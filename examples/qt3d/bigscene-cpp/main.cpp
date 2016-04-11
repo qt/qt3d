@@ -61,11 +61,11 @@
 #include <Qt3DCore/qaspectengine.h>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DRender/QParameter>
-#include <Qt3DRender/QCylinderMesh>
+#include <Qt3DExtras//QCylinderMesh>
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DRender/QCameraSelector>
-#include <Qt3DRender/QPhongMaterial>
-#include <Qt3DRender/QForwardRenderer>
+#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QForwardRenderer>
 #include <qmath.h>
 #include "qt3dwindow.h"
 #include "qfirstpersoncameracontroller.h"

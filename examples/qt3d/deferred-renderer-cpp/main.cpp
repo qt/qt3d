@@ -51,8 +51,8 @@
 #include <Qt3DCore/QEntity>
 
 #include <Qt3DRender/QMaterial>
-#include <Qt3DRender/QSphereMesh>
-#include <Qt3DRender/QPlaneMesh>
+#include <Qt3DExtras//QSphereMesh>
+#include <Qt3DExtras//QPlaneMesh>
 #include <Qt3DRender/QLayer>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QCamera>
@@ -87,7 +87,7 @@ int main(int ac, char **av)
     FinalEffect *finalEffect = new FinalEffect();
     SceneEffect *sceneEffect = new SceneEffect();
 
-    Qt3DRender::QSphereMesh *sphereMesh = new Qt3DRender::QSphereMesh();
+    Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh();
     sphereMesh->setRings(50);
     sphereMesh->setSlices(100);
 
@@ -97,7 +97,7 @@ int main(int ac, char **av)
     Qt3DRender::QLayer *quadLayer = new Qt3DRender::QLayer();
     quadLayer->setNames(QStringList("screenQuad"));
 
-    Qt3DRender::QPlaneMesh *planeMesh = new Qt3DRender::QPlaneMesh();
+    Qt3DExtras::QPlaneMesh *planeMesh = new Qt3DExtras::QPlaneMesh();
     planeMesh->setMeshResolution(QSize(2, 2));
     planeMesh->setWidth(2.0f);
     planeMesh->setHeight(2.0f);

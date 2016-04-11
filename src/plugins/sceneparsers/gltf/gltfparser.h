@@ -193,7 +193,7 @@ private:
     QMap<QString, QMaterial*> m_materialCache;
 
     QMap<QString, BufferData> m_bufferDatas;
-    QMap<QString, QBuffer*> m_buffers;
+    QMap<QString, Qt3DRender::QBuffer*> m_buffers;
 
     QMap<QString, QString> m_shaderPaths;
     QMap<QString, QShaderProgram*> m_programs;

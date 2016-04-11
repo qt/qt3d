@@ -58,7 +58,7 @@
 
 #include <Qt3DInput/QInputAspect>
 
-#include <Qt3DRender/qtorusmesh.h>
+#include <Qt3DExtras//qtorusmesh.h>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/qtechnique.h>
 #include <Qt3DRender/qmaterial.h>
@@ -88,7 +88,7 @@ int main(int ac, char **av)
     Qt3DCore::QEntity *torusEntity = new Qt3DCore::QEntity(rootEntity);
 
     // Torus shape data
-    Qt3DRender::QTorusMesh *torus = new Qt3DRender::QTorusMesh();
+    Qt3DExtras::QTorusMesh *torus = new Qt3DExtras::QTorusMesh();
     torus->setRadius(40);
     torus->setMinorRadius(15);
 

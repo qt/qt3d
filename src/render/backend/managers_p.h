@@ -337,6 +337,7 @@ class ObjectPickerManager : public Qt3DCore::QResourceManager<
 {
 };
 
+#if 0
 class BoundingVolumeDebugManager : public Qt3DCore::QResourceManager<
         BoundingVolumeDebug,
         Qt3DCore::QNodeId,
@@ -345,6 +346,7 @@ class BoundingVolumeDebugManager : public Qt3DCore::QResourceManager<
         Qt3DCore::ObjectLevelLockingPolicy>
 {
 };
+#endif
 
 class LightManager : public Qt3DCore::QResourceManager<
         Light,

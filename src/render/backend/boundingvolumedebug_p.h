@@ -51,6 +51,8 @@
 // We mean it.
 //
 
+#if 0
+
 #include <Qt3DRender/private/backendnode_p.h>
 #include <QVector3D>
 
@@ -88,5 +90,7 @@ private:
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif
 
 #endif // QT3DRENDER_RENDER_BOUNDINGVOLUMEDEBUG_H

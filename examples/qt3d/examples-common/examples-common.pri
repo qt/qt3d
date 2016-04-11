@@ -1,4 +1,4 @@
-QT += 3dcore 3drender 3dinput 3dlogic qml
+QT += 3dcore 3drender 3dinput 3dlogic qml 3dextras
 
 INCLUDEPATH += $$PWD
 

@@ -65,7 +65,7 @@
 
 #include <Qt3DInput/QInputAspect>
 
-#include <Qt3DRender/qtorusmesh.h>
+#include <Qt3DExtras/qtorusmesh.h>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/qtechnique.h>
 #include <Qt3DRender/qmaterial.h>
@@ -78,7 +78,7 @@
 #include <Qt3DCore/qaspectengine.h>
 
 #include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DRender/qforwardrenderer.h>
+#include <Qt3DExtras/qforwardrenderer.h>
 
 #include "qt3dwindow.h"
 #include "qfirstpersoncameracontroller.h"

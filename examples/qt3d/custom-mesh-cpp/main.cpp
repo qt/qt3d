@@ -60,8 +60,8 @@
 
 #include <Qt3DRender/QRenderStateSet>
 #include <Qt3DRender/QRenderAspect>
-#include <Qt3DRender/QForwardRenderer>
-#include <Qt3DRender/QPerVertexColorMaterial>
+#include <Qt3DExtras/QForwardRenderer>
+#include <Qt3DExtras/QPerVertexColorMaterial>
 
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QGeometry>
@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
     camController->setCamera(cameraEntity);
 
     // Material
-    Qt3DRender::QMaterial *material = new Qt3DRender::QPerVertexColorMaterial(rootEntity);
+    Qt3DRender::QMaterial *material = new Qt3DExtras::QPerVertexColorMaterial(rootEntity);
 
     // Torus
     Qt3DCore::QEntity *customMeshEntity = new Qt3DCore::QEntity(rootEntity);

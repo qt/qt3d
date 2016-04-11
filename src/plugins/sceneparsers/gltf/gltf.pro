@@ -1,6 +1,6 @@
 TARGET = gltfsceneparser
 
-QT += core-private 3dcore 3dcore-private 3drender 3drender-private
+QT += core-private 3dcore 3dcore-private 3drender 3drender-private 3dextras
 
 HEADERS += \
     gltfparser.h

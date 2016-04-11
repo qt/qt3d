@@ -36,7 +36,7 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
+#if 0
 #include "boundingvolumedebug_p.h"
 #include <Qt3DRender/private/qboundingvolumedebug_p.h>
 #include <Qt3DCore/qbackendnodepropertychange.h>
@@ -116,3 +116,5 @@ void BoundingVolumeDebug::setCenter(const QVector3D &center)
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif

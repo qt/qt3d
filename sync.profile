@@ -6,6 +6,7 @@
     "Qt3DInput" => "$basedir/src/input",
     "Qt3DQuickInput" => "$basedir/src/quick3d/quick3dinput",
     "Qt3DLogic" => "$basedir/src/logic",
+    "Qt3DExtras" => "$basedir/src/extras",
 );
 %moduleheaders = ( # restrict the module headers to those found in relative path
 );

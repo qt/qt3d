@@ -54,6 +54,7 @@ import Qt3D.Render 2.0
 Viewport {
     property alias camera: cameraSelector.camera
     property alias window: surfaceSelector.surface
+    property alias clearColor: clearBuffer.clearColor
 
     RenderSurfaceSelector {
         id: surfaceSelector
@@ -76,6 +77,7 @@ Viewport {
                     // Fills depth buffer for entities that are clipped
                     layers: ["content", "visualization"]
                     ClearBuffers {
+                        id: clearBuffer
                         buffers: ClearBuffers.ColorDepthBuffer
                         RenderPassFilter {
                             matchAny: FilterKey { name: "pass"; value: "material" }

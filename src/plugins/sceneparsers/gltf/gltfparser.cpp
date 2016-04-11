@@ -74,15 +74,16 @@
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QTexture>
 
-#include <Qt3DRender/QPhongMaterial>
-#include <Qt3DRender/QDiffuseMapMaterial>
-#include <Qt3DRender/QDiffuseSpecularMapMaterial>
-#include <Qt3DRender/QNormalDiffuseMapMaterial>
-#include <Qt3DRender/QNormalDiffuseSpecularMapMaterial>
+#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QDiffuseMapMaterial>
+#include <Qt3DExtras/QDiffuseSpecularMapMaterial>
+#include <Qt3DExtras/QNormalDiffuseMapMaterial>
+#include <Qt3DExtras/QNormalDiffuseSpecularMapMaterial>
 
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
+using namespace Qt3DExtras;
 
 namespace Qt3DRender {
 
@@ -872,11 +873,11 @@ void GLTFParser::processJSONBufferView(const QString &id, const QJsonObject& jso
     }
 
     int target = json.value(KEY_TARGET).toInt();
-    QBuffer::BufferType ty(QBuffer::VertexBuffer);
+    Qt3DRender::QBuffer::BufferType ty(Qt3DRender::QBuffer::VertexBuffer);
 
     switch (target) {
-    case GL_ARRAY_BUFFER:           ty = QBuffer::VertexBuffer; break;
-    case GL_ELEMENT_ARRAY_BUFFER:   ty = QBuffer::IndexBuffer; break;
+    case GL_ARRAY_BUFFER:           ty = Qt3DRender::QBuffer::VertexBuffer; break;
+    case GL_ELEMENT_ARRAY_BUFFER:   ty = Qt3DRender::QBuffer::IndexBuffer; break;
     default:
         qCWarning(GLTFParserLog) << Q_FUNC_INFO << "buffer" << id << "unsupported target:" << target;
         return;
@@ -896,7 +897,7 @@ void GLTFParser::processJSONBufferView(const QString &id, const QJsonObject& jso
                                  << "for view" << id;
     }
 
-    QBuffer *b(new QBuffer(ty));
+    Qt3DRender::QBuffer *b(new Qt3DRender::QBuffer(ty));
     b->setData(bytes);
     m_buffers[id] = b;
 }
@@ -1091,7 +1092,7 @@ void GLTFParser::processJSONMesh(const QString &id, const QJsonObject &json)
                 attributeName = attrName;
 
             //Get buffer handle for accessor
-            QBuffer *buffer = m_buffers.value(m_accessorDict[k].bufferViewName, Q_NULLPTR);
+            Qt3DRender::QBuffer *buffer = m_buffers.value(m_accessorDict[k].bufferViewName, Q_NULLPTR);
             if (buffer == Q_NULLPTR) {
                 qCWarning(GLTFParserLog) << "unknown buffer-view:" << m_accessorDict[k].bufferViewName << "processing accessor:" << id;
                 continue;
@@ -1114,7 +1115,7 @@ void GLTFParser::processJSONMesh(const QString &id, const QJsonObject &json)
                 qCWarning(GLTFParserLog) << "unknown index accessor:" << k << "on mesh" << id;
             } else {
                 //Get buffer handle for accessor
-                QBuffer *buffer = m_buffers.value(m_accessorDict[k].bufferViewName, Q_NULLPTR);
+                Qt3DRender::QBuffer *buffer = m_buffers.value(m_accessorDict[k].bufferViewName, Q_NULLPTR);
                 if (buffer == Q_NULLPTR) {
                     qCWarning(GLTFParserLog) << "unknown buffer-view:" << m_accessorDict[k].bufferViewName << "processing accessor:" << id;
                     continue;

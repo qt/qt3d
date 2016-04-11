@@ -35,6 +35,8 @@
 
 #include "testpostmanarbiter.h"
 
+#if 0
+
 class MyBoundingVolumeDebug : public Qt3DRender::QBoundingVolumeDebug
 {
     Q_OBJECT

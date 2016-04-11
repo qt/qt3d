@@ -51,7 +51,7 @@
 #ifndef BARREL_H
 #define BARREL_H
 
-#include <Qt3DRender/QNormalDiffuseSpecularMapMaterial>
+#include <Qt3DExtras/QNormalDiffuseSpecularMapMaterial>
 #include <Qt3DRender/qtexture.h>
 #include "renderableentity.h"
 
@@ -96,7 +96,7 @@ private:
     Bumps m_bumps;
     DiffuseColor m_diffuseColor;
     SpecularColor m_specularColor;
-    Qt3DRender::QNormalDiffuseSpecularMapMaterial *m_material;
+    Qt3DExtras::QNormalDiffuseSpecularMapMaterial *m_material;
     Qt3DRender::QAbstractTexture *m_diffuseTexture;
     Qt3DRender::QAbstractTexture *m_normalTexture;
     Qt3DRender::QAbstractTexture *m_specularTexture;

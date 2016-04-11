@@ -124,7 +124,7 @@ class Attribute;
 class Geometry;
 class GeometryRenderer;
 class ObjectPicker;
-class BoundingVolumeDebug;
+//class BoundingVolumeDebug;
 class Light;
 class ComputeCommand;
 class RenderStateNode;
@@ -196,7 +196,7 @@ public:
     inline GeometryManager *geometryManager() const Q_DECL_NOEXCEPT { return m_geometryManager; }
     inline GeometryRendererManager *geometryRendererManager() const Q_DECL_NOEXCEPT { return m_geometryRendererManager; }
     inline ObjectPickerManager *objectPickerManager() const Q_DECL_NOEXCEPT { return m_objectPickerManager; }
-    inline BoundingVolumeDebugManager *boundingVolumeDebugManager() const Q_DECL_NOEXCEPT { return m_boundingVolumeDebugManager; }
+    //    inline BoundingVolumeDebugManager *boundingVolumeDebugManager() const Q_DECL_NOEXCEPT { return m_boundingVolumeDebugManager; }
     inline LightManager *lightManager() const Q_DECL_NOEXCEPT { return m_lightManager; }
     inline ComputeCommandManager *computeJobManager() const Q_DECL_NOEXCEPT { return m_computeJobManager; }
     inline RenderStateManager *renderStateManager() const Q_DECL_NOEXCEPT { return m_renderStateManager; }
@@ -230,7 +230,7 @@ private:
     GeometryManager *m_geometryManager;
     GeometryRendererManager *m_geometryRendererManager;
     ObjectPickerManager *m_objectPickerManager;
-    BoundingVolumeDebugManager *m_boundingVolumeDebugManager;
+    //    BoundingVolumeDebugManager *m_boundingVolumeDebugManager;
     LightManager *m_lightManager;
     ComputeCommandManager *m_computeJobManager;
     RenderStateManager *m_renderStateManager;
@@ -322,8 +322,8 @@ QT3DRENDERSHARED_PRIVATE_EXPORT GeometryRendererManager *NodeManagers::manager<G
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT ObjectPickerManager *NodeManagers::manager<ObjectPicker>() const Q_DECL_NOEXCEPT;
 
-template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT BoundingVolumeDebugManager *NodeManagers::manager<BoundingVolumeDebug>() const Q_DECL_NOEXCEPT;
+//template<>
+//QT3DRENDERSHARED_PRIVATE_EXPORT BoundingVolumeDebugManager *NodeManagers::manager<BoundingVolumeDebug>() const Q_DECL_NOEXCEPT;
 
 template<>
 LightManager *NodeManagers::manager<Light>() const Q_DECL_NOEXCEPT;

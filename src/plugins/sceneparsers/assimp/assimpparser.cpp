@@ -49,9 +49,9 @@
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qtexture.h>
-#include <Qt3DRender/qdiffusemapmaterial.h>
-#include <Qt3DRender/qdiffusespecularmapmaterial.h>
-#include <Qt3DRender/qphongmaterial.h>
+#include <Qt3DExtras/qdiffusemapmaterial.h>
+#include <Qt3DExtras/qdiffusespecularmapmaterial.h>
+#include <Qt3DExtras/qphongmaterial.h>
 #include <QFileInfo>
 #include <QColor>
 #include <qmath.h>
@@ -63,6 +63,7 @@
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
+using namespace Qt3DExtras;
 
 namespace Qt3DRender {
 
@@ -529,8 +530,8 @@ void AssimpParser::loadMesh(uint meshIndex)
 
     QGeometryRenderer *geometryRenderer = new QGeometryRenderer();
     QGeometry *meshGeometry = new QGeometry(geometryRenderer);
-    QBuffer *vertexBuffer = new QBuffer(QBuffer::VertexBuffer, meshGeometry);
-    QBuffer *indexBuffer = new QBuffer(QBuffer::IndexBuffer, meshGeometry);
+    Qt3DRender::QBuffer *vertexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, meshGeometry);
+    Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer, meshGeometry);
 
     geometryRenderer->setGeometry(meshGeometry);
 

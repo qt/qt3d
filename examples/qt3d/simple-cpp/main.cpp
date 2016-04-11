@@ -59,11 +59,11 @@
 #include <Qt3DInput/QInputAspect>
 
 #include <Qt3DRender/QRenderAspect>
-#include <Qt3DRender/QForwardRenderer>
-#include <Qt3DRender/QPhongMaterial>
-#include <Qt3DRender/QCylinderMesh>
-#include <Qt3DRender/QSphereMesh>
-#include <Qt3DRender/QTorusMesh>
+#include <Qt3DExtras//QForwardRenderer>
+#include <Qt3DExtras//QPhongMaterial>
+#include <Qt3DExtras/QCylinderMesh>
+#include <Qt3DExtras/QSphereMesh>
+#include <Qt3DExtras/QTorusMesh>
 
 #include <QPropertyAnimation>
 
@@ -77,11 +77,11 @@ Qt3DCore::QEntity *createScene()
     Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity;
 
     // Material
-    Qt3DRender::QMaterial *material = new Qt3DRender::QPhongMaterial(rootEntity);
+    Qt3DRender::QMaterial *material = new Qt3DExtras::QPhongMaterial(rootEntity);
 
     // Torus
     Qt3DCore::QEntity *torusEntity = new Qt3DCore::QEntity(rootEntity);
-    Qt3DRender::QTorusMesh *torusMesh = new Qt3DRender::QTorusMesh;
+    Qt3DExtras::QTorusMesh *torusMesh = new Qt3DExtras::QTorusMesh;
     torusMesh->setRadius(5);
     torusMesh->setMinorRadius(1);
     torusMesh->setRings(100);
@@ -97,7 +97,7 @@ Qt3DCore::QEntity *createScene()
 
     // Sphere
     Qt3DCore::QEntity *sphereEntity = new Qt3DCore::QEntity(rootEntity);
-    Qt3DRender::QSphereMesh *sphereMesh = new Qt3DRender::QSphereMesh;
+    Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh;
     sphereMesh->setRadius(3);
 
     Qt3DCore::QTransform *sphereTransform = new Qt3DCore::QTransform;

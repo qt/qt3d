@@ -1,13 +1,14 @@
 TEMPLATE = lib
 CONFIG += staticlib
 TARGET = examples-common
-QT += core-private 3dcore 3dcore-private 3drender 3dinput 3dlogic qml quick
+QT += core-private 3dcore 3dcore-private 3drender 3dinput 3dlogic qml quick 3dextras
 
 SOURCES += \
     qfirstpersoncameracontroller.cpp \
     qorbitcontrol.cpp \
     qt3dwindow.cpp \
     qt3dquickwindow.cpp
+
 
 HEADERS += \
     qfirstpersoncameracontroller.h \
@@ -16,7 +17,6 @@ HEADERS += \
     qorbitcontrol.h \
     qt3dwindow.h \
     qt3dquickwindow.h
-
 
 QML_FILES = \
     $$PWD/OrbitController.qml \

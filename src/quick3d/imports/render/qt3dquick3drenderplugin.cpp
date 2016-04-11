@@ -54,12 +54,6 @@
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qfilterkey.h>
-#include <Qt3DRender/qcuboidmesh.h>
-#include <Qt3DRender/qconemesh.h>
-#include <Qt3DRender/qcylindermesh.h>
-#include <Qt3DRender/qplanemesh.h>
-#include <Qt3DRender/qspheremesh.h>
-#include <Qt3DRender/qtorusmesh.h>
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qlayerfilter.h>
 #include <Qt3DRender/qlight.h>
@@ -97,13 +91,7 @@
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qgeometry.h>
-#include <Qt3DRender/qtorusgeometry.h>
-#include <Qt3DRender/qspheregeometry.h>
-#include <Qt3DRender/qcuboidgeometry.h>
-#include <Qt3DRender/qplanegeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/qconegeometry.h>
-#include <Qt3DRender/qcylindergeometry.h>
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qpickevent.h>
 #include <Qt3DRender/qfrustumculling.h>
@@ -137,27 +125,6 @@
 #include <QtGui/qwindow.h>
 
 QT_BEGIN_NAMESPACE
-
-static const struct {
-    const char *type;
-    int major, minor;
-} qmldir [] = {
-    // Materials
-    { "PhongMaterial", 2, 0 },
-    { "PhongAlphaMaterial", 2, 0 },
-    { "DiffuseMapMaterial", 2, 0 },
-    { "DiffuseSpecularMapMaterial", 2, 0 },
-    { "NormalDiffuseMapAlphaMaterial", 2, 0 },
-    { "NormalDiffuseMapMaterial", 2, 0 },
-    { "NormalDiffuseSpecularMapMaterial", 2, 0 },
-    { "PerVertexColorMaterial", 2, 0 },
-    { "GoochMaterial", 2, 0 },
-    { "TextureMaterial", 2, 0 },
-    // FrameGraphs
-    { "ForwardRenderer", 2, 0 },
-    // Entities
-    { "SkyboxEntity", 2, 0 }
-};
 
 QVariantList Quick3DShaderDataArrayToVariantListConverter(Qt3DRender::Render::Quick::Quick3DShaderDataArray *array)
 {
@@ -226,28 +193,16 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QGeometryRenderer>(uri, 2, 0, "GeometryRenderer");
 
     // Debug components
-    qmlRegisterType<Qt3DRender::QBoundingVolumeDebug>(uri, 2, 0, "BoundingVolumeDebug");
+//    qmlRegisterType<Qt3DRender::QBoundingVolumeDebug>(uri, 2, 0, "BoundingVolumeDebug");
+
+    // Mesh
+    qmlRegisterType<Qt3DRender::QMesh>(uri, 2, 0, "Mesh");
 
     // Picking
     qmlRegisterType<Qt3DRender::QObjectPicker>(uri, 2, 0, "ObjectPicker");
     qmlRegisterUncreatableType<Qt3DRender::QPickEvent>(uri, 2, 0, "PickEvent", QStringLiteral("Events cannot be created"));
 
-    // Meshes
-    qmlRegisterType<Qt3DRender::QMesh>(uri, 2, 0, "Mesh");
-    qmlRegisterType<Qt3DRender::QConeMesh>(uri, 2, 0, "ConeMesh");
-    qmlRegisterType<Qt3DRender::QConeGeometry>(uri, 2, 0, "ConeGeometry");
-    qmlRegisterType<Qt3DRender::QCuboidMesh>(uri, 2, 0, "CuboidMesh");
-    qmlRegisterType<Qt3DRender::QCuboidGeometry>(uri, 2, 0, "CuboidGeometry");
-    qmlRegisterType<Qt3DRender::QCylinderMesh>(uri, 2, 0, "CylinderMesh");
-    qmlRegisterType<Qt3DRender::QCylinderGeometry>(uri, 2, 0, "CylinderGeometry");
-    qmlRegisterType<Qt3DRender::QPlaneMesh>(uri, 2, 0, "PlaneMesh");
-    qmlRegisterType<Qt3DRender::QPlaneGeometry>(uri, 2, 0, "PlaneGeometry");
-    qmlRegisterType<Qt3DRender::QTorusMesh>(uri, 2, 0, "TorusMesh");
-    qmlRegisterType<Qt3DRender::QTorusGeometry>(uri, 2, 0, "TorusGeometry");
-    qmlRegisterType<Qt3DRender::QSphereMesh>(uri, 2, 0, "SphereMesh");
-    qmlRegisterType<Qt3DRender::QSphereGeometry>(uri, 2, 0, "SphereGeometry");
-
-    // Compute Job
+        // Compute Job
     qmlRegisterType<Qt3DRender::QComputeCommand>(uri, 2, 0, "ComputeCommand");
 
     // Layers
@@ -307,15 +262,6 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QSeamlessCubemap>(uri, 2, 0, "SeamlessCubemap");
     qmlRegisterType<Qt3DRender::QStencilOperation>(uri, 2, 0, "StencilOperation");
     qmlRegisterType<Qt3DRender::QStencilMask>(uri, 2, 0, "StencilMask");
-
-    // Register types provided as QML files compiled into the plugin
-    for (int i = 0; i < int(sizeof(qmldir) / sizeof(qmldir[0])); i++) {
-        QString path = QStringLiteral("qrc:/qt-project.org/imports/Qt3D/Render/defaults/qml/");
-        qmlRegisterType(QUrl(path + qmldir[i].type + QStringLiteral(".qml")),
-                        uri,
-                        qmldir[i].major, qmldir[i].minor,
-                        qmldir[i].type);
-    }
 }
 
 QT_END_NAMESPACE

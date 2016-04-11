@@ -39,8 +39,8 @@ contains(QT_CONFIG, private_tests) {
         qobjectpicker \
         objectpicker \
         picking \
-        qboundingvolumedebug \
-        boundingvolumedebug \
+#        qboundingvolumedebug \
+#        boundingvolumedebug \
         qdefaultmeshes \
         trianglesextractor \
         triangleboundingvolume \

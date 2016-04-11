@@ -83,6 +83,7 @@ void FrameCleanupJob::run()
 
 void FrameCleanupJob::updateBoundingVolumesDebug(Entity *node)
 {
+#if 0
     BoundingVolumeDebug *debugBV = node->renderComponent<BoundingVolumeDebug>();
     if (debugBV) {
         Qt3DRender::Render::Sphere s;
@@ -94,6 +95,7 @@ void FrameCleanupJob::updateBoundingVolumesDebug(Entity *node)
         debugBV->setRadius(s.radius());
         debugBV->setCenter(s.center());
     }
+#endif
 
     Q_FOREACH (Entity *c, node->children())
         updateBoundingVolumesDebug(c);

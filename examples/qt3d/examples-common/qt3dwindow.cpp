@@ -50,7 +50,7 @@
 
 #include "qt3dwindow.h"
 
-#include <Qt3DRender/qforwardrenderer.h>
+#include <Qt3DExtras/qforwardrenderer.h>
 #include <Qt3DRender/qrendersettings.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DInput/qinputaspect.h>
@@ -72,7 +72,7 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
     , m_inputAspect(new Qt3DInput::QInputAspect)
     , m_logicAspect(new Qt3DLogic::QLogicAspect)
     , m_renderSettings(new Qt3DRender::QRenderSettings)
-    , m_forwardRenderer(new Qt3DRender::QForwardRenderer)
+    , m_forwardRenderer(new Qt3DExtras::QForwardRenderer)
     , m_defaultCamera(new Qt3DRender::QCamera)
     , m_inputSettings(new Qt3DInput::QInputSettings)
     , m_root(new Qt3DCore::QEntity)
@@ -141,7 +141,7 @@ Qt3DRender::QFrameGraphNode *Qt3DWindow::activeFrameGraph() const
     return m_renderSettings->activeFrameGraph();
 }
 
-Qt3DRender::QForwardRenderer *Qt3DWindow::defaultFramegraph() const
+Qt3DExtras::QForwardRenderer *Qt3DWindow::defaultFramegraph() const
 {
     return m_forwardRenderer;
 }

@@ -1,0 +1,3 @@
+module Qt3D.Extras
+plugin quick3dextrasplugin
+classname Qt3DQuick3DExtrasPlugin

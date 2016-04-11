@@ -64,9 +64,12 @@ class QEntity;
 namespace Qt3DRender {
 class QCamera;
 class QFrameGraphNode;
-class QForwardRenderer;
 class QRenderAspect;
 class QRenderSettings;
+}
+
+namespace Qt3DExtras {
+class QForwardRenderer;
 }
 
 namespace Qt3DInput {
@@ -92,7 +95,7 @@ public:
 
     void setActiveFrameGraph(Qt3DRender::QFrameGraphNode *activeFrameGraph);
     Qt3DRender::QFrameGraphNode *activeFrameGraph() const;
-    Qt3DRender::QForwardRenderer *defaultFramegraph() const;
+    Qt3DExtras::QForwardRenderer *defaultFramegraph() const;
 
     Qt3DRender::QCamera *camera() const;
 
@@ -114,7 +117,7 @@ private:
 
     // Renderer configuration
     Qt3DRender::QRenderSettings *m_renderSettings;
-    Qt3DRender::QForwardRenderer *m_forwardRenderer;
+    Qt3DExtras::QForwardRenderer *m_forwardRenderer;
     Qt3DRender::QCamera *m_defaultCamera;
 
     // Input configuration

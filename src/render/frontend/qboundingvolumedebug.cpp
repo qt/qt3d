@@ -37,6 +37,8 @@
 **
 ****************************************************************************/
 
+#if 0
+
 #include "qboundingvolumedebug_p.h"
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/private/qcomponent_p.h>
@@ -45,7 +47,6 @@
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DRender/qphongalphamaterial.h>
 #include <Qt3DRender/qlayer.h>
-
 #include <QThread>
 
 QT_BEGIN_NAMESPACE
@@ -184,3 +185,5 @@ void QBoundingVolumeDebugPrivate::updateSubtree()
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif

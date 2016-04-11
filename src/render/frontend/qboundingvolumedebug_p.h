@@ -37,6 +37,8 @@
 **
 ****************************************************************************/
 
+#if 0
+
 #ifndef QT3DRENDER_QBOUNDINGVOLUMEDEBUG_P_H
 #define QT3DRENDER_QBOUNDINGVOLUMEDEBUG_P_H
 
@@ -92,3 +94,5 @@ private:
 QT_END_NAMESPACE
 
 #endif // QT3DRENDER_QBOUNDINGVOLUMEDEBUG_P_H
+
+#endif

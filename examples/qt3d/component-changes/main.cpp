@@ -51,9 +51,9 @@
 #include <QGuiApplication>
 
 #include <Qt3DRender/qcamera.h>
-#include <Qt3DRender/qcylindermesh.h>
-#include <Qt3DRender/qspheremesh.h>
-#include <Qt3DRender/qphongmaterial.h>
+#include <Qt3DExtras/qcylindermesh.h>
+#include <Qt3DExtras/qspheremesh.h>
+#include <Qt3DExtras/qphongmaterial.h>
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
@@ -121,14 +121,14 @@ int main(int argc, char **argv)
     cameraController->setCamera(camera);
 
     // Cylinder mesh data
-    Qt3DRender::QCylinderMesh *cylinderMesh = new Qt3DRender::QCylinderMesh();
+    Qt3DExtras::QCylinderMesh *cylinderMesh = new Qt3DExtras::QCylinderMesh();
     cylinderMesh->setRadius(1);
     cylinderMesh->setLength(3);
     cylinderMesh->setRings(5);
     cylinderMesh->setSlices(40);
 
     // Sphere mesh data
-    Qt3DRender::QSphereMesh *sphereMesh = new Qt3DRender::QSphereMesh();
+    Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh();
     sphereMesh->setRings(20);
     sphereMesh->setSlices(40);
 
@@ -138,7 +138,7 @@ int main(int argc, char **argv)
     transform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1, 0, 0), 45.0f));
 
     // Material
-    Qt3DRender::QPhongMaterial *material = new Qt3DRender::QPhongMaterial(rootEntity);
+    Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial(rootEntity);
     material->setDiffuse(Qt::red);
 
     // Cylinder

@@ -36,13 +36,13 @@
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QRenderPass>
-#include <Qt3DRender/QPhongMaterial>
-#include <Qt3DRender/QDiffuseMapMaterial>
-#include <Qt3DRender/QPerVertexColorMaterial>
-#include <Qt3DRender/QNormalDiffuseMapMaterial>
-#include <Qt3DRender/QDiffuseSpecularMapMaterial>
-#include <Qt3DRender/QNormalDiffuseMapAlphaMaterial>
-#include <Qt3DRender/QNormalDiffuseSpecularMapMaterial>
+#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QDiffuseMapMaterial>
+#include <Qt3DExtras/QPerVertexColorMaterial>
+#include <Qt3DExtras/QNormalDiffuseMapMaterial>
+#include <Qt3DExtras/QDiffuseSpecularMapMaterial>
+#include <Qt3DExtras/QNormalDiffuseMapAlphaMaterial>
+#include <Qt3DExtras/QNormalDiffuseSpecularMapMaterial>
 
 #include "testpostmanarbiter.h"
 
@@ -201,19 +201,19 @@ private Q_SLOTS:
         QTest::newRow("empty material") << material;
         material = new TestMaterial();
         QTest::newRow("test material") << material;
-        material = new Qt3DRender::QPhongMaterial();
+        material = new Qt3DExtras::QPhongMaterial();
         QTest::newRow("QPhongMaterial") << material;
-        material = new Qt3DRender::QDiffuseMapMaterial();
+        material = new Qt3DExtras::QDiffuseMapMaterial();
         QTest::newRow("QDiffuseMapMaterial") << material;
-        material = new Qt3DRender::QDiffuseSpecularMapMaterial();
+        material = new Qt3DExtras::QDiffuseSpecularMapMaterial();
         QTest::newRow("QDiffuseMapSpecularMaterial") << material;
-        material = new Qt3DRender::QPerVertexColorMaterial();
+        material = new Qt3DExtras::QPerVertexColorMaterial();
         QTest::newRow("QPerVertexColorMaterial") << material;
-        material = new Qt3DRender::QNormalDiffuseMapMaterial();
+        material = new Qt3DExtras::QNormalDiffuseMapMaterial();
         QTest::newRow("QNormalDiffuseMapMaterial") << material;
-        material = new Qt3DRender::QNormalDiffuseMapAlphaMaterial();
+        material = new Qt3DExtras::QNormalDiffuseMapAlphaMaterial();
         QTest::newRow("QNormalDiffuseMapAlphaMaterial") << material;
-        material = new Qt3DRender::QNormalDiffuseSpecularMapMaterial();
+        material = new Qt3DExtras::QNormalDiffuseSpecularMapMaterial();
         QTest::newRow("QNormalDiffuseSpecularMapMaterial") << material;
     }
 

@@ -1,6 +1,6 @@
 TARGET = assimpsceneparser
 
-QT += core-private 3dcore 3dcore-private 3drender 3drender-private
+QT += core-private 3dcore 3dcore-private 3drender 3drender-private 3dextras
 
 include(../../../3rdparty/assimp/assimp_dependency.pri)
 

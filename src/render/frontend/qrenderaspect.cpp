@@ -229,7 +229,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QViewport>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::ViewportNode, QViewport>(m_renderer, m_nodeManagers->frameGraphManager())));
 
     // Picking
-    q->registerBackendType<QBoundingVolumeDebug>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::BoundingVolumeDebug, Render::BoundingVolumeDebugManager>(m_renderer, m_nodeManagers->boundingVolumeDebugManager())));
+    // q->registerBackendType<QBoundingVolumeDebug>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::BoundingVolumeDebug, Render::BoundingVolumeDebugManager>(m_renderer, m_nodeManagers->boundingVolumeDebugManager())));
     q->registerBackendType<QObjectPicker>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager>(m_renderer, m_nodeManagers->objectPickerManager())));
 }
 

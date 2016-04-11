@@ -35,11 +35,11 @@
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qbufferdatagenerator.h>
 
-#include <Qt3DRender/qspheremesh.h>
-#include <Qt3DRender/qcylindermesh.h>
-#include <Qt3DRender/qtorusmesh.h>
-#include <Qt3DRender/qcuboidmesh.h>
-#include <Qt3DRender/qplanemesh.h>
+#include <Qt3DExtras/qspheremesh.h>
+#include <Qt3DExtras/qcylindermesh.h>
+#include <Qt3DExtras/qtorusmesh.h>
+#include <Qt3DExtras/qcuboidmesh.h>
+#include <Qt3DExtras/qplanemesh.h>
 
 // We need to call QNode::clone which is protected
 // So we sublcass QNode instead of QObject
@@ -57,11 +57,11 @@ private Q_SLOTS:
     void checkCloning_data()
     {
         QTest::addColumn<Qt3DRender::QGeometryRenderer *>("geomRenderer");
-        QTest::newRow("QSphereMesh") << static_cast<Qt3DRender::QGeometryRenderer *>(new Qt3DRender::QSphereMesh);
-        QTest::newRow("QCylinderMesh") << static_cast<Qt3DRender::QGeometryRenderer *>(new Qt3DRender::QCylinderMesh);
-        QTest::newRow("QTorusMesh") << static_cast<Qt3DRender::QGeometryRenderer *>(new Qt3DRender::QTorusMesh);
-        QTest::newRow("QCuboidMesh") << static_cast<Qt3DRender::QGeometryRenderer *>(new Qt3DRender::QCuboidMesh);
-        QTest::newRow("QPlaneMesh") << static_cast<Qt3DRender::QGeometryRenderer *>(new Qt3DRender::QPlaneMesh);
+        QTest::newRow("QSphereMesh") << static_cast<Qt3DRender::QGeometryRenderer *>(new Qt3DExtras::QSphereMesh);
+        QTest::newRow("QCylinderMesh") << static_cast<Qt3DRender::QGeometryRenderer *>(new Qt3DExtras::QCylinderMesh);
+        QTest::newRow("QTorusMesh") << static_cast<Qt3DRender::QGeometryRenderer *>(new Qt3DExtras::QTorusMesh);
+        QTest::newRow("QCuboidMesh") << static_cast<Qt3DRender::QGeometryRenderer *>(new Qt3DExtras::QCuboidMesh);
+        QTest::newRow("QPlaneMesh") << static_cast<Qt3DRender::QGeometryRenderer *>(new Qt3DExtras::QPlaneMesh);
     }
 
     void checkCloning()

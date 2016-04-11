@@ -15,18 +15,12 @@ include (lights/lights.pri)
 include (materialsystem/materialsystem.pri)
 include (renderstates/renderstates.pri)
 include (io/io.pri)
-include (defaults/defaults.pri)
 include (picking/picking.pri)
 include (raycasting/raycasting.pri)
 include (services/services.pri)
 include (texture/texture.pri)
 
 RESOURCES += $$PWD/render.qrc
-
-OTHER_FILES += \
-    $$PWD/shaders/* \
-    $$PWD/shaders/gl3/* \
-    $$PWD/shaders/es2/*
 
 gcov {
     CONFIG += static

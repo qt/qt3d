@@ -31,9 +31,9 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QMaterial>
-#include <Qt3DRender/QForwardRenderer>
-#include <Qt3DRender/QPhongMaterial>
-#include <Qt3DRender/QCylinderMesh>
+#include <Qt3DExtras/QForwardRenderer>
+#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QCylinderMesh>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/private/managers_p.h>
 
@@ -165,7 +165,7 @@ Qt3DCore::QEntity *buildBigScene()
 
     // FrameGraph
     Qt3DRender::QRenderSettings* renderSettings = new Qt3DRender::QRenderSettings();
-    Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
+    Qt3DExtras::QForwardRenderer *forwardRenderer = new Qt3DExtras::QForwardRenderer();
     forwardRenderer->setCamera(cameraEntity);
     forwardRenderer->setClearColor(Qt::black);
     renderSettings->setActiveFrameGraph(forwardRenderer);
@@ -178,8 +178,8 @@ Qt3DCore::QEntity *buildBigScene()
     for (int i = 0; i < max; i++) {
         Qt3DCore::QEntity *e = new Qt3DCore::QEntity();
         Qt3DCore::QTransform *transform = new Qt3DCore::QTransform();
-        Qt3DRender::QCylinderMesh *mesh = new Qt3DRender::QCylinderMesh();
-        Qt3DRender::QPhongMaterial *material = new Qt3DRender::QPhongMaterial();
+        Qt3DExtras::QCylinderMesh *mesh = new Qt3DExtras::QCylinderMesh();
+        Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial();
         mesh->setRings(50.0f);
         mesh->setSlices(30.0f);
         mesh->setRadius(2.5f);

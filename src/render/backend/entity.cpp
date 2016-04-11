@@ -315,8 +315,8 @@ void Entity::addComponent(Qt3DCore::QComponent *component)
         m_boundingDirty = true;
     } else if (qobject_cast<QObjectPicker *>(component) != Q_NULLPTR) {
         m_objectPickerComponent = component->id();
-    } else if (qobject_cast<QBoundingVolumeDebug *>(component) != Q_NULLPTR) {
-        m_boundingVolumeDebugComponent = component->id();
+//    } else if (qobject_cast<QBoundingVolumeDebug *>(component) != Q_NULLPTR) {
+//        m_boundingVolumeDebugComponent = component->id();
     } else if (qobject_cast<QComputeCommand *>(component) != Q_NULLPTR) {
         m_computeComponent = component->id();
     }
@@ -346,8 +346,8 @@ void Entity::addComponent(Qt3DCore::QNodeIdTypePair idAndType)
         m_boundingDirty = true;
     } else if (type->inherits(&QObjectPicker::staticMetaObject)) {
         m_objectPickerComponent = id;
-    } else if (type->inherits(&QBoundingVolumeDebug::staticMetaObject)) {
-        m_boundingVolumeDebugComponent = id;
+//    } else if (type->inherits(&QBoundingVolumeDebug::staticMetaObject)) {
+//        m_boundingVolumeDebugComponent = id;
     } else if (type->inherits(&QComputeCommand::staticMetaObject)) {
         m_computeComponent = id;
     }
@@ -370,8 +370,8 @@ void Entity::removeComponent(Qt3DCore::QNodeId nodeId)
         m_boundingDirty = true;
     } else if (m_objectPickerComponent == nodeId) {
         m_objectPickerComponent = QNodeId();
-    } else if (m_boundingVolumeDebugComponent == nodeId) {
-        m_boundingVolumeDebugComponent = QNodeId();
+//    } else if (m_boundingVolumeDebugComponent == nodeId) {
+//        m_boundingVolumeDebugComponent = QNodeId();
     } else if (m_lightComponents.contains(nodeId)) {
         m_lightComponents.removeAll(nodeId);
     } else if (m_computeComponent == nodeId) {
@@ -441,11 +441,11 @@ QList<HShaderData> Entity::componentsHandle<ShaderData>() const
     return shaderDataHandles;
 }
 
-template<>
-HBoundingVolumeDebug Entity::componentHandle<BoundingVolumeDebug>() const
-{
-    return m_nodeManagers->boundingVolumeDebugManager()->lookupHandle(m_boundingVolumeDebugComponent);
-}
+//template<>
+//HBoundingVolumeDebug Entity::componentHandle<BoundingVolumeDebug>() const
+//{
+//    return m_nodeManagers->boundingVolumeDebugManager()->lookupHandle(m_boundingVolumeDebugComponent);
+//}
 
 template<>
 QList<HLight> Entity::componentsHandle<Light>() const
@@ -525,11 +525,11 @@ QList<Light *> Entity::renderComponents<Light>() const
     return lights;
 }
 
-template<>
-BoundingVolumeDebug *Entity::renderComponent<BoundingVolumeDebug>() const
-{
-    return m_nodeManagers->boundingVolumeDebugManager()->lookupResource(m_boundingVolumeDebugComponent);
-}
+//template<>
+//BoundingVolumeDebug *Entity::renderComponent<BoundingVolumeDebug>() const
+//{
+//    return m_nodeManagers->boundingVolumeDebugManager()->lookupResource(m_boundingVolumeDebugComponent);
+//}
 
 template<>
 ComputeCommand *Entity::renderComponent<ComputeCommand>() const

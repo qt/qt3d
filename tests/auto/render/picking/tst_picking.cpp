@@ -34,16 +34,17 @@
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
 #include <Qt3DRender/private/objectpicker_p.h>
 #include <Qt3DRender/qobjectpicker.h>
-#include <Qt3DRender/qspheremesh.h>
+#include <Qt3DExtras/qspheremesh.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qbufferdatagenerator.h>
-#include <Qt3DRender/qspheregeometry.h>
+#include <Qt3DExtras/qspheregeometry.h>
 #include <Qt3DRender/qpickevent.h>
 #include <Qt3DCore/qbackendnodepropertychange.h>
 
 using namespace Qt3DCore;
 using namespace Qt3DRender;
+using namespace Qt3DExtras;
 using namespace Qt3DRender::Render;
 
 class MyObjectPicker : public Qt3DRender::QObjectPicker

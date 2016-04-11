@@ -9,13 +9,6 @@ HEADERS += \
     $$PWD/geometryrenderermanager_p.h \
     $$PWD/qbuffer.h \
     $$PWD/qbuffer_p.h \
-    $$PWD/qconegeometry.h \
-    $$PWD/qconegeometry_p.h \
-    $$PWD/qconemesh.h \
-    $$PWD/qcuboidmesh.h \
-    $$PWD/qcylindergeometry.h \
-    $$PWD/qcylindergeometry_p.h \
-    $$PWD/qcylindermesh.h \
     $$PWD/qgeometry.h \
     $$PWD/qgeometry_p.h \
     $$PWD/qgeometryfactory.h \
@@ -23,17 +16,6 @@ HEADERS += \
     $$PWD/qgeometryrenderer_p.h \
     $$PWD/qmesh.h \
     $$PWD/qmesh_p.h \
-    $$PWD/qplanemesh.h \
-    $$PWD/qspheremesh.h \
-    $$PWD/qtorusmesh.h \
-    $$PWD/qtorusgeometry.h \
-    $$PWD/qtorusgeometry_p.h \
-    $$PWD/qspheregeometry.h \
-    $$PWD/qspheregeometry_p.h \
-    $$PWD/qcuboidgeometry.h \
-    $$PWD/qcuboidgeometry_p.h \
-    $$PWD/qplanegeometry.h \
-    $$PWD/qplanegeometry_p.h \
     $$PWD/qattribute_p.h \
     $$PWD/qattribute.h \
     $$PWD/qbufferdatagenerator.h
@@ -46,20 +28,8 @@ SOURCES += \
     $$PWD/geometryrenderer.cpp \
     $$PWD/geometryrenderermanager.cpp \
     $$PWD/qbuffer.cpp \
-    $$PWD/qconegeometry.cpp \
-    $$PWD/qconemesh.cpp \
-    $$PWD/qcuboidmesh.cpp \
-    $$PWD/qcylindergeometry.cpp \
-    $$PWD/qcylindermesh.cpp \
     $$PWD/qgeometry.cpp \
     $$PWD/qgeometryrenderer.cpp \
     $$PWD/qmesh.cpp \
-    $$PWD/qplanemesh.cpp \
-    $$PWD/qspheremesh.cpp \
-    $$PWD/qtorusmesh.cpp \
-    $$PWD/qtorusgeometry.cpp \
-    $$PWD/qspheregeometry.cpp \
-    $$PWD/qcuboidgeometry.cpp \
-    $$PWD/qplanegeometry.cpp \
     $$PWD/qattribute.cpp
 
