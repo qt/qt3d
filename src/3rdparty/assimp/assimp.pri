@@ -19,17 +19,22 @@ contains(QT_CONFIG, system-zlib):!if(cross_compile:host_build) {
 
 DEFINES += ASSIMP_BUILD_NO_OWN_ZLIB ASSIMP_BUILD_NO_COMPRESSED_IFC ASSIMP_BUILD_NO_Q3BSP_IMPORTER
 
-# Stop compiler complaining about ignored qualifiers on return types
 intel_icc: {
+    # warning #310: old-style parameter list (anachronism)
+    QMAKE_CFLAGS_WARN_ON += -wd310
+
+    # warning #68: integer conversion resulted in a change of sign
+    QMAKE_CFLAGS_WARN_ON += -wd68
+
+    # warning #858: type qualifier on return type is meaningless
     QMAKE_CFLAGS_WARN_ON += -wd858
+
     QMAKE_CXXFLAGS_WARN_ON += $$QMAKE_CFLAGS_WARN_ON
 } else:gcc|clang: {
+    # Stop compiler complaining about ignored qualifiers on return types
     QMAKE_CFLAGS_WARN_ON += -Wno-ignored-qualifiers -Wno-unused-parameter -Wno-unused-variable -Wno-deprecated-declarations -Wno-unused-function -Wno-reorder
     QMAKE_CXXFLAGS_WARN_ON = $$QMAKE_CFLAGS_WARN_ON
 }
-
-# warning #310: old-style parameter list (anachronism)
-intel_icc: QMAKE_CFLAGS_WARN_ON += -wd310
 
 CONFIG += warn_on
 
