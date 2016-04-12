@@ -49,11 +49,6 @@ QDispatchCompute::QDispatchCompute(Qt3DCore::QNode *parent)
 {
 }
 
-QDispatchCompute::~QDispatchCompute()
-{
-    QFrameGraphNode::cleanup();
-}
-
 int QDispatchCompute::workGroupX() const
 {
     Q_D(const QDispatchCompute);

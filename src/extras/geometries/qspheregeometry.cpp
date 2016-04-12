@@ -401,14 +401,6 @@ QSphereGeometry::QSphereGeometry(QSphereGeometryPrivate &dd, QNode *parent)
 }
 
 /*!
- * Destroys this geometry.
- */
-QSphereGeometry::~QSphereGeometry()
-{
-    QGeometry::cleanup();
-}
-
-/*!
  * Updates vertices based on rings and slices.
  */
 void QSphereGeometry::updateVertices()

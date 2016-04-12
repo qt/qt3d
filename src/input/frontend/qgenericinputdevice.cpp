@@ -50,11 +50,6 @@ QGenericInputDevice::QGenericInputDevice(Qt3DCore::QNode *parent)
     : QAbstractPhysicalDevice(parent)
 {}
 
-QGenericInputDevice::~QGenericInputDevice()
-{
-    QAbstractPhysicalDevice::cleanup();
-}
-
 static void setHashFromVariantMap(QHash<QString, int> &hash, const QVariantMap &map)
 {
     hash.clear();

@@ -191,6 +191,28 @@ void QNodePrivate::_q_removeChild(QNode *childNode)
     }
 }
 
+/*!
+ * This methods can only be called once and takes care of notyfing the backend
+ * aspects that the current Qt3DCore::QNode instance is about to be destroyed.
+ *
+ * \note It must be called by the destructor of every class subclassing
+ * QNode that is clonable (using the QT3D_CLONEABLE macro).
+ *
+ * \internal
+ */
+void QNodePrivate::_q_cleanup()
+{
+    if (!m_wasCleanedUp) {
+        m_wasCleanedUp = true;
+        Q_Q(QNode);
+        qCDebug(Nodes) << Q_FUNC_INFO << q;
+        if (q->parentNode())
+            QNodePrivate::get(q->parentNode())->_q_removeChild(q);
+        // Root element has no parent and therefore we cannot
+        // call parent->_q_removeChild();
+    }
+}
+
 void QNodePrivate::registerNotifiedProperties()
 {
     Q_Q(QNode);
@@ -697,26 +719,6 @@ QNode *QNode::clone(QNode *node)
         QNodePrivate::m_clonesLookupTable.clear();
 
     return clonedNode;
-}
-
-/*!
- * This methods can only be called once and takes care of notyfing the backend
- * aspects that the current Qt3DCore::QNode instance is about to be destroyed.
- *
- * \note It must be called by the destructor of every class subclassing
- * QNode that is clonable (using the QT3D_CLONEABLE macro).
- */
-void QNode::cleanup()
-{
-    Q_D(QNode);
-    if (!d->m_wasCleanedUp) {
-        d->m_wasCleanedUp = true;
-        qCDebug(Nodes) << Q_FUNC_INFO << this;
-        if (parentNode())
-            QNodePrivate::get(parentNode())->_q_removeChild(this);
-        // Root element has no parent and therefore we cannot
-        // call parent->_q_removeChild();
-    }
 }
 
 QNodeCreatedChangeBasePtr QNode::createNodeCreationChange() const

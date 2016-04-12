@@ -119,14 +119,6 @@ QMouseHandler::QMouseHandler(QNode *parent)
 }
 
 /*!
-   Destroys this QMouseHandler object
-*/
-QMouseHandler::~QMouseHandler()
-{
-    QNode::cleanup();
-}
-
-/*!
  * Sets the mouse device of the QMouseHandler instance to \a mouseDevice.
  */
 void QMouseHandler::setSourceDevice(QMouseDevice *mouseDevice)

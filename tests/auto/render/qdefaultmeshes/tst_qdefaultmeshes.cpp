@@ -49,7 +49,7 @@ class tst_QDefaultMeshes: public Qt3DCore::QNode
 public:
     ~tst_QDefaultMeshes()
     {
-        QNode::cleanup();
+        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
     }
 
 private Q_SLOTS:

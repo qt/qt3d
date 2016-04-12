@@ -68,7 +68,6 @@ class QT3DRENDERSHARED_EXPORT QGeometryRenderer : public Qt3DCore::QComponent
 
 public:
     explicit QGeometryRenderer(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QGeometryRenderer();
 
     enum PrimitiveType {
         Points = 0x0000,

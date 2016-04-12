@@ -218,11 +218,6 @@ QSkyboxEntity::QSkyboxEntity(QNode *parent)
     d_func()->init();
 }
 
-QSkyboxEntity::~QSkyboxEntity()
-{
-    QNode::cleanup();
-}
-
 /*!
  * Sets the base name to \a baseName.
  */

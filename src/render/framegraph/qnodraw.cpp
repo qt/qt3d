@@ -64,11 +64,6 @@ QNoDraw::QNoDraw(QNode *parent)
 {
 }
 
-QNoDraw::~QNoDraw()
-{
-    QNode::cleanup();
-}
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

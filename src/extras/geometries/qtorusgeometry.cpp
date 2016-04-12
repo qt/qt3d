@@ -344,14 +344,6 @@ QTorusGeometry::QTorusGeometry(QTorusGeometryPrivate &dd, QNode *parent)
 }
 
 /*!
- * Destroys this geometry.
- */
-QTorusGeometry::~QTorusGeometry()
-{
-    QGeometry::cleanup();
-}
-
-/*!
  * Updates vertices based on rings and slices.
  */
 void QTorusGeometry::updateVertices()

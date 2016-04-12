@@ -83,11 +83,6 @@ QRenderStateSet::QRenderStateSet(QRenderStateSetPrivate &dd, QNode *parent)
 {
 }
 
-QRenderStateSet::~QRenderStateSet()
-{
-    QNode::cleanup();
-}
-
 void QRenderStateSet::copy(const QNode *ref)
 {
     QFrameGraphNode::copy(ref);

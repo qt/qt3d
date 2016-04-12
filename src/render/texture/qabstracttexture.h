@@ -266,8 +266,6 @@ public:
     };
     Q_ENUM(ComparisonMode)
 
-    ~QAbstractTexture();
-
     Target target() const;
 
     TextureFormat format() const;

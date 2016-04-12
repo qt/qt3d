@@ -83,11 +83,6 @@ QBlendEquationArguments::QBlendEquationArguments(QNode *parent)
 {
 }
 
-QBlendEquationArguments::~QBlendEquationArguments()
-{
-    QNode::cleanup();
-}
-
 /*! \fn void QBlendEquationArguments::copy(const Qt3DCore::QNode *ref)
   \internal
   Copies \a ref into this object.

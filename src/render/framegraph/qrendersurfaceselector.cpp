@@ -111,14 +111,6 @@ QRenderSurfaceSelector::QRenderSurfaceSelector(QRenderSurfaceSelectorPrivate &dd
 {
 }
 
-/*!
- * Destroys QRenderSurfaceSelector.
- */
-QRenderSurfaceSelector::~QRenderSurfaceSelector()
-{
-    QNode::cleanup();
-}
-
 QObject *QRenderSurfaceSelector::surface() const
 {
     Q_D(const QRenderSurfaceSelector);

@@ -100,11 +100,6 @@ QMaterial::QMaterial(QNode *parent)
 {
 }
 
-QMaterial::~QMaterial()
-{
-    QNode::cleanup();
-}
-
 /*! \internal */
 QMaterial::QMaterial(QMaterialPrivate &dd, QNode *parent)
     : QComponent(dd, parent)

@@ -63,11 +63,6 @@ QSortCriterion::QSortCriterion(QNode *parent)
 {
 }
 
-QSortCriterion::~QSortCriterion()
-{
-    QNode::cleanup();
-}
-
 QSortCriterion::SortType QSortCriterion::sort() const
 {
     Q_D(const QSortCriterion);

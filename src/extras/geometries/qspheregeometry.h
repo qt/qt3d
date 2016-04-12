@@ -70,7 +70,6 @@ class QT3DEXTRASSHARED_EXPORT QSphereGeometry : public Qt3DRender::QGeometry
 
 public:
     explicit QSphereGeometry(QNode *parent = Q_NULLPTR);
-    ~QSphereGeometry();
 
     void updateVertices();
     void updateIndices();

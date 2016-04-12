@@ -90,14 +90,6 @@ QActionInput::QActionInput(Qt3DCore::QNode *parent)
 }
 
 /*!
-    Deletes the QActionInput instance.
- */
-QActionInput::~QActionInput()
-{
-    QNode::cleanup();
-}
-
-/*!
     Return the Buttons to trigger the QActionInput instance.
  */
 QVariantList QActionInput::buttons() const

@@ -169,7 +169,7 @@ public:
 
     ~MyQNode()
     {
-        QNode::cleanup();
+        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
         delete m_scene;
     }
 
@@ -203,7 +203,7 @@ signals:
     void customPropertyChanged();
 
 protected:
-    QT3D_CLONEABLE(MyQNode)
+    QT3D_CLONEABLE_CUSTOM_DTOR(MyQNode)
 
     QString m_customProperty;
     Qt3DCore::QScene *m_scene;
@@ -215,11 +215,6 @@ class MyQComponent : public Qt3DCore::QComponent
 public:
     explicit MyQComponent(Qt3DCore::QNode *parent = 0) : QComponent(parent)
     {}
-
-    ~MyQComponent()
-    {
-        QNode::cleanup();
-    }
 
     // QNode interface
 protected:

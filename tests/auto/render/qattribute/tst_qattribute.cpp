@@ -48,7 +48,7 @@ public:
 
     ~tst_QAttribute()
     {
-        QNode::cleanup();
+        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
     }
 
 private Q_SLOTS:

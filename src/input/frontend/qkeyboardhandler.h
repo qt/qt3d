@@ -58,7 +58,6 @@ class QT3DINPUTSHARED_EXPORT QKeyboardHandler : public Qt3DCore::QComponent
     Q_PROPERTY(bool focus READ focus WRITE setFocus NOTIFY focusChanged)
 public:
     explicit QKeyboardHandler(QNode *parent = nullptr);
-    ~QKeyboardHandler();
 
     Qt3DInput::QKeyboardDevice *sourceDevice() const;
     bool focus() const;

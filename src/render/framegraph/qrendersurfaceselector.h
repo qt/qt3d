@@ -61,7 +61,6 @@ class QT3DRENDERSHARED_EXPORT QRenderSurfaceSelector : public Qt3DRender::QFrame
 
 public:
     explicit QRenderSurfaceSelector(Qt3DCore::QNode *parent = nullptr);
-    ~QRenderSurfaceSelector();
 
     QObject *surface() const;
     QSize externalRenderTargetSize() const;

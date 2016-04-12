@@ -61,7 +61,6 @@ class QT3DRENDERSHARED_EXPORT QMaterial : public Qt3DCore::QComponent
 
 public:
     explicit QMaterial(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QMaterial();
 
     QEffect *effect() const;
 

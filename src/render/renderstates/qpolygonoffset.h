@@ -56,7 +56,6 @@ class QT3DRENDERSHARED_EXPORT QPolygonOffset : public QRenderState
     Q_PROPERTY(float depthSteps READ depthSteps WRITE setDepthSteps NOTIFY depthStepsChanged)
 public:
     explicit QPolygonOffset(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QPolygonOffset();
 
     float scaleFactor() const;
     float depthSteps() const;

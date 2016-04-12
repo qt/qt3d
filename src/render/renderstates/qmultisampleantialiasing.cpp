@@ -62,11 +62,6 @@ QMultiSampleAntiAliasing::QMultiSampleAntiAliasing(QNode *parent)
 {
 }
 
-QMultiSampleAntiAliasing::~QMultiSampleAntiAliasing()
-{
-    QNode::cleanup();
-}
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

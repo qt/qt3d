@@ -37,11 +37,6 @@ using namespace Qt3DCore;
 class tst_QTransform : public QNode
 {
     Q_OBJECT
-public:
-    ~tst_QTransform()
-    {
-        QNode::cleanup();
-    }
 
 private Q_SLOTS:
     void checkCloning_data()

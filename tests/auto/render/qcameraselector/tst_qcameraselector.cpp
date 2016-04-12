@@ -43,7 +43,7 @@ class tst_QCameraSelector: public Qt3DCore::QNode
 public:
     ~tst_QCameraSelector()
     {
-        QNode::cleanup();
+        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
     }
 
 private Q_SLOTS:

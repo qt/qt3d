@@ -98,7 +98,7 @@ QEntity::~QEntity()
     for (QComponent *comp : components)
         removeComponent(comp);
 
-    QNode::cleanup();
+    QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
     // If all children are removed
     // That includes the components that are parented by this entity
 

@@ -70,7 +70,6 @@ class QT3DEXTRASSHARED_EXPORT QPlaneGeometry : public Qt3DRender::QGeometry
 
 public:
     explicit QPlaneGeometry(QNode *parent = Q_NULLPTR);
-    ~QPlaneGeometry();
 
     void updateVertices();
     void updateIndices();

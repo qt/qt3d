@@ -132,11 +132,6 @@ QObjectPicker::QObjectPicker(Qt3DCore::QNode *parent)
 {
 }
 
-QObjectPicker::~QObjectPicker()
-{
-    QComponent::cleanup();
-}
-
 void QObjectPicker::setHoverEnabled(bool hoverEnabled)
 {
     Q_D(QObjectPicker);

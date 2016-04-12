@@ -75,14 +75,6 @@ QAction::QAction(Qt3DCore::QNode *parent)
 }
 
 /*!
-    Deletes the QAction instance.
- */
-QAction::~QAction()
-{
-    QNode::cleanup();
-}
-
-/*!
   \fn QAction::nameChanged()
 
   This signal is emitted when the name of the Action is changed.

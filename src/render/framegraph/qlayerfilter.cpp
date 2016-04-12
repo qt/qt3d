@@ -85,11 +85,6 @@ QLayerFilter::QLayerFilter(QNode *parent)
 {
 }
 
-QLayerFilter::~QLayerFilter()
-{
-    QNode::cleanup();
-}
-
 /*! \internal */
 QLayerFilter::QLayerFilter(QLayerFilterPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)

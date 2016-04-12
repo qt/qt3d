@@ -93,14 +93,6 @@ QGeometry::QGeometry(QGeometryPrivate &dd, QNode *parent)
 }
 
 /*!
- * Destroys this geometry.
- */
-QGeometry::~QGeometry()
-{
-    QNode::cleanup();
-}
-
-/*!
  * Adds an \a attribute to this geometry.
  */
 void QGeometry::addAttribute(QAttribute *attribute)

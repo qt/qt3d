@@ -61,7 +61,6 @@ class QT3DINPUTSHARED_EXPORT QAxisInput : public Qt3DCore::QNode
 
 public:
     explicit QAxisInput(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QAxisInput();
 
     QAbstractPhysicalDevice *sourceDevice() const;
     float scale() const;

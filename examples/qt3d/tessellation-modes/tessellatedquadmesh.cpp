@@ -101,9 +101,4 @@ TessellatedQuadMesh::TessellatedQuadMesh(Qt3DCore::QNode *parent)
     setGeometry(new TessellatedGeometry(this));
 }
 
-TessellatedQuadMesh::~TessellatedQuadMesh()
-{
-    QNode::cleanup();
-}
-
 #include "tessellatedquadmesh.moc"

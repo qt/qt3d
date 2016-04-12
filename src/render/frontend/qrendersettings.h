@@ -62,7 +62,6 @@ class QT3DRENDERSHARED_EXPORT QRenderSettings : public Qt3DCore::QComponent
 
 public:
     explicit QRenderSettings(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QRenderSettings();
 
     enum RenderPolicy {
         OnDemand,

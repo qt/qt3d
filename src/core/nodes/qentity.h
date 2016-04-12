@@ -74,7 +74,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QEntity)
-    QT3D_CLONEABLE(QEntity)
+    QT3D_CLONEABLE_CUSTOM_DTOR(QEntity)
     QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

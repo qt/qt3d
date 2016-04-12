@@ -59,7 +59,6 @@ class QT3DRENDERSHARED_EXPORT QClearBuffers : public QFrameGraphNode
     Q_PROPERTY(int clearStencilValue READ clearStencilValue WRITE setClearStencilValue NOTIFY clearStencilValueChanged)
 public:
     explicit QClearBuffers(Qt3DCore::QNode *parent = 0);
-    ~QClearBuffers();
 
     enum BufferType {
         None = 0,

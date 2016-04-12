@@ -69,11 +69,6 @@ private:
 class tst_QGeometryRenderer: public Qt3DCore::QNode
 {
     Q_OBJECT
-public:
-    ~tst_QGeometryRenderer()
-    {
-        QNode::cleanup();
-    }
 
 private Q_SLOTS:
 

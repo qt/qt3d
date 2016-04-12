@@ -595,14 +595,6 @@ QCuboidGeometry::QCuboidGeometry(QCuboidGeometryPrivate &dd, QNode *parent)
 }
 
 /*!
- * Destroys this geometry.
- */
-QCuboidGeometry::~QCuboidGeometry()
-{
-    QGeometry::cleanup();
-}
-
-/*!
  * Updates indices based on mesh resolutions.
  */
 void QCuboidGeometry::updateIndices()

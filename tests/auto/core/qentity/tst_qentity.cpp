@@ -67,11 +67,6 @@ public:
         : QComponent(parent)
     {}
 
-    ~MyQComponent()
-    {
-        QNode::cleanup();
-    }
-
 protected:
     QT3D_CLONEABLE(MyQComponent)
 };

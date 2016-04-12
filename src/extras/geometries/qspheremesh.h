@@ -59,7 +59,6 @@ class QT3DEXTRASSHARED_EXPORT QSphereMesh : public Qt3DRender::QGeometryRenderer
 
 public:
     explicit QSphereMesh(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QSphereMesh();
 
     int rings() const;
     int slices() const;

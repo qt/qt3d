@@ -85,7 +85,6 @@ public:
     Q_ENUM(Blending)
 
     explicit QBlendEquationArguments(Qt3DCore::QNode *parent = 0);
-    ~QBlendEquationArguments();
 
     Blending sourceRgb() const;
     Blending destinationRgb() const;

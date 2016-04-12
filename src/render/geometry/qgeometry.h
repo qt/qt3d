@@ -56,7 +56,6 @@ class QT3DRENDERSHARED_EXPORT QGeometry : public Qt3DCore::QNode
     Q_PROPERTY(Qt3DRender::QAttribute *boundingVolumePositionAttribute READ boundingVolumePositionAttribute WRITE setBoundingVolumePositionAttribute NOTIFY boundingVolumePositionAttributeChanged)
 public:
     explicit QGeometry(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QGeometry();
 
     QVector<QAttribute *> attributes() const;
     void addAttribute(QAttribute *attribute);

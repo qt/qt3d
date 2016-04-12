@@ -244,11 +244,6 @@ Quick3DNodeInstantiator::Quick3DNodeInstantiator(QNode *parent)
 {
 }
 
-Quick3DNodeInstantiator::~Quick3DNodeInstantiator()
-{
-    QNode::cleanup();
-}
-
 /*!
     \qmlsignal Qt3D.Core::NodeInstantiator::objectAdded(int index, QtObject node)
 

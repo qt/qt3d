@@ -57,7 +57,6 @@ class QT3DRENDERSHARED_EXPORT QClipPlane : public QRenderState
     Q_PROPERTY(float distance READ distance WRITE setDistance NOTIFY distanceChanged)
 public:
     explicit QClipPlane(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QClipPlane();
 
     int planeIndex() const;
     QVector3D normal() const;

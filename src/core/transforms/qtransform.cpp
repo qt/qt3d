@@ -186,14 +186,6 @@ QTransform::QTransform(QTransformPrivate &dd, QNode *parent)
 {
 }
 
-QTransform::~QTransform()
-{
-    QNode::cleanup();
-}
-
-/*!
- * Copies \a ref.
- */
 void QTransform::copy(const QNode *ref)
 {
     QComponent::copy(ref);

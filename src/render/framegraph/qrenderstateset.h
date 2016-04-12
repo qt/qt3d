@@ -55,7 +55,6 @@ class QT3DRENDERSHARED_EXPORT QRenderStateSet : public QFrameGraphNode
 
 public:
     explicit QRenderStateSet(Qt3DCore::QNode *parent = 0);
-    ~QRenderStateSet();
 
     void addRenderState(QRenderState *state);
     void removeRenderState(QRenderState *state);

@@ -46,11 +46,6 @@ public:
     {
     }
 
-    ~tst_QLogicalDevice()
-    {
-        QNode::cleanup();
-    }
-
 private Q_SLOTS:
 
     void checkCloning_data()

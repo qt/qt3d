@@ -288,14 +288,6 @@ QPlaneGeometry::QPlaneGeometry(QPlaneGeometryPrivate &dd, QNode *parent)
 }
 
 /*!
- * Destroys this geometry.
- */
-QPlaneGeometry::~QPlaneGeometry()
-{
-    QGeometry::cleanup();
-}
-
-/*!
  * Updates vertices based on resolution.
  */
 void QPlaneGeometry::updateVertices()

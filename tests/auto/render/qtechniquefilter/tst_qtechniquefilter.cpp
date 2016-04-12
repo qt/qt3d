@@ -45,7 +45,7 @@ class tst_QTechniqueFilter: public Qt3DCore::QNode
 public:
     ~tst_QTechniqueFilter()
     {
-        QNode::cleanup();
+        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
     }
 
 private Q_SLOTS:

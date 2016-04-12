@@ -57,7 +57,6 @@ class QT3DRENDERSHARED_EXPORT QViewport : public QFrameGraphNode
 
 public:
     explicit QViewport(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QViewport();
 
     QRectF normalizedRect() const;
 

@@ -64,11 +64,6 @@ QViewport::QViewport(QNode *parent)
 {
 }
 
-QViewport::~QViewport()
-{
-    QNode::cleanup();
-}
-
 /*! \internal */
 QViewport::QViewport(QViewportPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)

@@ -66,11 +66,6 @@ QRenderTarget::QRenderTarget(QNode *parent)
 {
 }
 
-QRenderTarget::~QRenderTarget()
-{
-    QNode::cleanup();
-}
-
 /*! \internal */
 QRenderTarget::QRenderTarget(QRenderTargetPrivate &dd, QNode *parent)
     : QComponent(dd, parent)

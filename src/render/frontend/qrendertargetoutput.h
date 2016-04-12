@@ -85,7 +85,6 @@ public:
     Q_ENUM(AttachmentPoint)
 
     explicit QRenderTargetOutput(Qt3DCore::QNode *parent = 0);
-    ~QRenderTargetOutput();
 
     AttachmentPoint attachmentPoint() const;
     QAbstractTexture *texture() const;

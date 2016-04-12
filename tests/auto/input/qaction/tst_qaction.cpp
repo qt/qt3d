@@ -46,11 +46,6 @@ public:
     {
     }
 
-    ~tst_QAction()
-    {
-        QNode::cleanup();
-    }
-
 private Q_SLOTS:
 
     void checkCloning_data()

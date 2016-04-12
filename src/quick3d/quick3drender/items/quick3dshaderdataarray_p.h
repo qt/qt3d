@@ -76,7 +76,6 @@ class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DShaderDataArray : public Qt3DC
 
 public:
     explicit Quick3DShaderDataArray(Qt3DCore::QNode *parent = 0);
-    ~Quick3DShaderDataArray();
     QQmlListProperty<QShaderData> valuesList();
     QVector<QShaderData *> values() const;
 

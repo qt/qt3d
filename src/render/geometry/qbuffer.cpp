@@ -154,14 +154,6 @@ QBuffer::QBuffer(QBuffer::BufferType ty, QNode *parent)
 }
 
 /*!
- * Destroys this buffer.
- */
-QBuffer::~QBuffer()
-{
-    QBuffer::cleanup();
-}
-
-/*!
  * \internal
  */
 void QBuffer::copy(const QNode *ref)

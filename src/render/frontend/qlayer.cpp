@@ -85,11 +85,6 @@ QLayer::QLayer(QNode *parent)
 {
 }
 
-QLayer::~QLayer()
-{
-    QNode::cleanup();
-}
-
 /*! \internal */
 QLayer::QLayer(QLayerPrivate &dd, QNode *parent)
     : QComponent(dd, parent)

@@ -47,11 +47,6 @@ public:
         qRegisterMetaType<Qt3DInput::QAbstractPhysicalDevice*>("Qt3DInput::QAbstractPhysicalDevice*");
     }
 
-    ~tst_QActionInput()
-    {
-        QNode::cleanup();
-    }
-
 private Q_SLOTS:
     void checkCloning_data()
     {

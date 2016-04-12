@@ -78,11 +78,6 @@ QClipPlane::QClipPlane(QNode *parent)
 {
 }
 
-QClipPlane::~QClipPlane()
-{
-    QNode::cleanup();
-}
-
 /*!
  * Returns the index of the clip plane.
  * \note usually between 0-7

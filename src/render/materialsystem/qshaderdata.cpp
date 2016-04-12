@@ -76,11 +76,6 @@ QShaderData::QShaderData(QNode *parent)
 {
 }
 
-QShaderData::~QShaderData()
-{
-    QNode::cleanup();
-}
-
 PropertyReaderInterfacePtr QShaderData::propertyReader() const
 {
     Q_D(const QShaderData);

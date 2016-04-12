@@ -50,11 +50,6 @@ public:
     explicit MyQNode(Qt3DCore::QNode *parent = 0) : QNode(parent)
     {}
 
-    ~MyQNode()
-    {
-        QNode::cleanup();
-    }
-
     void setCustomProperty(const QString &s) { m_customProperty = s; }
     QString customProperty() const { return m_customProperty; }
 
@@ -81,11 +76,6 @@ class MyQComponent : public Qt3DCore::QComponent
 public:
     explicit MyQComponent(Qt3DCore::QNode *parent = 0) : QComponent(parent)
     {}
-
-    ~MyQComponent()
-    {
-        QNode::cleanup();
-    }
 
     QT3D_CLONEABLE(MyQComponent)
 };

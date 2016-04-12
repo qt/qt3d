@@ -56,11 +56,6 @@ QInputSettings::QInputSettings(Qt3DCore::QNode *parent)
 {
 }
 
-QInputSettings::~QInputSettings()
-{
-    QComponent::cleanup();
-}
-
 QObject *QInputSettings::eventSource() const
 {
     Q_D(const QInputSettings);

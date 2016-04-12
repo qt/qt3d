@@ -158,11 +158,6 @@ QKeyboardHandler::QKeyboardHandler(QNode *parent)
 {
 }
 
-QKeyboardHandler::~QKeyboardHandler()
-{
-    QNode::cleanup();
-}
-
 void QKeyboardHandler::copy(const QNode *ref)
 {
     QComponent::copy(ref);

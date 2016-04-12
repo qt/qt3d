@@ -71,11 +71,6 @@ QTechniqueFilter::QTechniqueFilter(QNode *parent)
 {
 }
 
-QTechniqueFilter::~QTechniqueFilter()
-{
-    QNode::cleanup();
-}
-
 /*! \internal */
 QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)

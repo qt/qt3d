@@ -99,14 +99,6 @@ QSphereMesh::QSphereMesh(QNode *parent)
     QGeometryRenderer::setGeometry(geometry);
 }
 
-/*!
- * Destroys this sphere mesh.
- */
-QSphereMesh::~QSphereMesh()
-{
-    QNode::cleanup();
-}
-
 void QSphereMesh::setRings(int rings)
 {
     static_cast<QSphereGeometry *>(geometry())->setRings(rings);

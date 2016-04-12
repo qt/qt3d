@@ -139,14 +139,6 @@ QLogicalDevice::QLogicalDevice(Qt3DCore::QNode *parent)
 }
 
 /*!
-    Deletes the QLogicalDevice instance.
- */
-QLogicalDevice::~QLogicalDevice()
-{
-    QComponent::cleanup();
-}
-
-/*!
   \qmlproperty QQmlListProperty<Action> Qt3D.Input::LogicalDevice::actions
 
   The actions used by this Logical Device

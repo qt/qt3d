@@ -57,7 +57,6 @@ class QT3DEXTRASSHARED_EXPORT QPlaneMesh : public Qt3DRender::QGeometryRenderer
 
 public:
     explicit QPlaneMesh(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QPlaneMesh();
 
     float width() const;
     float height() const;

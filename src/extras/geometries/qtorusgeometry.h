@@ -69,7 +69,6 @@ class QT3DEXTRASSHARED_EXPORT QTorusGeometry : public Qt3DRender::QGeometry
 
 public:
     explicit QTorusGeometry(QNode *parent = Q_NULLPTR);
-    ~QTorusGeometry();
 
     void updateVertices();
     void updateIndices();

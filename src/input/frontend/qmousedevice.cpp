@@ -76,14 +76,6 @@ QMouseDevice::QMouseDevice(QNode *parent)
 {
 }
 
-/*!
-   Destroys this QMouseDevice object.
-*/
-QMouseDevice::~QMouseDevice()
-{
-    QNode::cleanup();
-}
-
 int QMouseDevice::axisCount() const
 {
     // TO DO: we could have mouse wheel later on

@@ -51,11 +51,6 @@ QAlphaTest::QAlphaTest(QNode *parent)
 {
 }
 
-QAlphaTest::~QAlphaTest()
-{
-    QNode::cleanup();
-}
-
 void QAlphaTest::copy(const QNode *ref)
 {
     QRenderState::copy(ref);

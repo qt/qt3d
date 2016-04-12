@@ -89,11 +89,6 @@ QFrameAction::QFrameAction(QFrameActionPrivate &dd, QNode *parent)
 {
 }
 
-QFrameAction::~QFrameAction()
-{
-    QNode::cleanup();
-}
-
 /*!
     \internal
     This function will be called in a synchronous manner once each frame by

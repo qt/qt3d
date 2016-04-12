@@ -60,11 +60,6 @@ QAlphaCoverage::QAlphaCoverage(QNode *parent)
 {
 }
 
-QAlphaCoverage::~QAlphaCoverage()
-{
-    QNode::cleanup();
-}
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

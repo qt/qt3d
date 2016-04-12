@@ -55,11 +55,6 @@ public:
         : Qt3DRender::QRenderState(*new MyStateSetPrivate(), parent)
     {}
 
-    ~MyStateSet()
-    {
-        QNode::cleanup();
-    }
-
 private:
     QT3D_CLONEABLE(MyStateSet)
     Q_DECLARE_PRIVATE(MyStateSet)
@@ -73,7 +68,7 @@ class tst_QRenderStateSet: public Qt3DCore::QNode
 public:
     ~tst_QRenderStateSet()
     {
-        QNode::cleanup();
+        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
     }
 
 private Q_SLOTS:

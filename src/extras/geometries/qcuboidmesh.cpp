@@ -112,14 +112,6 @@ QCuboidMesh::QCuboidMesh(QNode *parent)
     QGeometryRenderer::setGeometry(geometry);
 }
 
-/*!
- * Destroys this cube mesh.
- */
-QCuboidMesh::~QCuboidMesh()
-{
-    QNode::cleanup();
-}
-
 void QCuboidMesh::setXExtent(float xExtent)
 {
     static_cast<QCuboidGeometry *>(geometry())->setXExtent(xExtent);

@@ -107,14 +107,6 @@ QMesh::QMesh(QNode *parent)
 {
 }
 
-/*!
- * Destroys this mesh.
- */
-QMesh::~QMesh()
-{
-    QNode::cleanup();
-}
-
 /*! \internal */
 QMesh::QMesh(QMeshPrivate &dd, QNode *parent)
     : QGeometryRenderer(dd, parent)

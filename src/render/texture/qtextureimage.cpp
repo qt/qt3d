@@ -76,14 +76,6 @@ QTextureImage::QTextureImage(QNode *parent)
 }
 
 /*!
-  The destructor.
- */
-QTextureImage::~QTextureImage()
-{
-    QNode::cleanup();
-}
-
-/*!
     Returns the source url from which data for the texture image will be loaded.
  */
 QUrl QTextureImage::source() const

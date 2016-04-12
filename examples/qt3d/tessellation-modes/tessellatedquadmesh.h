@@ -58,7 +58,6 @@ class TessellatedQuadMesh : public Qt3DRender::QGeometryRenderer
     Q_OBJECT
 public:
     explicit TessellatedQuadMesh(Qt3DCore::QNode *parent = 0);
-    ~TessellatedQuadMesh();
 };
 
 #endif // TESSELLATEDQUAD_H

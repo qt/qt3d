@@ -62,11 +62,6 @@ QSeamlessCubemap::QSeamlessCubemap(QNode *parent)
 {
 }
 
-QSeamlessCubemap::~QSeamlessCubemap()
-{
-    QNode::cleanup();
-}
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

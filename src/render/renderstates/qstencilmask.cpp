@@ -54,11 +54,6 @@ QStencilMask::QStencilMask(QNode *parent)
 {
 }
 
-QStencilMask::~QStencilMask()
-{
-    QNode::cleanup();
-}
-
 void QStencilMask::setFrontOutputMask(uint mask)
 {
     Q_D(QStencilMask);

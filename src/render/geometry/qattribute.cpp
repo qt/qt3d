@@ -115,14 +115,6 @@ QAttribute::QAttribute(QNode *parent)
 }
 
 /*!
- * Destroys the  attribute.
- */
-QAttribute::~QAttribute()
-{
-    QNode::cleanup();
-}
-
-/*!
  * Constructs a new QAttribute from \a buf of \a type, \a dataSize, \a count, \a offset,
  * and \a stride with \a parent.
  */

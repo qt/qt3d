@@ -61,11 +61,6 @@ QPickingSettings::QPickingSettings(QPickingSettingsPrivate &dd, Qt3DCore::QNode 
 {
 }
 
-QPickingSettings::~QPickingSettings()
-{
-    QNode::cleanup();
-}
-
 QPickingSettings::PickMethod QPickingSettings::pickMethod() const
 {
     Q_D(const QPickingSettings);

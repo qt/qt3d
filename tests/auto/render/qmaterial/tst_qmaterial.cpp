@@ -62,11 +62,6 @@ public:
         setEffect(m_effect);
     }
 
-    ~TestMaterial()
-    {
-        QNode::cleanup();
-    }
-
     Qt3DRender::QEffect *m_effect;
     Qt3DRender::QTechnique *m_technique;
     Qt3DRender::QRenderPass *m_renderPass;
@@ -83,11 +78,6 @@ public:
         : Qt3DCore::QNode()
     {
         qRegisterMetaType<Qt3DRender::QEffect*>("Qt3DRender::QEffect*");
-    }
-
-    ~tst_QMaterial()
-    {
-        QNode::cleanup();
     }
 
 private:

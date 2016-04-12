@@ -417,14 +417,6 @@ QCylinderGeometry::QCylinderGeometry(QCylinderGeometryPrivate &dd, QNode *parent
 }
 
 /*!
- * Destroys the geometry.
- */
-QCylinderGeometry::~QCylinderGeometry()
-{
-    QGeometry::cleanup();
-}
-
-/*!
  * Updates the vertices based on rings and slices.
  */
 void QCylinderGeometry::updateVertices()

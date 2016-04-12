@@ -95,14 +95,6 @@ QInputSequence::QInputSequence(Qt3DCore::QNode *parent)
 }
 
 /*!
-    Deletes the QInputSequence instance.
- */
-QInputSequence::~QInputSequence()
-{
-    QNode::cleanup();
-}
-
-/*!
   \fn QInputSequence::timeoutChanged()
 
   This signal is emitted when the timeout of the input sequence is changed.

@@ -59,7 +59,6 @@ class RenderableEntity : public Qt3DCore::QEntity
 {
 public:
     RenderableEntity(Qt3DCore::QNode *parent = 0);
-    ~RenderableEntity();
 
     Qt3DRender::QMesh *mesh() const;
     Qt3DCore::QTransform *transform() const;

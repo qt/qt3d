@@ -60,11 +60,6 @@ QEffect::QEffect(QNode *parent)
 {
 }
 
-QEffect::~QEffect()
-{
-    QNode::cleanup();
-}
-
 void QEffect::copy(const QNode* ref)
 {
     QNode::copy(ref);

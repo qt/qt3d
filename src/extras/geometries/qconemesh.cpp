@@ -68,11 +68,6 @@ QConeMesh::QConeMesh(QNode *parent)
     QGeometryRenderer::setGeometry(geometry);
 }
 
-QConeMesh::~QConeMesh()
-{
-    QNode::cleanup();
-}
-
 void QConeMesh::setHasTopEndcap(bool hasTopEndcap)
 {
     static_cast<QConeGeometry *>(geometry())->setHasTopEndcap(hasTopEndcap);

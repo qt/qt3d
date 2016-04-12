@@ -59,7 +59,6 @@ class QT3DRENDERSHARED_EXPORT QComputeCommand : public Qt3DCore::QComponent
 public:
 
     explicit QComputeCommand(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QComputeCommand();
 
     int workGroupX() const;
     int workGroupY() const;

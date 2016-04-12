@@ -70,7 +70,6 @@ class QT3DEXTRASSHARED_EXPORT QConeGeometry : public Qt3DRender::QGeometry
 
 public:
     explicit QConeGeometry(QNode *parent = nullptr);
-    ~QConeGeometry();
 
     void updateVertices();
     void updateIndices();

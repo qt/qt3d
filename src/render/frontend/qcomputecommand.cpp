@@ -57,11 +57,6 @@ QComputeCommand::QComputeCommand(Qt3DCore::QNode *parent)
 {
 }
 
-QComputeCommand::~QComputeCommand()
-{
-    QComponent::cleanup();
-}
-
 int QComputeCommand::workGroupX() const
 {
     Q_D(const QComputeCommand);

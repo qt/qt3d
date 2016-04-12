@@ -80,7 +80,6 @@ class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DNodeInstantiator : public QNode, pub
 
 public:
     Quick3DNodeInstantiator(QNode *parent = 0);
-    ~Quick3DNodeInstantiator();
 
     bool isActive() const;
     void setActive(bool newVal);

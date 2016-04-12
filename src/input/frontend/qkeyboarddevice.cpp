@@ -220,11 +220,6 @@ QKeyboardDevice::QKeyboardDevice(QNode *parent)
 {
 }
 
-QKeyboardDevice::~QKeyboardDevice()
-{
-    QNode::cleanup();
-}
-
 /*!
     \qmlproperty KeyboardHandler Qt3D.Input::KeyboardDevice::activeInput
     \readonly

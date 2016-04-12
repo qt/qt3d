@@ -73,10 +73,6 @@ QTexture1D::QTexture1D(QNode *parent)
 {
 }
 
-QTexture1D::~QTexture1D()
-{
-}
-
 /*!
     \class Qt3DRender::QTexture1DArray
     \inmodule Qt3DRender
@@ -89,10 +85,6 @@ QTexture1D::~QTexture1D()
  */
 QTexture1DArray::QTexture1DArray(QNode *parent)
     : QAbstractTexture(Target1DArray, parent)
-{
-}
-
-QTexture1DArray::~QTexture1DArray()
 {
 }
 
@@ -111,10 +103,6 @@ QTexture2D::QTexture2D(QNode *parent)
 {
 }
 
-QTexture2D::~QTexture2D()
-{
-}
-
 /*!
     \class Qt3DRender::QTexture2DArray
     \inmodule Qt3DRender
@@ -130,11 +118,6 @@ QTexture2DArray::QTexture2DArray(QNode *parent)
 {
 }
 
-QTexture2DArray::~QTexture2DArray()
-{
-}
-
-
 /*!
     \class Qt3DRender::QTexture3D
     \inmodule Qt3DRender
@@ -147,10 +130,6 @@ QTexture2DArray::~QTexture2DArray()
  */
 QTexture3D::QTexture3D(QNode *parent)
     : QAbstractTexture(Target3D, parent)
-{
-}
-
-QTexture3D::~QTexture3D()
 {
 }
 
@@ -169,10 +148,6 @@ QTextureCubeMap::QTextureCubeMap(QNode *parent)
 {
 }
 
-QTextureCubeMap::~QTextureCubeMap()
-{
-}
-
 /*!
     \class Qt3DRender::QTextureCubeMapArray
     \inmodule Qt3DRender
@@ -188,11 +163,6 @@ QTextureCubeMapArray::QTextureCubeMapArray(QNode *parent)
 {
 }
 
-QTextureCubeMapArray::~QTextureCubeMapArray()
-{
-    QNode::cleanup();
-}
-
 /*!
     \class Qt3DRender::QTexture2DMultisample
     \inmodule Qt3DRender
@@ -205,10 +175,6 @@ QTextureCubeMapArray::~QTextureCubeMapArray()
  */
 QTexture2DMultisample::QTexture2DMultisample(QNode *parent)
     : QAbstractTexture(Target2DMultisample, parent)
-{
-}
-
-QTexture2DMultisample::~QTexture2DMultisample()
 {
 }
 
@@ -227,10 +193,6 @@ QTexture2DMultisampleArray::QTexture2DMultisampleArray(QNode *parent)
 {
 }
 
-QTexture2DMultisampleArray::~QTexture2DMultisampleArray()
-{
-}
-
 /*!
     \class Qt3DRender::QTextureRectangle
     \inmodule Qt3DRender
@@ -243,10 +205,6 @@ QTexture2DMultisampleArray::~QTexture2DMultisampleArray()
  */
 QTextureRectangle::QTextureRectangle(QNode *parent)
     : QAbstractTexture(TargetRectangle, parent)
-{
-}
-
-QTextureRectangle::~QTextureRectangle()
 {
 }
 
@@ -265,18 +223,10 @@ QTextureBuffer::QTextureBuffer(QNode *parent)
 {
 }
 
-QTextureBuffer::~QTextureBuffer()
-{
-}
-
 QTextureLoader::QTextureLoader(QNode *parent)
     : QAbstractTexture(*new QTextureLoaderPrivate, parent)
 {
     d_func()->m_target = TargetAutomatic;
-}
-
-QTextureLoader::~QTextureLoader()
-{
 }
 
 QUrl QTextureLoader::source() const

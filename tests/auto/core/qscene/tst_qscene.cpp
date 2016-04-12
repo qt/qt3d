@@ -84,11 +84,6 @@ public:
     tst_Node() : Qt3DCore::QNode()
     {}
 
-    ~tst_Node()
-    {
-        QNode::cleanup();
-    }
-
 protected:
     QT3D_CLONEABLE(tst_Node)
 };
@@ -99,11 +94,6 @@ class tst_Component : public Qt3DCore::QComponent
 public:
     tst_Component() : Qt3DCore::QComponent()
     {}
-
-    ~tst_Component()
-    {
-        QNode::cleanup();
-    }
 
 protected:
     QT3D_CLONEABLE(tst_Component)

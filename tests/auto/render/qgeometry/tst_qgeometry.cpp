@@ -41,11 +41,6 @@
 class tst_QGeometry: public Qt3DCore::QNode
 {
     Q_OBJECT
-public:
-    ~tst_QGeometry()
-    {
-        QNode::cleanup();
-    }
 
 private Q_SLOTS:
 

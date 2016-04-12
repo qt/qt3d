@@ -67,7 +67,7 @@ public:
 
     ~tst_QObjectPicker()
     {
-        QNode::cleanup();
+        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
     }
 
 private Q_SLOTS:

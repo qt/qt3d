@@ -91,14 +91,6 @@ QPlaneMesh::QPlaneMesh(QNode *parent)
     QGeometryRenderer::setGeometry(geometry);
 }
 
-/*!
- * Destroys this plane mesh.
- */
-QPlaneMesh::~QPlaneMesh()
-{
-    QNode::cleanup();
-}
-
 void QPlaneMesh::setWidth(float width)
 {
     static_cast<QPlaneGeometry *>(geometry())->setWidth(width);

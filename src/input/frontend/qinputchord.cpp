@@ -98,14 +98,6 @@ QInputChord::QInputChord(Qt3DCore::QNode *parent)
 }
 
 /*!
-    Deletes the QInputChord instance.
- */
-QInputChord::~QInputChord()
-{
-    QNode::cleanup();
-}
-
-/*!
   \fn QInputChord::timeoutChanged()
 
   This signal is emitted when the timeout of the input chord is changed.

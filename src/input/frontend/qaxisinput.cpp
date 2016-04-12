@@ -67,11 +67,6 @@ QAxisInput::QAxisInput(Qt3DCore::QNode *parent)
 {
 }
 
-QAxisInput::~QAxisInput()
-{
-    QNode::cleanup();
-}
-
 void QAxisInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
 {
     Q_D(QAxisInput);

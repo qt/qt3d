@@ -104,14 +104,6 @@ QTorusMesh::QTorusMesh(QNode *parent)
     QGeometryRenderer::setGeometry(geometry);
 }
 
-/*!
- * Destroys this torus mesh.
- */
-QTorusMesh::~QTorusMesh()
-{
-    QGeometryRenderer::cleanup();
-}
-
 void QTorusMesh::setRings(int rings)
 {
     static_cast<QTorusGeometry *>(geometry())->setRings(rings);

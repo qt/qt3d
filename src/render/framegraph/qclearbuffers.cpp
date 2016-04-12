@@ -68,11 +68,6 @@ QClearBuffers::QClearBuffers(QNode *parent)
 {
 }
 
-QClearBuffers::~QClearBuffers()
-{
-    QNode::cleanup();
-}
-
 /*! \internal */
 QClearBuffers::QClearBuffers(QClearBuffersPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)

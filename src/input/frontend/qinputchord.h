@@ -58,7 +58,6 @@ class QT3DINPUTSHARED_EXPORT QInputChord : public Qt3DInput::QAbstractActionInpu
 
 public:
     explicit QInputChord(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QInputChord();
 
     int timeout() const;
 

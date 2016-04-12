@@ -51,11 +51,6 @@ QStencilOperation::QStencilOperation(QNode *parent)
 {
 }
 
-QStencilOperation::~QStencilOperation()
-{
-    QNode::cleanup();
-}
-
 QStencilOperationArguments *QStencilOperation::front() const
 {
     Q_D(const QStencilOperation);

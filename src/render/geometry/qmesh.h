@@ -62,7 +62,6 @@ class QT3DRENDERSHARED_EXPORT QMesh : public QGeometryRenderer
 
 public:
     explicit QMesh(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QMesh();
 
     QUrl source() const;
     QString meshName() const;

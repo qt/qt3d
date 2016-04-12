@@ -118,13 +118,6 @@ QAbstractTexture::QAbstractTexture(QAbstractTexturePrivate &dd, QNode *parent)
 {
 }
 
-QAbstractTexture::~QAbstractTexture()
-{
-    // The subclasses of QAbstractTexture are only there to set the type on a QTextureProvider
-    // QNode::cleanup needs to be handled here and not in the subclasses.
-    QNode::cleanup();
-}
-
 /*!
     Sets the size of the texture provider to width \a w, height \a h and depth \a d.
  */

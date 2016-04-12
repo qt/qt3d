@@ -73,11 +73,6 @@ QShaderProgram::QShaderProgram(QNode *parent)
 {
 }
 
-QShaderProgram::~QShaderProgram()
-{
-    QNode::cleanup();
-}
-
 /*! \internal */
 QShaderProgram::QShaderProgram(QShaderProgramPrivate &dd, QNode *parent)
     : QNode(dd, parent)

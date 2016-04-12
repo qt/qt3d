@@ -44,11 +44,6 @@ public:
     {
     }
 
-    ~MyFrameGraphNode()
-    {
-        QNode::cleanup();
-    }
-
 private:
     QT3D_CLONEABLE(MyFrameGraphNode)
 };
@@ -61,7 +56,7 @@ class tst_QFrameGraphNode: public Qt3DCore::QNode
 public:
     ~tst_QFrameGraphNode()
     {
-        QNode::cleanup();
+        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
     }
 
 private Q_SLOTS:

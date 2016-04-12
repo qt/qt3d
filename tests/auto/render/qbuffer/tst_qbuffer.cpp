@@ -69,7 +69,7 @@ class tst_QBuffer: public Qt3DCore::QNode
 public:
     ~tst_QBuffer()
     {
-        QNode::cleanup();
+        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
     }
 
 private Q_SLOTS:

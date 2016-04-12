@@ -52,11 +52,6 @@ QStencilTest::QStencilTest(QNode *parent)
 {
 }
 
-QStencilTest::~QStencilTest()
-{
-    QNode::cleanup();
-}
-
 QStencilTestArguments *QStencilTest::front() const
 {
     Q_D(const QStencilTest);

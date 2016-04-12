@@ -67,11 +67,6 @@ QAxis::QAxis(Qt3DCore::QNode *parent)
 {
 }
 
-QAxis::~QAxis()
-{
-    QNode::cleanup();
-}
-
 void QAxis::addInput(QAxisInput *input)
 {
     Q_D(QAxis);

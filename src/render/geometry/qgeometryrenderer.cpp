@@ -159,14 +159,6 @@ QGeometryRenderer::QGeometryRenderer(QNode *parent)
 }
 
 /*!
- * Destroys this geometry renderer.
- */
-QGeometryRenderer::~QGeometryRenderer()
-{
-    QComponent::cleanup();
-}
-
-/*!
  * \internal
  */
 QGeometryRenderer::QGeometryRenderer(QGeometryRendererPrivate &dd, QNode *parent)

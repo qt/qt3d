@@ -68,7 +68,6 @@ public :
     Q_ENUM(Type)
 
     explicit QLight(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QLight();
 
     Type type() const;
     QColor color() const;

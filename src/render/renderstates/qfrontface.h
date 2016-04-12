@@ -63,7 +63,6 @@ public:
     Q_ENUM(WindingDirection)
 
     explicit QFrontFace(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QFrontFace();
 
     WindingDirection direction() const;
 

@@ -45,7 +45,7 @@ class tst_QLight: public Qt3DCore::QNode
 public:
     ~tst_QLight()
     {
-        QNode::cleanup();
+        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
     }
 
 private Q_SLOTS:

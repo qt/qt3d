@@ -100,11 +100,6 @@ Quick3DEntityLoader::Quick3DEntityLoader(QNode *parent)
 {
 }
 
-Quick3DEntityLoader::~Quick3DEntityLoader()
-{
-    QNode::cleanup();
-}
-
 /*!
     \qmlproperty QtQml::QtObject Qt3DCore::EntityLoader::entity
     \readonly

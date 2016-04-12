@@ -61,7 +61,6 @@ class QT3DRENDERSHARED_EXPORT QObjectPicker : public Qt3DCore::QComponent
 
 public:
     explicit QObjectPicker(QNode *parent = Q_NULLPTR);
-    ~QObjectPicker();
 
     bool isHoverEnabled() const;
     bool isDragEnabled() const;

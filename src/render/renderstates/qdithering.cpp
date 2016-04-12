@@ -62,11 +62,6 @@ QDithering::QDithering(QNode *parent)
 {
 }
 
-QDithering::~QDithering()
-{
-    QNode::cleanup();
-}
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

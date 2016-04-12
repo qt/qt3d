@@ -89,11 +89,6 @@ QLight::QLight(QLightPrivate &dd, QNode *parent)
 {
 }
 
-QLight::~QLight()
-{
-    cleanup();
-}
-
 QLight::Type QLight::type() const
 {
     Q_D(const QLight);

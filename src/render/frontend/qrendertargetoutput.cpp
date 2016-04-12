@@ -68,11 +68,6 @@ QRenderTargetOutput::QRenderTargetOutput(QNode *parent)
 {
 }
 
-QRenderTargetOutput::~QRenderTargetOutput()
-{
-    QNode::cleanup();
-}
-
 /*! \internal */
 QRenderTargetOutput::QRenderTargetOutput(QRenderTargetOutputPrivate &dd, QNode *parent)
     : QNode(dd, parent)

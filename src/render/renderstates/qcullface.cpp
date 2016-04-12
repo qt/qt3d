@@ -51,11 +51,6 @@ QCullFace::QCullFace(QNode *parent)
 {
 }
 
-QCullFace::~QCullFace()
-{
-    QNode::cleanup();
-}
-
 void QCullFace::copy(const QNode *ref)
 {
     QRenderState::copy(ref);

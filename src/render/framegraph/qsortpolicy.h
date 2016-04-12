@@ -55,7 +55,6 @@ class QT3DRENDERSHARED_EXPORT QSortPolicy : public QFrameGraphNode
 
 public:
     explicit QSortPolicy(Qt3DCore::QNode *parent = 0);
-    ~QSortPolicy();
 
     void addCriterion(QSortCriterion *criterion);
     void removeCriterion(QSortCriterion *criterion);

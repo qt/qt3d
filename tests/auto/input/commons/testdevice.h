@@ -37,11 +37,6 @@ public:
         : Qt3DInput::QAbstractPhysicalDevice(parent)
     {}
 
-    ~TestDevice()
-    {
-        QNode::cleanup();
-    }
-
     int axisCount() const Q_DECL_FINAL { return 0; }
     int buttonCount() const Q_DECL_FINAL { return 0; }
     QStringList axisNames() const Q_DECL_FINAL { return QStringList(); }
