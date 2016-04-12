@@ -23,7 +23,7 @@ DEFINES += ASSIMP_BUILD_NO_OWN_ZLIB ASSIMP_BUILD_NO_COMPRESSED_IFC ASSIMP_BUILD_
 intel_icc: {
     QMAKE_CFLAGS_WARN_ON += -wd858
     QMAKE_CXXFLAGS_WARN_ON += $$QMAKE_CFLAGS_WARN_ON
-} gcc|clang: {
+} else:gcc|clang: {
     QMAKE_CFLAGS_WARN_ON += -Wno-ignored-qualifiers -Wno-unused-parameter -Wno-unused-variable -Wno-deprecated-declarations -Wno-unused-function -Wno-reorder
     QMAKE_CXXFLAGS_WARN_ON = $$QMAKE_CFLAGS_WARN_ON
 }
