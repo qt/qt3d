@@ -63,7 +63,7 @@ void tst_RenderMaterial::shouldHaveInitialState()
     // THEN
     QVERIFY(backend.parameters().isEmpty());
     QVERIFY(backend.effect().isNull());
-    QVERIFY(backend.isEnabled());
+    QVERIFY(!backend.isEnabled());
 }
 
 void tst_RenderMaterial::shouldHavePropertiesMirroringFromItsPeer_data()
@@ -164,22 +164,22 @@ void tst_RenderMaterial::shouldHandleEnablePropertyChange()
 
     // WHEN
     QScenePropertyChangePtr updateChange(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, QNodeId()));
-    updateChange->setValue(false);
+    updateChange->setValue(true);
     updateChange->setPropertyName("enabled");
     backend.sceneChangeEvent(updateChange);
 
     // THEN
-    QVERIFY(!backend.isEnabled());
+    QVERIFY(backend.isEnabled());
     QVERIFY(renderer.dirtyBits() != 0);
 
     // WHEN
     QScenePropertyChangePtr secondUpdateChange(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, QNodeId()));
-    secondUpdateChange->setValue(true);
+    secondUpdateChange->setValue(false);
     secondUpdateChange->setPropertyName("enabled");
     backend.sceneChangeEvent(secondUpdateChange);
 
     // THEN
-    QVERIFY(backend.isEnabled());
+    QVERIFY(!backend.isEnabled());
 
 }
 

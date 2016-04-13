@@ -81,7 +81,6 @@ public:
 
     void updateFromPeer(Qt3DCore::QNode* mat) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    inline bool isEnabled() const { return m_enabled; }
 
     QVector<Qt3DCore::QNodeId> parameters() const;
     Qt3DCore::QNodeId effect() const;
@@ -91,7 +90,6 @@ private:
 
     ParameterPack m_parameterPack;
     Qt3DCore::QNodeId m_effectUuid;
-    bool m_enabled;
 };
 
 } // namespace Render

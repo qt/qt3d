@@ -58,7 +58,6 @@ namespace Render {
 
 Material::Material()
     : BackendNode()
-    , m_enabled(true)
 {
 }
 
@@ -69,6 +68,7 @@ Material::~Material()
 
 void Material::cleanup()
 {
+    QBackendNode::setEnabled(false);
     m_parameterPack.clear();
 }
 
@@ -76,7 +76,6 @@ void Material::updateFromPeer(Qt3DCore::QNode *node)
 {
     QMaterial *mat = static_cast<QMaterial *>(node);
     m_parameterPack.clear();
-    m_enabled = mat->isEnabled();
     if (mat->effect() != Q_NULLPTR)
         m_effectUuid = mat->effect()->id();
     Q_FOREACH (QParameter *p, mat->parameters())
@@ -89,7 +88,6 @@ void Material::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &cha
     const auto &data = typedChange->data;
     m_effectUuid = data.effectId;
     m_parameterPack.setParameters(data.parameterIds);
-    m_enabled = change->isNodeEnabled();
 }
 
 void Material::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -98,9 +96,7 @@ void Material::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
     switch (e->type()) {
     case NodeUpdated: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            m_enabled = propertyChange->value().toBool();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("effect"))
+        if (propertyChange->propertyName() == QByteArrayLiteral("effect"))
             m_effectUuid = propertyChange->value().value<QNodeId>();
         break;
     }
@@ -124,6 +120,8 @@ void Material::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
     markDirty(AbstractRenderer::AllDirty);
+
+    BackendNode::sceneChangeEvent(e);
 }
 
 QVector<Qt3DCore::QNodeId> Material::parameters() const
