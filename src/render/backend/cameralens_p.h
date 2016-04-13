@@ -75,15 +75,12 @@ public:
     void setProjection(const QMatrix4x4 &projection);
     inline QMatrix4x4 projection() const { return m_projection; }
 
-    inline bool isEnabled() const { return m_enabled; }
-
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
     QMatrix4x4 m_projection;
-    bool m_enabled;
 };
 
 } // namespace Render

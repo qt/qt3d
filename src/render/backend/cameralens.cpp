@@ -64,14 +64,13 @@ CameraLens::~CameraLens()
 
 void CameraLens::cleanup()
 {
-
+    QBackendNode::setEnabled(false);
 }
 
 void CameraLens::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QCameraLens *lens = static_cast<QCameraLens *>(peer);
     setProjection(lens->projectionMatrix());
-    m_enabled = lens->isEnabled();
 }
 
 void CameraLens::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -79,7 +78,6 @@ void CameraLens::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &c
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QCameraLensData>>(change);
     const auto &data = typedChange->data;
     m_projection = data.projectionMatrix;
-    m_enabled = change->isNodeEnabled();
 }
 
 void CameraLens::setProjection(const QMatrix4x4 &projection)
@@ -96,8 +94,6 @@ void CameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (propertyChange->propertyName() == QByteArrayLiteral("projectionMatrix")) {
             QMatrix4x4 projectionMatrix = propertyChange->value().value<QMatrix4x4>();
             m_projection = projectionMatrix;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            m_enabled = propertyChange->value().toBool();
         }
 
         markDirty(AbstractRenderer::AllDirty);
@@ -107,6 +103,7 @@ void CameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     default:
         break;
     }
+    BackendNode::sceneChangeEvent(e);
 }
 
 } // namespace Render
