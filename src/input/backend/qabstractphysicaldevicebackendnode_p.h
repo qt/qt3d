@@ -100,7 +100,6 @@ public:
     QVector<Input::AxisIdSetting> m_axisSettings;
     QVector<Input::AxisIdFilter> m_axisFilters;
     QInputAspect *m_inputAspect;
-    bool m_enabled;
 };
 
 }

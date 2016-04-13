@@ -80,7 +80,6 @@ QAbstractPhysicalDeviceBackendNodePrivate::QAbstractPhysicalDeviceBackendNodePri
     : Qt3DCore::QBackendNodePrivate(mode)
     , m_axisSettings()
     , m_inputAspect(Q_NULLPTR)
-    , m_enabled(false)
 {
 }
 
@@ -153,7 +152,6 @@ void QAbstractPhysicalDeviceBackendNode::updateFromPeer(Qt3DCore::QNode *peer)
 {
     Q_D(QAbstractPhysicalDeviceBackendNode);
     QAbstractPhysicalDevice *physicalDevice = static_cast<QAbstractPhysicalDevice *>(peer);
-    d->m_enabled = physicalDevice->isEnabled();
     Q_FOREACH (QAxisSetting *axisSetting, physicalDevice->axisSettings()) {
         // Each axis setting can apply to more than one axis. If an axis is
         // mentioned in more than one setting, we use the last one
@@ -166,7 +164,6 @@ void QAbstractPhysicalDeviceBackendNode::initializeFromPeer(const Qt3DCore::QNod
 {
     const auto deviceChange = qSharedPointerCast<QPhysicalDeviceCreatedChangeBase>(change);
     Q_D(QAbstractPhysicalDeviceBackendNode);
-    d->m_enabled = change->isNodeEnabled();
     // Store the axis setting Ids. We will update the settings themselves from
     // a job scheduled on the next frame.
     // TODO: Create such a job once all types can be created this way.
@@ -176,7 +173,7 @@ void QAbstractPhysicalDeviceBackendNode::initializeFromPeer(const Qt3DCore::QNod
 void QAbstractPhysicalDeviceBackendNode::cleanup()
 {
     Q_D(QAbstractPhysicalDeviceBackendNode);
-    d->m_enabled = false;
+    QBackendNode::setEnabled(false);
     d->m_axisSettings.clear();
     d->m_axisFilters.clear();
     d->m_inputAspect = Q_NULLPTR;
@@ -186,11 +183,7 @@ void QAbstractPhysicalDeviceBackendNode::sceneChangeEvent(const Qt3DCore::QScene
 {
     Q_D(QAbstractPhysicalDeviceBackendNode);
     Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
-    if (e->type() == Qt3DCore::NodeUpdated) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            d->m_enabled = propertyChange->value().toBool();
-        }
-    } else if (e->type() == Qt3DCore::NodeAdded) {
+    if (e->type() == Qt3DCore::NodeAdded) {
         if (propertyChange->propertyName() == QByteArrayLiteral("axisSettings")) {
             const Qt3DCore::QNodeId axisSettingId = propertyChange->value().value<Qt3DCore::QNodeId>();
             Input::AxisSetting *axisSetting = d->getAxisSetting(axisSettingId);
@@ -201,6 +194,7 @@ void QAbstractPhysicalDeviceBackendNode::sceneChangeEvent(const Qt3DCore::QScene
         if (propertyChange->propertyName() == QByteArrayLiteral("axisSettings"))
             d->removeAxisSetting(propertyChange->value().value<Qt3DCore::QNodeId>());
     }
+    QBackendNode::sceneChangeEvent(e);
 }
 
 void QAbstractPhysicalDeviceBackendNode::setInputAspect(QInputAspect *aspect)
