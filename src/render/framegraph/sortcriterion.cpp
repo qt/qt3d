@@ -56,6 +56,7 @@ SortCriterion::SortCriterion()
 
 void SortCriterion::cleanup()
 {
+    QBackendNode::setEnabled(false);
 }
 
 void SortCriterion::updateFromPeer(Qt3DCore::QNode *peer)
@@ -76,6 +77,8 @@ void SortCriterion::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         m_type = static_cast<QSortCriterion::SortType>(propertyChange->value().toInt());
     }
     markDirty(AbstractRenderer::AllDirty);
+
+    BackendNode::sceneChangeEvent(e);
 }
 
 } // namespace Render
