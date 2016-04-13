@@ -115,9 +115,6 @@ public:
     void addComponent(Qt3DCore::QNodeIdTypePair idAndType);
     void removeComponent(Qt3DCore::QNodeId nodeId);
 
-    bool isEnabled() const;
-    void setEnabled(bool isEnabled);
-
     bool isBoundingVolumeDirty() const;
     void unsetBoundingVolumeDirty();
 
@@ -183,7 +180,6 @@ private:
     Qt3DCore::QNodeId m_computeComponent;
 
     QString m_objectName;
-    bool m_enabled;
     bool m_boundingDirty;
 };
 

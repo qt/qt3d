@@ -72,7 +72,6 @@ namespace Render {
 Entity::Entity()
     : BackendNode()
     , m_nodeManagers(Q_NULLPTR)
-    , m_enabled(true)
     , m_boundingDirty(false)
 {
 }
@@ -114,8 +113,8 @@ void Entity::cleanup()
     m_localBoundingVolume.reset();
     m_worldBoundingVolume.reset();
     m_worldBoundingVolumeWithChildren.reset();
-    m_enabled = true;
     m_boundingDirty = false;
+    QBackendNode::setEnabled(false);
 }
 
 void Entity::setParentHandle(HEntity parentHandle)
@@ -172,8 +171,6 @@ void Entity::updateFromPeer(Qt3DCore::QNode *peer)
     } else {
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "No parent entity found for Entity" << peerId();
     }
-
-    m_enabled = entity->isEnabled();
 }
 
 void Entity::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
@@ -211,8 +208,6 @@ void Entity::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
         setParentHandle(m_nodeManagers->renderNodesManager()->lookupHandle(parentEntityId));
     else
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "No parent entity found for Entity" << peerId();
-
-    m_enabled = change->isNodeEnabled();
 }
 
 void Entity::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -235,16 +230,11 @@ void Entity::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
 
-    case NodeUpdated: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            m_enabled = propertyChange->value().value<bool>();
-        break;
-    }
-
     default:
         break;
     }
     markDirty(AbstractRenderer::AllDirty);
+    BackendNode::sceneChangeEvent(e);
 }
 
 void Entity::dump() const
@@ -386,16 +376,6 @@ void Entity::removeComponent(Qt3DCore::QNodeId nodeId)
     } else if (m_computeComponent == nodeId) {
         m_computeComponent = QNodeId();
     }
-}
-
-bool Entity::isEnabled() const
-{
-    return m_enabled;
-}
-
-void Entity::setEnabled(bool isEnabled)
-{
-    m_enabled = isEnabled;
 }
 
 bool Entity::isBoundingVolumeDirty() const
