@@ -84,7 +84,6 @@ void RenderSurfaceSelector::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QRenderSurfaceSelector *selector = static_cast<QRenderSurfaceSelector *>(peer);
     m_surface = surfaceFromQObject(selector->surface());
-    setEnabled(selector->isEnabled());
     setRenderTargetSize(selector->externalRenderTargetSize());
     if (m_surface) {
         if (m_surface->surfaceClass() == QSurface::Window) {
@@ -102,7 +101,6 @@ void RenderSurfaceSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChang
     FrameGraphNode::initializeFromPeer(change);
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderSurfaceSelectorData>>(change);
     const auto &data = typedChange->data;
-    setEnabled(change->isNodeEnabled());
     m_surface = surfaceFromQObject(data.surface);
     m_renderTargetSize = data.externalRenderTargetSize;
     if (m_surface && m_surface->surfaceClass() == QSurface::Window) {
@@ -121,8 +119,6 @@ void RenderSurfaceSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("surface"))
             m_surface = surfaceFromQObject(propertyChange->value().value<QObject *>());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            setEnabled(propertyChange->value().toBool());
         else if (propertyChange->propertyName() == QByteArrayLiteral("externalRenderTargetSize"))
             setRenderTargetSize(propertyChange->value().toSize());
         else if (propertyChange->propertyName() == QByteArrayLiteral("width"))
@@ -131,6 +127,7 @@ void RenderSurfaceSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_height = propertyChange->value().toInt();
         markDirty(AbstractRenderer::AllDirty);
     }
+    FrameGraphNode::sceneChangeEvent(e);
 }
 
 QSize RenderSurfaceSelector::renderTargetSize() const
