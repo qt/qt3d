@@ -92,6 +92,8 @@ void Parameter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         }
         markDirty(AbstractRenderer::AllDirty);
     }
+
+    BackendNode::sceneChangeEvent(e);
 }
 
 QString Parameter::name() const
