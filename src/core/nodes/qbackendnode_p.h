@@ -73,6 +73,7 @@ public:
     void setArbiter(QLockableObserverInterface *arbiter) Q_DECL_OVERRIDE;
     void notifyObservers(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void setEnabled(bool enabled);
 
     static QBackendNodePrivate *get(QBackendNode *n);
 
@@ -82,6 +83,7 @@ public:
 
     QLockableObserverInterface *m_arbiter;
     QNodeId m_peerId;
+    bool m_enabled;
 
 private:
     Q_DISABLE_COPY(QBackendNodePrivate)

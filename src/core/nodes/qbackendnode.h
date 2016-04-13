@@ -79,12 +79,15 @@ public:
     void setPeer(QNode *peer);
     QNodeId peerId() const Q_DECL_NOEXCEPT;
 
+    bool isEnabled() const Q_DECL_NOEXCEPT;
+
     Mode mode() const Q_DECL_NOEXCEPT;
     virtual void updateFromPeer(QNode *peer) = 0;
 
 protected:
     void notifyObservers(const QSceneChangePtr &e);
-    virtual void sceneChangeEvent(const QSceneChangePtr &e) = 0;
+    virtual void sceneChangeEvent(const QSceneChangePtr &e);
+    void setEnabled(bool enabled);
 
     QBackendNode(QBackendNodePrivate &dd);
 

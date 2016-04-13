@@ -180,6 +180,7 @@ QBackendNode *QAbstractAspectPrivate::createBackendNode(QNode *frontend) const
         if (backend == Q_NULLPTR)
             return Q_NULLPTR;
         QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
+        backendPriv->setEnabled(frontend->isEnabled());
         // TO DO: Find a way to specify the changes to observe
         // Register backendNode with QChangeArbiter
         if (m_arbiter != Q_NULLPTR) { // Unit tests may not have the arbiter registered
@@ -209,19 +210,19 @@ QBackendNode *QAbstractAspectPrivate::createBackendNodeNoClone(const QNodeCreate
         return backend;
     backend = backendNodeMapper->create(change);
 
+    if (!backend)
+        return nullptr;
+
     // TODO: Find some place else to do all of this function from the arbiter
-    if (backend) {
-        backend->setPeerId(change->subjectId());
-        backend->initializeFromPeer(change);
-    }
+    backend->setPeerId(change->subjectId());
+    backend->initializeFromPeer(change);
 
     // Backend could be null if the user decides that his functor should only
     // perform some action when encountering a given type of item but doesn't need to
     // return a QBackendNode pointer.
-    if (!backend)
-        return nullptr;
 
     QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
+    backendPriv->setEnabled(change->isNodeEnabled());
     // TO DO: Find a way to specify the changes to observe
     // Register backendNode with QChangeArbiter
     if (m_arbiter != Q_NULLPTR) { // Unit tests may not have the arbiter registered

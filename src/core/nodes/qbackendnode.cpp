@@ -41,6 +41,7 @@
 #include "qbackendnode_p.h"
 #include "qaspectengine.h"
 #include "qnode.h"
+#include "qscenepropertychange.h"
 #include <Qt3DCore/private/corelogging_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -51,6 +52,7 @@ QBackendNodePrivate::QBackendNodePrivate(QBackendNode::Mode mode)
     : q_ptr(Q_NULLPTR)
     , m_mode(mode)
     , m_arbiter(Q_NULLPTR)
+    , m_enabled(false)
 {
 }
 
@@ -73,6 +75,11 @@ void QBackendNodePrivate::notifyObservers(const QSceneChangePtr &e)
 void QBackendNodePrivate::sceneChangeEvent(const QSceneChangePtr &e)
 {
     q_func()->sceneChangeEvent(e);
+}
+
+void QBackendNodePrivate::setEnabled(bool enabled)
+{
+    m_enabled = enabled;
 }
 
 QBackendNodePrivate *QBackendNodePrivate::get(QBackendNode *n)
@@ -98,6 +105,7 @@ void QBackendNode::setPeer(QNode *peer)
     if (peer != Q_NULLPTR)
         peerId = peer->id();
     d->m_peerId = peerId;
+    d->m_enabled = peer->isEnabled();
     updateFromPeer(peer);
 }
 
@@ -111,6 +119,12 @@ QNodeId QBackendNode::peerId() const Q_DECL_NOEXCEPT
 {
     Q_D(const QBackendNode);
     return d->m_peerId;
+}
+
+bool QBackendNode::isEnabled() const Q_DECL_NOEXCEPT
+{
+    Q_D(const QBackendNode);
+    return d->m_enabled;
 }
 
 QBackendNode::Mode QBackendNode::mode() const Q_DECL_NOEXCEPT
@@ -136,6 +150,28 @@ void QBackendNode::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
 {
     Q_UNUSED(change);
     qCDebug(Nodes) << Q_FUNC_INFO << change->metaObject()->className() << "does not override";
+}
+
+void QBackendNode::setEnabled(bool enabled)
+{
+    Q_D(QBackendNode);
+    d->m_enabled = enabled;
+}
+
+void QBackendNode::sceneChangeEvent(const QSceneChangePtr &e)
+{
+    Q_D(QBackendNode);
+    auto propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+
+    switch (e->type()) {
+        case NodeUpdated: {
+            if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
+                d->m_enabled = propertyChange->value().value<bool>();
+            break;
+        }
+        default:
+            break;
+    }
 }
 
 } // Qt3D
