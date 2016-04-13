@@ -59,26 +59,7 @@ NoDraw::~NoDraw()
 
 void NoDraw::updateFromPeer(Qt3DCore::QNode *peer)
 {
-    QNoDraw *noDraw = static_cast<QNoDraw *>(peer);
-    setEnabled(noDraw->isEnabled());
-}
-
-void NoDraw::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-
-    switch (e->type()) {
-    case NodeUpdated: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            setEnabled(propertyChange->value().toBool());
-        markDirty(AbstractRenderer::AllDirty);
-        break;
-
-    default:
-        break;
-    }
-
-    }
+    Q_UNUSED(peer)
 }
 
 } // namespace Render
