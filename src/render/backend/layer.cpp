@@ -62,6 +62,7 @@ Layer::~Layer()
 
 void Layer::cleanup()
 {
+    QBackendNode::setEnabled(false);
 }
 
 void Layer::updateFromPeer(Qt3DCore::QNode *peer)
@@ -72,7 +73,6 @@ void Layer::updateFromPeer(Qt3DCore::QNode *peer)
     m_layerIds.reserve(m_layers.size());
     Q_FOREACH (const QString &name, m_layers)
         m_layerIds.push_back(StringToInt::lookupId(name));
-    m_enabled = layer->isEnabled();
 }
 
 QStringList Layer::layers() const
@@ -89,10 +89,10 @@ void Layer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         m_layerIds.reserve(m_layers.size());
         Q_FOREACH (const QString &name, m_layers)
             m_layerIds.push_back(StringToInt::lookupId(name));
-    } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-        m_enabled = propertyChange->value().toBool();
     }
     markDirty(AbstractRenderer::AllDirty);
+
+    BackendNode::sceneChangeEvent(e);
 }
 
 } // namespace Render
