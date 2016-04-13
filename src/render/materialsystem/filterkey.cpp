@@ -104,6 +104,7 @@ void FilterKey::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     default:
         break;
     }
+    BackendNode::sceneChangeEvent(e);
 }
 
 bool FilterKey::operator ==(const FilterKey &other)
