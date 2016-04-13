@@ -62,6 +62,7 @@ Geometry::~Geometry()
 
 void Geometry::cleanup()
 {
+    QBackendNode::setEnabled(false);
     m_attributes.clear();
     m_geometryDirty = false;
     m_boundingPositionAttribute = Qt3DCore::QNodeId();
@@ -131,6 +132,7 @@ void Geometry::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
     markDirty(AbstractRenderer::AllDirty);
+    BackendNode::sceneChangeEvent(e);
 }
 
 void Geometry::unsetDirty()
