@@ -68,7 +68,6 @@ void TechniqueFilter::updateFromPeer(Qt3DCore::QNode *peer)
     const auto parameters = filter->parameters();
     for (QParameter *p : parameters)
         m_parameterPack.appendParameter(p->id());
-    setEnabled(filter->isEnabled());
 }
 
 void TechniqueFilter::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -78,7 +77,6 @@ void TechniqueFilter::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBaseP
     const auto &data = typedChange->data;
     m_filters = data.matchIds;
     m_parameterPack.setParameters(data.parameterIds);
-    setEnabled(change->isNodeEnabled());
 }
 
 QVector<Qt3DCore::QNodeId> TechniqueFilter::parameters() const
@@ -107,11 +105,6 @@ void TechniqueFilter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
 
     switch (e->type()) {
-    case NodeUpdated: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            setEnabled(propertyChange->value().toBool());
-    }
-        break;
 
     case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("require"))
@@ -131,6 +124,7 @@ void TechniqueFilter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
     markDirty(AbstractRenderer::AllDirty);
+    FrameGraphNode::sceneChangeEvent(e);
 }
 
 } // namespace Render
