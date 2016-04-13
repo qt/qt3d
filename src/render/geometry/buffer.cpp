@@ -154,6 +154,7 @@ void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         }
         markDirty(AbstractRenderer::AllDirty);
     }
+    BackendNode::sceneChangeEvent(e);
 }
 
 // Called by Renderer once the buffer has been uploaded to OpenGL
