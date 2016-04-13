@@ -117,6 +117,8 @@ void RenderTargetOutput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         }
         markDirty(AbstractRenderer::AllDirty);
     }
+
+    BackendNode::sceneChangeEvent(e);
 }
 
 Attachment RenderTargetOutput::attachment() const
