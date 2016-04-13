@@ -67,7 +67,6 @@ void KeyboardHandler::updateFromPeer(Qt3DCore::QNode *peer)
     if (input->sourceDevice() != Q_NULLPTR)
         setSourcerDevice(input->sourceDevice()->id());
     m_focus = false;
-    m_enabled = input->isEnabled();
     if (input->focus())
         requestFocus();
 }
@@ -76,7 +75,6 @@ void KeyboardHandler::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBaseP
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QKeyboardHandlerData>>(change);
     const auto &data = typedChange->data;
-    m_enabled = change->isNodeEnabled();
     m_focus = false;
     if (data.focus)
         requestFocus();
@@ -128,18 +126,17 @@ void KeyboardHandler::sceneChangeEvent(const QSceneChangePtr &e)
             }
         } else if (propertyChange->propertyName() == QByteArrayLiteral("focus")) {
             focusRequest = propertyChange->value().toBool();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            m_enabled = propertyChange->value().toBool();
         }
     }
     if (focusRequest)
         requestFocus();
+    QBackendNode::sceneChangeEvent(e);
 }
 
 void KeyboardHandler::requestFocus()
 {
     KeyboardDevice *keyboardDevice = m_inputHandler->keyboardDeviceManager()->lookupResource(m_keyboardDevice);
-    if (keyboardDevice && m_enabled)
+    if (keyboardDevice && isEnabled())
         keyboardDevice->requestFocusForInput(peerId());
 }
 
