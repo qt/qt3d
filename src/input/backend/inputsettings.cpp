@@ -76,6 +76,7 @@ void InputSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (propertyChange->propertyName() == QByteArrayLiteral("eventSource"))
             m_eventSource = propertyChange->value().value<QObject *>();
     }
+    QBackendNode::sceneChangeEvent(e);
 }
 
 InputSettingsFunctor::InputSettingsFunctor(InputHandler *handler)
