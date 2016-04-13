@@ -94,6 +94,7 @@ Texture::~Texture()
 
 void Texture::cleanup()
 {
+    QBackendNode::setEnabled(false);
     m_gl = Q_NULLPTR;
     m_width = 1;
     m_height = 1;
@@ -630,6 +631,7 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
     }
     markDirty(AbstractRenderer::AllDirty);
+    BackendNode::sceneChangeEvent(e);
 }
 
 TextureDNA Texture::dna() const
