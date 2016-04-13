@@ -65,6 +65,7 @@ ObjectPicker::~ObjectPicker()
 
 void ObjectPicker::cleanup()
 {
+    BackendNode::setEnabled(false);
     m_isDirty = false;
     m_isPressed = false;
     m_hoverEnabled = false;
@@ -97,6 +98,8 @@ void ObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         }
         markDirty(AbstractRenderer::AllDirty);
     }
+
+    BackendNode::sceneChangeEvent(e);
 }
 
 bool ObjectPicker::isDirty() const
