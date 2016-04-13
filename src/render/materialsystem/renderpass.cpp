@@ -134,6 +134,8 @@ void RenderPass::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     default:
         break;
     }
+
+    BackendNode::sceneChangeEvent(e);
     markDirty(AbstractRenderer::AllDirty);
 }
 
