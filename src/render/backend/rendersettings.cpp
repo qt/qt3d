@@ -98,6 +98,8 @@ void RenderSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_renderPolicy = propertyChange->value().value<QRenderSettings::RenderPolicy>();
         markDirty(AbstractRenderer::AllDirty);
     }
+
+    BackendNode::sceneChangeEvent(e);
 }
 
 RenderSettingsFunctor::RenderSettingsFunctor(AbstractRenderer *renderer)
