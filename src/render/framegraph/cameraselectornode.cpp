@@ -63,7 +63,6 @@ void CameraSelector::updateFromPeer(Qt3DCore::QNode *peer)
     m_cameraUuid = QNodeId();
     if (selector->camera() != Q_NULLPTR)
         m_cameraUuid = selector->camera()->id();
-    setEnabled(selector->isEnabled());
 }
 
 void CameraSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -72,7 +71,6 @@ void CameraSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePt
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QCameraSelectorData>>(change);
     const auto &data = typedChange->data;
     m_cameraUuid = data.cameraId;
-    setEnabled(change->isNodeEnabled());
 }
 
 void CameraSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -82,10 +80,9 @@ void CameraSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("camera"))
             m_cameraUuid = propertyChange->value().value<QNodeId>();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            setEnabled(propertyChange->value().toBool());
         markDirty(AbstractRenderer::AllDirty);
     }
+    FrameGraphNode::sceneChangeEvent(e);
 }
 
 QNodeId CameraSelector::cameraUuid() const
