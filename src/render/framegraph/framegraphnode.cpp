@@ -49,14 +49,12 @@ namespace Render {
 FrameGraphNode::FrameGraphNode()
     : BackendNode()
     , m_nodeType(InvalidNodeType)
-    , m_enabled(true)
     , m_manager(Q_NULLPTR)
 {
 }
 
 FrameGraphNode::FrameGraphNode(FrameGraphNodeType nodeType)
     : m_nodeType(nodeType)
-    , m_enabled(true)
     , m_manager(Q_NULLPTR)
 {
 }
@@ -69,7 +67,6 @@ void FrameGraphNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePt
 {
     // Set up the parent child relationship and enabled state
     setParentId(change->parentId());
-    setEnabled(change->isNodeEnabled());
 }
 
 void FrameGraphNode::setFrameGraphManager(FrameGraphManager *manager)

@@ -93,9 +93,6 @@ public:
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 
-    void setEnabled(bool enabled) { m_enabled = enabled; }
-    inline bool isEnabled() const { return m_enabled; }
-
     void setFrameGraphManager(FrameGraphManager *manager);
     FrameGraphManager *manager() const;
 
@@ -115,7 +112,6 @@ protected:
 
 private:
     FrameGraphNodeType m_nodeType;
-    bool m_enabled;
     Qt3DCore::QNodeId m_parentId;
     QVector<Qt3DCore::QNodeId> m_childrenIds;
     FrameGraphManager *m_manager;

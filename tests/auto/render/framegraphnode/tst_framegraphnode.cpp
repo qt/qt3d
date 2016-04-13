@@ -34,6 +34,10 @@ class MyFrameGraphNode : public Qt3DRender::Render::FrameGraphNode
 {
 public:
     void updateFromPeer(Qt3DCore::QNode *) Q_DECL_FINAL {}
+    void setEnabled(bool enabled)
+    {
+        FrameGraphNode::setEnabled(enabled);
+    }
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) Q_DECL_FINAL {}
@@ -64,7 +68,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(n.nodeType(), Qt3DRender::Render::FrameGraphNode::InvalidNodeType);
-        QVERIFY(n.isEnabled());
+        QVERIFY(!n.isEnabled());
         QVERIFY(n.peerId().isNull());
         QVERIFY(n.manager() == Q_NULLPTR);
         QVERIFY(n.parentId().isNull());
@@ -74,12 +78,12 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
-        QScopedPointer<Qt3DRender::Render::FrameGraphNode> n(new MyFrameGraphNode());
+        QScopedPointer<MyFrameGraphNode> n(new MyFrameGraphNode());
 
         // WHEN
-        n->setEnabled(false);
+        n->setEnabled(true);
         // THEN
-        QCOMPARE(n->isEnabled(), false);
+        QCOMPARE(n->isEnabled(), true);
 
         // WHEN
         QScopedPointer<Qt3DRender::Render::FrameGraphManager> manager(new Qt3DRender::Render::FrameGraphManager());
