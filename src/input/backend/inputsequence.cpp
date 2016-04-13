@@ -58,14 +58,12 @@ InputSequence::InputSequence()
     , m_buttonInterval(0)
     , m_startTime(0)
     , m_lastInputTime(0)
-    , m_enabled(false)
 {
 }
 
 void InputSequence::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QInputSequence *input = static_cast<QInputSequence *>(peer);
-    m_enabled = input->isEnabled();
     m_timeout = input->timeout();
     m_buttonInterval = input->buttonInterval();
     Q_FOREACH (QAbstractActionInput *i, input->inputs())
@@ -76,7 +74,6 @@ void InputSequence::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QInputSequenceData>>(change);
     const auto &data = typedChange->data;
-    m_enabled = change->isNodeEnabled();
     m_inputs = data.inputIds;
     m_timeout = data.timeout;
     m_buttonInterval = data.buttonInterval;
@@ -84,7 +81,7 @@ void InputSequence::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr
 
 void InputSequence::cleanup()
 {
-    m_enabled = false;
+    QBackendNode::setEnabled(false);
     m_timeout = 0;
     m_buttonInterval = 0;
     m_startTime = 0;
@@ -134,9 +131,7 @@ void InputSequence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
     if (e->type() == Qt3DCore::NodeUpdated) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            m_enabled = propertyChange->value().toBool();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("timeout")) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("timeout")) {
             m_timeout = propertyChange->value().toInt();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("buttonInterval")) {
             m_buttonInterval = propertyChange->value().toInt();
@@ -152,6 +147,7 @@ void InputSequence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_inputsToTrigger.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
         }
     }
+    QBackendNode::sceneChangeEvent(e);
 }
 
 } // namespace Input

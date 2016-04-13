@@ -72,7 +72,6 @@ public:
     inline int buttonInterval() const { return m_buttonInterval; }
     inline qint64 startTime() const { return m_startTime; }
     void setStartTime(qint64 time);
-    inline bool isEnabled() const { return m_enabled; }
     bool sequenceTriggered() const;
     void reset();
     bool actionTriggered(Qt3DCore::QNodeId input, const qint64 currentTime);
@@ -88,7 +87,6 @@ private:
     qint64 m_startTime;
     qint64 m_lastInputTime;
     Qt3DCore::QNodeId m_lastInputId;
-    bool m_enabled;
 };
 
 } // namespace Input
