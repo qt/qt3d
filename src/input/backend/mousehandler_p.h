@@ -73,14 +73,11 @@ public:
     void mouseEvent(const QMouseEventPtr &event);
     void wheelEvent(const QWheelEventPtr &event);
 
-    inline bool isEnabled() const { return m_enabled; }
-
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void setDevice(Qt3DCore::QNodeId device);
 
 private:
-    bool m_enabled;
     Qt3DCore::QNodeId m_mouseDevice;
     InputHandler *m_inputHandler;
 };

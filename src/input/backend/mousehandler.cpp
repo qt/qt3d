@@ -56,7 +56,6 @@ namespace Input {
 
 MouseHandler::MouseHandler()
     : QBackendNode(ReadWrite)
-    , m_enabled(false)
     , m_inputHandler(Q_NULLPTR)
 {
 }
@@ -70,7 +69,6 @@ void MouseHandler::updateFromPeer(Qt3DCore::QNode *peer)
     QMouseHandler *input = static_cast<QMouseHandler *>(peer);
     if (input->sourceDevice() != Q_NULLPTR)
         setDevice(input->sourceDevice()->id());
-    m_enabled = input->isEnabled();
 }
 
 Qt3DCore::QNodeId MouseHandler::mouseDevice() const
@@ -112,6 +110,7 @@ void MouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             }
         }
     }
+    QBackendNode::sceneChangeEvent(e);
 }
 
 void MouseHandler::setDevice(Qt3DCore::QNodeId device)
