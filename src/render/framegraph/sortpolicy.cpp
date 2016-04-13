@@ -59,7 +59,6 @@ void SortPolicy::updateFromPeer(Qt3DCore::QNode *peer)
     m_criteria.clear();
     Q_FOREACH (QSortCriterion *c, sortPolicy->criteria())
         m_criteria.append(c->id());
-    setEnabled(sortPolicy->isEnabled());
 }
 
 void SortPolicy::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -73,10 +72,9 @@ void SortPolicy::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             else if (e->type() == NodeRemoved)
                 m_criteria.removeAll(cId);
         }
-    } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled") && e->type() == NodeUpdated) {
-        setEnabled(propertyChange->value().toBool());
     }
     markDirty(AbstractRenderer::AllDirty);
+    FrameGraphNode::sceneChangeEvent(e);
 }
 
 QVector<QNodeId> SortPolicy::criteria() const
