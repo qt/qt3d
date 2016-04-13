@@ -61,7 +61,6 @@ void RenderPassFilter::updateFromPeer(Qt3DCore::QNode *peer)
     QRenderPassFilter *filter = static_cast<QRenderPassFilter *>(peer);
     m_filters.clear();
     m_parameterPack.clear();
-    setEnabled(filter->isEnabled());
     const auto criteria = filter->matchAny();
     for (QFilterKey *criterion : criteria)
         appendFilter(criterion->id());
@@ -75,7 +74,6 @@ void RenderPassFilter::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBase
     FrameGraphNode::initializeFromPeer(change);
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderPassFilterData>>(change);
     const auto &data = typedChange->data;
-    setEnabled(change->isNodeEnabled());
     m_filters = data.matchIds;
     m_parameterPack.setParameters(data.parameterIds);
 }
@@ -106,11 +104,6 @@ void RenderPassFilter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
 
     switch (e->type()) {
-    case NodeUpdated: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            setEnabled(propertyChange->value().toBool());
-    }
-        break;
 
     case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("include"))
@@ -130,6 +123,7 @@ void RenderPassFilter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
     markDirty(AbstractRenderer::AllDirty);
+    FrameGraphNode::sceneChangeEvent(e);
 }
 
 } // namespace Render
