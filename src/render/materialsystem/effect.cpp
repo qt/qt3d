@@ -66,6 +66,7 @@ Effect::~Effect()
 
 void Effect::cleanup()
 {
+    QBackendNode::setEnabled(false);
 }
 
 void Effect::updateFromPeer(Qt3DCore::QNode *peer)
@@ -115,6 +116,7 @@ void Effect::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     markDirty(AbstractRenderer::AllDirty);
+    BackendNode::sceneChangeEvent(e);
 }
 
 void Effect::appendRenderTechnique(Qt3DCore::QNodeId technique)
