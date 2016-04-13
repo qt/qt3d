@@ -64,7 +64,7 @@ void Handler::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chan
 
 void Handler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    Q_UNUSED(e);
+    QBackendNode::sceneChangeEvent(e);
 }
 
 HandlerFunctor::HandlerFunctor(Manager *manager)
