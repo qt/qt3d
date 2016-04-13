@@ -59,7 +59,6 @@ void LayerFilterNode::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QLayerFilter *layerFilter = static_cast<QLayerFilter *>(peer);
     setLayers(layerFilter->layers());
-    setEnabled(layerFilter->isEnabled());
 }
 
 void LayerFilterNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -68,7 +67,6 @@ void LayerFilterNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBaseP
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QLayerFilterData>>(change);
     const auto &data = typedChange->data;
     setLayers(data.layers);
-    setEnabled(change->isNodeEnabled());
 }
 
 void LayerFilterNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -77,10 +75,9 @@ void LayerFilterNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("layers"))
             setLayers(propertyChange->value().value<QStringList>());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            setEnabled(propertyChange->value().toBool());
         markDirty(AbstractRenderer::AllDirty);
     }
+    FrameGraphNode::sceneChangeEvent(e);
 }
 
 QStringList LayerFilterNode::layers() const
