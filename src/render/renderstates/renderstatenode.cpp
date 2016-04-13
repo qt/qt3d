@@ -91,6 +91,7 @@ void RenderStateNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         }
         markDirty(AbstractRenderer::AllDirty);
     }
+    BackendNode::sceneChangeEvent(e);
 }
 
 } // namespace Render
