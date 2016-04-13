@@ -324,6 +324,8 @@ void ShaderData::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         }
         BackendNode::markDirty(AbstractRenderer::AllDirty);
     }
+
+    BackendNode::sceneChangeEvent(e);
 }
 
 RenderShaderDataFunctor::RenderShaderDataFunctor(AbstractRenderer *renderer, NodeManagers *managers)
