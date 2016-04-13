@@ -68,7 +68,6 @@ public:
     LogicalDevice();
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
-    inline bool isEnabled() const { return m_enabled; }
     inline QVector<Qt3DCore::QNodeId> axes() const { return m_axes; }
     inline QVector<Qt3DCore::QNodeId> actions() const { return m_actions; }
 
@@ -80,7 +79,6 @@ private:
 
     QVector<Qt3DCore::QNodeId> m_axes;
     QVector<Qt3DCore::QNodeId> m_actions;
-    bool m_enabled;
 };
 
 
