@@ -75,6 +75,7 @@ Shader::~Shader()
 
 void Shader::cleanup()
 {
+    QBackendNode::setEnabled(false);
     m_isLoaded = false;
     m_dna = 0;
     // TO DO: ShaderProgram is leaked as of now
@@ -177,6 +178,8 @@ void Shader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             updateDNA();
         markDirty(AbstractRenderer::AllDirty);
     }
+
+    BackendNode::sceneChangeEvent(e);
 }
 
 QHash<QString, ShaderUniform> Shader::activeUniformsForUniformBlock(int blockIndex) const
