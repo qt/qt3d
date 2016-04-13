@@ -72,13 +72,11 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-    inline bool isEnabled() const { return m_enabled; }
     inline int x() const Q_DECL_NOEXCEPT { return m_workGroups[0]; }
     inline int y() const Q_DECL_NOEXCEPT { return m_workGroups[1]; }
     inline int z() const Q_DECL_NOEXCEPT { return m_workGroups[2]; }
 
 private:
-    bool m_enabled;
     int m_workGroups[3];
 };
 
