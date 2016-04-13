@@ -52,7 +52,6 @@ namespace Input {
 
 Action::Action()
     : Qt3DCore::QBackendNode(ReadWrite)
-    , m_enabled(false)
     , m_actionTriggered(false)
 {
 }
@@ -60,7 +59,6 @@ Action::Action()
 void Action::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QAction *action = static_cast<QAction *>(peer);
-    m_enabled = action->isEnabled();
     Q_FOREACH (QAbstractActionInput *input, action->inputs())
         m_inputs.push_back(input->id());
 }
@@ -74,7 +72,7 @@ void Action::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chang
 
 void Action::cleanup()
 {
-    m_enabled = false;
+    QBackendNode::setEnabled(false);
     m_inputs.clear();
     m_actionTriggered = false;
 }
@@ -96,17 +94,14 @@ void Action::setActionTriggered(bool actionTriggered)
 void Action::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
-    if (e->type() == Qt3DCore::NodeUpdated) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            m_enabled = propertyChange->value().toBool();
-        }
-    } else if (e->type() == Qt3DCore::NodeAdded) {
+    if (e->type() == Qt3DCore::NodeAdded) {
         if (propertyChange->propertyName() == QByteArrayLiteral("input"))
             m_inputs.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
     } else if (e->type() == Qt3DCore::NodeRemoved) {
         if (propertyChange->propertyName() == QByteArrayLiteral("input"))
             m_inputs.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
     }
+    QBackendNode::sceneChangeEvent(e);
 }
 
 } // Input

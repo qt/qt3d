@@ -66,7 +66,6 @@ public:
     Action();
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
-    inline bool isEnabled() const { return m_enabled; }
     inline QVector<Qt3DCore::QNodeId> inputs() const { return m_inputs; }
     inline bool actionTriggered() const { return m_actionTriggered; }
     void setActionTriggered(bool actionTriggered);
@@ -76,7 +75,6 @@ private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
     QVector<Qt3DCore::QNodeId> m_inputs;
-    bool m_enabled;
     bool m_actionTriggered;
 };
 
