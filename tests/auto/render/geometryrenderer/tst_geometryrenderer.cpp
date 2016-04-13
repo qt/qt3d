@@ -119,7 +119,7 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.primitiveRestartEnabled(), false);
         QCOMPARE(renderGeometryRenderer.primitiveType(), Qt3DRender::QGeometryRenderer::Triangles);
         QVERIFY(renderGeometryRenderer.geometryFactory().isNull());
-        QVERIFY(renderGeometryRenderer.isEnabled());
+        QVERIFY(!renderGeometryRenderer.isEnabled());
 
         // GIVEN
         Qt3DRender::QGeometryRenderer geometryRenderer;
@@ -136,7 +136,7 @@ private Q_SLOTS:
         geometryRenderer.setPrimitiveType(Qt3DRender::QGeometryRenderer::Patches);
         geometryRenderer.setGeometry(&geometry);
         geometryRenderer.setGeometryFactory(factory);
-        geometryRenderer.setEnabled(false);
+        geometryRenderer.setEnabled(true);
 
         // WHEN
         renderGeometryRenderer.updateFromPeer(&geometryRenderer);
@@ -154,7 +154,7 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.primitiveRestartEnabled(), false);
         QCOMPARE(renderGeometryRenderer.primitiveType(), Qt3DRender::QGeometryRenderer::Triangles);
         QVERIFY(renderGeometryRenderer.geometryFactory().isNull());
-        QVERIFY(renderGeometryRenderer.isEnabled());
+        QVERIFY(!renderGeometryRenderer.isEnabled());
     }
 
     void checkPropertyChanges()
@@ -301,12 +301,12 @@ private Q_SLOTS:
 
         // WHEN
         updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
-        updateChange->setValue(QVariant::fromValue(false));
+        updateChange->setValue(QVariant::fromValue(true));
         updateChange->setPropertyName("enabled");
         renderGeometryRenderer.sceneChangeEvent(updateChange);
 
         // THEN
-        QCOMPARE(renderGeometryRenderer.isEnabled(), false);
+        QCOMPARE(renderGeometryRenderer.isEnabled(), true);
         QVERIFY(!renderGeometryRenderer.isDirty());
     }
 };

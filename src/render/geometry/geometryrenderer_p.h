@@ -87,7 +87,6 @@ public:
     inline bool primitiveRestartEnabled() const { return m_primitiveRestartEnabled; }
     inline QGeometryRenderer::PrimitiveType primitiveType() const { return m_primitiveType; }
     inline bool isDirty() const { return m_dirty; }
-    inline bool isEnabled() const { return m_enabled; }
     inline QGeometryFactoryPtr geometryFactory() const { return m_geometryFactory; }
     void unsetDirty();
 
@@ -109,7 +108,6 @@ private:
     bool m_primitiveRestartEnabled;
     QGeometryRenderer::PrimitiveType m_primitiveType;
     bool m_dirty;
-    bool m_enabled;
     QGeometryFactoryPtr m_geometryFactory;
     GeometryRendererManager *m_manager;
     QVector<QBoundingVolume *> m_triangleVolumes;

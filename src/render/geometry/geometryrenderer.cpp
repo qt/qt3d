@@ -63,7 +63,6 @@ GeometryRenderer::GeometryRenderer()
     , m_primitiveRestartEnabled(false)
     , m_primitiveType(QGeometryRenderer::Triangles)
     , m_dirty(false)
-    , m_enabled(true)
     , m_manager(Q_NULLPTR)
 {
 }
@@ -84,7 +83,6 @@ void GeometryRenderer::cleanup()
     m_primitiveType = QGeometryRenderer::Triangles;
     m_geometryId = Qt3DCore::QNodeId();
     m_dirty = false;
-    m_enabled = true;
     m_geometryFactory.reset();
     qDeleteAll(m_triangleVolumes);
     m_triangleVolumes.clear();
@@ -107,7 +105,6 @@ void GeometryRenderer::updateFromPeer(Qt3DCore::QNode *peer)
         m_verticesPerPatch = geometryRenderer->verticesPerPatch();
         m_primitiveRestartEnabled = geometryRenderer->primitiveRestartEnabled();
         m_primitiveType = geometryRenderer->primitiveType();
-        m_enabled = geometryRenderer->isEnabled();
         if (geometryRenderer->geometry() != Q_NULLPTR)
             m_geometryId = geometryRenderer->geometry()->id();
         m_geometryFactory = geometryRenderer->geometryFactory();
@@ -130,7 +127,6 @@ void GeometryRenderer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBase
     m_verticesPerPatch = data.verticesPerPatch;
     m_primitiveRestartEnabled = data.primitiveRestart;
     m_primitiveType = data.primitiveType;
-    m_enabled = change->isNodeEnabled();
 
     Q_ASSERT(m_manager);
     m_geometryFactory = data.geometryFactory;
@@ -168,8 +164,6 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyName == QByteArrayLiteral("primitiveRestartEnabled")) {
             m_primitiveRestartEnabled = propertyChange->value().value<bool>();
             m_dirty = true;
-        } else if (propertyName == QByteArrayLiteral("enabled")) {
-            m_enabled = propertyChange->value().value<bool>();
         } else if (propertyName == QByteArrayLiteral("primitiveType")) {
             m_primitiveType = static_cast<QGeometryRenderer::PrimitiveType>(propertyChange->value().value<int>());
             m_dirty = true;
@@ -210,6 +204,8 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     markDirty(AbstractRenderer::AllDirty);
+
+    BackendNode::sceneChangeEvent(e);
 
     // Add to dirty list in manager
 }
