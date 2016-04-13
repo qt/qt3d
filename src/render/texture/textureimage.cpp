@@ -65,6 +65,7 @@ TextureImage::TextureImage()
 
 void TextureImage::cleanup()
 {
+    QBackendNode::setEnabled(false);
     m_layer = 0;
     m_mipLevel = 0;
     m_dirty = true;
@@ -145,6 +146,7 @@ void TextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             txt->addToPendingTextureJobs();
     }
     markDirty(AbstractRenderer::AllDirty);
+    BackendNode::sceneChangeEvent(e);
 }
 
 void TextureImage::setTextureManager(TextureManager *manager)
