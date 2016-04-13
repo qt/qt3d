@@ -65,7 +65,6 @@ void ViewportNode::updateFromPeer(Qt3DCore::QNode *peer)
     setXMax(viewport->normalizedRect().width());
     setYMin(viewport->normalizedRect().y());
     setYMax(viewport->normalizedRect().height());
-    setEnabled(viewport->isEnabled());
 }
 
 void ViewportNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -77,7 +76,6 @@ void ViewportNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
     m_xMax = data.normalizedRect.width();
     m_yMin = data.normalizedRect.y();
     m_yMax = data.normalizedRect.height();
-    setEnabled(change->isNodeEnabled());
 }
 
 float ViewportNode::xMin() const
@@ -127,11 +125,10 @@ void ViewportNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             setYMin(normalizedRect.y());
             setXMax(normalizedRect.width());
             setYMax(normalizedRect.height());
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            setEnabled(propertyChange->value().toBool());
         }
         markDirty(AbstractRenderer::AllDirty);
     }
+    FrameGraphNode::sceneChangeEvent(e);
 }
 
 QRectF computeViewport(const QRectF &childViewport, const ViewportNode *parentViewport)
