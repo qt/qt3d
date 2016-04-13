@@ -72,6 +72,7 @@ Technique::~Technique()
 
 void Technique::cleanup()
 {
+    QBackendNode::setEnabled(false);
     if (m_graphicsApiFilter)
         delete m_graphicsApiFilter;
     m_graphicsApiFilter = Q_NULLPTR;
@@ -171,6 +172,7 @@ void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
     markDirty(AbstractRenderer::AllDirty);
+    BackendNode::sceneChangeEvent(e);
 }
 
 QVector<Qt3DCore::QNodeId> Technique::parameters() const
