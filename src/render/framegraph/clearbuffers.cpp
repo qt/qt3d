@@ -63,7 +63,6 @@ void ClearBuffers::updateFromPeer(Qt3DCore::QNode *peer)
     m_clearColor = clearBuffers->clearColor();
     m_clearDepthValue = clearBuffers->clearDepthValue();
     m_clearStencilValue = clearBuffers->clearStencilValue();
-    setEnabled(clearBuffers->isEnabled());
 }
 
 void ClearBuffers::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -75,7 +74,6 @@ void ClearBuffers::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
     m_clearColor = data.clearColor;
     m_clearDepthValue = data.clearDepthValue;
     m_clearStencilValue = data.clearStencilValue;
-    setEnabled(change->isNodeEnabled());
 }
 
 void ClearBuffers::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -90,10 +88,9 @@ void ClearBuffers::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_clearDepthValue = propertyChange->value().toFloat();
         else if (propertyChange->propertyName() == QByteArrayLiteral("clearStencilValue"))
             m_clearStencilValue = propertyChange->value().toInt();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            setEnabled(propertyChange->value().toBool());
         markDirty(AbstractRenderer::AllDirty);
     }
+    FrameGraphNode::sceneChangeEvent(e);
 }
 
 QClearBuffers::BufferType ClearBuffers::type() const
