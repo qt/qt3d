@@ -52,7 +52,6 @@ namespace Input {
 
 Axis::Axis()
     : Qt3DCore::QBackendNode(ReadWrite)
-    , m_enabled(false)
     , m_axisValue(0.0f)
 {
 }
@@ -60,7 +59,6 @@ Axis::Axis()
 void Axis::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QAxis *axis = static_cast<QAxis *>(peer);
-    m_enabled = axis->isEnabled();
     Q_FOREACH (QAxisInput *input, axis->inputs())
         m_inputs.push_back(input->id());
 }
@@ -69,13 +67,12 @@ void Axis::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAxisData>>(change);
     const auto &data = typedChange->data;
-    m_enabled = change->isNodeEnabled();
     m_inputs = data.inputIds;
 }
 
 void Axis::cleanup()
 {
-    m_enabled = false;
+    QBackendNode::setEnabled(false);
     m_inputs.clear();
     m_axisValue = 0.0f;
 }
@@ -97,17 +94,14 @@ void Axis::setAxisValue(float axisValue)
 void Axis::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
-    if (e->type() == Qt3DCore::NodeUpdated) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            m_enabled = propertyChange->value().toBool();
-        }
-    } else if (e->type() == Qt3DCore::NodeAdded) {
+    if (e->type() == Qt3DCore::NodeAdded) {
         if (propertyChange->propertyName() == QByteArrayLiteral("input"))
             m_inputs.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
     } else if (e->type() == Qt3DCore::NodeRemoved) {
         if (propertyChange->propertyName() == QByteArrayLiteral("input"))
             m_inputs.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
     }
+    QBackendNode::sceneChangeEvent(e);
 }
 
 } // namespace Input
