@@ -65,6 +65,7 @@ void RenderTarget::updateFromPeer(Qt3DCore::QNode *peer)
 
 void RenderTarget::cleanup()
 {
+    QBackendNode::setEnabled(false);
 }
 
 void RenderTarget::appendRenderOutput(QNodeId outputId)
@@ -91,6 +92,8 @@ void RenderTarget::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     else if (e->type() == NodeRemoved && propertyChange->propertyName() == QByteArrayLiteral("output"))
         removeRenderOutput(propertyChange->value().value<QNodeId>());
     markDirty(AbstractRenderer::AllDirty);
+
+    BackendNode::sceneChangeEvent(e);
 }
 
 } // namespace Render
