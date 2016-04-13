@@ -73,7 +73,6 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     QMatrix4x4 transformMatrix() const;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    inline bool isEnabled() const { return m_enabled; }
 
     void updateMatrix();
 
@@ -84,7 +83,6 @@ private:
     QQuaternion m_rotation;
     QVector3D m_scale;
     QVector3D m_translation;
-    bool m_enabled;
 };
 
 } // namespace Render

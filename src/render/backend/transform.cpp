@@ -67,7 +67,6 @@ void Transform::updateFromPeer(Qt3DCore::QNode *peer)
     m_scale = transform->scale3D();
     m_translation = transform->translation();
     updateMatrix();
-    m_enabled = transform->isEnabled();
 }
 
 void Transform::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -78,7 +77,6 @@ void Transform::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
     m_scale = data.scale;
     m_translation = data.translation;
     updateMatrix();
-    m_enabled = change->isNodeEnabled();
 }
 
 QMatrix4x4 Transform::transformMatrix() const
@@ -100,12 +98,11 @@ void Transform::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("translation")) {
             m_translation = propertyChange->value().value<QVector3D>();
             updateMatrix();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            m_enabled = propertyChange->value().toBool();
         }
     }
-
     markDirty(AbstractRenderer::TransformDirty);
+
+    BackendNode::sceneChangeEvent(e);
 }
 
 void Transform::updateMatrix()
