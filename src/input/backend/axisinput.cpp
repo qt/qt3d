@@ -66,7 +66,6 @@ AxisInput::AxisInput()
     : Qt3DCore::QBackendNode()
     , m_axis(0)
     , m_scale(0.0f)
-    , m_enabled(false)
 {
 }
 
@@ -78,7 +77,6 @@ void AxisInput::updateFromPeer(Qt3DCore::QNode *peer)
     QAxisInput *input = static_cast<QAxisInput *>(peer);
     m_axis = input->axis();
     m_scale = input->scale();
-    m_enabled = input->isEnabled();
     m_buttons = listToIntArray(input->buttons());
     if (input->sourceDevice())
         m_sourceDevice = input->sourceDevice()->id();
@@ -92,13 +90,12 @@ void AxisInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
     m_buttons = listToIntArray(data.buttons);
     m_axis = data.axis;
     m_scale = data.scale;
-    m_enabled = change->isNodeEnabled();
 }
 
 void AxisInput::cleanup()
 {
+    QBackendNode::setEnabled(false);
     m_axis = 0;
-    m_enabled = false;
     m_scale = 0.0f;
     m_buttons.clear();
     m_sourceDevice = Qt3DCore::QNodeId();
@@ -114,12 +111,11 @@ void AxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_scale = propertyChange->value().toFloat();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("axis")) {
             m_axis = propertyChange->value().toInt();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            m_enabled = propertyChange->value().toBool();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("buttons")) {
             m_buttons = listToIntArray(propertyChange->value().toList());
         }
     }
+    QBackendNode::sceneChangeEvent(e);
 }
 
 } // Input

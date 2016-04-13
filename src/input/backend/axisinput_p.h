@@ -71,7 +71,6 @@ public:
     inline float scale() const { return m_scale; }
     inline QVector<int> buttons() const { return m_buttons; }
     inline Qt3DCore::QNodeId sourceDevice() const { return m_sourceDevice; }
-    inline bool isEnabled() const { return m_enabled; }
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
@@ -81,7 +80,6 @@ private:
     QVector<int> m_buttons;
     Qt3DCore::QNodeId m_sourceDevice;
     float m_scale;
-    bool m_enabled;
 };
 
 } // namespace Input
