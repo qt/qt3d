@@ -58,24 +58,7 @@ FrustumCulling::~FrustumCulling()
 
 void FrustumCulling::updateFromPeer(Qt3DCore::QNode *peer)
 {
-    QFrustumCulling *frustumCulling = static_cast<QFrustumCulling *>(peer);
-    setEnabled(frustumCulling->isEnabled());
-}
-
-void FrustumCulling::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
-
-    switch (e->type()) {
-    case Qt3DCore::NodeUpdated: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            setEnabled(propertyChange->value().toBool());
-        break;
-    default:
-            break;
-        }
-    }
-    markDirty(AbstractRenderer::AllDirty);
+    Q_UNUSED(peer)
 }
 
 } // namespace Render
