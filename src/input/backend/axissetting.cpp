@@ -88,6 +88,7 @@ void AxisSetting::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &
 
 void AxisSetting::cleanup()
 {
+    QBackendNode::setEnabled(false);
     m_deadZoneRadius = 0.0f;
     m_axes.clear();
     m_smooth = false;
@@ -105,6 +106,7 @@ void AxisSetting::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_smooth = propertyChange->value().toBool();
         }
     }
+    QBackendNode::sceneChangeEvent(e);
 }
 
 } // namespace Input
