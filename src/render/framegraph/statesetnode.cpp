@@ -65,7 +65,6 @@ void StateSetNode::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QRenderStateSet *stateSet = static_cast<QRenderStateSet*>(peer);
 
-    setEnabled(stateSet->isEnabled());
     const auto renderStates = stateSet->renderStates();
     for (QRenderState *renderState : renderStates)
         appendRenderState(renderState->id());
@@ -76,7 +75,6 @@ void StateSetNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
     FrameGraphNode::initializeFromPeer(change);
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderStateSetData>>(change);
     const auto &data = typedChange->data;
-    setEnabled(change->isNodeEnabled());
     for (const auto &stateId : qAsConst(data.renderStateIds))
         appendRenderState(stateId);
 }
@@ -103,6 +101,7 @@ void StateSetNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
     markDirty(AbstractRenderer::AllDirty);
+    FrameGraphNode::sceneChangeEvent(e);
 }
 
 } // namespace Render
