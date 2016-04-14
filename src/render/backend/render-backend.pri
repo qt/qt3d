@@ -61,5 +61,6 @@ SOURCES += \
     $$PWD/rendersettings.cpp \
     $$PWD/stringtoint.cpp \
     $$PWD/backendnode.cpp \
-    $$PWD/rendertargetoutput.cpp
+    $$PWD/rendertargetoutput.cpp \
+    $$PWD/attachmentpack.cpp
 

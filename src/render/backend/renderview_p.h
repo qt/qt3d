@@ -236,9 +236,8 @@ public:
     QVector<RenderCommand *> commands() const { return m_commands; }
     void gatherLights(Entity *preprocessedTreeRoot);
 
-    void addRenderAttachment(Attachment attachment) { m_attachmentPack.addAttachment(attachment); }
-    void setDrawBuffers(const QVector<QRenderTargetOutput::AttachmentPoint> &drawBuffers) { m_attachmentPack.setDrawBuffers(drawBuffers); }
-    const AttachmentPack &attachmentPack() const;
+    void setAttachmentPack(const AttachmentPack &pack) { m_attachmentPack = pack; }
+    const AttachmentPack &attachmentPack() const { return m_attachmentPack; }
 
     void setRenderTargetHandle(HTarget renderTargetHandle) Q_DECL_NOEXCEPT { m_renderTarget = renderTargetHandle; }
     HTarget renderTargetHandle() const Q_DECL_NOEXCEPT { return m_renderTarget; }

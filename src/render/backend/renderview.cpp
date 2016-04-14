@@ -607,11 +607,6 @@ void RenderView::buildComputeRenderCommands(Entity *node)
     }
 }
 
-const AttachmentPack &RenderView::attachmentPack() const
-{
-    return m_attachmentPack;
-}
-
 void RenderView::setUniformValue(ShaderParameterPack &uniformPack, int nameId, const QVariant &value)
 {
     Texture *tex = Q_NULLPTR;

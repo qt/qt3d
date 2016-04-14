@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,69 +37,56 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_ATTACHMENTPACK_P_H
-#define QT3DRENDER_RENDER_ATTACHMENTPACK_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DRender/qrendertargetoutput.h>
-#include <QVector>
+#include "attachmentpack_p.h"
+#include <Qt3DRender/private/rendertarget_p.h>
+#include <Qt3DRender/private/rendertargetselectornode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 
-struct Attachment
+AttachmentPack::AttachmentPack()
 {
-    Attachment()
-        : m_mipLevel(0)
-        , m_layer(0)
-        , m_point(QRenderTargetOutput::Color0)
-        , m_face(QAbstractTexture::CubeMapNegativeX)
-    {}
+}
 
-    QString m_name;
-    int m_mipLevel;
-    int m_layer;
-    Qt3DCore::QNodeId m_textureUuid;
-    QRenderTargetOutput::AttachmentPoint m_point;
-    QAbstractTexture::CubeMapFace m_face;
-};
-
-class RenderTarget;
-class RenderTargetSelector;
-class AttachmentManager;
-
-class AttachmentPack
+AttachmentPack::AttachmentPack(const RenderTargetSelector *selector, const RenderTarget *target, AttachmentManager *attachmentManager)
 {
-public:
-    AttachmentPack();
-    AttachmentPack(const RenderTargetSelector *selector, const RenderTarget *target, AttachmentManager *attachmentManager);
+    // Cache draw buffers list
+    const QVector<QRenderTargetOutput::AttachmentPoint> selectedAttachmentPoints = selector->outputs();
 
-    QVector<Attachment> attachments() const { return m_attachments; }
-    QVector<int> getGlDrawBuffers() const { return m_drawBuffers; }
+    // Copy attachments
+    Q_FOREACH (Qt3DCore::QNodeId outputId, target->renderOutputs()) {
+        const RenderTargetOutput *output = attachmentManager->lookupResource(outputId);
+        if (output)
+            m_attachments.append(output->attachment());
+    }
 
-    // return index of given attachment within actual draw buffers list
-    int getDrawBufferIndex(QRenderTargetOutput::AttachmentPoint attachmentPoint) const;
+    // Create actual DrawBuffers list that is used for glDrawBuffers
 
-private:
-    QVector<Attachment> m_attachments;
-    QVector<int> m_drawBuffers;
-};
+    // If nothing is specified, use all the attachments as draw buffers
+    if (selectedAttachmentPoints.isEmpty()) {
+        for (const Attachment &attachment : qAsConst(m_attachments))
+            // only consider Color Attachments
+            if (attachment.m_point <= QRenderTargetOutput::Color15)
+                m_drawBuffers.push_back((int) attachment.m_point);
+    } else {
+        for (QRenderTargetOutput::AttachmentPoint drawBuffer : selectedAttachmentPoints)
+            if (drawBuffer <= QRenderTargetOutput::Color15)
+                m_drawBuffers.push_back((int) drawBuffer);
+    }
+}
+
+// return index of given attachment within actual draw buffers list
+int AttachmentPack::getDrawBufferIndex(QRenderTargetOutput::AttachmentPoint attachmentPoint) const
+{
+    for (int i = 0; i < m_drawBuffers.size(); i++)
+        if (m_drawBuffers.at(i) == (int)attachmentPoint)
+            return i;
+    return -1;
+}
 
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_ATTACHMENTPACK_P_H

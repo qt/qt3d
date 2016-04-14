@@ -130,24 +130,14 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 const RenderTargetSelector *targetSelector = static_cast<const RenderTargetSelector *>(node);
                 QNodeId renderTargetUid = targetSelector->renderTargetUuid();
                 HTarget renderTargetHandle = manager->renderTargetManager()->lookupHandle(renderTargetUid);
+
+                // Add renderTarget Handle and build renderCommand AttachmentPack
                 if (rv->renderTargetHandle().isNull()) {
                     rv->setRenderTargetHandle(renderTargetHandle);
 
                     RenderTarget *renderTarget = manager->renderTargetManager()->data(renderTargetHandle);
-                    if (renderTarget) {
-                        // Add renderTarget Handle and build renderCommand AttachmentPack
-
-                        // Copy draw buffers list
-                        rv->setDrawBuffers(targetSelector->outputs());
-
-                        // Copy attachments
-                        Q_FOREACH (QNodeId outputId, renderTarget->renderOutputs()) {
-                            RenderTargetOutput *output = manager->attachmentManager()->lookupResource(outputId);
-                            if (output)
-                                rv->addRenderAttachment(output->attachment());
-                        }
-
-                    }
+                    if (renderTarget)
+                        rv->setAttachmentPack(AttachmentPack(targetSelector, renderTarget, manager->attachmentManager()));
                 }
                 break;
             }
