@@ -226,6 +226,8 @@ QBackendNode *QAbstractAspectPrivate::createBackendNodeNoClone(const QNodeCreate
     // TO DO: Find a way to specify the changes to observe
     // Register backendNode with QChangeArbiter
     if (m_arbiter != Q_NULLPTR) { // Unit tests may not have the arbiter registered
+        qCDebug(Nodes) << q_func()->objectName() << "Creating backend node for node id"
+                       << change->subjectId() << "of type" << change->metaObject()->className();
         m_arbiter->registerObserver(backendPriv, backend->peerId(), AllChanges);
         if (backend->mode() == QBackendNode::ReadWrite)
             m_arbiter->scene()->addObservable(backendPriv, backend->peerId());
@@ -268,15 +270,14 @@ void QAbstractAspectPrivate::clearBackendNodeNoClone(const QNodeDestroyedChangeP
             metaObj = metaObj->superClass();
         }
 
-        if (!backendNodeMapper) {
-            qWarning() << "Failed to find backend node mapper for node id"
-                       << idAndType.id << "of type" << idAndType.type->className();
+        if (!backendNodeMapper)
             continue;
-        }
 
         // Request the mapper to destroy the corresponding backend node
         QBackendNode *backend = backendNodeMapper->get(idAndType.id);
         if (backend) {
+            qCDebug(Nodes) << q_func()->objectName() << "Deleting backend node for node id"
+                           << idAndType.id << "of type" << idAndType.type->className();
             QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
             m_arbiter->unregisterObserver(backendPriv, backend->peerId());
             if (backend->mode() == QBackendNode::ReadWrite)
