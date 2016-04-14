@@ -423,18 +423,18 @@ public:
     bool contains(const KeyType &id) const
     {
         typename LockingPolicy<QResourceManager>::ReadLocker lock(this);
-        return m_handleToResourceMapper.contains(id);
+        return m_keyToHandleMap.contains(id);
     }
 
     QHandle<ValueType, INDEXBITS> getOrAcquireHandle(const KeyType &id)
     {
         typename LockingPolicy<QResourceManager>::ReadLocker lock(this);
-        QHandle<ValueType, INDEXBITS> handle = m_handleToResourceMapper.value(id);
+        QHandle<ValueType, INDEXBITS> handle = m_keyToHandleMap.value(id);
         if (handle.isNull()) {
             lock.unlock();
             typename LockingPolicy<QResourceManager>::WriteLocker writeLock(this);
             // Test that the handle hasn't been set (in the meantime between the read unlock and the write lock)
-            QHandle<ValueType, INDEXBITS> &handleToSet = m_handleToResourceMapper[id];
+            QHandle<ValueType, INDEXBITS> &handleToSet = m_keyToHandleMap[id];
             if (handleToSet.isNull())
                 handleToSet = m_handleManager.acquire(AllocatingPolicy<ValueType, INDEXBITS>::allocateResource());
             return handleToSet;
@@ -445,7 +445,7 @@ public:
     QHandle<ValueType, INDEXBITS> lookupHandle(const KeyType &id)
     {
         typename LockingPolicy<QResourceManager>::ReadLocker lock(this);
-        return m_handleToResourceMapper.value(id);
+        return m_keyToHandleMap.value(id);
     }
 
     ValueType *lookupResource(const KeyType &id)
@@ -453,7 +453,7 @@ public:
         ValueType* ret = Q_NULLPTR;
         {
             typename LockingPolicy<QResourceManager>::ReadLocker lock(this);
-            QHandle<ValueType, INDEXBITS> handle = m_handleToResourceMapper.value(id);
+            QHandle<ValueType, INDEXBITS> handle = m_keyToHandleMap.value(id);
             if (!handle.isNull())
                 ret = m_handleManager.data(handle);
         }
@@ -470,7 +470,7 @@ public:
     void releaseResource(const KeyType &id)
     {
         typename LockingPolicy<QResourceManager>::WriteLocker lock(this);
-        QHandle<ValueType, INDEXBITS> handle = m_handleToResourceMapper.take(id);
+        QHandle<ValueType, INDEXBITS> handle = m_keyToHandleMap.take(id);
         if (!handle.isNull())
             releaseLocked(handle);
     }
@@ -481,7 +481,7 @@ public:
 
 protected:
     QHandleManager<ValueType, INDEXBITS> m_handleManager;
-    QHash<KeyType, QHandle<ValueType, INDEXBITS> > m_handleToResourceMapper;
+    QHash<KeyType, QHandle<ValueType, INDEXBITS> > m_keyToHandleMap;
     int m_maxResourcesEntries;
 
 private:
