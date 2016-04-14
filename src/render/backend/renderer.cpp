@@ -643,9 +643,6 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
     // We might not want to render on the default FBO
     bool boundFboIdValid = false;
     uint lastBoundFBOId = 0;
-    QColor previousClearColor = renderViews.first()->clearColor();
-    float previousClearDepthValue = renderViews.first()->clearDepthValue();
-    int previousClearStencilValue = renderViews.first()->clearStencilValue();
     QSurface *surface = Q_NULLPTR;
     QSurface *previousSurface = Q_NULLPTR;
     for (int i = 0; i < renderViewsCount; ++i) {
@@ -679,7 +676,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
         if (surface != previousSurface) {
             // If we can't make the context current on the surface, skip to the
             // next RenderView. We won't get the full frame but we may get something
-            if (!m_graphicsContext->beginDrawing(surface, previousClearColor)) {
+            if (!m_graphicsContext->beginDrawing(surface)) {
                 qWarning() << "Failed to make OpenGL context current on surface";
                 m_lastFrameCorrect.store(0);
                 continue;
@@ -707,23 +704,10 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
                                                 renderView->attachmentPack(),
                                                 lastBoundFBOId);
 
-        // Set clear color if different
-        if (previousClearColor != renderView->clearColor()) {
-            previousClearColor = renderView->clearColor();
-            m_graphicsContext->clearColor(previousClearColor);
-        }
-
-        // Set clear depth value if different
-        if (previousClearDepthValue != renderView->clearDepthValue()) {
-            previousClearDepthValue = renderView->clearDepthValue();
-            m_graphicsContext->clearDepthValue(previousClearDepthValue);
-        }
-
-        // Set clear stencil value if different
-        if (previousClearStencilValue != renderView->clearStencilValue()) {
-            previousClearStencilValue = renderView->clearStencilValue();
-            m_graphicsContext->clearStencilValue(previousClearStencilValue);
-        }
+        // set color, depth, stencil clear values
+        m_graphicsContext->clearColor(renderView->clearColor());
+        m_graphicsContext->clearDepthValue(renderView->clearDepthValue());
+        m_graphicsContext->clearStencilValue(renderView->clearStencilValue());
 
         // Clear BackBuffer
         m_graphicsContext->clearBackBuffer(renderView->clearBuffer());

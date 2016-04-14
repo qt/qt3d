@@ -131,6 +131,9 @@ GraphicsContext::GraphicsContext()
     , m_glHelper(Q_NULLPTR)
     , m_ownCurrent(true)
     , m_activeShader(Q_NULLPTR)
+    , m_currClearStencilValue(0)
+    , m_currClearDepthValue(1.f)
+    , m_currClearColorValue(0,0,0,0)
     , m_material(Q_NULLPTR)
     , m_activeFBO(0)
     , m_defaultFBO(0)
@@ -179,7 +182,7 @@ void GraphicsContext::initialize()
     qCDebug(Backend) << "VAO support = " << m_supportsVAO;
 }
 
-bool GraphicsContext::beginDrawing(QSurface *surface, const QColor &color)
+bool GraphicsContext::beginDrawing(QSurface *surface)
 {
     Q_ASSERT(surface);
     Q_ASSERT(m_gl);
@@ -214,8 +217,6 @@ bool GraphicsContext::beginDrawing(QSurface *surface, const QColor &color)
     if (!m_initialized) {
         initialize();
     }
-
-    clearColor(color);
 
     if (m_activeShader)
         m_activeShader = NULL;
@@ -844,17 +845,26 @@ GLuint GraphicsContext::boundFrameBufferObject()
 
 void GraphicsContext::clearColor(const QColor &color)
 {
-    m_gl->functions()->glClearColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
+    if (m_currClearColorValue != color) {
+        m_currClearColorValue = color;
+        m_gl->functions()->glClearColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
+    }
 }
 
 void GraphicsContext::clearDepthValue(float depth)
 {
-    m_gl->functions()->glClearDepthf(depth);
+    if (m_currClearDepthValue != depth) {
+        m_currClearDepthValue = depth;
+        m_gl->functions()->glClearDepthf(depth);
+    }
 }
 
 void GraphicsContext::clearStencilValue(int stencil)
 {
-    m_gl->functions()->glClearStencil(stencil);
+    if (m_currClearStencilValue != stencil) {
+        m_currClearStencilValue = stencil;
+        m_gl->functions()->glClearStencil(stencil);
+    }
 }
 
 void GraphicsContext::enableClipPlane(int clipPlane)

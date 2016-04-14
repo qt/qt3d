@@ -106,7 +106,7 @@ public:
 
     int id() const; // unique, small integer ID of this context
 
-    bool beginDrawing(QSurface *surface, const QColor &color);
+    bool beginDrawing(QSurface *surface);
     void clearBackBuffer(QClearBuffers::BufferType buffers);
     void endDrawing(bool swapBuffers);
 
@@ -254,6 +254,11 @@ private:
     QVector<uint> m_activeTextures;
     QBitArray m_pinnedTextureUnits;
     QVector<TextureScope> m_textureScopes;
+
+    // cache some current state, to make sure we don't issue unnecessary GL calls
+    int m_currClearStencilValue;
+    float m_currClearDepthValue;
+    QColor m_currClearColorValue;
 
     // recency score for all render-textures we've seen. Higher scores
     // mean more recently used.
