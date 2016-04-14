@@ -386,7 +386,7 @@ class QResourceManager
 public:
     QResourceManager() :
         AllocatingPolicy<ValueType, INDEXBITS>(),
-        m_maxResourcesEntries((1 << INDEXBITS) - 1)
+        m_maxSize((1 << INDEXBITS) - 1)
     {
     }
 
@@ -475,14 +475,14 @@ public:
             releaseLocked(handle);
     }
 
-    int maxResourcesEntries() const { return m_maxResourcesEntries; }
+    int maximumSize() const { return m_maxSize; }
 
     int count() const Q_DECL_NOEXCEPT { return m_handleManager.activeEntries(); }
 
 protected:
     QHandleManager<ValueType, INDEXBITS> m_handleManager;
     QHash<KeyType, QHandle<ValueType, INDEXBITS> > m_keyToHandleMap;
-    int m_maxResourcesEntries;
+    const int m_maxSize;
 
 private:
     void releaseLocked(const QHandle<ValueType, INDEXBITS> &handle)

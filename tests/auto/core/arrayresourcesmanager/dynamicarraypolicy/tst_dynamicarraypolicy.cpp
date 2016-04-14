@@ -77,9 +77,9 @@ void tst_DynamicArrayPolicy::createResourcesManager()
     Qt3DCore::QResourceManager<tst_ArrayResource, int, 16> manager16;
     Qt3DCore::QResourceManager<tst_ArrayResource, int, 4> manager4;
     Qt3DCore::QResourceManager<tst_ArrayResource, int, 8> manager8;
-    QVERIFY(manager16.maxResourcesEntries() == 65535);
-    QVERIFY(manager8.maxResourcesEntries() == 255);
-    QVERIFY(manager4.maxResourcesEntries() == 15);
+    QVERIFY(manager16.maximumSize() == 65535);
+    QVERIFY(manager8.maximumSize() == 255);
+    QVERIFY(manager4.maximumSize() == 15);
 }
 
 /*!
@@ -417,9 +417,9 @@ void tst_DynamicArrayPolicy::maximumNumberOfResources()
     QList<tst_ArrayResource *> resources;
     QList<tHandle16> handles;
 
-    QCOMPARE(tHandle16::maxIndex(), (uint)manager.maxResourcesEntries());
+    QCOMPARE(tHandle16::maxIndex(), (uint)manager.maximumSize());
 
-    for (int i = 0; i < manager.maxResourcesEntries(); i++) {
+    for (int i = 0; i < manager.maximumSize(); i++) {
         handles << manager.acquire();
         resources << manager.data(handles.at(i));
         resources.at(i)->m_value = 4;
