@@ -578,6 +578,9 @@ bool QNode::blockNotifications(bool block)
  */
 void QNode::setParent(QNode *parent)
 {
+    if (parentNode() == parent)
+        return;
+
     if (parentNode())
         QNodePrivate::get(parentNode())->_q_removeChild(this);
     QObject::setParent(parent);
