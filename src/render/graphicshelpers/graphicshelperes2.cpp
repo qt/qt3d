@@ -576,6 +576,13 @@ void GraphicsHelperES2::disablePrimitiveRestart()
 {
 }
 
+void GraphicsHelperES2::clearBufferf(GLint drawbuffer, const QVector4D &values)
+{
+    Q_UNUSED(drawbuffer);
+    Q_UNUSED(values);
+    qWarning() << "glClearBuffer*() not supported by OpenGL ES 2.0";
+}
+
 void GraphicsHelperES2::pointSize(bool programmable, GLfloat value)
 {
     // If this is not a reset to default values, print a warning

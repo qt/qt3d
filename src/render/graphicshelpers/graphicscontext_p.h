@@ -186,6 +186,7 @@ public:
     void    blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRGB, GLenum sAlpha, GLenum dAlpha);
     GLuint  boundFrameBufferObject();
     void    buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer);
+    void    clearBufferf(GLint drawbuffer, const QVector4D &values);
     void    clearColor(const QColor &color);
     void    clearDepthValue(float depth);
     void    clearStencilValue(int stencil);

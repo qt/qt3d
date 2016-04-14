@@ -937,6 +937,12 @@ void GraphicsHelperGL4::disablePrimitiveRestart()
     m_funcs->glDisable(GL_PRIMITIVE_RESTART);
 }
 
+void GraphicsHelperGL4::clearBufferf(GLint drawbuffer, const QVector4D &values)
+{
+    GLfloat vec[4] = {values[0], values[1], values[2], values[3]};
+    m_funcs->glClearBufferfv(GL_COLOR, drawbuffer, vec);
+}
+
 void GraphicsHelperGL4::pointSize(bool programmable, GLfloat value)
 {
     if (programmable) {

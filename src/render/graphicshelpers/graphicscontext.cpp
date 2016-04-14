@@ -832,6 +832,11 @@ void GraphicsContext::setAlphaCoverageEnabled(bool enabled)
     m_glHelper->setAlphaCoverageEnabled(enabled);
 }
 
+void GraphicsContext::clearBufferf(GLint drawbuffer, const QVector4D &values)
+{
+    m_glHelper->clearBufferf(drawbuffer, values);
+}
+
 GLuint GraphicsContext::boundFrameBufferObject()
 {
     return m_glHelper->boundFrameBufferObject();

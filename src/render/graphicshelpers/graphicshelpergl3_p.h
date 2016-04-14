@@ -84,6 +84,7 @@ public:
     GLuint boundFrameBufferObject() Q_DECL_OVERRIDE;
     void buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) Q_DECL_OVERRIDE;
     bool checkFrameBufferComplete() Q_DECL_OVERRIDE;
+    void clearBufferf(GLint drawbuffer, const QVector4D &values) Q_DECL_OVERRIDE;
     GLuint createFrameBufferObject() Q_DECL_OVERRIDE;
     void depthMask(GLenum mode) Q_DECL_OVERRIDE;
     void depthTest(GLenum mode) Q_DECL_OVERRIDE;

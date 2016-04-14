@@ -579,6 +579,13 @@ void GraphicsHelperGL2::disablePrimitiveRestart()
 {
 }
 
+void GraphicsHelperGL2::clearBufferf(GLint drawbuffer, const QVector4D &values)
+{
+    Q_UNUSED(drawbuffer);
+    Q_UNUSED(values);
+    qWarning() << "glClearBuffer*() not supported by OpenGL 2.0";
+}
+
 void GraphicsHelperGL2::pointSize(bool programmable, GLfloat value)
 {
     // Print a warning once for trying to set GL_PROGRAM_POINT_SIZE

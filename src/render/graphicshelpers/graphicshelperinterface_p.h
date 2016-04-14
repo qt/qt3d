@@ -94,6 +94,7 @@ public:
     virtual GLuint  boundFrameBufferObject() = 0;
     virtual void    buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) = 0;
     virtual bool    checkFrameBufferComplete() = 0;
+    virtual void    clearBufferf(GLint drawbuffer, const QVector4D &values) = 0;
     virtual GLuint  createFrameBufferObject() = 0;
     virtual void    depthMask(GLenum mode) = 0;
     virtual void    depthTest(GLenum mode) = 0;
