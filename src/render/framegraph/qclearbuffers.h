@@ -42,6 +42,7 @@
 
 #include <Qt3DRender/qframegraphnode.h>
 #include <QColor>
+#include <QFlags>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,12 +66,13 @@ public:
         ColorBuffer = (1 << 0),
         DepthBuffer = (1 << 1),
         StencilBuffer = (1 << 2),
-        DepthStencilBuffer = (1 << 1) | (1 << 2),
+        DepthStencilBuffer = DepthBuffer | StencilBuffer,
         ColorDepthBuffer = ColorBuffer | DepthBuffer,
         ColorDepthStencilBuffer = ColorBuffer | DepthStencilBuffer,
         AllBuffers = 0xFFFFFFFF
     };
     Q_ENUM(BufferType)
+    Q_DECLARE_FLAGS(BufferTypeFlags, BufferType)
 
     BufferType buffers() const;
     QColor clearColor() const;

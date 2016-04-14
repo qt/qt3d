@@ -226,7 +226,7 @@ bool GraphicsContext::beginDrawing(QSurface *surface)
     return true;
 }
 
-void GraphicsContext::clearBackBuffer(QClearBuffers::BufferType buffers)
+void GraphicsContext::clearBackBuffer(QClearBuffers::BufferTypeFlags buffers)
 {
     if (buffers != QClearBuffers::None) {
         GLbitfield mask = 0;

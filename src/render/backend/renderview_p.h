@@ -219,8 +219,8 @@ public:
         return *m_clearColor;
     }
 
-    inline void setClearBuffer(QClearBuffers::BufferType clearBuffer) Q_DECL_NOEXCEPT { m_clearBuffer = clearBuffer; }
-    inline QClearBuffers::BufferType clearBuffer() const Q_DECL_NOEXCEPT { return m_clearBuffer; }
+    inline void setClearBuffer(QClearBuffers::BufferTypeFlags clearBuffer) Q_DECL_NOEXCEPT { m_clearBuffer = clearBuffer; }
+    inline QClearBuffers::BufferTypeFlags clearBuffer() const Q_DECL_NOEXCEPT { return m_clearBuffer; }
 
     inline void setClearDepthValue(float clearDepthValue) Q_DECL_NOEXCEPT { m_clearDepthValue = clearDepthValue; }
     inline float clearDepthValue() const Q_DECL_NOEXCEPT { return m_clearDepthValue; }
@@ -295,7 +295,7 @@ private:
     HTarget m_renderTarget;
     QSurface *m_surface;
     AttachmentPack m_attachmentPack;
-    QClearBuffers::BufferType m_clearBuffer;
+    QClearBuffers::BufferTypeFlags m_clearBuffer;
     float m_clearDepthValue;
     int m_clearStencilValue;
     RenderStateSet *m_stateSet;
