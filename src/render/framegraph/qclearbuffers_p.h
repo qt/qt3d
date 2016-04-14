@@ -68,6 +68,7 @@ public:
     QColor m_clearColor;
     float m_clearDepthValue;
     int m_clearStencilValue;
+    QRenderTargetOutput *m_buffer;
 };
 
 struct QClearBuffersData
@@ -76,6 +77,7 @@ struct QClearBuffersData
     QColor clearColor;
     float clearDepthValue;
     int clearStencilValue;
+    Qt3DCore::QNodeId bufferId;
 };
 
 } // namespace Qt3DRender

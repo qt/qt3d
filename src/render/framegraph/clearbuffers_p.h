@@ -68,18 +68,33 @@ public:
     ClearBuffers();
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
     QClearBuffers::BufferType type() const;
-    QColor clearColor() const;
     float clearDepthValue() const;
     int clearStencilValue() const;
+    Qt3DCore::QNodeId bufferId() const;
+
+    // in the backend we store this as a QVector4D, as the clearBuffer
+    // functions do support all float values (also those not clamped to [0,1])
+    // (for non-clamped float or int buffer types)
+    // we don't support this in the frontend yet, but let's keep our options for now
+    // and avoid QColor->QVector4D conversion every frame.
+    QVector4D clearColor() const;
+
+    // some clear operations only accept clamped values
+    QColor clearColorAsColor() const;
+
+    bool clearsAllColorBuffers() const;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
     QClearBuffers::BufferType m_type;
-    QColor m_clearColor;
+    QVector4D m_clearColor;
+    QColor m_clearColorAsColor;
     float m_clearDepthValue;
     int m_clearStencilValue;
+    Qt3DCore::QNodeId m_colorBufferId;
 };
 
 } // namespace Render

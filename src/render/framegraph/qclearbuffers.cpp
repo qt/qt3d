@@ -50,6 +50,7 @@ QClearBuffersPrivate::QClearBuffersPrivate()
     , m_buffersType(QClearBuffers::None)
     , m_clearDepthValue(1.f)
     , m_clearStencilValue(0)
+    , m_buffer(Q_NULLPTR)
 {
 }
 
@@ -87,6 +88,12 @@ int QClearBuffers::clearStencilValue() const
 {
     Q_D(const QClearBuffers);
     return d->m_clearStencilValue;
+}
+
+QRenderTargetOutput *QClearBuffers::colorBuffer() const
+{
+    Q_D(const QClearBuffers);
+    return d->m_buffer;
 }
 
 void QClearBuffers::setBuffers(QClearBuffers::BufferType buffers)
@@ -127,6 +134,20 @@ void QClearBuffers::setClearStencilValue(int clearStencilValue)
     }
 }
 
+/*!
+    \property Qt3DRender::QClearBuffers::colorBuffer
+    Specifies a specific color buffer to clear. If set to NULL (default), and
+    ColorBuffer flag is set, all color buffers will be cleared.
+ */
+void QClearBuffers::setColorBuffer(QRenderTargetOutput *buffer)
+{
+    Q_D(QClearBuffers);
+    if (d->m_buffer != buffer) {
+        d->m_buffer = buffer;
+        emit colorBufferChanged(buffer);
+    }
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QClearBuffers::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QClearBuffersData>::create(this);
@@ -136,6 +157,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QClearBuffers::createNodeCreationChange() co
     data.clearColor = d->m_clearColor;
     data.clearDepthValue = d->m_clearDepthValue;
     data.clearStencilValue = d->m_clearStencilValue;
+    data.bufferId = Qt3DCore::qIdForNode(d->m_buffer);
     return creationChange;
 }
 

@@ -272,10 +272,10 @@ RenderView::RenderView()
     , m_devicePixelRatio(1.)
     , m_allocator(nullptr)
     , m_data(nullptr)
-    , m_clearColor(nullptr)
     , m_viewport(nullptr)
     , m_surface(nullptr)
     , m_clearBuffer(QClearBuffers::None)
+    , m_globalClearColorBuffer(nullptr)
     , m_stateSet(nullptr)
     , m_noDraw(false)
     , m_compute(false)
@@ -320,8 +320,6 @@ RenderView::~RenderView()
     m_allocator->deallocate<QMatrix4x4>(m_data->m_viewProjectionMatrix);
     // Deallocate viewport rect
     m_allocator->deallocate<QRectF>(m_viewport);
-    // Deallocate clearColor
-    m_allocator->deallocate<QColor>(m_clearColor);
     // Deallocate m_data
     m_allocator->deallocate<InnerData>(m_data);
     // Deallocate m_stateSet
@@ -467,6 +465,29 @@ public:
 private:
     QVector3D p;
 };
+
+void RenderView::addClearBuffers(const ClearBuffers *cb) {
+    QClearBuffers::BufferTypeFlags type = cb->type();
+
+    if (type & QClearBuffers::StencilBuffer) {
+        m_clearStencilValue = cb->clearStencilValue();
+        m_clearBuffer |= QClearBuffers::StencilBuffer;
+    }
+    if (type & QClearBuffers::DepthBuffer) {
+        m_clearDepthValue = cb->clearDepthValue();
+        m_clearBuffer |= QClearBuffers::DepthBuffer;
+    }
+    // keep track of global ClearColor (if set) and collect all DrawBuffer-specific
+    // ClearColors
+    if (type & QClearBuffers::ColorBuffer) {
+        if (cb->clearsAllColorBuffers()) {
+            m_globalClearColorBuffer = cb;
+            m_clearBuffer |= QClearBuffers::ColorBuffer;
+        } else {
+            m_specificClearColorBuffers.push_back(cb);
+        }
+    }
+}
 
 // TODO: Convert into a job that caches lookup of entities for layers
 static void findEntitiesInLayers(Entity *e, const QVector<int> &filterLayerIds, QVector<Entity *> &entities)

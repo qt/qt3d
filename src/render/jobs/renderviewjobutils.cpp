@@ -144,11 +144,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
             case FrameGraphNode::ClearBuffers: {
                 const ClearBuffers* cbNode = static_cast<const ClearBuffers *>(node);
-                rv->setClearBuffer(cbNode->type());
-                rv->setClearDepthValue(cbNode->clearDepthValue());
-                rv->setClearStencilValue(cbNode->clearStencilValue());
-                if (cbNode->clearColor().isValid())
-                    rv->setClearColor(cbNode->clearColor());
+                rv->addClearBuffers(cbNode);
                 break;
             }
 

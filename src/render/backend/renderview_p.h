@@ -55,6 +55,7 @@
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qclearbuffers.h>
 #include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/clearbuffers_p.h>
 #include <Qt3DRender/private/cameralens_p.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
@@ -201,33 +202,15 @@ public:
         return *m_viewport;
     }
 
-    inline void setClearColor(const QColor &c)
-    {
-        if (!m_clearColor) {
-            Q_ASSERT(m_allocator);
-            m_clearColor = m_allocator->allocate<QColor>();
-            *m_clearColor = QColor(QColor::Invalid);
-        }
-        *m_clearColor = c;
-    }
-    inline QColor clearColor() const
-    {
-        if (!m_clearColor) {
-            Q_ASSERT(m_allocator);
-            m_clearColor = m_allocator->allocate<QColor>();
-            *m_clearColor = QColor(QColor::Invalid);
-        }
-        return *m_clearColor;
-    }
-
-    inline void setClearBuffer(QClearBuffers::BufferTypeFlags clearBuffer) Q_DECL_NOEXCEPT { m_clearBuffer = clearBuffer; }
-    inline QClearBuffers::BufferTypeFlags clearBuffer() const Q_DECL_NOEXCEPT { return m_clearBuffer; }
-
-    inline void setClearDepthValue(float clearDepthValue) Q_DECL_NOEXCEPT { m_clearDepthValue = clearDepthValue; }
-    inline float clearDepthValue() const Q_DECL_NOEXCEPT { return m_clearDepthValue; }
-
-    inline void setClearStencilValue(int clearStencilValue) Q_DECL_NOEXCEPT { m_clearStencilValue = clearStencilValue; }
-    inline int clearStencilValue() const Q_DECL_NOEXCEPT { return m_clearStencilValue; }
+    // depth and stencil ClearBuffers are cached locally
+    // color ClearBuffers are collected, as there may be multiple
+    // color buffers to be cleared. we need to apply all these at rendering
+    void addClearBuffers(const ClearBuffers *cb);
+    inline QVector<const ClearBuffers*> specificClearColorBuffers() const { return m_specificClearColorBuffers; }
+    inline const ClearBuffers* globalClearColorBuffers() const { return m_globalClearColorBuffer; }
+    inline QClearBuffers::BufferTypeFlags clearTypes() const { return m_clearBuffer; }
+    inline float clearDepthValue() const { return m_clearDepthValue; }
+    inline int clearStencilValue() const { return m_clearStencilValue; }
 
     RenderRenderPassList passesAndParameters(ParameterInfoList *parameter, Entity *node, bool useDefaultMaterials = true);
 
@@ -291,7 +274,6 @@ private:
 
     InnerData *m_data;
 
-    mutable QColor *m_clearColor;
     mutable QRectF *m_viewport;
     HTarget m_renderTarget;
     QSurface *m_surface;
@@ -299,6 +281,8 @@ private:
     QClearBuffers::BufferTypeFlags m_clearBuffer;
     float m_clearDepthValue;
     int m_clearStencilValue;
+    const ClearBuffers* m_globalClearColorBuffer;               // global ClearColor
+    QVector<const ClearBuffers*> m_specificClearColorBuffers;   // different draw buffers with distinct colors
     RenderStateSet *m_stateSet;
     bool m_noDraw:1;
     bool m_compute:1;

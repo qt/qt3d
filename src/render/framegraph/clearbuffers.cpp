@@ -48,6 +48,11 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 namespace Render {
 
+static QVector4D vec4dFromColor(const QColor &color)
+{
+    return QVector4D(color.redF(), color.greenF(), color.blueF(), color.alphaF());
+}
+
 ClearBuffers::ClearBuffers()
     : FrameGraphNode(FrameGraphNode::ClearBuffers)
     , m_type(QClearBuffers::None)
@@ -62,23 +67,29 @@ void ClearBuffers::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QClearBuffersData>>(change);
     const auto &data = typedChange->data;
     m_type = data.buffersType;
-    m_clearColor = data.clearColor;
+    m_clearColorAsColor = data.clearColor;
+    m_clearColor = vec4dFromColor(m_clearColorAsColor);
     m_clearDepthValue = data.clearDepthValue;
     m_clearStencilValue = data.clearStencilValue;
+    m_colorBufferId = data.bufferId;
 }
 
 void ClearBuffers::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
         QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("buffers"))
+        if (propertyChange->propertyName() == QByteArrayLiteral("buffers")) {
             m_type = static_cast<QClearBuffers::BufferType>(propertyChange->value().toInt());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("clearColor"))
-            m_clearColor = propertyChange->value().value<QColor>();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("clearDepthValue"))
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("clearColor")) {
+            m_clearColorAsColor = propertyChange->value().value<QColor>();
+            m_clearColor = vec4dFromColor(m_clearColorAsColor);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("clearDepthValue")) {
             m_clearDepthValue = propertyChange->value().toFloat();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("clearStencilValue"))
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("clearStencilValue")) {
             m_clearStencilValue = propertyChange->value().toInt();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("colorBuffer")) {
+            m_colorBufferId = propertyChange->value().value<QNodeId>();
+        }
         markDirty(AbstractRenderer::AllDirty);
     }
     FrameGraphNode::sceneChangeEvent(e);
@@ -89,7 +100,12 @@ QClearBuffers::BufferType ClearBuffers::type() const
     return m_type;
 }
 
-QColor ClearBuffers::clearColor() const
+QColor ClearBuffers::clearColorAsColor() const
+{
+    return m_clearColorAsColor;
+}
+
+QVector4D ClearBuffers::clearColor() const
 {
     return m_clearColor;
 }
@@ -102,6 +118,16 @@ float ClearBuffers::clearDepthValue() const
 int ClearBuffers::clearStencilValue() const
 {
     return m_clearStencilValue;
+}
+
+Qt3DCore::QNodeId ClearBuffers::bufferId() const
+{
+    return m_colorBufferId;
+}
+
+bool ClearBuffers::clearsAllColorBuffers() const
+{
+    return m_colorBufferId.isNull();
 }
 
 } // namespace Render
