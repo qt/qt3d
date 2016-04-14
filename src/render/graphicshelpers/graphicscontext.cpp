@@ -821,6 +821,11 @@ void GraphicsContext::buildUniformBuffer(const QVariant &v, const ShaderUniform 
     m_glHelper->buildUniformBuffer(v, description, buffer);
 }
 
+void GraphicsContext::setMSAAEnabled(bool enabled)
+{
+    m_glHelper->setMSAAEnabled(enabled);
+}
+
 void GraphicsContext::setAlphaCoverageEnabled(bool enabled)
 {
     m_glHelper->setAlphaCoverageEnabled(enabled);

@@ -78,6 +78,7 @@
 #include <Qt3DRender/private/qstenciltestarguments_p.h>
 #include <Qt3DRender/qclipplane.h>
 #include <Qt3DRender/private/qclipplane_p.h>
+#include <Qt3DRender/qmultisampleantialiasing.h>
 #include <Qt3DRender/qseamlesscubemap.h>
 #include <Qt3DRender/qstenciloperation.h>
 #include <Qt3DRender/private/qstenciloperation_p.h>
@@ -292,6 +293,10 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
                                                                   blendState->isEnabled(),
                                                                   blendState->bufferIndex());
     }
+    case QRenderStatePrivate::MSAAEnabled: {
+        QMultiSampleAntiAliasing *setMSAAEnabled = static_cast<QMultiSampleAntiAliasing *>(renderState);
+        return getOrCreateRenderStateImpl<MSAAEnabled>(setMSAAEnabled->isEnabled());
+    }
     case QRenderStatePrivate::CullFace: {
         QCullFace *cullFace = static_cast<QCullFace *>(renderState);
         return getOrCreateRenderStateImpl<CullFace>(cullFace->mode());
@@ -398,6 +403,10 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(const Qt3DRender::QRenderStat
             data.sourceAlpha, data.destinationAlpha,
             change->isNodeEnabled(),
             data.bufferIndex);
+    }
+
+    case QRenderStatePrivate::MSAAEnabled: {
+        return getOrCreateRenderStateImpl<MSAAEnabled>(change->isNodeEnabled());
     }
 
     case QRenderStatePrivate::CullFace: {

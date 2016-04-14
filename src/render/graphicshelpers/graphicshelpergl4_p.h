@@ -110,6 +110,7 @@ public:
     QVector<ShaderUniform> programUniformsAndLocations(GLuint programId) Q_DECL_OVERRIDE;
     QVector<ShaderStorageBlock> programShaderStorageBlocks(GLuint programId) Q_DECL_OVERRIDE;
     void releaseFrameBufferObject(GLuint frameBufferId) Q_DECL_OVERRIDE;
+    void setMSAAEnabled(bool enable) Q_DECL_OVERRIDE;
     void setAlphaCoverageEnabled(bool enable) Q_DECL_OVERRIDE;
     void setClipPlane(int clipPlane, const QVector3D &normal, float distance) Q_DECL_OVERRIDE;
     void setSeamlessCubemap(bool enable) Q_DECL_OVERRIDE;

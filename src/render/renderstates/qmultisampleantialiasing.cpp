@@ -1,7 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Copyright (C) 2016 The Qt Company Ltd and/or its subsidiary(-ies).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -38,65 +37,37 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERSTATE_P_H
-#define QT3DRENDER_QRENDERSTATE_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DRender/qrenderstate.h>
-#include <Qt3DRender/private/qt3drender_global_p.h>
+#include "qmultisampleantialiasing.h"
+#include "qrenderstate_p.h"
+#include <private/qnode_p.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QRenderStatePrivate : public Qt3DCore::QNodePrivate
+class QMultiSampleAntiAliasingPrivate : public QRenderStatePrivate
 {
 public:
-    enum Type {
-        AlphaCoverage,
-        AlphaTest,
-        BlendEquation,
-        BlendEquationArguments,
-        ColorMask,
-        CullFace,
-        MSAAEnabled,
-        NoDepthMask,
-        DepthTest,
-        Dithering,
-        FrontFace,
-        PointSize,
-        PolygonOffset,
-        ScissorTest,
-        StencilTest,
-        StencilMask,
-        StencilOp,
-        ClipPlane,
-        SeamlessCubemap
-    };
+    QMultiSampleAntiAliasingPrivate()
+        : QRenderStatePrivate(QRenderStatePrivate::MSAAEnabled)
+    {
+    }
 
-    QRenderStatePrivate(Type type);
-    Q_DECLARE_PUBLIC(QRenderState)
-
-
-    const Type m_type;
-
-    static QRenderStatePrivate *get(QRenderState *state);
-    static const QRenderStatePrivate *get(const QRenderState *state);
+    Q_DECLARE_PUBLIC(QMultiSampleAntiAliasing)
 };
 
+QMultiSampleAntiAliasing::QMultiSampleAntiAliasing(QNode *parent)
+    : QRenderState(*new QMultiSampleAntiAliasingPrivate, parent)
+{
 }
+
+QMultiSampleAntiAliasing::~QMultiSampleAntiAliasing()
+{
+    QNode::cleanup();
+}
+
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QRENDERSTATE_P_H

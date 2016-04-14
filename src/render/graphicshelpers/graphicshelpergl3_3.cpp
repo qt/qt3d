@@ -299,6 +299,12 @@ void GraphicsHelperGL3_3::frontFace(GLenum mode)
 
 }
 
+void GraphicsHelperGL3_3::setMSAAEnabled(bool enabled)
+{
+    enabled ? m_funcs->glEnable(GL_MULTISAMPLE)
+            : m_funcs->glDisable(GL_MULTISAMPLE);
+}
+
 void GraphicsHelperGL3_3::setAlphaCoverageEnabled(bool enabled)
 {
     enabled ? m_funcs->glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE)

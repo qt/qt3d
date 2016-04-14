@@ -44,7 +44,8 @@ HEADERS += \
     $$PWD/qstenciloperationarguments_p.h \
     $$PWD/qstenciltest_p.h \
     $$PWD/qstenciltestarguments_p.h \
-    $$PWD/renderstatenode_p.h
+    $$PWD/renderstatenode_p.h \
+    $$PWD/qmultisampleantialiasing.h
 
 
 SOURCES += \
@@ -73,4 +74,5 @@ SOURCES += \
     $$PWD/qseamlesscubemap.cpp \
     $$PWD/qnodepthmask.cpp \
     $$PWD/qrenderstatecreatedchange.cpp \
-    $$PWD/renderstatenode.cpp
+    $$PWD/renderstatenode.cpp \
+    $$PWD/qmultisampleantialiasing.cpp

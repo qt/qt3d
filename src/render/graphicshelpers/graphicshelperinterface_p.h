@@ -123,6 +123,7 @@ public:
     virtual void    releaseFrameBufferObject(GLuint frameBufferId) = 0;
     virtual void    setAlphaCoverageEnabled(bool enable) = 0;
     virtual void    setClipPlane(int clipPlane, const QVector3D &normal, float distance) = 0;
+    virtual void    setMSAAEnabled(bool enable) = 0;
     virtual void    setSeamlessCubemap(bool enable) = 0;
     virtual void    setVerticesPerPatch(GLint verticesPerPatch) = 0;
     virtual bool    supportsFeature(Feature feature) const = 0;

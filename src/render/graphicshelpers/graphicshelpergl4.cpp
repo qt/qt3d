@@ -292,6 +292,12 @@ void GraphicsHelperGL4::frontFace(GLenum mode)
 
 }
 
+void GraphicsHelperGL4::setMSAAEnabled(bool enabled)
+{
+    enabled ? m_funcs->glEnable(GL_MULTISAMPLE)
+            : m_funcs->glDisable(GL_MULTISAMPLE);
+}
+
 void GraphicsHelperGL4::setAlphaCoverageEnabled(bool enabled)
 {
     enabled ? m_funcs->glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE)

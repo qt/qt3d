@@ -271,6 +271,11 @@ void GraphicsHelperES2::frontFace(GLenum mode)
     m_funcs->glFrontFace(mode);
 }
 
+void GraphicsHelperES2::setMSAAEnabled(bool enabled)
+{
+    qWarning() << "MSAA not available with OpenGL ES 2.0";
+}
+
 void GraphicsHelperES2::setAlphaCoverageEnabled(bool enabled)
 {
     enabled ? m_funcs->glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE)
@@ -341,7 +346,7 @@ bool GraphicsHelperES2::supportsFeature(GraphicsHelperInterface::Feature feature
 }
 void GraphicsHelperES2::drawBuffers(GLsizei , const int *)
 {
-    qCritical() << "drawBuffers is not supported by ES 2.0";
+    qWarning() << "drawBuffers is not supported by ES 2.0";
 }
 
 void GraphicsHelperES2::bindUniform(const QVariant &v, const ShaderUniform &description)

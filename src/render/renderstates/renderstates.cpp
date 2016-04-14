@@ -115,6 +115,17 @@ void AlphaFunc::apply(GraphicsContext* gc) const
     gc->alphaTest(m_1, m_2);
 }
 
+void MSAAEnabled::apply(GraphicsContext *gc) const
+{
+    gc->setMSAAEnabled(m_1);
+}
+
+void MSAAEnabled::updateProperty(const char *name, const QVariant &value)
+{
+    if (name == QByteArrayLiteral("enabled"))
+        m_1 = value.toBool();
+}
+
 void DepthTest::apply(GraphicsContext *gc) const
 {
     gc->depthTest(m_1);

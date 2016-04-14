@@ -120,6 +120,13 @@ public:
     virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
 };
 
+class Q_AUTOTEST_EXPORT MSAAEnabled : public GenericState1<MSAAEnabled, MSAAEnabledStateMask, GLboolean>
+{
+public:
+    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
+};
+
 class Q_AUTOTEST_EXPORT DepthTest : public GenericState1<DepthTest, DepthTestStateMask, GLenum>
 {
 public:
