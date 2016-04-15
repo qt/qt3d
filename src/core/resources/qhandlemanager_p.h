@@ -61,6 +61,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+#ifndef QT_NO_DEBUG_STREAM
+template <typename T, uint INDEXBITS>
+class QHandleManager;
+
+template <typename T, uint INDEXBITS = 16>
+QDebug operator<<(QDebug dbg, const QHandleManager<T, INDEXBITS> &manager);
+#endif
+
 template <typename T, uint INDEXBITS = 16>
 class QHandleManager
 {
@@ -84,6 +92,8 @@ public:
 
 private:
     Q_DISABLE_COPY(QHandleManager)
+
+    friend QDebug operator<< <>(QDebug dbg, const QHandleManager<T, INDEXBITS> &manager);
 
     template <typename U>
     struct HandleEntry
@@ -210,6 +220,28 @@ const T *QHandleManager<T, INDEXBITS>::constData(const QHandle<T, INDEXBITS> &ha
         *ok = true;
     return d;
 }
+
+#ifndef QT_NO_DEBUG_STREAM
+template <typename T, uint INDEXBITS>
+QDebug operator<<(QDebug dbg, const QHandleManager<T, INDEXBITS> &manager)
+{
+    QDebugStateSaver saver(dbg);
+    dbg << "First free entry =" << manager.m_firstFreeEntry << endl;
+
+    const auto end = manager.m_entries.cend();
+    const auto max = manager.m_activeEntryCount;
+    auto i = 0;
+    for (auto it = manager.m_entries.cbegin(); it != end && i < max; ++it) {
+        const auto isActive = it->m_active;
+        if (isActive) {
+            dbg << *(it->m_data);
+            ++i;
+        }
+    }
+
+    return dbg;
+}
+#endif
 
 } // Qt3D
 
