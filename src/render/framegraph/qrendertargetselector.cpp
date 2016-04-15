@@ -106,7 +106,7 @@ QRenderTarget *QRenderTargetSelector::target() const
  * default to using all the attachments' draw buffers.
  *
  */
-void QRenderTargetSelector::setOutputs(const QList<QRenderTargetOutput::AttachmentPoint> &buffers)
+void QRenderTargetSelector::setOutputs(const QVector<QRenderTargetOutput::AttachmentPoint> &buffers)
 {
     Q_D(QRenderTargetSelector);
     if (buffers != d->m_outputs) {
@@ -124,7 +124,7 @@ void QRenderTargetSelector::setOutputs(const QList<QRenderTargetOutput::Attachme
 /*!
  * Returns the list of draw buffers for the current Qt3DRender::QRenderTargetSelector instance.
  */
-QList<QRenderTargetOutput::AttachmentPoint> QRenderTargetSelector::outputs() const
+QVector<QRenderTargetOutput::AttachmentPoint> QRenderTargetSelector::outputs() const
 {
     Q_D(const QRenderTargetSelector);
     return d->m_outputs;
@@ -141,7 +141,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QRenderTargetSelector::createNodeCreationCha
     auto &data = creationChange->data;
     Q_D(const QRenderTargetSelector);
     data.targetId = qIdForNode(d->m_target);
-    data.outputs = d->m_outputs.toVector();
+    data.outputs = d->m_outputs;
     return creationChange;
 }
 

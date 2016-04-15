@@ -65,7 +65,7 @@ void RenderTargetSelector::updateFromPeer(Qt3DCore::QNode *peer)
     m_renderTargetUuid = QNodeId();
     if (selector->target() != Q_NULLPTR)
         m_renderTargetUuid = selector->target()->id();
-    m_outputs = selector->outputs().toVector();
+    m_outputs = selector->outputs();
 }
 
 void RenderTargetSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -85,7 +85,7 @@ void RenderTargetSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (propertyChange->propertyName() == QByteArrayLiteral("target"))
             m_renderTargetUuid = propertyChange->value().value<QNodeId>();
         else if (propertyChange->propertyName() == QByteArrayLiteral("outputs"))
-            m_outputs = propertyChange->value().value<QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint> >().toVector();
+            m_outputs = propertyChange->value().value<QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint> >();
         markDirty(AbstractRenderer::AllDirty);
     }
     FrameGraphNode::sceneChangeEvent(e);

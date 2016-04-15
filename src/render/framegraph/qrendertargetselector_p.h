@@ -67,7 +67,7 @@ public:
 
     Q_DECLARE_PUBLIC(QRenderTargetSelector)
     QRenderTarget *m_target;
-    QList<QRenderTargetOutput::AttachmentPoint> m_outputs;
+    QVector<QRenderTargetOutput::AttachmentPoint> m_outputs;
 };
 
 struct QRenderTargetSelectorData
