@@ -59,17 +59,17 @@ private Q_SLOTS:
     void checkCloning_data()
     {
         QTest::addColumn<Qt3DRender::QSortPolicy *>("sortPolicy");
-        QTest::addColumn<QList<Qt3DRender::QSortCriterion *> >("criteria");
+        QTest::addColumn<QVector<Qt3DRender::QSortCriterion *> >("criteria");
 
         Qt3DRender::QSortPolicy *defaultConstructed = new Qt3DRender::QSortPolicy();
-        QTest::newRow("defaultConstructed") << defaultConstructed << QList<Qt3DRender::QSortCriterion *>();
+        QTest::newRow("defaultConstructed") << defaultConstructed << QVector<Qt3DRender::QSortCriterion *>();
 
         Qt3DRender::QSortPolicy *sortPolicyWithCriteria = new Qt3DRender::QSortPolicy();
         Qt3DRender::QSortCriterion *criterion1 = new Qt3DRender::QSortCriterion();
         Qt3DRender::QSortCriterion *criterion2 = new Qt3DRender::QSortCriterion();
         criterion1->setSort(Qt3DRender::QSortCriterion::BackToFront);
         criterion2->setSort(Qt3DRender::QSortCriterion::Material);
-        QList<Qt3DRender::QSortCriterion *> criteria = QList<Qt3DRender::QSortCriterion *>() << criterion1 << criterion2;
+        QVector<Qt3DRender::QSortCriterion *> criteria = QVector<Qt3DRender::QSortCriterion *>() << criterion1 << criterion2;
         sortPolicyWithCriteria->addCriterion(criterion1);
         sortPolicyWithCriteria->addCriterion(criterion2);
         QTest::newRow("sortPolicyWithCriteria") << sortPolicyWithCriteria << criteria;
@@ -79,7 +79,7 @@ private Q_SLOTS:
     {
         // GIVEN
         QFETCH(Qt3DRender::QSortPolicy*, sortPolicy);
-        QFETCH(QList<Qt3DRender::QSortCriterion *>, criteria);
+        QFETCH(QVector<Qt3DRender::QSortCriterion *>, criteria);
 
         // THEN
         QCOMPARE(sortPolicy->criteria(), criteria);

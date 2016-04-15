@@ -59,7 +59,7 @@ public:
 
     void addCriterion(QSortCriterion *criterion);
     void removeCriterion(QSortCriterion *criterion);
-    QList<QSortCriterion *> criteria() const;
+    QVector<QSortCriterion *> criteria() const;
 
 protected:
     QSortPolicy(QSortPolicyPrivate &dd, Qt3DCore::QNode *parent = 0);

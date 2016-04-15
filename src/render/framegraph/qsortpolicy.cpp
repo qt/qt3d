@@ -108,7 +108,7 @@ void QSortPolicy::removeCriterion(QSortCriterion *criterion)
     d->m_criteria.removeOne(criterion);
 }
 
-QList<QSortCriterion *> QSortPolicy::criteria() const
+QVector<QSortCriterion *> QSortPolicy::criteria() const
 {
     Q_D(const QSortPolicy);
     return d->m_criteria;

@@ -65,7 +65,7 @@ class QSortPolicyPrivate : public QFrameGraphNodePrivate
 public:
     QSortPolicyPrivate();
     Q_DECLARE_PUBLIC(QSortPolicy)
-    QList<QSortCriterion *> m_criteria;
+    QVector<QSortCriterion *> m_criteria;
 };
 
 } // namespace Qt3DRender
