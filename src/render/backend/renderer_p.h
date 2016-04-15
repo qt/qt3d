@@ -124,6 +124,7 @@ public:
     explicit Renderer(QRenderAspect::RenderType type);
     ~Renderer();
 
+    void dumpInfo() const Q_DECL_OVERRIDE;
     API api() const Q_DECL_OVERRIDE { return AbstractRenderer::OpenGL; }
 
     qint64 time() const Q_DECL_OVERRIDE;

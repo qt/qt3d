@@ -286,6 +286,10 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     Q_D(QRenderAspect);
     d->m_renderer->setTime(time);
 
+#if defined(QT3D_RENDER_DUMP_BACKEND_NODES)
+    d->m_renderer->dumpInfo();
+#endif
+
     // Create jobs that will get exectued by the threadpool
     QVector<QAspectJobPtr> jobs;
 

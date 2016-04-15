@@ -39,6 +39,7 @@ public:
     TestRenderer();
     ~TestRenderer();
 
+    void dumpInfo() const Q_DECL_OVERRIDE {}
     API api() const Q_DECL_OVERRIDE { return AbstractRenderer::OpenGL; }
     qint64 time() const Q_DECL_OVERRIDE { return 0; }
     void setTime(qint64 time) Q_DECL_OVERRIDE { Q_UNUSED(time); }

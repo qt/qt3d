@@ -160,8 +160,16 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 
 Renderer::~Renderer()
 {
-
     delete m_renderQueue;
+}
+
+void Renderer::dumpInfo() const
+{
+    qDebug() << Q_FUNC_INFO << "t =" << m_time;
+
+    const ShaderManager *shaderManager = m_nodesManager->shaderManager();
+    qDebug() << "=== Shader Manager ===";
+    qDebug() << *shaderManager;
 }
 
 qint64 Renderer::time() const

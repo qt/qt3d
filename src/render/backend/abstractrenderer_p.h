@@ -100,6 +100,8 @@ public:
     };
     Q_DECLARE_FLAGS(BackendNodeDirtySet, BackendNodeDirtyFlag)
 
+    virtual void dumpInfo() const = 0;
+
     virtual API api() const = 0;
 
     virtual qint64 time() const = 0;
