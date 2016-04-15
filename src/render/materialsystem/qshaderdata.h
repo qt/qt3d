@@ -42,6 +42,7 @@
 
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DRender/qt3drender_global.h>
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 
@@ -88,6 +89,6 @@ private:
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3DRender::QShaderData*)
-Q_DECLARE_METATYPE(QList<Qt3DRender::QShaderData*>)
+Q_DECLARE_METATYPE(QVector<Qt3DRender::QShaderData*>)
 
 #endif // QT3DRENDER_QSHADERDATA_H

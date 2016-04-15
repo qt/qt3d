@@ -61,7 +61,7 @@ namespace Qt3DRender {
 
 namespace {
 
-const int qListShaderDataTypeId = qMetaTypeId<QList<QShaderData*> >();
+const int qVectorShaderDataTypeId = qMetaTypeId<QVector<QShaderData*> >();
 const int qShaderDataTypeId = qMetaTypeId<QShaderData*>();
 
 }
@@ -74,9 +74,9 @@ class QShaderDataPropertyReader: public PropertyReaderInterface
 
         if (v.userType() == qShaderDataTypeId && (shaderData = v.value<QShaderData *>()) != Q_NULLPTR) {
             return QVariant::fromValue(shaderData->id());
-        } else if (v.userType() == qListShaderDataTypeId) {
+        } else if (v.userType() == qVectorShaderDataTypeId) {
             QVariantList vlist;
-            Q_FOREACH (QShaderData *data, v.value<QList<QShaderData *> >()) {
+            Q_FOREACH (QShaderData *data, v.value<QVector<QShaderData *> >()) {
                 if (data)
                     vlist.append(QVariant::fromValue(data->id()));
             }
