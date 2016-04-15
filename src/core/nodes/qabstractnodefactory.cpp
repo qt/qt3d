@@ -47,14 +47,14 @@ QAbstractNodeFactory::~QAbstractNodeFactory()
 {
 }
 
-QList<QAbstractNodeFactory *> node_factories;
+QVector<QAbstractNodeFactory *> node_factories;
 
 void QAbstractNodeFactory::registerNodeFactory(QAbstractNodeFactory *factory)
 {
     node_factories << factory;
 }
 
-QList<QAbstractNodeFactory *> QAbstractNodeFactory::nodeFactories()
+QVector<QAbstractNodeFactory *> QAbstractNodeFactory::nodeFactories()
 {
     return node_factories;
 }

@@ -55,7 +55,7 @@ public:
     virtual QNode *createNode(const char *type) = 0;
 
     static void registerNodeFactory(QAbstractNodeFactory *factory);
-    static QList<QAbstractNodeFactory *> nodeFactories();
+    static QVector<QAbstractNodeFactory *> nodeFactories();
 
     template<class T> static T *createNode(const char *type)
     {
