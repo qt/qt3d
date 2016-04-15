@@ -82,7 +82,7 @@ QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent)
 {
 }
 
-QList<QFilterKey *> QTechniqueFilter::criteria() const
+QVector<QFilterKey *> QTechniqueFilter::criteria() const
 {
     Q_D(const QTechniqueFilter);
     return d->m_matchList;
@@ -157,7 +157,7 @@ void QTechniqueFilter::removeParameter(QParameter *parameter)
     d->m_parameters.removeOne(parameter);
 }
 
-QList<QParameter *> QTechniqueFilter::parameters() const
+QVector<QParameter *> QTechniqueFilter::parameters() const
 {
     Q_D(const QTechniqueFilter);
     return d->m_parameters;

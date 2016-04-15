@@ -61,19 +61,19 @@ private Q_SLOTS:
     void checkCloning_data()
     {
         QTest::addColumn<Qt3DRender::QTechniqueFilter *>("techniqueFilter");
-        QTest::addColumn<QList<Qt3DRender::QParameter *> >("parameters");
-        QTest::addColumn<QList<Qt3DRender::QFilterKey *> >("filterKeys");
+        QTest::addColumn<QVector<Qt3DRender::QParameter *> >("parameters");
+        QTest::addColumn<QVector<Qt3DRender::QFilterKey *> >("filterKeys");
 
         Qt3DRender::QTechniqueFilter *defaultConstructed = new Qt3DRender::QTechniqueFilter();
-        QTest::newRow("defaultConstructed") << defaultConstructed << QList<Qt3DRender::QParameter *>() << QList<Qt3DRender::QFilterKey *>();
+        QTest::newRow("defaultConstructed") << defaultConstructed << QVector<Qt3DRender::QParameter *>() << QVector<Qt3DRender::QFilterKey *>();
 
         Qt3DRender::QTechniqueFilter *techniqueFilterWithParams = new Qt3DRender::QTechniqueFilter();
         Qt3DRender::QParameter *parameter1 = new Qt3DRender::QParameter(QStringLiteral("displacement"), 454.0f);
         Qt3DRender::QParameter *parameter2 = new Qt3DRender::QParameter(QStringLiteral("torque"), 650);
-        QList<Qt3DRender::QParameter *> params1 = QList<Qt3DRender::QParameter *>() << parameter1 << parameter2;
+        QVector<Qt3DRender::QParameter *> params1 = QVector<Qt3DRender::QParameter *>() << parameter1 << parameter2;
         techniqueFilterWithParams->addParameter(parameter1);
         techniqueFilterWithParams->addParameter(parameter2);
-        QTest::newRow("techniqueFilterWithParams") << techniqueFilterWithParams << params1 << QList<Qt3DRender::QFilterKey *>();
+        QTest::newRow("techniqueFilterWithParams") << techniqueFilterWithParams << params1 << QVector<Qt3DRender::QFilterKey *>();
 
         Qt3DRender::QTechniqueFilter *techniqueFilterWithAnnotations = new Qt3DRender::QTechniqueFilter();
         Qt3DRender::QFilterKey *filterKey1 = new Qt3DRender::QFilterKey();
@@ -82,10 +82,10 @@ private Q_SLOTS:
         filterKey1->setValue(true);
         filterKey1->setName(QStringLiteral("hasNitroKit"));
         filterKey1->setValue(false);
-        QList<Qt3DRender::QFilterKey *> filterKeys1 = QList<Qt3DRender::QFilterKey *>() << filterKey1 << filterKey2;
+        QVector<Qt3DRender::QFilterKey *> filterKeys1 = QVector<Qt3DRender::QFilterKey *>() << filterKey1 << filterKey2;
         techniqueFilterWithAnnotations->addMatch(filterKey1);
         techniqueFilterWithAnnotations->addMatch(filterKey2);
-        QTest::newRow("techniqueFilterWithAnnotations") << techniqueFilterWithAnnotations << QList<Qt3DRender::QParameter *>() << filterKeys1;
+        QTest::newRow("techniqueFilterWithAnnotations") << techniqueFilterWithAnnotations << QVector<Qt3DRender::QParameter *>() << filterKeys1;
 
         Qt3DRender::QTechniqueFilter *techniqueFilterWithParamsAndAnnotations = new Qt3DRender::QTechniqueFilter();
         Qt3DRender::QParameter *parameter3 = new Qt3DRender::QParameter(QStringLiteral("displacement"), 383.0f);
@@ -96,8 +96,8 @@ private Q_SLOTS:
         filterKey3->setValue(false);
         filterKey4->setName(QStringLiteral("hasNitroKit"));
         filterKey4->setValue(true);
-        QList<Qt3DRender::QParameter *> params2 = QList<Qt3DRender::QParameter *>() << parameter3 << parameter4;
-        QList<Qt3DRender::QFilterKey *> filterKeys2 = QList<Qt3DRender::QFilterKey *>() << filterKey3 << filterKey4;
+        QVector<Qt3DRender::QParameter *> params2 = QVector<Qt3DRender::QParameter *>() << parameter3 << parameter4;
+        QVector<Qt3DRender::QFilterKey *> filterKeys2 = QVector<Qt3DRender::QFilterKey *>() << filterKey3 << filterKey4;
         techniqueFilterWithParamsAndAnnotations->addParameter(parameter3);
         techniqueFilterWithParamsAndAnnotations->addParameter(parameter4);
         techniqueFilterWithParamsAndAnnotations->addMatch(filterKey3);
@@ -109,8 +109,8 @@ private Q_SLOTS:
     {
         // GIVEN
         QFETCH(Qt3DRender::QTechniqueFilter*, techniqueFilter);
-        QFETCH(QList<Qt3DRender::QParameter *>, parameters);
-        QFETCH(QList<Qt3DRender::QFilterKey *>, filterKeys);
+        QFETCH(QVector<Qt3DRender::QParameter *>, parameters);
+        QFETCH(QVector<Qt3DRender::QFilterKey *>, filterKeys);
 
         // THEN
         QCOMPARE(techniqueFilter->parameters(), parameters);

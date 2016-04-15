@@ -65,8 +65,8 @@ public :
     QTechniqueFilterPrivate();
 
     Q_DECLARE_PUBLIC(QTechniqueFilter)
-    QList<QFilterKey *> m_matchList;
-    QList<QParameter *> m_parameters;
+    QVector<QFilterKey *> m_matchList;
+    QVector<QParameter *> m_parameters;
 };
 
 struct QTechniqueFilterData

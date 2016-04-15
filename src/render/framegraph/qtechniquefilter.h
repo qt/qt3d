@@ -58,13 +58,13 @@ public:
     explicit QTechniqueFilter(Qt3DCore::QNode *parent = 0);
     ~QTechniqueFilter();
 
-    QList<QFilterKey*> criteria() const;
+    QVector<QFilterKey*> criteria() const;
     void addMatch(QFilterKey*criterion);
     void removeMatch(QFilterKey*criterion);
 
     void addParameter(QParameter *p);
     void removeParameter(QParameter *p);
-    QList<QParameter *> parameters() const;
+    QVector<QParameter *> parameters() const;
 
 protected:
     QTechniqueFilter(QTechniqueFilterPrivate &dd, Qt3DCore::QNode *parent = 0);
