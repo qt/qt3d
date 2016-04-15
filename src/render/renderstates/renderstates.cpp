@@ -42,6 +42,7 @@
 
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/qrenderstate.h>
+#include <Qt3DRender/qcullface.h>
 
 #include <Qt3DRender/private/graphicscontext_p.h>
 
@@ -126,7 +127,12 @@ void DepthTest::updateProperty(const char *name, const QVariant &value)
 
 void CullFace::apply(GraphicsContext *gc) const
 {
-    gc->cullFace(m_1);
+    if (m_1 == QCullFace::NoCulling) {
+        gc->openGLContext()->functions()->glDisable(GL_CULL_FACE);
+    } else {
+        gc->openGLContext()->functions()->glEnable(GL_CULL_FACE);
+        gc->openGLContext()->functions()->glCullFace(m_1);
+    }
 }
 
 void CullFace::updateProperty(const char *name, const QVariant &value)

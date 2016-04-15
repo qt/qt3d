@@ -59,6 +59,7 @@ public:
 
     enum CullingMode
     {
+        NoCulling = 0x0,
         Front = 0x0404,
         Back = 0x0405,
         FrontAndBack = 0x0408
