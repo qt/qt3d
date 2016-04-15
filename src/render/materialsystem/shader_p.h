@@ -161,6 +161,15 @@ private:
     friend class GraphicsContext;
 };
 
+#ifndef QT_NO_DEBUG_STREAM
+inline QDebug operator<<(QDebug dbg, const Shader &shader)
+{
+    QDebugStateSaver saver(dbg);
+    dbg << "QNodeId =" << shader.peerId() << "dna =" << shader.dna() << endl;
+    return dbg;
+}
+#endif
+
 } // namespace Render
 } // namespace Qt3DRender
 
