@@ -95,7 +95,6 @@ public:
     virtual void    buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) = 0;
     virtual bool    checkFrameBufferComplete() = 0;
     virtual GLuint  createFrameBufferObject() = 0;
-    virtual void    cullFace(GLenum mode) = 0;
     virtual void    depthMask(GLenum mode) = 0;
     virtual void    depthTest(GLenum mode) = 0;
     virtual void    disableClipPlane(int clipPlane) = 0;

@@ -790,11 +790,6 @@ void GraphicsContext::depthMask(GLenum mode)
     m_glHelper->depthMask(mode);
 }
 
-void GraphicsContext::cullFace(GLenum mode)
-{
-    m_glHelper->cullFace(mode);
-}
-
 void GraphicsContext::frontFace(GLenum mode)
 {
     m_glHelper->frontFace(mode);

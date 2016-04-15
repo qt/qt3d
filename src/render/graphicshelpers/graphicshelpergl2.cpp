@@ -249,12 +249,6 @@ void GraphicsHelperGL2::depthMask(GLenum mode)
     m_funcs->glDepthMask(mode);
 }
 
-void GraphicsHelperGL2::cullFace(GLenum mode)
-{
-    m_funcs->glEnable(GL_CULL_FACE);
-    m_funcs->glCullFace(mode);
-}
-
 void GraphicsHelperGL2::frontFace(GLenum mode)
 {
     m_funcs->glFrontFace(mode);

@@ -82,7 +82,6 @@ public:
     void buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) Q_DECL_OVERRIDE;
     bool checkFrameBufferComplete() Q_DECL_OVERRIDE;
     GLuint createFrameBufferObject() Q_DECL_OVERRIDE;
-    void cullFace(GLenum mode) Q_DECL_OVERRIDE;
     void depthMask(GLenum mode) Q_DECL_OVERRIDE;
     void depthTest(GLenum mode) Q_DECL_OVERRIDE;
     void disableClipPlane(int clipPlane) Q_DECL_OVERRIDE;
