@@ -66,7 +66,7 @@ public:
     QRenderTargetPrivate();
 
     Q_DECLARE_PUBLIC(QRenderTarget)
-    QList<QRenderTargetOutput *> m_outputs;
+    QVector<QRenderTargetOutput *> m_outputs;
 };
 
 }

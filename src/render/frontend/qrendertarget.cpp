@@ -108,7 +108,7 @@ void QRenderTarget::removeOutput(QRenderTargetOutput *output)
     d->m_outputs.removeOne(output);
 }
 
-QList<QRenderTargetOutput *> QRenderTarget::outputs() const
+QVector<QRenderTargetOutput *> QRenderTarget::outputs() const
 {
     Q_D(const QRenderTarget);
     return d->m_outputs;
