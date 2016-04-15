@@ -60,9 +60,10 @@ namespace Render {
 
 Shader::Shader()
     : BackendNode()
-    , m_program(Q_NULLPTR)
+    , m_program(nullptr)
     , m_isLoaded(false)
     , m_dna(0)
+    , m_graphicsContext(nullptr)
 {
     m_shaderCode.resize(static_cast<int>(QShaderProgram::Compute) + 1);
 }
@@ -75,6 +76,11 @@ Shader::~Shader()
 
 void Shader::cleanup()
 {
+    // Remove this shader from the hash in the graphics context so
+    // nothing tries to use it after it has been recycled
+    if (m_graphicsContext)
+        m_graphicsContext->removeProgram(dna(), peerId());
+
     QBackendNode::setEnabled(false);
     m_isLoaded = false;
     m_dna = 0;
@@ -251,6 +257,7 @@ QOpenGLShaderProgram *Shader::getOrCreateProgram(GraphicsContext *ctx)
 {
     if (!m_isLoaded) {
         delete m_program;
+        m_graphicsContext = ctx;
         m_program = createProgram(ctx);
         if (!m_program)
             m_program = createDefaultProgram();

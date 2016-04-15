@@ -127,6 +127,7 @@ public:
 
     void activateShader(Shader* shader);
     QOpenGLShaderProgram *containsProgram(const ProgramDNA &dna);
+    void removeProgram(const ProgramDNA &dna, Qt3DCore::QNodeId id);
 
     GLuint activeFBO() const { return m_activeFBO; }
     GLuint defaultFBO() const { return m_defaultFBO; }

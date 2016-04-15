@@ -146,6 +146,7 @@ private:
     bool m_isLoaded;
     ProgramDNA m_dna;
     QMutex m_mutex;
+    GraphicsContext *m_graphicsContext;
 
     void updateDNA();
 

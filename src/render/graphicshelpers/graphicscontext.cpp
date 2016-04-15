@@ -429,6 +429,13 @@ QOpenGLShaderProgram *GraphicsContext::containsProgram(const ProgramDNA &dna)
     return Q_NULLPTR;
 }
 
+void GraphicsContext::removeProgram(const ProgramDNA &dna, Qt3DCore::QNodeId id)
+{
+    Shader *renderShader = m_renderShaderHash.value(dna, nullptr);
+    if (renderShader && renderShader->peerId() == id)
+        m_renderShaderHash.remove(dna);
+}
+
 void GraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments, GLuint defaultFboId)
 {
     GLuint fboId = defaultFboId; // Default FBO
