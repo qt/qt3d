@@ -141,7 +141,7 @@ void QRenderStateSet::removeRenderState(QRenderState *state)
 /*!
  * Returns the list of QRenderState objects that compose the QRenderStateSet instance.
  */
-QList<QRenderState *> QRenderStateSet::renderStates() const
+QVector<QRenderState *> QRenderStateSet::renderStates() const
 {
     Q_D(const QRenderStateSet);
     return d->m_renderStates;

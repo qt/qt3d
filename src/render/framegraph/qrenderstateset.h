@@ -59,7 +59,7 @@ public:
 
     void addRenderState(QRenderState *state);
     void removeRenderState(QRenderState *state);
-    QList<QRenderState *> renderStates() const;
+    QVector<QRenderState *> renderStates() const;
 
 protected:
     QRenderStateSet(QRenderStateSetPrivate &dd, Qt3DCore::QNode *parent = 0);

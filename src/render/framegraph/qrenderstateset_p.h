@@ -66,7 +66,7 @@ public:
     QRenderStateSetPrivate();
 
     Q_DECLARE_PUBLIC(QRenderStateSet)
-    QList<QRenderState *> m_renderStates;
+    QVector<QRenderState *> m_renderStates;
 };
 
 struct QRenderStateSetData

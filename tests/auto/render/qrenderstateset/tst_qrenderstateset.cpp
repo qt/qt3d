@@ -88,15 +88,15 @@ private Q_SLOTS:
     void checkCloning_data()
     {
         QTest::addColumn<Qt3DRender::QRenderStateSet *>("stateSet");
-        QTest::addColumn<QList<Qt3DRender::QRenderState *> >("states");
+        QTest::addColumn<QVector<Qt3DRender::QRenderState *> >("states");
 
         Qt3DRender::QRenderStateSet *defaultConstructed = new Qt3DRender::QRenderStateSet();
-        QTest::newRow("defaultConstructed") << defaultConstructed << QList<Qt3DRender::QRenderState *>();
+        QTest::newRow("defaultConstructed") << defaultConstructed << QVector<Qt3DRender::QRenderState *>();
 
         Qt3DRender::QRenderStateSet *stateSetWithStates = new Qt3DRender::QRenderStateSet();
         Qt3DRender::QRenderState *state1 = new MyStateSet();
         Qt3DRender::QRenderState *state2 = new MyStateSet();
-        QList<Qt3DRender::QRenderState *> states = QList<Qt3DRender::QRenderState *>() << state1 << state2;
+        QVector<Qt3DRender::QRenderState *> states = QVector<Qt3DRender::QRenderState *>() << state1 << state2;
         stateSetWithStates->addRenderState(state1);
         stateSetWithStates->addRenderState(state2);
         QTest::newRow("stateSetWithStates") << stateSetWithStates << states;
@@ -106,7 +106,7 @@ private Q_SLOTS:
     {
         // GIVEN
         QFETCH(Qt3DRender::QRenderStateSet*, stateSet);
-        QFETCH(QList<Qt3DRender::QRenderState *>, states);
+        QFETCH(QVector<Qt3DRender::QRenderState *>, states);
 
         // THEN
         QCOMPARE(stateSet->renderStates(), states);
