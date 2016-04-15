@@ -277,7 +277,7 @@ public:
 
     void addTextureImage(QAbstractTextureImage *textureImage);
     void removeTextureImage(QAbstractTextureImage *textureImage);
-    QList<QAbstractTextureImage *> textureImages() const;
+    QVector<QAbstractTextureImage *> textureImages() const;
 
     // sampler data - in the future proxy to a Sampler helper
     void setWrapMode(const QTextureWrapMode &wrapMode);

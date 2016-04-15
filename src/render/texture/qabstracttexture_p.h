@@ -72,7 +72,7 @@ public :
     int m_width, m_height, m_depth;
     bool m_autoMipMap;
 
-    QList<QTexImageDataPtr> m_data;
+    QVector<QTexImageDataPtr> m_data;
 
     QAbstractTexture::Filter m_minFilter, m_magFilter;
     // FIXME, store per direction
@@ -81,7 +81,7 @@ public :
     float m_maximumAnisotropy;
     QAbstractTexture::ComparisonFunction m_comparisonFunction;
     QAbstractTexture::ComparisonMode m_comparisonMode;
-    QList<QAbstractTextureImage *> m_textureImages;
+    QVector<QAbstractTextureImage *> m_textureImages;
     int m_layers;
 
     QTextureImageDataGeneratorPtr m_dataFunctor;

@@ -331,7 +331,7 @@ void QAbstractTexture::removeTextureImage(QAbstractTextureImage *textureImage)
     Returns a list of pointers to QAbstractTextureImage objects contained in
     the texture provider.
  */
-QList<QAbstractTextureImage *> QAbstractTexture::textureImages() const
+QVector<QAbstractTextureImage *> QAbstractTexture::textureImages() const
 {
     Q_D(const QAbstractTexture);
     return d->m_textureImages;
