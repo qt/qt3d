@@ -177,7 +177,7 @@ void QNodePrivate::_q_removeChild(QNode *childNode)
         visitor.traverse(childNode, this, &QNodePrivate::unsetSceneHelper);
     } else {
         auto childNodePrivate = get(childNode);
-        if (!childNodePrivate->m_hasBackendNode) {
+        if (childNodePrivate->m_hasBackendNode) {
             const QDestructionIdAndTypeCollector collector(childNode);
             auto destroyedChange = QNodeDestroyedChangePtr::create(childNode, collector.subtreeIdsAndTypes());
             notifyObservers(destroyedChange);
@@ -513,7 +513,7 @@ QNode::~QNode()
     // Create a QNodeDestroyedChange for this node that informs the backend that
     // this node and all of its children are going away
     Q_D(QNode);
-    if (!d->m_hasBackendNode) {
+    if (d->m_hasBackendNode) {
         const QDestructionIdAndTypeCollector collector(this);
         const auto destroyedChange = QNodeDestroyedChangePtr::create(this, collector.subtreeIdsAndTypes());
         d->notifyObservers(destroyedChange);

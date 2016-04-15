@@ -76,7 +76,11 @@ private:
         // the QNodeId and the metaobject as typeinfo to the backend aspects so they
         // in turn can find the correct QBackendNodeMapper object to handle the destruction
         // of the corresponding backend nodes.
-        QNodePrivate::get(node)->m_typeInfo = const_cast<QMetaObject*>(creationChange->metaObject());
+        QNodePrivate *d = QNodePrivate::get(node);
+        d->m_typeInfo = const_cast<QMetaObject*>(creationChange->metaObject());
+
+        // Mark this node as having been handled for creation so that it is picked up
+        d->m_hasBackendNode = true;
     }
 
     QVector<QNodeCreatedChangeBasePtr> m_creationChanges;

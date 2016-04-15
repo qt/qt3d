@@ -70,7 +70,7 @@ private:
 
         // Mark this node as having been handled for destruction so we don't
         // repeat it unnecessarily in an O(n^2) manner
-        QNodePrivate::get(node)->m_hasBackendNode = true;
+        QNodePrivate::get(node)->m_hasBackendNode = false;
     }
 
     QVector<QNodeIdTypePair> m_subtreeIdsAndTypes;
