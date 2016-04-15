@@ -132,8 +132,6 @@ bool isEntityFrustumCulled(const Entity *entity, const Plane *planes)
 
 bool wasInitialized = false;
 RenderView::StandardUniformsPFuncsHash RenderView::ms_standardUniformSetters;
-QStringList RenderView::m_standardAttributesNames = RenderView::initializeStandardAttributeNames();
-
 
 
 RenderView::StandardUniformsPFuncsHash RenderView::initializeStandardUniformSetters()
@@ -159,19 +157,6 @@ RenderView::StandardUniformsPFuncsHash RenderView::initializeStandardUniformSett
     setters.insert(StringToInt::lookupId(QStringLiteral("eyePosition")), &RenderView::eyePosition);
 
     return setters;
-}
-
-QStringList RenderView::initializeStandardAttributeNames()
-{
-    QStringList attributesNames;
-
-    attributesNames << QAttribute::defaultPositionAttributeName();
-    attributesNames << QAttribute::defaultTextureCoordinateAttributeName();
-    attributesNames << QAttribute::defaultNormalAttributeName();
-    attributesNames << QAttribute::defaultColorAttributeName();
-    attributesNames << QAttribute::defaultTangentAttributeName();
-
-    return attributesNames;
 }
 
 QUniformValue RenderView::modelMatrix(const QMatrix4x4 &model) const
