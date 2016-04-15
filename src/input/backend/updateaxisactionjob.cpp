@@ -122,7 +122,7 @@ bool UpdateAxisActionJob::processActionInput(const Qt3DCore::QNodeId actionInput
             }
         }
         bool actionTriggered = false;
-        Q_FOREACH (const Qt3DCore::QNodeId actionInputId, inputSequence->inputs()) {
+        Q_FOREACH (const Qt3DCore::QNodeId actionInputId, inputSequence->sequences()) {
             if (processActionInput(actionInputId)){
                 actionTriggered |= inputSequence->actionTriggered(actionInputId, m_currentTime);
                 // Set the start time if it wasn't set before
@@ -142,7 +142,7 @@ bool UpdateAxisActionJob::processActionInput(const Qt3DCore::QNodeId actionInput
             }
         }
         bool actionTriggered = false;
-        Q_FOREACH (const Qt3DCore::QNodeId actionInputId, inputChord->inputs()) {
+        Q_FOREACH (const Qt3DCore::QNodeId actionInputId, inputChord->chords()) {
             if (processActionInput(actionInputId)){
                 actionTriggered |= inputChord->actionTriggered(actionInputId);
                 if (startTime == 0)

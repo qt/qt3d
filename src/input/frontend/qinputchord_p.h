@@ -51,31 +51,34 @@
 // We mean it.
 //
 
-#include <Qt3DInput/private/qabstractaggregateactioninput_p.h>
+#include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
+class QAbstractActionInput;
+
 /*!
     \class Qt3DInput::QInputChordPrivate
     \internal
 */
-class QInputChordPrivate : public Qt3DInput::QAbstractAggregateActionInputPrivate
+class QInputChordPrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QInputChordPrivate()
-        : Qt3DInput::QAbstractAggregateActionInputPrivate()
+        : Qt3DCore::QNodePrivate()
         , m_timeout(0)
     {}
 
     int m_timeout;
+    QVector<QAbstractActionInput *> m_chords;
 };
 
 struct QInputChordData
 {
-    Qt3DCore::QNodeIdVector inputIds;
+    Qt3DCore::QNodeIdVector chordIds;
     int timeout;
 };
 

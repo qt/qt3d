@@ -42,7 +42,7 @@
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DCore/qnode.h>
-#include <Qt3DInput/qabstractaggregateactioninput.h>
+#include <Qt3DInput/qabstractactioninput.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,7 +51,7 @@ namespace Qt3DInput {
 class QAbstractPhysicalDevice;
 class QInputSequencePrivate;
 
-class QT3DINPUTSHARED_EXPORT QInputSequence : public Qt3DInput::QAbstractAggregateActionInput
+class QT3DINPUTSHARED_EXPORT QInputSequence : public Qt3DInput::QAbstractActionInput
 {
     Q_OBJECT
     Q_PROPERTY(int timeout READ timeout WRITE setTimeout NOTIFY timeoutChanged)
@@ -63,6 +63,10 @@ public:
 
     int timeout() const;
     int buttonInterval() const;
+
+    void addSequence(QAbstractActionInput *input);
+    void removeSequence(QAbstractActionInput *input);
+    QVector<QAbstractActionInput *> sequences() const;
 
 public Q_SLOTS:
     void setTimeout(int timeout);

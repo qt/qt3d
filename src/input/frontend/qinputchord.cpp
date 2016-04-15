@@ -40,7 +40,7 @@
 #include "qinputchord_p.h"
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DInput/qabstractaggregateactioninput.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,7 +49,7 @@ namespace Qt3DInput {
 /*!
     \class Qt3DInput::QInputChord
     \inmodule Qt3DInput
-    \inherits QAbstractAggregateActionInput
+    \inherits QAbstractActionInput
     \brief QInputChord represents a set of QAbstractActionInput's that must be triggerd at once.
 
     \since 5.7
@@ -58,7 +58,7 @@ namespace Qt3DInput {
 /*!
     \qmltype InputChord
     \inqmlmodule Qt3D.Input
-    \inherits QAbstractAggregateActionInput
+    \inherits QAbstractActionInput
     \instantiates Qt3DInput::QInputChord
     \brief QML frontend for the Qt3DInput::QInputChord C++ class.
 
@@ -66,10 +66,10 @@ namespace Qt3DInput {
 
     The following example shows an sequence that will be triggered by pressing the G, D, and J keys in that order with a maximum time between key presses of 1 second  and overall maximum input time of 3 seconds.
     \qml
-    InputSequence {
+    InputChord {
         interval: 1000
         timeout: 3000
-        inputs: [
+        chords: [
            ActionInput {
                 sourceDevice: keyboardSourceDevice
                 keys: [Qt.Key_G]
@@ -92,7 +92,7 @@ namespace Qt3DInput {
     Constructs a new QInputChord with parent \a parent.
  */
 QInputChord::QInputChord(Qt3DCore::QNode *parent)
-    : Qt3DInput::QAbstractAggregateActionInput(*new QInputChordPrivate(), parent)
+    : Qt3DInput::QAbstractActionInput(*new QInputChordPrivate(), parent)
 {
 
 }
@@ -111,18 +111,12 @@ QInputChord::~QInputChord()
   This signal is emitted when the timeout of the input chord is changed.
 */
 
-/*!
-  \qmlproperty int Qt3D.Input::InputChord::tollerance
 
-  The time in milliseconds in which all QAbstractActionInput's in the input chord must triggered within.
-*/
 
 /*!
-    \qmlsignal Qt3D.Input::InputChord::tolleranceChanged()
+  \qmlproperty QQmlListProperty<Qt3DInput::QAbstractActionInput> Qt3D.Input::QInputChord::chords
 
-    This signal is emitted when the timeout of the input chord is changed.
-
-    The corresponding handeler is \c onTolleranceChanged
+  The list of QAbstractActionInput that must be triggered to trigger this aggregate input.
 */
 
 /*!
@@ -148,20 +142,75 @@ void QInputChord::setTimeout(int timeout)
     }
 }
 
+/*!
+    Append the QAbstractActionInput \a input to the end of this QInputChord's chord vector.
+
+    \sa removeInput
+ */
+void QInputChord::addChord(QAbstractActionInput *input)
+{
+    Q_D(QInputChord);
+    if (!d->m_chords.contains(input)) {
+        d->m_chords.push_back(input);
+
+        if (!input->parent())
+            input->setParent(this);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, id()));
+            change->setPropertyName("chord");
+            change->setValue(QVariant::fromValue(input->id()));
+            d->notifyObservers(change);
+        }
+    }
+}
+
+/*!
+    Remove the QAbstractActionInput \a input from this QInputChord's chord vector.
+
+    \sa addInput
+ */
+void QInputChord::removeChord(QAbstractActionInput *input)
+{
+    Q_D(QInputChord);
+    if (d->m_chords.contains(input)) {
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, id()));
+            change->setPropertyName("chord");
+            change->setValue(QVariant::fromValue(input->id()));
+            d->notifyObservers(change);
+        }
+
+        d->m_chords.removeOne(input);
+    }
+}
+
+/*!
+    Returns the QInputChord's chord vector.
+ */
+QVector<QAbstractActionInput *> QInputChord::chords() const
+{
+    Q_D(const QInputChord);
+    return d->m_chords;
+}
+
+
 void QInputChord::copy(const Qt3DCore::QNode *ref)
 {
-    QAbstractAggregateActionInput::copy(ref);
+    QAbstractActionInput::copy(ref);
     const QInputChord *input = static_cast<const QInputChord *>(ref);
     d_func()->m_timeout = input->d_func()->m_timeout;
+    d_func()->m_chords = input->chords();
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QInputChord::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QInputChordData>::create(this);
-    auto &data = creationChange->data;
+    QInputChordData &data = creationChange->data;
 
     Q_D(const QInputChord);
-    data.inputIds = qIdsForNodes(inputs());
+    data.chordIds = qIdsForNodes(chords());
     data.timeout = d->m_timeout;
 
     return creationChange;

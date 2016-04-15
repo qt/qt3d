@@ -52,7 +52,7 @@ namespace Input {
 
 InputSequence::InputSequence()
     : Qt3DCore::QBackendNode()
-    , m_inputs()
+    , m_sequences()
     , m_inputsToTrigger()
     , m_timeout(0)
     , m_buttonInterval(0)
@@ -66,15 +66,15 @@ void InputSequence::updateFromPeer(Qt3DCore::QNode *peer)
     QInputSequence *input = static_cast<QInputSequence *>(peer);
     m_timeout = input->timeout();
     m_buttonInterval = input->buttonInterval();
-    Q_FOREACH (QAbstractActionInput *i, input->inputs())
-        m_inputs.push_back(i->id());
+    Q_FOREACH (QAbstractActionInput *i, input->sequences())
+        m_sequences.push_back(i->id());
 }
 
 void InputSequence::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QInputSequenceData>>(change);
-    const auto &data = typedChange->data;
-    m_inputs = data.inputIds;
+    const QInputSequenceData &data = typedChange->data;
+    m_sequences = data.sequenceIds;
     m_timeout = data.timeout;
     m_buttonInterval = data.buttonInterval;
 }
@@ -87,7 +87,7 @@ void InputSequence::cleanup()
     m_startTime = 0;
     m_lastInputTime = 0;
     m_lastInputId = Qt3DCore::QNodeId();
-    m_inputs.clear();
+    m_sequences.clear();
     m_inputsToTrigger.clear();
 }
 
@@ -100,7 +100,7 @@ void InputSequence::reset()
 {
     m_startTime = 0;
     m_lastInputTime = 0;
-    m_inputsToTrigger = m_inputs;
+    m_inputsToTrigger = m_sequences;
     m_lastInputId = Qt3DCore::QNodeId();
 }
 
@@ -137,13 +137,13 @@ void InputSequence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_buttonInterval = propertyChange->value().toInt();
         }
     } else if (e->type() == Qt3DCore::NodeAdded) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("input")) {
-            m_inputs.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
+        if (propertyChange->propertyName() == QByteArrayLiteral("sequence")) {
+            m_sequences.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
             m_inputsToTrigger.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
         }
     } else if (e->type() == Qt3DCore::NodeRemoved) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("input")) {
-            m_inputs.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
+        if (propertyChange->propertyName() == QByteArrayLiteral("sequence")) {
+            m_sequences.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
             m_inputsToTrigger.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
         }
     }

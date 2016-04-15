@@ -51,33 +51,36 @@
 // We mean it.
 //
 
-#include <Qt3DInput/private/qabstractaggregateactioninput_p.h>
+#include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
+class QAbstractActionInput;
+
 /*!
     \class Qt3DInput::QInputChordSequence
     \internal
 */
-class QInputSequencePrivate : public Qt3DInput::QAbstractAggregateActionInputPrivate
+class QInputSequencePrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QInputSequencePrivate()
-        : Qt3DInput::QAbstractAggregateActionInputPrivate()
+        : Qt3DCore::QNodePrivate()
         , m_timeout(0)
         , m_buttonInterval(0)
     {}
 
     int m_timeout;
     int m_buttonInterval;
+    QVector<QAbstractActionInput *> m_sequences;
 };
 
 struct QInputSequenceData
 {
-    Qt3DCore::QNodeIdVector inputIds;
+    Qt3DCore::QNodeIdVector sequenceIds;
     int timeout;
     int buttonInterval;
 };

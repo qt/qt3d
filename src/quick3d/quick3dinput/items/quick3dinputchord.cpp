@@ -37,23 +37,7 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_INPUT_QUICK_QUICK3DAGGREGATEACTION_H
-#define QT3DINPUT_INPUT_QUICK_QUICK3DAGGREGATEACTION_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DQuickInput/private/qt3dquickinput_global_p.h>
-#include <Qt3DInput/QAbstractAggregateActionInput>
-#include <QQmlListProperty>
+#include "quick3dinputchord_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -61,28 +45,47 @@ namespace Qt3DInput {
 namespace Input {
 namespace Quick {
 
-class QT3DQUICKINPUTSHARED_PRIVATE_EXPORT Quick3DAggregateAction : public QObject
+Quick3DInputChord::Quick3DInputChord(QObject *parent)
+    : QObject(parent)
 {
-    Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DInput::QAbstractActionInput> inputs READ qmlActionInputs CONSTANT)
-public:
-    explicit Quick3DAggregateAction(QObject *parent = Q_NULLPTR);
+}
 
-    inline QAbstractAggregateActionInput *parentAction() const { return qobject_cast<QAbstractAggregateActionInput *>(parent()); }
-    QQmlListProperty<QAbstractActionInput> qmlActionInputs();
+QQmlListProperty<QAbstractActionInput> Quick3DInputChord::qmlActionInputs()
+{
+    return QQmlListProperty<QAbstractActionInput>(this, 0,
+                                        &Quick3DInputChord::appendActionInput,
+                                        &Quick3DInputChord::actionInputCount,
+                                        &Quick3DInputChord::actionInputAt,
+                                        &Quick3DInputChord::clearActionInputs);
+}
 
-private:
-    static void appendActionInput(QQmlListProperty<QAbstractActionInput> *list, QAbstractActionInput *input);
-    static QAbstractActionInput *actionInputAt(QQmlListProperty<QAbstractActionInput> *list, int index);
-    static int actionInputCount(QQmlListProperty<QAbstractActionInput> *list);
-    static void clearActionInputs(QQmlListProperty<QAbstractActionInput> *list);
-};
+void Quick3DInputChord::appendActionInput(QQmlListProperty<QAbstractActionInput> *list, QAbstractActionInput *input)
+{
+    Quick3DInputChord *action = qobject_cast<Quick3DInputChord *>(list->object);
+    action->parentChord()->addChord(input);
+}
+
+QAbstractActionInput *Quick3DInputChord::actionInputAt(QQmlListProperty<QAbstractActionInput> *list, int index)
+{
+    Quick3DInputChord *action = qobject_cast<Quick3DInputChord *>(list->object);
+    return action->parentChord()->chords().at(index);
+}
+
+int Quick3DInputChord::actionInputCount(QQmlListProperty<QAbstractActionInput> *list)
+{
+    Quick3DInputChord *action = qobject_cast<Quick3DInputChord *>(list->object);
+    return action->parentChord()->chords().count();
+}
+
+void Quick3DInputChord::clearActionInputs(QQmlListProperty<QAbstractActionInput> *list)
+{
+    Quick3DInputChord *action = qobject_cast<Quick3DInputChord *>(list->object);
+    Q_FOREACH (QAbstractActionInput *input, action->parentChord()->chords())
+        action->parentChord()->removeChord(input);
+}
 
 } // namespace Quick
 } // namespace Input
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
-
-
-#endif // QT3DINPUT_INPUT_QUICK_QUICK3DAGGREGATEACTION_H

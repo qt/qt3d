@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QABSTRACTAGGREGATEACTIONINPUT_P_H
-#define QT3DINPUT_QABSTRACTAGGREGATEACTIONINPUT_P_H
+#ifndef QT3DINPUT_INPUT_QUICK_QUICK3DINPUTSEQUENCE_H
+#define QT3DINPUT_INPUT_QUICK_QUICK3DINPUTSEQUENCE_H
 
 //
 //  W A R N I N G
@@ -51,29 +51,38 @@
 // We mean it.
 //
 
-#include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/private/qnode_p.h>
-#include <QtCore/qvector.h>
-#include <Qt3DInput/private/qt3dinput_global_p.h>
+#include <Qt3DQuickInput/private/qt3dquickinput_global_p.h>
+#include <Qt3DInput/qinputsequence.h>
+#include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
+namespace Input {
+namespace Quick {
 
-class QAbstractActionInput;
-
-class QT3DINPUTSHARED_PRIVATE_EXPORT QAbstractAggregateActionInputPrivate : public Qt3DCore::QNodePrivate
+class QT3DQUICKINPUTSHARED_PRIVATE_EXPORT Quick3DInputSequence : public QObject
 {
+    Q_OBJECT
+    Q_PROPERTY(QQmlListProperty<Qt3DInput::QAbstractActionInput> sequences READ qmlActionInputs CONSTANT)
 public:
-    QAbstractAggregateActionInputPrivate();
+    explicit Quick3DInputSequence(QObject *parent = Q_NULLPTR);
 
-    Q_DECLARE_PUBLIC(QAbstractAggregateActionInput)
-    QVector<QAbstractActionInput *> m_inputs;
+    inline QInputSequence *parentSequence() const { return qobject_cast<QInputSequence *>(parent()); }
+    QQmlListProperty<QAbstractActionInput> qmlActionInputs();
+
+private:
+    static void appendActionInput(QQmlListProperty<QAbstractActionInput> *list, QAbstractActionInput *input);
+    static QAbstractActionInput *actionInputAt(QQmlListProperty<QAbstractActionInput> *list, int index);
+    static int actionInputCount(QQmlListProperty<QAbstractActionInput> *list);
+    static void clearActionInputs(QQmlListProperty<QAbstractActionInput> *list);
 };
 
-}
+} // namespace Quick
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QABSTRACTAGGREGATEACTIONINPUT_P_H
 
+#endif // QT3DINPUT_INPUT_QUICK_QUICK3DINPUTSEQUENCE_H

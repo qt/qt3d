@@ -34,41 +34,55 @@
 ** https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
+**
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QABSTRACTAGGREGATEACTIONINPUT_H
-#define QT3DINPUT_QABSTRACTAGGREGATEACTIONINPUT_H
+#ifndef QT3DINPUT_INPUT_QUICK_QUICK3DINPUTCHORD_H
+#define QT3DINPUT_INPUT_QUICK_QUICK3DINPUTCHORD_H
 
-#include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/qnode.h>
-#include <Qt3DInput/qabstractactioninput.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DQuickInput/private/qt3dquickinput_global_p.h>
+#include <Qt3DInput/qinputchord.h>
+#include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
+namespace Input {
+namespace Quick {
 
-class QAbstractActionInput;
-class QNodePrivate;
-class QAbstractAggregateActionInputPrivate;
-
-class QT3DINPUTSHARED_EXPORT QAbstractAggregateActionInput : public Qt3DInput::QAbstractActionInput
+class QT3DQUICKINPUTSHARED_PRIVATE_EXPORT Quick3DInputChord : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QQmlListProperty<Qt3DInput::QAbstractActionInput> chords READ qmlActionInputs CONSTANT)
 public:
-    ~QAbstractAggregateActionInput();
+    explicit Quick3DInputChord(QObject *parent = Q_NULLPTR);
 
-    void addInput(QAbstractActionInput *input);
-    void removeInput(QAbstractActionInput *input);
-    QVector<QAbstractActionInput *> inputs() const;
+    inline QInputChord *parentChord() const { return qobject_cast<QInputChord *>(parent()); }
+    QQmlListProperty<QAbstractActionInput> qmlActionInputs();
 
-protected:
-    explicit QAbstractAggregateActionInput(Qt3DInput::QAbstractAggregateActionInputPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-    Q_DECLARE_PRIVATE(QAbstractAggregateActionInput)
+private:
+    static void appendActionInput(QQmlListProperty<QAbstractActionInput> *list, QAbstractActionInput *input);
+    static QAbstractActionInput *actionInputAt(QQmlListProperty<QAbstractActionInput> *list, int index);
+    static int actionInputCount(QQmlListProperty<QAbstractActionInput> *list);
+    static void clearActionInputs(QQmlListProperty<QAbstractActionInput> *list);
 };
 
-} // Qt3DInput
+} // namespace Quick
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QABSTRACTAGGREGATEACTIONINPUT_H
+
+#endif // QT3DINPUT_INPUT_QUICK_QUICK3DINPUTCHORD_H

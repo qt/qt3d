@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "quick3daggregateaction_p.h"
+#include "quick3dinputsequence_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -45,43 +45,43 @@ namespace Qt3DInput {
 namespace Input {
 namespace Quick {
 
-Quick3DAggregateAction::Quick3DAggregateAction(QObject *parent)
+Quick3DInputSequence::Quick3DInputSequence(QObject *parent)
     : QObject(parent)
 {
 }
 
-QQmlListProperty<QAbstractActionInput> Quick3DAggregateAction::qmlActionInputs()
+QQmlListProperty<QAbstractActionInput> Quick3DInputSequence::qmlActionInputs()
 {
     return QQmlListProperty<QAbstractActionInput>(this, 0,
-                                        &Quick3DAggregateAction::appendActionInput,
-                                        &Quick3DAggregateAction::actionInputCount,
-                                        &Quick3DAggregateAction::actionInputAt,
-                                        &Quick3DAggregateAction::clearActionInputs);
+                                        &Quick3DInputSequence::appendActionInput,
+                                        &Quick3DInputSequence::actionInputCount,
+                                        &Quick3DInputSequence::actionInputAt,
+                                        &Quick3DInputSequence::clearActionInputs);
 }
 
-void Quick3DAggregateAction::appendActionInput(QQmlListProperty<QAbstractActionInput> *list, QAbstractActionInput *input)
+void Quick3DInputSequence::appendActionInput(QQmlListProperty<QAbstractActionInput> *list, QAbstractActionInput *input)
 {
-    Quick3DAggregateAction *action = qobject_cast<Quick3DAggregateAction *>(list->object);
-    action->parentAction()->addInput(input);
+    Quick3DInputSequence *action = qobject_cast<Quick3DInputSequence *>(list->object);
+    action->parentSequence()->addSequence(input);
 }
 
-QAbstractActionInput *Quick3DAggregateAction::actionInputAt(QQmlListProperty<QAbstractActionInput> *list, int index)
+QAbstractActionInput *Quick3DInputSequence::actionInputAt(QQmlListProperty<QAbstractActionInput> *list, int index)
 {
-    Quick3DAggregateAction *action = qobject_cast<Quick3DAggregateAction *>(list->object);
-    return action->parentAction()->inputs().at(index);
+    Quick3DInputSequence *action = qobject_cast<Quick3DInputSequence *>(list->object);
+    return action->parentSequence()->sequences().at(index);
 }
 
-int Quick3DAggregateAction::actionInputCount(QQmlListProperty<QAbstractActionInput> *list)
+int Quick3DInputSequence::actionInputCount(QQmlListProperty<QAbstractActionInput> *list)
 {
-    Quick3DAggregateAction *action = qobject_cast<Quick3DAggregateAction *>(list->object);
-    return action->parentAction()->inputs().count();
+    Quick3DInputSequence *action = qobject_cast<Quick3DInputSequence *>(list->object);
+    return action->parentSequence()->sequences().count();
 }
 
-void Quick3DAggregateAction::clearActionInputs(QQmlListProperty<QAbstractActionInput> *list)
+void Quick3DInputSequence::clearActionInputs(QQmlListProperty<QAbstractActionInput> *list)
 {
-    Quick3DAggregateAction *action = qobject_cast<Quick3DAggregateAction *>(list->object);
-    Q_FOREACH (QAbstractActionInput *input, action->parentAction()->inputs())
-        action->parentAction()->removeInput(input);
+    Quick3DInputSequence *action = qobject_cast<Quick3DInputSequence *>(list->object);
+    Q_FOREACH (QAbstractActionInput *input, action->parentSequence()->sequences())
+        action->parentSequence()->removeSequence(input);
 }
 
 

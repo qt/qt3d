@@ -41,7 +41,8 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DInput/QAbstractAggregateActionInput>
+#include <Qt3DInput/qabstractactioninput.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -88,7 +89,7 @@ namespace Qt3DInput {
     Constructs a new QInputSequence with parent \a parent.
  */
 QInputSequence::QInputSequence(Qt3DCore::QNode *parent)
-    : Qt3DInput::QAbstractAggregateActionInput(*new QInputSequencePrivate(), parent)
+    : Qt3DInput::QAbstractActionInput(*new QInputSequencePrivate(), parent)
 {
 
 }
@@ -187,21 +188,74 @@ void QInputSequence::setButtonInterval(int buttonInterval)
     }
 }
 
+/*!
+    Append the QAbstractActionInput \a input to the end of this QInputSequence's sequence vector.
+
+    \sa removeInput
+ */
+void QInputSequence::addSequence(QAbstractActionInput *input)
+{
+    Q_D(QInputSequence);
+    if (!d->m_sequences.contains(input)) {
+        d->m_sequences.push_back(input);
+
+        if (!input->parent())
+            input->setParent(this);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, id()));
+            change->setPropertyName("sequence");
+            change->setValue(QVariant::fromValue(input->id()));
+            d->notifyObservers(change);
+        }
+    }
+}
+
+/*!
+    Remove the QAbstractActionInput \a input from this QInputSequence's sequence vector.
+
+    \sa addInput
+ */
+void QInputSequence::removeSequence(QAbstractActionInput *input)
+{
+    Q_D(QInputSequence);
+    if (d->m_sequences.contains(input)) {
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, id()));
+            change->setPropertyName("sequence");
+            change->setValue(QVariant::fromValue(input->id()));
+            d->notifyObservers(change);
+        }
+
+        d->m_sequences.removeOne(input);
+    }
+}
+
+/*!
+    Returns the QInputSequence's sequence vector.
+ */
+QVector<QAbstractActionInput *> QInputSequence::sequences() const
+{
+    Q_D(const QInputSequence);
+    return d->m_sequences;
+}
+
 void QInputSequence::copy(const Qt3DCore::QNode *ref)
 {
-    QAbstractAggregateActionInput::copy(ref);
     const QInputSequence *input = static_cast<const QInputSequence *>(ref);
     d_func()->m_timeout = input->d_func()->m_timeout;
     d_func()->m_buttonInterval = input->d_func()->m_buttonInterval;
+    d_func()->m_sequences = input->sequences();
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QInputSequence::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QInputSequenceData>::create(this);
-    auto &data = creationChange->data;
+    QInputSequenceData &data = creationChange->data;
 
     Q_D(const QInputSequence);
-    data.inputIds = qIdsForNodes(inputs());
+    data.sequenceIds = qIdsForNodes(sequences());
     data.timeout = d->m_timeout;
     data.buttonInterval = d->m_buttonInterval;
 
