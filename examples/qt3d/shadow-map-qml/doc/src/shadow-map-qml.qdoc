@@ -136,10 +136,10 @@
     Viewport
         RenderPassFilter
             RenderTargetSelector
-                ClearBuffer
+                ClearBuffers
                     CameraSelector
         RenderPassFilter
-            ClearBuffer
+            ClearBuffers
                 CameraSelector
     \endcode
 

@@ -69,8 +69,8 @@ FrameGraph {
                     ]
                 }
 
-                ClearBuffer {
-                    buffers: ClearBuffer.DepthBuffer
+                ClearBuffers {
+                    buffers: ClearBuffers.DepthBuffer
 
                     CameraSelector {
                         id: lightCameraSelector
@@ -82,8 +82,8 @@ FrameGraph {
         RenderPassFilter {
             includes: [ FilterKey { name: "pass"; value: "forward" } ]
 
-            ClearBuffer {
-                buffers : ClearBuffer.ColorDepthBuffer
+            ClearBuffers {
+                buffers : ClearBuffers.ColorDepthBuffer
 
                 CameraSelector {
                     id: viewCameraSelector
