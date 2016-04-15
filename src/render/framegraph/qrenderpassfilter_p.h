@@ -68,8 +68,8 @@ public:
 
     Q_DECLARE_PUBLIC(QRenderPassFilter)
     QString m_renderPassName;
-    QList<QFilterKey *> m_matchList;
-    QList<QParameter *> m_parameters;
+    QVector<QFilterKey *> m_matchList;
+    QVector<QParameter *> m_parameters;
 };
 
 struct QRenderPassFilterData

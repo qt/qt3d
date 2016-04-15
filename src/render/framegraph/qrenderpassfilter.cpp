@@ -66,7 +66,7 @@ QRenderPassFilter::QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent
 {
 }
 
-QList<QFilterKey *> QRenderPassFilter::matchAny() const
+QVector<QFilterKey *> QRenderPassFilter::matchAny() const
 {
     Q_D(const QRenderPassFilter);
     return d->m_matchList;
@@ -151,7 +151,7 @@ void QRenderPassFilter::removeParameter(QParameter *parameter)
     d->m_parameters.removeOne(parameter);
 }
 
-QList<QParameter *> QRenderPassFilter::parameters() const
+QVector<QParameter *> QRenderPassFilter::parameters() const
 {
     Q_D(const QRenderPassFilter);
     return d->m_parameters;
