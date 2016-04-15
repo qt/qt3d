@@ -117,7 +117,7 @@ void QEffect::removeParameter(QParameter *parameter)
     d->m_parameters.removeOne(parameter);
 }
 
-QList<QParameter *> QEffect::parameters() const
+QVector<QParameter *> QEffect::parameters() const
 {
     Q_D(const QEffect);
     return d->m_parameters;
@@ -171,7 +171,7 @@ void QEffect::removeTechnique(QTechnique *t)
 /*!
  * Returns the list of techniques used by the effect.
  */
-QList<QTechnique *> QEffect::techniques() const
+QVector<QTechnique *> QEffect::techniques() const
 {
     Q_D(const QEffect);
     return d->m_techniques;

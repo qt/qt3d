@@ -54,7 +54,6 @@
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DRender/private/parameterpack_p.h>
-#include <QList>
 
 QT_BEGIN_NAMESPACE
 

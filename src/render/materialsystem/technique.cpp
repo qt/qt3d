@@ -191,7 +191,7 @@ void Technique::removeRenderPass(Qt3DCore::QNodeId renderPassId)
     m_renderPasses.removeOne(renderPassId);
 }
 
-QVector<Qt3DCore::QNodeId> Technique::      filterKeys() const
+QVector<Qt3DCore::QNodeId> Technique::filterKeys() const
 {
     return m_filterKeyList;
 }

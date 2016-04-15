@@ -60,11 +60,11 @@ public:
 
     void addParameter(QParameter *parameter);
     void removeParameter(QParameter *parameter);
-    QList<QParameter *> parameters() const;
+    QVector<QParameter *> parameters() const;
 
     void addTechnique(QTechnique *t);
     void removeTechnique(QTechnique *t);
-    QList<QTechnique *> techniques() const;
+    QVector<QTechnique *> techniques() const;
 
 protected:
     QEffect(QEffectPrivate &dd, Qt3DCore::QNode *parent = 0);

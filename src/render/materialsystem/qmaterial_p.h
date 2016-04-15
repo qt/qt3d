@@ -66,7 +66,7 @@ public:
     QMaterialPrivate();
 
     Q_DECLARE_PUBLIC(QMaterial)
-    QList<QParameter *> m_parameters;
+    QVector<QParameter *> m_parameters;
     QEffect *m_effect;
 };
 

@@ -48,7 +48,6 @@
 #include <Qt3DRender/qfilterkey.h>
 
 #include <QHash>
-#include <QList>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,7 +55,7 @@ namespace Qt3DRender {
 
 class QParameter;
 class QRenderState;
-typedef QList<QParameter*> ParameterList;
+typedef QVector<QParameter*> ParameterList;
 
 class QRenderPassPrivate;
 
@@ -73,15 +72,15 @@ public:
 
     void addFilterKey(QFilterKey*filterKey);
     void removeFilterKey(QFilterKey*filterKey);
-    QList<QFilterKey*> filterKeys() const;
+    QVector<QFilterKey*> filterKeys() const;
 
     void addRenderState(QRenderState *state);
     void removeRenderState(QRenderState *state);
-    QList<QRenderState *> renderStates() const;
+    QVector<QRenderState *> renderStates() const;
 
     void addParameter(QParameter *p);
     void removeParameter(QParameter *p);
-    QList<QParameter *> parameters() const;
+    QVector<QParameter *> parameters() const;
 
 public Q_SLOTS:
     void setShaderProgram(QShaderProgram *shaderProgram);

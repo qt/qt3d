@@ -173,7 +173,7 @@ void QMaterial::removeParameter(QParameter *parameter)
     d->m_parameters.removeOne(parameter);
 }
 
-QList<QParameter *> QMaterial::parameters() const
+QVector<QParameter *> QMaterial::parameters() const
 {
     Q_D(const QMaterial);
     return d->m_parameters;

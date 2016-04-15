@@ -139,7 +139,7 @@ void QTechnique::removeFilterKey(QFilterKey *criterion)
     d->m_filterKeys.removeOne(criterion);
 }
 
-QList<QFilterKey *> QTechnique::filterKeys() const
+QVector<QFilterKey *> QTechnique::filterKeys() const
 {
     Q_D(const QTechnique);
     return d->m_filterKeys;
@@ -227,13 +227,13 @@ void QTechnique::removeRenderPass(QRenderPass *pass)
 /*!
  * Returns the list of render passes contained in the technique.
  */
-QList<QRenderPass *> QTechnique::renderPasses() const
+QVector<QRenderPass *> QTechnique::renderPasses() const
 {
     Q_D(const QTechnique);
     return d->m_renderPasses;
 }
 
-QList<QParameter *> QTechnique::parameters() const
+QVector<QParameter *> QTechnique::parameters() const
 {
     Q_D(const QTechnique);
     return d->m_parameters;
