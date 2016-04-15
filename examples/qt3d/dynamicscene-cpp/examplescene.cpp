@@ -59,6 +59,7 @@ ExampleScene::ExampleScene(Qt3DCore::QNode *parent)
     , m_timer(new QTimer(this))
     , m_even(true)
 {
+    buildScene();
     QObject::connect(m_timer, SIGNAL(timeout()), SLOT(updateScene()));
     m_timer->setInterval(1200);
     m_timer->start();
@@ -71,19 +72,11 @@ ExampleScene::~ExampleScene()
 
 void ExampleScene::updateScene()
 {
-    if (m_entities.isEmpty()) {
-        buildScene();
-    } else {
-        int i = 0;
-        Q_FOREACH (BoxEntity *entity, m_entities) {
-            if (i % 2 == 0)
-                entity->setParent(m_even ? Q_NULLPTR : this);
-            else
-                entity->setParent(m_even ? this : Q_NULLPTR);
-            ++i;
-        }
-        m_even = !m_even;
+    for (int i = 0; i < m_entities.size(); ++i) {
+        const bool visible = (i % 2) ^ m_even;
+        m_entities[i]->setParent(visible ? this : nullptr);
     }
+    m_even = !m_even;
 }
 
 void ExampleScene::buildScene()
