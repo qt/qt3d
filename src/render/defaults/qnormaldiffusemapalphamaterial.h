@@ -52,7 +52,7 @@ class QT3DRENDERSHARED_EXPORT QNormalDiffuseMapAlphaMaterial : public QNormalDif
 {
     Q_OBJECT
 public:
-    explicit QNormalDiffuseMapAlphaMaterial(Qt3DCore::QNode *parent = 0);
+    explicit QNormalDiffuseMapAlphaMaterial(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QNormalDiffuseMapAlphaMaterial();
 
 private:

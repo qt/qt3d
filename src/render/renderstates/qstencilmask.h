@@ -54,7 +54,7 @@ class QT3DRENDERSHARED_EXPORT QStencilMask : public QRenderState
     Q_PROPERTY(uint frontOutputMask READ frontOutputMask WRITE setFrontOutputMask NOTIFY frontOutputMaskChanged)
     Q_PROPERTY(uint backOutputMask READ backOutputMask WRITE setBackOutputMask NOTIFY backOutputMaskChanged)
 public:
-    explicit QStencilMask(Qt3DCore::QNode *parent = 0);
+    explicit QStencilMask(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QStencilMask();
 
     uint frontOutputMask() const;

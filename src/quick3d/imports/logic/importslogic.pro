@@ -6,10 +6,10 @@ QT += core-private qml 3dcore 3dlogic
 
 OTHER_FILES += qmldir
 
-load(qml_plugin)
-
 HEADERS += \
     qt3dquick3dlogicplugin.h
 
 SOURCES += \
     qt3dquick3dlogicplugin.cpp
+
+load(qml_plugin)

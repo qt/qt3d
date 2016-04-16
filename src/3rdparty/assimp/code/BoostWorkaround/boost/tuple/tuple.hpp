@@ -275,7 +275,7 @@ namespace boost	{
 
 	// Constructs a tuple with 0 elements (well ...)
 	inline tuple <> make_tuple () {
-		tuple <> t;
+		tuple <> t = tuple <> ();
 		return t;
 	}
 };

@@ -60,7 +60,7 @@ class QT3DRENDERSHARED_EXPORT QDiffuseSpecularMapMaterial : public QMaterial
     Q_PROPERTY(float textureScale READ textureScale WRITE setTextureScale NOTIFY textureScaleChanged)
 
 public:
-    explicit QDiffuseSpecularMapMaterial(Qt3DCore::QNode *parent = 0);
+    explicit QDiffuseSpecularMapMaterial(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QDiffuseSpecularMapMaterial();
 
     QColor ambient() const;

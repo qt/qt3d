@@ -48,7 +48,6 @@ public:
         : Qt3DCore::QNodeCreatedChangeBasePrivate(renderState)
         , m_type(QRenderStatePrivate::get(renderState)->m_type)
     {
-
     }
 
     QRenderStatePrivate::Type m_type;

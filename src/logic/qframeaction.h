@@ -59,11 +59,11 @@ class QT3DLOGICSHARED_EXPORT QFrameAction : public Qt3DCore::QComponent
     Q_OBJECT
 
 public:
-    explicit QFrameAction(Qt3DCore::QNode *parent = 0);
+    explicit QFrameAction(Qt3DCore::QNode *parent = nullptr);
     ~QFrameAction();
 
 protected:
-    QFrameAction(QFrameActionPrivate &dd, QNode *parent = 0);
+    QFrameAction(QFrameActionPrivate &dd, QNode *parent = nullptr);
 
 Q_SIGNALS:
     void triggered(float dt);

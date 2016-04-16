@@ -56,7 +56,7 @@ class QT3DRENDERSHARED_EXPORT QViewport : public QFrameGraphNode
     Q_PROPERTY(QRectF normalizedRect READ normalizedRect WRITE setNormalizedRect NOTIFY normalizedRectChanged)
 
 public:
-    explicit QViewport(Qt3DCore::QNode *parent = 0);
+    explicit QViewport(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QViewport();
 
     QRectF normalizedRect() const;
@@ -68,7 +68,7 @@ Q_SIGNALS:
     void normalizedRectChanged(const QRectF& normalizedRect);
 
 protected:
-    QViewport(QViewportPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QViewport(QViewportPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

@@ -67,7 +67,7 @@ public :
     };
     Q_ENUM(Type)
 
-    explicit QLight(Qt3DCore::QNode *parent = 0);
+    explicit QLight(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QLight();
 
     Type type() const;
@@ -80,7 +80,7 @@ public Q_SLOTS:
     void setIntensity(float intensity);
 
 protected :
-    QLight(QLightPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QLight(QLightPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:

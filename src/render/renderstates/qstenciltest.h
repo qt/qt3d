@@ -57,7 +57,7 @@ class QT3DRENDERSHARED_EXPORT QStencilTest : public QRenderState
     Q_PROPERTY(Qt3DRender::QStencilTestArguments *back READ back CONSTANT)
 public:
 
-    explicit QStencilTest(Qt3DCore::QNode *parent = 0);
+    explicit QStencilTest(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QStencilTest();
 
     QStencilTestArguments *front() const;

@@ -64,8 +64,8 @@ public:
         Threaded
     };
 
-    explicit QRenderAspect(QObject *parent = 0);
-    explicit QRenderAspect(RenderType type, QObject *parent = 0);
+    explicit QRenderAspect(QObject *parent = Q_NULLPTR);
+    explicit QRenderAspect(RenderType type, QObject *parent = Q_NULLPTR);
 
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 

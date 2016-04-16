@@ -56,7 +56,7 @@ class QT3DRENDERSHARED_EXPORT QFilterKey : public Qt3DCore::QNode
     Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 public:
-    explicit QFilterKey(Qt3DCore::QNode *parent = 0);
+    explicit QFilterKey(Qt3DCore::QNode *parent = nullptr);
     ~QFilterKey();
 
     QVariant value() const;

@@ -64,7 +64,7 @@ class QT3DCORESHARED_EXPORT QTransform : public QComponent
     Q_PROPERTY(float rotationZ READ rotationZ WRITE setRotationZ NOTIFY rotationZChanged)
 
 public:
-    explicit QTransform(QNode *parent = 0);
+    explicit QTransform(QNode *parent = Q_NULLPTR);
     ~QTransform();
 
     float scale() const;
@@ -114,7 +114,7 @@ Q_SIGNALS:
     void rotationZChanged(float rotationZ);
 
 protected:
-    QTransform(QTransformPrivate &dd, QNode *parent = 0);
+    QTransform(QTransformPrivate &dd, QNode *parent = Q_NULLPTR);
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 private:

@@ -60,7 +60,7 @@ class QT3DRENDERSHARED_EXPORT QMaterial : public Qt3DCore::QComponent
     Q_PROPERTY(Qt3DRender::QEffect *effect READ effect WRITE setEffect NOTIFY effectChanged)
 
 public:
-    explicit QMaterial(Qt3DCore::QNode *parent = 0);
+    explicit QMaterial(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QMaterial();
 
     QEffect *effect() const;
@@ -76,7 +76,7 @@ Q_SIGNALS:
     void effectChanged(QEffect *effect);
 
 protected:
-    QMaterial(QMaterialPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QMaterial(QMaterialPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

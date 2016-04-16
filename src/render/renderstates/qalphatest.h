@@ -68,7 +68,7 @@ public:
     };
     Q_ENUM(AlphaFunction)
 
-    explicit QAlphaTest(Qt3DCore::QNode *parent = 0);
+    explicit QAlphaTest(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QAlphaTest();
 
     AlphaFunction alphaFunction() const;

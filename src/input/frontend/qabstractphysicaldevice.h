@@ -57,7 +57,7 @@ class QT3DINPUTSHARED_EXPORT QAbstractPhysicalDevice : public Qt3DCore::QNode
 {
     Q_OBJECT
 public:
-    explicit QAbstractPhysicalDevice(Qt3DCore::QNode *parent = 0);
+    explicit QAbstractPhysicalDevice(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QAbstractPhysicalDevice();
 
     virtual int axisCount() const;
@@ -73,7 +73,7 @@ public:
     QVector<QAxisSetting *> axisSettings() const;
 
 protected:
-    QAbstractPhysicalDevice(QAbstractPhysicalDevicePrivate &dd, Qt3DCore::QNode *parent = 0);
+    QAbstractPhysicalDevice(QAbstractPhysicalDevicePrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     Q_DECLARE_PRIVATE(QAbstractPhysicalDevice)
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;

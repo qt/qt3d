@@ -50,7 +50,7 @@ class QT3DRENDERSHARED_EXPORT QNoDraw : public QFrameGraphNode
 {
     Q_OBJECT
 public:
-    explicit QNoDraw(Qt3DCore::QNode *parent = 0);
+    explicit QNoDraw(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QNoDraw();
 
 private:

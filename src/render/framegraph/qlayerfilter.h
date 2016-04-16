@@ -54,7 +54,7 @@ class QT3DRENDERSHARED_EXPORT QLayerFilter : public QFrameGraphNode
     Q_OBJECT
     Q_PROPERTY(QStringList layers READ layers WRITE setLayers NOTIFY layersChanged)
 public:
-    explicit QLayerFilter(Qt3DCore::QNode *parent = 0);
+    explicit QLayerFilter(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QLayerFilter();
 
     QStringList layers() const;
@@ -66,7 +66,7 @@ Q_SIGNALS:
     void layersChanged(const QStringList &layers);
 
 protected:
-    QLayerFilter(QLayerFilterPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QLayerFilter(QLayerFilterPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

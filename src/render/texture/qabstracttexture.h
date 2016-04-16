@@ -324,9 +324,10 @@ Q_SIGNALS:
     void layersChanged(int layers);
 
 protected:
-    explicit QAbstractTexture(Qt3DCore::QNode *parent = 0);
-    explicit QAbstractTexture(Target target, Qt3DCore::QNode *parent = 0);
-    QAbstractTexture(QAbstractTexturePrivate &dd, Qt3DCore::QNode *parent = 0);
+    explicit QAbstractTexture(Qt3DCore::QNode *parent = nullptr);
+    explicit QAbstractTexture(Target target, Qt3DCore::QNode *parent = nullptr);
+    QAbstractTexture(QAbstractTexturePrivate &dd, Qt3DCore::QNode *parent = nullptr);
+
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void setStatus(Status status);
 

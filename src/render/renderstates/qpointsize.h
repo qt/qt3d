@@ -60,7 +60,7 @@ public:
     };
     Q_ENUM(SizeMode)
 
-    explicit QPointSize(Qt3DCore::QNode *parent = 0);
+    explicit QPointSize(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QPointSize();
 
     SizeMode sizeMode() const;

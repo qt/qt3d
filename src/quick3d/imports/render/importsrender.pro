@@ -14,7 +14,7 @@ include(./defaults/defaults.pri)
 
 OTHER_FILES += qmldir
 
-load(qml_plugin)
+include(./defaults/defaults.pri)
 
 OTHER_FILES += \
     $$QML_FILES
@@ -40,3 +40,5 @@ RESOURCE_CONTENT += \
 write_file($$GENERATED_RESOURCE_FILE, RESOURCE_CONTENT)|error("Aborting.")
 
 RESOURCES += $$GENERATED_RESOURCE_FILE
+
+load(qml_plugin)

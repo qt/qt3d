@@ -58,8 +58,9 @@ class QT3DINPUTSHARED_EXPORT QMouseDevice : public Qt3DInput::QAbstractPhysicalD
     Q_OBJECT
     Q_PROPERTY(float sensitivity READ sensitivity WRITE setSensitivity NOTIFY sensitivityChanged)
 public:
-    explicit QMouseDevice(Qt3DCore::QNode *parent = 0);
+    explicit QMouseDevice(Qt3DCore::QNode *parent = nullptr);
     ~QMouseDevice();
+
     enum Axis {
         X,
         Y
