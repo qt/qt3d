@@ -60,6 +60,7 @@ void Handler::updateFromPeer(Qt3DCore::QNode *peer)
 void Handler::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     Q_UNUSED(change);
+    m_logicManager->appendHandler(this);
 }
 
 void Handler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -85,7 +86,6 @@ Qt3DCore::QBackendNode *HandlerFunctor::create(const Qt3DCore::QNodeCreatedChang
 {
     Handler *handler = m_manager->logicHandlerManager()->getOrCreateResource(change->subjectId());
     handler->setManager(m_manager);
-    m_manager->appendHandler(handler);
     return handler;
 }
 
