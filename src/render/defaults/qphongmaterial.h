@@ -58,7 +58,7 @@ class QT3DRENDERSHARED_EXPORT QPhongMaterial : public QMaterial
     Q_PROPERTY(float shininess READ shininess WRITE setShininess NOTIFY shininessChanged)
 
 public:
-    explicit QPhongMaterial(Qt3DCore::QNode *parent = 0);
+    explicit QPhongMaterial(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QPhongMaterial();
 
     QColor ambient() const;

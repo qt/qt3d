@@ -54,7 +54,7 @@ class QT3DRENDERSHARED_EXPORT QRenderTarget : public Qt3DCore::QComponent
 {
     Q_OBJECT
 public:
-    explicit QRenderTarget(Qt3DCore::QNode *parent = 0);
+    explicit QRenderTarget(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QRenderTarget();
 
     void addOutput(QRenderTargetOutput *output);
@@ -62,7 +62,7 @@ public:
     QVector<QRenderTargetOutput *> outputs() const;
 
 protected:
-    QRenderTarget(QRenderTargetPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QRenderTarget(QRenderTargetPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

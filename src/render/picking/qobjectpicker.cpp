@@ -269,13 +269,13 @@ void QObjectPickerPrivate::propagateEvent(QPickEvent *event, EventType type)
                 if ((objectPicker = qobject_cast<Qt3DRender::QObjectPicker *>(c)) != Q_NULLPTR) {
                     QObjectPickerPrivate *objectPickerPrivate = static_cast<QObjectPickerPrivate *>(QObjectPickerPrivate::get(objectPicker));
                     switch (type) {
-                    case EventType::Pressed:
+                    case Pressed:
                         objectPickerPrivate->pressedEvent(event);
                         break;
-                    case EventType::Released:
+                    case Released:
                         objectPickerPrivate->releasedEvent(event);
                         break;
-                    case EventType::Clicked:
+                    case Clicked:
                         objectPickerPrivate->clickedEvent(event);
                         break;
                     case EventType::Moved:
@@ -301,7 +301,7 @@ void QObjectPickerPrivate::pressedEvent(QPickEvent *event)
     m_acceptedLastPressedEvent = event->isAccepted();
     if (!m_acceptedLastPressedEvent) {
         // Travel parents to transmit the event
-        propagateEvent(event, EventType::Pressed);
+        propagateEvent(event, Pressed);
     } else {
         setPressed(true);
     }
@@ -315,7 +315,7 @@ void QObjectPickerPrivate::clickedEvent(QPickEvent *event)
     Q_Q(QObjectPicker);
     emit q->clicked(event);
     if (!event->isAccepted())
-        propagateEvent(event, EventType::Clicked);
+        propagateEvent(event, Clicked);
 }
 
 /*!
@@ -340,7 +340,7 @@ void QObjectPickerPrivate::releasedEvent(QPickEvent *event)
         setPressed(false);
     } else {
         event->setAccepted(false);
-        propagateEvent(event, EventType::Released);
+        propagateEvent(event, Released);
     }
 }
 

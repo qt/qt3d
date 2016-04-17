@@ -80,7 +80,7 @@ class QT3DCORESHARED_EXPORT QNode : public QObject
     Q_PROPERTY(Qt3DCore::QNode *parent READ parentNode WRITE setParent NOTIFY parentChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 public:
-    explicit QNode(QNode *parent = 0);
+    explicit QNode(QNode *parent = Q_NULLPTR);
     virtual ~QNode();
 
     const QNodeId id() const;
@@ -105,7 +105,7 @@ protected:
     // Clone should only be made in the main thread
     static QNode *clone(QNode *node);
 
-    QNode(QNodePrivate &dd, QNode *parent = 0);
+    QNode(QNodePrivate &dd, QNode *parent = Q_NULLPTR);
     virtual void copy(const QNode *ref);
     virtual void sceneChangeEvent(const QSceneChangePtr &change);
 

@@ -58,7 +58,7 @@ class QOrbitControl : public Qt3DCore::QEntity
     Q_PROPERTY(float zoomInLimit READ zoomInLimit WRITE setZoomInLimit NOTIFY zoomInLimitChanged)
 
 public:
-    explicit QOrbitControl(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QOrbitControl(Qt3DCore::QNode *parent = nullptr);
     ~QOrbitControl();
 
     float clampInputs(float input1, float input2);

@@ -1,13 +1,8 @@
 TARGET   = Qt3DQuickRender
+MODULE   = 3dquickrender
 
 QT      += core core-private qml qml-private 3dcore 3drender 3dquick 3dquick-private 3dcore-private 3drender-private
 CONFIG -= precompile_header
-
-DEFINES += QT3DQUICKRENDER_LIBRARY
-
-MODULE   = 3dquickrender
-
-load(qt_module)
 
 gcov {
     CONFIG += static
@@ -31,3 +26,4 @@ win32-g++*:QMAKE_CXXFLAGS_CXX11 = -std=gnu++0x
 
 include(./items/items.pri)
 
+load(qt_module)

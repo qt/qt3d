@@ -1,12 +1,7 @@
 TARGET   = Qt3DQuick
-
-QT      += core-private gui-private qml qml-private quick quick-private 3dcore 3dcore-private
-
-DEFINES += QT3DQUICK_LIBRARY
-
 MODULE   = 3dquick
 
-load(qt_module)
+QT      += core-private gui-private qml qml-private quick quick-private 3dcore 3dcore-private
 
 gcov {
     CONFIG += static
@@ -37,3 +32,4 @@ win32-g++*:QMAKE_CXXFLAGS_CXX11 = -std=gnu++0x
 
 include(./items/items.pri)
 
+load(qt_module)

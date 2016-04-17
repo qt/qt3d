@@ -56,7 +56,7 @@ class QT3DRENDERSHARED_EXPORT QTextureImage : public QAbstractTextureImage
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 
 public:
-    explicit QTextureImage(Qt3DCore::QNode *parent = 0);
+    explicit QTextureImage(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QTextureImage();
 
     enum Status {

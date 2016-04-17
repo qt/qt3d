@@ -53,7 +53,7 @@ class QT3DRENDERSHARED_EXPORT QDithering : public QRenderState
 {
     Q_OBJECT
 public:
-    explicit QDithering(Qt3DCore::QNode *parent = 0);
+    explicit QDithering(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QDithering();
 
 private:

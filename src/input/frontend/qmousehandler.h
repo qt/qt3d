@@ -58,7 +58,7 @@ class QT3DINPUTSHARED_EXPORT QMouseHandler : public Qt3DCore::QComponent
     Q_PROPERTY(bool containsMouse READ containsMouse NOTIFY containsMouseChanged)
 
 public:
-    explicit QMouseHandler(QNode *parent = 0);
+    explicit QMouseHandler(QNode *parent = nullptr);
     ~QMouseHandler();
 
     QMouseDevice *sourceDevice() const;

@@ -57,7 +57,7 @@ class QT3DRENDERSHARED_EXPORT QSceneLoader : public Qt3DCore::QComponent
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 public:
-    explicit QSceneLoader(Qt3DCore::QNode *parent = 0);
+    explicit QSceneLoader(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QSceneLoader();
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;

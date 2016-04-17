@@ -66,7 +66,7 @@ public:
     };
     Q_ENUM(CullingMode)
 
-    explicit QCullFace(Qt3DCore::QNode *parent = 0);
+    explicit QCullFace(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QCullFace();
 
     CullingMode mode() const;

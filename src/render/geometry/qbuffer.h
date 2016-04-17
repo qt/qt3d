@@ -85,7 +85,7 @@ public:
     };
     Q_ENUM(UsageType)
 
-    explicit QBuffer(BufferType ty = QBuffer::VertexBuffer, Qt3DCore::QNode *parent = 0);
+    explicit QBuffer(BufferType ty = QBuffer::VertexBuffer, Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QBuffer();
 
     UsageType usage() const;

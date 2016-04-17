@@ -1,15 +1,9 @@
 TARGET   = Qt3DRender
-
-QT      += core-private gui-private 3dcore 3dcore-private openglextensions concurrent
-
-DEFINES += QT3DRENDER_LIBRARY
-
 MODULE   = 3drender
 
-MODULE_PLUGIN_TYPES = \
-    sceneparsers
-
-load(qt_module)
+QT = core-private gui-private 3dcore-private
+QT_PRIVATE = openglextensions
+QT_FOR_PRIVATE = concurrent
 
 include (backend/render-backend.pri)
 include (geometry/geometry.pri)
@@ -52,3 +46,7 @@ win32-g++*:QMAKE_CXXFLAGS_CXX11 = -std=gnu++0x
 
 SOURCES += \
     renderlogging.cpp
+
+MODULE_PLUGIN_TYPES = \
+    sceneparsers
+load(qt_module)

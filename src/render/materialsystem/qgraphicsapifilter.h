@@ -76,7 +76,7 @@ public:
     };
     Q_ENUM(OpenGLProfile)
 
-    explicit QGraphicsApiFilter(QObject *parent = 0);
+    explicit QGraphicsApiFilter(QObject *parent = Q_NULLPTR);
 
     void copy(const QGraphicsApiFilter &ref);
 
