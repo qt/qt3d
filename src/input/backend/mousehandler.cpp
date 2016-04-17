@@ -43,6 +43,7 @@
 #include "mousedevice_p.h"
 
 #include <Qt3DInput/qmousehandler.h>
+#include <Qt3DInput/private/qmousehandler_p.h>
 #include <Qt3DInput/qmousedevice.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
@@ -69,6 +70,13 @@ void MouseHandler::updateFromPeer(Qt3DCore::QNode *peer)
     QMouseHandler *input = static_cast<QMouseHandler *>(peer);
     if (input->sourceDevice() != Q_NULLPTR)
         setDevice(input->sourceDevice()->id());
+}
+
+void MouseHandler::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QMouseHandlerData>>(change);
+    const auto &data = typedChange->data;
+    setDevice(data.mouseDeviceId);
 }
 
 Qt3DCore::QNodeId MouseHandler::mouseDevice() const
