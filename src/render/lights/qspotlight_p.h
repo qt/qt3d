@@ -64,10 +64,13 @@ class QSpotLightPrivate : public QLightPrivate
 public:
     QSpotLightPrivate();
 
-    Q_DECLARE_PUBLIC(QSpotLight)
-    QVector3D m_attenuation;
+    float m_constantAttenuation;
+    float m_linearAttenuation;
+    float m_quadraticAttenuation;
     QVector3D m_localDirection;
     float m_cutOffAngle;
+
+    Q_DECLARE_PUBLIC(QSpotLight)
 
 };
 

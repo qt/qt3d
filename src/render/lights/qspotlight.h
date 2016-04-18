@@ -51,7 +51,9 @@ class QSpotLightPrivate;
 class QT3DRENDERSHARED_EXPORT QSpotLight : public QLight
 {
     Q_OBJECT
-    Q_PROPERTY(QVector3D attenuation READ attenuation WRITE setAttenuation NOTIFY attenuationChanged)
+    Q_PROPERTY(float constantAttenuation READ constantAttenuation WRITE setConstantAttenuation NOTIFY constantAttenuationChanged)
+    Q_PROPERTY(float linearAttenuation READ linearAttenuation WRITE setLinearAttenuation NOTIFY linearAttenuationChanged)
+    Q_PROPERTY(float quadraticAttenuation READ quadraticAttenuation WRITE setQuadraticAttenuation NOTIFY quadraticAttenuationChanged)
     Q_PROPERTY(QVector3D localDirection READ localDirection WRITE setLocalDirection NOTIFY localDirectionChanged)
     Q_PROPERTY(float cutOffAngle READ cutOffAngle WRITE setCutOffAngle NOTIFY cutOffAngleChanged)
 
@@ -63,21 +65,20 @@ public:
     float cutOffAngle() const;
 
     float constantAttenuation() const;
-    void setConstantAttenuation(float value);
-
     float linearAttenuation() const;
-    void setLinearAttenuation(float value);
-
     float quadraticAttenuation() const;
-    void setQuadraticAttenuation(float value);
 
 public Q_SLOTS:
-    void setAttenuation(const QVector3D &value);
+    void setConstantAttenuation(float value);
+    void setLinearAttenuation(float value);
+    void setQuadraticAttenuation(float value);
     void setLocalDirection(const QVector3D &localDirection);
     void setCutOffAngle(float cutOffAngle);
 
 Q_SIGNALS:
-    void attenuationChanged(const QVector3D &attenuation);
+    void constantAttenuationChanged(float constantAttenuation);
+    void linearAttenuationChanged(float linearAttenuation);
+    void quadraticAttenuationChanged(float quadraticAttenuation);
     void localDirectionChanged(const QVector3D &localDirection);
     void cutOffAngleChanged(float cutOffAngle);
 
