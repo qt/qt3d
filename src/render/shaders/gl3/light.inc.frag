@@ -53,7 +53,7 @@ void adsModelNormalMapped(const in vec3 vpos, const in vec3 vnormal, const in ve
         }
 
         diffuseColor += att * lights[i].intensity * diffuse * lights[i].color;
-        specularColor += att * specular;
+        specularColor += att * lights[i].intensity * specular * lights[i].color;
     }
 }
 
@@ -95,7 +95,7 @@ void adsModel(const in vec3 vpos, const in vec3 vnormal, const in vec3 eye, cons
         }
 
         diffuseColor += att * lights[i].intensity * diffuse * lights[i].color;
-        specularColor += att * specular;
+        specularColor += att * lights[i].intensity * specular * lights[i].color;
     }
 }
 
