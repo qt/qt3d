@@ -124,18 +124,16 @@ int main(int ac, char **av)
     Qt3DCore::QEntity *sceneRoot = new Qt3DCore::QEntity();
 
     // Scene Camera
-    Qt3DRender::QCamera *basicCamera = view.camera();
-    basicCamera->setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
-    basicCamera->setAspectRatio(view.width() / view.height());
-    basicCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
-    basicCamera->setViewCenter(QVector3D(0.0f, 3.5f, 0.0f));
-    basicCamera->setPosition(QVector3D(0.0f, 3.5f, 25.0f));
-    basicCamera->setNearPlane(0.001f);
-    basicCamera->setFarPlane(10000.0f);
+    Qt3DRender::QCamera *camera = view.camera();
+    camera->setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
+    camera->setViewCenter(QVector3D(0.0f, 3.5f, 0.0f));
+    camera->setPosition(QVector3D(0.0f, 3.5f, 25.0f));
+    camera->setNearPlane(0.001f);
+    camera->setFarPlane(10000.0f);
 
     // For camera controls
     Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(sceneRoot);
-    camController->setCamera(basicCamera);
+    camController->setCamera(camera);
 
     // Scene loader
     Qt3DCore::QEntity *sceneLoaderEntity = new Qt3DCore::QEntity(sceneRoot);
