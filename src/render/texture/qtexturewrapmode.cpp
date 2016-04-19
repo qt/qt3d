@@ -147,7 +147,7 @@ void QTextureWrapMode::setZ(WrapMode z)
 }
 
 /*!
-    Returns the wrap mode of the y dimension.
+    Returns the wrap mode of the z dimension.
  */
 QTextureWrapMode::WrapMode QTextureWrapMode::z() const
 {

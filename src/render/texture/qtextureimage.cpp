@@ -100,14 +100,14 @@ QTextureImage::Status QTextureImage::status() const
 /*!
   \property Qt3DRender::QTextureImage::source
 
-  This property holdsthe source url from which data for the texture
+  This property holds the source url from which data for the texture
   image will be loaded.
 */
 
 /*!
   \qmlproperty url Qt3D.Render::TextureImage::source
 
-  This property holdsthe source url from which data for the texture
+  This property holds the source url from which data for the texture
   image will be loaded.
 */
 

@@ -279,7 +279,7 @@ void QSkyboxEntity::setCameraPosition(const QVector3D &cameraPosition)
 }
 
 /*!
- * Returns the camera postion.
+ * Returns the camera position.
  */
 QVector3D QSkyboxEntity::cameraPosition() const
 {
