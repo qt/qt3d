@@ -77,11 +77,7 @@ public:
     void addSceneData(const QUrl &source, Qt3DCore::QNodeId sceneUuid);
     QVector<LoadSceneJobPtr> pendingSceneLoaderJobs();
 
-    void addLoadedSceneTree(const QUrl &source, Qt3DCore::QEntity *tree);
-    Qt3DCore::QEntity *sceneTreeFromSource(const QUrl &source);
-
 private:
-    QHash<QUrl, Qt3DCore::QEntity *> m_loadedSceneTrees;
     QVector<LoadSceneJobPtr> m_pendingJobs;
 };
 

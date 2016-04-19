@@ -46,6 +46,7 @@
 #include <Qt3DRender/qsceneloader.h>
 #include <Qt3DRender/private/qsceneloader_p.h>
 #include <Qt3DRender/private/scenemanager_p.h>
+#include <QtCore/qcoreapplication.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -94,18 +95,16 @@ QUrl Scene::source() const
 
 void Scene::setSceneSubtree(Qt3DCore::QEntity *subTree)
 {
+    // Move scene sub tree to the application thread so that it can be grafted in.
+    const auto appThread = QCoreApplication::instance()->thread();
+    subTree->moveToThread(appThread);
+
+    // Send the new subtree to the frontend
     QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerId()));
     e->setPropertyName("scene");
-    // The Frontend element has to perform the clone
-    // So that the objects are created in the main thread
-    e->setValue(QVariant::fromValue(QNodePtr(subTree, &QNodePrivate::nodePtrDeleter)));
+    e->setValue(QVariant::fromValue(subTree));
     e->setTargetNode(peerId());
     notifyObservers(e);
-    QBackendScenePropertyChangePtr e2(new QBackendScenePropertyChange(NodeUpdated, peerId()));
-    e2->setPropertyName("status");
-    e2->setValue(subTree != Q_NULLPTR ? QSceneLoader::Ready : QSceneLoader::Error);
-    e2->setTargetNode(peerId());
-    notifyObservers(e2);
 }
 
 void Scene::setSceneManager(SceneManager *manager)

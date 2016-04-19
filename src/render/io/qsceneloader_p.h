@@ -69,6 +69,7 @@ public:
 
     QUrl m_source;
     QSceneLoader::Status m_status;
+    Qt3DCore::QEntity *m_subTreeRoot;
 };
 
 struct QSceneLoaderData

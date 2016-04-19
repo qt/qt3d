@@ -61,19 +61,22 @@ LoadSceneJob::LoadSceneJob(const QUrl &source, Qt3DCore::QNodeId m_sceneComponen
 
 void LoadSceneJob::run()
 {
-    Qt3DCore::QEntity *sceneTree = m_managers->sceneManager()->sceneTreeFromSource(m_source);
-    if (sceneTree == Q_NULLPTR) {
-        Q_FOREACH (QSceneIOHandler *sceneIOHandler, m_sceneIOHandlers) {
-            if (sceneIOHandler->isFileTypeSupported(m_source)) {
-                sceneIOHandler->setSource(m_source);
-                sceneTree = sceneIOHandler->scene();
-                m_managers->sceneManager()->addLoadedSceneTree(m_source, sceneTree);
-            }
-        }
+    // Iterate scene IO handlers until we find one that can handle this file type
+    Qt3DCore::QEntity *sceneSubTree = nullptr;
+    for (QSceneIOHandler *sceneIOHandler : qAsConst(m_sceneIOHandlers)) {
+        if (!sceneIOHandler->isFileTypeSupported(m_source))
+            continue;
+
+        // File type is supported
+        sceneIOHandler->setSource(m_source);
+        sceneSubTree = sceneIOHandler->scene();
+        break;
     }
-    // set clone of sceneTree in sceneComponent
+
+    // Set clone of sceneTree in sceneComponent. This will move the sceneSubTree
+    // to the QCoreApplication thread which is where the frontend object tree lives.
     Scene *scene = m_managers->sceneManager()->lookupResource(m_sceneComponent);
-    scene->setSceneSubtree(sceneTree);
+    scene->setSceneSubtree(sceneSubTree);
 }
 
 } // namespace Render

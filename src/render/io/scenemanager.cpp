@@ -71,18 +71,6 @@ QVector<LoadSceneJobPtr> SceneManager::pendingSceneLoaderJobs()
     return copy;
 }
 
-void SceneManager::addLoadedSceneTree(const QUrl &source, Qt3DCore::QEntity *tree)
-{
-    SceneManager::Locker lock(this);
-    m_loadedSceneTrees.insert(source, tree);
-}
-
-Qt3DCore::QEntity *SceneManager::sceneTreeFromSource(const QUrl &source)
-{
-    SceneManager::Locker lock(this);
-    return m_loadedSceneTrees.value(source);
-}
-
 } // namespace Render
 } // namespace Qt3DRender
 
