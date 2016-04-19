@@ -4,7 +4,7 @@
 
 # AssImp expects this to be defined on debug builds
 CONFIG(debug, debug|release) : DEFINES+=_DEBUG
-CONFIG += exceptions
+CONFIG += exceptions rtti
 
 CONFIG -= precompile_header
 
