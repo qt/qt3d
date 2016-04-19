@@ -79,12 +79,8 @@ Q_SIGNALS:
     void axisChanged(int axis);
     void buttonsChanged(const QVariantList &buttons);
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
 private:
     Q_DECLARE_PRIVATE(QAxisInput)
-    QT3D_CLONEABLE(QAxisInput)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

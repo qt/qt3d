@@ -63,18 +63,6 @@ QStencilOperationArguments *QStencilOperation::back() const
     return d->m_back;
 }
 
-void QStencilOperation::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QStencilOperation *refState = static_cast<const QStencilOperation*>(ref);
-    d_func()->m_back->setDepthTestFailureOperation(refState->d_func()->m_back->depthTestFailureOperation());
-    d_func()->m_back->setStencilTestFailureOperation(refState->d_func()->m_back->stencilTestFailureOperation());
-    d_func()->m_back->setAllTestsPassOperation(refState->d_func()->m_back->allTestsPassOperation());
-    d_func()->m_front->setDepthTestFailureOperation(refState->d_func()->m_front->depthTestFailureOperation());
-    d_func()->m_front->setStencilTestFailureOperation(refState->d_func()->m_front->stencilTestFailureOperation());
-    d_func()->m_front->setAllTestsPassOperation(refState->d_func()->m_front->allTestsPassOperation());
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QStencilOperation::createNodeCreationChange() const
 {
     auto creationChange = QRenderStateCreatedChangePtr<QStencilOperationData>::create(this);

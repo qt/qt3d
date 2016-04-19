@@ -312,7 +312,6 @@ public:
 
 private:
     QByteArray m_data;
-    QT3D_CLONEABLE(AssimpRawTextureImage)
 
     class AssimpRawTextureImageFunctor : public QTextureImageDataGenerator
     {

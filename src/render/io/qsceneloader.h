@@ -80,9 +80,7 @@ Q_SIGNALS:
     void statusChanged(Status status);
 
 protected:
-    QT3D_CLONEABLE(QSceneLoader)
     explicit QSceneLoader(QSceneLoaderPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QSceneLoader)

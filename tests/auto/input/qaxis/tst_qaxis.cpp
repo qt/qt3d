@@ -29,9 +29,11 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DInput/QAxis>
 #include <Qt3DInput/QAxisInput>
+#include <Qt3DInput/private/qaxis_p.h>
 
 #include <Qt3DCore/QNodePropertyChange>
 #include <Qt3DCore/QNodeAddedPropertyChange>
@@ -78,19 +80,24 @@ private Q_SLOTS:
         QFETCH(Qt3DInput::QAxis *, axis);
 
         // WHEN
-        Qt3DInput::QAxis *clone = static_cast<Qt3DInput::QAxis *>(QNode::clone(axis));
-        QCoreApplication::processEvents();
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(axis);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(axis->id(), clone->id());
-        QCOMPARE(axis->inputs().count(), clone->inputs().count());
-        QCOMPARE(axis->value(), clone->value());
+        QCOMPARE(creationChanges.size(), 1 + axis->inputs().size());
 
-        for (int i = 0, m = axis->inputs().count(); i < m; ++i) {
-            QCOMPARE(axis->inputs().at(i)->id(), clone->inputs().at(i)->id());
-        }
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DInput::QAxisData> creationChangeData =
+               qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QAxisData>>(creationChanges.first());
+        const Qt3DInput::QAxisData &cloneData = creationChangeData->data;
 
+        // THEN
+        QCOMPARE(axis->id(), creationChangeData->subjectId());
+        QCOMPARE(axis->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(axis->metaObject(), creationChangeData->metaObject());
+        QCOMPARE(axis->inputs().count(), cloneData.inputIds.count());
+
+        for (int i = 0, m = axis->inputs().count(); i < m; ++i)
+            QCOMPARE(axis->inputs().at(i)->id(), cloneData.inputIds.at(i));
     }
 
     void checkPropertyUpdates()
@@ -142,14 +149,6 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(value(), 383.0f);
     }
-
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QAxis)

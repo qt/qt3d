@@ -30,8 +30,10 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qsortpolicy.h>
+#include <Qt3DRender/private/qsortpolicy_p.h>
 
 #include "testpostmanarbiter.h"
 
@@ -82,34 +84,33 @@ private Q_SLOTS:
         QCOMPARE(sortPolicy->sortTypes(), sortTypes);
 
         // WHEN
-        Qt3DRender::QSortPolicy *clone = static_cast<Qt3DRender::QSortPolicy *>(QNode::clone(sortPolicy));
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(sortPolicy);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(sortPolicy->id(), clone->id());
+        QCOMPARE(creationChanges.size(), 1);
 
-        QCOMPARE(sortPolicy->sortTypes().count(), clone->sortTypes().count());
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QSortPolicyData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QSortPolicyData>>(creationChanges.first());
+        const Qt3DRender::QSortPolicyData &cloneData = creationChangeData->data;
 
-        for (int i = 0, m = sortTypes.count(); i < m; ++i) {
-            Qt3DRender::QSortPolicy::SortType cClone = clone->sortTypes().at(i);
-            Qt3DRender::QSortPolicy::SortType cOrig = sortTypes.at(i);
-            QCOMPARE(cOrig,cClone);
-        }
+        QCOMPARE(sortPolicy->id(), creationChangeData->subjectId());
+        QCOMPARE(sortPolicy->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(sortPolicy->metaObject(), creationChangeData->metaObject());
+        QCOMPARE(sortPolicy->sortTypes().count(), cloneData.sortTypes.count());
+        QCOMPARE(sortPolicy->sortTypes(), cloneData.sortTypes);
 
         delete sortPolicy;
-        delete clone;
     }
 
     void checkPropertyUpdates()
     {
-        QSKIP("Wait for cloning mechanism to be fixed");
-
         // GIVEN
         QScopedPointer<Qt3DRender::QSortPolicy> sortPolicy(new Qt3DRender::QSortPolicy());
         TestArbiter arbiter(sortPolicy.data());
 
         // WHEN
-        Qt3DRender::QSortPolicy::SortType sortType1;
+        Qt3DRender::QSortPolicy::SortType sortType1 = Qt3DRender::QSortPolicy::BackToFront;
         sortPolicy->addSortType(sortType1);
         QCoreApplication::processEvents();
 
@@ -144,13 +145,6 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QSortPolicy)

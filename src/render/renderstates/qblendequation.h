@@ -75,12 +75,8 @@ public Q_SLOTS:
 Q_SIGNALS:
     void blendFunctionChanged(BlendFunction blendFunction);
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
 private:
     Q_DECLARE_PRIVATE(QBlendEquation)
-    QT3D_CLONEABLE(QBlendEquation)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

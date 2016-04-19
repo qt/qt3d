@@ -84,10 +84,8 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QRenderSettings)
     QRenderSettings(QRenderSettingsPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
-    QT3D_CLONEABLE(QRenderSettings)
     Q_PRIVATE_SLOT(d_func(), void _q_onPickingMethodChanged(QPickingSettings::PickMethod))
     Q_PRIVATE_SLOT(d_func(), void _q_onPickResultModeChanged(QPickingSettings::PickResultMode))
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;

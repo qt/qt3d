@@ -115,12 +115,10 @@ Q_SIGNALS:
     void released(Qt3DInput::QKeyEvent *event);
 
 protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QKeyboardHandler)
-    QT3D_CLONEABLE(QKeyboardHandler)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

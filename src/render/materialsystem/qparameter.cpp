@@ -64,15 +64,6 @@ void QParameterPrivate::setValue(const QVariant &v)
     m_value = v;
 }
 
-void QParameter::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QParameter *param = static_cast<const QParameter*>(ref);
-    d_func()->m_name = param->d_func()->m_name;
-    d_func()->m_value = param->d_func()->m_value;
-    d_func()->m_backendValue = param->d_func()->m_backendValue;
-}
-
 /*! \internal */
 QParameter::QParameter(QParameterPrivate &dd, QNode *parent)
     : QNode(dd, parent)

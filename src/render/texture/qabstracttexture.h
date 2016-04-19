@@ -326,12 +326,10 @@ protected:
     explicit QAbstractTexture(Target target, Qt3DCore::QNode *parent = nullptr);
     QAbstractTexture(QAbstractTexturePrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void setStatus(Status status);
 
 private:
     Q_DECLARE_PRIVATE(QAbstractTexture)
-    QT3D_CLONEABLE(QAbstractTexture)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

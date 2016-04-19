@@ -67,12 +67,8 @@ Q_SIGNALS:
     void frontOutputMaskChanged(uint frontOutputMask);
     void backOutputMaskChanged(uint backOutputMask);
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL;
-
 private:
     Q_DECLARE_PRIVATE(QStencilMask)
-    QT3D_CLONEABLE(QStencilMask)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

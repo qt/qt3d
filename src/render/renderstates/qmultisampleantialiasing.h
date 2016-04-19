@@ -57,7 +57,6 @@ public:
 
 private:
     Q_DECLARE_PRIVATE(QMultiSampleAntiAliasing)
-    QT3D_CLONEABLE(QMultiSampleAntiAliasing)
 };
 
 } // namespace Qt3DRender

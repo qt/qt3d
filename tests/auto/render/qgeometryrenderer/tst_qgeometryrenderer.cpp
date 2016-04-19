@@ -29,12 +29,14 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qgeometryfactory.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
+#include <Qt3DRender/private/qgeometryrenderer_p.h>
 
 #include <Qt3DCore/QNodePropertyChange>
 #include <Qt3DCore/QNodeAddedPropertyChange>
@@ -68,9 +70,7 @@ private:
     int m_size;
 };
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QGeometryRenderer: public Qt3DCore::QNode
+class tst_QGeometryRenderer: public QObject
 {
     Q_OBJECT
 
@@ -116,31 +116,35 @@ private Q_SLOTS:
         QFETCH(Qt3DRender::QGeometryRenderer *, geometryRenderer);
 
         // WHEN
-        Qt3DRender::QGeometryRenderer *clone = static_cast<Qt3DRender::QGeometryRenderer *>(QNode::clone(geometryRenderer));
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(geometryRenderer);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
+        QCOMPARE(creationChanges.size(), 1 + (geometryRenderer->geometry() ? 1 : 0));
 
-        QCOMPARE(clone->id(), geometryRenderer->id());
-        QCOMPARE(clone->instanceCount(), geometryRenderer->instanceCount());
-        QCOMPARE(clone->vertexCount(), geometryRenderer->vertexCount());
-        QCOMPARE(clone->indexOffset(), geometryRenderer->indexOffset());
-        QCOMPARE(clone->firstInstance(), geometryRenderer->firstInstance());
-        QCOMPARE(clone->restartIndexValue(), geometryRenderer->restartIndexValue());
-        QCOMPARE(clone->primitiveRestartEnabled(), geometryRenderer->primitiveRestartEnabled());
-        QCOMPARE(clone->primitiveType(), geometryRenderer->primitiveType());
-        QCOMPARE(clone->verticesPerPatch(), geometryRenderer->verticesPerPatch());
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QGeometryRendererData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QGeometryRendererData>>(creationChanges.first());
+        const Qt3DRender::QGeometryRendererData &cloneData = creationChangeData->data;
 
-        if (geometryRenderer->geometry() != Q_NULLPTR) {
-            QVERIFY(clone->geometry() != Q_NULLPTR);
-            QCOMPARE(clone->geometry()->id(), geometryRenderer->geometry()->id());
-        }
+        QCOMPARE(geometryRenderer->id(), creationChangeData->subjectId());
+        QCOMPARE(geometryRenderer->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(geometryRenderer->metaObject(), creationChangeData->metaObject());
 
-        QCOMPARE(clone->geometryFactory(), geometryRenderer->geometryFactory());
-        if (geometryRenderer->geometryFactory()) {
-            QVERIFY(clone->geometryFactory());
-            QVERIFY(*clone->geometryFactory() == *geometryRenderer->geometryFactory());
-        }
+        QCOMPARE(cloneData.instanceCount, geometryRenderer->instanceCount());
+        QCOMPARE(cloneData.vertexCount, geometryRenderer->vertexCount());
+        QCOMPARE(cloneData.indexOffset, geometryRenderer->indexOffset());
+        QCOMPARE(cloneData.firstInstance, geometryRenderer->firstInstance());
+        QCOMPARE(cloneData.restartIndexValue, geometryRenderer->restartIndexValue());
+        QCOMPARE(cloneData.primitiveRestart, geometryRenderer->primitiveRestartEnabled());
+        QCOMPARE(cloneData.primitiveType, geometryRenderer->primitiveType());
+        QCOMPARE(cloneData.verticesPerPatch, geometryRenderer->verticesPerPatch());
+
+        if (geometryRenderer->geometry() != Q_NULLPTR)
+            QCOMPARE(cloneData.geometryId, geometryRenderer->geometry()->id());
+
+        QCOMPARE(cloneData.geometryFactory, geometryRenderer->geometryFactory());
+        if (geometryRenderer->geometryFactory())
+            QVERIFY(*cloneData.geometryFactory == *geometryRenderer->geometryFactory());
     }
 
     void checkPropertyUpdates()
@@ -300,13 +304,6 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QGeometryRenderer)

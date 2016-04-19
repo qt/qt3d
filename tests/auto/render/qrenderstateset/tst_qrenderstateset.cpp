@@ -30,10 +30,12 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qrenderstateset.h>
 #include <Qt3DRender/private/qrenderstate_p.h>
 #include <Qt3DRender/qrenderstate.h>
+#include <Qt3DRender/private/qrenderstateset_p.h>
 
 #include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
@@ -60,27 +62,18 @@ public:
     {}
 
 private:
-    QT3D_CLONEABLE(MyStateSet)
     Q_DECLARE_PRIVATE(MyStateSet)
 };
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QRenderStateSet: public Qt3DCore::QNode
+class tst_QRenderStateSet: public QObject
 {
     Q_OBJECT
-public:
-    ~tst_QRenderStateSet()
-    {
-        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
-    }
 
 private Q_SLOTS:
 
     void checkSaneDefaults()
     {
         QScopedPointer<Qt3DRender::QRenderStateSet> defaultstateSet(new Qt3DRender::QRenderStateSet);
-
         QVERIFY(defaultstateSet->renderStates().isEmpty());
     }
 
@@ -111,24 +104,27 @@ private Q_SLOTS:
         QCOMPARE(stateSet->renderStates(), states);
 
         // WHEN
-        Qt3DRender::QRenderStateSet *clone = static_cast<Qt3DRender::QRenderStateSet *>(QNode::clone(stateSet));
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(stateSet);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(stateSet->id(), clone->id());
+        QCOMPARE(creationChanges.size(), 1 + states.size());
 
-        QCOMPARE(stateSet->renderStates().count(), clone->renderStates().count());
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QRenderStateSetData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QRenderStateSetData>>(creationChanges.first());
+        const Qt3DRender::QRenderStateSetData &cloneData = creationChangeData->data;
+
+        QCOMPARE(stateSet->id(), creationChangeData->subjectId());
+        QCOMPARE(stateSet->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(stateSet->metaObject(), creationChangeData->metaObject());
+        QCOMPARE(stateSet->renderStates().count(), cloneData.renderStateIds.count());
 
         for (int i = 0, m = states.count(); i < m; ++i) {
-            Qt3DRender::QRenderState *sClone = clone->renderStates().at(i);
             Qt3DRender::QRenderState *sOrig = states.at(i);
-            QCOMPARE(sOrig->id(),sClone->id());
-            QVERIFY(sClone->parent() == clone);
-            QVERIFY(sOrig->parent() == stateSet);
+            QCOMPARE(sOrig->id(), cloneData.renderStateIds.at(i));
         }
 
         delete stateSet;
-        delete clone;
     }
 
     void checkPropertyUpdates()
@@ -173,13 +169,6 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QRenderStateSet)

@@ -30,21 +30,16 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qrendertargetselector.h>
+#include <Qt3DRender/private/qrendertargetselector_p.h>
 #include <Qt3DRender/qrendertarget.h>
 #include "testpostmanarbiter.h"
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QRenderTargetSelector: public Qt3DCore::QNode
+class tst_QRenderTargetSelector: public QObject
 {
     Q_OBJECT
-public:
-    ~tst_QRenderTargetSelector()
-    {
-        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
-    }
 
 private Q_SLOTS:
 
@@ -90,21 +85,23 @@ private Q_SLOTS:
         QCOMPARE(renderTargetSelector->target(), target);
 
         // WHEN
-        Qt3DRender::QRenderTargetSelector *clone = static_cast<Qt3DRender::QRenderTargetSelector *>(QNode::clone(renderTargetSelector));
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(renderTargetSelector);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(renderTargetSelector->id(), clone->id());
+        QCOMPARE(creationChanges.size(), 1 + (renderTargetSelector->target() ? 1 : 0));
 
-        QCOMPARE(renderTargetSelector->outputs(), clone->outputs());
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QRenderTargetSelectorData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QRenderTargetSelectorData>>(creationChanges.first());
+        const Qt3DRender::QRenderTargetSelectorData &cloneData = creationChangeData->data;
 
-        if (renderTargetSelector->target() != Q_NULLPTR) {
-            QVERIFY(clone->target() != Q_NULLPTR);
-            QCOMPARE(clone->target()->id(), renderTargetSelector->target()->id());
-        }
+        // THEN
+        QCOMPARE(renderTargetSelector->id(), creationChangeData->subjectId());
+        QCOMPARE(renderTargetSelector->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(renderTargetSelector->metaObject(), creationChangeData->metaObject());
+        QCOMPARE(renderTargetSelector->target() ? renderTargetSelector->target()->id() : Qt3DCore::QNodeId(), cloneData.targetId);
 
         delete renderTargetSelector;
-        delete clone;
     }
 
     void checkPropertyUpdates()
@@ -187,13 +184,6 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QRenderTargetSelector)

@@ -29,8 +29,10 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qbuffer.h>
+#include <Qt3DRender/private/qbuffer_p.h>
 #include <Qt3DRender/qbufferdatagenerator.h>
 
 #include "testpostmanarbiter.h"
@@ -61,16 +63,9 @@ private:
     int m_size;
 };
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QBuffer: public Qt3DCore::QNode
+class tst_QBuffer: public QObject
 {
     Q_OBJECT
-public:
-    ~tst_QBuffer()
-    {
-        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
-    }
 
 private Q_SLOTS:
 
@@ -101,20 +96,29 @@ private Q_SLOTS:
         QFETCH(Qt3DRender::QBuffer *, buffer);
 
         // WHEN
-        Qt3DRender::QBuffer *clone = static_cast<Qt3DRender::QBuffer *>(QNode::clone(buffer));
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(buffer);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
+        QCOMPARE(creationChanges.size(), 1);
 
-        QCOMPARE(buffer->id(), clone->id());
-        QCOMPARE(buffer->data(), clone->data());
-        QCOMPARE(buffer->usage(), clone->usage());
-        QCOMPARE(buffer->type(), clone->type());
-        QCOMPARE(buffer->dataGenerator(), clone->dataGenerator());
-        QCOMPARE(buffer->isSyncData(), clone->isSyncData());
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QBufferData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QBufferData>>(creationChanges.first());
+        const Qt3DRender::QBufferData &cloneData = creationChangeData->data;
+
+
+        QCOMPARE(buffer->id(), creationChangeData->subjectId());
+        QCOMPARE(buffer->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(buffer->metaObject(), creationChangeData->metaObject());
+        QCOMPARE(buffer->data(), cloneData.data);
+        QCOMPARE(buffer->usage(), cloneData.usage);
+        QCOMPARE(buffer->type(), cloneData.type);
+        QCOMPARE(buffer->dataGenerator(), cloneData.functor);
+        QCOMPARE(buffer->isSyncData(), cloneData.syncData);
         if (buffer->dataGenerator()) {
-            QVERIFY(clone->dataGenerator());
-            QVERIFY(*clone->dataGenerator() == *buffer->dataGenerator());
+            QVERIFY(cloneData.functor);
+            QVERIFY(*cloneData.functor == *buffer->dataGenerator());
+            QCOMPARE((*cloneData.functor)(), (*buffer->dataGenerator())());
         }
     }
 
@@ -185,13 +189,6 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QBuffer)

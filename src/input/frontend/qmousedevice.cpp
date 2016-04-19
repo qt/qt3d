@@ -127,13 +127,6 @@ void QMouseDevice::setSensitivity(float value)
     emit sensitivityChanged(value);
 }
 
-void QMouseDevice::copy(const Qt3DCore::QNode *ref)
-{
-    QNode::copy(ref);
-    const QMouseDevice *object = static_cast<const QMouseDevice *>(ref);
-    d_func()->m_sensitivity = object->d_func()->m_sensitivity;
-}
-
 void QMouseDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_UNUSED(change);

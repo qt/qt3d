@@ -29,21 +29,16 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qlayerfilter.h>
+#include <Qt3DRender/private/qlayerfilter_p.h>
 
 #include "testpostmanarbiter.h"
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QLayerFilter: public Qt3DCore::QNode
+class tst_QLayerFilter: public QObject
 {
     Q_OBJECT
-public:
-    ~tst_QLayerFilter()
-    {
-        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
-    }
 
 private Q_SLOTS:
 
@@ -76,15 +71,24 @@ private Q_SLOTS:
         QCOMPARE(layerFilter->layers(), layerNames);
 
         // WHEN
-        Qt3DRender::QLayerFilter *clone = static_cast<Qt3DRender::QLayerFilter *>(QNode::clone(layerFilter));
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(layerFilter);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(layerFilter->id(), clone->id());
-        QCOMPARE(layerFilter->layers(), clone->layers());
+        QCOMPARE(creationChanges.size(), 1);
+
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QLayerFilterData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QLayerFilterData>>(creationChanges.first());
+        const Qt3DRender::QLayerFilterData &cloneData = creationChangeData->data;
+
+
+        // THEN
+        QCOMPARE(layerFilter->id(), creationChangeData->subjectId());
+        QCOMPARE(layerFilter->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(layerFilter->metaObject(), creationChangeData->metaObject());
+        QCOMPARE(layerFilter->layers(), cloneData.layers);
 
         delete layerFilter;
-        delete clone;
     }
 
     void checkPropertyUpdates()
@@ -145,13 +149,6 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QLayerFilter)

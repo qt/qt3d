@@ -68,27 +68,6 @@ QAbstractTexturePrivate::QAbstractTexturePrivate()
 {
 }
 
-void QAbstractTexture::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QAbstractTexture *t = static_cast<const QAbstractTexture*>(ref);
-    d_func()->m_target = t->d_func()->m_target;
-    d_func()->m_width = t->d_func()->m_width;
-    d_func()->m_height = t->d_func()->m_height;
-    d_func()->m_depth = t->d_func()->m_depth;
-    d_func()->m_format = t->d_func()->m_format;
-    d_func()->m_wrapMode.setX(t->d_func()->m_wrapMode.x());
-    d_func()->m_wrapMode.setY(t->d_func()->m_wrapMode.y());
-    d_func()->m_wrapMode.setZ(t->d_func()->m_wrapMode.z());
-    d_func()->m_minFilter = t->d_func()->m_minFilter;
-    d_func()->m_magFilter = t->d_func()->m_magFilter;
-    d_func()->m_autoMipMap = t->d_func()->m_autoMipMap;
-    d_func()->m_maximumAnisotropy = t->d_func()->m_maximumAnisotropy;
-    d_func()->m_comparisonFunction = t->d_func()->m_comparisonFunction;
-    d_func()->m_comparisonMode = t->d_func()->m_comparisonMode;
-    d_func()->m_layers = t->d_func()->m_layers;
-}
-
 /*!
     \class Qt3DRender::QAbstractTexture
     \inmodule Qt3DRender

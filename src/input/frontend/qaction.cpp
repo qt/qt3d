@@ -155,14 +155,6 @@ QVector<QAbstractActionInput *> QAction::inputs() const
     return d->m_inputs;
 }
 
-void QAction::copy(const Qt3DCore::QNode *ref)
-{
-    QNode::copy(ref);
-    const QAction *action = static_cast<const QAction *>(ref);
-    Q_FOREACH (QAbstractActionInput *input, action->inputs())
-        d_func()->m_inputs.append(qobject_cast<QAbstractActionInput *>(QNode::clone(input)));
-}
-
 void QAction::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QAction);

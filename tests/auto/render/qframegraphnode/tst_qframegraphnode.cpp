@@ -30,8 +30,10 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qframegraphnode.h>
+#include <Qt3DRender/private/qframegraphnode_p.h>
 
 #include "testpostmanarbiter.h"
 
@@ -43,21 +45,11 @@ public:
         : QFrameGraphNode(parent)
     {
     }
-
-private:
-    QT3D_CLONEABLE(MyFrameGraphNode)
 };
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QFrameGraphNode: public Qt3DCore::QNode
+class tst_QFrameGraphNode: public QObject
 {
     Q_OBJECT
-public:
-    ~tst_QFrameGraphNode()
-    {
-        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
-    }
 
 private Q_SLOTS:
 
@@ -92,15 +84,19 @@ private Q_SLOTS:
         QCOMPARE(frameGraphNode->isEnabled(), enabled);
 
         // WHEN
-        Qt3DRender::QFrameGraphNode *clone = static_cast<Qt3DRender::QFrameGraphNode *>(QNode::clone(frameGraphNode));
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(frameGraphNode);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(frameGraphNode->id(), clone->id());
-        QCOMPARE(frameGraphNode->isEnabled(), enabled);
+        QCOMPARE(creationChanges.size(), 1);
+        const Qt3DCore::QNodeCreatedChangeBasePtr creationChangeData = creationChanges.first();
+
+        // THEN
+        QCOMPARE(frameGraphNode->id(), creationChangeData->subjectId());
+        QCOMPARE(frameGraphNode->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(frameGraphNode->metaObject(), creationChangeData->metaObject());
 
         delete frameGraphNode;
-        delete clone;
     }
 
     void checkPropertyUpdates()
@@ -185,13 +181,6 @@ private Q_SLOTS:
         QVERIFY(child211->parent() == child21);
         QVERIFY(child211->parentFrameGraphNode() == child2);
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QFrameGraphNode)

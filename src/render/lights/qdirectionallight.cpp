@@ -70,11 +70,6 @@ QDirectionalLightPrivate::QDirectionalLightPrivate()
     m_shaderData->setProperty("direction", QVector3D(0.0f, -1.0f, 0.0f));
 }
 
-void QDirectionalLight::copy(const QNode *ref)
-{
-    QAbstractLight::copy(ref);
-}
-
 QDirectionalLight::QDirectionalLight(QNode *parent)
     : QAbstractLight(*new QDirectionalLightPrivate, parent)
 {

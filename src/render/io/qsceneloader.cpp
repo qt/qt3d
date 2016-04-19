@@ -101,13 +101,6 @@ void QSceneLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
     }
 }
 
-void QSceneLoader::copy(const QNode *ref)
-{
-    Qt3DCore::QComponent::copy(ref);
-    const QSceneLoader *s = static_cast<const QSceneLoader*>(ref);
-    d_func()->m_source = s->d_func()->m_source;
-}
-
 QUrl QSceneLoader::source() const
 {
     Q_D(const QSceneLoader);

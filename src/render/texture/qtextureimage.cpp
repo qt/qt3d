@@ -144,16 +144,6 @@ void QTextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
         setStatus(static_cast<QTextureImage::Status>(e->value().toInt()));
 }
 
-/*!
-  Copies \a ref into this texture image.
- */
-void QTextureImage::copy(const QNode *ref)
-{
-    QAbstractTextureImage::copy(ref);
-    const QTextureImage *img = static_cast<const QTextureImage *>(ref);
-    d_func()->m_source = img->source();
-}
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

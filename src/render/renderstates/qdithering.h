@@ -57,7 +57,6 @@ public:
 
 private:
     Q_DECLARE_PRIVATE(QDithering)
-    QT3D_CLONEABLE(QDithering)
 };
 
 } // namespace Qt3DRender

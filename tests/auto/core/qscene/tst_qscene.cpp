@@ -83,9 +83,6 @@ class tst_Node : public Qt3DCore::QNode
 public:
     tst_Node() : Qt3DCore::QNode()
     {}
-
-protected:
-    QT3D_CLONEABLE(tst_Node)
 };
 
 class tst_Component : public Qt3DCore::QComponent
@@ -94,9 +91,6 @@ class tst_Component : public Qt3DCore::QComponent
 public:
     tst_Component() : Qt3DCore::QComponent()
     {}
-
-protected:
-    QT3D_CLONEABLE(tst_Component)
 };
 
 void tst_QScene::addObservable()

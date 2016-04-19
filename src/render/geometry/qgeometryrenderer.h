@@ -125,12 +125,10 @@ Q_SIGNALS:
 
 protected:
     QGeometryRenderer(QGeometryRendererPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QGeometryRenderer)
-    QT3D_CLONEABLE(QGeometryRenderer)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

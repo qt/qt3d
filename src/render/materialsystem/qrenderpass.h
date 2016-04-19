@@ -89,11 +89,9 @@ Q_SIGNALS:
 
 protected:
     QRenderPass(QRenderPassPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QRenderPass)
-    QT3D_CLONEABLE(QRenderPass)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

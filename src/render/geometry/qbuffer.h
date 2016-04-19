@@ -103,7 +103,6 @@ public Q_SLOTS:
     void setSyncData(bool syncData);
 
 protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
@@ -114,7 +113,6 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QBuffer)
-    QT3D_CLONEABLE(QBuffer)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

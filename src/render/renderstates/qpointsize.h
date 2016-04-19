@@ -73,12 +73,8 @@ Q_SIGNALS:
     void sizeModeChanged(SizeMode sizeMode);
     void valueChanged(float value);
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL;
-
 private:
     Q_DECLARE_PRIVATE(QPointSize)
-    QT3D_CLONEABLE(QPointSize)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

@@ -51,14 +51,6 @@ QSortPolicyPrivate::QSortPolicyPrivate()
 {
 }
 
-void QSortPolicy::copy(const QNode *ref)
-{
-    QFrameGraphNode::copy(ref);
-    const QSortPolicy *other = static_cast<const QSortPolicy*>(ref);
-    Q_FOREACH (const QSortPolicy::SortType c, other->d_func()->m_sortTypes)
-        addSortType(c);
-}
-
 QSortPolicy::QSortPolicy(QNode *parent)
     : QFrameGraphNode(*new QSortPolicyPrivate, parent)
 {
@@ -68,6 +60,15 @@ QSortPolicy::QSortPolicy(QNode *parent)
 QSortPolicy::QSortPolicy(QSortPolicyPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {
+}
+
+QNodeCreatedChangeBasePtr QSortPolicy::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QSortPolicyData>::create(this);
+    QSortPolicyData &data = creationChange->data;
+    Q_D(const QSortPolicy);
+    data.sortTypes = d->m_sortTypes;
+    return creationChange;
 }
 
 void QSortPolicy::addSortType(Qt3DRender::QSortPolicy::SortType sortType)

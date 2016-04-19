@@ -80,20 +80,6 @@ QRenderStateSet::QRenderStateSet(QNode *parent)
 {
 }
 
-QRenderStateSet::QRenderStateSet(QRenderStateSetPrivate &dd, QNode *parent)
-    : QFrameGraphNode(dd, parent)
-{
-}
-
-void QRenderStateSet::copy(const QNode *ref)
-{
-    QFrameGraphNode::copy(ref);
-    const QRenderStateSet *other = static_cast<const QRenderStateSet*>(ref);
-
-    for (QRenderState *renderState : other->d_func()->m_renderStates)
-        addRenderState(qobject_cast<QRenderState *>(QNode::clone(renderState)));
-}
-
 /*!
  * Adds a new QRenderState \a state to the QRenderStateSet instance.
  *

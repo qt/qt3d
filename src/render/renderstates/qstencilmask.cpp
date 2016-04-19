@@ -84,14 +84,6 @@ uint QStencilMask::backOutputMask() const
     return d->m_backOutputMask;
 }
 
-void QStencilMask::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QStencilMask *otherRef = static_cast<const QStencilMask *>(ref);
-    d_func()->m_frontOutputMask = otherRef->frontOutputMask();
-    d_func()->m_backOutputMask = otherRef->backOutputMask();
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QStencilMask::createNodeCreationChange() const
 {
     auto creationChange = QRenderStateCreatedChangePtr<QStencilMaskData>::create(this);

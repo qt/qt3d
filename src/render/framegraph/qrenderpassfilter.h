@@ -70,11 +70,9 @@ public:
 
 protected:
     QRenderPassFilter(QRenderPassFilterPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QRenderPassFilter)
-    QT3D_CLONEABLE(QRenderPassFilter)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

@@ -103,16 +103,6 @@ void QRenderPassFilter::removeMatch(QFilterKey *filterKey)
     d->m_matchList.removeOne(filterKey);
 }
 
-void QRenderPassFilter::copy(const QNode *ref)
-{
-    QFrameGraphNode::copy(ref);
-    const QRenderPassFilter *other = static_cast<const QRenderPassFilter*>(ref);
-    Q_FOREACH (QFilterKey *c, other->d_func()->m_matchList)
-        addMatch(qobject_cast<QFilterKey *>(QNode::clone(c)));
-    for (QParameter *p : other->d_func()->m_parameters)
-        addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
-}
-
 void QRenderPassFilter::addParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);

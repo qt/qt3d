@@ -90,14 +90,6 @@ QAbstractPhysicalDevice::QAbstractPhysicalDevice(QAbstractPhysicalDevicePrivate 
 }
 
 /*!
-    Deletes the QAbstractPhysicalDevice instance.
- */
-QAbstractPhysicalDevice::~QAbstractPhysicalDevice()
-{
-    Q_ASSERT_X(Qt3DCore::QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DInput::QAbstractPhysicalDevice subclass didn't call QNode::cleanup in its destructor");
-}
-
-/*!
     Return the number of axis this device has.
  */
 int QAbstractPhysicalDevice::axisCount() const
@@ -222,15 +214,6 @@ void QAbstractPhysicalDevicePrivate::postButtonEvent(int button, qreal value)
     change->setPropertyName("buttonEvent");
     change->setValue(QVariant::fromValue(QPair<int, qreal>(button, value)));
     notifyObservers(change);
-}
-
-void QAbstractPhysicalDevice::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QAbstractPhysicalDevice *physicalDevice = static_cast<const QAbstractPhysicalDevice *>(ref);
-    d_func()->m_axisSettings = physicalDevice->d_func()->m_axisSettings;
-    d_func()->m_axesHash = physicalDevice->d_func()->m_axesHash;
-    d_func()->m_buttonsHash = physicalDevice->d_func()->m_buttonsHash;
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QAbstractPhysicalDevice::createNodeCreationChange() const

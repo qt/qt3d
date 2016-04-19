@@ -51,14 +51,6 @@ QAlphaTest::QAlphaTest(QNode *parent)
 {
 }
 
-void QAlphaTest::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QAlphaTest *refState = static_cast<const QAlphaTest*>(ref);
-    d_func()->m_alphaFunction = refState->d_func()->m_alphaFunction;
-    d_func()->m_referenceValue = refState->d_func()->m_referenceValue;
-}
-
 QAlphaTest::AlphaFunction QAlphaTest::alphaFunction() const
 {
     Q_D(const QAlphaTest);

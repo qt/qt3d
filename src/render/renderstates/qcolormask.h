@@ -76,12 +76,8 @@ Q_SIGNALS:
     void blueMaskedChanged(bool blueMasked);
     void alphaMaskedChanged(bool alphaMasked);
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL;
-
 private:
     Q_DECLARE_PRIVATE(QColorMask)
-    QT3D_CLONEABLE(QColorMask)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

@@ -85,12 +85,12 @@ Q_SIGNALS:
     void containsMouseChanged(bool containsMouse);
 
 protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
-    QT3D_CLONEABLE(QObjectPicker)
     Q_DECLARE_PRIVATE(QObjectPicker)
+
+    // TODO: Handle creation changes
 };
 
 } // Qt3D

@@ -112,12 +112,10 @@ Q_SIGNALS:
     void bufferIndexChanged(int index);
 
 protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     QBlendEquationArguments(QBlendEquationArgumentsPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
 
 private:
     Q_DECLARE_PRIVATE(QBlendEquationArguments)
-    QT3D_CLONEABLE(QBlendEquationArguments)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

@@ -161,20 +161,6 @@ void QMouseHandler::setContainsMouse(bool contains)
     }
 }
 
-void QMouseHandler::copy(const QNode *ref)
-{
-    Q_D(QMouseHandler);
-    const QMouseHandler *refInput = static_cast<const QMouseHandler *>(ref);
-    d->m_containsMouse = refInput->containsMouse();
-
-    // TODO: We may want to store the device id and only send a clone when we are the parent
-    // of the device.
-    // Perhaps it's time to investigate sending a "kernel" or "seed" over to the backend rather
-    // than a complete clone.
-    if (refInput && refInput->sourceDevice() && refInput->sourceDevice()->parent() == ref)
-        d->m_mouseDevice = static_cast<QMouseDevice *>(QNode::clone(refInput->sourceDevice()));
-}
-
 void QMouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QMouseHandler);

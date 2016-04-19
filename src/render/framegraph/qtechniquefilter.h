@@ -67,11 +67,9 @@ public:
 
 protected:
     QTechniqueFilter(QTechniqueFilterPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QTechniqueFilter)
-    QT3D_CLONEABLE(QTechniqueFilter)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

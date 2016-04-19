@@ -163,20 +163,6 @@ QVector<QAttribute *> QGeometry::attributes() const
     return d->m_attributes;
 }
 
-/*!
- * \internal
- */
-void QGeometry::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QGeometry *geometry = static_cast<const QGeometry *>(ref);
-    Q_FOREACH (QAttribute *attribute, geometry->d_func()->m_attributes)
-        d_func()->m_attributes.append(qobject_cast<QAttribute *>(QNode::clone(attribute)));
-    // Copy bounding volume position attribute
-    if (geometry->d_func()->m_boundingVolumePositionAttribute != Q_NULLPTR)
-        d_func()->m_boundingVolumePositionAttribute = qobject_cast<QAttribute *>(QNode::clone(geometry->d_func()->m_boundingVolumePositionAttribute));
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QGeometry::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QGeometryData>::create(this);

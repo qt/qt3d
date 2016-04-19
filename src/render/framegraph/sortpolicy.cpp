@@ -39,6 +39,7 @@
 
 #include "sortpolicy_p.h"
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DRender/private/qsortpolicy_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -79,6 +80,13 @@ void SortPolicy::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 QVector<QSortPolicy::SortType> SortPolicy::sortTypes() const
 {
     return m_sortTypes;
+}
+
+void SortPolicy::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QSortPolicyData>>(change);
+    const QSortPolicyData &data = typedChange->data;
+    m_sortTypes = data.sortTypes;
 }
 
 } // namepace Render

@@ -55,19 +55,6 @@ QShaderProgramPrivate::QShaderProgramPrivate()
 {
 }
 
-void QShaderProgram::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QShaderProgram *prog = static_cast<const QShaderProgram*>(ref);
-
-    d_func()->m_vertexShaderCode = prog->d_func()->m_vertexShaderCode;
-    d_func()->m_tessControlShaderCode = prog->d_func()->m_tessControlShaderCode;
-    d_func()->m_tessEvalShaderCode = prog->d_func()->m_tessEvalShaderCode;
-    d_func()->m_geometryShaderCode = prog->d_func()->m_geometryShaderCode;
-    d_func()->m_fragmentShaderCode = prog->d_func()->m_fragmentShaderCode;
-    d_func()->m_computeShaderCode = prog->d_func()->m_computeShaderCode;
-}
-
 QShaderProgram::QShaderProgram(QNode *parent)
     : QNode(*new QShaderProgramPrivate, parent)
 {

@@ -73,10 +73,8 @@ Q_SIGNALS:
 
 protected:
     QSortCriterion(QSortCriterionPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
-    QT3D_CLONEABLE(QSortCriterion)
     Q_DECLARE_PRIVATE(QSortCriterion)
 };
 

@@ -27,18 +27,19 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
+#include <Qt3DInput/private/qactioninput_p.h>
 #include <Qt3DInput/QActionInput>
 #include <Qt3DInput/QAbstractPhysicalDevice>
 
 #include "testpostmanarbiter.h"
 #include "testdevice.h"
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QActionInput: public Qt3DCore::QNode
+class tst_QActionInput: public QObject
 {
     Q_OBJECT
 public:
@@ -72,18 +73,22 @@ private Q_SLOTS:
         QFETCH(Qt3DInput::QActionInput *, actionInput);
 
         // WHEN
-        Qt3DInput::QActionInput *clone = static_cast<Qt3DInput::QActionInput *>(QNode::clone(actionInput));
-        QCoreApplication::processEvents();
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(actionInput);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(actionInput->id(), clone->id());
-        QCOMPARE(actionInput->buttons(), clone->buttons());
+        QCOMPARE(creationChanges.size(), 1 + (actionInput->sourceDevice() ? 1 : 0));
 
-        if (actionInput->sourceDevice() != Q_NULLPTR) {
-            QVERIFY(clone->sourceDevice() != Q_NULLPTR);
-            QCOMPARE(clone->sourceDevice()->id(), actionInput->sourceDevice()->id());
-        }
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DInput::QActionInputData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QActionInputData>>(creationChanges.first());
+        const Qt3DInput::QActionInputData &cloneData = creationChangeData->data;
+
+        // THEN
+        QCOMPARE(actionInput->id(), creationChangeData->subjectId());
+        QCOMPARE(actionInput->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(actionInput->metaObject(), creationChangeData->metaObject());
+        QCOMPARE(actionInput->buttons(), cloneData.buttons);
+        QCOMPARE(actionInput->sourceDevice() ? actionInput->sourceDevice()->id() : Qt3DCore::QNodeId(), cloneData.sourceDeviceId);
     }
 
     void checkPropertyUpdates()
@@ -120,13 +125,6 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QActionInput)

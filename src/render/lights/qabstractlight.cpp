@@ -61,14 +61,6 @@ QAbstractLightPrivate::QAbstractLightPrivate(QAbstractLight::Type type)
     m_shaderData->setProperty("type", type);
 }
 
-void QAbstractLight::copy(const QNode *ref)
-{
-    const QAbstractLight *light = static_cast<const QAbstractLight*>(ref);
-    d_func()->m_type = light->d_func()->m_type;
-    d_func()->m_shaderData = qobject_cast<QShaderData *>(QNode::clone(light->d_func()->m_shaderData));
-    QComponent::copy(ref);
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QAbstractLight::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAbstractLightData>::create(this);

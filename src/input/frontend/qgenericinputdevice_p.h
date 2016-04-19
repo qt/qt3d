@@ -74,9 +74,6 @@ public:
 Q_SIGNALS:
     void axesMapChanged();
     void buttonsMapChanged();
-
-protected:
-    QT3D_CLONEABLE(QGenericInputDevice)
 };
 
 } // Qt3DInput

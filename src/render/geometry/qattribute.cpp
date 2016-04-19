@@ -148,25 +148,6 @@ QAttribute::QAttribute(QBuffer *buf, const QString &name, VertexBaseType type, u
     d->m_byteStride = stride;
 }
 
-
-/*!
- * \internal
- */
-void QAttribute::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QAttribute *attribute = static_cast<const QAttribute *>(ref);
-    d_func()->m_buffer = qobject_cast<QBuffer *>(QNode::clone(attribute->d_func()->m_buffer));
-    d_func()->m_name = attribute->d_func()->m_name;
-    d_func()->m_count = attribute->d_func()->m_count;
-    d_func()->m_divisor = attribute->d_func()->m_divisor;
-    d_func()->m_byteOffset = attribute->d_func()->m_byteOffset;
-    d_func()->m_dataType = attribute->d_func()->m_dataType;
-    d_func()->m_dataSize = attribute->d_func()->m_dataSize;
-    d_func()->m_byteStride = attribute->d_func()->m_byteStride;
-    d_func()->m_attributeType = attribute->d_func()->m_attributeType;
-}
-
 /*!
  * \property QAttribute::buffer
  *

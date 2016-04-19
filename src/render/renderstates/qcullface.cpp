@@ -51,13 +51,6 @@ QCullFace::QCullFace(QNode *parent)
 {
 }
 
-void QCullFace::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QCullFace *refState = static_cast<const QCullFace*>(ref);
-    d_func()->m_mode = refState->d_func()->m_mode;
-}
-
 QCullFace::CullingMode QCullFace::mode() const
 {
     Q_D(const QCullFace);

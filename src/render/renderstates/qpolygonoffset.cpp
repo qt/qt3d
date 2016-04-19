@@ -80,14 +80,6 @@ void QPolygonOffset::setDepthSteps(float depthSteps)
     }
 }
 
-void QPolygonOffset::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QPolygonOffset *refState = static_cast<const QPolygonOffset *>(ref);
-    d_func()->m_scaleFactor = refState->d_func()->m_scaleFactor;
-    d_func()->m_depthSteps = refState->d_func()->m_depthSteps;
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QPolygonOffset::createNodeCreationChange() const
 {
     auto creationChange = QRenderStateCreatedChangePtr<QPolygonOffsetData>::create(this);

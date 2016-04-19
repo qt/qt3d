@@ -125,15 +125,6 @@ void QRenderSettings::setRenderPolicy(QRenderSettings::RenderPolicy renderPolicy
     emit renderPolicyChanged(renderPolicy);
 }
 
-void QRenderSettings::copy(const QNode *ref)
-{
-    QComponent::copy(ref);
-    const QRenderSettings *object = static_cast<const QRenderSettings *>(ref);
-    setActiveFrameGraph(qobject_cast<QFrameGraphNode *>(QNode::clone(object->activeFrameGraph())));
-
-    d_func()->m_renderPolicy = object->d_func()->m_renderPolicy;
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QRenderSettings::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderSettingsData>::create(this);

@@ -156,20 +156,6 @@ QBuffer::QBuffer(QBuffer::BufferType ty, QNode *parent)
 /*!
  * \internal
  */
-void QBuffer::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QBuffer *buffer = static_cast<const QBuffer *>(ref);
-    d_func()->m_data = buffer->d_func()->m_data;
-    d_func()->m_type = buffer->d_func()->m_type;
-    d_func()->m_usage = buffer->d_func()->m_usage;
-    d_func()->m_functor = buffer->d_func()->m_functor;
-    d_func()->m_syncData = buffer->d_func()->m_syncData;
-}
-
-/*!
- * \internal
- */
 void QBuffer::sceneChangeEvent(const QSceneChangePtr &change)
 {
     QNodePropertyChangePtr e = qSharedPointerCast<QNodePropertyChange>(change);

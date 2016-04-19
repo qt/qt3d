@@ -186,14 +186,6 @@ bool QObjectPicker::isPressed() const
     return d->m_pressed;
 }
 
-void QObjectPicker::copy(const QNode *ref)
-{
-    QComponent::copy(ref);
-    const QObjectPicker *picker = static_cast<const QObjectPicker *>(ref);
-    d_func()->m_hoverEnabled = picker->d_func()->m_hoverEnabled;
-    d_func()->m_dragEnabled = picker->d_func()->m_dragEnabled;
-}
-
 void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QObjectPicker);

@@ -79,16 +79,12 @@ public:
     QQmlListProperty<QShaderData> valuesList();
     QVector<QShaderData *> values() const;
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
 private:
     static void appendValue(QQmlListProperty<QShaderData> *list, QShaderData *bar);
     static QShaderData *valueAt(QQmlListProperty<QShaderData> *list, int index);
     static int valueCount(QQmlListProperty<QShaderData> *list);
     static void clearValues(QQmlListProperty<QShaderData> *list);
     Q_DECLARE_PRIVATE(Quick3DShaderDataArray)
-    QT3D_CLONEABLE(Quick3DShaderDataArray)
 };
 
 } // namespace Quick

@@ -46,13 +46,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-void QDepthTest::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QDepthTest *refState = static_cast<const QDepthTest*>(ref);
-    d_func()->m_depthFunction = refState->d_func()->m_depthFunction;
-}
-
 QDepthTest::QDepthTest(QNode *parent)
     : QRenderState(*new QDepthTestPrivate, parent)
 {

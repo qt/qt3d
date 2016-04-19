@@ -95,15 +95,6 @@ void QDispatchCompute::setWorkGroupZ(int workGroupZ)
 
 }
 
-void QDispatchCompute::copy(const Qt3DCore::QNode *ref)
-{
-    QFrameGraphNode::copy(ref);
-    const QDispatchCompute *dispatch = static_cast<const QDispatchCompute *>(ref);
-    d_func()->m_workGroupX = dispatch->workGroupX();
-    d_func()->m_workGroupY = dispatch->workGroupY();
-    d_func()->m_workGroupZ = dispatch->workGroupZ();
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QDispatchCompute::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QDispatchComputeData>::create(this);

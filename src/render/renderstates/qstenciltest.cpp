@@ -64,18 +64,6 @@ QStencilTestArguments *QStencilTest::back() const
     return d->m_back;
 }
 
-void QStencilTest::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QStencilTest *refState = static_cast<const QStencilTest*>(ref);
-    d_func()->m_front->setComparisonMask(refState->d_func()->m_front->comparisonMask());
-    d_func()->m_front->setReferenceValue(refState->d_func()->m_front->referenceValue());
-    d_func()->m_front->setStencilFunction(refState->d_func()->m_front->stencilFunction());
-    d_func()->m_back->setComparisonMask(refState->d_func()->m_back->comparisonMask());
-    d_func()->m_back->setReferenceValue(refState->d_func()->m_back->referenceValue());
-    d_func()->m_back->setStencilFunction(refState->d_func()->m_back->stencilFunction());
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QStencilTest::createNodeCreationChange() const
 {
     auto creationChange = QRenderStateCreatedChangePtr<QStencilTestData>::create(this);

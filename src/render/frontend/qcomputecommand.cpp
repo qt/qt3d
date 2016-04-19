@@ -102,15 +102,6 @@ void QComputeCommand::setWorkGroupZ(int workGroupZ)
     }
 }
 
-void QComputeCommand::copy(const QNode *ref)
-{
-    QComponent::copy(ref);
-    const QComputeCommand *object = static_cast<const QComputeCommand *>(ref);
-    d_func()->m_workGroupX = object->workGroupX();
-    d_func()->m_workGroupY = object->workGroupY();
-    d_func()->m_workGroupZ = object->workGroupZ();
-}
-
 } // Render
 
 QT_END_NAMESPACE

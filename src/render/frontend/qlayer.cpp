@@ -65,17 +65,6 @@ QLayerPrivate::QLayerPrivate()
     \brief For ...
 */
 
-
-/*! \fn void Qt3DRender::QLayer::copy(const Qt3DCore::QNode *ref)
-  Copies the \a ref instance into this one.
- */
-void QLayer::copy(const QNode *ref)
-{
-    QComponent::copy(ref);
-    const QLayer *layer = static_cast<const QLayer*>(ref);
-    d_func()->m_names = layer->d_func()->m_names;
-}
-
 /*! \fn Qt3DRender::QLayer::QLayer(Qt3DCore::QNode *parent)
   Constructs a new QLayer with the specified \a parent.
  */

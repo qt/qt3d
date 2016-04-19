@@ -51,16 +51,6 @@ QScissorTest::QScissorTest(QNode *parent)
 {
 }
 
-void QScissorTest::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QScissorTest *refState = static_cast<const QScissorTest*>(ref);
-    d_func()->m_left = refState->d_func()->m_left;
-    d_func()->m_bottom = refState->d_func()->m_bottom;
-    d_func()->m_width = refState->d_func()->m_width;
-    d_func()->m_height = refState->d_func()->m_height;
-}
-
 int QScissorTest::left() const
 {
     Q_D(const QScissorTest);

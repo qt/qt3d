@@ -90,7 +90,6 @@ QAbstractTextureImage::QAbstractTextureImage(QNode *parent)
  */
 QAbstractTextureImage::~QAbstractTextureImage()
 {
-    Q_ASSERT_X(Qt3DCore::QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DRender::QAbstractTextureImage subclass didn't call QNode::cleanup in its destructor");
 }
 
 
@@ -199,18 +198,6 @@ void QAbstractTextureImage::notifyDataGeneratorChanged()
         change->setValue(QVariant::fromValue(dataGenerator()));
         d->notifyObservers(change);
     }
-}
-
-/*!
-  Copies \a ref into this object.
- */
-void QAbstractTextureImage::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QAbstractTextureImage *imageRef = static_cast<const QAbstractTextureImage *>(ref);
-    d_func()->m_face = imageRef->face();
-    d_func()->m_layer = imageRef->layer();
-    d_func()->m_mipLevel = imageRef->mipLevel();
 }
 
 /*! \internal */

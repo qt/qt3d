@@ -53,16 +53,6 @@ QClearBuffersPrivate::QClearBuffersPrivate()
 {
 }
 
-void QClearBuffers::copy(const QNode *ref)
-{
-    QFrameGraphNode::copy(ref);
-    const QClearBuffers *b = static_cast<const QClearBuffers*>(ref);
-    d_func()->m_buffersType = b->d_func()->m_buffersType;
-    d_func()->m_clearColor = b->d_func()->m_clearColor;
-    d_func()->m_clearDepthValue = b->d_func()->m_clearDepthValue;
-    d_func()->m_clearStencilValue = b->d_func()->m_clearStencilValue;
-}
-
 QClearBuffers::QClearBuffers(QNode *parent)
     : QFrameGraphNode(*new QClearBuffersPrivate, parent)
 {

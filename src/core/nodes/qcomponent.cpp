@@ -110,7 +110,6 @@ QComponent::QComponent(QNode *parent)
 QComponent::~QComponent()
 {
     Q_D(QComponent);
-    Q_ASSERT_X(d->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DCore::QComponent subclass didn't call QNode::cleanup in its destructor");
 
     for (QEntity *entity : qAsConst(d->m_entities)) {
         QEntityPrivate *entityPimpl = static_cast<QEntityPrivate *>(QEntityPrivate::get(entity));
@@ -137,16 +136,6 @@ void QComponent::setShareable(bool shareable)
         d->m_shareable = shareable;
         emit shareableChanged(shareable);
     }
-}
-
-/*!
-    Copies the \a ref.
- */
-void QComponent::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QComponent *comp = static_cast<const QComponent *>(ref);
-    setShareable(comp->isShareable());
 }
 
 /*!

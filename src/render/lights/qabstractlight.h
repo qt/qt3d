@@ -77,7 +77,7 @@ public Q_SLOTS:
 
 protected :
     QAbstractLight(QAbstractLightPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+
 
 Q_SIGNALS:
     void colorChanged(const QColor &color);

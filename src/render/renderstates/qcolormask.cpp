@@ -143,16 +143,6 @@ void QColorMask::setAlphaMasked(bool alphaMasked)
     }
 }
 
-void QColorMask::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QColorMask *refState = static_cast<const QColorMask *>(ref);
-    d_func()->m_redMasked = refState->d_func()->m_redMasked;
-    d_func()->m_greenMasked = refState->d_func()->m_greenMasked;
-    d_func()->m_blueMasked = refState->d_func()->m_blueMasked;
-    d_func()->m_alphaMasked = refState->d_func()->m_alphaMasked;
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QColorMask::createNodeCreationChange() const
 {
     auto creationChange = QRenderStateCreatedChangePtr<QColorMaskData>::create(this);

@@ -89,7 +89,6 @@ public:
     QScene *m_scene;
     mutable QNodeId m_id;
     bool m_blockNotifications;
-    bool m_wasCleanedUp;
     bool m_hasBackendNode;
     bool m_enabled;
 
@@ -99,7 +98,6 @@ public:
 private:
     void _q_addChild(QNode *childNode);
     void _q_removeChild(QNode *childNode);
-    void _q_cleanup();
     void registerNotifiedProperties();
     void unregisterNotifiedProperties();
     void propertyChanged(int propertyIndex);

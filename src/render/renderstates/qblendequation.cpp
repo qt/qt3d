@@ -46,13 +46,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-void QBlendEquation::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QBlendEquation *refState = reinterpret_cast<const QBlendEquation*>(ref);
-    d_func()->m_blendFunction = refState->d_func()->m_blendFunction;
-}
-
 QBlendEquation::QBlendEquation(QNode *parent)
     : QRenderState(*new QBlendEquationPrivate, parent)
 {

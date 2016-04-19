@@ -57,7 +57,6 @@ public:
 
 private:
     Q_DECLARE_PRIVATE(QNoDepthMask)
-    QT3D_CLONEABLE(QNoDepthMask)
 };
 
 } // namespace Qt3DRender

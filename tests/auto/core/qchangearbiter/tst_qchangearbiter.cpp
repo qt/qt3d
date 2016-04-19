@@ -122,15 +122,6 @@ public:
         return m_lastChanges;
     }
 
-    // QNode interface
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        tst_Node *clone = new tst_Node();
-        clone->copy(this);
-        return clone;
-    }
-
 private:
     QList<Qt3DCore::QSceneChangePtr> m_lastChanges;
 };

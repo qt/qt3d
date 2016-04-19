@@ -51,13 +51,6 @@ QFrontFace::QFrontFace(QNode *parent)
 {
 }
 
-void QFrontFace::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QFrontFace *refState = static_cast<const QFrontFace*>(ref);
-    d_func()->m_direction = refState->d_func()->m_direction;
-}
-
 QFrontFace::WindingDirection QFrontFace::direction() const
 {
     Q_D(const QFrontFace);

@@ -186,20 +186,6 @@ QTransform::QTransform(QTransformPrivate &dd, QNode *parent)
 {
 }
 
-void QTransform::copy(const QNode *ref)
-{
-    QComponent::copy(ref);
-    const QTransform *transform = static_cast<const QTransform *>(ref);
-    // We need to copy the matrix with all the pending
-    // transformations applied
-    d_func()->m_matrix = transform->matrix();
-    d_func()->m_rotation = transform->rotation();
-    d_func()->m_scale = transform->scale3D();
-    d_func()->m_translation = transform->translation();
-    d_func()->m_eulerRotationAngles = transform->d_func()->m_eulerRotationAngles;
-    d_func()->m_matrixDirty = transform->d_func()->m_matrixDirty;
-}
-
 void QTransform::setMatrix(const QMatrix4x4 &m)
 {
     Q_D(QTransform);

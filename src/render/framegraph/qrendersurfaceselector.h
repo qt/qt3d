@@ -76,10 +76,8 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QRenderSurfaceSelector)
     QRenderSurfaceSelector(QRenderSurfaceSelectorPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
-    QT3D_CLONEABLE(QRenderSurfaceSelector)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

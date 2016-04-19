@@ -69,7 +69,6 @@ QNodePrivate::QNodePrivate()
     , m_scene(Q_NULLPTR)
     , m_id(QNodeId::createId())
     , m_blockNotifications(false)
-    , m_wasCleanedUp(false)
     , m_hasBackendNode(false)
     , m_enabled(true)
     , m_propertyChangesSetup(false)
@@ -82,135 +81,42 @@ void QNodePrivate::_q_addChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
 
-    if (ms_useCloning) {
-        if (childNode == q_func())
-            return;
+    if (!m_scene)
+        return;
 
-        // If the scene is null it means that the current node is part of a subtree
-        // that has been pre-prepared. Therefore the node shouldn't be added by
-        // itself but only when the root of the said subtree is inserted into an
-        // existing node whose m_scene member is valid
-        if (m_scene == Q_NULLPTR)
-            return;
+    QNodeCreatedChangeGenerator generator(childNode);
+    const auto creationChanges = generator.creationChanges();
+    // TODO: Wrap all creation changes into a single aggregate change to avoid
+    // hamemring the change arbiter when all of these need to be delivered to
+    // all of the aspects.
+    for (const auto &change : creationChanges)
+        notifyObservers(change);
 
-        QNodeVisitor visitor;
-        // Recursively set scene and change arbiter for the node subtree
-        visitor.traverse(childNode, this, &QNodePrivate::setSceneHelper);
-
-        // We notify only if we have a QChangeArbiter
-        if (m_changeArbiter != Q_NULLPTR) {
-            QNodePropertyChangePtr e(new QNodePropertyChange(NodeCreated, QSceneChange::Node, m_id));
-            e->setPropertyName("node");
-            // We need to clone the parent of the childNode we send
-            QNode *parentClone = QNode::clone(q_func());
-            QNode *childClone = Q_NULLPTR;
-            for (QObject *c : parentClone->children()) {
-                QNode *clone = qobject_cast<QNode *>(c);
-                if (clone != Q_NULLPTR && clone->id() == childNode->id()) {
-                    childClone = clone;
-                    break;
-                }
-            }
-            e->setValue(QVariant::fromValue(QNodePtr(childClone, &QNodePrivate::nodePtrDeleter)));
-            notifyObservers(e);
-        }
-
-        // Handle Entity - Components
-        visitor.traverse(childNode, this, &QNodePrivate::addEntityComponentToScene);
-    } else {
-        if (!m_scene)
-            return;
-
-        QNodeCreatedChangeGenerator generator(childNode);
-        const auto creationChanges = generator.creationChanges();
-        // TODO: Wrap all creation changes into a single aggregate change to avoid
-        // hamemring the change arbiter when all of these need to be delivered to
-        // all of the aspects.
-        for (const auto &change : creationChanges)
-            notifyObservers(change);
-
-        // Update the scene
-        // TODO: Fold this into the QNodeCreatedChangeGenerator so we don't have to
-        // traverse the sub tree three times!
-        QNodeVisitor visitor;
-        visitor.traverse(childNode, this, &QNodePrivate::setSceneHelper);
-        visitor.traverse(childNode, this, &QNodePrivate::addEntityComponentToScene);
-    }
+    // Update the scene
+    // TODO: Fold this into the QNodeCreatedChangeGenerator so we don't have to
+    // traverse the sub tree three times!
+    QNodeVisitor visitor;
+    visitor.traverse(childNode, this, &QNodePrivate::setSceneHelper);
+    visitor.traverse(childNode, this, &QNodePrivate::addEntityComponentToScene);
 }
 
 // Called by setParent or cleanup (main thread) (could be other thread if created on the backend in a job)
 void QNodePrivate::_q_removeChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
+    if (childNode->parent() != q_func())
+        qCWarning(Nodes) << Q_FUNC_INFO << "not a child of " << this;
 
-    if (ms_useCloning) {
-        if (childNode->parent() != q_func())
-            qCWarning(Nodes) << Q_FUNC_INFO << "not a child of " << this;
-
-        // Notify only if child isn't a clone
-        if (m_changeArbiter != Q_NULLPTR) {
-            QNodePropertyChangePtr e(new QNodePropertyChange(NodeAboutToBeDeleted, QSceneChange::Node, m_id));
-            e->setPropertyName("node");
-            // We need to clone the parent of the childNode we send
-            //        QNode *parentClone = QNode::clone(childNode->parentNode());
-            //        QNode *childClone = Q_NULLPTR;
-            //        Q_FOREACH (QObject *c, parentClone->children()) {
-            //            QNode *clone = qobject_cast<QNode *>(c);
-            //            if (clone != Q_NULLPTR && clone->id() == childNode->id()) {
-            //                childClone = clone;
-            //                break;
-            //            }
-            //        }
-
-            // We cannot clone the parent as it seems that the childNode is already removed
-            // from the parent when the ChildRemoved event is triggered
-            // and that would therefore return us a childNode NULL (because not found in the parent's children list)
-            // and crash the backend
-
-            QNode *childClone = QNode::clone(childNode);
-            e->setValue(QVariant::fromValue(QNodePtr(childClone, &QNodePrivate::nodePtrDeleter)));
-            notifyObservers(e);
-        }
-
-        // Recursively unset the scene on all children
-        QNodeVisitor visitor;
-        visitor.traverse(childNode, this, &QNodePrivate::unsetSceneHelper);
-    } else {
-        auto childNodePrivate = get(childNode);
-        if (childNodePrivate->m_hasBackendNode) {
-            const QDestructionIdAndTypeCollector collector(childNode);
-            auto destroyedChange = QNodeDestroyedChangePtr::create(childNode, collector.subtreeIdsAndTypes());
-            notifyObservers(destroyedChange);
-        }
-
-        // Update the scene
-        // TODO: Fold this into the QNodeCreatedChangeGenerator so we don't have to
-        // traverse the sub tree twice
-        QNodeVisitor visitor;
-        visitor.traverse(childNode, this, &QNodePrivate::unsetSceneHelper);
+    auto childNodePrivate = get(childNode);
+    if (childNodePrivate->m_hasBackendNode) {
+        const QDestructionIdAndTypeCollector collector(childNode);
+        auto destroyedChange = QNodeDestroyedChangePtr::create(childNode, collector.subtreeIdsAndTypes());
+        notifyObservers(destroyedChange);
     }
-}
 
-/*!
- * This methods can only be called once and takes care of notyfing the backend
- * aspects that the current Qt3DCore::QNode instance is about to be destroyed.
- *
- * \note It must be called by the destructor of every class subclassing
- * QNode that is clonable (using the QT3D_CLONEABLE macro).
- *
- * \internal
- */
-void QNodePrivate::_q_cleanup()
-{
-    if (!m_wasCleanedUp) {
-        m_wasCleanedUp = true;
-        Q_Q(QNode);
-        qCDebug(Nodes) << Q_FUNC_INFO << q;
-        if (q->parentNode())
-            QNodePrivate::get(q->parentNode())->_q_removeChild(q);
-        // Root element has no parent and therefore we cannot
-        // call parent->_q_removeChild();
-    }
+    // Update the scene
+    QNodeVisitor visitor;
+    visitor.traverse(childNode, this, &QNodePrivate::unsetSceneHelper);
 }
 
 void QNodePrivate::registerNotifiedProperties()
@@ -524,26 +430,8 @@ QNode::QNode(QNodePrivate &dd, QNode *parent)
     }
 }
 
-/*!
-    Copies all the attributes from \a ref to the current Qt3DCore::QNode instance.
-
-    \note When subclassing QNode, you should reimplement this method and
-    always call the copy method on the base class. This will ensure that when cloned,
-    the QNode is properly initialized.
-*/
-void QNode::copy(const QNode *ref)
-{
-    if (ref) {
-        d_func()->m_id = ref->d_func()->m_id;
-        d_func()->m_enabled = ref->d_func()->m_enabled;
-        setObjectName(ref->objectName());
-    }
-}
-
 QNode::~QNode()
 {
-    Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DCore::QNode subclass didn't call QNode::cleanup in its destructor");
-
     // Create a QNodeDestroyedChange for this node that informs the backend that
     // this node and all of its children are going away
     Q_D(QNode);
@@ -678,47 +566,6 @@ bool QNode::isEnabled() const
 {
     Q_D(const QNode);
     return d->m_enabled;
-}
-
-/*!
-    Returns a clone of \a node. All the children of \a node are cloned as well.
-
-    \note This is the only way to create two nodes with the same id.
-*/
-QNode *QNode::clone(QNode *node)
-{
-    if (node == Q_NULLPTR)
-        return Q_NULLPTR;
-
-    static int clearLock = 0;
-    clearLock++;
-
-    // We keep a reference of clones for the current subtree
-    // In order to preserve relationships when multiple entities
-    // reference the same component
-    QNode *clonedNode = QNodePrivate::m_clonesLookupTable.value(node->id());
-    if (clonedNode == Q_NULLPTR) {
-        clonedNode = node->doClone();
-        // doClone, returns new instance with content copied
-        // and relationships added
-        Q_ASSERT(node->id() == clonedNode->id());
-        QNodePrivate::m_clonesLookupTable.insert(node->id(), clonedNode);
-    }
-    for (QObject *c : node->children()) {
-        QNode *childNode = qobject_cast<QNode *>(c);
-        if (childNode != Q_NULLPTR) {
-            QNode *cclone = QNode::clone(childNode);
-            // We use QObject::setParent instead of QNode::setParent to avoid the
-            // whole overhead generated by the latter as we are only dealing with clones
-            if (cclone != Q_NULLPTR)
-                static_cast<QObject *>(cclone)->setParent(clonedNode);
-        }
-    }
-
-    if (--clearLock == 0) // Cloning done
-        QNodePrivate::m_clonesLookupTable.clear();
-
-    return clonedNode;
 }
 
 QNodeCreatedChangeBasePtr QNode::createNodeCreationChange() const

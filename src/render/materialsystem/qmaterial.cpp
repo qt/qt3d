@@ -84,19 +84,6 @@ QMaterialPrivate::QMaterialPrivate()
 {
 }
 
-void QMaterial::copy(const QNode *ref)
-{
-    QComponent::copy(ref);
-    const QMaterial *material = static_cast<const QMaterial*>(ref);
-    Q_FOREACH (QParameter *p, material->d_func()->m_parameters)
-        addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
-
-    // TO DO: We may want to copy the node id of the effect and only send a clone
-    // when we are the parent of the effect
-    if (material->d_func()->m_effect && material->d_func()->m_effect->parent() == ref)
-        setEffect(qobject_cast<QEffect *>(QNode::clone(material->d_func()->m_effect)));
-}
-
 QMaterial::QMaterial(QNode *parent)
     : QComponent(*new QMaterialPrivate, parent)
 {

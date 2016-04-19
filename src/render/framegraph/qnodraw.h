@@ -51,9 +51,6 @@ class QT3DRENDERSHARED_EXPORT QNoDraw : public QFrameGraphNode
     Q_OBJECT
 public:
     explicit QNoDraw(Qt3DCore::QNode *parent = Q_NULLPTR);
-
-private:
-    QT3D_CLONEABLE(QNoDraw)
 };
 
 } // namespace Qt3DRender

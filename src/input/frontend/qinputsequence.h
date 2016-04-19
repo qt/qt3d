@@ -75,12 +75,8 @@ Q_SIGNALS:
     void timeoutChanged(int timeout);
     void buttonIntervalChanged(int buttonInterval);
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
 private:
     Q_DECLARE_PRIVATE(QInputSequence)
-    QT3D_CLONEABLE(QInputSequence)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

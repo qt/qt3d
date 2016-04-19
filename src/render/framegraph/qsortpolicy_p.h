@@ -67,6 +67,12 @@ public:
     QVector<QSortPolicy::SortType> m_sortTypes;
 };
 
+
+struct QSortPolicyData
+{
+    QVector<QSortPolicy::SortType> sortTypes;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -165,7 +165,6 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QCamera)
-    QT3D_CLONEABLE(QCamera)
     QCamera(QCameraPrivate &dd, QNode *parent = Q_NULLPTR);
 };
 

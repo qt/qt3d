@@ -81,12 +81,12 @@ Q_SIGNALS:
     void recursiveChanged(bool recursive);
 
 protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QBoundingVolumeDebug)
-    QT3D_CLONEABLE(QBoundingVolumeDebug)
+
+    // TODO: Handle creation changes
 };
 
 } // Qt3DRender

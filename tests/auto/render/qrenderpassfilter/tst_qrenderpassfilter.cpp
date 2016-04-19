@@ -30,8 +30,10 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qrenderpassfilter.h>
+#include <Qt3DRender/private/qrenderpassfilter_p.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qfilterkey.h>
 
@@ -41,16 +43,9 @@
 
 #include "testpostmanarbiter.h"
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QRenderPassFilter: public Qt3DCore::QNode
+class tst_QRenderPassFilter: public QObject
 {
     Q_OBJECT
-public:
-    ~tst_QRenderPassFilter()
-    {
-        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
-    }
 
 private Q_SLOTS:
 
@@ -109,6 +104,7 @@ private Q_SLOTS:
         QTest::newRow("renderPassFilterWithParamsAndAnnotations") << renderPassFilterWithParamsAndAnnotations << params2 << filterKeys2 ;
     }
 
+    // TODO: Avoid cloning here
     void checkCloning()
     {
         // GIVEN
@@ -121,37 +117,28 @@ private Q_SLOTS:
         QCOMPARE(renderPassFilter->matchAny(), filterKeys);
 
         // WHEN
-        Qt3DRender::QRenderPassFilter *clone = static_cast<Qt3DRender::QRenderPassFilter *>(QNode::clone(renderPassFilter));
+        // WHEN
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(renderPassFilter);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(renderPassFilter->id(), clone->id());
+        QCOMPARE(creationChanges.size(), 1 + renderPassFilter->parameters().size() + renderPassFilter->matchAny().size());
 
-        QCOMPARE(renderPassFilter->matchAny().count(), clone->matchAny().count());
-        QCOMPARE(renderPassFilter->parameters().count(), clone->parameters().count());
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QRenderPassFilterData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QRenderPassFilterData>>(creationChanges.first());
+        const Qt3DRender::QRenderPassFilterData &cloneData = creationChangeData->data;
 
-        for (int i = 0, m = parameters.count(); i < m; ++i) {
-            Qt3DRender::QParameter *pClone = clone->parameters().at(i);
-            Qt3DRender::QParameter *pOrig = parameters.at(i);
-            QCOMPARE(pOrig->id(),pClone->id());
-            QCOMPARE(pOrig->name(), pClone->name());
-            QCOMPARE(pOrig->value(), pClone->value());
-            QVERIFY(pClone->parent() == clone);
-            QVERIFY(pOrig->parent() == renderPassFilter);
-        }
+        // THEN
+        QCOMPARE(renderPassFilter->id(), creationChangeData->subjectId());
+        QCOMPARE(renderPassFilter->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(renderPassFilter->metaObject(), creationChangeData->metaObject());
 
-        for (int i = 0, m = filterKeys.count(); i < m; ++i) {
-            Qt3DRender::QFilterKey *aClone = clone->matchAny().at(i);
-            Qt3DRender::QFilterKey *aOrig = filterKeys.at(i);
-            QCOMPARE(aOrig->id(),aClone->id());
-            QCOMPARE(aOrig->name(), aClone->name());
-            QCOMPARE(aOrig->value(), aClone->value());
-            QVERIFY(aClone->parent() == clone);
-            QVERIFY(aOrig->parent() == renderPassFilter);
-        }
+        QCOMPARE(renderPassFilter->matchAny().count(), cloneData.matchIds.count());
+        QCOMPARE(renderPassFilter->parameters().count(), cloneData.parameterIds.count());
+
+        // TO DO: Add unit tests for QParameter / QFilterKey
 
         delete renderPassFilter;
-        delete clone;
     }
 
     void checkPropertyUpdates()
@@ -232,13 +219,6 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QRenderPassFilter)

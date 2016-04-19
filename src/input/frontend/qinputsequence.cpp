@@ -232,14 +232,6 @@ QVector<QAbstractActionInput *> QInputSequence::sequences() const
     return d->m_sequences;
 }
 
-void QInputSequence::copy(const Qt3DCore::QNode *ref)
-{
-    const QInputSequence *input = static_cast<const QInputSequence *>(ref);
-    d_func()->m_timeout = input->d_func()->m_timeout;
-    d_func()->m_buttonInterval = input->d_func()->m_buttonInterval;
-    d_func()->m_sequences = input->sequences();
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QInputSequence::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QInputSequenceData>::create(this);

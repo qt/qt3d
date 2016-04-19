@@ -246,16 +246,6 @@ QVector<QAxis *> QLogicalDevice::axes() const
     return d->m_axes;
 }
 
-void QLogicalDevice::copy(const Qt3DCore::QNode *ref)
-{
-    QNode::copy(ref);
-    const QLogicalDevice *device = static_cast<const QLogicalDevice *>(ref);
-    Q_FOREACH (QAction *action, device->actions())
-        d_func()->m_actions.push_back(qobject_cast<QAction *>(QNode::clone(action)));
-    Q_FOREACH (QAxis *axis, device->axes())
-        d_func()->m_axes.push_back(qobject_cast<QAxis *>(QNode::clone(axis)));
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QLogicalDevice::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QLogicalDeviceData>::create(this);

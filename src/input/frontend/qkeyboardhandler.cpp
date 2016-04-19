@@ -158,17 +158,6 @@ QKeyboardHandler::QKeyboardHandler(QNode *parent)
 {
 }
 
-void QKeyboardHandler::copy(const QNode *ref)
-{
-    QComponent::copy(ref);
-    const QKeyboardHandler *input = static_cast<const QKeyboardHandler *>(ref);
-
-    // TO DO: We may want to store the keyboard device id and only send a clone when we are the parent
-    // of the keyboard device
-    if (input->d_func()->m_keyboardDevice != Q_NULLPTR && input->d_func()->m_keyboardDevice->parent() == ref)
-        setSourceDevice(qobject_cast<QKeyboardDevice *>(QNode::clone(input->d_func()->m_keyboardDevice)));
-}
-
 void QKeyboardHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QKeyboardHandler);

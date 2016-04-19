@@ -81,12 +81,8 @@ Q_SIGNALS:
     void alphaFunctionChanged(AlphaFunction alphaFunction);
     void referenceValueChanged(float referenceValue);
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
 private:
     Q_DECLARE_PRIVATE(QAlphaTest)
-    QT3D_CLONEABLE(QAlphaTest)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

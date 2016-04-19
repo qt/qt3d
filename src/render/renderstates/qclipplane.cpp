@@ -131,15 +131,6 @@ void QClipPlane::setDistance(float distance)
     }
 }
 
-void QClipPlane::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QClipPlane *refClip = static_cast<const QClipPlane *>(ref);
-    d_func()->m_planeIndex = refClip->planeIndex();
-    d_func()->m_normal = refClip->normal();
-    d_func()->m_distance = refClip->distance();
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QClipPlane::createNodeCreationChange() const
 {
     auto creationChange = QRenderStateCreatedChangePtr<QClipPlaneData>::create(this);

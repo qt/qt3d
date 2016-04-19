@@ -404,37 +404,19 @@ void QGeometryRenderer::setGeometryFactory(const QGeometryFactoryPtr &factory)
 /*!
  * \internal
  */
-void QGeometryRenderer::copy(const QNode *ref)
-{
-    QComponent::copy(ref);
-    const QGeometryRenderer *other = static_cast<const QGeometryRenderer *>(ref);
-    d_func()->m_instanceCount = other->d_func()->m_instanceCount;
-    d_func()->m_vertexCount = other->d_func()->m_vertexCount;
-    d_func()->m_indexOffset = other->d_func()->m_indexOffset;
-    d_func()->m_firstInstance = other->d_func()->m_firstInstance;
-    d_func()->m_restartIndexValue = other->d_func()->m_restartIndexValue;
-    d_func()->m_primitiveRestart = other->d_func()->m_primitiveRestart;
-    d_func()->m_primitiveType = other->d_func()->m_primitiveType;
-    d_func()->m_verticesPerPatch = other->d_func()->m_verticesPerPatch;
-    d_func()->m_geometry = static_cast<QGeometry *>(QNode::clone(other->d_func()->m_geometry));
-    d_func()->m_geometryFactory = other->d_func()->m_geometryFactory;
-}
-
-/*!
- * \internal
- */
 void QGeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    Q_D(QGeometryRenderer);
-    QNodePropertyChangePtr change = qSharedPointerCast<QNodePropertyChange>(e);
-    if (change->type() == NodeUpdated && change->propertyName() == QByteArrayLiteral("geometry")) {
-        QNodePtr nodePtr = change->value().value<QNodePtr>();
-        QGeometry *backendGeometry = static_cast<QGeometry *>(nodePtr.data());
-        QGeometry *frontendGeometry = static_cast<QGeometry *>(QNode::clone(backendGeometry));
-        if (frontendGeometry != Q_NULLPTR)
-            d->insertTree(frontendGeometry);
-        setGeometry(frontendGeometry);
-    }
+    // TODO: Avoid cloning here
+//    Q_D(QGeometryRenderer);
+//    QScenePropertyChangePtr change = qSharedPointerCast<QScenePropertyChange>(e);
+//    if (change->type() == NodeUpdated && change->propertyName() == QByteArrayLiteral("geometry")) {
+//        QNodePtr nodePtr = change->value().value<QNodePtr>();
+//        QGeometry *backendGeometry = static_cast<QGeometry *>(nodePtr.data());
+//        QGeometry *frontendGeometry = static_cast<QGeometry *>(QNode::clone(backendGeometry));
+//        if (frontendGeometry != Q_NULLPTR)
+//            d->insertTree(frontendGeometry);
+//        setGeometry(frontendGeometry);
+//    }
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QGeometryRenderer::createNodeCreationChange() const

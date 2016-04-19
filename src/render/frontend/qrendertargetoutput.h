@@ -108,11 +108,9 @@ Q_SIGNALS:
 
 protected:
     explicit QRenderTargetOutput(QRenderTargetOutputPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QRenderTargetOutput)
-    QT3D_CLONEABLE(QRenderTargetOutput)
 };
 
 } // namespace Qt3DRender

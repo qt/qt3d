@@ -91,16 +91,6 @@ QSpotLightPrivate::QSpotLightPrivate()
     \brief For OpenGL ...
 */
 
-/*! \fn void Qt3DRender::QSpotLight::copy(const Qt3DCore::QNode *ref)
-  Copies the \a ref instance into this one.
- */
-
-void QSpotLight::copy(const QNode *ref)
-{
-    QAbstractLight::copy(ref);
-}
-
-
 /*!
   \fn Qt3DRender::QSpotLight::QSpotLight(Qt3DCore::QNode *parent)
   Constructs a new QSpotLight with the specified \a parent.

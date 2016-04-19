@@ -29,21 +29,16 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qclearbuffers.h>
+#include <Qt3DRender/private/qclearbuffers_p.h>
 
 #include "testpostmanarbiter.h"
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QClearBuffers: public Qt3DCore::QNode
+class tst_QClearBuffers: public QObject
 {
     Q_OBJECT
-public:
-    ~tst_QClearBuffers()
-    {
-        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
-    }
 
 private Q_SLOTS:
 
@@ -78,15 +73,26 @@ private Q_SLOTS:
         QCOMPARE(clearBuffers->buffers(), bufferType);
 
         // WHEN
-        Qt3DRender::QClearBuffers *clone = static_cast<Qt3DRender::QClearBuffers *>(QNode::clone(clearBuffers));
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(clearBuffers);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(clearBuffers->id(), clone->id());
-        QCOMPARE(clearBuffers->buffers(), clone->buffers());
+        QCOMPARE(creationChanges.size(), 1);
+
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QClearBuffersData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QClearBuffersData>>(creationChanges.first());
+        const Qt3DRender::QClearBuffersData &cloneData = creationChangeData->data;
+
+        // THEN
+        QCOMPARE(clearBuffers->id(), creationChangeData->subjectId());
+        QCOMPARE(clearBuffers->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(clearBuffers->metaObject(), creationChangeData->metaObject());
+        QCOMPARE(clearBuffers->buffers(), cloneData.buffersType);
+        QCOMPARE(clearBuffers->clearColor(), cloneData.clearColor);
+        QCOMPARE(clearBuffers->clearDepthValue(), cloneData.clearDepthValue);
+        QCOMPARE(clearBuffers->clearStencilValue(), cloneData.clearStencilValue);
 
         delete clearBuffers;
-        delete clone;
     }
 
     void checkPropertyUpdates()
@@ -130,13 +136,6 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QClearBuffers)

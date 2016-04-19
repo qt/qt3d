@@ -69,17 +69,6 @@ QFilterKeyPrivate::QFilterKeyPrivate()
 */
 
 /*!
-  Copies the annotation in \a ref into this annotation.
- */
-void QFilterKey::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QFilterKey *criterion = static_cast<const QFilterKey*>(ref);
-    d_func()->m_name = criterion->d_func()->m_name;
-    d_func()->m_value = criterion->d_func()->m_value;
-}
-
-/*!
   The constructor creats a new annotation under \a parent.
  */
 QFilterKey::QFilterKey(QNode *parent)

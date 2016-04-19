@@ -56,17 +56,6 @@ QTechniqueFilterPrivate::QTechniqueFilterPrivate()
 {
 }
 
-void QTechniqueFilter::copy(const QNode *ref)
-{
-    QFrameGraphNode::copy(ref);
-    const QTechniqueFilter *other = static_cast<const QTechniqueFilter*>(ref);
-
-    Q_FOREACH (QFilterKey *crit, other->d_func()->m_matchList)
-        addMatch(qobject_cast<QFilterKey *>(QNode::clone(crit)));
-    for (QParameter *p : other->d_func()->m_parameters)
-        addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
-}
-
 QTechniqueFilter::QTechniqueFilter(QNode *parent)
     : QFrameGraphNode(*new QTechniqueFilterPrivate, parent)
 {

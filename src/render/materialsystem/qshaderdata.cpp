@@ -88,32 +88,6 @@ QShaderData::QShaderData(QShaderDataPrivate &dd, QNode *parent)
 {
 }
 
-void QShaderData::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QShaderData *shaderData = static_cast<const QShaderData *>(ref);
-    // We need to copy the properties
-    // At the moment we assume that the properties are copyable
-    // this may change in a later refactoring
-
-    const QMetaObject *metaObject = shaderData->metaObject();
-    const int propertyOffset = QShaderData::staticMetaObject.propertyOffset();
-    const int propertyCount = metaObject->propertyCount();
-
-    // Copy properties of shaderData
-    for (int i = propertyOffset; i < propertyCount; ++i) {
-        const QMetaProperty property = metaObject->property(i);
-        if (property.isWritable()) {
-            setProperty(property.name(), propertyReader()->readProperty(shaderData->property(property.name())));
-        }
-    }
-
-    // Also copy the dynamic properties
-    foreach (const QByteArray &propertyName, shaderData->dynamicPropertyNames()) {
-        setProperty(propertyName, propertyReader()->readProperty(shaderData->property(propertyName)));
-    }
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QShaderData::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QShaderDataData>::create(this);

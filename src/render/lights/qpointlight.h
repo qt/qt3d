@@ -75,7 +75,6 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QPointLight)
     QPointLight(QPointLightPrivate &dd, Qt3DCore::QNode *parent);
-    QT3D_CLONEABLE(QPointLight)
 };
 
 } // namespace Qt3DRender

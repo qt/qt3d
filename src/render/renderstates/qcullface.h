@@ -76,12 +76,8 @@ public Q_SLOTS:
 Q_SIGNALS:
     void modeChanged(CullingMode mode);
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
 private:
     Q_DECLARE_PRIVATE(QCullFace)
-    QT3D_CLONEABLE(QCullFace)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

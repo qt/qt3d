@@ -61,12 +61,8 @@ public:
     QStencilOperationArguments *front() const;
     QStencilOperationArguments *back() const;
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL;
-
 private:
     Q_DECLARE_PRIVATE(QStencilOperation)
-    QT3D_CLONEABLE(QStencilOperation)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

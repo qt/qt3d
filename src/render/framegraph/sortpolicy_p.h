@@ -71,6 +71,8 @@ public:
     QVector<Qt3DRender::QSortPolicy::SortType> sortTypes() const;
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QVector<Qt3DRender::QSortPolicy::SortType> m_sortTypes;
 };
 

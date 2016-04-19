@@ -83,22 +83,23 @@ private Q_SLOTS:
         QTest::newRow("objectPicker_all_true") << objectPicker;
     }
 
-    void checkCloning()
-    {
-        // GIVEN
-        QFETCH(Qt3DRender::QObjectPicker *, objectPicker);
+    // TODO: Avoid cloning here
+//    void checkCloning()
+//    {
+//        // GIVEN
+//        QFETCH(Qt3DRender::QObjectPicker *, objectPicker);
 
-        // WHEN
-        Qt3DRender::QObjectPicker *clone = static_cast<Qt3DRender::QObjectPicker *>(QNode::clone(objectPicker));
-        QCoreApplication::processEvents();
+//        // WHEN
+//        Qt3DRender::QObjectPicker *clone = static_cast<Qt3DRender::QObjectPicker *>(QNode::clone(objectPicker));
+//        QCoreApplication::processEvents();
 
-        // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(objectPicker->id(), clone->id());
-        QCOMPARE(objectPicker->isHoverEnabled(), clone->isHoverEnabled());
-        QCOMPARE(objectPicker->isPressed(), clone->isPressed());
-        QCOMPARE(objectPicker->containsMouse(), clone->containsMouse());
-    }
+//        // THEN
+//        QVERIFY(clone != Q_NULLPTR);
+//        QCOMPARE(objectPicker->id(), clone->id());
+//        QCOMPARE(objectPicker->isHoverEnabled(), clone->isHoverEnabled());
+//        QCOMPARE(objectPicker->isPressed(), clone->isPressed());
+//        QCOMPARE(objectPicker->containsMouse(), clone->containsMouse());
+//    }
 
     void checkPropertyUpdates()
     {
@@ -178,14 +179,6 @@ private Q_SLOTS:
         // Check that the QObjectPicker triggers the expected signal
         QCOMPARE(spy.count(), 1);
     }
-
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QObjectPicker)

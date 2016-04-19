@@ -60,20 +60,6 @@ QRenderPassPrivate::QRenderPassPrivate()
 {
 }
 
-void QRenderPass::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QRenderPass *other = static_cast<const QRenderPass*>(ref);
-    d_func()->m_shader = qobject_cast<QShaderProgram *>(QNode::clone(other->d_func()->m_shader));
-
-    Q_FOREACH (QFilterKey *crit, other->d_func()->m_filterKeyList)
-        addFilterKey(qobject_cast<QFilterKey *>(QNode::clone(crit)));
-    Q_FOREACH (QRenderState *renderState, other->d_func()->m_renderStates)
-        addRenderState(qobject_cast<QRenderState *>(QNode::clone(renderState)));
-    Q_FOREACH (QParameter *p, other->d_func()->m_parameters)
-        addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
-}
-
 QRenderPass::QRenderPass(QNode *parent)
     : QNode(*new QRenderPassPrivate, parent)
 {

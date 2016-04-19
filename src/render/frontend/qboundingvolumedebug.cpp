@@ -110,13 +110,6 @@ bool QBoundingVolumeDebug::recursive() const
     return d->m_recursive;
 }
 
-void QBoundingVolumeDebug::copy(const Qt3DCore::QNode *ref)
-{
-    QComponent::copy(ref);
-    const QBoundingVolumeDebug *debugVolume = static_cast<const QBoundingVolumeDebug *>(ref);
-    d_func()->m_recursive = debugVolume->d_func()->m_recursive;
-}
-
 void QBoundingVolumeDebug::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QBoundingVolumeDebug);

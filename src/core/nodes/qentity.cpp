@@ -97,11 +97,6 @@ QEntity::~QEntity()
     const auto components = std::move(d->m_components);
     for (QComponent *comp : components)
         removeComponent(comp);
-
-    QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
-    // If all children are removed
-    // That includes the components that are parented by this entity
-
 }
 
 /*! \internal */
@@ -110,22 +105,6 @@ QEntity::QEntity(QEntityPrivate &dd, QNode *parent)
 {
 }
 
-/*!
-    Copies all the properties and components of the Qt3DCore::QEntity \a ref to the
-    current instance.
-*/
-void QEntity::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QEntity *entity = static_cast<const QEntity*>(ref);
-    d_func()->m_visible = entity->d_func()->m_visible;
-    d_func()->m_parentEntityId = entity->d_func()->parentEntityId();
-
-    for (QComponent *c : qAsConst(entity->d_func()->m_components)) {
-        QNode *ccclone = QNode::clone(c);
-        addComponent(qobject_cast<QComponent *>(ccclone));
-    }
-}
 /*!
     \typedef Qt3DCore::QComponentVector
     \relates Qt3DCore::QEntity

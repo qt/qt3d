@@ -87,17 +87,6 @@ void QPointSize::setValue(float size)
     emit valueChanged(size);
 }
 
-void QPointSize::copy(const Qt3DCore::QNode *ref)
-{
-    const QPointSize *refState = static_cast<const QPointSize *>(ref);
-
-    QRenderState::copy(ref);
-
-    Q_D(QPointSize);
-    d->m_value = refState->d_func()->m_value;
-    d->m_sizeMode = refState->d_func()->m_sizeMode;
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QPointSize::createNodeCreationChange() const
 {
     auto creationChange = QRenderStateCreatedChangePtr<QPointSizeData>::create(this);

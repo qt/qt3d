@@ -92,11 +92,9 @@ Q_SIGNALS:
 
 protected:
     explicit QClearBuffers(QClearBuffersPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QClearBuffers)
-    QT3D_CLONEABLE(QClearBuffers)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

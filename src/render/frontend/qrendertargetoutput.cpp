@@ -55,14 +55,6 @@ QRenderTargetOutputPrivate::QRenderTargetOutputPrivate()
 {
 }
 
-void QRenderTargetOutput::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QRenderTargetOutput *rA = static_cast<const QRenderTargetOutput*>(ref);
-    d_func()->m_attachmentPoint = rA->d_func()->m_attachmentPoint;
-    setTexture(qobject_cast<QAbstractTexture *>(QNode::clone(rA->d_func()->m_texture)));
-}
-
 QRenderTargetOutput::QRenderTargetOutput(QNode *parent)
     : QNode(*new QRenderTargetOutputPrivate, parent)
 {

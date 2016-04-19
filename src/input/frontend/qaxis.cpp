@@ -113,15 +113,6 @@ float QAxis::value() const
     return d->m_value;
 }
 
-void QAxis::copy(const Qt3DCore::QNode *ref)
-{
-    QNode::copy(ref);
-    const QAxis *axis = static_cast<const QAxis *>(ref);
-    Q_FOREACH (QAxisInput *input, axis->inputs())
-        d_func()->m_inputs.append(qobject_cast<QAxisInput *>(QNode::clone(input)));
-
-}
-
 void QAxis::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QAxis);

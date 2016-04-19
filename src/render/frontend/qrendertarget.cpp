@@ -55,14 +55,6 @@ QRenderTargetPrivate::QRenderTargetPrivate()
 {
 }
 
-void QRenderTarget::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QRenderTarget *other = static_cast<const QRenderTarget*>(ref);
-    for (QRenderTargetOutput *output : other->d_func()->m_outputs)
-        addOutput(qobject_cast<QRenderTargetOutput *>(QNode::clone(output)));
-}
-
 QRenderTarget::QRenderTarget(QNode *parent)
     : QComponent(*new QRenderTargetPrivate, parent)
 {

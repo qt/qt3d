@@ -69,8 +69,6 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QFrameAction)
-    QT3D_CLONEABLE(QFrameAction)
-
     void onTriggered(float dt);
 
     friend class Logic::Executor;

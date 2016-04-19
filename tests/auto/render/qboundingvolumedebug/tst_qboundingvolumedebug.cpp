@@ -83,20 +83,21 @@ private Q_SLOTS:
         QTest::newRow("recursive_bvd") << bvD;
     }
 
-    void checkCloning()
-    {
-        // GIVEN
-        QFETCH(Qt3DRender::QBoundingVolumeDebug *, bvD);
+    // TODO: Avoid cloning here
+//    void checkCloning()
+//    {
+//        // GIVEN
+//        QFETCH(Qt3DRender::QBoundingVolumeDebug *, bvD);
 
-        // WHEN
-        Qt3DRender::QBoundingVolumeDebug *clone = static_cast<Qt3DRender::QBoundingVolumeDebug *>(QNode::clone(bvD));
-        QCoreApplication::processEvents();
+//        // WHEN
+//        Qt3DRender::QBoundingVolumeDebug *clone = static_cast<Qt3DRender::QBoundingVolumeDebug *>(QNode::clone(bvD));
+//        QCoreApplication::processEvents();
 
-        // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(bvD->id(), clone->id());
-        QCOMPARE(bvD->recursive(), clone->recursive());
-    }
+//        // THEN
+//        QVERIFY(clone != Q_NULLPTR);
+//        QCOMPARE(bvD->id(), clone->id());
+//        QCOMPARE(bvD->recursive(), clone->recursive());
+//    }
 
     void checkPropertyUpdates()
     {
@@ -161,14 +162,6 @@ private Q_SLOTS:
         QCOMPARE(entity->children().count(), 2);
         QCOMPARE(bvD->children().count(), 0);
     }
-
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QBoundingVolumeDebug)

@@ -62,11 +62,9 @@ public:
 
 protected:
     explicit QRenderStateSet(QRenderStateSetPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QRenderStateSet)
-    QT3D_CLONEABLE(QRenderStateSet)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

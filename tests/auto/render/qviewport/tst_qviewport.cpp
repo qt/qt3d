@@ -29,21 +29,16 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qviewport.h>
+#include <Qt3DRender/private/qviewport_p.h>
 
 #include "testpostmanarbiter.h"
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QViewport: public Qt3DCore::QNode
+class tst_QViewport: public QObject
 {
     Q_OBJECT
-public:
-    ~tst_QViewport()
-    {
-        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
-    }
 
 private Q_SLOTS:
 
@@ -71,15 +66,22 @@ private Q_SLOTS:
         QCOMPARE(viewport->normalizedRect(), normalizedRect);
 
         // WHEN
-        Qt3DRender::QViewport *clone = static_cast<Qt3DRender::QViewport *>(QNode::clone(viewport));
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(viewport);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(viewport->id(), clone->id());
-        QCOMPARE(viewport->normalizedRect(), clone->normalizedRect());
+        QCOMPARE(creationChanges.size(), 1);
+
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QViewportData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QViewportData>>(creationChanges.first());
+        const Qt3DRender::QViewportData &cloneData = creationChangeData->data;
+
+        QCOMPARE(viewport->id(), creationChangeData->subjectId());
+        QCOMPARE(viewport->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(viewport->metaObject(), creationChangeData->metaObject());
+        QCOMPARE(viewport->normalizedRect(), cloneData.normalizedRect);
 
         delete viewport;
-        delete clone;
     }
 
     void checkPropertyUpdates()
@@ -122,13 +124,6 @@ private Q_SLOTS:
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QViewport)

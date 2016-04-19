@@ -61,27 +61,6 @@ class QAspectEngine;
 typedef QVector<QNode *> QNodeVector;
 typedef QSharedPointer<QNode> QNodePtr;
 
-#define QT3DCORE_QUOTE(str) #str
-#define QT3D_CLONEABLE(Class)                \
-    friend class Qt3DCore::QAbstractNodeFactory;       \
-    QNode *doClone() const Q_DECL_OVERRIDE { \
-        Class *clone_ = Qt3DCore::QAbstractNodeFactory::createNode<Class>(QT3DCORE_QUOTE(Class)); \
-        clone_->copy(this);                   \
-        return clone_;                        \
-    }                                         \
-    public:                                   \
-    virtual ~Class() {                        \
-        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection); \
-    }
-
-#define QT3D_CLONEABLE_CUSTOM_DTOR(Class)                \
-    friend class Qt3DCore::QAbstractNodeFactory;       \
-    QNode *doClone() const Q_DECL_OVERRIDE { \
-        Class *clone_ = Qt3DCore::QAbstractNodeFactory::createNode<Class>(QT3DCORE_QUOTE(Class)); \
-        clone_->copy(this);                   \
-        return clone_;                        \
-    }                                         \
-
 // Each QNode subclass should call QNode::cleanup in it dtor
 // QNode::cleanup checks that a flags wasn't set to true,
 // sets it to true and sends a clone to the backend
@@ -114,16 +93,11 @@ Q_SIGNALS:
     void enabledChanged(bool enabled);
 
 protected:
-    // Clone should only be made in the main thread
-    static QNode *clone(QNode *node);
-
     QNode(QNodePrivate &dd, QNode *parent = Q_NULLPTR);
-    virtual void copy(const QNode *ref);
     virtual void sceneChangeEvent(const QSceneChangePtr &change);
 
 private:
     Q_DECLARE_PRIVATE(QNode)
-    virtual QNode *doClone() const = 0;
     // TODO: Make this pure virtual once all classes have been adapted
     virtual QNodeCreatedChangeBasePtr createNodeCreationChange() const;
 
@@ -133,7 +107,6 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void _q_addChild(Qt3DCore::QNode *))
     Q_PRIVATE_SLOT(d_func(), void _q_removeChild(Qt3DCore::QNode *))
-    Q_PRIVATE_SLOT(d_func(), void _q_cleanup())
 
     friend class QAspectEngine;
     friend class QAspectEnginePrivate;

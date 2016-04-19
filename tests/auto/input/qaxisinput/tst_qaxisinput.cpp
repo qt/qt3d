@@ -29,16 +29,16 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DInput/QAxisInput>
 #include <Qt3DInput/QAbstractPhysicalDevice>
+#include <Qt3DInput/private/qaxisinput_p.h>
 
 #include "testpostmanarbiter.h"
 #include "testdevice.h"
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QAxisInput: public Qt3DCore::QNode
+class tst_QAxisInput: public QObject
 {
     Q_OBJECT
 public:
@@ -76,20 +76,24 @@ private Q_SLOTS:
         QFETCH(Qt3DInput::QAxisInput *, axisInput);
 
         // WHEN
-        Qt3DInput::QAxisInput *clone = static_cast<Qt3DInput::QAxisInput *>(QNode::clone(axisInput));
-        QCoreApplication::processEvents();
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(axisInput);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(axisInput->id(), clone->id());
-        QCOMPARE(axisInput->buttons(), clone->buttons());
-        QCOMPARE(axisInput->axis(), clone->axis());
-        QCOMPARE(axisInput->scale(), clone->scale());
+        QCOMPARE(creationChanges.size(), 1 + (axisInput->sourceDevice() ? 1 : 0));
 
-        if (axisInput->sourceDevice() != Q_NULLPTR) {
-            QVERIFY(clone->sourceDevice() != Q_NULLPTR);
-            QCOMPARE(clone->sourceDevice()->id(), axisInput->sourceDevice()->id());
-        }
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DInput::QAxisInputData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QAxisInputData>>(creationChanges.first());
+        const Qt3DInput::QAxisInputData &cloneData = creationChangeData->data;
+
+        // THEN
+        QCOMPARE(axisInput->id(), creationChangeData->subjectId());
+        QCOMPARE(axisInput->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(axisInput->metaObject(), creationChangeData->metaObject());
+        QCOMPARE(axisInput->buttons(), cloneData.buttons);
+        QCOMPARE(axisInput->axis(), cloneData.axis);
+        QCOMPARE(axisInput->scale(), cloneData.scale);
+        QCOMPARE(axisInput->sourceDevice() ? axisInput->sourceDevice()->id() : Qt3DCore::QNodeId(), cloneData.sourceDeviceId);
     }
 
     void checkPropertyUpdates()
@@ -152,13 +156,6 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QAxisInput)

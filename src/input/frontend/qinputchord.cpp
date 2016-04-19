@@ -187,15 +187,6 @@ QVector<QAbstractActionInput *> QInputChord::chords() const
     return d->m_chords;
 }
 
-
-void QInputChord::copy(const Qt3DCore::QNode *ref)
-{
-    QAbstractActionInput::copy(ref);
-    const QInputChord *input = static_cast<const QInputChord *>(ref);
-    d_func()->m_timeout = input->d_func()->m_timeout;
-    d_func()->m_chords = input->chords();
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QInputChord::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QInputChordData>::create(this);

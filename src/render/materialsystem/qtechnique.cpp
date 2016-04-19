@@ -75,21 +75,6 @@ QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
     QObject::connect(&d->m_graphicsApiFilter, SIGNAL(graphicsApiFilterChanged()), this, SLOT(_q_graphicsApiFilterChanged()));
 }
 
-void QTechnique::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QTechnique *tech = static_cast<const QTechnique*>(ref);
-    QGraphicsApiFilterPrivate::get(const_cast<QGraphicsApiFilter *>(&d_func()->m_graphicsApiFilter))->m_data =
-            QGraphicsApiFilterPrivate::get(const_cast<QGraphicsApiFilter *>(&tech->d_func()->m_graphicsApiFilter))->m_data;
-
-    Q_FOREACH (QFilterKey *annotation, tech->d_func()->m_filterKeys)
-        addFilterKey(qobject_cast<QFilterKey *>(QNode::clone(annotation)));
-    Q_FOREACH (QRenderPass *pass, tech->d_func()->m_renderPasses)
-        addRenderPass(qobject_cast<QRenderPass *>(QNode::clone(pass)));
-    Q_FOREACH (QParameter *p, tech->d_func()->m_parameters)
-        addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
-}
-
 void QTechniquePrivate::_q_graphicsApiFilterChanged()
 {
     if (m_changeArbiter != Q_NULLPTR) {

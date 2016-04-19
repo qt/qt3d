@@ -93,14 +93,6 @@ void QPickingSettings::setPickResultMode(QPickingSettings::PickResultMode pickRe
     emit pickResultModeChanged(pickResultMode);
 }
 
-void QPickingSettings::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QPickingSettings *object = static_cast<const QPickingSettings *>(ref);
-    d_func()->m_pickMethod = object->d_func()->m_pickMethod;
-    d_func()->m_pickResultMode = object->d_func()->m_pickResultMode;
-}
-
 } // namespace Qt3Drender
 
 QT_END_NAMESPACE

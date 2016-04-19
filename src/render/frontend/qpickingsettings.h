@@ -84,10 +84,6 @@ Q_SIGNALS:
 protected:
     Q_DECLARE_PRIVATE(QPickingSettings)
     QPickingSettings(QPickingSettingsPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
-private:
-    QT3D_CLONEABLE(QPickingSettings)
 };
 
 } // namespace Qt3Drender

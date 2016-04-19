@@ -70,11 +70,10 @@ public:
 
 protected:
     QEntity(QEntityPrivate &dd, QNode *parent = Q_NULLPTR);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QEntity)
-    QT3D_CLONEABLE_CUSTOM_DTOR(QEntity)
+
     QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

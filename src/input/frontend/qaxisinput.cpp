@@ -131,16 +131,6 @@ QVariantList QAxisInput::buttons() const
     return d->m_buttons;
 }
 
-void QAxisInput::copy(const Qt3DCore::QNode *ref)
-{
-    QNode::copy(ref);
-    const QAxisInput *input = static_cast<const QAxisInput *>(ref);
-    d_func()->m_sourceDevice = qobject_cast<QAbstractPhysicalDevice *>(QNode::clone(input->d_func()->m_sourceDevice));
-    d_func()->m_buttons = input->d_func()->m_buttons;
-    d_func()->m_scale = input->d_func()->m_scale;
-    d_func()->m_axis = input->d_func()->m_axis;
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QAxisInput::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAxisInputData>::create(this);

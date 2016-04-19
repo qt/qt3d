@@ -29,8 +29,10 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qgeometry.h>
+#include <Qt3DRender/private/qgeometry_p.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
 
@@ -40,9 +42,7 @@
 
 #include "testpostmanarbiter.h"
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QGeometry: public Qt3DCore::QNode
+class tst_QGeometry: public QObject
 {
     Q_OBJECT
 
@@ -80,29 +80,28 @@ private Q_SLOTS:
         QFETCH(int, attributeCount);
 
         // WHEN
-        Qt3DRender::QGeometry *clone = static_cast<Qt3DRender::QGeometry *>(QNode::clone(geometry));
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(geometry);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
+        QCOMPARE(creationChanges.size(), 1 + geometry->childNodes().size());
 
-        QCOMPARE(geometry->id(), clone->id());
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QGeometryData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QGeometryData>>(creationChanges.first());
+        const Qt3DRender::QGeometryData &cloneData = creationChangeData->data;
+
+        QCOMPARE(geometry->id(), creationChangeData->subjectId());
+        QCOMPARE(geometry->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(geometry->metaObject(), creationChangeData->metaObject());
+
         QCOMPARE(attributeCount, geometry->attributes().count());
-        QCOMPARE(attributeCount, clone->attributes().count());
+        QCOMPARE(attributeCount, cloneData.attributeIds.count());
         if (geometry->boundingVolumePositionAttribute())
-                QCOMPARE(geometry->boundingVolumePositionAttribute()->id(), clone->boundingVolumePositionAttribute()->id());
+                QCOMPARE(geometry->boundingVolumePositionAttribute()->id(), cloneData.boundingVolumePositionAttributeId);
 
         for (int i = 0; i < attributeCount; ++i) {
             Qt3DRender::QAttribute *originalAttribute = static_cast<Qt3DRender::QAttribute *>(geometry->attributes()[i]);
-            Qt3DRender::QAttribute *cloneAttribute = static_cast<Qt3DRender::QAttribute *>(clone->attributes()[i]);
-
-            QCOMPARE(originalAttribute->id(), cloneAttribute->id());
-            QCOMPARE(originalAttribute->name(), cloneAttribute->name());
-            QCOMPARE(originalAttribute->buffer(), cloneAttribute->buffer());
-            QCOMPARE(originalAttribute->count(), cloneAttribute->count());
-            QCOMPARE(originalAttribute->byteStride(), cloneAttribute->byteStride());
-            QCOMPARE(originalAttribute->byteOffset(), cloneAttribute->byteOffset());
-            QCOMPARE(originalAttribute->divisor(), cloneAttribute->divisor());
-            QCOMPARE(originalAttribute->attributeType(), cloneAttribute->attributeType());
+            QCOMPARE(originalAttribute->id(), cloneData.attributeIds.at(i));
         }
     }
 
@@ -146,13 +145,6 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QGeometry)

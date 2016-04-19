@@ -69,12 +69,8 @@ Q_SIGNALS:
     void nameChanged(const QString &name);
     void valueChanged(const QVariant &value);
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
 private:
     Q_DECLARE_PRIVATE(QFilterKey)
-    QT3D_CLONEABLE(QFilterKey)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

@@ -70,7 +70,6 @@ Q_SIGNALS:
 
 protected:
     QComponent(QComponentPrivate &dd, QNode *parent = Q_NULLPTR);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QComponent)

@@ -68,12 +68,8 @@ Q_SIGNALS:
     void scaleFactorChanged(float scaleFactor);
     void depthStepsChanged(float depthSteps);
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
 private:
     Q_DECLARE_PRIVATE(QPolygonOffset)
-    QT3D_CLONEABLE(QPolygonOffset)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

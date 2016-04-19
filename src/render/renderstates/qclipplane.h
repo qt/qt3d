@@ -67,9 +67,6 @@ public Q_SLOTS:
     void setNormal(QVector3D);
     void setDistance(float);
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL;
-
 Q_SIGNALS:
     void planeIndexChanged(int planeIndex);
     void normalChanged(QVector3D normal);
@@ -77,7 +74,6 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QClipPlane)
-    QT3D_CLONEABLE(QClipPlane)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

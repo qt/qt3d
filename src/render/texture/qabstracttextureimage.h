@@ -92,7 +92,6 @@ Q_SIGNALS:
     void faceChanged(QAbstractTexture::CubeMapFace face);
 
 protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void notifyDataGeneratorChanged();
     virtual QTextureImageDataGeneratorPtr dataGenerator() const = 0;
     QAbstractTextureImage(QAbstractTextureImagePrivate &dd, Qt3DCore::QNode *parent = nullptr);

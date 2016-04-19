@@ -57,7 +57,6 @@ public:
 
 private:
     Q_DECLARE_PRIVATE(QSeamlessCubemap)
-    QT3D_CLONEABLE(QSeamlessCubemap)
 };
 
 } // namespace Qt3DRender

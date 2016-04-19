@@ -77,7 +77,6 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QKeyboardDevice)
-    QT3D_CLONEABLE(QKeyboardDevice)
     void setActiveInput(QKeyboardHandler *activeInput);
 };
 

@@ -177,14 +177,6 @@ void QActionInput::setButtons(const QVariantList &buttons)
     }
 }
 
-void QActionInput::copy(const Qt3DCore::QNode *ref)
-{
-    QNode::copy(ref);
-    const QActionInput *input = static_cast<const QActionInput *>(ref);
-    d_func()->m_sourceDevice = qobject_cast<QAbstractPhysicalDevice *>(QNode::clone(input->d_func()->m_sourceDevice));
-    d_func()->m_buttons = input->d_func()->m_buttons;
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QActionInput::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QActionInputData>::create(this);

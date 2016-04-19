@@ -74,12 +74,10 @@ Q_SIGNALS:
     void workGroupYChanged();
     void workGroupZChanged();
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
 private:
     Q_DECLARE_PRIVATE(QComputeCommand)
-    QT3D_CLONEABLE(QComputeCommand)
+
+    // TODO: Handle creation changes
 };
 
 } // Qt3DRender

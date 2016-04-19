@@ -65,12 +65,8 @@ public:
     void removeAxis(QAxis *axis);
     QVector<QAxis *> axes() const;
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
 private:
     Q_DECLARE_PRIVATE(QLogicalDevice)
-    QT3D_CLONEABLE(QLogicalDevice)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

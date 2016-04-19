@@ -75,12 +75,8 @@ Q_SIGNALS:
     void axesChanged(QVariantList axes);
     void smoothChanged(bool smooth);
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
 private:
     Q_DECLARE_PRIVATE(QAxisSetting)
-    QT3D_CLONEABLE(QAxisSetting)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

@@ -52,13 +52,6 @@ QViewportPrivate::QViewportPrivate()
 {
 }
 
-void QViewport::copy(const QNode *ref)
-{
-    QFrameGraphNode::copy(ref);
-    const QViewport *viewport = static_cast<const QViewport*>(ref);
-    d_func()->m_normalizedRect = viewport->d_func()->m_normalizedRect;
-}
-
 QViewport::QViewport(QNode *parent)
     : QFrameGraphNode(*new QViewportPrivate, parent)
 {

@@ -78,13 +78,11 @@ Q_SIGNALS:
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void setStatus(Status status);
 
 private:
     QTextureImageDataGeneratorPtr dataGenerator() const Q_DECL_OVERRIDE;
     Q_DECLARE_PRIVATE(QTextureImage)
-    QT3D_CLONEABLE(QTextureImage)
 };
 
 } // namespace Qt3DRender

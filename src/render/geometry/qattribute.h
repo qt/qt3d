@@ -129,12 +129,8 @@ Q_SIGNALS:
     void divisorChanged(uint divisor);
     void attributeTypeChanged(AttributeType attributeType);
 
-protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
 private:
     Q_DECLARE_PRIVATE(QAttribute)
-    QT3D_CLONEABLE(QAttribute)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

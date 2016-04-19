@@ -33,6 +33,7 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DRender/private/qrenderstate_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QMaterial>
@@ -46,6 +47,8 @@
 #include <Qt3DExtras/QDiffuseSpecularMapMaterial>
 #include <Qt3DExtras/QNormalDiffuseMapAlphaMaterial>
 #include <Qt3DExtras/QNormalDiffuseSpecularMapMaterial>
+
+#include <Qt3DRender/private/qmaterial_p.h>
 
 #include "testpostmanarbiter.h"
 
@@ -71,14 +74,12 @@ public:
     Qt3DRender::QShaderProgram *m_shaderProgram;
 };
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QMaterial : public Qt3DCore::QNode
+class tst_QMaterial : public QObject
 {
     Q_OBJECT
 public:
     tst_QMaterial()
-        : Qt3DCore::QNode()
+        : QObject()
     {
         qRegisterMetaType<Qt3DRender::QEffect*>("Qt3DRender::QEffect*");
     }
@@ -216,13 +217,29 @@ private Q_SLOTS:
         QFETCH(Qt3DRender::QMaterial *, material);
 
         // WHEN
-        Qt3DRender::QMaterial *clone = static_cast<Qt3DRender::QMaterial *>(QNode::clone(material));
-        QCoreApplication::processEvents();
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(material);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        compareParameters(material->parameters(), clone->parameters());
-        compareEffects(material->effect(), clone->effect());
+        QVERIFY(creationChanges.size() >= 1);
+
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QMaterialData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QMaterialData>>(creationChanges.first());
+        const Qt3DRender::QMaterialData &cloneData = creationChangeData->data;
+
+        // THEN
+        QCOMPARE(material->id(), creationChangeData->subjectId());
+        QCOMPARE(material->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(material->metaObject(), creationChangeData->metaObject());
+        QCOMPARE(material->effect() ? material->effect()->id() : Qt3DCore::QNodeId(), cloneData.effectId);
+        QCOMPARE(material->parameters().size(), cloneData.parameterIds.size());
+
+        for (int i = 0, m = material->parameters().size(); i < m; ++i)
+            QCOMPARE(material->parameters().at(i)->id(), cloneData.parameterIds.at(i));
+
+        // TO DO: Add unit tests for parameter and effect that do check this
+        //        compareParameters(material->parameters(), clone->parameters());
+        //        compareEffects(material->effect(), clone->effect());
     }
 
     void checkEffectUpdate()
@@ -414,13 +431,6 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QMaterial)

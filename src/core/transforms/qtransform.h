@@ -114,11 +114,9 @@ Q_SIGNALS:
 
 protected:
     QTransform(QTransformPrivate &dd, QNode *parent = Q_NULLPTR);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QTransform)
-    QT3D_CLONEABLE(QTransform)
     QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

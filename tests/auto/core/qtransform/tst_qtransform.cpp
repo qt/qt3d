@@ -29,12 +29,14 @@
 #include <QtTest/QtTest>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qcomponent.h>
+#include <Qt3DCore/private/qtransform_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <QtCore/qscopedpointer.h>
 #include "testpostmanarbiter.h"
 
 using namespace Qt3DCore;
 
-class tst_QTransform : public QNode
+class tst_QTransform : public QObject
 {
     Q_OBJECT
 
@@ -75,17 +77,24 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QTransform *, transform);
 
         // WHEN
-        Qt3DCore::QTransform *clone = static_cast<Qt3DCore::QTransform *>(QNode::clone(transform));
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(transform);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
+        QCOMPARE(creationChanges.size(), 1);
 
-        QCOMPARE(transform->id(), clone->id());
-        QCOMPARE(transform->matrix(), clone->matrix());
-        QCOMPARE(transform->translation(), clone->translation());
-        QCOMPARE(transform->scale3D(), clone->scale3D());
-        QCOMPARE(transform->scale(), clone->scale());
-        QCOMPARE(transform->rotation(), clone->rotation());
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DCore::QTransformData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DCore::QTransformData>>(creationChanges.first());
+        const Qt3DCore::QTransformData &cloneData = creationChangeData->data;
+
+        // THEN
+        QCOMPARE(creationChangeData->subjectId(), transform->id());
+        QCOMPARE(creationChangeData->isNodeEnabled(), transform->isEnabled());
+        QCOMPARE(creationChangeData->metaObject(), transform->metaObject());
+        QCOMPARE(creationChangeData->parentId(), transform->parentNode() ? transform->parentNode()->id() : Qt3DCore::QNodeId());
+        QCOMPARE(transform->translation(), cloneData.translation);
+        QCOMPARE(transform->scale3D(), cloneData.scale);
+        QCOMPARE(transform->rotation(), cloneData.rotation);
     }
 
     void checkPropertyUpdates()
@@ -186,12 +195,6 @@ private Q_SLOTS:
 
         // Note: t.matrix() != t2.matrix() since different matrices
         // can result in the same scale, rotation, translation
-    }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
     }
 };
 

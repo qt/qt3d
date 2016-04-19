@@ -57,7 +57,6 @@ public:
 
 private:
     Q_DECLARE_PRIVATE(QAlphaCoverage)
-    QT3D_CLONEABLE(QAlphaCoverage)
 };
 
 } // namespace Qt3DRender

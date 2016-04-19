@@ -29,9 +29,12 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DInput/QAction>
 #include <Qt3DInput/QActionInput>
+#include <Qt3DInput/private/qaction_p.h>
+#include <Qt3DInput/private/qactioninput_p.h>
 
 #include <Qt3DCore/QNodePropertyChange>
 #include <Qt3DCore/QNodeAddedPropertyChange>
@@ -78,19 +81,26 @@ private Q_SLOTS:
         QFETCH(Qt3DInput::QAction *, action);
 
         // WHEN
-        Qt3DInput::QAction *clone = static_cast<Qt3DInput::QAction *>(QNode::clone(action));
-        QCoreApplication::processEvents();
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(action);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(action->id(), clone->id());
-        QCOMPARE(action->inputs().count(), clone->inputs().count());
-        QCOMPARE(action->isActive(), clone->isActive());
+        QCOMPARE(creationChanges.size(), 1 + action->inputs().size());
 
-        for (int i = 0, m = action->inputs().count(); i < m; ++i) {
-            QCOMPARE(action->inputs().at(i)->id(), clone->inputs().at(i)->id());
-        }
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DInput::QActionData> creationChangeData =
+               qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QActionData>>(creationChanges.first());
+        const Qt3DInput::QActionData &cloneActionData = creationChangeData->data;
 
+        // THEN
+        QCOMPARE(creationChangeData->subjectId(), action->id());
+        QCOMPARE(creationChangeData->isNodeEnabled(), action->isEnabled());
+        QCOMPARE(creationChangeData->metaObject(), action->metaObject());
+        QCOMPARE(creationChangeData->parentId(), action->parentNode() ? action->parentNode()->id() : Qt3DCore::QNodeId());
+        QCOMPARE(cloneActionData.inputIds.size(), action->inputs().size());
+
+        const QVector<Qt3DInput::QAbstractActionInput *> &inputs = action->inputs();
+        for (int i = 0, m = inputs.size(); i < m; ++i)
+            QCOMPARE(cloneActionData.inputIds.at(i), inputs.at(i)->id());
     }
 
     void checkPropertyUpdates()
@@ -142,14 +152,6 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(isActive(), true);
     }
-
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QAction)

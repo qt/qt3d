@@ -228,18 +228,6 @@ void QRenderSurfaceSelector::setExternalRenderTargetSize(const QSize &size)
     emit externalRenderTargetSizeChanged(size);
 }
 
-/*!
- * \internal
- */
-void QRenderSurfaceSelector::copy(const QNode *ref)
-{
-    QFrameGraphNode::copy(ref);
-    const QRenderSurfaceSelector *object = static_cast<const QRenderSurfaceSelector *>(ref);
-
-    d_func()->m_surface = object->d_func()->m_surface;
-    d_func()->m_externalRenderTargetSize = object->d_func()->m_externalRenderTargetSize;
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QRenderSurfaceSelector::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderSurfaceSelectorData>::create(this);

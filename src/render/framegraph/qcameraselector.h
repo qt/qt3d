@@ -67,10 +67,8 @@ Q_SIGNALS:
 
 protected:
     QCameraSelector(QCameraSelectorPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
-    QT3D_CLONEABLE(QCameraSelector)
     Q_DECLARE_PRIVATE(QCameraSelector)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };

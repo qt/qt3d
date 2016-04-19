@@ -72,12 +72,7 @@ Q_SIGNALS:
     void workGroupYChanged();
     void workGroupZChanged();
 
-    // QNode interface
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
 private:
-    QT3D_CLONEABLE(QDispatchCompute)
     Q_DECLARE_PRIVATE(QDispatchCompute)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };

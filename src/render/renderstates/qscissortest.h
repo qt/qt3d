@@ -77,12 +77,8 @@ Q_SIGNALS:
     void widthChanged(int width);
     void heightChanged(int height);
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
 private:
     Q_DECLARE_PRIVATE(QScissorTest)
-    QT3D_CLONEABLE(QScissorTest)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 

@@ -115,15 +115,6 @@ void QAxisSetting::setSmoothEnabled(bool enabled)
     emit smoothChanged(enabled);
 }
 
-void QAxisSetting::copy(const Qt3DCore::QNode *ref)
-{
-    QNode::copy(ref);
-    const QAxisSetting *setting = static_cast<const QAxisSetting *>(ref);
-    d_func()->m_deadZoneRadius = setting->d_func()->m_deadZoneRadius;
-    d_func()->m_axes = setting->d_func()->m_axes;
-    d_func()->m_smooth = setting->d_func()->m_smooth;
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QAxisSetting::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAxisSettingData>::create(this);

@@ -132,15 +132,6 @@ void Quick3DEntityLoader::setSource(const QUrl &url)
     d->loadFromSource();
 }
 
-void Quick3DEntityLoader::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const Quick3DEntityLoader *loader = static_cast<const Quick3DEntityLoader*>(ref);
-    d_func()->m_source = loader->d_func()->m_source;
-    d_func()->m_entity = static_cast<QEntity*>(QNode::clone(loader->d_func()->m_entity));
-    d_func()->m_entity->setParent(this);
-}
-
 Quick3DEntityLoaderPrivate::Quick3DEntityLoaderPrivate()
     : QEntityPrivate(),
       m_incubator(Q_NULLPTR),

@@ -83,21 +83,6 @@ QBlendEquationArguments::QBlendEquationArguments(QNode *parent)
 {
 }
 
-/*! \fn void QBlendEquationArguments::copy(const Qt3DCore::QNode *ref)
-  \internal
-  Copies \a ref into this object.
- */
-void QBlendEquationArguments::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QBlendEquationArguments *refState = static_cast<const QBlendEquationArguments*>(ref);
-    d_func()->m_sourceRgb = refState->d_func()->m_sourceRgb;
-    d_func()->m_sourceAlpha = refState->d_func()->m_sourceAlpha;
-    d_func()->m_destinationAlpha = refState->d_func()->m_destinationAlpha;
-    d_func()->m_destinationRgb = refState->d_func()->m_destinationRgb;
-    d_func()->m_bufferIndex = refState->d_func()->m_bufferIndex;
-}
-
 /*!
   \internal
 */

@@ -55,17 +55,6 @@ QRenderTargetSelectorPrivate::QRenderTargetSelectorPrivate()
 {
 }
 
-void QRenderTargetSelector::copy(const QNode *ref)
-{
-    QFrameGraphNode::copy(ref);
-
-    const QRenderTargetSelector *other = static_cast<const QRenderTargetSelector*>(ref);
-
-    setOutputs(other->outputs());
-    if (other->d_func()->m_target)
-        setTarget(qobject_cast<QRenderTarget *>(QNode::clone(other->d_func()->m_target)));
-}
-
 QRenderTargetSelector::QRenderTargetSelector(QNode *parent)
     : QFrameGraphNode(*new QRenderTargetSelectorPrivate, parent)
 {

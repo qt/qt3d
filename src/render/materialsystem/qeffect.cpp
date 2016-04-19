@@ -62,17 +62,6 @@ QEffect::QEffect(QNode *parent)
 {
 }
 
-void QEffect::copy(const QNode* ref)
-{
-    QNode::copy(ref);
-    const QEffect *effect = static_cast<const QEffect*>(ref);
-    Q_FOREACH (QParameter *p, effect->d_func()->m_parameters)
-        addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
-
-    Q_FOREACH (QTechnique *t, effect->d_func()->m_techniques)
-        addTechnique(qobject_cast<QTechnique *>(QNode::clone(t)));
-}
-
 /*! \internal */
 QEffect::QEffect(QEffectPrivate &dd, QNode *parent)
     : QNode(dd, parent)

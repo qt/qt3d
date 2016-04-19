@@ -68,22 +68,6 @@ QCameraLens::QCameraLens(QNode *parent)
     d->updateProjectionMatrix();
 }
 
-void QCameraLens::copy(const QNode *ref)
-{
-    QComponent::copy(ref);
-    const QCameraLens *lens = static_cast<const QCameraLens*>(ref);
-    d_func()->m_projectionType = lens->d_func()->m_projectionType;
-    d_func()->m_nearPlane = lens->d_func()->m_nearPlane;
-    d_func()->m_farPlane = lens->d_func()->m_farPlane;
-    d_func()->m_fieldOfView = lens->d_func()->m_fieldOfView;
-    d_func()->m_aspectRatio = lens->d_func()->m_aspectRatio;
-    d_func()->m_left = lens->d_func()->m_left;
-    d_func()->m_right = lens->d_func()->m_right;
-    d_func()->m_bottom = lens->d_func()->m_bottom;
-    d_func()->m_top = lens->d_func()->m_top;
-    d_func()->m_projectionMatrix = lens->d_func()->m_projectionMatrix;
-}
-
 /*! \class Qt3DRender::QCameraLens
  *  \inmodule Qt3DCore
  *

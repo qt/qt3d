@@ -66,17 +66,6 @@ QLayerFilterPrivate::QLayerFilterPrivate()
     \brief For ...
 */
 
-/*! \fn void Qt3DRender::QLayerFilter::copy(const Qt3DCore::QNode *ref)
-  Copies the \a ref instance into this one.
- */
-void QLayerFilter::copy(const QNode *ref)
-{
-    QFrameGraphNode::copy(ref);
-    const QLayerFilter *layer = static_cast<const QLayerFilter*>(ref);
-    d_func()->m_layers = layer->d_func()->m_layers;
-}
-
-
 /*! \fn Qt3DRender::QLayerFilter::QLayerFilter(Qt3DCore::QNode *parent)
   Constructs a new QLayerFilter with the specified \a parent.
  */

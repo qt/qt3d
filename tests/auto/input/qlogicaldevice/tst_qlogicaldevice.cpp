@@ -29,8 +29,10 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DInput/QLogicalDevice>
+#include <Qt3DInput/private/qlogicaldevice_p.h>
 #include <Qt3DInput/QAxis>
 #include <Qt3DInput/QAction>
 
@@ -40,9 +42,7 @@
 
 #include "testpostmanarbiter.h"
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QLogicalDevice: public Qt3DCore::QNode
+class tst_QLogicalDevice: public QObject
 {
     Q_OBJECT
 public:
@@ -79,26 +79,31 @@ private Q_SLOTS:
         QFETCH(Qt3DInput::QLogicalDevice *, logicalDevice);
 
         // WHEN
-        Qt3DInput::QLogicalDevice *clone = static_cast<Qt3DInput::QLogicalDevice *>(QNode::clone(logicalDevice));
-        QCoreApplication::processEvents();
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(logicalDevice);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
-        // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(logicalDevice->id(), clone->id());
         const int axesCount = logicalDevice->axes().count();
         const int actionsCount = logicalDevice->actions().count();
-        QCOMPARE(axesCount, clone->axes().count());
-        QCOMPARE(actionsCount, clone->actions().count());
 
-        if (axesCount > 0) {
-            for (int i = 0; i < axesCount; ++i)
-                QCOMPARE(logicalDevice->axes().at(i)->id(), clone->axes().at(i)->id());
-        }
+        // THEN
+        QCOMPARE(creationChanges.size(), 1 + axesCount + actionsCount);
 
-        if (actionsCount > 0) {
-            for (int i = 0; i < actionsCount; ++i)
-                QCOMPARE(logicalDevice->actions().at(i)->id(), clone->actions().at(i)->id());
-        }
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DInput::QLogicalDeviceData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QLogicalDeviceData>>(creationChanges.first());
+        const Qt3DInput::QLogicalDeviceData &cloneData = creationChangeData->data;
+
+        // THEN
+        QCOMPARE(logicalDevice->id(), creationChangeData->subjectId());
+        QCOMPARE(logicalDevice->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(logicalDevice->metaObject(), creationChangeData->metaObject());
+        QCOMPARE(axesCount, cloneData.axisIds.count());
+        QCOMPARE(actionsCount, cloneData.actionIds.count());
+
+        for (int i = 0; i < axesCount; ++i)
+            QCOMPARE(logicalDevice->axes().at(i)->id(), cloneData.axisIds.at(i));
+
+        for (int i = 0; i < actionsCount; ++i)
+            QCOMPARE(logicalDevice->actions().at(i)->id(), cloneData.actionIds.at(i));
     }
 
     void checkPropertyUpdates()
@@ -161,13 +166,6 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QLogicalDevice)
