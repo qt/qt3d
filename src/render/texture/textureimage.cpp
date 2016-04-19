@@ -52,7 +52,7 @@ namespace Qt3DRender {
 namespace Render {
 
 TextureImage::TextureImage()
-    : BackendNode()
+    : BackendNode(ReadWrite)
     , m_layer(0)
     , m_mipLevel(0)
     , m_face(QAbstractTexture::CubeMapPositiveX)
