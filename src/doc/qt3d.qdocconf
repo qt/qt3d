@@ -43,7 +43,6 @@ depends                 += qtcore qtgui qtqml qtquick qtdoc
 headerdirs += . \
               ../render \
               ../core \
-              ../collision \
               ../logic \
               ../plugins \
               ../quick3d/quick3d \
@@ -55,7 +54,6 @@ excludefiles += "*_p.h"
 sourcedirs += . \
               ../render \
               ../core \
-              ../collision \
               ../logic \
               ../plugins \
               ../quick3d/quick3d \

@@ -60,9 +60,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
- * \internal
- *
+/*
  * A helper class to split a QByteArray and access its sections without
  * additional memory allocations.
  */

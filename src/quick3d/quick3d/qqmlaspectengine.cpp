@@ -89,6 +89,15 @@ QQmlAspectEnginePrivate::QQmlAspectEnginePrivate()
  */
 
 /*!
+ * \fn void Qt3DCore::Quick::QQmlAspectEngine::sceneCreated(QObject* rootObject)
+ *
+ * This signal is emitted with \a rootObject when the scene has been instantiated. This provides a
+ * chance to manipulate the scene before passing it over to the aspect engine. Useful for
+ * convenience window classes to set up cameras and surfaces on the framegraph and event sources
+ * for the input aspect etc.
+ */
+
+/*!
  * Constructs a new QQmlAspectEngine with \a parent.
  */
 QQmlAspectEngine::QQmlAspectEngine(QObject *parent)
