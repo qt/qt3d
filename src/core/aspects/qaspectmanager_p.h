@@ -54,7 +54,7 @@
 #include <QObject>
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
-#include <QList>
+#include <QVector>
 #include <QScopedPointer>
 #include <QVariant>
 #include <QSemaphore>
@@ -96,13 +96,13 @@ public Q_SLOTS:
     void exec();
     void quit();
 
-    const QList<QAbstractAspect *> &aspects() const;
+    const QVector<QAbstractAspect *> &aspects() const;
     QAbstractAspectJobManager *jobManager() const;
     QChangeArbiter *changeArbiter() const;
     QServiceLocator *serviceLocator() const;
 
 private:
-    QList<QAbstractAspect *> m_aspects;
+    QVector<QAbstractAspect *> m_aspects;
     QEntity *m_root;
     QVariantMap m_data;
     QScheduler *m_scheduler;

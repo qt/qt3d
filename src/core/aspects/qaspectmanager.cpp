@@ -284,7 +284,7 @@ void QAspectManager::quit()
     qCDebug(Aspects) << Q_FUNC_INFO << "Exiting";
 }
 
-const QList<QAbstractAspect *> &QAspectManager::aspects() const
+const QVector<QAbstractAspect *> &QAspectManager::aspects() const
 {
     return m_aspects;
 }
