@@ -95,7 +95,8 @@ QFrameAction::~QFrameAction()
 }
 
 /*!
-    This virtual function will be called in a synchronous manner once each frame by
+    \internal
+    This function will be called in a synchronous manner once each frame by
     the Logic aspect.
 */
 void QFrameAction::onTriggered(float dt)

@@ -72,7 +72,7 @@ private:
     Q_DECLARE_PRIVATE(QFrameAction)
     QT3D_CLONEABLE(QFrameAction)
 
-    virtual void onTriggered(float dt);
+    void onTriggered(float dt);
 
     friend class Logic::Executor;
 };
