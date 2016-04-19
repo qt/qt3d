@@ -161,7 +161,7 @@ static const struct {
 
 QVariantList Quick3DShaderDataArrayToVariantListConverter(Qt3DRender::Render::Quick::Quick3DShaderDataArray *array)
 {
-    QList<Qt3DRender::QShaderData *> arrayValues = array->values();
+    QVector<Qt3DRender::QShaderData *> arrayValues = array->values();
     QVariantList values;
     values.reserve(arrayValues.size());
     Q_FOREACH (Qt3DRender::QShaderData *data, arrayValues)

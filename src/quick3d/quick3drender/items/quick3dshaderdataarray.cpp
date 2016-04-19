@@ -53,7 +53,7 @@ public:
         : QNodePrivate()
     {}
 
-    QList<QShaderData *> m_values;
+    QVector<QShaderData *> m_values;
 };
 
 Quick3DShaderDataArray::Quick3DShaderDataArray(QNode *parent)
@@ -75,7 +75,7 @@ QQmlListProperty<QShaderData> Quick3DShaderDataArray::valuesList()
                                          &Quick3DShaderDataArray::clearValues);
 }
 
-QList<QShaderData *> Quick3DShaderDataArray::values() const
+QVector<QShaderData *> Quick3DShaderDataArray::values() const
 {
     Q_D(const Quick3DShaderDataArray);
     return d->m_values;

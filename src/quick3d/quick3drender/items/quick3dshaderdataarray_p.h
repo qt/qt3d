@@ -78,7 +78,7 @@ public:
     explicit Quick3DShaderDataArray(Qt3DCore::QNode *parent = 0);
     ~Quick3DShaderDataArray();
     QQmlListProperty<QShaderData> valuesList();
-    QList<QShaderData *> values() const;
+    QVector<QShaderData *> values() const;
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
