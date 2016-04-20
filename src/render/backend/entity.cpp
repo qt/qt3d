@@ -54,6 +54,8 @@
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 
 #include <Qt3DRender/qcameralens.h>
+#include <Qt3DCore/qcomponentaddedchange.h>
+#include <Qt3DCore/qcomponentremovedchange.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qtransform.h>
@@ -212,21 +214,20 @@ void Entity::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
 
 void Entity::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     switch (e->type()) {
 
     case ComponentAdded: {
-        QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
-        QComponent *component = qobject_cast<QComponent *>(nodePtr.data());
-        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Added" << m_objectName << component->objectName();
-        addComponent(component);
+        QComponentAddedChangePtr change = qSharedPointerCast<QComponentAddedChange>(e);
+        const auto componentIdAndType = QNodeIdTypePair(change->componentId(), change->componentMetaObject());
+        addComponent(componentIdAndType);
+        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Added. Id =" << change->componentId();
         break;
     }
 
     case ComponentRemoved: {
-        QNodeId nodeId = propertyChange->value().value<QNodeId>();
-        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Removed";
-        removeComponent(nodeId);
+        QComponentRemovedChangePtr change = qSharedPointerCast<QComponentRemovedChange>(e);
+        removeComponent(change->componentId());
+        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Removed. Id =" << change->componentId();
         break;
     }
 

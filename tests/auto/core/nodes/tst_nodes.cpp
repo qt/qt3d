@@ -32,6 +32,9 @@
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qcomponentaddedchange.h>
+#include <Qt3DCore/qcomponentremovedchange.h>
+#include <Qt3DCore/private/qnodedestroyedchange_p.h>
 #include <private/qpostman_p.h>
 
 #include <Qt3DCore/private/qlockableobserverinterface_p.h>
@@ -692,12 +695,12 @@ void tst_Nodes::appendingParentlessComponentToEntity()
     // return early in such a case.
 
     // Check that we received ComponentAdded
-    Qt3DCore::QScenePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QScenePropertyChange>();
+    const auto event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QComponentAddedChange>();
     QCOMPARE(event->type(), Qt3DCore::ComponentAdded);
-    QCOMPARE(event->propertyName(), "component");
-    Qt3DCore::QNodePtr clone = event->value().value<Qt3DCore::QNodePtr>();
-    QCOMPARE(clone->id(), comp->id());
-    QVERIFY(!clone->parentNode());
+    QCOMPARE(event->subjectId(), entity->id());
+    QCOMPARE(event->entityId(), entity->id());
+    QCOMPARE(event->componentId(), comp->id());
+    QCOMPARE(event->componentMetaObject(), comp->metaObject());
 }
 
 void tst_Nodes::appendingComponentToEntity()
@@ -723,12 +726,12 @@ void tst_Nodes::appendingComponentToEntity()
     QVERIFY(comp->parentNode() == entity.data());
     QCOMPARE(spy.events.size(), 1);
     QVERIFY(spy.events.first().wasLocked());
-    Qt3DCore::QScenePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QScenePropertyChange>();
+    const auto event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QComponentAddedChange>();
     QCOMPARE(event->type(), Qt3DCore::ComponentAdded);
-    QCOMPARE(event->propertyName(), "component");
-    Qt3DCore::QNodePtr clone = event->value().value<Qt3DCore::QNodePtr>();
-    QCOMPARE(clone->id(), comp->id());
-    QVERIFY(!clone->parentNode());
+    QCOMPARE(event->subjectId(), entity->id());
+    QCOMPARE(event->entityId(), entity->id());
+    QCOMPARE(event->componentId(), comp->id());
+    QCOMPARE(event->componentMetaObject(), comp->metaObject());
 }
 
 void tst_Nodes::removingComponentFromEntity()
@@ -755,11 +758,12 @@ void tst_Nodes::removingComponentFromEntity()
     QVERIFY(entity->children().count() == 1);
     QCOMPARE(spy.events.size(), 1);
     QVERIFY(spy.events.first().wasLocked());
-    Qt3DCore::QScenePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QScenePropertyChange>();
+    const auto event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QComponentRemovedChange>();
     QCOMPARE(event->type(), Qt3DCore::ComponentRemoved);
-    QCOMPARE(event->propertyName(), "componentId");
-    Qt3DCore::QNodeId nodeId = event->value().value<Qt3DCore::QNodeId>();
-    QCOMPARE(nodeId, comp->id());
+    QCOMPARE(event->subjectId(), entity->id());
+    QCOMPARE(event->entityId(), entity->id());
+    QCOMPARE(event->componentId(), comp->id());
+    QCOMPARE(event->componentMetaObject(), comp->metaObject());
 }
 
 void tst_Nodes::changeCustomProperty()

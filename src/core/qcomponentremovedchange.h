@@ -65,6 +65,8 @@ private:
     Q_DECLARE_PRIVATE(QComponentRemovedChange)
 };
 
+typedef QSharedPointer<QComponentRemovedChange> QComponentRemovedChangePtr;
+
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE

@@ -65,6 +65,8 @@ private:
     Q_DECLARE_PRIVATE(QComponentAddedChange)
 };
 
+typedef QSharedPointer<QComponentAddedChange> QComponentAddedChangePtr;
+
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE

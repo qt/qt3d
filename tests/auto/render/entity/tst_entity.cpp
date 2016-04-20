@@ -31,6 +31,7 @@
 
 #include <Qt3DRender/QCameraLens>
 #include <Qt3DCore/QScenePropertyChange>
+#include <Qt3DCore/QComponentAddedChange>
 #include <Qt3DCore/QTransform>
 
 #include <Qt3DRender/QMesh>
@@ -49,9 +50,6 @@ typedef QVector<Qt3DCore::QNodeId> (*UuidListMethod)(Qt3DRender::Render::Entity 
 using namespace Qt3DCore;
 using namespace Qt3DRender;
 using namespace Qt3DRender::Render;
-
-void noopDeleter(QNode *) {}
-
 
 QNodeId transformUuid(Entity *entity) { return entity->componentUuid<Transform>(); }
 QNodeId cameraLensUuid(Entity *entity) { return entity->componentUuid<CameraLens>(); }
@@ -96,6 +94,7 @@ private slots:
 
         TestRenderer renderer;
         Qt3DRender::Render::Entity entity;
+        Qt3DCore::QEntity dummyFrontendEntity;
         entity.setRenderer(&renderer);
 
         // THEN
@@ -111,9 +110,7 @@ private slots:
 
         // WHEN
         Q_FOREACH (QComponent *component, components) {
-            QScenePropertyChangePtr addChange(new QScenePropertyChange(ComponentAdded, QSceneChange::Node, component->id()));
-            addChange->setPropertyName("component");
-            addChange->setValue(QVariant::fromValue(QNodePtr(component, noopDeleter)));
+            const auto addChange = QComponentAddedChangePtr::create(&dummyFrontendEntity, component);
             entity.sceneChangeEvent(addChange);
         }
 
@@ -177,15 +174,14 @@ private slots:
 
         TestRenderer renderer;
         Qt3DRender::Render::Entity entity;
+        Qt3DCore::QEntity dummyFrontendEntity;
         entity.setRenderer(&renderer);
 
         // THEN
         QVERIFY(method(&entity).isNull());
 
         // WHEN
-        QScenePropertyChangePtr addChange(new QScenePropertyChange(ComponentAdded, QSceneChange::Node, component->id()));
-        addChange->setPropertyName("component");
-        addChange->setValue(QVariant::fromValue(QNodePtr(component, noopDeleter)));
+        const auto addChange = QComponentAddedChangePtr::create(&dummyFrontendEntity, component);
         entity.sceneChangeEvent(addChange);
 
         // THEN
@@ -231,6 +227,7 @@ private slots:
 
         TestRenderer renderer;
         Qt3DRender::Render::Entity entity;
+        Qt3DCore::QEntity dummyFrontendEntity;
         entity.setRenderer(&renderer);
 
         // THEN
@@ -238,9 +235,7 @@ private slots:
 
         // WHEN
         Q_FOREACH (QComponent *component, components) {
-            QScenePropertyChangePtr addChange(new QScenePropertyChange(ComponentAdded, QSceneChange::Node, component->id()));
-            addChange->setPropertyName("component");
-            addChange->setValue(QVariant::fromValue(QNodePtr(component, noopDeleter)));
+            const auto addChange = QComponentAddedChangePtr::create(&dummyFrontendEntity, component);
             entity.sceneChangeEvent(addChange);
         }
 

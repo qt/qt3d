@@ -64,26 +64,12 @@ void QComponentPrivate::addEntity(QEntity *entity)
         m_scene->addEntityForComponent(m_id, entity->id());
     }
 
-    // We notify only if we have a QChangeArbiter
-    if (m_changeArbiter != Q_NULLPTR) {
-        Q_Q(QComponent);
-        QScenePropertyChangePtr e(new QScenePropertyChange(ComponentAdded, QSceneChange::Node, q->id()));
-        e->setPropertyName("entity");
-        e->setValue(QVariant::fromValue(entity->id()));
-        notifyObservers(e);
-    }
+    // TODO: Add QAddedToEntityChange to be delivered to components on the backend
 }
 
 void QComponentPrivate::removeEntity(QEntity *entity)
 {
-    // We notify only if we have a QChangeArbiter
-    if (m_changeArbiter != Q_NULLPTR) {
-        Q_Q(QComponent);
-        QScenePropertyChangePtr e(new QScenePropertyChange(ComponentRemoved, QSceneChange::Node, q->id()));
-        e->setPropertyName("entity");
-        e->setValue(QVariant::fromValue(entity->id()));
-        notifyObservers(e);
-    }
+    // TODO: Add QRemovedFromEntityChange to be delivered to components on the backend
 
     if (m_scene != Q_NULLPTR)
         m_scene->removeEntityForComponent(m_id, entity->id());

@@ -43,6 +43,8 @@
 #include "qcomponent_p.h"
 
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/qcomponentaddedchange.h>
+#include <Qt3DCore/qcomponentremovedchange.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/private/corelogging_p.h>
@@ -162,14 +164,9 @@ void QEntity::addComponent(QComponent *comp)
     if (!comp->parent())
         comp->setParent(this);
 
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        // Sending a full fledged component in the notification as we'll need
-        // to know which type of component it was and its properties to create
-        // the backend object
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, QSceneChange::Node, id()));
-        propertyChange->setPropertyName("component");
-        propertyChange->setValue(QVariant::fromValue(QNodePtr(QNode::clone(comp), &QNodePrivate::nodePtrDeleter)));
-        d->notifyObservers(propertyChange);
+    if (d->m_changeArbiter) {
+        const auto componentAddedChange = QComponentAddedChangePtr::create(this, comp);
+        d->notifyObservers(componentAddedChange);
     }
     static_cast<QComponentPrivate *>(QComponentPrivate::get(comp))->addEntity(this);
 }
@@ -185,14 +182,9 @@ void QEntity::removeComponent(QComponent *comp)
 
     static_cast<QComponentPrivate *>(QComponentPrivate::get(comp))->removeEntity(this);
 
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        // Sending just the component id as it is the only part needed to
-        // cleanup the backend object. This way we avoid a clone which might
-        // fail in the case of large scenes.
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, QSceneChange::Node, id()));
-        propertyChange->setValue(QVariant::fromValue(comp->id()));
-        propertyChange->setPropertyName("componentId");
-        d->notifyObservers(propertyChange);
+    if (d->m_changeArbiter) {
+        const auto componentRemovedChange = QComponentRemovedChangePtr::create(this, comp);
+        d->notifyObservers(componentRemovedChange);
     }
 
     d->m_components.removeOne(comp);
