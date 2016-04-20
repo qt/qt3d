@@ -653,6 +653,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
     uint lastBoundFBOId = 0;
     QSurface *surface = Q_NULLPTR;
     QSurface *previousSurface = Q_NULLPTR;
+    QSurface *lastUsedSurface = Q_NULLPTR;
     for (int i = 0; i < renderViewsCount; ++i) {
         // Initialize GraphicsContext for drawing
         // If the RenderView has a RenderStateSet defined
@@ -674,6 +675,8 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
             m_lastFrameCorrect.store(0);
             continue;
         }
+
+        lastUsedSurface = surface;
 
         if (surface != previousSurface && previousSurface) {
             const bool swapBuffers = (lastBoundFBOId == m_graphicsContext->defaultFBO()) && PlatformSurfaceFilter::isSurfaceValid(previousSurface);
@@ -753,7 +756,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
     // the last swap buffer call
     ViewSubmissionResultData resultData;
     resultData.lastBoundFBOId = lastBoundFBOId;
-    resultData.surface = surface;
+    resultData.surface = lastUsedSurface;
 
     return resultData;
 }
