@@ -218,6 +218,12 @@ bool GraphicsContext::beginDrawing(QSurface *surface)
         initialize();
     }
 
+    // need to reset these values every frame, may get overwritten elsewhere
+    m_gl->functions()->glClearColor(m_currClearColorValue.redF(), m_currClearColorValue.greenF(), m_currClearColorValue.blueF(), m_currClearColorValue.alphaF());
+    m_gl->functions()->glClearDepthf(m_currClearDepthValue);
+    m_gl->functions()->glClearStencil(m_currClearStencilValue);
+
+
     if (m_activeShader)
         m_activeShader = NULL;
 
