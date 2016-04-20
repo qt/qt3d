@@ -62,6 +62,7 @@
 #include <Qt3DRender/private/quniformvalue_p.h>
 #include <Qt3DRender/qclearbuffers.h>
 #include <Qt3DRender/private/shader_p.h>
+#include <Qt3DRender/private/glbuffer_p.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/private/handle_types_p.h>
 
@@ -87,7 +88,6 @@ class RenderTarget;
 class AttachmentPack;
 class Attribute;
 class Buffer;
-class GLBuffer;
 
 enum TextureScope
 {
@@ -236,6 +236,7 @@ private:
     void activateDrawBuffers(const AttachmentPack &attachments);
     HGLBuffer createGLBufferFor(Buffer *buffer);
     void uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool releaseBuffer = false);
+    bool bindGLBuffer(GLBuffer *buffer, GLBuffer::Type type);
 
     bool m_initialized;
     const unsigned int m_id;
@@ -270,6 +271,8 @@ private:
     QRectF m_viewport;
     GLuint m_activeFBO;
     GLuint m_defaultFBO;
+
+    GLBuffer *m_boundArrayBuffer;
 
     RenderStateSet* m_stateSet;
 

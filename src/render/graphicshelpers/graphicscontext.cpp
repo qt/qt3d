@@ -143,6 +143,7 @@ GraphicsContext::GraphicsContext()
     , m_uboTempArray(QByteArray(1024, 0))
     , m_supportsVAO(true)
     , m_debugLogger(Q_NULLPTR)
+    , m_boundArrayBuffer(nullptr)
 {
     static_contexts[m_id] = this;
 }
@@ -228,6 +229,7 @@ bool GraphicsContext::beginDrawing(QSurface *surface)
         m_activeShader = NULL;
 
     m_activeTextures.fill(0);
+    m_boundArrayBuffer = nullptr;
 
     return true;
 }
@@ -1031,7 +1033,7 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
         bindShaderStorageBlock(shader->programId(), b.m_blockIndex, ssboIndex);
         // Needed to avoid conflict where the buffer would already
         // be bound as a VertexArray
-        ssbo->bind(this, GLBuffer::ShaderStorageBuffer);
+        bindGLBuffer(ssbo, GLBuffer::ShaderStorageBuffer);
         ssbo->bindBufferBase(this, ssboIndex++, GLBuffer::ShaderStorageBuffer);
         // Perform update if required
         if (cpuBuffer->isDirty()) {
@@ -1051,7 +1053,7 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
         bindUniformBlock(shader->programId(), b.m_blockIndex, uboIndex);
         // Needed to avoid conflict where the buffer would already
         // be bound as a VertexArray
-        ubo->bind(this, GLBuffer::UniformBuffer);
+        bindGLBuffer(ubo, GLBuffer::UniformBuffer);
         ubo->bindBufferBase(this, uboIndex++, GLBuffer::UniformBuffer);
         if (cpuBuffer->isDirty()) {
             // Perform update if required
@@ -1071,7 +1073,7 @@ void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffe
         return;
 
     GLBuffer *buf = glBufferForRenderBuffer(buffer);
-    buf->bind(this, bufferTypeToGLBufferType(buffer->type()));
+    bindGLBuffer(buf, bufferTypeToGLBufferType(buffer->type()));
     // bound within the current VAO
 
     QOpenGLShaderProgram* prog = activeShader();
@@ -1098,7 +1100,7 @@ void GraphicsContext::specifyIndices(Buffer *buffer)
     Q_ASSERT(buffer->type() == QBuffer::IndexBuffer);
 
     GLBuffer *buf = glBufferForRenderBuffer(buffer);
-    if (!buf->bind(this, GLBuffer::IndexBuffer))
+    if (!bindGLBuffer(buf, GLBuffer::IndexBuffer))
         qCWarning(Backend) << Q_FUNC_INFO << "binding index buffer failed";
 
     // bound within the current VAO
@@ -1126,7 +1128,7 @@ HGLBuffer GraphicsContext::createGLBufferFor(Buffer *buffer)
     if (!b->create(this))
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer creation failed";
 
-    if (!b->bind(this, bufferTypeToGLBufferType(buffer->type())))
+    if (!bindGLBuffer(b, bufferTypeToGLBufferType(buffer->type())))
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer binding failed";
 
     // TO DO: Handle usage pattern
@@ -1134,16 +1136,32 @@ HGLBuffer GraphicsContext::createGLBufferFor(Buffer *buffer)
     return m_renderer->nodeManagers()->glBufferManager()->lookupHandle(buffer->peerId());
 }
 
+bool GraphicsContext::bindGLBuffer(GLBuffer *buffer, GLBuffer::Type type)
+{
+    if (type == GLBuffer::ArrayBuffer && buffer == m_boundArrayBuffer)
+        return true;
+
+    if (buffer->bind(this, type)) {
+        if (type == GLBuffer::ArrayBuffer)
+            m_boundArrayBuffer = buffer;
+        return true;
+    }
+    return false;
+}
+
 void GraphicsContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool releaseBuffer)
 {
-    if (!b->isBound() && !b->bind(this, bufferTypeToGLBufferType(buffer->type())))
+    if (!bindGLBuffer(b, bufferTypeToGLBufferType(buffer->type())))
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer bind failed";
     const int bufferSize = buffer->data().size();
     // TO DO: Handle usage pattern and sub data updates
     b->allocate(this, bufferSize, false); // orphan the buffer
     b->allocate(this, buffer->data().constData(), bufferSize, false);
-    if (releaseBuffer)
+    if (releaseBuffer) {
         b->release(this);
+        if (buffer->type() == GLBuffer::ArrayBuffer)
+            m_boundArrayBuffer = nullptr;
+    }
     qCDebug(Render::Io) << "uploaded buffer size=" << buffer->data().size();
 }
 
