@@ -51,6 +51,24 @@ QNodeCreatedChangeBasePrivate::QNodeCreatedChangeBasePrivate(const QNode *node)
 {
 }
 
+/*!
+ * \class Qt3DCore::QNodeCreatedChangeBase
+ * \inherits Qt3DCore::QSceneChange
+ * \inmodule Qt3DCore
+ *
+ * TODO
+ */
+
+/*!
+ * \typedef Qt3DCore::QNodeCreatedChangeBasePtr
+ * \relates Qt3DCore::QNodeCreatedChangeBase
+ *
+ * A shared pointer for QNodeCreatedChangeBase.
+ */
+
+/*!
+ * Constructs a new QNodeCreatedChangeBase with \a node and \a priority.
+ */
 QNodeCreatedChangeBase::QNodeCreatedChangeBase(const QNode *node, Priority priority)
     : QSceneChange(*new QNodeCreatedChangeBasePrivate(node), NodeCreated, QSceneChange::Node, node->id(), priority)
 {
@@ -65,18 +83,27 @@ QNodeCreatedChangeBase::~QNodeCreatedChangeBase()
 {
 }
 
+/*!
+ * \return parent id.
+ */
 QNodeId QNodeCreatedChangeBase::parentId() const Q_DECL_NOEXCEPT
 {
     Q_D(const QNodeCreatedChangeBase);
     return d->m_parentId;
 }
 
+/*!
+ * \return metaobject.
+ */
 const QMetaObject *QNodeCreatedChangeBase::metaObject() const Q_DECL_NOEXCEPT
 {
     Q_D(const QNodeCreatedChangeBase);
     return d->m_metaObject;
 }
 
+/*!
+ * \return node enabled.
+ */
 bool QNodeCreatedChangeBase::isNodeEnabled() const Q_DECL_NOEXCEPT
 {
     Q_D(const QNodeCreatedChangeBase);

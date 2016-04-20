@@ -77,9 +77,11 @@ QAspectEnginePrivate::QAspectEnginePrivate()
 }
 
 /*!
-    Used to init the scene tree when the Qt3D aspect is first started. Basically
-    sets the scene/change arbiter on the items and store the entity - component
-    pairs in the scene
+ * \internal
+ *
+ * Used to init the scene tree when the Qt3D aspect is first started. Basically,
+ * sets the scene/change arbiter on the items and stores the entity - component
+ * pairs in the scene
  */
 void QAspectEnginePrivate::initNode(QNode *node)
 {
@@ -105,6 +107,24 @@ void QAspectEnginePrivate::generateCreationChanges(QNode *root)
     m_creationChanges = generator.creationChanges();
 }
 
+/*!
+ * \class Qt3DCore::QAspectEngine
+ * \inherits QObject
+ * \inmodule Qt3DCore
+ *
+ * TODO
+ */
+
+/*!
+ * \typedef Qt3DCore::QEntityPtr
+ * \relates Qt3DCore::QAspectEngine
+ *
+ * A shared pointer for QEntity.
+ */
+
+/*!
+ * Constructs a new QAspectEngine with \a parent.
+ */
 QAspectEngine::QAspectEngine(QObject *parent)
     : QObject(*new QAspectEnginePrivate, parent)
 {
@@ -121,6 +141,9 @@ QAspectEngine::QAspectEngine(QObject *parent)
     d->m_aspectThread->waitForStart(QThread::HighestPriority);
 }
 
+/*!
+ * Destroys the engine.
+ */
 QAspectEngine::~QAspectEngine()
 {
     Q_D(QAspectEngine);
@@ -157,12 +180,12 @@ void QAspectEnginePrivate::initialize()
 }
 
 /*!
-    \internal
-
-    Called when we unset the root entity. Causes the QAspectManager's simulation
-    loop to be exited. The main loop should keep processing events ready
-    to start up the simulation again with a new root entity.
-*/
+ * \internal
+ *
+ * Called when we unset the root entity. Causes the QAspectManager's simulation
+ * loop to be exited. The main loop should keep processing events ready
+ * to start up the simulation again with a new root entity.
+ */
 void QAspectEnginePrivate::shutdown()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
@@ -174,9 +197,9 @@ void QAspectEnginePrivate::shutdown()
 }
 
 /*!
-    Registers a new \a aspect to the AspectManager. The QAspectEngine takes
-    ownership of the aspect and will delete it when the aspect is unregistered.
-*/
+ * Registers a new \a aspect to the AspectManager. The QAspectEngine takes
+ * ownership of the aspect and will delete it when the aspect is unregistered.
+ */
 // Called in the main thread
 void QAspectEngine::registerAspect(QAbstractAspect *aspect)
 {
@@ -208,6 +231,9 @@ void QAspectEngine::registerAspect(const QString &name)
     }
 }
 
+/*!
+ * Unregisters and deletes the given \a aspect.
+ */
 void QAspectEngine::unregisterAspect(QAbstractAspect *aspect)
 {
     Q_D(QAspectEngine);
@@ -233,6 +259,9 @@ void QAspectEngine::unregisterAspect(QAbstractAspect *aspect)
     aspect->deleteLater();
 }
 
+/*!
+ * Unregisters and deletes the aspect with the given \a name.
+ */
 void QAspectEngine::unregisterAspect(const QString &name)
 {
     Q_D(QAspectEngine);
@@ -246,12 +275,23 @@ void QAspectEngine::unregisterAspect(const QString &name)
     unregisterAspect(aspect);
 }
 
+/*!
+ * \return the aspects owned by the aspect engine.
+ */
 QVector<QAbstractAspect *> QAspectEngine::aspects() const
 {
     Q_D(const QAspectEngine);
     return d->m_aspects;
 }
 
+/*!
+ * Executes the given \a command on aspect engine. Valid commands are:
+ * \list
+ * \li "list aspects"
+ * \endlist
+ *
+ * \return the reply for the command.
+ */
 QVariant QAspectEngine::executeCommand(const QString &command)
 {
     Q_D(QAspectEngine);
@@ -283,6 +323,9 @@ QVariant QAspectEngine::executeCommand(const QString &command)
     return QVariant();
 }
 
+/*!
+ * Sets the \a root entity for the aspect engine.
+ */
 void QAspectEngine::setRootEntity(QEntityPtr root)
 {
     qCDebug(Aspects) << Q_FUNC_INFO << "root =" << root;
@@ -339,6 +382,9 @@ void QAspectEngine::setRootEntity(QEntityPtr root)
     d->m_aspectThread->aspectManager()->enterSimulationLoop();
 }
 
+/*!
+ * \return the root entity of the aspect engine.
+ */
 QEntityPtr QAspectEngine::rootEntity() const
 {
     Q_D(const QAspectEngine);

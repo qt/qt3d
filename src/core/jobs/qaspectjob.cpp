@@ -68,7 +68,21 @@ QAspectJob::QAspectJob()
 {
 }
 
-/*! \internal */
+/*!
+ * \class Qt3DCore::QAspectJob
+ * \inmodule Qt3DCore
+ *
+ * TODO
+ */
+
+/*!
+ * \fn void QAspectJob::run()
+ * Executes job.
+ */
+
+/*!
+ * \internal
+ */
 QAspectJob::QAspectJob(QAspectJobPrivate &dd)
     : d_ptr(&dd)
 {
@@ -79,6 +93,9 @@ QAspectJob::~QAspectJob()
     delete d_ptr;
 }
 
+/*!
+ * Adds \a dependency to the aspect job.
+ */
 void QAspectJob::addDependency(QWeakPointer<QAspectJob> dependency)
 {
     Q_D(QAspectJob);
@@ -90,6 +107,9 @@ void QAspectJob::addDependency(QWeakPointer<QAspectJob> dependency)
 #endif
 }
 
+/*!
+ * Removes the given \a dependency from aspect job.
+ */
 void QAspectJob::removeDependency(QWeakPointer<QAspectJob> dependency)
 {
     Q_D(QAspectJob);
@@ -103,6 +123,9 @@ void QAspectJob::removeDependency(QWeakPointer<QAspectJob> dependency)
     }
 }
 
+/*!
+ * \return the dependencies of the aspect job.
+ */
 QVector<QWeakPointer<QAspectJob> > QAspectJob::dependencies() const
 {
     Q_D(const QAspectJob);

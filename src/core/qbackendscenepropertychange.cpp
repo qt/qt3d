@@ -47,9 +47,12 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 /*!
-    \class Qt3DCore::QBackendScenePropertyChange
-    \inmodule Qt3DCore
-*/
+ * \class Qt3DCore::QBackendScenePropertyChange
+ * \inherits Qt3DCore::QScenePropertyChange
+ * \inmodule Qt3DCore
+ *
+ * TODO
+ */
 
 QBackendScenePropertyChangePrivate::QBackendScenePropertyChangePrivate()
     : QScenePropertyChangePrivate()
@@ -70,12 +73,18 @@ QBackendScenePropertyChange::~QBackendScenePropertyChange()
 }
 
 // TO DO get rid off setTargetNode, use the subject instead ??
+/*!
+ * Sets the target node of the backend scene property change to \a id.
+ */
 void QBackendScenePropertyChange::setTargetNode(QNodeId id)
 {
     Q_D(QBackendScenePropertyChange);
     d->m_targetUuid = id;
 }
 
+/*!
+ * \return the target node id of the backend scene property change.
+ */
 QNodeId QBackendScenePropertyChange::targetNode() const
 {
     Q_D(const QBackendScenePropertyChange);
@@ -83,19 +92,23 @@ QNodeId QBackendScenePropertyChange::targetNode() const
 }
 
 /*!
-    \typedef Qt3DCore::QBackendScenePropertyChangePtr
-    \relates Qt3DCore::QBackendScenePropertyChange
+ * \typedef Qt3DCore::QBackendScenePropertyChangePtr
+ * \relates Qt3DCore::QBackendScenePropertyChange
+ *
+ * A shared pointer for QBackendScenePropertyChange.
+ */
 
-    A shared pointer for QBackendScenePropertyChange.
-*/
-
-/*! \internal */
+/*!
+ * \internal
+ */
 QBackendScenePropertyChange::QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd)
     : QScenePropertyChange(dd)
 {
 }
 
-/*! \internal */
+/*!
+ * \internal
+ */
 QBackendScenePropertyChange::QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd, ChangeFlag type, QNodeId subjectId, QSceneChange::Priority priority)
     : QScenePropertyChange(dd, type, Observable, subjectId, priority)
 {

@@ -459,6 +459,18 @@ void QNodePrivate::nodePtrDeleter(QNode *q)
 */
 
 /*!
+    \fn QNodeId qIdForNode(QNode *node)
+    \relates Qt3DCore::QNode
+    \return node id for \a node.
+*/
+
+/*!
+    \fn QNodeIdVector qIdsForNodes(const T &nodes)
+    \relates Qt3DCore::QNode
+    \return vector of node ids for \a nodes.
+*/
+
+/*!
      Creates a new QNode instance with parent \a parent.
 
      \note The backend aspects will be notified that a QNode instance is
@@ -530,7 +542,15 @@ const QNodeId QNode::id() const
 }
 
 /*!
-    Returns the immediate QNode parent, or null if the node has no parent.
+    \property Qt3DCore::QNode::parent
+
+    Holds the immediate QNode parent, or null if the node has no parent.
+
+    Setting the parent will notify the backend aspects about current QNode
+    instance's parent change.
+
+    \note if \a parent happens to be null, this will actually notify that the
+    current QNode instance was removed from the scene.
 */
 QNode *QNode::parentNode() const
 {
@@ -568,14 +588,6 @@ bool QNode::blockNotifications(bool block)
     return previous;
 }
 
-/*!
- * Sets the parent node of the current QNode instance to \a parent.
- * Setting the parent will notify the backend aspects about current QNode
- * instance's parent change.
- *
- * \note if \a parent happens to be null, this will actually notify that the
- * current QNode instance was removed from the scene.
- */
 void QNode::setParent(QNode *parent)
 {
     if (parentNode() == parent)
@@ -619,14 +631,6 @@ QNodeVector QNode::childNodes() const
 
     return nodeChildrenList;
 }
-/*!
-    Set the QNode to enabled if \a isEnabled is \c true.
-    By default a QNode is always enabled.
-
-    \note the interpretation of what enabled means is aspect-dependent. Even if
-    enabled is set to \c false, some aspects may still consider the node in
-    some manner. This is documented on a class by class basis.
-*/
 void QNode::setEnabled(bool isEnabled)
 {
     Q_D(QNode);
@@ -639,7 +643,14 @@ void QNode::setEnabled(bool isEnabled)
 }
 
 /*!
-    Returns whether the QNode is enabled or not.
+    \property Qt3DCore::QNode::enabled
+
+    Holds the QNode enabled flag.
+    By default a QNode is always enabled.
+
+    \note the interpretation of what enabled means is aspect-dependent. Even if
+    enabled is set to \c false, some aspects may still consider the node in
+    some manner. This is documented on a class by class basis.
 */
 bool QNode::isEnabled() const
 {

@@ -69,7 +69,7 @@ QAbstractAspectPrivate *QAbstractAspectPrivate::get(QAbstractAspect *aspect)
 }
 
 /*!
- *
+ * \internal
  * Called in the context of the main thread
  */
 void QAbstractAspectPrivate::onEngineAboutToShutdown()
@@ -77,36 +77,55 @@ void QAbstractAspectPrivate::onEngineAboutToShutdown()
 }
 
 /*!
-    \class Qt3DCore::QAbstractAspect
-    \inmodule Qt3DCore
-    \brief QAbstractAspect is the base class for aspects that provide a vertical slice of behavior.
-*/
+ * \class Qt3DCore::QAbstractAspect
+ * \inherits QObject
+ * \inmodule Qt3DCore
+ * \brief QAbstractAspect is the base class for aspects that provide a vertical slice of behavior.
+ */
+
+/*!
+ * \fn void QAbstractAspect::registerBackendType(const QBackendNodeMapperPtr &functor)
+ * Registers backend with \a functor.
+ */
+
+/*!
+ * \internal
+ * \fn void registerBackendType(const QBackendNodeMapperPtr &functor)
+ * This is a workaround to fix an erroneous qdoc warning. KEEP IT INTERNAL
+ */
+
+/*!
+ * Constructs a new QAbstractAspect with \a parent
+ */
 QAbstractAspect::QAbstractAspect(QObject *parent)
     : QObject(*new QAbstractAspectPrivate, parent)
 {
 }
 /*!
-    \typedef Qt3DCore::QAspectJobPtr
-    \relates Qt3DCore::QAbstractAspect
-
-    A shared pointer for QAspectJob.
-*/
-
-/*!
-    \typedef Qt3DCore::QBackendNodeMapperPtr
-    \relates Qt3DCore::QAbstractAspect
-
-    A shared pointer for QBackendNodeMapper.
-*/
+ * \typedef Qt3DCore::QAspectJobPtr
+ * \relates Qt3DCore::QAbstractAspect
+ *
+ * A shared pointer for QAspectJob.
+ */
 
 /*!
-    \internal
-*/
+ * \typedef Qt3DCore::QBackendNodeMapperPtr
+ * \relates Qt3DCore::QAbstractAspect
+ *
+ * A shared pointer for QBackendNodeMapper.
+ */
+
+/*!
+ * \internal
+ */
 QAbstractAspect::QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent)
     : QObject(dd, parent)
 {
 }
 
+/*!
+ * \return root entity node id.
+ */
 QNodeId QAbstractAspect::rootEntityId() const Q_DECL_NOEXCEPT
 {
     Q_D(const QAbstractAspect);
@@ -114,8 +133,8 @@ QNodeId QAbstractAspect::rootEntityId() const Q_DECL_NOEXCEPT
 }
 
 /*!
-    Registers backend.
-*/
+ * Registers backend with \a obj and \a functor.
+ */
 void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackendNodeMapperPtr &functor)
 {
     Q_D(QAbstractAspect);
@@ -323,25 +342,24 @@ QVector<QAspectJobPtr> QAbstractAspectPrivate::jobsToExecute(qint64 time)
 }
 
 /*!
-    Called in the context of the aspect thread once the aspect has been registered.
-    This provides an opportunity for the aspect to do any initialization tasks that
-    require to be in the aspect thread context such as creating QObject subclasses that
-    must have affinity with this thread.
-
-    \sa onUnregistered
-*/
+ * Called in the context of the aspect thread once the aspect has been registered.
+ * This provides an opportunity for the aspect to do any initialization tasks that
+ * require to be in the aspect thread context such as creating QObject subclasses that
+ * must have affinity with this thread.
+ *
+ * \sa onUnregistered
+ */
 void QAbstractAspect::onRegistered()
 {
 }
 
 /*!
-    Called in the context of the aspect thread during unregistration
-
-    of the aspect. This gives the aspect a chance to do any final pieces of
-    cleanup that it would not do when just changing to a new scene.
-
-    \sa onRegistered
-*/
+ * Called in the context of the aspect thread during unregistration
+ * of the aspect. This gives the aspect a chance to do any final pieces of
+ * cleanup that it would not do when just changing to a new scene.
+ *
+ * \sa onRegistered
+ */
 void QAbstractAspect::onUnregistered()
 {
 }

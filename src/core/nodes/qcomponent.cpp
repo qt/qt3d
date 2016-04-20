@@ -120,7 +120,9 @@ QComponent::~QComponent()
 }
 
 /*!
-    Returns whether the QComponent is shareable across entities or not.
+    \property Qt3DCore::QComponent::isShareable
+    Holds the shareable flag of the QComponent. The QComponent can be shared across several
+    entities if \c{true}.
 */
 bool QComponent::isShareable() const
 {
@@ -128,9 +130,6 @@ bool QComponent::isShareable() const
     return d->m_shareable;
 }
 
-/*!
-    The QComponent can be shared across several entities if \a shareable is true.
-*/
 void QComponent::setShareable(bool shareable)
 {
     Q_D(QComponent);
@@ -140,6 +139,9 @@ void QComponent::setShareable(bool shareable)
     }
 }
 
+/*!
+    Copies the \a ref.
+ */
 void QComponent::copy(const QNode *ref)
 {
     QNode::copy(ref);
@@ -176,7 +178,7 @@ QComponent::QComponent(QComponentPrivate &dd, QNode *parent)
 */
 
 /*!
-    \qmlproperty bool Qt3DCore::Component3D::shareable
+    \qmlproperty bool Component3D::isShareable
 */
 
 QT_END_NAMESPACE
