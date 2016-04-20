@@ -273,6 +273,7 @@ void GraphicsHelperES2::frontFace(GLenum mode)
 
 void GraphicsHelperES2::setMSAAEnabled(bool enabled)
 {
+    Q_UNUSED(enabled);
     qWarning() << "MSAA not available with OpenGL ES 2.0";
 }
 

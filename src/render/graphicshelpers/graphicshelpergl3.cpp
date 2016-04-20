@@ -935,6 +935,9 @@ void GraphicsHelperGL3::disableClipPlane(int clipPlane)
 void GraphicsHelperGL3::setClipPlane(int clipPlane, const QVector3D &normal, float distance)
 {
     // deprecated
+    Q_UNUSED(clipPlane);
+    Q_UNUSED(normal);
+    Q_UNUSED(distance);
 }
 
 GLint GraphicsHelperGL3::maxClipPlaneCount()
