@@ -40,7 +40,7 @@
 #include "qsortpolicy.h"
 #include "qsortpolicy_p.h"
 #include "qsortcriterion_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qsortcriterion.h>
 
 QT_BEGIN_NAMESPACE
@@ -88,7 +88,7 @@ void QSortPolicy::addCriterion(QSortCriterion *criterion)
             criterion->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            QNodePropertyChangePtr propertyChange(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
             propertyChange->setPropertyName("sortCriterion");
             propertyChange->setValue(QVariant::fromValue(criterion->id()));
             d->notifyObservers(propertyChange);
@@ -100,7 +100,7 @@ void QSortPolicy::removeCriterion(QSortCriterion *criterion)
 {
     Q_D(QSortPolicy);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        QNodePropertyChangePtr propertyChange(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
         propertyChange->setPropertyName("sortCriterion");
         propertyChange->setValue(QVariant::fromValue(criterion->id()));
         d->notifyObservers(propertyChange);

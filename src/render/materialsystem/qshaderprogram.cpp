@@ -39,7 +39,7 @@
 
 #include "qshaderprogram.h"
 #include "qshaderprogram_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 #include <QDebug>
 #include <QFile>

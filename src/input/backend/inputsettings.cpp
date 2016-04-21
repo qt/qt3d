@@ -41,7 +41,7 @@
 #include <Qt3DInput/qinputsettings.h>
 #include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DInput/private/qinputsettings_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,7 +72,7 @@ void InputSettings::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr
 void InputSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::NodeUpdated) {
-        Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
+        Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("eventSource"))
             m_eventSource = propertyChange->value().value<QObject *>();
     }

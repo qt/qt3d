@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QScenePropertyChange;
+class QNodePropertyChange;
 class QFrameAllocator;
 
 class QNodePropertyChangeBasePrivate : public QSceneChangePrivate

@@ -41,7 +41,7 @@
 #include "qpickevent.h"
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qattribute.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -84,7 +84,7 @@ void ObjectPicker::updateFromPeer(Qt3DCore::QNode *peer)
 
 void ObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    const Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
+    const Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
     const QByteArray propertyName = propertyChange->propertyName();
 
     if (propertyChange->type() == Qt3DCore::NodeUpdated) {

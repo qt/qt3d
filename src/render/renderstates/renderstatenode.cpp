@@ -37,7 +37,7 @@
 #include "renderstatenode_p.h"
 #include <Qt3DRender/qrenderstate.h>
 #include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -82,7 +82,7 @@ void RenderStateNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBaseP
 void RenderStateNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::NodeUpdated) {
-        Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
+        Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
 
         if (m_impl->isPooledImpl()) {
             m_impl = m_impl->getOrCreateWithPropertyChange(propertyChange->propertyName(), propertyChange->value());

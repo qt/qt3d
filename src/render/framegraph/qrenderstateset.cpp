@@ -40,7 +40,7 @@
 #include "qrenderstateset.h"
 #include "qrenderstateset_p.h"
 
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
@@ -114,7 +114,7 @@ void QRenderStateSet::addRenderState(QRenderState *state)
             state->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            QNodePropertyChangePtr change(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
             change->setPropertyName("renderState");
             // Since we have no RenderState managers, we need to send a clone
             change->setValue(QVariant::fromValue(QNodePtr(QNode::clone(state))));
@@ -130,7 +130,7 @@ void QRenderStateSet::removeRenderState(QRenderState *state)
 {
     Q_D(QRenderStateSet);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        QNodePropertyChangePtr change(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
         change->setPropertyName("renderState");
         change->setValue(QVariant::fromValue(state->id()));
         d->notifyObservers(change);

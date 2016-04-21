@@ -39,7 +39,7 @@
 
 #include "qpostman_p.h"
 #include <private/qobject_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qlockableobserverinterface_p.h>

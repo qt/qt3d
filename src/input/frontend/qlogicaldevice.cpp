@@ -41,7 +41,7 @@
 #include "qlogicaldevice_p.h"
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qaxis.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
@@ -165,7 +165,7 @@ void QLogicalDevice::addAction(QAction *action)
             action->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, id()));
+            Qt3DCore::QNodePropertyChangePtr change(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, id()));
             change->setPropertyName("action");
             change->setValue(QVariant::fromValue(action->id()));
             d->notifyObservers(change);
@@ -182,7 +182,7 @@ void QLogicalDevice::removeAction(QAction *action)
     if (d->m_actions.contains(action)) {
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, id()));
+            Qt3DCore::QNodePropertyChangePtr change(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, id()));
             change->setPropertyName("action");
             change->setValue(QVariant::fromValue(action->id()));
             d->notifyObservers(change);
@@ -221,7 +221,7 @@ void QLogicalDevice::addAxis(QAxis *axis)
             axis->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, id()));
+            Qt3DCore::QNodePropertyChangePtr change(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, id()));
             change->setPropertyName("axis");
             change->setValue(QVariant::fromValue(axis->id()));
             d->notifyObservers(change);
@@ -237,7 +237,7 @@ void QLogicalDevice::removeAxis(QAxis *axis)
     Q_D(QLogicalDevice);
     if (d->m_axes.contains(axis)) {
         if (d->m_changeArbiter != Q_NULLPTR) {
-            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, id()));
+            Qt3DCore::QNodePropertyChangePtr change(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, id()));
             change->setPropertyName("axis");
             change->setValue(QVariant::fromValue(axis->id()));
             d->notifyObservers(change);

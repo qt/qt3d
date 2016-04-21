@@ -41,7 +41,7 @@
 #include "qcameraselector_p.h"
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/private/qentity_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 

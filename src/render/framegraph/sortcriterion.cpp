@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "sortcriterion_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
@@ -72,7 +72,7 @@ QSortCriterion::SortType SortCriterion::sortType() const
 
 void SortCriterion::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
     if (e->type() == NodeUpdated && propertyChange->propertyName() == QByteArrayLiteral("sort")) {
         m_type = static_cast<QSortCriterion::SortType>(propertyChange->value().toInt());
     }

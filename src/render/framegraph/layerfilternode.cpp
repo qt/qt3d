@@ -40,7 +40,7 @@
 #include "layerfilternode_p.h"
 #include "qlayerfilter.h"
 #include <Qt3DRender/private/qlayerfilter_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -72,7 +72,7 @@ void LayerFilterNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBaseP
 void LayerFilterNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("layers"))
             setLayers(propertyChange->value().value<QStringList>());
         markDirty(AbstractRenderer::AllDirty);

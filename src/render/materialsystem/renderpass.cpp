@@ -48,7 +48,7 @@
 #include <Qt3DRender/private/renderstates_p.h>
 #include <Qt3DRender/private/renderstateset_p.h>
 
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -101,7 +101,7 @@ void RenderPass::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &c
 
 void RenderPass::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
     switch (e->type()) {
 
     case NodeAdded: {

@@ -42,7 +42,7 @@
 #include "qshaderdata_p.h"
 #include <QMetaProperty>
 #include <QMetaObject>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <private/graphicscontext_p.h>
 #include <private/qbackendnode_p.h>
 #include <private/glbuffer_p.h>
@@ -283,7 +283,7 @@ void ShaderData::readPeerProperties(QShaderData *shaderData)
 void ShaderData::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (!m_propertyReader.isNull()) {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         QString propertyName = QString::fromLatin1(propertyChange->propertyName());
         switch (e->type()) {
         case NodeUpdated: {

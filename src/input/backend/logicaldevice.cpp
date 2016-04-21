@@ -43,7 +43,7 @@
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
 #include <Qt3DInput/private/qlogicaldevice_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -82,7 +82,7 @@ void LogicalDevice::cleanup()
 
 void LogicalDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
+    Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
     if (e->type() == Qt3DCore::NodeAdded) {
         if (propertyChange->propertyName() == QByteArrayLiteral("axis"))
             m_axes.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());

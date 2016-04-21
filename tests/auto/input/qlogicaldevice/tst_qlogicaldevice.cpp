@@ -114,7 +114,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "action");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), action->id());
         QCOMPARE(change->type(), Qt3DCore::NodeAdded);
@@ -127,7 +127,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "action");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), action->id());
         QCOMPARE(change->type(), Qt3DCore::NodeRemoved);
@@ -141,7 +141,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "axis");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), axis->id());
         QCOMPARE(change->type(), Qt3DCore::NodeAdded);
@@ -154,7 +154,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "axis");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), axis->id());
         QCOMPARE(change->type(), Qt3DCore::NodeRemoved);

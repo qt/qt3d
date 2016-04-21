@@ -43,7 +43,7 @@
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/private/qeffect_p.h>
 
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 #include <QVariant>
 
@@ -95,7 +95,7 @@ void Effect::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
     case NodeAdded: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         QVariant propertyValue = propertyChange->value();
         if (propertyChange->propertyName() == QByteArrayLiteral("technique"))
             appendRenderTechnique(propertyValue.value<QNodeId>());
@@ -105,7 +105,7 @@ void Effect::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     case NodeRemoved: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         QVariant propertyValue = propertyChange->value();
         if (propertyChange->propertyName() == QByteArrayLiteral("technique"))
             m_techniques.removeOne(propertyValue.value<QNodeId>());

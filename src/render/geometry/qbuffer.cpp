@@ -40,7 +40,7 @@
 #include "qbuffer.h"
 #include "qbuffer_p.h"
 #include <Qt3DRender/private/renderlogging_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -180,7 +180,7 @@ void QBuffer::copy(const QNode *ref)
  */
 void QBuffer::sceneChangeEvent(const QSceneChangePtr &change)
 {
-    QScenePropertyChangePtr e = qSharedPointerCast<QScenePropertyChange>(change);
+    QNodePropertyChangePtr e = qSharedPointerCast<QNodePropertyChange>(change);
     if (e->type() == NodeUpdated && e->propertyName() == QByteArrayLiteral("data")) {
         const bool blocked = blockNotifications(true);
         setData(e->value().toByteArray());
@@ -251,7 +251,7 @@ void QBuffer::setDataGenerator(const QBufferDataGeneratorPtr &functor)
         return;
     d->m_functor = functor;
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
+        QNodePropertyChangePtr change(new QNodePropertyChange(NodeUpdated, QSceneChange::Node, id()));
         change->setPropertyName("dataGenerator");
         change->setValue(QVariant::fromValue(d->m_functor));
         d->notifyObservers(change);

@@ -39,7 +39,7 @@
 
 #include "geometryrenderer_p.h"
 #include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
 #include <Qt3DRender/private/qboundingvolume_p.h>
@@ -140,7 +140,7 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
     case NodeUpdated: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         QByteArray propertyName = propertyChange->propertyName();
 
         if (propertyName == QByteArrayLiteral("instanceCount")) {
@@ -178,7 +178,7 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     case NodeAdded: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         QByteArray propertyName = propertyChange->propertyName();
 
         if (propertyName == QByteArrayLiteral("geometry")) {
@@ -189,7 +189,7 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     case NodeRemoved: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         QByteArray propertyName = propertyChange->propertyName();
 
         if (propertyName == QByteArrayLiteral("geometry")) {

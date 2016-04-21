@@ -39,7 +39,7 @@
 
 #include "qlayerfilter.h"
 #include "qlayerfilter_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 

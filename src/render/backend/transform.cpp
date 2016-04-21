@@ -39,7 +39,7 @@
 
 #include "transform_p.h"
 
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/private/qtransform_p.h>
@@ -88,7 +88,7 @@ void Transform::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     // TODO: Flag the matrix as dirty and update all matrices batched in a job
     if (e->type() == NodeUpdated) {
-        const QScenePropertyChangePtr &propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        const QNodePropertyChangePtr &propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("scale3D")) {
             m_scale = propertyChange->value().value<QVector3D>();
             updateMatrix();

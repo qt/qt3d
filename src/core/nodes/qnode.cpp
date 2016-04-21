@@ -41,7 +41,7 @@
 #include "qnode_p.h"
 
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/qaspectengine.h>
 #include <Qt3DCore/private/qdestructionidandtypecollector_p.h>
 #include <Qt3DCore/private/qnodedestroyedchange_p.h>
@@ -99,7 +99,7 @@ void QNodePrivate::_q_addChild(QNode *childNode)
 
         // We notify only if we have a QChangeArbiter
         if (m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, QSceneChange::Node, m_id));
+            QNodePropertyChangePtr e(new QNodePropertyChange(NodeCreated, QSceneChange::Node, m_id));
             e->setPropertyName("node");
             // We need to clone the parent of the childNode we send
             QNode *parentClone = QNode::clone(q_func());
@@ -149,7 +149,7 @@ void QNodePrivate::_q_removeChild(QNode *childNode)
 
         // Notify only if child isn't a clone
         if (m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, QSceneChange::Node, m_id));
+            QNodePropertyChangePtr e(new QNodePropertyChange(NodeAboutToBeDeleted, QSceneChange::Node, m_id));
             e->setPropertyName("node");
             // We need to clone the parent of the childNode we send
             //        QNode *parentClone = QNode::clone(childNode->parentNode());
@@ -354,7 +354,7 @@ void QNodePrivate::notifyPropertyChange(const char *name, const QVariant &value)
     if (m_blockNotifications)
         return;
 
-    QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, m_id));
+    QNodePropertyChangePtr e(new QNodePropertyChange(NodeUpdated, QSceneChange::Node, m_id));
     e->setPropertyName(name);
     e->setValue(value);
     notifyObservers(e);

@@ -107,7 +107,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "input");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), input->id());
         QCOMPARE(change->type(), Qt3DCore::NodeAdded);
@@ -120,7 +120,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "input");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), input->id());
         QCOMPARE(change->type(), Qt3DCore::NodeRemoved);
@@ -135,7 +135,7 @@ private Q_SLOTS:
 
         // Note: simulate backend change to frontend
         // WHEN
-        Qt3DCore::QScenePropertyChangePtr valueChange(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        Qt3DCore::QNodePropertyChangePtr valueChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         valueChange->setPropertyName("value");
         valueChange->setValue(383.0f);
         sceneChangeEvent(valueChange);

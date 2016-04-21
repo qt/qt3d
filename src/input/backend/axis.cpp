@@ -41,7 +41,7 @@
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DInput/qaxisinput.h>
 #include <Qt3DInput/private/qaxis_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -93,7 +93,7 @@ void Axis::setAxisValue(float axisValue)
 
 void Axis::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
+    Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
     if (e->type() == Qt3DCore::NodeAdded) {
         if (propertyChange->propertyName() == QByteArrayLiteral("input"))
             m_inputs.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());

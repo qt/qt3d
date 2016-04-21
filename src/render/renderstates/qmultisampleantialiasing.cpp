@@ -40,7 +40,7 @@
 #include "qmultisampleantialiasing.h"
 #include "qrenderstate_p.h"
 #include <private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 

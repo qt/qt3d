@@ -29,7 +29,7 @@
 #include <QtTest/QtTest>
 #include <Qt3DRender/private/renderpass_p.h>
 
-#include <Qt3DCore/QScenePropertyChange>
+#include <Qt3DCore/QNodePropertyChange>
 
 #include <Qt3DRender/QFilterKey>
 #include <Qt3DRender/QRenderPass>
@@ -132,7 +132,7 @@ private slots:
         backend.setRenderer(&renderer);
 
         // WHEN
-        QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, shader->id()));
+        QNodePropertyChangePtr addChange(new QNodePropertyChange(NodeAdded, QSceneChange::Node, shader->id()));
         addChange->setValue(QVariant::fromValue(shader->id()));
         addChange->setPropertyName("shaderProgram");
         backend.sceneChangeEvent(addChange);
@@ -142,7 +142,7 @@ private slots:
         QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
-        QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, shader->id()));
+        QNodePropertyChangePtr removeChange(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, shader->id()));
         removeChange->setValue(QVariant::fromValue(shader->id()));
         removeChange->setPropertyName("shaderProgram");
         backend.sceneChangeEvent(removeChange);
@@ -161,7 +161,7 @@ private slots:
         backend.setRenderer(&renderer);
 
         // WHEN
-        QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, annotation->id()));
+        QNodePropertyChangePtr addChange(new QNodePropertyChange(NodeAdded, QSceneChange::Node, annotation->id()));
         addChange->setValue(QVariant::fromValue(annotation->id()));
         addChange->setPropertyName("filterKeys");
         backend.sceneChangeEvent(addChange);
@@ -172,7 +172,7 @@ private slots:
         QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
-        QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, annotation->id()));
+        QNodePropertyChangePtr removeChange(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, annotation->id()));
         removeChange->setValue(QVariant::fromValue(annotation->id()));
         removeChange->setPropertyName("filterKeys");
         backend.sceneChangeEvent(removeChange);
@@ -191,7 +191,7 @@ private slots:
         backend.setRenderer(&renderer);
 
         // WHEN
-        QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, parameter->id()));
+        QNodePropertyChangePtr addChange(new QNodePropertyChange(NodeAdded, QSceneChange::Node, parameter->id()));
         addChange->setValue(QVariant::fromValue(parameter->id()));
         addChange->setPropertyName("parameter");
         backend.sceneChangeEvent(addChange);
@@ -202,7 +202,7 @@ private slots:
         QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
-        QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, parameter->id()));
+        QNodePropertyChangePtr removeChange(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, parameter->id()));
         removeChange->setValue(QVariant::fromValue(parameter->id()));
         removeChange->setPropertyName("parameter");
         backend.sceneChangeEvent(removeChange);
@@ -224,7 +224,7 @@ private slots:
         backendState->setPeer(frontendState);
 
         // WHEN
-        QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, frontendState->id()));
+        QNodePropertyChangePtr addChange(new QNodePropertyChange(NodeAdded, QSceneChange::Node, frontendState->id()));
         addChange->setValue(QVariant::fromValue(frontendStatePtr));
         addChange->setPropertyName("renderState");
         backend.sceneChangeEvent(addChange);
@@ -235,7 +235,7 @@ private slots:
         QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
-        QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, frontendState->id()));
+        QNodePropertyChangePtr removeChange(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, frontendState->id()));
         removeChange->setValue(QVariant::fromValue(frontendState->id()));
         removeChange->setPropertyName("renderState");
         backend.sceneChangeEvent(removeChange);

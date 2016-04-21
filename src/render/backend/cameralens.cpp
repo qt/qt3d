@@ -42,7 +42,7 @@
 #include <Qt3DRender/private/qcameralens_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/qtransform.h>
 
 QT_BEGIN_NAMESPACE
@@ -89,7 +89,7 @@ void CameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
     case NodeUpdated: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
 
         if (propertyChange->propertyName() == QByteArrayLiteral("projectionMatrix")) {
             QMatrix4x4 projectionMatrix = propertyChange->value().value<QMatrix4x4>();

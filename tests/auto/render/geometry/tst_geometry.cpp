@@ -30,7 +30,7 @@
 #include <Qt3DRender/private/geometry_p.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qattribute.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include "testrenderer.h"
 
 class tst_RenderGeometry : public QObject
@@ -111,7 +111,7 @@ private Q_SLOTS:
         Qt3DCore::QNodeId geometryId = Qt3DCore::QNodeId::createId();
 
         // WHEN
-        Qt3DCore::QScenePropertyChangePtr updateChange(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        Qt3DCore::QNodePropertyChangePtr updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(QVariant::fromValue(geometryId));
         updateChange->setPropertyName("attribute");
         renderGeometry.sceneChangeEvent(updateChange);
@@ -124,7 +124,7 @@ private Q_SLOTS:
         QVERIFY(!renderGeometry.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(QVariant::fromValue(geometryId));
         updateChange->setPropertyName("attribute");
         renderGeometry.sceneChangeEvent(updateChange);
@@ -138,7 +138,7 @@ private Q_SLOTS:
 
         // WHEN
         const Qt3DCore::QNodeId boundingAttrId = Qt3DCore::QNodeId::createId();
-        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(QVariant::fromValue(boundingAttrId));
         updateChange->setPropertyName("boundingVolumePositionAttribute");
         renderGeometry.sceneChangeEvent(updateChange);

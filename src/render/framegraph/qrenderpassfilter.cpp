@@ -40,7 +40,7 @@
 #include "qrenderpassfilter.h"
 #include "qrenderpassfilter_p.h"
 
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qparameter.h>
 
@@ -86,7 +86,7 @@ void QRenderPassFilter::addMatch(QFilterKey *keyFilter)
             keyFilter->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            QNodePropertyChangePtr propertyChange(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
             propertyChange->setPropertyName("match");
             propertyChange->setValue(QVariant::fromValue(keyFilter->id()));
             d->notifyObservers(propertyChange);
@@ -98,7 +98,7 @@ void QRenderPassFilter::removeMatch(QFilterKey *filterKey)
 {
     Q_D(QRenderPassFilter);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        QNodePropertyChangePtr propertyChange(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
         propertyChange->setPropertyName("match");
         propertyChange->setValue(QVariant::fromValue(filterKey->id()));
         d->notifyObservers(propertyChange);
@@ -130,7 +130,7 @@ void QRenderPassFilter::addParameter(QParameter *parameter)
             parameter->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            QNodePropertyChangePtr change(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
             change->setPropertyName("parameter");
             change->setValue(QVariant::fromValue(parameter->id()));
             d->notifyObservers(change);
@@ -143,7 +143,7 @@ void QRenderPassFilter::removeParameter(QParameter *parameter)
     Q_D(QRenderPassFilter);
 
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        QNodePropertyChangePtr change(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
         change->setPropertyName("parameter");
         change->setValue(QVariant::fromValue(parameter->id()));
         d->notifyObservers(change);

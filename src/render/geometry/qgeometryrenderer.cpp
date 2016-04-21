@@ -41,7 +41,7 @@
 #include "qgeometryrenderer_p.h"
 
 #include <private/qcomponent_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -358,7 +358,7 @@ void QGeometryRenderer::setGeometry(QGeometry *geometry)
         return;
 
     if (d->m_geometry && d->m_changeArbiter) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        QNodePropertyChangePtr change(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
         change->setPropertyName("geometry");
         change->setValue(QVariant::fromValue(d->m_geometry->id()));
         d->notifyObservers(change);
@@ -373,7 +373,7 @@ void QGeometryRenderer::setGeometry(QGeometry *geometry)
     blockNotifications(blocked);
 
     if (d->m_geometry && d->m_changeArbiter) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+        QNodePropertyChangePtr change(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
         change->setPropertyName("geometry");
         change->setValue(QVariant::fromValue(d->m_geometry->id()));
         d->notifyObservers(change);
@@ -400,7 +400,7 @@ void QGeometryRenderer::setGeometryFactory(const QGeometryFactoryPtr &factory)
         return;
     d->m_geometryFactory = factory;
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
+        QNodePropertyChangePtr change(new QNodePropertyChange(NodeUpdated, QSceneChange::Node, id()));
         change->setPropertyName("geometryFactory");
         change->setValue(QVariant::fromValue(d->m_geometryFactory));
         d->notifyObservers(change);
@@ -432,7 +432,7 @@ void QGeometryRenderer::copy(const QNode *ref)
 void QGeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     Q_D(QGeometryRenderer);
-    QScenePropertyChangePtr change = qSharedPointerCast<QScenePropertyChange>(e);
+    QNodePropertyChangePtr change = qSharedPointerCast<QNodePropertyChange>(e);
     if (change->type() == NodeUpdated && change->propertyName() == QByteArrayLiteral("geometry")) {
         QNodePtr nodePtr = change->value().value<QNodePtr>();
         QGeometry *backendGeometry = static_cast<QGeometry *>(nodePtr.data());

@@ -41,7 +41,7 @@
 #include "qbackendnode_p.h"
 #include "qaspectengine.h"
 #include "qnode.h"
-#include "qscenepropertychange.h"
+#include "qnodepropertychange.h"
 #include <Qt3DCore/private/corelogging_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -249,7 +249,7 @@ void QBackendNode::setEnabled(bool enabled)
 void QBackendNode::sceneChangeEvent(const QSceneChangePtr &e)
 {
     Q_D(QBackendNode);
-    auto propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    auto propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
 
     switch (e->type()) {
         case NodeUpdated: {

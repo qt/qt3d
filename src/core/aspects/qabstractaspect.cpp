@@ -45,7 +45,7 @@
 #include <private/qchangearbiter_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/private/corelogging_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -144,7 +144,7 @@ void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackend
 void QAbstractAspectPrivate::sceneNodeAdded(QSceneChangePtr &change)
 {
     if (m_useCloning) {
-        QScenePropertyChangePtr propertyChange = change.staticCast<QScenePropertyChange>();
+        QNodePropertyChangePtr propertyChange = change.staticCast<QNodePropertyChange>();
         QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
         QNode *n = nodePtr.data();
         QNodeVisitor visitor;
@@ -158,7 +158,7 @@ void QAbstractAspectPrivate::sceneNodeAdded(QSceneChangePtr &change)
 void QAbstractAspectPrivate::sceneNodeRemoved(QSceneChangePtr &change)
 {
     if (m_useCloning) {
-        QScenePropertyChangePtr propertyChange = change.staticCast<QScenePropertyChange>();
+        QNodePropertyChangePtr propertyChange = change.staticCast<QNodePropertyChange>();
         QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
         QNode *n = nodePtr.data();
         clearBackendNode(n);

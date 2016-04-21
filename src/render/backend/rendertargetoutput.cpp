@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include <Qt3DRender/private/rendertargetoutput_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qtexture.h>
 #include <QVariant>
 
@@ -98,7 +98,7 @@ QRenderTargetOutput::AttachmentPoint RenderTargetOutput::point() const
 
 void RenderTargetOutput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
     if (e->type() == NodeUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("type")) {
             m_attachmentData.m_point = static_cast<QRenderTargetOutput::AttachmentPoint>(propertyChange->value().toInt());

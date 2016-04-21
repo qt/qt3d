@@ -41,7 +41,7 @@
 #include "qtransform_p.h"
 #include "qmath3d_p.h"
 
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 

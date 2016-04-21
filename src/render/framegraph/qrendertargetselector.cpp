@@ -40,7 +40,7 @@
 #include "qrendertargetselector.h"
 #include "qrendertargetselector_p.h"
 #include <Qt3DRender/qrendertarget.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/private/qrenderpass_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -113,7 +113,7 @@ void QRenderTargetSelector::setOutputs(const QVector<QRenderTargetOutput::Attach
         d->m_outputs = buffers;
 
         if (d->m_changeArbiter) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
+            QNodePropertyChangePtr change(new QNodePropertyChange(NodeUpdated, QSceneChange::Node, id()));
             change->setPropertyName("outputs");
             change->setValue(QVariant::fromValue(d->m_outputs));
             d->notifyObservers(change);

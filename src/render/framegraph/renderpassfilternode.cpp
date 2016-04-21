@@ -41,7 +41,7 @@
 #include "qfilterkey.h"
 #include "qrenderpassfilter.h"
 #include <Qt3DRender/private/qrenderpassfilter_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qparameter.h>
 
 QT_BEGIN_NAMESPACE
@@ -101,7 +101,7 @@ QVector<Qt3DCore::QNodeId> RenderPassFilter::parameters() const
 
 void RenderPassFilter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
 
     switch (e->type()) {
 

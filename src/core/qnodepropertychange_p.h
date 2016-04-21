@@ -59,19 +59,19 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QScenePropertyChange;
+class QNodePropertyChange;
 class QFrameAllocator;
 
-class QScenePropertyChangePrivate : public QNodePropertyChangeBasePrivate
+class QNodePropertyChangePrivate : public QNodePropertyChangeBasePrivate
 {
 public:
-    QScenePropertyChangePrivate();
-    virtual ~QScenePropertyChangePrivate();
+    QNodePropertyChangePrivate();
+    virtual ~QNodePropertyChangePrivate();
 
     static void *operator new(size_t size);
     static void operator delete(void *ptr, size_t size);
 
-    Q_DECLARE_PUBLIC(QScenePropertyChange)
+    Q_DECLARE_PUBLIC(QNodePropertyChange)
 
     QVariant m_value;
 

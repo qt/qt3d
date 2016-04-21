@@ -39,7 +39,7 @@
 
 #include "light_p.h"
 #include "qlight.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <private/abstractrenderer_p.h>
 #include <private/nodemanagers_p.h>
 #include <private/qbackendnode_p.h>

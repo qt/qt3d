@@ -40,7 +40,7 @@
 #include "qparameter.h"
 #include "qparameter_p.h"
 #include <Qt3DRender/private/renderlogging_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qtexture.h>
 
 QT_BEGIN_NAMESPACE
@@ -133,7 +133,7 @@ void QParameter::setValue(const QVariant &dv)
         if (nodeValue != Q_NULLPTR && !nodeValue->parent())
             nodeValue->setParent(this);
 
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
+        QNodePropertyChangePtr change(new QNodePropertyChange(NodeUpdated, QSceneChange::Node, id()));
         change->setPropertyName(d->m_name.toUtf8().data());
         change->setValue(d->m_backendValue);
 

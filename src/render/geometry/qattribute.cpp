@@ -41,7 +41,7 @@
 #include "qattribute_p.h"
 #include <Qt3DRender/qbuffer.h>
 
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 

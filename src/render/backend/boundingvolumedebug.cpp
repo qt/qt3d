@@ -75,7 +75,7 @@ void BoundingVolumeDebug::updateFromPeer(Qt3DCore::QNode *peer)
 
 void BoundingVolumeDebug::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    const Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
+    const Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
     const QByteArray propertyName = propertyChange->propertyName();
 
     if (propertyChange->type() == Qt3DCore::NodeUpdated) {

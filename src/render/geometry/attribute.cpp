@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "attribute_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/private/qattribute_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
@@ -123,7 +123,7 @@ void Attribute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
     case NodeUpdated: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         QByteArray propertyName = propertyChange->propertyName();
 
         if (propertyName == QByteArrayLiteral("name")) {

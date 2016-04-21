@@ -55,7 +55,7 @@ namespace Qt3DCore {
  */
 
 QBackendScenePropertyChangePrivate::QBackendScenePropertyChangePrivate()
-    : QScenePropertyChangePrivate()
+    : QNodePropertyChangePrivate()
 {
 }
 
@@ -64,7 +64,7 @@ QBackendScenePropertyChangePrivate::~QBackendScenePropertyChangePrivate()
 }
 
 QBackendScenePropertyChange::QBackendScenePropertyChange(ChangeFlag type, QNodeId subjectId, QSceneChange::Priority priority)
-    : QScenePropertyChange(*new QBackendScenePropertyChangePrivate, type, Observable, subjectId, priority)
+    : QNodePropertyChange(*new QBackendScenePropertyChangePrivate, type, Observable, subjectId, priority)
 {
 }
 
@@ -102,7 +102,7 @@ QNodeId QBackendScenePropertyChange::targetNode() const
  * \internal
  */
 QBackendScenePropertyChange::QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd)
-    : QScenePropertyChange(dd)
+    : QNodePropertyChange(dd)
 {
 }
 
@@ -110,7 +110,7 @@ QBackendScenePropertyChange::QBackendScenePropertyChange(QBackendScenePropertyCh
  * \internal
  */
 QBackendScenePropertyChange::QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd, ChangeFlag type, QNodeId subjectId, QSceneChange::Priority priority)
-    : QScenePropertyChange(dd, type, Observable, subjectId, priority)
+    : QNodePropertyChange(dd, type, Observable, subjectId, priority)
 {
 }
 

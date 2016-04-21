@@ -40,7 +40,7 @@
 #ifndef QT3DCORE_QBACKENDSCENEPROPERTYCHANGE_H
 #define QT3DCORE_QBACKENDSCENEPROPERTYCHANGE_H
 
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -50,7 +50,7 @@ namespace Qt3DCore {
 class QBackendScenePropertyChangePrivate;
 class QBackendNode;
 
-class QT3DCORESHARED_EXPORT QBackendScenePropertyChange : public QScenePropertyChange
+class QT3DCORESHARED_EXPORT QBackendScenePropertyChange : public QNodePropertyChange
 {
 public:
     QBackendScenePropertyChange(ChangeFlag type, QNodeId subjectId,

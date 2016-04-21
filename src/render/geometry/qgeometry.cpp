@@ -40,7 +40,7 @@
 #include "qgeometry.h"
 #include "qgeometry_p.h"
 #include <private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qattribute.h>
 
 QT_BEGIN_NAMESPACE
@@ -117,7 +117,7 @@ void QGeometry::addAttribute(QAttribute *attribute)
             attribute->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            QNodePropertyChangePtr change(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
             change->setPropertyName("attribute");
             change->setValue(QVariant::fromValue(attribute->id()));
             d->notifyObservers(change);
@@ -132,7 +132,7 @@ void QGeometry::removeAttribute(QAttribute *attribute)
 {
     Q_D(QGeometry);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        QNodePropertyChangePtr change(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
         change->setPropertyName("attribute");
         change->setValue(QVariant::fromValue(attribute->id()));
         d->notifyObservers(change);

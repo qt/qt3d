@@ -46,13 +46,13 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QScenePropertyChangePrivate;
+class QNodePropertyChangePrivate;
 
-class QT3DCORESHARED_EXPORT QScenePropertyChange : public QNodePropertyChangeBase
+class QT3DCORESHARED_EXPORT QNodePropertyChange : public QNodePropertyChangeBase
 {
 public:
-    QScenePropertyChange(ChangeFlag type, ObservableType observableType, QNodeId subjectId, Priority priority = Standard);
-    virtual ~QScenePropertyChange();
+    QNodePropertyChange(ChangeFlag type, ObservableType observableType, QNodeId subjectId, Priority priority = Standard);
+    virtual ~QNodePropertyChange();
 
     QVariant value() const;
     void setValue(const QVariant &value);
@@ -61,12 +61,12 @@ public:
     static void operator delete(void *ptr, size_t size);
 
 protected:
-    Q_DECLARE_PRIVATE(QScenePropertyChange)
-    QScenePropertyChange(QScenePropertyChangePrivate &dd);
-    QScenePropertyChange(QScenePropertyChangePrivate &dd, ChangeFlag type, ObservableType observableType, QNodeId subjectId, Priority priority = Standard);
+    Q_DECLARE_PRIVATE(QNodePropertyChange)
+    QNodePropertyChange(QNodePropertyChangePrivate &dd);
+    QNodePropertyChange(QNodePropertyChangePrivate &dd, ChangeFlag type, ObservableType observableType, QNodeId subjectId, Priority priority = Standard);
 };
 
-typedef QSharedPointer<QScenePropertyChange> QScenePropertyChangePtr;
+typedef QSharedPointer<QNodePropertyChange> QNodePropertyChangePtr;
 
 } // namespace Qt3DCore
 

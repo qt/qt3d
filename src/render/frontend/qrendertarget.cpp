@@ -40,7 +40,7 @@
 #include "qrendertarget.h"
 #include "qrendertarget_p.h"
 #include "qrendertargetoutput.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -87,7 +87,7 @@ void QRenderTarget::addOutput(QRenderTargetOutput *output)
             output->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            QNodePropertyChangePtr change(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
             change->setPropertyName("output");
             change->setValue(QVariant::fromValue(output->id()));
             d->notifyObservers(change);
@@ -100,7 +100,7 @@ void QRenderTarget::removeOutput(QRenderTargetOutput *output)
     Q_D(QRenderTarget);
 
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        QNodePropertyChangePtr change(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
         change->setPropertyName("output");
         change->setValue(QVariant::fromValue(output->id()));
         d->notifyObservers(change);

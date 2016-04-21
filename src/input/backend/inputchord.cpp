@@ -40,7 +40,7 @@
 #include "inputchord_p.h"
 #include <Qt3DInput/qinputchord.h>
 #include <Qt3DInput/private/qinputchord_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -108,7 +108,7 @@ void InputChord::setStartTime(qint64 time)
 
 void InputChord::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
+    Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
     if (e->type() == Qt3DCore::NodeUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("timeout")) {
             m_timeout = propertyChange->value().toInt();

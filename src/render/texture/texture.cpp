@@ -46,7 +46,7 @@
 #include <QOpenGLPixelTransferOptions>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qtexturedata.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/qabstracttexture_p.h>
@@ -552,7 +552,7 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     QMutexLocker lock(&m_lock);
     // We lock here so that we're sure the texture cannot be rebuilt while we are
     // modifying one of its properties
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
     switch (e->type()) {
     case NodeUpdated: {
         if (propertyChange->propertyName() == QByteArrayLiteral("width")) {

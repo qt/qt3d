@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "filterkey_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/private/qfilterkey_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -92,7 +92,7 @@ void FilterKey::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
     case NodeUpdated: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("value"))
             m_value = propertyChange->value();
         else if (propertyChange->propertyName() == QByteArrayLiteral("name"))

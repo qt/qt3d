@@ -108,7 +108,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.last().staticCast<Qt3DCore::QScenePropertyChange>();
+        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.last().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "recursive");
         QCOMPARE(change->value().toBool(), true);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
@@ -128,7 +128,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.last().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.last().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "recursive");
         QCOMPARE(change->value().toBool(), false);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);

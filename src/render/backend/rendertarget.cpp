@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include <Qt3DRender/private/rendertarget_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qrendertarget.h>
 #include <Qt3DRender/qrendertargetoutput.h>
 #include <QVariant>
@@ -86,7 +86,7 @@ QVector<Qt3DCore::QNodeId> RenderTarget::renderOutputs() const
 
 void RenderTarget::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
     if (e->type() == NodeAdded && propertyChange->propertyName() == QByteArrayLiteral("output"))
         appendRenderOutput(propertyChange->value().value<QNodeId>());
     else if (e->type() == NodeRemoved && propertyChange->propertyName() == QByteArrayLiteral("output"))

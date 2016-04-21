@@ -30,7 +30,7 @@
 #include <Qt3DRender/private/boundingvolumedebug_p.h>
 #include <Qt3DRender/private/qboundingvolumedebug_p.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include "testpostmanarbiter.h"
 #include "testrenderer.h"
 
@@ -91,7 +91,7 @@ private Q_SLOTS:
         QVERIFY(!boundingVolumeDebug.isRecursive());
 
         // WHEN
-        Qt3DCore::QScenePropertyChangePtr updateChange(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        Qt3DCore::QNodePropertyChangePtr updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(true);
         updateChange->setPropertyName("recursive");
         boundingVolumeDebug.sceneChangeEvent(updateChange);
@@ -113,7 +113,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.count(), 1);
-        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "radius");
         QCOMPARE(change->value().toFloat(), 1340.0f);
 
@@ -131,7 +131,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.count(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "center");
         QCOMPARE(change->value().value<QVector3D>(), QVector3D(1.0f, 2.0f, 3.0f));
 

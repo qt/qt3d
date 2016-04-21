@@ -44,7 +44,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <Qt3DRender/private/objloader_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 

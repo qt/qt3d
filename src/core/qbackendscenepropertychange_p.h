@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <private/qscenepropertychange_p.h>
+#include <private/qnodepropertychange_p.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -60,7 +60,7 @@ namespace Qt3DCore {
 
 class QBackendScenePropertyChange;
 
-class QBackendScenePropertyChangePrivate : public QScenePropertyChangePrivate
+class QBackendScenePropertyChangePrivate : public QNodePropertyChangePrivate
 {
 public:
     QBackendScenePropertyChangePrivate();

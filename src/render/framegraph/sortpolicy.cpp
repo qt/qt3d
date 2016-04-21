@@ -39,7 +39,7 @@
 
 #include "sortpolicy_p.h"
 #include <Qt3DRender/qsortcriterion.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,7 +63,7 @@ void SortPolicy::updateFromPeer(Qt3DCore::QNode *peer)
 
 void SortPolicy::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
     if (propertyChange->propertyName() == QByteArrayLiteral("sortCriterion")) {
         const QNodeId cId = propertyChange->value().value<QNodeId>();
         if (!cId.isNull()) {

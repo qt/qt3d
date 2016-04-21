@@ -39,7 +39,7 @@
 
 #include "statesetnode_p.h"
 
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qrenderstateset.h>
 #include <Qt3DRender/private/qrenderstateset_p.h>
 #include <Qt3DRender/private/genericstate_p.h>
@@ -81,7 +81,7 @@ void StateSetNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
 
 void StateSetNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
     switch (e->type()) {
     case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {

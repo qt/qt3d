@@ -39,7 +39,7 @@
 
 #include "qabstracttexture.h"
 #include "qabstracttexture_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qabstracttextureimage.h>
 
 QT_BEGIN_NAMESPACE
@@ -304,7 +304,7 @@ void QAbstractTexture::addTextureImage(QAbstractTextureImage *textureImage)
             textureImage->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            QNodePropertyChangePtr change(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
             change->setPropertyName("textureImage");
             change->setValue(QVariant::fromValue(textureImage->id()));
             d->notifyObservers(change);
@@ -319,7 +319,7 @@ void QAbstractTexture::removeTextureImage(QAbstractTextureImage *textureImage)
 {
     Q_D(QAbstractTexture);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        QNodePropertyChangePtr change(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
         change->setPropertyName("textureImage");
         change->setValue(QVariant::fromValue(textureImage->id()));
         d->notifyObservers(change);
@@ -407,21 +407,21 @@ void QAbstractTexture::setWrapMode(const QTextureWrapMode &wrapMode)
     Q_D(QAbstractTexture);
     if (d->m_wrapMode.x() != wrapMode.x()) {
         d->m_wrapMode.setX(wrapMode.x());
-        QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
+        QNodePropertyChangePtr e(new QNodePropertyChange(NodeUpdated, QSceneChange::Node, id()));
         e->setPropertyName("wrapModeX");
         e->setValue(static_cast<int>(d->m_wrapMode.x()));
         d->notifyObservers(e);
     }
     if (d->m_wrapMode.y() != wrapMode.y()) {
         d->m_wrapMode.setY(wrapMode.y());
-        QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
+        QNodePropertyChangePtr e(new QNodePropertyChange(NodeUpdated, QSceneChange::Node, id()));
         e->setPropertyName("wrapModeY");
         e->setValue(static_cast<int>(d->m_wrapMode.y()));
         d->notifyObservers(e);
     }
     if (d->m_wrapMode.z() != wrapMode.z()) {
         d->m_wrapMode.setZ(wrapMode.z());
-        QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
+        QNodePropertyChangePtr e(new QNodePropertyChange(NodeUpdated, QSceneChange::Node, id()));
         e->setPropertyName("wrapModeZ");
         e->setValue(static_cast<int>(d->m_wrapMode.z()));
         d->notifyObservers(e);

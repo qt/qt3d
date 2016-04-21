@@ -42,7 +42,7 @@
 
 #include <QtGui/qwindow.h>
 #include <QtGui/qoffscreensurface.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -175,8 +175,8 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
             if (window) {
                 QObject::connect(window, &QWindow::widthChanged, [=] (int width) {
                     if (d->m_changeArbiter != Q_NULLPTR) {
-                        Qt3DCore::QScenePropertyChangePtr change(
-                                    new Qt3DCore::QScenePropertyChange(
+                        Qt3DCore::QNodePropertyChangePtr change(
+                                    new Qt3DCore::QNodePropertyChange(
                                         Qt3DCore::NodeUpdated,
                                         Qt3DCore::QSceneChange::Node,
                                         id()));
@@ -188,8 +188,8 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
                 });
                 QObject::connect(window, &QWindow::heightChanged, [=] (int height) {
                     if (d->m_changeArbiter != Q_NULLPTR) {
-                        Qt3DCore::QScenePropertyChangePtr change(
-                                    new Qt3DCore::QScenePropertyChange(
+                        Qt3DCore::QNodePropertyChangePtr change(
+                                    new Qt3DCore::QNodePropertyChange(
                                         Qt3DCore::NodeUpdated,
                                         Qt3DCore::QSceneChange::Node,
                                         id()));

@@ -145,7 +145,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "renderState");
         QCOMPARE(change->subjectId(), stateSet->id());
         Qt3DCore::QNodePtr clonedState = change->value().value<Qt3DCore::QNodePtr>();
@@ -168,7 +168,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "renderState");
         QCOMPARE(change->subjectId(), stateSet->id());
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), state1->id());

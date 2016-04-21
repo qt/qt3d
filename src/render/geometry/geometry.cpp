@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "geometry_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/private/qgeometry_p.h>
@@ -95,7 +95,7 @@ void Geometry::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
     switch (e->type()) {
     case NodeAdded: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         QByteArray propertyName = propertyChange->propertyName();
 
         if (propertyName == QByteArrayLiteral("attribute")) {
@@ -106,7 +106,7 @@ void Geometry::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     case NodeRemoved: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         QByteArray propertyName = propertyChange->propertyName();
 
         if (propertyName == QByteArrayLiteral("attribute")) {
@@ -119,7 +119,7 @@ void Geometry::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     case NodeUpdated: {
         // Note: doesn't set dirtyness as this parameter changing doesn't need
         // a new VAO update.
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         QByteArray propertyName = propertyChange->propertyName();
 
         if (propertyName == QByteArrayLiteral("boundingVolumePositionAttribute")) {

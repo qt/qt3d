@@ -42,7 +42,7 @@
 #include "qtechniquefilter.h"
 #include <Qt3DRender/private/qtechniquefilter_p.h>
 #include <Qt3DRender/private/managers_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qparameter.h>
 
 QT_BEGIN_NAMESPACE
@@ -102,7 +102,7 @@ void TechniqueFilter::removeFilter(Qt3DCore::QNodeId criterionId)
 
 void TechniqueFilter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
 
     switch (e->type()) {
 

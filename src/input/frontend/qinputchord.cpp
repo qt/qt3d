@@ -40,7 +40,7 @@
 #include "qinputchord_p.h"
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -157,7 +157,7 @@ void QInputChord::addChord(QAbstractActionInput *input)
             input->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, id()));
+            Qt3DCore::QNodePropertyChangePtr change(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, id()));
             change->setPropertyName("chord");
             change->setValue(QVariant::fromValue(input->id()));
             d->notifyObservers(change);
@@ -176,7 +176,7 @@ void QInputChord::removeChord(QAbstractActionInput *input)
     if (d->m_chords.contains(input)) {
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, id()));
+            Qt3DCore::QNodePropertyChangePtr change(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, id()));
             change->setPropertyName("chord");
             change->setValue(QVariant::fromValue(input->id()));
             d->notifyObservers(change);

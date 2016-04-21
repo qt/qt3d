@@ -31,7 +31,7 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/qcomponentaddedchange.h>
 #include <Qt3DCore/qcomponentremovedchange.h>
 #include <Qt3DCore/private/qnodedestroyedchange_p.h>
@@ -374,7 +374,7 @@ void tst_Nodes::appendSingleChildNodeToNodeSceneExplicitParenting()
     QVERIFY(spy.events.first().wasLocked());
     QCOMPARE(node->children().count(), 1);
 
-    Qt3DCore::QScenePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QScenePropertyChange>();
+    Qt3DCore::QNodePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodePropertyChange>();
     QCOMPARE(event->type(), Qt3DCore::NodeCreated);
     QCOMPARE(event->propertyName(), "node");
     Qt3DCore::QNodePtr clone = event->value().value<Qt3DCore::QNodePtr>();
@@ -406,7 +406,7 @@ void tst_Nodes::appendSingleChildNodeToNodeSceneImplicitParenting()
     QVERIFY(spy.events.first().wasLocked());
     QCOMPARE(node->children().count(), 1);
 
-    Qt3DCore::QScenePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QScenePropertyChange>();
+    Qt3DCore::QNodePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodePropertyChange>();
     QCOMPARE(event->type(), Qt3DCore::NodeCreated);
     QCOMPARE(event->propertyName(), "node");
     Qt3DCore::QNodePtr clone = event->value().value<Qt3DCore::QNodePtr>();
@@ -450,7 +450,7 @@ void tst_Nodes::appendMultipleChildNodesToNodeScene()
     Q_FOREACH (const ObserverSpy::ChangeRecord &r, spy.events) {
 
         QVERIFY(r.wasLocked());
-        Qt3DCore::QScenePropertyChangePtr event = r.change().dynamicCast<Qt3DCore::QScenePropertyChange>();
+        Qt3DCore::QNodePropertyChangePtr event = r.change().dynamicCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(event->type(), Qt3DCore::NodeCreated);
         QCOMPARE(event->propertyName(), "node");
         Qt3DCore::QNodePtr clone = event->value().value<Qt3DCore::QNodePtr>();
@@ -493,7 +493,7 @@ void tst_Nodes::checkParentChangeToNull()
     QCOMPARE(spy.events.size(), 1);
 
     QVERIFY(spy.events.first().wasLocked());
-    Qt3DCore::QScenePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QScenePropertyChange>();
+    Qt3DCore::QNodePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodePropertyChange>();
     QCOMPARE(event->type(), Qt3DCore::NodeAboutToBeDeleted);
     QCOMPARE(event->propertyName(), "node");
     Qt3DCore::QNodePtr clone = event->value().value<Qt3DCore::QNodePtr>();
@@ -540,7 +540,7 @@ void tst_Nodes::checkParentChangeToOtherParent()
 
     // CHECK event 1 is  a Node Deleted event
     QVERIFY(spyParent1.events.first().wasLocked());
-    Qt3DCore::QScenePropertyChangePtr event = spyParent1.events.takeFirst().change().dynamicCast<Qt3DCore::QScenePropertyChange>();
+    Qt3DCore::QNodePropertyChangePtr event = spyParent1.events.takeFirst().change().dynamicCast<Qt3DCore::QNodePropertyChange>();
     QCOMPARE(event->type(), Qt3DCore::NodeAboutToBeDeleted);
     QCOMPARE(event->propertyName(), "node");
     Qt3DCore::QNodePtr clone = event->value().value<Qt3DCore::QNodePtr>();
@@ -549,7 +549,7 @@ void tst_Nodes::checkParentChangeToOtherParent()
 
     // CHECK event 2 is a Node Added event
     QVERIFY(spyParent2.events.last().wasLocked());
-    event = spyParent2.events.last().change().dynamicCast<Qt3DCore::QScenePropertyChange>();
+    event = spyParent2.events.last().change().dynamicCast<Qt3DCore::QNodePropertyChange>();
     QCOMPARE(event->type(), Qt3DCore::NodeCreated);
     QCOMPARE(event->propertyName(), "node");
     clone = event->value().value<Qt3DCore::QNodePtr>();
@@ -581,7 +581,7 @@ void tst_Nodes::removingSingleChildNodeFromNode()
 
     QCOMPARE(spy.events.size(), 1);
     QVERIFY(spy.events.first().wasLocked());
-    Qt3DCore::QScenePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QScenePropertyChange>();
+    Qt3DCore::QNodePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodePropertyChange>();
     QCOMPARE(event->type(), Qt3DCore::NodeAboutToBeDeleted);
     QCOMPARE(event->propertyName(), "node");
     Qt3DCore::QNodePtr clone = event->value().value<Qt3DCore::QNodePtr>();
@@ -621,7 +621,7 @@ void tst_Nodes::removingMultipleChildNodesFromNode()
     QCOMPARE(spy.events.size(), 10);
     Q_FOREACH (const ObserverSpy::ChangeRecord &r, spy.events) {
         QVERIFY(r.wasLocked());
-        Qt3DCore::QScenePropertyChangePtr event = r.change().dynamicCast<Qt3DCore::QScenePropertyChange>();
+        Qt3DCore::QNodePropertyChangePtr event = r.change().dynamicCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(event->type(), Qt3DCore::NodeAboutToBeDeleted);
         QCOMPARE(event->propertyName(), "node");
         Qt3DCore::QNodePtr clone = event->value().value<Qt3DCore::QNodePtr>();
@@ -776,7 +776,7 @@ void tst_Nodes::changeCustomProperty()
     // THEN
     QCOMPARE(spy.events.size(), 1);
     QVERIFY(spy.events.first().wasLocked());
-    Qt3DCore::QScenePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QScenePropertyChange>();
+    Qt3DCore::QNodePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodePropertyChange>();
     QCOMPARE(event->type(), Qt3DCore::NodeUpdated);
     QCOMPARE(event->propertyName(), "customProperty");
     QCOMPARE(event->value().toString(), QString("foo"));

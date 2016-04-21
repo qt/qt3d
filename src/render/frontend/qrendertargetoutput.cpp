@@ -39,7 +39,7 @@
 #include "qrendertargetoutput_p.h"
 #include "qrendertargetoutput.h"
 #include "qtexture.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 

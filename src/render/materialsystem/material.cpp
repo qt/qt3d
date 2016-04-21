@@ -47,7 +47,7 @@
 #include "qeffect.h"
 #include <Qt3DRender/private/qmaterial_p.h>
 
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 using namespace Qt3DCore;
 
@@ -92,7 +92,7 @@ void Material::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &cha
 
 void Material::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
 
     switch (e->type()) {
     case NodeUpdated: {

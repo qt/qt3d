@@ -31,7 +31,7 @@
 #include <Qt3DCore/private/qobservableinterface_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/private/qpostman_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/qscenechange.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
 #include <Qt3DCore/private/qscene_p.h>
@@ -64,42 +64,42 @@ public:
 
     void sendNodeAddedNotification()
     {
-        Qt3DCore::QScenePropertyChangePtr e(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, id()));
+        Qt3DCore::QNodePropertyChangePtr e(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, id()));
         e->setPropertyName("NodeAdded");
         Qt3DCore::QNodePrivate::get(this)->notifyObservers(e);
     }
 
     void sendNodeRemovedNotification()
     {
-        Qt3DCore::QScenePropertyChangePtr e(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, id()));
+        Qt3DCore::QNodePropertyChangePtr e(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, id()));
         e->setPropertyName("NodeRemoved");
         Qt3DCore::QNodePrivate::get(this)->notifyObservers(e);
     }
 
     void sendNodeUpdatedNotification()
     {
-        Qt3DCore::QScenePropertyChangePtr e(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, id()));
+        Qt3DCore::QNodePropertyChangePtr e(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, id()));
         e->setPropertyName("NodeUpdated");
         Qt3DCore::QNodePrivate::get(this)->notifyObservers(e);
     }
 
     void sendComponentAddedNotification()
     {
-        Qt3DCore::QScenePropertyChangePtr e(new Qt3DCore::QScenePropertyChange(Qt3DCore::ComponentAdded, Qt3DCore::QSceneChange::Node, id()));
+        Qt3DCore::QNodePropertyChangePtr e(new Qt3DCore::QNodePropertyChange(Qt3DCore::ComponentAdded, Qt3DCore::QSceneChange::Node, id()));
         e->setPropertyName("ComponentAdded");
         Qt3DCore::QNodePrivate::get(this)->notifyObservers(e);
     }
 
     void sendComponentRemovedNotification()
     {
-        Qt3DCore::QScenePropertyChangePtr e(new Qt3DCore::QScenePropertyChange(Qt3DCore::ComponentRemoved, Qt3DCore::QSceneChange::Node, id()));
+        Qt3DCore::QNodePropertyChangePtr e(new Qt3DCore::QNodePropertyChange(Qt3DCore::ComponentRemoved, Qt3DCore::QSceneChange::Node, id()));
         e->setPropertyName("ComponentRemoved");
         Qt3DCore::QNodePrivate::get(this)->notifyObservers(e);
     }
 
     void sendAllChangesNotification()
     {
-        Qt3DCore::QScenePropertyChangePtr e(new Qt3DCore::QScenePropertyChange(Qt3DCore::AllChanges, Qt3DCore::QSceneChange::Node, id()));
+        Qt3DCore::QNodePropertyChangePtr e(new Qt3DCore::QNodePropertyChange(Qt3DCore::AllChanges, Qt3DCore::QSceneChange::Node, id()));
         e->setPropertyName("AllChanges");
         Qt3DCore::QNodePrivate::get(this)->notifyObservers(e);
     }
