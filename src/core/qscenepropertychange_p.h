@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <private/qscenechange_p.h>
+#include <private/qnodepropertychangebase_p.h>
 #include <QVariant>
 #include <QMutex>
 
@@ -62,7 +62,7 @@ namespace Qt3DCore {
 class QScenePropertyChange;
 class QFrameAllocator;
 
-class QScenePropertyChangePrivate : public QSceneChangePrivate
+class QScenePropertyChangePrivate : public QNodePropertyChangeBasePrivate
 {
 public:
     QScenePropertyChangePrivate();
@@ -73,9 +73,6 @@ public:
 
     Q_DECLARE_PUBLIC(QScenePropertyChange)
 
-    /// FIXME: use QMetaProperty here once the NodeAboutToBeDeleted etc. change events
-    /// get refactored to their own QSceneChange subclass
-    const char *m_propertyName;
     QVariant m_value;
 
     static QFrameAllocator *m_allocator;

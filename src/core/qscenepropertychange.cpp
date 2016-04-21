@@ -49,7 +49,7 @@ QFrameAllocator *QScenePropertyChangePrivate::m_allocator = new QFrameAllocator(
 QMutex QScenePropertyChangePrivate::m_mutex;
 
 QScenePropertyChangePrivate::QScenePropertyChangePrivate()
-    : QSceneChangePrivate()
+    : QNodePropertyChangeBasePrivate()
 {
 }
 
@@ -98,7 +98,7 @@ QScenePropertyChange::QScenePropertyChange(ChangeFlag type, ObservableType obser
  * \internal
  */
 QScenePropertyChange::QScenePropertyChange(QScenePropertyChangePrivate &dd)
-    : QSceneChange(dd)
+    : QNodePropertyChangeBase(dd)
 {
 }
 
@@ -106,21 +106,12 @@ QScenePropertyChange::QScenePropertyChange(QScenePropertyChangePrivate &dd)
  * \internal
  */
 QScenePropertyChange::QScenePropertyChange(QScenePropertyChangePrivate &dd, ChangeFlag type, ObservableType observableType, QNodeId subjectId, QSceneChange::Priority priority)
-    : QSceneChange(dd, type, observableType, subjectId, priority)
+    : QNodePropertyChangeBase(dd, type, observableType, subjectId, priority)
 {
 }
 
 QScenePropertyChange::~QScenePropertyChange()
 {
-}
-
-/*!
- * \return name of the property.
- */
-const char *QScenePropertyChange::propertyName() const
-{
-    Q_D(const QScenePropertyChange);
-    return d->m_propertyName;
 }
 
 /*!
@@ -130,15 +121,6 @@ QVariant QScenePropertyChange::value() const
 {
     Q_D(const QScenePropertyChange);
     return d->m_value;
-}
-
-/*!
- * Sets the property change \a name.
- */
-void QScenePropertyChange::setPropertyName(const char *name)
-{
-    Q_D(QScenePropertyChange);
-    d->m_propertyName = name;
 }
 
 /*!

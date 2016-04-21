@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,39 +37,80 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QSCENEPROPERTYCHANGE_H
-#define QT3DCORE_QSCENEPROPERTYCHANGE_H
-
-#include <Qt3DCore/qnodepropertychangebase.h>
+#include "qnodepropertychangebase.h"
+#include "qnodepropertychangebase_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QScenePropertyChangePrivate;
-
-class QT3DCORESHARED_EXPORT QScenePropertyChange : public QNodePropertyChangeBase
+QNodePropertyChangeBasePrivate::QNodePropertyChangeBasePrivate()
+    : QSceneChangePrivate()
 {
-public:
-    QScenePropertyChange(ChangeFlag type, ObservableType observableType, QNodeId subjectId, Priority priority = Standard);
-    virtual ~QScenePropertyChange();
+}
 
-    QVariant value() const;
-    void setValue(const QVariant &value);
+QNodePropertyChangeBasePrivate::~QNodePropertyChangeBasePrivate()
+{
+}
 
-    static void *operator new(size_t size);
-    static void operator delete(void *ptr, size_t size);
 
-protected:
-    Q_DECLARE_PRIVATE(QScenePropertyChange)
-    QScenePropertyChange(QScenePropertyChangePrivate &dd);
-    QScenePropertyChange(QScenePropertyChangePrivate &dd, ChangeFlag type, ObservableType observableType, QNodeId subjectId, Priority priority = Standard);
-};
+/*!
+ * \class Qt3DCore::QNodePropertyChangeBase
+ * \inmodule Qt3DCore
+ *
+ * TODO
+ */
 
-typedef QSharedPointer<QScenePropertyChange> QScenePropertyChangePtr;
+/*!
+ * \typedef Qt3DCore::QNodePropertyChangeBasePtr
+ * \relates Qt3DCore::QNodePropertyChangeBase
+ *
+ * A shared pointer for QNodePropertyChangeBase.
+ */
+
+/*!
+ * Constructs a new QNodePropertyChangeBase with \a type, \a observableType, \a subjectId, and
+ * \a priority.
+ */
+QNodePropertyChangeBase::QNodePropertyChangeBase(ChangeFlag type, ObservableType observableType, QNodeId subjectId, QSceneChange::Priority priority)
+    : QSceneChange(*new QNodePropertyChangeBasePrivate, type, observableType, subjectId, priority)
+{
+}
+
+/*! \internal */
+QNodePropertyChangeBase::QNodePropertyChangeBase(QNodePropertyChangeBasePrivate &dd)
+    : QSceneChange(dd)
+{
+}
+
+/*! \internal */
+QNodePropertyChangeBase::QNodePropertyChangeBase(QNodePropertyChangeBasePrivate &dd, ChangeFlag type, ObservableType observableType, QNodeId subjectId, QSceneChange::Priority priority)
+    : QSceneChange(dd, type, observableType, subjectId, priority)
+{
+}
+
+QNodePropertyChangeBase::~QNodePropertyChangeBase()
+{
+}
+
+/*!
+ * \return name of the property.
+ */
+const char *QNodePropertyChangeBase::propertyName() const
+{
+    Q_D(const QNodePropertyChangeBase);
+    return d->m_propertyName;
+}
+
+/*!
+ * Sets the property change \a name.
+ */
+void QNodePropertyChangeBase::setPropertyName(const char *name)
+{
+    Q_D(QNodePropertyChangeBase);
+    d->m_propertyName = name;
+}
 
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
-
-#endif // QT3DCORE_QSCENEPROPERTYCHANGE_H

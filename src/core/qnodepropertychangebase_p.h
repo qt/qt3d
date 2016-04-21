@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,39 +37,45 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QSCENEPROPERTYCHANGE_H
-#define QT3DCORE_QSCENEPROPERTYCHANGE_H
+#ifndef QNODEPROPERTYCHANGEBASE_P_H
+#define QNODEPROPERTYCHANGEBASE_P_H
 
-#include <Qt3DCore/qnodepropertychangebase.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <private/qscenechange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QScenePropertyChangePrivate;
+class QScenePropertyChange;
+class QFrameAllocator;
 
-class QT3DCORESHARED_EXPORT QScenePropertyChange : public QNodePropertyChangeBase
+class QNodePropertyChangeBasePrivate : public QSceneChangePrivate
 {
 public:
-    QScenePropertyChange(ChangeFlag type, ObservableType observableType, QNodeId subjectId, Priority priority = Standard);
-    virtual ~QScenePropertyChange();
+    QNodePropertyChangeBasePrivate();
+    virtual ~QNodePropertyChangeBasePrivate();
 
-    QVariant value() const;
-    void setValue(const QVariant &value);
+    Q_DECLARE_PUBLIC(QNodePropertyChangeBase)
 
-    static void *operator new(size_t size);
-    static void operator delete(void *ptr, size_t size);
-
-protected:
-    Q_DECLARE_PRIVATE(QScenePropertyChange)
-    QScenePropertyChange(QScenePropertyChangePrivate &dd);
-    QScenePropertyChange(QScenePropertyChangePrivate &dd, ChangeFlag type, ObservableType observableType, QNodeId subjectId, Priority priority = Standard);
+    /// FIXME: use QMetaProperty here once the NodeAboutToBeDeleted etc. change events
+    /// get refactored to their own QSceneChange subclass
+    const char *m_propertyName;
 };
 
-typedef QSharedPointer<QScenePropertyChange> QScenePropertyChangePtr;
-
-} // namespace Qt3DCore
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QSCENEPROPERTYCHANGE_H
+#endif // QNODEPROPERTYCHANGEBASE_P_H
+

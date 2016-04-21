@@ -39,7 +39,9 @@ HEADERS += \
     $$PWD/qcomponentaddedchange.h \
     $$PWD/qcomponentaddedchange_p.h \
     $$PWD/qcomponentremovedchange.h \
-    $$PWD/qcomponentremovedchange_p.h
+    $$PWD/qcomponentremovedchange_p.h \
+    $$PWD/qnodepropertychangebase.h \
+    $$PWD/qnodepropertychangebase_p.h
 
 SOURCES += \
     $$PWD/qtickclock.cpp \
@@ -60,3 +62,4 @@ SOURCES += \
     $$PWD/qnodedestroyedchange.cpp \
     $$PWD/qcomponentaddedchange.cpp \
     $$PWD/qcomponentremovedchange.cpp \
+    $$PWD/qnodepropertychangebase.cpp

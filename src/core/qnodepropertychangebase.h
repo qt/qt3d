@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,39 +37,36 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QSCENEPROPERTYCHANGE_H
-#define QT3DCORE_QSCENEPROPERTYCHANGE_H
+#ifndef QT3DCORE_QNODEPROPERTYCHANGEBASE_H
+#define QT3DCORE_QNODEPROPERTYCHANGEBASE_H
 
-#include <Qt3DCore/qnodepropertychangebase.h>
+#include <Qt3DCore/qscenechange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QScenePropertyChangePrivate;
+class QNodePropertyChangeBasePrivate;
 
-class QT3DCORESHARED_EXPORT QScenePropertyChange : public QNodePropertyChangeBase
+class QT3DCORESHARED_EXPORT QNodePropertyChangeBase : public QSceneChange
 {
 public:
-    QScenePropertyChange(ChangeFlag type, ObservableType observableType, QNodeId subjectId, Priority priority = Standard);
-    virtual ~QScenePropertyChange();
+    QNodePropertyChangeBase(ChangeFlag type, ObservableType observableType, QNodeId subjectId, Priority priority = Standard);
+    virtual ~QNodePropertyChangeBase();
 
-    QVariant value() const;
-    void setValue(const QVariant &value);
-
-    static void *operator new(size_t size);
-    static void operator delete(void *ptr, size_t size);
+    const char *propertyName() const;
+    void setPropertyName(const char *name);
 
 protected:
-    Q_DECLARE_PRIVATE(QScenePropertyChange)
-    QScenePropertyChange(QScenePropertyChangePrivate &dd);
-    QScenePropertyChange(QScenePropertyChangePrivate &dd, ChangeFlag type, ObservableType observableType, QNodeId subjectId, Priority priority = Standard);
+    Q_DECLARE_PRIVATE(QNodePropertyChangeBase)
+    QNodePropertyChangeBase(QNodePropertyChangeBasePrivate &dd);
+    QNodePropertyChangeBase(QNodePropertyChangeBasePrivate &dd, ChangeFlag type, ObservableType observableType, QNodeId subjectId, Priority priority = Standard);
 };
 
-typedef QSharedPointer<QScenePropertyChange> QScenePropertyChangePtr;
+typedef QSharedPointer<QNodePropertyChangeBase> QNodePropertyChangeBasePtr;
 
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QSCENEPROPERTYCHANGE_H
+#endif // QT3DCORE_QNODEPROPERTYCHANGEBASE_H
