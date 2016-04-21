@@ -137,13 +137,13 @@ GraphicsContext::GraphicsContext()
     , m_material(Q_NULLPTR)
     , m_activeFBO(0)
     , m_defaultFBO(0)
+    , m_boundArrayBuffer(nullptr)
     , m_stateSet(Q_NULLPTR)
     , m_renderer(Q_NULLPTR)
     , m_contextInfo(new QGraphicsApiFilter())
     , m_uboTempArray(QByteArray(1024, 0))
     , m_supportsVAO(true)
     , m_debugLogger(Q_NULLPTR)
-    , m_boundArrayBuffer(nullptr)
 {
     static_contexts[m_id] = this;
 }
