@@ -136,7 +136,7 @@ void TextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("face")) {
             m_face = static_cast<QAbstractTexture::CubeMapFace>(propertyChange->value().toInt());
             m_dirty = true;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("dataFunctor")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("dataGenerator")) {
             m_generator = propertyChange->value().value<QTextureImageDataGeneratorPtr>();
             m_dirty = true;
         }
