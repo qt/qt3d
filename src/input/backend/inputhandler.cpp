@@ -99,23 +99,21 @@ void InputHandler::registerEventFilters(QEventFilterService *service)
 void InputHandler::appendKeyEvent(const QT_PREPEND_NAMESPACE(QKeyEvent) &event)
 {
     QMutexLocker lock(&m_mutex);
-    m_pendingEvents.append(event);
+    m_pendingKeyEvents.append(event);
 }
 
 // Called by QInputASpect::jobsToExecute (aspectThread)
 QList<QT_PREPEND_NAMESPACE(QKeyEvent)> InputHandler::pendingKeyEvents()
 {
     QMutexLocker lock(&m_mutex);
-    QList<QT_PREPEND_NAMESPACE(QKeyEvent)> pendingEvents = m_pendingEvents;
-    m_pendingEvents.clear();
-    return pendingEvents;
+    return std::move(m_pendingKeyEvents);
 }
 
 // Called by QInputASpect::jobsToExecute (aspectThread)
 void InputHandler::clearPendingKeyEvents()
 {
     QMutexLocker lock(&m_mutex);
-    m_pendingEvents.clear();
+    m_pendingKeyEvents.clear();
 }
 
 void InputHandler::appendMouseEvent(const QT_PREPEND_NAMESPACE(QMouseEvent) &event)
@@ -127,9 +125,7 @@ void InputHandler::appendMouseEvent(const QT_PREPEND_NAMESPACE(QMouseEvent) &eve
 QList<QT_PREPEND_NAMESPACE(QMouseEvent)> InputHandler::pendingMouseEvents()
 {
     QMutexLocker lock(&m_mutex);
-    QList<QT_PREPEND_NAMESPACE(QMouseEvent)> pendingEvents = m_pendingMouseEvents;
-    m_pendingMouseEvents.clear();
-    return pendingEvents;
+    return std::move(m_pendingMouseEvents);
 }
 
 void InputHandler::clearPendingMouseEvents()
@@ -137,6 +133,25 @@ void InputHandler::clearPendingMouseEvents()
     QMutexLocker lock(&m_mutex);
     m_pendingMouseEvents.clear();
 }
+
+void InputHandler::appendWheelEvent(const QT_PREPEND_NAMESPACE(QWheelEvent) &event)
+{
+    QMutexLocker lock(&m_mutex);
+    m_pendingWheelEvents.append(event);
+}
+
+QList<QT_PREPEND_NAMESPACE (QWheelEvent)> Qt3DInput::Input::InputHandler::pendingWheelEvents()
+{
+    QMutexLocker lock(&m_mutex);
+    return std::move(m_pendingWheelEvents);
+}
+
+void InputHandler::clearPendingWheelEvents()
+{
+    QMutexLocker lock(&m_mutex);
+    m_pendingWheelEvents.clear();
+}
+
 
 void InputHandler::appendKeyboardDevice(HKeyboardDevice device)
 {
@@ -204,16 +219,20 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::keyboardJobs()
 QVector<Qt3DCore::QAspectJobPtr> InputHandler::mouseJobs()
 {
     QVector<QAspectJobPtr> jobs;
-    const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> events = pendingMouseEvents();
+    const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> mouseEvents = pendingMouseEvents();
+    const QList<QT_PREPEND_NAMESPACE(QWheelEvent)> wheelEvents = pendingWheelEvents();
 
     Q_FOREACH (const HMouseDevice cHandle, m_activeMouseDevices) {
         MouseDevice *controller = m_mouseDeviceManager->data(cHandle);
 
-        controller->updateMouseEvents(events);
+        controller->updateMouseEvents(mouseEvents);
         // Event dispacthing job
-        if (!events.isEmpty()) {
-            Q_FOREACH (QNodeId input, controller->mouseInputs()) {
-                MouseEventDispatcherJob *job = new MouseEventDispatcherJob(input, events);
+        if (!mouseEvents.isEmpty() || !wheelEvents.empty()) {
+            const QVector<Qt3DCore::QNodeId> mouseInputs = controller->mouseInputs();
+            for (QNodeId input : mouseInputs) {
+                MouseEventDispatcherJob *job = new MouseEventDispatcherJob(input,
+                                                                           mouseEvents,
+                                                                           wheelEvents);
                 job->setInputHandler(this);
                 jobs.append(QAspectJobPtr(job));
             }

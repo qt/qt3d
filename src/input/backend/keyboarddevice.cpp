@@ -440,7 +440,7 @@ void KeyboardDevice::setButtonValue(int key, bool value)
 
 void KeyboardDevice::updateKeyEvents(const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> &events)
 {
-    Q_FOREACH (const QT_PREPEND_NAMESPACE(QKeyEvent) &e, events)
+    for (const QT_PREPEND_NAMESPACE(QKeyEvent) &e : events)
         setButtonValue(e.key(), e.type() == QT_PREPEND_NAMESPACE(QKeyEvent)::KeyPress ? true : false);
 }
 

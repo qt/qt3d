@@ -64,7 +64,7 @@ void KeyEventDispatcherJob::run()
 {
     KeyboardHandler *input = m_inputHandler->keyboardInputManager()->lookupResource(m_keyboardHandler);
     if (input)
-        Q_FOREACH (const QT_PREPEND_NAMESPACE(QKeyEvent) &e, m_events) {
+        for (const QT_PREPEND_NAMESPACE(QKeyEvent) &e : qAsConst(m_events)) {
             // Send events to frontend
             input->keyEvent(QKeyEventPtr(new QKeyEvent(e)));
         }

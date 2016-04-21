@@ -113,9 +113,13 @@ public:
     QList<QT_PREPEND_NAMESPACE(QKeyEvent)> pendingKeyEvents();
     void clearPendingKeyEvents();
 
-    void appendMouseEvent(const QMouseEvent &event);
-    QList<QMouseEvent> pendingMouseEvents();
+    void appendMouseEvent(const QT_PREPEND_NAMESPACE(QMouseEvent) &event);
+    QList<QT_PREPEND_NAMESPACE(QMouseEvent)> pendingMouseEvents();
     void clearPendingMouseEvents();
+
+    void appendWheelEvent(const QT_PREPEND_NAMESPACE(QWheelEvent) &event);
+    QList<QT_PREPEND_NAMESPACE(QWheelEvent)> pendingWheelEvents();
+    void clearPendingWheelEvents();
 
     void appendKeyboardDevice(HKeyboardDevice device);
     void removeKeyboardDevice(HKeyboardDevice device);
@@ -148,9 +152,11 @@ private:
     QVector<HMouseDevice> m_activeMouseDevices;
     QVector<HGenericDeviceBackendNode> m_activeGenericPhysicalDevices;
     KeyboardEventFilter *m_keyboardEventFilter;
-    QList<QT_PREPEND_NAMESPACE(QKeyEvent)> m_pendingEvents;
     MouseEventFilter *m_mouseEventFilter;
-    QList<QMouseEvent> m_pendingMouseEvents;
+
+    QList<QT_PREPEND_NAMESPACE(QKeyEvent)> m_pendingKeyEvents;
+    QList<QT_PREPEND_NAMESPACE(QMouseEvent)> m_pendingMouseEvents;
+    QList<QT_PREPEND_NAMESPACE(QWheelEvent)> m_pendingWheelEvents;
     mutable QMutex m_mutex;
 
     AxisManager *m_axisManager;
