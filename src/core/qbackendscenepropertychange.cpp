@@ -55,7 +55,7 @@ namespace Qt3DCore {
  */
 
 QBackendScenePropertyChangePrivate::QBackendScenePropertyChangePrivate()
-    : QNodePropertyChangePrivate()
+    : QNodePropertyChangeBasePrivate()
 {
 }
 
@@ -63,13 +63,31 @@ QBackendScenePropertyChangePrivate::~QBackendScenePropertyChangePrivate()
 {
 }
 
-QBackendScenePropertyChange::QBackendScenePropertyChange(ChangeFlag type, QNodeId subjectId, QSceneChange::Priority priority)
-    : QNodePropertyChange(*new QBackendScenePropertyChangePrivate, type, Observable, subjectId, priority)
+QBackendScenePropertyChange::QBackendScenePropertyChange(QNodeId subjectId, QSceneChange::Priority priority)
+    : QNodePropertyChangeBase(*new QBackendScenePropertyChangePrivate, NodeUpdated, Observable, subjectId, priority)
 {
 }
 
 QBackendScenePropertyChange::~QBackendScenePropertyChange()
 {
+}
+
+/*!
+ * \return property value.
+ */
+QVariant QBackendScenePropertyChange::value() const
+{
+    Q_D(const QBackendScenePropertyChange);
+    return d->m_value;
+}
+
+/*!
+ * Set the property change \a value.
+ */
+void QBackendScenePropertyChange::setValue(const QVariant &value)
+{
+    Q_D(QBackendScenePropertyChange);
+    d->m_value = value;
 }
 
 // TO DO get rid off setTargetNode, use the subject instead ??
@@ -102,15 +120,16 @@ QNodeId QBackendScenePropertyChange::targetNode() const
  * \internal
  */
 QBackendScenePropertyChange::QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd)
-    : QNodePropertyChange(dd)
+    : QNodePropertyChangeBase(dd)
 {
 }
 
 /*!
  * \internal
  */
-QBackendScenePropertyChange::QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd, ChangeFlag type, QNodeId subjectId, QSceneChange::Priority priority)
-    : QNodePropertyChange(dd, type, Observable, subjectId, priority)
+QBackendScenePropertyChange::QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd,
+                                                         QNodeId subjectId, QSceneChange::Priority priority)
+    : QNodePropertyChangeBase(dd, NodeUpdated, Observable, subjectId, priority)
 {
 }
 

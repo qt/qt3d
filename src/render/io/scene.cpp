@@ -100,7 +100,7 @@ void Scene::setSceneSubtree(Qt3DCore::QEntity *subTree)
     subTree->moveToThread(appThread);
 
     // Send the new subtree to the frontend
-    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerId()));
+    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(peerId()));
     e->setPropertyName("scene");
     e->setValue(QVariant::fromValue(subTree));
     e->setTargetNode(peerId());

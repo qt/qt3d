@@ -88,7 +88,7 @@ void Buffer::executeFunctor()
     m_data = (*m_functor)();
     if (m_syncData) {
         // Send data back to the frontend
-        QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerId()));
+        QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(peerId()));
         e->setPropertyName("data");
         e->setTargetNode(peerId());
         e->setValue(QVariant::fromValue(m_data));

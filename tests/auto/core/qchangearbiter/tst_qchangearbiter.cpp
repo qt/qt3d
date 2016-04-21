@@ -179,7 +179,7 @@ public:
         QVERIFY(!e.isNull());
         m_lastChanges << e;
         // Save reply to be sent to the frontend
-        m_reply.reset(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, e->subjectId()));
+        m_reply.reset(new Qt3DCore::QBackendScenePropertyChange(e->subjectId()));
         m_reply->setTargetNode(e->subjectId());
         m_reply->setPropertyName("Reply");
     }

@@ -40,7 +40,7 @@
 #ifndef QT3DCORE_QBACKENDSCENEPROPERTYCHANGE_H
 #define QT3DCORE_QBACKENDSCENEPROPERTYCHANGE_H
 
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodepropertychangebase.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -50,12 +50,14 @@ namespace Qt3DCore {
 class QBackendScenePropertyChangePrivate;
 class QBackendNode;
 
-class QT3DCORESHARED_EXPORT QBackendScenePropertyChange : public QNodePropertyChange
+class QT3DCORESHARED_EXPORT QBackendScenePropertyChange : public QNodePropertyChangeBase
 {
 public:
-    QBackendScenePropertyChange(ChangeFlag type, QNodeId subjectId,
-                                Priority priority = Standard);
+    QBackendScenePropertyChange(QNodeId subjectId, Priority priority = Standard);
     virtual ~QBackendScenePropertyChange();
+
+    QVariant value() const;
+    void setValue(const QVariant &value);
 
     void setTargetNode(QNodeId id);
     QNodeId targetNode() const;
@@ -63,7 +65,8 @@ public:
 protected:
     Q_DECLARE_PRIVATE(QBackendScenePropertyChange)
     QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd);
-    QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd, ChangeFlag type, QNodeId subjectId, Priority priority = Standard);
+    QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd,
+                                QNodeId subjectId, Priority priority = Standard);
 };
 
 typedef QSharedPointer<QBackendScenePropertyChange> QBackendScenePropertyChangePtr;

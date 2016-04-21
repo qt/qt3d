@@ -180,7 +180,7 @@ void TextureImage::setTextureDataHandle(HTextureData handle)
 void TextureImage::setStatus(QTextureImage::Status status)
 {
     // Notify the frontend
-    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerId()));
+    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(peerId()));
     e->setPropertyName("status");
     e->setValue(status);
     e->setTargetNode(peerId());

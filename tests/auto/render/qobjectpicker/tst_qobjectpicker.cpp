@@ -164,7 +164,7 @@ private Q_SLOTS:
 
         // WHEN
         // Create Backend Change and distribute it to frontend node
-        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, objectPicker->id()));
+        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(objectPicker->id()));
         e->setPropertyName(propertyName.constData());
         if (requiresEvent)
         {

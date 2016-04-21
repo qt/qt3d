@@ -134,7 +134,7 @@ bool ObjectPicker::isDragEnabled() const
 
 void ObjectPicker::onClicked(QPickEventPtr event)
 {
-    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerId()));
+    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(peerId()));
     e->setPropertyName("clicked");
     e->setTargetNode(peerId());
     e->setValue(QVariant::fromValue(event));
@@ -143,7 +143,7 @@ void ObjectPicker::onClicked(QPickEventPtr event)
 
 void ObjectPicker::onMoved(QPickEventPtr event)
 {
-    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerId()));
+    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(peerId()));
     e->setPropertyName("moved");
     e->setTargetNode(peerId());
     e->setValue(QVariant::fromValue(event));
@@ -152,7 +152,7 @@ void ObjectPicker::onMoved(QPickEventPtr event)
 
 void ObjectPicker::onPressed(QPickEventPtr event)
 {
-    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerId()));
+    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(peerId()));
     e->setPropertyName("pressed");
     e->setTargetNode(peerId());
     e->setValue(QVariant::fromValue(event));
@@ -162,7 +162,7 @@ void ObjectPicker::onPressed(QPickEventPtr event)
 
 void ObjectPicker::onReleased(QPickEventPtr event)
 {
-    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerId()));
+    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(peerId()));
     e->setPropertyName("released");
     e->setTargetNode(peerId());
     e->setValue(QVariant::fromValue(event));
@@ -172,7 +172,7 @@ void ObjectPicker::onReleased(QPickEventPtr event)
 
 void ObjectPicker::onEntered()
 {
-    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerId()));
+    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(peerId()));
     e->setPropertyName("entered");
     e->setTargetNode(peerId());
     notifyObservers(e);
@@ -180,7 +180,7 @@ void ObjectPicker::onEntered()
 
 void ObjectPicker::onExited()
 {
-    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerId()));
+    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(peerId()));
     e->setPropertyName("exited");
     e->setTargetNode(peerId());
     notifyObservers(e);

@@ -215,7 +215,7 @@ void GeometryRenderer::executeFunctor()
     Q_ASSERT(m_geometryFactory);
     QGeometry *geometry = (*m_geometryFactory)();
 
-    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerId()));
+    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(peerId()));
     e->setPropertyName("geometry");
     // The Frontend element has to perform the clone
     // So that the objects are created in the main thread

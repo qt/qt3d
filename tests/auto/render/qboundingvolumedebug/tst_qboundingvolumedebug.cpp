@@ -150,7 +150,7 @@ private Q_SLOTS:
 
         // WHEN
         // Create Backend Change and distribute it to frontend node
-        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, bvD->id()));
+        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(bvD->id()));
         e->setPropertyName("center");
         bvD->sceneChangeEvent(e);
         QCoreApplication::processEvents();
