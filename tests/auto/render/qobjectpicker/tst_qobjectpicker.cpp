@@ -30,7 +30,7 @@
 #include <QtTest/QSignalSpy>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickEvent>
 
@@ -164,7 +164,7 @@ private Q_SLOTS:
 
         // WHEN
         // Create Backend Change and distribute it to frontend node
-        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(objectPicker->id()));
+        Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(objectPicker->id()));
         e->setPropertyName(propertyName.constData());
         if (requiresEvent)
         {

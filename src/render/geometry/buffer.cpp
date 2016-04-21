@@ -39,7 +39,7 @@
 
 #include "buffer_p.h"
 #include <Qt3DCore/qnodepropertychange.h>
-#include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/qbuffer_p.h>
 
@@ -88,7 +88,7 @@ void Buffer::executeFunctor()
     m_data = (*m_functor)();
     if (m_syncData) {
         // Send data back to the frontend
-        QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(peerId()));
+        QBackendNodePropertyChangePtr e(new QBackendNodePropertyChange(peerId()));
         e->setPropertyName("data");
         e->setTargetNode(peerId());
         e->setValue(QVariant::fromValue(m_data));

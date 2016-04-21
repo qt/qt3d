@@ -39,7 +39,7 @@
 
 #include "boundingvolumedebug_p.h"
 #include <Qt3DRender/private/qboundingvolumedebug_p.h>
-#include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -91,7 +91,7 @@ void BoundingVolumeDebug::setRadius(float radius)
 {
     if (m_radius != radius) {
         m_radius = radius;
-        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(peerId()));
+        Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(peerId()));
         e->setPropertyName("radius");
         e->setTargetNode(peerId());
         e->setValue(QVariant(radius));
@@ -103,7 +103,7 @@ void BoundingVolumeDebug::setCenter(const QVector3D &center)
 {
     if (m_center != center) {
         m_center = center;
-        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(peerId()));
+        Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(peerId()));
         e->setPropertyName("center");
         e->setTargetNode(peerId());
         e->setValue(QVariant::fromValue(center));

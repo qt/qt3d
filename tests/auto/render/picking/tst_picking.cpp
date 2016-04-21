@@ -40,7 +40,7 @@
 #include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/qspheregeometry.h>
 #include <Qt3DRender/qpickevent.h>
-#include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
 
 using namespace Qt3DCore;
 using namespace Qt3DRender;
@@ -144,7 +144,7 @@ private Q_SLOTS:
         Qt3DRender::QPickEventPtr event(new Qt3DRender::QPickEvent());
         QVariant v;
         v.setValue<Qt3DRender::QPickEventPtr>(event);
-        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(child11.id()));
+        Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(child11.id()));
         e->setPropertyName("pressed");
         e->setValue(v);
         child11.picker->sceneChangeEvent(e);
@@ -192,7 +192,7 @@ private Q_SLOTS:
         Qt3DRender::QPickEventPtr event(new Qt3DRender::QPickEvent());
         QVariant v;
         v.setValue<Qt3DRender::QPickEventPtr>(event);
-        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(child11.id()));
+        Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(child11.id()));
         e->setPropertyName("pressed");
         e->setValue(v);
         child11.picker->sceneChangeEvent(e);
@@ -236,7 +236,7 @@ private Q_SLOTS:
         Qt3DRender::QPickEventPtr event(new Qt3DRender::QPickEvent());
         QVariant v;
         v.setValue<Qt3DRender::QPickEventPtr>(event);
-        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(child11.id()));
+        Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(child11.id()));
         e->setPropertyName("clicked");
         e->setValue(v);
         child11.picker->sceneChangeEvent(e);

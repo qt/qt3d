@@ -41,7 +41,7 @@
 #include "qmousehandler_p.h"
 #include "qmousedevice.h"
 #include "qmouseevent.h"
-#include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -186,7 +186,7 @@ void QMouseHandler::copy(const QNode *ref)
 void QMouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QMouseHandler);
-    QBackendScenePropertyChangePtr e = qSharedPointerCast<QBackendScenePropertyChange>(change);
+    QBackendNodePropertyChangePtr e = qSharedPointerCast<QBackendNodePropertyChange>(change);
     if (e->type() == NodeUpdated) {
         if (e->propertyName() == QByteArrayLiteral("mouse")) {
             QMouseEventPtr ev = e->value().value<QMouseEventPtr>();

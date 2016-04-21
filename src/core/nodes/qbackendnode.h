@@ -99,7 +99,7 @@ private:
     void setPeerId(QNodeId id) Q_DECL_NOEXCEPT;
     virtual void initializeFromPeer(const QNodeCreatedChangeBasePtr &change);
 
-    friend class QBackendScenePropertyChange;
+    friend class QBackendNodePropertyChange;
     friend class QAbstractAspectPrivate;
 };
 

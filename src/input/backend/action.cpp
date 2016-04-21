@@ -42,7 +42,7 @@
 #include <Qt3DInput/qabstractactioninput.h>
 #include <Qt3DInput/private/qaction_p.h>
 #include <Qt3DCore/qnodepropertychange.h>
-#include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -83,7 +83,7 @@ void Action::setActionTriggered(bool actionTriggered)
         m_actionTriggered = actionTriggered;
 
         // Send change to the frontend
-        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(peerId()));
+        Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(peerId()));
         e->setTargetNode(peerId());
         e->setPropertyName("active");
         e->setValue(m_actionTriggered);

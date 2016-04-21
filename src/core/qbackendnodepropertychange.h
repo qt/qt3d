@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QBACKENDSCENEPROPERTYCHANGE_H
-#define QT3DCORE_QBACKENDSCENEPROPERTYCHANGE_H
+#ifndef QT3DCORE_QBACKENDNODEPROPERTYCHANGE_H
+#define QT3DCORE_QBACKENDNODEPROPERTYCHANGE_H
 
 #include <Qt3DCore/qnodepropertychangebase.h>
 #include <Qt3DCore/qnodeid.h>
@@ -47,14 +47,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QBackendScenePropertyChangePrivate;
+class QBackendNodePropertyChangePrivate;
 class QBackendNode;
 
-class QT3DCORESHARED_EXPORT QBackendScenePropertyChange : public QNodePropertyChangeBase
+class QT3DCORESHARED_EXPORT QBackendNodePropertyChange : public QNodePropertyChangeBase
 {
 public:
-    QBackendScenePropertyChange(QNodeId subjectId, Priority priority = Standard);
-    virtual ~QBackendScenePropertyChange();
+    QBackendNodePropertyChange(QNodeId subjectId, Priority priority = Standard);
+    virtual ~QBackendNodePropertyChange();
 
     QVariant value() const;
     void setValue(const QVariant &value);
@@ -63,17 +63,17 @@ public:
     QNodeId targetNode() const;
 
 protected:
-    Q_DECLARE_PRIVATE(QBackendScenePropertyChange)
-    QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd);
-    QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd,
-                                QNodeId subjectId, Priority priority = Standard);
+    Q_DECLARE_PRIVATE(QBackendNodePropertyChange)
+    QBackendNodePropertyChange(QBackendNodePropertyChangePrivate &dd);
+    QBackendNodePropertyChange(QBackendNodePropertyChangePrivate &dd,
+                               QNodeId subjectId, Priority priority = Standard);
 };
 
-typedef QSharedPointer<QBackendScenePropertyChange> QBackendScenePropertyChangePtr;
+typedef QSharedPointer<QBackendNodePropertyChange> QBackendNodePropertyChangePtr;
 
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QBACKENDSCENEPROPERTYCHANGE_H
+#endif // QT3DCORE_QBACKENDNODEPROPERTYCHANGE_H

@@ -40,7 +40,7 @@
 #include "qobjectpicker.h"
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/private/qcomponent_p.h>
-#include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DRender/qpickevent.h>
 
 QT_BEGIN_NAMESPACE
@@ -202,7 +202,7 @@ void QObjectPicker::copy(const QNode *ref)
 void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QObjectPicker);
-    Qt3DCore::QBackendScenePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QBackendScenePropertyChange>(change);
+    Qt3DCore::QBackendNodePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QBackendNodePropertyChange>(change);
     if (e->type() == Qt3DCore::NodeUpdated) {
         // TO DO: Complete this part
         // to emit the correct signals

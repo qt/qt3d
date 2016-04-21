@@ -33,7 +33,7 @@
 #include <Qt3DCore/private/qpostman_p.h>
 #include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/qscenechange.h>
-#include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qbackendnode.h>
@@ -179,7 +179,7 @@ public:
         QVERIFY(!e.isNull());
         m_lastChanges << e;
         // Save reply to be sent to the frontend
-        m_reply.reset(new Qt3DCore::QBackendScenePropertyChange(e->subjectId()));
+        m_reply.reset(new Qt3DCore::QBackendNodePropertyChange(e->subjectId()));
         m_reply->setTargetNode(e->subjectId());
         m_reply->setPropertyName("Reply");
     }
@@ -206,7 +206,7 @@ public:
 
 private:
     QList<Qt3DCore::QSceneChangePtr> m_lastChanges;
-    Qt3DCore::QBackendScenePropertyChangePtr m_reply;
+    Qt3DCore::QBackendNodePropertyChangePtr m_reply;
 
 };
 
@@ -256,7 +256,7 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     {
         QVERIFY(!e.isNull());
-        Qt3DCore::QBackendScenePropertyChangePtr change = qSharedPointerDynamicCast<Qt3DCore::QBackendScenePropertyChange>(e);
+        Qt3DCore::QBackendNodePropertyChangePtr change = qSharedPointerDynamicCast<Qt3DCore::QBackendNodePropertyChange>(e);
         QVERIFY(!change.isNull());
         Qt3DCore::QNode *targetNode = m_sceneInterface->lookupNode(change->targetNode());
         QVERIFY(targetNode != Q_NULLPTR);
@@ -778,7 +778,7 @@ void tst_QChangeArbiter::distributeBackendChanges()
     QCOMPARE(postman->lastChanges().count(), 1);
 
     // verify correctness of the reply
-    Qt3DCore::QBackendScenePropertyChangePtr c = qSharedPointerDynamicCast<Qt3DCore::QBackendScenePropertyChange>(postman->lastChange());
+    Qt3DCore::QBackendNodePropertyChangePtr c = qSharedPointerDynamicCast<Qt3DCore::QBackendNodePropertyChange>(postman->lastChange());
     QVERIFY(!c.isNull());
     QVERIFY(c->targetNode() == root->id());
     qDebug() << c->propertyName();

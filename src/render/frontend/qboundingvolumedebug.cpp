@@ -40,7 +40,7 @@
 #include "qboundingvolumedebug_p.h"
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/private/qcomponent_p.h>
-#include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DRender/qspheremesh.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DRender/qphongalphamaterial.h>
@@ -119,7 +119,7 @@ void QBoundingVolumeDebug::copy(const Qt3DCore::QNode *ref)
 void QBoundingVolumeDebug::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QBoundingVolumeDebug);
-    Qt3DCore::QBackendScenePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QBackendScenePropertyChange>(change);
+    Qt3DCore::QBackendNodePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QBackendNodePropertyChange>(change);
     if (e->type() == Qt3DCore::NodeUpdated) {
         if (e->propertyName() == QByteArrayLiteral("center")) {
             d->m_bvCenter = e->value().value<QVector3D>();

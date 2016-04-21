@@ -30,7 +30,7 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DRender/private/qboundingvolumedebug_p.h>
 
 #include "testpostmanarbiter.h"
@@ -150,7 +150,7 @@ private Q_SLOTS:
 
         // WHEN
         // Create Backend Change and distribute it to frontend node
-        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(bvD->id()));
+        Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(bvD->id()));
         e->setPropertyName("center");
         bvD->sceneChangeEvent(e);
         QCoreApplication::processEvents();

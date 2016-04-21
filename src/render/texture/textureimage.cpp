@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "textureimage_p.h"
-#include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/texturedatamanager_p.h>
@@ -180,7 +180,7 @@ void TextureImage::setTextureDataHandle(HTextureData handle)
 void TextureImage::setStatus(QTextureImage::Status status)
 {
     // Notify the frontend
-    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(peerId()));
+    QBackendNodePropertyChangePtr e(new QBackendNodePropertyChange(peerId()));
     e->setPropertyName("status");
     e->setValue(status);
     e->setTargetNode(peerId());

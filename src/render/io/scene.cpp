@@ -42,7 +42,7 @@
 #include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DRender/qsceneloader.h>
 #include <Qt3DRender/private/qsceneloader_p.h>
 #include <Qt3DRender/private/scenemanager_p.h>
@@ -100,7 +100,7 @@ void Scene::setSceneSubtree(Qt3DCore::QEntity *subTree)
     subTree->moveToThread(appThread);
 
     // Send the new subtree to the frontend
-    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(peerId()));
+    QBackendNodePropertyChangePtr e(new QBackendNodePropertyChange(peerId()));
     e->setPropertyName("scene");
     e->setValue(QVariant::fromValue(subTree));
     e->setTargetNode(peerId());

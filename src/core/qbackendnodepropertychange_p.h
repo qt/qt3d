@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QBACKENDSCENEPROPERTYCHANGE_P_H
-#define QT3DCORE_QBACKENDSCENEPROPERTYCHANGE_P_H
+#ifndef QT3DCORE_QBACKENDNODEPROPERTYCHANGE_P_H
+#define QT3DCORE_QBACKENDNODEPROPERTYCHANGE_P_H
 
 //
 //  W A R N I N G
@@ -58,15 +58,15 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QBackendScenePropertyChange;
+class QBackendNodePropertyChange;
 
-class QBackendScenePropertyChangePrivate : public QNodePropertyChangeBasePrivate
+class QBackendNodePropertyChangePrivate : public QNodePropertyChangeBasePrivate
 {
 public:
-    QBackendScenePropertyChangePrivate();
-    virtual ~QBackendScenePropertyChangePrivate();
+    QBackendNodePropertyChangePrivate();
+    virtual ~QBackendNodePropertyChangePrivate();
 
-    Q_DECLARE_PUBLIC(QBackendScenePropertyChange)
+    Q_DECLARE_PUBLIC(QBackendNodePropertyChange)
 
     QVariant m_value;
     QNodeId m_targetUuid;
@@ -76,4 +76,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QBACKENDSCENEPROPERTYCHANGE_P_H
+#endif // QT3DCORE_QBACKENDNODEPROPERTYCHANGE_P_H

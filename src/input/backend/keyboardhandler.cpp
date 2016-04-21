@@ -44,7 +44,7 @@
 #include "inputhandler_p.h"
 #include "inputmanagers_p.h"
 #include <Qt3DCore/qnodepropertychange.h>
-#include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
@@ -96,7 +96,7 @@ void KeyboardHandler::setFocus(bool focus)
 {
     if (focus != m_focus) {
         m_focus = focus;
-        QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(peerId()));
+        QBackendNodePropertyChangePtr e(new QBackendNodePropertyChange(peerId()));
         e->setTargetNode(peerId());
         e->setPropertyName("focus");
         e->setValue(m_focus);
@@ -106,7 +106,7 @@ void KeyboardHandler::setFocus(bool focus)
 
 void KeyboardHandler::keyEvent(const QKeyEventPtr &event)
 {
-    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(peerId()));
+    QBackendNodePropertyChangePtr e(new QBackendNodePropertyChange(peerId()));
     e->setTargetNode(peerId());
     e->setPropertyName("event");
     e->setValue(QVariant::fromValue(event));

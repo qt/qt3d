@@ -42,7 +42,7 @@
 #include <Qt3DInput/qaxisinput.h>
 #include <Qt3DInput/private/qaxis_p.h>
 #include <Qt3DCore/qnodepropertychange.h>
-#include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -83,7 +83,7 @@ void Axis::setAxisValue(float axisValue)
         m_axisValue = axisValue;
 
         // Send a change to the frontend
-        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(peerId()));
+        Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(peerId()));
         e->setTargetNode(peerId());
         e->setPropertyName("value");
         e->setValue(m_axisValue);

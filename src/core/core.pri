@@ -22,8 +22,6 @@ HEADERS += \
     $$PWD/qscenechange_p.h \
     $$PWD/qsceneobserverinterface_p.h \
     $$PWD/qpostman_p.h \
-    $$PWD/qbackendscenepropertychange.h \
-    $$PWD/qbackendscenepropertychange_p.h \
     $$PWD/qobservableinterface_p.h \
     $$PWD/qobserverinterface_p.h \
     $$PWD/qlockableobserverinterface_p.h \
@@ -41,7 +39,9 @@ HEADERS += \
     $$PWD/qnodepropertychangebase.h \
     $$PWD/qnodepropertychangebase_p.h \
     $$PWD/qnodepropertychange_p.h \
-    $$PWD/qnodepropertychange.h
+    $$PWD/qnodepropertychange.h \
+    $$PWD/qbackendnodepropertychange.h \
+    $$PWD/qbackendnodepropertychange_p.h
 
 SOURCES += \
     $$PWD/qtickclock.cpp \
@@ -55,11 +55,11 @@ SOURCES += \
     $$PWD/qsceneobserverinterface.cpp \
     $$PWD/qpostman.cpp \
     $$PWD/qscene.cpp \
-    $$PWD/qbackendscenepropertychange.cpp \
     $$PWD/qbackendnodefactory.cpp \
     $$PWD/qnodecreatedchange.cpp \
     $$PWD/qnodedestroyedchange.cpp \
     $$PWD/qcomponentaddedchange.cpp \
     $$PWD/qcomponentremovedchange.cpp \
     $$PWD/qnodepropertychangebase.cpp \
-    $$PWD/qnodepropertychange.cpp
+    $$PWD/qnodepropertychange.cpp \
+    $$PWD/qbackendnodepropertychange.cpp
