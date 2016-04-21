@@ -1159,7 +1159,7 @@ void GraphicsContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool rel
     b->allocate(this, buffer->data().constData(), bufferSize, false);
     if (releaseBuffer) {
         b->release(this);
-        if (buffer->type() == GLBuffer::ArrayBuffer)
+        if (bufferTypeToGLBufferType(buffer->type()) == GLBuffer::ArrayBuffer)
             m_boundArrayBuffer = nullptr;
     }
     qCDebug(Render::Io) << "uploaded buffer size=" << buffer->data().size();
