@@ -101,6 +101,14 @@ QNodePropertyChange::QNodePropertyChange(ChangeFlag type, ObservableType observa
 }
 
 /*!
+ * Constructs a new QNodePropertyChange with \a subjectId and \a priority.
+ */
+QNodePropertyChange::QNodePropertyChange(QNodeId subjectId, Priority priority)
+    : QNodePropertyChangeBase(*new QNodePropertyChangePrivate, NodeUpdated, Node, subjectId, priority)
+{
+}
+
+/*!
  * \internal
  */
 QNodePropertyChange::QNodePropertyChange(QNodePropertyChangePrivate &dd)
@@ -108,11 +116,19 @@ QNodePropertyChange::QNodePropertyChange(QNodePropertyChangePrivate &dd)
 {
 }
 
+QNodePropertyChange::QNodePropertyChange(QNodePropertyChangePrivate &dd,
+                                         ChangeFlag type, ObservableType observableType,
+                                         QNodeId subjectId, QSceneChange::Priority priority)
+    : QNodePropertyChangeBase(dd, type, observableType, subjectId, priority)
+{
+}
+
 /*!
  * \internal
  */
-QNodePropertyChange::QNodePropertyChange(QNodePropertyChangePrivate &dd, ChangeFlag type, ObservableType observableType, QNodeId subjectId, QSceneChange::Priority priority)
-    : QNodePropertyChangeBase(dd, type, observableType, subjectId, priority)
+QNodePropertyChange::QNodePropertyChange(QNodePropertyChangePrivate &dd,
+                                         QNodeId subjectId, QSceneChange::Priority priority)
+    : QNodePropertyChangeBase(dd, NodeUpdated, Node, subjectId, priority)
 {
 }
 
