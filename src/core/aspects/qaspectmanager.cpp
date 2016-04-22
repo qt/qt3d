@@ -99,6 +99,10 @@ void QAspectManager::exitSimulationLoop()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
     m_runSimulationLoop.fetchAndStoreOrdered(0);
+    QAbstractFrameAdvanceService *frameAdvanceService =
+            m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService);
+    if (frameAdvanceService)
+        frameAdvanceService->stop();
 
     // Give any aspects a chance to unqueue any asynchronous work they
     // may have scheduled that would otherwise potentially deadlock or
