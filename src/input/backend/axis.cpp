@@ -42,6 +42,8 @@
 #include <Qt3DInput/qaxisinput.h>
 #include <Qt3DInput/private/qaxis_p.h>
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/qbackendnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -93,13 +95,22 @@ void Axis::setAxisValue(float axisValue)
 
 void Axis::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
-    if (e->type() == Qt3DCore::NodeAdded) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("input"))
-            m_inputs.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
-    } else if (e->type() == Qt3DCore::NodeRemoved) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("input"))
-            m_inputs.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
+    switch (e->type()) {
+    case Qt3DCore::NodeAdded: {
+        const auto change = qSharedPointerCast<Qt3DCore::QNodeAddedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("input"))
+            m_inputs.push_back(change->addedNodeId());
+        break;
+    }
+
+    case Qt3DCore::NodeRemoved: {
+        const auto change = qSharedPointerCast<Qt3DCore::QNodeRemovedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("input"))
+            m_inputs.removeOne(change->removedNodeId());
+    }
+
+    default:
+        break;
     }
     QBackendNode::sceneChangeEvent(e);
 }
