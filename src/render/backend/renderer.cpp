@@ -380,6 +380,7 @@ void Renderer::initialize()
 void Renderer::shutdown()
 {
     // Clean up the graphics context
+    m_running.fetchAndStoreOrdered(0);
     m_graphicsContext.reset(nullptr);
     qCDebug(Backend) << Q_FUNC_INFO << "Renderer properly shutdown";
 }
