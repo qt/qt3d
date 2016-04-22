@@ -30,6 +30,8 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/QActionInput>
 #include <Qt3DInput/QAction>
@@ -112,20 +114,18 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DCore::QNodeId inputId = Qt3DCore::QNodeId::createId();
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
-        updateChange->setPropertyName("input");
-        updateChange->setValue(QVariant::fromValue(inputId));
-        backendAction.sceneChangeEvent(updateChange);
+        const auto nodeAddedChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), inputId);
+        nodeAddedChange->setPropertyName("input");
+        backendAction.sceneChangeEvent(nodeAddedChange);
 
         // THEN
         QCOMPARE(backendAction.inputs().size(), 1);
         QCOMPARE(backendAction.inputs().first(), inputId);
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
-        updateChange->setPropertyName("input");
-        updateChange->setValue(QVariant::fromValue(inputId));
-        backendAction.sceneChangeEvent(updateChange);
+        const auto nodeRemovedChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), inputId);
+        nodeRemovedChange->setPropertyName("input");
+        backendAction.sceneChangeEvent(nodeRemovedChange);
 
         // THEN
         QCOMPARE(backendAction.inputs().size(), 0);
