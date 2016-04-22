@@ -145,7 +145,7 @@ RenderView::StandardUniformsPFuncsHash RenderView::initializeStandardUniformSett
     setters.insert(StringToInt::lookupId(QStringLiteral("modelViewProjection")), &RenderView::modelViewProjectionMatrix);
     setters.insert(StringToInt::lookupId(QStringLiteral("mvp")), &RenderView::modelViewProjectionMatrix);
     setters.insert(StringToInt::lookupId(QStringLiteral("inverseModelMatrix")), &RenderView::inverseModelMatrix);
-    setters.insert(StringToInt::lookupId(QStringLiteral("inverViewMatrix")), &RenderView::inverseViewMatrix);
+    setters.insert(StringToInt::lookupId(QStringLiteral("inverseViewMatrix")), &RenderView::inverseViewMatrix);
     setters.insert(StringToInt::lookupId(QStringLiteral("inverseProjectionMatrix")), &RenderView::inverseProjectionMatrix);
     setters.insert(StringToInt::lookupId(QStringLiteral("inverseModelView")), &RenderView::inverseModelViewMatrix);
     setters.insert(StringToInt::lookupId(QStringLiteral("inverseModelViewProjection")), &RenderView::inverseModelViewProjectionMatrix);
