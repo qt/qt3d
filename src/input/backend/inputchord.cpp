@@ -41,6 +41,8 @@
 #include <Qt3DInput/qinputchord.h>
 #include <Qt3DInput/private/qinputchord_p.h>
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -108,21 +110,34 @@ void InputChord::setStartTime(qint64 time)
 
 void InputChord::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
-    if (e->type() == Qt3DCore::NodeUpdated) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("timeout")) {
-            m_timeout = propertyChange->value().toInt();
+    switch (e->type()) {
+    case Qt3DCore::NodeUpdated: {
+        const auto change = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("timeout"))
+            m_timeout = change->value().toInt();
+        break;
+    }
+
+    case Qt3DCore::NodeAdded: {
+        const auto change = qSharedPointerCast<Qt3DCore::QNodeAddedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("chord")) {
+            m_chords.push_back(change->addedNodeId());
+            m_inputsToTrigger.push_back(change->addedNodeId());
         }
-    } else if (e->type() == Qt3DCore::NodeAdded) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("chord")) {
-            m_chords.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
-            m_inputsToTrigger.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
+        break;
+    }
+
+    case Qt3DCore::NodeRemoved: {
+        const auto change = qSharedPointerCast<Qt3DCore::QNodeRemovedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("chord")) {
+            m_chords.removeOne(change->removedNodeId());
+            m_inputsToTrigger.removeOne(change->removedNodeId());
         }
-    } else if (e->type() == Qt3DCore::NodeRemoved) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("chord")) {
-            m_chords.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
-            m_inputsToTrigger.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
-        }
+        break;
+    }
+
+    default:
+        break;
     }
     QBackendNode::sceneChangeEvent(e);
 }
