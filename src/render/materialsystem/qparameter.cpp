@@ -120,19 +120,14 @@ void QParameter::setValue(const QVariant &dv)
 {
     Q_D(QParameter);
     if (d->m_value != dv) {
-        d->setValue(dv);
-        emit valueChanged(dv);
 
         // In case node values are declared inline
         QNode *nodeValue = dv.value<QNode *>();
         if (nodeValue != Q_NULLPTR && !nodeValue->parent())
             nodeValue->setParent(this);
 
-        QNodePropertyChangePtr change(new QNodePropertyChange(NodeUpdated, QSceneChange::Node, id()));
-        change->setPropertyName(d->m_name.toUtf8().data());
-        change->setValue(d->m_backendValue);
-
-        d->notifyObservers(change);
+        d->setValue(dv);
+        emit valueChanged(dv);
     }
 }
 
