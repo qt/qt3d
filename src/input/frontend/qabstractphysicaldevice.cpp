@@ -40,7 +40,10 @@
 #include "qabstractphysicaldevice.h"
 #include "qabstractphysicaldevice_p.h"
 #include <Qt3DInput/qphysicaldevicecreatedchange.h>
+#include <Qt3DInput/qaxissetting.h>
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -160,8 +163,15 @@ int QAbstractPhysicalDevice::buttonIdentifier(const QString &name) const
 void QAbstractPhysicalDevice::addAxisSetting(QAxisSetting *axisSetting)
 {
     Q_D(QAbstractPhysicalDevice);
-    if (!d->m_axisSettings.contains(axisSetting))
+    if (axisSetting && !d->m_axisSettings.contains(axisSetting)) {
+        if (d->m_changeArbiter) {
+            const auto change = Qt3DCore::QNodeAddedPropertyChangePtr::create(id(), axisSetting->id());
+            change->setPropertyName("axisSettings");
+            d->notifyObservers(change);
+        }
+
         d->m_axisSettings.push_back(axisSetting);
+    }
 }
 
 /*!
@@ -170,8 +180,15 @@ void QAbstractPhysicalDevice::addAxisSetting(QAxisSetting *axisSetting)
 void QAbstractPhysicalDevice::removeAxisSetting(QAxisSetting *axisSetting)
 {
     Q_D(QAbstractPhysicalDevice);
-    if (d->m_axisSettings.contains(axisSetting))
+    if (axisSetting && d->m_axisSettings.contains(axisSetting)) {
+        if (d->m_changeArbiter) {
+            const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), axisSetting->id());
+            change->setPropertyName("axisSettings");
+            d->notifyObservers(change);
+        }
+
         d->m_axisSettings.removeOne(axisSetting);
+    }
 }
 
 /*!

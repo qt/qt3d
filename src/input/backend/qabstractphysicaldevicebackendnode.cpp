@@ -49,6 +49,8 @@
 #include <Qt3DInput/private/qinputaspect_p.h>
 
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/private/qabstractaspect_p.h>
 
 #include <cmath>
@@ -182,17 +184,27 @@ void QAbstractPhysicalDeviceBackendNode::cleanup()
 void QAbstractPhysicalDeviceBackendNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     Q_D(QAbstractPhysicalDeviceBackendNode);
-    Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
-    if (e->type() == Qt3DCore::NodeAdded) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("axisSettings")) {
-            const Qt3DCore::QNodeId axisSettingId = propertyChange->value().value<Qt3DCore::QNodeId>();
+    switch (e->type()) {
+    case Qt3DCore::NodeAdded: {
+        const auto change = qSharedPointerCast<Qt3DCore::QNodeAddedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("axisSettings")) {
+            const auto axisSettingId = change->addedNodeId();
             Input::AxisSetting *axisSetting = d->getAxisSetting(axisSettingId);
             Q_FOREACH (int axisId, axisSetting->axes())
                 d->addAxisSetting(axisId, axisSettingId);
         }
-    } else if (e->type() == Qt3DCore::NodeRemoved) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("axisSettings"))
-            d->removeAxisSetting(propertyChange->value().value<Qt3DCore::QNodeId>());
+        break;
+    }
+
+    case Qt3DCore::NodeRemoved: {
+        const auto change = qSharedPointerCast<Qt3DCore::QNodeRemovedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("axisSettings"))
+            d->removeAxisSetting(change->removedNodeId());
+        break;
+    }
+
+    default:
+        break;
     }
     QBackendNode::sceneChangeEvent(e);
 }
