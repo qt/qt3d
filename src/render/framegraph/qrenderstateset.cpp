@@ -40,8 +40,10 @@
 #include "qrenderstateset.h"
 #include "qrenderstateset_p.h"
 
-#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qrenderstate.h>
+#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -100,6 +102,7 @@ void QRenderStateSet::copy(const QNode *ref)
  */
 void QRenderStateSet::addRenderState(QRenderState *state)
 {
+    Q_ASSERT(state);
     Q_D(QRenderStateSet);
 
     if (!d->m_renderStates.contains(state)) {
@@ -109,10 +112,8 @@ void QRenderStateSet::addRenderState(QRenderState *state)
             state->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QNodePropertyChangePtr change(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), state->id());
             change->setPropertyName("renderState");
-            // Since we have no RenderState managers, we need to send a clone
-            change->setValue(QVariant::fromValue(QNodePtr(QNode::clone(state))));
             d->notifyObservers(change);
         }
     }
@@ -123,11 +124,11 @@ void QRenderStateSet::addRenderState(QRenderState *state)
  */
 void QRenderStateSet::removeRenderState(QRenderState *state)
 {
+    Q_ASSERT(state);
     Q_D(QRenderStateSet);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), state->id());
         change->setPropertyName("renderState");
-        change->setValue(QVariant::fromValue(state->id()));
         d->notifyObservers(change);
     }
     d->m_renderStates.removeOne(state);

@@ -39,11 +39,13 @@
 
 #include "statesetnode_p.h"
 
-#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qrenderstateset.h>
 #include <Qt3DRender/private/qrenderstateset_p.h>
 #include <Qt3DRender/private/genericstate_p.h>
 #include <Qt3DRender/private/renderstateset_p.h>
+#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -81,26 +83,28 @@ void StateSetNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
 
 void StateSetNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
     switch (e->type()) {
     case NodeAdded: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
-            QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
-            appendRenderState(nodePtr->id());
+        const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("renderState")) {
+            appendRenderState(change->addedNodeId());
+            markDirty(AbstractRenderer::AllDirty);
         }
-    }
         break;
+    }
 
     case NodeRemoved: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("renderState"))
-            removeRenderState(propertyChange->value().value<QNodeId>());
-    }
+        const auto propertyChange = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
+        if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
+            removeRenderState(propertyChange->removedNodeId());
+            markDirty(AbstractRenderer::AllDirty);
+        }
         break;
+    }
 
     default:
         break;
     }
-    markDirty(AbstractRenderer::AllDirty);
     FrameGraphNode::sceneChangeEvent(e);
 }
 

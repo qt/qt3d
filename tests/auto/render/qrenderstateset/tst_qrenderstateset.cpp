@@ -35,6 +35,10 @@
 #include <Qt3DRender/private/qrenderstate_p.h>
 #include <Qt3DRender/qrenderstate.h>
 
+#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
+
 #include "testpostmanarbiter.h"
 
 class MyStateSet;
@@ -140,12 +144,10 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        Qt3DCore::QNodeAddedPropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodeAddedPropertyChange>();
         QCOMPARE(change->propertyName(), "renderState");
         QCOMPARE(change->subjectId(), stateSet->id());
-        Qt3DCore::QNodePtr clonedState = change->value().value<Qt3DCore::QNodePtr>();
-        QVERIFY(!clonedState.isNull());
-        QCOMPARE(clonedState->id(), state1->id());
+        QCOMPARE(change->addedNodeId(), state1->id());
         QCOMPARE(change->type(), Qt3DCore::NodeAdded);
 
         arbiter.events.clear();
@@ -163,11 +165,11 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
-        QCOMPARE(change->propertyName(), "renderState");
-        QCOMPARE(change->subjectId(), stateSet->id());
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), state1->id());
-        QCOMPARE(change->type(), Qt3DCore::NodeRemoved);
+        Qt3DCore::QNodeRemovedPropertyChangePtr nodeRemovedChange = arbiter.events.first().staticCast<Qt3DCore::QNodeRemovedPropertyChange>();
+        QCOMPARE(nodeRemovedChange->propertyName(), "renderState");
+        QCOMPARE(nodeRemovedChange->subjectId(), stateSet->id());
+        QCOMPARE(nodeRemovedChange->removedNodeId(), state1->id());
+        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::NodeRemoved);
 
         arbiter.events.clear();
     }
