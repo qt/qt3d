@@ -42,8 +42,10 @@
 #include "qtechniquefilter.h"
 #include <Qt3DRender/private/qtechniquefilter_p.h>
 #include <Qt3DRender/private/managers_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qparameter.h>
+#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -102,28 +104,34 @@ void TechniqueFilter::removeFilter(Qt3DCore::QNodeId criterionId)
 
 void TechniqueFilter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
-
     switch (e->type()) {
-
     case NodeAdded: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("require"))
-            appendFilter(propertyChange->value().value<QNodeId>());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.appendParameter(propertyChange->value().value<QNodeId>());
-    }
+        const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("matchAll")) {
+            appendFilter(change->addedNodeId());
+            markDirty(AbstractRenderer::AllDirty);
+        } else if (change->propertyName() == QByteArrayLiteral("parameter")) {
+            m_parameterPack.appendParameter(change->addedNodeId());
+            markDirty(AbstractRenderer::AllDirty);
+        }
         break;
+    }
+
     case NodeRemoved: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("require"))
-            removeFilter(propertyChange->value().value<QNodeId>());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.removeParameter(propertyChange->value().value<QNodeId>());
-    }
+        const auto change = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("matchAll")) {
+            removeFilter(change->removedNodeId());
+            markDirty(AbstractRenderer::AllDirty);
+        } else if (change->propertyName() == QByteArrayLiteral("parameter")) {
+            m_parameterPack.removeParameter(change->removedNodeId());
+            markDirty(AbstractRenderer::AllDirty);
+        }
         break;
+    }
+
     default:
         break;
     }
-    markDirty(AbstractRenderer::AllDirty);
     FrameGraphNode::sceneChangeEvent(e);
 }
 

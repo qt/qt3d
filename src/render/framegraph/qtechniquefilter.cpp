@@ -1,4 +1,3 @@
-
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
@@ -43,6 +42,8 @@
 #include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -83,42 +84,43 @@ QVector<QFilterKey *> QTechniqueFilter::matchAll() const
     return d->m_matchList;
 }
 
-void QTechniqueFilter::addMatch(QFilterKey *criterion)
+void QTechniqueFilter::addMatch(QFilterKey *filterKey)
 {
+    Q_ASSERT(filterKey);
     Q_D(QTechniqueFilter);
-    if (!d->m_matchList.contains(criterion)) {
-        d->m_matchList.append(criterion);
+    if (!d->m_matchList.contains(filterKey)) {
+        d->m_matchList.append(filterKey);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!criterion->parent())
-            criterion->setParent(this);
+        if (!filterKey->parent())
+            filterKey->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QNodePropertyChangePtr propertyChange(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
-            propertyChange->setPropertyName("require");
-            propertyChange->setValue(QVariant::fromValue(criterion->id()));
-            d->notifyObservers(propertyChange);
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), filterKey->id());
+            change->setPropertyName("matchAll");
+            d->notifyObservers(change);
         }
     }
 }
 
-void QTechniqueFilter::removeMatch(QFilterKey *criterion)
+void QTechniqueFilter::removeMatch(QFilterKey *filterKey)
 {
+    Q_ASSERT(filterKey);
     Q_D(QTechniqueFilter);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QNodePropertyChangePtr propertyChange(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
-        propertyChange->setPropertyName("require");
-        propertyChange->setValue(QVariant::fromValue(criterion->id()));
-        d->notifyObservers(propertyChange);
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), filterKey->id());
+        change->setPropertyName("matchAll");
+        d->notifyObservers(change);
     }
-    d->m_matchList.removeOne(criterion);
+    d->m_matchList.removeOne(filterKey);
 }
 
 void QTechniqueFilter::addParameter(QParameter *parameter)
 {
+    Q_ASSERT(parameter);
     Q_D(QTechniqueFilter);
     if (!d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
@@ -131,9 +133,8 @@ void QTechniqueFilter::addParameter(QParameter *parameter)
             parameter->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QNodePropertyChangePtr change(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter->id());
             change->setPropertyName("parameter");
-            change->setValue(QVariant::fromValue(parameter->id()));
             d->notifyObservers(change);
         }
     }
@@ -141,12 +142,11 @@ void QTechniqueFilter::addParameter(QParameter *parameter)
 
 void QTechniqueFilter::removeParameter(QParameter *parameter)
 {
+    Q_ASSERT(parameter);
     Q_D(QTechniqueFilter);
-
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter->id());
         change->setPropertyName("parameter");
-        change->setValue(QVariant::fromValue(parameter->id()));
         d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
