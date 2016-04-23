@@ -43,6 +43,8 @@
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/qabstractactioninput.h>
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -195,9 +197,8 @@ void QInputSequence::addSequence(QAbstractActionInput *input)
             input->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            Qt3DCore::QNodePropertyChangePtr change(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, id()));
+            const auto change = Qt3DCore::QNodeAddedPropertyChangePtr::create(id(), input->id());
             change->setPropertyName("sequence");
-            change->setValue(QVariant::fromValue(input->id()));
             d->notifyObservers(change);
         }
     }
@@ -212,11 +213,9 @@ void QInputSequence::removeSequence(QAbstractActionInput *input)
 {
     Q_D(QInputSequence);
     if (d->m_sequences.contains(input)) {
-
         if (d->m_changeArbiter != Q_NULLPTR) {
-            Qt3DCore::QNodePropertyChangePtr change(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, id()));
+            const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), input->id());
             change->setPropertyName("sequence");
-            change->setValue(QVariant::fromValue(input->id()));
             d->notifyObservers(change);
         }
 

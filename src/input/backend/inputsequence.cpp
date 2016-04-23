@@ -42,6 +42,8 @@
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/private/qinputsequence_p.h>
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <QDateTime>
 
 QT_BEGIN_NAMESPACE
@@ -129,23 +131,37 @@ bool InputSequence::actionTriggered(Qt3DCore::QNodeId input, const qint64 curren
 
 void InputSequence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
-    if (e->type() == Qt3DCore::NodeUpdated) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("timeout")) {
-            m_timeout = propertyChange->value().toInt();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("buttonInterval")) {
-            m_buttonInterval = propertyChange->value().toInt();
+    switch (e->type()) {
+    case Qt3DCore::NodeUpdated: {
+        const auto change = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("timeout")) {
+            m_timeout = change->value().toInt();
+        } else if (change->propertyName() == QByteArrayLiteral("buttonInterval")) {
+            m_buttonInterval = change->value().toInt();
         }
-    } else if (e->type() == Qt3DCore::NodeAdded) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("sequence")) {
-            m_sequences.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
-            m_inputsToTrigger.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
+        break;
+    }
+
+    case Qt3DCore::NodeAdded: {
+        const auto change = qSharedPointerCast<Qt3DCore::QNodeAddedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("sequence")) {
+            m_sequences.push_back(change->addedNodeId());
+            m_inputsToTrigger.push_back(change->addedNodeId());
         }
-    } else if (e->type() == Qt3DCore::NodeRemoved) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("sequence")) {
-            m_sequences.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
-            m_inputsToTrigger.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
+        break;
+    }
+
+    case Qt3DCore::NodeRemoved: {
+        const auto change = qSharedPointerCast<Qt3DCore::QNodeRemovedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("sequence")) {
+            m_sequences.removeOne(change->removedNodeId());
+            m_inputsToTrigger.removeOne(change->removedNodeId());
         }
+        break;
+    }
+
+    default:
+        break;
     }
     QBackendNode::sceneChangeEvent(e);
 }
