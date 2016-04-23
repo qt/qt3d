@@ -38,9 +38,11 @@
 ****************************************************************************/
 
 #include <Qt3DRender/private/rendertarget_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qrendertarget.h>
 #include <Qt3DRender/qrendertargetoutput.h>
+#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
@@ -86,13 +88,28 @@ QVector<Qt3DCore::QNodeId> RenderTarget::renderOutputs() const
 
 void RenderTarget::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
-    if (e->type() == NodeAdded && propertyChange->propertyName() == QByteArrayLiteral("output"))
-        appendRenderOutput(propertyChange->value().value<QNodeId>());
-    else if (e->type() == NodeRemoved && propertyChange->propertyName() == QByteArrayLiteral("output"))
-        removeRenderOutput(propertyChange->value().value<QNodeId>());
-    markDirty(AbstractRenderer::AllDirty);
+    switch (e->type()) {
+    case Qt3DCore::NodeAdded: {
+        const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("output")) {
+            appendRenderOutput(change->addedNodeId());
+            markDirty(AbstractRenderer::AllDirty);
+        }
+        break;
+    }
 
+    case Qt3DCore::NodeRemoved: {
+        const auto change = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("output")) {
+            removeRenderOutput(change->removedNodeId());
+            markDirty(AbstractRenderer::AllDirty);
+        }
+        break;
+    }
+
+    default:
+        break;
+    }
     BackendNode::sceneChangeEvent(e);
 }
 

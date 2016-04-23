@@ -41,6 +41,8 @@
 #include "qrendertarget_p.h"
 #include "qrendertargetoutput.h"
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -75,16 +77,15 @@ QRenderTarget::QRenderTarget(QRenderTargetPrivate &dd, QNode *parent)
 void QRenderTarget::addOutput(QRenderTargetOutput *output)
 {
     Q_D(QRenderTarget);
-    if (!d->m_outputs.contains(output)) {
+    if (output && !d->m_outputs.contains(output)) {
         d->m_outputs.append(output);
 
         if (!output->parent())
             output->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QNodePropertyChangePtr change(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), output->id());
             change->setPropertyName("output");
-            change->setValue(QVariant::fromValue(output->id()));
             d->notifyObservers(change);
         }
     }
@@ -94,10 +95,9 @@ void QRenderTarget::removeOutput(QRenderTargetOutput *output)
 {
     Q_D(QRenderTarget);
 
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+    if (output && d->m_changeArbiter != Q_NULLPTR) {
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), output->id());
         change->setPropertyName("output");
-        change->setValue(QVariant::fromValue(output->id()));
         d->notifyObservers(change);
     }
     d->m_outputs.removeOne(output);
