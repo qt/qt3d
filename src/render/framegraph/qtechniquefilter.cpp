@@ -77,7 +77,7 @@ QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent)
 {
 }
 
-QVector<QFilterKey *> QTechniqueFilter::criteria() const
+QVector<QFilterKey *> QTechniqueFilter::matchAll() const
 {
     Q_D(const QTechniqueFilter);
     return d->m_matchList;

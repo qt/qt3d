@@ -81,7 +81,7 @@ QFilterKey *Quick3DTechniqueFilter::requireAt(QQmlListProperty<QFilterKey> *list
 {
     Quick3DTechniqueFilter *filter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
     if (filter)
-        return filter->parentTechniqueFilter()->criteria().at(index);
+        return filter->parentTechniqueFilter()->matchAll().at(index);
     return 0;
 }
 
@@ -89,7 +89,7 @@ int Quick3DTechniqueFilter::requiresCount(QQmlListProperty<QFilterKey> *list)
 {
     Quick3DTechniqueFilter *filter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
     if (filter)
-        return filter->parentTechniqueFilter()->criteria().size();
+        return filter->parentTechniqueFilter()->matchAll().size();
     return 0;
 }
 
@@ -97,7 +97,7 @@ void Quick3DTechniqueFilter::clearRequires(QQmlListProperty<QFilterKey> *list)
 {
     Quick3DTechniqueFilter *filter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
     if (filter) {
-        Q_FOREACH (QFilterKey *criterion, filter->parentTechniqueFilter()->criteria())
+        Q_FOREACH (QFilterKey *criterion, filter->parentTechniqueFilter()->matchAll())
             filter->parentTechniqueFilter()->removeMatch(criterion);
     }
 }

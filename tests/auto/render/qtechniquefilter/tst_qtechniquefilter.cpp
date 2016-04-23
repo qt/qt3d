@@ -54,7 +54,7 @@ private Q_SLOTS:
     {
         QScopedPointer<Qt3DRender::QTechniqueFilter> defaulttechniqueFilter(new Qt3DRender::QTechniqueFilter);
 
-        QCOMPARE(defaulttechniqueFilter->criteria().count(), 0);
+        QCOMPARE(defaulttechniqueFilter->matchAll().count(), 0);
         QCOMPARE(defaulttechniqueFilter->parameters().count(), 0);
     }
 
@@ -114,7 +114,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(techniqueFilter->parameters(), parameters);
-        QCOMPARE(techniqueFilter->criteria(), filterKeys);
+        QCOMPARE(techniqueFilter->matchAll(), filterKeys);
 
         // WHEN
         Qt3DRender::QTechniqueFilter *clone = static_cast<Qt3DRender::QTechniqueFilter *>(QNode::clone(techniqueFilter));
@@ -123,7 +123,7 @@ private Q_SLOTS:
         QVERIFY(clone != Q_NULLPTR);
         QCOMPARE(techniqueFilter->id(), clone->id());
 
-        QCOMPARE(techniqueFilter->criteria().count(), clone->criteria().count());
+        QCOMPARE(techniqueFilter->matchAll().count(), clone->matchAll().count());
         QCOMPARE(techniqueFilter->parameters().count(), clone->parameters().count());
 
         for (int i = 0, m = parameters.count(); i < m; ++i) {
@@ -137,7 +137,7 @@ private Q_SLOTS:
         }
 
         for (int i = 0, m = filterKeys.count(); i < m; ++i) {
-            Qt3DRender::QFilterKey *aClone = clone->criteria().at(i);
+            Qt3DRender::QFilterKey *aClone = clone->matchAll().at(i);
             Qt3DRender::QFilterKey *aOrig = filterKeys.at(i);
             QCOMPARE(aOrig->id(),aClone->id());
             QCOMPARE(aOrig->name(), aClone->name());

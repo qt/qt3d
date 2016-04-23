@@ -62,7 +62,7 @@ void TechniqueFilter::updateFromPeer(Qt3DCore::QNode *peer)
     QTechniqueFilter *filter = static_cast<QTechniqueFilter *>(peer);
     m_filters.clear();
     m_parameterPack.clear();
-    const auto criteria = filter->criteria();
+    const auto criteria = filter->matchAll();
     for (QFilterKey *criterion : criteria)
         appendFilter(criterion->id());
     const auto parameters = filter->parameters();
