@@ -61,11 +61,11 @@ public:
     explicit QRenderPassFilter(Qt3DCore::QNode *parent = Q_NULLPTR);
 
     QVector<QFilterKey*> matchAny() const;
-    void addMatch(QFilterKey*keyFilter);
-    void removeMatch(QFilterKey*criterion);
+    void addMatch(QFilterKey *filterKey);
+    void removeMatch(QFilterKey *filterKey);
 
-    void addParameter(QParameter *p);
-    void removeParameter(QParameter *p);
+    void addParameter(QParameter *parameter);
+    void removeParameter(QParameter *parameter);
     QVector<QParameter *> parameters() const;
 
 protected:
