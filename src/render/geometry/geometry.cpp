@@ -38,10 +38,12 @@
 ****************************************************************************/
 
 #include "geometry_p.h"
-#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/private/qgeometry_p.h>
+#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -92,38 +94,30 @@ void Geometry::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &cha
 
 void Geometry::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-
     switch (e->type()) {
     case NodeAdded: {
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
-        QByteArray propertyName = propertyChange->propertyName();
-
-        if (propertyName == QByteArrayLiteral("attribute")) {
-            m_attributes.push_back(propertyChange->value().value<QNodeId>());
+        const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("attribute")) {
+            m_attributes.push_back(change->addedNodeId());
             m_geometryDirty = true;
         }
         break;
     }
 
     case NodeRemoved: {
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
-        QByteArray propertyName = propertyChange->propertyName();
-
-        if (propertyName == QByteArrayLiteral("attribute")) {
-            m_attributes.removeOne(propertyChange->value().value<QNodeId>());
+        const auto change = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("attribute")) {
+            m_attributes.removeOne(change->removedNodeId());
             m_geometryDirty = true;
         }
         break;
     }
 
     case NodeUpdated: {
-        // Note: doesn't set dirtyness as this parameter changing doesn't need
-        // a new VAO update.
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
-        QByteArray propertyName = propertyChange->propertyName();
-
-        if (propertyName == QByteArrayLiteral("boundingVolumePositionAttribute")) {
-            m_boundingPositionAttribute = propertyChange->value().value<QNodeId>();
+        // Note: doesn't set dirtyness as this parameter changing doesn't need a new VAO update.
+        const auto change = qSharedPointerCast<QNodePropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("boundingVolumePositionAttribute")) {
+            m_boundingPositionAttribute = change->value().value<QNodeId>();
             break;
         }
     }

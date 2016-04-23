@@ -40,8 +40,10 @@
 #include "qgeometry.h"
 #include "qgeometry_p.h"
 #include <private/qnode_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qattribute.h>
+#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -97,6 +99,7 @@ QGeometry::QGeometry(QGeometryPrivate &dd, QNode *parent)
  */
 void QGeometry::addAttribute(QAttribute *attribute)
 {
+    Q_ASSERT(attribute);
     Q_D(QGeometry);
     if (!d->m_attributes.contains(attribute)) {
         d->m_attributes.append(attribute);
@@ -109,9 +112,8 @@ void QGeometry::addAttribute(QAttribute *attribute)
             attribute->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QNodePropertyChangePtr change(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), attribute->id());
             change->setPropertyName("attribute");
-            change->setValue(QVariant::fromValue(attribute->id()));
             d->notifyObservers(change);
         }
     }
@@ -122,11 +124,11 @@ void QGeometry::addAttribute(QAttribute *attribute)
  */
 void QGeometry::removeAttribute(QAttribute *attribute)
 {
+    Q_ASSERT(attribute);
     Q_D(QGeometry);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), attribute->id());
         change->setPropertyName("attribute");
-        change->setValue(QVariant::fromValue(attribute->id()));
         d->notifyObservers(change);
     }
     d->m_attributes.removeOne(attribute);

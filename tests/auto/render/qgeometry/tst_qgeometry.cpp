@@ -34,6 +34,10 @@
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
 
+#include <Qt3DCore/QNodePropertyChange>
+#include <Qt3DCore/QNodeAddedPropertyChange>
+#include <Qt3DCore/QNodeRemovedPropertyChange>
+
 #include "testpostmanarbiter.h"
 
 // We need to call QNode::clone which is protected
@@ -115,10 +119,10 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
-        QCOMPARE(change->propertyName(), "attribute");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), attr.id());
-        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
+        Qt3DCore::QNodeAddedPropertyChangePtr nodeAddedChange = arbiter.events.first().staticCast<Qt3DCore::QNodeAddedPropertyChange>();
+        QCOMPARE(nodeAddedChange->propertyName(), "attribute");
+        QCOMPARE(nodeAddedChange->addedNodeId(), attr.id());
+        QCOMPARE(nodeAddedChange->type(), Qt3DCore::NodeAdded);
 
         arbiter.events.clear();
 
@@ -135,10 +139,10 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
-        QCOMPARE(change->propertyName(), "attribute");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), attr.id());
-        QCOMPARE(change->type(), Qt3DCore::NodeRemoved);
+        Qt3DCore::QNodeRemovedPropertyChangePtr nodeRemovedChange = arbiter.events.first().staticCast<Qt3DCore::QNodeRemovedPropertyChange>();
+        QCOMPARE(nodeRemovedChange->propertyName(), "attribute");
+        QCOMPARE(nodeRemovedChange->removedNodeId(), attr.id());
+        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::NodeRemoved);
 
         arbiter.events.clear();
     }
