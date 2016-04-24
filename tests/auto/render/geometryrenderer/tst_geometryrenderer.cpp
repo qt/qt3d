@@ -31,6 +31,8 @@
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryfactory.h>
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 #include "testrenderer.h"
 
 class TestFactory : public Qt3DRender::QGeometryFactory
@@ -273,11 +275,10 @@ private Q_SLOTS:
         QVERIFY(!renderGeometryRenderer.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         Qt3DCore::QNodeId geometryId = Qt3DCore::QNodeId::createId();
-        updateChange->setValue(QVariant::fromValue(geometryId));
-        updateChange->setPropertyName("geometry");
-        renderGeometryRenderer.sceneChangeEvent(updateChange);
+        const auto nodeAddedChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), geometryId);
+        nodeAddedChange->setPropertyName("geometry");
+        renderGeometryRenderer.sceneChangeEvent(nodeAddedChange);
 
         // THEN
         QCOMPARE(renderGeometryRenderer.geometryId(), geometryId);
@@ -288,9 +289,9 @@ private Q_SLOTS:
 
         // WHEN
         updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
-        updateChange->setValue(QVariant::fromValue(geometryId));
-        updateChange->setPropertyName("geometry");
-        renderGeometryRenderer.sceneChangeEvent(updateChange);
+        const auto nodeRemovedChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), geometryId);
+        nodeRemovedChange->setPropertyName("geometry");
+        renderGeometryRenderer.sceneChangeEvent(nodeRemovedChange);
 
         // THEN
         QCOMPARE(renderGeometryRenderer.geometryId(), Qt3DCore::QNodeId());

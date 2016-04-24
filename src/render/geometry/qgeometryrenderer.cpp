@@ -42,6 +42,8 @@
 
 #include <private/qcomponent_p.h>
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -349,10 +351,11 @@ void QGeometryRenderer::setGeometry(QGeometry *geometry)
     if (d->m_geometry == geometry)
         return;
 
+    // TODO: Investigate if we can rely upon the automatic property change notifications
+    // rather than having to manually send a NodeRemoved followed by a NodeAdded change.
     if (d->m_geometry && d->m_changeArbiter) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), d->m_geometry->id());
         change->setPropertyName("geometry");
-        change->setValue(QVariant::fromValue(d->m_geometry->id()));
         d->notifyObservers(change);
     }
 
@@ -365,9 +368,8 @@ void QGeometryRenderer::setGeometry(QGeometry *geometry)
     blockNotifications(blocked);
 
     if (d->m_geometry && d->m_changeArbiter) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
+        const auto change = QNodeAddedPropertyChangePtr::create(id(), d->m_geometry->id());
         change->setPropertyName("geometry");
-        change->setValue(QVariant::fromValue(d->m_geometry->id()));
         d->notifyObservers(change);
     }
 }

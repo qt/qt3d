@@ -36,6 +36,10 @@
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
 
+#include <Qt3DCore/QNodePropertyChange>
+#include <Qt3DCore/QNodeAddedPropertyChange>
+#include <Qt3DCore/QNodeRemovedPropertyChange>
+
 #include "testpostmanarbiter.h"
 
 class TestFactory : public Qt3DRender::QGeometryFactory
@@ -270,10 +274,10 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
-        QCOMPARE(change->propertyName(), "geometry");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), geom.id());
-        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
+        Qt3DCore::QNodeAddedPropertyChangePtr nodeAddedChange = arbiter.events.first().staticCast<Qt3DCore::QNodeAddedPropertyChange>();
+        QCOMPARE(nodeAddedChange->propertyName(), "geometry");
+        QCOMPARE(nodeAddedChange->addedNodeId(), geom.id());
+        QCOMPARE(nodeAddedChange->type(), Qt3DCore::NodeAdded);
 
         arbiter.events.clear();
 
@@ -284,15 +288,15 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 2);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
-        QCOMPARE(change->propertyName(), "geometry");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), geom.id());
-        QCOMPARE(change->type(), Qt3DCore::NodeRemoved);
+        Qt3DCore::QNodeRemovedPropertyChangePtr nodeRemovedChange = arbiter.events.first().staticCast<Qt3DCore::QNodeRemovedPropertyChange>();
+        QCOMPARE(nodeRemovedChange->propertyName(), "geometry");
+        QCOMPARE(nodeRemovedChange->removedNodeId(), geom.id());
+        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::NodeRemoved);
 
-        change = arbiter.events.last().staticCast<Qt3DCore::QNodePropertyChange>();
-        QCOMPARE(change->propertyName(), "geometry");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), geom2.id());
-        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
+        nodeAddedChange = arbiter.events.last().staticCast<Qt3DCore::QNodeAddedPropertyChange>();
+        QCOMPARE(nodeAddedChange->propertyName(), "geometry");
+        QCOMPARE(nodeAddedChange->addedNodeId(), geom2.id());
+        QCOMPARE(nodeAddedChange->type(), Qt3DCore::NodeAdded);
 
         arbiter.events.clear();
     }

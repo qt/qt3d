@@ -38,12 +38,14 @@
 ****************************************************************************/
 
 #include "geometryrenderer_p.h"
-#include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
-#include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DRender/private/qboundingvolume_p.h>
 #include <Qt3DRender/private/qgeometryrenderer_p.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -178,21 +180,17 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     case NodeAdded: {
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
-        QByteArray propertyName = propertyChange->propertyName();
-
-        if (propertyName == QByteArrayLiteral("geometry")) {
-            m_geometryId = propertyChange->value().value<QNodeId>();
+        const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("geometry")) {
+            m_geometryId = change->addedNodeId();
             m_dirty = true;
         }
         break;
     }
 
     case NodeRemoved: {
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
-        QByteArray propertyName = propertyChange->propertyName();
-
-        if (propertyName == QByteArrayLiteral("geometry")) {
+        const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("geometry")) {
             m_geometryId = QNodeId();
             m_dirty = true;
         }
