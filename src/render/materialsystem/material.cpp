@@ -48,6 +48,8 @@
 #include <Qt3DRender/private/qmaterial_p.h>
 
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 using namespace Qt3DCore;
 
@@ -92,27 +94,26 @@ void Material::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &cha
 
 void Material::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
 
     switch (e->type()) {
     case NodeUpdated: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("effect"))
-            m_effectUuid = propertyChange->value().value<QNodeId>();
+        const auto change = qSharedPointerCast<QNodePropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("effect"))
+            m_effectUuid = change->value().value<QNodeId>();
         break;
     }
-        // Check for shader parameter
+
     case NodeAdded: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.appendParameter(propertyChange->value().value<QNodeId>());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("effect"))
-            m_effectUuid = propertyChange->value().value<QNodeId>();
+        const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("parameter"))
+            m_parameterPack.appendParameter(change->addedNodeId());
         break;
     }
+
     case NodeRemoved: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.removeParameter(propertyChange->value().value<QNodeId>());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("effect"))
-            m_effectUuid = QNodeId();
+        const auto change = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("parameter"))
+            m_parameterPack.removeParameter(change->removedNodeId());
         break;
     }
 

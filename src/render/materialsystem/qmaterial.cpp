@@ -44,6 +44,8 @@
 #include <Qt3DRender/private/renderlogging_p.h>
 #include "qparameter.h"
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 /*!
  * \qmltype Material
@@ -136,6 +138,7 @@ QEffect *QMaterial::effect() const
 
 void QMaterial::addParameter(QParameter *parameter)
 {
+    Q_ASSERT(parameter);
     Q_D(QMaterial);
     if (!d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
@@ -148,9 +151,8 @@ void QMaterial::addParameter(QParameter *parameter)
             parameter->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QNodePropertyChangePtr change(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter->id());
             change->setPropertyName("parameter");
-            change->setValue(QVariant::fromValue(parameter->id()));
             d->notifyObservers(change);
         }
     }
@@ -158,11 +160,11 @@ void QMaterial::addParameter(QParameter *parameter)
 
 void QMaterial::removeParameter(QParameter *parameter)
 {
+    Q_ASSERT(parameter);
     Q_D(QMaterial);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter->id());
         change->setPropertyName("parameter");
-        change->setValue(QVariant::fromValue(parameter->id()));
         d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);

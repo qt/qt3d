@@ -27,6 +27,9 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DRender/private/qrenderstate_p.h>
@@ -271,9 +274,9 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        Qt3DCore::QNodeAddedPropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodeAddedPropertyChange>();
         QCOMPARE(change->propertyName(), "parameter");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), param->id());
+        QCOMPARE(change->addedNodeId(), param->id());
         QCOMPARE(change->type(), Qt3DCore::NodeAdded);
 
         arbiter.events.clear();
@@ -285,9 +288,9 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QNodeAddedPropertyChange>();
         QCOMPARE(change->propertyName(), "parameter");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), param->id());
+        QCOMPARE(change->addedNodeId(), param->id());
         QCOMPARE(change->type(), Qt3DCore::NodeAdded);
 
         arbiter.events.clear();
@@ -299,9 +302,9 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QNodeAddedPropertyChange>();
         QCOMPARE(change->propertyName(), "parameter");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), param->id());
+        QCOMPARE(change->addedNodeId(), param->id());
         QCOMPARE(change->type(), Qt3DCore::NodeAdded);
 
         arbiter.events.clear();
@@ -313,9 +316,9 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QNodeAddedPropertyChange>();
         QCOMPARE(change->propertyName(), "parameter");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), param->id());
+        QCOMPARE(change->addedNodeId(), param->id());
         QCOMPARE(change->type(), Qt3DCore::NodeAdded);
 
         arbiter.events.clear();

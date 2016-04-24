@@ -33,6 +33,8 @@
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QEffect>
 #include <Qt3DCore/QNodePropertyChange>
+#include <Qt3DCore/QNodeAddedPropertyChange>
+#include <Qt3DCore/QNodeRemovedPropertyChange>
 #include "testrenderer.h"
 
 using namespace Qt3DCore;
@@ -135,8 +137,7 @@ void tst_RenderMaterial::shouldHandleParametersPropertyChange()
     backend.setRenderer(&renderer);
 
     // WHEN
-    QNodePropertyChangePtr addChange(new QNodePropertyChange(NodeAdded, QSceneChange::Node, parameter->id()));
-    addChange->setValue(QVariant::fromValue(parameter->id()));
+    const auto addChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), parameter->id());
     addChange->setPropertyName("parameter");
     backend.sceneChangeEvent(addChange);
 
@@ -146,8 +147,7 @@ void tst_RenderMaterial::shouldHandleParametersPropertyChange()
     QVERIFY(renderer.dirtyBits() != 0);
 
     // WHEN
-    QNodePropertyChangePtr removeChange(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, parameter->id()));
-    removeChange->setValue(QVariant::fromValue(parameter->id()));
+    const auto removeChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), parameter->id());
     removeChange->setPropertyName("parameter");
     backend.sceneChangeEvent(removeChange);
 
