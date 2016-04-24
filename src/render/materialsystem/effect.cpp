@@ -44,6 +44,8 @@
 #include <Qt3DRender/private/qeffect_p.h>
 
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 #include <QVariant>
 
@@ -95,26 +97,24 @@ void Effect::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
     case NodeAdded: {
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
-        QVariant propertyValue = propertyChange->value();
-        if (propertyChange->propertyName() == QByteArrayLiteral("technique"))
-            appendRenderTechnique(propertyValue.value<QNodeId>());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.appendParameter(propertyValue.value<QNodeId>());
+        const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("technique"))
+            appendRenderTechnique(change->addedNodeId());
+        else if (change->propertyName() == QByteArrayLiteral("parameter"))
+            m_parameterPack.appendParameter(change->addedNodeId());
         break;
     }
 
     case NodeRemoved: {
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
-        QVariant propertyValue = propertyChange->value();
-        if (propertyChange->propertyName() == QByteArrayLiteral("technique"))
-            m_techniques.removeOne(propertyValue.value<QNodeId>());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.removeParameter(propertyValue.value<QNodeId>());
+        const auto change = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("technique"))
+            m_techniques.removeOne(change->removedNodeId());
+        else if (change->propertyName() == QByteArrayLiteral("parameter"))
+            m_parameterPack.removeParameter(change->removedNodeId());
         break;
     }
 
-    default :
+    default:
         break;
     }
 

@@ -43,6 +43,8 @@
 #include "qparameter.h"
 
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -80,7 +82,7 @@ QEffect::QEffect(QEffectPrivate &dd, QNode *parent)
 void QEffect::addParameter(QParameter *parameter)
 {
     Q_D(QEffect);
-    if (!d->m_parameters.contains(parameter)) {
+    if (parameter && !d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
 
         // We need to add it as a child of the current node if it has been declared inline
@@ -91,9 +93,8 @@ void QEffect::addParameter(QParameter *parameter)
             parameter->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QNodePropertyChangePtr change(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter->id());
             change->setPropertyName("parameter");
-            change->setValue(QVariant::fromValue(parameter->id()));
             d->notifyObservers(change);
         }
     }
@@ -103,10 +104,9 @@ void QEffect::removeParameter(QParameter *parameter)
 {
     Q_D(QEffect);
 
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+    if (parameter && d->m_changeArbiter != Q_NULLPTR) {
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter->id());
         change->setPropertyName("parameter");
-        change->setValue(QVariant::fromValue(parameter->id()));
         d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
@@ -127,7 +127,7 @@ void QEffect::addTechnique(QTechnique *t)
 {
     Q_ASSERT(t);
     Q_D(QEffect);
-    if (!d->m_techniques.contains(t)) {
+    if (t && !d->m_techniques.contains(t)) {
         d->m_techniques.append(t);
 
         // We need to add it as a child of the current node if it has been declared inline
@@ -138,10 +138,9 @@ void QEffect::addTechnique(QTechnique *t)
             t->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QNodePropertyChangePtr e(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
-            e->setPropertyName("technique");
-            e->setValue(QVariant::fromValue(t->id()));
-            d->notifyObservers(e);
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), t->id());
+            change->setPropertyName("technique");
+            d->notifyObservers(change);
         }
     }
 }
@@ -154,11 +153,10 @@ void QEffect::addTechnique(QTechnique *t)
 void QEffect::removeTechnique(QTechnique *t)
 {
     Q_D(QEffect);
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        QNodePropertyChangePtr e(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
-        e->setPropertyName("technique");
-        e->setValue(QVariant::fromValue(t->id()));
-        d->notifyObservers(e);
+    if (t && d->m_changeArbiter != Q_NULLPTR) {
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), t->id());
+        change->setPropertyName("technique");
+        d->notifyObservers(change);
     }
     d->m_techniques.removeOne(t);
 }
