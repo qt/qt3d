@@ -30,6 +30,8 @@
 #include <Qt3DRender/private/renderpass_p.h>
 
 #include <Qt3DCore/QNodePropertyChange>
+#include <Qt3DCore/QNodeAddedPropertyChange>
+#include <Qt3DCore/QNodeRemovedPropertyChange>
 
 #include <Qt3DRender/QFilterKey>
 #include <Qt3DRender/QRenderPass>
@@ -132,8 +134,7 @@ private slots:
         backend.setRenderer(&renderer);
 
         // WHEN
-        QNodePropertyChangePtr addChange(new QNodePropertyChange(NodeAdded, QSceneChange::Node, shader->id()));
-        addChange->setValue(QVariant::fromValue(shader->id()));
+        const auto addChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), shader->id());
         addChange->setPropertyName("shaderProgram");
         backend.sceneChangeEvent(addChange);
 
@@ -142,8 +143,7 @@ private slots:
         QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
-        QNodePropertyChangePtr removeChange(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, shader->id()));
-        removeChange->setValue(QVariant::fromValue(shader->id()));
+        const auto removeChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), shader->id());
         removeChange->setPropertyName("shaderProgram");
         backend.sceneChangeEvent(removeChange);
 
@@ -161,8 +161,7 @@ private slots:
         backend.setRenderer(&renderer);
 
         // WHEN
-        QNodePropertyChangePtr addChange(new QNodePropertyChange(NodeAdded, QSceneChange::Node, annotation->id()));
-        addChange->setValue(QVariant::fromValue(annotation->id()));
+        const auto addChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), annotation->id());
         addChange->setPropertyName("filterKeys");
         backend.sceneChangeEvent(addChange);
 
@@ -172,8 +171,7 @@ private slots:
         QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
-        QNodePropertyChangePtr removeChange(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, annotation->id()));
-        removeChange->setValue(QVariant::fromValue(annotation->id()));
+        const auto removeChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), annotation->id());
         removeChange->setPropertyName("filterKeys");
         backend.sceneChangeEvent(removeChange);
 
@@ -191,8 +189,7 @@ private slots:
         backend.setRenderer(&renderer);
 
         // WHEN
-        QNodePropertyChangePtr addChange(new QNodePropertyChange(NodeAdded, QSceneChange::Node, parameter->id()));
-        addChange->setValue(QVariant::fromValue(parameter->id()));
+        const auto addChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), parameter->id());
         addChange->setPropertyName("parameter");
         backend.sceneChangeEvent(addChange);
 
@@ -202,8 +199,7 @@ private slots:
         QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
-        QNodePropertyChangePtr removeChange(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, parameter->id()));
-        removeChange->setValue(QVariant::fromValue(parameter->id()));
+        const auto removeChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), parameter->id());
         removeChange->setPropertyName("parameter");
         backend.sceneChangeEvent(removeChange);
 
@@ -224,8 +220,7 @@ private slots:
         backendState->setPeer(frontendState);
 
         // WHEN
-        QNodePropertyChangePtr addChange(new QNodePropertyChange(NodeAdded, QSceneChange::Node, frontendState->id()));
-        addChange->setValue(QVariant::fromValue(frontendStatePtr));
+        const auto addChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), frontendState->id());
         addChange->setPropertyName("renderState");
         backend.sceneChangeEvent(addChange);
 
@@ -235,8 +230,7 @@ private slots:
         QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
-        QNodePropertyChangePtr removeChange(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, frontendState->id()));
-        removeChange->setValue(QVariant::fromValue(frontendState->id()));
+        const auto removeChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), frontendState->id());
         removeChange->setPropertyName("renderState");
         backend.sceneChangeEvent(removeChange);
 

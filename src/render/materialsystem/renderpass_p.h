@@ -88,8 +88,8 @@ public:
     QVector<Qt3DCore::QNodeId> parameters() const;
 
 private:
-    void appendAnnotation(Qt3DCore::QNodeId criterionId);
-    void removeAnnotation(Qt3DCore::QNodeId criterionId);
+    void appendFilterKey(Qt3DCore::QNodeId filterKeyId);
+    void removeFilterKey(Qt3DCore::QNodeId filterKeyId);
 
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 

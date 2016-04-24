@@ -44,6 +44,8 @@
 #include "qfilterkey.h"
 #include "qrenderstate.h"
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -94,10 +96,9 @@ void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
     if (d->m_shader != shaderProgram) {
 
         if (d->m_shader != Q_NULLPTR && d->m_changeArbiter != Q_NULLPTR) {
-            QNodePropertyChangePtr e(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
-            e->setPropertyName("shaderProgram");
-            e->setValue(QVariant::fromValue(d->m_shader->id()));
-            d->notifyObservers(e);
+            const auto change = QNodeRemovedPropertyChangePtr::create(id(), d->m_shader->id());
+            change->setPropertyName("shaderProgram");
+            d->notifyObservers(change);
         }
 
         d->m_shader = shaderProgram;
@@ -110,11 +111,11 @@ void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
         if (!shaderProgram->parent())
             shaderProgram->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_shader && d->m_changeArbiter != Q_NULLPTR) {
             QNodePropertyChangePtr e(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
-            e->setPropertyName("shaderProgram");
-            e->setValue(QVariant::fromValue(shaderProgram->id()));
-            d->notifyObservers(e);
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), d->m_shader->id());
+            change->setPropertyName("shaderProgram");
+            d->notifyObservers(change);
         }
     }
 }
@@ -127,6 +128,7 @@ QShaderProgram *QRenderPass::shaderProgram() const
 
 void QRenderPass::addFilterKey(QFilterKey *filterKey)
 {
+    Q_ASSERT(filterKey);
     Q_D(QRenderPass);
     if (!d->m_filterKeyList.contains(filterKey)) {
         d->m_filterKeyList.append(filterKey);
@@ -139,9 +141,8 @@ void QRenderPass::addFilterKey(QFilterKey *filterKey)
             filterKey->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QNodePropertyChangePtr change(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), filterKey->id());
             change->setPropertyName("filterKeys");
-            change->setValue(QVariant::fromValue(filterKey->id()));
             d->notifyObservers(change);
         }
     }
@@ -149,11 +150,11 @@ void QRenderPass::addFilterKey(QFilterKey *filterKey)
 
 void QRenderPass::removeFilterKey(QFilterKey *filterKey)
 {
+    Q_ASSERT(filterKey);
     Q_D(QRenderPass);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), filterKey->id());
         change->setPropertyName("filterKeys");
-        change->setValue(QVariant::fromValue(filterKey->id()));
         d->notifyObservers(change);
     }
     d->m_filterKeyList.removeOne(filterKey);
@@ -175,8 +176,8 @@ QVector<QFilterKey *> QRenderPass::filterKeys() const
  */
 void QRenderPass::addRenderState(QRenderState *state)
 {
+    Q_ASSERT(state);
     Q_D(QRenderPass);
-
     if (!d->m_renderStates.contains(state)) {
         d->m_renderStates.append(state);
 
@@ -184,9 +185,8 @@ void QRenderPass::addRenderState(QRenderState *state)
             state->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QNodePropertyChangePtr change(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), state->id());
             change->setPropertyName("renderState");
-            change->setValue(QVariant::fromValue(QNodePtr(QNode::clone(state))));
             d->notifyObservers(change);
         }
     }
@@ -197,11 +197,11 @@ void QRenderPass::addRenderState(QRenderState *state)
  */
 void QRenderPass::removeRenderState(QRenderState *state)
 {
+    Q_ASSERT(state);
     Q_D(QRenderPass);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), state->id());
         change->setPropertyName("renderState");
-        change->setValue(QVariant::fromValue(state->id()));
         d->notifyObservers(change);
     }
     d->m_renderStates.removeOne(state);
@@ -219,6 +219,7 @@ QVector<QRenderState *> QRenderPass::renderStates() const
 
 void QRenderPass::addParameter(QParameter *parameter)
 {
+    Q_ASSERT(parameter);
     Q_D(QRenderPass);
     if (!d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
@@ -231,9 +232,8 @@ void QRenderPass::addParameter(QParameter *parameter)
             parameter->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QNodePropertyChangePtr change(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter->id());
             change->setPropertyName("parameter");
-            change->setValue(QVariant::fromValue(parameter->id()));
             d->notifyObservers(change);
         }
     }
@@ -241,12 +241,11 @@ void QRenderPass::addParameter(QParameter *parameter)
 
 void QRenderPass::removeParameter(QParameter *parameter)
 {
+    Q_ASSERT(parameter);
     Q_D(QRenderPass);
-
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter->id());
         change->setPropertyName("parameter");
-        change->setValue(QVariant::fromValue(parameter->id()));
         d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
