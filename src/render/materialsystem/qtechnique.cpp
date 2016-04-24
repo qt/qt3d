@@ -42,7 +42,8 @@
 #include "qparameter.h"
 #include "qgraphicsapifilter.h"
 #include <Qt3DCore/qnodepropertychange.h>
-#include <QDebug>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -99,38 +100,38 @@ void QTechniquePrivate::_q_graphicsApiFilterChanged()
     }
 }
 
-void QTechnique::addFilterKey(QFilterKey *criterion)
+void QTechnique::addFilterKey(QFilterKey *filterKey)
 {
+    Q_ASSERT(filterKey);
     Q_D(QTechnique);
-    if (!d->m_filterKeys.contains(criterion)) {
-        d->m_filterKeys.append(criterion);
+    if (!d->m_filterKeys.contains(filterKey)) {
+        d->m_filterKeys.append(filterKey);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!criterion->parent())
-            criterion->setParent(this);
+        if (!filterKey->parent())
+            filterKey->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QNodePropertyChangePtr change(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), filterKey->id());
             change->setPropertyName("filterKeys");
-            change->setValue(QVariant::fromValue(criterion->id()));
             d->notifyObservers(change);
         }
     }
 }
 
-void QTechnique::removeFilterKey(QFilterKey *criterion)
+void QTechnique::removeFilterKey(QFilterKey *filterKey)
 {
+    Q_ASSERT(filterKey);
     Q_D(QTechnique);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), filterKey->id());
         change->setPropertyName("filterKeys");
-        change->setValue(QVariant::fromValue(criterion->id()));
         d->notifyObservers(change);
     }
-    d->m_filterKeys.removeOne(criterion);
+    d->m_filterKeys.removeOne(filterKey);
 }
 
 QVector<QFilterKey *> QTechnique::filterKeys() const
@@ -141,6 +142,7 @@ QVector<QFilterKey *> QTechnique::filterKeys() const
 
 void QTechnique::addParameter(QParameter *parameter)
 {
+    Q_ASSERT(parameter);
     Q_D(QTechnique);
     if (!d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
@@ -153,9 +155,8 @@ void QTechnique::addParameter(QParameter *parameter)
             parameter->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QNodePropertyChangePtr change(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter->id());
             change->setPropertyName("parameter");
-            change->setValue(QVariant::fromValue(parameter->id()));
             d->notifyObservers(change);
         }
     }
@@ -163,12 +164,11 @@ void QTechnique::addParameter(QParameter *parameter)
 
 void QTechnique::removeParameter(QParameter *parameter)
 {
+    Q_ASSERT(parameter);
     Q_D(QTechnique);
-
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter->id());
         change->setPropertyName("parameter");
-        change->setValue(QVariant::fromValue(parameter->id()));
         d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
@@ -181,6 +181,7 @@ void QTechnique::removeParameter(QParameter *parameter)
  */
 void QTechnique::addRenderPass(QRenderPass *pass)
 {
+    Q_ASSERT(pass);
     Q_D(QTechnique);
     if (!d->m_renderPasses.contains(pass)) {
         d->m_renderPasses.append(pass);
@@ -193,10 +194,9 @@ void QTechnique::addRenderPass(QRenderPass *pass)
             pass->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QNodePropertyChangePtr e(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
-            e->setPropertyName("pass");
-            e->setValue(QVariant::fromValue(pass->id()));
-            d->notifyObservers(e);
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), pass->id());
+            change->setPropertyName("pass");
+            d->notifyObservers(change);
         }
     }
 }
@@ -208,12 +208,12 @@ void QTechnique::addRenderPass(QRenderPass *pass)
  */
 void QTechnique::removeRenderPass(QRenderPass *pass)
 {
+    Q_ASSERT(pass);
     Q_D(QTechnique);
     if (d->m_changeArbiter) {
-        QNodePropertyChangePtr e(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
-        e->setPropertyName("pass");
-        e->setValue(QVariant::fromValue(pass->id()));
-        d->notifyObservers(e);
+        const auto change = QNodeAddedPropertyChangePtr::create(id(), pass->id());
+        change->setPropertyName("pass");
+        d->notifyObservers(change);
     }
     d->m_renderPasses.removeOne(pass);
 }

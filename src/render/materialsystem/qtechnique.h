@@ -63,8 +63,8 @@ class QT3DRENDERSHARED_EXPORT QTechnique : public Qt3DCore::QNode
 public:
     explicit QTechnique(Qt3DCore::QNode *parent = Q_NULLPTR);
 
-    void addFilterKey(QFilterKey*criterion);
-    void removeFilterKey(QFilterKey*criterion);
+    void addFilterKey(QFilterKey *filterKey);
+    void removeFilterKey(QFilterKey *filterKey);
     QVector<QFilterKey*> filterKeys() const;
 
     void addParameter(QParameter *p);

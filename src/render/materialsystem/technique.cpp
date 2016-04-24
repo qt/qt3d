@@ -49,6 +49,8 @@
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 #include <QDebug>
 
@@ -112,40 +114,35 @@ void Technique::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
 
 void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
     switch (e->type()) {
-
     case NodeUpdated: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("graphicsApiFilterData")) {
-            GraphicsApiFilterData filterData = propertyChange->value().value<GraphicsApiFilterData>();
+        const auto change = qSharedPointerCast<QNodePropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("graphicsApiFilterData")) {
+            GraphicsApiFilterData filterData = change->value().value<GraphicsApiFilterData>();
             m_graphicsApiFilterData = filterData;
         }
         break;
     }
 
     case NodeAdded: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
-            appendRenderPass(propertyChange->value().value<QNodeId>());
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
-            m_parameterPack.appendParameter(propertyChange->value().value<QNodeId>());
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("filterKeys")) {
-            appendFilterKey(propertyChange->value().value<QNodeId>());
-        }
+        const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("pass"))
+            appendRenderPass(change->addedNodeId());
+        else if (change->propertyName() == QByteArrayLiteral("parameter"))
+            m_parameterPack.appendParameter(change->addedNodeId());
+        else if (change->propertyName() == QByteArrayLiteral("filterKeys"))
+            appendFilterKey(change->addedNodeId());
         break;
     }
 
     case NodeRemoved: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
-            removeRenderPass(propertyChange->value().value<QNodeId>());
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
-            m_parameterPack.removeParameter(propertyChange->value().value<QNodeId>());
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("filterKeys")) {
-            removeFilterKey(propertyChange->value().value<QNodeId>());
-        }
+        const auto change = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("pass"))
+            removeRenderPass(change->removedNodeId());
+        else if (change->propertyName() == QByteArrayLiteral("parameter"))
+            m_parameterPack.removeParameter(change->removedNodeId());
+        else if (change->propertyName() == QByteArrayLiteral("filterKeys"))
+            removeFilterKey(change->removedNodeId());
         break;
     }
 
