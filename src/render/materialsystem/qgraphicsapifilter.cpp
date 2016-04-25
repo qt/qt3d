@@ -105,15 +105,6 @@ QGraphicsApiFilter::QGraphicsApiFilter(QObject *parent)
 {
 }
 
-/*! \fn void Qt3DRender::QGraphicsApiFilter::copy(const QGraphicsApiFilter &ref)
-  Copies the \a ref instance into this one.
- */
-void QGraphicsApiFilter::copy(const QGraphicsApiFilter &ref)
-{
-    Q_D(QGraphicsApiFilter);
-    d->m_data = ref.d_func()->m_data;
-}
-
 /*!
   \enum Qt3DRender::QGraphicsApiFilter::Api
 

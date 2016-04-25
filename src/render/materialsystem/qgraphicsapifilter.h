@@ -78,8 +78,6 @@ public:
 
     explicit QGraphicsApiFilter(QObject *parent = Q_NULLPTR);
 
-    void copy(const QGraphicsApiFilter &ref);
-
     Api api() const;
     OpenGLProfile profile() const;
     int minorVersion() const;

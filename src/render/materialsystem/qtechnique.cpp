@@ -78,7 +78,8 @@ void QTechnique::copy(const QNode *ref)
 {
     QNode::copy(ref);
     const QTechnique *tech = static_cast<const QTechnique*>(ref);
-    d_func()->m_graphicsApiFilter.copy(tech->d_func()->m_graphicsApiFilter);
+    QGraphicsApiFilterPrivate::get(const_cast<QGraphicsApiFilter *>(&d_func()->m_graphicsApiFilter))->m_data =
+            QGraphicsApiFilterPrivate::get(const_cast<QGraphicsApiFilter *>(&tech->d_func()->m_graphicsApiFilter))->m_data;
 
     Q_FOREACH (QFilterKey *annotation, tech->d_func()->m_filterKeys)
         addFilterKey(qobject_cast<QFilterKey *>(QNode::clone(annotation)));
