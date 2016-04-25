@@ -54,6 +54,7 @@
 
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/parameterpack_p.h>
+#include <Qt3DRender/private/qgraphicsapifilter_p.h>
 #include <Qt3DRender/qfilterkey.h>
 #include <QVector>
 #include <QStringList>
@@ -92,13 +93,12 @@ public:
 
     QVector<Qt3DCore::QNodeId> filterKeys() const;
     QVector<Qt3DCore::QNodeId> renderPasses() const;
-    QGraphicsApiFilter *graphicsApiFilter() const;
+    const GraphicsApiFilterData *graphicsApiFilter() const;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
-    QGraphicsApiFilter *m_graphicsApiFilter;
-
+    GraphicsApiFilterData m_graphicsApiFilterData;
     ParameterPack m_parameterPack;
     QVector<Qt3DCore::QNodeId> m_filterKeyList;
     QVector<Qt3DCore::QNodeId> m_renderPasses;

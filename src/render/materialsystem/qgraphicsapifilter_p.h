@@ -57,6 +57,9 @@ struct GraphicsApiFilterData
     int m_major;
     QStringList m_extensions;
     QString m_vendor;
+
+    bool operator ==(const GraphicsApiFilterData &other) const;
+    bool operator !=(const GraphicsApiFilterData &other) const;
 };
 
 class QGraphicsApiFilterPrivate : public QObjectPrivate
@@ -67,6 +70,8 @@ public:
     {
     }
 
+    static QGraphicsApiFilterPrivate *get(QGraphicsApiFilter *q);
+
     Q_DECLARE_PUBLIC(QGraphicsApiFilter)
     GraphicsApiFilterData m_data;
 };
@@ -74,5 +79,7 @@ public:
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3DRender::GraphicsApiFilterData);
 
 #endif // QT3DRENDER_QGRAPHICSAPIFILTER_P_H

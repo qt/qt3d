@@ -92,10 +92,8 @@ void QTechniquePrivate::_q_graphicsApiFilterChanged()
 {
     if (m_changeArbiter != Q_NULLPTR) {
         QNodePropertyChangePtr change(new QNodePropertyChange(NodeUpdated, QSceneChange::Node, m_id));
-        change->setPropertyName("graphicsApiFilter");
-        QGraphicsApiFilter *clone = new QGraphicsApiFilter();
-        clone->copy(m_graphicsApiFilter);
-        change->setValue(QVariant::fromValue(clone));
+        change->setPropertyName("graphicsApiFilterData");
+        change->setValue(QVariant::fromValue(QGraphicsApiFilterPrivate::get(const_cast<QGraphicsApiFilter *>(&m_graphicsApiFilter))->m_data));
         notifyObservers(change);
     }
 }
@@ -243,17 +241,10 @@ QGraphicsApiFilter *QTechnique::graphicsApiFilter()
 Qt3DCore::QNodeCreatedChangeBasePtr QTechnique::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QTechniqueData>::create(this);
-    auto &data = creationChange->data;
+    QTechniqueData &data = creationChange->data;
 
     Q_D(const QTechnique);
-    const QGraphicsApiFilter &filter = d->m_graphicsApiFilter;
-    data.api = filter.api();
-    data.profile = filter.profile();
-    data.majorVersion = filter.majorVersion();
-    data.minorVersion = filter.minorVersion();
-    data.extensions = filter.extensions();
-    data.vendor = filter.vendor();
-
+    data.graphicsApiFilterData = QGraphicsApiFilterPrivate::get(const_cast<QGraphicsApiFilter *>(&d->m_graphicsApiFilter))->m_data;
     data.filterKeyIds = qIdsForNodes(d->m_filterKeys);
     data.parameterIds = qIdsForNodes(d->m_parameters);
     data.renderPassIds = qIdsForNodes(d->m_renderPasses);

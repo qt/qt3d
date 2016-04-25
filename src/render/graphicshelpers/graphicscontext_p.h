@@ -65,6 +65,7 @@
 #include <Qt3DRender/private/glbuffer_p.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/private/qgraphicsapifilter_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -73,8 +74,6 @@ class QOpenGLShaderProgram;
 class QAbstractOpenGLFunctions;
 
 namespace Qt3DRender {
-
-class QGraphicsApiFilter;
 
 namespace Render {
 
@@ -173,7 +172,7 @@ public:
 
     void setCurrentStateSet(RenderStateSet* ss);
     RenderStateSet *currentStateSet() const;
-    QGraphicsApiFilter *contextInfo() const;
+    const GraphicsApiFilterData *contextInfo() const;
 
     // Wrapper methods
     void    alphaTest(GLenum mode1, GLenum mode2);
@@ -277,7 +276,7 @@ private:
     RenderStateSet* m_stateSet;
 
     Renderer *m_renderer;
-    QGraphicsApiFilter *m_contextInfo;
+    GraphicsApiFilterData m_contextInfo;
 
     QByteArray m_uboTempArray;
 

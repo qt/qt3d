@@ -140,7 +140,6 @@ GraphicsContext::GraphicsContext()
     , m_boundArrayBuffer(nullptr)
     , m_stateSet(Q_NULLPTR)
     , m_renderer(Q_NULLPTR)
-    , m_contextInfo(new QGraphicsApiFilter())
     , m_uboTempArray(QByteArray(1024, 0))
     , m_supportsVAO(true)
     , m_debugLogger(Q_NULLPTR)
@@ -646,12 +645,12 @@ GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
     QStringList extensions;
     Q_FOREACH (const QByteArray &ext, m_gl->extensions().values())
         extensions << QString::fromUtf8(ext);
-    m_contextInfo->setMajorVersion(m_gl->format().version().first);
-    m_contextInfo->setMinorVersion(m_gl->format().version().second);
-    m_contextInfo->setApi(m_gl->isOpenGLES() ? QGraphicsApiFilter::OpenGLES : QGraphicsApiFilter::OpenGL);
-    m_contextInfo->setProfile(static_cast<QGraphicsApiFilter::OpenGLProfile>(m_gl->format().profile()));
-    m_contextInfo->setExtensions(extensions);
-    m_contextInfo->setVendor(QString::fromUtf8(reinterpret_cast<const char *>(m_gl->functions()->glGetString(GL_VENDOR))));
+    m_contextInfo.m_major = m_gl->format().version().first;
+    m_contextInfo.m_minor = m_gl->format().version().second;
+    m_contextInfo.m_api = m_gl->isOpenGLES() ? QGraphicsApiFilter::OpenGLES : QGraphicsApiFilter::OpenGL;
+    m_contextInfo.m_profile = static_cast<QGraphicsApiFilter::OpenGLProfile>(m_gl->format().profile());
+    m_contextInfo.m_extensions = extensions;
+    m_contextInfo.m_vendor = QString::fromUtf8(reinterpret_cast<const char *>(m_gl->functions()->glGetString(GL_VENDOR)));
 
     return glHelper;
 }
@@ -683,9 +682,9 @@ RenderStateSet *GraphicsContext::currentStateSet() const
     return m_stateSet;
 }
 
-QGraphicsApiFilter *GraphicsContext::contextInfo() const
+const GraphicsApiFilterData *GraphicsContext::contextInfo() const
 {
-    return m_contextInfo;
+    return &m_contextInfo;
 }
 
 bool GraphicsContext::supportsDrawBuffersBlend() const

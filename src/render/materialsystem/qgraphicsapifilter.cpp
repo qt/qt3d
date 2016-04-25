@@ -53,6 +53,34 @@ GraphicsApiFilterData::GraphicsApiFilterData()
     , m_major(0)
 {}
 
+bool GraphicsApiFilterData::operator ==(const GraphicsApiFilterData &other) const
+{
+    if (other.m_api == m_api
+            && other.m_profile <= m_profile
+            && (other.m_major < m_major
+                || (other.m_major == m_major && other.m_minor <= m_minor))) {
+        Q_FOREACH (const QString &neededExt, other.m_extensions)
+            if (!m_extensions.contains(neededExt))
+                return false;
+        // If a vendor name was specified in sample, we perform comparison,
+        // otherwise we assume the vendor name doesn't matter
+        if (!other.m_vendor.isEmpty())
+            return (other.m_vendor == m_vendor);
+        return true;
+    }
+    return false;
+}
+
+bool GraphicsApiFilterData::operator !=(const GraphicsApiFilterData &other) const
+{
+    return !(*this == other);
+}
+
+QGraphicsApiFilterPrivate *QGraphicsApiFilterPrivate::get(QGraphicsApiFilter *q)
+{
+    return q->d_func();
+}
+
 /*!
     \class Qt3DRender::QGraphicsApiFilter
     \inmodule Qt3DRender
@@ -272,20 +300,8 @@ void QGraphicsApiFilter::setVendor(const QString &vendor)
  */
 bool operator ==(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &sample)
 {
-    if (sample.api() == reference.api()
-            && sample.profile() <= reference.profile()
-            && (sample.majorVersion() < reference.majorVersion()
-                || (sample.majorVersion() == reference.majorVersion() && sample.minorVersion() <= reference.minorVersion()))) {
-        Q_FOREACH (const QString &neededExt, sample.extensions())
-            if (!reference.extensions().contains(neededExt))
-                return false;
-        // If a vendor name was specified in sample, we perform comparison,
-        // otherwise we assume the vendor name doesn't matter
-        if (!sample.vendor().isEmpty())
-            return (sample.vendor() == reference.vendor());
-        return true;
-    }
-    return false;
+    return QGraphicsApiFilterPrivate::get(const_cast<QGraphicsApiFilter *>(&reference))->m_data ==
+            QGraphicsApiFilterPrivate::get(const_cast<QGraphicsApiFilter *>(&sample))->m_data;
 }
 
 /*! \fn bool Qt3DRender::operator !=(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &sample)

@@ -53,6 +53,7 @@
 
 #include <private/qnode_p.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
+#include <private/qgraphicsapifilter_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -81,12 +82,7 @@ private:
 
 struct QTechniqueData
 {
-    QGraphicsApiFilter::Api api;
-    QGraphicsApiFilter::OpenGLProfile profile;
-    int majorVersion;
-    int minorVersion;
-    QStringList extensions;
-    QString vendor;
+    GraphicsApiFilterData graphicsApiFilterData;
 
     Qt3DCore::QNodeIdVector filterKeyIds;
     Qt3DCore::QNodeIdVector parameterIds;

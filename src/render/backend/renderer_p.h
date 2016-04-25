@@ -95,7 +95,7 @@ class QShaderProgram;
 class QMesh;
 class QRenderPass;
 class QAbstractShapeMesh;
-class QGraphicsApiFilter;
+class GraphicsApiFilterData;
 class QSceneIOHandler;
 
 namespace Render {
@@ -176,7 +176,7 @@ public:
     Attribute *updateBuffersAndAttributes(Geometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate);
 
     void setOpenGLContext(QOpenGLContext *context);
-    QGraphicsApiFilter *contextInfo() const;
+    const GraphicsApiFilterData *contextInfo() const;
 
     void addAllocator(Qt3DCore::QFrameAllocator *allocator);
 

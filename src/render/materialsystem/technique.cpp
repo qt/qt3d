@@ -61,7 +61,6 @@ namespace Render {
 
 Technique::Technique()
     : BackendNode()
-    , m_graphicsApiFilter(Q_NULLPTR)
 {
 }
 
@@ -73,9 +72,6 @@ Technique::~Technique()
 void Technique::cleanup()
 {
     QBackendNode::setEnabled(false);
-    if (m_graphicsApiFilter)
-        delete m_graphicsApiFilter;
-    m_graphicsApiFilter = Q_NULLPTR;
     m_parameterPack.clear();
     m_renderPasses.clear();
     m_filterKeyList.clear();
@@ -86,9 +82,6 @@ void Technique::updateFromPeer(Qt3DCore::QNode *peer)
     m_parameterPack.clear();
     m_renderPasses.clear();
     m_filterKeyList.clear();
-
-    if (m_graphicsApiFilter == Q_NULLPTR)
-        m_graphicsApiFilter = new QGraphicsApiFilter();
 
     QTechnique *technique = static_cast<QTechnique *>(peer);
 
@@ -102,25 +95,16 @@ void Technique::updateFromPeer(Qt3DCore::QNode *peer)
 
         // Copy GraphicsApiFilter info from frontend GraphicsApiFilter
         QGraphicsApiFilter *peerFilter = technique->graphicsApiFilter();
-        m_graphicsApiFilter->copy(*peerFilter);
+        m_graphicsApiFilterData = QGraphicsApiFilterPrivate::get(peerFilter)->m_data;
     }
 }
 
 void Technique::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QTechniqueData>>(change);
-    const auto &data = typedChange->data;
+    const QTechniqueData &data = typedChange->data;
 
-    // TODO: Replace this with a value backend type
-    if (m_graphicsApiFilter == Q_NULLPTR)
-        m_graphicsApiFilter = new QGraphicsApiFilter();
-    m_graphicsApiFilter->setApi(data.api);
-    m_graphicsApiFilter->setProfile(data.profile);
-    m_graphicsApiFilter->setMajorVersion(data.majorVersion);
-    m_graphicsApiFilter->setMinorVersion(data.minorVersion);
-    m_graphicsApiFilter->setExtensions(data.extensions);
-    m_graphicsApiFilter->setVendor(data.vendor);
-
+    m_graphicsApiFilterData = data.graphicsApiFilterData;
     m_filterKeyList = data.filterKeyIds;
     m_parameterPack.setParameters(data.parameterIds);
     m_renderPasses = data.renderPassIds;
@@ -132,12 +116,9 @@ void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     switch (e->type()) {
 
     case NodeUpdated: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("graphicsApiFilter")) {
-            QGraphicsApiFilter *filter = propertyChange->value().value<QGraphicsApiFilter *>();
-            if (filter != Q_NULLPTR) {
-                m_graphicsApiFilter->copy(*filter);
-                delete filter;
-            }
+        if (propertyChange->propertyName() == QByteArrayLiteral("graphicsApiFilterData")) {
+            GraphicsApiFilterData filterData = propertyChange->value().value<GraphicsApiFilterData>();
+            m_graphicsApiFilterData = filterData;
         }
         break;
     }
@@ -201,9 +182,9 @@ QVector<Qt3DCore::QNodeId> Technique::renderPasses() const
     return m_renderPasses;
 }
 
-QGraphicsApiFilter *Technique::graphicsApiFilter() const
+const GraphicsApiFilterData *Technique::graphicsApiFilter() const
 {
-    return m_graphicsApiFilter;
+    return &m_graphicsApiFilterData;
 }
 
 void Technique::appendFilterKey(Qt3DCore::QNodeId criterionId)
