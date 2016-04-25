@@ -63,7 +63,11 @@ class QRenderPass;
 class QShaderProgram;
 class QTechnique;
 
-class QGoochMaterialPrivate : public QMaterialPrivate
+}
+
+namespace Qt3DExtras {
+
+class QGoochMaterialPrivate : public Qt3DRender::QMaterialPrivate
 {
 public:
     QGoochMaterialPrivate();
@@ -78,23 +82,23 @@ public:
     void handleBetaChanged(const QVariant &var);
     void handleShininessChanged(const QVariant &var);
 
-    QEffect *m_effect;
-    QParameter *m_diffuseParameter;
-    QParameter *m_specularParameter;
-    QParameter *m_coolParameter;
-    QParameter *m_warmParameter;
-    QParameter *m_alphaParameter;
-    QParameter *m_betaParameter;
-    QParameter *m_shininessParameter;
-    QTechnique *m_gl3Technique;
-    QTechnique *m_gl2Technique;
-    QTechnique *m_es2Technique;
-    QRenderPass *m_gl3RenderPass;
-    QRenderPass *m_gl2RenderPass;
-    QRenderPass *m_es2RenderPass;
-    QShaderProgram *m_gl3Shader;
-    QShaderProgram *m_gl2ES2Shader;
-    QFilterKey *m_filterKey;
+    Qt3DRender::QEffect *m_effect;
+    Qt3DRender::QParameter *m_diffuseParameter;
+    Qt3DRender::QParameter *m_specularParameter;
+    Qt3DRender::QParameter *m_coolParameter;
+    Qt3DRender::QParameter *m_warmParameter;
+    Qt3DRender::QParameter *m_alphaParameter;
+    Qt3DRender::QParameter *m_betaParameter;
+    Qt3DRender::QParameter *m_shininessParameter;
+    Qt3DRender::QTechnique *m_gl3Technique;
+    Qt3DRender::QTechnique *m_gl2Technique;
+    Qt3DRender::QTechnique *m_es2Technique;
+    Qt3DRender::QRenderPass *m_gl3RenderPass;
+    Qt3DRender::QRenderPass *m_gl2RenderPass;
+    Qt3DRender::QRenderPass *m_es2RenderPass;
+    Qt3DRender::QShaderProgram *m_gl3Shader;
+    Qt3DRender::QShaderProgram *m_gl2ES2Shader;
+    Qt3DRender::QFilterKey *m_filterKey;
 
     Q_DECLARE_PUBLIC(QGoochMaterial)
 };

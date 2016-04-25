@@ -45,11 +45,11 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DExtras {
 
 class QGoochMaterialPrivate;
 
-class QGoochMaterial : public QMaterial
+class QGoochMaterial : public Qt3DRender::QMaterial
 {
     Q_OBJECT
     Q_PROPERTY(QColor diffuse READ diffuse WRITE setDiffuse NOTIFY diffuseChanged)

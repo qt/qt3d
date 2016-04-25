@@ -50,27 +50,27 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DExtras {
 
 QGoochMaterialPrivate::QGoochMaterialPrivate()
     : QMaterialPrivate()
-    , m_effect(new QEffect)
-    , m_diffuseParameter(new QParameter(QStringLiteral("kd"), QColor::fromRgbF(0.0f, 0.0f, 0.0f)))
-    , m_specularParameter(new QParameter(QStringLiteral("ks"), QColor::fromRgbF(0.0f, 0.0f, 0.0f)))
-    , m_coolParameter(new QParameter(QStringLiteral("kblue"), QColor::fromRgbF(0.0f, 0.0f, 0.4f)))
-    , m_warmParameter(new QParameter(QStringLiteral("kyellow"), QColor::fromRgbF(0.4f, 0.4f, 0.0f)))
-    , m_alphaParameter(new QParameter(QStringLiteral("alpha"), 0.25f))
-    , m_betaParameter(new QParameter(QStringLiteral("beta"), 0.5f))
-    , m_shininessParameter(new QParameter(QStringLiteral("shininess"), 100.0f))
-    , m_gl3Technique(new QTechnique)
-    , m_gl2Technique(new QTechnique)
-    , m_es2Technique(new QTechnique)
-    , m_gl3RenderPass(new QRenderPass)
-    , m_gl2RenderPass(new QRenderPass)
-    , m_es2RenderPass(new QRenderPass)
-    , m_gl3Shader(new QShaderProgram)
-    , m_gl2ES2Shader(new QShaderProgram)
-    , m_filterKey(new QFilterKey)
+    , m_effect(new Qt3DRender::QEffect)
+    , m_diffuseParameter(new Qt3DRender::QParameter(QStringLiteral("kd"), QColor::fromRgbF(0.0f, 0.0f, 0.0f)))
+    , m_specularParameter(new Qt3DRender::QParameter(QStringLiteral("ks"), QColor::fromRgbF(0.0f, 0.0f, 0.0f)))
+    , m_coolParameter(new Qt3DRender::QParameter(QStringLiteral("kblue"), QColor::fromRgbF(0.0f, 0.0f, 0.4f)))
+    , m_warmParameter(new Qt3DRender::QParameter(QStringLiteral("kyellow"), QColor::fromRgbF(0.4f, 0.4f, 0.0f)))
+    , m_alphaParameter(new Qt3DRender::QParameter(QStringLiteral("alpha"), 0.25f))
+    , m_betaParameter(new Qt3DRender::QParameter(QStringLiteral("beta"), 0.5f))
+    , m_shininessParameter(new Qt3DRender::QParameter(QStringLiteral("shininess"), 100.0f))
+    , m_gl3Technique(new Qt3DRender::QTechnique)
+    , m_gl2Technique(new Qt3DRender::QTechnique)
+    , m_es2Technique(new Qt3DRender::QTechnique)
+    , m_gl3RenderPass(new Qt3DRender::QRenderPass)
+    , m_gl2RenderPass(new Qt3DRender::QRenderPass)
+    , m_es2RenderPass(new Qt3DRender::QRenderPass)
+    , m_gl3Shader(new Qt3DRender::QShaderProgram)
+    , m_gl2ES2Shader(new Qt3DRender::QShaderProgram)
+    , m_filterKey(new Qt3DRender::QFilterKey)
 {
 }
 
@@ -93,25 +93,25 @@ void QGoochMaterialPrivate::init()
     connect(m_shininessParameter, &Qt3DRender::QParameter::valueChanged,
             this, &QGoochMaterialPrivate::handleShininessChanged);
 
-    m_gl3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/gooch.vert"))));
-    m_gl3Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/gooch.frag"))));
-    m_gl2ES2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/gooch.vert"))));
-    m_gl2ES2Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/gooch.frag"))));
+    m_gl3Shader->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/gooch.vert"))));
+    m_gl3Shader->setFragmentShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/gooch.frag"))));
+    m_gl2ES2Shader->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/gooch.vert"))));
+    m_gl2ES2Shader->setFragmentShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/gooch.frag"))));
 
-    m_gl3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+    m_gl3Technique->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::OpenGL);
     m_gl3Technique->graphicsApiFilter()->setMajorVersion(3);
     m_gl3Technique->graphicsApiFilter()->setMinorVersion(1);
-    m_gl3Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::CoreProfile);
+    m_gl3Technique->graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::CoreProfile);
 
-    m_gl2Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+    m_gl2Technique->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::OpenGL);
     m_gl2Technique->graphicsApiFilter()->setMajorVersion(2);
     m_gl2Technique->graphicsApiFilter()->setMinorVersion(0);
-    m_gl2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
+    m_gl2Technique->graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::NoProfile);
 
-    m_es2Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGLES);
+    m_es2Technique->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::OpenGLES);
     m_es2Technique->graphicsApiFilter()->setMajorVersion(2);
     m_es2Technique->graphicsApiFilter()->setMinorVersion(0);
-    m_es2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
+    m_es2Technique->graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::NoProfile);
 
     m_filterKey->setParent(q);
     m_filterKey->setName(QStringLiteral("renderingStyle"));
