@@ -343,20 +343,22 @@ void ShaderData::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             }
             break;
         }
-        case NodeAdded: {
-            m_properties.insert(propertyName, m_propertyReader->readProperty(propertyChange->value()));
-            m_originalProperties.insert(propertyName, m_propertyReader->readProperty(propertyChange->value()));
-            m_nestedShaderDataProperties.insert(propertyName, propertyChange->value());
-            break;
-        }
-        case NodeRemoved: {
-            if (m_properties.contains(propertyName)) {
-                m_originalProperties.remove(propertyName);
-                m_properties.remove(propertyName);
-                m_nestedShaderDataProperties.remove(propertyName);
-            }
-            break;
-        }
+            //        case NodeAdded: {
+            //            qDebug() << Q_FUNC_INFO;
+            //            m_properties.insert(propertyName, m_propertyReader->readProperty(propertyChange->value()));
+            //            m_originalProperties.insert(propertyName, m_propertyReader->readProperty(propertyChange->value()));
+            //            m_nestedShaderDataProperties.insert(propertyName, propertyChange->value());
+            //            break;
+            //        }
+            //        case NodeRemoved: {
+            //            qDebug() << Q_FUNC_INFO;
+            //            if (m_properties.contains(propertyName)) {
+            //                m_originalProperties.remove(propertyName);
+            //                m_properties.remove(propertyName);
+            //                m_nestedShaderDataProperties.remove(propertyName);
+            //            }
+            //            break;
+            //        }
         default:
             break;
         }
