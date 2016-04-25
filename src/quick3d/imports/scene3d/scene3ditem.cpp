@@ -83,8 +83,6 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
 {
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::MouseButtonMask);
-    setAcceptHoverEvents(true);
-
     // TO DO: register the event source in the main thread
 
     m_aspectEngine->registerAspect(m_renderAspect);
@@ -148,6 +146,14 @@ void Scene3DItem::setCameraAspectRatioMode(CameraAspectRatioMode mode)
     m_cameraAspectRatioMode = mode;
     setCameraAspectModeHelper();
     emit cameraAspectRatioModeChanged(mode);
+}
+
+void Scene3DItem::setHoverEnabled(bool enabled)
+{
+    if (enabled != acceptHoverEvents()) {
+        setAcceptHoverEvents(enabled);
+        emit hoverEnabledChanged();
+    }
 }
 
 Scene3DItem::CameraAspectRatioMode Scene3DItem::cameraAspectRatioMode() const
@@ -241,6 +247,11 @@ void Scene3DItem::setItemArea(const QSize &area)
         return;
     }
     surfaceSelector->setExternalRenderTargetSize(area);
+}
+
+bool Scene3DItem::isHoverEnabled() const
+{
+    return acceptHoverEvents();
 }
 
 void Scene3DItem::setCameraAspectModeHelper()
