@@ -90,6 +90,7 @@ public:
     void setManagers(NodeManagers *managers);
 
 protected:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     // 1 to 1 match with frontend properties, modified only by sceneChangeEvent

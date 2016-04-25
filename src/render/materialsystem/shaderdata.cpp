@@ -79,6 +79,35 @@ void ShaderData::setManagers(NodeManagers *managers)
     m_managers = managers;
 }
 
+void ShaderData::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QShaderDataData>>(change);
+    const QShaderDataData &data = typedChange->data;
+
+    for (const QPair<QByteArray, QVariant> &entry : data.properties) {
+        if (entry.first == QByteArrayLiteral("data") ||
+                entry.first == QByteArrayLiteral("childNodes")) // We don't handle default Node properties
+            continue;
+        const QVariant &propertyValue = entry.second;
+        const QString propertyName = QString::fromLatin1(entry.first);
+
+        m_properties.insert(propertyName, propertyValue);
+        m_originalProperties.insert(propertyName, propertyValue);
+
+        // We check if the property is a QNodeId or QVector<QNodeId> so that we can
+        // check nested QShaderData for update
+        if (propertyValue.userType() == qNodeIdTypeId) {
+            m_nestedShaderDataProperties.insert(propertyName, propertyValue);
+        } else if (propertyValue.userType() == QMetaType::QVariantList) {
+            QVariantList list = propertyValue.value<QVariantList>();
+            if (list.count() > 0 && list.at(0).userType() == qNodeIdTypeId)
+                m_nestedShaderDataProperties.insert(propertyName, propertyValue);
+        }
+    }
+    // Note: we ignore transformed properties for now until we figure out how to best handle them
+}
+
+
 ShaderData *ShaderData::lookupResource(NodeManagers *managers, QNodeId id)
 {
     ShaderData *shaderData = managers->shaderDataManager()->lookupResource(id);
