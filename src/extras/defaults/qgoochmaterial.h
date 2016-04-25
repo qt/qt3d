@@ -40,6 +40,7 @@
 #ifndef QT3DEXTRAS_QGOOCHMATERIAL_H
 #define QT3DEXTRAS_QGOOCHMATERIAL_H
 
+#include <Qt3DExtras/qt3dextras_global.h>
 #include <Qt3DRender/qmaterial.h>
 #include <QColor>
 
@@ -49,7 +50,7 @@ namespace Qt3DExtras {
 
 class QGoochMaterialPrivate;
 
-class QGoochMaterial : public Qt3DRender::QMaterial
+class QT3DEXTRASSHARED_EXPORT QGoochMaterial : public Qt3DRender::QMaterial
 {
     Q_OBJECT
     Q_PROPERTY(QColor diffuse READ diffuse WRITE setDiffuse NOTIFY diffuseChanged)
@@ -95,7 +96,7 @@ private:
     Q_DECLARE_PRIVATE(QGoochMaterial)
 };
 
-} // namespace Qt3DRender
+} // namespace Qt3DExtras
 
 QT_END_NAMESPACE
 

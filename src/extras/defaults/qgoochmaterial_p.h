@@ -103,7 +103,7 @@ public:
     Q_DECLARE_PUBLIC(QGoochMaterial)
 };
 
-} // namespace Qt3DRender
+} // namespace Qt3DExtras
 
 QT_END_NAMESPACE
 
