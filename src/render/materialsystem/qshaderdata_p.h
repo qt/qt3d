@@ -96,6 +96,11 @@ public:
     Q_DECLARE_PUBLIC(QShaderData)
 };
 
+struct QShaderDataData
+{
+    QVector<QPair<QByteArray, QVariant>> properties;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

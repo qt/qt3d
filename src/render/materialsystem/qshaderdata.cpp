@@ -107,6 +107,25 @@ void QShaderData::copy(const QNode *ref)
     }
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QShaderData::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QShaderDataData>::create(this);
+    QShaderDataData &data = creationChange->data;
+
+    const QMetaObject *metaObj = metaObject();
+    const int propertyOffset = QShaderData::staticMetaObject.propertyOffset();
+    const int propertyCount = metaObj->propertyCount();
+
+    data.properties.reserve(propertyCount - propertyOffset);
+    for (int i = propertyOffset; i < propertyCount; ++i) {
+        const QMetaProperty pro = metaObj->property(i);
+        data.properties.push_back(qMakePair(pro.name(),
+                                            propertyReader()->readProperty(property(pro.name()))));
+    }
+
+    return creationChange;
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
