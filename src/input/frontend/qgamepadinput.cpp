@@ -93,11 +93,6 @@ QGamepadInput::QGamepadInput(const QGamepadInput &other)
     d_func()->m_deviceId = other.d_func()->m_deviceId;
 }
 
-QGamepadInput::~QGamepadInput()
-{
-    QAbstractPhysicalDevice::cleanup();
-}
-
 int QGamepadInput::deviceId() const
 {
     return d_func()->m_deviceId;

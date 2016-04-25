@@ -64,7 +64,6 @@ public:
     explicit QGamepadInput(Qt3DCore::QNode *parent = Q_NULLPTR);
     explicit QGamepadInput(const QGamepadInput &other);
 
-    ~QGamepadInput();
     int deviceId() const;
     void setDeviceId(int deviceId);
 
