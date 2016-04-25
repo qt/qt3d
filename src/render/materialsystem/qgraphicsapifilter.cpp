@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "qgraphicsapifilter.h"
+#include "qgraphicsapifilter_p.h"
 #include "private/qobject_p.h"
 #include <QOpenGLContext>
 
@@ -45,26 +46,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QGraphicsApiFilterPrivate : public QObjectPrivate
-{
-public:
-    QGraphicsApiFilterPrivate()
-        : QObjectPrivate()
-        , m_api(QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL ? QGraphicsApiFilter::OpenGL : QGraphicsApiFilter::OpenGLES)
-        , m_profile(QGraphicsApiFilter::NoProfile) // matches all (no profile, core, compat)
-        , m_minor(0)
-        , m_major(0)
-    {
-    }
-
-    Q_DECLARE_PUBLIC(QGraphicsApiFilter)
-    QGraphicsApiFilter::Api m_api;
-    QGraphicsApiFilter::OpenGLProfile m_profile;
-    int m_minor;
-    int m_major;
-    QStringList m_extensions;
-    QString m_vendor;
-};
+GraphicsApiFilterData::GraphicsApiFilterData()
+    : m_api(QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL ? QGraphicsApiFilter::OpenGL : QGraphicsApiFilter::OpenGLES)
+    , m_profile(QGraphicsApiFilter::NoProfile) // matches all (no profile, core, compat)
+    , m_minor(0)
+    , m_major(0)
+{}
 
 /*!
     \class Qt3DRender::QGraphicsApiFilter
@@ -96,12 +83,7 @@ QGraphicsApiFilter::QGraphicsApiFilter(QObject *parent)
 void QGraphicsApiFilter::copy(const QGraphicsApiFilter &ref)
 {
     Q_D(QGraphicsApiFilter);
-    d->m_api = ref.api();
-    d->m_profile = ref.profile();
-    d->m_major = ref.majorVersion();
-    d->m_minor = ref.minorVersion();
-    d->m_extensions = ref.extensions();
-    d->m_vendor = ref.vendor();
+    d->m_data = ref.d_func()->m_data;
 }
 
 /*!
@@ -137,7 +119,7 @@ void QGraphicsApiFilter::copy(const QGraphicsApiFilter &ref)
 QGraphicsApiFilter::Api QGraphicsApiFilter::api() const
 {
     Q_D(const QGraphicsApiFilter);
-    return d->m_api;
+    return d->m_data.m_api;
 }
 
 /*!
@@ -156,7 +138,7 @@ QGraphicsApiFilter::Api QGraphicsApiFilter::api() const
 QGraphicsApiFilter::OpenGLProfile QGraphicsApiFilter::profile() const
 {
     Q_D(const QGraphicsApiFilter);
-    return d->m_profile;
+    return d->m_data.m_profile;
 }
 
 /*!
@@ -172,7 +154,7 @@ QGraphicsApiFilter::OpenGLProfile QGraphicsApiFilter::profile() const
 int QGraphicsApiFilter::minorVersion() const
 {
     Q_D(const QGraphicsApiFilter);
-    return d->m_minor;
+    return d->m_data.m_minor;
 }
 
 /*!
@@ -188,7 +170,7 @@ int QGraphicsApiFilter::minorVersion() const
 int QGraphicsApiFilter::majorVersion() const
 {
     Q_D(const QGraphicsApiFilter);
-    return d->m_major;
+    return d->m_data.m_major;
 }
 
 /*!
@@ -204,7 +186,7 @@ int QGraphicsApiFilter::majorVersion() const
 QStringList QGraphicsApiFilter::extensions() const
 {
     Q_D(const QGraphicsApiFilter);
-    return d->m_extensions;
+    return d->m_data.m_extensions;
 }
 
 /*!
@@ -220,14 +202,14 @@ QStringList QGraphicsApiFilter::extensions() const
 QString QGraphicsApiFilter::vendor() const
 {
     Q_D(const QGraphicsApiFilter);
-    return d->m_vendor;
+    return d->m_data.m_vendor;
 }
 
 void QGraphicsApiFilter::setApi(QGraphicsApiFilter::Api api)
 {
     Q_D(QGraphicsApiFilter);
-    if (d->m_api != api) {
-        d->m_api = api;
+    if (d->m_data.m_api != api) {
+        d->m_data.m_api = api;
         emit apiChanged(api);
         emit graphicsApiFilterChanged();
     }
@@ -236,8 +218,8 @@ void QGraphicsApiFilter::setApi(QGraphicsApiFilter::Api api)
 void QGraphicsApiFilter::setProfile(QGraphicsApiFilter::OpenGLProfile profile)
 {
     Q_D(QGraphicsApiFilter);
-    if (d->m_profile != profile) {
-        d->m_profile = profile;
+    if (d->m_data.m_profile != profile) {
+        d->m_data.m_profile = profile;
         emit profileChanged(profile);
         emit graphicsApiFilterChanged();
     }
@@ -246,8 +228,8 @@ void QGraphicsApiFilter::setProfile(QGraphicsApiFilter::OpenGLProfile profile)
 void QGraphicsApiFilter::setMinorVersion(int minorVersion)
 {
     Q_D(QGraphicsApiFilter);
-    if (minorVersion != d->m_minor) {
-        d->m_minor = minorVersion;
+    if (minorVersion != d->m_data.m_minor) {
+        d->m_data.m_minor = minorVersion;
         emit minorVersionChanged(minorVersion);
         emit graphicsApiFilterChanged();
     }
@@ -256,8 +238,8 @@ void QGraphicsApiFilter::setMinorVersion(int minorVersion)
 void QGraphicsApiFilter::setMajorVersion(int majorVersion)
 {
     Q_D(QGraphicsApiFilter);
-    if (d->m_major != majorVersion) {
-        d->m_major = majorVersion;
+    if (d->m_data.m_major != majorVersion) {
+        d->m_data.m_major = majorVersion;
         emit majorVersionChanged(majorVersion);
         emit graphicsApiFilterChanged();
     }
@@ -266,8 +248,8 @@ void QGraphicsApiFilter::setMajorVersion(int majorVersion)
 void QGraphicsApiFilter::setExtensions(const QStringList &extensions)
 {
     Q_D(QGraphicsApiFilter);
-    if (d->m_extensions != extensions) {
-        d->m_extensions = extensions;
+    if (d->m_data.m_extensions != extensions) {
+        d->m_data.m_extensions = extensions;
         emit extensionsChanged(extensions);
         emit graphicsApiFilterChanged();
     }
@@ -276,8 +258,8 @@ void QGraphicsApiFilter::setExtensions(const QStringList &extensions)
 void QGraphicsApiFilter::setVendor(const QString &vendor)
 {
     Q_D(QGraphicsApiFilter);
-    if (d->m_vendor != vendor) {
-        d->m_vendor = vendor;
+    if (d->m_data.m_vendor != vendor) {
+        d->m_data.m_vendor = vendor;
         emit vendorChanged(vendor);
         emit graphicsApiFilterChanged();
     }
@@ -291,9 +273,9 @@ void QGraphicsApiFilter::setVendor(const QString &vendor)
 bool operator ==(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &sample)
 {
     if (sample.api() == reference.api()
-        && sample.profile() <= reference.profile()
-        && (sample.majorVersion() < reference.majorVersion()
-            || (sample.majorVersion() == reference.majorVersion() && sample.minorVersion() <= reference.minorVersion()))) {
+            && sample.profile() <= reference.profile()
+            && (sample.majorVersion() < reference.majorVersion()
+                || (sample.majorVersion() == reference.majorVersion() && sample.minorVersion() <= reference.minorVersion()))) {
         Q_FOREACH (const QString &neededExt, sample.extensions())
             if (!reference.extensions().contains(neededExt))
                 return false;
