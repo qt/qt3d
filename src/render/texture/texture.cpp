@@ -46,10 +46,12 @@
 #include <QOpenGLPixelTransferOptions>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qtexturedata.h>
-#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/qabstracttexture_p.h>
+#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -552,9 +554,9 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     QMutexLocker lock(&m_lock);
     // We lock here so that we're sure the texture cannot be rebuilt while we are
     // modifying one of its properties
-    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
     switch (e->type()) {
     case NodeUpdated: {
+        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("width")) {
             setSize(propertyChange->value().toInt(), m_height, m_depth);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("height")) {
@@ -612,15 +614,17 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
 
     case NodeAdded: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("textureImage")) {
-            m_textureImages.append(m_textureImageManager->lookupHandle(propertyChange->value().value<QNodeId>()));
+        const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("textureImage")) {
+            m_textureImages.append(m_textureImageManager->lookupHandle(change->addedNodeId()));
         }
     }
         break;
 
     case NodeRemoved: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("textureImage")) {
-            m_textureImages.removeOne(m_textureImageManager->lookupHandle(propertyChange->value().value<QNodeId>()));
+        const auto change = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("textureImage")) {
+            m_textureImages.removeOne(m_textureImageManager->lookupHandle(change->removedNodeId()));
             // If a TextureImage is removed from a Texture, the texture image data remains on GPU
         }
     }

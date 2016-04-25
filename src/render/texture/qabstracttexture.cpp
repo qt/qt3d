@@ -39,8 +39,10 @@
 
 #include "qabstracttexture.h"
 #include "qabstracttexture_p.h"
-#include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qabstracttextureimage.h>
+#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -282,6 +284,7 @@ QAbstractTexture::Target QAbstractTexture::target() const
  */
 void QAbstractTexture::addTextureImage(QAbstractTextureImage *textureImage)
 {
+    Q_ASSERT(textureImage);
     Q_D(QAbstractTexture);
     if (!d->m_textureImages.contains(textureImage)) {
         d->m_textureImages.append(textureImage);
@@ -297,9 +300,8 @@ void QAbstractTexture::addTextureImage(QAbstractTextureImage *textureImage)
             textureImage->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QNodePropertyChangePtr change(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), textureImage->id());
             change->setPropertyName("textureImage");
-            change->setValue(QVariant::fromValue(textureImage->id()));
             d->notifyObservers(change);
         }
     }
@@ -310,11 +312,11 @@ void QAbstractTexture::addTextureImage(QAbstractTextureImage *textureImage)
  */
 void QAbstractTexture::removeTextureImage(QAbstractTextureImage *textureImage)
 {
+    Q_ASSERT(textureImage);
     Q_D(QAbstractTexture);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), textureImage->id());
         change->setPropertyName("textureImage");
-        change->setValue(QVariant::fromValue(textureImage->id()));
         d->notifyObservers(change);
     }
     d->m_textureImages.removeOne(textureImage);
