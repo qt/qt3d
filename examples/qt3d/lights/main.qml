@@ -143,7 +143,7 @@ Entity
                     loops: Quick.Animation.Infinite
                 }
                 cutOffAngle: 30
-                attenuation: Qt.vector3d(1, 0, 0)
+                constantAttenuation: 1
                 intensity: 4
             }
         ]
