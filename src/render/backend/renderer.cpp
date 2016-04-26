@@ -150,6 +150,8 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_pickBoundingVolumeJob(Q_NULLPTR)
     , m_time(0)
     , m_settings(Q_NULLPTR)
+    , m_defaultMaterial(Q_NULLPTR)
+    , m_defaultRenderStateSet(Q_NULLPTR)
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
@@ -161,6 +163,8 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 Renderer::~Renderer()
 {
     delete m_renderQueue;
+    delete m_defaultMaterial;
+    delete m_defaultRenderStateSet;
 }
 
 void Renderer::dumpInfo() const
