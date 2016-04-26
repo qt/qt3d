@@ -51,16 +51,20 @@
 import QtQuick 2.0 as Quick
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import Qt3D.Input 2.0
 import Qt3D.Extras 2.0
 
 Entity
 {
-    components: RenderSettings {
-        activeFrameGraph: ForwardRenderer {
-            clearColor: Qt.rgba(0, 0, 0, 1)
-            camera: camera
-        }
-    }
+    components: [
+        RenderSettings {
+            activeFrameGraph: ForwardRenderer {
+                clearColor: Qt.rgba(0, 0, 0, 1)
+                camera: camera
+            }
+        },
+        InputSettings { }
+    ]
 
     Camera {
         id: camera
