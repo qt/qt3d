@@ -55,7 +55,7 @@ class QAbstractLightPrivate;
 class QT3DRENDERSHARED_EXPORT QAbstractLight : public QShaderData
 {
     Q_OBJECT
-    Q_PROPERTY(Type type READ type WRITE setType NOTIFY typeChanged)
+    Q_PROPERTY(Type type READ type)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(float intensity READ intensity WRITE setIntensity NOTIFY intensityChanged)
 
@@ -74,7 +74,6 @@ public :
     float intensity() const;
 
 public Q_SLOTS:
-    void setType(Type type);
     void setColor(const QColor &color);
     void setIntensity(float intensity);
 
@@ -83,7 +82,6 @@ protected :
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
-    void typeChanged(Type type);
     void colorChanged(const QColor &color);
     void intensityChanged(float intensity);
 

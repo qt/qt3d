@@ -95,15 +95,6 @@ QAbstractLight::Type QAbstractLight::type() const
     return d->m_type;
 }
 
-void QAbstractLight::setType(Type type)
-{
-    Q_D(QAbstractLight);
-    if (d->m_type != type) {
-        d->m_type = type;
-        emit typeChanged(type);
-    }
-}
-
 /*!
  *  \property Qt3DRender::QAbstractLight::color
  *
