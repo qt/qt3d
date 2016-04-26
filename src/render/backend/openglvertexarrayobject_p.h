@@ -63,45 +63,44 @@ class OpenGLVertexArrayObject
 {
 public:
     OpenGLVertexArrayObject()
-        : m_vao(Q_NULLPTR)
-        , m_specified(false)
+        : m_specified(false)
     {}
 
     void bind()
     {
-        Q_ASSERT(m_vao);
+        Q_ASSERT(!m_vao.isNull());
         Q_ASSERT(m_vao->isCreated());
         m_vao->bind();
     }
 
     void release()
     {
-        Q_ASSERT(m_vao);
+        Q_ASSERT(!m_vao.isNull());
         Q_ASSERT(m_vao->isCreated());
         m_vao->release();
     }
 
     void create()
     {
-        Q_ASSERT(m_vao);
+        Q_ASSERT(!m_vao.isNull());
         m_vao->create();
     }
 
     bool isCreated() const
     {
-        Q_ASSERT(m_vao);
+        Q_ASSERT(!m_vao.isNull());
         return m_vao->isCreated();
     }
 
-    QOpenGLVertexArrayObject *vao() { return m_vao; }
-    const QOpenGLVertexArrayObject *vao() const { return m_vao; }
-    void setVao(QOpenGLVertexArrayObject *vao) { m_vao = vao; }
+    QOpenGLVertexArrayObject *vao() { return m_vao.data(); }
+    const QOpenGLVertexArrayObject *vao() const { return m_vao.data(); }
+    void setVao(QOpenGLVertexArrayObject *vao) { m_vao.reset(vao); }
 
     void setSpecified(bool b) { m_specified = b; }
     bool isSpecified() const { return m_specified; }
 
 private:
-    QOpenGLVertexArrayObject *m_vao;
+    QScopedPointer<QOpenGLVertexArrayObject> m_vao;
     bool m_specified;
 };
 
