@@ -40,7 +40,7 @@
 #ifndef QT3DRENDER_QSPOTLIGHT_H
 #define QT3DRENDER_QSPOTLIGHT_H
 
-#include <Qt3DRender/qlight.h>
+#include <Qt3DRender/qabstractlight.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,7 +48,7 @@ namespace Qt3DRender {
 
 class QSpotLightPrivate;
 
-class QT3DRENDERSHARED_EXPORT QSpotLight : public QLight
+class QT3DRENDERSHARED_EXPORT QSpotLight : public QAbstractLight
 {
     Q_OBJECT
     Q_PROPERTY(float constantAttenuation READ constantAttenuation WRITE setConstantAttenuation NOTIFY constantAttenuationChanged)

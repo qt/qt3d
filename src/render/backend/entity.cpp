@@ -40,7 +40,7 @@
 #include "entity_p.h"
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
-#include <Qt3DRender/qlight.h>
+#include <Qt3DRender/qabstractlight.h>
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qmesh.h>
@@ -308,7 +308,7 @@ void Entity::addComponent(Qt3DCore::QComponent *component)
         m_layerComponents.append(component->id());
     } else if (qobject_cast<QMaterial *>(component) != Q_NULLPTR) {
         m_materialComponent = component->id();
-    } else if (qobject_cast<QLight *>(component) != Q_NULLPTR) { // QLight subclasses QShaderData
+    } else if (qobject_cast<QAbstractLight *>(component) != Q_NULLPTR) { // QAbstractLight subclasses QShaderData
         m_lightComponents.append(component->id());
     } else if (qobject_cast<QShaderData *>(component) != Q_NULLPTR) {
         m_shaderDataComponents.append(component->id());
@@ -339,7 +339,7 @@ void Entity::addComponent(Qt3DCore::QNodeIdTypePair idAndType)
         m_layerComponents.append(id);
     } else if (type->inherits(&QMaterial::staticMetaObject)) {
         m_materialComponent = id;
-    } else if (type->inherits(&QLight::staticMetaObject)) { // QLight subclasses QShaderData
+    } else if (type->inherits(&QAbstractLight::staticMetaObject)) { // QAbstractLight subclasses QShaderData
         m_lightComponents.append(id);
     } else if (type->inherits(&QShaderData::staticMetaObject)) {
         m_shaderDataComponents.append(id);

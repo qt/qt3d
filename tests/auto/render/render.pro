@@ -26,7 +26,7 @@ contains(QT_CONFIG, private_tests) {
         qclearbuffers \
         qframegraphnode \
         qlayerfilter \
-        qlight \
+        qabstractlight \
         qray3d \
         qrenderpassfilter \
         qrendertargetselector \

@@ -66,10 +66,10 @@ namespace Qt3DRender {
  */
 
 QSpotLightPrivate::QSpotLightPrivate()
-    : QLightPrivate(QLight::SpotLight)
+    : QAbstractLightPrivate(QAbstractLight::SpotLight)
     , m_constantAttenuation(0.0f)
     , m_linearAttenuation(0.0f)
-    , m_quadraticAttenuation(0.002f)
+    , m_quadraticAttenuation(0.0f)
     , m_localDirection(0.0f, -1.0f, 0.0f)
     , m_cutOffAngle(45.0f)
 {
@@ -100,7 +100,7 @@ void QSpotLight::copy(const QNode *ref)
     const QSpotLight *light = static_cast<const QSpotLight*>(ref);
     d_func()->m_localDirection = light->d_func()->m_localDirection;
     d_func()->m_cutOffAngle = light->d_func()->m_cutOffAngle;
-    QLight::copy(ref);
+    QAbstractLight::copy(ref);
 }
 
 
@@ -109,13 +109,13 @@ void QSpotLight::copy(const QNode *ref)
   Constructs a new QSpotLight with the specified \a parent.
  */
 QSpotLight::QSpotLight(QNode *parent)
-    : QLight(*new QSpotLightPrivate, parent)
+    : QAbstractLight(*new QSpotLightPrivate, parent)
 {
 }
 
 /*! \internal */
 QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
-    : QLight(dd, parent)
+    : QAbstractLight(dd, parent)
 {
 }
 

@@ -30,7 +30,7 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 
-#include <Qt3DRender/qlight.h>
+#include <Qt3DRender/qabstractlight.h>
 #include <Qt3DRender/qpointlight.h>
 #include <Qt3DRender/qdirectionallight.h>
 #include <Qt3DRender/qspotlight.h>
@@ -39,11 +39,11 @@
 
 // We need to call QNode::clone which is protected
 // So we sublcass QNode instead of QObject
-class tst_QLight: public Qt3DCore::QNode
+class tst_QAbstractLight: public Qt3DCore::QNode
 {
     Q_OBJECT
 public:
-    ~tst_QLight()
+    ~tst_QAbstractLight()
     {
         QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
     }
@@ -52,11 +52,11 @@ private Q_SLOTS:
 
     void checkLightCloning()
     {
-        Qt3DRender::QLight light;
+        Qt3DRender::QAbstractLight light;
         light.setColor(Qt::red);
         light.setIntensity(0.5f);
 
-        QScopedPointer<Qt3DRender::QLight> lightClone(static_cast<Qt3DRender::QLight *>(QNode::clone(&light)));
+        QScopedPointer<Qt3DRender::QAbstractLight> lightClone(static_cast<Qt3DRender::QAbstractLight *>(QNode::clone(&light)));
         QVERIFY(lightClone.data());
         QCOMPARE(light.color(), lightClone->color());
         QCOMPARE(light.intensity(), lightClone->intensity());
@@ -65,7 +65,7 @@ private Q_SLOTS:
     void checkPointLightCloning()
     {
         Qt3DRender::QPointLight pointLight;
-        QCOMPARE(pointLight.type(), Qt3DRender::QLight::PointLight);
+        QCOMPARE(pointLight.type(), Qt3DRender::QAbstractLight::PointLight);
         pointLight.setColor(Qt::green);
         pointLight.setIntensity(0.5f);
         pointLight.setConstantAttenuation(0.5f);
@@ -74,7 +74,7 @@ private Q_SLOTS:
 
         QScopedPointer<Qt3DRender::QPointLight> pointLightClone(static_cast<Qt3DRender::QPointLight *>(QNode::clone(&pointLight)));
         QVERIFY(pointLightClone.data());
-        QCOMPARE(pointLightClone->type(), Qt3DRender::QLight::PointLight);
+        QCOMPARE(pointLightClone->type(), Qt3DRender::QAbstractLight::PointLight);
         QCOMPARE(pointLight.color(), pointLightClone->color());
         QCOMPARE(pointLight.intensity(), pointLightClone->intensity());
         QCOMPARE(pointLight.constantAttenuation(), pointLightClone->constantAttenuation());
@@ -85,14 +85,14 @@ private Q_SLOTS:
     void checkDirectionalLightCloning()
     {
         Qt3DRender::QDirectionalLight dirLight;
-        QCOMPARE(dirLight.type(), Qt3DRender::QLight::DirectionalLight);
+        QCOMPARE(dirLight.type(), Qt3DRender::QAbstractLight::DirectionalLight);
         dirLight.setColor(Qt::blue);
         dirLight.setIntensity(0.5f);
         dirLight.setWorldDirection(QVector3D(0, 0, -1));
 
         QScopedPointer<Qt3DRender::QDirectionalLight> dirLightClone(static_cast<Qt3DRender::QDirectionalLight *>(QNode::clone(&dirLight)));
         QVERIFY(dirLightClone.data());
-        QCOMPARE(dirLightClone->type(), Qt3DRender::QLight::DirectionalLight);
+        QCOMPARE(dirLightClone->type(), Qt3DRender::QAbstractLight::DirectionalLight);
         QCOMPARE(dirLight.color(), dirLightClone->color());
         QCOMPARE(dirLight.intensity(), dirLightClone->intensity());
         QCOMPARE(dirLight.worldDirection(), dirLightClone->worldDirection());
@@ -101,7 +101,7 @@ private Q_SLOTS:
     void checkSpotLightCloning()
     {
         Qt3DRender::QSpotLight spotLight;
-        QCOMPARE(spotLight.type(), Qt3DRender::QLight::SpotLight);
+        QCOMPARE(spotLight.type(), Qt3DRender::QAbstractLight::SpotLight);
         spotLight.setColor(Qt::lightGray);
         spotLight.setIntensity(0.5f);
         spotLight.setLocalDirection(QVector3D(0, 0, -1));
@@ -109,7 +109,7 @@ private Q_SLOTS:
 
         QScopedPointer<Qt3DRender::QSpotLight> spotLightClone(static_cast<Qt3DRender::QSpotLight *>(QNode::clone(&spotLight)));
         QVERIFY(spotLightClone.data());
-        QCOMPARE(spotLightClone->type(), Qt3DRender::QLight::SpotLight);
+        QCOMPARE(spotLightClone->type(), Qt3DRender::QAbstractLight::SpotLight);
         QCOMPARE(spotLight.color(), spotLightClone->color());
         QCOMPARE(spotLight.intensity(), spotLightClone->intensity());
         QCOMPARE(spotLight.localDirection(), spotLightClone->localDirection());
@@ -118,7 +118,7 @@ private Q_SLOTS:
 
     void checkLightPropertyUpdates()
     {
-        QScopedPointer<Qt3DRender::QLight> light(new Qt3DRender::QLight);
+        QScopedPointer<Qt3DRender::QAbstractLight> light(new Qt3DRender::QAbstractLight);
         TestArbiter lightArbiter(light.data());
 
         light->setColor(Qt::red);
@@ -258,6 +258,6 @@ protected:
 
 };
 
-QTEST_MAIN(tst_QLight)
+QTEST_MAIN(tst_QAbstractLight)
 
-#include "tst_qlight.moc"
+#include "tst_qabstractlight.moc"

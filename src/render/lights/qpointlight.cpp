@@ -61,11 +61,11 @@ namespace Qt3DRender {
   \endcode
  */
 
-QPointLightPrivate::QPointLightPrivate(QLight::Type type)
-    : QLightPrivate(type)
+QPointLightPrivate::QPointLightPrivate(QAbstractLight::Type type)
+    : QAbstractLightPrivate(type)
     , m_constantAttenuation(0.0f)
     , m_linearAttenuation(0.0f)
-    , m_quadraticAttenuation(0.002f)
+    , m_quadraticAttenuation(0.0f)
 {
 }
 
@@ -90,13 +90,13 @@ QPointLightPrivate::QPointLightPrivate(QLight::Type type)
   Constructs a new QPointLight with the specified \a parent.
  */
 QPointLight::QPointLight(QNode *parent)
-    : QLight(*new QPointLightPrivate, parent)
+    : QAbstractLight(*new QPointLightPrivate, parent)
 {
 }
 
 /*! \internal */
 QPointLight::QPointLight(QPointLightPrivate &dd, QNode *parent)
-    : QLight(dd, parent)
+    : QAbstractLight(dd, parent)
 {
 }
 

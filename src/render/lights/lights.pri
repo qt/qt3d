@@ -1,8 +1,8 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
-    $$PWD/qlight.h \
-    $$PWD/qlight_p.h \
+    $$PWD/qabstractlight.h \
+    $$PWD/qabstractlight_p.h \
     $$PWD/qdirectionallight.h \
     $$PWD/qdirectionallight_p.h \
     $$PWD/qpointlight.h \
@@ -12,7 +12,7 @@ HEADERS += \
     $$PWD/light_p.h
 
 SOURCES += \
-    $$PWD/qlight.cpp \
+    $$PWD/qabstractlight.cpp \
     $$PWD/qdirectionallight.cpp \
     $$PWD/qpointlight.cpp \
     $$PWD/qspotlight.cpp \

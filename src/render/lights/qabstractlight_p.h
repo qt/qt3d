@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QLIGHT_P_H
-#define QT3DRENDER_QLIGHT_P_H
+#ifndef QT3DRENDER_QABSTRACTLIGHT_P_H
+#define QT3DRENDER_QABSTRACTLIGHT_P_H
 
 //
 //  W A R N I N G
@@ -57,15 +57,15 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QLight;
+class QAbstractLight;
 
-class QLightPrivate : public QShaderDataPrivate
+class QAbstractLightPrivate : public QShaderDataPrivate
 {
 public:
-    QLightPrivate(QLight::Type type);
+    QAbstractLightPrivate(QAbstractLight::Type type);
 
-    Q_DECLARE_PUBLIC(QLight)
-    QLight::Type m_type;
+    Q_DECLARE_PUBLIC(QAbstractLight)
+    QAbstractLight::Type m_type;
     QColor m_color;
     float m_intensity;
 };
@@ -74,4 +74,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QLIGHT_P_H
+#endif // QT3DRENDER_QABSTRACTLIGHT_P_H

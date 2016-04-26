@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <private/qlight_p.h>
+#include <private/qabstractlight_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,10 +59,10 @@ namespace Qt3DRender {
 
 class QPointLight;
 
-class QPointLightPrivate : public QLightPrivate
+class QPointLightPrivate : public QAbstractLightPrivate
 {
 public:
-    QPointLightPrivate(QLight::Type type = QLight::PointLight);
+    QPointLightPrivate(QAbstractLight::Type type = QAbstractLight::PointLight);
 
     float m_constantAttenuation;
     float m_linearAttenuation;

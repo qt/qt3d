@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QLIGHT_H
-#define QT3DRENDER_QLIGHT_H
+#ifndef QT3DRENDER_QABSTRACTLIGHT_H
+#define QT3DRENDER_QABSTRACTLIGHT_H
 
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DRender/qshaderdata.h>
@@ -50,9 +50,9 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QLightPrivate;
+class QAbstractLightPrivate;
 
-class QT3DRENDERSHARED_EXPORT QLight : public QShaderData
+class QT3DRENDERSHARED_EXPORT QAbstractLight : public QShaderData
 {
     Q_OBJECT
     Q_PROPERTY(Type type READ type WRITE setType NOTIFY typeChanged)
@@ -67,7 +67,7 @@ public :
     };
     Q_ENUM(Type)
 
-    explicit QLight(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QAbstractLight(Qt3DCore::QNode *parent = Q_NULLPTR);
 
     Type type() const;
     QColor color() const;
@@ -79,7 +79,7 @@ public Q_SLOTS:
     void setIntensity(float intensity);
 
 protected :
-    QLight(QLightPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
+    QAbstractLight(QAbstractLightPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
@@ -88,12 +88,12 @@ Q_SIGNALS:
     void intensityChanged(float intensity);
 
 private:
-    Q_DECLARE_PRIVATE(QLight)
-    QT3D_CLONEABLE(QLight)
+    Q_DECLARE_PRIVATE(QAbstractLight)
+    QT3D_CLONEABLE(QAbstractLight)
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QLIGHT_H
+#endif // QT3DRENDER_QABSTRACTLIGHT_H

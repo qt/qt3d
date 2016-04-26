@@ -71,7 +71,7 @@
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qfrustumculling.h>
-#include <Qt3DRender/qlight.h>
+#include <Qt3DRender/qabstractlight.h>
 #include <Qt3DRender/qdispatchcompute.h>
 #include <Qt3DRender/qcomputecommand.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
@@ -203,7 +203,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     // Material system
     q->registerBackendType<QEffect>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Effect, Render::EffectManager>(m_renderer, m_nodeManagers->effectManager())));
     q->registerBackendType<QFilterKey>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::FilterKey, Render::FilterKeyManager>(m_renderer, m_nodeManagers->filterKeyManager())));
-    q->registerBackendType<QLight>(QBackendNodeMapperPtr(new Render::RenderLightFunctor(m_renderer, m_nodeManagers)));
+    q->registerBackendType<QAbstractLight>(QBackendNodeMapperPtr(new Render::RenderLightFunctor(m_renderer, m_nodeManagers)));
     q->registerBackendType<QMaterial>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Material, Render::MaterialManager>(m_renderer, m_nodeManagers->materialManager())));
     q->registerBackendType<QParameter>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Parameter, Render::ParameterManager>(m_renderer, m_nodeManagers->parameterManager())));
     q->registerBackendType<QRenderPass>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderPass, Render::RenderPassManager>(m_renderer, m_nodeManagers->renderPassManager())));

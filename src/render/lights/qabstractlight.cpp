@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qlight.h"
-#include "qlight_p.h"
+#include "qabstractlight.h"
+#include "qabstractlight_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -48,22 +48,22 @@ namespace Qt3DRender
 /*!
  * \qmltype Light
  * \inqmlmodule Qt3D.Render
- * \instantiates Qt3DRender::QLight
- * \brief Encapsulate a QLight object in a Qt 3D scene.
+ * \instantiates Qt3DRender::QAbstractLight
+ * \brief Encapsulate a QAbstractLight object in a Qt 3D scene.
  * \since 5.6
  */
 
 
-QLightPrivate::QLightPrivate(QLight::Type type)
+QAbstractLightPrivate::QAbstractLightPrivate(QAbstractLight::Type type)
     : m_type(type)
     , m_color(QColor(255, 255, 255))
     , m_intensity(1.0f)
 {
 }
 
-void QLight::copy(const QNode *ref)
+void QAbstractLight::copy(const QNode *ref)
 {
-    const QLight *light = static_cast<const QLight*>(ref);
+    const QAbstractLight *light = static_cast<const QAbstractLight*>(ref);
     d_func()->m_type = light->d_func()->m_type;
     d_func()->m_color = light->d_func()->m_color;
     d_func()->m_intensity = light->d_func()->m_intensity;
@@ -71,33 +71,33 @@ void QLight::copy(const QNode *ref)
 }
 
 /*!
-    \class Qt3DRender::QLight
+    \class Qt3DRender::QAbstractLight
     \inmodule Qt3DRender
 */
 
 /*!
- * Constructs a new QLight with the given \a parent.
+ * Constructs a new QAbstractLight with the given \a parent.
  */
-QLight::QLight(Qt3DCore::QNode *parent) :
-    QShaderData(*new QLightPrivate(PointLight), parent)
+QAbstractLight::QAbstractLight(Qt3DCore::QNode *parent) :
+    QShaderData(*new QAbstractLightPrivate(PointLight), parent)
 {
 }
 
 /*! \internal */
-QLight::QLight(QLightPrivate &dd, QNode *parent)
+QAbstractLight::QAbstractLight(QAbstractLightPrivate &dd, QNode *parent)
     : QShaderData(dd, parent)
 {
 }
 
-QLight::Type QLight::type() const
+QAbstractLight::Type QAbstractLight::type() const
 {
-    Q_D(const QLight);
+    Q_D(const QAbstractLight);
     return d->m_type;
 }
 
-void QLight::setType(Type type)
+void QAbstractLight::setType(Type type)
 {
-    Q_D(QLight);
+    Q_D(QAbstractLight);
     if (d->m_type != type) {
         d->m_type = type;
         emit typeChanged(type);
@@ -105,19 +105,19 @@ void QLight::setType(Type type)
 }
 
 /*!
- *  \property Qt3DRender::QLight::color
+ *  \property Qt3DRender::QAbstractLight::color
  *
- * Holds the current QLight color.
+ * Holds the current QAbstractLight color.
  */
-QColor QLight::color() const
+QColor QAbstractLight::color() const
 {
-    Q_D(const QLight);
+    Q_D(const QAbstractLight);
     return d->m_color;
 }
 
-void QLight::setColor(const QColor &color)
+void QAbstractLight::setColor(const QColor &color)
 {
-    Q_D(QLight);
+    Q_D(QAbstractLight);
     if (d->m_color != color) {
         d->m_color = color;
         emit colorChanged(color);
@@ -125,19 +125,19 @@ void QLight::setColor(const QColor &color)
 }
 
 /*!
-    \property Qt3DRender::QLight::intensity
+    \property Qt3DRender::QAbstractLight::intensity
 
-    Holds the current QLight intensity.
+    Holds the current QAbstractLight intensity.
 */
-float QLight::intensity() const
+float QAbstractLight::intensity() const
 {
-    Q_D(const QLight);
+    Q_D(const QAbstractLight);
     return d->m_intensity;
 }
 
-void QLight::setIntensity(float intensity)
+void QAbstractLight::setIntensity(float intensity)
 {
-    Q_D(QLight);
+    Q_D(QAbstractLight);
     if (d->m_intensity != intensity) {
         d->m_intensity = intensity;
         emit intensityChanged(intensity);

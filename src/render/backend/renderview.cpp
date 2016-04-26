@@ -42,7 +42,7 @@
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DRender/qrendertarget.h>
-#include <Qt3DRender/qlight.h>
+#include <Qt3DRender/qabstractlight.h>
 #include <Qt3DRender/private/sphere_p.h>
 
 #include <Qt3DRender/private/cameraselectornode_p.h>
@@ -869,7 +869,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                         if (lightIdx == MAX_LIGHTS)
                             break;
                         setUniformValue(command->m_parameterPack, LIGHT_POSITION_NAMES[lightIdx], worldPos);
-                        setUniformValue(command->m_parameterPack, LIGHT_TYPE_NAMES[lightIdx], int(QLight::PointLight));
+                        setUniformValue(command->m_parameterPack, LIGHT_TYPE_NAMES[lightIdx], int(QAbstractLight::PointLight));
                         setUniformValue(command->m_parameterPack, LIGHT_COLOR_NAMES[lightIdx], QVector3D(1.0f, 1.0f, 1.0f));
                         setUniformValue(command->m_parameterPack, LIGHT_INTENSITY_NAMES[lightIdx], QVector3D(0.5f, 0.5f, 0.5f));
                         setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, light, LIGHT_STRUCT_NAMES[lightIdx]);
@@ -882,7 +882,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
 
                 if (activeLightSources.isEmpty()) {
                     setUniformValue(command->m_parameterPack, LIGHT_POSITION_NAMES[0], QVector3D(10.0f, 10.0f, 0.0f));
-                    setUniformValue(command->m_parameterPack, LIGHT_TYPE_NAMES[0], int(QLight::PointLight));
+                    setUniformValue(command->m_parameterPack, LIGHT_TYPE_NAMES[0], int(QAbstractLight::PointLight));
                     setUniformValue(command->m_parameterPack, LIGHT_COLOR_NAMES[0], QVector3D(1.0f, 1.0f, 1.0f));
                     setUniformValue(command->m_parameterPack, LIGHT_INTENSITY_NAMES[0], QVector3D(0.5f, 0.5f, 0.5f));
                 }

@@ -40,7 +40,7 @@
 #ifndef QT3DRENDER_QDIRECTIONALLIGHT_H
 #define QT3DRENDER_QDIRECTIONALLIGHT_H
 
-#include <Qt3DRender/qlight.h>
+#include <Qt3DRender/qabstractlight.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,7 +48,7 @@ namespace Qt3DRender {
 
 class QDirectionalLightPrivate;
 
-class QT3DRENDERSHARED_EXPORT QDirectionalLight : public QLight
+class QT3DRENDERSHARED_EXPORT QDirectionalLight : public QAbstractLight
 {
     Q_OBJECT
     Q_PROPERTY(QVector3D worldDirection READ worldDirection WRITE setWorldDirection NOTIFY worldDirectionChanged)
