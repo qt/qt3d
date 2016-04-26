@@ -209,7 +209,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QLayerFilter>(uri, 2, 0, "LayerFilter");
 
     // Lights
-    qmlRegisterType<Qt3DRender::QAbstractLight>(uri, 2, 0, "Light");
+    qmlRegisterUncreatableType<Qt3DRender::QAbstractLight>(uri, 2, 0, "Light", QStringLiteral("Light is an abstract base class"));
     qmlRegisterType<Qt3DRender::QPointLight>(uri, 2, 0, "PointLight");
     qmlRegisterType<Qt3DRender::QDirectionalLight>(uri, 2, 0, "DirectionalLight");
     qmlRegisterType<Qt3DRender::QSpotLight>(uri, 2, 0, "SpotLight");

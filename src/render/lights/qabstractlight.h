@@ -67,8 +67,6 @@ public :
     };
     Q_ENUM(Type)
 
-    explicit QAbstractLight(Qt3DCore::QNode *parent = Q_NULLPTR);
-
     Type type() const;
     QColor color() const;
     float intensity() const;
@@ -87,7 +85,6 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QAbstractLight)
-    QT3D_CLONEABLE(QAbstractLight)
 };
 
 } // namespace Qt3DRender

@@ -31,11 +31,26 @@
 #include <Qt3DCore/private/qscene_p.h>
 
 #include <Qt3DRender/qabstractlight.h>
+#include <Qt3DRender/private/qabstractlight_p.h>
 #include <Qt3DRender/qpointlight.h>
 #include <Qt3DRender/qdirectionallight.h>
 #include <Qt3DRender/qspotlight.h>
 
 #include "testpostmanarbiter.h"
+
+class DummyLight : public Qt3DRender::QAbstractLight
+{
+    Q_OBJECT
+
+public:
+    explicit DummyLight(Qt3DCore::QNode *parent = Q_NULLPTR)
+        : QAbstractLight(*new Qt3DRender::QAbstractLightPrivate(QAbstractLight::PointLight), parent)
+    {}
+
+private:
+    QT3D_CLONEABLE(DummyLight)
+};
+
 
 // We need to call QNode::clone which is protected
 // So we sublcass QNode instead of QObject
@@ -52,7 +67,7 @@ private Q_SLOTS:
 
     void checkLightCloning()
     {
-        Qt3DRender::QAbstractLight light;
+        DummyLight light;
         light.setColor(Qt::red);
         light.setIntensity(0.5f);
 
@@ -118,7 +133,7 @@ private Q_SLOTS:
 
     void checkLightPropertyUpdates()
     {
-        QScopedPointer<Qt3DRender::QAbstractLight> light(new Qt3DRender::QAbstractLight);
+        QScopedPointer<Qt3DRender::QAbstractLight> light(new DummyLight);
         TestArbiter lightArbiter(light.data());
 
         light->setColor(Qt::red);

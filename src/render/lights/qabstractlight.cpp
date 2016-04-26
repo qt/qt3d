@@ -75,14 +75,6 @@ void QAbstractLight::copy(const QNode *ref)
     \inmodule Qt3DRender
 */
 
-/*!
- * Constructs a new QAbstractLight with the given \a parent.
- */
-QAbstractLight::QAbstractLight(Qt3DCore::QNode *parent) :
-    QShaderData(*new QAbstractLightPrivate(PointLight), parent)
-{
-}
-
 /*! \internal */
 QAbstractLight::QAbstractLight(QAbstractLightPrivate &dd, QNode *parent)
     : QShaderData(dd, parent)
