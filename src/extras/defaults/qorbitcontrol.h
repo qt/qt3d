@@ -34,9 +34,10 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QORBITCONTROL_H
-#define QT3DINPUT_QORBITCONTROL_H
+#ifndef QT3DEXTRAS_QORBITCONTROL_H
+#define QT3DEXTRAS_QORBITCONTROL_H
 
+#include <Qt3DExtras/qt3dextras_global.h>
 #include <Qt3DCore/QEntity>
 
 QT_BEGIN_NAMESPACE
@@ -45,11 +46,11 @@ namespace Qt3DRender {
 class QCamera;
 }
 
-namespace Qt3DInput {
+namespace Qt3DExtras {
 
 class QOrbitControlPrivate;
 
-class QOrbitControl : public Qt3DCore::QEntity
+class QT3DEXTRASSHARED_EXPORT QOrbitControl : public Qt3DCore::QEntity
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QCamera *camera READ camera WRITE setCamera NOTIFY cameraChanged)
@@ -83,8 +84,8 @@ private:
     Q_PRIVATE_SLOT(d_func(),  void _q_onTriggered(float))
 };
 
-}   // Qt3DInput
+}   // Qt3DExtras
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QORBITCONTROL_H
+#endif // QT3DEXTRAS_QORBITCONTROL_H

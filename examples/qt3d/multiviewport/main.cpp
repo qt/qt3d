@@ -48,13 +48,13 @@
 **
 ****************************************************************************/
 
-#include <qt3dquickwindow.h>
+#include <Qt3DQuickExtras/qt3dquickwindow.h>
 #include <QGuiApplication>
 
 int main(int ac, char **av)
 {
     QGuiApplication app(ac, av);
-    Qt3DQuickWindow view;
+    Qt3DExtras::Quick::Qt3DQuickWindow view;
     view.setSource(QUrl("qrc:/main.qml"));
     view.show();
 

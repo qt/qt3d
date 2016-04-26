@@ -69,13 +69,13 @@
 #include <Qt3DRender/QBuffer>
 
 #include <QPropertyAnimation>
-#include "qt3dwindow.h"
-#include "qfirstpersoncameracontroller.h"
+#include <Qt3DExtras/qt3dwindow.h>
+#include <Qt3DExtras/qfirstpersoncameracontroller.h>
 
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
-    Qt3DWindow view;
+    Qt3DExtras::Qt3DWindow view;
     view.defaultFramegraph()->setClearColor(QColor::fromRgbF(0.0, 0.5, 1.0, 1.0));
 
     // Root entity
@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
     cameraEntity->setViewCenter(QVector3D(0, 0, 0));
 
     // For camera controls
-    Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(rootEntity);
+    Qt3DExtras::QFirstPersonCameraController *camController = new Qt3DExtras::QFirstPersonCameraController(rootEntity);
     camController->setCamera(cameraEntity);
 
     // Material

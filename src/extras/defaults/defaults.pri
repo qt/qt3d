@@ -22,7 +22,12 @@ HEADERS += \
     $$PWD/qgoochmaterial.h \
     $$PWD/qgoochmaterial_p.h \
     $$PWD/qphongalphamaterial.h \
-    $$PWD/qphongalphamaterial_p.h
+    $$PWD/qphongalphamaterial_p.h \
+    $$PWD/qt3dwindow.h \
+    $$PWD/qorbitcontrol.h \
+    $$PWD/qorbitcontrol_p.h \
+    $$PWD/qfirstpersoncameracontroller.h \
+    $$PWD/qfirstpersoncameracontroller_p.h
 
 SOURCES += \
     $$PWD/qphongmaterial.cpp \
@@ -35,5 +40,8 @@ SOURCES += \
     $$PWD/qpervertexcolormaterial.cpp \
     $$PWD/qskyboxentity.cpp \
     $$PWD/qgoochmaterial.cpp \
-    $$PWD/qphongalphamaterial.cpp
+    $$PWD/qphongalphamaterial.cpp \
+    $$PWD/qt3dwindow.cpp \
+    $$PWD/qorbitcontrol.cpp \
+    $$PWD/qfirstpersoncameracontroller.cpp
 

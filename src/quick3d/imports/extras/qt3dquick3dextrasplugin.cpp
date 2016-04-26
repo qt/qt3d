@@ -72,7 +72,10 @@ static const struct {
     // FrameGraphs
     { "ForwardRenderer", 2, 0 },
     // Entities
-    { "SkyboxEntity", 2, 0 }
+    { "SkyboxEntity", 2, 0 },
+    // Camera Controllers
+    { "OrbitController", 2, 0 },
+    { "FirstPersonCameraController", 2, 0 },
 };
 
 void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)

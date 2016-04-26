@@ -66,14 +66,14 @@
 #include "rotatingtrefoilknot.h"
 #include "barrel.h"
 #include "houseplant.h"
-#include "qt3dwindow.h"
-#include "qfirstpersoncameracontroller.h"
+#include <Qt3DExtras/qt3dwindow.h>
+#include <Qt3DExtras/qfirstpersoncameracontroller.h>
 
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
 
-    Qt3DWindow view;
+    Qt3DExtras::Qt3DWindow view;
 
     // Scene Root
     Qt3DCore::QEntity *sceneRoot = new Qt3DCore::QEntity();
@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
     basicCamera->setViewCenter(QVector3D(0.0f, 3.5f, 0.0f));
     basicCamera->setPosition(QVector3D(0.0f, 3.5f, 25.0f));
     // For camera controls
-    Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(sceneRoot);
+    Qt3DExtras::QFirstPersonCameraController *camController = new Qt3DExtras::QFirstPersonCameraController(sceneRoot);
     camController->setCamera(basicCamera);
 
     // Scene floor

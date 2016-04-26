@@ -4,7 +4,7 @@
 # resource file.
 #
 # To have the plugin register them as types, add an entries to the
-# qmldir array in qt3dquick3drenderplugin.cpp
+# qmldir array in qt3dquick3dextrasplugin.cpp
 QML_FILES = \
     $$PWD/qml/PhongMaterial.qml \
     $$PWD/qml/DiffuseMapMaterial.qml \
@@ -17,4 +17,6 @@ QML_FILES = \
     $$PWD/qml/SkyboxEntity.qml \
     $$PWD/qml/GoochMaterial.qml \
     $$PWD/qml/PhongAlphaMaterial.qml \
-    $$PWD/qml/TextureMaterial.qml
+    $$PWD/qml/TextureMaterial.qml \
+    $$PWD/qml/OrbitController.qml \
+    $$PWD/qml/FirstPersonCameraController.qml

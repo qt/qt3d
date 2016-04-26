@@ -67,8 +67,8 @@
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QForwardRenderer>
 #include <qmath.h>
-#include "qt3dwindow.h"
-#include "qfirstpersoncameracontroller.h"
+#include <Qt3DExtras/qt3dwindow.h>
+#include <Qt3DExtras/qfirstpersoncameracontroller.h>
 
 using namespace Qt3DCore;
 using namespace Qt3DRender;
@@ -76,7 +76,7 @@ using namespace Qt3DRender;
 int main(int ac, char **av)
 {
     QGuiApplication app(ac, av);
-    Qt3DWindow view;
+    Qt3DExtras::Qt3DWindow view;
     view.defaultFramegraph()->setClearColor(Qt::black);
 
     QEntity *root = new QEntity();
@@ -89,7 +89,7 @@ int main(int ac, char **av)
     cameraEntity->setViewCenter(QVector3D(0, 0, 0));
 
     // For camera controls
-    Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(root);
+    Qt3DExtras::QFirstPersonCameraController *camController = new Qt3DExtras::QFirstPersonCameraController(root);
     camController->setCamera(cameraEntity);
 
     const float radius = 100.0f;

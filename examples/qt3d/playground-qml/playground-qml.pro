@@ -2,7 +2,7 @@
     error( "Couldn't find the examples.pri file!" )
 }
 
-QT += 3dcore 3drender 3dquick qml quick 3dinput
+QT += 3dcore 3drender 3dquick qml quick 3dinput 3dquickextras
 
 HEADERS += \
 

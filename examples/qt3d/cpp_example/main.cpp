@@ -72,14 +72,14 @@
 #include <Qt3DRender/qviewport.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DRender/qclearbuffers.h>
-#include "qt3dwindow.h"
-#include "qfirstpersoncameracontroller.h"
+#include <Qt3DExtras/qt3dwindow.h>
+#include <Qt3DExtras/qfirstpersoncameracontroller.h>
 
 int main(int ac, char **av)
 {
     QGuiApplication app(ac, av);
 
-    Qt3DWindow view;
+    Qt3DExtras::Qt3DWindow view;
 
     // Root entity
     Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
@@ -119,7 +119,7 @@ int main(int ac, char **av)
     cameraEntity->setUpVector(QVector3D(0, 1, 0));
 
     // For camera controls
-    Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(rootEntity);
+    Qt3DExtras::QFirstPersonCameraController *camController = new Qt3DExtras::QFirstPersonCameraController(rootEntity);
     camController->setCamera(cameraEntity);
 
     // Set root object of the scene

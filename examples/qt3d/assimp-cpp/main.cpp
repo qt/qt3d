@@ -58,8 +58,8 @@
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DExtras/QForwardRenderer>
-#include "qt3dwindow.h"
-#include "qfirstpersoncameracontroller.h"
+#include <Qt3DExtras/qt3dwindow.h>
+#include <Qt3DExtras/qfirstpersoncameracontroller.h>
 
 class SceneWalker : public QObject
 {
@@ -117,7 +117,7 @@ void SceneWalker::walkEntity(Qt3DCore::QEntity *e, int depth)
 int main(int ac, char **av)
 {
     QApplication app(ac, av);
-    Qt3DWindow view;
+    Qt3DExtras::Qt3DWindow view;
     view.defaultFramegraph()->setClearColor(Qt::black);
 
     // Root entity
@@ -132,7 +132,7 @@ int main(int ac, char **av)
     camera->setFarPlane(10000.0f);
 
     // For camera controls
-    Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(sceneRoot);
+    Qt3DExtras::QFirstPersonCameraController *camController = new Qt3DExtras::QFirstPersonCameraController(sceneRoot);
     camController->setCamera(camera);
 
     // Scene loader

@@ -48,90 +48,86 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DWINDOW_H
-#define QT3DWINDOW_H
+#ifndef QT3DEXTRAS_QFIRSTPERSONCAMERACONTROLLER_P_H
+#define QT3DEXTRAS_QFIRSTPERSONCAMERACONTROLLER_P_H
 
-#include <QWindow>
+#include <Qt3DCore/private/qentity_p.h>
+#include <QVector3D>
+#include "qfirstpersoncameracontroller.h"
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-class QAspectEngine;
-class QAbstractAspect;
-class QEntity;
-}
-
 namespace Qt3DRender {
 class QCamera;
-class QFrameGraphNode;
-class QRenderAspect;
-class QRenderSettings;
-}
-
-namespace Qt3DExtras {
-class QForwardRenderer;
-}
-
-namespace Qt3DInput {
-class QInputAspect;
-class QInputSettings;
 }
 
 namespace Qt3DLogic {
-class QLogicAspect;
+class QFrameAction;
 }
 
-class Qt3DWindow : public QWindow
+namespace Qt3DInput {
+
+class QKeyboardDevice;
+class QMouseDevice;
+class QLogicalDevice;
+class QAction;
+class QActionInput;
+class QAxis;
+class QAxisInput;
+class QAxisActionHandler;
+
+}
+
+namespace Qt3DExtras {
+
+class QFirstPersonCameraControllerPrivate : public Qt3DCore::QEntityPrivate
 {
-    Q_OBJECT
 public:
-    Qt3DWindow(QScreen *screen = nullptr);
-    ~Qt3DWindow();
+    QFirstPersonCameraControllerPrivate();
 
-    void registerAspect(Qt3DCore::QAbstractAspect *aspect);
-    void registerAspect(const QString &name);
+    void init();
 
-    void setRootEntity(Qt3DCore::QEntity *root);
+    Qt3DRender::QCamera *m_camera;
 
-    void setActiveFrameGraph(Qt3DRender::QFrameGraphNode *activeFrameGraph);
-    Qt3DRender::QFrameGraphNode *activeFrameGraph() const;
-    Qt3DExtras::QForwardRenderer *defaultFramegraph() const;
+    Qt3DInput::QAction *m_leftMouseButtonAction;
+    Qt3DInput::QAction *m_fineMotionAction;
 
-    Qt3DRender::QCamera *camera() const;
+    Qt3DInput::QAxis *m_rxAxis;
+    Qt3DInput::QAxis *m_ryAxis;
+    Qt3DInput::QAxis *m_txAxis;
+    Qt3DInput::QAxis *m_tyAxis;
+    Qt3DInput::QAxis *m_tzAxis;
 
-public Q_SLOTS:
+    Qt3DInput::QActionInput *m_leftMouseButtonInput;
+    Qt3DInput::QActionInput *m_fineMotionKeyInput;
 
-Q_SIGNALS:
+    Qt3DInput::QAxisInput *m_mouseRxInput;
+    Qt3DInput::QAxisInput *m_mouseRyInput;
+    Qt3DInput::QAxisInput *m_keyboardTxPosInput;
+    Qt3DInput::QAxisInput *m_keyboardTyPosInput;
+    Qt3DInput::QAxisInput *m_keyboardTzPosInput;
+    Qt3DInput::QAxisInput *m_keyboardTxNegInput;
+    Qt3DInput::QAxisInput *m_keyboardTyNegInput;
+    Qt3DInput::QAxisInput *m_keyboardTzNegInput;
 
-protected:
-    void showEvent(QShowEvent *e) Q_DECL_OVERRIDE;
-    void resizeEvent(QResizeEvent *) Q_DECL_OVERRIDE;
+    Qt3DInput::QKeyboardDevice *m_keyboardDevice;
+    Qt3DInput::QMouseDevice *m_mouseDevice;
 
-private:
-    QScopedPointer<Qt3DCore::QAspectEngine> m_aspectEngine;
+    Qt3DInput::QLogicalDevice *m_logicalDevice;
 
-    // Aspects
-    Qt3DRender::QRenderAspect *m_renderAspect;
-    Qt3DInput::QInputAspect *m_inputAspect;
-    Qt3DLogic::QLogicAspect *m_logicAspect;
+    Qt3DLogic::QFrameAction *m_frameAction;
 
-    // Renderer configuration
-    Qt3DRender::QRenderSettings *m_renderSettings;
-    Qt3DExtras::QForwardRenderer *m_forwardRenderer;
-    Qt3DRender::QCamera *m_defaultCamera;
+    float m_linearSpeed;
+    float m_lookSpeed;
+    QVector3D m_firstPersonUp;
 
-    // Input configuration
-    Qt3DInput::QInputSettings *m_inputSettings;
+    void _q_onTriggered(float);
 
-    // Logic configuration
-
-    // Scene
-    Qt3DCore::QEntity *m_root;
-    Qt3DCore::QEntity *m_userRoot;
-
-    bool m_initialized;
+    Q_DECLARE_PUBLIC(QFirstPersonCameraController)
 };
+
+} // Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DWINDOW_H
+#endif // QT3DINPUT_QFIRSTPERSONCAMERACONTROLLER_P_H

@@ -59,13 +59,13 @@
 #include <Qt3DExtras/QForwardRenderer>
 
 #include "examplescene.h"
-#include "qt3dwindow.h"
-#include "qfirstpersoncameracontroller.h"
+#include <Qt3DExtras/qt3dwindow.h>
+#include <Qt3DExtras/qfirstpersoncameracontroller.h>
 
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
-    Qt3DWindow view;
+    Qt3DExtras::Qt3DWindow view;
 
     ExampleScene *sceneRoot = new ExampleScene();
 
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
     basicCamera->setPosition(QVector3D(0.0f, 3.5f, 25.0f));
 
     // For camera controls
-    Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(sceneRoot);
+    Qt3DExtras::QFirstPersonCameraController *camController = new Qt3DExtras::QFirstPersonCameraController(sceneRoot);
     camController->setCamera(basicCamera);
 
     view.setRootEntity(sceneRoot);

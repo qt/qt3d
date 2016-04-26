@@ -73,6 +73,10 @@ class QAxis;
 class QAxisInput;
 class QAxisActionHandler;
 
+}
+
+namespace Qt3DExtras {
+
 class QOrbitControlPrivate : public Qt3DCore::QEntityPrivate
 {
 public:
@@ -82,35 +86,35 @@ public:
 
     Qt3DRender::QCamera *m_camera;
 
-    QAction *m_leftMouseButtonAction;
-    QAction *m_rightMouseButtonAction;
-    QAction *m_altButtonAction;
-    QAction *m_shiftButtonAction;
+    Qt3DInput::QAction *m_leftMouseButtonAction;
+    Qt3DInput::QAction *m_rightMouseButtonAction;
+    Qt3DInput::QAction *m_altButtonAction;
+    Qt3DInput::QAction *m_shiftButtonAction;
 
-    QAxis *m_rxAxis;
-    QAxis *m_ryAxis;
-    QAxis *m_txAxis;
-    QAxis *m_tyAxis;
-    QAxis *m_tzAxis;
+    Qt3DInput::QAxis *m_rxAxis;
+    Qt3DInput::QAxis *m_ryAxis;
+    Qt3DInput::QAxis *m_txAxis;
+    Qt3DInput::QAxis *m_tyAxis;
+    Qt3DInput::QAxis *m_tzAxis;
 
-    QActionInput *m_leftMouseButtonInput;
-    QActionInput *m_rightMouseButtonInput;
-    QActionInput *m_altButtonInput;
-    QActionInput *m_shiftButtonInput;
+    Qt3DInput::QActionInput *m_leftMouseButtonInput;
+    Qt3DInput::QActionInput *m_rightMouseButtonInput;
+    Qt3DInput::QActionInput *m_altButtonInput;
+    Qt3DInput::QActionInput *m_shiftButtonInput;
 
-    QAxisInput *m_mouseRxInput;
-    QAxisInput *m_mouseRyInput;
-    QAxisInput *m_keyboardTxPosInput;
-    QAxisInput *m_keyboardTyPosInput;
-    QAxisInput *m_keyboardTzPosInput;
-    QAxisInput *m_keyboardTxNegInput;
-    QAxisInput *m_keyboardTyNegInput;
-    QAxisInput *m_keyboardTzNegInput;
+    Qt3DInput::QAxisInput *m_mouseRxInput;
+    Qt3DInput::QAxisInput *m_mouseRyInput;
+    Qt3DInput::QAxisInput *m_keyboardTxPosInput;
+    Qt3DInput::QAxisInput *m_keyboardTyPosInput;
+    Qt3DInput::QAxisInput *m_keyboardTzPosInput;
+    Qt3DInput::QAxisInput *m_keyboardTxNegInput;
+    Qt3DInput::QAxisInput *m_keyboardTyNegInput;
+    Qt3DInput::QAxisInput *m_keyboardTzNegInput;
 
-    QKeyboardDevice *m_keyboardDevice;
-    QMouseDevice *m_mouseDevice;
+    Qt3DInput::QKeyboardDevice *m_keyboardDevice;
+    Qt3DInput::QMouseDevice *m_mouseDevice;
 
-    QLogicalDevice *m_logicalDevice;
+    Qt3DInput::QLogicalDevice *m_logicalDevice;
 
     Qt3DLogic::QFrameAction *m_frameAction;
 
@@ -124,8 +128,8 @@ public:
     Q_DECLARE_PUBLIC(QOrbitControl)
 };
 
-} // namespace Qt3DInput
+} // namespace Qt3DExtras
 
 QT_END_NAMESPACE
 
-#endif // QTINPUT_QORBITCONTROL_P_H
+#endif // QT3DEXTRAS_QORBITCONTROL_P_H

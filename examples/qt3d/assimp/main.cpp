@@ -48,7 +48,7 @@
 **
 ****************************************************************************/
 
-#include <qt3dquickwindow.h>
+#include <Qt3DQuickExtras/qt3dquickwindow.h>
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DCore/QEntity>
 
@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
 
-    Qt3DQuickWindow view;
+    Qt3DExtras::Quick::Qt3DQuickWindow view;
 
     qmlRegisterType<SceneHelper>("Qt3D.Examples", 2, 0, "SceneHelper");
     view.setSource(QUrl("qrc:/main.qml"));

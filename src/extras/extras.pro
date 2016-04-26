@@ -1,6 +1,6 @@
 TARGET   = Qt3DExtras
 MODULE   = 3dextras
-QT      += core-private 3dcore 3dcore-private 3drender 3drender-private
+QT      += core-private 3dcore 3dcore-private 3drender 3drender-private 3dinput 3dlogic
 
 DEFINES += QT3DEXTRAS_LIBRARY
 

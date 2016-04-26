@@ -58,8 +58,8 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 
-#include "qt3dwindow.h"
-#include "qorbitcontrol.h"
+#include <Qt3DExtras/qt3dwindow.h>
+#include <Qt3DExtras/qorbitcontrol.h>
 
 #include <QTimer>
 
@@ -106,7 +106,7 @@ private:
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
-    Qt3DWindow view;
+    Qt3DExtras::Qt3DWindow view;
 
     // Root entity
     Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
@@ -117,7 +117,7 @@ int main(int argc, char **argv)
     camera->setViewCenter(QVector3D(0, 0, 0));
 
     // For camera controls
-    Qt3DInput::QOrbitControl *cameraController = new Qt3DInput::QOrbitControl(rootEntity);
+    Qt3DExtras::QOrbitControl *cameraController = new Qt3DExtras::QOrbitControl(rootEntity);
     cameraController->setCamera(camera);
 
     // Cylinder mesh data

@@ -68,15 +68,15 @@
 #include "finaleffect.h"
 #include "sceneeffect.h"
 #include "pointlightblock.h"
-#include "qt3dwindow.h"
-#include "qfirstpersoncameracontroller.h"
+#include <Qt3DExtras/qt3dwindow.h>
+#include <Qt3DExtras/qfirstpersoncameracontroller.h>
 
 
 int main(int ac, char **av)
 {
     QGuiApplication app(ac, av);
 
-    Qt3DWindow view;
+    Qt3DExtras::Qt3DWindow view;
 
     // Root entity
     Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
@@ -121,7 +121,7 @@ int main(int ac, char **av)
     camera->setViewCenter(QVector3D(0.0f, 0.0f, 10.0f));
 
     // For camera controls
-    Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(rootEntity);
+    Qt3DExtras::QFirstPersonCameraController *camController = new Qt3DExtras::QFirstPersonCameraController(rootEntity);
     camController->setCamera(camera);
 
     // FrameGraph

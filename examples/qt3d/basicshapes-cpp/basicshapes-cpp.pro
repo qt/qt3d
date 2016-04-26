@@ -6,7 +6,7 @@ android|ios|tvos|winrt {
     error( "Couldn't find the examples.pri file!" )
 }
 
-QT += 3dcore 3drender 3dinput
+QT += 3dcore 3drender 3dinput 3dextras
 QT += widgets
 
 SOURCES += main.cpp \

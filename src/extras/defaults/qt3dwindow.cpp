@@ -65,6 +65,8 @@
 
 QT_BEGIN_NAMESPACE
 
+namespace Qt3DExtras {
+
 Qt3DWindow::Qt3DWindow(QScreen *screen)
     : QWindow(screen)
     , m_aspectEngine(new Qt3DCore::QAspectEngine)
@@ -171,5 +173,7 @@ void Qt3DWindow::resizeEvent(QResizeEvent *)
 {
     m_defaultCamera->setAspectRatio(float(width()) / float(height()));
 }
+
+} // Qt3DExtras
 
 QT_END_NAMESPACE

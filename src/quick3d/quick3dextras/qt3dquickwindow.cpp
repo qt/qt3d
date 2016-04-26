@@ -48,7 +48,7 @@
 **
 ****************************************************************************/
 
-#include "qt3dquickwindow.h"
+#include <Qt3DQuickExtras/qt3dquickwindow.h>
 #include <Qt3DQuick/QQmlAspectEngine>
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qrenderaspect.h>
@@ -63,6 +63,10 @@
 #include <QtGui/qopenglcontext.h>
 
 QT_BEGIN_NAMESPACE
+
+namespace Qt3DExtras {
+
+namespace Quick {
 
 Qt3DQuickWindow::Qt3DQuickWindow(QWindow *parent)
     : QQuickWindow(parent)
@@ -242,5 +246,9 @@ void Qt3DQuickWindow::updateCameraAspectRatio()
                                  static_cast<float>(height()));
     }
 }
+
+} // Quick
+
+} // Qt3DExtras
 
 QT_END_NAMESPACE

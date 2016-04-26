@@ -124,7 +124,7 @@ Qt3DCore::QEntity *createScene()
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
-    Qt3DWindow view;
+    Qt3DExtras::Qt3DWindow view;
 
     Qt3DCore::QEntity *scene = createScene();
 
@@ -134,7 +134,7 @@ int main(int argc, char* argv[])
     camera->setPosition(QVector3D(0, 0, 40.0f));
 
     // For camera controls
-    Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(scene);
+    Qt3DExtras::QFirstPersonCameraController *camController = new Qt3DExtras::QFirstPersonCameraController(scene);
     camController->setLinearSpeed( 50.0f );
     camController->setLookSpeed( 180.0f );
     camController->setCamera(camera);

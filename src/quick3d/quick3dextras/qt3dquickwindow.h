@@ -48,52 +48,93 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QFIRSTPERSONCAMERACONTROLLER_H
-#define QT3DINPUT_QFIRSTPERSONCAMERACONTROLLER_H
+#ifndef QT3DEXTRAS_QUICK_QT3DQUICKWINDOW_H
+#define QT3DEXTRAS_QUICK_QT3DQUICKWINDOW_H
 
-#include <Qt3DCore/QEntity>
+#include <Qt3DQuickExtras/qt3dquickextras_global.h>
+#include <QQuickWindow>
+#include <QtCore/qpointer.h>
+#include <QUrl>
 
 QT_BEGIN_NAMESPACE
 
+namespace Qt3DCore {
+class QAbstractAspect;
+namespace Quick {
+class QQmlAspectEngine;
+}
+}
+
 namespace Qt3DRender {
+class QRenderAspect;
 class QCamera;
 }
 
 namespace Qt3DInput {
+class QInputAspect;
+}
 
-class QFirstPersonCameraControllerPrivate;
+namespace Qt3DLogic {
+class QLogicAspect;
+}
 
-class QFirstPersonCameraController : public Qt3DCore::QEntity
+namespace Qt3DExtras {
+
+namespace Quick {
+
+class QT3DQUICKEXTRASSHARED_EXPORT Qt3DQuickWindow : public QQuickWindow
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QCamera *camera READ camera WRITE setCamera NOTIFY cameraChanged)
-    Q_PROPERTY(float linearSpeed READ linearSpeed WRITE setLinearSpeed NOTIFY linearSpeedChanged)
-    Q_PROPERTY(float lookSpeed READ lookSpeed WRITE setLookSpeed NOTIFY lookSpeedChanged)
+    Q_PROPERTY(CameraAspectRatioMode cameraAspectRatioMode READ cameraAspectRatioMode WRITE setCameraAspectRatioMode NOTIFY cameraAspectRatioModeChanged)
 
 public:
-    explicit QFirstPersonCameraController(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QFirstPersonCameraController();
+    Qt3DQuickWindow(QWindow *parent = Q_NULLPTR);
+    ~Qt3DQuickWindow();
 
-    Qt3DRender::QCamera *camera() const;
-    float linearSpeed() const;
-    float lookSpeed() const;
+    void registerAspect(Qt3DCore::QAbstractAspect *aspect);
+    void registerAspect(const QString &name);
 
-    void setCamera(Qt3DRender::QCamera *camera);
-    void setLinearSpeed(float linearSpeed);
-    void setLookSpeed(float lookSpeed);
+    void setSource(const QUrl &source);
+    Qt3DCore::Quick::QQmlAspectEngine *engine() const;
+
+    enum CameraAspectRatioMode {
+        AutomaticAspectRatio,
+        UserAspectRatio
+    };
+    Q_ENUM(CameraAspectRatioMode);
+
+    void setCameraAspectRatioMode(CameraAspectRatioMode mode);
+    CameraAspectRatioMode cameraAspectRatioMode() const;
 
 Q_SIGNALS:
-    void cameraChanged();
-    void linearSpeedChanged();
-    void lookSpeedChanged();
+    void cameraAspectRatioModeChanged(CameraAspectRatioMode mode);
+
+protected:
+    void showEvent(QShowEvent *e) Q_DECL_OVERRIDE;
 
 private:
-    Q_DECLARE_PRIVATE(QFirstPersonCameraController)
-    Q_PRIVATE_SLOT(d_func(), void _q_onTriggered(float))
+    void onSceneCreated(QObject *rootObject);
+    void setWindowSurface(QObject *rootObject);
+    void setCameraAspectModeHelper();
+    void updateCameraAspectRatio();
+
+    QScopedPointer<Qt3DCore::Quick::QQmlAspectEngine> m_engine;
+
+    // Aspects
+    Qt3DRender::QRenderAspect *m_renderAspect;
+    Qt3DInput::QInputAspect *m_inputAspect;
+    Qt3DLogic::QLogicAspect *m_logicAspect;
+
+    QUrl m_source;
+    bool m_initialized;
+    QPointer<Qt3DRender::QCamera> m_camera;
+    CameraAspectRatioMode m_cameraAspectRatioMode;
 };
 
-} // Qt3DInput
+} // Quick
+
+} // Qt3DExtras
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QFIRSTPERSONCAMERACONTROLLER_H
+#endif // QT3DEXTRAS_QUICK_QT3DQUICKWINDOW_H

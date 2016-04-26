@@ -63,32 +63,31 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DInput {
-
+namespace Qt3DExtras {
 
 QFirstPersonCameraControllerPrivate::QFirstPersonCameraControllerPrivate()
     : Qt3DCore::QEntityPrivate()
     , m_camera(Q_NULLPTR)
-    , m_leftMouseButtonAction(new QAction())
-    , m_fineMotionAction(new QAction())
-    , m_rxAxis(new QAxis())
-    , m_ryAxis(new QAxis())
-    , m_txAxis(new QAxis())
-    , m_tyAxis(new QAxis())
-    , m_tzAxis(new QAxis())
-    , m_leftMouseButtonInput(new QActionInput())
-    , m_fineMotionKeyInput(new QActionInput())
-    , m_mouseRxInput(new QAxisInput())
-    , m_mouseRyInput(new QAxisInput())
-    , m_keyboardTxPosInput(new QAxisInput())
-    , m_keyboardTyPosInput(new QAxisInput())
-    , m_keyboardTzPosInput(new QAxisInput())
-    , m_keyboardTxNegInput(new QAxisInput())
-    , m_keyboardTyNegInput(new QAxisInput())
-    , m_keyboardTzNegInput(new QAxisInput())
-    , m_keyboardDevice(new QKeyboardDevice())
-    , m_mouseDevice(new QMouseDevice())
-    , m_logicalDevice(new QLogicalDevice())
+    , m_leftMouseButtonAction(new Qt3DInput::QAction())
+    , m_fineMotionAction(new Qt3DInput::QAction())
+    , m_rxAxis(new Qt3DInput::QAxis())
+    , m_ryAxis(new Qt3DInput::QAxis())
+    , m_txAxis(new Qt3DInput::QAxis())
+    , m_tyAxis(new Qt3DInput::QAxis())
+    , m_tzAxis(new Qt3DInput::QAxis())
+    , m_leftMouseButtonInput(new Qt3DInput::QActionInput())
+    , m_fineMotionKeyInput(new Qt3DInput::QActionInput())
+    , m_mouseRxInput(new Qt3DInput::QAxisInput())
+    , m_mouseRyInput(new Qt3DInput::QAxisInput())
+    , m_keyboardTxPosInput(new Qt3DInput::QAxisInput())
+    , m_keyboardTyPosInput(new Qt3DInput::QAxisInput())
+    , m_keyboardTzPosInput(new Qt3DInput::QAxisInput())
+    , m_keyboardTxNegInput(new Qt3DInput::QAxisInput())
+    , m_keyboardTyNegInput(new Qt3DInput::QAxisInput())
+    , m_keyboardTzNegInput(new Qt3DInput::QAxisInput())
+    , m_keyboardDevice(new Qt3DInput::QKeyboardDevice())
+    , m_mouseDevice(new Qt3DInput::QMouseDevice())
+    , m_logicalDevice(new Qt3DInput::QLogicalDevice())
     , m_frameAction(new Qt3DLogic::QFrameAction())
     , m_linearSpeed(10.0f)
     , m_lookSpeed(180.0f)
@@ -100,7 +99,7 @@ void QFirstPersonCameraControllerPrivate::init()
     //// Actions
 
     // Left Mouse Button Action
-    m_leftMouseButtonInput->setButtons(QVariantList() << QMouseEvent::LeftButton);
+    m_leftMouseButtonInput->setButtons(QVariantList() << Qt::LeftButton);
     m_leftMouseButtonInput->setSourceDevice(m_mouseDevice);
     m_leftMouseButtonAction->addInput(m_leftMouseButtonInput);
 
@@ -112,12 +111,12 @@ void QFirstPersonCameraControllerPrivate::init()
     //// Axes
 
     // Mouse X
-    m_mouseRxInput->setAxis(QMouseDevice::X);
+    m_mouseRxInput->setAxis(Qt3DInput::QMouseDevice::X);
     m_mouseRxInput->setSourceDevice(m_mouseDevice);
     m_rxAxis->addInput(m_mouseRxInput);
 
     // Mouse Y
-    m_mouseRyInput->setAxis(QMouseDevice::Y);
+    m_mouseRyInput->setAxis(Qt3DInput::QMouseDevice::Y);
     m_mouseRyInput->setSourceDevice(m_mouseDevice);
     m_ryAxis->addInput(m_mouseRyInput);
 
@@ -246,7 +245,7 @@ void QFirstPersonCameraController::setLookSpeed(float lookSpeed)
     }
 }
 
-} // Qt3DInput
+} // Qt3DExtras
 
 QT_END_NAMESPACE
 

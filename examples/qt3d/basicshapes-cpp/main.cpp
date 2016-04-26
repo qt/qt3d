@@ -80,13 +80,13 @@
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DExtras/qforwardrenderer.h>
 
-#include "qt3dwindow.h"
-#include "qfirstpersoncameracontroller.h"
+#include <Qt3DExtras/qt3dwindow.h>
+#include <Qt3DExtras/qfirstpersoncameracontroller.h>
 
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
-    Qt3DWindow *view = new Qt3DWindow();
+    Qt3DExtras::Qt3DWindow *view = new Qt3DExtras::Qt3DWindow();
     view->defaultFramegraph()->setClearColor(QColor(QRgb(0x4d4d4f)));
     QWidget *container = QWidget::createWindowContainer(view);
     QSize screenSize = view->screen()->size();
@@ -117,7 +117,7 @@ int main(int argc, char **argv)
     cameraEntity->setViewCenter(QVector3D(0, 0, 0));
 
     // For camera controls
-    Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(rootEntity);
+    Qt3DExtras::QFirstPersonCameraController *camController = new Qt3DExtras::QFirstPersonCameraController(rootEntity);
     camController->setCamera(cameraEntity);
 
     // Scenemodifier
