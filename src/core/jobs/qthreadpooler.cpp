@@ -185,9 +185,9 @@ QMutex localStoragesMutex;
 void QThreadPooler::addJobLogStatsEntry(JobRunStats &stats)
 {
     if (!jobStatsCached.hasLocalData()) {
-        QMutexLocker lock(&localStoragesMutex);
         auto jobVector = new JobRunStatsList;
         jobStatsCached.setLocalData(jobVector);
+        QMutexLocker lock(&localStoragesMutex);
         localStorages.push_back(jobVector);
     }
     jobStatsCached.localData()->push_back(stats);
