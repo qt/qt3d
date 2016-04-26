@@ -83,6 +83,21 @@ InputHandler::InputHandler()
 
 InputHandler::~InputHandler()
 {
+    delete m_keyboardDeviceManager;
+    delete m_keyboardInputManager;
+    delete m_mouseDeviceManager;
+    delete m_mouseInputManager;
+    delete m_keyboardEventFilter;
+    delete m_mouseEventFilter;
+    delete m_axisManager;
+    delete m_actionManager;
+    delete m_axisSettingManager;
+    delete m_axisInputManager;
+    delete m_actionInputManager;
+    delete m_inputChordManager;
+    delete m_inputSequenceManager;
+    delete m_logicalDeviceManager;
+    delete m_genericPhysicalDeviceBackendNodeManager;
 }
 
 // Called in MainThread (by the EventSourceHelperSetter)
