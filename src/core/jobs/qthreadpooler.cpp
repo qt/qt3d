@@ -197,9 +197,7 @@ void QThreadPooler::addJobLogStatsEntry(JobRunStats &stats)
 void QThreadPooler::starNewFrameJobLogsStats()
 {
     Q_FOREACH (JobRunStatsListPtr storage, localStorages) {
-        const int oldSize = storage->size();
         storage->clear();
-        storage->reserve(oldSize);
     }
 }
 
