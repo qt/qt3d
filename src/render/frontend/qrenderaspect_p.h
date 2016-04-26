@@ -76,6 +76,7 @@ class QT3DRENDERSHARED_PRIVATE_EXPORT QRenderAspectPrivate : public Qt3DCore::QA
 {
 public:
     QRenderAspectPrivate(QRenderAspect::RenderType type);
+    ~QRenderAspectPrivate();
 
     Q_DECLARE_PUBLIC(QRenderAspect)
 

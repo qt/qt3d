@@ -174,6 +174,12 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     m_renderer->setNodeManagers(m_nodeManagers);
 }
 
+QRenderAspectPrivate::~QRenderAspectPrivate()
+{
+    delete m_renderer;
+    delete m_nodeManagers;
+}
+
 void QRenderAspectPrivate::registerBackendTypes()
 {
     Q_Q(QRenderAspect);
