@@ -71,6 +71,7 @@ class QAspectEnginePrivate : public QObjectPrivate
 {
 public:
     QAspectEnginePrivate();
+    ~QAspectEnginePrivate();
 
     Q_DECLARE_PUBLIC(QAspectEngine)
 

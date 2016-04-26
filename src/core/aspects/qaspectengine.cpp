@@ -76,6 +76,12 @@ QAspectEnginePrivate::QAspectEnginePrivate()
     qRegisterMetaType<Qt3DCore::QAbstractPostman *>();
 }
 
+QAspectEnginePrivate::~QAspectEnginePrivate()
+{
+    Q_FOREACH (QAbstractAspect* aspect, m_aspects)
+        delete aspect;
+}
+
 /*!
  * \internal
  *
