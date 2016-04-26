@@ -60,7 +60,6 @@
 #include <Qt3DRender/private/layer_p.h>
 #include <Qt3DRender/private/material_p.h>
 #include <Qt3DRender/private/shader_p.h>
-#include <Qt3DRender/private/sortcriterion_p.h>
 #include <Qt3DRender/private/technique_p.h>
 #include <Qt3DRender/private/texture_p.h>
 #include <Qt3DRender/private/transform_p.h>
@@ -192,17 +191,6 @@ class ShaderManager : public Qt3DCore::QResourceManager<
 {
 public:
     ShaderManager() {}
-};
-
-class SortCriterionManager : public Qt3DCore::QResourceManager<
-        SortCriterion,
-        Qt3DCore::QNodeId,
-        8,
-        Qt3DCore::ArrayAllocatingPolicy,
-        Qt3DCore::ObjectLevelLockingPolicy>
-{
-public:
-    SortCriterionManager() {}
 };
 
 class TechniqueManager : public Qt3DCore::QResourceManager<
@@ -389,7 +377,6 @@ Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Entity, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Layer, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Material, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Shader, Q_REQUIRES_CLEANUP)
-Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::SortCriterion, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderTarget, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Technique, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Texture, Q_REQUIRES_CLEANUP)

@@ -79,9 +79,9 @@ TechniqueFilter {
                     buffers : ClearBuffers.ColorDepthBuffer
                     clearColor: "white"
                     SortPolicy {
-                        criteria: [
-                            SortCriterion { sort: SortCriterion.StateChangeCost },
-                            SortCriterion { sort: SortCriterion.Material }
+                        sortTypes: [
+                            SortPolicy.StateChangeCost,
+                            SortPolicy.Material
                         ]
                     }
                 }

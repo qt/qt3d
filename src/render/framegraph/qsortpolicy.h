@@ -46,19 +46,34 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QSortCriterion;
 class QSortPolicyPrivate;
 
 class QT3DRENDERSHARED_EXPORT QSortPolicy : public QFrameGraphNode
 {
     Q_OBJECT
-
+    Q_PROPERTY(QVariantList sortTypes READ sortTypeList WRITE setSortTypes NOTIFY sortTypesChanged)
 public:
     explicit QSortPolicy(Qt3DCore::QNode *parent = 0);
 
-    void addCriterion(QSortCriterion *criterion);
-    void removeCriterion(QSortCriterion *criterion);
-    QVector<QSortCriterion *> criteria() const;
+    enum SortType {
+        StateChangeCost = (1 << 0),
+        BackToFront = (1 << 1),
+        Material = (1 << 2)
+    };
+    Q_ENUM(SortType)
+
+    void addSortType(SortType sortType);
+    void removeSortType(SortType sortType);
+    QVector<SortType> sortTypes() const;
+    QVariantList sortTypeList() const;
+
+public Q_SLOTS:
+    void setSortTypes(QVector<QSortPolicy::SortType> sortTypes);
+    void setSortTypes(QVariantList sortTypes);
+
+Q_SIGNALS:
+    void sortTypesChanged(QVector<SortType> sortTypes);
+    void sortTypesChanged(QVariantList sortTypes);
 
 protected:
     QSortPolicy(QSortPolicyPrivate &dd, Qt3DCore::QNode *parent = 0);

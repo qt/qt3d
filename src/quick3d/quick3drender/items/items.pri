@@ -10,7 +10,6 @@ HEADERS += \
     $$PWD/quick3dscene_p.h \
     $$PWD/quick3dshaderdata_p.h \
     $$PWD/quick3dshaderdataarray_p.h \
-    $$PWD/quick3dsortpolicy_p.h \
     $$PWD/quick3dstateset_p.h \
     $$PWD/quick3dtechnique_p.h \
     $$PWD/quick3dtexture_p.h \
@@ -29,7 +28,6 @@ SOURCES += \
     $$PWD/quick3dscene.cpp \
     $$PWD/quick3dtexture.cpp \
     $$PWD/quick3drenderpass.cpp \
-    $$PWD/quick3dsortpolicy.cpp \
     $$PWD/quick3dparameter.cpp \
     $$PWD/quick3dshaderdata.cpp \
     $$PWD/quick3dshaderdataarray.cpp \

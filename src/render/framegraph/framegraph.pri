@@ -20,8 +20,6 @@ HEADERS += \
     $$PWD/qrenderpassfilter_p.h \
     $$PWD/qrendertargetselector.h \
     $$PWD/qrendertargetselector_p.h \
-    $$PWD/qsortcriterion.h \
-    $$PWD/qsortcriterion_p.h \
     $$PWD/qsortpolicy.h \
     $$PWD/qsortpolicy_p.h \
     $$PWD/qrenderstateset.h \
@@ -32,7 +30,6 @@ HEADERS += \
     $$PWD/qviewport_p.h \
     $$PWD/renderpassfilternode_p.h \
     $$PWD/rendertargetselectornode_p.h \
-    $$PWD/sortcriterion_p.h \
     $$PWD/sortpolicy_p.h \
     $$PWD/statesetnode_p.h \
     $$PWD/techniquefilternode_p.h \
@@ -60,14 +57,12 @@ SOURCES += \
     $$PWD/qnodraw.cpp \
     $$PWD/qrenderpassfilter.cpp \
     $$PWD/qrendertargetselector.cpp \
-    $$PWD/qsortcriterion.cpp \
     $$PWD/qsortpolicy.cpp \
     $$PWD/qrenderstateset.cpp \
     $$PWD/qtechniquefilter.cpp \
     $$PWD/qviewport.cpp \
     $$PWD/renderpassfilternode.cpp \
     $$PWD/rendertargetselectornode.cpp \
-    $$PWD/sortcriterion.cpp \
     $$PWD/sortpolicy.cpp \
     $$PWD/statesetnode.cpp \
     $$PWD/techniquefilternode.cpp \

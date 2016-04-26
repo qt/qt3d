@@ -38,7 +38,6 @@
 ****************************************************************************/
 
 #include "sortpolicy_p.h"
-#include <Qt3DRender/qsortcriterion.h>
 #include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -56,30 +55,30 @@ SortPolicy::SortPolicy()
 void SortPolicy::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QSortPolicy *sortPolicy = static_cast<QSortPolicy *>(peer);
-    m_criteria.clear();
-    Q_FOREACH (QSortCriterion *c, sortPolicy->criteria())
-        m_criteria.append(c->id());
+    m_sortTypes.clear();
+    Q_FOREACH (QSortPolicy::SortType c, sortPolicy->sortTypes())
+        m_sortTypes.append(c);
 }
 
 void SortPolicy::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
-    if (propertyChange->propertyName() == QByteArrayLiteral("sortCriterion")) {
-        const QNodeId cId = propertyChange->value().value<QNodeId>();
-        if (!cId.isNull()) {
+    if (propertyChange->propertyName() == QByteArrayLiteral("sortType")) {
+        const QSortPolicy::SortType cId = propertyChange->value().value<QSortPolicy::SortType>();
+        if (cId == QSortPolicy::StateChangeCost || cId == QSortPolicy::BackToFront || cId == QSortPolicy::Material) {
             if (e->type() == NodeAdded)
-                m_criteria.append(cId);
+                m_sortTypes.append(cId);
             else if (e->type() == NodeRemoved)
-                m_criteria.removeAll(cId);
+                m_sortTypes.removeAll(cId);
         }
     }
     markDirty(AbstractRenderer::AllDirty);
     FrameGraphNode::sceneChangeEvent(e);
 }
 
-QVector<QNodeId> SortPolicy::criteria() const
+QVector<QSortPolicy::SortType> SortPolicy::sortTypes() const
 {
-    return m_criteria;
+    return m_sortTypes;
 }
 
 } // namepace Render

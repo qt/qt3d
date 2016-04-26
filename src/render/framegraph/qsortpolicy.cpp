@@ -37,11 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qsortpolicy.h"
 #include "qsortpolicy_p.h"
-#include "qsortcriterion_p.h"
 #include <Qt3DCore/qnodepropertychange.h>
-#include <Qt3DRender/qsortcriterion.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,8 +55,8 @@ void QSortPolicy::copy(const QNode *ref)
 {
     QFrameGraphNode::copy(ref);
     const QSortPolicy *other = static_cast<const QSortPolicy*>(ref);
-    Q_FOREACH (QSortCriterion *c, other->d_func()->m_criteria)
-        addCriterion(qobject_cast<QSortCriterion *>(QNode::clone(c)));
+    Q_FOREACH (const QSortPolicy::SortType c, other->d_func()->m_sortTypes)
+        addSortType(c);
 }
 
 QSortPolicy::QSortPolicy(QNode *parent)
@@ -73,40 +70,61 @@ QSortPolicy::QSortPolicy(QSortPolicyPrivate &dd, QNode *parent)
 {
 }
 
-void QSortPolicy::addCriterion(QSortCriterion *criterion)
+void QSortPolicy::addSortType(Qt3DRender::QSortPolicy::SortType sortType)
 {
     Q_D(QSortPolicy);
-    if (!d->m_criteria.contains(criterion)) {
-        d->m_criteria.append(criterion);
-
-        if (!criterion->parent())
-            criterion->setParent(this);
+    if (!d->m_sortTypes.contains(sortType)) {
+        d->m_sortTypes.append(sortType);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QNodePropertyChangePtr propertyChange(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
-            propertyChange->setPropertyName("sortCriterion");
-            propertyChange->setValue(QVariant::fromValue(criterion->id()));
+            propertyChange->setPropertyName("sortType");
+            propertyChange->setValue(QVariant::fromValue(sortType));
             d->notifyObservers(propertyChange);
         }
     }
 }
 
-void QSortPolicy::removeCriterion(QSortCriterion *criterion)
+void QSortPolicy::removeSortType(SortType sortType)
 {
     Q_D(QSortPolicy);
     if (d->m_changeArbiter != Q_NULLPTR) {
         QNodePropertyChangePtr propertyChange(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
-        propertyChange->setPropertyName("sortCriterion");
-        propertyChange->setValue(QVariant::fromValue(criterion->id()));
+        propertyChange->setPropertyName("sortType");
+        propertyChange->setValue(QVariant::fromValue(sortType));
         d->notifyObservers(propertyChange);
     }
-    d->m_criteria.removeOne(criterion);
+    d->m_sortTypes.removeOne(sortType);
 }
 
-QVector<QSortCriterion *> QSortPolicy::criteria() const
+QVector<QSortPolicy::SortType> QSortPolicy::sortTypes() const
 {
     Q_D(const QSortPolicy);
-    return d->m_criteria;
+    return d->m_sortTypes;
+}
+
+QVariantList QSortPolicy::sortTypeList() const
+{
+    Q_D(const QSortPolicy);
+    QVariantList ret;
+    Q_FOREACH (const auto type, d->m_sortTypes)
+        ret.append(QVariant(type));
+
+    return ret;
+}
+
+void QSortPolicy::setSortTypes(QVector<QSortPolicy::SortType> sortTypes)
+{
+    Q_D(QSortPolicy);
+    d->m_sortTypes = sortTypes;
+}
+
+void QSortPolicy::setSortTypes(QVariantList sortTypes)
+{
+    Q_D(QSortPolicy);
+    d->m_sortTypes.clear();
+    Q_FOREACH (const auto &typeVariant, sortTypes)
+        d->m_sortTypes.append(typeVariant.value<QSortPolicy::SortType>());
 }
 
 } // namespace Qt3DRender

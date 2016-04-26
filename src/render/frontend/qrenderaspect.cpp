@@ -92,7 +92,6 @@
 #include <Qt3DRender/private/scenemanager_p.h>
 #include <Qt3DRender/private/clearbuffers_p.h>
 #include <Qt3DRender/private/sortpolicy_p.h>
-#include <Qt3DRender/private/sortcriterion_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/nodefunctor_p.h>
 #include <Qt3DRender/private/framegraphnode_p.h>
@@ -187,7 +186,6 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QSceneLoader>(QBackendNodeMapperPtr(new Render::RenderSceneFunctor(m_renderer, m_nodeManagers->sceneManager())));
     q->registerBackendType<QRenderTarget>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderTarget, Render::RenderTargetManager>(m_renderer, m_nodeManagers->renderTargetManager())));
     q->registerBackendType<QRenderTargetOutput>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderTargetOutput, Render::AttachmentManager>(m_renderer, m_nodeManagers->attachmentManager())));
-    q->registerBackendType<QSortCriterion>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::SortCriterion, Render::SortCriterionManager>(m_renderer, m_nodeManagers->sortCriterionManager())));
     q->registerBackendType<QRenderSettings>(QBackendNodeMapperPtr(new Render::RenderSettingsFunctor(m_renderer)));
     q->registerBackendType<QRenderState>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderStateNode, Render::RenderStateManager>(m_renderer, m_nodeManagers->renderStateManager())));
 

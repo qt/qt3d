@@ -749,22 +749,20 @@ void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &unif
 void RenderView::buildSortingKey(RenderCommand *command)
 {
     // Build a bitset key depending on the SortingCriterion
-    int sortCount = m_data->m_sortingCriteria.count();
+    int sortCount = m_data->m_sortingTypes.count();
 
     // If sortCount == 0, no sorting is applied
 
     // Handle at most 4 filters at once
     for (int i = 0; i < sortCount && i < 4; i++) {
-        SortCriterion *sC = m_manager->lookupResource<SortCriterion, SortCriterionManager>(m_data->m_sortingCriteria[i]);
-
-        switch (sC->sortType()) {
-        case QSortCriterion::StateChangeCost:
+        switch (m_data->m_sortingTypes.at(i)) {
+        case QSortPolicy::StateChangeCost:
             command->m_sortingType.sorts[i] = command->m_changeCost; // State change cost
             break;
-        case QSortCriterion::BackToFront:
+        case QSortPolicy::BackToFront:
             command->m_sortBackToFront = true; // Depth value
             break;
-        case QSortCriterion::Material:
+        case QSortPolicy::Material:
             command->m_sortingType.sorts[i] = command->m_shaderDna; // Material
             break;
         default:

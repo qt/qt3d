@@ -66,13 +66,11 @@ NodeManagers::NodeManagers()
     , m_textureManager(new TextureManager())
     , m_textureDataManager(new TextureDataManager())
     , m_layerManager(new LayerManager())
-    , m_filterKeyManager(new FilterKeyManager())
     , m_frameGraphManager(new FrameGraphManager())
     , m_transformManager(new TransformManager())
     , m_renderTargetManager(new RenderTargetManager())
     , m_sceneManager(new SceneManager())
     , m_attachmentManager(new AttachmentManager())
-    , m_sortCriterionManager(new SortCriterionManager())
     , m_parameterManager(new ParameterManager())
     , m_shaderDataManager(new ShaderDataManager())
     , m_glBufferManager(new GLBufferManager())
@@ -162,12 +160,6 @@ LayerManager *NodeManagers::manager<Layer>() const Q_DECL_NOEXCEPT
 }
 
 template<>
-FilterKeyManager *NodeManagers::manager<FilterKey>() const Q_DECL_NOEXCEPT
-{
-    return m_filterKeyManager;
-}
-
-template<>
 FrameGraphManager *NodeManagers::manager<FrameGraphNode*>() const Q_DECL_NOEXCEPT
 {
     return m_frameGraphManager;
@@ -195,12 +187,6 @@ template<>
 AttachmentManager *NodeManagers::manager<RenderTargetOutput>() const Q_DECL_NOEXCEPT
 {
     return m_attachmentManager;
-}
-
-template<>
-SortCriterionManager *NodeManagers::manager<SortCriterion>() const Q_DECL_NOEXCEPT
-{
-    return m_sortCriterionManager;
 }
 
 template<>

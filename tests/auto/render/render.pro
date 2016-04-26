@@ -30,7 +30,6 @@ contains(QT_CONFIG, private_tests) {
         qray3d \
         qrenderpassfilter \
         qrendertargetselector \
-        qsortcriterion \
         qsortpolicy \
         qrenderstateset \
         qtechniquefilter \

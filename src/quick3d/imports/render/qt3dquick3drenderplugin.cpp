@@ -75,7 +75,6 @@
 #include <Qt3DRender/qdithering.h>
 #include <Qt3DRender/qrendertargetoutput.h>
 #include <Qt3DRender/qclearbuffers.h>
-#include <Qt3DRender/qsortcriterion.h>
 #include <Qt3DRender/qalphacoverage.h>
 #include <Qt3DRender/qmultisampleantialiasing.h>
 #include <Qt3DRender/qpointsize.h>
@@ -85,6 +84,7 @@
 #include <Qt3DRender/qnodraw.h>
 #include <Qt3DRender/qclipplane.h>
 #include <Qt3DRender/qseamlesscubemap.h>
+#include <Qt3DRender/qsortpolicy.h>
 #include <Qt3DRender/qstenciloperation.h>
 #include <Qt3DRender/qstenciloperationarguments.h>
 #include <Qt3DRender/qstencilmask.h>
@@ -112,7 +112,6 @@
 #include <Qt3DQuickRender/private/quick3dscene_p.h>
 #include <Qt3DQuickRender/private/quick3dtexture_p.h>
 #include <Qt3DQuickRender/private/quick3drenderpass_p.h>
-#include <Qt3DQuickRender/private/quick3dsortpolicy_p.h>
 #include <Qt3DQuickRender/private/quick3dparameter_p.h>
 #include <Qt3DQuickRender/private/quick3dshaderdata_p.h>
 #include <Qt3DQuickRender/private/quick3dshaderdataarray_p.h>
@@ -236,8 +235,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QRenderSurfaceSelector>(uri, 2, 0, "RenderSurfaceSelector");
 
     // Sorting
-    qmlRegisterType<Qt3DRender::QSortCriterion>(uri, 2, 0, "SortCriterion");
-    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QSortPolicy, Qt3DRender::Render::Quick::Quick3DSortPolicy>("QSortPolicy", "Qt3D.Render/SortPolicy", uri, 2, 0, "SortPolicy");
+    qmlRegisterType<Qt3DRender::QSortPolicy>(uri, 2, 0, "SortPolicy");
 
     // RenderStates
     qmlRegisterUncreatableType<Qt3DRender::QRenderState>(uri, 2, 0, "RenderState", QStringLiteral("QRenderState is a base class"));

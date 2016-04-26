@@ -62,8 +62,6 @@ class QFilterKey;
 
 namespace Render {
 
-class FilterKeyManager;
-
 class FilterKey : public BackendNode
 {
 public:

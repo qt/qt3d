@@ -78,9 +78,7 @@ Entity {
                     buffers : ClearBuffers.ColorDepthBuffer
                     clearColor: "black"
                     SortPolicy {
-                        criteria: [
-                            SortCriterion { sort: SortCriterion.BackToFront }
-                        ]
+                        sortTypes: [ SortType.BackToFront ]
                     }
                 }
             }

@@ -170,7 +170,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
             case FrameGraphNode::SortMethod: {
                 const Render::SortPolicy *sortPolicy = static_cast<const Render::SortPolicy *>(node);
-                rv->addSortCriteria(sortPolicy->criteria());
+                rv->addSortType(sortPolicy->sortTypes());
                 break;
             }
 

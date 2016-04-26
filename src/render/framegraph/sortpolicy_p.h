@@ -68,10 +68,10 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-    QVector<Qt3DCore::QNodeId> criteria() const;
+    QVector<Qt3DRender::QSortPolicy::SortType> sortTypes() const;
 
 private:
-    QVector<Qt3DCore::QNodeId> m_criteria;
+    QVector<Qt3DRender::QSortPolicy::SortType> m_sortTypes;
 };
 
 } // namespace Render

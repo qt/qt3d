@@ -83,7 +83,6 @@ class RenderPassManager;
 class RenderTargetManager;
 class SceneManager;
 class AttachmentManager;
-class SortCriterionManager;
 class ParameterManager;
 class ShaderDataManager;
 class GLBufferManager;
@@ -115,7 +114,6 @@ class Scene;
 class RenderTargetOutput;
 class RenderTarget;
 class ShaderData;
-class SortCriterion;
 class Parameter;
 class GLBuffer;
 class TextureImage;
@@ -186,7 +184,6 @@ public:
     inline RenderTargetManager *renderTargetManager() const Q_DECL_NOEXCEPT { return m_renderTargetManager; }
     inline SceneManager *sceneManager() const Q_DECL_NOEXCEPT { return m_sceneManager; }
     inline AttachmentManager *attachmentManager() const Q_DECL_NOEXCEPT { return m_attachmentManager; }
-    inline SortCriterionManager *sortCriterionManager() const Q_DECL_NOEXCEPT { return m_sortCriterionManager; }
     inline ParameterManager *parameterManager() const Q_DECL_NOEXCEPT { return m_parameterManager; }
     inline ShaderDataManager *shaderDataManager() const Q_DECL_NOEXCEPT { return m_shaderDataManager; }
     inline GLBufferManager *glBufferManager() const Q_DECL_NOEXCEPT { return m_glBufferManager; }
@@ -220,7 +217,6 @@ private:
     RenderTargetManager *m_renderTargetManager;
     SceneManager *m_sceneManager;
     AttachmentManager *m_attachmentManager;
-    SortCriterionManager *m_sortCriterionManager;
     ParameterManager *m_parameterManager;
     ShaderDataManager *m_shaderDataManager;
     GLBufferManager *m_glBufferManager;
@@ -291,9 +287,6 @@ QT3DRENDERSHARED_PRIVATE_EXPORT SceneManager *NodeManagers::manager<Scene>() con
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT AttachmentManager *NodeManagers::manager<RenderTargetOutput>() const Q_DECL_NOEXCEPT;
-
-template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT SortCriterionManager *NodeManagers::manager<SortCriterion>() const Q_DECL_NOEXCEPT;
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT ParameterManager *NodeManagers::manager<Parameter>() const Q_DECL_NOEXCEPT;

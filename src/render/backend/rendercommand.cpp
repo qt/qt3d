@@ -38,7 +38,6 @@
 ****************************************************************************/
 
 #include "rendercommand_p.h"
-#include <Qt3DRender/qsortcriterion.h>
 
 QT_BEGIN_NAMESPACE
 

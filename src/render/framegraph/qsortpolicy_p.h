@@ -52,20 +52,19 @@
 //
 
 #include <private/qframegraphnode_p.h>
+#include "qsortpolicy.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QSortPolicy;
-class QSortCriterion;
 
 class QSortPolicyPrivate : public QFrameGraphNodePrivate
 {
 public:
     QSortPolicyPrivate();
     Q_DECLARE_PUBLIC(QSortPolicy)
-    QVector<QSortCriterion *> m_criteria;
+    QVector<QSortPolicy::SortType> m_sortTypes;
 };
 
 } // namespace Qt3DRender
