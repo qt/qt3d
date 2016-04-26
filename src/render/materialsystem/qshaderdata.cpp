@@ -103,7 +103,9 @@ void QShaderData::copy(const QNode *ref)
     // Copy properties of shaderData
     for (int i = propertyOffset; i < propertyCount; ++i) {
         const QMetaProperty property = metaObject->property(i);
-        setProperty(property.name(), propertyReader()->readProperty(shaderData->property(property.name())));
+        if (property.isWritable()) {
+            setProperty(property.name(), propertyReader()->readProperty(shaderData->property(property.name())));
+        }
     }
 }
 
@@ -119,8 +121,10 @@ Qt3DCore::QNodeCreatedChangeBasePtr QShaderData::createNodeCreationChange() cons
     data.properties.reserve(propertyCount - propertyOffset);
     for (int i = propertyOffset; i < propertyCount; ++i) {
         const QMetaProperty pro = metaObj->property(i);
-        data.properties.push_back(qMakePair(pro.name(),
-                                            propertyReader()->readProperty(property(pro.name()))));
+        if (pro.isWritable()) {
+            data.properties.push_back(qMakePair(pro.name(),
+                                                propertyReader()->readProperty(property(pro.name()))));
+        }
     }
 
     return creationChange;
