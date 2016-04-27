@@ -107,6 +107,11 @@ void QShaderData::copy(const QNode *ref)
             setProperty(property.name(), propertyReader()->readProperty(shaderData->property(property.name())));
         }
     }
+
+    // Also copy the dynamic properties
+    foreach (const QByteArray &propertyName, shaderData->dynamicPropertyNames()) {
+        setProperty(propertyName, propertyReader()->readProperty(shaderData->property(propertyName)));
+    }
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QShaderData::createNodeCreationChange() const
@@ -125,6 +130,11 @@ Qt3DCore::QNodeCreatedChangeBasePtr QShaderData::createNodeCreationChange() cons
             data.properties.push_back(qMakePair(pro.name(),
                                                 propertyReader()->readProperty(property(pro.name()))));
         }
+    }
+
+    foreach (const QByteArray &propertyName, dynamicPropertyNames()) {
+        data.properties.push_back(qMakePair(propertyName,
+                                            propertyReader()->readProperty(property(propertyName))));
     }
 
     return creationChange;

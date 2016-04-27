@@ -293,6 +293,19 @@ void ShaderData::readPeerProperties(QShaderData *shaderData)
         }
     }
 
+    // Also check the dynamic properties
+    foreach (const QByteArray &propertyName , shaderData->dynamicPropertyNames()) {
+        if (propertyName == "data" || propertyName == "childNodes")  // We don't handle default Node properties
+            continue;
+
+        QVariant value = m_propertyReader->readProperty(shaderData->property(propertyName));
+        QString key = QString::fromLatin1(propertyName);
+
+        m_properties.insert(key, value);
+        m_originalProperties.insert(key, value);
+    }
+
+
     // We look for transformed properties
     QHash<QString, QVariant>::iterator it = m_properties.begin();
     const QHash<QString, QVariant>::iterator end = m_properties.end();

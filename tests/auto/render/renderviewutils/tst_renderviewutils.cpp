@@ -44,6 +44,7 @@ private Q_SLOTS:
     void topLevelArrayValue();
     void topLevelStructValue_data();
     void topLevelStructValue();
+    void topLevelDynamicProperties();
 };
 
 class ScalarShaderData : public Qt3DRender::QShaderData
@@ -433,6 +434,35 @@ void tst_RenderViewUtils::topLevelStructValue()
         QCOMPARE(it.value(), expectedValues.value(Qt3DRender::Render::StringToInt::lookupString(it.key())));
         ++it;
     }
+}
+
+void tst_RenderViewUtils::topLevelDynamicProperties()
+{
+    QScopedPointer<Qt3DRender::QShaderData> shaderData(new Qt3DRender::QShaderData());
+    QScopedPointer<Qt3DRender::Render::ShaderDataManager> manager(new Qt3DRender::Render::ShaderDataManager());
+
+    shaderData->setProperty("scalar", 883.0f);
+    shaderData->setProperty("array", QVariantList() << 454 << 350 << 383 << 427 << 552);
+    initBackendShaderData(shaderData.data(), manager.data());
+
+    Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
+    QVERIFY(backendShaderData != Q_NULLPTR);
+
+    Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
+    blockBuilder.shaderDataManager = manager.data();
+    blockBuilder.updatedPropertiesOnly = false;
+    blockBuilder.uniforms.insert(QStringLiteral("MyBlock.scalar"), Qt3DRender::Render::ShaderUniform());
+    blockBuilder.uniforms.insert(QStringLiteral("MyBlock.array[0]"), Qt3DRender::Render::ShaderUniform());
+    // build name-value map
+    blockBuilder.buildActiveUniformNameValueMapStructHelper(backendShaderData, QStringLiteral("MyBlock"));
+
+    QVERIFY(blockBuilder.uniforms.count() == 2);
+    QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), 2);
+
+    QCOMPARE(blockBuilder.activeUniformNamesToValue.value(Qt3DRender::Render::StringToInt::lookupId("MyBlock.scalar")),
+             shaderData->property("scalar"));
+    QCOMPARE(blockBuilder.activeUniformNamesToValue.value(Qt3DRender::Render::StringToInt::lookupId("MyBlock.array[0]")),
+             shaderData->property("array"));
 }
 
 QTEST_APPLESS_MAIN(tst_RenderViewUtils)
