@@ -136,17 +136,16 @@ public:
 
 };
 
-QVector<Entity *> gatherEntities(Entity *entity)
+static QVector<Entity *> gatherEntities(Entity *entity, QVector<Entity *> entities)
 {
-    QVector<Entity *> entities;
-
     if (entity != Q_NULLPTR) {
         entities.push_back(entity);
         // Traverse children
-        Q_FOREACH (Entity *child, entity->children())
-            entities += gatherEntities(child);
+        const auto children = entity->children();
+        for (Entity *child : children)
+            entities = gatherEntities(child, std::move(entities));
     }
-    return entities;
+    return std::move(entities);
 }
 
 class EntityGatherer
@@ -161,7 +160,8 @@ public:
     QVector<Entity *> entities() const
     {
         if (m_needsRefresh) {
-            m_entities = gatherEntities(m_root);
+            m_entities.clear();
+            m_entities = gatherEntities(m_root, std::move(m_entities));
             m_needsRefresh = false;
         }
         return m_entities;
