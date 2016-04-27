@@ -76,7 +76,8 @@ void LoadSceneJob::run()
     // Set clone of sceneTree in sceneComponent. This will move the sceneSubTree
     // to the QCoreApplication thread which is where the frontend object tree lives.
     Scene *scene = m_managers->sceneManager()->lookupResource(m_sceneComponent);
-    scene->setSceneSubtree(sceneSubTree);
+    if (scene && sceneSubTree)
+        scene->setSceneSubtree(sceneSubTree);
 }
 
 } // namespace Render
