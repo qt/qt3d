@@ -39,6 +39,7 @@
 
 #include "assimpparser.h"
 
+#include <Qt3DCore/qabstractnodefactory.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DRender/qcameralens.h>
@@ -146,10 +147,10 @@ QMaterial *createBestApproachingMaterial(const aiMaterial *assimpMaterial) Q_DEC
     const bool hasSpecularTexture = (assimpMaterial->GetTexture(aiTextureType_SPECULAR, 0, &path) == AI_SUCCESS);
 
     if (hasDiffuseTexture && hasSpecularTexture)
-        return new QDiffuseSpecularMapMaterial();
+        return QAbstractNodeFactory::createNode<QDiffuseSpecularMapMaterial>("QDiffuseSpecularMapMaterial");
     if (hasDiffuseTexture)
-        return new QDiffuseMapMaterial();
-    return new QPhongMaterial();
+        return QAbstractNodeFactory::createNode<QDiffuseMapMaterial>("QDiffuseMapMaterial");
+    return QAbstractNodeFactory::createNode<QPhongMaterial>("QPhongMaterial");
 }
 
 QString texturePath(const aiString &path)
@@ -181,7 +182,8 @@ QParameter *findNamedParameter(const QString &name, QMaterial *material)
     }
 
     // Create and add parameter to material
-    QParameter *p = new QParameter(material);
+    QParameter *p = QAbstractNodeFactory::createNode<QParameter>("QParameter");
+    p->setParent(material);
     p->setName(name);
     material->addParameter(p);
     return p;
@@ -191,6 +193,46 @@ void setParameterValue(const QString &name, QMaterial *material, const QVariant 
 {
     QParameter *p = findNamedParameter(name, material);
     p->setValue(value);
+}
+
+QAttribute *createAttribute(QBuffer *buffer,
+                            const QString &name,
+                            QAttribute::VertexBaseType vertexBaseType,
+                            uint vertexSize,
+                            uint count,
+                            uint byteOffset = 0,
+                            uint byteStride = 0,
+                            QNode *parent = nullptr)
+{
+    QAttribute *attribute = QAbstractNodeFactory::createNode<QAttribute>("QAttribute");
+    attribute->setBuffer(buffer);
+    attribute->setName(name);
+    attribute->setDataType(vertexBaseType);
+    attribute->setDataSize(vertexSize);
+    attribute->setCount(count);
+    attribute->setByteOffset(byteOffset);
+    attribute->setByteStride(byteStride);
+    attribute->setParent(parent);
+    return attribute;
+}
+
+QAttribute *createAttribute(QBuffer *buffer,
+                            QAttribute::VertexBaseType vertexBaseType,
+                            uint vertexSize,
+                            uint count,
+                            uint byteOffset = 0,
+                            uint byteStride = 0,
+                            QNode *parent = nullptr)
+{
+    QAttribute *attribute = QAbstractNodeFactory::createNode<QAttribute>("QAttribute");
+    attribute->setBuffer(buffer);
+    attribute->setDataType(vertexBaseType);
+    attribute->setDataSize(vertexSize);
+    attribute->setCount(count);
+    attribute->setByteOffset(byteOffset);
+    attribute->setByteStride(byteStride);
+    attribute->setParent(parent);
+    return attribute;
 }
 
 } // anonymous
@@ -391,7 +433,7 @@ Qt3DCore::QEntity *AssimpParser::node(aiNode *node)
 {
     if (node == Q_NULLPTR)
         return Q_NULLPTR;
-    QEntity *entityNode = new QEntity();
+    QEntity *entityNode = QAbstractNodeFactory::createNode<Qt3DCore::QEntity>("QEntity");
     entityNode->setObjectName(aiStringToQString(node->mName));
 
     // Add Meshes to the node
@@ -418,7 +460,7 @@ Qt3DCore::QEntity *AssimpParser::node(aiNode *node)
 
     // Add Transformations
     const QMatrix4x4 qTransformMatrix = aiMatrix4x4ToQMatrix4x4(node->mTransformation);
-    Qt3DCore::QTransform *transform = new Qt3DCore::QTransform;
+    Qt3DCore::QTransform *transform = QAbstractNodeFactory::createNode<Qt3DCore::QTransform>("QTransform");
     transform->setMatrix(qTransformMatrix);
     entityNode->addComponent(transform);
 
@@ -528,10 +570,15 @@ void AssimpParser::loadMesh(uint meshIndex)
 {
     aiMesh *mesh = m_scene->m_aiScene->mMeshes[meshIndex];
 
-    QGeometryRenderer *geometryRenderer = new QGeometryRenderer();
-    QGeometry *meshGeometry = new QGeometry(geometryRenderer);
-    Qt3DRender::QBuffer *vertexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, meshGeometry);
-    Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer, meshGeometry);
+    QGeometryRenderer *geometryRenderer = QAbstractNodeFactory::createNode<QGeometryRenderer>("QGeometryRenderer");
+    QGeometry *meshGeometry = QAbstractNodeFactory::createNode<QGeometry>("QGeometry");
+    meshGeometry->setParent(geometryRenderer);
+    Qt3DRender::QBuffer *vertexBuffer = QAbstractNodeFactory::createNode<Qt3DRender::QBuffer>("QBuffer");
+    vertexBuffer->setParent(meshGeometry);
+    vertexBuffer->setType(Qt3DRender::QBuffer::VertexBuffer);
+    Qt3DRender::QBuffer *indexBuffer = QAbstractNodeFactory::createNode<Qt3DRender::QBuffer>("QBuffer");
+    indexBuffer->setParent(meshGeometry);
+    indexBuffer->setType(Qt3DRender::QBuffer::IndexBuffer);
 
     geometryRenderer->setGeometry(meshGeometry);
 
@@ -586,13 +633,13 @@ void AssimpParser::loadMesh(uint meshIndex)
     vertexBuffer->setData(bufferArray);
 
     // Add vertex attributes to the mesh with the right array
-    QAttribute *positionAttribute = new QAttribute(vertexBuffer, VERTICES_ATTRIBUTE_NAME,
+    QAttribute *positionAttribute = createAttribute(vertexBuffer, VERTICES_ATTRIBUTE_NAME,
                                           QAttribute::Float, 3,
                                           mesh->mNumVertices,
                                           0,
                                           chunkSize * sizeof(float));
 
-    QAttribute *normalAttribute = new QAttribute(vertexBuffer, NORMAL_ATTRIBUTE_NAME,
+    QAttribute *normalAttribute = createAttribute(vertexBuffer, NORMAL_ATTRIBUTE_NAME,
                                           QAttribute::Float, 3,
                                           mesh->mNumVertices,
                                           3 * sizeof(float),
@@ -602,7 +649,7 @@ void AssimpParser::loadMesh(uint meshIndex)
     meshGeometry->addAttribute(normalAttribute);
 
     if (hasTangent) {
-        QAttribute *tangentsAttribute = new QAttribute(vertexBuffer, TANGENT_ATTRIBUTE_NAME,
+        QAttribute *tangentsAttribute = createAttribute(vertexBuffer, TANGENT_ATTRIBUTE_NAME,
                                               QAttribute::Float, 3,
                                               mesh->mNumVertices,
                                               6 * sizeof(float),
@@ -611,7 +658,7 @@ void AssimpParser::loadMesh(uint meshIndex)
     }
 
     if (hasTexture) {
-        QAttribute *textureCoordAttribute = new QAttribute(vertexBuffer, TEXTCOORD_ATTRIBUTE_NAME,
+        QAttribute *textureCoordAttribute = createAttribute(vertexBuffer, TEXTCOORD_ATTRIBUTE_NAME,
                                               QAttribute::Float, 2,
                                               mesh->mNumVertices,
                                               (hasTangent ? 9 : 6) * sizeof(float),
@@ -620,7 +667,7 @@ void AssimpParser::loadMesh(uint meshIndex)
     }
 
     if (hasColor) {
-        QAttribute *colorAttribute = new QAttribute(vertexBuffer, COLOR_ATTRIBUTE_NAME,
+        QAttribute *colorAttribute = createAttribute(vertexBuffer, COLOR_ATTRIBUTE_NAME,
                                               QAttribute::Float, 4,
                                               mesh->mNumVertices,
                                               (6 + (hasTangent ? 3 : 0) + (hasTexture ? 2 : 0)) * sizeof(float),
@@ -656,7 +703,7 @@ void AssimpParser::loadMesh(uint meshIndex)
     indexBuffer->setData(ibufferContent);
 
     // Add indices attributes
-    QAttribute *indexAttribute = new QAttribute(indexBuffer, indiceType, 1, indices);
+    QAttribute *indexAttribute = createAttribute(indexBuffer, indiceType, 1, indices);
     indexAttribute->setAttributeType(QAttribute::IndexAttribute);
 
     meshGeometry->addAttribute(indexAttribute);
@@ -675,7 +722,7 @@ void AssimpParser::loadMesh(uint meshIndex)
 void AssimpParser::loadEmbeddedTexture(uint textureIndex)
 {
     aiTexture *assimpTexture = m_scene->m_aiScene->mTextures[textureIndex];
-    QAbstractTexture *texture = new QTexture2D();
+    QAbstractTexture *texture = QAbstractNodeFactory::createNode<QTexture2D>("QTexture2D");
     AssimpRawTextureImage *imageData = new AssimpRawTextureImage();
 
     bool isCompressed = assimpTexture->mHeight == 0;
@@ -719,8 +766,8 @@ void AssimpParser::loadCamera(uint cameraIndex)
     if (cameraNode == Q_NULLPTR)
         return ;
 
-    QEntity  *camera = new QEntity();
-    QCameraLens *lens = new QCameraLens();
+    QEntity *camera = QAbstractNodeFactory::createNode<Qt3DCore::QEntity>("QEntity");
+    QCameraLens *lens = QAbstractNodeFactory::createNode<QCameraLens>("QCameraLens");
 
     lens->setObjectName(aiStringToQString(assimpCamera->mName));
     lens->setPerspectiveProjection(qRadiansToDegrees(assimpCamera->mHorizontalFOV),
@@ -733,7 +780,7 @@ void AssimpParser::loadCamera(uint cameraIndex)
     m.lookAt(QVector3D(assimpCamera->mPosition.x, assimpCamera->mPosition.y, assimpCamera->mPosition.z),
              QVector3D(assimpCamera->mLookAt.x, assimpCamera->mLookAt.y, assimpCamera->mLookAt.z),
              QVector3D(assimpCamera->mUp.x, assimpCamera->mUp.y, assimpCamera->mUp.z));
-    Qt3DCore::QTransform *transform = new Qt3DCore::QTransform();
+    Qt3DCore::QTransform *transform = QAbstractNodeFactory::createNode<Qt3DCore::QTransform>("QTransform");
     transform->setMatrix(m);
     camera->addComponent(transform);
 
@@ -847,8 +894,8 @@ void AssimpParser::copyMaterialTextures(QMaterial *material, aiMaterial *assimpM
             QString fullPath = m_sceneDir.absoluteFilePath(texturePath(path));
             // Load texture if not already loaded
             if (!m_scene->m_materialTextures.contains(fullPath)) {
-                QAbstractTexture *tex = new QTexture2D();
-                QTextureImage *texImage = new QTextureImage();
+                QAbstractTexture *tex = QAbstractNodeFactory::createNode<QTexture2D>("QTexture2D");
+                QTextureImage *texImage = QAbstractNodeFactory::createNode<QTextureImage>("QTextureImage");
                 texImage->setSource(QUrl::fromLocalFile(fullPath));
                 tex->addTextureImage(texImage);
                 m_scene->m_materialTextures.insert(fullPath, tex);
