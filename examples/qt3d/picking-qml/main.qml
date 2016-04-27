@@ -162,9 +162,6 @@ Entity {
         onClicked: {
             console.log("Clicked cube 2")
             toggled = !toggled
-            sceneItem.width = _view.width * (toggled ? .7 : .5)
-            sceneItem.height = _view.height * (toggled ? .7 : .5)
-            console.log(sceneItem.width, sceneItem.height)
         }
     }
     PickableEntity {
@@ -195,11 +192,7 @@ Entity {
             onExited: cube4.material.diffuse = "blue"
         }
 
-        readonly property BoundingVolumeDebug debugVolume: BoundingVolumeDebug {
-            recursive: true
-        }
-
-        components: [objectPicker, debugVolume]
+        components: [objectPicker]
 
         Entity {
             id: cube4
@@ -212,10 +205,9 @@ Entity {
                 translation: Qt.vector3d(3, 4, 0)
             }
             readonly property Layer layer: Layer { names: "content" }
-            readonly property BoundingVolumeDebug debugVolume: BoundingVolumeDebug {}
             readonly property PhongMaterial material: PhongMaterial { diffuse: "red" }
 
-            components: [cubeMesh, transform, material, debugVolume, layer]
+            components: [cubeMesh, transform, material, layer]
         }
     }
 }

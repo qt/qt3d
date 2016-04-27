@@ -50,6 +50,7 @@
 
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import Qt3D.Extras 2.0
 
 Entity {
     id: root
@@ -64,7 +65,6 @@ Entity {
     property real z: 0
     property alias scale: transform.scale
     property alias hoverEnabled: objectPicker.hoverEnabled
-    property alias recursive: debugVolume.recursive
     property alias diffuseColor: material.diffuse
     property alias ambientColor: material.ambient
     readonly property bool containsMouse: objectPicker.containsMouse
@@ -81,7 +81,6 @@ Entity {
         onExited: root.exited();
     }
 
-    BoundingVolumeDebug { id: debugVolume }
     PhongMaterial { id: material }
 
     Transform {
@@ -94,6 +93,6 @@ Entity {
         names: "content"
     }
 
-    components: [mesh, material, transform, debugVolume, objectPicker, layer]
+    components: [mesh, material, transform, objectPicker, layer]
 }
 
