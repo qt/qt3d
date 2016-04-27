@@ -36,6 +36,7 @@
 
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import Qt3D.Extras 2.0
 import QtQuick 2.4 as QQ2
 
 Entity {
