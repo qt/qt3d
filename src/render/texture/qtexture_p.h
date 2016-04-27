@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DRender/private/qabstracttexture_p.h>
+#include <Qt3DRender/qtexturegenerator.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,6 +64,18 @@ public:
     QTextureLoaderPrivate();
 
     QUrl m_source;
+};
+
+class QTextureFromSourceGenerator : public QTextureGenerator
+{
+public:
+    explicit QTextureFromSourceGenerator(const QUrl &url);
+    QTextureDataPtr operator ()() Q_DECL_OVERRIDE;
+    bool operator ==(const QTextureGenerator &other) const Q_DECL_OVERRIDE;
+    inline QAbstractTexture::Status status() const { return m_status; }
+private:
+    QUrl m_url;
+    QAbstractTexture::Status m_status;
 };
 
 } // namespace Qt3DRender

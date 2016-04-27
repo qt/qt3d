@@ -40,6 +40,7 @@
 #include "qtextureimage.h"
 #include "qabstracttextureimage.h"
 #include "qtextureimage_p.h"
+#include "qtexturedata.h"
 #include "qtexture.h"
 #include "qtexture_p.h"
 
@@ -297,6 +298,61 @@ void QTextureLoader::setSource(const QUrl& source)
         d->m_dataFunctor.reset(new QImageTextureDataFunctor(source));
         emit sourceChanged(source);
     }
+}
+
+bool QTextureFromSourceGenerator::operator ==(const QTextureGenerator &other) const
+{
+    const QTextureFromSourceGenerator *otherFunctor = functor_cast<QTextureFromSourceGenerator>(&other);
+    return (otherFunctor != Q_NULLPTR && otherFunctor->m_url == m_url);
+
+}
+
+// Note: Maybe this should return a struct containing information such as
+// the format, number of layers ....
+// This would also give more flexibility for the future
+QTextureDataPtr QTextureFromSourceGenerator::operator ()()
+{
+    QTextureDataPtr generatedData = QTextureDataPtr::create();
+    // TO DO: Make it handle more formats and formats with nested images
+
+    m_status = QAbstractTexture::Loading;
+
+    if (m_url.isLocalFile() || m_url.scheme() == QStringLiteral("qrc")) {
+        QString source = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_url);
+        QVector<QTextureImageDataPtr> images;
+        QTextureImageDataPtr dataPtr = QTextureImageDataPtr::create();
+        // TO DO: Ideally a setter shouldn't return a value
+        // Separate that into isCompressedFile and setCompressedFile
+        // Set compressed fill the QTextImageData if possible,
+        // returns false if it failed or is not a compressed format
+
+        // TO DO: Make separateSetCompressed from the loading of a compressed file
+        // Make such loader set the property formats, targets and sizes in the generatedData
+
+        if (!dataPtr->setCompressedFile(source)) {
+            // Try to load using QImage
+            QImage img;
+            if (img.load(source))
+                dataPtr->setImage(img);
+            generatedData->setTarget(QAbstractTexture::Target2D);
+            generatedData->setWidth(img.width());
+            generatedData->setHeight(img.height());
+            generatedData->setDepth(1);
+        }
+
+        if (dataPtr->data().length() > 0) {
+            m_status = QAbstractTexture::Ready;
+            generatedData->addImageData(dataPtr);
+            images.push_back(dataPtr);
+        } else {
+            m_status = QAbstractTexture::Error;
+            qWarning() << "Failed to load image : " << source;
+        }
+    } else {
+        m_status = QAbstractTexture::Error;
+        qWarning() << "implement loading from remote URLs";
+    }
+    return generatedData;
 }
 
 } // namespace Qt3DRender
