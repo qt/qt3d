@@ -38,9 +38,10 @@
 ****************************************************************************/
 
 #include "layer_p.h"
-#include "qlayer.h"
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DRender/qlayer.h>
+#include <Qt3DRender/private/qlayer_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
@@ -71,6 +72,15 @@ void Layer::updateFromPeer(Qt3DCore::QNode *peer)
     m_layers = layer->names();
     m_layerIds.clear();
     m_layerIds.reserve(m_layers.size());
+    for (const QString &name : qAsConst(m_layers))
+        m_layerIds.push_back(StringToInt::lookupId(name));
+}
+
+void Layer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QLayerData>>(change);
+    const auto &data = typedChange->data;
+    m_layers = data.names;
     for (const QString &name : qAsConst(m_layers))
         m_layerIds.push_back(StringToInt::lookupId(name));
 }

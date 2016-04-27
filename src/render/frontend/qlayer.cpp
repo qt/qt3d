@@ -105,6 +105,14 @@ void QLayer::setNames(const QStringList &names)
     }
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QLayer::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QLayerData>::create(this);
+    auto &data = creationChange->data;
+    data.names = d_func()->m_names;
+    return creationChange;
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
