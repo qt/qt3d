@@ -101,6 +101,14 @@ QVector<QRenderTargetOutput *> QRenderTarget::outputs() const
     return d->m_outputs;
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QRenderTarget::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderTargetData>::create(this);
+    auto &data = creationChange->data;
+    data.outputIds = qIdsForNodes(outputs());
+    return creationChange;
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

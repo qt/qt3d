@@ -69,6 +69,11 @@ public:
     QVector<QRenderTargetOutput *> m_outputs;
 };
 
+struct QRenderTargetData
+{
+    Qt3DCore::QNodeIdVector outputIds;
+};
+
 }
 
 QT_END_NAMESPACE

@@ -39,6 +39,7 @@
 
 #include <Qt3DRender/private/rendertarget_p.h>
 #include <Qt3DRender/qrendertarget.h>
+#include <Qt3DRender/private/qrendertarget_p.h>
 #include <Qt3DRender/qrendertargetoutput.h>
 #include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
@@ -64,6 +65,13 @@ void RenderTarget::updateFromPeer(Qt3DCore::QNode *peer)
     const auto outputs = target->outputs();
     for (QRenderTargetOutput *att : outputs)
         appendRenderOutput(att->id());
+}
+
+void RenderTarget::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderTargetData>>(change);
+    const auto &data = typedChange->data;
+    m_renderOutputs = data.outputIds;
 }
 
 void RenderTarget::cleanup()
