@@ -91,8 +91,8 @@ public:
 
 private:
     QVector<Qt3DCore::QNodeId> m_texturesPending;
-    QVector<FunctorTextureDataPair > m_textureDataFunctors;
-    QVector<FunctorImageHandlesPair > m_texturesImagesPerFunctor;
+    QVector<FunctorTextureDataPair> m_textureDataFunctors;
+    QVector<FunctorImageHandlesPair> m_texturesImagesPerFunctor;
     mutable QMutex m_mutex;
     QVector<HTextureData> m_textureHandlesToRelease;
 };

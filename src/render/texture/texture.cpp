@@ -341,20 +341,20 @@ void Texture::setToGLTexture(QTextureImageData *imgData)
 
                 if (imgData->isCompressed()) {
                     m_gl->setCompressedData(level,
-                            layer,
-                            static_cast<QOpenGLTexture::CubeMapFace>(QOpenGLTexture::CubeMapPositiveX + face),
-                            bytes.size(),
-                            bytes.constData());
+                                            layer,
+                                            static_cast<QOpenGLTexture::CubeMapFace>(QOpenGLTexture::CubeMapPositiveX + face),
+                                            bytes.size(),
+                                            bytes.constData());
                 } else {
                     QOpenGLPixelTransferOptions uploadOptions;
                     uploadOptions.setAlignment(1);
                     m_gl->setData(level,
-                            layer,
-                            static_cast<QOpenGLTexture::CubeMapFace>(QOpenGLTexture::CubeMapPositiveX + face),
-                            imgData->pixelFormat(),
-                            imgData->pixelType(),
-                            bytes.constData(),
-                            &uploadOptions);
+                                  layer,
+                                  static_cast<QOpenGLTexture::CubeMapFace>(QOpenGLTexture::CubeMapPositiveX + face),
+                                  imgData->pixelFormat(),
+                                  imgData->pixelType(),
+                                  bytes.constData(),
+                                  &uploadOptions);
                 }
             }
         }
@@ -430,17 +430,17 @@ void Texture::updateWrapAndFilters()
 
 void Texture::updateDNA()
 {
-    int key = m_width + m_height + m_depth + m_layers + m_mipLevels +
-                         (m_generateMipMaps ? 1 : 0) +
-                         static_cast<int>(m_target) +
-                         static_cast<int>(m_format) +
-                         static_cast<int>(m_magnificationFilter) +
-                         static_cast<int>(m_minificationFilter) +
-                         static_cast<int>(m_wrapModeX) +
-                         static_cast<int>(m_wrapModeY) +
-                         static_cast<int>(m_wrapModeZ) +
-                         static_cast<int>(m_comparisonFunction) +
-                         static_cast<int>(m_comparisonMode);
+    const int key = m_width + m_height + m_depth + m_layers + m_mipLevels +
+            (m_generateMipMaps ? 1 : 0) +
+            static_cast<int>(m_target) +
+            static_cast<int>(m_format) +
+            static_cast<int>(m_magnificationFilter) +
+            static_cast<int>(m_minificationFilter) +
+            static_cast<int>(m_wrapModeX) +
+            static_cast<int>(m_wrapModeY) +
+            static_cast<int>(m_wrapModeZ) +
+            static_cast<int>(m_comparisonFunction) +
+            static_cast<int>(m_comparisonMode);
     m_textureDNA = ::qHash(key) + ::qHash(m_maximumAnisotropy);
 
     // apply non-unique hashes from texture images or texture data
