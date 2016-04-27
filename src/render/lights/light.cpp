@@ -39,6 +39,7 @@
 
 #include "light_p.h"
 #include "qabstractlight.h"
+#include "qabstractlight_p.h"
 #include <Qt3DCore/qnodepropertychange.h>
 #include <private/abstractrenderer_p.h>
 #include <private/nodemanagers_p.h>
@@ -52,6 +53,26 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 namespace Render {
 
+void Light::updateFromPeer(QNode *node)
+{
+    QAbstractLight *light = static_cast<QAbstractLight *>(node);
+    QShaderData *shaderData = light->findChild<QShaderData *>();
+    if (shaderData != Q_NULLPTR)
+        m_shaderDataId = shaderData->id();
+}
+
+QNodeId Light::shaderData() const
+{
+    return m_shaderDataId;
+}
+
+void Light::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAbstractLightData>>(change);
+    const auto &data = typedChange->data;
+    m_shaderDataId = data.shaderDataId;
+}
+
 RenderLightFunctor::RenderLightFunctor(AbstractRenderer *renderer, NodeManagers *managers)
     : m_managers(managers)
     , m_renderer(renderer)
@@ -61,7 +82,6 @@ RenderLightFunctor::RenderLightFunctor(AbstractRenderer *renderer, NodeManagers 
 Qt3DCore::QBackendNode *RenderLightFunctor::create(Qt3DCore::QNode *frontend) const
 {
     Light *backend = m_managers->lightManager()->getOrCreateResource(frontend->id());
-    backend->setManagers(m_managers);
     backend->setPeer(frontend);
     backend->setRenderer(m_renderer);
     return backend;
@@ -70,7 +90,6 @@ Qt3DCore::QBackendNode *RenderLightFunctor::create(Qt3DCore::QNode *frontend) co
 Qt3DCore::QBackendNode *RenderLightFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
     Light *backend = m_managers->lightManager()->getOrCreateResource(change->subjectId());
-    backend->setManagers(m_managers);
     backend->setRenderer(m_renderer);
     return backend;
 }

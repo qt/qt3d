@@ -51,7 +51,8 @@
 // We mean it.
 //
 
-#include <private/qshaderdata_p.h>
+#include <private/qcomponent_p.h>
+#include <qshaderdata.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,15 +60,19 @@ namespace Qt3DRender {
 
 class QAbstractLight;
 
-class Q_AUTOTEST_EXPORT QAbstractLightPrivate : public QShaderDataPrivate
+class Q_AUTOTEST_EXPORT QAbstractLightPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QAbstractLightPrivate(QAbstractLight::Type type);
 
     Q_DECLARE_PUBLIC(QAbstractLight)
     QAbstractLight::Type m_type;
-    QColor m_color;
-    float m_intensity;
+    QShaderData *m_shaderData;
+};
+
+struct QAbstractLightData
+{
+    Qt3DCore::QNodeId shaderDataId;
 };
 
 }

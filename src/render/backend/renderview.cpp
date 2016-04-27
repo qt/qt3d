@@ -866,13 +866,18 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                     Entity *lightEntity = lightSource.entity;
                     const QVector3D worldPos = lightEntity->worldBoundingVolume()->center();
                     for (Light *light : lightSource.lights) {
+                        ShaderData *shaderData = m_manager->shaderDataManager()->lookupResource(light->shaderData());
+                        if (!shaderData)
+                            continue;
+
                         if (lightIdx == MAX_LIGHTS)
                             break;
+
                         setUniformValue(command->m_parameterPack, LIGHT_POSITION_NAMES[lightIdx], worldPos);
                         setUniformValue(command->m_parameterPack, LIGHT_TYPE_NAMES[lightIdx], int(QAbstractLight::PointLight));
                         setUniformValue(command->m_parameterPack, LIGHT_COLOR_NAMES[lightIdx], QVector3D(1.0f, 1.0f, 1.0f));
                         setUniformValue(command->m_parameterPack, LIGHT_INTENSITY_NAMES[lightIdx], QVector3D(0.5f, 0.5f, 0.5f));
-                        setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, light, LIGHT_STRUCT_NAMES[lightIdx]);
+                        setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, LIGHT_STRUCT_NAMES[lightIdx]);
                         ++lightIdx;
                     }
                 }

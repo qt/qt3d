@@ -308,7 +308,7 @@ void Entity::addComponent(Qt3DCore::QComponent *component)
         m_layerComponents.append(component->id());
     } else if (qobject_cast<QMaterial *>(component) != Q_NULLPTR) {
         m_materialComponent = component->id();
-    } else if (qobject_cast<QAbstractLight *>(component) != Q_NULLPTR) { // QAbstractLight subclasses QShaderData
+    } else if (qobject_cast<QAbstractLight *>(component) != Q_NULLPTR) {
         m_lightComponents.append(component->id());
     } else if (qobject_cast<QShaderData *>(component) != Q_NULLPTR) {
         m_shaderDataComponents.append(component->id());

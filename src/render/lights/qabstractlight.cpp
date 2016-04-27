@@ -56,18 +56,26 @@ namespace Qt3DRender
 
 QAbstractLightPrivate::QAbstractLightPrivate(QAbstractLight::Type type)
     : m_type(type)
-    , m_color(QColor(255, 255, 255))
-    , m_intensity(1.0f)
+    , m_shaderData(new QShaderData)
 {
+    m_shaderData->setProperty("type", type);
 }
 
 void QAbstractLight::copy(const QNode *ref)
 {
     const QAbstractLight *light = static_cast<const QAbstractLight*>(ref);
     d_func()->m_type = light->d_func()->m_type;
-    d_func()->m_color = light->d_func()->m_color;
-    d_func()->m_intensity = light->d_func()->m_intensity;
-    QShaderData::copy(ref);
+    d_func()->m_shaderData = qobject_cast<QShaderData *>(QNode::clone(light->d_func()->m_shaderData));
+    QComponent::copy(ref);
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QAbstractLight::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAbstractLightData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QAbstractLight);
+    data.shaderDataId = qIdForNode(d->m_shaderData);
+    return creationChange;
 }
 
 /*!
@@ -77,8 +85,10 @@ void QAbstractLight::copy(const QNode *ref)
 
 /*! \internal */
 QAbstractLight::QAbstractLight(QAbstractLightPrivate &dd, QNode *parent)
-    : QShaderData(dd, parent)
+    : QComponent(dd, parent)
 {
+    Q_D(QAbstractLight);
+    d->m_shaderData->setParent(this);
 }
 
 QAbstractLight::Type QAbstractLight::type() const
@@ -95,15 +105,15 @@ QAbstractLight::Type QAbstractLight::type() const
 QColor QAbstractLight::color() const
 {
     Q_D(const QAbstractLight);
-    return d->m_color;
+    return d->m_shaderData->property("color").value<QColor>();
 }
 
-void QAbstractLight::setColor(const QColor &color)
+void QAbstractLight::setColor(const QColor &c)
 {
     Q_D(QAbstractLight);
-    if (d->m_color != color) {
-        d->m_color = color;
-        emit colorChanged(color);
+    if (color() != c) {
+        d->m_shaderData->setProperty("color", c);
+        emit colorChanged(c);
     }
 }
 
@@ -115,15 +125,15 @@ void QAbstractLight::setColor(const QColor &color)
 float QAbstractLight::intensity() const
 {
     Q_D(const QAbstractLight);
-    return d->m_intensity;
+    return d->m_shaderData->property("intensity").toFloat();
 }
 
-void QAbstractLight::setIntensity(float intensity)
+void QAbstractLight::setIntensity(float value)
 {
     Q_D(QAbstractLight);
-    if (d->m_intensity != intensity) {
-        d->m_intensity = intensity;
-        emit intensityChanged(intensity);
+    if (intensity() != value) {
+        d->m_shaderData->setProperty("intensity", value);
+        emit intensityChanged(value);
     }
 }
 

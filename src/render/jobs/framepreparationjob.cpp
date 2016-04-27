@@ -86,10 +86,6 @@ void FramePreparationJob::parseNodeTree(Entity *node)
     Q_FOREACH (ShaderData *r, shaderDatas)
         r->updateWorldTransform(*node->worldTransform());
 
-    QList<Light *> lights = node->renderComponents<Light>();
-    Q_FOREACH (Light *light, lights)
-        light->updateWorldTransform(*node->worldTransform());
-
     // Look if for the GeometryRender/Geometry the attributes and or buffers are dirty
     // in which case we need to recompute the triangle list
     GeometryRenderer *geomRenderer = node->renderComponent<GeometryRenderer>();

@@ -41,7 +41,7 @@
 #define QT3DRENDER_QABSTRACTLIGHT_H
 
 #include <Qt3DRender/qt3drender_global.h>
-#include <Qt3DRender/qshaderdata.h>
+#include <Qt3DCore/qcomponent.h>
 
 #include <QVector3D>
 #include <QColor>
@@ -52,7 +52,7 @@ namespace Qt3DRender {
 
 class QAbstractLightPrivate;
 
-class QT3DRENDERSHARED_EXPORT QAbstractLight : public QShaderData
+class QT3DRENDERSHARED_EXPORT QAbstractLight : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(Type type READ type)
@@ -85,6 +85,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QAbstractLight)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

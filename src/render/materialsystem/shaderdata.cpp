@@ -110,11 +110,7 @@ void ShaderData::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
 
 ShaderData *ShaderData::lookupResource(NodeManagers *managers, QNodeId id)
 {
-    ShaderData *shaderData = managers->shaderDataManager()->lookupResource(id);
-    if (!shaderData)
-        shaderData = managers->lightManager()->lookupResource(id);
-
-    return shaderData;
+    return managers->shaderDataManager()->lookupResource(id);
 }
 
 ShaderData *ShaderData::lookupResource(QNodeId id)

@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DRender/private/shaderdata_p.h>
+#include <Qt3DRender/private/backendnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,10 +61,17 @@ namespace Render {
 
 class NodeManagers;
 
-class Q_AUTOTEST_EXPORT Light : public ShaderData
+class Q_AUTOTEST_EXPORT Light : public BackendNode
 {
 public:
+    void updateFromPeer(Qt3DCore::QNode *node) Q_DECL_OVERRIDE;
 
+    Qt3DCore::QNodeId shaderData() const;
+
+private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
+    Qt3DCore::QNodeId m_shaderDataId;
 };
 
 class RenderLightFunctor : public Qt3DCore::QBackendNodeMapper

@@ -65,7 +65,6 @@ public:
     QDirectionalLightPrivate();
 
     Q_DECLARE_PUBLIC(QDirectionalLight)
-    QVector3D m_worldDirection;
 };
 
 } // namespace Qt3DRender

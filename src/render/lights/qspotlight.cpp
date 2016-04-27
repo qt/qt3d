@@ -67,12 +67,12 @@ namespace Qt3DRender {
 
 QSpotLightPrivate::QSpotLightPrivate()
     : QAbstractLightPrivate(QAbstractLight::SpotLight)
-    , m_constantAttenuation(0.0f)
-    , m_linearAttenuation(0.0f)
-    , m_quadraticAttenuation(0.0f)
-    , m_localDirection(0.0f, -1.0f, 0.0f)
-    , m_cutOffAngle(45.0f)
 {
+    m_shaderData->setProperty("constantAttenuation", 0.0f);
+    m_shaderData->setProperty("linearAttenuation", 0.0f);
+    m_shaderData->setProperty("quadraticAttenuation", 0.0f);
+    m_shaderData->setProperty("localDirection", QVector3D(0.0f, -1.0f, 0.0f));
+    m_shaderData->setProperty("cutOffAngle", 45.0f);
 }
 
 /*!
@@ -97,9 +97,6 @@ QSpotLightPrivate::QSpotLightPrivate()
 
 void QSpotLight::copy(const QNode *ref)
 {
-    const QSpotLight *light = static_cast<const QSpotLight*>(ref);
-    d_func()->m_localDirection = light->d_func()->m_localDirection;
-    d_func()->m_cutOffAngle = light->d_func()->m_cutOffAngle;
     QAbstractLight::copy(ref);
 }
 
@@ -132,14 +129,14 @@ QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
 float QSpotLight::constantAttenuation() const
 {
     Q_D(const QSpotLight);
-    return d->m_constantAttenuation;
+    return d->m_shaderData->property("constantAttenuation").toFloat();
 }
 
 void QSpotLight::setConstantAttenuation(float value)
 {
     Q_D(QSpotLight);
-    if (d->m_constantAttenuation != value) {
-        d->m_constantAttenuation = value;
+    if (constantAttenuation() != value) {
+        d->m_shaderData->setProperty("constantAttenuation", value);
         emit constantAttenuationChanged(value);
     }
 }
@@ -147,14 +144,14 @@ void QSpotLight::setConstantAttenuation(float value)
 float QSpotLight::linearAttenuation() const
 {
     Q_D(const QSpotLight);
-    return d->m_linearAttenuation;
+    return d->m_shaderData->property("linearAttenuation").toFloat();
 }
 
 void QSpotLight::setLinearAttenuation(float value)
 {
     Q_D(QSpotLight);
-    if (d->m_linearAttenuation != value) {
-        d->m_linearAttenuation = value;
+    if (linearAttenuation() != value) {
+        d->m_shaderData->setProperty("linearAttenuation", value);
         emit linearAttenuationChanged(value);
     }
 }
@@ -162,14 +159,14 @@ void QSpotLight::setLinearAttenuation(float value)
 float QSpotLight::quadraticAttenuation() const
 {
     Q_D(const QSpotLight);
-    return d->m_quadraticAttenuation;
+    return d->m_shaderData->property("quadraticAttenuation").toFloat();
 }
 
 void QSpotLight::setQuadraticAttenuation(float value)
 {
     Q_D(QSpotLight);
-    if (d->m_quadraticAttenuation != value) {
-        d->m_quadraticAttenuation = value;
+    if (quadraticAttenuation() != value) {
+        d->m_shaderData->setProperty("quadraticAttenuation", value);
         emit quadraticAttenuationChanged(value);
     }
 }
@@ -177,7 +174,7 @@ void QSpotLight::setQuadraticAttenuation(float value)
 QVector3D QSpotLight::localDirection() const
 {
     Q_D(const QSpotLight);
-    return d->m_localDirection;
+    return d->m_shaderData->property("localDirection").value<QVector3D>();
 }
 
 
@@ -193,24 +190,24 @@ QVector3D QSpotLight::localDirection() const
 float QSpotLight::cutOffAngle() const
 {
     Q_D(const QSpotLight);
-    return d->m_cutOffAngle;
+    return d->m_shaderData->property("cutOffAngle").toFloat();
 }
 
-void QSpotLight::setLocalDirection(const QVector3D &localDirection)
+void QSpotLight::setLocalDirection(const QVector3D &direction)
 {
     Q_D(QSpotLight);
-    if (localDirection != d->m_localDirection) {
-        d->m_localDirection = localDirection;
-        emit localDirectionChanged(localDirection);
+    if (localDirection() != direction) {
+        d->m_shaderData->setProperty("localDirection", direction);
+        emit localDirectionChanged(direction);
     }
 }
 
-void QSpotLight::setCutOffAngle(float cutOffAngle)
+void QSpotLight::setCutOffAngle(float value)
 {
     Q_D(QSpotLight);
-    if (d->m_cutOffAngle != cutOffAngle) {
-        d->m_cutOffAngle = cutOffAngle;
-        emit cutOffAngleChanged(cutOffAngle);
+    if (cutOffAngle() != value) {
+        d->m_shaderData->setProperty("cutOffAngle", value);
+        emit cutOffAngleChanged(value);
     }
 }
 
