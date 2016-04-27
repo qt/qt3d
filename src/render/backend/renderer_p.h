@@ -95,7 +95,7 @@ class QShaderProgram;
 class QMesh;
 class QRenderPass;
 class QAbstractShapeMesh;
-class GraphicsApiFilterData;
+struct GraphicsApiFilterData;
 class QSceneIOHandler;
 
 namespace Render {
