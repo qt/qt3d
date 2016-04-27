@@ -174,7 +174,7 @@ void QSpotLight::setQuadraticAttenuation(float value)
     }
 }
 
-    QVector3D QSpotLight::localDirection() const
+QVector3D QSpotLight::localDirection() const
 {
     Q_D(const QSpotLight);
     return d->m_localDirection;
