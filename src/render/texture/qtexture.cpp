@@ -41,22 +41,16 @@
 #include "qabstracttextureimage.h"
 #include "qtextureimage_p.h"
 #include "qtexture.h"
-#include "qabstracttexture_p.h"
+#include "qtexture_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QTextureLoaderPrivate : public QAbstractTexturePrivate
+QTextureLoaderPrivate::QTextureLoaderPrivate()
+    : QAbstractTexturePrivate()
 {
-public:
-    QTextureLoaderPrivate()
-        : QAbstractTexturePrivate()
-    {
-    }
-
-    QUrl m_source;
-};
+}
 
 /*!
     \class Qt3DRender::QTexture1D
