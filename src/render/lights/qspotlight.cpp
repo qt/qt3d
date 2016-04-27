@@ -71,7 +71,7 @@ QSpotLightPrivate::QSpotLightPrivate()
     m_shaderData->setProperty("constantAttenuation", 0.0f);
     m_shaderData->setProperty("linearAttenuation", 0.0f);
     m_shaderData->setProperty("quadraticAttenuation", 0.0f);
-    m_shaderData->setProperty("localDirection", QVector3D(0.0f, -1.0f, 0.0f));
+    m_shaderData->setProperty("direction", QVector3D(0.0f, -1.0f, 0.0f));
     m_shaderData->setProperty("cutOffAngle", 45.0f);
 }
 
@@ -174,7 +174,7 @@ void QSpotLight::setQuadraticAttenuation(float value)
 QVector3D QSpotLight::localDirection() const
 {
     Q_D(const QSpotLight);
-    return d->m_shaderData->property("localDirection").value<QVector3D>();
+    return d->m_shaderData->property("direction").value<QVector3D>();
 }
 
 
@@ -197,7 +197,7 @@ void QSpotLight::setLocalDirection(const QVector3D &direction)
 {
     Q_D(QSpotLight);
     if (localDirection() != direction) {
-        d->m_shaderData->setProperty("localDirection", direction);
+        d->m_shaderData->setProperty("direction", direction);
         emit localDirectionChanged(direction);
     }
 }

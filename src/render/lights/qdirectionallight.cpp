@@ -67,7 +67,7 @@ namespace Qt3DRender {
 QDirectionalLightPrivate::QDirectionalLightPrivate()
     : QAbstractLightPrivate(QAbstractLight::DirectionalLight)
 {
-    m_shaderData->setProperty("worldDirection", QVector3D(0.0f, -1.0f, 0.0f));
+    m_shaderData->setProperty("direction", QVector3D(0.0f, -1.0f, 0.0f));
 }
 
 void QDirectionalLight::copy(const QNode *ref)
@@ -90,7 +90,7 @@ void QDirectionalLight::setWorldDirection(const QVector3D &direction)
 {
     Q_D(QDirectionalLight);
     if (worldDirection() != direction) {
-        d->m_shaderData->setProperty("worldDirection", direction);
+        d->m_shaderData->setProperty("direction", direction);
         emit worldDirectionChanged(direction);
     }
 }
@@ -98,7 +98,7 @@ void QDirectionalLight::setWorldDirection(const QVector3D &direction)
 QVector3D QDirectionalLight::worldDirection() const
 {
     Q_D(const QDirectionalLight);
-    return d->m_shaderData->property("worldDirection").value<QVector3D>();
+    return d->m_shaderData->property("direction").value<QVector3D>();
 }
 
 } // namespace Qt3DRender
