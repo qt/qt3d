@@ -40,6 +40,7 @@
 #include "qabstracttextureimage.h"
 #include "qabstracttextureimage_p.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DRender/qtextureimagedatagenerator.h>
 
 QT_BEGIN_NAMESPACE
 

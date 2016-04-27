@@ -39,6 +39,7 @@
 
 #include "textureimage_p.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DRender/qtextureimagedatagenerator.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/qabstracttextureimage_p.h>

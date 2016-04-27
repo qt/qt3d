@@ -50,6 +50,7 @@
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qtexture.h>
+#include <Qt3DRender/qtextureimagedatagenerator.h>
 #include <Qt3DExtras/qdiffusemapmaterial.h>
 #include <Qt3DExtras/qdiffusespecularmapmaterial.h>
 #include <Qt3DExtras/qphongmaterial.h>

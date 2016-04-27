@@ -5,12 +5,14 @@ HEADERS += \
     $$PWD/qabstracttextureimage_p.h \
     $$PWD/qtexture.h \
     $$PWD/qtextureimage.h \
+    $$PWD/qtextureimage_p.h \
     $$PWD/qtexturewrapmode.h \
     $$PWD/texture_p.h \
     $$PWD/texturedatamanager_p.h \
     $$PWD/textureimage_p.h \
     $$PWD/qabstracttexture.h \
     $$PWD/qabstracttexture_p.h \
+    $$PWD/qtextureimagedatagenerator.h \
     $$PWD/qtextureimagedata_p.h \
     $$PWD/qtextureimagedata.h
 

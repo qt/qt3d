@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,58 +37,38 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QABSTRACTTEXTUREIMAGE_H
-#define QT3DRENDER_QABSTRACTTEXTUREIMAGE_H
+#ifndef QT3DRENDER_QTEXTUREIMAGEDATAGENERATOR_H
+#define QT3DRENDER_QTEXTUREIMAGEDATAGENERATOR_H
 
-#include <Qt3DRender/qabstracttexture.h>
+#include <Qt3DRender/qabstractfunctor.h>
+#include <QSharedPointer>
+
+// TO DO TexImageDataPtr -> QImageDataPtr + d_ptr
+// We might also get rid of the layer, face, mipmap level from
+// TexImageDataPtr and store that in the functor directly
+// or use the QTextureImage instead
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-namespace Render {
-class TextureImage;
-}
+class QTextureImageData;
+typedef QSharedPointer<QTextureImageData> QTextureImageDataPtr;
 
-class QAbstractTextureImagePrivate;
-
-class QT3DRENDERSHARED_EXPORT QAbstractTextureImage : public Qt3DCore::QNode
+class QT3DRENDERSHARED_EXPORT QTextureImageDataGenerator : public QAbstractFunctor
 {
-    Q_OBJECT
-    Q_PROPERTY(int mipLevel READ mipLevel WRITE setMipLevel NOTIFY mipLevelChanged)
-    Q_PROPERTY(int layer READ layer WRITE setLayer NOTIFY layerChanged)
-    Q_PROPERTY(Qt3DRender::QAbstractTexture::CubeMapFace face READ face WRITE setFace NOTIFY faceChanged)
 public:
-    explicit QAbstractTextureImage(Qt3DCore::QNode *parent = nullptr);
-    virtual ~QAbstractTextureImage();
-
-    int mipLevel() const;
-    int layer() const;
-    QAbstractTexture::CubeMapFace face() const;
-
-public Q_SLOTS:
-    void setMipLevel(int level);
-    void setLayer(int layer);
-    void setFace(QAbstractTexture::CubeMapFace face);
-
-Q_SIGNALS:
-    void mipLevelChanged(int mipLevel);
-    void layerChanged(int layer);
-    void faceChanged(QAbstractTexture::CubeMapFace face);
-
-protected:
-    void notifyDataGeneratorChanged();
-    virtual QTextureImageDataGeneratorPtr dataGenerator() const = 0;
-    explicit QAbstractTextureImage(QAbstractTextureImagePrivate &dd, Qt3DCore::QNode *parent = nullptr);
-
-private:
-    Q_DECLARE_PRIVATE(QAbstractTextureImage)
-    friend class Render::TextureImage;
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+    virtual ~QTextureImageDataGenerator() {}
+    virtual QTextureImageDataPtr operator()() = 0;
+    virtual bool operator ==(const QTextureImageDataGenerator &other) const = 0;
 };
+
+typedef QSharedPointer<QTextureImageDataGenerator> QTextureImageDataGeneratorPtr;
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QABSTRACTTEXTUREIMAGE_H
+Q_DECLARE_METATYPE(Qt3DRender::QTextureImageDataGeneratorPtr)
+
+#endif // QT3DRENDER_QTEXTUREIMAGEDATAGENERATOR_H
