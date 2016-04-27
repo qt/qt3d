@@ -10,11 +10,11 @@ win32 {
             common_static_lib = $$OUT_PWD/../examples-common/release/$${QMAKE_PREFIX_STATICLIB}examples-common.$${QMAKE_EXTENSION_STATICLIB}
         }
     }
+    LIBS += $$common_static_lib
+    PRE_TARGETDEPS += $$common_static_lib
 } else {
-    common_static_lib = $$OUT_PWD/../examples-common/$${QMAKE_PREFIX_STATICLIB}examples-common.$${QMAKE_EXTENSION_STATICLIB}
+    LIBS += -L$$OUT_PWD/../examples-common -l$$qtLibraryTarget(examples-common)
+    PRE_TARGETDEPS += $$OUT_PWD/../examples-common/lib$$qtLibraryTarget(examples-common).a
 }
-
-LIBS += $$common_static_lib
-PRE_TARGETDEPS += $$common_static_lib
 
 RESOURCES += $$OUT_PWD/../examples-common/examples-common.qrc

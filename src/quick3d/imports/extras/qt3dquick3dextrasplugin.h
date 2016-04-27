@@ -45,7 +45,9 @@
 static void initResources()
 {
 #ifdef QT_STATIC
-    Q_INIT_RESOURCE(qmake_Qt3D_Core);
+    Q_INIT_RESOURCE(qmake_Qt3D_Extras);
+    Q_INIT_RESOURCE(defaults);
+    Q_INIT_RESOURCE(extras);
 #endif
 }
 
