@@ -116,10 +116,10 @@ QVariantList QSortPolicy::sortTypeList() const
 void QSortPolicy::setSortTypes(QVector<QSortPolicy::SortType> sortTypes)
 {
     Q_D(QSortPolicy);
-    d->m_sortTypes = sortTypes;
+    d->m_sortTypes = std::move(sortTypes);
 }
 
-void QSortPolicy::setSortTypes(QVariantList sortTypes)
+void QSortPolicy::setSortTypes(const QVariantList &sortTypes)
 {
     Q_D(QSortPolicy);
     d->m_sortTypes.clear();

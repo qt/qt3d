@@ -69,11 +69,11 @@ public:
 
 public Q_SLOTS:
     void setSortTypes(QVector<QSortPolicy::SortType> sortTypes);
-    void setSortTypes(QVariantList sortTypes);
+    void setSortTypes(const QVariantList &sortTypes);
 
 Q_SIGNALS:
-    void sortTypesChanged(QVector<SortType> sortTypes);
-    void sortTypesChanged(QVariantList sortTypes);
+    void sortTypesChanged(const QVector<SortType> &sortTypes);
+    void sortTypesChanged(const QVariantList &sortTypes);
 
 protected:
     explicit QSortPolicy(QSortPolicyPrivate &dd, Qt3DCore::QNode *parent = nullptr);
