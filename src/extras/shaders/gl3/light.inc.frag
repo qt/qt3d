@@ -8,7 +8,9 @@ struct Light {
     vec3 color;
     float intensity;
     vec3 direction;
-    vec3 attenuation;
+    float constantAttenuation;
+    float linearAttenuation;
+    float quadraticAttenuation;
     float cutOffAngle;
 };
 uniform Light lights[MAX_LIGHTS];
@@ -29,9 +31,11 @@ void adsModelNormalMapped(const in vec3 vpos, const in vec3 vnormal, const in ve
         float att = 1.0;
         if ( lights[i].type != TYPE_DIRECTIONAL ) {
             s = tangentMatrix * ( lights[i].position - vpos );
-            if (length( lights[i].attenuation ) != 0.0) {
+            if (lights[i].constantAttenuation != 0.0
+             || lights[i].linearAttenuation != 0.0
+             || lights[i].quadraticAttenuation != 0.0) {
                 float dist = length(s);
-                att = 1.0 / (lights[i].attenuation.x + lights[i].attenuation.y * dist + lights[i].attenuation.z * dist * dist);
+                att = 1.0 / (lights[i].constantAttenuation + lights[i].linearAttenuation * dist + lights[i].quadraticAttenuation * dist * dist);
             }
             s = normalize( s );
             if ( lights[i].type == TYPE_SPOT ) {
@@ -71,9 +75,11 @@ void adsModel(const in vec3 vpos, const in vec3 vnormal, const in vec3 eye, cons
         float att = 1.0;
         if ( lights[i].type != TYPE_DIRECTIONAL ) {
             s = lights[i].position - vpos;
-            if (length( lights[i].attenuation ) != 0.0) {
+            if (lights[i].constantAttenuation != 0.0
+             || lights[i].linearAttenuation != 0.0
+             || lights[i].quadraticAttenuation != 0.0) {
                 float dist = length(s);
-                att = 1.0 / (lights[i].attenuation.x + lights[i].attenuation.y * dist + lights[i].attenuation.z * dist * dist);
+                att = 1.0 / (lights[i].constantAttenuation + lights[i].linearAttenuation * dist + lights[i].quadraticAttenuation * dist * dist);
             }
             s = normalize( s );
             if ( lights[i].type == TYPE_SPOT ) {
@@ -111,9 +117,11 @@ void adModel(const in vec3 vpos, const in vec3 vnormal, out vec3 diffuseColor)
         float att = 1.0;
         if ( lights[i].type != TYPE_DIRECTIONAL ) {
             s = lights[i].position - vpos;
-            if (length( lights[i].attenuation ) != 0.0) {
+            if (lights[i].constantAttenuation != 0.0
+             || lights[i].linearAttenuation != 0.0
+             || lights[i].quadraticAttenuation != 0.0) {
                 float dist = length(s);
-                att = 1.0 / (lights[i].attenuation.x + lights[i].attenuation.y * dist + lights[i].attenuation.z * dist * dist);
+                att = 1.0 / (lights[i].constantAttenuation + lights[i].linearAttenuation * dist + lights[i].quadraticAttenuation * dist * dist);
             }
             s = normalize( s );
             if ( lights[i].type == TYPE_SPOT ) {
