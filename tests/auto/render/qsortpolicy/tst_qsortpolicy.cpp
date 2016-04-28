@@ -42,11 +42,6 @@
 class tst_QSortPolicy: public Qt3DCore::QNode
 {
     Q_OBJECT
-public:
-    ~tst_QSortPolicy()
-    {
-        QMetaObject::invokeMethod(this, "_q_cleanup", Qt::DirectConnection);
-    }
 
 private Q_SLOTS:
 

@@ -343,8 +343,8 @@ void tst_QChangeArbiter::registerObservers()
     child->setParent(root);
     arbiter->syncChanges();
     Q_FOREACH (tst_SimpleObserver *o, observers) {
-        QVERIFY(!o->lastChange().isNull());
-        QVERIFY(o->lastChange()->type() == Qt3DCore::NodeCreated);
+        QCOMPARE(o->lastChanges().size(), 1);
+        QVERIFY(o->lastChanges().last()->type() == Qt3DCore::NodeAdded);
     }
 
     Qt3DCore::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter.data());
@@ -398,7 +398,7 @@ void tst_QChangeArbiter::registerSceneObserver()
     // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
-        QVERIFY(o->lastChange()->type() == Qt3DCore::NodeCreated);
+        QVERIFY(o->lastChange()->type() == Qt3DCore::NodeAdded);
     }
     Q_FOREACH (tst_SceneObserver *s, sceneObservers) {
         QVERIFY(!s->lastChange().isNull());
@@ -461,7 +461,7 @@ void tst_QChangeArbiter::unregisterObservers()
     // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
-        QVERIFY(o->lastChange()->type() == Qt3DCore::NodeCreated);
+        QVERIFY(o->lastChange()->type() == Qt3DCore::NodeAdded);
     }
 
     // WHEN
@@ -474,7 +474,7 @@ void tst_QChangeArbiter::unregisterObservers()
     // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
-        QVERIFY(o->lastChange()->type() == Qt3DCore::NodeCreated);
+        QVERIFY(o->lastChange()->type() == Qt3DCore::NodeAdded);
     }
 
     Qt3DCore::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter.data());
@@ -528,7 +528,7 @@ void tst_QChangeArbiter::unregisterSceneObservers()
     // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
-        QVERIFY(o->lastChange()->type() == Qt3DCore::NodeCreated);
+        QVERIFY(o->lastChange()->type() == Qt3DCore::NodeAdded);
     }
     Q_FOREACH (tst_SceneObserver *s, sceneObservers) {
         QVERIFY(!s->lastChange().isNull());
@@ -556,11 +556,11 @@ void tst_QChangeArbiter::unregisterSceneObservers()
     // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
-        QVERIFY(o->lastChange()->type() == Qt3DCore::NodeAboutToBeDeleted);
+        QVERIFY(o->lastChange()->type() == Qt3DCore::NodeRemoved);
     }
     Q_FOREACH (tst_SceneObserver *s, sceneObservers) {
         QVERIFY(!s->lastChange().isNull());
-        QVERIFY(s->lastChange()->type() == Qt3DCore::NodeAboutToBeDeleted);
+        QVERIFY(s->lastChange()->type() == Qt3DCore::NodeDeleted);
     }
 
     Q_FOREACH (tst_SceneObserver *s, sceneObservers)
@@ -573,11 +573,11 @@ void tst_QChangeArbiter::unregisterSceneObservers()
     // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
-        QVERIFY(o->lastChange()->type() == Qt3DCore::NodeCreated);
+        QVERIFY(o->lastChange()->type() == Qt3DCore::NodeAdded);
     }
     Q_FOREACH (tst_SceneObserver *s, sceneObservers) {
         QVERIFY(!s->lastChange().isNull());
-        QVERIFY(s->lastChange()->type() == Qt3DCore::NodeAboutToBeDeleted);
+        QVERIFY(s->lastChange()->type() == Qt3DCore::NodeDeleted);
     }
 
     Qt3DCore::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter.data());

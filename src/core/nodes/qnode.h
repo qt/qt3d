@@ -107,6 +107,7 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void _q_addChild(Qt3DCore::QNode *))
     Q_PRIVATE_SLOT(d_func(), void _q_removeChild(Qt3DCore::QNode *))
+    Q_PRIVATE_SLOT(d_func(), void _q_setParentHelper(Qt3DCore::QNode *))
 
     friend class QAspectEngine;
     friend class QAspectEnginePrivate;

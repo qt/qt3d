@@ -114,6 +114,9 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DInput::QAction *action = new Qt3DInput::QAction(logicalDevice.data());
+        QCoreApplication::processEvents();
+        arbiter.events.clear();
+
         logicalDevice->addAction(action);
         QCoreApplication::processEvents();
 
@@ -141,6 +144,9 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DInput::QAxis *axis = new Qt3DInput::QAxis(logicalDevice.data());
+        QCoreApplication::processEvents();
+        arbiter.events.clear();
+
         logicalDevice->addAxis(axis);
         QCoreApplication::processEvents();
 

@@ -56,7 +56,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QNodeDestroyedChange : public QSceneChange
+class QT3DCORESHARED_EXPORT QNodeDestroyedChange : public QSceneChange
 {
 public:
     explicit QNodeDestroyedChange(const QNode *node, const QVector<QNodeIdTypePair> &subtreeIdsAndTypes);

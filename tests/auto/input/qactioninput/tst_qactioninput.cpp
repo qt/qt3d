@@ -113,6 +113,9 @@ private Q_SLOTS:
 
         // WHEN
         TestDevice *device = new TestDevice(actionInput.data());
+        QCoreApplication::processEvents();
+        arbiter.events.clear();
+
         actionInput->setSourceDevice(device);
         QCoreApplication::processEvents();
 

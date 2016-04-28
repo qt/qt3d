@@ -42,6 +42,8 @@
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/qaspectengine.h>
 #include <Qt3DCore/private/qdestructionidandtypecollector_p.h>
 #include <Qt3DCore/private/qnodedestroyedchange_p.h>
@@ -80,23 +82,24 @@ QNodePrivate::QNodePrivate()
 void QNodePrivate::_q_addChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
+    Q_ASSERT_X(childNode->parent() == q_func(), Q_FUNC_INFO,  "not a child of this node");
 
     if (!m_scene)
         return;
 
-    QNodeCreatedChangeGenerator generator(childNode);
-    const auto creationChanges = generator.creationChanges();
-    // TODO: Wrap all creation changes into a single aggregate change to avoid
-    // hamemring the change arbiter when all of these need to be delivered to
-    // all of the aspects.
-    for (const auto &change : creationChanges)
+    // We need to send a QNodeAddedChange to the backend
+
+    // We notify the backend that we have a new child
+    if (m_changeArbiter != Q_NULLPTR) {
+        const auto change = QNodeAddedPropertyChangePtr::create(m_id, childNode->id());
+        change->setPropertyName("children");
         notifyObservers(change);
+    }
 
     // Update the scene
     // TODO: Fold this into the QNodeCreatedChangeGenerator so we don't have to
     // traverse the sub tree three times!
     QNodeVisitor visitor;
-    visitor.traverse(childNode, this, &QNodePrivate::setSceneHelper);
     visitor.traverse(childNode, this, &QNodePrivate::addEntityComponentToScene);
 }
 
@@ -104,19 +107,71 @@ void QNodePrivate::_q_addChild(QNode *childNode)
 void QNodePrivate::_q_removeChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
-    if (childNode->parent() != q_func())
-        qCWarning(Nodes) << Q_FUNC_INFO << "not a child of " << this;
+    Q_ASSERT_X(childNode->parent() == q_func(), Q_FUNC_INFO, "not a child of this node");
 
-    auto childNodePrivate = get(childNode);
-    if (childNodePrivate->m_hasBackendNode) {
-        const QDestructionIdAndTypeCollector collector(childNode);
-        auto destroyedChange = QNodeDestroyedChangePtr::create(childNode, collector.subtreeIdsAndTypes());
-        notifyObservers(destroyedChange);
+    // We notify the backend that we lost a child
+    if (m_changeArbiter != Q_NULLPTR) {
+        const auto change = QNodeRemovedPropertyChangePtr::create(m_id, childNode->id());
+        change->setPropertyName("children");
+        notifyObservers(change);
+    }
+}
+
+// Note: should never be called from the ctor directly as the type may not be fully
+// created yet
+void QNodePrivate::_q_setParentHelper(QNode *parent)
+{
+    Q_Q(QNode);
+    QNode *oldParentNode = q->parentNode();
+
+    // If we had a parent, we let him know that we are about to change
+    // parent
+    if (oldParentNode) {
+        QNodePrivate::get(oldParentNode)->_q_removeChild(q);
+
+        // If we have an old parent but the new parent is null
+        // the backend node needs to be destroyed
+        if (!parent) {
+            // Tell the backend we are about to be destroyed
+            if (m_hasBackendNode) {
+                const QDestructionIdAndTypeCollector collector(q);
+                const auto destroyedChange = QNodeDestroyedChangePtr::create(q, collector.subtreeIdsAndTypes());
+                notifyObservers(destroyedChange);
+            }
+
+            // We unset the scene from the node as its backend node was/is about to be destroyed
+            QNodeVisitor visitor;
+            visitor.traverse(q, oldParentNode->d_func(), &QNodePrivate::unsetSceneHelper);
+        }
     }
 
-    // Update the scene
-    QNodeVisitor visitor;
-    visitor.traverse(childNode, this, &QNodePrivate::unsetSceneHelper);
+    // Basically QObject::setParent but for QObjectPrivate
+    QObjectPrivate::setParent_helper(parent);
+    QNode *newParentNode = q->parentNode();
+
+    if (newParentNode) {
+        // If we had no parent but are about to set one,
+        // we need to send a QNodeCreatedChangeGenerator
+        if (!oldParentNode) {
+            QNodePrivate *newParentPrivate = QNodePrivate::get(newParentNode);
+
+            // Set the scene helper / arbiter
+            if (newParentPrivate->m_scene) {
+                QNodeVisitor visitor;
+                visitor.traverse(q, newParentNode->d_func(), &QNodePrivate::setSceneHelper);
+            }
+
+            if (m_changeArbiter) {
+                QNodeCreatedChangeGenerator generator(q);
+                const auto creationChanges = generator.creationChanges();
+                for (const auto &change : creationChanges)
+                    notifyObservers(change);
+            }
+        }
+
+        // If we have a valid new parent, we let him know that we are its child
+        QNodePrivate::get(newParentNode)->_q_addChild(q);
+    }
 }
 
 void QNodePrivate::registerNotifiedProperties()
@@ -408,38 +463,34 @@ void QNodePrivate::nodePtrDeleter(QNode *q)
      \sa setParent()
 */
 QNode::QNode(QNode *parent)
-    : QObject(*new QNodePrivate, parent)
+    : QObject(*new QNodePrivate)
 {
     // We need to add ourselves with the parent if it is valid
     // This will notify the backend about the new child
-    if (parent && QNodePrivate::get(parent)->m_changeArbiter != Q_NULLPTR) {
-        // This needs to be invoked  only after the QNode has been fully
-        QMetaObject::invokeMethod(parent, "_q_addChild", Qt::QueuedConnection, Q_ARG(Qt3DCore::QNode*, this));
+    if (parent/* && QNodePrivate::get(parent)->m_changeArbiter != Q_NULLPTR*/) {
+        // This needs to be invoked  only after the QNode has been fully constructed
+        QMetaObject::invokeMethod(this, "_q_setParentHelper", Qt::QueuedConnection, Q_ARG(Qt3DCore::QNode*, parent));
     }
 }
 
 /*! \internal */
 QNode::QNode(QNodePrivate &dd, QNode *parent)
-    : QObject(dd, parent)
+    : QObject(dd)
 {
     // We need to add ourselves with the parent if it is valid
     // This will notify the backend about the new child
-    if (parent && QNodePrivate::get(parent)->m_changeArbiter != Q_NULLPTR) {
-        // This needs to be invoked  only after the QNode has been fully
-        QMetaObject::invokeMethod(parent, "_q_addChild", Qt::QueuedConnection, Q_ARG(Qt3DCore::QNode*, this));
+    if (parent/* && QNodePrivate::get(parent)->m_changeArbiter != Q_NULLPTR*/) {
+        // This needs to be invoked  only after the QNode has been fully constructed
+        QMetaObject::invokeMethod(this, "_q_setParentHelper", Qt::QueuedConnection, Q_ARG(Qt3DCore::QNode*, parent));
     }
 }
 
 QNode::~QNode()
 {
-    // Create a QNodeDestroyedChange for this node that informs the backend that
-    // this node and all of its children are going away
-    Q_D(QNode);
-    if (d->m_hasBackendNode) {
-        const QDestructionIdAndTypeCollector collector(this);
-        const auto destroyedChange = QNodeDestroyedChangePtr::create(this, collector.subtreeIdsAndTypes());
-        d->notifyObservers(destroyedChange);
-    }
+    // If we have a parent it makes sense to let it know we are about to be destroyed.
+    // This in turn triggers the deletion of the corresponding backend nodes for the
+    // subtree rooted at this QNode.
+    setParent(Q_NODE_NULLPTR);
 }
 
 /*!
@@ -498,17 +549,20 @@ bool QNode::blockNotifications(bool block)
     return previous;
 }
 
+// Note: should never be called from the ctor directly as the type may not be fully
+// created yet
 void QNode::setParent(QNode *parent)
 {
+    Q_D(QNode);
     if (parentNode() == parent)
         return;
+    d->_q_setParentHelper(parent);
 
-    if (parentNode())
-        QNodePrivate::get(parentNode())->_q_removeChild(this);
-    QObject::setParent(parent);
-    if (parentNode())
-        QNodePrivate::get(parentNode())->_q_addChild(this);
+    // Block notifications as we want to let the _q_setParentHelper
+    // manually handle them
+    const bool blocked = blockNotifications(true);
     emit parentChanged(parent);
+    blockNotifications(blocked);
 }
 
 /*!

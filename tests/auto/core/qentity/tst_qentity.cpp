@@ -39,7 +39,10 @@ class tst_Entity : public QObject
 {
     Q_OBJECT
 public:
-    tst_Entity() : QObject() {}
+    tst_Entity() : QObject()
+    {
+        qRegisterMetaType<Qt3DCore::QNode*>();
+    }
     ~tst_Entity() {}
 
 private slots:

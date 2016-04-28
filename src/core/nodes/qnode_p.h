@@ -98,6 +98,7 @@ public:
 private:
     void _q_addChild(QNode *childNode);
     void _q_removeChild(QNode *childNode);
+    void _q_setParentHelper(QNode *parent);
     void registerNotifiedProperties();
     void unregisterNotifiedProperties();
     void propertyChanged(int propertyIndex);

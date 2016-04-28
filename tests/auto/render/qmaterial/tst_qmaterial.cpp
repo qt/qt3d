@@ -81,6 +81,7 @@ public:
     tst_QMaterial()
         : QObject()
     {
+        qRegisterMetaType<Qt3DCore::QNode*>();
         qRegisterMetaType<Qt3DRender::QEffect*>("Qt3DRender::QEffect*");
     }
 
@@ -266,11 +267,16 @@ private Q_SLOTS:
         QScopedPointer<TestMaterial> material2(new TestMaterial());
         TestArbiter arbiter2(material2.data());
 
+        QCoreApplication::processEvents();
+        // Clear events trigger by child generation of TestMnterial
+        arbiter2.events.clear();
+
         // WHEN
         material2->setEffect(&effect);
         QCoreApplication::processEvents();
 
         // THEN
+        qDebug() << Q_FUNC_INFO << arbiter2.events.size();
         QCOMPARE(arbiter2.events.size(), 1);
         change = arbiter2.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "effect");
@@ -283,6 +289,10 @@ private Q_SLOTS:
         // GIVEN
         TestMaterial *material = new TestMaterial();
         TestArbiter arbiter(material);
+
+        QCoreApplication::processEvents();
+        // Clear events trigger by child generation of TestMnterial
+        arbiter.events.clear();
 
         // WHEN (add parameter to material)
         Qt3DRender::QParameter *param = new Qt3DRender::QParameter("testParamMaterial", QVariant::fromValue(383.0f));
@@ -346,6 +356,10 @@ private Q_SLOTS:
         // GIVEN
         TestMaterial *material = new TestMaterial();
         TestArbiter arbiter(material);
+
+        QCoreApplication::processEvents();
+        // Clear events trigger by child generation of TestMnterial
+        arbiter.events.clear();
 
         // WHEN
         const QByteArray vertexCode = QByteArrayLiteral("new vertex shader code");

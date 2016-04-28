@@ -129,7 +129,11 @@ class tst_Picking : public QObject
 {
     Q_OBJECT
 public:
-    tst_Picking() {}
+    tst_Picking()
+    {
+        qRegisterMetaType<Qt3DCore::QNode*>();
+    }
+
     ~tst_Picking() {}
 
 private Q_SLOTS:
@@ -140,6 +144,8 @@ private Q_SLOTS:
         PickableEntity child1(QVector3D(), 5.0f, &root);
         PickableEntity child2(QVector3D(), 5.0f, &root);
         PickableEntity child11(QVector3D(), 5.0f, &child1);
+
+        QCoreApplication::processEvents();
 
         // WHEN
         Qt3DRender::QPickEventPtr event(new Qt3DRender::QPickEvent());
@@ -189,6 +195,8 @@ private Q_SLOTS:
         PickableEntity child2(QVector3D(), 5.0f, &root);
         PickableEntity child11(QVector3D(), 5.0f, &child1);
 
+        QCoreApplication::processEvents();
+
         // WHEN
         Qt3DRender::QPickEventPtr event(new Qt3DRender::QPickEvent());
         QVariant v;
@@ -233,6 +241,8 @@ private Q_SLOTS:
         PickableEntity child2(QVector3D(), 5.0f, &root);
         PickableEntity child11(QVector3D(), 5.0f, &child1);
 
+        QCoreApplication::processEvents();
+
         // WHEN
         Qt3DRender::QPickEventPtr event(new Qt3DRender::QPickEvent());
         QVariant v;
@@ -274,6 +284,6 @@ private Q_SLOTS:
     }
 };
 
-QTEST_APPLESS_MAIN(tst_Picking)
+QTEST_MAIN(tst_Picking)
 
 #include "tst_picking.moc"

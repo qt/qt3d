@@ -51,6 +51,12 @@ class tst_QDefaultMeshes: public QObject
 {
     Q_OBJECT
 
+public:
+    tst_QDefaultMeshes()
+    {
+        qRegisterMetaType<Qt3DCore::QNode*>();
+    }
+
 private Q_SLOTS:
 
     void checkCloning_data()
