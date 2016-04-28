@@ -302,8 +302,8 @@ void QSphereGeometryPrivate::init()
 
     m_indexAttribute->setCount(faces * 3);
 
-    m_vertexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new SphereVertexDataFunctor(m_rings, m_slices, m_radius)));
-    m_indexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new SphereIndexDataFunctor(m_rings, m_slices)));
+    m_vertexBuffer->setDataGenerator(QSharedPointer<SphereVertexDataFunctor>::create(m_rings, m_slices, m_radius));
+    m_indexBuffer->setDataGenerator(QSharedPointer<SphereIndexDataFunctor>::create(m_rings, m_slices));
 
     q->addAttribute(m_positionAttribute);
     q->addAttribute(m_texCoordAttribute);
@@ -411,7 +411,7 @@ void QSphereGeometry::updateVertices()
     d->m_texCoordAttribute->setCount(nVerts);
     d->m_normalAttribute->setCount(nVerts);
     d->m_tangentAttribute->setCount(nVerts);
-    d->m_vertexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new SphereVertexDataFunctor(d->m_rings, d->m_slices, d->m_radius)));
+    d->m_vertexBuffer->setDataGenerator(QSharedPointer<SphereVertexDataFunctor>::create(d->m_rings, d->m_slices, d->m_radius));
 }
 
 /*!
@@ -422,7 +422,7 @@ void QSphereGeometry::updateIndices()
     Q_D(QSphereGeometry);
     const int faces = (d->m_slices * 2) * (d->m_rings - 2) + (2 * d->m_slices);
     d->m_indexAttribute->setCount(faces * 3);
-    d->m_indexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new SphereIndexDataFunctor(d->m_rings, d->m_slices)));
+    d->m_indexBuffer->setDataGenerator(QSharedPointer<SphereIndexDataFunctor>::create(d->m_rings, d->m_slices));
 
 }
 

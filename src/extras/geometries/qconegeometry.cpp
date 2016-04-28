@@ -390,10 +390,10 @@ void QConeGeometryPrivate::init()
 
     m_indexAttribute->setCount(faces * 3);
 
-    m_vertexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new ConeVertexDataFunctor(m_hasTopEndcap, m_hasBottomEndcap, m_rings, m_slices,
-                                                                                 m_topRadius, m_bottomRadius, m_length)));
-    m_indexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new ConeIndexDataFunctor(m_hasTopEndcap, m_hasBottomEndcap, m_rings, m_slices,
-                                                                               m_length)));
+    m_vertexBuffer->setDataGenerator(QSharedPointer<ConeVertexDataFunctor>::create(m_hasTopEndcap, m_hasBottomEndcap, m_rings, m_slices,
+                                                                                   m_topRadius, m_bottomRadius, m_length));
+    m_indexBuffer->setDataGenerator(QSharedPointer<ConeIndexDataFunctor>::create(m_hasTopEndcap, m_hasBottomEndcap, m_rings, m_slices,
+                                                                                 m_length));
 
     q->addAttribute(m_positionAttribute);
     q->addAttribute(m_texCoordAttribute);
@@ -422,8 +422,8 @@ void QConeGeometry::updateVertices()
     d->m_positionAttribute->setCount(nVerts);
     d->m_texCoordAttribute->setCount(nVerts);
     d->m_normalAttribute->setCount(nVerts);
-    d->m_vertexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new ConeVertexDataFunctor(d->m_hasTopEndcap, d->m_hasBottomEndcap, d->m_rings, d->m_slices,
-                                                                                    d->m_topRadius, d->m_bottomRadius, d->m_length)));
+    d->m_vertexBuffer->setDataGenerator(QSharedPointer<ConeVertexDataFunctor>::create(d->m_hasTopEndcap, d->m_hasBottomEndcap, d->m_rings, d->m_slices,
+                                                                                      d->m_topRadius, d->m_bottomRadius, d->m_length));
 }
 
 void QConeGeometry::updateIndices()
@@ -435,8 +435,8 @@ void QConeGeometry::updateIndices()
             + d->m_slices * (d->m_hasTopEndcap + d->m_hasBottomEndcap); // 2 x endcaps
 
     d->m_indexAttribute->setCount(faces * 3);
-    d->m_indexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new ConeIndexDataFunctor(d->m_hasTopEndcap, d->m_hasBottomEndcap, d->m_rings, d->m_slices,
-                                                                                  d->m_length)));
+    d->m_indexBuffer->setDataGenerator(QSharedPointer<ConeIndexDataFunctor>::create(d->m_hasTopEndcap, d->m_hasBottomEndcap, d->m_rings, d->m_slices,
+                                                                                    d->m_length));
 }
 
 void QConeGeometry::setHasTopEndcap(bool hasTopEndcap)

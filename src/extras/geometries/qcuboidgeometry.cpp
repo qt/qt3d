@@ -483,9 +483,9 @@ void QCuboidGeometryPrivate::init()
 
     m_indexAttribute->setCount(indexCount);
 
-    m_vertexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new CuboidVertexBufferFunctor(m_xExtent, m_yExtent, m_zExtent,
-                                                                                     m_yzFaceResolution, m_xzFaceResolution, m_xyFaceResolution)));
-    m_indexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new CuboidIndexBufferFunctor(m_yzFaceResolution, m_xzFaceResolution, m_xyFaceResolution)));
+    m_vertexBuffer->setDataGenerator(QSharedPointer<CuboidVertexBufferFunctor>::create(m_xExtent, m_yExtent, m_zExtent,
+                                                                                       m_yzFaceResolution, m_xzFaceResolution, m_xyFaceResolution));
+    m_indexBuffer->setDataGenerator(QSharedPointer<CuboidIndexBufferFunctor>::create(m_yzFaceResolution, m_xzFaceResolution, m_xyFaceResolution));
 
     q->addAttribute(m_positionAttribute);
     q->addAttribute(m_texCoordAttribute);
@@ -606,7 +606,7 @@ void QCuboidGeometry::updateIndices()
     const int indexCount = 2 * (yzIndices + xzIndices + xyIndices);
 
     d->m_indexAttribute->setCount(indexCount);
-    d->m_indexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new CuboidIndexBufferFunctor(d->m_yzFaceResolution, d->m_xzFaceResolution, d->m_xyFaceResolution)));
+    d->m_indexBuffer->setDataGenerator(QSharedPointer<CuboidIndexBufferFunctor>::create(d->m_yzFaceResolution, d->m_xzFaceResolution, d->m_xyFaceResolution));
 
 }
 
@@ -626,8 +626,8 @@ void QCuboidGeometry::updateVertices()
     d->m_texCoordAttribute->setCount(nVerts);
     d->m_tangentAttribute->setCount(nVerts);
 
-    d->m_vertexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new CuboidVertexBufferFunctor(d->m_xExtent, d->m_yExtent, d->m_zExtent,
-                                                                                        d->m_yzFaceResolution, d->m_xzFaceResolution, d->m_xyFaceResolution)));
+    d->m_vertexBuffer->setDataGenerator(QSharedPointer<CuboidVertexBufferFunctor>::create(d->m_xExtent, d->m_yExtent, d->m_zExtent,
+                                                                                          d->m_yzFaceResolution, d->m_xzFaceResolution, d->m_xyFaceResolution));
 }
 
 void QCuboidGeometry::setXExtent(float xExtent)

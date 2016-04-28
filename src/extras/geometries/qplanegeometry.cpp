@@ -299,7 +299,7 @@ void QPlaneGeometry::updateVertices()
     d->m_normalAttribute->setCount(nVerts);
     d->m_texCoordAttribute->setCount(nVerts);
     d->m_tangentAttribute->setCount(nVerts);
-    d->m_vertexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new PlaneVertexBufferFunctor(d->m_width, d->m_height, d->m_meshResolution)));
+    d->m_vertexBuffer->setDataGenerator(QSharedPointer<PlaneVertexBufferFunctor>::create(d->m_width, d->m_height, d->m_meshResolution));
 }
 
 /*!
@@ -311,7 +311,7 @@ void QPlaneGeometry::updateIndices()
     const int faces = 2 * (d->m_meshResolution.width() - 1) * (d->m_meshResolution.height() - 1);
     // Each primitive has 3 vertices
     d->m_indexAttribute->setCount(faces * 3);
-    d->m_indexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new PlaneIndexBufferFunctor(d->m_meshResolution)));
+    d->m_indexBuffer->setDataGenerator(QSharedPointer<PlaneIndexBufferFunctor>::create(d->m_meshResolution));
 
 }
 
@@ -506,8 +506,8 @@ void QPlaneGeometryPrivate::init()
     // Each primitive has 3 vertives
     m_indexAttribute->setCount(faces * 3);
 
-    m_vertexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new PlaneVertexBufferFunctor(m_width, m_height, m_meshResolution)));
-    m_indexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new PlaneIndexBufferFunctor(m_meshResolution)));
+    m_vertexBuffer->setDataGenerator(QSharedPointer<PlaneVertexBufferFunctor>::create(m_width, m_height, m_meshResolution));
+    m_indexBuffer->setDataGenerator(QSharedPointer<PlaneIndexBufferFunctor>::create(m_meshResolution));
 
     q->addAttribute(m_positionAttribute);
     q->addAttribute(m_texCoordAttribute);
