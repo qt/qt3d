@@ -49,19 +49,6 @@ namespace Qt3DInput {
 
 namespace Input {
 
-namespace {
-
-QVector<int> listToIntArray(const QVariantList &l)
-{
-    QVector<int> array;
-    array.reserve(l.size());
-    for (const QVariant &v : l)
-        array.push_back(v.toInt());
-    return array;
-}
-
-} // anonymous
-
 AxisInput::AxisInput()
     : Qt3DCore::QBackendNode()
     , m_axis(0)
