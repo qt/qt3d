@@ -327,8 +327,8 @@ bool QItemModelBuffer::validateRoles()
     QHash<int, QByteArray> roles(m_model->roleNames());
     // create a lookup that's the the way round we need
     QHash<QByteArray, int> inverseRoles;
-    foreach (int r, roles.keys())
-        inverseRoles[roles.value(r)] = r;
+    for (auto it = roles.cbegin(), end = roles.cend(); it != end; ++it)
+        inverseRoles[it.value()] = it.key();
 
     for (int m=0; m<m_mappings.count(); ++m) {
         QByteArray rnm(m_mappings.at(m).roleName);
