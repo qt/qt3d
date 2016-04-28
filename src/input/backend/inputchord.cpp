@@ -88,9 +88,7 @@ void InputChord::cleanup()
 void InputChord::reset()
 {
     m_startTime = 0;
-    m_inputsToTrigger.clear();
-    Q_FOREACH (Qt3DCore::QNodeId input, m_chords)
-        m_inputsToTrigger.push_back(input);
+    m_inputsToTrigger = m_chords;
 }
 
 bool InputChord::actionTriggered(Qt3DCore::QNodeId input)
