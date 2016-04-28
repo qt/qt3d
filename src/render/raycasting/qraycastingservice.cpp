@@ -204,11 +204,10 @@ QVector<QCollisionQueryResult> QRayCastingService::fetchAllResults() const
 {
     Q_D(const QRayCastingService);
 
-    const QList<FutureQueryResult> futureResults = d->m_results.values();
     QVector<QCollisionQueryResult> results;
-    results.reserve(futureResults.size());
+    results.reserve(d->m_results.size());
 
-    Q_FOREACH (const FutureQueryResult &future, futureResults)
+    for (const FutureQueryResult &future : d->m_results)
         results.append(future.result());
 
     return results;
