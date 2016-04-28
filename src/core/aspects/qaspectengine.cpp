@@ -78,8 +78,7 @@ QAspectEnginePrivate::QAspectEnginePrivate()
 
 QAspectEnginePrivate::~QAspectEnginePrivate()
 {
-    Q_FOREACH (QAbstractAspect* aspect, m_aspects)
-        delete aspect;
+    qDeleteAll(m_aspects);
 }
 
 /*!
