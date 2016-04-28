@@ -210,8 +210,9 @@ void Qt3DQuickWindow::setWindowSurface(QObject *rootObject)
         return;
     }
 
-    Qt3DRender::QRenderSurfaceSelector *surfaceSelector
-        = frameGraphRoot->findChild<Qt3DRender::QRenderSurfaceSelector *>();
+    Qt3DRender::QRenderSurfaceSelector *surfaceSelector = qobject_cast<Qt3DRender::QRenderSurfaceSelector *>(frameGraphRoot);
+    if (!surfaceSelector)
+        surfaceSelector = frameGraphRoot->findChild<Qt3DRender::QRenderSurfaceSelector *>();
     if (!surfaceSelector) {
         qWarning() << "No render surface selector found in frame graph";
         return;
