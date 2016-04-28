@@ -124,7 +124,7 @@ void QSortPolicy::setSortTypes(QVariantList sortTypes)
     Q_D(QSortPolicy);
     d->m_sortTypes.clear();
     Q_FOREACH (const auto &typeVariant, sortTypes)
-        d->m_sortTypes.append(typeVariant.value<QSortPolicy::SortType>());
+        d->m_sortTypes.append(static_cast<QSortPolicy::SortType>(typeVariant.toInt()));
 }
 
 } // namespace Qt3DRender
