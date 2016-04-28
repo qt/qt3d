@@ -51,7 +51,7 @@ namespace Input {
 
 GenericDeviceBackendNode::GenericDeviceBackendNode(QBackendNode::Mode mode)
     : QAbstractPhysicalDeviceBackendNode(mode)
-    , m_mutex(new QMutex)
+    , m_mutex()
 {
 }
 
@@ -65,11 +65,11 @@ void GenericDeviceBackendNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr 
     if (e->type() == Qt3DCore::NodeUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("axisEvent")) {
             QPair<int, qreal> val = propertyChange->value().value<QPair<int, qreal>>();
-            QMutexLocker lock(m_mutex.data());
+            const QMutexLocker lock(&m_mutex);
             m_axesValues[val.first] = val.second;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("buttonEvent")) {
             QPair<int, qreal> val = propertyChange->value().value<QPair<int, qreal>>();
-            QMutexLocker lock(m_mutex.data());
+            const QMutexLocker lock(&m_mutex);
             m_buttonsValues[val.first] = val.second;
         }
     }
@@ -77,7 +77,7 @@ void GenericDeviceBackendNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr 
 
 void GenericDeviceBackendNode::cleanup()
 {
-    QMutexLocker lock(m_mutex.data());
+    const QMutexLocker lock(&m_mutex);
     m_axesValues.clear();
     m_buttonsValues.clear();
     QAbstractPhysicalDeviceBackendNode::cleanup();
@@ -85,13 +85,13 @@ void GenericDeviceBackendNode::cleanup()
 
 float GenericDeviceBackendNode::axisValue(int axisIdentifier) const
 {
-    QMutexLocker lock(m_mutex.data());
+    const QMutexLocker lock(&m_mutex);
     return m_axesValues[axisIdentifier];
 }
 
 bool GenericDeviceBackendNode::isButtonPressed(int buttonIdentifier) const
 {
-    QMutexLocker lock(m_mutex.data());
+    const QMutexLocker lock(&m_mutex);
     return m_buttonsValues[buttonIdentifier];
 }
 

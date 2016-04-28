@@ -80,7 +80,7 @@ public:
 private:
     QHash<int, qreal> m_axesValues;
     QHash<int, qreal> m_buttonsValues;
-    mutable QSharedPointer<QMutex> m_mutex;
+    mutable QMutex m_mutex;
 };
 
 class GenericDeviceBackendFunctor : public Qt3DCore::QBackendNodeMapper
