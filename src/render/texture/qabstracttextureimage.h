@@ -41,6 +41,7 @@
 #define QT3DRENDER_QABSTRACTTEXTUREIMAGE_H
 
 #include <Qt3DRender/qabstracttexture.h>
+#include <Qt3DRender/qtextureimagedatagenerator.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -73,6 +73,9 @@ public:
     QTextureDataPtr operator ()() Q_DECL_OVERRIDE;
     bool operator ==(const QTextureGenerator &other) const Q_DECL_OVERRIDE;
     inline QAbstractTexture::Status status() const { return m_status; }
+
+    QT3D_FUNCTOR(QTextureFromSourceGenerator)
+
 private:
     QUrl m_url;
     QAbstractTexture::Status m_status;

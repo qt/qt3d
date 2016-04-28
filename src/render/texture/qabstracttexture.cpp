@@ -473,7 +473,7 @@ QAbstractTexture::ComparisonMode QAbstractTexture::comparisonMode() const
     return d->m_comparisonMode;
 }
 
-QTextureImageDataGeneratorPtr QAbstractTexture::dataGenerator() const
+QTextureGeneratorPtr QAbstractTexture::dataGenerator() const
 {
     Q_D(const QAbstractTexture);
     return d->m_dataFunctor;

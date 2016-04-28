@@ -295,7 +295,7 @@ void QTextureLoader::setSource(const QUrl& source)
     Q_D(QTextureLoader);
     if (source != d->m_source) {
         d->m_source = source;
-        d->m_dataFunctor.reset(new QImageTextureDataFunctor(source));
+        d->m_dataFunctor.reset(new QTextureFromSourceGenerator(source));
         emit sourceChanged(source);
     }
 }
@@ -305,6 +305,13 @@ bool QTextureFromSourceGenerator::operator ==(const QTextureGenerator &other) co
     const QTextureFromSourceGenerator *otherFunctor = functor_cast<QTextureFromSourceGenerator>(&other);
     return (otherFunctor != Q_NULLPTR && otherFunctor->m_url == m_url);
 
+}
+
+
+QTextureFromSourceGenerator::QTextureFromSourceGenerator(const QUrl &url)
+    : QTextureGenerator()
+    , m_url(url)
+{
 }
 
 // Note: Maybe this should return a struct containing information such as
