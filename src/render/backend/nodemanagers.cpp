@@ -88,6 +88,41 @@ NodeManagers::NodeManagers()
 {
 }
 
+NodeManagers::~NodeManagers()
+{
+    delete m_cameraManager;
+    delete m_materialManager;
+    delete m_worldMatrixManager;
+    delete m_vaoManager;
+    delete m_shaderManager;
+    delete m_techniqueManager;
+    delete m_effectManager;
+    delete m_renderPassManager;
+    delete m_textureManager;
+    delete m_textureDataManager;
+    delete m_layerManager;
+    delete m_filterKeyManager;
+    delete m_frameGraphManager;
+    delete m_transformManager;
+    delete m_renderTargetManager;
+    delete m_sceneManager;
+    delete m_attachmentManager;
+    delete m_parameterManager;
+    delete m_shaderDataManager;
+    delete m_glBufferManager;
+    delete m_textureImageManager;
+    delete m_bufferManager;
+    delete m_attributeManager;
+    delete m_geometryManager;
+    delete m_geometryRendererManager;
+    delete m_objectPickerManager;
+//    delete m_boundingVolumeDebugManager;
+    delete m_lightManager;
+    delete m_computeJobManager;
+    delete m_renderStateManager;
+    delete m_renderNodesManager;
+}
+
 template<>
 CameraManager *NodeManagers::manager<CameraLens>() const Q_DECL_NOTHROW
 {
