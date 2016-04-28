@@ -58,7 +58,7 @@ QElapsedTimer QThreadPooler::m_jobsStatTimer;
 QThreadPooler::QThreadPooler(QObject *parent)
     : QObject(parent),
       m_futureInterface(Q_NULLPTR),
-      m_mutex(new QMutex(QMutex::NonRecursive)),
+      m_mutex(),
       m_taskCount(0)
 {
     // Ensures that threads will never be recycled
@@ -71,16 +71,14 @@ QThreadPooler::QThreadPooler(QObject *parent)
 QThreadPooler::~QThreadPooler()
 {
     // Wait till all tasks are finished before deleting mutex
-    QMutexLocker locker(m_mutex);
+    QMutexLocker locker(&m_mutex);
     locker.unlock();
-
-    delete m_mutex;
 }
 
 void QThreadPooler::setDependencyHandler(DependencyHandler *handler)
 {
     m_dependencyHandler = handler;
-    m_dependencyHandler->setMutex(m_mutex);
+    m_dependencyHandler->setMutex(&m_mutex);
 }
 
 void QThreadPooler::enqueueTasks(const QVector<RunnableInterface *> &tasks)
@@ -100,7 +98,7 @@ void QThreadPooler::enqueueTasks(const QVector<RunnableInterface *> &tasks)
 
 void QThreadPooler::taskFinished(RunnableInterface *task)
 {
-    const QMutexLocker locker(m_mutex);
+    const QMutexLocker locker(&m_mutex);
 
     release();
 
@@ -121,7 +119,7 @@ void QThreadPooler::taskFinished(RunnableInterface *task)
 
 QFuture<void> QThreadPooler::mapDependables(QVector<RunnableInterface *> &taskQueue)
 {
-    const QMutexLocker locker(m_mutex);
+    const QMutexLocker locker(&m_mutex);
 
     if (!m_futureInterface)
         m_futureInterface = new QFutureInterface<void>();
@@ -136,7 +134,7 @@ QFuture<void> QThreadPooler::mapDependables(QVector<RunnableInterface *> &taskQu
 
 QFuture<void> QThreadPooler::future()
 {
-    const QMutexLocker locker(m_mutex);
+    const QMutexLocker locker(&m_mutex);
 
     if (!m_futureInterface)
         return QFuture<void>();

@@ -99,7 +99,7 @@ private:
 
 private:
     QFutureInterface<void> *m_futureInterface;
-    QMutex *m_mutex;
+    QMutex m_mutex;
     DependencyHandler *m_dependencyHandler;
     QAtomicInt m_taskCount;
     QThreadPool m_threadPool;
