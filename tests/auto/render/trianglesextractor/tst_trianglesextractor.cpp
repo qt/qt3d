@@ -364,8 +364,8 @@ private Q_SLOTS:
         // GIVEN
         QFETCH(Qt3DRender::QGeometryRenderer *, geomRenderer);
         QFETCH(QVector<Qt3DRender::Render::TriangleBoundingVolume *>, expectedVolumes);
-        TestAspect aspect(geomRenderer);
-        Qt3DRender::Render::NodeManagers *manager = aspect.nodeManagers();
+        TestAspect *aspect = new TestAspect(geomRenderer);
+        Qt3DRender::Render::NodeManagers *manager = aspect->nodeManagers();
 
         // WHEN
         Qt3DRender::Render::GeometryRenderer *bGeomRenderer =
