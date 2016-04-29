@@ -150,9 +150,9 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_glContext(Q_NULLPTR)
     , m_pickBoundingVolumeJob(Q_NULLPTR)
     , m_time(0)
-    , m_settings(Q_NULLPTR)
     , m_defaultMaterial(Q_NULLPTR)
     , m_defaultRenderStateSet(Q_NULLPTR)
+    , m_settings(Q_NULLPTR)
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
