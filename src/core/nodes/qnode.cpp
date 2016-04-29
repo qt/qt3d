@@ -68,6 +68,7 @@ const bool QNodePrivate::ms_useCloning = !qEnvironmentVariableIsSet("QT3D_NO_CLO
 QNodePrivate::QNodePrivate()
     : QObjectPrivate()
     , m_changeArbiter(Q_NULLPTR)
+    , m_typeInfo(Q_NULLPTR)
     , m_scene(Q_NULLPTR)
     , m_id(QNodeId::createId())
     , m_blockNotifications(false)
