@@ -37,17 +37,28 @@
 **
 ****************************************************************************/
 
-#ifndef QABSTRACTNODEFACTORY_H
-#define QABSTRACTNODEFACTORY_H
+#ifndef QABSTRACTNODEFACTORY_P_H
+#define QABSTRACTNODEFACTORY_P_H
 
-#include <Qt3DCore/qt3dcore_global.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 #include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QT3DCORESHARED_EXPORT QAbstractNodeFactory
+class QT3DCORE_PRIVATE_EXPORT QAbstractNodeFactory
 {
 public:
     virtual ~QAbstractNodeFactory();
@@ -73,4 +84,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QABSTRACTNODEFACTORY_H
+#endif // QABSTRACTNODEFACTORY_P_H

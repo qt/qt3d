@@ -39,7 +39,7 @@
 
 #include "assimpparser.h"
 
-#include <Qt3DCore/qabstractnodefactory.h>
+#include <Qt3DCore/private/qabstractnodefactory_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DRender/qcameralens.h>

@@ -45,7 +45,6 @@
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qscenechange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
-#include <Qt3DCore/qabstractnodefactory.h>
 
 #define Q_NODE_NULLPTR static_cast<Qt3DCore::QNode *>(nullptr)
 

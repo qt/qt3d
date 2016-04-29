@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qabstractnodefactory.h>
+#include <Qt3DCore/private/qabstractnodefactory_p.h>
 #include <QtCore/qhash.h>
 
 QT_BEGIN_NAMESPACE

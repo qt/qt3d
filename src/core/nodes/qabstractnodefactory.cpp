@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "qabstractnodefactory.h"
+#include "qabstractnodefactory_p.h"
 
 QT_BEGIN_NAMESPACE
 
