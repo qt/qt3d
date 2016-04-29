@@ -55,9 +55,9 @@
 #include <private/qaspectjobproviderinterface_p.h>
 #include <private/qbackendnode_p.h>
 #include <private/qbackendnodefactory_p.h>
-#include <private/qnodedestroyedchange_p.h>
 #include <private/qsceneobserverinterface_p.h>
 #include <private/qt3dcore_global_p.h>
+#include <Qt3DCore/qnodedestroyedchange.h>
 #include <Qt3DCore/qabstractaspect.h>
 
 QT_BEGIN_NAMESPACE

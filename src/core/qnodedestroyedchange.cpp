@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "qnodedestroyedchange_p.h"
+#include "qnodedestroyedchange.h"
 
 QT_BEGIN_NAMESPACE
 

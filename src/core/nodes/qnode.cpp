@@ -44,9 +44,9 @@
 #include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qnodedestroyedchange.h>
 #include <Qt3DCore/qaspectengine.h>
 #include <Qt3DCore/private/qdestructionidandtypecollector_p.h>
-#include <Qt3DCore/private/qnodedestroyedchange_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qpostman_p.h>
 #include <QEvent>

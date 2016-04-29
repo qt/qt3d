@@ -34,7 +34,7 @@
 #include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/qcomponentaddedchange.h>
 #include <Qt3DCore/qcomponentremovedchange.h>
-#include <Qt3DCore/private/qnodedestroyedchange_p.h>
+#include <Qt3DCore/qnodedestroyedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <private/qpostman_p.h>

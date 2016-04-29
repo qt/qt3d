@@ -31,7 +31,6 @@ HEADERS += \
     $$PWD/qscene_p.h \
     $$PWD/qnodecreatedchange_p.h \
     $$PWD/qnodecreatedchange.h \
-    $$PWD/qnodedestroyedchange_p.h \
     $$PWD/qcomponentaddedchange.h \
     $$PWD/qcomponentaddedchange_p.h \
     $$PWD/qcomponentremovedchange.h \
@@ -45,7 +44,8 @@ HEADERS += \
     $$PWD/qnodeaddedpropertychange.h \
     $$PWD/qnodeaddedpropertychange_p.h \
     $$PWD/qnoderemovedpropertychange.h \
-    $$PWD/qnoderemovedpropertychange_p.h
+    $$PWD/qnoderemovedpropertychange_p.h \
+    $$PWD/qnodedestroyedchange.h
 
 SOURCES += \
     $$PWD/qtickclock.cpp \
