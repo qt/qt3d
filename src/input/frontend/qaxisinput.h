@@ -55,29 +55,24 @@ class QT3DINPUTSHARED_EXPORT QAxisInput : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DInput::QAbstractPhysicalDevice *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
-    Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scaleChanged)
     Q_PROPERTY(int axis READ axis WRITE setAxis NOTIFY axisChanged)
-    Q_PROPERTY(QVariantList buttons READ buttons WRITE setButtons NOTIFY buttonsChanged)
 
 public:
     explicit QAxisInput(Qt3DCore::QNode *parent = nullptr);
 
     QAbstractPhysicalDevice *sourceDevice() const;
-    float scale() const;
     int axis() const;
-    QVariantList buttons() const;
 
 public Q_SLOTS:
     void setSourceDevice(QAbstractPhysicalDevice *sourceDevice);
-    void setScale(float scale);
     void setAxis(int axis);
-    void setButtons(const QVariantList &buttons);
 
 Q_SIGNALS:
     void sourceDeviceChanged(QAbstractPhysicalDevice *sourceDevice);
-    void scaleChanged(float scale);
     void axisChanged(int axis);
-    void buttonsChanged(const QVariantList &buttons);
+
+protected:
+    QAxisInput(QAxisInputPrivate &dd, QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QAxisInput)

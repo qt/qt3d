@@ -67,6 +67,11 @@ QAxisInput::QAxisInput(Qt3DCore::QNode *parent)
 {
 }
 
+QAxisInput::QAxisInput(QAxisInputPrivate &dd, Qt3DCore::QNode *parent)
+    : QNode(dd, parent)
+{
+}
+
 void QAxisInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
 {
     Q_D(QAxisInput);
@@ -86,21 +91,6 @@ QAbstractPhysicalDevice *QAxisInput::sourceDevice() const
     return d->m_sourceDevice;
 }
 
-void QAxisInput::setScale(float scale)
-{
-    Q_D(QAxisInput);
-    if (d->m_scale != scale) {
-        d->m_scale = scale;
-        emit scaleChanged(scale);
-    }
-}
-
-float QAxisInput::scale() const
-{
-    Q_D(const QAxisInput);
-    return d->m_scale;
-}
-
 void QAxisInput::setAxis(int axis)
 {
     Q_D(QAxisInput);
@@ -116,21 +106,6 @@ int QAxisInput::axis() const
     return d->m_axis;
 }
 
-void QAxisInput::setButtons(const QVariantList &buttons)
-{
-    Q_D(QAxisInput);
-    if (buttons != d->m_buttons) {
-        d->m_buttons = buttons;
-        emit buttonsChanged(buttons);
-    }
-}
-
-QVariantList QAxisInput::buttons() const
-{
-    Q_D(const QAxisInput);
-    return d->m_buttons;
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QAxisInput::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAxisInputData>::create(this);
@@ -139,8 +114,6 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAxisInput::createNodeCreationChange() const
     Q_D(const QAxisInput);
     data.sourceDeviceId = qIdForNode(d->m_sourceDevice);
     data.axis = d->m_axis;
-    data.buttons = d->m_buttons;
-    data.scale = d->m_scale;
 
     return creationChange;
 }

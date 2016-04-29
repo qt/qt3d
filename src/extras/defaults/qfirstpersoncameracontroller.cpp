@@ -53,6 +53,7 @@
 #include <Qt3DRender/QCamera>
 #include <Qt3DInput/QAxis>
 #include <Qt3DInput/QAxisInput>
+#include <Qt3DInput/QButtonAxisInput>
 #include <Qt3DInput/QAction>
 #include <Qt3DInput/QActionInput>
 #include <Qt3DInput/QLogicalDevice>
@@ -79,12 +80,12 @@ QFirstPersonCameraControllerPrivate::QFirstPersonCameraControllerPrivate()
     , m_fineMotionKeyInput(new Qt3DInput::QActionInput())
     , m_mouseRxInput(new Qt3DInput::QAxisInput())
     , m_mouseRyInput(new Qt3DInput::QAxisInput())
-    , m_keyboardTxPosInput(new Qt3DInput::QAxisInput())
-    , m_keyboardTyPosInput(new Qt3DInput::QAxisInput())
-    , m_keyboardTzPosInput(new Qt3DInput::QAxisInput())
-    , m_keyboardTxNegInput(new Qt3DInput::QAxisInput())
-    , m_keyboardTyNegInput(new Qt3DInput::QAxisInput())
-    , m_keyboardTzNegInput(new Qt3DInput::QAxisInput())
+    , m_keyboardTxPosInput(new Qt3DInput::QButtonAxisInput())
+    , m_keyboardTyPosInput(new Qt3DInput::QButtonAxisInput())
+    , m_keyboardTzPosInput(new Qt3DInput::QButtonAxisInput())
+    , m_keyboardTxNegInput(new Qt3DInput::QButtonAxisInput())
+    , m_keyboardTyNegInput(new Qt3DInput::QButtonAxisInput())
+    , m_keyboardTzNegInput(new Qt3DInput::QButtonAxisInput())
     , m_keyboardDevice(new Qt3DInput::QKeyboardDevice())
     , m_mouseDevice(new Qt3DInput::QMouseDevice())
     , m_logicalDevice(new Qt3DInput::QLogicalDevice())

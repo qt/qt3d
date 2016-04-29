@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,22 +37,11 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_INPUT_AXISINPUT_H
-#define QT3DINPUT_INPUT_AXISINPUT_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeid.h>
+#include "buttonaxisinput_p.h"
+#include <Qt3DInput/qbuttonaxisinput.h>
+#include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DInput/private/qbuttonaxisinput_p.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,28 +49,64 @@ namespace Qt3DInput {
 
 namespace Input {
 
-class Q_AUTOTEST_EXPORT AxisInput : public Qt3DCore::QBackendNode
+namespace {
+
+QVector<int> listToIntArray(const QVariantList &l)
 {
-public:
-    AxisInput();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    virtual void cleanup();
+    QVector<int> array;
+    array.reserve(l.size());
+    for (const QVariant &v : l)
+        array.push_back(v.toInt());
+    return array;
+}
 
-    inline int axis() const { return m_axis; }
-    inline Qt3DCore::QNodeId sourceDevice() const { return m_sourceDevice; }
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+} // anonymous
 
-protected:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
+ButtonAxisInput::ButtonAxisInput()
+    : AxisInput()
+    , m_scale(0.0f)
+{
+}
 
-    int m_axis;
-    Qt3DCore::QNodeId m_sourceDevice;
-};
+void ButtonAxisInput::updateFromPeer(Qt3DCore::QNode *peer)
+{
+    QButtonAxisInput *input = static_cast<QButtonAxisInput *>(peer);
+    m_scale = input->scale();
+    m_buttons = listToIntArray(input->buttons());
+    AxisInput::updateFromPeer(peer);
+}
 
-} // namespace Input
+void ButtonAxisInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QButtonAxisInputData>>(change);
+    const auto &data = typedChange->data;
+    m_buttons = listToIntArray(data.buttons);
+    m_scale = data.scale;
+    AxisInput::initializeFromPeer(change);
+}
 
-} // namespace Qt3DInput
+void ButtonAxisInput::cleanup()
+{
+    m_scale = 0.0f;
+    m_buttons.clear();
+    AxisInput::cleanup();
+}
+
+void ButtonAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+{
+    if (e->type() == Qt3DCore::NodeUpdated) {
+        Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
+        if (propertyChange->propertyName() == QByteArrayLiteral("scale")) {
+            m_scale = propertyChange->value().toFloat();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("buttons")) {
+            m_buttons = listToIntArray(propertyChange->value().toList());
+        }
+    }
+    AxisInput::sceneChangeEvent(e);
+}
+
+} // Input
+
+} // Qt3DInput
 
 QT_END_NAMESPACE
-
-#endif // QT3DINPUT_INPUT_AXISINPUT_H

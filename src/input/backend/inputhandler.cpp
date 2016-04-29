@@ -67,6 +67,7 @@ InputHandler::InputHandler()
     , m_axisInputManager(new AxisInputManager())
     , m_axisSettingManager(new AxisSettingManager())
     , m_actionInputManager(new ActionInputManager())
+    , m_buttonAxisInputManager(new ButtonAxisInputManager())
     , m_inputChordManager(new InputChordManager())
     , m_inputSequenceManager(new InputSequenceManager())
     , m_logicalDeviceManager(new LogicalDeviceManager())
@@ -93,6 +94,7 @@ InputHandler::~InputHandler()
     delete m_actionManager;
     delete m_axisSettingManager;
     delete m_axisInputManager;
+    delete m_buttonAxisInputManager;
     delete m_actionInputManager;
     delete m_inputChordManager;
     delete m_inputSequenceManager;

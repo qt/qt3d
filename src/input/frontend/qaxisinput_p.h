@@ -67,22 +67,17 @@ public:
     QAxisInputPrivate()
         : Qt3DCore::QNodePrivate()
         , m_sourceDevice(nullptr)
-        , m_scale(0.0f)
         , m_axis(-1)
     {}
 
-    QVariantList m_buttons;
     QAbstractPhysicalDevice *m_sourceDevice;
-    float m_scale;
     int m_axis;
 };
 
 struct QAxisInputData
 {
     Qt3DCore::QNodeId sourceDeviceId;
-    QVariantList buttons; // TODO: Replace with QVector<int>
     int axis;
-    float scale;
 };
 
 } // Qt3DInput

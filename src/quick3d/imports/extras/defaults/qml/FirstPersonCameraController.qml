@@ -120,12 +120,12 @@ Entity {
                 // Translation
                 Axis {
                     id: txAxis
-                    AxisInput {
+                    ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_Left]
                         scale: -1.0
                     }
-                    AxisInput {
+                    ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_Right]
                         scale: 1.0
@@ -133,12 +133,12 @@ Entity {
                 },
                 Axis {
                     id: tzAxis
-                    AxisInput {
+                    ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_Up]
                         scale: 1.0
                     }
-                    AxisInput {
+                    ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_Down]
                         scale: -1.0
@@ -146,12 +146,12 @@ Entity {
                 },
                 Axis {
                     id: tyAxis
-                    AxisInput {
+                    ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_PageUp]
                         scale: 1.0
                     }
-                    AxisInput {
+                    ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_PageDown]
                         scale: -1.0

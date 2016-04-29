@@ -71,6 +71,7 @@ class QAction;
 class QActionInput;
 class QAxis;
 class QAxisInput;
+class QButtonAxisInput;
 class QAxisActionHandler;
 
 }
@@ -104,12 +105,12 @@ public:
 
     Qt3DInput::QAxisInput *m_mouseRxInput;
     Qt3DInput::QAxisInput *m_mouseRyInput;
-    Qt3DInput::QAxisInput *m_keyboardTxPosInput;
-    Qt3DInput::QAxisInput *m_keyboardTyPosInput;
-    Qt3DInput::QAxisInput *m_keyboardTzPosInput;
-    Qt3DInput::QAxisInput *m_keyboardTxNegInput;
-    Qt3DInput::QAxisInput *m_keyboardTyNegInput;
-    Qt3DInput::QAxisInput *m_keyboardTzNegInput;
+    Qt3DInput::QButtonAxisInput *m_keyboardTxPosInput;
+    Qt3DInput::QButtonAxisInput *m_keyboardTyPosInput;
+    Qt3DInput::QButtonAxisInput *m_keyboardTzPosInput;
+    Qt3DInput::QButtonAxisInput *m_keyboardTxNegInput;
+    Qt3DInput::QButtonAxisInput *m_keyboardTyNegInput;
+    Qt3DInput::QButtonAxisInput *m_keyboardTzNegInput;
 
     Qt3DInput::QKeyboardDevice *m_keyboardDevice;
     Qt3DInput::QMouseDevice *m_mouseDevice;

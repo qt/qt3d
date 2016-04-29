@@ -31,18 +31,18 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
-#include <Qt3DInput/QAxisInput>
 #include <Qt3DInput/QAbstractPhysicalDevice>
-#include <Qt3DInput/private/qaxisinput_p.h>
+#include <Qt3DInput/QButtonAxisInput>
+#include <Qt3DInput/private/qbuttonaxisinput_p.h>
 
 #include "testpostmanarbiter.h"
 #include "testdevice.h"
 
-class tst_QAxisInput: public QObject
+class tst_QButtonAxisInput: public QObject
 {
     Q_OBJECT
 public:
-    tst_QAxisInput()
+    tst_QButtonAxisInput()
     {
         qRegisterMetaType<Qt3DInput::QAbstractPhysicalDevice*>("Qt3DInput::QAbstractPhysicalDevice*");
     }
@@ -50,26 +50,30 @@ public:
 private Q_SLOTS:
     void checkCloning_data()
     {
-        QTest::addColumn<Qt3DInput::QAxisInput *>("axisInput");
+        QTest::addColumn<Qt3DInput::QButtonAxisInput *>("axisInput");
 
-        Qt3DInput::QAxisInput *defaultConstructed = new Qt3DInput::QAxisInput();
+        Qt3DInput::QButtonAxisInput *defaultConstructed = new Qt3DInput::QButtonAxisInput();
         QTest::newRow("defaultConstructed") << defaultConstructed;
 
-        Qt3DInput::QAxisInput *axisInputWithAxis = new Qt3DInput::QAxisInput();
-        axisInputWithAxis->setAxis(383);
-        QTest::newRow("axisInputWithAxis") << axisInputWithAxis;
+        Qt3DInput::QButtonAxisInput *axisInputWithKeysAndAxis = new Qt3DInput::QButtonAxisInput();
+        axisInputWithKeysAndAxis->setButtons(QVariantList() << QVariant((1 << 1) | (1 << 5)));
+        axisInputWithKeysAndAxis->setAxis(383);
+        axisInputWithKeysAndAxis->setScale(327.0f);
+        QTest::newRow("axisInputWithKeys") << axisInputWithKeysAndAxis;
 
-        Qt3DInput::QAxisInput *axisInputWithAxisAndSourceDevice = new Qt3DInput::QAxisInput();
+        Qt3DInput::QButtonAxisInput *axisInputWithKeysAndSourceDevice = new Qt3DInput::QButtonAxisInput();
         TestDevice *device = new TestDevice();
-        axisInputWithAxisAndSourceDevice->setSourceDevice(device);
-        axisInputWithAxisAndSourceDevice->setAxis(427);
-        QTest::newRow("axisInputWithAxisAndSourceDevice") << axisInputWithAxisAndSourceDevice;
+        axisInputWithKeysAndSourceDevice->setButtons(QVariantList() << QVariant((1 << 1) | (1 << 5)));
+        axisInputWithKeysAndSourceDevice->setSourceDevice(device);
+        axisInputWithKeysAndSourceDevice->setAxis(427);
+        axisInputWithKeysAndSourceDevice->setScale(355.0f);
+        QTest::newRow("axisInputWithKeysAndSourceDevice") << axisInputWithKeysAndSourceDevice;
     }
 
     void checkCloning()
     {
         // GIVEN
-        QFETCH(Qt3DInput::QAxisInput *, axisInput);
+        QFETCH(Qt3DInput::QButtonAxisInput *, axisInput);
 
         // WHEN
         Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(axisInput);
@@ -78,23 +82,50 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(creationChanges.size(), 1 + (axisInput->sourceDevice() ? 1 : 0));
 
-        const Qt3DCore::QNodeCreatedChangePtr<Qt3DInput::QAxisInputData> creationChangeData =
-                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QAxisInputData>>(creationChanges.first());
-        const Qt3DInput::QAxisInputData &cloneData = creationChangeData->data;
-
-        // THEN
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DInput::QButtonAxisInputData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QButtonAxisInputData>>(creationChanges.first());
+        const Qt3DInput::QButtonAxisInputData &cloneData = creationChangeData->data;
         QCOMPARE(axisInput->id(), creationChangeData->subjectId());
         QCOMPARE(axisInput->isEnabled(), creationChangeData->isNodeEnabled());
         QCOMPARE(axisInput->metaObject(), creationChangeData->metaObject());
+        QCOMPARE(axisInput->buttons(), cloneData.buttons);
         QCOMPARE(axisInput->axis(), cloneData.axis);
+        QCOMPARE(axisInput->scale(), cloneData.scale);
         QCOMPARE(axisInput->sourceDevice() ? axisInput->sourceDevice()->id() : Qt3DCore::QNodeId(), cloneData.sourceDeviceId);
     }
 
     void checkPropertyUpdates()
     {
         // GIVEN
-        QScopedPointer<Qt3DInput::QAxisInput> axisInput(new Qt3DInput::QAxisInput());
+        QScopedPointer<Qt3DInput::QButtonAxisInput> axisInput(new Qt3DInput::QButtonAxisInput());
         TestArbiter arbiter(axisInput.data());
+
+        // WHEN
+        QVariantList buttons = QVariantList() << QVariant(555);
+        axisInput->setButtons(buttons);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        QCOMPARE(change->propertyName(), "buttons");
+        QCOMPARE(change->value().toList(), buttons);
+        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+
+        arbiter.events.clear();
+
+        // WHEN
+        axisInput->setScale(1340.0f);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        QCOMPARE(change->propertyName(), "scale");
+        QCOMPARE(change->value().toFloat(), 1340.0f);
+        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+
+        arbiter.events.clear();
 
         // WHEN
         axisInput->setAxis(350);
@@ -102,7 +133,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "axis");
         QCOMPARE(change->value().toInt(), 350);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
@@ -128,6 +159,6 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(tst_QAxisInput)
+QTEST_MAIN(tst_QButtonAxisInput)
 
-#include "tst_qaxisinput.moc"
+#include "tst_qbuttonaxisinput.moc"

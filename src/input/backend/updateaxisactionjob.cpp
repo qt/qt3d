@@ -170,6 +170,13 @@ void UpdateAxisActionJob::updateAxis(LogicalDevice *device)
         const auto axisInputIds = axis->inputs();
         for (const Qt3DCore::QNodeId axisInputId : axisInputIds) {
             AxisInput *axisInput = m_handler->axisInputManager()->lookupResource(axisInputId);
+            ButtonAxisInput *buttonAxisInput = nullptr;
+            if (!axisInput) {
+                buttonAxisInput = m_handler->buttonAxisInputManager()->lookupResource(axisInputId);
+                axisInput = buttonAxisInput;
+            }
+            Q_ASSERT(axisInput);
+
             QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = nullptr;
 
             const auto integrations = m_handler->inputDeviceIntegrations();
@@ -180,14 +187,14 @@ void UpdateAxisActionJob::updateAxis(LogicalDevice *device)
 
             if (physicalDeviceBackend != nullptr) {
                 // Update the value
-                const QVector<int> buttons = axisInput->buttons();
+                const QVector<int> buttons = buttonAxisInput ? buttonAxisInput->buttons() : QVector<int>();
                 // Axis was specified -> we take this as the base value
                 if (axisInput->axis() != -1)
                     axisValue += physicalDeviceBackend->processedAxisValue(axisInput->axis());
                 else if (!buttons.isEmpty()) {
                     // TO DO: Linear Curver for the progression of the scale value
                     if (anyOfRequiredButtonsPressed(buttons, physicalDeviceBackend))
-                        axisValue += axisInput->scale();
+                        axisValue += buttonAxisInput->scale();
                 }
             }
         }

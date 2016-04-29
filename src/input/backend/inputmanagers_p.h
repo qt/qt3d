@@ -65,6 +65,7 @@
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/private/axis_p.h>
 #include <Qt3DInput/private/axissetting_p.h>
+#include <Qt3DInput/private/buttonaxisinput_p.h>
 #include <Qt3DInput/private/logicaldevice_p.h>
 #include <Qt3DInput/private/genericdevicebackendnode_p.h>
 
@@ -161,6 +162,16 @@ class ActionInputManager : public Qt3DCore::QResourceManager<
 {
 public:
     ActionInputManager() {}
+};
+
+class ButtonAxisInputManager : public Qt3DCore::QResourceManager<
+        ButtonAxisInput,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy>
+{
+public:
+    ButtonAxisInputManager() {}
 };
 
 class InputChordManager : public Qt3DCore::QResourceManager<

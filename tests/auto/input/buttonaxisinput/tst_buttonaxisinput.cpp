@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -31,12 +31,24 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qnodepropertychange.h>
-#include <Qt3DInput/private/axisinput_p.h>
-#include <Qt3DInput/QAxisInput>
+#include <Qt3DInput/private/buttonaxisinput_p.h>
+#include <Qt3DInput/QButtonAxisInput>
 #include <Qt3DCore/qnodepropertychange.h>
 #include "testdevice.h"
 
-class tst_AxisInput : public Qt3DCore::QBackendNodeTester
+namespace {
+
+void compareKeys(const QVector<int> &backendKeys, const QVariantList &frontendKeys)
+{
+    QCOMPARE(backendKeys.size(), frontendKeys.size());
+    for (int i = 0, m = backendKeys.size(); i < m; ++i) {
+        QCOMPARE(backendKeys.at(i), frontendKeys.at(i).toInt());
+    }
+}
+
+}
+
+class tst_ButtonAxisInput: public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 
@@ -45,11 +57,13 @@ private Q_SLOTS:
     void checkPeerPropertyMirroring()
     {
         // GIVEN
-        Qt3DInput::Input::AxisInput backendAxisInput;
-        Qt3DInput::QAxisInput axisInput;
+        Qt3DInput::Input::ButtonAxisInput backendAxisInput;
+        Qt3DInput::QButtonAxisInput axisInput;
         TestDevice sourceDevice;
 
+        axisInput.setButtons(QVariantList() << QVariant(1 << 8));
         axisInput.setAxis(327);
+        axisInput.setScale(0.5f);
         axisInput.setSourceDevice(&sourceDevice);
 
         // WHEN
@@ -58,26 +72,32 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendAxisInput.peerId(), axisInput.id());
         QCOMPARE(backendAxisInput.isEnabled(), axisInput.isEnabled());
+        compareKeys(backendAxisInput.buttons(), axisInput.buttons());
         QCOMPARE(backendAxisInput.axis(), axisInput.axis());
+        QCOMPARE(backendAxisInput.scale(), axisInput.scale());
         QCOMPARE(backendAxisInput.sourceDevice(), sourceDevice.id());
     }
 
     void checkInitialAndCleanedUpState()
     {
         // GIVEN
-        Qt3DInput::Input::AxisInput backendAxisInput;
+        Qt3DInput::Input::ButtonAxisInput backendAxisInput;
 
         // THEN
         QVERIFY(backendAxisInput.peerId().isNull());
+        QCOMPARE(backendAxisInput.scale(), 0.0f);
+        QVERIFY(backendAxisInput.buttons().isEmpty());
         QCOMPARE(backendAxisInput.axis(), 0);
         QCOMPARE(backendAxisInput.isEnabled(), false);
         QCOMPARE(backendAxisInput.sourceDevice(), Qt3DCore::QNodeId());
 
         // GIVEN
-        Qt3DInput::QAxisInput axisInput;
+        Qt3DInput::QButtonAxisInput axisInput;
         TestDevice sourceDevice;
 
+        axisInput.setButtons(QVariantList() << QVariant(1 << 8));
         axisInput.setAxis(327);
+        axisInput.setScale(0.5f);
         axisInput.setSourceDevice(&sourceDevice);
 
         // WHEN
@@ -86,6 +106,8 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(backendAxisInput.peerId().isNull());
+        QCOMPARE(backendAxisInput.scale(), 0.0f);
+        QVERIFY(backendAxisInput.buttons().isEmpty());
         QCOMPARE(backendAxisInput.axis(), 0);
         QCOMPARE(backendAxisInput.isEnabled(), false);
         QCOMPARE(backendAxisInput.sourceDevice(), Qt3DCore::QNodeId());
@@ -94,7 +116,8 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
-        Qt3DInput::Input::AxisInput backendAxisInput;
+        Qt3DInput::Input::ButtonAxisInput backendAxisInput;
+
 
         // WHEN
         Qt3DCore::QNodePropertyChangePtr updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
@@ -104,6 +127,24 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendAxisInput.axis(), 32);
+
+        // WHEN
+        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange->setValue(QVariantList() << QVariant(64));
+        updateChange->setPropertyName("buttons");
+        backendAxisInput.sceneChangeEvent(updateChange);
+
+        // THEN
+        compareKeys(backendAxisInput.buttons(), QVariantList() << QVariant(64));
+
+        // WHEN
+        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange->setValue(0.5f);
+        updateChange->setPropertyName("scale");
+        backendAxisInput.sceneChangeEvent(updateChange);
+
+        // THEN
+        QCOMPARE(backendAxisInput.scale(), 0.5f);
 
         // WHEN
         updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
@@ -126,6 +167,6 @@ private Q_SLOTS:
     }
 };
 
-QTEST_APPLESS_MAIN(tst_AxisInput)
+QTEST_APPLESS_MAIN(tst_ButtonAxisInput)
 
-#include "tst_axisinput.moc"
+#include "tst_buttonaxisinput.moc"

@@ -147,12 +147,12 @@ Entity {
                 // Keyboard
                 Axis {
                     id: keyboardXAxis
-                    AxisInput {
+                    ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_Left]
                         scale: -1.0
                     }
-                    AxisInput {
+                    ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_Right]
                         scale: 1.0
@@ -160,12 +160,12 @@ Entity {
                 },
                 Axis {
                     id: keyboardZAxis
-                    AxisInput {
+                    ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_Up]
                         scale: d.shiftPressed ? 1.0 : 0.0
                     }
-                    AxisInput {
+                    ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_Down]
                         scale: d.shiftPressed ? -1.0 : 0.0
@@ -173,12 +173,12 @@ Entity {
                 },
                 Axis {
                     id: keyboardYAxis
-                    AxisInput {
+                    ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_Up]
                         scale: d.shiftPressed ? 0.0 : 1.0
                     }
-                    AxisInput {
+                    ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_Down]
                         scale: d.shiftPressed ? 0.0 : -1.0

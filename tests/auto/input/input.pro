@@ -4,10 +4,12 @@ contains(QT_CONFIG, private_tests) {
     SUBDIRS += \
         qaxis \
         qaction \
-        qaxisinput \
         qactioninput \
+        qaxisinput \
+        qbuttonaxisinput \
         qlogicaldevice \
         axis \
         action \
-        axisinput
+        axisinput \
+        buttonaxisinput
 }

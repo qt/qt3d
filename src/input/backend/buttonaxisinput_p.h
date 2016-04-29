@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_INPUT_AXISINPUT_H
-#define QT3DINPUT_INPUT_AXISINPUT_H
+#ifndef QT3DINPUT_INPUT_BUTTONAXISINPUT_H
+#define QT3DINPUT_INPUT_BUTTONAXISINPUT_H
 
 //
 //  W A R N I N G
@@ -51,8 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeid.h>
+#include <Qt3DInput/private/axisinput_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,22 +59,22 @@ namespace Qt3DInput {
 
 namespace Input {
 
-class Q_AUTOTEST_EXPORT AxisInput : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT ButtonAxisInput : public AxisInput
 {
 public:
-    AxisInput();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    virtual void cleanup();
+    ButtonAxisInput();
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_FINAL;
+    void cleanup() Q_DECL_FINAL;
 
-    inline int axis() const { return m_axis; }
-    inline Qt3DCore::QNodeId sourceDevice() const { return m_sourceDevice; }
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    inline float scale() const { return m_scale; }
+    inline QVector<int> buttons() const { return m_buttons; }
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
 
-protected:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
+private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
-    int m_axis;
-    Qt3DCore::QNodeId m_sourceDevice;
+    QVector<int> m_buttons;
+    float m_scale;
 };
 
 } // namespace Input
@@ -84,4 +83,4 @@ protected:
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_INPUT_AXISINPUT_H
+#endif // QT3DINPUT_INPUT_BUTTONAXISINPUT_H
