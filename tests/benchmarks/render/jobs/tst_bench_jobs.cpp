@@ -50,6 +50,7 @@
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qaspectthread_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <QQmlComponent>
 #include <QScopedPointer>
 
@@ -121,17 +122,16 @@ public:
     void onRootEntityChanged(Qt3DCore::QEntity *root)
     {
         if (!m_window) {
-            Qt3DCore::QNodeVisitor visitor;
-            visitor.traverse(root, this, &TestAspect::visitNode);
+            const Qt3DCore::QNodeCreatedChangeGenerator generator(root);
+            const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = generator.creationChanges();
+
+            for (const Qt3DCore::QNodeCreatedChangeBasePtr change : creationChanges)
+                d_func()->createBackendNode(change);
+
             static_cast<Qt3DRender::Render::Renderer *>(d_func()->m_renderer)->m_renderSceneRoot =
                     d_func()->m_renderer->nodeManagers()
                     ->lookupResource<Qt3DRender::Render::Entity, Qt3DRender::Render::EntityManager>(root->id());
         }
-    }
-
-    void visitNode(Qt3DCore::QNode *node)
-    {
-        d_func()->createBackendNode(node);
     }
 
 private:

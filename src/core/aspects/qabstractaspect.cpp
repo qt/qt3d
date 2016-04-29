@@ -154,13 +154,13 @@ void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackend
 void QAbstractAspectPrivate::sceneNodeAdded(QSceneChangePtr &change)
 {
     QNodeCreatedChangeBasePtr creationChange = qSharedPointerCast<QNodeCreatedChangeBase>(change);
-    createBackendNodeNoClone(creationChange);
+    createBackendNode(creationChange);
 }
 
 void QAbstractAspectPrivate::sceneNodeRemoved(QSceneChangePtr &change)
 {
     QNodeDestroyedChangePtr destructionChange = qSharedPointerCast<QNodeDestroyedChange>(change);
-    clearBackendNodeNoClone(destructionChange);
+    clearBackendNode(destructionChange);
 }
 
 QVariant QAbstractAspect::executeCommand(const QStringList &args)
@@ -175,39 +175,7 @@ QVector<QAspectJobPtr> QAbstractAspect::jobsToExecute(qint64 time)
     return QVector<QAspectJobPtr>();
 }
 
-QBackendNode *QAbstractAspectPrivate::createBackendNode(QNode *frontend) const
-{
-    const QMetaObject *metaObj = frontend->metaObject();
-    QBackendNodeMapperPtr functor;
-    while (metaObj != Q_NULLPTR && functor.isNull()) {
-        functor = m_backendCreatorFunctors.value(metaObj);
-        metaObj = metaObj->superClass();
-    }
-    if (!functor.isNull()) {
-        QBackendNode *backend = functor->get(frontend->id());
-        if (backend != Q_NULLPTR)
-            return backend;
-        backend = functor->create(frontend);
-        // backend could be null if the user decides that his functor should only
-        // perform some action when encountering a given type of item but doesn't need to
-        // return a QBackendNode pointer.
-        if (backend == Q_NULLPTR)
-            return Q_NULLPTR;
-        QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
-        backendPriv->setEnabled(frontend->isEnabled());
-        // TO DO: Find a way to specify the changes to observe
-        // Register backendNode with QChangeArbiter
-        if (m_arbiter != Q_NULLPTR) { // Unit tests may not have the arbiter registered
-            m_arbiter->registerObserver(backendPriv, backend->peerId(), AllChanges);
-            if (backend->mode() == QBackendNode::ReadWrite)
-                m_arbiter->scene()->addObservable(backendPriv, backend->peerId());
-        }
-        return backend;
-    }
-    return Q_NULLPTR;
-}
-
-QBackendNode *QAbstractAspectPrivate::createBackendNodeNoClone(const QNodeCreatedChangeBasePtr &change) const
+QBackendNode *QAbstractAspectPrivate::createBackendNode(const QNodeCreatedChangeBasePtr &change) const
 {
     const QMetaObject *metaObj = change->metaObject();
     QBackendNodeMapperPtr backendNodeMapper;
@@ -249,28 +217,7 @@ QBackendNode *QAbstractAspectPrivate::createBackendNodeNoClone(const QNodeCreate
     return backend;
 }
 
-void QAbstractAspectPrivate::clearBackendNode(QNode *frontend) const
-{
-    const QMetaObject *metaObj = frontend->metaObject();
-    QBackendNodeMapperPtr functor;
-
-    while (metaObj != Q_NULLPTR && functor.isNull()) {
-        functor = m_backendCreatorFunctors.value(metaObj);
-        metaObj = metaObj->superClass();
-    }
-    if (!functor.isNull()) {
-        QBackendNode *backend = functor->get(frontend->id());
-        if (backend != Q_NULLPTR) {
-            QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
-            m_arbiter->unregisterObserver(backendPriv, backend->peerId());
-            if (backend->mode() == QBackendNode::ReadWrite)
-                m_arbiter->scene()->removeObservable(backendPriv, backend->peerId());
-            functor->destroy(frontend->id());
-        }
-    }
-}
-
-void QAbstractAspectPrivate::clearBackendNodeNoClone(const QNodeDestroyedChangePtr &change) const
+void QAbstractAspectPrivate::clearBackendNode(const QNodeDestroyedChangePtr &change) const
 {
     // Each QNodeDestroyedChange may contain info about a whole sub-tree of nodes that
     // are being destroyed. Iterate over them and process each in turn
@@ -311,7 +258,7 @@ void QAbstractAspectPrivate::setRootAndCreateNodes(QEntity *rootObject, const QV
     m_rootId = rootObject->id();
 
     for (const auto &change : changes)
-        createBackendNodeNoClone(change);
+        createBackendNode(change);
 }
 
 QServiceLocator *QAbstractAspectPrivate::services() const

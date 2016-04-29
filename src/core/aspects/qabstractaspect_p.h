@@ -89,13 +89,8 @@ public:
 
     QVector<QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
-    QBackendNode *createBackendNode(QNode *frontend) const Q_DECL_OVERRIDE;
-    // TODO: Rename this to createBackendNode when new system is fully in place
-    QBackendNode *createBackendNodeNoClone(const QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
-
-    void clearBackendNode(QNode *frontend) const;
-    // TODO: Rename this to clearBackendNode (or deleteBackendNode) when new system is fully in place
-    void clearBackendNodeNoClone(const QNodeDestroyedChangePtr &change) const;
+    QBackendNode *createBackendNode(const QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
+    void clearBackendNode(const QNodeDestroyedChangePtr &change) const;
 
     void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;

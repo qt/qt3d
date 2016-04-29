@@ -59,15 +59,12 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 class QBackendNode;
-class QNode;
 
 class QT3DCORE_PRIVATE_EXPORT QBackendNodeFactory
 {
 public:
     virtual ~QBackendNodeFactory();
-    virtual QBackendNode *createBackendNode(QNode *frontend) const = 0;
-    // TODO: Rename this to createBackendNode when new system is fully in place
-    virtual QBackendNode *createBackendNodeNoClone(const QNodeCreatedChangeBasePtr &change) const = 0;
+    virtual QBackendNode *createBackendNode(const QNodeCreatedChangeBasePtr &change) const = 0;
 };
 
 } // namespace Qt3DCore

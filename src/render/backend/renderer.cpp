@@ -83,6 +83,7 @@
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <QStack>
 #include <QSurface>
@@ -420,25 +421,22 @@ void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
     // Create the default materials ....
     // Needs a QOpenGLContext (for things like isOpenGLES ...)
     // TO DO: Maybe this should be moved elsewhere
-    buildDefaultTechnique();
-    buildDefaultMaterial();
+    {
+        buildDefaultTechnique();
+        QNodeCreatedChangeGenerator creationChangeGenerator(m_defaultTechnique);
+        const QVector<QNodeCreatedChangeBasePtr> defaultMaterialCreationChanges = creationChangeGenerator.creationChanges();
+        for (const QNodeCreatedChangeBasePtr &change : defaultMaterialCreationChanges)
+            factory->createBackendNode(change);
 
-    factory->createBackendNode(m_defaultMaterial);
-    factory->createBackendNode(m_defaultMaterial->effect());
-    factory->createBackendNode(m_defaultTechnique);
-    factory->createBackendNode(m_defaultTechnique->renderPasses().constFirst());
-    factory->createBackendNode(m_defaultTechnique->renderPasses().constFirst()->shaderProgram());
-
-    // We create backend resources for all the parameters
-    const QVector<QParameter *> parameterList[] = {
-        m_defaultMaterial->parameters(),
-        m_defaultTechnique->parameters(),
-        m_defaultMaterial->effect()->parameters(),
-    };
-    for (const auto &parameters : parameterList) {
-        for (QParameter *p : parameters)
-            factory->createBackendNode(p);
     }
+    {
+        buildDefaultMaterial();
+        QNodeCreatedChangeGenerator creationChangeGenerator(m_defaultMaterial);
+        const QVector<QNodeCreatedChangeBasePtr> defaultMaterialCreationChanges = creationChangeGenerator.creationChanges();
+        for (const QNodeCreatedChangeBasePtr &change : defaultMaterialCreationChanges)
+            factory->createBackendNode(change);
+    }
+
 
     m_defaultMaterialHandle = nodeManagers()->lookupHandle<Material, MaterialManager, HMaterial>(m_defaultMaterial->id());
     m_defaultEffectHandle = nodeManagers()->lookupHandle<Effect, EffectManager, HEffect>(m_defaultMaterial->effect()->id());

@@ -46,6 +46,7 @@
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 Qt3DRender::QGeometryRenderer *customIndexedGeometryRenderer()
 {
@@ -317,18 +318,16 @@ public:
     TestAspect(Qt3DCore::QNode *root)
         : Qt3DRender::QRenderAspect()
     {
-        Qt3DCore::QNodeVisitor visitor;
-        visitor.traverse(root, this, &TestAspect::visitNode);
+        const Qt3DCore::QNodeCreatedChangeGenerator generator(root);
+        const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = generator.creationChanges();
+
+        for (const Qt3DCore::QNodeCreatedChangeBasePtr change : creationChanges)
+            d_func()->createBackendNode(change);
     }
 
     Qt3DRender::Render::NodeManagers *nodeManagers() const
     {
         return d_func()->m_renderer->nodeManagers();
-    }
-
-    void visitNode(Qt3DCore::QNode *node)
-    {
-        d_func()->createBackendNode(node);
     }
 };
 
