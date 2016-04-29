@@ -62,8 +62,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-QHash<QNodeId, QNode *> QNodePrivate::m_clonesLookupTable = QHash<QNodeId, QNode *>();
-
 QNodePrivate::QNodePrivate()
     : QObjectPrivate()
     , m_changeArbiter(nullptr)

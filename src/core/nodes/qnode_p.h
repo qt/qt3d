@@ -110,8 +110,6 @@ private:
     friend class PropertyChangeHandler<QNodePrivate>;
     bool m_propertyChangesSetup;
     PropertyChangeHandler<QNodePrivate> m_signals;
-
-    static QHash<QNodeId, QNode *> m_clonesLookupTable;
 };
 
 } // namespace Qt3DCore

@@ -64,7 +64,6 @@ public:
     QMultiHash<QNodeId, QObservableInterface *> m_observablesLookupTable;
     QHash<QObservableInterface *, QNodeId> m_observableToUuid;
     QLockableObserverInterface *m_arbiter;
-    QHash<QNodeId, QNode *> m_clonesLookupTable;
     mutable QReadWriteLock m_lock;
 };
 
