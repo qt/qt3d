@@ -128,6 +128,22 @@ inline QNodeIdVector qIdsForNodes(const T &nodes)
     return ids;
 }
 
+struct QNodeIdTypePair
+{
+    QNodeIdTypePair() Q_DECL_NOEXCEPT
+        : id()
+        , type(nullptr)
+    {}
+
+    explicit QNodeIdTypePair(QNodeId _id, const QMetaObject *_type) Q_DECL_NOEXCEPT
+        : id(_id)
+        , type(_type)
+    {}
+
+    QNodeId id;
+    const QMetaObject *type;
+};
+
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
