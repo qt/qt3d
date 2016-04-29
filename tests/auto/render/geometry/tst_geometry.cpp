@@ -136,7 +136,7 @@ private Q_SLOTS:
         QVERIFY(!renderGeometry.isDirty());
 
         // WHEN
-        const auto nodeRemovedChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), attributeId);
+        const auto nodeRemovedChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), &attribute);
         nodeRemovedChange->setPropertyName("attribute");
         renderGeometry.sceneChangeEvent(nodeRemovedChange);
 

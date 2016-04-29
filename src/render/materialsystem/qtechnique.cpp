@@ -112,7 +112,7 @@ void QTechnique::removeFilterKey(QFilterKey *filterKey)
     Q_ASSERT(filterKey);
     Q_D(QTechnique);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), filterKey->id());
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), filterKey);
         change->setPropertyName("filterKeys");
         d->notifyObservers(change);
     }
@@ -152,7 +152,7 @@ void QTechnique::removeParameter(QParameter *parameter)
     Q_ASSERT(parameter);
     Q_D(QTechnique);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter->id());
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter);
         change->setPropertyName("parameter");
         d->notifyObservers(change);
     }

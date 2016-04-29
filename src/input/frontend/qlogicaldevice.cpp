@@ -175,7 +175,7 @@ void QLogicalDevice::removeAction(QAction *action)
     if (d->m_actions.contains(action)) {
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), action->id());
+            const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), action);
             change->setPropertyName("action");
             d->notifyObservers(change);
         }
@@ -228,7 +228,7 @@ void QLogicalDevice::removeAxis(QAxis *axis)
     Q_D(QLogicalDevice);
     if (d->m_axes.contains(axis)) {
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), axis->id());
+            const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), axis);
             change->setPropertyName("axis");
             d->notifyObservers(change);
         }

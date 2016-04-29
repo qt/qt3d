@@ -112,7 +112,7 @@ void QNodePrivate::_q_removeChild(QNode *childNode)
 
     // We notify the backend that we lost a child
     if (m_changeArbiter != Q_NULLPTR) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(m_id, childNode->id());
+        const auto change = QNodeRemovedPropertyChangePtr::create(m_id, childNode);
         change->setPropertyName("children");
         notifyObservers(change);
     }

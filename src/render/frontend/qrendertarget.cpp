@@ -88,7 +88,7 @@ void QRenderTarget::removeOutput(QRenderTargetOutput *output)
     Q_D(QRenderTarget);
 
     if (output && d->m_changeArbiter != Q_NULLPTR) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), output->id());
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), output);
         change->setPropertyName("output");
         d->notifyObservers(change);
     }

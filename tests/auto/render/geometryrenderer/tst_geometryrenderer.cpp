@@ -300,7 +300,7 @@ private Q_SLOTS:
 
         // WHEN
         updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
-        const auto nodeRemovedChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), geometryId);
+        const auto nodeRemovedChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), &geometry);
         nodeRemovedChange->setPropertyName("geometry");
         renderGeometryRenderer.sceneChangeEvent(nodeRemovedChange);
 

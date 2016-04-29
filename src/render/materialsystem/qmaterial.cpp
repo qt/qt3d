@@ -150,7 +150,7 @@ void QMaterial::removeParameter(QParameter *parameter)
     Q_ASSERT(parameter);
     Q_D(QMaterial);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter->id());
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter);
         change->setPropertyName("parameter");
         d->notifyObservers(change);
     }

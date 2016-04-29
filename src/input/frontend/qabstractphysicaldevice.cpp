@@ -174,7 +174,7 @@ void QAbstractPhysicalDevice::removeAxisSetting(QAxisSetting *axisSetting)
     Q_D(QAbstractPhysicalDevice);
     if (axisSetting && d->m_axisSettings.contains(axisSetting)) {
         if (d->m_changeArbiter) {
-            const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), axisSetting->id());
+            const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), axisSetting);
             change->setPropertyName("axisSettings");
             d->notifyObservers(change);
         }

@@ -137,7 +137,7 @@ void QAction::removeInput(QAbstractActionInput *input)
     if (d->m_inputs.contains(input)) {
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), input->id());
+            const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), input);
             change->setPropertyName("input");
             d->notifyObservers(change);
         }

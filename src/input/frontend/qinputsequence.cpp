@@ -214,7 +214,7 @@ void QInputSequence::removeSequence(QAbstractActionInput *input)
     Q_D(QInputSequence);
     if (d->m_sequences.contains(input)) {
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), input->id());
+            const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), input);
             change->setPropertyName("sequence");
             d->notifyObservers(change);
         }

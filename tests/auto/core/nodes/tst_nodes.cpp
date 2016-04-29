@@ -509,6 +509,7 @@ void tst_Nodes::checkParentChangeToNull()
     QVERIFY(removalEvent);
     QCOMPARE(removalEvent->subjectId(), root->id());
     QCOMPARE(removalEvent->removedNodeId(), child->id());
+    QCOMPARE(removalEvent->metaObject(), child->metaObject());
 
     QVERIFY(spy.events.first().wasLocked());
     const Qt3DCore::QNodeDestroyedChangePtr destructionEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeDestroyedChange>();
@@ -566,6 +567,7 @@ void tst_Nodes::checkParentChangeToOtherParent()
     QCOMPARE(event->type(), Qt3DCore::NodeRemoved);
     QCOMPARE(event->subjectId(), parent1->id());
     QCOMPARE(event->removedNodeId(), child->id());
+    QCOMPARE(event->metaObject(), child->metaObject());
 
     // CHECK event 2 is a Node Added event
     QVERIFY(spyParent2.events.last().wasLocked());
@@ -607,6 +609,7 @@ void tst_Nodes::removingSingleChildNodeFromNode()
     const Qt3DCore::QNodeRemovedPropertyChangePtr removalEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeRemovedPropertyChange>();
     QCOMPARE(removalEvent->subjectId(), root->id());
     QCOMPARE(removalEvent->removedNodeId(), child->id());
+    QCOMPARE(removalEvent->metaObject(), child->metaObject());
 
     QVERIFY(spy.events.first().wasLocked());
     const Qt3DCore::QNodeDestroyedChangePtr destructionEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeDestroyedChange>();
@@ -658,6 +661,7 @@ void tst_Nodes::removingMultipleChildNodesFromNode()
             Qt3DCore::QNodeRemovedPropertyChangePtr additionEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeRemovedPropertyChange>();
             QCOMPARE(additionEvent->subjectId(), root->id());
             QCOMPARE(additionEvent->removedNodeId(), childId);
+            QCOMPARE(additionEvent->metaObject(), &MyQNode::staticMetaObject);
         } else {
             const Qt3DCore::QNodeDestroyedChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeDestroyedChange>();
             QCOMPARE(event->subjectId(), childId);

@@ -113,7 +113,7 @@ void QRenderStateSet::removeRenderState(QRenderState *state)
     Q_ASSERT(state);
     Q_D(QRenderStateSet);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), state->id());
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), state);
         change->setPropertyName("renderState");
         d->notifyObservers(change);
     }

@@ -169,7 +169,7 @@ void QInputChord::removeChord(QAbstractActionInput *input)
     if (d->m_chords.contains(input)) {
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), input->id());
+            const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), input);
             change->setPropertyName("chord");
             d->notifyObservers(change);
         }

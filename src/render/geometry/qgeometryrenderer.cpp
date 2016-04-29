@@ -354,7 +354,7 @@ void QGeometryRenderer::setGeometry(QGeometry *geometry)
     // TODO: Investigate if we can rely upon the automatic property change notifications
     // rather than having to manually send a NodeRemoved followed by a NodeAdded change.
     if (d->m_geometry && d->m_changeArbiter) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), d->m_geometry->id());
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), d->m_geometry);
         change->setPropertyName("geometry");
         d->notifyObservers(change);
     }

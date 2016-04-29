@@ -294,7 +294,7 @@ void QAbstractTexture::removeTextureImage(QAbstractTextureImage *textureImage)
     Q_ASSERT(textureImage);
     Q_D(QAbstractTexture);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), textureImage->id());
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), textureImage);
         change->setPropertyName("textureImage");
         d->notifyObservers(change);
     }

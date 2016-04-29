@@ -94,7 +94,7 @@ void QEffect::removeParameter(QParameter *parameter)
     Q_D(QEffect);
 
     if (parameter && d->m_changeArbiter != Q_NULLPTR) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter->id());
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter);
         change->setPropertyName("parameter");
         d->notifyObservers(change);
     }
@@ -143,7 +143,7 @@ void QEffect::removeTechnique(QTechnique *t)
 {
     Q_D(QEffect);
     if (t && d->m_changeArbiter != Q_NULLPTR) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), t->id());
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), t);
         change->setPropertyName("technique");
         d->notifyObservers(change);
     }

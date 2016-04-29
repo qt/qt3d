@@ -133,7 +133,7 @@ private Q_SLOTS:
         QCOMPARE(backendAction.inputs().first(), inputId);
 
         // WHEN
-        const auto nodeRemovedChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), inputId);
+        const auto nodeRemovedChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), &input);
         nodeRemovedChange->setPropertyName("input");
         backendAction.sceneChangeEvent(nodeRemovedChange);
 

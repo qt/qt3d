@@ -147,7 +147,7 @@ void tst_RenderMaterial::shouldHandleParametersPropertyChange()
     QVERIFY(renderer.dirtyBits() != 0);
 
     // WHEN
-    const auto removeChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), parameter->id());
+    const auto removeChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), parameter.data());
     removeChange->setPropertyName("parameter");
     backend.sceneChangeEvent(removeChange);
 

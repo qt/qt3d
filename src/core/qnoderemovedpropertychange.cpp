@@ -39,6 +39,7 @@
 
 #include "qnoderemovedpropertychange.h"
 #include "qnoderemovedpropertychange_p.h"
+#include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,15 +60,15 @@ namespace Qt3DCore {
  */
 
 /*!
- * Constructs a new QNodeRemovedPropertyChange with \a subjectId, \a removedNodeId, and
+ * Constructs a new QNodeRemovedPropertyChange with \a subjectId, \a node, and
  * \a priority.
  */
-QNodeRemovedPropertyChange::QNodeRemovedPropertyChange(QNodeId subjectId, QNodeId removedNodeId,
+QNodeRemovedPropertyChange::QNodeRemovedPropertyChange(QNodeId subjectId, QNode *node,
                                                        QSceneChange::Priority priority)
     : QNodePropertyChangeBase(*new QNodeRemovedPropertyChangePrivate, NodeRemoved, Node, subjectId, priority)
 {
     Q_D(QNodeRemovedPropertyChange);
-    d->m_removedNodeId = removedNodeId;
+    d->m_removedNodeIdTypePair = QNodeIdTypePair(node->id(), QNodePrivate::get(node)->m_typeInfo);
 }
 
 /*!
@@ -76,7 +77,16 @@ QNodeRemovedPropertyChange::QNodeRemovedPropertyChange(QNodeId subjectId, QNodeI
 QNodeId QNodeRemovedPropertyChange::removedNodeId() const
 {
     Q_D(const QNodeRemovedPropertyChange);
-    return d->m_removedNodeId;
+    return d->m_removedNodeIdTypePair.id;
+}
+
+/*!
+ * \return the metaObject of the node removed to the property.
+ */
+const QMetaObject *QNodeRemovedPropertyChange::metaObject() const
+{
+    Q_D(const QNodeRemovedPropertyChange);
+    return d->m_removedNodeIdTypePair.type;
 }
 
 } // namespace Qt3DCore

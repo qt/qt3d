@@ -41,7 +41,7 @@
 #define QT3DCORE_QNODEREMOVEDPROPERTYCHANGE_H
 
 #include <Qt3DCore/qnodepropertychangebase.h>
-#include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/qnode.h>
 #include <QtCore/qsharedpointer.h>
 
 QT_BEGIN_NAMESPACE
@@ -53,10 +53,11 @@ class QNodeRemovedPropertyChangePrivate;
 class QT3DCORESHARED_EXPORT QNodeRemovedPropertyChange : public QNodePropertyChangeBase
 {
 public:
-    QNodeRemovedPropertyChange(QNodeId subjectId, QNodeId removedNodeId,
+    QNodeRemovedPropertyChange(QNodeId subjectId, QNode *node,
                                Priority priority = Standard);
 
     QNodeId removedNodeId() const;
+    const QMetaObject *metaObject() const;
 
 private:
     Q_DECLARE_PRIVATE(QNodeRemovedPropertyChange)

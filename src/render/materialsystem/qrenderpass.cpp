@@ -82,7 +82,7 @@ void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
     if (d->m_shader != shaderProgram) {
 
         if (d->m_shader != Q_NULLPTR && d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = QNodeRemovedPropertyChangePtr::create(id(), d->m_shader->id());
+            const auto change = QNodeRemovedPropertyChangePtr::create(id(), d->m_shader);
             change->setPropertyName("shaderProgram");
             d->notifyObservers(change);
         }
@@ -139,7 +139,7 @@ void QRenderPass::removeFilterKey(QFilterKey *filterKey)
     Q_ASSERT(filterKey);
     Q_D(QRenderPass);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), filterKey->id());
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), filterKey);
         change->setPropertyName("filterKeys");
         d->notifyObservers(change);
     }
@@ -186,7 +186,7 @@ void QRenderPass::removeRenderState(QRenderState *state)
     Q_ASSERT(state);
     Q_D(QRenderPass);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), state->id());
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), state);
         change->setPropertyName("renderState");
         d->notifyObservers(change);
     }
@@ -230,7 +230,7 @@ void QRenderPass::removeParameter(QParameter *parameter)
     Q_ASSERT(parameter);
     Q_D(QRenderPass);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter->id());
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter);
         change->setPropertyName("parameter");
         d->notifyObservers(change);
     }
