@@ -28,7 +28,9 @@ SUBDIRS += \
     tessellation-modes \
     transforms-qml \
     transparency-qml \
-    transparency-qml-scene3d
+    transparency-qml-scene3d \
+    custom-mesh-update-data-cpp \
+    custom-mesh-update-data-qml
 
 qtHaveModule(widgets): {
     SUBDIRS += \

@@ -57,6 +57,7 @@
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
+#include <Qt3DRender/private/qbuffer_p.h>
 #include <QOpenGLShaderProgram>
 
 #if !defined(QT_OPENGL_ES_2)
@@ -1297,10 +1298,26 @@ void GraphicsContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool rel
 {
     if (!bindGLBuffer(b, bufferTypeToGLBufferType(buffer->type())))
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer bind failed";
-    const int bufferSize = buffer->data().size();
-    // TO DO: Handle usage pattern and sub data updates
-    b->allocate(this, bufferSize, false); // orphan the buffer
-    b->allocate(this, buffer->data().constData(), bufferSize, false);
+    // If the buffer is dirty (hence being called here)
+    // there are two possible cases
+    // * setData was called changing the whole data or functor (or the usage pattern)
+    // * partial buffer updates where received
+
+    // Note: we assume the case where both setData/functor and updates are called to be a misuse
+    // with unexpected behavior
+    const QVector<Qt3DRender::QBufferUpdate> updates = std::move(buffer->pendingBufferUpdates());
+    if (!updates.empty()) {
+        for (const Qt3DRender::QBufferUpdate &update : updates) {
+            // TO DO: based on the number of updates .., it might make sense to
+            // sometime use glMapBuffer rather than glBufferSubData
+            b->update(this, update.data.constData(), update.data.size(), update.offset);
+        }
+    } else {
+        const int bufferSize = buffer->data().size();
+        // TO DO: Handle usage pattern
+        b->allocate(this, bufferSize, false); // orphan the buffer
+        b->allocate(this, buffer->data().constData(), bufferSize, false);
+    }
     if (releaseBuffer) {
         b->release(this);
         if (bufferTypeToGLBufferType(buffer->type()) == GLBuffer::ArrayBuffer)

@@ -85,8 +85,15 @@ struct QBufferData
     bool syncData;
 };
 
+struct QBufferUpdate
+{
+    int offset;
+    QByteArray data;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+Q_DECLARE_METATYPE(Qt3DRender::QBufferUpdate)
 
 #endif // QT3DRENDER_QBUFFER_P_H

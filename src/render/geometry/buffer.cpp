@@ -70,6 +70,7 @@ void Buffer::cleanup()
     m_type = QBuffer::VertexBuffer;
     m_usage = QBuffer::StaticDraw;
     m_data.clear();
+    m_bufferUpdates.clear();
     m_functor.reset();
     m_bufferDirty = false;
     m_syncData = false;
@@ -120,6 +121,10 @@ void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             QByteArray newData = propertyChange->value().value<QByteArray>();
             m_bufferDirty |= m_data != newData;
             m_data = newData;
+        } else if (propertyName == QByteArrayLiteral("updateData")) {
+            Qt3DRender::QBufferUpdate updateData = propertyChange->value().value<Qt3DRender::QBufferUpdate>();
+            m_bufferUpdates.push_back(updateData);
+            m_bufferDirty = true;
         } else if (propertyName == QByteArrayLiteral("type")) {
             m_type = static_cast<QBuffer::BufferType>(propertyChange->value().value<int>());
             m_bufferDirty = true;

@@ -69,16 +69,18 @@ namespace Render {
 
 namespace Quick {
 
-class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DBuffer : public QObject
+class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DBuffer : public Qt3DRender::QBuffer
 {
     Q_OBJECT
     Q_PROPERTY(QVariant data READ bufferData WRITE setBufferData NOTIFY bufferDataChanged)
 public:
-    explicit Quick3DBuffer(QObject *parent = nullptr);
-    inline QBuffer *parentBuffer() const { return qobject_cast<QBuffer *>(parent()); }
+    explicit Quick3DBuffer(Qt3DCore::QNode *parent = nullptr);
 
     QVariant bufferData() const;
     void setBufferData(const QVariant &bufferData);
+
+public Q_SLOTS:
+    void updateData(int offset, const QVariant &bytes);
 
 Q_SIGNALS:
     void bufferDataChanged();

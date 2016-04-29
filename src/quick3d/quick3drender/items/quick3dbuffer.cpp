@@ -57,12 +57,12 @@ namespace {
 const int jsValueTypeId = qMetaTypeId<QJSValue>();
 }
 
-Quick3DBuffer::Quick3DBuffer(QObject *parent)
-    : QObject(parent)
+Quick3DBuffer::Quick3DBuffer(Qt3DCore::QNode *parent)
+    : Qt3DRender::QBuffer(QBuffer::VertexBuffer, parent)
     , m_engine(nullptr)
     , m_v4engine(nullptr)
 {
-    QObject::connect(parentBuffer(), &Qt3DRender::QBuffer::dataChanged, this, &Quick3DBuffer::bufferDataChanged);
+    QObject::connect(this, &Qt3DRender::QBuffer::dataChanged, this, &Quick3DBuffer::bufferDataChanged);
 }
 
 QByteArray Quick3DBuffer::convertToRawData(const QJSValue &jsValue)
@@ -83,16 +83,26 @@ QByteArray Quick3DBuffer::convertToRawData(const QJSValue &jsValue)
 
 QVariant Quick3DBuffer::bufferData() const
 {
-    return QVariant::fromValue(parentBuffer()->data());
+    return QVariant::fromValue(data());
 }
 
 void Quick3DBuffer::setBufferData(const QVariant &bufferData)
 {
     if (bufferData.userType() == QMetaType::QByteArray) {
-        parentBuffer()->setData(bufferData.toByteArray());
+        QBuffer::setData(bufferData.toByteArray());
     } else if (bufferData.userType() == jsValueTypeId) {
         QJSValue jsValue = bufferData.value<QJSValue>();
-        parentBuffer()->setData(convertToRawData(jsValue));
+        QBuffer::setData(convertToRawData(jsValue));
+    }
+}
+
+void Quick3DBuffer::updateData(int offset, const QVariant &bufferData)
+{
+    if (bufferData.userType() == QMetaType::QByteArray) {
+        QBuffer::updateData(offset, bufferData.toByteArray());
+    } else if (bufferData.userType() == jsValueTypeId) {
+        QJSValue jsValue = bufferData.value<QJSValue>();
+        QBuffer::updateData(offset, convertToRawData(jsValue));
     }
 }
 

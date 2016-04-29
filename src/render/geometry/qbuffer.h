@@ -44,6 +44,7 @@
 #include <Qt3DRender/qt3drender_global.h>
 #include <QSharedPointer>
 
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -97,6 +98,8 @@ public:
 
     void setDataGenerator(const QBufferDataGeneratorPtr &functor);
     QBufferDataGeneratorPtr dataGenerator() const;
+
+    Q_INVOKABLE void updateData(int offset, const QByteArray &bytes);
 
 public Q_SLOTS:
     void setType(BufferType type);

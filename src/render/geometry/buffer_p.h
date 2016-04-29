@@ -51,6 +51,7 @@
 // We mean it.
 //
 
+#include <QtCore>
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qbufferdatagenerator.h>
@@ -58,6 +59,8 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+
+class QBufferUpdate;
 
 namespace Render {
 
@@ -74,10 +77,10 @@ public:
 
     void setManager(BufferManager *manager);
     void executeFunctor();
-
     inline QBuffer::BufferType type() const { return m_type; }
     inline QBuffer::UsageType usage() const { return m_usage; }
     inline QByteArray data() const { return m_data; }
+    inline QVector<Qt3DRender::QBufferUpdate> &pendingBufferUpdates() { return m_bufferUpdates; }
     inline bool isDirty() const { return m_bufferDirty; }
     inline QBufferDataGeneratorPtr dataGenerator() const { return m_functor; }
     inline bool isSyncData() const { return m_syncData; }
@@ -89,6 +92,7 @@ private:
     QBuffer::BufferType m_type;
     QBuffer::UsageType m_usage;
     QByteArray m_data;
+    QVector<Qt3DRender::QBufferUpdate> m_bufferUpdates;
     bool m_bufferDirty;
     bool m_syncData;
     QBufferDataGeneratorPtr m_functor;

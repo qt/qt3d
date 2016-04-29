@@ -182,12 +182,36 @@ void QBuffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
  */
 void QBuffer::setData(const QByteArray &bytes)
 {
-   Q_D(QBuffer);
+    Q_D(QBuffer);
     if (bytes != d->m_data) {
         d->m_data = bytes;
         Qt3DCore::QNodePrivate::get(this)->notifyPropertyChange("data", QVariant::fromValue(d->m_data));
         emit dataChanged(bytes);
     }
+}
+
+/*!
+ * \Update the data.
+ */
+void QBuffer::updateData(int offset, const QByteArray &bytes)
+{
+    Q_D(QBuffer);
+    Q_ASSERT(offset >= 0 && (offset + bytes.size()) <= d->m_data.size());
+
+    // Update data
+    d->m_data.replace(offset, bytes.size(), bytes);
+    const bool blocked = blockNotifications(true);
+    emit dataChanged(d->m_data);
+    blockNotifications(blocked);
+
+    QBufferUpdate updateData;
+    updateData.offset = offset;
+    updateData.data = bytes;
+
+    auto e = QPropertyUpdatedChangePtr::create(id());
+    e->setPropertyName("updateData");
+    e->setValue(QVariant::fromValue(updateData));
+    notifyObservers(e);
 }
 
 /*!
