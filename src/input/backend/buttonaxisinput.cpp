@@ -63,7 +63,7 @@ QVector<int> listToIntArray(const QVariantList &l)
 } // anonymous
 
 ButtonAxisInput::ButtonAxisInput()
-    : AxisInput()
+    : AbstractAxisInput()
     , m_scale(0.0f)
 {
 }
@@ -73,7 +73,7 @@ void ButtonAxisInput::updateFromPeer(Qt3DCore::QNode *peer)
     QButtonAxisInput *input = static_cast<QButtonAxisInput *>(peer);
     m_scale = input->scale();
     m_buttons = listToIntArray(input->buttons());
-    AxisInput::updateFromPeer(peer);
+    AbstractAxisInput::updateFromPeer(peer);
 }
 
 void ButtonAxisInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -82,14 +82,14 @@ void ButtonAxisInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBaseP
     const auto &data = typedChange->data;
     m_buttons = listToIntArray(data.buttons);
     m_scale = data.scale;
-    AxisInput::initializeFromPeer(change);
+    AbstractAxisInput::initializeFromPeer(change);
 }
 
 void ButtonAxisInput::cleanup()
 {
     m_scale = 0.0f;
     m_buttons.clear();
-    AxisInput::cleanup();
+    AbstractAxisInput::cleanup();
 }
 
 void ButtonAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -102,7 +102,7 @@ void ButtonAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_buttons = listToIntArray(propertyChange->value().toList());
         }
     }
-    AxisInput::sceneChangeEvent(e);
+    AbstractAxisInput::sceneChangeEvent(e);
 }
 
 } // Input

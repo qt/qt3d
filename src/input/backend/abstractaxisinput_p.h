@@ -60,10 +60,9 @@ namespace Qt3DInput {
 
 namespace Input {
 
-class Q_AUTOTEST_EXPORT AxisInput : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT AbstractAxisInput : public Qt3DCore::QBackendNode
 {
 public:
-    AxisInput();
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     virtual void cleanup();
 
@@ -71,6 +70,7 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 protected:
+    AbstractAxisInput();
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
 
     Qt3DCore::QNodeId m_sourceDevice;

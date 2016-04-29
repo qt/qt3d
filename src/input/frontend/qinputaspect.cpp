@@ -72,7 +72,6 @@
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/private/axis_p.h>
 #include <Qt3DInput/private/action_p.h>
-#include <Qt3DInput/private/axisinput_p.h>
 #include <Qt3DInput/private/axissetting_p.h>
 #include <Qt3DInput/private/actioninput_p.h>
 #include <Qt3DInput/private/inputchord_p.h>
@@ -118,7 +117,6 @@ QInputAspect::QInputAspect(QObject *parent)
     registerBackendType<QMouseDevice>(QBackendNodeMapperPtr(new Input::MouseDeviceFunctor(this, d_func()->m_inputHandler.data())));
     registerBackendType<QMouseHandler>(QBackendNodeMapperPtr(new Input::MouseHandlerFunctor(d_func()->m_inputHandler.data())));
     registerBackendType<QAxis>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::Axis, Input::AxisManager>(d_func()->m_inputHandler->axisManager())));
-    registerBackendType<QAxisInput>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::AxisInput, Input::AxisInputManager>(d_func()->m_inputHandler->axisInputManager())));
     registerBackendType<QAnalogAxisInput>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::AnalogAxisInput, Input::AnalogAxisInputManager>(d_func()->m_inputHandler->analogAxisInputManager())));
     registerBackendType<QButtonAxisInput>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::ButtonAxisInput, Input::ButtonAxisInputManager>(d_func()->m_inputHandler->buttonAxisInputManager())));
     registerBackendType<QAxisSetting>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::AxisSetting, Input::AxisSettingManager>(d_func()->m_inputHandler->axisSettingManager())));

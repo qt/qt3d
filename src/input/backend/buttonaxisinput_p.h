@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DInput/private/axisinput_p.h>
+#include <Qt3DInput/private/abstractaxisinput_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,7 +59,7 @@ namespace Qt3DInput {
 
 namespace Input {
 
-class Q_AUTOTEST_EXPORT ButtonAxisInput : public AxisInput
+class Q_AUTOTEST_EXPORT ButtonAxisInput : public AbstractAxisInput
 {
 public:
     ButtonAxisInput();

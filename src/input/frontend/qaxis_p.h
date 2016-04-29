@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAxisInput;
+class QAbstractAxisInput;
 
 class QAxisPrivate : public Qt3DCore::QNodePrivate
 {
@@ -69,7 +69,7 @@ public:
 
     Q_DECLARE_PUBLIC(QAxis)
 
-    QVector<QAxisInput *> m_inputs;
+    QVector<QAbstractAxisInput *> m_inputs;
     float m_value;
 
     void setValue(float value)

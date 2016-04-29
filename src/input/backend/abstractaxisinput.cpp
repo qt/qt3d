@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,46 +37,56 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QAXISINPUT_H
-#define QT3DINPUT_QAXISINPUT_H
-
-#include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/qnode.h>
-#include <QVector3D>
+#include "abstractaxisinput_p.h"
+#include <Qt3DInput/qabstractaxisinput.h>
+#include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DInput/private/qabstractaxisinput_p.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAbstractPhysicalDevice;
-class QAxisInputPrivate;
+namespace Input {
 
-class QT3DINPUTSHARED_EXPORT QAxisInput : public Qt3DCore::QNode
+AbstractAxisInput::AbstractAxisInput()
+    : Qt3DCore::QBackendNode()
 {
-    Q_OBJECT
-    Q_PROPERTY(Qt3DInput::QAbstractPhysicalDevice *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
+}
 
-public:
-    explicit QAxisInput(Qt3DCore::QNode *parent = nullptr);
+void AbstractAxisInput::updateFromPeer(Qt3DCore::QNode *peer)
+{
+    QAbstractAxisInput *input = static_cast<QAbstractAxisInput *>(peer);
+    if (input->sourceDevice())
+        m_sourceDevice = input->sourceDevice()->id();
+}
 
-    QAbstractPhysicalDevice *sourceDevice() const;
+void AbstractAxisInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAbstractAxisInputData>>(change);
+    const auto &data = typedChange->data;
+    m_sourceDevice = data.sourceDeviceId;
+}
 
-public Q_SLOTS:
-    void setSourceDevice(QAbstractPhysicalDevice *sourceDevice);
+void AbstractAxisInput::cleanup()
+{
+    QBackendNode::setEnabled(false);
+    m_sourceDevice = Qt3DCore::QNodeId();
+}
 
-Q_SIGNALS:
-    void sourceDeviceChanged(QAbstractPhysicalDevice *sourceDevice);
+void AbstractAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+{
+    if (e->type() == Qt3DCore::NodeUpdated) {
+        Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
+        if (propertyChange->propertyName() == QByteArrayLiteral("sourceDevice")) {
+            m_sourceDevice = propertyChange->value().value<Qt3DCore::QNodeId>();
+        }
+    }
+    QBackendNode::sceneChangeEvent(e);
+}
 
-protected:
-    QAxisInput(QAxisInputPrivate &dd, QNode *parent = nullptr);
-
-private:
-    Q_DECLARE_PRIVATE(QAxisInput)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
-};
+} // Input
 
 } // Qt3DInput
 
 QT_END_NAMESPACE
-
-#endif // QQT3DINPUT_AXISINPUT_H

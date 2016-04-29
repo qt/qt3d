@@ -31,63 +31,38 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
-#include <Qt3DInput/QAxisInput>
+#include <Qt3DInput/QAbstractAxisInput>
 #include <Qt3DInput/QAbstractPhysicalDevice>
-#include <Qt3DInput/private/qaxisinput_p.h>
+#include <Qt3DInput/private/qabstractaxisinput_p.h>
 
 #include "testpostmanarbiter.h"
 #include "testdevice.h"
 
-class tst_QAxisInput: public QObject
+class DummyAxisInput : public Qt3DInput::QAbstractAxisInput
 {
     Q_OBJECT
 public:
-    tst_QAxisInput()
+    explicit DummyAxisInput(QNode *parent = nullptr)
+        : Qt3DInput::QAbstractAxisInput(*new Qt3DInput::QAbstractAxisInputPrivate, parent)
+    {
+    }
+};
+
+class tst_QAbstractAxisInput: public QObject
+{
+    Q_OBJECT
+public:
+    tst_QAbstractAxisInput()
     {
         qRegisterMetaType<Qt3DInput::QAbstractPhysicalDevice*>("Qt3DInput::QAbstractPhysicalDevice*");
+        qRegisterMetaType<Qt3DCore::QNode*>("Qt3DCore::QNode*");
     }
 
 private Q_SLOTS:
-    void checkCloning_data()
-    {
-        QTest::addColumn<Qt3DInput::QAxisInput *>("axisInput");
-
-        Qt3DInput::QAxisInput *defaultConstructed = new Qt3DInput::QAxisInput();
-        QTest::newRow("defaultConstructed") << defaultConstructed;
-
-        Qt3DInput::QAxisInput *axisInputWithSourceDevice = new Qt3DInput::QAxisInput();
-        TestDevice *device = new TestDevice();
-        axisInputWithSourceDevice->setSourceDevice(device);
-        QTest::newRow("axisInputWithSourceDevice") << axisInputWithSourceDevice;
-    }
-
-    void checkCloning()
-    {
-        // GIVEN
-        QFETCH(Qt3DInput::QAxisInput *, axisInput);
-
-        // WHEN
-        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(axisInput);
-        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
-
-        // THEN
-        QCOMPARE(creationChanges.size(), 1 + (axisInput->sourceDevice() ? 1 : 0));
-
-        const Qt3DCore::QNodeCreatedChangePtr<Qt3DInput::QAxisInputData> creationChangeData =
-                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QAxisInputData>>(creationChanges.first());
-        const Qt3DInput::QAxisInputData &cloneData = creationChangeData->data;
-
-        // THEN
-        QCOMPARE(axisInput->id(), creationChangeData->subjectId());
-        QCOMPARE(axisInput->isEnabled(), creationChangeData->isNodeEnabled());
-        QCOMPARE(axisInput->metaObject(), creationChangeData->metaObject());
-        QCOMPARE(axisInput->sourceDevice() ? axisInput->sourceDevice()->id() : Qt3DCore::QNodeId(), cloneData.sourceDeviceId);
-    }
-
     void checkPropertyUpdates()
     {
         // GIVEN
-        QScopedPointer<Qt3DInput::QAxisInput> axisInput(new Qt3DInput::QAxisInput());
+        QScopedPointer<Qt3DInput::QAbstractAxisInput> axisInput(new DummyAxisInput());
         TestArbiter arbiter(axisInput.data());
 
         // WHEN
@@ -109,6 +84,6 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(tst_QAxisInput)
+QTEST_MAIN(tst_QAbstractAxisInput)
 
-#include "tst_qaxisinput.moc"
+#include "tst_qabstractaxisinput.moc"

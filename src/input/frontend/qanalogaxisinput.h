@@ -41,7 +41,7 @@
 #define QT3DINPUT_QANALOGAXISINPUT_H
 
 #include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DInput/QAxisInput>
+#include <Qt3DInput/QAbstractAxisInput>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,7 +49,7 @@ namespace Qt3DInput {
 
 class QAnalogAxisInputPrivate;
 
-class QT3DINPUTSHARED_EXPORT QAnalogAxisInput : public QAxisInput
+class QT3DINPUTSHARED_EXPORT QAnalogAxisInput : public QAbstractAxisInput
 {
     Q_OBJECT
     Q_PROPERTY(int axis READ axis WRITE setAxis NOTIFY axisChanged)

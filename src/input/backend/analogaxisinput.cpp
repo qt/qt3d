@@ -50,7 +50,7 @@ namespace Qt3DInput {
 namespace Input {
 
 AnalogAxisInput::AnalogAxisInput()
-    : AxisInput()
+    : AbstractAxisInput()
     , m_axis(0)
 {
 }
@@ -59,7 +59,7 @@ void AnalogAxisInput::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QAnalogAxisInput *input = static_cast<QAnalogAxisInput *>(peer);
     m_axis = input->axis();
-    AxisInput::updateFromPeer(peer);
+    AbstractAxisInput::updateFromPeer(peer);
 }
 
 void AnalogAxisInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -67,13 +67,13 @@ void AnalogAxisInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBaseP
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAnalogAxisInputData>>(change);
     const auto &data = typedChange->data;
     m_axis = data.axis;
-    AxisInput::initializeFromPeer(change);
+    AbstractAxisInput::initializeFromPeer(change);
 }
 
 void AnalogAxisInput::cleanup()
 {
     m_axis = 0;
-    AxisInput::cleanup();
+    AbstractAxisInput::cleanup();
 }
 
 void AnalogAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -84,7 +84,7 @@ void AnalogAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_axis = propertyChange->value().toInt();
         }
     }
-    AxisInput::sceneChangeEvent(e);
+    AbstractAxisInput::sceneChangeEvent(e);
 }
 
 } // Input

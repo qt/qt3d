@@ -11,7 +11,7 @@ HEADERS += \
     $$PWD/mousedevice_p.h \
     $$PWD/mouseeventdispatcherjob_p.h \
     $$PWD/mouseeventfilter_p.h \
-    $$PWD/axisinput_p.h \
+    $$PWD/abstractaxisinput_p.h \
     $$PWD/actioninput_p.h \
     $$PWD/axis_p.h \
     $$PWD/action_p.h \
@@ -42,7 +42,7 @@ SOURCES += \
     $$PWD/mousedevice.cpp \
     $$PWD/mouseeventfilter.cpp \
     $$PWD/mouseeventdispatcherjob.cpp \
-    $$PWD/axisinput.cpp \
+    $$PWD/abstractaxisinput.cpp \
     $$PWD/actioninput.cpp \
     $$PWD/axis.cpp \
     $$PWD/action.cpp \

@@ -14,7 +14,7 @@ HEADERS += \
     $$PWD/qinputdeviceplugin.h \
     $$PWD/qactioninput.h \
     $$PWD/qaction.h \
-    $$PWD/qaxisinput.h \
+    $$PWD/qabstractaxisinput.h \
     $$PWD/qaxis.h \
     $$PWD/qanalogaxisinput.h \
     $$PWD/qbuttonaxisinput.h \
@@ -34,7 +34,7 @@ HEADERS += \
     $$PWD/qaction_p.h \
     $$PWD/qactioninput_p.h \
     $$PWD/qaxis_p.h \
-    $$PWD/qaxisinput_p.h \
+    $$PWD/qabstractaxisinput_p.h \
     $$PWD/qanalogaxisinput_p.h \
     $$PWD/qbuttonaxisinput_p.h \
     $$PWD/qlogicaldevice_p.h \
@@ -56,7 +56,7 @@ SOURCES += \
     $$PWD/qinputdeviceplugin.cpp \
     $$PWD/qactioninput.cpp \
     $$PWD/qaction.cpp \
-    $$PWD/qaxisinput.cpp \
+    $$PWD/qabstractaxisinput.cpp \
     $$PWD/qaxis.cpp \
     $$PWD/qanalogaxisinput.cpp \
     $$PWD/qbuttonaxisinput.cpp \

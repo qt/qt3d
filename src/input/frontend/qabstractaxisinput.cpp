@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,49 +37,60 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QAXISINPUT_P_H
-#define QT3DINPUT_QAXISINPUT_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DCore/qnodeid.h>
-#include <QtCore/qvariant.h>
+#include "qabstractaxisinput.h"
+#include "qabstractaxisinput_p.h"
+#include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAbstractPhysicalDevice;
+/*!
+ * \qmltype AxisInput
+ * \instantiates Qt3DInput::QAxisInput
+ * \inqmlmodule Qt3D.Input
+ * \since 5.5
+ * \TODO
+ *
+ */
 
-class QAxisInputPrivate : public Qt3DCore::QNodePrivate
+/*!
+ * \class Qt3DInput::QAxisInput
+ * \inmodule Qt3DInput
+ * \since 5.5
+ * \TODO
+ *
+ */
+
+QAbstractAxisInput::QAbstractAxisInput(QAbstractAxisInputPrivate &dd, Qt3DCore::QNode *parent)
+    : QNode(dd, parent)
 {
-public:
-    QAxisInputPrivate()
-        : Qt3DCore::QNodePrivate()
-        , m_sourceDevice(nullptr)
-    {}
+}
 
-    QAbstractPhysicalDevice *m_sourceDevice;
-};
-
-struct QAxisInputData
+void QAbstractAxisInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
 {
-    Qt3DCore::QNodeId sourceDeviceId;
-};
+    Q_D(QAbstractAxisInput);
+    if (d->m_sourceDevice != sourceDevice) {
+
+        if (sourceDevice && !sourceDevice->parent())
+            sourceDevice->setParent(this);
+
+        d->m_sourceDevice = sourceDevice;
+        emit sourceDeviceChanged(sourceDevice);
+    }
+}
+
+QAbstractAxisInput::~QAbstractAxisInput()
+{
+}
+
+QAbstractPhysicalDevice *QAbstractAxisInput::sourceDevice() const
+{
+    Q_D(const QAbstractAxisInput);
+    return d->m_sourceDevice;
+}
 
 } // Qt3DInput
 
 QT_END_NAMESPACE
-
-#endif // QT3DINPUT_QAXISINPUT_P_H
-

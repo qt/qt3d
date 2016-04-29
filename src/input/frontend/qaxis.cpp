@@ -38,7 +38,7 @@
 
 #include "qaxis.h"
 #include "qaxis_p.h"
-#include <Qt3DInput/qaxisinput.h>
+#include <Qt3DInput/qabstractaxisinput.h>
 #include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
@@ -69,7 +69,7 @@ QAxis::QAxis(Qt3DCore::QNode *parent)
 {
 }
 
-void QAxis::addInput(QAxisInput *input)
+void QAxis::addInput(QAbstractAxisInput *input)
 {
     Q_D(QAxis);
     if (!d->m_inputs.contains(input)) {
@@ -86,7 +86,7 @@ void QAxis::addInput(QAxisInput *input)
     }
 }
 
-void QAxis::removeInput(QAxisInput *input)
+void QAxis::removeInput(QAbstractAxisInput *input)
 {
     Q_D(QAxis);
     if (d->m_inputs.contains(input)) {
@@ -101,7 +101,7 @@ void QAxis::removeInput(QAxisInput *input)
     }
 }
 
-QVector<QAxisInput *> QAxis::inputs() const
+QVector<QAbstractAxisInput *> QAxis::inputs() const
 {
     Q_D(const QAxis);
     return d->m_inputs;

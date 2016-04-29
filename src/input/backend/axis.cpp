@@ -39,7 +39,7 @@
 
 #include "axis_p.h"
 #include <Qt3DInput/qaxis.h>
-#include <Qt3DInput/qaxisinput.h>
+#include <Qt3DInput/qabstractaxisinput.h>
 #include <Qt3DInput/private/qaxis_p.h>
 #include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
@@ -62,7 +62,7 @@ void Axis::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QAxis *axis = static_cast<QAxis *>(peer);
     const auto inputs = axis->inputs();
-    for (QAxisInput *input : inputs)
+    for (QAbstractAxisInput *input : inputs)
         m_inputs.push_back(input->id());
 }
 

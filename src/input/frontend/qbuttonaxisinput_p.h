@@ -51,17 +51,17 @@
 // We mean it.
 //
 
-#include <Qt3DInput/private/qaxisinput_p.h>
+#include <Qt3DInput/private/qabstractaxisinput_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QButtonAxisInputPrivate : public QAxisInputPrivate
+class QButtonAxisInputPrivate : public QAbstractAxisInputPrivate
 {
 public:
     QButtonAxisInputPrivate()
-        : QAxisInputPrivate()
+        : QAbstractAxisInputPrivate()
         , m_scale(0.0f)
     {}
 
@@ -69,7 +69,7 @@ public:
     float m_scale;
 };
 
-struct QButtonAxisInputData : public QAxisInputData
+struct QButtonAxisInputData : public QAbstractAxisInputData
 {
     QVariantList buttons; // TODO: Replace with QVector<int>
     float scale;

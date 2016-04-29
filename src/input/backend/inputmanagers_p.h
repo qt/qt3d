@@ -61,7 +61,6 @@
 #include <Qt3DInput/private/actioninput_p.h>
 #include <Qt3DInput/private/inputsequence_p.h>
 #include <Qt3DInput/private/inputchord_p.h>
-#include <Qt3DInput/private/axisinput_p.h>
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/private/axis_p.h>
 #include <Qt3DInput/private/axissetting_p.h>
@@ -133,16 +132,6 @@ class AxisSettingManager : public Qt3DCore::QResourceManager<
 {
 public:
     AxisSettingManager() {}
-};
-
-class AxisInputManager : public Qt3DCore::QResourceManager<
-        AxisInput,
-        Qt3DCore::QNodeId,
-        16,
-        Qt3DCore::ArrayAllocatingPolicy>
-{
-public:
-    AxisInputManager() {}
 };
 
 class ActionManager : public Qt3DCore::QResourceManager<

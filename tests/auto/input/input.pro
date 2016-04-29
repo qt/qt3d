@@ -5,13 +5,13 @@ contains(QT_CONFIG, private_tests) {
         qaxis \
         qaction \
         qactioninput \
-        qaxisinput \
+        qabstractaxisinput \
         qanalogaxisinput \
         qbuttonaxisinput \
         qlogicaldevice \
         axis \
         action \
-        axisinput \
+        abstractaxisinput \
         analogaxisinput \
         buttonaxisinput
 }

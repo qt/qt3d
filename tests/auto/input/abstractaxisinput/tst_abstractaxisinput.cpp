@@ -31,12 +31,42 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qnodepropertychange.h>
-#include <Qt3DInput/private/axisinput_p.h>
-#include <Qt3DInput/QAxisInput>
+#include <Qt3DInput/private/abstractaxisinput_p.h>
+#include <Qt3DInput/QAbstractAxisInput>
+#include <Qt3DInput/private/qabstractaxisinput_p.h>
 #include <Qt3DCore/qnodepropertychange.h>
 #include "testdevice.h"
 
-class tst_AxisInput : public Qt3DCore::QBackendNodeTester
+class DummyAxisInput : public Qt3DInput::QAbstractAxisInput
+{
+    Q_OBJECT
+public:
+    explicit DummyAxisInput(QNode *parent = nullptr)
+        : Qt3DInput::QAbstractAxisInput(*new Qt3DInput::QAbstractAxisInputPrivate, parent)
+    {
+    }
+
+private:
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE
+    {
+        auto creationChange = Qt3DCore::QNodeCreatedChangePtr<Qt3DInput::QAbstractAxisInputData>::create(this);
+        auto &data = creationChange->data;
+        data.sourceDeviceId = qIdForNode(sourceDevice());
+        return creationChange;
+    }
+};
+
+class DummyAxisInputBackend : public Qt3DInput::Input::AbstractAxisInput
+{
+public:
+    explicit DummyAxisInputBackend()
+        : AbstractAxisInput()
+    {
+    }
+};
+
+
+class tst_AbstractAxisInput : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 
@@ -45,8 +75,8 @@ private Q_SLOTS:
     void checkPeerPropertyMirroring()
     {
         // GIVEN
-        Qt3DInput::Input::AxisInput backendAxisInput;
-        Qt3DInput::QAxisInput axisInput;
+        DummyAxisInputBackend backendAxisInput;
+        DummyAxisInput axisInput;
         TestDevice sourceDevice;
 
         axisInput.setSourceDevice(&sourceDevice);
@@ -63,7 +93,7 @@ private Q_SLOTS:
     void checkInitialAndCleanedUpState()
     {
         // GIVEN
-        Qt3DInput::Input::AxisInput backendAxisInput;
+        DummyAxisInputBackend backendAxisInput;
 
         // THEN
         QVERIFY(backendAxisInput.peerId().isNull());
@@ -71,7 +101,7 @@ private Q_SLOTS:
         QCOMPARE(backendAxisInput.sourceDevice(), Qt3DCore::QNodeId());
 
         // GIVEN
-        Qt3DInput::QAxisInput axisInput;
+        DummyAxisInput axisInput;
         TestDevice sourceDevice;
 
         axisInput.setSourceDevice(&sourceDevice);
@@ -89,7 +119,7 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
-        Qt3DInput::Input::AxisInput backendAxisInput;
+        DummyAxisInputBackend backendAxisInput;
 
         // WHEN
         Qt3DCore::QNodePropertyChangePtr updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
@@ -112,6 +142,6 @@ private Q_SLOTS:
     }
 };
 
-QTEST_APPLESS_MAIN(tst_AxisInput)
+QTEST_APPLESS_MAIN(tst_AbstractAxisInput)
 
-#include "tst_axisinput.moc"
+#include "tst_abstractaxisinput.moc"

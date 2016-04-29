@@ -204,7 +204,7 @@ void UpdateAxisActionJob::updateAxis(LogicalDevice *device)
     }
 }
 
-QAbstractPhysicalDeviceBackendNode *UpdateAxisActionJob::findAxisInputPhysicalDevice(AxisInput *axisInput)
+QAbstractPhysicalDeviceBackendNode *UpdateAxisActionJob::findAxisInputPhysicalDevice(AbstractAxisInput *axisInput)
 {
     const auto integrations = m_handler->inputDeviceIntegrations();
     for (QInputDeviceIntegration *integration : integrations) {

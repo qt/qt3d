@@ -62,7 +62,7 @@ namespace Qt3DInput {
  *
  */
 QAnalogAxisInput::QAnalogAxisInput(Qt3DCore::QNode *parent)
-    : QAxisInput(*new QAnalogAxisInputPrivate, parent)
+    : QAbstractAxisInput(*new QAnalogAxisInputPrivate, parent)
 {
 }
 

@@ -32,7 +32,7 @@
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DInput/QAxis>
-#include <Qt3DInput/QAxisInput>
+#include <Qt3DInput/QAnalogAxisInput>
 #include <Qt3DInput/private/qaxis_p.h>
 
 #include <Qt3DCore/QNodePropertyChange>
@@ -65,9 +65,9 @@ private Q_SLOTS:
         QTest::newRow("namedAxis") << namedAxis;
 
         Qt3DInput::QAxis *namedAxisWithInputs = new Qt3DInput::QAxis();
-        Qt3DInput::QAxisInput *axisInput1 = new Qt3DInput::QAxisInput();
-        Qt3DInput::QAxisInput *axisInput2 = new Qt3DInput::QAxisInput();
-        Qt3DInput::QAxisInput *axisInput3 = new Qt3DInput::QAxisInput();
+        Qt3DInput::QAbstractAxisInput *axisInput1 = new Qt3DInput::QAnalogAxisInput();
+        Qt3DInput::QAbstractAxisInput *axisInput2 = new Qt3DInput::QAnalogAxisInput();
+        Qt3DInput::QAbstractAxisInput *axisInput3 = new Qt3DInput::QAnalogAxisInput();
         namedAxisWithInputs->addInput(axisInput1);
         namedAxisWithInputs->addInput(axisInput2);
         namedAxisWithInputs->addInput(axisInput3);
@@ -107,7 +107,7 @@ private Q_SLOTS:
         TestArbiter arbiter(axis.data());
 
         // WHEN
-        Qt3DInput::QAxisInput *input = new Qt3DInput::QAxisInput();
+        Qt3DInput::QAbstractAxisInput *input = new Qt3DInput::QAnalogAxisInput();
         axis->addInput(input);
         QCoreApplication::processEvents();
 

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,59 +37,49 @@
 **
 ****************************************************************************/
 
-#include "axisinput_p.h"
-#include <Qt3DInput/qaxisinput.h>
-#include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DInput/private/qaxisinput_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#ifndef QT3DINPUT_QABSTRACTAXISINPUT_P_H
+#define QT3DINPUT_QABSTRACTAXISINPUT_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/qnodeid.h>
+#include <QtCore/qvariant.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-namespace Input {
+class QAbstractPhysicalDevice;
 
-AxisInput::AxisInput()
-    : Qt3DCore::QBackendNode()
+class QAbstractAxisInputPrivate : public Qt3DCore::QNodePrivate
 {
-}
+public:
+    QAbstractAxisInputPrivate()
+        : Qt3DCore::QNodePrivate()
+        , m_sourceDevice(nullptr)
+    {}
 
-// AxisInput can have two types of behavior
-// Axis input with source device and axis -> will retrieve the axis value from the source device
-// Axis input with source device and scale + buttons -> will be used as a multiplication factor with other AxisInput
-void AxisInput::updateFromPeer(Qt3DCore::QNode *peer)
+    QAbstractPhysicalDevice *m_sourceDevice;
+};
+
+struct QAbstractAxisInputData
 {
-    QAxisInput *input = static_cast<QAxisInput *>(peer);
-    if (input->sourceDevice())
-        m_sourceDevice = input->sourceDevice()->id();
-}
-
-void AxisInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAxisInputData>>(change);
-    const auto &data = typedChange->data;
-    m_sourceDevice = data.sourceDeviceId;
-}
-
-void AxisInput::cleanup()
-{
-    QBackendNode::setEnabled(false);
-    m_sourceDevice = Qt3DCore::QNodeId();
-}
-
-void AxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    if (e->type() == Qt3DCore::NodeUpdated) {
-        Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("sourceDevice")) {
-            m_sourceDevice = propertyChange->value().value<Qt3DCore::QNodeId>();
-        }
-    }
-    QBackendNode::sceneChangeEvent(e);
-}
-
-} // Input
+    Qt3DCore::QNodeId sourceDeviceId;
+};
 
 } // Qt3DInput
 
 QT_END_NAMESPACE
+
+#endif // QT3DINPUT_QABSTRACTAXISINPUT_P_H
+

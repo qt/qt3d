@@ -51,24 +51,24 @@
 // We mean it.
 //
 
-#include <Qt3DInput/private/qaxisinput_p.h>
+#include <Qt3DInput/private/qabstractaxisinput_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAnalogAxisInputPrivate : public QAxisInputPrivate
+class QAnalogAxisInputPrivate : public QAbstractAxisInputPrivate
 {
 public:
     QAnalogAxisInputPrivate()
-        : QAxisInputPrivate()
+        : QAbstractAxisInputPrivate()
         , m_axis(-1)
     {}
 
     int m_axis;
 };
 
-struct QAnalogAxisInputData : public QAxisInputData
+struct QAnalogAxisInputData : public QAbstractAxisInputData
 {
     int axis;
 };

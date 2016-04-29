@@ -1,12 +1,12 @@
 TEMPLATE = app
 
-TARGET = tst_qaxisinput
+TARGET = tst_abstractaxisinput
 
 QT += core-private 3dcore 3dcore-private 3dinput 3dinput-private testlib
 
 CONFIG += testcase
 
-SOURCES += tst_qaxisinput.cpp
+SOURCES += tst_abstractaxisinput.cpp
 
-include(../../render/commons/commons.pri)
+include(../../core/common/common.pri)
 include(../commons/commons.pri)

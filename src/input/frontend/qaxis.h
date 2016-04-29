@@ -47,7 +47,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 class QAxisPrivate;
-class QAxisInput;
+class QAbstractAxisInput;
 
 class QT3DINPUTSHARED_EXPORT QAxis : public Qt3DCore::QNode
 {
@@ -56,9 +56,9 @@ class QT3DINPUTSHARED_EXPORT QAxis : public Qt3DCore::QNode
 public:
     explicit QAxis(Qt3DCore::QNode *parent = nullptr);
 
-    void addInput(QAxisInput *input);
-    void removeInput(QAxisInput *input);
-    QVector<QAxisInput *> inputs() const;
+    void addInput(QAbstractAxisInput *input);
+    void removeInput(QAbstractAxisInput *input);
+    QVector<QAbstractAxisInput *> inputs() const;
 
     float value() const;
 

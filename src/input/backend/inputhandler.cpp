@@ -64,7 +64,6 @@ InputHandler::InputHandler()
     , m_mouseEventFilter(new MouseEventFilter())
     , m_axisManager(new AxisManager())
     , m_actionManager(new ActionManager())
-    , m_axisInputManager(new AxisInputManager())
     , m_axisSettingManager(new AxisSettingManager())
     , m_actionInputManager(new ActionInputManager())
     , m_analogAxisInputManager(new AnalogAxisInputManager())
@@ -94,7 +93,6 @@ InputHandler::~InputHandler()
     delete m_axisManager;
     delete m_actionManager;
     delete m_axisSettingManager;
-    delete m_axisInputManager;
     delete m_analogAxisInputManager;
     delete m_buttonAxisInputManager;
     delete m_actionInputManager;

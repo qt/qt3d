@@ -34,17 +34,18 @@
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DInput/private/axis_p.h>
-#include <Qt3DInput/QAxisInput>
+#include <Qt3DInput/private/qabstractaxisinput_p.h>
+#include <Qt3DInput/QAnalogAxisInput>
 #include <Qt3DInput/QAxis>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include "testpostmanarbiter.h"
 
-class DummyAxisInput : public Qt3DInput::QAxisInput
+class DummyAxisInput : public Qt3DInput::QAbstractAxisInput
 {
     Q_OBJECT
 public:
     DummyAxisInput(Qt3DCore::QNode *parent = nullptr)
-        : Qt3DInput::QAxisInput(parent)
+        : Qt3DInput::QAbstractAxisInput(*new Qt3DInput::QAbstractAxisInputPrivate, parent)
     {}
 };
 
@@ -59,7 +60,7 @@ private Q_SLOTS:
         // GIVEN
         Qt3DInput::Input::Axis backendAxis;
         Qt3DInput::QAxis axis;
-        Qt3DInput::QAxisInput axisInput;
+        Qt3DInput::QAnalogAxisInput axisInput;
 
         axis.addInput(&axisInput);
 
@@ -91,7 +92,7 @@ private Q_SLOTS:
 
         // GIVEN
         Qt3DInput::QAxis axis;
-        Qt3DInput::QAxisInput axisInput;
+        Qt3DInput::QAnalogAxisInput axisInput;
 
         axis.addInput(&axisInput);
 

@@ -41,7 +41,7 @@
 #define QT3DINPUT_QBUTTONAXISINPUT_H
 
 #include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DInput/QAxisInput>
+#include <Qt3DInput/QAbstractAxisInput>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,7 +49,7 @@ namespace Qt3DInput {
 
 class QButtonAxisInputPrivate;
 
-class QT3DINPUTSHARED_EXPORT QButtonAxisInput : public QAxisInput
+class QT3DINPUTSHARED_EXPORT QButtonAxisInput : public QAbstractAxisInput
 {
     Q_OBJECT
     Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scaleChanged)

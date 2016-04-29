@@ -62,7 +62,7 @@ namespace Qt3DInput {
  *
  */
 QButtonAxisInput::QButtonAxisInput(Qt3DCore::QNode *parent)
-    : QAxisInput(*new QButtonAxisInputPrivate, parent)
+    : QAbstractAxisInput(*new QButtonAxisInputPrivate, parent)
 {
 }
 

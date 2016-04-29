@@ -37,71 +37,44 @@
 **
 ****************************************************************************/
 
-#include "qaxisinput.h"
-#include "qaxisinput_p.h"
-#include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DCore/qnodecreatedchange.h>
+#ifndef QT3DINPUT_QABSTRACTAXISINPUT_H
+#define QT3DINPUT_QABSTRACTAXISINPUT_H
+
+#include <Qt3DInput/qt3dinput_global.h>
+#include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-/*!
- * \qmltype AxisInput
- * \instantiates Qt3DInput::QAxisInput
- * \inqmlmodule Qt3D.Input
- * \since 5.5
- * \TODO
- *
- */
+class QAbstractPhysicalDevice;
+class QAbstractAxisInputPrivate;
 
-/*!
- * \class Qt3DInput::QAxisInput
- * \inmodule Qt3DInput
- * \since 5.5
- * \TODO
- *
- */
-QAxisInput::QAxisInput(Qt3DCore::QNode *parent)
-    : QNode(*new QAxisInputPrivate(), parent)
+class QT3DINPUTSHARED_EXPORT QAbstractAxisInput : public Qt3DCore::QNode
 {
-}
+    Q_OBJECT
+    Q_PROPERTY(Qt3DInput::QAbstractPhysicalDevice *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
 
-QAxisInput::QAxisInput(QAxisInputPrivate &dd, Qt3DCore::QNode *parent)
-    : QNode(dd, parent)
-{
-}
+public:
+    ~QAbstractAxisInput();
 
-void QAxisInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
-{
-    Q_D(QAxisInput);
-    if (d->m_sourceDevice != sourceDevice) {
+    QAbstractPhysicalDevice *sourceDevice() const;
 
-        if (sourceDevice && !sourceDevice->parent())
-            sourceDevice->setParent(this);
+public Q_SLOTS:
+    void setSourceDevice(QAbstractPhysicalDevice *sourceDevice);
 
-        d->m_sourceDevice = sourceDevice;
-        emit sourceDeviceChanged(sourceDevice);
-    }
-}
+Q_SIGNALS:
+    void sourceDeviceChanged(QAbstractPhysicalDevice *sourceDevice);
 
-QAbstractPhysicalDevice *QAxisInput::sourceDevice() const
-{
-    Q_D(const QAxisInput);
-    return d->m_sourceDevice;
-}
+protected:
+    QAbstractAxisInput(QAbstractAxisInputPrivate &dd, QNode *parent = nullptr);
 
-Qt3DCore::QNodeCreatedChangeBasePtr QAxisInput::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAxisInputData>::create(this);
-    auto &data = creationChange->data;
-
-    Q_D(const QAxisInput);
-    data.sourceDeviceId = qIdForNode(d->m_sourceDevice);
-
-    return creationChange;
-}
+private:
+    Q_DECLARE_PRIVATE(QAbstractAxisInput)
+};
 
 } // Qt3DInput
 
 QT_END_NAMESPACE
+
+#endif // QQT3DINPUT_ABSTRACTAXISINPUT_H
