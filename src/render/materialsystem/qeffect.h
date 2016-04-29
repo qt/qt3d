@@ -55,7 +55,7 @@ class QT3DRENDERSHARED_EXPORT QEffect : public Qt3DCore::QNode
 {
     Q_OBJECT
 public:
-    explicit QEffect(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QEffect(Qt3DCore::QNode *parent = nullptr);
 
     void addParameter(QParameter *parameter);
     void removeParameter(QParameter *parameter);
@@ -66,7 +66,7 @@ public:
     QVector<QTechnique *> techniques() const;
 
 protected:
-    QEffect(QEffectPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
+    QEffect(QEffectPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QEffect)

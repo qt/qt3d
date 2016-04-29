@@ -51,7 +51,7 @@ namespace Qt3DInput {
 /*! \internal */
 QMouseHandlerPrivate::QMouseHandlerPrivate()
     : QComponentPrivate()
-    , m_mouseDevice(Q_NULLPTR)
+    , m_mouseDevice(nullptr)
     , m_containsMouse(false)
 {
     m_shareable = false;

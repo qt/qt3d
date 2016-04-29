@@ -55,7 +55,7 @@ class QT3DINPUTSHARED_EXPORT QLogicalDevice : public Qt3DCore::QComponent
 {
     Q_OBJECT
 public:
-    explicit QLogicalDevice(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QLogicalDevice(Qt3DCore::QNode *parent = nullptr);
 
     void addAction(QAction *action);
     void removeAction(QAction *action);

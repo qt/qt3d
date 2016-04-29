@@ -52,7 +52,7 @@ public:
     bool operator ==(const Qt3DRender::QBufferDataGenerator &other) const
     {
         const TestFunctor *otherFunctor = functor_cast<TestFunctor>(&other);
-        if (otherFunctor != Q_NULLPTR)
+        if (otherFunctor != nullptr)
             return otherFunctor->m_size == m_size;
         return false;
     }

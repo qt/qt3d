@@ -99,7 +99,7 @@ private:
     struct HandleEntry
     {
         HandleEntry()
-            : m_data(Q_NULLPTR)
+            : m_data(nullptr)
             , m_nextFreeIndex(0)
             , m_counter(0)
             , m_active(false)
@@ -107,7 +107,7 @@ private:
         {}
 
         explicit HandleEntry(quint32 nextFreeIndex)
-            : m_data(Q_NULLPTR)
+            : m_data(nullptr)
             , m_nextFreeIndex(nextFreeIndex)
             , m_counter(0)
             , m_active(false)
@@ -195,7 +195,7 @@ T *QHandleManager<T, INDEXBITS>::data(const QHandle<T, INDEXBITS> &handle, bool 
         m_entries[index].m_active == false) {
         if (ok)
             *ok = false;
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     T *d = m_entries[index].m_data;
@@ -212,7 +212,7 @@ const T *QHandleManager<T, INDEXBITS>::constData(const QHandle<T, INDEXBITS> &ha
         m_entries[index].m_active == false) {
         if (ok)
             *ok = false;
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     const T *d = m_entries[index].m_data;

@@ -147,7 +147,7 @@ private:
     {
         for (QObject *n : currentNode()->children()) {
             QNode *node = qobject_cast<QNode *>(n);
-            if (node != Q_NULLPTR)
+            if (node != nullptr)
                 outerVisitNode(node, fN, fE);
         } // of children iteration
     }
@@ -157,7 +157,7 @@ private:
     {
         for (QObject *n : currentNode()->children()) {
             QNode *node = qobject_cast<QNode *>(n);
-            if (node != Q_NULLPTR)
+            if (node != nullptr)
                 outerVisitNode(node, fN);
         } // of children iteration
     }

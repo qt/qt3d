@@ -196,7 +196,7 @@ void QInputSequence::addSequence(QAbstractActionInput *input)
         if (!input->parent())
             input->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             const auto change = Qt3DCore::QNodeAddedPropertyChangePtr::create(id(), input);
             change->setPropertyName("sequence");
             d->notifyObservers(change);
@@ -213,7 +213,7 @@ void QInputSequence::removeSequence(QAbstractActionInput *input)
 {
     Q_D(QInputSequence);
     if (d->m_sequences.contains(input)) {
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), input);
             change->setPropertyName("sequence");
             d->notifyObservers(change);

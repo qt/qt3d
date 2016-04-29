@@ -56,7 +56,7 @@ class QT3DRENDERSHARED_EXPORT QPointLight : public QAbstractLight
     Q_PROPERTY(float quadraticAttenuation READ quadraticAttenuation WRITE setQuadraticAttenuation NOTIFY quadraticAttenuationChanged)
 
 public:
-    explicit QPointLight(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QPointLight(Qt3DCore::QNode *parent = nullptr);
 
     float constantAttenuation() const;
     float linearAttenuation() const;

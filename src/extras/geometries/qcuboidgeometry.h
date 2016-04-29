@@ -72,7 +72,7 @@ class QT3DEXTRASSHARED_EXPORT QCuboidGeometry : public Qt3DRender::QGeometry
     Q_PROPERTY(Qt3DRender::QAttribute *indexAttribute READ indexAttribute CONSTANT)
 
 public:
-    explicit QCuboidGeometry(QNode *parent = Q_NULLPTR);
+    explicit QCuboidGeometry(QNode *parent = nullptr);
 
     void updateIndices();
     void updateVertices();
@@ -108,7 +108,7 @@ Q_SIGNALS:
     void xyMeshResolutionChanged(const QSize &xyMeshResolution);
 
 protected:
-    QCuboidGeometry(QCuboidGeometryPrivate &dd, QNode *parent = Q_NULLPTR);
+    QCuboidGeometry(QCuboidGeometryPrivate &dd, QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QCuboidGeometry)

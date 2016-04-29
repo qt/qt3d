@@ -74,7 +74,7 @@ class QT3DRENDERSHARED_EXPORT QAbstractTextureImage : public Qt3DCore::QNode
     Q_PROPERTY(int layer READ layer WRITE setLayer NOTIFY layerChanged)
     Q_PROPERTY(Qt3DRender::QAbstractTexture::CubeMapFace face READ face WRITE setFace NOTIFY faceChanged)
 public:
-    explicit QAbstractTextureImage(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QAbstractTextureImage(Qt3DCore::QNode *parent = nullptr);
     virtual ~QAbstractTextureImage();
 
     int mipLevel() const;

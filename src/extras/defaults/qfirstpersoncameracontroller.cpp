@@ -67,7 +67,7 @@ namespace Qt3DExtras {
 
 QFirstPersonCameraControllerPrivate::QFirstPersonCameraControllerPrivate()
     : Qt3DCore::QEntityPrivate()
-    , m_camera(Q_NULLPTR)
+    , m_camera(nullptr)
     , m_leftMouseButtonAction(new Qt3DInput::QAction())
     , m_fineMotionAction(new Qt3DInput::QAction())
     , m_rxAxis(new Qt3DInput::QAxis())
@@ -178,7 +178,7 @@ void QFirstPersonCameraControllerPrivate::init()
 
 void QFirstPersonCameraControllerPrivate::_q_onTriggered(float dt)
 {
-    if (m_camera != Q_NULLPTR) {
+    if (m_camera != nullptr) {
         m_camera->translate(QVector3D(m_txAxis->value() * m_linearSpeed,
                                       m_tyAxis->value() * m_linearSpeed,
                                       m_tzAxis->value() * m_linearSpeed) * dt);

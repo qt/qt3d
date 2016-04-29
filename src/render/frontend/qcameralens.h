@@ -68,7 +68,7 @@ class QT3DRENDERSHARED_EXPORT QCameraLens : public Qt3DCore::QComponent
     Q_PROPERTY(QMatrix4x4 projectionMatrix READ projectionMatrix WRITE setProjectionMatrix NOTIFY projectionMatrixChanged)
 
 public:
-    explicit QCameraLens(QNode *parent = Q_NULLPTR);
+    explicit QCameraLens(QNode *parent = nullptr);
 
     enum ProjectionType {
         OrthographicProjection,
@@ -126,7 +126,7 @@ Q_SIGNALS:
     void projectionMatrixChanged(const QMatrix4x4 &projectionMatrix);
 
 protected:
-    QCameraLens(QCameraLensPrivate &dd, QNode *parent = Q_NULLPTR);
+    QCameraLens(QCameraLensPrivate &dd, QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QCameraLens)

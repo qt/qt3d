@@ -57,9 +57,9 @@ TextureImage::TextureImage()
     , m_mipLevel(0)
     , m_face(QAbstractTexture::CubeMapPositiveX)
     , m_dirty(true)
-    , m_textureManager(Q_NULLPTR)
-    , m_textureImageManager(Q_NULLPTR)
-    , m_textureDataManager(Q_NULLPTR)
+    , m_textureManager(nullptr)
+    , m_textureImageManager(nullptr)
+    , m_textureDataManager(nullptr)
     , m_dna(0)
 {
 }
@@ -72,9 +72,9 @@ void TextureImage::cleanup()
     m_dirty = true;
     m_face = QAbstractTexture::CubeMapPositiveX;
     m_generator.reset();
-    m_textureManager = Q_NULLPTR;
-    m_textureImageManager = Q_NULLPTR;
-    m_textureDataManager = Q_NULLPTR;
+    m_textureManager = nullptr;
+    m_textureImageManager = nullptr;
+    m_textureDataManager = nullptr;
     m_referencedTextures.clear();
     m_dna = 0;
 }
@@ -95,7 +95,7 @@ void TextureImage::updateFromPeer(Qt3DCore::QNode *peer)
         Texture *txt = m_textureManager->data(m_textureProvider);
         // Notify the Texture that it has a new TextureImage and needs an update
         txt->addTextureImageData(m_textureImageManager->lookupHandle(peerId()));
-        if (txt != Q_NULLPTR)
+        if (txt != nullptr)
             txt->addToPendingTextureJobs();
     }
 }
@@ -143,7 +143,7 @@ void TextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
     if (m_dirty) {// Notify the Texture that we were updated and request it to schedule an update job
         Texture *txt = m_textureManager->data(m_textureProvider);
-        if (txt != Q_NULLPTR)
+        if (txt != nullptr)
             txt->addToPendingTextureJobs();
     }
     markDirty(AbstractRenderer::AllDirty);

@@ -59,7 +59,7 @@ namespace Qt3DRender {
 namespace Render {
 
 FramePreparationJob::FramePreparationJob(NodeManagers *manager)
-    : m_root(Q_NULLPTR)
+    : m_root(nullptr)
     , m_manager(manager)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::FramePreparation, 0);
@@ -90,20 +90,20 @@ void FramePreparationJob::parseNodeTree(Entity *node)
     // in which case we need to recompute the triangle list
     GeometryRenderer *geomRenderer = node->renderComponent<GeometryRenderer>();
     const Qt3DCore::QNodeId geomRendererId = node->componentUuid<GeometryRenderer>();
-    Geometry *geom = Q_NULLPTR;
+    Geometry *geom = nullptr;
     if (geomRenderer &&
-            (geom = m_manager->lookupResource<Geometry, GeometryManager>(geomRenderer->geometryId())) != Q_NULLPTR) {
+            (geom = m_manager->lookupResource<Geometry, GeometryManager>(geomRenderer->geometryId())) != nullptr) {
         if (!m_manager->geometryRendererManager()->isGeometryRendererScheduledForTriangleDataRefresh(geomRendererId)) {
             // Check if the attributes or buffers are dirty
             bool dirty = geomRenderer->isDirty();
-            Attribute *attr = Q_NULLPTR;
+            Attribute *attr = nullptr;
             const auto attrIds = geom->attributes();
             for (const Qt3DCore::QNodeId attrId : attrIds) {
-                if ((attr = m_manager->attributeManager()->lookupResource(attrId)) != Q_NULLPTR) {
+                if ((attr = m_manager->attributeManager()->lookupResource(attrId)) != nullptr) {
                     dirty |= attr->isDirty();
                     if (!dirty) {
-                        Buffer *buffer = Q_NULLPTR;
-                        if ((buffer = m_manager->bufferManager()->lookupResource(attr->bufferId())) != Q_NULLPTR)
+                        Buffer *buffer = nullptr;
+                        if ((buffer = m_manager->bufferManager()->lookupResource(attr->bufferId())) != nullptr)
                             dirty = buffer->isDirty();
                     }
                     if (dirty)

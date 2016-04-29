@@ -163,7 +163,7 @@ public:
     bool operator ==(const QBufferDataGenerator &other) const Q_DECL_FINAL
     {
         const PlaneVertexBufferFunctor *otherFunctor = functor_cast<PlaneVertexBufferFunctor>(&other);
-        if (otherFunctor != Q_NULLPTR)
+        if (otherFunctor != nullptr)
             return (otherFunctor->m_width == m_width &&
                     otherFunctor->m_height == m_height &&
                     otherFunctor->m_resolution == m_resolution);
@@ -195,7 +195,7 @@ public:
     bool operator ==(const QBufferDataGenerator &other) const Q_DECL_FINAL
     {
         const PlaneIndexBufferFunctor *otherFunctor = functor_cast<PlaneIndexBufferFunctor>(&other);
-        if (otherFunctor != Q_NULLPTR)
+        if (otherFunctor != nullptr)
             return (otherFunctor->m_resolution == m_resolution);
         return false;
     }
@@ -439,13 +439,13 @@ QPlaneGeometryPrivate::QPlaneGeometryPrivate()
     , m_width(1.0f)
     , m_height(1.0f)
     , m_meshResolution(QSize(2, 2))
-    , m_positionAttribute(Q_NULLPTR)
-    , m_normalAttribute(Q_NULLPTR)
-    , m_texCoordAttribute(Q_NULLPTR)
-    , m_tangentAttribute(Q_NULLPTR)
-    , m_indexAttribute(Q_NULLPTR)
-    , m_vertexBuffer(Q_NULLPTR)
-    , m_indexBuffer(Q_NULLPTR)
+    , m_positionAttribute(nullptr)
+    , m_normalAttribute(nullptr)
+    , m_texCoordAttribute(nullptr)
+    , m_tangentAttribute(nullptr)
+    , m_indexAttribute(nullptr)
+    , m_vertexBuffer(nullptr)
+    , m_indexBuffer(nullptr)
 {
 }
 

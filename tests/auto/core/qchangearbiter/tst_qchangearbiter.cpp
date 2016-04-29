@@ -235,7 +235,7 @@ class tst_PostManObserver : public Qt3DCore::QAbstractPostman
 {
 public:
 
-    tst_PostManObserver() : m_sceneInterface(Q_NULLPTR)
+    tst_PostManObserver() : m_sceneInterface(nullptr)
     {}
 
     void setScene(Qt3DCore::QScene *scene) Q_DECL_FINAL
@@ -250,7 +250,7 @@ public:
         Qt3DCore::QBackendNodePropertyChangePtr change = qSharedPointerDynamicCast<Qt3DCore::QBackendNodePropertyChange>(e);
         QVERIFY(!change.isNull());
         Qt3DCore::QNode *targetNode = m_sceneInterface->lookupNode(change->targetNode());
-        QVERIFY(targetNode != Q_NULLPTR);
+        QVERIFY(targetNode != nullptr);
         m_lastChanges << e;
     }
 

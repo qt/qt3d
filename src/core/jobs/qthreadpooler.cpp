@@ -57,7 +57,7 @@ QElapsedTimer QThreadPooler::m_jobsStatTimer;
 
 QThreadPooler::QThreadPooler(QObject *parent)
     : QObject(parent),
-      m_futureInterface(Q_NULLPTR),
+      m_futureInterface(nullptr),
       m_mutex(),
       m_taskCount(0)
 {
@@ -113,7 +113,7 @@ void QThreadPooler::taskFinished(RunnableInterface *task)
             m_futureInterface->reportFinished();
             delete m_futureInterface;
         }
-        m_futureInterface = Q_NULLPTR;
+        m_futureInterface = nullptr;
     }
 }
 

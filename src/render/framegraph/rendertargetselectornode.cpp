@@ -63,7 +63,7 @@ void RenderTargetSelector::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QRenderTargetSelector *selector = static_cast<QRenderTargetSelector *>(peer);
     m_renderTargetUuid = QNodeId();
-    if (selector->target() != Q_NULLPTR)
+    if (selector->target() != nullptr)
         m_renderTargetUuid = selector->target()->id();
     m_outputs = selector->outputs();
 }

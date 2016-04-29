@@ -143,7 +143,7 @@ void QInputAspectPrivate::loadInputDevicePlugins()
     QStringList keys = QInputDeviceIntegrationFactory::keys();
     Q_FOREACH (const QString &key, keys) {
         Qt3DInput::QInputDeviceIntegration *integration = QInputDeviceIntegrationFactory::create(key, QStringList());
-        if (integration != Q_NULLPTR) {
+        if (integration != nullptr) {
             m_inputHandler->addInputDeviceIntegration(integration);
             // Initialize will allow the InputDeviceIntegration to
             // register their frontend / backend types,
@@ -158,9 +158,9 @@ void QInputAspectPrivate::loadInputDevicePlugins()
 QAbstractPhysicalDevice *QInputAspect::createPhysicalDevice(const QString &name)
 {
     Q_D(QInputAspect);
-    QAbstractPhysicalDevice *device = Q_NULLPTR;
+    QAbstractPhysicalDevice *device = nullptr;
     Q_FOREACH (Qt3DInput::QInputDeviceIntegration *integration, d->m_inputHandler->inputDeviceIntegrations()) {
-        if ((device = integration->createPhysicalDevice(name)) != Q_NULLPTR)
+        if ((device = integration->createPhysicalDevice(name)) != nullptr)
             break;
     }
     return device;
@@ -220,7 +220,7 @@ void QInputAspect::onUnregistered()
     Q_D(QInputAspect);
     // At this point it is too late to call removeEventFilter as the eventSource (Window)
     // may already be destroyed
-    d->m_inputHandler.reset(Q_NULLPTR);
+    d->m_inputHandler.reset(nullptr);
 }
 
 } // namespace Qt3DInput

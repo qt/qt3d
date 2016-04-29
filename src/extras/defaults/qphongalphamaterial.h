@@ -60,7 +60,7 @@ class QT3DEXTRASSHARED_EXPORT QPhongAlphaMaterial : public Qt3DRender::QMaterial
     Q_PROPERTY(float alpha READ alpha WRITE setAlpha NOTIFY alphaChanged)
 
 public:
-    explicit QPhongAlphaMaterial(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QPhongAlphaMaterial(Qt3DCore::QNode *parent = nullptr);
     ~QPhongAlphaMaterial();
 
     QColor ambient() const;

@@ -54,7 +54,7 @@ namespace Render {
 
 FrameCleanupJob::FrameCleanupJob(NodeManagers *managers)
     : m_managers(managers)
-    , m_root(Q_NULLPTR)
+    , m_root(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::FrameCleanup, 0);
 }

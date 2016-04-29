@@ -253,10 +253,10 @@ public:
     // But that aren't used later by the Renderer
     struct InnerData {
         InnerData()
-            : m_renderCamera(Q_NULLPTR)
-            , m_techniqueFilter(Q_NULLPTR)
-            , m_passFilter(Q_NULLPTR)
-            , m_viewMatrix(Q_NULLPTR)
+            : m_renderCamera(nullptr)
+            , m_techniqueFilter(nullptr)
+            , m_passFilter(nullptr)
+            , m_viewMatrix(nullptr)
         {
         }
         CameraLens *m_renderCamera;
@@ -272,7 +272,7 @@ public:
     };
 
     struct LightSource {
-        LightSource() : entity(Q_NULLPTR) { }
+        LightSource() : entity(nullptr) { }
         LightSource(Entity *entity, const QList<Light *> &lights)
             : entity(entity), lights(lights) { }
         Entity *entity;

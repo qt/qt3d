@@ -57,10 +57,10 @@ RenderStateNode::~RenderStateNode()
 
 void RenderStateNode::cleanup()
 {
-    if (m_impl != Q_NULLPTR) {
+    if (m_impl != nullptr) {
         if (!m_impl->isPooledImpl())
             delete m_impl;
-        m_impl = Q_NULLPTR;
+        m_impl = nullptr;
     }
 }
 

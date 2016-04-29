@@ -59,7 +59,7 @@ QQmlAspectEnginePrivate::QQmlAspectEnginePrivate()
     : QObjectPrivate()
     , m_qmlEngine(new QQmlEngine())
     , m_aspectEngine(new QAspectEngine())
-    , m_component(Q_NULLPTR)
+    , m_component(nullptr)
 {
 }
 
@@ -127,7 +127,7 @@ void QQmlAspectEngine::setSource(const QUrl &source)
 
     if (d->m_component) {
         d->m_aspectEngine->setRootEntity(QEntityPtr());
-        d->m_component = Q_NULLPTR;
+        d->m_component = nullptr;
     }
 
     if (!source.isEmpty()) {

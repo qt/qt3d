@@ -47,7 +47,7 @@ class tst_FrameGraphNode : public QObject
 {
     Q_OBJECT
 public:
-    tst_FrameGraphNode(QObject *parent = Q_NULLPTR)
+    tst_FrameGraphNode(QObject *parent = nullptr)
         : QObject(parent)
     {}
 
@@ -70,7 +70,7 @@ private Q_SLOTS:
         QCOMPARE(n.nodeType(), Qt3DRender::Render::FrameGraphNode::InvalidNodeType);
         QVERIFY(!n.isEnabled());
         QVERIFY(n.peerId().isNull());
-        QVERIFY(n.manager() == Q_NULLPTR);
+        QVERIFY(n.manager() == nullptr);
         QVERIFY(n.parentId().isNull());
         QVERIFY(n.childrenIds().empty());
     }
@@ -162,7 +162,7 @@ private Q_SLOTS:
         parent1->removeChildId(childId);
         // THEN
         QVERIFY(child->parentId().isNull());
-        QVERIFY(child->parent() == Q_NULLPTR);
+        QVERIFY(child->parent() == nullptr);
         QCOMPARE(parent1->childrenIds().count(), 0);
         QCOMPARE(parent1->children().count(), parent1->childrenIds().count());
     }

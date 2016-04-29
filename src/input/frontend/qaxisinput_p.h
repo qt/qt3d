@@ -66,7 +66,7 @@ class QAxisInputPrivate : public Qt3DCore::QNodePrivate
 public:
     QAxisInputPrivate()
         : Qt3DCore::QNodePrivate()
-        , m_sourceDevice(Q_NULLPTR)
+        , m_sourceDevice(nullptr)
         , m_scale(0.0f)
         , m_axis(-1)
     {}

@@ -92,7 +92,7 @@ QObject *SceneHelper::findComponent(Qt3DCore::QEntity *entity, const QString &co
             return component;
         }
     }
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 void SceneHelper::addListEntry(const QVariant &list, QObject *entry)

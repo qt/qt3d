@@ -88,7 +88,7 @@ class QT3DQUICKEXTRASSHARED_EXPORT Qt3DQuickWindow : public QQuickWindow
     Q_PROPERTY(CameraAspectRatioMode cameraAspectRatioMode READ cameraAspectRatioMode WRITE setCameraAspectRatioMode NOTIFY cameraAspectRatioModeChanged)
 
 public:
-    Qt3DQuickWindow(QWindow *parent = Q_NULLPTR);
+    Qt3DQuickWindow(QWindow *parent = nullptr);
     ~Qt3DQuickWindow();
 
     void registerAspect(Qt3DCore::QAbstractAspect *aspect);

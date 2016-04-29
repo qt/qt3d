@@ -73,7 +73,7 @@ namespace Render {
 
 RenderSurfaceSelector::RenderSurfaceSelector()
     : FrameGraphNode(FrameGraphNode::Surface)
-    , m_surface(Q_NULLPTR)
+    , m_surface(nullptr)
     , m_width(0)
     , m_height(0)
     , m_devicePixelRatio(0.0f)

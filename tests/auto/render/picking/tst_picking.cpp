@@ -51,7 +51,7 @@ class MyObjectPicker : public Qt3DRender::QObjectPicker
 {
     Q_OBJECT
 public:
-    MyObjectPicker(Qt3DCore::QNode *parent = Q_NULLPTR)
+    MyObjectPicker(Qt3DCore::QNode *parent = nullptr)
         : Qt3DRender::QObjectPicker(parent)
     {}
 
@@ -65,7 +65,7 @@ class PickableEntity : public QEntity
 {
     Q_OBJECT
 public:
-    explicit PickableEntity(const QVector3D &position, float radius, QEntity *parent = Q_NULLPTR)
+    explicit PickableEntity(const QVector3D &position, float radius, QEntity *parent = nullptr)
         : QEntity(parent)
         , picker(new MyObjectPicker(this))
         , mesh(new QSphereMesh(this))

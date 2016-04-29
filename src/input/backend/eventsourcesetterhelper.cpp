@@ -49,9 +49,9 @@ namespace Input {
 
 EventSourceSetterHelper::EventSourceSetterHelper(InputHandler *inputHandler)
     : QObject()
-    , m_service(Q_NULLPTR)
+    , m_service(nullptr)
     , m_inputHandler(inputHandler)
-    , m_lastEventSource(Q_NULLPTR)
+    , m_lastEventSource(nullptr)
 {
 }
 

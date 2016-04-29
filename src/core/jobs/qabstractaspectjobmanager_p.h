@@ -63,7 +63,7 @@ class QT3DCORESHARED_EXPORT QAbstractAspectJobManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit QAbstractAspectJobManager(QObject *p = Q_NULLPTR);
+    explicit QAbstractAspectJobManager(QObject *p = nullptr);
 
     virtual void initialize() {}
     virtual void enqueueJobs(const QVector<QAspectJobPtr> &jobQueue) = 0;

@@ -133,7 +133,7 @@ public:
     template<class Backend>
     Backend *renderComponent() const
     {
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     template<class Backend>

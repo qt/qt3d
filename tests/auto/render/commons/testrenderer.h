@@ -46,8 +46,8 @@ public:
     void setNodeManagers(Qt3DRender::Render::NodeManagers *managers) Q_DECL_OVERRIDE { Q_UNUSED(managers); }
     void setServices(Qt3DCore::QServiceLocator *services) Q_DECL_OVERRIDE { Q_UNUSED(services); }
     void setSurfaceExposed(bool exposed) Q_DECL_OVERRIDE { Q_UNUSED(exposed); }
-    Qt3DRender::Render::NodeManagers *nodeManagers() const Q_DECL_OVERRIDE { return Q_NULLPTR; }
-    Qt3DCore::QServiceLocator *services() const Q_DECL_OVERRIDE { return Q_NULLPTR; }
+    Qt3DRender::Render::NodeManagers *nodeManagers() const Q_DECL_OVERRIDE { return nullptr; }
+    Qt3DCore::QServiceLocator *services() const Q_DECL_OVERRIDE { return nullptr; }
     void initialize() Q_DECL_OVERRIDE {}
     void shutdown() Q_DECL_OVERRIDE {}
     void createAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager) Q_DECL_OVERRIDE { Q_UNUSED(jobManager); }
@@ -60,12 +60,12 @@ public:
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() Q_DECL_OVERRIDE { return QVector<Qt3DCore::QAspectJobPtr>(); }
     Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() Q_DECL_OVERRIDE { return Qt3DCore::QAspectJobPtr(); }
     void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Qt3DRender::Render::Entity *root) Q_DECL_OVERRIDE { Q_UNUSED(factory);  Q_UNUSED(root); }
-    Qt3DRender::Render::Entity *sceneRoot() const Q_DECL_OVERRIDE { return Q_NULLPTR; }
-    Qt3DRender::Render::FrameGraphNode *frameGraphRoot() const Q_DECL_OVERRIDE { return Q_NULLPTR; }
-    Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const Q_DECL_OVERRIDE { return Q_NULLPTR; }
+    Qt3DRender::Render::Entity *sceneRoot() const Q_DECL_OVERRIDE { return nullptr; }
+    Qt3DRender::Render::FrameGraphNode *frameGraphRoot() const Q_DECL_OVERRIDE { return nullptr; }
+    Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const Q_DECL_OVERRIDE { return nullptr; }
     void registerEventFilter(Qt3DCore::QEventFilterService *service) Q_DECL_OVERRIDE { Q_UNUSED(service); }
     void setSettings(Qt3DRender::Render::RenderSettings *settings) Q_DECL_OVERRIDE { Q_UNUSED(settings); }
-    Qt3DRender::Render::RenderSettings *settings() const Q_DECL_OVERRIDE { return Q_NULLPTR; }
+    Qt3DRender::Render::RenderSettings *settings() const Q_DECL_OVERRIDE { return nullptr; }
 
     void markDirty(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes, Qt3DRender::Render::BackendNode *node) Q_DECL_OVERRIDE;
     Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet dirtyBits() Q_DECL_OVERRIDE;

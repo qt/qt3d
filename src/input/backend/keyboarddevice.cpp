@@ -357,7 +357,7 @@ QPair<int, int> getKeyPosition(int key)
 
 KeyboardDevice::KeyboardDevice()
     : QAbstractPhysicalDeviceBackendNode(QBackendNode::ReadOnly)
-    , m_inputHandler(Q_NULLPTR)
+    , m_inputHandler(nullptr)
 {
     m_keyStates.keys[0] = 0;
     m_keyStates.keys[1] = 0;

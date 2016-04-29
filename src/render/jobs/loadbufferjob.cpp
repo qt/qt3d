@@ -53,7 +53,7 @@ namespace Render {
 LoadBufferJob::LoadBufferJob(const HBuffer &handle)
     : QAspectJob()
     , m_handle(handle)
-    , m_nodeManagers(Q_NULLPTR)
+    , m_nodeManagers(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadBuffer, 0);
 }

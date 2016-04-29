@@ -78,7 +78,7 @@ void QAxis::addInput(QAxisInput *input)
         if (!input->parent())
             input->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             const auto change = Qt3DCore::QNodeAddedPropertyChangePtr::create(id(), input);
             change->setPropertyName("input");
             d->notifyObservers(change);
@@ -91,7 +91,7 @@ void QAxis::removeInput(QAxisInput *input)
     Q_D(QAxis);
     if (d->m_inputs.contains(input)) {
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), input);
             change->setPropertyName("input");
             d->notifyObservers(change);

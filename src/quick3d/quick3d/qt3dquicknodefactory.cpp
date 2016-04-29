@@ -59,7 +59,7 @@ void QuickNodeFactory::registerType(const char *className, const char *quickName
 QNode *QuickNodeFactory::createNode(const char *type)
 {
     if (!m_types.contains(type))
-        return Q_NULLPTR;
+        return nullptr;
 
     Type &typeInfo(m_types[type]);
 
@@ -68,7 +68,7 @@ QNode *QuickNodeFactory::createNode(const char *type)
         typeInfo.t = QQmlMetaType::qmlType(QString::fromLatin1(typeInfo.quickName), typeInfo.version.first, typeInfo.version.second);
     }
 
-    return typeInfo.t ? qobject_cast<QNode *>(typeInfo.t->create()) : Q_NULLPTR;
+    return typeInfo.t ? qobject_cast<QNode *>(typeInfo.t->create()) : nullptr;
 }
 
 } // namespace Qt3DCore

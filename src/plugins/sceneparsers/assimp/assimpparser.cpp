@@ -332,7 +332,7 @@ private:
  */
 AssimpParser::AssimpParser() : QSceneIOHandler(),
     m_sceneParsed(false),
-    m_scene(Q_NULLPTR)
+    m_scene(nullptr)
 {
 }
 
@@ -389,22 +389,22 @@ bool AssimpParser::isFileTypeSupported(const QUrl &source) const
  * node specified by \a id. If \a id is empty, the scene is assumed to be
  * the root node of the scene.
  *
- * Returns \c Q_NULLPTR if \a id was specified but no node matching it was found.
+ * Returns \c nullptr if \a id was specified but no node matching it was found.
  */
 Qt3DCore::QEntity *AssimpParser::scene(const QString &id)
 {
     // m_aiScene shouldn't be null.
     // If it is either, the file failed to be imported or
     // setFilePath was not called
-    if (m_scene == Q_NULLPTR || m_scene->m_aiScene == Q_NULLPTR)
-        return Q_NULLPTR;
+    if (m_scene == nullptr || m_scene->m_aiScene == nullptr)
+        return nullptr;
 
     aiNode *rootNode = m_scene->m_aiScene->mRootNode;
     // if id specified, tries to find node
     if (!id.isEmpty() &&
             !(rootNode = rootNode->FindNode(id.toUtf8().constData()))) {
         qCDebug(AssimpParserLog) << Q_FUNC_INFO << " Couldn't find requested scene node";
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     // Builds the Qt3D scene using the Assimp aiScene
@@ -414,12 +414,12 @@ Qt3DCore::QEntity *AssimpParser::scene(const QString &id)
 
 /*!
  *  Returns a Node from the scene identified by \a id.
- *  Returns \c Q_NULLPTR if the node was not found.
+ *  Returns \c nullptr if the node was not found.
  */
 Qt3DCore::QEntity *AssimpParser::node(const QString &id)
 {
-    if (m_scene == Q_NULLPTR || m_scene->m_aiScene == Q_NULLPTR)
-        return Q_NULLPTR;
+    if (m_scene == nullptr || m_scene->m_aiScene == nullptr)
+        return nullptr;
     parse();
     aiNode *n = m_scene->m_aiScene->mRootNode->FindNode(id.toUtf8().constData());
     return node(n);
@@ -430,8 +430,8 @@ Qt3DCore::QEntity *AssimpParser::node(const QString &id)
  */
 Qt3DCore::QEntity *AssimpParser::node(aiNode *node)
 {
-    if (node == Q_NULLPTR)
-        return Q_NULLPTR;
+    if (node == nullptr)
+        return nullptr;
     QEntity *entityNode = QAbstractNodeFactory::createNode<Qt3DCore::QEntity>("QEntity");
     entityNode->setObjectName(aiStringToQString(node->mName));
 
@@ -453,7 +453,7 @@ Qt3DCore::QEntity *AssimpParser::node(aiNode *node)
         // it conflicts with the variable node
         QEntity *child = this->node(node->mChildren[i]);
         // Are we sure each child are unique ???
-        if (child != Q_NULLPTR)
+        if (child != nullptr)
             child->setParent(entityNode);
     }
 
@@ -496,7 +496,7 @@ void AssimpParser::readSceneFile(const QString &path)
                                                        aiProcess_JoinIdenticalVertices|
                                                        aiProcess_GenSmoothNormals|
                                                        aiProcess_FlipUVs);
-    if (m_scene->m_aiScene == Q_NULLPTR) {
+    if (m_scene->m_aiScene == nullptr) {
         qCWarning(AssimpParserLog) << "Assimp scene import failed";
         return ;
     }
@@ -510,7 +510,7 @@ void AssimpParser::cleanup()
 {
     m_sceneParsed = false;
     delete m_scene;
-    m_scene = Q_NULLPTR;
+    m_scene = nullptr;
 }
 
 /*!
@@ -591,8 +591,8 @@ void AssimpParser::loadMesh(uint meshIndex)
     bool hasTangent = mesh->HasTangentsAndBitangents();
     bool hasTexture = mesh->HasTextureCoords(0);
     bool hasColor = (colors != NULL); // NULL defined by Assimp
-    aiVector3D *tangents = hasTangent ? mesh->mTangents : Q_NULLPTR;
-    aiVector3D *textureCoord = hasTexture ? mesh->mTextureCoords[0] : Q_NULLPTR;
+    aiVector3D *tangents = hasTangent ? mesh->mTangents : nullptr;
+    aiVector3D *textureCoord = hasTexture ? mesh->mTextureCoords[0] : nullptr;
 
     // Add values in raw float array
     ushort chunkSize = 6 + (hasTangent ? 3 : 0) + (hasTexture ? 2 : 0) + (hasColor ? 4 : 0);
@@ -762,7 +762,7 @@ void AssimpParser::loadCamera(uint cameraIndex)
     aiNode *cameraNode = m_scene->m_aiScene->mRootNode->FindNode(assimpCamera->mName);
 
     // If no node is associated to the camera in the scene, camera not saved
-    if (cameraNode == Q_NULLPTR)
+    if (cameraNode == nullptr)
         return ;
 
     QEntity *camera = QAbstractNodeFactory::createNode<Qt3DCore::QEntity>("QEntity");
@@ -958,12 +958,12 @@ QTexImageDataPtr AssimpRawTextureImage::AssimpRawTextureImageFunctor::operator()
 bool AssimpRawTextureImage::AssimpRawTextureImageFunctor::operator ==(const QTextureImageDataGenerator &other) const
 {
     const AssimpRawTextureImageFunctor *otherFunctor = functor_cast<AssimpRawTextureImageFunctor>(&other);
-    return (otherFunctor != Q_NULLPTR && otherFunctor->m_data == m_data);
+    return (otherFunctor != nullptr && otherFunctor->m_data == m_data);
 }
 
 AssimpParser::SceneImporter::SceneImporter()
     : m_importer(new Assimp::Importer())
-    , m_aiScene(Q_NULLPTR)
+    , m_aiScene(nullptr)
 {
     // The Assimp::Importer manages the lifetime of the aiScene object
 }

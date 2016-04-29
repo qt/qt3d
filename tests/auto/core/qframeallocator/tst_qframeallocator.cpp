@@ -109,7 +109,7 @@ void tst_QFrameAllocator::initQFrameChunk()
     QVERIFY(c.m_blocksAvailable == c.m_maxBlocksAvailable);
     QCOMPARE(c.m_blocksAvailable, (uchar)12);
     QCOMPARE(c.m_firstAvailableBlock, (uchar)0);
-    QVERIFY(c.m_data != Q_NULLPTR);
+    QVERIFY(c.m_data != nullptr);
     QVERIFY(c.isEmpty());
 
     for (int i = 0; i < 12; i++) {
@@ -128,7 +128,7 @@ void tst_QFrameAllocator::singleAllocationQFrameChunk()
     QVERIFY(c.contains(ptr, 16));
     QVERIFY(!c.isEmpty());
     QCOMPARE(c.m_blocksAvailable, (uchar)(c.m_maxBlocksAvailable - 1));
-    QVERIFY(ptr != Q_NULLPTR);
+    QVERIFY(ptr != nullptr);
     QCOMPARE(c.m_firstAvailableBlock, (uchar)1);
     QCOMPARE(*((uchar*)ptr), (uchar)1);
 }
@@ -139,11 +139,11 @@ void tst_QFrameAllocator::qvectorAllocationQFrameChunk()
 
     c.init(16, 12);
 
-    QVector<int> *v = Q_NULLPTR;
+    QVector<int> *v = nullptr;
 
     QVERIFY(sizeof(v) < 16);
     v = static_cast<QVector<int> *>(c.allocate(16));
-    QVERIFY(v != Q_NULLPTR);
+    QVERIFY(v != nullptr);
     new (v) QVector<int>();
     for (int i = 0; i < 1024; i++)
         v->append(i);
@@ -165,7 +165,7 @@ void tst_QFrameAllocator::multipleAllocationQFrameChunk()
     QCOMPARE(c.m_firstAvailableBlock, (uchar)6);
     QVERIFY(!c.isEmpty());
     for (int i = 0; i < 6; i++) {
-        QVERIFY(ptrs.at(i) != Q_NULLPTR);
+        QVERIFY(ptrs.at(i) != nullptr);
         QCOMPARE(*((uchar*)ptrs.at(i)), (uchar)(i + 1));
     }
 }
@@ -187,11 +187,11 @@ void tst_QFrameAllocator::overflowAllocationQFrameChunk()
     QVERIFY(!c.isEmpty());
     for (int i = 0; i < 15; i++) {
         if (i < 12) {
-            QVERIFY(ptrs.at(i) != Q_NULLPTR);
+            QVERIFY(ptrs.at(i) != nullptr);
             QCOMPARE(*((uchar*)ptrs.at(i)), (uchar)(i + 1));
         }
         else {
-            QVERIFY(ptrs.at(i) == Q_NULLPTR);
+            QVERIFY(ptrs.at(i) == nullptr);
         }
     }
 }
@@ -209,7 +209,7 @@ void tst_QFrameAllocator::singleDeallocationQFrameChunk()
     QVERIFY(c.m_blocksAvailable == c.m_maxBlocksAvailable);
     QCOMPARE(c.m_blocksAvailable, (uchar)12);
     QCOMPARE(c.m_firstAvailableBlock, (uchar)0);
-    QVERIFY(c.m_data != Q_NULLPTR);
+    QVERIFY(c.m_data != nullptr);
     QVERIFY(c.isEmpty());
 
     for (int i = 0; i < 12; i++) {
@@ -237,7 +237,7 @@ void tst_QFrameAllocator::multipleDeallocationQFrameChunk()
 
     QVERIFY(c.m_blocksAvailable == c.m_maxBlocksAvailable);
     QCOMPARE(c.m_blocksAvailable, (uchar)12);
-    QVERIFY(c.m_data != Q_NULLPTR);
+    QVERIFY(c.m_data != nullptr);
     QVERIFY(c.isEmpty());
 
     // Refill all
@@ -245,7 +245,7 @@ void tst_QFrameAllocator::multipleDeallocationQFrameChunk()
     for (int i = 0; i < 12; i++) {
         void *ptr = c.allocate(16);
         ptrs << ptr;
-        QVERIFY(ptr != Q_NULLPTR);
+        QVERIFY(ptr != nullptr);
     }
     QVERIFY(!c.isEmpty());
 
@@ -261,7 +261,7 @@ void tst_QFrameAllocator::multipleDeallocationQFrameChunk()
     for (int i = 0; i < 12; i++) {
         void *ptr = c.allocate(16);
         ptrs << ptr;
-        QVERIFY(ptr != Q_NULLPTR);
+        QVERIFY(ptr != nullptr);
     }
 
     // Free all in non linear behavior
@@ -276,7 +276,7 @@ void tst_QFrameAllocator::multipleDeallocationQFrameChunk()
     for (int i = 0; i < 12; i++) {
         void *ptr = c.allocate(16);
         ptrs << ptr;
-        QVERIFY(ptr != Q_NULLPTR);
+        QVERIFY(ptr != nullptr);
     }
     QVERIFY(!c.isEmpty());
 }
@@ -353,14 +353,14 @@ void tst_QFrameAllocator::allocateQFixedFrameAllocator()
     // Fill 1 chunck
     for (int i = 0; i < 128; i++) {
         void *ptr = f.allocate();
-        QVERIFY(ptr != Q_NULLPTR);
+        QVERIFY(ptr != nullptr);
         ptrs << ptr;
     }
     QCOMPARE(f.chunkCount(), 1);
     // Fill half of chunk 2
     for (int i = 0; i < 64; i++) {
         void *ptr = f.allocate();
-        QVERIFY(ptr != Q_NULLPTR);
+        QVERIFY(ptr != nullptr);
         ptrs << ptr;
     }
     // Free chunk 2
@@ -374,7 +374,7 @@ void tst_QFrameAllocator::allocateQFixedFrameAllocator()
 
     for (int i = 0; i < 256; i++) {
         void *ptr = f.allocate();
-        QVERIFY(ptr != Q_NULLPTR);
+        QVERIFY(ptr != nullptr);
         ptrs << ptr;
     }
     QCOMPARE(f.chunkCount(), 3);
@@ -390,13 +390,13 @@ void tst_QFrameAllocator::deallocateQFixedFrameAllocator()
 
     for (int i = 0; i < 128; i++) {
         void *ptr = f.allocate();
-        QVERIFY(ptr != Q_NULLPTR);
+        QVERIFY(ptr != nullptr);
         ptrs << ptr;
     }
     QCOMPARE(f.chunkCount(), 1);
     for (int i = 0; i < 64; i++) {
         void *ptr = f.allocate();
-        QVERIFY(ptr != Q_NULLPTR);
+        QVERIFY(ptr != nullptr);
         ptrs << ptr;
     }
     QCOMPARE(f.chunkCount(), 2);
@@ -413,7 +413,7 @@ void tst_QFrameAllocator::deallocateQFixedFrameAllocator()
     QCOMPARE(f.chunkCount(), 1);
     for (int i = 0; i < 36; i++) {
         void *ptr = f.allocate();
-        QVERIFY(ptr != Q_NULLPTR);
+        QVERIFY(ptr != nullptr);
         ptrs << ptr;
     }
     QCOMPARE(f.chunkCount(), 1);
@@ -429,7 +429,7 @@ void tst_QFrameAllocator::checkFragmentationQFixedFrameAllocator()
 
     for (int i = 0; i < 256; i++) {
         void *ptr = f.allocate();
-        QVERIFY(ptr != Q_NULLPTR);
+        QVERIFY(ptr != nullptr);
         ptrs << ptr;
     }
 
@@ -443,7 +443,7 @@ void tst_QFrameAllocator::checkFragmentationQFixedFrameAllocator()
 
     for (int i = 0; i < 64; i++) {
         void *ptr = f.allocate();
-        QVERIFY(ptr != Q_NULLPTR);
+        QVERIFY(ptr != nullptr);
         ptrs << ptr;
     }
     QCOMPARE(f.chunkCount(), 2);
@@ -459,7 +459,7 @@ void tst_QFrameAllocator::clearQFixedFrameAllocator()
 
     for (int i = 0; i < 256; i++) {
         void *ptr = f.allocate();
-        QVERIFY(ptr != Q_NULLPTR);
+        QVERIFY(ptr != nullptr);
         ptrs << ptr;
     }
     QCOMPARE(f.chunkCount(), 2);
@@ -469,7 +469,7 @@ void tst_QFrameAllocator::clearQFixedFrameAllocator()
 
     for (int i = 0; i < 256; i++) {
         void *ptr = f.allocate();
-        QVERIFY(ptr != Q_NULLPTR);
+        QVERIFY(ptr != nullptr);
         ptrs << ptr;
     }
     QCOMPARE(f.chunkCount(), 2);

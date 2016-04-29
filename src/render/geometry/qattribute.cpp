@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 QAttributePrivate::QAttributePrivate()
     : QNodePrivate()
-    , m_buffer(Q_NULLPTR)
+    , m_buffer(nullptr)
     , m_name()
     , m_dataType(QAttribute::Float)
     , m_dataSize(1)

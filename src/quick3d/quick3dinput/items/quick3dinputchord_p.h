@@ -66,7 +66,7 @@ class QT3DQUICKINPUTSHARED_PRIVATE_EXPORT Quick3DInputChord : public QObject
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3DInput::QAbstractActionInput> chords READ qmlActionInputs CONSTANT)
 public:
-    explicit Quick3DInputChord(QObject *parent = Q_NULLPTR);
+    explicit Quick3DInputChord(QObject *parent = nullptr);
 
     inline QInputChord *parentChord() const { return qobject_cast<QInputChord *>(parent()); }
     QQmlListProperty<QAbstractActionInput> qmlActionInputs();

@@ -75,7 +75,7 @@ class CircularBufferData : public QSharedData
 {
 protected:
     CircularBufferData()
-        : data(Q_NULLPTR),
+        : data(nullptr),
           capacity(0),
           size(0),
           first(-1),
@@ -210,7 +210,7 @@ public:
         typedef T *pointer;
         typedef T &reference;
 
-        Q_DECL_CONSTEXPR iterator() : buffer(Q_NULLPTR), index(-1) {}
+        Q_DECL_CONSTEXPR iterator() : buffer(nullptr), index(-1) {}
         iterator(QCircularBuffer<T> *buf, int idx)
             : buffer(buf), index(idx)
         {}
@@ -295,7 +295,7 @@ public:
         typedef const T *pointer;
         typedef const T &reference;
 
-        Q_DECL_CONSTEXPR const_iterator() : buffer(Q_NULLPTR), index(-1) {}
+        Q_DECL_CONSTEXPR const_iterator() : buffer(nullptr), index(-1) {}
         const_iterator(const QCircularBuffer<T> *buff, int idx)
             : buffer(buff), index(idx)
         {}
@@ -463,7 +463,7 @@ public:
     {
         d.detach();
         if (d->size == 0)
-            return array_range(Q_NULLPTR, 0);
+            return array_range(nullptr, 0);
         if (!isLinearised())
             linearise();
         return array_range(d->data() + d->first, d->last - d->first + 1);
@@ -472,7 +472,7 @@ public:
     const_array_range constData() const
     {
         if (!isLinearised() || d->size == 0)
-            return const_array_range(Q_NULLPTR, 0);
+            return const_array_range(nullptr, 0);
         return const_array_range(d->data() + d->first, d->last - d->first + 1);
     }
 
@@ -480,7 +480,7 @@ public:
     {
         d.detach();
         if (d->size == 0)
-            return array_range(Q_NULLPTR, 0);
+            return array_range(nullptr, 0);
         if (isLinearised())
             return array_range(d->data() + d->first, d->last - d->first + 1);
         else
@@ -490,7 +490,7 @@ public:
     const_array_range constDataOne() const
     {
         if (d->size == 0)
-            return const_array_range(Q_NULLPTR, 0);
+            return const_array_range(nullptr, 0);
         if (isLinearised())
             return const_array_range(d->data() + d->first, d->last - d->first + 1);
         else
@@ -501,14 +501,14 @@ public:
     {
         d.detach();
         if (d->size == 0 || isLinearised())
-            return array_range(Q_NULLPTR, 0);
+            return array_range(nullptr, 0);
         return array_range(d->data(), d->last + 1);
     }
     const_array_range dataTwo() const { return constDataTwo(); }
     const_array_range constDataTwo() const
     {
         if (d->size == 0 || isLinearised())
-            return const_array_range(Q_NULLPTR, 0);
+            return const_array_range(nullptr, 0);
         return const_array_range(d->data(), d->last + 1);
     }
 

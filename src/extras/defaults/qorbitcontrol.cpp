@@ -59,7 +59,7 @@ namespace Qt3DExtras {
 
 QOrbitControlPrivate::QOrbitControlPrivate()
     : Qt3DCore::QEntityPrivate()
-    , m_camera(Q_NULLPTR)
+    , m_camera(nullptr)
     , m_leftMouseButtonAction(new Qt3DInput::QAction())
     , m_rightMouseButtonAction(new Qt3DInput::QAction())
     , m_altButtonAction(new Qt3DInput::QAction())
@@ -198,7 +198,7 @@ float zoomDistance(QVector3D firstPoint, QVector3D secondPoint)
 
 void QOrbitControlPrivate::_q_onTriggered(float dt)
 {
-    if (m_camera != Q_NULLPTR) {
+    if (m_camera != nullptr) {
         // Mouse input
         if (m_leftMouseButtonAction->isActive()) {
             if (m_rightMouseButtonAction->isActive()) {

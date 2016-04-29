@@ -67,7 +67,7 @@ class QT3DCORESHARED_EXPORT PropertyChangeHandlerBase : public QObject
 {
     Q_OBJECT
 public:
-    PropertyChangeHandlerBase(QObject *parent = Q_NULLPTR);
+    PropertyChangeHandlerBase(QObject *parent = nullptr);
 
     /**
      * Connect to the change signal of @p property in @p object.
@@ -90,7 +90,7 @@ template<class Receiver>
 class PropertyChangeHandler : public PropertyChangeHandlerBase
 {
 public:
-    PropertyChangeHandler(Receiver *receiver, QObject *parent = Q_NULLPTR);
+    PropertyChangeHandler(Receiver *receiver, QObject *parent = nullptr);
 
     /**
      * @internal

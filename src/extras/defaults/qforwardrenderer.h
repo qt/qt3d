@@ -61,7 +61,7 @@ class QT3DEXTRASSHARED_EXPORT QForwardRenderer : public Qt3DRender::QTechniqueFi
     Q_PROPERTY(QColor clearColor READ clearColor WRITE setClearColor NOTIFY clearColorChanged)
     Q_PROPERTY(Qt3DCore::QEntity *camera READ camera WRITE setCamera NOTIFY cameraChanged)
 public:
-    explicit QForwardRenderer(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QForwardRenderer(Qt3DCore::QNode *parent = nullptr);
     ~QForwardRenderer();
 
     QRectF viewportRect() const;

@@ -70,7 +70,7 @@ QVector<Qt3DCore::QAspectJobPtr> KeyboardMouseGenericDeviceIntegration::jobsToEx
 QAbstractPhysicalDevice *KeyboardMouseGenericDeviceIntegration::createPhysicalDevice(const QString &name)
 {
     Q_UNUSED(name)
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 QVector<Qt3DCore::QNodeId> KeyboardMouseGenericDeviceIntegration::physicalDevices() const

@@ -86,18 +86,18 @@ public:
 void tst_Entity::constructionDestruction()
 {
     // GIVEN
-    QEntity *entity = Q_NULLPTR;
+    QEntity *entity = nullptr;
     // WHEN
     entity = new QEntity;
     // THEN
-    QVERIFY(entity != Q_NULLPTR);
+    QVERIFY(entity != nullptr);
 
     delete entity;
 
     // GIVEN
     QScopedPointer<QEntity> entity2(new QEntity);
     // WHEN
-    entity2.reset(Q_NULLPTR);
+    entity2.reset(nullptr);
     // THEN
     // this should not crash
 }

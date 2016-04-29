@@ -183,7 +183,7 @@ public:
     bool operator ==(const QBufferDataGenerator &other) const Q_DECL_OVERRIDE
     {
         const SphereVertexDataFunctor *otherFunctor = functor_cast<SphereVertexDataFunctor>(&other);
-        if (otherFunctor != Q_NULLPTR)
+        if (otherFunctor != nullptr)
             return (otherFunctor->m_rings == m_rings &&
                     otherFunctor->m_slices == m_slices &&
                     otherFunctor->m_radius == m_radius);
@@ -215,7 +215,7 @@ public:
     bool operator ==(const QBufferDataGenerator &other) const Q_DECL_OVERRIDE
     {
         const SphereIndexDataFunctor *otherFunctor = functor_cast<SphereIndexDataFunctor>(&other);
-        if (otherFunctor != Q_NULLPTR)
+        if (otherFunctor != nullptr)
             return (otherFunctor->m_rings == m_rings &&
                     otherFunctor->m_slices == m_slices);
         return false;
@@ -234,13 +234,13 @@ QSphereGeometryPrivate::QSphereGeometryPrivate()
     , m_rings(16)
     , m_slices(16)
     , m_radius(1.0f)
-    , m_positionAttribute(Q_NULLPTR)
-    , m_normalAttribute(Q_NULLPTR)
-    , m_texCoordAttribute(Q_NULLPTR)
-    , m_tangentAttribute(Q_NULLPTR)
-    , m_indexAttribute(Q_NULLPTR)
-    , m_vertexBuffer(Q_NULLPTR)
-    , m_indexBuffer(Q_NULLPTR)
+    , m_positionAttribute(nullptr)
+    , m_normalAttribute(nullptr)
+    , m_texCoordAttribute(nullptr)
+    , m_tangentAttribute(nullptr)
+    , m_indexAttribute(nullptr)
+    , m_vertexBuffer(nullptr)
+    , m_indexBuffer(nullptr)
 {
 }
 

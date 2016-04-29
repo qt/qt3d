@@ -51,7 +51,7 @@ MouseEventDispatcherJob::MouseEventDispatcherJob(Qt3DCore::QNodeId input,
                                                  const QList<QT_PREPEND_NAMESPACE (QMouseEvent)> &mouseEvents,
                                                  const QList<QT_PREPEND_NAMESPACE (QWheelEvent)> &wheelEvents)
     : QAspectJob()
-    , m_inputHandler(Q_NULLPTR)
+    , m_inputHandler(nullptr)
     , m_mouseInput(input)
     , m_mouseEvents(mouseEvents)
     , m_wheelEvents(wheelEvents)

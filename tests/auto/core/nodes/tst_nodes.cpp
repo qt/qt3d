@@ -123,7 +123,7 @@ public:
 
     ~ObserverSpy()
     {
-        Qt3DCore::QNodePrivate::get(m_node)->setArbiter(Q_NULLPTR);
+        Qt3DCore::QNodePrivate::get(m_node)->setArbiter(nullptr);
     }
 
     void sceneChangeEventWithLock(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE
@@ -165,7 +165,7 @@ class MyQNode : public Qt3DCore::QNode
 public:
     explicit MyQNode(Qt3DCore::QNode *parent = 0)
         : QNode(parent)
-        , m_scene(Q_NULLPTR)
+        , m_scene(nullptr)
     {}
 
     ~MyQNode()
@@ -220,7 +220,7 @@ void tst_Nodes::defaultNodeConstruction()
     QScopedPointer<MyQNode> node(new MyQNode());
 
     // THEN
-    QVERIFY(node != Q_NULLPTR);
+    QVERIFY(node != nullptr);
     QVERIFY(node->children().isEmpty());
 
     // GIVEN
@@ -241,7 +241,7 @@ void tst_Nodes::defaultComponentConstruction()
     QCoreApplication::processEvents();
 
     // THEN
-    QVERIFY(comp != Q_NULLPTR);
+    QVERIFY(comp != nullptr);
     QCOMPARE(comp2->parent(), comp.data());
 }
 
@@ -266,12 +266,12 @@ void tst_Nodes::appendSingleChildNodeToNodeNoSceneExplicitParenting()
     ObserverSpy spy(node.data());
 
     // THEN
-    QVERIFY(Qt3DCore::QNodePrivate::get(node.data())->scene() == Q_NULLPTR);
+    QVERIFY(Qt3DCore::QNodePrivate::get(node.data())->scene() == nullptr);
     // WHEN
     QScopedPointer<MyQNode> child(new MyQNode());
 
     // THEN
-    QVERIFY(child->parent() == Q_NULLPTR);
+    QVERIFY(child->parent() == nullptr);
 
     // WHEN
     child->setParent(node.data());
@@ -293,7 +293,7 @@ void tst_Nodes::appendSingleChildNodeToNodeNoSceneImplicitParenting()
     ObserverSpy spy(node.data());
 
     // THEN
-    QVERIFY(Qt3DCore::QNodePrivate::get(node.data())->scene() == Q_NULLPTR);
+    QVERIFY(Qt3DCore::QNodePrivate::get(node.data())->scene() == nullptr);
     // WHEN
     QScopedPointer<MyQNode> child(new MyQNode(node.data()));
     QCoreApplication::processEvents();
@@ -315,11 +315,11 @@ void tst_Nodes::appendMultipleChildNodesToNodeNoScene()
     ObserverSpy spy(node.data());
 
     // THEN
-    QVERIFY(Qt3DCore::QNodePrivate::get(node.data())->scene() == Q_NULLPTR);
+    QVERIFY(Qt3DCore::QNodePrivate::get(node.data())->scene() == nullptr);
     // WHEN
     for (int i = 0; i < 10; i++) {
         // WHEN
-        Qt3DCore::QNode *child = Q_NULLPTR;
+        Qt3DCore::QNode *child = nullptr;
         if (i % 2 == 0) {
             child = new MyQNode(node.data());
             QCoreApplication::processEvents();
@@ -347,14 +347,14 @@ void tst_Nodes::appendSingleChildNodeToNodeSceneExplicitParenting()
     // WHEN
     node->assignScene(&spy);
     // THEN
-    QVERIFY(Qt3DCore::QNodePrivate::get(node.data())->scene() != Q_NULLPTR);
+    QVERIFY(Qt3DCore::QNodePrivate::get(node.data())->scene() != nullptr);
 
     // WHEN
     QScopedPointer<MyQNode> child(new MyQNode());
 
     // THEN
-    QVERIFY(child->parent() == Q_NULLPTR);
-    QVERIFY(Qt3DCore::QNodePrivate::get(child.data())->scene() == Q_NULLPTR);
+    QVERIFY(child->parent() == nullptr);
+    QVERIFY(Qt3DCore::QNodePrivate::get(child.data())->scene() == nullptr);
 
     // WHEN
     child->setParent(node.data());
@@ -364,7 +364,7 @@ void tst_Nodes::appendSingleChildNodeToNodeSceneExplicitParenting()
     QVERIFY(child->parentNode() == node.data());
     QCOMPARE(spy.events.size(), 2);
     QCOMPARE(node->children().count(), 1);
-    QVERIFY(Qt3DCore::QNodePrivate::get(child.data())->scene() != Q_NULLPTR);
+    QVERIFY(Qt3DCore::QNodePrivate::get(child.data())->scene() != nullptr);
 
     // Creation event
     QVERIFY(spy.events.first().wasLocked());
@@ -394,7 +394,7 @@ void tst_Nodes::appendSingleChildNodeToNodeSceneImplicitParenting()
     // WHEN
     node->assignScene(&spy);
     // THEN
-    QVERIFY(Qt3DCore::QNodePrivate::get(node.data())->scene() != Q_NULLPTR);
+    QVERIFY(Qt3DCore::QNodePrivate::get(node.data())->scene() != nullptr);
 
     // WHEN
     QScopedPointer<MyQNode> child(new MyQNode(node.data()));
@@ -403,7 +403,7 @@ void tst_Nodes::appendSingleChildNodeToNodeSceneImplicitParenting()
     // THEN
     QVERIFY(child->parent() == node.data());
     QVERIFY(child->parentNode() == node.data());
-    QVERIFY(Qt3DCore::QNodePrivate::get(child.data())->scene() != Q_NULLPTR);
+    QVERIFY(Qt3DCore::QNodePrivate::get(child.data())->scene() != nullptr);
 
     QCOMPARE(spy.events.size(), 2);
     QVERIFY(spy.events.first().wasLocked());
@@ -437,12 +437,12 @@ void tst_Nodes::appendMultipleChildNodesToNodeScene()
     ObserverSpy spy(node.data());
     node->assignScene(&spy);
     // THEN
-    QVERIFY(Qt3DCore::QNodePrivate::get(node.data())->scene() != Q_NULLPTR);
+    QVERIFY(Qt3DCore::QNodePrivate::get(node.data())->scene() != nullptr);
 
     // WHEN
     for (int i = 0; i < 10; i++) {
         // WHEN
-        Qt3DCore::QNode *child = Q_NULLPTR;
+        Qt3DCore::QNode *child = nullptr;
         if (i % 2 == 0) {
             child = new MyQNode(node.data());
             QCoreApplication::processEvents();
@@ -453,7 +453,7 @@ void tst_Nodes::appendMultipleChildNodesToNodeScene()
         }
         // THEN
         QVERIFY(child->parent() == node.data());
-        QVERIFY(Qt3DCore::QNodePrivate::get(child)->scene() != Q_NULLPTR);
+        QVERIFY(Qt3DCore::QNodePrivate::get(child)->scene() != nullptr);
     }
     // THEN
     QCOMPARE(node->children().count(), 10);
@@ -500,7 +500,7 @@ void tst_Nodes::checkParentChangeToNull()
     child->setParent(Q_NODE_NULLPTR);
 
     // THEN
-    QVERIFY(child->parent() == Q_NULLPTR);
+    QVERIFY(child->parent() == nullptr);
     QCOMPARE(root->children().size(), 0);
     QCOMPARE(spy.events.size(), 2);
 
@@ -547,7 +547,7 @@ void tst_Nodes::checkParentChangeToOtherParent()
     QVERIFY(child->parent() == parent1.data());
     QCOMPARE(parent1->children().size(), 1);
     QCOMPARE(parent2->children().size(), 0);
-    QVERIFY(Qt3DCore::QNodePrivate::get(child.data())->scene() != Q_NULLPTR);
+    QVERIFY(Qt3DCore::QNodePrivate::get(child.data())->scene() != nullptr);
     QCOMPARE(spyParent1.events.size(), 2);
 
     // WHEN
@@ -600,7 +600,7 @@ void tst_Nodes::removingSingleChildNodeFromNode()
     child->setParent(Q_NODE_NULLPTR);
 
     // THEN
-    QVERIFY(child->parent() == Q_NULLPTR);
+    QVERIFY(child->parent() == nullptr);
     QVERIFY(root->children().count() == 0);
 
     QCOMPARE(spy.events.size(), 2);
@@ -630,7 +630,7 @@ void tst_Nodes::removingMultipleChildNodesFromNode()
     root->assignScene(&spy);
 
     // THEN
-    QVERIFY(Qt3DCore::QNodePrivate::get(root.data())->scene() != Q_NULLPTR);
+    QVERIFY(Qt3DCore::QNodePrivate::get(root.data())->scene() != nullptr);
 
     // WHEN
     Qt3DCore::QNodeIdVector childIds(10);
@@ -685,7 +685,7 @@ void tst_Nodes::appendingChildEntitiesToNode()
 
     // THEN
     QVERIFY(root->children().first() == childEntity);
-    QVERIFY(childEntity->parentEntity() == Q_NULLPTR);
+    QVERIFY(childEntity->parentEntity() == nullptr);
     QVERIFY(childEntity->parentNode() == root.data());
 }
 
@@ -700,7 +700,7 @@ void tst_Nodes::removingChildEntitiesFromNode()
 
     // THEN
     QVERIFY(root->children().first() == childEntity);
-    QVERIFY(childEntity->parentEntity() == Q_NULLPTR);
+    QVERIFY(childEntity->parentEntity() == nullptr);
     QVERIFY(childEntity->parentNode() == root.data());
 
     // WHEN
@@ -708,8 +708,8 @@ void tst_Nodes::removingChildEntitiesFromNode()
 
     // THEN
     QVERIFY(root->children().isEmpty());
-    QVERIFY(childEntity->parentNode() == Q_NULLPTR);
-    QVERIFY(childEntity->parent() == Q_NULLPTR);
+    QVERIFY(childEntity->parentNode() == nullptr);
+    QVERIFY(childEntity->parent() == nullptr);
 }
 
 void tst_Nodes::appendingParentlessComponentToEntity()
@@ -719,10 +719,10 @@ void tst_Nodes::appendingParentlessComponentToEntity()
     MyQComponent *comp = new MyQComponent();
 
     // THEN
-    QVERIFY(entity->parentNode() == Q_NULLPTR);
+    QVERIFY(entity->parentNode() == nullptr);
     QVERIFY(entity->children().count() == 0);
     QVERIFY(entity->components().empty());
-    QVERIFY(comp->parentNode() == Q_NULLPTR);
+    QVERIFY(comp->parentNode() == nullptr);
 
     // WHEN
     ObserverSpy spy(entity.data());
@@ -758,7 +758,7 @@ void tst_Nodes::appendingComponentToEntity()
     QCoreApplication::processEvents();
 
     // THEN
-    QVERIFY(entity->parentNode() == Q_NULLPTR);
+    QVERIFY(entity->parentNode() == nullptr);
     QVERIFY(entity->children().count() == 1);
     QVERIFY(entity->components().empty());
     QVERIFY(comp->parentNode() == entity.data());

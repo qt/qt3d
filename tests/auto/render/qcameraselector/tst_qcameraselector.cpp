@@ -49,7 +49,7 @@ private Q_SLOTS:
         QTest::addColumn<Qt3DCore::QEntity *>("camera");
 
         Qt3DRender::QCameraSelector *defaultConstructed = new Qt3DRender::QCameraSelector();
-        QTest::newRow("defaultConstructed") << defaultConstructed << static_cast<Qt3DCore::QEntity *>(Q_NULLPTR);
+        QTest::newRow("defaultConstructed") << defaultConstructed << static_cast<Qt3DCore::QEntity *>(nullptr);
 
         Qt3DRender::QCameraSelector *selector1 = new Qt3DRender::QCameraSelector();
         Qt3DCore::QEntity *camera1 = new Qt3DCore::QEntity();
@@ -123,7 +123,7 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        cameraSelector->setCamera(Q_NULLPTR);
+        cameraSelector->setCamera(nullptr);
         QCoreApplication::processEvents();
 
         // THEN

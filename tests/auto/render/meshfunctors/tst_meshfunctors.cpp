@@ -41,7 +41,7 @@ public:
 
     Qt3DRender::QGeometry *operator ()() Q_DECL_OVERRIDE
     {
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     bool operator ==(const Qt3DRender::QGeometryFactory &other) const Q_DECL_OVERRIDE
@@ -63,7 +63,7 @@ public:
 
     Qt3DRender::QGeometry *operator ()() Q_DECL_OVERRIDE
     {
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     bool operator ==(const Qt3DRender::QGeometryFactory &other) const Q_DECL_OVERRIDE

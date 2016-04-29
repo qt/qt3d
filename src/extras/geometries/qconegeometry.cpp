@@ -238,7 +238,7 @@ public:
     bool operator ==(const QBufferDataGenerator &other) const Q_DECL_OVERRIDE
     {
         const ConeVertexDataFunctor *otherFunctor = functor_cast<ConeVertexDataFunctor>(&other);
-        if (otherFunctor != Q_NULLPTR)
+        if (otherFunctor != nullptr)
             return (otherFunctor->m_hasTopEndcap == m_hasTopEndcap &&
                     otherFunctor->m_hasBottomEndcap == m_hasBottomEndcap &&
                     otherFunctor->m_rings == m_rings &&
@@ -301,7 +301,7 @@ public:
     bool operator ==(const QBufferDataGenerator &other) const Q_DECL_OVERRIDE
     {
         const ConeIndexDataFunctor *otherFunctor = functor_cast<ConeIndexDataFunctor>(&other);
-        if (otherFunctor != Q_NULLPTR)
+        if (otherFunctor != nullptr)
             return (otherFunctor->m_hasTopEndcap == m_hasTopEndcap &&
                     otherFunctor->m_hasBottomEndcap == m_hasBottomEndcap &&
                     otherFunctor->m_rings == m_rings &&
@@ -330,12 +330,12 @@ QConeGeometryPrivate::QConeGeometryPrivate()
     , m_topRadius(0.0f)
     , m_bottomRadius(1.0f)
     , m_length(1.0f)
-    , m_positionAttribute(Q_NULLPTR)
-    , m_normalAttribute(Q_NULLPTR)
-    , m_texCoordAttribute(Q_NULLPTR)
-    , m_indexAttribute(Q_NULLPTR)
-    , m_vertexBuffer(Q_NULLPTR)
-    , m_indexBuffer(Q_NULLPTR)
+    , m_positionAttribute(nullptr)
+    , m_normalAttribute(nullptr)
+    , m_texCoordAttribute(nullptr)
+    , m_indexAttribute(nullptr)
+    , m_vertexBuffer(nullptr)
+    , m_indexBuffer(nullptr)
 {
 }
 

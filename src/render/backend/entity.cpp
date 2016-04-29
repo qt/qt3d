@@ -73,7 +73,7 @@ namespace Render {
 
 Entity::Entity()
     : BackendNode()
-    , m_nodeManagers(Q_NULLPTR)
+    , m_nodeManagers(nullptr)
     , m_boundingDirty(false)
 {
 }
@@ -85,9 +85,9 @@ Entity::~Entity()
 
 void Entity::cleanup()
 {
-    if (m_nodeManagers != Q_NULLPTR) {
+    if (m_nodeManagers != nullptr) {
         Entity *parentEntity = parent();
-        if (parentEntity != Q_NULLPTR)
+        if (parentEntity != nullptr)
             parentEntity->removeChildHandle(m_handle);
         for (int i = 0; i < m_childrenHandles.size(); i++)
             m_nodeManagers->renderNodesManager()->release(m_childrenHandles[i]);
@@ -124,11 +124,11 @@ void Entity::setParentHandle(HEntity parentHandle)
     Q_ASSERT(m_nodeManagers);
     // Remove ourselves from previous parent children list
     Entity *parent = m_nodeManagers->renderNodesManager()->data(parentHandle);
-    if (parent != Q_NULLPTR && parent->m_childrenHandles.contains(m_handle))
+    if (parent != nullptr && parent->m_childrenHandles.contains(m_handle))
         parent->m_childrenHandles.remove(m_handle);
     m_parentHandle = parentHandle;
     parent = m_nodeManagers->renderNodesManager()->data(parentHandle);
-    if (parent != Q_NULLPTR && !parent->m_childrenHandles.contains(m_handle))
+    if (parent != nullptr && !parent->m_childrenHandles.contains(m_handle))
         parent->m_childrenHandles.append(m_handle);
 }
 
@@ -260,7 +260,7 @@ void Entity::appendChildHandle(HEntity childHandle)
     if (!m_childrenHandles.contains(childHandle)) {
         m_childrenHandles.append(childHandle);
         Entity *child = m_nodeManagers->renderNodesManager()->data(childHandle);
-        if (child != Q_NULLPTR)
+        if (child != nullptr)
             child->m_parentHandle = m_handle;
     }
 }
@@ -279,7 +279,7 @@ QVector<Entity *> Entity::children() const
     childrenVector.reserve(m_childrenHandles.size());
     for (HEntity handle : m_childrenHandles) {
         Entity *child = m_nodeManagers->renderNodesManager()->data(handle);
-        if (child != Q_NULLPTR)
+        if (child != nullptr)
             childrenVector.append(child);
     }
     return childrenVector;
@@ -300,26 +300,26 @@ void Entity::addComponent(Qt3DCore::QComponent *component)
     // The backend element is always created when this method is called
     // If that's not the case something has gone wrong
 
-    if (qobject_cast<Qt3DCore::QTransform*>(component) != Q_NULLPTR) {
+    if (qobject_cast<Qt3DCore::QTransform*>(component) != nullptr) {
         m_transformComponent = component->id();
-    } else if (qobject_cast<QCameraLens *>(component) != Q_NULLPTR) {
+    } else if (qobject_cast<QCameraLens *>(component) != nullptr) {
         m_cameraComponent = component->id();
-    } else if (qobject_cast<QLayer *>(component) != Q_NULLPTR) {
+    } else if (qobject_cast<QLayer *>(component) != nullptr) {
         m_layerComponents.append(component->id());
-    } else if (qobject_cast<QMaterial *>(component) != Q_NULLPTR) {
+    } else if (qobject_cast<QMaterial *>(component) != nullptr) {
         m_materialComponent = component->id();
-    } else if (qobject_cast<QAbstractLight *>(component) != Q_NULLPTR) {
+    } else if (qobject_cast<QAbstractLight *>(component) != nullptr) {
         m_lightComponents.append(component->id());
-    } else if (qobject_cast<QShaderData *>(component) != Q_NULLPTR) {
+    } else if (qobject_cast<QShaderData *>(component) != nullptr) {
         m_shaderDataComponents.append(component->id());
-    } else if (qobject_cast<QGeometryRenderer *>(component) != Q_NULLPTR) {
+    } else if (qobject_cast<QGeometryRenderer *>(component) != nullptr) {
         m_geometryRendererComponent = component->id();
         m_boundingDirty = true;
-    } else if (qobject_cast<QObjectPicker *>(component) != Q_NULLPTR) {
+    } else if (qobject_cast<QObjectPicker *>(component) != nullptr) {
         m_objectPickerComponent = component->id();
-//    } else if (qobject_cast<QBoundingVolumeDebug *>(component) != Q_NULLPTR) {
+//    } else if (qobject_cast<QBoundingVolumeDebug *>(component) != nullptr) {
 //        m_boundingVolumeDebugComponent = component->id();
-    } else if (qobject_cast<QComputeCommand *>(component) != Q_NULLPTR) {
+    } else if (qobject_cast<QComputeCommand *>(component) != nullptr) {
         m_computeComponent = component->id();
     }
 }

@@ -86,7 +86,7 @@ void Shader::cleanup()
     m_dna = 0;
     // TO DO: ShaderProgram is leaked as of now
     // Fix that taking care that they may be shared given a same dna
-    m_program = Q_NULLPTR;
+    m_program = nullptr;
     m_uniformsNames.clear();
     m_attributesNames.clear();
     m_uniformBlockNames.clear();
@@ -327,7 +327,7 @@ QOpenGLShaderProgram *Shader::createProgram(GraphicsContext *context)
     context->bindFragOutputs(p->programId(), m_fragOutputs);
     if (!p->link()) {
         qWarning().noquote() << "Failed to link shader program:" << p->log();
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     // take from scoped-pointer so it doesn't get deleted

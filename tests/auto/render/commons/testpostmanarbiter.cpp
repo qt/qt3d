@@ -57,7 +57,7 @@ TestArbiter::TestArbiter(Qt3DCore::QNode *node)
 TestArbiter::~TestArbiter()
 {
     if (m_node)
-        Qt3DCore::QNodePrivate::get(m_node)->setArbiter(Q_NULLPTR);
+        Qt3DCore::QNodePrivate::get(m_node)->setArbiter(nullptr);
 }
 
 void TestArbiter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

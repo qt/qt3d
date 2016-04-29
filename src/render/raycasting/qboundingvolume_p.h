@@ -70,7 +70,7 @@ public:
     };
 
     virtual Qt3DCore::QNodeId id() const = 0;
-    virtual bool intersects(const QRay3D &ray, QVector3D *q = Q_NULLPTR) const = 0;
+    virtual bool intersects(const QRay3D &ray, QVector3D *q = nullptr) const = 0;
 
     virtual Type type() const = 0;
 };

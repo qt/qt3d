@@ -75,7 +75,7 @@ void QRenderTarget::addOutput(QRenderTargetOutput *output)
         if (!output->parent())
             output->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             const auto change = QNodeAddedPropertyChangePtr::create(id(), output);
             change->setPropertyName("output");
             d->notifyObservers(change);
@@ -87,7 +87,7 @@ void QRenderTarget::removeOutput(QRenderTargetOutput *output)
 {
     Q_D(QRenderTarget);
 
-    if (output && d->m_changeArbiter != Q_NULLPTR) {
+    if (output && d->m_changeArbiter != nullptr) {
         const auto change = QNodeRemovedPropertyChangePtr::create(id(), output);
         change->setPropertyName("output");
         d->notifyObservers(change);

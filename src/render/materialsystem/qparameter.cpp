@@ -57,7 +57,7 @@ QParameterPrivate::QParameterPrivate()
 void QParameterPrivate::setValue(const QVariant &v)
 {
     Qt3DCore::QNode *nodeValue = v.value<Qt3DCore::QNode *>();
-    if (nodeValue != Q_NULLPTR)
+    if (nodeValue != nullptr)
         m_backendValue = QVariant::fromValue(nodeValue->id());
     else
         m_backendValue = v;
@@ -114,7 +114,7 @@ void QParameter::setValue(const QVariant &dv)
 
         // In case node values are declared inline
         QNode *nodeValue = dv.value<QNode *>();
-        if (nodeValue != Q_NULLPTR && !nodeValue->parent())
+        if (nodeValue != nullptr && !nodeValue->parent())
             nodeValue->setParent(this);
 
         d->setValue(dv);

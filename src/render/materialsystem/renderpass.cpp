@@ -78,7 +78,7 @@ void RenderPass::updateFromPeer(Qt3DCore::QNode *peer)
 
     m_parameterPack.clear();
 
-    if (pass->shaderProgram() != Q_NULLPTR)
+    if (pass->shaderProgram() != nullptr)
         m_shaderUuid = pass->shaderProgram()->id();
     // The RenderPass clones frontend bindings in case the frontend ever removes them
     // TO DO: We probably need a QParameterMapper manager

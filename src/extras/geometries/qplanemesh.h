@@ -56,7 +56,7 @@ class QT3DEXTRASSHARED_EXPORT QPlaneMesh : public Qt3DRender::QGeometryRenderer
     Q_PROPERTY(QSize meshResolution READ meshResolution WRITE setMeshResolution NOTIFY meshResolutionChanged)
 
 public:
-    explicit QPlaneMesh(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QPlaneMesh(Qt3DCore::QNode *parent = nullptr);
 
     float width() const;
     float height() const;

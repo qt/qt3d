@@ -56,7 +56,7 @@ QInputDeviceIntegration *QInputDevicePlugin::create(const QString &key, const QS
 {
     Q_UNUSED(key)
     Q_UNUSED(paramList)
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 } // Qt3DInput

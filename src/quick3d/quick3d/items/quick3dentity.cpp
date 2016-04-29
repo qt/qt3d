@@ -72,7 +72,7 @@ QQmlListProperty<QComponent> Quick3DEntity::componentList()
 
 void Quick3DEntity::qmlAppendComponent(QQmlListProperty<QComponent> *list, QComponent *comp)
 {
-    if (comp == Q_NULLPTR)
+    if (comp == nullptr)
         return;
     Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
     self->parentEntity()->addComponent(comp);

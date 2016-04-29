@@ -60,7 +60,7 @@ class QT3DRENDERSHARED_EXPORT QObjectPicker : public Qt3DCore::QComponent
     Q_PROPERTY(bool containsMouse READ containsMouse NOTIFY containsMouseChanged)
 
 public:
-    explicit QObjectPicker(QNode *parent = Q_NULLPTR);
+    explicit QObjectPicker(QNode *parent = nullptr);
 
     bool isHoverEnabled() const;
     bool isDragEnabled() const;

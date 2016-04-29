@@ -139,7 +139,7 @@ public:
 
 static QVector<Entity *> gatherEntities(Entity *entity, QVector<Entity *> entities)
 {
-    if (entity != Q_NULLPTR) {
+    if (entity != nullptr) {
         entities.push_back(entity);
         // Traverse children
         const auto children = entity->children();
@@ -225,14 +225,14 @@ struct AbstractCollisionGathererFunctor
 
         // If the Entity which actually received the hit doesn't have
         // an object picker component, we need to check the parent if it has one ...
-        while (objectPickerHandle.isNull() && entity != Q_NULLPTR) {
+        while (objectPickerHandle.isNull() && entity != nullptr) {
             entity = entity->parent();
-            if (entity != Q_NULLPTR)
+            if (entity != nullptr)
                 objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
         }
 
         ObjectPicker *objectPicker = m_renderer->nodeManagers()->objectPickerManager()->data(objectPickerHandle);
-        if (objectPicker == Q_NULLPTR)
+        if (objectPicker == nullptr)
             return result_type();  // don't bother picking entities that don't have an object picker
 
         Qt3DRender::QRayCastingService rayCasting;
@@ -324,7 +324,7 @@ CollisionVisitor::HitList reduceToAllHits(CollisionVisitor::HitList &results, co
 PickBoundingVolumeJob::PickBoundingVolumeJob(Renderer *renderer)
     : m_renderer(renderer)
     , m_manager(renderer->nodeManagers())
-    , m_node(Q_NULLPTR)
+    , m_node(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::PickBoundingVolume, 0);
 }
@@ -395,15 +395,15 @@ void PickBoundingVolumeJob::run()
 
                         // If the Entity which actually received the hit doesn't have
                         // an object picker component, we need to check the parent if it has one ...
-                        while (objectPickerHandle.isNull() && entity != Q_NULLPTR) {
+                        while (objectPickerHandle.isNull() && entity != nullptr) {
                             entity = entity->parent();
-                            if (entity != Q_NULLPTR)
+                            if (entity != nullptr)
                                 objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
                         }
 
                         ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
 
-                        if (objectPicker != Q_NULLPTR) {
+                        if (objectPicker != nullptr) {
                             // Send the corresponding event
                             QVector3D localIntersection = hit.m_intersection;
                             if (entity && entity->worldTransform())
@@ -427,7 +427,7 @@ void PickBoundingVolumeJob::run()
 
                             case QEvent::MouseButtonRelease: {
                                 // Send release event to m_currentPicker
-                                if (lastCurrentPicker != Q_NULLPTR) {
+                                if (lastCurrentPicker != nullptr) {
                                     m_currentPicker = HObjectPicker();
                                     lastCurrentPicker->onClicked(pickEvent);
                                     lastCurrentPicker->onReleased(pickEvent);
@@ -474,7 +474,7 @@ void PickBoundingVolumeJob::run()
                     switch (event.type()) {
                     case QEvent::MouseButtonRelease: {
                         // Send release event to m_currentPicker
-                        if (lastCurrentPicker != Q_NULLPTR) {
+                        if (lastCurrentPicker != nullptr) {
                             m_currentPicker = HObjectPicker();
                             QPickEventPtr pickEvent(new QPickEvent);
                             lastCurrentPicker->onReleased(pickEvent);
@@ -503,10 +503,10 @@ void PickBoundingVolumeJob::viewMatrixForCamera(Qt3DCore::QNodeId cameraId,
                                                 QMatrix4x4 &viewMatrix,
                                                 QMatrix4x4 &projectionMatrix) const
 {
-    Render::CameraLens *lens = Q_NULLPTR;
+    Render::CameraLens *lens = nullptr;
     Entity *camNode = m_manager->renderNodesManager()->lookupResource(cameraId);
-    if (camNode != Q_NULLPTR &&
-            (lens = camNode->renderComponent<CameraLens>()) != Q_NULLPTR &&
+    if (camNode != nullptr &&
+            (lens = camNode->renderComponent<CameraLens>()) != nullptr &&
             lens->isEnabled()) {
         viewMatrix = *camNode->worldTransform();
         projectionMatrix = lens->projection();

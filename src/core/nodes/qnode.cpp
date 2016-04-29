@@ -67,9 +67,9 @@ const bool QNodePrivate::ms_useCloning = !qEnvironmentVariableIsSet("QT3D_NO_CLO
 
 QNodePrivate::QNodePrivate()
     : QObjectPrivate()
-    , m_changeArbiter(Q_NULLPTR)
-    , m_typeInfo(Q_NULLPTR)
-    , m_scene(Q_NULLPTR)
+    , m_changeArbiter(nullptr)
+    , m_typeInfo(nullptr)
+    , m_scene(nullptr)
     , m_id(QNodeId::createId())
     , m_blockNotifications(false)
     , m_hasBackendNode(false)
@@ -91,7 +91,7 @@ void QNodePrivate::_q_addChild(QNode *childNode)
     // We need to send a QNodeAddedChange to the backend
 
     // We notify the backend that we have a new child
-    if (m_changeArbiter != Q_NULLPTR) {
+    if (m_changeArbiter != nullptr) {
         const auto change = QNodeAddedPropertyChangePtr::create(m_id, childNode);
         change->setPropertyName("children");
         notifyObservers(change);
@@ -111,7 +111,7 @@ void QNodePrivate::_q_removeChild(QNode *childNode)
     Q_ASSERT_X(childNode->parent() == q_func(), Q_FUNC_INFO, "not a child of this node");
 
     // We notify the backend that we lost a child
-    if (m_changeArbiter != Q_NULLPTR) {
+    if (m_changeArbiter != nullptr) {
         const auto change = QNodeRemovedPropertyChangePtr::create(m_id, childNode);
         change->setPropertyName("children");
         notifyObservers(change);
@@ -267,9 +267,9 @@ void QNodePrivate::unsetSceneHelper(QNode *root)
         }
     }
 
-    if (m_scene != Q_NULLPTR)
+    if (m_scene != nullptr)
         m_scene->removeObservable(root);
-    root->d_func()->setScene(Q_NULLPTR);
+    root->d_func()->setScene(nullptr);
 }
 
 /*!
@@ -356,9 +356,9 @@ void QNodePrivate::notifyObservers(const QSceneChangePtr &change)
     if (m_blockNotifications && change->type() == NodeUpdated)
         return;
 
-    if (m_changeArbiter != Q_NULLPTR) {
+    if (m_changeArbiter != nullptr) {
         QAbstractPostman *postman = m_changeArbiter->postman();
-        if (postman != Q_NULLPTR)
+        if (postman != nullptr)
             postman->notifyBackend(change);
     }
 }
@@ -375,14 +375,14 @@ void QNodePrivate::notifyObservers(const QSceneChangePtr &change)
  */
 void QNodePrivate::insertTree(QNode *treeRoot, int depth)
 {
-    if (m_scene != Q_NULLPTR) {
+    if (m_scene != nullptr) {
         treeRoot->d_func()->setScene(m_scene);
         m_scene->addObservable(treeRoot);
     }
 
     for (QObject *c : treeRoot->children()) {
-        QNode *n = Q_NULLPTR;
-        if ((n = qobject_cast<QNode *>(c)) != Q_NULLPTR)
+        QNode *n = nullptr;
+        if ((n = qobject_cast<QNode *>(c)) != nullptr)
             insertTree(n, depth + 1);
     }
 
@@ -404,7 +404,7 @@ QNodePrivate *QNodePrivate::get(QNode *q)
 void QNodePrivate::nodePtrDeleter(QNode *q)
 {
     QObject *p = q->parent();
-    if (p == Q_NULLPTR)
+    if (p == nullptr)
         p = q;
     p->deleteLater();
 }
@@ -468,7 +468,7 @@ QNode::QNode(QNode *parent)
 {
     // We need to add ourselves with the parent if it is valid
     // This will notify the backend about the new child
-    if (parent/* && QNodePrivate::get(parent)->m_changeArbiter != Q_NULLPTR*/) {
+    if (parent/* && QNodePrivate::get(parent)->m_changeArbiter != nullptr*/) {
         // This needs to be invoked  only after the QNode has been fully constructed
         QMetaObject::invokeMethod(this, "_q_setParentHelper", Qt::QueuedConnection, Q_ARG(Qt3DCore::QNode*, parent));
     }
@@ -480,7 +480,7 @@ QNode::QNode(QNodePrivate &dd, QNode *parent)
 {
     // We need to add ourselves with the parent if it is valid
     // This will notify the backend about the new child
-    if (parent/* && QNodePrivate::get(parent)->m_changeArbiter != Q_NULLPTR*/) {
+    if (parent/* && QNodePrivate::get(parent)->m_changeArbiter != nullptr*/) {
         // This needs to be invoked  only after the QNode has been fully constructed
         QMetaObject::invokeMethod(this, "_q_setParentHelper", Qt::QueuedConnection, Q_ARG(Qt3DCore::QNode*, parent));
     }

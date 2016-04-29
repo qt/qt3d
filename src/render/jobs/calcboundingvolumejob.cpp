@@ -162,7 +162,7 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
 
 CalculateBoundingVolumeJob::CalculateBoundingVolumeJob(NodeManagers *manager)
     : m_manager(manager),
-      m_node(Q_NULLPTR)
+      m_node(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::CalcBoundingVolume, 0);
 }

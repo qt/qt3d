@@ -56,7 +56,7 @@ namespace Qt3DRender {
 
 QRenderPassPrivate::QRenderPassPrivate()
     : QNodePrivate()
-    , m_shader(Q_NULLPTR)
+    , m_shader(nullptr)
 {
 }
 
@@ -81,7 +81,7 @@ void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
     Q_D(QRenderPass);
     if (d->m_shader != shaderProgram) {
 
-        if (d->m_shader != Q_NULLPTR && d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_shader != nullptr && d->m_changeArbiter != nullptr) {
             const auto change = QNodeRemovedPropertyChangePtr::create(id(), d->m_shader);
             change->setPropertyName("shaderProgram");
             d->notifyObservers(change);
@@ -97,7 +97,7 @@ void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
         if (!shaderProgram->parent())
             shaderProgram->setParent(this);
 
-        if (d->m_shader && d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_shader && d->m_changeArbiter != nullptr) {
             QNodePropertyChangePtr e(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
             const auto change = QNodeAddedPropertyChangePtr::create(id(), d->m_shader);
             change->setPropertyName("shaderProgram");
@@ -126,7 +126,7 @@ void QRenderPass::addFilterKey(QFilterKey *filterKey)
         if (!filterKey->parent())
             filterKey->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             const auto change = QNodeAddedPropertyChangePtr::create(id(), filterKey);
             change->setPropertyName("filterKeys");
             d->notifyObservers(change);
@@ -138,7 +138,7 @@ void QRenderPass::removeFilterKey(QFilterKey *filterKey)
 {
     Q_ASSERT(filterKey);
     Q_D(QRenderPass);
-    if (d->m_changeArbiter != Q_NULLPTR) {
+    if (d->m_changeArbiter != nullptr) {
         const auto change = QNodeRemovedPropertyChangePtr::create(id(), filterKey);
         change->setPropertyName("filterKeys");
         d->notifyObservers(change);
@@ -170,7 +170,7 @@ void QRenderPass::addRenderState(QRenderState *state)
         if (!state->parent())
             state->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             const auto change = QNodeAddedPropertyChangePtr::create(id(), state);
             change->setPropertyName("renderState");
             d->notifyObservers(change);
@@ -185,7 +185,7 @@ void QRenderPass::removeRenderState(QRenderState *state)
 {
     Q_ASSERT(state);
     Q_D(QRenderPass);
-    if (d->m_changeArbiter != Q_NULLPTR) {
+    if (d->m_changeArbiter != nullptr) {
         const auto change = QNodeRemovedPropertyChangePtr::create(id(), state);
         change->setPropertyName("renderState");
         d->notifyObservers(change);
@@ -217,7 +217,7 @@ void QRenderPass::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter);
             change->setPropertyName("parameter");
             d->notifyObservers(change);
@@ -229,7 +229,7 @@ void QRenderPass::removeParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
     Q_D(QRenderPass);
-    if (d->m_changeArbiter != Q_NULLPTR) {
+    if (d->m_changeArbiter != nullptr) {
         const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter);
         change->setPropertyName("parameter");
         d->notifyObservers(change);

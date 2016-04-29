@@ -63,7 +63,7 @@ class QT3DRENDERSHARED_EXPORT QShaderData : public Qt3DCore::QComponent
 {
     Q_OBJECT
 public:
-    explicit QShaderData(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QShaderData(Qt3DCore::QNode *parent = nullptr);
 
     enum TransformType {
         ModelToEye = 0,
@@ -74,7 +74,7 @@ public:
     PropertyReaderInterfacePtr propertyReader() const;
 
 protected:
-    QShaderData(QShaderDataPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
+    QShaderData(QShaderDataPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QShaderData)

@@ -534,7 +534,7 @@ bool QTexImageDataPrivate::setDdsFile(const QString &source)
     const quint32 pixelFlags = qFromLittleEndian(header.pixelFormat.flags);
     const quint32 fourCC = qFromLittleEndian(header.pixelFormat.fourCC);
 
-    const FormatInfo *formatInfo = Q_NULLPTR;
+    const FormatInfo *formatInfo = nullptr;
 
     if ((pixelFlags & FourCCFlag) == FourCCFlag) {
         if (fourCC == DdsFourCC<'D', 'X', '1', '0'>::value) {
@@ -587,7 +587,7 @@ bool QTexImageDataPrivate::setDdsFile(const QString &source)
         }
     }
 
-    if (formatInfo == Q_NULLPTR) {
+    if (formatInfo == nullptr) {
             qWarning() << "Unrecognized pixel format in" << source;
             return false;
     }

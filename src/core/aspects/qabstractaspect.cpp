@@ -54,11 +54,11 @@ namespace Qt3DCore {
 
 QAbstractAspectPrivate::QAbstractAspectPrivate()
     : QObjectPrivate()
-    , m_root(Q_NULLPTR)
+    , m_root(nullptr)
     , m_rootId()
-    , m_aspectManager(Q_NULLPTR)
-    , m_jobManager(Q_NULLPTR)
-    , m_arbiter(Q_NULLPTR)
+    , m_aspectManager(nullptr)
+    , m_jobManager(nullptr)
+    , m_arbiter(nullptr)
 {
 }
 
@@ -179,7 +179,7 @@ QBackendNode *QAbstractAspectPrivate::createBackendNode(const QNodeCreatedChange
 {
     const QMetaObject *metaObj = change->metaObject();
     QBackendNodeMapperPtr backendNodeMapper;
-    while (metaObj != Q_NULLPTR && backendNodeMapper.isNull()) {
+    while (metaObj != nullptr && backendNodeMapper.isNull()) {
         backendNodeMapper = m_backendCreatorFunctors.value(metaObj);
         metaObj = metaObj->superClass();
     }
@@ -188,7 +188,7 @@ QBackendNode *QAbstractAspectPrivate::createBackendNode(const QNodeCreatedChange
         return nullptr;
 
     QBackendNode *backend = backendNodeMapper->get(change->subjectId());
-    if (backend != Q_NULLPTR)
+    if (backend != nullptr)
         return backend;
     backend = backendNodeMapper->create(change);
 
@@ -207,7 +207,7 @@ QBackendNode *QAbstractAspectPrivate::createBackendNode(const QNodeCreatedChange
     backendPriv->setEnabled(change->isNodeEnabled());
     // TO DO: Find a way to specify the changes to observe
     // Register backendNode with QChangeArbiter
-    if (m_arbiter != Q_NULLPTR) { // Unit tests may not have the arbiter registered
+    if (m_arbiter != nullptr) { // Unit tests may not have the arbiter registered
         qCDebug(Nodes) << q_func()->objectName() << "Creating backend node for node id"
                        << change->subjectId() << "of type" << change->metaObject()->className();
         m_arbiter->registerObserver(backendPriv, backend->peerId(), AllChanges);
@@ -226,7 +226,7 @@ void QAbstractAspectPrivate::clearBackendNode(const QNodeDestroyedChangePtr &cha
         QBackendNodeMapperPtr backendNodeMapper;
 
         // Find backend node mapper for this type
-        while (metaObj != Q_NULLPTR && backendNodeMapper.isNull()) {
+        while (metaObj != nullptr && backendNodeMapper.isNull()) {
             backendNodeMapper = m_backendCreatorFunctors.value(metaObj);
             metaObj = metaObj->superClass();
         }

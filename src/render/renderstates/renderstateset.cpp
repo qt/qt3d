@@ -372,7 +372,7 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
     default:
         Q_UNREACHABLE();
         qFatal("Should not happen");
-        return Q_NULLPTR;
+        return nullptr;
     }
 }
 
@@ -504,7 +504,7 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(const Qt3DRender::QRenderStat
     default:
         Q_UNREACHABLE();
         qFatal("Should not happen");
-        return Q_NULLPTR;
+        return nullptr;
     }
 }
 

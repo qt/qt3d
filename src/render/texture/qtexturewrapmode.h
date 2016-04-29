@@ -65,8 +65,8 @@ public:
     };
     Q_ENUM(WrapMode)
 
-    explicit QTextureWrapMode(WrapMode wrapMode = ClampToEdge, QObject *parent = Q_NULLPTR);
-    explicit QTextureWrapMode(WrapMode x, WrapMode y, WrapMode z, QObject *parent = Q_NULLPTR);
+    explicit QTextureWrapMode(WrapMode wrapMode = ClampToEdge, QObject *parent = nullptr);
+    explicit QTextureWrapMode(WrapMode x, WrapMode y, WrapMode z, QObject *parent = nullptr);
 
     WrapMode x() const;
     WrapMode y() const;

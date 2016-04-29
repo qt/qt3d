@@ -201,7 +201,7 @@ public:
     {
         ViewSubmissionResultData()
             : lastBoundFBOId(0)
-            , surface(Q_NULLPTR)
+            , surface(nullptr)
         {}
 
         uint lastBoundFBOId;

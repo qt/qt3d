@@ -59,7 +59,7 @@ CalcGeometryTriangleVolumes::CalcGeometryTriangleVolumes(const Qt3DCore::QNodeId
 void CalcGeometryTriangleVolumes::run()
 {
     GeometryRenderer *renderer = m_manager->geometryRendererManager()->lookupResource(m_geometryRendererId);
-    if (renderer != Q_NULLPTR) {
+    if (renderer != nullptr) {
         TrianglesExtractor extractor(renderer, m_manager);
         renderer->setTriangleVolumes(extractor.extract(m_geometryRendererId));
     }

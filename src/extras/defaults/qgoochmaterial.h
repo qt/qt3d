@@ -62,7 +62,7 @@ class QT3DEXTRASSHARED_EXPORT QGoochMaterial : public Qt3DRender::QMaterial
     Q_PROPERTY(float shininess READ shininess WRITE setShininess NOTIFY shininessChanged)
 
 public:
-    explicit QGoochMaterial(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QGoochMaterial(Qt3DCore::QNode *parent = nullptr);
     QColor diffuse() const;
     QColor specular() const;
     QColor cool() const;
@@ -90,7 +90,7 @@ Q_SIGNALS:
     void shininessChanged(float shininess);
 
 protected:
-    QGoochMaterial(QGoochMaterialPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
+    QGoochMaterial(QGoochMaterialPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QGoochMaterial)

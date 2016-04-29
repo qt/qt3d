@@ -87,7 +87,7 @@ QInputDeviceIntegration *QInputDeviceIntegrationFactory::create(const QString &n
     if (QInputDeviceIntegration *ret = qLoadPlugin<QInputDeviceIntegration, QInputDevicePlugin>(loader(), name, args))
         return ret;
 #endif
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 } // Qt3DInput

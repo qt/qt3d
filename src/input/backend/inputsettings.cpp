@@ -51,7 +51,7 @@ namespace Input {
 
 InputSettings::InputSettings()
     : QBackendNode(QBackendNode::ReadOnly)
-    , m_eventSource(Q_NULLPTR)
+    , m_eventSource(nullptr)
 {
 }
 
@@ -86,9 +86,9 @@ InputSettingsFunctor::InputSettingsFunctor(InputHandler *handler)
 
 Qt3DCore::QBackendNode *InputSettingsFunctor::create(Qt3DCore::QNode *frontend) const
 {
-    if (m_handler->inputSettings() != Q_NULLPTR) {
+    if (m_handler->inputSettings() != nullptr) {
         qWarning() << "Input settings already specified";
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     InputSettings *settings = new InputSettings();
@@ -100,9 +100,9 @@ Qt3DCore::QBackendNode *InputSettingsFunctor::create(Qt3DCore::QNode *frontend) 
 Qt3DCore::QBackendNode *InputSettingsFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
     Q_UNUSED(change);
-    if (m_handler->inputSettings() != Q_NULLPTR) {
+    if (m_handler->inputSettings() != nullptr) {
         qWarning() << "Input settings already specified";
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     InputSettings *settings = new InputSettings();
@@ -113,16 +113,16 @@ Qt3DCore::QBackendNode *InputSettingsFunctor::create(const Qt3DCore::QNodeCreate
 Qt3DCore::QBackendNode *InputSettingsFunctor::get(Qt3DCore::QNodeId id) const
 {
     InputSettings *settings = m_handler->inputSettings();
-    if (settings != Q_NULLPTR && settings->peerId() == id)
+    if (settings != nullptr && settings->peerId() == id)
         return settings;
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 void InputSettingsFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     InputSettings *settings = m_handler->inputSettings();
-    if (settings != Q_NULLPTR && settings->peerId() == id) {
-        m_handler->setInputSettings(Q_NULLPTR);
+    if (settings != nullptr && settings->peerId() == id) {
+        m_handler->setInputSettings(nullptr);
         delete settings;
     }
 }

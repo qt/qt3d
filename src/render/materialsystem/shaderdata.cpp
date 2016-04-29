@@ -66,7 +66,7 @@ const int qNodeIdTypeId = qMetaTypeId<Qt3DCore::QNodeId>();
 QVector<Qt3DCore::QNodeId> ShaderData::m_updatedShaderData;
 
 ShaderData::ShaderData()
-    : m_managers(Q_NULLPTR)
+    : m_managers(nullptr)
 {
 }
 
@@ -138,12 +138,12 @@ void ShaderData::clearUpdatedProperties()
         if (it.value().userType() == QMetaType::QVariantList) {
             Q_FOREACH (const QVariant &v, it.value().value<QVariantList>()) {
                 ShaderData *nested = lookupResource(v.value<QNodeId>());
-                if (nested != Q_NULLPTR)
+                if (nested != nullptr)
                     nested->clearUpdatedProperties();
             }
         } else {
             ShaderData *nested = lookupResource(it.value().value<QNodeId>());
-            if (nested != Q_NULLPTR)
+            if (nested != nullptr)
                 nested->clearUpdatedProperties();
         }
         ++it;
@@ -207,7 +207,7 @@ bool ShaderData::updateViewTransform(const QMatrix4x4 &viewMatrix)
 
                 const Qt3DCore::QNodeId nestedId = variant_value<Qt3DCore::QNodeId>(v);
                 ShaderData *nested = lookupResource(nestedId);
-                if (nested != Q_NULLPTR) {
+                if (nested != nullptr) {
                     // We need to add the nested nodes to the updated property list
                     // as we need to maintain order
                     // if node[0] doesn't need update but node[1] does,
@@ -222,7 +222,7 @@ bool ShaderData::updateViewTransform(const QMatrix4x4 &viewMatrix)
         } else if (userType == qNodeIdTypeId) {
             const Qt3DCore::QNodeId nestedId = variant_value<Qt3DCore::QNodeId>(it.value());
             ShaderData *nested = lookupResource(nestedId);
-            if (nested != Q_NULLPTR && nested->updateViewTransform(viewMatrix))
+            if (nested != nullptr && nested->updateViewTransform(viewMatrix))
                 m_updatedProperties.insert(it.key(), it.value());
         }
         ++it;

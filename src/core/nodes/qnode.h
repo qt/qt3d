@@ -47,7 +47,7 @@
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/qabstractnodefactory.h>
 
-#define Q_NODE_NULLPTR static_cast<Qt3DCore::QNode *>(Q_NULLPTR)
+#define Q_NODE_NULLPTR static_cast<Qt3DCore::QNode *>(nullptr)
 
 QT_BEGIN_NAMESPACE
 
@@ -71,7 +71,7 @@ class QT3DCORESHARED_EXPORT QNode : public QObject
     Q_PROPERTY(Qt3DCore::QNode *parent READ parentNode WRITE setParent NOTIFY parentChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 public:
-    explicit QNode(QNode *parent = Q_NULLPTR);
+    explicit QNode(QNode *parent = nullptr);
     virtual ~QNode();
 
     const QNodeId id() const;
@@ -93,7 +93,7 @@ Q_SIGNALS:
     void enabledChanged(bool enabled);
 
 protected:
-    QNode(QNodePrivate &dd, QNode *parent = Q_NULLPTR);
+    QNode(QNodePrivate &dd, QNode *parent = nullptr);
     virtual void sceneChangeEvent(const QSceneChangePtr &change);
 
 private:

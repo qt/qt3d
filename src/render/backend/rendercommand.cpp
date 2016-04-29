@@ -46,7 +46,7 @@ namespace Render {
 
 RenderCommand::RenderCommand()
     : m_instancesCount(0)
-    , m_stateSet(Q_NULLPTR)
+    , m_stateSet(nullptr)
     , m_depth(0.0f)
     , m_changeCost(0)
     , m_type(RenderCommand::Draw)

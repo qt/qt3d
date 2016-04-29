@@ -41,7 +41,7 @@ class MyFrameGraphNode : public Qt3DRender::QFrameGraphNode
 {
     Q_OBJECT
 public:
-    explicit MyFrameGraphNode(Qt3DCore::QNode *parent = Q_NULLPTR)
+    explicit MyFrameGraphNode(Qt3DCore::QNode *parent = nullptr)
         : QFrameGraphNode(parent)
     {
     }
@@ -58,7 +58,7 @@ private Q_SLOTS:
         QScopedPointer<Qt3DRender::QFrameGraphNode> defaultFrameGraphNode(new MyFrameGraphNode);
 
         QVERIFY(defaultFrameGraphNode->isEnabled());
-        QVERIFY(defaultFrameGraphNode->parentFrameGraphNode() == Q_NULLPTR);
+        QVERIFY(defaultFrameGraphNode->parentFrameGraphNode() == nullptr);
     }
 
     void checkCloning_data()

@@ -57,7 +57,7 @@ namespace Render {
 
 Scene::Scene()
     : BackendNode(QBackendNode::ReadWrite)
-    , m_sceneManager(Q_NULLPTR)
+    , m_sceneManager(nullptr)
 {
 }
 

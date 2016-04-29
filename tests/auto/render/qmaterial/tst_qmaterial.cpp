@@ -89,7 +89,7 @@ private:
 
     void compareEffects(const Qt3DRender::QEffect *original, const Qt3DRender::QEffect *clone)
     {
-        bool isEffectNull = (original == Q_NULLPTR);
+        bool isEffectNull = (original == nullptr);
         if (isEffectNull) {
             QVERIFY(!clone);
         } else {
@@ -171,7 +171,7 @@ private:
 
     void compareShaderPrograms(const Qt3DRender::QShaderProgram *original, const Qt3DRender::QShaderProgram *clone)
     {
-        bool isOriginalNull = (original == Q_NULLPTR);
+        bool isOriginalNull = (original == nullptr);
         if (isOriginalNull) {
             QVERIFY(!clone);
         } else {

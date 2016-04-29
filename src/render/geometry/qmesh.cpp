@@ -174,7 +174,7 @@ QGeometry *MeshFunctor::operator()()
 {
     if (m_sourcePath.isEmpty()) {
         qCWarning(Render::Jobs) << Q_FUNC_INFO << "Mesh is empty, nothing to load";
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     // TO DO : Maybe use Assimp instead of ObjLoader to handle more sources
@@ -191,7 +191,7 @@ QGeometry *MeshFunctor::operator()()
         return loader.geometry();
 
     qCWarning(Render::Jobs) << Q_FUNC_INFO << "OBJ load failure for:" << filePath;
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 /*!
@@ -200,7 +200,7 @@ QGeometry *MeshFunctor::operator()()
 bool MeshFunctor::operator ==(const QGeometryFactory &other) const
 {
     const MeshFunctor *otherFunctor = functor_cast<MeshFunctor>(&other);
-    if (otherFunctor != Q_NULLPTR)
+    if (otherFunctor != nullptr)
         return (otherFunctor->m_sourcePath == m_sourcePath);
     return false;
 }

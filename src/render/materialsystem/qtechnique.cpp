@@ -77,7 +77,7 @@ QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
 
 void QTechniquePrivate::_q_graphicsApiFilterChanged()
 {
-    if (m_changeArbiter != Q_NULLPTR) {
+    if (m_changeArbiter != nullptr) {
         QNodePropertyChangePtr change(new QNodePropertyChange(NodeUpdated, QSceneChange::Node, m_id));
         change->setPropertyName("graphicsApiFilterData");
         change->setValue(QVariant::fromValue(QGraphicsApiFilterPrivate::get(const_cast<QGraphicsApiFilter *>(&m_graphicsApiFilter))->m_data));
@@ -99,7 +99,7 @@ void QTechnique::addFilterKey(QFilterKey *filterKey)
         if (!filterKey->parent())
             filterKey->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             const auto change = QNodeAddedPropertyChangePtr::create(id(), filterKey);
             change->setPropertyName("filterKeys");
             d->notifyObservers(change);
@@ -111,7 +111,7 @@ void QTechnique::removeFilterKey(QFilterKey *filterKey)
 {
     Q_ASSERT(filterKey);
     Q_D(QTechnique);
-    if (d->m_changeArbiter != Q_NULLPTR) {
+    if (d->m_changeArbiter != nullptr) {
         const auto change = QNodeRemovedPropertyChangePtr::create(id(), filterKey);
         change->setPropertyName("filterKeys");
         d->notifyObservers(change);
@@ -139,7 +139,7 @@ void QTechnique::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter);
             change->setPropertyName("parameter");
             d->notifyObservers(change);
@@ -151,7 +151,7 @@ void QTechnique::removeParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
     Q_D(QTechnique);
-    if (d->m_changeArbiter != Q_NULLPTR) {
+    if (d->m_changeArbiter != nullptr) {
         const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter);
         change->setPropertyName("parameter");
         d->notifyObservers(change);
@@ -178,7 +178,7 @@ void QTechnique::addRenderPass(QRenderPass *pass)
         if (!pass->parent())
             pass->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             const auto change = QNodeAddedPropertyChangePtr::create(id(), pass);
             change->setPropertyName("pass");
             d->notifyObservers(change);

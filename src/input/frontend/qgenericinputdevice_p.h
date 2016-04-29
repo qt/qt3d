@@ -64,7 +64,7 @@ class QT3DINPUTSHARED_PRIVATE_EXPORT QGenericInputDevice : public QAbstractPhysi
     Q_PROPERTY(QVariantMap axesMap READ axesMap WRITE setAxesMap NOTIFY axesMapChanged)
     Q_PROPERTY(QVariantMap buttonsMap READ buttonsMap WRITE setButtonsMap NOTIFY buttonsMapChanged)
 public:
-    QGenericInputDevice(Qt3DCore::QNode *parent = Q_NULLPTR);
+    QGenericInputDevice(Qt3DCore::QNode *parent = nullptr);
 
     QVariantMap axesMap() const;
     void setAxesMap(const QVariantMap &axesMap);

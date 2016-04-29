@@ -85,7 +85,7 @@ namespace Qt3DRender {
 
 QRenderSurfaceSelectorPrivate::QRenderSurfaceSelectorPrivate()
     : Qt3DRender::QFrameGraphNodePrivate()
-    , m_surface(Q_NULLPTR)
+    , m_surface(nullptr)
     , m_surfaceEventFilter(new Qt3DRender::Render::PlatformSurfaceFilter())
 {
 }
@@ -166,7 +166,7 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
 
             if (window) {
                 QObject::connect(window, &QWindow::widthChanged, [=] (int width) {
-                    if (d->m_changeArbiter != Q_NULLPTR) {
+                    if (d->m_changeArbiter != nullptr) {
                         Qt3DCore::QNodePropertyChangePtr change(
                                     new Qt3DCore::QNodePropertyChange(
                                         Qt3DCore::NodeUpdated,
@@ -179,7 +179,7 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
                     }
                 });
                 QObject::connect(window, &QWindow::heightChanged, [=] (int height) {
-                    if (d->m_changeArbiter != Q_NULLPTR) {
+                    if (d->m_changeArbiter != nullptr) {
                         Qt3DCore::QNodePropertyChangePtr change(
                                     new Qt3DCore::QNodePropertyChange(
                                         Qt3DCore::NodeUpdated,
@@ -205,7 +205,7 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
             break;
         }
     } else {
-        QWindow *nullWindow = Q_NULLPTR;
+        QWindow *nullWindow = nullptr;
         d->m_surfaceEventFilter->setSurface(nullWindow);
     }
     emit surfaceChanged(surfaceObject);

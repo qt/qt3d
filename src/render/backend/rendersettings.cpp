@@ -110,9 +110,9 @@ RenderSettingsFunctor::RenderSettingsFunctor(AbstractRenderer *renderer)
 Qt3DCore::QBackendNode *RenderSettingsFunctor::create(Qt3DCore::QNode *frontend) const
 {
     QRenderSettings *settingsFrontend = static_cast<QRenderSettings *>(frontend);
-    if (m_renderer->settings() != Q_NULLPTR) {
+    if (m_renderer->settings() != nullptr) {
         qWarning() << "Renderer settings already exists";
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     RenderSettings *settings = new RenderSettings;
@@ -125,9 +125,9 @@ Qt3DCore::QBackendNode *RenderSettingsFunctor::create(Qt3DCore::QNode *frontend)
 Qt3DCore::QBackendNode *RenderSettingsFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
     Q_UNUSED(change);
-    if (m_renderer->settings() != Q_NULLPTR) {
+    if (m_renderer->settings() != nullptr) {
         qWarning() << "Renderer settings already exists";
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     RenderSettings *settings = new RenderSettings;
@@ -139,14 +139,14 @@ Qt3DCore::QBackendNode *RenderSettingsFunctor::create(const Qt3DCore::QNodeCreat
 Qt3DCore::QBackendNode *RenderSettingsFunctor::get(Qt3DCore::QNodeId id) const
 {
     Q_UNUSED(id);
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 void RenderSettingsFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     Q_UNUSED(id);
     // Deletes the old settings object
-    m_renderer->setSettings(Q_NULLPTR);
+    m_renderer->setSettings(nullptr);
 }
 
 } // namespace Render

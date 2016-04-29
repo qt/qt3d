@@ -69,7 +69,7 @@ class QT3DRENDERSHARED_EXPORT QBoundingVolumeDebug : public Qt3DCore::QComponent
     Q_PROPERTY(bool recursive READ recursive WRITE setRecursive NOTIFY recursiveChanged)
 
 public:
-    explicit QBoundingVolumeDebug(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QBoundingVolumeDebug(Qt3DCore::QNode *parent = nullptr);
     ~QBoundingVolumeDebug();
 
     bool recursive() const;

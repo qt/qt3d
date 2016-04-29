@@ -123,7 +123,7 @@ private Q_SLOTS:
     void constructionDestruction()
     {
         QAspectEngine *engine = new QAspectEngine;
-        QVERIFY(engine->rootEntity() == Q_NULLPTR);
+        QVERIFY(engine->rootEntity() == nullptr);
         delete engine;
     }
 

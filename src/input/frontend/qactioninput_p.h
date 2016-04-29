@@ -69,7 +69,7 @@ class QActionInputPrivate : public Qt3DCore::QNodePrivate
 public:
     QActionInputPrivate()
         : Qt3DCore::QNodePrivate()
-        , m_sourceDevice(Q_NULLPTR)
+        , m_sourceDevice(nullptr)
     {}
 
     QVariantList m_buttons;

@@ -228,7 +228,7 @@ void QBuffer::setDataGenerator(const QBufferDataGeneratorPtr &functor)
     if (functor && d->m_functor && *functor == *d->m_functor)
         return;
     d->m_functor = functor;
-    if (d->m_changeArbiter != Q_NULLPTR) {
+    if (d->m_changeArbiter != nullptr) {
         QNodePropertyChangePtr change(new QNodePropertyChange(NodeUpdated, QSceneChange::Node, id()));
         change->setPropertyName("dataGenerator");
         change->setValue(QVariant::fromValue(d->m_functor));

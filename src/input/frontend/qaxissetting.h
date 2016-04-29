@@ -59,7 +59,7 @@ class QT3DINPUTSHARED_EXPORT QAxisSetting : public Qt3DCore::QNode
     Q_PROPERTY(bool smooth READ isSmoothEnabled WRITE setSmoothEnabled NOTIFY smoothChanged)
 
 public:
-    explicit QAxisSetting(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QAxisSetting(Qt3DCore::QNode *parent = nullptr);
 
     float deadZoneRadius() const;
     QVariantList axes() const;

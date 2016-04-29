@@ -75,7 +75,7 @@ void ComputeCommand::updateFromPeer(Qt3DCore::QNode *peer)
     m_workGroups[0] = computeCommand->workGroupX();
     m_workGroups[1] = computeCommand->workGroupY();
     m_workGroups[2] = computeCommand->workGroupZ();
-    if (m_renderer != Q_NULLPTR)
+    if (m_renderer != nullptr)
         BackendNode::markDirty(AbstractRenderer::ComputeDirty);
 }
 

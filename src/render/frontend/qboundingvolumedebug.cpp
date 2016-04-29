@@ -59,11 +59,11 @@ public:
     QBoundingVolumeDebugPrivate()
         : QComponentPrivate()
         , m_recursive(false)
-        , m_debugSubtree(Q_NULLPTR)
-        , m_sphereMesh(Q_NULLPTR)
-        , m_transform(Q_NULLPTR)
-        , m_material(Q_NULLPTR)
-        , m_layer(Q_NULLPTR)
+        , m_debugSubtree(nullptr)
+        , m_sphereMesh(nullptr)
+        , m_transform(nullptr)
+        , m_material(nullptr)
+        , m_layer(nullptr)
         , m_bvRadius(0.0f)
     {
         m_shareable = false;
@@ -128,9 +128,9 @@ void QBoundingVolumeDebug::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &cha
 // Executed in the frontend thread
 Qt3DCore::QEntity *QBoundingVolumeDebugPrivate::findRootEntity(Qt3DCore::QEntity *e)
 {
-    Qt3DCore::QEntity *tmp = Q_NULLPTR;
-    Qt3DCore::QEntity *parentEntity = Q_NULLPTR;
-    while (e && (tmp = e->parentEntity()) != Q_NULLPTR) {
+    Qt3DCore::QEntity *tmp = nullptr;
+    Qt3DCore::QEntity *parentEntity = nullptr;
+    while (e && (tmp = e->parentEntity()) != nullptr) {
         parentEntity = tmp;
         e = parentEntity;
     }
@@ -140,7 +140,7 @@ Qt3DCore::QEntity *QBoundingVolumeDebugPrivate::findRootEntity(Qt3DCore::QEntity
 void QBoundingVolumeDebugPrivate::updateSubtree()
 {
     Q_Q(QBoundingVolumeDebug);
-    if (m_debugSubtree == Q_NULLPTR) {
+    if (m_debugSubtree == nullptr) {
         m_debugSubtree = new Qt3DCore::QEntity();
         m_sphereMesh = new Qt3DRender::QSphereMesh();
         m_transform = new Qt3DCore::QTransform();

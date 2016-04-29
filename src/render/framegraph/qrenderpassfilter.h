@@ -58,7 +58,7 @@ class QT3DRENDERSHARED_EXPORT QRenderPassFilter : public QFrameGraphNode
     Q_OBJECT
 
 public:
-    explicit QRenderPassFilter(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QRenderPassFilter(Qt3DCore::QNode *parent = nullptr);
 
     QVector<QFilterKey*> matchAny() const;
     void addMatch(QFilterKey *filterKey);
@@ -69,7 +69,7 @@ public:
     QVector<QParameter *> parameters() const;
 
 protected:
-    QRenderPassFilter(QRenderPassFilterPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
+    QRenderPassFilter(QRenderPassFilterPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QRenderPassFilter)

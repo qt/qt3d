@@ -205,7 +205,7 @@ class MultiLevelStructShaderData : public StructShaderData
 public:
     MultiLevelStructShaderData()
         : StructShaderData()
-        , m_inner(Q_NULLPTR)
+        , m_inner(nullptr)
     {
     }
 
@@ -226,8 +226,8 @@ public:
     {
         QHash<QString, Qt3DRender::Render::ShaderUniform> innerUniforms;
 
-        StructShaderData *innerData = Q_NULLPTR;
-        if ((innerData = qobject_cast<StructShaderData *>(m_inner)) != Q_NULLPTR)
+        StructShaderData *innerData = nullptr;
+        if ((innerData = qobject_cast<StructShaderData *>(m_inner)) != nullptr)
             innerUniforms = innerData->buildUniformMap(QStringLiteral(".inner"));
 
         QHash<QString, Qt3DRender::Render::ShaderUniform> uniforms = StructShaderData::buildUniformMap(blockName);
@@ -245,8 +245,8 @@ public:
     {
         QHash<QString, QVariant> innerUniformsValues;
 
-        StructShaderData *innerData = Q_NULLPTR;
-        if ((innerData = qobject_cast<StructShaderData *>(m_inner)) != Q_NULLPTR)
+        StructShaderData *innerData = nullptr;
+        if ((innerData = qobject_cast<StructShaderData *>(m_inner)) != nullptr)
             innerUniformsValues = innerData->buildUniformMapValues(QStringLiteral(".inner"));
 
         QHash<QString, QVariant> uniformsValues = StructShaderData::buildUniformMapValues(blockName);
@@ -298,7 +298,7 @@ void tst_RenderViewUtils::topLevelScalarValueNoUniforms()
     initBackendShaderData(shaderData.data(), manager.data());
 
     Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
-    QVERIFY(backendShaderData != Q_NULLPTR);
+    QVERIFY(backendShaderData != nullptr);
 
     Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
     blockBuilder.shaderDataManager = manager.data();
@@ -318,7 +318,7 @@ void tst_RenderViewUtils::topLevelScalarValue()
     initBackendShaderData(shaderData.data(), manager.data());
 
     Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
-    QVERIFY(backendShaderData != Q_NULLPTR);
+    QVERIFY(backendShaderData != nullptr);
 
     Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
     blockBuilder.shaderDataManager = manager.data();
@@ -350,7 +350,7 @@ void tst_RenderViewUtils::topLevelArrayValue()
     initBackendShaderData(shaderData.data(), manager.data());
 
     Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
-    QVERIFY(backendShaderData != Q_NULLPTR);
+    QVERIFY(backendShaderData != nullptr);
 
     Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
     blockBuilder.shaderDataManager = manager.data();
@@ -413,7 +413,7 @@ void tst_RenderViewUtils::topLevelStructValue()
     initBackendShaderData(shaderData, manager.data());
 
     Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
-    QVERIFY(backendShaderData != Q_NULLPTR);
+    QVERIFY(backendShaderData != nullptr);
 
     Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
     blockBuilder.shaderDataManager = manager.data();
@@ -446,7 +446,7 @@ void tst_RenderViewUtils::topLevelDynamicProperties()
     initBackendShaderData(shaderData.data(), manager.data());
 
     Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
-    QVERIFY(backendShaderData != Q_NULLPTR);
+    QVERIFY(backendShaderData != nullptr);
 
     Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
     blockBuilder.shaderDataManager = manager.data();

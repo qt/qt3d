@@ -65,7 +65,7 @@ AssimpIOStream::AssimpIOStream(QIODevice *device) :
     Assimp::IOStream(),
     m_device(device)
 {
-    Q_ASSERT(m_device != Q_NULLPTR);
+    Q_ASSERT(m_device != nullptr);
 }
 
 /*!
@@ -213,7 +213,7 @@ Assimp::IOStream *AssimpIOSystem::Open(const char *pFile, const char *pMode)
     if (file->open(openMode))
         return new AssimpIOStream(file.take());
 
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 /*!

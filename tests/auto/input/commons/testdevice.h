@@ -33,7 +33,7 @@ class TestDevice : public Qt3DInput::QAbstractPhysicalDevice
 {
     Q_OBJECT
 public:
-    explicit TestDevice(Qt3DCore::QNode *parent = Q_NULLPTR)
+    explicit TestDevice(Qt3DCore::QNode *parent = nullptr)
         : Qt3DInput::QAbstractPhysicalDevice(parent)
     {}
 

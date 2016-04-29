@@ -170,7 +170,7 @@ QAttribute::VertexBaseType typeFromGLType(GLint dataType, uint &dataCount)
 } // anonymous
 
 QItemModelBuffer::QItemModelBuffer()
-    : m_buffer(Q_NULLPTR)
+    : m_buffer(nullptr)
 {
 }
 
@@ -181,7 +181,7 @@ void QItemModelBuffer::setModel(QAbstractItemModel *model)
 
     m_model = model;
     delete m_buffer;
-    m_buffer = Q_NULLPTR;
+    m_buffer = nullptr;
 
     connect(m_model, SIGNAL(modelReset()), this, SLOT(onModelReset()));
     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
@@ -192,7 +192,7 @@ void QItemModelBuffer::setRoot(const QModelIndex &rootIndex)
 {
     m_rootIndex = rootIndex;
     delete m_buffer;
-    m_buffer = Q_NULLPTR;
+    m_buffer = nullptr;
 }
 
 void QItemModelBuffer::mapRoleName(QByteArray roleName, int elementType)
@@ -210,7 +210,7 @@ void QItemModelBuffer::mapRoleName(QByteArray roleName, QString attributeName, i
 
     m_mappings.append(RoleMapping(roleName, attributeName, elementType));
     delete m_buffer;
-    m_buffer = Q_NULLPTR;
+    m_buffer = nullptr;
 }
 
 QBuffer *QItemModelBuffer::buffer()

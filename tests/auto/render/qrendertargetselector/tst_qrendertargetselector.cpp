@@ -47,7 +47,7 @@ private Q_SLOTS:
     {
         QScopedPointer<Qt3DRender::QRenderTargetSelector> defaultTargetSelector(new Qt3DRender::QRenderTargetSelector);
 
-        QVERIFY(defaultTargetSelector->target() == Q_NULLPTR);
+        QVERIFY(defaultTargetSelector->target() == nullptr);
         QCOMPARE(defaultTargetSelector->outputs().count(), 0);
     }
 
@@ -58,7 +58,7 @@ private Q_SLOTS:
         QTest::addColumn<Qt3DRender::QRenderTarget * >("target");
 
         Qt3DRender::QRenderTargetSelector *defaultConstructed = new Qt3DRender::QRenderTargetSelector();
-        QTest::newRow("defaultConstructed") << defaultConstructed << QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint>() << static_cast<Qt3DRender::QRenderTarget *>(Q_NULLPTR);
+        QTest::newRow("defaultConstructed") << defaultConstructed << QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint>() << static_cast<Qt3DRender::QRenderTarget *>(nullptr);
 
         Qt3DRender::QRenderTargetSelector *renderTargetSelectorWithTarget = new Qt3DRender::QRenderTargetSelector();
         Qt3DRender::QRenderTarget *target1 = new Qt3DRender::QRenderTarget();
@@ -133,7 +133,7 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.size(), 0);
 
         // WHEN
-        renderTargetSelector->setTarget(Q_NULLPTR);
+        renderTargetSelector->setTarget(nullptr);
         QCoreApplication::processEvents();
 
         // THEN

@@ -65,8 +65,8 @@ namespace Qt3DCore {
 
 QAspectEnginePrivate::QAspectEnginePrivate()
     : QObjectPrivate()
-    , m_postman(Q_NULLPTR)
-    , m_scene(Q_NULLPTR)
+    , m_postman(nullptr)
+    , m_scene(nullptr)
 {
     qRegisterMetaType<Qt3DCore::QAbstractAspect *>();
     qRegisterMetaType<Qt3DCore::QObserverInterface *>();
@@ -196,7 +196,7 @@ void QAspectEnginePrivate::shutdown()
     qCDebug(Aspects) << Q_FUNC_INFO;
 
     // Cleanup the scene before quitting the backend
-    m_scene->setArbiter(Q_NULLPTR);
+    m_scene->setArbiter(nullptr);
     QChangeArbiter *arbiter = m_aspectThread->aspectManager()->changeArbiter();
     QChangeArbiter::destroyUnmanagedThreadLocalChangeQueue(arbiter);
 }

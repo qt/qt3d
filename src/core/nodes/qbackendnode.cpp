@@ -49,9 +49,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 QBackendNodePrivate::QBackendNodePrivate(QBackendNode::Mode mode)
-    : q_ptr(Q_NULLPTR)
+    : q_ptr(nullptr)
     , m_mode(mode)
-    , m_arbiter(Q_NULLPTR)
+    , m_arbiter(nullptr)
     , m_enabled(false)
 {
 }
@@ -68,7 +68,7 @@ void QBackendNodePrivate::setArbiter(QLockableObserverInterface *arbiter)
 void QBackendNodePrivate::notifyObservers(const QSceneChangePtr &e)
 {
     Q_ASSERT(m_mode == QBackendNode::ReadWrite);
-    if (m_arbiter != Q_NULLPTR)
+    if (m_arbiter != nullptr)
         m_arbiter->sceneChangeEvent(e);
 }
 
@@ -166,7 +166,7 @@ void QBackendNode::setPeer(QNode *peer)
 {
     Q_D(QBackendNode);
     QNodeId peerId;
-    if (peer != Q_NULLPTR)
+    if (peer != nullptr)
         peerId = peer->id();
     d->m_peerId = peerId;
     d->m_enabled = peer->isEnabled();

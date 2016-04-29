@@ -56,7 +56,7 @@ namespace Input {
 
 KeyboardHandler::KeyboardHandler()
     : QBackendNode(QBackendNode::ReadWrite)
-    , m_inputHandler(Q_NULLPTR)
+    , m_inputHandler(nullptr)
     , m_focus(false)
 {
 }
@@ -64,7 +64,7 @@ KeyboardHandler::KeyboardHandler()
 void KeyboardHandler::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QKeyboardHandler *input = static_cast<QKeyboardHandler *>(peer);
-    if (input->sourceDevice() != Q_NULLPTR)
+    if (input->sourceDevice() != nullptr)
         setSourcerDevice(input->sourceDevice()->id());
     m_focus = false;
     if (input->focus())

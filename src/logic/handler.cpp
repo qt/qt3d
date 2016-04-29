@@ -48,7 +48,7 @@ namespace Qt3DLogic {
 namespace Logic {
 
 Handler::Handler()
-    : m_logicManager(Q_NULLPTR)
+    : m_logicManager(nullptr)
 {
 }
 

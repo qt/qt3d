@@ -129,8 +129,8 @@ uint QFrameAllocator::totalChunkCount() const
 QFixedFrameAllocator::QFixedFrameAllocator()
     : m_blockSize(0)
     , m_nbrBlock(0)
-    , m_lastAllocatedChunck(Q_NULLPTR)
-    , m_lastFreedChunck(Q_NULLPTR)
+    , m_lastAllocatedChunck(nullptr)
+    , m_lastFreedChunck(nullptr)
 {
 }
 
@@ -148,7 +148,7 @@ void QFixedFrameAllocator::init(uint blockSize, uchar pageSize)
 void *QFixedFrameAllocator::allocate()
 {
     Q_ASSERT(m_blockSize && m_nbrBlock);
-    if (m_lastAllocatedChunck == Q_NULLPTR ||
+    if (m_lastAllocatedChunck == nullptr ||
             m_lastAllocatedChunck->m_blocksAvailable == 0) {
         int i = 0;
         for (; i < m_chunks.size(); i++) {
@@ -171,8 +171,8 @@ void *QFixedFrameAllocator::allocate()
 void QFixedFrameAllocator::deallocate(void *ptr)
 {
     Q_ASSERT(m_blockSize && m_nbrBlock);
-    if (!m_chunks.empty() && ptr != Q_NULLPTR) {
-        if (m_lastFreedChunck != Q_NULLPTR && m_lastFreedChunck->contains(ptr, m_blockSize))
+    if (!m_chunks.empty() && ptr != nullptr) {
+        if (m_lastFreedChunck != nullptr && m_lastFreedChunck->contains(ptr, m_blockSize))
             m_lastFreedChunck->deallocate(ptr, m_blockSize);
         else {
             for (int i = 0; i < m_chunks.size(); i++) {
@@ -192,9 +192,9 @@ void QFixedFrameAllocator::trim()
         if (m_chunks.at(i).isEmpty()) {
             m_chunks[i].release();
             if (m_lastAllocatedChunck == &m_chunks[i])
-                m_lastAllocatedChunck = Q_NULLPTR;
+                m_lastAllocatedChunck = nullptr;
             if (m_lastFreedChunck == &m_chunks[i])
-                m_lastFreedChunck = Q_NULLPTR;
+                m_lastFreedChunck = nullptr;
             m_chunks.removeAt(i);
         }
     }
@@ -205,8 +205,8 @@ void QFixedFrameAllocator::release()
     for (int i = m_chunks.size() - 1; i >= 0; i--)
         m_chunks[i].release();
     m_chunks.clear();
-    m_lastAllocatedChunck = Q_NULLPTR;
-    m_lastFreedChunck = Q_NULLPTR;
+    m_lastAllocatedChunck = nullptr;
+    m_lastFreedChunck = nullptr;
 }
 
 // Allows to reuse chunks without having to reinitialize and reallocate them
@@ -248,7 +248,7 @@ void QFrameChunk::init(uint blockSize, uchar blocks)
 void *QFrameChunk::allocate(uint blockSize)
 {
     if (m_blocksAvailable == 0)
-        return Q_NULLPTR;
+        return nullptr;
     uchar *r = m_data + (m_firstAvailableBlock * blockSize);
     m_firstAvailableBlock = *r;
     --m_blocksAvailable;

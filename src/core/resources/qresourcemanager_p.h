@@ -464,7 +464,7 @@ public:
 
     ValueType *lookupResource(const KeyType &id)
     {
-        ValueType* ret = Q_NULLPTR;
+        ValueType* ret = nullptr;
         {
             typename LockingPolicy<QResourceManager>::ReadLocker lock(this);
             QHandle<ValueType, INDEXBITS> handle = m_keyToHandleMap.value(id);

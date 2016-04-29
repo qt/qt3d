@@ -59,7 +59,7 @@ namespace Qt3DRender {
  */
 Scene3DSGMaterial::Scene3DSGMaterial()
     : QSGMaterial()
-    , m_texture(Q_NULLPTR)
+    , m_texture(nullptr)
 {
 }
 

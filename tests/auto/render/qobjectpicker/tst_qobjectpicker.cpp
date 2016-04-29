@@ -40,7 +40,7 @@ class MyObjectPicker : public Qt3DRender::QObjectPicker
 {
     Q_OBJECT
 public:
-    MyObjectPicker(Qt3DCore::QNode *parent = Q_NULLPTR)
+    MyObjectPicker(Qt3DCore::QNode *parent = nullptr)
         : Qt3DRender::QObjectPicker(parent)
     {}
 
@@ -94,7 +94,7 @@ private Q_SLOTS:
 //        QCoreApplication::processEvents();
 
 //        // THEN
-//        QVERIFY(clone != Q_NULLPTR);
+//        QVERIFY(clone != nullptr);
 //        QCOMPARE(objectPicker->id(), clone->id());
 //        QCOMPARE(objectPicker->isHoverEnabled(), clone->isHoverEnabled());
 //        QCOMPARE(objectPicker->isPressed(), clone->isPressed());

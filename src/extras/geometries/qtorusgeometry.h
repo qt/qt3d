@@ -68,7 +68,7 @@ class QT3DEXTRASSHARED_EXPORT QTorusGeometry : public Qt3DRender::QGeometry
     Q_PROPERTY(Qt3DRender::QAttribute *indexAttribute READ indexAttribute CONSTANT)
 
 public:
-    explicit QTorusGeometry(QNode *parent = Q_NULLPTR);
+    explicit QTorusGeometry(QNode *parent = nullptr);
 
     void updateVertices();
     void updateIndices();
@@ -97,7 +97,7 @@ Q_SIGNALS:
 
 
 protected:
-    QTorusGeometry(QTorusGeometryPrivate &dd, QNode *parent = Q_NULLPTR);
+    QTorusGeometry(QTorusGeometryPrivate &dd, QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QTorusGeometry)

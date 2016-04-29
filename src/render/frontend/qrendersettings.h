@@ -61,7 +61,7 @@ class QT3DRENDERSHARED_EXPORT QRenderSettings : public Qt3DCore::QComponent
     Q_CLASSINFO("DefaultProperty", "activeFrameGraph")
 
 public:
-    explicit QRenderSettings(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QRenderSettings(Qt3DCore::QNode *parent = nullptr);
 
     enum RenderPolicy {
         OnDemand,
@@ -83,7 +83,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QRenderSettings)
-    QRenderSettings(QRenderSettingsPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
+    QRenderSettings(QRenderSettingsPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_PRIVATE_SLOT(d_func(), void _q_onPickingMethodChanged(QPickingSettings::PickMethod))

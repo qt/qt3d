@@ -58,7 +58,7 @@ class QT3DINPUTSHARED_EXPORT QActionInput : public Qt3DInput::QAbstractActionInp
     Q_PROPERTY(QVariantList buttons READ buttons WRITE setButtons NOTIFY buttonsChanged)
 
 public:
-    explicit QActionInput(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QActionInput(Qt3DCore::QNode *parent = nullptr);
 
     QAbstractPhysicalDevice *sourceDevice() const;
     QVariantList buttons() const;

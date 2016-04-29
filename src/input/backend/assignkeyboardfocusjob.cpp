@@ -50,7 +50,7 @@ namespace Input {
 
 AssignKeyboardFocusJob::AssignKeyboardFocusJob(Qt3DCore::QNodeId keyboardDevice)
     : QAspectJob()
-    , m_inputHandler(Q_NULLPTR)
+    , m_inputHandler(nullptr)
     , m_keyboardDevice(keyboardDevice)
 {
 }

@@ -51,8 +51,8 @@ namespace Qt3DRender {
 namespace Render {
 
 GraphicsHelperGL2::GraphicsHelperGL2()
-    : m_funcs(Q_NULLPTR)
-    , m_fboFuncs(Q_NULLPTR)
+    : m_funcs(nullptr)
+    , m_fboFuncs(nullptr)
 {
 
 }
@@ -268,7 +268,7 @@ void GraphicsHelperGL2::setAlphaCoverageEnabled(bool enabled)
 
 GLuint GraphicsHelperGL2::createFrameBufferObject()
 {
-    if (m_fboFuncs != Q_NULLPTR) {
+    if (m_fboFuncs != nullptr) {
         GLuint id;
         m_fboFuncs->glGenFramebuffers(1, &id);
         return id;
@@ -279,7 +279,7 @@ GLuint GraphicsHelperGL2::createFrameBufferObject()
 
 void GraphicsHelperGL2::releaseFrameBufferObject(GLuint frameBufferId)
 {
-    if (m_fboFuncs != Q_NULLPTR)
+    if (m_fboFuncs != nullptr)
         m_fboFuncs->glDeleteFramebuffers(1, &frameBufferId);
     else
         qWarning() << "FBO not supported by your OpenGL hardware";
@@ -287,14 +287,14 @@ void GraphicsHelperGL2::releaseFrameBufferObject(GLuint frameBufferId)
 
 bool GraphicsHelperGL2::checkFrameBufferComplete()
 {
-    if (m_fboFuncs != Q_NULLPTR)
+    if (m_fboFuncs != nullptr)
         return (m_fboFuncs->glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
     return false;
 }
 
 void GraphicsHelperGL2::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
 {
-    if (m_fboFuncs != Q_NULLPTR) {
+    if (m_fboFuncs != nullptr) {
         GLenum attr = GL_DEPTH_STENCIL_ATTACHMENT;
 
         if (attachment.m_point <= QRenderTargetOutput::Color15)
@@ -326,7 +326,7 @@ bool GraphicsHelperGL2::supportsFeature(GraphicsHelperInterface::Feature feature
 {
     switch (feature) {
     case MRT:
-        return (m_fboFuncs != Q_NULLPTR);
+        return (m_fboFuncs != nullptr);
     case TextureDimensionRetrieval:
         return true;
     default:
@@ -442,7 +442,7 @@ void GraphicsHelperGL2::bindUniform(const QVariant &v, const ShaderUniform &desc
 
 void GraphicsHelperGL2::bindFrameBufferObject(GLuint frameBufferId)
 {
-    if (m_fboFuncs != Q_NULLPTR)
+    if (m_fboFuncs != nullptr)
         m_fboFuncs->glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBufferId);
     else
         qWarning() << "FBO not supported by your OpenGL hardware";

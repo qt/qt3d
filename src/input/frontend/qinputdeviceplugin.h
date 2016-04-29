@@ -56,7 +56,7 @@ class QT3DINPUTSHARED_EXPORT QInputDevicePlugin : public QObject
 {
     Q_OBJECT
 public:
-    explicit QInputDevicePlugin(QObject *parent = Q_NULLPTR);
+    explicit QInputDevicePlugin(QObject *parent = nullptr);
     ~QInputDevicePlugin();
 
     virtual QInputDeviceIntegration *create(const QString &key, const QStringList &paramList);

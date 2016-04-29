@@ -144,7 +144,7 @@ public:
     bool operator ==(const QBufferDataGenerator &other) const Q_DECL_OVERRIDE
     {
         const TorusVertexDataFunctor *otherFunctor = functor_cast<TorusVertexDataFunctor>(&other);
-        if (otherFunctor != Q_NULLPTR)
+        if (otherFunctor != nullptr)
             return (otherFunctor->m_rings == m_rings &&
                     otherFunctor->m_sides == m_sides &&
                     otherFunctor->m_radius == m_radius &&
@@ -178,7 +178,7 @@ public:
     bool operator ==(const QBufferDataGenerator &other) const Q_DECL_OVERRIDE
     {
         const TorusIndexDataFunctor *otherFunctor = functor_cast<TorusIndexDataFunctor>(&other);
-        if (otherFunctor != Q_NULLPTR)
+        if (otherFunctor != nullptr)
             return (otherFunctor->m_rings == m_rings &&
                     otherFunctor->m_sides == m_sides);
         return false;
@@ -197,12 +197,12 @@ QTorusGeometryPrivate::QTorusGeometryPrivate()
     , m_slices(16)
     , m_radius(1.0f)
     , m_minorRadius(1.0f)
-    , m_positionAttribute(Q_NULLPTR)
-    , m_normalAttribute(Q_NULLPTR)
-    , m_texCoordAttribute(Q_NULLPTR)
-    , m_indexAttribute(Q_NULLPTR)
-    , m_vertexBuffer(Q_NULLPTR)
-    , m_indexBuffer(Q_NULLPTR)
+    , m_positionAttribute(nullptr)
+    , m_normalAttribute(nullptr)
+    , m_texCoordAttribute(nullptr)
+    , m_indexAttribute(nullptr)
+    , m_vertexBuffer(nullptr)
+    , m_indexBuffer(nullptr)
 {
 }
 

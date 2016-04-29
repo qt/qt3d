@@ -60,7 +60,7 @@ FrameGraphNode* FrameGraphManager::lookupNode(Qt3DCore::QNodeId id) const
 {
     const QHash<Qt3DCore::QNodeId, FrameGraphNode*>::const_iterator it = m_nodes.find(id);
     if (it == m_nodes.end())
-        return Q_NULLPTR;
+        return nullptr;
     else
         return *it;
 }

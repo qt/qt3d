@@ -73,7 +73,7 @@ void expandWorldBoundingVolume(Qt3DRender::Render::Entity *node)
 }
 
 UpdateBoundingVolumeJob::UpdateBoundingVolumeJob()
-    : m_node(Q_NULLPTR)
+    : m_node(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateBoundingVolume, 0);
 }

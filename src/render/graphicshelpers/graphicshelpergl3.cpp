@@ -72,7 +72,7 @@ namespace Qt3DRender {
 namespace Render {
 
 GraphicsHelperGL3::GraphicsHelperGL3()
-    : m_funcs(Q_NULLPTR)
+    : m_funcs(nullptr)
     , m_tessFuncs()
 {
 }

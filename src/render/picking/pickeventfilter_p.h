@@ -65,7 +65,7 @@ class PickEventFilter : public QObject
 {
     Q_OBJECT
 public:
-    explicit PickEventFilter(QObject *parent = Q_NULLPTR);
+    explicit PickEventFilter(QObject *parent = nullptr);
     ~PickEventFilter();
 
     QList<QMouseEvent> pendingEvents();

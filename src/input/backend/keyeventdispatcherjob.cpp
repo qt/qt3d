@@ -49,7 +49,7 @@ namespace Input {
 
 KeyEventDispatcherJob::KeyEventDispatcherJob(Qt3DCore::QNodeId input, const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> &events)
     : QAspectJob()
-    , m_inputHandler(Q_NULLPTR)
+    , m_inputHandler(nullptr)
     , m_keyboardHandler(input)
     , m_events(events)
 {

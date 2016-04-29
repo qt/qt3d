@@ -278,7 +278,7 @@ void QAbstractTexture::addTextureImage(QAbstractTextureImage *textureImage)
         if (!textureImage->parent())
             textureImage->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             const auto change = QNodeAddedPropertyChangePtr::create(id(), textureImage);
             change->setPropertyName("textureImage");
             d->notifyObservers(change);
@@ -293,7 +293,7 @@ void QAbstractTexture::removeTextureImage(QAbstractTextureImage *textureImage)
 {
     Q_ASSERT(textureImage);
     Q_D(QAbstractTexture);
-    if (d->m_changeArbiter != Q_NULLPTR) {
+    if (d->m_changeArbiter != nullptr) {
         const auto change = QNodeRemovedPropertyChangePtr::create(id(), textureImage);
         change->setPropertyName("textureImage");
         d->notifyObservers(change);

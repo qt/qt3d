@@ -87,7 +87,7 @@ void QTechniqueFilter::addMatch(QFilterKey *filterKey)
         if (!filterKey->parent())
             filterKey->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             const auto change = QNodeAddedPropertyChangePtr::create(id(), filterKey);
             change->setPropertyName("matchAll");
             d->notifyObservers(change);
@@ -99,7 +99,7 @@ void QTechniqueFilter::removeMatch(QFilterKey *filterKey)
 {
     Q_ASSERT(filterKey);
     Q_D(QTechniqueFilter);
-    if (d->m_changeArbiter != Q_NULLPTR) {
+    if (d->m_changeArbiter != nullptr) {
         const auto change = QNodeRemovedPropertyChangePtr::create(id(), filterKey);
         change->setPropertyName("matchAll");
         d->notifyObservers(change);
@@ -121,7 +121,7 @@ void QTechniqueFilter::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter);
             change->setPropertyName("parameter");
             d->notifyObservers(change);
@@ -133,7 +133,7 @@ void QTechniqueFilter::removeParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
     Q_D(QTechniqueFilter);
-    if (d->m_changeArbiter != Q_NULLPTR) {
+    if (d->m_changeArbiter != nullptr) {
         const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter);
         change->setPropertyName("parameter");
         d->notifyObservers(change);

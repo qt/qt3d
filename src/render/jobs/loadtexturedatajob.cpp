@@ -65,7 +65,7 @@ static QPair<HTextureData, QTexImageData *> textureDataFromGenerator(TextureData
                                                                      QTextureImageDataGeneratorPtr generator)
 {
     HTextureData textureDataHandle;
-    QTexImageData *data = Q_NULLPTR;
+    QTexImageData *data = nullptr;
 
     QMutexLocker locker(textureDataManager->mutex());
     // We don't want to take the chance of having two jobs uploading the same functor
@@ -99,7 +99,7 @@ void LoadTextureDataJob::run()
     Texture *txt = m_manager->textureManager()->lookupResource(m_textureId);
     TextureDataManager *textureDataManager = m_manager->manager<QTexImageData, TextureDataManager>();
 
-    if (txt != Q_NULLPTR) {
+    if (txt != nullptr) {
         if (txt->dataGenerator()) {
             QTextureImageDataGeneratorPtr generator = txt->dataGenerator();
 
@@ -126,7 +126,7 @@ void LoadTextureDataJob::run()
         const auto texImgHandles = txt->textureImages();
         for (HTextureImage texImgHandle : texImgHandles) {
             TextureImage *texImg = m_manager->textureImageManager()->data(texImgHandle);
-            if (texImg != Q_NULLPTR && texImg->isDirty() && !texImg->dataGenerator().isNull()) {
+            if (texImg != nullptr && texImg->isDirty() && !texImg->dataGenerator().isNull()) {
                 QTextureImageDataGeneratorPtr generator = texImg->dataGenerator();
 
                 QPair<HTextureData, QTexImageData *> handleData = textureDataFromGenerator(textureDataManager, generator);
@@ -150,7 +150,7 @@ void LoadTextureDataJob::run()
                 if (texImg->layer() == 0 && texImg->mipLevel() == 0 &&
                         texImg->face() == QAbstractTexture::CubeMapPositiveX) {
 
-                    if (data == Q_NULLPTR) {
+                    if (data == nullptr) {
                         qWarning() << "Texture data is null, texture data failed to load";
                     } else {
                         // Set the size of the texture based on the layer 0 / level 0

@@ -48,7 +48,7 @@ namespace Render {
 
 BackendNode::BackendNode(Mode mode)
     : QBackendNode(mode)
-    , m_renderer(Q_NULLPTR)
+    , m_renderer(nullptr)
 {
 }
 

@@ -70,7 +70,7 @@ namespace Qt3DRender {
 namespace Render {
 
 GraphicsHelperGL4::GraphicsHelperGL4()
-    : m_funcs(Q_NULLPTR)
+    : m_funcs(nullptr)
 {
 }
 

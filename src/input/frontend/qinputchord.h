@@ -57,7 +57,7 @@ class QT3DINPUTSHARED_EXPORT QInputChord : public Qt3DInput::QAbstractActionInpu
     Q_PROPERTY(int timeout READ timeout WRITE setTimeout NOTIFY timeoutChanged)
 
 public:
-    explicit QInputChord(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QInputChord(Qt3DCore::QNode *parent = nullptr);
 
     int timeout() const;
 

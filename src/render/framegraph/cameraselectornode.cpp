@@ -61,7 +61,7 @@ void CameraSelector::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QCameraSelector *selector = static_cast<QCameraSelector *>(peer);
     m_cameraUuid = QNodeId();
-    if (selector->camera() != Q_NULLPTR)
+    if (selector->camera() != nullptr)
         m_cameraUuid = selector->camera()->id();
 }
 

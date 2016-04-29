@@ -70,10 +70,10 @@ namespace Quick {
 
 Qt3DQuickWindow::Qt3DQuickWindow(QWindow *parent)
     : QQuickWindow(parent)
-    , m_engine(Q_NULLPTR)
-    , m_renderAspect(Q_NULLPTR)
-    , m_inputAspect(Q_NULLPTR)
-    , m_logicAspect(Q_NULLPTR)
+    , m_engine(nullptr)
+    , m_renderAspect(nullptr)
+    , m_inputAspect(nullptr)
+    , m_logicAspect(nullptr)
     , m_initialized(false)
     , m_cameraAspectRatioMode(AutomaticAspectRatio)
 {

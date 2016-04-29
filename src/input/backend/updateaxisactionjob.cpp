@@ -102,15 +102,15 @@ bool UpdateAxisActionJob::processActionInput(const Qt3DCore::QNodeId actionInput
 
     if (m_handler->actionInputManager()->lookupResource(actionInputId)) {
         ActionInput *actionInput = m_handler->actionInputManager()->lookupResource(actionInputId);
-        QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = Q_NULLPTR;
+        QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = nullptr;
 
         const auto integrations = m_handler->inputDeviceIntegrations();
         for (QInputDeviceIntegration *integration : integrations) {
-            if ((physicalDeviceBackend = integration->physicalDevice(actionInput->sourceDevice())) != Q_NULLPTR)
+            if ((physicalDeviceBackend = integration->physicalDevice(actionInput->sourceDevice())) != nullptr)
                 break;
         }
 
-        if (physicalDeviceBackend != Q_NULLPTR) {
+        if (physicalDeviceBackend != nullptr) {
             // Update the value
             return anyOfRequiredButtonsPressed(actionInput->buttons(), physicalDeviceBackend);
         }
@@ -170,15 +170,15 @@ void UpdateAxisActionJob::updateAxis(LogicalDevice *device)
         const auto axisInputIds = axis->inputs();
         for (const Qt3DCore::QNodeId axisInputId : axisInputIds) {
             AxisInput *axisInput = m_handler->axisInputManager()->lookupResource(axisInputId);
-            QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = Q_NULLPTR;
+            QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = nullptr;
 
             const auto integrations = m_handler->inputDeviceIntegrations();
             for (QInputDeviceIntegration *integration : integrations) {
-                if ((physicalDeviceBackend = integration->physicalDevice(axisInput->sourceDevice())) != Q_NULLPTR)
+                if ((physicalDeviceBackend = integration->physicalDevice(axisInput->sourceDevice())) != nullptr)
                     break;
             }
 
-            if (physicalDeviceBackend != Q_NULLPTR) {
+            if (physicalDeviceBackend != nullptr) {
                 // Update the value
                 const QVector<int> buttons = axisInput->buttons();
                 // Axis was specified -> we take this as the base value

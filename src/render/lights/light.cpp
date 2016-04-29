@@ -57,7 +57,7 @@ void Light::updateFromPeer(QNode *node)
 {
     QAbstractLight *light = static_cast<QAbstractLight *>(node);
     QShaderData *shaderData = light->findChild<QShaderData *>();
-    if (shaderData != Q_NULLPTR)
+    if (shaderData != nullptr)
         m_shaderDataId = shaderData->id();
 }
 

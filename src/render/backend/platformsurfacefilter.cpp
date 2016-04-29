@@ -75,8 +75,8 @@ QHash<QSurface *, bool> PlatformSurfaceFilter::m_surfacesValidity;
 
 PlatformSurfaceFilter::PlatformSurfaceFilter(QObject *parent)
     : QObject(parent)
-    , m_obj(Q_NULLPTR)
-    , m_surface(Q_NULLPTR)
+    , m_obj(nullptr)
+    , m_surface(nullptr)
 {
     qRegisterMetaType<QSurface *>("QSurface*");
 }

@@ -48,7 +48,7 @@ namespace Qt3DInput {
 
 QInputDeviceIntegrationPrivate::QInputDeviceIntegrationPrivate()
     : QObjectPrivate()
-    , m_aspect(Q_NULLPTR)
+    , m_aspect(nullptr)
 {
 }
 

@@ -57,7 +57,7 @@ QSceneIOHandler *QSceneParserPlugin::create(const QString &key, const QStringLis
 {
     Q_UNUSED(key)
     Q_UNUSED(paramList)
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 } // namespace Qt3DRender

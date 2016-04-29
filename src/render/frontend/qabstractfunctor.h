@@ -56,7 +56,7 @@ struct FunctorType
         // The MSVC linker can under some cases optimize all the template
         // functions into a single function. The code below is there to ensure
         // that the linker won't collapse all these distincts functions into one
-        static T *t = Q_NULLPTR;
+        static T *t = nullptr;
         return reinterpret_cast<qintptr>(t);
     }
 };
@@ -84,7 +84,7 @@ public:
     {
         if (other->id() == functorTypeId<T>())
             return static_cast<const T *>(other);
-        return Q_NULLPTR;
+        return nullptr;
     }
 };
 
@@ -93,7 +93,7 @@ const T *functor_cast(const QAbstractFunctor *other)
 {
     if (other->id() == functorTypeId<T>())
         return static_cast<const T *>(other);
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 } // Qt3D

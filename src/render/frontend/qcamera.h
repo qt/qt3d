@@ -80,7 +80,7 @@ class QT3DRENDERSHARED_EXPORT QCamera : public Qt3DCore::QEntity
     Q_PROPERTY(QMatrix4x4 viewMatrix READ viewMatrix NOTIFY viewMatrixChanged)
 
 public:
-    explicit QCamera(QNode *parent = Q_NULLPTR);
+    explicit QCamera(QNode *parent = nullptr);
 
     enum CameraTranslationOption {
         TranslateViewCenter,
@@ -165,7 +165,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QCamera)
-    QCamera(QCameraPrivate &dd, QNode *parent = Q_NULLPTR);
+    QCamera(QCameraPrivate &dd, QNode *parent = nullptr);
 };
 
 } // namespace Qt3DRender

@@ -52,7 +52,7 @@ namespace Logic {
 
 Executor::Executor(QObject *parent)
     : QObject(parent)
-    , m_scene(Q_NULLPTR)
+    , m_scene(nullptr)
 {
 }
 

@@ -181,7 +181,7 @@ QEntity *QEntity::parentEntity() const
     QNode *parentNode = QNode::parentNode();
     QEntity *parentEntity = qobject_cast<QEntity *>(parentNode);
 
-    while (parentEntity == Q_NULLPTR && parentNode != Q_NULLPTR) {
+    while (parentEntity == nullptr && parentNode != nullptr) {
         parentNode = parentNode->parentNode();
         parentEntity = qobject_cast<QEntity*>(parentNode);
     }

@@ -61,7 +61,7 @@ class QT3DCORESHARED_EXPORT QAspectEngine : public QObject
 {
     Q_OBJECT
 public:
-    explicit QAspectEngine(QObject *parent = Q_NULLPTR);
+    explicit QAspectEngine(QObject *parent = nullptr);
     ~QAspectEngine();
 
     void setRootEntity(QEntityPtr root);

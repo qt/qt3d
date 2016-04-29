@@ -53,7 +53,7 @@ class QT3DLOGICSHARED_EXPORT QLogicAspect : public Qt3DCore::QAbstractAspect
 {
     Q_OBJECT
 public:
-    explicit QLogicAspect(QObject *parent = Q_NULLPTR);
+    explicit QLogicAspect(QObject *parent = nullptr);
 
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 

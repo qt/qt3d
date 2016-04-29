@@ -239,7 +239,7 @@ Qt3DCore::QEntity* GLTFParser::node(const QString &id)
     }
 
     QJsonObject jsonObj = nodes.value(id).toObject();
-    QEntity* result = Q_NULLPTR;
+    QEntity* result = nullptr;
 
     // Qt3D has a limitation that a QEntity can only have 1 mesh and 1 material component
     // So if the node has only 1 mesh, we only create 1 QEntity
@@ -275,7 +275,7 @@ Qt3DCore::QEntity* GLTFParser::node(const QString &id)
     }
 
     //If the entity contains no meshes, results will still be null here
-    if (result == Q_NULLPTR)
+    if (result == nullptr)
         result = new QEntity;
 
     if ( jsonObj.contains(KEY_CHILDREN) ) {
@@ -291,7 +291,7 @@ Qt3DCore::QEntity* GLTFParser::node(const QString &id)
 
 
     // Node Transforms
-    Qt3DCore::QTransform *trans = Q_NULLPTR;
+    Qt3DCore::QTransform *trans = nullptr;
     if ( jsonObj.contains(KEY_MATRIX) ) {
         QMatrix4x4 m(Qt::Uninitialized);
 
@@ -302,14 +302,14 @@ Qt3DCore::QEntity* GLTFParser::node(const QString &id)
         }
 
         // ADD MATRIX TRANSFORM COMPONENT TO ENTITY
-        if (trans == Q_NULLPTR)
+        if (trans == nullptr)
             trans = new Qt3DCore::QTransform;
         trans->setMatrix(m);
     }
 
     // Rotation quaternion
     if (jsonObj.contains(KEY_ROTATION)) {
-        if (trans == Q_NULLPTR)
+        if (trans == nullptr)
             trans = new Qt3DCore::QTransform;
 
         QJsonArray quaternionValues = jsonObj.value(KEY_ROTATION).toArray();
@@ -322,7 +322,7 @@ Qt3DCore::QEntity* GLTFParser::node(const QString &id)
 
     // Translation
     if (jsonObj.contains(KEY_TRANSLATION)) {
-        if (trans == Q_NULLPTR)
+        if (trans == nullptr)
             trans = new Qt3DCore::QTransform;
 
         QJsonArray translationValues = jsonObj.value(KEY_TRANSLATION).toArray();
@@ -333,7 +333,7 @@ Qt3DCore::QEntity* GLTFParser::node(const QString &id)
 
     // Scale
     if (jsonObj.contains(KEY_SCALE)) {
-        if (trans == Q_NULLPTR)
+        if (trans == nullptr)
             trans = new Qt3DCore::QTransform;
 
         QJsonArray scaleValues = jsonObj.value(KEY_SCALE).toArray();
@@ -343,7 +343,7 @@ Qt3DCore::QEntity* GLTFParser::node(const QString &id)
     }
 
     // Add the Transform component
-    if (trans != Q_NULLPTR)
+    if (trans != nullptr)
         result->addComponent(trans);
 
     if ( jsonObj.contains(KEY_CAMERA) ) {
@@ -385,7 +385,7 @@ Qt3DCore::QEntity* GLTFParser::scene(const QString &id)
 
 GLTFParser::BufferData::BufferData()
     : length(0)
-    , data(Q_NULLPTR)
+    , data(nullptr)
 {
 }
 
@@ -393,7 +393,7 @@ GLTFParser::BufferData::BufferData(QJsonObject json)
 {
     path = json.value(KEY_URI).toString();
     length = json.value(KEY_BYTE_LENGTH).toInt();
-    data = Q_NULLPTR;
+    data = nullptr;
 }
 
 GLTFParser::ParameterData::ParameterData() :
@@ -513,7 +513,7 @@ QParameter *GLTFParser::parameterFromTechnique(QTechnique *technique, const QStr
         }
     }
 
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 Qt3DCore::QEntity* GLTFParser::defaultScene()
@@ -543,8 +543,8 @@ QMaterial *GLTFParser::materialWithCustomShader(const QString &id, const QJsonOb
 
 
     //Optional Core technique
-    QTechnique *coreTechnique = Q_NULLPTR;
-    QTechnique *gl2Technique = Q_NULLPTR;
+    QTechnique *coreTechnique = nullptr;
+    QTechnique *gl2Technique = nullptr;
     QString coreTechniqueName = jsonObj.value(KEY_TECHNIQUE_CORE).toString();
     if (!coreTechniqueName.isNull()) {
         if (!m_techniques.contains(coreTechniqueName)) {
@@ -582,9 +582,9 @@ QMaterial *GLTFParser::materialWithCustomShader(const QString &id, const QJsonOb
     QEffect* effect = new QEffect;
     effect->setObjectName(techniqueName);
     effect->addTechnique(technique);
-    if (coreTechnique != Q_NULLPTR)
+    if (coreTechnique != nullptr)
         effect->addTechnique(coreTechnique);
-    if (gl2Technique != Q_NULLPTR)
+    if (gl2Technique != nullptr)
         effect->addTechnique(gl2Technique);
 
     QMaterial* mat = new QMaterial;
@@ -596,15 +596,15 @@ QMaterial *GLTFParser::materialWithCustomShader(const QString &id, const QJsonOb
     Q_FOREACH (QString vName, values.keys()) {
         QParameter *param = parameterFromTechnique(technique, vName);
 
-        if (param == Q_NULLPTR && coreTechnique != Q_NULLPTR) {
+        if (param == nullptr && coreTechnique != nullptr) {
             param = parameterFromTechnique(coreTechnique, vName);
         }
 
-        if (param == Q_NULLPTR && gl2Technique != Q_NULLPTR) {
+        if (param == nullptr && gl2Technique != nullptr) {
             param = parameterFromTechnique(gl2Technique, vName);
         }
 
-        if (param == Q_NULLPTR) {
+        if (param == nullptr) {
             qCWarning(GLTFParserLog) << "unknown parameter:" << vName << "in technique" << techniqueName
                                      << "processing material" << id;
             continue;
@@ -666,7 +666,7 @@ QMaterial *GLTFParser::commonMaterial(const QJsonObject &jsonObj)
             params[propertyName] = var;
     }
 
-    QMaterial *mat = Q_NULLPTR;
+    QMaterial *mat = nullptr;
     if (hasNormalMap) {
         if (hasSpecularMap) {
             mat = new QNormalDiffuseSpecularMapMaterial;
@@ -712,7 +712,7 @@ QMaterial* GLTFParser::material(const QString &id)
 
     QJsonObject jsonObj = mats.value(id).toObject();
 
-    QMaterial *mat = Q_NULLPTR;
+    QMaterial *mat = nullptr;
 
     // Prefer common materials over custom shaders.
     if (jsonObj.contains(KEY_EXTENSIONS)) {
@@ -733,7 +733,7 @@ QCameraLens* GLTFParser::camera(const QString &id) const
     QJsonObject cams = m_json.object().value(KEY_CAMERAS).toObject();
     if (!cams.contains(id)) {
         qCWarning(GLTFParserLog) << "unknown camera" << id << "in GLTF file" << m_basePath;
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     QJsonObject jsonObj = cams.value(id).toObject();
@@ -742,7 +742,7 @@ QCameraLens* GLTFParser::camera(const QString &id) const
     if (camTy == QStringLiteral("perspective")) {
         if (!jsonObj.contains(KEY_PERSPECTIVE)) {
             qCWarning(GLTFParserLog) << "camera:" << id << "missing 'perspective' object";
-            return Q_NULLPTR;
+            return nullptr;
         }
 
         QJsonObject pObj = jsonObj.value(KEY_PERSPECTIVE).toObject();
@@ -757,10 +757,10 @@ QCameraLens* GLTFParser::camera(const QString &id) const
     } else if (camTy == QStringLiteral("orthographic")) {
         qCWarning(GLTFParserLog) << Q_FUNC_INFO << "implement me";
 
-        return Q_NULLPTR;
+        return nullptr;
     } else {
         qCWarning(GLTFParserLog) << "camera:" << id << "has unsupported type:" << camTy;
-        return Q_NULLPTR;
+        return nullptr;
     }
 }
 
@@ -828,7 +828,7 @@ void GLTFParser::cleanup()
     m_accessorDict.clear();
     //Check for Materials with no parent
     Q_FOREACH (QMaterial *material, m_materialCache.values()) {
-        if (material->parent() == Q_NULLPTR)
+        if (material->parent() == nullptr)
             delete material;
     }
     m_materialCache.clear();
@@ -837,19 +837,19 @@ void GLTFParser::cleanup()
     m_shaderPaths.clear();
     //Check for ShaderPrograms with no parent
     Q_FOREACH (QShaderProgram *program, m_programs.values()) {
-        if (program->parent() == Q_NULLPTR)
+        if (program->parent() == nullptr)
             delete program;
     }
     m_programs.clear();
     //Check for Techniques with no parent
     Q_FOREACH (QTechnique *technique, m_techniques.values()) {
-        if (technique->parent() == Q_NULLPTR)
+        if (technique->parent() == nullptr)
             delete technique;
     }
     m_techniques.clear();
     //Check for Textures with no parent
     Q_FOREACH (QAbstractTexture *texture, m_textures.values()) {
-        if (texture->parent() == Q_NULLPTR)
+        if (texture->parent() == nullptr)
             delete texture;
     }
     m_textures.clear();
@@ -977,9 +977,9 @@ void GLTFParser::processJSONTechnique(const QString &id, const QJsonObject &json
     QJsonObject attrs = jsonObject.value(KEY_ATTRIBUTES).toObject();
     Q_FOREACH ( QString shaderAttributeName, attrs.keys() ) {
         QString pname = attrs.value(shaderAttributeName).toString();
-        QParameter *parameter = paramDict.value(pname, Q_NULLPTR);
+        QParameter *parameter = paramDict.value(pname, nullptr);
         QString attributeName = pname;
-        if (parameter == Q_NULLPTR) {
+        if (parameter == nullptr) {
             qCWarning(GLTFParserLog) << Q_FUNC_INFO << "attribute " << pname
                                      << "defined in instanceProgram but not as parameter";
             continue;
@@ -999,8 +999,8 @@ void GLTFParser::processJSONTechnique(const QString &id, const QJsonObject &json
     QJsonObject uniforms = jsonObject.value(KEY_UNIFORMS).toObject();
     Q_FOREACH (QString shaderUniformName, uniforms.keys()) {
         QString pname = uniforms.value(shaderUniformName).toString();
-        QParameter *parameter = paramDict.value(pname, Q_NULLPTR);
-        if (parameter == Q_NULLPTR) {
+        QParameter *parameter = paramDict.value(pname, nullptr);
+        if (parameter == nullptr) {
             qCWarning(GLTFParserLog) << Q_FUNC_INFO << "uniform " << pname
                                      << "defined in instanceProgram but not as parameter";
             continue;
@@ -1031,7 +1031,7 @@ void GLTFParser::processJSONTechnique(const QString &id, const QJsonObject &json
     Q_FOREACH (QString functionName, functions.keys()) {
         int enableStateType = 0;
         QRenderState *renderState = buildState(functionName, functions.value(functionName), enableStateType);
-        if (renderState != Q_NULLPTR) {
+        if (renderState != nullptr) {
             //Remove the need to set a default state values for enableStateType
             enableStates.removeOne(enableStateType);
             pass->addRenderState(renderState);
@@ -1041,7 +1041,7 @@ void GLTFParser::processJSONTechnique(const QString &id, const QJsonObject &json
     //Create render states with default values for any remaining enable states
     Q_FOREACH (int enableState, enableStates) {
         QRenderState *renderState = buildStateEnable(enableState);
-        if (renderState != Q_NULLPTR)
+        if (renderState != nullptr)
             pass->addRenderState(renderState);
     }
 
@@ -1092,8 +1092,8 @@ void GLTFParser::processJSONMesh(const QString &id, const QJsonObject &json)
                 attributeName = attrName;
 
             //Get buffer handle for accessor
-            Qt3DRender::QBuffer *buffer = m_buffers.value(m_accessorDict[k].bufferViewName, Q_NULLPTR);
-            if (buffer == Q_NULLPTR) {
+            Qt3DRender::QBuffer *buffer = m_buffers.value(m_accessorDict[k].bufferViewName, nullptr);
+            if (buffer == nullptr) {
                 qCWarning(GLTFParserLog) << "unknown buffer-view:" << m_accessorDict[k].bufferViewName << "processing accessor:" << id;
                 continue;
             }
@@ -1115,8 +1115,8 @@ void GLTFParser::processJSONMesh(const QString &id, const QJsonObject &json)
                 qCWarning(GLTFParserLog) << "unknown index accessor:" << k << "on mesh" << id;
             } else {
                 //Get buffer handle for accessor
-                Qt3DRender::QBuffer *buffer = m_buffers.value(m_accessorDict[k].bufferViewName, Q_NULLPTR);
-                if (buffer == Q_NULLPTR) {
+                Qt3DRender::QBuffer *buffer = m_buffers.value(m_accessorDict[k].bufferViewName, nullptr);
+                if (buffer == nullptr) {
                     qCWarning(GLTFParserLog) << "unknown buffer-view:" << m_accessorDict[k].bufferViewName << "processing accessor:" << id;
                     continue;
                 }
@@ -1203,7 +1203,7 @@ void GLTFParser::processJSONTexture(const QString &id, const QJsonObject &jsonOb
 void GLTFParser::loadBufferData()
 {
     Q_FOREACH (QString bufferName, m_bufferDatas.keys()) {
-        if (m_bufferDatas[bufferName].data == Q_NULLPTR) {
+        if (m_bufferDatas[bufferName].data == nullptr) {
             QFile* bufferFile = resolveLocalData(m_bufferDatas[bufferName].path);
             QByteArray *data = new QByteArray(bufferFile->readAll());
             m_bufferDatas[bufferName].data = data;
@@ -1431,7 +1431,7 @@ QRenderState *GLTFParser::buildStateEnable(int state)
 
     if (state == GL_BLEND) {
         //It doesn't make sense to handle this state alone
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     if (state == GL_CULL_FACE) {
@@ -1456,7 +1456,7 @@ QRenderState *GLTFParser::buildStateEnable(int state)
 
     qCWarning(GLTFParserLog) << Q_FUNC_INFO << "unsupported render state:" << state;
 
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 QRenderState* GLTFParser::buildState(const QString& functionName, const QJsonValue &value, int &type)
@@ -1468,7 +1468,7 @@ QRenderState* GLTFParser::buildState(const QString& functionName, const QJsonVal
         type = GL_BLEND;
         //TODO: support render state blendColor
         qCWarning(GLTFParserLog) << Q_FUNC_INFO << "unsupported render state:" << functionName;
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     if (functionName == QStringLiteral("blendEquationSeparate")) {
@@ -1517,13 +1517,13 @@ QRenderState* GLTFParser::buildState(const QString& functionName, const QJsonVal
             QNoDepthMask *depthMask = new QNoDepthMask;
             return depthMask;
         }
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     if (functionName == QStringLiteral("depthRange")) {
         //TODO: support render state depthRange
         qCWarning(GLTFParserLog) << Q_FUNC_INFO << "unsupported render state:" << functionName;
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     if (functionName == QStringLiteral("frontFace")) {
@@ -1535,7 +1535,7 @@ QRenderState* GLTFParser::buildState(const QString& functionName, const QJsonVal
     if (functionName == QStringLiteral("lineWidth")) {
         //TODO: support render state lineWidth
         qCWarning(GLTFParserLog) << Q_FUNC_INFO << "unsupported render state:" << functionName;
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     if (functionName == QStringLiteral("polygonOffset")) {
@@ -1557,7 +1557,7 @@ QRenderState* GLTFParser::buildState(const QString& functionName, const QJsonVal
     }
 
     qCWarning(GLTFParserLog) << Q_FUNC_INFO << "unsupported render state:" << functionName;
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 } // namespace Qt3DRender

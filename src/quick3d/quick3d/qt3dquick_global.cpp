@@ -304,7 +304,7 @@ public:
             break;
         }
 
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     bool init(int type, QVariant& dst) Q_DECL_OVERRIDE

@@ -135,23 +135,23 @@ public:
     template<class Backend, typename Manager>
     Manager *manager() const Q_DECL_NOEXCEPT
     {
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     template<class Backend, typename Manager, typename Key>
     Backend *lookupResource(const Key &id) const
     {
         Manager *mgr = manager<Backend, Manager>();
-        if (mgr != Q_NULLPTR)
+        if (mgr != nullptr)
             return mgr->lookupResource(id);
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     template<class Backend, typename Manager, typename Handle, typename Key>
     Handle lookupHandle(const Key &id) const
     {
         Manager *mgr = manager<Backend, Manager>();
-        if (mgr != Q_NULLPTR)
+        if (mgr != nullptr)
             return mgr->lookupHandle(id);
         return Handle();
     }
@@ -160,9 +160,9 @@ public:
     Backend *data(Handle handle)
     {
         Manager *mgr = manager<Backend, Manager>();
-        if (mgr != Q_NULLPTR)
+        if (mgr != nullptr)
             return mgr->data(handle);
-        return Q_NULLPTR;
+        return nullptr;
     }
 
 

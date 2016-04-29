@@ -81,7 +81,7 @@ namespace Qt3DInput {
 QAbstractPhysicalDeviceBackendNodePrivate::QAbstractPhysicalDeviceBackendNodePrivate(Qt3DCore::QBackendNode::Mode mode)
     : Qt3DCore::QBackendNodePrivate(mode)
     , m_axisSettings()
-    , m_inputAspect(Q_NULLPTR)
+    , m_inputAspect(nullptr)
 {
 }
 
@@ -180,7 +180,7 @@ void QAbstractPhysicalDeviceBackendNode::cleanup()
     QBackendNode::setEnabled(false);
     d->m_axisSettings.clear();
     d->m_axisFilters.clear();
-    d->m_inputAspect = Q_NULLPTR;
+    d->m_inputAspect = nullptr;
 }
 
 void QAbstractPhysicalDeviceBackendNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

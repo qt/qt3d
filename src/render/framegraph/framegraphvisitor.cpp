@@ -50,8 +50,8 @@ namespace Qt3DRender {
 namespace Render {
 
 FrameGraphVisitor::FrameGraphVisitor()
-    : m_renderer(Q_NULLPTR)
-    , m_jobs(Q_NULLPTR)
+    : m_renderer(nullptr)
+    , m_jobs(nullptr)
     , m_renderviewIndex(0)
 
 {
@@ -71,7 +71,7 @@ void FrameGraphVisitor::traverse(FrameGraphNode *root,
 
     // Kick off the traversal
     Render::FrameGraphNode *node = root;
-    if (node == Q_NULLPTR)
+    if (node == nullptr)
         qCritical() << Q_FUNC_INFO << "FrameGraph is null";
     visit(node);
 }

@@ -465,14 +465,14 @@ void TrianglesVisitor::apply(const GeometryRenderer *renderer, const Qt3DCore::Q
 {
     m_nodeId = id;
     if (renderer && renderer->instanceCount() == 1 && isTriangleBased(renderer->primitiveType())) {
-        Attribute *positionAttribute = Q_NULLPTR;
-        Attribute *indexAttribute = Q_NULLPTR;
-        Buffer *positionBuffer = Q_NULLPTR;
-        Buffer *indexBuffer = Q_NULLPTR;
+        Attribute *positionAttribute = nullptr;
+        Attribute *indexAttribute = nullptr;
+        Buffer *positionBuffer = nullptr;
+        Buffer *indexBuffer = nullptr;
         Geometry *geom = m_manager->lookupResource<Geometry, GeometryManager>(renderer->geometryId());
 
         if (geom) {
-            Qt3DRender::Render::Attribute *attribute = Q_NULLPTR;
+            Qt3DRender::Render::Attribute *attribute = nullptr;
             const auto attrIds = geom->attributes();
             for (const Qt3DCore::QNodeId attrId : attrIds) {
                 attribute = m_manager->lookupResource<Attribute, AttributeManager>(attrId);

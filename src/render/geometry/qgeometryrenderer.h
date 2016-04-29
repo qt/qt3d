@@ -67,7 +67,7 @@ class QT3DRENDERSHARED_EXPORT QGeometryRenderer : public Qt3DCore::QComponent
     Q_PROPERTY(PrimitiveType primitiveType READ primitiveType WRITE setPrimitiveType NOTIFY primitiveTypeChanged)
 
 public:
-    explicit QGeometryRenderer(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QGeometryRenderer(Qt3DCore::QNode *parent = nullptr);
 
     enum PrimitiveType {
         Points = 0x0000,
@@ -124,7 +124,7 @@ Q_SIGNALS:
     void primitiveTypeChanged(PrimitiveType primitiveType);
 
 protected:
-    QGeometryRenderer(QGeometryRendererPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
+    QGeometryRenderer(QGeometryRendererPrivate &dd, Qt3DCore::QNode *parent = nullptr);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:

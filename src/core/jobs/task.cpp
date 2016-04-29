@@ -109,7 +109,7 @@ SyncTaskRunnable::SyncTaskRunnable(QAbstractAspectJobManager::JobFunction func,
     : m_func(func),
       m_arg(arg),
       m_atomicCount(atomicCount),
-      m_pooler(Q_NULLPTR),
+      m_pooler(nullptr),
       m_reserved(false)
 {
 }
@@ -141,7 +141,7 @@ void SyncTaskRunnable::setDependencyHandler(DependencyHandler *handler)
 
 DependencyHandler *SyncTaskRunnable::dependencyHandler()
 {
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 } // namespace Qt3DCore {

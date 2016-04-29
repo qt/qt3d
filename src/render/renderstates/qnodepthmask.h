@@ -53,7 +53,7 @@ class QT3DRENDERSHARED_EXPORT  QNoDepthMask : public QRenderState
 {
     Q_OBJECT
 public:
-    explicit QNoDepthMask(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QNoDepthMask(Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QNoDepthMask)

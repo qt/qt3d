@@ -73,10 +73,10 @@ namespace Qt3DRender {
  */
 Scene3DItem::Scene3DItem(QQuickItem *parent)
     : QQuickItem(parent)
-    , m_entity(Q_NULLPTR)
+    , m_entity(nullptr)
     , m_aspectEngine(new Qt3DCore::QAspectEngine())
     , m_renderAspect(new QRenderAspect(QRenderAspect::Synchronous))
-    , m_renderer(Q_NULLPTR)
+    , m_renderer(nullptr)
     , m_rendererCleaner(new Scene3DCleaner())
     , m_multisample(true)
     , m_cameraAspectRatioMode(AutomaticAspectRatio)
@@ -311,10 +311,10 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
     // as we need to resize the FBO
     if (node) {
         delete node;
-        node = Q_NULLPTR;
+        node = nullptr;
     }
 
-    if (m_renderer == Q_NULLPTR) {
+    if (m_renderer == nullptr) {
         m_renderer = new Scene3DRenderer(this, m_aspectEngine, m_renderAspect);
         m_renderer->setCleanerHelper(m_rendererCleaner);
     }

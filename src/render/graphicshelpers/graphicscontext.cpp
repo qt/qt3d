@@ -126,23 +126,23 @@ unsigned int nextFreeContextId()
 GraphicsContext::GraphicsContext()
     : m_initialized(false)
     , m_id(nextFreeContextId())
-    , m_gl(Q_NULLPTR)
-    , m_surface(Q_NULLPTR)
-    , m_glHelper(Q_NULLPTR)
+    , m_gl(nullptr)
+    , m_surface(nullptr)
+    , m_glHelper(nullptr)
     , m_ownCurrent(true)
-    , m_activeShader(Q_NULLPTR)
+    , m_activeShader(nullptr)
     , m_currClearStencilValue(0)
     , m_currClearDepthValue(1.f)
     , m_currClearColorValue(0,0,0,0)
-    , m_material(Q_NULLPTR)
+    , m_material(nullptr)
     , m_activeFBO(0)
     , m_defaultFBO(0)
     , m_boundArrayBuffer(nullptr)
-    , m_stateSet(Q_NULLPTR)
-    , m_renderer(Q_NULLPTR)
+    , m_stateSet(nullptr)
+    , m_renderer(nullptr)
     , m_uboTempArray(QByteArray(1024, 0))
     , m_supportsVAO(true)
-    , m_debugLogger(Q_NULLPTR)
+    , m_debugLogger(nullptr)
 {
     static_contexts[m_id] = this;
 }
@@ -255,7 +255,7 @@ void GraphicsContext::endDrawing(bool swapBuffers)
         m_gl->swapBuffers(m_surface);
     if (m_ownCurrent)
         m_gl->doneCurrent();
-    m_stateSet = Q_NULLPTR;
+    m_stateSet = nullptr;
     decayTextureScores();
 }
 
@@ -326,7 +326,7 @@ void GraphicsContext::releaseOpenGL()
     // Stop and destroy the OpenGL logger
     if (m_debugLogger) {
         m_debugLogger->stopLogging();
-        m_debugLogger.reset(Q_NULLPTR);
+        m_debugLogger.reset(nullptr);
     }
 }
 
@@ -354,7 +354,7 @@ void GraphicsContext::activateGLHelper()
 
 bool GraphicsContext::hasValidGLHelper() const
 {
-    return m_glHelper != Q_NULLPTR;
+    return m_glHelper != nullptr;
 }
 
 bool GraphicsContext::makeCurrent(QSurface *surface)
@@ -385,9 +385,9 @@ void GraphicsContext::doneCurrent()
 // That assumes that the shaderProgram in Shader stays the same
 void GraphicsContext::activateShader(Shader *shader)
 {
-    if (shader == Q_NULLPTR) {
-        m_activeShader = Q_NULLPTR;
-        m_material = Q_NULLPTR;
+    if (shader == nullptr) {
+        m_activeShader = nullptr;
+        m_material = nullptr;
         m_glHelper->useProgram(0);
         return;
     }
@@ -404,7 +404,7 @@ void GraphicsContext::activateShader(Shader *shader)
             shader->initializeUniformBlocks(m_glHelper->programUniformBlocks(prog->programId()));
         if (m_glHelper->supportsFeature(GraphicsHelperInterface::ShaderStorageObject))
             shader->initializeShaderStorageBlocks(m_glHelper->programShaderStorageBlocks(prog->programId()));
-        m_activeShader = Q_NULLPTR;
+        m_activeShader = nullptr;
     } else if (!shader->isLoaded()) {
         // Shader program is already in the m_shaderHash but we still need to
         // ensure that the Shader has full knowledge of attributes, uniforms,
@@ -412,28 +412,28 @@ void GraphicsContext::activateShader(Shader *shader)
         shader->initialize(*m_renderShaderHash.value(shader->dna()));
     }
 
-    if (m_activeShader != Q_NULLPTR && m_activeShader->dna() == shader->dna()) {
+    if (m_activeShader != nullptr && m_activeShader->dna() == shader->dna()) {
         // no op
     } else {
         m_activeShader = shader;
         QOpenGLShaderProgram* prog = m_renderShaderHash[shader->dna()]->getOrCreateProgram(this);
         prog->bind();
         // ensure material uniforms are re-applied
-        m_material = Q_NULLPTR;
+        m_material = nullptr;
     }
 }
 
 /*!
  * \internal
  * Returns the QOpenGLShaderProgram matching the ProgramDNA \a dna. If no match
- * is found, Q_NULLPTR is returned.
+ * is found, nullptr is returned.
  */
 QOpenGLShaderProgram *GraphicsContext::containsProgram(const ProgramDNA &dna)
 {
-    Shader *renderShader = m_renderShaderHash.value(dna, Q_NULLPTR);
+    Shader *renderShader = m_renderShaderHash.value(dna, nullptr);
     if (renderShader)
         return renderShader->getOrCreateProgram(this);
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 void GraphicsContext::removeProgram(const ProgramDNA &dna, Qt3DCore::QNodeId id)
@@ -446,7 +446,7 @@ void GraphicsContext::removeProgram(const ProgramDNA &dna, Qt3DCore::QNodeId id)
 void GraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments, GLuint defaultFboId)
 {
     GLuint fboId = defaultFboId; // Default FBO
-    if (renderTarget != Q_NULLPTR) {
+    if (renderTarget != nullptr) {
         // New RenderTarget
         if (!m_renderTargets.contains(renderTarget->peerId())) {
             if (m_defaultFBO && fboId == m_defaultFBO) {
@@ -471,7 +471,7 @@ void GraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const Att
             bool needsResize = false;
             Q_FOREACH (const Attachment &attachment, attachments.attachments()) {
                 Texture *rTex = textureManager->lookupResource(attachment.m_textureUuid);
-                if (rTex != Q_NULLPTR)
+                if (rTex != nullptr)
                     needsResize |= rTex->isTextureReset();
             }
             if (needsResize) {
@@ -494,9 +494,9 @@ void GraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const Attach
     TextureManager *textureManager = m_renderer->nodeManagers()->textureManager();
     Q_FOREACH (const Attachment &attachment, attachments.attachments()) {
         Texture *rTex =textureManager->lookupResource(attachment.m_textureUuid);
-        if (rTex != Q_NULLPTR) {
+        if (rTex != nullptr) {
             QOpenGLTexture *glTex = rTex->getOrCreateGLTexture();
-            if (glTex != Q_NULLPTR) {
+            if (glTex != nullptr) {
                 if (fboSize.isEmpty())
                     fboSize = QSize(glTex->width(), glTex->height());
                 else
@@ -587,26 +587,26 @@ void GraphicsContext::deactivateTexturesWithScope(TextureScope ts)
 GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
 {
     Q_ASSERT(m_gl);
-    GraphicsHelperInterface *glHelper = Q_NULLPTR;
+    GraphicsHelperInterface *glHelper = nullptr;
 
     if (m_gl->isOpenGLES()) {
         glHelper = new GraphicsHelperES2();
-        glHelper->initializeHelper(m_gl, Q_NULLPTR);
+        glHelper->initializeHelper(m_gl, nullptr);
         qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2/ES2 Helper";
     }
 #ifndef QT_OPENGL_ES_2
     else {
-        QAbstractOpenGLFunctions *glFunctions = Q_NULLPTR;
-        if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_4_3_Core>()) != Q_NULLPTR) {
+        QAbstractOpenGLFunctions *glFunctions = nullptr;
+        if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_4_3_Core>()) != nullptr) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 4.3";
             glHelper = new GraphicsHelperGL4();
-        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_3_Core>()) != Q_NULLPTR) {
+        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_3_Core>()) != nullptr) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.3";
             glHelper = new GraphicsHelperGL3_3();
-        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != Q_NULLPTR) {
+        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != nullptr) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.2";
             glHelper = new GraphicsHelperGL3();
-        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_2_0>()) != Q_NULLPTR) {
+        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_2_0>()) != nullptr) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2 Helper";
             glHelper = new GraphicsHelperGL2();
         }
@@ -1009,7 +1009,7 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
         const ShaderParameterPack::NamedTexture &namedTex = parameterPack.textures().at(i);
         Texture *t = manager->lookupResource<Texture, TextureManager>(namedTex.texId);
         // TO DO : Rework the way textures are loaded
-        if (t != Q_NULLPTR) {
+        if (t != nullptr) {
             int texUnit = activateTexture(TextureScopeMaterial, t);
             if (uniformValues.contains(namedTex.glslNameId)) {
                 QUniformValue &texUniform = uniformValues[namedTex.glslNameId];
@@ -1068,7 +1068,7 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
 
 void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffer, const QString &shaderName)
 {
-    if (attribute == Q_NULLPTR || buffer == Q_NULLPTR)
+    if (attribute == nullptr || buffer == nullptr)
         return;
 
     GLBuffer *buf = glBufferForRenderBuffer(buffer);

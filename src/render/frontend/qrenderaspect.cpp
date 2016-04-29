@@ -147,7 +147,7 @@ namespace Qt3DRender {
 QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     : QAbstractAspectPrivate()
     , m_nodeManagers(new Render::NodeManagers())
-    , m_renderer(Q_NULLPTR)
+    , m_renderer(nullptr)
     , m_initialized(false)
     , m_framePreparationJob(new Render::FramePreparationJob(m_nodeManagers))
     , m_cleanupJob(new Render::FrameCleanupJob(m_nodeManagers))
@@ -306,7 +306,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     // 7 Cleanup Job (depends on RV)
 
     // Create jobs to load in any meshes that are pending
-    if (d->m_renderer != Q_NULLPTR && d->m_renderer->isRunning()) {
+    if (d->m_renderer != nullptr && d->m_renderer->isRunning()) {
         // don't spawn any jobs, if the renderer decides to skip this frame
         if (!d->m_renderer->shouldRender()) {
             d->m_renderer->skipNextFrame();
@@ -411,7 +411,7 @@ void QRenderAspect::onRegistered()
         d->m_initialized = true;
     }
 
-    //    QSurface *surface = Q_NULLPTR;
+    //    QSurface *surface = nullptr;
     //    const QVariant &v = data.value(QStringLiteral("surface"));
     //    if (v.isValid())
     //        surface = v.value<QSurface *>();
@@ -429,7 +429,7 @@ void QRenderAspect::onUnregistered()
     if (d->m_renderer)
         d->m_renderer->destroyAllocators(d->jobManager());
     delete d->m_renderer;
-    d->m_renderer = Q_NULLPTR;
+    d->m_renderer = nullptr;
 }
 
 // Returns a vector of jobs to be performed for dirty buffers
@@ -475,7 +475,7 @@ void QRenderAspectPrivate::loadSceneParsers()
     const QStringList keys = QSceneParserFactory::keys();
     for (const QString &key : keys) {
         QSceneIOHandler *sceneIOHandler = QSceneParserFactory::create(key, QStringList());
-        if (sceneIOHandler != Q_NULLPTR)
+        if (sceneIOHandler != nullptr)
             m_sceneIOHandler.append(sceneIOHandler);
     }
 }

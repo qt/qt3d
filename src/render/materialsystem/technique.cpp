@@ -87,7 +87,7 @@ void Technique::updateFromPeer(Qt3DCore::QNode *peer)
 
     QTechnique *technique = static_cast<QTechnique *>(peer);
 
-    if (technique != Q_NULLPTR) {
+    if (technique != nullptr) {
         Q_FOREACH (QParameter *p, technique->parameters())
             m_parameterPack.appendParameter(p->id());
         Q_FOREACH (QRenderPass *rPass, technique->renderPasses())

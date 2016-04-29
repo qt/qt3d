@@ -55,7 +55,7 @@ class QT3DRENDERSHARED_EXPORT QLayer : public Qt3DCore::QComponent
     Q_OBJECT
     Q_PROPERTY(QStringList names READ names WRITE setNames NOTIFY namesChanged)
 public:
-    explicit QLayer(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QLayer(Qt3DCore::QNode *parent = nullptr);
 
     QStringList names() const;
 
@@ -66,7 +66,7 @@ Q_SIGNALS:
     void namesChanged(const QStringList &names);
 
 protected:
-    QLayer(QLayerPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
+    QLayer(QLayerPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QLayer)

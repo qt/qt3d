@@ -73,12 +73,12 @@ void Geometry::cleanup()
 void Geometry::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QGeometry *geometry = static_cast<QGeometry *>(peer);
-    if (geometry != Q_NULLPTR) {
+    if (geometry != nullptr) {
         m_attributes.reserve(geometry->attributes().size());
         Q_FOREACH (QAttribute *attribute, geometry->attributes())
             m_attributes.push_back(attribute->id());
         m_geometryDirty = true;
-        if (geometry->boundingVolumePositionAttribute() != Q_NULLPTR)
+        if (geometry->boundingVolumePositionAttribute() != nullptr)
             m_boundingPositionAttribute = geometry->boundingVolumePositionAttribute()->id();
     }
 }

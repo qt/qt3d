@@ -120,7 +120,7 @@ void QAction::addInput(QAbstractActionInput *input)
         if (!input->parent())
             input->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             const auto change = Qt3DCore::QNodeAddedPropertyChangePtr::create(id(), input);
             change->setPropertyName("input");
             d->notifyObservers(change);
@@ -136,7 +136,7 @@ void QAction::removeInput(QAbstractActionInput *input)
     Q_D(QAction);
     if (d->m_inputs.contains(input)) {
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), input);
             change->setPropertyName("input");
             d->notifyObservers(change);

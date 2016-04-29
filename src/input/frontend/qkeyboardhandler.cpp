@@ -108,7 +108,7 @@ const QByteArray keyToSignal(int key)
 
 QKeyboardHandlerPrivate::QKeyboardHandlerPrivate()
     : QComponentPrivate()
-    , m_keyboardDevice(Q_NULLPTR)
+    , m_keyboardDevice(nullptr)
     , m_focus(false)
 {
     m_shareable = false;

@@ -73,8 +73,8 @@ private Q_SLOTS:
         QAbstractAspect *aspect = factory.createAspect(QStringLiteral("default"));
 
         // THEN
-        QVERIFY(qobject_cast<DefaultFakeAspect*>(aspect) != Q_NULLPTR);
-        QVERIFY(aspect->parent() == Q_NULLPTR);
+        QVERIFY(qobject_cast<DefaultFakeAspect*>(aspect) != nullptr);
+        QVERIFY(aspect->parent() == nullptr);
     }
 
     void shouldKnowAspectNames()
@@ -100,7 +100,7 @@ private Q_SLOTS:
         QAbstractAspect *aspect = factory.createAspect(QStringLiteral("missing"), this);
 
         // THEN
-        QVERIFY(qobject_cast<AnotherFakeAspect*>(aspect) == Q_NULLPTR);
+        QVERIFY(qobject_cast<AnotherFakeAspect*>(aspect) == nullptr);
     }
 };
 

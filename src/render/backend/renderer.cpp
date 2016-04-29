@@ -121,9 +121,9 @@ const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
     Renderer shutdown procedure:
 
     Since the renderer relies on the surface and OpenGLContext to perform its cleanup,
-    it is shutdown when the surface is set to Q_NULLPTR
+    it is shutdown when the surface is set to nullptr
 
-    When the surface is set to Q_NULLPTR this will request the RenderThread to terminate
+    When the surface is set to nullptr this will request the RenderThread to terminate
     and will prevent createRenderBinJobs from returning a set of jobs as there is nothing
     more to be rendered.
 
@@ -136,23 +136,23 @@ const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
  */
 
 Renderer::Renderer(QRenderAspect::RenderType type)
-    : m_services(Q_NULLPTR)
-    , m_nodesManager(Q_NULLPTR)
-    , m_defaultMaterial(Q_NULLPTR)
-    , m_defaultRenderStateSet(Q_NULLPTR)
-    , m_graphicsContext(Q_NULLPTR)
+    : m_services(nullptr)
+    , m_nodesManager(nullptr)
+    , m_defaultMaterial(nullptr)
+    , m_defaultRenderStateSet(nullptr)
+    , m_graphicsContext(nullptr)
     , m_renderQueue(new RenderQueue())
-    , m_renderThread(type == QRenderAspect::Threaded ? new RenderThread(this) : Q_NULLPTR)
+    , m_renderThread(type == QRenderAspect::Threaded ? new RenderThread(this) : nullptr)
     , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService())
     , m_waitForInitializationToBeCompleted(0)
     , m_pickEventFilter(new PickEventFilter())
     , m_exposed(0)
     , m_changeSet(0)
     , m_lastFrameCorrect(0)
-    , m_glContext(Q_NULLPTR)
-    , m_pickBoundingVolumeJob(Q_NULLPTR)
+    , m_glContext(nullptr)
+    , m_pickBoundingVolumeJob(nullptr)
     , m_time(0)
-    , m_settings(Q_NULLPTR)
+    , m_settings(nullptr)
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
@@ -326,7 +326,7 @@ void Renderer::destroyThreadLocalAllocator(void *renderer)
         allocator->clear();
         // Setting the local data to null actually deletes the allocatorQeue
         // as the tls object takes ownership of pointers
-        theRenderer->tlsAllocators()->setLocalData(Q_NULLPTR);
+        theRenderer->tlsAllocators()->setLocalData(nullptr);
     }
 }
 
@@ -382,7 +382,7 @@ void Renderer::initialize()
 void Renderer::shutdown()
 {
     // Clean up the graphics context
-    m_graphicsContext.reset(Q_NULLPTR);
+    m_graphicsContext.reset(nullptr);
     qCDebug(Backend) << Q_FUNC_INFO << "Renderer properly shutdown";
 }
 
@@ -657,9 +657,9 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
     // We might not want to render on the default FBO
     bool boundFboIdValid = false;
     uint lastBoundFBOId = 0;
-    QSurface *surface = Q_NULLPTR;
-    QSurface *previousSurface = Q_NULLPTR;
-    QSurface *lastUsedSurface = Q_NULLPTR;
+    QSurface *surface = nullptr;
+    QSurface *previousSurface = nullptr;
+    QSurface *lastUsedSurface = nullptr;
     for (int i = 0; i < renderViewsCount; ++i) {
         // Initialize GraphicsContext for drawing
         // If the RenderView has a RenderStateSet defined
@@ -858,7 +858,7 @@ QAbstractFrameAdvanceService *Renderer::frameAdvanceService() const
 void Renderer::performDraw(GeometryRenderer *rGeometryRenderer, GLsizei primitiveCount, Attribute *indexAttribute)
 {
     const GLint primType = rGeometryRenderer->primitiveType();
-    const bool drawIndexed = indexAttribute != Q_NULLPTR;
+    const bool drawIndexed = indexAttribute != nullptr;
     const GLint indexType = drawIndexed ? GraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->vertexBaseType()) : 0;
 
     if (rGeometryRenderer->primitiveType() == QGeometryRenderer::Patches)
@@ -899,7 +899,7 @@ void Renderer::performDraw(GeometryRenderer *rGeometryRenderer, GLsizei primitiv
 void Renderer::performCompute(const RenderView *, RenderCommand *command)
 {
     Shader *shader = m_nodesManager->data<Shader, ShaderManager>(command->m_shader);
-    if (shader != Q_NULLPTR) {
+    if (shader != nullptr) {
         m_graphicsContext->activateShader(shader);
         m_graphicsContext->setParameters(command->m_parameterPack);
         m_graphicsContext->dispatchCompute(command->m_workGroups[0],
@@ -956,7 +956,7 @@ bool Renderer::executeCommands(const RenderView *rv)
 
     // Save the RenderView base stateset
     RenderStateSet *globalState = m_graphicsContext->currentStateSet();
-    OpenGLVertexArrayObject *vao = Q_NULLPTR;
+    OpenGLVertexArrayObject *vao = nullptr;
     HVao previousVaoHandle;
 
     for (RenderCommand *command : qAsConst(commands)) {
@@ -968,7 +968,7 @@ bool Renderer::executeCommands(const RenderView *rv)
             // Check if we have a valid GeometryRenderer + Geometry
             Geometry *rGeometry = m_nodesManager->data<Geometry, GeometryManager>(command->m_geometry);
             GeometryRenderer *rGeometryRenderer = m_nodesManager->data<GeometryRenderer, GeometryRendererManager>(command->m_geometryRenderer);
-            const bool hasGeometryRenderer = rGeometry != Q_NULLPTR && rGeometryRenderer != Q_NULLPTR && !rGeometry->attributes().isEmpty();
+            const bool hasGeometryRenderer = rGeometry != nullptr && rGeometryRenderer != nullptr && !rGeometry->attributes().isEmpty();
 
             if (!hasGeometryRenderer) {
                 allCommandsIssued = false;
@@ -977,7 +977,7 @@ bool Renderer::executeCommands(const RenderView *rv)
             }
 
             Shader *shader = m_nodesManager->data<Shader, ShaderManager>(command->m_shader);
-            if (shader == Q_NULLPTR) {
+            if (shader == nullptr) {
                 shader = m_defaultRenderShader;
                 command->m_parameterPack = m_defaultUniformPack;
             }
@@ -997,7 +997,7 @@ bool Renderer::executeCommands(const RenderView *rv)
             // Uniform and Attributes info from the shader
             // Otherwise we might create a VAO without attribute bindings as the RenderCommand had no way to know about attributes
             // Before the shader was loader
-            Attribute *indexAttribute = Q_NULLPTR;
+            Attribute *indexAttribute = nullptr;
             bool specified = false;
             const bool requiresVAOUpdate = (!vao || !vao->isSpecified()) || (rGeometry->isDirty() || rGeometryRenderer->isDirty());
             GLsizei primitiveCount = rGeometryRenderer->vertexCount();
@@ -1007,7 +1007,7 @@ bool Renderer::executeCommands(const RenderView *rv)
             if (rGeometry->isDirty())
                 m_dirtyGeometry.push_back(rGeometry);
 
-            if (needsToBindVAO && vao != Q_NULLPTR)
+            if (needsToBindVAO && vao != nullptr)
                 vao->bind();
 
             if (!command->m_attributes.isEmpty()) {
@@ -1026,7 +1026,7 @@ bool Renderer::executeCommands(const RenderView *rv)
             RenderStateSet *localState = command->m_stateSet;
             // Merge the RenderCommand state with the globalState of the RenderView
             // Or restore the globalState if no stateSet for the RenderCommand
-            if (localState != Q_NULLPTR) {
+            if (localState != nullptr) {
                 command->m_stateSet->merge(globalState);
                 m_graphicsContext->setCurrentStateSet(command->m_stateSet);
             } else {
@@ -1067,7 +1067,7 @@ bool Renderer::executeCommands(const RenderView *rv)
 
 Attribute *Renderer::updateBuffersAndAttributes(Geometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate)
 {
-    Attribute *indexAttribute = Q_NULLPTR;
+    Attribute *indexAttribute = nullptr;
     uint estimatedCount = 0;
 
     m_dirtyAttributes.reserve(m_dirtyAttributes.size() + geometry->attributes().size());
@@ -1076,12 +1076,12 @@ Attribute *Renderer::updateBuffersAndAttributes(Geometry *geometry, RenderComman
         // TO DO: Improvement we could store handles and use the non locking policy on the attributeManager
         Attribute *attribute = m_nodesManager->attributeManager()->lookupResource(attributeId);
 
-        if (attribute == Q_NULLPTR)
+        if (attribute == nullptr)
             continue;
 
         Buffer *buffer = m_nodesManager->bufferManager()->lookupResource(attribute->bufferId());
 
-        if (buffer == Q_NULLPTR)
+        if (buffer == nullptr)
             continue;
 
         if (buffer->isDirty()) {

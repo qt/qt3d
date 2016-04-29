@@ -51,7 +51,7 @@ namespace Qt3DRender {
 
 QRenderTargetSelectorPrivate::QRenderTargetSelectorPrivate()
     : QFrameGraphNodePrivate()
-    , m_target(Q_NULLPTR)
+    , m_target(nullptr)
 {
 }
 
@@ -67,7 +67,7 @@ void QRenderTargetSelector::setTarget(QRenderTarget *target)
         d->m_target = target;
 
         // For inline declaration cases
-        if (target != Q_NULLPTR && !target->parent())
+        if (target != nullptr && !target->parent())
             target->setParent(this);
         emit targetChanged(target);
     }

@@ -63,7 +63,7 @@ public:
     Q_DECLARE_PUBLIC(QGeometry)
     QGeometryPrivate()
         : QNodePrivate()
-        , m_boundingVolumePositionAttribute(Q_NULLPTR)
+        , m_boundingVolumePositionAttribute(nullptr)
     {}
 
 

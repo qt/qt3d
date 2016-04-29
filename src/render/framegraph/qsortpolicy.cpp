@@ -77,7 +77,7 @@ void QSortPolicy::addSortType(Qt3DRender::QSortPolicy::SortType sortType)
     if (!d->m_sortTypes.contains(sortType)) {
         d->m_sortTypes.append(sortType);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             QNodePropertyChangePtr propertyChange(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
             propertyChange->setPropertyName("sortType");
             propertyChange->setValue(QVariant::fromValue(sortType));
@@ -89,7 +89,7 @@ void QSortPolicy::addSortType(Qt3DRender::QSortPolicy::SortType sortType)
 void QSortPolicy::removeSortType(SortType sortType)
 {
     Q_D(QSortPolicy);
-    if (d->m_changeArbiter != Q_NULLPTR) {
+    if (d->m_changeArbiter != nullptr) {
         QNodePropertyChangePtr propertyChange(new QNodePropertyChange(NodeRemoved, QSceneChange::Node, id()));
         propertyChange->setPropertyName("sortType");
         propertyChange->setValue(QVariant::fromValue(sortType));

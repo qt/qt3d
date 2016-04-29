@@ -112,7 +112,7 @@ Q_SIGNALS:
     void bufferIndexChanged(int index);
 
 protected:
-    QBlendEquationArguments(QBlendEquationArgumentsPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
+    QBlendEquationArguments(QBlendEquationArgumentsPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QBlendEquationArguments)

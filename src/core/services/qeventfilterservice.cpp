@@ -109,7 +109,7 @@ class InternalEventListener : public QObject
 {
     Q_OBJECT
 public:
-    explicit InternalEventListener(QEventFilterServicePrivate *filterService, QObject *parent = Q_NULLPTR)
+    explicit InternalEventListener(QEventFilterServicePrivate *filterService, QObject *parent = nullptr)
         : QObject(parent)
         , m_filterService(filterService)
     {
@@ -156,7 +156,7 @@ QEventFilterService::~QEventFilterService()
 void QEventFilterService::initialize(QObject *eventSource)
 {
     Q_D(QEventFilterService);
-    if (eventSource == Q_NULLPTR) {
+    if (eventSource == nullptr) {
         d->m_eventDispatcher.reset();
     } else {
         d->m_eventDispatcher.reset(new InternalEventListener(d));

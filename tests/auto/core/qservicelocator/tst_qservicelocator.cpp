@@ -85,11 +85,11 @@ void tst_QServiceLocator::defaultServices()
 {
     QServiceLocator locator;
     QOpenGLInformationService *glInfo = locator.openGLInformation();
-    QVERIFY(glInfo != Q_NULLPTR);
+    QVERIFY(glInfo != nullptr);
     QVERIFY(glInfo->description() == QStringLiteral("Null OpenGL Information Service"));
 
     QSystemInformationService *sysInfo = locator.systemInformation();
-    QVERIFY(sysInfo != Q_NULLPTR);
+    QVERIFY(sysInfo != nullptr);
     QVERIFY(sysInfo->description() == QStringLiteral("Null System Information Service"));
     QVERIFY(sysInfo->threadPoolThreadCount() == 0);
 }
@@ -109,7 +109,7 @@ void tst_QServiceLocator::addRemoveDefaultService()
 
     // Ensure the other default services work
     QOpenGLInformationService *glInfo = locator.openGLInformation();
-    QVERIFY(glInfo != Q_NULLPTR);
+    QVERIFY(glInfo != nullptr);
     QVERIFY(glInfo->description() == QStringLiteral("Null OpenGL Information Service"));
     QVERIFY(glInfo->format() == QSurfaceFormat());
 
@@ -137,7 +137,7 @@ void tst_QServiceLocator::addRemoveUserService()
 
     // Ensure the default services work
     QSystemInformationService *sysInfo = locator.systemInformation();
-    QVERIFY(sysInfo != Q_NULLPTR);
+    QVERIFY(sysInfo != nullptr);
     QVERIFY(sysInfo->description() == QStringLiteral("Null System Information Service"));
     QVERIFY(sysInfo->threadPoolThreadCount() == 0);
 

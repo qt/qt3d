@@ -55,7 +55,7 @@ class QT3DEXTRASSHARED_EXPORT QTorusMesh : public Qt3DRender::QGeometryRenderer
     Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
     Q_PROPERTY(float minorRadius READ minorRadius WRITE setMinorRadius NOTIFY minorRadiusChanged)
 public:
-    explicit QTorusMesh(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QTorusMesh(Qt3DCore::QNode *parent = nullptr);
 
     int rings() const;
     int slices() const;

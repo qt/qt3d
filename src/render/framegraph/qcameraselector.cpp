@@ -60,7 +60,7 @@ QCameraSelector::QCameraSelector(QCameraSelectorPrivate &dd, QNode *parent)
 
 QCameraSelectorPrivate::QCameraSelectorPrivate()
     : QFrameGraphNodePrivate()
-    , m_camera(Q_NULLPTR)
+    , m_camera(nullptr)
 {
 }
 

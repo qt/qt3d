@@ -61,7 +61,7 @@ class QT3DRENDERSHARED_EXPORT QTechnique : public Qt3DCore::QNode
     Q_PROPERTY(Qt3DRender::QGraphicsApiFilter *graphicsApiFilter READ graphicsApiFilter CONSTANT)
 
 public:
-    explicit QTechnique(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QTechnique(Qt3DCore::QNode *parent = nullptr);
 
     void addFilterKey(QFilterKey *filterKey);
     void removeFilterKey(QFilterKey *filterKey);
@@ -78,7 +78,7 @@ public:
     QGraphicsApiFilter *graphicsApiFilter();
 
 protected:
-    QTechnique(QTechniquePrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
+    QTechnique(QTechniquePrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QTechnique)

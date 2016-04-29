@@ -69,7 +69,7 @@ class QT3DEXTRASSHARED_EXPORT QPlaneGeometry : public Qt3DRender::QGeometry
     Q_PROPERTY(Qt3DRender::QAttribute *indexAttribute READ indexAttribute CONSTANT)
 
 public:
-    explicit QPlaneGeometry(QNode *parent = Q_NULLPTR);
+    explicit QPlaneGeometry(QNode *parent = nullptr);
 
     void updateVertices();
     void updateIndices();
@@ -95,7 +95,7 @@ Q_SIGNALS:
     void heightChanged(float height);
 
 protected:
-    QPlaneGeometry(QPlaneGeometryPrivate &dd, QNode *parent = Q_NULLPTR);
+    QPlaneGeometry(QPlaneGeometryPrivate &dd, QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QPlaneGeometry)

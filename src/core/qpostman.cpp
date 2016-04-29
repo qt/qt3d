@@ -55,7 +55,7 @@ class QPostmanPrivate : public QObjectPrivate
 public:
     QPostmanPrivate()
         : QObjectPrivate()
-        , m_scene(Q_NULLPTR)
+        , m_scene(nullptr)
     {
     }
 
@@ -123,9 +123,9 @@ void QPostman::notifyFrontendNode(const QSceneChangePtr &e)
 {
     Q_D(QPostman);
     QBackendNodePropertyChangePtr change = qSharedPointerCast<QBackendNodePropertyChange>(e);
-    if (!change.isNull() && d->m_scene != Q_NULLPTR) {
+    if (!change.isNull() && d->m_scene != nullptr) {
         QNode *n = d->m_scene->lookupNode(change->targetNode());
-        if (n != Q_NULLPTR)
+        if (n != nullptr)
             n->sceneChangeEvent(change);
     }
 }
@@ -133,8 +133,8 @@ void QPostman::notifyFrontendNode(const QSceneChangePtr &e)
 void QPostman::submitChangeBatch()
 {
     Q_D(QPostman);
-    QLockableObserverInterface *arbiter = Q_NULLPTR;
-    if (d->m_scene && (arbiter = d->m_scene->arbiter()) != Q_NULLPTR) {
+    QLockableObserverInterface *arbiter = nullptr;
+    if (d->m_scene && (arbiter = d->m_scene->arbiter()) != nullptr) {
         arbiter->sceneChangeEventWithLock(d->m_batch);
         d->m_batch.clear();
     }

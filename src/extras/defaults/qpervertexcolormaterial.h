@@ -55,7 +55,7 @@ class QT3DEXTRASSHARED_EXPORT QPerVertexColorMaterial : public Qt3DRender::QMate
     Q_OBJECT
 
 public:
-    explicit QPerVertexColorMaterial(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QPerVertexColorMaterial(Qt3DCore::QNode *parent = nullptr);
     ~QPerVertexColorMaterial();
 
 private:

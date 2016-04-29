@@ -111,7 +111,7 @@ void QGeometry::addAttribute(QAttribute *attribute)
         if (!attribute->parent())
             attribute->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             const auto change = QNodeAddedPropertyChangePtr::create(id(), attribute);
             change->setPropertyName("attribute");
             d->notifyObservers(change);
@@ -126,7 +126,7 @@ void QGeometry::removeAttribute(QAttribute *attribute)
 {
     Q_ASSERT(attribute);
     Q_D(QGeometry);
-    if (d->m_changeArbiter != Q_NULLPTR) {
+    if (d->m_changeArbiter != nullptr) {
         const auto change = QNodeRemovedPropertyChangePtr::create(id(), attribute);
         change->setPropertyName("attribute");
         d->notifyObservers(change);

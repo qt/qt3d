@@ -53,13 +53,13 @@ public:
 
     Qt3DRender::QGeometry *operator ()() Q_DECL_FINAL
     {
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     bool operator ==(const Qt3DRender::QGeometryFactory &other) const Q_DECL_FINAL
     {
         const TestFactory *otherFactory = functor_cast<TestFactory>(&other);
-        if (otherFactory != Q_NULLPTR)
+        if (otherFactory != nullptr)
             return otherFactory->m_size == m_size;
         return false;
     }
@@ -139,7 +139,7 @@ private Q_SLOTS:
         QCOMPARE(cloneData.primitiveType, geometryRenderer->primitiveType());
         QCOMPARE(cloneData.verticesPerPatch, geometryRenderer->verticesPerPatch());
 
-        if (geometryRenderer->geometry() != Q_NULLPTR)
+        if (geometryRenderer->geometry() != nullptr)
             QCOMPARE(cloneData.geometryId, geometryRenderer->geometry()->id());
 
         QCOMPARE(cloneData.geometryFactory, geometryRenderer->geometryFactory());

@@ -264,7 +264,7 @@ public:
 
         default: {
 
-            float *data = Q_NULLPTR;
+            float *data = nullptr;
             if (v.userType() == QMatrix3x3Type) {
                 QMatrix3x3 mat = v.value<QMatrix3x3>();
                 data = mat.data();

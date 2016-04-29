@@ -69,7 +69,7 @@ class QT3DEXTRASSHARED_EXPORT QSphereGeometry : public Qt3DRender::QGeometry
     Q_PROPERTY(Qt3DRender::QAttribute *indexAttribute READ indexAttribute CONSTANT)
 
 public:
-    explicit QSphereGeometry(QNode *parent = Q_NULLPTR);
+    explicit QSphereGeometry(QNode *parent = nullptr);
 
     void updateVertices();
     void updateIndices();
@@ -98,7 +98,7 @@ Q_SIGNALS:
     void generateTangentsChanged(bool generateTangents);
 
 protected:
-    QSphereGeometry(QSphereGeometryPrivate &dd, QNode *parent = Q_NULLPTR);
+    QSphereGeometry(QSphereGeometryPrivate &dd, QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QSphereGeometry)

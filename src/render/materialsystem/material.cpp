@@ -78,7 +78,7 @@ void Material::updateFromPeer(Qt3DCore::QNode *node)
 {
     QMaterial *mat = static_cast<QMaterial *>(node);
     m_parameterPack.clear();
-    if (mat->effect() != Q_NULLPTR)
+    if (mat->effect() != nullptr)
         m_effectUuid = mat->effect()->id();
     Q_FOREACH (QParameter *p, mat->parameters())
         m_parameterPack.appendParameter(p->id());

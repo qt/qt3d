@@ -65,7 +65,7 @@ GeometryRenderer::GeometryRenderer()
     , m_primitiveRestartEnabled(false)
     , m_primitiveType(QGeometryRenderer::Triangles)
     , m_dirty(false)
-    , m_manager(Q_NULLPTR)
+    , m_manager(nullptr)
 {
 }
 
@@ -107,10 +107,10 @@ void GeometryRenderer::updateFromPeer(Qt3DCore::QNode *peer)
         m_verticesPerPatch = geometryRenderer->verticesPerPatch();
         m_primitiveRestartEnabled = geometryRenderer->primitiveRestartEnabled();
         m_primitiveType = geometryRenderer->primitiveType();
-        if (geometryRenderer->geometry() != Q_NULLPTR)
+        if (geometryRenderer->geometry() != nullptr)
             m_geometryId = geometryRenderer->geometry()->id();
         m_geometryFactory = geometryRenderer->geometryFactory();
-        if (m_geometryFactory && m_manager != Q_NULLPTR)
+        if (m_geometryFactory && m_manager != nullptr)
             m_manager->addDirtyGeometryRenderer(peerId());
         m_dirty = true;
     }
@@ -173,7 +173,7 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             QGeometryFactoryPtr newFunctor = propertyChange->value().value<QGeometryFactoryPtr>();
             m_dirty |= !(newFunctor && m_geometryFactory && *newFunctor == *m_geometryFactory);
             m_geometryFactory = newFunctor;
-            if (m_geometryFactory && m_manager != Q_NULLPTR)
+            if (m_geometryFactory && m_manager != nullptr)
                 m_manager->addDirtyGeometryRenderer(peerId());
         }
         break;

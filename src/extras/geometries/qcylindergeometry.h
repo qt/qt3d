@@ -67,7 +67,7 @@ class QT3DEXTRASSHARED_EXPORT QCylinderGeometry : public Qt3DRender::QGeometry
     Q_PROPERTY(Qt3DRender::QAttribute *indexAttribute READ indexAttribute CONSTANT)
 
 public:
-    explicit QCylinderGeometry(QNode *parent = Q_NULLPTR);
+    explicit QCylinderGeometry(QNode *parent = nullptr);
 
     void updateVertices();
     void updateIndices();
@@ -95,7 +95,7 @@ Q_SIGNALS:
     void lengthChanged(float length);
 
 protected:
-    QCylinderGeometry(QCylinderGeometryPrivate &dd, QNode *parent = Q_NULLPTR);
+    QCylinderGeometry(QCylinderGeometryPrivate &dd, QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QCylinderGeometry)

@@ -344,7 +344,7 @@ public:
     bool operator ==(const QBufferDataGenerator &other) const Q_DECL_FINAL
     {
         const CuboidVertexBufferFunctor *otherFunctor = functor_cast<CuboidVertexBufferFunctor>(&other);
-        if (otherFunctor != Q_NULLPTR)
+        if (otherFunctor != nullptr)
             return (otherFunctor->m_xExtent == m_xExtent &&
                     otherFunctor->m_yExtent == m_yExtent &&
                     otherFunctor->m_zExtent == m_zExtent &&
@@ -386,7 +386,7 @@ public:
     bool operator ==(const QBufferDataGenerator &other) const Q_DECL_FINAL
     {
         const CuboidIndexBufferFunctor *otherFunctor = functor_cast<CuboidIndexBufferFunctor>(&other);
-        if (otherFunctor != Q_NULLPTR)
+        if (otherFunctor != nullptr)
             return (otherFunctor->m_yzFaceResolution == m_yzFaceResolution &&
                     otherFunctor->m_xzFaceResolution == m_xzFaceResolution &&
                     otherFunctor->m_xyFaceResolution == m_xyFaceResolution);
@@ -409,13 +409,13 @@ QCuboidGeometryPrivate::QCuboidGeometryPrivate()
     , m_yzFaceResolution(2, 2)
     , m_xzFaceResolution(2, 2)
     , m_xyFaceResolution(2, 2)
-    , m_positionAttribute(Q_NULLPTR)
-    , m_normalAttribute(Q_NULLPTR)
-    , m_texCoordAttribute(Q_NULLPTR)
-    , m_tangentAttribute(Q_NULLPTR)
-    , m_indexAttribute(Q_NULLPTR)
-    , m_vertexBuffer(Q_NULLPTR)
-    , m_indexBuffer(Q_NULLPTR)
+    , m_positionAttribute(nullptr)
+    , m_normalAttribute(nullptr)
+    , m_texCoordAttribute(nullptr)
+    , m_tangentAttribute(nullptr)
+    , m_indexAttribute(nullptr)
+    , m_vertexBuffer(nullptr)
+    , m_indexBuffer(nullptr)
 {
 }
 

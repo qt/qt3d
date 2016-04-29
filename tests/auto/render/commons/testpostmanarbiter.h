@@ -53,7 +53,7 @@ private:
 class TestArbiter : public Qt3DCore::QAbstractArbiter
 {
 public:
-    TestArbiter(Qt3DCore::QNode *node = Q_NULLPTR);
+    TestArbiter(Qt3DCore::QNode *node = nullptr);
 
     ~TestArbiter();
 

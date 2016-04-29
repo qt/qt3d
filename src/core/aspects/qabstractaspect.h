@@ -65,11 +65,11 @@ class QT3DCORESHARED_EXPORT QAbstractAspect : public QObject
     Q_OBJECT
 
 public:
-    explicit QAbstractAspect(QObject *parent = Q_NULLPTR);
+    explicit QAbstractAspect(QObject *parent = nullptr);
     ~QAbstractAspect();
 
 protected:
-    QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = Q_NULLPTR);
+    QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = nullptr);
 
     QNodeId rootEntityId() const Q_DECL_NOEXCEPT;
 

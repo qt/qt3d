@@ -58,7 +58,7 @@ class QT3DCORESHARED_EXPORT QEntity : public QNode
 {
     Q_OBJECT
 public:
-    explicit QEntity(QNode *parent = Q_NULLPTR);
+    explicit QEntity(QNode *parent = nullptr);
     virtual ~QEntity();
 
     QComponentVector components() const;
@@ -69,7 +69,7 @@ public:
     QEntity *parentEntity() const;
 
 protected:
-    QEntity(QEntityPrivate &dd, QNode *parent = Q_NULLPTR);
+    QEntity(QEntityPrivate &dd, QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QEntity)

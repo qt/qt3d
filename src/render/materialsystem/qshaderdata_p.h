@@ -70,9 +70,9 @@ class QShaderDataPropertyReader: public PropertyReaderInterface
 {
     QVariant readProperty(const QVariant &v) Q_DECL_OVERRIDE
     {
-        QShaderData *shaderData = Q_NULLPTR;
+        QShaderData *shaderData = nullptr;
 
-        if (v.userType() == qShaderDataTypeId && (shaderData = v.value<QShaderData *>()) != Q_NULLPTR) {
+        if (v.userType() == qShaderDataTypeId && (shaderData = v.value<QShaderData *>()) != nullptr) {
             return QVariant::fromValue(shaderData->id());
         } else if (v.userType() == qVectorShaderDataTypeId) {
             QVariantList vlist;

@@ -121,7 +121,7 @@ void tst_HandleManager::nullForRemovedEntry()
     bool ok = false;
     SimpleResource *p2 = manager.data(h, &ok);
     QVERIFY(ok == false);
-    QVERIFY(p2 == Q_NULLPTR);
+    QVERIFY(p2 == nullptr);
 }
 
 void tst_HandleManager::validHandleForReplacementEntry()

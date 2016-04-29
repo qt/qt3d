@@ -83,11 +83,11 @@ QFrameGraphNode::QFrameGraphNode(QNode *parent)
  */
 QFrameGraphNode *QFrameGraphNode::parentFrameGraphNode() const
 {
-    QFrameGraphNode *parentFGNode = Q_NULLPTR;
+    QFrameGraphNode *parentFGNode = nullptr;
     QNode *parentN = parentNode();
 
     while (parentN) {
-        if ((parentFGNode = qobject_cast<QFrameGraphNode *>(parentN)) != Q_NULLPTR)
+        if ((parentFGNode = qobject_cast<QFrameGraphNode *>(parentN)) != nullptr)
             break;
         parentN = parentN->parentNode();
     }

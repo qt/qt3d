@@ -47,7 +47,7 @@ namespace Logic {
 
 CallbackJob::CallbackJob()
     : QAspectJob()
-    , m_logicManager(Q_NULLPTR)
+    , m_logicManager(nullptr)
 {
 }
 

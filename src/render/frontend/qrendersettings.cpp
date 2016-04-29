@@ -47,7 +47,7 @@ namespace Qt3DRender {
 
 QRenderSettingsPrivate::QRenderSettingsPrivate()
     : Qt3DCore::QComponentPrivate()
-    , m_activeFrameGraph(Q_NULLPTR)
+    , m_activeFrameGraph(nullptr)
     , m_renderPolicy(QRenderSettings::OnDemand)
 {
 }
@@ -109,7 +109,7 @@ void QRenderSettings::setActiveFrameGraph(QFrameGraphNode *activeFrameGraph)
     if (d->m_activeFrameGraph == activeFrameGraph)
         return;
 
-    if (activeFrameGraph != Q_NULLPTR && !activeFrameGraph->parent())
+    if (activeFrameGraph != nullptr && !activeFrameGraph->parent())
         activeFrameGraph->setParent(this);
     d->m_activeFrameGraph = activeFrameGraph;
     emit activeFrameGraphChanged(activeFrameGraph);

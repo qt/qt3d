@@ -97,7 +97,7 @@ void QRenderStateSet::addRenderState(QRenderState *state)
         if (!state->parent())
             state->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             const auto change = QNodeAddedPropertyChangePtr::create(id(), state);
             change->setPropertyName("renderState");
             d->notifyObservers(change);
@@ -112,7 +112,8 @@ void QRenderStateSet::removeRenderState(QRenderState *state)
 {
     Q_ASSERT(state);
     Q_D(QRenderStateSet);
-    if (d->m_changeArbiter != Q_NULLPTR) {
+
+    if (d->m_changeArbiter != nullptr) {
         const auto change = QNodeRemovedPropertyChangePtr::create(id(), state);
         change->setPropertyName("renderState");
         d->notifyObservers(change);

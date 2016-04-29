@@ -71,7 +71,7 @@ InputHandler::InputHandler()
     , m_inputSequenceManager(new InputSequenceManager())
     , m_logicalDeviceManager(new LogicalDeviceManager())
     , m_genericPhysicalDeviceBackendNodeManager(new GenericDeviceBackendNodeManager)
-    , m_settings(Q_NULLPTR)
+    , m_settings(nullptr)
     , m_eventSourceSetter(new Qt3DInput::Input::EventSourceSetterHelper(this))
 {
     m_keyboardEventFilter->setInputHandler(this);
@@ -284,7 +284,7 @@ EventSourceSetterHelper *InputHandler::eventSourceHelper() const
 
 void InputHandler::updateEventSource()
 {
-    if (m_settings != Q_NULLPTR) {
+    if (m_settings != nullptr) {
         // Will be updated only if eventSource is different than
         // what was set last
         QObject *eventSource = m_settings->eventSource();

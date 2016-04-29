@@ -57,7 +57,7 @@ class MyStateSet : public Qt3DRender::QRenderState
 {
     Q_OBJECT
 public:
-    explicit MyStateSet(Qt3DCore::QNode *parent = Q_NULLPTR)
+    explicit MyStateSet(Qt3DCore::QNode *parent = nullptr)
         : Qt3DRender::QRenderState(*new MyStateSetPrivate(), parent)
     {}
 

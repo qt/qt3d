@@ -330,7 +330,7 @@ void tst_RayCasting::mousePicking()
     Qt3DRender::Render::Sphere s(QVector3D(0.0f, 0.5f, 0.0f), 1.0f);
 
     // WHEN
-    bool intersects = s.intersects(ray, Q_NULLPTR);
+    bool intersects = s.intersects(ray, nullptr);
 
     // THEN
     QVERIFY(intersects);
@@ -340,7 +340,7 @@ void tst_RayCasting::mousePicking()
                                                                      camera.viewMatrix(),
                                                                      camera.projectionMatrix(),
                                                                      viewport.toRect());
-    intersects = s.intersects(ray, Q_NULLPTR);
+    intersects = s.intersects(ray, nullptr);
 
     // THEN
     QVERIFY(!intersects);
@@ -350,7 +350,7 @@ void tst_RayCasting::mousePicking()
                                                                      camera.viewMatrix(),
                                                                      camera.projectionMatrix(),
                                                                      viewport.toRect());
-    intersects = s.intersects(ray, Q_NULLPTR);
+    intersects = s.intersects(ray, nullptr);
 
     // THEN
     QVERIFY(!intersects);
@@ -360,7 +360,7 @@ void tst_RayCasting::mousePicking()
                                                                      camera.viewMatrix(),
                                                                      camera.projectionMatrix(),
                                                                      viewport.toRect());
-    intersects = s.intersects(ray, Q_NULLPTR);
+    intersects = s.intersects(ray, nullptr);
 
     // THEN
     QVERIFY(!intersects);
@@ -370,7 +370,7 @@ void tst_RayCasting::mousePicking()
                                                                      camera.viewMatrix(),
                                                                      camera.projectionMatrix(),
                                                                      viewport.toRect());
-    intersects = s.intersects(ray, Q_NULLPTR);
+    intersects = s.intersects(ray, nullptr);
 
     // THEN
     QVERIFY(!intersects);

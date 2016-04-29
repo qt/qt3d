@@ -60,7 +60,7 @@ QGeometryRendererPrivate::QGeometryRendererPrivate()
     , m_restartIndexValue(-1)
     , m_verticesPerPatch(0)
     , m_primitiveRestart(false)
-    , m_geometry(Q_NULLPTR)
+    , m_geometry(nullptr)
     , m_primitiveType(QGeometryRenderer::Triangles)
 {
 }
@@ -393,7 +393,7 @@ void QGeometryRenderer::setGeometryFactory(const QGeometryFactoryPtr &factory)
     if (factory && d->m_geometryFactory && *factory == *d->m_geometryFactory)
         return;
     d->m_geometryFactory = factory;
-    if (d->m_changeArbiter != Q_NULLPTR) {
+    if (d->m_changeArbiter != nullptr) {
         QNodePropertyChangePtr change(new QNodePropertyChange(NodeUpdated, QSceneChange::Node, id()));
         change->setPropertyName("geometryFactory");
         change->setValue(QVariant::fromValue(d->m_geometryFactory));
@@ -413,7 +413,7 @@ void QGeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 //        QNodePtr nodePtr = change->value().value<QNodePtr>();
 //        QGeometry *backendGeometry = static_cast<QGeometry *>(nodePtr.data());
 //        QGeometry *frontendGeometry = static_cast<QGeometry *>(QNode::clone(backendGeometry));
-//        if (frontendGeometry != Q_NULLPTR)
+//        if (frontendGeometry != nullptr)
 //            d->insertTree(frontendGeometry);
 //        setGeometry(frontendGeometry);
 //    }

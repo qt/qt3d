@@ -58,7 +58,7 @@ class QT3DEXTRASSHARED_EXPORT QSphereMesh : public Qt3DRender::QGeometryRenderer
     Q_PROPERTY(bool generateTangents READ generateTangents WRITE setGenerateTangents NOTIFY generateTangentsChanged)
 
 public:
-    explicit QSphereMesh(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QSphereMesh(Qt3DCore::QNode *parent = nullptr);
 
     int rings() const;
     int slices() const;

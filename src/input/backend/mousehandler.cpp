@@ -57,7 +57,7 @@ namespace Input {
 
 MouseHandler::MouseHandler()
     : QBackendNode(ReadWrite)
-    , m_inputHandler(Q_NULLPTR)
+    , m_inputHandler(nullptr)
 {
 }
 
@@ -68,7 +68,7 @@ MouseHandler::~MouseHandler()
 void MouseHandler::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QMouseHandler *input = static_cast<QMouseHandler *>(peer);
-    if (input->sourceDevice() != Q_NULLPTR)
+    if (input->sourceDevice() != nullptr)
         setDevice(input->sourceDevice()->id());
 }
 

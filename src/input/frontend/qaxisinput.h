@@ -60,7 +60,7 @@ class QT3DINPUTSHARED_EXPORT QAxisInput : public Qt3DCore::QNode
     Q_PROPERTY(QVariantList buttons READ buttons WRITE setButtons NOTIFY buttonsChanged)
 
 public:
-    explicit QAxisInput(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QAxisInput(Qt3DCore::QNode *parent = nullptr);
 
     QAbstractPhysicalDevice *sourceDevice() const;
     float scale() const;

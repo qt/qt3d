@@ -68,7 +68,7 @@ namespace Qt3DCore {
 
 QAspectManager::QAspectManager(QObject *parent)
     : QObject(parent)
-    , m_root(Q_NULLPTR)
+    , m_root(nullptr)
     , m_scheduler(new QScheduler(this))
     , m_jobManager(new QAspectJobManager(this))
     , m_changeArbiter(new QChangeArbiter(this))
@@ -175,7 +175,7 @@ void QAspectManager::registerAspect(QAbstractAspect *aspect)
 {
     qCDebug(Aspects) << "Registering aspect";
 
-    if (aspect != Q_NULLPTR) {
+    if (aspect != nullptr) {
         m_aspects.append(aspect);
         QAbstractAspectPrivate::get(aspect)->m_aspectManager = this;
         QAbstractAspectPrivate::get(aspect)->m_jobManager = m_jobManager;

@@ -66,7 +66,7 @@ class QT3DQUICKINPUTSHARED_PRIVATE_EXPORT Quick3DInputSequence : public QObject
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3DInput::QAbstractActionInput> sequences READ qmlActionInputs CONSTANT)
 public:
-    explicit Quick3DInputSequence(QObject *parent = Q_NULLPTR);
+    explicit Quick3DInputSequence(QObject *parent = nullptr);
 
     inline QInputSequence *parentSequence() const { return qobject_cast<QInputSequence *>(parent()); }
     QQmlListProperty<QAbstractActionInput> qmlActionInputs();

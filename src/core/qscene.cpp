@@ -54,7 +54,7 @@ class QScenePrivate
 public:
     QScenePrivate(QAspectEngine *engine)
         : m_engine(engine)
-        , m_arbiter(Q_NULLPTR)
+        , m_arbiter(nullptr)
     {
     }
 
@@ -91,7 +91,7 @@ void QScene::addObservable(QObservableInterface *observable, QNodeId id)
     QWriteLocker lock(&d->m_lock);
     d->m_observablesLookupTable.insert(id, observable);
     d->m_observableToUuid.insert(observable, id);
-    if (d->m_arbiter != Q_NULLPTR)
+    if (d->m_arbiter != nullptr)
         observable->setArbiter(d->m_arbiter);
 }
 
@@ -99,10 +99,10 @@ void QScene::addObservable(QObservableInterface *observable, QNodeId id)
 void QScene::addObservable(QNode *observable)
 {
     Q_D(QScene);
-    if (observable != Q_NULLPTR) {
+    if (observable != nullptr) {
         QWriteLocker lock(&d->m_lock);
         d->m_nodeLookupTable.insert(observable->id(), observable);
-        if (d->m_arbiter != Q_NULLPTR)
+        if (d->m_arbiter != nullptr)
             observable->d_func()->setArbiter(d->m_arbiter);
     }
 }
@@ -114,14 +114,14 @@ void QScene::removeObservable(QObservableInterface *observable, QNodeId id)
     QWriteLocker lock(&d->m_lock);
     d->m_observablesLookupTable.remove(id, observable);
     d->m_observableToUuid.remove(observable);
-    observable->setArbiter(Q_NULLPTR);
+    observable->setArbiter(nullptr);
 }
 
 // Called by main thread
 void QScene::removeObservable(QNode *observable)
 {
     Q_D(QScene);
-    if (observable != Q_NULLPTR) {
+    if (observable != nullptr) {
         QWriteLocker lock(&d->m_lock);
         QNodeId nodeUuid = observable->id();
         const auto p = d->m_observablesLookupTable.equal_range(nodeUuid); // must be non-const equal_range to ensure p.second stays valid
@@ -132,7 +132,7 @@ void QScene::removeObservable(QNode *observable)
             it = d->m_observablesLookupTable.erase(it);
         }
         d->m_nodeLookupTable.remove(nodeUuid);
-        observable->d_func()->setArbiter(Q_NULLPTR);
+        observable->d_func()->setArbiter(nullptr);
     }
 }
 

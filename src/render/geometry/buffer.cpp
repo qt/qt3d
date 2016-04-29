@@ -56,7 +56,7 @@ Buffer::Buffer()
     , m_usage(QBuffer::StaticDraw)
     , m_bufferDirty(false)
     , m_syncData(false)
-    , m_manager(Q_NULLPTR)
+    , m_manager(nullptr)
 {
     // Maybe it could become read write if we want to inform
     // the frontend QBuffer node of any backend issue
@@ -99,13 +99,13 @@ void Buffer::executeFunctor()
 void Buffer::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QBuffer *buffer = static_cast<QBuffer *>(peer);
-    if (buffer != Q_NULLPTR) {
+    if (buffer != nullptr) {
         m_type = buffer->type();
         m_usage = buffer->usage();
         m_data = buffer->data();
         m_functor = buffer->dataGenerator();
         // Add to dirty list in the manager
-        if (m_functor && m_manager != Q_NULLPTR)
+        if (m_functor && m_manager != nullptr)
             m_manager->addDirtyBuffer(peerId());
         m_bufferDirty = true;
         m_syncData = buffer->isSyncData();
@@ -147,7 +147,7 @@ void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             QBufferDataGeneratorPtr newGenerator = propertyChange->value().value<QBufferDataGeneratorPtr>();
             m_bufferDirty |= !(newGenerator && m_functor && *newGenerator == *m_functor);
             m_functor = newGenerator;
-            if (m_functor && m_manager != Q_NULLPTR)
+            if (m_functor && m_manager != nullptr)
                 m_manager->addDirtyBuffer(peerId());
         } else if (propertyName == QByteArrayLiteral("syncData")) {
             m_syncData = propertyChange->value().toBool();

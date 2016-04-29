@@ -71,7 +71,7 @@ QRenderTargetOutput *Quick3DRenderTargetOutput::renderAttachmentAt(QQmlListPrope
     Quick3DRenderTargetOutput *rT = qobject_cast<Quick3DRenderTargetOutput *>(list->object);
     if (rT)
         return rT->parentRenderTarget()->outputs().at(index);
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 int Quick3DRenderTargetOutput::renderAttachmentCount(QQmlListProperty<QRenderTargetOutput> *list)

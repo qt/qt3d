@@ -57,7 +57,7 @@ class QT3DRENDERSHARED_EXPORT QColorMask : public QRenderState
     Q_PROPERTY(bool alphaMasked READ isAlphaMasked WRITE setAlphaMasked NOTIFY alphaMaskedChanged)
 
 public:
-    explicit QColorMask(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QColorMask(Qt3DCore::QNode *parent = nullptr);
 
     bool isRedMasked() const;
     bool isGreenMasked() const;

@@ -68,7 +68,7 @@ typedef QList<QObservableInterface *> QObservableList;
 class QT3DCORE_PRIVATE_EXPORT QScene
 {
 public:
-    QScene(QAspectEngine *engine = Q_NULLPTR);
+    QScene(QAspectEngine *engine = nullptr);
     ~QScene();
 
     QAspectEngine *engine() const;

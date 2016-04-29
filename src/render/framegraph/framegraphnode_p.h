@@ -153,7 +153,7 @@ protected:
     Backend *createBackendFrameGraphNode(Qt3DCore::QNode *n) const
     {
         Frontend *f = qobject_cast<Frontend *>(n);
-        if (f != Q_NULLPTR) {
+        if (f != nullptr) {
             if (!m_manager->containsNode(n->id())) {
                 Backend *backend = new Backend();
                 backend->setFrameGraphManager(m_manager);
@@ -167,7 +167,7 @@ protected:
             }
             return static_cast<Backend *>(m_manager->lookupNode(n->id()));
         }
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     Backend *createBackendFrameGraphNode(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const

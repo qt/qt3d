@@ -61,7 +61,7 @@ class QT3DRENDERSHARED_EXPORT QMesh : public QGeometryRenderer
     Q_PROPERTY(QString meshName READ meshName WRITE setMeshName NOTIFY meshNameChanged)
 
 public:
-    explicit QMesh(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QMesh(Qt3DCore::QNode *parent = nullptr);
 
     QUrl source() const;
     QString meshName() const;
@@ -75,7 +75,7 @@ Q_SIGNALS:
     void meshNameChanged(const QString &meshName);
 
 protected:
-    QMesh(QMeshPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
+    QMesh(QMeshPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QMesh)

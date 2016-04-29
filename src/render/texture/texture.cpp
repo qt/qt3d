@@ -62,7 +62,7 @@ namespace Render {
 
 Texture::Texture()
     : BackendNode()
-    , m_gl(Q_NULLPTR)
+    , m_gl(nullptr)
     , m_width(1)
     , m_height(1)
     , m_depth(1)
@@ -83,9 +83,9 @@ Texture::Texture()
     , m_filtersAndWrapUpdated(false)
     , m_dataUploadRequired(false)
     , m_textureDNA(0)
-    , m_textureManager(Q_NULLPTR)
-    , m_textureImageManager(Q_NULLPTR)
-    , m_textureDataManager(Q_NULLPTR)
+    , m_textureManager(nullptr)
+    , m_textureImageManager(nullptr)
+    , m_textureDataManager(nullptr)
 {
     // We need backend -> frontend notifications to update the status of the texture
 }
@@ -97,7 +97,7 @@ Texture::~Texture()
 void Texture::cleanup()
 {
     QBackendNode::setEnabled(false);
-    m_gl = Q_NULLPTR;
+    m_gl = nullptr;
     m_width = 1;
     m_height = 1;
     m_depth = 1;
@@ -119,9 +119,9 @@ void Texture::cleanup()
     m_dataUploadRequired = false;
     m_textureDNA = 0;
     m_textureImages.clear();
-    m_textureManager = Q_NULLPTR;
-    m_textureImageManager = Q_NULLPTR;
-    m_textureDataManager = Q_NULLPTR;
+    m_textureManager = nullptr;
+    m_textureImageManager = nullptr;
+    m_textureDataManager = nullptr;
     m_dataFunctor.clear();
     m_textureDataHandle = HTextureData();
 }
@@ -132,7 +132,7 @@ void Texture::updateFromPeer(Qt3DCore::QNode *peer)
     QAbstractTexture *texture = static_cast<QAbstractTexture *>(peer);
 
     QMutexLocker lock(&m_lock);
-    if (texture != Q_NULLPTR) {
+    if (texture != nullptr) {
         m_isDirty = true;
         m_width = texture->width();
         m_height = texture->height();
@@ -209,12 +209,12 @@ QOpenGLTexture *Texture::getOrCreateGLTexture()
     QMutexLocker lock(&m_lock);
     if (m_isDirty) {
         delete m_gl;
-        m_gl = Q_NULLPTR;
+        m_gl = nullptr;
         m_isDirty = false;
     }
 
     // If the texture exists, we just update it and return
-    if (m_gl != Q_NULLPTR) {
+    if (m_gl != nullptr) {
 
         bool refreshDNA = m_filtersAndWrapUpdated || m_dataUploadRequired;
 
@@ -238,7 +238,7 @@ QOpenGLTexture *Texture::getOrCreateGLTexture()
     m_gl->allocateStorage();
     if (!m_gl->isStorageAllocated()) {
         qWarning() << Q_FUNC_INFO << "texture storage allocation failed";
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     // Filters and WrapMode are set
@@ -270,12 +270,12 @@ QOpenGLTexture *Texture::buildGLTexture()
     QOpenGLContext *ctx = QOpenGLContext::currentContext();
     if (!ctx) {
         qWarning() << Q_FUNC_INFO << "requires an OpenGL context";
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     if (m_target == QAbstractTexture::TargetAutomatic) {
         qWarning() << Q_FUNC_INFO << "something went wrong, target shouldn't be automatic at this point";
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     QOpenGLTexture* glTex = new QOpenGLTexture(static_cast<QOpenGLTexture::Target>(m_target));
@@ -338,7 +338,7 @@ QOpenGLTexture *Texture::buildGLTexture()
 
     if (!glTex->create()) {
         qWarning() << Q_FUNC_INFO << "creating QOpenGLTexture failed";
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     // FIXME : make this conditional on Qt version
@@ -665,20 +665,20 @@ void Texture::updateAndLoadTextureImage()
 {
     if (!m_textureDataHandle.isNull()) {
         QTexImageData *data = m_textureDataManager->data(m_textureDataHandle);
-        if (data != Q_NULLPTR)
+        if (data != nullptr)
             setToGLTexture(data);
     }
 
     QVector<TextureImageDNA> dnas;
     Q_FOREACH (HTextureImage t, m_textureImages) {
         TextureImage *img = m_textureImageManager->data(t);
-        if (img != Q_NULLPTR && img->isDirty()) {
+        if (img != nullptr && img->isDirty()) {
             if (dnas.contains(img->dna())) {
                 img->unsetDirty();
                 continue;
             }
             QTexImageData *data = m_textureDataManager->data(img->textureDataHandle());
-            if (data != Q_NULLPTR) {
+            if (data != nullptr) {
                 setToGLTexture(img, data);
                 dnas.append(img->dna());
                 img->unsetDirty();

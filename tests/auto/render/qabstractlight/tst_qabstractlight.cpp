@@ -47,7 +47,7 @@ class DummyLight : public Qt3DRender::QAbstractLight
     Q_OBJECT
 
 public:
-    explicit DummyLight(Qt3DCore::QNode *parent = Q_NULLPTR)
+    explicit DummyLight(Qt3DCore::QNode *parent = nullptr)
         : QAbstractLight(*new Qt3DRender::QAbstractLightPrivate(QAbstractLight::PointLight), parent)
     {}
 };

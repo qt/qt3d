@@ -88,7 +88,7 @@ QSceneIOHandler *QSceneParserFactory::create(const QString &name, const QStringL
     if (QSceneIOHandler *ret = qLoadPlugin<QSceneIOHandler, QSceneParserPlugin>(loader(), name, args))
         return ret;
 #endif
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 } // namespace Qt3DRender

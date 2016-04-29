@@ -80,7 +80,7 @@ namespace Qt3DRender {
 
 QMaterialPrivate::QMaterialPrivate()
     : QComponentPrivate()
-    , m_effect(Q_NULLPTR)
+    , m_effect(nullptr)
 {
 }
 
@@ -137,7 +137,7 @@ void QMaterial::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
+        if (d->m_changeArbiter != nullptr) {
             const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter);
             change->setPropertyName("parameter");
             d->notifyObservers(change);
@@ -149,7 +149,7 @@ void QMaterial::removeParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
     Q_D(QMaterial);
-    if (d->m_changeArbiter != Q_NULLPTR) {
+    if (d->m_changeArbiter != nullptr) {
         const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter);
         change->setPropertyName("parameter");
         d->notifyObservers(change);

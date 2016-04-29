@@ -54,7 +54,7 @@ class QT3DINPUTSHARED_EXPORT QAxis : public Qt3DCore::QNode
     Q_OBJECT
     Q_PROPERTY(float value READ value NOTIFY valueChanged)
 public:
-    explicit QAxis(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QAxis(Qt3DCore::QNode *parent = nullptr);
 
     void addInput(QAxisInput *input);
     void removeInput(QAxisInput *input);

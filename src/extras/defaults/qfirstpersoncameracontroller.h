@@ -72,7 +72,7 @@ class QT3DEXTRASSHARED_EXPORT QFirstPersonCameraController : public Qt3DCore::QE
     Q_PROPERTY(float lookSpeed READ lookSpeed WRITE setLookSpeed NOTIFY lookSpeedChanged)
 
 public:
-    explicit QFirstPersonCameraController(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QFirstPersonCameraController(Qt3DCore::QNode *parent = nullptr);
     ~QFirstPersonCameraController();
 
     Qt3DRender::QCamera *camera() const;

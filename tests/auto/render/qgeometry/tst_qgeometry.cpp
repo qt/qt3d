@@ -57,18 +57,18 @@ private Q_SLOTS:
         QTest::newRow("defaultConstructed") << defaultConstructed << 0;
 
         Qt3DRender::QGeometry *geometry1 = new Qt3DRender::QGeometry();
-        Qt3DRender::QAttribute *attribute = new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr1"), Qt3DRender::QAttribute::Float, 4, 454);
+        Qt3DRender::QAttribute *attribute = new Qt3DRender::QAttribute(nullptr, QStringLiteral("Attr1"), Qt3DRender::QAttribute::Float, 4, 454);
         geometry1->addAttribute(attribute);
-        geometry1->addAttribute(new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr2"), Qt3DRender::QAttribute::Float, 4, 555));
+        geometry1->addAttribute(new Qt3DRender::QAttribute(nullptr, QStringLiteral("Attr2"), Qt3DRender::QAttribute::Float, 4, 555));
         geometry1->setBoundingVolumePositionAttribute(attribute);
         QTest::newRow("2 attributes") << geometry1 << 2;
 
 
         Qt3DRender::QGeometry *geometry2 = new Qt3DRender::QGeometry();
-        attribute = new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr2"), Qt3DRender::QAttribute::Float, 4, 383);
-        geometry2->addAttribute(new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr1"), Qt3DRender::QAttribute::Float, 3, 427));
+        attribute = new Qt3DRender::QAttribute(nullptr, QStringLiteral("Attr2"), Qt3DRender::QAttribute::Float, 4, 383);
+        geometry2->addAttribute(new Qt3DRender::QAttribute(nullptr, QStringLiteral("Attr1"), Qt3DRender::QAttribute::Float, 3, 427));
         geometry2->addAttribute(attribute);
-        geometry2->addAttribute(new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr3"), Qt3DRender::QAttribute::Float, 2, 327));
+        geometry2->addAttribute(new Qt3DRender::QAttribute(nullptr, QStringLiteral("Attr3"), Qt3DRender::QAttribute::Float, 2, 327));
         geometry2->removeAttribute(attribute);
         QTest::newRow("3 - 1 attributes") << geometry2 << 2;
     }

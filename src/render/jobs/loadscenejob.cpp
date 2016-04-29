@@ -54,7 +54,7 @@ LoadSceneJob::LoadSceneJob(const QUrl &source, Qt3DCore::QNodeId m_sceneComponen
     : QAspectJob()
     , m_source(source)
     , m_sceneComponent(m_sceneComponent)
-    , m_managers(Q_NULLPTR)
+    , m_managers(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadScene, 0);
 }

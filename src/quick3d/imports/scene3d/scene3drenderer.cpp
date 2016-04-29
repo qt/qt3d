@@ -63,7 +63,7 @@ class ContextSaver
 public:
     explicit ContextSaver(QOpenGLContext *context = QOpenGLContext::currentContext())
         : m_context(context),
-          m_surface(context ? context->surface() : Q_NULLPTR)
+          m_surface(context ? context->surface() : nullptr)
     {
     }
 
@@ -116,9 +116,9 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     , m_item(item)
     , m_aspectEngine(aspectEngine)
     , m_renderAspect(renderAspect)
-    , m_multisampledFBO(Q_NULLPTR)
-    , m_finalFBO(Q_NULLPTR)
-    , m_texture(Q_NULLPTR)
+    , m_multisampledFBO(nullptr)
+    , m_finalFBO(nullptr)
+    , m_texture(nullptr)
     , m_multisample(false) // this value is not used, will be synced from the Scene3DItem instead
     , m_lastMultisample(false)
 {
@@ -175,7 +175,7 @@ void Scene3DRenderer::shutdown()
 
     // Set to null so that subsequent calls to render
     // would return early
-    m_item = Q_NULLPTR;
+    m_item = nullptr;
 
     // Shutdown the Renderer Aspect while the OpenGL context
     // is still valid
@@ -186,7 +186,7 @@ void Scene3DRenderer::shutdown()
 // SGThread
 void Scene3DRenderer::onWindowChangedQueued(QQuickWindow *w)
 {
-    if (w == Q_NULLPTR) {
+    if (w == nullptr) {
         qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
         shutdown();
         // Will only trigger something with the Loader case
@@ -234,7 +234,7 @@ void Scene3DRenderer::render()
         if (m_multisampledFBO->format().samples() == 0 || !QOpenGLFramebufferObject::hasOpenGLFramebufferBlit()) {
             qCDebug(Scene3D) << Q_FUNC_INFO << "Failed to create multisample framebuffer";
             m_multisample = false;
-            m_multisampledFBO.reset(Q_NULLPTR);
+            m_multisampledFBO.reset(nullptr);
         }
     }
 

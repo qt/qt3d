@@ -47,7 +47,7 @@ namespace Qt3DInput {
 
 QInputSettingsPrivate::QInputSettingsPrivate()
     : Qt3DCore::QComponentPrivate()
-    , m_eventSource(Q_NULLPTR)
+    , m_eventSource(nullptr)
 {
 }
 

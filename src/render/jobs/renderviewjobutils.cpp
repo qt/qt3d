@@ -183,7 +183,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 const Render::StateSetNode *rStateSet = static_cast<const Render::StateSetNode *>(node);
                 // Create global RenderStateSet for renderView if no stateSet was set before
                 RenderStateSet *stateSet = rv->stateSet();
-                if (stateSet == Q_NULLPTR) {
+                if (stateSet == nullptr) {
                     stateSet = rv->allocator()->allocate<RenderStateSet>();
                     rv->setStateSet(stateSet);
                 }
@@ -218,7 +218,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
             case FrameGraphNode::Surface: {
                 // Use the surface closest to leaf node
-                if (rv->surface() == Q_NULLPTR) {
+                if (rv->surface() == nullptr) {
                     const Render::RenderSurfaceSelector *surfaceSelector
                             = static_cast<const Render::RenderSurfaceSelector *>(node);
                     rv->setSurface(surfaceSelector->surface());
@@ -246,7 +246,7 @@ Technique *findTechniqueForEffect(Renderer *renderer,
                                   Effect *effect)
 {
     if (!effect)
-        return Q_NULLPTR;
+        return nullptr;
 
     NodeManagers *manager = renderer->nodeManagers();
 
@@ -263,7 +263,7 @@ Technique *findTechniqueForEffect(Renderer *renderer,
 
             // If no techniqueFilter is present, we return the technique as it satisfies OpenGL version
             const TechniqueFilter *techniqueFilter = renderView->techniqueFilter();
-            bool foundMatch = (techniqueFilter == Q_NULLPTR || techniqueFilter->filters().isEmpty());
+            bool foundMatch = (techniqueFilter == nullptr || techniqueFilter->filters().isEmpty());
             if (foundMatch)
                 return technique;
 
@@ -300,7 +300,7 @@ Technique *findTechniqueForEffect(Renderer *renderer,
     }
 
     // We failed to find a suitable technique to use :(
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 
@@ -412,7 +412,7 @@ const int qNodeIdTypeId = qMetaTypeId<QNodeId>();
 }
 
 UniformBlockValueBuilder::UniformBlockValueBuilder()
-    : shaderDataManager(Q_NULLPTR)
+    : shaderDataManager(nullptr)
 {
 }
 

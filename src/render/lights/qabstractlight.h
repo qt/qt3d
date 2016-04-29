@@ -76,7 +76,7 @@ public Q_SLOTS:
     void setIntensity(float intensity);
 
 protected :
-    QAbstractLight(QAbstractLightPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
+    QAbstractLight(QAbstractLightPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 
 Q_SIGNALS:
