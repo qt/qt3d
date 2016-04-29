@@ -62,17 +62,12 @@ class QT3DINPUTSHARED_PRIVATE_EXPORT QGamepadInput : public QAbstractPhysicalDev
     Q_PROPERTY(int deviceId READ deviceId WRITE setDeviceId NOTIFY deviceIdChanged)
 public:
     explicit QGamepadInput(Qt3DCore::QNode *parent = nullptr);
-    explicit QGamepadInput(const QGamepadInput &other);
 
     int deviceId() const;
     void setDeviceId(int deviceId);
 
 Q_SIGNALS:
     void deviceIdChanged();
-
-    // QNode interface
-private:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QGamepadInput)

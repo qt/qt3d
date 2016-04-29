@@ -87,12 +87,6 @@ QGamepadInput::QGamepadInput(Qt3DCore::QNode *parent)
     });
 }
 
-QGamepadInput::QGamepadInput(const QGamepadInput &other)
-    : QAbstractPhysicalDevice()
-{
-    d_func()->m_deviceId = other.d_func()->m_deviceId;
-}
-
 int QGamepadInput::deviceId() const
 {
     return d_func()->m_deviceId;
@@ -106,11 +100,6 @@ void QGamepadInput::setDeviceId(int deviceId)
 
     d->m_deviceId = deviceId;
     emit deviceIdChanged();
-}
-
-Qt3DCore::QNode *QGamepadInput::doClone() const
-{
-    return new QGamepadInput(*this); // much faster than QGamepadInput(Qt3DCore::QNode *parent)
 }
 
 } // Qt3DInput
