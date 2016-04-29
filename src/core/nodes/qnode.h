@@ -60,10 +60,6 @@ class QAspectEngine;
 typedef QVector<QNode *> QNodeVector;
 typedef QSharedPointer<QNode> QNodePtr;
 
-// Each QNode subclass should call QNode::cleanup in it dtor
-// QNode::cleanup checks that a flags wasn't set to true,
-// sets it to true and sends a clone to the backend
-
 class QT3DCORESHARED_EXPORT QNode : public QObject
 {
     Q_OBJECT
@@ -97,7 +93,6 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QNode)
-    // TODO: Make this pure virtual once all classes have been adapted
     virtual QNodeCreatedChangeBasePtr createNodeCreationChange() const;
 
     // We only want setParent(QNode *) to be callable

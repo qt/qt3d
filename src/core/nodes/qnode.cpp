@@ -625,11 +625,11 @@ bool QNode::isEnabled() const
 
 QNodeCreatedChangeBasePtr QNode::createNodeCreationChange() const
 {
-    // TODO: Remove the qDebug() from this default implementation
-    // For now it's useful to uncomment it when porting to the new system
-    // as any classes that don't override this function will be noticeable here.
+    // Uncomment this when implementing new frontend and backend types.
+    // Any classes that don't override this function will be noticeable here.
     // Note that some classes actually don't need to override as they have
-    // no additional data to send.
+    // no additional data to send. In those cases this default implementation
+    // is perfectly fine.
     // const QMetaObject *mo = metaObject();
     // qDebug() << Q_FUNC_INFO << mo->className();
     return QNodeCreatedChangeBasePtr::create(this);
