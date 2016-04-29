@@ -145,6 +145,15 @@ void traverseTriangles(vertex *vertices,
     }
 }
 
+static inline bool checkDegenerate(const uint ndx[3], const uint idx, const uint i)
+{
+    for (uint j = 0; j < i; ++j) {
+        if (idx == ndx[j])
+            return true;
+    }
+    return false;
+}
+
 // indices, vertices are already offset
 template<typename index, typename vertex>
 void traverseTriangleStripIndexed(index *indices,
@@ -159,15 +168,20 @@ void traverseTriangleStripIndexed(index *indices,
 
     uint ndx[3];
     QVector3D abc[3];
-    while (i < indexInfo.count) {
+    while (i < indexInfo.count - 2) {
+        bool degenerate = false;
         for (uint u = 0; u < 3; ++u) {
             uint idx = indices[i + u] * verticesStride;
-            ndx[u] = idx;
-            for (uint j = 0; j < maxVerticesDataSize; ++j) {
-                abc[u][j] = vertices[idx + j];
+            if (checkDegenerate(ndx, idx, i)) {
+                degenerate = true;
+                break;
             }
+            ndx[u] = idx;
+            for (uint j = 0; j < maxVerticesDataSize; ++j)
+                abc[u][j] = vertices[idx + j];
         }
-        visitor->visit(ndx[2], abc[2], ndx[1], abc[1], ndx[0], abc[0]);
+        if (!degenerate)
+            visitor->visit(ndx[2], abc[2], ndx[1], abc[1], ndx[0], abc[0]);
         ++i;
     }
 }
