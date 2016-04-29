@@ -63,7 +63,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 QHash<QNodeId, QNode *> QNodePrivate::m_clonesLookupTable = QHash<QNodeId, QNode *>();
-const bool QNodePrivate::ms_useCloning = !qEnvironmentVariableIsSet("QT3D_NO_CLONE");
 
 QNodePrivate::QNodePrivate()
     : QObjectPrivate()
