@@ -60,6 +60,9 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/private/qentity_p.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 
 #include <QMatrix4x4>
 #include <QString>
@@ -197,6 +200,21 @@ void Entity::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Removed. Id =" << change->componentId();
         break;
     }
+
+    case PropertyValueAdded: {
+        QPropertyNodeAddedChangePtr change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
+        if (change->metaObject()->inherits(&QEntity::staticMetaObject))
+            appendChildHandle(m_nodeManagers->renderNodesManager()->lookupHandle(change->addedNodeId()));
+        break;
+    }
+
+    case PropertyValueRemoved: {
+        QPropertyNodeRemovedChangePtr change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
+        if (change->metaObject()->inherits(&QEntity::staticMetaObject))
+            removeChildHandle(m_nodeManagers->renderNodesManager()->lookupHandle(change->removedNodeId()));
+        break;
+    }
+
 
     default:
         break;
