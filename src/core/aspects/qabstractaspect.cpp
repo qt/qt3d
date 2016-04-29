@@ -59,7 +59,6 @@ QAbstractAspectPrivate::QAbstractAspectPrivate()
     , m_aspectManager(Q_NULLPTR)
     , m_jobManager(Q_NULLPTR)
     , m_arbiter(Q_NULLPTR)
-    , m_useCloning(!qEnvironmentVariableIsSet("QT3D_NO_CLONE"))
 {
 }
 
@@ -154,29 +153,14 @@ void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackend
 
 void QAbstractAspectPrivate::sceneNodeAdded(QSceneChangePtr &change)
 {
-    if (m_useCloning) {
-        QNodePropertyChangePtr propertyChange = change.staticCast<QNodePropertyChange>();
-        QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
-        QNode *n = nodePtr.data();
-        QNodeVisitor visitor;
-        visitor.traverse(n, this, &QAbstractAspectPrivate::createBackendNode);
-    } else {
-        QNodeCreatedChangeBasePtr creationChange = qSharedPointerCast<QNodeCreatedChangeBase>(change);
-        createBackendNodeNoClone(creationChange);
-    }
+    QNodeCreatedChangeBasePtr creationChange = qSharedPointerCast<QNodeCreatedChangeBase>(change);
+    createBackendNodeNoClone(creationChange);
 }
 
 void QAbstractAspectPrivate::sceneNodeRemoved(QSceneChangePtr &change)
 {
-    if (m_useCloning) {
-        QNodePropertyChangePtr propertyChange = change.staticCast<QNodePropertyChange>();
-        QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
-        QNode *n = nodePtr.data();
-        clearBackendNode(n);
-    } else {
-        QNodeDestroyedChangePtr destructionChange = qSharedPointerCast<QNodeDestroyedChange>(change);
-        clearBackendNodeNoClone(destructionChange);
-    }
+    QNodeDestroyedChangePtr destructionChange = qSharedPointerCast<QNodeDestroyedChange>(change);
+    clearBackendNodeNoClone(destructionChange);
 }
 
 QVariant QAbstractAspect::executeCommand(const QStringList &args)
@@ -326,14 +310,8 @@ void QAbstractAspectPrivate::setRootAndCreateNodes(QEntity *rootObject, const QV
     m_root = rootObject;
     m_rootId = rootObject->id();
 
-    // Use old method for now, unless user explicitly requests new method
-    if (m_useCloning) {
-        QNodeVisitor visitor;
-        visitor.traverse(rootObject, this, &QAbstractAspectPrivate::createBackendNode);
-    } else {
-        for (const auto &change : changes)
-            createBackendNodeNoClone(change);
-    }
+    for (const auto &change : changes)
+        createBackendNodeNoClone(change);
 }
 
 QServiceLocator *QAbstractAspectPrivate::services() const

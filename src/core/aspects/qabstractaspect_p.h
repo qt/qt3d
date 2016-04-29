@@ -111,9 +111,6 @@ public:
     QChangeArbiter *m_arbiter;
     QHash<const QMetaObject*, QBackendNodeMapperPtr> m_backendCreatorFunctors;
 
-    // Temporary flag to try out new, no-cloning approach
-    bool m_useCloning;
-
     static QAbstractAspectPrivate *get(QAbstractAspect *aspect);
 };
 

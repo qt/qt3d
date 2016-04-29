@@ -58,7 +58,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class Q_AUTOTEST_EXPORT QNodeCreatedChangeGenerator
+class QT3DCORE_PRIVATE_EXPORT QNodeCreatedChangeGenerator
 {
 public:
     QNodeCreatedChangeGenerator(QNode *rootNode);
