@@ -51,7 +51,6 @@ namespace Input {
 
 AxisInput::AxisInput()
     : Qt3DCore::QBackendNode()
-    , m_axis(0)
 {
 }
 
@@ -61,7 +60,6 @@ AxisInput::AxisInput()
 void AxisInput::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QAxisInput *input = static_cast<QAxisInput *>(peer);
-    m_axis = input->axis();
     if (input->sourceDevice())
         m_sourceDevice = input->sourceDevice()->id();
 }
@@ -71,13 +69,11 @@ void AxisInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAxisInputData>>(change);
     const auto &data = typedChange->data;
     m_sourceDevice = data.sourceDeviceId;
-    m_axis = data.axis;
 }
 
 void AxisInput::cleanup()
 {
     QBackendNode::setEnabled(false);
-    m_axis = 0;
     m_sourceDevice = Qt3DCore::QNodeId();
 }
 
@@ -87,8 +83,6 @@ void AxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("sourceDevice")) {
             m_sourceDevice = propertyChange->value().value<Qt3DCore::QNodeId>();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("axis")) {
-            m_axis = propertyChange->value().toInt();
         }
     }
     QBackendNode::sceneChangeEvent(e);

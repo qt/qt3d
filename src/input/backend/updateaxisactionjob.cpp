@@ -169,40 +169,51 @@ void UpdateAxisActionJob::updateAxis(LogicalDevice *device)
 
         const auto axisInputIds = axis->inputs();
         for (const Qt3DCore::QNodeId axisInputId : axisInputIds) {
-            AxisInput *axisInput = m_handler->axisInputManager()->lookupResource(axisInputId);
-            ButtonAxisInput *buttonAxisInput = nullptr;
-            if (!axisInput) {
-                buttonAxisInput = m_handler->buttonAxisInputManager()->lookupResource(axisInputId);
-                axisInput = buttonAxisInput;
-            }
-            Q_ASSERT(axisInput);
-
-            QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = nullptr;
-
-            const auto integrations = m_handler->inputDeviceIntegrations();
-            for (QInputDeviceIntegration *integration : integrations) {
-                if ((physicalDeviceBackend = integration->physicalDevice(axisInput->sourceDevice())) != nullptr)
-                    break;
-            }
-
-            if (physicalDeviceBackend != nullptr) {
-                // Update the value
-                const QVector<int> buttons = buttonAxisInput ? buttonAxisInput->buttons() : QVector<int>();
-                // Axis was specified -> we take this as the base value
-                if (axisInput->axis() != -1)
-                    axisValue += physicalDeviceBackend->processedAxisValue(axisInput->axis());
-                else if (!buttons.isEmpty()) {
-                    // TO DO: Linear Curver for the progression of the scale value
-                    if (anyOfRequiredButtonsPressed(buttons, physicalDeviceBackend))
-                        axisValue += buttonAxisInput->scale();
+            AnalogAxisInput *analogInput = m_handler->analogAxisInputManager()->lookupResource(axisInputId);
+            if (analogInput) {
+                QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = findAxisInputPhysicalDevice(analogInput);
+                if (physicalDeviceBackend && analogInput->axis() != -1) {
+                    // Update the value
+                    axisValue += physicalDeviceBackend->processedAxisValue(analogInput->axis());
                 }
+                continue;
             }
+
+            ButtonAxisInput *buttonInput = m_handler->buttonAxisInputManager()->lookupResource(axisInputId);
+            if (buttonInput) {
+                QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = findAxisInputPhysicalDevice(buttonInput);
+                if (physicalDeviceBackend != nullptr) {
+                    // Update the value
+                    const QVector<int> buttons = buttonInput ? buttonInput->buttons() : QVector<int>();
+                    if (!buttons.isEmpty()) {
+                        // TO DO: Linear Curver for the progression of the scale value
+                        if (anyOfRequiredButtonsPressed(buttons, physicalDeviceBackend))
+                            axisValue += buttonInput->scale();
+                    }
+                }
+
+                continue;
+            }
+
+            Q_UNREACHABLE();
         }
 
         // Clamp the axisValue -1/1
         axisValue = qMin(1.0f, qMax(axisValue, -1.0f));
         axis->setAxisValue(axisValue);
     }
+}
+
+QAbstractPhysicalDeviceBackendNode *UpdateAxisActionJob::findAxisInputPhysicalDevice(AxisInput *axisInput)
+{
+    const auto integrations = m_handler->inputDeviceIntegrations();
+    for (QInputDeviceIntegration *integration : integrations) {
+        QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = integration->physicalDevice(axisInput->sourceDevice());
+        if (physicalDeviceBackend)
+            return physicalDeviceBackend;
+    }
+
+    return nullptr;
 }
 
 } // Input

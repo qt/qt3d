@@ -52,7 +52,7 @@
 #include "qfirstpersoncameracontroller.h"
 #include <Qt3DRender/QCamera>
 #include <Qt3DInput/QAxis>
-#include <Qt3DInput/QAxisInput>
+#include <Qt3DInput/QAnalogAxisInput>
 #include <Qt3DInput/QButtonAxisInput>
 #include <Qt3DInput/QAction>
 #include <Qt3DInput/QActionInput>
@@ -78,8 +78,8 @@ QFirstPersonCameraControllerPrivate::QFirstPersonCameraControllerPrivate()
     , m_tzAxis(new Qt3DInput::QAxis())
     , m_leftMouseButtonInput(new Qt3DInput::QActionInput())
     , m_fineMotionKeyInput(new Qt3DInput::QActionInput())
-    , m_mouseRxInput(new Qt3DInput::QAxisInput())
-    , m_mouseRyInput(new Qt3DInput::QAxisInput())
+    , m_mouseRxInput(new Qt3DInput::QAnalogAxisInput())
+    , m_mouseRyInput(new Qt3DInput::QAnalogAxisInput())
     , m_keyboardTxPosInput(new Qt3DInput::QButtonAxisInput())
     , m_keyboardTyPosInput(new Qt3DInput::QButtonAxisInput())
     , m_keyboardTzPosInput(new Qt3DInput::QButtonAxisInput())

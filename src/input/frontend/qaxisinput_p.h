@@ -67,17 +67,14 @@ public:
     QAxisInputPrivate()
         : Qt3DCore::QNodePrivate()
         , m_sourceDevice(nullptr)
-        , m_axis(-1)
     {}
 
     QAbstractPhysicalDevice *m_sourceDevice;
-    int m_axis;
 };
 
 struct QAxisInputData
 {
     Qt3DCore::QNodeId sourceDeviceId;
-    int axis;
 };
 
 } // Qt3DInput

@@ -6,10 +6,12 @@ contains(QT_CONFIG, private_tests) {
         qaction \
         qactioninput \
         qaxisinput \
+        qanalogaxisinput \
         qbuttonaxisinput \
         qlogicaldevice \
         axis \
         action \
         axisinput \
+        analogaxisinput \
         buttonaxisinput
 }

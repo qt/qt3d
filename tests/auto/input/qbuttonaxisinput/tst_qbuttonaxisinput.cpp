@@ -55,17 +55,15 @@ private Q_SLOTS:
         Qt3DInput::QButtonAxisInput *defaultConstructed = new Qt3DInput::QButtonAxisInput();
         QTest::newRow("defaultConstructed") << defaultConstructed;
 
-        Qt3DInput::QButtonAxisInput *axisInputWithKeysAndAxis = new Qt3DInput::QButtonAxisInput();
-        axisInputWithKeysAndAxis->setButtons(QVariantList() << QVariant((1 << 1) | (1 << 5)));
-        axisInputWithKeysAndAxis->setAxis(383);
-        axisInputWithKeysAndAxis->setScale(327.0f);
-        QTest::newRow("axisInputWithKeys") << axisInputWithKeysAndAxis;
+        Qt3DInput::QButtonAxisInput *axisInputWithKeys = new Qt3DInput::QButtonAxisInput();
+        axisInputWithKeys->setButtons(QVariantList() << QVariant((1 << 1) | (1 << 5)));
+        axisInputWithKeys->setScale(327.0f);
+        QTest::newRow("axisInputWithKeys") << axisInputWithKeys;
 
         Qt3DInput::QButtonAxisInput *axisInputWithKeysAndSourceDevice = new Qt3DInput::QButtonAxisInput();
         TestDevice *device = new TestDevice();
         axisInputWithKeysAndSourceDevice->setButtons(QVariantList() << QVariant((1 << 1) | (1 << 5)));
         axisInputWithKeysAndSourceDevice->setSourceDevice(device);
-        axisInputWithKeysAndSourceDevice->setAxis(427);
         axisInputWithKeysAndSourceDevice->setScale(355.0f);
         QTest::newRow("axisInputWithKeysAndSourceDevice") << axisInputWithKeysAndSourceDevice;
     }
@@ -89,7 +87,6 @@ private Q_SLOTS:
         QCOMPARE(axisInput->isEnabled(), creationChangeData->isNodeEnabled());
         QCOMPARE(axisInput->metaObject(), creationChangeData->metaObject());
         QCOMPARE(axisInput->buttons(), cloneData.buttons);
-        QCOMPARE(axisInput->axis(), cloneData.axis);
         QCOMPARE(axisInput->scale(), cloneData.scale);
         QCOMPARE(axisInput->sourceDevice() ? axisInput->sourceDevice()->id() : Qt3DCore::QNodeId(), cloneData.sourceDeviceId);
     }
@@ -123,19 +120,6 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "scale");
         QCOMPARE(change->value().toFloat(), 1340.0f);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
-
-        arbiter.events.clear();
-
-        // WHEN
-        axisInput->setAxis(350);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
-        QCOMPARE(change->propertyName(), "axis");
-        QCOMPARE(change->value().toInt(), 350);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();

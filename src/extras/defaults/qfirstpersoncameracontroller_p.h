@@ -84,7 +84,7 @@ class QLogicalDevice;
 class QAction;
 class QActionInput;
 class QAxis;
-class QAxisInput;
+class QAnalogAxisInput;
 class QButtonAxisInput;
 class QAxisActionHandler;
 
@@ -113,8 +113,8 @@ public:
     Qt3DInput::QActionInput *m_leftMouseButtonInput;
     Qt3DInput::QActionInput *m_fineMotionKeyInput;
 
-    Qt3DInput::QAxisInput *m_mouseRxInput;
-    Qt3DInput::QAxisInput *m_mouseRyInput;
+    Qt3DInput::QAnalogAxisInput *m_mouseRxInput;
+    Qt3DInput::QAnalogAxisInput *m_mouseRyInput;
     Qt3DInput::QButtonAxisInput *m_keyboardTxPosInput;
     Qt3DInput::QButtonAxisInput *m_keyboardTyPosInput;
     Qt3DInput::QButtonAxisInput *m_keyboardTzPosInput;

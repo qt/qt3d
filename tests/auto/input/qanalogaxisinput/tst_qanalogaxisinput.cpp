@@ -31,18 +31,18 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
-#include <Qt3DInput/QAxisInput>
+#include <Qt3DInput/QAnalogAxisInput>
 #include <Qt3DInput/QAbstractPhysicalDevice>
-#include <Qt3DInput/private/qaxisinput_p.h>
+#include <Qt3DInput/private/qanalogaxisinput_p.h>
 
 #include "testpostmanarbiter.h"
 #include "testdevice.h"
 
-class tst_QAxisInput: public QObject
+class tst_QAnalogAxisInput: public QObject
 {
     Q_OBJECT
 public:
-    tst_QAxisInput()
+    tst_QAnalogAxisInput()
     {
         qRegisterMetaType<Qt3DInput::QAbstractPhysicalDevice*>("Qt3DInput::QAbstractPhysicalDevice*");
     }
@@ -50,21 +50,26 @@ public:
 private Q_SLOTS:
     void checkCloning_data()
     {
-        QTest::addColumn<Qt3DInput::QAxisInput *>("axisInput");
+        QTest::addColumn<Qt3DInput::QAnalogAxisInput *>("axisInput");
 
-        Qt3DInput::QAxisInput *defaultConstructed = new Qt3DInput::QAxisInput();
+        Qt3DInput::QAnalogAxisInput *defaultConstructed = new Qt3DInput::QAnalogAxisInput();
         QTest::newRow("defaultConstructed") << defaultConstructed;
 
-        Qt3DInput::QAxisInput *axisInputWithSourceDevice = new Qt3DInput::QAxisInput();
+        Qt3DInput::QAnalogAxisInput *axisInputWithAxis = new Qt3DInput::QAnalogAxisInput();
+        axisInputWithAxis->setAxis(383);
+        QTest::newRow("axisInputWithAxis") << axisInputWithAxis;
+
+        Qt3DInput::QAnalogAxisInput *axisInputWithAxisAndSourceDevice = new Qt3DInput::QAnalogAxisInput();
         TestDevice *device = new TestDevice();
-        axisInputWithSourceDevice->setSourceDevice(device);
-        QTest::newRow("axisInputWithSourceDevice") << axisInputWithSourceDevice;
+        axisInputWithAxisAndSourceDevice->setSourceDevice(device);
+        axisInputWithAxisAndSourceDevice->setAxis(427);
+        QTest::newRow("axisInputWithAxisAndSourceDevice") << axisInputWithAxisAndSourceDevice;
     }
 
     void checkCloning()
     {
         // GIVEN
-        QFETCH(Qt3DInput::QAxisInput *, axisInput);
+        QFETCH(Qt3DInput::QAnalogAxisInput *, axisInput);
 
         // WHEN
         Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(axisInput);
@@ -73,22 +78,34 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(creationChanges.size(), 1 + (axisInput->sourceDevice() ? 1 : 0));
 
-        const Qt3DCore::QNodeCreatedChangePtr<Qt3DInput::QAxisInputData> creationChangeData =
-                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QAxisInputData>>(creationChanges.first());
-        const Qt3DInput::QAxisInputData &cloneData = creationChangeData->data;
-
-        // THEN
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DInput::QAnalogAxisInputData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QAnalogAxisInputData>>(creationChanges.first());
+        const Qt3DInput::QAnalogAxisInputData &cloneData = creationChangeData->data;
         QCOMPARE(axisInput->id(), creationChangeData->subjectId());
         QCOMPARE(axisInput->isEnabled(), creationChangeData->isNodeEnabled());
         QCOMPARE(axisInput->metaObject(), creationChangeData->metaObject());
+        QCOMPARE(axisInput->axis(), cloneData.axis);
         QCOMPARE(axisInput->sourceDevice() ? axisInput->sourceDevice()->id() : Qt3DCore::QNodeId(), cloneData.sourceDeviceId);
     }
 
     void checkPropertyUpdates()
     {
         // GIVEN
-        QScopedPointer<Qt3DInput::QAxisInput> axisInput(new Qt3DInput::QAxisInput());
+        QScopedPointer<Qt3DInput::QAnalogAxisInput> axisInput(new Qt3DInput::QAnalogAxisInput());
         TestArbiter arbiter(axisInput.data());
+
+        // WHEN
+        axisInput->setAxis(350);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        QCOMPARE(change->propertyName(), "axis");
+        QCOMPARE(change->value().toInt(), 350);
+        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+
+        arbiter.events.clear();
 
         // WHEN
         TestDevice *device = new TestDevice(axisInput.data());
@@ -100,7 +117,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "sourceDevice");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), device->id());
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
@@ -109,6 +126,6 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(tst_QAxisInput)
+QTEST_MAIN(tst_QAnalogAxisInput)
 
-#include "tst_qaxisinput.moc"
+#include "tst_qanalogaxisinput.moc"

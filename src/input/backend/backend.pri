@@ -15,6 +15,7 @@ HEADERS += \
     $$PWD/actioninput_p.h \
     $$PWD/axis_p.h \
     $$PWD/action_p.h \
+    $$PWD/analogaxisinput_p.h \
     $$PWD/buttonaxisinput_p.h \
     $$PWD/logicaldevice_p.h \
     $$PWD/inputbackendnodefunctor_p.h \
@@ -45,6 +46,7 @@ SOURCES += \
     $$PWD/actioninput.cpp \
     $$PWD/axis.cpp \
     $$PWD/action.cpp \
+    $$PWD/analogaxisinput.cpp \
     $$PWD/buttonaxisinput.cpp \
     $$PWD/logicaldevice.cpp \
     $$PWD/qabstractphysicaldevicebackendnode.cpp \

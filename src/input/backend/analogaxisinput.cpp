@@ -37,77 +37,57 @@
 **
 ****************************************************************************/
 
-#include "qbuttonaxisinput.h"
-#include "qbuttonaxisinput_p.h"
+#include "analogaxisinput_p.h"
+#include <Qt3DInput/qanalogaxisinput.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DInput/private/qanalogaxisinput_p.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-/*!
- * \qmltype ButtonAxisInput
- * \instantiates Qt3DInput::QButtonAxisInput
- * \inqmlmodule Qt3D.Input
- * \since 5.7
- * \TODO
- *
- */
+namespace Input {
 
-/*!
- * \class Qt3DInput::QButtonAxisInput
- * \inmodule Qt3DInput
- * \since 5.7
- * \TODO
- *
- */
-QButtonAxisInput::QButtonAxisInput(Qt3DCore::QNode *parent)
-    : QAxisInput(*new QButtonAxisInputPrivate, parent)
+AnalogAxisInput::AnalogAxisInput()
+    : AxisInput()
+    , m_axis(0)
 {
 }
 
-void QButtonAxisInput::setScale(float scale)
+void AnalogAxisInput::updateFromPeer(Qt3DCore::QNode *peer)
 {
-    Q_D(QButtonAxisInput);
-    if (d->m_scale != scale) {
-        d->m_scale = scale;
-        emit scaleChanged(scale);
+    QAnalogAxisInput *input = static_cast<QAnalogAxisInput *>(peer);
+    m_axis = input->axis();
+    AxisInput::updateFromPeer(peer);
+}
+
+void AnalogAxisInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAnalogAxisInputData>>(change);
+    const auto &data = typedChange->data;
+    m_axis = data.axis;
+    AxisInput::initializeFromPeer(change);
+}
+
+void AnalogAxisInput::cleanup()
+{
+    m_axis = 0;
+    AxisInput::cleanup();
+}
+
+void AnalogAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+{
+    if (e->type() == Qt3DCore::NodeUpdated) {
+        Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
+        if (propertyChange->propertyName() == QByteArrayLiteral("axis")) {
+            m_axis = propertyChange->value().toInt();
+        }
     }
+    AxisInput::sceneChangeEvent(e);
 }
 
-float QButtonAxisInput::scale() const
-{
-    Q_D(const QButtonAxisInput);
-    return d->m_scale;
-}
-
-void QButtonAxisInput::setButtons(const QVariantList &buttons)
-{
-    Q_D(QButtonAxisInput);
-    if (buttons != d->m_buttons) {
-        d->m_buttons = buttons;
-        emit buttonsChanged(buttons);
-    }
-}
-
-QVariantList QButtonAxisInput::buttons() const
-{
-    Q_D(const QButtonAxisInput);
-    return d->m_buttons;
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QButtonAxisInput::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QButtonAxisInputData>::create(this);
-    auto &data = creationChange->data;
-
-    Q_D(const QButtonAxisInput);
-    data.sourceDeviceId = qIdForNode(d->m_sourceDevice);
-    data.buttons = d->m_buttons;
-    data.scale = d->m_scale;
-
-    return creationChange;
-}
+} // Input
 
 } // Qt3DInput
 

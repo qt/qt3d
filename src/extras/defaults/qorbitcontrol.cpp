@@ -39,7 +39,7 @@
 #include <QtGlobal>
 #include <Qt3DRender/QCamera>
 #include <Qt3DInput/QAxis>
-#include <Qt3DInput/QAxisInput>
+#include <Qt3DInput/QAnalogAxisInput>
 #include <Qt3DInput/QButtonAxisInput>
 #include <Qt3DInput/QAction>
 #include <Qt3DInput/QActionInput>
@@ -74,8 +74,8 @@ QOrbitControlPrivate::QOrbitControlPrivate()
     , m_rightMouseButtonInput(new Qt3DInput::QActionInput())
     , m_altButtonInput(new Qt3DInput::QActionInput())
     , m_shiftButtonInput(new Qt3DInput::QActionInput())
-    , m_mouseRxInput(new Qt3DInput::QAxisInput())
-    , m_mouseRyInput(new Qt3DInput::QAxisInput())
+    , m_mouseRxInput(new Qt3DInput::QAnalogAxisInput())
+    , m_mouseRyInput(new Qt3DInput::QAnalogAxisInput())
     , m_keyboardTxPosInput(new Qt3DInput::QButtonAxisInput())
     , m_keyboardTyPosInput(new Qt3DInput::QButtonAxisInput())
     , m_keyboardTzPosInput(new Qt3DInput::QButtonAxisInput())

@@ -123,7 +123,7 @@ Entity {
             Axis {
                 name: "RX"
                 inputs: [
-                    AxisInput {
+                    AnalogAxisInput {
                         sourceDevice: mouseSourceDevice
                         axis: MouseDevice.X
                     }
@@ -132,7 +132,7 @@ Entity {
             Axis {
                 name: "RY"
                 inputs: [
-                    AxisInput {
+                    AnalogAxisInput {
                         sourceDevice: mouseSourceDevice
                         axis: MouseDevice.Y
                     }

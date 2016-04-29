@@ -37,78 +37,48 @@
 **
 ****************************************************************************/
 
-#include "qbuttonaxisinput.h"
-#include "qbuttonaxisinput_p.h"
-#include <Qt3DInput/qabstractphysicaldevice.h>
+#ifndef QT3DINPUT_INPUT_ANALOGAXISINPUT_H
+#define QT3DINPUT_INPUT_ANALOGAXISINPUT_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DInput/private/axisinput_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-/*!
- * \qmltype ButtonAxisInput
- * \instantiates Qt3DInput::QButtonAxisInput
- * \inqmlmodule Qt3D.Input
- * \since 5.7
- * \TODO
- *
- */
+namespace Input {
 
-/*!
- * \class Qt3DInput::QButtonAxisInput
- * \inmodule Qt3DInput
- * \since 5.7
- * \TODO
- *
- */
-QButtonAxisInput::QButtonAxisInput(Qt3DCore::QNode *parent)
-    : QAxisInput(*new QButtonAxisInputPrivate, parent)
+class Q_AUTOTEST_EXPORT AnalogAxisInput : public AxisInput
 {
-}
+public:
+    AnalogAxisInput();
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_FINAL;
+    void cleanup() Q_DECL_FINAL;
 
-void QButtonAxisInput::setScale(float scale)
-{
-    Q_D(QButtonAxisInput);
-    if (d->m_scale != scale) {
-        d->m_scale = scale;
-        emit scaleChanged(scale);
-    }
-}
+    inline int axis() const { return m_axis; }
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
 
-float QButtonAxisInput::scale() const
-{
-    Q_D(const QButtonAxisInput);
-    return d->m_scale;
-}
+private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
-void QButtonAxisInput::setButtons(const QVariantList &buttons)
-{
-    Q_D(QButtonAxisInput);
-    if (buttons != d->m_buttons) {
-        d->m_buttons = buttons;
-        emit buttonsChanged(buttons);
-    }
-}
+    int m_axis;
+};
 
-QVariantList QButtonAxisInput::buttons() const
-{
-    Q_D(const QButtonAxisInput);
-    return d->m_buttons;
-}
+} // namespace Input
 
-Qt3DCore::QNodeCreatedChangeBasePtr QButtonAxisInput::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QButtonAxisInputData>::create(this);
-    auto &data = creationChange->data;
-
-    Q_D(const QButtonAxisInput);
-    data.sourceDeviceId = qIdForNode(d->m_sourceDevice);
-    data.buttons = d->m_buttons;
-    data.scale = d->m_scale;
-
-    return creationChange;
-}
-
-} // Qt3DInput
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
+
+#endif // QT3DINPUT_INPUT_ANALOGAXISINPUT_H

@@ -91,21 +91,6 @@ QAbstractPhysicalDevice *QAxisInput::sourceDevice() const
     return d->m_sourceDevice;
 }
 
-void QAxisInput::setAxis(int axis)
-{
-    Q_D(QAxisInput);
-    if (d->m_axis != axis) {
-        d->m_axis = axis;
-        emit axisChanged(axis);
-    }
-}
-
-int QAxisInput::axis() const
-{
-    Q_D(const QAxisInput);
-    return d->m_axis;
-}
-
 Qt3DCore::QNodeCreatedChangeBasePtr QAxisInput::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAxisInputData>::create(this);
@@ -113,7 +98,6 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAxisInput::createNodeCreationChange() const
 
     Q_D(const QAxisInput);
     data.sourceDeviceId = qIdForNode(d->m_sourceDevice);
-    data.axis = d->m_axis;
 
     return creationChange;
 }

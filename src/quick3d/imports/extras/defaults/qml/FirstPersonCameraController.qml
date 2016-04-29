@@ -105,14 +105,14 @@ Entity {
                 // Rotation
                 Axis {
                     id: rxAxis
-                    AxisInput {
+                    AnalogAxisInput {
                         sourceDevice: mouseSourceDevice
                         axis: MouseDevice.X
                     }
                 },
                 Axis {
                     id: ryAxis
-                    AxisInput {
+                    AnalogAxisInput {
                         sourceDevice: mouseSourceDevice
                         axis: MouseDevice.Y
                     }

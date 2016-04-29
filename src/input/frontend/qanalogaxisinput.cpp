@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qbuttonaxisinput.h"
-#include "qbuttonaxisinput_p.h"
+#include "qanalogaxisinput.h"
+#include "qanalogaxisinput_p.h"
 #include <Qt3DInput/qabstractphysicaldevice.h>
 
 QT_BEGIN_NAMESPACE
@@ -46,8 +46,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 /*!
- * \qmltype ButtonAxisInput
- * \instantiates Qt3DInput::QButtonAxisInput
+ * \qmltype AnalogAxisInput
+ * \instantiates Qt3DInput::QAnalogAxisInput
  * \inqmlmodule Qt3D.Input
  * \since 5.7
  * \TODO
@@ -55,56 +55,40 @@ namespace Qt3DInput {
  */
 
 /*!
- * \class Qt3DInput::QButtonAxisInput
+ * \class Qt3DInput::QAnalogAxisInput
  * \inmodule Qt3DInput
  * \since 5.7
  * \TODO
  *
  */
-QButtonAxisInput::QButtonAxisInput(Qt3DCore::QNode *parent)
-    : QAxisInput(*new QButtonAxisInputPrivate, parent)
+QAnalogAxisInput::QAnalogAxisInput(Qt3DCore::QNode *parent)
+    : QAxisInput(*new QAnalogAxisInputPrivate, parent)
 {
 }
 
-void QButtonAxisInput::setScale(float scale)
+void QAnalogAxisInput::setAxis(int axis)
 {
-    Q_D(QButtonAxisInput);
-    if (d->m_scale != scale) {
-        d->m_scale = scale;
-        emit scaleChanged(scale);
+    Q_D(QAnalogAxisInput);
+    if (d->m_axis != axis) {
+        d->m_axis = axis;
+        emit axisChanged(axis);
     }
 }
 
-float QButtonAxisInput::scale() const
+int QAnalogAxisInput::axis() const
 {
-    Q_D(const QButtonAxisInput);
-    return d->m_scale;
+    Q_D(const QAnalogAxisInput);
+    return d->m_axis;
 }
 
-void QButtonAxisInput::setButtons(const QVariantList &buttons)
+Qt3DCore::QNodeCreatedChangeBasePtr QAnalogAxisInput::createNodeCreationChange() const
 {
-    Q_D(QButtonAxisInput);
-    if (buttons != d->m_buttons) {
-        d->m_buttons = buttons;
-        emit buttonsChanged(buttons);
-    }
-}
-
-QVariantList QButtonAxisInput::buttons() const
-{
-    Q_D(const QButtonAxisInput);
-    return d->m_buttons;
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QButtonAxisInput::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QButtonAxisInputData>::create(this);
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAnalogAxisInputData>::create(this);
     auto &data = creationChange->data;
 
-    Q_D(const QButtonAxisInput);
+    Q_D(const QAnalogAxisInput);
     data.sourceDeviceId = qIdForNode(d->m_sourceDevice);
-    data.buttons = d->m_buttons;
-    data.scale = d->m_scale;
+    data.axis = d->m_axis;
 
     return creationChange;
 }

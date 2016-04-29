@@ -132,14 +132,14 @@ Entity {
                 // Mouse
                 Axis {
                     id: mouseXAxis
-                    AxisInput {
+                    AnalogAxisInput {
                         sourceDevice: mouseSourceDevice
                         axis: MouseDevice.X
                     }
                 },
                 Axis {
                     id: mouseYAxis
-                    AxisInput {
+                    AnalogAxisInput {
                         sourceDevice: mouseSourceDevice
                         axis: MouseDevice.Y
                     }

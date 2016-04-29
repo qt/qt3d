@@ -80,6 +80,7 @@ class ActionManager;
 class AxisInputManager;
 class AxisSettingManager;
 class ActionInputManager;
+class AnalogAxisInputManager;
 class ButtonAxisInputManager;
 class InputChordManager;
 class InputSequenceManager;
@@ -104,6 +105,7 @@ public:
     inline AxisInputManager *axisInputManager() const { return m_axisInputManager; }
     inline AxisSettingManager *axisSettingManager() const { return m_axisSettingManager; }
     inline ActionInputManager *actionInputManager() const { return m_actionInputManager; }
+    inline AnalogAxisInputManager *analogAxisInputManager() const { return m_analogAxisInputManager; }
     inline ButtonAxisInputManager *buttonAxisInputManager() const { return m_buttonAxisInputManager; }
     inline InputChordManager *inputChordManager() const { return m_inputChordManager; }
     inline InputSequenceManager *inputSequenceManager() const { return m_inputSequenceManager; }
@@ -166,6 +168,7 @@ private:
     AxisInputManager *m_axisInputManager;
     AxisSettingManager *m_axisSettingManager;
     ActionInputManager *m_actionInputManager;
+    AnalogAxisInputManager *m_analogAxisInputManager;
     ButtonAxisInputManager *m_buttonAxisInputManager;
     InputChordManager *m_inputChordManager;
     InputSequenceManager *m_inputSequenceManager;

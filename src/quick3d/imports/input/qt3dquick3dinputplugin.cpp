@@ -46,10 +46,10 @@
 #include <Qt3DInput/qmouseevent.h>
 
 #include <Qt3DInput/qaxis.h>
-#include <Qt3DInput/qaxisinput.h>
 #include <Qt3DInput/qaxissetting.h>
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qactioninput.h>
+#include <Qt3DInput/qanalogaxisinput.h>
 #include <Qt3DInput/qbuttonaxisinput.h>
 #include <Qt3DInput/qinputsequence.h>
 #include <Qt3DInput/qinputchord.h>
@@ -89,6 +89,7 @@ void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DInput::QActionInput>(uri, 2, 0, "ActionInput");
     qmlRegisterType<Qt3DInput::QAxisInput>(uri, 2, 0, "AxisInput");
     qmlRegisterType<Qt3DInput::QAxisSetting>(uri, 2, 0, "AxisSetting");
+    qmlRegisterType<Qt3DInput::QAnalogAxisInput>(uri, 2, 0, "AnalogAxisInput");
     qmlRegisterType<Qt3DInput::QButtonAxisInput>(uri, 2, 0, "ButtonAxisInput");
     qmlRegisterExtendedType<Qt3DInput::QAxis, Qt3DInput::Input::Quick::Quick3DAxis>(uri, 2, 0, "Axis");
     qmlRegisterExtendedType<Qt3DInput::QAction, Qt3DInput::Input::Quick::Quick3DAction>(uri, 2, 0, "Action");
