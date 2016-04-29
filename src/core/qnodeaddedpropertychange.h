@@ -41,7 +41,7 @@
 #define QT3DCORE_QNODEADDEDPROPERTYCHANGE_H
 
 #include <Qt3DCore/qnodepropertychangebase.h>
-#include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/qnode.h>
 #include <QtCore/qsharedpointer.h>
 
 QT_BEGIN_NAMESPACE
@@ -53,10 +53,11 @@ class QNodeAddedPropertyChangePrivate;
 class QT3DCORESHARED_EXPORT QNodeAddedPropertyChange : public QNodePropertyChangeBase
 {
 public:
-    QNodeAddedPropertyChange(QNodeId subjectId, QNodeId addedNodeId,
+    QNodeAddedPropertyChange(QNodeId subjectId, QNode *node,
                              Priority priority = Standard);
 
     QNodeId addedNodeId() const;
+    const QMetaObject *metaObject() const;
 
 private:
     Q_DECLARE_PRIVATE(QNodeAddedPropertyChange)

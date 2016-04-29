@@ -381,6 +381,7 @@ void tst_Nodes::appendSingleChildNodeToNodeSceneExplicitParenting()
     QVERIFY(additionEvent);
     QCOMPARE(additionEvent->subjectId(), node->id());
     QCOMPARE(additionEvent->addedNodeId(), child->id());
+    QCOMPARE(additionEvent->metaObject(), child->metaObject());
 }
 
 void tst_Nodes::appendSingleChildNodeToNodeSceneImplicitParenting()
@@ -423,6 +424,7 @@ void tst_Nodes::appendSingleChildNodeToNodeSceneImplicitParenting()
     QVERIFY(additionEvent);
     QCOMPARE(additionEvent->subjectId(), node->id());
     QCOMPARE(additionEvent->addedNodeId(), child->id());
+    QCOMPARE(additionEvent->metaObject(), child->metaObject());
 }
 
 void tst_Nodes::appendMultipleChildNodesToNodeScene()
@@ -471,6 +473,7 @@ void tst_Nodes::appendMultipleChildNodesToNodeScene()
             Qt3DCore::QNodeAddedPropertyChangePtr additionEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeAddedPropertyChange>();
             QCOMPARE(additionEvent->subjectId(), node->id());
             QCOMPARE(additionEvent->addedNodeId(), child->id());
+            QCOMPARE(additionEvent->metaObject(), child->metaObject());
         }
         ++i;
     }
@@ -570,8 +573,8 @@ void tst_Nodes::checkParentChangeToOtherParent()
     QCOMPARE(event2->type(), Qt3DCore::NodeAdded);
     QCOMPARE(event2->subjectId(), parent2->id());
     QCOMPARE(event2->addedNodeId(), child->id());
+    QCOMPARE(event2->metaObject(), child->metaObject());
 }
-
 
 void tst_Nodes::removingSingleChildNodeFromNode()
 {

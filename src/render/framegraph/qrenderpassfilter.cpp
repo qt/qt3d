@@ -84,7 +84,7 @@ void QRenderPassFilter::addMatch(QFilterKey *filterKey)
             filterKey->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), filterKey->id());
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), filterKey);
             change->setPropertyName("match");
             d->notifyObservers(change);
         }
@@ -118,7 +118,7 @@ void QRenderPassFilter::addParameter(QParameter *parameter)
             parameter->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter->id());
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter);
             change->setPropertyName("parameter");
             d->notifyObservers(change);
         }

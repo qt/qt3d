@@ -38,6 +38,15 @@
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include "testpostmanarbiter.h"
 
+class DummyAxisInput : public Qt3DInput::QAxisInput
+{
+    Q_OBJECT
+public:
+    DummyAxisInput(Qt3DCore::QNode *parent = nullptr)
+        : Qt3DInput::QAxisInput(parent)
+    {}
+};
+
 class tst_Axis: public QObject
 {
     Q_OBJECT
@@ -113,8 +122,9 @@ private Q_SLOTS:
         QCOMPARE(backendAxis.isEnabled(), true);
 
         // WHEN
-        Qt3DCore::QNodeId inputId = Qt3DCore::QNodeId::createId();
-        const auto nodeAddedChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), inputId);
+        DummyAxisInput input;
+        const Qt3DCore::QNodeId inputId = input.id();
+        const auto nodeAddedChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), &input);
         nodeAddedChange->setPropertyName("input");
         backendAxis.sceneChangeEvent(nodeAddedChange);
 

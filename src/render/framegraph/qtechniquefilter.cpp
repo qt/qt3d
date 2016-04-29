@@ -88,7 +88,7 @@ void QTechniqueFilter::addMatch(QFilterKey *filterKey)
             filterKey->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), filterKey->id());
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), filterKey);
             change->setPropertyName("matchAll");
             d->notifyObservers(change);
         }
@@ -122,7 +122,7 @@ void QTechniqueFilter::addParameter(QParameter *parameter)
             parameter->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter->id());
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter);
             change->setPropertyName("parameter");
             d->notifyObservers(change);
         }

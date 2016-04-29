@@ -35,6 +35,16 @@
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include "testrenderer.h"
 
+class DummyAttribute : public Qt3DRender::QAttribute
+{
+    Q_OBJECT
+public:
+    DummyAttribute(Qt3DCore::QNode *parent = nullptr)
+        : Qt3DRender::QAttribute(parent)
+    {}
+};
+
+
 class tst_RenderGeometry : public QObject
 {
     Q_OBJECT
@@ -110,10 +120,11 @@ private Q_SLOTS:
         TestRenderer renderer;
         Qt3DRender::Render::Geometry renderGeometry;
         renderGeometry.setRenderer(&renderer);
-        Qt3DCore::QNodeId geometryId = Qt3DCore::QNodeId::createId();
+
+        DummyAttribute attribute;
 
         // WHEN
-        const auto nodeAddedChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), geometryId);
+        const auto nodeAddedChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), &attribute);
         nodeAddedChange->setPropertyName("attribute");
         renderGeometry.sceneChangeEvent(nodeAddedChange);
 
@@ -125,7 +136,7 @@ private Q_SLOTS:
         QVERIFY(!renderGeometry.isDirty());
 
         // WHEN
-        const auto nodeRemovedChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), geometryId);
+        const auto nodeRemovedChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), attributeId);
         nodeRemovedChange->setPropertyName("attribute");
         renderGeometry.sceneChangeEvent(nodeRemovedChange);
 

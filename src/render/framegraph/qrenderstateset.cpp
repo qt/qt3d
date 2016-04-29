@@ -98,7 +98,7 @@ void QRenderStateSet::addRenderState(QRenderState *state)
             state->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), state->id());
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), state);
             change->setPropertyName("renderState");
             d->notifyObservers(change);
         }

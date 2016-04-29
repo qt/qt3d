@@ -39,6 +39,7 @@
 
 #include "qnodeaddedpropertychange.h"
 #include "qnodeaddedpropertychange_p.h"
+#include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,12 +63,12 @@ namespace Qt3DCore {
  * Constructs a new QNodeAddedPropertyChange with \a subjectId, \a addedNodeId, and
  * \a priority.
  */
-QNodeAddedPropertyChange::QNodeAddedPropertyChange(QNodeId subjectId, QNodeId addedNodeId,
+QNodeAddedPropertyChange::QNodeAddedPropertyChange(QNodeId subjectId, QNode *node,
                                                    QSceneChange::Priority priority)
     : QNodePropertyChangeBase(*new QNodeAddedPropertyChangePrivate, NodeAdded, Node, subjectId, priority)
 {
     Q_D(QNodeAddedPropertyChange);
-    d->m_addedNodeId = addedNodeId;
+    d->m_addedNodeIdTypePair = QNodeIdTypePair(node->id(), QNodePrivate::get(node)->m_typeInfo);
 }
 
 /*!
@@ -76,7 +77,16 @@ QNodeAddedPropertyChange::QNodeAddedPropertyChange(QNodeId subjectId, QNodeId ad
 QNodeId QNodeAddedPropertyChange::addedNodeId() const
 {
     Q_D(const QNodeAddedPropertyChange);
-    return d->m_addedNodeId;
+    return d->m_addedNodeIdTypePair.id;
+}
+
+/*!
+ * \return the meta object of the node added to the property.
+ */
+const QMetaObject *QNodeAddedPropertyChange::metaObject() const
+{
+    Q_D(const QNodeAddedPropertyChange);
+    return d->m_addedNodeIdTypePair.type;
 }
 
 } // namespace Qt3DCore

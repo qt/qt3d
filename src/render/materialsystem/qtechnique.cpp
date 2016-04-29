@@ -100,7 +100,7 @@ void QTechnique::addFilterKey(QFilterKey *filterKey)
             filterKey->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), filterKey->id());
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), filterKey);
             change->setPropertyName("filterKeys");
             d->notifyObservers(change);
         }
@@ -140,7 +140,7 @@ void QTechnique::addParameter(QParameter *parameter)
             parameter->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter->id());
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter);
             change->setPropertyName("parameter");
             d->notifyObservers(change);
         }
@@ -152,7 +152,7 @@ void QTechnique::removeParameter(QParameter *parameter)
     Q_ASSERT(parameter);
     Q_D(QTechnique);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter->id());
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter->id());
         change->setPropertyName("parameter");
         d->notifyObservers(change);
     }
@@ -179,7 +179,7 @@ void QTechnique::addRenderPass(QRenderPass *pass)
             pass->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), pass->id());
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), pass);
             change->setPropertyName("pass");
             d->notifyObservers(change);
         }
@@ -196,7 +196,7 @@ void QTechnique::removeRenderPass(QRenderPass *pass)
     Q_ASSERT(pass);
     Q_D(QTechnique);
     if (d->m_changeArbiter) {
-        const auto change = QNodeAddedPropertyChangePtr::create(id(), pass->id());
+        const auto change = QNodeAddedPropertyChangePtr::create(id(), pass);
         change->setPropertyName("pass");
         d->notifyObservers(change);
     }

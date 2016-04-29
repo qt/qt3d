@@ -112,7 +112,7 @@ void QGeometry::addAttribute(QAttribute *attribute)
             attribute->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), attribute->id());
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), attribute);
             change->setPropertyName("attribute");
             d->notifyObservers(change);
         }

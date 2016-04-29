@@ -57,9 +57,19 @@ public:
 
     QT3D_FUNCTOR(TestFactory)
 
-private:
-    int m_size;
+    private:
+        int m_size;
 };
+
+class DummyGeometry : public Qt3DRender::QGeometry
+{
+    Q_OBJECT
+public:
+    DummyGeometry(Qt3DCore::QNode *parent = nullptr)
+        : Qt3DRender::QGeometry(parent)
+    {}
+};
+
 
 class tst_RenderGeometryRenderer : public QObject
 {
@@ -275,8 +285,9 @@ private Q_SLOTS:
         QVERIFY(!renderGeometryRenderer.isDirty());
 
         // WHEN
-        Qt3DCore::QNodeId geometryId = Qt3DCore::QNodeId::createId();
-        const auto nodeAddedChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), geometryId);
+        DummyGeometry geometry;
+        const Qt3DCore::QNodeId geometryId = geometry.id();
+        const auto nodeAddedChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), &geometry);
         nodeAddedChange->setPropertyName("geometry");
         renderGeometryRenderer.sceneChangeEvent(nodeAddedChange);
 

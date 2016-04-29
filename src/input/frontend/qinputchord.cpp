@@ -151,7 +151,7 @@ void QInputChord::addChord(QAbstractActionInput *input)
             input->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = Qt3DCore::QNodeAddedPropertyChangePtr::create(id(), input->id());
+            const auto change = Qt3DCore::QNodeAddedPropertyChangePtr::create(id(), input);
             change->setPropertyName("chord");
             d->notifyObservers(change);
         }

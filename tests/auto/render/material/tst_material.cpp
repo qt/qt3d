@@ -137,7 +137,7 @@ void tst_RenderMaterial::shouldHandleParametersPropertyChange()
     backend.setRenderer(&renderer);
 
     // WHEN
-    const auto addChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), parameter->id());
+    const auto addChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), parameter.data());
     addChange->setPropertyName("parameter");
     backend.sceneChangeEvent(addChange);
 

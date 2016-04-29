@@ -279,7 +279,7 @@ void QAbstractTexture::addTextureImage(QAbstractTextureImage *textureImage)
             textureImage->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), textureImage->id());
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), textureImage);
             change->setPropertyName("textureImage");
             d->notifyObservers(change);
         }

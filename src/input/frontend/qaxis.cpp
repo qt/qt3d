@@ -79,7 +79,7 @@ void QAxis::addInput(QAxisInput *input)
             input->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = Qt3DCore::QNodeAddedPropertyChangePtr::create(id(), input->id());
+            const auto change = Qt3DCore::QNodeAddedPropertyChangePtr::create(id(), input);
             change->setPropertyName("input");
             d->notifyObservers(change);
         }

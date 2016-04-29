@@ -159,7 +159,7 @@ void QLogicalDevice::addAction(QAction *action)
             action->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = Qt3DCore::QNodeAddedPropertyChangePtr::create(id(), action->id());
+            const auto change = Qt3DCore::QNodeAddedPropertyChangePtr::create(id(), action);
             change->setPropertyName("action");
             d->notifyObservers(change);
         }
@@ -213,7 +213,7 @@ void QLogicalDevice::addAxis(QAxis *axis)
             axis->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = Qt3DCore::QNodeAddedPropertyChangePtr::create(id(), axis->id());
+            const auto change = Qt3DCore::QNodeAddedPropertyChangePtr::create(id(), axis);
             change->setPropertyName("axis");
             d->notifyObservers(change);
         }

@@ -99,7 +99,7 @@ void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
 
         if (d->m_shader && d->m_changeArbiter != Q_NULLPTR) {
             QNodePropertyChangePtr e(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), d->m_shader->id());
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), d->m_shader);
             change->setPropertyName("shaderProgram");
             d->notifyObservers(change);
         }
@@ -127,7 +127,7 @@ void QRenderPass::addFilterKey(QFilterKey *filterKey)
             filterKey->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), filterKey->id());
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), filterKey);
             change->setPropertyName("filterKeys");
             d->notifyObservers(change);
         }
@@ -171,7 +171,7 @@ void QRenderPass::addRenderState(QRenderState *state)
             state->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), state->id());
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), state);
             change->setPropertyName("renderState");
             d->notifyObservers(change);
         }
@@ -218,7 +218,7 @@ void QRenderPass::addParameter(QParameter *parameter)
             parameter->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter->id());
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter);
             change->setPropertyName("parameter");
             d->notifyObservers(change);
         }
@@ -230,7 +230,7 @@ void QRenderPass::removeParameter(QParameter *parameter)
     Q_ASSERT(parameter);
     Q_D(QRenderPass);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter->id());
+        const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter->id());
         change->setPropertyName("parameter");
         d->notifyObservers(change);
     }

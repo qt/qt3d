@@ -82,7 +82,7 @@ void QEffect::addParameter(QParameter *parameter)
             parameter->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter->id());
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter);
             change->setPropertyName("parameter");
             d->notifyObservers(change);
         }
@@ -127,7 +127,7 @@ void QEffect::addTechnique(QTechnique *t)
             t->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), t->id());
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), t);
             change->setPropertyName("technique");
             d->notifyObservers(change);
         }

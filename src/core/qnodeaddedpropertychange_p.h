@@ -52,7 +52,7 @@
 //
 
 #include <private/qnodepropertychangebase_p.h>
-#include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,13 +65,13 @@ class QNodeAddedPropertyChangePrivate : public QNodePropertyChangeBasePrivate
 {
 public:
     QNodeAddedPropertyChangePrivate()
-        : m_addedNodeId()
+        : m_addedNodeIdTypePair()
     {
     }
 
     Q_DECLARE_PUBLIC(QNodeAddedPropertyChange)
 
-    QNodeId m_addedNodeId;
+    QNodeIdTypePair m_addedNodeIdTypePair;
 };
 
 } // Qt3D

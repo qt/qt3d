@@ -76,7 +76,7 @@ void QRenderTarget::addOutput(QRenderTargetOutput *output)
             output->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), output->id());
+            const auto change = QNodeAddedPropertyChangePtr::create(id(), output);
             change->setPropertyName("output");
             d->notifyObservers(change);
         }

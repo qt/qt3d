@@ -300,6 +300,9 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
+        QCOMPARE(param->parent(), material);
+
+        // THEN
         QCOMPARE(arbiter.events.size(), 1);
         Qt3DCore::QNodeAddedPropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodeAddedPropertyChange>();
         QCOMPARE(change->propertyName(), "parameter");

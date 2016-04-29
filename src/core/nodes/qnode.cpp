@@ -92,7 +92,7 @@ void QNodePrivate::_q_addChild(QNode *childNode)
 
     // We notify the backend that we have a new child
     if (m_changeArbiter != Q_NULLPTR) {
-        const auto change = QNodeAddedPropertyChangePtr::create(m_id, childNode->id());
+        const auto change = QNodeAddedPropertyChangePtr::create(m_id, childNode);
         change->setPropertyName("children");
         notifyObservers(change);
     }

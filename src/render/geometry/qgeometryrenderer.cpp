@@ -368,7 +368,7 @@ void QGeometryRenderer::setGeometry(QGeometry *geometry)
     blockNotifications(blocked);
 
     if (d->m_geometry && d->m_changeArbiter) {
-        const auto change = QNodeAddedPropertyChangePtr::create(id(), d->m_geometry->id());
+        const auto change = QNodeAddedPropertyChangePtr::create(id(), d->m_geometry);
         change->setPropertyName("geometry");
         d->notifyObservers(change);
     }
