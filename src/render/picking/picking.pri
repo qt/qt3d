@@ -6,7 +6,8 @@ HEADERS += \
     $$PWD/qpickevent_p.h \
     $$PWD/qpicktriangleevent.h \
     $$PWD/objectpicker_p.h \
-    $$PWD/pickeventfilter_p.h
+    $$PWD/pickeventfilter_p.h \
+    $$PWD/qobjectpicker_p.h
 
 SOURCES += \
     $$PWD/qobjectpicker.cpp \

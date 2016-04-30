@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "qobjectpicker.h"
+#include "qobjectpicker_p.h"
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DCore/qbackendnodepropertychange.h>
@@ -87,45 +88,6 @@ namespace Qt3DRender {
 /*!
     \qmlsignal Qt3D.Render::ObjectPicker::exited()
 */
-
-class QObjectPickerPrivate : public Qt3DCore::QComponentPrivate
-{
-public:
-    QObjectPickerPrivate()
-        : QComponentPrivate()
-        , m_hoverEnabled(false)
-        , m_dragEnabled(false)
-        , m_pressed(false)
-        , m_containsMouse(false)
-        , m_acceptedLastPressedEvent(true)
-    {
-        m_shareable = false;
-    }
-
-    Q_DECLARE_PUBLIC(QObjectPicker)
-    bool m_hoverEnabled;
-    bool m_dragEnabled;
-    bool m_pressed;
-    bool m_containsMouse;
-    bool m_acceptedLastPressedEvent;
-
-    enum EventType {
-        Pressed,
-        Released,
-        Clicked,
-        Moved
-    };
-
-    void propagateEvent(QPickEvent *event, EventType type);
-
-    void pressedEvent(QPickEvent *event);
-    void clickedEvent(QPickEvent *event);
-    void movedEvent(QPickEvent *event);
-    void releasedEvent(QPickEvent *event);
-
-    void setPressed(bool pressed);
-    void setContainsMouse(bool containsMouse);
-};
 
 QObjectPicker::QObjectPicker(Qt3DCore::QNode *parent)
     : Qt3DCore::QComponent(*new QObjectPickerPrivate(), parent)
@@ -329,6 +291,16 @@ void QObjectPickerPrivate::releasedEvent(QPickEvent *event)
         event->setAccepted(false);
         propagateEvent(event, Released);
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QObjectPicker::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QObjectPickerData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QObjectPicker);
+    data.hoverEnabled = d->m_hoverEnabled;
+    data.dragEnabled = d->m_dragEnabled;
+    return creationChange;
 }
 
 } // Qt3DRender

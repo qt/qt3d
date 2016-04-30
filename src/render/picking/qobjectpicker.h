@@ -89,8 +89,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QObjectPicker)
-
-    // TODO: Handle creation changes
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3D

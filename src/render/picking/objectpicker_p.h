@@ -86,6 +86,8 @@ public:
     void onExited();
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     bool m_isDirty;
     bool m_isPressed;
     bool m_hoverEnabled;

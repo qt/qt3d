@@ -40,6 +40,7 @@
 #include "objectpicker_p.h"
 #include "qpickevent.h"
 #include <Qt3DRender/qobjectpicker.h>
+#include <Qt3DRender/private/qobjectpicker_p.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/qbackendnodepropertychange.h>
@@ -80,6 +81,15 @@ void ObjectPicker::updateFromPeer(Qt3DCore::QNode *peer)
         m_dragEnabled = picker->isDragEnabled();
         m_isDirty = true;
     }
+}
+
+void ObjectPicker::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QObjectPickerData>>(change);
+    const auto &data = typedChange->data;
+    m_hoverEnabled = data.hoverEnabled;
+    m_dragEnabled = data.dragEnabled;
+    m_isDirty = true;
 }
 
 void ObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
