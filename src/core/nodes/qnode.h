@@ -57,6 +57,10 @@ class QNodePrivate;
 class QEntity;
 class QAspectEngine;
 
+#if defined(QT_BUILD_INTERNAL)
+class QBackendNodeTester;
+#endif
+
 typedef QVector<QNode *> QNodeVector;
 typedef QSharedPointer<QNode> QNodePtr;
 
@@ -108,6 +112,10 @@ private:
     friend class QNodeCreatedChangeGenerator;
     friend class QPostman;
     friend class QScene;
+
+#if defined(QT_BUILD_INTERNAL)
+    friend class QBackendNodeTester;
+#endif
 };
 
 inline QNodeId qIdForNode(QNode *node){ return node ? node->id() : QNodeId(); }

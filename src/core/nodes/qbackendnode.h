@@ -53,6 +53,10 @@ class QBackendNodePrivate;
 class QBackendNode;
 class QAspectEngine;
 
+#if defined(QT_BUILD_INTERNAL)
+class QBackendNodeTester;
+#endif
+
 class QT3DCORESHARED_EXPORT QBackendNodeMapper
 {
 public:
@@ -99,6 +103,9 @@ private:
 
     friend class QBackendNodePropertyChange;
     friend class QAbstractAspectPrivate;
+#if defined(QT_BUILD_INTERNAL)
+    friend class QBackendNodeTester;
+#endif
 };
 
 } // namespace Qt3DCore
