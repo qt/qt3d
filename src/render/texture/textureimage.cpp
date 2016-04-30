@@ -205,17 +205,6 @@ TextureImageFunctor::TextureImageFunctor(AbstractRenderer *renderer, TextureMana
 {
 }
 
-Qt3DCore::QBackendNode *TextureImageFunctor::create(Qt3DCore::QNode *frontend) const
-{
-    TextureImage *backend = m_textureImageManager->getOrCreateResource(frontend->id());
-    backend->setTextureManager(m_textureManager);
-    backend->setTextureImageManager(m_textureImageManager);
-    backend->setTextureDataManager(m_textureDataManager);
-    backend->setPeer(frontend);
-    backend->setRenderer(m_renderer);
-    return backend;
-}
-
 Qt3DCore::QBackendNode *TextureImageFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
     TextureImage *backend = m_textureImageManager->getOrCreateResource(change->subjectId());

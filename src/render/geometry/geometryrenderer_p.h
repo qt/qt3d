@@ -117,7 +117,6 @@ class GeometryRendererFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit GeometryRendererFunctor(AbstractRenderer *renderer, GeometryRendererManager *manager);
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE;
     Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
     void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;

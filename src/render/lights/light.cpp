@@ -79,14 +79,6 @@ RenderLightFunctor::RenderLightFunctor(AbstractRenderer *renderer, NodeManagers 
 {
 }
 
-Qt3DCore::QBackendNode *RenderLightFunctor::create(Qt3DCore::QNode *frontend) const
-{
-    Light *backend = m_managers->lightManager()->getOrCreateResource(frontend->id());
-    backend->setPeer(frontend);
-    backend->setRenderer(m_renderer);
-    return backend;
-}
-
 Qt3DCore::QBackendNode *RenderLightFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
     Light *backend = m_managers->lightManager()->getOrCreateResource(change->subjectId());

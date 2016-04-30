@@ -169,15 +169,6 @@ BufferFunctor::BufferFunctor(AbstractRenderer *renderer, BufferManager *manager)
 {
 }
 
-Qt3DCore::QBackendNode *BufferFunctor::create(Qt3DCore::QNode *frontend) const
-{
-    Buffer *buffer = m_manager->getOrCreateResource(frontend->id());
-    buffer->setManager(m_manager);
-    buffer->setPeer(frontend);
-    buffer->setRenderer(m_renderer);
-    return buffer;
-}
-
 Qt3DCore::QBackendNode *BufferFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
     Buffer *buffer = m_manager->getOrCreateResource(change->subjectId());

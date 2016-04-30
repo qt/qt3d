@@ -72,14 +72,6 @@ public:
     {
     }
 
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_FINAL
-    {
-        Backend *backend = m_manager->getOrCreateResource(frontend->id());
-        backend->setPeer(frontend);
-        backend->setRenderer(m_renderer);
-        return backend;
-    }
-
     Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_FINAL
     {
         Backend *backend = m_manager->getOrCreateResource(change->subjectId());

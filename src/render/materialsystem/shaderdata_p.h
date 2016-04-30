@@ -123,7 +123,6 @@ class RenderShaderDataFunctor : public Qt3DCore::QBackendNodeMapper
 public:
     explicit RenderShaderDataFunctor(AbstractRenderer *renderer, NodeManagers *managers);
 
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_FINAL;
     Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_FINAL;
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
     void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL;

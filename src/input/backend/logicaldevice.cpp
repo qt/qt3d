@@ -116,15 +116,6 @@ LogicalDeviceNodeFunctor::LogicalDeviceNodeFunctor(LogicalDeviceManager *manager
 {
 }
 
-Qt3DCore::QBackendNode *LogicalDeviceNodeFunctor::create(Qt3DCore::QNode *frontend) const
-{
-    HLogicalDevice handle = m_manager->getOrAcquireHandle(frontend->id());
-    LogicalDevice *backend = m_manager->data(handle);
-    m_manager->addActiveDevice(handle);
-    backend->setPeer(frontend);
-    return backend;
-}
-
 Qt3DCore::QBackendNode *LogicalDeviceNodeFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
     HLogicalDevice handle = m_manager->getOrAcquireHandle(change->subjectId());

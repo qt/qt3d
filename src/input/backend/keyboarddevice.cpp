@@ -455,16 +455,6 @@ KeyboardDeviceFunctor::KeyboardDeviceFunctor(QInputAspect *inputaspect, InputHan
 {
 }
 
-Qt3DCore::QBackendNode *KeyboardDeviceFunctor::create(Qt3DCore::QNode *frontend) const
-{
-    KeyboardDevice *keyboardDevice = m_handler->keyboardDeviceManager()->getOrCreateResource(frontend->id());
-    keyboardDevice->setInputAspect(m_inputAspect);
-    keyboardDevice->setInputHandler(m_handler);
-    keyboardDevice->setPeer(frontend);
-    m_handler->appendKeyboardDevice(m_handler->keyboardDeviceManager()->lookupHandle(frontend->id()));
-    return keyboardDevice;
-}
-
 Qt3DCore::QBackendNode *KeyboardDeviceFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
     KeyboardDevice *keyboardDevice = m_handler->keyboardDeviceManager()->getOrCreateResource(change->subjectId());

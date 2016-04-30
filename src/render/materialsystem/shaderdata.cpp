@@ -374,15 +374,6 @@ RenderShaderDataFunctor::RenderShaderDataFunctor(AbstractRenderer *renderer, Nod
 {
 }
 
-Qt3DCore::QBackendNode *RenderShaderDataFunctor::create(Qt3DCore::QNode *frontend) const
-{
-    ShaderData *backend = m_managers->shaderDataManager()->getOrCreateResource(frontend->id());
-    backend->setManagers(m_managers);
-    backend->setPeer(frontend);
-    backend->setRenderer(m_renderer);
-    return backend;
-}
-
 Qt3DCore::QBackendNode *RenderShaderDataFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
     ShaderData *backend = m_managers->shaderDataManager()->getOrCreateResource(change->subjectId());

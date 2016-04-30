@@ -246,15 +246,6 @@ GeometryRendererFunctor::GeometryRendererFunctor(AbstractRenderer *renderer, Geo
 {
 }
 
-Qt3DCore::QBackendNode *GeometryRendererFunctor::create(Qt3DCore::QNode *frontend) const
-{
-    GeometryRenderer *geometryRenderer = m_manager->getOrCreateResource(frontend->id());
-    geometryRenderer->setManager(m_manager);
-    geometryRenderer->setPeer(frontend);
-    geometryRenderer->setRenderer(m_renderer);
-    return geometryRenderer;
-}
-
 Qt3DCore::QBackendNode *GeometryRendererFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
     GeometryRenderer *geometryRenderer = m_manager->getOrCreateResource(change->subjectId());

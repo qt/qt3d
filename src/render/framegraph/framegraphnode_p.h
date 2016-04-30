@@ -129,11 +129,6 @@ public:
     {
     }
 
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE
-    {
-        return createBackendFrameGraphNode(frontend);
-    }
-
     Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE
     {
         return createBackendFrameGraphNode(change);

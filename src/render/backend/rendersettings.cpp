@@ -107,21 +107,6 @@ RenderSettingsFunctor::RenderSettingsFunctor(AbstractRenderer *renderer)
 {
 }
 
-Qt3DCore::QBackendNode *RenderSettingsFunctor::create(Qt3DCore::QNode *frontend) const
-{
-    QRenderSettings *settingsFrontend = static_cast<QRenderSettings *>(frontend);
-    if (m_renderer->settings() != nullptr) {
-        qWarning() << "Renderer settings already exists";
-        return nullptr;
-    }
-
-    RenderSettings *settings = new RenderSettings;
-    settings->setPeer(settingsFrontend);
-    settings->setRenderer(m_renderer);
-    m_renderer->setSettings(settings);
-    return settings;
-}
-
 Qt3DCore::QBackendNode *RenderSettingsFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
     Q_UNUSED(change);
