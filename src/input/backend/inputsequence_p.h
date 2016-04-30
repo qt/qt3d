@@ -64,7 +64,6 @@ class Q_AUTOTEST_EXPORT InputSequence : public Qt3DCore::QBackendNode
 {
 public:
     InputSequence();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
     inline QVector<Qt3DCore::QNodeId> sequences() const { return m_sequences; }

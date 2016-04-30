@@ -63,16 +63,6 @@ InputSequence::InputSequence()
 {
 }
 
-void InputSequence::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QInputSequence *input = static_cast<QInputSequence *>(peer);
-    m_timeout = input->timeout();
-    m_buttonInterval = input->buttonInterval();
-    const auto sequences = input->sequences();
-    for (QAbstractActionInput *i : sequences)
-        m_sequences.push_back(i->id());
-}
-
 void InputSequence::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QInputSequenceData>>(change);

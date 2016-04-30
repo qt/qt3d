@@ -61,20 +61,11 @@ KeyboardHandler::KeyboardHandler()
 {
 }
 
-void KeyboardHandler::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QKeyboardHandler *input = static_cast<QKeyboardHandler *>(peer);
-    if (input->sourceDevice() != nullptr)
-        setSourcerDevice(input->sourceDevice()->id());
-    m_focus = false;
-    if (input->focus())
-        requestFocus();
-}
-
 void KeyboardHandler::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QKeyboardHandlerData>>(change);
     const auto &data = typedChange->data;
+    setSourcerDevice(data.keyboardDeviceId);
     m_focus = false;
     if (data.focus)
         requestFocus();

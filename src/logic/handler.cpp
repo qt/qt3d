@@ -52,11 +52,6 @@ Handler::Handler()
 {
 }
 
-void Handler::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    Q_UNUSED(peer);
-}
-
 void Handler::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     Q_UNUSED(change);

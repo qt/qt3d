@@ -63,7 +63,6 @@ namespace Input {
 class Q_AUTOTEST_EXPORT AbstractAxisInput : public Qt3DCore::QBackendNode
 {
 public:
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     virtual void cleanup();
 
     inline Qt3DCore::QNodeId sourceDevice() const { return m_sourceDevice; }

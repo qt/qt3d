@@ -59,15 +59,6 @@ RenderTargetSelector::RenderTargetSelector() :
 {
 }
 
-void RenderTargetSelector::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QRenderTargetSelector *selector = static_cast<QRenderTargetSelector *>(peer);
-    m_renderTargetUuid = QNodeId();
-    if (selector->target() != nullptr)
-        m_renderTargetUuid = selector->target()->id();
-    m_outputs = selector->outputs();
-}
-
 void RenderTargetSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     FrameGraphNode::initializeFromPeer(change);

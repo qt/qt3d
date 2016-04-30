@@ -68,14 +68,6 @@ AxisSetting::AxisSetting()
 {
 }
 
-void AxisSetting::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QAxisSetting *setting = static_cast<QAxisSetting *>(peer);
-    m_deadZoneRadius = setting->deadZoneRadius();
-    m_axes = variantListToVector(setting->axes());
-    m_smooth = setting->isSmoothEnabled();
-}
-
 void AxisSetting::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAxisSettingData>>(change);

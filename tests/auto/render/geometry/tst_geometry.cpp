@@ -105,7 +105,7 @@ private Q_SLOTS:
         geometry.addAttribute(&attr4);
 
         // WHEN
-        renderGeometry.updateFromPeer(&geometry);
+        simulateInitialization(&geometry, &renderGeometry);
         renderGeometry.cleanup();
 
         // THEN

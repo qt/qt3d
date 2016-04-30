@@ -90,18 +90,17 @@ private Q_SLOTS:
         QCOMPARE(backendAction.inputs().size(), 0);
 
         // GIVEN
-        Qt3DInput::QAction axis;
+        Qt3DInput::QAction action;
         Qt3DInput::QActionInput axisInput;
 
-        axis.addInput(&axisInput);
+        action.addInput(&axisInput);
 
         // WHEN
-        backendAction.updateFromPeer(&axis);
+        simulateInitialization(&action, &backendAction);
         backendAction.setActionTriggered(true);
         backendAction.cleanup();
 
         // THEN
-        QVERIFY(backendAction.peerId().isNull());
         QCOMPARE(backendAction.actionTriggered(), false);
         QCOMPARE(backendAction.isEnabled(), false);
         QCOMPARE(backendAction.inputs().size(), 0);

@@ -72,11 +72,10 @@ private Q_SLOTS:
         picker.setHoverEnabled(true);
 
         // WHEN
-        objectPicker.updateFromPeer(&picker);
+        simulateInitialization(&picker, &objectPicker);
         objectPicker.cleanup();
 
         // THEN
-        QVERIFY(objectPicker.peerId().isNull());
         QCOMPARE(objectPicker.isHoverEnabled(), false);
         QCOMPARE(objectPicker.isDirty(), false);
     }

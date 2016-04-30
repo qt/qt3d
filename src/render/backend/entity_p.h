@@ -90,7 +90,6 @@ public:
     void setParentHandle(HEntity parentHandle);
     void setNodeManagers(NodeManagers *manager);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
     void dump() const;
 

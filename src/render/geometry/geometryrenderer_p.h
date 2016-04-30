@@ -73,7 +73,6 @@ public:
 
     void cleanup();
     void setManager(GeometryRendererManager *manager);
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void executeFunctor();
 

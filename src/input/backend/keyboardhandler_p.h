@@ -67,7 +67,7 @@ class KeyboardHandler : public Qt3DCore::QBackendNode
 {
 public:
     KeyboardHandler();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+
     Qt3DCore::QNodeId keyboardDevice() const;
     void setInputHandler(InputHandler *handler);
     void setFocus(bool focus);

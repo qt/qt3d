@@ -59,19 +59,6 @@ TechniqueFilter::TechniqueFilter()
 {
 }
 
-void TechniqueFilter::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QTechniqueFilter *filter = static_cast<QTechniqueFilter *>(peer);
-    m_filters.clear();
-    m_parameterPack.clear();
-    const auto criteria = filter->matchAll();
-    for (QFilterKey *criterion : criteria)
-        appendFilter(criterion->id());
-    const auto parameters = filter->parameters();
-    for (QParameter *p : parameters)
-        m_parameterPack.appendParameter(p->id());
-}
-
 void TechniqueFilter::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     FrameGraphNode::initializeFromPeer(change);

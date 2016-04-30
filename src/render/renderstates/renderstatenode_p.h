@@ -62,7 +62,6 @@ public:
     RenderStateNode();
     virtual ~RenderStateNode();
 
-    virtual void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     virtual void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     void apply(GraphicsContext* gc) const { m_impl->apply(gc); }

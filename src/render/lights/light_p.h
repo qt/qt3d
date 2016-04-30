@@ -64,8 +64,6 @@ class NodeManagers;
 class Q_AUTOTEST_EXPORT Light : public BackendNode
 {
 public:
-    void updateFromPeer(Qt3DCore::QNode *node) Q_DECL_OVERRIDE;
-
     Qt3DCore::QNodeId shaderData() const;
 
 private:

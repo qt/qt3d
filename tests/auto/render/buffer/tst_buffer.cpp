@@ -94,6 +94,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::Buffer renderBuffer;
+        Qt3DRender::Render::BufferManager bufferManager;
 
         // THEN
         QCOMPARE(renderBuffer.isDirty(), false);
@@ -110,7 +111,8 @@ private Q_SLOTS:
         buffer.setDataGenerator(Qt3DRender::QBufferDataGeneratorPtr(new TestFunctor(73)));
 
         // WHEN
-        renderBuffer.updateFromPeer(&buffer);
+        renderBuffer.setManager(&bufferManager);
+        simulateInitialization(&buffer, &renderBuffer);
         renderBuffer.cleanup();
 
         // THEN

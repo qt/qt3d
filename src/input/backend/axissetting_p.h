@@ -62,8 +62,6 @@ class AxisSetting : public Qt3DCore::QBackendNode
 {
 public:
     AxisSetting();
-
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
     inline float deadZoneRadius() const { return m_deadZoneRadius; }

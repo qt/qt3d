@@ -40,6 +40,7 @@
 #include <Qt3DRender/private/rendertargetoutput_p.h>
 #include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qtexture.h>
+#include <Qt3DRender/private/qrendertargetoutput_p.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
@@ -54,16 +55,15 @@ RenderTargetOutput::RenderTargetOutput()
 {
 }
 
-void RenderTargetOutput::updateFromPeer(Qt3DCore::QNode *peer)
+void RenderTargetOutput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QRenderTargetOutput *attachment = static_cast<QRenderTargetOutput *>(peer);
-
-    m_attachmentData.m_mipLevel = attachment->mipLevel();
-    m_attachmentData.m_layer = attachment->layer();
-    m_attachmentData.m_point = attachment->attachmentPoint();
-    m_attachmentData.m_face = attachment->face();
-    if (attachment->texture())
-        m_attachmentData.m_textureUuid = attachment->texture()->id();
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderTargetOutputData>>(change);
+    const auto &data = typedChange->data;
+    m_attachmentData.m_point = data.attachmentPoint;
+    m_attachmentData.m_mipLevel = data.mipLevel;
+    m_attachmentData.m_layer = data.layer;
+    m_attachmentData.m_face = data.face;
+    m_attachmentData.m_textureUuid = data.textureId;
 }
 
 Qt3DCore::QNodeId RenderTargetOutput::textureUuid() const

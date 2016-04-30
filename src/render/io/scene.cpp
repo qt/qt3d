@@ -61,14 +61,6 @@ Scene::Scene()
 {
 }
 
-void Scene::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QSceneLoader *loader = static_cast<QSceneLoader *>(peer);
-
-    m_source = loader->source();
-    m_sceneManager->addSceneData(m_source, peerId());
-}
-
 void Scene::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QSceneLoaderData>>(change);

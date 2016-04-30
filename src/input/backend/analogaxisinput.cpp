@@ -55,13 +55,6 @@ AnalogAxisInput::AnalogAxisInput()
 {
 }
 
-void AnalogAxisInput::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QAnalogAxisInput *input = static_cast<QAnalogAxisInput *>(peer);
-    m_axis = input->axis();
-    AbstractAxisInput::updateFromPeer(peer);
-}
-
 void AnalogAxisInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAnalogAxisInputData>>(change);

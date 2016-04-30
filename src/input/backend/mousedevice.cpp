@@ -41,6 +41,7 @@
 #include "inputmanagers_p.h"
 #include "inputhandler_p.h"
 #include "qmousedevice.h"
+#include <Qt3DInput/private/qmousedevice_p.h>
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qentity.h>
@@ -61,11 +62,12 @@ MouseDevice::~MouseDevice()
 {
 }
 
-void MouseDevice::updateFromPeer(Qt3DCore::QNode *peer)
+void MouseDevice::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QAbstractPhysicalDeviceBackendNode::updateFromPeer(peer);
-    QMouseDevice *object = static_cast<QMouseDevice *>(peer);
-    m_sensitivity = object->sensitivity();
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QMouseDeviceData>>(change);
+    const auto &data = typedChange->data;
+    m_sensitivity = data.sensitivity;
+    QAbstractPhysicalDeviceBackendNode::initializeFromPeer(change);
 }
 
 void MouseDevice::setInputHandler(InputHandler *handler)

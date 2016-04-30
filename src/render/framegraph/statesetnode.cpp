@@ -63,15 +63,6 @@ StateSetNode::~StateSetNode()
 {
 }
 
-void StateSetNode::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QRenderStateSet *stateSet = static_cast<QRenderStateSet*>(peer);
-
-    const auto renderStates = stateSet->renderStates();
-    for (QRenderState *renderState : renderStates)
-        appendRenderState(renderState->id());
-}
-
 void StateSetNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     FrameGraphNode::initializeFromPeer(change);

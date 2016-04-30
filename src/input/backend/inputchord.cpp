@@ -59,15 +59,6 @@ InputChord::InputChord()
 {
 }
 
-void InputChord::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QInputChord *input = static_cast<QInputChord *>(peer);
-    m_timeout = input->timeout();
-    const auto chords = input->chords();
-    for (QAbstractActionInput *i : chords)
-        m_chords.push_back(i->id());
-}
-
 void InputChord::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QInputChordData>>(change);

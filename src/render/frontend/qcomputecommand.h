@@ -76,8 +76,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QComputeCommand)
-
-    // TODO: Handle creation changes
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3DRender

@@ -85,11 +85,10 @@ private Q_SLOTS:
         axisInput.setSourceDevice(&sourceDevice);
 
         // WHEN
-        backendAxisInput.updateFromPeer(&axisInput);
+        simulateInitialization(&axisInput, &backendAxisInput);
         backendAxisInput.cleanup();
 
         // THEN
-        QVERIFY(backendAxisInput.peerId().isNull());
         QCOMPARE(backendAxisInput.scale(), 0.0f);
         QVERIFY(backendAxisInput.buttons().isEmpty());
         QCOMPARE(backendAxisInput.isEnabled(), false);

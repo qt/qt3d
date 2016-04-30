@@ -41,6 +41,7 @@
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DRender/qcomputecommand.h>
+#include <Qt3DRender/private/qcomputecommand_p.h>
 #include <Qt3DRender/private/abstractrenderer_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -69,12 +70,13 @@ void ComputeCommand::cleanup()
     m_workGroups[2] = 1;
 }
 
-void ComputeCommand::updateFromPeer(Qt3DCore::QNode *peer)
+void ComputeCommand::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QComputeCommand *computeCommand = static_cast<QComputeCommand *>(peer);
-    m_workGroups[0] = computeCommand->workGroupX();
-    m_workGroups[1] = computeCommand->workGroupY();
-    m_workGroups[2] = computeCommand->workGroupZ();
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QComputeCommandData>>(change);
+    const auto &data = typedChange->data;
+    m_workGroups[0] = data.workGroupX;
+    m_workGroups[1] = data.workGroupY;
+    m_workGroups[2] = data.workGroupZ;
     if (m_renderer != nullptr)
         BackendNode::markDirty(AbstractRenderer::ComputeDirty);
 }

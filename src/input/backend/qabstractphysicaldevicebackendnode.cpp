@@ -150,19 +150,20 @@ QAbstractPhysicalDeviceBackendNode::QAbstractPhysicalDeviceBackendNode(QAbstract
 {
 }
 
-void QAbstractPhysicalDeviceBackendNode::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    Q_D(QAbstractPhysicalDeviceBackendNode);
-    QAbstractPhysicalDevice *physicalDevice = static_cast<QAbstractPhysicalDevice *>(peer);
-    const auto axisSettings = physicalDevice->axisSettings();
-    for (QAxisSetting *axisSetting : axisSettings) {
-        // Each axis setting can apply to more than one axis. If an axis is
-        // mentioned in more than one setting, we use the last one
-        const auto axisIds = variantListToVector(axisSetting->axes());
-        for (int axisId : axisIds)
-            d->addAxisSetting(axisId, axisSetting->id());
-    }
-}
+// TODO: Fold this into a job as described below
+//void QAbstractPhysicalDeviceBackendNode::updateFromPeer(Qt3DCore::QNode *peer)
+//{
+//    Q_D(QAbstractPhysicalDeviceBackendNode);
+//    QAbstractPhysicalDevice *physicalDevice = static_cast<QAbstractPhysicalDevice *>(peer);
+//    const auto axisSettings = physicalDevice->axisSettings();
+//    for (QAxisSetting *axisSetting : axisSettings) {
+//        // Each axis setting can apply to more than one axis. If an axis is
+//        // mentioned in more than one setting, we use the last one
+//        const auto axisIds = variantListToVector(axisSetting->axes());
+//        for (int axisId : axisIds)
+//            d->addAxisSetting(axisId, axisSetting->id());
+//    }
+//}
 
 void QAbstractPhysicalDeviceBackendNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {

@@ -55,13 +55,6 @@ InputSettings::InputSettings()
 {
 }
 
-void InputSettings::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QInputSettings *settings = static_cast<QInputSettings *>(peer);
-    m_eventSource = settings->eventSource();
-    // Does it make sense to check for the enabled property for such a node ?
-}
-
 void InputSettings::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QInputSettingsData>>(change);

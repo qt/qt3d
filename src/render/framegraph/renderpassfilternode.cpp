@@ -58,25 +58,13 @@ RenderPassFilter::RenderPassFilter()
 {
 }
 
-void RenderPassFilter::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QRenderPassFilter *filter = static_cast<QRenderPassFilter *>(peer);
-    m_filters.clear();
-    m_parameterPack.clear();
-    const auto criteria = filter->matchAny();
-    for (QFilterKey *criterion : criteria)
-        appendFilter(criterion->id());
-    const auto parameters = filter->parameters();
-    for (QParameter *p : parameters)
-        m_parameterPack.appendParameter(p->id());
-}
-
 void RenderPassFilter::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     FrameGraphNode::initializeFromPeer(change);
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderPassFilterData>>(change);
     const auto &data = typedChange->data;
     m_filters = data.matchIds;
+    m_parameterPack.clear();
     m_parameterPack.setParameters(data.parameterIds);
 }
 

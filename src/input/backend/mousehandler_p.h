@@ -67,7 +67,6 @@ public:
     MouseHandler();
     ~MouseHandler();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     Qt3DCore::QNodeId mouseDevice() const;
     void setInputHandler(InputHandler *handler);
     void mouseEvent(const QMouseEventPtr &event);

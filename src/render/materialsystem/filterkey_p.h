@@ -68,7 +68,6 @@ public:
     FilterKey();
     ~FilterKey();
     void cleanup();
-    void updateFromPeer(Qt3DCore::QNode *criterion) Q_DECL_OVERRIDE;
 
     QVariant criterionValue() const;
     QString criterionName() const;

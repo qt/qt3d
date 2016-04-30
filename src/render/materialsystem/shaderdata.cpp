@@ -118,15 +118,6 @@ ShaderData *ShaderData::lookupResource(QNodeId id)
     return ShaderData::lookupResource(m_managers, id);
 }
 
-void ShaderData::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    m_properties.clear();
-    const QShaderData *shaderData = static_cast<const QShaderData *>(peer);
-    m_propertyReader = shaderData->propertyReader();
-    if (!m_propertyReader.isNull())
-        readPeerProperties(const_cast<QShaderData *>(shaderData));
-}
-
 // Call by cleanup job (single thread)
 void ShaderData::clearUpdatedProperties()
 {

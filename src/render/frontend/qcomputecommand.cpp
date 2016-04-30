@@ -102,6 +102,17 @@ void QComputeCommand::setWorkGroupZ(int workGroupZ)
     }
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QComputeCommand::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QComputeCommandData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QComputeCommand);
+    data.workGroupX = d->m_workGroupX;
+    data.workGroupY = d->m_workGroupY;
+    data.workGroupZ = d->m_workGroupZ;
+    return creationChange;
+}
+
 } // Render
 
 QT_END_NAMESPACE

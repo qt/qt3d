@@ -80,22 +80,6 @@ RenderSurfaceSelector::RenderSurfaceSelector()
 {
 }
 
-void RenderSurfaceSelector::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QRenderSurfaceSelector *selector = static_cast<QRenderSurfaceSelector *>(peer);
-    m_surface = surfaceFromQObject(selector->surface());
-    setRenderTargetSize(selector->externalRenderTargetSize());
-    if (m_surface) {
-        if (m_surface->surfaceClass() == QSurface::Window) {
-            QWindow *window = static_cast<QWindow *>(m_surface);
-            m_width = window->width();
-            m_height = window->height();
-            if (window->screen())
-                m_devicePixelRatio = window->screen()->devicePixelRatio();
-        }
-    }
-}
-
 void RenderSurfaceSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     FrameGraphNode::initializeFromPeer(change);

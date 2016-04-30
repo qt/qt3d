@@ -73,16 +73,6 @@ void ObjectPicker::cleanup()
     m_dragEnabled = false;
 }
 
-void ObjectPicker::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QObjectPicker *picker = static_cast<QObjectPicker *>(peer);
-    if (picker) {
-        m_hoverEnabled = picker->isHoverEnabled();
-        m_dragEnabled = picker->isDragEnabled();
-        m_isDirty = true;
-    }
-}
-
 void ObjectPicker::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QObjectPickerData>>(change);

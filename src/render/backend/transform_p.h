@@ -70,7 +70,6 @@ class Transform : public BackendNode
 public:
     Transform();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     QMatrix4x4 transformMatrix() const;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 

@@ -85,7 +85,6 @@ public:
     bool isEnabled() const Q_DECL_NOEXCEPT;
 
     Mode mode() const Q_DECL_NOEXCEPT;
-    virtual void updateFromPeer(QNode *peer) = 0;
 
 protected:
     Q_DECLARE_PRIVATE(QBackendNode)

@@ -53,14 +53,6 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 namespace Render {
 
-void Light::updateFromPeer(QNode *node)
-{
-    QAbstractLight *light = static_cast<QAbstractLight *>(node);
-    QShaderData *shaderData = light->findChild<QShaderData *>();
-    if (shaderData != nullptr)
-        m_shaderDataId = shaderData->id();
-}
-
 QNodeId Light::shaderData() const
 {
     return m_shaderDataId;

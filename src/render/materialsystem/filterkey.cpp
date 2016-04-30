@@ -62,14 +62,6 @@ void FilterKey::cleanup()
 {
 }
 
-void FilterKey::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QFilterKey *criterion = static_cast<QFilterKey *>(peer);
-
-    m_value = criterion->value();
-    m_name = criterion->name();
-}
-
 void FilterKey::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QFilterKeyData>>(change);

@@ -55,14 +55,6 @@ ActionInput::ActionInput()
 {
 }
 
-void ActionInput::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QActionInput *input = static_cast<QActionInput *>(peer);
-    m_buttons = input->buttons().toVector();
-    if (input->sourceDevice())
-        m_sourceDevice = input->sourceDevice()->id();
-}
-
 void ActionInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QActionInputData>>(change);

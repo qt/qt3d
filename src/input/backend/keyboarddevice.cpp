@@ -366,11 +366,6 @@ KeyboardDevice::KeyboardDevice()
     m_keyStates.keys[4] = 0;
 }
 
-void KeyboardDevice::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QAbstractPhysicalDeviceBackendNode::updateFromPeer(peer);
-}
-
 void KeyboardDevice::cleanup()
 {
     QAbstractPhysicalDeviceBackendNode::cleanup();

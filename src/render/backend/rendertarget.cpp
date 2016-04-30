@@ -58,15 +58,6 @@ RenderTarget::RenderTarget()
 {
 }
 
-void RenderTarget::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QRenderTarget *target = static_cast<QRenderTarget *>(peer);
-    m_renderOutputs.clear();
-    const auto outputs = target->outputs();
-    for (QRenderTargetOutput *att : outputs)
-        appendRenderOutput(att->id());
-}
-
 void RenderTarget::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderTargetData>>(change);
@@ -76,6 +67,7 @@ void RenderTarget::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
 
 void RenderTarget::cleanup()
 {
+    m_renderOutputs.clear();
     QBackendNode::setEnabled(false);
 }
 

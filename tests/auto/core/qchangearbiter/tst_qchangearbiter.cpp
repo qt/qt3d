@@ -161,9 +161,6 @@ public:
         : Qt3DCore::QBackendNode(ReadWrite)
     {}
 
-    void updateFromPeer(Qt3DCore::QNode *) Q_DECL_OVERRIDE
-    {}
-
     // QObserverInterface interface
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE
     {

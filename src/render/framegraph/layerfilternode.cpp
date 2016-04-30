@@ -55,12 +55,6 @@ LayerFilterNode::LayerFilterNode()
 {
 }
 
-void LayerFilterNode::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QLayerFilter *layerFilter = static_cast<QLayerFilter *>(peer);
-    setLayers(layerFilter->layers());
-}
-
 void LayerFilterNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     FrameGraphNode::initializeFromPeer(change);

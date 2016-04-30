@@ -64,8 +64,6 @@ class FrustumCulling : public FrameGraphNode
 public:
     FrustumCulling();
     ~FrustumCulling();
-
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 };
 
 } // namespace Render

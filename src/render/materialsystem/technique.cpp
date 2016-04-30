@@ -79,28 +79,6 @@ void Technique::cleanup()
     m_filterKeyList.clear();
 }
 
-void Technique::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    m_parameterPack.clear();
-    m_renderPasses.clear();
-    m_filterKeyList.clear();
-
-    QTechnique *technique = static_cast<QTechnique *>(peer);
-
-    if (technique != nullptr) {
-        Q_FOREACH (QParameter *p, technique->parameters())
-            m_parameterPack.appendParameter(p->id());
-        Q_FOREACH (QRenderPass *rPass, technique->renderPasses())
-            appendRenderPass(rPass->id());
-        Q_FOREACH (QFilterKey *filterKey, technique->filterKeys())
-            appendFilterKey(filterKey->id());
-
-        // Copy GraphicsApiFilter info from frontend GraphicsApiFilter
-        QGraphicsApiFilter *peerFilter = technique->graphicsApiFilter();
-        m_graphicsApiFilterData = QGraphicsApiFilterPrivate::get(peerFilter)->m_data;
-    }
-}
-
 void Technique::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QTechniqueData>>(change);

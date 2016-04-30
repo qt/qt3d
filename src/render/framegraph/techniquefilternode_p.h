@@ -75,7 +75,6 @@ class TechniqueFilter
 {
 public:
     TechniqueFilter();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
     QVector<Qt3DCore::QNodeId> parameters() const;
 

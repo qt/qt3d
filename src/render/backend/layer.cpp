@@ -63,17 +63,8 @@ Layer::~Layer()
 
 void Layer::cleanup()
 {
-    QBackendNode::setEnabled(false);
-}
-
-void Layer::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QLayer *layer = static_cast<QLayer *>(peer);
-    m_layers = layer->names();
     m_layerIds.clear();
-    m_layerIds.reserve(m_layers.size());
-    for (const QString &name : qAsConst(m_layers))
-        m_layerIds.push_back(StringToInt::lookupId(name));
+    QBackendNode::setEnabled(false);
 }
 
 void Layer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -81,6 +72,7 @@ void Layer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QLayerData>>(change);
     const auto &data = typedChange->data;
     m_layers = data.names;
+    m_layerIds.reserve(m_layers.size());
     for (const QString &name : qAsConst(m_layers))
         m_layerIds.push_back(StringToInt::lookupId(name));
 }

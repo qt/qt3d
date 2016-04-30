@@ -97,12 +97,11 @@ private Q_SLOTS:
         axis.addInput(&axisInput);
 
         // WHEN
-        backendAxis.updateFromPeer(&axis);
+        simulateInitialization(&axis, &backendAxis);
         backendAxis.setAxisValue(883.0f);
         backendAxis.cleanup();
 
         // THEN
-        QVERIFY(backendAxis.peerId().isNull());
         QCOMPARE(backendAxis.axisValue(), 0.0f);
         QCOMPARE(backendAxis.isEnabled(), false);
         QCOMPARE(backendAxis.inputs().size(), 0);

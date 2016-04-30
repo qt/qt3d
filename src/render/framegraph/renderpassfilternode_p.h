@@ -67,13 +67,11 @@ class QHandle;
 
 namespace Render {
 
-class RenderPassFilter
-        : public Render::FrameGraphNode
+class RenderPassFilter : public Render::FrameGraphNode
 {
 public:
     RenderPassFilter();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     QVector<Qt3DCore::QNodeId> filters() const;
     QVector<Qt3DCore::QNodeId> parameters() const;
     void appendFilter(Qt3DCore::QNodeId criterionId);

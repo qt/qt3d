@@ -58,14 +58,6 @@ Axis::Axis()
 {
 }
 
-void Axis::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QAxis *axis = static_cast<QAxis *>(peer);
-    const auto inputs = axis->inputs();
-    for (QAbstractAxisInput *input : inputs)
-        m_inputs.push_back(input->id());
-}
-
 void Axis::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAxisData>>(change);

@@ -56,15 +56,6 @@ ClearBuffers::ClearBuffers()
 {
 }
 
-void ClearBuffers::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QClearBuffers *clearBuffers = static_cast<QClearBuffers *>(peer);
-    m_type = clearBuffers->buffers();
-    m_clearColor = clearBuffers->clearColor();
-    m_clearDepthValue = clearBuffers->clearDepthValue();
-    m_clearStencilValue = clearBuffers->clearStencilValue();
-}
-
 void ClearBuffers::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     FrameGraphNode::initializeFromPeer(change);

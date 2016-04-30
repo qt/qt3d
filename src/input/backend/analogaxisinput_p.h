@@ -63,7 +63,6 @@ class Q_AUTOTEST_EXPORT AnalogAxisInput : public AbstractAxisInput
 {
 public:
     AnalogAxisInput();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_FINAL;
     void cleanup() Q_DECL_FINAL;
 
     inline int axis() const { return m_axis; }

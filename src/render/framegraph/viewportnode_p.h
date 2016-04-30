@@ -69,8 +69,6 @@ class ViewportNode : public FrameGraphNode
 public:
     ViewportNode();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-
     float xMin() const;
     void setXMin(float xMin);
 

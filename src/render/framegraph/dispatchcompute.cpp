@@ -66,14 +66,6 @@ void DispatchCompute::cleanup()
     m_workGroups[2] = 1;
 }
 
-void DispatchCompute::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QDispatchCompute *computeDispatch = static_cast<QDispatchCompute *>(peer);
-    m_workGroups[0] = computeDispatch->workGroupX();
-    m_workGroups[1] = computeDispatch->workGroupY();
-    m_workGroups[2] = computeDispatch->workGroupZ();
-}
-
 void DispatchCompute::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     FrameGraphNode::initializeFromPeer(change);

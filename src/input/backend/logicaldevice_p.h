@@ -66,8 +66,8 @@ class LogicalDevice : public Qt3DCore::QBackendNode
 {
 public:
     LogicalDevice();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
+
     inline QVector<Qt3DCore::QNodeId> axes() const { return m_axes; }
     inline QVector<Qt3DCore::QNodeId> actions() const { return m_actions; }
 

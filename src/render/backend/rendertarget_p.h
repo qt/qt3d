@@ -69,8 +69,6 @@ class RenderTarget : public BackendNode
 {
 public:
     RenderTarget();
-
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
     void appendRenderOutput(Qt3DCore::QNodeId outputId);

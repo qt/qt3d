@@ -71,9 +71,6 @@ class Scene : public BackendNode
 public:
     Scene();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-
-    // QObserverInterface interface
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QUrl source() const;
     void setSceneSubtree(Qt3DCore::QEntity *subTree);

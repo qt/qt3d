@@ -68,7 +68,6 @@ public:
     QSize renderTargetSize() const;
     void setRenderTargetSize(const QSize &size) { m_renderTargetSize = size; }
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     QSurface *surface() const { return m_surface; }

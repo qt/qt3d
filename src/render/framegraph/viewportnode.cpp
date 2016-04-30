@@ -58,15 +58,6 @@ ViewportNode::ViewportNode()
 {
 }
 
-void ViewportNode::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QViewport *viewport = static_cast<QViewport *>(peer);
-    setXMin(viewport->normalizedRect().x());
-    setXMax(viewport->normalizedRect().width());
-    setYMin(viewport->normalizedRect().y());
-    setYMax(viewport->normalizedRect().height());
-}
-
 void ViewportNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     FrameGraphNode::initializeFromPeer(change);

@@ -70,19 +70,6 @@ void Geometry::cleanup()
     m_boundingPositionAttribute = Qt3DCore::QNodeId();
 }
 
-void Geometry::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QGeometry *geometry = static_cast<QGeometry *>(peer);
-    if (geometry != nullptr) {
-        m_attributes.reserve(geometry->attributes().size());
-        Q_FOREACH (QAttribute *attribute, geometry->attributes())
-            m_attributes.push_back(attribute->id());
-        m_geometryDirty = true;
-        if (geometry->boundingVolumePositionAttribute() != nullptr)
-            m_boundingPositionAttribute = geometry->boundingVolumePositionAttribute()->id();
-    }
-}
-
 void Geometry::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QGeometryData>>(change);

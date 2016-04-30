@@ -79,7 +79,6 @@ public:
     ~Material();
     void cleanup();
 
-    void updateFromPeer(Qt3DCore::QNode* mat) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     QVector<Qt3DCore::QNodeId> parameters() const;

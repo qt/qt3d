@@ -69,7 +69,6 @@ class QT3DINPUTSHARED_PRIVATE_EXPORT QAbstractPhysicalDeviceBackendNode : public
 {
 public:
     explicit QAbstractPhysicalDeviceBackendNode(QBackendNode::Mode mode);
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     virtual void cleanup();
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 

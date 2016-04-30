@@ -83,25 +83,6 @@ void Attribute::cleanup()
     m_nameId = 0;
 }
 
-void Attribute::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QAttribute *attribute = static_cast<QAttribute *>(peer);
-    if (attribute) {
-        m_vertexDataType = attribute->vertexBaseType();
-        m_vertexSize = attribute->vertexSize();
-        m_count = attribute->count();
-        m_byteOffset = attribute->byteOffset();
-        m_byteStride = attribute->byteStride();
-        m_divisor = attribute->divisor();
-        m_attributeType = attribute->attributeType();
-        m_name = attribute->name();
-        m_nameId = StringToInt::lookupId(m_name);
-        if (attribute->buffer())
-            m_bufferId = attribute->buffer()->id();
-        m_attributeDirty = true;
-    }
-}
-
 void Attribute::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAttributeData>>(change);

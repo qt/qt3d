@@ -64,14 +64,6 @@ void RenderStateNode::cleanup()
     }
 }
 
-void RenderStateNode::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    cleanup();
-
-    QRenderState *renderState = static_cast<QRenderState *>(peer);
-    m_impl = RenderStateImpl::getOrCreateState(renderState);
-}
-
 void RenderStateNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     cleanup();

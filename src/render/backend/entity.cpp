@@ -142,40 +142,6 @@ void Entity::setHandle(HEntity handle)
     m_handle = handle;
 }
 
-void Entity::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QEntity *entity = static_cast<QEntity *>(peer);
-    QEntityPrivate *entityPrivate = static_cast<QEntityPrivate *>(QNodePrivate::get(entity));
-    const QNodeId parentEntityId = entityPrivate->parentEntityId();
-
-    m_objectName = peer->objectName();
-    m_worldTransform = m_nodeManagers->worldMatrixManager()->getOrAcquireHandle(peerId());
-
-    // TO DO: Suboptimal -> Maybe have a Hash<QComponent, QEntityList> instead
-    m_transformComponent = QNodeId();
-    m_materialComponent = QNodeId();
-    m_cameraComponent = QNodeId();
-    m_geometryRendererComponent = QNodeId();
-    m_objectPickerComponent = QNodeId();
-    m_boundingVolumeDebugComponent = QNodeId();
-    m_layerComponents.clear();
-    m_shaderDataComponents.clear();
-    m_lightComponents.clear();
-    m_localBoundingVolume.reset(new Sphere(peerId()));
-    m_worldBoundingVolume.reset(new Sphere(peerId()));
-    m_worldBoundingVolumeWithChildren.reset(new Sphere(peerId()));
-
-    const auto components = entity->components();
-    for (QComponent *comp : components)
-        addComponent(comp);
-
-    if (!parentEntityId.isNull()) {
-        setParentHandle(m_nodeManagers->renderNodesManager()->lookupHandle(parentEntityId));
-    } else {
-        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "No parent entity found for Entity" << peerId();
-    }
-}
-
 void Entity::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<QNodeCreatedChange<Qt3DCore::QEntityData>>(change);

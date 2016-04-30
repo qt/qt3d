@@ -53,14 +53,6 @@ SortPolicy::SortPolicy()
 {
 }
 
-void SortPolicy::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QSortPolicy *sortPolicy = static_cast<QSortPolicy *>(peer);
-    m_sortTypes.clear();
-    Q_FOREACH (QSortPolicy::SortType c, sortPolicy->sortTypes())
-        m_sortTypes.append(c);
-}
-
 void SortPolicy::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);

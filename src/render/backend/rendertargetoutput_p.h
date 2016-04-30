@@ -70,8 +70,6 @@ class RenderTargetOutput : public BackendNode
 public:
     RenderTargetOutput();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-
     Qt3DCore::QNodeId textureUuid() const;
     int mipLevel() const;
     int layer() const;
@@ -82,6 +80,7 @@ public:
     Attachment attachment() const;
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
     Qt3DCore::QNodeId m_attachmentUuid;
     Attachment m_attachmentData;
 };

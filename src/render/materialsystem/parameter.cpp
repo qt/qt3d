@@ -62,14 +62,6 @@ Parameter::Parameter()
 {
 }
 
-void Parameter::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QParameter *param = static_cast<QParameter *>(peer);
-    m_name = param->name();
-    m_nameId = StringToInt::lookupId(m_name);
-    m_value = static_cast<QParameterPrivate *>(QNodePrivate::get(param))->m_backendValue;
-}
-
 void Parameter::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QParameterData>>(change);

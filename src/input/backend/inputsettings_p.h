@@ -66,7 +66,6 @@ class InputSettings : public Qt3DCore::QBackendNode
 {
 public:
     InputSettings();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     inline QObject *eventSource() const { return m_eventSource; }
 
 protected:

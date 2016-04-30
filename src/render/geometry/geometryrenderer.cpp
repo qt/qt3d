@@ -75,6 +75,7 @@ GeometryRenderer::~GeometryRenderer()
 
 void GeometryRenderer::cleanup()
 {
+    BackendNode::setEnabled(false);
     m_instanceCount = 0;
     m_vertexCount = 0;
     m_indexOffset = 0;
@@ -93,27 +94,6 @@ void GeometryRenderer::cleanup()
 void GeometryRenderer::setManager(GeometryRendererManager *manager)
 {
     m_manager = manager;
-}
-
-void GeometryRenderer::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QGeometryRenderer *geometryRenderer = static_cast<QGeometryRenderer *>(peer);
-    if (geometryRenderer) {
-        m_instanceCount = geometryRenderer->instanceCount();
-        m_vertexCount = geometryRenderer->vertexCount();
-        m_indexOffset = geometryRenderer->indexOffset();
-        m_firstInstance = geometryRenderer->firstInstance();
-        m_restartIndexValue = geometryRenderer->restartIndexValue();
-        m_verticesPerPatch = geometryRenderer->verticesPerPatch();
-        m_primitiveRestartEnabled = geometryRenderer->primitiveRestartEnabled();
-        m_primitiveType = geometryRenderer->primitiveType();
-        if (geometryRenderer->geometry() != nullptr)
-            m_geometryId = geometryRenderer->geometry()->id();
-        m_geometryFactory = geometryRenderer->geometryFactory();
-        if (m_geometryFactory && m_manager != nullptr)
-            m_manager->addDirtyGeometryRenderer(peerId());
-        m_dirty = true;
-    }
 }
 
 void GeometryRenderer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)

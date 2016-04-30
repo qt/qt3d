@@ -63,7 +63,6 @@ class Q_AUTOTEST_EXPORT ButtonAxisInput : public AbstractAxisInput
 {
 public:
     ButtonAxisInput();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_FINAL;
     void cleanup() Q_DECL_FINAL;
 
     inline float scale() const { return m_scale; }

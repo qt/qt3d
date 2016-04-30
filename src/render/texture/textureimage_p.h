@@ -75,7 +75,6 @@ class TextureImage : public BackendNode
 public:
     TextureImage();
     void cleanup();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     int m_layer;

@@ -56,11 +56,6 @@ FrustumCulling::~FrustumCulling()
 {
 }
 
-void FrustumCulling::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    Q_UNUSED(peer)
-}
-
 } // namespace Render
 
 } // namespace Qt3DRender

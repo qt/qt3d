@@ -96,22 +96,6 @@ void Buffer::executeFunctor()
     }
 }
 
-void Buffer::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QBuffer *buffer = static_cast<QBuffer *>(peer);
-    if (buffer != nullptr) {
-        m_type = buffer->type();
-        m_usage = buffer->usage();
-        m_data = buffer->data();
-        m_functor = buffer->dataGenerator();
-        // Add to dirty list in the manager
-        if (m_functor && m_manager != nullptr)
-            m_manager->addDirtyBuffer(peerId());
-        m_bufferDirty = true;
-        m_syncData = buffer->isSyncData();
-    }
-}
-
 void Buffer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QBufferData>>(change);

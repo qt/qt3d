@@ -68,8 +68,6 @@ public:
     ~ComputeCommand();
 
     void cleanup();
-
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     inline int x() const Q_DECL_NOEXCEPT { return m_workGroups[0]; }
@@ -77,6 +75,7 @@ public:
     inline int z() const Q_DECL_NOEXCEPT { return m_workGroups[2]; }
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
     int m_workGroups[3];
 };
 

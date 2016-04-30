@@ -81,8 +81,6 @@ public:
     ~Texture();
     void cleanup();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-
     QOpenGLTexture* getOrCreateGLTexture() ;
 
     GLint textureId();

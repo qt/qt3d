@@ -91,7 +91,6 @@ public:
     // Called by FrameCleanupJob
     static void cleanup(NodeManagers *managers);
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void setManagers(NodeManagers *managers);
 
 protected:

@@ -67,12 +67,6 @@ void CameraLens::cleanup()
     QBackendNode::setEnabled(false);
 }
 
-void CameraLens::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QCameraLens *lens = static_cast<QCameraLens *>(peer);
-    setProjection(lens->projectionMatrix());
-}
-
 void CameraLens::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QCameraLensData>>(change);

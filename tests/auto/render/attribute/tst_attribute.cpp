@@ -111,11 +111,10 @@ private Q_SLOTS:
         attribute.setBuffer(&buffer);
 
         // WHEN
-        renderAttribute.updateFromPeer(&attribute);
+        simulateInitialization(&attribute, &renderAttribute);
         renderAttribute.cleanup();
 
         // THEN
-        QVERIFY(renderAttribute.peerId().isNull());
         QVERIFY(renderAttribute.bufferId().isNull());
         QVERIFY(renderAttribute.name().isEmpty());
         QCOMPARE(renderAttribute.isDirty(), false);

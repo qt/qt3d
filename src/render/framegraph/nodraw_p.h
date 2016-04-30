@@ -64,8 +64,6 @@ class NoDraw : public FrameGraphNode
 public:
     NoDraw();
     ~NoDraw();
-
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 };
 
 } // namespace Render

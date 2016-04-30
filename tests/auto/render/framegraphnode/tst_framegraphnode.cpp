@@ -33,7 +33,6 @@
 class MyFrameGraphNode : public Qt3DRender::Render::FrameGraphNode
 {
 public:
-    void updateFromPeer(Qt3DCore::QNode *) Q_DECL_FINAL {}
     void setEnabled(bool enabled)
     {
         FrameGraphNode::setEnabled(enabled);

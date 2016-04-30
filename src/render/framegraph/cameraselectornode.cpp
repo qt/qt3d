@@ -57,14 +57,6 @@ CameraSelector::CameraSelector()
 {
 }
 
-void CameraSelector::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QCameraSelector *selector = static_cast<QCameraSelector *>(peer);
-    m_cameraUuid = QNodeId();
-    if (selector->camera() != nullptr)
-        m_cameraUuid = selector->camera()->id();
-}
-
 void CameraSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     FrameGraphNode::initializeFromPeer(change);

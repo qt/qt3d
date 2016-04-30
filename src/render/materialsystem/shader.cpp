@@ -95,23 +95,6 @@ void Shader::cleanup()
     m_uniformBlocks.clear();
 }
 
-void Shader::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QShaderProgram *shader = static_cast<QShaderProgram *>(peer);
-
-    for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
-        m_shaderCode[i].clear();
-    }
-
-    m_isLoaded = false;
-
-    for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
-        QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
-        m_shaderCode[i] = shader->shaderCode(type);
-    }
-    updateDNA();
-}
-
 void Shader::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QShaderProgramData>>(change);

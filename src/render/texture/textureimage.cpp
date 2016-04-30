@@ -79,27 +79,6 @@ void TextureImage::cleanup()
     m_dna = 0;
 }
 
-void TextureImage::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QAbstractTextureImage *textureImage = static_cast<QAbstractTextureImage *>(peer);
-    m_layer = textureImage->layer();
-    m_mipLevel = textureImage->mipLevel();
-    m_face = textureImage->face();
-    m_generator = textureImage->dataGenerator();
-    // Notify the Texture that we are one of its TextureImage
-    if (!peer->parentNode()) {
-        qWarning() << "Not QAbstractTexture parent found";
-    } else {
-        m_textureProviderId = peer->parentNode()->id();
-        m_textureProvider = m_textureManager->lookupHandle(m_textureProviderId);
-        Texture *txt = m_textureManager->data(m_textureProvider);
-        // Notify the Texture that it has a new TextureImage and needs an update
-        txt->addTextureImageData(m_textureImageManager->lookupHandle(peerId()));
-        if (txt != nullptr)
-            txt->addToPendingTextureJobs();
-    }
-}
-
 void TextureImage::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAbstractTextureImageData>>(change);

@@ -65,13 +65,6 @@ MouseHandler::~MouseHandler()
 {
 }
 
-void MouseHandler::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QMouseHandler *input = static_cast<QMouseHandler *>(peer);
-    if (input->sourceDevice() != nullptr)
-        setDevice(input->sourceDevice()->id());
-}
-
 void MouseHandler::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QMouseHandlerData>>(change);

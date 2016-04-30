@@ -72,8 +72,6 @@ public:
     ~Layer();
     void cleanup();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-
     QStringList layers() const;
     QVector<int> layerIds() const Q_DECL_NOEXCEPT { return m_layerIds; }
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;

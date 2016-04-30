@@ -70,8 +70,6 @@ class KeyboardDevice : public Qt3DInput::QAbstractPhysicalDeviceBackendNode
 {
 public:
     KeyboardDevice();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-
     void cleanup() Q_DECL_OVERRIDE;
 
     void requestFocusForInput(Qt3DCore::QNodeId inputId);

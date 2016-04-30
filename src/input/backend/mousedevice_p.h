@@ -70,7 +70,6 @@ public:
     MouseDevice();
     ~MouseDevice();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void setInputHandler(InputHandler *handler);
 
     void addMouseInput(Qt3DCore::QNodeId input);
@@ -87,6 +86,8 @@ protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QVector<Qt3DCore::QNodeId> m_mouseInputs;
     InputHandler *m_inputHandler;
 

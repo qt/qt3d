@@ -67,8 +67,6 @@ class Handler : public Qt3DCore::QBackendNode
 public:
     Handler();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-
     void setManager(Manager *manager) { m_logicManager = manager; }
     Manager *logicManager() const { return m_logicManager; }
 

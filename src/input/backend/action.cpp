@@ -58,14 +58,6 @@ Action::Action()
 {
 }
 
-void Action::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QAction *action = static_cast<QAction *>(peer);
-    const auto inputs = action->inputs();
-    for (QAbstractActionInput *input : inputs)
-        m_inputs.push_back(input->id());
-}
-
 void Action::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QActionData>>(change);

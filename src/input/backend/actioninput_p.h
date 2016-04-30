@@ -64,7 +64,6 @@ class Q_AUTOTEST_EXPORT ActionInput : public Qt3DCore::QBackendNode
 {
 public:
     ActionInput();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
     inline QVector<int> buttons() const { return m_buttons; }

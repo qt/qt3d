@@ -58,17 +58,6 @@ LogicalDevice::LogicalDevice()
 {
 }
 
-void LogicalDevice::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QLogicalDevice *device = static_cast<QLogicalDevice *>(peer);
-    const auto axes = device->axes();
-    for (QAxis *axis : axes)
-        m_axes.push_back(axis->id());
-    const auto actions = device->actions();
-    for (QAction *action : actions)
-        m_actions.push_back(action->id());
-}
-
 void LogicalDevice::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QLogicalDeviceData>>(change);

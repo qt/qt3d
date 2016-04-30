@@ -27,7 +27,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-
+#include <qbackendnodetester.h>
 #include <Qt3DRender/private/renderviewjobutils_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
 #include <Qt3DRender/private/managers_p.h>
@@ -35,7 +35,7 @@
 #include <Qt3DRender/qshaderdata.h>
 
 
-class tst_RenderViewUtils : public QObject
+class tst_RenderViewUtils : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 private Q_SLOTS:
@@ -45,6 +45,23 @@ private Q_SLOTS:
     void topLevelStructValue_data();
     void topLevelStructValue();
     void topLevelDynamicProperties();
+
+private:
+    void initBackendShaderData(Qt3DRender::QShaderData *frontend,
+                               Qt3DRender::Render::ShaderDataManager *manager)
+    {
+        // Create children first
+        Q_FOREACH (QObject *c, frontend->children()) {
+            Qt3DRender::QShaderData *cShaderData = qobject_cast<Qt3DRender::QShaderData *>(c);
+            if (cShaderData)
+                initBackendShaderData(cShaderData, manager);
+        }
+
+        // Create backend element for frontend one
+        Qt3DRender::Render::ShaderData *backend = manager->getOrCreateResource(frontend->id());
+        // Init the backend element
+        simulateInitialization(frontend, backend);
+    }
 };
 
 class ScalarShaderData : public Qt3DRender::QShaderData
@@ -267,27 +284,6 @@ Q_SIGNALS:
 private:
     Qt3DRender::QShaderData *m_inner;
 };
-
-namespace {
-
-void initBackendShaderData(Qt3DRender::QShaderData *frontend,
-                           Qt3DRender::Render::ShaderDataManager *manager)
-{
-    // Create children first
-    Q_FOREACH (QObject *c, frontend->children()) {
-        Qt3DRender::QShaderData *cShaderData = qobject_cast<Qt3DRender::QShaderData *>(c);
-        if (cShaderData)
-            initBackendShaderData(cShaderData, manager);
-    }
-
-    // Create backend element for frontend one
-    Qt3DRender::Render::ShaderData *backend = manager->getOrCreateResource(frontend->id());
-    // Init the backend element
-    backend->updateFromPeer(frontend);
-}
-
-} // anonymous
-
 
 void tst_RenderViewUtils::topLevelScalarValueNoUniforms()
 {

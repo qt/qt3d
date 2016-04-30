@@ -127,35 +127,6 @@ void Texture::cleanup()
 }
 
 // AspectThread
-void Texture::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QAbstractTexture *texture = static_cast<QAbstractTexture *>(peer);
-
-    QMutexLocker lock(&m_lock);
-    if (texture != nullptr) {
-        m_isDirty = true;
-        m_width = texture->width();
-        m_height = texture->height();
-        m_depth = texture->depth();
-        m_generateMipMaps = texture->generateMipMaps();
-        m_target = texture->target();
-        m_format = texture->format();
-        m_magnificationFilter = texture->magnificationFilter();
-        m_minificationFilter = texture->minificationFilter();
-        m_wrapModeX = texture->wrapMode()->x();
-        m_wrapModeY = texture->wrapMode()->y();
-        m_wrapModeZ = texture->wrapMode()->z();
-        m_maximumAnisotropy = texture->maximumAnisotropy();
-        m_comparisonFunction = texture->comparisonFunction();
-        m_comparisonMode = texture->comparisonMode();
-        m_layers = texture->layers();
-        m_dataFunctor = texture->dataGenerator();
-
-        if (m_dataFunctor)
-            addToPendingTextureJobs();
-    }
-}
-
 void Texture::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAbstractTextureData>>(change);

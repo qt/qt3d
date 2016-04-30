@@ -54,13 +54,6 @@ AbstractAxisInput::AbstractAxisInput()
 {
 }
 
-void AbstractAxisInput::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QAbstractAxisInput *input = static_cast<QAbstractAxisInput *>(peer);
-    if (input->sourceDevice())
-        m_sourceDevice = input->sourceDevice()->id();
-}
-
 void AbstractAxisInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAbstractAxisInputData>>(change);

@@ -57,15 +57,6 @@ RenderSettings::RenderSettings()
     cleanup();
 }
 
-void RenderSettings::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QRenderSettings *settings = static_cast<QRenderSettings *>(peer);
-    m_pickMethod = settings->pickingSettings()->pickMethod();
-    m_pickResultMode = settings->pickingSettings()->pickResultMode();
-    m_activeFrameGraph = settings->activeFrameGraph()->id();
-    m_renderPolicy = settings->renderPolicy();
-}
-
 void RenderSettings::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderSettingsData>>(change);

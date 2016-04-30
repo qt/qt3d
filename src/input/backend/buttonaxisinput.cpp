@@ -55,14 +55,6 @@ ButtonAxisInput::ButtonAxisInput()
 {
 }
 
-void ButtonAxisInput::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QButtonAxisInput *input = static_cast<QButtonAxisInput *>(peer);
-    m_scale = input->scale();
-    m_buttons = input->buttons().toVector();
-    AbstractAxisInput::updateFromPeer(peer);
-}
-
 void ButtonAxisInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QButtonAxisInputData>>(change);

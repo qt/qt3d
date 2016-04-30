@@ -64,7 +64,6 @@ class Q_AUTOTEST_EXPORT Action : public Qt3DCore::QBackendNode
 {
 public:
     Action();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
     inline QVector<Qt3DCore::QNodeId> inputs() const { return m_inputs; }
     inline bool actionTriggered() const { return m_actionTriggered; }

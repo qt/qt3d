@@ -67,6 +67,13 @@ public:
     int m_workGroupZ;
 };
 
+struct QComputeCommandData
+{
+    int workGroupX;
+    int workGroupY;
+    int workGroupZ;
+};
+
 } // Qt3DRender
 
 QT_END_NAMESPACE

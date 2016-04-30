@@ -72,24 +72,6 @@ void RenderPass::cleanup()
 {
 }
 
-void RenderPass::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QRenderPass *pass = static_cast<QRenderPass *>(peer);
-
-    m_parameterPack.clear();
-
-    if (pass->shaderProgram() != nullptr)
-        m_shaderUuid = pass->shaderProgram()->id();
-    // The RenderPass clones frontend bindings in case the frontend ever removes them
-    // TO DO: We probably need a QParameterMapper manager
-    Q_FOREACH (QFilterKey *c, pass->filterKeys())
-        appendFilterKey(c->id());
-    Q_FOREACH (QRenderState *renderState, pass->renderStates())
-        appendRenderState(renderState->id());
-    Q_FOREACH (QParameter *p, pass->parameters())
-        m_parameterPack.appendParameter(p->id());
-}
-
 void RenderPass::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderPassData>>(change);

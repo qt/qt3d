@@ -121,6 +121,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::GeometryRenderer renderGeometryRenderer;
+        Qt3DRender::Render::GeometryRendererManager geometryRendererManager;
 
         // THEN
         QVERIFY(renderGeometryRenderer.peerId().isNull());
@@ -154,11 +155,11 @@ private Q_SLOTS:
         geometryRenderer.setEnabled(true);
 
         // WHEN
-        renderGeometryRenderer.updateFromPeer(&geometryRenderer);
+        renderGeometryRenderer.setManager(&geometryRendererManager);
+        simulateInitialization(&geometryRenderer, &renderGeometryRenderer);
         renderGeometryRenderer.cleanup();
 
         // THEN
-        QVERIFY(renderGeometryRenderer.peerId().isNull());
         QVERIFY(renderGeometryRenderer.geometryId().isNull());
         QCOMPARE(renderGeometryRenderer.isDirty(), false);
         QCOMPARE(renderGeometryRenderer.instanceCount(), 0);

@@ -71,20 +71,6 @@ void Effect::cleanup()
     QBackendNode::setEnabled(false);
 }
 
-void Effect::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QEffect *effect = static_cast<QEffect *>(peer);
-
-    m_techniques.clear();
-    m_parameterPack.clear();
-
-    Q_FOREACH (QTechnique *t, effect->techniques())
-        appendRenderTechnique(t->id());
-
-    Q_FOREACH (QParameter *p, effect->parameters())
-        m_parameterPack.appendParameter(p->id());
-}
-
 void Effect::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QEffectData>>(change);
