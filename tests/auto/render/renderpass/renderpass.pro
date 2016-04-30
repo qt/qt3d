@@ -8,4 +8,5 @@ CONFIG += testcase
 
 SOURCES += tst_renderpass.cpp
 
+include(../../core/common/common.pri)
 include(../commons/commons.pri)

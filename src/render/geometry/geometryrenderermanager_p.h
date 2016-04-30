@@ -60,7 +60,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class GeometryRendererManager : public Qt3DCore::QResourceManager<
+class Q_AUTOTEST_EXPORT GeometryRendererManager : public Qt3DCore::QResourceManager<
         GeometryRenderer,
         Qt3DCore::QNodeId,
         16,

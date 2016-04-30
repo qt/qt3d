@@ -79,7 +79,6 @@ public:
     explicit QBackendNode(Mode mode = ReadOnly);
     virtual ~QBackendNode();
 
-    void setPeer(QNode *peer);
     QNodeId peerId() const Q_DECL_NOEXCEPT;
 
     void setEnabled(bool enabled) Q_DECL_NOEXCEPT;

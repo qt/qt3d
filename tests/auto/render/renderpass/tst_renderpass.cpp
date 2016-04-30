@@ -27,6 +27,7 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
+#include <qbackendnodetester.h>
 #include <Qt3DRender/private/renderpass_p.h>
 
 #include <Qt3DCore/QNodePropertyChange>
@@ -66,13 +67,14 @@ using namespace Qt3DCore;
 using namespace Qt3DRender;
 using namespace Qt3DRender::Render;
 
-class tst_RenderRenderPass : public QObject
+class tst_RenderRenderPass : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 public:
     tst_RenderRenderPass()
         : m_renderStateManager(new RenderStateManager())
     {
+        qRegisterMetaType<Qt3DCore::QNode *>();
     }
     ~tst_RenderRenderPass() {}
 
@@ -106,10 +108,10 @@ private slots:
         RenderPass backend;
 
         RenderStateNode *backendState = m_renderStateManager->getOrCreateResource(frontendState->id());
-        backendState->setPeer(frontendState);
+        simulateInitialization(frontendState, backendState);
 
         // WHEN
-        backend.setPeer(&frontend);
+        simulateInitialization(&frontend, &backend);
 
         // THEN
         QCOMPARE(backend.shaderProgram(), frontend.shaderProgram()->id());
@@ -217,7 +219,7 @@ private slots:
         backend.setRenderer(&renderer);
 
         RenderStateNode *backendState = m_renderStateManager->getOrCreateResource(frontendState->id());
-        backendState->setPeer(frontendState);
+        simulateInitialization(frontendState, backendState);
 
         // WHEN
         const auto addChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), frontendState);

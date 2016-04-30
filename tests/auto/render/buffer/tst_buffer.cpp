@@ -27,7 +27,9 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <qbackendnodetester.h>
 #include <Qt3DRender/private/buffer_p.h>
+#include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include "testpostmanarbiter.h"
@@ -59,7 +61,7 @@ private:
     int m_size;
 };
 
-class tst_RenderBuffer : public QObject
+class tst_RenderBuffer : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 private Q_SLOTS:
@@ -69,12 +71,14 @@ private Q_SLOTS:
         // GIVEN
         Qt3DRender::Render::Buffer renderBuffer;
         Qt3DRender::QBuffer buffer(Qt3DRender::QBuffer::IndexBuffer);
+        Qt3DRender::Render::BufferManager bufferManager;
         buffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
         buffer.setData(QByteArrayLiteral("Corvette"));
         buffer.setDataGenerator(Qt3DRender::QBufferDataGeneratorPtr(new TestFunctor(883)));
 
         // WHEN
-        renderBuffer.setPeer(&buffer);
+        renderBuffer.setManager(&bufferManager);
+        simulateInitialization(&buffer, &renderBuffer);
 
         // THEN
         QCOMPARE(renderBuffer.peerId(), buffer.id());

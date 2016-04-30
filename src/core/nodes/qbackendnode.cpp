@@ -160,20 +160,6 @@ QBackendNode::~QBackendNode()
 }
 
 /*!
- * Sets the \a peer.
- */
-void QBackendNode::setPeer(QNode *peer)
-{
-    Q_D(QBackendNode);
-    QNodeId peerId;
-    if (peer != nullptr)
-        peerId = peer->id();
-    d->m_peerId = peerId;
-    d->m_enabled = peer->isEnabled();
-    updateFromPeer(peer);
-}
-
-/*!
  * Sets the peer \a id.
  */
 void QBackendNode::setPeerId(QNodeId id) Q_DECL_NOEXCEPT

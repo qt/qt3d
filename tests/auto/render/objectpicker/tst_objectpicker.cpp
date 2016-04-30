@@ -27,6 +27,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <qbackendnodetester.h>
 #include <Qt3DRender/private/objectpicker_p.h>
 #include <Qt3DRender/qpickevent.h>
 #include <Qt3DRender/qobjectpicker.h>
@@ -35,7 +36,7 @@
 #include "testpostmanarbiter.h"
 #include "testrenderer.h"
 
-class tst_ObjectPicker : public QObject
+class tst_ObjectPicker : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 private Q_SLOTS:
@@ -48,7 +49,7 @@ private Q_SLOTS:
         picker.setHoverEnabled(true);
 
         // WHEN
-        objectPicker.setPeer(&picker);
+        simulateInitialization(&picker, &objectPicker);
 
         // THEN
         QVERIFY(!objectPicker.peerId().isNull());

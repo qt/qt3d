@@ -8,4 +8,5 @@ CONFIG += testcase
 
 SOURCES += tst_action.cpp
 
+include(../../core/common/common.pri)
 include(../../render/commons/commons.pri)

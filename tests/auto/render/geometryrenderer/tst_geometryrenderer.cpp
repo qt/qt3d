@@ -27,7 +27,9 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <qbackendnodetester.h>
 #include <Qt3DRender/private/geometryrenderer_p.h>
+#include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryfactory.h>
 #include <Qt3DCore/qnodepropertychange.h>
@@ -70,8 +72,7 @@ public:
     {}
 };
 
-
-class tst_RenderGeometryRenderer : public QObject
+class tst_RenderGeometryRenderer : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 private Q_SLOTS:
@@ -83,6 +84,7 @@ private Q_SLOTS:
         Qt3DRender::QGeometryRenderer geometryRenderer;
         Qt3DRender::QGeometry geometry;
         Qt3DRender::QGeometryFactoryPtr factory(new TestFactory(1200));
+        Qt3DRender::Render::GeometryRendererManager geometryRendererManager;
 
         geometryRenderer.setInstanceCount(1584);
         geometryRenderer.setVertexCount(1609);
@@ -96,7 +98,8 @@ private Q_SLOTS:
         geometryRenderer.setEnabled(false);
 
         // WHEN
-        renderGeometryRenderer.setPeer(&geometryRenderer);
+        renderGeometryRenderer.setManager(&geometryRendererManager);
+        simulateInitialization(&geometryRenderer, &renderGeometryRenderer);
 
         // THEN
         QCOMPARE(renderGeometryRenderer.peerId(), geometryRenderer.id());

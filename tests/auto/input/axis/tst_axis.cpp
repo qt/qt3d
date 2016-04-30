@@ -27,6 +27,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <qbackendnodetester.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qnodepropertychange.h>
@@ -47,7 +48,7 @@ public:
     {}
 };
 
-class tst_Axis: public QObject
+class tst_Axis: public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 
@@ -63,7 +64,7 @@ private Q_SLOTS:
         axis.addInput(&axisInput);
 
         // WHEN
-        backendAxis.setPeer(&axis);
+        simulateInitialization(&axis, &backendAxis);
 
         // THEN
         QCOMPARE(backendAxis.peerId(), axis.id());

@@ -27,12 +27,13 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <qbackendnodetester.h>
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DCore/qnodepropertychange.h>
 #include "testrenderer.h"
 
-class tst_Attribute : public QObject
+class tst_Attribute : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 private Q_SLOTS:
@@ -58,7 +59,7 @@ private Q_SLOTS:
         attribute.setBuffer(&buffer);
 
         // WHEN
-        renderAttribute.setPeer(&attribute);
+        simulateInitialization(&attribute, &renderAttribute);
 
         // THEN
         QCOMPARE(renderAttribute.peerId(), attribute.id());

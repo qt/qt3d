@@ -9,4 +9,5 @@ CONFIG += testcase
 SOURCES += \
     tst_attribute.cpp
 
+include(../../core/common/common.pri)
 include(../commons/commons.pri)

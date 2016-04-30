@@ -27,6 +27,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <qbackendnodetester.h>
 #include <Qt3DRender/private/material_p.h>
 
 #include <Qt3DRender/QMaterial>
@@ -41,7 +42,7 @@ using namespace Qt3DCore;
 using namespace Qt3DRender;
 using namespace Qt3DRender::Render;
 
-class tst_RenderMaterial : public QObject
+class tst_RenderMaterial : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 public:
@@ -114,7 +115,7 @@ void tst_RenderMaterial::shouldHavePropertiesMirroringFromItsPeer()
     Material backend;
 
     // GIVEN
-    backend.setPeer(frontendMaterial);
+    simulateInitialization(frontendMaterial, &backend);
 
     // THEN
     QVERIFY(backend.isEnabled() == frontendMaterial->isEnabled());

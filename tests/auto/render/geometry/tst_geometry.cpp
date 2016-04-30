@@ -27,6 +27,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <qbackendnodetester.h>
 #include <Qt3DRender/private/geometry_p.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qattribute.h>
@@ -44,8 +45,7 @@ public:
     {}
 };
 
-
-class tst_RenderGeometry : public QObject
+class tst_RenderGeometry : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 private Q_SLOTS:
@@ -68,7 +68,7 @@ private Q_SLOTS:
         geometry.setBoundingVolumePositionAttribute(&attr1);
 
         // WHEN
-        renderGeometry.setPeer(&geometry);
+        simulateInitialization(&geometry, &renderGeometry);
 
         // THEN
         QCOMPARE(renderGeometry.peerId(), geometry.id());
