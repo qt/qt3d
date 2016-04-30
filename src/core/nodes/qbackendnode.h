@@ -79,19 +79,18 @@ public:
     void setPeer(QNode *peer);
     QNodeId peerId() const Q_DECL_NOEXCEPT;
 
+    void setEnabled(bool enabled) Q_DECL_NOEXCEPT;
     bool isEnabled() const Q_DECL_NOEXCEPT;
 
     Mode mode() const Q_DECL_NOEXCEPT;
     virtual void updateFromPeer(QNode *peer) = 0;
 
 protected:
+    Q_DECLARE_PRIVATE(QBackendNode)
+    QBackendNode(QBackendNodePrivate &dd);
     void notifyObservers(const QSceneChangePtr &e);
     virtual void sceneChangeEvent(const QSceneChangePtr &e);
-    void setEnabled(bool enabled);
 
-    QBackendNode(QBackendNodePrivate &dd);
-
-    Q_DECLARE_PRIVATE(QBackendNode)
     QBackendNodePrivate *d_ptr;
 
 private:
@@ -103,8 +102,7 @@ private:
     friend class QAbstractAspectPrivate;
 };
 
-
-} // Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

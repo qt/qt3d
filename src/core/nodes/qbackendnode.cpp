@@ -236,7 +236,7 @@ void QBackendNode::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
 /*!
  * Enables or disables the backend node by \a enabled.
  */
-void QBackendNode::setEnabled(bool enabled)
+void QBackendNode::setEnabled(bool enabled) Q_DECL_NOEXCEPT
 {
     Q_D(QBackendNode);
     d->m_enabled = enabled;
