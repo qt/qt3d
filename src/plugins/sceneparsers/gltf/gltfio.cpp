@@ -535,7 +535,7 @@ QMaterial *GLTFIO::materialWithCustomShader(const QString &id, const QJsonObject
                                  << "for material" << id << "in GLTF file" << m_basePath;
         return NULL;
     }
-    QTechnique *technique = m_techniques.value(techniqueName);
+    QTechnique *technique = m_techniques[techniqueName];
     technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGLES);
     technique->graphicsApiFilter()->setMajorVersion(2);
     technique->graphicsApiFilter()->setMinorVersion(0);
@@ -551,7 +551,7 @@ QMaterial *GLTFIO::materialWithCustomShader(const QString &id, const QJsonObject
             qCWarning(GLTFIOLog) << "unknown technique" << coreTechniqueName
                                      << "for material" << id << "in GLTF file" << m_basePath;
         } else {
-            coreTechnique = m_techniques.value(coreTechniqueName);
+            coreTechnique = m_techniques[coreTechniqueName];
             coreTechnique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
             coreTechnique->graphicsApiFilter()->setMajorVersion(3);
             coreTechnique->graphicsApiFilter()->setMinorVersion(1);
@@ -565,7 +565,7 @@ QMaterial *GLTFIO::materialWithCustomShader(const QString &id, const QJsonObject
             qCWarning(GLTFIOLog) << "unknown technique" << gl2TechniqueName
                                      << "for material" << id << "in GLTF file" << m_basePath;
         } else {
-            gl2Technique = m_techniques.value(gl2TechniqueName);
+            gl2Technique = m_techniques[gl2TechniqueName];
             gl2Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
             gl2Technique->graphicsApiFilter()->setMajorVersion(2);
             gl2Technique->graphicsApiFilter()->setMinorVersion(0);
@@ -702,7 +702,7 @@ QMaterial *GLTFIO::commonMaterial(const QJsonObject &jsonObj)
 QMaterial* GLTFIO::material(const QString &id)
 {
     if (m_materialCache.contains(id))
-        return m_materialCache.value(id);
+        return m_materialCache[id];
 
     QJsonObject mats = m_json.object().value(KEY_MATERIALS).toObject();
     if (!mats.contains(id)) {
@@ -1245,7 +1245,7 @@ QVariant GLTFIO::parameterValueFromJSON(int type, const QJsonValue &value) const
                 qCWarning(GLTFIOLog) << "unknown texture" << textureId;
                 return QVariant();
             } else {
-                return QVariant::fromValue(m_textures.value(textureId));
+                return QVariant::fromValue(m_textures.value(textureId, nullptr));
             }
         }
     } else if (value.isDouble()) {

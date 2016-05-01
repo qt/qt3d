@@ -146,7 +146,7 @@ static QVector<Entity *> gatherEntities(Entity *entity, QVector<Entity *> entiti
         for (Entity *child : children)
             entities = gatherEntities(child, std::move(entities));
     }
-    return std::move(entities);
+    return entities;
 }
 
 class EntityGatherer

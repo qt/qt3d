@@ -49,7 +49,7 @@ public:
         return QByteArray();
     }
 
-    bool operator ==(const Qt3DRender::QBufferDataGenerator &other) const
+    bool operator ==(const Qt3DRender::QBufferDataGenerator &other) const Q_DECL_FINAL
     {
         const TestFunctor *otherFunctor = functor_cast<TestFunctor>(&other);
         if (otherFunctor != nullptr)

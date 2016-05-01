@@ -465,7 +465,7 @@ Qt3DCore::QEntity *AssimpIO::node(aiNode *node)
 
     // Add Camera
     if (m_scene->m_cameras.contains(node))
-        m_scene->m_cameras.value(node)->setParent(entityNode);
+        m_scene->m_cameras[node]->setParent(entityNode);
 
     // TO DO : Add lights ....
 

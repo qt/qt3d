@@ -406,6 +406,7 @@ void QGeometryRenderer::setGeometryFactory(const QGeometryFactoryPtr &factory)
  */
 void QGeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
+    Q_UNUSED(e);
     // TODO: Avoid cloning here
 //    Q_D(QGeometryRenderer);
 //    QScenePropertyChangePtr change = qSharedPointerCast<QScenePropertyChange>(e);

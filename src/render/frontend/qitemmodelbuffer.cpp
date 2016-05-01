@@ -257,7 +257,7 @@ QStringList QItemModelBuffer::attributeNames() const
 
 QAttribute *QItemModelBuffer::attributeByName(QString nm) const
 {
-    return m_attributes.value(nm);
+    return m_attributes.value(nm, nullptr);
 }
 
 void QItemModelBuffer::onModelDataChanged(const QModelIndex& topLeft,

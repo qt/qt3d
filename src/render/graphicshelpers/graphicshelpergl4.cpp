@@ -47,7 +47,9 @@
 #include <private/qgraphicsutils_p.h>
 
 # ifndef QT_OPENGL_4_3
-#  define GL_PATCH_VERTICES 36466
+#  ifndef GL_PATCH_VERTICES
+#    define GL_PATCH_VERTICES 36466
+#  endif
 #  define GL_ACTIVE_RESOURCES 0x92F5
 #  define GL_BUFFER_BINDING 0x9302
 #  define GL_BUFFER_DATA_SIZE 0x9303
