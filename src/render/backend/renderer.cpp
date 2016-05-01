@@ -138,6 +138,8 @@ const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
 Renderer::Renderer(QRenderAspect::RenderType type)
     : m_services(Q_NULLPTR)
     , m_nodesManager(Q_NULLPTR)
+    , m_defaultMaterial(Q_NULLPTR)
+    , m_defaultRenderStateSet(Q_NULLPTR)
     , m_graphicsContext(Q_NULLPTR)
     , m_renderQueue(new RenderQueue())
     , m_renderThread(type == QRenderAspect::Threaded ? new RenderThread(this) : Q_NULLPTR)
@@ -150,8 +152,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_glContext(Q_NULLPTR)
     , m_pickBoundingVolumeJob(Q_NULLPTR)
     , m_time(0)
-    , m_defaultMaterial(Q_NULLPTR)
-    , m_defaultRenderStateSet(Q_NULLPTR)
     , m_settings(Q_NULLPTR)
 {
     // Set renderer as running - it will wait in the context of the
