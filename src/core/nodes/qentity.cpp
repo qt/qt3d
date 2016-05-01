@@ -87,6 +87,12 @@ QEntity::QEntity(QNode *parent)
 {
 }
 
+/*! \internal */
+QEntity::QEntity(QEntityPrivate &dd, QNode *parent)
+    : QNode(dd, parent)
+{
+}
+
 QEntity::~QEntity()
 {
     // remove all component aggregations
@@ -99,11 +105,6 @@ QEntity::~QEntity()
         removeComponent(comp);
 }
 
-/*! \internal */
-QEntity::QEntity(QEntityPrivate &dd, QNode *parent)
-    : QNode(dd, parent)
-{
-}
 
 /*!
     \typedef Qt3DCore::QComponentVector

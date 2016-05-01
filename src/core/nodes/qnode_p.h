@@ -70,6 +70,8 @@ class QT3DCORE_PRIVATE_EXPORT QNodePrivate : public QObjectPrivate, public QObse
 public:
     QNodePrivate();
 
+    void init(QNode *parent);
+
     void setScene(QScene *scene);
     QScene *scene() const;
 
@@ -97,6 +99,8 @@ public:
     static void nodePtrDeleter(QNode *q);
 
 private:
+    void notifyCreationChange();
+    void _q_notifyCreationAndChildChanges();
     void _q_addChild(QNode *childNode);
     void _q_removeChild(QNode *childNode);
     void _q_setParentHelper(QNode *parent);

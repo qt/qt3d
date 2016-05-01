@@ -77,7 +77,72 @@ QNodePrivate::QNodePrivate()
 {
 }
 
-// Called by QNodePrivate::ctor or setParent  (main thread)
+void QNodePrivate::init(QNode *parent)
+{
+    if (!parent)
+        return;
+
+    // If we have a QNode parent that has a scene (and hence change arbiter),
+    // copy these to this QNode. If valid, then also notify the backend
+    // in a deferred way when the object is fully constructed. This is delayed
+    // until the object is fully constructed as it involves calling a virtual
+    // function of QNode.
+    const auto parentPrivate = get(parent);
+    m_scene = parentPrivate->m_scene;
+    Q_Q(QNode);
+    if (m_scene) {
+        m_scene->addObservable(q); // Sets the m_changeArbiter to that of the scene
+
+        // Scehdule the backend notification
+        QMetaObject::invokeMethod(q, "_q_notifyCreationAndChildChanges", Qt::QueuedConnection);
+    }
+}
+
+/*!
+ * \internal
+ *
+ * Sends QNodeCreatedChange events to the aspects.
+ */
+void QNodePrivate::notifyCreationChange()
+{
+    Q_Q(QNode);
+    QNodeCreatedChangeGenerator generator(q);
+    const auto creationChanges = generator.creationChanges();
+    for (const auto &change : creationChanges)
+        notifyObservers(change);
+}
+
+/*!
+ * \internal
+ *
+ * Sends a QNodeCreatedChange event to the aspects and then also notifies the
+ * parent backend node of its new child. This is called in a deferred manner
+ * by the QNodePrivate::init() method to notify the backend of newly created
+ * nodes with a parent that is already part of the scene.
+ */
+void QNodePrivate::_q_notifyCreationAndChildChanges()
+{
+    Q_Q(QNode);
+
+    // Check that the parent hasn't been unset since this call was enqueued
+    auto parentNode = q->parentNode();
+    if (!parentNode)
+        return;
+
+    // Let the backend know we have been added to the scene
+    notifyCreationChange();
+
+    // Let the backend parent know that they have a new child
+    Q_ASSERT(parentNode);
+    QNodePrivate::get(parentNode)->_q_addChild(q);
+}
+
+/*!
+ * \internal
+ *
+ * Called by _q_setParentHelper() or _q_notifyCreationAndChildChanges()
+ * on the main thread.
+ */
 void QNodePrivate::_q_addChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
@@ -86,9 +151,8 @@ void QNodePrivate::_q_addChild(QNode *childNode)
     if (!m_scene)
         return;
 
-    // We need to send a QNodeAddedChange to the backend
-
-    // We notify the backend that we have a new child
+    // We need to send a QNodeAddedPropertyChange to the backend
+    // to notify the backend that we have a new child
     if (m_changeArbiter != nullptr) {
         const auto change = QNodeAddedPropertyChangePtr::create(m_id, childNode);
         change->setPropertyName("children");
@@ -102,7 +166,11 @@ void QNodePrivate::_q_addChild(QNode *childNode)
     visitor.traverse(childNode, this, &QNodePrivate::addEntityComponentToScene);
 }
 
-// Called by setParent or cleanup (main thread) (could be other thread if created on the backend in a job)
+/*!
+ * \internal
+ *
+ * Called by _q_setParentHelper on the main thread.
+ */
 void QNodePrivate::_q_removeChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
@@ -116,8 +184,26 @@ void QNodePrivate::_q_removeChild(QNode *childNode)
     }
 }
 
-// Note: should never be called from the ctor directly as the type may not be fully
-// created yet
+/*!
+ * \internal
+ *
+ * Reparents the public QNode to \a parent. If the new parent is nullptr then this
+ * QNode is no longer part of the scene and so we notify the backend of its removal
+ * from its parent's list of children, and then send a QNodeDestroyedChange to the
+ * aspects so that the corresponding backend node is destroyed.
+ *
+ * If \a parent is not null, then we must tell its new parent about this QNode now
+ * being a child of it on the backend. If this QNode did not have a parent upon
+ * entry to this function, then we must first send a QNodeCreatedChange to the backend
+ * prior to sending the QNodeAddedPropertyChange to its parent.
+ *
+ * Note: This function should never be called from the ctor directly as the type may
+ * not be fully created yet and creating creation changes involves calling a virtual
+ * function on QNode. The function _q_notifyCreationAndChildChanges() is used
+ * for sending initial notification when a parent is passed to the QNode ctor.
+ * That function does a subset of this function with the assumption that the new object
+ * had no parent before (must be true as it is newly constructed).
+ */
 void QNodePrivate::_q_setParentHelper(QNode *parent)
 {
     Q_Q(QNode);
@@ -150,7 +236,7 @@ void QNodePrivate::_q_setParentHelper(QNode *parent)
 
     if (newParentNode) {
         // If we had no parent but are about to set one,
-        // we need to send a QNodeCreatedChangeGenerator
+        // we need to send a QNodeCreatedChange
         if (!oldParentNode) {
             QNodePrivate *newParentPrivate = QNodePrivate::get(newParentNode);
 
@@ -160,12 +246,7 @@ void QNodePrivate::_q_setParentHelper(QNode *parent)
                 visitor.traverse(q, newParentNode->d_func(), &QNodePrivate::setSceneHelper);
             }
 
-            if (m_changeArbiter) {
-                QNodeCreatedChangeGenerator generator(q);
-                const auto creationChanges = generator.creationChanges();
-                for (const auto &change : creationChanges)
-                    notifyObservers(change);
-            }
+            notifyCreationChange();
         }
 
         // If we have a valid new parent, we let him know that we are its child
@@ -474,26 +555,18 @@ void QNodePrivate::nodePtrDeleter(QNode *q)
      \sa setParent()
 */
 QNode::QNode(QNode *parent)
-    : QObject(*new QNodePrivate)
+    : QObject(*new QNodePrivate, parent)
 {
-    // We need to add ourselves with the parent if it is valid
-    // This will notify the backend about the new child
-    if (parent/* && QNodePrivate::get(parent)->m_changeArbiter != nullptr*/) {
-        // This needs to be invoked  only after the QNode has been fully constructed
-        QMetaObject::invokeMethod(this, "_q_setParentHelper", Qt::QueuedConnection, Q_ARG(Qt3DCore::QNode*, parent));
-    }
+    Q_D(QNode);
+    d->init(parent);
 }
 
 /*! \internal */
 QNode::QNode(QNodePrivate &dd, QNode *parent)
-    : QObject(dd)
+    : QObject(dd, parent)
 {
-    // We need to add ourselves with the parent if it is valid
-    // This will notify the backend about the new child
-    if (parent/* && QNodePrivate::get(parent)->m_changeArbiter != nullptr*/) {
-        // This needs to be invoked  only after the QNode has been fully constructed
-        QMetaObject::invokeMethod(this, "_q_setParentHelper", Qt::QueuedConnection, Q_ARG(Qt3DCore::QNode*, parent));
-    }
+    Q_D(QNode);
+    d->init(parent);
 }
 
 QNode::~QNode()

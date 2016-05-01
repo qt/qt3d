@@ -103,6 +103,7 @@ private:
     // when dealing with QNode objects
     void setParent(QObject *) Q_DECL_EQ_DELETE;
 
+    Q_PRIVATE_SLOT(d_func(), void _q_notifyCreationAndChildChanges())
     Q_PRIVATE_SLOT(d_func(), void _q_addChild(Qt3DCore::QNode *))
     Q_PRIVATE_SLOT(d_func(), void _q_removeChild(Qt3DCore::QNode *))
     Q_PRIVATE_SLOT(d_func(), void _q_setParentHelper(Qt3DCore::QNode *))

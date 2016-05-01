@@ -433,6 +433,7 @@ void tst_Nodes::appendMultipleChildNodesToNodeScene()
 
     // GIVEN
     QScopedPointer<MyQNode> node(new MyQNode());
+
     // WHEN
     ObserverSpy spy(node.data());
     node->assignScene(&spy);
@@ -440,42 +441,75 @@ void tst_Nodes::appendMultipleChildNodesToNodeScene()
     QVERIFY(Qt3DCore::QNodePrivate::get(node.data())->scene() != nullptr);
 
     // WHEN
-    for (int i = 0; i < 10; i++) {
+    const auto childCount = 10;
+    for (int i = 0; i < childCount; i++) {
         // WHEN
         Qt3DCore::QNode *child = nullptr;
         if (i % 2 == 0) {
             child = new MyQNode(node.data());
-            QCoreApplication::processEvents();
-            QCOMPARE(spy.events.size(), 2 * (i + 1));
         } else {
             child = new MyQNode();
             child->setParent(node.data());
         }
-        // THEN
+
+        // THEN parent and scene should be set synchronously
         QVERIFY(child->parent() == node.data());
-        QVERIFY(Qt3DCore::QNodePrivate::get(child)->scene() != nullptr);
+        QVERIFY(Qt3DCore::QNodePrivate::get(child)->scene() == Qt3DCore::QNodePrivate::get(node.data())->m_scene);
     }
     // THEN
     QCOMPARE(node->children().count(), 10);
 
-    // THEN
+    // WHEN
+    QCoreApplication::processEvents();
+
+    // THEN backend is notified after the event loop spins. The recorded events are a little
+    // tricky to understand and differs for children with the parent being set at construction
+    // time (even children and ids) and the children being created without a parent and then
+    // explicitly calling setParent() after (odd children and ids).
+    //
+    // Even children:
+    //   child constructed
+    //   notifications to backend scheduled via the event loop as object is not yet fully constructed
+    //
+    // Odd children:
+    //   child constructed
+    //   parent set
+    //   notifications to backend sent immediately as object is fully constructed
+    //
+    // With this in mind, the recorded events should show:
+    //
+    // for each odd child:
+    //   odd child creation
+    //   child addition to parent of odd child
+    //
+    // followed by:
+    //
+    // for each even child:
+    //   even child construction
+    //   child addition to parent of even child
+    //
+    const auto expectedEventCount = 2 * childCount;
     QCOMPARE(spy.events.size(), 10 * 2);
-    int i = 0;
-    Q_FOREACH (const ObserverSpy::ChangeRecord &r, spy.events) {
-        QVERIFY(r.wasLocked());
-        Qt3DCore::QNode *child = node->childNodes().at(i / 2);
-        if (i % 2 == 0) {
-            const Qt3DCore::QNodeCreatedChangeBasePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeCreatedChangeBase>();
-            QCOMPARE(event->subjectId(), child->id());
-            QCOMPARE(event->metaObject(), child->metaObject());
-            QCOMPARE(event->isNodeEnabled(), child->isEnabled());
-        } else {
-            Qt3DCore::QNodeAddedPropertyChangePtr additionEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeAddedPropertyChange>();
-            QCOMPARE(additionEvent->subjectId(), node->id());
-            QCOMPARE(additionEvent->addedNodeId(), child->id());
-            QCOMPARE(additionEvent->metaObject(), child->metaObject());
-        }
-        ++i;
+
+    for (auto i = 0; i < expectedEventCount; i += 2) {
+        const auto creationRecord = spy.events.at(i);
+        QVERIFY(creationRecord.wasLocked());
+        const auto childIndex = i < 10
+                ? (i / 2) * 2 + 1
+                : (i - 10) / 2 * 2;
+        Qt3DCore::QNode *child = node->childNodes().at(childIndex);
+
+        const Qt3DCore::QNodeCreatedChangeBasePtr event = creationRecord.change().dynamicCast<Qt3DCore::QNodeCreatedChangeBase>();
+        QVERIFY(event != nullptr);
+        QCOMPARE(event->subjectId(), child->id());
+        QCOMPARE(event->metaObject(), child->metaObject());
+        QCOMPARE(event->isNodeEnabled(), child->isEnabled());
+
+        const auto additionRecord = spy.events.at(i + 1);
+        Qt3DCore::QNodeAddedPropertyChangePtr additionEvent = additionRecord.change().dynamicCast<Qt3DCore::QNodeAddedPropertyChange>();
+        QCOMPARE(additionEvent->subjectId(), node->id());
+        QCOMPARE(additionEvent->addedNodeId(), child->id());
+        QCOMPARE(additionEvent->metaObject(), child->metaObject());
     }
 }
 
