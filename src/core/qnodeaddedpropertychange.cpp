@@ -68,7 +68,7 @@ QNodeAddedPropertyChange::QNodeAddedPropertyChange(QNodeId subjectId, QNode *nod
     : QNodePropertyChangeBase(*new QNodeAddedPropertyChangePrivate, NodeAdded, Node, subjectId, priority)
 {
     Q_D(QNodeAddedPropertyChange);
-    d->m_addedNodeIdTypePair = QNodeIdTypePair(node->id(), QNodePrivate::get(node)->m_typeInfo);
+    d->m_addedNodeIdTypePair = QNodeIdTypePair(node->id(), node->metaObject());
 }
 
 /*!
