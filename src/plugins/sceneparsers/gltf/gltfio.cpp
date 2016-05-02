@@ -233,18 +233,19 @@ bool GLTFIO::isFileTypeSupported(const QUrl &source) const
 Qt3DCore::QEntity* GLTFIO::node(const QString &id)
 {
     QJsonObject nodes = m_json.object().value(KEY_NODES).toObject();
-    if (!nodes.contains(id)) {
+    const auto jsonVal = nodes.value(id);
+    if (Q_UNLIKELY(jsonVal.isUndefined())) {
         qCWarning(GLTFIOLog) << "unknown node" << id << "in GLTF file" << m_basePath;
         return NULL;
     }
 
-    QJsonObject jsonObj = nodes.value(id).toObject();
+    const QJsonObject jsonObj = jsonVal.toObject();
     QEntity* result = nullptr;
 
     // Qt3D has a limitation that a QEntity can only have 1 mesh and 1 material component
     // So if the node has only 1 mesh, we only create 1 QEntity
     // Otherwise if there are n meshes, there is 1 QEntity, with n children for each mesh/material combo
-    if (jsonObj.contains(KEY_MESHES)) {
+    {
         QVector<QEntity *> entities;
 
         Q_FOREACH (QJsonValue mesh, jsonObj.value(KEY_MESHES).toArray()) {
@@ -264,9 +265,12 @@ Qt3DCore::QEntity* GLTFIO::node(const QString &id)
 
         }
 
-        if (entities.count() == 1) {
+        switch (entities.size()) {
+        case 0:
+            break;
+        case 1:
             result = entities.first();
-        } else {
+        default:
             result = new QEntity;
             Q_FOREACH (QEntity *entity, entities) {
                 entity->setParent(result);
@@ -278,7 +282,7 @@ Qt3DCore::QEntity* GLTFIO::node(const QString &id)
     if (result == nullptr)
         result = new QEntity;
 
-    if ( jsonObj.contains(KEY_CHILDREN) ) {
+    {
         Q_FOREACH (QJsonValue c, jsonObj.value(KEY_CHILDREN).toArray()) {
             QEntity* child = node(c.toString());
             if (!child)
@@ -292,10 +296,11 @@ Qt3DCore::QEntity* GLTFIO::node(const QString &id)
 
     // Node Transforms
     Qt3DCore::QTransform *trans = nullptr;
-    if ( jsonObj.contains(KEY_MATRIX) ) {
+    const auto matrix = jsonObj.value(KEY_MATRIX);
+    if (!matrix.isUndefined()) {
         QMatrix4x4 m(Qt::Uninitialized);
 
-        QJsonArray matrixValues = jsonObj.value(KEY_MATRIX).toArray();
+        QJsonArray matrixValues = matrix.toArray();
         for (int i=0; i<16; ++i) {
             double v = matrixValues.at( i ).toDouble();
             m(i % 4, i >> 2) = v;
@@ -308,11 +313,12 @@ Qt3DCore::QEntity* GLTFIO::node(const QString &id)
     }
 
     // Rotation quaternion
-    if (jsonObj.contains(KEY_ROTATION)) {
-        if (trans == nullptr)
+    const auto rotation = jsonObj.value(KEY_ROTATION);
+    if (!rotation.isUndefined()) {
+        if (!trans)
             trans = new Qt3DCore::QTransform;
 
-        QJsonArray quaternionValues = jsonObj.value(KEY_ROTATION).toArray();
+        const QJsonArray quaternionValues = rotation.toArray();
         QQuaternion quaternion(quaternionValues[0].toDouble(),
                                quaternionValues[1].toDouble(),
                                quaternionValues[2].toDouble(),
@@ -321,22 +327,24 @@ Qt3DCore::QEntity* GLTFIO::node(const QString &id)
     }
 
     // Translation
-    if (jsonObj.contains(KEY_TRANSLATION)) {
-        if (trans == nullptr)
+    const auto translation = jsonObj.value(KEY_TRANSLATION);
+    if (!translation.isUndefined()) {
+        if (!trans)
             trans = new Qt3DCore::QTransform;
 
-        QJsonArray translationValues = jsonObj.value(KEY_TRANSLATION).toArray();
+        const QJsonArray translationValues = translation.toArray();
         trans->setTranslation(QVector3D(translationValues[0].toDouble(),
                                         translationValues[1].toDouble(),
                                         translationValues[2].toDouble()));
     }
 
     // Scale
-    if (jsonObj.contains(KEY_SCALE)) {
-        if (trans == nullptr)
+    const auto scale = jsonObj.value(KEY_SCALE);
+    if (!scale.isUndefined()) {
+        if (!trans)
             trans = new Qt3DCore::QTransform;
 
-        QJsonArray scaleValues = jsonObj.value(KEY_SCALE).toArray();
+        const QJsonArray scaleValues = scale.toArray();
         trans->setScale3D(QVector3D(scaleValues[0].toDouble(),
                                     scaleValues[1].toDouble(),
                                     scaleValues[2].toDouble()));
@@ -346,10 +354,11 @@ Qt3DCore::QEntity* GLTFIO::node(const QString &id)
     if (trans != nullptr)
         result->addComponent(trans);
 
-    if ( jsonObj.contains(KEY_CAMERA) ) {
-        QCameraLens* cam = camera( jsonObj.value(KEY_CAMERA).toString() );
+    const auto cameraVal = jsonObj.value(KEY_CAMERA);
+    if (!cameraVal.isUndefined()) {
+        QCameraLens* cam = camera(cameraVal.toString());
         if (!cam) {
-            qCWarning(GLTFIOLog) << "failed to build camera:" << jsonObj.value(KEY_CAMERA)
+            qCWarning(GLTFIOLog) << "failed to build camera:" << cameraVal
                                      << "on node" << id;
         } else {
             result->addComponent(cam);
@@ -364,13 +373,14 @@ Qt3DCore::QEntity* GLTFIO::scene(const QString &id)
     parse();
 
     QJsonObject scenes = m_json.object().value(KEY_SCENES).toObject();
-    if (!scenes.contains(id)) {
+    const auto sceneVal = scenes.value(id);
+    if (Q_UNLIKELY(sceneVal.isUndefined())) {
         if (!id.isNull())
             qCWarning(GLTFIOLog) << "GLTF: no such scene" << id << "in file" << m_basePath;
         return defaultScene();
     }
 
-    QJsonObject sceneObj = scenes.value(id).toObject();
+    QJsonObject sceneObj = sceneVal.toObject();
     QEntity* sceneEntity = new QEntity;
     Q_FOREACH (QJsonValue nnv, sceneObj.value(KEY_NODES).toArray()) {
         QString nodeName = nnv.toString();
@@ -428,10 +438,12 @@ GLTFIO::AccessorData::AccessorData(const QJsonObject &json)
     count = json.value(KEY_COUNT).toInt();
     dataSize = accessorDataSizeFromJson(json.value(KEY_TYPE).toString());
 
-    if ( json.contains(KEY_BYTE_OFFSET))
-        offset = json.value(KEY_BYTE_OFFSET).toInt();
-    if ( json.contains(KEY_BYTE_STRIDE))
-        stride = json.value(KEY_BYTE_STRIDE).toInt();
+    const auto byteOffset = json.value(KEY_BYTE_OFFSET);
+    if (!byteOffset.isUndefined())
+        offset = byteOffset.toInt();
+    const auto byteStride = json.value(KEY_BYTE_STRIDE);
+    if (!byteStride.isUndefined())
+        stride = byteStride.toInt();
 }
 
 bool GLTFIO::isGLTFPath(const QString& path)
@@ -448,8 +460,9 @@ bool GLTFIO::isGLTFPath(const QString& path)
 
 void GLTFIO::renameFromJson(const QJsonObject &json, QObject * const object)
 {
-    if ( json.contains(KEY_NAME) )
-        object->setObjectName( json.value(KEY_NAME).toString() );
+    const auto name = json.value(KEY_NAME);
+    if (!name.isUndefined())
+        object->setObjectName(name.toString());
 }
 
 QString GLTFIO::standardUniformNamefromSemantic(const QString &semantic)
@@ -705,21 +718,20 @@ QMaterial* GLTFIO::material(const QString &id)
         return m_materialCache[id];
 
     QJsonObject mats = m_json.object().value(KEY_MATERIALS).toObject();
-    if (!mats.contains(id)) {
+    const auto jsonVal = mats.value(id);
+    if (Q_UNLIKELY(jsonVal.isUndefined())) {
         qCWarning(GLTFIOLog) << "unknown material" << id << "in GLTF file" << m_basePath;
         return NULL;
     }
 
-    QJsonObject jsonObj = mats.value(id).toObject();
+    const QJsonObject jsonObj = jsonVal.toObject();
 
     QMaterial *mat = nullptr;
 
     // Prefer common materials over custom shaders.
-    if (jsonObj.contains(KEY_EXTENSIONS)) {
-        QJsonObject extensions = jsonObj.value(KEY_EXTENSIONS).toObject();
-        if (extensions.contains(KEY_COMMON_MAT))
-            mat = commonMaterial(extensions.value(KEY_COMMON_MAT).toObject());
-    }
+    const auto extensionMat = jsonObj.value(KEY_EXTENSIONS).toObject().value(KEY_COMMON_MAT);
+    if (!extensionMat.isUndefined())
+        mat = commonMaterial(extensionMat.toObject());
 
     if (!mat)
         mat = materialWithCustomShader(id, jsonObj);
@@ -730,22 +742,23 @@ QMaterial* GLTFIO::material(const QString &id)
 
 QCameraLens* GLTFIO::camera(const QString &id) const
 {
-    QJsonObject cams = m_json.object().value(KEY_CAMERAS).toObject();
-    if (!cams.contains(id)) {
+    const auto jsonVal = m_json.object().value(KEY_CAMERAS).toObject().value(id);
+    if (Q_UNLIKELY(jsonVal.isUndefined())) {
         qCWarning(GLTFIOLog) << "unknown camera" << id << "in GLTF file" << m_basePath;
         return nullptr;
     }
 
-    QJsonObject jsonObj = cams.value(id).toObject();
+    QJsonObject jsonObj = jsonVal.toObject();
     QString camTy = jsonObj.value(KEY_TYPE).toString();
 
     if (camTy == QStringLiteral("perspective")) {
-        if (!jsonObj.contains(KEY_PERSPECTIVE)) {
+        const auto pVal = jsonObj.value(KEY_PERSPECTIVE);
+        if (Q_UNLIKELY(pVal.isUndefined())) {
             qCWarning(GLTFIOLog) << "camera:" << id << "missing 'perspective' object";
             return nullptr;
         }
 
-        QJsonObject pObj = jsonObj.value(KEY_PERSPECTIVE).toObject();
+        const QJsonObject pObj = pVal.toObject();
         double aspectRatio = pObj.value(KEY_ASPECT_RATIO).toDouble();
         double yfov = pObj.value(KEY_YFOV).toDouble();
         double frustumNear = pObj.value(KEY_ZNEAR).toDouble();
@@ -884,8 +897,9 @@ void GLTFIO::processJSONBufferView(const QString &id, const QJsonObject& json)
     }
 
     quint64 offset = 0;
-    if (json.contains(KEY_BYTE_OFFSET)) {
-        offset = json.value(KEY_BYTE_OFFSET).toInt();
+    const auto byteOffset = json.value(KEY_BYTE_OFFSET);
+    if (!byteOffset.isUndefined()) {
+        offset = byteOffset.toInt();
         qCDebug(GLTFIOLog) << "bv:" << id << "has offset:" << offset;
     }
 
@@ -1109,8 +1123,9 @@ void GLTFIO::processJSONMesh(const QString &id, const QJsonObject &json)
             meshGeometry->addAttribute(attribute);
         }
 
-        if ( primitiveObject.contains(KEY_INDICES)) {
-            QString k = primitiveObject.value(KEY_INDICES).toString();
+        const auto indices = primitiveObject.value(KEY_INDICES);
+        if (!indices.isUndefined()) {
+            QString k = indices.toString();
             if (!m_accessorDict.contains(k)) {
                 qCWarning(GLTFIOLog) << "unknown index accessor:" << k << "on mesh" << id;
             } else {
@@ -1178,13 +1193,13 @@ void GLTFIO::processJSONTexture(const QString &id, const QJsonObject &jsonObject
     texImage->setSource(QUrl::fromLocalFile(m_imagePaths[source]));
     tex->addTextureImage(texImage);
 
-    QJsonObject samplersDict(m_json.object().value(KEY_SAMPLERS).toObject());
-    if (!samplersDict.contains(samplerId)) {
+    const auto samplersDictValue = m_json.object().value(KEY_SAMPLERS).toObject().value(samplerId);
+    if (Q_UNLIKELY(samplersDictValue.isUndefined())) {
         qCWarning(GLTFIOLog) << "texture" << id << "references unknown sampler" << samplerId;
         return;
     }
 
-    QJsonObject sampler = samplersDict.value(samplerId).toObject();
+    QJsonObject sampler = samplersDictValue.toObject();
 
     tex->setWrapMode(QTextureWrapMode(static_cast<QTextureWrapMode::WrapMode>(sampler.value(KEY_WRAP_S).toInt())));
     tex->setMinificationFilter(static_cast<QAbstractTexture::Filter>(sampler.value(KEY_MIN_FILTER).toInt()));
