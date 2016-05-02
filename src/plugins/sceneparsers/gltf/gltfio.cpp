@@ -597,8 +597,9 @@ QMaterial *GLTFIO::materialWithCustomShader(const QString &id, const QJsonObject
 
     renameFromJson(jsonObj, mat);
 
-    QJsonObject values = jsonObj.value(KEY_VALUES).toObject();
-    Q_FOREACH (QString vName, values.keys()) {
+    const QJsonObject values = jsonObj.value(KEY_VALUES).toObject();
+    for (auto it = values.begin(), end = values.end(); it != end; ++it) {
+        const QString vName = it.key();
         QParameter *param = parameterFromTechnique(technique, vName);
 
         if (param == nullptr && coreTechnique != nullptr) {
@@ -616,7 +617,7 @@ QMaterial *GLTFIO::materialWithCustomShader(const QString &id, const QJsonObject
         }
 
         ParameterData paramData = m_parameterDataDict.value(param);
-        QVariant var = parameterValueFromJSON(paramData.type, values.value(vName));
+        QVariant var = parameterValueFromJSON(paramData.type, it.value());
 
         mat->addParameter(new QParameter(param->name(), var));
     } // of material technique-instance values iteration
@@ -637,9 +638,10 @@ QMaterial *GLTFIO::commonMaterial(const QJsonObject &jsonObj)
     bool hasSpecularMap = false;
     bool hasNormalMap = false;
 
-    QJsonObject values = jsonObj.value(KEY_VALUES).toObject();
-    Q_FOREACH (const QString &vName, values.keys()) {
-        const QJsonValue val = values.value(vName);
+    const QJsonObject values = jsonObj.value(KEY_VALUES).toObject();
+    for (auto it = values.begin(), end = values.end(); it != end; ++it) {
+        const QString vName = it.key();
+        const QJsonValue val = it.value();
         QVariant var;
         QString propertyName = vName;
         if (vName == QLatin1String("ambient") && val.isArray()) {
@@ -775,52 +777,43 @@ void GLTFIO::parse()
     if (m_parseDone)
         return;
 
-    QJsonObject buffers = m_json.object().value(KEY_BUFFERS).toObject();
-    Q_FOREACH (QString nm, buffers.keys()) {
-        processJSONBuffer( nm, buffers.value(nm).toObject() );
-    }
+    const QJsonObject buffers = m_json.object().value(KEY_BUFFERS).toObject();
+    for (auto it = buffers.begin(), end = buffers.end(); it != end; ++it)
+        processJSONBuffer(it.key(), it.value().toObject());
 
-    QJsonObject views = m_json.object().value(KEY_BUFFER_VIEWS).toObject();
+    const QJsonObject views = m_json.object().value(KEY_BUFFER_VIEWS).toObject();
     loadBufferData();
-    Q_FOREACH (QString nm, views.keys()) {
-        processJSONBufferView( nm, views.value(nm).toObject() );
-    }
+    for (auto it = views.begin(), end = views.end(); it != end; ++it)
+        processJSONBufferView(it.key(), it.value().toObject());
     unloadBufferData();
 
-    QJsonObject shaders = m_json.object().value(KEY_SHADERS).toObject();
-    Q_FOREACH (QString nm, shaders.keys()) {
-        processJSONShader( nm, shaders.value(nm).toObject() );
-    }
+    const QJsonObject shaders = m_json.object().value(KEY_SHADERS).toObject();
+    for (auto it = shaders.begin(), end = shaders.end(); it != end; ++it)
+        processJSONShader(it.key(), it.value().toObject());
 
-    QJsonObject programs = m_json.object().value(KEY_PROGRAMS).toObject();
-    Q_FOREACH (QString nm, programs.keys()) {
-        processJSONProgram( nm, programs.value(nm).toObject() );
-    }
+    const QJsonObject programs = m_json.object().value(KEY_PROGRAMS).toObject();
+    for (auto it = programs.begin(), end = programs.end(); it != end; ++it)
+        processJSONProgram(it.key(), it.value().toObject());
 
-    QJsonObject techniques = m_json.object().value(KEY_TECHNIQUES).toObject();
-    Q_FOREACH (QString nm, techniques.keys()) {
-        processJSONTechnique( nm, techniques.value(nm).toObject() );
-    }
+    const QJsonObject techniques = m_json.object().value(KEY_TECHNIQUES).toObject();
+    for (auto it = techniques.begin(), end = techniques.end(); it != end; ++it)
+        processJSONTechnique(it.key(), it.value().toObject());
 
-    QJsonObject attrs = m_json.object().value(KEY_ACCESSORS).toObject();
-    Q_FOREACH (QString nm, attrs.keys()) {
-        processJSONAccessor( nm, attrs.value(nm).toObject() );
-    }
+    const QJsonObject attrs = m_json.object().value(KEY_ACCESSORS).toObject();
+    for (auto it = attrs.begin(), end = attrs.end(); it != end; ++it)
+        processJSONAccessor(it.key(), it.value().toObject());
 
-    QJsonObject meshes = m_json.object().value(KEY_MESHES).toObject();
-    Q_FOREACH (QString nm, meshes.keys()) {
-        processJSONMesh( nm, meshes.value(nm).toObject() );
-    }
+    const QJsonObject meshes = m_json.object().value(KEY_MESHES).toObject();
+    for (auto it = meshes.begin(), end = meshes.end(); it != end; ++it)
+        processJSONMesh(it.key(), it.value().toObject());
 
-    QJsonObject images = m_json.object().value(KEY_IMAGES).toObject();
-    Q_FOREACH (QString nm, images.keys()) {
-        processJSONImage( nm, images.value(nm).toObject() );
-    }
+    const QJsonObject images = m_json.object().value(KEY_IMAGES).toObject();
+    for (auto it = images.begin(), end = images.end(); it != end; ++it)
+        processJSONImage(it.key(), it.value().toObject());
 
-    QJsonObject textures = m_json.object().value(KEY_TEXTURES).toObject();
-    Q_FOREACH (QString nm, textures.keys()) {
-        processJSONTexture(nm, textures.value(nm).toObject() );
-    }
+    const QJsonObject textures = m_json.object().value(KEY_TEXTURES).toObject();
+    for (auto it = textures.begin(), end = textures.end(); it != end; ++it)
+        processJSONTexture(it.key(), it.value().toObject());
 
     m_defaultScene = m_json.object().value(KEY_SCENE).toString();
     m_parseDone = true;
@@ -948,9 +941,10 @@ void GLTFIO::processJSONTechnique(const QString &id, const QJsonObject &jsonObje
 
     // Parameters
     QHash<QString, QParameter*> paramDict;
-    QJsonObject params = jsonObject.value(KEY_PARAMETERS).toObject();
-    Q_FOREACH (QString pname, params.keys()) {
-        QJsonObject po = params.value(pname).toObject();
+    const QJsonObject params = jsonObject.value(KEY_PARAMETERS).toObject();
+    for (auto it = params.begin(), end = params.end(); it != end; ++it) {
+        const QString pname = it.key();
+        const QJsonObject po = it.value().toObject();
 
         //QString semantic = po.value(KEY_SEMANTIC).toString();
         QParameter *p = new QParameter(t);
@@ -980,9 +974,9 @@ void GLTFIO::processJSONTechnique(const QString &id, const QJsonObject &jsonObje
     pass->setShaderProgram(m_programs[programName]);
 
     // Attributes
-    QJsonObject attrs = jsonObject.value(KEY_ATTRIBUTES).toObject();
-    Q_FOREACH ( QString shaderAttributeName, attrs.keys() ) {
-        QString pname = attrs.value(shaderAttributeName).toString();
+    const QJsonObject attrs = jsonObject.value(KEY_ATTRIBUTES).toObject();
+    for (auto it = attrs.begin(), end = attrs.end(); it != end; ++it) {
+        QString pname = it.value().toString();
         QParameter *parameter = paramDict.value(pname, nullptr);
         QString attributeName = pname;
         if (parameter == nullptr) {
@@ -1002,9 +996,9 @@ void GLTFIO::processJSONTechnique(const QString &id, const QJsonObject &jsonObje
     } // of program-instance attributes
 
     // Uniforms
-    QJsonObject uniforms = jsonObject.value(KEY_UNIFORMS).toObject();
-    Q_FOREACH (QString shaderUniformName, uniforms.keys()) {
-        QString pname = uniforms.value(shaderUniformName).toString();
+    const QJsonObject uniforms = jsonObject.value(KEY_UNIFORMS).toObject();
+    for (auto it = uniforms.begin(), end = uniforms.end(); it != end; ++it) {
+        const QString pname = it.value().toString();
         QParameter *parameter = paramDict.value(pname, nullptr);
         if (parameter == nullptr) {
             qCWarning(GLTFIOLog) << Q_FUNC_INFO << "uniform " << pname
@@ -1031,10 +1025,10 @@ void GLTFIO::processJSONTechnique(const QString &id, const QJsonObject &jsonObje
     }
 
     //Process the list of state functions
-    QJsonObject functions = states.value(KEY_FUNCTIONS).toObject();
-    Q_FOREACH (QString functionName, functions.keys()) {
+    const QJsonObject functions = states.value(KEY_FUNCTIONS).toObject();
+    for (auto it = functions.begin(), end = functions.end(); it != end; ++it) {
         int enableStateType = 0;
-        QRenderState *renderState = buildState(functionName, functions.value(functionName), enableStateType);
+        QRenderState *renderState = buildState(it.key(), it.value(), enableStateType);
         if (renderState != nullptr) {
             //Remove the need to set a default state values for enableStateType
             enableStates.removeOne(enableStateType);
@@ -1083,14 +1077,15 @@ void GLTFIO::processJSONMesh(const QString &id, const QJsonObject &json)
         //Save Material for mesh
         m_meshMaterialDict[geometryRenderer] = material;
 
-        QJsonObject attrs = primitiveObject.value(KEY_ATTRIBUTES).toObject();
-        Q_FOREACH (QString attrName, attrs.keys()) {
-            QString k = attrs.value(attrName).toString();
+        const QJsonObject attrs = primitiveObject.value(KEY_ATTRIBUTES).toObject();
+        for (auto it = attrs.begin(), end = attrs.end(); it != end; ++it) {
+            QString k = it.value().toString();
             if (!m_accessorDict.contains(k)) {
                 qCWarning(GLTFIOLog) << "unknown attribute accessor:" << k << "on mesh" << id;
                 continue;
             }
 
+            const QString attrName = it.key();
             QString attributeName = standardAttributeNameFromSemantic(attrName);
             if (attributeName.isEmpty())
                 attributeName = attrName;
