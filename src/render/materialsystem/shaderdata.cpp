@@ -180,11 +180,11 @@ bool ShaderData::updateViewTransform(const QMatrix4x4 &viewMatrix)
     // We check the matrices and decide if the transform has changed since the previous call to needsUpdate
     if (m_viewMatrix != viewMatrix) {
         m_viewMatrix = viewMatrix;
-        const QHash<QString, QShaderData::TransformType>::const_iterator transformedEnd = m_transformedProperties.end();
-        QHash<QString, QShaderData::TransformType>::const_iterator transformedIt = m_transformedProperties.begin();
+        const QHash<QString, TransformType>::const_iterator transformedEnd = m_transformedProperties.end();
+        QHash<QString, TransformType>::const_iterator transformedIt = m_transformedProperties.begin();
 
         while (transformedIt != transformedEnd) {
-            if (transformedIt.value() == QShaderData::ModelToEye) {
+            if (transformedIt.value() == ModelToEye) {
                 m_updatedProperties.insert(transformedIt.key(), m_viewMatrix * m_worldMatrix * m_originalProperties.value(transformedIt.key()).value<QVector3D>());
                 m_properties.insert(transformedIt.key(), m_viewMatrix * m_worldMatrix * m_originalProperties.value(transformedIt.key()).value<QVector3D>());
             }
@@ -235,11 +235,11 @@ bool ShaderData::updateWorldTransform(const QMatrix4x4 &worldMatrix)
     if (m_worldMatrix != worldMatrix) {
         m_worldMatrix = worldMatrix;
 
-        const QHash<QString, QShaderData::TransformType>::const_iterator transformedEnd = m_transformedProperties.end();
-        QHash<QString, QShaderData::TransformType>::const_iterator transformedIt = m_transformedProperties.begin();
+        const QHash<QString, TransformType>::const_iterator transformedEnd = m_transformedProperties.end();
+        QHash<QString, TransformType>::const_iterator transformedIt = m_transformedProperties.begin();
 
         while (transformedIt != transformedEnd) {
-            if (transformedIt.value() == QShaderData::ModelToEye) {
+            if (transformedIt.value() == ModelToEye) {
                 m_updatedProperties.insert(transformedIt.key(), m_viewMatrix * m_worldMatrix * m_originalProperties.value(transformedIt.key()).value<QVector3D>());
                 m_properties.insert(transformedIt.key(), m_viewMatrix * m_worldMatrix * m_originalProperties.value(transformedIt.key()).value<QVector3D>());
             } else {
@@ -312,7 +312,7 @@ void ShaderData::readPeerProperties(QShaderData *shaderData)
             QVariant value = m_properties.value(it.key() + QStringLiteral("Transformed"));
             // if that's the case, we apply a space transformation to the property
             if (value.isValid() && value.type() == QVariant::Int)
-                m_transformedProperties.insert(it.key(), static_cast<QShaderData::TransformType>(value.toInt()));
+                m_transformedProperties.insert(it.key(), static_cast<TransformType>(value.toInt()));
         }
         ++it;
     }
@@ -333,7 +333,7 @@ void ShaderData::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
                 // matrices
                 m_originalProperties.insert(propertyName, val);
                 if (m_transformedProperties.contains(propertyName)) {
-                    if (m_transformedProperties[propertyName] == QShaderData::ModelToEye)
+                    if (m_transformedProperties[propertyName] == ModelToEye)
                         val = m_viewMatrix * m_worldMatrix * val.value<QVector3D>();
                     else
                         val = m_worldMatrix * val.value<QVector3D>();

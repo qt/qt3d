@@ -70,6 +70,11 @@ class NodeManagers;
 class Q_AUTOTEST_EXPORT ShaderData : public BackendNode
 {
 public:
+    enum TransformType {
+        ModelToEye = 0,
+        ModelToWorld
+    };
+
     ShaderData();
     ~ShaderData();
 
@@ -103,7 +108,7 @@ protected:
     QHash<QString, QVariant> m_updatedProperties;
     PropertyReaderInterfacePtr m_propertyReader;
     QHash<QString, QVariant> m_nestedShaderDataProperties;
-    QHash<QString, QShaderData::TransformType> m_transformedProperties;
+    QHash<QString, TransformType> m_transformedProperties;
     QMutex m_mutex;
     static QVector<Qt3DCore::QNodeId> m_updatedShaderData;
     QMatrix4x4 m_worldMatrix;

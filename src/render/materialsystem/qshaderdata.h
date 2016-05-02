@@ -65,12 +65,6 @@ class QT3DRENDERSHARED_EXPORT QShaderData : public Qt3DCore::QComponent
 public:
     explicit QShaderData(Qt3DCore::QNode *parent = nullptr);
 
-    enum TransformType {
-        ModelToEye = 0,
-        ModelToWorld
-    };
-    Q_ENUM(TransformType)
-
     PropertyReaderInterfacePtr propertyReader() const;
 
 protected:
