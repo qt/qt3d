@@ -47,10 +47,27 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QBackendNodePropertyChangePrivate;
-class QBackendNode;
+class QBackendNodePropertyChangeBasePrivate;
 
-class QT3DCORESHARED_EXPORT QBackendNodePropertyChange : public QNodePropertyChangeBase
+class QT3DCORESHARED_EXPORT QBackendNodePropertyChangeBase : public QNodePropertyChangeBase
+{
+public:
+    QBackendNodePropertyChangeBase(QNodeId subjectId, Priority priority = Standard);
+    virtual ~QBackendNodePropertyChangeBase();
+
+protected:
+    Q_DECLARE_PRIVATE(QBackendNodePropertyChangeBase)
+    QBackendNodePropertyChangeBase(QBackendNodePropertyChangeBasePrivate &dd);
+    QBackendNodePropertyChangeBase(QBackendNodePropertyChangeBasePrivate &dd,
+                                   QNodeId subjectId, Priority priority = Standard);
+};
+
+typedef QSharedPointer<QBackendNodePropertyChangeBase> QBackendNodePropertyChangeBasePtr;
+
+
+class QBackendNodePropertyChangePrivate;
+
+class QT3DCORESHARED_EXPORT QBackendNodePropertyChange : public QBackendNodePropertyChangeBase
 {
 public:
     QBackendNodePropertyChange(QNodeId subjectId, Priority priority = Standard);

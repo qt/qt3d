@@ -60,7 +60,17 @@ namespace Qt3DCore {
 
 class QBackendNodePropertyChange;
 
-class QBackendNodePropertyChangePrivate : public QNodePropertyChangeBasePrivate
+class QBackendNodePropertyChangeBasePrivate : public QNodePropertyChangeBasePrivate
+{
+public:
+    QBackendNodePropertyChangeBasePrivate();
+    virtual ~QBackendNodePropertyChangeBasePrivate();
+
+    Q_DECLARE_PUBLIC(QBackendNodePropertyChangeBase)
+};
+
+
+class QBackendNodePropertyChangePrivate : public QBackendNodePropertyChangeBasePrivate
 {
 public:
     QBackendNodePropertyChangePrivate();

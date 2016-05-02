@@ -46,16 +46,57 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+QBackendNodePropertyChangeBasePrivate::QBackendNodePropertyChangeBasePrivate()
+    : QNodePropertyChangeBasePrivate()
+{
+}
+
+QBackendNodePropertyChangeBasePrivate::~QBackendNodePropertyChangeBasePrivate()
+{
+}
+
 /*!
- * \class Qt3DCore::QBackendNodePropertyChange
+ * \class Qt3DCore::QBackendNodePropertyChangeBase
  * \inherits Qt3DCore::QNodePropertyChangeBase
  * \inmodule Qt3DCore
  *
  * TODO
  */
+QBackendNodePropertyChangeBase::QBackendNodePropertyChangeBase(QNodeId subjectId, Priority priority)
+    : QNodePropertyChangeBase(*new QBackendNodePropertyChangeBasePrivate, NodeUpdated, Observable, subjectId, priority)
+{
+}
 
+/*!
+ * \internal
+ */
+QBackendNodePropertyChangeBase::QBackendNodePropertyChangeBase(QBackendNodePropertyChangeBasePrivate &dd)
+    : QNodePropertyChangeBase(dd)
+{
+}
+
+/*!
+ * \internal
+ */
+QBackendNodePropertyChangeBase::QBackendNodePropertyChangeBase(QBackendNodePropertyChangeBasePrivate &dd,
+                                                               QNodeId subjectId, Priority priority)
+    : QNodePropertyChangeBase(dd, NodeUpdated, Observable, subjectId, priority)
+{
+}
+
+QBackendNodePropertyChangeBase::~QBackendNodePropertyChangeBase()
+{
+}
+
+/*!
+ * \class Qt3DCore::QBackendNodePropertyChange
+ * \inherits Qt3DCore::QBackendNodePropertyChangeBase
+ * \inmodule Qt3DCore
+ *
+ * TODO
+ */
 QBackendNodePropertyChangePrivate::QBackendNodePropertyChangePrivate()
-    : QNodePropertyChangeBasePrivate()
+    : QBackendNodePropertyChangeBasePrivate()
 {
 }
 
@@ -64,7 +105,24 @@ QBackendNodePropertyChangePrivate::~QBackendNodePropertyChangePrivate()
 }
 
 QBackendNodePropertyChange::QBackendNodePropertyChange(QNodeId subjectId, QSceneChange::Priority priority)
-    : QNodePropertyChangeBase(*new QBackendNodePropertyChangePrivate, NodeUpdated, Observable, subjectId, priority)
+    : QBackendNodePropertyChangeBase(*new QBackendNodePropertyChangePrivate, subjectId, priority)
+{
+}
+
+/*!
+ * \internal
+ */
+QBackendNodePropertyChange::QBackendNodePropertyChange(QBackendNodePropertyChangePrivate &dd)
+    : QBackendNodePropertyChangeBase(dd)
+{
+}
+
+/*!
+ * \internal
+ */
+QBackendNodePropertyChange::QBackendNodePropertyChange(QBackendNodePropertyChangePrivate &dd,
+                                                       QNodeId subjectId, QSceneChange::Priority priority)
+    : QBackendNodePropertyChangeBase(dd, subjectId, priority)
 {
 }
 
@@ -115,23 +173,6 @@ QNodeId QBackendNodePropertyChange::targetNode() const
  *
  * A shared pointer for QBackendNodePropertyChange.
  */
-
-/*!
- * \internal
- */
-QBackendNodePropertyChange::QBackendNodePropertyChange(QBackendNodePropertyChangePrivate &dd)
-    : QNodePropertyChangeBase(dd)
-{
-}
-
-/*!
- * \internal
- */
-QBackendNodePropertyChange::QBackendNodePropertyChange(QBackendNodePropertyChangePrivate &dd,
-                                                         QNodeId subjectId, QSceneChange::Priority priority)
-    : QNodePropertyChangeBase(dd, NodeUpdated, Observable, subjectId, priority)
-{
-}
 
 } // Qt3D
 
