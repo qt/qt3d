@@ -819,37 +819,32 @@ void GLTFIO::parse()
     m_parseDone = true;
 }
 
+namespace {
+template <typename C>
+void delete_if_without_parent(const C &c)
+{
+    for (const auto *e : c) {
+        if (!e->parent())
+            delete e;
+    }
+}
+} // unnamed namespace
+
 void GLTFIO::cleanup()
 {
     m_meshDict.clear();
     m_meshMaterialDict.clear();
     m_accessorDict.clear();
-    //Check for Materials with no parent
-    Q_FOREACH (QMaterial *material, m_materialCache.values()) {
-        if (material->parent() == nullptr)
-            delete material;
-    }
+    delete_if_without_parent(m_materialCache);
     m_materialCache.clear();
     m_bufferDatas.clear();
     m_buffers.clear();
     m_shaderPaths.clear();
-    //Check for ShaderPrograms with no parent
-    Q_FOREACH (QShaderProgram *program, m_programs.values()) {
-        if (program->parent() == nullptr)
-            delete program;
-    }
+    delete_if_without_parent(m_programs);
     m_programs.clear();
-    //Check for Techniques with no parent
-    Q_FOREACH (QTechnique *technique, m_techniques.values()) {
-        if (technique->parent() == nullptr)
-            delete technique;
-    }
+    delete_if_without_parent(m_techniques);
     m_techniques.clear();
-    //Check for Textures with no parent
-    Q_FOREACH (QAbstractTexture *texture, m_textures.values()) {
-        if (texture->parent() == nullptr)
-            delete texture;
-    }
+    delete_if_without_parent(m_textures);
     m_textures.clear();
     m_imagePaths.clear();
     m_defaultScene.clear();
