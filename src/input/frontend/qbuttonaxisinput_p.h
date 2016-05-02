@@ -65,13 +65,13 @@ public:
         , m_scale(0.0f)
     {}
 
-    QVariantList m_buttons;
+    QVector<int> m_buttons;
     float m_scale;
 };
 
 struct QButtonAxisInputData : public QAbstractAxisInputData
 {
-    QVariantList buttons; // TODO: Replace with QVector<int>
+    QVector<int> buttons;
     float scale;
 };
 

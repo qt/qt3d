@@ -72,14 +72,14 @@ public:
         , m_sourceDevice(nullptr)
     {}
 
-    QVariantList m_buttons;
+    QVector<int> m_buttons;
     QAbstractPhysicalDevice *m_sourceDevice;
 };
 
 struct QActionInputData
 {
     Qt3DCore::QNodeId sourceDeviceId;
-    QVariantList buttons; // TODO: Replace with QVector<int>
+    QVector<int> buttons;
 };
 
 } // Qt3DInput

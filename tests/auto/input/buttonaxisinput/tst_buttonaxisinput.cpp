@@ -36,18 +36,6 @@
 #include <Qt3DCore/qnodepropertychange.h>
 #include "testdevice.h"
 
-namespace {
-
-void compareKeys(const QVector<int> &backendKeys, const QVariantList &frontendKeys)
-{
-    QCOMPARE(backendKeys.size(), frontendKeys.size());
-    for (int i = 0, m = backendKeys.size(); i < m; ++i) {
-        QCOMPARE(backendKeys.at(i), frontendKeys.at(i).toInt());
-    }
-}
-
-}
-
 class tst_ButtonAxisInput: public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
@@ -61,7 +49,7 @@ private Q_SLOTS:
         Qt3DInput::QButtonAxisInput axisInput;
         TestDevice sourceDevice;
 
-        axisInput.setButtons(QVariantList() << QVariant(1 << 8));
+        axisInput.setButtons(QList<int>() << (1 << 8));
         axisInput.setScale(0.5f);
         axisInput.setSourceDevice(&sourceDevice);
 
@@ -71,7 +59,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendAxisInput.peerId(), axisInput.id());
         QCOMPARE(backendAxisInput.isEnabled(), axisInput.isEnabled());
-        compareKeys(backendAxisInput.buttons(), axisInput.buttons());
+        QCOMPARE(backendAxisInput.buttons(), axisInput.buttons().toVector());
         QCOMPARE(backendAxisInput.scale(), axisInput.scale());
         QCOMPARE(backendAxisInput.sourceDevice(), sourceDevice.id());
     }
@@ -92,7 +80,7 @@ private Q_SLOTS:
         Qt3DInput::QButtonAxisInput axisInput;
         TestDevice sourceDevice;
 
-        axisInput.setButtons(QVariantList() << QVariant(1 << 8));
+        axisInput.setButtons(QList<int>() << (1 << 8));
         axisInput.setScale(0.5f);
         axisInput.setSourceDevice(&sourceDevice);
 
@@ -115,12 +103,12 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DCore::QNodePropertyChangePtr  updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
-        updateChange->setValue(QVariantList() << QVariant(64));
+        updateChange->setValue(QVariant::fromValue(QList<int>() << 64));
         updateChange->setPropertyName("buttons");
         backendAxisInput.sceneChangeEvent(updateChange);
 
         // THEN
-        compareKeys(backendAxisInput.buttons(), QVariantList() << QVariant(64));
+        QCOMPARE(backendAxisInput.buttons(), QVector<int>() << 64);
 
         // WHEN
         updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));

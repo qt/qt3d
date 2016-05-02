@@ -49,19 +49,6 @@ namespace Qt3DInput {
 
 namespace Input {
 
-namespace {
-
-QVector<int> listToIntArray(const QVariantList &l)
-{
-    QVector<int> array;
-    array.reserve(l.size());
-    for (const QVariant &v : l)
-        array.push_back(v.toInt());
-    return array;
-}
-
-} // anonymous
-
 ActionInput::ActionInput()
     : Qt3DCore::QBackendNode()
     , m_buttons(0)
@@ -71,7 +58,7 @@ ActionInput::ActionInput()
 void ActionInput::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QActionInput *input = static_cast<QActionInput *>(peer);
-    m_buttons = listToIntArray(input->buttons());
+    m_buttons = input->buttons().toVector();
     if (input->sourceDevice())
         m_sourceDevice = input->sourceDevice()->id();
 }
@@ -80,7 +67,7 @@ void ActionInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QActionInputData>>(change);
     const auto &data = typedChange->data;
-    m_buttons = listToIntArray(data.buttons);
+    m_buttons = data.buttons;
     m_sourceDevice = data.sourceDeviceId;
 }
 
@@ -98,7 +85,7 @@ void ActionInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (propertyChange->propertyName() == QByteArrayLiteral("sourceDevice")) {
             m_sourceDevice = propertyChange->value().value<Qt3DCore::QNodeId>();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("buttons")) {
-            m_buttons = listToIntArray(propertyChange->value().toList());
+            m_buttons = propertyChange->value().value<QList<int>>().toVector();
         }
     }
     QBackendNode::sceneChangeEvent(e);
