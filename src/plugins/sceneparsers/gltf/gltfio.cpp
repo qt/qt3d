@@ -245,12 +245,14 @@ Qt3DCore::QEntity* GLTFIO::node(const QString &id)
         QVector<QEntity *> entities;
 
         Q_FOREACH (QJsonValue mesh, jsonObj.value(KEY_MESHES).toArray()) {
-            if (!m_meshDict.contains(mesh.toString())) {
+            const auto geometryRenderers = qAsConst(m_meshDict).equal_range(mesh.toString());
+            if (Q_UNLIKELY(geometryRenderers.first == geometryRenderers.second)) {
                 qCWarning(GLTFIOLog) << "node" << id << "references unknown mesh" << mesh.toString();
                 continue;
             }
 
-            Q_FOREACH (QGeometryRenderer *geometryRenderer, m_meshDict.values(mesh.toString())) {
+            for (auto it = geometryRenderers.first; it != geometryRenderers.second; ++it) {
+                QGeometryRenderer *geometryRenderer = it.value();
                 QEntity *entity = new QEntity;
                 entity->addComponent(geometryRenderer);
                 QMaterial *mat = material(m_meshMaterialDict[geometryRenderer]);
@@ -535,12 +537,13 @@ QMaterial *GLTFIO::materialWithCustomShader(const QString &id, const QJsonObject
 {
     //Default ES2 Technique
     QString techniqueName = jsonObj.value(KEY_TECHNIQUE).toString();
-    if (!m_techniques.contains(techniqueName)) {
+    const auto it = qAsConst(m_techniques).find(techniqueName);
+    if (Q_UNLIKELY(it == m_techniques.cend())) {
         qCWarning(GLTFIOLog) << "unknown technique" << techniqueName
                                  << "for material" << id << "in GLTF file" << m_basePath;
         return NULL;
     }
-    QTechnique *technique = m_techniques[techniqueName];
+    QTechnique *technique = *it;
     technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGLES);
     technique->graphicsApiFilter()->setMajorVersion(2);
     technique->graphicsApiFilter()->setMinorVersion(0);
@@ -552,11 +555,12 @@ QMaterial *GLTFIO::materialWithCustomShader(const QString &id, const QJsonObject
     QTechnique *gl2Technique = nullptr;
     QString coreTechniqueName = jsonObj.value(KEY_TECHNIQUE_CORE).toString();
     if (!coreTechniqueName.isNull()) {
-        if (!m_techniques.contains(coreTechniqueName)) {
+        const auto it = qAsConst(m_techniques).find(coreTechniqueName);
+        if (Q_UNLIKELY(it == m_techniques.cend())) {
             qCWarning(GLTFIOLog) << "unknown technique" << coreTechniqueName
                                      << "for material" << id << "in GLTF file" << m_basePath;
         } else {
-            coreTechnique = m_techniques[coreTechniqueName];
+            coreTechnique = it.value();
             coreTechnique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
             coreTechnique->graphicsApiFilter()->setMajorVersion(3);
             coreTechnique->graphicsApiFilter()->setMinorVersion(1);
@@ -566,11 +570,12 @@ QMaterial *GLTFIO::materialWithCustomShader(const QString &id, const QJsonObject
     //Optional GL2 technique
     QString gl2TechniqueName = jsonObj.value(KEY_TECHNIQUE_GL2).toString();
     if (!gl2TechniqueName.isNull()) {
-        if (!m_techniques.contains(gl2TechniqueName)) {
+        const auto it = qAsConst(m_techniques).find(gl2TechniqueName);
+        if (Q_UNLIKELY(it == m_techniques.cend())) {
             qCWarning(GLTFIOLog) << "unknown technique" << gl2TechniqueName
                                      << "for material" << id << "in GLTF file" << m_basePath;
         } else {
-            gl2Technique = m_techniques[gl2TechniqueName];
+            gl2Technique = it.value();
             gl2Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
             gl2Technique->graphicsApiFilter()->setMajorVersion(2);
             gl2Technique->graphicsApiFilter()->setMinorVersion(0);
@@ -708,8 +713,9 @@ QMaterial *GLTFIO::commonMaterial(const QJsonObject &jsonObj)
 
 QMaterial* GLTFIO::material(const QString &id)
 {
-    if (m_materialCache.contains(id))
-        return m_materialCache[id];
+    const auto it = qAsConst(m_materialCache).find(id);
+    if (it != m_materialCache.cend())
+        return it.value();
 
     QJsonObject mats = m_json.object().value(KEY_MATERIALS).toObject();
     const auto jsonVal = mats.value(id);
@@ -860,10 +866,12 @@ void GLTFIO::processJSONBuffer(const QString &id, const QJsonObject& json)
 void GLTFIO::processJSONBufferView(const QString &id, const QJsonObject& json)
 {
     QString bufName = json.value(KEY_BUFFER).toString();
-    if (!m_bufferDatas.contains(bufName)) {
+    const auto it = qAsConst(m_bufferDatas).find(bufName);
+    if (Q_UNLIKELY(it == m_bufferDatas.cend())) {
         qCWarning(GLTFIOLog) << "unknown buffer:" << bufName << "processing view:" << id;
         return;
     }
+    const auto &bufferData = *it;
 
     int target = json.value(KEY_TARGET).toInt();
     Qt3DRender::QBuffer::BufferType ty(Qt3DRender::QBuffer::VertexBuffer);
@@ -885,9 +893,9 @@ void GLTFIO::processJSONBufferView(const QString &id, const QJsonObject& json)
 
     quint64 len = json.value(KEY_BYTE_LENGTH).toInt();
 
-    QByteArray bytes(m_bufferDatas[bufName].data->mid(offset, len));
+    QByteArray bytes = bufferData.data->mid(offset, len);
     if (bytes.count() != (int) len) {
-        qCWarning(GLTFIOLog) << "failed to read sufficient bytes from:" << m_bufferDatas[bufName].path
+        qCWarning(GLTFIOLog) << "failed to read sufficient bytes from:" << bufferData.path
                                  << "for view" << id;
     }
 
@@ -915,7 +923,9 @@ void GLTFIO::processJSONProgram(const QString &id, const QJsonObject &jsonObject
 {
     QString fragName = jsonObject.value(KEY_FRAGMENT_SHADER).toString(),
             vertName = jsonObject.value(KEY_VERTEX_SHADER).toString();
-    if (!m_shaderPaths.contains(fragName) || !m_shaderPaths.contains(vertName)) {
+    const auto fragIt = qAsConst(m_shaderPaths).find(fragName),
+               vertIt = qAsConst(m_shaderPaths).find(vertName);
+    if (Q_UNLIKELY(fragIt == m_shaderPaths.cend() || vertIt == m_shaderPaths.cend())) {
         qCWarning(GLTFIOLog) << Q_FUNC_INFO << "program:" << id << "missing shader:"
                                  << fragName << vertName;
         return;
@@ -923,8 +933,8 @@ void GLTFIO::processJSONProgram(const QString &id, const QJsonObject &jsonObject
 
     QShaderProgram* prog = new QShaderProgram;
     prog->setObjectName(id);
-    prog->setFragmentShaderCode(QShaderProgram::loadSource(QUrl::fromLocalFile(m_shaderPaths[fragName])));
-    prog->setVertexShaderCode(QShaderProgram::loadSource(QUrl::fromLocalFile(m_shaderPaths[vertName])));
+    prog->setFragmentShaderCode(QShaderProgram::loadSource(QUrl::fromLocalFile(fragIt.value())));
+    prog->setVertexShaderCode(QShaderProgram::loadSource(QUrl::fromLocalFile(vertIt.value())));
     m_programs[id] = prog;
 }
 
@@ -959,13 +969,14 @@ void GLTFIO::processJSONTechnique(const QString &id, const QJsonObject &jsonObje
 
     // Program
     QString programName = jsonObject.value(KEY_PROGRAM).toString();
-    if (!m_programs.contains(programName)) {
+    const auto progIt = qAsConst(m_programs).find(programName);
+    if (progIt == m_programs.cend()) {
         qCWarning(GLTFIOLog) << Q_FUNC_INFO << "technique" << id
                                  << ": missing program" << programName;
     }
 
     QRenderPass* pass = new QRenderPass;
-    pass->setShaderProgram(m_programs[programName]);
+    pass->setShaderProgram(progIt.value());
 
     // Attributes
     const QJsonObject attrs = jsonObject.value(KEY_ATTRIBUTES).toObject();
@@ -1074,7 +1085,8 @@ void GLTFIO::processJSONMesh(const QString &id, const QJsonObject &json)
         const QJsonObject attrs = primitiveObject.value(KEY_ATTRIBUTES).toObject();
         for (auto it = attrs.begin(), end = attrs.end(); it != end; ++it) {
             QString k = it.value().toString();
-            if (!m_accessorDict.contains(k)) {
+            const auto accessorIt = qAsConst(m_accessorDict).find(k);
+            if (Q_UNLIKELY(accessorIt == m_accessorDict.cend())) {
                 qCWarning(GLTFIOLog) << "unknown attribute accessor:" << k << "on mesh" << id;
                 continue;
             }
@@ -1085,19 +1097,19 @@ void GLTFIO::processJSONMesh(const QString &id, const QJsonObject &json)
                 attributeName = attrName;
 
             //Get buffer handle for accessor
-            Qt3DRender::QBuffer *buffer = m_buffers.value(m_accessorDict[k].bufferViewName, nullptr);
+            Qt3DRender::QBuffer *buffer = m_buffers.value(accessorIt->bufferViewName, Q_NULLPTR);
             if (buffer == nullptr) {
-                qCWarning(GLTFIOLog) << "unknown buffer-view:" << m_accessorDict[k].bufferViewName << "processing accessor:" << id;
+                qCWarning(GLTFIOLog) << "unknown buffer-view:" << accessorIt->bufferViewName << "processing accessor:" << id;
                 continue;
             }
 
             QAttribute *attribute = new QAttribute(buffer,
                                                    attributeName,
-                                                   m_accessorDict[k].type,
-                                                   m_accessorDict[k].dataSize,
-                                                   m_accessorDict[k].count,
-                                                   m_accessorDict[k].offset,
-                                                   m_accessorDict[k].stride);
+                                                   accessorIt->type,
+                                                   accessorIt->dataSize,
+                                                   accessorIt->count,
+                                                   accessorIt->offset,
+                                                   accessorIt->stride);
             attribute->setAttributeType(QAttribute::VertexAttribute);
             meshGeometry->addAttribute(attribute);
         }
@@ -1105,22 +1117,23 @@ void GLTFIO::processJSONMesh(const QString &id, const QJsonObject &json)
         const auto indices = primitiveObject.value(KEY_INDICES);
         if (!indices.isUndefined()) {
             QString k = indices.toString();
-            if (!m_accessorDict.contains(k)) {
+            const auto accessorIt = qAsConst(m_accessorDict).find(k);
+            if (Q_UNLIKELY(accessorIt == m_accessorDict.cend())) {
                 qCWarning(GLTFIOLog) << "unknown index accessor:" << k << "on mesh" << id;
             } else {
                 //Get buffer handle for accessor
-                Qt3DRender::QBuffer *buffer = m_buffers.value(m_accessorDict[k].bufferViewName, nullptr);
+                Qt3DRender::QBuffer *buffer = m_buffers.value(accessorIt->bufferViewName, nullptr);
                 if (buffer == nullptr) {
-                    qCWarning(GLTFIOLog) << "unknown buffer-view:" << m_accessorDict[k].bufferViewName << "processing accessor:" << id;
+                    qCWarning(GLTFIOLog) << "unknown buffer-view:" << accessorIt->bufferViewName << "processing accessor:" << id;
                     continue;
                 }
 
                 QAttribute *attribute = new QAttribute(buffer,
-                                                       m_accessorDict[k].type,
-                                                       m_accessorDict[k].dataSize,
-                                                       m_accessorDict[k].count,
-                                                       m_accessorDict[k].offset,
-                                                       m_accessorDict[k].stride);
+                                                       accessorIt->type,
+                                                       accessorIt->dataSize,
+                                                       accessorIt->count,
+                                                       accessorIt->offset,
+                                                       accessorIt->stride);
                 attribute->setAttributeType(QAttribute::IndexAttribute);
                 meshGeometry->addAttribute(attribute);
             }
@@ -1163,13 +1176,14 @@ void GLTFIO::processJSONTexture(const QString &id, const QJsonObject &jsonObject
 
     QString samplerId = jsonObject.value(KEY_SAMPLER).toString();
     QString source = jsonObject.value(KEY_SOURCE).toString();
-    if (!m_imagePaths.contains(source)) {
+    const auto imagIt = qAsConst(m_imagePaths).find(source);
+    if (Q_UNLIKELY(imagIt == m_imagePaths.cend())) {
         qCWarning(GLTFIOLog) << "texture" << id << "references missing image" << source;
         return;
     }
 
     QTextureImage *texImage = new QTextureImage(tex);
-    texImage->setSource(QUrl::fromLocalFile(m_imagePaths[source]));
+    texImage->setSource(QUrl::fromLocalFile(imagIt.value()));
     tex->addTextureImage(texImage);
 
     const auto samplersDictValue = m_json.object().value(KEY_SAMPLERS).toObject().value(samplerId);
@@ -1235,11 +1249,12 @@ QVariant GLTFIO::parameterValueFromJSON(int type, const QJsonValue &value) const
             //Textures are special because we need to do a lookup to return the
             //QAbstractTexture
             QString textureId = value.toString();
-            if (!m_textures.contains(textureId)) {
+            const auto it = m_textures.find(textureId);
+            if (Q_UNLIKELY(it == m_textures.end())) {
                 qCWarning(GLTFIOLog) << "unknown texture" << textureId;
                 return QVariant();
             } else {
-                return QVariant::fromValue(m_textures.value(textureId, nullptr));
+                return QVariant::fromValue(it.value());
             }
         }
     } else if (value.isDouble()) {
