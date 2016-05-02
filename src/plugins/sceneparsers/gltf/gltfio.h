@@ -139,7 +139,7 @@ private:
 
     static bool isGLTFPath(const QString &path);
     static void renameFromJson(const QJsonObject& json, QObject * const object );
-    static QString standardUniformNamefromSemantic(const QString &semantic);
+    static bool hasStandardUniformNameFromSemantic(const QString &semantic);
     static QString standardAttributeNameFromSemantic(const QString &semantic);
     static QParameter *parameterFromTechnique(QTechnique *technique, const QString &parameterName);
 

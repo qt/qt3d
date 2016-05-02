@@ -461,36 +461,32 @@ void GLTFIO::renameFromJson(const QJsonObject &json, QObject * const object)
         object->setObjectName(name.toString());
 }
 
-QString GLTFIO::standardUniformNamefromSemantic(const QString &semantic)
+bool GLTFIO::hasStandardUniformNameFromSemantic(const QString &semantic)
 {
     //Standard Uniforms
-    //if (semantic == QStringLiteral("LOCAL"));
-    if (semantic == QStringLiteral("MODEL"))
-        return QStringLiteral("modelMatrix");
-    if (semantic == QStringLiteral("VIEW"))
-        return QStringLiteral("viewMatrix");
-    if (semantic == QStringLiteral("PROJECTION"))
-        return QStringLiteral("projectionMatrix");
-    if (semantic == QStringLiteral("MODELVIEW"))
-        return QStringLiteral("modelView");
-    if (semantic == QStringLiteral("MODELVIEWPROJECTION"))
-        return QStringLiteral("modelViewProjection");
-    if (semantic == QStringLiteral("MODELINVERSE"))
-        return QStringLiteral("inverseModelMatrix");
-    if (semantic == QStringLiteral("VIEWINVERSE"))
-        return QStringLiteral("inverViewMatrix");
-    if (semantic == QStringLiteral("PROJECTIONINVERSE"))
-        return QStringLiteral("inverseProjectionMatrix");
-    if (semantic == QStringLiteral("MODELVIEWPROJECTIONINVERSE"))
-        return QStringLiteral("inverseModelViewProjection");
-    if (semantic == QStringLiteral("MODELINVERSETRANSPOSE"))
-        return QStringLiteral("modelNormalMatrix");
-    if (semantic == QStringLiteral("MODELVIEWINVERSETRANSPOSE"))
-        return QStringLiteral("modelViewNormal");
-    if (semantic == QStringLiteral("VIEWPORT"))
-        return QStringLiteral("viewportMatrix");
-
-    return QString();
+    if (semantic.isEmpty())
+        return false;
+    switch (semantic.at(0).toLatin1()) {
+    case 'L':
+        // return semantic == QLatin1String("LOCAL");
+        return false;
+    case 'M':
+        return semantic == QLatin1String("MODEL")
+            || semantic == QLatin1String("MODELVIEW")
+            || semantic == QLatin1String("MODELVIEWPROJECTION")
+            || semantic == QLatin1String("MODELINVERSE")
+            || semantic == QLatin1String("MODELVIEWPROJECTIONINVERSE")
+            || semantic == QLatin1String("MODELINVERSETRANSPOSE")
+            || semantic == QLatin1String("MODELVIEWINVERSETRANSPOSE");
+    case 'V':
+        return semantic == QLatin1String("VIEW")
+            || semantic == QLatin1String("VIEWINVERSE")
+            || semantic == QLatin1String("VIEWPORT");
+    case 'P':
+        return semantic == QLatin1String("PROJECTION")
+            || semantic == QLatin1String("PROJECTIONINVERSE");
+    }
+    return false;
 }
 
 QString GLTFIO::standardAttributeNameFromSemantic(const QString &semantic)
@@ -1016,9 +1012,7 @@ void GLTFIO::processJSONTechnique(const QString &id, const QJsonObject &jsonObje
             continue;
         }
         //Check if the parameter has a standard uniform semantic
-        QString standardUniformName = standardUniformNamefromSemantic(m_parameterDataDict[parameter].semantic);
-        if (standardUniformName.isNull()) {
-        } else {
+        if (hasStandardUniformNameFromSemantic(m_parameterDataDict[parameter].semantic)) {
             t->removeParameter(parameter);
             m_parameterDataDict.remove(parameter);
             delete parameter;
