@@ -51,16 +51,16 @@
 // We mean it.
 //
 
-#include "qtexturedata.h"
+#include "qtextureimagedata.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QTexImageDataPrivate
+class QTextureImageDataPrivate
 {
 public:
-    QTexImageDataPrivate();
+    QTextureImageDataPrivate();
 
     void setData(const QByteArray &data, QOpenGLTexture::PixelFormat fmt,
                  QOpenGLTexture::PixelType ptype);

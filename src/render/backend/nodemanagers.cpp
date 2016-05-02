@@ -149,7 +149,7 @@ TextureManager *NodeManagers::manager<Texture>() const Q_DECL_NOEXCEPT
 }
 
 template<>
-TextureDataManager *NodeManagers::manager<QTexImageData>() const Q_DECL_NOEXCEPT
+TextureDataManager *NodeManagers::manager<QTextureImageData>() const Q_DECL_NOEXCEPT
 {
     return m_textureDataManager;
 }

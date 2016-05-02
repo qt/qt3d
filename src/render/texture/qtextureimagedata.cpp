@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "qtexturedata_p.h"
+#include "qtextureimagedata_p.h"
 #include <QFileInfo>
 #include <QFile>
 #include <qendian.h>
@@ -404,7 +404,7 @@ const struct DX10Format {
 
 } // namespace
 
-QTexImageDataPrivate::QTexImageDataPrivate()
+QTextureImageDataPrivate::QTextureImageDataPrivate()
     : m_width(-1)
     , m_height(-1)
     , m_depth(-1)
@@ -420,7 +420,7 @@ QTexImageDataPrivate::QTexImageDataPrivate()
 {
 }
 
-QByteArray QTexImageDataPrivate::data(int layer, int face, int mipmapLevel) const
+QByteArray QTextureImageDataPrivate::data(int layer, int face, int mipmapLevel) const
 {
     if (layer < 0 || layer >= m_layers ||
             face < 0 || face >= m_faces ||
@@ -435,7 +435,7 @@ QByteArray QTexImageDataPrivate::data(int layer, int face, int mipmapLevel) cons
     return QByteArray::fromRawData(m_data.constData() + offset, mipmapLevelSize(mipmapLevel));
 }
 
-void QTexImageDataPrivate::setData(const QByteArray &data, QOpenGLTexture::PixelFormat fmt,
+void QTextureImageDataPrivate::setData(const QByteArray &data, QOpenGLTexture::PixelFormat fmt,
                                    QOpenGLTexture::PixelType ptype)
 {
     m_isCompressed = false;
@@ -448,7 +448,7 @@ void QTexImageDataPrivate::setData(const QByteArray &data, QOpenGLTexture::Pixel
     m_pixelType = ptype;
 }
 
-bool QTexImageDataPrivate::setCompressedFile(const QString &source)
+bool QTextureImageDataPrivate::setCompressedFile(const QString &source)
 {
     QString suffix = QFileInfo(source).suffix();
 
@@ -460,7 +460,7 @@ bool QTexImageDataPrivate::setCompressedFile(const QString &source)
         return false;
 }
 
-bool QTexImageDataPrivate::setPkmFile(const QString &source)
+bool QTextureImageDataPrivate::setPkmFile(const QString &source)
 {
     QFile f(source);
     if (!f.open(QIODevice::ReadOnly)) {
@@ -500,7 +500,7 @@ static int bitCount(quint32 n)
     return r;
 }
 
-bool QTexImageDataPrivate::setDdsFile(const QString &source)
+bool QTextureImageDataPrivate::setDdsFile(const QString &source)
 {
     QFile f(source);
     if (!f.open(QIODevice::ReadOnly)) {
@@ -630,12 +630,12 @@ bool QTexImageDataPrivate::setDdsFile(const QString &source)
     return true;
 }
 
-int QTexImageDataPrivate::layerSize() const
+int QTextureImageDataPrivate::layerSize() const
 {
     return m_faces*faceSize();
 }
 
-int QTexImageDataPrivate::faceSize() const
+int QTextureImageDataPrivate::faceSize() const
 {
     int size = 0;
 
@@ -646,7 +646,7 @@ int QTexImageDataPrivate::faceSize() const
 }
 
 // XXX check if this works for ETC1 compression
-int QTexImageDataPrivate::mipmapLevelSize(int level) const
+int QTextureImageDataPrivate::mipmapLevelSize(int level) const
 {
     int w = qMax(m_width >> level, 1);
     int h = qMax(m_height >> level, 1);
@@ -658,32 +658,32 @@ int QTexImageDataPrivate::mipmapLevelSize(int level) const
         return w * h * m_blockSize * d;
 }
 
-QTexImageData::QTexImageData()
-    : d_ptr(new QTexImageDataPrivate())
+QTextureImageData::QTextureImageData() Q_DECL_NOEXCEPT
+    : d_ptr(new QTextureImageDataPrivate())
 {
 }
 
-QTexImageData::QTexImageData(QTexImageDataPrivate &dd)
+QTextureImageData::QTextureImageData(QTextureImageDataPrivate &dd) Q_DECL_NOEXCEPT
     : d_ptr(&dd)
 {
 }
 
-QTexImageData::~QTexImageData()
+QTextureImageData::~QTextureImageData() Q_DECL_NOEXCEPT
 {
     cleanup();
     delete d_ptr;
 }
 
-QTexImageData &QTexImageData::operator=(const QTexImageData &other)
+QTextureImageData &QTextureImageData::operator=(const QTextureImageData &other) Q_DECL_NOEXCEPT
 {
-    Q_D(QTexImageData);
+    Q_D(QTextureImageData);
     *d = *other.d_ptr;
     return *this;
 }
 
-void QTexImageData::cleanup()
+void QTextureImageData::cleanup() Q_DECL_NOEXCEPT
 {
-    Q_D(QTexImageData);
+    Q_D(QTextureImageData);
     d->m_width = -1;
     d->m_height = -1;
     d->m_depth = -1;
@@ -695,104 +695,104 @@ void QTexImageData::cleanup()
     d->m_data.clear();
 }
 
-bool QTexImageData::isCompressed() const
+bool QTextureImageData::isCompressed() const Q_DECL_NOEXCEPT
 {
-    Q_D(const QTexImageData);
+    Q_D(const QTextureImageData);
     return d->m_isCompressed;
 }
 
-int QTexImageData::width() const
+int QTextureImageData::width() const Q_DECL_NOEXCEPT
 {
-    Q_D(const QTexImageData);
+    Q_D(const QTextureImageData);
     return d->m_width;
 }
 
-int QTexImageData::height() const
+int QTextureImageData::height() const Q_DECL_NOEXCEPT
 {
-    Q_D(const QTexImageData);
+    Q_D(const QTextureImageData);
     return d->m_height;
 }
 
-int QTexImageData::depth() const
+int QTextureImageData::depth() const Q_DECL_NOEXCEPT
 {
-    Q_D(const QTexImageData);
+    Q_D(const QTextureImageData);
     return d->m_depth;
 }
 
-int QTexImageData::layers() const
+int QTextureImageData::layers() const Q_DECL_NOEXCEPT
 {
-    Q_D(const QTexImageData);
+    Q_D(const QTextureImageData);
     return d->m_layers;
 }
 
-int QTexImageData::mipLevels() const
+int QTextureImageData::mipLevels() const Q_DECL_NOEXCEPT
 {
-    Q_D(const QTexImageData);
+    Q_D(const QTextureImageData);
     return d->m_mipLevels;
 }
 
-int QTexImageData::faces() const
+int QTextureImageData::faces() const Q_DECL_NOEXCEPT
 {
-    Q_D(const QTexImageData);
+    Q_D(const QTextureImageData);
     return d->m_faces;;
 }
 
-QOpenGLTexture::Target QTexImageData::target() const
+QOpenGLTexture::Target QTextureImageData::target() const Q_DECL_NOEXCEPT
 {
-    Q_D(const QTexImageData);
+    Q_D(const QTextureImageData);
     return d->m_target;
 }
 
-QOpenGLTexture::TextureFormat QTexImageData::format() const
+QOpenGLTexture::TextureFormat QTextureImageData::format() const Q_DECL_NOEXCEPT
 {
-    Q_D(const QTexImageData);
+    Q_D(const QTextureImageData);
     return d->m_format;
 }
 
-void QTexImageData::setImage(const QImage &image)
+void QTextureImageData::setImage(const QImage &image) Q_DECL_NOEXCEPT
 {
-    Q_D(QTexImageData);
+    Q_D(QTextureImageData);
     d->m_width = image.width();
     d->m_height = image.height();
     d->m_depth = 1;
 
     QImage glImage = image.convertToFormat(QImage::Format_RGBA8888);
     Q_ASSERT_X(glImage.bytesPerLine() == (glImage.width() * glImage.depth() + 7) / 8,
-               "QTexImageData::setImage", "glImage is not packed"); // QTBUG-48330
+               "QTextureImageData::setImage", "glImage is not packed"); // QTBUG-48330
     QByteArray imageBytes((const char*) glImage.constBits(), glImage.byteCount());
     setData(imageBytes, QOpenGLTexture::RGBA, QOpenGLTexture::UInt8);
     d->m_format = QOpenGLTexture::RGBA8_UNorm;
     d->m_blockSize = 4;
 }
 
-void QTexImageData::setData(const QByteArray &data, QOpenGLTexture::PixelFormat fmt,
-                            QOpenGLTexture::PixelType ptype)
+void QTextureImageData::setData(const QByteArray &data, QOpenGLTexture::PixelFormat fmt,
+                            QOpenGLTexture::PixelType ptype) Q_DECL_NOEXCEPT
 {
-    Q_D(QTexImageData);
+    Q_D(QTextureImageData);
     d->setData(data, fmt, ptype);
 }
 
-bool QTexImageData::setCompressedFile(const QString &source)
+bool QTextureImageData::setCompressedFile(const QString &source) Q_DECL_NOEXCEPT
 {
-    Q_D(QTexImageData);
+    Q_D(QTextureImageData);
     return d->setCompressedFile(source);
 }
 
-QByteArray QTexImageData::data(int layer, int face, int mipmapLevel) const
+QByteArray QTextureImageData::data(int layer, int face, int mipmapLevel) const Q_DECL_NOEXCEPT
 {
-    Q_D(const QTexImageData);
+    Q_D(const QTextureImageData);
     return d->data(layer, face, mipmapLevel);
 }
 
-QOpenGLTexture::PixelFormat QTexImageData::pixelFormat() const
+QOpenGLTexture::PixelFormat QTextureImageData::pixelFormat() const Q_DECL_NOEXCEPT
 {
-    Q_D(const QTexImageData);
+    Q_D(const QTextureImageData);
     return d->m_pixelFormat;
 }
 
-QOpenGLTexture::PixelType QTexImageData::pixelType() const
+QOpenGLTexture::PixelType QTextureImageData::pixelType() const Q_DECL_NOEXCEPT
 {
-    Q_D(const QTexImageData);
+    Q_D(const QTextureImageData);
     return d->m_pixelType;
 }
 

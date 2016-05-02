@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_TEXTUREDATA_H
-#define QT3DRENDER_TEXTUREDATA_H
+#ifndef QT3DRENDER_TEXTUREIMAGEDATA_H
+#define QT3DRENDER_TEXTUREIMAGEDATA_H
 
 #include <QtGui/QOpenGLTexture>
 #include <QtGui/QImage>
@@ -49,68 +49,59 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QTexImageDataPrivate;
+class QTextureImageDataPrivate;
 
-class QT3DRENDERSHARED_EXPORT QTexImageData
+class QT3DRENDERSHARED_EXPORT QTextureImageData
 {
 public:
-    QTexImageData();
-    virtual ~QTexImageData();
+    QTextureImageData() Q_DECL_NOEXCEPT;
+    ~QTextureImageData() Q_DECL_NOEXCEPT;
 
-    QTexImageData &operator=(const QTexImageData &other);
+    QTextureImageData &operator=(const QTextureImageData &other) Q_DECL_NOEXCEPT;
 
-    void cleanup();
+    void cleanup() Q_DECL_NOEXCEPT;
 
-    bool isCompressed() const;
+    bool isCompressed() const Q_DECL_NOEXCEPT;
 
-    int width() const;
-    int height() const;
-    int depth() const;
+    int width() const Q_DECL_NOEXCEPT;
+    int height() const Q_DECL_NOEXCEPT;
+    int depth() const Q_DECL_NOEXCEPT;
 
-    int layers() const;
-    int mipLevels() const;
-    int faces() const;
+    int layers() const Q_DECL_NOEXCEPT;
+    int mipLevels() const Q_DECL_NOEXCEPT;
+    int faces() const Q_DECL_NOEXCEPT;
 
-    QOpenGLTexture::Target target() const;
+    QOpenGLTexture::Target target() const Q_DECL_NOEXCEPT;
 
-    QOpenGLTexture::TextureFormat format() const;
+    QOpenGLTexture::TextureFormat format() const Q_DECL_NOEXCEPT;
 
-    void setImage(const QImage &);
+    void setImage(const QImage &) Q_DECL_NOEXCEPT;
 
     void setData(const QByteArray &data,
                  QOpenGLTexture::PixelFormat fmt,
-                 QOpenGLTexture::PixelType ptype);
+                 QOpenGLTexture::PixelType ptype) Q_DECL_NOEXCEPT;
 
-    bool setCompressedFile(const QString &source);
+    bool setCompressedFile(const QString &source) Q_DECL_NOEXCEPT;
 
-    QByteArray data(int layer = 0, int face = 0, int mipmapLevel = 0) const;
+    QByteArray data(int layer = 0, int face = 0, int mipmapLevel = 0) const Q_DECL_NOEXCEPT;
 
-    QOpenGLTexture::PixelFormat pixelFormat() const;
+    QOpenGLTexture::PixelFormat pixelFormat() const Q_DECL_NOEXCEPT;
 
-    QOpenGLTexture::PixelType pixelType() const;
+    QOpenGLTexture::PixelType pixelType() const Q_DECL_NOEXCEPT;
 
 protected:
-    QTexImageData(QTexImageDataPrivate &dd);
+    QTextureImageData(QTextureImageDataPrivate &dd) Q_DECL_NOEXCEPT;
 
 private:
-    Q_DECLARE_PRIVATE(QTexImageData)
-    QTexImageDataPrivate *d_ptr;
-
-//    int m_width, m_height, m_depth;
-//    QOpenGLTexture::PixelFormat m_pixelFormat;
-//    QOpenGLTexture::PixelType m_pixelType;
-
-//    bool m_isCompressed;
-//    QByteArray m_data;
-//    QOpenGLTexture::TextureFormat m_format;
-
+    Q_DECLARE_PRIVATE(QTextureImageData)
+    QTextureImageDataPrivate *d_ptr;
 };
 
-typedef QSharedPointer<QTexImageData> QTexImageDataPtr;
+typedef QSharedPointer<QTextureImageData> QTextureImageDataPtr;
 
 } // namespace Qt3DRender
 
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_TEXTUREDATA_H
+#endif // QT3DRENDER_TEXTUREIMAGEDATA_H

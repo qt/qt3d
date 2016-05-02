@@ -60,7 +60,7 @@ class QMatrix4x4;
 
 namespace Qt3DRender {
 
-class QTexImageData;
+class QTextureImageData;
 
 namespace Render {
 
@@ -109,7 +109,7 @@ typedef Qt3DCore::QHandle<Texture, 16> HTexture;
 typedef Qt3DCore::QHandle<Transform, 16> HTransform;
 typedef Qt3DCore::QHandle<RenderTarget, 8> HTarget;
 typedef Qt3DCore::QHandle<RenderPass, 16> HRenderPass;
-typedef Qt3DCore::QHandle<QTexImageData, 16> HTextureData;
+typedef Qt3DCore::QHandle<QTextureImageData, 16> HTextureData;
 typedef Qt3DCore::QHandle<Parameter, 16> HParameter;
 typedef Qt3DCore::QHandle<ShaderData, 16> HShaderData;
 typedef Qt3DCore::QHandle<TextureImage, 16> HTextureImage;

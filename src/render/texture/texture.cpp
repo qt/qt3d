@@ -45,7 +45,7 @@
 #include <QOpenGLTexture>
 #include <QOpenGLPixelTransferOptions>
 #include <Qt3DRender/qtexture.h>
-#include <Qt3DRender/qtexturedata.h>
+#include <Qt3DRender/qtextureimagedata.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/qabstracttexture_p.h>
@@ -354,7 +354,7 @@ QOpenGLTexture *Texture::buildGLTexture()
 }
 
 // RenderThread
-void Texture::setToGLTexture(QTexImageData *imgData)
+void Texture::setToGLTexture(QTextureImageData *imgData)
 {
     Q_ASSERT(m_gl && m_gl->isCreated() && m_gl->isStorageAllocated());
 
@@ -402,7 +402,7 @@ void Texture::setToGLTexture(QTexImageData *imgData)
 }
 
 // RenderThread
-void Texture::setToGLTexture(TextureImage *rImg, QTexImageData *imgData)
+void Texture::setToGLTexture(TextureImage *rImg, QTextureImageData *imgData)
 {
     Q_ASSERT(m_gl && m_gl->isCreated() && m_gl->isStorageAllocated());
     // ensure we don't accidently cause a detach / copy of the raw bytes
@@ -664,7 +664,7 @@ void Texture::setTextureDataManager(TextureDataManager *manager)
 void Texture::updateAndLoadTextureImage()
 {
     if (!m_textureDataHandle.isNull()) {
-        QTexImageData *data = m_textureDataManager->data(m_textureDataHandle);
+        QTextureImageData *data = m_textureDataManager->data(m_textureDataHandle);
         if (data != nullptr)
             setToGLTexture(data);
     }
@@ -677,7 +677,7 @@ void Texture::updateAndLoadTextureImage()
                 img->unsetDirty();
                 continue;
             }
-            QTexImageData *data = m_textureDataManager->data(img->textureDataHandle());
+            QTextureImageData *data = m_textureDataManager->data(img->textureDataHandle());
             if (data != nullptr) {
                 setToGLTexture(img, data);
                 dnas.append(img->dna());

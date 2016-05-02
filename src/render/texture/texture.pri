@@ -9,10 +9,10 @@ HEADERS += \
     $$PWD/texture_p.h \
     $$PWD/texturedatamanager_p.h \
     $$PWD/textureimage_p.h \
-    $$PWD/qtexturedata_p.h \
-    $$PWD/qtexturedata.h \
     $$PWD/qabstracttexture.h \
-    $$PWD/qabstracttexture_p.h
+    $$PWD/qabstracttexture_p.h \
+    $$PWD/qtextureimagedata_p.h \
+    $$PWD/qtextureimagedata.h
 
 SOURCES += \
     $$PWD/qabstracttextureimage.cpp \
@@ -21,6 +21,6 @@ SOURCES += \
     $$PWD/texture.cpp \
     $$PWD/texturedatamanager.cpp \
     $$PWD/textureimage.cpp \
-    $$PWD/qtexturedata.cpp \
     $$PWD/qabstracttexture.cpp \
-    $$PWD/qtexture.cpp
+    $$PWD/qtexture.cpp \
+    $$PWD/qtextureimagedata.cpp

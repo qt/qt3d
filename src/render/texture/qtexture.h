@@ -40,7 +40,7 @@
 #ifndef QT3DRENDER_QTEXTURE_H
 #define QT3DRENDER_QTEXTURE_H
 
-#include <Qt3DRender/qtexturedata.h>
+#include <Qt3DRender/qtextureimagedata.h>
 #include <Qt3DRender/qtexturewrapmode.h>
 #include <Qt3DRender/qtextureimage.h>
 #include <Qt3DRender/qabstracttexture.h>

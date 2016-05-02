@@ -33,6 +33,7 @@ contains(QT_CONFIG, private_tests) {
         qsortpolicy \
         qrenderstateset \
         qtechniquefilter \
+        qtextureimagedata \
         qviewport \
         framegraphnode \
         qobjectpicker \

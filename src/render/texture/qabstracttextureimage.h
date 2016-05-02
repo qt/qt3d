@@ -59,7 +59,7 @@ class QT3DRENDERSHARED_EXPORT QTextureImageDataGenerator : public QAbstractFunct
 {
 public:
     virtual ~QTextureImageDataGenerator() {}
-    virtual QTexImageDataPtr operator()() = 0;
+    virtual QTextureImageDataPtr operator()() = 0;
     virtual bool operator ==(const QTextureImageDataGenerator &other) const = 0;
 };
 

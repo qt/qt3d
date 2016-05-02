@@ -61,7 +61,7 @@ class QOpenGLVertexArrayObject;
 
 namespace Qt3DRender {
 
-class QTexImageData;
+class QTextureImageData;
 
 namespace Render {
 
@@ -265,7 +265,7 @@ template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT TextureManager *NodeManagers::manager<Texture>() const Q_DECL_NOEXCEPT;
 
 template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT TextureDataManager *NodeManagers::manager<QTexImageData>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT TextureDataManager *NodeManagers::manager<QTextureImageData>() const Q_DECL_NOEXCEPT;
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT LayerManager *NodeManagers::manager<Layer>() const Q_DECL_NOEXCEPT;
