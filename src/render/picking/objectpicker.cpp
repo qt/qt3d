@@ -136,7 +136,6 @@ void ObjectPicker::onClicked(QPickEventPtr event)
 {
     Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(peerId()));
     e->setPropertyName("clicked");
-    e->setTargetNode(peerId());
     e->setValue(QVariant::fromValue(event));
     notifyObservers(e);
 }
@@ -145,7 +144,6 @@ void ObjectPicker::onMoved(QPickEventPtr event)
 {
     Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(peerId()));
     e->setPropertyName("moved");
-    e->setTargetNode(peerId());
     e->setValue(QVariant::fromValue(event));
     notifyObservers(e);
 }
@@ -154,7 +152,6 @@ void ObjectPicker::onPressed(QPickEventPtr event)
 {
     Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(peerId()));
     e->setPropertyName("pressed");
-    e->setTargetNode(peerId());
     e->setValue(QVariant::fromValue(event));
     m_isPressed = true;
     notifyObservers(e);
@@ -164,7 +161,6 @@ void ObjectPicker::onReleased(QPickEventPtr event)
 {
     Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(peerId()));
     e->setPropertyName("released");
-    e->setTargetNode(peerId());
     e->setValue(QVariant::fromValue(event));
     m_isPressed = false;
     notifyObservers(e);
@@ -174,7 +170,6 @@ void ObjectPicker::onEntered()
 {
     Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(peerId()));
     e->setPropertyName("entered");
-    e->setTargetNode(peerId());
     notifyObservers(e);
 }
 
@@ -182,7 +177,6 @@ void ObjectPicker::onExited()
 {
     Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(peerId()));
     e->setPropertyName("exited");
-    e->setTargetNode(peerId());
     notifyObservers(e);
 }
 

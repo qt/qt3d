@@ -162,7 +162,6 @@ void TextureImage::setStatus(QTextureImage::Status status)
     QBackendNodePropertyChangePtr e(new QBackendNodePropertyChange(peerId()));
     e->setPropertyName("status");
     e->setValue(status);
-    e->setTargetNode(peerId());
     notifyObservers(e);
 }
 

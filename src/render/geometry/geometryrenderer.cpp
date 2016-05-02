@@ -198,7 +198,6 @@ void GeometryRenderer::executeFunctor()
     // The Frontend element has to perform the clone
     // So that the objects are created in the main thread
     e->setValue(QVariant::fromValue(QNodePtr(geometry, &QNodePrivate::nodePtrDeleter)));
-    e->setTargetNode(peerId());
     notifyObservers(e);
     // Maybe we could also send a status to help troubleshoot errors
 }

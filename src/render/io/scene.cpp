@@ -97,7 +97,6 @@ void Scene::setSceneSubtree(Qt3DCore::QEntity *subTree)
     QBackendNodePropertyChangePtr e(new QBackendNodePropertyChange(peerId()));
     e->setPropertyName("scene");
     e->setValue(QVariant::fromValue(subTree));
-    e->setTargetNode(peerId());
     notifyObservers(e);
 }
 

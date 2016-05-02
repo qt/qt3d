@@ -79,7 +79,6 @@ void Action::setActionTriggered(bool actionTriggered)
 
         // Send change to the frontend
         Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(peerId()));
-        e->setTargetNode(peerId());
         e->setPropertyName("active");
         e->setValue(m_actionTriggered);
         notifyObservers(e);

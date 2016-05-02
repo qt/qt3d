@@ -85,7 +85,6 @@ void MouseHandler::setInputHandler(InputHandler *handler)
 void MouseHandler::mouseEvent(const QMouseEventPtr &event)
 {
     QBackendNodePropertyChangePtr e(new QBackendNodePropertyChange(peerId()));
-    e->setTargetNode(peerId());
     e->setPropertyName("mouse");
     e->setValue(QVariant::fromValue(event));
     notifyObservers(e);
@@ -94,7 +93,6 @@ void MouseHandler::mouseEvent(const QMouseEventPtr &event)
 void MouseHandler::wheelEvent(const QWheelEventPtr &event)
 {
     QBackendNodePropertyChangePtr e(new QBackendNodePropertyChange(peerId()));
-    e->setTargetNode(peerId());
     e->setPropertyName("wheel");
     e->setValue(QVariant::fromValue(event));
     notifyObservers(e);

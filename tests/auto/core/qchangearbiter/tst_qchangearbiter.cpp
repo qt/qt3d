@@ -168,7 +168,6 @@ public:
         m_lastChanges << e;
         // Save reply to be sent to the frontend
         m_reply.reset(new Qt3DCore::QBackendNodePropertyChange(e->subjectId()));
-        m_reply->setTargetNode(e->subjectId());
         m_reply->setPropertyName("Reply");
     }
 
@@ -246,7 +245,7 @@ public:
         QVERIFY(!e.isNull());
         Qt3DCore::QBackendNodePropertyChangePtr change = qSharedPointerDynamicCast<Qt3DCore::QBackendNodePropertyChange>(e);
         QVERIFY(!change.isNull());
-        Qt3DCore::QNode *targetNode = m_sceneInterface->lookupNode(change->targetNode());
+        Qt3DCore::QNode *targetNode = m_sceneInterface->lookupNode(change->subjectId());
         QVERIFY(targetNode != nullptr);
         m_lastChanges << e;
     }
@@ -768,7 +767,7 @@ void tst_QChangeArbiter::distributeBackendChanges()
     // verify correctness of the reply
     Qt3DCore::QBackendNodePropertyChangePtr c = qSharedPointerDynamicCast<Qt3DCore::QBackendNodePropertyChange>(postman->lastChange());
     QVERIFY(!c.isNull());
-    QVERIFY(c->targetNode() == root->id());
+    QVERIFY(c->subjectId() == root->id());
     qDebug() << c->propertyName();
     QVERIFY(strcmp(c->propertyName(), "Reply") == 0);
     QVERIFY(c->type() == Qt3DCore::NodeUpdated);

@@ -79,7 +79,6 @@ void Axis::setAxisValue(float axisValue)
 
         // Send a change to the frontend
         Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(peerId()));
-        e->setTargetNode(peerId());
         e->setPropertyName("value");
         e->setValue(m_axisValue);
         notifyObservers(e);

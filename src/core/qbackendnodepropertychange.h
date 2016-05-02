@@ -76,9 +76,6 @@ public:
     QVariant value() const;
     void setValue(const QVariant &value);
 
-    void setTargetNode(QNodeId id);
-    QNodeId targetNode() const;
-
 protected:
     Q_DECLARE_PRIVATE(QBackendNodePropertyChange)
     QBackendNodePropertyChange(QBackendNodePropertyChangePrivate &dd);

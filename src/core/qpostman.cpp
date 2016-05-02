@@ -124,7 +124,7 @@ void QPostman::notifyFrontendNode(const QSceneChangePtr &e)
     Q_D(QPostman);
     QBackendNodePropertyChangePtr change = qSharedPointerCast<QBackendNodePropertyChange>(e);
     if (!change.isNull() && d->m_scene != nullptr) {
-        QNode *n = d->m_scene->lookupNode(change->targetNode());
+        QNode *n = d->m_scene->lookupNode(change->subjectId());
         if (n != nullptr)
             n->sceneChangeEvent(change);
     }

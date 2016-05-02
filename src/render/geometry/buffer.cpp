@@ -90,7 +90,6 @@ void Buffer::executeFunctor()
         // Send data back to the frontend
         QBackendNodePropertyChangePtr e(new QBackendNodePropertyChange(peerId()));
         e->setPropertyName("data");
-        e->setTargetNode(peerId());
         e->setValue(QVariant::fromValue(m_data));
         notifyObservers(e);
     }

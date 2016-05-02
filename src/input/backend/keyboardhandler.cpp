@@ -88,7 +88,6 @@ void KeyboardHandler::setFocus(bool focus)
     if (focus != m_focus) {
         m_focus = focus;
         QBackendNodePropertyChangePtr e(new QBackendNodePropertyChange(peerId()));
-        e->setTargetNode(peerId());
         e->setPropertyName("focus");
         e->setValue(m_focus);
         notifyObservers(e);
@@ -98,7 +97,6 @@ void KeyboardHandler::setFocus(bool focus)
 void KeyboardHandler::keyEvent(const QKeyEventPtr &event)
 {
     QBackendNodePropertyChangePtr e(new QBackendNodePropertyChange(peerId()));
-    e->setTargetNode(peerId());
     e->setPropertyName("event");
     e->setValue(QVariant::fromValue(event));
     notifyObservers(e);

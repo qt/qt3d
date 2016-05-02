@@ -148,25 +148,6 @@ void QBackendNodePropertyChange::setValue(const QVariant &value)
     d->m_value = value;
 }
 
-// TO DO get rid off setTargetNode, use the subject instead ??
-/*!
- * Sets the target node of the backend scene property change to \a id.
- */
-void QBackendNodePropertyChange::setTargetNode(QNodeId id)
-{
-    Q_D(QBackendNodePropertyChange);
-    d->m_targetUuid = id;
-}
-
-/*!
- * \return the target node id of the backend scene property change.
- */
-QNodeId QBackendNodePropertyChange::targetNode() const
-{
-    Q_D(const QBackendNodePropertyChange);
-    return d->m_targetUuid;
-}
-
 /*!
  * \typedef Qt3DCore::QBackendNodePropertyChangePtr
  * \relates Qt3DCore::QBackendNodePropertyChange
