@@ -196,7 +196,7 @@ void GLTFIO::setSource(const QUrl &source)
 {
     const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
     QFileInfo finfo(path);
-    if (!finfo.exists()) {
+    if (Q_UNLIKELY(!finfo.exists())) {
         qCWarning(GLTFIOLog) << "missing file:" << path;
         return;
     }
@@ -208,7 +208,7 @@ void GLTFIO::setSource(const QUrl &source)
     if (sceneDocument.isNull())
         sceneDocument = QJsonDocument::fromJson(jsonData);
 
-    if (!setJSON(sceneDocument)) {
+    if (Q_UNLIKELY(!setJSON(sceneDocument))) {
         qCWarning(GLTFIOLog) << "not a JSON document";
         return;
     }
@@ -356,7 +356,7 @@ Qt3DCore::QEntity* GLTFIO::node(const QString &id)
     const auto cameraVal = jsonObj.value(KEY_CAMERA);
     if (!cameraVal.isUndefined()) {
         QCameraLens* cam = camera(cameraVal.toString());
-        if (!cam) {
+        if (Q_UNLIKELY(!cam)) {
             qCWarning(GLTFIOLog) << "failed to build camera:" << cameraVal
                                      << "on node" << id;
         } else {
@@ -374,7 +374,7 @@ Qt3DCore::QEntity* GLTFIO::scene(const QString &id)
     QJsonObject scenes = m_json.object().value(KEY_SCENES).toObject();
     const auto sceneVal = scenes.value(id);
     if (Q_UNLIKELY(sceneVal.isUndefined())) {
-        if (!id.isNull())
+        if (Q_UNLIKELY(!id.isNull()))
             qCWarning(GLTFIOLog) << "GLTF: no such scene" << id << "in file" << m_basePath;
         return defaultScene();
     }
@@ -526,7 +526,7 @@ QParameter *GLTFIO::parameterFromTechnique(QTechnique *technique, const QString 
 
 Qt3DCore::QEntity* GLTFIO::defaultScene()
 {
-    if (m_defaultScene.isEmpty()) {
+    if (Q_UNLIKELY(m_defaultScene.isEmpty())) {
         qCWarning(GLTFIOLog) << Q_FUNC_INFO << "no default scene";
         return NULL;
     }
@@ -616,7 +616,7 @@ QMaterial *GLTFIO::materialWithCustomShader(const QString &id, const QJsonObject
             param = parameterFromTechnique(gl2Technique, vName);
         }
 
-        if (param == nullptr) {
+        if (Q_UNLIKELY(!param)) {
             qCWarning(GLTFIOLog) << "unknown parameter:" << vName << "in technique" << techniqueName
                                      << "processing material" << id;
             continue;
@@ -684,17 +684,17 @@ QMaterial *GLTFIO::commonMaterial(const QJsonObject &jsonObj)
         if (hasSpecularMap) {
             mat = new QNormalDiffuseSpecularMapMaterial;
         } else {
-            if (hasDiffuseMap)
-                mat = new QNormalDiffuseMapMaterial;
-            else
+            if (Q_UNLIKELY(!hasDiffuseMap))
                 qCWarning(GLTFIOLog) << "Common material with normal and specular maps needs a diffuse map as well";
+            else
+                mat = new QNormalDiffuseMapMaterial;
         }
     } else {
         if (hasSpecularMap) {
-            if (hasDiffuseMap)
-                mat = new QDiffuseSpecularMapMaterial;
-            else
+            if (Q_UNLIKELY(!hasDiffuseMap))
                 qCWarning(GLTFIOLog) << "Common material with specular map needs a diffuse map as well";
+            else
+                mat = new QDiffuseSpecularMapMaterial;
         } else if (hasDiffuseMap) {
             mat = new QDiffuseMapMaterial;
         } else {
@@ -702,11 +702,11 @@ QMaterial *GLTFIO::commonMaterial(const QJsonObject &jsonObj)
         }
     }
 
-    if (mat) {
+    if (Q_UNLIKELY(!mat)) {
+        qCWarning(GLTFIOLog) << "Could not find a suitable built-in material for KHR_materials_common";
+    } else {
         for (QVariantHash::const_iterator it = params.constBegin(), itEnd = params.constEnd(); it != itEnd; ++it)
             mat->setProperty(it.key().toUtf8(), it.value());
-    } else {
-        qCWarning(GLTFIOLog) << "Could not find a suitable built-in material for KHR_materials_common";
     }
 
     return mat;
@@ -895,7 +895,7 @@ void GLTFIO::processJSONBufferView(const QString &id, const QJsonObject& json)
     quint64 len = json.value(KEY_BYTE_LENGTH).toInt();
 
     QByteArray bytes = bufferData.data->mid(offset, len);
-    if (bytes.count() != (int) len) {
+    if (Q_UNLIKELY(bytes.count() != int(len))) {
         qCWarning(GLTFIOLog) << "failed to read sufficient bytes from:" << bufferData.path
                                  << "for view" << id;
     }
@@ -912,7 +912,7 @@ void GLTFIO::processJSONShader(const QString &id, const QJsonObject &jsonObject)
     QString path = jsonObject.value(KEY_URI).toString();
 
     QFileInfo info(m_basePath, path);
-    if (!info.exists()) {
+    if (Q_UNLIKELY(!info.exists())) {
         qCWarning(GLTFIOLog) << "can't find shader" << id << "from path" << path;
         return;
     }
@@ -971,7 +971,7 @@ void GLTFIO::processJSONTechnique(const QString &id, const QJsonObject &jsonObje
     // Program
     QString programName = jsonObject.value(KEY_PROGRAM).toString();
     const auto progIt = qAsConst(m_programs).find(programName);
-    if (progIt == m_programs.cend()) {
+    if (Q_UNLIKELY(progIt == m_programs.cend())) {
         qCWarning(GLTFIOLog) << Q_FUNC_INFO << "technique" << id
                                  << ": missing program" << programName;
     }
@@ -985,7 +985,7 @@ void GLTFIO::processJSONTechnique(const QString &id, const QJsonObject &jsonObje
         QString pname = it.value().toString();
         QParameter *parameter = paramDict.value(pname, nullptr);
         QString attributeName = pname;
-        if (parameter == nullptr) {
+        if (Q_UNLIKELY(!parameter)) {
             qCWarning(GLTFIOLog) << Q_FUNC_INFO << "attribute " << pname
                                      << "defined in instanceProgram but not as parameter";
             continue;
@@ -1006,8 +1006,8 @@ void GLTFIO::processJSONTechnique(const QString &id, const QJsonObject &jsonObje
     const QJsonObject uniforms = jsonObject.value(KEY_UNIFORMS).toObject();
     for (auto it = uniforms.begin(), end = uniforms.end(); it != end; ++it) {
         const QString pname = it.value().toString();
-        QParameter *parameter = paramDict.value(pname, nullptr);
-        if (parameter == nullptr) {
+        QParameter *parameter = paramDict.value(pname, Q_NULLPTR);
+        if (Q_UNLIKELY(!parameter)) {
             qCWarning(GLTFIOLog) << Q_FUNC_INFO << "uniform " << pname
                                      << "defined in instanceProgram but not as parameter";
             continue;
@@ -1069,7 +1069,7 @@ void GLTFIO::processJSONMesh(const QString &id, const QJsonObject &json)
         int type = primitiveObject.value(KEY_MODE).toInt();
         QString material = primitiveObject.value(KEY_MATERIAL).toString();
 
-        if ( material.isEmpty()) {
+        if (Q_UNLIKELY(material.isEmpty())) {
             qCWarning(GLTFIOLog) << "malformed primitive on " << id << ", missing material value"
                                      << material;
             continue;
@@ -1100,7 +1100,7 @@ void GLTFIO::processJSONMesh(const QString &id, const QJsonObject &json)
 
             //Get buffer handle for accessor
             Qt3DRender::QBuffer *buffer = m_buffers.value(accessorIt->bufferViewName, Q_NULLPTR);
-            if (buffer == nullptr) {
+            if (Q_UNLIKELY(!buffer)) {
                 qCWarning(GLTFIOLog) << "unknown buffer-view:" << accessorIt->bufferViewName << "processing accessor:" << id;
                 continue;
             }
@@ -1124,8 +1124,8 @@ void GLTFIO::processJSONMesh(const QString &id, const QJsonObject &json)
                 qCWarning(GLTFIOLog) << "unknown index accessor:" << k << "on mesh" << id;
             } else {
                 //Get buffer handle for accessor
-                Qt3DRender::QBuffer *buffer = m_buffers.value(accessorIt->bufferViewName, nullptr);
-                if (buffer == nullptr) {
+                Qt3DRender::QBuffer *buffer = m_buffers.value(accessorIt->bufferViewName, Q_NULLPTR);
+                if (Q_UNLIKELY(!buffer)) {
                     qCWarning(GLTFIOLog) << "unknown buffer-view:" << accessorIt->bufferViewName << "processing accessor:" << id;
                     continue;
                 }
@@ -1151,7 +1151,7 @@ void GLTFIO::processJSONImage(const QString &id, const QJsonObject &jsonObject)
 {
     QString path = jsonObject.value(KEY_URI).toString();
     QFileInfo info(m_basePath, path);
-    if (!info.exists()) {
+    if (Q_UNLIKELY(!info.exists())) {
         qCWarning(GLTFIOLog) << "can't find image" << id << "from path" << path;
         return;
     }
@@ -1163,7 +1163,7 @@ void GLTFIO::processJSONTexture(const QString &id, const QJsonObject &jsonObject
 {
     int target = jsonObject.value(KEY_TARGET).toInt(GL_TEXTURE_2D);
     //TODO: support other targets that GL_TEXTURE_2D (though the spec doesn't support anything else)
-    if (target != GL_TEXTURE_2D) {
+    if (Q_UNLIKELY(target != GL_TEXTURE_2D)) {
         qCWarning(GLTFIOLog) << "unsupported texture target: " << target;
         return;
     }
