@@ -451,7 +451,7 @@ bool GLTFIO::isGLTFPath(const QString& path)
     // might need to detect other things in the future, but would
     // prefer to avoid doing a full parse.
     QString suffix = finfo.suffix().toLower();
-    return (suffix == QStringLiteral("json") || suffix == QStringLiteral("gltf") || suffix == QStringLiteral("qgltf"));
+    return suffix == QLatin1String("json") || suffix == QLatin1String("gltf") || suffix == QLatin1String("qgltf");
 }
 
 void GLTFIO::renameFromJson(const QJsonObject &json, QObject * const object)
@@ -492,20 +492,20 @@ bool GLTFIO::hasStandardUniformNameFromSemantic(const QString &semantic)
 QString GLTFIO::standardAttributeNameFromSemantic(const QString &semantic)
 {
     //Standard Attributes
-    if (semantic.startsWith(QStringLiteral("POSITION")))
+    if (semantic.startsWith(QLatin1String("POSITION")))
         return QAttribute::defaultPositionAttributeName();
-    if (semantic.startsWith(QStringLiteral("NORMAL")))
+    if (semantic.startsWith(QLatin1String("NORMAL")))
         return QAttribute::defaultNormalAttributeName();
-    if (semantic.startsWith(QStringLiteral("TEXCOORD")))
+    if (semantic.startsWith(QLatin1String("TEXCOORD")))
         return QAttribute::defaultTextureCoordinateAttributeName();
-    if (semantic.startsWith(QStringLiteral("COLOR")))
+    if (semantic.startsWith(QLatin1String("COLOR")))
         return QAttribute::defaultColorAttributeName();
-    if (semantic.startsWith(QStringLiteral("TANGENT")))
+    if (semantic.startsWith(QLatin1String("TANGENT")))
         return QAttribute::defaultTangentAttributeName();
 
-//    if (semantic.startsWith(QStringLiteral("JOINT")));
-//    if (semantic.startsWith(QStringLiteral("JOINTMATRIX")));
-//    if (semantic.startsWith(QStringLiteral("WEIGHT")));
+//    if (semantic.startsWith(QLatin1String("JOINT")));
+//    if (semantic.startsWith(QLatin1String("JOINTMATRIX")));
+//    if (semantic.startsWith(QLatin1String("WEIGHT")));
 
     return QString();
 }
@@ -642,29 +642,29 @@ QMaterial *GLTFIO::commonMaterial(const QJsonObject &jsonObj)
         const QJsonValue val = values.value(vName);
         QVariant var;
         QString propertyName = vName;
-        if (vName == QStringLiteral("ambient") && val.isArray()) {
+        if (vName == QLatin1String("ambient") && val.isArray()) {
             var = vec4ToRgb(parameterValueFromJSON(GL_FLOAT_VEC4, val));
-        } else if (vName == QStringLiteral("diffuse")) {
+        } else if (vName == QLatin1String("diffuse")) {
             if (val.isString()) {
                 var = parameterValueFromJSON(GL_SAMPLER_2D, val);
                 hasDiffuseMap = true;
             } else if (val.isArray()) {
                 var = vec4ToRgb(parameterValueFromJSON(GL_FLOAT_VEC4, val));
             }
-        } else if (vName == QStringLiteral("specular")) {
+        } else if (vName == QLatin1String("specular")) {
             if (val.isString()) {
                 var = parameterValueFromJSON(GL_SAMPLER_2D, val);
                 hasSpecularMap = true;
             } else if (val.isArray()) {
                 var = vec4ToRgb(parameterValueFromJSON(GL_FLOAT_VEC4, val));
             }
-        } else if (vName == QStringLiteral("shininess") && val.isDouble()) {
+        } else if (vName == QLatin1String("shininess") && val.isDouble()) {
             var = parameterValueFromJSON(GL_FLOAT, val);
-        } else if (vName == QStringLiteral("normalmap") && val.isString()) {
+        } else if (vName == QLatin1String("normalmap") && val.isString()) {
             var = parameterValueFromJSON(GL_SAMPLER_2D, val);
             propertyName = QStringLiteral("normal");
             hasNormalMap = true;
-        } else if (vName == QStringLiteral("transparency")) {
+        } else if (vName == QLatin1String("transparency")) {
             qCWarning(GLTFIOLog) << "Semi-transparent common materials are not currently supported, ignoring alpha";
         }
         if (var.isValid())
@@ -743,7 +743,7 @@ QCameraLens* GLTFIO::camera(const QString &id) const
     QJsonObject jsonObj = jsonVal.toObject();
     QString camTy = jsonObj.value(KEY_TYPE).toString();
 
-    if (camTy == QStringLiteral("perspective")) {
+    if (camTy == QLatin1String("perspective")) {
         const auto pVal = jsonObj.value(KEY_PERSPECTIVE);
         if (Q_UNLIKELY(pVal.isUndefined())) {
             qCWarning(GLTFIOLog) << "camera:" << id << "missing 'perspective' object";
@@ -759,7 +759,7 @@ QCameraLens* GLTFIO::camera(const QString &id) const
         QCameraLens* result = new QCameraLens;
         result->setPerspectiveProjection(yfov, aspectRatio, frustumNear, frustumFar);
         return result;
-    } else if (camTy == QStringLiteral("orthographic")) {
+    } else if (camTy == QLatin1String("orthographic")) {
         qCWarning(GLTFIOLog) << Q_FUNC_INFO << "implement me";
 
         return nullptr;
@@ -1410,19 +1410,19 @@ QAttribute::VertexBaseType GLTFIO::accessorTypeFromJSON(int componentType)
 uint GLTFIO::accessorDataSizeFromJson(const QString &type)
 {
     QString typeName = type.toUpper();
-    if (typeName == "SCALAR")
+    if (typeName == QLatin1String("SCALAR"))
         return 1;
-    if (typeName == "VEC2")
+    if (typeName == QLatin1String("VEC2"))
         return 2;
-    if (typeName == "VEC3")
+    if (typeName == QLatin1String("VEC3"))
         return 3;
-    if (typeName == "VEC4")
+    if (typeName == QLatin1String("VEC4"))
         return 4;
-    if (typeName == "MAT2")
+    if (typeName == QLatin1String("MAT2"))
         return 4;
-    if (typeName == "MAT3")
+    if (typeName == QLatin1String("MAT3"))
         return 9;
-    if (typeName == "MAT4")
+    if (typeName == QLatin1String("MAT4"))
         return 16;
 
     return 0;
@@ -1469,14 +1469,14 @@ QRenderState* GLTFIO::buildState(const QString& functionName, const QJsonValue &
     type = -1;
     QJsonArray values = value.toArray();
 
-    if (functionName == QStringLiteral("blendColor")) {
+    if (functionName == QLatin1String("blendColor")) {
         type = GL_BLEND;
         //TODO: support render state blendColor
         qCWarning(GLTFIOLog) << Q_FUNC_INFO << "unsupported render state:" << functionName;
         return nullptr;
     }
 
-    if (functionName == QStringLiteral("blendEquationSeparate")) {
+    if (functionName == QLatin1String("blendEquationSeparate")) {
         type = GL_BLEND;
         //TODO: support settings blendEquation alpha
         QBlendEquation *blendEquation = new QBlendEquation;
@@ -1484,7 +1484,7 @@ QRenderState* GLTFIO::buildState(const QString& functionName, const QJsonValue &
         return blendEquation;
     }
 
-    if (functionName == QStringLiteral("blendFuncSeparate")) {
+    if (functionName == QLatin1String("blendFuncSeparate")) {
         type = GL_BLEND;
         QBlendEquationArguments *blendArgs = new QBlendEquationArguments;
         blendArgs->setSourceRgb((QBlendEquationArguments::Blending)values.at(0).toInt(GL_ONE));
@@ -1494,7 +1494,7 @@ QRenderState* GLTFIO::buildState(const QString& functionName, const QJsonValue &
         return blendArgs;
     }
 
-    if (functionName == QStringLiteral("colorMask")) {
+    if (functionName == QLatin1String("colorMask")) {
         QColorMask *colorMask = new QColorMask;
         colorMask->setRedMasked(values.at(0).toBool(true));
         colorMask->setGreenMasked(values.at(1).toBool(true));
@@ -1503,21 +1503,21 @@ QRenderState* GLTFIO::buildState(const QString& functionName, const QJsonValue &
         return colorMask;
     }
 
-    if (functionName == QStringLiteral("cullFace")) {
+    if (functionName == QLatin1String("cullFace")) {
         type = GL_CULL_FACE;
         QCullFace *cullFace = new QCullFace;
         cullFace->setMode((QCullFace::CullingMode)values.at(0).toInt(GL_BACK));
         return cullFace;
     }
 
-    if (functionName == QStringLiteral("depthFunc")) {
+    if (functionName == QLatin1String("depthFunc")) {
         type = GL_DEPTH_TEST;
         QDepthTest *depthTest = new QDepthTest;
         depthTest->setDepthFunction((QDepthTest::DepthFunction)values.at(0).toInt(GL_LESS));
         return depthTest;
     }
 
-    if (functionName == QStringLiteral("depthMask")) {
+    if (functionName == QLatin1String("depthMask")) {
         if (!values.at(0).toBool(true)) {
             QNoDepthMask *depthMask = new QNoDepthMask;
             return depthMask;
@@ -1525,25 +1525,25 @@ QRenderState* GLTFIO::buildState(const QString& functionName, const QJsonValue &
         return nullptr;
     }
 
-    if (functionName == QStringLiteral("depthRange")) {
+    if (functionName == QLatin1String("depthRange")) {
         //TODO: support render state depthRange
         qCWarning(GLTFIOLog) << Q_FUNC_INFO << "unsupported render state:" << functionName;
         return nullptr;
     }
 
-    if (functionName == QStringLiteral("frontFace")) {
+    if (functionName == QLatin1String("frontFace")) {
         QFrontFace *frontFace = new QFrontFace;
         frontFace->setDirection((QFrontFace::WindingDirection)values.at(0).toInt(GL_CCW));
         return frontFace;
     }
 
-    if (functionName == QStringLiteral("lineWidth")) {
+    if (functionName == QLatin1String("lineWidth")) {
         //TODO: support render state lineWidth
         qCWarning(GLTFIOLog) << Q_FUNC_INFO << "unsupported render state:" << functionName;
         return nullptr;
     }
 
-    if (functionName == QStringLiteral("polygonOffset")) {
+    if (functionName == QLatin1String("polygonOffset")) {
         type = GL_POLYGON_OFFSET_FILL;
         QPolygonOffset *polygonOffset = new QPolygonOffset;
         polygonOffset->setScaleFactor((float)values.at(0).toDouble(0.0f));
@@ -1551,7 +1551,7 @@ QRenderState* GLTFIO::buildState(const QString& functionName, const QJsonValue &
         return polygonOffset;
     }
 
-    if (functionName == QStringLiteral("scissor")) {
+    if (functionName == QLatin1String("scissor")) {
         type = GL_SCISSOR_TEST;
         QScissorTest *scissorTest = new QScissorTest;
         scissorTest->setLeft(values.at(0).toDouble(0.0f));
