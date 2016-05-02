@@ -993,11 +993,12 @@ void GLTFIO::processJSONTechnique(const QString &id, const QJsonObject &jsonObje
             continue;
         }
         //Check if the parameter has a standard attribute semantic
-        QString standardAttributeName = standardAttributeNameFromSemantic(m_parameterDataDict[parameter].semantic);
+        const auto paramDataIt = m_parameterDataDict.find(parameter);
+        QString standardAttributeName = standardAttributeNameFromSemantic(paramDataIt->semantic);
         if (!standardAttributeName.isNull()) {
             attributeName = standardAttributeName;
             t->removeParameter(parameter);
-            m_parameterDataDict.remove(parameter);
+            m_parameterDataDict.erase(paramDataIt);
             delete parameter;
         }
 
@@ -1014,9 +1015,10 @@ void GLTFIO::processJSONTechnique(const QString &id, const QJsonObject &jsonObje
             continue;
         }
         //Check if the parameter has a standard uniform semantic
-        if (hasStandardUniformNameFromSemantic(m_parameterDataDict[parameter].semantic)) {
+        const auto paramDataIt = m_parameterDataDict.find(parameter);
+        if (hasStandardUniformNameFromSemantic(paramDataIt->semantic)) {
             t->removeParameter(parameter);
-            m_parameterDataDict.remove(parameter);
+            m_parameterDataDict.erase(paramDataIt);
             delete parameter;
         }
     } // of program-instance uniforms
