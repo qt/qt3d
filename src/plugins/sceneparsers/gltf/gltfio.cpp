@@ -244,7 +244,8 @@ Qt3DCore::QEntity* GLTFIO::node(const QString &id)
     {
         QVector<QEntity *> entities;
 
-        Q_FOREACH (QJsonValue mesh, jsonObj.value(KEY_MESHES).toArray()) {
+        const auto meshes = jsonObj.value(KEY_MESHES).toArray();
+        for (const QJsonValue &mesh : meshes) {
             const auto geometryRenderers = qAsConst(m_meshDict).equal_range(mesh.toString());
             if (Q_UNLIKELY(geometryRenderers.first == geometryRenderers.second)) {
                 qCWarning(GLTFIOLog) << "node" << id << "references unknown mesh" << mesh.toString();
@@ -270,9 +271,8 @@ Qt3DCore::QEntity* GLTFIO::node(const QString &id)
             result = entities.first();
         default:
             result = new QEntity;
-            Q_FOREACH (QEntity *entity, entities) {
+            for (QEntity *entity : qAsConst(entities))
                 entity->setParent(result);
-            }
         }
     }
 
@@ -281,7 +281,8 @@ Qt3DCore::QEntity* GLTFIO::node(const QString &id)
         result = new QEntity;
 
     {
-        Q_FOREACH (QJsonValue c, jsonObj.value(KEY_CHILDREN).toArray()) {
+        const auto children = jsonObj.value(KEY_CHILDREN).toArray();
+        for (const QJsonValue &c : children) {
             QEntity* child = node(c.toString());
             if (!child)
                 continue;
@@ -380,7 +381,8 @@ Qt3DCore::QEntity* GLTFIO::scene(const QString &id)
 
     QJsonObject sceneObj = sceneVal.toObject();
     QEntity* sceneEntity = new QEntity;
-    Q_FOREACH (QJsonValue nnv, sceneObj.value(KEY_NODES).toArray()) {
+    const auto nodes = sceneObj.value(KEY_NODES).toArray();
+    for (const QJsonValue &nnv : nodes) {
         QString nodeName = nnv.toString();
         QEntity* child = node(nodeName);
         if (!child)
@@ -514,7 +516,8 @@ QString GLTFIO::standardAttributeNameFromSemantic(const QString &semantic)
 
 QParameter *GLTFIO::parameterFromTechnique(QTechnique *technique, const QString &parameterName)
 {
-    Q_FOREACH (QParameter *parameter, technique->parameters()) {
+    const auto parameters = technique->parameters();
+    for (QParameter *parameter : parameters) {
         if (parameter->name() == parameterName) {
             return parameter;
         }
@@ -1023,11 +1026,10 @@ void GLTFIO::processJSONTechnique(const QString &id, const QJsonObject &jsonObje
     QJsonObject states = jsonObject.value(KEY_STATES).toObject();
 
     //Process states to enable
-    QJsonArray enableStatesArray = states.value(KEY_ENABLE).toArray();
+    const QJsonArray enableStatesArray = states.value(KEY_ENABLE).toArray();
     QVector<int> enableStates;
-    Q_FOREACH (QJsonValue enableValue, enableStatesArray) {
+    for (const QJsonValue &enableValue : enableStatesArray)
         enableStates.append(enableValue.toInt());
-    }
 
     //Process the list of state functions
     const QJsonObject functions = states.value(KEY_FUNCTIONS).toObject();
@@ -1042,7 +1044,7 @@ void GLTFIO::processJSONTechnique(const QString &id, const QJsonObject &jsonObje
     }
 
     //Create render states with default values for any remaining enable states
-    Q_FOREACH (int enableState, enableStates) {
+    for (int enableState : qAsConst(enableStates)) {
         QRenderState *renderState = buildStateEnable(enableState);
         if (renderState != nullptr)
             pass->addRenderState(renderState);
@@ -1061,8 +1063,8 @@ void GLTFIO::processJSONAccessor( const QString &id, const QJsonObject& json )
 
 void GLTFIO::processJSONMesh(const QString &id, const QJsonObject &json)
 {
-    QJsonArray primitivesArray = json.value(KEY_PRIMITIVES).toArray();
-    Q_FOREACH (QJsonValue primitiveValue, primitivesArray) {
+    const QJsonArray primitivesArray = json.value(KEY_PRIMITIVES).toArray();
+    for (const QJsonValue &primitiveValue : primitivesArray) {
         QJsonObject primitiveObject = primitiveValue.toObject();
         int type = primitiveObject.value(KEY_MODE).toInt();
         QString material = primitiveObject.value(KEY_MATERIAL).toString();
