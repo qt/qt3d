@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qabstractphysicaldevicebackendnode.h"
 #include "qabstractphysicaldevicebackendnode_p.h"
+#include "qabstractphysicaldevicebackendnode_p_p.h"
 #include "qabstractphysicaldevice.h"
 #include "qaxissetting.h"
 #include "inputhandler_p.h"

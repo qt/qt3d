@@ -37,35 +37,42 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QINPUTDEVICEPLUGIN_H
-#define QT3DINPUT_QINPUTDEVICEPLUGIN_H
+#ifndef QT3DINPUT_QINPUTDEVICEINTEGRATION_P_P_H
+#define QT3DINPUT_QINPUTDEVICEINTEGRATION_P_P_H
 
-#include <QtCore/QObject>
-#include <QtCore/QtPlugin>
-#include <QtCore/QFactoryInterface>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
-#include <Qt3DInput/qt3dinput_global.h>
+#include <private/qobject_p.h>
+#include <private/qt3dinput_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
+class QInputAspect;
 class QInputDeviceIntegration;
 
-class QT3DINPUTSHARED_EXPORT QInputDevicePlugin : public QObject
+class QT3DINPUTSHARED_PRIVATE_EXPORT QInputDeviceIntegrationPrivate : public QObjectPrivate
 {
-    Q_OBJECT
 public:
-    explicit QInputDevicePlugin(QObject *parent = nullptr);
-    ~QInputDevicePlugin();
+    QInputDeviceIntegrationPrivate();
 
-    virtual QInputDeviceIntegration *create(const QString &key, const QStringList &paramList);
+    Q_DECLARE_PUBLIC(QInputDeviceIntegration)
+
+    QInputAspect *m_aspect;
 };
 
 } // Qt3DInput
 
-#define QInputDevicePlugin_iid "org.qt-project.Qt3DInput.QInputDevicePlugin 5.6"
-
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QINPUTDEVICEPLUGIN_H
+#endif // QT3DINPUT_QINPUTDEVICEINTEGRATION_P_P_H

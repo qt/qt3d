@@ -49,7 +49,7 @@
 #include <Qt3DInput/qkeyboardhandler.h>
 #include <Qt3DInput/qmousedevice.h>
 #include <Qt3DInput/qmousehandler.h>
-#include <Qt3DInput/qinputdeviceintegration.h>
+#include <Qt3DInput/private/qinputdeviceintegration_p.h>
 #include <Qt3DInput/qinputsettings.h>
 #include <Qt3DInput/private/qgenericinputdevice_p.h>
 #include <Qt3DInput/private/qinputdeviceintegrationfactory_p.h>

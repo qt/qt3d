@@ -37,48 +37,35 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QABSTRACTPHYSICALDEVICEBACKENDNODE_H
-#define QT3DINPUT_QABSTRACTPHYSICALDEVICEBACKENDNODE_H
+#ifndef QT3DINPUT_QINPUTDEVICEPLUGIN_P_H
+#define QT3DINPUT_QINPUTDEVICEPLUGIN_P_H
 
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DInput/qt3dinput_global.h>
+#include <QtCore/QObject>
+#include <QtCore/QtPlugin>
+#include <QtCore/QFactoryInterface>
+
+#include <Qt3DInput/private/qt3dinput_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-class QBackendNodePrivate;
-}
-
 namespace Qt3DInput {
 
-class QInputAspect;
-class QAbstractPhysicalDeviceBackendNodePrivate;
+class QInputDeviceIntegration;
 
-class QT3DINPUTSHARED_EXPORT QAbstractPhysicalDeviceBackendNode : public Qt3DCore::QBackendNode
+class QT3DINPUTSHARED_PRIVATE_EXPORT QInputDevicePlugin : public QObject
 {
+    Q_OBJECT
 public:
-    explicit QAbstractPhysicalDeviceBackendNode(QBackendNode::Mode mode);
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    virtual void cleanup();
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    explicit QInputDevicePlugin(QObject *parent = nullptr);
+    ~QInputDevicePlugin();
 
-    void setInputAspect(QInputAspect *aspect);
-    QInputAspect *inputAspect() const;
-
-    float processedAxisValue(int axisIdentifier);
-    virtual float axisValue(int axisIdentifier) const = 0;
-    virtual bool isButtonPressed(int buttonIdentifier) const = 0;
-
-protected:
-    QAbstractPhysicalDeviceBackendNode(QAbstractPhysicalDeviceBackendNodePrivate &dd);
-
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
-
-    Q_DECLARE_PRIVATE(QAbstractPhysicalDeviceBackendNode)
+    virtual QInputDeviceIntegration *create(const QString &key, const QStringList &paramList);
 };
 
 } // Qt3DInput
 
+#define QInputDevicePlugin_iid "org.qt-project.Qt3DInput.QInputDevicePlugin 5.6"
+
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QABSTRACTPHYSICALDEVICEBACKENDNODE_H
+#endif // QT3DINPUT_QINPUTDEVICEPLUGIN_P_H

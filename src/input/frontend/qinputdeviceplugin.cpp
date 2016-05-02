@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "qinputdeviceplugin.h"
+#include "qinputdeviceplugin_p.h"
 
 QT_BEGIN_NAMESPACE
 

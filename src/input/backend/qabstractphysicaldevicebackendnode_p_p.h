@@ -37,65 +37,74 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QINPUTDEVICEINTEGRATION_H
-#define QT3DINPUT_QINPUTDEVICEINTEGRATION_H
+#ifndef QT3DINPUT_QABSTRACTPHYSICALDEVICEBACKENDNODE_P_P_H
+#define QT3DINPUT_QABSTRACTPHYSICALDEVICEBACKENDNODE_P_P_H
 
-#include <QObject>
-#include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DInput/qabstractphysicaldevicebackendnode.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
-#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DCore/private/qbackendnode_p.h>
 #include <Qt3DCore/qnodeid.h>
+#include <QtCore/qvector.h>
+#include <Qt3DInput/private/qt3dinput_global_p.h>
+#include <Qt3DInput/private/movingaverage_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-class QBackendNodeMapper;
-typedef QSharedPointer<QBackendNodeMapper> QBackendNodeMapperPtr;
-}
-
-
 namespace Qt3DInput {
 
+class QAxisSetting;
 class QInputAspect;
-class QAbstractPhysicalDevice;
-class QInputDeviceIntegrationPrivate;
 
-class QT3DINPUTSHARED_EXPORT QInputDeviceIntegration : public QObject
+namespace Input {
+
+struct AxisIdSetting
 {
-    Q_OBJECT
-protected:
-    explicit QInputDeviceIntegration(QObject *parent = nullptr);
-    explicit QInputDeviceIntegration(QInputDeviceIntegrationPrivate &dd, QObject *parent = nullptr);
-
-    template<class Frontend>
-    void registerBackendType(const Qt3DCore::QBackendNodeMapperPtr &functor)
-    {
-        registerBackendType(Frontend::staticMetaObject, functor);
-    }
-
-    void registerBackendType(const QMetaObject &metaObject, const Qt3DCore::QBackendNodeMapperPtr &functor);
-
-public:
-    void initialize(Qt3DInput::QInputAspect *aspect);
-
-    virtual QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) = 0;
-    virtual QAbstractPhysicalDevice *createPhysicalDevice(const QString &name) = 0;
-    virtual QVector<Qt3DCore::QNodeId> physicalDevices() const = 0;
-    virtual QAbstractPhysicalDeviceBackendNode *physicalDevice(Qt3DCore::QNodeId id) const = 0;
-    virtual QStringList deviceNames() const = 0;
-
-protected:
-    QInputAspect *inputAspect() const;
-
-private:
-    virtual void onInitialize() = 0;
-
-    Q_DECLARE_PRIVATE(QInputDeviceIntegration)
+    int m_axisIdentifier;
+    Qt3DCore::QNodeId m_axisSettingsId;
 };
 
-} // namespace Qt3DInput
+struct AxisIdFilter
+{
+    int m_axisIdentifier;
+    MovingAverage m_filter;
+};
+
+class AxisSetting;
+
+}
+
+class QT3DINPUTSHARED_PRIVATE_EXPORT QAbstractPhysicalDeviceBackendNodePrivate : public Qt3DCore::QBackendNodePrivate
+{
+public:
+    explicit QAbstractPhysicalDeviceBackendNodePrivate(Qt3DCore::QBackendNode::Mode mode = Qt3DCore::QBackendNode::ReadOnly);
+
+    Q_DECLARE_PUBLIC(QAbstractPhysicalDeviceBackendNode)
+
+    void addAxisSetting(int axisIdentifier, Qt3DCore::QNodeId axisSettingId);
+    void removeAxisSetting(Qt3DCore::QNodeId axisSettingsId);
+
+    Input::MovingAverage &getOrCreateFilter(int axisIdentifier);
+
+    Input::AxisSetting *getAxisSetting(Qt3DCore::QNodeId axisSettingId) const;
+
+    Qt3DCore::QNodeIdVector m_pendingAxisSettingIds;
+    QVector<Input::AxisIdSetting> m_axisSettings;
+    QVector<Input::AxisIdFilter> m_axisFilters;
+    QInputAspect *m_inputAspect;
+};
+
+}
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QINPUTDEVICEINTEGRATION_H
+#endif // QT3DINPUT_QABSTRACTPHYSICALDEVICEBACKENDNODE_P_P_H
+

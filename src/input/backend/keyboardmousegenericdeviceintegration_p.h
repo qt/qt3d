@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DInput/qinputdeviceintegration.h>
+#include <Qt3DInput/private/qinputdeviceintegration_p.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qinputdeviceintegration.h"
 #include "qinputdeviceintegration_p.h"
+#include "qinputdeviceintegration_p_p.h"
 
 #include <Qt3DInput/QInputAspect>
 

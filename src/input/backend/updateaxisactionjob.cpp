@@ -40,8 +40,8 @@
 #include "updateaxisactionjob_p.h"
 #include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
-#include <Qt3DInput/qabstractphysicaldevicebackendnode.h>
-#include <Qt3DInput/qinputdeviceintegration.h>
+#include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
+#include <Qt3DInput/private/qinputdeviceintegration_p.h>
 
 QT_BEGIN_NAMESPACE
 

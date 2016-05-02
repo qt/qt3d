@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DInput/qabstractphysicaldevicebackendnode.h>
+#include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
 #include <QHash>
 #include <QMutex>
 

@@ -19,10 +19,10 @@ HEADERS += \
     $$PWD/buttonaxisinput_p.h \
     $$PWD/logicaldevice_p.h \
     $$PWD/inputbackendnodefunctor_p.h \
-    $$PWD/qabstractphysicaldevicebackendnode.h \
+    $$PWD/qabstractphysicaldevicebackendnode_p.h \
     $$PWD/movingaverage_p.h \
     $$PWD/axissetting_p.h \
-    $$PWD/qabstractphysicaldevicebackendnode_p.h \
+    $$PWD/qabstractphysicaldevicebackendnode_p_p.h \
     $$PWD/updateaxisactionjob_p.h \
     $$PWD/keyboardmousegenericdeviceintegration_p.h \
     $$PWD/genericdevicebackendnode_p.h \

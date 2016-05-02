@@ -11,7 +11,7 @@ HEADERS += \
     $$PWD/qmousehandler.h \
     $$PWD/qmousehandler_p.h \
     $$PWD/qmouseevent.h \
-    $$PWD/qinputdeviceplugin.h \
+    $$PWD/qinputdeviceplugin_p.h \
     $$PWD/qactioninput.h \
     $$PWD/qaction.h \
     $$PWD/qabstractaxisinput.h \
@@ -19,8 +19,8 @@ HEADERS += \
     $$PWD/qanalogaxisinput.h \
     $$PWD/qbuttonaxisinput.h \
     $$PWD/qlogicaldevice.h \
-    $$PWD/qinputdeviceintegration.h \
     $$PWD/qinputdeviceintegration_p.h \
+    $$PWD/qinputdeviceintegration_p_p.h \
     $$PWD/qabstractphysicaldevice.h \
     $$PWD/qinputdeviceintegrationfactory_p.h \
     $$PWD/qaxissetting.h \
