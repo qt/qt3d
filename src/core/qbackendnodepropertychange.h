@@ -89,7 +89,33 @@ protected:
 typedef QSharedPointer<QBackendNodePropertyChange> QBackendNodePropertyChangePtr;
 
 
-} // Qt3D
+template<typename T>
+class QTypedBackendNodePropertyChange : public QBackendNodePropertyChangeBase
+{
+public:
+    explicit QTypedBackendNodePropertyChange(QNodeId _subjectId, Priority _priority = QSceneChange::Standard)
+        : QBackendNodePropertyChangeBase(_subjectId, _priority)
+        , data()
+    {
+    }
+
+    T data;
+};
+
+#if defined(Q_COMPILER_TEMPLATE_ALIAS)
+template<typename T>
+using QTypedBackendNodePropertyChangePtr = QSharedPointer<QTypedBackendNodePropertyChange<T>>;
+#else
+template <typename T>
+struct QTypedBackendNodePropertyChangePtr {
+    static QSharedPointer<QTypedBackendNodePropertyChange<T> > create(QNodeId subjectId)
+    {
+        return QSharedPointer<QTypedBackendNodePropertyChange<T> >::create(subjectId);
+    }
+};
+#endif
+
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
