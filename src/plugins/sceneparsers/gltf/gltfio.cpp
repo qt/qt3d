@@ -913,9 +913,6 @@ void GLTFIO::processJSONShader(const QString &id, const QJsonObject &jsonObject)
 
 void GLTFIO::processJSONProgram(const QString &id, const QJsonObject &jsonObject)
 {
-    QShaderProgram* prog = new QShaderProgram;
-    prog->setObjectName(id);
-
     QString fragName = jsonObject.value(KEY_FRAGMENT_SHADER).toString(),
             vertName = jsonObject.value(KEY_VERTEX_SHADER).toString();
     if (!m_shaderPaths.contains(fragName) || !m_shaderPaths.contains(vertName)) {
@@ -924,6 +921,8 @@ void GLTFIO::processJSONProgram(const QString &id, const QJsonObject &jsonObject
         return;
     }
 
+    QShaderProgram* prog = new QShaderProgram;
+    prog->setObjectName(id);
     prog->setFragmentShaderCode(QShaderProgram::loadSource(QUrl::fromLocalFile(m_shaderPaths[fragName])));
     prog->setVertexShaderCode(QShaderProgram::loadSource(QUrl::fromLocalFile(m_shaderPaths[vertName])));
     m_programs[id] = prog;
