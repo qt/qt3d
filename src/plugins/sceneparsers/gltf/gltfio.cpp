@@ -268,7 +268,7 @@ Qt3DCore::QEntity* GLTFIO::node(const QString &id)
         case 0:
             break;
         case 1:
-            result = entities.first();
+            result = qAsConst(entities).first();
         default:
             result = new QEntity;
             for (QEntity *entity : qAsConst(entities))
@@ -1280,7 +1280,7 @@ QVariant GLTFIO::parameterValueFromJSON(int type, const QJsonValue &value) const
         }
     } else if (value.isArray()) {
 
-        QJsonArray valueArray = value.toArray();
+        const QJsonArray valueArray = value.toArray();
 
         QVector2D vector2D;
         QVector3D vector3D;
