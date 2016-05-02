@@ -399,11 +399,11 @@ GLTFIO::BufferData::BufferData()
 {
 }
 
-GLTFIO::BufferData::BufferData(QJsonObject json)
+GLTFIO::BufferData::BufferData(const QJsonObject &json)
+    : length(json.value(KEY_BYTE_LENGTH).toInt()),
+      path(json.value(KEY_URI).toString()),
+      data(nullptr)
 {
-    path = json.value(KEY_URI).toString();
-    length = json.value(KEY_BYTE_LENGTH).toInt();
-    data = nullptr;
 }
 
 GLTFIO::ParameterData::ParameterData() :
@@ -412,10 +412,10 @@ GLTFIO::ParameterData::ParameterData() :
 
 }
 
-GLTFIO::ParameterData::ParameterData(QJsonObject json)
+GLTFIO::ParameterData::ParameterData(const QJsonObject &json)
+    : semantic(json.value(KEY_SEMANTIC).toString()),
+      type(json.value(KEY_TYPE).toInt())
 {
-    type = json.value(KEY_TYPE).toInt();
-    semantic = json.value(KEY_SEMANTIC).toString();
 }
 
 GLTFIO::AccessorData::AccessorData()
@@ -429,15 +429,13 @@ GLTFIO::AccessorData::AccessorData()
 }
 
 GLTFIO::AccessorData::AccessorData(const QJsonObject &json)
+    : bufferViewName(json.value(KEY_BUFFER_VIEW).toString()),
+      type(accessorTypeFromJSON(json.value(KEY_COMPONENT_TYPE).toInt())),
+      dataSize(accessorDataSizeFromJson(json.value(KEY_TYPE).toString())),
+      count(json.value(KEY_COUNT).toInt()),
+      offset(0),
+      stride(0)
 {
-    bufferViewName = json.value(KEY_BUFFER_VIEW).toString();
-    offset = 0;
-    stride = 0;
-    int componentType = json.value(KEY_COMPONENT_TYPE).toInt();
-    type = accessorTypeFromJSON(componentType);
-    count = json.value(KEY_COUNT).toInt();
-    dataSize = accessorDataSizeFromJson(json.value(KEY_TYPE).toString());
-
     const auto byteOffset = json.value(KEY_BYTE_OFFSET);
     if (!byteOffset.isUndefined())
         offset = byteOffset.toInt();

@@ -104,8 +104,7 @@ private:
     {
     public:
         BufferData();
-
-        BufferData(QJsonObject json);
+        explicit BufferData(const QJsonObject &json);
 
         quint64 length;
         QString path;
@@ -117,7 +116,7 @@ private:
     {
     public:
         ParameterData();
-        ParameterData(QJsonObject json);
+        explicit ParameterData(const QJsonObject &json);
 
         QString semantic;
         int type;
@@ -127,7 +126,7 @@ private:
     {
     public:
         AccessorData();
-        AccessorData(const QJsonObject& json);
+        explicit AccessorData(const QJsonObject& json);
 
         QString bufferViewName;
         QAttribute::VertexBaseType type;
