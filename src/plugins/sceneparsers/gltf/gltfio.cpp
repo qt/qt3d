@@ -89,75 +89,75 @@ namespace Qt3DRender {
 
 Q_LOGGING_CATEGORY(GLTFIOLog, "Qt3D.GLTFIO")
 
-static const auto KEY_CAMERA      = QLatin1String("camera");
-static const auto KEY_CAMERAS     = QLatin1String("cameras");
-static const auto KEY_SCENES      = QLatin1String("scenes");
-static const auto KEY_NODES       = QLatin1String("nodes");
-static const auto KEY_MESHES      = QLatin1String("meshes");
-static const auto KEY_CHILDREN    = QLatin1String("children");
-static const auto KEY_MATRIX      = QLatin1String("matrix");
-static const auto KEY_ROTATION    = QLatin1String("rotation");
-static const auto KEY_SCALE       = QLatin1String("scale");
-static const auto KEY_TRANSLATION = QLatin1String("translation");
-static const auto KEY_TYPE        = QLatin1String("type");
-static const auto KEY_PERSPECTIVE = QLatin1String("perspective");
-static const auto KEY_NAME        = QLatin1String("name");
-static const auto KEY_COUNT       = QLatin1String("count");
-static const auto KEY_YFOV        = QLatin1String("yfov");
-static const auto KEY_ZNEAR       = QLatin1String("znear");
-static const auto KEY_ZFAR        = QLatin1String("zfar");
-static const auto KEY_MATERIALS   = QLatin1String("materials");
-static const auto KEY_EXTENSIONS  = QLatin1String("extensions");
-static const auto KEY_COMMON_MAT  = QLatin1String("KHR_materials_common");
-static const auto KEY_TECHNIQUE   = QLatin1String("technique");
-static const auto KEY_VALUES      = QLatin1String("values");
-static const auto KEY_BUFFERS     = QLatin1String("buffers");
-static const auto KEY_SHADERS     = QLatin1String("shaders");
-static const auto KEY_PROGRAMS    = QLatin1String("programs");
-static const auto KEY_PROGRAM     = QLatin1String("program");
-static const auto KEY_TECHNIQUES  = QLatin1String("techniques");
-static const auto KEY_ACCESSORS   = QLatin1String("accessors");
-static const auto KEY_IMAGES      = QLatin1String("images");
-static const auto KEY_TEXTURES    = QLatin1String("textures");
-static const auto KEY_SCENE       = QLatin1String("scene");
-static const auto KEY_BUFFER      = QLatin1String("buffer");
-static const auto KEY_TARGET      = QLatin1String("target");
-static const auto KEY_BYTE_OFFSET = QLatin1String("byteOffset");
-static const auto KEY_BYTE_LENGTH = QLatin1String("byteLength");
-static const auto KEY_BYTE_STRIDE = QLatin1String("byteStride");
-static const auto KEY_PRIMITIVES  = QLatin1String("primitives");
-static const auto KEY_MODE        = QLatin1String("mode");
-static const auto KEY_MATERIAL    = QLatin1String("material");
-static const auto KEY_ATTRIBUTES  = QLatin1String("attributes");
-static const auto KEY_INDICES     = QLatin1String("indices");
-static const auto KEY_URI         = QLatin1String("uri");
-static const auto KEY_FORMAT      = QLatin1String("format");
-static const auto KEY_PASSES      = QLatin1String("passes");
-static const auto KEY_SOURCE      = QLatin1String("source");
-static const auto KEY_SAMPLER     = QLatin1String("sampler");
-static const auto KEY_SAMPLERS    = QLatin1String("samplers");
-static const auto KEY_SEMANTIC    = QLatin1String("semantic");
-static const auto KEY_STATES      = QLatin1String("states");
-static const auto KEY_UNIFORMS    = QLatin1String("uniforms");
-static const auto KEY_PARAMETERS  = QLatin1String("parameters");
-static const auto KEY_WRAP_S      = QLatin1String("wrapS");
-static const auto KEY_MIN_FILTER  = QLatin1String("minFilter");
-static const auto KEY_MAG_FILTER  = QLatin1String("magFilter");
+#define KEY_CAMERA       QLatin1String("camera")
+#define KEY_CAMERAS      QLatin1String("cameras")
+#define KEY_SCENES       QLatin1String("scenes")
+#define KEY_NODES        QLatin1String("nodes")
+#define KEY_MESHES       QLatin1String("meshes")
+#define KEY_CHILDREN     QLatin1String("children")
+#define KEY_MATRIX       QLatin1String("matrix")
+#define KEY_ROTATION     QLatin1String("rotation")
+#define KEY_SCALE        QLatin1String("scale")
+#define KEY_TRANSLATION  QLatin1String("translation")
+#define KEY_TYPE         QLatin1String("type")
+#define KEY_PERSPECTIVE  QLatin1String("perspective")
+#define KEY_NAME         QLatin1String("name")
+#define KEY_COUNT        QLatin1String("count")
+#define KEY_YFOV         QLatin1String("yfov")
+#define KEY_ZNEAR        QLatin1String("znear")
+#define KEY_ZFAR         QLatin1String("zfar")
+#define KEY_MATERIALS    QLatin1String("materials")
+#define KEY_EXTENSIONS   QLatin1String("extensions")
+#define KEY_COMMON_MAT   QLatin1String("KHR_materials_common")
+#define KEY_TECHNIQUE    QLatin1String("technique")
+#define KEY_VALUES       QLatin1String("values")
+#define KEY_BUFFERS      QLatin1String("buffers")
+#define KEY_SHADERS      QLatin1String("shaders")
+#define KEY_PROGRAMS     QLatin1String("programs")
+#define KEY_PROGRAM      QLatin1String("program")
+#define KEY_TECHNIQUES   QLatin1String("techniques")
+#define KEY_ACCESSORS    QLatin1String("accessors")
+#define KEY_IMAGES       QLatin1String("images")
+#define KEY_TEXTURES     QLatin1String("textures")
+#define KEY_SCENE        QLatin1String("scene")
+#define KEY_BUFFER       QLatin1String("buffer")
+#define KEY_TARGET       QLatin1String("target")
+#define KEY_BYTE_OFFSET  QLatin1String("byteOffset")
+#define KEY_BYTE_LENGTH  QLatin1String("byteLength")
+#define KEY_BYTE_STRIDE  QLatin1String("byteStride")
+#define KEY_PRIMITIVES   QLatin1String("primitives")
+#define KEY_MODE         QLatin1String("mode")
+#define KEY_MATERIAL     QLatin1String("material")
+#define KEY_ATTRIBUTES   QLatin1String("attributes")
+#define KEY_INDICES      QLatin1String("indices")
+#define KEY_URI          QLatin1String("uri")
+#define KEY_FORMAT       QLatin1String("format")
+#define KEY_PASSES       QLatin1String("passes")
+#define KEY_SOURCE       QLatin1String("source")
+#define KEY_SAMPLER      QLatin1String("sampler")
+#define KEY_SAMPLERS     QLatin1String("samplers")
+#define KEY_SEMANTIC     QLatin1String("semantic")
+#define KEY_STATES       QLatin1String("states")
+#define KEY_UNIFORMS     QLatin1String("uniforms")
+#define KEY_PARAMETERS   QLatin1String("parameters")
+#define KEY_WRAP_S       QLatin1String("wrapS")
+#define KEY_MIN_FILTER   QLatin1String("minFilter")
+#define KEY_MAG_FILTER   QLatin1String("magFilter")
 
-static const auto KEY_INSTANCE_TECHNIQUE = QLatin1String("instanceTechnique");
-static const auto KEY_INSTANCE_PROGRAM   = QLatin1String("instanceProgram");
-static const auto KEY_BUFFER_VIEWS       = QLatin1String("bufferViews");
-static const auto KEY_BUFFER_VIEW        = QLatin1String("bufferView");
-static const auto KEY_VERTEX_SHADER      = QLatin1String("vertexShader");
-static const auto KEY_FRAGMENT_SHADER    = QLatin1String("fragmentShader");
-static const auto KEY_INTERNAL_FORMAT    = QLatin1String("internalFormat");
-static const auto KEY_COMPONENT_TYPE     = QLatin1String("componentType");
-static const auto KEY_ASPECT_RATIO       = QLatin1String("aspect_ratio");
-static const auto KEY_VALUE              = QLatin1String("value");
-static const auto KEY_ENABLE             = QLatin1String("enable");
-static const auto KEY_FUNCTIONS          = QLatin1String("functions");
-static const auto KEY_TECHNIQUE_CORE     = QLatin1String("techniqueCore");
-static const auto KEY_TECHNIQUE_GL2      = QLatin1String("techniqueGL2");
+#define KEY_INSTANCE_TECHNIQUE  QLatin1String("instanceTechnique")
+#define KEY_INSTANCE_PROGRAM    QLatin1String("instanceProgram")
+#define KEY_BUFFER_VIEWS        QLatin1String("bufferViews")
+#define KEY_BUFFER_VIEW         QLatin1String("bufferView")
+#define KEY_VERTEX_SHADER       QLatin1String("vertexShader")
+#define KEY_FRAGMENT_SHADER     QLatin1String("fragmentShader")
+#define KEY_INTERNAL_FORMAT     QLatin1String("internalFormat")
+#define KEY_COMPONENT_TYPE      QLatin1String("componentType")
+#define KEY_ASPECT_RATIO        QLatin1String("aspect_ratio")
+#define KEY_VALUE               QLatin1String("value")
+#define KEY_ENABLE              QLatin1String("enable")
+#define KEY_FUNCTIONS           QLatin1String("functions")
+#define KEY_TECHNIQUE_CORE      QLatin1String("techniqueCore")
+#define KEY_TECHNIQUE_GL2       QLatin1String("techniqueGL2")
 
 GLTFIO::GLTFIO() : QSceneIOHandler(),
     m_parseDone(false)
