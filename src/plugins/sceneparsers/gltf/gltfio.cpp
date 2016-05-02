@@ -1202,11 +1202,11 @@ void GLTFIO::processJSONTexture(const QString &id, const QJsonObject &jsonObject
 
 void GLTFIO::loadBufferData()
 {
-    Q_FOREACH (QString bufferName, m_bufferDatas.keys()) {
-        if (m_bufferDatas[bufferName].data == nullptr) {
-            QFile* bufferFile = resolveLocalData(m_bufferDatas[bufferName].path);
+    for (auto &bufferData : m_bufferDatas) {
+        if (!bufferData.data) {
+            QFile* bufferFile = resolveLocalData(bufferData.path);
             QByteArray *data = new QByteArray(bufferFile->readAll());
-            m_bufferDatas[bufferName].data = data;
+            bufferData.data = data;
             delete bufferFile;
         }
     }
@@ -1214,8 +1214,8 @@ void GLTFIO::loadBufferData()
 
 void GLTFIO::unloadBufferData()
 {
-    Q_FOREACH (QString bufferName, m_bufferDatas.keys()) {
-        QByteArray *data = m_bufferDatas[bufferName].data;
+    for (const auto &bufferData : qAsConst(m_bufferDatas)) {
+        QByteArray *data = bufferData.data;
         delete data;
     }
 }
