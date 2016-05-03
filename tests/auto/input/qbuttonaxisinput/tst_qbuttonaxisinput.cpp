@@ -56,13 +56,13 @@ private Q_SLOTS:
         QTest::newRow("defaultConstructed") << defaultConstructed;
 
         Qt3DInput::QButtonAxisInput *axisInputWithKeys = new Qt3DInput::QButtonAxisInput();
-        axisInputWithKeys->setButtons(QList<int>() << ((1 << 1) | (1 << 5)));
+        axisInputWithKeys->setButtons(QVector<int>() << ((1 << 1) | (1 << 5)));
         axisInputWithKeys->setScale(327.0f);
         QTest::newRow("axisInputWithKeys") << axisInputWithKeys;
 
         Qt3DInput::QButtonAxisInput *axisInputWithKeysAndSourceDevice = new Qt3DInput::QButtonAxisInput();
         TestDevice *device = new TestDevice();
-        axisInputWithKeysAndSourceDevice->setButtons(QList<int>() << ((1 << 1) | (1 << 5)));
+        axisInputWithKeysAndSourceDevice->setButtons(QVector<int>() << ((1 << 1) | (1 << 5)));
         axisInputWithKeysAndSourceDevice->setSourceDevice(device);
         axisInputWithKeysAndSourceDevice->setScale(355.0f);
         QTest::newRow("axisInputWithKeysAndSourceDevice") << axisInputWithKeysAndSourceDevice;
@@ -86,7 +86,7 @@ private Q_SLOTS:
         QCOMPARE(axisInput->id(), creationChangeData->subjectId());
         QCOMPARE(axisInput->isEnabled(), creationChangeData->isNodeEnabled());
         QCOMPARE(axisInput->metaObject(), creationChangeData->metaObject());
-        QCOMPARE(axisInput->buttons(), cloneData.buttons.toList());
+        QCOMPARE(axisInput->buttons(), cloneData.buttons);
         QCOMPARE(axisInput->scale(), cloneData.scale);
         QCOMPARE(axisInput->sourceDevice() ? axisInput->sourceDevice()->id() : Qt3DCore::QNodeId(), cloneData.sourceDeviceId);
     }
@@ -98,7 +98,7 @@ private Q_SLOTS:
         TestArbiter arbiter(axisInput.data());
 
         // WHEN
-        QList<int> buttons = QList<int>() << 555;
+        QVector<int> buttons = QVector<int>() << 555;
         axisInput->setButtons(buttons);
         QCoreApplication::processEvents();
 
@@ -106,7 +106,7 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.size(), 1);
         Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "buttons");
-        QCOMPARE(change->value().value<QList<int>>(), buttons);
+        QCOMPARE(change->value().value<QVector<int>>(), buttons);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();

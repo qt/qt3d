@@ -92,10 +92,10 @@ QActionInput::QActionInput(Qt3DCore::QNode *parent)
 /*!
     Return the Buttons to trigger the QActionInput instance.
  */
-QList<int> QActionInput::buttons() const
+QVector<int> QActionInput::buttons() const
 {
     Q_D(const QActionInput);
-    return d->m_buttons.toList();
+    return d->m_buttons;
 }
 
 /*!
@@ -168,12 +168,11 @@ QAbstractPhysicalDevice *QActionInput::sourceDevice() const
 /*!
     Set the buttons to trigger the QActionInput instance.
  */
-void QActionInput::setButtons(const QList<int> &buttons)
+void QActionInput::setButtons(const QVector<int> &buttons)
 {
     Q_D(QActionInput);
-    const QVector<int> buttonVector = buttons.toVector();
-    if (buttonVector != d->m_buttons) {
-        d->m_buttons = buttonVector;
+    if (buttons != d->m_buttons) {
+        d->m_buttons = buttons;
         emit buttonsChanged(buttons);
     }
 }

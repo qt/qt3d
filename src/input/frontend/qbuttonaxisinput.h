@@ -53,21 +53,21 @@ class QT3DINPUTSHARED_EXPORT QButtonAxisInput : public QAbstractAxisInput
 {
     Q_OBJECT
     Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scaleChanged)
-    Q_PROPERTY(QList<int> buttons READ buttons WRITE setButtons NOTIFY buttonsChanged)
+    Q_PROPERTY(QVector<int> buttons READ buttons WRITE setButtons NOTIFY buttonsChanged)
 
 public:
     explicit QButtonAxisInput(Qt3DCore::QNode *parent = nullptr);
 
     float scale() const;
-    QList<int> buttons() const;
+    QVector<int> buttons() const;
 
 public Q_SLOTS:
     void setScale(float scale);
-    void setButtons(const QList<int> &buttons);
+    void setButtons(const QVector<int> &buttons);
 
 Q_SIGNALS:
     void scaleChanged(float scale);
-    void buttonsChanged(const QList<int> &buttons);
+    void buttonsChanged(const QVector<int> &buttons);
 
 private:
     Q_DECLARE_PRIVATE(QButtonAxisInput)

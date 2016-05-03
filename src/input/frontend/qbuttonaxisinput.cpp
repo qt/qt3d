@@ -81,20 +81,19 @@ float QButtonAxisInput::scale() const
     return d->m_scale;
 }
 
-void QButtonAxisInput::setButtons(const QList<int> &buttons)
+void QButtonAxisInput::setButtons(const QVector<int> &buttons)
 {
     Q_D(QButtonAxisInput);
-    const QVector<int> buttonVector = buttons.toVector();
-    if (buttonVector != d->m_buttons) {
-        d->m_buttons = buttonVector;
+    if (buttons != d->m_buttons) {
+        d->m_buttons = buttons;
         emit buttonsChanged(buttons);
     }
 }
 
-QList<int> QButtonAxisInput::buttons() const
+QVector<int> QButtonAxisInput::buttons() const
 {
     Q_D(const QButtonAxisInput);
-    return d->m_buttons.toList();
+    return d->m_buttons;
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QButtonAxisInput::createNodeCreationChange() const

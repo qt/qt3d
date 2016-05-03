@@ -78,7 +78,7 @@ void ButtonAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (propertyChange->propertyName() == QByteArrayLiteral("scale")) {
             m_scale = propertyChange->value().toFloat();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("buttons")) {
-            m_buttons = propertyChange->value().value<QList<int>>().toVector();
+            m_buttons = propertyChange->value().value<QVector<int>>();
         }
     }
     AbstractAxisInput::sceneChangeEvent(e);

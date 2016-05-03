@@ -77,7 +77,7 @@ void ActionInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (propertyChange->propertyName() == QByteArrayLiteral("sourceDevice")) {
             m_sourceDevice = propertyChange->value().value<Qt3DCore::QNodeId>();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("buttons")) {
-            m_buttons = propertyChange->value().value<QList<int>>().toVector();
+            m_buttons = propertyChange->value().value<QVector<int>>();
         }
     }
     QBackendNode::sceneChangeEvent(e);
