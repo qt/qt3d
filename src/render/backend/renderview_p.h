@@ -155,6 +155,8 @@ public:
     inline void setEyePosition(const QVector3D &eyePos) { m_data->m_eyePos = eyePos; }
     inline QVector3D eyePosition() const { return m_data->m_eyePos; }
 
+    inline void setHasLayerFilter(bool filter) { m_data->m_hasLayerFilter = filter; }
+    inline bool hasLayerFilter() const { return m_data->m_hasLayerFilter; }
     inline void appendLayerFilter(const QStringList &layers) { m_data->m_layers << layers; }
     inline QStringList layerFilters() const { return m_data->m_layers; }
     inline void appendLayerFilter(const QVector<int> &layerIds) { m_data->m_layerIds << layerIds; }
@@ -240,6 +242,7 @@ public:
             , m_techniqueFilter(nullptr)
             , m_passFilter(nullptr)
             , m_viewMatrix(nullptr)
+            , m_hasLayerFilter(false)
         {
         }
         CameraLens *m_renderCamera;
@@ -247,6 +250,7 @@ public:
         const RenderPassFilter *m_passFilter;
         QMatrix4x4 *m_viewMatrix;
         QMatrix4x4 *m_viewProjectionMatrix;
+        bool m_hasLayerFilter;
         QStringList m_layers; // Only for debug
         QVector<int> m_layerIds;
         QVector<Qt3DRender::QSortPolicy::SortType> m_sortingTypes;

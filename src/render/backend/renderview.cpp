@@ -100,11 +100,11 @@ int LIGHT_COLOR_NAMES[MAX_LIGHTS];
 int LIGHT_INTENSITY_NAMES[MAX_LIGHTS];
 QString LIGHT_STRUCT_NAMES[MAX_LIGHTS];
 
-// TODO: Should we treat lack of layer data as implicitly meaning that an
-// entity is in all layers?
-bool isEntityInLayers(const Entity *entity, const QVector<int> &filterLayerIds)
+bool isEntityInLayers(const Entity *entity, bool hasLayerFilter, const QVector<int> &filterLayerIds)
 {
-    if (filterLayerIds.isEmpty())
+    if (hasLayerFilter && filterLayerIds.isEmpty())
+        return false;
+    else if (filterLayerIds.isEmpty())
         return true;
 
     const QList<Layer *> entityLayers = entity->renderComponents<Layer>();
@@ -490,20 +490,20 @@ void RenderView::addClearBuffers(const ClearBuffers *cb) {
 }
 
 // TODO: Convert into a job that caches lookup of entities for layers
-static void findEntitiesInLayers(Entity *e, const QVector<int> &filterLayerIds, QVector<Entity *> &entities)
+static void findEntitiesInLayers(Entity *e, bool hasLayerFilter, const QVector<int> &filterLayerIds, QVector<Entity *> &entities)
 {
     // Bail if sub-tree is disabled
     if (!e->isEnabled())
         return;
 
     // Check this entity
-    if (isEntityInLayers(e, filterLayerIds))
+    if (isEntityInLayers(e, hasLayerFilter, filterLayerIds))
         entities.push_back(e);
 
     // Recurse to children
     const auto children = e->children();
     for (Entity *child : children)
-        findEntitiesInLayers(child, filterLayerIds, entities);
+        findEntitiesInLayers(child, hasLayerFilter, filterLayerIds, entities);
 }
 
 // Tries to order renderCommand by shader so as to minimize shader changes
@@ -517,7 +517,7 @@ void RenderView::buildRenderCommands(Entity *rootEntity, const Plane *planes)
     QVector<Entity *> entities;
     const int entityCount = m_renderer->nodeManagers()->renderNodesManager()->count();
     entities.reserve(entityCount);
-    findEntitiesInLayers(rootEntity, m_data->m_layerIds, entities);
+    findEntitiesInLayers(rootEntity, hasLayerFilter(), layerFilterIds(), entities);
 #if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
     qDebug() << "Found" << entities.size() << "entities in layers" << m_data->m_layers
              << "in" << timer.nsecsElapsed() / 1.0e6 << "ms";
