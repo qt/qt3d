@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014-2016 Klarälvdalens Datakonsult AB (KDAB).
 ** Copyright (C) 2016 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: https://www.qt.io/licensing/
 **
