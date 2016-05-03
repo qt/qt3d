@@ -40,6 +40,7 @@
 
 #include "qrenderstate.h"
 #include "qrenderstate_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,6 +66,12 @@ const QRenderStatePrivate *QRenderStatePrivate::get(const QRenderState *state)
 QRenderState::QRenderState(QRenderStatePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QRenderState::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangeBasePtr::create(this);
+    return creationChange;
 }
 
 } // namespace Qt3DRender
