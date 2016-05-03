@@ -75,7 +75,7 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     : QQuickItem(parent)
     , m_entity(nullptr)
     , m_aspectEngine(new Qt3DCore::QAspectEngine())
-    , m_renderAspect(new QRenderAspect(QRenderAspect::Synchronous))
+    , m_renderAspect(nullptr)
     , m_renderer(nullptr)
     , m_rendererCleaner(new Scene3DCleaner())
     , m_multisample(true)
@@ -84,8 +84,6 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::MouseButtonMask);
     // TO DO: register the event source in the main thread
-
-    m_aspectEngine->registerAspect(m_renderAspect);
 }
 
 Scene3DItem::~Scene3DItem()
@@ -306,6 +304,12 @@ void Scene3DItem::setMultisample(bool enable)
 
 QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *)
 {
+    // If the render aspect wasn't created yet, do so now
+    if (!m_renderAspect) {
+        m_renderAspect = new QRenderAspect(QRenderAspect::Synchronous);
+        m_aspectEngine->registerAspect(m_renderAspect);
+    }
+
     // If the node already exists
     // we delete it and recreate it
     // as we need to resize the FBO
