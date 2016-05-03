@@ -185,23 +185,23 @@ private:
 
     // GLTF assigns materials at the mesh level, but we do them as siblings,
     // so record the association here for when we instantiate meshes
-    QMap<QGeometryRenderer*, QString> m_meshMaterialDict;
+    QHash<QGeometryRenderer*, QString> m_meshMaterialDict;
 
-    QMap<QString, AccessorData> m_accessorDict;
+    QHash<QString, AccessorData> m_accessorDict;
 
-    QMap<QString, QMaterial*> m_materialCache;
+    QHash<QString, QMaterial*> m_materialCache;
 
-    QMap<QString, BufferData> m_bufferDatas;
-    QMap<QString, Qt3DRender::QBuffer*> m_buffers;
+    QHash<QString, BufferData> m_bufferDatas;
+    QHash<QString, Qt3DRender::QBuffer*> m_buffers;
 
-    QMap<QString, QString> m_shaderPaths;
-    QMap<QString, QShaderProgram*> m_programs;
+    QHash<QString, QString> m_shaderPaths;
+    QHash<QString, QShaderProgram*> m_programs;
 
-    QMap<QString, QTechnique *> m_techniques;
-    QMap<QParameter*, ParameterData> m_parameterDataDict;
+    QHash<QString, QTechnique *> m_techniques;
+    QHash<QParameter*, ParameterData> m_parameterDataDict;
 
-    QMap<QString, QAbstractTexture*> m_textures;
-    QMap<QString, QString> m_imagePaths;
+    QHash<QString, QAbstractTexture*> m_textures;
+    QHash<QString, QString> m_imagePaths;
 };
 
 } // namespace Qt3DRender
