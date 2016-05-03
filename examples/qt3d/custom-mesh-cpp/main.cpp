@@ -70,7 +70,7 @@
 
 #include <QPropertyAnimation>
 #include <Qt3DExtras/qt3dwindow.h>
-#include <Qt3DExtras/qfirstpersoncameracontroller.h>
+#include <Qt3DExtras/qorbitcameracontroller.h>
 
 int main(int argc, char* argv[])
 {
@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
     cameraEntity->setViewCenter(QVector3D(0, 0, 0));
 
     // For camera controls
-    Qt3DExtras::QFirstPersonCameraController *camController = new Qt3DExtras::QFirstPersonCameraController(rootEntity);
+    Qt3DExtras::QOrbitCameraController *camController = new Qt3DExtras::QOrbitCameraController(rootEntity);
     camController->setCamera(cameraEntity);
 
     // Material
