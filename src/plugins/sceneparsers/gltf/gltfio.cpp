@@ -1597,3 +1597,5 @@ QRenderState* GLTFIO::buildState(const QString& functionName, const QJsonValue &
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_gltfio.cpp"
