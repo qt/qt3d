@@ -1237,10 +1237,7 @@ void GLTFIO::loadBufferData()
 {
     for (auto &bufferData : m_bufferDatas) {
         if (!bufferData.data) {
-            QFile* bufferFile = resolveLocalData(bufferData.path);
-            QByteArray *data = new QByteArray(bufferFile->readAll());
-            bufferData.data = data;
-            delete bufferFile;
+            bufferData.data = new QByteArray(resolveLocalData(bufferData.path));
         }
     }
 }
@@ -1253,15 +1250,15 @@ void GLTFIO::unloadBufferData()
     }
 }
 
-QFile *GLTFIO::resolveLocalData(QString path) const
+QByteArray GLTFIO::resolveLocalData(const QString &path) const
 {
     QDir d(m_basePath);
     Q_ASSERT(d.exists());
 
     QString absPath = d.absoluteFilePath(path);
-    QFile* f = new QFile(absPath);
-    f->open(QIODevice::ReadOnly);
-    return f;
+    QFile f(absPath);
+    f.open(QIODevice::ReadOnly);
+    return f.readAll();
 }
 
 QVariant GLTFIO::parameterValueFromJSON(int type, const QJsonValue &value) const

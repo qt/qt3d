@@ -61,7 +61,7 @@
 
 QT_BEGIN_NAMESPACE
 
-class QFile;
+class QByteArray;
 
 namespace Qt3DCore {
 class QEntity;
@@ -162,7 +162,7 @@ private:
     void loadBufferData();
     void unloadBufferData();
 
-    QFile* resolveLocalData(QString path) const;
+    QByteArray resolveLocalData(const QString &path) const;
 
     QVariant parameterValueFromJSON(int type, const QJsonValue &value) const;
     static QAttribute::VertexBaseType accessorTypeFromJSON(int componentType);
