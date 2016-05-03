@@ -46,6 +46,9 @@
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/private/qnode_p.h>
+#include <QtCore/qcoreapplication.h>
+
+#include <memory>
 
 QT_BEGIN_NAMESPACE
 
@@ -191,15 +194,21 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 void GeometryRenderer::executeFunctor()
 {
     Q_ASSERT(m_geometryFactory);
-    QGeometry *geometry = (*m_geometryFactory)();
+    std::unique_ptr<QGeometry> geometry((*m_geometryFactory)());
+    if (!geometry)
+        return;
 
-    QBackendNodePropertyChangePtr e(new QBackendNodePropertyChange(peerId()));
+    // Move the QGeometry object to the main thread and notify the
+    // corresponding QGeometryRenderer
+    const auto appThread = QCoreApplication::instance()->thread();
+    geometry->moveToThread(appThread);
+
+    auto e = QGeometryChangePtr::create(peerId());
     e->setPropertyName("geometry");
-    // The Frontend element has to perform the clone
-    // So that the objects are created in the main thread
-    e->setValue(QVariant::fromValue(QNodePtr(geometry, &QNodePrivate::nodePtrDeleter)));
+    e->data = std::move(geometry);
     notifyObservers(e);
-    // Maybe we could also send a status to help troubleshoot errors
+
+    // TODO: Maybe we could also send a status to help troubleshoot errors
 }
 
 void GeometryRenderer::unsetDirty()

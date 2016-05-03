@@ -406,18 +406,12 @@ void QGeometryRenderer::setGeometryFactory(const QGeometryFactoryPtr &factory)
  */
 void QGeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    Q_UNUSED(e);
-    // TODO: Avoid cloning here
-//    Q_D(QGeometryRenderer);
-//    QScenePropertyChangePtr change = qSharedPointerCast<QScenePropertyChange>(e);
-//    if (change->type() == NodeUpdated && change->propertyName() == QByteArrayLiteral("geometry")) {
-//        QNodePtr nodePtr = change->value().value<QNodePtr>();
-//        QGeometry *backendGeometry = static_cast<QGeometry *>(nodePtr.data());
-//        QGeometry *frontendGeometry = static_cast<QGeometry *>(QNode::clone(backendGeometry));
-//        if (frontendGeometry != nullptr)
-//            d->insertTree(frontendGeometry);
-//        setGeometry(frontendGeometry);
-//    }
+    auto change = qSharedPointerCast<QNodePropertyChangeBase>(e);
+    if (change->type() == NodeUpdated && change->propertyName() == QByteArrayLiteral("geometry")) {
+        auto typedChange = qSharedPointerCast<QGeometryChange>(e);
+        auto geometry = std::move(typedChange->data);
+        setGeometry(geometry.release());
+    }
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QGeometryRenderer::createNodeCreationChange() const
