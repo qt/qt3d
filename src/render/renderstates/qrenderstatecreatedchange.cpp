@@ -58,7 +58,7 @@ QRenderStateCreatedChangeBase::QRenderStateCreatedChangeBase(const QRenderState 
 {
 }
 
-QRenderStatePrivate::Type QRenderStateCreatedChangeBase::type() const
+QRenderStatePrivate::Type QRenderStateCreatedChangeBase::renderStateType() const
 {
     Q_D(const QRenderStateCreatedChangeBase);
     return d->m_type;

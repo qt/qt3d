@@ -378,7 +378,7 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
 
 RenderStateImpl* RenderStateImpl::getOrCreateState(const Qt3DRender::QRenderStateCreatedChangeBasePtr change)
 {
-    switch (change->type()) {
+    switch (change->renderStateType()) {
     case QRenderStatePrivate::AlphaCoverage: {
         return getOrCreateRenderStateImpl<AlphaCoverage>(change->isNodeEnabled());
     }

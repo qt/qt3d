@@ -63,7 +63,7 @@ class QRenderStateCreatedChangeBase : public Qt3DCore::QNodeCreatedChangeBase
 public:
     explicit QRenderStateCreatedChangeBase(const QRenderState *renderState, Priority priority = QSceneChange::Standard);
 
-    QRenderStatePrivate::Type type() const;
+    QRenderStatePrivate::Type renderStateType() const;
 
 private:
     Q_DECLARE_PRIVATE(QRenderStateCreatedChangeBase)
