@@ -122,6 +122,16 @@ void GraphicsHelperGL3_3::drawArraysInstanced(GLenum primitiveType,
                                    instances);
 }
 
+void GraphicsHelperGL3_3::drawArraysInstancedBaseInstance(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances, GLsizei baseInstance)
+{
+    if (baseInstance != 0)
+        qWarning() << "glDrawArraysInstancedBaseInstance is not supported with OpenGL 3";
+    m_funcs->glDrawArraysInstanced(primitiveType,
+                                   first,
+                                   count,
+                                   instances);
+}
+
 void GraphicsHelperGL3_3::drawElements(GLenum primitiveType,
                                         GLsizei primitiveCount,
                                         GLint indexType,

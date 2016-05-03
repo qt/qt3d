@@ -81,6 +81,7 @@ public:
     inline int vertexCount() const { return m_vertexCount; }
     inline int indexOffset() const { return m_indexOffset; }
     inline int firstInstance() const { return m_firstInstance; }
+    inline int firstVertex() const { return m_firstVertex; }
     inline int restartIndexValue() const { return m_restartIndexValue; }
     inline int verticesPerPatch() const { return m_verticesPerPatch; }
     inline bool primitiveRestartEnabled() const { return m_primitiveRestartEnabled; }
@@ -102,6 +103,7 @@ private:
     int m_vertexCount;
     int m_indexOffset;
     int m_firstInstance;
+    int m_firstVertex;
     int m_restartIndexValue;
     int m_verticesPerPatch;
     bool m_primitiveRestartEnabled;

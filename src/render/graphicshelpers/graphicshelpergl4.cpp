@@ -118,6 +118,15 @@ void GraphicsHelperGL4::drawArraysInstanced(GLenum primitiveType,
                                    instances);
 }
 
+void GraphicsHelperGL4::drawArraysInstancedBaseInstance(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances, GLsizei baseInstance)
+{
+    m_funcs->glDrawArraysInstancedBaseInstance(primitiveType,
+                                               first,
+                                               count,
+                                               instances,
+                                               baseInstance);
+}
+
 void GraphicsHelperGL4::drawElements(GLenum primitiveType,
                                      GLsizei primitiveCount,
                                      GLint indexType,

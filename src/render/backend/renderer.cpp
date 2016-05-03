@@ -891,10 +891,11 @@ void Renderer::performDraw(GeometryRenderer *rGeometryRenderer, GLsizei primitiv
                                                  rGeometryRenderer->instanceCount(),
                                                  rGeometryRenderer->indexOffset());
     else
-        m_graphicsContext->drawArraysInstanced(primType,
-                                               rGeometryRenderer->firstInstance(),
-                                               primitiveCount,
-                                               rGeometryRenderer->instanceCount());
+        m_graphicsContext->drawArraysInstancedBaseInstance(primType,
+                                                           rGeometryRenderer->firstInstance(),
+                                                           primitiveCount,
+                                                           rGeometryRenderer->instanceCount(),
+                                                           rGeometryRenderer->firstVertex());
 
 #if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
     int err = m_graphicsContext->openGLContext()->functions()->glGetError();

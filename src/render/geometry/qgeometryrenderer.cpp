@@ -57,6 +57,7 @@ QGeometryRendererPrivate::QGeometryRendererPrivate()
     , m_vertexCount(0)
     , m_indexOffset(0)
     , m_firstInstance(0)
+    , m_firstVertex(0)
     , m_restartIndexValue(-1)
     , m_verticesPerPatch(0)
     , m_primitiveRestart(false)
@@ -91,6 +92,12 @@ QGeometryRendererPrivate::QGeometryRendererPrivate()
 
 /*!
  * \qmlproperty int GeometryRenderer::firstInstance
+ *
+ * Holds the first vertex.
+ */
+
+/*!
+ * \qmlproperty int GeometryRenderer::firstVertex
  *
  * Holds the base instance.
  */
@@ -213,6 +220,17 @@ int QGeometryRenderer::firstInstance() const
 }
 
 /*!
+ * \property QGeometryRenderer::firstVertex
+ *
+ * Holds the base vertex.
+ */
+int QGeometryRenderer::firstVertex() const
+{
+    Q_D(const QGeometryRenderer);
+    return d->m_firstVertex;
+}
+
+/*!
  * \property QGeometryRenderer::restartIndex
  *
  * Holds the restart index.
@@ -314,6 +332,16 @@ void QGeometryRenderer::setFirstInstance(int firstInstance)
 
     d->m_firstInstance = firstInstance;
     emit firstInstanceChanged(firstInstance);
+}
+
+void QGeometryRenderer::setFirstVertex(int firstVertex)
+{
+    Q_D(QGeometryRenderer);
+    if (d->m_firstVertex == firstVertex)
+        return;
+
+    d->m_firstVertex = firstVertex;
+    emit firstVertexChanged(firstVertex);
 }
 
 void QGeometryRenderer::setRestartIndexValue(int index)
@@ -423,6 +451,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QGeometryRenderer::createNodeCreationChange(
     data.vertexCount = d->m_vertexCount;
     data.indexOffset = d->m_indexOffset;
     data.firstInstance = d->m_firstInstance;
+    data.firstVertex = d->m_firstVertex;
     data.restartIndexValue = d->m_restartIndexValue;
     data.verticesPerPatch = d->m_verticesPerPatch;
     data.primitiveRestart = d->m_primitiveRestart;

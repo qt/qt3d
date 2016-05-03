@@ -115,6 +115,16 @@ void GraphicsHelperES2::drawArraysInstanced(GLenum primitiveType,
                    count);
 }
 
+void GraphicsHelperES2::drawArraysInstancedBaseInstance(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances, GLsizei baseInstance)
+{
+    if (baseInstance != 0)
+        qWarning() << "glDrawArraysInstancedBaseInstance is not supported with OpenGL ES 2";
+    for (GLint i = 0; i < instances; i++)
+        drawArrays(primitiveType,
+                   first,
+                   count);
+}
+
 void GraphicsHelperES2::drawElements(GLenum primitiveType,
                                       GLsizei primitiveCount,
                                       GLint indexType,

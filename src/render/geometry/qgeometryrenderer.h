@@ -60,6 +60,7 @@ class QT3DRENDERSHARED_EXPORT QGeometryRenderer : public Qt3DCore::QComponent
     Q_PROPERTY(int vertexCount READ vertexCount WRITE setVertexCount NOTIFY vertexCountChanged)
     Q_PROPERTY(int indexOffset READ indexOffset WRITE setIndexOffset NOTIFY indexOffsetChanged)
     Q_PROPERTY(int firstInstance READ firstInstance WRITE setFirstInstance NOTIFY firstInstanceChanged)
+    Q_PROPERTY(int firstVertex READ firstVertex WRITE setFirstVertex NOTIFY firstVertexChanged)
     Q_PROPERTY(int restartIndexValue READ restartIndexValue WRITE setRestartIndexValue NOTIFY restartIndexValueChanged)
     Q_PROPERTY(int verticesPerPatch READ verticesPerPatch WRITE setVerticesPerPatch NOTIFY verticesPerPatchChanged)
     Q_PROPERTY(bool primitiveRestartEnabled READ primitiveRestartEnabled WRITE setPrimitiveRestartEnabled NOTIFY primitiveRestartEnabledChanged)
@@ -92,6 +93,7 @@ public:
     int vertexCount() const;
     int indexOffset() const;
     int firstInstance() const;
+    int firstVertex() const;
     int restartIndexValue() const;
     int verticesPerPatch() const;
     bool primitiveRestartEnabled() const;
@@ -106,6 +108,7 @@ public Q_SLOTS:
     void setVertexCount(int vertexCount);
     void setIndexOffset(int indexOffset);
     void setFirstInstance(int firstInstance);
+    void setFirstVertex(int firstVertex);
     void setRestartIndexValue(int index);
     void setVerticesPerPatch(int verticesPerPatch);
     void setPrimitiveRestartEnabled(bool enabled);
@@ -117,6 +120,7 @@ Q_SIGNALS:
     void vertexCountChanged(int vertexCount);
     void indexOffsetChanged(int indexOffset);
     void firstInstanceChanged(int firstInstance);
+    void firstVertexChanged(int firstVertex);
     void restartIndexValueChanged(int restartIndexValue);
     void verticesPerPatchChanged(int verticesPerPatch);
     void primitiveRestartEnabledChanged(bool primitiveRestartEnabled);

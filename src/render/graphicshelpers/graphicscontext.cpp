@@ -728,6 +728,15 @@ void GraphicsContext::drawArraysInstanced(GLenum primitiveType,
                                     instances);
 }
 
+void GraphicsContext::drawArraysInstancedBaseInstance(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances, GLsizei baseinstance)
+{
+    m_glHelper->drawArraysInstancedBaseInstance(primitiveType,
+                                                first,
+                                                count,
+                                                instances,
+                                                baseinstance);
+}
+
 /*!
  * Wraps an OpenGL call to glDrawElements.
  */
