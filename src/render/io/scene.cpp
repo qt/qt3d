@@ -80,10 +80,12 @@ void Scene::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change
 
 void Scene::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
-    if (propertyChange->propertyName() == QByteArrayLiteral("source")) {
-        m_source = propertyChange->value().toUrl();
-        m_sceneManager->addSceneData(m_source, peerId());
+    if (e->type() == NodeUpdated) {
+        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
+        if (propertyChange->propertyName() == QByteArrayLiteral("source")) {
+            m_source = propertyChange->value().toUrl();
+            m_sceneManager->addSceneData(m_source, peerId());
+        }
     }
     markDirty(AbstractRenderer::AllDirty);
 }
