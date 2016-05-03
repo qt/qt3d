@@ -77,7 +77,7 @@ Entity {
         position: Qt.vector3d( 0.0, 0.0, 10.0 )
     }
 
-    FirstPersonCameraController { camera: mainCamera }
+    OrbitCameraController { camera: mainCamera }
 
     TessellatedWireframeMaterial {
         id: quadMaterial
