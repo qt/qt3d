@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QTINPUT_QORBITCONTROL_P_H
-#define QTINPUT_QORBITCONTROL_P_H
+#ifndef QT3DEXTRAS_QORBITCAMERACONTROLLER_P_H
+#define QT3DEXTRAS_QORBITCAMERACONTROLLER_P_H
 
 //
 //  W A R N I N G
@@ -50,7 +50,7 @@
 
 #include <Qt3DCore/private/qentity_p.h>
 #include <QVector3D>
-#include "qorbitcontrol.h"
+#include "qorbitcameracontroller.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -78,10 +78,10 @@ class QAxisActionHandler;
 
 namespace Qt3DExtras {
 
-class QOrbitControlPrivate : public Qt3DCore::QEntityPrivate
+class QOrbitCameraControllerPrivate : public Qt3DCore::QEntityPrivate
 {
 public:
-    QOrbitControlPrivate();
+    QOrbitCameraControllerPrivate();
 
     void init();
 
@@ -126,11 +126,11 @@ public:
 
     void _q_onTriggered(float);
 
-    Q_DECLARE_PUBLIC(QOrbitControl)
+    Q_DECLARE_PUBLIC(QOrbitCameraController)
 };
 
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
 
-#endif // QT3DEXTRAS_QORBITCONTROL_P_H
+#endif // QT3DEXTRAS_QORBITCAMERACONTROLLER_P_H

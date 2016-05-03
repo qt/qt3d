@@ -68,7 +68,7 @@ Entity {
         viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
     }
 
-    OrbitController { camera: camera }
+    OrbitCameraController { camera: camera }
 
     RenderSettings {
         id : external_forward_renderer

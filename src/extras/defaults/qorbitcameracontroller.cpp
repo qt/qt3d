@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#include "qorbitcontrol_p.h"
-#include "qorbitcontrol.h"
+#include "qorbitcameracontroller_p.h"
+#include "qorbitcameracontroller.h"
 #include <QtGlobal>
 #include <Qt3DRender/QCamera>
 #include <Qt3DInput/QAxis>
@@ -54,11 +54,11 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DExtras {
 
 /*!
- * \class QOrbitControl::QOrbitControl
+ * \class QOrbitCameraController::QOrbitCameraController
  * \internal
  */
 
-QOrbitControlPrivate::QOrbitControlPrivate()
+QOrbitCameraControllerPrivate::QOrbitCameraControllerPrivate()
     : Qt3DCore::QEntityPrivate()
     , m_camera(nullptr)
     , m_leftMouseButtonAction(new Qt3DInput::QAction())
@@ -92,7 +92,7 @@ QOrbitControlPrivate::QOrbitControlPrivate()
     , m_cameraUp(QVector3D(0.0f, 1.0f, 0.0f))
 {}
 
-void QOrbitControlPrivate::init()
+void QOrbitCameraControllerPrivate::init()
 {
     //// Actions
 
@@ -176,7 +176,7 @@ void QOrbitControlPrivate::init()
     m_logicalDevice->addAxis(m_tyAxis);
     m_logicalDevice->addAxis(m_tzAxis);
 
-    Q_Q(QOrbitControl);
+    Q_Q(QOrbitCameraController);
     //// FrameAction
 
     QObject::connect(m_frameAction, SIGNAL(triggered(float)),
@@ -197,7 +197,7 @@ float zoomDistance(QVector3D firstPoint, QVector3D secondPoint)
     return (secondPoint - firstPoint).lengthSquared();
 }
 
-void QOrbitControlPrivate::_q_onTriggered(float dt)
+void QOrbitCameraControllerPrivate::_q_onTriggered(float dt)
 {
     if (m_camera != nullptr) {
         // Mouse input
@@ -243,71 +243,71 @@ void QOrbitControlPrivate::_q_onTriggered(float dt)
     }
 }
 
-QOrbitControl::QOrbitControl(Qt3DCore::QNode *parent)
-    : Qt3DCore::QEntity(*new QOrbitControlPrivate, parent)
+QOrbitCameraController::QOrbitCameraController(Qt3DCore::QNode *parent)
+    : Qt3DCore::QEntity(*new QOrbitCameraControllerPrivate, parent)
 {
-    Q_D(QOrbitControl);
+    Q_D(QOrbitCameraController);
     d->init();
 }
 
-QOrbitControl::~QOrbitControl()
+QOrbitCameraController::~QOrbitCameraController()
 {
 }
 
-Qt3DRender::QCamera *QOrbitControl::camera() const
+Qt3DRender::QCamera *QOrbitCameraController::camera() const
 {
-    Q_D(const QOrbitControl);
+    Q_D(const QOrbitCameraController);
     return d->m_camera;
 }
 
-float QOrbitControl::linearSpeed() const
+float QOrbitCameraController::linearSpeed() const
 {
-    Q_D(const QOrbitControl);
+    Q_D(const QOrbitCameraController);
     return d->m_linearSpeed;
 }
 
-float QOrbitControl::lookSpeed() const
+float QOrbitCameraController::lookSpeed() const
 {
-    Q_D(const QOrbitControl);
+    Q_D(const QOrbitCameraController);
     return d->m_lookSpeed;
 }
 
-float QOrbitControl::zoomInLimit() const
+float QOrbitCameraController::zoomInLimit() const
 {
-    Q_D(const QOrbitControl);
+    Q_D(const QOrbitCameraController);
     return d->m_zoomInLimit;
 }
 
-void QOrbitControl::setCamera(Qt3DRender::QCamera *camera)
+void QOrbitCameraController::setCamera(Qt3DRender::QCamera *camera)
 {
-    Q_D(QOrbitControl);
+    Q_D(QOrbitCameraController);
     if (d->m_camera != camera) {
         d->m_camera = camera;
         emit cameraChanged();
     }
 }
 
-void QOrbitControl::setLinearSpeed(float linearSpeed)
+void QOrbitCameraController::setLinearSpeed(float linearSpeed)
 {
-    Q_D(QOrbitControl);
+    Q_D(QOrbitCameraController);
     if (d->m_linearSpeed != linearSpeed) {
         d->m_linearSpeed = linearSpeed;
         emit linearSpeedChanged();
     }
 }
 
-void QOrbitControl::setLookSpeed(float lookSpeed)
+void QOrbitCameraController::setLookSpeed(float lookSpeed)
 {
-    Q_D(QOrbitControl);
+    Q_D(QOrbitCameraController);
     if (d->m_lookSpeed != lookSpeed) {
         d->m_lookSpeed = lookSpeed;
         emit lookSpeedChanged();
     }
 }
 
-void QOrbitControl::setZoomInLimit(float zoomInLimit)
+void QOrbitCameraController::setZoomInLimit(float zoomInLimit)
 {
-    Q_D(QOrbitControl);
+    Q_D(QOrbitCameraController);
     if (d->m_zoomInLimit != zoomInLimit) {
         d->m_zoomInLimit = zoomInLimit;
         emit zoomInLimitChanged();
@@ -318,4 +318,4 @@ void QOrbitControl::setZoomInLimit(float zoomInLimit)
 
 QT_END_NAMESPACE
 
-#include "moc_qorbitcontrol.cpp"
+#include "moc_qorbitcameracontroller.cpp"

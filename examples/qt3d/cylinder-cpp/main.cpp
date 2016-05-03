@@ -69,7 +69,7 @@
 #include <Qt3DCore/qaspectengine.h>
 
 #include <Qt3DExtras/qt3dwindow.h>
-#include <Qt3DExtras/qorbitcontrol.h>
+#include <Qt3DExtras/qorbitcameracontroller.h>
 
 int main(int argc, char **argv)
 {
@@ -87,7 +87,7 @@ int main(int argc, char **argv)
     camera->setViewCenter(QVector3D(0, 0, 0));
 
     // For camera controls
-    Qt3DExtras::QOrbitControl *cameraController = new Qt3DExtras::QOrbitControl(rootEntity);
+    Qt3DExtras::QOrbitCameraController *cameraController = new Qt3DExtras::QOrbitCameraController(rootEntity);
     cameraController->setCamera(camera);
 
     // Cylinder shape data

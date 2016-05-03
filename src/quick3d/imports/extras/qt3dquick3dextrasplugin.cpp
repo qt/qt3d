@@ -74,7 +74,7 @@ static const struct {
     // Entities
     { "SkyboxEntity", 2, 0 },
     // Camera Controllers
-    { "OrbitController", 2, 0 },
+    { "OrbitCameraController", 2, 0 },
     { "FirstPersonCameraController", 2, 0 },
 };
 

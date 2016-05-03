@@ -18,5 +18,5 @@ QML_FILES = \
     $$PWD/qml/GoochMaterial.qml \
     $$PWD/qml/PhongAlphaMaterial.qml \
     $$PWD/qml/TextureMaterial.qml \
-    $$PWD/qml/OrbitController.qml \
+    $$PWD/qml/OrbitCameraController.qml \
     $$PWD/qml/FirstPersonCameraController.qml

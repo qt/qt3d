@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DEXTRAS_QORBITCONTROL_H
-#define QT3DEXTRAS_QORBITCONTROL_H
+#ifndef QT3DEXTRAS_QORBITCAMERACONTROLLER_H
+#define QT3DEXTRAS_QORBITCAMERACONTROLLER_H
 
 #include <Qt3DExtras/qt3dextras_global.h>
 #include <Qt3DCore/QEntity>
@@ -48,9 +48,9 @@ class QCamera;
 
 namespace Qt3DExtras {
 
-class QOrbitControlPrivate;
+class QOrbitCameraControllerPrivate;
 
-class QT3DEXTRASSHARED_EXPORT QOrbitControl : public Qt3DCore::QEntity
+class QT3DEXTRASSHARED_EXPORT QOrbitCameraController : public Qt3DCore::QEntity
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QCamera *camera READ camera WRITE setCamera NOTIFY cameraChanged)
@@ -59,8 +59,8 @@ class QT3DEXTRASSHARED_EXPORT QOrbitControl : public Qt3DCore::QEntity
     Q_PROPERTY(float zoomInLimit READ zoomInLimit WRITE setZoomInLimit NOTIFY zoomInLimitChanged)
 
 public:
-    explicit QOrbitControl(Qt3DCore::QNode *parent = nullptr);
-    ~QOrbitControl();
+    explicit QOrbitCameraController(Qt3DCore::QNode *parent = nullptr);
+    ~QOrbitCameraController();
 
     float clampInputs(float input1, float input2);
     Qt3DRender::QCamera *camera() const;
@@ -80,7 +80,7 @@ Q_SIGNALS:
     void zoomInLimitChanged();
 
 private:
-    Q_DECLARE_PRIVATE(QOrbitControl)
+    Q_DECLARE_PRIVATE(QOrbitCameraController)
     Q_PRIVATE_SLOT(d_func(),  void _q_onTriggered(float))
 };
 
@@ -88,4 +88,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DEXTRAS_QORBITCONTROL_H
+#endif // QT3DEXTRAS_QORBITCAMERACONTROLLER_H
