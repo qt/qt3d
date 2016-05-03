@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "qsceneiofactory_p.h"
-#include "qsceneioplugin.h"
+#include "qsceneioplugin_p.h"
 #include "qsceneiohandler_p.h"
 
 #include <QtCore/private/qfactoryloader_p.h>

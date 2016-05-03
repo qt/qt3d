@@ -9,7 +9,7 @@ HEADERS += \
     $$PWD/scene_p.h \
     $$PWD/scenemanager_p.h \
     $$PWD/qsceneiohandler_p.h \
-    $$PWD/qsceneioplugin.h \
+    $$PWD/qsceneioplugin_p.h \
     $$PWD/glbuffer_p.h \
     $$PWD/qsceneiofactory_p.h
 

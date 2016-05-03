@@ -39,7 +39,7 @@
 
 #include "assimpio.h"
 
-#include <Qt3DRender/QSceneIOPlugin>
+#include <Qt3DRender/private/qsceneioplugin_p.h>
 
 QT_BEGIN_NAMESPACE
 

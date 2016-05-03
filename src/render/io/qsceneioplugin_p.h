@@ -37,14 +37,14 @@
 **
 ****************************************************************************/
 
-#ifndef QSCENEIOPLUGIN_H
-#define QSCENEIOPLUGIN_H
+#ifndef QSCENEIOPLUGIN_P_H
+#define QSCENEIOPLUGIN_P_H
 
 #include <QtCore/QObject>
 #include <QtCore/QtPlugin>
 #include <QtCore/QFactoryInterface>
 
-#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,7 +54,7 @@ namespace Qt3DRender {
 
 class QSceneIOHandler;
 
-class QT3DRENDERSHARED_EXPORT QSceneIOPlugin : public QObject
+class QT3DRENDERSHARED_PRIVATE_EXPORT QSceneIOPlugin : public QObject
 {
     Q_OBJECT
 public:
@@ -68,4 +68,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QSCENEIOPLUGIN_H
+#endif // QSCENEIOPLUGIN_P_H

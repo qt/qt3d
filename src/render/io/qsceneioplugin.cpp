@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "qsceneioplugin.h"
+#include "qsceneioplugin_p.h"
 
 QT_BEGIN_NAMESPACE
 
