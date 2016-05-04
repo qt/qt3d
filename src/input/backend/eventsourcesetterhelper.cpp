@@ -65,7 +65,7 @@ void EventSourceSetterHelper::setEventFilterService(Qt3DCore::QEventFilterServic
 // Any thread
 void EventSourceSetterHelper::setEventSource(QObject *eventSource)
 {
-    if (m_lastEventSource != eventSource) {
+    if (eventSource && m_lastEventSource != eventSource) {
         QMetaObject::invokeMethod(this,
                                   "setEventSourceHelper",
                                   Qt::BlockingQueuedConnection,
