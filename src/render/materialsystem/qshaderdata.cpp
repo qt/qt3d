@@ -90,8 +90,12 @@ QShaderData::QShaderData(QShaderDataPrivate &dd, QNode *parent)
 
 Qt3DCore::QNodeCreatedChangeBasePtr QShaderData::createNodeCreationChange() const
 {
+    Q_D(const QShaderData);
+
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QShaderDataData>::create(this);
     QShaderDataData &data = creationChange->data;
+
+    data.propertyReader = d->m_propertyReader;
 
     const QMetaObject *metaObj = metaObject();
     const int propertyOffset = QShaderData::staticMetaObject.propertyOffset();

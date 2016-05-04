@@ -99,6 +99,7 @@ public:
 struct QShaderDataData
 {
     QVector<QPair<QByteArray, QVariant>> properties;
+    PropertyReaderInterfacePtr propertyReader;
 };
 
 } // namespace Qt3DRender

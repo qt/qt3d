@@ -84,6 +84,8 @@ void ShaderData::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QShaderDataData>>(change);
     const QShaderDataData &data = typedChange->data;
 
+    m_propertyReader = data.propertyReader;
+
     for (const QPair<QByteArray, QVariant> &entry : data.properties) {
         if (entry.first == QByteArrayLiteral("data") ||
                 entry.first == QByteArrayLiteral("childNodes")) // We don't handle default Node properties
