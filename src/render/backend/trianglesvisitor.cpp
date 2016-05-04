@@ -145,9 +145,9 @@ void traverseTriangles(vertex *vertices,
     }
 }
 
-static inline bool checkDegenerate(const uint ndx[3], const uint idx, const uint i)
+static inline bool checkDegenerate(const uint ndx[3], const uint idx, const uint u)
 {
-    for (uint j = 0; j < i; ++j) {
+    for (uint j = 0; j < u; ++j) {
         if (idx == ndx[j])
             return true;
     }
@@ -172,7 +172,7 @@ void traverseTriangleStripIndexed(index *indices,
         bool degenerate = false;
         for (uint u = 0; u < 3; ++u) {
             uint idx = indices[i + u] * verticesStride;
-            if (checkDegenerate(ndx, idx, i)) {
+            if (checkDegenerate(ndx, idx, u)) {
                 degenerate = true;
                 break;
             }
