@@ -57,6 +57,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+class QLayer;
 class QLayerFilter;
 
 class QLayerFilterPrivate : public QFrameGraphNodePrivate
@@ -65,12 +66,12 @@ public:
     QLayerFilterPrivate();
 
     Q_DECLARE_PUBLIC(QLayerFilter)
-    QStringList m_layers;
+    QVector<QLayer*> m_layers;
 };
 
 struct QLayerFilterData
 {
-    QStringList layers;
+    Qt3DCore::QNodeIdVector layerIds;
 };
 
 } // namespace Qt3DRender

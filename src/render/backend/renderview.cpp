@@ -100,7 +100,7 @@ int LIGHT_COLOR_NAMES[MAX_LIGHTS];
 int LIGHT_INTENSITY_NAMES[MAX_LIGHTS];
 QString LIGHT_STRUCT_NAMES[MAX_LIGHTS];
 
-bool isEntityInLayers(const Entity *entity, bool hasLayerFilter, const QVector<int> &filterLayerIds)
+bool isEntityInLayers(const Entity *entity, bool hasLayerFilter, const Qt3DCore::QNodeIdVector &filterLayerIds)
 {
     if (hasLayerFilter && filterLayerIds.isEmpty())
         return false;
@@ -109,13 +109,11 @@ bool isEntityInLayers(const Entity *entity, bool hasLayerFilter, const QVector<i
 
     const QList<Layer *> entityLayers = entity->renderComponents<Layer>();
     for (const Layer *entityLayer : entityLayers) {
-        if (entityLayer->isEnabled()) {
-            const auto layerIds = entityLayer->layerIds();
-            for (const int layerId : layerIds) {
-                if (filterLayerIds.contains(layerId))
-                    return true;
-            }
-        }
+        if (!entityLayer->isEnabled())
+            continue;
+
+        if (filterLayerIds.contains(entityLayer->peerId()))
+            return true;
     }
     return false;
 }
@@ -490,7 +488,7 @@ void RenderView::addClearBuffers(const ClearBuffers *cb) {
 }
 
 // TODO: Convert into a job that caches lookup of entities for layers
-static void findEntitiesInLayers(Entity *e, bool hasLayerFilter, const QVector<int> &filterLayerIds, QVector<Entity *> &entities)
+static void findEntitiesInLayers(Entity *e, bool hasLayerFilter, const Qt3DCore::QNodeIdVector &filterLayerIds, QVector<Entity *> &entities)
 {
     // Bail if sub-tree is disabled
     if (!e->isEnabled())
@@ -517,7 +515,7 @@ void RenderView::buildRenderCommands(Entity *rootEntity, const Plane *planes)
     QVector<Entity *> entities;
     const int entityCount = m_renderer->nodeManagers()->renderNodesManager()->count();
     entities.reserve(entityCount);
-    findEntitiesInLayers(rootEntity, hasLayerFilter(), layerFilterIds(), entities);
+    findEntitiesInLayers(rootEntity, hasLayerFilter(), layerFilter(), entities);
 #if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
     qDebug() << "Found" << entities.size() << "entities in layers" << m_data->m_layers
              << "in" << timer.nsecsElapsed() / 1.0e6 << "ms";

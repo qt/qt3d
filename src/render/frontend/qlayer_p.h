@@ -64,12 +64,6 @@ public:
     QLayerPrivate();
 
     Q_DECLARE_PUBLIC(QLayer)
-    QStringList m_names;
-};
-
-struct QLayerData
-{
-    QStringList names;
 };
 
 } // namespace Qt3DRender

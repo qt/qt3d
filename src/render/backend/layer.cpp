@@ -63,38 +63,7 @@ Layer::~Layer()
 
 void Layer::cleanup()
 {
-    m_layerIds.clear();
     QBackendNode::setEnabled(false);
-}
-
-void Layer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
-{
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QLayerData>>(change);
-    const auto &data = typedChange->data;
-    m_layers = data.names;
-    m_layerIds.reserve(m_layers.size());
-    for (const QString &name : qAsConst(m_layers))
-        m_layerIds.push_back(StringToInt::lookupId(name));
-}
-
-QStringList Layer::layers() const
-{
-    return m_layers;
-}
-
-void Layer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
-    if (e->type() == NodeUpdated && propertyChange->propertyName() == QByteArrayLiteral("names")) {
-        m_layers = propertyChange->value().toStringList();
-        m_layerIds.clear();
-        m_layerIds.reserve(m_layers.size());
-        for (const QString &name : qAsConst(m_layers))
-            m_layerIds.push_back(StringToInt::lookupId(name));
-    }
-    markDirty(AbstractRenderer::AllDirty);
-
-    BackendNode::sceneChangeEvent(e);
 }
 
 } // namespace Render

@@ -3,6 +3,7 @@ HEADERS += \
     $$PWD/quick3dbuffer_p.h \
     $$PWD/quick3deffect_p.h \
     $$PWD/quick3dgeometry_p.h \
+    $$PWD/quick3dlayerfilter_p.h \
     $$PWD/quick3dmaterial_p.h \
     $$PWD/quick3drenderpass_p.h \
     $$PWD/quick3drenderpassfilter_p.h \
@@ -22,6 +23,7 @@ SOURCES += \
     $$PWD/quick3drenderpassfilter.cpp \
     $$PWD/quick3dtechniquefilter.cpp \
     $$PWD/quick3dviewport.cpp \
+    $$PWD/quick3dlayerfilter.cpp \
     $$PWD/quick3dmaterial.cpp \
     $$PWD/quick3dtechnique.cpp \
     $$PWD/quick3deffect.cpp \

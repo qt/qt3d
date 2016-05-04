@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,52 +37,71 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_LAYERFILTERNODE_H
-#define QT3DRENDER_RENDER_LAYERFILTERNODE_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DRender/private/framegraphnode_p.h>
-#include <QStringList>
+#include "quick3dlayerfilter_p.h"
+#include <Qt3DRender/qtexture.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QLayerFilter;
-
 namespace Render {
 
-class Renderer;
+namespace Quick {
 
-class LayerFilterNode : public FrameGraphNode
+Quick3DLayerFilter::Quick3DLayerFilter(QObject *parent)
+    : QObject(parent)
 {
-public:
-    LayerFilterNode();
+}
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    Qt3DCore::QNodeIdVector layerIds() const Q_DECL_NOEXCEPT;
-    void setLayerIds(const Qt3DCore::QNodeIdVector &list);
+QQmlListProperty<QLayer> Quick3DLayerFilter::qmlLayers()
+{
+    return QQmlListProperty<QLayer>(this, 0,
+                                    &Quick3DLayerFilter::appendLayer,
+                                    &Quick3DLayerFilter::layerCount,
+                                    &Quick3DLayerFilter::layerAt,
+                                    &Quick3DLayerFilter::clearLayers);
+}
 
-private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+void Quick3DLayerFilter::appendLayer(QQmlListProperty<QLayer> *list, QLayer *layer)
+{
+    Quick3DLayerFilter *filter = qobject_cast<Quick3DLayerFilter *>(list->object);
+    if (filter) {
+        filter->parentFilter()->addLayer(layer);
+    }
+}
 
-    Qt3DCore::QNodeIdVector m_layerIds;
-};
+QLayer *Quick3DLayerFilter::layerAt(QQmlListProperty<QLayer> *list, int index)
+{
+    Quick3DLayerFilter *filter = qobject_cast<Quick3DLayerFilter *>(list->object);
+    if (filter) {
+        return filter->parentFilter()->layers().at(index);
+    }
+    return 0;
+}
+
+int Quick3DLayerFilter::layerCount(QQmlListProperty<QLayer> *list)
+{
+    Quick3DLayerFilter *filter = qobject_cast<Quick3DLayerFilter *>(list->object);
+    if (filter) {
+        return filter->parentFilter()->layers().count();
+    }
+    return 0;
+}
+
+void Quick3DLayerFilter::clearLayers(QQmlListProperty<QLayer> *list)
+{
+    Quick3DLayerFilter *filter = qobject_cast<Quick3DLayerFilter *>(list->object);
+    if (filter) {
+        Q_FOREACH (QLayer *layer, filter->parentFilter()->layers()) {
+            filter->parentFilter()->removeLayer(layer);
+        }
+    }
+}
+
+} // Quick
 
 } // namespace Render
 
-} // namespace Qt3DRender
+} // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_LAYERFILTERNODE_H

@@ -41,7 +41,8 @@
 #include "qlayerfilter.h"
 #include <Qt3DRender/private/qlayerfilter_p.h>
 #include <Qt3DCore/qnodepropertychange.h>
-#include <Qt3DRender/private/stringtoint_p.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,32 +61,42 @@ void LayerFilterNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBaseP
     FrameGraphNode::initializeFromPeer(change);
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QLayerFilterData>>(change);
     const auto &data = typedChange->data;
-    setLayers(data.layers);
+    setLayerIds(data.layerIds);
 }
 
 void LayerFilterNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == NodeUpdated) {
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("layers"))
-            setLayers(propertyChange->value().value<QStringList>());
-        markDirty(AbstractRenderer::AllDirty);
+    switch (e->type()) {
+    case NodeAdded: {
+        const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("layer"))
+            m_layerIds.append(change->addedNodeId());
+        break;
     }
+
+    case NodeRemoved: {
+        const auto change = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("layer"))
+            m_layerIds.remove(change->removedNodeId());
+        break;
+    }
+
+    default:
+        break;
+    }
+    markDirty(AbstractRenderer::AllDirty);
+
     FrameGraphNode::sceneChangeEvent(e);
 }
 
-QStringList LayerFilterNode::layers() const
+QNodeIdVector LayerFilterNode::layerIds() const Q_DECL_NOEXCEPT
 {
-    return m_layers;
+    return m_layerIds;
 }
 
-void LayerFilterNode::setLayers(const QStringList &list)
+void LayerFilterNode::setLayerIds(const QNodeIdVector &list)
 {
-    m_layers = list;
-    m_layerIds.clear();
-    m_layerIds.reserve(m_layers.size());
-    for (const QString &name : list)
-        m_layerIds.push_back(StringToInt::lookupId(name));
+    m_layerIds = list;
 }
 
 } // namespace Render

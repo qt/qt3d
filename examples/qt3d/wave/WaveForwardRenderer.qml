@@ -58,6 +58,10 @@ TechniqueFilter {
     property alias camera: cameraSelector.camera
     property alias window: surfaceSelector.surface
 
+    // Expose the layers we'll manage during rendering
+    readonly property Layer backgroundLayer: Layer {}
+    readonly property Layer waveLayer: Layer {}
+
     // Select the forward rendering Technique of any used Effect
     matchAll: [ FilterKey { name: "renderingStyle"; value: "forward" } ]
 
@@ -75,10 +79,10 @@ TechniqueFilter {
 
                 ClearBuffers {
                     buffers: ClearBuffers.ColorDepthBuffer
-                    LayerFilter { layers: "background" }
+                    LayerFilter { layers: root.backgroundLayer }
                 }
 
-                LayerFilter { layers: "wave" }
+                LayerFilter { layers: root.waveLayer }
             }
         }
     }

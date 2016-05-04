@@ -94,9 +94,11 @@ Entity {
 
     Background {
         id: background
+        layer: renderSettings.activeFrameGraph.backgroundLayer
     }
 
     Wave {
         id: wave
+        layer: renderSettings.activeFrameGraph.waveLayer
     }
 }

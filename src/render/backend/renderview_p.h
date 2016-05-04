@@ -157,10 +157,8 @@ public:
 
     inline void setHasLayerFilter(bool filter) { m_data->m_hasLayerFilter = filter; }
     inline bool hasLayerFilter() const { return m_data->m_hasLayerFilter; }
-    inline void appendLayerFilter(const QStringList &layers) { m_data->m_layers << layers; }
-    inline QStringList layerFilters() const { return m_data->m_layers; }
-    inline void appendLayerFilter(const QVector<int> &layerIds) { m_data->m_layerIds << layerIds; }
-    inline QVector<int> layerFilterIds() const { return m_data->m_layerIds; }
+    inline void appendLayerFilter(const Qt3DCore::QNodeIdVector &layerIds) { m_data->m_layerIds << layerIds; }
+    inline Qt3DCore::QNodeIdVector layerFilter() const { return m_data->m_layerIds; }
 
     inline void setRenderPassFilter(const RenderPassFilter *rpFilter) { m_data->m_passFilter = rpFilter; }
     inline const RenderPassFilter *renderPassFilter() const { return m_data->m_passFilter; }
@@ -251,8 +249,7 @@ public:
         QMatrix4x4 *m_viewMatrix;
         QMatrix4x4 *m_viewProjectionMatrix;
         bool m_hasLayerFilter;
-        QStringList m_layers; // Only for debug
-        QVector<int> m_layerIds;
+        Qt3DCore::QNodeIdVector m_layerIds;
         QVector<Qt3DRender::QSortPolicy::SortType> m_sortingTypes;
         QVector3D m_eyePos;
         UniformBlockValueBuilder m_uniformBlockBuilder;

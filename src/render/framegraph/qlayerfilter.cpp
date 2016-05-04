@@ -39,7 +39,10 @@
 
 #include "qlayerfilter.h"
 #include "qlayerfilter_p.h"
+#include "qlayer.h"
 #include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -90,16 +93,41 @@ QLayerFilter::QLayerFilter(QLayerFilterPrivate &dd, QNode *parent)
 
 */
 
-void QLayerFilter::setLayers(const QStringList &layers)
+void QLayerFilter::addLayer(QLayer *layer)
 {
+    Q_ASSERT(layer);
     Q_D(QLayerFilter);
-    if (d->m_layers != layers) {
-        d->m_layers = layers;
-        emit layersChanged(layers);
+    if (!d->m_layers.contains(layer)) {
+        d->m_layers.append(layer);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, it gets destroyed as well
+        if (!layer->parent())
+            layer->setParent(this);
+
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = Qt3DCore::QNodeAddedPropertyChangePtr::create(id(), layer);
+            change->setPropertyName("layer");
+            d->notifyObservers(change);
+        }
     }
 }
 
-QStringList QLayerFilter::layers() const
+void QLayerFilter::removeLayer(QLayer *layer)
+{
+    Q_ASSERT(layer);
+    Q_D(QLayerFilter);
+    if (d->m_changeArbiter != nullptr) {
+        const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), layer);
+        change->setPropertyName("layer");
+        d->notifyObservers(change);
+    }
+    d->m_layers.removeOne(layer);
+}
+
+QVector<QLayer *> QLayerFilter::layers() const
 {
     Q_D(const QLayerFilter);
     return d->m_layers;
@@ -110,7 +138,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QLayerFilter::createNodeCreationChange() con
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QLayerFilterData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QLayerFilter);
-    data.layers = d->m_layers;
+    data.layerIds = qIdsForNodes(d->m_layers);
     return creationChange;
 }
 

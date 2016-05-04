@@ -55,7 +55,6 @@
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qlayer.h>
-#include <Qt3DRender/qlayerfilter.h>
 #include <Qt3DRender/qabstractlight.h>
 #include <Qt3DRender/qspotlight.h>
 #include <Qt3DRender/qdirectionallight.h>
@@ -102,6 +101,7 @@
 #include <Qt3DRender/qrendersettings.h>
 #include <Qt3DRender/qpickingsettings.h>
 #include <Qt3DRender/private/qboundingvolumedebug_p.h>
+#include <Qt3DQuickRender/private/quick3dlayerfilter_p.h>
 #include <Qt3DQuickRender/private/quick3dtechnique_p.h>
 #include <Qt3DQuickRender/private/quick3dmaterial_p.h>
 #include <Qt3DQuickRender/private/quick3dtechniquefilter_p.h>
@@ -206,7 +206,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 
     // Layers
     qmlRegisterType<Qt3DRender::QLayer>(uri, 2, 0, "Layer");
-    qmlRegisterType<Qt3DRender::QLayerFilter>(uri, 2, 0, "LayerFilter");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QLayerFilter, Qt3DRender::Render::Quick::Quick3DLayerFilter>("QLayerFilter", "Qt3D.Render/LayerFilter", uri, 2, 0, "LayerFilter");
 
     // Lights
     qmlRegisterUncreatableType<Qt3DRender::QAbstractLight>(uri, 2, 0, "Light", QStringLiteral("Light is an abstract base class"));

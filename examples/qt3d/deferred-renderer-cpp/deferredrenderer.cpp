@@ -89,12 +89,12 @@ void DeferredRenderer::setFinalPassCriteria(QList<Qt3DRender::QFilterKey *> crit
         c->setParent(m_finalPassFilter);
 }
 
-void DeferredRenderer::setGBufferLayers(const QStringList &layerNames)
+void DeferredRenderer::setGBufferLayer(Qt3DRender::QLayer *layer)
 {
-    m_sceneFilter->setLayers(layerNames);
+    m_sceneFilter->addLayer(layer);
 }
 
-void DeferredRenderer::setScreenQuadLayers(const QStringList &layerNames)
+void DeferredRenderer::setScreenQuadLayer(Qt3DRender::QLayer *layer)
 {
-    m_screenQuadFilter->setLayers(layerNames);
+    m_screenQuadFilter->addLayer(layer);
 }

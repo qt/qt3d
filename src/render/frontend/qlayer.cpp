@@ -80,39 +80,6 @@ QLayer::QLayer(QLayerPrivate &dd, QNode *parent)
 {
 }
 
-/*!
-  \property Qt3DRender::QLayer::names
-
- */
-
-/*!
-  \qmlproperty stringlist Qt3D.Render::Layer::names
-
-*/
-
-QStringList QLayer::names() const
-{
-    Q_D(const QLayer);
-    return d->m_names;
-}
-
-void QLayer::setNames(const QStringList &names)
-{
-    Q_D(QLayer);
-    if (d->m_names != names) {
-        d->m_names = names;
-        emit namesChanged(names);
-    }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QLayer::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QLayerData>::create(this);
-    auto &data = creationChange->data;
-    data.names = d_func()->m_names;
-    return creationChange;
-}
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

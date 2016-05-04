@@ -47,22 +47,18 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+class QLayer;
 class QLayerFilterPrivate;
 
 class QT3DRENDERSHARED_EXPORT QLayerFilter : public QFrameGraphNode
 {
     Q_OBJECT
-    Q_PROPERTY(QStringList layers READ layers WRITE setLayers NOTIFY layersChanged)
 public:
     explicit QLayerFilter(Qt3DCore::QNode *parent = nullptr);
 
-    QStringList layers() const;
-
-public Q_SLOTS:
-    void setLayers(const QStringList &layers);
-
-Q_SIGNALS:
-    void layersChanged(const QStringList &layers);
+    void addLayer(QLayer *layer);
+    void removeLayer(QLayer *layer);
+    QVector<QLayer *> layers() const;
 
 protected:
     QLayerFilter(QLayerFilterPrivate &dd, Qt3DCore::QNode *parent = nullptr);
