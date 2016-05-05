@@ -70,14 +70,6 @@ QBackendNodePropertyChangeBase::QBackendNodePropertyChangeBase(QNodeId subjectId
 /*!
  * \internal
  */
-QBackendNodePropertyChangeBase::QBackendNodePropertyChangeBase(QBackendNodePropertyChangeBasePrivate &dd)
-    : QNodePropertyChangeBase(dd)
-{
-}
-
-/*!
- * \internal
- */
 QBackendNodePropertyChangeBase::QBackendNodePropertyChangeBase(QBackendNodePropertyChangeBasePrivate &dd,
                                                                QNodeId subjectId, Priority priority)
     : QNodePropertyChangeBase(dd, NodeUpdated, BackendNode, subjectId, priority)
@@ -106,14 +98,6 @@ QBackendNodePropertyChangePrivate::~QBackendNodePropertyChangePrivate()
 
 QBackendNodePropertyChange::QBackendNodePropertyChange(QNodeId subjectId, QSceneChange::Priority priority)
     : QBackendNodePropertyChangeBase(*new QBackendNodePropertyChangePrivate, subjectId, priority)
-{
-}
-
-/*!
- * \internal
- */
-QBackendNodePropertyChange::QBackendNodePropertyChange(QBackendNodePropertyChangePrivate &dd)
-    : QBackendNodePropertyChangeBase(dd)
 {
 }
 

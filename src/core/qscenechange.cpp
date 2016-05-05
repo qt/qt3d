@@ -125,14 +125,8 @@ QSceneChange::QSceneChange(ChangeFlag type, SenderType senderType, QNodeId subje
 }
 
 /*! \internal */
-QSceneChange::QSceneChange(QSceneChangePrivate &dd)
-    : d_ptr(&dd)
-{
-    d_ptr->q_ptr = this;
-}
-
-/*! \internal */
-QSceneChange::QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, SenderType senderType, QNodeId subjectId, QSceneChange::Priority priority)
+QSceneChange::QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, SenderType senderType,
+                           QNodeId subjectId, QSceneChange::Priority priority)
     : d_ptr(&dd)
 {
     d_ptr->q_ptr = this;

@@ -108,14 +108,6 @@ QNodePropertyChange::QNodePropertyChange(QNodeId subjectId, Priority priority)
 {
 }
 
-/*!
- * \internal
- */
-QNodePropertyChange::QNodePropertyChange(QNodePropertyChangePrivate &dd)
-    : QNodePropertyChangeBase(dd)
-{
-}
-
 QNodePropertyChange::QNodePropertyChange(QNodePropertyChangePrivate &dd,
                                          ChangeFlag type, SenderType senderType,
                                          QNodeId subjectId, QSceneChange::Priority priority)

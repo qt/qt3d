@@ -78,12 +78,6 @@ QNodePropertyChangeBase::QNodePropertyChangeBase(ChangeFlag type, SenderType sen
 }
 
 /*! \internal */
-QNodePropertyChangeBase::QNodePropertyChangeBase(QNodePropertyChangeBasePrivate &dd)
-    : QSceneChange(dd)
-{
-}
-
-/*! \internal */
 QNodePropertyChangeBase::QNodePropertyChangeBase(QNodePropertyChangeBasePrivate &dd, ChangeFlag type, SenderType senderType, QNodeId subjectId, QSceneChange::Priority priority)
     : QSceneChange(dd, type, senderType, subjectId, priority)
 {

@@ -63,7 +63,6 @@ public:
 
 protected:
     Q_DECLARE_PRIVATE(QNodePropertyChange)
-    QNodePropertyChange(QNodePropertyChangePrivate &dd);
     QNodePropertyChange(QNodePropertyChangePrivate &dd,
                         ChangeFlag type, SenderType senderType,
                         QNodeId subjectId, Priority priority = Standard);

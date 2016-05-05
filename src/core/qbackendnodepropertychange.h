@@ -57,7 +57,6 @@ public:
 
 protected:
     Q_DECLARE_PRIVATE(QBackendNodePropertyChangeBase)
-    QBackendNodePropertyChangeBase(QBackendNodePropertyChangeBasePrivate &dd);
     QBackendNodePropertyChangeBase(QBackendNodePropertyChangeBasePrivate &dd,
                                    QNodeId subjectId, Priority priority = Standard);
 };
@@ -78,7 +77,6 @@ public:
 
 protected:
     Q_DECLARE_PRIVATE(QBackendNodePropertyChange)
-    QBackendNodePropertyChange(QBackendNodePropertyChangePrivate &dd);
     QBackendNodePropertyChange(QBackendNodePropertyChangePrivate &dd,
                                QNodeId subjectId, Priority priority = Standard);
 };
