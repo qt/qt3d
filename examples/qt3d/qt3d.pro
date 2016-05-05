@@ -1,7 +1,6 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    playground-qml \
     simple-qml \
     simple-cpp \
     gltf \
