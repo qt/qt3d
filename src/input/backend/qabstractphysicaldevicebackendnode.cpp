@@ -59,16 +59,6 @@ QT_BEGIN_NAMESPACE
 
 namespace {
 
-QVector<int> variantListToVector(const QVariantList &list)
-{
-    QVector<int> v(list.size());
-    int i = 0;
-    for (const QVariant &e : list) {
-        v[i++] = e.toInt();
-    }
-    return v;
-}
-
 Q_DECL_CONSTEXPR int signum(float v)
 {
     return (v > 0.0f) - (v < 0.0f);
