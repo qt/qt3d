@@ -4,7 +4,6 @@ SUBDIRS += \
     simple-qml \
     simple-cpp \
     gltf \
-    assimp \
     multiviewport \
     cylinder-qml \
     cylinder-cpp \
@@ -45,7 +44,6 @@ SUBDIRS += \
     compute-particles \
     component-changes
 
-
 qtHaveModule(multimedia): SUBDIRS += audio-visualizer-qml
 
 # qmake seems to break in some CI configurations, disable this for now
@@ -53,5 +51,6 @@ qtHaveModule(multimedia): SUBDIRS += audio-visualizer-qml
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
+
 qtHaveModule(widgets): SUBDIRS += assimp-cpp \
     basicshapes-cpp
