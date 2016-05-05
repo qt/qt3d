@@ -112,6 +112,7 @@ private:
         return d_ptr.constData();
     }
 };
+QT3D_DECLARE_SHARED(Qt3DRender, QCollisionQueryResult)
 
 class QCollisionQueryResultPrivate : public QSharedData
 {
@@ -132,8 +133,6 @@ inline bool operator==(const QCollisionQueryResult::Hit& left, const QCollisionQ
 }
 
 } // Qt3DRender
-
-Q_DECLARE_SHARED(Qt3DRender::QCollisionQueryResult)
 
 QT_END_NAMESPACE
 

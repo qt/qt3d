@@ -122,6 +122,8 @@ struct ParameterInfo
         return nameId < other.nameId;
     }
 };
+QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ParameterInfo, Q_MOVABLE_TYPE)
+
 
 
 typedef QVarLengthArray<ParameterInfo, 16> ParameterInfoList;
@@ -173,8 +175,6 @@ struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
 
 } // namespace Render
 } // namespace Qt3DRender
-
-Q_DECLARE_TYPEINFO(Qt3DRender::Render::ParameterInfo, Q_MOVABLE_TYPE);
 
 QT_END_NAMESPACE
 

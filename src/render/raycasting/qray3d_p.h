@@ -97,6 +97,8 @@ private:
     QVector3D m_direction;
     float m_distance;
 };
+QT3D_DECLARE_TYPEINFO(Qt3DRender, QRay3D, Q_MOVABLE_TYPE)
+
 
 #ifndef QT_NO_DEBUG_STREAM
 QT3DRENDERSHARED_EXPORT QDebug operator<<(QDebug dbg, const QRay3D &ray);
@@ -108,9 +110,6 @@ QT3DRENDERSHARED_EXPORT QDataStream &operator>>(QDataStream &stream, QRay3D &ray
 #endif
 
 } // namespace Qt3DRender
-
-Q_DECLARE_TYPEINFO(Qt3DRender::QRay3D, Q_MOVABLE_TYPE);
-
 QT_END_NAMESPACE
 
 inline bool qFuzzyCompare(const Qt3DRender::QRay3D &ray1, const Qt3DRender::QRay3D &ray2)

@@ -128,12 +128,7 @@ private:
     QVarLengthArray<Entry, 16> m_entries;
     const char *m_input;
 };
-
-} // namespace Qt3DRender
-
-Q_DECLARE_TYPEINFO(Qt3DRender::ByteArraySplitter::Entry, Q_PRIMITIVE_TYPE);
-
-namespace Qt3DRender {
+QT3D_DECLARE_TYPEINFO(Qt3DRender, ByteArraySplitter::Entry, Q_PRIMITIVE_TYPE)
 
 inline uint qHash(const FaceIndices &faceIndices)
 {

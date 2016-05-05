@@ -40,7 +40,7 @@
 #ifndef QT3DRENDER_GLOBAL_H
 #define QT3DRENDER_GLOBAL_H
 
-#include <QtCore/qglobal.h>
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 

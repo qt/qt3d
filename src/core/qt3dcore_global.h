@@ -54,6 +54,25 @@ QT_BEGIN_NAMESPACE
 #  define QT3DCORESHARED_EXPORT
 #endif
 
+#define QT3D_DECLARE_TYPEINFO(NS, Class, Flags) \
+    } /* NS */ \
+    Q_DECLARE_TYPEINFO(NS :: Class, Flags); \
+    namespace NS { \
+    /*end*/
+
+#define QT3D_DECLARE_TYPEINFO_2(OuterNS, InnerNS, Class, Flags) \
+    } /* InnerNS */ \
+    QT3D_DECLARE_TYPEINFO(OuterNS, InnerNS :: Class, Flags) \
+    namespace InnerNS { \
+    /*end*/
+
+#define QT3D_DECLARE_SHARED(NS, Class) \
+    inline void swap(Class &lhs, Class &rhs) \
+        Q_DECL_NOEXCEPT(noexcept(lhs.swap(rhs))) \
+    { lhs.swap(rhs); } \
+    QT3D_DECLARE_TYPEINFO(NS, Class, Q_MOVABLE_TYPE) \
+    /*end*/
+
 QT_END_NAMESPACE
 
 #endif // QT3DCORE_GLOBAL_H

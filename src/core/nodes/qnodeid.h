@@ -98,6 +98,7 @@ public:
 private:
     quint64 m_id;
 };
+QT3D_DECLARE_TYPEINFO(Qt3DCore, QNodeId, Q_PRIMITIVE_TYPE)
 
 typedef QVector<QNodeId> QNodeIdVector;
 
@@ -111,9 +112,7 @@ inline Q_DECL_CONSTEXPR uint qHash(QNodeId id, uint seed = 0) Q_DECL_NOTHROW
     return qHash(id.id(), seed);
 }
 
-} // Qt3D
-
-Q_DECLARE_TYPEINFO(Qt3DCore::QNodeId, Q_MOVABLE_TYPE);
+} // Qt3DCore
 
 QT_END_NAMESPACE
 
