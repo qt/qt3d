@@ -7,7 +7,6 @@ SUBDIRS += \
     assimp \
     cpp_example \
     multiviewport \
-    torus-qml \
     cylinder-qml \
     cylinder-cpp \
     bigmodel-qml \
