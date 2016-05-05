@@ -5,7 +5,6 @@ SUBDIRS += \
     simple-cpp \
     gltf \
     assimp \
-    cpp_example \
     multiviewport \
     cylinder-qml \
     cylinder-cpp \
