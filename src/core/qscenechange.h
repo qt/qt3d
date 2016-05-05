@@ -50,13 +50,12 @@ namespace Qt3DCore {
 
 enum ChangeFlag {
     NodeCreated             = 1 << 0,
-    NodeAboutToBeDeleted    = 1 << 1,
-    NodeDeleted             = 1 << 2,
-    NodeUpdated             = 1 << 3,
-    NodeAdded               = 1 << 4,
-    NodeRemoved             = 1 << 5,
-    ComponentAdded          = 1 << 6,
-    ComponentRemoved        = 1 << 7,
+    NodeDeleted             = 1 << 1,
+    NodeUpdated             = 1 << 2,
+    NodeAdded               = 1 << 3,
+    NodeRemoved             = 1 << 4,
+    ComponentAdded          = 1 << 5,
+    ComponentRemoved        = 1 << 6,
     AllChanges              = 0xFFFFFFFF
 };
 Q_DECLARE_FLAGS(ChangeFlags, ChangeFlag)

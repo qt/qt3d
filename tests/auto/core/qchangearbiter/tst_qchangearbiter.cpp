@@ -286,7 +286,7 @@ public:
     void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e)
     {
         QVERIFY(!e.isNull());
-        QVERIFY((e->type() == Qt3DCore::NodeDeleted || e->type() == Qt3DCore::NodeAboutToBeDeleted));
+        QVERIFY((e->type() == Qt3DCore::NodeDeleted));
         m_lastChange = e;
     }
 

@@ -118,8 +118,7 @@ void QChangeArbiter::distributeQueueChanges(QChangeQueue *changeQueue)
         if (change->type() == NodeCreated) {
             for (QSceneObserverInterface *observer : qAsConst(m_sceneObservers))
                 observer->sceneNodeAdded(change);
-        }
-        else if (change->type() == NodeAboutToBeDeleted || change->type() == NodeDeleted) {
+        } else if (change->type() == NodeDeleted) {
             for (QSceneObserverInterface *observer : qAsConst(m_sceneObservers))
                 observer->sceneNodeRemoved(change);
         }

@@ -52,7 +52,6 @@ namespace Qt3DCore {
  * The types of change that can be sent and received by Qt3D's change notification system.
  *
  * \value NodeCreated A new instance of a QNode subclass has been created.
- * \value NodeAboutToBeDeleted A QNode is about to be deleted from the scene.
  * \value NodeDeleted A QNode has been deleted.
  * \value NodeUpdated A QNode property has been updated.
  * \value NodeAdded A QNode has been added to the scene.

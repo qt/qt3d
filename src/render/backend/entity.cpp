@@ -100,7 +100,7 @@ void Entity::cleanup()
     }
     m_worldTransform = HMatrix();
     // Release all component will have to perform their own release when they receive the
-    // NodeDeleted/NodeAboutToBeDeleted notification
+    // NodeDeleted notification
     // Clear components
     m_transformComponent = Qt3DCore::QNodeId();
     m_cameraComponent = Qt3DCore::QNodeId();

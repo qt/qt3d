@@ -68,7 +68,7 @@ public:
 
     Q_DECLARE_PUBLIC(QNodePropertyChangeBase)
 
-    /// FIXME: use QMetaProperty here once the NodeAboutToBeDeleted etc. change events
+    /// FIXME: use QMetaProperty here once the NodeDeleted etc. change events
     /// get refactored to their own QSceneChange subclass
     const char *m_propertyName;
 };
