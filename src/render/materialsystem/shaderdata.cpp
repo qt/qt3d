@@ -42,6 +42,7 @@
 #include "qshaderdata_p.h"
 #include <QMetaProperty>
 #include <QMetaObject>
+#include <Qt3DCore/qnodedynamicpropertychange.h>
 #include <Qt3DCore/qnodepropertychange.h>
 #include <private/graphicscontext_p.h>
 #include <private/qbackendnode_p.h>
@@ -314,47 +315,34 @@ void ShaderData::readPeerProperties(QShaderData *shaderData)
 
 void ShaderData::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (!m_propertyReader.isNull()) {
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
-        QString propertyName = QString::fromLatin1(propertyChange->propertyName());
-        switch (e->type()) {
-        case NodeUpdated: {
-            // Note we aren't notified about nested QShaderData in this call
-            // only scalar / vec properties
-            if (m_properties.contains(propertyName)) {
-                QVariant val = m_propertyReader->readProperty(propertyChange->value());
-                // If this is a Transformed property, we need to multiply against the correct
-                // matrices
-                m_originalProperties.insert(propertyName, val);
-                if (m_transformedProperties.contains(propertyName)) {
-                    if (m_transformedProperties[propertyName] == ModelToEye)
-                        val = m_viewMatrix * m_worldMatrix * val.value<QVector3D>();
-                    else
-                        val = m_worldMatrix * val.value<QVector3D>();
-                }
-                m_properties.insert(propertyName, val);
-                m_updatedProperties.insert(propertyName, val);
-            }
-            break;
+    if (!m_propertyReader.isNull() && e->type() == NodeUpdated) {
+        QString propertyName;
+        QVariant propertyValue;
+
+        if (auto propertyChange = qSharedPointerDynamicCast<QNodePropertyChange>(e)) {
+            propertyName = QString::fromLatin1(propertyChange->propertyName());
+            propertyValue =  m_propertyReader->readProperty(propertyChange->value());
+        } else if (auto propertyChange = qSharedPointerDynamicCast<QNodeDynamicPropertyChange>(e)) {
+            propertyName = QString::fromLatin1(propertyChange->propertyName());
+            propertyValue = m_propertyReader->readProperty(propertyChange->value());
+        } else {
+            Q_UNREACHABLE();
         }
-            //        case NodeAdded: {
-            //            qDebug() << Q_FUNC_INFO;
-            //            m_properties.insert(propertyName, m_propertyReader->readProperty(propertyChange->value()));
-            //            m_originalProperties.insert(propertyName, m_propertyReader->readProperty(propertyChange->value()));
-            //            m_nestedShaderDataProperties.insert(propertyName, propertyChange->value());
-            //            break;
-            //        }
-            //        case NodeRemoved: {
-            //            qDebug() << Q_FUNC_INFO;
-            //            if (m_properties.contains(propertyName)) {
-            //                m_originalProperties.remove(propertyName);
-            //                m_properties.remove(propertyName);
-            //                m_nestedShaderDataProperties.remove(propertyName);
-            //            }
-            //            break;
-            //        }
-        default:
-            break;
+
+        // Note we aren't notified about nested QShaderData in this call
+        // only scalar / vec properties
+        if (m_properties.contains(propertyName)) {
+            // If this is a Transformed property, we need to multiply against the correct
+            // matrices
+            m_originalProperties.insert(propertyName, propertyValue);
+            if (m_transformedProperties.contains(propertyName)) {
+                if (m_transformedProperties[propertyName] == ModelToEye)
+                    propertyValue = m_viewMatrix * m_worldMatrix * propertyValue.value<QVector3D>();
+                else
+                    propertyValue = m_worldMatrix * propertyValue.value<QVector3D>();
+            }
+            m_properties.insert(propertyName, propertyValue);
+            m_updatedProperties.insert(propertyName, propertyValue);
         }
         BackendNode::markDirty(AbstractRenderer::AllDirty);
     }

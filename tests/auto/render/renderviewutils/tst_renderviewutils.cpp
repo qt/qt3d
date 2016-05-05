@@ -28,12 +28,14 @@
 
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
+#include <Qt3DCore/qnodedynamicpropertychange.h>
 #include <Qt3DRender/private/renderviewjobutils_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <Qt3DRender/qshaderdata.h>
 
+#include "testpostmanarbiter.h"
 
 class tst_RenderViewUtils : public Qt3DCore::QBackendNodeTester
 {
@@ -45,6 +47,7 @@ private Q_SLOTS:
     void topLevelStructValue_data();
     void topLevelStructValue();
     void topLevelDynamicProperties();
+    void shouldNotifyDynamicPropertyChanges();
 
 private:
     void initBackendShaderData(Qt3DRender::QShaderData *frontend,
@@ -461,6 +464,23 @@ void tst_RenderViewUtils::topLevelDynamicProperties()
              shaderData->property("array"));
 }
 
-QTEST_APPLESS_MAIN(tst_RenderViewUtils)
+void tst_RenderViewUtils::shouldNotifyDynamicPropertyChanges()
+{
+    // GIVEN
+    QScopedPointer<Qt3DRender::QShaderData> shaderData(new Qt3DRender::QShaderData());
+    TestArbiter arbiter(shaderData.data());
+
+    // WHEN
+    shaderData->setProperty("scalar", 883.0f);
+
+    // THEN
+    QCOMPARE(arbiter.events.size(), 1);
+    auto change = arbiter.events.first().dynamicCast<Qt3DCore::QNodeDynamicPropertyChange>();
+    QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+    QCOMPARE(change->propertyName(), QByteArrayLiteral("scalar"));
+    QCOMPARE(change->value().toFloat(), 883.0f);
+}
+
+QTEST_MAIN(tst_RenderViewUtils)
 
 #include "tst_renderviewutils.moc"

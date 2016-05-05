@@ -88,6 +88,27 @@ QShaderData::QShaderData(QShaderDataPrivate &dd, QNode *parent)
 {
 }
 
+bool QShaderData::event(QEvent *event)
+{
+    Q_D(QShaderData);
+
+    if (event->type() == QEvent::DynamicPropertyChange) {
+        auto e = static_cast<QDynamicPropertyChangeEvent*>(event);
+        const auto propertyName = e->propertyName();
+
+        const QVariant data = property(propertyName);
+        if (data.canConvert<Qt3DCore::QNode*>()) {
+            const auto node = data.value<Qt3DCore::QNode*>();
+            const auto id = node ? node->id() : Qt3DCore::QNodeId();
+            d->notifyDynamicPropertyChange(propertyName, QVariant::fromValue(id));
+        } else {
+            d->notifyDynamicPropertyChange(propertyName, data);
+        }
+    }
+
+    return QComponent::event(event);
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QShaderData::createNodeCreationChange() const
 {
     Q_D(const QShaderData);

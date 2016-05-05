@@ -150,7 +150,9 @@ private Q_SLOTS:
         light->setIntensity(0.5f);
         QCoreApplication::processEvents();
 
-        QCOMPARE(lightArbiter.events.size(), 2);
+        QCOMPARE(lightArbiter.events.size(), 2 * 2); // Due to contained shader data
+        for (int i = 0; i < 2; i++)
+            lightArbiter.events.removeAt(i);
         Qt3DCore::QNodePropertyChangePtr change = lightArbiter.events[0].staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "color");
         QCOMPARE(change->subjectId(), light->id());
@@ -184,7 +186,9 @@ private Q_SLOTS:
         pointLight->setQuadraticAttenuation(1.0f);
         QCoreApplication::processEvents();
 
-        QCOMPARE(pointLightArbiter.events.size(), 4);
+        QCOMPARE(pointLightArbiter.events.size(), 4 * 2); // Due to contained shader data
+        for (int i = 0; i < 4; i++)
+            pointLightArbiter.events.removeAt(i);
         Qt3DCore::QNodePropertyChangePtr change = pointLightArbiter.events[0].staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "color");
         QCOMPARE(change->subjectId(), pointLight->id());
@@ -219,7 +223,9 @@ private Q_SLOTS:
         dirLight->setWorldDirection(QVector3D(0.5f, 0.0f, -1.0f));
         QCoreApplication::processEvents();
 
-        QCOMPARE(dirLightArbiter.events.size(), 3);
+        QCOMPARE(dirLightArbiter.events.size(), 3 * 2); // Due to contained shader data
+        for (int i = 0; i < 3; i++)
+            dirLightArbiter.events.removeAt(i);
         Qt3DCore::QNodePropertyChangePtr change = dirLightArbiter.events[0].staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "color");
         QCOMPARE(change->subjectId(), dirLight->id());
@@ -250,7 +256,9 @@ private Q_SLOTS:
         spotLight->setCutOffAngle(0.75f);
         QCoreApplication::processEvents();
 
-        QCOMPARE(spotLightArbiter.events.size(), 4);
+        QCOMPARE(spotLightArbiter.events.size(), 4 * 2); // Due to contained shader data
+        for (int i = 0; i < 4; i++)
+            spotLightArbiter.events.removeAt(i);
         Qt3DCore::QNodePropertyChangePtr change = spotLightArbiter.events[0].staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "color");
         QCOMPARE(change->subjectId(), spotLight->id());
