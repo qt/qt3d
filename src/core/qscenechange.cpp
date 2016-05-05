@@ -64,7 +64,7 @@ namespace Qt3DCore {
 QSceneChangePrivate::QSceneChangePrivate()
     : q_ptr(nullptr)
     , m_subjectId()
-    , m_subjectType(QSceneChange::Node)
+    , m_senderType(QSceneChange::Node)
     , m_type(AllChanges)
     , m_priority(QSceneChange::Standard)
     , m_timestamp(QDateTime::currentMSecsSinceEpoch())
@@ -109,9 +109,9 @@ QSceneChangePrivate::~QSceneChangePrivate()
  */
 
 /*!
- * Constructs a new QSceneChange with \a type, \a observableType, \a subjectId, and \a priority.
+ * Constructs a new QSceneChange with \a type, \a senderType, \a subjectId, and \a priority.
  */
-QSceneChange::QSceneChange(ChangeFlag type, ObservableType observableType, QNodeId subjectId,
+QSceneChange::QSceneChange(ChangeFlag type, SenderType senderType, QNodeId subjectId,
                            QSceneChange::Priority priority)
     : d_ptr(new QSceneChangePrivate)
 {
@@ -121,7 +121,7 @@ QSceneChange::QSceneChange(ChangeFlag type, ObservableType observableType, QNode
     d->m_priority = priority;
     d->m_timestamp = QDateTime::currentMSecsSinceEpoch();
     d->m_subjectId = subjectId;
-    d->m_subjectType = observableType;
+    d->m_senderType = senderType;
 }
 
 /*! \internal */
@@ -132,7 +132,7 @@ QSceneChange::QSceneChange(QSceneChangePrivate &dd)
 }
 
 /*! \internal */
-QSceneChange::QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, ObservableType observableType, QNodeId subjectId, QSceneChange::Priority priority)
+QSceneChange::QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, SenderType senderType, QNodeId subjectId, QSceneChange::Priority priority)
     : d_ptr(&dd)
 {
     d_ptr->q_ptr = this;
@@ -141,7 +141,7 @@ QSceneChange::QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, ObservableT
     d->m_priority = priority;
     d->m_timestamp = QDateTime::currentMSecsSinceEpoch();
     d->m_subjectId = subjectId;
-    d->m_subjectType = observableType;
+    d->m_senderType = senderType;
 }
 
 QSceneChange::~QSceneChange()
@@ -179,10 +179,10 @@ qint64 QSceneChange::timestamp() const
 /*!
  * \return scene change observable type.
  */
-QSceneChange::ObservableType QSceneChange::observableType() const
+QSceneChange::SenderType QSceneChange::senderType() const
 {
     Q_D(const QSceneChange);
-    return d->m_subjectType;
+    return d->m_senderType;
 }
 
 /*!

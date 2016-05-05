@@ -91,12 +91,12 @@ void QNodePropertyChangePrivate::operator delete(void *ptr, size_t size)
  */
 
 /*!
- * Constructs a new QNodePropertyChange with \a type, \a observableType, \a subjectId, and
+ * Constructs a new QNodePropertyChange with \a type, \a senderType, \a subjectId, and
  * \a priority.
  */
-QNodePropertyChange::QNodePropertyChange(ChangeFlag type, ObservableType observableType,
+QNodePropertyChange::QNodePropertyChange(ChangeFlag type, SenderType senderType,
                                          QNodeId subjectId, QSceneChange::Priority priority)
-    : QNodePropertyChangeBase(*new QNodePropertyChangePrivate, type, observableType, subjectId, priority)
+    : QNodePropertyChangeBase(*new QNodePropertyChangePrivate, type, senderType, subjectId, priority)
 {
 }
 
@@ -117,9 +117,9 @@ QNodePropertyChange::QNodePropertyChange(QNodePropertyChangePrivate &dd)
 }
 
 QNodePropertyChange::QNodePropertyChange(QNodePropertyChangePrivate &dd,
-                                         ChangeFlag type, ObservableType observableType,
+                                         ChangeFlag type, SenderType senderType,
                                          QNodeId subjectId, QSceneChange::Priority priority)
-    : QNodePropertyChangeBase(dd, type, observableType, subjectId, priority)
+    : QNodePropertyChangeBase(dd, type, senderType, subjectId, priority)
 {
 }
 

@@ -131,7 +131,7 @@ void QChangeArbiter::distributeQueueChanges(QChangeQueue *changeQueue)
                 if ((change->type() & observer.first))
                     observer.second->sceneChangeEvent(change);
             }
-            if (change->observableType() == QSceneChange::Observable) {
+            if (change->senderType() == QSceneChange::BackendNode) {
                 // Also send change to the postman
                 m_postman->sceneChangeEvent(change);
             }

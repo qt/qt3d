@@ -53,6 +53,7 @@
 
 #include <QtGlobal>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
+#include <Qt3DCore/qscenechange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,7 +73,7 @@ public :
     QSceneChange *q_ptr;
 
     QNodeId m_subjectId;
-    QSceneChange::ObservableType m_subjectType;
+    QSceneChange::SenderType m_senderType;
     ChangeFlag m_type;
     QSceneChange::Priority m_priority;
     qint64 m_timestamp;
