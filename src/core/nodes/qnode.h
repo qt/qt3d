@@ -93,6 +93,7 @@ Q_SIGNALS:
 
 protected:
     QNode(QNodePrivate &dd, QNode *parent = nullptr);
+    void notifyObservers(const QSceneChangePtr &change);
     virtual void sceneChangeEvent(const QSceneChangePtr &change);
 
 private:

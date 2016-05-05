@@ -379,6 +379,21 @@ void QNodePrivate::setArbiter(QLockableObserverInterface *arbiter)
 }
 
 /*!
+ * Sends the \a change QSceneChangePtr to any QBackendNodes in the registered
+ * aspects that correspond to this QNode.
+ *
+ * For the common case of a QObject property change, QNode handles this for you
+ * automatically by sending a QNodePropertyChange event to the backend nodes.
+ * You only need to call this function if you wish to send a specific type of
+ * change in place of the automatic handling.
+ */
+void QNode::notifyObservers(const QSceneChangePtr &change)
+{
+    Q_D(QNode);
+    d->notifyObservers(change);
+}
+
+/*!
     Called when one or more backend aspects sends a notification \a change to the
     current Qt3DCore::QNode instance.
 
