@@ -94,9 +94,6 @@ protected:
     QSceneChange(QSceneChangePrivate &dd);
     QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, SenderType senderType, QNodeId subjectId, Priority priority = Standard);
 
-    // TODO: add timestamp from central clock and priority level
-    // These can be used to resolve any conflicts between events
-    // posted from different aspects
 private:
     Q_DISABLE_COPY(QSceneChange)
 };
