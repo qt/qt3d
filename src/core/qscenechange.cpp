@@ -152,7 +152,7 @@ QSceneChange::~QSceneChange()
 /*!
  * \return scene change type.
  */
-ChangeFlag QSceneChange::type() const
+ChangeFlag QSceneChange::type() const Q_DECL_NOEXCEPT
 {
     Q_D(const QSceneChange);
     return d->m_type;
@@ -161,7 +161,7 @@ ChangeFlag QSceneChange::type() const
 /*!
  * \return scene change priority.
  */
-QSceneChange::Priority QSceneChange::priority() const
+QSceneChange::Priority QSceneChange::priority() const Q_DECL_NOEXCEPT
 {
     Q_D(const QSceneChange);
     return d->m_priority;
@@ -170,7 +170,7 @@ QSceneChange::Priority QSceneChange::priority() const
 /*!
  * \return scene change timestamp.
  */
-qint64 QSceneChange::timestamp() const
+qint64 QSceneChange::timestamp() const Q_DECL_NOEXCEPT
 {
     Q_D(const QSceneChange);
     return d->m_timestamp;
@@ -179,7 +179,7 @@ qint64 QSceneChange::timestamp() const
 /*!
  * \return scene change observable type.
  */
-QSceneChange::SenderType QSceneChange::senderType() const
+QSceneChange::SenderType QSceneChange::senderType() const Q_DECL_NOEXCEPT
 {
     Q_D(const QSceneChange);
     return d->m_senderType;
@@ -188,7 +188,7 @@ QSceneChange::SenderType QSceneChange::senderType() const
 /*!
  * \return scene change subject id.
  */
-QNodeId QSceneChange::subjectId() const
+QNodeId QSceneChange::subjectId() const Q_DECL_NOEXCEPT
 {
     Q_D(const QSceneChange);
     return d->m_subjectId;

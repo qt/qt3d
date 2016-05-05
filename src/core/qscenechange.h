@@ -82,11 +82,11 @@ public:
     QSceneChange(ChangeFlag type, SenderType senderType, QNodeId subjectId, Priority priority = Standard);
     virtual ~QSceneChange();
 
-    ChangeFlag type() const;
-    qint64 timestamp() const;
-    QSceneChange::Priority priority() const;
-    QSceneChange::SenderType senderType() const;
-    QNodeId subjectId() const;
+    ChangeFlag type() const Q_DECL_NOEXCEPT;
+    qint64 timestamp() const Q_DECL_NOEXCEPT;
+    QSceneChange::Priority priority() const Q_DECL_NOEXCEPT;
+    QSceneChange::SenderType senderType() const Q_DECL_NOEXCEPT;
+    QNodeId subjectId() const Q_DECL_NOEXCEPT;
 
 protected:
     Q_DECLARE_PRIVATE(QSceneChange)
