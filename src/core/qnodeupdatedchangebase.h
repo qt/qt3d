@@ -52,12 +52,15 @@ class QNodeUpdatedChangeBasePrivate;
 class QNodeUpdatedChangeBase : public QSceneChange
 {
 public:
-    explicit QNodeUpdatedChangeBase(SenderType senderType, QNodeId subjectId, Priority priority = Standard);
+    // TODO: Remove the ChangeType argument and force to NodeUpdated once
+    //       the QNodeAddedPropertyChange and QNOdeRemovedPropertyChange types
+    //       have been moved to their own branch of the inheritance tree
+    explicit QNodeUpdatedChangeBase(ChangeFlag type, SenderType senderType, QNodeId subjectId, Priority priority = Standard);
 
 protected:
     Q_DECLARE_PRIVATE(QNodeUpdatedChangeBase)
-    QNodeUpdatedChangeBase(QNodeUpdatedChangeBasePrivate &dd,
-                          SenderType senderType, QNodeId subjectId, Priority priority = Standard);
+    QNodeUpdatedChangeBase(QNodeUpdatedChangeBasePrivate &dd, ChangeFlag type,
+                           SenderType senderType, QNodeId subjectId, Priority priority = Standard);
 };
 
 typedef QSharedPointer<QNodeUpdatedChangeBase> QNodeUpdatedChangeBasePtr;

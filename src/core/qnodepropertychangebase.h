@@ -41,6 +41,7 @@
 #define QT3DCORE_QNODEPROPERTYCHANGEBASE_H
 
 #include <Qt3DCore/qscenechange.h>
+#include <Qt3DCore/qnodeupdatedchangebase.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,7 +49,7 @@ namespace Qt3DCore {
 
 class QNodePropertyChangeBasePrivate;
 
-class QT3DCORESHARED_EXPORT QNodePropertyChangeBase : public QSceneChange
+class QT3DCORESHARED_EXPORT QNodePropertyChangeBase : public QNodeUpdatedChangeBase
 {
 public:
     QNodePropertyChangeBase(ChangeFlag type, SenderType senderType, QNodeId subjectId, Priority priority = Standard);

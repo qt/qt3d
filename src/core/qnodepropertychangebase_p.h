@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <private/qscenechange_p.h>
+#include <private/qnodeupdatedchangebase_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,7 +60,7 @@ namespace Qt3DCore {
 class QNodePropertyChange;
 class QFrameAllocator;
 
-class QNodePropertyChangeBasePrivate : public QSceneChangePrivate
+class QNodePropertyChangeBasePrivate : public QNodeUpdatedChangeBasePrivate
 {
 public:
     QNodePropertyChangeBasePrivate();
