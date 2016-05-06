@@ -45,7 +45,9 @@ HEADERS += \
     $$PWD/qnodeaddedpropertychange_p.h \
     $$PWD/qnoderemovedpropertychange.h \
     $$PWD/qnoderemovedpropertychange_p.h \
-    $$PWD/qnodedestroyedchange.h
+    $$PWD/qnodedestroyedchange.h \
+    $$PWD/qnodeupdatedchangebase.h \
+    $$PWD/qnodeupdatedchangebase_p.h
 
 SOURCES += \
     $$PWD/qtickclock.cpp \
@@ -68,4 +70,5 @@ SOURCES += \
     $$PWD/qnodepropertychange.cpp \
     $$PWD/qbackendnodepropertychange.cpp \
     $$PWD/qnodeaddedpropertychange.cpp \
-    $$PWD/qnoderemovedpropertychange.cpp
+    $$PWD/qnoderemovedpropertychange.cpp \
+    $$PWD/qnodeupdatedchangebase.cpp
