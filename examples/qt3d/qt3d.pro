@@ -30,7 +30,6 @@ SUBDIRS += \
     transparency-qml \
     transparency-qml-scene3d \
     scene3d-loader \
-    clip-planes-qml \
     mouseinput-qml \
     custom-mesh-cpp \
     custom-mesh-qml \
