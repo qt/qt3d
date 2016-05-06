@@ -62,7 +62,7 @@ namespace Qt3DCore {
 class QNodePropertyChange;
 class QFrameAllocator;
 
-class QNodeDynamicPropertyChangePrivate : public QNodeUpdatedChangeBasePrivate
+class QT3DCORE_PRIVATE_EXPORT QNodeDynamicPropertyChangePrivate : public QNodeUpdatedChangeBasePrivate
 {
 public:
     QNodeDynamicPropertyChangePrivate();

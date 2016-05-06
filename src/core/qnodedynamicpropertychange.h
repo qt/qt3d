@@ -48,7 +48,7 @@ namespace Qt3DCore {
 
 class QNodeDynamicPropertyChangePrivate;
 
-class QNodeDynamicPropertyChange : public QNodeUpdatedChangeBase
+class QT3DCORESHARED_EXPORT QNodeDynamicPropertyChange : public QNodeUpdatedChangeBase
 {
 public:
     QNodeDynamicPropertyChange(SenderType senderType, QNodeId subjectId, Priority priority = Standard);
