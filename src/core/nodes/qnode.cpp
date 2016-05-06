@@ -41,6 +41,7 @@
 #include "qnode_p.h"
 
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/qnodedynamicpropertychange.h>
 #include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
@@ -336,6 +337,18 @@ void QNodePrivate::notifyPropertyChange(const char *name, const QVariant &value)
         return;
 
     QNodePropertyChangePtr e(new QNodePropertyChange(NodeUpdated, QSceneChange::Node, m_id));
+    e->setPropertyName(name);
+    e->setValue(value);
+    notifyObservers(e);
+}
+
+void QNodePrivate::notifyDynamicPropertyChange(const QByteArray &name, const QVariant &value)
+{
+    // Bail out early if we can to avoid operator new
+    if (m_blockNotifications)
+        return;
+
+    QNodeDynamicPropertyChangePtr e(new QNodeDynamicPropertyChange(QSceneChange::Node, m_id));
     e->setPropertyName(name);
     e->setValue(value);
     notifyObservers(e);
