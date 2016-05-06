@@ -13,7 +13,6 @@ SUBDIRS += \
     deferred-renderer-qml \
     deferred-renderer-cpp \
     shadow-map-qml \
-    bigscene-cpp \
     materials \
     keyboardinput-qml \
     loader-qml \

@@ -1,4 +1,5 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    assimp
+    assimp \
+    bigscene-cpp
