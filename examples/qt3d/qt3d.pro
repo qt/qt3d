@@ -7,7 +7,6 @@ SUBDIRS += \
     multiviewport \
     cylinder-qml \
     cylinder-cpp \
-    bigmodel-qml \
     wireframe \
     tessellation-modes \
     deferred-renderer-qml \
