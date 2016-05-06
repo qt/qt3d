@@ -1752,9 +1752,10 @@ static inline void promoteColorsToRGBA(QJsonObject *obj)
             const QString key = it.key();
             if (key == QStringLiteral("ambient")
                     || key == QStringLiteral("diffuse")
-                    || key == QStringLiteral("specular"))
+                    || key == QStringLiteral("specular")) {
                 arr.append(1);
                 *it = arr;
+            }
         }
         ++it;
     }
