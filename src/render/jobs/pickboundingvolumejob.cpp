@@ -69,14 +69,15 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace {
-
 struct ViewportCameraAreaTriplet
 {
     Qt3DCore::QNodeId cameraId;
     QRectF viewport;
     QSize area;
 };
+QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ViewportCameraAreaTriplet, Q_PRIMITIVE_TYPE)
+
+namespace {
 
 class ViewportCameraAreaGatherer
 {

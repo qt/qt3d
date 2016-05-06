@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <QtGlobal>
+#include <Qt3DRender/qt3drender_global.h>
 #include <QOpenGLContext>
 
 QT_BEGIN_NAMESPACE
@@ -75,6 +75,7 @@ struct ShaderAttribute
     int m_size;
     int m_location;
 };
+QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ShaderAttribute, Q_MOVABLE_TYPE)
 
 struct ShaderUniform
 {
@@ -98,6 +99,7 @@ struct ShaderUniform
     uint m_rawByteSize; // contains byte size (size / type / strides)
     // size, offset and strides are in bytes
 };
+QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ShaderUniform, Q_MOVABLE_TYPE)
 
 struct ShaderUniformBlock
 {
@@ -116,6 +118,7 @@ struct ShaderUniformBlock
     int m_activeUniformsCount;
     int m_size;
 };
+QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ShaderUniformBlock, Q_MOVABLE_TYPE)
 
 struct ShaderStorageBlock
 {
@@ -133,6 +136,7 @@ struct ShaderStorageBlock
     int m_size;
     int m_activeVariablesCount;
 };
+QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ShaderStorageBlock, Q_MOVABLE_TYPE)
 
 } // namespace Render
 

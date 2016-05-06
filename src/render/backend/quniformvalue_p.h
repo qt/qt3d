@@ -190,11 +190,14 @@ struct BlockToUBO {
     bool m_needsUpdate;
     QHash<QString, QVariant> m_updatedProperties;
 };
+QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, BlockToUBO, Q_MOVABLE_TYPE)
 
 struct BlockToSSBO {
     int m_blockIndex;
     Qt3DCore::QNodeId m_bufferID;
 };
+QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, BlockToSSBO, Q_PRIMITIVE_TYPE)
+
 
 typedef QHash<int, QUniformValue> PackUniformHash;
 
@@ -236,6 +239,7 @@ private:
 
     friend class RenderView;
 };
+QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ShaderParameterPack::NamedTexture, Q_PRIMITIVE_TYPE)
 
 } // namespace Render
 } // namespace Qt3DRender

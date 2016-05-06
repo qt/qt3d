@@ -145,6 +145,7 @@ struct QNodeIdTypePair
     QNodeId id;
     const QMetaObject *type;
 };
+QT3D_DECLARE_TYPEINFO(Qt3DCore, QNodeIdTypePair, Q_PRIMITIVE_TYPE)
 
 } // namespace Qt3DCore
 

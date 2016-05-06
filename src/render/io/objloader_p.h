@@ -51,6 +51,8 @@
 // We mean it.
 //
 
+#include <Qt3DCore/qt3dcore_global.h>
+
 #include <QVector>
 #include <QVector2D>
 #include <QVector3D>
@@ -92,6 +94,7 @@ struct FaceIndices
     unsigned int texCoordIndex;
     unsigned int normalIndex;
 };
+QT3D_DECLARE_TYPEINFO(Qt3DRender, FaceIndices, Q_PRIMITIVE_TYPE)
 
 class Q_AUTOTEST_EXPORT ObjLoader
 {

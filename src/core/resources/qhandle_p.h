@@ -127,7 +127,11 @@ QDebug operator<<(QDebug dbg, const QHandle<T, INDEXBITS> &h)
     return dbg;
 }
 
-} // Qt3D
+} // Qt3DCore
+
+template <typename T, uint I>
+class QTypeInfo<Qt3DCore::QHandle<T,I> > // simpler than fighting the Q_DECLARE_TYPEINFO macro
+    : public QTypeInfoMerger<Qt3DCore::QHandle<T,I>, quint32> {};
 
 QT_END_NAMESPACE
 

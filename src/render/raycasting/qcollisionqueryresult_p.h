@@ -112,6 +112,7 @@ private:
         return d_ptr.constData();
     }
 };
+QT3D_DECLARE_TYPEINFO(Qt3DRender, QCollisionQueryResult::Hit, Q_PRIMITIVE_TYPE)
 QT3D_DECLARE_SHARED(Qt3DRender, QCollisionQueryResult)
 
 class QCollisionQueryResultPrivate : public QSharedData
