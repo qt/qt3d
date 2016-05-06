@@ -33,7 +33,6 @@ SUBDIRS += \
     clip-planes-qml \
     mouseinput-qml \
     custom-mesh-cpp \
-    bigscene-instanced-qml \
     custom-mesh-qml \
     instanced-arrays-qml \
     picking-qml \

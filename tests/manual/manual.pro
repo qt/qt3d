@@ -3,4 +3,5 @@ TEMPLATE = subdirs
 SUBDIRS += \
     assimp \
     bigscene-cpp \
-    bigmodel-qml
+    bigmodel-qml \
+    bigscene-instanced-qml
