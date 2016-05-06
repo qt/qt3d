@@ -66,6 +66,8 @@ protected:
                                SenderType senderType, QNodeId subjectId, Priority priority = Standard);
 };
 
+typedef QSharedPointer<QNodeDynamicPropertyChange> QNodeDynamicPropertyChangePtr;
+
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
