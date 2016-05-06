@@ -77,7 +77,7 @@ Entity {
 
                         LayerFilter {
                             enabled: counter === 12
-                            layers: "scene"
+                            layers: sceneLayer
                         }
                     }
                 }
@@ -125,9 +125,8 @@ Entity {
         }
 
         Layer {
-            id: layer
+            id: sceneLayer
             enabled: counter !== 2
-            names: "scene"
         }
 
         Transform {
@@ -180,7 +179,7 @@ Entity {
             }
         }
 
-        components: [sphereMesh, material, layer, transform]
+        components: [sphereMesh, material, sceneLayer, transform]
     }
 
     // Floor
@@ -201,7 +200,6 @@ Entity {
 
         Layer {
             id: floorLayer
-            names: "floor"
         }
 
         components: [planeMesh, floorMaterial, floorLayer]

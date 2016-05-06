@@ -60,6 +60,9 @@ import QtQuick.Scene3D 2.0
 Entity {
     id: sceneRoot
 
+    property Layer contentLayer: Layer {}
+    property Layer debugLayer: Layer {}
+
     Camera {
         id: camera
         projectionType: CameraLens.PerspectiveProjection
@@ -105,7 +108,7 @@ Entity {
                         normalizedRect: Qt.rect(0.0, 0.0, 0.5, 1.0)
                         CameraSelector {
                             camera: camera
-                            LayerFilter { layers: "content"}
+                            LayerFilter { layers: sceneRoot.contentLayer }
                         }
                     }
 
@@ -115,7 +118,7 @@ Entity {
                             camera: camera2
                             LayerFilter {
                                 // To show Debug volumes
-                                layers: ["content", "debug"]
+                                layers: [sceneRoot.contentLayer, sceneRoot.debugLayer]
                             }
                         }
                     }
@@ -132,6 +135,7 @@ Entity {
         property real scaleFactor: isPressed ? 3.0 : 1.0
         QQ2.Behavior on scaleFactor { QQ2.NumberAnimation { duration: 150; easing.type: QQ2.Easing.InQuad } }
 
+        layer: sceneRoot.contentLayer
         mesh: cubeMesh
         scale: cube1.scaleFactor
         x: -8
@@ -149,6 +153,7 @@ Entity {
 
     PickableEntity {
         id: cube2
+        layer: sceneRoot.contentLayer
         mesh: cubeMesh
 
         ambientColor: cube2.containsMouse ? "blue" : "red"
@@ -166,6 +171,7 @@ Entity {
     }
     PickableEntity {
         id: cube3
+        layer: sceneRoot.contentLayer
         mesh: cubeMesh
 
         diffuseColor: "yellow"
@@ -204,10 +210,9 @@ Entity {
                 scale: cube4.scaleFactor
                 translation: Qt.vector3d(3, 4, 0)
             }
-            readonly property Layer layer: Layer { names: "content" }
             readonly property PhongMaterial material: PhongMaterial { diffuse: "red" }
 
-            components: [cubeMesh, transform, material, layer]
+            components: [cubeMesh, transform, material, sceneRoot.contentLayer]
         }
     }
 }

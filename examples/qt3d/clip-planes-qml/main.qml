@@ -74,6 +74,7 @@ Entity {
     components: [
         RenderSettings {
             ClipCappingFrameGraph {
+                id: frameGraph
                 camera: camera;
                 clearColor: Qt.rgba(0.0, 0.5, 1, 1)
             }
@@ -89,6 +90,8 @@ Entity {
 
     ClippingPlanes {
         id: clippingPlanes
+        visualizationLayer: frameGraph.visualizationLayer
+        capsLayer: frameGraph.contentLayer
     }
 
     // Entity being clipped
@@ -112,10 +115,6 @@ Entity {
             scale: 3
         }
 
-        property Layer layer: Layer {
-            names: "content"
-        }
-
-        components: [material, transform, mesh, layer]
+        components: [material, transform, mesh, frameGraph.contentLayer]
     }
 }

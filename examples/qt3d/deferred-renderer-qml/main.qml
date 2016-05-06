@@ -64,6 +64,7 @@ Entity {
     components : [
         RenderSettings {
             activeFrameGraph: DeferredRenderer {
+                id: frameGraph
                 camera : camera
                 gBuffer: gBuffer
             }
@@ -77,29 +78,30 @@ Entity {
 
     Entity {
         id : screenQuadEntity
-        components : [
-            Layer {
-                names : "screenQuad"
-            },
-            PlaneMesh {
-                width: 2.0
-                height: 2.0
-                meshResolution: Qt.size(2, 2)
-            },
-            Transform { // We rotate the plane so that it faces us
-                rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 90)
-            },
-            Material {
-                parameters : [
-                    Parameter { name: "color"; value : gBuffer.color },
-                    Parameter { name: "position"; value : gBuffer.position },
-                    Parameter { name: "normal"; value : gBuffer.normal },
-                    Parameter { name: "winSize"; value : Qt.size(1024, 1024) }
-                ]
-                effect : FinalEffect {}
-            }
-        ]
+        PlaneMesh {
+            id: mesh
+            width: 2.0
+            height: 2.0
+            meshResolution: Qt.size(2, 2)
+        }
 
+        Transform { // We rotate the plane so that it faces us
+            id: transform
+            rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 90)
+        }
+
+        Material {
+            id: material
+            parameters : [
+                Parameter { name: "color"; value : gBuffer.color },
+                Parameter { name: "position"; value : gBuffer.position },
+                Parameter { name: "normal"; value : gBuffer.normal },
+                Parameter { name: "winSize"; value : Qt.size(1024, 1024) }
+            ]
+            effect : FinalEffect {}
+        }
+
+        components : [ frameGraph.screenQuadLayer, mesh, transform, material ]
     }
 
     Entity {
@@ -124,11 +126,6 @@ Entity {
             position: Qt.vector3d( 0.0, 0.0, -25.0 )
             upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
             viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
-        }
-
-        Layer {
-            id : sceneLayer
-            names : "scene"
         }
 
         SphereMesh {
@@ -172,7 +169,7 @@ Entity {
                 material,
                 sphere1.transform,
                 sphere1.light,
-                sceneLayer
+                frameGraph.sceneLayer
             ]
         }
 
@@ -198,7 +195,7 @@ Entity {
                 sphere2.transform,
                 material,
                 sphere2.light,
-                sceneLayer
+                frameGraph.sceneLayer
             ]
         }
 
@@ -232,7 +229,7 @@ Entity {
                 material,
                 light,
                 transform,
-                sceneLayer
+                frameGraph.sceneLayer
             ]
         }
 
@@ -249,7 +246,7 @@ Entity {
             components: [
                 light4.light,
                 light4.transform,
-                sceneLayer
+                frameGraph.sceneLayer
             ]
         }
     }

@@ -52,14 +52,18 @@ import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 
 Viewport {
+    id: root
     normalizedRect : Qt.rect(0.0, 0.0, 1.0, 1.0)
 
     property alias gBuffer : gBufferTargetSelector.target
     property alias camera : sceneCameraSelector.camera
 
+    readonly property Layer sceneLayer: Layer {}
+    readonly property Layer screenQuadLayer: Layer {}
+
     RenderSurfaceSelector {
         LayerFilter {
-            layers : "scene"
+            layers : root.sceneLayer
 
             RenderTargetSelector {
                 id : gBufferTargetSelector
@@ -80,7 +84,7 @@ Viewport {
         }
 
         LayerFilter {
-            layers : "screenQuad"
+            layers : root.screenQuadLayer
 
             ClearBuffers {
                 buffers: ClearBuffers.ColorDepthBuffer

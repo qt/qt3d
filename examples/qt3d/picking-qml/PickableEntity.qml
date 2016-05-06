@@ -60,6 +60,7 @@ Entity {
     signal entered()
     signal exited()
 
+    property Layer layer
     property real x: 0
     property real y: 0
     property real z: 0
@@ -86,11 +87,6 @@ Entity {
     Transform {
         id: transform
         translation: Qt.vector3d(x, y, z)
-    }
-
-    Layer {
-        id: layer
-        names: "content"
     }
 
     components: [mesh, material, transform, objectPicker, layer]

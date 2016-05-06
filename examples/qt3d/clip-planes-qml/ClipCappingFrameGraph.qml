@@ -52,9 +52,14 @@ import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 
 Viewport {
+    id: root
     property alias camera: cameraSelector.camera
     property alias window: surfaceSelector.surface
     property alias clearColor: clearBuffer.clearColor
+
+    readonly property Layer contentLayer: Layer {}
+    readonly property Layer visualizationLayer: Layer {}
+    readonly property Layer capsLayer: Layer {}
 
     RenderSurfaceSelector {
         id: surfaceSelector
@@ -75,7 +80,7 @@ Viewport {
                 LayerFilter {
                     // Render entities with their regular material
                     // Fills depth buffer for entities that are clipped
-                    layers: ["content", "visualization"]
+                    layers: [root.contentLayer, root.visualizationLayer]
                     ClearBuffers {
                         id: clearBuffer
                         buffers: ClearBuffers.ColorDepthBuffer
@@ -113,7 +118,7 @@ Viewport {
                         ]
 
                         LayerFilter {
-                            layers: "content"
+                            layers: root.contentLayer
                             RenderPassFilter {
                                 matchAny: FilterKey { name: "pass"; value: "stencilFill"; }
                             }
@@ -126,7 +131,7 @@ Viewport {
             RenderStateSet {
                 // Draw caps using stencil buffer
                 LayerFilter {
-                    layers: "caps"
+                    layers: root.capsLayer
                     RenderPassFilter {
                         matchAny: FilterKey { name: "pass"; value: "capping"; }
                     }

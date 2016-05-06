@@ -54,6 +54,7 @@ import Qt3D.Extras 2.0
 
 Entity {
     id: root
+    property Layer layer
     property Material visualMaterial;
     property real rotateAngle: 0.0
     property vector3d rotateAxis: Qt.vector3d(1.0, 0.0, 0.0)
@@ -77,10 +78,6 @@ Entity {
         id: transform
         translation: root.center
         rotation: fromAxisAndAngle(root.rotateAxis, root.rotateAngle)
-    }
-
-    property Layer layer: Layer {
-        names: "visualization"
     }
 
     components: [visualMaterial, mesh, transform, layer]
