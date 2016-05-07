@@ -116,7 +116,7 @@ void ShaderParameterPack::setUniformBuffer(BlockToUBO blockToUBO)
 
 void ShaderParameterPack::setShaderStorageBuffer(BlockToSSBO blockToSSBO)
 {
-    m_shaderStorageBuffers.push_back(blockToSSBO);
+    m_shaderStorageBuffers.push_back(std::move(blockToSSBO));
 }
 
 } // namespace Render
