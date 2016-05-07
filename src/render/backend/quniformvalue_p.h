@@ -209,7 +209,7 @@ public:
     void setUniform(const int glslNameId, const QUniformValue &val);
     void setTexture(const int glslNameId, Qt3DCore::QNodeId id);
     void setUniformBuffer(const BlockToUBO &blockToUBO);
-    void setShaderStorageBuffer(const BlockToSSBO &blockToSSBO);
+    void setShaderStorageBuffer(BlockToSSBO blockToSSBO);
 
     inline PackUniformHash &uniforms() { return m_uniforms; }
     inline const PackUniformHash &uniforms() const { return m_uniforms; }

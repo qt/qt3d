@@ -114,7 +114,7 @@ void ShaderParameterPack::setUniformBuffer(const BlockToUBO &blockToUBO)
     m_uniformBuffers.append(blockToUBO);
 }
 
-void ShaderParameterPack::setShaderStorageBuffer(const BlockToSSBO &blockToSSBO)
+void ShaderParameterPack::setShaderStorageBuffer(BlockToSSBO blockToSSBO)
 {
     m_shaderStorageBuffers.push_back(blockToSSBO);
 }
