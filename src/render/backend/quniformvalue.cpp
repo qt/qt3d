@@ -109,9 +109,9 @@ void ShaderParameterPack::setTexture(const int glslNameId, Qt3DCore::QNodeId tex
 }
 
 // Contains Uniform Block Index and QNodeId of the ShaderData (UBO)
-void ShaderParameterPack::setUniformBuffer(const BlockToUBO &blockToUBO)
+void ShaderParameterPack::setUniformBuffer(BlockToUBO blockToUBO)
 {
-    m_uniformBuffers.append(blockToUBO);
+    m_uniformBuffers.append(std::move(blockToUBO));
 }
 
 void ShaderParameterPack::setShaderStorageBuffer(BlockToSSBO blockToSSBO)
