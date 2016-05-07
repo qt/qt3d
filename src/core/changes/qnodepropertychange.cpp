@@ -39,7 +39,6 @@
 
 #include "qnodepropertychange.h"
 #include "qnodepropertychange_p.h"
-#include <Qt3DCore/private/qframeallocator_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,10 +48,6 @@ namespace Qt3DCore {
     \class Qt3DCore::QNodePropertyChange
     \inmodule Qt3DCore
 */
-
-QFrameAllocator *QNodePropertyChangePrivate::m_allocator = new QFrameAllocator(128, sizeof(QNodePropertyChange), sizeof(QNodePropertyChangePrivate) * 2);
-QMutex QNodePropertyChangePrivate::m_mutex;
-
 QNodePropertyChangePrivate::QNodePropertyChangePrivate()
     : QNodePropertyChangeBasePrivate()
 {
@@ -60,21 +55,7 @@ QNodePropertyChangePrivate::QNodePropertyChangePrivate()
 
 QNodePropertyChangePrivate::~QNodePropertyChangePrivate()
 {
-
 }
-
-void *QNodePropertyChangePrivate::operator new(size_t size)
-{
-    QMutexLocker locker(&QNodePropertyChangePrivate::m_mutex);
-    return QNodePropertyChangePrivate::m_allocator->allocateRawMemory(size);
-}
-
-void QNodePropertyChangePrivate::operator delete(void *ptr, size_t size)
-{
-    QMutexLocker locker(&QNodePropertyChangePrivate::m_mutex);
-    QNodePropertyChangePrivate::m_allocator->deallocateRawMemory(ptr, size);
-}
-
 
 /*!
  * \class Qt3DCore::QNodePropertyChange
@@ -144,24 +125,6 @@ void QNodePropertyChange::setValue(const QVariant &value)
 {
     Q_D(QNodePropertyChange);
     d->m_value = value;
-}
-
-/*!
- * \return new scene property change of size \a n.
- */
-void *QNodePropertyChange::operator new(size_t n)
-{
-    QMutexLocker locker(&QNodePropertyChangePrivate::m_mutex);
-    return QNodePropertyChangePrivate::m_allocator->allocateRawMemory(n);
-}
-
-/*!
- * Deletes \a size block from scene property change starting from \a ptr.
- */
-void QNodePropertyChange::operator delete(void *ptr, size_t size)
-{
-    QMutexLocker locker(&QNodePropertyChangePrivate::m_mutex);
-    QNodePropertyChangePrivate::m_allocator->deallocateRawMemory(ptr, size);
 }
 
 } // Qt3D

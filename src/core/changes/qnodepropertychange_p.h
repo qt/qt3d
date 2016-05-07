@@ -53,14 +53,12 @@
 
 #include <private/qnodepropertychangebase_p.h>
 #include <QVariant>
-#include <QMutex>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
 class QNodePropertyChange;
-class QFrameAllocator;
 
 class QNodePropertyChangePrivate : public QNodePropertyChangeBasePrivate
 {
@@ -68,15 +66,9 @@ public:
     QNodePropertyChangePrivate();
     virtual ~QNodePropertyChangePrivate();
 
-    static void *operator new(size_t size);
-    static void operator delete(void *ptr, size_t size);
-
     Q_DECLARE_PUBLIC(QNodePropertyChange)
 
     QVariant m_value;
-
-    static QFrameAllocator *m_allocator;
-    static QMutex m_mutex;
 };
 
 } // Qt3D
