@@ -10,7 +10,6 @@ SUBDIRS += \
     wireframe \
     tessellation-modes \
     deferred-renderer-qml \
-    deferred-renderer-cpp \
     shadow-map-qml \
     materials \
     keyboardinput-qml \

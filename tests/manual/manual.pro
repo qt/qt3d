@@ -5,4 +5,5 @@ SUBDIRS += \
     bigscene-cpp \
     bigmodel-qml \
     bigscene-instanced-qml \
-    clip-planes-qml
+    clip-planes-qml \
+    deferred-renderer-cpp
