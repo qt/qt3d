@@ -13,7 +13,6 @@ SUBDIRS += \
     loader-qml \
     wave \
     materials-cpp \
-    dynamicscene-cpp \
     scene3d \
     enabled-qml \
     skybox \
