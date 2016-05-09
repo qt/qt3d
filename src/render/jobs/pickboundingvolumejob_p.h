@@ -93,7 +93,6 @@ private:
     Renderer *m_renderer;
     NodeManagers *m_manager;
     Entity *m_node;
-    QList<QMouseEvent> m_mouseEvents;
 
     void viewMatrixForCamera(Qt3DCore::QNodeId cameraId,
                              QMatrix4x4 &viewMatrix,
