@@ -27,4 +27,5 @@ SUBDIRS += \
     skybox \
     tessellation-modes \
     transforms-qml \
-    transparency-qml
+    transparency-qml \
+    transparency-qml-scene3d
