@@ -5,7 +5,6 @@ SUBDIRS += \
     simple-cpp \
     multiviewport \
     wireframe \
-    tessellation-modes \
     shadow-map-qml \
     materials \
     wave \

@@ -24,4 +24,5 @@ SUBDIRS += \
     plasma \
     scene3d-loader \
     simple-shaders-qml \
-    skybox
+    skybox \
+    tessellation-modes
