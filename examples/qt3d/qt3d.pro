@@ -14,7 +14,6 @@ SUBDIRS += \
     skybox \
     controls \
     anaglyph-rendering \
-    simple-shaders-qml \
     planets-qml \
     transparency-qml \
     transparency-qml-scene3d \
