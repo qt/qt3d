@@ -7,7 +7,6 @@ SUBDIRS += \
     multiviewport \
     wireframe \
     tessellation-modes \
-    deferred-renderer-qml \
     shadow-map-qml \
     materials \
     keyboardinput-qml \
