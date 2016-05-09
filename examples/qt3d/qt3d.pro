@@ -18,7 +18,6 @@ SUBDIRS += \
     planets-qml \
     transparency-qml \
     transparency-qml-scene3d \
-    scene3d-loader \
     instanced-arrays-qml \
     transforms-qml \
     lights \

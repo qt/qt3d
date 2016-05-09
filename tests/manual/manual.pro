@@ -21,4 +21,5 @@ SUBDIRS += \
     loader-qml \
     mouseinput-qml \
     picking-qml \
-    plasma
+    plasma \
+    scene3d-loader
