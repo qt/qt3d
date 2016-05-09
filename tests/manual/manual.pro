@@ -18,4 +18,5 @@ SUBDIRS += \
     gltf \
     gooch-qml \
     keyboardinput-qml \
-    loader-qml
+    loader-qml \
+    mouseinput-qml

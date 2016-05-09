@@ -20,7 +20,6 @@ SUBDIRS += \
     transparency-qml \
     transparency-qml-scene3d \
     scene3d-loader \
-    mouseinput-qml \
     instanced-arrays-qml \
     picking-qml \
     transforms-qml \
