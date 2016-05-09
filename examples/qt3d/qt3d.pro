@@ -30,7 +30,6 @@ SUBDIRS += \
     transparency-qml-scene3d \
     scene3d-loader \
     mouseinput-qml \
-    custom-mesh-cpp \
     custom-mesh-qml \
     instanced-arrays-qml \
     picking-qml \
