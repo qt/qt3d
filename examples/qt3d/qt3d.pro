@@ -14,7 +14,6 @@ SUBDIRS += \
     wave \
     materials-cpp \
     scene3d \
-    enabled-qml \
     skybox \
     controls \
     anaglyph-rendering \

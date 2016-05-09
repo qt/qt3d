@@ -13,4 +13,5 @@ SUBDIRS += \
     cylinder-qml \
     deferred-renderer-cpp \
     deferred-renderer-qml \
-    dynamicscene-cpp
+    dynamicscene-cpp \
+    enabled-qml
