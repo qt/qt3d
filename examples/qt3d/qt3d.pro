@@ -8,7 +8,6 @@ SUBDIRS += \
     tessellation-modes \
     shadow-map-qml \
     materials \
-    loader-qml \
     wave \
     materials-cpp \
     scene3d \
