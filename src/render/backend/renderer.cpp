@@ -113,8 +113,6 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 namespace Render {
 
-const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
-
 /*!
     \internal
 
