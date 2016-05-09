@@ -52,7 +52,7 @@ class QNodeUpdatedChangeBasePrivate;
 class QNodeUpdatedChangeBase : public QSceneChange
 {
 public:
-    // TODO: Remove the ChangeType argument and force to NodeUpdated once
+    // TODO: Remove the ChangeType argument and force to PropertyUpdated once
     //       the QNodeAddedPropertyChange and QNOdeRemovedPropertyChange types
     //       have been moved to their own branch of the inheritance tree
     explicit QNodeUpdatedChangeBase(ChangeFlag type, SenderType senderType, QNodeId subjectId, Priority priority = Standard);

@@ -315,7 +315,7 @@ void ShaderData::readPeerProperties(QShaderData *shaderData)
 
 void ShaderData::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (!m_propertyReader.isNull() && e->type() == NodeUpdated) {
+    if (!m_propertyReader.isNull() && e->type() == PropertyUpdated) {
         QString propertyName;
         QVariant propertyValue;
 

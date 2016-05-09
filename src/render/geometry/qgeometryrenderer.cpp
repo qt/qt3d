@@ -422,7 +422,7 @@ void QGeometryRenderer::setGeometryFactory(const QGeometryFactoryPtr &factory)
         return;
     d->m_geometryFactory = factory;
     if (d->m_changeArbiter != nullptr) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(NodeUpdated, QSceneChange::Node, id()));
+        QNodePropertyChangePtr change(new QNodePropertyChange(PropertyUpdated, QSceneChange::Node, id()));
         change->setPropertyName("geometryFactory");
         change->setValue(QVariant::fromValue(d->m_geometryFactory));
         d->notifyObservers(change);
@@ -435,7 +435,7 @@ void QGeometryRenderer::setGeometryFactory(const QGeometryFactoryPtr &factory)
 void QGeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     auto change = qSharedPointerCast<QNodePropertyChangeBase>(e);
-    if (change->type() == NodeUpdated && change->propertyName() == QByteArrayLiteral("geometry")) {
+    if (change->type() == PropertyUpdated && change->propertyName() == QByteArrayLiteral("geometry")) {
         auto typedChange = qSharedPointerCast<QGeometryChange>(e);
         auto geometry = std::move(typedChange->data);
         setGeometry(geometry.release());

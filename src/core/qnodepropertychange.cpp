@@ -104,7 +104,7 @@ QNodePropertyChange::QNodePropertyChange(ChangeFlag type, SenderType senderType,
  * Constructs a new QNodePropertyChange with \a subjectId and \a priority.
  */
 QNodePropertyChange::QNodePropertyChange(QNodeId subjectId, Priority priority)
-    : QNodePropertyChangeBase(*new QNodePropertyChangePrivate, NodeUpdated, Node, subjectId, priority)
+    : QNodePropertyChangeBase(*new QNodePropertyChangePrivate, PropertyUpdated, Node, subjectId, priority)
 {
 }
 
@@ -120,7 +120,7 @@ QNodePropertyChange::QNodePropertyChange(QNodePropertyChangePrivate &dd,
  */
 QNodePropertyChange::QNodePropertyChange(QNodePropertyChangePrivate &dd,
                                          QNodeId subjectId, QSceneChange::Priority priority)
-    : QNodePropertyChangeBase(dd, NodeUpdated, Node, subjectId, priority)
+    : QNodePropertyChangeBase(dd, PropertyUpdated, Node, subjectId, priority)
 {
 }
 

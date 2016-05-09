@@ -858,7 +858,7 @@ void tst_Nodes::changeCustomProperty()
     QCOMPARE(spy.events.size(), 1);
     QVERIFY(spy.events.first().wasLocked());
     Qt3DCore::QNodePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodePropertyChange>();
-    QCOMPARE(event->type(), Qt3DCore::NodeUpdated);
+    QCOMPARE(event->type(), Qt3DCore::PropertyUpdated);
     QCOMPARE(event->propertyName(), "customProperty");
     QCOMPARE(event->value().toString(), QString("foo"));
 }

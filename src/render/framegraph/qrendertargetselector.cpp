@@ -97,7 +97,7 @@ void QRenderTargetSelector::setOutputs(const QVector<QRenderTargetOutput::Attach
         d->m_outputs = buffers;
 
         if (d->m_changeArbiter) {
-            QNodePropertyChangePtr change(new QNodePropertyChange(NodeUpdated, QSceneChange::Node, id()));
+            QNodePropertyChangePtr change(new QNodePropertyChange(PropertyUpdated, QSceneChange::Node, id()));
             change->setPropertyName("outputs");
             change->setValue(QVariant::fromValue(d->m_outputs));
             d->notifyObservers(change);

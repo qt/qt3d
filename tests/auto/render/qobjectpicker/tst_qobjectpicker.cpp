@@ -116,7 +116,7 @@ private Q_SLOTS:
         Qt3DCore::QNodePropertyChangePtr change = arbiter.events.last().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "hoverEnabled");
         QCOMPARE(change->value().toBool(), true);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
     }

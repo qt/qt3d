@@ -114,7 +114,7 @@ void QBoundingVolumeDebug::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &cha
 {
     Q_D(QBoundingVolumeDebug);
     Qt3DCore::QBackendNodePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QBackendNodePropertyChange>(change);
-    if (e->type() == Qt3DCore::NodeUpdated) {
+    if (e->type() == Qt3DCore::PropertyUpdated) {
         if (e->propertyName() == QByteArrayLiteral("center")) {
             d->m_bvCenter = e->value().value<QVector3D>();
             d->updateSubtree();

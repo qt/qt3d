@@ -100,7 +100,7 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "normalizedRect");
         QCOMPARE(change->subjectId(), viewport->id());
         QCOMPARE(change->value().value<QRectF>(), QRectF(0.5f, 0.5f, 1.0f, 1.0f));
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
@@ -121,7 +121,7 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "normalizedRect");
         QCOMPARE(change->subjectId(), viewport->id());
         QCOMPARE(change->value().value<QRectF>(), QRectF(0.0f, 0.0f, 1.0f, 1.0f));
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
     }
 };

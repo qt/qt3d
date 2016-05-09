@@ -432,7 +432,7 @@ void QNodePrivate::notifyPropertyChange(const char *name, const QVariant &value)
     if (m_blockNotifications)
         return;
 
-    QNodePropertyChangePtr e(new QNodePropertyChange(NodeUpdated, QSceneChange::Node, m_id));
+    QNodePropertyChangePtr e(new QNodePropertyChange(PropertyUpdated, QSceneChange::Node, m_id));
     e->setPropertyName(name);
     e->setValue(value);
     notifyObservers(e);
@@ -459,7 +459,7 @@ void QNodePrivate::notifyObservers(const QSceneChangePtr &change)
     Q_ASSERT(change);
 
     // Don't send notifications if we are blocking
-    if (m_blockNotifications && change->type() == NodeUpdated)
+    if (m_blockNotifications && change->type() == PropertyUpdated)
         return;
 
     if (m_changeArbiter != nullptr) {

@@ -70,7 +70,7 @@ class QTypedNodePropertyChange : public QNodePropertyChangeBase
 {
 public:
     explicit QTypedNodePropertyChange(QNodeId _subjectId, Priority _priority = QSceneChange::Standard)
-        : QNodePropertyChangeBase(NodeUpdated, Node, _subjectId, _priority)
+        : QNodePropertyChangeBase(PropertyUpdated, Node, _subjectId, _priority)
         , data()
     {
     }

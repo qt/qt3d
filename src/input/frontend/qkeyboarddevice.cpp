@@ -274,7 +274,7 @@ void QKeyboardDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QKeyboardDevice);
     Qt3DCore::QBackendNodePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QBackendNodePropertyChange>(change);
-    if (e->type() == Qt3DCore::NodeUpdated && e->propertyName() == QByteArrayLiteral("activeInput")) {
+    if (e->type() == Qt3DCore::PropertyUpdated && e->propertyName() == QByteArrayLiteral("activeInput")) {
         Qt3DCore::QNodeId activeInputId = e->value().value<Qt3DCore::QNodeId>();
         setActiveInput(qobject_cast<QKeyboardHandler *>(d->scene()->lookupNode(activeInputId)));
     }

@@ -105,7 +105,7 @@ void TextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
 
-    if (e->type() == NodeUpdated) {
+    if (e->type() == PropertyUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("layer")) {
             m_layer = propertyChange->value().toInt();
             m_dirty = true;

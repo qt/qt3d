@@ -127,7 +127,7 @@ void GeometryRenderer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBase
 void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
-    case NodeUpdated: {
+    case PropertyUpdated: {
         QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         QByteArray propertyName = propertyChange->propertyName();
 

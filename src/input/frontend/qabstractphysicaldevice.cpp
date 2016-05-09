@@ -198,7 +198,7 @@ QVector<QAxisSetting *> QAbstractPhysicalDevice::axisSettings() const
 void QAbstractPhysicalDevicePrivate::postAxisEvent(int axis, qreal value)
 {
     Q_Q(QAbstractPhysicalDevice);
-    Qt3DCore::QNodePropertyChangePtr change(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, q->id()));
+    Qt3DCore::QNodePropertyChangePtr change(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, q->id()));
     change->setPropertyName("axisEvent");
     change->setValue(QVariant::fromValue(QPair<int, qreal>(axis, value)));
     notifyObservers(change);
@@ -210,7 +210,7 @@ void QAbstractPhysicalDevicePrivate::postAxisEvent(int axis, qreal value)
 void QAbstractPhysicalDevicePrivate::postButtonEvent(int button, qreal value)
 {
     Q_Q(QAbstractPhysicalDevice);
-    Qt3DCore::QNodePropertyChangePtr change(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, q->id()));
+    Qt3DCore::QNodePropertyChangePtr change(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, q->id()));
     change->setPropertyName("buttonEvent");
     change->setValue(QVariant::fromValue(QPair<int, qreal>(button, value)));
     notifyObservers(change);

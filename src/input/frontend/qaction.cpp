@@ -159,7 +159,7 @@ void QAction::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QAction);
     Qt3DCore::QNodePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(change);
-    if (e->type() == Qt3DCore::NodeUpdated && e->propertyName() == QByteArrayLiteral("active")) {
+    if (e->type() == Qt3DCore::PropertyUpdated && e->propertyName() == QByteArrayLiteral("active")) {
         d->setActive(e->value().toBool());
     }
 }

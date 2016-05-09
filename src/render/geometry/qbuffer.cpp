@@ -159,7 +159,7 @@ QBuffer::QBuffer(QBuffer::BufferType ty, QNode *parent)
 void QBuffer::sceneChangeEvent(const QSceneChangePtr &change)
 {
     QNodePropertyChangePtr e = qSharedPointerCast<QNodePropertyChange>(change);
-    if (e->type() == NodeUpdated && e->propertyName() == QByteArrayLiteral("data")) {
+    if (e->type() == PropertyUpdated && e->propertyName() == QByteArrayLiteral("data")) {
         const bool blocked = blockNotifications(true);
         setData(e->value().toByteArray());
         blockNotifications(blocked);
@@ -229,7 +229,7 @@ void QBuffer::setDataGenerator(const QBufferDataGeneratorPtr &functor)
         return;
     d->m_functor = functor;
     if (d->m_changeArbiter != nullptr) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(NodeUpdated, QSceneChange::Node, id()));
+        QNodePropertyChangePtr change(new QNodePropertyChange(PropertyUpdated, QSceneChange::Node, id()));
         change->setPropertyName("dataGenerator");
         change->setValue(QVariant::fromValue(d->m_functor));
         d->notifyObservers(change);

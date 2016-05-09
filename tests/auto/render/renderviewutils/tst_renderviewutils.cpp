@@ -476,7 +476,7 @@ void tst_RenderViewUtils::shouldNotifyDynamicPropertyChanges()
     // THEN
     QCOMPARE(arbiter.events.size(), 1);
     auto change = arbiter.events.first().dynamicCast<Qt3DCore::QNodeDynamicPropertyChange>();
-    QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+    QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
     QCOMPARE(change->propertyName(), QByteArrayLiteral("scalar"));
     QCOMPARE(change->value().toFloat(), 883.0f);
 }

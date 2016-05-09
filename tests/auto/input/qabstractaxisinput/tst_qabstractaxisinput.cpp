@@ -78,7 +78,7 @@ private Q_SLOTS:
         Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "sourceDevice");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), device->id());
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
     }

@@ -58,7 +58,7 @@ QNodeUpdatedChangeBasePrivate::~QNodeUpdatedChangeBasePrivate()
  * \inmodule Qt3DCore
  *
  * The QNodeUpdatedChangeBase class is the base class for all QSceneChange events that
- * have the changeType() NodeUpdated. You should not need to instantiate this class.
+ * have the changeType() PropertyUpdated. You should not need to instantiate this class.
  * Usually you should be using one of its subclasses such as QNodePropertyChange or
  * QTypedNodePropertyChange.
  *

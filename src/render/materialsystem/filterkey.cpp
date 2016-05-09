@@ -83,7 +83,7 @@ QString FilterKey::criterionName() const
 void FilterKey::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
-    case NodeUpdated: {
+    case PropertyUpdated: {
         QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("value"))
             m_value = propertyChange->value();

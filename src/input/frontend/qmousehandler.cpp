@@ -165,7 +165,7 @@ void QMouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QMouseHandler);
     QBackendNodePropertyChangePtr e = qSharedPointerCast<QBackendNodePropertyChange>(change);
-    if (e->type() == NodeUpdated) {
+    if (e->type() == PropertyUpdated) {
         if (e->propertyName() == QByteArrayLiteral("mouse")) {
             QMouseEventPtr ev = e->value().value<QMouseEventPtr>();
             d->mouseEvent(ev.data());

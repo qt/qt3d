@@ -75,7 +75,7 @@ void QSceneLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QSceneLoader);
     QNodePropertyChangePtr e = qSharedPointerCast<QNodePropertyChange>(change);
-    if (e->type() == NodeUpdated) {
+    if (e->type() == PropertyUpdated) {
         if (e->propertyName() == QByteArrayLiteral("scene")) {
             // If we already have a scene sub tree, delete it
             if (d->m_subTreeRoot) {

@@ -259,7 +259,7 @@ private Q_SLOTS:
         Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "effect");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), effect.id());
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
@@ -281,7 +281,7 @@ private Q_SLOTS:
         change = arbiter2.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "effect");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), effect.id());
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
     }
 
     void checkDynamicParametersAddedUpdates()
@@ -374,7 +374,7 @@ private Q_SLOTS:
         Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "vertexShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), vertexCode);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
@@ -388,7 +388,7 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "fragmentShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), fragmentCode);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
@@ -402,7 +402,7 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "geometryShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), geometryCode);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
@@ -416,7 +416,7 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "computeShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), computeCode);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
@@ -430,7 +430,7 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "tessellationControlShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), tesselControlCode);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
@@ -444,7 +444,7 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "tessellationEvaluationShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), tesselEvalCode);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
     }

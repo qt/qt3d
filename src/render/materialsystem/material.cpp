@@ -86,7 +86,7 @@ void Material::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
 
     switch (e->type()) {
-    case NodeUpdated: {
+    case PropertyUpdated: {
         const auto change = qSharedPointerCast<QNodePropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("effect"))
             m_effectUuid = change->value().value<QNodeId>();

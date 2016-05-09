@@ -115,7 +115,7 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "enabled");
         QCOMPARE(change->subjectId(), frameGraphNode->id());
         QCOMPARE(change->value().toBool(), false);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
@@ -136,7 +136,7 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "enabled");
         QCOMPARE(change->subjectId(), frameGraphNode->id());
         QCOMPARE(change->value().toBool(), true);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
     }

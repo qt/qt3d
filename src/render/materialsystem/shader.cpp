@@ -140,7 +140,7 @@ QVector<QByteArray> Shader::shaderCode() const
 
 void Shader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == NodeUpdated) {
+    if (e->type() == PropertyUpdated) {
         QNodePropertyChangePtr propertyChange = e.staticCast<QNodePropertyChange>();
         QVariant propertyValue = propertyChange->value();
 

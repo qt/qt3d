@@ -62,7 +62,7 @@ GenericDeviceBackendNode::~GenericDeviceBackendNode()
 void GenericDeviceBackendNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
-    if (e->type() == Qt3DCore::NodeUpdated) {
+    if (e->type() == Qt3DCore::PropertyUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("axisEvent")) {
             QPair<int, qreal> val = propertyChange->value().value<QPair<int, qreal>>();
             const QMutexLocker lock(&m_mutex);

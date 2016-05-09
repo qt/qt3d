@@ -162,7 +162,7 @@ void QKeyboardHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QKeyboardHandler);
     QBackendNodePropertyChangePtr e = qSharedPointerCast<QBackendNodePropertyChange>(change);
-    if (e->type() == NodeUpdated) {
+    if (e->type() == PropertyUpdated) {
         if (e->propertyName() == QByteArrayLiteral("focus")) {
             bool block = blockNotifications(true);
             setFocus(e->value().toBool());

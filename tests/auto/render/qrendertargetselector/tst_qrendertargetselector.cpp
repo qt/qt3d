@@ -121,7 +121,7 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "target");
         QCOMPARE(change->subjectId(), renderTargetSelector->id());
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), target->id());
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
@@ -142,7 +142,7 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "target");
         QCOMPARE(change->subjectId(), renderTargetSelector->id());
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), Qt3DCore::QNodeId());
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
@@ -158,7 +158,7 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "outputs");
         QCOMPARE(change->subjectId(), renderTargetSelector->id());
         QCOMPARE(change->value().value<QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint> >(), outputs);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
@@ -179,7 +179,7 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "outputs");
         QCOMPARE(change->subjectId(), renderTargetSelector->id());
         QCOMPARE(change->value().value<QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint> >(), QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint>());
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
 
         arbiter.events.clear();

@@ -100,7 +100,7 @@ void Geometry::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
 
-    case NodeUpdated: {
+    case PropertyUpdated: {
         // Note: doesn't set dirtyness as this parameter changing doesn't need a new VAO update.
         const auto change = qSharedPointerCast<QNodePropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("boundingVolumePositionAttribute")) {

@@ -77,7 +77,7 @@ QMatrix4x4 Transform::transformMatrix() const
 void Transform::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     // TODO: Flag the matrix as dirty and update all matrices batched in a job
-    if (e->type() == NodeUpdated) {
+    if (e->type() == PropertyUpdated) {
         const QNodePropertyChangePtr &propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("scale3D")) {
             m_scale = propertyChange->value().value<QVector3D>();

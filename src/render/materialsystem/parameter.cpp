@@ -75,7 +75,7 @@ void Parameter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
 
-    if (e->type() == NodeUpdated) {
+    if (e->type() == PropertyUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("name")) {
             m_name = propertyChange->value().toString();
             m_nameId = StringToInt::lookupId(m_name);

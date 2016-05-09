@@ -77,7 +77,7 @@ void RenderSettings::cleanup()
 
 void RenderSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == NodeUpdated) {
+    if (e->type() == PropertyUpdated) {
         QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("pickMethod"))
             m_pickMethod = propertyChange->value().value<QPickingSettings::PickMethod>();

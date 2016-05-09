@@ -78,8 +78,8 @@ public:
 
     void sendNodeUpdatedNotification()
     {
-        Qt3DCore::QNodePropertyChangePtr e(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, id()));
-        e->setPropertyName("NodeUpdated");
+        Qt3DCore::QNodePropertyChangePtr e(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, id()));
+        e->setPropertyName("PropertyUpdated");
         Qt3DCore::QNodePrivate::get(this)->notifyObservers(e);
     }
 
@@ -606,7 +606,7 @@ void tst_QChangeArbiter::distributeFrontendChanges()
 
     arbiter->registerObserver(backendAllChangedObserver, root->id());
     arbiter->registerObserver(backendNodeAddedObserver, root->id(), Qt3DCore::NodeAdded);
-    arbiter->registerObserver(backendNodeUpdatedObserver, root->id(), Qt3DCore::NodeUpdated);
+    arbiter->registerObserver(backendNodeUpdatedObserver, root->id(), Qt3DCore::PropertyUpdated);
     arbiter->registerObserver(backendNodeRemovedObserver, root->id(), Qt3DCore::NodeRemoved);
     arbiter->registerObserver(backendComponentAddedObserver, root->id(), Qt3DCore::ComponentAdded);
     arbiter->registerObserver(backendComponentRemovedObserver, root->id(), Qt3DCore::ComponentRemoved);
@@ -770,7 +770,7 @@ void tst_QChangeArbiter::distributeBackendChanges()
     QVERIFY(c->subjectId() == root->id());
     qDebug() << c->propertyName();
     QVERIFY(strcmp(c->propertyName(), "Reply") == 0);
-    QVERIFY(c->type() == Qt3DCore::NodeUpdated);
+    QVERIFY(c->type() == Qt3DCore::PropertyUpdated);
 
     answer->exit();
     answer->wait();

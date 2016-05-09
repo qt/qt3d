@@ -103,7 +103,7 @@ void Attribute::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
 void Attribute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
-    case NodeUpdated: {
+    case PropertyUpdated: {
         QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         QByteArray propertyName = propertyChange->propertyName();
 

@@ -84,14 +84,13 @@ void ObjectPicker::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
 
 void ObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == Qt3DCore::NodeUpdated) {
+    if (e->type() == Qt3DCore::PropertyUpdated) {
         const Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
-        const QByteArray propertyName = propertyChange->propertyName();
-        if (propertyName == QByteArrayLiteral("hoverEnabled")) {
+
+        if (propertyChange->propertyName() == QByteArrayLiteral("hoverEnabled")) {
             m_hoverEnabled = propertyChange->value().toBool();
             m_isDirty = true;
-        }
-        if (propertyName == QByteArrayLiteral("dragEnabled")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("dragEnabled")) {
             m_dragEnabled = propertyChange->value().toBool();
             m_isDirty = true;
         }

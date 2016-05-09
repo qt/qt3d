@@ -238,7 +238,7 @@ void QBackendNode::sceneChangeEvent(const QSceneChangePtr &e)
     auto propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
 
     switch (e->type()) {
-        case NodeUpdated: {
+        case PropertyUpdated: {
             if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
                 d->m_enabled = propertyChange->value().value<bool>();
             break;

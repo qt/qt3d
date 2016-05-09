@@ -100,7 +100,7 @@ void MouseHandler::wheelEvent(const QWheelEventPtr &event)
 
 void MouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == NodeUpdated) {
+    if (e->type() == PropertyUpdated) {
         QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("device")) {
             const QNodeId newId = propertyChange->value().value<QNodeId>();

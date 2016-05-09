@@ -78,7 +78,7 @@ QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
 void QTechniquePrivate::_q_graphicsApiFilterChanged()
 {
     if (m_changeArbiter != nullptr) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(NodeUpdated, QSceneChange::Node, m_id));
+        QNodePropertyChangePtr change(new QNodePropertyChange(PropertyUpdated, QSceneChange::Node, m_id));
         change->setPropertyName("graphicsApiFilterData");
         change->setValue(QVariant::fromValue(QGraphicsApiFilterPrivate::get(const_cast<QGraphicsApiFilter *>(&m_graphicsApiFilter))->m_data));
         notifyObservers(change);

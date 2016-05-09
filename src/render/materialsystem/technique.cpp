@@ -93,7 +93,7 @@ void Technique::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
 void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
-    case NodeUpdated: {
+    case PropertyUpdated: {
         const auto change = qSharedPointerCast<QNodePropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("graphicsApiFilterData")) {
             GraphicsApiFilterData filterData = change->value().value<GraphicsApiFilterData>();

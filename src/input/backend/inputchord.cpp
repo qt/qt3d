@@ -101,7 +101,7 @@ void InputChord::setStartTime(qint64 time)
 void InputChord::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
-    case Qt3DCore::NodeUpdated: {
+    case Qt3DCore::PropertyUpdated: {
         const auto change = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("timeout"))
             m_timeout = change->value().toInt();

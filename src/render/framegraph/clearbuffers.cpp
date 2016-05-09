@@ -76,7 +76,7 @@ void ClearBuffers::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
 
 void ClearBuffers::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == NodeUpdated) {
+    if (e->type() == PropertyUpdated) {
         QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("buffers")) {
             m_type = static_cast<QClearBuffers::BufferType>(propertyChange->value().toInt());

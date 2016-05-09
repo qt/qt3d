@@ -64,7 +64,7 @@ void InputSettings::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr
 
 void InputSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == Qt3DCore::NodeUpdated) {
+    if (e->type() == Qt3DCore::PropertyUpdated) {
         Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("eventSource"))
             m_eventSource = propertyChange->value().value<QObject *>();

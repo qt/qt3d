@@ -71,7 +71,7 @@ void AnalogAxisInput::cleanup()
 
 void AnalogAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == Qt3DCore::NodeUpdated) {
+    if (e->type() == Qt3DCore::PropertyUpdated) {
         Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("axis")) {
             m_axis = propertyChange->value().toInt();

@@ -71,7 +71,7 @@ void RenderTargetSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChange
 void RenderTargetSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     qCDebug(Render::Framegraph) << Q_FUNC_INFO;
-    if (e->type() == NodeUpdated) {
+    if (e->type() == PropertyUpdated) {
         QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("target"))
             m_renderTargetUuid = propertyChange->value().value<QNodeId>();

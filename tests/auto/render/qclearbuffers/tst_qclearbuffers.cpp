@@ -111,7 +111,7 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "buffers");
         QCOMPARE(change->subjectId(), clearBuffer->id());
         QCOMPARE(change->value().value<Qt3DRender::QClearBuffers::BufferType>(), Qt3DRender::QClearBuffers::AllBuffers);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
@@ -132,7 +132,7 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "buffers");
         QCOMPARE(change->subjectId(), clearBuffer->id());
         QCOMPARE(change->value().value<Qt3DRender::QClearBuffers::BufferType>(), Qt3DRender::QClearBuffers::ColorDepthBuffer);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
     }

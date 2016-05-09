@@ -79,7 +79,7 @@ void BoundingVolumeDebug::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     const Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
     const QByteArray propertyName = propertyChange->propertyName();
 
-    if (propertyChange->type() == Qt3DCore::NodeUpdated) {
+    if (propertyChange->type() == Qt3DCore::PropertyUpdated) {
         if (propertyName == QByteArrayLiteral("recursive")) {
             m_recursive = propertyChange->value().toBool();
         }

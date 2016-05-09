@@ -117,7 +117,7 @@ void QAxis::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QAxis);
     Qt3DCore::QNodePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(change);
-    if (e->type() == Qt3DCore::NodeUpdated && e->propertyName() == QByteArrayLiteral("value")) {
+    if (e->type() == Qt3DCore::PropertyUpdated && e->propertyName() == QByteArrayLiteral("value")) {
         d->setValue(e->value().toFloat());
     }
 }

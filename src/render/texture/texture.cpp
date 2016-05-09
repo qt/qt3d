@@ -526,7 +526,7 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     // We lock here so that we're sure the texture cannot be rebuilt while we are
     // modifying one of its properties
     switch (e->type()) {
-    case NodeUpdated: {
+    case PropertyUpdated: {
         QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("width")) {
             setSize(propertyChange->value().toInt(), m_height, m_depth);

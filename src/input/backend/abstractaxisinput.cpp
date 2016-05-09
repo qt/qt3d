@@ -69,7 +69,7 @@ void AbstractAxisInput::cleanup()
 
 void AbstractAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == Qt3DCore::NodeUpdated) {
+    if (e->type() == Qt3DCore::PropertyUpdated) {
         Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("sourceDevice")) {
             m_sourceDevice = propertyChange->value().value<Qt3DCore::QNodeId>();

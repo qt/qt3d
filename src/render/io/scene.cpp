@@ -72,7 +72,7 @@ void Scene::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change
 
 void Scene::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == NodeUpdated) {
+    if (e->type() == PropertyUpdated) {
         QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("source")) {
             m_source = propertyChange->value().toUrl();

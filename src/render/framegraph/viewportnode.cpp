@@ -108,7 +108,7 @@ void ViewportNode::setYMax(float yMax)
 
 void ViewportNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == NodeUpdated) {
+    if (e->type() == PropertyUpdated) {
         QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("normalizedRect")) {
             QRectF normalizedRect = propertyChange->value().value<QRectF>();

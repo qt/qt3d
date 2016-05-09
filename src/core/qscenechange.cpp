@@ -53,7 +53,7 @@ namespace Qt3DCore {
  *
  * \value NodeCreated A new instance of a QNode subclass has been created.
  * \value NodeDeleted A QNode has been deleted.
- * \value NodeUpdated A QNode property has been updated.
+ * \value PropertyUpdated A QNode property has been updated.
  * \value NodeAdded A QNode has been added to the scene.
  * \value NodeRemoved A QNode has been removed from the scene.
  * \value ComponentAdded A QComponent has been added to a QEntity.

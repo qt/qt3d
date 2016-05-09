@@ -121,7 +121,7 @@ private Q_SLOTS:
         DummyAxisInputBackend backendAxisInput;
 
         // WHEN
-        Qt3DCore::QNodePropertyChangePtr updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        Qt3DCore::QNodePropertyChangePtr updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setPropertyName("enabled");
         updateChange->setValue(true);
         backendAxisInput.sceneChangeEvent(updateChange);
@@ -131,7 +131,7 @@ private Q_SLOTS:
 
         // WHEN
         TestDevice device;
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setPropertyName("sourceDevice");
         updateChange->setValue(QVariant::fromValue(device.id()));
         backendAxisInput.sceneChangeEvent(updateChange);

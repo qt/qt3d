@@ -73,7 +73,7 @@ void ButtonAxisInput::cleanup()
 
 void ButtonAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == Qt3DCore::NodeUpdated) {
+    if (e->type() == Qt3DCore::PropertyUpdated) {
         Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("scale")) {
             m_scale = propertyChange->value().toFloat();

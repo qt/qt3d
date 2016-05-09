@@ -68,7 +68,7 @@ void CameraSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePt
 void CameraSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     qCDebug(Render::Framegraph) << Q_FUNC_INFO;
-    if (e->type() == NodeUpdated) {
+    if (e->type() == PropertyUpdated) {
         QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("camera"))
             m_cameraUuid = propertyChange->value().value<QNodeId>();

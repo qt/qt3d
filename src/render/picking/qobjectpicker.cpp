@@ -152,7 +152,7 @@ void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QObjectPicker);
     Qt3DCore::QBackendNodePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QBackendNodePropertyChange>(change);
-    if (e->type() == Qt3DCore::NodeUpdated) {
+    if (e->type() == Qt3DCore::PropertyUpdated) {
         // TO DO: Complete this part
         // to emit the correct signals
         const QByteArray propertyName = e->propertyName();

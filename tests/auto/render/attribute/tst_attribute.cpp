@@ -137,7 +137,7 @@ private Q_SLOTS:
         QVERIFY(!renderAttribute.isDirty());
 
         // WHEN
-        Qt3DCore::QNodePropertyChangePtr updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        Qt3DCore::QNodePropertyChangePtr updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(static_cast<int>(Qt3DRender::QAttribute::Int));
         updateChange->setPropertyName("vertexBaseType");
         renderAttribute.sceneChangeEvent(updateChange);
@@ -153,7 +153,7 @@ private Q_SLOTS:
         QVERIFY(!renderer.dirtyBits());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(3);
         updateChange->setPropertyName("vertexSize");
         renderAttribute.sceneChangeEvent(updateChange);
@@ -168,7 +168,7 @@ private Q_SLOTS:
         QVERIFY(!renderAttribute.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(static_cast<int>(Qt3DRender::QAttribute::IndexAttribute));
         updateChange->setPropertyName("attributeType");
         renderAttribute.sceneChangeEvent(updateChange);
@@ -183,7 +183,7 @@ private Q_SLOTS:
         QVERIFY(!renderAttribute.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(1340);
         updateChange->setPropertyName("count");
         renderAttribute.sceneChangeEvent(updateChange);
@@ -198,7 +198,7 @@ private Q_SLOTS:
         QVERIFY(!renderAttribute.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(QStringLiteral("L88"));
         updateChange->setPropertyName("name");
         renderAttribute.sceneChangeEvent(updateChange);
@@ -213,7 +213,7 @@ private Q_SLOTS:
         QVERIFY(!renderAttribute.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(555);
         updateChange->setPropertyName("byteOffset");
         renderAttribute.sceneChangeEvent(updateChange);
@@ -228,7 +228,7 @@ private Q_SLOTS:
         QVERIFY(!renderAttribute.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(454);
         updateChange->setPropertyName("byteStride");
         renderAttribute.sceneChangeEvent(updateChange);
@@ -243,7 +243,7 @@ private Q_SLOTS:
         QVERIFY(!renderAttribute.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(1450);
         updateChange->setPropertyName("divisor");
         renderAttribute.sceneChangeEvent(updateChange);
@@ -258,7 +258,7 @@ private Q_SLOTS:
         QVERIFY(!renderAttribute.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         Qt3DCore::QNodeId bufferId = Qt3DCore::QNodeId::createId();
         updateChange->setValue(QVariant::fromValue(bufferId));
         updateChange->setPropertyName("buffer");

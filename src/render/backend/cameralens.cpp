@@ -82,7 +82,7 @@ void CameraLens::setProjection(const QMatrix4x4 &projection)
 void CameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
-    case NodeUpdated: {
+    case PropertyUpdated: {
         QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
 
         if (propertyChange->propertyName() == QByteArrayLiteral("projectionMatrix")) {

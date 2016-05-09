@@ -73,7 +73,7 @@ void RenderStateNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBaseP
 
 void RenderStateNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == Qt3DCore::NodeUpdated) {
+    if (e->type() == Qt3DCore::PropertyUpdated) {
         Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
 
         if (m_impl->isPooledImpl()) {

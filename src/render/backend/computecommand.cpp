@@ -84,7 +84,7 @@ void ComputeCommand::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePt
 void ComputeCommand::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
-    if (e->type() == Qt3DCore::NodeUpdated) {
+    if (e->type() == Qt3DCore::PropertyUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("workGroupX"))
             m_workGroups[0] = propertyChange->value().toInt();
         else if (propertyChange->propertyName() == QByteArrayLiteral("workGroupY"))
