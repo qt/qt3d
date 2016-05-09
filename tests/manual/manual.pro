@@ -20,4 +20,5 @@ SUBDIRS += \
     keyboardinput-qml \
     loader-qml \
     mouseinput-qml \
-    picking-qml
+    picking-qml \
+    plasma
