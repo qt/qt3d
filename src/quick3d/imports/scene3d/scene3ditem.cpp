@@ -114,9 +114,9 @@ void Scene3DItem::setAspects(const QStringList &aspects)
 
     // Aspects are owned by the aspect engine
     Q_FOREACH (const QString &aspect, m_aspects) {
-        if (aspect == QStringLiteral("render")) // This one is hardwired anyway
+        if (aspect == QLatin1String("render")) // This one is hardwired anyway
             continue;
-        if (aspect == QStringLiteral("input"))  {
+        if (aspect == QLatin1String("input"))  {
             m_aspectEngine->registerAspect(new Qt3DInput::QInputAspect);
             continue;
         }

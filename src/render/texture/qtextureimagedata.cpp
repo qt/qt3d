@@ -453,9 +453,9 @@ bool QTextureImageDataPrivate::setCompressedFile(const QString &source)
 {
     QString suffix = QFileInfo(source).suffix();
 
-    if (suffix == QStringLiteral("pkm"))
+    if (suffix == QLatin1String("pkm"))
         return setPkmFile(source);
-    else if (suffix == QStringLiteral("dds"))
+    else if (suffix == QLatin1String("dds"))
         return setDdsFile(source);
     else
         return false;

@@ -304,7 +304,7 @@ void ShaderData::readPeerProperties(QShaderData *shaderData)
     while (it != end) {
         if (static_cast<QMetaType::Type>(it.value().type()) == QMetaType::QVector3D) {
             // if there is a matching QShaderData::TransformType propertyTransformed
-            QVariant value = m_properties.value(it.key() + QStringLiteral("Transformed"));
+            QVariant value = m_properties.value(it.key() + QLatin1String("Transformed"));
             // if that's the case, we apply a space transformation to the property
             if (value.isValid() && value.type() == QVariant::Int)
                 m_transformedProperties.insert(it.key(), static_cast<TransformType>(value.toInt()));

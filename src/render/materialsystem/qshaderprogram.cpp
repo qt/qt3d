@@ -223,10 +223,10 @@ static QByteArray deincludify(const QString &filePath)
     for (int i = 0; i < lines.count(); ++i) {
         if (lines[i].startsWith(includeDirective)) {
             QString includeFileName = QFileInfo(filePath).absolutePath()
-                + QStringLiteral("/")
+                + QLatin1Char('/')
                 + QString::fromUtf8(lines[i].mid(includeDirective.count() + 1));
             if (qEnvironmentVariableIsSet("QT3D_GLSL100_WORKAROUND")) {
-                QString candidate = includeFileName + QStringLiteral("100");
+                QString candidate = includeFileName + QLatin1String("100");
                 if (QFile::exists(candidate))
                     includeFileName = candidate;
             }

@@ -88,10 +88,10 @@ const int qNodeIdTypeId = qMetaTypeId<Qt3DCore::QNodeId>();
 
 const int MAX_LIGHTS = 8;
 
-const QString LIGHT_POSITION_NAME = QStringLiteral(".position");
-const QString LIGHT_TYPE_NAME = QStringLiteral(".type");
-const QString LIGHT_COLOR_NAME = QStringLiteral(".color");
-const QString LIGHT_INTENSITY_NAME = QStringLiteral(".intensity");
+#define LIGHT_POSITION_NAME  QLatin1String(".position")
+#define LIGHT_TYPE_NAME      QLatin1String(".type")
+#define LIGHT_COLOR_NAME     QLatin1String(".color")
+#define LIGHT_INTENSITY_NAME QLatin1String(".intensity")
 
 int LIGHT_COUNT_NAME_ID = 0;
 int LIGHT_POSITION_NAMES[MAX_LIGHTS];
@@ -290,7 +290,8 @@ RenderView::RenderView()
         RenderView::ms_standardUniformSetters = RenderView::initializeStandardUniformSetters();
         LIGHT_COUNT_NAME_ID = StringToInt::lookupId(QStringLiteral("lightCount"));
         for (int i = 0; i < MAX_LIGHTS; ++i) {
-            LIGHT_STRUCT_NAMES[i] = QStringLiteral("lights[") + QString::number(i) + QLatin1Char(']');
+            Q_STATIC_ASSERT_X(MAX_LIGHTS < 10, "can't use the QChar trick anymore");
+            LIGHT_STRUCT_NAMES[i] = QLatin1String("lights[") + QLatin1Char(char('0' + i)) + QLatin1Char(']');
             LIGHT_POSITION_NAMES[i] = StringToInt::lookupId(LIGHT_STRUCT_NAMES[i] + LIGHT_POSITION_NAME);
             LIGHT_TYPE_NAMES[i] = StringToInt::lookupId(LIGHT_STRUCT_NAMES[i] + LIGHT_TYPE_NAME);
             LIGHT_COLOR_NAMES[i] = StringToInt::lookupId(LIGHT_STRUCT_NAMES[i] + LIGHT_COLOR_NAME);

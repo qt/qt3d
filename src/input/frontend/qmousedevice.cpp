@@ -104,9 +104,9 @@ QStringList QMouseDevice::buttonNames() const
 
 int QMouseDevice::axisIdentifier(const QString &name) const
 {
-    if (name == QStringLiteral("X"))
+    if (name == QLatin1String("X"))
         return X;
-    else if (name == QStringLiteral("Y"))
+    else if (name == QLatin1String("Y"))
         return Y;
     return -1;
 }

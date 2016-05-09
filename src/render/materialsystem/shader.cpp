@@ -408,7 +408,7 @@ void Shader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformB
             if (uniformsIt->m_blockIndex == uniformBlockDescription[i].m_index) {
                 QString uniformName = *uniformNamesIt;
                 if (!m_uniformBlockNames[i].isEmpty() && !uniformName.startsWith(m_uniformBlockNames[i]))
-                    uniformName = m_uniformBlockNames[i] + QStringLiteral(".") + *uniformNamesIt;
+                    uniformName = m_uniformBlockNames[i] + QLatin1Char('.') + *uniformNamesIt;
                 activeUniformsInBlock.insert(uniformName, *uniformsIt);
                 qCDebug(Shaders) << "Active Uniform Block " << uniformName << " in block " << m_uniformBlockNames[i] << " at index " << uniformsIt->m_blockIndex;
             }

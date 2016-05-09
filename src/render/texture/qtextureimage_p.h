@@ -86,7 +86,7 @@ public:
     QTextureImageDataPtr operator ()() Q_DECL_FINAL
     {
         QTextureImageDataPtr dataPtr;
-        if (m_url.isLocalFile() || m_url.scheme() == QStringLiteral("qrc")) {
+        if (m_url.isLocalFile() || m_url.scheme() == QLatin1String("qrc")) {
             QString source = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_url);
             dataPtr.reset(new QTextureImageData());
             if (dataPtr->setCompressedFile(source))
