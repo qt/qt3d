@@ -13,7 +13,6 @@ SUBDIRS += \
     controls \
     anaglyph-rendering \
     planets-qml \
-    transparency-qml \
     transparency-qml-scene3d \
     instanced-arrays-qml \
     lights \

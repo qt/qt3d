@@ -26,4 +26,5 @@ SUBDIRS += \
     simple-shaders-qml \
     skybox \
     tessellation-modes \
-    transforms-qml
+    transforms-qml \
+    transparency-qml
