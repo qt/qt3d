@@ -23,4 +23,5 @@ SUBDIRS += \
     picking-qml \
     plasma \
     scene3d-loader \
-    simple-shaders-qml
+    simple-shaders-qml \
+    skybox

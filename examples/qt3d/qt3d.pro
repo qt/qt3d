@@ -11,7 +11,6 @@ SUBDIRS += \
     wave \
     materials-cpp \
     scene3d \
-    skybox \
     controls \
     anaglyph-rendering \
     planets-qml \
