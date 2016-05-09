@@ -8,7 +8,6 @@ SUBDIRS += \
     tessellation-modes \
     shadow-map-qml \
     materials \
-    keyboardinput-qml \
     loader-qml \
     wave \
     materials-cpp \

@@ -16,4 +16,5 @@ SUBDIRS += \
     dynamicscene-cpp \
     enabled-qml \
     gltf \
-    gooch-qml
+    gooch-qml \
+    keyboardinput-qml
