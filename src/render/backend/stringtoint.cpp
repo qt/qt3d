@@ -58,6 +58,12 @@ QVector<QString> StringToInt::m_stringsArray = QVector<QString>();
 QVector<QString> StringToInt::m_pendingStringsArray = QVector<QString>();
 int StringToInt::m_calls = 0;
 
+int StringToInt::lookupId(QLatin1String str)
+{
+    // ### optimize me
+    return lookupId(QString(str));
+}
+
 int StringToInt::lookupId(const QString &str)
 {
     // Note: how do we protect against the case where

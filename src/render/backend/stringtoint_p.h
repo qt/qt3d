@@ -65,6 +65,7 @@ class Q_AUTOTEST_EXPORT StringToInt
 {
 public:
     static int lookupId(const QString &str);
+    static int lookupId(QLatin1String str);
     static QString lookupString(int idx);
 
 private:

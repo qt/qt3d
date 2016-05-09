@@ -138,23 +138,23 @@ RenderView::StandardUniformsPFuncsHash RenderView::initializeStandardUniformSett
 {
     RenderView::StandardUniformsPFuncsHash setters;
 
-    setters.insert(StringToInt::lookupId(QStringLiteral("modelMatrix")), &RenderView::modelMatrix);
-    setters.insert(StringToInt::lookupId(QStringLiteral("viewMatrix")), &RenderView::viewMatrix);
-    setters.insert(StringToInt::lookupId(QStringLiteral("projectionMatrix")), &RenderView::projectionMatrix);
-    setters.insert(StringToInt::lookupId(QStringLiteral("modelView")), &RenderView::modelViewMatrix);
-    setters.insert(StringToInt::lookupId(QStringLiteral("modelViewProjection")), &RenderView::modelViewProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QStringLiteral("mvp")), &RenderView::modelViewProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QStringLiteral("inverseModelMatrix")), &RenderView::inverseModelMatrix);
-    setters.insert(StringToInt::lookupId(QStringLiteral("inverseViewMatrix")), &RenderView::inverseViewMatrix);
-    setters.insert(StringToInt::lookupId(QStringLiteral("inverseProjectionMatrix")), &RenderView::inverseProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QStringLiteral("inverseModelView")), &RenderView::inverseModelViewMatrix);
-    setters.insert(StringToInt::lookupId(QStringLiteral("inverseModelViewProjection")), &RenderView::inverseModelViewProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QStringLiteral("modelNormalMatrix")), &RenderView::modelNormalMatrix);
-    setters.insert(StringToInt::lookupId(QStringLiteral("modelViewNormal")), &RenderView::modelViewNormalMatrix);
-    setters.insert(StringToInt::lookupId(QStringLiteral("viewportMatrix")), &RenderView::viewportMatrix);
-    setters.insert(StringToInt::lookupId(QStringLiteral("inverseViewportMatrix")), &RenderView::inverseViewportMatrix);
-    setters.insert(StringToInt::lookupId(QStringLiteral("time")), &RenderView::time);
-    setters.insert(StringToInt::lookupId(QStringLiteral("eyePosition")), &RenderView::eyePosition);
+    setters.insert(StringToInt::lookupId(QLatin1String("modelMatrix")), &RenderView::modelMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("viewMatrix")), &RenderView::viewMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("projectionMatrix")), &RenderView::projectionMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("modelView")), &RenderView::modelViewMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("modelViewProjection")), &RenderView::modelViewProjectionMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("mvp")), &RenderView::modelViewProjectionMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("inverseModelMatrix")), &RenderView::inverseModelMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("inverseViewMatrix")), &RenderView::inverseViewMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("inverseProjectionMatrix")), &RenderView::inverseProjectionMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("inverseModelView")), &RenderView::inverseModelViewMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("inverseModelViewProjection")), &RenderView::inverseModelViewProjectionMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("modelNormalMatrix")), &RenderView::modelNormalMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("modelViewNormal")), &RenderView::modelViewNormalMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("viewportMatrix")), &RenderView::viewportMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("inverseViewportMatrix")), &RenderView::inverseViewportMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("time")), &RenderView::time);
+    setters.insert(StringToInt::lookupId(QLatin1String("eyePosition")), &RenderView::eyePosition);
 
     return setters;
 }
@@ -288,7 +288,7 @@ RenderView::RenderView()
         // and this hash relies on the static StringToInt class
         wasInitialized = true;
         RenderView::ms_standardUniformSetters = RenderView::initializeStandardUniformSetters();
-        LIGHT_COUNT_NAME_ID = StringToInt::lookupId(QStringLiteral("lightCount"));
+        LIGHT_COUNT_NAME_ID = StringToInt::lookupId(QLatin1String("lightCount"));
         for (int i = 0; i < MAX_LIGHTS; ++i) {
             Q_STATIC_ASSERT_X(MAX_LIGHTS < 10, "can't use the QChar trick anymore");
             LIGHT_STRUCT_NAMES[i] = QLatin1String("lights[") + QLatin1Char(char('0' + i)) + QLatin1Char(']');
