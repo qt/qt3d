@@ -65,7 +65,7 @@ namespace Qt3DCore {
  */
 QNodeRemovedPropertyChange::QNodeRemovedPropertyChange(QNodeId subjectId, QNode *node,
                                                        QSceneChange::Priority priority)
-    : QNodePropertyChangeBase(*new QNodeRemovedPropertyChangePrivate, NodeRemoved, Node, subjectId, priority)
+    : QNodePropertyChangeBase(*new QNodeRemovedPropertyChangePrivate, PropertyValueRemoved, Node, subjectId, priority)
 {
     Q_D(QNodeRemovedPropertyChange);
     d->m_removedNodeIdTypePair = QNodeIdTypePair(node->id(), QNodePrivate::get(node)->m_typeInfo);

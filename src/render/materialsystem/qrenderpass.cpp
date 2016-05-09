@@ -98,7 +98,7 @@ void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
             shaderProgram->setParent(this);
 
         if (d->m_shader && d->m_changeArbiter != nullptr) {
-            QNodePropertyChangePtr e(new QNodePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            QNodePropertyChangePtr e(new QNodePropertyChange(PropertyValueAdded, QSceneChange::Node, id()));
             const auto change = QNodeAddedPropertyChangePtr::create(id(), d->m_shader);
             change->setPropertyName("shaderProgram");
             d->notifyObservers(change);

@@ -59,9 +59,9 @@ void SortPolicy::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     if (propertyChange->propertyName() == QByteArrayLiteral("sortType")) {
         const QSortPolicy::SortType cId = propertyChange->value().value<QSortPolicy::SortType>();
         if (cId == QSortPolicy::StateChangeCost || cId == QSortPolicy::BackToFront || cId == QSortPolicy::Material) {
-            if (e->type() == NodeAdded)
+            if (e->type() == PropertyValueAdded)
                 m_sortTypes.append(cId);
-            else if (e->type() == NodeRemoved)
+            else if (e->type() == PropertyValueRemoved)
                 m_sortTypes.removeAll(cId);
         }
     }

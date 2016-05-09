@@ -108,7 +108,7 @@ void InputChord::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
 
-    case Qt3DCore::NodeAdded: {
+    case Qt3DCore::PropertyValueAdded: {
         const auto change = qSharedPointerCast<Qt3DCore::QNodeAddedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("chord")) {
             m_chords.push_back(change->addedNodeId());
@@ -117,7 +117,7 @@ void InputChord::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
 
-    case Qt3DCore::NodeRemoved: {
+    case Qt3DCore::PropertyValueRemoved: {
         const auto change = qSharedPointerCast<Qt3DCore::QNodeRemovedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("chord")) {
             m_chords.removeOne(change->removedNodeId());

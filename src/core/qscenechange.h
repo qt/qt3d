@@ -52,8 +52,8 @@ enum ChangeFlag {
     NodeCreated             = 1 << 0,
     NodeDeleted             = 1 << 1,
     PropertyUpdated         = 1 << 2,
-    NodeAdded               = 1 << 3,
-    NodeRemoved             = 1 << 4,
+    PropertyValueAdded      = 1 << 3,
+    PropertyValueRemoved    = 1 << 4,
     ComponentAdded          = 1 << 5,
     ComponentRemoved        = 1 << 6,
     AllChanges              = 0xFFFFFFFF

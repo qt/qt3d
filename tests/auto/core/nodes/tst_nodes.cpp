@@ -598,7 +598,7 @@ void tst_Nodes::checkParentChangeToOtherParent()
     // CHECK event 1 is a Node Removed event
     QVERIFY(spyParent1.events.first().wasLocked());
     const Qt3DCore::QNodeRemovedPropertyChangePtr event = spyParent1.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeRemovedPropertyChange>();
-    QCOMPARE(event->type(), Qt3DCore::NodeRemoved);
+    QCOMPARE(event->type(), Qt3DCore::PropertyValueRemoved);
     QCOMPARE(event->subjectId(), parent1->id());
     QCOMPARE(event->removedNodeId(), child->id());
     QCOMPARE(event->metaObject(), child->metaObject());
@@ -606,7 +606,7 @@ void tst_Nodes::checkParentChangeToOtherParent()
     // CHECK event 2 is a Node Added event
     QVERIFY(spyParent2.events.last().wasLocked());
     const Qt3DCore::QNodeAddedPropertyChangePtr event2 = spyParent2.events.last().change().dynamicCast<Qt3DCore::QNodeAddedPropertyChange>();
-    QCOMPARE(event2->type(), Qt3DCore::NodeAdded);
+    QCOMPARE(event2->type(), Qt3DCore::PropertyValueAdded);
     QCOMPARE(event2->subjectId(), parent2->id());
     QCOMPARE(event2->addedNodeId(), child->id());
     QCOMPARE(event2->metaObject(), child->metaObject());

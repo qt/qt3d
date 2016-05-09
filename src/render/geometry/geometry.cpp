@@ -82,7 +82,7 @@ void Geometry::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &cha
 void Geometry::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
-    case NodeAdded: {
+    case PropertyValueAdded: {
         const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("attribute")) {
             m_attributes.push_back(change->addedNodeId());
@@ -91,7 +91,7 @@ void Geometry::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
 
-    case NodeRemoved: {
+    case PropertyValueRemoved: {
         const auto change = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("attribute")) {
             m_attributes.removeOne(change->removedNodeId());

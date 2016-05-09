@@ -584,7 +584,7 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
         break;
 
-    case NodeAdded: {
+    case PropertyValueAdded: {
         const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("textureImage")) {
             m_textureImages.append(m_textureImageManager->lookupHandle(change->addedNodeId()));
@@ -592,7 +592,7 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
         break;
 
-    case NodeRemoved: {
+    case PropertyValueRemoved: {
         const auto change = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("textureImage")) {
             m_textureImages.removeOne(m_textureImageManager->lookupHandle(change->removedNodeId()));

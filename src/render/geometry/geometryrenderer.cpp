@@ -168,7 +168,7 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
 
-    case NodeAdded: {
+    case PropertyValueAdded: {
         const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("geometry")) {
             m_geometryId = change->addedNodeId();
@@ -177,7 +177,7 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
 
-    case NodeRemoved: {
+    case PropertyValueRemoved: {
         const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("geometry")) {
             m_geometryId = QNodeId();

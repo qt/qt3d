@@ -163,7 +163,7 @@ private Q_SLOTS:
         QCOMPARE(nodeAddedChange->propertyName(), "parameter");
         QCOMPARE(nodeAddedChange->subjectId(),techniqueFilter->id());
         QCOMPARE(nodeAddedChange->addedNodeId(), param1->id());
-        QCOMPARE(nodeAddedChange->type(), Qt3DCore::NodeAdded);
+        QCOMPARE(nodeAddedChange->type(), Qt3DCore::PropertyValueAdded);
 
         arbiter.events.clear();
 
@@ -184,7 +184,7 @@ private Q_SLOTS:
         QCOMPARE(nodeRemovedChange->propertyName(), "parameter");
         QCOMPARE(nodeRemovedChange->subjectId(), techniqueFilter->id());
         QCOMPARE(nodeRemovedChange->removedNodeId(), param1->id());
-        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::NodeRemoved);
+        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::PropertyValueRemoved);
 
         arbiter.events.clear();
 
@@ -199,7 +199,7 @@ private Q_SLOTS:
         QCOMPARE(nodeAddedChange->propertyName(), "matchAll");
         QCOMPARE(nodeAddedChange->subjectId(),techniqueFilter->id());
         QCOMPARE(nodeAddedChange->addedNodeId(), filterKey1->id());
-        QCOMPARE(nodeAddedChange->type(), Qt3DCore::NodeAdded);
+        QCOMPARE(nodeAddedChange->type(), Qt3DCore::PropertyValueAdded);
 
         arbiter.events.clear();
 
@@ -220,7 +220,7 @@ private Q_SLOTS:
         QCOMPARE(nodeRemovedChange->propertyName(), "matchAll");
         QCOMPARE(nodeRemovedChange->subjectId(), techniqueFilter->id());
         QCOMPARE(nodeRemovedChange->removedNodeId(), filterKey1->id());
-        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::NodeRemoved);
+        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::PropertyValueRemoved);
 
         arbiter.events.clear();
     }

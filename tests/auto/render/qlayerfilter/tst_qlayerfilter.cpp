@@ -127,7 +127,7 @@ private Q_SLOTS:
         QCOMPARE(addChange->propertyName(), "layer");
         QCOMPARE(addChange->subjectId(), layerFilter->id());
         QCOMPARE(addChange->addedNodeId(), layerFilter->layers().at(0)->id());
-        QCOMPARE(addChange->type(), Qt3DCore::NodeAdded);
+        QCOMPARE(addChange->type(), Qt3DCore::PropertyValueAdded);
 
         arbiter.events.clear();
 
@@ -143,7 +143,7 @@ private Q_SLOTS:
         QCOMPARE(addChange->propertyName(), "layer");
         QCOMPARE(addChange->subjectId(), layerFilter->id());
         QCOMPARE(addChange->addedNodeId(), layerFilter->layers().at(1)->id());
-        QCOMPARE(addChange->type(), Qt3DCore::NodeAdded);
+        QCOMPARE(addChange->type(), Qt3DCore::PropertyValueAdded);
 
         arbiter.events.clear();
 
@@ -158,7 +158,7 @@ private Q_SLOTS:
         QCOMPARE(removeChange->propertyName(), "layer");
         QCOMPARE(removeChange->subjectId(), layerFilter->id());
         QCOMPARE(removeChange->removedNodeId(), layer->id());
-        QCOMPARE(removeChange->type(), Qt3DCore::NodeRemoved);
+        QCOMPARE(removeChange->type(), Qt3DCore::PropertyValueRemoved);
 
         arbiter.events.clear();
     }

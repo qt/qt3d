@@ -54,8 +54,8 @@ namespace Qt3DCore {
  * \value NodeCreated A new instance of a QNode subclass has been created.
  * \value NodeDeleted A QNode has been deleted.
  * \value PropertyUpdated A QNode property has been updated.
- * \value NodeAdded A QNode has been added to the scene.
- * \value NodeRemoved A QNode has been removed from the scene.
+ * \value PropertyValueAdded A QNode has been added to the scene.
+ * \value PropertyValueRemoved A QNode has been removed from the scene.
  * \value ComponentAdded A QComponent has been added to a QEntity.
  * \value ComponentRemoved A QComponent has been removed from a QEntity.
  * \value AllChanges Allows an observer to monitor for any of the above changes.

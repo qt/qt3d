@@ -67,14 +67,14 @@ void LayerFilterNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBaseP
 void LayerFilterNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
-    case NodeAdded: {
+    case PropertyValueAdded: {
         const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("layer"))
             m_layerIds.append(change->addedNodeId());
         break;
     }
 
-    case NodeRemoved: {
+    case PropertyValueRemoved: {
         const auto change = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("layer"))
             m_layerIds.remove(change->removedNodeId());

@@ -93,14 +93,14 @@ void Material::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
 
-    case NodeAdded: {
+    case PropertyValueAdded: {
         const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("parameter"))
             m_parameterPack.appendParameter(change->addedNodeId());
         break;
     }
 
-    case NodeRemoved: {
+    case PropertyValueRemoved: {
         const auto change = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("parameter"))
             m_parameterPack.removeParameter(change->removedNodeId());

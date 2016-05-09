@@ -86,7 +86,7 @@ void RenderPass::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &c
 void RenderPass::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
-    case NodeAdded: {
+    case PropertyValueAdded: {
         const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("filterKeys"))
             appendFilterKey(change->addedNodeId());
@@ -99,7 +99,7 @@ void RenderPass::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
 
-    case NodeRemoved: {
+    case PropertyValueRemoved: {
         const auto change = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("filterKeys"))
             removeFilterKey(change->removedNodeId());

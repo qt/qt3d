@@ -121,7 +121,7 @@ private Q_SLOTS:
         Qt3DCore::QNodeAddedPropertyChangePtr nodeAddedChange = arbiter.events.first().staticCast<Qt3DCore::QNodeAddedPropertyChange>();
         QCOMPARE(nodeAddedChange->propertyName(), "attribute");
         QCOMPARE(nodeAddedChange->addedNodeId(), attr.id());
-        QCOMPARE(nodeAddedChange->type(), Qt3DCore::NodeAdded);
+        QCOMPARE(nodeAddedChange->type(), Qt3DCore::PropertyValueAdded);
 
         arbiter.events.clear();
 
@@ -141,7 +141,7 @@ private Q_SLOTS:
         Qt3DCore::QNodeRemovedPropertyChangePtr nodeRemovedChange = arbiter.events.first().staticCast<Qt3DCore::QNodeRemovedPropertyChange>();
         QCOMPARE(nodeRemovedChange->propertyName(), "attribute");
         QCOMPARE(nodeRemovedChange->removedNodeId(), attr.id());
-        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::NodeRemoved);
+        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::PropertyValueRemoved);
 
         arbiter.events.clear();
     }

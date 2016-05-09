@@ -64,15 +64,15 @@ public:
 
     void sendNodeAddedNotification()
     {
-        Qt3DCore::QNodePropertyChangePtr e(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, id()));
-        e->setPropertyName("NodeAdded");
+        Qt3DCore::QNodePropertyChangePtr e(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyValueAdded, Qt3DCore::QSceneChange::Node, id()));
+        e->setPropertyName("PropertyValueAdded");
         Qt3DCore::QNodePrivate::get(this)->notifyObservers(e);
     }
 
     void sendNodeRemovedNotification()
     {
-        Qt3DCore::QNodePropertyChangePtr e(new Qt3DCore::QNodePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, id()));
-        e->setPropertyName("NodeRemoved");
+        Qt3DCore::QNodePropertyChangePtr e(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyValueRemoved, Qt3DCore::QSceneChange::Node, id()));
+        e->setPropertyName("PropertyValueRemoved");
         Qt3DCore::QNodePrivate::get(this)->notifyObservers(e);
     }
 
@@ -340,7 +340,7 @@ void tst_QChangeArbiter::registerObservers()
     arbiter->syncChanges();
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QCOMPARE(o->lastChanges().size(), 1);
-        QVERIFY(o->lastChanges().last()->type() == Qt3DCore::NodeAdded);
+        QVERIFY(o->lastChanges().last()->type() == Qt3DCore::PropertyValueAdded);
     }
 
     Qt3DCore::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter.data());
@@ -394,7 +394,7 @@ void tst_QChangeArbiter::registerSceneObserver()
     // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
-        QVERIFY(o->lastChange()->type() == Qt3DCore::NodeAdded);
+        QVERIFY(o->lastChange()->type() == Qt3DCore::PropertyValueAdded);
     }
     Q_FOREACH (tst_SceneObserver *s, sceneObservers) {
         QVERIFY(!s->lastChange().isNull());
@@ -457,7 +457,7 @@ void tst_QChangeArbiter::unregisterObservers()
     // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
-        QVERIFY(o->lastChange()->type() == Qt3DCore::NodeAdded);
+        QVERIFY(o->lastChange()->type() == Qt3DCore::PropertyValueAdded);
     }
 
     // WHEN
@@ -470,7 +470,7 @@ void tst_QChangeArbiter::unregisterObservers()
     // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
-        QVERIFY(o->lastChange()->type() == Qt3DCore::NodeAdded);
+        QVERIFY(o->lastChange()->type() == Qt3DCore::PropertyValueAdded);
     }
 
     Qt3DCore::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter.data());
@@ -524,7 +524,7 @@ void tst_QChangeArbiter::unregisterSceneObservers()
     // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
-        QVERIFY(o->lastChange()->type() == Qt3DCore::NodeAdded);
+        QVERIFY(o->lastChange()->type() == Qt3DCore::PropertyValueAdded);
     }
     Q_FOREACH (tst_SceneObserver *s, sceneObservers) {
         QVERIFY(!s->lastChange().isNull());
@@ -552,7 +552,7 @@ void tst_QChangeArbiter::unregisterSceneObservers()
     // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
-        QVERIFY(o->lastChange()->type() == Qt3DCore::NodeRemoved);
+        QVERIFY(o->lastChange()->type() == Qt3DCore::PropertyValueRemoved);
     }
     Q_FOREACH (tst_SceneObserver *s, sceneObservers) {
         QVERIFY(!s->lastChange().isNull());
@@ -569,7 +569,7 @@ void tst_QChangeArbiter::unregisterSceneObservers()
     // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
-        QVERIFY(o->lastChange()->type() == Qt3DCore::NodeAdded);
+        QVERIFY(o->lastChange()->type() == Qt3DCore::PropertyValueAdded);
     }
     Q_FOREACH (tst_SceneObserver *s, sceneObservers) {
         QVERIFY(!s->lastChange().isNull());
@@ -605,9 +605,9 @@ void tst_QChangeArbiter::distributeFrontendChanges()
     tst_SimpleObserver *backendComponentRemovedObserver = new tst_SimpleObserver();
 
     arbiter->registerObserver(backendAllChangedObserver, root->id());
-    arbiter->registerObserver(backendNodeAddedObserver, root->id(), Qt3DCore::NodeAdded);
+    arbiter->registerObserver(backendNodeAddedObserver, root->id(), Qt3DCore::PropertyValueAdded);
     arbiter->registerObserver(backendNodeUpdatedObserver, root->id(), Qt3DCore::PropertyUpdated);
-    arbiter->registerObserver(backendNodeRemovedObserver, root->id(), Qt3DCore::NodeRemoved);
+    arbiter->registerObserver(backendNodeRemovedObserver, root->id(), Qt3DCore::PropertyValueRemoved);
     arbiter->registerObserver(backendComponentAddedObserver, root->id(), Qt3DCore::ComponentAdded);
     arbiter->registerObserver(backendComponentRemovedObserver, root->id(), Qt3DCore::ComponentRemoved);
 

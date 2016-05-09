@@ -88,14 +88,14 @@ void Axis::setAxisValue(float axisValue)
 void Axis::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
-    case Qt3DCore::NodeAdded: {
+    case Qt3DCore::PropertyValueAdded: {
         const auto change = qSharedPointerCast<Qt3DCore::QNodeAddedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("input"))
             m_inputs.push_back(change->addedNodeId());
         break;
     }
 
-    case Qt3DCore::NodeRemoved: {
+    case Qt3DCore::PropertyValueRemoved: {
         const auto change = qSharedPointerCast<Qt3DCore::QNodeRemovedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("input"))
             m_inputs.removeOne(change->removedNodeId());

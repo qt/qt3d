@@ -75,7 +75,7 @@ void StateSetNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
 void StateSetNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
-    case NodeAdded: {
+    case PropertyValueAdded: {
         const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("renderState")) {
             appendRenderState(change->addedNodeId());
@@ -84,7 +84,7 @@ void StateSetNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
 
-    case NodeRemoved: {
+    case PropertyValueRemoved: {
         const auto propertyChange = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
             removeRenderState(propertyChange->removedNodeId());

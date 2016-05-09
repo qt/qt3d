@@ -115,7 +115,7 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "sortType");
         QCOMPARE(change->subjectId(),sortPolicy->id());
         QCOMPARE(change->value().value<Qt3DRender::QSortPolicy::SortType>(), sortType1);
-        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
+        QCOMPARE(change->type(), Qt3DCore::PropertyValueAdded);
 
         arbiter.events.clear();
 
@@ -136,7 +136,7 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "sortType");
         QCOMPARE(change->subjectId(), sortPolicy->id());
         QCOMPARE(change->value().value<Qt3DRender::QSortPolicy::SortType>(), sortType1);
-        QCOMPARE(change->type(), Qt3DCore::NodeRemoved);
+        QCOMPARE(change->type(), Qt3DCore::PropertyValueRemoved);
 
         arbiter.events.clear();
     }

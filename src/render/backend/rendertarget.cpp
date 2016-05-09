@@ -90,7 +90,7 @@ QVector<Qt3DCore::QNodeId> RenderTarget::renderOutputs() const
 void RenderTarget::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
-    case Qt3DCore::NodeAdded: {
+    case Qt3DCore::PropertyValueAdded: {
         const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("output")) {
             appendRenderOutput(change->addedNodeId());
@@ -99,7 +99,7 @@ void RenderTarget::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
 
-    case Qt3DCore::NodeRemoved: {
+    case Qt3DCore::PropertyValueRemoved: {
         const auto change = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("output")) {
             removeRenderOutput(change->removedNodeId());

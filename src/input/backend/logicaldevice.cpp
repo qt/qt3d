@@ -76,7 +76,7 @@ void LogicalDevice::cleanup()
 void LogicalDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
-    case Qt3DCore::NodeAdded: {
+    case Qt3DCore::PropertyValueAdded: {
         const auto change = qSharedPointerCast<Qt3DCore::QNodeAddedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("axis"))
             m_axes.push_back(change->addedNodeId());
@@ -85,7 +85,7 @@ void LogicalDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
 
-    case Qt3DCore::NodeRemoved: {
+    case Qt3DCore::PropertyValueRemoved: {
         const auto change = qSharedPointerCast<Qt3DCore::QNodeRemovedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("axis"))
             m_axes.removeOne(change->removedNodeId());

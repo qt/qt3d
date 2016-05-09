@@ -144,7 +144,7 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "renderState");
         QCOMPARE(change->subjectId(), stateSet->id());
         QCOMPARE(change->addedNodeId(), state1->id());
-        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
+        QCOMPARE(change->type(), Qt3DCore::PropertyValueAdded);
 
         arbiter.events.clear();
 
@@ -165,7 +165,7 @@ private Q_SLOTS:
         QCOMPARE(nodeRemovedChange->propertyName(), "renderState");
         QCOMPARE(nodeRemovedChange->subjectId(), stateSet->id());
         QCOMPARE(nodeRemovedChange->removedNodeId(), state1->id());
-        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::NodeRemoved);
+        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::PropertyValueRemoved);
 
         arbiter.events.clear();
     }

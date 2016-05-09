@@ -82,7 +82,7 @@ void Effect::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chang
 void Effect::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
-    case NodeAdded: {
+    case PropertyValueAdded: {
         const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("technique"))
             appendRenderTechnique(change->addedNodeId());
@@ -91,7 +91,7 @@ void Effect::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
 
-    case NodeRemoved: {
+    case PropertyValueRemoved: {
         const auto change = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
         if (change->propertyName() == QByteArrayLiteral("technique"))
             m_techniques.removeOne(change->removedNodeId());
