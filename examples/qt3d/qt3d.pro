@@ -16,7 +16,6 @@ SUBDIRS += \
     transparency-qml \
     transparency-qml-scene3d \
     instanced-arrays-qml \
-    transforms-qml \
     lights \
     compute-particles
 

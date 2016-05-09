@@ -25,4 +25,5 @@ SUBDIRS += \
     scene3d-loader \
     simple-shaders-qml \
     skybox \
-    tessellation-modes
+    tessellation-modes \
+    transforms-qml
