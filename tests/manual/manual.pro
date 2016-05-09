@@ -10,4 +10,5 @@ SUBDIRS += \
     custom-mesh-cpp \
     custom-mesh-qml \
     cylinder-cpp \
+    cylinder-qml \
     deferred-renderer-cpp
