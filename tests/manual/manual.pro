@@ -8,4 +8,5 @@ SUBDIRS += \
     clip-planes-qml \
     component-changes \
     custom-mesh-cpp \
+    custom-mesh-qml \
     deferred-renderer-cpp
