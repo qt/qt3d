@@ -6,7 +6,6 @@ SUBDIRS += \
     gltf \
     multiviewport \
     cylinder-qml \
-    cylinder-cpp \
     wireframe \
     tessellation-modes \
     deferred-renderer-qml \

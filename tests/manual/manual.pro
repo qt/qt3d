@@ -9,4 +9,5 @@ SUBDIRS += \
     component-changes \
     custom-mesh-cpp \
     custom-mesh-qml \
+    cylinder-cpp \
     deferred-renderer-cpp
