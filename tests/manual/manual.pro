@@ -19,4 +19,5 @@ SUBDIRS += \
     gooch-qml \
     keyboardinput-qml \
     loader-qml \
-    mouseinput-qml
+    mouseinput-qml \
+    picking-qml
