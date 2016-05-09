@@ -3,7 +3,6 @@ TEMPLATE = subdirs
 SUBDIRS += \
     simple-qml \
     simple-cpp \
-    gltf \
     multiviewport \
     wireframe \
     tessellation-modes \

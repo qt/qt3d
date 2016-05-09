@@ -14,4 +14,5 @@ SUBDIRS += \
     deferred-renderer-cpp \
     deferred-renderer-qml \
     dynamicscene-cpp \
-    enabled-qml
+    enabled-qml \
+    gltf
