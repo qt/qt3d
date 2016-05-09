@@ -72,14 +72,15 @@ QNodePropertyChangeBasePrivate::~QNodePropertyChangeBasePrivate()
  * Constructs a new QNodePropertyChangeBase with \a type, \a senderType, \a subjectId, and
  * \a priority.
  */
-QNodePropertyChangeBase::QNodePropertyChangeBase(ChangeFlag type, SenderType senderType, QNodeId subjectId, QSceneChange::Priority priority)
-    : QNodeUpdatedChangeBase(*new QNodePropertyChangeBasePrivate, type, senderType, subjectId, priority)
+QNodePropertyChangeBase::QNodePropertyChangeBase(SenderType senderType, QNodeId subjectId, QSceneChange::Priority priority)
+    : QNodeUpdatedChangeBase(*new QNodePropertyChangeBasePrivate, senderType, subjectId, priority)
 {
 }
 
 /*! \internal */
-QNodePropertyChangeBase::QNodePropertyChangeBase(QNodePropertyChangeBasePrivate &dd, ChangeFlag type, SenderType senderType, QNodeId subjectId, QSceneChange::Priority priority)
-    : QNodeUpdatedChangeBase(dd, type, senderType, subjectId, priority)
+QNodePropertyChangeBase::QNodePropertyChangeBase(QNodePropertyChangeBasePrivate &dd,
+                                                 SenderType senderType, QNodeId subjectId, QSceneChange::Priority priority)
+    : QNodeUpdatedChangeBase(dd, senderType, subjectId, priority)
 {
 }
 

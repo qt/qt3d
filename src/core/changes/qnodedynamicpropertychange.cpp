@@ -55,13 +55,13 @@ QNodeDynamicPropertyChangePrivate::~QNodeDynamicPropertyChangePrivate()
 
 
 QNodeDynamicPropertyChange::QNodeDynamicPropertyChange(SenderType senderType, QNodeId subjectId, Priority priority)
-    : QNodeUpdatedChangeBase(*new QNodeDynamicPropertyChangePrivate, PropertyUpdated, senderType, subjectId, priority)
+    : QNodeUpdatedChangeBase(*new QNodeDynamicPropertyChangePrivate, senderType, subjectId, priority)
 {
 }
 
 QNodeDynamicPropertyChange::QNodeDynamicPropertyChange(QNodeDynamicPropertyChangePrivate &dd,
                                                        SenderType senderType, QNodeId subjectId, Priority priority)
-    : QNodeUpdatedChangeBase(dd, PropertyUpdated, senderType, subjectId, priority)
+    : QNodeUpdatedChangeBase(dd, senderType, subjectId, priority)
 {
 }
 

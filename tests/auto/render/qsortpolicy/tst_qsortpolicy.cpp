@@ -30,6 +30,8 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qsortpolicy.h>
@@ -111,11 +113,11 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
-        QCOMPARE(change->propertyName(), "sortType");
-        QCOMPARE(change->subjectId(),sortPolicy->id());
-        QCOMPARE(change->value().value<Qt3DRender::QSortPolicy::SortType>(), sortType1);
-        QCOMPARE(change->type(), Qt3DCore::PropertyValueAdded);
+        Qt3DCore::QNodeAddedPropertyChangePtr addChange = arbiter.events.first().staticCast<Qt3DCore::QNodeAddedPropertyChange>();
+        QCOMPARE(addChange->propertyName(), "sortType");
+        QCOMPARE(addChange->subjectId(),sortPolicy->id());
+        QCOMPARE(addChange->addedValue().value<Qt3DRender::QSortPolicy::SortType>(), sortType1);
+        QCOMPARE(addChange->type(), Qt3DCore::PropertyValueAdded);
 
         arbiter.events.clear();
 
@@ -132,11 +134,11 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
-        QCOMPARE(change->propertyName(), "sortType");
-        QCOMPARE(change->subjectId(), sortPolicy->id());
-        QCOMPARE(change->value().value<Qt3DRender::QSortPolicy::SortType>(), sortType1);
-        QCOMPARE(change->type(), Qt3DCore::PropertyValueRemoved);
+        Qt3DCore::QNodeRemovedPropertyChangePtr removeChange = arbiter.events.first().staticCast<Qt3DCore::QNodeRemovedPropertyChange>();
+        QCOMPARE(removeChange->propertyName(), "sortType");
+        QCOMPARE(removeChange->subjectId(), sortPolicy->id());
+        QCOMPARE(removeChange->removedValue().value<Qt3DRender::QSortPolicy::SortType>(), sortType1);
+        QCOMPARE(removeChange->type(), Qt3DCore::PropertyValueRemoved);
 
         arbiter.events.clear();
     }

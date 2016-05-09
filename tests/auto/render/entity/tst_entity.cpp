@@ -32,6 +32,7 @@
 #include <Qt3DRender/QCameraLens>
 #include <Qt3DCore/QNodePropertyChange>
 #include <Qt3DCore/QComponentAddedChange>
+#include <Qt3DCore/QComponentRemovedChange>
 #include <Qt3DCore/QTransform>
 
 #include <Qt3DRender/QMesh>
@@ -190,9 +191,7 @@ private slots:
 
         // WHEN
         renderer.resetDirty();
-        QNodePropertyChangePtr removeChange(new QNodePropertyChange(ComponentRemoved, QSceneChange::Node, component->id()));
-        removeChange->setPropertyName("componentId");
-        removeChange->setValue(QVariant::fromValue(component->id()));
+        const auto removeChange = QComponentRemovedChangePtr::create(&dummyFrontendEntity, component);
         entity.sceneChangeEvent(removeChange);
 
         // THEN
@@ -248,9 +247,7 @@ private slots:
 
         // WHEN
         renderer.resetDirty();
-        QNodePropertyChangePtr removeChange(new QNodePropertyChange(ComponentRemoved, QSceneChange::Node, components.first()->id()));
-        removeChange->setPropertyName("componentId");
-        removeChange->setValue(QVariant::fromValue(components.first()->id()));
+        const auto removeChange = QComponentRemovedChangePtr::create(&dummyFrontendEntity, components.first());
         entity.sceneChangeEvent(removeChange);
 
         // THEN

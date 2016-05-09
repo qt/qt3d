@@ -141,7 +141,7 @@ private Q_SLOTS:
 
         // Note: simulate backend change to frontend
         // WHEN
-        Qt3DCore::QNodePropertyChangePtr valueChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        Qt3DCore::QNodePropertyChangePtr valueChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         valueChange->setPropertyName("value");
         valueChange->setValue(383.0f);
         sceneChangeEvent(valueChange);

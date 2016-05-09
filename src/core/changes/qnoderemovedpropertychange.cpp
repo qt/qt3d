@@ -71,6 +71,12 @@ QNodeRemovedPropertyChange::QNodeRemovedPropertyChange(QNodeId subjectId, QNode 
     d->m_removedNodeIdTypePair = QNodeIdTypePair(node->id(), QNodePrivate::get(node)->m_typeInfo);
 }
 
+QNodeRemovedPropertyChange::QNodeRemovedPropertyChange(QNodeId subjectId,
+                                                       QSceneChange::Priority priority)
+    : QPropertyValueRemovedChangeBase(*new QNodeRemovedPropertyChangePrivate, Node, subjectId, priority)
+{
+}
+
 /*!
  * \return the id of the node removed to the property.
  */
@@ -105,6 +111,18 @@ void QNodeRemovedPropertyChange::setPropertyName(const char *name)
 {
     Q_D(QNodeRemovedPropertyChange);
     d->m_propertyName = name;
+}
+
+void QNodeRemovedPropertyChange::setRemovedValue(const QVariant &value)
+{
+    Q_D(QNodeRemovedPropertyChange);
+    d->m_removedValue = value;
+}
+
+QVariant QNodeRemovedPropertyChange::removedValue() const
+{
+    Q_D(const QNodeRemovedPropertyChange);
+    return d->m_removedValue;
 }
 
 } // namespace Qt3DCore

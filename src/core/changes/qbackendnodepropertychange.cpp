@@ -63,7 +63,7 @@ QBackendNodePropertyChangeBasePrivate::~QBackendNodePropertyChangeBasePrivate()
  * TODO
  */
 QBackendNodePropertyChangeBase::QBackendNodePropertyChangeBase(QNodeId subjectId, Priority priority)
-    : QNodePropertyChangeBase(*new QBackendNodePropertyChangeBasePrivate, PropertyUpdated, BackendNode, subjectId, priority)
+    : QNodePropertyChangeBase(*new QBackendNodePropertyChangeBasePrivate, BackendNode, subjectId, priority)
 {
 }
 
@@ -72,7 +72,7 @@ QBackendNodePropertyChangeBase::QBackendNodePropertyChangeBase(QNodeId subjectId
  */
 QBackendNodePropertyChangeBase::QBackendNodePropertyChangeBase(QBackendNodePropertyChangeBasePrivate &dd,
                                                                QNodeId subjectId, Priority priority)
-    : QNodePropertyChangeBase(dd, PropertyUpdated, BackendNode, subjectId, priority)
+    : QNodePropertyChangeBase(dd, BackendNode, subjectId, priority)
 {
 }
 

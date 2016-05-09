@@ -149,7 +149,7 @@ private Q_SLOTS:
 
         // WHEN
         const Qt3DCore::QNodeId boundingAttrId = Qt3DCore::QNodeId::createId();
-        Qt3DCore::QNodePropertyChangePtr updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        Qt3DCore::QNodePropertyChangePtr updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(QVariant::fromValue(boundingAttrId));
         updateChange->setPropertyName("boundingVolumePositionAttribute");
         renderGeometry.sceneChangeEvent(updateChange);

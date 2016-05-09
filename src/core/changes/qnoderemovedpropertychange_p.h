@@ -53,6 +53,7 @@
 
 #include <private/qpropertyvalueremovedchangebase_p.h>
 #include <Qt3DCore/qnode.h>
+#include <QtCore/qvariant.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -73,6 +74,7 @@ public:
 
     const char *m_propertyName;
     QNodeIdTypePair m_removedNodeIdTypePair;
+    QVariant m_removedValue;
 };
 
 } // Qt3D

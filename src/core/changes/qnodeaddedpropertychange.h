@@ -50,10 +50,13 @@ namespace Qt3DCore {
 
 class QNodeAddedPropertyChangePrivate;
 
+// TODO: Split this class into two. One for general values, one specifically for QNodeIds
 class QT3DCORESHARED_EXPORT QNodeAddedPropertyChange : public QPropertyValueAddedChangeBase
 {
 public:
     QNodeAddedPropertyChange(QNodeId subjectId, QNode *node,
+                             Priority priority = Standard);
+    QNodeAddedPropertyChange(QNodeId subjectId,
                              Priority priority = Standard);
 
     const char *propertyName() const;
@@ -61,6 +64,9 @@ public:
 
     QNodeId addedNodeId() const;
     const QMetaObject *metaObject() const;
+
+    void setAddedValue(const QVariant &value);
+    QVariant addedValue() const;
 
 private:
     Q_DECLARE_PRIVATE(QNodeAddedPropertyChange)

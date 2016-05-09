@@ -71,6 +71,12 @@ QNodeAddedPropertyChange::QNodeAddedPropertyChange(QNodeId subjectId, QNode *nod
     d->m_addedNodeIdTypePair = QNodeIdTypePair(node->id(), node->metaObject());
 }
 
+QNodeAddedPropertyChange::QNodeAddedPropertyChange(QNodeId subjectId,
+                                                   QSceneChange::Priority priority)
+    : QPropertyValueAddedChangeBase(*new QNodeAddedPropertyChangePrivate, Node, subjectId, priority)
+{
+}
+
 /*!
  * \return the id of the node added to the property.
  */
@@ -105,6 +111,18 @@ void QNodeAddedPropertyChange::setPropertyName(const char *name)
 {
     Q_D(QNodeAddedPropertyChange);
     d->m_propertyName = name;
+}
+
+void QNodeAddedPropertyChange::setAddedValue(const QVariant &value)
+{
+    Q_D(QNodeAddedPropertyChange);
+    d->m_addedValue = value;
+}
+
+QVariant QNodeAddedPropertyChange::addedValue() const
+{
+    Q_D(const QNodeAddedPropertyChange);
+    return d->m_addedValue;
 }
 
 } // namespace Qt3DCore

@@ -50,10 +50,13 @@ namespace Qt3DCore {
 
 class QNodeRemovedPropertyChangePrivate;
 
+// TODO: Split this class into two. One for general values, one specifically for QNodeIds
 class QT3DCORESHARED_EXPORT QNodeRemovedPropertyChange : public QPropertyValueRemovedChangeBase
 {
 public:
     QNodeRemovedPropertyChange(QNodeId subjectId, QNode *node,
+                               Priority priority = Standard);
+    QNodeRemovedPropertyChange(QNodeId subjectId,
                                Priority priority = Standard);
 
     const char *propertyName() const;
@@ -61,6 +64,9 @@ public:
 
     QNodeId removedNodeId() const;
     const QMetaObject *metaObject() const;
+
+    void setRemovedValue(const QVariant &value);
+    QVariant removedValue() const;
 
 private:
     Q_DECLARE_PRIVATE(QNodeRemovedPropertyChange)

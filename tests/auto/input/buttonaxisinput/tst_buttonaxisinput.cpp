@@ -101,7 +101,7 @@ private Q_SLOTS:
         Qt3DInput::Input::ButtonAxisInput backendAxisInput;
 
         // WHEN
-        Qt3DCore::QNodePropertyChangePtr  updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        Qt3DCore::QNodePropertyChangePtr  updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(QVariant::fromValue(QVector<int>() << 64));
         updateChange->setPropertyName("buttons");
         backendAxisInput.sceneChangeEvent(updateChange);
@@ -110,7 +110,7 @@ private Q_SLOTS:
         QCOMPARE(backendAxisInput.buttons(), QVector<int>() << 64);
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(0.5f);
         updateChange->setPropertyName("scale");
         backendAxisInput.sceneChangeEvent(updateChange);
@@ -119,7 +119,7 @@ private Q_SLOTS:
         QCOMPARE(backendAxisInput.scale(), 0.5f);
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setPropertyName("enabled");
         updateChange->setValue(true);
         backendAxisInput.sceneChangeEvent(updateChange);
@@ -129,7 +129,7 @@ private Q_SLOTS:
 
         // WHEN
         TestDevice device;
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::PropertyUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setPropertyName("sourceDevice");
         updateChange->setValue(QVariant::fromValue(device.id()));
         backendAxisInput.sceneChangeEvent(updateChange);

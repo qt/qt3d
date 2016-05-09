@@ -169,7 +169,6 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
                     if (d->m_changeArbiter != nullptr) {
                         Qt3DCore::QNodePropertyChangePtr change(
                                     new Qt3DCore::QNodePropertyChange(
-                                        Qt3DCore::PropertyUpdated,
                                         Qt3DCore::QSceneChange::Node,
                                         id()));
 
@@ -182,7 +181,6 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
                     if (d->m_changeArbiter != nullptr) {
                         Qt3DCore::QNodePropertyChangePtr change(
                                     new Qt3DCore::QNodePropertyChange(
-                                        Qt3DCore::PropertyUpdated,
                                         Qt3DCore::QSceneChange::Node,
                                         id()));
 
