@@ -36,8 +36,7 @@ SUBDIRS += \
     picking-qml \
     transforms-qml \
     lights \
-    compute-particles \
-    component-changes
+    compute-particles
 
 qtHaveModule(multimedia): SUBDIRS += audio-visualizer-qml
 
