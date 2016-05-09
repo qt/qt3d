@@ -19,7 +19,6 @@ SUBDIRS += \
     simple-shaders-qml \
     planets-qml \
     plasma \
-    gooch-qml \
     transparency-qml \
     transparency-qml-scene3d \
     scene3d-loader \

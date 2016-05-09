@@ -15,4 +15,5 @@ SUBDIRS += \
     deferred-renderer-qml \
     dynamicscene-cpp \
     enabled-qml \
-    gltf
+    gltf \
+    gooch-qml

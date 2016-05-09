@@ -1,5 +1,5 @@
-!include( ../examples.pri ) {
-    error( "Couldn't find the examples.pri file!" )
+!include( ../manual.pri ) {
+    error( "Couldn't find the manual.pri file!" )
 }
 
 QT += 3dcore 3drender 3dquick 3dinput qml quick 3dquickextras
@@ -13,4 +13,4 @@ OTHER_FILES += \
 
 RESOURCES += \
     gooch-qml.qrc \
-    ../exampleresources/obj.qrc
+    ../../../examples/qt3d/exampleresources/obj.qrc
