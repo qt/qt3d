@@ -13,6 +13,13 @@ gcov {
 win32-g++*:QMAKE_CXXFLAGS_CXX11 = -std=gnu++0x
 
 include(core.pri)
+include(aspects/aspects.pri)
+include(changes/changes.pri)
+include(jobs/jobs.pri)
+include(nodes/nodes.pri)
+include(transforms/transforms.pri)
+include(resources/resources.pri)
+include(services/services.pri)
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
 
