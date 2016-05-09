@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <private/qnodepropertychangebase_p.h>
+#include <private/qpropertyvalueremovedchangebase_p.h>
 #include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
@@ -61,7 +61,7 @@ namespace Qt3DCore {
 class QNodePropertyChange;
 class QFrameAllocator;
 
-class QNodeRemovedPropertyChangePrivate : public QNodePropertyChangeBasePrivate
+class QNodeRemovedPropertyChangePrivate : public QPropertyValueRemovedChangeBasePrivate
 {
 public:
     QNodeRemovedPropertyChangePrivate()
@@ -71,6 +71,7 @@ public:
 
     Q_DECLARE_PUBLIC(QNodeRemovedPropertyChange)
 
+    const char *m_propertyName;
     QNodeIdTypePair m_removedNodeIdTypePair;
 };
 
