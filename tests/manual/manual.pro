@@ -29,3 +29,5 @@ SUBDIRS += \
     transforms-qml \
     transparency-qml \
     transparency-qml-scene3d
+
+qtHaveModule(widgets): SUBDIRS += assimp-cpp
