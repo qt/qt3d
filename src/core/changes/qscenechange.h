@@ -77,12 +77,23 @@ public:
         Node
     };
 
+    enum DeliveryFlag {
+        BackendNodes = 0x0001,
+        Nodes = 0x0010,
+        DeliverToAll = BackendNodes | Nodes
+    };
+    Q_DECLARE_FLAGS(DeliveryFlags, DeliveryFlag)
+
     QSceneChange(ChangeFlag type, SenderType senderType, QNodeId subjectId, Priority priority = Standard);
     virtual ~QSceneChange();
 
     ChangeFlag type() const Q_DECL_NOEXCEPT;
     QSceneChange::Priority priority() const Q_DECL_NOEXCEPT;
     QSceneChange::SenderType senderType() const Q_DECL_NOEXCEPT;
+
+    void setDeliveryFlags(DeliveryFlags flags) Q_DECL_NOEXCEPT;
+    DeliveryFlags deliveryFlags() const Q_DECL_NOEXCEPT;
+
     QNodeId subjectId() const Q_DECL_NOEXCEPT;
 
 protected:
@@ -93,6 +104,8 @@ protected:
 private:
     Q_DISABLE_COPY(QSceneChange)
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(QSceneChange::DeliveryFlags)
 
 typedef QSharedPointer<QSceneChange> QSceneChangePtr;
 

@@ -64,6 +64,7 @@ QSceneChangePrivate::QSceneChangePrivate()
     : q_ptr(nullptr)
     , m_subjectId()
     , m_senderType(QSceneChange::Node)
+    , m_deliveryFlags(QSceneChange::BackendNodes)
     , m_type(AllChanges)
     , m_priority(QSceneChange::Standard)
 {
@@ -164,6 +165,18 @@ QSceneChange::SenderType QSceneChange::senderType() const Q_DECL_NOEXCEPT
 {
     Q_D(const QSceneChange);
     return d->m_senderType;
+}
+
+void QSceneChange::setDeliveryFlags(DeliveryFlags flags) Q_DECL_NOEXCEPT
+{
+    Q_D(QSceneChange);
+    d->m_deliveryFlags = flags;
+}
+
+QSceneChange::DeliveryFlags QSceneChange::deliveryFlags() const Q_DECL_NOEXCEPT
+{
+    Q_D(const QSceneChange);
+    return d->m_deliveryFlags;
 }
 
 /*!

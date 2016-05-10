@@ -74,6 +74,7 @@ public :
 
     QNodeId m_subjectId;
     QSceneChange::SenderType m_senderType;
+    QSceneChange::DeliveryFlags m_deliveryFlags;
     ChangeFlag m_type;
     QSceneChange::Priority m_priority;
 };
