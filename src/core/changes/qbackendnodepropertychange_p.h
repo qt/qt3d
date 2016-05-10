@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <private/qnodepropertychangebase_p.h>
+#include <private/qstaticpropertyupdatedchangebase_p.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -60,7 +60,7 @@ namespace Qt3DCore {
 
 class QBackendNodePropertyChange;
 
-class QBackendNodePropertyChangeBasePrivate : public QNodePropertyChangeBasePrivate
+class QBackendNodePropertyChangeBasePrivate : public QStaticPropertyUpdatedChangeBasePrivate
 {
 public:
     QBackendNodePropertyChangeBasePrivate();

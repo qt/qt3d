@@ -434,7 +434,7 @@ void QGeometryRenderer::setGeometryFactory(const QGeometryFactoryPtr &factory)
  */
 void QGeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    auto change = qSharedPointerCast<QNodePropertyChangeBase>(e);
+    auto change = qSharedPointerCast<QStaticPropertyUpdatedChangeBase>(e);
     if (change->type() == PropertyUpdated && change->propertyName() == QByteArrayLiteral("geometry")) {
         auto typedChange = qSharedPointerCast<QGeometryChange>(e);
         auto geometry = std::move(typedChange->data);

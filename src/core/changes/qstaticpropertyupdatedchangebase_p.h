@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QNODEPROPERTYCHANGEBASE_P_H
-#define QNODEPROPERTYCHANGEBASE_P_H
+#ifndef QT3DCORE_QSTATICPROPERTYUPDATEDCHANGEBASE_P_H
+#define QT3DCORE_QSTATICPROPERTYUPDATEDCHANGEBASE_P_H
 
 //
 //  W A R N I N G
@@ -60,22 +60,22 @@ namespace Qt3DCore {
 class QNodePropertyChange;
 class QFrameAllocator;
 
-class QNodePropertyChangeBasePrivate : public QPropertyUpdatedChangeBasePrivate
+class QStaticPropertyUpdatedChangeBasePrivate : public QPropertyUpdatedChangeBasePrivate
 {
 public:
-    QNodePropertyChangeBasePrivate();
-    virtual ~QNodePropertyChangeBasePrivate();
+    QStaticPropertyUpdatedChangeBasePrivate();
+    virtual ~QStaticPropertyUpdatedChangeBasePrivate();
 
-    Q_DECLARE_PUBLIC(QNodePropertyChangeBase)
+    Q_DECLARE_PUBLIC(QStaticPropertyUpdatedChangeBase)
 
     /// FIXME: use QMetaProperty here once the NodeDeleted etc. change events
     /// get refactored to their own QSceneChange subclass
     const char *m_propertyName;
 };
 
-} // Qt3D
+} // Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QNODEPROPERTYCHANGEBASE_P_H
+#endif // QT3DCORE_QSTATICPROPERTYUPDATEDCHANGEBASE_P_H
 

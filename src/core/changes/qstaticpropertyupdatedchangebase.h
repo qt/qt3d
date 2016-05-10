@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QNODEPROPERTYCHANGEBASE_H
-#define QT3DCORE_QNODEPROPERTYCHANGEBASE_H
+#ifndef QT3DCORE_QSTATICPROPERTYUPDATEDCHANGEBASE_H
+#define QT3DCORE_QSTATICPROPERTYUPDATEDCHANGEBASE_H
 
 #include <Qt3DCore/qscenechange.h>
 #include <Qt3DCore/qpropertyupdatedchangebase.h>
@@ -47,30 +47,30 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QNodePropertyChangeBasePrivate;
+class QStaticPropertyUpdatedChangeBasePrivate;
 
-class QT3DCORESHARED_EXPORT QNodePropertyChangeBase : public QPropertyUpdatedChangeBase
+class QT3DCORESHARED_EXPORT QStaticPropertyUpdatedChangeBase : public QPropertyUpdatedChangeBase
 {
 public:
-    QNodePropertyChangeBase(QNodeId subjectId);
-    virtual ~QNodePropertyChangeBase();
+    ~QStaticPropertyUpdatedChangeBase();
 
     const char *propertyName() const;
     void setPropertyName(const char *name);
 
 protected:
-    Q_DECLARE_PRIVATE(QNodePropertyChangeBase)
-    QNodePropertyChangeBase(QNodePropertyChangeBasePrivate &dd, QNodeId subjectId);
+    QStaticPropertyUpdatedChangeBase(QNodeId subjectId);
+    QStaticPropertyUpdatedChangeBase(QStaticPropertyUpdatedChangeBasePrivate &dd, QNodeId subjectId);
+    Q_DECLARE_PRIVATE(QStaticPropertyUpdatedChangeBase)
 };
 
-typedef QSharedPointer<QNodePropertyChangeBase> QNodePropertyChangeBasePtr;
+typedef QSharedPointer<QStaticPropertyUpdatedChangeBase> QStaticPropertyUpdatedChangeBasePtr;
 
 template<typename T>
-class QTypedNodePropertyChange : public QNodePropertyChangeBase
+class QTypedNodePropertyChange : public QStaticPropertyUpdatedChangeBase
 {
 public:
     explicit QTypedNodePropertyChange(QNodeId _subjectId)
-        : QNodePropertyChangeBase(_subjectId)
+        : QStaticPropertyUpdatedChangeBase(_subjectId)
         , data()
     {
     }
@@ -95,4 +95,4 @@ struct QTypedNodePropertyChangePtr {
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QNODEPROPERTYCHANGEBASE_H
+#endif // QT3DCORE_QSTATICPROPERTYUPDATEDCHANGEBASE_H

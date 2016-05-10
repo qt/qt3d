@@ -40,7 +40,7 @@
 #ifndef QT3DCORE_QBACKENDNODEPROPERTYCHANGE_H
 #define QT3DCORE_QBACKENDNODEPROPERTYCHANGE_H
 
-#include <Qt3DCore/qnodepropertychangebase.h>
+#include <Qt3DCore/qstaticpropertyupdatedchangebase.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -49,16 +49,16 @@ namespace Qt3DCore {
 
 class QBackendNodePropertyChangeBasePrivate;
 
-class QT3DCORESHARED_EXPORT QBackendNodePropertyChangeBase : public QNodePropertyChangeBase
+class QT3DCORESHARED_EXPORT QBackendNodePropertyChangeBase : public QStaticPropertyUpdatedChangeBase
 {
 public:
-    QBackendNodePropertyChangeBase(QNodeId subjectId);
-    virtual ~QBackendNodePropertyChangeBase();
+    ~QBackendNodePropertyChangeBase();
 
 protected:
-    Q_DECLARE_PRIVATE(QBackendNodePropertyChangeBase)
+    QBackendNodePropertyChangeBase(QNodeId subjectId);
     QBackendNodePropertyChangeBase(QBackendNodePropertyChangeBasePrivate &dd,
                                    QNodeId subjectId);
+    Q_DECLARE_PRIVATE(QBackendNodePropertyChangeBase)
 };
 
 typedef QSharedPointer<QBackendNodePropertyChangeBase> QBackendNodePropertyChangeBasePtr;
@@ -70,7 +70,7 @@ class QT3DCORESHARED_EXPORT QBackendNodePropertyChange : public QBackendNodeProp
 {
 public:
     QBackendNodePropertyChange(QNodeId subjectId);
-    virtual ~QBackendNodePropertyChange();
+    ~QBackendNodePropertyChange();
 
     QVariant value() const;
     void setValue(const QVariant &value);

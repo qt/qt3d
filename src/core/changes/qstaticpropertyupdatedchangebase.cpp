@@ -37,72 +37,72 @@
 **
 ****************************************************************************/
 
-#include "qnodepropertychangebase.h"
-#include "qnodepropertychangebase_p.h"
+#include "qstaticpropertyupdatedchangebase.h"
+#include "qstaticpropertyupdatedchangebase_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-QNodePropertyChangeBasePrivate::QNodePropertyChangeBasePrivate()
+QStaticPropertyUpdatedChangeBasePrivate::QStaticPropertyUpdatedChangeBasePrivate()
     : QPropertyUpdatedChangeBasePrivate()
 {
 }
 
-QNodePropertyChangeBasePrivate::~QNodePropertyChangeBasePrivate()
+QStaticPropertyUpdatedChangeBasePrivate::~QStaticPropertyUpdatedChangeBasePrivate()
 {
 }
 
 
 /*!
- * \class Qt3DCore::QNodePropertyChangeBase
+ * \class Qt3DCore::QStaticPropertyUpdatedChangeBase
  * \inmodule Qt3DCore
  *
  * TODO
  */
 
 /*!
- * \typedef Qt3DCore::QNodePropertyChangeBasePtr
- * \relates Qt3DCore::QNodePropertyChangeBase
+ * \typedef Qt3DCore::QStaticPropertyUpdatedChangeBasePtr
+ * \relates Qt3DCore::QStaticPropertyUpdatedChangeBase
  *
- * A shared pointer for QNodePropertyChangeBase.
+ * A shared pointer for QStaticPropertyUpdatedChangeBase.
  */
 
 /*!
- * Constructs a new QNodePropertyChangeBase with \a type, \a senderType, \a subjectId, and
+ * Constructs a new QStaticPropertyUpdatedChangeBase with \a type, \a senderType, \a subjectId, and
  * \a priority.
  */
-QNodePropertyChangeBase::QNodePropertyChangeBase(QNodeId subjectId)
-    : QPropertyUpdatedChangeBase(*new QNodePropertyChangeBasePrivate, subjectId)
+QStaticPropertyUpdatedChangeBase::QStaticPropertyUpdatedChangeBase(QNodeId subjectId)
+    : QPropertyUpdatedChangeBase(*new QStaticPropertyUpdatedChangeBasePrivate, subjectId)
 {
 }
 
 /*! \internal */
-QNodePropertyChangeBase::QNodePropertyChangeBase(QNodePropertyChangeBasePrivate &dd,
+QStaticPropertyUpdatedChangeBase::QStaticPropertyUpdatedChangeBase(QStaticPropertyUpdatedChangeBasePrivate &dd,
                                                  QNodeId subjectId)
     : QPropertyUpdatedChangeBase(dd, subjectId)
 {
 }
 
-QNodePropertyChangeBase::~QNodePropertyChangeBase()
+QStaticPropertyUpdatedChangeBase::~QStaticPropertyUpdatedChangeBase()
 {
 }
 
 /*!
  * \return name of the property.
  */
-const char *QNodePropertyChangeBase::propertyName() const
+const char *QStaticPropertyUpdatedChangeBase::propertyName() const
 {
-    Q_D(const QNodePropertyChangeBase);
+    Q_D(const QStaticPropertyUpdatedChangeBase);
     return d->m_propertyName;
 }
 
 /*!
  * Sets the property change \a name.
  */
-void QNodePropertyChangeBase::setPropertyName(const char *name)
+void QStaticPropertyUpdatedChangeBase::setPropertyName(const char *name)
 {
-    Q_D(QNodePropertyChangeBase);
+    Q_D(QStaticPropertyUpdatedChangeBase);
     d->m_propertyName = name;
 }
 

@@ -49,7 +49,7 @@ namespace Qt3DCore {
     \inmodule Qt3DCore
 */
 QNodePropertyChangePrivate::QNodePropertyChangePrivate()
-    : QNodePropertyChangeBasePrivate()
+    : QStaticPropertyUpdatedChangeBasePrivate()
 {
 }
 
@@ -75,7 +75,7 @@ QNodePropertyChangePrivate::~QNodePropertyChangePrivate()
  * Constructs a new QNodePropertyChange with \a subjectId and \a priority.
  */
 QNodePropertyChange::QNodePropertyChange(QNodeId subjectId)
-    : QNodePropertyChangeBase(*new QNodePropertyChangePrivate, subjectId)
+    : QStaticPropertyUpdatedChangeBase(*new QNodePropertyChangePrivate, subjectId)
 {
 }
 
@@ -84,7 +84,7 @@ QNodePropertyChange::QNodePropertyChange(QNodeId subjectId)
  */
 QNodePropertyChange::QNodePropertyChange(QNodePropertyChangePrivate &dd,
                                          QNodeId subjectId)
-    : QNodePropertyChangeBase(dd, subjectId)
+    : QStaticPropertyUpdatedChangeBase(dd, subjectId)
 {
 }
 

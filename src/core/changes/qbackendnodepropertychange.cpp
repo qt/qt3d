@@ -47,7 +47,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 QBackendNodePropertyChangeBasePrivate::QBackendNodePropertyChangeBasePrivate()
-    : QNodePropertyChangeBasePrivate()
+    : QStaticPropertyUpdatedChangeBasePrivate()
 {
 }
 
@@ -57,13 +57,13 @@ QBackendNodePropertyChangeBasePrivate::~QBackendNodePropertyChangeBasePrivate()
 
 /*!
  * \class Qt3DCore::QBackendNodePropertyChangeBase
- * \inherits Qt3DCore::QNodePropertyChangeBase
+ * \inherits Qt3DCore::QStaticPropertyUpdatedChangeBase
  * \inmodule Qt3DCore
  *
  * TODO
  */
 QBackendNodePropertyChangeBase::QBackendNodePropertyChangeBase(QNodeId subjectId)
-    : QNodePropertyChangeBase(*new QBackendNodePropertyChangeBasePrivate, subjectId)
+    : QStaticPropertyUpdatedChangeBase(*new QBackendNodePropertyChangeBasePrivate, subjectId)
 {
     setDeliveryFlags(DeliverToAll);
 }
@@ -73,7 +73,7 @@ QBackendNodePropertyChangeBase::QBackendNodePropertyChangeBase(QNodeId subjectId
  */
 QBackendNodePropertyChangeBase::QBackendNodePropertyChangeBase(QBackendNodePropertyChangeBasePrivate &dd,
                                                                QNodeId subjectId)
-    : QNodePropertyChangeBase(dd, subjectId)
+    : QStaticPropertyUpdatedChangeBase(dd, subjectId)
 {
     setDeliveryFlags(DeliverToAll);
 }
