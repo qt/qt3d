@@ -78,7 +78,12 @@ Entity
         viewCenter: Qt.vector3d( 0.0, -10.0, -1.0 )
     }
 
-    FirstPersonCameraController { camera: camera }
+    FirstPersonCameraController {
+        camera: camera
+        linearSpeed: 1000.0
+        acceleration: 0.1
+        deceleration: 1.0
+    }
 
     Entity {
         id: sun
