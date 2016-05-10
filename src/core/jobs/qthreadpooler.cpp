@@ -170,20 +170,16 @@ int QThreadPooler::maxThreadCount() const
 
 #ifdef QT3D_JOBS_RUN_STATS
 
-typedef QVector<JobRunStats> JobRunStatsList;
-typedef JobRunStatsList* JobRunStatsListPtr;
-typedef QThreadStorage<JobRunStatsListPtr> JobRunStatStorage;
+QThreadStorage<QVector<JobRunStats> *> jobStatsCached;
 
-JobRunStatStorage jobStatsCached;
-
-QVector<JobRunStatsListPtr> localStorages;
+QVector<QVector<JobRunStats> *> localStorages;
 QMutex localStoragesMutex;
 
 // Called by the jobs
 void QThreadPooler::addJobLogStatsEntry(JobRunStats &stats)
 {
     if (!jobStatsCached.hasLocalData()) {
-        auto jobVector = new JobRunStatsList;
+        auto jobVector = new QVector<JobRunStats>;
         jobStatsCached.setLocalData(jobVector);
         QMutexLocker lock(&localStoragesMutex);
         localStorages.push_back(jobVector);
@@ -194,9 +190,8 @@ void QThreadPooler::addJobLogStatsEntry(JobRunStats &stats)
 // Called before jobs are executed (AspectThread)
 void QThreadPooler::starNewFrameJobLogsStats()
 {
-    Q_FOREACH (JobRunStatsListPtr storage, localStorages) {
+    for (QVector<JobRunStats> *storage : qAsConst(localStorages))
         storage->clear();
-    }
 }
 
 // Called after jobs have been executed
@@ -214,16 +209,16 @@ void QThreadPooler::writeFrameJobLogStats()
     header.frameId = frameId;
     header.jobCount = 0;
 
-    Q_FOREACH (const JobRunStatsListPtr storage, localStorages)
+    for (const QVector<JobRunStats> *storage : qAsConst(localStorages))
         header.jobCount += storage->size();
 
     traceFile->write(reinterpret_cast<char *>(&header), sizeof(FrameHeader));
 
 
 
-    Q_FOREACH (const JobRunStatsListPtr storage, localStorages) {
+    for (const QVector<JobRunStats> *storage : qAsConst(localStorages)) {
         qDebug() << Q_FUNC_INFO << localStorages.size() << storage << storage->size();
-        Q_FOREACH (const JobRunStats &stat, *storage) {
+        for (const JobRunStats &stat : *storage) {
             traceFile->write(reinterpret_cast<const char *>(&stat), sizeof(JobRunStats));
         }
     }
