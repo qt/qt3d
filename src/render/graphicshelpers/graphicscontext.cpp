@@ -701,21 +701,21 @@ bool GraphicsContext::supportsDrawBuffersBlend() const
  * If the call is not supported by the system's OpenGL version,
  * it is simulated with a loop.
  */
-void GraphicsContext::drawElementsInstanced(GLenum primitiveType,
-                                            GLsizei primitiveCount,
-                                            GLint indexType,
-                                            void *indices,
-                                            GLsizei instances,
-                                            GLint baseVertex,
-                                            GLint baseInstance)
+void GraphicsContext::drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType,
+                                                                  GLsizei primitiveCount,
+                                                                  GLint indexType,
+                                                                  void *indices,
+                                                                  GLsizei instances,
+                                                                  GLint baseVertex,
+                                                                  GLint baseInstance)
 {
-    m_glHelper->drawElementsInstanced(primitiveType,
-                                      primitiveCount,
-                                      indexType,
-                                      indices,
-                                      instances,
-                                      baseVertex,
-                                      baseInstance);
+    m_glHelper->drawElementsInstancedBaseVertexBaseInstance(primitiveType,
+                                                            primitiveCount,
+                                                            indexType,
+                                                            indices,
+                                                            instances,
+                                                            baseVertex,
+                                                            baseInstance);
 }
 
 /*!

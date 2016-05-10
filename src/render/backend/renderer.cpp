@@ -883,19 +883,21 @@ void Renderer::performDraw(GeometryRenderer *rGeometryRenderer, GLsizei primitiv
         m_graphicsContext->enablePrimitiveRestart(rGeometryRenderer->restartIndexValue());
 
     // TO DO: Add glMulti Draw variants
-    if (drawIndexed)
-        m_graphicsContext->drawElementsInstanced(primType,
-                                                 primitiveCount,
-                                                 indexType,
-                                                 reinterpret_cast<void*>(quintptr(indexAttribute->byteOffset())),
-                                                 rGeometryRenderer->instanceCount(),
-                                                 rGeometryRenderer->indexOffset());
-    else
+    if (drawIndexed) {
+        m_graphicsContext->drawElementsInstancedBaseVertexBaseInstance(primType,
+                                                                       primitiveCount,
+                                                                       indexType,
+                                                                       reinterpret_cast<void*>(quintptr(indexAttribute->byteOffset())),
+                                                                       rGeometryRenderer->instanceCount(),
+                                                                       rGeometryRenderer->indexOffset(),
+                                                                       rGeometryRenderer->firstVertex());
+    } else {
         m_graphicsContext->drawArraysInstancedBaseInstance(primType,
                                                            rGeometryRenderer->firstInstance(),
                                                            primitiveCount,
                                                            rGeometryRenderer->instanceCount(),
                                                            rGeometryRenderer->firstVertex());
+    }
 
 #if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
     int err = m_graphicsContext->openGLContext()->functions()->glGetError();

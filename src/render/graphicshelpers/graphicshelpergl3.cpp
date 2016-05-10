@@ -91,13 +91,13 @@ void GraphicsHelperGL3::initializeHelper(QOpenGLContext *context,
     }
 }
 
-void GraphicsHelperGL3::drawElementsInstanced(GLenum primitiveType,
-                                               GLsizei primitiveCount,
-                                               GLint indexType,
-                                               void *indices,
-                                               GLsizei instances,
-                                               GLint baseVertex,
-                                               GLint baseInstance)
+void GraphicsHelperGL3::drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType,
+                                                                    GLsizei primitiveCount,
+                                                                    GLint indexType,
+                                                                    void *indices,
+                                                                    GLsizei instances,
+                                                                    GLint baseVertex,
+                                                                    GLint baseInstance)
 {
     if (baseInstance != 0)
         qWarning() << "glDrawElementsInstancedBaseVertexBaseInstance is not supported with OpenGL ES 2";
