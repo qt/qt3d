@@ -46,6 +46,10 @@ QNodeDestroyedChange::QNodeDestroyedChange(const QNode *node, const QVector<QNod
 {
 }
 
+QNodeDestroyedChange::~QNodeDestroyedChange()
+{
+}
+
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE

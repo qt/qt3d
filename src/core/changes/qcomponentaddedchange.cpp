@@ -62,6 +62,10 @@ QComponentAddedChange::QComponentAddedChange(const QEntity *entity,
 {
 }
 
+QComponentAddedChange::~QComponentAddedChange()
+{
+}
+
 QNodeId QComponentAddedChange::entityId() const Q_DECL_NOEXCEPT
 {
     Q_D(const QComponentAddedChange);

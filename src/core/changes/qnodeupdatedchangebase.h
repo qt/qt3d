@@ -53,6 +53,7 @@ class QNodeUpdatedChangeBase : public QSceneChange
 {
 public:
     explicit QNodeUpdatedChangeBase(QNodeId subjectId);
+    ~QNodeUpdatedChangeBase();
 
 protected:
     Q_DECLARE_PRIVATE(QNodeUpdatedChangeBase)

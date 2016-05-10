@@ -41,6 +41,7 @@
 #define QT3DCORE_QPROPERTYVALUEADDEDCHANGEBASE_H
 
 #include <Qt3DCore/qscenechange.h>
+#include <Qt3DCore/qt3dcore_global.h>
 #include <QtCore/qsharedpointer.h>
 
 QT_BEGIN_NAMESPACE
@@ -49,8 +50,11 @@ namespace Qt3DCore {
 
 class QPropertyValueAddedChangeBasePrivate;
 
-class QPropertyValueAddedChangeBase : public QSceneChange
+class QT3DCORESHARED_EXPORT QPropertyValueAddedChangeBase : public QSceneChange
 {
+public:
+    ~QPropertyValueAddedChangeBase();
+
 protected:
     explicit QPropertyValueAddedChangeBase(QNodeId subjectId);
     QPropertyValueAddedChangeBase(QPropertyValueAddedChangeBasePrivate &dd, QNodeId subjectId);

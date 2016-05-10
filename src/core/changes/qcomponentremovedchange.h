@@ -53,8 +53,9 @@ class QComponentRemovedChangePrivate;
 class QT3DCORESHARED_EXPORT QComponentRemovedChange : public QSceneChange
 {
 public:
-    QComponentRemovedChange(const QEntity *entity,
-                            const QComponent *component);
+    explicit QComponentRemovedChange(const QEntity *entity,
+                                     const QComponent *component);
+    ~QComponentRemovedChange();
 
     QNodeId entityId() const Q_DECL_NOEXCEPT;
     QNodeId componentId() const Q_DECL_NOEXCEPT;

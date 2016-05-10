@@ -53,8 +53,9 @@ class QComponentAddedChangePrivate;
 class QT3DCORESHARED_EXPORT QComponentAddedChange : public QSceneChange
 {
 public:
-    QComponentAddedChange(const QEntity *entity,
-                          const QComponent *component);
+    explicit QComponentAddedChange(const QEntity *entity,
+                                   const QComponent *component);
+    ~QComponentAddedChange();
 
     QNodeId entityId() const Q_DECL_NOEXCEPT;
     QNodeId componentId() const Q_DECL_NOEXCEPT;

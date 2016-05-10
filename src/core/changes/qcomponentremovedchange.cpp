@@ -62,6 +62,10 @@ QComponentRemovedChange::QComponentRemovedChange(const QEntity *entity,
 {
 }
 
+QComponentRemovedChange::~QComponentRemovedChange()
+{
+}
+
 QNodeId QComponentRemovedChange::entityId() const Q_DECL_NOEXCEPT
 {
     Q_D(const QComponentRemovedChange);

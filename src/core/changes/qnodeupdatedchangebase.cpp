@@ -87,6 +87,10 @@ QNodeUpdatedChangeBase::QNodeUpdatedChangeBase(QNodeUpdatedChangeBasePrivate &dd
 {
 }
 
+QNodeUpdatedChangeBase::~QNodeUpdatedChangeBase()
+{
+}
+
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE

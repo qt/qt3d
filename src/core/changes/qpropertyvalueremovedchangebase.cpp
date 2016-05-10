@@ -88,6 +88,10 @@ QPropertyValueRemovedChangeBase::QPropertyValueRemovedChangeBase(QPropertyValueR
 {
 }
 
+QPropertyValueRemovedChangeBase::~QPropertyValueRemovedChangeBase()
+{
+}
+
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
