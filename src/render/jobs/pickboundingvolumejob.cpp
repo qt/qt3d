@@ -128,7 +128,7 @@ public:
         vcaTriplets.reserve(m_leaves.count());
 
         // Find all viewport/camera pairs by traversing from leaf to root
-        Q_FOREACH (Render::FrameGraphNode *leaf, m_leaves) {
+        for (Render::FrameGraphNode *leaf : qAsConst(m_leaves)) {
             ViewportCameraAreaTriplet vcaTriplet = gatherUpViewportCameraAreas(leaf);
             if (!vcaTriplet.cameraId.isNull())
                 vcaTriplets.push_back(vcaTriplet);

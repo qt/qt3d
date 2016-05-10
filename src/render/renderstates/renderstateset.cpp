@@ -158,7 +158,7 @@ void RenderStateSet::apply(GraphicsContext *gc)
 
     if (m_cachedPrevious && previousStates == m_cachedPrevious) {
         // state-change cache hit
-        Q_FOREACH (RenderStateImpl *ds, m_cachedDeltaStates) {
+        for (RenderStateImpl *ds : qAsConst(m_cachedDeltaStates)) {
             ds->apply(gc);
         }
     } else {
@@ -166,7 +166,7 @@ void RenderStateSet::apply(GraphicsContext *gc)
         m_cachedDeltaStates.clear();
         m_cachedPrevious = previousStates;
 
-        Q_FOREACH (RenderStateImpl *ds, m_states) {
+        for (RenderStateImpl *ds : qAsConst(m_states)) {
             if (previousStates && previousStates->contains(ds)) {
                 continue;
             }
