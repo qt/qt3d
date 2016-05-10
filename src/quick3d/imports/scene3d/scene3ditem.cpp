@@ -113,7 +113,7 @@ void Scene3DItem::setAspects(const QStringList &aspects)
     m_aspects = aspects;
 
     // Aspects are owned by the aspect engine
-    Q_FOREACH (const QString &aspect, m_aspects) {
+    for (const QString &aspect : qAsConst(m_aspects)) {
         if (aspect == QLatin1String("render")) // This one is hardwired anyway
             continue;
         if (aspect == QLatin1String("input"))  {
