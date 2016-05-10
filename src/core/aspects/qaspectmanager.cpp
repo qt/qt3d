@@ -109,7 +109,7 @@ void QAspectManager::exitSimulationLoop()
     // This is because we call this function from the main thread and the
     // logic aspect is waiting for the main thread to execute the
     // QLogicComponent::onFrameUpdate() callback.
-    Q_FOREACH (QAbstractAspect *aspect, m_aspects)
+    for (QAbstractAspect *aspect : qAsConst(m_aspects))
         aspect->d_func()->onEngineAboutToShutdown();
 }
 
