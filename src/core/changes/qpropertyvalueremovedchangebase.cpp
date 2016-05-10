@@ -59,7 +59,7 @@ QPropertyValueRemovedChangeBasePrivate::~QPropertyValueRemovedChangeBasePrivate(
  *
  * The QPropertyValueRemovedChangeBase class is the base class for all QSceneChange events that
  * have the changeType() PropertyValueRemoved. You should not need to instantiate this class.
- * Usually you should be using one of its subclasses such as QNodeRemovedPropertyChange.
+ * Usually you should be using one of its subclasses such as QPropertyNodeRemovedChange.
  *
  * You can subclass this to create your own node Removed types for communication between
  * your QNode and QBackendNode subclasses when writing your own aspects.

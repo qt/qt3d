@@ -42,7 +42,7 @@
 #include "qlayer.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -120,7 +120,7 @@ void QLayerFilter::removeLayer(QLayer *layer)
     Q_ASSERT(layer);
     Q_D(QLayerFilter);
     if (d->m_changeArbiter != nullptr) {
-        const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), layer);
+        const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), layer);
         change->setPropertyName("layer");
         d->notifyObservers(change);
     }

@@ -43,7 +43,7 @@
 #include <private/qcomponent_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -382,7 +382,7 @@ void QGeometryRenderer::setGeometry(QGeometry *geometry)
     // TODO: Investigate if we can rely upon the automatic property change notifications
     // rather than having to manually send a PropertyValueRemoved followed by a PropertyValueAdded change.
     if (d->m_geometry && d->m_changeArbiter) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), d->m_geometry);
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), d->m_geometry);
         change->setPropertyName("geometry");
         d->notifyObservers(change);
     }

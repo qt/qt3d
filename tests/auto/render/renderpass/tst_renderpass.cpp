@@ -32,7 +32,7 @@
 
 #include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DCore/QPropertyNodeAddedChange>
-#include <Qt3DCore/QNodeRemovedPropertyChange>
+#include <Qt3DCore/QPropertyNodeRemovedChange>
 
 #include <Qt3DRender/QFilterKey>
 #include <Qt3DRender/QRenderPass>
@@ -145,7 +145,7 @@ private slots:
         QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
-        const auto removeChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), shader.data());
+        const auto removeChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), shader.data());
         removeChange->setPropertyName("shaderProgram");
         backend.sceneChangeEvent(removeChange);
 
@@ -173,7 +173,7 @@ private slots:
         QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
-        const auto removeChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), annotation.data());
+        const auto removeChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), annotation.data());
         removeChange->setPropertyName("filterKeys");
         backend.sceneChangeEvent(removeChange);
 
@@ -201,7 +201,7 @@ private slots:
         QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
-        const auto removeChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), parameter.data());
+        const auto removeChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), parameter.data());
         removeChange->setPropertyName("parameter");
         backend.sceneChangeEvent(removeChange);
 
@@ -232,7 +232,7 @@ private slots:
         QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
-        const auto removeChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), frontendState);
+        const auto removeChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), frontendState);
         removeChange->setPropertyName("renderState");
         backend.sceneChangeEvent(removeChange);
 

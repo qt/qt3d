@@ -42,7 +42,7 @@
 #include "qrendertargetoutput.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -88,7 +88,7 @@ void QRenderTarget::removeOutput(QRenderTargetOutput *output)
     Q_D(QRenderTarget);
 
     if (output && d->m_changeArbiter != nullptr) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), output);
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), output);
         change->setPropertyName("output");
         d->notifyObservers(change);
     }

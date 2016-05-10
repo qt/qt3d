@@ -43,7 +43,7 @@
 #include "qgraphicsapifilter.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -112,7 +112,7 @@ void QTechnique::removeFilterKey(QFilterKey *filterKey)
     Q_ASSERT(filterKey);
     Q_D(QTechnique);
     if (d->m_changeArbiter != nullptr) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), filterKey);
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), filterKey);
         change->setPropertyName("filterKeys");
         d->notifyObservers(change);
     }
@@ -152,7 +152,7 @@ void QTechnique::removeParameter(QParameter *parameter)
     Q_ASSERT(parameter);
     Q_D(QTechnique);
     if (d->m_changeArbiter != nullptr) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter);
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), parameter);
         change->setPropertyName("parameter");
         d->notifyObservers(change);
     }

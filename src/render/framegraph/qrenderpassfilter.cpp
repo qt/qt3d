@@ -44,7 +44,7 @@
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -97,7 +97,7 @@ void QRenderPassFilter::removeMatch(QFilterKey *filterKey)
     Q_D(QRenderPassFilter);
 
     if (d->m_changeArbiter != nullptr) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), filterKey);
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), filterKey);
         change->setPropertyName("match");
         d->notifyObservers(change);
     }
@@ -132,7 +132,7 @@ void QRenderPassFilter::removeParameter(QParameter *parameter)
     Q_D(QRenderPassFilter);
 
     if (d->m_changeArbiter != nullptr) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter);
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), parameter);
         change->setPropertyName("parameter");
         d->notifyObservers(change);
     }

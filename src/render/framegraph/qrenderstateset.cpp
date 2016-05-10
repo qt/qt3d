@@ -43,7 +43,7 @@
 #include <Qt3DRender/qrenderstate.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -114,7 +114,7 @@ void QRenderStateSet::removeRenderState(QRenderState *state)
     Q_D(QRenderStateSet);
 
     if (d->m_changeArbiter != nullptr) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), state);
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), state);
         change->setPropertyName("renderState");
         d->notifyObservers(change);
     }

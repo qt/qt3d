@@ -44,7 +44,7 @@
 #include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <QtCore/qcoreapplication.h>
 

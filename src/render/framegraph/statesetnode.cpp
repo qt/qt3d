@@ -45,7 +45,7 @@
 #include <Qt3DRender/private/renderstateset_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -85,7 +85,7 @@ void StateSetNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     case PropertyValueRemoved: {
-        const auto propertyChange = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
+        const auto propertyChange = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
             removeRenderState(propertyChange->removedNodeId());
             markDirty(AbstractRenderer::AllDirty);

@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qnoderemovedpropertychange.h"
-#include "qnoderemovedpropertychange_p.h"
+#include "qpropertynoderemovedchange.h"
+#include "qpropertynoderemovedchange_p.h"
 #include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -46,62 +46,62 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 /*!
- * \class Qt3DCore::QNodeRemovedPropertyChange
+ * \class Qt3DCore::QPropertyNodeRemovedChange
  * \inmodule Qt3DCore
  *
  * TODO
  */
 
 /*!
- * \typedef Qt3DCore::QNodeRemovedPropertyChangePtr
- * \relates Qt3DCore::QNodeRemovedPropertyChange
+ * \typedef Qt3DCore::QPropertyNodeRemovedChangePtr
+ * \relates Qt3DCore::QPropertyNodeRemovedChange
  *
- * A shared pointer for QNodeRemovedPropertyChange.
+ * A shared pointer for QPropertyNodeRemovedChange.
  */
 
 /*!
- * Constructs a new QNodeRemovedPropertyChange with \a subjectId, \a node, and
+ * Constructs a new QPropertyNodeRemovedChange with \a subjectId, \a node, and
  * \a priority.
  */
-QNodeRemovedPropertyChange::QNodeRemovedPropertyChange(QNodeId subjectId, QNode *node)
-    : QStaticPropertyValueRemovedChangeBase(*new QNodeRemovedPropertyChangePrivate, subjectId)
+QPropertyNodeRemovedChange::QPropertyNodeRemovedChange(QNodeId subjectId, QNode *node)
+    : QStaticPropertyValueRemovedChangeBase(*new QPropertyNodeRemovedChangePrivate, subjectId)
 {
-    Q_D(QNodeRemovedPropertyChange);
+    Q_D(QPropertyNodeRemovedChange);
     d->m_removedNodeIdTypePair = QNodeIdTypePair(node->id(), QNodePrivate::get(node)->m_typeInfo);
 }
 
-QNodeRemovedPropertyChange::QNodeRemovedPropertyChange(QNodeId subjectId)
-    : QStaticPropertyValueRemovedChangeBase(*new QNodeRemovedPropertyChangePrivate, subjectId)
+QPropertyNodeRemovedChange::QPropertyNodeRemovedChange(QNodeId subjectId)
+    : QStaticPropertyValueRemovedChangeBase(*new QPropertyNodeRemovedChangePrivate, subjectId)
 {
 }
 
 /*!
  * \return the id of the node removed to the property.
  */
-QNodeId QNodeRemovedPropertyChange::removedNodeId() const
+QNodeId QPropertyNodeRemovedChange::removedNodeId() const
 {
-    Q_D(const QNodeRemovedPropertyChange);
+    Q_D(const QPropertyNodeRemovedChange);
     return d->m_removedNodeIdTypePair.id;
 }
 
 /*!
  * \return the metaObject of the node removed to the property.
  */
-const QMetaObject *QNodeRemovedPropertyChange::metaObject() const
+const QMetaObject *QPropertyNodeRemovedChange::metaObject() const
 {
-    Q_D(const QNodeRemovedPropertyChange);
+    Q_D(const QPropertyNodeRemovedChange);
     return d->m_removedNodeIdTypePair.type;
 }
 
-void QNodeRemovedPropertyChange::setRemovedValue(const QVariant &value)
+void QPropertyNodeRemovedChange::setRemovedValue(const QVariant &value)
 {
-    Q_D(QNodeRemovedPropertyChange);
+    Q_D(QPropertyNodeRemovedChange);
     d->m_removedValue = value;
 }
 
-QVariant QNodeRemovedPropertyChange::removedValue() const
+QVariant QPropertyNodeRemovedChange::removedValue() const
 {
-    Q_D(const QNodeRemovedPropertyChange);
+    Q_D(const QPropertyNodeRemovedChange);
     return d->m_removedValue;
 }
 

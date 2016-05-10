@@ -43,7 +43,7 @@
 #include <Qt3DRender/private/qgeometry_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -92,7 +92,7 @@ void Geometry::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     case PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
+        const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("attribute")) {
             m_attributes.removeOne(change->removedNodeId());
             m_geometryDirty = true;

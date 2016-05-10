@@ -49,7 +49,7 @@
 
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 using namespace Qt3DCore;
 
@@ -101,7 +101,7 @@ void Material::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     case PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
+        const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("parameter"))
             m_parameterPack.removeParameter(change->removedNodeId());
         break;

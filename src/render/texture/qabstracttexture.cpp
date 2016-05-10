@@ -42,7 +42,7 @@
 #include <Qt3DRender/qabstracttextureimage.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -294,7 +294,7 @@ void QAbstractTexture::removeTextureImage(QAbstractTextureImage *textureImage)
     Q_ASSERT(textureImage);
     Q_D(QAbstractTexture);
     if (d->m_changeArbiter != nullptr) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), textureImage);
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), textureImage);
         change->setPropertyName("textureImage");
         d->notifyObservers(change);
     }

@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QNODEREMOVEDPROPERTYCHANGE_P_H
-#define QT3DCORE_QNODEREMOVEDPROPERTYCHANGE_P_H
+#ifndef QT3DCORE_QPROPERTYNODEREMOVEDCHANGE_P_H
+#define QT3DCORE_QPROPERTYNODEREMOVEDCHANGE_P_H
 
 //
 //  W A R N I N G
@@ -62,15 +62,15 @@ namespace Qt3DCore {
 class QPropertyUpdatedChange;
 class QFrameAllocator;
 
-class QNodeRemovedPropertyChangePrivate : public QStaticPropertyValueRemovedChangeBasePrivate
+class QPropertyNodeRemovedChangePrivate : public QStaticPropertyValueRemovedChangeBasePrivate
 {
 public:
-    QNodeRemovedPropertyChangePrivate()
+    QPropertyNodeRemovedChangePrivate()
         : m_removedNodeIdTypePair()
     {
     }
 
-    Q_DECLARE_PUBLIC(QNodeRemovedPropertyChange)
+    Q_DECLARE_PUBLIC(QPropertyNodeRemovedChange)
 
     const char *m_propertyName;
     QNodeIdTypePair m_removedNodeIdTypePair;
@@ -81,4 +81,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QNODEREMOVEDPROPERTYCHANGE_P_H
+#endif // QT3DCORE_QPROPERTYNODEREMOVEDCHANGE_P_H

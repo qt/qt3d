@@ -42,7 +42,7 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DInput/qabstractactioninput.h>
 
@@ -137,7 +137,7 @@ void QAction::removeInput(QAbstractActionInput *input)
     if (d->m_inputs.contains(input)) {
 
         if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), input);
+            const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), input);
             change->setPropertyName("input");
             d->notifyObservers(change);
         }

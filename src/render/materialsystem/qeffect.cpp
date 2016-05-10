@@ -44,7 +44,7 @@
 
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -94,7 +94,7 @@ void QEffect::removeParameter(QParameter *parameter)
     Q_D(QEffect);
 
     if (parameter && d->m_changeArbiter != nullptr) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter);
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), parameter);
         change->setPropertyName("parameter");
         d->notifyObservers(change);
     }
@@ -143,7 +143,7 @@ void QEffect::removeTechnique(QTechnique *t)
 {
     Q_D(QEffect);
     if (t && d->m_changeArbiter != nullptr) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), t);
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), t);
         change->setPropertyName("technique");
         d->notifyObservers(change);
     }

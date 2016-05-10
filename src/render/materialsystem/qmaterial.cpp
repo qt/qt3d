@@ -45,7 +45,7 @@
 #include "qparameter.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 /*!
  * \qmltype Material
@@ -150,7 +150,7 @@ void QMaterial::removeParameter(QParameter *parameter)
     Q_ASSERT(parameter);
     Q_D(QMaterial);
     if (d->m_changeArbiter != nullptr) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter);
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), parameter);
         change->setPropertyName("parameter");
         d->notifyObservers(change);
     }

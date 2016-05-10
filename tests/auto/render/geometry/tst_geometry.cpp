@@ -33,7 +33,7 @@
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include "testrenderer.h"
 
 class DummyAttribute : public Qt3DRender::QAttribute
@@ -136,7 +136,7 @@ private Q_SLOTS:
         QVERIFY(!renderGeometry.isDirty());
 
         // WHEN
-        const auto nodeRemovedChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), &attribute);
+        const auto nodeRemovedChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &attribute);
         nodeRemovedChange->setPropertyName("attribute");
         renderGeometry.sceneChangeEvent(nodeRemovedChange);
 

@@ -43,7 +43,7 @@
 #include <Qt3DInput/private/qinputsequence_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <QDateTime>
 
 QT_BEGIN_NAMESPACE
@@ -143,7 +143,7 @@ void InputSequence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     case Qt3DCore::PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<Qt3DCore::QNodeRemovedPropertyChange>(e);
+        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeRemovedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("sequence")) {
             m_sequences.removeOne(change->removedNodeId());
             m_inputsToTrigger.removeOne(change->removedNodeId());

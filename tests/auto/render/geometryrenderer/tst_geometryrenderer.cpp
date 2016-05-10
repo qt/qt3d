@@ -34,7 +34,7 @@
 #include <Qt3DRender/qgeometryfactory.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include "testrenderer.h"
 
 class TestFactory : public Qt3DRender::QGeometryFactory
@@ -303,7 +303,7 @@ private Q_SLOTS:
         QVERIFY(!renderGeometryRenderer.isDirty());
 
         // WHEN
-        const auto nodeRemovedChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), &geometry);
+        const auto nodeRemovedChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &geometry);
         nodeRemovedChange->setPropertyName("geometry");
         renderGeometryRenderer.sceneChangeEvent(nodeRemovedChange);
 

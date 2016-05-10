@@ -43,7 +43,7 @@
 #include <Qt3DRender/qrendertargetoutput.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
@@ -100,7 +100,7 @@ void RenderTarget::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     case Qt3DCore::PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<QNodeRemovedPropertyChange>(e);
+        const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("output")) {
             removeRenderOutput(change->removedNodeId());
             markDirty(AbstractRenderer::AllDirty);

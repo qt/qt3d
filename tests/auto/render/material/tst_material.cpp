@@ -35,7 +35,7 @@
 #include <Qt3DRender/QEffect>
 #include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DCore/QPropertyNodeAddedChange>
-#include <Qt3DCore/QNodeRemovedPropertyChange>
+#include <Qt3DCore/QPropertyNodeRemovedChange>
 #include "testrenderer.h"
 
 using namespace Qt3DCore;
@@ -148,7 +148,7 @@ void tst_RenderMaterial::shouldHandleParametersPropertyChange()
     QVERIFY(renderer.dirtyBits() != 0);
 
     // WHEN
-    const auto removeChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), parameter.data());
+    const auto removeChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), parameter.data());
     removeChange->setPropertyName("parameter");
     backend.sceneChangeEvent(removeChange);
 

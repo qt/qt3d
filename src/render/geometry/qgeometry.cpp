@@ -43,7 +43,7 @@
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -127,7 +127,7 @@ void QGeometry::removeAttribute(QAttribute *attribute)
     Q_ASSERT(attribute);
     Q_D(QGeometry);
     if (d->m_changeArbiter != nullptr) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), attribute);
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), attribute);
         change->setPropertyName("attribute");
         d->notifyObservers(change);
     }

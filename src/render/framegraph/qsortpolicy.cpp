@@ -39,7 +39,7 @@
 
 #include "qsortpolicy_p.h"
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -91,7 +91,7 @@ void QSortPolicy::removeSortType(SortType sortType)
 {
     Q_D(QSortPolicy);
     if (d->m_changeArbiter != nullptr) {
-        QNodeRemovedPropertyChangePtr propertyChange(new QNodeRemovedPropertyChange(id()));
+        QPropertyNodeRemovedChangePtr propertyChange(new QPropertyNodeRemovedChange(id()));
         propertyChange->setPropertyName("sortType");
         propertyChange->setRemovedValue(QVariant::fromValue(sortType));
         d->notifyObservers(propertyChange);

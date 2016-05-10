@@ -45,7 +45,7 @@
 #include "qrenderstate.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -82,7 +82,7 @@ void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
     if (d->m_shader != shaderProgram) {
 
         if (d->m_shader != nullptr && d->m_changeArbiter != nullptr) {
-            const auto change = QNodeRemovedPropertyChangePtr::create(id(), d->m_shader);
+            const auto change = QPropertyNodeRemovedChangePtr::create(id(), d->m_shader);
             change->setPropertyName("shaderProgram");
             d->notifyObservers(change);
         }
@@ -138,7 +138,7 @@ void QRenderPass::removeFilterKey(QFilterKey *filterKey)
     Q_ASSERT(filterKey);
     Q_D(QRenderPass);
     if (d->m_changeArbiter != nullptr) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), filterKey);
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), filterKey);
         change->setPropertyName("filterKeys");
         d->notifyObservers(change);
     }
@@ -185,7 +185,7 @@ void QRenderPass::removeRenderState(QRenderState *state)
     Q_ASSERT(state);
     Q_D(QRenderPass);
     if (d->m_changeArbiter != nullptr) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), state);
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), state);
         change->setPropertyName("renderState");
         d->notifyObservers(change);
     }
@@ -229,7 +229,7 @@ void QRenderPass::removeParameter(QParameter *parameter)
     Q_ASSERT(parameter);
     Q_D(QRenderPass);
     if (d->m_changeArbiter != nullptr) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(id(), parameter);
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), parameter);
         change->setPropertyName("parameter");
         d->notifyObservers(change);
     }

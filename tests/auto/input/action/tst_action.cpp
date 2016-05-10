@@ -32,7 +32,7 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/QActionInput>
 #include <Qt3DInput/QAction>
@@ -133,7 +133,7 @@ private Q_SLOTS:
         QCOMPARE(backendAction.inputs().first(), inputId);
 
         // WHEN
-        const auto nodeRemovedChange = Qt3DCore::QNodeRemovedPropertyChangePtr::create(Qt3DCore::QNodeId(), &input);
+        const auto nodeRemovedChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &input);
         nodeRemovedChange->setPropertyName("input");
         backendAction.sceneChangeEvent(nodeRemovedChange);
 

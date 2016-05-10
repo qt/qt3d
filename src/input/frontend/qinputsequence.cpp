@@ -44,7 +44,7 @@
 #include <Qt3DInput/qabstractactioninput.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -214,7 +214,7 @@ void QInputSequence::removeSequence(QAbstractActionInput *input)
     Q_D(QInputSequence);
     if (d->m_sequences.contains(input)) {
         if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), input);
+            const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), input);
             change->setPropertyName("sequence");
             d->notifyObservers(change);
         }

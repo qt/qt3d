@@ -35,7 +35,7 @@
 #include <Qt3DCore/qcomponentremovedchange.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/qscenechange.h>
 #include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DCore/private/qscene_p.h>
@@ -77,7 +77,7 @@ public:
 
     void sendNodeRemovedNotification()
     {
-        Qt3DCore::QNodeRemovedPropertyChangePtr e(new Qt3DCore::QNodeRemovedPropertyChange(id()));
+        Qt3DCore::QPropertyNodeRemovedChangePtr e(new Qt3DCore::QPropertyNodeRemovedChange(id()));
         e->setPropertyName("PropertyValueRemoved");
         Qt3DCore::QNodePrivate::get(this)->notifyObservers(e);
     }

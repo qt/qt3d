@@ -31,7 +31,7 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qsortpolicy.h>
@@ -134,7 +134,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QNodeRemovedPropertyChangePtr removeChange = arbiter.events.first().staticCast<Qt3DCore::QNodeRemovedPropertyChange>();
+        Qt3DCore::QPropertyNodeRemovedChangePtr removeChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
         QCOMPARE(removeChange->propertyName(), "sortType");
         QCOMPARE(removeChange->subjectId(), sortPolicy->id());
         QCOMPARE(removeChange->removedValue().value<Qt3DRender::QSortPolicy::SortType>(), sortType1);

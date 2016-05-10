@@ -44,7 +44,7 @@
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -175,7 +175,7 @@ void QLogicalDevice::removeAction(QAction *action)
     if (d->m_actions.contains(action)) {
 
         if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), action);
+            const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), action);
             change->setPropertyName("action");
             d->notifyObservers(change);
         }
@@ -228,7 +228,7 @@ void QLogicalDevice::removeAxis(QAxis *axis)
     Q_D(QLogicalDevice);
     if (d->m_axes.contains(axis)) {
         if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QNodeRemovedPropertyChangePtr::create(id(), axis);
+            const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), axis);
             change->setPropertyName("axis");
             d->notifyObservers(change);
         }

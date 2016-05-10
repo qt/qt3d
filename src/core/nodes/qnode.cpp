@@ -44,7 +44,7 @@
 #include <Qt3DCore/qdynamicpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/qnodedestroyedchange.h>
 #include <Qt3DCore/qaspectengine.h>
 #include <Qt3DCore/private/qdestructionidandtypecollector_p.h>
@@ -178,7 +178,7 @@ void QNodePrivate::_q_removeChild(QNode *childNode)
 
     // We notify the backend that we lost a child
     if (m_changeArbiter != nullptr) {
-        const auto change = QNodeRemovedPropertyChangePtr::create(m_id, childNode);
+        const auto change = QPropertyNodeRemovedChangePtr::create(m_id, childNode);
         change->setPropertyName("children");
         notifyObservers(change);
     }

@@ -39,7 +39,7 @@
 
 #include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DCore/QPropertyNodeAddedChange>
-#include <Qt3DCore/QNodeRemovedPropertyChange>
+#include <Qt3DCore/QPropertyNodeRemovedChange>
 
 #include "testpostmanarbiter.h"
 
@@ -180,7 +180,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QNodeRemovedPropertyChangePtr nodeRemovedChange = arbiter.events.first().staticCast<Qt3DCore::QNodeRemovedPropertyChange>();
+        Qt3DCore::QPropertyNodeRemovedChangePtr nodeRemovedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
         QCOMPARE(nodeRemovedChange->propertyName(), "parameter");
         QCOMPARE(nodeRemovedChange->subjectId(), techniqueFilter->id());
         QCOMPARE(nodeRemovedChange->removedNodeId(), param1->id());
@@ -216,7 +216,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        nodeRemovedChange = arbiter.events.first().staticCast<Qt3DCore::QNodeRemovedPropertyChange>();
+        nodeRemovedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
         QCOMPARE(nodeRemovedChange->propertyName(), "matchAll");
         QCOMPARE(nodeRemovedChange->subjectId(), techniqueFilter->id());
         QCOMPARE(nodeRemovedChange->removedNodeId(), filterKey1->id());

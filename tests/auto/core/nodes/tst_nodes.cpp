@@ -36,7 +36,7 @@
 #include <Qt3DCore/qcomponentremovedchange.h>
 #include <Qt3DCore/qnodedestroyedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <private/qpostman_p.h>
 
 #include <Qt3DCore/private/qlockableobserverinterface_p.h>
@@ -539,7 +539,7 @@ void tst_Nodes::checkParentChangeToNull()
     QCOMPARE(spy.events.size(), 2);
 
     QVERIFY(spy.events.first().wasLocked());
-    const Qt3DCore::QNodeRemovedPropertyChangePtr removalEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeRemovedPropertyChange>();
+    const Qt3DCore::QPropertyNodeRemovedChangePtr removalEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyNodeRemovedChange>();
     QVERIFY(removalEvent);
     QCOMPARE(removalEvent->subjectId(), root->id());
     QCOMPARE(removalEvent->removedNodeId(), child->id());
@@ -597,7 +597,7 @@ void tst_Nodes::checkParentChangeToOtherParent()
 
     // CHECK event 1 is a Node Removed event
     QVERIFY(spyParent1.events.first().wasLocked());
-    const Qt3DCore::QNodeRemovedPropertyChangePtr event = spyParent1.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeRemovedPropertyChange>();
+    const Qt3DCore::QPropertyNodeRemovedChangePtr event = spyParent1.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyNodeRemovedChange>();
     QCOMPARE(event->type(), Qt3DCore::PropertyValueRemoved);
     QCOMPARE(event->subjectId(), parent1->id());
     QCOMPARE(event->removedNodeId(), child->id());
@@ -640,7 +640,7 @@ void tst_Nodes::removingSingleChildNodeFromNode()
     QCOMPARE(spy.events.size(), 2);
 
     QVERIFY(spy.events.first().wasLocked());
-    const Qt3DCore::QNodeRemovedPropertyChangePtr removalEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeRemovedPropertyChange>();
+    const Qt3DCore::QPropertyNodeRemovedChangePtr removalEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyNodeRemovedChange>();
     QCOMPARE(removalEvent->subjectId(), root->id());
     QCOMPARE(removalEvent->removedNodeId(), child->id());
     QCOMPARE(removalEvent->metaObject(), child->metaObject());
@@ -692,7 +692,7 @@ void tst_Nodes::removingMultipleChildNodesFromNode()
         QVERIFY(r.wasLocked());
         const Qt3DCore::QNodeId childId = childIds.at(i / 2);
         if (i % 2 == 0) {
-            Qt3DCore::QNodeRemovedPropertyChangePtr additionEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeRemovedPropertyChange>();
+            Qt3DCore::QPropertyNodeRemovedChangePtr additionEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyNodeRemovedChange>();
             QCOMPARE(additionEvent->subjectId(), root->id());
             QCOMPARE(additionEvent->removedNodeId(), childId);
             QCOMPARE(additionEvent->metaObject(), &MyQNode::staticMetaObject);

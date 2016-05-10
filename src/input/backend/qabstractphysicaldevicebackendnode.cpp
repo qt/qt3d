@@ -50,7 +50,7 @@
 
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qnoderemovedpropertychange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/private/qabstractaspect_p.h>
 
 #include <cmath>
@@ -191,7 +191,7 @@ void QAbstractPhysicalDeviceBackendNode::sceneChangeEvent(const Qt3DCore::QScene
     }
 
     case Qt3DCore::PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<Qt3DCore::QNodeRemovedPropertyChange>(e);
+        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeRemovedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("axisSettings"))
             d->removeAxisSetting(change->removedNodeId());
         break;
