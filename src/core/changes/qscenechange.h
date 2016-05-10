@@ -73,7 +73,6 @@ public:
     };
     Q_DECLARE_FLAGS(DeliveryFlags, DeliveryFlag)
 
-    QSceneChange(ChangeFlag type, QNodeId subjectId);
     virtual ~QSceneChange();
 
     ChangeFlag type() const Q_DECL_NOEXCEPT;
@@ -85,9 +84,10 @@ public:
 
 protected:
     Q_DECLARE_PRIVATE(QSceneChange)
-    QSceneChangePrivate *d_ptr;
+    QSceneChange(ChangeFlag type, QNodeId subjectId);
     QSceneChange(QSceneChangePrivate &dd,
                  ChangeFlag type, QNodeId subjectId);
+    QSceneChangePrivate *d_ptr;
 
 private:
     Q_DISABLE_COPY(QSceneChange)

@@ -31,6 +31,7 @@
 #include <Qt3DCore/private/qobservableinterface_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/private/qpostman_p.h>
+#include <Qt3DCore/qscenechange.h>
 #include <Qt3DCore/qcomponentaddedchange.h>
 #include <Qt3DCore/qcomponentremovedchange.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
@@ -60,6 +61,15 @@ private slots:
     void unregisterSceneObservers();
     void distributeFrontendChanges();
     void distributeBackendChanges();
+};
+
+class AllChangesChange : public Qt3DCore::QSceneChange
+{
+public:
+    AllChangesChange(Qt3DCore::QNodeId subjectId)
+        : Qt3DCore::QSceneChange(Qt3DCore::AllChanges, subjectId)
+    {
+    }
 };
 
 class tst_Node : public Qt3DCore::QEntity
@@ -103,7 +113,7 @@ public:
 
     void sendAllChangesNotification()
     {
-        Qt3DCore::QSceneChangePtr e(new Qt3DCore::QSceneChange(Qt3DCore::AllChanges, id()));
+        Qt3DCore::QSceneChangePtr e(new AllChangesChange(id()));
         Qt3DCore::QNodePrivate::get(this)->notifyObservers(e);
     }
 
