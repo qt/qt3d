@@ -41,6 +41,7 @@
 #define QT3DCORE_QSTATICPROPERTYVALUEREMOVEDCHANGEBASE_H
 
 #include <Qt3DCore/qpropertyvalueremovedchangebase.h>
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,7 +49,7 @@ namespace Qt3DCore {
 
 class QStaticPropertyValueRemovedChangeBasePrivate;
 
-class QStaticPropertyValueRemovedChangeBase : public QPropertyValueRemovedChangeBase
+class QT3DCORESHARED_EXPORT QStaticPropertyValueRemovedChangeBase : public QPropertyValueRemovedChangeBase
 {
 public:
     ~QStaticPropertyValueRemovedChangeBase();

@@ -64,14 +64,14 @@ namespace Qt3DCore {
  * \a priority.
  */
 QNodeAddedPropertyChange::QNodeAddedPropertyChange(QNodeId subjectId, QNode *node)
-    : QPropertyValueAddedChangeBase(*new QNodeAddedPropertyChangePrivate, subjectId)
+    : QStaticPropertyValueAddedChangeBase(*new QNodeAddedPropertyChangePrivate, subjectId)
 {
     Q_D(QNodeAddedPropertyChange);
     d->m_addedNodeIdTypePair = QNodeIdTypePair(node->id(), node->metaObject());
 }
 
 QNodeAddedPropertyChange::QNodeAddedPropertyChange(QNodeId subjectId)
-    : QPropertyValueAddedChangeBase(*new QNodeAddedPropertyChangePrivate, subjectId)
+    : QStaticPropertyValueAddedChangeBase(*new QNodeAddedPropertyChangePrivate, subjectId)
 {
 }
 
@@ -91,24 +91,6 @@ const QMetaObject *QNodeAddedPropertyChange::metaObject() const
 {
     Q_D(const QNodeAddedPropertyChange);
     return d->m_addedNodeIdTypePair.type;
-}
-
-/*!
- * \return name of the property.
- */
-const char *QNodeAddedPropertyChange::propertyName() const
-{
-    Q_D(const QNodeAddedPropertyChange);
-    return d->m_propertyName;
-}
-
-/*!
- * Sets the property change \a name.
- */
-void QNodeAddedPropertyChange::setPropertyName(const char *name)
-{
-    Q_D(QNodeAddedPropertyChange);
-    d->m_propertyName = name;
 }
 
 void QNodeAddedPropertyChange::setAddedValue(const QVariant &value)

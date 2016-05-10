@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <private/qpropertyvalueremovedchangebase_p.h>
+#include <private/qstaticpropertyvalueremovedchangebase_p.h>
 #include <Qt3DCore/qnode.h>
 #include <QtCore/qvariant.h>
 
@@ -62,7 +62,7 @@ namespace Qt3DCore {
 class QPropertyUpdatedChange;
 class QFrameAllocator;
 
-class QNodeRemovedPropertyChangePrivate : public QPropertyValueRemovedChangeBasePrivate
+class QNodeRemovedPropertyChangePrivate : public QStaticPropertyValueRemovedChangeBasePrivate
 {
 public:
     QNodeRemovedPropertyChangePrivate()

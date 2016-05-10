@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <private/qpropertyvalueaddedchangebase_p.h>
+#include <private/qstaticpropertyvalueaddedchangebase_p.h>
 #include <Qt3DCore/qnode.h>
 #include <QtCore/qvariant.h>
 
@@ -62,7 +62,7 @@ namespace Qt3DCore {
 class QPropertyUpdatedChange;
 class QFrameAllocator;
 
-class QNodeAddedPropertyChangePrivate : public QPropertyValueAddedChangeBasePrivate
+class QNodeAddedPropertyChangePrivate : public QStaticPropertyValueAddedChangeBasePrivate
 {
 public:
     QNodeAddedPropertyChangePrivate()
@@ -72,12 +72,11 @@ public:
 
     Q_DECLARE_PUBLIC(QNodeAddedPropertyChange)
 
-    const char *m_propertyName;
     QNodeIdTypePair m_addedNodeIdTypePair;
     QVariant m_addedValue;
 };
 
-} // Qt3D
+} // Qt3DCore
 
 QT_END_NAMESPACE
 

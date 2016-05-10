@@ -40,7 +40,7 @@
 #ifndef QT3DCORE_QNODEREMOVEDPROPERTYCHANGE_H
 #define QT3DCORE_QNODEREMOVEDPROPERTYCHANGE_H
 
-#include <Qt3DCore/qpropertyvalueremovedchangebase.h>
+#include <Qt3DCore/qstaticpropertyvalueremovedchangebase.h>
 #include <Qt3DCore/qnode.h>
 #include <QtCore/qsharedpointer.h>
 
@@ -51,14 +51,11 @@ namespace Qt3DCore {
 class QNodeRemovedPropertyChangePrivate;
 
 // TODO: Split this class into two. One for general values, one specifically for QNodeIds
-class QT3DCORESHARED_EXPORT QNodeRemovedPropertyChange : public QPropertyValueRemovedChangeBase
+class QT3DCORESHARED_EXPORT QNodeRemovedPropertyChange : public QStaticPropertyValueRemovedChangeBase
 {
 public:
     QNodeRemovedPropertyChange(QNodeId subjectId, QNode *node);
     QNodeRemovedPropertyChange(QNodeId subjectId);
-
-    const char *propertyName() const;
-    void setPropertyName(const char *name);
 
     QNodeId removedNodeId() const;
     const QMetaObject *metaObject() const;

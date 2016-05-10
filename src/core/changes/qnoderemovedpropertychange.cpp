@@ -64,14 +64,14 @@ namespace Qt3DCore {
  * \a priority.
  */
 QNodeRemovedPropertyChange::QNodeRemovedPropertyChange(QNodeId subjectId, QNode *node)
-    : QPropertyValueRemovedChangeBase(*new QNodeRemovedPropertyChangePrivate, subjectId)
+    : QStaticPropertyValueRemovedChangeBase(*new QNodeRemovedPropertyChangePrivate, subjectId)
 {
     Q_D(QNodeRemovedPropertyChange);
     d->m_removedNodeIdTypePair = QNodeIdTypePair(node->id(), QNodePrivate::get(node)->m_typeInfo);
 }
 
 QNodeRemovedPropertyChange::QNodeRemovedPropertyChange(QNodeId subjectId)
-    : QPropertyValueRemovedChangeBase(*new QNodeRemovedPropertyChangePrivate, subjectId)
+    : QStaticPropertyValueRemovedChangeBase(*new QNodeRemovedPropertyChangePrivate, subjectId)
 {
 }
 
@@ -91,24 +91,6 @@ const QMetaObject *QNodeRemovedPropertyChange::metaObject() const
 {
     Q_D(const QNodeRemovedPropertyChange);
     return d->m_removedNodeIdTypePair.type;
-}
-
-/*!
- * \return name of the property.
- */
-const char *QNodeRemovedPropertyChange::propertyName() const
-{
-    Q_D(const QNodeRemovedPropertyChange);
-    return d->m_propertyName;
-}
-
-/*!
- * Sets the property change \a name.
- */
-void QNodeRemovedPropertyChange::setPropertyName(const char *name)
-{
-    Q_D(QNodeRemovedPropertyChange);
-    d->m_propertyName = name;
 }
 
 void QNodeRemovedPropertyChange::setRemovedValue(const QVariant &value)

@@ -40,7 +40,7 @@
 #ifndef QT3DCORE_QNODEADDEDPROPERTYCHANGE_H
 #define QT3DCORE_QNODEADDEDPROPERTYCHANGE_H
 
-#include <Qt3DCore/qpropertyvalueaddedchangebase.h>
+#include <Qt3DCore/qstaticpropertyvalueaddedchangebase.h>
 #include <Qt3DCore/qnode.h>
 #include <QtCore/qsharedpointer.h>
 
@@ -51,14 +51,11 @@ namespace Qt3DCore {
 class QNodeAddedPropertyChangePrivate;
 
 // TODO: Split this class into two. One for general values, one specifically for QNodeIds
-class QT3DCORESHARED_EXPORT QNodeAddedPropertyChange : public QPropertyValueAddedChangeBase
+class QT3DCORESHARED_EXPORT QNodeAddedPropertyChange : public QStaticPropertyValueAddedChangeBase
 {
 public:
     QNodeAddedPropertyChange(QNodeId subjectId, QNode *node);
     QNodeAddedPropertyChange(QNodeId subjectId);
-
-    const char *propertyName() const;
-    void setPropertyName(const char *name);
 
     QNodeId addedNodeId() const;
     const QMetaObject *metaObject() const;
