@@ -52,6 +52,7 @@
 //
 
 #include <private/qscenechange_p.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,7 +60,7 @@ namespace Qt3DCore {
 
 class QNodeUpdatedChangeBase;
 
-class QNodeUpdatedChangeBasePrivate : public QSceneChangePrivate
+class QT3DCORE_PRIVATE_EXPORT QNodeUpdatedChangeBasePrivate : public QSceneChangePrivate
 {
 public:
     QNodeUpdatedChangeBasePrivate();

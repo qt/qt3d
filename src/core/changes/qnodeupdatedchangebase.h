@@ -41,6 +41,7 @@
 #define QT3DCORE_QNODEUPDATEDCHANGEBASE_H
 
 #include <Qt3DCore/qscenechange.h>
+#include <Qt3DCore/qt3dcore_global.h>
 #include <QtCore/qsharedpointer.h>
 
 QT_BEGIN_NAMESPACE
@@ -49,15 +50,15 @@ namespace Qt3DCore {
 
 class QNodeUpdatedChangeBasePrivate;
 
-class QNodeUpdatedChangeBase : public QSceneChange
+class QT3DCORESHARED_EXPORT QNodeUpdatedChangeBase : public QSceneChange
 {
 public:
-    explicit QNodeUpdatedChangeBase(QNodeId subjectId);
     ~QNodeUpdatedChangeBase();
 
 protected:
-    Q_DECLARE_PRIVATE(QNodeUpdatedChangeBase)
+    explicit QNodeUpdatedChangeBase(QNodeId subjectId);
     QNodeUpdatedChangeBase(QNodeUpdatedChangeBasePrivate &dd, QNodeId subjectId);
+    Q_DECLARE_PRIVATE(QNodeUpdatedChangeBase)
 };
 
 typedef QSharedPointer<QNodeUpdatedChangeBase> QNodeUpdatedChangeBasePtr;
