@@ -43,7 +43,7 @@
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/qabstractactioninput.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -197,7 +197,7 @@ void QInputSequence::addSequence(QAbstractActionInput *input)
             input->setParent(this);
 
         if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QNodeAddedPropertyChangePtr::create(id(), input);
+            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), input);
             change->setPropertyName("sequence");
             d->notifyObservers(change);
         }

@@ -37,40 +37,74 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QNODEADDEDPROPERTYCHANGE_H
-#define QT3DCORE_QNODEADDEDPROPERTYCHANGE_H
-
-#include <Qt3DCore/qstaticpropertyvalueaddedchangebase.h>
-#include <Qt3DCore/qnode.h>
-#include <QtCore/qsharedpointer.h>
+#include "qpropertynodeaddedchange.h"
+#include "qpropertynodeaddedchange_p.h"
+#include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QNodeAddedPropertyChangePrivate;
+/*!
+ * \class Qt3DCore::QPropertyNodeAddedChange
+ * \inmodule Qt3DCore
+ *
+ * TODO
+ */
 
-// TODO: Split this class into two. One for general values, one specifically for QNodeIds
-class QT3DCORESHARED_EXPORT QNodeAddedPropertyChange : public QStaticPropertyValueAddedChangeBase
+/*!
+ * \typedef Qt3DCore::QPropertyNodeAddedChangePtr
+ * \relates Qt3DCore::QPropertyNodeAddedChange
+ *
+ * A shared pointer for QPropertyNodeAddedChange.
+ */
+
+/*!
+ * Constructs a new QPropertyNodeAddedChange with \a subjectId, \a addedNodeId, and
+ * \a priority.
+ */
+QPropertyNodeAddedChange::QPropertyNodeAddedChange(QNodeId subjectId, QNode *node)
+    : QStaticPropertyValueAddedChangeBase(*new QPropertyNodeAddedChangePrivate, subjectId)
 {
-public:
-    QNodeAddedPropertyChange(QNodeId subjectId, QNode *node);
-    QNodeAddedPropertyChange(QNodeId subjectId);
+    Q_D(QPropertyNodeAddedChange);
+    d->m_addedNodeIdTypePair = QNodeIdTypePair(node->id(), node->metaObject());
+}
 
-    QNodeId addedNodeId() const;
-    const QMetaObject *metaObject() const;
+QPropertyNodeAddedChange::QPropertyNodeAddedChange(QNodeId subjectId)
+    : QStaticPropertyValueAddedChangeBase(*new QPropertyNodeAddedChangePrivate, subjectId)
+{
+}
 
-    void setAddedValue(const QVariant &value);
-    QVariant addedValue() const;
+/*!
+ * \return the id of the node added to the property.
+ */
+QNodeId QPropertyNodeAddedChange::addedNodeId() const
+{
+    Q_D(const QPropertyNodeAddedChange);
+    return d->m_addedNodeIdTypePair.id;
+}
 
-private:
-    Q_DECLARE_PRIVATE(QNodeAddedPropertyChange)
-};
+/*!
+ * \return the meta object of the node added to the property.
+ */
+const QMetaObject *QPropertyNodeAddedChange::metaObject() const
+{
+    Q_D(const QPropertyNodeAddedChange);
+    return d->m_addedNodeIdTypePair.type;
+}
 
-typedef QSharedPointer<QNodeAddedPropertyChange> QNodeAddedPropertyChangePtr;
+void QPropertyNodeAddedChange::setAddedValue(const QVariant &value)
+{
+    Q_D(QPropertyNodeAddedChange);
+    d->m_addedValue = value;
+}
+
+QVariant QPropertyNodeAddedChange::addedValue() const
+{
+    Q_D(const QPropertyNodeAddedChange);
+    return d->m_addedValue;
+}
 
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
-
-#endif // QT3DCORE_QNODEADDEDPROPERTYCHANGE_H

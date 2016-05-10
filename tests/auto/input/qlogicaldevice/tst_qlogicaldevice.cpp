@@ -37,7 +37,7 @@
 #include <Qt3DInput/QAction>
 
 #include <Qt3DCore/QPropertyUpdatedChange>
-#include <Qt3DCore/QNodeAddedPropertyChange>
+#include <Qt3DCore/QPropertyNodeAddedChange>
 #include <Qt3DCore/QNodeRemovedPropertyChange>
 
 #include "testpostmanarbiter.h"
@@ -122,7 +122,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QNodeAddedPropertyChangePtr nodeAddedChange = arbiter.events.first().staticCast<Qt3DCore::QNodeAddedPropertyChange>();
+        Qt3DCore::QPropertyNodeAddedChangePtr nodeAddedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
         QCOMPARE(nodeAddedChange->propertyName(), "action");
         QCOMPARE(nodeAddedChange->addedNodeId(), action->id());
         QCOMPARE(nodeAddedChange->type(), Qt3DCore::PropertyValueAdded);
@@ -152,7 +152,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        nodeAddedChange = arbiter.events.first().staticCast<Qt3DCore::QNodeAddedPropertyChange>();
+        nodeAddedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
         QCOMPARE(nodeAddedChange->propertyName(), "axis");
         QCOMPARE(nodeAddedChange->addedNodeId(), axis->id());
         QCOMPARE(nodeAddedChange->type(), Qt3DCore::PropertyValueAdded);

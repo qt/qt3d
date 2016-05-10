@@ -42,7 +42,7 @@
 
 #include <private/qcomponent_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -396,7 +396,7 @@ void QGeometryRenderer::setGeometry(QGeometry *geometry)
     blockNotifications(blocked);
 
     if (d->m_geometry && d->m_changeArbiter) {
-        const auto change = QNodeAddedPropertyChangePtr::create(id(), d->m_geometry);
+        const auto change = QPropertyNodeAddedChangePtr::create(id(), d->m_geometry);
         change->setPropertyName("geometry");
         d->notifyObservers(change);
     }

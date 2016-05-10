@@ -42,7 +42,7 @@
 #include <Qt3DRender/private/qrendertarget_p.h>
 #include <Qt3DRender/qrendertargetoutput.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <QVariant>
 
@@ -91,7 +91,7 @@ void RenderTarget::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
     case Qt3DCore::PropertyValueAdded: {
-        const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
+        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("output")) {
             appendRenderOutput(change->addedNodeId());
             markDirty(AbstractRenderer::AllDirty);

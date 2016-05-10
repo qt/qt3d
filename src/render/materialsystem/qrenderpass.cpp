@@ -44,7 +44,7 @@
 #include "qfilterkey.h"
 #include "qrenderstate.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/private/qnode_p.h>
 
@@ -98,7 +98,7 @@ void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
             shaderProgram->setParent(this);
 
         if (d->m_shader && d->m_changeArbiter != nullptr) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), d->m_shader);
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), d->m_shader);
             change->setPropertyName("shaderProgram");
             d->notifyObservers(change);
         }
@@ -126,7 +126,7 @@ void QRenderPass::addFilterKey(QFilterKey *filterKey)
             filterKey->setParent(this);
 
         if (d->m_changeArbiter != nullptr) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), filterKey);
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), filterKey);
             change->setPropertyName("filterKeys");
             d->notifyObservers(change);
         }
@@ -170,7 +170,7 @@ void QRenderPass::addRenderState(QRenderState *state)
             state->setParent(this);
 
         if (d->m_changeArbiter != nullptr) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), state);
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), state);
             change->setPropertyName("renderState");
             d->notifyObservers(change);
         }
@@ -217,7 +217,7 @@ void QRenderPass::addParameter(QParameter *parameter)
             parameter->setParent(this);
 
         if (d->m_changeArbiter != nullptr) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter);
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), parameter);
             change->setPropertyName("parameter");
             d->notifyObservers(change);
         }

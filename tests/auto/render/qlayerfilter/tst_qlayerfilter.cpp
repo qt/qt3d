@@ -30,7 +30,7 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
 #include <Qt3DRender/qlayer.h>
@@ -123,7 +123,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        auto addChange = arbiter.events.first().staticCast<Qt3DCore::QNodeAddedPropertyChange>();
+        auto addChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
         QCOMPARE(addChange->propertyName(), "layer");
         QCOMPARE(addChange->subjectId(), layerFilter->id());
         QCOMPARE(addChange->addedNodeId(), layerFilter->layers().at(0)->id());
@@ -139,7 +139,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        addChange = arbiter.events.first().staticCast<Qt3DCore::QNodeAddedPropertyChange>();
+        addChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
         QCOMPARE(addChange->propertyName(), "layer");
         QCOMPARE(addChange->subjectId(), layerFilter->id());
         QCOMPARE(addChange->addedNodeId(), layerFilter->layers().at(1)->id());

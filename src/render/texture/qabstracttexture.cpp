@@ -41,7 +41,7 @@
 #include "qabstracttexture_p.h"
 #include <Qt3DRender/qabstracttextureimage.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -279,7 +279,7 @@ void QAbstractTexture::addTextureImage(QAbstractTextureImage *textureImage)
             textureImage->setParent(this);
 
         if (d->m_changeArbiter != nullptr) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), textureImage);
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), textureImage);
             change->setPropertyName("textureImage");
             d->notifyObservers(change);
         }

@@ -31,7 +31,7 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DInput/private/axis_p.h>
 #include <Qt3DInput/private/qabstractaxisinput_p.h>
@@ -125,7 +125,7 @@ private Q_SLOTS:
         // WHEN
         DummyAxisInput input;
         const Qt3DCore::QNodeId inputId = input.id();
-        const auto nodeAddedChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), &input);
+        const auto nodeAddedChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &input);
         nodeAddedChange->setPropertyName("input");
         backendAxis.sceneChangeEvent(nodeAddedChange);
 

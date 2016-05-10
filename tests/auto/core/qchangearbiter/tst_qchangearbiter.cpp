@@ -34,7 +34,7 @@
 #include <Qt3DCore/qcomponentaddedchange.h>
 #include <Qt3DCore/qcomponentremovedchange.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/qscenechange.h>
 #include <Qt3DCore/qbackendnodepropertychange.h>
@@ -70,7 +70,7 @@ public:
 
     void sendNodeAddedNotification()
     {
-        Qt3DCore::QNodeAddedPropertyChangePtr e(new Qt3DCore::QNodeAddedPropertyChange(id()));
+        Qt3DCore::QPropertyNodeAddedChangePtr e(new Qt3DCore::QPropertyNodeAddedChange(id()));
         e->setPropertyName("PropertyValueAdded");
         Qt3DCore::QNodePrivate::get(this)->notifyObservers(e);
     }

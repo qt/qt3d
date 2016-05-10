@@ -42,7 +42,7 @@
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/private/qinputsequence_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <QDateTime>
 
@@ -134,7 +134,7 @@ void InputSequence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     case Qt3DCore::PropertyValueAdded: {
-        const auto change = qSharedPointerCast<Qt3DCore::QNodeAddedPropertyChange>(e);
+        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeAddedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("sequence")) {
             m_sequences.push_back(change->addedNodeId());
             m_inputsToTrigger.push_back(change->addedNodeId());

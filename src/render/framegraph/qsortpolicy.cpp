@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "qsortpolicy_p.h"
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -79,7 +79,7 @@ void QSortPolicy::addSortType(Qt3DRender::QSortPolicy::SortType sortType)
         d->m_sortTypes.append(sortType);
 
         if (d->m_changeArbiter != nullptr) {
-            QNodeAddedPropertyChangePtr propertyChange(new QNodeAddedPropertyChange(id()));
+            QPropertyNodeAddedChangePtr propertyChange(new QPropertyNodeAddedChange(id()));
             propertyChange->setPropertyName("sortType");
             propertyChange->setAddedValue(QVariant::fromValue(sortType));
             d->notifyObservers(propertyChange);

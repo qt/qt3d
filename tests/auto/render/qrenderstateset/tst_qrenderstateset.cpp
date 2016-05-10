@@ -38,7 +38,7 @@
 #include <Qt3DRender/private/qrenderstateset_p.h>
 
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
 #include "testpostmanarbiter.h"
@@ -140,7 +140,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QNodeAddedPropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodeAddedPropertyChange>();
+        Qt3DCore::QPropertyNodeAddedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
         QCOMPARE(change->propertyName(), "renderState");
         QCOMPARE(change->subjectId(), stateSet->id());
         QCOMPARE(change->addedNodeId(), state1->id());

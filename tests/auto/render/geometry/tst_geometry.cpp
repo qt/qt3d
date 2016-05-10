@@ -32,7 +32,7 @@
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include "testrenderer.h"
 
@@ -124,7 +124,7 @@ private Q_SLOTS:
         DummyAttribute attribute;
 
         // WHEN
-        const auto nodeAddedChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), &attribute);
+        const auto nodeAddedChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &attribute);
         nodeAddedChange->setPropertyName("attribute");
         renderGeometry.sceneChangeEvent(nodeAddedChange);
 

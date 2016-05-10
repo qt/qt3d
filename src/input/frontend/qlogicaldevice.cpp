@@ -43,7 +43,7 @@
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -159,7 +159,7 @@ void QLogicalDevice::addAction(QAction *action)
             action->setParent(this);
 
         if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QNodeAddedPropertyChangePtr::create(id(), action);
+            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), action);
             change->setPropertyName("action");
             d->notifyObservers(change);
         }
@@ -213,7 +213,7 @@ void QLogicalDevice::addAxis(QAxis *axis)
             axis->setParent(this);
 
         if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QNodeAddedPropertyChangePtr::create(id(), axis);
+            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), axis);
             change->setPropertyName("axis");
             d->notifyObservers(change);
         }

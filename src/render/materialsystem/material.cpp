@@ -48,7 +48,7 @@
 #include <Qt3DRender/private/qmaterial_p.h>
 
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
 using namespace Qt3DCore;
@@ -94,7 +94,7 @@ void Material::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     case PropertyValueAdded: {
-        const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
+        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("parameter"))
             m_parameterPack.appendParameter(change->addedNodeId());
         break;

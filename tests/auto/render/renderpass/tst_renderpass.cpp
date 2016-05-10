@@ -31,7 +31,7 @@
 #include <Qt3DRender/private/renderpass_p.h>
 
 #include <Qt3DCore/QPropertyUpdatedChange>
-#include <Qt3DCore/QNodeAddedPropertyChange>
+#include <Qt3DCore/QPropertyNodeAddedChange>
 #include <Qt3DCore/QNodeRemovedPropertyChange>
 
 #include <Qt3DRender/QFilterKey>
@@ -136,7 +136,7 @@ private slots:
         backend.setRenderer(&renderer);
 
         // WHEN
-        const auto addChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), shader.data());
+        const auto addChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), shader.data());
         addChange->setPropertyName("shaderProgram");
         backend.sceneChangeEvent(addChange);
 
@@ -163,7 +163,7 @@ private slots:
         backend.setRenderer(&renderer);
 
         // WHEN
-        const auto addChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), annotation.data());
+        const auto addChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), annotation.data());
         addChange->setPropertyName("filterKeys");
         backend.sceneChangeEvent(addChange);
 
@@ -191,7 +191,7 @@ private slots:
         backend.setRenderer(&renderer);
 
         // WHEN
-        const auto addChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), parameter.data());
+        const auto addChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), parameter.data());
         addChange->setPropertyName("parameter");
         backend.sceneChangeEvent(addChange);
 
@@ -222,7 +222,7 @@ private slots:
         simulateInitialization(frontendState, backendState);
 
         // WHEN
-        const auto addChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), frontendState);
+        const auto addChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), frontendState);
         addChange->setPropertyName("renderState");
         backend.sceneChangeEvent(addChange);
 

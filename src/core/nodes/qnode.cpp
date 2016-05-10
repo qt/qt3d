@@ -43,7 +43,7 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qdynamicpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/qnodedestroyedchange.h>
 #include <Qt3DCore/qaspectengine.h>
@@ -151,10 +151,10 @@ void QNodePrivate::_q_addChild(QNode *childNode)
     if (!m_scene)
         return;
 
-    // We need to send a QNodeAddedPropertyChange to the backend
+    // We need to send a QPropertyNodeAddedChange to the backend
     // to notify the backend that we have a new child
     if (m_changeArbiter != nullptr) {
-        const auto change = QNodeAddedPropertyChangePtr::create(m_id, childNode);
+        const auto change = QPropertyNodeAddedChangePtr::create(m_id, childNode);
         change->setPropertyName("children");
         notifyObservers(change);
     }
@@ -195,7 +195,7 @@ void QNodePrivate::_q_removeChild(QNode *childNode)
  * If \a parent is not null, then we must tell its new parent about this QNode now
  * being a child of it on the backend. If this QNode did not have a parent upon
  * entry to this function, then we must first send a QNodeCreatedChange to the backend
- * prior to sending the QNodeAddedPropertyChange to its parent.
+ * prior to sending the QPropertyNodeAddedChange to its parent.
  *
  * Note: This function should never be called from the ctor directly as the type may
  * not be fully created yet and creating creation changes involves calling a virtual

@@ -42,7 +42,7 @@
 #include "qparameter.h"
 #include "qgraphicsapifilter.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -100,7 +100,7 @@ void QTechnique::addFilterKey(QFilterKey *filterKey)
             filterKey->setParent(this);
 
         if (d->m_changeArbiter != nullptr) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), filterKey);
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), filterKey);
             change->setPropertyName("filterKeys");
             d->notifyObservers(change);
         }
@@ -140,7 +140,7 @@ void QTechnique::addParameter(QParameter *parameter)
             parameter->setParent(this);
 
         if (d->m_changeArbiter != nullptr) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter);
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), parameter);
             change->setPropertyName("parameter");
             d->notifyObservers(change);
         }
@@ -179,7 +179,7 @@ void QTechnique::addRenderPass(QRenderPass *pass)
             pass->setParent(this);
 
         if (d->m_changeArbiter != nullptr) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), pass);
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), pass);
             change->setPropertyName("pass");
             d->notifyObservers(change);
         }
@@ -196,7 +196,7 @@ void QTechnique::removeRenderPass(QRenderPass *pass)
     Q_ASSERT(pass);
     Q_D(QTechnique);
     if (d->m_changeArbiter) {
-        const auto change = QNodeAddedPropertyChangePtr::create(id(), pass);
+        const auto change = QPropertyNodeAddedChangePtr::create(id(), pass);
         change->setPropertyName("pass");
         d->notifyObservers(change);
     }

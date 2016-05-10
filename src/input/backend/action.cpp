@@ -42,7 +42,7 @@
 #include <Qt3DInput/qabstractactioninput.h>
 #include <Qt3DInput/private/qaction_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/qbackendnodepropertychange.h>
 
@@ -89,7 +89,7 @@ void Action::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
     case Qt3DCore::PropertyValueAdded: {
-        const auto change = qSharedPointerCast<Qt3DCore::QNodeAddedPropertyChange>(e);
+        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeAddedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("input"))
             m_inputs.push_back(change->addedNodeId());
         break;

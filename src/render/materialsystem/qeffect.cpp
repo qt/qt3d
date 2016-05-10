@@ -43,7 +43,7 @@
 #include "qparameter.h"
 
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -82,7 +82,7 @@ void QEffect::addParameter(QParameter *parameter)
             parameter->setParent(this);
 
         if (d->m_changeArbiter != nullptr) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter);
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), parameter);
             change->setPropertyName("parameter");
             d->notifyObservers(change);
         }
@@ -127,7 +127,7 @@ void QEffect::addTechnique(QTechnique *t)
             t->setParent(this);
 
         if (d->m_changeArbiter != nullptr) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), t);
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), t);
             change->setPropertyName("technique");
             d->notifyObservers(change);
         }

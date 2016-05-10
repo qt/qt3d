@@ -41,7 +41,7 @@
 #include "qrendertarget_p.h"
 #include "qrendertargetoutput.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -76,7 +76,7 @@ void QRenderTarget::addOutput(QRenderTargetOutput *output)
             output->setParent(this);
 
         if (d->m_changeArbiter != nullptr) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), output);
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), output);
             change->setPropertyName("output");
             d->notifyObservers(change);
         }

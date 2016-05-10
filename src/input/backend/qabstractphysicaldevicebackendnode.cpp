@@ -49,7 +49,7 @@
 #include <Qt3DInput/private/qinputaspect_p.h>
 
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/private/qabstractaspect_p.h>
 
@@ -179,7 +179,7 @@ void QAbstractPhysicalDeviceBackendNode::sceneChangeEvent(const Qt3DCore::QScene
     Q_D(QAbstractPhysicalDeviceBackendNode);
     switch (e->type()) {
     case Qt3DCore::PropertyValueAdded: {
-        const auto change = qSharedPointerCast<Qt3DCore::QNodeAddedPropertyChange>(e);
+        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeAddedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("axisSettings")) {
             const auto axisSettingId = change->addedNodeId();
             Input::AxisSetting *axisSetting = d->getAxisSetting(axisSettingId);

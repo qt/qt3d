@@ -49,7 +49,7 @@
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
 #include <QDebug>
@@ -103,7 +103,7 @@ void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     case PropertyValueAdded: {
-        const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
+        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("pass"))
             appendRenderPass(change->addedNodeId());
         else if (change->propertyName() == QByteArrayLiteral("parameter"))

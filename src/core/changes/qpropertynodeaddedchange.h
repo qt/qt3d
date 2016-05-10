@@ -37,47 +37,40 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QNODEADDEDPROPERTYCHANGE_P_H
-#define QT3DCORE_QNODEADDEDPROPERTYCHANGE_P_H
+#ifndef QT3DCORE_QPROPERTYNODEADDEDCHANGE_H
+#define QT3DCORE_QPROPERTYNODEADDEDCHANGE_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <private/qstaticpropertyvalueaddedchangebase_p.h>
+#include <Qt3DCore/qstaticpropertyvalueaddedchangebase.h>
 #include <Qt3DCore/qnode.h>
-#include <QtCore/qvariant.h>
+#include <QtCore/qsharedpointer.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QPropertyUpdatedChange;
-class QFrameAllocator;
+class QPropertyNodeAddedChangePrivate;
 
-class QNodeAddedPropertyChangePrivate : public QStaticPropertyValueAddedChangeBasePrivate
+// TODO: Split this class into two. One for general values, one specifically for QNodeIds
+class QT3DCORESHARED_EXPORT QPropertyNodeAddedChange : public QStaticPropertyValueAddedChangeBase
 {
 public:
-    QNodeAddedPropertyChangePrivate()
-        : m_addedNodeIdTypePair()
-    {
-    }
+    QPropertyNodeAddedChange(QNodeId subjectId, QNode *node);
+    QPropertyNodeAddedChange(QNodeId subjectId);
 
-    Q_DECLARE_PUBLIC(QNodeAddedPropertyChange)
+    QNodeId addedNodeId() const;
+    const QMetaObject *metaObject() const;
 
-    QNodeIdTypePair m_addedNodeIdTypePair;
-    QVariant m_addedValue;
+    void setAddedValue(const QVariant &value);
+    QVariant addedValue() const;
+
+private:
+    Q_DECLARE_PRIVATE(QPropertyNodeAddedChange)
 };
 
-} // Qt3DCore
+typedef QSharedPointer<QPropertyNodeAddedChange> QPropertyNodeAddedChangePtr;
+
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QNODEADDEDPROPERTYCHANGE_P_H
+#endif // QT3DCORE_QPROPERTYNODEADDEDCHANGE_H

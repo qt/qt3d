@@ -42,7 +42,7 @@
 #include <Qt3DInput/qphysicaldevicecreatedchange.h>
 #include <Qt3DInput/qaxissetting.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/private/qnode_p.h>
 
@@ -157,7 +157,7 @@ void QAbstractPhysicalDevice::addAxisSetting(QAxisSetting *axisSetting)
     Q_D(QAbstractPhysicalDevice);
     if (axisSetting && !d->m_axisSettings.contains(axisSetting)) {
         if (d->m_changeArbiter) {
-            const auto change = Qt3DCore::QNodeAddedPropertyChangePtr::create(id(), axisSetting);
+            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), axisSetting);
             change->setPropertyName("axisSettings");
             d->notifyObservers(change);
         }

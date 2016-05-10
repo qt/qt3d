@@ -11,8 +11,6 @@ HEADERS += \
     $$PWD/qcomponentremovedchange_p.h \
     $$PWD/qbackendnodepropertychange.h \
     $$PWD/qbackendnodepropertychange_p.h \
-    $$PWD/qnodeaddedpropertychange.h \
-    $$PWD/qnodeaddedpropertychange_p.h \
     $$PWD/qnoderemovedpropertychange.h \
     $$PWD/qnoderemovedpropertychange_p.h \
     $$PWD/qnodedestroyedchange.h \
@@ -32,7 +30,9 @@ HEADERS += \
     $$PWD/qstaticpropertyvalueaddedchangebase.h \
     $$PWD/qstaticpropertyvalueaddedchangebase_p.h \
     $$PWD/qstaticpropertyvalueremovedchangebase.h \
-    $$PWD/qstaticpropertyvalueremovedchangebase_p.h
+    $$PWD/qstaticpropertyvalueremovedchangebase_p.h \
+    $$PWD/qpropertynodeaddedchange.h \
+    $$PWD/qpropertynodeaddedchange_p.h
 
 SOURCES += \
     $$PWD/qscenechange.cpp \
@@ -41,7 +41,6 @@ SOURCES += \
     $$PWD/qcomponentaddedchange.cpp \
     $$PWD/qcomponentremovedchange.cpp \
     $$PWD/qbackendnodepropertychange.cpp \
-    $$PWD/qnodeaddedpropertychange.cpp \
     $$PWD/qnoderemovedpropertychange.cpp \
     $$PWD/qpropertyvalueaddedchangebase.cpp \
     $$PWD/qpropertyvalueremovedchangebase.cpp \
@@ -50,4 +49,5 @@ SOURCES += \
     $$PWD/qstaticpropertyupdatedchangebase.cpp \
     $$PWD/qpropertyupdatedchange.cpp \
     $$PWD/qstaticpropertyvalueaddedchangebase.cpp \
-    $$PWD/qstaticpropertyvalueremovedchangebase.cpp
+    $$PWD/qstaticpropertyvalueremovedchangebase.cpp \
+    $$PWD/qpropertynodeaddedchange.cpp

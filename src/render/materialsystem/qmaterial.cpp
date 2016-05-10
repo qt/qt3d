@@ -44,7 +44,7 @@
 #include <Qt3DRender/private/renderlogging_p.h>
 #include "qparameter.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
 /*!
@@ -138,7 +138,7 @@ void QMaterial::addParameter(QParameter *parameter)
             parameter->setParent(this);
 
         if (d->m_changeArbiter != nullptr) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), parameter);
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), parameter);
             change->setPropertyName("parameter");
             d->notifyObservers(change);
         }

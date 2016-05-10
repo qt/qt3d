@@ -41,7 +41,7 @@
 #include "qlayerfilter.h"
 #include <Qt3DRender/private/qlayerfilter_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -68,7 +68,7 @@ void LayerFilterNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
     case PropertyValueAdded: {
-        const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
+        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("layer"))
             m_layerIds.append(change->addedNodeId());
         break;

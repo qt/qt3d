@@ -42,7 +42,7 @@
 #include <private/qnode_p.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -112,7 +112,7 @@ void QGeometry::addAttribute(QAttribute *attribute)
             attribute->setParent(this);
 
         if (d->m_changeArbiter != nullptr) {
-            const auto change = QNodeAddedPropertyChangePtr::create(id(), attribute);
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), attribute);
             change->setPropertyName("attribute");
             d->notifyObservers(change);
         }

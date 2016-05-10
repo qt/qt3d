@@ -43,7 +43,7 @@
 #include <Qt3DRender/private/qrenderpassfilter_p.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -94,7 +94,7 @@ void RenderPassFilter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
     switch (e->type()) {
     case PropertyValueAdded: {
-        const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
+        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("match")) {
             appendFilter(change->addedNodeId());
             markDirty(AbstractRenderer::AllDirty);

@@ -33,7 +33,7 @@
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryfactory.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include "testrenderer.h"
 
@@ -291,7 +291,7 @@ private Q_SLOTS:
         // WHEN
         DummyGeometry geometry;
         const Qt3DCore::QNodeId geometryId = geometry.id();
-        const auto nodeAddedChange = Qt3DCore::QNodeAddedPropertyChangePtr::create(Qt3DCore::QNodeId(), &geometry);
+        const auto nodeAddedChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &geometry);
         nodeAddedChange->setPropertyName("geometry");
         renderGeometryRenderer.sceneChangeEvent(nodeAddedChange);
 

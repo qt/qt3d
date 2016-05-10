@@ -35,7 +35,7 @@
 #include <Qt3DCore/qcomponentaddedchange.h>
 #include <Qt3DCore/qcomponentremovedchange.h>
 #include <Qt3DCore/qnodedestroyedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <private/qpostman_p.h>
 
@@ -377,7 +377,7 @@ void tst_Nodes::appendSingleChildNodeToNodeSceneExplicitParenting()
 
     // Node Added event
     QVERIFY(spy.events.first().wasLocked());
-    Qt3DCore::QNodeAddedPropertyChangePtr additionEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeAddedPropertyChange>();
+    Qt3DCore::QPropertyNodeAddedChangePtr additionEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyNodeAddedChange>();
     QVERIFY(additionEvent);
     QCOMPARE(additionEvent->subjectId(), node->id());
     QCOMPARE(additionEvent->addedNodeId(), child->id());
@@ -420,7 +420,7 @@ void tst_Nodes::appendSingleChildNodeToNodeSceneImplicitParenting()
 
     // Node Added event
     QVERIFY(spy.events.first().wasLocked());
-    Qt3DCore::QNodeAddedPropertyChangePtr additionEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeAddedPropertyChange>();
+    Qt3DCore::QPropertyNodeAddedChangePtr additionEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyNodeAddedChange>();
     QVERIFY(additionEvent);
     QCOMPARE(additionEvent->subjectId(), node->id());
     QCOMPARE(additionEvent->addedNodeId(), child->id());
@@ -506,7 +506,7 @@ void tst_Nodes::appendMultipleChildNodesToNodeScene()
         QCOMPARE(event->isNodeEnabled(), child->isEnabled());
 
         const auto additionRecord = spy.events.at(i + 1);
-        Qt3DCore::QNodeAddedPropertyChangePtr additionEvent = additionRecord.change().dynamicCast<Qt3DCore::QNodeAddedPropertyChange>();
+        Qt3DCore::QPropertyNodeAddedChangePtr additionEvent = additionRecord.change().dynamicCast<Qt3DCore::QPropertyNodeAddedChange>();
         QCOMPARE(additionEvent->subjectId(), node->id());
         QCOMPARE(additionEvent->addedNodeId(), child->id());
         QCOMPARE(additionEvent->metaObject(), child->metaObject());
@@ -605,7 +605,7 @@ void tst_Nodes::checkParentChangeToOtherParent()
 
     // CHECK event 2 is a Node Added event
     QVERIFY(spyParent2.events.last().wasLocked());
-    const Qt3DCore::QNodeAddedPropertyChangePtr event2 = spyParent2.events.last().change().dynamicCast<Qt3DCore::QNodeAddedPropertyChange>();
+    const Qt3DCore::QPropertyNodeAddedChangePtr event2 = spyParent2.events.last().change().dynamicCast<Qt3DCore::QPropertyNodeAddedChange>();
     QCOMPARE(event2->type(), Qt3DCore::PropertyValueAdded);
     QCOMPARE(event2->subjectId(), parent2->id());
     QCOMPARE(event2->addedNodeId(), child->id());

@@ -43,7 +43,7 @@
 #include <Qt3DRender/private/qgeometryrenderer_p.h>
 #include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qnodeaddedpropertychange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <QtCore/qcoreapplication.h>
@@ -169,7 +169,7 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     case PropertyValueAdded: {
-        const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
+        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("geometry")) {
             m_geometryId = change->addedNodeId();
             m_dirty = true;
@@ -178,7 +178,7 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     case PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<QNodeAddedPropertyChange>(e);
+        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("geometry")) {
             m_geometryId = QNodeId();
             m_dirty = true;

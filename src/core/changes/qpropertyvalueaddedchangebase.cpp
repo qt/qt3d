@@ -59,7 +59,7 @@ QPropertyValueAddedChangeBasePrivate::~QPropertyValueAddedChangeBasePrivate()
  *
  * The QPropertyValueAddedChangeBase class is the base class for all QSceneChange events that
  * have the changeType() PropertyValueAdded. You should not need to instantiate this class.
- * Usually you should be using one of its subclasses such as QNodeAddedPropertyChange.
+ * Usually you should be using one of its subclasses such as QPropertyNodeAddedChange.
  *
  * You can subclass this to create your own node added types for communication between
  * your QNode and QBackendNode subclasses when writing your own aspects.

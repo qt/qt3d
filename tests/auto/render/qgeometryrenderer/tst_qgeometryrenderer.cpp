@@ -39,7 +39,7 @@
 #include <Qt3DRender/private/qgeometryrenderer_p.h>
 
 #include <Qt3DCore/QPropertyUpdatedChange>
-#include <Qt3DCore/QNodeAddedPropertyChange>
+#include <Qt3DCore/QPropertyNodeAddedChange>
 #include <Qt3DCore/QNodeRemovedPropertyChange>
 
 #include "testpostmanarbiter.h"
@@ -278,7 +278,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QNodeAddedPropertyChangePtr nodeAddedChange = arbiter.events.first().staticCast<Qt3DCore::QNodeAddedPropertyChange>();
+        Qt3DCore::QPropertyNodeAddedChangePtr nodeAddedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
         QCOMPARE(nodeAddedChange->propertyName(), "geometry");
         QCOMPARE(nodeAddedChange->addedNodeId(), geom.id());
         QCOMPARE(nodeAddedChange->type(), Qt3DCore::PropertyValueAdded);
@@ -297,7 +297,7 @@ private Q_SLOTS:
         QCOMPARE(nodeRemovedChange->removedNodeId(), geom.id());
         QCOMPARE(nodeRemovedChange->type(), Qt3DCore::PropertyValueRemoved);
 
-        nodeAddedChange = arbiter.events.last().staticCast<Qt3DCore::QNodeAddedPropertyChange>();
+        nodeAddedChange = arbiter.events.last().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
         QCOMPARE(nodeAddedChange->propertyName(), "geometry");
         QCOMPARE(nodeAddedChange->addedNodeId(), geom2.id());
         QCOMPARE(nodeAddedChange->type(), Qt3DCore::PropertyValueAdded);
