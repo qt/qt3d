@@ -208,25 +208,25 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::keyboardJobs()
     QVector<QAspectJobPtr> jobs;
     const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> events = pendingKeyEvents();
 
-    Q_FOREACH (const HKeyboardDevice cHandle, m_activeKeyboardDevices) {
+    for (const HKeyboardDevice cHandle : qAsConst(m_activeKeyboardDevices)) {
         KeyboardDevice *keyboardDevice = m_keyboardDeviceManager->data(cHandle);
         if (keyboardDevice) {
             keyboardDevice->updateKeyEvents(events);
-            QAspectJobPtr focusChangeJob;
+            bool haveFocusChangeJob = false;
             if (keyboardDevice->lastKeyboardInputRequester() != keyboardDevice->currentFocusItem()) {
-                AssignKeyboardFocusJob *job = new AssignKeyboardFocusJob(keyboardDevice->peerId());
+                auto job = QSharedPointer<AssignKeyboardFocusJob>::create(keyboardDevice->peerId());
                 job->setInputHandler(this);
-                focusChangeJob.reset(job);
-                jobs.append(focusChangeJob);
+                haveFocusChangeJob= true;
+                jobs.append(std::move(job));
                 // One job for Keyboard events (depends on the focus change job if there was one)
             }
             // Event dispacthing job
             if (!events.isEmpty()) {
-                KeyEventDispatcherJob *job = new KeyEventDispatcherJob(keyboardDevice->currentFocusItem(), events);
+                auto job = QSharedPointer<KeyEventDispatcherJob>::create(keyboardDevice->currentFocusItem(), events);
                 job->setInputHandler(this);
-                if (focusChangeJob)
-                    job->addDependency(focusChangeJob);
-                jobs.append(QAspectJobPtr(job));
+                if (haveFocusChangeJob)
+                    job->addDependency(qAsConst(jobs).back());
+                jobs.append(std::move(job));
             }
         }
     }
@@ -239,7 +239,7 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::mouseJobs()
     const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> mouseEvents = pendingMouseEvents();
     const QList<QT_PREPEND_NAMESPACE(QWheelEvent)> wheelEvents = pendingWheelEvents();
 
-    Q_FOREACH (const HMouseDevice cHandle, m_activeMouseDevices) {
+    for (const HMouseDevice cHandle : qAsConst(m_activeMouseDevices)) {
         MouseDevice *controller = m_mouseDeviceManager->data(cHandle);
 
         controller->updateMouseEvents(mouseEvents);
