@@ -37,60 +37,41 @@
 **
 ****************************************************************************/
 
-#include "qnodeupdatedchangebase.h"
-#include "qnodeupdatedchangebase_p.h"
+#ifndef QT3DCORE_QPROPERTYUPDATEDCHANGEBASE_P_H
+#define QT3DCORE_QPROPERTYUPDATEDCHANGEBASE_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <private/qscenechange_p.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-QNodeUpdatedChangeBasePrivate::QNodeUpdatedChangeBasePrivate()
-    : QSceneChangePrivate()
+class QPropertyUpdatedChangeBase;
+
+class QT3DCORE_PRIVATE_EXPORT QPropertyUpdatedChangeBasePrivate : public QSceneChangePrivate
 {
-}
+public:
+    QPropertyUpdatedChangeBasePrivate();
+    virtual ~QPropertyUpdatedChangeBasePrivate();
 
-QNodeUpdatedChangeBasePrivate::~QNodeUpdatedChangeBasePrivate()
-{
-}
-
-/*!
- * \class Qt3DCore::QNodeUpdatedChangeBase
- * \inmodule Qt3DCore
- *
- * The QNodeUpdatedChangeBase class is the base class for all QSceneChange events that
- * have the changeType() PropertyUpdated. You should not need to instantiate this class.
- * Usually you should be using one of its subclasses such as QNodePropertyChange or
- * QTypedNodePropertyChange.
- *
- * You can subclass this to create your own node update types for communication between
- * your QNode and QBackendNode subclasses when writing your own aspects.
- */
-
-/*!
- * \typedef Qt3DCore::QNodeUpdatedChangeBasePtr
- * \relates Qt3DCore::QNodeUpdatedChangeBase
- *
- * A shared pointer for QNodeUpdatedChangeBase.
- */
-
-/*!
- * Constructs a new QNodeUpdatedChangeBase with \a senderType, \a subjectId, and
- * \a priority.
- */
-QNodeUpdatedChangeBase::QNodeUpdatedChangeBase(QNodeId subjectId)
-    : QSceneChange(*new QNodeUpdatedChangeBasePrivate, PropertyUpdated, subjectId)
-{
-}
-
-QNodeUpdatedChangeBase::QNodeUpdatedChangeBase(QNodeUpdatedChangeBasePrivate &dd, QNodeId subjectId)
-    : QSceneChange(dd, PropertyUpdated, subjectId)
-{
-}
-
-QNodeUpdatedChangeBase::~QNodeUpdatedChangeBase()
-{
-}
+    Q_DECLARE_PUBLIC(QPropertyUpdatedChangeBase)
+};
 
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#endif // QT3DCORE_QPROPERTYUPDATEDCHANGEBASE_P_H
+

@@ -40,7 +40,7 @@
 #ifndef QT3DCORE_QNODEDYNAMICPROPERTYCHANGE_H
 #define QT3DCORE_QNODEDYNAMICPROPERTYCHANGE_H
 
-#include <Qt3DCore/qnodeupdatedchangebase.h>
+#include <Qt3DCore/qpropertyupdatedchangebase.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,7 +48,7 @@ namespace Qt3DCore {
 
 class QNodeDynamicPropertyChangePrivate;
 
-class QT3DCORESHARED_EXPORT QNodeDynamicPropertyChange : public QNodeUpdatedChangeBase
+class QT3DCORESHARED_EXPORT QNodeDynamicPropertyChange : public QPropertyUpdatedChangeBase
 {
 public:
     QNodeDynamicPropertyChange(QNodeId subjectId);

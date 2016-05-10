@@ -37,41 +37,60 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QNODEUPDATEDCHANGEBASE_P_H
-#define QT3DCORE_QNODEUPDATEDCHANGEBASE_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <private/qscenechange_p.h>
-#include <Qt3DCore/private/qt3dcore_global_p.h>
+#include "qpropertyupdatedchangebase.h"
+#include "qpropertyupdatedchangebase_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QNodeUpdatedChangeBase;
-
-class QT3DCORE_PRIVATE_EXPORT QNodeUpdatedChangeBasePrivate : public QSceneChangePrivate
+QPropertyUpdatedChangeBasePrivate::QPropertyUpdatedChangeBasePrivate()
+    : QSceneChangePrivate()
 {
-public:
-    QNodeUpdatedChangeBasePrivate();
-    virtual ~QNodeUpdatedChangeBasePrivate();
+}
 
-    Q_DECLARE_PUBLIC(QNodeUpdatedChangeBase)
-};
+QPropertyUpdatedChangeBasePrivate::~QPropertyUpdatedChangeBasePrivate()
+{
+}
+
+/*!
+ * \class Qt3DCore::QPropertyUpdatedChangeBase
+ * \inmodule Qt3DCore
+ *
+ * The QPropertyUpdatedChangeBase class is the base class for all QSceneChange events that
+ * have the changeType() PropertyUpdated. You should not need to instantiate this class.
+ * Usually you should be using one of its subclasses such as QNodePropertyChange or
+ * QTypedNodePropertyChange.
+ *
+ * You can subclass this to create your own node update types for communication between
+ * your QNode and QBackendNode subclasses when writing your own aspects.
+ */
+
+/*!
+ * \typedef Qt3DCore::QPropertyUpdatedChangeBasePtr
+ * \relates Qt3DCore::QPropertyUpdatedChangeBase
+ *
+ * A shared pointer for QPropertyUpdatedChangeBase.
+ */
+
+/*!
+ * Constructs a new QPropertyUpdatedChangeBase with \a senderType, \a subjectId, and
+ * \a priority.
+ */
+QPropertyUpdatedChangeBase::QPropertyUpdatedChangeBase(QNodeId subjectId)
+    : QSceneChange(*new QPropertyUpdatedChangeBasePrivate, PropertyUpdated, subjectId)
+{
+}
+
+QPropertyUpdatedChangeBase::QPropertyUpdatedChangeBase(QPropertyUpdatedChangeBasePrivate &dd, QNodeId subjectId)
+    : QSceneChange(dd, PropertyUpdated, subjectId)
+{
+}
+
+QPropertyUpdatedChangeBase::~QPropertyUpdatedChangeBase()
+{
+}
 
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
-
-#endif // QT3DCORE_QNODEUPDATEDCHANGEBASE_P_H
-

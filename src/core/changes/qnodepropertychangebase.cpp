@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 QNodePropertyChangeBasePrivate::QNodePropertyChangeBasePrivate()
-    : QNodeUpdatedChangeBasePrivate()
+    : QPropertyUpdatedChangeBasePrivate()
 {
 }
 
@@ -73,14 +73,14 @@ QNodePropertyChangeBasePrivate::~QNodePropertyChangeBasePrivate()
  * \a priority.
  */
 QNodePropertyChangeBase::QNodePropertyChangeBase(QNodeId subjectId)
-    : QNodeUpdatedChangeBase(*new QNodePropertyChangeBasePrivate, subjectId)
+    : QPropertyUpdatedChangeBase(*new QNodePropertyChangeBasePrivate, subjectId)
 {
 }
 
 /*! \internal */
 QNodePropertyChangeBase::QNodePropertyChangeBase(QNodePropertyChangeBasePrivate &dd,
                                                  QNodeId subjectId)
-    : QNodeUpdatedChangeBase(dd, subjectId)
+    : QPropertyUpdatedChangeBase(dd, subjectId)
 {
 }
 

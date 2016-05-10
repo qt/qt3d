@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <private/qnodeupdatedchangebase_p.h>
+#include <private/qpropertyupdatedchangebase_p.h>
 #include <QtCore/qbytearray.h>
 #include <QtCore/qvariant.h>
 
@@ -62,7 +62,7 @@ namespace Qt3DCore {
 class QNodePropertyChange;
 class QFrameAllocator;
 
-class QT3DCORE_PRIVATE_EXPORT QNodeDynamicPropertyChangePrivate : public QNodeUpdatedChangeBasePrivate
+class QT3DCORE_PRIVATE_EXPORT QNodeDynamicPropertyChangePrivate : public QPropertyUpdatedChangeBasePrivate
 {
 public:
     QNodeDynamicPropertyChangePrivate();
