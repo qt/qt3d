@@ -59,6 +59,8 @@ Entity {
     property Camera camera
     property real linearSpeed: 10.0
     property real lookSpeed: 180.0
+    property real acceleration: -1.0
+    property real deceleration: -1.0
 
     QtObject {
         id: d
@@ -124,11 +126,15 @@ Entity {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_Left]
                         scale: -1.0
+                        acceleration: root.acceleration
+                        deceleration: root.deceleration
                     }
                     ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_Right]
                         scale: 1.0
+                        acceleration: root.acceleration
+                        deceleration: root.deceleration
                     }
                 },
                 Axis {
@@ -137,11 +143,15 @@ Entity {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_Up]
                         scale: 1.0
+                        acceleration: root.acceleration
+                        deceleration: root.deceleration
                     }
                     ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_Down]
                         scale: -1.0
+                        acceleration: root.acceleration
+                        deceleration: root.deceleration
                     }
                 },
                 Axis {
@@ -150,11 +160,15 @@ Entity {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_PageUp]
                         scale: 1.0
+                        acceleration: root.acceleration
+                        deceleration: root.deceleration
                     }
                     ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_PageDown]
                         scale: -1.0
+                        acceleration: root.acceleration
+                        deceleration: root.deceleration
                     }
                 }
             ] // axes
