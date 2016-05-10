@@ -76,7 +76,6 @@ public :
     QSceneChange::SenderType m_senderType;
     ChangeFlag m_type;
     QSceneChange::Priority m_priority;
-    qint64 m_timestamp;
 };
 
 } // Qt3D

@@ -83,7 +83,6 @@ public:
     virtual ~QSceneChange();
 
     ChangeFlag type() const Q_DECL_NOEXCEPT;
-    qint64 timestamp() const Q_DECL_NOEXCEPT;
     QSceneChange::Priority priority() const Q_DECL_NOEXCEPT;
     QSceneChange::SenderType senderType() const Q_DECL_NOEXCEPT;
     QNodeId subjectId() const Q_DECL_NOEXCEPT;

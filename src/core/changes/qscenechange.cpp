@@ -39,7 +39,6 @@
 
 #include "qscenechange.h"
 #include "qscenechange_p.h"
-#include <QDateTime>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,7 +66,6 @@ QSceneChangePrivate::QSceneChangePrivate()
     , m_senderType(QSceneChange::Node)
     , m_type(AllChanges)
     , m_priority(QSceneChange::Standard)
-    , m_timestamp(QDateTime::currentMSecsSinceEpoch())
 {
 }
 
@@ -119,7 +117,6 @@ QSceneChange::QSceneChange(ChangeFlag type, SenderType senderType, QNodeId subje
     Q_D(QSceneChange);
     d->m_type = type;
     d->m_priority = priority;
-    d->m_timestamp = QDateTime::currentMSecsSinceEpoch();
     d->m_subjectId = subjectId;
     d->m_senderType = senderType;
 }
@@ -133,7 +130,6 @@ QSceneChange::QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, SenderType 
     Q_D(QSceneChange);
     d->m_type = type;
     d->m_priority = priority;
-    d->m_timestamp = QDateTime::currentMSecsSinceEpoch();
     d->m_subjectId = subjectId;
     d->m_senderType = senderType;
 }
@@ -159,15 +155,6 @@ QSceneChange::Priority QSceneChange::priority() const Q_DECL_NOEXCEPT
 {
     Q_D(const QSceneChange);
     return d->m_priority;
-}
-
-/*!
- * \return scene change timestamp.
- */
-qint64 QSceneChange::timestamp() const Q_DECL_NOEXCEPT
-{
-    Q_D(const QSceneChange);
-    return d->m_timestamp;
 }
 
 /*!
