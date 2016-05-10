@@ -30,8 +30,8 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DCore/qpropertyvalueaddedchange.h>
+#include <Qt3DCore/qpropertyvalueremovedchange.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qsortpolicy.h>
@@ -113,7 +113,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyNodeAddedChangePtr addChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
+        Qt3DCore::QPropertyValueAddedChangePtr addChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyValueAddedChange>();
         QCOMPARE(addChange->propertyName(), "sortType");
         QCOMPARE(addChange->subjectId(),sortPolicy->id());
         QCOMPARE(addChange->addedValue().value<Qt3DRender::QSortPolicy::SortType>(), sortType1);
@@ -134,7 +134,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyNodeRemovedChangePtr removeChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
+        Qt3DCore::QPropertyValueRemovedChangePtr removeChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyValueRemovedChange>();
         QCOMPARE(removeChange->propertyName(), "sortType");
         QCOMPARE(removeChange->subjectId(), sortPolicy->id());
         QCOMPARE(removeChange->removedValue().value<Qt3DRender::QSortPolicy::SortType>(), sortType1);

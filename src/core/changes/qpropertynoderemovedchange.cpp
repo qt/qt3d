@@ -45,6 +45,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+QPropertyNodeRemovedChangePrivate::QPropertyNodeRemovedChangePrivate()
+    : QStaticPropertyValueRemovedChangeBasePrivate()
+    , m_removedNodeIdTypePair()
+{
+}
+
 /*!
  * \class Qt3DCore::QPropertyNodeRemovedChange
  * \inmodule Qt3DCore
@@ -91,18 +97,6 @@ const QMetaObject *QPropertyNodeRemovedChange::metaObject() const
 {
     Q_D(const QPropertyNodeRemovedChange);
     return d->m_removedNodeIdTypePair.type;
-}
-
-void QPropertyNodeRemovedChange::setRemovedValue(const QVariant &value)
-{
-    Q_D(QPropertyNodeRemovedChange);
-    d->m_removedValue = value;
-}
-
-QVariant QPropertyNodeRemovedChange::removedValue() const
-{
-    Q_D(const QPropertyNodeRemovedChange);
-    return d->m_removedValue;
 }
 
 } // namespace Qt3DCore

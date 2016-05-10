@@ -68,16 +68,16 @@ public:
     explicit tst_Node(Qt3DCore::QNode *parent = 0) : Qt3DCore::QEntity(parent)
     {}
 
-    void sendNodeAddedNotification()
+    void sendNodeAddedNotification(QNode *node)
     {
-        Qt3DCore::QPropertyNodeAddedChangePtr e(new Qt3DCore::QPropertyNodeAddedChange(id()));
+        Qt3DCore::QPropertyNodeAddedChangePtr e(new Qt3DCore::QPropertyNodeAddedChange(id(), node));
         e->setPropertyName("PropertyValueAdded");
         Qt3DCore::QNodePrivate::get(this)->notifyObservers(e);
     }
 
-    void sendNodeRemovedNotification()
+    void sendNodeRemovedNotification(QNode *node)
     {
-        Qt3DCore::QPropertyNodeRemovedChangePtr e(new Qt3DCore::QPropertyNodeRemovedChange(id()));
+        Qt3DCore::QPropertyNodeRemovedChangePtr e(new Qt3DCore::QPropertyNodeRemovedChange(id(), node));
         e->setPropertyName("PropertyValueRemoved");
         Qt3DCore::QNodePrivate::get(this)->notifyObservers(e);
     }
@@ -588,6 +588,7 @@ void tst_QChangeArbiter::distributeFrontendChanges()
 {
     // GIVEN
     Qt3DCore::QComponent dummyComponent;
+    Qt3DCore::QNode dummyNode;
     QScopedPointer<Qt3DCore::QChangeArbiter> arbiter(new Qt3DCore::QChangeArbiter());
     QScopedPointer<Qt3DCore::QScene> scene(new Qt3DCore::QScene());
     QScopedPointer<Qt3DCore::QAbstractPostman> postman(new tst_PostManObserver);
@@ -628,7 +629,7 @@ void tst_QChangeArbiter::distributeFrontendChanges()
     QVERIFY(backendComponentRemovedObserver->lastChange().isNull());
 
     // WHEN
-    root->sendNodeAddedNotification();
+    root->sendNodeAddedNotification(&dummyNode);
     arbiter->syncChanges();
 
     // THEN
@@ -652,7 +653,7 @@ void tst_QChangeArbiter::distributeFrontendChanges()
     QCOMPARE(backendComponentRemovedObserver->lastChanges().count(), 0);
 
     // WHEN
-    root->sendNodeRemovedNotification();
+    root->sendNodeRemovedNotification(&dummyNode);
     arbiter->syncChanges();
 
     // THEN

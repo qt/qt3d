@@ -37,42 +37,63 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QPROPERTYNODEADDEDCHANGE_P_H
-#define QT3DCORE_QPROPERTYNODEADDEDCHANGE_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <private/qstaticpropertyvalueaddedchangebase_p.h>
-#include <Qt3DCore/qnode.h>
+#include "qpropertyvalueremovedchange.h"
+#include "qpropertyvalueremovedchange_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QPropertyUpdatedChange;
-class QFrameAllocator;
-
-class QPropertyNodeAddedChangePrivate : public QStaticPropertyValueAddedChangeBasePrivate
+QPropertyValueRemovedChangePrivate::QPropertyValueRemovedChangePrivate()
+    : QStaticPropertyValueRemovedChangeBasePrivate()
 {
-public:
-    QPropertyNodeAddedChangePrivate();
+}
 
-    Q_DECLARE_PUBLIC(QPropertyNodeAddedChange)
 
-    QNodeIdTypePair m_addedNodeIdTypePair;
-};
+/*!
+ * \class Qt3DCore::QPropertyValueRemovedChange
+ * \inmodule Qt3DCore
+ *
+ * TODO
+ */
 
-} // Qt3DCore
+/*!
+ * \typedef Qt3DCore::QPropertyValueRemovedChangePtr
+ * \relates Qt3DCore::QPropertyValueRemovedChange
+ *
+ * A shared pointer for QPropertyValueRemovedChange.
+ */
+
+/*!
+ * Constructs a new QPropertyValueRemovedChange with \a subjectId.
+ */
+QPropertyValueRemovedChange::QPropertyValueRemovedChange(QNodeId subjectId)
+    : QStaticPropertyValueRemovedChangeBase(*new QPropertyValueRemovedChangePrivate, subjectId)
+{
+}
+
+QPropertyValueRemovedChange::~QPropertyValueRemovedChange()
+{
+}
+
+/*!
+ * Sets the value Removed to the property to \a value.
+ */
+void QPropertyValueRemovedChange::setRemovedValue(const QVariant &value)
+{
+    Q_D(QPropertyValueRemovedChange);
+    d->m_RemovedValue = value;
+}
+
+/*!
+ * \return the value Removed to the property.
+ */
+QVariant QPropertyValueRemovedChange::removedValue() const
+{
+    Q_D(const QPropertyValueRemovedChange);
+    return d->m_RemovedValue;
+}
+
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
-
-#endif // QT3DCORE_QPROPERTYNODEADDEDCHANGE_P_H

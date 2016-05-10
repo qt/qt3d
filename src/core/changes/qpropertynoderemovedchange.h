@@ -50,7 +50,6 @@ namespace Qt3DCore {
 
 class QPropertyNodeRemovedChangePrivate;
 
-// TODO: Split this class into two. One for general values, one specifically for QNodeIds
 class QT3DCORESHARED_EXPORT QPropertyNodeRemovedChange : public QStaticPropertyValueRemovedChangeBase
 {
 public:
@@ -59,9 +58,6 @@ public:
 
     QNodeId removedNodeId() const;
     const QMetaObject *metaObject() const;
-
-    void setRemovedValue(const QVariant &value);
-    QVariant removedValue() const;
 
 private:
     Q_DECLARE_PRIVATE(QPropertyNodeRemovedChange)

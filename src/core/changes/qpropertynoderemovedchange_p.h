@@ -53,7 +53,6 @@
 
 #include <private/qstaticpropertyvalueremovedchangebase_p.h>
 #include <Qt3DCore/qnode.h>
-#include <QtCore/qvariant.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,19 +64,15 @@ class QFrameAllocator;
 class QPropertyNodeRemovedChangePrivate : public QStaticPropertyValueRemovedChangeBasePrivate
 {
 public:
-    QPropertyNodeRemovedChangePrivate()
-        : m_removedNodeIdTypePair()
-    {
-    }
+    QPropertyNodeRemovedChangePrivate();
 
     Q_DECLARE_PUBLIC(QPropertyNodeRemovedChange)
 
     const char *m_propertyName;
     QNodeIdTypePair m_removedNodeIdTypePair;
-    QVariant m_removedValue;
 };
 
-} // Qt3D
+} // Qt3DCore
 
 QT_END_NAMESPACE
 

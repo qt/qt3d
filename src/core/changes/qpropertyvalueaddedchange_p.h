@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QPROPERTYNODEADDEDCHANGE_P_H
-#define QT3DCORE_QPROPERTYNODEADDEDCHANGE_P_H
+#ifndef QT3DCORE_QPROPERTYVALUEADDEDCHANGE_P_H
+#define QT3DCORE_QPROPERTYVALUEADDEDCHANGE_P_H
 
 //
 //  W A R N I N G
@@ -52,27 +52,28 @@
 //
 
 #include <private/qstaticpropertyvalueaddedchangebase_p.h>
-#include <Qt3DCore/qnode.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
+#include <QtCore/qvariant.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QPropertyUpdatedChange;
-class QFrameAllocator;
+class QPropertyValueAddedChange;
 
-class QPropertyNodeAddedChangePrivate : public QStaticPropertyValueAddedChangeBasePrivate
+class QT3DCORE_PRIVATE_EXPORT QPropertyValueAddedChangePrivate : public QStaticPropertyValueAddedChangeBasePrivate
 {
 public:
-    QPropertyNodeAddedChangePrivate();
+    QPropertyValueAddedChangePrivate();
 
-    Q_DECLARE_PUBLIC(QPropertyNodeAddedChange)
+    Q_DECLARE_PUBLIC(QPropertyValueAddedChange)
 
-    QNodeIdTypePair m_addedNodeIdTypePair;
+    QVariant m_addedValue;
 };
 
 } // Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QPROPERTYNODEADDEDCHANGE_P_H
+#endif // QT3DCORE_QPROPERTYVALUEADDEDCHANGE_P_H
+

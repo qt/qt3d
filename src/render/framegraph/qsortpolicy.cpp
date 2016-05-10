@@ -38,8 +38,8 @@
 ****************************************************************************/
 
 #include "qsortpolicy_p.h"
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DCore/qpropertyvalueaddedchange.h>
+#include <Qt3DCore/qpropertyvalueremovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -79,7 +79,7 @@ void QSortPolicy::addSortType(Qt3DRender::QSortPolicy::SortType sortType)
         d->m_sortTypes.append(sortType);
 
         if (d->m_changeArbiter != nullptr) {
-            QPropertyNodeAddedChangePtr propertyChange(new QPropertyNodeAddedChange(id()));
+            QPropertyValueAddedChangePtr propertyChange(new QPropertyValueAddedChange(id()));
             propertyChange->setPropertyName("sortType");
             propertyChange->setAddedValue(QVariant::fromValue(sortType));
             d->notifyObservers(propertyChange);
@@ -91,7 +91,7 @@ void QSortPolicy::removeSortType(SortType sortType)
 {
     Q_D(QSortPolicy);
     if (d->m_changeArbiter != nullptr) {
-        QPropertyNodeRemovedChangePtr propertyChange(new QPropertyNodeRemovedChange(id()));
+        QPropertyValueRemovedChangePtr propertyChange(new QPropertyValueRemovedChange(id()));
         propertyChange->setPropertyName("sortType");
         propertyChange->setRemovedValue(QVariant::fromValue(sortType));
         d->notifyObservers(propertyChange);

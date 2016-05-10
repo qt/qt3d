@@ -37,42 +37,63 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QPROPERTYNODEADDEDCHANGE_P_H
-#define QT3DCORE_QPROPERTYNODEADDEDCHANGE_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <private/qstaticpropertyvalueaddedchangebase_p.h>
-#include <Qt3DCore/qnode.h>
+#include "qpropertyvalueaddedchange.h"
+#include "qpropertyvalueaddedchange_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QPropertyUpdatedChange;
-class QFrameAllocator;
-
-class QPropertyNodeAddedChangePrivate : public QStaticPropertyValueAddedChangeBasePrivate
+QPropertyValueAddedChangePrivate::QPropertyValueAddedChangePrivate()
+    : QStaticPropertyValueAddedChangeBasePrivate()
 {
-public:
-    QPropertyNodeAddedChangePrivate();
+}
 
-    Q_DECLARE_PUBLIC(QPropertyNodeAddedChange)
 
-    QNodeIdTypePair m_addedNodeIdTypePair;
-};
+/*!
+ * \class Qt3DCore::QPropertyValueAddedChange
+ * \inmodule Qt3DCore
+ *
+ * TODO
+ */
 
-} // Qt3DCore
+/*!
+ * \typedef Qt3DCore::QPropertyValueAddedChangePtr
+ * \relates Qt3DCore::QPropertyValueAddedChange
+ *
+ * A shared pointer for QPropertyValueAddedChange.
+ */
+
+/*!
+ * Constructs a new QPropertyValueAddedChange with \a subjectId.
+ */
+QPropertyValueAddedChange::QPropertyValueAddedChange(QNodeId subjectId)
+    : QStaticPropertyValueAddedChangeBase(*new QPropertyValueAddedChangePrivate, subjectId)
+{
+}
+
+QPropertyValueAddedChange::~QPropertyValueAddedChange()
+{
+}
+
+/*!
+ * Sets the value added to the property to \a value.
+ */
+void QPropertyValueAddedChange::setAddedValue(const QVariant &value)
+{
+    Q_D(QPropertyValueAddedChange);
+    d->m_addedValue = value;
+}
+
+/*!
+ * \return the value added to the property.
+ */
+QVariant QPropertyValueAddedChange::addedValue() const
+{
+    Q_D(const QPropertyValueAddedChange);
+    return d->m_addedValue;
+}
+
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
-
-#endif // QT3DCORE_QPROPERTYNODEADDEDCHANGE_P_H

@@ -45,6 +45,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+QPropertyNodeAddedChangePrivate::QPropertyNodeAddedChangePrivate()
+    : QStaticPropertyValueAddedChangeBasePrivate()
+    , m_addedNodeIdTypePair()
+{
+}
+
 /*!
  * \class Qt3DCore::QPropertyNodeAddedChange
  * \inmodule Qt3DCore
@@ -70,11 +76,6 @@ QPropertyNodeAddedChange::QPropertyNodeAddedChange(QNodeId subjectId, QNode *nod
     d->m_addedNodeIdTypePair = QNodeIdTypePair(node->id(), node->metaObject());
 }
 
-QPropertyNodeAddedChange::QPropertyNodeAddedChange(QNodeId subjectId)
-    : QStaticPropertyValueAddedChangeBase(*new QPropertyNodeAddedChangePrivate, subjectId)
-{
-}
-
 /*!
  * \return the id of the node added to the property.
  */
@@ -91,18 +92,6 @@ const QMetaObject *QPropertyNodeAddedChange::metaObject() const
 {
     Q_D(const QPropertyNodeAddedChange);
     return d->m_addedNodeIdTypePair.type;
-}
-
-void QPropertyNodeAddedChange::setAddedValue(const QVariant &value)
-{
-    Q_D(QPropertyNodeAddedChange);
-    d->m_addedValue = value;
-}
-
-QVariant QPropertyNodeAddedChange::addedValue() const
-{
-    Q_D(const QPropertyNodeAddedChange);
-    return d->m_addedValue;
 }
 
 } // namespace Qt3DCore
