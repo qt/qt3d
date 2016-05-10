@@ -36,7 +36,7 @@
 #include <Qt3DInput/QAxis>
 #include <Qt3DInput/QAction>
 
-#include <Qt3DCore/QNodePropertyChange>
+#include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DCore/QNodeAddedPropertyChange>
 #include <Qt3DCore/QNodeRemovedPropertyChange>
 

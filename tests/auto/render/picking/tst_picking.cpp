@@ -29,7 +29,7 @@
 #include <QtTest/QtTest>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DCore/QNodePropertyChange>
+#include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DRender/private/qboundingvolumeprovider_p.h>
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
 #include <Qt3DRender/private/objectpicker_p.h>

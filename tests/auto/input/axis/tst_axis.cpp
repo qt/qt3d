@@ -30,7 +30,7 @@
 #include <qbackendnodetester.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DInput/private/axis_p.h>
@@ -111,10 +111,10 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DInput::Input::Axis backendAxis;
-        Qt3DCore::QNodePropertyChangePtr updateChange;
+        Qt3DCore::QPropertyUpdatedChangePtr updateChange;
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         updateChange->setPropertyName("enabled");
         updateChange->setValue(true);
         backendAxis.sceneChangeEvent(updateChange);
@@ -155,7 +155,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendAxis.axisValue(), 454.0f);
         QCOMPARE(arbiter.events.count(), 1);
-        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "value");
         QCOMPARE(change->value().toFloat(), backendAxis.axisValue());
 

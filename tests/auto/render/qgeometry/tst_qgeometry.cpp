@@ -36,7 +36,7 @@
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
 
-#include <Qt3DCore/QNodePropertyChange>
+#include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DCore/QNodeAddedPropertyChange>
 #include <Qt3DCore/QNodeRemovedPropertyChange>
 

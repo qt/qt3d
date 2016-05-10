@@ -45,7 +45,7 @@
 #include <Qt3DInput/qmousehandler.h>
 #include <Qt3DInput/private/qmousehandler_p.h>
 #include <Qt3DInput/qmousedevice.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qbackendnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -101,7 +101,7 @@ void MouseHandler::wheelEvent(const QWheelEventPtr &event)
 void MouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == PropertyUpdated) {
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("device")) {
             const QNodeId newId = propertyChange->value().value<QNodeId>();
             if (m_mouseDevice != newId) {

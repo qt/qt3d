@@ -40,7 +40,7 @@
 #include "light_p.h"
 #include "qabstractlight.h"
 #include "qabstractlight_p.h"
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <private/abstractrenderer_p.h>
 #include <private/nodemanagers_p.h>
 #include <private/qbackendnode_p.h>

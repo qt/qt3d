@@ -40,7 +40,7 @@
 #include "qaction.h"
 #include "qaction_p.h"
 #include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
@@ -158,7 +158,7 @@ QVector<QAbstractActionInput *> QAction::inputs() const
 void QAction::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QAction);
-    Qt3DCore::QNodePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(change);
+    Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
     if (e->type() == Qt3DCore::PropertyUpdated && e->propertyName() == QByteArrayLiteral("active")) {
         d->setActive(e->value().toBool());
     }

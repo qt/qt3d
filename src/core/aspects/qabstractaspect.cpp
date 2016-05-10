@@ -45,7 +45,7 @@
 #include <private/qchangearbiter_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/corelogging_p.h>
 
 QT_BEGIN_NAMESPACE

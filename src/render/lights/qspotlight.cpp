@@ -39,7 +39,7 @@
 
 #include "qspotlight.h"
 #include "qspotlight_p.h"
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 

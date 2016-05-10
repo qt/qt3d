@@ -42,7 +42,7 @@
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -69,7 +69,7 @@ void CameraSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     qCDebug(Render::Framegraph) << Q_FUNC_INFO;
     if (e->type() == PropertyUpdated) {
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("camera"))
             m_cameraUuid = propertyChange->value().value<QNodeId>();
         markDirty(AbstractRenderer::AllDirty);

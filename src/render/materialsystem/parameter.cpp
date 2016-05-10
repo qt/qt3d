@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "parameter_p.h"
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/private/qparameter_p.h>
 #include <Qt3DRender/qtexture.h>
@@ -73,7 +73,7 @@ void Parameter::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
 
 void Parameter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
+    QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
 
     if (e->type() == PropertyUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("name")) {

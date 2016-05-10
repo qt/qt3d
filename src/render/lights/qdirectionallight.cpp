@@ -39,7 +39,7 @@
 
 #include "qdirectionallight.h"
 #include "qdirectionallight_p.h"
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 

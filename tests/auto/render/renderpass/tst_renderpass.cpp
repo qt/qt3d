@@ -30,7 +30,7 @@
 #include <qbackendnodetester.h>
 #include <Qt3DRender/private/renderpass_p.h>
 
-#include <Qt3DCore/QNodePropertyChange>
+#include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DCore/QNodeAddedPropertyChange>
 #include <Qt3DCore/QNodeRemovedPropertyChange>
 

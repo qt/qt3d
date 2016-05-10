@@ -37,42 +37,79 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QSCENEPROPERTYCHANGE_P_H
-#define QT3DCORE_QSCENEPROPERTYCHANGE_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <private/qstaticpropertyupdatedchangebase_p.h>
-#include <QVariant>
+#include "qpropertyupdatedchange.h"
+#include "qpropertyupdatedchange_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QNodePropertyChange;
-
-class QNodePropertyChangePrivate : public QStaticPropertyUpdatedChangeBasePrivate
+/*!
+    \class Qt3DCore::QPropertyUpdatedChange
+    \inmodule Qt3DCore
+*/
+QPropertyUpdatedChangePrivate::QPropertyUpdatedChangePrivate()
+    : QStaticPropertyUpdatedChangeBasePrivate()
 {
-public:
-    QNodePropertyChangePrivate();
-    virtual ~QNodePropertyChangePrivate();
+}
 
-    Q_DECLARE_PUBLIC(QNodePropertyChange)
+QPropertyUpdatedChangePrivate::~QPropertyUpdatedChangePrivate()
+{
+}
 
-    QVariant m_value;
-};
+/*!
+ * \class Qt3DCore::QPropertyUpdatedChange
+ * \inmodule Qt3DCore
+ *
+ * TODO
+ */
+
+/*!
+ * \typedef Qt3DCore::QPropertyUpdatedChangePtr
+ * \relates Qt3DCore::QPropertyUpdatedChange
+ *
+ * A shared pointer for QPropertyUpdatedChange.
+ */
+
+/*!
+ * Constructs a new QPropertyUpdatedChange with \a subjectId and \a priority.
+ */
+QPropertyUpdatedChange::QPropertyUpdatedChange(QNodeId subjectId)
+    : QStaticPropertyUpdatedChangeBase(*new QPropertyUpdatedChangePrivate, subjectId)
+{
+}
+
+/*!
+ * \internal
+ */
+QPropertyUpdatedChange::QPropertyUpdatedChange(QPropertyUpdatedChangePrivate &dd,
+                                         QNodeId subjectId)
+    : QStaticPropertyUpdatedChangeBase(dd, subjectId)
+{
+}
+
+QPropertyUpdatedChange::~QPropertyUpdatedChange()
+{
+}
+
+/*!
+ * \return property value.
+ */
+QVariant QPropertyUpdatedChange::value() const
+{
+    Q_D(const QPropertyUpdatedChange);
+    return d->m_value;
+}
+
+/*!
+ * Set the property change \a value.
+ */
+void QPropertyUpdatedChange::setValue(const QVariant &value)
+{
+    Q_D(QPropertyUpdatedChange);
+    d->m_value = value;
+}
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3DCORE_QSCENEPROPERTYCHANGE_P_H

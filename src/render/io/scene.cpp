@@ -39,7 +39,7 @@
 
 #include "scene_p.h"
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qbackendnodepropertychange.h>
@@ -73,7 +73,7 @@ void Scene::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change
 void Scene::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == PropertyUpdated) {
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("source")) {
             m_source = propertyChange->value().toUrl();
             m_sceneManager->addSceneData(m_source, peerId());

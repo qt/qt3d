@@ -100,7 +100,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "axis");
         QCOMPARE(change->value().toInt(), 350);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
@@ -117,7 +117,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "sourceDevice");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), device->id());
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);

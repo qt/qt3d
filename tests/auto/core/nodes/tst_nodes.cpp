@@ -31,7 +31,7 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qcomponentaddedchange.h>
 #include <Qt3DCore/qcomponentremovedchange.h>
 #include <Qt3DCore/qnodedestroyedchange.h>
@@ -857,7 +857,7 @@ void tst_Nodes::changeCustomProperty()
     // THEN
     QCOMPARE(spy.events.size(), 1);
     QVERIFY(spy.events.first().wasLocked());
-    Qt3DCore::QNodePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodePropertyChange>();
+    Qt3DCore::QPropertyUpdatedChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QPropertyUpdatedChange>();
     QCOMPARE(event->type(), Qt3DCore::PropertyUpdated);
     QCOMPARE(event->propertyName(), "customProperty");
     QCOMPARE(event->value().toString(), QString("foo"));

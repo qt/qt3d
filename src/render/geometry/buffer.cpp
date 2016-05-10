@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "buffer_p.h"
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/qbuffer_p.h>
@@ -114,7 +114,7 @@ void Buffer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chang
 void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == PropertyUpdated) {
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         QByteArray propertyName = propertyChange->propertyName();
         if (propertyName == QByteArrayLiteral("data")) {
             QByteArray newData = propertyChange->value().value<QByteArray>();

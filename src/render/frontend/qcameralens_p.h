@@ -54,7 +54,7 @@
 #include <Qt3DCore/private/qcomponent_p.h>
 #include "qcameralens.h"
 
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <QtGui/qmatrix4x4.h>
 

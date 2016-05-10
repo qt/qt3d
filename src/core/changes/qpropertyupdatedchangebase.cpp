@@ -59,7 +59,7 @@ QPropertyUpdatedChangeBasePrivate::~QPropertyUpdatedChangeBasePrivate()
  *
  * The QPropertyUpdatedChangeBase class is the base class for all QSceneChange events that
  * have the changeType() PropertyUpdated. You should not need to instantiate this class.
- * Usually you should be using one of its subclasses such as QNodePropertyChange or
+ * Usually you should be using one of its subclasses such as QPropertyUpdatedChange or
  * QTypedNodePropertyChange.
  *
  * You can subclass this to create your own node update types for communication between

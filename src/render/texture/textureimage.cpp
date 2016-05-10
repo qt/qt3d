@@ -39,7 +39,7 @@
 
 #include "textureimage_p.h"
 #include <Qt3DCore/qbackendnodepropertychange.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/qabstracttextureimage_p.h>
@@ -103,7 +103,7 @@ void TextureImage::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
 
 void TextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
+    QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
 
     if (e->type() == PropertyUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("layer")) {

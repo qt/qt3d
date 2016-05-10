@@ -124,7 +124,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "vertexBaseType");
         QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3DRender::QAttribute::Double));
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
@@ -137,7 +137,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "vertexSize");
         QCOMPARE(change->value().value<uint>(), 4U);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
@@ -150,7 +150,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "name");
         QCOMPARE(change->value().value<QString>(), QStringLiteral("Duntov"));
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
@@ -163,7 +163,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "count");
         QCOMPARE(change->value().value<uint>(), 883U);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
@@ -176,7 +176,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "byteStride");
         QCOMPARE(change->value().value<uint>(), 1340U);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
@@ -189,7 +189,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "byteOffset");
         QCOMPARE(change->value().value<uint>(), 1584U);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
@@ -202,7 +202,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "divisor");
         QCOMPARE(change->value().value<uint>(), 1450U);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
@@ -215,7 +215,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "attributeType");
         QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3DRender::QAttribute::IndexAttribute));
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
@@ -229,7 +229,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "buffer");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), buf.id());
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
@@ -243,7 +243,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "buffer");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), buf2.id());
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);

@@ -42,7 +42,7 @@
 
 #include <QtGui/qwindow.h>
 #include <QtGui/qoffscreensurface.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -167,8 +167,8 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
             if (window) {
                 QObject::connect(window, &QWindow::widthChanged, [=] (int width) {
                     if (d->m_changeArbiter != nullptr) {
-                        Qt3DCore::QNodePropertyChangePtr change(
-                                    new Qt3DCore::QNodePropertyChange(id()));
+                        Qt3DCore::QPropertyUpdatedChangePtr change(
+                                    new Qt3DCore::QPropertyUpdatedChange(id()));
 
                         change->setPropertyName("width");
                         change->setValue(QVariant::fromValue(width));
@@ -177,8 +177,8 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
                 });
                 QObject::connect(window, &QWindow::heightChanged, [=] (int height) {
                     if (d->m_changeArbiter != nullptr) {
-                        Qt3DCore::QNodePropertyChangePtr change(
-                                    new Qt3DCore::QNodePropertyChange(id()));
+                        Qt3DCore::QPropertyUpdatedChangePtr change(
+                                    new Qt3DCore::QPropertyUpdatedChange(id()));
 
                         change->setPropertyName("height");
                         change->setValue(QVariant::fromValue(height));

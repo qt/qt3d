@@ -41,7 +41,7 @@
 #include <Qt3DRender/qrendertarget.h>
 #include <Qt3DRender/private/qrendertarget_p.h>
 #include <Qt3DRender/qrendertargetoutput.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <QVariant>

@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QSCENEPROPERTYCHANGE_H
-#define QT3DCORE_QSCENEPROPERTYCHANGE_H
+#ifndef QT3DCORE_QPROPERTYUPDATEDCHANGE_H
+#define QT3DCORE_QPROPERTYUPDATEDCHANGE_H
 
 #include <Qt3DCore/qstaticpropertyupdatedchangebase.h>
 
@@ -46,26 +46,26 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QNodePropertyChangePrivate;
+class QPropertyUpdatedChangePrivate;
 
-class QT3DCORESHARED_EXPORT QNodePropertyChange : public QStaticPropertyUpdatedChangeBase
+class QT3DCORESHARED_EXPORT QPropertyUpdatedChange : public QStaticPropertyUpdatedChangeBase
 {
 public:
-    QNodePropertyChange(QNodeId subjectId);
-    virtual ~QNodePropertyChange();
+    QPropertyUpdatedChange(QNodeId subjectId);
+    virtual ~QPropertyUpdatedChange();
 
     QVariant value() const;
     void setValue(const QVariant &value);
 
 protected:
-    Q_DECLARE_PRIVATE(QNodePropertyChange)
-    QNodePropertyChange(QNodePropertyChangePrivate &dd, QNodeId subjectId);
+    Q_DECLARE_PRIVATE(QPropertyUpdatedChange)
+    QPropertyUpdatedChange(QPropertyUpdatedChangePrivate &dd, QNodeId subjectId);
 };
 
-typedef QSharedPointer<QNodePropertyChange> QNodePropertyChangePtr;
+typedef QSharedPointer<QPropertyUpdatedChange> QPropertyUpdatedChangePtr;
 
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QSCENEPROPERTYCHANGE_H
+#endif // QT3DCORE_QPROPERTYUPDATEDCHANGE_H

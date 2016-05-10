@@ -37,7 +37,7 @@
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qfilterkey.h>
 
-#include <Qt3DCore/QNodePropertyChange>
+#include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DCore/QNodeAddedPropertyChange>
 #include <Qt3DCore/QNodeRemovedPropertyChange>
 

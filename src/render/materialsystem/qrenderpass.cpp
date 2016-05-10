@@ -43,7 +43,7 @@
 #include "qparameter.h"
 #include "qfilterkey.h"
 #include "qrenderstate.h"
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/private/qnode_p.h>

@@ -40,7 +40,7 @@
 #include "qtextureimage.h"
 #include "qtextureimage_p.h"
 #include "qabstracttextureimage_p.h"
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -138,7 +138,7 @@ QTextureImageDataGeneratorPtr QTextureImage::dataGenerator() const
 
 void QTextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
-    Qt3DCore::QNodePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(change);
+    Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
 
     if (e->propertyName() == QByteArrayLiteral("status"))
         setStatus(static_cast<QTextureImage::Status>(e->value().toInt()));

@@ -41,7 +41,7 @@
 #include <Qt3DInput/qinputsequence.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/private/qinputsequence_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <QDateTime>
@@ -124,7 +124,7 @@ void InputSequence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
     case Qt3DCore::PropertyUpdated: {
-        const auto change = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
+        const auto change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("timeout")) {
             m_timeout = change->value().toInt();
         } else if (change->propertyName() == QByteArrayLiteral("buttonInterval")) {

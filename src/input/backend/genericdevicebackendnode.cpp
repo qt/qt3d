@@ -41,7 +41,7 @@
 #include "inputhandler_p.h"
 #include "inputmanagers_p.h"
 
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
 
 QT_BEGIN_NAMESPACE
@@ -61,7 +61,7 @@ GenericDeviceBackendNode::~GenericDeviceBackendNode()
 
 void GenericDeviceBackendNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
+    Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
     if (e->type() == Qt3DCore::PropertyUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("axisEvent")) {
             QPair<int, qreal> val = propertyChange->value().value<QPair<int, qreal>>();

@@ -49,7 +49,7 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/qabstracttexture_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
@@ -527,7 +527,7 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     // modifying one of its properties
     switch (e->type()) {
     case PropertyUpdated: {
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("width")) {
             setSize(propertyChange->value().toInt(), m_height, m_depth);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("height")) {

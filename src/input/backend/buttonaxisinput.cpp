@@ -41,7 +41,7 @@
 #include <Qt3DInput/qbuttonaxisinput.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/private/qbuttonaxisinput_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -74,7 +74,7 @@ void ButtonAxisInput::cleanup()
 void ButtonAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
+        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("scale")) {
             m_scale = propertyChange->value().toFloat();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("buttons")) {

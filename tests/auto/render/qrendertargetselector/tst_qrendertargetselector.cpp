@@ -117,7 +117,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "target");
         QCOMPARE(change->subjectId(), renderTargetSelector->id());
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), target->id());
@@ -138,7 +138,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "target");
         QCOMPARE(change->subjectId(), renderTargetSelector->id());
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), Qt3DCore::QNodeId());
@@ -154,7 +154,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "outputs");
         QCOMPARE(change->subjectId(), renderTargetSelector->id());
         QCOMPARE(change->value().value<QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint> >(), outputs);
@@ -175,7 +175,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "outputs");
         QCOMPARE(change->subjectId(), renderTargetSelector->id());
         QCOMPARE(change->value().value<QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint> >(), QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint>());

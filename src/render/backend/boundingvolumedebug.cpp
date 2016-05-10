@@ -40,7 +40,7 @@
 #include "boundingvolumedebug_p.h"
 #include <Qt3DRender/private/qboundingvolumedebug_p.h>
 #include <Qt3DCore/qbackendnodepropertychange.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -76,7 +76,7 @@ void BoundingVolumeDebug::updateFromPeer(Qt3DCore::QNode *peer)
 
 void BoundingVolumeDebug::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    const Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
+    const Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
     const QByteArray propertyName = propertyChange->propertyName();
 
     if (propertyChange->type() == Qt3DCore::PropertyUpdated) {

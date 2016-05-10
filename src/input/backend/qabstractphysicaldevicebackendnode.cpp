@@ -48,7 +48,7 @@
 #include <Qt3DInput/qphysicaldevicecreatedchange.h>
 #include <Qt3DInput/private/qinputaspect_p.h>
 
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/private/qabstractaspect_p.h>

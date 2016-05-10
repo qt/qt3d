@@ -43,7 +43,7 @@
 #include <Qt3DRender/qrendertargetselector.h>
 #include <Qt3DRender/private/qrendertargetselector_p.h>
 #include <Qt3DRender/qrendertarget.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/qrendertargetoutput.h>
 
@@ -72,7 +72,7 @@ void RenderTargetSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     qCDebug(Render::Framegraph) << Q_FUNC_INFO;
     if (e->type() == PropertyUpdated) {
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("target"))
             m_renderTargetUuid = propertyChange->value().value<QNodeId>();
         else if (propertyChange->propertyName() == QByteArrayLiteral("outputs"))

@@ -39,7 +39,7 @@
 
 #include "qabstracttextureimage.h"
 #include "qabstracttextureimage_p.h"
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -193,7 +193,7 @@ void QAbstractTextureImage::notifyDataGeneratorChanged()
 {
     Q_D(QAbstractTextureImage);
     if (d->m_changeArbiter != nullptr) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(id()));
+        QPropertyUpdatedChangePtr change(new QPropertyUpdatedChange(id()));
         change->setPropertyName("dataGenerator");
         change->setValue(QVariant::fromValue(dataGenerator()));
         d->notifyObservers(change);

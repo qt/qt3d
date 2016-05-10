@@ -42,7 +42,7 @@
 
 #include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qparameter.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 

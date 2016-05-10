@@ -30,10 +30,10 @@
 #include <qbackendnodetester.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DInput/private/analogaxisinput_p.h>
 #include <Qt3DInput/QAnalogAxisInput>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "testdevice.h"
 
 class tst_AnalogAxisInput: public Qt3DCore::QBackendNodeTester
@@ -96,7 +96,7 @@ private Q_SLOTS:
         Qt3DInput::Input::AnalogAxisInput backendAxisInput;
 
         // WHEN
-        Qt3DCore::QNodePropertyChangePtr updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::QNodeId()));
+        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         updateChange->setValue(32);
         updateChange->setPropertyName("axis");
         backendAxisInput.sceneChangeEvent(updateChange);
@@ -105,7 +105,7 @@ private Q_SLOTS:
         QCOMPARE(backendAxisInput.axis(), 32);
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         updateChange->setPropertyName("enabled");
         updateChange->setValue(true);
         backendAxisInput.sceneChangeEvent(updateChange);
@@ -115,7 +115,7 @@ private Q_SLOTS:
 
         // WHEN
         TestDevice device;
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         updateChange->setPropertyName("sourceDevice");
         updateChange->setValue(QVariant::fromValue(device.id()));
         backendAxisInput.sceneChangeEvent(updateChange);

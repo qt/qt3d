@@ -40,7 +40,7 @@
 #include "qparameter.h"
 #include "qparameter_p.h"
 #include <Qt3DRender/private/renderlogging_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qtexture.h>
 
 QT_BEGIN_NAMESPACE

@@ -108,9 +108,9 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        Qt3DCore::QNodePropertyChangePtr change;
+        Qt3DCore::QPropertyUpdatedChangePtr change;
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "translation");
         QCOMPARE(change->value().value<QVector3D>(), QVector3D(454.0f, 427.0f, 383.0f));
 
@@ -123,7 +123,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "rotation");
         QCOMPARE(change->value().value<QQuaternion>(), q);
 
@@ -135,7 +135,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "scale3D");
         QCOMPARE(change->value().value<QVector3D>(), QVector3D(883.0f, 1200.0f, 1340.0f));
 
@@ -150,13 +150,13 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 3);
-        change = arbiter.events.takeFirst().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "scale3D");
         QCOMPARE(change->value().value<QVector3D>(), QVector3D(1.0f, 1.0f, 1.0f));
-        change = arbiter.events.takeFirst().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "rotation");
         QCOMPARE(change->value().value<QQuaternion>(), QQuaternion());
-        change = arbiter.events.takeFirst().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "translation");
         QCOMPARE(change->value().value<QVector3D>(), QVector3D());
 
@@ -168,7 +168,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "rotation");
         QCOMPARE(change->value().value<QQuaternion>().toEulerAngles().x(), 20.0f);
 

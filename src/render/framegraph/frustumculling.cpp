@@ -39,7 +39,7 @@
 
 #include "frustumculling_p.h"
 #include <Qt3DRender/qfrustumculling.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 

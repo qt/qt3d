@@ -33,7 +33,7 @@
 #include <Qt3DCore/private/qpostman_p.h>
 #include <Qt3DCore/qcomponentaddedchange.h>
 #include <Qt3DCore/qcomponentremovedchange.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/qscenechange.h>
@@ -84,7 +84,7 @@ public:
 
     void sendNodeUpdatedNotification()
     {
-        Qt3DCore::QNodePropertyChangePtr e(new Qt3DCore::QNodePropertyChange(id()));
+        Qt3DCore::QPropertyUpdatedChangePtr e(new Qt3DCore::QPropertyUpdatedChange(id()));
         e->setPropertyName("PropertyUpdated");
         Qt3DCore::QNodePrivate::get(this)->notifyObservers(e);
     }

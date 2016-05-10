@@ -47,7 +47,7 @@
 #include "qeffect.h"
 #include <Qt3DRender/private/qmaterial_p.h>
 
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
@@ -87,7 +87,7 @@ void Material::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
     switch (e->type()) {
     case PropertyUpdated: {
-        const auto change = qSharedPointerCast<QNodePropertyChange>(e);
+        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("effect"))
             m_effectUuid = change->value().value<QNodeId>();
         break;

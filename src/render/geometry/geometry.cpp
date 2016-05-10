@@ -41,7 +41,7 @@
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/private/qgeometry_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
@@ -102,7 +102,7 @@ void Geometry::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
     case PropertyUpdated: {
         // Note: doesn't set dirtyness as this parameter changing doesn't need a new VAO update.
-        const auto change = qSharedPointerCast<QNodePropertyChange>(e);
+        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("boundingVolumePositionAttribute")) {
             m_boundingPositionAttribute = change->value().value<QNodeId>();
             break;

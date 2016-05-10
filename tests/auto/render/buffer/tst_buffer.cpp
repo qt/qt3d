@@ -30,7 +30,7 @@
 #include <qbackendnodetester.h>
 #include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include "testpostmanarbiter.h"
 #include "testrenderer.h"
@@ -137,7 +137,7 @@ private Q_SLOTS:
         QVERIFY(!renderBuffer.isDirty());
 
         // WHEN
-        Qt3DCore::QNodePropertyChangePtr updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::QNodeId()));
+        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         updateChange->setValue(static_cast<int>(Qt3DRender::QBuffer::IndexBuffer));
         updateChange->setPropertyName("type");
         renderBuffer.sceneChangeEvent(updateChange);
@@ -151,7 +151,7 @@ private Q_SLOTS:
         QVERIFY(!renderBuffer.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         updateChange->setValue(static_cast<int>(Qt3DRender::QBuffer::DynamicRead));
         updateChange->setPropertyName("usage");
         renderBuffer.sceneChangeEvent(updateChange);
@@ -164,7 +164,7 @@ private Q_SLOTS:
         QVERIFY(!renderBuffer.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         updateChange->setValue(QByteArrayLiteral("LS9"));
         updateChange->setPropertyName("data");
         renderBuffer.sceneChangeEvent(updateChange);
@@ -180,7 +180,7 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DRender::QBufferDataGeneratorPtr functor(new TestFunctor(355));
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         updateChange->setValue(QVariant::fromValue(functor));
         updateChange->setPropertyName("dataGenerator");
         renderBuffer.sceneChangeEvent(updateChange);
@@ -193,7 +193,7 @@ private Q_SLOTS:
         QVERIFY(!renderBuffer.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         updateChange->setValue(true);
         updateChange->setPropertyName("syncData");
         renderBuffer.sceneChangeEvent(updateChange);
@@ -209,7 +209,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.count(), 1);
-        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "data");
         QCOMPARE(change->value().toByteArray(), QByteArrayLiteral("454"));
 

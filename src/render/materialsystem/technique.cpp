@@ -48,7 +48,7 @@
 #include <Qt3DRender/private/qtechnique_p.h>
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
@@ -94,7 +94,7 @@ void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
     case PropertyUpdated: {
-        const auto change = qSharedPointerCast<QNodePropertyChange>(e);
+        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("graphicsApiFilterData")) {
             GraphicsApiFilterData filterData = change->value().value<GraphicsApiFilterData>();
             m_graphicsApiFilterData = filterData;

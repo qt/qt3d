@@ -39,7 +39,7 @@
 #include "qaxis.h"
 #include "qaxis_p.h"
 #include <Qt3DInput/qabstractaxisinput.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
@@ -116,7 +116,7 @@ float QAxis::value() const
 void QAxis::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QAxis);
-    Qt3DCore::QNodePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(change);
+    Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
     if (e->type() == Qt3DCore::PropertyUpdated && e->propertyName() == QByteArrayLiteral("value")) {
         d->setValue(e->value().toFloat());
     }

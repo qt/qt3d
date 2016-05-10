@@ -104,7 +104,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "buttons");
         QCOMPARE(change->value().value<QVector<int>>(), buttons);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
@@ -117,7 +117,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "scale");
         QCOMPARE(change->value().toFloat(), 1340.0f);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
@@ -134,7 +134,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "sourceDevice");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), device->id());
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);

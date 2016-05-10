@@ -40,7 +40,7 @@
 #include "rendersurfaceselector_p.h"
 #include <Qt3DRender/qrendersurfaceselector.h>
 #include <Qt3DRender/private/qrendersurfaceselector_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <QtGui/qwindow.h>
 #include <QtGui/qscreen.h>
@@ -100,7 +100,7 @@ void RenderSurfaceSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     qCDebug(Render::Framegraph) << Q_FUNC_INFO;
     if (e->type() == PropertyUpdated) {
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("surface"))
             m_surface = surfaceFromQObject(propertyChange->value().value<QObject *>());
         else if (propertyChange->propertyName() == QByteArrayLiteral("externalRenderTargetSize"))

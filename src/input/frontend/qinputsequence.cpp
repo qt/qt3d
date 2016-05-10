@@ -42,7 +42,7 @@
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/qabstractactioninput.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 

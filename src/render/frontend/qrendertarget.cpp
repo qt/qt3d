@@ -40,7 +40,7 @@
 #include "qrendertarget.h"
 #include "qrendertarget_p.h"
 #include "qrendertargetoutput.h"
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 

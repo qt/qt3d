@@ -37,79 +37,42 @@
 **
 ****************************************************************************/
 
-#include "qnodepropertychange.h"
-#include "qnodepropertychange_p.h"
+#ifndef QT3DCORE_QPROPERTYUPDATEDCHANGE_P_H
+#define QT3DCORE_QPROPERTYUPDATEDCHANGE_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <private/qstaticpropertyupdatedchangebase_p.h>
+#include <QVariant>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-/*!
-    \class Qt3DCore::QNodePropertyChange
-    \inmodule Qt3DCore
-*/
-QNodePropertyChangePrivate::QNodePropertyChangePrivate()
-    : QStaticPropertyUpdatedChangeBasePrivate()
+class QPropertyUpdatedChange;
+
+class QPropertyUpdatedChangePrivate : public QStaticPropertyUpdatedChangeBasePrivate
 {
-}
+public:
+    QPropertyUpdatedChangePrivate();
+    virtual ~QPropertyUpdatedChangePrivate();
 
-QNodePropertyChangePrivate::~QNodePropertyChangePrivate()
-{
-}
+    Q_DECLARE_PUBLIC(QPropertyUpdatedChange)
 
-/*!
- * \class Qt3DCore::QNodePropertyChange
- * \inmodule Qt3DCore
- *
- * TODO
- */
-
-/*!
- * \typedef Qt3DCore::QNodePropertyChangePtr
- * \relates Qt3DCore::QNodePropertyChange
- *
- * A shared pointer for QNodePropertyChange.
- */
-
-/*!
- * Constructs a new QNodePropertyChange with \a subjectId and \a priority.
- */
-QNodePropertyChange::QNodePropertyChange(QNodeId subjectId)
-    : QStaticPropertyUpdatedChangeBase(*new QNodePropertyChangePrivate, subjectId)
-{
-}
-
-/*!
- * \internal
- */
-QNodePropertyChange::QNodePropertyChange(QNodePropertyChangePrivate &dd,
-                                         QNodeId subjectId)
-    : QStaticPropertyUpdatedChangeBase(dd, subjectId)
-{
-}
-
-QNodePropertyChange::~QNodePropertyChange()
-{
-}
-
-/*!
- * \return property value.
- */
-QVariant QNodePropertyChange::value() const
-{
-    Q_D(const QNodePropertyChange);
-    return d->m_value;
-}
-
-/*!
- * Set the property change \a value.
- */
-void QNodePropertyChange::setValue(const QVariant &value)
-{
-    Q_D(QNodePropertyChange);
-    d->m_value = value;
-}
+    QVariant m_value;
+};
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3DCORE_QPROPERTYUPDATEDCHANGE_P_H

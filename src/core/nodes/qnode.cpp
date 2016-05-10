@@ -42,7 +42,7 @@
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qdynamicpropertyupdatedchange.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/qnodedestroyedchange.h>
@@ -383,7 +383,7 @@ void QNodePrivate::setArbiter(QLockableObserverInterface *arbiter)
  * aspects that correspond to this QNode.
  *
  * For the common case of a QObject property change, QNode handles this for you
- * automatically by sending a QNodePropertyChange event to the backend nodes.
+ * automatically by sending a QPropertyUpdatedChange event to the backend nodes.
  * You only need to call this function if you wish to send a specific type of
  * change in place of the automatic handling.
  */
@@ -432,7 +432,7 @@ void QNodePrivate::notifyPropertyChange(const char *name, const QVariant &value)
     if (m_blockNotifications)
         return;
 
-    QNodePropertyChangePtr e(new QNodePropertyChange(m_id));
+    QPropertyUpdatedChangePtr e(new QPropertyUpdatedChange(m_id));
     e->setPropertyName(name);
     e->setValue(value);
     notifyObservers(e);

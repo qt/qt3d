@@ -40,7 +40,7 @@
 #include "viewportnode_p.h"
 #include <Qt3DRender/qviewport.h>
 #include <Qt3DRender/private/qviewport_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -109,7 +109,7 @@ void ViewportNode::setYMax(float yMax)
 void ViewportNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == PropertyUpdated) {
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("normalizedRect")) {
             QRectF normalizedRect = propertyChange->value().value<QRectF>();
             setXMin(normalizedRect.x());

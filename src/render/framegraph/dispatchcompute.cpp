@@ -39,7 +39,7 @@
 
 #include "dispatchcompute_p.h"
 #include <Qt3DRender/private/qdispatchcompute_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -79,7 +79,7 @@ void DispatchCompute::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBaseP
 void DispatchCompute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
+        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("workGroupX"))
             m_workGroups[0] = propertyChange->value().toInt();
         else if (propertyChange->propertyName() == QByteArrayLiteral("workGroupY"))

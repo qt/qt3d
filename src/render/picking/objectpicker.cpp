@@ -42,7 +42,7 @@
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/private/qobjectpicker_p.h>
 #include <Qt3DRender/qattribute.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qbackendnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -85,7 +85,7 @@ void ObjectPicker::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
 void ObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::PropertyUpdated) {
-        const Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
+        const Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
 
         if (propertyChange->propertyName() == QByteArrayLiteral("hoverEnabled")) {
             m_hoverEnabled = propertyChange->value().toBool();

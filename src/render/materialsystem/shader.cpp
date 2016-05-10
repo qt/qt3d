@@ -49,7 +49,7 @@
 #include <Qt3DRender/private/graphicscontext_p.h>
 #include <Qt3DRender/private/qshaderprogram_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -141,7 +141,7 @@ QVector<QByteArray> Shader::shaderCode() const
 void Shader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == PropertyUpdated) {
-        QNodePropertyChangePtr propertyChange = e.staticCast<QNodePropertyChange>();
+        QPropertyUpdatedChangePtr propertyChange = e.staticCast<QPropertyUpdatedChange>();
         QVariant propertyValue = propertyChange->value();
 
         if (propertyChange->propertyName() == QByteArrayLiteral("vertexSourceCode")) {

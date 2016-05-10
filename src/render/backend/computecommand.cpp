@@ -39,7 +39,7 @@
 
 #include "computecommand_p.h"
 #include <Qt3DCore/qnode.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qcomputecommand.h>
 #include <Qt3DRender/private/qcomputecommand_p.h>
 #include <Qt3DRender/private/abstractrenderer_p.h>
@@ -83,7 +83,7 @@ void ComputeCommand::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePt
 
 void ComputeCommand::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
+    Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
     if (e->type() == Qt3DCore::PropertyUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("workGroupX"))
             m_workGroups[0] = propertyChange->value().toInt();

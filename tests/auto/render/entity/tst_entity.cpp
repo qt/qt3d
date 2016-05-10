@@ -30,7 +30,7 @@
 #include <Qt3DRender/private/entity_p.h>
 
 #include <Qt3DRender/QCameraLens>
-#include <Qt3DCore/QNodePropertyChange>
+#include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DCore/QComponentAddedChange>
 #include <Qt3DCore/QComponentRemovedChange>
 #include <Qt3DCore/QTransform>

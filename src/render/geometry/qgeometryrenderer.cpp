@@ -41,7 +41,7 @@
 #include "qgeometryrenderer_p.h"
 
 #include <private/qcomponent_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
@@ -422,7 +422,7 @@ void QGeometryRenderer::setGeometryFactory(const QGeometryFactoryPtr &factory)
         return;
     d->m_geometryFactory = factory;
     if (d->m_changeArbiter != nullptr) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(id()));
+        QPropertyUpdatedChangePtr change(new QPropertyUpdatedChange(id()));
         change->setPropertyName("geometryFactory");
         change->setValue(QVariant::fromValue(d->m_geometryFactory));
         d->notifyObservers(change);

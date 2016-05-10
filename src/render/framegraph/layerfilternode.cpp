@@ -40,7 +40,7 @@
 #include "layerfilternode_p.h"
 #include "qlayerfilter.h"
 #include <Qt3DRender/private/qlayerfilter_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 

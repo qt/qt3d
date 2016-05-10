@@ -40,7 +40,7 @@
 #include "axissetting_p.h"
 #include <Qt3DInput/qaxissetting.h>
 #include <Qt3DInput/private/qaxissetting_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -88,7 +88,7 @@ void AxisSetting::cleanup()
 void AxisSetting::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QNodePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
+        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("deadZoneRadius")) {
             m_deadZoneRadius = propertyChange->value().toFloat();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("axes")) {

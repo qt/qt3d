@@ -41,7 +41,7 @@
 #include "qtechnique_p.h"
 #include "qparameter.h"
 #include "qgraphicsapifilter.h"
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
@@ -78,7 +78,7 @@ QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
 void QTechniquePrivate::_q_graphicsApiFilterChanged()
 {
     if (m_changeArbiter != nullptr) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(m_id));
+        QPropertyUpdatedChangePtr change(new QPropertyUpdatedChange(m_id));
         change->setPropertyName("graphicsApiFilterData");
         change->setValue(QVariant::fromValue(QGraphicsApiFilterPrivate::get(const_cast<QGraphicsApiFilter *>(&m_graphicsApiFilter))->m_data));
         notifyObservers(change);

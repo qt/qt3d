@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "sortpolicy_p.h"
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/qsortpolicy_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -55,7 +55,7 @@ SortPolicy::SortPolicy()
 
 void SortPolicy::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
+    QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
     if (propertyChange->propertyName() == QByteArrayLiteral("sortType")) {
         const QSortPolicy::SortType cId = propertyChange->value().value<QSortPolicy::SortType>();
         if (cId == QSortPolicy::StateChangeCost || cId == QSortPolicy::BackToFront || cId == QSortPolicy::Material) {

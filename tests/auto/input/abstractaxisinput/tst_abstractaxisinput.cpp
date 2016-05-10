@@ -30,11 +30,11 @@
 #include <qbackendnodetester.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DInput/private/abstractaxisinput_p.h>
 #include <Qt3DInput/QAbstractAxisInput>
 #include <Qt3DInput/private/qabstractaxisinput_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "testdevice.h"
 
 class DummyAxisInput : public Qt3DInput::QAbstractAxisInput
@@ -121,7 +121,7 @@ private Q_SLOTS:
         DummyAxisInputBackend backendAxisInput;
 
         // WHEN
-        Qt3DCore::QNodePropertyChangePtr updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::QNodeId()));
+        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         updateChange->setPropertyName("enabled");
         updateChange->setValue(true);
         backendAxisInput.sceneChangeEvent(updateChange);
@@ -131,7 +131,7 @@ private Q_SLOTS:
 
         // WHEN
         TestDevice device;
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         updateChange->setPropertyName("sourceDevice");
         updateChange->setValue(QVariant::fromValue(device.id()));
         backendAxisInput.sceneChangeEvent(updateChange);

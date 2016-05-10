@@ -40,7 +40,7 @@
 #include "qsceneloader.h"
 #include "qsceneloader_p.h"
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <QThread>
@@ -74,7 +74,7 @@ QSceneLoader::QSceneLoader(QSceneLoaderPrivate &dd, QNode *parent)
 void QSceneLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QSceneLoader);
-    QNodePropertyChangePtr e = qSharedPointerCast<QNodePropertyChange>(change);
+    QPropertyUpdatedChangePtr e = qSharedPointerCast<QPropertyUpdatedChange>(change);
     if (e->type() == PropertyUpdated) {
         if (e->propertyName() == QByteArrayLiteral("scene")) {
             // If we already have a scene sub tree, delete it

@@ -43,7 +43,7 @@
 #include "qkeyboarddevice.h"
 #include "inputhandler_p.h"
 #include "inputmanagers_p.h"
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qbackendnodepropertychange.h>
 #include <QVariant>
 
@@ -106,7 +106,7 @@ void KeyboardHandler::sceneChangeEvent(const QSceneChangePtr &e)
 {
     bool focusRequest = false;
     if (e->type() == PropertyUpdated) {
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("device")) {
             const QNodeId newId = propertyChange->value().value<QNodeId>();
             if (m_keyboardDevice != newId) {

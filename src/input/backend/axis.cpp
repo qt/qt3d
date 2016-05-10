@@ -41,7 +41,7 @@
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DInput/qabstractaxisinput.h>
 #include <Qt3DInput/private/qaxis_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/qbackendnodepropertychange.h>

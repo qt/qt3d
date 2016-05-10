@@ -35,7 +35,7 @@
 #include <Qt3DInput/QAnalogAxisInput>
 #include <Qt3DInput/private/qaxis_p.h>
 
-#include <Qt3DCore/QNodePropertyChange>
+#include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DCore/QNodeAddedPropertyChange>
 #include <Qt3DCore/QNodeRemovedPropertyChange>
 
@@ -141,7 +141,7 @@ private Q_SLOTS:
 
         // Note: simulate backend change to frontend
         // WHEN
-        Qt3DCore::QNodePropertyChangePtr valueChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::QNodeId()));
+        Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         valueChange->setPropertyName("value");
         valueChange->setValue(383.0f);
         sceneChangeEvent(valueChange);

@@ -42,7 +42,7 @@
 #include <Qt3DRender/private/qboundingvolume_p.h>
 #include <Qt3DRender/private/qgeometryrenderer_p.h>
 #include <Qt3DCore/qbackendnodepropertychange.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/private/qnode_p.h>
@@ -128,7 +128,7 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
     case PropertyUpdated: {
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         QByteArray propertyName = propertyChange->propertyName();
 
         if (propertyName == QByteArrayLiteral("instanceCount")) {

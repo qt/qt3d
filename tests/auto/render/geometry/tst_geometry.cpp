@@ -31,7 +31,7 @@
 #include <Qt3DRender/private/geometry_p.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qattribute.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include "testrenderer.h"
@@ -149,7 +149,7 @@ private Q_SLOTS:
 
         // WHEN
         const Qt3DCore::QNodeId boundingAttrId = Qt3DCore::QNodeId::createId();
-        Qt3DCore::QNodePropertyChangePtr updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::QNodeId()));
+        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         updateChange->setValue(QVariant::fromValue(boundingAttrId));
         updateChange->setPropertyName("boundingVolumePositionAttribute");
         renderGeometry.sceneChangeEvent(updateChange);

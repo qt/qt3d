@@ -41,7 +41,7 @@
 #include "qgeometry_p.h"
 #include <private/qnode_p.h>
 #include <Qt3DRender/qattribute.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 

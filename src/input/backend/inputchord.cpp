@@ -40,7 +40,7 @@
 #include "inputchord_p.h"
 #include <Qt3DInput/qinputchord.h>
 #include <Qt3DInput/private/qinputchord_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 
@@ -102,7 +102,7 @@ void InputChord::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
     case Qt3DCore::PropertyUpdated: {
-        const auto change = qSharedPointerCast<Qt3DCore::QNodePropertyChange>(e);
+        const auto change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("timeout"))
             m_timeout = change->value().toInt();
         break;

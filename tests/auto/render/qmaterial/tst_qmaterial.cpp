@@ -27,7 +27,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
 #include <Qt3DCore/private/qnode_p.h>
@@ -256,7 +256,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "effect");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), effect.id());
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
@@ -278,7 +278,7 @@ private Q_SLOTS:
         // THEN
         qDebug() << Q_FUNC_INFO << arbiter2.events.size();
         QCOMPARE(arbiter2.events.size(), 1);
-        change = arbiter2.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter2.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "effect");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), effect.id());
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
@@ -371,7 +371,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "vertexShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), vertexCode);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
@@ -385,7 +385,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "fragmentShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), fragmentCode);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
@@ -399,7 +399,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "geometryShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), geometryCode);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
@@ -413,7 +413,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "computeShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), computeCode);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
@@ -427,7 +427,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "tessellationControlShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), tesselControlCode);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
@@ -441,7 +441,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "tessellationEvaluationShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), tesselEvalCode);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);

@@ -39,7 +39,7 @@
 
 #include "clearbuffers_p.h"
 #include <Qt3DRender/private/qclearbuffers_p.h>
-#include <Qt3DCore/qnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -77,7 +77,7 @@ void ClearBuffers::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
 void ClearBuffers::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == PropertyUpdated) {
-        QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("buffers")) {
             m_type = static_cast<QClearBuffers::BufferType>(propertyChange->value().toInt());
         } else if (propertyChange->propertyName() == QByteArrayLiteral("clearColor")) {
