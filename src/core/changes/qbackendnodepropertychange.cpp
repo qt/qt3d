@@ -62,8 +62,8 @@ QBackendNodePropertyChangeBasePrivate::~QBackendNodePropertyChangeBasePrivate()
  *
  * TODO
  */
-QBackendNodePropertyChangeBase::QBackendNodePropertyChangeBase(QNodeId subjectId, Priority priority)
-    : QNodePropertyChangeBase(*new QBackendNodePropertyChangeBasePrivate, BackendNode, subjectId, priority)
+QBackendNodePropertyChangeBase::QBackendNodePropertyChangeBase(QNodeId subjectId)
+    : QNodePropertyChangeBase(*new QBackendNodePropertyChangeBasePrivate, subjectId)
 {
     setDeliveryFlags(DeliverToAll);
 }
@@ -72,8 +72,8 @@ QBackendNodePropertyChangeBase::QBackendNodePropertyChangeBase(QNodeId subjectId
  * \internal
  */
 QBackendNodePropertyChangeBase::QBackendNodePropertyChangeBase(QBackendNodePropertyChangeBasePrivate &dd,
-                                                               QNodeId subjectId, Priority priority)
-    : QNodePropertyChangeBase(dd, BackendNode, subjectId, priority)
+                                                               QNodeId subjectId)
+    : QNodePropertyChangeBase(dd, subjectId)
 {
     setDeliveryFlags(DeliverToAll);
 }
@@ -98,8 +98,8 @@ QBackendNodePropertyChangePrivate::~QBackendNodePropertyChangePrivate()
 {
 }
 
-QBackendNodePropertyChange::QBackendNodePropertyChange(QNodeId subjectId, QSceneChange::Priority priority)
-    : QBackendNodePropertyChangeBase(*new QBackendNodePropertyChangePrivate, subjectId, priority)
+QBackendNodePropertyChange::QBackendNodePropertyChange(QNodeId subjectId)
+    : QBackendNodePropertyChangeBase(*new QBackendNodePropertyChangePrivate, subjectId)
 {
 }
 
@@ -107,8 +107,8 @@ QBackendNodePropertyChange::QBackendNodePropertyChange(QNodeId subjectId, QScene
  * \internal
  */
 QBackendNodePropertyChange::QBackendNodePropertyChange(QBackendNodePropertyChangePrivate &dd,
-                                                       QNodeId subjectId, QSceneChange::Priority priority)
-    : QBackendNodePropertyChangeBase(dd, subjectId, priority)
+                                                       QNodeId subjectId)
+    : QBackendNodePropertyChangeBase(dd, subjectId)
 {
 }
 

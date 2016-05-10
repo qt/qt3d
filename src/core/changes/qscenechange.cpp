@@ -63,35 +63,14 @@ namespace Qt3DCore {
 QSceneChangePrivate::QSceneChangePrivate()
     : q_ptr(nullptr)
     , m_subjectId()
-    , m_senderType(QSceneChange::Node)
     , m_deliveryFlags(QSceneChange::BackendNodes)
     , m_type(AllChanges)
-    , m_priority(QSceneChange::Standard)
 {
 }
 
 QSceneChangePrivate::~QSceneChangePrivate()
 {
 }
-
-/*!
- * \enum Qt3DCore::QSceneChange::Priority
- *
- * The priority of scene change.
- *
- * \value High
- * \value Standard
- * \value Low
- */
-
-/*!
- * \enum Qt3DCore::QSceneChange::ObservableType
- *
- * TODO
- *
- * \value Observable
- * \value Node
- */
 
 /*!
  * \class Qt3DCore::QSceneChange
@@ -110,29 +89,24 @@ QSceneChangePrivate::~QSceneChangePrivate()
 /*!
  * Constructs a new QSceneChange with \a type, \a senderType, \a subjectId, and \a priority.
  */
-QSceneChange::QSceneChange(ChangeFlag type, SenderType senderType, QNodeId subjectId,
-                           QSceneChange::Priority priority)
+QSceneChange::QSceneChange(ChangeFlag type, QNodeId subjectId)
     : d_ptr(new QSceneChangePrivate)
 {
     d_ptr->q_ptr = this;
     Q_D(QSceneChange);
     d->m_type = type;
-    d->m_priority = priority;
     d->m_subjectId = subjectId;
-    d->m_senderType = senderType;
 }
 
 /*! \internal */
-QSceneChange::QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, SenderType senderType,
-                           QNodeId subjectId, QSceneChange::Priority priority)
+QSceneChange::QSceneChange(QSceneChangePrivate &dd,
+                           ChangeFlag type, QNodeId subjectId)
     : d_ptr(&dd)
 {
     d_ptr->q_ptr = this;
     Q_D(QSceneChange);
     d->m_type = type;
-    d->m_priority = priority;
     d->m_subjectId = subjectId;
-    d->m_senderType = senderType;
 }
 
 QSceneChange::~QSceneChange()
@@ -147,24 +121,6 @@ ChangeFlag QSceneChange::type() const Q_DECL_NOEXCEPT
 {
     Q_D(const QSceneChange);
     return d->m_type;
-}
-
-/*!
- * \return scene change priority.
- */
-QSceneChange::Priority QSceneChange::priority() const Q_DECL_NOEXCEPT
-{
-    Q_D(const QSceneChange);
-    return d->m_priority;
-}
-
-/*!
- * \return scene change observable type.
- */
-QSceneChange::SenderType QSceneChange::senderType() const Q_DECL_NOEXCEPT
-{
-    Q_D(const QSceneChange);
-    return d->m_senderType;
 }
 
 void QSceneChange::setDeliveryFlags(DeliveryFlags flags) Q_DECL_NOEXCEPT

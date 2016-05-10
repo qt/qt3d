@@ -69,13 +69,13 @@ QNodeCreatedChangeBasePrivate::QNodeCreatedChangeBasePrivate(const QNode *node)
 /*!
  * Constructs a new QNodeCreatedChangeBase with \a node and \a priority.
  */
-QNodeCreatedChangeBase::QNodeCreatedChangeBase(const QNode *node, Priority priority)
-    : QSceneChange(*new QNodeCreatedChangeBasePrivate(node), NodeCreated, QSceneChange::Node, node->id(), priority)
+QNodeCreatedChangeBase::QNodeCreatedChangeBase(const QNode *node)
+    : QSceneChange(*new QNodeCreatedChangeBasePrivate(node), NodeCreated, node->id())
 {
 }
 
-QNodeCreatedChangeBase::QNodeCreatedChangeBase(QNodeCreatedChangeBasePrivate &dd, const QNode *node, Priority priority)
-    : QSceneChange(dd, NodeCreated, QSceneChange::Node, node->id(), priority)
+QNodeCreatedChangeBase::QNodeCreatedChangeBase(QNodeCreatedChangeBasePrivate &dd, const QNode *node)
+    : QSceneChange(dd, NodeCreated, node->id())
 {
 }
 

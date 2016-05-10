@@ -76,15 +76,15 @@ QPropertyValueAddedChangeBasePrivate::~QPropertyValueAddedChangeBasePrivate()
  * Constructs a new QPropertyValueAddedChangeBase with \a senderType, \a subjectId, and
  * \a priority.
  */
-QPropertyValueAddedChangeBase::QPropertyValueAddedChangeBase(SenderType senderType, QNodeId subjectId, Priority priority)
-    : QSceneChange(*new QPropertyValueAddedChangeBasePrivate, PropertyValueAdded, senderType, subjectId, priority)
+QPropertyValueAddedChangeBase::QPropertyValueAddedChangeBase(QNodeId subjectId)
+    : QSceneChange(*new QPropertyValueAddedChangeBasePrivate, PropertyValueAdded, subjectId)
 {
 }
 
 /*! internal */
 QPropertyValueAddedChangeBase::QPropertyValueAddedChangeBase(QPropertyValueAddedChangeBasePrivate &dd,
-                                           SenderType senderType, QNodeId subjectId, Priority priority)
-    : QSceneChange(dd, PropertyValueAdded, senderType, subjectId, priority)
+                                                             QNodeId subjectId)
+    : QSceneChange(dd, PropertyValueAdded, subjectId)
 {
 }
 

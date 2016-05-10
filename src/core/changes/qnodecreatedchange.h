@@ -52,7 +52,7 @@ class QNodeCreatedChangeBasePrivate;
 class QT3DCORESHARED_EXPORT QNodeCreatedChangeBase : public QSceneChange
 {
 public:
-    explicit QNodeCreatedChangeBase(const QNode *node, Priority priority = QSceneChange::Standard);
+    explicit QNodeCreatedChangeBase(const QNode *node);
     ~QNodeCreatedChangeBase();
 
     QNodeId parentId() const Q_DECL_NOEXCEPT;
@@ -60,7 +60,7 @@ public:
     bool isNodeEnabled() const Q_DECL_NOEXCEPT;
 
 protected:
-    QNodeCreatedChangeBase(QNodeCreatedChangeBasePrivate &dd, const QNode *node, Priority priority);
+    QNodeCreatedChangeBase(QNodeCreatedChangeBasePrivate &dd, const QNode *node);
 
 private:
     Q_DECLARE_PRIVATE(QNodeCreatedChangeBase)
@@ -72,8 +72,8 @@ template<typename T>
 class QNodeCreatedChange : public QNodeCreatedChangeBase
 {
 public:
-    explicit QNodeCreatedChange(const QNode *_node, Priority _priority = QSceneChange::Standard)
-        : QNodeCreatedChangeBase(_node, _priority)
+    explicit QNodeCreatedChange(const QNode *_node)
+        : QNodeCreatedChangeBase(_node)
         , data()
     {
     }

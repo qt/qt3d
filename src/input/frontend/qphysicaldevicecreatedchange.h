@@ -50,7 +50,7 @@ class QPhysicalDeviceCreatedChangeBasePrivate;
 class QT3DINPUTSHARED_EXPORT QPhysicalDeviceCreatedChangeBase : public Qt3DCore::QNodeCreatedChangeBase
 {
 public:
-    explicit QPhysicalDeviceCreatedChangeBase(const QAbstractPhysicalDevice *device, Priority priority = QSceneChange::Standard);
+    explicit QPhysicalDeviceCreatedChangeBase(const QAbstractPhysicalDevice *device);
 
     Qt3DCore::QNodeIdVector axisSettingIds() const;
 
@@ -64,8 +64,8 @@ template<typename T>
 class QPhysicalDeviceCreatedChange : public QPhysicalDeviceCreatedChangeBase
 {
 public:
-    explicit QPhysicalDeviceCreatedChange(const QAbstractPhysicalDevice *_device, Priority _priority = QSceneChange::Standard)
-        : QPhysicalDeviceCreatedChangeBase(_device, _priority)
+    explicit QPhysicalDeviceCreatedChange(const QAbstractPhysicalDevice *_device)
+        : QPhysicalDeviceCreatedChangeBase(_device)
         , data()
     {
     }

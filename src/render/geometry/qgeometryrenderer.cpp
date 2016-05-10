@@ -422,7 +422,7 @@ void QGeometryRenderer::setGeometryFactory(const QGeometryFactoryPtr &factory)
         return;
     d->m_geometryFactory = factory;
     if (d->m_changeArbiter != nullptr) {
-        QNodePropertyChangePtr change(new QNodePropertyChange(QSceneChange::Node, id()));
+        QNodePropertyChangePtr change(new QNodePropertyChange(id()));
         change->setPropertyName("geometryFactory");
         change->setValue(QVariant::fromValue(d->m_geometryFactory));
         d->notifyObservers(change);

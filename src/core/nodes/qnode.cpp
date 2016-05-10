@@ -432,7 +432,7 @@ void QNodePrivate::notifyPropertyChange(const char *name, const QVariant &value)
     if (m_blockNotifications)
         return;
 
-    QNodePropertyChangePtr e(new QNodePropertyChange(QSceneChange::Node, m_id));
+    QNodePropertyChangePtr e(new QNodePropertyChange(m_id));
     e->setPropertyName(name);
     e->setValue(value);
     notifyObservers(e);
@@ -444,7 +444,7 @@ void QNodePrivate::notifyDynamicPropertyChange(const QByteArray &name, const QVa
     if (m_blockNotifications)
         return;
 
-    QNodeDynamicPropertyChangePtr e(new QNodeDynamicPropertyChange(QSceneChange::Node, m_id));
+    QNodeDynamicPropertyChangePtr e(new QNodeDynamicPropertyChange(m_id));
     e->setPropertyName(name);
     e->setValue(value);
     notifyObservers(e);

@@ -52,9 +52,8 @@ class QPropertyValueAddedChangeBasePrivate;
 class QPropertyValueAddedChangeBase : public QSceneChange
 {
 protected:
-    explicit QPropertyValueAddedChangeBase(SenderType senderType, QNodeId subjectId, Priority priority = Standard);
-    QPropertyValueAddedChangeBase(QPropertyValueAddedChangeBasePrivate &dd,
-                                  SenderType senderType, QNodeId subjectId, Priority priority = Standard);
+    explicit QPropertyValueAddedChangeBase(QNodeId subjectId);
+    QPropertyValueAddedChangeBase(QPropertyValueAddedChangeBasePrivate &dd, QNodeId subjectId);
     Q_DECLARE_PRIVATE(QPropertyValueAddedChangeBase)
 };
 

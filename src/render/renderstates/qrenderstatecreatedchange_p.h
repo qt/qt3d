@@ -61,7 +61,7 @@ class QRenderStateCreatedChangeBasePrivate;
 class QRenderStateCreatedChangeBase : public Qt3DCore::QNodeCreatedChangeBase
 {
 public:
-    explicit QRenderStateCreatedChangeBase(const QRenderState *renderState, Priority priority = QSceneChange::Standard);
+    explicit QRenderStateCreatedChangeBase(const QRenderState *renderState);
 
     QRenderStatePrivate::Type renderStateType() const;
 
@@ -75,8 +75,8 @@ template<typename T>
 class QRenderStateCreatedChange : public QRenderStateCreatedChangeBase
 {
 public:
-    explicit QRenderStateCreatedChange(const QRenderState *_renderState, Priority _priority = QSceneChange::Standard)
-        : QRenderStateCreatedChangeBase(_renderState, _priority)
+    explicit QRenderStateCreatedChange(const QRenderState *_renderState)
+        : QRenderStateCreatedChangeBase(_renderState)
         , data()
     {
     }

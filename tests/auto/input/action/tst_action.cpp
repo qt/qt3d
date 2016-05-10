@@ -113,7 +113,7 @@ private Q_SLOTS:
         Qt3DCore::QNodePropertyChangePtr updateChange;
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QNodePropertyChange(Qt3DCore::QNodeId()));
         updateChange->setPropertyName("enabled");
         updateChange->setValue(true);
         backendAction.sceneChangeEvent(updateChange);

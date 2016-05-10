@@ -90,7 +90,7 @@ private Q_SLOTS:
         QVERIFY(!objectPicker.isDirty());
 
         // WHEN
-        Qt3DCore::QNodePropertyChangePtr updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        Qt3DCore::QNodePropertyChangePtr updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::QNodeId()));
         updateChange->setValue(true);
         updateChange->setPropertyName("hoverEnabled");
         objectPicker.sceneChangeEvent(updateChange);

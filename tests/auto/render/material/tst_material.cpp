@@ -164,7 +164,7 @@ void tst_RenderMaterial::shouldHandleEnablePropertyChange()
     backend.setRenderer(&renderer);
 
     // WHEN
-    QNodePropertyChangePtr updateChange(new QNodePropertyChange(QSceneChange::Node, QNodeId()));
+    QNodePropertyChangePtr updateChange(new QNodePropertyChange(QNodeId()));
     updateChange->setValue(true);
     updateChange->setPropertyName("enabled");
     backend.sceneChangeEvent(updateChange);
@@ -174,7 +174,7 @@ void tst_RenderMaterial::shouldHandleEnablePropertyChange()
     QVERIFY(renderer.dirtyBits() != 0);
 
     // WHEN
-    QNodePropertyChangePtr secondUpdateChange(new QNodePropertyChange(QSceneChange::Node, QNodeId()));
+    QNodePropertyChangePtr secondUpdateChange(new QNodePropertyChange(QNodeId()));
     secondUpdateChange->setValue(false);
     secondUpdateChange->setPropertyName("enabled");
     backend.sceneChangeEvent(secondUpdateChange);
@@ -192,7 +192,7 @@ void tst_RenderMaterial::shouldHandleEffectPropertyChange()
     backend.setRenderer(&renderer);
 
     // WHEN
-    QNodePropertyChangePtr updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+    QNodePropertyChangePtr updateChange(new Qt3DCore::QNodePropertyChange(Qt3DCore::QNodeId()));
     Qt3DCore::QNodeId effectId = Qt3DCore::QNodeId::createId();
     updateChange->setValue(QVariant::fromValue(effectId));
     updateChange->setPropertyName("effect");

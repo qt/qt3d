@@ -54,10 +54,8 @@ class QNodeAddedPropertyChangePrivate;
 class QT3DCORESHARED_EXPORT QNodeAddedPropertyChange : public QPropertyValueAddedChangeBase
 {
 public:
-    QNodeAddedPropertyChange(QNodeId subjectId, QNode *node,
-                             Priority priority = Standard);
-    QNodeAddedPropertyChange(QNodeId subjectId,
-                             Priority priority = Standard);
+    QNodeAddedPropertyChange(QNodeId subjectId, QNode *node);
+    QNodeAddedPropertyChange(QNodeId subjectId);
 
     const char *propertyName() const;
     void setPropertyName(const char *name);

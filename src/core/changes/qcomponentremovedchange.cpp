@@ -56,10 +56,9 @@ QComponentRemovedChangePrivate::QComponentRemovedChangePrivate(const QEntity *en
 }
 
 QComponentRemovedChange::QComponentRemovedChange(const QEntity *entity,
-                                             const QComponent *component,
-                                             Priority priority)
+                                                 const QComponent *component)
     : QSceneChange(*new QComponentRemovedChangePrivate(entity, component),
-                   ComponentRemoved, QSceneChange::Node, entity->id(), priority)
+                   ComponentRemoved, entity->id())
 {
 }
 

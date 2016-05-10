@@ -77,13 +77,13 @@ QNodeUpdatedChangeBasePrivate::~QNodeUpdatedChangeBasePrivate()
  * Constructs a new QNodeUpdatedChangeBase with \a senderType, \a subjectId, and
  * \a priority.
  */
-QNodeUpdatedChangeBase::QNodeUpdatedChangeBase(SenderType senderType, QNodeId subjectId, Priority priority)
-    : QSceneChange(*new QNodeUpdatedChangeBasePrivate, PropertyUpdated, senderType, subjectId, priority)
+QNodeUpdatedChangeBase::QNodeUpdatedChangeBase(QNodeId subjectId)
+    : QSceneChange(*new QNodeUpdatedChangeBasePrivate, PropertyUpdated, subjectId)
 {
 }
 
-QNodeUpdatedChangeBase::QNodeUpdatedChangeBase(QNodeUpdatedChangeBasePrivate &dd, SenderType senderType, QNodeId subjectId, Priority priority)
-    : QSceneChange(dd, PropertyUpdated, senderType, subjectId, priority)
+QNodeUpdatedChangeBase::QNodeUpdatedChangeBase(QNodeUpdatedChangeBasePrivate &dd, QNodeId subjectId)
+    : QSceneChange(dd, PropertyUpdated, subjectId)
 {
 }
 

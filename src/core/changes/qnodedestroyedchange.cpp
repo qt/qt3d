@@ -41,7 +41,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 QNodeDestroyedChange::QNodeDestroyedChange(const QNode *node, const QVector<QNodeIdTypePair> &subtreeIdsAndTypes)
-    : QSceneChange(NodeDeleted, QSceneChange::Node, node->id(), QSceneChange::Standard)
+    : QSceneChange(NodeDeleted, node->id())
     , m_subtreeIdsAndTypes(subtreeIdsAndTypes)
 {
 }

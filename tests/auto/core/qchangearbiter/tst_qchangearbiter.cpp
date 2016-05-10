@@ -84,7 +84,7 @@ public:
 
     void sendNodeUpdatedNotification()
     {
-        Qt3DCore::QNodePropertyChangePtr e(new Qt3DCore::QNodePropertyChange(Qt3DCore::QSceneChange::Node, id()));
+        Qt3DCore::QNodePropertyChangePtr e(new Qt3DCore::QNodePropertyChange(id()));
         e->setPropertyName("PropertyUpdated");
         Qt3DCore::QNodePrivate::get(this)->notifyObservers(e);
     }
@@ -103,7 +103,7 @@ public:
 
     void sendAllChangesNotification()
     {
-        Qt3DCore::QSceneChangePtr e(new Qt3DCore::QSceneChange(Qt3DCore::AllChanges, Qt3DCore::QSceneChange::Node, id()));
+        Qt3DCore::QSceneChangePtr e(new Qt3DCore::QSceneChange(Qt3DCore::AllChanges, id()));
         Qt3DCore::QNodePrivate::get(this)->notifyObservers(e);
     }
 

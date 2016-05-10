@@ -53,8 +53,8 @@ public:
     QRenderStatePrivate::Type m_type;
 };
 
-QRenderStateCreatedChangeBase::QRenderStateCreatedChangeBase(const QRenderState *renderState, Priority priority)
-    : QNodeCreatedChangeBase(*new QRenderStateCreatedChangeBasePrivate(renderState), renderState, priority)
+QRenderStateCreatedChangeBase::QRenderStateCreatedChangeBase(const QRenderState *renderState)
+    : QNodeCreatedChangeBase(*new QRenderStateCreatedChangeBasePrivate(renderState), renderState)
 {
 }
 

@@ -56,10 +56,9 @@ QComponentAddedChangePrivate::QComponentAddedChangePrivate(const QEntity *entity
 }
 
 QComponentAddedChange::QComponentAddedChange(const QEntity *entity,
-                                             const QComponent *component,
-                                             Priority priority)
+                                             const QComponent *component)
     : QSceneChange(*new QComponentAddedChangePrivate(entity, component),
-                   ComponentAdded, QSceneChange::Node, entity->id(), priority)
+                   ComponentAdded, entity->id())
 {
 }
 

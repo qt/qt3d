@@ -51,8 +51,8 @@ QPhysicalDeviceCreatedChangeBasePrivate::QPhysicalDeviceCreatedChangeBasePrivate
 
 }
 
-QPhysicalDeviceCreatedChangeBase::QPhysicalDeviceCreatedChangeBase(const QAbstractPhysicalDevice *device, Priority priority)
-    : Qt3DCore::QNodeCreatedChangeBase(*new QPhysicalDeviceCreatedChangeBasePrivate(device), device, priority)
+QPhysicalDeviceCreatedChangeBase::QPhysicalDeviceCreatedChangeBase(const QAbstractPhysicalDevice *device)
+    : Qt3DCore::QNodeCreatedChangeBase(*new QPhysicalDeviceCreatedChangeBasePrivate(device), device)
 {
 }
 

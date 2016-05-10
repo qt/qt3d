@@ -63,17 +63,15 @@ namespace Qt3DCore {
  * Constructs a new QNodeRemovedPropertyChange with \a subjectId, \a node, and
  * \a priority.
  */
-QNodeRemovedPropertyChange::QNodeRemovedPropertyChange(QNodeId subjectId, QNode *node,
-                                                       QSceneChange::Priority priority)
-    : QPropertyValueRemovedChangeBase(*new QNodeRemovedPropertyChangePrivate, Node, subjectId, priority)
+QNodeRemovedPropertyChange::QNodeRemovedPropertyChange(QNodeId subjectId, QNode *node)
+    : QPropertyValueRemovedChangeBase(*new QNodeRemovedPropertyChangePrivate, subjectId)
 {
     Q_D(QNodeRemovedPropertyChange);
     d->m_removedNodeIdTypePair = QNodeIdTypePair(node->id(), QNodePrivate::get(node)->m_typeInfo);
 }
 
-QNodeRemovedPropertyChange::QNodeRemovedPropertyChange(QNodeId subjectId,
-                                                       QSceneChange::Priority priority)
-    : QPropertyValueRemovedChangeBase(*new QNodeRemovedPropertyChangePrivate, Node, subjectId, priority)
+QNodeRemovedPropertyChange::QNodeRemovedPropertyChange(QNodeId subjectId)
+    : QPropertyValueRemovedChangeBase(*new QNodeRemovedPropertyChangePrivate, subjectId)
 {
 }
 

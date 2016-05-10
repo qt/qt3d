@@ -52,13 +52,13 @@ class QBackendNodePropertyChangeBasePrivate;
 class QT3DCORESHARED_EXPORT QBackendNodePropertyChangeBase : public QNodePropertyChangeBase
 {
 public:
-    QBackendNodePropertyChangeBase(QNodeId subjectId, Priority priority = Standard);
+    QBackendNodePropertyChangeBase(QNodeId subjectId);
     virtual ~QBackendNodePropertyChangeBase();
 
 protected:
     Q_DECLARE_PRIVATE(QBackendNodePropertyChangeBase)
     QBackendNodePropertyChangeBase(QBackendNodePropertyChangeBasePrivate &dd,
-                                   QNodeId subjectId, Priority priority = Standard);
+                                   QNodeId subjectId);
 };
 
 typedef QSharedPointer<QBackendNodePropertyChangeBase> QBackendNodePropertyChangeBasePtr;
@@ -69,7 +69,7 @@ class QBackendNodePropertyChangePrivate;
 class QT3DCORESHARED_EXPORT QBackendNodePropertyChange : public QBackendNodePropertyChangeBase
 {
 public:
-    QBackendNodePropertyChange(QNodeId subjectId, Priority priority = Standard);
+    QBackendNodePropertyChange(QNodeId subjectId);
     virtual ~QBackendNodePropertyChange();
 
     QVariant value() const;
@@ -78,7 +78,7 @@ public:
 protected:
     Q_DECLARE_PRIVATE(QBackendNodePropertyChange)
     QBackendNodePropertyChange(QBackendNodePropertyChangePrivate &dd,
-                               QNodeId subjectId, Priority priority = Standard);
+                               QNodeId subjectId);
 };
 
 typedef QSharedPointer<QBackendNodePropertyChange> QBackendNodePropertyChangePtr;
@@ -88,8 +88,8 @@ template<typename T>
 class QTypedBackendNodePropertyChange : public QBackendNodePropertyChangeBase
 {
 public:
-    explicit QTypedBackendNodePropertyChange(QNodeId _subjectId, Priority _priority = QSceneChange::Standard)
-        : QBackendNodePropertyChangeBase(_subjectId, _priority)
+    explicit QTypedBackendNodePropertyChange(QNodeId _subjectId)
+        : QBackendNodePropertyChangeBase(_subjectId)
         , data()
     {
     }

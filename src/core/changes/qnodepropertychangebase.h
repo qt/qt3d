@@ -52,7 +52,7 @@ class QNodePropertyChangeBasePrivate;
 class QT3DCORESHARED_EXPORT QNodePropertyChangeBase : public QNodeUpdatedChangeBase
 {
 public:
-    QNodePropertyChangeBase(SenderType senderType, QNodeId subjectId, Priority priority = Standard);
+    QNodePropertyChangeBase(QNodeId subjectId);
     virtual ~QNodePropertyChangeBase();
 
     const char *propertyName() const;
@@ -60,8 +60,7 @@ public:
 
 protected:
     Q_DECLARE_PRIVATE(QNodePropertyChangeBase)
-    QNodePropertyChangeBase(QNodePropertyChangeBasePrivate &dd,
-                            SenderType senderType, QNodeId subjectId, Priority priority = Standard);
+    QNodePropertyChangeBase(QNodePropertyChangeBasePrivate &dd, QNodeId subjectId);
 };
 
 typedef QSharedPointer<QNodePropertyChangeBase> QNodePropertyChangeBasePtr;
@@ -70,8 +69,8 @@ template<typename T>
 class QTypedNodePropertyChange : public QNodePropertyChangeBase
 {
 public:
-    explicit QTypedNodePropertyChange(QNodeId _subjectId, Priority _priority = QSceneChange::Standard)
-        : QNodePropertyChangeBase(Node, _subjectId, _priority)
+    explicit QTypedNodePropertyChange(QNodeId _subjectId)
+        : QNodePropertyChangeBase(_subjectId)
         , data()
     {
     }

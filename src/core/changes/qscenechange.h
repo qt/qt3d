@@ -66,17 +66,6 @@ class QSceneChangePrivate;
 class QT3DCORESHARED_EXPORT QSceneChange
 {
 public:
-    enum Priority {
-        High,
-        Standard,
-        Low
-    };
-
-    enum SenderType {
-        BackendNode,
-        Node
-    };
-
     enum DeliveryFlag {
         BackendNodes = 0x0001,
         Nodes = 0x0010,
@@ -84,12 +73,10 @@ public:
     };
     Q_DECLARE_FLAGS(DeliveryFlags, DeliveryFlag)
 
-    QSceneChange(ChangeFlag type, SenderType senderType, QNodeId subjectId, Priority priority = Standard);
+    QSceneChange(ChangeFlag type, QNodeId subjectId);
     virtual ~QSceneChange();
 
     ChangeFlag type() const Q_DECL_NOEXCEPT;
-    QSceneChange::Priority priority() const Q_DECL_NOEXCEPT;
-    QSceneChange::SenderType senderType() const Q_DECL_NOEXCEPT;
 
     void setDeliveryFlags(DeliveryFlags flags) Q_DECL_NOEXCEPT;
     DeliveryFlags deliveryFlags() const Q_DECL_NOEXCEPT;
@@ -99,7 +86,8 @@ public:
 protected:
     Q_DECLARE_PRIVATE(QSceneChange)
     QSceneChangePrivate *d_ptr;
-    QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, SenderType senderType, QNodeId subjectId, Priority priority = Standard);
+    QSceneChange(QSceneChangePrivate &dd,
+                 ChangeFlag type, QNodeId subjectId);
 
 private:
     Q_DISABLE_COPY(QSceneChange)

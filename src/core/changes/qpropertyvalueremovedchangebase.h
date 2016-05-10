@@ -53,9 +53,8 @@ class QPropertyValueRemovedChangeBase : public QSceneChange
 {
 protected:
     Q_DECLARE_PRIVATE(QPropertyValueRemovedChangeBase)
-    explicit QPropertyValueRemovedChangeBase(SenderType senderType, QNodeId subjectId, Priority priority = Standard);
-    QPropertyValueRemovedChangeBase(QPropertyValueRemovedChangeBasePrivate &dd,
-                         SenderType senderType, QNodeId subjectId, Priority priority = Standard);
+    explicit QPropertyValueRemovedChangeBase(QNodeId subjectId);
+    QPropertyValueRemovedChangeBase(QPropertyValueRemovedChangeBasePrivate &dd, QNodeId subjectId);
 };
 
 typedef QSharedPointer<QPropertyValueRemovedChangeBase> QPropertyValueRemovedChangeBasePtr;

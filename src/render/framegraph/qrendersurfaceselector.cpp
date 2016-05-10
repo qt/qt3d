@@ -168,9 +168,7 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
                 QObject::connect(window, &QWindow::widthChanged, [=] (int width) {
                     if (d->m_changeArbiter != nullptr) {
                         Qt3DCore::QNodePropertyChangePtr change(
-                                    new Qt3DCore::QNodePropertyChange(
-                                        Qt3DCore::QSceneChange::Node,
-                                        id()));
+                                    new Qt3DCore::QNodePropertyChange(id()));
 
                         change->setPropertyName("width");
                         change->setValue(QVariant::fromValue(width));
@@ -180,9 +178,7 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
                 QObject::connect(window, &QWindow::heightChanged, [=] (int height) {
                     if (d->m_changeArbiter != nullptr) {
                         Qt3DCore::QNodePropertyChangePtr change(
-                                    new Qt3DCore::QNodePropertyChange(
-                                        Qt3DCore::QSceneChange::Node,
-                                        id()));
+                                    new Qt3DCore::QNodePropertyChange(id()));
 
                         change->setPropertyName("height");
                         change->setValue(QVariant::fromValue(height));

@@ -54,8 +54,7 @@ class QT3DCORESHARED_EXPORT QComponentRemovedChange : public QSceneChange
 {
 public:
     QComponentRemovedChange(const QEntity *entity,
-                          const QComponent *component,
-                          Priority priority = QSceneChange::Standard);
+                            const QComponent *component);
 
     QNodeId entityId() const Q_DECL_NOEXCEPT;
     QNodeId componentId() const Q_DECL_NOEXCEPT;

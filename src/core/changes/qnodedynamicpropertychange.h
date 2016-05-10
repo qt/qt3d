@@ -51,7 +51,7 @@ class QNodeDynamicPropertyChangePrivate;
 class QT3DCORESHARED_EXPORT QNodeDynamicPropertyChange : public QNodeUpdatedChangeBase
 {
 public:
-    QNodeDynamicPropertyChange(SenderType senderType, QNodeId subjectId, Priority priority = Standard);
+    QNodeDynamicPropertyChange(QNodeId subjectId);
     ~QNodeDynamicPropertyChange();
 
     QByteArray propertyName() const;
@@ -62,8 +62,7 @@ public:
 
 protected:
     Q_DECLARE_PRIVATE(QNodeDynamicPropertyChange)
-    QNodeDynamicPropertyChange(QNodeDynamicPropertyChangePrivate &dd,
-                               SenderType senderType, QNodeId subjectId, Priority priority = Standard);
+    QNodeDynamicPropertyChange(QNodeDynamicPropertyChangePrivate &dd, QNodeId subjectId);
 };
 
 typedef QSharedPointer<QNodeDynamicPropertyChange> QNodeDynamicPropertyChangePtr;
