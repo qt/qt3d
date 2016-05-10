@@ -27,7 +27,8 @@ HEADERS += \
     $$PWD/qstaticpropertyupdatedchangebase.h \
     $$PWD/qstaticpropertyupdatedchangebase_p.h \
     $$PWD/qpropertyupdatedchange.h \
-    $$PWD/qpropertyupdatedchange_p.h
+    $$PWD/qpropertyupdatedchange_p.h \
+    $$PWD/qtypedpropertyupdatechange_p.h
 
 SOURCES += \
     $$PWD/qscenechange.cpp \
