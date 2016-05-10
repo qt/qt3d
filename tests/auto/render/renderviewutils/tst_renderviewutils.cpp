@@ -28,7 +28,7 @@
 
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
-#include <Qt3DCore/qnodedynamicpropertychange.h>
+#include <Qt3DCore/qdynamicpropertyupdatedchange.h>
 #include <Qt3DRender/private/renderviewjobutils_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
 #include <Qt3DRender/private/managers_p.h>
@@ -475,7 +475,7 @@ void tst_RenderViewUtils::shouldNotifyDynamicPropertyChanges()
 
     // THEN
     QCOMPARE(arbiter.events.size(), 1);
-    auto change = arbiter.events.first().dynamicCast<Qt3DCore::QNodeDynamicPropertyChange>();
+    auto change = arbiter.events.first().dynamicCast<Qt3DCore::QDynamicPropertyUpdatedChange>();
     QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
     QCOMPARE(change->propertyName(), QByteArrayLiteral("scalar"));
     QCOMPARE(change->value().toFloat(), 883.0f);

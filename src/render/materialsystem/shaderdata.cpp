@@ -42,7 +42,7 @@
 #include "qshaderdata_p.h"
 #include <QMetaProperty>
 #include <QMetaObject>
-#include <Qt3DCore/qnodedynamicpropertychange.h>
+#include <Qt3DCore/qdynamicpropertyupdatedchange.h>
 #include <Qt3DCore/qnodepropertychange.h>
 #include <private/graphicscontext_p.h>
 #include <private/qbackendnode_p.h>
@@ -322,7 +322,7 @@ void ShaderData::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (auto propertyChange = qSharedPointerDynamicCast<QNodePropertyChange>(e)) {
             propertyName = QString::fromLatin1(propertyChange->propertyName());
             propertyValue =  m_propertyReader->readProperty(propertyChange->value());
-        } else if (auto propertyChange = qSharedPointerDynamicCast<QNodeDynamicPropertyChange>(e)) {
+        } else if (auto propertyChange = qSharedPointerDynamicCast<QDynamicPropertyUpdatedChange>(e)) {
             propertyName = QString::fromLatin1(propertyChange->propertyName());
             propertyValue = m_propertyReader->readProperty(propertyChange->value());
         } else {

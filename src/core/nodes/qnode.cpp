@@ -41,7 +41,7 @@
 #include "qnode_p.h"
 
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qnodedynamicpropertychange.h>
+#include <Qt3DCore/qdynamicpropertyupdatedchange.h>
 #include <Qt3DCore/qnodepropertychange.h>
 #include <Qt3DCore/qnodeaddedpropertychange.h>
 #include <Qt3DCore/qnoderemovedpropertychange.h>
@@ -444,7 +444,7 @@ void QNodePrivate::notifyDynamicPropertyChange(const QByteArray &name, const QVa
     if (m_blockNotifications)
         return;
 
-    QNodeDynamicPropertyChangePtr e(new QNodeDynamicPropertyChange(m_id));
+    QDynamicPropertyUpdatedChangePtr e(new QDynamicPropertyUpdatedChange(m_id));
     e->setPropertyName(name);
     e->setValue(value);
     notifyObservers(e);

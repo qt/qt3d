@@ -37,38 +37,46 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QNODEDYNAMICPROPERTYCHANGE_H
-#define QT3DCORE_QNODEDYNAMICPROPERTYCHANGE_H
+#ifndef QT3DCORE_QDYNAMICPROPERTYUPDATEDCHANGE_P_H
+#define QT3DCORE_QDYNAMICPROPERTYUPDATEDCHANGE_P_H
 
-#include <Qt3DCore/qpropertyupdatedchangebase.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <private/qpropertyupdatedchangebase_p.h>
+#include <QtCore/qbytearray.h>
+#include <QtCore/qvariant.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QNodeDynamicPropertyChangePrivate;
+class QNodePropertyChange;
+class QFrameAllocator;
 
-class QT3DCORESHARED_EXPORT QNodeDynamicPropertyChange : public QPropertyUpdatedChangeBase
+class QT3DCORE_PRIVATE_EXPORT QDynamicPropertyUpdatedChangePrivate : public QPropertyUpdatedChangeBasePrivate
 {
 public:
-    QNodeDynamicPropertyChange(QNodeId subjectId);
-    ~QNodeDynamicPropertyChange();
+    QDynamicPropertyUpdatedChangePrivate();
+    virtual ~QDynamicPropertyUpdatedChangePrivate();
 
-    QByteArray propertyName() const;
-    void setPropertyName(const QByteArray &name);
+    Q_DECLARE_PUBLIC(QDynamicPropertyUpdatedChange)
 
-    QVariant value() const;
-    void setValue(const QVariant &value);
-
-protected:
-    Q_DECLARE_PRIVATE(QNodeDynamicPropertyChange)
-    QNodeDynamicPropertyChange(QNodeDynamicPropertyChangePrivate &dd, QNodeId subjectId);
+    QByteArray m_propertyName;
+    QVariant m_value;
 };
 
-typedef QSharedPointer<QNodeDynamicPropertyChange> QNodeDynamicPropertyChangePtr;
-
-} // namespace Qt3DCore
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QNODEDYNAMICPROPERTYCHANGE_H
+#endif // QT3DCORE_QDYNAMICPROPERTYUPDATEDCHANGE_P_H
+

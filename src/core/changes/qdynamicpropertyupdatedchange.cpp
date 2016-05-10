@@ -37,46 +37,74 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QNODEDYNAMICPROPERTYCHANGE_P_H
-#define QT3DCORE_QNODEDYNAMICPROPERTYCHANGE_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <private/qpropertyupdatedchangebase_p.h>
-#include <QtCore/qbytearray.h>
-#include <QtCore/qvariant.h>
+#include "qdynamicpropertyupdatedchange.h"
+#include "qdynamicpropertyupdatedchange_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QNodePropertyChange;
-class QFrameAllocator;
-
-class QT3DCORE_PRIVATE_EXPORT QNodeDynamicPropertyChangePrivate : public QPropertyUpdatedChangeBasePrivate
+QDynamicPropertyUpdatedChangePrivate::QDynamicPropertyUpdatedChangePrivate()
+    : QPropertyUpdatedChangeBasePrivate()
 {
-public:
-    QNodeDynamicPropertyChangePrivate();
-    virtual ~QNodeDynamicPropertyChangePrivate();
+}
 
-    Q_DECLARE_PUBLIC(QNodeDynamicPropertyChange)
+QDynamicPropertyUpdatedChangePrivate::~QDynamicPropertyUpdatedChangePrivate()
+{
+}
 
-    QByteArray m_propertyName;
-    QVariant m_value;
-};
 
-} // Qt3D
+QDynamicPropertyUpdatedChange::QDynamicPropertyUpdatedChange(QNodeId subjectId)
+    : QPropertyUpdatedChangeBase(*new QDynamicPropertyUpdatedChangePrivate, subjectId)
+{
+}
+
+QDynamicPropertyUpdatedChange::QDynamicPropertyUpdatedChange(QDynamicPropertyUpdatedChangePrivate &dd,
+                                                       QNodeId subjectId)
+    : QPropertyUpdatedChangeBase(dd, subjectId)
+{
+}
+
+QDynamicPropertyUpdatedChange::~QDynamicPropertyUpdatedChange()
+{
+}
+
+/*!
+ * \return name of the property.
+ */
+QByteArray QDynamicPropertyUpdatedChange::propertyName() const
+{
+    Q_D(const QDynamicPropertyUpdatedChange);
+    return d->m_propertyName;
+}
+
+/*!
+ * Sets the property change \a name.
+ */
+void QDynamicPropertyUpdatedChange::setPropertyName(const QByteArray &name)
+{
+    Q_D(QDynamicPropertyUpdatedChange);
+    d->m_propertyName = name;
+}
+
+/*!
+ * \return property value.
+ */
+QVariant QDynamicPropertyUpdatedChange::value() const
+{
+    Q_D(const QDynamicPropertyUpdatedChange);
+    return d->m_value;
+}
+
+/*!
+ * Set the property change \a value.
+ */
+void QDynamicPropertyUpdatedChange::setValue(const QVariant &value)
+{
+    Q_D(QDynamicPropertyUpdatedChange);
+    d->m_value = value;
+}
+
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
-
-#endif // QT3DCORE_QNODEDYNAMICPROPERTYCHANGE_P_H
-
