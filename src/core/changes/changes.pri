@@ -30,7 +30,9 @@ HEADERS += \
     $$PWD/qpropertyupdatedchange_p.h \
     $$PWD/qtypedpropertyupdatechange_p.h \
     $$PWD/qstaticpropertyvalueaddedchangebase.h \
-    $$PWD/qstaticpropertyvalueaddedchangebase_p.h
+    $$PWD/qstaticpropertyvalueaddedchangebase_p.h \
+    $$PWD/qstaticpropertyvalueremovedchangebase.h \
+    $$PWD/qstaticpropertyvalueremovedchangebase_p.h
 
 SOURCES += \
     $$PWD/qscenechange.cpp \
@@ -47,4 +49,5 @@ SOURCES += \
     $$PWD/qdynamicpropertyupdatedchange.cpp \
     $$PWD/qstaticpropertyupdatedchangebase.cpp \
     $$PWD/qpropertyupdatedchange.cpp \
-    $$PWD/qstaticpropertyvalueaddedchangebase.cpp
+    $$PWD/qstaticpropertyvalueaddedchangebase.cpp \
+    $$PWD/qstaticpropertyvalueremovedchangebase.cpp
