@@ -65,6 +65,7 @@ QBackendNodePropertyChangeBasePrivate::~QBackendNodePropertyChangeBasePrivate()
 QBackendNodePropertyChangeBase::QBackendNodePropertyChangeBase(QNodeId subjectId, Priority priority)
     : QNodePropertyChangeBase(*new QBackendNodePropertyChangeBasePrivate, BackendNode, subjectId, priority)
 {
+    setDeliveryFlags(DeliverToAll);
 }
 
 /*!
@@ -74,6 +75,7 @@ QBackendNodePropertyChangeBase::QBackendNodePropertyChangeBase(QBackendNodePrope
                                                                QNodeId subjectId, Priority priority)
     : QNodePropertyChangeBase(dd, BackendNode, subjectId, priority)
 {
+    setDeliveryFlags(DeliverToAll);
 }
 
 QBackendNodePropertyChangeBase::~QBackendNodePropertyChangeBase()
