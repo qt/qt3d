@@ -46,6 +46,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+class QNode;
 class QNodeCreatedChangeBasePrivate;
 
 class QT3DCORESHARED_EXPORT QNodeCreatedChangeBase : public QSceneChange

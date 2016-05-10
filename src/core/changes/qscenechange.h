@@ -61,8 +61,6 @@ enum ChangeFlag {
 Q_DECLARE_FLAGS(ChangeFlags, ChangeFlag)
 Q_DECLARE_OPERATORS_FOR_FLAGS(ChangeFlags)
 
-class QNode;
-class QObservableInterface;
 class QSceneChangePrivate;
 
 class QT3DCORESHARED_EXPORT QSceneChange
