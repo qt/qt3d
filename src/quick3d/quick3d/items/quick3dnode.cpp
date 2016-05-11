@@ -111,7 +111,7 @@ int Quick3DNode::dataCount(QQmlListProperty<QObject> *list)
 void Quick3DNode::clearData(QQmlListProperty<QObject> *list)
 {
     Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
-    Q_FOREACH (QObject *const child, self->parentNode()->children())
+    for (QObject *const child : self->parentNode()->children())
         self->childRemoved(0, child);
 }
 
@@ -141,7 +141,7 @@ int Quick3DNode::childCount(QQmlListProperty<Qt3DCore::QNode> *list)
 void Quick3DNode::clearChildren(QQmlListProperty<Qt3DCore::QNode> *list)
 {
     Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
-    Q_FOREACH (QObject *const child, self->parentNode()->children())
+    for (QObject *const child : self->parentNode()->children())
         self->childRemoved(0, child);
 }
 
