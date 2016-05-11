@@ -193,7 +193,7 @@ void QAbstractTextureImage::notifyDataGeneratorChanged()
 {
     Q_D(QAbstractTextureImage);
     if (d->m_changeArbiter != nullptr) {
-        QPropertyUpdatedChangePtr change(new QPropertyUpdatedChange(id()));
+        auto change = QPropertyUpdatedChangePtr::create(d->m_id);
         change->setPropertyName("dataGenerator");
         change->setValue(QVariant::fromValue(dataGenerator()));
         d->notifyObservers(change);

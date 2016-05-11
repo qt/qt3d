@@ -229,7 +229,7 @@ void QBuffer::setDataGenerator(const QBufferDataGeneratorPtr &functor)
         return;
     d->m_functor = functor;
     if (d->m_changeArbiter != nullptr) {
-        QPropertyUpdatedChangePtr change(new QPropertyUpdatedChange(id()));
+        auto change = QPropertyUpdatedChangePtr::create(d->m_id);
         change->setPropertyName("dataGenerator");
         change->setValue(QVariant::fromValue(d->m_functor));
         d->notifyObservers(change);

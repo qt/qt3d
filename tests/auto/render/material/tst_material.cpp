@@ -164,7 +164,7 @@ void tst_RenderMaterial::shouldHandleEnablePropertyChange()
     backend.setRenderer(&renderer);
 
     // WHEN
-    QPropertyUpdatedChangePtr updateChange(new QPropertyUpdatedChange(QNodeId()));
+    auto updateChange = QPropertyUpdatedChangePtr::create(QNodeId());
     updateChange->setValue(true);
     updateChange->setPropertyName("enabled");
     backend.sceneChangeEvent(updateChange);
@@ -174,7 +174,7 @@ void tst_RenderMaterial::shouldHandleEnablePropertyChange()
     QVERIFY(renderer.dirtyBits() != 0);
 
     // WHEN
-    QPropertyUpdatedChangePtr secondUpdateChange(new QPropertyUpdatedChange(QNodeId()));
+    auto secondUpdateChange = QPropertyUpdatedChangePtr::create(QNodeId());
     secondUpdateChange->setValue(false);
     secondUpdateChange->setPropertyName("enabled");
     backend.sceneChangeEvent(secondUpdateChange);
