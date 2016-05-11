@@ -22,6 +22,9 @@ include (texture/texture.pri)
 
 RESOURCES += $$PWD/render.qrc
 
+# Qt3D is free of Q_FOREACH - make sure it stays that way:
+DEFINES += QT_NO_FOREACH
+
 gcov {
     CONFIG += static
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
