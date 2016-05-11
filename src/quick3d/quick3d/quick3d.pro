@@ -3,6 +3,9 @@ MODULE   = 3dquick
 
 QT      += core-private gui-private qml qml-private quick quick-private 3dcore 3dcore-private
 
+# Qt3D is free of Q_FOREACH - make sure it stays that way:
+DEFINES += QT_NO_FOREACH
+
 gcov {
     CONFIG += static
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
