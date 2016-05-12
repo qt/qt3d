@@ -38,7 +38,6 @@
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/qscenechange.h>
-#include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qentity.h>
@@ -180,7 +179,8 @@ public:
         QVERIFY(!e.isNull());
         m_lastChanges << e;
         // Save reply to be sent to the frontend
-        m_reply.reset(new Qt3DCore::QBackendNodePropertyChange(e->subjectId()));
+        m_reply.reset(new Qt3DCore::QPropertyUpdatedChange(e->subjectId()));
+        m_reply->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
         m_reply->setPropertyName("Reply");
     }
 
@@ -206,7 +206,7 @@ public:
 
 private:
     QList<Qt3DCore::QSceneChangePtr> m_lastChanges;
-    Qt3DCore::QBackendNodePropertyChangePtr m_reply;
+    Qt3DCore::QPropertyUpdatedChangePtr m_reply;
 
 };
 
@@ -256,7 +256,7 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     {
         QVERIFY(!e.isNull());
-        Qt3DCore::QBackendNodePropertyChangePtr change = qSharedPointerDynamicCast<Qt3DCore::QBackendNodePropertyChange>(e);
+        Qt3DCore::QPropertyUpdatedChangePtr change = qSharedPointerDynamicCast<Qt3DCore::QPropertyUpdatedChange>(e);
         QVERIFY(!change.isNull());
         Qt3DCore::QNode *targetNode = m_sceneInterface->lookupNode(change->subjectId());
         QVERIFY(targetNode != nullptr);
@@ -782,7 +782,7 @@ void tst_QChangeArbiter::distributeBackendChanges()
     QCOMPARE(postman->lastChanges().count(), 1);
 
     // verify correctness of the reply
-    Qt3DCore::QBackendNodePropertyChangePtr c = qSharedPointerDynamicCast<Qt3DCore::QBackendNodePropertyChange>(postman->lastChange());
+    Qt3DCore::QPropertyUpdatedChangePtr c = qSharedPointerDynamicCast<Qt3DCore::QPropertyUpdatedChange>(postman->lastChange());
     QVERIFY(!c.isNull());
     QVERIFY(c->subjectId() == root->id());
     qDebug() << c->propertyName();

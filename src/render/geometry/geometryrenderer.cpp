@@ -41,11 +41,11 @@
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/qboundingvolume_p.h>
 #include <Qt3DRender/private/qgeometryrenderer_p.h>
-#include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/private/qtypedpropertyupdatechange_p.h>
 #include <QtCore/qcoreapplication.h>
 
 #include <memory>
@@ -210,6 +210,7 @@ void GeometryRenderer::executeFunctor()
     geometry->moveToThread(appThread);
 
     auto e = QGeometryChangePtr::create(peerId());
+    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("geometry");
     e->data = std::move(geometry);
     notifyObservers(e);

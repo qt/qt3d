@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "qtextureimagedata_p.h"
+#include <QDebug>
 #include <QFileInfo>
 #include <QFile>
 #include <qendian.h>

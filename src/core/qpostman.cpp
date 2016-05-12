@@ -40,7 +40,6 @@
 #include "qpostman_p.h"
 #include <private/qobject_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qlockableobserverinterface_p.h>
 #include <Qt3DCore/qnode.h>
@@ -122,11 +121,10 @@ void QPostman::notifyBackend(const QSceneChangePtr &change)
 void QPostman::notifyFrontendNode(const QSceneChangePtr &e)
 {
     Q_D(QPostman);
-    QBackendNodePropertyChangePtr change = qSharedPointerCast<QBackendNodePropertyChange>(e);
-    if (!change.isNull() && d->m_scene != nullptr) {
-        QNode *n = d->m_scene->lookupNode(change->subjectId());
+    if (!e.isNull() && d->m_scene != nullptr) {
+        QNode *n = d->m_scene->lookupNode(e->subjectId());
         if (n != nullptr)
-            n->sceneChangeEvent(change);
+            n->sceneChangeEvent(e);
     }
 }
 
