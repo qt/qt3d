@@ -66,7 +66,7 @@ Q_SIGNALS:
     void cameraChanged(Qt3DCore::QEntity *camera);
 
 protected:
-    QCameraSelector(QCameraSelectorPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QCameraSelector(QCameraSelectorPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QCameraSelector)

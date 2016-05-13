@@ -94,7 +94,7 @@ Q_SIGNALS:
 protected:
     void notifyDataGeneratorChanged();
     virtual QTextureImageDataGeneratorPtr dataGenerator() const = 0;
-    QAbstractTextureImage(QAbstractTextureImagePrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QAbstractTextureImage(QAbstractTextureImagePrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QAbstractTextureImage)

@@ -75,9 +75,8 @@ public Q_SLOTS:
     void setColor(const QColor &color);
     void setIntensity(float intensity);
 
-protected :
-    QAbstractLight(QAbstractLightPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-
+protected:
+    explicit QAbstractLight(QAbstractLightPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 Q_SIGNALS:
     void colorChanged(const QColor &color);

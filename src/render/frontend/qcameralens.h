@@ -126,7 +126,7 @@ Q_SIGNALS:
     void projectionMatrixChanged(const QMatrix4x4 &projectionMatrix);
 
 protected:
-    QCameraLens(QCameraLensPrivate &dd, QNode *parent = nullptr);
+    explicit QCameraLens(QCameraLensPrivate &dd, QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QCameraLens)

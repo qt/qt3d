@@ -57,7 +57,7 @@ public:
 
 protected:
     explicit QPropertyValueAddedChangeBase(QNodeId subjectId);
-    QPropertyValueAddedChangeBase(QPropertyValueAddedChangeBasePrivate &dd, QNodeId subjectId);
+    explicit QPropertyValueAddedChangeBase(QPropertyValueAddedChangeBasePrivate &dd, QNodeId subjectId);
     Q_DECLARE_PRIVATE(QPropertyValueAddedChangeBase)
 };
 

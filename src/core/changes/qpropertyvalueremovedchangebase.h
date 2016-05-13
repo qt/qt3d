@@ -58,7 +58,7 @@ public:
 protected:
     Q_DECLARE_PRIVATE(QPropertyValueRemovedChangeBase)
     explicit QPropertyValueRemovedChangeBase(QNodeId subjectId);
-    QPropertyValueRemovedChangeBase(QPropertyValueRemovedChangeBasePrivate &dd, QNodeId subjectId);
+    explicit QPropertyValueRemovedChangeBase(QPropertyValueRemovedChangeBasePrivate &dd, QNodeId subjectId);
 };
 
 typedef QSharedPointer<QPropertyValueRemovedChangeBase> QPropertyValueRemovedChangeBasePtr;

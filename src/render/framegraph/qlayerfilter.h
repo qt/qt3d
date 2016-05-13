@@ -61,7 +61,7 @@ public:
     QVector<QLayer *> layers() const;
 
 protected:
-    QLayerFilter(QLayerFilterPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QLayerFilter(QLayerFilterPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QLayerFilter)

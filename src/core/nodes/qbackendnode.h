@@ -88,7 +88,7 @@ public:
 
 protected:
     Q_DECLARE_PRIVATE(QBackendNode)
-    QBackendNode(QBackendNodePrivate &dd);
+    explicit QBackendNode(QBackendNodePrivate &dd);
     void notifyObservers(const QSceneChangePtr &e);
     virtual void sceneChangeEvent(const QSceneChangePtr &e);
 

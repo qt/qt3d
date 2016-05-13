@@ -57,7 +57,7 @@ public:
     explicit QLayer(Qt3DCore::QNode *parent = nullptr);
 
 protected:
-    QLayer(QLayerPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QLayer(QLayerPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QLayer)

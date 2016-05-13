@@ -75,7 +75,7 @@ Q_SIGNALS:
     void meshNameChanged(const QString &meshName);
 
 protected:
-    QMesh(QMeshPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QMesh(QMeshPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QMesh)

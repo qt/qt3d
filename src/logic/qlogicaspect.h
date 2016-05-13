@@ -63,7 +63,7 @@ private:
     void onEngineStartup() Q_DECL_OVERRIDE;
 
     Q_DECLARE_PRIVATE(QLogicAspect)
-    QLogicAspect(QLogicAspectPrivate &dd, QObject *parent);
+    explicit QLogicAspect(QLogicAspectPrivate &dd, QObject *parent);
 };
 
 } // namespace Qt3DLogic

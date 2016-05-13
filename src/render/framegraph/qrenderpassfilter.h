@@ -69,7 +69,7 @@ public:
     QVector<QParameter *> parameters() const;
 
 protected:
-    QRenderPassFilter(QRenderPassFilterPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QRenderPassFilter(QRenderPassFilterPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QRenderPassFilter)

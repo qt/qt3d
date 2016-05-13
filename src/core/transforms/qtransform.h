@@ -113,7 +113,7 @@ Q_SIGNALS:
     void rotationZChanged(float rotationZ);
 
 protected:
-    QTransform(QTransformPrivate &dd, QNode *parent = nullptr);
+    explicit QTransform(QTransformPrivate &dd, QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QTransform)

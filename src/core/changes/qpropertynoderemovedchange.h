@@ -53,8 +53,8 @@ class QPropertyNodeRemovedChangePrivate;
 class QT3DCORESHARED_EXPORT QPropertyNodeRemovedChange : public QStaticPropertyValueRemovedChangeBase
 {
 public:
-    QPropertyNodeRemovedChange(QNodeId subjectId, QNode *node);
-    QPropertyNodeRemovedChange(QNodeId subjectId);
+    explicit QPropertyNodeRemovedChange(QNodeId subjectId, QNode *node);
+    explicit QPropertyNodeRemovedChange(QNodeId subjectId);
 
     QNodeId removedNodeId() const;
     const QMetaObject *metaObject() const;

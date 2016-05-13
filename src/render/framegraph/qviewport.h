@@ -67,7 +67,7 @@ Q_SIGNALS:
     void normalizedRectChanged(const QRectF& normalizedRect);
 
 protected:
-    QViewport(QViewportPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QViewport(QViewportPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QViewport)

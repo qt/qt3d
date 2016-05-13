@@ -83,7 +83,7 @@ Q_SIGNALS:
     void cutOffAngleChanged(float cutOffAngle);
 
 protected:
-    QSpotLight(QSpotLightPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QSpotLight(QSpotLightPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QSpotLight)

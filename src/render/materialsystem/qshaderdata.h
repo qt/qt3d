@@ -70,7 +70,7 @@ public:
     bool event(QEvent *event) Q_DECL_OVERRIDE;
 
 protected:
-    QShaderData(QShaderDataPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QShaderData(QShaderDataPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QShaderData)

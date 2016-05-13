@@ -83,7 +83,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QPickingSettings)
-    QPickingSettings(QPickingSettingsPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QPickingSettings(QPickingSettingsPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 };
 
 } // namespace Qt3Drender

@@ -90,7 +90,7 @@ Q_SIGNALS:
     void shininessChanged(float shininess);
 
 protected:
-    QGoochMaterial(QGoochMaterialPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QGoochMaterial(QGoochMaterialPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QGoochMaterial)

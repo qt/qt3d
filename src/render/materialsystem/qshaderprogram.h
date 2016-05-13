@@ -102,7 +102,7 @@ Q_SIGNALS:
     void computeShaderCodeChanged(const QByteArray &computeShaderCode);
 
 protected:
-    QShaderProgram(QShaderProgramPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QShaderProgram(QShaderProgramPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QShaderProgram)

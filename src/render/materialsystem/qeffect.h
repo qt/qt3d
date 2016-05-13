@@ -66,7 +66,7 @@ public:
     QVector<QTechnique *> techniques() const;
 
 protected:
-    QEffect(QEffectPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QEffect(QEffectPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QEffect)

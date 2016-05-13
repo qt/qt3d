@@ -57,8 +57,8 @@ public:
     void setPropertyName(const char *name);
 
 protected:
-    QStaticPropertyUpdatedChangeBase(QNodeId subjectId);
-    QStaticPropertyUpdatedChangeBase(QStaticPropertyUpdatedChangeBasePrivate &dd, QNodeId subjectId);
+    explicit QStaticPropertyUpdatedChangeBase(QNodeId subjectId);
+    explicit QStaticPropertyUpdatedChangeBase(QStaticPropertyUpdatedChangeBasePrivate &dd, QNodeId subjectId);
     Q_DECLARE_PRIVATE(QStaticPropertyUpdatedChangeBase)
 };
 

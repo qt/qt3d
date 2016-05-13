@@ -70,7 +70,7 @@ Q_SIGNALS:
     void boundingVolumePositionAttributeChanged(QAttribute *boundingVolumePositionAttribute);
 
 protected:
-    QGeometry(QGeometryPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QGeometry(QGeometryPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QGeometry)

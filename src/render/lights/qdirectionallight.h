@@ -65,7 +65,7 @@ Q_SIGNALS:
     void worldDirectionChanged(const QVector3D &worldDirection);
 
 protected:
-    QDirectionalLight(QDirectionalLightPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QDirectionalLight(QDirectionalLightPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QDirectionalLight)

@@ -53,7 +53,7 @@ class QPropertyValueAddedChangePrivate;
 class QT3DCORESHARED_EXPORT QPropertyValueAddedChange : public QStaticPropertyValueAddedChangeBase
 {
 public:
-    QPropertyValueAddedChange(QNodeId subjectId);
+    explicit QPropertyValueAddedChange(QNodeId subjectId);
     ~QPropertyValueAddedChange();
 
     void setAddedValue(const QVariant &value);

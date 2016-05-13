@@ -64,7 +64,7 @@ public:
     virtual void run() = 0;
 
 protected:
-    QAspectJob(QAspectJobPrivate &dd);
+    explicit QAspectJob(QAspectJobPrivate &dd);
 
 private:
     Q_DISABLE_COPY(QAspectJob)

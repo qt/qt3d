@@ -83,7 +83,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QRenderSettings)
-    QRenderSettings(QRenderSettingsPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QRenderSettings(QRenderSettingsPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_PRIVATE_SLOT(d_func(), void _q_onPickingMethodChanged(QPickingSettings::PickMethod))

@@ -75,7 +75,7 @@ Q_SIGNALS:
     void effectChanged(QEffect *effect);
 
 protected:
-    QMaterial(QMaterialPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QMaterial(QMaterialPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QMaterial)

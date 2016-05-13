@@ -92,7 +92,7 @@ Q_SIGNALS:
     void enabledChanged(bool enabled);
 
 protected:
-    QNode(QNodePrivate &dd, QNode *parent = nullptr);
+    explicit QNode(QNodePrivate &dd, QNode *parent = nullptr);
     void notifyObservers(const QSceneChangePtr &change);
     virtual void sceneChangeEvent(const QSceneChangePtr &change);
 

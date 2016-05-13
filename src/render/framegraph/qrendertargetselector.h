@@ -71,7 +71,7 @@ Q_SIGNALS:
     void targetChanged(QRenderTarget *target);
 
 protected:
-    QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QRenderTargetSelector)

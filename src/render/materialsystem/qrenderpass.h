@@ -88,7 +88,7 @@ Q_SIGNALS:
     void shaderProgramChanged(QShaderProgram *shaderProgram);
 
 protected:
-    QRenderPass(QRenderPassPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QRenderPass(QRenderPassPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QRenderPass)

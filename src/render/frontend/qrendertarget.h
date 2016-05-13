@@ -61,7 +61,7 @@ public:
     QVector<QRenderTargetOutput *> outputs() const;
 
 protected:
-    QRenderTarget(QRenderTargetPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QRenderTarget(QRenderTargetPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QRenderTarget)

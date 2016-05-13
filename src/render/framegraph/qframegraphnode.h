@@ -59,7 +59,7 @@ public:
     QFrameGraphNode *parentFrameGraphNode() const;
 
 protected:
-    QFrameGraphNode(QFrameGraphNodePrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QFrameGraphNode(QFrameGraphNodePrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QFrameGraphNode)
