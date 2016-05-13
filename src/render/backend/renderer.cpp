@@ -859,8 +859,8 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     // their details from the RenderNodes that are visible to the
     // Camera selected by the framegraph configuration
 
-    FrameGraphVisitor visitor;
-    visitor.traverse(frameGraphRoot(), this, &renderBinJobs);
+    FrameGraphVisitor visitor(this, m_nodesManager->frameGraphManager());
+    visitor.traverse(frameGraphRoot(), &renderBinJobs);
 
     // Set target number of RenderViews
     m_renderQueue->setTargetRenderViewCount(renderBinJobs.size());

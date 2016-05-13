@@ -41,6 +41,7 @@
 
 #include "framegraphnode_p.h"
 #include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/managers_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,8 +50,10 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 namespace Render {
 
-FrameGraphVisitor::FrameGraphVisitor()
-    : m_renderer(nullptr)
+FrameGraphVisitor::FrameGraphVisitor(Renderer *renderer,
+                                     const FrameGraphManager *manager)
+    : m_renderer(renderer)
+    , m_manager(manager)
     , m_jobs(nullptr)
     , m_renderviewIndex(0)
 
@@ -58,10 +61,8 @@ FrameGraphVisitor::FrameGraphVisitor()
 }
 
 void FrameGraphVisitor::traverse(FrameGraphNode *root,
-                                 Renderer *renderer,
                                  QVector<Qt3DCore::QAspectJobPtr> *jobs)
 {
-    m_renderer = renderer;
     m_jobs = jobs;
     m_renderviewIndex = 0;
 
@@ -85,13 +86,15 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
 
     // Recurse to children (if we have any), otherwise if this is a leaf node,
     // initiate a rendering from the current camera
-    const auto children = node->children();
-    for (Render::FrameGraphNode *n : children)
-        visit(n);
+    const QVector<Qt3DCore::QNodeId> fgChildIds = node->childrenIds();
+
+    for (const Qt3DCore::QNodeId fgChildId : fgChildIds)
+        visit(m_manager->lookupNode(fgChildId));
+
     // Leaf node - create a RenderView ready to be populated
     // TODO: Pass in only framegraph config that has changed from previous
     // index RenderViewJob.
-    if (node->childrenIds().empty()) {
+    if (fgChildIds.empty()) {
         QAspectJobPtr job = m_renderer->createRenderViewJob(node, m_renderviewIndex++);
         m_jobs->append(job);
     }
