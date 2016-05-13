@@ -128,7 +128,7 @@ bool isEntityFrustumCulled(const Entity *entity, const Plane *planes)
     return false;
 }
 
-} // anonymouse namespace
+} // anonymous namespace
 
 bool wasInitialized = false;
 RenderView::StandardUniformsPFuncsHash RenderView::ms_standardUniformSetters;
