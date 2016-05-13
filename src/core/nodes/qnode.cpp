@@ -77,6 +77,10 @@ QNodePrivate::QNodePrivate()
 {
 }
 
+QNodePrivate::~QNodePrivate()
+{
+}
+
 void QNodePrivate::init(QNode *parent)
 {
     if (!parent)

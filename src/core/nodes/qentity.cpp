@@ -60,6 +60,10 @@ QEntityPrivate::QEntityPrivate()
     , m_parentEntityId()
 {}
 
+QEntityPrivate::~QEntityPrivate()
+{
+}
+
 /*!
     \class Qt3DCore::QEntity
     \inmodule Qt3DCore

@@ -54,6 +54,10 @@ QComponentPrivate::QComponentPrivate()
 {
 }
 
+QComponentPrivate::~QComponentPrivate()
+{
+}
+
 void QComponentPrivate::addEntity(QEntity *entity)
 {
     m_entities.append(entity);

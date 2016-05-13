@@ -62,6 +62,7 @@ class QT3DCORE_PRIVATE_EXPORT QComponentPrivate : public QNodePrivate
 {
 public:
     QComponentPrivate();
+    ~QComponentPrivate();
 
     void addEntity(QEntity *entity);
     void removeEntity(QEntity *entity);

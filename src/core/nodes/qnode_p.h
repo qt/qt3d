@@ -69,6 +69,7 @@ class QT3DCORE_PRIVATE_EXPORT QNodePrivate : public QObjectPrivate, public QObse
 {
 public:
     QNodePrivate();
+    ~QNodePrivate();
 
     void init(QNode *parent);
 
