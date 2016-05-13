@@ -57,9 +57,6 @@ public:
     void setPropertyName(const char *name);
     void setValue(const QVariant &value);
 
-    static void *operator new(size_t size);
-    static void operator delete(void *ptr, size_t size);
-
 protected:
     Q_DECLARE_PRIVATE(QScenePropertyChange)
     QScenePropertyChange(QScenePropertyChangePrivate &dd);

@@ -50,14 +50,12 @@
 
 #include <private/qscenechange_p.h>
 #include <QVariant>
-#include <QMutex>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
 class QScenePropertyChange;
-class QFrameAllocator;
 
 class QScenePropertyChangePrivate : public QSceneChangePrivate
 {
@@ -65,18 +63,12 @@ public:
     QScenePropertyChangePrivate();
     virtual ~QScenePropertyChangePrivate();
 
-    static void *operator new(size_t size);
-    static void operator delete(void *ptr, size_t size);
-
     Q_DECLARE_PUBLIC(QScenePropertyChange)
 
     /// FIXME: use QMetaProperty here once the NodeAboutToBeDeleted etc. change events
     /// get refactored to their own QSceneChange subclass
     const char *m_propertyName;
     QVariant m_value;
-
-    static QFrameAllocator *m_allocator;
-    static QMutex m_mutex;
 };
 
 } // Qt3D

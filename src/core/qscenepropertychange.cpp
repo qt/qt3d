@@ -36,7 +36,6 @@
 
 #include "qscenepropertychange.h"
 #include "qscenepropertychange_p.h"
-#include <Qt3DCore/private/qframeallocator_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,9 +46,6 @@ namespace Qt3DCore {
     \inmodule Qt3DCore
 */
 
-QFrameAllocator *QScenePropertyChangePrivate::m_allocator = new QFrameAllocator(128, sizeof(QScenePropertyChange), sizeof(QScenePropertyChangePrivate) * 2);
-QMutex QScenePropertyChangePrivate::m_mutex;
-
 QScenePropertyChangePrivate::QScenePropertyChangePrivate()
     : QSceneChangePrivate()
 {
@@ -58,18 +54,6 @@ QScenePropertyChangePrivate::QScenePropertyChangePrivate()
 QScenePropertyChangePrivate::~QScenePropertyChangePrivate()
 {
 
-}
-
-void *QScenePropertyChangePrivate::operator new(size_t size)
-{
-    QMutexLocker locker(&QScenePropertyChangePrivate::m_mutex);
-    return QScenePropertyChangePrivate::m_allocator->allocateRawMemory(size);
-}
-
-void QScenePropertyChangePrivate::operator delete(void *ptr, size_t size)
-{
-    QMutexLocker locker(&QScenePropertyChangePrivate::m_mutex);
-    QScenePropertyChangePrivate::m_allocator->deallocateRawMemory(ptr, size);
 }
 
 QScenePropertyChange::QScenePropertyChange(ChangeFlag type, ObservableType observableType, const QNodeId &subjectId, QSceneChange::Priority priority)
@@ -115,18 +99,6 @@ void QScenePropertyChange::setValue(const QVariant &value)
 {
     Q_D(QScenePropertyChange);
     d->m_value = value;
-}
-
-void *QScenePropertyChange::operator new(size_t n)
-{
-    QMutexLocker locker(&QScenePropertyChangePrivate::m_mutex);
-    return QScenePropertyChangePrivate::m_allocator->allocateRawMemory(n);
-}
-
-void QScenePropertyChange::operator delete(void *ptr, size_t size)
-{
-    QMutexLocker locker(&QScenePropertyChangePrivate::m_mutex);
-    QScenePropertyChangePrivate::m_allocator->deallocateRawMemory(ptr, size);
 }
 
 } // Qt3D
