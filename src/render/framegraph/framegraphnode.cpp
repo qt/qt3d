@@ -127,9 +127,9 @@ FrameGraphNode *FrameGraphNode::parent() const
     return m_manager->lookupNode(m_parentId);
 }
 
-QList<FrameGraphNode *> FrameGraphNode::children() const
+QVector<FrameGraphNode *> FrameGraphNode::children() const
 {
-    QList<FrameGraphNode *> children;
+    QVector<FrameGraphNode *> children;
     children.reserve(m_childrenIds.size());
 
     for (Qt3DCore::QNodeId id : m_childrenIds) {
