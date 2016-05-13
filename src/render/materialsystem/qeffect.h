@@ -51,29 +51,26 @@ class QParameter;
 class QTechnique;
 class QEffectPrivate;
 
-class QT3DRENDERSHARED_EXPORT QEffect
-        : public Qt3DCore::QNode
+class QT3DRENDERSHARED_EXPORT QEffect : public Qt3DCore::QNode
 {
     Q_OBJECT
 public:
-    explicit QEffect(Qt3DCore::QNode *parent = 0);
-    ~QEffect();
+    explicit QEffect(Qt3DCore::QNode *parent = nullptr);
 
     void addParameter(QParameter *parameter);
     void removeParameter(QParameter *parameter);
-    QList<QParameter *> parameters() const;
+    QVector<QParameter *> parameters() const;
 
-    virtual void addTechnique(QTechnique *t);
-    virtual void removeTechnique(QTechnique *t);
-    QList<QTechnique *> techniques() const;
+    void addTechnique(QTechnique *t);
+    void removeTechnique(QTechnique *t);
+    QVector<QTechnique *> techniques() const;
 
 protected:
-    QEffect(QEffectPrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    QEffect(QEffectPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QEffect)
-    QT3D_CLONEABLE(QEffect)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

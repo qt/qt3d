@@ -29,51 +29,50 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/qgeometryfunctor.h>
+#include <Qt3DRender/qgeometryfactory.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
+#include <Qt3DRender/private/qgeometryrenderer_p.h>
+
+#include <Qt3DCore/QPropertyUpdatedChange>
+#include <Qt3DCore/QPropertyNodeAddedChange>
+#include <Qt3DCore/QPropertyNodeRemovedChange>
 
 #include "testpostmanarbiter.h"
 
-class TestFunctor : public Qt3DRender::QGeometryFunctor
+class TestFactory : public Qt3DRender::QGeometryFactory
 {
 public:
-    explicit TestFunctor(int size)
+    explicit TestFactory(int size)
         : m_size(size)
     {}
 
     Qt3DRender::QGeometry *operator ()() Q_DECL_FINAL
     {
-        return Q_NULLPTR;
+        return nullptr;
     }
 
-    bool operator ==(const Qt3DRender::QGeometryFunctor &other) const
+    bool operator ==(const Qt3DRender::QGeometryFactory &other) const Q_DECL_FINAL
     {
-        const TestFunctor *otherFunctor = functor_cast<TestFunctor>(&other);
-        if (otherFunctor != Q_NULLPTR)
-            return otherFunctor->m_size == m_size;
+        const TestFactory *otherFactory = functor_cast<TestFactory>(&other);
+        if (otherFactory != nullptr)
+            return otherFactory->m_size == m_size;
         return false;
     }
 
-    QT3D_FUNCTOR(TestFunctor)
+    QT3D_FUNCTOR(TestFactory)
 
 private:
     int m_size;
 };
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QGeometryRenderer: public Qt3DCore::QNode
+class tst_QGeometryRenderer: public QObject
 {
     Q_OBJECT
-public:
-    ~tst_QGeometryRenderer()
-    {
-        QNode::cleanup();
-    }
 
 private Q_SLOTS:
 
@@ -87,25 +86,27 @@ private Q_SLOTS:
         Qt3DRender::QGeometryRenderer *geometry1 = new Qt3DRender::QGeometryRenderer();
         geometry1->setGeometry(new Qt3DRender::QGeometry());
         geometry1->setInstanceCount(1);
-        geometry1->setBaseVertex(0);
-        geometry1->setBaseInstance(55);
-        geometry1->setRestartIndex(-1);
-        geometry1->setPrimitiveRestart(false);
+        geometry1->setIndexOffset(0);
+        geometry1->setFirstInstance(55);
+        geometry1->setRestartIndexValue(-1);
+        geometry1->setPrimitiveRestartEnabled(false);
         geometry1->setPrimitiveType(Qt3DRender::QGeometryRenderer::Triangles);
-        geometry1->setPrimitiveCount(15);
-        geometry1->setGeometryFunctor(Qt3DRender::QGeometryFunctorPtr(new TestFunctor(383)));
+        geometry1->setVertexCount(15);
+        geometry1->setVerticesPerPatch(2);
+        geometry1->setGeometryFactory(Qt3DRender::QGeometryFactoryPtr(new TestFactory(383)));
         QTest::newRow("triangle") << geometry1;
 
         Qt3DRender::QGeometryRenderer *geometry2 = new Qt3DRender::QGeometryRenderer();
         geometry2->setGeometry(new Qt3DRender::QGeometry());
         geometry2->setInstanceCount(200);
-        geometry2->setBaseVertex(58);
-        geometry2->setBaseInstance(10);
-        geometry2->setRestartIndex(65535);
-        geometry1->setPrimitiveCount(2056);
-        geometry2->setPrimitiveRestart(true);
+        geometry2->setIndexOffset(58);
+        geometry2->setFirstInstance(10);
+        geometry2->setRestartIndexValue(65535);
+        geometry2->setVertexCount(2056);
+        geometry2->setPrimitiveRestartEnabled(true);
+        geometry2->setVerticesPerPatch(3);
         geometry2->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
-        geometry2->setGeometryFunctor(Qt3DRender::QGeometryFunctorPtr(new TestFunctor(305)));
+        geometry2->setGeometryFactory(Qt3DRender::QGeometryFactoryPtr(new TestFactory(305)));
         QTest::newRow("lines with restart") << geometry2;
     }
 
@@ -115,30 +116,35 @@ private Q_SLOTS:
         QFETCH(Qt3DRender::QGeometryRenderer *, geometryRenderer);
 
         // WHEN
-        Qt3DRender::QGeometryRenderer *clone = static_cast<Qt3DRender::QGeometryRenderer *>(QNode::clone(geometryRenderer));
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(geometryRenderer);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
+        QCOMPARE(creationChanges.size(), 1 + (geometryRenderer->geometry() ? 1 : 0));
 
-        QCOMPARE(clone->id(), geometryRenderer->id());
-        QCOMPARE(clone->instanceCount(), geometryRenderer->instanceCount());
-        QCOMPARE(clone->primitiveCount(), geometryRenderer->primitiveCount());
-        QCOMPARE(clone->baseVertex(), geometryRenderer->baseVertex());
-        QCOMPARE(clone->baseInstance(), geometryRenderer->baseInstance());
-        QCOMPARE(clone->restartIndex(), geometryRenderer->restartIndex());
-        QCOMPARE(clone->primitiveRestart(), geometryRenderer->primitiveRestart());
-        QCOMPARE(clone->primitiveType(), geometryRenderer->primitiveType());
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QGeometryRendererData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QGeometryRendererData>>(creationChanges.first());
+        const Qt3DRender::QGeometryRendererData &cloneData = creationChangeData->data;
 
-        if (geometryRenderer->geometry() != Q_NULLPTR) {
-            QVERIFY(clone->geometry() != Q_NULLPTR);
-            QCOMPARE(clone->geometry()->id(), geometryRenderer->geometry()->id());
-        }
+        QCOMPARE(geometryRenderer->id(), creationChangeData->subjectId());
+        QCOMPARE(geometryRenderer->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(geometryRenderer->metaObject(), creationChangeData->metaObject());
 
-        QCOMPARE(clone->geometryFunctor(), geometryRenderer->geometryFunctor());
-        if (geometryRenderer->geometryFunctor()) {
-            QVERIFY(clone->geometryFunctor());
-            QVERIFY(*clone->geometryFunctor() == *geometryRenderer->geometryFunctor());
-        }
+        QCOMPARE(cloneData.instanceCount, geometryRenderer->instanceCount());
+        QCOMPARE(cloneData.vertexCount, geometryRenderer->vertexCount());
+        QCOMPARE(cloneData.indexOffset, geometryRenderer->indexOffset());
+        QCOMPARE(cloneData.firstInstance, geometryRenderer->firstInstance());
+        QCOMPARE(cloneData.restartIndexValue, geometryRenderer->restartIndexValue());
+        QCOMPARE(cloneData.primitiveRestart, geometryRenderer->primitiveRestartEnabled());
+        QCOMPARE(cloneData.primitiveType, geometryRenderer->primitiveType());
+        QCOMPARE(cloneData.verticesPerPatch, geometryRenderer->verticesPerPatch());
+
+        if (geometryRenderer->geometry() != nullptr)
+            QCOMPARE(cloneData.geometryId, geometryRenderer->geometry()->id());
+
+        QCOMPARE(cloneData.geometryFactory, geometryRenderer->geometryFactory());
+        if (geometryRenderer->geometryFactory())
+            QVERIFY(*cloneData.geometryFactory == *geometryRenderer->geometryFactory());
     }
 
     void checkPropertyUpdates()
@@ -153,75 +159,88 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "instanceCount");
         QCOMPARE(change->value().value<int>(), 256);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
         // WHEN
-        geometryRenderer->setPrimitiveCount(1340);
+        geometryRenderer->setVertexCount(1340);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "primitiveCount");
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "vertexCount");
         QCOMPARE(change->value().value<int>(), 1340);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
         // WHEN
-        geometryRenderer->setBaseVertex(883);
+        geometryRenderer->setIndexOffset(883);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "baseVertex");
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "indexOffset");
         QCOMPARE(change->value().value<int>(), 883);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
         // WHEN
-        geometryRenderer->setBaseInstance(1200);
+        geometryRenderer->setFirstInstance(1200);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "baseInstance");
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "firstInstance");
         QCOMPARE(change->value().value<int>(), 1200);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
         // WHEN
-        geometryRenderer->setRestartIndex(65535);
+        geometryRenderer->setRestartIndexValue(65535);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "restartIndex");
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "restartIndexValue");
         QCOMPARE(change->value().value<int>(), 65535);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
         // WHEN
-        geometryRenderer->setPrimitiveRestart(true);
+        geometryRenderer->setVerticesPerPatch(2);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "primitiveRestart");
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "verticesPerPatch");
+        QCOMPARE(change->value().toInt(), 2);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+        arbiter.events.clear();
+
+        // WHEN
+        geometryRenderer->setPrimitiveRestartEnabled(true);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "primitiveRestartEnabled");
         QCOMPARE(change->value().value<bool>(), true);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
@@ -231,24 +250,24 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "primitiveType");
         QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3DRender::QGeometryRenderer::Patches));
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
         // WHEN
-        Qt3DRender::QGeometryFunctorPtr functor(new TestFunctor(555));
-        geometryRenderer->setGeometryFunctor(functor);
+        Qt3DRender::QGeometryFactoryPtr factory(new TestFactory(555));
+        geometryRenderer->setGeometryFactory(factory);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "geometryFunctor");
-        QCOMPARE(change->value().value<Qt3DRender::QGeometryFunctorPtr>(), functor);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "geometryFactory");
+        QCOMPARE(change->value().value<Qt3DRender::QGeometryFactoryPtr>(), factory);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
@@ -259,10 +278,10 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "geometry");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), geom.id());
-        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
+        Qt3DCore::QPropertyNodeAddedChangePtr nodeAddedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
+        QCOMPARE(nodeAddedChange->propertyName(), "geometry");
+        QCOMPARE(nodeAddedChange->addedNodeId(), geom.id());
+        QCOMPARE(nodeAddedChange->type(), Qt3DCore::PropertyValueAdded);
 
         arbiter.events.clear();
 
@@ -273,25 +292,18 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 2);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "geometry");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), geom.id());
-        QCOMPARE(change->type(), Qt3DCore::NodeRemoved);
+        Qt3DCore::QPropertyNodeRemovedChangePtr nodeRemovedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
+        QCOMPARE(nodeRemovedChange->propertyName(), "geometry");
+        QCOMPARE(nodeRemovedChange->removedNodeId(), geom.id());
+        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::PropertyValueRemoved);
 
-        change = arbiter.events.last().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "geometry");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), geom2.id());
-        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
+        nodeAddedChange = arbiter.events.last().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
+        QCOMPARE(nodeAddedChange->propertyName(), "geometry");
+        QCOMPARE(nodeAddedChange->addedNodeId(), geom2.id());
+        QCOMPARE(nodeAddedChange->type(), Qt3DCore::PropertyValueAdded);
 
         arbiter.events.clear();
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QGeometryRenderer)

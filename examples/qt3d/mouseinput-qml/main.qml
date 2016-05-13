@@ -51,6 +51,7 @@
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 import Qt3D.Input 2.0
+import Qt3D.Extras 2.0
 
 Entity {
     id: sceneRoot
@@ -67,28 +68,31 @@ Entity {
         viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
     }
 
-    FirstPersonCameraController { camera: camera }
+    OrbitCameraController { camera: camera }
 
-    components: FrameGraph {
-        ForwardRenderer {
-            camera: camera
-            clearColor: "black"
-        }
-    }
+    components: [
+        RenderSettings {
+            ForwardRenderer {
+                camera: camera
+                clearColor: "black"
+            }
+            renderPolicy: RenderSettings.Always
+        },
+        InputSettings {}
+    ]
 
     SphereMesh {
         id: sphereMesh
         radius: 3
     }
 
-    Material {
+    PhongMaterial {
         id: material
-        effect : Effect {
-        }
+        diffuse: "green"
     }
 
-    MouseController {
-        id: mouseController
+    MouseDevice {
+        id: mouseDevice
     }
 
     Entity {
@@ -98,10 +102,11 @@ Entity {
 
         property Transform transform: Transform {
             scale: sphere1.scaleFactor
+                rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 45)
         }
 
-        property MouseInput mouseInput : MouseInput {
-            controller: mouseController
+        property MouseHandler mouseHandler : MouseHandler {
+            sourceDevice: mouseDevice
 
             onClicked: {
                 //Signal not implemented yet
@@ -120,6 +125,6 @@ Entity {
             }
         }
 
-        components: [sphereMesh, material, transform, mouseInput]
+        components: [sphereMesh, material, transform, mouseHandler]
     }
 }

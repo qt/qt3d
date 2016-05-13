@@ -59,14 +59,14 @@ public:
 
     enum CullingMode
     {
+        NoCulling = 0x0,
         Front = 0x0404,
         Back = 0x0405,
         FrontAndBack = 0x0408
     };
     Q_ENUM(CullingMode)
 
-    explicit QCullFace(Qt3DCore::QNode *parent = 0);
-    ~QCullFace();
+    explicit QCullFace(Qt3DCore::QNode *parent = nullptr);
 
     CullingMode mode() const;
 
@@ -76,12 +76,9 @@ public Q_SLOTS:
 Q_SIGNALS:
     void modeChanged(CullingMode mode);
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
 private:
     Q_DECLARE_PRIVATE(QCullFace)
-    QT3D_CLONEABLE(QCullFace)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

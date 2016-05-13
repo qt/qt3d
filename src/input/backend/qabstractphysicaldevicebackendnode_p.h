@@ -51,60 +51,44 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qbackendnode_p.h>
-#include <Qt3DCore/qnodeid.h>
-#include <QtCore/qvector.h>
+#include <Qt3DCore/qbackendnode.h>
 #include <Qt3DInput/private/qt3dinput_global_p.h>
-#include <Qt3DInput/private/movingaverage_p.h>
 
 QT_BEGIN_NAMESPACE
 
+namespace Qt3DCore {
+class QBackendNodePrivate;
+}
+
 namespace Qt3DInput {
 
-class QAxisSetting;
 class QInputAspect;
+class QAbstractPhysicalDeviceBackendNodePrivate;
 
-namespace Input {
-
-struct AxisIdSetting
-{
-    int m_axisIdentifier;
-    Qt3DCore::QNodeId m_axisSettingsId;
-};
-
-struct AxisIdFilter
-{
-    int m_axisIdentifier;
-    MovingAverage m_filter;
-};
-
-class AxisSetting;
-
-}
-
-class QT3DINPUTSHARED_PRIVATE_EXPORT QAbstractPhysicalDeviceBackendNodePrivate : public Qt3DCore::QBackendNodePrivate
+class QT3DINPUTSHARED_PRIVATE_EXPORT QAbstractPhysicalDeviceBackendNode : public Qt3DCore::QBackendNode
 {
 public:
-    explicit QAbstractPhysicalDeviceBackendNodePrivate(Qt3DCore::QBackendNode::Mode mode = Qt3DCore::QBackendNode::ReadOnly);
+    explicit QAbstractPhysicalDeviceBackendNode(QBackendNode::Mode mode);
+    virtual void cleanup();
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-    Q_DECLARE_PUBLIC(QAbstractPhysicalDeviceBackendNode)
+    void setInputAspect(QInputAspect *aspect);
+    QInputAspect *inputAspect() const;
 
-    void addAxisSetting(int axisIdentifier, Qt3DCore::QNodeId axisSettingId);
-    void removeAxisSetting(Qt3DCore::QNodeId axisSettingsId);
+    float processedAxisValue(int axisIdentifier);
+    virtual float axisValue(int axisIdentifier) const = 0;
+    virtual bool isButtonPressed(int buttonIdentifier) const = 0;
 
-    Input::MovingAverage &getOrCreateFilter(int axisIdentifier);
+protected:
+    QAbstractPhysicalDeviceBackendNode(QAbstractPhysicalDeviceBackendNodePrivate &dd);
 
-    Input::AxisSetting *getAxisSetting(Qt3DCore::QNodeId axisSettingId) const;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
 
-    QVector<Input::AxisIdSetting> m_axisSettings;
-    QVector<Input::AxisIdFilter> m_axisFilters;
-    QInputAspect *m_inputAspect;
-    bool m_enabled;
+    Q_DECLARE_PRIVATE(QAbstractPhysicalDeviceBackendNode)
 };
 
-}
+} // Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QABSTRACTPHYSICALDEVICEBACKENDNODE_P_H
-
+#endif // QT3DINPUT_QABSTRACTPHYSICALDEVICEBACKENDNODE_H

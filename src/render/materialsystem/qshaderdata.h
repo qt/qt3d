@@ -42,6 +42,7 @@
 
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DRender/qt3drender_global.h>
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,25 +63,18 @@ class QT3DRENDERSHARED_EXPORT QShaderData : public Qt3DCore::QComponent
 {
     Q_OBJECT
 public:
-    explicit QShaderData(Qt3DCore::QNode *parent = 0);
-    ~QShaderData();
-
-    enum TransformType {
-        ModelToEye = 0,
-        ModelToWorld
-    };
-    Q_ENUM(TransformType)
+    explicit QShaderData(Qt3DCore::QNode *parent = nullptr);
 
     PropertyReaderInterfacePtr propertyReader() const;
 
-protected:
-    QShaderData(QShaderDataPrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    bool event(QEvent *event) Q_DECL_OVERRIDE;
 
+protected:
+    QShaderData(QShaderDataPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QShaderData)
-    QT3D_CLONEABLE(QShaderData)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender
@@ -88,6 +82,6 @@ private:
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3DRender::QShaderData*)
-Q_DECLARE_METATYPE(QList<Qt3DRender::QShaderData*>)
+Q_DECLARE_METATYPE(QVector<Qt3DRender::QShaderData*>)
 
 #endif // QT3DRENDER_QSHADERDATA_H

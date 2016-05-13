@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QRenderAttachment;
+class QRenderTargetOutput;
 class QRenderTarget;
 
 class QRenderTargetPrivate : public Qt3DCore::QComponentPrivate
@@ -66,7 +66,12 @@ public:
     QRenderTargetPrivate();
 
     Q_DECLARE_PUBLIC(QRenderTarget)
-    QList<QRenderAttachment *> m_attachments;
+    QVector<QRenderTargetOutput *> m_outputs;
+};
+
+struct QRenderTargetData
+{
+    Qt3DCore::QNodeIdVector outputIds;
 };
 
 }

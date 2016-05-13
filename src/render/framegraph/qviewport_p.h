@@ -65,8 +65,13 @@ public :
     QViewportPrivate();
 
     Q_DECLARE_PUBLIC(QViewport)
-    QRectF m_rect;
+    QRectF m_normalizedRect;
     QColor m_clearColor;
+};
+
+struct QViewportData
+{
+    QRectF normalizedRect;
 };
 
 } // namespace Qt3DRender

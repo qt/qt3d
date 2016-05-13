@@ -38,8 +38,8 @@
 ****************************************************************************/
 
 #include "assignkeyboardfocusjob_p.h"
-#include "keyboardcontroller_p.h"
-#include "keyboardinput_p.h"
+#include "keyboarddevice_p.h"
+#include "keyboardhandler_p.h"
 #include "inputhandler_p.h"
 #include "inputmanagers_p.h"
 
@@ -48,10 +48,10 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 namespace Input {
 
-AssignKeyboardFocusJob::AssignKeyboardFocusJob(const Qt3DCore::QNodeId &controller)
+AssignKeyboardFocusJob::AssignKeyboardFocusJob(Qt3DCore::QNodeId keyboardDevice)
     : QAspectJob()
-    , m_inputHandler(Q_NULLPTR)
-    , m_keyboardController(controller)
+    , m_inputHandler(nullptr)
+    , m_keyboardDevice(keyboardDevice)
 {
 }
 
@@ -62,14 +62,15 @@ void AssignKeyboardFocusJob::setInputHandler(InputHandler *handler)
 
 void AssignKeyboardFocusJob::run()
 {
-    KeyboardController *controller = m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController);
-    Q_FOREACH (const HKeyboardInput handle, controller->keyboardInputsHandles()) {
-        KeyboardInput *input = m_inputHandler->keyboardInputManager()->data(handle);
+    KeyboardDevice *keyboardDevice = m_inputHandler->keyboardDeviceManager()->lookupResource(m_keyboardDevice);
+    const auto handles = keyboardDevice->keyboardInputsHandles();
+    for (const HKeyboardHandler handle : handles) {
+        KeyboardHandler *input = m_inputHandler->keyboardInputManager()->data(handle);
         if (input) {
-            bool hasFocus = input->peerUuid() == controller->lastKeyboardInputRequester();
+            bool hasFocus = input->peerId() == keyboardDevice->lastKeyboardInputRequester();
             input->setFocus(hasFocus);
             if (hasFocus)
-                controller->setCurrentFocusItem(input->peerUuid());
+                keyboardDevice->setCurrentFocusItem(input->peerId());
         }
     }
 }

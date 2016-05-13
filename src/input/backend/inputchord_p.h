@@ -64,23 +64,23 @@ class Q_AUTOTEST_EXPORT InputChord : public Qt3DCore::QBackendNode
 {
 public:
     InputChord();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
-    inline QVector<Qt3DCore::QNodeId> inputs() const { return m_inputs; }
-    inline int tolerance() const { return m_tolerance; }
+    inline QVector<Qt3DCore::QNodeId> chords() const { return m_chords; }
+    inline int timeout() const { return m_timeout; }
     inline qint64 startTime() const { return m_startTime; }
     void setStartTime(qint64 time);
-    inline bool isEnabled() const { return m_enabled; }
     void reset();
     bool actionTriggered(Qt3DCore::QNodeId input);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
 private:
-    QVector<Qt3DCore::QNodeId> m_inputs;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
+    QVector<Qt3DCore::QNodeId> m_chords;
     QVector<Qt3DCore::QNodeId> m_inputsToTrigger;
-    int m_tolerance;
+    int m_timeout;
     qint64 m_startTime;
-    bool m_enabled;
 };
 
 } // namespace Input

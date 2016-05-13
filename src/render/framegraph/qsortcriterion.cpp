@@ -39,7 +39,7 @@
 
 #include "qsortcriterion.h"
 #include "qsortcriterion_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,21 +51,9 @@ QSortCriterionPrivate::QSortCriterionPrivate()
 {
 }
 
-void QSortCriterion::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QSortCriterion *s = static_cast<const QSortCriterion*>(ref);
-    d_func()->m_sort = s->d_func()->m_sort;
-}
-
 QSortCriterion::QSortCriterion(QNode *parent)
     : QNode(*new QSortCriterionPrivate, parent)
 {
-}
-
-QSortCriterion::~QSortCriterion()
-{
-    QNode::cleanup();
 }
 
 QSortCriterion::SortType QSortCriterion::sort() const

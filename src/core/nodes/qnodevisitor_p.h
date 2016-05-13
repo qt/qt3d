@@ -92,18 +92,19 @@ public:
 
     QNode *rootNode() const;
     QNode *currentNode() const;
-    void setPath(QNodeList path);
-    QNodeList path() const;
+    void setPath(QNodeVector path);
+    QNodeVector path() const;
     void append(QNode *n);
     void pop_back();
 
 private:
-    QNodeList m_path;
+    Q_DISABLE_COPY(QNodeVisitor)
+    QNodeVector m_path;
 
     template<typename NodeVisitorFunctor>
     void startTraversing(QNode *rootNode_, NodeVisitorFunctor fN)
     {
-        setPath(QNodeList() << rootNode_);
+        setPath(QNodeVector() << rootNode_);
         if (rootNode_)
             visitNode(rootNode_, fN);
     }
@@ -111,7 +112,7 @@ private:
     template<typename NodeVisitorFunctor, typename EntityVisitorFunctor>
     void startTraversing(QNode *rootNode_, NodeVisitorFunctor fN, EntityVisitorFunctor fE)
     {
-        setPath(QNodeList() << rootNode_);
+        setPath(QNodeVector() << rootNode_);
         QEntity* rootEntity = qobject_cast<QEntity *>(rootNode_);
 
         if (rootEntity)
@@ -144,9 +145,9 @@ private:
     template<typename NodeVisitorFunctor, typename EntityVisitorFunctor>
     void traverseChildren(NodeVisitorFunctor &fN, EntityVisitorFunctor &fE)
     {
-        Q_FOREACH (QObject *n, currentNode()->children()) {
+        for (QObject *n : currentNode()->children()) {
             QNode *node = qobject_cast<QNode *>(n);
-            if (node != Q_NULLPTR)
+            if (node != nullptr)
                 outerVisitNode(node, fN, fE);
         } // of children iteration
     }
@@ -154,9 +155,9 @@ private:
     template<typename NodeVisitorFunctor>
     void traverseChildren(NodeVisitorFunctor &fN)
     {
-        Q_FOREACH (QObject *n, currentNode()->children()) {
+        for (QObject *n : currentNode()->children()) {
             QNode *node = qobject_cast<QNode *>(n);
-            if (node != Q_NULLPTR)
+            if (node != nullptr)
                 outerVisitNode(node, fN);
         } // of children iteration
     }

@@ -42,76 +42,194 @@
 
 #include <QtGui/qwindow.h>
 #include <QtGui/qoffscreensurface.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * \class Qt3DRender::QRenderSurfaceSelector
+ * \inmodule Qt3DRender
+ * \brief QRenderSurfaceSelector
+ * \since
+ *
+ * \inherits Qt3DRender::QFrameGraphNode
+ *
+ */
+
+/*!
+ * \qmltype RenderSurfaceSelector
+ * \inqmlmodule Qt3D.Render
+ * \since
+ * \ingroup
+ * \instantiates Qt3DRender::QRenderSurfaceSelector
+ * \brief RenderSurfaceSelector
+ *
+ */
+
+/*! \qmlproperty QSurface Qt3D.Render::RenderSurfaceSelector::surface
+ *
+ * Holds the surface.
+ */
+
+/*! \qmlproperty QWindow Qt3D.Render::RenderSurfaceSelector::window
+ *
+ * Holds the window.
+ */
+
+/*! \qmlproperty QSize Qt3D.Render::RenderSurfaceSelector::externalRenderTargetSize
+ *
+ * Holds the size of the external render target.
+ */
+
 QRenderSurfaceSelectorPrivate::QRenderSurfaceSelectorPrivate()
     : Qt3DRender::QFrameGraphNodePrivate()
-    , m_surface(Q_NULLPTR)
+    , m_surface(nullptr)
+    , m_surfaceEventFilter(new Qt3DRender::Render::PlatformSurfaceFilter())
 {
 }
 
+void QRenderSurfaceSelectorPrivate::setExternalRenderTargetSize(const QSize &size)
+{
+    m_externalRenderTargetSize = size;
+}
+
+/*!
+ * Constructs QRenderSurfaceSelector with given \a parent.
+ */
 QRenderSurfaceSelector::QRenderSurfaceSelector(Qt3DCore::QNode *parent)
     : Qt3DRender::QFrameGraphNode(*new QRenderSurfaceSelectorPrivate, parent)
 {
 }
 
+/*!
+ * \internal
+ */
 QRenderSurfaceSelector::QRenderSurfaceSelector(QRenderSurfaceSelectorPrivate &dd, Qt3DCore::QNode *parent)
     : Qt3DRender::QFrameGraphNode(dd, parent)
 {
 }
 
-QRenderSurfaceSelector::~QRenderSurfaceSelector()
-{
-    QNode::cleanup();
-}
-
-QSurface *QRenderSurfaceSelector::surface() const
+QObject *QRenderSurfaceSelector::surface() const
 {
     Q_D(const QRenderSurfaceSelector);
-    return d->m_surface;
+    QObject *surfaceObj = nullptr;
+    if (!d->m_surface)
+        return surfaceObj;
+
+    switch (d->m_surface->surfaceClass()) {
+    case QSurface::Window:
+        surfaceObj = static_cast<QWindow *>(d->m_surface);
+        break;
+
+    case QSurface::Offscreen:
+        surfaceObj = static_cast<QOffscreenSurface *>(d->m_surface);
+        break;
+    }
+
+    return surfaceObj;
 }
 
-QWindow *QRenderSurfaceSelector::window() const
-{
-    Q_D(const QRenderSurfaceSelector);
-    if (d->m_surface && d->m_surface->surfaceClass() == QSurface::Window)
-        return static_cast<QWindow *>(d->m_surface);
-    return Q_NULLPTR;
-}
-
-void QRenderSurfaceSelector::setSurface(QSurface *surface)
+/*! \property QRenderSurfaceSelector::surface
+ *
+ * Sets \a surface.
+ */
+void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
 {
     Q_D(QRenderSurfaceSelector);
+    QSurface *surface = nullptr;
+    if (surfaceObject) {
+        QWindow *window = qobject_cast<QWindow *>(surfaceObject);
+        if (window) {
+            surface = static_cast<QSurface *>(window);
+        } else {
+            QOffscreenSurface *offscreen = qobject_cast<QOffscreenSurface *>(surfaceObject);
+            if (offscreen)
+                surface = static_cast<QSurface *>(offscreen);
+        }
+
+        Q_ASSERT_X(surface, Q_FUNC_INFO, "surfaceObject is not a valid QSurface * object");
+    }
+
     if (d->m_surface == surface)
         return;
-
     d->m_surface = surface;
-    emit surfaceChanged(surface);
+
+    // The platform surface filter only deals with QObject
+    // We assume therefore that our surface is actually a QObject underneath
+    if (d->m_surface) {
+        switch (d->m_surface->surfaceClass()) {
+        case QSurface::Window: {
+            QWindow *window = static_cast<QWindow *>(d->m_surface);
+            d->m_surfaceEventFilter->setSurface(window);
+
+            if (window) {
+                QObject::connect(window, &QWindow::widthChanged, [=] (int width) {
+                    if (d->m_changeArbiter != nullptr) {
+                        Qt3DCore::QPropertyUpdatedChangePtr change(
+                                    new Qt3DCore::QPropertyUpdatedChange(id()));
+
+                        change->setPropertyName("width");
+                        change->setValue(QVariant::fromValue(width));
+                        d->notifyObservers(change);
+                    }
+                });
+                QObject::connect(window, &QWindow::heightChanged, [=] (int height) {
+                    if (d->m_changeArbiter != nullptr) {
+                        Qt3DCore::QPropertyUpdatedChangePtr change(
+                                    new Qt3DCore::QPropertyUpdatedChange(id()));
+
+                        change->setPropertyName("height");
+                        change->setValue(QVariant::fromValue(height));
+                        d->notifyObservers(change);
+                    }
+                });
+            }
+
+            break;
+        }
+        case QSurface::Offscreen: {
+            d->m_surfaceEventFilter->setSurface(static_cast<QOffscreenSurface *>(d->m_surface));
+            break;
+        }
+
+        default:
+            Q_UNREACHABLE();
+            break;
+        }
+    } else {
+        QWindow *nullWindow = nullptr;
+        d->m_surfaceEventFilter->setSurface(nullWindow);
+    }
+    emit surfaceChanged(surfaceObject);
 }
 
-void QRenderSurfaceSelector::setWindow(QWindow *window)
+QSize QRenderSurfaceSelector::externalRenderTargetSize() const
+{
+    Q_D(const QRenderSurfaceSelector);
+    return d->externalRenderTargetSize();
+}
+
+/*!
+ * Sets render target \a size if different than underlying surface size.
+ * Tells picking the correct size.
+ */
+void QRenderSurfaceSelector::setExternalRenderTargetSize(const QSize &size)
 {
     Q_D(QRenderSurfaceSelector);
-    QWindow *currentWindow = Q_NULLPTR;
-    if (d->m_surface && d->m_surface->surfaceClass() == QSurface::Window)
-        currentWindow = static_cast<QWindow *>(d->m_surface);
-    if (currentWindow == window)
-        return;
-
-    d->m_surface = window;
-    emit windowChanged(window);
-    emit surfaceChanged(d->m_surface);
+    d->setExternalRenderTargetSize(size);
+    emit externalRenderTargetSizeChanged(size);
 }
 
-void QRenderSurfaceSelector::copy(const QNode *ref)
+Qt3DCore::QNodeCreatedChangeBasePtr QRenderSurfaceSelector::createNodeCreationChange() const
 {
-    QFrameGraphNode::copy(ref);
-    const QRenderSurfaceSelector *object = static_cast<const QRenderSurfaceSelector *>(ref);
-
-    d_func()->m_surface = object->d_func()->m_surface;
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderSurfaceSelectorData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QRenderSurfaceSelector);
+    data.surface = QPointer<QObject>(surface());
+    data.externalRenderTargetSize = d->m_externalRenderTargetSize;
+    return creationChange;
 }
 
 } // namespace Qt3DRender

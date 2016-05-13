@@ -50,10 +50,9 @@
 
 #include <Qt3DCore/QEntity>
 
-#include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QMaterial>
-#include <Qt3DRender/QSphereMesh>
-#include <Qt3DRender/QPlaneMesh>
+#include <Qt3DExtras//QSphereMesh>
+#include <Qt3DExtras//QPlaneMesh>
 #include <Qt3DRender/QLayer>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QCamera>
@@ -69,15 +68,15 @@
 #include "finaleffect.h"
 #include "sceneeffect.h"
 #include "pointlightblock.h"
-#include "qt3dwindow.h"
-#include "qfirstpersoncameracontroller.h"
+#include <Qt3DExtras/qt3dwindow.h>
+#include <Qt3DExtras/qfirstpersoncameracontroller.h>
 
 
 int main(int ac, char **av)
 {
     QGuiApplication app(ac, av);
 
-    Qt3DWindow view;
+    Qt3DExtras::Qt3DWindow view;
 
     // Root entity
     Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
@@ -88,17 +87,14 @@ int main(int ac, char **av)
     FinalEffect *finalEffect = new FinalEffect();
     SceneEffect *sceneEffect = new SceneEffect();
 
-    Qt3DRender::QSphereMesh *sphereMesh = new Qt3DRender::QSphereMesh();
+    Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh();
     sphereMesh->setRings(50);
     sphereMesh->setSlices(100);
 
     Qt3DRender::QLayer *sceneLayer = new Qt3DRender::QLayer();
-    sceneLayer->setNames(QStringList("scene"));
-
     Qt3DRender::QLayer *quadLayer = new Qt3DRender::QLayer();
-    quadLayer->setNames(QStringList("screenQuad"));
 
-    Qt3DRender::QPlaneMesh *planeMesh = new Qt3DRender::QPlaneMesh();
+    Qt3DExtras::QPlaneMesh *planeMesh = new Qt3DExtras::QPlaneMesh();
     planeMesh->setMeshResolution(QSize(2, 2));
     planeMesh->setWidth(2.0f);
     planeMesh->setHeight(2.0f);
@@ -122,19 +118,18 @@ int main(int ac, char **av)
     camera->setViewCenter(QVector3D(0.0f, 0.0f, 10.0f));
 
     // For camera controls
-    Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(rootEntity);
+    Qt3DExtras::QFirstPersonCameraController *camController = new Qt3DExtras::QFirstPersonCameraController(rootEntity);
     camController->setCamera(camera);
 
     // FrameGraph
     DeferredRenderer *deferredRenderer = new DeferredRenderer();
-    deferredRenderer->setClearColor(Qt::black);
-    deferredRenderer->setRect(QRectF(0.0f, 0.0f, 1.0f, 1.0f));
+    deferredRenderer->setNormalizedRect(QRectF(0.0f, 0.0f, 1.0f, 1.0f));
     deferredRenderer->setFinalPassCriteria(finalEffect->passCriteria());
     deferredRenderer->setGeometryPassCriteria(sceneEffect->passCriteria());
     deferredRenderer->setGBuffer(gBuffer);
     deferredRenderer->setSceneCamera(camera);
-    deferredRenderer->setGBufferLayers(sceneLayer->names());
-    deferredRenderer->setScreenQuadLayers(quadLayer->names());
+    deferredRenderer->setGBufferLayer(sceneLayer);
+    deferredRenderer->setScreenQuadLayer(quadLayer);
     view.setActiveFrameGraph(deferredRenderer);
 
     // Scene Content

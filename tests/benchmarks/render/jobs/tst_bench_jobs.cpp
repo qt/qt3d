@@ -31,10 +31,10 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QMaterial>
-#include <Qt3DRender/QFrameGraph>
-#include <Qt3DRender/QForwardRenderer>
-#include <Qt3DRender/QPhongMaterial>
-#include <Qt3DRender/QCylinderMesh>
+#include <Qt3DExtras/QForwardRenderer>
+#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QCylinderMesh>
+#include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/private/managers_p.h>
 
 #include <Qt3DCore/private/qresourcemanager_p.h>
@@ -50,6 +50,7 @@
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qaspectthread_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <QQmlComponent>
 #include <QScopedPointer>
 
@@ -79,7 +80,7 @@ public:
             m_window->setFormat(format);
             m_window->create();
 
-            QRenderAspect::onInitialize();
+            QRenderAspect::onRegistered();
         }
     }
 
@@ -121,17 +122,16 @@ public:
     void onRootEntityChanged(Qt3DCore::QEntity *root)
     {
         if (!m_window) {
-            Qt3DCore::QNodeVisitor visitor;
-            visitor.traverse(root, this, &TestAspect::visitNode);
+            const Qt3DCore::QNodeCreatedChangeGenerator generator(root);
+            const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = generator.creationChanges();
+
+            for (const Qt3DCore::QNodeCreatedChangeBasePtr change : creationChanges)
+                d_func()->createBackendNode(change);
+
             static_cast<Qt3DRender::Render::Renderer *>(d_func()->m_renderer)->m_renderSceneRoot =
                     d_func()->m_renderer->nodeManagers()
                     ->lookupResource<Qt3DRender::Render::Entity, Qt3DRender::Render::EntityManager>(root->id());
         }
-    }
-
-    void visitNode(Qt3DCore::QNode *node)
-    {
-        d_func()->createBackendNode(node);
     }
 
 private:
@@ -164,13 +164,12 @@ Qt3DCore::QEntity *buildBigScene()
     cameraEntity->setViewCenter(QVector3D(0, 0, 0));
 
     // FrameGraph
-    Qt3DRender::QFrameGraph *frameGraph = new Qt3DRender::QFrameGraph();
-    Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
+    Qt3DRender::QRenderSettings* renderSettings = new Qt3DRender::QRenderSettings();
+    Qt3DExtras::QForwardRenderer *forwardRenderer = new Qt3DExtras::QForwardRenderer();
     forwardRenderer->setCamera(cameraEntity);
     forwardRenderer->setClearColor(Qt::black);
-    frameGraph->setActiveFrameGraph(forwardRenderer);
-    root->addComponent(frameGraph);
-
+    renderSettings->setActiveFrameGraph(forwardRenderer);
+    root->addComponent(renderSettings);
 
     const float radius = 100.0f;
     const int max = 1000;
@@ -179,8 +178,8 @@ Qt3DCore::QEntity *buildBigScene()
     for (int i = 0; i < max; i++) {
         Qt3DCore::QEntity *e = new Qt3DCore::QEntity();
         Qt3DCore::QTransform *transform = new Qt3DCore::QTransform();
-        Qt3DRender::QCylinderMesh *mesh = new Qt3DRender::QCylinderMesh();
-        Qt3DRender::QPhongMaterial *material = new Qt3DRender::QPhongMaterial();
+        Qt3DExtras::QCylinderMesh *mesh = new Qt3DExtras::QCylinderMesh();
+        Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial();
         mesh->setRings(50.0f);
         mesh->setSlices(30.0f);
         mesh->setRadius(2.5f);
@@ -234,7 +233,8 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->registerAspect(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity),
+                                                                              QVector<Qt3DCore::QNodeCreatedChangeBasePtr>());
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.worldTransformJob();
@@ -257,7 +257,8 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->registerAspect(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity),
+                                                                              QVector<Qt3DCore::QNodeCreatedChangeBasePtr>());
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.updateBoundingJob();
@@ -280,7 +281,8 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->registerAspect(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity),
+                                                                              QVector<Qt3DCore::QNodeCreatedChangeBasePtr>());
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.calculateBoundingVolumeJob();
@@ -303,7 +305,8 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->registerAspect(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity),
+                                                                              QVector<Qt3DCore::QNodeCreatedChangeBasePtr>());
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.framePreparationJob();
@@ -326,7 +329,8 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->registerAspect(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity),
+                                                                              QVector<Qt3DCore::QNodeCreatedChangeBasePtr>());
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.frameCleanupJob();

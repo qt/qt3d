@@ -51,6 +51,7 @@
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 import Qt3D.Input 2.0
+import Qt3D.Extras 2.0
 import QtQuick 2.4 as QQ2
 
 Entity {
@@ -71,7 +72,7 @@ Entity {
     FirstPersonCameraController { camera: camera }
 
     components: [
-        FrameGraph {
+        RenderSettings {
             activeFrameGraph: ForwardRenderer{
                 camera: camera
                 clearColor: Qt.rgba(0.0, 0.5, 1, 1)
@@ -136,7 +137,7 @@ Entity {
         }
 
         effect:  Effect {
-            Annotation {
+            FilterKey {
                 id: forward
                 name: "renderingStyle"
                 value: "forward"
@@ -161,7 +162,7 @@ Entity {
             techniques: [
                 Technique
                 {
-                    annotations: forward
+                    filterKeys: [ forward ]
                     graphicsApiFilter {
                         api: GraphicsApiFilter.OpenGL
                         profile: GraphicsApiFilter.NoProfile
@@ -172,13 +173,13 @@ Entity {
                     renderPasses: RenderPass {
                         renderStates: [
                             CullFace { mode : CullFace.Back },
-                            DepthTest { func: DepthTest.Less },
-                            DepthMask { mask: false },
-                            BlendState {
-                                srcRGB: BlendState.SrcAlpha
-                                dstRGB: BlendState.OneMinusSrcAlpha
+                            DepthTest { depthFunction: DepthTest.Less },
+                            NoDepthMask { },
+                            BlendEquationArguments {
+                                sourceRgb: BlendEquationArguments.SourceAlpha
+                                destinationRgb: BlendEquationArguments.OneMinusSourceAlpha
                             }
-                            ,BlendEquation {mode: BlendEquation.FuncAdd}
+                            ,BlendEquation {blendFunction: BlendEquation.Add}
                         ]
 
                         shaderProgram: alphaPhong
@@ -186,7 +187,7 @@ Entity {
                 },
                 Technique
                 {
-                    annotations: forward
+                    filterKeys: [ forward ]
                     graphicsApiFilter {
                         api: GraphicsApiFilter.OpenGLES
                         profile: GraphicsApiFilter.NoProfile
@@ -197,13 +198,13 @@ Entity {
                     renderPasses: RenderPass {
                         renderStates: [
                             CullFace { mode : CullFace.Back },
-                            DepthTest { func: DepthTest.Less },
-                            DepthMask { mask: false },
-                            BlendState {
-                                srcRGB: BlendState.SrcAlpha
-                                dstRGB: BlendState.OneMinusSrcAlpha
+                            DepthTest { depthFunction: DepthTest.Less },
+                            NoDepthMask { },
+                            BlendEquationArguments {
+                                sourceRgb: BlendEquationArguments.SourceAlpha
+                                destinationRgb: BlendEquationArguments.OneMinusSourceAlpha
                             }
-                            ,BlendEquation {mode: BlendEquation.FuncAdd}
+                            ,BlendEquation {blendFunction: BlendEquation.Add}
                         ]
 
                         shaderProgram: alphaPhong

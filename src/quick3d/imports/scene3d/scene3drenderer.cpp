@@ -44,6 +44,7 @@
 #include "scene3dsgnode_p.h"
 
 #include <Qt3DRender/qrenderaspect.h>
+#include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DCore/qaspectengine.h>
 
 #include <QtQuick/qquickwindow.h>
@@ -62,7 +63,7 @@ class ContextSaver
 public:
     explicit ContextSaver(QOpenGLContext *context = QOpenGLContext::currentContext())
         : m_context(context),
-          m_surface(context ? context->surface() : Q_NULLPTR)
+          m_surface(context ? context->surface() : nullptr)
     {
     }
 
@@ -115,9 +116,9 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     , m_item(item)
     , m_aspectEngine(aspectEngine)
     , m_renderAspect(renderAspect)
-    , m_multisampledFBO(Q_NULLPTR)
-    , m_finalFBO(Q_NULLPTR)
-    , m_texture(Q_NULLPTR)
+    , m_multisampledFBO(nullptr)
+    , m_finalFBO(nullptr)
+    , m_texture(nullptr)
     , m_multisample(false) // this value is not used, will be synced from the Scene3DItem instead
     , m_lastMultisample(false)
 {
@@ -128,7 +129,7 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     QObject::connect(m_item, &QQuickItem::windowChanged, this, &Scene3DRenderer::onWindowChangedQueued, Qt::QueuedConnection);
 
     ContextSaver saver;
-    m_renderAspect->renderInitialize(saver.context());
+    static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderInitialize(saver.context());
     scheduleRootEntityChange();
 }
 
@@ -174,18 +175,18 @@ void Scene3DRenderer::shutdown()
 
     // Set to null so that subsequent calls to render
     // would return early
-    m_item = Q_NULLPTR;
+    m_item = nullptr;
 
     // Shutdown the Renderer Aspect while the OpenGL context
     // is still valid
     if (m_renderAspect)
-        m_renderAspect->renderShutdown();
+        static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderShutdown();
 }
 
 // SGThread
 void Scene3DRenderer::onWindowChangedQueued(QQuickWindow *w)
 {
-    if (w == Q_NULLPTR) {
+    if (w == nullptr) {
         qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
         shutdown();
         // Will only trigger something with the Loader case
@@ -219,8 +220,12 @@ void Scene3DRenderer::render()
 
     ContextSaver saver;
 
-    const QSize currentSize = m_item->boundingRect().size().toSize() * window->effectiveDevicePixelRatio();
+    const QSize boundingRectSize = m_item->boundingRect().size().toSize();
+    const QSize currentSize = boundingRectSize * window->effectiveDevicePixelRatio();
     const bool forceRecreate = currentSize != m_lastSize || m_multisample != m_lastMultisample;
+
+    if (currentSize != m_lastSize)
+        m_item->setItemArea(boundingRectSize);
 
     // Rebuild FBO and textures if never created or a resize has occurred
     if ((m_multisampledFBO.isNull() || forceRecreate) && m_multisample) {
@@ -229,7 +234,7 @@ void Scene3DRenderer::render()
         if (m_multisampledFBO->format().samples() == 0 || !QOpenGLFramebufferObject::hasOpenGLFramebufferBlit()) {
             qCDebug(Scene3D) << Q_FUNC_INFO << "Failed to create multisample framebuffer";
             m_multisample = false;
-            m_multisampledFBO.reset(Q_NULLPTR);
+            m_multisampledFBO.reset(nullptr);
         }
     }
 
@@ -250,14 +255,21 @@ void Scene3DRenderer::render()
         m_multisampledFBO->bind();
 
         // Render Qt3D Scene
-        m_renderAspect->renderSynchronous();
+        static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderSynchronous();
 
         // We may have called doneCurrent() so restore the context.
         if (saver.context()->surface() != saver.surface())
             saver.context()->makeCurrent(saver.surface());
 
         // Blit multisampled FBO with non multisampled FBO with texture attachment
-        QOpenGLFramebufferObject::blitFramebuffer(m_finalFBO.data(), m_multisampledFBO.data());
+        const QRect dstRect(QPoint(0, 0), m_finalFBO->size());
+        const QRect srcRect(QPoint(0, 0), m_multisampledFBO->size());
+        QOpenGLFramebufferObject::blitFramebuffer(m_finalFBO.data(), dstRect,
+                                                  m_multisampledFBO.data(), srcRect,
+                                                  GL_COLOR_BUFFER_BIT,
+                                                  GL_NEAREST,
+                                                  0, 0,
+                                                  QOpenGLFramebufferObject::DontRestoreFramebufferBinding);
 
         // Restore QtQuick FBO
         m_multisampledFBO->bindDefault();
@@ -266,7 +278,7 @@ void Scene3DRenderer::render()
         m_finalFBO->bind();
 
         // Render Qt3D Scene
-        m_renderAspect->renderSynchronous();
+        static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderSynchronous();
 
         // We may have called doneCurrent() so restore the context.
         if (saver.context()->surface() != saver.surface())

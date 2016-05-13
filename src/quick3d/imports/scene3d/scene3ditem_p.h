@@ -75,6 +75,7 @@ class Scene3DItem : public QQuickItem
     Q_PROPERTY(QStringList aspects READ aspects WRITE setAspects NOTIFY aspectsChanged)
     Q_PROPERTY(bool multisample READ multisample WRITE setMultisample NOTIFY multisampleChanged)
     Q_PROPERTY(CameraAspectRatioMode cameraAspectRatioMode READ cameraAspectRatioMode WRITE setCameraAspectRatioMode NOTIFY cameraAspectRatioModeChanged)
+    Q_PROPERTY(bool hoverEnabled READ isHoverEnabled WRITE setHoverEnabled NOTIFY hoverEnabledChanged)
     Q_CLASSINFO("DefaultProperty", "entity")
 public:
     explicit Scene3DItem(QQuickItem *parent = 0);
@@ -85,6 +86,8 @@ public:
 
     bool multisample() const;
     void setMultisample(bool enable);
+    void setItemArea(const QSize &area);
+    bool isHoverEnabled() const;
 
     enum CameraAspectRatioMode {
         AutomaticAspectRatio,
@@ -97,12 +100,14 @@ public Q_SLOTS:
     void setAspects(const QStringList &aspects);
     void setEntity(Qt3DCore::QEntity *entity);
     void setCameraAspectRatioMode(CameraAspectRatioMode mode);
+    void setHoverEnabled(bool enabled);
 
 Q_SIGNALS:
     void aspectsChanged();
     void entityChanged();
     void multisampleChanged();
     void cameraAspectRatioModeChanged(CameraAspectRatioMode mode);
+    void hoverEnabledChanged();
 
 private Q_SLOTS:
     void applyRootEntityChange();

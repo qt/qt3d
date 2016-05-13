@@ -57,7 +57,7 @@ TestArbiter::TestArbiter(Qt3DCore::QNode *node)
 TestArbiter::~TestArbiter()
 {
     if (m_node)
-        Qt3DCore::QNodePrivate::get(m_node)->setArbiter(Q_NULLPTR);
+        Qt3DCore::QNodePrivate::get(m_node)->setArbiter(nullptr);
 }
 
 void TestArbiter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -83,7 +83,7 @@ Qt3DCore::QAbstractPostman *TestArbiter::postman() const
 void TestArbiter::assignArbiter(Qt3DCore::QNode *node)
 {
     Qt3DCore::QNodePrivate::get(node)->setArbiter(this);
-    Q_FOREACH (Qt3DCore::QNode *n, node->childrenNodes())
+    Q_FOREACH (Qt3DCore::QNode *n, node->childNodes())
         assignArbiter(n);
 }
 

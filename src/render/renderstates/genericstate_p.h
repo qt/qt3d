@@ -52,10 +52,12 @@
 // We mean it.
 //
 
-#include <QList>
-#include <QOpenGLContext>
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRender/private/backendnode_p.h>
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>
+#include <QList>
+#include <QVector3D>
+#include <QOpenGLContext>
 
 QT_BEGIN_NAMESPACE
 
@@ -85,7 +87,8 @@ enum StateMask
     ClipPlaneMask           = 1 << 13,
     StencilOpMask           = 1 << 14,
     PointSizeMask           = 1 << 15,
-    SeamlessCubemapMask     = 1 << 16
+    SeamlessCubemapMask     = 1 << 16,
+    MSAAEnabledStateMask    = 1 << 17
 };
 
 typedef quint64 StateMaskSet;
@@ -119,30 +122,10 @@ public:
     virtual RenderStateImpl *getOrCreateWithPropertyChange(const char *name, const QVariant &value) const = 0;
 
     static RenderStateImpl *getOrCreateState(QRenderState *renderState);
+    static RenderStateImpl *getOrCreateState(const Qt3DRender::QRenderStateCreatedChangeBasePtr change);
     virtual void updateProperty(const char *name, const QVariant &value);
 };
 
-/**
- * @brief Backend Render State Node
- */
-class Q_AUTOTEST_EXPORT RenderStateNode : public Qt3DCore::QBackendNode
-{
-public:
-    RenderStateNode();
-    virtual ~RenderStateNode();
-
-    virtual void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    virtual void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-
-    void apply(GraphicsContext* gc) const { m_impl->apply(gc); }
-    StateMaskSet mask() const { return m_impl->mask(); }
-    RenderStateImpl *impl() const { return m_impl; }
-
-protected:
-    void cleanup();
-
-    RenderStateImpl *m_impl;
-};
 
 template <class State>
 State *getOrCreateRenderStateEqualTo(const State &prototype)

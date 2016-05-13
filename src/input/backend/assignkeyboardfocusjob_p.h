@@ -64,13 +64,13 @@ class InputHandler;
 class AssignKeyboardFocusJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit AssignKeyboardFocusJob(const Qt3DCore::QNodeId &controller);
+    explicit AssignKeyboardFocusJob(Qt3DCore::QNodeId keyboardDevice);
     void setInputHandler(InputHandler *handler);
     void run() Q_DECL_OVERRIDE;
 
 private:
     InputHandler *m_inputHandler;
-    const Qt3DCore::QNodeId m_keyboardController;
+    const Qt3DCore::QNodeId m_keyboardDevice;
 };
 
 } // namespace Input

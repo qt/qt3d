@@ -56,13 +56,13 @@ class QT3DRENDERSHARED_EXPORT QDispatchCompute : public QFrameGraphNode
     Q_PROPERTY(int workGroupY READ workGroupY WRITE setWorkGroupY NOTIFY workGroupYChanged)
     Q_PROPERTY(int workGroupZ READ workGroupZ WRITE setWorkGroupZ NOTIFY workGroupZChanged)
 public:
-    explicit QDispatchCompute(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QDispatchCompute();
+    explicit QDispatchCompute(Qt3DCore::QNode *parent = nullptr);
 
     int workGroupX() const;
     int workGroupY() const;
     int workGroupZ() const;
 
+public Q_SLOTS:
     void setWorkGroupX(int workGroupX);
     void setWorkGroupY(int workGroupY);
     void setWorkGroupZ(int workGroupZ);
@@ -72,13 +72,9 @@ Q_SIGNALS:
     void workGroupYChanged();
     void workGroupZChanged();
 
-    // QNode interface
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
 private:
-    QT3D_CLONEABLE(QDispatchCompute)
     Q_DECLARE_PRIVATE(QDispatchCompute)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3DRender

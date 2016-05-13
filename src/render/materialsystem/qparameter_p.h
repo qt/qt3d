@@ -74,6 +74,12 @@ public:
     QVariant m_backendValue;
 };
 
+struct QParameterData
+{
+    QString name;
+    QVariant backendValue;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRender/private/backendnode_p.h>
 #include <QMatrix4x4>
 #include <QRectF>
 
@@ -63,29 +63,22 @@ namespace Render {
 
 class CameraManager;
 
-class CameraLens : public Qt3DCore::QBackendNode
+class CameraLens : public BackendNode
 {
 public:
     CameraLens();
     ~CameraLens();
     void cleanup();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-
-    void setClearColor();
-    QVector4D clearColor() const { return m_clearColor; }
-
     void setProjection(const QMatrix4x4 &projection);
     inline QMatrix4x4 projection() const { return m_projection; }
-
-    inline bool isEnabled() const { return m_enabled; }
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    QVector4D m_clearColor;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QMatrix4x4 m_projection;
-    bool m_enabled;
 };
 
 } // namespace Render

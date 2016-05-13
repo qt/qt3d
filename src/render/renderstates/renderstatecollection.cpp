@@ -58,7 +58,7 @@ QVector<RenderStateNode*> RenderStateCollection::renderStates(RenderStateManager
     if (m_dirty) {
         m_renderStateNodes.clear();
 
-        Q_FOREACH (Qt3DCore::QNodeId id, m_renderStateIds) {
+        for (const Qt3DCore::QNodeId id : m_renderStateIds) {
             RenderStateNode *node = manager->lookupResource(id);
             m_renderStateNodes.append(node);
         }
@@ -74,7 +74,7 @@ bool RenderStateCollection::hasRenderStates() const
     return !m_renderStateIds.empty();
 }
 
-void RenderStateCollection::appendRenderState(const Qt3DCore::QNodeId &renderStateId)
+void RenderStateCollection::appendRenderState(Qt3DCore::QNodeId renderStateId)
 {
     if (!m_renderStateIds.contains(renderStateId)) {
         m_renderStateIds.append(renderStateId);
@@ -82,7 +82,7 @@ void RenderStateCollection::appendRenderState(const Qt3DCore::QNodeId &renderSta
     }
 }
 
-void RenderStateCollection::removeRenderState(const Qt3DCore::QNodeId &renderStateId)
+void RenderStateCollection::removeRenderState(Qt3DCore::QNodeId renderStateId)
 {
     if (m_renderStateIds.removeAll(renderStateId) > 0) {
         m_dirty = true;

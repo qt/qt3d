@@ -84,8 +84,8 @@ Material {
                         ]
                     }
                 ]
-                annotations: [
-                    Annotation { name: "type"; value: "compute" }
+                filterKeys: [
+                    FilterKey { name: "type"; value: "compute" }
                 ]
                 graphicsApiFilter {
                     api: GraphicsApiFilter.OpenGL
@@ -100,14 +100,10 @@ Material {
                         shaderProgram: drawShader
                         // We assume the mesh to be drawn will also receive
                         // Vertex buffers attributes that will be used to position and color
-                        bindings: [
-                            ParameterMapping { parameterName: "particlePosition";  shaderVariableName: "particlePosition"; bindingType: ParameterMapping.Attribute },
-                            ParameterMapping { parameterName: "particleColor";  shaderVariableName: "particleColor"; bindingType: ParameterMapping.Attribute }
-                        ]
                     }
                 ]
-                annotations: [
-                    Annotation { name: "type"; value: "draw" }
+                filterKeys: [
+                    FilterKey { name: "type"; value: "draw" }
                 ]
                 graphicsApiFilter {
                     api: GraphicsApiFilter.OpenGL

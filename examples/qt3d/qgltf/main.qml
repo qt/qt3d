@@ -71,12 +71,14 @@ Entity {
         controlledCamera: camera
     }
 
-    components: FrameGraph {
-        activeFrameGraph: ForwardRenderer {
-            clearColor: Qt.rgba(0, 0.5, 1, 1)
-            camera: camera
+    components: [
+        RendererSettings {
+            activeFrameGraph: ForwardRenderer {
+                clearColor: Qt.rgba(0, 0.5, 1, 1)
+                camera: camera
+            }
         }
-    }
+    ]
 
     Scene {
     }

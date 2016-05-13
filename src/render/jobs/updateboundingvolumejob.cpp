@@ -43,6 +43,7 @@
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/sphere_p.h>
+#include <Qt3DRender/private/job_common_p.h>
 
 #include <QThread>
 
@@ -56,14 +57,15 @@ namespace {
 void expandWorldBoundingVolume(Qt3DRender::Render::Entity *node)
 {
     // Go to the nodes that have the most depth
-    Q_FOREACH (Entity *c, node->children())
+    const auto children = node->children();
+    for (Entity *c : children)
         expandWorldBoundingVolume(c);
 
     // Then traverse back from leaf to root
     // Initialize parent bounding volume to be equal to that of the first child
-    if (node->hasChildren()) {
+    if (!children.empty()) {
         Qt3DRender::Render::Sphere *parentBoundingVolume = node->worldBoundingVolumeWithChildren();
-        Q_FOREACH (Entity *c, node->children())
+        for (Entity *c : children)
             parentBoundingVolume->expandToContain(*c->worldBoundingVolumeWithChildren());
     }
 }
@@ -71,8 +73,9 @@ void expandWorldBoundingVolume(Qt3DRender::Render::Entity *node)
 }
 
 UpdateBoundingVolumeJob::UpdateBoundingVolumeJob()
-    : m_node(Q_NULLPTR)
+    : m_node(nullptr)
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateBoundingVolume, 0);
 }
 
 void UpdateBoundingVolumeJob::setRoot(Entity *root)

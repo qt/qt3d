@@ -68,12 +68,8 @@ class FrameGraphNode;
 class Q_AUTOTEST_EXPORT RenderViewJob : public Qt3DCore::QAspectJob
 {
 public:
-    RenderViewJob()
-        : m_renderer(0)
-        , m_devicePixelRatio(1.)
-        , m_fgLeaf(0)
-        , m_index(0)
-    {}
+    RenderViewJob();
+    ~RenderViewJob();
 
     inline void setRenderer(Renderer *renderer) { m_renderer = renderer; }
     inline void setSurfaceSize(const QSize &size) { m_surfaceSize = size; }

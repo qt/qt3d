@@ -45,7 +45,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
-    \class Qt3DRender::QCameraLensPrivate
     \internal
 */
 QCameraLensPrivate::QCameraLensPrivate()
@@ -69,27 +68,6 @@ QCameraLens::QCameraLens(QNode *parent)
     d->updateProjectionMatrix();
 }
 
-QCameraLens::~QCameraLens()
-{
-    QNode::cleanup();
-}
-
-void QCameraLens::copy(const QNode *ref)
-{
-    QComponent::copy(ref);
-    const QCameraLens *lens = static_cast<const QCameraLens*>(ref);
-    d_func()->m_projectionType = lens->d_func()->m_projectionType;
-    d_func()->m_nearPlane = lens->d_func()->m_nearPlane;
-    d_func()->m_farPlane = lens->d_func()->m_farPlane;
-    d_func()->m_fieldOfView = lens->d_func()->m_fieldOfView;
-    d_func()->m_aspectRatio = lens->d_func()->m_aspectRatio;
-    d_func()->m_left = lens->d_func()->m_left;
-    d_func()->m_right = lens->d_func()->m_right;
-    d_func()->m_bottom = lens->d_func()->m_bottom;
-    d_func()->m_top = lens->d_func()->m_top;
-    d_func()->m_projectionMatrix = lens->d_func()->m_projectionMatrix;
-}
-
 /*! \class Qt3DRender::QCameraLens
  *  \inmodule Qt3DCore
  *
@@ -104,6 +82,17 @@ QCameraLens::QCameraLens(QCameraLensPrivate &dd, QNode *parent)
     Q_D(QCameraLens);
     d->updateOrthographicProjection();
 }
+
+/*!
+ * \enum Qt3DRender::QCameraLens::ProjectionType
+ *
+ * Specifies which parameters of Qt3DRender::QCameraLens are used to compute the projection matrix.
+ *
+ * \value OrthographicProjection
+ * \value PerspectiveProjection
+ * \value FrustumProjection
+ * \value CustomProjection
+ */
 
 /*!
  * Sets the lens' projection type \a projectionType.
@@ -412,12 +401,36 @@ float QCameraLens::top() const
 }
 
 /*!
+ * Sets the project matrix.
+ *
+ * \note This will set the projection type to Qt3DRender::QCameraLens::CustomProjection and thus
+ * ignore all other camera parameters that might have been specified.
+ */
+void QCameraLens::setProjectionMatrix(const QMatrix4x4 &projectionMatrix)
+{
+    Q_D(QCameraLens);
+    setProjectionType(CustomProjection);
+    if (qFuzzyCompare(d->m_projectionMatrix, projectionMatrix))
+        return;
+    d->m_projectionMatrix = projectionMatrix;
+    emit projectionMatrixChanged(projectionMatrix);
+}
+
+/*!
  * Returns the projection matrix.
  */
 QMatrix4x4 QCameraLens::projectionMatrix() const
 {
     Q_D(const QCameraLens);
     return d->m_projectionMatrix;
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QCameraLens::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QCameraLensData>::create(this);
+    auto &data = creationChange->data;
+    data.projectionMatrix = d_func()->m_projectionMatrix;
+    return creationChange;
 }
 
 } // Qt3DRender

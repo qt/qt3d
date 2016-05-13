@@ -66,24 +66,25 @@ class InputSettings : public Qt3DCore::QBackendNode
 {
 public:
     InputSettings();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     inline QObject *eventSource() const { return m_eventSource; }
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QPointer<QObject> m_eventSource;
 };
 
-class InputSettingsFunctor : public Qt3DCore::QBackendNodeFunctor
+class InputSettingsFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit InputSettingsFunctor(InputHandler *handler);
 
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
 
 private:
     InputHandler *m_handler;

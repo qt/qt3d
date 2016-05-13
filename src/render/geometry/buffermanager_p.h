@@ -60,7 +60,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class BufferManager : public Qt3DCore::QResourceManager<
+class Q_AUTOTEST_EXPORT BufferManager : public Qt3DCore::QResourceManager<
         Buffer,
         Qt3DCore::QNodeId,
         16,
@@ -72,7 +72,7 @@ public:
     ~BufferManager();
 
     // Aspect Thread
-    void addDirtyBuffer(const Qt3DCore::QNodeId &bufferId);
+    void addDirtyBuffer(Qt3DCore::QNodeId bufferId);
     QVector<Qt3DCore::QNodeId> dirtyBuffers();
 
 private:

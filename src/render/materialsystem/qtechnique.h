@@ -43,8 +43,8 @@
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRender/qrenderpass.h>
-#include <Qt3DRender/qannotation.h>
-#include <QList>
+#include <Qt3DRender/qfilterkey.h>
+#include <QVector>
 #include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
@@ -61,31 +61,29 @@ class QT3DRENDERSHARED_EXPORT QTechnique : public Qt3DCore::QNode
     Q_PROPERTY(Qt3DRender::QGraphicsApiFilter *graphicsApiFilter READ graphicsApiFilter CONSTANT)
 
 public:
-    explicit QTechnique(Qt3DCore::QNode *parent = 0);
-    ~QTechnique();
+    explicit QTechnique(Qt3DCore::QNode *parent = nullptr);
 
-    void addAnnotation(QAnnotation *criterion);
-    void removeAnnotation(QAnnotation *criterion);
-    QList<QAnnotation *> annotations() const;
+    void addFilterKey(QFilterKey *filterKey);
+    void removeFilterKey(QFilterKey *filterKey);
+    QVector<QFilterKey*> filterKeys() const;
 
     void addParameter(QParameter *p);
     void removeParameter(QParameter *p);
-    QList<QParameter *> parameters() const;
+    QVector<QParameter *> parameters() const;
 
-    void addPass(QRenderPass *pass);
-    void removePass(QRenderPass *pass);
-    QList<QRenderPass *> renderPasses() const;
+    void addRenderPass(QRenderPass *pass);
+    void removeRenderPass(QRenderPass *pass);
+    QVector<QRenderPass *> renderPasses() const;
 
     QGraphicsApiFilter *graphicsApiFilter();
 
 protected:
-    QTechnique(QTechniquePrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    QTechnique(QTechniquePrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QTechnique)
-    QT3D_CLONEABLE(QTechnique)
     Q_PRIVATE_SLOT(d_func(), void _q_graphicsApiFilterChanged())
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 }

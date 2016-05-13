@@ -68,8 +68,14 @@ public:
 
     Q_DECLARE_PUBLIC(QRenderPassFilter)
     QString m_renderPassName;
-    QList<QAnnotation *> m_includeList;
-    QList<QParameter *> m_parameters;
+    QVector<QFilterKey *> m_matchList;
+    QVector<QParameter *> m_parameters;
+};
+
+struct QRenderPassFilterData
+{
+    Qt3DCore::QNodeIdVector matchIds;
+    Qt3DCore::QNodeIdVector parameterIds;
 };
 
 } // namespace Qt3DRender

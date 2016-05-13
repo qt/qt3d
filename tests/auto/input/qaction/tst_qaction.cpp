@@ -29,25 +29,28 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DInput/QAction>
 #include <Qt3DInput/QActionInput>
+#include <Qt3DInput/private/qaction_p.h>
+#include <Qt3DInput/private/qactioninput_p.h>
+
+#include <Qt3DCore/QPropertyUpdatedChange>
+#include <Qt3DCore/QPropertyNodeAddedChange>
+#include <Qt3DCore/QPropertyNodeRemovedChange>
 
 #include "testpostmanarbiter.h"
 
 // We need to call QNode::clone which is protected
+// We need to call QAction::sceneChangeEvent which is protected
 // So we sublcass QNode instead of QObject
-class tst_QAction: public Qt3DCore::QNode
+class tst_QAction: public Qt3DInput::QAction
 {
     Q_OBJECT
 public:
     tst_QAction()
     {
-    }
-
-    ~tst_QAction()
-    {
-        QNode::cleanup();
     }
 
 private Q_SLOTS:
@@ -60,14 +63,12 @@ private Q_SLOTS:
         QTest::newRow("defaultConstructed") << defaultConstructed;
 
         Qt3DInput::QAction *namedaction = new Qt3DInput::QAction();
-        namedaction->setName(QStringLiteral("fire"));
         QTest::newRow("namedAction") << namedaction;
 
         Qt3DInput::QAction *namedactionWithInputs = new Qt3DInput::QAction();
         Qt3DInput::QActionInput *actionInput1 = new Qt3DInput::QActionInput();
         Qt3DInput::QActionInput *actionInput2 = new Qt3DInput::QActionInput();
         Qt3DInput::QActionInput *actionInput3 = new Qt3DInput::QActionInput();
-        namedactionWithInputs->setName("accelerate");
         namedactionWithInputs->addInput(actionInput1);
         namedactionWithInputs->addInput(actionInput2);
         namedactionWithInputs->addInput(actionInput3);
@@ -80,19 +81,26 @@ private Q_SLOTS:
         QFETCH(Qt3DInput::QAction *, action);
 
         // WHEN
-        Qt3DInput::QAction *clone = static_cast<Qt3DInput::QAction *>(QNode::clone(action));
-        QCoreApplication::processEvents();
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(action);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(action->id(), clone->id());
-        QCOMPARE(action->name(), clone->name());
-        QCOMPARE(action->inputs().count(), clone->inputs().count());
+        QCOMPARE(creationChanges.size(), 1 + action->inputs().size());
 
-        for (int i = 0, m = action->inputs().count(); i < m; ++i) {
-            QCOMPARE(action->inputs().at(i)->id(), clone->inputs().at(i)->id());
-        }
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DInput::QActionData> creationChangeData =
+               qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QActionData>>(creationChanges.first());
+        const Qt3DInput::QActionData &cloneActionData = creationChangeData->data;
 
+        // THEN
+        QCOMPARE(creationChangeData->subjectId(), action->id());
+        QCOMPARE(creationChangeData->isNodeEnabled(), action->isEnabled());
+        QCOMPARE(creationChangeData->metaObject(), action->metaObject());
+        QCOMPARE(creationChangeData->parentId(), action->parentNode() ? action->parentNode()->id() : Qt3DCore::QNodeId());
+        QCOMPARE(cloneActionData.inputIds.size(), action->inputs().size());
+
+        const QVector<Qt3DInput::QAbstractActionInput *> &inputs = action->inputs();
+        for (int i = 0, m = inputs.size(); i < m; ++i)
+            QCOMPARE(cloneActionData.inputIds.at(i), inputs.at(i)->id());
     }
 
     void checkPropertyUpdates()
@@ -102,29 +110,16 @@ private Q_SLOTS:
         TestArbiter arbiter(action.data());
 
         // WHEN
-        action->setName(QStringLiteral("454"));
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "name");
-        QCOMPARE(change->value().toString(), QStringLiteral("454"));
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
-
-        arbiter.events.clear();
-
-        // WHEN
         Qt3DInput::QActionInput *input = new Qt3DInput::QActionInput();
         action->addInput(input);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        Qt3DCore::QPropertyNodeAddedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
         QCOMPARE(change->propertyName(), "input");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), input->id());
-        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
+        QCOMPARE(change->addedNodeId(), input->id());
+        QCOMPARE(change->type(), Qt3DCore::PropertyValueAdded);
 
         arbiter.events.clear();
 
@@ -134,20 +129,29 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "input");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), input->id());
-        QCOMPARE(change->type(), Qt3DCore::NodeRemoved);
+        Qt3DCore::QPropertyNodeRemovedChangePtr nodeRemovedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
+        QCOMPARE(nodeRemovedChange->propertyName(), "input");
+        QCOMPARE(nodeRemovedChange->removedNodeId(), input->id());
+        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::PropertyValueRemoved);
 
         arbiter.events.clear();
     }
 
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
+    void checkActivePropertyChanged()
     {
-        return Q_NULLPTR;
-    }
+        // GIVEN
+        QCOMPARE(isActive(), false);
 
+        // Note: simulate backend change to frontend
+        // WHEN
+        Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        valueChange->setPropertyName("active");
+        valueChange->setValue(true);
+        sceneChangeEvent(valueChange);
+
+        // THEN
+        QCOMPARE(isActive(), true);
+    }
 };
 
 QTEST_MAIN(tst_QAction)

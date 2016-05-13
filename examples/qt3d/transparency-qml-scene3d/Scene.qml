@@ -50,6 +50,7 @@
 
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import Qt3D.Extras 2.0
 import QtQuick 2.2 as QQ2
 
 Entity {
@@ -69,7 +70,12 @@ Entity {
 
     FirstPersonCameraController { camera: camera }
 
-    components: FrameGraph { ForwardRenderer{ camera: camera; clearColor: Qt.rgba(0.0, 0.5, 1, 1) } }
+    components: RenderSettings {
+        ForwardRenderer{
+            camera: camera
+            clearColor: Qt.rgba(0.0, 0.5, 1, 1)
+        }
+    }
 
     TorusMesh {
         id: torusMesh
@@ -154,13 +160,13 @@ Entity {
                     renderPasses: RenderPass {
                         renderStates: [
                             CullFace { mode : CullFace.Back },
-                            DepthTest { func: DepthTest.Less },
-                            DepthMask { mask: false },
-                            BlendState {
-                                srcRGB: BlendState.SrcAlpha
-                                dstRGB: BlendState.OneMinusSrcAlpha
+                            DepthTest { depthFunction: DepthTest.Less },
+                            NoDepthMask { },
+                            BlendEquationArguments {
+                                sourceRgb: BlendEquationArguments.SourceAlpha
+                                destinationRgb: BlendEquationArguments.OneMinusSourceAlpha
                             }
-                            ,BlendEquation {mode: BlendEquation.FuncAdd}
+                            ,BlendEquation {blendFunction: BlendEquation.Add}
                         ]
 
                         shaderProgram: alphaPhong
@@ -178,13 +184,13 @@ Entity {
                     renderPasses: RenderPass {
                         renderStates: [
                             CullFace { mode : CullFace.Back },
-                            DepthTest { func: DepthTest.Less },
-                            DepthMask { mask: false },
-                            BlendState {
-                                srcRGB: BlendState.SrcAlpha
-                                dstRGB: BlendState.OneMinusSrcAlpha
+                            DepthTest { depthFunction: DepthTest.Less },
+                            NoDepthMask { },
+                            BlendEquationArguments {
+                                sourceRgb: BlendEquationArguments.SourceAlpha
+                                destinationRgb: BlendEquationArguments.OneMinusSourceAlpha
                             }
-                            ,BlendEquation {mode: BlendEquation.FuncAdd}
+                            ,BlendEquation {blendFunction: BlendEquation.Add}
                         ]
 
                         shaderProgram: alphaPhong

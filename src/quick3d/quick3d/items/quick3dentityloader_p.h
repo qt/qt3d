@@ -76,7 +76,6 @@ class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DEntityLoader : public QEntity
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
 public:
     explicit Quick3DEntityLoader(QNode *parent = 0);
-    ~Quick3DEntityLoader();
 
     QObject *entity() const;
 
@@ -87,13 +86,9 @@ Q_SIGNALS:
     void entityChanged();
     void sourceChanged();
 
-protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
 private:
     Q_DECLARE_PRIVATE(Quick3DEntityLoader)
     Q_PRIVATE_SLOT(d_func(), void _q_componentStatusChanged(QQmlComponent::Status))
-    QT3D_CLONEABLE(Quick3DEntityLoader)
 };
 
 } // namespace Quick

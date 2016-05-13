@@ -51,24 +51,38 @@
 // We mean it.
 //
 
-#include <private/qabstractbuffer_p.h>
+#include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferfunctor.h>
+#include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/qt3drender_global.h>
+#include <private/qnode_p.h>
+#include <QByteArray>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_EXPORT QBufferPrivate : public QAbstractBufferPrivate
+class QT3DRENDERSHARED_EXPORT QBufferPrivate : public Qt3DCore::QNodePrivate
 {
 public:
+    Q_DECLARE_PUBLIC(QBuffer)
+
     QBufferPrivate();
 
+    QByteArray m_data;
     QBuffer::BufferType m_type;
     QBuffer::UsageType m_usage;
-    QBufferFunctorPtr m_functor;
-    bool m_sync;
+    QBufferDataGeneratorPtr m_functor;
+    bool m_syncData;
+};
+
+struct QBufferData
+{
+    QByteArray data;
+    QBuffer::BufferType type;
+    QBuffer::UsageType usage;
+    QBufferDataGeneratorPtr functor;
+    bool syncData;
 };
 
 } // namespace Qt3DRender

@@ -33,14 +33,9 @@ class TestDevice : public Qt3DInput::QAbstractPhysicalDevice
 {
     Q_OBJECT
 public:
-    explicit TestDevice(Qt3DCore::QNode *parent = Q_NULLPTR)
+    explicit TestDevice(Qt3DCore::QNode *parent = nullptr)
         : Qt3DInput::QAbstractPhysicalDevice(parent)
     {}
-
-    ~TestDevice()
-    {
-        QNode::cleanup();
-    }
 
     int axisCount() const Q_DECL_FINAL { return 0; }
     int buttonCount() const Q_DECL_FINAL { return 0; }
@@ -48,13 +43,4 @@ public:
     QStringList buttonNames() const Q_DECL_FINAL { return QStringList(); }
     int axisIdentifier(const QString &name) const Q_DECL_FINAL { Q_UNUSED(name) return 0; }
     int buttonIdentifier(const QString &name) const Q_DECL_FINAL { Q_UNUSED(name) return 0; }
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL
-    {
-        QAbstractPhysicalDevice::copy(ref);
-    }
-
-private:
-    QT3D_CLONEABLE(TestDevice)
 };

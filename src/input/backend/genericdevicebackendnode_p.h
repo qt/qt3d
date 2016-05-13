@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DInput/qabstractphysicaldevicebackendnode.h>
+#include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
 #include <QHash>
 #include <QMutex>
 
@@ -80,17 +80,17 @@ public:
 private:
     QHash<int, qreal> m_axesValues;
     QHash<int, qreal> m_buttonsValues;
-    mutable QSharedPointer<QMutex> m_mutex;
+    mutable QMutex m_mutex;
 };
 
-class GenericDeviceBackendFunctor : public Qt3DCore::QBackendNodeFunctor
+class GenericDeviceBackendFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit GenericDeviceBackendFunctor(QInputAspect *inputaspect, InputHandler *handler);
 
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
 
 private:
     QInputAspect *m_inputAspect;

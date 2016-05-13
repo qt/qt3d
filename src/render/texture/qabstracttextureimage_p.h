@@ -53,7 +53,7 @@
 
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
-#include <Qt3DRender/qabstracttextureprovider.h>
+#include <Qt3DRender/qabstracttexture.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -66,17 +66,25 @@ class QT3DRENDERSHARED_PRIVATE_EXPORT QAbstractTextureImagePrivate : public Qt3D
 public:
     QAbstractTextureImagePrivate()
         : QNodePrivate()
-        , m_mipmapLevel(0)
+        , m_mipLevel(0)
         , m_layer(0)
-        , m_face(QAbstractTextureProvider::CubeMapPositiveX)
+        , m_face(QAbstractTexture::CubeMapPositiveX)
     {
     }
 
     Q_DECLARE_PUBLIC(QAbstractTextureImage)
 
-    int m_mipmapLevel;
+    int m_mipLevel;
     int m_layer;
-    QAbstractTextureProvider::CubeMapFace m_face;
+    QAbstractTexture::CubeMapFace m_face;
+};
+
+struct QAbstractTextureImageData
+{
+    int mipLevel;
+    int layer;
+    QAbstractTexture::CubeMapFace face;
+    QTextureImageDataGeneratorPtr generator;
 };
 
 } // namespace Qt3DRender

@@ -73,25 +73,11 @@ Effect {
                 minorVersion: 2
             }
 
-            annotations: [ Annotation { name: "name"; value: "Desktop" } ]
+            filterKeys: [ FilterKey { name: "name"; value: "Desktop" } ]
 
             renderPasses: [
                 RenderPass {
-                    annotations: [ Annotation { name : "pass"; value : "forward" } ]
-
-                    bindings: [
-                        // Uniforms (those provided by the user)
-                        ParameterMapping {
-                            parameterName: "ambient";
-                            shaderVariableName: "ka";
-                            bindingType: ParameterMapping.Uniform
-                        },
-                        ParameterMapping {
-                            parameterName: "specular";
-                            shaderVariableName: "ks";
-                            bindingType: ParameterMapping.Uniform
-                        }
-                    ]
+                    filterKeys: [ FilterKey { name : "pass"; value : "forward" } ]
 
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/gl3/planetD.vert")
@@ -108,25 +94,11 @@ Effect {
                 majorVersion: 2
             }
 
-            annotations: [ Annotation { name: "name"; value: "ES2" } ]
+            filterKeys: [ FilterKey { name: "name"; value: "ES2" } ]
 
             renderPasses: [
                 RenderPass {
-                    annotations: [ Annotation { name : "pass"; value : "forward" } ]
-
-                    bindings: [
-                        // Uniforms (those provided by the user)
-                        ParameterMapping {
-                            parameterName: "ambient";
-                            shaderVariableName: "ka";
-                            bindingType: ParameterMapping.Uniform
-                        },
-                        ParameterMapping {
-                            parameterName: "specular";
-                            shaderVariableName: "ks";
-                            bindingType: ParameterMapping.Uniform
-                        }
-                    ]
+                    filterKeys: [ FilterKey { name : "pass"; value : "forward" } ]
 
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/es2/planetD.vert")
@@ -144,25 +116,11 @@ Effect {
                 minorVersion: 0
             }
 
-            annotations: [ Annotation { name: "name"; value: "ES2" } ]
+            filterKeys: [ FilterKey { name: "name"; value: "ES2" } ]
 
             renderPasses: [
                 RenderPass {
-                    annotations: [ Annotation { name : "pass"; value : "forward" } ]
-
-                    bindings: [
-                        // Uniforms (those provided by the user)
-                        ParameterMapping {
-                            parameterName: "ambient";
-                            shaderVariableName: "ka";
-                            bindingType: ParameterMapping.Uniform
-                        },
-                        ParameterMapping {
-                            parameterName: "specular";
-                            shaderVariableName: "ks";
-                            bindingType: ParameterMapping.Uniform
-                        }
-                    ]
+                    filterKeys: [ FilterKey { name : "pass"; value : "forward" } ]
 
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/es2/planetD.vert")

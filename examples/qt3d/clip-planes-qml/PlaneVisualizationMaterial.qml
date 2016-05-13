@@ -62,13 +62,13 @@ Material {
 
     ShaderProgram {
         id: gl3PhongAlphaShader
-        vertexShaderCode: loadSource("qrc:/shaders/gl3/phongalpha.vert")
+        vertexShaderCode: loadSource("qrc:/shaders/gl3/phong.vert")
         fragmentShaderCode: loadSource("qrc:/shaders/gl3/phongalpha.frag")
     }
 
     ShaderProgram {
         id: gl2es2PhongAlphaShader
-        vertexShaderCode: loadSource("qrc:/shaders/es2/phongalpha.vert")
+        vertexShaderCode: loadSource("qrc:/shaders/es2/phong.vert")
         fragmentShaderCode: loadSource("qrc:/shaders/es2/phongalpha.frag")
     }
 
@@ -96,14 +96,14 @@ Material {
                 renderPasses: RenderPass {
                     shaderProgram: gl3PhongAlphaShader
                     renderStates: [
-                        DepthMask { mask: false },
-                        BlendState {
-                            srcRGB: BlendState.SrcAlpha
-                            dstRGB: BlendState.OneMinusSrcAlpha
+                        NoDepthMask { },
+                        BlendEquationArguments {
+                            sourceRgb: BlendEquationArguments.SourceAlpha
+                            destinationRgb: BlendEquationArguments.OneMinusSourceAlpha
                         },
-                        BlendEquation {mode: BlendEquation.FuncAdd}
+                        BlendEquation {blendFunction: BlendEquation.Add}
                     ]
-                    annotations: Annotation { name: "pass"; value: "material" }
+                    filterKeys: FilterKey { name: "pass"; value: "material" }
                 }
             },
 
@@ -118,14 +118,14 @@ Material {
                 renderPasses: RenderPass {
                     shaderProgram: gl2es2PhongAlphaShader
                     renderStates: [
-                        DepthMask { mask: false },
-                        BlendState {
-                            srcRGB: BlendState.SrcAlpha
-                            dstRGB: BlendState.OneMinusSrcAlpha
+                        NoDepthMask { },
+                        BlendEquationArguments {
+                            sourceRgb: BlendEquationArguments.SourceAlpha
+                            destinationRgb: BlendEquationArguments.OneMinusSourceAlpha
                         },
-                        BlendEquation {mode: BlendEquation.FuncAdd}
+                        BlendEquation {blendFunction: BlendEquation.Add}
                     ]
-                    annotations: Annotation { name: "pass"; value: "material" }
+                    filterKeys: FilterKey { name: "pass"; value: "material" }
                 }
             }
         ]

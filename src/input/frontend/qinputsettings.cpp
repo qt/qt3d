@@ -39,6 +39,7 @@
 
 #include "qinputsettings.h"
 #include "qinputsettings_p.h"
+#include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,18 +47,13 @@ namespace Qt3DInput {
 
 QInputSettingsPrivate::QInputSettingsPrivate()
     : Qt3DCore::QComponentPrivate()
-    , m_eventSource(Q_NULLPTR)
+    , m_eventSource(nullptr)
 {
 }
 
 QInputSettings::QInputSettings(Qt3DCore::QNode *parent)
     : Qt3DCore::QComponent(*new QInputSettingsPrivate(), parent)
 {
-}
-
-QInputSettings::~QInputSettings()
-{
-    QComponent::cleanup();
 }
 
 QObject *QInputSettings::eventSource() const
@@ -73,6 +69,17 @@ void QInputSettings::setEventSource(QObject *eventSource)
         d->m_eventSource = eventSource;
         emit eventSourceChanged(eventSource);
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QInputSettings::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QInputSettingsData>::create(this);
+    auto &data = creationChange->data;
+
+    Q_D(const QInputSettings);
+    data.eventSource = d->m_eventSource;
+
+    return creationChange;
 }
 
 } // Qt3DInput

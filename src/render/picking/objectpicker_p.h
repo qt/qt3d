@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRender/private/backendnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,29 +62,35 @@ typedef QSharedPointer<QPickEvent> QPickEventPtr;
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT ObjectPicker : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT ObjectPicker : public BackendNode
 {
 public:
     ObjectPicker();
     ~ObjectPicker();
 
     void cleanup();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_FINAL;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
     bool isDirty() const;
+    bool isPressed() const;
     void unsetDirty();
     void makeDirty();
-    bool hoverEnabled() const;
+    bool isHoverEnabled() const;
+    bool isDragEnabled() const;
 
     void onClicked(QPickEventPtr event);
+    void onMoved(QPickEventPtr event);
     void onPressed(QPickEventPtr event);
     void onReleased(QPickEventPtr event);
     void onEntered();
     void onExited();
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     bool m_isDirty;
+    bool m_isPressed;
     bool m_hoverEnabled;
+    bool m_dragEnabled;
 };
 
 } // Render

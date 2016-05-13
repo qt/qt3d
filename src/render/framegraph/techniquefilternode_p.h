@@ -62,7 +62,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAnnotation;
+class QFilterKey;
 class QTechniqueFilter;
 
 template <typename T, uint INDEXBITS>
@@ -75,18 +75,19 @@ class TechniqueFilter
 {
 public:
     TechniqueFilter();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
-    QList<Qt3DCore::QNodeId> parameters() const;
+    QVector<Qt3DCore::QNodeId> parameters() const;
 
-    QList<Qt3DCore::QNodeId> filters() const;
+    QVector<Qt3DCore::QNodeId> filters() const;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    void appendFilter(const Qt3DCore::QNodeId &criterionId);
-    void removeFilter(const Qt3DCore::QNodeId &criterionId);
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
-    QList<Qt3DCore::QNodeId> m_filters;
+    void appendFilter(Qt3DCore::QNodeId criterionId);
+    void removeFilter(Qt3DCore::QNodeId criterionId);
+
+    QVector<Qt3DCore::QNodeId> m_filters;
     ParameterPack m_parameterPack;
 };
 

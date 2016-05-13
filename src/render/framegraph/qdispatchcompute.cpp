@@ -38,35 +38,15 @@
 ****************************************************************************/
 
 #include "qdispatchcompute.h"
-#include <Qt3DRender/private/qframegraphnode_p.h>
+#include "qdispatchcompute_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QDispatchComputePrivate : public QFrameGraphNodePrivate
-{
-public:
-    QDispatchComputePrivate()
-        : QFrameGraphNodePrivate()
-        , m_workGroupX(1)
-        , m_workGroupY(1)
-        , m_workGroupZ(1)
-    {}
-
-    int m_workGroupX;
-    int m_workGroupY;
-    int m_workGroupZ;
-};
-
 QDispatchCompute::QDispatchCompute(Qt3DCore::QNode *parent)
     : QFrameGraphNode(*new QDispatchComputePrivate(), parent)
 {
-}
-
-QDispatchCompute::~QDispatchCompute()
-{
-    QFrameGraphNode::cleanup();
 }
 
 int QDispatchCompute::workGroupX() const
@@ -115,13 +95,15 @@ void QDispatchCompute::setWorkGroupZ(int workGroupZ)
 
 }
 
-void QDispatchCompute::copy(const Qt3DCore::QNode *ref)
+Qt3DCore::QNodeCreatedChangeBasePtr QDispatchCompute::createNodeCreationChange() const
 {
-    QFrameGraphNode::copy(ref);
-    const QDispatchCompute *dispatch = static_cast<const QDispatchCompute *>(ref);
-    d_func()->m_workGroupX = dispatch->workGroupX();
-    d_func()->m_workGroupY = dispatch->workGroupY();
-    d_func()->m_workGroupZ = dispatch->workGroupZ();
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QDispatchComputeData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QDispatchCompute);
+    data.workGroupX = d->m_workGroupX;
+    data.workGroupY = d->m_workGroupY;
+    data.workGroupZ = d->m_workGroupZ;
+    return creationChange;
 }
 
 } // Qt3DRender

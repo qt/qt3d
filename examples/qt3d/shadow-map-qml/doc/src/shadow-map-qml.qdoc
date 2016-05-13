@@ -121,7 +121,7 @@
     \skipto import QtQuick
     \printuntil Render 2.0
 
-    The code defines a \l FrameGraph entity that has a tree of entities as the
+    The code defines a \l RendererSettings entity that has a tree of entities as the
     active framegraph:
 
     \printuntil clearColor
@@ -136,10 +136,10 @@
     Viewport
         RenderPassFilter
             RenderTargetSelector
-                ClearBuffer
+                ClearBuffers
                     CameraSelector
         RenderPassFilter
-            ClearBuffer
+            ClearBuffers
                 CameraSelector
     \endcode
 
@@ -221,7 +221,7 @@
     \printuntil }
 
     Inside the technique, we finally have the definition of our two rendering
-    passes. We \e tag each pass with an \l Annotation entity, matching the ones
+    passes. We \e tag each pass with an \l FilterKey entity, matching the ones
     we specified in the framegraph configuration, so that each pass will have
     different rendering settings:
 

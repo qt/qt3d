@@ -39,7 +39,10 @@
 
 #include "layerfilternode_p.h"
 #include "qlayerfilter.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRender/private/qlayerfilter_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,32 +56,47 @@ LayerFilterNode::LayerFilterNode()
 {
 }
 
-void LayerFilterNode::updateFromPeer(Qt3DCore::QNode *peer)
+void LayerFilterNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QLayerFilter *layerFilter = static_cast<QLayerFilter *>(peer);
-    m_layers = layerFilter->layers();
-    setEnabled(layerFilter->isEnabled());
+    FrameGraphNode::initializeFromPeer(change);
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QLayerFilterData>>(change);
+    const auto &data = typedChange->data;
+    setLayerIds(data.layerIds);
 }
 
 void LayerFilterNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == NodeUpdated) {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("layers"))
-            setLayers(propertyChange->value().value<QStringList>());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            setEnabled(propertyChange->value().toBool());
+    switch (e->type()) {
+    case PropertyValueAdded: {
+        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("layer"))
+            m_layerIds.append(change->addedNodeId());
+        break;
     }
+
+    case PropertyValueRemoved: {
+        const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("layer"))
+            m_layerIds.remove(change->removedNodeId());
+        break;
+    }
+
+    default:
+        break;
+    }
+    markDirty(AbstractRenderer::AllDirty);
+
+    FrameGraphNode::sceneChangeEvent(e);
 }
 
-QStringList LayerFilterNode::layers() const
+QNodeIdVector LayerFilterNode::layerIds() const Q_DECL_NOEXCEPT
 {
-    return m_layers;
+    return m_layerIds;
 }
 
-void LayerFilterNode::setLayers(const QStringList &list)
+void LayerFilterNode::setLayerIds(const QNodeIdVector &list)
 {
-    m_layers = list;
+    m_layerIds = list;
 }
 
 } // namespace Render

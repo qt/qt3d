@@ -2,7 +2,7 @@
     error( "Couldn't find the examples.pri file!" )
 }
 
-QT += 3dcore 3drender 3dquick 3dinput qml quick
+QT += 3dcore 3drender 3dquick 3dinput qml quick 3dquickextras
 
 HEADERS += \
 
@@ -18,6 +18,7 @@ OTHER_FILES += \
     WaveEffect.qml \
     WaveMaterial.qml \
     Background.qml \
+    BackgroundEffect.qml \
     shaders/background.vert \
     shaders/background.frag
 

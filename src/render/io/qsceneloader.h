@@ -40,22 +40,51 @@
 #ifndef QT3DRENDER_QSCENELOADER_H
 #define QT3DRENDER_QSCENELOADER_H
 
-#include <Qt3DRender/qabstractsceneloader.h>
+#include <Qt3DCore/qcomponent.h>
+#include <Qt3DCore/qscenechange.h>
+#include <Qt3DRender/qt3drender_global.h>
+#include <QUrl>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_EXPORT QSceneLoader : public QAbstractSceneLoader
+class QSceneLoaderPrivate;
+
+class QT3DRENDERSHARED_EXPORT QSceneLoader : public Qt3DCore::QComponent
 {
     Q_OBJECT
+    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 public:
-    explicit QSceneLoader(Qt3DCore::QNode *parent = 0);
-    ~QSceneLoader();
+    explicit QSceneLoader(Qt3DCore::QNode *parent = nullptr);
+
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
+    enum Status {
+        None = 0,
+        Loading,
+        Ready,
+        Error
+    };
+    Q_ENUM(Status)
+
+    QUrl source() const;
+    Status status() const;
+
+public Q_SLOTS:
+    void setSource(const QUrl &arg);
+    void setStatus(Status status);
+
+Q_SIGNALS:
+    void sourceChanged(const QUrl &source);
+    void statusChanged(Status status);
 
 protected:
-    QT3D_CLONEABLE(QSceneLoader)
+    explicit QSceneLoader(QSceneLoaderPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+
+private:
+    Q_DECLARE_PRIVATE(QSceneLoader)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

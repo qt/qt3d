@@ -54,28 +54,27 @@
 
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qcameralens.h>
-#include <Qt3DRender/qcylindermesh.h>
+#include <Qt3DExtras/qcylindermesh.h>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/qtechnique.h>
-#include <Qt3DRender/qphongmaterial.h>
+#include <Qt3DExtras/qphongmaterial.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DRender/qframegraph.h>
-#include <Qt3DRender/qforwardrenderer.h>
+#include <Qt3DExtras/qforwardrenderer.h>
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qaspectengine.h>
 
-#include "qt3dwindow.h"
-#include "qfirstpersoncameracontroller.h"
+#include <Qt3DExtras/qt3dwindow.h>
+#include <Qt3DExtras/qorbitcameracontroller.h>
 
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
-    Qt3DWindow view;
+    Qt3DExtras::Qt3DWindow view;
 
     // Root entity
     Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
@@ -88,11 +87,11 @@ int main(int argc, char **argv)
     camera->setViewCenter(QVector3D(0, 0, 0));
 
     // For camera controls
-    Qt3DInput::QFirstPersonCameraController *cameraController = new Qt3DInput::QFirstPersonCameraController(rootEntity);
+    Qt3DExtras::QOrbitCameraController *cameraController = new Qt3DExtras::QOrbitCameraController(rootEntity);
     cameraController->setCamera(camera);
 
     // Cylinder shape data
-    Qt3DRender::QCylinderMesh *mesh = new Qt3DRender::QCylinderMesh();
+    Qt3DExtras::QCylinderMesh *mesh = new Qt3DExtras::QCylinderMesh();
     mesh->setRadius(1);
     mesh->setLength(3);
     mesh->setRings(100);
@@ -104,7 +103,7 @@ int main(int argc, char **argv)
     transform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1, 0, 0), 45.0f));
 
     // Material
-    Qt3DRender::QPhongMaterial *material = new Qt3DRender::QPhongMaterial(rootEntity);
+    Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial(rootEntity);
     material->setDiffuse(Qt::red);
 
     // Cylinder

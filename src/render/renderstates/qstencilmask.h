@@ -51,29 +51,25 @@ class QStencilMaskPrivate;
 class QT3DRENDERSHARED_EXPORT QStencilMask : public QRenderState
 {
     Q_OBJECT
-    Q_PROPERTY(uint frontMask READ frontMask WRITE setFrontMask NOTIFY frontMaskChanged)
-    Q_PROPERTY(uint backMask READ backMask WRITE setBackMask NOTIFY backMaskChanged)
+    Q_PROPERTY(uint frontOutputMask READ frontOutputMask WRITE setFrontOutputMask NOTIFY frontOutputMaskChanged)
+    Q_PROPERTY(uint backOutputMask READ backOutputMask WRITE setBackOutputMask NOTIFY backOutputMaskChanged)
 public:
-    explicit QStencilMask(Qt3DCore::QNode *parent = 0);
-    ~QStencilMask();
+    explicit QStencilMask(Qt3DCore::QNode *parent = nullptr);
 
-    uint frontMask() const;
-    uint backMask() const;
+    uint frontOutputMask() const;
+    uint backOutputMask() const;
 
 public Q_SLOTS:
-    void setFrontMask(uint mask);
-    void setBackMask(uint mask);
+    void setFrontOutputMask(uint frontOutputMask);
+    void setBackOutputMask(uint backOutputMask);
 
 Q_SIGNALS:
-    void frontMaskChanged(uint frontMask);
-    void backMaskChanged(uint backMask);
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL;
+    void frontOutputMaskChanged(uint frontOutputMask);
+    void backOutputMaskChanged(uint backOutputMask);
 
 private:
     Q_DECLARE_PRIVATE(QStencilMask)
-    QT3D_CLONEABLE(QStencilMask)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

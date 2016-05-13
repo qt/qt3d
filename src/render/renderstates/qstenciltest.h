@@ -48,27 +48,22 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QStencilTestPrivate;
-class QStencilTestSeparate;
+class QStencilTestArguments;
 
 class QT3DRENDERSHARED_EXPORT QStencilTest : public QRenderState
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QStencilTestSeparate *front READ front CONSTANT)
-    Q_PROPERTY(Qt3DRender::QStencilTestSeparate *back READ back CONSTANT)
+    Q_PROPERTY(Qt3DRender::QStencilTestArguments *front READ front CONSTANT)
+    Q_PROPERTY(Qt3DRender::QStencilTestArguments *back READ back CONSTANT)
 public:
+    explicit QStencilTest(Qt3DCore::QNode *parent = nullptr);
 
-    explicit QStencilTest(Qt3DCore::QNode *parent = 0);
-    ~QStencilTest();
-
-    QStencilTestSeparate *front() const;
-    QStencilTestSeparate *back() const;
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    QStencilTestArguments *front() const;
+    QStencilTestArguments *back() const;
 
 private:
     Q_DECLARE_PRIVATE(QStencilTest)
-    QT3D_CLONEABLE(QStencilTest)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

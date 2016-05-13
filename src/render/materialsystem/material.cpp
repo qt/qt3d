@@ -45,8 +45,11 @@
 #include "qtechnique.h"
 #include "qmaterial.h"
 #include "qeffect.h"
+#include <Qt3DRender/private/qmaterial_p.h>
 
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 using namespace Qt3DCore;
 
@@ -56,8 +59,7 @@ namespace Qt3DRender {
 namespace Render {
 
 Material::Material()
-    : QBackendNode()
-    , m_enabled(true)
+    : BackendNode()
 {
 }
 
@@ -68,54 +70,52 @@ Material::~Material()
 
 void Material::cleanup()
 {
+    QBackendNode::setEnabled(false);
     m_parameterPack.clear();
 }
 
-void Material::updateFromPeer(Qt3DCore::QNode *node)
+void Material::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QMaterial *mat = static_cast<QMaterial *>(node);
-    m_parameterPack.clear();
-    m_enabled = mat->isEnabled();
-    if (mat->effect() != Q_NULLPTR)
-        m_effectUuid = mat->effect()->id();
-    Q_FOREACH (QParameter *p, mat->parameters())
-        m_parameterPack.appendParameter(p->id());
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QMaterialData>>(change);
+    const auto &data = typedChange->data;
+    m_effectUuid = data.effectId;
+    m_parameterPack.setParameters(data.parameterIds);
 }
 
 void Material::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
 
     switch (e->type()) {
-    case NodeUpdated: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            m_enabled = propertyChange->value().toBool();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("effect"))
-            m_effectUuid = propertyChange->value().value<QNodeId>();
+    case PropertyUpdated: {
+        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("effect"))
+            m_effectUuid = change->value().value<QNodeId>();
         break;
     }
-        // Check for shader parameter
-    case NodeAdded: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.appendParameter(propertyChange->value().value<QNodeId>());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("effect"))
-            m_effectUuid = propertyChange->value().value<QNodeId>();
+
+    case PropertyValueAdded: {
+        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("parameter"))
+            m_parameterPack.appendParameter(change->addedNodeId());
         break;
     }
-    case NodeRemoved: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.removeParameter(propertyChange->value().value<QNodeId>());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("effect"))
-            m_effectUuid = QNodeId();
+
+    case PropertyValueRemoved: {
+        const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("parameter"))
+            m_parameterPack.removeParameter(change->removedNodeId());
         break;
     }
 
     default:
         break;
     }
+    markDirty(AbstractRenderer::AllDirty);
+
+    BackendNode::sceneChangeEvent(e);
 }
 
-QList<Qt3DCore::QNodeId> Material::parameters() const
+QVector<Qt3DCore::QNodeId> Material::parameters() const
 {
     return m_parameterPack.parameters();
 }

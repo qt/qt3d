@@ -41,11 +41,12 @@
 #include "qrenderpass.h"
 #include "qrenderpass_p.h"
 #include "qparameter.h"
-#include "qannotation.h"
-#include "qparametermapping.h"
-#include "qscenepropertychange.h"
+#include "qfilterkey.h"
 #include "qrenderstate.h"
-#include "private/qnode_p.h"
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,22 +56,8 @@ namespace Qt3DRender {
 
 QRenderPassPrivate::QRenderPassPrivate()
     : QNodePrivate()
-    , m_shader(Q_NULLPTR)
+    , m_shader(nullptr)
 {
-}
-
-void QRenderPass::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QRenderPass *other = static_cast<const QRenderPass*>(ref);
-    d_func()->m_shader = qobject_cast<QShaderProgram *>(QNode::clone(other->d_func()->m_shader));
-
-    Q_FOREACH (QAnnotation *crit, other->d_func()->m_annotationList)
-        addAnnotation(qobject_cast<QAnnotation *>(QNode::clone(crit)));
-    Q_FOREACH (QParameterMapping *binding, other->d_func()->m_bindings)
-        addBinding(qobject_cast<QParameterMapping *>(QNode::clone(binding)));
-    Q_FOREACH (QRenderState *renderState, other->d_func()->m_renderStates)
-        addRenderState(qobject_cast<QRenderState *>(QNode::clone(renderState)));
 }
 
 QRenderPass::QRenderPass(QNode *parent)
@@ -78,27 +65,10 @@ QRenderPass::QRenderPass(QNode *parent)
 {
 }
 
-QRenderPass::~QRenderPass()
-{
-    QNode::cleanup();
-}
-
 /*! \internal */
 QRenderPass::QRenderPass(QRenderPassPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
-}
-
-ParameterList QRenderPass::attributes() const
-{
-    Q_D(const QRenderPass);
-    return d->m_attributes;
-}
-
-ParameterList QRenderPass::uniforms() const
-{
-    Q_D(const QRenderPass);
-    return d->m_uniforms;
 }
 
 /*!
@@ -111,11 +81,10 @@ void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
     Q_D(QRenderPass);
     if (d->m_shader != shaderProgram) {
 
-        if (d->m_shader != Q_NULLPTR && d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr e(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
-            e->setPropertyName("shaderProgram");
-            e->setValue(QVariant::fromValue(d->m_shader->id()));
-            d->notifyObservers(e);
+        if (d->m_shader != nullptr && d->m_changeArbiter != nullptr) {
+            const auto change = QPropertyNodeRemovedChangePtr::create(id(), d->m_shader);
+            change->setPropertyName("shaderProgram");
+            d->notifyObservers(change);
         }
 
         d->m_shader = shaderProgram;
@@ -128,11 +97,10 @@ void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
         if (!shaderProgram->parent())
             shaderProgram->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr e(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
-            e->setPropertyName("shaderProgram");
-            e->setValue(QVariant::fromValue(shaderProgram->id()));
-            d->notifyObservers(e);
+        if (d->m_shader && d->m_changeArbiter != nullptr) {
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), d->m_shader);
+            change->setPropertyName("shaderProgram");
+            d->notifyObservers(change);
         }
     }
 }
@@ -143,80 +111,44 @@ QShaderProgram *QRenderPass::shaderProgram() const
     return d->m_shader;
 }
 
-void QRenderPass::addAnnotation(QAnnotation *annotation)
+void QRenderPass::addFilterKey(QFilterKey *filterKey)
 {
+    Q_ASSERT(filterKey);
     Q_D(QRenderPass);
-    if (!d->m_annotationList.contains(annotation)) {
-        d->m_annotationList.append(annotation);
+    if (!d->m_filterKeyList.contains(filterKey)) {
+        d->m_filterKeyList.append(filterKey);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!annotation->parent())
-            annotation->setParent(this);
+        if (!filterKey->parent())
+            filterKey->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
-            change->setPropertyName("annotation");
-            change->setValue(QVariant::fromValue(annotation->id()));
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), filterKey);
+            change->setPropertyName("filterKeys");
             d->notifyObservers(change);
         }
     }
 }
 
-void QRenderPass::removeAnnotation(QAnnotation *annotation)
+void QRenderPass::removeFilterKey(QFilterKey *filterKey)
 {
+    Q_ASSERT(filterKey);
     Q_D(QRenderPass);
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
-        change->setPropertyName("annotation");
-        change->setValue(QVariant::fromValue(annotation->id()));
+    if (d->m_changeArbiter != nullptr) {
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), filterKey);
+        change->setPropertyName("filterKeys");
         d->notifyObservers(change);
     }
-    d->m_annotationList.removeOne(annotation);
+    d->m_filterKeyList.removeOne(filterKey);
 }
 
-QList<QAnnotation *> QRenderPass::annotations() const
+QVector<QFilterKey *> QRenderPass::filterKeys() const
 {
     Q_D(const QRenderPass);
-    return d->m_annotationList;
-}
-
-void QRenderPass::addBinding(QParameterMapping *binding)
-{
-    Q_D(QRenderPass);
-    if (!d->m_bindings.contains(binding)) {
-        d->m_bindings.append(binding);
-
-        if (!binding->parent())
-            binding->setParent(this);
-
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
-            change->setPropertyName("binding");
-            change->setValue(QVariant::fromValue(QNode::clone(binding)));
-            d->notifyObservers(change);
-        }
-    }
-}
-
-void QRenderPass::removeBinding(QParameterMapping *binding)
-{
-    Q_D(QRenderPass);
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
-        change->setPropertyName("binding");
-        change->setValue(QVariant::fromValue(binding->id()));
-        d->notifyObservers(change);
-    }
-    d->m_bindings.removeOne(binding);
-}
-
-QList<QParameterMapping *> QRenderPass::bindings() const
-{
-    Q_D(const QRenderPass);
-    return d->m_bindings;
+    return d->m_filterKeyList;
 }
 
 /*!
@@ -229,18 +161,17 @@ QList<QParameterMapping *> QRenderPass::bindings() const
  */
 void QRenderPass::addRenderState(QRenderState *state)
 {
+    Q_ASSERT(state);
     Q_D(QRenderPass);
-
     if (!d->m_renderStates.contains(state)) {
         d->m_renderStates.append(state);
 
         if (!state->parent())
             state->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), state);
             change->setPropertyName("renderState");
-            change->setValue(QVariant::fromValue(QNodePtr(QNode::clone(state))));
             d->notifyObservers(change);
         }
     }
@@ -251,11 +182,11 @@ void QRenderPass::addRenderState(QRenderState *state)
  */
 void QRenderPass::removeRenderState(QRenderState *state)
 {
+    Q_ASSERT(state);
     Q_D(QRenderPass);
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+    if (d->m_changeArbiter != nullptr) {
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), state);
         change->setPropertyName("renderState");
-        change->setValue(QVariant::fromValue(state->id()));
         d->notifyObservers(change);
     }
     d->m_renderStates.removeOne(state);
@@ -265,7 +196,7 @@ void QRenderPass::removeRenderState(QRenderState *state)
  * Returns the list of Qt3DCore::QRenderState state objects making up the render
  * state of the Qt3DRender::QRenderPass.
  */
-QList<QRenderState *> QRenderPass::renderStates() const
+QVector<QRenderState *> QRenderPass::renderStates() const
 {
     Q_D(const QRenderPass);
     return d->m_renderStates;
@@ -273,6 +204,7 @@ QList<QRenderState *> QRenderPass::renderStates() const
 
 void QRenderPass::addParameter(QParameter *parameter)
 {
+    Q_ASSERT(parameter);
     Q_D(QRenderPass);
     if (!d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
@@ -284,10 +216,9 @@ void QRenderPass::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), parameter);
             change->setPropertyName("parameter");
-            change->setValue(QVariant::fromValue(parameter->id()));
             d->notifyObservers(change);
         }
     }
@@ -295,22 +226,33 @@ void QRenderPass::addParameter(QParameter *parameter)
 
 void QRenderPass::removeParameter(QParameter *parameter)
 {
+    Q_ASSERT(parameter);
     Q_D(QRenderPass);
-
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+    if (d->m_changeArbiter != nullptr) {
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), parameter);
         change->setPropertyName("parameter");
-        change->setValue(QVariant::fromValue(parameter->id()));
         d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
 }
 
 
-QList<QParameter *> QRenderPass::parameters() const
+QVector<QParameter *> QRenderPass::parameters() const
 {
     Q_D(const QRenderPass);
     return d->m_parameters;
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QRenderPass::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderPassData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QRenderPass);
+    data.filterKeyIds = qIdsForNodes(d->m_filterKeyList);
+    data.parameterIds = qIdsForNodes(d->m_parameters);
+    data.renderStateIds = qIdsForNodes(d->m_renderStates);
+    data.shaderId = qIdForNode(d->m_shader);
+    return creationChange;
 }
 
 } // namespace Qt3DRender

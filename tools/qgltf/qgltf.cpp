@@ -186,7 +186,7 @@ Assimp::IOStream *AssimpIOSystem::Open(const char *pFile, const char *pMode)
     if (file->open(openMode))
         return new AssimpIOStream(file.take());
 
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 void AssimpIOSystem::Close(Assimp::IOStream *pFile)
@@ -354,7 +354,7 @@ protected:
 };
 
 Importer::Importer()
-    : m_rootNode(Q_NULLPTR)
+    : m_rootNode(nullptr)
 {
 }
 
@@ -472,7 +472,7 @@ const Importer::Node *Importer::findNode(const Node *root, const QString &origin
         if (cn)
             return cn;
     }
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 class AssimpImporter : public Importer
@@ -1096,19 +1096,19 @@ void AssimpImporter::parseAnimations()
                 float t = float(a->mPositionKeys[kf].mTime);
                 aiVector3D v = a->mPositionKeys[kf].mValue;
                 animInfo.hasTranslation = true;
-                addKeyFrame(keyFrames, t, &v, Q_NULLPTR, Q_NULLPTR);
+                addKeyFrame(keyFrames, t, &v, nullptr, nullptr);
             }
             for (uint kf = 0; kf < a->mNumRotationKeys; ++kf) {
                 float t = float(a->mRotationKeys[kf].mTime);
                 aiQuaternion v = a->mRotationKeys[kf].mValue;
                 animInfo.hasRotation = true;
-                addKeyFrame(keyFrames, t, Q_NULLPTR, &v, Q_NULLPTR);
+                addKeyFrame(keyFrames, t, nullptr, &v, nullptr);
             }
             for (uint kf = 0; kf < a->mNumScalingKeys; ++kf) {
                 float t = float(a->mScalingKeys[kf].mTime);
                 aiVector3D v = a->mScalingKeys[kf].mValue;
                 animInfo.hasScale = true;
-                addKeyFrame(keyFrames, t, Q_NULLPTR, Q_NULLPTR, &v);
+                addKeyFrame(keyFrames, t, nullptr, nullptr, &v);
             }
 
             // Here we should ideally get rid of non-animated properties (that
@@ -1282,7 +1282,7 @@ private:
     QVector<ProgramInfo> m_progs;
 
     struct TechniqueInfo {
-        TechniqueInfo() : opaque(true), prog(Q_NULLPTR) { }
+        TechniqueInfo() : opaque(true), prog(nullptr) { }
         TechniqueInfo(const QString &name, bool opaque, ProgramInfo *prog)
             : name(name)
             , opaque(opaque)
@@ -1752,9 +1752,10 @@ static inline void promoteColorsToRGBA(QJsonObject *obj)
             const QString key = it.key();
             if (key == QStringLiteral("ambient")
                     || key == QStringLiteral("diffuse")
-                    || key == QStringLiteral("specular"))
+                    || key == QStringLiteral("specular")) {
                 arr.append(1);
                 *it = arr;
+            }
         }
         ++it;
     }
@@ -1916,6 +1917,14 @@ void GltfExporter::exportParameter(QJsonObject &dst, const QVector<ProgramInfo::
     }
 }
 
+namespace {
+struct ProgramNames
+{
+    QString name;
+    QString coreName;
+};
+}
+
 void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
 {
     if (!opts.shaders)
@@ -1973,12 +1982,6 @@ void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
     obj["shaders"] = shaders;
 
     QJsonObject programs;
-    struct ProgramNames
-    {
-        QString name;
-        QString coreName;
-    };
-
     QHash<ProgramInfo *, ProgramNames> programMap;
     foreach (ProgramInfo *prog, m_usedPrograms) {
         QJsonObject program;

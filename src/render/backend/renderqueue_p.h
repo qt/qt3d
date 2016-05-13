@@ -76,7 +76,10 @@ public:
     QVector<RenderView *> nextFrameQueue();
     void reset();
 
+    void setNoRender();
+
 private:
+    bool m_noRender;
     int m_targetRenderViewCount;
     int m_currentRenderViewCount;
     QVector<RenderView *> m_currentWorkQueue;

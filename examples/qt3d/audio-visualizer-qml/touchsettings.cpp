@@ -45,8 +45,7 @@ TouchSettings::TouchSettings(QObject *parent)
 
 bool TouchSettings::isHoverEnabled() const
 {
-#if defined(Q_OS_IOS) || defined(Q_OS_ANDROID) || defined(Q_OS_BLACKBERRY) || defined(Q_OS_QNX)
-    || defined(Q_OS_WINRT)
+#if defined(Q_OS_IOS) || defined(Q_OS_ANDROID) || defined(Q_OS_QNX) || defined(Q_OS_WINRT)
     return false;
 #else
     bool isTouch = false;

@@ -36,10 +36,11 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
+#if 0
 #include "boundingvolumedebug_p.h"
-#include <Qt3DRender/qboundingvolumedebug.h>
-#include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DRender/private/qboundingvolumedebug_p.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,7 +49,7 @@ namespace Qt3DRender {
 namespace Render {
 
 BoundingVolumeDebug::BoundingVolumeDebug()
-    : QBackendNode(QBackendNode::ReadWrite)
+    : BackendNode(QBackendNode::ReadWrite)
     , m_recursive(false)
     , m_radius(0.0f)
 {
@@ -75,13 +76,14 @@ void BoundingVolumeDebug::updateFromPeer(Qt3DCore::QNode *peer)
 
 void BoundingVolumeDebug::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    const Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
+    const Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
     const QByteArray propertyName = propertyChange->propertyName();
 
-    if (propertyChange->type() == Qt3DCore::NodeUpdated) {
+    if (propertyChange->type() == Qt3DCore::PropertyUpdated) {
         if (propertyName == QByteArrayLiteral("recursive")) {
             m_recursive = propertyChange->value().toBool();
         }
+        markDirty(AbstractRenderer::AllDirty);
     }
 }
 
@@ -89,9 +91,9 @@ void BoundingVolumeDebug::setRadius(float radius)
 {
     if (m_radius != radius) {
         m_radius = radius;
-        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
+        Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(peerId()));
         e->setPropertyName("radius");
-        e->setTargetNode(peerUuid());
+        e->setTargetNode(peerId());
         e->setValue(QVariant(radius));
         notifyObservers(e);
     }
@@ -101,9 +103,9 @@ void BoundingVolumeDebug::setCenter(const QVector3D &center)
 {
     if (m_center != center) {
         m_center = center;
-        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
+        Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(peerId()));
         e->setPropertyName("center");
-        e->setTargetNode(peerUuid());
+        e->setTargetNode(peerId());
         e->setValue(QVariant::fromValue(center));
         notifyObservers(e);
     }
@@ -114,3 +116,5 @@ void BoundingVolumeDebug::setCenter(const QVector3D &center)
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif

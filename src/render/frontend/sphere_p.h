@@ -67,13 +67,13 @@ namespace Render {
 class QT3DRENDERSHARED_PRIVATE_EXPORT Sphere : public QBoundingSphere
 {
 public:
-    inline Sphere(const Qt3DCore::QNodeId &i = Qt3DCore::QNodeId())
+    inline Sphere(Qt3DCore::QNodeId i = Qt3DCore::QNodeId())
         : m_center()
         , m_radius(0.0f)
         , m_id(i)
     {}
 
-    inline Sphere(const QVector3D &c, float r, const Qt3DCore::QNodeId &i = Qt3DCore::QNodeId())
+    inline Sphere(const QVector3D &c, float r, Qt3DCore::QNodeId i = Qt3DCore::QNodeId())
         : m_center(c)
         , m_radius(r)
         , m_id(i)
@@ -92,7 +92,7 @@ public:
     void expandToContain(const QVector3D &point);
     inline void expandToContain(const QVector<QVector3D> &points)
     {
-        Q_FOREACH (const QVector3D &p, points)
+        for (const QVector3D &p : points)
             expandToContain(p);
     }
 
@@ -106,7 +106,7 @@ public:
     }
 
     Qt3DCore::QNodeId id() const Q_DECL_FINAL;
-    bool intersects(const Qt3DCore::QRay3D &ray, QVector3D *q) const Q_DECL_FINAL;
+    bool intersects(const QRay3D &ray, QVector3D *q) const Q_DECL_FINAL;
     Type type() const Q_DECL_FINAL;
 
     static Sphere fromPoints(const QVector<QVector3D> &points);

@@ -38,7 +38,8 @@
 ****************************************************************************/
 
 #include "dispatchcompute_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRender/private/qdispatchcompute_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,27 +66,29 @@ void DispatchCompute::cleanup()
     m_workGroups[2] = 1;
 }
 
-void DispatchCompute::updateFromPeer(Qt3DCore::QNode *peer)
+void DispatchCompute::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QDispatchCompute *computeDispatch = static_cast<QDispatchCompute *>(peer);
-    m_workGroups[0] = computeDispatch->workGroupX();
-    m_workGroups[1] = computeDispatch->workGroupY();
-    m_workGroups[2] = computeDispatch->workGroupZ();
+    FrameGraphNode::initializeFromPeer(change);
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QDispatchComputeData>>(change);
+    const auto &data = typedChange->data;
+    m_workGroups[0] = data.workGroupX;
+    m_workGroups[1] = data.workGroupY;
+    m_workGroups[2] = data.workGroupZ;
 }
 
 void DispatchCompute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == Qt3DCore::NodeUpdated) {
-        Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
+    if (e->type() == Qt3DCore::PropertyUpdated) {
+        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("workGroupX"))
             m_workGroups[0] = propertyChange->value().toInt();
         else if (propertyChange->propertyName() == QByteArrayLiteral("workGroupY"))
             m_workGroups[1] = propertyChange->value().toInt();
         else if (propertyChange->propertyName() == QByteArrayLiteral("workGroupZ"))
             m_workGroups[2] = propertyChange->value().toInt();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            setEnabled(propertyChange->value().toBool());
+        markDirty(AbstractRenderer::AllDirty);
     }
+    FrameGraphNode::sceneChangeEvent(e);
 }
 
 } // Render

@@ -52,8 +52,10 @@ class QT3DINPUTSHARED_EXPORT QAbstractActionInput : public Qt3DCore::QNode
 {
     Q_OBJECT
 public:
-    explicit QAbstractActionInput(Qt3DCore::QNodePrivate &dd, Qt3DCore::QNode *parent = 0);
     ~QAbstractActionInput();
+
+protected:
+    explicit QAbstractActionInput(Qt3DCore::QNodePrivate &dd, Qt3DCore::QNode *parent = nullptr);
 };
 
 } // Qt3DInput

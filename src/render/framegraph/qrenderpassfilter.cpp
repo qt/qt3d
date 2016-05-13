@@ -40,9 +40,11 @@
 #include "qrenderpassfilter.h"
 #include "qrenderpassfilter_p.h"
 
-#include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qparameter.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,69 +57,56 @@ QRenderPassFilter::QRenderPassFilter(QNode *parent)
     : QFrameGraphNode(*new QRenderPassFilterPrivate, parent)
 {}
 
-QRenderPassFilter::~QRenderPassFilter()
-{
-    QNode::cleanup();
-}
-
 /*! \internal */
 QRenderPassFilter::QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {
 }
 
-QList<QAnnotation *> QRenderPassFilter::includes() const
+QVector<QFilterKey *> QRenderPassFilter::matchAny() const
 {
     Q_D(const QRenderPassFilter);
-    return d->m_includeList;
+    return d->m_matchList;
 }
 
-void QRenderPassFilter::addInclude(QAnnotation *annotation)
+void QRenderPassFilter::addMatch(QFilterKey *filterKey)
 {
+    Q_ASSERT(filterKey);
     Q_D(QRenderPassFilter);
-    if (!d->m_includeList.contains(annotation)) {
-        d->m_includeList.append(annotation);
+    if (!d->m_matchList.contains(filterKey)) {
+        d->m_matchList.append(filterKey);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!annotation->parent())
-            annotation->setParent(this);
+        if (!filterKey->parent())
+            filterKey->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
-            propertyChange->setPropertyName("include");
-            propertyChange->setValue(QVariant::fromValue(annotation->id()));
-            d->notifyObservers(propertyChange);
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), filterKey);
+            change->setPropertyName("match");
+            d->notifyObservers(change);
         }
     }
 }
 
-void QRenderPassFilter::removeInclude(QAnnotation *annotation)
+void QRenderPassFilter::removeMatch(QFilterKey *filterKey)
 {
+    Q_ASSERT(filterKey);
     Q_D(QRenderPassFilter);
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
-        propertyChange->setPropertyName("include");
-        propertyChange->setValue(QVariant::fromValue(annotation->id()));
-        d->notifyObservers(propertyChange);
-    }
-    d->m_includeList.removeOne(annotation);
-}
 
-void QRenderPassFilter::copy(const QNode *ref)
-{
-    QFrameGraphNode::copy(ref);
-    const QRenderPassFilter *other = static_cast<const QRenderPassFilter*>(ref);
-    Q_FOREACH (QAnnotation *c, other->d_func()->m_includeList)
-        addInclude(qobject_cast<QAnnotation *>(QNode::clone(c)));
-    Q_FOREACH (QParameter *p, other->d_func()->m_parameters)
-        addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
+    if (d->m_changeArbiter != nullptr) {
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), filterKey);
+        change->setPropertyName("match");
+        d->notifyObservers(change);
+    }
+    d->m_matchList.removeOne(filterKey);
 }
 
 void QRenderPassFilter::addParameter(QParameter *parameter)
 {
+    Q_ASSERT(parameter);
     Q_D(QRenderPassFilter);
     if (!d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
@@ -129,10 +118,9 @@ void QRenderPassFilter::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), parameter);
             change->setPropertyName("parameter");
-            change->setValue(QVariant::fromValue(parameter->id()));
             d->notifyObservers(change);
         }
     }
@@ -140,21 +128,31 @@ void QRenderPassFilter::addParameter(QParameter *parameter)
 
 void QRenderPassFilter::removeParameter(QParameter *parameter)
 {
+    Q_ASSERT(parameter);
     Q_D(QRenderPassFilter);
 
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+    if (d->m_changeArbiter != nullptr) {
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), parameter);
         change->setPropertyName("parameter");
-        change->setValue(QVariant::fromValue(parameter->id()));
         d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
 }
 
-QList<QParameter *> QRenderPassFilter::parameters() const
+QVector<QParameter *> QRenderPassFilter::parameters() const
 {
     Q_D(const QRenderPassFilter);
     return d->m_parameters;
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QRenderPassFilter::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderPassFilterData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QRenderPassFilter);
+    data.matchIds = qIdsForNodes(d->m_matchList);
+    data.parameterIds = qIdsForNodes(d->m_parameters);
+    return creationChange;
 }
 
 } // namespace Qt3DRender

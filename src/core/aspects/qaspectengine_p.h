@@ -52,6 +52,7 @@
 //
 
 #include <private/qobject_p.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/private/qaspectfactory_p.h>
 #include <QtCore/qsharedpointer.h>
 
@@ -70,6 +71,7 @@ class QAspectEnginePrivate : public QObjectPrivate
 {
 public:
     QAspectEnginePrivate();
+    ~QAspectEnginePrivate();
 
     Q_DECLARE_PUBLIC(QAspectEngine)
 
@@ -78,7 +80,8 @@ public:
     QPostman *m_postman;
     QScene *m_scene;
     QSharedPointer<QEntity> m_root;
-    QList<QAbstractAspect*> m_aspects;
+    QVector<QAbstractAspect*> m_aspects;
+    QHash<QString, QAbstractAspect *> m_namedAspects;
 
     void initialize();
     void shutdown();
@@ -86,6 +89,9 @@ public:
     void initNodeTree(QNode *node);
     void initNode(QNode *node);
     void initEntity(QEntity *entity);
+
+    void generateCreationChanges(QNode *rootNode);
+    QVector<QNodeCreatedChangeBasePtr> m_creationChanges;
 };
 
 } // Qt3D

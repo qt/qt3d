@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "sortcriterion_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodepropertychange.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
@@ -49,13 +49,14 @@ namespace Qt3DRender {
 namespace Render {
 
 SortCriterion::SortCriterion()
-    : QBackendNode()
+    : BackendNode()
     , m_type(QSortCriterion::StateChangeCost)
 {
 }
 
 void SortCriterion::cleanup()
 {
+    QBackendNode::setEnabled(false);
 }
 
 void SortCriterion::updateFromPeer(Qt3DCore::QNode *peer)
@@ -71,10 +72,13 @@ QSortCriterion::SortType SortCriterion::sortType() const
 
 void SortCriterion::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    QNodePropertyChangePtr propertyChange = qSharedPointerCast<QNodePropertyChange>(e);
     if (e->type() == NodeUpdated && propertyChange->propertyName() == QByteArrayLiteral("sort")) {
         m_type = static_cast<QSortCriterion::SortType>(propertyChange->value().toInt());
     }
+    markDirty(AbstractRenderer::AllDirty);
+
+    BackendNode::sceneChangeEvent(e);
 }
 
 } // namespace Render

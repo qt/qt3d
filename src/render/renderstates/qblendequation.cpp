@@ -38,58 +38,40 @@
 **
 ****************************************************************************/
 
-#include "qrenderstate_p.h"
 #include "qblendequation.h"
-#include <private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include "qblendequation_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QBlendEquationPrivate : public QRenderStatePrivate
-{
-public:
-    QBlendEquationPrivate()
-        : QRenderStatePrivate(QRenderState::BlendEquation)
-        , m_mode(QBlendEquation::FuncAdd)
-    {
-    }
-
-    Q_DECLARE_PUBLIC(QBlendEquation)
-    QBlendEquation::BlendMode m_mode;
-};
-
-void QBlendEquation::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QBlendEquation *refState = reinterpret_cast<const QBlendEquation*>(ref);
-    d_func()->m_mode = refState->d_func()->m_mode;
-}
 
 QBlendEquation::QBlendEquation(QNode *parent)
     : QRenderState(*new QBlendEquationPrivate, parent)
 {
 }
 
-QBlendEquation::~QBlendEquation()
-{
-    QNode::cleanup();
-}
-
-QBlendEquation::BlendMode QBlendEquation::mode() const
+QBlendEquation::BlendFunction QBlendEquation::blendFunction() const
 {
     Q_D(const QBlendEquation);
-    return d->m_mode;
+    return d->m_blendFunction;
 }
 
-void QBlendEquation::setMode(QBlendEquation::BlendMode mode)
+void QBlendEquation::setBlendFunction(QBlendEquation::BlendFunction blendFunction)
 {
     Q_D(QBlendEquation);
-    if (d->m_mode != mode) {
-        d->m_mode = mode;
-        emit modeChanged(mode);
+    if (d->m_blendFunction != blendFunction) {
+        d->m_blendFunction = blendFunction;
+        emit blendFunctionChanged(blendFunction);
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QBlendEquation::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangePtr<QBlendEquationData>::create(this);
+    auto &data = creationChange->data;
+    data.blendFunction = d_func()->m_blendFunction;
+    return creationChange;
 }
 
 } // namespace Qt3DRender

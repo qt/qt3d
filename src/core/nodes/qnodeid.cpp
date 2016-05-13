@@ -43,20 +43,83 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-QNodeId QNodeId::createId()
+/*!
+ * \class Qt3DCore::QNodeId
+ * \inmodule Qt3DCore
+ *
+ * TODO
+ */
+
+/*!
+ * \typedef Qt3DCore::QNodeIdVector
+ * \relates Qt3DCore::QNodeId
+ *
+ * A vector of {QNodeId}s.
+ */
+
+/*!
+ * \fn bool QNodeId::isNull() const
+ * \return TODO
+ */
+
+/*!
+ * \fn bool Qt3DCore::QNodeId::operator ==(QNodeId other) const
+ * \return \c true if \c this == \a other.
+ */
+
+/*!
+ * \fn bool Qt3DCore::QNodeId::operator !=(QNodeId other) const
+ * \return \c true if \c this != \a other.
+ */
+
+/*!
+ * \fn bool Qt3DCore::QNodeId::operator <(QNodeId other) const
+ * \return \c true if \c this < \a other.
+ */
+
+/*!
+ * \fn bool Qt3DCore::QNodeId::operator >(QNodeId other) const
+ * \return \c true if \c this > \a other.
+ */
+
+/*!
+ * \fn quint64 QNodeId::id() const
+ * \return TODO
+ */
+
+/*!
+ * \fn Qt3DCore::QNodeId::operator bool() const
+ * TODO
+ */
+
+/*!
+ * \fn uint Qt3DCore::qHash(QNodeId id, uint seed = 0)
+ * \relates Qt3DCore::QNodeId
+ * \return hash of node with \a id and optional \a seed.
+ */
+
+/*!
+ * \return node id.
+ */
+QNodeId QNodeId::createId() Q_DECL_NOTHROW
 {
+    typedef
 #if defined(Q_ATOMIC_INT64_IS_SUPPORTED)
-    static QAtomicInteger<quint64> m_curId = QAtomicInteger<quint64>(1);
+        quint64
 #else
-    static QAtomicInteger<quint32> m_curId = QAtomicInteger<quint32>(1);
+        quint32
 #endif
-    QNodeId id;
-    id.m_id = m_curId.fetchAndAddOrdered(1);
-    return id;
+        UIntType;
+    static QBasicAtomicInteger<UIntType> next = Q_BASIC_ATOMIC_INITIALIZER(0);
+    return QNodeId(next.fetchAndAddRelaxed(1) + 1);
 }
 
 #ifndef QT_NO_DEBUG_STREAM
-QDebug operator<<(QDebug d, const QNodeId &id)
+/*!
+ * << with \a d and \a id.
+ * \return QDebug.
+ */
+QDebug operator<<(QDebug d, QNodeId id)
 {
     d << id.id();
     return d;

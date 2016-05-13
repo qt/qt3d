@@ -76,6 +76,13 @@ public:
     mutable bool m_matrixDirty;
 };
 
+struct QTransformData
+{
+    QQuaternion rotation;
+    QVector3D scale;
+    QVector3D translation;
+};
+
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE

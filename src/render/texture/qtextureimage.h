@@ -53,27 +53,36 @@ class QT3DRENDERSHARED_EXPORT QTextureImage : public QAbstractTextureImage
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 
 public:
-    explicit QTextureImage(Qt3DCore::QNode *parent = 0);
-    ~QTextureImage();
+    explicit QTextureImage(Qt3DCore::QNode *parent = nullptr);
+
+    enum Status {
+        None = 0,
+        Loading,
+        Ready,
+        Error
+    };
+    Q_ENUM(Status)
 
     QUrl source() const;
-
-    QTextureDataFunctorPtr dataFunctor() const Q_DECL_OVERRIDE;
+    Status status() const;
 
 public Q_SLOTS:
     void setSource(const QUrl &source);
 
 Q_SIGNALS:
     void sourceChanged(const QUrl &source);
+    void statusChanged(Status status);
 
 protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
+    void setStatus(Status status);
 
 private:
+    QTextureImageDataGeneratorPtr dataGenerator() const Q_DECL_OVERRIDE;
     Q_DECLARE_PRIVATE(QTextureImage)
-    QT3D_CLONEABLE(QTextureImage)
 };
 
 } // namespace Qt3DRender

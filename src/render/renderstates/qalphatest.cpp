@@ -39,75 +39,56 @@
 ****************************************************************************/
 
 #include "qalphatest.h"
-#include "qrenderstate_p.h"
-#include <private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include "qalphatest_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QAlphaTestPrivate : public QRenderStatePrivate
-{
-public:
-    QAlphaTestPrivate()
-        : QRenderStatePrivate(QRenderState::AlphaTest)
-        , m_func(QAlphaTest::Never)
-        , m_clamp(0.0f)
-    {
-    }
-
-    Q_DECLARE_PUBLIC(QAlphaTest)
-    QAlphaTest::AlphaFunc m_func;
-    float m_clamp;
-};
 
 QAlphaTest::QAlphaTest(QNode *parent)
     : QRenderState(*new QAlphaTestPrivate, parent)
 {
 }
 
-QAlphaTest::~QAlphaTest()
-{
-    QNode::cleanup();
-}
-
-void QAlphaTest::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QAlphaTest *refState = static_cast<const QAlphaTest*>(ref);
-    d_func()->m_func = refState->d_func()->m_func;
-    d_func()->m_clamp = refState->d_func()->m_clamp;
-}
-
-QAlphaTest::AlphaFunc QAlphaTest::func() const
+QAlphaTest::AlphaFunction QAlphaTest::alphaFunction() const
 {
     Q_D(const QAlphaTest);
-    return d->m_func;
+    return d->m_alphaFunction;
 }
 
-void QAlphaTest::setFunc(QAlphaTest::AlphaFunc func)
+void QAlphaTest::setAlphaFunction(QAlphaTest::AlphaFunction alphaFunction)
 {
     Q_D(QAlphaTest);
-    if (d->m_func != func) {
-        d->m_func = func;
-        emit funcChanged(func);
+    if (d->m_alphaFunction != alphaFunction) {
+        d->m_alphaFunction = alphaFunction;
+        emit alphaFunctionChanged(alphaFunction);
     }
 }
 
-float QAlphaTest::clamp() const
+float QAlphaTest::referenceValue() const
 {
     Q_D(const QAlphaTest);
-    return d->m_clamp;
+    return d->m_referenceValue;
 }
 
-void QAlphaTest::setClamp(float clamp)
+void QAlphaTest::setReferenceValue(float referenceValue)
 {
     Q_D(QAlphaTest);
-    if (d->m_clamp != clamp) {
-        d->m_clamp = clamp;
-        emit clampChanged(clamp);
+    if (d->m_referenceValue != referenceValue) {
+        d->m_referenceValue = referenceValue;
+        emit referenceValueChanged(referenceValue);
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QAlphaTest::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangePtr<QAlphaTestData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QAlphaTest);
+    data.alphaFunction = d->m_alphaFunction;
+    data.referenceValue = d->m_referenceValue;
+    return creationChange;
 }
 
 } // namespace Qt3DRender

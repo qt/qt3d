@@ -40,7 +40,11 @@
 #include "action_p.h"
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qabstractactioninput.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DInput/private/qaction_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,50 +53,58 @@ namespace Qt3DInput {
 namespace Input {
 
 Action::Action()
-    : Qt3DCore::QBackendNode()
-    , m_enabled(false)
+    : Qt3DCore::QBackendNode(ReadWrite)
     , m_actionTriggered(false)
 {
 }
 
-void Action::updateFromPeer(Qt3DCore::QNode *peer)
+void Action::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QAction *action = static_cast<QAction *>(peer);
-    m_enabled = action->isEnabled();
-    m_name = action->name();
-    Q_FOREACH (QAbstractActionInput *input, action->inputs())
-        m_inputs.push_back(input->id());
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QActionData>>(change);
+    const auto &data = typedChange->data;
+    m_inputs = data.inputIds;
 }
 
 void Action::cleanup()
 {
-    m_enabled = false;
+    QBackendNode::setEnabled(false);
     m_inputs.clear();
-    m_name.clear();
     m_actionTriggered = false;
 }
 
 void Action::setActionTriggered(bool actionTriggered)
 {
-    m_actionTriggered = actionTriggered;
+    if (actionTriggered != m_actionTriggered) {
+        m_actionTriggered = actionTriggered;
+
+        // Send change to the frontend
+        Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(peerId()));
+        e->setPropertyName("active");
+        e->setValue(m_actionTriggered);
+        notifyObservers(e);
+    }
 }
 
 void Action::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
-    if (e->type() == Qt3DCore::NodeUpdated) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            m_enabled = propertyChange->value().toBool();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("name")) {
-            m_name = propertyChange->value().toString();
-        }
-    } else if (e->type() == Qt3DCore::NodeAdded) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("input"))
-            m_inputs.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
-    } else if (e->type() == Qt3DCore::NodeRemoved) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("input"))
-            m_inputs.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
+    switch (e->type()) {
+    case Qt3DCore::PropertyValueAdded: {
+        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeAddedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("input"))
+            m_inputs.push_back(change->addedNodeId());
+        break;
     }
+
+    case Qt3DCore::PropertyValueRemoved: {
+        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeRemovedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("input"))
+            m_inputs.removeOne(change->removedNodeId());
+    }
+
+    default:
+        break;
+    }
+    QBackendNode::sceneChangeEvent(e);
 }
 
 } // Input

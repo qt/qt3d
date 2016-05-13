@@ -52,7 +52,6 @@
 //
 
 #include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DRender/qboundingvolumespecifier.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,15 +63,18 @@ public:
     Q_DECLARE_PUBLIC(QGeometry)
     QGeometryPrivate()
         : QNodePrivate()
-        , m_verticesPerPatch(0)
+        , m_boundingVolumePositionAttribute(nullptr)
     {}
 
-    QAttributeList m_attributes;
-    int m_verticesPerPatch;
-    QBoundingVolumeSpecifier m_boundingVolumeSpecifier;
 
-private:
-    void _q_boundingVolumeSpecifierChanged(Qt3DRender::QAbstractAttribute *);
+    QVector<QAttribute *> m_attributes;
+    QAttribute *m_boundingVolumePositionAttribute;
+};
+
+struct QGeometryData
+{
+    Qt3DCore::QNodeIdVector attributeIds;
+    Qt3DCore::QNodeId boundingVolumePositionAttributeId;
 };
 
 } // namespace Qt3DRender

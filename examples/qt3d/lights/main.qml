@@ -51,15 +51,20 @@
 import QtQuick 2.0 as Quick
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import Qt3D.Input 2.0
+import Qt3D.Extras 2.0
 
 Entity
 {
-    components: FrameGraph {
-        activeFrameGraph: ForwardRenderer {
-            clearColor: Qt.rgba(0, 0, 0, 1)
-            camera: camera
-        }
-    }
+    components: [
+        RenderSettings {
+            activeFrameGraph: ForwardRenderer {
+                clearColor: Qt.rgba(0, 0, 0, 1)
+                camera: camera
+            }
+        },
+        InputSettings { }
+    ]
 
     Camera {
         id: camera
@@ -80,7 +85,7 @@ Entity
         components: [
             DirectionalLight {
                 color: Qt.rgba(0.8, 0.8, 0.8, 1.0)
-                direction: Qt.vector3d(-1, -1, 0)
+                worldDirection: Qt.vector3d(-1, -1, 0)
             }
         ]
     }
@@ -135,14 +140,14 @@ Entity
                 translation: Qt.vector3d(-5.0, 40.0, -5.0)
             },
             SpotLight {
-                direction: Qt.vector3d(1.0, -4.0, 0.0)
-                Quick.SequentialAnimation on direction.x {
+                localDirection: Qt.vector3d(1.0, -4.0, 0.0)
+                Quick.SequentialAnimation on localDirection.x {
                     Quick.NumberAnimation { from: -4.0; to: 4.0; duration: 5000 }
                     Quick.NumberAnimation { from: 4.0; to: -4.0; duration: 5000 }
                     loops: Quick.Animation.Infinite
                 }
                 cutOffAngle: 30
-                attenuation: Qt.vector3d(1, 0, 0)
+                constantAttenuation: 1
                 intensity: 4
             }
         ]

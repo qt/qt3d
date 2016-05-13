@@ -61,7 +61,7 @@ class QOpenGLVertexArrayObject;
 
 namespace Qt3DRender {
 
-class QTexImageData;
+class QTextureImageData;
 
 namespace Render {
 
@@ -83,23 +83,21 @@ class RenderPassManager;
 class RenderTargetManager;
 class SceneManager;
 class AttachmentManager;
-class SortCriterionManager;
 class ParameterManager;
 class ShaderDataManager;
 class GLBufferManager;
 class TextureImageManager;
-class CriterionManager;
+class FilterKeyManager;
 class FrameGraphManager;
 class TransformManager;
 class TextureManager;
 class TextureDataManager;
 class LayerManager;
 class LightManager;
-class ComputeJobManager;
+class ComputeCommandManager;
 class RenderStateManager;
 
 class FrameGraphNode;
-class Annotation;
 class Entity;
 class CameraLens;
 class Material;
@@ -109,14 +107,13 @@ class Effect;
 class RenderPass;
 class Texture;
 class Layer;
-class Annotation;
+class FilterKey;
 class FrameGraphNode;
 class Transform;
 class Scene;
-class RenderAttachment;
+class RenderTargetOutput;
 class RenderTarget;
 class ShaderData;
-class SortCriterion;
 class Parameter;
 class GLBuffer;
 class TextureImage;
@@ -125,9 +122,9 @@ class Attribute;
 class Geometry;
 class GeometryRenderer;
 class ObjectPicker;
-class BoundingVolumeDebug;
+//class BoundingVolumeDebug;
 class Light;
-class ComputeJob;
+class ComputeCommand;
 class RenderStateNode;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT NodeManagers
@@ -138,23 +135,23 @@ public:
     template<class Backend, typename Manager>
     Manager *manager() const Q_DECL_NOEXCEPT
     {
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     template<class Backend, typename Manager, typename Key>
     Backend *lookupResource(const Key &id) const
     {
         Manager *mgr = manager<Backend, Manager>();
-        if (mgr != Q_NULLPTR)
+        if (mgr != nullptr)
             return mgr->lookupResource(id);
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     template<class Backend, typename Manager, typename Handle, typename Key>
     Handle lookupHandle(const Key &id) const
     {
         Manager *mgr = manager<Backend, Manager>();
-        if (mgr != Q_NULLPTR)
+        if (mgr != nullptr)
             return mgr->lookupHandle(id);
         return Handle();
     }
@@ -163,9 +160,9 @@ public:
     Backend *data(Handle handle)
     {
         Manager *mgr = manager<Backend, Manager>();
-        if (mgr != Q_NULLPTR)
+        if (mgr != nullptr)
             return mgr->data(handle);
-        return Q_NULLPTR;
+        return nullptr;
     }
 
 
@@ -181,13 +178,12 @@ public:
     inline TextureManager *textureManager() const Q_DECL_NOEXCEPT { return m_textureManager; }
     inline TextureDataManager *textureDataManager() const Q_DECL_NOEXCEPT { return m_textureDataManager; }
     inline LayerManager *layerManager() const Q_DECL_NOEXCEPT { return m_layerManager; }
-    inline CriterionManager *criterionManager() const Q_DECL_NOEXCEPT { return m_criterionManager; }
+    inline FilterKeyManager *filterKeyManager() const Q_DECL_NOEXCEPT { return m_filterKeyManager; }
     inline FrameGraphManager *frameGraphManager() const Q_DECL_NOEXCEPT { return m_frameGraphManager; }
     inline TransformManager *transformManager() const Q_DECL_NOEXCEPT { return m_transformManager; }
     inline RenderTargetManager *renderTargetManager() const Q_DECL_NOEXCEPT { return m_renderTargetManager; }
     inline SceneManager *sceneManager() const Q_DECL_NOEXCEPT { return m_sceneManager; }
     inline AttachmentManager *attachmentManager() const Q_DECL_NOEXCEPT { return m_attachmentManager; }
-    inline SortCriterionManager *sortCriterionManager() const Q_DECL_NOEXCEPT { return m_sortCriterionManager; }
     inline ParameterManager *parameterManager() const Q_DECL_NOEXCEPT { return m_parameterManager; }
     inline ShaderDataManager *shaderDataManager() const Q_DECL_NOEXCEPT { return m_shaderDataManager; }
     inline GLBufferManager *glBufferManager() const Q_DECL_NOEXCEPT { return m_glBufferManager; }
@@ -197,9 +193,9 @@ public:
     inline GeometryManager *geometryManager() const Q_DECL_NOEXCEPT { return m_geometryManager; }
     inline GeometryRendererManager *geometryRendererManager() const Q_DECL_NOEXCEPT { return m_geometryRendererManager; }
     inline ObjectPickerManager *objectPickerManager() const Q_DECL_NOEXCEPT { return m_objectPickerManager; }
-    inline BoundingVolumeDebugManager *boundingVolumeDebugManager() const Q_DECL_NOEXCEPT { return m_boundingVolumeDebugManager; }
+    //    inline BoundingVolumeDebugManager *boundingVolumeDebugManager() const Q_DECL_NOEXCEPT { return m_boundingVolumeDebugManager; }
     inline LightManager *lightManager() const Q_DECL_NOEXCEPT { return m_lightManager; }
-    inline ComputeJobManager *computeJobManager() const Q_DECL_NOEXCEPT { return m_computeJobManager; }
+    inline ComputeCommandManager *computeJobManager() const Q_DECL_NOEXCEPT { return m_computeJobManager; }
     inline RenderStateManager *renderStateManager() const Q_DECL_NOEXCEPT { return m_renderStateManager; }
 
 private:
@@ -215,13 +211,12 @@ private:
     TextureManager *m_textureManager;
     TextureDataManager *m_textureDataManager;
     LayerManager *m_layerManager;
-    CriterionManager *m_criterionManager;
+    FilterKeyManager *m_filterKeyManager;
     FrameGraphManager *m_frameGraphManager;
     TransformManager *m_transformManager;
     RenderTargetManager *m_renderTargetManager;
     SceneManager *m_sceneManager;
     AttachmentManager *m_attachmentManager;
-    SortCriterionManager *m_sortCriterionManager;
     ParameterManager *m_parameterManager;
     ShaderDataManager *m_shaderDataManager;
     GLBufferManager *m_glBufferManager;
@@ -231,9 +226,9 @@ private:
     GeometryManager *m_geometryManager;
     GeometryRendererManager *m_geometryRendererManager;
     ObjectPickerManager *m_objectPickerManager;
-    BoundingVolumeDebugManager *m_boundingVolumeDebugManager;
+    //    BoundingVolumeDebugManager *m_boundingVolumeDebugManager;
     LightManager *m_lightManager;
-    ComputeJobManager *m_computeJobManager;
+    ComputeCommandManager *m_computeJobManager;
     RenderStateManager *m_renderStateManager;
 };
 
@@ -270,13 +265,13 @@ template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT TextureManager *NodeManagers::manager<Texture>() const Q_DECL_NOEXCEPT;
 
 template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT TextureDataManager *NodeManagers::manager<QTexImageData>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT TextureDataManager *NodeManagers::manager<QTextureImageData>() const Q_DECL_NOEXCEPT;
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT LayerManager *NodeManagers::manager<Layer>() const Q_DECL_NOEXCEPT;
 
 template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT CriterionManager *NodeManagers::manager<Annotation>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT FilterKeyManager *NodeManagers::manager<FilterKey>() const Q_DECL_NOEXCEPT;
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT FrameGraphManager *NodeManagers::manager<FrameGraphNode*>() const Q_DECL_NOEXCEPT;
@@ -291,10 +286,7 @@ template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT SceneManager *NodeManagers::manager<Scene>() const Q_DECL_NOEXCEPT;
 
 template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT AttachmentManager *NodeManagers::manager<RenderAttachment>() const Q_DECL_NOEXCEPT;
-
-template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT SortCriterionManager *NodeManagers::manager<SortCriterion>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT AttachmentManager *NodeManagers::manager<RenderTargetOutput>() const Q_DECL_NOEXCEPT;
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT ParameterManager *NodeManagers::manager<Parameter>() const Q_DECL_NOEXCEPT;
@@ -323,14 +315,14 @@ QT3DRENDERSHARED_PRIVATE_EXPORT GeometryRendererManager *NodeManagers::manager<G
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT ObjectPickerManager *NodeManagers::manager<ObjectPicker>() const Q_DECL_NOEXCEPT;
 
-template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT BoundingVolumeDebugManager *NodeManagers::manager<BoundingVolumeDebug>() const Q_DECL_NOEXCEPT;
+//template<>
+//QT3DRENDERSHARED_PRIVATE_EXPORT BoundingVolumeDebugManager *NodeManagers::manager<BoundingVolumeDebug>() const Q_DECL_NOEXCEPT;
 
 template<>
 LightManager *NodeManagers::manager<Light>() const Q_DECL_NOEXCEPT;
 
 template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT ComputeJobManager *NodeManagers::manager<ComputeJob>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT ComputeCommandManager *NodeManagers::manager<ComputeCommand>() const Q_DECL_NOEXCEPT;
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT RenderStateManager *NodeManagers::manager<RenderStateNode>() const Q_DECL_NOEXCEPT;

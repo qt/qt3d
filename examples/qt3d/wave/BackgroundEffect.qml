@@ -63,7 +63,7 @@ Effect {
                 minorVersion: 1
             }
 
-            annotations: Annotation { name: "renderingStyle"; value: "forward" }
+            filterKeys: [ FilterKey { name: "renderingStyle"; value: "forward" } ]
 
             renderPasses: [
                 RenderPass {
@@ -71,6 +71,10 @@ Effect {
                         vertexShaderCode:   loadSource( "qrc:/shaders/background.vert" )
                         fragmentShaderCode: loadSource( "qrc:/shaders/background.frag" )
                     }
+
+                    renderStates: [
+                        DepthTest { depthFunction: DepthTest.Always }
+                    ]
                 }
             ]
         }

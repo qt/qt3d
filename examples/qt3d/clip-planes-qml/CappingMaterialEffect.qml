@@ -79,7 +79,7 @@ Effect {
                 // Capping pass: generate planes given clipping plane equations
                 // to be rendered with the phong material
                 RenderPass {
-                    annotations: Annotation { name: "pass"; value: "capping" }
+                    filterKeys: FilterKey { name: "pass"; value: "capping" }
                     shaderProgram: ShaderProgram {
                         vertexShaderCode: loadSource("qrc:/capping.vert")
                         geometryShaderCode: loadSource("qrc:/capping.geom")

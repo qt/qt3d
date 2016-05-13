@@ -51,6 +51,7 @@
 // We mean it.
 //
 
+#include <Qt3DRender/private/qt3drender_global_p.h>
 #include <private/qframegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -59,14 +60,20 @@ namespace Qt3DRender {
 
 class QTechniqueFilter;
 
-class QTechniqueFilterPrivate : public QFrameGraphNodePrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QTechniqueFilterPrivate : public QFrameGraphNodePrivate
 {
 public :
     QTechniqueFilterPrivate();
 
     Q_DECLARE_PUBLIC(QTechniqueFilter)
-    QList<QAnnotation *> m_requireList;
-    QList<QParameter *> m_parameters;
+    QVector<QFilterKey *> m_matchList;
+    QVector<QParameter *> m_parameters;
+};
+
+struct QTechniqueFilterData
+{
+    Qt3DCore::QNodeIdVector matchIds;
+    Qt3DCore::QNodeIdVector parameterIds;
 };
 
 } // namespace Qt3DRender

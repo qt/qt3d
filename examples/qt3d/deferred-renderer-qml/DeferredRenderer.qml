@@ -52,46 +52,52 @@ import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 
 Viewport {
-    rect : Qt.rect(0.0, 0.0, 1.0, 1.0)
+    id: root
+    normalizedRect : Qt.rect(0.0, 0.0, 1.0, 1.0)
 
     property alias gBuffer : gBufferTargetSelector.target
     property alias camera : sceneCameraSelector.camera
 
-    LayerFilter {
-        layers : "scene"
+    readonly property Layer sceneLayer: Layer {}
+    readonly property Layer screenQuadLayer: Layer {}
 
-        RenderTargetSelector {
-            id : gBufferTargetSelector
+    RenderSurfaceSelector {
+        LayerFilter {
+            layers : root.sceneLayer
 
-            ClearBuffer {
-                buffers: ClearBuffer.ColorDepthBuffer
+            RenderTargetSelector {
+                id : gBufferTargetSelector
 
-                RenderPassFilter {
-                    id : geometryPass
-                    includes : Annotation { name : "pass"; value : "geometry" }
+                ClearBuffers {
+                    buffers: ClearBuffers.ColorDepthBuffer
 
-                    CameraSelector {
-                        id : sceneCameraSelector
+                    RenderPassFilter {
+                        id : geometryPass
+                        matchAny : FilterKey { name : "pass"; value : "geometry" }
+
+                        CameraSelector {
+                            id : sceneCameraSelector
+                        }
                     }
                 }
             }
         }
-    }
 
-    LayerFilter {
-        layers : "screenQuad"
+        LayerFilter {
+            layers : root.screenQuadLayer
 
-        ClearBuffer {
-            buffers: ClearBuffer.ColorDepthBuffer
+            ClearBuffers {
+                buffers: ClearBuffers.ColorDepthBuffer
 
-            RenderPassFilter {
-                id : finalPass
-                includes : Annotation { name : "pass"; value : "final" }
-                CameraSelector {
-                    camera: sceneCameraSelector.camera
+                RenderPassFilter {
+                    id : finalPass
+                    matchAny : FilterKey { name : "pass"; value : "final" }
+                    CameraSelector {
+                        camera: sceneCameraSelector.camera
+                    }
                 }
-            }
 
+            }
         }
     }
 }

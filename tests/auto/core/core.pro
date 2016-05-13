@@ -7,19 +7,17 @@ SUBDIRS = \
     qcircularbuffer \
     qboundedcircularbuffer \
     nodes \
-    qentity \
     qaspectengine \
     qaspectfactory \
     qaspectjob \
     qchangearbiter \
     qscene \
-    qservicelocator \
-    qray3d \
-    qtransform
+    qservicelocator
 
 contains(QT_CONFIG, private_tests) {
     SUBDIRS += \
+    qentity \
     qframeallocator \
-    cloning \
+    qtransform \
     threadpooler
 }

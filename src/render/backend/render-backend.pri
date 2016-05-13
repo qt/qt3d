@@ -1,3 +1,6 @@
+#DEFINES += QT3D_RENDER_VIEW_JOB_TIMING
+#DEFINES += QT3D_RENDER_DUMP_BACKEND_NODES
+
 INCLUDEPATH += $$PWD
 
 HEADERS += \
@@ -10,7 +13,6 @@ HEADERS += \
     $$PWD/renderqueue_p.h \
     $$PWD/parameterpack_p.h \
     $$PWD/rendertarget_p.h \
-    $$PWD/renderattachment_p.h \
     $$PWD/attachmentpack_p.h \
     $$PWD/shadervariables_p.h \
     $$PWD/qgraphicsutils_p.h \
@@ -29,8 +31,11 @@ HEADERS += \
     $$PWD/trianglesextractor_p.h \
     $$PWD/trianglesvisitor_p.h \
     $$PWD/abstractrenderer_p.h \
-    $$PWD/computejob_p.h \
-    $$PWD/renderersettings_p.h
+    $$PWD/computecommand_p.h \
+    $$PWD/rendersettings_p.h \
+    $$PWD/stringtoint_p.h \
+    $$PWD/backendnode_p.h \
+    $$PWD/rendertargetoutput_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
@@ -42,8 +47,6 @@ SOURCES += \
     $$PWD/renderqueue.cpp \
     $$PWD/parameterpack.cpp \
     $$PWD/rendertarget.cpp \
-    $$PWD/renderattachment.cpp \
-    $$PWD/attachmentpack.cpp \
     $$PWD/managers.cpp \
     $$PWD/platformsurfacefilter.cpp \
     $$PWD/cameralens.cpp \
@@ -55,5 +58,10 @@ SOURCES += \
     $$PWD/triangleboundingvolume.cpp \
     $$PWD/trianglesextractor.cpp \
     $$PWD/trianglesvisitor.cpp \
-    $$PWD/computejob.cpp \
-    $$PWD/renderersettings.cpp
+    $$PWD/computecommand.cpp \
+    $$PWD/rendersettings.cpp \
+    $$PWD/stringtoint.cpp \
+    $$PWD/backendnode.cpp \
+    $$PWD/rendertargetoutput.cpp \
+    $$PWD/attachmentpack.cpp
+

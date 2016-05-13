@@ -68,8 +68,8 @@ class QT3DRENDERSHARED_EXPORT QCollisionQueryResult
 {
 public:
     struct Hit {
-        Hit() : m_distance(-1.f) { }
-        Hit(const Qt3DCore::QNodeId &entity, const QVector3D &intersection, float distance) : m_entityId(entity), m_intersection(intersection), m_distance(distance) { }
+        Hit() : m_distance(-1.f), m_triangleIndex(0) { m_vertexIndex[0] = m_vertexIndex[1] = m_vertexIndex[2] = 0; }
+        Hit(Qt3DCore::QNodeId entity, const QVector3D &intersection, float distance) : m_entityId(entity), m_intersection(intersection), m_distance(distance) { }
         Qt3DCore::QNodeId m_entityId;
         QVector3D m_intersection;
         float m_distance;
@@ -112,6 +112,8 @@ private:
         return d_ptr.constData();
     }
 };
+QT3D_DECLARE_TYPEINFO(Qt3DRender, QCollisionQueryResult::Hit, Q_PRIMITIVE_TYPE)
+QT3D_DECLARE_SHARED(Qt3DRender, QCollisionQueryResult)
 
 class QCollisionQueryResultPrivate : public QSharedData
 {
@@ -120,7 +122,7 @@ public:
     explicit QCollisionQueryResultPrivate(const QCollisionQueryResultPrivate &copy);
 
     void setHandle(const QQueryHandle &handle);
-    void addEntityHit(const Qt3DCore::QNodeId &entity, const QVector3D& intersection, float distance);
+    void addEntityHit(Qt3DCore::QNodeId entity, const QVector3D& intersection, float distance);
 
     QQueryHandle m_handle;
     QVector<QCollisionQueryResult::Hit> m_hits;
@@ -132,8 +134,6 @@ inline bool operator==(const QCollisionQueryResult::Hit& left, const QCollisionQ
 }
 
 } // Qt3DRender
-
-Q_DECLARE_SHARED(Qt3DRender::QCollisionQueryResult)
 
 QT_END_NAMESPACE
 

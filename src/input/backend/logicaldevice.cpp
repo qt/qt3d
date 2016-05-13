@@ -41,8 +41,11 @@
 #include <Qt3DInput/qlogicaldevice.h>
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DInput/qaction.h>
-#include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
+#include <Qt3DInput/private/qlogicaldevice_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,46 +54,50 @@ namespace Qt3DInput {
 namespace Input {
 
 LogicalDevice::LogicalDevice()
-    : QBackendNode(),
-      m_enabled(false)
+    : QBackendNode()
 {
 }
 
-void LogicalDevice::updateFromPeer(Qt3DCore::QNode *peer)
+void LogicalDevice::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QLogicalDevice *device = static_cast<QLogicalDevice *>(peer);
-    m_enabled = device->isEnabled();
-    Q_FOREACH (QAxis *axis, device->axes())
-        m_axes.push_back(axis->id());
-    Q_FOREACH (QAction *action, device->actions())
-        m_actions.push_back(action->id());
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QLogicalDeviceData>>(change);
+    const auto &data = typedChange->data;
+    m_actions = data.actionIds;
+    m_axes = data.axisIds;
 }
 
 void LogicalDevice::cleanup()
 {
-    m_enabled = false;
+    QBackendNode::setEnabled(false);
     m_actions.clear();
     m_axes.clear();
 }
 
 void LogicalDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
-    if (e->type() == Qt3DCore::NodeUpdated) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            m_enabled = propertyChange->value().toBool();
-        } else if (e->type() == Qt3DCore::NodeAdded) {
-            if (propertyChange->propertyName() == QByteArrayLiteral("axis"))
-                m_axes.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
-            else if (propertyChange->propertyName() == QByteArrayLiteral("action"))
-                m_actions.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
-        } else if (e->type() == Qt3DCore::NodeRemoved) {
-            if (propertyChange->propertyName() == QByteArrayLiteral("axis"))
-                m_axes.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
-            else if (propertyChange->propertyName() == QByteArrayLiteral("action"))
-                m_actions.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
-        }
+    switch (e->type()) {
+    case Qt3DCore::PropertyValueAdded: {
+        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeAddedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("axis"))
+            m_axes.push_back(change->addedNodeId());
+        else if (change->propertyName() == QByteArrayLiteral("action"))
+            m_actions.push_back(change->addedNodeId());
+        break;
     }
+
+    case Qt3DCore::PropertyValueRemoved: {
+        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeRemovedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("axis"))
+            m_axes.removeOne(change->removedNodeId());
+        else if (change->propertyName() == QByteArrayLiteral("action"))
+            m_actions.removeOne(change->removedNodeId());
+        break;
+    }
+
+    default:
+        break;
+    }
+    QBackendNode::sceneChangeEvent(e);
 }
 
 LogicalDeviceNodeFunctor::LogicalDeviceNodeFunctor(LogicalDeviceManager *manager)
@@ -98,21 +105,20 @@ LogicalDeviceNodeFunctor::LogicalDeviceNodeFunctor(LogicalDeviceManager *manager
 {
 }
 
-Qt3DCore::QBackendNode *LogicalDeviceNodeFunctor::create(Qt3DCore::QNode *frontend) const
+Qt3DCore::QBackendNode *LogicalDeviceNodeFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
-    HLogicalDevice handle = m_manager->getOrAcquireHandle(frontend->id());
+    HLogicalDevice handle = m_manager->getOrAcquireHandle(change->subjectId());
     LogicalDevice *backend = m_manager->data(handle);
     m_manager->addActiveDevice(handle);
-    backend->setPeer(frontend);
     return backend;
 }
 
-Qt3DCore::QBackendNode *LogicalDeviceNodeFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *LogicalDeviceNodeFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_manager->lookupResource(id);
 }
 
-void LogicalDeviceNodeFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void LogicalDeviceNodeFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     HLogicalDevice handle = m_manager->lookupHandle(id);
     m_manager->releaseResource(id);

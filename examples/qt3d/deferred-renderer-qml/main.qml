@@ -51,6 +51,8 @@
 import QtQuick 2.0 as QQ2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import Qt3D.Input 2.0
+import Qt3D.Extras 2.0
 
 Entity {
     id : root
@@ -59,41 +61,47 @@ Entity {
         id : gBuffer
     }
 
-    components : FrameGraph {
-        id : deferredFrameGraphComponent
-        activeFrameGraph: DeferredRenderer {
-            camera : camera
-            gBuffer: gBuffer
-        }
-    }
+    components : [
+        RenderSettings {
+            activeFrameGraph: DeferredRenderer {
+                id: frameGraph
+                camera : camera
+                gBuffer: gBuffer
+            }
+
+            renderPolicy: RenderSettings.Always
+        },
+        InputSettings {}
+    ]
 
     FirstPersonCameraController { camera: camera }
 
     Entity {
         id : screenQuadEntity
-        components : [
-            Layer {
-                names : "screenQuad"
-            },
-            PlaneMesh {
-                width: 2.0
-                height: 2.0
-                meshResolution: Qt.size(2, 2)
-            },
-            Transform { // We rotate the plane so that it faces us
-                rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 90)
-            },
-            Material {
-                parameters : [
-                    Parameter { name: "color"; value : gBuffer.color },
-                    Parameter { name: "position"; value : gBuffer.position },
-                    Parameter { name: "normal"; value : gBuffer.normal },
-                    Parameter { name: "winSize"; value : Qt.size(1024, 1024) }
-                ]
-                effect : FinalEffect {}
-            }
-        ]
+        PlaneMesh {
+            id: mesh
+            width: 2.0
+            height: 2.0
+            meshResolution: Qt.size(2, 2)
+        }
 
+        Transform { // We rotate the plane so that it faces us
+            id: transform
+            rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 90)
+        }
+
+        Material {
+            id: material
+            parameters : [
+                Parameter { name: "color"; value : gBuffer.color },
+                Parameter { name: "position"; value : gBuffer.position },
+                Parameter { name: "normal"; value : gBuffer.normal },
+                Parameter { name: "winSize"; value : Qt.size(1024, 1024) }
+            ]
+            effect : FinalEffect {}
+        }
+
+        components : [ frameGraph.screenQuadLayer, mesh, transform, material ]
     }
 
     Entity {
@@ -106,7 +114,7 @@ Entity {
             QQ2.NumberAnimation on intensity { from: 0; to: 5.0; duration: 1000; loops: QQ2.Animation.Infinite }
         }
 
-        components: sceneEntity.light
+        components: [ sceneEntity.light ]
 
         Camera {
             id: camera
@@ -120,16 +128,10 @@ Entity {
             viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
         }
 
-        Layer {
-            id : sceneLayer
-            names : "scene"
-        }
-
         SphereMesh {
             id : sphereMesh
             rings: 50
             slices: 100
-            shareable: false
         }
 
         SceneEffect {
@@ -167,7 +169,7 @@ Entity {
                 material,
                 sphere1.transform,
                 sphere1.light,
-                sceneLayer
+                frameGraph.sceneLayer
             ]
         }
 
@@ -193,7 +195,7 @@ Entity {
                 sphere2.transform,
                 material,
                 sphere2.light,
-                sceneLayer
+                frameGraph.sceneLayer
             ]
         }
 
@@ -227,7 +229,7 @@ Entity {
                 material,
                 light,
                 transform,
-                sceneLayer
+                frameGraph.sceneLayer
             ]
         }
 
@@ -244,7 +246,7 @@ Entity {
             components: [
                 light4.light,
                 light4.transform,
-                sceneLayer
+                frameGraph.sceneLayer
             ]
         }
     }

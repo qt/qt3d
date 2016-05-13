@@ -52,11 +52,11 @@ class QAlphaTestPrivate;
 class QT3DRENDERSHARED_EXPORT QAlphaTest : public QRenderState
 {
     Q_OBJECT
-    Q_PROPERTY(AlphaFunc func READ func WRITE setFunc NOTIFY funcChanged)
-    Q_PROPERTY(float clamp READ clamp WRITE setClamp NOTIFY clampChanged)
+    Q_PROPERTY(AlphaFunction alphaFunction READ alphaFunction WRITE setAlphaFunction NOTIFY alphaFunctionChanged)
+    Q_PROPERTY(float referenceValue READ referenceValue WRITE setReferenceValue NOTIFY referenceValueChanged)
 public:
 
-    enum AlphaFunc {
+    enum AlphaFunction {
         Never = 0x0200,
         Always = 0x0207,
         Less = 0x0201,
@@ -66,28 +66,24 @@ public:
         Greater = 0x0204,
         NotEqual = 0x0205
     };
-    Q_ENUM(AlphaFunc)
+    Q_ENUM(AlphaFunction)
 
-    explicit QAlphaTest(Qt3DCore::QNode *parent = 0);
-    ~QAlphaTest();
+    explicit QAlphaTest(Qt3DCore::QNode *parent = nullptr);
 
-    AlphaFunc func() const;
-    float clamp() const;
+    AlphaFunction alphaFunction() const;
+    float referenceValue() const;
 
 public Q_SLOTS:
-    void setFunc(AlphaFunc func);
-    void setClamp(float clamp);
+    void setAlphaFunction(AlphaFunction alphaFunction);
+    void setReferenceValue(float referenceValue);
 
 Q_SIGNALS:
-    void funcChanged(AlphaFunc func);
-    void clampChanged(float clamp);
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void alphaFunctionChanged(AlphaFunction alphaFunction);
+    void referenceValueChanged(float referenceValue);
 
 private:
     Q_DECLARE_PRIVATE(QAlphaTest)
-    QT3D_CLONEABLE(QAlphaTest)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

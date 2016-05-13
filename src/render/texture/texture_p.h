@@ -51,12 +51,12 @@
 // We mean it.
 //
 
+#include <Qt3DRender/private/backendnode_p.h>
+#include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/qtexture.h>
+#include <Qt3DRender/qtextureimagedata.h>
 #include <QOpenGLContext>
 #include <QMutex>
-#include <Qt3DRender/qtexture.h>
-#include <Qt3DRender/qtexturedata.h>
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DRender/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,7 +64,7 @@ class QOpenGLTexture;
 
 namespace Qt3DRender {
 
-class QAbstractTextureProvider;
+class QAbstractTexture;
 
 namespace Render {
 
@@ -74,14 +74,12 @@ class TextureDataManager;
 
 typedef uint TextureDNA;
 
-class Texture : public Qt3DCore::QBackendNode
+class Texture : public BackendNode
 {
 public:
     Texture();
     ~Texture();
     void cleanup();
-
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
     QOpenGLTexture* getOrCreateGLTexture() ;
 
@@ -102,26 +100,30 @@ public:
 
     void requestTextureDataUpdate();
     void addToPendingTextureJobs();
-    void setTarget(QAbstractTextureProvider::Target target);
+    void setTarget(QAbstractTexture::Target target);
     void setSize(int width, int height, int depth);
-    void setFormat(QAbstractTextureProvider::TextureFormat format);
+    void setFormat(QAbstractTexture::TextureFormat format);
     void setMipLevels(int mipmapLevels);
     void setLayers(int layers);
 
     inline QVector<HTextureImage> textureImages() const { return m_textureImages; }
-    inline QAbstractTextureProvider::TextureFormat format() const { return m_format; }
-    inline QAbstractTextureProvider::Target target() const { return m_target; }
+    inline QAbstractTexture::TextureFormat format() const { return m_format; }
+    inline QAbstractTexture::Target target() const { return m_target; }
     inline bool isAutoMipMapGenerationEnabled() const { return m_generateMipMaps; }
 
-    inline QTextureDataFunctorPtr dataFunctor() const { return m_dataFunctor; }
+    inline QTextureImageDataGeneratorPtr dataGenerator() const { return m_dataFunctor; }
     void setTextureDataHandle(HTextureData handle) { m_textureDataHandle = handle; }
 
+    inline bool dataUploadRequired() const { return m_dataUploadRequired; }
+
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QOpenGLTexture *m_gl;
 
     QOpenGLTexture *buildGLTexture();
-    void setToGLTexture(QTexImageData *imgData);
-    void setToGLTexture(TextureImage *rImg, QTexImageData *imgData);
+    void setToGLTexture(QTextureImageData *imgData);
+    void setToGLTexture(TextureImage *rImg, QTextureImageData *imgData);
     void updateWrapAndFilters();
 
     int m_width;
@@ -130,18 +132,18 @@ private:
     int m_layers;
     int m_mipLevels;
     bool m_generateMipMaps;
-    QAbstractTextureProvider::Target m_target;
-    QAbstractTextureProvider::TextureFormat m_format;
-    QAbstractTextureProvider::Filter m_magnificationFilter;
-    QAbstractTextureProvider::Filter m_minificationFilter;
+    QAbstractTexture::Target m_target;
+    QAbstractTexture::TextureFormat m_format;
+    QAbstractTexture::Filter m_magnificationFilter;
+    QAbstractTexture::Filter m_minificationFilter;
     QTextureWrapMode::WrapMode m_wrapModeX;
     QTextureWrapMode::WrapMode m_wrapModeY;
     QTextureWrapMode::WrapMode m_wrapModeZ;
     float m_maximumAnisotropy;
-    QAbstractTextureProvider::ComparisonFunction m_comparisonFunction;
-    QAbstractTextureProvider::ComparisonMode m_comparisonMode;
+    QAbstractTexture::ComparisonFunction m_comparisonFunction;
+    QAbstractTexture::ComparisonMode m_comparisonMode;
 
-    QTextureDataFunctorPtr m_dataFunctor;
+    QTextureImageDataGeneratorPtr m_dataFunctor;
     HTextureData m_textureDataHandle;
 
     QVector<HTextureImage> m_textureImages;
@@ -149,8 +151,6 @@ private:
     bool m_isDirty;
     bool m_filtersAndWrapUpdated;
     bool m_dataUploadRequired;
-    bool m_formatWasSpecified;
-    bool m_unique;
 
     mutable QMutex m_lock;
     TextureDNA m_textureDNA;
@@ -161,18 +161,19 @@ private:
     void updateDNA();
 };
 
-class TextureFunctor : public Qt3DCore::QBackendNodeFunctor
+class TextureFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
-    explicit TextureFunctor(TextureManager *textureManager,
-                                  TextureImageManager *textureImageManager,
-                                  TextureDataManager *textureDataManager);
-
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_FINAL;
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
+    explicit TextureFunctor(AbstractRenderer *renderer,
+                            TextureManager *textureManager,
+                            TextureImageManager *textureImageManager,
+                            TextureDataManager *textureDataManager);
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
 
 private:
+    AbstractRenderer *m_renderer;
     TextureManager *m_textureManager;
     TextureImageManager *m_textureImageManager;
     TextureDataManager *m_textureDataManager;

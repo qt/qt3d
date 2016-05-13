@@ -39,7 +39,7 @@
 
 #include "keyeventdispatcherjob_p.h"
 #include "inputhandler_p.h"
-#include "keyboardinput_p.h"
+#include "keyboardhandler_p.h"
 #include "inputmanagers_p.h"
 
 QT_BEGIN_NAMESPACE
@@ -47,10 +47,10 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 namespace Input {
 
-KeyEventDispatcherJob::KeyEventDispatcherJob(const Qt3DCore::QNodeId &input, const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> &events)
+KeyEventDispatcherJob::KeyEventDispatcherJob(Qt3DCore::QNodeId input, const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> &events)
     : QAspectJob()
-    , m_inputHandler(Q_NULLPTR)
-    , m_keyboardInput(input)
+    , m_inputHandler(nullptr)
+    , m_keyboardHandler(input)
     , m_events(events)
 {
 }
@@ -62,9 +62,9 @@ void KeyEventDispatcherJob::setInputHandler(InputHandler *handler)
 
 void KeyEventDispatcherJob::run()
 {
-    KeyboardInput *input = m_inputHandler->keyboardInputManager()->lookupResource(m_keyboardInput);
+    KeyboardHandler *input = m_inputHandler->keyboardInputManager()->lookupResource(m_keyboardHandler);
     if (input)
-        Q_FOREACH (const QT_PREPEND_NAMESPACE(QKeyEvent) &e, m_events) {
+        for (const QT_PREPEND_NAMESPACE(QKeyEvent) &e : qAsConst(m_events)) {
             // Send events to frontend
             input->keyEvent(QKeyEventPtr(new QKeyEvent(e)));
         }

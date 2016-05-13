@@ -53,18 +53,22 @@
 
 #include "task_p.h"
 #include "dependencyhandler_p.h"
-
+#include "qaspectjob_p.h"
 #include <QtCore/QObject>
 #include <QtCore/QSharedPointer>
 #include <QtCore/QFutureInterface>
 #include <QtCore/QFuture>
 #include <QThreadPool>
 
+#ifdef QT3D_JOBS_RUN_STATS
+#include <QElapsedTimer>
+#endif
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QThreadPooler : public QObject
+class QT3DCORE_PRIVATE_EXPORT QThreadPooler : public QObject
 {
     Q_OBJECT
 
@@ -79,6 +83,13 @@ public:
     void setDependencyHandler(DependencyHandler *handler);
 
     int maxThreadCount() const;
+#ifdef QT3D_JOBS_RUN_STATS
+    static QElapsedTimer m_jobsStatTimer;
+
+    static void addJobLogStatsEntry(JobRunStats &stats);
+    static void starNewFrameJobLogsStats();
+    static void writeFrameJobLogStats();
+#endif
 
 private:
     void enqueueTasks(const QVector<RunnableInterface *> &tasks);
@@ -88,7 +99,7 @@ private:
 
 private:
     QFutureInterface<void> *m_futureInterface;
-    QMutex *m_mutex;
+    QMutex m_mutex;
     DependencyHandler *m_dependencyHandler;
     QAtomicInt m_taskCount;
     QThreadPool m_threadPool;

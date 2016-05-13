@@ -41,7 +41,7 @@
 #include "qdithering.h"
 #include "qrenderstate_p.h"
 #include <private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,7 +51,7 @@ class QDitheringPrivate : public QRenderStatePrivate
 {
 public:
     QDitheringPrivate()
-        : QRenderStatePrivate(QRenderState::Dithering)
+        : QRenderStatePrivate(QRenderStatePrivate::Dithering)
     {}
 
     Q_DECLARE_PUBLIC(QDithering)
@@ -60,11 +60,6 @@ public:
 QDithering::QDithering(QNode *parent)
     : QRenderState(*new QDitheringPrivate, parent)
 {
-}
-
-QDithering::~QDithering()
-{
-    QNode::cleanup();
 }
 
 } // namespace Qt3DRender

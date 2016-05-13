@@ -51,8 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeid.h>
+#include <Qt3DRender/private/backendnode_p.h>
 #include <QList>
 
 QT_BEGIN_NAMESPACE
@@ -60,29 +59,29 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QRenderTarget;
-class QRenderAttachment;
+class QRenderTargetOutput;
 
 namespace Render {
 
 class RenderTargetManager;
 
-class RenderTarget : public Qt3DCore::QBackendNode
+class RenderTarget : public BackendNode
 {
 public:
     RenderTarget();
-
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
-    void appendRenderAttachment(const Qt3DCore::QNodeId &attachmentId);
-    void removeRenderAttachment(const Qt3DCore::QNodeId &attachmentId);
+    void appendRenderOutput(Qt3DCore::QNodeId outputId);
+    void removeRenderOutput(Qt3DCore::QNodeId outputId);
 
-    QList<Qt3DCore::QNodeId> renderAttachments() const;
+    QVector<Qt3DCore::QNodeId> renderOutputs() const;
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    QList<Qt3DCore::QNodeId> m_renderAttachments;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
+    QVector<Qt3DCore::QNodeId> m_renderOutputs;
 };
 
 } // namespace Render

@@ -80,7 +80,6 @@ class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DNodeInstantiator : public QNode, pub
 
 public:
     Quick3DNodeInstantiator(QNode *parent = 0);
-    ~Quick3DNodeInstantiator();
 
     bool isActive() const;
     void setActive(bool newVal);
@@ -113,11 +112,7 @@ Q_SIGNALS:
     void objectAdded(int index, QObject *object);
     void objectRemoved(int index, QObject *object);
 
-protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
 private:
-    QT3D_CLONEABLE(Quick3DNodeInstantiator)
     Q_DISABLE_COPY(Quick3DNodeInstantiator)
     Q_DECLARE_PRIVATE(Quick3DNodeInstantiator)
     Q_PRIVATE_SLOT(d_func(), void _q_createdItem(int, QObject *))

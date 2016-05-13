@@ -50,16 +50,16 @@
 
 #include "entity.h"
 
-#include <Qt3DRender/QCylinderMesh>
-#include <Qt3DRender/QPhongMaterial>
+#include <Qt3DExtras/QCylinderMesh>
+#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DCore/QTransform>
 #include <QMatrix4x4>
 
 Entity::Entity(Qt3DCore::QNode *parent)
     : QEntity(parent)
     , m_transform(new Qt3DCore::QTransform())
-    , m_mesh(new Qt3DRender::QCylinderMesh())
-    , m_material(new Qt3DRender::QPhongMaterial())
+    , m_mesh(new Qt3DExtras::QCylinderMesh())
+    , m_material(new Qt3DExtras::QPhongMaterial())
 {
     m_mesh->setRings(50.0f);
     m_mesh->setSlices(30.0f);

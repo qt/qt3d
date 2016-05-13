@@ -38,74 +38,56 @@
 ****************************************************************************/
 
 #include "qpolygonoffset.h"
-#include <private/qrenderstate_p.h>
+#include "qpolygonoffset_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QPolygonOffsetPrivate : public QRenderStatePrivate
-{
-public:
-    QPolygonOffsetPrivate()
-        : QRenderStatePrivate(QRenderState::PolygonOffset)
-        , m_factor(0)
-        , m_units(0)
-    {
-    }
-
-    float m_factor;
-    float m_units;
-
-    Q_DECLARE_PUBLIC(QPolygonOffset)
-};
 
 QPolygonOffset::QPolygonOffset(QNode *parent)
     : QRenderState(*new QPolygonOffsetPrivate, parent)
 {
 }
 
-QPolygonOffset::~QPolygonOffset()
-{
-    QNode::cleanup();
-}
-
-float QPolygonOffset::factor() const
+float QPolygonOffset::scaleFactor() const
 {
     Q_D(const QPolygonOffset);
-    return d->m_factor;
+    return d->m_scaleFactor;
 }
 
-void QPolygonOffset::setFactor(float factor)
+void QPolygonOffset::setScaleFactor(float scaleFactor)
 {
     Q_D(QPolygonOffset);
-    if (d->m_factor != factor) {
-        d->m_factor = factor;
-        emit factorChanged(d->m_factor);
+    if (d->m_scaleFactor != scaleFactor) {
+        d->m_scaleFactor = scaleFactor;
+        emit scaleFactorChanged(d->m_scaleFactor);
     }
 }
 
-float QPolygonOffset::units() const
+float QPolygonOffset::depthSteps() const
 {
     Q_D(const QPolygonOffset);
-    return d->m_units;
+    return d->m_depthSteps;
 }
 
-void QPolygonOffset::setUnits(float units)
+void QPolygonOffset::setDepthSteps(float depthSteps)
 {
     Q_D(QPolygonOffset);
-    if (d->m_units != units) {
-        d->m_units = units;
-        emit unitsChanged(d->m_units);
+    if (d->m_depthSteps != depthSteps) {
+        d->m_depthSteps = depthSteps;
+        emit depthStepsChanged(d->m_depthSteps);
     }
 }
 
-void QPolygonOffset::copy(const QNode *ref)
+Qt3DCore::QNodeCreatedChangeBasePtr QPolygonOffset::createNodeCreationChange() const
 {
-    QRenderState::copy(ref);
-    const QPolygonOffset *refState = static_cast<const QPolygonOffset *>(ref);
-    d_func()->m_factor = refState->d_func()->m_factor;
-    d_func()->m_units = refState->d_func()->m_units;
+    auto creationChange = QRenderStateCreatedChangePtr<QPolygonOffsetData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QPolygonOffset);
+    data.scaleFactor = d->m_scaleFactor;
+    data.depthSteps = d->m_depthSteps;
+    return creationChange;
 }
 
 } // namespace Qt3DRender

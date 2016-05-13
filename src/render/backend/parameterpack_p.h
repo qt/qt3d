@@ -66,12 +66,17 @@ public:
     ParameterPack();
     ~ParameterPack();
     void clear();
-    void appendParameter(const Qt3DCore::QNodeId &parameterId);
-    void removeParameter(const Qt3DCore::QNodeId &parameterId);
-    QList<Qt3DCore::QNodeId> parameters() const;
+    void appendParameter(Qt3DCore::QNodeId parameterId);
+    void removeParameter(Qt3DCore::QNodeId parameterId);
+    QVector<Qt3DCore::QNodeId> parameters() const;
+
+    void setParameters(const Qt3DCore::QNodeIdVector &parameterIds)
+    {
+        m_peers = parameterIds;
+    }
 
 private:
-    QList<Qt3DCore::QNodeId> m_peers;
+    QVector<Qt3DCore::QNodeId> m_peers;
 };
 
 } // namespace Render

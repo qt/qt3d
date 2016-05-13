@@ -38,9 +38,10 @@
 ****************************************************************************/
 
 #include "qobjectpicker.h"
+#include "qobjectpicker_p.h"
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/private/qcomponent_p.h>
-#include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DRender/qpickevent.h>
 
 QT_BEGIN_NAMESPACE
@@ -54,7 +55,7 @@ namespace Qt3DRender {
     \brief The QObjectPicker class instantiates a component that can
     be used to interact with a QEntity by a process known as picking.
 
-    The signals pressed(), released(), clicked(), entered(), and exited() are
+    The signals pressed(), released(), clicked(), moved(), entered(), and exited() are
     emitted when the bounding volume defined by the pickAttribute property intersects
     with a ray.
 
@@ -77,6 +78,10 @@ namespace Qt3DRender {
 */
 
 /*!
+    \qmlsignal Qt3D.Render::ObjectPicker::moved()
+*/
+
+/*!
     \qmlsignal Qt3D.Render::ObjectPicker::entered()
 */
 
@@ -84,46 +89,9 @@ namespace Qt3DRender {
     \qmlsignal Qt3D.Render::ObjectPicker::exited()
 */
 
-class QObjectPickerPrivate : public Qt3DCore::QComponentPrivate
-{
-public:
-    QObjectPickerPrivate()
-        : QComponentPrivate()
-        , m_hoverEnabled(false)
-        , m_pressed(false)
-        , m_containsMouse(false)
-        , m_acceptedLastPressedEvent(true)
-    {
-        m_shareable = false;
-    }
-
-    Q_DECLARE_PUBLIC(QObjectPicker)
-    bool m_hoverEnabled;
-    bool m_pressed;
-    bool m_containsMouse;
-    bool m_acceptedLastPressedEvent;
-
-    enum EventType {
-        Pressed,
-        Released,
-        Clicked
-    };
-
-    void propagateEvent(QPickEvent *event, EventType type);
-
-    void pressedEvent(QPickEvent *event);
-    void clickedEvent(QPickEvent *event);
-    void releasedEvent(QPickEvent *event);
-};
-
 QObjectPicker::QObjectPicker(Qt3DCore::QNode *parent)
     : Qt3DCore::QComponent(*new QObjectPickerPrivate(), parent)
 {
-}
-
-QObjectPicker::~QObjectPicker()
-{
-    QComponent::cleanup();
 }
 
 void QObjectPicker::setHoverEnabled(bool hoverEnabled)
@@ -138,10 +106,28 @@ void QObjectPicker::setHoverEnabled(bool hoverEnabled)
 /*!
     \qmlproperty bool Qt3D.Render::ObjectPicker::hoverEnabled
 */
-bool QObjectPicker::hoverEnabled() const
+bool QObjectPicker::isHoverEnabled() const
 {
     Q_D(const QObjectPicker);
     return d->m_hoverEnabled;
+}
+
+void QObjectPicker::setDragEnabled(bool dragEnabled)
+{
+    Q_D(QObjectPicker);
+    if (dragEnabled != d->m_dragEnabled) {
+        d->m_dragEnabled = dragEnabled;
+        emit dragEnabledChanged(dragEnabled);
+    }
+}
+
+/*!
+    \qmlproperty bool Qt3D.Render::ObjectPicker::dragEnabled
+*/
+bool QObjectPicker::isDragEnabled() const
+{
+    Q_D(const QObjectPicker);
+    return d->m_dragEnabled;
 }
 
 /*!
@@ -162,18 +148,11 @@ bool QObjectPicker::isPressed() const
     return d->m_pressed;
 }
 
-void QObjectPicker::copy(const QNode *ref)
-{
-    QComponent::copy(ref);
-    const QObjectPicker *picker = static_cast<const QObjectPicker *>(ref);
-    d_func()->m_hoverEnabled = picker->d_func()->m_hoverEnabled;
-}
-
 void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QObjectPicker);
-    Qt3DCore::QBackendScenePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QBackendScenePropertyChange>(change);
-    if (e->type() == Qt3DCore::NodeUpdated) {
+    Qt3DCore::QBackendNodePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QBackendNodePropertyChange>(change);
+    if (e->type() == Qt3DCore::PropertyUpdated) {
         // TO DO: Complete this part
         // to emit the correct signals
         const QByteArray propertyName = e->propertyName();
@@ -186,61 +165,70 @@ void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
         } else if (propertyName == QByteArrayLiteral("clicked")) {
             QPickEventPtr ev = e->value().value<QPickEventPtr>();
             d->clickedEvent(ev.data());
+        } else if (propertyName == QByteArrayLiteral("moved")) {
+            QPickEventPtr ev = e->value().value<QPickEventPtr>();
+            d->movedEvent(ev.data());
         } else if (propertyName == QByteArrayLiteral("entered")) {
             emit entered();
-            setContainsMouse(true);
+            d->setContainsMouse(true);
         } else if (propertyName == QByteArrayLiteral("exited")) {
-            setContainsMouse(false);
+            d->setContainsMouse(false);
             emit exited();
         }
-    }
-}
-
-void QObjectPicker::setPressed(bool pressed)
-{
-    Q_D(QObjectPicker);
-    if (d->m_pressed != pressed) {
-        const bool blocked = blockNotifications(true);
-        d->m_pressed = pressed;
-        emit pressedChanged(pressed);
-        blockNotifications(blocked);
-    }
-}
-
-void QObjectPicker::setContainsMouse(bool containsMouse)
-{
-    Q_D(QObjectPicker);
-    if (d->m_containsMouse != containsMouse) {
-        const bool blocked = blockNotifications(true);
-        d->m_containsMouse = containsMouse;
-        emit containsMouseChanged(containsMouse);
-        blockNotifications(blocked);
     }
 }
 
 /*!
     \internal
  */
+void QObjectPickerPrivate::setPressed(bool pressed)
+{
+    Q_Q(QObjectPicker);
+    if (m_pressed != pressed) {
+        const bool blocked = q->blockNotifications(true);
+        m_pressed = pressed;
+        emit q->pressedChanged(pressed);
+        q->blockNotifications(blocked);
+    }
+}
+
+/*!
+    \internal
+*/
+void QObjectPickerPrivate::setContainsMouse(bool containsMouse)
+{
+    Q_Q(QObjectPicker);
+    if (m_containsMouse != containsMouse) {
+        const bool blocked = q->blockNotifications(true);
+        m_containsMouse = containsMouse;
+        emit q->containsMouseChanged(containsMouse);
+        q->blockNotifications(blocked);
+    }
+}
+
 void QObjectPickerPrivate::propagateEvent(QPickEvent *event, EventType type)
 {
     if (!m_entities.isEmpty()) {
         Qt3DCore::QEntity *entity = m_entities.first();
-        Qt3DCore::QEntity *parentEntity = Q_NULLPTR;
-        Qt3DRender::QObjectPicker *objectPicker = Q_NULLPTR;
-        while (entity != Q_NULLPTR && entity->parent() != Q_NULLPTR && !event->isAccepted()) {
+        Qt3DCore::QEntity *parentEntity = nullptr;
+        while (entity != nullptr && entity->parent() != nullptr && !event->isAccepted()) {
             parentEntity = entity->parentEntity();
-            Q_FOREACH (Qt3DCore::QComponent *c, parentEntity->components()) {
-                if ((objectPicker = qobject_cast<Qt3DRender::QObjectPicker *>(c)) != Q_NULLPTR) {
+            const auto components = parentEntity->components();
+            for (Qt3DCore::QComponent *c : components) {
+                if (auto objectPicker = qobject_cast<Qt3DRender::QObjectPicker *>(c)) {
                     QObjectPickerPrivate *objectPickerPrivate = static_cast<QObjectPickerPrivate *>(QObjectPickerPrivate::get(objectPicker));
                     switch (type) {
-                    case EventType::Pressed:
+                    case Pressed:
                         objectPickerPrivate->pressedEvent(event);
                         break;
-                    case EventType::Released:
+                    case Released:
                         objectPickerPrivate->releasedEvent(event);
                         break;
-                    case EventType::Clicked:
+                    case Clicked:
                         objectPickerPrivate->clickedEvent(event);
+                        break;
+                    case EventType::Moved:
+                        objectPickerPrivate->movedEvent(event);
                         break;
                     }
                     break;
@@ -262,9 +250,9 @@ void QObjectPickerPrivate::pressedEvent(QPickEvent *event)
     m_acceptedLastPressedEvent = event->isAccepted();
     if (!m_acceptedLastPressedEvent) {
         // Travel parents to transmit the event
-        propagateEvent(event, EventType::Pressed);
+        propagateEvent(event, Pressed);
     } else {
-        q->setPressed(true);
+        setPressed(true);
     }
 }
 
@@ -276,7 +264,18 @@ void QObjectPickerPrivate::clickedEvent(QPickEvent *event)
     Q_Q(QObjectPicker);
     emit q->clicked(event);
     if (!event->isAccepted())
-        propagateEvent(event, EventType::Clicked);
+        propagateEvent(event, Clicked);
+}
+
+/*!
+    \internal
+ */
+void QObjectPickerPrivate::movedEvent(QPickEvent *event)
+{
+    Q_Q(QObjectPicker);
+    emit q->moved(event);
+    if (!event->isAccepted())
+        propagateEvent(event, EventType::Moved);
 }
 
 /*!
@@ -287,11 +286,21 @@ void QObjectPickerPrivate::releasedEvent(QPickEvent *event)
     Q_Q(QObjectPicker);
     if (m_acceptedLastPressedEvent) {
         emit q->released(event);
-        q->setPressed(false);
+        setPressed(false);
     } else {
         event->setAccepted(false);
-        propagateEvent(event, EventType::Released);
+        propagateEvent(event, Released);
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QObjectPicker::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QObjectPickerData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QObjectPicker);
+    data.hoverEnabled = d->m_hoverEnabled;
+    data.dragEnabled = d->m_dragEnabled;
+    return creationChange;
 }
 
 } // Qt3DRender

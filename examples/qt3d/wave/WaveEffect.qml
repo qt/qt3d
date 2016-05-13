@@ -65,8 +65,8 @@ Effect {
     //
     // Material -> Effect -> Technique -> RenderPass -> GLSL default values
     parameters: [
-        Parameter { name: "ambient"; value: Qt.vector3d( 0.1, 0.1, 0.1 ) },
-        Parameter { name: "diffuse"; value: Qt.vector3d( 0.7, 0.7, 0.7 ) }
+        Parameter { name: "ka"; value: Qt.vector3d( 0.1, 0.1, 0.1 ) },
+        Parameter { name: "kd"; value: Qt.vector3d( 0.7, 0.7, 0.7 ) }
     ]
 
     techniques: [
@@ -78,7 +78,7 @@ Effect {
                 minorVersion: 2
             }
 
-            annotations: [ Annotation { name: "renderingStyle"; value: "forward" } ]
+            filterKeys: [ FilterKey { name: "renderingStyle"; value: "forward" } ]
 
             parameters: [
                 Parameter { name: "light.position"; value: Qt.vector4d( 0.0, 0.0, 0.0, 1.0 ) },
@@ -89,20 +89,14 @@ Effect {
 
             renderPasses: [
                 RenderPass {
-                    bindings: [
-                        ParameterMapping { parameterName: "ambient";  shaderVariableName: "ka"; bindingType: ParameterMapping.Uniform },
-                        ParameterMapping { parameterName: "diffuse";  shaderVariableName: "kd"; bindingType: ParameterMapping.Uniform }
-                    ]
-
                     shaderProgram: wireframe ? wireframeShader : standardShader
 
                     // Disable depth testing and use simple additive blending
                     renderStates: [
-                        DepthTest { func: DepthTest.Always },
-                        DepthMask { mask: true },
-                        BlendState {
-                            srcRGB: BlendState.One
-                            dstRGB: BlendState.OneMinusSrcColor
+                        DepthTest { depthFunction: DepthTest.Always },
+                        BlendEquationArguments {
+                            sourceRgb: BlendEquationArguments.One
+                            destinationRgb: BlendEquationArguments.OneMinusSourceColor
                         }
                     ]
 

@@ -38,22 +38,12 @@
 ****************************************************************************/
 
 #include "qclipplane.h"
-#include <Qt3DRender/private/qrenderstate_p.h>
+#include "qclipplane_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QClipPlanePrivate : public QRenderStatePrivate
-{
-public:
-    QClipPlanePrivate()
-        : QRenderStatePrivate(QRenderState::ClipPlane)
-        , m_plane(0)
-    {}
-
-    int m_plane;
-};
 
 /*!
     \class Qt3DRender::QClipPlane
@@ -88,39 +78,68 @@ QClipPlane::QClipPlane(QNode *parent)
 {
 }
 
-QClipPlane::~QClipPlane()
-{
-    QNode::cleanup();
-}
-
 /*!
  * Returns the index of the clip plane.
  * \note usually between 0-7
  */
-int QClipPlane::plane() const
+int QClipPlane::planeIndex() const
 {
     Q_D(const QClipPlane);
-    return d->m_plane;
+    return d->m_planeIndex;
+}
+
+QVector3D QClipPlane::normal() const
+{
+    Q_D(const QClipPlane);
+    return d->m_normal;
+}
+
+float QClipPlane::distance() const
+{
+    Q_D(const QClipPlane);
+    return d->m_distance;
 }
 
 /*!
  * Sets the index of the clip plane to \a plane.
  * \note above 7, support is not garanteed
  */
-void QClipPlane::setPlane(int plane)
+void QClipPlane::setPlaneIndex(int planeIndex)
 {
     Q_D(QClipPlane);
-    if (plane != d->m_plane) {
-        d->m_plane = plane;
-        Q_EMIT planeChanged(plane);
+    if (planeIndex != d->m_planeIndex) {
+        d->m_planeIndex = planeIndex;
+        Q_EMIT planeIndexChanged(planeIndex);
     }
 }
 
-void QClipPlane::copy(const QNode *ref)
+void QClipPlane::setNormal(QVector3D normal)
 {
-    QRenderState::copy(ref);
-    const QClipPlane *refClip = static_cast<const QClipPlane *>(ref);
-    d_func()->m_plane = refClip->plane();
+    Q_D(QClipPlane);
+    if (normal != d->m_normal) {
+        d->m_normal = normal;
+        Q_EMIT normalChanged(normal);
+    }
+}
+
+void QClipPlane::setDistance(float distance)
+{
+    Q_D(QClipPlane);
+    if (distance != d->m_distance) {
+        d->m_distance = distance;
+        Q_EMIT distanceChanged(distance);
+    }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QClipPlane::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangePtr<QClipPlaneData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QClipPlane);
+    data.normal = d->m_normal;
+    data.distance = d->m_distance;
+    data.planeIndex = d->m_planeIndex;
+    return creationChange;
 }
 
 } // namespace Qt3DRender

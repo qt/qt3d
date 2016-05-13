@@ -40,7 +40,6 @@
 #include "framegraphnode_p.h"
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
-#include <Qt3DRender/qframegraph.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,22 +47,26 @@ namespace Qt3DRender {
 namespace Render {
 
 FrameGraphNode::FrameGraphNode()
-    : QBackendNode()
+    : BackendNode()
     , m_nodeType(InvalidNodeType)
-    , m_enabled(true)
-    , m_manager(Q_NULLPTR)
+    , m_manager(nullptr)
 {
 }
 
 FrameGraphNode::FrameGraphNode(FrameGraphNodeType nodeType)
     : m_nodeType(nodeType)
-    , m_enabled(true)
-    , m_manager(Q_NULLPTR)
+    , m_manager(nullptr)
 {
 }
 
 FrameGraphNode::~FrameGraphNode()
 {
+}
+
+void FrameGraphNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    // Set up the parent child relationship and enabled state
+    setParentId(change->parentId());
 }
 
 void FrameGraphNode::setFrameGraphManager(FrameGraphManager *manager)
@@ -77,32 +80,32 @@ FrameGraphManager *FrameGraphNode::manager() const
     return m_manager;
 }
 
-void FrameGraphNode::setParentId(const Qt3DCore::QNodeId &parentId)
+void FrameGraphNode::setParentId(Qt3DCore::QNodeId parentId)
 {
     if (m_parentId != parentId) {
         m_parentId = parentId;
         FrameGraphNode *parent = m_manager->lookupNode(m_parentId);
-        if (parent != Q_NULLPTR && !parent->m_childrenIds.contains(peerUuid()))
-            parent->m_childrenIds.append(peerUuid());
+        if (parent != nullptr && !parent->m_childrenIds.contains(peerId()))
+            parent->m_childrenIds.append(peerId());
     }
 }
 
-void FrameGraphNode::appendChildId(const Qt3DCore::QNodeId &childId)
+void FrameGraphNode::appendChildId(Qt3DCore::QNodeId childId)
 {
     if (!m_childrenIds.contains(childId)) {
         FrameGraphNode *child = m_manager->lookupNode(childId);
-        if (child != Q_NULLPTR) {
+        if (child != nullptr) {
             m_childrenIds.append(childId);
-            child->m_parentId = peerUuid();
+            child->m_parentId = peerId();
         }
     }
 }
 
-void FrameGraphNode::removeChildId(const Qt3DCore::QNodeId &childId)
+void FrameGraphNode::removeChildId(Qt3DCore::QNodeId childId)
 {
     if (m_childrenIds.contains(childId)) {
         FrameGraphNode *child = m_manager->lookupNode(childId);
-        if (child != Q_NULLPTR) {
+        if (child != nullptr) {
             child->m_parentId = Qt3DCore::QNodeId();
         }
         m_childrenIds.removeAll(childId);
@@ -114,7 +117,7 @@ Qt3DCore::QNodeId FrameGraphNode::parentId() const
     return m_parentId;
 }
 
-QList<Qt3DCore::QNodeId> FrameGraphNode::childrenIds() const
+QVector<Qt3DCore::QNodeId> FrameGraphNode::childrenIds() const
 {
     return m_childrenIds;
 }
@@ -129,39 +132,12 @@ QList<FrameGraphNode *> FrameGraphNode::children() const
     QList<FrameGraphNode *> children;
     children.reserve(m_childrenIds.size());
 
-    Q_FOREACH (const Qt3DCore::QNodeId &id, m_childrenIds) {
+    for (Qt3DCore::QNodeId id : m_childrenIds) {
         FrameGraphNode *child = m_manager->lookupNode(id);
-        if (child != Q_NULLPTR)
+        if (child != nullptr)
             children << child;
     }
     return children;
-}
-
-// TO DO: We need to rework that and probably add a RenderFrameGraph element
-FrameGraphComponentFunctor::FrameGraphComponentFunctor(AbstractRenderer *renderer)
-    : m_renderer(renderer)
-{
-}
-
-Qt3DCore::QBackendNode *FrameGraphComponentFunctor::create(Qt3DCore::QNode *frontend) const
-{
-    // TO DO: Ideally we should have a RenderFrameGraph component and use its setPeer method
-    // to do that
-    QFrameGraph *framegraph = static_cast<QFrameGraph *>(frontend);
-    if (framegraph->activeFrameGraph() != Q_NULLPTR)
-        m_renderer->setFrameGraphRoot(framegraph->activeFrameGraph()->id());
-    return Q_NULLPTR;
-}
-
-Qt3DCore::QBackendNode *FrameGraphComponentFunctor::get(const Qt3DCore::QNodeId &id) const
-{
-    Q_UNUSED(id);
-    return Q_NULLPTR;
-}
-
-void FrameGraphComponentFunctor::destroy(const Qt3DCore::QNodeId &id) const
-{
-    Q_UNUSED(id);
 }
 
 } // namespace Render

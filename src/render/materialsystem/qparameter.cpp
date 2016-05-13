@@ -38,9 +38,9 @@
 ****************************************************************************/
 
 #include "qparameter.h"
+#include "qparameter_p.h"
 #include <Qt3DRender/private/renderlogging_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
-#include <private/qparameter_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qtexture.h>
 
 QT_BEGIN_NAMESPACE
@@ -57,20 +57,11 @@ QParameterPrivate::QParameterPrivate()
 void QParameterPrivate::setValue(const QVariant &v)
 {
     Qt3DCore::QNode *nodeValue = v.value<Qt3DCore::QNode *>();
-    if (nodeValue != Q_NULLPTR)
+    if (nodeValue != nullptr)
         m_backendValue = QVariant::fromValue(nodeValue->id());
     else
         m_backendValue = v;
     m_value = v;
-}
-
-void QParameter::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QParameter *param = static_cast<const QParameter*>(ref);
-    d_func()->m_name = param->d_func()->m_name;
-    d_func()->m_value = param->d_func()->m_value;
-    d_func()->m_backendValue = param->d_func()->m_backendValue;
 }
 
 /*! \internal */
@@ -84,11 +75,6 @@ QParameter::QParameter(QNode *parent)
 {
 }
 
-QParameter::~QParameter()
-{
-    QNode::cleanup();
-}
-
 QParameter::QParameter(const QString &name, const QVariant &value, QNode *parent)
     : QNode(*new QParameterPrivate, parent)
 {
@@ -97,7 +83,7 @@ QParameter::QParameter(const QString &name, const QVariant &value, QNode *parent
     setValue(value);
 }
 
-QParameter::QParameter(const QString &name, QAbstractTextureProvider *texture, QNode *parent)
+QParameter::QParameter(const QString &name, QAbstractTexture *texture, QNode *parent)
     : QNode(*new QParameterPrivate, parent)
 {
     Q_D(QParameter);
@@ -125,19 +111,14 @@ void QParameter::setValue(const QVariant &dv)
 {
     Q_D(QParameter);
     if (d->m_value != dv) {
-        d->setValue(dv);
-        emit valueChanged(dv);
 
         // In case node values are declared inline
         QNode *nodeValue = dv.value<QNode *>();
-        if (nodeValue != Q_NULLPTR && !nodeValue->parent())
+        if (nodeValue != nullptr && !nodeValue->parent())
             nodeValue->setParent(this);
 
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
-        change->setPropertyName(d->m_name.toUtf8().data());
-        change->setValue(d->m_backendValue);
-
-        d->notifyObservers(change);
+        d->setValue(dv);
+        emit valueChanged(dv);
     }
 }
 
@@ -145,6 +126,16 @@ QVariant QParameter::value() const
 {
     Q_D(const QParameter);
     return d->m_value;
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QParameter::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QParameterData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QParameter);
+    data.name = d->m_name;
+    data.backendValue = d->m_backendValue;
+    return creationChange;
 }
 
 } // namespace Qt3DRender

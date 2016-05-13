@@ -45,7 +45,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
-    \class Qt3DRender::QCameraPrivate
     \internal
 */
 QCameraPrivate::QCameraPrivate()
@@ -58,6 +57,7 @@ QCameraPrivate::QCameraPrivate()
     , m_lens(new QCameraLens())
     , m_transform(new Qt3DCore::QTransform())
 {
+    updateViewMatrix();
 }
 
 /*!
@@ -84,11 +84,6 @@ QCamera::QCamera(Qt3DCore::QNode *parent)
     QObject::connect(d_func()->m_transform, SIGNAL(matrixChanged(const QMatrix4x4 &)), this, SIGNAL(viewMatrixChanged(const QMatrix4x4 &)));
     addComponent(d_func()->m_lens);
     addComponent(d_func()->m_transform);
-}
-
-QCamera::~QCamera()
-{
-    QNode::cleanup();
 }
 
 /*! \internal */
@@ -400,8 +395,13 @@ float QCamera::top() const
 
 /*!
     \qmlproperty matrix4x4 Qt3DCore::Camera::projectionMatrix
-    \readonly
 */
+void QCamera::setProjectionMatrix(const QMatrix4x4 &projectionMatrix)
+{
+    Q_D(QCamera);
+    d->m_lens->setProjectionMatrix(projectionMatrix);
+}
+
 QMatrix4x4 QCamera::projectionMatrix() const
 {
     Q_D(const QCamera);
@@ -411,12 +411,14 @@ QMatrix4x4 QCamera::projectionMatrix() const
 void QCamera::setPosition(const QVector3D &position)
 {
     Q_D(QCamera);
-    d->m_position = position;
-    d->m_cameraToCenter = d->m_viewCenter - position;
-    d->m_viewMatrixDirty = true;
-    emit positionChanged(position);
-    emit viewVectorChanged(d->m_cameraToCenter);
-    d->updateViewMatrix();
+    if (d->m_position != position) {
+        d->m_position = position;
+        d->m_cameraToCenter = d->m_viewCenter - position;
+        d->m_viewMatrixDirty = true;
+        emit positionChanged(position);
+        emit viewVectorChanged(d->m_cameraToCenter);
+        d->updateViewMatrix();
+    }
 }
 
 /*!
@@ -431,10 +433,12 @@ QVector3D QCamera::position() const
 void QCamera::setUpVector(const QVector3D &upVector)
 {
     Q_D(QCamera);
-    d->m_upVector = upVector;
-    d->m_viewMatrixDirty = true;
-    emit upVectorChanged(upVector);
-    d->updateViewMatrix();
+    if (d->m_upVector != upVector) {
+        d->m_upVector = upVector;
+        d->m_viewMatrixDirty = true;
+        emit upVectorChanged(upVector);
+        d->updateViewMatrix();
+    }
 }
 
 /*!
@@ -449,12 +453,14 @@ QVector3D QCamera::upVector() const
 void QCamera::setViewCenter(const QVector3D &viewCenter)
 {
     Q_D(QCamera);
-    d->m_viewCenter = viewCenter;
-    d->m_cameraToCenter = viewCenter - d->m_position;
-    d->m_viewMatrixDirty = true;
-    emit viewCenterChanged(viewCenter);
-    emit viewVectorChanged(d->m_cameraToCenter);
-    d->updateViewMatrix();
+    if (d->m_viewCenter != viewCenter) {
+        d->m_viewCenter = viewCenter;
+        d->m_cameraToCenter = viewCenter - d->m_position;
+        d->m_viewMatrixDirty = true;
+        emit viewCenterChanged(viewCenter);
+        emit viewVectorChanged(d->m_cameraToCenter);
+        d->updateViewMatrix();
+    }
 }
 
 /*!

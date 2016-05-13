@@ -41,8 +41,11 @@
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qparameter.h>
+#include <Qt3DRender/private/qeffect_p.h>
 
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 #include <QVariant>
 
@@ -54,7 +57,7 @@ namespace Qt3DRender {
 namespace Render {
 
 Effect::Effect()
-    : QBackendNode()
+    : BackendNode()
 {
 }
 
@@ -65,59 +68,58 @@ Effect::~Effect()
 
 void Effect::cleanup()
 {
+    QBackendNode::setEnabled(false);
 }
 
-void Effect::updateFromPeer(Qt3DCore::QNode *peer)
+void Effect::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QEffect *effect = static_cast<QEffect *>(peer);
-
-    m_techniques.clear();
-    m_parameterPack.clear();
-
-    Q_FOREACH (QTechnique *t, effect->techniques())
-        appendRenderTechnique(t->id());
-
-    Q_FOREACH (QParameter *p, effect->parameters())
-        m_parameterPack.appendParameter(p->id());
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QEffectData>>(change);
+    const auto &data = typedChange->data;
+    m_techniques = data.techniqueIds;
+    m_parameterPack.setParameters(data.parameterIds);
 }
 
 void Effect::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    QVariant propertyValue = propertyChange->value();
     switch (e->type()) {
-
-    case NodeAdded:
-        if (propertyChange->propertyName() == QByteArrayLiteral("technique"))
-            appendRenderTechnique(propertyValue.value<QNodeId>());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.appendParameter(propertyValue.value<QNodeId>());
-        break;
-
-    case NodeRemoved:
-        if (propertyChange->propertyName() == QByteArrayLiteral("technique"))
-            m_techniques.removeOne(propertyValue.value<QNodeId>());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
-            m_parameterPack.removeParameter(propertyValue.value<QNodeId>());
-        break;
-
-    default :
+    case PropertyValueAdded: {
+        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("technique"))
+            appendRenderTechnique(change->addedNodeId());
+        else if (change->propertyName() == QByteArrayLiteral("parameter"))
+            m_parameterPack.appendParameter(change->addedNodeId());
         break;
     }
+
+    case PropertyValueRemoved: {
+        const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("technique"))
+            m_techniques.removeOne(change->removedNodeId());
+        else if (change->propertyName() == QByteArrayLiteral("parameter"))
+            m_parameterPack.removeParameter(change->removedNodeId());
+        break;
+    }
+
+    default:
+        break;
+    }
+
+    markDirty(AbstractRenderer::AllDirty);
+    BackendNode::sceneChangeEvent(e);
 }
 
-void Effect::appendRenderTechnique(const Qt3DCore::QNodeId &technique)
+void Effect::appendRenderTechnique(Qt3DCore::QNodeId technique)
 {
     if (!m_techniques.contains(technique))
         m_techniques.append(technique);
 }
 
-QList<Qt3DCore::QNodeId> Effect::techniques() const
+QVector<Qt3DCore::QNodeId> Effect::techniques() const
 {
     return m_techniques;
 }
 
-QList<Qt3DCore::QNodeId> Effect::parameters() const
+QVector<Qt3DCore::QNodeId> Effect::parameters() const
 {
     return m_parameterPack.parameters();
 }

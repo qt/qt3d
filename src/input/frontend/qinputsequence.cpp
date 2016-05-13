@@ -37,32 +37,18 @@
 ****************************************************************************/
 
 #include "qinputsequence.h"
+#include "qinputsequence_p.h"
 #include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DInput/QAbstractAggregateActionInput>
-#include <Qt3DInput/private/qabstractaggregateactioninput_p.h>
+#include <Qt3DInput/qabstractactioninput.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-/*!
-    \class Qt3DInput::QInputChordSequence
-    \internal
-*/
-class QInputSequencePrivate : public Qt3DInput::QAbstractAggregateActionInputPrivate
-{
-public:
-    QInputSequencePrivate()
-        : Qt3DInput::QAbstractAggregateActionInputPrivate()
-        , m_timeout(0)
-        , m_interval(0)
-        , m_sequential(true)
-    {}
-
-    int m_timeout;
-    int m_interval;
-    bool m_sequential;
-};
 
 /*!
     \class Qt3DInput::QInputSequence
@@ -105,17 +91,9 @@ public:
     Constructs a new QInputSequence with parent \a parent.
  */
 QInputSequence::QInputSequence(Qt3DCore::QNode *parent)
-    : Qt3DInput::QAbstractAggregateActionInput(*new QInputSequencePrivate(), parent)
+    : Qt3DInput::QAbstractActionInput(*new QInputSequencePrivate(), parent)
 {
 
-}
-
-/*!
-    Deletes the QInputSequence instance.
- */
-QInputSequence::~QInputSequence()
-{
-    QNode::cleanup();
 }
 
 /*!
@@ -149,62 +127,33 @@ int QInputSequence::timeout() const
 }
 
 /*!
-  \fn QInputSequence::intervalChanged()
+  \fn QInputSequence::buttonIntervalChanged()
 
-  This signal is emitted when the interval of the input sequence is changed.
+  This signal is emitted when the buttonInterval of the input sequence is changed.
 */
 
 /*!
-  \qmlproperty int Qt3D.Input::InputSequence::interval
+  \qmlproperty int Qt3D.Input::InputSequence::buttonInterval
 
   The maximum time in milliseconds in between consecutive QAbstractActionInput's in the input sequence.
 */
 
 /*!
-    \qmlsignal Qt3D.Input::InputSequence::intervalChanged()
+    \qmlsignal Qt3D.Input::InputSequence::buttonIntervalChanged()
 
-    This signal is emitted when the interval of the input sequence is changed.
+    This signal is emitted when the buttonInterval of the input sequence is changed.
 
-    The corresponding handeler is \c onIntervalChanged
+    The corresponding handeler is \c onButtonIntervalChanged
 */
 
 /*!
     Returns the maximum time in between consecutive QAbstractActionInput's in the input sequence.
     The time is in milliseconds
  */
-int QInputSequence::interval() const
+int QInputSequence::buttonInterval() const
 {
     Q_D(const QInputSequence);
-    return d->m_interval;
-}
-
-/*!
-  \fn QInputSequence::sequentialChanged()
-
-  This signal is emitted when the sequential property of the input sequence is changed.
-*/
-
-/*!
-  \qmlproperty bool Qt3D.Input::InputSequence::sequential
-
-  If the QAbstractActionInput's in the input sequence must triggered in order.
-*/
-
-/*!
-    \qmlsignal Qt3D.Input::InputSequence::sequentialChanged()
-
-    This signal is emitted when the sequential property of the input sequence is changed.
-
-    The corresponding handeler is \c onSequentialChanged
-*/
-
-/*!
-    Returns true if the QAbstractActionInput's in the input sequence must triggered in order.
- */
-bool QInputSequence::sequential() const
-{
-    Q_D(const QInputSequence);
-    return d->m_sequential;
+    return d->m_buttonInterval;
 }
 
 /*!
@@ -224,34 +173,76 @@ void QInputSequence::setTimeout(int timeout)
     Set the maximum time in between consecutive QAbstractActionInput's in the input sequence.
     The time is in milliseconds
  */
-void QInputSequence::setInterval(int interval)
+void QInputSequence::setButtonInterval(int buttonInterval)
 {
     Q_D(QInputSequence);
-    if (d->m_interval != interval) {
-        d->m_interval = interval;
-        emit intervalChanged(interval);
+    if (d->m_buttonInterval != buttonInterval) {
+        d->m_buttonInterval = buttonInterval;
+        emit buttonIntervalChanged(buttonInterval);
     }
 }
 
 /*!
-    Set if the QAbstractActionInput's in the input sequence must triggered in order.
+    Append the QAbstractActionInput \a input to the end of this QInputSequence's sequence vector.
+
+    \sa removeInput
  */
-void QInputSequence::setSequential(bool sequential)
+void QInputSequence::addSequence(QAbstractActionInput *input)
 {
     Q_D(QInputSequence);
-    if (d->m_sequential != sequential) {
-        d->m_sequential = sequential;
-        emit sequentialChanged(sequential);
+    if (!d->m_sequences.contains(input)) {
+        d->m_sequences.push_back(input);
+
+        if (!input->parent())
+            input->setParent(this);
+
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), input);
+            change->setPropertyName("sequence");
+            d->notifyObservers(change);
+        }
     }
 }
 
-void QInputSequence::copy(const Qt3DCore::QNode *ref)
+/*!
+    Remove the QAbstractActionInput \a input from this QInputSequence's sequence vector.
+
+    \sa addInput
+ */
+void QInputSequence::removeSequence(QAbstractActionInput *input)
 {
-    QAbstractAggregateActionInput::copy(ref);
-    const QInputSequence *input = static_cast<const QInputSequence *>(ref);
-    d_func()->m_timeout = input->d_func()->m_timeout;
-    d_func()->m_interval = input->d_func()->m_interval;
-    d_func()->m_sequential = input->d_func()->m_sequential;
+    Q_D(QInputSequence);
+    if (d->m_sequences.contains(input)) {
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), input);
+            change->setPropertyName("sequence");
+            d->notifyObservers(change);
+        }
+
+        d->m_sequences.removeOne(input);
+    }
+}
+
+/*!
+    Returns the QInputSequence's sequence vector.
+ */
+QVector<QAbstractActionInput *> QInputSequence::sequences() const
+{
+    Q_D(const QInputSequence);
+    return d->m_sequences;
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QInputSequence::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QInputSequenceData>::create(this);
+    QInputSequenceData &data = creationChange->data;
+
+    Q_D(const QInputSequence);
+    data.sequenceIds = qIdsForNodes(sequences());
+    data.timeout = d->m_timeout;
+    data.buttonInterval = d->m_buttonInterval;
+
+    return creationChange;
 }
 
 } // Qt3DInput

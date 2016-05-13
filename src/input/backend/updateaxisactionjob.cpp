@@ -40,8 +40,8 @@
 #include "updateaxisactionjob_p.h"
 #include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
-#include <Qt3DInput/qabstractphysicaldevicebackendnode.h>
-#include <Qt3DInput/qinputdeviceintegration.h>
+#include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
+#include <Qt3DInput/private/qinputdeviceintegration_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,16 +51,16 @@ namespace Input {
 
 namespace {
 
-bool anyOfRequiredKeysPressed(const QVector<int> &keys, QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend)
+bool anyOfRequiredButtonsPressed(const QVector<int> &buttons, QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend)
 {
-    bool validKeyWasPressed = false;
-    Q_FOREACH (int key, keys) {
-        if (physicalDeviceBackend->isButtonPressed(key)) {
-            validKeyWasPressed = true;
+    bool validButtonWasPressed = false;
+    for (int button : buttons) {
+        if (physicalDeviceBackend->isButtonPressed(button)) {
+            validButtonWasPressed = true;
             break;
         }
     }
-    return validKeyWasPressed;
+    return validButtonWasPressed;
 }
 
 } // anonymous
@@ -84,13 +84,15 @@ void UpdateAxisActionJob::run()
 
 void UpdateAxisActionJob::updateAction(LogicalDevice *device)
 {
-    Q_FOREACH (const Qt3DCore::QNodeId actionId, device->actions()) {
+    const auto actionIds = device->actions();
+    for (const Qt3DCore::QNodeId actionId : actionIds) {
         bool actionTriggered = false;
         Action *action = m_handler->actionManager()->lookupResource(actionId);
 
-        Q_FOREACH (const Qt3DCore::QNodeId actionInputId, action->inputs()) {
+        const auto actionInputIds = action->inputs();
+        for (const Qt3DCore::QNodeId actionInputId : actionInputIds)
             actionTriggered |= processActionInput(actionInputId);
-        }
+
         action->setActionTriggered(actionTriggered);
     }
 }
@@ -100,16 +102,17 @@ bool UpdateAxisActionJob::processActionInput(const Qt3DCore::QNodeId actionInput
 
     if (m_handler->actionInputManager()->lookupResource(actionInputId)) {
         ActionInput *actionInput = m_handler->actionInputManager()->lookupResource(actionInputId);
-        QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = Q_NULLPTR;
+        QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = nullptr;
 
-        Q_FOREACH (QInputDeviceIntegration *integration, m_handler->inputDeviceIntegrations()) {
-            if ((physicalDeviceBackend = integration->physicalDevice(actionInput->sourceDevice())) != Q_NULLPTR)
+        const auto integrations = m_handler->inputDeviceIntegrations();
+        for (QInputDeviceIntegration *integration : integrations) {
+            if ((physicalDeviceBackend = integration->physicalDevice(actionInput->sourceDevice())) != nullptr)
                 break;
         }
 
-        if (physicalDeviceBackend != Q_NULLPTR) {
+        if (physicalDeviceBackend != nullptr) {
             // Update the value
-            return anyOfRequiredKeysPressed(actionInput->keys(), physicalDeviceBackend);
+            return anyOfRequiredButtonsPressed(actionInput->buttons(), physicalDeviceBackend);
         }
     } else if (m_handler->inputSequenceManager()->lookupResource(actionInputId)) {
         InputSequence *inputSequence = m_handler->inputSequenceManager()->lookupResource(actionInputId);
@@ -122,7 +125,8 @@ bool UpdateAxisActionJob::processActionInput(const Qt3DCore::QNodeId actionInput
             }
         }
         bool actionTriggered = false;
-        Q_FOREACH (const Qt3DCore::QNodeId actionInputId, inputSequence->inputs()) {
+        const auto actionInputIds = inputSequence->sequences();
+        for (const Qt3DCore::QNodeId actionInputId : actionInputIds) {
             if (processActionInput(actionInputId)){
                 actionTriggered |= inputSequence->actionTriggered(actionInputId, m_currentTime);
                 // Set the start time if it wasn't set before
@@ -136,13 +140,14 @@ bool UpdateAxisActionJob::processActionInput(const Qt3DCore::QNodeId actionInput
         const qint64 startTime = inputChord->startTime();
         if (startTime != 0) {
             // Check if we are still inside the time limit for the chord
-            if ((m_currentTime - startTime) > inputChord->tolerance()) {
+            if ((m_currentTime - startTime) > inputChord->timeout()) {
                 inputChord->reset();
                 return false;
             }
         }
         bool actionTriggered = false;
-        Q_FOREACH (const Qt3DCore::QNodeId actionInputId, inputChord->inputs()) {
+        const auto actionInputIds = inputChord->chords();
+        for (const Qt3DCore::QNodeId actionInputId : actionInputIds) {
             if (processActionInput(actionInputId)){
                 actionTriggered |= inputChord->actionTriggered(actionInputId);
                 if (startTime == 0)
@@ -157,37 +162,58 @@ bool UpdateAxisActionJob::processActionInput(const Qt3DCore::QNodeId actionInput
 
 void UpdateAxisActionJob::updateAxis(LogicalDevice *device)
 {
-    Q_FOREACH (const Qt3DCore::QNodeId axisId, device->axes()) {
+    const auto axisIds = device->axes();
+    for (const Qt3DCore::QNodeId axisId : axisIds) {
         Axis *axis = m_handler->axisManager()->lookupResource(axisId);
         float axisValue = 0.0f;
 
-        Q_FOREACH (const Qt3DCore::QNodeId axisInputId, axis->inputs()) {
-            AxisInput *axisInput = m_handler->axisInputManager()->lookupResource(axisInputId);
-            QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = Q_NULLPTR;
-
-            Q_FOREACH (QInputDeviceIntegration *integration, m_handler->inputDeviceIntegrations()) {
-                if ((physicalDeviceBackend = integration->physicalDevice(axisInput->sourceDevice())) != Q_NULLPTR)
-                    break;
-            }
-
-            if (physicalDeviceBackend != Q_NULLPTR) {
-                // Update the value
-                const QVector<int> keys = axisInput->keys();
-                // Axis was specified -> we take this as the base value
-                if (axisInput->axis() != -1)
-                    axisValue += physicalDeviceBackend->processedAxisValue(axisInput->axis());
-                else if (!keys.isEmpty()) {
-                    // TO DO: Linear Curver for the progression of the scale value
-                    if (anyOfRequiredKeysPressed(keys, physicalDeviceBackend))
-                        axisValue += axisInput->scale();
+        const auto axisInputIds = axis->inputs();
+        for (const Qt3DCore::QNodeId axisInputId : axisInputIds) {
+            AnalogAxisInput *analogInput = m_handler->analogAxisInputManager()->lookupResource(axisInputId);
+            if (analogInput) {
+                QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = findAxisInputPhysicalDevice(analogInput);
+                if (physicalDeviceBackend && analogInput->axis() != -1) {
+                    // Update the value
+                    axisValue += physicalDeviceBackend->processedAxisValue(analogInput->axis());
                 }
+                continue;
             }
+
+            ButtonAxisInput *buttonInput = m_handler->buttonAxisInputManager()->lookupResource(axisInputId);
+            if (buttonInput) {
+                QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = findAxisInputPhysicalDevice(buttonInput);
+                if (physicalDeviceBackend != nullptr) {
+                    // Update the value
+                    const QVector<int> buttons = buttonInput ? buttonInput->buttons() : QVector<int>();
+                    if (!buttons.isEmpty()) {
+                        // TO DO: Linear Curver for the progression of the scale value
+                        if (anyOfRequiredButtonsPressed(buttons, physicalDeviceBackend))
+                            axisValue += buttonInput->scale();
+                    }
+                }
+
+                continue;
+            }
+
+            Q_UNREACHABLE();
         }
 
         // Clamp the axisValue -1/1
         axisValue = qMin(1.0f, qMax(axisValue, -1.0f));
         axis->setAxisValue(axisValue);
     }
+}
+
+QAbstractPhysicalDeviceBackendNode *UpdateAxisActionJob::findAxisInputPhysicalDevice(AbstractAxisInput *axisInput)
+{
+    const auto integrations = m_handler->inputDeviceIntegrations();
+    for (QInputDeviceIntegration *integration : integrations) {
+        QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = integration->physicalDevice(axisInput->sourceDevice());
+        if (physicalDeviceBackend)
+            return physicalDeviceBackend;
+    }
+
+    return nullptr;
 }
 
 } // Input

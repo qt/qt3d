@@ -39,42 +39,88 @@
 
 #include "rendersurfaceselector_p.h"
 #include <Qt3DRender/qrendersurfaceselector.h>
-
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRender/private/qrendersurfaceselector_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <QtGui/qwindow.h>
+#include <QtGui/qscreen.h>
 #include <QtGui/qoffscreensurface.h>
 
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
 
+namespace {
+
+QSurface *surfaceFromQObject(QObject *o)
+{
+    QSurface *surface = nullptr;
+    QWindow *window = qobject_cast<QWindow *>(o);
+    if (window) {
+        surface = static_cast<QSurface *>(window);
+    } else {
+        QOffscreenSurface *offscreen = qobject_cast<QOffscreenSurface *>(o);
+        if (offscreen)
+            surface = static_cast<QSurface *>(offscreen);
+    }
+    return surface;
+}
+
+}
+
 namespace Qt3DRender {
 namespace Render {
 
 RenderSurfaceSelector::RenderSurfaceSelector()
     : FrameGraphNode(FrameGraphNode::Surface)
-    , m_surface(Q_NULLPTR)
+    , m_surface(nullptr)
+    , m_width(0)
+    , m_height(0)
+    , m_devicePixelRatio(0.0f)
 {
 }
 
-void RenderSurfaceSelector::updateFromPeer(Qt3DCore::QNode *peer)
+void RenderSurfaceSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QRenderSurfaceSelector *selector = static_cast<QRenderSurfaceSelector *>(peer);
-    m_surface = selector->surface();
-    setEnabled(selector->isEnabled());
+    FrameGraphNode::initializeFromPeer(change);
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderSurfaceSelectorData>>(change);
+    const auto &data = typedChange->data;
+    m_surface = surfaceFromQObject(data.surface);
+    m_renderTargetSize = data.externalRenderTargetSize;
+    if (m_surface && m_surface->surfaceClass() == QSurface::Window) {
+        QWindow *window = static_cast<QWindow *>(m_surface);
+        m_width = window->width();
+        m_height = window->height();
+        if (window->screen())
+            m_devicePixelRatio = window->screen()->devicePixelRatio();
+    }
 }
 
 void RenderSurfaceSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     qCDebug(Render::Framegraph) << Q_FUNC_INFO;
-    if (e->type() == NodeUpdated) {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    if (e->type() == PropertyUpdated) {
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("surface"))
-            m_surface = propertyChange->value().value<QSurface *>();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            setEnabled(propertyChange->value().toBool());
+            m_surface = surfaceFromQObject(propertyChange->value().value<QObject *>());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("externalRenderTargetSize"))
+            setRenderTargetSize(propertyChange->value().toSize());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("width"))
+            m_width = propertyChange->value().toInt();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("height"))
+            m_height = propertyChange->value().toInt();
+        markDirty(AbstractRenderer::AllDirty);
     }
+    FrameGraphNode::sceneChangeEvent(e);
+}
+
+QSize RenderSurfaceSelector::renderTargetSize() const
+{
+    if (m_renderTargetSize.isValid())
+        return m_renderTargetSize;
+    if (m_surface && m_surface->size().isValid())
+        return m_surface->size();
+    return QSize();
 }
 
 } // namespace Render

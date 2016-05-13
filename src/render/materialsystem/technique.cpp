@@ -44,10 +44,13 @@
 #include <Qt3DRender/qtechnique.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/private/renderer_p.h>
-#include <Qt3DRender/private/annotation_p.h>
+#include <Qt3DRender/private/filterkey_p.h>
+#include <Qt3DRender/private/qtechnique_p.h>
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 #include <QDebug>
 
@@ -59,8 +62,7 @@ namespace Qt3DRender {
 namespace Render {
 
 Technique::Technique()
-    : QBackendNode()
-    , m_graphicsApiFilter(Q_NULLPTR)
+    : BackendNode()
 {
 }
 
@@ -71,126 +73,104 @@ Technique::~Technique()
 
 void Technique::cleanup()
 {
-    if (m_graphicsApiFilter)
-        delete m_graphicsApiFilter;
-    m_graphicsApiFilter = Q_NULLPTR;
+    QBackendNode::setEnabled(false);
     m_parameterPack.clear();
     m_renderPasses.clear();
-    m_annotationList.clear();
+    m_filterKeyList.clear();
 }
 
-void Technique::updateFromPeer(Qt3DCore::QNode *peer)
+void Technique::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    m_parameterPack.clear();
-    m_renderPasses.clear();
-    m_annotationList.clear();
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QTechniqueData>>(change);
+    const QTechniqueData &data = typedChange->data;
 
-    if (m_graphicsApiFilter == Q_NULLPTR)
-        m_graphicsApiFilter = new QGraphicsApiFilter();
-
-    QTechnique *technique = static_cast<QTechnique *>(peer);
-
-    if (technique != Q_NULLPTR) {
-        Q_FOREACH (QParameter *p, technique->parameters())
-            m_parameterPack.appendParameter(p->id());
-        Q_FOREACH (QRenderPass *rPass, technique->renderPasses())
-            appendRenderPass(rPass->id());
-        Q_FOREACH (QAnnotation *annotation, technique->annotations())
-            appendAnnotation(annotation->id());
-
-        // Copy GraphicsApiFilter info from frontend GraphicsApiFilter
-        QGraphicsApiFilter *peerFilter = technique->graphicsApiFilter();
-        m_graphicsApiFilter->copy(*peerFilter);
-    }
+    m_graphicsApiFilterData = data.graphicsApiFilterData;
+    m_filterKeyList = data.filterKeyIds;
+    m_parameterPack.setParameters(data.parameterIds);
+    m_renderPasses = data.renderPassIds;
 }
 
 void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     switch (e->type()) {
-
-    case NodeUpdated: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("graphicsApiFilter")) {
-            QGraphicsApiFilter *filter = propertyChange->value().value<QGraphicsApiFilter *>();
-            if (filter != Q_NULLPTR) {
-                m_graphicsApiFilter->copy(*filter);
-                delete filter;
-            }
+    case PropertyUpdated: {
+        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("graphicsApiFilterData")) {
+            GraphicsApiFilterData filterData = change->value().value<GraphicsApiFilterData>();
+            m_graphicsApiFilterData = filterData;
         }
         break;
     }
 
-    case NodeAdded: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
-            appendRenderPass(propertyChange->value().value<QNodeId>());
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
-            m_parameterPack.appendParameter(propertyChange->value().value<QNodeId>());
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("annotation")) {
-            appendAnnotation(propertyChange->value().value<QNodeId>());
-        }
+    case PropertyValueAdded: {
+        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("pass"))
+            appendRenderPass(change->addedNodeId());
+        else if (change->propertyName() == QByteArrayLiteral("parameter"))
+            m_parameterPack.appendParameter(change->addedNodeId());
+        else if (change->propertyName() == QByteArrayLiteral("filterKeys"))
+            appendFilterKey(change->addedNodeId());
         break;
     }
 
-    case NodeRemoved: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("pass")) {
-            removeRenderPass(propertyChange->value().value<QNodeId>());
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
-            m_parameterPack.removeParameter(propertyChange->value().value<QNodeId>());
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("annotation")) {
-            removeAnnotation(propertyChange->value().value<QNodeId>());
-        }
+    case PropertyValueRemoved: {
+        const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("pass"))
+            removeRenderPass(change->removedNodeId());
+        else if (change->propertyName() == QByteArrayLiteral("parameter"))
+            m_parameterPack.removeParameter(change->removedNodeId());
+        else if (change->propertyName() == QByteArrayLiteral("filterKeys"))
+            removeFilterKey(change->removedNodeId());
         break;
     }
 
     default:
         break;
     }
+    markDirty(AbstractRenderer::AllDirty);
+    BackendNode::sceneChangeEvent(e);
 }
 
-QList<Qt3DCore::QNodeId> Technique::parameters() const
+QVector<Qt3DCore::QNodeId> Technique::parameters() const
 {
     return m_parameterPack.parameters();
 }
 
-void Technique::appendRenderPass(const Qt3DCore::QNodeId &renderPassId)
+void Technique::appendRenderPass(Qt3DCore::QNodeId renderPassId)
 {
     if (!m_renderPasses.contains(renderPassId))
         m_renderPasses.append(renderPassId);
 }
 
-void Technique::removeRenderPass(const Qt3DCore::QNodeId &renderPassId)
+void Technique::removeRenderPass(Qt3DCore::QNodeId renderPassId)
 {
     m_renderPasses.removeOne(renderPassId);
 }
 
-QList<Qt3DCore::QNodeId> Technique::annotations() const
+QVector<Qt3DCore::QNodeId> Technique::filterKeys() const
 {
-    return m_annotationList;
+    return m_filterKeyList;
 }
 
-QList<Qt3DCore::QNodeId> Technique::renderPasses() const
+QVector<Qt3DCore::QNodeId> Technique::renderPasses() const
 {
     return m_renderPasses;
 }
 
-QGraphicsApiFilter *Technique::graphicsApiFilter() const
+const GraphicsApiFilterData *Technique::graphicsApiFilter() const
 {
-    return m_graphicsApiFilter;
+    return &m_graphicsApiFilterData;
 }
 
-void Technique::appendAnnotation(const Qt3DCore::QNodeId &criterionId)
+void Technique::appendFilterKey(Qt3DCore::QNodeId criterionId)
 {
-    if (!m_annotationList.contains(criterionId))
-        m_annotationList.append(criterionId);
+    if (!m_filterKeyList.contains(criterionId))
+        m_filterKeyList.append(criterionId);
 }
 
-void Technique::removeAnnotation(const Qt3DCore::QNodeId &criterionId)
+void Technique::removeFilterKey(Qt3DCore::QNodeId criterionId)
 {
-    m_annotationList.removeOne(criterionId);
+    m_filterKeyList.removeOne(criterionId);
 }
 
 } // namespace Render

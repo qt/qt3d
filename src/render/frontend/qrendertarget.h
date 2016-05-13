@@ -48,26 +48,24 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QRenderTargetPrivate;
-class QRenderAttachment;
+class QRenderTargetOutput;
 
 class QT3DRENDERSHARED_EXPORT QRenderTarget : public Qt3DCore::QComponent
 {
     Q_OBJECT
 public:
-    explicit QRenderTarget(Qt3DCore::QNode *parent = 0);
-    ~QRenderTarget();
+    explicit QRenderTarget(Qt3DCore::QNode *parent = nullptr);
 
-    void addAttachment(QRenderAttachment *attachment);
-    void removeAttachment(QRenderAttachment *attachment);
-    QList<QRenderAttachment *> attachments() const;
+    void addOutput(QRenderTargetOutput *output);
+    void removeOutput(QRenderTargetOutput *output);
+    QVector<QRenderTargetOutput *> outputs() const;
 
 protected:
-    QRenderTarget(QRenderTargetPrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    QRenderTarget(QRenderTargetPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QRenderTarget)
-    QT3D_CLONEABLE(QRenderTarget)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

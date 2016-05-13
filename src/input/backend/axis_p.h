@@ -64,19 +64,16 @@ class Q_AUTOTEST_EXPORT Axis : public Qt3DCore::QBackendNode
 {
 public:
     Axis();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
-    inline bool isEnabled() const { return m_enabled; }
     inline QVector<Qt3DCore::QNodeId> inputs() const { return m_inputs; }
     inline float axisValue() const { return m_axisValue; }
-    inline QString name() const { return m_name; }
     void setAxisValue(float axisValue);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QVector<Qt3DCore::QNodeId> m_inputs;
-    QString m_name;
-    bool m_enabled;
     float m_axisValue;
 };
 

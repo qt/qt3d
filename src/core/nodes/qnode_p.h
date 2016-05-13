@@ -70,12 +70,15 @@ class QT3DCORE_PRIVATE_EXPORT QNodePrivate : public QObjectPrivate, public QObse
 public:
     QNodePrivate();
 
+    void init(QNode *parent);
+
     void setScene(QScene *scene);
     QScene *scene() const;
 
     void setArbiter(QLockableObserverInterface *arbiter) Q_DECL_OVERRIDE;
 
     void notifyPropertyChange(const char *name, const QVariant &value);
+    void notifyDynamicPropertyChange(const QByteArray &name, const QVariant &value);
     void notifyObservers(const QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
     void insertTree(QNode *treeRoot, int depth = 0);
@@ -85,18 +88,22 @@ public:
     // For now this just protects access to the m_changeArbiter.
     // Later on we may decide to extend support for multiple observers.
     QAbstractArbiter *m_changeArbiter;
+    QMetaObject *m_typeInfo;
     QScene *m_scene;
     mutable QNodeId m_id;
     bool m_blockNotifications;
-    bool m_wasCleanedUp;
+    bool m_hasBackendNode;
     bool m_enabled;
 
     static QNodePrivate *get(QNode *q);
     static void nodePtrDeleter(QNode *q);
 
 private:
+    void notifyCreationChange();
+    void _q_notifyCreationAndChildChanges();
     void _q_addChild(QNode *childNode);
     void _q_removeChild(QNode *childNode);
+    void _q_setParentHelper(QNode *parent);
     void registerNotifiedProperties();
     void unregisterNotifiedProperties();
     void propertyChanged(int propertyIndex);
@@ -108,8 +115,6 @@ private:
     friend class PropertyChangeHandler<QNodePrivate>;
     bool m_propertyChangesSetup;
     PropertyChangeHandler<QNodePrivate> m_signals;
-
-    static QHash<QNodeId, QNode *> m_clonesLookupTable;
 };
 
 } // namespace Qt3DCore

@@ -23,24 +23,24 @@ contains(QT_CONFIG, private_tests) {
         geometryrenderer \
         raycasting \
         qcameraselector \
-        qclearbuffer \
+        qclearbuffers \
         qframegraphnode \
-        qframegraph \
         qlayerfilter \
-        qlight \
+        qabstractlight \
+        qray3d \
         qrenderpassfilter \
         qrendertargetselector \
-        qsortcriterion \
-        qsortmethod \
-        qstateset \
+        qsortpolicy \
+        qrenderstateset \
         qtechniquefilter \
+        qtextureimagedata \
         qviewport \
         framegraphnode \
         qobjectpicker \
         objectpicker \
         picking \
-        qboundingvolumedebug \
-        boundingvolumedebug \
+#        qboundingvolumedebug \
+#        boundingvolumedebug \
         qdefaultmeshes \
         trianglesextractor \
         triangleboundingvolume \

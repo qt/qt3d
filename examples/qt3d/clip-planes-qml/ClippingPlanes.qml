@@ -51,9 +51,13 @@
 import QtQuick 2.4 as QQ2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import Qt3D.Extras 2.0
 
 Entity {
     id: root
+    property Layer capsLayer
+    property Layer visualizationLayer
+
     property ShaderData sectionData: ShaderData {
         property real sectionsCount: 3
         property ShaderDataArray sections: ShaderDataArray {
@@ -73,10 +77,6 @@ Entity {
     }
 
     Entity {
-        property Layer layer: Layer {
-            names: "caps"
-        }
-
         property Material cappingMaterial: Material {
             effect: CappingMaterialEffect {
                 sectionsData: root.sectionData
@@ -89,7 +89,7 @@ Entity {
             meshResolution: Qt.size(2, 2)
         }
 
-        components: [cappingMaterial, mesh, layer]
+        components: [cappingMaterial, mesh, root.capsLayer]
     }
 
     PlaneVisualizationMaterial {
@@ -100,6 +100,7 @@ Entity {
     // XZ
     ClipPlaneEntity {
         id: clipPlane0
+        layer: root.visualizationLayer
         visualMaterial: clipPlanesMaterial
         center: Qt.vector3d(0, -10, 0)
         normal: Qt.vector3d(0, -1.0, 0)
@@ -107,6 +108,7 @@ Entity {
     // XY
     ClipPlaneEntity {
         id: clipPlane1
+        layer: root.visualizationLayer
         visualMaterial: clipPlanesMaterial
         center: Qt.vector3d(0, 0, 10)
         normal: Qt.vector3d(0, 0, -1.0)
@@ -117,6 +119,7 @@ Entity {
     // YZ
     ClipPlaneEntity {
         id: clipPlane2
+        layer: root.visualizationLayer
         visualMaterial: clipPlanesMaterial
         center: Qt.vector3d(-10, 0, 0)
         normal: Qt.vector3d(1.0, 0, 0)

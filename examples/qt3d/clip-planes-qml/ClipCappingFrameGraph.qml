@@ -52,8 +52,14 @@ import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 
 Viewport {
+    id: root
     property alias camera: cameraSelector.camera
-    property alias window: surfaceSelector.window
+    property alias window: surfaceSelector.surface
+    property alias clearColor: clearBuffer.clearColor
+
+    readonly property Layer contentLayer: Layer {}
+    readonly property Layer visualizationLayer: Layer {}
+    readonly property Layer capsLayer: Layer {}
 
     RenderSurfaceSelector {
         id: surfaceSelector
@@ -61,33 +67,34 @@ Viewport {
         CameraSelector {
             id: cameraSelector
 
-            StateSet {
+            RenderStateSet {
                 // Enable 3 clipping planes
                 renderStates: [
-                    ClipPlane { plane: 0 },
-                    ClipPlane { plane: 1 },
-                    ClipPlane { plane: 2 },
-                    DepthTest { func: DepthTest.LessOrEqual }
+                    ClipPlane { planeIndex: 0 },
+                    ClipPlane { planeIndex: 1 },
+                    ClipPlane { planeIndex: 2 },
+                    DepthTest { depthFunction: DepthTest.LessOrEqual }
                 ]
 
                 // Branch 1
                 LayerFilter {
                     // Render entities with their regular material
                     // Fills depth buffer for entities that are clipped
-                    layers: ["content", "visualization"]
-                    ClearBuffer {
-                        buffers: ClearBuffer.ColorDepthBuffer
+                    layers: [root.contentLayer, root.visualizationLayer]
+                    ClearBuffers {
+                        id: clearBuffer
+                        buffers: ClearBuffers.ColorDepthBuffer
                         RenderPassFilter {
-                            includes: Annotation { name: "pass"; value: "material" }
+                            matchAny: FilterKey { name: "pass"; value: "material" }
                         }
                     }
                 }
 
                 // Branch 2
-                ClearBuffer {
+                ClearBuffers {
                     // Enable and fill Stencil to later generate caps
-                    buffers: ClearBuffer.StencilBuffer
-                    StateSet {
+                    buffers: ClearBuffers.StencilBuffer
+                    RenderStateSet {
                         // Disable depth culling
                         // Incr for back faces
                         // Decr for front faces
@@ -95,25 +102,25 @@ Viewport {
                         renderStates: [
                             StencilTest {
                                 front {
-                                    func: StencilTestSeparate.Always
-                                    ref: 0; mask: 0
+                                    stencilFunction: StencilTestArguments.Always
+                                    referenceValue: 0; comparisonMask: 0
                                 }
                                 back {
-                                    func: StencilTestSeparate.Always
-                                    ref: 0; mask: 0
+                                    stencilFunction: StencilTestArguments.Always
+                                    referenceValue: 0; comparisonMask: 0
                                 }
                             },
-                            StencilOp {
-                                front.stencilDepthPass: StencilOpSeparate.Decr
-                                back.stencilDepthPass: StencilOpSeparate.Incr
+                            StencilOperation {
+                                front.allTestsPassOperation: StencilOperationArguments.Decrement
+                                back.allTestsPassOperation: StencilOperationArguments.Increment
                             },
-                            ColorMask { red: false; green: false; blue: false; alpha: false }
+                            ColorMask { redMasked: false; greenMasked: false; blueMasked: false; alphaMasked: false }
                         ]
 
                         LayerFilter {
-                            layers: "content"
+                            layers: root.contentLayer
                             RenderPassFilter {
-                                includes: Annotation { name: "pass"; value: "stencilFill"; }
+                                matchAny: FilterKey { name: "pass"; value: "stencilFill"; }
                             }
                         }
                     }
@@ -121,12 +128,12 @@ Viewport {
             }
 
             // Branch 3
-            StateSet {
+            RenderStateSet {
                 // Draw caps using stencil buffer
                 LayerFilter {
-                    layers: "caps"
+                    layers: root.capsLayer
                     RenderPassFilter {
-                        includes: Annotation { name: "pass"; value: "capping"; }
+                        matchAny: FilterKey { name: "pass"; value: "capping"; }
                     }
                 }
 
@@ -134,12 +141,12 @@ Viewport {
                 renderStates: [
                     StencilTest {
                         front {
-                            func: StencilTestSeparate.NotEqual
-                            ref: 0; mask: ~0
+                            stencilFunction: StencilTestArguments.NotEqual
+                            referenceValue: 0; comparisonMask: ~0
                         }
                         back {
-                            func: StencilTestSeparate.NotEqual
-                            ref: 0; mask: ~0
+                            stencilFunction: StencilTestArguments.NotEqual
+                            referenceValue: 0; comparisonMask: ~0
                         }
                     }
                 ]

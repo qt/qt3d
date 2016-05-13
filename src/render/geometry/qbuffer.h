@@ -40,7 +40,7 @@
 #ifndef QT3DRENDER_QBUFFER_H
 #define QT3DRENDER_QBUFFER_H
 
-#include <Qt3DRender/qabstractbuffer.h>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DRender/qt3drender_global.h>
 #include <QSharedPointer>
 
@@ -49,15 +49,15 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QBufferPrivate;
-class QBufferFunctor;
-typedef QSharedPointer<QBufferFunctor> QBufferFunctorPtr;
+class QBufferDataGenerator;
+typedef QSharedPointer<QBufferDataGenerator> QBufferDataGeneratorPtr;
 
-class QT3DRENDERSHARED_EXPORT QBuffer : public QAbstractBuffer
+class QT3DRENDERSHARED_EXPORT QBuffer : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(BufferType type READ type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(UsageType usage READ usage WRITE setUsage NOTIFY usageChanged)
-    Q_PROPERTY(bool sync READ isSync WRITE setSync NOTIFY syncChanged)
+    Q_PROPERTY(bool syncData READ isSyncData WRITE setSyncData NOTIFY syncDataChanged)
 
 public:
     enum BufferType
@@ -85,34 +85,35 @@ public:
     };
     Q_ENUM(UsageType)
 
-    explicit QBuffer(BufferType ty = QBuffer::VertexBuffer, Qt3DCore::QNode *parent = 0);
-    ~QBuffer();
+    explicit QBuffer(BufferType ty = QBuffer::VertexBuffer, Qt3DCore::QNode *parent = nullptr);
 
     UsageType usage() const;
     BufferType type() const;
-    bool isSync() const;
+    bool isSyncData() const;
 
-    void setBufferFunctor(const QBufferFunctorPtr &functor);
-    QBufferFunctorPtr bufferFunctor() const;
+    void setData(const QByteArray &bytes);
+    QByteArray data() const;
+
+    void setDataGenerator(const QBufferDataGeneratorPtr &functor);
+    QBufferDataGeneratorPtr dataGenerator() const;
 
 public Q_SLOTS:
     void setType(BufferType type);
     void setUsage(UsageType usage);
-    void setSync(bool sync);
+    void setSyncData(bool syncData);
 
 protected:
-    QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
+    void dataChanged(const QByteArray &bytes);
     void typeChanged(BufferType type);
     void usageChanged(UsageType usage);
-    void syncChanged(bool sync);
+    void syncDataChanged(bool syncData);
 
 private:
     Q_DECLARE_PRIVATE(QBuffer)
-    QT3D_CLONEABLE(QBuffer)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

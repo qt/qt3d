@@ -8,4 +8,5 @@ CONFIG += testcase
 
 SOURCES += tst_objectpicker.cpp
 
+include(../../core/common/common.pri)
 include(../commons/commons.pri)

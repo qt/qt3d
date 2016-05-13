@@ -41,15 +41,18 @@
 #include "qbackendnode_p.h"
 #include "qaspectengine.h"
 #include "qnode.h"
+#include "qpropertyupdatedchange.h"
+#include <Qt3DCore/private/corelogging_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
 QBackendNodePrivate::QBackendNodePrivate(QBackendNode::Mode mode)
-    : q_ptr(Q_NULLPTR)
+    : q_ptr(nullptr)
     , m_mode(mode)
-    , m_arbiter(Q_NULLPTR)
+    , m_arbiter(nullptr)
+    , m_enabled(false)
 {
 }
 
@@ -65,7 +68,7 @@ void QBackendNodePrivate::setArbiter(QLockableObserverInterface *arbiter)
 void QBackendNodePrivate::notifyObservers(const QSceneChangePtr &e)
 {
     Q_ASSERT(m_mode == QBackendNode::ReadWrite);
-    if (m_arbiter != Q_NULLPTR)
+    if (m_arbiter != nullptr)
         m_arbiter->sceneChangeEvent(e);
 }
 
@@ -74,10 +77,76 @@ void QBackendNodePrivate::sceneChangeEvent(const QSceneChangePtr &e)
     q_func()->sceneChangeEvent(e);
 }
 
+void QBackendNodePrivate::setEnabled(bool enabled)
+{
+    m_enabled = enabled;
+}
+
 QBackendNodePrivate *QBackendNodePrivate::get(QBackendNode *n)
 {
     return n->d_func();
 }
+
+/*!
+ * \class Qt3DCore::QBackendNodeMapper
+ * \inmodule Qt3DCore
+ *
+ * TODO
+ */
+
+/*!
+ * \fn QBackendNode *QBackendNodeMapper::create(QNode *frontend) const
+ *
+ * TODO
+ *
+ * \a frontend
+ *
+ * \return created node.
+ */
+
+/*!
+ * \fn QBackendNode *QBackendNodeMapper::create(const QNodeCreatedChangeBasePtr &change) const
+ *
+ * TODO
+ *
+ * \a change
+ *
+ * \return created node.
+ */
+
+/*!
+ * \fn QBackendNode *QBackendNodeMapper::get(QNodeId id) const
+ *
+ * \return backend node for the given node \a id.
+ */
+
+/*!
+ * \fn void QBackendNodeMapper::destroy(QNodeId id) const
+ *
+ * Destroys the backend node for the given node \a id.
+ */
+
+/*!
+ * \class Qt3DCore::QBackendNode
+ * \inmodule Qt3DCore
+ *
+ * TODO
+ */
+
+/*!
+ * \fn void Qt3DCore::QBackendNode::updateFromPeer(QNode *peer)
+ *
+ * Updates the backend node from \a peer.
+ */
+
+/*!
+ * \enum Qt3DCore::QBackendNode::Mode
+ *
+ * The mode for the backend node.
+ *
+ * \value ReadOnly
+ * \value ReadWrite
+ */
 
 QBackendNode::QBackendNode(QBackendNode::Mode mode)
     : d_ptr(new QBackendNodePrivate(mode))
@@ -90,39 +159,93 @@ QBackendNode::~QBackendNode()
     delete d_ptr;
 }
 
-void QBackendNode::setPeer(QNode *peer)
+/*!
+ * Sets the peer \a id.
+ */
+void QBackendNode::setPeerId(QNodeId id) Q_DECL_NOEXCEPT
 {
     Q_D(QBackendNode);
-    QNodeId peerUuid;
-    if (peer != Q_NULLPTR)
-        peerUuid = peer->id();
-    d->m_peerUuid = peerUuid;
-    updateFromPeer(peer);
+    d->m_peerId = id;
 }
 
-QNodeId QBackendNode::peerUuid() const Q_DECL_NOEXCEPT
+/*!
+ * \return the peer id of the backend node.
+ */
+QNodeId QBackendNode::peerId() const Q_DECL_NOEXCEPT
 {
     Q_D(const QBackendNode);
-    return d->m_peerUuid;
+    return d->m_peerId;
 }
 
+/*!
+ * \return \c true if the backend node is enabled.
+ */
+bool QBackendNode::isEnabled() const Q_DECL_NOEXCEPT
+{
+    Q_D(const QBackendNode);
+    return d->m_enabled;
+}
+
+/*!
+ * \return the mode of the backend mode.
+ */
 QBackendNode::Mode QBackendNode::mode() const Q_DECL_NOEXCEPT
 {
     Q_D(const QBackendNode);
     return d->m_mode;
 }
 
-/*! \internal */
+/*!
+ * \internal
+ */
 QBackendNode::QBackendNode(QBackendNodePrivate &dd)
     : d_ptr(&dd)
 {
     d_ptr->q_ptr = this;
 }
 
+/*!
+ * Notifies observers of scene change \a e.
+ */
 void QBackendNode::notifyObservers(const QSceneChangePtr &e)
 {
     Q_D(QBackendNode);
     d->notifyObservers(e);
+}
+
+void QBackendNode::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
+{
+    Q_UNUSED(change);
+    qCDebug(Nodes) << Q_FUNC_INFO << change->metaObject()->className() << "does not override";
+}
+
+/*!
+ * Enables or disables the backend node by \a enabled.
+ */
+void QBackendNode::setEnabled(bool enabled) Q_DECL_NOEXCEPT
+{
+    Q_D(QBackendNode);
+    d->m_enabled = enabled;
+}
+
+/*!
+ * TODO
+ * \a e
+ */
+void QBackendNode::sceneChangeEvent(const QSceneChangePtr &e)
+{
+    Q_D(QBackendNode);
+    auto propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
+
+    switch (e->type()) {
+        case PropertyUpdated: {
+            if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
+                d->m_enabled = propertyChange->value().value<bool>();
+            break;
+        }
+        default:
+            break;
+    }
 }
 
 } // Qt3D

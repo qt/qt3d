@@ -40,7 +40,7 @@
 #include "qrendertargetselector.h"
 #include "qrendertargetselector_p.h"
 #include <Qt3DRender/qrendertarget.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/qrenderpass_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -51,29 +51,13 @@ namespace Qt3DRender {
 
 QRenderTargetSelectorPrivate::QRenderTargetSelectorPrivate()
     : QFrameGraphNodePrivate()
-    , m_target(Q_NULLPTR)
+    , m_target(nullptr)
 {
-}
-
-void QRenderTargetSelector::copy(const QNode *ref)
-{
-    QFrameGraphNode::copy(ref);
-
-    const QRenderTargetSelector *other = static_cast<const QRenderTargetSelector*>(ref);
-
-    setDrawBuffers(other->drawBuffers());
-    if (other->d_func()->m_target)
-        setTarget(qobject_cast<QRenderTarget *>(QNode::clone(other->d_func()->m_target)));
 }
 
 QRenderTargetSelector::QRenderTargetSelector(QNode *parent)
     : QFrameGraphNode(*new QRenderTargetSelectorPrivate, parent)
 {
-}
-
-QRenderTargetSelector::~QRenderTargetSelector()
-{
-    QNode::cleanup();
 }
 
 void QRenderTargetSelector::setTarget(QRenderTarget *target)
@@ -83,7 +67,7 @@ void QRenderTargetSelector::setTarget(QRenderTarget *target)
         d->m_target = target;
 
         // For inline declaration cases
-        if (target != Q_NULLPTR && !target->parent())
+        if (target != nullptr && !target->parent())
             target->setParent(this);
         emit targetChanged(target);
     }
@@ -98,7 +82,7 @@ QRenderTarget *QRenderTargetSelector::target() const
 /*!
  * \internal
  * Sets the draw buffers \a buffers to be used. The draw buffers should be
- * matching the Qt3DRender::QRenderAttachment::RenderAttachmentType
+ * matching the Qt3DRender::QRenderTargetOutput::RenderAttachmentType
  * defined in the attachments of the Qt3DRender::QRenderTarget associated to the
  * Qt3DRender::QRenderTargetSelector instance.
  *
@@ -106,16 +90,16 @@ QRenderTarget *QRenderTargetSelector::target() const
  * default to using all the attachments' draw buffers.
  *
  */
-void QRenderTargetSelector::setDrawBuffers(const QList<QRenderAttachment::RenderAttachmentType> &buffers)
+void QRenderTargetSelector::setOutputs(const QVector<QRenderTargetOutput::AttachmentPoint> &buffers)
 {
     Q_D(QRenderTargetSelector);
-    if (buffers != d->m_drawBuffers) {
-        d->m_drawBuffers = buffers;
+    if (buffers != d->m_outputs) {
+        d->m_outputs = buffers;
 
         if (d->m_changeArbiter) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
-            change->setPropertyName("drawBuffers");
-            change->setValue(QVariant::fromValue(d->m_drawBuffers));
+            QPropertyUpdatedChangePtr change(new QPropertyUpdatedChange(id()));
+            change->setPropertyName("outputs");
+            change->setValue(QVariant::fromValue(d->m_outputs));
             d->notifyObservers(change);
         }
     }
@@ -124,15 +108,25 @@ void QRenderTargetSelector::setDrawBuffers(const QList<QRenderAttachment::Render
 /*!
  * Returns the list of draw buffers for the current Qt3DRender::QRenderTargetSelector instance.
  */
-QList<QRenderAttachment::RenderAttachmentType> QRenderTargetSelector::drawBuffers() const
+QVector<QRenderTargetOutput::AttachmentPoint> QRenderTargetSelector::outputs() const
 {
     Q_D(const QRenderTargetSelector);
-    return d->m_drawBuffers;
+    return d->m_outputs;
 }
 
 QRenderTargetSelector::QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QRenderTargetSelector::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderTargetSelectorData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QRenderTargetSelector);
+    data.targetId = qIdForNode(d->m_target);
+    data.outputs = d->m_outputs;
+    return creationChange;
 }
 
 } // namespace Qt3DRender

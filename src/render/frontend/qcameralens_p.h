@@ -54,7 +54,7 @@
 #include <Qt3DCore/private/qcomponent_p.h>
 #include "qcameralens.h"
 
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <QtGui/qmatrix4x4.h>
 
@@ -78,6 +78,8 @@ public:
             break;
         case QCameraLens::FrustumProjection:
             updateFrustumProjection();
+            break;
+        case QCameraLens::CustomProjection:
             break;
         }
     }
@@ -123,6 +125,11 @@ private:
         m_projectionMatrix.frustum(m_left, m_right, m_bottom, m_top, m_nearPlane, m_farPlane);
         Q_EMIT q->projectionMatrixChanged(m_projectionMatrix);
     }
+};
+
+struct QCameraLensData
+{
+    QMatrix4x4 projectionMatrix;
 };
 
 } // namespace Qt3DRender

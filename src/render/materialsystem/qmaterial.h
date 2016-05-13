@@ -49,11 +49,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAbstractTextureProvider;
+class QAbstractTexture;
 class QParameter;
 class QMaterialPrivate;
 class QEffect;
-typedef QMap<QString, QAbstractTextureProvider*> TextureDict;
 
 class QT3DRENDERSHARED_EXPORT QMaterial : public Qt3DCore::QComponent
 {
@@ -61,18 +60,13 @@ class QT3DRENDERSHARED_EXPORT QMaterial : public Qt3DCore::QComponent
     Q_PROPERTY(Qt3DRender::QEffect *effect READ effect WRITE setEffect NOTIFY effectChanged)
 
 public:
-    explicit QMaterial(Qt3DCore::QNode *parent = 0);
-    ~QMaterial();
+    explicit QMaterial(Qt3DCore::QNode *parent = nullptr);
 
     QEffect *effect() const;
 
     void addParameter(QParameter *parameter);
     void removeParameter(QParameter *parameter);
-    QList<QParameter *> parameters() const;
-
-    TextureDict textureValues() const;
-
-    void setTextureParameter(QString name, QAbstractTextureProvider* tex);
+    QVector<QParameter *> parameters() const;
 
 public Q_SLOTS:
     void setEffect(QEffect *effect);
@@ -81,12 +75,11 @@ Q_SIGNALS:
     void effectChanged(QEffect *effect);
 
 protected:
-    QMaterial(QMaterialPrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    QMaterial(QMaterialPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QMaterial)
-    QT3D_CLONEABLE(QMaterial)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 }

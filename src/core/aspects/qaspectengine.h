@@ -41,7 +41,7 @@
 #define QT3DCORE_QASPECTENGINE_H
 
 #include <QObject>
-#include <QList>
+#include <QVector>
 
 #include <Qt3DCore/qt3dcore_global.h>
 
@@ -55,20 +55,24 @@ class QAspectEnginePrivate;
 class QEntity;
 class QNode;
 
+typedef QSharedPointer<QEntity> QEntityPtr;
+
 class QT3DCORESHARED_EXPORT QAspectEngine : public QObject
 {
     Q_OBJECT
 public:
-    explicit QAspectEngine(QObject *parent = 0);
+    explicit QAspectEngine(QObject *parent = nullptr);
     ~QAspectEngine();
 
-    void setRootEntity(QEntity *root);
-    QSharedPointer<QEntity> rootEntity() const;
+    void setRootEntity(QEntityPtr root);
+    QEntityPtr rootEntity() const;
 
     void registerAspect(QAbstractAspect *aspect);
     void registerAspect(const QString &name);
+    void unregisterAspect(QAbstractAspect *aspect);
+    void unregisterAspect(const QString &name);
 
-    QList<QAbstractAspect*> aspects() const;
+    QVector<QAbstractAspect*> aspects() const;
 
     QVariant executeCommand(const QString &command);
 

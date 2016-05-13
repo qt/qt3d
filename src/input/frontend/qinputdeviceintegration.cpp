@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qinputdeviceintegration.h"
 #include "qinputdeviceintegration_p.h"
+#include "qinputdeviceintegration_p_p.h"
 
 #include <Qt3DInput/QInputAspect>
 
@@ -48,7 +48,7 @@ namespace Qt3DInput {
 
 QInputDeviceIntegrationPrivate::QInputDeviceIntegrationPrivate()
     : QObjectPrivate()
-    , m_aspect(Q_NULLPTR)
+    , m_aspect(nullptr)
 {
 }
 
@@ -62,7 +62,7 @@ QInputDeviceIntegration::QInputDeviceIntegration(QInputDeviceIntegrationPrivate 
 {
 }
 
-void QInputDeviceIntegration::registerBackendType(const QMetaObject &metaObject, const Qt3DCore::QBackendNodeFunctorPtr &functor)
+void QInputDeviceIntegration::registerBackendType(const QMetaObject &metaObject, const Qt3DCore::QBackendNodeMapperPtr &functor)
 {
     Q_D(QInputDeviceIntegration);
     d->m_aspect->registerBackendType(metaObject, functor);

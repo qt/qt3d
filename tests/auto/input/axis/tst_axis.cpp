@@ -27,14 +27,29 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <qbackendnodetester.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DInput/private/axis_p.h>
-#include <Qt3DInput/QAxisInput>
+#include <Qt3DInput/private/qabstractaxisinput_p.h>
+#include <Qt3DInput/QAnalogAxisInput>
 #include <Qt3DInput/QAxis>
+#include <Qt3DCore/private/qbackendnode_p.h>
+#include "testpostmanarbiter.h"
 
-class tst_Axis: public QObject
+class DummyAxisInput : public Qt3DInput::QAbstractAxisInput
+{
+    Q_OBJECT
+public:
+    DummyAxisInput(Qt3DCore::QNode *parent = nullptr)
+        : Qt3DInput::QAbstractAxisInput(*new Qt3DInput::QAbstractAxisInputPrivate, parent)
+    {}
+};
+
+class tst_Axis: public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 
@@ -45,18 +60,16 @@ private Q_SLOTS:
         // GIVEN
         Qt3DInput::Input::Axis backendAxis;
         Qt3DInput::QAxis axis;
-        Qt3DInput::QAxisInput axisInput;
+        Qt3DInput::QAnalogAxisInput axisInput;
 
         axis.addInput(&axisInput);
-        axis.setName(QStringLiteral("L88"));
 
         // WHEN
-        backendAxis.setPeer(&axis);
+        simulateInitialization(&axis, &backendAxis);
 
         // THEN
-        QCOMPARE(backendAxis.peerUuid(), axis.id());
+        QCOMPARE(backendAxis.peerId(), axis.id());
         QCOMPARE(backendAxis.isEnabled(), axis.isEnabled());
-        QCOMPARE(backendAxis.name(), axis.name());
         QCOMPARE(backendAxis.inputs().size(), axis.inputs().size());
 
         const int inputsCount = backendAxis.inputs().size();
@@ -72,27 +85,23 @@ private Q_SLOTS:
         Qt3DInput::Input::Axis backendAxis;
 
         // THEN
-        QVERIFY(backendAxis.peerUuid().isNull());
-        QVERIFY(backendAxis.name().isEmpty());
+        QVERIFY(backendAxis.peerId().isNull());
         QCOMPARE(backendAxis.axisValue(), 0.0f);
         QCOMPARE(backendAxis.isEnabled(), false);
         QCOMPARE(backendAxis.inputs().size(), 0);
 
         // GIVEN
         Qt3DInput::QAxis axis;
-        Qt3DInput::QAxisInput axisInput;
+        Qt3DInput::QAnalogAxisInput axisInput;
 
         axis.addInput(&axisInput);
-        axis.setName(QStringLiteral("L88"));
 
         // WHEN
-        backendAxis.updateFromPeer(&axis);
+        simulateInitialization(&axis, &backendAxis);
         backendAxis.setAxisValue(883.0f);
         backendAxis.cleanup();
 
         // THEN
-        QVERIFY(backendAxis.peerUuid().isNull());
-        QVERIFY(backendAxis.name().isEmpty());
         QCOMPARE(backendAxis.axisValue(), 0.0f);
         QCOMPARE(backendAxis.isEnabled(), false);
         QCOMPARE(backendAxis.inputs().size(), 0);
@@ -102,18 +111,10 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DInput::Input::Axis backendAxis;
+        Qt3DCore::QPropertyUpdatedChangePtr updateChange;
 
         // WHEN
-        Qt3DCore::QScenePropertyChangePtr updateChange(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
-        updateChange->setValue(QStringLiteral("LT1"));
-        updateChange->setPropertyName("name");
-        backendAxis.sceneChangeEvent(updateChange);
-
-        // THEN
-        QCOMPARE(backendAxis.name(), QStringLiteral("LT1"));
-
-        // WHEN
-        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         updateChange->setPropertyName("enabled");
         updateChange->setValue(true);
         backendAxis.sceneChangeEvent(updateChange);
@@ -122,24 +123,53 @@ private Q_SLOTS:
         QCOMPARE(backendAxis.isEnabled(), true);
 
         // WHEN
-        Qt3DCore::QNodeId inputId = Qt3DCore::QNodeId::createId();
-        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
-        updateChange->setPropertyName("input");
-        updateChange->setValue(QVariant::fromValue(inputId));
-        backendAxis.sceneChangeEvent(updateChange);
+        DummyAxisInput input;
+        const Qt3DCore::QNodeId inputId = input.id();
+        const auto nodeAddedChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &input);
+        nodeAddedChange->setPropertyName("input");
+        backendAxis.sceneChangeEvent(nodeAddedChange);
 
         // THEN
         QCOMPARE(backendAxis.inputs().size(), 1);
         QCOMPARE(backendAxis.inputs().first(), inputId);
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
-        updateChange->setPropertyName("input");
-        updateChange->setValue(QVariant::fromValue(inputId));
-        backendAxis.sceneChangeEvent(updateChange);
+        const auto nodeRemovedChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &input);
+        nodeRemovedChange->setPropertyName("input");
+        backendAxis.sceneChangeEvent(nodeRemovedChange);
 
         // THEN
         QCOMPARE(backendAxis.inputs().size(), 0);
+    }
+
+    void checkValuePropertyBackendNotification()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DInput::Input::Axis backendAxis;
+        Qt3DCore::QBackendNodePrivate::get(&backendAxis)->setArbiter(&arbiter);
+
+        // WHEN
+        backendAxis.setAxisValue(454.0f);
+
+        // THEN
+        QCOMPARE(backendAxis.axisValue(), 454.0f);
+        QCOMPARE(arbiter.events.count(), 1);
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "value");
+        QCOMPARE(change->value().toFloat(), backendAxis.axisValue());
+
+        arbiter.events.clear();
+
+        // WHEN
+        backendAxis.setAxisValue(454.0f);
+
+        // THEN
+        QCOMPARE(backendAxis.axisValue(), 454.0f);
+        QCOMPARE(arbiter.events.count(), 0);
+
+        arbiter.events.clear();
+
     }
 };
 

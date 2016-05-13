@@ -59,8 +59,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
+class QAbstractPhysicalDeviceBackendNode;
+
 namespace Input {
 
+class AbstractAxisInput;
 class InputHandler;
 
 class UpdateAxisActionJob : public Qt3DCore::QAspectJob
@@ -73,6 +76,7 @@ private:
     void updateAction(LogicalDevice *device);
     bool processActionInput(const Qt3DCore::QNodeId actionInputId);
     void updateAxis(LogicalDevice *device);
+    QAbstractPhysicalDeviceBackendNode *findAxisInputPhysicalDevice(AbstractAxisInput *axisInput);
 
     const qint64 m_currentTime;
     InputHandler *m_handler;

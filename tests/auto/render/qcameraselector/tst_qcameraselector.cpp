@@ -29,22 +29,17 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qcameraselector.h>
+#include <Qt3DRender/private/qcameraselector_p.h>
 #include <Qt3DCore/qentity.h>
 
 #include "testpostmanarbiter.h"
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QCameraSelector: public Qt3DCore::QNode
+class tst_QCameraSelector: public QObject
 {
     Q_OBJECT
-public:
-    ~tst_QCameraSelector()
-    {
-        QNode::cleanup();
-    }
 
 private Q_SLOTS:
 
@@ -54,7 +49,7 @@ private Q_SLOTS:
         QTest::addColumn<Qt3DCore::QEntity *>("camera");
 
         Qt3DRender::QCameraSelector *defaultConstructed = new Qt3DRender::QCameraSelector();
-        QTest::newRow("defaultConstructed") << defaultConstructed << static_cast<Qt3DCore::QEntity *>(Q_NULLPTR);
+        QTest::newRow("defaultConstructed") << defaultConstructed << static_cast<Qt3DCore::QEntity *>(nullptr);
 
         Qt3DRender::QCameraSelector *selector1 = new Qt3DRender::QCameraSelector();
         Qt3DCore::QEntity *camera1 = new Qt3DCore::QEntity();
@@ -69,21 +64,22 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity *, camera);
 
         // WHEN
-        Qt3DRender::QCameraSelector *clone = static_cast<Qt3DRender::QCameraSelector *>(QNode::clone(cameraSelector));
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(cameraSelector);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
+        QCOMPARE(creationChanges.size(), 1 + (camera ? 1 : 0));
 
-        QCOMPARE(cameraSelector->id(), clone->id());
-        if (cameraSelector->camera()) {
-            QVERIFY(clone->camera());
-            QCOMPARE(clone->camera()->id(), camera->id());
-        } else {
-            QVERIFY(clone->camera() == Q_NULLPTR);
-        }
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QCameraSelectorData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QCameraSelectorData>>(creationChanges.first());
+        const Qt3DRender::QCameraSelectorData &cloneData = creationChangeData->data;
+
+        QCOMPARE(cameraSelector->id(), creationChangeData->subjectId());
+        QCOMPARE(cameraSelector->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(cameraSelector->metaObject(), creationChangeData->metaObject());
+        QCOMPARE(cameraSelector->camera() ? cameraSelector->camera()->id() : Qt3DCore::QNodeId(), cloneData.cameraId);
 
         delete cameraSelector;
-        delete clone;
     }
 
     void checkPropertyUpdates()
@@ -99,10 +95,10 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "camera");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), camera->id());
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
@@ -120,32 +116,25 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "camera");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), camera2->id());
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
         arbiter.events.clear();
 
         // WHEN
-        cameraSelector->setCamera(Q_NULLPTR);
+        cameraSelector->setCamera(nullptr);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "camera");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), Qt3DCore::QNodeId());
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QCameraSelector)

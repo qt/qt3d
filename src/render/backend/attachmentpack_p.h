@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DRender/qrenderattachment.h>
+#include <Qt3DRender/qrendertargetoutput.h>
 #include <QVector>
 
 QT_BEGIN_NAMESPACE
@@ -61,29 +61,40 @@ namespace Render {
 
 struct Attachment
 {
-    Attachment();
+    Attachment()
+        : m_mipLevel(0)
+        , m_layer(0)
+        , m_point(QRenderTargetOutput::Color0)
+        , m_face(QAbstractTexture::CubeMapNegativeX)
+    {}
+
     QString m_name;
     int m_mipLevel;
     int m_layer;
     Qt3DCore::QNodeId m_textureUuid;
-    QRenderAttachment::RenderAttachmentType m_type;
-    QRenderAttachment::CubeMapFace m_face;
+    QRenderTargetOutput::AttachmentPoint m_point;
+    QAbstractTexture::CubeMapFace m_face;
 };
+
+class RenderTarget;
+class RenderTargetSelector;
+class AttachmentManager;
 
 class AttachmentPack
 {
 public:
     AttachmentPack();
+    AttachmentPack(const RenderTargetSelector *selector, const RenderTarget *target, AttachmentManager *attachmentManager);
 
-    void addAttachment(const Attachment &attachment);
-    QVector<Attachment> attachments() const;
-    QList<QRenderAttachment::RenderAttachmentType> drawBuffers() const;
+    QVector<Attachment> attachments() const { return m_attachments; }
+    QVector<int> getGlDrawBuffers() const { return m_drawBuffers; }
 
-    void setDrawBuffers(const QList<QRenderAttachment::RenderAttachmentType> &drawBuffers);
+    // return index of given attachment within actual draw buffers list
+    int getDrawBufferIndex(QRenderTargetOutput::AttachmentPoint attachmentPoint) const;
 
 private:
     QVector<Attachment> m_attachments;
-    QList<QRenderAttachment::RenderAttachmentType> m_drawBuffers;
+    QVector<int> m_drawBuffers;
 };
 
 } // namespace Render

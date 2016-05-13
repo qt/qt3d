@@ -71,7 +71,7 @@ class QT3DRENDERSHARED_EXPORT QCamera : public Qt3DCore::QEntity
     Q_PROPERTY(float right READ right WRITE setRight NOTIFY rightChanged)
     Q_PROPERTY(float bottom READ bottom WRITE setBottom NOTIFY bottomChanged)
     Q_PROPERTY(float top READ top WRITE setTop NOTIFY topChanged)
-    Q_PROPERTY(QMatrix4x4 projectionMatrix READ projectionMatrix NOTIFY projectionMatrixChanged)
+    Q_PROPERTY(QMatrix4x4 projectionMatrix READ projectionMatrix WRITE setProjectionMatrix NOTIFY projectionMatrixChanged)
     // LookAt
     Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(QVector3D upVector READ upVector WRITE setUpVector NOTIFY upVectorChanged)
@@ -80,8 +80,7 @@ class QT3DRENDERSHARED_EXPORT QCamera : public Qt3DCore::QEntity
     Q_PROPERTY(QMatrix4x4 viewMatrix READ viewMatrix NOTIFY viewMatrixChanged)
 
 public:
-    explicit QCamera(QNode *parent = 0);
-    ~QCamera();
+    explicit QCamera(QNode *parent = nullptr);
 
     enum CameraTranslationOption {
         TranslateViewCenter,
@@ -92,10 +91,10 @@ public:
     QCameraLens *lens() const;
     Qt3DCore::QTransform *transform() const;
 
-    QQuaternion tiltRotation(float angle) const;
-    QQuaternion panRotation(float angle) const;
-    QQuaternion rollRotation(float angle) const;
-    QQuaternion rotation(float angle, const QVector3D &axis) const;
+    Q_INVOKABLE QQuaternion tiltRotation(float angle) const;
+    Q_INVOKABLE QQuaternion panRotation(float angle) const;
+    Q_INVOKABLE QQuaternion rollRotation(float angle) const;
+    Q_INVOKABLE QQuaternion rotation(float angle, const QVector3D &axis) const;
 
     // Translate relative to camera orientation axes
     Q_INVOKABLE void translate(const QVector3D& vLocal, CameraTranslationOption option = TranslateViewCenter);
@@ -142,6 +141,7 @@ public Q_SLOTS:
     void setRight(float right);
     void setBottom(float bottom);
     void setTop(float top);
+    void setProjectionMatrix(const QMatrix4x4 &projectionMatrix);
     void setPosition(const QVector3D &position);
     void setUpVector(const QVector3D &upVector);
     void setViewCenter(const QVector3D &viewCenter);
@@ -165,8 +165,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QCamera)
-    QT3D_CLONEABLE(QCamera)
-    QCamera(QCameraPrivate &dd, QNode *parent = 0);
+    QCamera(QCameraPrivate &dd, QNode *parent = nullptr);
 };
 
 } // namespace Qt3DRender

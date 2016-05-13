@@ -61,7 +61,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-Q_AUTOTEST_EXPORT bool intersectsSegmentTriangle(const Qt3DCore::QRay3D &ray,
+Q_AUTOTEST_EXPORT bool intersectsSegmentTriangle(const QRay3D &ray,
                                                  const QVector3D &a,
                                                  const QVector3D &b,
                                                  const QVector3D &c,
@@ -72,13 +72,13 @@ class Q_AUTOTEST_EXPORT TriangleBoundingVolume : public QBoundingVolume
 {
 public:
     TriangleBoundingVolume();
-    explicit TriangleBoundingVolume(const Qt3DCore::QNodeId &id,
+    explicit TriangleBoundingVolume(Qt3DCore::QNodeId id,
                                     const QVector3D &a,
                                     const QVector3D &b,
                                     const QVector3D &c);
 
     Qt3DCore::QNodeId id() const Q_DECL_FINAL;
-    bool intersects(const Qt3DCore::QRay3D &ray, QVector3D *q) const Q_DECL_FINAL;
+    bool intersects(const QRay3D &ray, QVector3D *q) const Q_DECL_FINAL;
     Type type() const  Q_DECL_FINAL;
 
     QVector3D a() const;

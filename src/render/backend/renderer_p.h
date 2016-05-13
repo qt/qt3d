@@ -60,7 +60,7 @@
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
-#include <Qt3DRender/private/renderersettings_p.h>
+#include <Qt3DRender/private/rendersettings_p.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -95,8 +95,8 @@ class QShaderProgram;
 class QMesh;
 class QRenderPass;
 class QAbstractShapeMesh;
-class QGraphicsApiFilter;
-class QAbstractSceneParser;
+struct GraphicsApiFilterData;
+class QSceneIOHandler;
 
 namespace Render {
 
@@ -124,6 +124,7 @@ public:
     explicit Renderer(QRenderAspect::RenderType type);
     ~Renderer();
 
+    void dumpInfo() const Q_DECL_OVERRIDE;
     API api() const Q_DECL_OVERRIDE { return AbstractRenderer::OpenGL; }
 
     qint64 time() const Q_DECL_OVERRIDE;
@@ -149,8 +150,15 @@ public:
     void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Entity *sgRoot) Q_DECL_OVERRIDE;
     Entity *sceneRoot() const Q_DECL_OVERRIDE { return m_renderSceneRoot; }
 
-    void setFrameGraphRoot(const Qt3DCore::QNodeId fgRootId) Q_DECL_OVERRIDE;
     FrameGraphNode *frameGraphRoot() const Q_DECL_OVERRIDE;
+
+    void markDirty(BackendNodeDirtySet changes, BackendNode *node) Q_DECL_OVERRIDE;
+    BackendNodeDirtySet dirtyBits() Q_DECL_OVERRIDE;
+    void clearDirtyBits(BackendNodeDirtySet changes) Q_DECL_OVERRIDE;
+
+
+    bool shouldRender() Q_DECL_OVERRIDE;
+    void skipNextFrame() Q_DECL_OVERRIDE;
 
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() Q_DECL_OVERRIDE;
     Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() Q_DECL_OVERRIDE;
@@ -161,14 +169,14 @@ public:
 
     void registerEventFilter(Qt3DCore::QEventFilterService *service) Q_DECL_OVERRIDE;
 
-    virtual void setSettings(RendererSettings *settings) Q_DECL_OVERRIDE;
-    virtual RendererSettings *settings() const Q_DECL_OVERRIDE;
+    virtual void setSettings(RenderSettings *settings) Q_DECL_OVERRIDE;
+    virtual RenderSettings *settings() const Q_DECL_OVERRIDE;
 
-    void executeCommands(const RenderView *rv);
+    bool executeCommands(const RenderView *rv);
     Attribute *updateBuffersAndAttributes(Geometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate);
 
     void setOpenGLContext(QOpenGLContext *context);
-    QGraphicsApiFilter *contextInfo() const;
+    const GraphicsApiFilterData *contextInfo() const;
 
     void addAllocator(Qt3DCore::QFrameAllocator *allocator);
 
@@ -186,7 +194,21 @@ public:
 
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
-    bool submitRenderViews();
+    bool isReadyToSubmit();
+
+
+    struct ViewSubmissionResultData
+    {
+        ViewSubmissionResultData()
+            : lastBoundFBOId(0)
+            , surface(nullptr)
+        {}
+
+        uint lastBoundFBOId;
+        QSurface *surface;
+    };
+
+    ViewSubmissionResultData submitRenderViews(const QVector<Render::RenderView *> &renderViews);
 
     QMutex* mutex() { return &m_mutex; }
 
@@ -222,7 +244,6 @@ private:
     // is missing a shader
     Shader *m_defaultRenderShader;
     RenderStateSet *m_defaultRenderStateSet;
-    QHash<QString, QString> m_defaultParameterToGLSLAttributeNames;
     ShaderParameterPack m_defaultUniformPack;
 
     QScopedPointer<GraphicsContext> m_graphicsContext;
@@ -250,13 +271,21 @@ private:
     QVector<Attribute *> m_dirtyAttributes;
     QVector<Geometry *> m_dirtyGeometry;
     QAtomicInt m_exposed;
+    BackendNodeDirtySet m_changeSet;
+    QAtomicInt m_lastFrameCorrect;
     QOpenGLContext *m_glContext;
     PickBoundingVolumeJobPtr m_pickBoundingVolumeJob;
 
     qint64 m_time;
 
-    RendererSettings *m_settings;
-    static const RendererSettings ms_defaultSettings;
+    RenderSettings *m_settings;
+
+    void performDraw(GeometryRenderer *rGeometryRenderer,
+                     GLsizei primitiveCount, Attribute *indexAttribute);
+    void performCompute(const RenderView *rv, RenderCommand *command);
+    bool createOrUpdateVAO(RenderCommand *command,
+                           HVao *previousVAOHandle,
+                           OpenGLVertexArrayObject **vao);
 };
 
 } // namespace Render

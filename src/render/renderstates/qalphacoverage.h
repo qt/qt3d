@@ -53,12 +53,10 @@ class QT3DRENDERSHARED_EXPORT QAlphaCoverage : public QRenderState
 {
     Q_OBJECT
 public:
-    explicit QAlphaCoverage(Qt3DCore::QNode *parent = 0);
-    ~QAlphaCoverage();
+    explicit QAlphaCoverage(Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QAlphaCoverage)
-    QT3D_CLONEABLE(QAlphaCoverage)
 };
 
 } // namespace Qt3DRender

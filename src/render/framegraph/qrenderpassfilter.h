@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QRenderPassFilterPrivate;
-class QAnnotation;
+class QFilterKey;
 class QParameter;
 
 class QT3DRENDERSHARED_EXPORT QRenderPassFilter : public QFrameGraphNode
@@ -58,24 +58,22 @@ class QT3DRENDERSHARED_EXPORT QRenderPassFilter : public QFrameGraphNode
     Q_OBJECT
 
 public:
-    explicit QRenderPassFilter(Qt3DCore::QNode *parent = 0);
-    ~QRenderPassFilter();
+    explicit QRenderPassFilter(Qt3DCore::QNode *parent = nullptr);
 
-    QList<QAnnotation *> includes() const;
-    void addInclude(QAnnotation *criterion);
-    void removeInclude(QAnnotation *criterion);
+    QVector<QFilterKey*> matchAny() const;
+    void addMatch(QFilterKey *filterKey);
+    void removeMatch(QFilterKey *filterKey);
 
-    void addParameter(QParameter *p);
-    void removeParameter(QParameter *p);
-    QList<QParameter *> parameters() const;
+    void addParameter(QParameter *parameter);
+    void removeParameter(QParameter *parameter);
+    QVector<QParameter *> parameters() const;
 
 protected:
-    QRenderPassFilter(QRenderPassFilterPrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    QRenderPassFilter(QRenderPassFilterPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QRenderPassFilter)
-    QT3D_CLONEABLE(QRenderPassFilter)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

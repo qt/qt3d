@@ -40,7 +40,7 @@
 #include "qviewport.h"
 #include "qviewport_p.h"
 
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,26 +48,13 @@ namespace Qt3DRender {
 
 QViewportPrivate::QViewportPrivate()
     : QFrameGraphNodePrivate()
-    , m_rect(QRectF(0.0f, 0.0f, 1.0f, 1.0f))
+    , m_normalizedRect(QRectF(0.0f, 0.0f, 1.0f, 1.0f))
 {
-}
-
-void QViewport::copy(const QNode *ref)
-{
-    QFrameGraphNode::copy(ref);
-    const QViewport *viewport = static_cast<const QViewport*>(ref);
-    d_func()->m_rect = viewport->d_func()->m_rect;
-    d_func()->m_clearColor = viewport->d_func()->m_clearColor;
 }
 
 QViewport::QViewport(QNode *parent)
     : QFrameGraphNode(*new QViewportPrivate, parent)
 {
-}
-
-QViewport::~QViewport()
-{
-    QNode::cleanup();
 }
 
 /*! \internal */
@@ -76,34 +63,28 @@ QViewport::QViewport(QViewportPrivate &dd, QNode *parent)
 {
 }
 
-QRectF QViewport::rect() const
+QRectF QViewport::normalizedRect() const
 {
     Q_D(const QViewport);
-    return d->m_rect;
+    return d->m_normalizedRect;
 }
 
-void QViewport::setRect(const QRectF &rect)
+void QViewport::setNormalizedRect(const QRectF &normalizedRect)
 {
     Q_D(QViewport);
-    if (rect != d->m_rect) {
-        d->m_rect = rect;
-        emit rectChanged(rect);
+    if (normalizedRect != d->m_normalizedRect) {
+        d->m_normalizedRect = normalizedRect;
+        emit normalizedRectChanged(normalizedRect);
     }
 }
 
-QColor QViewport::clearColor() const
+Qt3DCore::QNodeCreatedChangeBasePtr QViewport::createNodeCreationChange() const
 {
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QViewportData>::create(this);
+    auto &data = creationChange->data;
     Q_D(const QViewport);
-    return d->m_clearColor;
-}
-
-void QViewport::setClearColor(const QColor &color)
-{
-    Q_D(QViewport);
-    if (color != d->m_clearColor) {
-        d->m_clearColor = color;
-        emit clearColorChanged(color);
-    }
+    data.normalizedRect = d->m_normalizedRect;
+    return creationChange;
 }
 
 } // namespace Qt3DRender

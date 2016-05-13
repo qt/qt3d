@@ -39,12 +39,14 @@
 
 #include "scene_p.h"
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qbackendscenepropertychange.h>
-#include <Qt3DRender/qabstractsceneloader.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
+#include <Qt3DRender/qsceneloader.h>
+#include <Qt3DRender/private/qsceneloader_p.h>
 #include <Qt3DRender/private/scenemanager_p.h>
+#include <QtCore/qcoreapplication.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,26 +56,30 @@ namespace Qt3DRender {
 namespace Render {
 
 Scene::Scene()
-    : QBackendNode(QBackendNode::ReadWrite)
-    , m_sceneManager(Q_NULLPTR)
+    : BackendNode(QBackendNode::ReadWrite)
+    , m_sceneManager(nullptr)
 {
 }
 
-void Scene::updateFromPeer(Qt3DCore::QNode *peer)
+void Scene::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QAbstractSceneLoader *loader = static_cast<QAbstractSceneLoader *>(peer);
-
-    m_source = loader->source();
-    m_sceneManager->addSceneData(m_source, peerUuid());
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QSceneLoaderData>>(change);
+    const auto &data = typedChange->data;
+    m_source = data.source;
+    Q_ASSERT(m_sceneManager);
+    m_sceneManager->addSceneData(m_source, peerId());
 }
 
 void Scene::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    if (propertyChange->propertyName() == QByteArrayLiteral("source")) {
-        m_source = propertyChange->value().toUrl();
-        m_sceneManager->addSceneData(m_source, peerUuid());
+    if (e->type() == PropertyUpdated) {
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
+        if (propertyChange->propertyName() == QByteArrayLiteral("source")) {
+            m_source = propertyChange->value().toUrl();
+            m_sceneManager->addSceneData(m_source, peerId());
+        }
     }
+    markDirty(AbstractRenderer::AllDirty);
 }
 
 QUrl Scene::source() const
@@ -83,18 +89,15 @@ QUrl Scene::source() const
 
 void Scene::setSceneSubtree(Qt3DCore::QEntity *subTree)
 {
-    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
+    // Move scene sub tree to the application thread so that it can be grafted in.
+    const auto appThread = QCoreApplication::instance()->thread();
+    subTree->moveToThread(appThread);
+
+    // Send the new subtree to the frontend
+    QBackendNodePropertyChangePtr e(new QBackendNodePropertyChange(peerId()));
     e->setPropertyName("scene");
-    // The Frontend element has to perform the clone
-    // So that the objects are created in the main thread
-    e->setValue(QVariant::fromValue(QNodePtr(subTree, &QNodePrivate::nodePtrDeleter)));
-    e->setTargetNode(peerUuid());
+    e->setValue(QVariant::fromValue(subTree));
     notifyObservers(e);
-    QBackendScenePropertyChangePtr e2(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
-    e2->setPropertyName("status");
-    e2->setValue(subTree != Q_NULLPTR ? QAbstractSceneLoader::Loaded : QAbstractSceneLoader::Error);
-    e2->setTargetNode(peerUuid());
-    notifyObservers(e2);
 }
 
 void Scene::setSceneManager(SceneManager *manager)
@@ -103,25 +106,26 @@ void Scene::setSceneManager(SceneManager *manager)
         m_sceneManager = manager;
 }
 
-RenderSceneFunctor::RenderSceneFunctor(SceneManager *sceneManager)
+RenderSceneFunctor::RenderSceneFunctor(AbstractRenderer *renderer, SceneManager *sceneManager)
     : m_sceneManager(sceneManager)
+    , m_renderer(renderer)
 {
 }
 
-Qt3DCore::QBackendNode *RenderSceneFunctor::create(Qt3DCore::QNode *frontend) const
+Qt3DCore::QBackendNode *RenderSceneFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
-    Scene *scene = m_sceneManager->getOrCreateResource(frontend->id());
+    Scene *scene = m_sceneManager->getOrCreateResource(change->subjectId());
     scene->setSceneManager(m_sceneManager);
-    scene->setPeer(frontend);
+    scene->setRenderer(m_renderer);
     return scene;
 }
 
-Qt3DCore::QBackendNode *RenderSceneFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *RenderSceneFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_sceneManager->lookupResource(id);
 }
 
-void RenderSceneFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void RenderSceneFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     m_sceneManager->releaseResource(id);
 }

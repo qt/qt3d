@@ -66,9 +66,9 @@ protected:
 
         switch (status) {
         case Ready: {
-            Q_ASSERT(priv->m_entity == Q_NULLPTR);
+            Q_ASSERT(priv->m_entity == nullptr);
             priv->m_entity = qobject_cast<QEntity *>(object());
-            Q_ASSERT(priv->m_entity != Q_NULLPTR);
+            Q_ASSERT(priv->m_entity != nullptr);
             priv->m_entity->setParent(m_loader);
             emit m_loader->entityChanged();
             break;
@@ -98,11 +98,6 @@ private:
 Quick3DEntityLoader::Quick3DEntityLoader(QNode *parent)
     : QEntity(*new Quick3DEntityLoaderPrivate, parent)
 {
-}
-
-Quick3DEntityLoader::~Quick3DEntityLoader()
-{
-    QNode::cleanup();
 }
 
 /*!
@@ -137,21 +132,12 @@ void Quick3DEntityLoader::setSource(const QUrl &url)
     d->loadFromSource();
 }
 
-void Quick3DEntityLoader::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const Quick3DEntityLoader *loader = static_cast<const Quick3DEntityLoader*>(ref);
-    d_func()->m_source = loader->d_func()->m_source;
-    d_func()->m_entity = static_cast<QEntity*>(QNode::clone(loader->d_func()->m_entity));
-    d_func()->m_entity->setParent(this);
-}
-
 Quick3DEntityLoaderPrivate::Quick3DEntityLoaderPrivate()
     : QEntityPrivate(),
-      m_incubator(Q_NULLPTR),
-      m_context(Q_NULLPTR),
-      m_component(Q_NULLPTR),
-      m_entity(Q_NULLPTR)
+      m_incubator(nullptr),
+      m_context(nullptr),
+      m_component(nullptr),
+      m_entity(nullptr)
 {
 }
 
@@ -160,23 +146,23 @@ void Quick3DEntityLoaderPrivate::clear()
     if (m_incubator) {
         m_incubator->clear();
         delete m_incubator;
-        m_incubator = Q_NULLPTR;
+        m_incubator = nullptr;
     }
 
     if (m_entity) {
         m_entity->setParent(Q_NODE_NULLPTR);
         delete m_entity;
-        m_entity = Q_NULLPTR;
+        m_entity = nullptr;
     }
 
     if (m_component) {
         delete m_component;
-        m_component = Q_NULLPTR;
+        m_component = nullptr;
     }
 
     if (m_context) {
         delete m_context;
-        m_context = Q_NULLPTR;
+        m_context = nullptr;
     }
 }
 
@@ -196,9 +182,9 @@ void Quick3DEntityLoaderPrivate::loadComponent(const QUrl &source)
 {
     Q_Q(Quick3DEntityLoader);
 
-    Q_ASSERT(m_entity == Q_NULLPTR);
-    Q_ASSERT(m_component == Q_NULLPTR);
-    Q_ASSERT(m_context == Q_NULLPTR);
+    Q_ASSERT(m_entity == nullptr);
+    Q_ASSERT(m_component == nullptr);
+    Q_ASSERT(m_context == nullptr);
 
     m_component = new QQmlComponent(qmlEngine(q), q);
     QObject::connect(m_component, SIGNAL(statusChanged(QQmlComponent::Status)),
@@ -210,10 +196,10 @@ void Quick3DEntityLoaderPrivate::_q_componentStatusChanged(QQmlComponent::Status
 {
     Q_Q(Quick3DEntityLoader);
 
-    Q_ASSERT(m_entity == Q_NULLPTR);
-    Q_ASSERT(m_component != Q_NULLPTR);
-    Q_ASSERT(m_context == Q_NULLPTR);
-    Q_ASSERT(m_incubator == Q_NULLPTR);
+    Q_ASSERT(m_entity == nullptr);
+    Q_ASSERT(m_component != nullptr);
+    Q_ASSERT(m_context == nullptr);
+    Q_ASSERT(m_incubator == nullptr);
 
     if (!m_component->errors().isEmpty()) {
         QQmlEnginePrivate::warning(qmlEngine(q), m_component->errors());

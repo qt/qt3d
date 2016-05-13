@@ -30,8 +30,10 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qframegraphnode.h>
+#include <Qt3DRender/private/qframegraphnode_p.h>
 
 #include "testpostmanarbiter.h"
 
@@ -39,30 +41,15 @@ class MyFrameGraphNode : public Qt3DRender::QFrameGraphNode
 {
     Q_OBJECT
 public:
-    explicit MyFrameGraphNode(Qt3DCore::QNode *parent = Q_NULLPTR)
+    explicit MyFrameGraphNode(Qt3DCore::QNode *parent = nullptr)
         : QFrameGraphNode(parent)
     {
     }
-
-    ~MyFrameGraphNode()
-    {
-        QNode::cleanup();
-    }
-
-private:
-    QT3D_CLONEABLE(MyFrameGraphNode)
 };
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QFrameGraphNode: public Qt3DCore::QNode
+class tst_QFrameGraphNode: public QObject
 {
     Q_OBJECT
-public:
-    ~tst_QFrameGraphNode()
-    {
-        QNode::cleanup();
-    }
 
 private Q_SLOTS:
 
@@ -71,7 +58,7 @@ private Q_SLOTS:
         QScopedPointer<Qt3DRender::QFrameGraphNode> defaultFrameGraphNode(new MyFrameGraphNode);
 
         QVERIFY(defaultFrameGraphNode->isEnabled());
-        QVERIFY(defaultFrameGraphNode->parentFrameGraphNode() == Q_NULLPTR);
+        QVERIFY(defaultFrameGraphNode->parentFrameGraphNode() == nullptr);
     }
 
     void checkCloning_data()
@@ -97,15 +84,19 @@ private Q_SLOTS:
         QCOMPARE(frameGraphNode->isEnabled(), enabled);
 
         // WHEN
-        Qt3DRender::QFrameGraphNode *clone = static_cast<Qt3DRender::QFrameGraphNode *>(QNode::clone(frameGraphNode));
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(frameGraphNode);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(frameGraphNode->id(), clone->id());
-        QCOMPARE(frameGraphNode->isEnabled(), enabled);
+        QCOMPARE(creationChanges.size(), 1);
+        const Qt3DCore::QNodeCreatedChangeBasePtr creationChangeData = creationChanges.first();
+
+        // THEN
+        QCOMPARE(frameGraphNode->id(), creationChangeData->subjectId());
+        QCOMPARE(frameGraphNode->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(frameGraphNode->metaObject(), creationChangeData->metaObject());
 
         delete frameGraphNode;
-        delete clone;
     }
 
     void checkPropertyUpdates()
@@ -120,11 +111,11 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "enabled");
         QCOMPARE(change->subjectId(), frameGraphNode->id());
         QCOMPARE(change->value().toBool(), false);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
@@ -141,11 +132,11 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "enabled");
         QCOMPARE(change->subjectId(), frameGraphNode->id());
         QCOMPARE(change->value().toBool(), true);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
     }
@@ -190,13 +181,6 @@ private Q_SLOTS:
         QVERIFY(child211->parent() == child21);
         QVERIFY(child211->parentFrameGraphNode() == child2);
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QFrameGraphNode)

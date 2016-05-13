@@ -38,27 +38,17 @@
 ****************************************************************************/
 
 #include "qaction.h"
+#include "qaction_p.h"
 #include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DInput/qabstractactioninput.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-/*!
-    \class Qt3DInput::QActionPrivate
-    \internal
-*/
-class QActionPrivate : public Qt3DCore::QNodePrivate
-{
-public:
-    QActionPrivate()
-        : Qt3DCore::QNodePrivate()
-    {}
-
-    QString m_name;
-    QVector<QAbstractActionInput *> m_inputs;
-};
 
 /*!
     \class Qt3DInput::QActionInput
@@ -87,14 +77,6 @@ QAction::QAction(Qt3DCore::QNode *parent)
 }
 
 /*!
-    Deletes the QAction instance.
- */
-QAction::~QAction()
-{
-    QNode::cleanup();
-}
-
-/*!
   \fn QAction::nameChanged()
 
   This signal is emitted when the name of the Action is changed.
@@ -114,25 +96,10 @@ QAction::~QAction()
     The corresponding handeler is \c onNameChanged
 */
 
-/*!
-    Set the name used to identify this action.
- */
-void QAction::setName(const QString &name)
-{
-    Q_D(QAction);
-    if (d->m_name != name) {
-        d->m_name = name;
-        emit nameChanged(name);
-    }
-}
-
-/*!
-    Returns the name used to identify this action.
- */
-QString QAction::name() const
+bool QAction::isActive() const
 {
     Q_D(const QAction);
-    return d->m_name;
+    return d->m_active;
 }
 
 /*!
@@ -153,10 +120,9 @@ void QAction::addInput(QAbstractActionInput *input)
         if (!input->parent())
             input->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, id()));
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), input);
             change->setPropertyName("input");
-            change->setValue(QVariant::fromValue(input->id()));
             d->notifyObservers(change);
         }
     }
@@ -170,10 +136,9 @@ void QAction::removeInput(QAbstractActionInput *input)
     Q_D(QAction);
     if (d->m_inputs.contains(input)) {
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, id()));
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), input);
             change->setPropertyName("input");
-            change->setValue(QVariant::fromValue(input->id()));
             d->notifyObservers(change);
         }
 
@@ -190,13 +155,21 @@ QVector<QAbstractActionInput *> QAction::inputs() const
     return d->m_inputs;
 }
 
-void QAction::copy(const Qt3DCore::QNode *ref)
+void QAction::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
-    QNode::copy(ref);
-    const QAction *action = static_cast<const QAction *>(ref);
-    d_func()->m_name = action->d_func()->m_name;
-    Q_FOREACH (QAbstractActionInput *input, action->inputs())
-        d_func()->m_inputs.append(qobject_cast<QAbstractActionInput *>(QNode::clone(input)));
+    Q_D(QAction);
+    Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
+    if (e->type() == Qt3DCore::PropertyUpdated && e->propertyName() == QByteArrayLiteral("active")) {
+        d->setActive(e->value().toBool());
+    }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QAction::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QActionData>::create(this);
+    auto &data = creationChange->data;
+    data.inputIds = qIdsForNodes(inputs());
+    return creationChange;
 }
 
 } // Qt3DInput

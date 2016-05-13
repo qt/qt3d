@@ -57,24 +57,23 @@
 #include <Qt3DInput/QInputAspect>
 
 #include <Qt3DRender/QRenderAspect>
-#include <Qt3DRender/QPhongMaterial>
-#include <Qt3DRender/QDiffuseMapMaterial>
-#include <Qt3DRender/QForwardRenderer>
-#include <Qt3DRender/QFrameGraph>
+#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QDiffuseMapMaterial>
+#include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QTextureImage>
 
 #include "planeentity.h"
 #include "rotatingtrefoilknot.h"
 #include "barrel.h"
 #include "houseplant.h"
-#include "qt3dwindow.h"
-#include "qfirstpersoncameracontroller.h"
+#include <Qt3DExtras/qt3dwindow.h>
+#include <Qt3DExtras/qfirstpersoncameracontroller.h>
 
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
 
-    Qt3DWindow view;
+    Qt3DExtras::Qt3DWindow view;
 
     // Scene Root
     Qt3DCore::QEntity *sceneRoot = new Qt3DCore::QEntity();
@@ -87,7 +86,7 @@ int main(int argc, char* argv[])
     basicCamera->setViewCenter(QVector3D(0.0f, 3.5f, 0.0f));
     basicCamera->setPosition(QVector3D(0.0f, 3.5f, 25.0f));
     // For camera controls
-    Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(sceneRoot);
+    Qt3DExtras::QFirstPersonCameraController *camController = new Qt3DExtras::QFirstPersonCameraController(sceneRoot);
     camController->setCamera(basicCamera);
 
     // Scene floor
@@ -96,7 +95,7 @@ int main(int argc, char* argv[])
     planeEntity->mesh()->setWidth(100.0f);
     planeEntity->mesh()->setMeshResolution(QSize(20, 20));
 
-    Qt3DRender::QNormalDiffuseSpecularMapMaterial *normalDiffuseSpecularMapMaterial = new Qt3DRender::QNormalDiffuseSpecularMapMaterial();
+    Qt3DExtras::QNormalDiffuseSpecularMapMaterial *normalDiffuseSpecularMapMaterial = new Qt3DExtras::QNormalDiffuseSpecularMapMaterial();
     normalDiffuseSpecularMapMaterial->setTextureScale(10.0f);
     normalDiffuseSpecularMapMaterial->setShininess(80.0f);
     normalDiffuseSpecularMapMaterial->setAmbient(QColor::fromRgbF(0.2f, 0.2f, 0.2f, 1.0f));
@@ -119,7 +118,7 @@ int main(int argc, char* argv[])
     RenderableEntity *chest = new RenderableEntity(sceneRoot);
     chest->transform()->setScale(0.03f);
     chest->mesh()->setSource(QUrl(QStringLiteral("qrc:/assets/chest/Chest.obj")));
-    Qt3DRender::QDiffuseMapMaterial *diffuseMapMaterial = new Qt3DRender::QDiffuseMapMaterial();
+    Qt3DExtras::QDiffuseMapMaterial *diffuseMapMaterial = new Qt3DExtras::QDiffuseMapMaterial();
     diffuseMapMaterial->setSpecular(QColor::fromRgbF(0.2f, 0.2f, 0.2f, 1.0f));
     diffuseMapMaterial->setShininess(2.0f);
 
@@ -134,7 +133,7 @@ int main(int argc, char* argv[])
     RotatingTrefoilKnot *trefoil = new RotatingTrefoilKnot(sceneRoot);
     trefoil->setPosition(QVector3D(0.0f, 3.5f, 0.0f));
     trefoil->setScale(0.5f);
-    Qt3DRender::QPhongMaterial *phongMaterial = new Qt3DRender::QPhongMaterial();
+    Qt3DExtras::QPhongMaterial *phongMaterial = new Qt3DExtras::QPhongMaterial();
     phongMaterial->setDiffuse(QColor(204, 205, 75)); // Safari Yellow #cccd4b
     phongMaterial->setSpecular(Qt::white);
     trefoil->addComponent(phongMaterial);

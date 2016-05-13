@@ -40,22 +40,11 @@
 #include "qtextureimage.h"
 #include "qtextureimage_p.h"
 #include "qabstracttextureimage_p.h"
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QTextureImagePrivate : public QAbstractTextureImagePrivate
-{
-public:
-    QTextureImagePrivate()
-        : QAbstractTextureImagePrivate()
-    {
-    }
-
-    Q_DECLARE_PUBLIC(QTextureImage)
-    QUrl m_source;
-};
 
 /*!
     \class Qt3DRender::QTextureImage
@@ -87,14 +76,6 @@ QTextureImage::QTextureImage(QNode *parent)
 }
 
 /*!
-  The destructor.
- */
-QTextureImage::~QTextureImage()
-{
-    QNode::cleanup();
-}
-
-/*!
     Returns the source url from which data for the texture image will be loaded.
  */
 QUrl QTextureImage::source() const
@@ -103,17 +84,23 @@ QUrl QTextureImage::source() const
     return d->m_source;
 }
 
+QTextureImage::Status QTextureImage::status() const
+{
+    Q_D(const QTextureImage);
+    return d->m_status;
+}
+
 /*!
   \property Qt3DRender::QTextureImage::source
 
-  This property holdsthe source url from which data for the texture
+  This property holds the source url from which data for the texture
   image will be loaded.
 */
 
 /*!
   \qmlproperty url Qt3D.Render::TextureImage::source
 
-  This property holdsthe source url from which data for the texture
+  This property holds the source url from which data for the texture
   image will be loaded.
 */
 
@@ -127,27 +114,34 @@ void QTextureImage::setSource(const QUrl &source)
     if (source != d->m_source) {
         d->m_source = source;
         emit sourceChanged(source);
-        update();
+        notifyDataGeneratorChanged();
+    }
+}
+
+void QTextureImage::setStatus(Status status)
+{
+    Q_D(QTextureImage);
+    if (status != d->m_status) {
+        d->m_status = status;
+        emit statusChanged(status);
     }
 }
 
 /*!
-    Returns the Qt3DRender::QTextureDataFunctorPtr functor to be used by the
+    Returns the Qt3DRender::QTextureImageDataGeneratorPtr functor to be used by the
     backend to load the texture image data into an OpenGL texture object.
  */
-QTextureDataFunctorPtr QTextureImage::dataFunctor() const
+QTextureImageDataGeneratorPtr QTextureImage::dataGenerator() const
 {
-    return QTextureDataFunctorPtr(new QImageTextureDataFunctor(source()));
+    return QTextureImageDataGeneratorPtr(new QImageTextureDataFunctor(source()));
 }
 
-/*!
-  Copies \a ref into this texture image.
- */
-void QTextureImage::copy(const QNode *ref)
+void QTextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
-    QAbstractTextureImage::copy(ref);
-    const QTextureImage *img = static_cast<const QTextureImage *>(ref);
-    d_func()->m_source = img->source();
+    Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
+
+    if (e->propertyName() == QByteArrayLiteral("status"))
+        setStatus(static_cast<QTextureImage::Status>(e->value().toInt()));
 }
 
 } // namespace Qt3DRender

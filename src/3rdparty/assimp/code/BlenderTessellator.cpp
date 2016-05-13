@@ -146,7 +146,7 @@ void BlenderTessellatorGL::TriangulateDrawCalls( const TessDataGL& tessData )
 	for ( unsigned int i = 0; i < tessData.drawCalls.size( ); ++i )
 	{
 		const DrawCallGL& drawCallGL = tessData.drawCalls[ i ];
-		const VertexGL* vertices = &tessData.vertices[ drawCallGL.baseVertex ];
+        const VertexGL* vertices = &tessData.vertices[ drawCallGL.baseVertex ];
 		if ( drawCallGL.drawMode == GL_TRIANGLES )
 		{
 			MakeFacesFromTris( vertices, drawCallGL.vertexCount );

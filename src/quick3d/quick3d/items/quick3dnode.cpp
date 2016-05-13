@@ -162,7 +162,7 @@ void Quick3DNode::childRemoved(int, QObject *obj)
     if (QNode *n = qobject_cast<QNode *>(obj))
         n->setParent(Q_NODE_NULLPTR);
     else
-        obj->setParent(Q_NULLPTR);
+        obj->setParent(nullptr);
 }
 
 } // namespace Quick

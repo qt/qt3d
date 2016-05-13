@@ -38,8 +38,10 @@
 ****************************************************************************/
 
 #include "attribute_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qbuffer.h>
+#include <Qt3DRender/private/qattribute_p.h>
+#include <Qt3DRender/private/stringtoint_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,14 +51,15 @@ namespace Qt3DRender {
 namespace Render {
 
 Attribute::Attribute()
-    : QBackendNode(ReadOnly)
-    , m_dataType(QAbstractAttribute::Float)
-    , m_dataSize(1)
+    : BackendNode(ReadOnly)
+    , m_nameId(0)
+    , m_vertexDataType(QAttribute::Float)
+    , m_vertexSize(1)
     , m_count(0)
     , m_byteStride(0)
     , m_byteOffset(0)
     , m_divisor(0)
-    , m_attributeType(QAbstractAttribute::VertexAttribute)
+    , m_attributeType(QAttribute::VertexAttribute)
     , m_attributeDirty(false)
 {
 }
@@ -67,52 +70,52 @@ Attribute::~Attribute()
 
 void Attribute::cleanup()
 {
-    m_dataType = QAbstractAttribute::Float;
-    m_dataSize = 1;
+    m_vertexDataType = QAttribute::Float;
+    m_vertexSize = 1;
     m_count = 0;
     m_byteStride = 0;
     m_byteOffset = 0;
     m_divisor = 0;
-    m_attributeType = QAbstractAttribute::VertexAttribute;
+    m_attributeType = QAttribute::VertexAttribute;
     m_bufferId = Qt3DCore::QNodeId();
     m_name.clear();
     m_attributeDirty = false;
+    m_nameId = 0;
 }
 
-void Attribute::updateFromPeer(Qt3DCore::QNode *peer)
+void Attribute::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QAttribute *attribute = static_cast<QAttribute *>(peer);
-    if (attribute) {
-        m_dataType = attribute->dataType();
-        m_dataSize = attribute->dataSize();
-        m_count = attribute->count();
-        m_byteOffset = attribute->byteOffset();
-        m_byteStride = attribute->byteStride();
-        m_divisor = attribute->divisor();
-        m_attributeType = attribute->attributeType();
-        m_name = attribute->name();
-        if (attribute->buffer())
-            m_bufferId = attribute->buffer()->id();
-        m_attributeDirty = true;
-    }
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAttributeData>>(change);
+    const auto &data = typedChange->data;
+    m_bufferId = data.bufferId;
+    m_name = data.name;
+    m_nameId = StringToInt::lookupId(m_name);
+    m_vertexDataType = data.dataType;
+    m_vertexSize = data.dataSize;
+    m_count = data.count;
+    m_byteStride = data.byteStride;
+    m_byteOffset = data.byteOffset;
+    m_divisor = data.divisor;
+    m_attributeType = data.attributeType;
+    m_attributeDirty = true;
 }
 
 void Attribute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    QByteArray propertyName = propertyChange->propertyName();
-
     switch (e->type()) {
+    case PropertyUpdated: {
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
+        QByteArray propertyName = propertyChange->propertyName();
 
-    case NodeUpdated: {
         if (propertyName == QByteArrayLiteral("name")) {
             m_name = propertyChange->value().value<QString>();
+            m_nameId = StringToInt::lookupId(m_name);
             m_attributeDirty = true;
-        } else if (propertyName == QByteArrayLiteral("dataType")) {
-            m_dataType = static_cast<QAbstractAttribute::DataType>(propertyChange->value().value<int>());
+        } else if (propertyName == QByteArrayLiteral("vertexBaseType")) {
+            m_vertexDataType = static_cast<QAttribute::VertexBaseType>(propertyChange->value().value<int>());
             m_attributeDirty = true;
-        } else if (propertyName == QByteArrayLiteral("dataSize")) {
-            m_dataSize = propertyChange->value().value<uint>();
+        } else if (propertyName == QByteArrayLiteral("vertexSize")) {
+            m_vertexSize = propertyChange->value().value<uint>();
             m_attributeDirty = true;
         } else if (propertyName == QByteArrayLiteral("count")) {
             m_count = propertyChange->value().value<uint>();
@@ -127,18 +130,20 @@ void Attribute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_divisor = propertyChange->value().value<uint>();
             m_attributeDirty = true;
         } else if (propertyName == QByteArrayLiteral("attributeType")) {
-            m_attributeType = static_cast<QAbstractAttribute::AttributeType>(propertyChange->value().value<int>());
+            m_attributeType = static_cast<QAttribute::AttributeType>(propertyChange->value().value<int>());
             m_attributeDirty = true;
         } else  if (propertyName == QByteArrayLiteral("buffer")) {
             m_bufferId = propertyChange->value().value<QNodeId>();
             m_attributeDirty = true;
         }
+        markDirty(AbstractRenderer::AllDirty);
         break;
     }
 
     default:
         break;
     }
+    BackendNode::sceneChangeEvent(e);
 }
 
 void Attribute::unsetDirty()

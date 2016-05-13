@@ -61,7 +61,7 @@ namespace Qt3DInput {
  * traversing the view, originating from the mouse position intersects with one
  * or more elements of the scene.
  *
- * \sa KeyEvent, WheelEvent, MouseInput
+ * \sa KeyEvent, WheelEvent, MouseHandler
  */
 
 /*!
@@ -76,7 +76,7 @@ namespace Qt3DInput {
  *
  * \since 5.5
  *
- * \sa QKeyEvent, QWheelEvent, QMouseInput
+ * \sa QKeyEvent, QWheelEvent, QMouseHandler
  *
  */
 
@@ -132,13 +132,13 @@ QMouseEvent::~QMouseEvent()
 QMouseEvent::Buttons QMouseEvent::button() const
 {
     switch (m_event.button()) {
-    case Qt::MouseButton::LeftButton:
+    case Qt::LeftButton:
         return QMouseEvent::LeftButton;
-    case Qt::MouseButton::RightButton:
+    case Qt::RightButton:
         return QMouseEvent::RightButton;
-    case Qt::MouseButton::MiddleButton:
+    case Qt::MiddleButton:
         return QMouseEvent::MiddleButton;
-    case Qt::MouseButton::BackButton:
+    case Qt::BackButton:
         return QMouseEvent::BackButton;
     default:
         return QMouseEvent::NoButton;
@@ -155,9 +155,9 @@ int QMouseEvent::buttons() const
 }
 
 /*!
- * Returns the keyboard modifier that may be accompanying the mouse event.
+ * Returns the keyboard modifiers that may be accompanying the mouse event.
  */
-QMouseEvent::Modifiers QMouseEvent::modifier() const
+QMouseEvent::Modifiers QMouseEvent::modifiers() const
 {
     switch (m_event.modifiers()) {
     case Qt::ShiftModifier:
@@ -184,7 +184,7 @@ QMouseEvent::Modifiers QMouseEvent::modifier() const
  *
  * Mouse wheel events occur when the mouse wheel is rotated.
  *
- * \sa KeyEvent, MouseEvent, MouseInput
+ * \sa KeyEvent, MouseEvent, MouseHandler
  *
  */
 
@@ -198,7 +198,7 @@ QMouseEvent::Modifiers QMouseEvent::modifier() const
  *
  * \since 5.5
  *
- * \sa QKeyEvent, QMouseEvent, QMouseInput
+ * \sa QKeyEvent, QMouseEvent, QMouseHandler
  *
  */
 
@@ -267,9 +267,9 @@ int QWheelEvent::buttons() const
 }
 
 /*!
- * Returns the keyboard modifier that may be accompanying the wheel event.
+ * Returns the keyboard modifiers that may be accompanying the wheel event.
  */
-QWheelEvent::Modifiers QWheelEvent::modifier() const
+QWheelEvent::Modifiers QWheelEvent::modifiers() const
 {
     switch (m_event.modifiers()) {
     case Qt::ShiftModifier:

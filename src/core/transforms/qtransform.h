@@ -58,14 +58,13 @@ class QT3DCORESHARED_EXPORT QTransform : public QComponent
     Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scaleChanged)
     Q_PROPERTY(QVector3D scale3D READ scale3D WRITE setScale3D NOTIFY scale3DChanged)
     Q_PROPERTY(QQuaternion rotation READ rotation WRITE setRotation NOTIFY rotationChanged)
+    Q_PROPERTY(QVector3D translation READ translation WRITE setTranslation NOTIFY translationChanged)
     Q_PROPERTY(float rotationX READ rotationX WRITE setRotationX NOTIFY rotationXChanged)
     Q_PROPERTY(float rotationY READ rotationY WRITE setRotationY NOTIFY rotationYChanged)
     Q_PROPERTY(float rotationZ READ rotationZ WRITE setRotationZ NOTIFY rotationZChanged)
-    Q_PROPERTY(QVector3D translation READ translation WRITE setTranslation NOTIFY translationChanged)
 
 public:
-    explicit QTransform(QNode *parent = 0);
-    ~QTransform();
+    explicit QTransform(QNode *parent = nullptr);
 
     float scale() const;
     QVector3D scale3D() const;
@@ -107,19 +106,18 @@ Q_SIGNALS:
     void scaleChanged(float scale);
     void scale3DChanged(const QVector3D &scale);
     void rotationChanged(const QQuaternion &rotation);
+    void translationChanged(const QVector3D &translation);
+    void matrixChanged(const QMatrix4x4 &matrix);
     void rotationXChanged(float rotationX);
     void rotationYChanged(float rotationY);
     void rotationZChanged(float rotationZ);
-    void translationChanged(const QVector3D &translation);
-    void matrixChanged(const QMatrix4x4 &matrix);
 
 protected:
-    QTransform(QTransformPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QTransform(QTransformPrivate &dd, QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QTransform)
-    QT3D_CLONEABLE(QTransform)
+    QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DCore

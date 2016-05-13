@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DCore/private/qcomponent_p.h>
+#include <QtCore/qpointer.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,6 +64,11 @@ public:
     QInputSettingsPrivate();
 
     QObject *m_eventSource;
+};
+
+struct QInputSettingsData
+{
+    QPointer<QObject> eventSource;
 };
 
 } // Qt3DInput

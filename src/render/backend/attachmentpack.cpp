@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -38,47 +38,56 @@
 ****************************************************************************/
 
 #include "attachmentpack_p.h"
+#include <Qt3DRender/private/rendertarget_p.h>
+#include <Qt3DRender/private/rendertargetselectornode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
 namespace Render {
 
 AttachmentPack::AttachmentPack()
 {
 }
 
-void AttachmentPack::addAttachment(const Attachment &attachment)
+AttachmentPack::AttachmentPack(const RenderTargetSelector *selector, const RenderTarget *target, AttachmentManager *attachmentManager)
 {
-    m_attachments.append(attachment);
+    // Cache draw buffers list
+    const QVector<QRenderTargetOutput::AttachmentPoint> selectedAttachmentPoints = selector->outputs();
+
+    // Copy attachments
+    const auto outputIds = target->renderOutputs();
+    for (Qt3DCore::QNodeId outputId : outputIds) {
+        const RenderTargetOutput *output = attachmentManager->lookupResource(outputId);
+        if (output)
+            m_attachments.append(output->attachment());
+    }
+
+    // Create actual DrawBuffers list that is used for glDrawBuffers
+
+    // If nothing is specified, use all the attachments as draw buffers
+    if (selectedAttachmentPoints.isEmpty()) {
+        for (const Attachment &attachment : qAsConst(m_attachments))
+            // only consider Color Attachments
+            if (attachment.m_point <= QRenderTargetOutput::Color15)
+                m_drawBuffers.push_back((int) attachment.m_point);
+    } else {
+        for (QRenderTargetOutput::AttachmentPoint drawBuffer : selectedAttachmentPoints)
+            if (drawBuffer <= QRenderTargetOutput::Color15)
+                m_drawBuffers.push_back((int) drawBuffer);
+    }
 }
 
-QVector<Attachment> AttachmentPack::attachments() const
+// return index of given attachment within actual draw buffers list
+int AttachmentPack::getDrawBufferIndex(QRenderTargetOutput::AttachmentPoint attachmentPoint) const
 {
-    return m_attachments;
-}
-
-QList<QRenderAttachment::RenderAttachmentType> AttachmentPack::drawBuffers() const
-{
-    return m_drawBuffers;
-}
-
-void AttachmentPack::setDrawBuffers(const QList<QRenderAttachment::RenderAttachmentType> &drawBuffers)
-{
-    m_drawBuffers = drawBuffers;
-}
-
-Attachment::Attachment()
-    : m_mipLevel(0)
-    , m_layer(0)
-    , m_type(QRenderAttachment::ColorAttachment0)
-    , m_face(QRenderAttachment::CubeMapNegativeX)
-{
+    for (int i = 0; i < m_drawBuffers.size(); i++)
+        if (m_drawBuffers.at(i) == (int)attachmentPoint)
+            return i;
+    return -1;
 }
 
 } // namespace Render
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

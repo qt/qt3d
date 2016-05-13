@@ -66,13 +66,12 @@ NodeManagers::NodeManagers()
     , m_textureManager(new TextureManager())
     , m_textureDataManager(new TextureDataManager())
     , m_layerManager(new LayerManager())
-    , m_criterionManager(new CriterionManager())
+    , m_filterKeyManager(new FilterKeyManager())
     , m_frameGraphManager(new FrameGraphManager())
     , m_transformManager(new TransformManager())
     , m_renderTargetManager(new RenderTargetManager())
     , m_sceneManager(new SceneManager())
     , m_attachmentManager(new AttachmentManager())
-    , m_sortCriterionManager(new SortCriterionManager())
     , m_parameterManager(new ParameterManager())
     , m_shaderDataManager(new ShaderDataManager())
     , m_glBufferManager(new GLBufferManager())
@@ -82,9 +81,9 @@ NodeManagers::NodeManagers()
     , m_geometryManager(new GeometryManager())
     , m_geometryRendererManager(new GeometryRendererManager)
     , m_objectPickerManager(new ObjectPickerManager())
-    , m_boundingVolumeDebugManager(new BoundingVolumeDebugManager())
+//    , m_boundingVolumeDebugManager(new BoundingVolumeDebugManager())
     , m_lightManager(new LightManager())
-    , m_computeJobManager(new ComputeJobManager())
+    , m_computeJobManager(new ComputeCommandManager())
     , m_renderStateManager(new RenderStateManager())
 {
 }
@@ -150,7 +149,7 @@ TextureManager *NodeManagers::manager<Texture>() const Q_DECL_NOEXCEPT
 }
 
 template<>
-TextureDataManager *NodeManagers::manager<QTexImageData>() const Q_DECL_NOEXCEPT
+TextureDataManager *NodeManagers::manager<QTextureImageData>() const Q_DECL_NOEXCEPT
 {
     return m_textureDataManager;
 }
@@ -162,9 +161,9 @@ LayerManager *NodeManagers::manager<Layer>() const Q_DECL_NOEXCEPT
 }
 
 template<>
-CriterionManager *NodeManagers::manager<Annotation>() const Q_DECL_NOEXCEPT
+FilterKeyManager *NodeManagers::manager<FilterKey>() const Q_DECL_NOEXCEPT
 {
-    return m_criterionManager;
+    return m_filterKeyManager;
 }
 
 template<>
@@ -192,15 +191,9 @@ SceneManager *NodeManagers::manager<Scene>() const Q_DECL_NOEXCEPT
 }
 
 template<>
-AttachmentManager *NodeManagers::manager<RenderAttachment>() const Q_DECL_NOEXCEPT
+AttachmentManager *NodeManagers::manager<RenderTargetOutput>() const Q_DECL_NOEXCEPT
 {
     return m_attachmentManager;
-}
-
-template<>
-SortCriterionManager *NodeManagers::manager<SortCriterion>() const Q_DECL_NOEXCEPT
-{
-    return m_sortCriterionManager;
 }
 
 template<>
@@ -257,11 +250,11 @@ ObjectPickerManager *NodeManagers::manager<ObjectPicker>() const Q_DECL_NOEXCEPT
     return m_objectPickerManager;
 }
 
-template<>
-BoundingVolumeDebugManager *NodeManagers::manager<BoundingVolumeDebug>() const Q_DECL_NOEXCEPT
-{
-    return m_boundingVolumeDebugManager;
-}
+//template<>
+//BoundingVolumeDebugManager *NodeManagers::manager<BoundingVolumeDebug>() const Q_DECL_NOEXCEPT
+//{
+//    return m_boundingVolumeDebugManager;
+//}
 
 template<>
 LightManager *NodeManagers::manager<Light>() const Q_DECL_NOEXCEPT
@@ -270,7 +263,7 @@ LightManager *NodeManagers::manager<Light>() const Q_DECL_NOEXCEPT
 }
 
 template<>
-ComputeJobManager *NodeManagers::manager<ComputeJob>() const Q_DECL_NOEXCEPT
+ComputeCommandManager *NodeManagers::manager<ComputeCommand>() const Q_DECL_NOEXCEPT
 {
     return m_computeJobManager;
 }

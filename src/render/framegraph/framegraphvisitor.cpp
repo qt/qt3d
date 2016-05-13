@@ -50,8 +50,8 @@ namespace Qt3DRender {
 namespace Render {
 
 FrameGraphVisitor::FrameGraphVisitor()
-    : m_renderer(Q_NULLPTR)
-    , m_jobs(Q_NULLPTR)
+    : m_renderer(nullptr)
+    , m_jobs(nullptr)
     , m_renderviewIndex(0)
 
 {
@@ -71,7 +71,7 @@ void FrameGraphVisitor::traverse(FrameGraphNode *root,
 
     // Kick off the traversal
     Render::FrameGraphNode *node = root;
-    if (node == Q_NULLPTR)
+    if (node == nullptr)
         qCritical() << Q_FUNC_INFO << "FrameGraph is null";
     visit(node);
 }
@@ -85,7 +85,8 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
 
     // Recurse to children (if we have any), otherwise if this is a leaf node,
     // initiate a rendering from the current camera
-    Q_FOREACH (Render::FrameGraphNode *n, node->children())
+    const auto children = node->children();
+    for (Render::FrameGraphNode *n : children)
         visit(n);
     // Leaf node - create a RenderView ready to be populated
     // TODO: Pass in only framegraph config that has changed from previous

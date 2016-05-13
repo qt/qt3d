@@ -42,7 +42,7 @@
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DCore/qnode.h>
-#include <Qt3DInput/qabstractaggregateactioninput.h>
+#include <Qt3DInput/qabstractactioninput.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,37 +51,33 @@ namespace Qt3DInput {
 class QAbstractPhysicalDevice;
 class QInputSequencePrivate;
 
-class QT3DINPUTSHARED_EXPORT QInputSequence : public Qt3DInput::QAbstractAggregateActionInput
+class QT3DINPUTSHARED_EXPORT QInputSequence : public Qt3DInput::QAbstractActionInput
 {
     Q_OBJECT
     Q_PROPERTY(int timeout READ timeout WRITE setTimeout NOTIFY timeoutChanged)
-    Q_PROPERTY(int interval READ interval WRITE setInterval NOTIFY intervalChanged)
-    Q_PROPERTY(bool sequential READ sequential WRITE setSequential NOTIFY sequentialChanged)
+    Q_PROPERTY(int buttonInterval READ buttonInterval WRITE setButtonInterval NOTIFY buttonIntervalChanged)
 
 public:
-    explicit QInputSequence(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QInputSequence();
+    explicit QInputSequence(Qt3DCore::QNode *parent = nullptr);
 
     int timeout() const;
-    int interval() const;
-    bool sequential() const;
+    int buttonInterval() const;
+
+    void addSequence(QAbstractActionInput *input);
+    void removeSequence(QAbstractActionInput *input);
+    QVector<QAbstractActionInput *> sequences() const;
 
 public Q_SLOTS:
     void setTimeout(int timeout);
-    void setInterval(int interval);
-    void setSequential(bool sequential);
+    void setButtonInterval(int buttonInterval);
 
 Q_SIGNALS:
     void timeoutChanged(int timeout);
-    void intervalChanged(int interval);
-    void sequentialChanged(bool sequential);
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void buttonIntervalChanged(int buttonInterval);
 
 private:
     Q_DECLARE_PRIVATE(QInputSequence)
-    QT3D_CLONEABLE(QInputSequence)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3DInput

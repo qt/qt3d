@@ -52,6 +52,7 @@ import QtQuick 2.1 as QQ2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 import Qt3D.Input 2.0
+import Qt3D.Extras 2.0
 
 Entity {
     id: root
@@ -60,7 +61,7 @@ Entity {
     // Use the renderer configuration specified in ForwardRenderer.qml
     // and render from the mainCamera
     components: [
-        FrameGraph {
+        RenderSettings {
             activeFrameGraph: SortedForwardRenderer {
                 id: renderer
                 camera: mainCamera

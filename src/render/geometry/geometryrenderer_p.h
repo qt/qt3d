@@ -51,9 +51,9 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/qgeometryfunctor.h>
+#include <Qt3DRender/qgeometryfactory.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,7 +65,7 @@ namespace Render {
 
 class GeometryRendererManager;
 
-class Q_AUTOTEST_EXPORT GeometryRenderer : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT GeometryRenderer : public BackendNode
 {
 public:
     GeometryRenderer();
@@ -73,21 +73,21 @@ public:
 
     void cleanup();
     void setManager(GeometryRendererManager *manager);
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void executeFunctor();
 
     inline Qt3DCore::QNodeId geometryId() const { return m_geometryId; }
     inline int instanceCount() const { return m_instanceCount; }
-    inline int primitiveCount() const { return m_primitiveCount; }
-    inline int baseVertex() const { return m_baseVertex; }
-    inline int baseInstance() const { return m_baseInstance; }
-    inline int restartIndex() const { return m_restartIndex; }
-    inline bool primitiveRestart() const { return m_primitiveRestart; }
+    inline int vertexCount() const { return m_vertexCount; }
+    inline int indexOffset() const { return m_indexOffset; }
+    inline int firstInstance() const { return m_firstInstance; }
+    inline int firstVertex() const { return m_firstVertex; }
+    inline int restartIndexValue() const { return m_restartIndexValue; }
+    inline int verticesPerPatch() const { return m_verticesPerPatch; }
+    inline bool primitiveRestartEnabled() const { return m_primitiveRestartEnabled; }
     inline QGeometryRenderer::PrimitiveType primitiveType() const { return m_primitiveType; }
     inline bool isDirty() const { return m_dirty; }
-    inline bool isEnabled() const { return m_enabled; }
-    inline QGeometryFunctorPtr geometryFunctor() const { return m_functor; }
+    inline QGeometryFactoryPtr geometryFactory() const { return m_geometryFactory; }
     void unsetDirty();
 
     // Build triangle data Job thread
@@ -96,30 +96,34 @@ public:
     QVector<QBoundingVolume *> triangleData() const;
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     Qt3DCore::QNodeId m_geometryId;
     int m_instanceCount;
-    int m_primitiveCount;
-    int m_baseVertex;
-    int m_baseInstance;
-    int m_restartIndex;
-    bool m_primitiveRestart;
+    int m_vertexCount;
+    int m_indexOffset;
+    int m_firstInstance;
+    int m_firstVertex;
+    int m_restartIndexValue;
+    int m_verticesPerPatch;
+    bool m_primitiveRestartEnabled;
     QGeometryRenderer::PrimitiveType m_primitiveType;
     bool m_dirty;
-    bool m_enabled;
-    QGeometryFunctorPtr m_functor;
+    QGeometryFactoryPtr m_geometryFactory;
     GeometryRendererManager *m_manager;
     QVector<QBoundingVolume *> m_triangleVolumes;
 };
 
-class GeometryRendererFunctor : public Qt3DCore::QBackendNodeFunctor
+class GeometryRendererFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
-    explicit GeometryRendererFunctor(GeometryRendererManager *manager);
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    explicit GeometryRendererFunctor(AbstractRenderer *renderer, GeometryRendererManager *manager);
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
 private:
     GeometryRendererManager *m_manager;
+    AbstractRenderer *m_renderer;
 };
 
 } // namespace Render

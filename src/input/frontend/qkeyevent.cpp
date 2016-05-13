@@ -58,7 +58,7 @@ namespace Qt3DInput {
     \since 5.5
 
     The KeyEvent QML type cannot be directly created. Objects of this type
-    are used as signal parameters in KeyboardInput.
+    are used as signal parameters in KeyboardHandler.
 */
 
 QKeyEvent::QKeyEvent(QEvent::Type type, int key, Qt::KeyboardModifiers modifiers, const QString &text, bool autorep, ushort count)

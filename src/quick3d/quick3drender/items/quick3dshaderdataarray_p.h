@@ -76,12 +76,8 @@ class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DShaderDataArray : public Qt3DC
 
 public:
     explicit Quick3DShaderDataArray(Qt3DCore::QNode *parent = 0);
-    ~Quick3DShaderDataArray();
     QQmlListProperty<QShaderData> valuesList();
-    QList<QShaderData *> values() const;
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    QVector<QShaderData *> values() const;
 
 private:
     static void appendValue(QQmlListProperty<QShaderData> *list, QShaderData *bar);
@@ -89,7 +85,6 @@ private:
     static int valueCount(QQmlListProperty<QShaderData> *list);
     static void clearValues(QQmlListProperty<QShaderData> *list);
     Q_DECLARE_PRIVATE(Quick3DShaderDataArray)
-    QT3D_CLONEABLE(Quick3DShaderDataArray)
 };
 
 } // namespace Quick

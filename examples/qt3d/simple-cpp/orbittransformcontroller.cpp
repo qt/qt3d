@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 
 OrbitTransformController::OrbitTransformController(QObject *parent)
     : QObject(parent)
-    , m_target(Q_NULLPTR)
+    , m_target(nullptr)
     , m_matrix()
     , m_radius(1.0f)
     , m_angle(0.0f)

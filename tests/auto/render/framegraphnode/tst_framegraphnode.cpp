@@ -26,15 +26,17 @@
 **
 ****************************************************************************/
 
-#include <QtTest/QTest>
-#include <Qt3DCore/private/qbackendnode_p.h>
 #include <Qt3DRender/private/framegraphnode_p.h>
+#include <QtTest/QTest>
 #include <Qt3DRender/private/managers_p.h>
 
 class MyFrameGraphNode : public Qt3DRender::Render::FrameGraphNode
 {
 public:
-    void updateFromPeer(Qt3DCore::QNode *) Q_DECL_FINAL {}
+    void setEnabled(bool enabled)
+    {
+        FrameGraphNode::setEnabled(enabled);
+    }
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) Q_DECL_FINAL {}
@@ -44,16 +46,16 @@ class tst_FrameGraphNode : public QObject
 {
     Q_OBJECT
 public:
-    tst_FrameGraphNode(QObject *parent = Q_NULLPTR)
+    tst_FrameGraphNode(QObject *parent = nullptr)
         : QObject(parent)
     {}
 
     ~tst_FrameGraphNode()
     {}
 
-    void setIdInternal(Qt3DRender::Render::FrameGraphNode *node, const Qt3DCore::QNodeId &id)
+    void setIdInternal(Qt3DRender::Render::FrameGraphNode *node, Qt3DCore::QNodeId id)
     {
-        Qt3DCore::QBackendNodePrivate::get(node)->m_peerUuid = id;
+        Qt3DCore::QBackendNodePrivate::get(node)->m_peerId = id;
     }
 
 private Q_SLOTS:
@@ -65,9 +67,9 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(n.nodeType(), Qt3DRender::Render::FrameGraphNode::InvalidNodeType);
-        QVERIFY(n.isEnabled());
-        QVERIFY(n.peerUuid().isNull());
-        QVERIFY(n.manager() == Q_NULLPTR);
+        QVERIFY(!n.isEnabled());
+        QVERIFY(n.peerId().isNull());
+        QVERIFY(n.manager() == nullptr);
         QVERIFY(n.parentId().isNull());
         QVERIFY(n.childrenIds().empty());
     }
@@ -75,12 +77,12 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
-        QScopedPointer<Qt3DRender::Render::FrameGraphNode> n(new MyFrameGraphNode());
+        QScopedPointer<MyFrameGraphNode> n(new MyFrameGraphNode());
 
         // WHEN
-        n->setEnabled(false);
+        n->setEnabled(true);
         // THEN
-        QCOMPARE(n->isEnabled(), false);
+        QCOMPARE(n->isEnabled(), true);
 
         // WHEN
         QScopedPointer<Qt3DRender::Render::FrameGraphManager> manager(new Qt3DRender::Render::FrameGraphManager());
@@ -102,7 +104,7 @@ private Q_SLOTS:
         const Qt3DCore::QNodeId childId = Qt3DCore::QNodeId::createId();
         QScopedPointer<Qt3DRender::Render::FrameGraphNode> c(new MyFrameGraphNode());
         setIdInternal(c.data(), childId);
-        manager->appendNode(c.data());
+        manager->appendNode(childId, c.data());
         n->appendChildId(childId);
         // THEN
         QCOMPARE(n->childrenIds().count(), 1);
@@ -125,8 +127,8 @@ private Q_SLOTS:
         setIdInternal(parent1, parentId);
         setIdInternal(child, childId);
 
-        manager->appendNode(parent1);
-        manager->appendNode(child);
+        manager->appendNode(parentId, parent1);
+        manager->appendNode(childId, child);
 
         parent1->setFrameGraphManager(manager.data());
         child->setFrameGraphManager(manager.data());
@@ -159,7 +161,7 @@ private Q_SLOTS:
         parent1->removeChildId(childId);
         // THEN
         QVERIFY(child->parentId().isNull());
-        QVERIFY(child->parent() == Q_NULLPTR);
+        QVERIFY(child->parent() == nullptr);
         QCOMPARE(parent1->childrenIds().count(), 0);
         QCOMPARE(parent1->children().count(), parent1->childrenIds().count());
     }

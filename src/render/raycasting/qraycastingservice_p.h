@@ -53,7 +53,7 @@
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DRender/private/qabstractcollisionqueryservice_p.h>
-#include <Qt3DCore/qray3d.h>
+#include <Qt3DRender/private/qray3d_p.h>
 
 #include <QHash>
 #include <QtConcurrent>
@@ -73,8 +73,8 @@ class QT3DRENDERSHARED_EXPORT QRayCastingService : public QAbstractCollisionQuer
 public:
     QRayCastingService();
 
-    QQueryHandle query(const Qt3DCore::QRay3D &ray, QueryMode mode, QBoundingVolumeProvider *provider) Q_DECL_OVERRIDE;
-    QCollisionQueryResult::Hit query(const Qt3DCore::QRay3D &ray, const QBoundingVolume *volume) Q_DECL_OVERRIDE;
+    QQueryHandle query(const QRay3D &ray, QueryMode mode, QBoundingVolumeProvider *provider) Q_DECL_OVERRIDE;
+    QCollisionQueryResult::Hit query(const QRay3D &ray, const QBoundingVolume *volume) Q_DECL_OVERRIDE;
 
     QCollisionQueryResult fetchResult(const QQueryHandle &handle) Q_DECL_OVERRIDE;
     QVector<QCollisionQueryResult> fetchAllResults() const Q_DECL_OVERRIDE;
@@ -92,11 +92,11 @@ class QRayCastingServicePrivate : public QAbstractCollisionQueryServicePrivate
 public:
     QRayCastingServicePrivate(const QString &description);
 
-    QCollisionQueryResult collides(const Qt3DCore::QRay3D &ray,
+    QCollisionQueryResult collides(const QRay3D &ray,
                                    QBoundingVolumeProvider *provider,
                                    QAbstractCollisionQueryService::QueryMode mode,
                                    const QQueryHandle &handle);
-    QCollisionQueryResult::Hit collides(const Qt3DCore::QRay3D &ray,
+    QCollisionQueryResult::Hit collides(const QRay3D &ray,
                                         const QBoundingVolume *volume);
 
     Q_DECLARE_PUBLIC(QRayCastingService)
@@ -104,7 +104,7 @@ public:
     struct Query
     {
         QQueryHandle handle;
-        Qt3DCore::QRay3D ray;
+        QRay3D ray;
         QRayCastingService::QueryMode mode;
     };
 

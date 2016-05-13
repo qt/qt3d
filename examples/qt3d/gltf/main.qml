@@ -51,6 +51,7 @@
 
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import Qt3D.Extras 2.0
 
 Entity {
     id: sceneRoot
@@ -69,25 +70,23 @@ Entity {
 
     FirstPersonCameraController { camera: camera }
 
-    FrameGraph {
-        id : framegraph
+    RenderSettings {
+        id : renderSettings
         activeFrameGraph : Viewport {
-            clearColor: "black"
             CameraSelector {
                 camera: camera
-                ClearBuffer {
-                    buffers : ClearBuffer.ColorDepthBuffer
-                    SortMethod {
-                        criteria: [
-                            SortCriterion { sort: SortCriterion.BackToFront }
-                        ]
+                ClearBuffers {
+                    buffers : ClearBuffers.ColorDepthBuffer
+                    clearColor: "black"
+                    SortPolicy {
+                        sortTypes: [ SortType.BackToFront ]
                     }
                 }
             }
         }
     }
 
-    components: [ framegraph ]
+    components: [ renderSettings ]
 
     Wine {
         id: wineRack

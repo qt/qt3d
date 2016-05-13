@@ -61,7 +61,7 @@ namespace Qt3DRender {
 
 namespace {
 
-const int qListShaderDataTypeId = qMetaTypeId<QList<QShaderData*> >();
+const int qVectorShaderDataTypeId = qMetaTypeId<QVector<QShaderData*> >();
 const int qShaderDataTypeId = qMetaTypeId<QShaderData*>();
 
 }
@@ -70,13 +70,14 @@ class QShaderDataPropertyReader: public PropertyReaderInterface
 {
     QVariant readProperty(const QVariant &v) Q_DECL_OVERRIDE
     {
-        QShaderData *shaderData = Q_NULLPTR;
+        QShaderData *shaderData = nullptr;
 
-        if (v.userType() == qShaderDataTypeId && (shaderData = v.value<QShaderData *>()) != Q_NULLPTR) {
+        if (v.userType() == qShaderDataTypeId && (shaderData = v.value<QShaderData *>()) != nullptr) {
             return QVariant::fromValue(shaderData->id());
-        } else if (v.userType() == qListShaderDataTypeId) {
+        } else if (v.userType() == qVectorShaderDataTypeId) {
             QVariantList vlist;
-            Q_FOREACH (QShaderData *data, v.value<QList<QShaderData *> >()) {
+            const auto data_ = v.value<QVector<QShaderData *> >();
+            for (QShaderData *data : data_) {
                 if (data)
                     vlist.append(QVariant::fromValue(data->id()));
             }
@@ -94,6 +95,12 @@ public:
     PropertyReaderInterfacePtr m_propertyReader;
 
     Q_DECLARE_PUBLIC(QShaderData)
+};
+
+struct QShaderDataData
+{
+    QVector<QPair<QByteArray, QVariant>> properties;
+    PropertyReaderInterfacePtr propertyReader;
 };
 
 } // namespace Qt3DRender

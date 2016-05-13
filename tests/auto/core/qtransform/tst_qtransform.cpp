@@ -29,19 +29,16 @@
 #include <QtTest/QtTest>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qcomponent.h>
+#include <Qt3DCore/private/qtransform_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <QtCore/qscopedpointer.h>
 #include "testpostmanarbiter.h"
 
 using namespace Qt3DCore;
 
-class tst_QTransform : public QNode
+class tst_QTransform : public QObject
 {
     Q_OBJECT
-public:
-    ~tst_QTransform()
-    {
-        QNode::cleanup();
-    }
 
 private Q_SLOTS:
     void checkCloning_data()
@@ -80,17 +77,24 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QTransform *, transform);
 
         // WHEN
-        Qt3DCore::QTransform *clone = static_cast<Qt3DCore::QTransform *>(QNode::clone(transform));
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(transform);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
+        QCOMPARE(creationChanges.size(), 1);
 
-        QCOMPARE(transform->id(), clone->id());
-        QCOMPARE(transform->matrix(), clone->matrix());
-        QCOMPARE(transform->translation(), clone->translation());
-        QCOMPARE(transform->scale3D(), clone->scale3D());
-        QCOMPARE(transform->scale(), clone->scale());
-        QCOMPARE(transform->rotation(), clone->rotation());
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DCore::QTransformData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DCore::QTransformData>>(creationChanges.first());
+        const Qt3DCore::QTransformData &cloneData = creationChangeData->data;
+
+        // THEN
+        QCOMPARE(creationChangeData->subjectId(), transform->id());
+        QCOMPARE(creationChangeData->isNodeEnabled(), transform->isEnabled());
+        QCOMPARE(creationChangeData->metaObject(), transform->metaObject());
+        QCOMPARE(creationChangeData->parentId(), transform->parentNode() ? transform->parentNode()->id() : Qt3DCore::QNodeId());
+        QCOMPARE(transform->translation(), cloneData.translation);
+        QCOMPARE(transform->scale3D(), cloneData.scale);
+        QCOMPARE(transform->rotation(), cloneData.rotation);
     }
 
     void checkPropertyUpdates()
@@ -104,9 +108,9 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        Qt3DCore::QScenePropertyChangePtr change;
+        Qt3DCore::QPropertyUpdatedChangePtr change;
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "translation");
         QCOMPARE(change->value().value<QVector3D>(), QVector3D(454.0f, 427.0f, 383.0f));
 
@@ -119,7 +123,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "rotation");
         QCOMPARE(change->value().value<QQuaternion>(), q);
 
@@ -131,7 +135,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "scale3D");
         QCOMPARE(change->value().value<QVector3D>(), QVector3D(883.0f, 1200.0f, 1340.0f));
 
@@ -146,13 +150,13 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 3);
-        change = arbiter.events.takeFirst().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "scale3D");
         QCOMPARE(change->value().value<QVector3D>(), QVector3D(1.0f, 1.0f, 1.0f));
-        change = arbiter.events.takeFirst().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "rotation");
         QCOMPARE(change->value().value<QQuaternion>(), QQuaternion());
-        change = arbiter.events.takeFirst().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.takeFirst().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "translation");
         QCOMPARE(change->value().value<QVector3D>(), QVector3D());
 
@@ -164,7 +168,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "rotation");
         QCOMPARE(change->value().value<QQuaternion>().toEulerAngles().x(), 20.0f);
 
@@ -191,12 +195,6 @@ private Q_SLOTS:
 
         // Note: t.matrix() != t2.matrix() since different matrices
         // can result in the same scale, rotation, translation
-    }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
     }
 };
 

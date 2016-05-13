@@ -48,18 +48,19 @@ namespace Qt3DLogic {
 namespace Logic {
 
 Handler::Handler()
-    : m_logicManager(Q_NULLPTR)
+    : m_logicManager(nullptr)
 {
 }
 
-void Handler::updateFromPeer(Qt3DCore::QNode *peer)
+void Handler::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    Q_UNUSED(peer);
+    Q_UNUSED(change);
+    m_logicManager->appendHandler(this);
 }
 
 void Handler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    Q_UNUSED(e);
+    QBackendNode::sceneChangeEvent(e);
 }
 
 HandlerFunctor::HandlerFunctor(Manager *manager)
@@ -67,21 +68,19 @@ HandlerFunctor::HandlerFunctor(Manager *manager)
 {
 }
 
-Qt3DCore::QBackendNode *HandlerFunctor::create(Qt3DCore::QNode *frontend) const
+Qt3DCore::QBackendNode *HandlerFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
-    Handler *handler = m_manager->logicHandlerManager()->getOrCreateResource(frontend->id());
+    Handler *handler = m_manager->logicHandlerManager()->getOrCreateResource(change->subjectId());
     handler->setManager(m_manager);
-    handler->setPeer(frontend);
-    m_manager->appendHandler(handler);
     return handler;
 }
 
-Qt3DCore::QBackendNode *HandlerFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *HandlerFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_manager->logicHandlerManager()->lookupResource(id);
 }
 
-void HandlerFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void HandlerFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     m_manager->removeHandler(id);
 }

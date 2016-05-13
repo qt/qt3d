@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qabstractnodefactory.h>
+#include <Qt3DCore/private/qabstractnodefactory_p.h>
 #include <QtCore/qhash.h>
 
 QT_BEGIN_NAMESPACE
@@ -71,9 +71,9 @@ public:
 
 private:
     struct Type {
-        Type() : t(Q_NULLPTR), resolved(false) { }
+        Type() : t(nullptr), resolved(false) { }
         Type(const char *quickName, int major, int minor)
-            : quickName(quickName), version(major, minor), t(Q_NULLPTR), resolved(false) { }
+            : quickName(quickName), version(major, minor), t(nullptr), resolved(false) { }
         QByteArray quickName;
         QPair<int, int> version;
         QQmlType *t;

@@ -39,7 +39,11 @@
 
 #include "qabstractphysicaldevice.h"
 #include "qabstractphysicaldevice_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DInput/qphysicaldevicecreatedchange.h>
+#include <Qt3DInput/qaxissetting.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -83,14 +87,6 @@ QAbstractPhysicalDevice::QAbstractPhysicalDevice(Qt3DCore::QNode *parent)
 QAbstractPhysicalDevice::QAbstractPhysicalDevice(QAbstractPhysicalDevicePrivate &dd, Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(dd, parent)
 {
-}
-
-/*!
-    Deletes the QAbstractPhysicalDevice instance.
- */
-QAbstractPhysicalDevice::~QAbstractPhysicalDevice()
-{
-    Q_ASSERT_X(Qt3DCore::QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DInput::QAbstractPhysicalDevice subclass didn't call QNode::cleanup in its destructor");
 }
 
 /*!
@@ -159,8 +155,15 @@ int QAbstractPhysicalDevice::buttonIdentifier(const QString &name) const
 void QAbstractPhysicalDevice::addAxisSetting(QAxisSetting *axisSetting)
 {
     Q_D(QAbstractPhysicalDevice);
-    if (!d->m_axisSettings.contains(axisSetting))
+    if (axisSetting && !d->m_axisSettings.contains(axisSetting)) {
+        if (d->m_changeArbiter) {
+            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), axisSetting);
+            change->setPropertyName("axisSettings");
+            d->notifyObservers(change);
+        }
+
         d->m_axisSettings.push_back(axisSetting);
+    }
 }
 
 /*!
@@ -169,8 +172,15 @@ void QAbstractPhysicalDevice::addAxisSetting(QAxisSetting *axisSetting)
 void QAbstractPhysicalDevice::removeAxisSetting(QAxisSetting *axisSetting)
 {
     Q_D(QAbstractPhysicalDevice);
-    if (d->m_axisSettings.contains(axisSetting))
+    if (axisSetting && d->m_axisSettings.contains(axisSetting)) {
+        if (d->m_changeArbiter) {
+            const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), axisSetting);
+            change->setPropertyName("axisSettings");
+            d->notifyObservers(change);
+        }
+
         d->m_axisSettings.removeOne(axisSetting);
+    }
 }
 
 /*!
@@ -185,34 +195,31 @@ QVector<QAxisSetting *> QAbstractPhysicalDevice::axisSettings() const
 /*!
     Used to notify observers that an axis value has been changed.
  */
-void QAbstractPhysicalDevice::postAxisEvent(int axis, qreal value)
+void QAbstractPhysicalDevicePrivate::postAxisEvent(int axis, qreal value)
 {
-    Q_D(QAbstractPhysicalDevice);
-    Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, id()));
+    Q_Q(QAbstractPhysicalDevice);
+    Qt3DCore::QPropertyUpdatedChangePtr change(new Qt3DCore::QPropertyUpdatedChange(q->id()));
     change->setPropertyName("axisEvent");
     change->setValue(QVariant::fromValue(QPair<int, qreal>(axis, value)));
-    d->notifyObservers(change);
+    notifyObservers(change);
 }
 
 /*!
     Used to notify observers that an button value has been changed.
  */
-void QAbstractPhysicalDevice::postButtonEvent(int button, qreal value)
+void QAbstractPhysicalDevicePrivate::postButtonEvent(int button, qreal value)
 {
-    Q_D(QAbstractPhysicalDevice);
-    Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, id()));
+    Q_Q(QAbstractPhysicalDevice);
+    Qt3DCore::QPropertyUpdatedChangePtr change(new Qt3DCore::QPropertyUpdatedChange(q->id()));
     change->setPropertyName("buttonEvent");
     change->setValue(QVariant::fromValue(QPair<int, qreal>(button, value)));
-    d->notifyObservers(change);
+    notifyObservers(change);
 }
 
-void QAbstractPhysicalDevice::copy(const QNode *ref)
+Qt3DCore::QNodeCreatedChangeBasePtr QAbstractPhysicalDevice::createNodeCreationChange() const
 {
-    QNode::copy(ref);
-    const QAbstractPhysicalDevice *physicalDevice = static_cast<const QAbstractPhysicalDevice *>(ref);
-    d_func()->m_axisSettings = physicalDevice->d_func()->m_axisSettings;
-    d_func()->m_axesHash = physicalDevice->d_func()->m_axesHash;
-    d_func()->m_buttonsHash = physicalDevice->d_func()->m_buttonsHash;
+    auto creationChange = QPhysicalDeviceCreatedChangeBasePtr::create(this);
+    return creationChange;
 }
 
 }

@@ -115,6 +115,16 @@ void GraphicsHelperES2::drawArraysInstanced(GLenum primitiveType,
                    count);
 }
 
+void GraphicsHelperES2::drawArraysInstancedBaseInstance(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances, GLsizei baseInstance)
+{
+    if (baseInstance != 0)
+        qWarning() << "glDrawArraysInstancedBaseInstance is not supported with OpenGL ES 2";
+    for (GLint i = 0; i < instances; i++)
+        drawArrays(primitiveType,
+                   first,
+                   count);
+}
+
 void GraphicsHelperES2::drawElements(GLenum primitiveType,
                                       GLsizei primitiveCount,
                                       GLint indexType,
@@ -266,25 +276,21 @@ void GraphicsHelperES2::depthMask(GLenum mode)
     m_funcs->glDepthMask(mode);
 }
 
-void GraphicsHelperES2::cullFace(GLenum mode)
-{
-    m_funcs->glEnable(GL_CULL_FACE);
-    m_funcs->glCullFace(mode);
-}
-
 void GraphicsHelperES2::frontFace(GLenum mode)
 {
     m_funcs->glFrontFace(mode);
 }
 
-void GraphicsHelperES2::enableAlphaCoverage()
+void GraphicsHelperES2::setMSAAEnabled(bool enabled)
 {
-    m_funcs->glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+    Q_UNUSED(enabled);
+    qWarning() << "MSAA not available with OpenGL ES 2.0";
 }
 
-void GraphicsHelperES2::disableAlphaCoverage()
+void GraphicsHelperES2::setAlphaCoverageEnabled(bool enabled)
 {
-    m_funcs->glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+    enabled ? m_funcs->glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE)
+            : m_funcs->glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 }
 
 GLuint GraphicsHelperES2::createFrameBufferObject()
@@ -320,11 +326,11 @@ void GraphicsHelperES2::bindFrameBufferAttachment(QOpenGLTexture *texture, const
 {
     GLenum attr = GL_COLOR_ATTACHMENT0;
 
-    if (attachment.m_type == QRenderAttachment::ColorAttachment0)
+    if (attachment.m_point == QRenderTargetOutput::Color0)
         attr = GL_COLOR_ATTACHMENT0;
-    else if (attachment.m_type == QRenderAttachment::DepthAttachment)
+    else if (attachment.m_point == QRenderTargetOutput::Depth)
         attr = GL_DEPTH_ATTACHMENT;
-    else if (attachment.m_type == QRenderAttachment::StencilAttachment)
+    else if (attachment.m_point == QRenderTargetOutput::Stencil)
         attr = GL_STENCIL_ATTACHMENT;
     else
         qCritical() << "Unsupported FBO attachment OpenGL ES 2.0";
@@ -351,7 +357,7 @@ bool GraphicsHelperES2::supportsFeature(GraphicsHelperInterface::Feature feature
 }
 void GraphicsHelperES2::drawBuffers(GLsizei , const int *)
 {
-    qCritical() << "drawBuffers is not supported by ES 2.0";
+    qWarning() << "drawBuffers is not supported by ES 2.0";
 }
 
 void GraphicsHelperES2::bindUniform(const QVariant &v, const ShaderUniform &description)
@@ -568,6 +574,11 @@ void GraphicsHelperES2::disableClipPlane(int)
 {
 }
 
+void GraphicsHelperES2::setClipPlane(int, const QVector3D &, float)
+{
+    qWarning() << "Clip planes not supported by OpenGL ES 2.0";
+}
+
 GLint GraphicsHelperES2::maxClipPlaneCount()
 {
     return 0;
@@ -579,6 +590,13 @@ void GraphicsHelperES2::enablePrimitiveRestart(int)
 
 void GraphicsHelperES2::disablePrimitiveRestart()
 {
+}
+
+void GraphicsHelperES2::clearBufferf(GLint drawbuffer, const QVector4D &values)
+{
+    Q_UNUSED(drawbuffer);
+    Q_UNUSED(values);
+    qWarning() << "glClearBuffer*() not supported by OpenGL ES 2.0";
 }
 
 void GraphicsHelperES2::pointSize(bool programmable, GLfloat value)

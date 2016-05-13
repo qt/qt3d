@@ -38,9 +38,11 @@
 ****************************************************************************/
 
 #include "textureimage_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/texturedatamanager_p.h>
+#include <Qt3DRender/private/qabstracttextureimage_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,77 +52,81 @@ namespace Qt3DRender {
 namespace Render {
 
 TextureImage::TextureImage()
-    : QBackendNode()
+    : BackendNode(ReadWrite)
     , m_layer(0)
-    , m_mipmapLevel(0)
-    , m_face(QAbstractTextureProvider::CubeMapPositiveX)
+    , m_mipLevel(0)
+    , m_face(QAbstractTexture::CubeMapPositiveX)
     , m_dirty(true)
-    , m_textureManager(Q_NULLPTR)
-    , m_textureImageManager(Q_NULLPTR)
-    , m_textureDataManager(Q_NULLPTR)
+    , m_textureManager(nullptr)
+    , m_textureImageManager(nullptr)
+    , m_textureDataManager(nullptr)
     , m_dna(0)
 {
 }
 
 void TextureImage::cleanup()
 {
+    QBackendNode::setEnabled(false);
     m_layer = 0;
-    m_mipmapLevel = 0;
+    m_mipLevel = 0;
     m_dirty = true;
-    m_face = QAbstractTextureProvider::CubeMapPositiveX;
-    m_functor.reset();
-    m_textureManager = Q_NULLPTR;
-    m_textureImageManager = Q_NULLPTR;
-    m_textureDataManager = Q_NULLPTR;
+    m_face = QAbstractTexture::CubeMapPositiveX;
+    m_generator.reset();
+    m_textureManager = nullptr;
+    m_textureImageManager = nullptr;
+    m_textureDataManager = nullptr;
     m_referencedTextures.clear();
     m_dna = 0;
 }
 
-void TextureImage::updateFromPeer(Qt3DCore::QNode *peer)
+void TextureImage::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QAbstractTextureImage *textureImage = static_cast<QAbstractTextureImage *>(peer);
-    m_layer = textureImage->layer();
-    m_mipmapLevel = textureImage->mipmapLevel();
-    m_face = textureImage->cubeMapFace();
-    m_functor = textureImage->dataFunctor();
-    // Notify the Texture that we are one of its TextureImage
-    if (!peer->parentNode()) {
-        qWarning() << "Not QAbstractTextureProvider parent found";
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAbstractTextureImageData>>(change);
+    const auto &data = typedChange->data;
+    m_mipLevel = data.mipLevel;
+    m_layer = data.layer;
+    m_face = data.face;
+    m_generator = data.generator;
+
+    if (!change->parentId()) {
+        qWarning() << "No QAbstractTextureProvider parent found";
     } else {
-        m_textureProviderId = peer->parentNode()->id();
+        m_textureProviderId = change->parentId();
         m_textureProvider = m_textureManager->lookupHandle(m_textureProviderId);
-        Texture *txt = m_textureManager->data(m_textureProvider);
+        Texture *texture = m_textureManager->data(m_textureProvider);
+        Q_ASSERT(texture);
         // Notify the Texture that it has a new TextureImage and needs an update
-        txt->addTextureImageData(m_textureImageManager->lookupHandle(peerUuid()));
-        if (txt != Q_NULLPTR)
-            txt->addToPendingTextureJobs();
+        texture->addTextureImageData(m_textureImageManager->lookupHandle(peerId()));
+        texture->addToPendingTextureJobs();
     }
 }
 
 void TextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
 
-    if (e->type() == NodeUpdated) {
+    if (e->type() == PropertyUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("layer")) {
             m_layer = propertyChange->value().toInt();
             m_dirty = true;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("mipmapLevel")) {
-            m_mipmapLevel = propertyChange->value().toInt();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("mipLevel")) {
+            m_mipLevel = propertyChange->value().toInt();
             m_dirty = true;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("cubeMapFace")) {
-            m_face = static_cast<QAbstractTextureProvider::CubeMapFace>(propertyChange->value().toInt());
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("face")) {
+            m_face = static_cast<QAbstractTexture::CubeMapFace>(propertyChange->value().toInt());
             m_dirty = true;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("dataFunctor")) {
-            m_functor = propertyChange->value().value<QTextureDataFunctorPtr>();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("dataGenerator")) {
+            m_generator = propertyChange->value().value<QTextureImageDataGeneratorPtr>();
             m_dirty = true;
         }
     }
     if (m_dirty) {// Notify the Texture that we were updated and request it to schedule an update job
         Texture *txt = m_textureManager->data(m_textureProvider);
-        if (txt != Q_NULLPTR)
+        if (txt != nullptr)
             txt->addToPendingTextureJobs();
     }
+    markDirty(AbstractRenderer::AllDirty);
+    BackendNode::sceneChangeEvent(e);
 }
 
 void TextureImage::setTextureManager(TextureManager *manager)
@@ -150,36 +156,49 @@ void TextureImage::setTextureDataHandle(HTextureData handle)
     updateDNA();
 }
 
-void TextureImage::updateDNA()
+void TextureImage::setStatus(QTextureImage::Status status)
 {
-    m_dna = ::qHash(m_layer + m_mipmapLevel + static_cast<int>(m_face) + m_textureDataHandle);
+    // Notify the frontend
+    QBackendNodePropertyChangePtr e(new QBackendNodePropertyChange(peerId()));
+    e->setPropertyName("status");
+    e->setValue(status);
+    notifyObservers(e);
 }
 
-TextureImageFunctor::TextureImageFunctor(TextureManager *textureManager,
-                                                     TextureImageManager *textureImageManager,
-                                                     TextureDataManager *textureDataManager)
+void TextureImage::updateDNA()
+{
+    m_dna = ::qHash(m_layer
+                    + (m_mipLevel << 4)
+                    + (static_cast<int>(m_face) << 8)
+                    + (m_textureDataHandle.handle() << 12));
+}
+
+TextureImageFunctor::TextureImageFunctor(AbstractRenderer *renderer, TextureManager *textureManager,
+                                         TextureImageManager *textureImageManager,
+                                         TextureDataManager *textureDataManager)
     : m_textureManager(textureManager)
     , m_textureImageManager(textureImageManager)
     , m_textureDataManager(textureDataManager)
+    , m_renderer(renderer)
 {
 }
 
-Qt3DCore::QBackendNode *TextureImageFunctor::create(Qt3DCore::QNode *frontend) const
+Qt3DCore::QBackendNode *TextureImageFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
-    TextureImage *backend = m_textureImageManager->getOrCreateResource(frontend->id());
+    TextureImage *backend = m_textureImageManager->getOrCreateResource(change->subjectId());
     backend->setTextureManager(m_textureManager);
     backend->setTextureImageManager(m_textureImageManager);
     backend->setTextureDataManager(m_textureDataManager);
-    backend->setPeer(frontend);
+    backend->setRenderer(m_renderer);
     return backend;
 }
 
-Qt3DCore::QBackendNode *TextureImageFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *TextureImageFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_textureImageManager->lookupResource(id);
 }
 
-void TextureImageFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void TextureImageFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     m_textureImageManager->releaseResource(id);
 }

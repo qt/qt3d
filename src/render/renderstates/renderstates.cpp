@@ -40,8 +40,9 @@
 
 #include "renderstates_p.h"
 
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qrenderstate.h>
+#include <Qt3DRender/qcullface.h>
 
 #include <Qt3DRender/private/graphicscontext_p.h>
 
@@ -61,50 +62,9 @@ bool RenderStateImpl::isPooledImpl() const Q_DECL_NOEXCEPT
     return true;
 }
 
-RenderStateNode::RenderStateNode()
-    : QBackendNode()
-    , m_impl(NULL)
+void BlendEquationArguments::apply(GraphicsContext* gc) const
 {
-}
-
-RenderStateNode::~RenderStateNode()
-{
-    cleanup();
-}
-
-void RenderStateNode::cleanup()
-{
-    if (m_impl != Q_NULLPTR) {
-        if (!m_impl->isPooledImpl())
-            delete m_impl;
-        m_impl = Q_NULLPTR;
-    }
-}
-
-void RenderStateNode::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    cleanup();
-
-    QRenderState *renderState = static_cast<QRenderState *>(peer);
-    m_impl = RenderStateImpl::getOrCreateState(renderState);
-}
-
-void RenderStateNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    if (e->type() == Qt3DCore::NodeUpdated) {
-        Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
-
-        if (m_impl->isPooledImpl()) {
-            m_impl = m_impl->getOrCreateWithPropertyChange(propertyChange->propertyName(), propertyChange->value());
-        } else {
-            m_impl->updateProperty(propertyChange->propertyName(), propertyChange->value());
-        }
-    }
-}
-
-void BlendState::apply(GraphicsContext* gc) const
-{
-    // Un-indexed BlendState -> Use normal GL1.0 functions
+    // Un-indexed BlendEquationArguments -> Use normal GL1.0 functions
     if (m_6 < 0) {
         if (m_5) {
             gc->openGLContext()->functions()->glEnable(GL_BLEND);
@@ -113,7 +73,7 @@ void BlendState::apply(GraphicsContext* gc) const
             gc->openGLContext()->functions()->glDisable(GL_BLEND);
         }
     }
-    // BlendState for a particular Draw Buffer. Different behaviours for
+    // BlendEquationArguments for a particular Draw Buffer. Different behaviours for
     //  (1) 3.0-3.3: only enablei/disablei supported.
     //  (2) 4.0+: all operations supported.
     // We just ignore blend func parameter for (1), so no warnings get
@@ -130,12 +90,12 @@ void BlendState::apply(GraphicsContext* gc) const
     }
 }
 
-void BlendState::updateProperty(const char *name, const QVariant &value)
+void BlendEquationArguments::updateProperty(const char *name, const QVariant &value)
 {
-         if (name == QByteArrayLiteral("srcRGB")) m_1 = value.toInt();
-    else if (name == QByteArrayLiteral("dstRGB")) m_2 = value.toInt();
-    else if (name == QByteArrayLiteral("srcAlpha")) m_3 = value.toInt();
-    else if (name == QByteArrayLiteral("dstAlphaB")) m_4 = value.toInt();
+         if (name == QByteArrayLiteral("sourceRgb")) m_1 = value.toInt();
+    else if (name == QByteArrayLiteral("destinationRgb")) m_2 = value.toInt();
+    else if (name == QByteArrayLiteral("sourceAlpha")) m_3 = value.toInt();
+    else if (name == QByteArrayLiteral("destinationAlpha")) m_4 = value.toInt();
     else if (name == QByteArrayLiteral("enabled")) m_5 = value.toBool();
     else if (name == QByteArrayLiteral("bufferIndex")) m_6 = value.toInt();
 }
@@ -155,6 +115,17 @@ void AlphaFunc::apply(GraphicsContext* gc) const
     gc->alphaTest(m_1, m_2);
 }
 
+void MSAAEnabled::apply(GraphicsContext *gc) const
+{
+    gc->setMSAAEnabled(m_1);
+}
+
+void MSAAEnabled::updateProperty(const char *name, const QVariant &value)
+{
+    if (name == QByteArrayLiteral("enabled"))
+        m_1 = value.toBool();
+}
+
 void DepthTest::apply(GraphicsContext *gc) const
 {
     gc->depthTest(m_1);
@@ -167,7 +138,12 @@ void DepthTest::updateProperty(const char *name, const QVariant &value)
 
 void CullFace::apply(GraphicsContext *gc) const
 {
-    gc->cullFace(m_1);
+    if (m_1 == QCullFace::NoCulling) {
+        gc->openGLContext()->functions()->glDisable(GL_CULL_FACE);
+    } else {
+        gc->openGLContext()->functions()->glEnable(GL_CULL_FACE);
+        gc->openGLContext()->functions()->glCullFace(m_1);
+    }
 }
 
 void CullFace::updateProperty(const char *name, const QVariant &value)
@@ -185,12 +161,12 @@ void FrontFace::updateProperty(const char *name, const QVariant &value)
     if (name == QByteArrayLiteral("direction")) m_1 = value.toInt();
 }
 
-void DepthMask::apply(GraphicsContext *gc) const
+void NoDepthMask::apply(GraphicsContext *gc) const
 {
    gc->depthMask(m_1);
 }
 
-void DepthMask::updateProperty(const char *name, const QVariant &value)
+void NoDepthMask::updateProperty(const char *name, const QVariant &value)
 {
     if (name == QByteArrayLiteral("mask")) m_1 = value.toBool();
 }
@@ -223,7 +199,13 @@ void StencilTest::apply(GraphicsContext *gc) const
 
 void AlphaCoverage::apply(GraphicsContext *gc) const
 {
-    gc->enableAlphaCoverage();
+    gc->setAlphaCoverageEnabled(m_1);
+}
+
+void AlphaCoverage::updateProperty(const char *name, const QVariant &value)
+{
+    if (name == QByteArrayLiteral("enabled"))
+        m_1 = value.toBool();
 }
 
 void PointSize::apply(GraphicsContext *gc) const
@@ -265,11 +247,14 @@ void ColorMask::updateProperty(const char *name, const QVariant &value)
 void ClipPlane::apply(GraphicsContext *gc) const
 {
     gc->enableClipPlane(m_1);
+    gc->setClipPlane(m_1, m_2, m_3);
 }
 
 void ClipPlane::updateProperty(const char *name, const QVariant &value)
 {
-    if (name == QByteArrayLiteral("plane")) m_1 = value.toInt();
+    if (name == QByteArrayLiteral("planeIndex")) m_1 = value.toInt();
+    else if (name == QByteArrayLiteral("normal")) m_2 = value.value<QVector3D>();
+    else if (name == QByteArrayLiteral("distance")) m_3 = value.toFloat();
 }
 
 void SeamlessCubemap::apply(GraphicsContext *gc) const

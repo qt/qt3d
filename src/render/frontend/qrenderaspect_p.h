@@ -66,32 +66,30 @@ class QSurface;
 
 namespace Qt3DRender {
 
-class QAbstractSceneParser;
-
+class QSceneIOHandler;
 namespace Render {
 class AbstractRenderer;
 class NodeManagers;
 }
 
-class QRenderAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QRenderAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
 {
 public:
     QRenderAspectPrivate(QRenderAspect::RenderType type);
+    ~QRenderAspectPrivate();
 
     Q_DECLARE_PUBLIC(QRenderAspect)
 
-    void setSurface(QSurface *surface);
+    void registerBackendTypes();
     void loadSceneParsers();
+    void renderInitialize(QOpenGLContext *context);
+    void renderSynchronous();
+    void renderShutdown();
+    QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs();
+    QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
 
     Render::NodeManagers *m_nodeManagers;
     Render::AbstractRenderer *m_renderer;
-
-    // The filter has affinity with the main thread so we have to delete it there
-    // via QScopedPointerDeleteLater
-    QScopedPointer<Render::PlatformSurfaceFilter, QScopedPointerDeleteLater> m_surfaceEventFilter;
-    QSurface *m_surface;
-    QSize m_surfaceSize;
-    qreal m_devicePixelRatio;
 
     bool m_initialized;
     Render::FramePreparationJobPtr m_framePreparationJob;
@@ -99,7 +97,8 @@ public:
     Render::UpdateWorldTransformJobPtr m_worldTransformJob;
     Render::UpdateBoundingVolumeJobPtr m_updateBoundingVolumeJob;
     Render::CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
-    QList<QAbstractSceneParser *> m_sceneParsers;
+    QList<QSceneIOHandler *> m_sceneIOHandler;
+
 };
 
 }

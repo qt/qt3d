@@ -39,8 +39,10 @@
 
 #include "qrendertarget.h"
 #include "qrendertarget_p.h"
-#include "qrenderattachment.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include "qrendertargetoutput.h"
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,22 +55,9 @@ QRenderTargetPrivate::QRenderTargetPrivate()
 {
 }
 
-void QRenderTarget::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QRenderTarget *other = static_cast<const QRenderTarget*>(ref);
-    Q_FOREACH (QRenderAttachment *attachment, other->d_func()->m_attachments)
-        addAttachment(qobject_cast<QRenderAttachment *>(QNode::clone(attachment)));
-}
-
 QRenderTarget::QRenderTarget(QNode *parent)
     : QComponent(*new QRenderTargetPrivate, parent)
 {
-}
-
-QRenderTarget::~QRenderTarget()
-{
-    QNode::cleanup();
 }
 
 /*! \internal */
@@ -77,41 +66,47 @@ QRenderTarget::QRenderTarget(QRenderTargetPrivate &dd, QNode *parent)
 {
 }
 
-void QRenderTarget::addAttachment(QRenderAttachment *attachment)
+void QRenderTarget::addOutput(QRenderTargetOutput *output)
 {
     Q_D(QRenderTarget);
-    if (!d->m_attachments.contains(attachment)) {
-        d->m_attachments.append(attachment);
+    if (output && !d->m_outputs.contains(output)) {
+        d->m_outputs.append(output);
 
-        if (!attachment->parent())
-            attachment->setParent(this);
+        if (!output->parent())
+            output->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
-            change->setPropertyName("attachment");
-            change->setValue(QVariant::fromValue(attachment->id()));
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), output);
+            change->setPropertyName("output");
             d->notifyObservers(change);
         }
     }
 }
 
-void QRenderTarget::removeAttachment(QRenderAttachment *attachment)
+void QRenderTarget::removeOutput(QRenderTargetOutput *output)
 {
     Q_D(QRenderTarget);
 
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
-        change->setPropertyName("attachment");
-        change->setValue(QVariant::fromValue(attachment->id()));
+    if (output && d->m_changeArbiter != nullptr) {
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), output);
+        change->setPropertyName("output");
         d->notifyObservers(change);
     }
-    d->m_attachments.removeOne(attachment);
+    d->m_outputs.removeOne(output);
 }
 
-QList<QRenderAttachment *> QRenderTarget::attachments() const
+QVector<QRenderTargetOutput *> QRenderTarget::outputs() const
 {
     Q_D(const QRenderTarget);
-    return d->m_attachments;
+    return d->m_outputs;
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QRenderTarget::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderTargetData>::create(this);
+    auto &data = creationChange->data;
+    data.outputIds = qIdsForNodes(outputs());
+    return creationChange;
 }
 
 } // namespace Qt3DRender

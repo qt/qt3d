@@ -51,6 +51,7 @@
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 import Qt3D.Input 2.0
+import Qt3D.Extras 2.0
 
 Entity {
     id: root
@@ -70,7 +71,7 @@ Entity {
     FirstPersonCameraController { camera: camera }
 
     components: [
-        FrameGraph {
+        RenderSettings {
             activeFrameGraph: ForwardRenderer {
                 camera: camera
             }
@@ -79,8 +80,8 @@ Entity {
         InputSettings { }
     ]
 
-    KeyboardController {
-        id: keyboardController
+    KeyboardDevice {
+        id: keyboardDevice
     }
 
     SphereEntity {
@@ -89,14 +90,14 @@ Entity {
         color: "red"
         input.onTabPressed: sphere2.input.focus = true
         input.focus: true
-        input.controller: keyboardController
+        input.sourceDevice: keyboardDevice
     }
 
     SphereEntity {
         id: sphere2
         color: "green"
         input.onTabPressed: sphere3.input.focus = true
-        input.controller: keyboardController
+        input.sourceDevice: keyboardDevice
     }
 
     SphereEntity {
@@ -104,6 +105,6 @@ Entity {
         position: Qt.vector3d(5, 0, 0)
         color: "blue"
         input.onTabPressed: sphere1.input.focus = true
-        input.controller: keyboardController
+        input.sourceDevice: keyboardDevice
     }
 }

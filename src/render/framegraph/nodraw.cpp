@@ -39,7 +39,7 @@
 
 #include "nodraw_p.h"
 #include <Qt3DRender/qnodraw.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,29 +55,6 @@ NoDraw::NoDraw()
 
 NoDraw::~NoDraw()
 {
-}
-
-void NoDraw::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QNoDraw *noDraw = static_cast<QNoDraw *>(peer);
-    setEnabled(noDraw->isEnabled());
-}
-
-void NoDraw::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-
-    switch (e->type()) {
-    case NodeUpdated: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            setEnabled(propertyChange->value().toBool());
-        break;
-
-    default:
-        break;
-    }
-
-    }
 }
 
 } // namespace Render

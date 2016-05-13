@@ -60,20 +60,19 @@ class QMatrix4x4;
 
 namespace Qt3DRender {
 
-class QTexImageData;
+class QTextureImageData;
 
 namespace Render {
 
-class RenderAttachment;
+class RenderTargetOutput;
 class CameraLens;
-class Annotation;
+class FilterKey;
 class Effect;
 class Entity;
 class Shader;
 class FrameGraphNode;
 class Layer;
 class Material;
-class SortCriterion;
 class Technique;
 class Texture;
 class Transform;
@@ -90,13 +89,13 @@ class ObjectPicker;
 class BoundingVolumeDebug;
 class OpenGLVertexArrayObject;
 class Light;
-class ComputeJob;
+class ComputeCommand;
 class GLBuffer;
 class RenderStateNode;
 
-typedef Qt3DCore::QHandle<RenderAttachment, 16> HAttachment;
+typedef Qt3DCore::QHandle<RenderTargetOutput, 16> HAttachment;
 typedef Qt3DCore::QHandle<CameraLens, 8> HCamera;
-typedef Qt3DCore::QHandle<Annotation, 16> HCriterion;
+typedef Qt3DCore::QHandle<FilterKey, 16> HFilterKey;
 typedef Qt3DCore::QHandle<Effect, 16> HEffect;
 typedef Qt3DCore::QHandle<Entity, 16> HEntity;
 typedef Qt3DCore::QHandle<FrameGraphNode *, 8> HFrameGraphNode;
@@ -105,13 +104,12 @@ typedef Qt3DCore::QHandle<Material, 16> HMaterial;
 typedef Qt3DCore::QHandle<QMatrix4x4, 16> HMatrix;
 typedef Qt3DCore::QHandle<OpenGLVertexArrayObject, 16> HVao;
 typedef Qt3DCore::QHandle<Shader, 16> HShader;
-typedef Qt3DCore::QHandle<SortCriterion, 8> HSortCriterion;
 typedef Qt3DCore::QHandle<Technique, 16> HTechnique;
 typedef Qt3DCore::QHandle<Texture, 16> HTexture;
 typedef Qt3DCore::QHandle<Transform, 16> HTransform;
 typedef Qt3DCore::QHandle<RenderTarget, 8> HTarget;
 typedef Qt3DCore::QHandle<RenderPass, 16> HRenderPass;
-typedef Qt3DCore::QHandle<QTexImageData, 16> HTextureData;
+typedef Qt3DCore::QHandle<QTextureImageData, 16> HTextureData;
 typedef Qt3DCore::QHandle<Parameter, 16> HParameter;
 typedef Qt3DCore::QHandle<ShaderData, 16> HShaderData;
 typedef Qt3DCore::QHandle<TextureImage, 16> HTextureImage;
@@ -122,7 +120,7 @@ typedef Qt3DCore::QHandle<GeometryRenderer, 16> HGeometryRenderer;
 typedef Qt3DCore::QHandle<ObjectPicker, 16> HObjectPicker;
 typedef Qt3DCore::QHandle<BoundingVolumeDebug, 16> HBoundingVolumeDebug;
 typedef Qt3DCore::QHandle<Light, 16> HLight;
-typedef Qt3DCore::QHandle<ComputeJob, 16> HComputeJob;
+typedef Qt3DCore::QHandle<ComputeCommand, 16> HComputeCommand;
 typedef Qt3DCore::QHandle<GLBuffer, 16> HGLBuffer;
 typedef Qt3DCore::QHandle<RenderStateNode, 16> HRenderState;
 

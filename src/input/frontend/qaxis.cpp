@@ -37,24 +37,16 @@
 ****************************************************************************/
 
 #include "qaxis.h"
-#include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DInput/qaxisinput.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include "qaxis_p.h"
+#include <Qt3DInput/qabstractaxisinput.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-
-class QAxisPrivate : public Qt3DCore::QNodePrivate
-{
-public:
-    QAxisPrivate()
-        : Qt3DCore::QNodePrivate()
-    {}
-
-    QString m_name;
-    QVector<QAxisInput *> m_inputs;
-};
 
 /*!
  * \qmltype Axis
@@ -77,27 +69,7 @@ QAxis::QAxis(Qt3DCore::QNode *parent)
 {
 }
 
-QAxis::~QAxis()
-{
-    QNode::cleanup();
-}
-
-void QAxis::setName(const QString &name)
-{
-    Q_D(QAxis);
-    if (d->m_name != name) {
-        d->m_name = name;
-        emit nameChanged(name);
-    }
-}
-
-QString QAxis::name() const
-{
-    Q_D(const QAxis);
-    return d->m_name;
-}
-
-void QAxis::addInput(QAxisInput *input)
+void QAxis::addInput(QAbstractAxisInput *input)
 {
     Q_D(QAxis);
     if (!d->m_inputs.contains(input)) {
@@ -106,24 +78,22 @@ void QAxis::addInput(QAxisInput *input)
         if (!input->parent())
             input->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, id()));
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), input);
             change->setPropertyName("input");
-            change->setValue(QVariant::fromValue(input->id()));
             d->notifyObservers(change);
         }
     }
 }
 
-void QAxis::removeInput(QAxisInput *input)
+void QAxis::removeInput(QAbstractAxisInput *input)
 {
     Q_D(QAxis);
     if (d->m_inputs.contains(input)) {
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, id()));
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), input);
             change->setPropertyName("input");
-            change->setValue(QVariant::fromValue(input->id()));
             d->notifyObservers(change);
         }
 
@@ -131,20 +101,33 @@ void QAxis::removeInput(QAxisInput *input)
     }
 }
 
-QVector<QAxisInput *> QAxis::inputs() const
+QVector<QAbstractAxisInput *> QAxis::inputs() const
 {
     Q_D(const QAxis);
     return d->m_inputs;
 }
 
-void QAxis::copy(const Qt3DCore::QNode *ref)
+float QAxis::value() const
 {
-    QNode::copy(ref);
-    const QAxis *axis = static_cast<const QAxis *>(ref);
-    d_func()->m_name = axis->d_func()->m_name;
-    Q_FOREACH (QAxisInput *input, axis->inputs())
-        d_func()->m_inputs.append(qobject_cast<QAxisInput *>(QNode::clone(input)));
+    Q_D(const QAxis);
+    return d->m_value;
+}
 
+void QAxis::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
+{
+    Q_D(QAxis);
+    Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
+    if (e->type() == Qt3DCore::PropertyUpdated && e->propertyName() == QByteArrayLiteral("value")) {
+        d->setValue(e->value().toFloat());
+    }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QAxis::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAxisData>::create(this);
+    auto &data = creationChange->data;
+    data.inputIds = qIdsForNodes(inputs());
+    return creationChange;
 }
 
 } // Qt3DInput

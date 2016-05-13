@@ -38,8 +38,8 @@
 ****************************************************************************/
 
 #include "qinputdeviceintegrationfactory_p.h"
-#include <Qt3DInput/qinputdeviceintegration.h>
-#include <Qt3DInput/qinputdeviceplugin.h>
+#include <Qt3DInput/private/qinputdeviceintegration_p.h>
+#include <Qt3DInput/private/qinputdeviceplugin_p.h>
 #include <QtCore/private/qfactoryloader_p.h>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
@@ -87,7 +87,7 @@ QInputDeviceIntegration *QInputDeviceIntegrationFactory::create(const QString &n
     if (QInputDeviceIntegration *ret = qLoadPlugin<QInputDeviceIntegration, QInputDevicePlugin>(loader(), name, args))
         return ret;
 #endif
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 } // Qt3DInput

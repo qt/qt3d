@@ -53,7 +53,6 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
 namespace Render {
 
 TrianglesExtractor::TrianglesExtractor(GeometryRenderer *renderer, NodeManagers *manager)
@@ -76,7 +75,6 @@ void TrianglesExtractor::visit(uint andx, const QVector3D &a, uint bndx, const Q
 }
 
 } // namespace Render
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

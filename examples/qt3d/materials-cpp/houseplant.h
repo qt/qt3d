@@ -53,8 +53,8 @@
 
 #include "renderableentity.h"
 #include <QEntity>
-#include <QNormalDiffuseMapAlphaMaterial>
-#include <QNormalDiffuseMapMaterial>
+#include <Qt3DExtras/QNormalDiffuseMapAlphaMaterial>
+#include <Qt3DExtras/QNormalDiffuseMapMaterial>
 #include <QTextureImage>
 
 class HousePlant : public Qt3DCore::QEntity
@@ -96,9 +96,9 @@ private:
     RenderableEntity *m_plant;
     RenderableEntity *m_cover;
 
-    Qt3DRender::QNormalDiffuseMapMaterial *m_potMaterial;
-    Qt3DRender::QNormalDiffuseMapAlphaMaterial *m_plantMaterial;
-    Qt3DRender::QNormalDiffuseMapMaterial *m_coverMaterial;
+    Qt3DExtras::QNormalDiffuseMapMaterial *m_potMaterial;
+    Qt3DExtras::QNormalDiffuseMapAlphaMaterial *m_plantMaterial;
+    Qt3DExtras::QNormalDiffuseMapMaterial *m_coverMaterial;
 
     Qt3DRender::QTextureImage *m_potImage;
     Qt3DRender::QTextureImage *m_potNormalImage;

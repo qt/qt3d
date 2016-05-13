@@ -39,7 +39,7 @@
 
 #include "qshaderprogram.h"
 #include "qshaderprogram_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 #include <QDebug>
 #include <QFile>
@@ -55,27 +55,9 @@ QShaderProgramPrivate::QShaderProgramPrivate()
 {
 }
 
-void QShaderProgram::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QShaderProgram *prog = static_cast<const QShaderProgram*>(ref);
-
-    d_func()->m_vertexShaderCode = prog->d_func()->m_vertexShaderCode;
-    d_func()->m_tessControlShaderCode = prog->d_func()->m_tessControlShaderCode;
-    d_func()->m_tessEvalShaderCode = prog->d_func()->m_tessEvalShaderCode;
-    d_func()->m_geometryShaderCode = prog->d_func()->m_geometryShaderCode;
-    d_func()->m_fragmentShaderCode = prog->d_func()->m_fragmentShaderCode;
-    d_func()->m_computeShaderCode = prog->d_func()->m_computeShaderCode;
-}
-
 QShaderProgram::QShaderProgram(QNode *parent)
     : QNode(*new QShaderProgramPrivate, parent)
 {
-}
-
-QShaderProgram::~QShaderProgram()
-{
-    QNode::cleanup();
 }
 
 /*! \internal */
@@ -263,6 +245,20 @@ QByteArray QShaderProgram::loadSource(const QUrl &sourceUrl)
 {
     // TO DO: Handle remote path
     return deincludify(Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(sourceUrl));
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QShaderProgram::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QShaderProgramData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QShaderProgram);
+    data.vertexShaderCode = d->m_vertexShaderCode;
+    data.tessellationControlShaderCode = d->m_tessControlShaderCode;
+    data.tessellationEvaluationShaderCode = d->m_tessEvalShaderCode;
+    data.geometryShaderCode = d->m_geometryShaderCode;
+    data.fragmentShaderCode = d->m_fragmentShaderCode;
+    data.computeShaderCode = d->m_computeShaderCode;
+    return creationChange;
 }
 
 } // of namespace Qt3DRender

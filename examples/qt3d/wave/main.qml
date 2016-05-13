@@ -52,15 +52,16 @@ import QtQuick 2.1 as QQ2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 import Qt3D.Input 2.0
+import Qt3D.Extras 2.0
 
 Entity {
     id: root
 
-    KeyboardController { id: keyboard1 }
+    KeyboardDevice { id: keyboard1 }
 
-    KeyboardInput {
+    KeyboardHandler {
         id: input
-        controller: keyboard1
+        sourceDevice: keyboard1
         focus: true
 
         onTabPressed: {
@@ -72,14 +73,14 @@ Entity {
         }
     }
 
-    FrameGraph {
-        id: frameGraph
+    RenderSettings {
+        id: renderSettings
         activeFrameGraph: WaveForwardRenderer {
             camera: mainCamera
         }
     }
 
-    components: [ frameGraph, input, inputSettings ]
+    components: [ renderSettings, input, inputSettings ]
 
     // Event Source will be set by the Qt3DQuickWindow
     InputSettings { id: inputSettings }
@@ -93,9 +94,11 @@ Entity {
 
     Background {
         id: background
+        layer: renderSettings.activeFrameGraph.backgroundLayer
     }
 
     Wave {
         id: wave
+        layer: renderSettings.activeFrameGraph.waveLayer
     }
 }

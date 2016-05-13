@@ -94,21 +94,37 @@ Q_AUTOTEST_EXPORT RenderRenderPassList findRenderPassesForTechnique(NodeManagers
                                                                     RenderView *renderView,
                                                                     Technique *technique);
 
+// Extracts the type T from a QVariant v without using QVariant::value which is slow
+// Note: Assumes you are 100% sure about the type you requested
+template<typename T>
+Q_AUTOTEST_EXPORT inline T variant_value(const QVariant &v)
+{
+    return *reinterpret_cast<const T *>(v.data());
+}
+
 struct ParameterInfo
 {
-    ParameterInfo(const QString &name = QString(), const QVariant &value = QVariant())
-        : name(name)
+    ParameterInfo(const int nameId = -1, const QVariant &value = QVariant())
+        : nameId(nameId)
         , value(value)
     {}
 
-    QString name;
+    int nameId;
     QVariant value;
 
-    bool operator<(const QString &otherName) const
+    bool operator<(const int otherNameId) const
     {
-        return name < otherName;
+        return nameId < otherNameId;
+    }
+
+    bool operator<(const ParameterInfo &other) const
+    {
+        return nameId < other.nameId;
     }
 };
+QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ParameterInfo, Q_MOVABLE_TYPE)
+
+
 
 typedef QVarLengthArray<ParameterInfo, 16> ParameterInfoList;
 
@@ -119,7 +135,7 @@ Q_AUTOTEST_EXPORT void parametersFromMaterialEffectTechnique(ParameterInfoList *
                                                              Technique *technique);
 
 Q_AUTOTEST_EXPORT void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
-                                           const QList<Qt3DCore::QNodeId> &parameterIds);
+                                           const QVector<Qt3DCore::QNodeId> &parameterIds);
 
 template<class T>
 void parametersFromParametersProvider(ParameterInfoList *infoList,
@@ -130,13 +146,14 @@ void parametersFromParametersProvider(ParameterInfoList *infoList,
         addParametersForIds(infoList, manager, pass->parameters());
 }
 
-Q_AUTOTEST_EXPORT ParameterInfoList::iterator findParamInfo(ParameterInfoList *infoList,
-                                                            const QString &name);
+Q_AUTOTEST_EXPORT ParameterInfoList::const_iterator findParamInfo(ParameterInfoList *infoList,
+                                                                  const int nameId);
 
 Q_AUTOTEST_EXPORT void addToRenderStateSet(RenderStateSet *stateSet,
                                            const RenderStateCollection *collection,
                                            RenderStateManager *manager);
 
+typedef QHash<int, QVariant> UniformBlockValueBuilderHash;
 
 struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
 {
@@ -152,14 +169,12 @@ struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
 
     bool updatedPropertiesOnly;
     QHash<QString, ShaderUniform> uniforms;
-    QHash<QString, QVariant> activeUniformNamesToValue;
+    UniformBlockValueBuilderHash activeUniformNamesToValue;
     ShaderDataManager *shaderDataManager;
 };
 
 } // namespace Render
 } // namespace Qt3DRender
-
-Q_DECLARE_TYPEINFO(Qt3DRender::Render::ParameterInfo, Q_MOVABLE_TYPE);
 
 QT_END_NAMESPACE
 

@@ -39,10 +39,13 @@
 
 #include "statesetnode_p.h"
 
-#include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRender/qstateset.h>
+#include <Qt3DRender/qrenderstateset.h>
+#include <Qt3DRender/private/qrenderstateset_p.h>
 #include <Qt3DRender/private/genericstate_p.h>
 #include <Qt3DRender/private/renderstateset_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,36 +63,40 @@ StateSetNode::~StateSetNode()
 {
 }
 
-void StateSetNode::updateFromPeer(Qt3DCore::QNode *peer)
+void StateSetNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QStateSet *stateSet = static_cast<QStateSet*>(peer);
-
-    setEnabled(stateSet->isEnabled());
-    Q_FOREACH (QRenderState *renderState, stateSet->renderStates())
-        appendRenderState(renderState->id());
+    FrameGraphNode::initializeFromPeer(change);
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderStateSetData>>(change);
+    const auto &data = typedChange->data;
+    for (const auto &stateId : qAsConst(data.renderStateIds))
+        appendRenderState(stateId);
 }
 
 void StateSetNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     switch (e->type()) {
-    case NodeAdded: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
-            QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
-            appendRenderState(nodePtr->id());
+    case PropertyValueAdded: {
+        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("renderState")) {
+            appendRenderState(change->addedNodeId());
+            markDirty(AbstractRenderer::AllDirty);
         }
-    }
         break;
+    }
 
-    case NodeRemoved: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("renderState"))
-            removeRenderState(propertyChange->value().value<QNodeId>());
-    }
+    case PropertyValueRemoved: {
+        const auto propertyChange = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
+        if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
+            removeRenderState(propertyChange->removedNodeId());
+            markDirty(AbstractRenderer::AllDirty);
+        }
         break;
+    }
 
     default:
         break;
     }
+    FrameGraphNode::sceneChangeEvent(e);
 }
 
 } // namespace Render

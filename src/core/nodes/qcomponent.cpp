@@ -42,7 +42,7 @@
 #include "qentity.h"
 #include "qentity_p.h"
 #include "qscene_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,34 +58,20 @@ void QComponentPrivate::addEntity(QEntity *entity)
 {
     m_entities.append(entity);
 
-    if (m_scene != Q_NULLPTR && !m_scene->hasEntityForComponent(m_id, entity->id())) {
+    if (m_scene != nullptr && !m_scene->hasEntityForComponent(m_id, entity->id())) {
         if (!m_shareable && !m_scene->entitiesForComponent(m_id).isEmpty())
             qWarning() << "Trying to assign a non shareable component to more than one Entity";
         m_scene->addEntityForComponent(m_id, entity->id());
     }
 
-    // We notify only if we have a QChangeArbiter
-    if (m_changeArbiter != Q_NULLPTR) {
-        Q_Q(QComponent);
-        QScenePropertyChangePtr e(new QScenePropertyChange(ComponentAdded, QSceneChange::Node, q->id()));
-        e->setPropertyName("entity");
-        e->setValue(QVariant::fromValue(entity->id()));
-        notifyObservers(e);
-    }
+    // TODO: Add QAddedToEntityChange to be delivered to components on the backend
 }
 
 void QComponentPrivate::removeEntity(QEntity *entity)
 {
-    // We notify only if we have a QChangeArbiter
-    if (m_changeArbiter != Q_NULLPTR) {
-        Q_Q(QComponent);
-        QScenePropertyChangePtr e(new QScenePropertyChange(ComponentRemoved, QSceneChange::Node, q->id()));
-        e->setPropertyName("entity");
-        e->setValue(QVariant::fromValue(entity->id()));
-        notifyObservers(e);
-    }
+    // TODO: Add QRemovedFromEntityChange to be delivered to components on the backend
 
-    if (m_scene != Q_NULLPTR)
+    if (m_scene != nullptr)
         m_scene->removeEntityForComponent(m_id, entity->id());
 
     m_entities.removeAll(entity);
@@ -123,9 +109,9 @@ QComponent::QComponent(QNode *parent)
 
 QComponent::~QComponent()
 {
-    Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DCore::QComponent subclass didn't call QNode::cleanup in its destructor");
+    Q_D(QComponent);
 
-    Q_FOREACH (QEntity *entity, entities()) {
+    for (QEntity *entity : qAsConst(d->m_entities)) {
         QEntityPrivate *entityPimpl = static_cast<QEntityPrivate *>(QEntityPrivate::get(entity));
         if (entityPimpl)
             entityPimpl->m_components.removeAll(this);
@@ -133,17 +119,16 @@ QComponent::~QComponent()
 }
 
 /*!
-    Returns whether the QComponent is shareable across entities or not.
+    \property Qt3DCore::QComponent::isShareable
+    Holds the shareable flag of the QComponent. The QComponent can be shared across several
+    entities if \c{true}.
 */
-bool QComponent::shareable() const
+bool QComponent::isShareable() const
 {
     Q_D(const QComponent);
     return d->m_shareable;
 }
 
-/*!
-    The QComponent can be shared across several entities if \a shareable is true.
-*/
 void QComponent::setShareable(bool shareable)
 {
     Q_D(QComponent);
@@ -151,13 +136,6 @@ void QComponent::setShareable(bool shareable)
         d->m_shareable = shareable;
         emit shareableChanged(shareable);
     }
-}
-
-void QComponent::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QComponent *comp = static_cast<const QComponent *>(ref);
-    setShareable(comp->shareable());
 }
 
 /*!
@@ -189,7 +167,7 @@ QComponent::QComponent(QComponentPrivate &dd, QNode *parent)
 */
 
 /*!
-    \qmlproperty bool Qt3DCore::Component3D::shareable
+    \qmlproperty bool Component3D::isShareable
 */
 
 QT_END_NAMESPACE

@@ -74,7 +74,7 @@ class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DBuffer : public QObject
     Q_OBJECT
     Q_PROPERTY(QVariant data READ bufferData WRITE setBufferData NOTIFY bufferDataChanged)
 public:
-    explicit Quick3DBuffer(QObject *parent = Q_NULLPTR);
+    explicit Quick3DBuffer(QObject *parent = nullptr);
     inline QBuffer *parentBuffer() const { return qobject_cast<QBuffer *>(parent()); }
 
     QVariant bufferData() const;

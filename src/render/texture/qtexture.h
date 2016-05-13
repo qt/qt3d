@@ -40,10 +40,10 @@
 #ifndef QT3DRENDER_QTEXTURE_H
 #define QT3DRENDER_QTEXTURE_H
 
-#include <Qt3DRender/qtexturedata.h>
-#include <Qt3DRender/qwrapmode.h>
-#include <Qt3DRender/qtextureproviders.h>
+#include <Qt3DRender/qtextureimagedata.h>
+#include <Qt3DRender/qtexturewrapmode.h>
 #include <Qt3DRender/qtextureimage.h>
+#include <Qt3DRender/qabstracttexture.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,6 +52,121 @@ QT_BEGIN_NAMESPACE
 #pragma qt_class(QTexture)
 #pragma qt_sync_stop_processing
 #endif
+
+namespace Qt3DRender {
+
+class QT3DRENDERSHARED_EXPORT QTexture1D : public QAbstractTexture
+{
+    Q_OBJECT
+public:
+    explicit QTexture1D(Qt3DCore::QNode *parent = nullptr);
+    ~QTexture1D();
+};
+
+class QT3DRENDERSHARED_EXPORT QTexture1DArray : public QAbstractTexture
+{
+    Q_OBJECT
+public:
+    explicit QTexture1DArray(Qt3DCore::QNode *parent = nullptr);
+    ~QTexture1DArray();
+};
+
+class QT3DRENDERSHARED_EXPORT QTexture2D : public QAbstractTexture
+{
+    Q_OBJECT
+public:
+    explicit QTexture2D(Qt3DCore::QNode *parent = nullptr);
+    ~QTexture2D();
+};
+
+class QT3DRENDERSHARED_EXPORT QTexture2DArray : public QAbstractTexture
+{
+    Q_OBJECT
+public:
+    explicit QTexture2DArray(Qt3DCore::QNode *parent = nullptr);
+    ~QTexture2DArray();
+};
+
+class QT3DRENDERSHARED_EXPORT QTexture3D : public QAbstractTexture
+{
+    Q_OBJECT
+public:
+    explicit QTexture3D(Qt3DCore::QNode *parent = nullptr);
+    ~QTexture3D();
+};
+
+class QT3DRENDERSHARED_EXPORT QTextureCubeMap : public QAbstractTexture
+{
+    Q_OBJECT
+public:
+    explicit QTextureCubeMap(Qt3DCore::QNode *parent = nullptr);
+    ~QTextureCubeMap();
+};
+
+class QT3DRENDERSHARED_EXPORT QTextureCubeMapArray : public QAbstractTexture
+{
+    Q_OBJECT
+public:
+    explicit QTextureCubeMapArray(Qt3DCore::QNode *parent = nullptr);
+    ~QTextureCubeMapArray();
+};
+
+class QT3DRENDERSHARED_EXPORT QTexture2DMultisample : public QAbstractTexture
+{
+    Q_OBJECT
+public:
+    explicit QTexture2DMultisample(Qt3DCore::QNode *parent = nullptr);
+    ~QTexture2DMultisample();
+};
+
+class QT3DRENDERSHARED_EXPORT QTexture2DMultisampleArray : public QAbstractTexture
+{
+    Q_OBJECT
+public:
+    explicit QTexture2DMultisampleArray(Qt3DCore::QNode *parent = nullptr);
+    ~QTexture2DMultisampleArray();
+};
+
+class QT3DRENDERSHARED_EXPORT QTextureRectangle : public QAbstractTexture
+{
+    Q_OBJECT
+public:
+    explicit QTextureRectangle(Qt3DCore::QNode *parent = nullptr);
+    ~QTextureRectangle();
+};
+
+class QT3DRENDERSHARED_EXPORT QTextureBuffer : public QAbstractTexture
+{
+    Q_OBJECT
+public:
+    explicit QTextureBuffer(Qt3DCore::QNode *parent = nullptr);
+    ~QTextureBuffer();
+};
+
+class QTextureLoaderPrivate;
+
+class QT3DRENDERSHARED_EXPORT QTextureLoader : public QAbstractTexture
+{
+    Q_OBJECT
+    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+
+public:
+    explicit QTextureLoader(Qt3DCore::QNode *parent = nullptr);
+    ~QTextureLoader();
+
+    QUrl source() const;
+
+public Q_SLOTS:
+    void setSource(const QUrl &source);
+
+Q_SIGNALS:
+    void sourceChanged(const QUrl &source);
+
+private:
+    Q_DECLARE_PRIVATE(QTextureLoader)
+};
+
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

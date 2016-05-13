@@ -60,10 +60,12 @@
 #include <QMatrix4x4>
 #include <QBitArray>
 #include <Qt3DRender/private/quniformvalue_p.h>
-#include <Qt3DRender/qclearbuffer.h>
+#include <Qt3DRender/qclearbuffers.h>
 #include <Qt3DRender/private/shader_p.h>
+#include <Qt3DRender/private/glbuffer_p.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/private/qgraphicsapifilter_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,8 +74,6 @@ class QOpenGLShaderProgram;
 class QAbstractOpenGLFunctions;
 
 namespace Qt3DRender {
-
-class QGraphicsApiFilter;
 
 namespace Render {
 
@@ -87,7 +87,6 @@ class RenderTarget;
 class AttachmentPack;
 class Attribute;
 class Buffer;
-class GLBuffer;
 
 enum TextureScope
 {
@@ -106,8 +105,8 @@ public:
 
     int id() const; // unique, small integer ID of this context
 
-    bool beginDrawing(QSurface *surface, const QColor &color);
-    void clearBackBuffer(QClearBuffer::BufferType buffers);
+    bool beginDrawing(QSurface *surface);
+    void clearBackBuffer(QClearBuffers::BufferTypeFlags buffers);
     void endDrawing(bool swapBuffers);
 
     void setViewport(const QRectF &viewport, const QSize &surfaceSize);
@@ -123,9 +122,11 @@ public:
     bool makeCurrent(QSurface *surface);
     void doneCurrent();
     void activateGLHelper();
+    bool hasValidGLHelper() const;
 
     void activateShader(Shader* shader);
     QOpenGLShaderProgram *containsProgram(const ProgramDNA &dna);
+    void removeProgram(const ProgramDNA &dna, Qt3DCore::QNodeId id);
 
     GLuint activeFBO() const { return m_activeFBO; }
     GLuint defaultFBO() const { return m_defaultFBO; }
@@ -171,7 +172,7 @@ public:
 
     void setCurrentStateSet(RenderStateSet* ss);
     RenderStateSet *currentStateSet() const;
-    QGraphicsApiFilter *contextInfo() const;
+    const GraphicsApiFilterData *contextInfo() const;
 
     // Wrapper methods
     void    alphaTest(GLenum mode1, GLenum mode2);
@@ -185,26 +186,30 @@ public:
     void    blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRGB, GLenum sAlpha, GLenum dAlpha);
     GLuint  boundFrameBufferObject();
     void    buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer);
+    void    clearBufferf(GLint drawbuffer, const QVector4D &values);
     void    clearColor(const QColor &color);
-    void    cullFace(GLenum mode);
+    void    clearDepthValue(float depth);
+    void    clearStencilValue(int stencil);
     void    depthMask(GLenum mode);
     void    depthTest(GLenum mode);
-    void    disableAlphaCoverage();
     void    disableClipPlane(int clipPlane);
     void    disablei(GLenum cap, GLuint index);
     void    disablePrimitiveRestart();
     void    dispatchCompute(int x, int y, int z);
     void    drawArrays(GLenum primitiveType, GLint first, GLsizei count);
     void    drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances);
+    void    drawArraysInstancedBaseInstance(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances, GLsizei baseinstance);
     void    drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLint baseVertex = 0);
     void    drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances, GLint baseVertex = 0, GLint baseInstance = 0);
-    void    enableAlphaCoverage();
     void    enableClipPlane(int clipPlane);
     void    enablei(GLenum cap, GLuint index);
     void    enablePrimitiveRestart(int restartIndex);
     void    frontFace(GLenum mode);
     GLint   maxClipPlaneCount();
     void    pointSize(bool programmable, GLfloat value);
+    void    setMSAAEnabled(bool enabled);
+    void    setAlphaCoverageEnabled(bool enabled);
+    void    setClipPlane(int clipPlane, const QVector3D &normal, float distance);
     void    setSeamlessCubemap(bool enable);
     void    setVerticesPerPatch(GLint verticesPerPatch);
 
@@ -212,7 +217,7 @@ public:
     static GLint elementType(GLint type);
     static GLint tupleSizeFromType(GLint type);
     static GLuint byteSizeFromType(GLint type);
-    static GLint glDataTypeFromAttributeDataType(QAttribute::DataType dataType);
+    static GLint glDataTypeFromAttributeDataType(QAttribute::VertexBaseType dataType);
 
     bool supportsDrawBuffersBlend() const;
     bool supportsVAO() const { return m_supportsVAO; }
@@ -231,6 +236,7 @@ private:
     void activateDrawBuffers(const AttachmentPack &attachments);
     HGLBuffer createGLBufferFor(Buffer *buffer);
     void uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool releaseBuffer = false);
+    bool bindGLBuffer(GLBuffer *buffer, GLBuffer::Type type);
 
     bool m_initialized;
     const unsigned int m_id;
@@ -252,6 +258,11 @@ private:
     QBitArray m_pinnedTextureUnits;
     QVector<TextureScope> m_textureScopes;
 
+    // cache some current state, to make sure we don't issue unnecessary GL calls
+    int m_currClearStencilValue;
+    float m_currClearDepthValue;
+    QColor m_currClearColorValue;
+
     // recency score for all render-textures we've seen. Higher scores
     // mean more recently used.
     QHash<uint, int> m_textureScores;
@@ -261,10 +272,12 @@ private:
     GLuint m_activeFBO;
     GLuint m_defaultFBO;
 
+    GLBuffer *m_boundArrayBuffer;
+
     RenderStateSet* m_stateSet;
 
     Renderer *m_renderer;
-    QGraphicsApiFilter *m_contextInfo;
+    GraphicsApiFilterData m_contextInfo;
 
     QByteArray m_uboTempArray;
 

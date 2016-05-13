@@ -53,31 +53,25 @@ class QViewportPrivate;
 class QT3DRENDERSHARED_EXPORT QViewport : public QFrameGraphNode
 {
     Q_OBJECT
-    Q_PROPERTY(QRectF rect READ rect WRITE setRect NOTIFY rectChanged)
-    Q_PROPERTY(QColor clearColor READ clearColor WRITE setClearColor NOTIFY clearColorChanged)
+    Q_PROPERTY(QRectF normalizedRect READ normalizedRect WRITE setNormalizedRect NOTIFY normalizedRectChanged)
 
 public:
-    explicit QViewport(Qt3DCore::QNode *parent = 0);
-    ~QViewport();
+    explicit QViewport(Qt3DCore::QNode *parent = nullptr);
 
-    QRectF rect() const;
-    QColor clearColor() const;
+    QRectF normalizedRect() const;
 
 public Q_SLOTS:
-    void setRect(const QRectF& rect);
-    void setClearColor(const QColor &color);
+    void setNormalizedRect(const QRectF& normalizedRect);
 
 Q_SIGNALS:
-    void rectChanged(const QRectF& rect);
-    void clearColorChanged(const QColor &clearColor);
+    void normalizedRectChanged(const QRectF& normalizedRect);
 
 protected:
-    QViewport(QViewportPrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    QViewport(QViewportPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QViewport)
-    QT3D_CLONEABLE(QViewport)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

@@ -43,7 +43,9 @@
 #include "qeffect.h"
 #include <Qt3DRender/private/renderlogging_p.h>
 #include "qparameter.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 /*!
  * \qmltype Material
@@ -78,31 +80,13 @@ namespace Qt3DRender {
 
 QMaterialPrivate::QMaterialPrivate()
     : QComponentPrivate()
-    , m_effect(Q_NULLPTR)
+    , m_effect(nullptr)
 {
-}
-
-void QMaterial::copy(const QNode *ref)
-{
-    QComponent::copy(ref);
-    const QMaterial *material = static_cast<const QMaterial*>(ref);
-    Q_FOREACH (QParameter *p, material->d_func()->m_parameters)
-        addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
-
-    // TO DO: We may want to copy the node id of the effect and only send a clone
-    // when we are the parent of the effect
-    if (material->d_func()->m_effect && material->d_func()->m_effect->parent() == ref)
-        setEffect(qobject_cast<QEffect *>(QNode::clone(material->d_func()->m_effect)));
 }
 
 QMaterial::QMaterial(QNode *parent)
     : QComponent(*new QMaterialPrivate, parent)
 {
-}
-
-QMaterial::~QMaterial()
-{
-    QNode::cleanup();
 }
 
 /*! \internal */
@@ -141,6 +125,7 @@ QEffect *QMaterial::effect() const
 
 void QMaterial::addParameter(QParameter *parameter)
 {
+    Q_ASSERT(parameter);
     Q_D(QMaterial);
     if (!d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
@@ -152,10 +137,9 @@ void QMaterial::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), parameter);
             change->setPropertyName("parameter");
-            change->setValue(QVariant::fromValue(parameter->id()));
             d->notifyObservers(change);
         }
     }
@@ -163,33 +147,30 @@ void QMaterial::addParameter(QParameter *parameter)
 
 void QMaterial::removeParameter(QParameter *parameter)
 {
+    Q_ASSERT(parameter);
     Q_D(QMaterial);
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+    if (d->m_changeArbiter != nullptr) {
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), parameter);
         change->setPropertyName("parameter");
-        change->setValue(QVariant::fromValue(parameter->id()));
         d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
 }
 
-QList<QParameter *> QMaterial::parameters() const
+QVector<QParameter *> QMaterial::parameters() const
 {
     Q_D(const QMaterial);
     return d->m_parameters;
 }
 
-TextureDict QMaterial::textureValues() const
+Qt3DCore::QNodeCreatedChangeBasePtr QMaterial::createNodeCreationChange() const
 {
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QMaterialData>::create(this);
+    auto &data = creationChange->data;
     Q_D(const QMaterial);
-    return d->m_textures;
-}
-
-// TO DO: Check if this is really needed
-void QMaterial::setTextureParameter(QString name, QAbstractTextureProvider *tex)
-{
-    Q_D(QMaterial);
-    d->m_textures[name] = tex;
+    data.parameterIds = qIdsForNodes(d->m_parameters);
+    data.effectId = qIdForNode(d->m_effect);
+    return creationChange;
 }
 
 } // namespace Qt3DRender

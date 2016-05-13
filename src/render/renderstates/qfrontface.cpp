@@ -39,57 +39,40 @@
 ****************************************************************************/
 
 #include "qfrontface.h"
-#include "qrenderstate_p.h"
-#include <private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include "qfrontface_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QFrontFacePrivate : public QRenderStatePrivate
-{
-public:
-    QFrontFacePrivate()
-        : QRenderStatePrivate(QRenderState::FrontFace)
-        , m_direction(QFrontFace::ClockWise)
-    {
-    }
-
-    Q_DECLARE_PUBLIC(QFrontFace)
-    QFrontFace::FaceDir m_direction;
-};
 
 QFrontFace::QFrontFace(QNode *parent)
     : QRenderState(*new QFrontFacePrivate, parent)
 {
 }
 
-QFrontFace::~QFrontFace()
-{
-    QNode::cleanup();
-}
-
-void QFrontFace::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QFrontFace *refState = static_cast<const QFrontFace*>(ref);
-    d_func()->m_direction = refState->d_func()->m_direction;
-}
-
-QFrontFace::FaceDir QFrontFace::direction() const
+QFrontFace::WindingDirection QFrontFace::direction() const
 {
     Q_D(const QFrontFace);
     return d->m_direction;
 }
 
-void QFrontFace::setDirection(QFrontFace::FaceDir direction)
+void QFrontFace::setDirection(QFrontFace::WindingDirection direction)
 {
     Q_D(QFrontFace);
     if (d->m_direction != direction) {
         d->m_direction = direction;
         emit directionChanged(direction);
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QFrontFace::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangePtr<QFrontFaceData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QFrontFace);
+    data.direction = d->m_direction;
+    return creationChange;
 }
 
 } // namespace Qt3DRender

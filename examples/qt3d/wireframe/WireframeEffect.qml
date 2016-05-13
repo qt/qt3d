@@ -55,9 +55,9 @@ Effect {
     id: root
 
     parameters: [
-        Parameter { name: "ambient";   value: Qt.vector3d( 0.1, 0.1, 0.1 ) },
-        Parameter { name: "diffuse";   value: Qt.vector3d( 0.7, 0.7, 0.7 ) },
-        Parameter { name: "specular";  value: Qt.vector3d( 0.95, 0.95, 0.95 ) },
+        Parameter { name: "ka";   value: Qt.vector3d( 0.1, 0.1, 0.1 ) },
+        Parameter { name: "kd";   value: Qt.vector3d( 0.7, 0.7, 0.7 ) },
+        Parameter { name: "ks";  value: Qt.vector3d( 0.95, 0.95, 0.95 ) },
         Parameter { name: "shininess"; value: 150.0 }
     ]
 
@@ -70,7 +70,7 @@ Effect {
                 minorVersion: 1
             }
 
-            annotations: [ Annotation { name: "renderingStyle"; value: "forward" } ]
+            filterKeys: [ FilterKey { name: "renderingStyle"; value: "forward" } ]
 
             parameters: [
                 Parameter { name: "light.position"; value: Qt.vector4d( 0.0, 0.0, 0.0, 1.0 ) },
@@ -81,13 +81,6 @@ Effect {
 
             renderPasses: [
                 RenderPass {
-
-                    bindings: [
-                        ParameterMapping { parameterName: "ambient";  shaderVariableName: "ka"; bindingType: ParameterMapping.Uniform },
-                        ParameterMapping { parameterName: "diffuse";  shaderVariableName: "kd"; bindingType: ParameterMapping.Uniform },
-                        ParameterMapping { parameterName: "specular"; shaderVariableName: "ks"; bindingType: ParameterMapping.Uniform }
-                    ]
-
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/robustwireframe.vert")
                         geometryShaderCode: loadSource("qrc:/shaders/robustwireframe.geom")

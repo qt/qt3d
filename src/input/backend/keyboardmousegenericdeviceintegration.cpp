@@ -70,23 +70,28 @@ QVector<Qt3DCore::QAspectJobPtr> KeyboardMouseGenericDeviceIntegration::jobsToEx
 QAbstractPhysicalDevice *KeyboardMouseGenericDeviceIntegration::createPhysicalDevice(const QString &name)
 {
     Q_UNUSED(name)
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 QVector<Qt3DCore::QNodeId> KeyboardMouseGenericDeviceIntegration::physicalDevices() const
 {
-    // TO DO: could return the ids of active KeyboardController/MouseController
+    // TO DO: could return the ids of active KeyboardDevice/MouseDevice
     return QVector<Qt3DCore::QNodeId>();
 }
 
 QAbstractPhysicalDeviceBackendNode *KeyboardMouseGenericDeviceIntegration::physicalDevice(Qt3DCore::QNodeId id) const
 {
-    QAbstractPhysicalDeviceBackendNode *device = m_handler->keyboardControllerManager()->lookupResource(id);
+    QAbstractPhysicalDeviceBackendNode *device = m_handler->keyboardDeviceManager()->lookupResource(id);
     if (!device)
-        device = m_handler->mouseControllerManager()->lookupResource(id);
+        device = m_handler->mouseDeviceManager()->lookupResource(id);
     if (!device)
         device = m_handler->genericDeviceBackendNodeManager()->lookupResource(id);
     return device;
+}
+
+QStringList KeyboardMouseGenericDeviceIntegration::deviceNames() const
+{
+    return QStringList() << tr("Keyboard") << tr("Mouse");
 }
 
 } // Input

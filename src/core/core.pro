@@ -1,10 +1,7 @@
 TARGET     = Qt3DCore
 MODULE     = 3dcore
+
 QT         = core-private gui-private
-
-load(qt_module)
-
-DEFINES += QT3DCORE_LIBRARY
 
 gcov {
     CONFIG += static
@@ -16,5 +13,14 @@ gcov {
 win32-g++*:QMAKE_CXXFLAGS_CXX11 = -std=gnu++0x
 
 include(core.pri)
+include(aspects/aspects.pri)
+include(changes/changes.pri)
+include(jobs/jobs.pri)
+include(nodes/nodes.pri)
+include(transforms/transforms.pri)
+include(resources/resources.pri)
+include(services/services.pri)
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
+
+load(qt_module)

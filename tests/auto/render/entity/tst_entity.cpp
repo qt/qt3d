@@ -30,7 +30,9 @@
 #include <Qt3DRender/private/entity_p.h>
 
 #include <Qt3DRender/QCameraLens>
-#include <Qt3DCore/QScenePropertyChange>
+#include <Qt3DCore/QPropertyUpdatedChange>
+#include <Qt3DCore/QComponentAddedChange>
+#include <Qt3DCore/QComponentRemovedChange>
 #include <Qt3DCore/QTransform>
 
 #include <Qt3DRender/QMesh>
@@ -39,29 +41,26 @@
 #include <Qt3DRender/QShaderData>
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QObjectPicker>
-#include <Qt3DRender/QBoundingVolumeDebug>
-#include <Qt3DRender/QComputeJob>
+#include <Qt3DRender/QComputeCommand>
+
+#include "testrenderer.h"
 
 typedef Qt3DCore::QNodeId (*UuidMethod)(Qt3DRender::Render::Entity *);
-typedef QList<Qt3DCore::QNodeId> (*UuidListMethod)(Qt3DRender::Render::Entity *);
+typedef QVector<Qt3DCore::QNodeId> (*UuidListMethod)(Qt3DRender::Render::Entity *);
 
 using namespace Qt3DCore;
 using namespace Qt3DRender;
 using namespace Qt3DRender::Render;
-
-void noopDeleter(QNode *) {}
-
 
 QNodeId transformUuid(Entity *entity) { return entity->componentUuid<Transform>(); }
 QNodeId cameraLensUuid(Entity *entity) { return entity->componentUuid<CameraLens>(); }
 QNodeId materialUuid(Entity *entity) { return entity->componentUuid<Material>(); }
 QNodeId geometryRendererUuid(Entity *entity) { return entity->componentUuid<GeometryRenderer>(); }
 QNodeId objectPickerUuid(Entity *entity) { return entity->componentUuid<ObjectPicker>(); }
-QNodeId boundingVolumeDebugUuid(Entity *entity) { return entity->componentUuid<BoundingVolumeDebug>(); }
-QNodeId computeJobUuid(Entity *entity) { return entity->componentUuid<ComputeJob>(); }
+QNodeId computeJobUuid(Entity *entity) { return entity->componentUuid<ComputeCommand>(); }
 
-QList<QNodeId> layersUuid(Entity *entity) { return entity->componentsUuid<Layer>(); }
-QList<QNodeId> shadersUuid(Entity *entity) { return entity->componentsUuid<ShaderData>(); }
+QVector<QNodeId> layersUuid(Entity *entity) { return entity->componentsUuid<Layer>(); }
+QVector<QNodeId> shadersUuid(Entity *entity) { return entity->componentsUuid<ShaderData>(); }
 
 class tst_RenderEntity : public QObject
 {
@@ -84,8 +83,7 @@ private slots:
                 << new QObjectPicker
                 << new QLayer
                 << new QShaderData
-                << new QBoundingVolumeDebug
-                << new QComputeJob;
+                << new QComputeCommand;
 
         QTest::newRow("all components") << components;
     }
@@ -94,7 +92,11 @@ private slots:
     {
         // GIVEN
         QFETCH(QList<QComponent*>, components);
+
+        TestRenderer renderer;
         Qt3DRender::Render::Entity entity;
+        Qt3DCore::QEntity dummyFrontendEntity;
+        entity.setRenderer(&renderer);
 
         // THEN
         QVERIFY(entity.componentUuid<Transform>().isNull());
@@ -102,17 +104,14 @@ private slots:
         QVERIFY(entity.componentUuid<Material>().isNull());
         QVERIFY(entity.componentUuid<GeometryRenderer>().isNull());
         QVERIFY(entity.componentUuid<ObjectPicker>().isNull());
-        QVERIFY(entity.componentUuid<BoundingVolumeDebug>().isNull());
-        QVERIFY(entity.componentUuid<ComputeJob>().isNull());
+        QVERIFY(entity.componentUuid<ComputeCommand>().isNull());
         QVERIFY(entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(entity.componentsUuid<ShaderData>().isEmpty());
         QVERIFY(!entity.isBoundingVolumeDirty());
 
         // WHEN
         Q_FOREACH (QComponent *component, components) {
-            QScenePropertyChangePtr addChange(new QScenePropertyChange(ComponentAdded, QSceneChange::Node, component->id()));
-            addChange->setPropertyName("component");
-            addChange->setValue(QVariant::fromValue(QNodePtr(component, noopDeleter)));
+            const auto addChange = QComponentAddedChangePtr::create(&dummyFrontendEntity, component);
             entity.sceneChangeEvent(addChange);
         }
 
@@ -122,11 +121,11 @@ private slots:
         QVERIFY(!entity.componentUuid<Material>().isNull());
         QVERIFY(!entity.componentUuid<GeometryRenderer>().isNull());
         QVERIFY(!entity.componentUuid<ObjectPicker>().isNull());
-        QVERIFY(!entity.componentUuid<BoundingVolumeDebug>().isNull());
         QVERIFY(!entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(!entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(!entity.componentsUuid<ShaderData>().isEmpty());
         QVERIFY(entity.isBoundingVolumeDirty());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
         entity.cleanup();
@@ -137,7 +136,6 @@ private slots:
         QVERIFY(entity.componentUuid<Material>().isNull());
         QVERIFY(entity.componentUuid<GeometryRenderer>().isNull());
         QVERIFY(entity.componentUuid<ObjectPicker>().isNull());
-        QVERIFY(entity.componentUuid<BoundingVolumeDebug>().isNull());
         QVERIFY(entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(entity.componentsUuid<ShaderData>().isEmpty());
@@ -164,10 +162,7 @@ private slots:
         component = new QObjectPicker;
         QTest::newRow("objectPicker") << component << reinterpret_cast<void*>(objectPickerUuid);
 
-        component = new QBoundingVolumeDebug;
-        QTest::newRow("boundingVolumeDebug") << component << reinterpret_cast<void*>(boundingVolumeDebugUuid);
-
-        component = new QComputeJob;
+        component = new QComputeCommand;
         QTest::newRow("computeJob") << component << reinterpret_cast<void*>(computeJobUuid);
     }
 
@@ -178,28 +173,30 @@ private slots:
         QFETCH(void*, functionPtr);
         UuidMethod method = reinterpret_cast<UuidMethod>(functionPtr);
 
-        Entity entity;
+        TestRenderer renderer;
+        Qt3DRender::Render::Entity entity;
+        Qt3DCore::QEntity dummyFrontendEntity;
+        entity.setRenderer(&renderer);
 
         // THEN
         QVERIFY(method(&entity).isNull());
 
         // WHEN
-        QScenePropertyChangePtr addChange(new QScenePropertyChange(ComponentAdded, QSceneChange::Node, component->id()));
-        addChange->setPropertyName("component");
-        addChange->setValue(QVariant::fromValue(QNodePtr(component, noopDeleter)));
+        const auto addChange = QComponentAddedChangePtr::create(&dummyFrontendEntity, component);
         entity.sceneChangeEvent(addChange);
 
         // THEN
         QCOMPARE(method(&entity), component->id());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
-        QScenePropertyChangePtr removeChange(new QScenePropertyChange(ComponentRemoved, QSceneChange::Node, component->id()));
-        removeChange->setPropertyName("componentId");
-        removeChange->setValue(QVariant::fromValue(component->id()));
+        renderer.resetDirty();
+        const auto removeChange = QComponentRemovedChangePtr::create(&dummyFrontendEntity, component);
         entity.sceneChangeEvent(removeChange);
 
         // THEN
         QVERIFY(method(&entity).isNull());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         delete component;
     }
@@ -227,16 +224,17 @@ private slots:
         QFETCH(void*, functionPtr);
         UuidListMethod method = reinterpret_cast<UuidListMethod>(functionPtr);
 
-        Entity entity;
+        TestRenderer renderer;
+        Qt3DRender::Render::Entity entity;
+        Qt3DCore::QEntity dummyFrontendEntity;
+        entity.setRenderer(&renderer);
 
         // THEN
         QVERIFY(method(&entity).isEmpty());
 
         // WHEN
         Q_FOREACH (QComponent *component, components) {
-            QScenePropertyChangePtr addChange(new QScenePropertyChange(ComponentAdded, QSceneChange::Node, component->id()));
-            addChange->setPropertyName("component");
-            addChange->setValue(QVariant::fromValue(QNodePtr(component, noopDeleter)));
+            const auto addChange = QComponentAddedChangePtr::create(&dummyFrontendEntity, component);
             entity.sceneChangeEvent(addChange);
         }
 
@@ -245,16 +243,17 @@ private slots:
         Q_FOREACH (QComponent *component, components) {
             QVERIFY(method(&entity).contains(component->id()));
         }
+        QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
-        QScenePropertyChangePtr removeChange(new QScenePropertyChange(ComponentRemoved, QSceneChange::Node, components.first()->id()));
-        removeChange->setPropertyName("componentId");
-        removeChange->setValue(QVariant::fromValue(components.first()->id()));
+        renderer.resetDirty();
+        const auto removeChange = QComponentRemovedChangePtr::create(&dummyFrontendEntity, components.first());
         entity.sceneChangeEvent(removeChange);
 
         // THEN
         QCOMPARE(method(&entity).size(), components.size() - 1);
         QVERIFY(!method(&entity).contains(components.first()->id()));
+        QVERIFY(renderer.dirtyBits() != 0);
 
         qDeleteAll(components);
     }

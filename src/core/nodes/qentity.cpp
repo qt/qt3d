@@ -43,7 +43,10 @@
 #include "qcomponent_p.h"
 
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qcomponentaddedchange.h>
+#include <Qt3DCore/qcomponentremovedchange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/private/corelogging_p.h>
 #include <QMetaObject>
 #include <QMetaProperty>
@@ -71,7 +74,7 @@ QEntityPrivate::QEntityPrivate()
     backend aspect will be able to interpret and process an Entity by
     recognizing which components it is made up of. One aspect may decide to only
     process entities composed of a single Qt3DCore::QTransform component whilst
-    another may focus on Qt3DCore::QMouseInput.
+    another may focus on Qt3DCore::QMouseHandler.
 
     \sa Qt3DCore::QComponent, Qt3DCore::QTransform
 */
@@ -84,41 +87,27 @@ QEntity::QEntity(QNode *parent)
 {
 }
 
-QEntity::~QEntity()
-{
-    // remove all component aggregations
-    removeAllComponents();
-
-    QNode::cleanup();
-    // If all children are removed
-    // That includes the components that are parented by this entity
-
-}
-
 /*! \internal */
 QEntity::QEntity(QEntityPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
 }
 
-/*!
-    Copies all the properties and components of the Qt3DCore::QEntity \a ref to the
-    current instance.
-*/
-void QEntity::copy(const QNode *ref)
+QEntity::~QEntity()
 {
-    QNode::copy(ref);
-    const QEntity *entity = static_cast<const QEntity*>(ref);
-    d_func()->m_visible = entity->d_func()->m_visible;
-    d_func()->m_parentEntityId = entity->d_func()->parentEntityId();
-
-    Q_FOREACH (QComponent *c, entity->d_func()->m_components) {
-        QNode *ccclone = QNode::clone(c);
-        addComponent(qobject_cast<QComponent *>(ccclone));
-    }
+    // remove all component aggregations
+    Q_D(const QEntity);
+    // to avoid hammering m_components by repeated removeComponent()
+    // calls below, move all contents out, so the removeOne() calls in
+    // removeComponent() don't actually remove something:
+    const auto components = std::move(d->m_components);
+    for (QComponent *comp : components)
+        removeComponent(comp);
 }
+
+
 /*!
-    \typedef Qt3DCore::QComponentList
+    \typedef Qt3DCore::QComponentVector
     \relates Qt3DCore::QEntity
 
     List of QComponent pointers.
@@ -127,7 +116,7 @@ void QEntity::copy(const QNode *ref)
 /*!
     Returns the list of Qt3DCore::QComponent instances the entity is referencing.
 */
-QList<QComponent *> QEntity::components() const
+QComponentVector QEntity::components() const
 {
     Q_D(const QEntity);
     return d->m_components;
@@ -155,14 +144,9 @@ void QEntity::addComponent(QComponent *comp)
     if (!comp->parent())
         comp->setParent(this);
 
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        // Sending a full fledged component in the notification as we'll need
-        // to know which type of component it was and its properties to create
-        // the backend object
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, QSceneChange::Node, id()));
-        propertyChange->setPropertyName("component");
-        propertyChange->setValue(QVariant::fromValue(QNodePtr(QNode::clone(comp), &QNodePrivate::nodePtrDeleter)));
-        d->notifyObservers(propertyChange);
+    if (d->m_changeArbiter) {
+        const auto componentAddedChange = QComponentAddedChangePtr::create(this, comp);
+        d->notifyObservers(componentAddedChange);
     }
     static_cast<QComponentPrivate *>(QComponentPrivate::get(comp))->addEntity(this);
 }
@@ -178,27 +162,12 @@ void QEntity::removeComponent(QComponent *comp)
 
     static_cast<QComponentPrivate *>(QComponentPrivate::get(comp))->removeEntity(this);
 
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        // Sending just the component id as it is the only part needed to
-        // cleanup the backend object. This way we avoid a clone which might
-        // fail in the case of large scenes.
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, QSceneChange::Node, id()));
-        propertyChange->setValue(QVariant::fromValue(comp->id()));
-        propertyChange->setPropertyName("componentId");
-        d->notifyObservers(propertyChange);
+    if (d->m_changeArbiter) {
+        const auto componentRemovedChange = QComponentRemovedChangePtr::create(this, comp);
+        d->notifyObservers(componentRemovedChange);
     }
 
     d->m_components.removeOne(comp);
-}
-
-/*!
-    Remove all references to the components.
-*/
-void QEntity::removeAllComponents()
-{
-    Q_D(const QEntity);
-    Q_FOREACH (QComponent *comp, d->m_components)
-        removeComponent(comp);
 }
 
 /*!
@@ -213,7 +182,7 @@ QEntity *QEntity::parentEntity() const
     QNode *parentNode = QNode::parentNode();
     QEntity *parentEntity = qobject_cast<QEntity *>(parentNode);
 
-    while (parentEntity == Q_NULLPTR && parentNode != Q_NULLPTR) {
+    while (parentEntity == nullptr && parentNode != nullptr) {
         parentNode = parentNode->parentNode();
         parentEntity = qobject_cast<QEntity*>(parentNode);
     }
@@ -239,6 +208,23 @@ QNodeId QEntityPrivate::parentEntityId() const
     if (m_parentEntityId.isNull())
         q->parentEntity();
     return m_parentEntityId;
+}
+
+QNodeCreatedChangeBasePtr QEntity::createNodeCreationChange() const
+{
+    auto creationChange = QNodeCreatedChangePtr<QEntityData>::create(this);
+    auto &data = creationChange->data;
+
+    Q_D(const QEntity);
+    data.parentEntityId = parentEntity() ? parentEntity()->id() : Qt3DCore::QNodeId();
+    data.componentIdsAndTypes.reserve(d->m_components.size());
+    const QComponentVector &components = d->m_components;
+    for (const auto &c : components) {
+        const auto idAndType = QNodeIdTypePair(c->id(), c->metaObject());
+        data.componentIdsAndTypes.push_back(idAndType);
+    }
+
+    return creationChange;
 }
 
 } // namespace Qt3DCore

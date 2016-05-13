@@ -70,17 +70,17 @@ class QInputDeviceIntegration;
 namespace Input {
 
 class KeyboardInputManager;
-class KeyboardControllerManager;
+class KeyboardDeviceManager;
 class KeyboardEventFilter;
-class MouseControllerManager;
+class MouseDeviceManager;
 class MouseInputManager;
 class MouseEventFilter;
 class AxisManager;
-class AxisActionHandlerManager;
 class ActionManager;
-class AxisInputManager;
 class AxisSettingManager;
 class ActionInputManager;
+class AnalogAxisInputManager;
+class ButtonAxisInputManager;
 class InputChordManager;
 class InputSequenceManager;
 class LogicalDeviceManager;
@@ -95,16 +95,16 @@ public:
     InputHandler();
     ~InputHandler();
 
-    inline KeyboardControllerManager *keyboardControllerManager() const { return m_keyboardControllerManager; }
+    inline KeyboardDeviceManager *keyboardDeviceManager() const { return m_keyboardDeviceManager; }
     inline KeyboardInputManager *keyboardInputManager() const  { return m_keyboardInputManager; }
-    inline MouseControllerManager *mouseControllerManager() const { return m_mouseControllerManager; }
+    inline MouseDeviceManager *mouseDeviceManager() const { return m_mouseDeviceManager; }
     inline MouseInputManager *mouseInputManager() const { return m_mouseInputManager; }
     inline AxisManager *axisManager() const { return m_axisManager; }
     inline ActionManager *actionManager() const { return m_actionManager; }
-    inline AxisInputManager *axisInputManager() const { return m_axisInputManager; }
-    inline AxisActionHandlerManager *axisActionHandlerManager() const { return m_axisActionHandlerManager; }
     inline AxisSettingManager *axisSettingManager() const { return m_axisSettingManager; }
     inline ActionInputManager *actionInputManager() const { return m_actionInputManager; }
+    inline AnalogAxisInputManager *analogAxisInputManager() const { return m_analogAxisInputManager; }
+    inline ButtonAxisInputManager *buttonAxisInputManager() const { return m_buttonAxisInputManager; }
     inline InputChordManager *inputChordManager() const { return m_inputChordManager; }
     inline InputSequenceManager *inputSequenceManager() const { return m_inputSequenceManager; }
     inline LogicalDeviceManager *logicalDeviceManager() const { return m_logicalDeviceManager; }
@@ -115,15 +115,19 @@ public:
     QList<QT_PREPEND_NAMESPACE(QKeyEvent)> pendingKeyEvents();
     void clearPendingKeyEvents();
 
-    void appendMouseEvent(const QMouseEvent &event);
-    QList<QMouseEvent> pendingMouseEvents();
+    void appendMouseEvent(const QT_PREPEND_NAMESPACE(QMouseEvent) &event);
+    QList<QT_PREPEND_NAMESPACE(QMouseEvent)> pendingMouseEvents();
     void clearPendingMouseEvents();
 
-    void appendKeyboardController(HKeyboardController controller);
-    void removeKeyboardController(HKeyboardController controller);
+    void appendWheelEvent(const QT_PREPEND_NAMESPACE(QWheelEvent) &event);
+    QList<QT_PREPEND_NAMESPACE(QWheelEvent)> pendingWheelEvents();
+    void clearPendingWheelEvents();
 
-    void appendMouseController(HMouseController controller);
-    void removeMouseController(HMouseController controller);
+    void appendKeyboardDevice(HKeyboardDevice device);
+    void removeKeyboardDevice(HKeyboardDevice device);
+
+    void appendMouseDevice(HMouseDevice device);
+    void removeMouseDevice(HMouseDevice device);
 
     void appendGenericDevice(HGenericDeviceBackendNode device);
     void removeGenericDevice(HGenericDeviceBackendNode device);
@@ -141,26 +145,28 @@ public:
     void updateEventSource();
 
 private:
-    KeyboardControllerManager *m_keyboardControllerManager;
+    KeyboardDeviceManager *m_keyboardDeviceManager;
     KeyboardInputManager *m_keyboardInputManager;
-    MouseControllerManager *m_mouseControllerManager;
+    MouseDeviceManager *m_mouseDeviceManager;
     MouseInputManager *m_mouseInputManager;
 
-    QVector<HKeyboardController> m_activeKeyboardControllers;
-    QVector<HMouseController> m_activeMouseControllers;
+    QVector<HKeyboardDevice> m_activeKeyboardDevices;
+    QVector<HMouseDevice> m_activeMouseDevices;
     QVector<HGenericDeviceBackendNode> m_activeGenericPhysicalDevices;
     KeyboardEventFilter *m_keyboardEventFilter;
-    QList<QT_PREPEND_NAMESPACE(QKeyEvent)> m_pendingEvents;
     MouseEventFilter *m_mouseEventFilter;
-    QList<QMouseEvent> m_pendingMouseEvents;
+
+    QList<QT_PREPEND_NAMESPACE(QKeyEvent)> m_pendingKeyEvents;
+    QList<QT_PREPEND_NAMESPACE(QMouseEvent)> m_pendingMouseEvents;
+    QList<QT_PREPEND_NAMESPACE(QWheelEvent)> m_pendingWheelEvents;
     mutable QMutex m_mutex;
 
     AxisManager *m_axisManager;
     ActionManager *m_actionManager;
-    AxisInputManager *m_axisInputManager;
-    AxisActionHandlerManager *m_axisActionHandlerManager;
     AxisSettingManager *m_axisSettingManager;
     ActionInputManager *m_actionInputManager;
+    AnalogAxisInputManager *m_analogAxisInputManager;
+    ButtonAxisInputManager *m_buttonAxisInputManager;
     InputChordManager *m_inputChordManager;
     InputSequenceManager *m_inputSequenceManager;
     LogicalDeviceManager *m_logicalDeviceManager;

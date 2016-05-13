@@ -53,17 +53,18 @@
 
 DeferredRenderer::DeferredRenderer(Qt3DCore::QNode *parent)
     : Qt3DRender::QViewport(parent)
-    , m_sceneFilter(new Qt3DRender::QLayerFilter(this))
-    , m_screenQuadFilter(new Qt3DRender::QLayerFilter(this))
-    , m_clearScreenQuad(new Qt3DRender::QClearBuffer(m_screenQuadFilter))
+    , m_surfaceSelector(new Qt3DRender::QRenderSurfaceSelector(this))
+    , m_sceneFilter(new Qt3DRender::QLayerFilter(m_surfaceSelector))
+    , m_screenQuadFilter(new Qt3DRender::QLayerFilter(m_surfaceSelector))
+    , m_clearScreenQuad(new Qt3DRender::QClearBuffers(m_screenQuadFilter))
     , m_gBufferTargetSelector(new Qt3DRender::QRenderTargetSelector(m_sceneFilter))
-    , m_clearGBuffer(new Qt3DRender::QClearBuffer(m_gBufferTargetSelector))
+    , m_clearGBuffer(new Qt3DRender::QClearBuffers(m_gBufferTargetSelector))
     , m_geometryPassFilter(new Qt3DRender::QRenderPassFilter(m_clearGBuffer))
     , m_finalPassFilter(new Qt3DRender::QRenderPassFilter(m_clearScreenQuad))
     , m_sceneCameraSelector(new Qt3DRender::QCameraSelector(m_geometryPassFilter))
 {
-    m_clearGBuffer->setBuffers(Qt3DRender::QClearBuffer::ColorDepthBuffer);
-    m_clearScreenQuad->setBuffers(Qt3DRender::QClearBuffer::ColorDepthBuffer);
+    m_clearGBuffer->setBuffers(Qt3DRender::QClearBuffers::ColorDepthBuffer);
+    m_clearScreenQuad->setBuffers(Qt3DRender::QClearBuffers::ColorDepthBuffer);
 }
 
 void DeferredRenderer::setSceneCamera(Qt3DCore::QEntity *camera)
@@ -76,24 +77,24 @@ void DeferredRenderer::setGBuffer(Qt3DRender::QRenderTarget *gBuffer)
     m_gBufferTargetSelector->setTarget(gBuffer);
 }
 
-void DeferredRenderer::setGeometryPassCriteria(QList<Qt3DRender::QAnnotation *> criteria)
+void DeferredRenderer::setGeometryPassCriteria(QList<Qt3DRender::QFilterKey *> criteria)
 {
-    Q_FOREACH (Qt3DRender::QAnnotation *c, criteria)
-        m_geometryPassFilter->addInclude(c);
+    Q_FOREACH (Qt3DRender::QFilterKey *c, criteria)
+        m_geometryPassFilter->addMatch(c);
 }
 
-void DeferredRenderer::setFinalPassCriteria(QList<Qt3DRender::QAnnotation *> criteria)
+void DeferredRenderer::setFinalPassCriteria(QList<Qt3DRender::QFilterKey *> criteria)
 {
-    Q_FOREACH (Qt3DRender::QAnnotation *c, criteria)
+    Q_FOREACH (Qt3DRender::QFilterKey *c, criteria)
         c->setParent(m_finalPassFilter);
 }
 
-void DeferredRenderer::setGBufferLayers(const QStringList &layerNames)
+void DeferredRenderer::setGBufferLayer(Qt3DRender::QLayer *layer)
 {
-    m_sceneFilter->setLayers(layerNames);
+    m_sceneFilter->addLayer(layer);
 }
 
-void DeferredRenderer::setScreenQuadLayers(const QStringList &layerNames)
+void DeferredRenderer::setScreenQuadLayer(Qt3DRender::QLayer *layer)
 {
-    m_screenQuadFilter->setLayers(layerNames);
+    m_screenQuadFilter->addLayer(layer);
 }

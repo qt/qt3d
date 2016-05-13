@@ -53,7 +53,9 @@
 
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/qgeometryfunctor.h>
+#include <Qt3DRender/qgeometryfactory.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
+#include <memory>
 
 QT_BEGIN_NAMESPACE
 
@@ -66,15 +68,36 @@ public:
     Q_DECLARE_PUBLIC(QGeometryRenderer)
 
     int m_instanceCount;
-    int m_primitiveCount;
-    int m_baseVertex;
-    int m_baseInstance;
-    int m_restartIndex;
+    int m_vertexCount;
+    int m_indexOffset;
+    int m_firstInstance;
+    int m_firstVertex;
+    int m_restartIndexValue;
+    int m_verticesPerPatch;
     bool m_primitiveRestart;
     QGeometry *m_geometry;
     QGeometryRenderer::PrimitiveType m_primitiveType;
-    QGeometryFunctorPtr m_functor;
+    QGeometryFactoryPtr m_geometryFactory;
 };
+
+struct QGeometryRendererData
+{
+    int instanceCount;
+    int vertexCount;
+    int indexOffset;
+    int firstInstance;
+    int firstVertex;
+    int restartIndexValue;
+    int verticesPerPatch;
+    bool primitiveRestart;
+    Qt3DCore::QNodeId geometryId;
+    QGeometryRenderer::PrimitiveType primitiveType;
+    QGeometryFactoryPtr geometryFactory;
+};
+
+class QGeometry;
+typedef Qt3DCore::QTypedBackendNodePropertyChange<std::unique_ptr<QGeometry>> QGeometryChange;
+typedef Qt3DCore::QTypedBackendNodePropertyChangePtr<std::unique_ptr<QGeometry>> QGeometryChangePtr;
 
 } // namespace Qt3DRender
 

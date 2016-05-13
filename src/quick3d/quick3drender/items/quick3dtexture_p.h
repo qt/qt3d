@@ -73,7 +73,7 @@ public:
     explicit Quick3DTextureExtension(QObject *parent = 0);
 
     QQmlListProperty<QAbstractTextureImage> textureImages();
-    inline QAbstractTextureProvider *parentTexture() const { return qobject_cast<QAbstractTextureProvider *>(parent()); }
+    inline QAbstractTexture *parentTexture() const { return qobject_cast<QAbstractTexture *>(parent()); }
 
 private:
     static void appendTextureImage(QQmlListProperty<QAbstractTextureImage> *list, QAbstractTextureImage *textureImage);

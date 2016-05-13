@@ -50,12 +50,12 @@
 
 #include "planeentity.h"
 
-#include <Qt3DRender/QPlaneMesh>
+#include <Qt3DExtras/QPlaneMesh>
 #include <Qt3DCore/QTransform>
 
 PlaneEntity::PlaneEntity(Qt3DCore::QNode *parent)
     : Qt3DCore::QEntity(new Qt3DCore::QEntity(parent))
-    , m_mesh(new Qt3DRender::QPlaneMesh())
+    , m_mesh(new Qt3DExtras::QPlaneMesh())
     , m_transform(new Qt3DCore::QTransform())
 {
     addComponent(m_mesh);
@@ -66,7 +66,7 @@ PlaneEntity::~PlaneEntity()
 {
 }
 
-Qt3DRender::QPlaneMesh *PlaneEntity::mesh() const
+Qt3DExtras::QPlaneMesh *PlaneEntity::mesh() const
 {
     return m_mesh;
 }

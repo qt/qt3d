@@ -52,8 +52,9 @@
 //
 
 #include <QObject>
+#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
-#include <QList>
+#include <QVector>
 #include <QScopedPointer>
 #include <QVariant>
 #include <QSemaphore>
@@ -80,32 +81,35 @@ public:
     explicit QAspectManager(QObject *parent = 0);
     ~QAspectManager();
 
+    void enterSimulationLoop();
+    void exitSimulationLoop();
+
     bool isShuttingDown() const;
 
 public Q_SLOTS:
     void initialize();
     void shutdown();
 
-    void setRootEntity(Qt3DCore::QEntity *root);
+    void setRootEntity(Qt3DCore::QEntity *root, const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> &changes);
     void registerAspect(Qt3DCore::QAbstractAspect *aspect);
 
     void exec();
     void quit();
 
-    const QList<QAbstractAspect *> &aspects() const;
+    const QVector<QAbstractAspect *> &aspects() const;
     QAbstractAspectJobManager *jobManager() const;
     QChangeArbiter *changeArbiter() const;
     QServiceLocator *serviceLocator() const;
 
 private:
-    QList<QAbstractAspect *> m_aspects;
+    QVector<QAbstractAspect *> m_aspects;
     QEntity *m_root;
     QVariantMap m_data;
     QScheduler *m_scheduler;
     QAbstractAspectJobManager *m_jobManager;
     QChangeArbiter *m_changeArbiter;
+    QAtomicInt m_runSimulationLoop;
     QAtomicInt m_runMainLoop;
-    QAtomicInt m_terminated;
     QScopedPointer<QServiceLocator> m_serviceLocator;
     QSemaphore m_waitForEndOfExecLoop;
     QSemaphore m_waitForQuit;

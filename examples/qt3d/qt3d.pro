@@ -1,15 +1,11 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    examples-common \
-    playground-qml \
     simple-qml \
     simple-cpp \
     gltf \
     assimp \
-    cpp_example \
     multiviewport \
-    torus-qml \
     cylinder-qml \
     cylinder-cpp \
     bigmodel-qml \
@@ -46,7 +42,8 @@ SUBDIRS += \
     picking-qml \
     transforms-qml \
     lights \
-    compute-particles
+    compute-particles \
+    component-changes
 
 
 qtHaveModule(multimedia): SUBDIRS += audio-visualizer-qml
@@ -58,9 +55,3 @@ qtHaveModule(multimedia): SUBDIRS += audio-visualizer-qml
 #SUBDIRS += qt3d
 qtHaveModule(widgets): SUBDIRS += assimp-cpp \
     basicshapes-cpp
-
-for(subdir, SUBDIRS) {
-    !equals(subdir, examples-common) {
-        $${subdir}.depends += examples-common
-    }
-}

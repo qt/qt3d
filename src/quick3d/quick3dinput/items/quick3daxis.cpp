@@ -50,37 +50,37 @@ Quick3DAxis::Quick3DAxis(QObject *parent)
 {
 }
 
-QQmlListProperty<QAxisInput> Quick3DAxis::qmlAxisInputs()
+QQmlListProperty<QAbstractAxisInput> Quick3DAxis::qmlAxisInputs()
 {
-    return QQmlListProperty<QAxisInput>(this, 0,
+    return QQmlListProperty<QAbstractAxisInput>(this, 0,
                                         &Quick3DAxis::appendAxisInput,
                                         &Quick3DAxis::axesInputCount,
                                         &Quick3DAxis::axisInputAt,
                                         &Quick3DAxis::clearAxisInputs);
 }
 
-void Quick3DAxis::appendAxisInput(QQmlListProperty<QAxisInput> *list, QAxisInput *input)
+void Quick3DAxis::appendAxisInput(QQmlListProperty<QAbstractAxisInput> *list, QAbstractAxisInput *input)
 {
     Quick3DAxis *axis = qobject_cast<Quick3DAxis *>(list->object);
     axis->parentAxis()->addInput(input);
 }
 
-QAxisInput *Quick3DAxis::axisInputAt(QQmlListProperty<QAxisInput> *list, int index)
+QAbstractAxisInput *Quick3DAxis::axisInputAt(QQmlListProperty<QAbstractAxisInput> *list, int index)
 {
     Quick3DAxis *axis = qobject_cast<Quick3DAxis *>(list->object);
     return axis->parentAxis()->inputs().at(index);
 }
 
-int Quick3DAxis::axesInputCount(QQmlListProperty<QAxisInput> *list)
+int Quick3DAxis::axesInputCount(QQmlListProperty<QAbstractAxisInput> *list)
 {
     Quick3DAxis *axis = qobject_cast<Quick3DAxis *>(list->object);
     return axis->parentAxis()->inputs().count();
 }
 
-void Quick3DAxis::clearAxisInputs(QQmlListProperty<QAxisInput> *list)
+void Quick3DAxis::clearAxisInputs(QQmlListProperty<QAbstractAxisInput> *list)
 {
     Quick3DAxis *axis = qobject_cast<Quick3DAxis *>(list->object);
-    Q_FOREACH (QAxisInput *input, axis->parentAxis()->inputs())
+    Q_FOREACH (QAbstractAxisInput *input, axis->parentAxis()->inputs())
         axis->parentAxis()->removeInput(input);
 }
 

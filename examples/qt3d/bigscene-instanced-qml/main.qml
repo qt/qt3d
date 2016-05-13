@@ -52,6 +52,7 @@ import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 import QtQuick 2.2 as QQ2
 import Qt3D.Input 2.0
+import Qt3D.Extras 2.0
 
 Entity {
     id: sceneRoot
@@ -71,11 +72,17 @@ Entity {
     FirstPersonCameraController { camera: camera }
 
     components: [
-        FrameGraph {
+        RenderSettings {
             activeFrameGraph: ForwardRenderer {
                 clearColor: Qt.rgba(0, 0.5, 1, 1)
                 camera: camera
             }
+            // we need to explicitly set the RenderPolicy to AlwaysRender here,
+            // because a vertex shader will use time-based rendering, so the
+            // scene will change every frame without the scene-graph changing.
+            // RenderOnDemand would therefore not render every frame, as it won't
+            // detect scene-graph changes
+            renderPolicy: RenderSettings.Always
         },
         // Event Source will be set by the Qt3DQuickWindow
         InputSettings { }
@@ -93,7 +100,7 @@ Entity {
                     minorVersion: 2
                     majorVersion: 3
                 }
-                annotations: Annotation { name: "renderingStyle"; value: "forward" }
+                filterKeys: [ FilterKey { name: "renderingStyle"; value: "forward" } ]
                 renderPasses: RenderPass {
                     shaderProgram: ShaderProgram {
                         vertexShaderCode: loadSource("qrc:/instanced.vert")

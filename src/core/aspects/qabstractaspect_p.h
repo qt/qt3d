@@ -57,6 +57,7 @@
 #include <private/qbackendnodefactory_p.h>
 #include <private/qsceneobserverinterface_p.h>
 #include <private/qt3dcore_global_p.h>
+#include <Qt3DCore/qnodedestroyedchange.h>
 #include <Qt3DCore/qabstractaspect.h>
 
 QT_BEGIN_NAMESPACE
@@ -79,27 +80,31 @@ class QT3DCORE_PRIVATE_EXPORT QAbstractAspectPrivate
 {
 public:
     QAbstractAspectPrivate();
+    ~QAbstractAspectPrivate();
 
-    void registerAspect(QEntity *rootObject);
+    void setRootAndCreateNodes(QEntity *rootObject, const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> &changes);
 
     QServiceLocator *services() const;
     QAbstractAspectJobManager *jobManager() const;
 
     QVector<QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
-    QBackendNode *createBackendNode(QNode *frontend) const Q_DECL_OVERRIDE;
-    void clearBackendNode(QNode *frontend) const;
+    QBackendNode *createBackendNode(const QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
+    void clearBackendNode(const QNodeDestroyedChangePtr &change) const;
 
     void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
+    virtual void onEngineAboutToShutdown();
+
     Q_DECLARE_PUBLIC(QAbstractAspect)
 
     QEntity *m_root;
+    QNodeId m_rootId;
     QAspectManager *m_aspectManager;
     QAbstractAspectJobManager *m_jobManager;
     QChangeArbiter *m_arbiter;
-    QHash<QByteArray, QBackendNodeFunctorPtr> m_backendCreatorFunctors;
+    QHash<const QMetaObject*, QBackendNodeMapperPtr> m_backendCreatorFunctors;
 
     static QAbstractAspectPrivate *get(QAbstractAspect *aspect);
 };

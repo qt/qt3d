@@ -38,9 +38,9 @@
 ****************************************************************************/
 
 #include "qsceneloader.h"
-#include "qabstractsceneloader_p.h"
+#include "qsceneloader_p.h"
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <QThread>
@@ -51,43 +51,92 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
+QSceneLoaderPrivate::QSceneLoaderPrivate()
+    : QComponentPrivate()
+    , m_status(QSceneLoader::Loading)
+    , m_subTreeRoot(nullptr)
+{
+    m_shareable = false;
+}
+
+
 QSceneLoader::QSceneLoader(QNode *parent)
-    : QAbstractSceneLoader(parent)
+    : Qt3DCore::QComponent(*new QSceneLoaderPrivate, parent)
 {
 }
 
-QSceneLoader::~QSceneLoader()
+QSceneLoader::QSceneLoader(QSceneLoaderPrivate &dd, QNode *parent)
+    : Qt3DCore::QComponent(dd, parent)
 {
-    QNode::cleanup();
 }
 
 // Called in main thread
 void QSceneLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
-    QAbstractSceneLoaderPrivate *d = static_cast<QAbstractSceneLoaderPrivate*>(QNodePrivate::get(this));
-    QScenePropertyChangePtr e = qSharedPointerCast<QScenePropertyChange>(change);
-    if (e->type() == NodeUpdated) {
+    Q_D(QSceneLoader);
+    QPropertyUpdatedChangePtr e = qSharedPointerCast<QPropertyUpdatedChange>(change);
+    if (e->type() == PropertyUpdated) {
         if (e->propertyName() == QByteArrayLiteral("scene")) {
-            // We receive a QNodePtr so that it is released automatically
-            QNodePtr nodePtr = e->value().value<QNodePtr>();
-            QEntity *scene = static_cast<QEntity *>(nodePtr.data());
-            if (scene != Q_NULLPTR && d->m_scene != Q_NULLPTR) {
-                QList<QNodeId> entities = d->m_scene->entitiesForComponent(d->m_id);
-                if (entities.size() > 1) // TO DO: QComponent shareable property
-                    qCWarning(Render::Frontend) << "It is strongly discouraged to share SceneLoader component between entities";
-                Q_FOREACH (const QNodeId &id, entities) {
-                    QEntity *parentEntity = qobject_cast<QEntity *>(d->m_scene->lookupNode(id));
-                    if (parentEntity != Q_NULLPTR) {
-                        QEntity *cloneScene = qobject_cast<QEntity *>(QNode::clone(scene));
-                        QNodePrivate::get(parentEntity)->insertTree(cloneScene);
-                    }
-                }
+            // If we already have a scene sub tree, delete it
+            if (d->m_subTreeRoot) {
+                delete d->m_subTreeRoot;
+                d->m_subTreeRoot = nullptr;
             }
-        }
-        else if (e->propertyName() == QByteArrayLiteral("status")) {
-            QAbstractSceneLoader::setStatus(static_cast<QAbstractSceneLoader::Status>(e->value().toInt()));
+
+            // If we have successfully loaded a scene, graft it in
+            auto *subTreeRoot = e->value().value<Qt3DCore::QEntity *>();
+            if (subTreeRoot) {
+                // Get the entity to which this component is attached
+                const Qt3DCore::QNodeIdVector entities = d->m_scene->entitiesForComponent(d->m_id);
+                Q_ASSERT(entities.size() == 1);
+                Qt3DCore::QNodeId parentEntityId = entities.first();
+                QEntity *parentEntity = qobject_cast<QEntity *>(d->m_scene->lookupNode(parentEntityId));
+                subTreeRoot->setParent(parentEntity);
+                d->m_subTreeRoot = subTreeRoot;
+            }
+
+            // Update status property
+            setStatus(subTreeRoot ? QSceneLoader::Ready : QSceneLoader::Error);
         }
     }
+}
+
+QUrl QSceneLoader::source() const
+{
+    Q_D(const QSceneLoader);
+    return d->m_source;
+}
+
+void QSceneLoader::setSource(const QUrl &arg)
+{
+    Q_D(QSceneLoader);
+    if (d->m_source != arg) {
+        d->m_source = arg;
+        emit sourceChanged(arg);
+    }
+}
+
+QSceneLoader::Status QSceneLoader::status() const
+{
+    Q_D(const QSceneLoader);
+    return d->m_status;
+}
+
+void QSceneLoader::setStatus(QSceneLoader::Status status)
+{
+    Q_D(QSceneLoader);
+    if (d->m_status != status) {
+        d->m_status = status;
+        emit statusChanged(status);
+    }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QSceneLoader::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QSceneLoaderData>::create(this);
+    auto &data = creationChange->data;
+    data.source = d_func()->m_source;
+    return creationChange;
 }
 
 } // namespace Qt3DRender

@@ -74,7 +74,7 @@ bool isTriangleBased(Qt3DRender::QGeometryRenderer::PrimitiveType type) Q_DECL_N
 struct BufferInfo
 {
     BufferInfo()
-        : type(QAttribute::DataType::Float)
+        : type(QAttribute::VertexBaseType::Float)
         , dataSize(0)
         , count(0)
         , byteStride(0)
@@ -82,7 +82,7 @@ struct BufferInfo
     {}
 
     QByteArray data;
-    QAttribute::DataType type;
+    QAttribute::VertexBaseType type;
     uint dataSize;
     uint count;
     uint byteStride;
@@ -145,6 +145,15 @@ void traverseTriangles(vertex *vertices,
     }
 }
 
+static inline bool checkDegenerate(const uint ndx[3], const uint idx, const uint i)
+{
+    for (uint j = 0; j < i; ++j) {
+        if (idx == ndx[j])
+            return true;
+    }
+    return false;
+}
+
 // indices, vertices are already offset
 template<typename index, typename vertex>
 void traverseTriangleStripIndexed(index *indices,
@@ -159,15 +168,20 @@ void traverseTriangleStripIndexed(index *indices,
 
     uint ndx[3];
     QVector3D abc[3];
-    while (i < indexInfo.count) {
+    while (i < indexInfo.count - 2) {
+        bool degenerate = false;
         for (uint u = 0; u < 3; ++u) {
             uint idx = indices[i + u] * verticesStride;
-            ndx[u] = idx;
-            for (uint j = 0; j < maxVerticesDataSize; ++j) {
-                abc[u][j] = vertices[idx + j];
+            if (checkDegenerate(ndx, idx, i)) {
+                degenerate = true;
+                break;
             }
+            ndx[u] = idx;
+            for (uint j = 0; j < maxVerticesDataSize; ++j)
+                abc[u][j] = vertices[idx + j];
         }
-        visitor->visit(ndx[2], abc[2], ndx[1], abc[1], ndx[0], abc[0]);
+        if (!degenerate)
+            visitor->visit(ndx[2], abc[2], ndx[1], abc[1], ndx[0], abc[0]);
         ++i;
     }
 }
@@ -277,7 +291,7 @@ void traverseTriangleAdjacencyIndexed(index *indices,
     while (i < indexInfo.count) {
         for (uint u = 0; u < 6; u += 2) {
             uint idx = indices[i + u] * verticesStride;
-            ndx[u] = idx;
+            ndx[u / 2] = idx;
             for (uint j = 0; j < maxVerticesDataSize; ++j) {
                 abc[u / 2][j] = vertices[idx + j];
             }
@@ -303,7 +317,7 @@ void traverseTriangleAdjacency(Vertex *vertices,
     while (i < vertexInfo.count) {
         for (uint u = 0; u < 6; u += 2) {
             uint idx = (i + u) * verticesStride;
-            ndx[u] = idx;
+            ndx[u / 2] = idx;
             for (uint j = 0; j < maxVerticesDataSize; ++j) {
                 abc[u / 2][j] = vertices[idx + j];
             }
@@ -314,7 +328,7 @@ void traverseTriangleAdjacency(Vertex *vertices,
 }
 
 
-template <QAttribute::DataType> struct EnumToType;
+template <QAttribute::VertexBaseType> struct EnumToType;
 template <> struct EnumToType<QAttribute::Byte> { typedef const char type; };
 template <> struct EnumToType<QAttribute::UnsignedByte> { typedef const uchar type; };
 template <> struct EnumToType<QAttribute::Short> { typedef const short type; };
@@ -324,7 +338,7 @@ template <> struct EnumToType<QAttribute::UnsignedInt> { typedef const uint type
 template <> struct EnumToType<QAttribute::Float> { typedef const float type; };
 template <> struct EnumToType<QAttribute::Double> { typedef const double type; };
 
-template<QAttribute::DataType v>
+template<QAttribute::VertexBaseType v>
 typename EnumToType<v>::type *castToType(const QByteArray &u, uint byteOffset)
 {
     return reinterpret_cast< typename EnumToType<v>::type *>(u.constData() + byteOffset);
@@ -451,15 +465,16 @@ void TrianglesVisitor::apply(const GeometryRenderer *renderer, const Qt3DCore::Q
 {
     m_nodeId = id;
     if (renderer && renderer->instanceCount() == 1 && isTriangleBased(renderer->primitiveType())) {
-        Attribute *positionAttribute = Q_NULLPTR;
-        Attribute *indexAttribute = Q_NULLPTR;
-        Buffer *positionBuffer = Q_NULLPTR;
-        Buffer *indexBuffer = Q_NULLPTR;
+        Attribute *positionAttribute = nullptr;
+        Attribute *indexAttribute = nullptr;
+        Buffer *positionBuffer = nullptr;
+        Buffer *indexBuffer = nullptr;
         Geometry *geom = m_manager->lookupResource<Geometry, GeometryManager>(renderer->geometryId());
 
         if (geom) {
-            Qt3DRender::Render::Attribute *attribute = Q_NULLPTR;
-            Q_FOREACH (const Qt3DCore::QNodeId attrId, geom->attributes()) {
+            Qt3DRender::Render::Attribute *attribute = nullptr;
+            const auto attrIds = geom->attributes();
+            for (const Qt3DCore::QNodeId attrId : attrIds) {
                 attribute = m_manager->lookupResource<Attribute, AttributeManager>(attrId);
                 if (attribute){
                     if (attribute->name() == QAttribute::defaultPositionAttributeName())
@@ -478,17 +493,17 @@ void TrianglesVisitor::apply(const GeometryRenderer *renderer, const Qt3DCore::Q
 
                 BufferInfo vertexBufferInfo;
                 vertexBufferInfo.data = positionBuffer->data();
-                vertexBufferInfo.type = positionAttribute->dataType();
+                vertexBufferInfo.type = positionAttribute->vertexBaseType();
                 vertexBufferInfo.byteOffset = positionAttribute->byteOffset();
                 vertexBufferInfo.byteStride = positionAttribute->byteStride();
-                vertexBufferInfo.dataSize = positionAttribute->dataSize();
+                vertexBufferInfo.dataSize = positionAttribute->vertexSize();
                 vertexBufferInfo.count = positionAttribute->count();
 
                 if (indexBuffer) { // Indexed
 
                     BufferInfo indexBufferInfo;
                     indexBufferInfo.data = indexBuffer->data();
-                    indexBufferInfo.type = indexAttribute->dataType();
+                    indexBufferInfo.type = indexAttribute->vertexBaseType();
                     indexBufferInfo.byteOffset = indexAttribute->byteOffset();
                     indexBufferInfo.byteStride = indexAttribute->byteStride();
                     indexBufferInfo.count = indexAttribute->count();

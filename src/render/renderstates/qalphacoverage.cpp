@@ -49,7 +49,7 @@ class QAlphaCoveragePrivate : public QRenderStatePrivate
 {
 public :
     QAlphaCoveragePrivate()
-        : QRenderStatePrivate(QRenderState::AlphaCoverage)
+        : QRenderStatePrivate(QRenderStatePrivate::AlphaCoverage)
     {}
 
     Q_DECLARE_PUBLIC(QAlphaCoverage)
@@ -58,11 +58,6 @@ public :
 QAlphaCoverage::QAlphaCoverage(QNode *parent)
     : QRenderState(*new QAlphaCoveragePrivate, parent)
 {
-}
-
-QAlphaCoverage::~QAlphaCoverage()
-{
-    QNode::cleanup();
 }
 
 } // namespace Qt3DRender

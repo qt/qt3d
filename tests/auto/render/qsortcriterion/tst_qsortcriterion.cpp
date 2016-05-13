@@ -29,21 +29,16 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DRender/qsortcriterion.h>
+#include <Qt3DRender/private/qsortcriterion_p.h>
 
 #include "testpostmanarbiter.h"
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QSortCriterion: public Qt3DCore::QNode
+class tst_QSortCriterion: public QObject
 {
     Q_OBJECT
-public:
-    ~tst_QSortCriterion()
-    {
-        QNode::cleanup();
-    }
 
 private Q_SLOTS:
 
@@ -73,16 +68,26 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(sortCriterion->sort(), sortType);
 
-        // WHEN
-        Qt3DRender::QSortCriterion *clone = static_cast<Qt3DRender::QSortCriterion *>(QNode::clone(sortCriterion));
+// TO DO: Add creation change
+//        // WHEN
+//        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(sortCriterion);
+//        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
-        // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(sortCriterion->id(), clone->id());
-        QCOMPARE(sortCriterion->sort(), clone->sort());
+//        // THEN
+//        QCOMPARE(creationChanges.size(), 1);
+
+//        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QCameraSelectorData> creationChangeData =
+//                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QSortCriterion>>(creationChanges.first());
+//        const Qt3DRender::QCameraSelectorData &cloneData = creationChangeData->data;
+
+
+//        // THEN
+//        QCOMPARE(sortCriterion->id(), creationChangeData->subjectId());
+//        QCOMPARE(sortCriterion->isEnabled(), creationChangeData->isNodeEnabled());
+//        QCOMPARE(sortCriterion->metaObject(), creationChangeData->metaObject());
+//        QCOMPARE(sortCriterion->sort(), cloneData.sort);
 
         delete sortCriterion;
-        delete clone;
     }
 
     void checkPropertyUpdates()
@@ -97,7 +102,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        Qt3DCore::QNodePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "sort");
         QCOMPARE(change->subjectId(), sortCriterion->id());
         QCOMPARE(change->value().value<Qt3DRender::QSortCriterion::SortType>(), Qt3DRender::QSortCriterion::BackToFront);
@@ -118,7 +123,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QNodePropertyChange>();
         QCOMPARE(change->propertyName(), "sort");
         QCOMPARE(change->subjectId(), sortCriterion->id());
         QCOMPARE(change->value().value<Qt3DRender::QSortCriterion::SortType>(), Qt3DRender::QSortCriterion::Material);
@@ -126,13 +131,6 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QSortCriterion)

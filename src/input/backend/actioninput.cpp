@@ -40,7 +40,8 @@
 #include "actioninput_p.h"
 #include <Qt3DInput/qactioninput.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DInput/private/qactioninput_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,54 +49,38 @@ namespace Qt3DInput {
 
 namespace Input {
 
-namespace {
-
-QVector<int> listToIntArray(const QVariantList &l)
-{
-    QVector<int> array;
-    array.reserve(l.size());
-    Q_FOREACH (const QVariant &v, l)
-        array.push_back(v.toInt());
-    return array;
-}
-
-} // anonymous
-
 ActionInput::ActionInput()
     : Qt3DCore::QBackendNode()
-    , m_keys(0)
-    , m_enabled(false)
+    , m_buttons(0)
 {
 }
 
-void ActionInput::updateFromPeer(Qt3DCore::QNode *peer)
+void ActionInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QActionInput *input = static_cast<QActionInput *>(peer);
-    m_enabled = input->isEnabled();
-    m_keys = listToIntArray(input->keys());
-    if (input->sourceDevice())
-        m_sourceDevice = input->sourceDevice()->id();
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QActionInputData>>(change);
+    const auto &data = typedChange->data;
+    m_buttons = data.buttons;
+    m_sourceDevice = data.sourceDeviceId;
 }
 
 void ActionInput::cleanup()
 {
-    m_enabled = false;
+    QBackendNode::setEnabled(false);
     m_sourceDevice = Qt3DCore::QNodeId();
-    m_keys.clear();
+    m_buttons.clear();
 }
 
 void ActionInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == Qt3DCore::NodeUpdated) {
-        Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
+    if (e->type() == Qt3DCore::PropertyUpdated) {
+        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("sourceDevice")) {
             m_sourceDevice = propertyChange->value().value<Qt3DCore::QNodeId>();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            m_enabled = propertyChange->value().toBool();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("keys")) {
-            m_keys = listToIntArray(propertyChange->value().toList());
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("buttons")) {
+            m_buttons = propertyChange->value().value<QVector<int>>();
         }
     }
+    QBackendNode::sceneChangeEvent(e);
 }
 
 } // namespace Input

@@ -45,10 +45,13 @@
 #include <QOpenGLTexture>
 #include <QOpenGLPixelTransferOptions>
 #include <Qt3DRender/qtexture.h>
-#include <Qt3DRender/qtexturedata.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRender/qtextureimagedata.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/texturedatamanager_p.h>
+#include <Qt3DRender/private/qabstracttexture_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,32 +61,31 @@ namespace Qt3DRender {
 namespace Render {
 
 Texture::Texture()
-    : QBackendNode()
-    , m_gl(Q_NULLPTR)
+    : BackendNode()
+    , m_gl(nullptr)
     , m_width(1)
     , m_height(1)
     , m_depth(1)
     , m_layers(1)
     , m_mipLevels(1)
     , m_generateMipMaps(false)
-    , m_target(QAbstractTextureProvider::Target2D)
-    , m_format(QAbstractTextureProvider::RGBA8_UNorm)
-    , m_magnificationFilter(QAbstractTextureProvider::Nearest)
-    , m_minificationFilter(QAbstractTextureProvider::Nearest)
+    , m_target(QAbstractTexture::Target2D)
+    , m_format(QAbstractTexture::RGBA8_UNorm)
+    , m_magnificationFilter(QAbstractTexture::Nearest)
+    , m_minificationFilter(QAbstractTexture::Nearest)
     , m_wrapModeX(QTextureWrapMode::ClampToEdge)
     , m_wrapModeY(QTextureWrapMode::ClampToEdge)
     , m_wrapModeZ(QTextureWrapMode::ClampToEdge)
     , m_maximumAnisotropy(1.0f)
-    , m_comparisonFunction(QAbstractTextureProvider::CompareLessEqual)
-    , m_comparisonMode(QAbstractTextureProvider::CompareNone)
+    , m_comparisonFunction(QAbstractTexture::CompareLessEqual)
+    , m_comparisonMode(QAbstractTexture::CompareNone)
     , m_isDirty(false)
     , m_filtersAndWrapUpdated(false)
     , m_dataUploadRequired(false)
-    , m_unique(false)
     , m_textureDNA(0)
-    , m_textureManager(Q_NULLPTR)
-    , m_textureImageManager(Q_NULLPTR)
-    , m_textureDataManager(Q_NULLPTR)
+    , m_textureManager(nullptr)
+    , m_textureImageManager(nullptr)
+    , m_textureDataManager(nullptr)
 {
     // We need backend -> frontend notifications to update the status of the texture
 }
@@ -94,65 +96,68 @@ Texture::~Texture()
 
 void Texture::cleanup()
 {
-    m_gl = Q_NULLPTR;
+    QBackendNode::setEnabled(false);
+    m_gl = nullptr;
     m_width = 1;
     m_height = 1;
     m_depth = 1;
     m_layers = 1;
     m_mipLevels = 1;
     m_generateMipMaps = false;
-    m_target = QAbstractTextureProvider::Target2D;
-    m_format = QAbstractTextureProvider::RGBA8_UNorm;
-    m_magnificationFilter = QAbstractTextureProvider::Nearest;
-    m_minificationFilter = QAbstractTextureProvider::Nearest;
+    m_target = QAbstractTexture::Target2D;
+    m_format = QAbstractTexture::RGBA8_UNorm;
+    m_magnificationFilter = QAbstractTexture::Nearest;
+    m_minificationFilter = QAbstractTexture::Nearest;
     m_wrapModeX = QTextureWrapMode::ClampToEdge;
     m_wrapModeY = QTextureWrapMode::ClampToEdge;
     m_wrapModeZ = QTextureWrapMode::ClampToEdge;
     m_maximumAnisotropy = 1.0f;
-    m_comparisonFunction = QAbstractTextureProvider::CompareLessEqual;
-    m_comparisonMode = QAbstractTextureProvider::CompareNone;
+    m_comparisonFunction = QAbstractTexture::CompareLessEqual;
+    m_comparisonMode = QAbstractTexture::CompareNone;
     m_isDirty = false;
     m_filtersAndWrapUpdated = false;
     m_dataUploadRequired = false;
-    m_unique = false;
     m_textureDNA = 0;
     m_textureImages.clear();
-    m_textureManager = Q_NULLPTR;
-    m_textureImageManager = Q_NULLPTR;
-    m_textureDataManager = Q_NULLPTR;
+    m_textureManager = nullptr;
+    m_textureImageManager = nullptr;
+    m_textureDataManager = nullptr;
     m_dataFunctor.clear();
     m_textureDataHandle = HTextureData();
 }
 
 // AspectThread
-void Texture::updateFromPeer(Qt3DCore::QNode *peer)
+void Texture::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QAbstractTextureProvider *texture = static_cast<QAbstractTextureProvider *>(peer);
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAbstractTextureData>>(change);
+    const auto &data = typedChange->data;
 
     QMutexLocker lock(&m_lock);
-    if (texture != Q_NULLPTR) {
-        m_isDirty = true;
-        m_width = texture->width();
-        m_height = texture->height();
-        m_depth = texture->depth();
-        m_generateMipMaps = texture->generateMipMaps();
-        m_target = texture->target();
-        m_format = texture->format();
-        m_magnificationFilter = texture->magnificationFilter();
-        m_minificationFilter = texture->minificationFilter();
-        m_wrapModeX = texture->wrapMode()->x();
-        m_wrapModeY = texture->wrapMode()->y();
-        m_wrapModeZ = texture->wrapMode()->z();
-        m_maximumAnisotropy = texture->maximumAnisotropy();
-        m_comparisonFunction = texture->comparisonFunction();
-        m_comparisonMode = texture->comparisonMode();
-        m_layers = texture->maximumLayers();
-        m_unique = texture->isUnique();
-        m_dataFunctor = texture->dataFunctor();
+    m_target = data.target;
+    m_format = data.format;
+    m_width = data.width;
+    m_height = data.height;
+    m_depth = data.depth;
+    m_generateMipMaps = data.autoMipMap;
+    m_minificationFilter = data.minFilter;
+    m_magnificationFilter = data.magFilter;
+    m_wrapModeX = data.wrapModeX;
+    m_wrapModeY = data.wrapModeY;
+    m_wrapModeZ = data.wrapModeZ;
+    m_maximumAnisotropy = data.maximumAnisotropy;
+    m_comparisonFunction = data.comparisonFunction;
+    m_comparisonMode = data.comparisonMode;
+    m_layers = data.layers;
+    m_dataFunctor = data.dataFunctor;
+    if (m_dataFunctor)
+        addToPendingTextureJobs();
 
-        if (m_dataFunctor)
-            addToPendingTextureJobs();
-    }
+    // TODO: Handle texture image ids better. At the moment we rely upon the assumption
+    // in the TextureImage that its parent is a Texture. Better to set the ids from here
+    // I think, and do it consistently with other types that refer to other nodes.
+    //data.textureImageIds
+
+    m_isDirty = true;
 }
 
 // RenderTread
@@ -175,12 +180,12 @@ QOpenGLTexture *Texture::getOrCreateGLTexture()
     QMutexLocker lock(&m_lock);
     if (m_isDirty) {
         delete m_gl;
-        m_gl = Q_NULLPTR;
+        m_gl = nullptr;
         m_isDirty = false;
     }
 
     // If the texture exists, we just update it and return
-    if (m_gl != Q_NULLPTR) {
+    if (m_gl != nullptr) {
 
         bool refreshDNA = m_filtersAndWrapUpdated || m_dataUploadRequired;
 
@@ -204,7 +209,7 @@ QOpenGLTexture *Texture::getOrCreateGLTexture()
     m_gl->allocateStorage();
     if (!m_gl->isStorageAllocated()) {
         qWarning() << Q_FUNC_INFO << "texture storage allocation failed";
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     // Filters and WrapMode are set
@@ -236,33 +241,33 @@ QOpenGLTexture *Texture::buildGLTexture()
     QOpenGLContext *ctx = QOpenGLContext::currentContext();
     if (!ctx) {
         qWarning() << Q_FUNC_INFO << "requires an OpenGL context";
-        return Q_NULLPTR;
+        return nullptr;
     }
 
-    if (m_target == QAbstractTextureProvider::TargetAutomatic) {
+    if (m_target == QAbstractTexture::TargetAutomatic) {
         qWarning() << Q_FUNC_INFO << "something went wrong, target shouldn't be automatic at this point";
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     QOpenGLTexture* glTex = new QOpenGLTexture(static_cast<QOpenGLTexture::Target>(m_target));
 
-    if (m_format == QAbstractTextureProvider::Automatic)
+    if (m_format == QAbstractTexture::Automatic)
         qWarning() << Q_FUNC_INFO << "something went wrong, format shouldn't be automatic at this point";
 
     // m_format may not be ES2 compatible. Now it's time to convert it, if necessary.
-    QAbstractTextureProvider::TextureFormat format = m_format;
+    QAbstractTexture::TextureFormat format = m_format;
     if (ctx->isOpenGLES() && ctx->format().majorVersion() < 3) {
         switch (m_format) {
         case QOpenGLTexture::RGBA8_UNorm:
         case QOpenGLTexture::RGBAFormat:
-            format = QAbstractTextureProvider::RGBAFormat;
+            format = QAbstractTexture::RGBAFormat;
             break;
         case QOpenGLTexture::RGB8_UNorm:
         case QOpenGLTexture::RGBFormat:
-            format = QAbstractTextureProvider::RGBFormat;
+            format = QAbstractTexture::RGBFormat;
             break;
         case QOpenGLTexture::DepthFormat:
-            format = QAbstractTextureProvider::DepthFormat;
+            format = QAbstractTexture::DepthFormat;
             break;
         default:
             qWarning() << Q_FUNC_INFO << "could not find a matching OpenGL ES 2.0 unsized texture format";
@@ -273,23 +278,23 @@ QOpenGLTexture *Texture::buildGLTexture()
     // Map ETC1 to ETC2 when supported. This allows using features like
     // immutable storage as ETC2 is standard in GLES 3.0, while the ETC1 extension
     // is written against GLES 1.0.
-    if (m_format == QAbstractTextureProvider::RGB8_ETC1) {
+    if (m_format == QAbstractTexture::RGB8_ETC1) {
         if ((ctx->isOpenGLES() && ctx->format().majorVersion() >= 3)
                 || ctx->hasExtension(QByteArrayLiteral("GL_OES_compressed_ETC2_RGB8_texture"))
                 || ctx->hasExtension(QByteArrayLiteral("GL_ARB_ES3_compatibility")))
-            format = m_format = QAbstractTextureProvider::RGB8_ETC2;
+            format = m_format = QAbstractTexture::RGB8_ETC2;
     }
 
-    glTex->setFormat(format == QAbstractTextureProvider::Automatic ?
+    glTex->setFormat(format == QAbstractTexture::Automatic ?
                          QOpenGLTexture::NoFormat :
                          static_cast<QOpenGLTexture::TextureFormat>(format));
     glTex->setSize(m_width, m_height, m_depth);
     // Set layers count if texture array
-    if (m_target == QAbstractTextureProvider::Target1DArray ||
-        m_target == QAbstractTextureProvider::Target2DArray ||
-        m_target == QAbstractTextureProvider::Target3D ||
-        m_target == QAbstractTextureProvider::Target2DMultisampleArray ||
-        m_target == QAbstractTextureProvider::TargetCubeMapArray) {
+    if (m_target == QAbstractTexture::Target1DArray ||
+        m_target == QAbstractTexture::Target2DArray ||
+        m_target == QAbstractTexture::Target3D ||
+        m_target == QAbstractTexture::Target2DMultisampleArray ||
+        m_target == QAbstractTexture::TargetCubeMapArray) {
         glTex->setLayers(m_layers);
     }
 
@@ -304,7 +309,7 @@ QOpenGLTexture *Texture::buildGLTexture()
 
     if (!glTex->create()) {
         qWarning() << Q_FUNC_INFO << "creating QOpenGLTexture failed";
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     // FIXME : make this conditional on Qt version
@@ -320,7 +325,7 @@ QOpenGLTexture *Texture::buildGLTexture()
 }
 
 // RenderThread
-void Texture::setToGLTexture(QTexImageData *imgData)
+void Texture::setToGLTexture(QTextureImageData *imgData)
 {
     Q_ASSERT(m_gl && m_gl->isCreated() && m_gl->isStorageAllocated());
 
@@ -368,13 +373,13 @@ void Texture::setToGLTexture(QTexImageData *imgData)
 }
 
 // RenderThread
-void Texture::setToGLTexture(TextureImage *rImg, QTexImageData *imgData)
+void Texture::setToGLTexture(TextureImage *rImg, QTextureImageData *imgData)
 {
     Q_ASSERT(m_gl && m_gl->isCreated() && m_gl->isStorageAllocated());
     // ensure we don't accidently cause a detach / copy of the raw bytes
     const QByteArray &bytes(imgData->data());
     if (imgData->isCompressed()) {
-        m_gl->setCompressedData(rImg->mipmapLevel(),
+        m_gl->setCompressedData(rImg->mipLevel(),
                                 rImg->layer(),
                                 static_cast<QOpenGLTexture::CubeMapFace>(rImg->face()),
                                 bytes.size(),
@@ -382,7 +387,7 @@ void Texture::setToGLTexture(TextureImage *rImg, QTexImageData *imgData)
     } else {
         QOpenGLPixelTransferOptions uploadOptions;
         uploadOptions.setAlignment(1);
-        m_gl->setData(rImg->mipmapLevel(),
+        m_gl->setData(rImg->mipLevel(),
                       rImg->layer(),
                       static_cast<QOpenGLTexture::CubeMapFace>(rImg->face()),
                       imgData->pixelFormat(),
@@ -407,11 +412,11 @@ void Texture::setToGLTexture(TextureImage *rImg, QTexImageData *imgData)
 void Texture::updateWrapAndFilters()
 {
     m_gl->setWrapMode(QOpenGLTexture::DirectionS, static_cast<QOpenGLTexture::WrapMode>(m_wrapModeX));
-    if (m_target != QAbstractTextureProvider::Target1D &&
-            m_target != QAbstractTextureProvider::Target1DArray &&
-            m_target != QAbstractTextureProvider::TargetBuffer)
+    if (m_target != QAbstractTexture::Target1D &&
+            m_target != QAbstractTexture::Target1DArray &&
+            m_target != QAbstractTexture::TargetBuffer)
         m_gl->setWrapMode(QOpenGLTexture::DirectionT, static_cast<QOpenGLTexture::WrapMode>(m_wrapModeY));
-    if (m_target == QAbstractTextureProvider::Target3D)
+    if (m_target == QAbstractTexture::Target3D)
         m_gl->setWrapMode(QOpenGLTexture::DirectionR, static_cast<QOpenGLTexture::WrapMode>(m_wrapModeZ));
     m_gl->setMinMagFilters(static_cast<QOpenGLTexture::Filter>(m_minificationFilter),
                            static_cast<QOpenGLTexture::Filter>(m_magnificationFilter));
@@ -437,13 +442,19 @@ void Texture::updateDNA()
                          static_cast<int>(m_comparisonFunction) +
                          static_cast<int>(m_comparisonMode);
     m_textureDNA = ::qHash(key) + ::qHash(m_maximumAnisotropy);
-    Q_FOREACH (HTextureImage imgHandle, m_textureImages) {
+
+    // apply non-unique hashes from texture images or texture data
+    for (HTextureImage imgHandle : qAsConst(m_textureImages)) {
         TextureImage *img = m_textureImageManager->data(imgHandle);
         if (img)
             m_textureDNA += img->dna();
     }
-    if (m_unique) // Ensures uniqueness by adding unique QNode id to the dna
-        m_textureDNA += qHash(peerUuid());
+    if (!m_textureDataHandle.isNull())
+        m_textureDNA += ::qHash(m_textureDataHandle.index());
+
+    // if texture contains no potentially shared image data: texture is unique
+    if (m_textureImages.empty() && m_textureDataHandle.isNull()) // Ensures uniqueness by adding unique QNode id to the dna
+        m_textureDNA += qHash(peerId());
 }
 
 // RenderThread
@@ -459,7 +470,7 @@ bool Texture::isTextureReset() const
     return m_isDirty;
 }
 
-void Texture::setTarget(QAbstractTextureProvider::Target target)
+void Texture::setTarget(QAbstractTexture::Target target)
 {
     if (target != m_target) {
         m_target = target;
@@ -483,7 +494,7 @@ void Texture::setSize(int width, int height, int depth)
     }
 }
 
-void Texture::setFormat(QAbstractTextureProvider::TextureFormat format)
+void Texture::setFormat(QAbstractTexture::TextureFormat format)
 {
     if (format != m_format) {
         m_format = format;
@@ -514,9 +525,9 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     QMutexLocker lock(&m_lock);
     // We lock here so that we're sure the texture cannot be rebuilt while we are
     // modifying one of its properties
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     switch (e->type()) {
-    case NodeUpdated: {
+    case PropertyUpdated: {
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("width")) {
             setSize(propertyChange->value().toInt(), m_height, m_depth);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("height")) {
@@ -528,12 +539,12 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_generateMipMaps = propertyChange->value().toBool();
             m_isDirty |= (oldMipMaps != m_generateMipMaps);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("minificationFilter")) {
-            QAbstractTextureProvider::Filter oldMinFilter = m_minificationFilter;
-            m_minificationFilter = static_cast<QAbstractTextureProvider::Filter>(propertyChange->value().toInt());
+            QAbstractTexture::Filter oldMinFilter = m_minificationFilter;
+            m_minificationFilter = static_cast<QAbstractTexture::Filter>(propertyChange->value().toInt());
             m_filtersAndWrapUpdated |= (oldMinFilter != m_minificationFilter);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("magnificationFilter")) {
-            QAbstractTextureProvider::Filter oldMagFilter = m_magnificationFilter;
-            m_magnificationFilter = static_cast<QAbstractTextureProvider::Filter>(propertyChange->value().toInt());
+            QAbstractTexture::Filter oldMagFilter = m_magnificationFilter;
+            m_magnificationFilter = static_cast<QAbstractTexture::Filter>(propertyChange->value().toInt());
             m_filtersAndWrapUpdated |= (oldMagFilter != m_magnificationFilter);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("wrapModeX")) {
             QTextureWrapMode::WrapMode oldWrapModeX = m_wrapModeX;
@@ -548,46 +559,43 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_wrapModeZ =static_cast<QTextureWrapMode::WrapMode>(propertyChange->value().toInt());
             m_filtersAndWrapUpdated |= (oldWrapModeZ != m_wrapModeZ);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("format")) {
-            setFormat(static_cast<QAbstractTextureProvider::TextureFormat>(propertyChange->value().toInt()));
+            setFormat(static_cast<QAbstractTexture::TextureFormat>(propertyChange->value().toInt()));
         } else if (propertyChange->propertyName() == QByteArrayLiteral("target")) {
-            QAbstractTextureProvider::Target oldTarget = m_target;
-            m_target = static_cast<QAbstractTextureProvider::Target>(propertyChange->value().toInt());
+            QAbstractTexture::Target oldTarget = m_target;
+            m_target = static_cast<QAbstractTexture::Target>(propertyChange->value().toInt());
             m_isDirty |= (oldTarget != m_target);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("maximumAnisotropy")) {
             float oldMaximumAnisotropy = m_maximumAnisotropy;
             m_maximumAnisotropy = propertyChange->value().toFloat();
             m_filtersAndWrapUpdated |= !qFuzzyCompare(oldMaximumAnisotropy, m_maximumAnisotropy);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("comparisonFunction")) {
-            QAbstractTextureProvider::ComparisonFunction oldComparisonFunction = m_comparisonFunction;
-            m_comparisonFunction = propertyChange->value().value<QAbstractTextureProvider::ComparisonFunction>();
+            QAbstractTexture::ComparisonFunction oldComparisonFunction = m_comparisonFunction;
+            m_comparisonFunction = propertyChange->value().value<QAbstractTexture::ComparisonFunction>();
             m_filtersAndWrapUpdated |= (oldComparisonFunction != m_comparisonFunction);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("comparisonMode")) {
-            QAbstractTextureProvider::ComparisonMode oldComparisonMode = m_comparisonMode;
-            m_comparisonMode = propertyChange->value().value<QAbstractTextureProvider::ComparisonMode>();
+            QAbstractTexture::ComparisonMode oldComparisonMode = m_comparisonMode;
+            m_comparisonMode = propertyChange->value().value<QAbstractTexture::ComparisonMode>();
             m_filtersAndWrapUpdated |= (oldComparisonMode != m_comparisonMode);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("maximumLayers")) {
             const int oldLayers = m_layers;
             m_layers = propertyChange->value().toInt();
             m_isDirty |= (oldLayers != m_layers);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("unique")) {
-            const bool oldUnique = m_unique;
-            m_unique = propertyChange->value().toBool();
-            // Will force a DNA update
-            m_filtersAndWrapUpdated |= (oldUnique != m_unique);
         }
     }
         break;
 
-    case NodeAdded: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("textureImage")) {
-            m_textureImages.append(m_textureImageManager->lookupHandle(propertyChange->value().value<QNodeId>()));
+    case PropertyValueAdded: {
+        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("textureImage")) {
+            m_textureImages.append(m_textureImageManager->lookupHandle(change->addedNodeId()));
         }
     }
         break;
 
-    case NodeRemoved: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("textureImage")) {
-            m_textureImages.removeOne(m_textureImageManager->lookupHandle(propertyChange->value().value<QNodeId>()));
+    case PropertyValueRemoved: {
+        const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("textureImage")) {
+            m_textureImages.removeOne(m_textureImageManager->lookupHandle(change->removedNodeId()));
             // If a TextureImage is removed from a Texture, the texture image data remains on GPU
         }
     }
@@ -597,6 +605,8 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
 
     }
+    markDirty(AbstractRenderer::AllDirty);
+    BackendNode::sceneChangeEvent(e);
 }
 
 TextureDNA Texture::dna() const
@@ -625,21 +635,21 @@ void Texture::setTextureDataManager(TextureDataManager *manager)
 void Texture::updateAndLoadTextureImage()
 {
     if (!m_textureDataHandle.isNull()) {
-        QTexImageData *data = m_textureDataManager->data(m_textureDataHandle);
-        if (data != Q_NULLPTR)
+        QTextureImageData *data = m_textureDataManager->data(m_textureDataHandle);
+        if (data != nullptr)
             setToGLTexture(data);
     }
 
     QVector<TextureImageDNA> dnas;
     Q_FOREACH (HTextureImage t, m_textureImages) {
         TextureImage *img = m_textureImageManager->data(t);
-        if (img != Q_NULLPTR && img->isDirty()) {
+        if (img != nullptr && img->isDirty()) {
             if (dnas.contains(img->dna())) {
                 img->unsetDirty();
                 continue;
             }
-            QTexImageData *data = m_textureDataManager->data(img->textureDataHandle());
-            if (data != Q_NULLPTR) {
+            QTextureImageData *data = m_textureDataManager->data(img->textureDataHandle());
+            if (data != nullptr) {
                 setToGLTexture(img, data);
                 dnas.append(img->dna());
                 img->unsetDirty();
@@ -670,34 +680,36 @@ void Texture::requestTextureDataUpdate()
 // Called by RenderTextureImages
 void Texture::addToPendingTextureJobs()
 {
-    m_textureDataManager->addToPendingTextures(peerUuid());
+    m_textureDataManager->addToPendingTextures(peerId());
 }
 
-TextureFunctor::TextureFunctor(TextureManager *textureManager,
-                                           TextureImageManager *textureImageManager,
-                                           TextureDataManager *textureDataManager)
-    : m_textureManager(textureManager)
+TextureFunctor::TextureFunctor(AbstractRenderer *renderer,
+                               TextureManager *textureManager,
+                               TextureImageManager *textureImageManager,
+                               TextureDataManager *textureDataManager)
+    : m_renderer(renderer)
+    , m_textureManager(textureManager)
     , m_textureImageManager(textureImageManager)
     , m_textureDataManager(textureDataManager)
 {
 }
 
-Qt3DCore::QBackendNode *TextureFunctor::create(Qt3DCore::QNode *frontend) const
+Qt3DCore::QBackendNode *TextureFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
-    Texture *backend = m_textureManager->getOrCreateResource(frontend->id());
+    Texture *backend = m_textureManager->getOrCreateResource(change->subjectId());
     backend->setTextureManager(m_textureManager);
     backend->setTextureImageManager(m_textureImageManager);
     backend->setTextureDataManager(m_textureDataManager);
-    backend->setPeer(frontend);
+    backend->setRenderer(m_renderer);
     return backend;
 }
 
-Qt3DCore::QBackendNode *TextureFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *TextureFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_textureManager->lookupResource(id);
 }
 
-void TextureFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void TextureFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     m_textureManager->releaseResource(id);
 }

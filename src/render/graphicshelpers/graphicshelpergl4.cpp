@@ -47,7 +47,9 @@
 #include <private/qgraphicsutils_p.h>
 
 # ifndef QT_OPENGL_4_3
-#  define GL_PATCH_VERTICES 36466
+#  ifndef GL_PATCH_VERTICES
+#    define GL_PATCH_VERTICES 36466
+#  endif
 #  define GL_ACTIVE_RESOURCES 0x92F5
 #  define GL_BUFFER_BINDING 0x9302
 #  define GL_BUFFER_DATA_SIZE 0x9303
@@ -70,7 +72,7 @@ namespace Qt3DRender {
 namespace Render {
 
 GraphicsHelperGL4::GraphicsHelperGL4()
-    : m_funcs(Q_NULLPTR)
+    : m_funcs(nullptr)
 {
 }
 
@@ -114,6 +116,15 @@ void GraphicsHelperGL4::drawArraysInstanced(GLenum primitiveType,
                                    first,
                                    count,
                                    instances);
+}
+
+void GraphicsHelperGL4::drawArraysInstancedBaseInstance(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances, GLsizei baseInstance)
+{
+    m_funcs->glDrawArraysInstancedBaseInstance(primitiveType,
+                                               first,
+                                               count,
+                                               instances,
+                                               baseInstance);
 }
 
 void GraphicsHelperGL4::drawElements(GLenum primitiveType,
@@ -286,26 +297,22 @@ void GraphicsHelperGL4::depthMask(GLenum mode)
     m_funcs->glDepthMask(mode);
 }
 
-void GraphicsHelperGL4::cullFace(GLenum mode)
-{
-    m_funcs->glEnable(GL_CULL_FACE);
-    m_funcs->glCullFace(mode);
-}
-
 void GraphicsHelperGL4::frontFace(GLenum mode)
 {
     m_funcs->glFrontFace(mode);
 
 }
 
-void GraphicsHelperGL4::enableAlphaCoverage()
+void GraphicsHelperGL4::setMSAAEnabled(bool enabled)
 {
-    m_funcs->glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+    enabled ? m_funcs->glEnable(GL_MULTISAMPLE)
+            : m_funcs->glDisable(GL_MULTISAMPLE);
 }
 
-void GraphicsHelperGL4::disableAlphaCoverage()
+void GraphicsHelperGL4::setAlphaCoverageEnabled(bool enabled)
 {
-    m_funcs->glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+    enabled ? m_funcs->glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE)
+            : m_funcs->glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 }
 
 GLuint GraphicsHelperGL4::createFrameBufferObject()
@@ -341,11 +348,11 @@ void GraphicsHelperGL4::bindFrameBufferAttachment(QOpenGLTexture *texture, const
 {
     GLenum attr = GL_DEPTH_STENCIL_ATTACHMENT;
 
-    if (attachment.m_type <= QRenderAttachment::ColorAttachment15)
-        attr = GL_COLOR_ATTACHMENT0 + attachment.m_type;
-    else if (attachment.m_type == QRenderAttachment::DepthAttachment)
+    if (attachment.m_point <= QRenderTargetOutput::Color15)
+        attr = GL_COLOR_ATTACHMENT0 + attachment.m_point;
+    else if (attachment.m_point == QRenderTargetOutput::Depth)
         attr = GL_DEPTH_ATTACHMENT;
-    else if (attachment.m_type == QRenderAttachment::StencilAttachment)
+    else if (attachment.m_point == QRenderTargetOutput::Stencil)
         attr = GL_STENCIL_ATTACHMENT;
 
     texture->bind();
@@ -391,8 +398,8 @@ void GraphicsHelperGL4::drawBuffers(GLsizei n, const int *bufs)
 
 void GraphicsHelperGL4::bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs)
 {
-    Q_FOREACH (const QString &name, outputs.keys())
-        m_funcs->glBindFragDataLocation(shader, outputs.value(name), name.toStdString().c_str());
+    for (auto it = outputs.begin(), end = outputs.end(); it != end; ++it)
+        m_funcs->glBindFragDataLocation(shader, it.value(), it.key().toStdString().c_str());
 }
 
 void GraphicsHelperGL4::bindUniform(const QVariant &v, const ShaderUniform &description)
@@ -924,6 +931,11 @@ void GraphicsHelperGL4::disableClipPlane(int clipPlane)
     m_funcs->glDisable(GL_CLIP_DISTANCE0 + clipPlane);
 }
 
+void GraphicsHelperGL4::setClipPlane(int, const QVector3D &, float)
+{
+    // deprecated
+}
+
 GLint GraphicsHelperGL4::maxClipPlaneCount()
 {
     GLint max = 0;
@@ -940,6 +952,12 @@ void GraphicsHelperGL4::enablePrimitiveRestart(int primitiveRestartIndex)
 void GraphicsHelperGL4::disablePrimitiveRestart()
 {
     m_funcs->glDisable(GL_PRIMITIVE_RESTART);
+}
+
+void GraphicsHelperGL4::clearBufferf(GLint drawbuffer, const QVector4D &values)
+{
+    GLfloat vec[4] = {values[0], values[1], values[2], values[3]};
+    m_funcs->glClearBufferfv(GL_COLOR, drawbuffer, vec);
 }
 
 void GraphicsHelperGL4::pointSize(bool programmable, GLfloat value)

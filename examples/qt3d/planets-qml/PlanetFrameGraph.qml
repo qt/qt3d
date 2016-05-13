@@ -52,7 +52,7 @@
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 
-FrameGraph {
+RenderSettings {
     id: root
 
     property alias viewCamera: viewCameraSelector.camera
@@ -60,22 +60,20 @@ FrameGraph {
     readonly property Texture2D shadowTexture: depthTexture
 
     activeFrameGraph: Viewport {
-        rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
-        clearColor: Qt.rgba(0.0, 0.0, 0.0, 1.0)
+        normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
 
         TechniqueFilter {
-            requires: [ Annotation { name: "name"; value: "Desktop" } ]
-
+            matchAll: [ FilterKey { name: "name"; value: "Desktop" } ]
 
             RenderPassFilter {
-                includes: [ Annotation { name: "pass"; value: "shadowmap" } ]
+                matchAny: [ FilterKey { name: "pass"; value: "shadowmap" } ]
 
                 RenderTargetSelector {
                     target: RenderTarget {
                         attachments: [
-                            RenderAttachment {
-                                name: "depth"
-                                type: RenderAttachment.DepthAttachment
+                            RenderTargetOutput {
+                                objectName: "depth"
+                                attachmentPoint: RenderTargetOutput.Depth
                                 texture: Texture2D {
                                     id: depthTexture
                                     width: mainview.width
@@ -95,8 +93,9 @@ FrameGraph {
                         ]
                     }
 
-                    ClearBuffer {
-                        buffers: ClearBuffer.DepthBuffer
+                    ClearBuffers {
+                        buffers: ClearBuffers.DepthBuffer
+                        clearColor: Qt.rgba(0., 0., 0., 1.)
 
                         CameraSelector {
                             id: lightCameraSelector
@@ -107,10 +106,10 @@ FrameGraph {
         }
 
         RenderPassFilter {
-            includes: [ Annotation { name: "pass"; value: "forward" } ]
+            matchAny: [ FilterKey { name: "pass"; value: "forward" } ]
 
-            ClearBuffer {
-                buffers: ClearBuffer.ColorDepthBuffer
+            ClearBuffers {
+                buffers: ClearBuffers.ColorDepthBuffer
 
                 CameraSelector {
                     id: viewCameraSelector

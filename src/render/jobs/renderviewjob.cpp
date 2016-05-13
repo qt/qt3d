@@ -43,15 +43,44 @@
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/renderviewjobutils_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DRender/private/job_common_p.h>
+
+#include <QElapsedTimer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 
+namespace {
+// only accessed in ctor and dtor of RenderViewJob
+// which are always being called in a non concurrent manner
+int renderViewInstanceCounter = 0;
+} // anonymous
+
+RenderViewJob::RenderViewJob()
+    : m_renderer(0)
+    , m_devicePixelRatio(1.)
+    , m_fgLeaf(0)
+    , m_index(0)
+{
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderView, renderViewInstanceCounter++);
+}
+
+RenderViewJob::~RenderViewJob()
+{
+    renderViewInstanceCounter--;
+}
+
 void RenderViewJob::run()
 {
     qCDebug(Jobs) << Q_FUNC_INFO << m_index;
+#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
+    QElapsedTimer timer;
+    timer.start();
+    qint64 gatherLightsTime;
+    qint64 buildCommandsTime;
+#endif
 
     // Create a RenderView object
     // The RenderView are created from a QFrameAllocator stored in the current Thread local storage
@@ -67,6 +96,10 @@ void RenderViewJob::run()
 
     // Populate the renderview's configuration from the framegraph
     setRenderViewConfigFromFrameGraphLeafNode(renderView, m_fgLeaf);
+#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
+    qint64 gatherStateTime = timer.nsecsElapsed();
+    timer.restart();
+#endif
 
     // Build RenderCommand should perform the culling as we have no way to determine
     // if a child has a mesh in the view frustum while its parent isn't contained in it.
@@ -83,11 +116,36 @@ void RenderViewJob::run()
         };
 
         renderView->gatherLights(m_renderer->sceneRoot());
+#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
+        gatherLightsTime = timer.nsecsElapsed();
+        timer.restart();
+#endif
+
         renderView->buildRenderCommands(m_renderer->sceneRoot(), planes);
+#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
+        buildCommandsTime = timer.nsecsElapsed();
+        timer.restart();
+#endif
     }
+
+#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
+    qint64 creationTime = timer.nsecsElapsed();
+    timer.restart();
+#endif
 
     // Sorts RenderCommand
     renderView->sort();
+#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
+    qint64 sortTime = timer.nsecsElapsed();
+#endif
+
+#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
+    qDebug() << m_index
+             << "state:" << gatherStateTime / 1.0e6
+             << "lights:" << gatherLightsTime / 1.0e6
+             << "build commands:" << buildCommandsTime / 1.0e6
+             << "sort:" << sortTime / 1.0e6;
+#endif
 
     // Enqueue our fully populated RenderView with the RenderThread
     m_renderer->enqueueRenderView(renderView, m_index);

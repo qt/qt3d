@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "parameter_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/private/qparameter_p.h>
 #include <Qt3DRender/qtexture.h>
@@ -47,6 +47,7 @@
 #include <Qt3DRender/private/buffer_p.h>
 
 #include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/stringtoint_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,27 +57,35 @@ namespace Qt3DRender {
 namespace Render {
 
 Parameter::Parameter()
-    : QBackendNode()
+    : BackendNode()
+    , m_nameId(-1)
 {
 }
 
-void Parameter::updateFromPeer(Qt3DCore::QNode *peer)
+void Parameter::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QParameter *param = static_cast<QParameter *>(peer);
-    m_name = param->name();
-    m_value = static_cast<QParameterPrivate *>(QNodePrivate::get(param))->m_backendValue;
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QParameterData>>(change);
+    const auto &data = typedChange->data;
+    m_name = data.name;
+    m_nameId = StringToInt::lookupId(m_name);
+    m_value = data.backendValue;
 }
 
 void Parameter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
 
-    if (e->type() == NodeUpdated) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("name"))
+    if (e->type() == PropertyUpdated) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("name")) {
             m_name = propertyChange->value().toString();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("value"))
+            m_nameId = StringToInt::lookupId(m_name);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("value")) {
             m_value = propertyChange->value();
+        }
+        markDirty(AbstractRenderer::AllDirty);
     }
+
+    BackendNode::sceneChangeEvent(e);
 }
 
 QString Parameter::name() const
@@ -87,6 +96,11 @@ QString Parameter::name() const
 QVariant Parameter::value() const
 {
     return m_value;
+}
+
+int Parameter::nameId() const Q_DECL_NOEXCEPT
+{
+    return m_nameId;
 }
 
 } // namespace Render

@@ -41,11 +41,9 @@ public: \
         : QAbstractAspect(parent) {} \
 \
 private: \
-    void onRootEntityChanged(QEntity *) Q_DECL_OVERRIDE {} \
-    void onInitialize() Q_DECL_OVERRIDE {} \
-    void onStartup() Q_DECL_OVERRIDE {} \
-    void onShutdown() Q_DECL_OVERRIDE {} \
-    void onCleanup() Q_DECL_OVERRIDE {} \
+    void onRegistered() Q_DECL_OVERRIDE {} \
+    void onEngineStartup() Q_DECL_OVERRIDE {} \
+    void onEngineShutdown() Q_DECL_OVERRIDE {} \
 \
     QVector<QAspectJobPtr> jobsToExecute(qint64) Q_DECL_OVERRIDE \
     { \
@@ -75,8 +73,8 @@ private Q_SLOTS:
         QAbstractAspect *aspect = factory.createAspect(QStringLiteral("default"));
 
         // THEN
-        QVERIFY(qobject_cast<DefaultFakeAspect*>(aspect) != Q_NULLPTR);
-        QVERIFY(aspect->parent() == Q_NULLPTR);
+        QVERIFY(qobject_cast<DefaultFakeAspect*>(aspect) != nullptr);
+        QVERIFY(aspect->parent() == nullptr);
     }
 
     void shouldKnowAspectNames()
@@ -102,7 +100,7 @@ private Q_SLOTS:
         QAbstractAspect *aspect = factory.createAspect(QStringLiteral("missing"), this);
 
         // THEN
-        QVERIFY(qobject_cast<AnotherFakeAspect*>(aspect) == Q_NULLPTR);
+        QVERIFY(qobject_cast<AnotherFakeAspect*>(aspect) == nullptr);
     }
 };
 

@@ -39,8 +39,9 @@
 
 #include "inputsettings_p.h"
 #include <Qt3DInput/qinputsettings.h>
-#include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DInput/private/inputhandler_p.h>
+#include <Qt3DInput/private/qinputsettings_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,24 +51,25 @@ namespace Input {
 
 InputSettings::InputSettings()
     : QBackendNode(QBackendNode::ReadOnly)
-    , m_eventSource(Q_NULLPTR)
+    , m_eventSource(nullptr)
 {
 }
 
-void InputSettings::updateFromPeer(Qt3DCore::QNode *peer)
+void InputSettings::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QInputSettings *settings = static_cast<QInputSettings *>(peer);
-    m_eventSource = settings->eventSource();
-    // Does it make sense to check for the enabled property for such a node ?
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QInputSettingsData>>(change);
+    const auto &data = typedChange->data;
+    m_eventSource = data.eventSource;
 }
 
 void InputSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == Qt3DCore::NodeUpdated) {
-        Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
+    if (e->type() == Qt3DCore::PropertyUpdated) {
+        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("eventSource"))
             m_eventSource = propertyChange->value().value<QObject *>();
     }
+    QBackendNode::sceneChangeEvent(e);
 }
 
 InputSettingsFunctor::InputSettingsFunctor(InputHandler *handler)
@@ -75,32 +77,32 @@ InputSettingsFunctor::InputSettingsFunctor(InputHandler *handler)
 {
 }
 
-Qt3DCore::QBackendNode *InputSettingsFunctor::create(Qt3DCore::QNode *frontend) const
+Qt3DCore::QBackendNode *InputSettingsFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
-    if (m_handler->inputSettings() != Q_NULLPTR) {
+    Q_UNUSED(change);
+    if (m_handler->inputSettings() != nullptr) {
         qWarning() << "Input settings already specified";
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     InputSettings *settings = new InputSettings();
-    settings->setPeer(frontend);
     m_handler->setInputSettings(settings);
     return settings;
 }
 
-Qt3DCore::QBackendNode *InputSettingsFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *InputSettingsFunctor::get(Qt3DCore::QNodeId id) const
 {
     InputSettings *settings = m_handler->inputSettings();
-    if (settings != Q_NULLPTR && settings->peerUuid() == id)
+    if (settings != nullptr && settings->peerId() == id)
         return settings;
-    return Q_NULLPTR;
+    return nullptr;
 }
 
-void InputSettingsFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void InputSettingsFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     InputSettings *settings = m_handler->inputSettings();
-    if (settings != Q_NULLPTR && settings->peerUuid() == id) {
-        m_handler->setInputSettings(Q_NULLPTR);
+    if (settings != nullptr && settings->peerId() == id) {
+        m_handler->setInputSettings(nullptr);
         delete settings;
     }
 }

@@ -59,18 +59,17 @@
 #include <Qt3DInput/QInputAspect>
 
 #include <Qt3DRender/QRenderAspect>
-#include <Qt3DRender/QFrameGraph>
-#include <Qt3DRender/QForwardRenderer>
-#include <Qt3DRender/QPhongMaterial>
-#include <Qt3DRender/QCylinderMesh>
-#include <Qt3DRender/QSphereMesh>
-#include <Qt3DRender/QTorusMesh>
+#include <Qt3DExtras//QForwardRenderer>
+#include <Qt3DExtras//QPhongMaterial>
+#include <Qt3DExtras/QCylinderMesh>
+#include <Qt3DExtras/QSphereMesh>
+#include <Qt3DExtras/QTorusMesh>
 
 #include <QPropertyAnimation>
 
 #include "qt3dwindow.h"
 #include "orbittransformcontroller.h"
-#include "qfirstpersoncameracontroller.h"
+#include "qorbitcameracontroller.h"
 
 Qt3DCore::QEntity *createScene()
 {
@@ -78,11 +77,11 @@ Qt3DCore::QEntity *createScene()
     Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity;
 
     // Material
-    Qt3DRender::QMaterial *material = new Qt3DRender::QPhongMaterial(rootEntity);
+    Qt3DRender::QMaterial *material = new Qt3DExtras::QPhongMaterial(rootEntity);
 
     // Torus
     Qt3DCore::QEntity *torusEntity = new Qt3DCore::QEntity(rootEntity);
-    Qt3DRender::QTorusMesh *torusMesh = new Qt3DRender::QTorusMesh;
+    Qt3DExtras::QTorusMesh *torusMesh = new Qt3DExtras::QTorusMesh;
     torusMesh->setRadius(5);
     torusMesh->setMinorRadius(1);
     torusMesh->setRings(100);
@@ -98,7 +97,7 @@ Qt3DCore::QEntity *createScene()
 
     // Sphere
     Qt3DCore::QEntity *sphereEntity = new Qt3DCore::QEntity(rootEntity);
-    Qt3DRender::QSphereMesh *sphereMesh = new Qt3DRender::QSphereMesh;
+    Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh;
     sphereMesh->setRadius(3);
 
     Qt3DCore::QTransform *sphereTransform = new Qt3DCore::QTransform;
@@ -125,7 +124,7 @@ Qt3DCore::QEntity *createScene()
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
-    Qt3DWindow view;
+    Qt3DExtras::Qt3DWindow view;
 
     Qt3DCore::QEntity *scene = createScene();
 
@@ -133,9 +132,10 @@ int main(int argc, char* argv[])
     Qt3DRender::QCamera *camera = view.camera();
     camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     camera->setPosition(QVector3D(0, 0, 40.0f));
+    camera->setViewCenter(QVector3D(0, 0, 0));
 
     // For camera controls
-    Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(scene);
+    Qt3DExtras::QOrbitCameraController *camController = new Qt3DExtras::QOrbitCameraController(scene);
     camController->setLinearSpeed( 50.0f );
     camController->setLookSpeed( 180.0f );
     camController->setCamera(camera);

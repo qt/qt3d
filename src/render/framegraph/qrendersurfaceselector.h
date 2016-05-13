@@ -42,6 +42,7 @@
 
 #include <Qt3DRender/qframegraphnode.h>
 #include <Qt3DRender/qt3drender_global.h>
+#include <QtCore/QSize>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,31 +56,29 @@ class QRenderSurfaceSelectorPrivate;
 class QT3DRENDERSHARED_EXPORT QRenderSurfaceSelector : public Qt3DRender::QFrameGraphNode
 {
     Q_OBJECT
-    Q_PROPERTY(QSurface *surface READ surface WRITE setSurface NOTIFY surfaceChanged)
-    Q_PROPERTY(QWindow *window READ window WRITE setWindow NOTIFY windowChanged)
+    Q_PROPERTY(QObject *surface READ surface WRITE setSurface NOTIFY surfaceChanged)
+    Q_PROPERTY(QSize externalRenderTargetSize READ externalRenderTargetSize NOTIFY externalRenderTargetSizeChanged)
 
 public:
-    explicit QRenderSurfaceSelector(Qt3DCore::QNode *parent = 0);
-    ~QRenderSurfaceSelector();
+    explicit QRenderSurfaceSelector(Qt3DCore::QNode *parent = nullptr);
 
-    QSurface *surface() const;
-    QWindow *window() const;
+    QObject *surface() const;
+    QSize externalRenderTargetSize() const;
+    void setExternalRenderTargetSize(const QSize &size);
 
 public Q_SLOTS:
-    void setSurface(QSurface *surface);
-    void setWindow(QWindow *window);
+    void setSurface(QObject *surfaceObject);
 
 Q_SIGNALS:
-    void surfaceChanged(QSurface *surface);
-    void windowChanged(QWindow *window);
+    void surfaceChanged(QObject *surface);
+    void externalRenderTargetSizeChanged(const QSize &size);
 
 protected:
     Q_DECLARE_PRIVATE(QRenderSurfaceSelector)
-    QRenderSurfaceSelector(QRenderSurfaceSelectorPrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    QRenderSurfaceSelector(QRenderSurfaceSelectorPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
-    QT3D_CLONEABLE(QRenderSurfaceSelector)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

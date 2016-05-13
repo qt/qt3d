@@ -55,7 +55,7 @@ class QT3DRENDERSHARED_EXPORT QGraphicsApiFilter : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QGraphicsApiFilter::Api api READ api WRITE setApi NOTIFY apiChanged)
-    Q_PROPERTY(Qt3DRender::QGraphicsApiFilter::Profile profile READ profile WRITE setProfile NOTIFY profileChanged)
+    Q_PROPERTY(Qt3DRender::QGraphicsApiFilter::OpenGLProfile profile READ profile WRITE setProfile NOTIFY profileChanged)
     Q_PROPERTY(int minorVersion READ minorVersion WRITE setMinorVersion NOTIFY minorVersionChanged)
     Q_PROPERTY(int majorVersion READ majorVersion WRITE setMajorVersion NOTIFY majorVersionChanged)
     Q_PROPERTY(QStringList extensions READ extensions WRITE setExtensions NOTIFY extensionsChanged)
@@ -63,27 +63,23 @@ class QT3DRENDERSHARED_EXPORT QGraphicsApiFilter : public QObject
 
 public:
 
-    enum Api
-    {
+    enum Api {
         OpenGLES = QSurfaceFormat::OpenGLES,
         OpenGL = QSurfaceFormat::OpenGL
     };
     Q_ENUM(Api)
 
-    enum Profile
-    {
+    enum OpenGLProfile {
         NoProfile = QSurfaceFormat::NoProfile,
         CoreProfile = QSurfaceFormat::CoreProfile,
         CompatibilityProfile = QSurfaceFormat::CompatibilityProfile
     };
-    Q_ENUM(Profile)
+    Q_ENUM(OpenGLProfile)
 
-    explicit QGraphicsApiFilter(QObject *parent = 0);
-
-    void copy(const QGraphicsApiFilter &ref);
+    explicit QGraphicsApiFilter(QObject *parent = nullptr);
 
     Api api() const;
-    Profile profile() const;
+    OpenGLProfile profile() const;
     int minorVersion() const;
     int majorVersion() const;
     QStringList extensions() const;
@@ -91,7 +87,7 @@ public:
 
 public Q_SLOTS:
     void setApi(Api api);
-    void setProfile(Profile profile);
+    void setProfile(OpenGLProfile profile);
     void setMinorVersion(int minorVersion);
     void setMajorVersion(int majorVersion);
     void setExtensions(const QStringList &extensions);
@@ -99,7 +95,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void apiChanged(Api api);
-    void profileChanged(Profile profile);
+    void profileChanged(OpenGLProfile profile);
     void minorVersionChanged(int minorVersion);
     void majorVersionChanged(int majorVersion);
     void extensionsChanged(const QStringList &extensions);

@@ -51,9 +51,9 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferfunctor.h>
+#include <Qt3DRender/qbufferdatagenerator.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,14 +63,13 @@ namespace Render {
 
 class BufferManager;
 
-class Q_AUTOTEST_EXPORT Buffer : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT Buffer : public BackendNode
 {
 public:
     Buffer();
     ~Buffer();
     void cleanup();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     void setManager(BufferManager *manager);
@@ -80,29 +79,32 @@ public:
     inline QBuffer::UsageType usage() const { return m_usage; }
     inline QByteArray data() const { return m_data; }
     inline bool isDirty() const { return m_bufferDirty; }
-    inline QBufferFunctorPtr bufferFunctor() const { return m_functor; }
-    inline bool isSync() const { return m_sync; }
+    inline QBufferDataGeneratorPtr dataGenerator() const { return m_functor; }
+    inline bool isSyncData() const { return m_syncData; }
     void unsetDirty();
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QBuffer::BufferType m_type;
     QBuffer::UsageType m_usage;
     QByteArray m_data;
     bool m_bufferDirty;
-    bool m_sync;
-    QBufferFunctorPtr m_functor;
+    bool m_syncData;
+    QBufferDataGeneratorPtr m_functor;
     BufferManager *m_manager;
 };
 
-class BufferFunctor : public Qt3DCore::QBackendNodeFunctor
+class BufferFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
-    explicit BufferFunctor(BufferManager *manager);
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    explicit BufferFunctor(AbstractRenderer *renderer, BufferManager *manager);
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
 private:
     BufferManager *m_manager;
+    AbstractRenderer *m_renderer;
 };
 
 } // namespace Render

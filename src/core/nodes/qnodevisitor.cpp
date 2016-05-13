@@ -61,12 +61,12 @@ QNode* QNodeVisitor::currentNode() const
     return m_path.back();
 }
 
-void QNodeVisitor::setPath(QNodeList path)
+void QNodeVisitor::setPath(QNodeVector path)
 {
     m_path = path;
 }
 
-QNodeList QNodeVisitor::path() const
+QNodeVector QNodeVisitor::path() const
 {
     return m_path;
 }

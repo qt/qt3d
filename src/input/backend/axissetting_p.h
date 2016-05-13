@@ -62,21 +62,21 @@ class AxisSetting : public Qt3DCore::QBackendNode
 {
 public:
     AxisSetting();
-
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
-    inline float deadZone() const { return m_deadZone; }
+    inline float deadZoneRadius() const { return m_deadZoneRadius; }
     inline QVector<int> axes() const { return m_axes; }
-    inline bool isFilterEnabled() const { return m_filter; }
+    inline bool isSmoothEnabled() const { return m_smooth; }
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    float m_deadZone;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
+    float m_deadZoneRadius;
     QVector<int> m_axes;
-    bool m_filter;
+    bool m_smooth;
 };
 
 } // namespace Input

@@ -29,40 +29,54 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
+#include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qlayerfilter.h>
+#include <Qt3DRender/private/qlayerfilter_p.h>
 
 #include "testpostmanarbiter.h"
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QLayerFilter: public Qt3DCore::QNode
+class tst_QLayerFilter: public QObject
 {
     Q_OBJECT
 public:
-    ~tst_QLayerFilter()
+    tst_QLayerFilter()
+        : QObject()
+        , layersNode(new Qt3DCore::QNode)
     {
-        QNode::cleanup();
+        qRegisterMetaType<Qt3DCore::QNode*>();
     }
+
+private:
+    QScopedPointer<Qt3DCore::QNode> layersNode;
 
 private Q_SLOTS:
 
     void checkCloning_data()
     {
         QTest::addColumn<Qt3DRender::QLayerFilter *>("layerFilter");
-        QTest::addColumn<QStringList>("layerNames");
+        QTest::addColumn<QVector<Qt3DRender::QLayer*>>("layers");
+
 
         Qt3DRender::QLayerFilter *defaultConstructed = new Qt3DRender::QLayerFilter();
-        QTest::newRow("defaultConstructed") << defaultConstructed << QStringList();
+        QTest::newRow("defaultConstructed") << defaultConstructed << QVector<Qt3DRender::QLayer*>();
 
         Qt3DRender::QLayerFilter *singleLayer = new Qt3DRender::QLayerFilter();
-        QStringList layer = QStringList() << QStringLiteral("myLayer");
-        singleLayer->setLayers(layer);
+        auto layer = QVector<Qt3DRender::QLayer*>() << new Qt3DRender::QLayer(layersNode.data());
+        QCoreApplication::processEvents();
+        singleLayer->addLayer(layer.first());
         QTest::newRow("single layer") << singleLayer << layer;
 
         Qt3DRender::QLayerFilter *multiLayers = new Qt3DRender::QLayerFilter();
-        QStringList layers = QStringList() << QStringLiteral("883") << QStringLiteral("350") << QStringLiteral("454");
-        multiLayers->setLayers(layers);
+        auto layers = QVector<Qt3DRender::QLayer*>() << new Qt3DRender::QLayer(layersNode.data())
+                                                     << new Qt3DRender::QLayer(layersNode.data())
+                                                     << new Qt3DRender::QLayer(layersNode.data());
+        QCoreApplication::processEvents();
+        for (Qt3DRender::QLayer *layer : qAsConst(layers))
+            multiLayers->addLayer(layer);
         QTest::newRow("multi layers") << multiLayers << layers;
      }
 
@@ -70,21 +84,29 @@ private Q_SLOTS:
     {
         // GIVEN
         QFETCH(Qt3DRender::QLayerFilter *, layerFilter);
-        QFETCH(QStringList, layerNames);
+        QFETCH(QVector<Qt3DRender::QLayer*>, layers);
 
         // THEN
-        QCOMPARE(layerFilter->layers(), layerNames);
+        QCOMPARE(layerFilter->layers(), layers);
 
         // WHEN
-        Qt3DRender::QLayerFilter *clone = static_cast<Qt3DRender::QLayerFilter *>(QNode::clone(layerFilter));
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(layerFilter);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(layerFilter->id(), clone->id());
-        QCOMPARE(layerFilter->layers(), clone->layers());
+        QCOMPARE(creationChanges.size(), 1);
+
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QLayerFilterData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QLayerFilterData>>(creationChanges.first());
+        const Qt3DRender::QLayerFilterData &cloneData = creationChangeData->data;
+
+        // THEN
+        QCOMPARE(layerFilter->id(), creationChangeData->subjectId());
+        QCOMPARE(layerFilter->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(layerFilter->metaObject(), creationChangeData->metaObject());
+        QCOMPARE(Qt3DCore::qIdsForNodes(layerFilter->layers()), cloneData.layerIds);
 
         delete layerFilter;
-        delete clone;
     }
 
     void checkPropertyUpdates()
@@ -94,64 +116,52 @@ private Q_SLOTS:
         TestArbiter arbiter(layerFilter.data());
 
         // WHEN
-        QStringList layerNames1 = QStringList() << QStringLiteral("883") << QStringLiteral("350");
-        layerFilter->setLayers(layerNames1);
+        auto layer = new Qt3DRender::QLayer(layersNode.data());
+        QCoreApplication::processEvents();
+        layerFilter->addLayer(layer);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "layers");
-        QCOMPARE(change->subjectId(), layerFilter->id());
-        QCOMPARE(change->value().value<QStringList>(), layerNames1);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        auto addChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
+        QCOMPARE(addChange->propertyName(), "layer");
+        QCOMPARE(addChange->subjectId(), layerFilter->id());
+        QCOMPARE(addChange->addedNodeId(), layerFilter->layers().at(0)->id());
+        QCOMPARE(addChange->type(), Qt3DCore::PropertyValueAdded);
 
         arbiter.events.clear();
 
         // WHEN
-        layerFilter->setLayers(layerNames1);
+        layer = new Qt3DRender::QLayer(layersNode.data());
         QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-
-        // WHEN
-        QStringList layerNames2 = QStringList() << QStringLiteral("454");
-        layerFilter->setLayers(layerNames2);
+        layerFilter->addLayer(layer);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "layers");
-        QCOMPARE(change->subjectId(), layerFilter->id());
-        QCOMPARE(change->value().value<QStringList>(), layerNames2);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        addChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
+        QCOMPARE(addChange->propertyName(), "layer");
+        QCOMPARE(addChange->subjectId(), layerFilter->id());
+        QCOMPARE(addChange->addedNodeId(), layerFilter->layers().at(1)->id());
+        QCOMPARE(addChange->type(), Qt3DCore::PropertyValueAdded);
 
         arbiter.events.clear();
 
         // WHEN
-        layerFilter->setLayers(QStringList());
+        layer = layerFilter->layers().at(0);
+        layerFilter->removeLayer(layer);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "layers");
-        QCOMPARE(change->subjectId(), layerFilter->id());
-        QCOMPARE(change->value().value<QStringList>(), QStringList());
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
-
+        auto removeChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
+        QCOMPARE(removeChange->propertyName(), "layer");
+        QCOMPARE(removeChange->subjectId(), layerFilter->id());
+        QCOMPARE(removeChange->removedNodeId(), layer->id());
+        QCOMPARE(removeChange->type(), Qt3DCore::PropertyValueRemoved);
 
         arbiter.events.clear();
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QLayerFilter)

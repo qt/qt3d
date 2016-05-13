@@ -53,12 +53,10 @@ class QT3DRENDERSHARED_EXPORT QDithering : public QRenderState
 {
     Q_OBJECT
 public:
-    explicit QDithering(Qt3DCore::QNode *parent = 0);
-    ~QDithering();
+    explicit QDithering(Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QDithering)
-    QT3D_CLONEABLE(QDithering)
 };
 
 } // namespace Qt3DRender

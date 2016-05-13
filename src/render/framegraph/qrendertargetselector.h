@@ -43,7 +43,7 @@
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRender/qframegraphnode.h>
-#include <Qt3DRender/qrenderattachment.h>
+#include <Qt3DRender/qrendertargetoutput.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,13 +57,12 @@ class QT3DRENDERSHARED_EXPORT QRenderTargetSelector : public QFrameGraphNode
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QRenderTarget *target READ target WRITE setTarget NOTIFY targetChanged)
 public:
-    explicit QRenderTargetSelector(Qt3DCore::QNode *parent = 0);
-    ~QRenderTargetSelector();
+    explicit QRenderTargetSelector(Qt3DCore::QNode *parent = nullptr);
 
     QRenderTarget *target() const;
 
-    void setDrawBuffers(const QList<QRenderAttachment::RenderAttachmentType> &buffers);
-    QList<QRenderAttachment::RenderAttachmentType> drawBuffers() const;
+    void setOutputs(const QVector<QRenderTargetOutput::AttachmentPoint> &buffers);
+    QVector<QRenderTargetOutput::AttachmentPoint> outputs() const;
 
 public Q_SLOTS:
     void setTarget(QRenderTarget *target);
@@ -72,18 +71,17 @@ Q_SIGNALS:
     void targetChanged(QRenderTarget *target);
 
 protected:
-    QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QRenderTargetSelector)
-    QT3D_CLONEABLE(QRenderTargetSelector)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(QList<Qt3DRender::QRenderAttachment::RenderAttachmentType>)
+Q_DECLARE_METATYPE(QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint>)
 
 #endif // QT3DRENDER_QRENDERTARGETSELECTOR_H

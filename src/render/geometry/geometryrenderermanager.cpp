@@ -52,7 +52,7 @@ GeometryRendererManager::~GeometryRendererManager()
 {
 }
 
-void GeometryRendererManager::addDirtyGeometryRenderer(const Qt3DCore::QNodeId &bufferId)
+void GeometryRendererManager::addDirtyGeometryRenderer(Qt3DCore::QNodeId bufferId)
 {
     if (!m_dirtyGeometryRenderers.contains(bufferId))
         m_dirtyGeometryRenderers.push_back(bufferId);

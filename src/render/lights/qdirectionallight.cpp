@@ -39,7 +39,7 @@
 
 #include "qdirectionallight.h"
 #include "qdirectionallight_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,7 +54,7 @@ namespace Qt3DRender {
  * struct DirectionalLight
  * {
  *  vec3 position;
- *  vec3 direction;
+ *  vec3 worldDirection;
  *  vec4 color;
  *  float intensity;
  * };
@@ -65,44 +65,35 @@ namespace Qt3DRender {
  */
 
 QDirectionalLightPrivate::QDirectionalLightPrivate()
-    : QLightPrivate(QLight::DirectionalLight)
-    , m_direction(0.0f, -1.0f, 0.0f)
+    : QAbstractLightPrivate(QAbstractLight::DirectionalLight)
 {
-}
-
-void QDirectionalLight::copy(const QNode *ref)
-{
-    const QDirectionalLight *light = static_cast<const QDirectionalLight*>(ref);
-    d_func()->m_direction = light->d_func()->m_direction;
-    // This needs to be last otherwise, properties value won't be copied
-    // as we use shader introspection in QShaderData::copy
-    QLight::copy(ref);
+    m_shaderData->setProperty("direction", QVector3D(0.0f, -1.0f, 0.0f));
 }
 
 QDirectionalLight::QDirectionalLight(QNode *parent)
-    : QLight(*new QDirectionalLightPrivate, parent)
+    : QAbstractLight(*new QDirectionalLightPrivate, parent)
 {
 }
 
 /*! \internal */
 QDirectionalLight::QDirectionalLight(QDirectionalLightPrivate &dd, QNode *parent)
-    : QLight(dd, parent)
+    : QAbstractLight(dd, parent)
 {
 }
 
-void QDirectionalLight::setDirection(const QVector3D &direction)
+void QDirectionalLight::setWorldDirection(const QVector3D &direction)
 {
     Q_D(QDirectionalLight);
-    if (direction != d->m_direction) {
-        d->m_direction = direction;
-        emit directionChanged(direction);
+    if (worldDirection() != direction) {
+        d->m_shaderData->setProperty("direction", direction);
+        emit worldDirectionChanged(direction);
     }
 }
 
-QVector3D QDirectionalLight::direction() const
+QVector3D QDirectionalLight::worldDirection() const
 {
     Q_D(const QDirectionalLight);
-    return d->m_direction;
+    return d->m_shaderData->property("direction").value<QVector3D>();
 }
 
 } // namespace Qt3DRender

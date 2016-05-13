@@ -27,13 +27,25 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <qbackendnodetester.h>
 #include <Qt3DRender/private/geometry_p.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qattribute.h>
-#include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRender/qboundingvolumespecifier.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
+#include "testrenderer.h"
 
-class tst_RenderGeometry : public QObject
+class DummyAttribute : public Qt3DRender::QAttribute
+{
+    Q_OBJECT
+public:
+    DummyAttribute(Qt3DCore::QNode *parent = nullptr)
+        : Qt3DRender::QAttribute(parent)
+    {}
+};
+
+class tst_RenderGeometry : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 private Q_SLOTS:
@@ -53,17 +65,15 @@ private Q_SLOTS:
         geometry.addAttribute(&attr2);
         geometry.addAttribute(&attr3);
         geometry.addAttribute(&attr4);
-        geometry.setVerticesPerPatch(4);
-        geometry.boundingVolumeSpecifier()->setPositionAttribute(&attr1);
+        geometry.setBoundingVolumePositionAttribute(&attr1);
 
         // WHEN
-        renderGeometry.setPeer(&geometry);
+        simulateInitialization(&geometry, &renderGeometry);
 
         // THEN
-        QCOMPARE(renderGeometry.peerUuid(), geometry.id());
+        QCOMPARE(renderGeometry.peerId(), geometry.id());
         QCOMPARE(renderGeometry.isDirty(), true);
         QCOMPARE(renderGeometry.attributes().count(), 4);
-        QCOMPARE(renderGeometry.verticesPerPatch(), 4);
         QCOMPARE(renderGeometry.boundingPositionAttribute(), attr1.id());
 
         for (int i = 0; i < 4; ++i)
@@ -78,8 +88,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderGeometry.isDirty(), false);
         QVERIFY(renderGeometry.attributes().isEmpty());
-        QVERIFY(renderGeometry.peerUuid().isNull());
-        QCOMPARE(renderGeometry.verticesPerPatch(), 0);
+        QVERIFY(renderGeometry.peerId().isNull());
         QCOMPARE(renderGeometry.boundingPositionAttribute(), Qt3DCore::QNodeId());
 
         // GIVEN
@@ -88,36 +97,36 @@ private Q_SLOTS:
         Qt3DRender::QAttribute attr2;
         Qt3DRender::QAttribute attr4;
         Qt3DRender::QAttribute attr3;
-        geometry.boundingVolumeSpecifier()->setPositionAttribute(&attr1);
+        geometry.setBoundingVolumePositionAttribute(&attr1);
 
         geometry.addAttribute(&attr1);
         geometry.addAttribute(&attr2);
         geometry.addAttribute(&attr3);
         geometry.addAttribute(&attr4);
-        geometry.setVerticesPerPatch(4);
 
         // WHEN
-        renderGeometry.updateFromPeer(&geometry);
+        simulateInitialization(&geometry, &renderGeometry);
         renderGeometry.cleanup();
 
         // THEN
         QCOMPARE(renderGeometry.isDirty(), false);
         QVERIFY(renderGeometry.attributes().isEmpty());
-        QCOMPARE(renderGeometry.verticesPerPatch(), 0);
         QCOMPARE(renderGeometry.boundingPositionAttribute(), Qt3DCore::QNodeId());
     }
 
     void checkPropertyChanges()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::Render::Geometry renderGeometry;
-        Qt3DCore::QNodeId geometryId = Qt3DCore::QNodeId::createId();
+        renderGeometry.setRenderer(&renderer);
+
+        DummyAttribute attribute;
 
         // WHEN
-        Qt3DCore::QScenePropertyChangePtr updateChange(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
-        updateChange->setValue(QVariant::fromValue(geometryId));
-        updateChange->setPropertyName("attribute");
-        renderGeometry.sceneChangeEvent(updateChange);
+        const auto nodeAddedChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &attribute);
+        nodeAddedChange->setPropertyName("attribute");
+        renderGeometry.sceneChangeEvent(nodeAddedChange);
 
         // THEN
         QCOMPARE(renderGeometry.attributes().count(), 1);
@@ -127,10 +136,9 @@ private Q_SLOTS:
         QVERIFY(!renderGeometry.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
-        updateChange->setValue(QVariant::fromValue(geometryId));
-        updateChange->setPropertyName("attribute");
-        renderGeometry.sceneChangeEvent(updateChange);
+        const auto nodeRemovedChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &attribute);
+        nodeRemovedChange->setPropertyName("attribute");
+        renderGeometry.sceneChangeEvent(nodeRemovedChange);
 
         // THEN
         QCOMPARE(renderGeometry.attributes().count(), 0);
@@ -140,20 +148,10 @@ private Q_SLOTS:
         QVERIFY(!renderGeometry.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
-        updateChange->setValue(QVariant::fromValue(3));
-        updateChange->setPropertyName("verticesPerPatch");
-        renderGeometry.sceneChangeEvent(updateChange);
-
-        // THEN
-        QCOMPARE(renderGeometry.verticesPerPatch(), 3);
-        QVERIFY(!renderGeometry.isDirty());
-
-        // WHEN
         const Qt3DCore::QNodeId boundingAttrId = Qt3DCore::QNodeId::createId();
-        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         updateChange->setValue(QVariant::fromValue(boundingAttrId));
-        updateChange->setPropertyName("boundingVolumeSpecifierPositionAttribute");
+        updateChange->setPropertyName("boundingVolumePositionAttribute");
         renderGeometry.sceneChangeEvent(updateChange);
 
         // THEN

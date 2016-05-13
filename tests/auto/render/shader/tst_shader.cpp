@@ -27,10 +27,11 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <qbackendnodetester.h>
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DRender/qshaderprogram.h>
 
-class tst_RenderShader : public QObject
+class tst_RenderShader : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 private slots:
@@ -87,7 +88,7 @@ void tst_RenderShader::matchesFrontendPeer()
     Qt3DRender::QShaderProgram *frontend = createFrontendShader();
     Qt3DRender::Render::Shader *backend = new Qt3DRender::Render::Shader();
 
-    backend->updateFromPeer(frontend);
+    simulateInitialization(frontend, backend);
     QCOMPARE(backend->isLoaded(), false);
     QVERIFY(backend->dna() != 0U);
 
@@ -101,7 +102,7 @@ void tst_RenderShader::cleanupLeavesACoherentState()
     Qt3DRender::QShaderProgram *frontend = createFrontendShader();
     Qt3DRender::Render::Shader *shader = new Qt3DRender::Render::Shader();
 
-    shader->updateFromPeer(frontend);
+    simulateInitialization(frontend, shader);
 
     shader->cleanup();
 

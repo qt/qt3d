@@ -68,9 +68,6 @@ class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DShaderData : public QShaderDat
     Q_OBJECT
 public:
     explicit Quick3DShaderData(QNode *parent = 0);
-
-private:
-    QT3D_CLONEABLE(Quick3DShaderData)
 };
 
 } // namespace Quick

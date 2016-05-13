@@ -40,7 +40,7 @@
 #include "qbuffer.h"
 #include "qbuffer_p.h"
 #include <Qt3DRender/private/renderlogging_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,9 +49,9 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 
 QBufferPrivate::QBufferPrivate()
-    : QAbstractBufferPrivate()
+    : QNodePrivate()
     , m_usage(QBuffer::StaticDraw)
-    , m_sync(false)
+    , m_syncData(false)
 {
 }
 
@@ -74,11 +74,11 @@ QBufferPrivate::QBufferPrivate()
  */
 
 /*!
- * \qmlproperty bool Buffer::sync
+ * \qmlproperty bool Buffer::syncData
  *
- * Holds the sync flag. When sync is true, this will force data created
- * by a Qt3DRender::QBufferFunctor to also be updated on the frontend
- * Qt3DRender::QBuffer node. By default sync is false.
+ * Holds the syncData flag. When syncData is true, this will force data created
+ * by a Qt3DRender::QBufferDataGenerator to also be updated on the frontend
+ * Qt3DRender::QBuffer node. By default syncData is false.
  *
  * \note: This has no effect if the buffer's data was set directly using the data
  * property.
@@ -88,8 +88,15 @@ QBufferPrivate::QBufferPrivate()
  * \class Qt3DRender::QBuffer
  * \inmodule Qt3DRender
  *
- * \inherits Qt3DRender::QAbstractBuffer
+ * \inherits Qt3DCore::QNode
  */
+
+/*!
+ * \fn void Qt3DRender::QBuffer::dataChanged(const QByteArray &bytes)
+ *
+ * This signal is emitted with \a bytes when data changes.
+ */
+
 
 /*!
  * \enum QBuffer::BufferType
@@ -132,7 +139,7 @@ QBufferPrivate::QBufferPrivate()
  */
 
 /*!
- * \typedef Qt3DRender::QBufferFunctorPtr
+ * \typedef Qt3DRender::QBufferDataGeneratorPtr
  * \relates QBuffer
  */
 
@@ -140,41 +147,10 @@ QBufferPrivate::QBufferPrivate()
  * Constructs a new QBuffer of buffer type \a ty with \a parent.
  */
 QBuffer::QBuffer(QBuffer::BufferType ty, QNode *parent)
-    : QAbstractBuffer(*new QBufferPrivate(), parent)
+    : QNode(*new QBufferPrivate(), parent)
 {
     Q_D(QBuffer);
     d->m_type = ty;
-}
-
-/*!
- * Destroys this buffer.
- */
-QBuffer::~QBuffer()
-{
-    QAbstractBuffer::cleanup();
-}
-
-/*!
- * \internal
- */
-QBuffer::QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, QNode *parent)
-    : QAbstractBuffer(dd, parent)
-{
-    Q_D(QBuffer);
-    d->m_type = ty;
-}
-
-/*!
- * \internal
- */
-void QBuffer::copy(const QNode *ref)
-{
-    QAbstractBuffer::copy(ref);
-    const QBuffer *buffer = static_cast<const QBuffer *>(ref);
-    d_func()->m_type = buffer->d_func()->m_type;
-    d_func()->m_usage = buffer->d_func()->m_usage;
-    d_func()->m_functor = buffer->d_func()->m_functor;
-    d_func()->m_sync = buffer->d_func()->m_sync;
 }
 
 /*!
@@ -182,12 +158,34 @@ void QBuffer::copy(const QNode *ref)
  */
 void QBuffer::sceneChangeEvent(const QSceneChangePtr &change)
 {
-    QScenePropertyChangePtr e = qSharedPointerCast<QScenePropertyChange>(change);
-    if (e->type() == NodeUpdated && e->propertyName() == QByteArrayLiteral("data")) {
+    QPropertyUpdatedChangePtr e = qSharedPointerCast<QPropertyUpdatedChange>(change);
+    if (e->type() == PropertyUpdated && e->propertyName() == QByteArrayLiteral("data")) {
         const bool blocked = blockNotifications(true);
         setData(e->value().toByteArray());
         blockNotifications(blocked);
     }
+}
+
+/*!
+ * Sets \a bytes as data.
+ */
+void QBuffer::setData(const QByteArray &bytes)
+{
+   Q_D(QBuffer);
+    if (bytes != d->m_data) {
+        d->m_data = bytes;
+        Qt3DCore::QNodePrivate::get(this)->notifyPropertyChange("data", QVariant::fromValue(d->m_data));
+        emit dataChanged(bytes);
+    }
+}
+
+/*!
+ * \return the data.
+ */
+QByteArray QBuffer::data() const
+{
+    Q_D(const QBuffer);
+    return d->m_data;
 }
 
 /*!
@@ -224,15 +222,15 @@ QBuffer::BufferType QBuffer::type() const
 /*!
  * Sets the buffer \a functor.
  */
-void QBuffer::setBufferFunctor(const QBufferFunctorPtr &functor)
+void QBuffer::setDataGenerator(const QBufferDataGeneratorPtr &functor)
 {
     Q_D(QBuffer);
     if (functor && d->m_functor && *functor == *d->m_functor)
         return;
     d->m_functor = functor;
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
-        change->setPropertyName("bufferFunctor");
+    if (d->m_changeArbiter != nullptr) {
+        QPropertyUpdatedChangePtr change(new QPropertyUpdatedChange(id()));
+        change->setPropertyName("dataGenerator");
         change->setValue(QVariant::fromValue(d->m_functor));
         d->notifyObservers(change);
     }
@@ -241,35 +239,35 @@ void QBuffer::setBufferFunctor(const QBufferFunctorPtr &functor)
 /*!
  * \return the buffer functor.
  */
-QBufferFunctorPtr QBuffer::bufferFunctor() const
+QBufferDataGeneratorPtr QBuffer::dataGenerator() const
 {
     Q_D(const QBuffer);
     return d->m_functor;
 }
 
 /*!
- * \property QBuffer::sync
+ * \property QBuffer::syncData
  *
- * Holds the sync flag. When sync is true, this will force data created
- * by a Qt3DRender::QBufferFunctor to also be updated on the frontend
- * Qt3DRender::QBuffer node. By default sync is false.
+ * Holds the syncData flag. When syncData is true, this will force data created
+ * by a Qt3DRender::QBufferDataGenerator to also be updated on the frontend
+ * Qt3DRender::QBuffer node. By default syncData is false.
  *
  * \note: This has no effect if the buffer's data was set directly using the data
  * property.
  */
-void QBuffer::setSync(bool sync)
+void QBuffer::setSyncData(bool syncData)
 {
     Q_D(QBuffer);
-    if (d->m_sync != sync) {
-        d->m_sync = sync;
-        emit syncChanged(sync);
+    if (d->m_syncData != syncData) {
+        d->m_syncData = syncData;
+        emit syncDataChanged(syncData);
     }
 }
 
-bool QBuffer::isSync() const
+bool QBuffer::isSyncData() const
 {
     Q_D(const QBuffer);
-    return d->m_sync;
+    return d->m_syncData;
 }
 
 void QBuffer::setType(QBuffer::BufferType type)
@@ -279,6 +277,19 @@ void QBuffer::setType(QBuffer::BufferType type)
         d->m_type = type;
         emit typeChanged(type);
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QBuffer::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QBufferData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QBuffer);
+    data.data = d->m_data;
+    data.type = d->m_type;
+    data.usage = d->m_usage;
+    data.functor = d->m_functor;
+    data.syncData = d->m_syncData;
+    return creationChange;
 }
 
 } // namespace Qt3DRender

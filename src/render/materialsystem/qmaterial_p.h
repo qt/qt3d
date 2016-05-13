@@ -51,6 +51,7 @@
 // We mean it.
 //
 
+#include <Qt3DRender/private/qt3drender_global_p.h>
 #include <private/qcomponent_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -60,15 +61,20 @@ namespace Qt3DRender {
 class QParameter;
 class QEffect;
 
-class QMaterialPrivate : public Qt3DCore::QComponentPrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QMaterialPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QMaterialPrivate();
 
     Q_DECLARE_PUBLIC(QMaterial)
-    QList<QParameter *> m_parameters;
-    TextureDict m_textures;
+    QVector<QParameter *> m_parameters;
     QEffect *m_effect;
+};
+
+struct QMaterialData
+{
+    Qt3DCore::QNodeIdVector parameterIds;
+    Qt3DCore::QNodeId effectId;
 };
 
 } // namespace Qt3DRender

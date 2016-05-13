@@ -73,7 +73,6 @@ private:
 
 protected:
     Quick3DParameter(Quick3DParameterPrivate &dd, QNode *parent = 0);
-    QT3D_CLONEABLE(Quick3DParameter)
 };
 
 } // namespace Quick

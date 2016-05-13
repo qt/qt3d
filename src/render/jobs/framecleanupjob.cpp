@@ -45,6 +45,7 @@
 #include <private/managers_p.h>
 #include <private/texturedatamanager_p.h>
 #include <private/sphere_p.h>
+#include <Qt3DRender/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,8 +54,9 @@ namespace Render {
 
 FrameCleanupJob::FrameCleanupJob(NodeManagers *managers)
     : m_managers(managers)
-    , m_root(Q_NULLPTR)
+    , m_root(nullptr)
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FrameCleanup, 0);
 }
 
 FrameCleanupJob::~FrameCleanupJob()
@@ -81,6 +83,7 @@ void FrameCleanupJob::run()
 
 void FrameCleanupJob::updateBoundingVolumesDebug(Entity *node)
 {
+#if 0
     BoundingVolumeDebug *debugBV = node->renderComponent<BoundingVolumeDebug>();
     if (debugBV) {
         Qt3DRender::Render::Sphere s;
@@ -92,8 +95,10 @@ void FrameCleanupJob::updateBoundingVolumesDebug(Entity *node)
         debugBV->setRadius(s.radius());
         debugBV->setCenter(s.center());
     }
+#endif
 
-    Q_FOREACH (Entity *c, node->children())
+    const auto children = node->children();
+    for (Entity *c : children)
         updateBoundingVolumesDebug(c);
 }
 

@@ -64,11 +64,23 @@ bool MouseEventFilter::eventFilter(QObject *obj, QEvent *e)
 {
     Q_UNUSED(obj);
     switch (e->type()) {
+    // When dealing with QtQuick events, there are nove MouseMove events
+    // only hover events which are transmitted if hoverEnabled was set to true on the Scene3D
+    case QEvent::HoverMove:
+    {
+        const QHoverEvent *event = static_cast<QHoverEvent *>(e);
+        m_inputHandler->appendMouseEvent(QMouseEvent(QEvent::MouseMove, event->posF(), Qt::NoButton,  Qt::NoButton, event->modifiers()));
+        break;
+    }
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:
     case QEvent::MouseMove:
-        // Store event to be processed later on in an InputAspect job
+        // Creates copy and store event to be processed later on in an InputAspect job
         m_inputHandler->appendMouseEvent(QMouseEvent(*static_cast<QMouseEvent *>(e)));
+        break;
+    case QEvent::Wheel:
+        // Creates copy and store event to be processed later on in an InputAspect job
+        m_inputHandler->appendWheelEvent(QWheelEvent(*static_cast<QWheelEvent *>(e)));
         break;
     default:
         break;

@@ -244,11 +244,6 @@ Quick3DNodeInstantiator::Quick3DNodeInstantiator(QNode *parent)
 {
 }
 
-Quick3DNodeInstantiator::~Quick3DNodeInstantiator()
-{
-    QNode::cleanup();
-}
-
 /*!
     \qmlsignal Qt3D.Core::NodeInstantiator::objectAdded(int index, QtObject node)
 
@@ -503,21 +498,22 @@ void Quick3DNodeInstantiator::componentComplete()
     }
 }
 
-void Quick3DNodeInstantiator::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const Quick3DNodeInstantiator *instantiator = static_cast<const Quick3DNodeInstantiator*>(ref);
-    // We only need to clone the children as the instantiator itself has no
-    // corresponding backend node type.
-    for (int i = 0; i < instantiator->d_func()->m_objects.size(); ++i) {
-        QNode *n = qobject_cast<QNode *>(instantiator->d_func()->m_objects.at(i));
-        if (!n)
-            continue;
-        QNode *clonedNode = QNode::clone(n);
-        clonedNode->setParent(this);
-        d_func()->m_objects.append(clonedNode);
-    }
-}
+// TODO: Avoid cloning here
+//void Quick3DNodeInstantiator::copy(const QNode *ref)
+//{
+//    QNode::copy(ref);
+//    const Quick3DNodeInstantiator *instantiator = static_cast<const Quick3DNodeInstantiator*>(ref);
+//    // We only need to clone the children as the instantiator itself has no
+//    // corresponding backend node type.
+//    for (int i = 0; i < instantiator->d_func()->m_objects.size(); ++i) {
+//        QNode *n = qobject_cast<QNode *>(instantiator->d_func()->m_objects.at(i));
+//        if (!n)
+//            continue;
+//        QNode *clonedNode = QNode::clone(n);
+//        clonedNode->setParent(this);
+//        d_func()->m_objects.append(clonedNode);
+//    }
+//}
 
 } // namespace Quick
 } // namespace Qt3DCore

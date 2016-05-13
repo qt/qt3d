@@ -38,7 +38,6 @@
 ****************************************************************************/
 
 #include "rendercommand_p.h"
-#include <Qt3DRender/qsortcriterion.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,13 +46,16 @@ namespace Render {
 
 RenderCommand::RenderCommand()
     : m_instancesCount(0)
-    , m_stateSet(Q_NULLPTR)
+    , m_stateSet(nullptr)
     , m_depth(0.0f)
     , m_changeCost(0)
     , m_type(RenderCommand::Draw)
     , m_sortBackToFront(false)
 {
    m_sortingType.global = 0;
+   m_workGroups[0] = 0;
+   m_workGroups[1] = 0;
+   m_workGroups[2] = 0;
 }
 
 bool compareCommands(RenderCommand *r1, RenderCommand *r2)

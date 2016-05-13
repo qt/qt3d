@@ -58,8 +58,8 @@ Viewport {
         id: surfaceSelector
 
         // Clear Buffer
-        ClearBuffer {
-            buffers: ClearBuffer.ColorDepthBuffer
+        ClearBuffers {
+            buffers: ClearBuffers.ColorDepthBuffer
             NoDraw {}
         }
 
@@ -67,8 +67,8 @@ Viewport {
         DispatchCompute {
             workGroupX: 1024; workGroupY: 1; workGroupZ: 1
             TechniqueFilter {
-                requires: [
-                    Annotation { name: "type"; value: "compute"}
+                matchAll: [
+                    FilterKey { name: "type"; value: "compute"}
                 ]
             }
         }
@@ -77,8 +77,8 @@ Viewport {
         CameraSelector {
             id: selector
             TechniqueFilter {
-                requires: [
-                    Annotation { name: "type"; value: "draw"}
+                matchAll: [
+                    FilterKey { name: "type"; value: "draw"}
                 ]
             }
         }

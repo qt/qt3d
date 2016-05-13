@@ -59,11 +59,6 @@ RenderableEntity::RenderableEntity(Qt3DCore::QNode *parent)
     addComponent(m_transform);
 }
 
-RenderableEntity::~RenderableEntity()
-{
-    QNode::cleanup();
-}
-
 Qt3DRender::QMesh *RenderableEntity::mesh() const
 {
     return m_mesh;

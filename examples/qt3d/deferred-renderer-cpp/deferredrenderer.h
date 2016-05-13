@@ -52,12 +52,13 @@
 #define DEFERREDRENDERER_H
 
 #include <Qt3DRender/QViewport>
-#include <Qt3DRender/QClearBuffer>
+#include <Qt3DRender/QClearBuffers>
 #include <Qt3DRender/QLayerFilter>
 #include <Qt3DRender/QRenderPassFilter>
 #include <Qt3DRender/QRenderTargetSelector>
+#include <Qt3DRender/QRenderSurfaceSelector>
 #include <Qt3DRender/QCameraSelector>
-#include <Qt3DRender/QAnnotation>
+#include <Qt3DRender/QFilterKey>
 
 class DeferredRenderer : public Qt3DRender::QViewport
 {
@@ -66,17 +67,18 @@ public:
 
     void setSceneCamera(Qt3DCore::QEntity *camera);
     void setGBuffer(Qt3DRender::QRenderTarget *gBuffer);
-    void setGeometryPassCriteria(QList<Qt3DRender::QAnnotation *> criteria);
-    void setFinalPassCriteria(QList<Qt3DRender::QAnnotation *> criteria);
-    void setGBufferLayers(const QStringList &layerName);
-    void setScreenQuadLayers(const QStringList &layerName);
+    void setGeometryPassCriteria(QList<Qt3DRender::QFilterKey *> criteria);
+    void setFinalPassCriteria(QList<Qt3DRender::QFilterKey *> criteria);
+    void setGBufferLayer(Qt3DRender::QLayer *layer);
+    void setScreenQuadLayer(Qt3DRender::QLayer *layer);
 
 private:
+    Qt3DRender::QRenderSurfaceSelector *m_surfaceSelector;
     Qt3DRender::QLayerFilter *m_sceneFilter;
     Qt3DRender::QLayerFilter *m_screenQuadFilter;
-    Qt3DRender::QClearBuffer *m_clearScreenQuad;
+    Qt3DRender::QClearBuffers *m_clearScreenQuad;
     Qt3DRender::QRenderTargetSelector *m_gBufferTargetSelector;
-    Qt3DRender::QClearBuffer *m_clearGBuffer;
+    Qt3DRender::QClearBuffers *m_clearGBuffer;
     Qt3DRender::QRenderPassFilter *m_geometryPassFilter;
     Qt3DRender::QRenderPassFilter *m_finalPassFilter;
     Qt3DRender::QCameraSelector *m_sceneCameraSelector;

@@ -53,6 +53,7 @@
 
 #include <QtCore/qobject.h>
 #include <QtGui/qsurface.h>
+#include <QSemaphore>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,35 +73,49 @@ public:
     explicit PlatformSurfaceFilter(QObject *parent = 0);
     ~PlatformSurfaceFilter();
 
-    void setWindow(QWindow *window);
-    void setOffscreenSurface(QOffscreenSurface *offscreen);
-
-    void setRenderer(AbstractRenderer *renderer);
-
     bool eventFilter(QObject *obj, QEvent *e) Q_DECL_OVERRIDE;
 
-private:
-    void setRendererSurface(QSurface *surface);
+    static void lockSurface();
+    static void releaseSurface();
+    static bool isSurfaceValid(QSurface *surface);
 
     template<class T>
     void setSurface(T *surface)
     {
+        Q_ASSERT(surface);
         if (m_obj == surface)
             return;
 
         if (m_obj)
             m_obj->removeEventFilter(this);
 
-        m_surface = surface;
+        // Surface is offset from QWindow/QOffscreenSurface due to multiple inheritance
+        m_surface = static_cast<QSurface *>(surface);
         m_obj = surface;
 
-        if (m_obj)
+        if (m_obj) {
             m_obj->installEventFilter(this);
+            markSurfaceAsValid();
+        }
     }
-
+private:
     QObject *m_obj;
     QSurface *m_surface;
-    AbstractRenderer *m_renderer;
+
+    static QSemaphore m_surfacesSemaphore;
+    static QHash<QSurface *, bool> m_surfacesValidity;
+    void markSurfaceAsValid();
+};
+
+class SurfaceLocker
+{
+public:
+    explicit SurfaceLocker(QSurface *surface);
+    ~SurfaceLocker();
+    bool isSurfaceValid() const;
+
+private:
+    QSurface *m_surface;
 };
 
 } // namespace Render

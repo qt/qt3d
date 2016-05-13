@@ -81,7 +81,7 @@ public:
     HandlerManager *logicHandlerManager() const { return m_logicHandlerManager.data(); }
 
     void appendHandler(Handler *handler);
-    void removeHandler(const Qt3DCore::QNodeId &id);
+    void removeHandler(Qt3DCore::QNodeId id);
 
     void triggerLogicFrameUpdates();
 

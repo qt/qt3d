@@ -58,11 +58,10 @@
 
 #include <Qt3DInput/QInputAspect>
 
-#include <Qt3DRender/QStateSet>
+#include <Qt3DRender/QRenderStateSet>
 #include <Qt3DRender/QRenderAspect>
-#include <Qt3DRender/QFrameGraph>
-#include <Qt3DRender/QForwardRenderer>
-#include <Qt3DRender/QPerVertexColorMaterial>
+#include <Qt3DExtras/QForwardRenderer>
+#include <Qt3DExtras/QPerVertexColorMaterial>
 
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QGeometry>
@@ -70,13 +69,13 @@
 #include <Qt3DRender/QBuffer>
 
 #include <QPropertyAnimation>
-#include "qt3dwindow.h"
-#include "qfirstpersoncameracontroller.h"
+#include <Qt3DExtras/qt3dwindow.h>
+#include <Qt3DExtras/qorbitcameracontroller.h>
 
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
-    Qt3DWindow view;
+    Qt3DExtras::Qt3DWindow view;
     view.defaultFramegraph()->setClearColor(QColor::fromRgbF(0.0, 0.5, 1.0, 1.0));
 
     // Root entity
@@ -91,11 +90,11 @@ int main(int argc, char* argv[])
     cameraEntity->setViewCenter(QVector3D(0, 0, 0));
 
     // For camera controls
-    Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(rootEntity);
+    Qt3DExtras::QOrbitCameraController *camController = new Qt3DExtras::QOrbitCameraController(rootEntity);
     camController->setCamera(cameraEntity);
 
     // Material
-    Qt3DRender::QMaterial *material = new Qt3DRender::QPerVertexColorMaterial(rootEntity);
+    Qt3DRender::QMaterial *material = new Qt3DExtras::QPerVertexColorMaterial(rootEntity);
 
     // Torus
     Qt3DCore::QEntity *customMeshEntity = new Qt3DCore::QEntity(rootEntity);
@@ -236,12 +235,12 @@ int main(int argc, char* argv[])
     customGeometry->addAttribute(indexAttribute);
 
     customMeshRenderer->setInstanceCount(1);
-    customMeshRenderer->setBaseVertex(0);
-    customMeshRenderer->setBaseInstance(0);
+    customMeshRenderer->setIndexOffset(0);
+    customMeshRenderer->setFirstInstance(0);
     customMeshRenderer->setPrimitiveType(Qt3DRender::QGeometryRenderer::Triangles);
     customMeshRenderer->setGeometry(customGeometry);
     // 4 faces of 3 points
-    customMeshRenderer->setPrimitiveCount(12);
+    customMeshRenderer->setVertexCount(12);
 
     customMeshEntity->addComponent(customMeshRenderer);
     customMeshEntity->addComponent(transform);

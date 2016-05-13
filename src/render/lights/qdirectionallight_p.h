@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <private/qlight_p.h>
+#include <private/qabstractlight_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,13 +59,12 @@ namespace Qt3DRender {
 
 class QDirectionalLight;
 
-class QDirectionalLightPrivate : QLightPrivate
+class QDirectionalLightPrivate : QAbstractLightPrivate
 {
 public:
     QDirectionalLightPrivate();
 
     Q_DECLARE_PUBLIC(QDirectionalLight)
-    QVector3D m_direction;
 };
 
 } // namespace Qt3DRender

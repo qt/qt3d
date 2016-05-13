@@ -53,17 +53,12 @@ public:
         : QNodePrivate()
     {}
 
-    QList<QShaderData *> m_values;
+    QVector<QShaderData *> m_values;
 };
 
 Quick3DShaderDataArray::Quick3DShaderDataArray(QNode *parent)
     : QNode(*new Quick3DShaderDataArrayPrivate, parent)
 {
-}
-
-Quick3DShaderDataArray::~Quick3DShaderDataArray()
-{
-    QNode::cleanup();
 }
 
 QQmlListProperty<QShaderData> Quick3DShaderDataArray::valuesList()
@@ -75,19 +70,20 @@ QQmlListProperty<QShaderData> Quick3DShaderDataArray::valuesList()
                                          &Quick3DShaderDataArray::clearValues);
 }
 
-QList<QShaderData *> Quick3DShaderDataArray::values() const
+QVector<QShaderData *> Quick3DShaderDataArray::values() const
 {
     Q_D(const Quick3DShaderDataArray);
     return d->m_values;
 }
 
-void Quick3DShaderDataArray::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const Quick3DShaderDataArray *dataArray = static_cast<const Quick3DShaderDataArray *>(ref);
-    Q_FOREACH (QShaderData *v, dataArray->d_func()->m_values)
-        d_func()->m_values.append(static_cast<QShaderData *>(QNode::clone(v)));
-}
+// TODO: Avoid cloning here
+//void Quick3DShaderDataArray::copy(const QNode *ref)
+//{
+//    QNode::copy(ref);
+//    const Quick3DShaderDataArray *dataArray = static_cast<const Quick3DShaderDataArray *>(ref);
+//    Q_FOREACH (QShaderData *v, dataArray->d_func()->m_values)
+//        d_func()->m_values.append(static_cast<QShaderData *>(QNode::clone(v)));
+//}
 
 void Quick3DShaderDataArray::appendValue(QQmlListProperty<QShaderData> *list, QShaderData *bar)
 {

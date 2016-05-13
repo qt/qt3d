@@ -55,8 +55,8 @@
 BoxEntity::BoxEntity(QNode *parent)
     : Qt3DCore::QEntity(parent)
     , m_transform(new Qt3DCore::QTransform())
-    , m_mesh(new Qt3DRender::QCuboidMesh())
-    , m_material(new Qt3DRender::QPhongMaterial())
+    , m_mesh(new Qt3DExtras::QCuboidMesh())
+    , m_material(new Qt3DExtras::QPhongMaterial())
     , m_angle(0.0f)
     , m_radius(1.0f)
 {

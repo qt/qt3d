@@ -45,9 +45,11 @@
 #include <QOpenGLShaderProgram>
 #include <QMutexLocker>
 #include <qshaderprogram.h>
-#include <Qt3DRender/private/graphicscontext_p.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRender/private/graphicscontext_p.h>
+#include <Qt3DRender/private/qshaderprogram_p.h>
+#include <Qt3DRender/private/stringtoint_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,10 +59,11 @@ namespace Qt3DRender {
 namespace Render {
 
 Shader::Shader()
-    : QBackendNode()
-    , m_program(Q_NULLPTR)
+    : BackendNode()
+    , m_program(nullptr)
     , m_isLoaded(false)
     , m_dna(0)
+    , m_graphicsContext(nullptr)
 {
     m_shaderCode.resize(static_cast<int>(QShaderProgram::Compute) + 1);
 }
@@ -73,11 +76,17 @@ Shader::~Shader()
 
 void Shader::cleanup()
 {
+    // Remove this shader from the hash in the graphics context so
+    // nothing tries to use it after it has been recycled
+    if (m_graphicsContext)
+        m_graphicsContext->removeProgram(dna(), peerId());
+
+    QBackendNode::setEnabled(false);
     m_isLoaded = false;
     m_dna = 0;
     // TO DO: ShaderProgram is leaked as of now
     // Fix that taking care that they may be shared given a same dna
-    m_program = Q_NULLPTR;
+    m_program = nullptr;
     m_uniformsNames.clear();
     m_attributesNames.clear();
     m_uniformBlockNames.clear();
@@ -86,20 +95,21 @@ void Shader::cleanup()
     m_uniformBlocks.clear();
 }
 
-void Shader::updateFromPeer(Qt3DCore::QNode *peer)
+void Shader::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QShaderProgram *shader = static_cast<QShaderProgram *>(peer);
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QShaderProgramData>>(change);
+    const auto &data = typedChange->data;
 
-    for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
+    for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i)
         m_shaderCode[i].clear();
-    }
 
+    m_shaderCode[QShaderProgram::Vertex] = data.vertexShaderCode;
+    m_shaderCode[QShaderProgram::TessellationControl] = data.tessellationControlShaderCode;
+    m_shaderCode[QShaderProgram::TessellationEvaluation] = data.tessellationEvaluationShaderCode;
+    m_shaderCode[QShaderProgram::Geometry] = data.geometryShaderCode;
+    m_shaderCode[QShaderProgram::Fragment] = data.fragmentShaderCode;
+    m_shaderCode[QShaderProgram::Compute] = data.computeShaderCode;
     m_isLoaded = false;
-
-    for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
-        QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
-        m_shaderCode[i] = shader->shaderCode(type);
-    }
     updateDNA();
 }
 
@@ -130,8 +140,8 @@ QVector<QByteArray> Shader::shaderCode() const
 
 void Shader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == NodeUpdated) {
-        QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
+    if (e->type() == PropertyUpdated) {
+        QPropertyUpdatedChangePtr propertyChange = e.staticCast<QPropertyUpdatedChange>();
         QVariant propertyValue = propertyChange->value();
 
         if (propertyChange->propertyName() == QByteArrayLiteral("vertexSourceCode")) {
@@ -155,32 +165,10 @@ void Shader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         }
         if (!m_isLoaded)
             updateDNA();
+        markDirty(AbstractRenderer::AllDirty);
     }
-}
 
-bool Shader::isLoaded() const
-{
-    return m_isLoaded;
-}
-
-ProgramDNA Shader::dna() const
-{
-    return m_dna;
-}
-
-QVector<ShaderUniform> Shader::uniforms() const
-{
-    return m_uniforms;
-}
-
-QVector<ShaderAttribute> Shader::attributes() const
-{
-    return m_attributes;
-}
-
-QVector<ShaderUniformBlock> Shader::uniformBlocks() const
-{
-    return m_uniformBlocks;
+    BackendNode::sceneChangeEvent(e);
 }
 
 QHash<QString, ShaderUniform> Shader::activeUniformsForUniformBlock(int blockIndex) const
@@ -188,7 +176,7 @@ QHash<QString, ShaderUniform> Shader::activeUniformsForUniformBlock(int blockInd
     return m_uniformBlockIndexToShaderUniforms.value(blockIndex);
 }
 
-ShaderUniformBlock Shader::uniformBlock(int blockIndex)
+ShaderUniformBlock Shader::uniformBlockForBlockIndex(int blockIndex)
 {
     for (int i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
         if (m_uniformBlocks[i].m_index == blockIndex) {
@@ -198,7 +186,17 @@ ShaderUniformBlock Shader::uniformBlock(int blockIndex)
     return ShaderUniformBlock();
 }
 
-ShaderUniformBlock Shader::uniformBlock(const QString &blockName)
+ShaderUniformBlock Shader::uniformBlockForBlockNameId(int blockNameId)
+{
+    for (int i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
+        if (m_uniformBlocks[i].m_nameId == blockNameId) {
+            return m_uniformBlocks[i];
+        }
+    }
+    return ShaderUniformBlock();
+}
+
+ShaderUniformBlock Shader::uniformBlockForBlockName(const QString &blockName)
 {
     for (int i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
         if (m_uniformBlocks[i].m_name == blockName) {
@@ -208,7 +206,7 @@ ShaderUniformBlock Shader::uniformBlock(const QString &blockName)
     return ShaderUniformBlock();
 }
 
-ShaderStorageBlock Shader::storageBlock(int blockIndex)
+ShaderStorageBlock Shader::storageBlockForBlockIndex(int blockIndex)
 {
     for (int i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
         if (m_shaderStorageBlocks[i].m_index == blockIndex)
@@ -217,7 +215,16 @@ ShaderStorageBlock Shader::storageBlock(int blockIndex)
     return ShaderStorageBlock();
 }
 
-ShaderStorageBlock Shader::storageBlock(const QString &blockName)
+ShaderStorageBlock Shader::storageBlockForBlockNameId(int blockNameId)
+{
+    for (int i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
+        if (m_shaderStorageBlocks[i].m_nameId == blockNameId)
+            return m_shaderStorageBlocks[i];
+    }
+    return ShaderStorageBlock();
+}
+
+ShaderStorageBlock Shader::storageBlockForBlockName(const QString &blockName)
 {
     for (int i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
         if (m_shaderStorageBlocks[i].m_name == blockName)
@@ -233,6 +240,7 @@ QOpenGLShaderProgram *Shader::getOrCreateProgram(GraphicsContext *ctx)
 {
     if (!m_isLoaded) {
         delete m_program;
+        m_graphicsContext = ctx;
         m_program = createProgram(ctx);
         if (!m_program)
             m_program = createDefaultProgram();
@@ -243,13 +251,13 @@ QOpenGLShaderProgram *Shader::getOrCreateProgram(GraphicsContext *ctx)
 
 void Shader::updateUniforms(GraphicsContext *ctx, const ShaderParameterPack &pack)
 {
-    const QHash<QString, const QUniformValue* > &values = pack.uniforms();
-    const QHash<QString, const QUniformValue* >::const_iterator valueEnd = values.constEnd();
+    const PackUniformHash values = pack.uniforms();
+    const PackUniformHash::const_iterator valueEnd = values.constEnd();
 
-    Q_FOREACH (const ShaderUniform &uniform, m_uniforms) {
-        QHash<QString, const QUniformValue* >::const_iterator valueIt = values.constFind(uniform.m_name);
+    for (const ShaderUniform &uniform : qAsConst(m_uniforms)) {
+        PackUniformHash::const_iterator valueIt = values.constFind(uniform.m_nameId);
         if (valueIt != valueEnd)
-            valueIt.value()->apply(ctx, uniform);
+            valueIt.value().apply(ctx, uniform);
     }
 }
 
@@ -293,7 +301,7 @@ QOpenGLShaderProgram *Shader::createProgram(GraphicsContext *context)
         // Compile shaders
         QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
         if (!m_shaderCode[type].isEmpty() && !p->addShaderFromSourceCode(shaderType(type), m_shaderCode[type]))
-            qWarning() << "Failed to compile shader:" << p->log();
+            qWarning().noquote() << "Failed to compile shader:" << p->log();
     }
 
     // Call glBindFragDataLocation and link the program
@@ -301,8 +309,8 @@ QOpenGLShaderProgram *Shader::createProgram(GraphicsContext *context)
     // fragOutputs, they should all be the same for a given shader
     context->bindFragOutputs(p->programId(), m_fragOutputs);
     if (!p->link()) {
-        qWarning() << "Failed to link shader program:" << p->log();
-        return Q_NULLPTR;
+        qWarning().noquote() << "Failed to link shader program:" << p->log();
+        return nullptr;
     }
 
     // take from scoped-pointer so it doesn't get deleted
@@ -347,10 +355,13 @@ void Shader::initializeUniforms(const QVector<ShaderUniform> &uniformsDescriptio
 {
     m_uniforms = uniformsDescription;
     m_uniformsNames.resize(uniformsDescription.size());
+    m_uniformsNamesIds.resize(uniformsDescription.size());
     QHash<QString, ShaderUniform> activeUniformsInDefaultBlock;
 
     for (int i = 0, m = uniformsDescription.size(); i < m; i++) {
-        m_uniformsNames[i] = uniformsDescription[i].m_name;
+        m_uniformsNames[i] = m_uniforms[i].m_name;
+        m_uniforms[i].m_nameId = StringToInt::lookupId(m_uniformsNames[i]);
+        m_uniformsNamesIds[i] = m_uniforms[i].m_nameId;
         if (uniformsDescription[i].m_blockIndex == -1) { // Uniform is in default block
             qCDebug(Shaders) << "Active Uniform in Default Block " << uniformsDescription[i].m_name << uniformsDescription[i].m_blockIndex;
             activeUniformsInDefaultBlock.insert(uniformsDescription[i].m_name, uniformsDescription[i]);
@@ -363,8 +374,12 @@ void Shader::initializeAttributes(const QVector<ShaderAttribute> &attributesDesc
 {
     m_attributes = attributesDescription;
     m_attributesNames.resize(attributesDescription.size());
+    m_attributeNamesIds.resize(attributesDescription.size());
     for (int i = 0, m = attributesDescription.size(); i < m; i++) {
         m_attributesNames[i] = attributesDescription[i].m_name;
+        m_attributes[i].m_nameId = StringToInt::lookupId(m_attributesNames[i]);
+        m_attributeNamesIds[i] = m_attributes[i].m_nameId;
+        qDebug() << m_attributes[i].m_nameId << m_attributeNamesIds[i] << m_attributesNames[i];
         qCDebug(Shaders) << "Active Attribute " << attributesDescription[i].m_name;
     }
 }
@@ -373,8 +388,11 @@ void Shader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformB
 {
     m_uniformBlocks = uniformBlockDescription;
     m_uniformBlockNames.resize(uniformBlockDescription.size());
+    m_uniformBlockNamesIds.resize(uniformBlockDescription.size());
     for (int i = 0, m = uniformBlockDescription.size(); i < m; ++i) {
-        m_uniformBlockNames[i] = uniformBlockDescription[i].m_name;
+        m_uniformBlockNames[i] = m_uniformBlocks[i].m_name;
+        m_uniformBlockNamesIds[i] = StringToInt::lookupId(m_uniformBlockNames[i]);
+        m_uniformBlocks[i].m_nameId = m_uniformBlockNamesIds[i];
         qCDebug(Shaders) << "Initializing Uniform Block {" << m_uniformBlockNames[i] << "}";
 
         // Find all active uniforms for the shader block
@@ -405,9 +423,12 @@ void Shader::initializeShaderStorageBlocks(const QVector<ShaderStorageBlock> &sh
 {
     m_shaderStorageBlocks = shaderStorageBlockDescription;
     m_shaderStorageBlockNames.resize(shaderStorageBlockDescription.size());
+    m_shaderStorageBlockNamesIds.resize(shaderStorageBlockDescription.size());
 
     for (int i = 0, m = shaderStorageBlockDescription.size(); i < m; ++i) {
-        m_shaderStorageBlockNames[i] = shaderStorageBlockDescription[i].m_name;
+        m_shaderStorageBlockNames[i] = m_shaderStorageBlocks[i].m_name;
+        m_shaderStorageBlockNamesIds[i] = StringToInt::lookupId(m_shaderStorageBlockNames[i]);
+        m_shaderStorageBlocks[i].m_nameId =m_shaderStorageBlockNamesIds[i];
         qCDebug(Shaders) << "Initializing Shader Storage Block {" << m_shaderStorageBlockNames[i] << "}";
     }
 }
@@ -421,14 +442,20 @@ void Shader::initialize(const Shader &other)
 {
     Q_ASSERT(m_dna == other.m_dna);
     m_program = other.m_program;
+    m_uniformsNamesIds = other.m_uniformsNamesIds;
     m_uniformsNames = other.m_uniformsNames;
     m_uniforms = other.m_uniforms;
     m_attributesNames = other.m_attributesNames;
+    m_attributeNamesIds = other.m_attributeNamesIds;
     m_attributes = other.m_attributes;
+    m_uniformBlockNamesIds = other.m_uniformBlockNamesIds;
     m_uniformBlockNames = other.m_uniformBlockNames;
     m_uniformBlocks = other.m_uniformBlocks;
     m_uniformBlockIndexToShaderUniforms = other.m_uniformBlockIndexToShaderUniforms;
     m_fragOutputs = other.m_fragOutputs;
+    m_shaderStorageBlockNamesIds = other.m_shaderStorageBlockNamesIds;
+    m_shaderStorageBlockNames = other.m_shaderStorageBlockNames;
+    m_shaderStorageBlocks = other.m_shaderStorageBlocks;
     m_isLoaded = other.m_isLoaded;
 }
 

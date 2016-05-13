@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QParameterPrivate;
-class QAbstractTextureProvider;
+class QAbstractTexture;
 
 class QT3DRENDERSHARED_EXPORT QParameter : public Qt3DCore::QNode
 {
@@ -58,17 +58,11 @@ class QT3DRENDERSHARED_EXPORT QParameter : public Qt3DCore::QNode
     Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
 
 public:
-    explicit QParameter(Qt3DCore::QNode *parent = 0);
-    ~QParameter();
-    QParameter(const QString &name, const QVariant& value, Qt3DCore::QNode *parent = 0);
-    QParameter(const QString &name, QAbstractTextureProvider *texture, Qt3DCore::QNode *parent = 0);
+    explicit QParameter(Qt3DCore::QNode *parent = nullptr);
+    QParameter(const QString &name, const QVariant& value, Qt3DCore::QNode *parent = nullptr);
+    QParameter(const QString &name, QAbstractTexture *texture, Qt3DCore::QNode *parent = nullptr);
 
     QString name() const;
-
-    /**
-     * @brief setDefaultValue - for non-texture uniform parameters
-     * @param dv
-     */
     QVariant value() const;
 
 public Q_SLOTS:
@@ -80,12 +74,11 @@ Q_SIGNALS:
     void nameChanged(const QString &name);
 
 protected:
-    QParameter(QParameterPrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    QParameter(QParameterPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QParameter)
-    QT3D_CLONEABLE(QParameter)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

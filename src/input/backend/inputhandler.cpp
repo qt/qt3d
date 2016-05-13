@@ -56,23 +56,23 @@ namespace Qt3DInput {
 namespace Input {
 
 InputHandler::InputHandler()
-    : m_keyboardControllerManager(new KeyboardControllerManager())
+    : m_keyboardDeviceManager(new KeyboardDeviceManager())
     , m_keyboardInputManager(new KeyboardInputManager())
-    , m_mouseControllerManager(new MouseControllerManager())
+    , m_mouseDeviceManager(new MouseDeviceManager())
     , m_mouseInputManager(new MouseInputManager())
     , m_keyboardEventFilter(new KeyboardEventFilter())
     , m_mouseEventFilter(new MouseEventFilter())
     , m_axisManager(new AxisManager())
     , m_actionManager(new ActionManager())
-    , m_axisInputManager(new AxisInputManager())
-    , m_axisActionHandlerManager(new AxisActionHandlerManager())
     , m_axisSettingManager(new AxisSettingManager())
     , m_actionInputManager(new ActionInputManager())
+    , m_analogAxisInputManager(new AnalogAxisInputManager())
+    , m_buttonAxisInputManager(new ButtonAxisInputManager())
     , m_inputChordManager(new InputChordManager())
     , m_inputSequenceManager(new InputSequenceManager())
     , m_logicalDeviceManager(new LogicalDeviceManager())
     , m_genericPhysicalDeviceBackendNodeManager(new GenericDeviceBackendNodeManager)
-    , m_settings(Q_NULLPTR)
+    , m_settings(nullptr)
     , m_eventSourceSetter(new Qt3DInput::Input::EventSourceSetterHelper(this))
 {
     m_keyboardEventFilter->setInputHandler(this);
@@ -84,6 +84,22 @@ InputHandler::InputHandler()
 
 InputHandler::~InputHandler()
 {
+    delete m_keyboardDeviceManager;
+    delete m_keyboardInputManager;
+    delete m_mouseDeviceManager;
+    delete m_mouseInputManager;
+    delete m_keyboardEventFilter;
+    delete m_mouseEventFilter;
+    delete m_axisManager;
+    delete m_actionManager;
+    delete m_axisSettingManager;
+    delete m_analogAxisInputManager;
+    delete m_buttonAxisInputManager;
+    delete m_actionInputManager;
+    delete m_inputChordManager;
+    delete m_inputSequenceManager;
+    delete m_logicalDeviceManager;
+    delete m_genericPhysicalDeviceBackendNodeManager;
 }
 
 // Called in MainThread (by the EventSourceHelperSetter)
@@ -100,23 +116,21 @@ void InputHandler::registerEventFilters(QEventFilterService *service)
 void InputHandler::appendKeyEvent(const QT_PREPEND_NAMESPACE(QKeyEvent) &event)
 {
     QMutexLocker lock(&m_mutex);
-    m_pendingEvents.append(event);
+    m_pendingKeyEvents.append(event);
 }
 
 // Called by QInputASpect::jobsToExecute (aspectThread)
 QList<QT_PREPEND_NAMESPACE(QKeyEvent)> InputHandler::pendingKeyEvents()
 {
     QMutexLocker lock(&m_mutex);
-    QList<QT_PREPEND_NAMESPACE(QKeyEvent)> pendingEvents = m_pendingEvents;
-    m_pendingEvents.clear();
-    return pendingEvents;
+    return std::move(m_pendingKeyEvents);
 }
 
 // Called by QInputASpect::jobsToExecute (aspectThread)
 void InputHandler::clearPendingKeyEvents()
 {
     QMutexLocker lock(&m_mutex);
-    m_pendingEvents.clear();
+    m_pendingKeyEvents.clear();
 }
 
 void InputHandler::appendMouseEvent(const QT_PREPEND_NAMESPACE(QMouseEvent) &event)
@@ -128,9 +142,7 @@ void InputHandler::appendMouseEvent(const QT_PREPEND_NAMESPACE(QMouseEvent) &eve
 QList<QT_PREPEND_NAMESPACE(QMouseEvent)> InputHandler::pendingMouseEvents()
 {
     QMutexLocker lock(&m_mutex);
-    QList<QT_PREPEND_NAMESPACE(QMouseEvent)> pendingEvents = m_pendingMouseEvents;
-    m_pendingMouseEvents.clear();
-    return pendingEvents;
+    return std::move(m_pendingMouseEvents);
 }
 
 void InputHandler::clearPendingMouseEvents()
@@ -139,24 +151,43 @@ void InputHandler::clearPendingMouseEvents()
     m_pendingMouseEvents.clear();
 }
 
-void InputHandler::appendKeyboardController(HKeyboardController controller)
+void InputHandler::appendWheelEvent(const QT_PREPEND_NAMESPACE(QWheelEvent) &event)
 {
-    m_activeKeyboardControllers.append(controller);
+    QMutexLocker lock(&m_mutex);
+    m_pendingWheelEvents.append(event);
 }
 
-void InputHandler::removeKeyboardController(HKeyboardController controller)
+QList<QT_PREPEND_NAMESPACE (QWheelEvent)> Qt3DInput::Input::InputHandler::pendingWheelEvents()
 {
-    m_activeKeyboardControllers.removeAll(controller);
+    QMutexLocker lock(&m_mutex);
+    return std::move(m_pendingWheelEvents);
 }
 
-void InputHandler::appendMouseController(HMouseController controller)
+void InputHandler::clearPendingWheelEvents()
 {
-    m_activeMouseControllers.append(controller);
+    QMutexLocker lock(&m_mutex);
+    m_pendingWheelEvents.clear();
 }
 
-void InputHandler::removeMouseController(HMouseController controller)
+
+void InputHandler::appendKeyboardDevice(HKeyboardDevice device)
 {
-    m_activeMouseControllers.removeAll(controller);
+    m_activeKeyboardDevices.append(device);
+}
+
+void InputHandler::removeKeyboardDevice(HKeyboardDevice device)
+{
+    m_activeKeyboardDevices.removeAll(device);
+}
+
+void InputHandler::appendMouseDevice(HMouseDevice device)
+{
+    m_activeMouseDevices.append(device);
+}
+
+void InputHandler::removeMouseDevice(HMouseDevice device)
+{
+    m_activeMouseDevices.removeAll(device);
 }
 
 void Qt3DInput::Input::InputHandler::appendGenericDevice(HGenericDeviceBackendNode device)
@@ -173,17 +204,17 @@ void Qt3DInput::Input::InputHandler::removeGenericDevice(HGenericDeviceBackendNo
 // Handles all dependencies between jobs
 QVector<Qt3DCore::QAspectJobPtr> InputHandler::keyboardJobs()
 {
-    // One job for Keyboard focus change event per Keyboard Controller
+    // One job for Keyboard focus change event per Keyboard device
     QVector<QAspectJobPtr> jobs;
     const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> events = pendingKeyEvents();
 
-    Q_FOREACH (const HKeyboardController cHandle, m_activeKeyboardControllers) {
-        KeyboardController *controller = m_keyboardControllerManager->data(cHandle);
-        if (controller) {
-            controller->updateKeyEvents(events);
+    Q_FOREACH (const HKeyboardDevice cHandle, m_activeKeyboardDevices) {
+        KeyboardDevice *keyboardDevice = m_keyboardDeviceManager->data(cHandle);
+        if (keyboardDevice) {
+            keyboardDevice->updateKeyEvents(events);
             QAspectJobPtr focusChangeJob;
-            if (controller->lastKeyboardInputRequester() != controller->currentFocusItem()) {
-                AssignKeyboardFocusJob *job = new AssignKeyboardFocusJob(controller->peerUuid());
+            if (keyboardDevice->lastKeyboardInputRequester() != keyboardDevice->currentFocusItem()) {
+                AssignKeyboardFocusJob *job = new AssignKeyboardFocusJob(keyboardDevice->peerId());
                 job->setInputHandler(this);
                 focusChangeJob.reset(job);
                 jobs.append(focusChangeJob);
@@ -191,7 +222,7 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::keyboardJobs()
             }
             // Event dispacthing job
             if (!events.isEmpty()) {
-                KeyEventDispatcherJob *job = new KeyEventDispatcherJob(controller->currentFocusItem(), events);
+                KeyEventDispatcherJob *job = new KeyEventDispatcherJob(keyboardDevice->currentFocusItem(), events);
                 job->setInputHandler(this);
                 if (focusChangeJob)
                     job->addDependency(focusChangeJob);
@@ -205,16 +236,20 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::keyboardJobs()
 QVector<Qt3DCore::QAspectJobPtr> InputHandler::mouseJobs()
 {
     QVector<QAspectJobPtr> jobs;
-    const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> events = pendingMouseEvents();
+    const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> mouseEvents = pendingMouseEvents();
+    const QList<QT_PREPEND_NAMESPACE(QWheelEvent)> wheelEvents = pendingWheelEvents();
 
-    Q_FOREACH (const HMouseController cHandle, m_activeMouseControllers) {
-        MouseController *controller = m_mouseControllerManager->data(cHandle);
+    Q_FOREACH (const HMouseDevice cHandle, m_activeMouseDevices) {
+        MouseDevice *controller = m_mouseDeviceManager->data(cHandle);
 
-        controller->updateMouseEvents(events);
+        controller->updateMouseEvents(mouseEvents);
         // Event dispacthing job
-        if (!events.isEmpty()) {
-            Q_FOREACH (const QNodeId &input, controller->mouseInputs()) {
-                MouseEventDispatcherJob *job = new MouseEventDispatcherJob(input, events);
+        if (!mouseEvents.isEmpty() || !wheelEvents.empty()) {
+            const QVector<Qt3DCore::QNodeId> mouseInputs = controller->mouseInputs();
+            for (QNodeId input : mouseInputs) {
+                MouseEventDispatcherJob *job = new MouseEventDispatcherJob(input,
+                                                                           mouseEvents,
+                                                                           wheelEvents);
                 job->setInputHandler(this);
                 jobs.append(QAspectJobPtr(job));
             }
@@ -251,7 +286,7 @@ EventSourceSetterHelper *InputHandler::eventSourceHelper() const
 
 void InputHandler::updateEventSource()
 {
-    if (m_settings != Q_NULLPTR) {
+    if (m_settings != nullptr) {
         // Will be updated only if eventSource is different than
         // what was set last
         QObject *eventSource = m_settings->eventSource();

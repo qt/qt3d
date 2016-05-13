@@ -38,22 +38,22 @@
 **
 ****************************************************************************/
 
-#include "gltfparser.h"
+#include "gltfio.h"
 
-#include <Qt3DRender/QSceneParserPlugin>
+#include <Qt3DRender/private/qsceneioplugin_p.h>
 
 QT_BEGIN_NAMESPACE
 
-class GLTFSceneParserPlugin : public Qt3DRender::QSceneParserPlugin
+class GLTFSceneIOPlugin : public Qt3DRender::QSceneIOPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID QSceneParserFactoryInterface_iid FILE "gltf.json")
+    Q_PLUGIN_METADATA(IID QSceneIOFactoryInterface_iid FILE "gltf.json")
 
-    Qt3DRender::QAbstractSceneParser *create(const QString &key, const QStringList &paramList) Q_DECL_OVERRIDE
+    Qt3DRender::QSceneIOHandler *create(const QString &key, const QStringList &paramList) Q_DECL_OVERRIDE
     {
         Q_UNUSED(key)
         Q_UNUSED(paramList)
-        return new Qt3DRender::GLTFParser();
+        return new Qt3DRender::GLTFIO();
     }
 };
 

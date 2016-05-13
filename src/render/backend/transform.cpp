@@ -39,9 +39,10 @@
 
 #include "transform_p.h"
 
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qtransform.h>
+#include <Qt3DCore/private/qtransform_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,22 +52,21 @@ namespace Qt3DRender {
 namespace Render {
 
 Transform::Transform()
-    : QBackendNode()
+    : BackendNode()
     , m_rotation()
     , m_scale(1.0f, 1.0f, 1.0f)
     , m_translation()
 {
 }
 
-void Transform::updateFromPeer(Qt3DCore::QNode *peer)
+void Transform::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    Qt3DCore::QTransform *transform = static_cast<Qt3DCore::QTransform *>(peer);
-
-    m_rotation = transform->rotation();
-    m_scale = transform->scale3D();
-    m_translation = transform->translation();
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QTransformData>>(change);
+    const auto &data = typedChange->data;
+    m_rotation = data.rotation;
+    m_scale = data.scale;
+    m_translation = data.translation;
     updateMatrix();
-    m_enabled = transform->isEnabled();
 }
 
 QMatrix4x4 Transform::transformMatrix() const
@@ -77,8 +77,8 @@ QMatrix4x4 Transform::transformMatrix() const
 void Transform::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     // TODO: Flag the matrix as dirty and update all matrices batched in a job
-    if (e->type() == NodeUpdated) {
-        const QScenePropertyChangePtr &propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    if (e->type() == PropertyUpdated) {
+        const QPropertyUpdatedChangePtr &propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("scale3D")) {
             m_scale = propertyChange->value().value<QVector3D>();
             updateMatrix();
@@ -88,10 +88,11 @@ void Transform::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("translation")) {
             m_translation = propertyChange->value().value<QVector3D>();
             updateMatrix();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            m_enabled = propertyChange->value().toBool();
         }
     }
+    markDirty(AbstractRenderer::TransformDirty);
+
+    BackendNode::sceneChangeEvent(e);
 }
 
 void Transform::updateMatrix()

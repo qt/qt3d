@@ -55,10 +55,10 @@ namespace Quick {
 
 Quick3DBuffer::Quick3DBuffer(QObject *parent)
     : QObject(parent)
-    , m_engine(Q_NULLPTR)
-    , m_v4engine(Q_NULLPTR)
+    , m_engine(nullptr)
+    , m_v4engine(nullptr)
 {
-    QObject::connect(parentBuffer(), &Qt3DRender::QAbstractBuffer::dataChanged, this, &Quick3DBuffer::bufferDataChanged);
+    QObject::connect(parentBuffer(), &Qt3DRender::QBuffer::dataChanged, this, &Quick3DBuffer::bufferDataChanged);
 }
 
 QByteArray Quick3DBuffer::convertToRawData(const QJSValue &jsValue)
@@ -90,7 +90,7 @@ void Quick3DBuffer::setBufferData(const QVariant &bufferData)
 
 void Quick3DBuffer::initEngines()
 {
-    if (m_engine == Q_NULLPTR) {
+    if (m_engine == nullptr) {
         m_engine = qmlEngine(parent());
         m_v4engine = QQmlEnginePrivate::getV4Engine(m_engine);
     }

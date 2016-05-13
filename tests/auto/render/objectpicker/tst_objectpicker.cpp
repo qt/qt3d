@@ -27,14 +27,16 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <qbackendnodetester.h>
 #include <Qt3DRender/private/objectpicker_p.h>
 #include <Qt3DRender/qpickevent.h>
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include "testpostmanarbiter.h"
+#include "testrenderer.h"
 
-class tst_ObjectPicker : public QObject
+class tst_ObjectPicker : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 private Q_SLOTS:
@@ -47,11 +49,11 @@ private Q_SLOTS:
         picker.setHoverEnabled(true);
 
         // WHEN
-        objectPicker.setPeer(&picker);
+        simulateInitialization(&picker, &objectPicker);
 
         // THEN
-        QVERIFY(!objectPicker.peerUuid().isNull());
-        QCOMPARE(objectPicker.hoverEnabled(), true);
+        QVERIFY(!objectPicker.peerId().isNull());
+        QCOMPARE(objectPicker.isHoverEnabled(), true);
         QCOMPARE(objectPicker.isDirty(), true);
     }
 
@@ -61,8 +63,8 @@ private Q_SLOTS:
         Qt3DRender::Render::ObjectPicker objectPicker;
 
         // THEN
-        QVERIFY(objectPicker.peerUuid().isNull());
-        QCOMPARE(objectPicker.hoverEnabled(), false);
+        QVERIFY(objectPicker.peerId().isNull());
+        QCOMPARE(objectPicker.isHoverEnabled(), false);
         QCOMPARE(objectPicker.isDirty(), false);
 
         // GIVEN
@@ -70,12 +72,11 @@ private Q_SLOTS:
         picker.setHoverEnabled(true);
 
         // WHEN
-        objectPicker.updateFromPeer(&picker);
+        simulateInitialization(&picker, &objectPicker);
         objectPicker.cleanup();
 
         // THEN
-        QVERIFY(objectPicker.peerUuid().isNull());
-        QCOMPARE(objectPicker.hoverEnabled(), false);
+        QCOMPARE(objectPicker.isHoverEnabled(), false);
         QCOMPARE(objectPicker.isDirty(), false);
     }
 
@@ -83,18 +84,21 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::ObjectPicker objectPicker;
+        TestRenderer renderer;
+        objectPicker.setRenderer(&renderer);
 
         QVERIFY(!objectPicker.isDirty());
 
         // WHEN
-        Qt3DCore::QScenePropertyChangePtr updateChange(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         updateChange->setValue(true);
         updateChange->setPropertyName("hoverEnabled");
         objectPicker.sceneChangeEvent(updateChange);
 
         // THEN
-        QCOMPARE(objectPicker.hoverEnabled(), true);
+        QCOMPARE(objectPicker.isHoverEnabled(), true);
         QVERIFY(objectPicker.isDirty());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         objectPicker.unsetDirty();
         QVERIFY(!objectPicker.isDirty());
@@ -114,7 +118,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.count(), 1);
-        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "pressed");
 
         arbiter.events.clear();
@@ -124,7 +128,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.count(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "released");
 
         arbiter.events.clear();
@@ -134,7 +138,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.count(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "clicked");
 
         arbiter.events.clear();
@@ -144,7 +148,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.count(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "entered");
 
         arbiter.events.clear();
@@ -154,7 +158,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.count(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "exited");
 
         arbiter.events.clear();

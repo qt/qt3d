@@ -50,6 +50,7 @@
 
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import Qt3D.Extras 2.0
 
 Entity {
     id: root
@@ -59,12 +60,12 @@ Entity {
     signal entered()
     signal exited()
 
+    property Layer layer
     property real x: 0
     property real y: 0
     property real z: 0
     property alias scale: transform.scale
     property alias hoverEnabled: objectPicker.hoverEnabled
-    property alias recursive: debugVolume.recursive
     property alias diffuseColor: material.diffuse
     property alias ambientColor: material.ambient
     readonly property bool containsMouse: objectPicker.containsMouse
@@ -74,14 +75,13 @@ Entity {
 
     ObjectPicker {
         id: objectPicker
-        onClicked: root.clicked(event)
-        onPressed: root.pressed(event)
-        onReleased: root.released(event)
+        onClicked: root.clicked(pick)
+        onPressed: root.pressed(pick)
+        onReleased: root.released(pick)
         onEntered: root.entered()
         onExited: root.exited();
     }
 
-    BoundingVolumeDebug { id: debugVolume }
     PhongMaterial { id: material }
 
     Transform {
@@ -89,11 +89,6 @@ Entity {
         translation: Qt.vector3d(x, y, z)
     }
 
-    Layer {
-        id: layer
-        names: "content"
-    }
-
-    components: [mesh, material, transform, debugVolume, objectPicker, layer]
+    components: [mesh, material, transform, objectPicker, layer]
 }
 

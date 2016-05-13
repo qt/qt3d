@@ -27,29 +27,25 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
+#include <Qt3DInput/private/qactioninput_p.h>
 #include <Qt3DInput/QActionInput>
 #include <Qt3DInput/QAbstractPhysicalDevice>
 
 #include "testpostmanarbiter.h"
 #include "testdevice.h"
 
-// We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QActionInput: public Qt3DCore::QNode
+class tst_QActionInput: public QObject
 {
     Q_OBJECT
 public:
     tst_QActionInput()
     {
         qRegisterMetaType<Qt3DInput::QAbstractPhysicalDevice*>("Qt3DInput::QAbstractPhysicalDevice*");
-    }
-
-    ~tst_QActionInput()
-    {
-        QNode::cleanup();
     }
 
 private Q_SLOTS:
@@ -61,12 +57,12 @@ private Q_SLOTS:
         QTest::newRow("defaultConstructed") << defaultConstructed;
 
         Qt3DInput::QActionInput *actionInputWithKeys = new Qt3DInput::QActionInput();
-        actionInputWithKeys->setKeys(QVariantList() << QVariant((1 << 1) | (1 << 5)));
+        actionInputWithKeys->setButtons(QVector<int>() << ((1 << 1) | (1 << 5)));
         QTest::newRow("actionInputWithKeys") << actionInputWithKeys;
 
         Qt3DInput::QActionInput *actionInputWithKeysAndSourceDevice = new Qt3DInput::QActionInput();
         TestDevice *device = new TestDevice();
-        actionInputWithKeysAndSourceDevice->setKeys(QVariantList() << QVariant((1 << 1) | (1 << 5)));
+        actionInputWithKeysAndSourceDevice->setButtons(QVector<int>() << ((1 << 1) | (1 << 5)));
         actionInputWithKeysAndSourceDevice->setSourceDevice(device);
         QTest::newRow("actionInputWithKeysAndSourceDevice") << actionInputWithKeysAndSourceDevice;
     }
@@ -77,18 +73,22 @@ private Q_SLOTS:
         QFETCH(Qt3DInput::QActionInput *, actionInput);
 
         // WHEN
-        Qt3DInput::QActionInput *clone = static_cast<Qt3DInput::QActionInput *>(QNode::clone(actionInput));
-        QCoreApplication::processEvents();
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(actionInput);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(actionInput->id(), clone->id());
-        QCOMPARE(actionInput->keys(), clone->keys());
+        QCOMPARE(creationChanges.size(), 1 + (actionInput->sourceDevice() ? 1 : 0));
 
-        if (actionInput->sourceDevice() != Q_NULLPTR) {
-            QVERIFY(clone->sourceDevice() != Q_NULLPTR);
-            QCOMPARE(clone->sourceDevice()->id(), actionInput->sourceDevice()->id());
-        }
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DInput::QActionInputData> creationChangeData =
+                qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QActionInputData>>(creationChanges.first());
+        const Qt3DInput::QActionInputData &cloneData = creationChangeData->data;
+
+        // THEN
+        QCOMPARE(actionInput->id(), creationChangeData->subjectId());
+        QCOMPARE(actionInput->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(actionInput->metaObject(), creationChangeData->metaObject());
+        QCOMPARE(actionInput->buttons(), cloneData.buttons);
+        QCOMPARE(actionInput->sourceDevice() ? actionInput->sourceDevice()->id() : Qt3DCore::QNodeId(), cloneData.sourceDeviceId);
     }
 
     void checkPropertyUpdates()
@@ -98,40 +98,36 @@ private Q_SLOTS:
         TestArbiter arbiter(actionInput.data());
 
         // WHEN
-        QVariantList keys = QVariantList() << QVariant(555);
-        actionInput->setKeys(keys);
+        QVector<int> buttons = QVector<int>() << 555;
+        actionInput->setButtons(buttons);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "keys");
-        QCOMPARE(change->value().toList(), keys);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "buttons");
+        QCOMPARE(change->value().value<QVector<int>>(), buttons);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
         // WHEN
         TestDevice *device = new TestDevice(actionInput.data());
+        QCoreApplication::processEvents();
+        arbiter.events.clear();
+
         actionInput->setSourceDevice(device);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "sourceDevice");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), device->id());
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
     }
-
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
-    {
-        return Q_NULLPTR;
-    }
-
 };
 
 QTEST_MAIN(tst_QActionInput)

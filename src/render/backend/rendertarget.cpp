@@ -38,9 +38,12 @@
 ****************************************************************************/
 
 #include <Qt3DRender/private/rendertarget_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/qrendertarget.h>
-#include <Qt3DRender/qrenderattachment.h>
+#include <Qt3DRender/private/qrendertarget_p.h>
+#include <Qt3DRender/qrendertargetoutput.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
@@ -51,45 +54,64 @@ namespace Qt3DRender {
 namespace Render {
 
 RenderTarget::RenderTarget()
-    : QBackendNode()
+    : BackendNode()
 {
 }
 
-void RenderTarget::updateFromPeer(Qt3DCore::QNode *peer)
+void RenderTarget::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QRenderTarget *target = static_cast<QRenderTarget *>(peer);
-    m_renderAttachments.clear();
-    Q_FOREACH (QRenderAttachment *att, target->attachments())
-        appendRenderAttachment(att->id());
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderTargetData>>(change);
+    const auto &data = typedChange->data;
+    m_renderOutputs = data.outputIds;
 }
 
 void RenderTarget::cleanup()
 {
+    m_renderOutputs.clear();
+    QBackendNode::setEnabled(false);
 }
 
-void RenderTarget::appendRenderAttachment(const QNodeId &attachmentId)
+void RenderTarget::appendRenderOutput(QNodeId outputId)
 {
-    if (!m_renderAttachments.contains(attachmentId))
-        m_renderAttachments.append(attachmentId);
+    if (!m_renderOutputs.contains(outputId))
+        m_renderOutputs.append(outputId);
 }
 
-void RenderTarget::removeRenderAttachment(const QNodeId &attachmentId)
+void RenderTarget::removeRenderOutput(QNodeId outputId)
 {
-    m_renderAttachments.removeOne(attachmentId);
+    m_renderOutputs.removeOne(outputId);
 }
 
-QList<Qt3DCore::QNodeId> RenderTarget::renderAttachments() const
+QVector<Qt3DCore::QNodeId> RenderTarget::renderOutputs() const
 {
-    return m_renderAttachments;
+    return m_renderOutputs;
 }
 
 void RenderTarget::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    if (e->type() == NodeAdded && propertyChange->propertyName() == QByteArrayLiteral("attachment"))
-        appendRenderAttachment(propertyChange->value().value<QNodeId>());
-    else if (e->type() == NodeRemoved && propertyChange->propertyName() == QByteArrayLiteral("attachment"))
-        removeRenderAttachment(propertyChange->value().value<QNodeId>());
+    switch (e->type()) {
+    case Qt3DCore::PropertyValueAdded: {
+        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("output")) {
+            appendRenderOutput(change->addedNodeId());
+            markDirty(AbstractRenderer::AllDirty);
+        }
+        break;
+    }
+
+    case Qt3DCore::PropertyValueRemoved: {
+        const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("output")) {
+            removeRenderOutput(change->removedNodeId());
+            markDirty(AbstractRenderer::AllDirty);
+        }
+        break;
+    }
+
+    default:
+        break;
+    }
+    BackendNode::sceneChangeEvent(e);
 }
 
 } // namespace Render

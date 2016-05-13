@@ -39,7 +39,7 @@
 
 #include "qabstracttextureimage.h"
 #include "qabstracttextureimage_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,10 +65,10 @@ namespace Qt3DRender {
     \brief Encapsulates the necessary information to create an OpenGL texture image.
 
     QAbstractTextureImage should be used as the means of providing image data to a
-    QAbstractTextureProvider. It contains the necessary information: mipmap
+    QAbstractTexture. It contains the necessary information: mipmap
     level, layer, cube face load at the proper place data into an OpenGL texture.
 
-    The actual data is provided through a QTextureDataFunctor that will be
+    The actual data is provided through a QTextureImageDataGenerator that will be
     executed by Aspect jobs in the backend. QAbstractTextureImage should be
     subclassed to provide a functor and eventual additional properties needed by
     the functor to load actual data.
@@ -90,25 +90,24 @@ QAbstractTextureImage::QAbstractTextureImage(QNode *parent)
  */
 QAbstractTextureImage::~QAbstractTextureImage()
 {
-    Q_ASSERT_X(Qt3DCore::QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DRender::QAbstractTextureImage subclass didn't call QNode::cleanup in its destructor");
 }
 
 
 /*!
-    \qmlproperty int Qt3D.Render::AbstractTextureImage::mipmapLevel
+    \qmlproperty int Qt3D.Render::AbstractTextureImage::mipLevel
 
     Holds the mipmap level of the texture image.
  */
 
 /*!
-    \property Qt3DRender::QAbstractTextureImage::mipmapLevel
+    \property Qt3DRender::QAbstractTextureImage::mipLevel
 
     Holds the mipmap level of the texture image.
  */
-int QAbstractTextureImage::mipmapLevel() const
+int QAbstractTextureImage::mipLevel() const
 {
     Q_D(const QAbstractTextureImage);
-    return d->m_mipmapLevel;
+    return d->m_mipLevel;
 }
 
 /*!
@@ -129,7 +128,7 @@ int QAbstractTextureImage::layer() const
 }
 
 /*!
-    \qmlproperty enumeration Qt3D.Render::AbstractTextureImage::cubeMapFace
+    \qmlproperty enumeration Qt3D.Render::AbstractTextureImage::face
 
     Holds the cube map face of the texture image.
 
@@ -141,31 +140,31 @@ int QAbstractTextureImage::layer() const
     \value CubeMapNegativeZ 0x851A   GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
 
     \note The cube map face has a meaning only for
-    \l [CPP] {Qt3DRender::QAbstractTextureProvider::}{TargetCubeMap} and
-    \l [CPP] {Qt3DRender::QAbstractTextureProvider::}{TargetCubeMapArray}.
+    \l [CPP] {Qt3DRender::QAbstractTexture::}{TargetCubeMap} and
+    \l [CPP] {Qt3DRender::QAbstractTexture::}{TargetCubeMapArray}.
  */
 
 /*!
-    \property Qt3DRender::QAbstractTextureImage::cubeMapFace
+    \property Qt3DRender::QAbstractTextureImage::face
 
     Holds the cube map face of the texture image.
 
     \note The cube map face has a meaning only for
-    \l {QAbstractTextureProvider::}{TargetCubeMap} and
-    \l {QAbstractTextureProvider::}{TargetCubeMapArray}.
+    \l {QAbstractTexture::}{TargetCubeMap} and
+    \l {QAbstractTexture::}{TargetCubeMapArray}.
  */
-QAbstractTextureProvider::CubeMapFace QAbstractTextureImage::cubeMapFace() const
+QAbstractTexture::CubeMapFace QAbstractTextureImage::face() const
 {
     Q_D(const QAbstractTextureImage);
     return d->m_face;
 }
 
-void QAbstractTextureImage::setMipmapLevel(int level)
+void QAbstractTextureImage::setMipLevel(int level)
 {
     Q_D(QAbstractTextureImage);
-    if (level != d->m_mipmapLevel) {
-        d->m_mipmapLevel = level;
-        emit mipmapLevelChanged(level);
+    if (level != d->m_mipLevel) {
+        d->m_mipLevel = level;
+        emit mipLevelChanged(level);
     }
 }
 
@@ -178,44 +177,45 @@ void QAbstractTextureImage::setLayer(int layer)
     }
 }
 
-void QAbstractTextureImage::setCubeMapFace(QAbstractTextureProvider::CubeMapFace face)
+void QAbstractTextureImage::setFace(QAbstractTexture::CubeMapFace face)
 {
     Q_D(QAbstractTextureImage);
     if (face != d->m_face) {
         d->m_face = face;
-        emit cubeMapFaceChanged(face);
+        emit faceChanged(face);
     }
 }
 
 /*!
-    Triggers an update of the data functor that is sent to the backend.
+    Triggers an update of the data generator that is sent to the backend.
  */
-void QAbstractTextureImage::update()
+void QAbstractTextureImage::notifyDataGeneratorChanged()
 {
     Q_D(QAbstractTextureImage);
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
-        change->setPropertyName("dataFunctor");
-        change->setValue(QVariant::fromValue(dataFunctor()));
+    if (d->m_changeArbiter != nullptr) {
+        QPropertyUpdatedChangePtr change(new QPropertyUpdatedChange(id()));
+        change->setPropertyName("dataGenerator");
+        change->setValue(QVariant::fromValue(dataGenerator()));
         d->notifyObservers(change);
     }
-}
-
-/*!
-  Copies \a ref into this object.
- */
-void QAbstractTextureImage::copy(const QNode *ref)
-{
-    const QAbstractTextureImage *imageRef = static_cast<const QAbstractTextureImage *>(ref);
-    d_func()->m_face = imageRef->cubeMapFace();
-    d_func()->m_layer = imageRef->layer();
-    d_func()->m_mipmapLevel = imageRef->mipmapLevel();
 }
 
 /*! \internal */
 QAbstractTextureImage::QAbstractTextureImage(QAbstractTextureImagePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QAbstractTextureImage::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAbstractTextureImageData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QAbstractTextureImage);
+    data.mipLevel = d->m_mipLevel;
+    data.layer = d->m_layer;
+    data.face = d->m_face;
+    data.generator = dataGenerator();
+    return creationChange;
 }
 
 } // namespace Qt3DRender

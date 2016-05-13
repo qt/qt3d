@@ -159,8 +159,8 @@ public:
             int index = s.indexOf(QLatin1Char(','));
 
             bool xGood, yGood;
-            float xCoord = s.left(index).toFloat(&xGood);
-            float yCoord = s.mid(index+1).toFloat(&yGood);
+            float xCoord = s.leftRef(index).toFloat(&xGood);
+            float yCoord = s.midRef(index+1).toFloat(&yGood);
 
             if (xGood && yGood) {
                 if (ok) *ok = true;
@@ -179,9 +179,9 @@ public:
             int index2 = s.indexOf(QLatin1Char(','), index+1);
 
             bool xGood, yGood, zGood;
-            float xCoord = s.left(index).toFloat(&xGood);
-            float yCoord = s.mid(index+1, index2-index-1).toFloat(&yGood);
-            float zCoord = s.mid(index2+1).toFloat(&zGood);
+            float xCoord = s.leftRef(index).toFloat(&xGood);
+            float yCoord = s.midRef(index+1, index2-index-1).toFloat(&yGood);
+            float zCoord = s.midRef(index2+1).toFloat(&zGood);
 
             if (xGood && yGood && zGood) {
                 if (ok) *ok = true;
@@ -201,10 +201,10 @@ public:
             int index3 = s.indexOf(QLatin1Char(','), index2+1);
 
             bool xGood, yGood, zGood, wGood;
-            float xCoord = s.left(index).toFloat(&xGood);
-            float yCoord = s.mid(index+1, index2-index-1).toFloat(&yGood);
-            float zCoord = s.mid(index2+1, index3-index2-1).toFloat(&zGood);
-            float wCoord = s.mid(index3+1).toFloat(&wGood);
+            float xCoord = s.leftRef(index).toFloat(&xGood);
+            float yCoord = s.midRef(index+1, index2-index-1).toFloat(&yGood);
+            float zCoord = s.midRef(index2+1, index3-index2-1).toFloat(&zGood);
+            float wCoord = s.midRef(index3+1).toFloat(&wGood);
 
             if (xGood && yGood && zGood && wGood) {
                 if (ok) *ok = true;
@@ -224,10 +224,10 @@ public:
             int index3 = s.indexOf(QLatin1Char(','), index2+1);
 
             bool sGood, xGood, yGood, zGood;
-            qreal sCoord = s.left(index).toDouble(&sGood);
-            qreal xCoord = s.mid(index+1, index2-index-1).toDouble(&xGood);
-            qreal yCoord = s.mid(index2+1, index3-index2-1).toDouble(&yGood);
-            qreal zCoord = s.mid(index3+1).toDouble(&zGood);
+            qreal sCoord = s.leftRef(index).toDouble(&sGood);
+            qreal xCoord = s.midRef(index+1, index2-index-1).toDouble(&xGood);
+            qreal yCoord = s.midRef(index2+1, index3-index2-1).toDouble(&yGood);
+            qreal zCoord = s.midRef(index3+1).toDouble(&zGood);
 
             if (sGood && xGood && yGood && zGood) {
                 if (ok) *ok = true;
@@ -244,7 +244,7 @@ public:
         if (s.count(QLatin1Char(',')) == 15) {
             float matValues[16];
             bool vOK = true;
-            QString mutableStr = s;
+            QStringRef mutableStr(&s);
             for (int i = 0; vOK && i < 16; ++i) {
                 int cidx = mutableStr.indexOf(QLatin1Char(','));
                 matValues[i] = mutableStr.left(cidx).toDouble(&vOK);
@@ -304,7 +304,7 @@ public:
             break;
         }
 
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     bool init(int type, QVariant& dst) Q_DECL_OVERRIDE

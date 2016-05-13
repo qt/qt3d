@@ -50,6 +50,7 @@
 
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import Qt3D.Extras 2.0
 
 Entity {
     property alias particleStep: computeMaterial.particleStep
@@ -65,10 +66,14 @@ Entity {
     signal reset()
 
     components: [
-        FrameGraph {
+        RenderSettings {
             ComputeFrameGraph {
                 camera: sceneCamera
             }
+            // explicitly set RenderingPolicy to AlwaysRender, as changes in the
+            // scene won't be reflected in actual Qt scene-graph changes (due to
+            // GPU compute calls)
+            renderPolicy: RenderSettings.Always
         }
     ]
 
@@ -129,8 +134,8 @@ Entity {
         id: particlePositionDataAttribute
         name: "particlePosition"
         attributeType: Attribute.VertexAttribute
-        dataType: Attribute.Float
-        dataSize: 3
+        vertexBaseType: Attribute.Float
+        vertexSize: 3
         divisor: 1
         byteStride: 12 * floatSize
         buffer: particleBuffer
@@ -140,8 +145,8 @@ Entity {
         id: particleColorDataAttribute
         name: "particleColor"
         attributeType: Attribute.VertexAttribute
-        dataType: Attribute.Float
-        dataSize: 3
+        vertexBaseType: Attribute.Float
+        vertexSize: 3
         divisor: 1
         byteOffset: 8 * floatSize
         byteStride: 12 * floatSize
@@ -155,7 +160,7 @@ Entity {
 
     Entity {
         id: particleComputeEntity
-        readonly property ComputeJob particlesComputeJob: ComputeJob {}
+        readonly property ComputeCommand particlesComputeJob: ComputeCommand {}
         components: [
             particlesComputeJob,
             computeMaterial
@@ -216,8 +221,8 @@ Entity {
         id: particleRenderEntity
         readonly property GeometryRenderer particlesRenderer: GeometryRenderer {
             instanceCount: particlesCount
-            baseVertex: 0
-            baseInstance: 0
+            indexOffset: 0
+            firstInstance: 0
             primitiveType: GeometryRenderer.Triangles
             geometry:  {
                 switch (particlesShape) {

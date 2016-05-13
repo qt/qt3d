@@ -53,8 +53,8 @@
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
-#include <Qt3DRender/QCuboidMesh>
-#include <Qt3DRender/QPhongMaterial>
+#include <Qt3DExtras/QCuboidMesh>
+#include <Qt3DExtras/QPhongMaterial>
 
 class BoxEntity : public Qt3DCore::QEntity
 {
@@ -85,8 +85,8 @@ private:
     void updateTransformation();
 
     Qt3DCore::QTransform *m_transform;
-    Qt3DRender::QCuboidMesh *m_mesh;
-    Qt3DRender::QPhongMaterial *m_material;
+    Qt3DExtras::QCuboidMesh *m_mesh;
+    Qt3DExtras::QPhongMaterial *m_material;
     float m_angle;
     float m_radius;
 };

@@ -40,7 +40,10 @@
 #include "inputsequence_p.h"
 #include <Qt3DInput/qinputsequence.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DInput/private/qinputsequence_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <QDateTime>
 
 QT_BEGIN_NAMESPACE
@@ -51,38 +54,33 @@ namespace Input {
 
 InputSequence::InputSequence()
     : Qt3DCore::QBackendNode()
-    , m_inputs()
+    , m_sequences()
     , m_inputsToTrigger()
     , m_timeout(0)
-    , m_interval(0)
-    , m_sequential(true)
+    , m_buttonInterval(0)
     , m_startTime(0)
     , m_lastInputTime(0)
-    , m_enabled(false)
 {
 }
 
-void InputSequence::updateFromPeer(Qt3DCore::QNode *peer)
+void InputSequence::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QInputSequence *input = static_cast<QInputSequence *>(peer);
-    m_enabled = input->isEnabled();
-    m_timeout = input->timeout();
-    m_interval = input->interval();
-    m_sequential = input->sequential();
-    Q_FOREACH (QAbstractActionInput *i, input->inputs())
-        m_inputs.push_back(i->id());
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QInputSequenceData>>(change);
+    const QInputSequenceData &data = typedChange->data;
+    m_sequences = data.sequenceIds;
+    m_timeout = data.timeout;
+    m_buttonInterval = data.buttonInterval;
 }
 
 void InputSequence::cleanup()
 {
-    m_enabled = false;
+    QBackendNode::setEnabled(false);
     m_timeout = 0;
-    m_interval = 0;
+    m_buttonInterval = 0;
     m_startTime = 0;
     m_lastInputTime = 0;
     m_lastInputId = Qt3DCore::QNodeId();
-    m_sequential = true;
-    m_inputs.clear();
+    m_sequences.clear();
     m_inputsToTrigger.clear();
 }
 
@@ -95,24 +93,16 @@ void InputSequence::reset()
 {
     m_startTime = 0;
     m_lastInputTime = 0;
-    m_inputsToTrigger = m_inputs;
+    m_inputsToTrigger = m_sequences;
     m_lastInputId = Qt3DCore::QNodeId();
 }
 
 bool InputSequence::actionTriggered(Qt3DCore::QNodeId input, const qint64 currentTime)
 {
-    // If we are running the root of a sequence and input is not the first element of the sequence
-    // reset and return false
-    if (m_sequential && (!m_inputs.empty() && m_inputsToTrigger.first() != input)) {
-        if (!(input == m_lastInputId && ((currentTime - m_lastInputTime) < 200)))
-            reset();
-        return false;
-    }
-
-    // Otherwise save the last input
+    // Save the last input
     m_lastInputId = input;
     // Return false if we've spent too much time in between two sequences
-    if ((m_lastInputTime != 0) && ((currentTime - m_lastInputTime) > m_interval)) {
+    if ((m_lastInputTime != 0) && ((currentTime - m_lastInputTime) > m_buttonInterval)) {
         reset();
         return false;
     }
@@ -132,28 +122,39 @@ bool InputSequence::actionTriggered(Qt3DCore::QNodeId input, const qint64 curren
 
 void InputSequence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
-    if (e->type() == Qt3DCore::NodeUpdated) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            m_enabled = propertyChange->value().toBool();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("timeout")) {
-            m_timeout = propertyChange->value().toInt();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("interval")) {
-            m_interval = propertyChange->value().toInt();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("sequential")) {
-            m_sequential = propertyChange->value().toBool();
+    switch (e->type()) {
+    case Qt3DCore::PropertyUpdated: {
+        const auto change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("timeout")) {
+            m_timeout = change->value().toInt();
+        } else if (change->propertyName() == QByteArrayLiteral("buttonInterval")) {
+            m_buttonInterval = change->value().toInt();
         }
-    } else if (e->type() == Qt3DCore::NodeAdded) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("input")) {
-            m_inputs.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
-            m_inputsToTrigger.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
-        }
-    } else if (e->type() == Qt3DCore::NodeRemoved) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("input")) {
-            m_inputs.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
-            m_inputsToTrigger.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
-        }
+        break;
     }
+
+    case Qt3DCore::PropertyValueAdded: {
+        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeAddedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("sequence")) {
+            m_sequences.push_back(change->addedNodeId());
+            m_inputsToTrigger.push_back(change->addedNodeId());
+        }
+        break;
+    }
+
+    case Qt3DCore::PropertyValueRemoved: {
+        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeRemovedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("sequence")) {
+            m_sequences.removeOne(change->removedNodeId());
+            m_inputsToTrigger.removeOne(change->removedNodeId());
+        }
+        break;
+    }
+
+    default:
+        break;
+    }
+    QBackendNode::sceneChangeEvent(e);
 }
 
 } // namespace Input

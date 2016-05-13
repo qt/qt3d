@@ -30,7 +30,7 @@
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/triangleboundingvolume_p.h>
 #include <Qt3DRender/private/qraycastingservice_p.h>
-#include <Qt3DCore/qray3d.h>
+#include <Qt3DRender/private/qray3d_p.h>
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/private/qboundingvolume_p.h>
@@ -124,7 +124,7 @@ private Q_SLOTS:
 
     void intersects_data()
     {
-        QTest::addColumn<Qt3DCore::QRay3D>("ray");
+        QTest::addColumn<Qt3DRender::QRay3D>("ray");
         QTest::addColumn<QVector3D>("a");
         QTest::addColumn<QVector3D>("b");
         QTest::addColumn<QVector3D>("c");
@@ -135,7 +135,7 @@ private Q_SLOTS:
         const float farPlaneDistance = 40.0;
 
         QTest::newRow("halfway_center")
-                << Qt3DCore::QRay3D(QVector3D(), QVector3D(0.0, 0.0, 1.0), farPlaneDistance)
+                << Qt3DRender::QRay3D(QVector3D(), QVector3D(0.0, 0.0, 1.0), farPlaneDistance)
                 << QVector3D(3.0, 1.5, 20.0)
                 << QVector3D(0.0, -1.5, 20.0)
                 << QVector3D(-3, 1.5, 20.0)
@@ -143,7 +143,7 @@ private Q_SLOTS:
                 << 0.5f
                 << true;
         QTest::newRow("miss_halfway_center_too_short")
-                << Qt3DCore::QRay3D(QVector3D(), QVector3D(0.0, 0.0, 1.0), farPlaneDistance * 0.25f)
+                << Qt3DRender::QRay3D(QVector3D(), QVector3D(0.0, 0.0, 1.0), farPlaneDistance * 0.25f)
                 << QVector3D(3.0, 1.5, 20.0)
                 << QVector3D(0.0, -1.5, 20.0)
                 << QVector3D(-3, 1.5, 20.0)
@@ -151,7 +151,7 @@ private Q_SLOTS:
                 << 0.0f
                 << false;
         QTest::newRow("far_center")
-                << Qt3DCore::QRay3D(QVector3D(), QVector3D(0.0, 0.0, 1.0), farPlaneDistance)
+                << Qt3DRender::QRay3D(QVector3D(), QVector3D(0.0, 0.0, 1.0), farPlaneDistance)
                 << QVector3D(3.0, 1.5, 40.0)
                 << QVector3D(0.0, -1.5, 40.0)
                 << QVector3D(-3, 1.5, 40.0)
@@ -159,7 +159,7 @@ private Q_SLOTS:
                 << 1.0f
                 << true;
         QTest::newRow("near_center")
-                << Qt3DCore::QRay3D(QVector3D(), QVector3D(0.0, 0.0, 1.0), 1.0f)
+                << Qt3DRender::QRay3D(QVector3D(), QVector3D(0.0, 0.0, 1.0), 1.0f)
                 << QVector3D(3.0, 1.5, 0.0)
                 << QVector3D(0.0, -1.5, 0.0)
                 << QVector3D(-3, 1.5, 0.0)
@@ -167,7 +167,7 @@ private Q_SLOTS:
                 << 0.0f
                 << true;
         QTest::newRow("above_miss_center")
-                << Qt3DCore::QRay3D(QVector3D(0.0, 2.0, 0.0), QVector3D(0.0, 2.0, 1.0), 1.0f)
+                << Qt3DRender::QRay3D(QVector3D(0.0, 2.0, 0.0), QVector3D(0.0, 2.0, 1.0), 1.0f)
                 << QVector3D(3.0, 1.5, 0.0)
                 << QVector3D(0.0, -1.5, 0.0)
                 << QVector3D(-3, 1.5, 0.0)
@@ -175,7 +175,7 @@ private Q_SLOTS:
                 << 0.0f
                 << false;
         QTest::newRow("below_miss_center")
-                << Qt3DCore::QRay3D(QVector3D(0.0, -2.0, 0.0), QVector3D(0.0, -2.0, 1.0), 1.0f)
+                << Qt3DRender::QRay3D(QVector3D(0.0, -2.0, 0.0), QVector3D(0.0, -2.0, 1.0), 1.0f)
                 << QVector3D(3.0, 1.5, 0.0)
                 << QVector3D(0.0, -1.5, 0.0)
                 << QVector3D(-3, 1.5, 0.0)
@@ -187,7 +187,7 @@ private Q_SLOTS:
     void intersects()
     {
         // GIVEN
-        QFETCH(Qt3DCore::QRay3D, ray);
+        QFETCH(Qt3DRender::QRay3D, ray);
         QFETCH(QVector3D, a);
         QFETCH(QVector3D, b);
         QFETCH(QVector3D, c);

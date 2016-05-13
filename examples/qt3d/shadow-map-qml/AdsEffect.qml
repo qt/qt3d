@@ -84,7 +84,7 @@ Effect {
 
             renderPasses: [
                 RenderPass {
-                    annotations: [ Annotation { name: "pass"; value: "shadowmap" } ]
+                    filterKeys: [ FilterKey { name: "pass"; value: "shadowmap" } ]
 
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/shadowmap.vert")
@@ -92,24 +92,13 @@ Effect {
                     }
 
                     renderStates: [
-                        PolygonOffset { factor: 4; units: 4 },
-                        DepthTest { func: DepthTest.Less }
+                        PolygonOffset { scaleFactor: 4; depthSteps: 4 },
+                        DepthTest { depthFunction: DepthTest.Less }
                     ]
                 },
 
                 RenderPass {
-                    annotations: [ Annotation { name : "pass"; value : "forward" } ]
-
-                    // The bindings property allows us to map from names of parameters (uniforms or vertex attributes)
-                    // within a shader to more friendly names in QML. By default the parameter names are exposed from
-                    // the shader so we only need to add add mappings where the names differ. E.g. here we map from the
-                    // ka uniform name in the shader to a property called ambient
-                    bindings: [
-                        // Uniforms (those provided by the user)
-                        ParameterMapping { parameterName: "ambient";  shaderVariableName: "ka"; bindingType: ParameterMapping.Uniform },
-                        ParameterMapping { parameterName: "diffuse";  shaderVariableName: "kd"; bindingType: ParameterMapping.Uniform },
-                        ParameterMapping { parameterName: "specular"; shaderVariableName: "ks"; bindingType: ParameterMapping.Uniform }
-                    ]
+                    filterKeys: [ FilterKey { name : "pass"; value : "forward" } ]
 
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/ads.vert")
@@ -129,7 +118,7 @@ Effect {
 
             renderPasses: [
                 RenderPass {
-                    annotations: [ Annotation { name: "pass"; value: "shadowmap" } ]
+                    filterKeys: [ FilterKey { name: "pass"; value: "shadowmap" } ]
 
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/es3/shadowmap.vert")
@@ -137,19 +126,13 @@ Effect {
                     }
 
                     renderStates: [
-                        PolygonOffset { factor: 4; units: 4 },
-                        DepthTest { func: DepthTest.Less }
+                        PolygonOffset { scaleFactor: 4; depthSteps: 4 },
+                        DepthTest { depthFunction: DepthTest.Less }
                     ]
                 },
 
                 RenderPass {
-                    annotations: [ Annotation { name : "pass"; value : "forward" } ]
-
-                    bindings: [
-                        ParameterMapping { parameterName: "ambient";  shaderVariableName: "ka"; bindingType: ParameterMapping.Uniform },
-                        ParameterMapping { parameterName: "diffuse";  shaderVariableName: "kd"; bindingType: ParameterMapping.Uniform },
-                        ParameterMapping { parameterName: "specular"; shaderVariableName: "ks"; bindingType: ParameterMapping.Uniform }
-                    ]
+                    filterKeys: [ FilterKey { name : "pass"; value : "forward" } ]
 
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/es3/ads.vert")

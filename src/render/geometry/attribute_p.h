@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qattribute.h>
 
 QT_BEGIN_NAMESPACE
@@ -60,7 +60,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT Attribute : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT Attribute : public BackendNode
 {
 public:
     Attribute();
@@ -68,31 +68,34 @@ public:
 
     void cleanup();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     inline Qt3DCore::QNodeId bufferId() const { return m_bufferId; }
     inline QString name() const { return m_name; }
-    inline QAbstractAttribute::DataType dataType() const { return m_dataType; }
-    inline uint dataSize() const { return m_dataSize; }
+    inline int nameId() const { return m_nameId; }
+    inline QAttribute::VertexBaseType vertexBaseType() const { return m_vertexDataType; }
+    inline uint vertexSize() const { return m_vertexSize; }
     inline uint count() const { return m_count; }
     inline uint byteStride() const { return m_byteStride; }
     inline uint byteOffset() const { return m_byteOffset; }
     inline uint divisor() const { return m_divisor; }
-    inline QAbstractAttribute::AttributeType attributeType() const { return m_attributeType; }
+    inline QAttribute::AttributeType attributeType() const { return m_attributeType; }
     inline bool isDirty() const { return m_attributeDirty; }
     void unsetDirty();
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     Qt3DCore::QNodeId m_bufferId;
     QString m_name;
-    QAbstractAttribute::DataType m_dataType;
-    uint m_dataSize;
+    int m_nameId;
+    QAttribute::VertexBaseType m_vertexDataType;
+    uint m_vertexSize;
     uint m_count;
     uint m_byteStride;
     uint m_byteOffset;
     uint m_divisor;
-    QAbstractAttribute::AttributeType m_attributeType;
+    QAttribute::AttributeType m_attributeType;
     bool m_attributeDirty;
 };
 

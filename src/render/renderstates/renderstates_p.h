@@ -99,7 +99,7 @@ State* getOrCreateRenderStateImpl(const S& m1, const T& m2, const U& m3, const V
     return getOrCreateRenderStateEqualTo<State>(state);
 }
 
-class Q_AUTOTEST_EXPORT BlendState : public GenericState6<BlendState, BlendStateMask, GLenum, GLenum, GLenum, GLenum, bool, int>
+class Q_AUTOTEST_EXPORT BlendEquationArguments : public GenericState6<BlendEquationArguments, BlendStateMask, GLenum, GLenum, GLenum, GLenum, bool, int>
 {
 public:
     virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
@@ -120,6 +120,13 @@ public:
     virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
 };
 
+class Q_AUTOTEST_EXPORT MSAAEnabled : public GenericState1<MSAAEnabled, MSAAEnabledStateMask, GLboolean>
+{
+public:
+    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
+};
+
 class Q_AUTOTEST_EXPORT DepthTest : public GenericState1<DepthTest, DepthTestStateMask, GLenum>
 {
 public:
@@ -127,7 +134,7 @@ public:
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT DepthMask : public GenericState1<DepthMask, DepthWriteStateMask, GLboolean>
+class Q_AUTOTEST_EXPORT NoDepthMask : public GenericState1<NoDepthMask, DepthWriteStateMask, GLboolean>
 {
 public:
     virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
@@ -168,10 +175,11 @@ public:
     virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT AlphaCoverage : public MaskedRenderState<AlphaCoverage, AlphaCoverageStateMask>
+class Q_AUTOTEST_EXPORT AlphaCoverage : public GenericState1<AlphaCoverage, AlphaCoverageStateMask, GLboolean>
 {
 public:
     void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
 class Q_AUTOTEST_EXPORT PointSize : public GenericState2<PointSize, PointSizeMask, bool, GLfloat>
@@ -197,7 +205,7 @@ public:
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT ClipPlane : public GenericState1<ClipPlane, ClipPlaneMask, int>
+class Q_AUTOTEST_EXPORT ClipPlane : public GenericState3<ClipPlane, ClipPlaneMask, int, QVector3D, float>
 {
 public:
     void apply(GraphicsContext *gc) const Q_DECL_FINAL;

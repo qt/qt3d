@@ -27,7 +27,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DRender/qtexturedata.h>
+#include <Qt3DRender/qtextureimagedata.h>
 
 class tst_DdsTextures : public QObject
 {
@@ -77,7 +77,7 @@ void tst_DdsTextures::ddsImageData()
     for (unsigned i = 0; i < sizeof(textures)/sizeof(*textures); i++) {
         const TextureInfo *texture = &textures[i];
 
-        Qt3DRender::QTexImageData data;
+        Qt3DRender::QTextureImageData data;
 
         QVERIFY(data.setCompressedFile(QFINDTESTDATA(texture->source)));
         QCOMPARE(data.width(), texture->width);

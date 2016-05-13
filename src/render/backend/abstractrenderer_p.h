@@ -50,6 +50,7 @@
 // We mean it.
 //
 
+#include <QtCore/qflags.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
@@ -76,7 +77,9 @@ namespace Render {
 class NodeManagers;
 class Entity;
 class FrameGraphNode;
-class RendererSettings;
+class RenderSettings;
+class BackendNode;
+
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT AbstractRenderer
 {
@@ -86,6 +89,18 @@ public:
     enum API {
         OpenGL
     };
+
+    // Changes made to backend nodes are reported to the Renderer
+    enum BackendNodeDirtyFlag {
+        TransformDirty   = 1 << 0,
+        MaterialDirty    = 1 << 1,
+        GeometryDirty    = 1 << 2,
+        ComputeDirty     = 1 << 3,
+        AllDirty         = 1 << 15
+    };
+    Q_DECLARE_FLAGS(BackendNodeDirtySet, BackendNodeDirtyFlag)
+
+    virtual void dumpInfo() const = 0;
 
     virtual API api() const = 0;
 
@@ -111,10 +126,15 @@ public:
 
     virtual bool isRunning() const = 0;
 
+    virtual void markDirty(BackendNodeDirtySet changes, BackendNode *node) = 0;
+    virtual BackendNodeDirtySet dirtyBits() = 0;
+    virtual void clearDirtyBits(BackendNodeDirtySet changes) = 0;
+    virtual bool shouldRender() = 0;
+    virtual void skipNextFrame() = 0;
+
     virtual QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() = 0;
     virtual Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() = 0;
 
-    virtual void setFrameGraphRoot(const Qt3DCore::QNodeId fgRootId) = 0;
     virtual void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Entity *root) = 0;
 
     virtual Entity *sceneRoot() const = 0;
@@ -123,10 +143,11 @@ public:
     virtual Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const = 0;
     virtual void registerEventFilter(Qt3DCore::QEventFilterService *service) = 0;
 
-    virtual void setSettings(RendererSettings *settings) = 0;
-    virtual RendererSettings *settings() const = 0;
-
+    virtual void setSettings(RenderSettings *settings) = 0;
+    virtual RenderSettings *settings() const = 0;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractRenderer::BackendNodeDirtySet)
 
 } // Render
 

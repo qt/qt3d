@@ -45,7 +45,7 @@
 #include <Qt3DRender/qshaderdata.h>
 
 #include <Qt3DRender/private/cameraselectornode_p.h>
-#include <Qt3DRender/private/clearbuffer_p.h>
+#include <Qt3DRender/private/clearbuffers_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/effect_p.h>
@@ -53,7 +53,7 @@
 #include <Qt3DRender/private/renderstateset_p.h>
 #include <Qt3DRender/private/rendertargetselectornode_p.h>
 #include <Qt3DRender/private/renderview_p.h>
-#include <Qt3DRender/private/sortmethod_p.h>
+#include <Qt3DRender/private/sortpolicy_p.h>
 #include <Qt3DRender/private/techniquefilternode_p.h>
 #include <Qt3DRender/private/viewportnode_p.h>
 #include <Qt3DRender/private/shadervariables_p.h>
@@ -62,6 +62,7 @@
 #include <Qt3DRender/private/statesetnode_p.h>
 #include <Qt3DRender/private/dispatchcompute_p.h>
 #include <Qt3DRender/private/rendersurfaceselector_p.h>
+#include <Qt3DRender/private/stringtoint_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -113,7 +114,8 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 }
 
             case FrameGraphNode::LayerFilter: // Can be set multiple times in the tree
-                rv->appendLayerFilter(static_cast<const LayerFilterNode *>(node)->layers());
+                rv->setHasLayerFilter(true);
+                rv->appendLayerFilter(static_cast<const LayerFilterNode *>(node)->layerIds());
                 break;
 
             case FrameGraphNode::RenderPassFilter:
@@ -128,31 +130,23 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 const RenderTargetSelector *targetSelector = static_cast<const RenderTargetSelector *>(node);
                 QNodeId renderTargetUid = targetSelector->renderTargetUuid();
                 HTarget renderTargetHandle = manager->renderTargetManager()->lookupHandle(renderTargetUid);
+
+                // Add renderTarget Handle and build renderCommand AttachmentPack
                 if (rv->renderTargetHandle().isNull()) {
                     rv->setRenderTargetHandle(renderTargetHandle);
 
                     RenderTarget *renderTarget = manager->renderTargetManager()->data(renderTargetHandle);
-                    if (renderTarget) {
-                        // Add renderTarget Handle and build renderCommand AttachmentPack
-
-                        // Copy draw buffers list
-                        rv->setDrawBuffers(targetSelector->drawBuffers());
-
-                        // Copy attachments
-                        Q_FOREACH (const QNodeId &attachmentId, renderTarget->renderAttachments()) {
-                            RenderAttachment *attachment = manager->attachmentManager()->lookupResource(attachmentId);
-                            if (attachment)
-                                rv->addRenderAttachment(attachment->attachment());
-                        }
-
-                    }
+                    if (renderTarget)
+                        rv->setAttachmentPack(AttachmentPack(targetSelector, renderTarget, manager->attachmentManager()));
                 }
                 break;
             }
 
-            case FrameGraphNode::ClearBuffer:
-                rv->setClearBuffer(static_cast<const ClearBuffer *>(node)->type());
+            case FrameGraphNode::ClearBuffers: {
+                const ClearBuffers* cbNode = static_cast<const ClearBuffers *>(node);
+                rv->addClearBuffers(cbNode);
                 break;
+            }
 
             case FrameGraphNode::TechniqueFilter:
                 // Can be set once
@@ -167,16 +161,12 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 // a subregion relative to that of the parent viewport
                 const ViewportNode *vpNode = static_cast<const ViewportNode *>(node);
                 rv->setViewport(computeViewport(rv->viewport(), vpNode));
-
-                // We take the clear color from the viewport node nearest the leaf
-                if (!rv->clearColor().isValid())
-                    rv->setClearColor(vpNode->clearColor());
                 break;
             }
 
             case FrameGraphNode::SortMethod: {
-                const Render::SortMethod *sortMethod = static_cast<const Render::SortMethod *>(node);
-                rv->addSortCriteria(sortMethod->criteria());
+                const Render::SortPolicy *sortPolicy = static_cast<const Render::SortPolicy *>(node);
+                rv->addSortType(sortPolicy->sortTypes());
                 break;
             }
 
@@ -189,7 +179,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 const Render::StateSetNode *rStateSet = static_cast<const Render::StateSetNode *>(node);
                 // Create global RenderStateSet for renderView if no stateSet was set before
                 RenderStateSet *stateSet = rv->stateSet();
-                if (stateSet == Q_NULLPTR) {
+                if (stateSet == nullptr) {
                     stateSet = rv->allocator()->allocate<RenderStateSet>();
                     rv->setStateSet(stateSet);
                 }
@@ -212,8 +202,8 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 const Render::DispatchCompute *dispatchCompute = static_cast<const Render::DispatchCompute *>(node);
                 rv->setCompute(true);
                 rv->setComputeWorkgroups(dispatchCompute->x(),
-                                        dispatchCompute->y(),
-                                        dispatchCompute->z());
+                                         dispatchCompute->y(),
+                                         dispatchCompute->z());
                 break;
             }
 
@@ -224,10 +214,11 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
             case FrameGraphNode::Surface: {
                 // Use the surface closest to leaf node
-                if (rv->surface() == Q_NULLPTR) {
+                if (rv->surface() == nullptr) {
                     const Render::RenderSurfaceSelector *surfaceSelector
-                        = static_cast<const Render::RenderSurfaceSelector *>(node);
+                            = static_cast<const Render::RenderSurfaceSelector *>(node);
                     rv->setSurface(surfaceSelector->surface());
+                    rv->setSurfaceSize(surfaceSelector->renderTargetSize());
                 }
                 break;
             }
@@ -251,12 +242,13 @@ Technique *findTechniqueForEffect(Renderer *renderer,
                                   Effect *effect)
 {
     if (!effect)
-        return Q_NULLPTR;
+        return nullptr;
 
     NodeManagers *manager = renderer->nodeManagers();
 
     // Iterate through the techniques in the effect
-    Q_FOREACH (const QNodeId &techniqueId, effect->techniques()) {
+    const auto techniqueIds = effect->techniques();
+    for (const QNodeId techniqueId : techniqueIds) {
         Technique *technique = manager->techniqueManager()->lookupResource(techniqueId);
 
         if (!technique)
@@ -267,25 +259,27 @@ Technique *findTechniqueForEffect(Renderer *renderer,
 
             // If no techniqueFilter is present, we return the technique as it satisfies OpenGL version
             const TechniqueFilter *techniqueFilter = renderView->techniqueFilter();
-            bool foundMatch = (techniqueFilter == Q_NULLPTR || techniqueFilter->filters().isEmpty());
+            bool foundMatch = (techniqueFilter == nullptr || techniqueFilter->filters().isEmpty());
             if (foundMatch)
                 return technique;
 
             // There is a technique filter so we need to check for a technique with suitable criteria.
             // Check for early bail out if the technique doesn't have sufficient number of criteria and
             // can therefore never satisfy the filter
-            if (technique->annotations().size() < techniqueFilter->filters().size())
+            if (technique->filterKeys().size() < techniqueFilter->filters().size())
                 continue;
 
             // Iterate through the filter criteria and for each one search for a criteria on the
             // technique that satisfies it
-            Q_FOREACH (const QNodeId &filterAnnotationId, techniqueFilter->filters()) {
+            const auto filterKeyIds = techniqueFilter->filters();
+            for (const QNodeId filterKeyId : filterKeyIds) {
                 foundMatch = false;
-                Annotation *filterAnnotation = manager->criterionManager()->lookupResource(filterAnnotationId);
+                FilterKey *filterKey = manager->filterKeyManager()->lookupResource(filterKeyId);
 
-                Q_FOREACH (const QNodeId &techniqueAnnotationId, technique->annotations()) {
-                    Annotation *techniqueAnnotation = manager->criterionManager()->lookupResource(techniqueAnnotationId);
-                    if ((foundMatch = (*techniqueAnnotation == *filterAnnotation)))
+                const auto techniqueFilterKeyIds = technique->filterKeys();
+                for (const QNodeId techniqueFilterKeyId : techniqueFilterKeyIds) {
+                    FilterKey *techniqueFilterKey = manager->filterKeyManager()->lookupResource(techniqueFilterKeyId);
+                    if ((foundMatch = (*techniqueFilterKey == *filterKey)))
                         break;
                 }
 
@@ -302,7 +296,7 @@ Technique *findTechniqueForEffect(Renderer *renderer,
     }
 
     // We failed to find a suitable technique to use :(
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 
@@ -314,24 +308,27 @@ RenderRenderPassList findRenderPassesForTechnique(NodeManagers *manager,
     Q_ASSERT(technique);
 
     RenderRenderPassList passes;
-    Q_FOREACH (const QNodeId &passId, technique->renderPasses()) {
+    const auto passIds = technique->renderPasses();
+    for (const QNodeId passId : passIds) {
         RenderPass *renderPass = manager->renderPassManager()->lookupResource(passId);
 
-        if (renderPass) {
+        if (renderPass && renderPass->isEnabled()) {
             const RenderPassFilter *passFilter = renderView->renderPassFilter();
             bool foundMatch = (!passFilter || passFilter->filters().size() == 0);
 
             // A pass filter is present so we need to check for matching criteria
-            if (!foundMatch && renderPass->annotations().size() >= passFilter->filters().size()) {
+            if (!foundMatch && renderPass->filterKeys().size() >= passFilter->filters().size()) {
 
                 // Iterate through the filter criteria and look for render passes with criteria that satisfy them
-                Q_FOREACH (const QNodeId &filterAnnotationId, passFilter->filters()) {
+                const auto filterKeyIds = passFilter->filters();
+                for (const QNodeId filterKeyId : filterKeyIds) {
                     foundMatch = false;
-                    Annotation *filterAnnotation = manager->criterionManager()->lookupResource(filterAnnotationId);
+                    FilterKey *filterFilterKey = manager->filterKeyManager()->lookupResource(filterKeyId);
 
-                    Q_FOREACH (const QNodeId &passAnnotationId, renderPass->annotations()) {
-                        Annotation *passAnnotation = manager->criterionManager()->lookupResource(passAnnotationId);
-                        if ((foundMatch = (*passAnnotation == *filterAnnotation)))
+                    const auto passFilterKeyIds = renderPass->filterKeys();
+                    for (const QNodeId passFilterKeyId : passFilterKeyIds) {
+                        FilterKey *passFilterKey = manager->filterKeyManager()->lookupResource(passFilterKeyId);
+                        if ((foundMatch = (*passFilterKey == *filterFilterKey)))
                             break;
                     }
 
@@ -353,24 +350,25 @@ RenderRenderPassList findRenderPassesForTechnique(NodeManagers *manager,
 }
 
 
-ParameterInfoList::iterator findParamInfo(ParameterInfoList *params, const QString &name)
+ParameterInfoList::const_iterator findParamInfo(ParameterInfoList *params, const int nameId)
 {
-    ParameterInfoList::iterator it = std::lower_bound(params->begin(), params->end(), name);
-    if (it != params->end() && it->name != name)
-        return params->end();
+    const ParameterInfoList::const_iterator end = params->cend();
+    ParameterInfoList::const_iterator it = std::lower_bound(params->cbegin(), end, nameId);
+    if (it != end && it->nameId != nameId)
+        return end;
     return it;
 }
 
 void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
-                         const QList<Qt3DCore::QNodeId> &parameterIds)
+                         const QVector<Qt3DCore::QNodeId> &parameterIds)
 {
-    Q_FOREACH (const QNodeId &paramId, parameterIds) {
+    for (const QNodeId paramId : parameterIds) {
         Parameter *param = manager->lookupResource(paramId);
-        if (param != Q_NULLPTR) {
-            ParameterInfoList::iterator it = std::lower_bound(params->begin(), params->end(), param->name());
-            if (it == params->end() || it->name != param->name())
-                params->insert(it, ParameterInfo(param->name(), param->value()));
-        }
+        if (Q_UNLIKELY(!param))
+            continue;
+        ParameterInfoList::iterator it = std::lower_bound(params->begin(), params->end(), param->nameId());
+        if (it == params->end() || it->nameId != param->nameId())
+            params->insert(it, ParameterInfo(param->nameId(), param->value()));
     }
 }
 
@@ -397,7 +395,8 @@ void addToRenderStateSet(RenderStateSet *stateSet,
                          const RenderStateCollection *collection,
                          RenderStateManager *manager)
 {
-    Q_FOREACH (RenderStateNode *rstate, collection->renderStates(manager))
+    const auto rstates = collection->renderStates(manager);
+    for (RenderStateNode *rstate : rstates)
         stateSet->addState(rstate->impl());
 }
 
@@ -409,7 +408,7 @@ const int qNodeIdTypeId = qMetaTypeId<QNodeId>();
 }
 
 UniformBlockValueBuilder::UniformBlockValueBuilder()
-    : shaderDataManager(Q_NULLPTR)
+    : shaderDataManager(nullptr)
 {
 }
 
@@ -437,7 +436,7 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(const QStrin
             QString varName = blockName + QStringLiteral(".") + qmlPropertyName + QStringLiteral("[0]");
             if (uniforms.contains(varName)) {
                 qCDebug(Shaders) << "UBO array member " << varName << " set for update";
-                activeUniformNamesToValue.insert(varName, value);
+                activeUniformNamesToValue.insert(StringToInt::lookupId(varName), value);
             }
         }
     } else if (value.userType() == qNodeIdTypeId) { // Struct qmlPropertyName.structMember
@@ -450,7 +449,7 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(const QStrin
         QString varName = blockName + QStringLiteral(".") + qmlPropertyName;
         if (uniforms.contains(varName)) {
             qCDebug(Shaders) << "UBO scalar member " << varName << " set for update";
-            activeUniformNamesToValue.insert(varName, value);
+            activeUniformNamesToValue.insert(StringToInt::lookupId(varName), value);
         }
     }
 }

@@ -65,13 +65,24 @@ class RenderSurfaceSelector : public Qt3DRender::Render::FrameGraphNode
 public:
     RenderSurfaceSelector();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+    QSize renderTargetSize() const;
+    void setRenderTargetSize(const QSize &size) { m_renderTargetSize = size; }
+
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     QSurface *surface() const { return m_surface; }
+    inline int width() const Q_DECL_NOEXCEPT { return m_width; }
+    inline int height() const Q_DECL_NOEXCEPT { return m_height; }
+    inline float devicePixelRatio() const Q_DECL_NOEXCEPT { return m_devicePixelRatio; }
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QSurface *m_surface;
+    QSize m_renderTargetSize;
+    int m_width;
+    int m_height;
+    float m_devicePixelRatio;
 };
 
 } // namespace Render

@@ -40,9 +40,10 @@
 #include "qgeometry.h"
 #include "qgeometry_p.h"
 #include <private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRender/qabstractattribute.h>
-#include <Qt3DRender/qboundingvolumespecifier.h>
+#include <Qt3DRender/qattribute.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,37 +52,15 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 
 /*!
- * \internal
- */
-void QGeometryPrivate::_q_boundingVolumeSpecifierChanged(QAbstractAttribute *)
-{
-    if (m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, m_id));
-        change->setPropertyName("boundingVolumeSpecifierPositionAttribute");
-        Qt3DCore::QNodeId positionAttributeId;
-        if (m_boundingVolumeSpecifier.positionAttribute())
-            positionAttributeId = m_boundingVolumeSpecifier.positionAttribute()->id();
-        change->setValue(QVariant::fromValue(positionAttributeId));
-        notifyObservers(change);
-    }
-}
-
-/*!
  * \qmltype Geometry
  * \instantiates Qt3DRender::QGeometry
  * \inqmlmodule Qt3D.Render
  */
 
 /*!
- * \qmlproperty int Geometry::verticesPerPatch
+ * \qmlproperty QAttribute Geometry::boundingVolumePositionAttribute
  *
- * Holds vertices per patch.
- */
-
-/*!
- * \qmlproperty BoundingVolumeSpecifier Geometry::boundingVolumeSpecifier
- *
- * Holds bounding volume specifier.
+ * Holds the property used to compute the bounding volume.
  */
 
 /*!
@@ -96,7 +75,7 @@ void QGeometryPrivate::_q_boundingVolumeSpecifierChanged(QAbstractAttribute *)
  * \typedef Qt3DRender::QAttributeList
  * \relates Qt3DRender::QGeometry
  *
- * A vector of {QAbstractAttribute}s.
+ * A vector of {QAttribute}s.
  */
 
 /*!
@@ -105,9 +84,6 @@ void QGeometryPrivate::_q_boundingVolumeSpecifierChanged(QAbstractAttribute *)
 QGeometry::QGeometry(QNode *parent)
     : QNode(*new QGeometryPrivate(), parent)
 {
-    Q_D(QGeometry);
-    QObject::connect(&d->m_boundingVolumeSpecifier, SIGNAL(positionAttributeChanged(QAbstractAttribute *)),
-                     this, SLOT(_q_boundingVolumeSpecifierChanged(QAbstractAttribute *)));
 }
 
 /*!
@@ -116,24 +92,14 @@ QGeometry::QGeometry(QNode *parent)
 QGeometry::QGeometry(QGeometryPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
-    Q_D(QGeometry);
-    QObject::connect(&d->m_boundingVolumeSpecifier, SIGNAL(positionAttributeChanged(QAbstractAttribute *)),
-                     this, SLOT(_q_boundingVolumeSpecifierChanged(QAbstractAttribute *)));
-}
-
-/*!
- * Destroys this geometry.
- */
-QGeometry::~QGeometry()
-{
-    QNode::cleanup();
 }
 
 /*!
  * Adds an \a attribute to this geometry.
  */
-void QGeometry::addAttribute(QAbstractAttribute *attribute)
+void QGeometry::addAttribute(QAttribute *attribute)
 {
+    Q_ASSERT(attribute);
     Q_D(QGeometry);
     if (!d->m_attributes.contains(attribute)) {
         d->m_attributes.append(attribute);
@@ -145,10 +111,9 @@ void QGeometry::addAttribute(QAbstractAttribute *attribute)
         if (!attribute->parent())
             attribute->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), attribute);
             change->setPropertyName("attribute");
-            change->setValue(QVariant::fromValue(attribute->id()));
             d->notifyObservers(change);
         }
     }
@@ -157,71 +122,55 @@ void QGeometry::addAttribute(QAbstractAttribute *attribute)
 /*!
  * Removes the given \a attribute from this geometry.
  */
-void QGeometry::removeAttribute(QAbstractAttribute *attribute)
+void QGeometry::removeAttribute(QAttribute *attribute)
 {
+    Q_ASSERT(attribute);
     Q_D(QGeometry);
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+    if (d->m_changeArbiter != nullptr) {
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), attribute);
         change->setPropertyName("attribute");
-        change->setValue(QVariant::fromValue(attribute->id()));
         d->notifyObservers(change);
     }
     d->m_attributes.removeOne(attribute);
 }
 
-void QGeometry::setVerticesPerPatch(int verticesPerPatch)
+void QGeometry::setBoundingVolumePositionAttribute(QAttribute *boundingVolumePositionAttribute)
 {
     Q_D(QGeometry);
-    if (d->m_verticesPerPatch != verticesPerPatch) {
-        d->m_verticesPerPatch = verticesPerPatch;
-        emit verticesPerPatchChanged(verticesPerPatch);
+    if (d->m_boundingVolumePositionAttribute != boundingVolumePositionAttribute) {
+        d->m_boundingVolumePositionAttribute = boundingVolumePositionAttribute;
+        emit boundingVolumePositionAttributeChanged(boundingVolumePositionAttribute);
     }
 }
 
 /*!
- * \property QGeometry::verticesPerPatch
+ * \property QGeometry::boundingVolumePositionAttribute
  *
- * Holds vertices per patch.
+ * Holds atribute used to compute the bounding volume .
  */
-int QGeometry::verticesPerPatch() const
+QAttribute *QGeometry::boundingVolumePositionAttribute() const
 {
     Q_D(const QGeometry);
-    return d->m_verticesPerPatch;
-}
-
-/*!
- * \property QGeometry::boundingVolumeSpecifier
- *
- * Holds bounding volume specifier.
- */
-QBoundingVolumeSpecifier *QGeometry::boundingVolumeSpecifier()
-{
-    Q_D(QGeometry);
-    return &d->m_boundingVolumeSpecifier;
+    return d->m_boundingVolumePositionAttribute;
 }
 
 /*!
  * \return the list of attributes in this geometry.
  */
-QAttributeList QGeometry::attributes() const
+QVector<QAttribute *> QGeometry::attributes() const
 {
     Q_D(const QGeometry);
     return d->m_attributes;
 }
 
-/*!
- * \internal
- */
-void QGeometry::copy(const QNode *ref)
+Qt3DCore::QNodeCreatedChangeBasePtr QGeometry::createNodeCreationChange() const
 {
-    QNode::copy(ref);
-    const QGeometry *geometry = static_cast<const QGeometry *>(ref);
-    d_func()->m_verticesPerPatch = geometry->d_func()->m_verticesPerPatch;
-    Q_FOREACH (QAbstractAttribute *attribute, geometry->d_func()->m_attributes)
-        d_func()->m_attributes.append(qobject_cast<QAbstractAttribute *>(QNode::clone(attribute)));
-    // Copy bounding volume specifier attribute
-    if (geometry->d_func()->m_boundingVolumeSpecifier.positionAttribute() != Q_NULLPTR)
-        d_func()->m_boundingVolumeSpecifier.setPositionAttribute(qobject_cast<QAbstractAttribute *>(QNode::clone(geometry->d_func()->m_boundingVolumeSpecifier.positionAttribute())));
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QGeometryData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QGeometry);
+    data.attributeIds = qIdsForNodes(d->m_attributes);
+    data.boundingVolumePositionAttributeId = qIdForNode(d->m_boundingVolumePositionAttribute);
+    return creationChange;
 }
 
 } // namespace Qt3DRender

@@ -42,7 +42,7 @@
 #include "executor_p.h"
 #include "handler_p.h"
 #include "manager_p.h"
-#include "qlogiccomponent.h"
+#include "qframeaction.h"
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
@@ -70,10 +70,25 @@ QLogicAspectPrivate::QLogicAspectPrivate()
     m_manager->setExecutor(m_executor.data());
 }
 
+void QLogicAspectPrivate::onEngineAboutToShutdown()
+{
+    // Throw away any pending work that may deadlock during the shutdown procedure
+    // when the main thread waits for any queued jobs to finish.
+    m_executor->clearQueueAndProceed();
+}
+
+void QLogicAspectPrivate::registerBackendTypes()
+{
+    Q_Q(QLogicAspect);
+    q->registerBackendType<QFrameAction>(QBackendNodeMapperPtr(new Logic::HandlerFunctor(m_manager.data())));
+}
+
 QLogicAspect::QLogicAspect(QObject *parent)
     : QAbstractAspect(*new QLogicAspectPrivate(), parent)
 {
-    registerBackendTypes();
+    Q_D(QLogicAspect);
+    setObjectName(QStringLiteral("Logic Aspect"));
+    d->registerBackendTypes();
     d_func()->m_manager->setLogicAspect(this);
 }
 
@@ -81,13 +96,10 @@ QLogicAspect::QLogicAspect(QObject *parent)
 QLogicAspect::QLogicAspect(QLogicAspectPrivate &dd, QObject *parent)
     : QAbstractAspect(dd, parent)
 {
-    registerBackendTypes();
+    Q_D(QLogicAspect);
+    setObjectName(QStringLiteral("Logic Aspect"));
+    d->registerBackendTypes();
     d_func()->m_manager->setLogicAspect(this);
-}
-
-void QLogicAspect::registerBackendTypes()
-{
-    registerBackendType<QLogicComponent>(QBackendNodeFunctorPtr(new Logic::HandlerFunctor(d_func()->m_manager.data())));
 }
 
 QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)
@@ -104,26 +116,14 @@ QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)
     return jobs;
 }
 
-void QLogicAspect::onInitialize()
+void QLogicAspect::onRegistered()
 {
 }
 
-void QLogicAspect::onCleanup()
-{
-}
-
-void QLogicAspect::onStartup()
+void QLogicAspect::onEngineStartup()
 {
     Q_D(QLogicAspect);
     d->m_executor->setScene(d->m_arbiter->scene());
-}
-
-void QLogicAspect::onShutdown()
-{
-    Q_D(QLogicAspect);
-    // Throw away any pending work that may deadlock during the shutdown procedure
-    // when the main thread waits for any queued jobs to finish.
-    d->m_executor->clearQueueAndProceed();
 }
 
 } // namespace Qt3DLogic

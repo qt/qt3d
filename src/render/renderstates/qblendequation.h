@@ -52,36 +52,32 @@ class QBlendEquationPrivate;
 class QT3DRENDERSHARED_EXPORT QBlendEquation : public QRenderState
 {
     Q_OBJECT
-    Q_PROPERTY(BlendMode mode READ mode WRITE setMode NOTIFY modeChanged)
+    Q_PROPERTY(BlendFunction blendFunction READ blendFunction WRITE setBlendFunction NOTIFY blendFunctionChanged)
 public:
 
-    enum BlendMode
+    enum BlendFunction
     {
-        FuncAdd = 0x8006,
-        FuncSubstract = 0x800A,
-        FuncReverseSubstract = 0x800B,
+        Add = 0x8006,
+        Subtract = 0x800A,
+        ReverseSubtract = 0x800B,
         Min = 0x8007,
         Max = 0x8008
     };
-    Q_ENUM(BlendMode)
+    Q_ENUM(BlendFunction)
 
-    explicit QBlendEquation(Qt3DCore::QNode *parent = 0);
-    ~QBlendEquation();
+    explicit QBlendEquation(Qt3DCore::QNode *parent = nullptr);
 
-    BlendMode mode() const;
+    BlendFunction blendFunction() const;
 
 public Q_SLOTS:
-    void setMode(BlendMode mode);
+    void setBlendFunction(BlendFunction blendFunction);
 
 Q_SIGNALS:
-    void modeChanged(BlendMode mode);
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void blendFunctionChanged(BlendFunction blendFunction);
 
 private:
     Q_DECLARE_PRIVATE(QBlendEquation)
-    QT3D_CLONEABLE(QBlendEquation)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

@@ -51,7 +51,7 @@ namespace Qt3DRender {
 
 Scene3DCleaner::Scene3DCleaner(QObject *parent)
     : QObject(parent)
-    , m_renderer(Q_NULLPTR)
+    , m_renderer(nullptr)
 {
 }
 
@@ -64,8 +64,8 @@ void Scene3DCleaner::cleanup()
 {
     Q_ASSERT(m_renderer);
     delete m_renderer->m_aspectEngine; // also deletes m_renderer->m_renderAspect
-    m_renderer->m_aspectEngine = Q_NULLPTR;
-    m_renderer->m_renderAspect = Q_NULLPTR;
+    m_renderer->m_aspectEngine = nullptr;
+    m_renderer->m_renderAspect = nullptr;
     m_renderer->deleteLater();
     deleteLater();
 }

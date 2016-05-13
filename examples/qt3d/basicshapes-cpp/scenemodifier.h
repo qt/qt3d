@@ -56,13 +56,13 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 
-#include <Qt3DRender/QTorusMesh>
-#include <Qt3DRender/QConeMesh>
-#include <Qt3DRender/QCylinderMesh>
-#include <Qt3DRender/QCuboidMesh>
-#include <Qt3DRender/QPlaneMesh>
-#include <Qt3DRender/QSphereMesh>
-#include <Qt3DRender/QPhongMaterial>
+#include <Qt3DExtras/QTorusMesh>
+#include <Qt3DExtras/QConeMesh>
+#include <Qt3DExtras/QCylinderMesh>
+#include <Qt3DExtras/QCuboidMesh>
+#include <Qt3DExtras/QPlaneMesh>
+#include <Qt3DExtras/QSphereMesh>
+#include <Qt3DExtras/QPhongMaterial>
 
 class SceneModifier : public QObject
 {
@@ -82,7 +82,7 @@ public slots:
 
 private:
     Qt3DCore::QEntity *m_rootEntity;
-    Qt3DRender::QTorusMesh *m_torus;
+    Qt3DExtras::QTorusMesh *m_torus;
     Qt3DCore::QEntity *m_coneEntity;
     Qt3DCore::QEntity *m_cylinderEntity;
     Qt3DCore::QEntity *m_torusEntity;

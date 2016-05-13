@@ -52,10 +52,11 @@
 // We mean it.
 //
 
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/qnodecreatedchange.h>
+#include <Qt3DCore/private/qentity_p.h>
 #include <Qt3DCore/private/qhandle_p.h>
 #include <QVector>
 
@@ -79,7 +80,7 @@ class Sphere;
 class Renderer;
 class NodeManagers;
 
-class Q_AUTOTEST_EXPORT Entity : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT Entity : public BackendNode
 {
 public:
     Entity();
@@ -89,7 +90,6 @@ public:
     void setParentHandle(HEntity parentHandle);
     void setNodeManagers(NodeManagers *manager);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
     void dump() const;
 
@@ -111,10 +111,8 @@ public:
     Sphere *worldBoundingVolumeWithChildren() const { return m_worldBoundingVolumeWithChildren.data(); }
 
     void addComponent(Qt3DCore::QComponent *component);
-    void removeComponent(const Qt3DCore::QNodeId &nodeId);
-
-    bool isEnabled() const;
-    void setEnabled(bool isEnabled);
+    void addComponent(Qt3DCore::QNodeIdTypePair idAndType);
+    void removeComponent(Qt3DCore::QNodeId nodeId);
 
     bool isBoundingVolumeDirty() const;
     void unsetBoundingVolumeDirty();
@@ -134,7 +132,7 @@ public:
     template<class Backend>
     Backend *renderComponent() const
     {
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     template<class Backend>
@@ -150,12 +148,14 @@ public:
     }
 
     template<class Backend>
-    QList<Qt3DCore::QNodeId> componentsUuid() const
+    QVector<Qt3DCore::QNodeId> componentsUuid() const
     {
-        return QList<Qt3DCore::QNodeId>();
+        return QVector<Qt3DCore::QNodeId>();
     }
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     NodeManagers *m_nodeManagers;
     HEntity m_handle;
     HEntity m_parentHandle;
@@ -170,16 +170,15 @@ private:
     Qt3DCore::QNodeId m_transformComponent;
     Qt3DCore::QNodeId m_materialComponent;
     Qt3DCore::QNodeId m_cameraComponent;
-    QList<Qt3DCore::QNodeId> m_layerComponents;
-    QList<Qt3DCore::QNodeId> m_shaderDataComponents;
-    QList<Qt3DCore::QNodeId> m_lightComponents;
+    QVector<Qt3DCore::QNodeId> m_layerComponents;
+    QVector<Qt3DCore::QNodeId> m_shaderDataComponents;
+    QVector<Qt3DCore::QNodeId> m_lightComponents;
     Qt3DCore::QNodeId m_geometryRendererComponent;
     Qt3DCore::QNodeId m_objectPickerComponent;
     Qt3DCore::QNodeId m_boundingVolumeDebugComponent;
     Qt3DCore::QNodeId m_computeComponent;
 
     QString m_objectName;
-    bool m_enabled;
     bool m_boundingDirty;
 };
 
@@ -205,14 +204,14 @@ QList<HLayer> Entity::componentsHandle<Layer>() const;
 template<>
 QList<HShaderData> Entity::componentsHandle<ShaderData>() const;
 
-template<>
-Q_AUTOTEST_EXPORT HBoundingVolumeDebug Entity::componentHandle<BoundingVolumeDebug>() const;
+//template<>
+//Q_AUTOTEST_EXPORT HBoundingVolumeDebug Entity::componentHandle<BoundingVolumeDebug>() const;
 
 template<>
 QList<HLight> Entity::componentsHandle<Light>() const;
 
 template<>
-Q_AUTOTEST_EXPORT HComputeJob Entity::componentHandle<ComputeJob>() const;
+Q_AUTOTEST_EXPORT HComputeCommand Entity::componentHandle<ComputeCommand>() const;
 
 // Render components
 template<>
@@ -236,14 +235,14 @@ QList<Layer *> Entity::renderComponents<Layer>() const;
 template<>
 QList<ShaderData *> Entity::renderComponents<ShaderData>() const;
 
-template<>
-Q_AUTOTEST_EXPORT BoundingVolumeDebug *Entity::renderComponent<BoundingVolumeDebug>() const;
+//template<>
+//Q_AUTOTEST_EXPORT BoundingVolumeDebug *Entity::renderComponent<BoundingVolumeDebug>() const;
 
 template<>
 QList<Light *> Entity::renderComponents<Light>() const;
 
 template<>
-Q_AUTOTEST_EXPORT ComputeJob *Entity::renderComponent<ComputeJob>() const;
+Q_AUTOTEST_EXPORT ComputeCommand *Entity::renderComponent<ComputeCommand>() const;
 
 // UUid
 template<>
@@ -256,10 +255,10 @@ template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<Material>() const;
 
 template<>
-Q_AUTOTEST_EXPORT QList<Qt3DCore::QNodeId> Entity::componentsUuid<Layer>() const;
+Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<Layer>() const;
 
 template<>
-Q_AUTOTEST_EXPORT QList<Qt3DCore::QNodeId> Entity::componentsUuid<ShaderData>() const;
+Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<ShaderData>() const;
 
 template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<GeometryRenderer>() const;
@@ -267,25 +266,26 @@ Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<GeometryRenderer>() co
 template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ObjectPicker>() const;
 
-template<>
-Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<BoundingVolumeDebug>() const;
+//template<>
+//Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<BoundingVolumeDebug>() const;
 
 template<>
-Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ComputeJob>() const;
+Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ComputeCommand>() const;
 
 template<>
-Q_AUTOTEST_EXPORT QList<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const;
+Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const;
 
-class RenderEntityFunctor : public Qt3DCore::QBackendNodeFunctor
+class RenderEntityFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
-    explicit RenderEntityFunctor(NodeManagers *manager);
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    explicit RenderEntityFunctor(AbstractRenderer *renderer, NodeManagers *manager);
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
 
 private:
     NodeManagers *m_nodeManagers;
+    AbstractRenderer *m_renderer;
 };
 
 } // namespace Render

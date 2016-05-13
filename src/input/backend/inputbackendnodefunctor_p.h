@@ -61,7 +61,7 @@ namespace Qt3DInput {
 namespace Input {
 
 template<class Backend, class Manager>
-class InputNodeFunctor : public Qt3DCore::QBackendNodeFunctor
+class InputNodeFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit InputNodeFunctor(Manager *manager)
@@ -69,19 +69,18 @@ public:
     {
     }
 
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_FINAL
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_FINAL
     {
-        Backend *backend = m_manager->getOrCreateResource(frontend->id());
-        backend->setPeer(frontend);
+        Backend *backend = m_manager->getOrCreateResource(change->subjectId());
         return backend;
     }
 
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL
     {
         return m_manager->lookupResource(id);
     }
 
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL
     {
         m_manager->releaseResource(id);
     }

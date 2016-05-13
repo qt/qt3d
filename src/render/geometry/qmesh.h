@@ -58,25 +58,24 @@ class QT3DRENDERSHARED_EXPORT QMesh : public QGeometryRenderer
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
-    Q_PROPERTY(QString subMesh READ subMesh WRITE setSubMesh NOTIFY subMeshChanged)
+    Q_PROPERTY(QString meshName READ meshName WRITE setMeshName NOTIFY meshNameChanged)
 
 public:
-    explicit QMesh(Qt3DCore::QNode *parent = 0);
-    ~QMesh();
+    explicit QMesh(Qt3DCore::QNode *parent = nullptr);
 
     QUrl source() const;
-    QString subMesh() const;
+    QString meshName() const;
 
 public Q_SLOTS:
     void setSource(const QUrl &source);
-    void setSubMesh(const QString &subMesh);
+    void setMeshName(const QString &meshName);
 
 Q_SIGNALS:
     void sourceChanged(const QUrl &source);
-    void subMeshChanged(const QString &subMesh);
+    void meshNameChanged(const QString &meshName);
 
 protected:
-    QMesh(QMeshPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QMesh(QMeshPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QMesh)

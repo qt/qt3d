@@ -40,12 +40,12 @@
 #ifndef QT3DQUICKRENDER_GLOBAL_H
 #define QT3DQUICKRENDER_GLOBAL_H
 
-#include <QtCore/qglobal.h>
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 
 #if defined(QT_SHARED) || !defined(QT_STATIC)
-#  if defined(QT3DQUICKRENDER_LIBRARY)
+#  if defined(QT_BUILD_3DQUICKRENDER_LIB)
 #    define QT3DQUICKRENDERSHARED_EXPORT Q_DECL_EXPORT
 #  else
 #    define QT3DQUICKRENDERSHARED_EXPORT Q_DECL_IMPORT

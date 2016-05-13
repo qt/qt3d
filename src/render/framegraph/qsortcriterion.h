@@ -54,8 +54,7 @@ class QT3DRENDERSHARED_EXPORT QSortCriterion : public Qt3DCore::QNode
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QSortCriterion::SortType sort READ sort WRITE setSort NOTIFY sortChanged)
 public:
-    explicit QSortCriterion(Qt3DCore::QNode *parent = 0);
-    ~QSortCriterion();
+    explicit QSortCriterion(Qt3DCore::QNode *parent = Q_NULLPTR);
 
     enum SortType {
         StateChangeCost = (1 << 0),
@@ -73,11 +72,9 @@ Q_SIGNALS:
     void sortChanged(SortType sort);
 
 protected:
-    QSortCriterion(QSortCriterionPrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    QSortCriterion(QSortCriterionPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
 
 private:
-    QT3D_CLONEABLE(QSortCriterion)
     Q_DECLARE_PRIVATE(QSortCriterion)
 };
 

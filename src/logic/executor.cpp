@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "executor_p.h"
-#include <Qt3DLogic/qlogiccomponent.h>
+#include <Qt3DLogic/qframeaction.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <QtCore/qsemaphore.h>
@@ -52,7 +52,7 @@ namespace Logic {
 
 Executor::Executor(QObject *parent)
     : QObject(parent)
-    , m_scene(Q_NULLPTR)
+    , m_scene(nullptr)
 {
 }
 
@@ -91,11 +91,11 @@ void Executor::processLogicFrameUpdates(float dt)
 {
     Q_ASSERT(m_scene);
     Q_ASSERT(m_semaphore);
-    QVector<QNode *> nodes = m_scene->lookupNodes(m_nodeIds);
-    foreach (QNode *node, nodes) {
-        QLogicComponent *logicComponent = qobject_cast<QLogicComponent *>(node);
-        if (logicComponent)
-            logicComponent->onFrameUpdate(dt);
+    const QVector<QNode *> nodes = m_scene->lookupNodes(m_nodeIds);
+    for (QNode *node : nodes) {
+        QFrameAction *frameAction = qobject_cast<QFrameAction *>(node);
+        if (frameAction)
+            frameAction->onTriggered(dt);
     }
 
     // Release the semaphore so the calling Manager can continue

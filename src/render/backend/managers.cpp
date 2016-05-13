@@ -46,26 +46,26 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-bool FrameGraphManager::containsNode(const Qt3DCore::QNodeId &id) const
+bool FrameGraphManager::containsNode(Qt3DCore::QNodeId id) const
 {
     return m_nodes.contains(id);
 }
 
-void FrameGraphManager::appendNode(FrameGraphNode *node)
+void FrameGraphManager::appendNode(Qt3DCore::QNodeId id, FrameGraphNode *node)
 {
-    m_nodes.insert(node->peerUuid(), node);
+    m_nodes.insert(id, node);
 }
 
-FrameGraphNode* FrameGraphManager::lookupNode(const Qt3DCore::QNodeId &id) const
+FrameGraphNode* FrameGraphManager::lookupNode(Qt3DCore::QNodeId id) const
 {
     const QHash<Qt3DCore::QNodeId, FrameGraphNode*>::const_iterator it = m_nodes.find(id);
     if (it == m_nodes.end())
-        return Q_NULLPTR;
+        return nullptr;
     else
         return *it;
 }
 
-void FrameGraphManager::releaseNode(const Qt3DCore::QNodeId &id)
+void FrameGraphManager::releaseNode(Qt3DCore::QNodeId id)
 {
     delete m_nodes.take(id);
 }

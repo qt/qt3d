@@ -29,28 +29,29 @@
 #include <QtTest/QtTest>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DCore/QScenePropertyChange>
+#include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DRender/private/qboundingvolumeprovider_p.h>
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
 #include <Qt3DRender/private/objectpicker_p.h>
 #include <Qt3DRender/qobjectpicker.h>
-#include <Qt3DRender/qspheremesh.h>
+#include <Qt3DExtras/qspheremesh.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferfunctor.h>
-#include <Qt3DRender/qspheregeometry.h>
+#include <Qt3DRender/qbufferdatagenerator.h>
+#include <Qt3DExtras/qspheregeometry.h>
 #include <Qt3DRender/qpickevent.h>
-#include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
 
 using namespace Qt3DCore;
 using namespace Qt3DRender;
+using namespace Qt3DExtras;
 using namespace Qt3DRender::Render;
 
 class MyObjectPicker : public Qt3DRender::QObjectPicker
 {
     Q_OBJECT
 public:
-    MyObjectPicker(Qt3DCore::QNode *parent = Q_NULLPTR)
+    MyObjectPicker(Qt3DCore::QNode *parent = nullptr)
         : Qt3DRender::QObjectPicker(parent)
     {}
 
@@ -64,7 +65,7 @@ class PickableEntity : public QEntity
 {
     Q_OBJECT
 public:
-    explicit PickableEntity(const QVector3D &position, float radius, QEntity *parent = Q_NULLPTR)
+    explicit PickableEntity(const QVector3D &position, float radius, QEntity *parent = nullptr)
         : QEntity(parent)
         , picker(new MyObjectPicker(this))
         , mesh(new QSphereMesh(this))
@@ -80,7 +81,7 @@ public:
         Qt3DRender::QBuffer *vertexBuffer = static_cast<Qt3DRender::QBuffer *>(positionAttr->buffer());
 
         // Load the geometry
-        const QByteArray data = (*vertexBuffer->bufferFunctor())();
+        const QByteArray data = (*vertexBuffer->dataGenerator())();
         vertexBuffer->setData(data);
 
         transform->setTranslation(position);
@@ -128,7 +129,11 @@ class tst_Picking : public QObject
 {
     Q_OBJECT
 public:
-    tst_Picking() {}
+    tst_Picking()
+    {
+        qRegisterMetaType<Qt3DCore::QNode*>();
+    }
+
     ~tst_Picking() {}
 
 private Q_SLOTS:
@@ -140,11 +145,13 @@ private Q_SLOTS:
         PickableEntity child2(QVector3D(), 5.0f, &root);
         PickableEntity child11(QVector3D(), 5.0f, &child1);
 
+        QCoreApplication::processEvents();
+
         // WHEN
         Qt3DRender::QPickEventPtr event(new Qt3DRender::QPickEvent());
         QVariant v;
         v.setValue<Qt3DRender::QPickEventPtr>(event);
-        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, child11.id()));
+        Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(child11.id()));
         e->setPropertyName("pressed");
         e->setValue(v);
         child11.picker->sceneChangeEvent(e);
@@ -188,11 +195,13 @@ private Q_SLOTS:
         PickableEntity child2(QVector3D(), 5.0f, &root);
         PickableEntity child11(QVector3D(), 5.0f, &child1);
 
+        QCoreApplication::processEvents();
+
         // WHEN
         Qt3DRender::QPickEventPtr event(new Qt3DRender::QPickEvent());
         QVariant v;
         v.setValue<Qt3DRender::QPickEventPtr>(event);
-        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, child11.id()));
+        Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(child11.id()));
         e->setPropertyName("pressed");
         e->setValue(v);
         child11.picker->sceneChangeEvent(e);
@@ -232,11 +241,13 @@ private Q_SLOTS:
         PickableEntity child2(QVector3D(), 5.0f, &root);
         PickableEntity child11(QVector3D(), 5.0f, &child1);
 
+        QCoreApplication::processEvents();
+
         // WHEN
         Qt3DRender::QPickEventPtr event(new Qt3DRender::QPickEvent());
         QVariant v;
         v.setValue<Qt3DRender::QPickEventPtr>(event);
-        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, child11.id()));
+        Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(child11.id()));
         e->setPropertyName("clicked");
         e->setValue(v);
         child11.picker->sceneChangeEvent(e);
@@ -273,6 +284,6 @@ private Q_SLOTS:
     }
 };
 
-QTEST_APPLESS_MAIN(tst_Picking)
+QTEST_MAIN(tst_Picking)
 
 #include "tst_picking.moc"

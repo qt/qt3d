@@ -60,7 +60,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class GeometryRendererManager : public Qt3DCore::QResourceManager<
+class Q_AUTOTEST_EXPORT GeometryRendererManager : public Qt3DCore::QResourceManager<
         GeometryRenderer,
         Qt3DCore::QNodeId,
         16,
@@ -72,7 +72,7 @@ public:
     ~GeometryRendererManager();
 
     // Aspect Thread
-    void addDirtyGeometryRenderer(const Qt3DCore::QNodeId &bufferId);
+    void addDirtyGeometryRenderer(Qt3DCore::QNodeId bufferId);
     QVector<Qt3DCore::QNodeId> dirtyGeometryRenderers();
 
     void requestTriangleDataRefreshForGeometryRenderer(const Qt3DCore::QNodeId geometryRenderer);

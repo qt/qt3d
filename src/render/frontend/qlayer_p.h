@@ -64,7 +64,6 @@ public:
     QLayerPrivate();
 
     Q_DECLARE_PUBLIC(QLayer)
-    QStringList m_names;
 };
 
 } // namespace Qt3DRender

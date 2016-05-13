@@ -59,11 +59,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QAbstractAspectJobManager : public QObject
+class QT3DCORESHARED_EXPORT QAbstractAspectJobManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit QAbstractAspectJobManager(QObject *p = 0);
+    explicit QAbstractAspectJobManager(QObject *p = nullptr);
 
     virtual void initialize() {}
     virtual void enqueueJobs(const QVector<QAspectJobPtr> &jobQueue) = 0;

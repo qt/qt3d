@@ -96,7 +96,7 @@ QAbstractAspect *QAspectFactory::createAspect(const QString &aspect, QObject *pa
         return m_factories.value(aspect)(parent);
     } else {
         qWarning() << "Unsupported aspect name:" << aspect << "please check registrations";
-        return Q_NULLPTR;
+        return nullptr;
     }
 }
 

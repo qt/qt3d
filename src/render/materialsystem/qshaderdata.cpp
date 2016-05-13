@@ -76,11 +76,6 @@ QShaderData::QShaderData(QNode *parent)
 {
 }
 
-QShaderData::~QShaderData()
-{
-    QNode::cleanup();
-}
-
 PropertyReaderInterfacePtr QShaderData::propertyReader() const
 {
     Q_D(const QShaderData);
@@ -93,23 +88,55 @@ QShaderData::QShaderData(QShaderDataPrivate &dd, QNode *parent)
 {
 }
 
-void QShaderData::copy(const QNode *ref)
+bool QShaderData::event(QEvent *event)
 {
-    QNode::copy(ref);
-    const QShaderData *shaderData = static_cast<const QShaderData *>(ref);
-    // We need to copy the properties
-    // At the moment we assume that the properties are copyable
-    // this may change in a later refactoring
+    Q_D(QShaderData);
 
-    const QMetaObject *metaObject = shaderData->metaObject();
-    const int propertyOffset = QShaderData::staticMetaObject.propertyOffset();
-    const int propertyCount = metaObject->propertyCount();
+    if (event->type() == QEvent::DynamicPropertyChange) {
+        auto e = static_cast<QDynamicPropertyChangeEvent*>(event);
+        const auto propertyName = e->propertyName();
 
-    // Copy properties of shaderData
-    for (int i = propertyOffset; i < propertyCount; ++i) {
-        const QMetaProperty property = metaObject->property(i);
-        setProperty(property.name(), propertyReader()->readProperty(shaderData->property(property.name())));
+        const QVariant data = property(propertyName);
+        if (data.canConvert<Qt3DCore::QNode*>()) {
+            const auto node = data.value<Qt3DCore::QNode*>();
+            const auto id = node ? node->id() : Qt3DCore::QNodeId();
+            d->notifyDynamicPropertyChange(propertyName, QVariant::fromValue(id));
+        } else {
+            d->notifyDynamicPropertyChange(propertyName, data);
+        }
     }
+
+    return QComponent::event(event);
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QShaderData::createNodeCreationChange() const
+{
+    Q_D(const QShaderData);
+
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QShaderDataData>::create(this);
+    QShaderDataData &data = creationChange->data;
+
+    data.propertyReader = d->m_propertyReader;
+
+    const QMetaObject *metaObj = metaObject();
+    const int propertyOffset = QShaderData::staticMetaObject.propertyOffset();
+    const int propertyCount = metaObj->propertyCount();
+
+    data.properties.reserve(propertyCount - propertyOffset);
+    for (int i = propertyOffset; i < propertyCount; ++i) {
+        const QMetaProperty pro = metaObj->property(i);
+        if (pro.isWritable()) {
+            data.properties.push_back(qMakePair(pro.name(),
+                                                propertyReader()->readProperty(property(pro.name()))));
+        }
+    }
+
+    foreach (const QByteArray &propertyName, dynamicPropertyNames()) {
+        data.properties.push_back(qMakePair(propertyName,
+                                            propertyReader()->readProperty(property(propertyName))));
+    }
+
+    return creationChange;
 }
 
 } // namespace Qt3DRender

@@ -51,8 +51,8 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
-#include <private/shadervariables_p.h>
+#include <Qt3DRender/private/backendnode_p.h>
+#include <Qt3DRender/private/shadervariables_p.h>
 #include <Qt3DRender/qshaderdata.h>
 #include <QMutex>
 #include <QMatrix4x4>
@@ -67,9 +67,14 @@ class GraphicsContext;
 class GLBuffer;
 class NodeManagers;
 
-class Q_AUTOTEST_EXPORT ShaderData : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT ShaderData : public BackendNode
 {
 public:
+    enum TransformType {
+        ModelToEye = 0,
+        ModelToWorld
+    };
+
     ShaderData();
     ~ShaderData();
 
@@ -86,10 +91,10 @@ public:
     // Called by FrameCleanupJob
     static void cleanup(NodeManagers *managers);
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void setManagers(NodeManagers *managers);
 
 protected:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     // 1 to 1 match with frontend properties, modified only by sceneChangeEvent
@@ -102,32 +107,33 @@ protected:
     QHash<QString, QVariant> m_updatedProperties;
     PropertyReaderInterfacePtr m_propertyReader;
     QHash<QString, QVariant> m_nestedShaderDataProperties;
-    QHash<QString, QShaderData::TransformType> m_transformedProperties;
+    QHash<QString, TransformType> m_transformedProperties;
     QMutex m_mutex;
-    static QList<Qt3DCore::QNodeId> m_updatedShaderData;
+    static QVector<Qt3DCore::QNodeId> m_updatedShaderData;
     QMatrix4x4 m_worldMatrix;
     QMatrix4x4 m_viewMatrix;
     NodeManagers *m_managers;
 
     void readPeerProperties(QShaderData *peer);
     void clearUpdatedProperties();
-    static ShaderData *lookupResource(NodeManagers *managers, const Qt3DCore::QNodeId &id);
-    ShaderData *lookupResource(const Qt3DCore::QNodeId &id);
+    static ShaderData *lookupResource(NodeManagers *managers, Qt3DCore::QNodeId id);
+    ShaderData *lookupResource(Qt3DCore::QNodeId id);
 
     friend class RenderShaderDataFunctor;
 };
 
-class RenderShaderDataFunctor : public Qt3DCore::QBackendNodeFunctor
+class RenderShaderDataFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
-    explicit RenderShaderDataFunctor(NodeManagers *managers);
+    explicit RenderShaderDataFunctor(AbstractRenderer *renderer, NodeManagers *managers);
 
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_FINAL;
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
 
 private:
     NodeManagers *m_managers;
+    AbstractRenderer *m_renderer;
 };
 
 } // namespace Render

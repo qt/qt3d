@@ -51,8 +51,8 @@
 // We mean it.
 //
 
-#include <QtGlobal>
 #include <QWeakPointer>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,12 +60,45 @@ namespace Qt3DCore {
 
 class QAspectJob;
 
-class QAspectJobPrivate
+#ifdef QT3D_JOBS_RUN_STATS
+struct FrameHeader
+{
+    quint32 frameId;
+    quint32 jobCount;
+};
+
+union JobId
+{
+    quint32 typeAndInstance[2];
+    quint64 id;
+};
+
+struct JobRunStats
+{
+    JobRunStats()
+    {
+        jobId.id = 0;
+    }
+
+    qint64 startTime;
+    qint64 endTime;
+    JobId jobId;
+    // QAspectJob subclasses should properly populate the jobId
+    quint64 threadId;
+};
+#endif
+
+class QT3DCORE_PRIVATE_EXPORT QAspectJobPrivate
 {
 public:
     QAspectJobPrivate();
 
+    static QAspectJobPrivate *get(QAspectJob *job);
+
     QVector<QWeakPointer<QAspectJob> > m_dependencies;
+#ifdef QT3D_JOBS_RUN_STATS
+    JobRunStats m_stats;
+#endif
 };
 
 } // Qt3D

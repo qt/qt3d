@@ -68,6 +68,7 @@ class QInputAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
 {
 public:
     QInputAspectPrivate();
+    void loadInputDevicePlugins();
 
     Q_DECLARE_PUBLIC(QInputAspect)
     QScopedPointer<Input::InputHandler> m_inputHandler;

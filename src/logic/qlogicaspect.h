@@ -53,18 +53,13 @@ class QT3DLOGICSHARED_EXPORT QLogicAspect : public Qt3DCore::QAbstractAspect
 {
     Q_OBJECT
 public:
-    explicit QLogicAspect(QObject *parent = 0);
+    explicit QLogicAspect(QObject *parent = nullptr);
 
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
-protected:
-    void registerBackendTypes();
-
 private:
-    void onInitialize() Q_DECL_OVERRIDE;
-    void onStartup() Q_DECL_OVERRIDE;
-    void onShutdown() Q_DECL_OVERRIDE;
-    void onCleanup() Q_DECL_OVERRIDE;
+    void onRegistered() Q_DECL_OVERRIDE;
+    void onEngineStartup() Q_DECL_OVERRIDE;
 
     Q_DECLARE_PRIVATE(QLogicAspect)
     QLogicAspect(QLogicAspectPrivate &dd, QObject *parent);

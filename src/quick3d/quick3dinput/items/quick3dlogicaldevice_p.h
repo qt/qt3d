@@ -69,7 +69,7 @@ class QT3DQUICKINPUTSHARED_PRIVATE_EXPORT Quick3DLogicalDevice  : public QObject
     Q_PROPERTY(QQmlListProperty<Qt3DInput::QAxis> axes READ qmlAxes CONSTANT)
     Q_PROPERTY(QQmlListProperty<Qt3DInput::QAction> actions READ qmlActions CONSTANT)
 public:
-    explicit Quick3DLogicalDevice(QObject *parent = Q_NULLPTR);
+    explicit Quick3DLogicalDevice(QObject *parent = nullptr);
 
     inline QLogicalDevice *parentLogicalDevice() const { return qobject_cast<QLogicalDevice *>(parent()); }
     QQmlListProperty<QAxis> qmlAxes();

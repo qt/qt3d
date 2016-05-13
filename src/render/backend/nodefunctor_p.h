@@ -51,8 +51,8 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnode.h>
+#include <Qt3DRender/private/backendnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,34 +60,38 @@ namespace Qt3DRender {
 
 namespace Render {
 
+class AbstractRenderer;
+
 template<class Backend, class Manager>
-class NodeFunctor : public Qt3DCore::QBackendNodeFunctor
+class NodeFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
-    explicit NodeFunctor(Manager *manager)
+    explicit NodeFunctor(AbstractRenderer *renderer, Manager *manager)
         : m_manager(manager)
+        , m_renderer(renderer)
     {
     }
 
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_FINAL
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_FINAL
     {
-        Backend *backend = m_manager->getOrCreateResource(frontend->id());
-        backend->setPeer(frontend);
+        Backend *backend = m_manager->getOrCreateResource(change->subjectId());
+        backend->setRenderer(m_renderer);
         return backend;
     }
 
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL
     {
         return m_manager->lookupResource(id);
     }
 
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL
     {
         m_manager->releaseResource(id);
     }
 
 private:
     Manager *m_manager;
+    AbstractRenderer *m_renderer;
 };
 
 } // namespace Render

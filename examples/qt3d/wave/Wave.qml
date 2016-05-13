@@ -50,6 +50,7 @@
 
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import Qt3D.Extras 2.0
 
 Entity {
     id: root
@@ -63,13 +64,9 @@ Entity {
     property color tint: Qt.rgba( 0.0, 0.0, 0.0, 1.0 )
     property real intensity: 0.3
     property alias wireframe: material.wireframe
+    property Layer layer: null
 
     components: [ transform, mesh, material, layer ]
-
-    Layer {
-        id: layer
-        names: "wave"
-    }
 
     Transform {
         id: transform

@@ -51,8 +51,8 @@ namespace Qt3DRender {
 namespace Render {
 
 GraphicsHelperGL2::GraphicsHelperGL2()
-    : m_funcs(Q_NULLPTR)
-    , m_fboFuncs(Q_NULLPTR)
+    : m_funcs(nullptr)
+    , m_fboFuncs(nullptr)
 {
 
 }
@@ -99,6 +99,16 @@ void GraphicsHelperGL2::drawArraysInstanced(GLenum primitiveType,
                                              GLsizei count,
                                              GLsizei instances)
 {
+    for (GLint i = 0; i < instances; i++)
+        drawArrays(primitiveType,
+                   first,
+                   count);
+}
+
+void GraphicsHelperGL2::drawArraysInstancedBaseInstance(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances, GLsizei baseInstance)
+{
+    if (baseInstance != 0)
+        qWarning() << "glDrawArraysInstancedBaseInstance is not supported with OpenGL 2";
     for (GLint i = 0; i < instances; i++)
         drawArrays(primitiveType,
                    first,
@@ -249,30 +259,26 @@ void GraphicsHelperGL2::depthMask(GLenum mode)
     m_funcs->glDepthMask(mode);
 }
 
-void GraphicsHelperGL2::cullFace(GLenum mode)
-{
-    m_funcs->glEnable(GL_CULL_FACE);
-    m_funcs->glCullFace(mode);
-}
-
 void GraphicsHelperGL2::frontFace(GLenum mode)
 {
     m_funcs->glFrontFace(mode);
 }
 
-void GraphicsHelperGL2::enableAlphaCoverage()
+void GraphicsHelperGL2::setMSAAEnabled(bool enabled)
 {
-    m_funcs->glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+    enabled ? m_funcs->glEnable(GL_MULTISAMPLE)
+            : m_funcs->glDisable(GL_MULTISAMPLE);
 }
 
-void GraphicsHelperGL2::disableAlphaCoverage()
+void GraphicsHelperGL2::setAlphaCoverageEnabled(bool enabled)
 {
-    m_funcs->glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+    enabled ? m_funcs->glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE)
+            : m_funcs->glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 }
 
 GLuint GraphicsHelperGL2::createFrameBufferObject()
 {
-    if (m_fboFuncs != Q_NULLPTR) {
+    if (m_fboFuncs != nullptr) {
         GLuint id;
         m_fboFuncs->glGenFramebuffers(1, &id);
         return id;
@@ -283,7 +289,7 @@ GLuint GraphicsHelperGL2::createFrameBufferObject()
 
 void GraphicsHelperGL2::releaseFrameBufferObject(GLuint frameBufferId)
 {
-    if (m_fboFuncs != Q_NULLPTR)
+    if (m_fboFuncs != nullptr)
         m_fboFuncs->glDeleteFramebuffers(1, &frameBufferId);
     else
         qWarning() << "FBO not supported by your OpenGL hardware";
@@ -291,21 +297,21 @@ void GraphicsHelperGL2::releaseFrameBufferObject(GLuint frameBufferId)
 
 bool GraphicsHelperGL2::checkFrameBufferComplete()
 {
-    if (m_fboFuncs != Q_NULLPTR)
+    if (m_fboFuncs != nullptr)
         return (m_fboFuncs->glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
     return false;
 }
 
 void GraphicsHelperGL2::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
 {
-    if (m_fboFuncs != Q_NULLPTR) {
+    if (m_fboFuncs != nullptr) {
         GLenum attr = GL_DEPTH_STENCIL_ATTACHMENT;
 
-        if (attachment.m_type <= QRenderAttachment::ColorAttachment15)
-            attr = GL_COLOR_ATTACHMENT0 + attachment.m_type;
-        else if (attachment.m_type == QRenderAttachment::DepthAttachment)
+        if (attachment.m_point <= QRenderTargetOutput::Color15)
+            attr = GL_COLOR_ATTACHMENT0 + attachment.m_point;
+        else if (attachment.m_point == QRenderTargetOutput::Depth)
             attr = GL_DEPTH_ATTACHMENT;
-        else if (attachment.m_type == QRenderAttachment::StencilAttachment)
+        else if (attachment.m_point == QRenderTargetOutput::Stencil)
             attr = GL_STENCIL_ATTACHMENT;
         else
             qCritical() << "DepthStencil Attachment not supported on OpenGL 2.0";
@@ -330,7 +336,7 @@ bool GraphicsHelperGL2::supportsFeature(GraphicsHelperInterface::Feature feature
 {
     switch (feature) {
     case MRT:
-        return (m_fboFuncs != Q_NULLPTR);
+        return (m_fboFuncs != nullptr);
     case TextureDimensionRetrieval:
         return true;
     default:
@@ -446,7 +452,7 @@ void GraphicsHelperGL2::bindUniform(const QVariant &v, const ShaderUniform &desc
 
 void GraphicsHelperGL2::bindFrameBufferObject(GLuint frameBufferId)
 {
-    if (m_fboFuncs != Q_NULLPTR)
+    if (m_fboFuncs != nullptr)
         m_fboFuncs->glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBufferId);
     else
         qWarning() << "FBO not supported by your OpenGL hardware";
@@ -563,6 +569,17 @@ void GraphicsHelperGL2::disableClipPlane(int clipPlane)
     m_funcs->glDisable(GL_CLIP_DISTANCE0 + clipPlane);
 }
 
+void GraphicsHelperGL2::setClipPlane(int clipPlane, const QVector3D &normal, float distance)
+{
+    double plane[4];
+    plane[0] = normal.x();
+    plane[1] = normal.y();
+    plane[2] = normal.z();
+    plane[3] = distance;
+
+    m_funcs->glClipPlane(GL_CLIP_PLANE0 + clipPlane, plane);
+}
+
 GLint GraphicsHelperGL2::maxClipPlaneCount()
 {
     GLint max = 0;
@@ -576,6 +593,13 @@ void GraphicsHelperGL2::enablePrimitiveRestart(int)
 
 void GraphicsHelperGL2::disablePrimitiveRestart()
 {
+}
+
+void GraphicsHelperGL2::clearBufferf(GLint drawbuffer, const QVector4D &values)
+{
+    Q_UNUSED(drawbuffer);
+    Q_UNUSED(values);
+    qWarning() << "glClearBuffer*() not supported by OpenGL 2.0";
 }
 
 void GraphicsHelperGL2::pointSize(bool programmable, GLfloat value)

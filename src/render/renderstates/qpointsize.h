@@ -50,37 +50,32 @@ class QPointSizePrivate;
 class QT3DRENDERSHARED_EXPORT QPointSize : public QRenderState
 {
     Q_OBJECT
-    Q_PROPERTY(Specification specification READ specification WRITE setSpecification NOTIFY specificationChanged)
+    Q_PROPERTY(SizeMode sizeMode READ sizeMode WRITE setSizeMode NOTIFY sizeModeChanged)
     Q_PROPERTY(float value READ value WRITE setValue NOTIFY valueChanged)
 
 public:
-    enum Specification {
-        StaticValue = 0,
+    enum SizeMode {
+        Fixed = 0,
         Programmable = 1
     };
-    Q_ENUM(Specification)
+    Q_ENUM(SizeMode)
 
-    explicit QPointSize(Qt3DCore::QNode *parent = 0);
-    ~QPointSize();
+    explicit QPointSize(Qt3DCore::QNode *parent = nullptr);
 
-    Specification specification() const;
+    SizeMode sizeMode() const;
     float value() const;
-    bool isProgrammable() const;
 
 public Q_SLOTS:
-    void setSpecification(Specification spec);
+    void setSizeMode(SizeMode sizeMode);
     void setValue(float value);
 
 Q_SIGNALS:
-    void specificationChanged(Specification spec);
+    void sizeModeChanged(SizeMode sizeMode);
     void valueChanged(float value);
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL;
 
 private:
     Q_DECLARE_PRIVATE(QPointSize)
-    QT3D_CLONEABLE(QPointSize)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

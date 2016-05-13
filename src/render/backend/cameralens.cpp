@@ -38,12 +38,12 @@
 ****************************************************************************/
 
 #include "cameralens_p.h"
-#include <Qt3DRender/private/renderlogging_p.h>
-
-#include <Qt3DCore/qtransform.h>
 #include <Qt3DRender/qcameralens.h>
+#include <Qt3DRender/private/qcameralens_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qtransform.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,9 +53,8 @@ namespace Qt3DRender {
 namespace Render {
 
 CameraLens::CameraLens()
-    : QBackendNode()
+    : BackendNode()
 {
-    m_clearColor = QVector4D(0.5, 0.5, 1.0, 1.0);
 }
 
 CameraLens::~CameraLens()
@@ -65,14 +64,14 @@ CameraLens::~CameraLens()
 
 void CameraLens::cleanup()
 {
-
+    QBackendNode::setEnabled(false);
 }
 
-void CameraLens::updateFromPeer(Qt3DCore::QNode *peer)
+void CameraLens::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QCameraLens *lens = static_cast<QCameraLens *>(peer);
-    setProjection(lens->projectionMatrix());
-    m_enabled = lens->isEnabled();
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QCameraLensData>>(change);
+    const auto &data = typedChange->data;
+    m_projection = data.projectionMatrix;
 }
 
 void CameraLens::setProjection(const QMatrix4x4 &projection)
@@ -83,21 +82,22 @@ void CameraLens::setProjection(const QMatrix4x4 &projection)
 void CameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
-    case NodeUpdated: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    case PropertyUpdated: {
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
 
         if (propertyChange->propertyName() == QByteArrayLiteral("projectionMatrix")) {
             QMatrix4x4 projectionMatrix = propertyChange->value().value<QMatrix4x4>();
             m_projection = projectionMatrix;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            m_enabled = propertyChange->value().toBool();
         }
+
+        markDirty(AbstractRenderer::AllDirty);
     }
         break;
 
     default:
         break;
     }
+    BackendNode::sceneChangeEvent(e);
 }
 
 } // namespace Render

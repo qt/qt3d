@@ -42,7 +42,7 @@
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DCore/qnode.h>
-#include <Qt3DInput/qabstractaggregateactioninput.h>
+#include <Qt3DInput/qabstractactioninput.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,29 +51,29 @@ namespace Qt3DInput {
 class QAbstractPhysicalDevice;
 class QInputChordPrivate;
 
-class QT3DINPUTSHARED_EXPORT QInputChord : public Qt3DInput::QAbstractAggregateActionInput
+class QT3DINPUTSHARED_EXPORT QInputChord : public Qt3DInput::QAbstractActionInput
 {
     Q_OBJECT
-    Q_PROPERTY(int tolerance READ tolerance WRITE setTolerance NOTIFY toleranceChanged)
+    Q_PROPERTY(int timeout READ timeout WRITE setTimeout NOTIFY timeoutChanged)
 
 public:
-    explicit QInputChord(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QInputChord();
+    explicit QInputChord(Qt3DCore::QNode *parent = nullptr);
 
-    int tolerance() const;
+    int timeout() const;
+
+    void addChord(QAbstractActionInput *input);
+    void removeChord(QAbstractActionInput *input);
+    QVector<QAbstractActionInput *> chords() const;
 
 public Q_SLOTS:
-    void setTolerance(int tolerance);
+    void setTimeout(int timeout);
 
 Q_SIGNALS:
-    void toleranceChanged(int tolerance);
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void timeoutChanged(int timeout);
 
 private:
     Q_DECLARE_PRIVATE(QInputChord)
-    QT3D_CLONEABLE(QInputChord)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3DInput

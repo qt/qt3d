@@ -29,6 +29,7 @@
 #include <QtTest/QtTest>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/private/qentity_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <Qt3DCore/qcomponent.h>
 #include <QtCore/qscopedpointer.h>
 
@@ -38,7 +39,10 @@ class tst_Entity : public QObject
 {
     Q_OBJECT
 public:
-    tst_Entity() : QObject() {}
+    tst_Entity() : QObject()
+    {
+        qRegisterMetaType<Qt3DCore::QNode*>();
+    }
     ~tst_Entity() {}
 
 private slots:
@@ -56,7 +60,9 @@ private slots:
 
     void addSeveralTimesSameComponent();
     void removeSeveralTimesSameComponent();
-    void verifyCopy();
+
+    void checkCloning_data();
+    void checkCloning();
 };
 
 class MyQComponent : public Qt3DCore::QComponent
@@ -66,14 +72,6 @@ public:
     explicit MyQComponent(Qt3DCore::QNode *parent = 0)
         : QComponent(parent)
     {}
-
-    ~MyQComponent()
-    {
-        QNode::cleanup();
-    }
-
-protected:
-    QT3D_CLONEABLE(MyQComponent)
 };
 
 
@@ -83,28 +81,23 @@ public:
     explicit MyEntity(Qt3DCore::QNode *parent = 0)
         : QEntity(parent)
     {}
-
-    void makeCopyOf(Qt3DCore::QEntity *other)
-    {
-        QEntity::copy(other);
-    }
 };
 
 void tst_Entity::constructionDestruction()
 {
     // GIVEN
-    QEntity *entity = Q_NULLPTR;
+    QEntity *entity = nullptr;
     // WHEN
     entity = new QEntity;
     // THEN
-    QVERIFY(entity != Q_NULLPTR);
+    QVERIFY(entity != nullptr);
 
     delete entity;
 
     // GIVEN
     QScopedPointer<QEntity> entity2(new QEntity);
     // WHEN
-    entity2.reset(Q_NULLPTR);
+    entity2.reset(nullptr);
     // THEN
     // this should not crash
 }
@@ -558,45 +551,58 @@ void tst_Entity::removeSeveralTimesSameComponent()
     QCOMPARE(comp->entities().size(), 0);
 }
 
+void tst_Entity::checkCloning_data()
+{
+    QTest::addColumn<Qt3DCore::QEntity *>("entity");
+
+    QTest::newRow("defaultConstructed") << new MyEntity();
+
+    Qt3DCore::QEntity *entityWithComponents = new MyEntity();
+    Qt3DCore::QComponent *component1 = new MyQComponent();
+    Qt3DCore::QComponent *component2 = new MyQComponent();
+    Qt3DCore::QComponent *component3 = new MyQComponent();
+    entityWithComponents->addComponent(component1);
+    entityWithComponents->addComponent(component2);
+    entityWithComponents->addComponent(component3);
+    QTest::newRow("entityWithComponents") << entityWithComponents;
+}
+
+void tst_Entity::checkCloning()
+{
+    // GIVEN
+    QFETCH(Qt3DCore::QEntity *, entity);
+
+    // WHEN
+    Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(entity);
+    QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
+
+    // THEN
+    QCOMPARE(creationChanges.size(), 1 + entity->components().size());
+
+    const Qt3DCore::QNodeCreatedChangePtr<Qt3DCore::QEntityData> creationChangeData =
+            qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DCore::QEntityData>>(creationChanges.first());
+    const Qt3DCore::QEntityData &cloneData = creationChangeData->data;
+
+    // THEN
+    QCOMPARE(creationChangeData->subjectId(), entity->id());
+    QCOMPARE(creationChangeData->isNodeEnabled(), entity->isEnabled());
+    QCOMPARE(creationChangeData->metaObject(), entity->metaObject());
+    QCOMPARE(creationChangeData->parentId(), entity->parentNode() ? entity->parentNode()->id() : Qt3DCore::QNodeId());
+    QCOMPARE(cloneData.parentEntityId, entity->parentEntity() ? entity->parentEntity()->id() : Qt3DCore::QNodeId());
+    QCOMPARE(cloneData.componentIdsAndTypes.size(), entity->components().size());
+
+    const QVector<Qt3DCore::QComponent *> &components = entity->components();
+    for (int i = 0, m = components.size(); i < m; ++i) {
+        QCOMPARE(cloneData.componentIdsAndTypes.at(i).id, components.at(i)->id());
+        QCOMPARE(cloneData.componentIdsAndTypes.at(i).type, components.at(i)->metaObject());
+    }
+}
+
 Qt3DCore::QNodeId parentEntityId(Qt3DCore::QEntity *entity)
 {
     Qt3DCore::QEntityPrivate *d = static_cast<Qt3DCore::QEntityPrivate*>(Qt3DCore::QNodePrivate::get(entity));
     return d->parentEntityId();
 }
-
-void tst_Entity::verifyCopy()
-{
-    // GIVEN
-    QScopedPointer<Qt3DCore::QEntity> root(new Qt3DCore::QEntity());
-    MyEntity *parentLessEntity = new MyEntity();
-    MyEntity *parentedEntity = new MyEntity(root.data());
-
-    QCoreApplication::processEvents();
-
-    // THEN
-    QVERIFY(root->id() != parentLessEntity->id());
-    QVERIFY(root->id() != parentedEntity->id());
-    QVERIFY(parentEntityId(root.data()).isNull());
-    QVERIFY(!parentEntityId(parentedEntity).isNull());
-    QVERIFY(parentEntityId(parentLessEntity).isNull());
-
-    // WHEN
-    MyEntity *parentedEntityCopy = new MyEntity();
-    parentedEntityCopy->makeCopyOf(parentedEntity);
-
-    // THEN
-    QVERIFY(parentedEntityCopy->id() == parentedEntity->id());
-    QVERIFY(parentEntityId(parentedEntityCopy) == parentEntityId(parentedEntity));
-
-    // WHEN
-    MyEntity *parentLessEntityCopy = new MyEntity();
-    parentLessEntityCopy->makeCopyOf(parentLessEntity);
-
-    // THEN
-    QVERIFY(parentLessEntityCopy->id() == parentLessEntity->id());
-    QVERIFY(parentEntityId(parentLessEntityCopy) == parentEntityId(parentLessEntity));
-}
-
 
 QTEST_MAIN(tst_Entity)
 

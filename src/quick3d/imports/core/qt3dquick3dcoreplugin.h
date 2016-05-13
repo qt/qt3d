@@ -56,7 +56,7 @@ class Qt3DQuick3DCorePlugin : public QQmlExtensionPlugin
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
 public:
-    Qt3DQuick3DCorePlugin(QObject *parent = 0) : QQmlExtensionPlugin(parent) { initResources(); }
+    Qt3DQuick3DCorePlugin(QObject *parent = nullptr) : QQmlExtensionPlugin(parent) { initResources(); }
     void registerTypes(const char *uri) Q_DECL_OVERRIDE;
 };
 

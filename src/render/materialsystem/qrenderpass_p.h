@@ -60,15 +60,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QParameter;
-class QParameterMapping;
 class QRenderState;
-class QAnnotation;
-typedef QList<QParameter*> ParameterList;
-
-namespace Render
-{
-class RenderStateSet;
-}
+class QFilterKey;
 
 class QRenderPassPrivate : public Qt3DCore::QNodePrivate
 {
@@ -76,16 +69,19 @@ public:
     QRenderPassPrivate();
 
     Q_DECLARE_PUBLIC(QRenderPass)
-    ParameterList m_attributes;
-    ParameterList m_uniforms;
 
-    // map Parameter names to GLSL names
-    QHash<QString, QString> m_parameterNameDict;
-    QList<QAnnotation *> m_annotationList;
-    QList<QParameterMapping *> m_bindings;
-    QList<QRenderState *> m_renderStates;
-    QList<QParameter *> m_parameters;
+    QVector<QFilterKey *> m_filterKeyList;
+    QVector<QRenderState *> m_renderStates;
+    QVector<QParameter *> m_parameters;
     QShaderProgram *m_shader;
+};
+
+struct QRenderPassData
+{
+    Qt3DCore::QNodeIdVector filterKeyIds;
+    Qt3DCore::QNodeIdVector parameterIds;
+    Qt3DCore::QNodeIdVector renderStateIds;
+    Qt3DCore::QNodeId shaderId;
 };
 
 } // namespace Qt3DRender

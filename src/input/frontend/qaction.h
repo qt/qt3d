@@ -53,32 +53,25 @@ class QAbstractActionInput;
 class QT3DINPUTSHARED_EXPORT QAction : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(bool active READ isActive NOTIFY activeChanged)
 public:
-    explicit QAction(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QAction();
+    explicit QAction(Qt3DCore::QNode *parent = nullptr);
 
-    QString name() const;
+    bool isActive() const;
 
-
-public Q_SLOTS:
-    void setName(const QString &name);
     void addInput(QAbstractActionInput *input);
     void removeInput(QAbstractActionInput *input);
     QVector<QAbstractActionInput *> inputs() const;
 
 Q_SIGNALS:
-    void nameChanged(const QString &name);
-
-    void started(const QString &name);
-    void finished(const QString &name);
+    void activeChanged(bool isActive);
 
 protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QAction)
-    QT3D_CLONEABLE(QAction)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3DInput

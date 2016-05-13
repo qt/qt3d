@@ -82,7 +82,7 @@ QTechnique *Quick3DEffect::techniqueAt(QQmlListProperty<QTechnique> *list, int i
     Quick3DEffect *eff = qobject_cast<Quick3DEffect*>(list->object);
     if (eff)
         return qobject_cast<QTechnique*>(eff->parentEffect()->techniques().at(index));
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 int Quick3DEffect::techniqueCount(QQmlListProperty<QTechnique> *list)

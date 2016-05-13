@@ -51,8 +51,10 @@
 // We mean it.
 //
 
-#include <private/qabstractattribute_p.h>
-#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/QAttribute>
+#include <Qt3DRender/QBuffer>
+#include <private/qnode_p.h>
+#include <private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,13 +62,38 @@ namespace Qt3DRender {
 
 class QAttribute;
 
-class QT3DRENDERSHARED_EXPORT QAttributePrivate : public QAbstractAttributePrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QAttributePrivate : public Qt3DCore::QNodePrivate
 {
 public:
+    Q_DECLARE_PUBLIC(QAttribute)
+
     QAttributePrivate();
+
+    QBuffer *m_buffer;
+    QString m_name;
+    QAttribute::VertexBaseType m_dataType;
+    uint m_dataSize;
+    uint m_count;
+    uint m_byteStride;
+    uint m_byteOffset;
+    uint m_divisor;
+    QAttribute::AttributeType m_attributeType;
 };
 
-} // namespace Qt3DRender
+struct QAttributeData
+{
+    Qt3DCore::QNodeId bufferId;
+    QString name;
+    QAttribute::VertexBaseType dataType;
+    uint dataSize;
+    uint count;
+    uint byteStride;
+    uint byteOffset;
+    uint divisor;
+    QAttribute::AttributeType attributeType;
+};
+
+} // Qt3DRender
 
 QT_END_NAMESPACE
 

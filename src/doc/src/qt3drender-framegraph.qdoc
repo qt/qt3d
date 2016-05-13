@@ -197,8 +197,8 @@
          rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
          property alias camera: cameraSelector.camera
 
-         ClearBuffer {
-              buffers: ClearBuffer.ColorDepthBuffer
+         ClearBuffers {
+              buffers: ClearBuffers.ColorDepthBuffer
 
               CameraSelector {
                    id: cameraSelector
@@ -239,8 +239,8 @@
          CameraSelector {
               id: cameraSelector
 
-              ClearBuffer {
-                   buffers: ClearBuffer.ColorDepthBuffer
+              ClearBuffers {
+                   buffers: ClearBuffers.ColorDepthBuffer
               }
          }
     }
@@ -251,8 +251,8 @@
           Viewport {
                rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
 
-               ClearBuffer {
-                    buffers: ClearBuffer.ColorDepthBuffer
+               ClearBuffers {
+                    buffers: ClearBuffers.ColorDepthBuffer
                }
           }
     }
@@ -277,8 +277,8 @@
          property alias Camera: cameraSelectorBottomLeftViewport.camera
          property alias Camera: cameraSelectorBottomRightViewport.camera
 
-         ClearBuffer {
-              buffers: ClearBuffer.ColorDepthBuffer
+         ClearBuffers {
+              buffers: ClearBuffers.ColorDepthBuffer
          }
 
          Viewport {
@@ -355,7 +355,7 @@
         \endlist
     \endlist
 
-    However, in this case the \e {order is important}. If the ClearBuffer node
+    However, in this case the \e {order is important}. If the ClearBuffers node
     were to be the last instead of the first, this would result in a black
     screen for the simple reason that everything would be cleared right after
     having been so carefully rendered. For a similar reason, it could not be
@@ -429,8 +429,8 @@
               RenderTargetSelector {
                     id: gBufferTargetSelector
 
-                    ClearBuffer {
-                         buffers: ClearBuffer.ColorDepthBuffer
+                    ClearBuffers {
+                         buffers: ClearBuffers.ColorDepthBuffer
 
                          RenderPassFilter {
                                id: geometryPass
@@ -447,8 +447,8 @@
          LayerFilter {
               layers: "screenQuad"
 
-              ClearBuffer {
-                   buffers: ClearBuffer.ColorDepthBuffer
+              ClearBuffers {
+                   buffers: ClearBuffers.ColorDepthBuffer
 
                    RenderPassFilter {
                          id: finalPass

@@ -48,11 +48,6 @@ QFrustumCulling::QFrustumCulling(Qt3DCore::QNode *parent)
 {
 }
 
-QFrustumCulling::~QFrustumCulling()
-{
-    QFrameGraphNode::cleanup();
-}
-
 } // Qt3DRender
 
 QT_END_NAMESPACE

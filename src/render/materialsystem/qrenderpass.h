@@ -45,10 +45,9 @@
 
 #include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DRender/qrenderstate.h>
-#include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfilterkey.h>
 
 #include <QHash>
-#include <QList>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,8 +55,7 @@ namespace Qt3DRender {
 
 class QParameter;
 class QRenderState;
-class QParameterMapping;
-typedef QList<QParameter*> ParameterList;
+typedef QVector<QParameter*> ParameterList;
 
 class QRenderPassPrivate;
 
@@ -67,31 +65,21 @@ class QT3DRENDERSHARED_EXPORT QRenderPass : public Qt3DCore::QNode
     Q_PROPERTY(Qt3DRender::QShaderProgram *shaderProgram READ shaderProgram WRITE setShaderProgram NOTIFY shaderProgramChanged)
 
 public:
-    explicit QRenderPass(Qt3DCore::QNode *parent = 0);
-    ~QRenderPass();
-
-    QString glslNameForParameter(QString paramName) const;
-
-    ParameterList attributes() const;
-    ParameterList uniforms() const;
+    explicit QRenderPass(Qt3DCore::QNode *parent = nullptr);
 
     QShaderProgram *shaderProgram() const;
 
-    void addAnnotation(QAnnotation *criterion);
-    void removeAnnotation(QAnnotation *criterion);
-    QList<QAnnotation *> annotations() const;
-
-    void addBinding(QParameterMapping *binding);
-    void removeBinding(QParameterMapping *binding);
-    QList<QParameterMapping *> bindings() const;
+    void addFilterKey(QFilterKey*filterKey);
+    void removeFilterKey(QFilterKey*filterKey);
+    QVector<QFilterKey*> filterKeys() const;
 
     void addRenderState(QRenderState *state);
     void removeRenderState(QRenderState *state);
-    QList<QRenderState *> renderStates() const;
+    QVector<QRenderState *> renderStates() const;
 
     void addParameter(QParameter *p);
     void removeParameter(QParameter *p);
-    QList<QParameter *> parameters() const;
+    QVector<QParameter *> parameters() const;
 
 public Q_SLOTS:
     void setShaderProgram(QShaderProgram *shaderProgram);
@@ -100,12 +88,11 @@ Q_SIGNALS:
     void shaderProgramChanged(QShaderProgram *shaderProgram);
 
 protected:
-    QRenderPass(QRenderPassPrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    QRenderPass(QRenderPassPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QRenderPass)
-    QT3D_CLONEABLE(QRenderPass)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 }

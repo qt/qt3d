@@ -68,13 +68,14 @@ void QAspectJobManager::initialize()
 {
 }
 
+// Adds all Aspect Jobs to be processed for a frame
 void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
 {
     // Convert QJobs to Tasks
     QHash<QAspectJob *, AspectTaskRunnable *> tasksMap;
     QVector<RunnableInterface *> taskList;
     taskList.reserve(jobQueue.size());
-    Q_FOREACH (const QAspectJobPtr &job, jobQueue) {
+    for (const QAspectJobPtr &job : jobQueue) {
         AspectTaskRunnable *task = new AspectTaskRunnable();
         task->m_job = job;
         tasksMap.insert(job.data(), task);
@@ -85,10 +86,10 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
     // Resolve dependencies
     QVector<Dependency> dependencyList;
 
-    Q_FOREACH (const QSharedPointer<QAspectJob> &job, jobQueue) {
+    for (const QSharedPointer<QAspectJob> &job : jobQueue) {
         const QVector<QWeakPointer<QAspectJob> > &deps = job->dependencies();
 
-        Q_FOREACH (const QWeakPointer<QAspectJob> &dep, deps) {
+        for (const QWeakPointer<QAspectJob> &dep : deps) {
             AspectTaskRunnable *taskDependee = tasksMap.value(dep.data());
 
             if (taskDependee) {
@@ -100,10 +101,13 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
         }
     }
     m_dependencyHandler->addDependencies(qMove(dependencyList));
-
+#ifdef QT3D_JOBS_RUN_STATS
+    QThreadPooler::starNewFrameJobLogsStats();
+#endif
     m_threadPooler->mapDependables(taskList);
 }
 
+// Wait for all aspects jobs to be completed
 void QAspectJobManager::waitForAllJobs()
 {
     m_threadPooler->future().waitForFinished();

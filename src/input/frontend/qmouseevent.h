@@ -57,7 +57,7 @@ class QT3DINPUTSHARED_EXPORT QMouseEvent : public QObject
     Q_PROPERTY(bool wasHeld READ wasHeld CONSTANT)
     Q_PROPERTY(Qt3DInput::QMouseEvent::Buttons button READ button CONSTANT)
     Q_PROPERTY(int buttons READ buttons CONSTANT)
-    Q_PROPERTY(Qt3DInput::QMouseEvent::Modifiers modifier READ modifier CONSTANT)
+    Q_PROPERTY(Qt3DInput::QMouseEvent::Modifiers modifiers READ modifiers CONSTANT)
     Q_PROPERTY(bool accepted READ isAccepted WRITE setAccepted)
 
 public:
@@ -88,7 +88,7 @@ public:
     inline bool wasHeld() const { return static_cast<Qt::GestureType>(m_event.type()) == Qt::TapAndHoldGesture; }
     Buttons button() const;
     int buttons() const;
-    Modifiers modifier() const;
+    Modifiers modifiers() const;
 
     inline bool isAccepted() const { return m_event.isAccepted(); }
     inline void setAccepted(bool accepted) { m_event.setAccepted(accepted); }
@@ -107,7 +107,7 @@ class QT3DINPUTSHARED_EXPORT QWheelEvent : public QObject
     Q_PROPERTY(int y READ y CONSTANT)
     Q_PROPERTY(QPoint angleDelta READ angleDelta CONSTANT)
     Q_PROPERTY(int buttons READ buttons CONSTANT)
-    Q_PROPERTY(Qt3DInput::QWheelEvent::Modifiers modifier READ modifier CONSTANT)
+    Q_PROPERTY(Qt3DInput::QWheelEvent::Modifiers modifiers READ modifiers CONSTANT)
     Q_PROPERTY(bool accepted READ isAccepted WRITE setAccepted)
 
 public:
@@ -137,7 +137,7 @@ public:
     inline int y() const { return m_event.y(); }
     inline QPoint angleDelta() const { return m_event.angleDelta(); }
     int buttons() const;
-    Modifiers modifier() const;
+    Modifiers modifiers() const;
 
     inline bool isAccepted() const { return m_event.isAccepted(); }
     inline void setAccepted(bool accepted) { m_event.setAccepted(accepted); }

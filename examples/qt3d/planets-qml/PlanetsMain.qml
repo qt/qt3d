@@ -66,7 +66,7 @@ Item {
     //! [0]
     Scene3D {
         anchors.fill: parent
-        aspects: ["render", "logic"]
+        aspects: ["render", "logic", "input"]
         focus: true
 
         SolarSystem { id: solarsystem }

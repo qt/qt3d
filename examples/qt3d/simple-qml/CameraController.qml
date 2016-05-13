@@ -75,11 +75,11 @@ Entity {
         property bool fineMotion: false
     }
 
-    KeyboardController {
+    KeyboardDevice {
         id: keyboardSourceDevice
     }
 
-    MouseController {
+    MouseDevice {
         id: mouseSourceDevice
         sensitivity: d.fineMotion ? 0.01 : 0.1
     }
@@ -93,7 +93,7 @@ Entity {
                 inputs: [
                     ActionInput {
                         sourceDevice: mouseSourceDevice
-                        keys: [MouseController.Left]
+                        buttons: [MouseEvent.LeftButton]
                     }
                 ]
             },
@@ -102,7 +102,7 @@ Entity {
                 inputs: [
                     ActionInput {
                         sourceDevice: mouseSourceDevice
-                        keys: [MouseController.Right]
+                        buttons: [MouseEvent.RightButton]
                     }
                 ]
             },
@@ -111,7 +111,7 @@ Entity {
                 inputs: [
                     ActionInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_Shift]
+                        buttons: [Qt.Key_Shift]
                     }
                 ]
             }
@@ -123,18 +123,18 @@ Entity {
             Axis {
                 name: "RX"
                 inputs: [
-                    AxisInput {
+                    AnalogAxisInput {
                         sourceDevice: mouseSourceDevice
-                        axis: MouseController.X
+                        axis: MouseDevice.X
                     }
                 ]
             },
             Axis {
                 name: "RY"
                 inputs: [
-                    AxisInput {
+                    AnalogAxisInput {
                         sourceDevice: mouseSourceDevice
-                        axis: MouseController.Y
+                        axis: MouseDevice.Y
                     }
                 ]
             },
@@ -142,14 +142,14 @@ Entity {
             Axis {
                 name: "TX"
                 inputs: [
-                    AxisInput {
+                    ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_Left]
+                        buttons: [Qt.Key_Left]
                         scale: -1.0
                     },
-                    AxisInput {
+                    ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_Right]
+                        buttons: [Qt.Key_Right]
                         scale: 1.0
                     }
                 ]
@@ -157,14 +157,14 @@ Entity {
             Axis {
                 name: "TZ"
                 inputs: [
-                    AxisInput {
+                    ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_Up]
+                        buttons: [Qt.Key_Up]
                         scale: 1.0
                     },
-                    AxisInput {
+                    ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_Down]
+                        buttons: [Qt.Key_Down]
                         scale: -1.0
                     }
                 ]
@@ -172,14 +172,14 @@ Entity {
             Axis {
                 name: "TY"
                 inputs: [
-                    AxisInput {
+                    ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_PageUp]
+                        buttons: [Qt.Key_PageUp]
                         scale: 1.0
                     },
-                    AxisInput {
+                    ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_PageDown]
+                        buttons: [Qt.Key_PageDown]
                         scale: -1.0
                     }
                 ]
@@ -272,8 +272,8 @@ Entity {
             }
         },
 
-        LogicComponent {
-            onFrameUpdate: {
+        FrameAction {
+            onTriggered: {
                 // The time difference since the last frame is passed in as the
                 // argument dt. It is a floating point value in units of seconds.
                 root.camera.translate(Qt.vector3d(d.vx, d.vy, d.vz).times(dt))

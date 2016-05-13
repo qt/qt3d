@@ -52,11 +52,12 @@
 // We mean it.
 //
 
+#include <Qt3DRender/private/backendnode_p.h>
+#include <Qt3DRender/private/parameterpack_p.h>
+#include <Qt3DRender/private/qgraphicsapifilter_p.h>
+#include <Qt3DRender/qfilterkey.h>
 #include <QVector>
 #include <QStringList>
-#include <Qt3DRender/private/parameterpack_p.h>
-#include <Qt3DRender/qannotation.h>
-#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,41 +66,40 @@ namespace Qt3DRender {
 class QTechnique;
 class QParameter;
 class QGraphicsApiFilter;
-class QAnnotation;
+class QFilterKey;
 class QRenderPass;
 
 namespace Render {
 
 class TechniqueManager;
 
-class Technique : public Qt3DCore::QBackendNode
+class Technique : public BackendNode
 {
 public:
     Technique();
     ~Technique();
     void cleanup();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    QList<Qt3DCore::QNodeId> parameters() const;
+    QVector<Qt3DCore::QNodeId> parameters() const;
 
-    void appendRenderPass(const Qt3DCore::QNodeId &renderPassId);
-    void removeRenderPass(const Qt3DCore::QNodeId &renderPassId);
+    void appendRenderPass(Qt3DCore::QNodeId renderPassId);
+    void removeRenderPass(Qt3DCore::QNodeId renderPassId);
 
-    void appendAnnotation(const Qt3DCore::QNodeId &criterionId);
-    void removeAnnotation(const Qt3DCore::QNodeId &criterionId);
+    void appendFilterKey(Qt3DCore::QNodeId criterionId);
+    void removeFilterKey(Qt3DCore::QNodeId criterionId);
 
-    QList<Qt3DCore::QNodeId> annotations() const;
-    QList<Qt3DCore::QNodeId> renderPasses() const;
-    QGraphicsApiFilter *graphicsApiFilter() const;
+    QVector<Qt3DCore::QNodeId> filterKeys() const;
+    QVector<Qt3DCore::QNodeId> renderPasses() const;
+    const GraphicsApiFilterData *graphicsApiFilter() const;
 
 private:
-    QGraphicsApiFilter *m_graphicsApiFilter;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
+    GraphicsApiFilterData m_graphicsApiFilterData;
     ParameterPack m_parameterPack;
-    QList<Qt3DCore::QNodeId> m_annotationList;
-    QList<Qt3DCore::QNodeId> m_renderPasses;
+    QVector<Qt3DCore::QNodeId> m_filterKeyList;
+    QVector<Qt3DCore::QNodeId> m_renderPasses;
 };
 
 } // namespace Render

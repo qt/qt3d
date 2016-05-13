@@ -49,10 +49,14 @@ namespace Qt3DCore {
 
 QAspectThread::QAspectThread(QObject *parent)
     : QThread(parent),
-      m_aspectManager(Q_NULLPTR),
+      m_aspectManager(nullptr),
       m_semaphore(0)
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
+}
+
+QAspectThread::~QAspectThread()
+{
 }
 
 void QAspectThread::waitForStart(Priority priority)

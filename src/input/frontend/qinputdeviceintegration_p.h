@@ -51,27 +51,61 @@
 // We mean it.
 //
 
-#include <private/qobject_p.h>
-#include <private/qt3dinput_global_p.h>
+#include <QObject>
+#include <Qt3DInput/qt3dinput_global.h>
+#include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
+
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
+
+namespace Qt3DCore {
+class QBackendNodeMapper;
+typedef QSharedPointer<QBackendNodeMapper> QBackendNodeMapperPtr;
+}
+
 
 namespace Qt3DInput {
 
 class QInputAspect;
-class QInputDeviceIntegration;
+class QAbstractPhysicalDevice;
+class QInputDeviceIntegrationPrivate;
 
-class QT3DINPUTSHARED_PRIVATE_EXPORT QInputDeviceIntegrationPrivate : public QObjectPrivate
+class QT3DINPUTSHARED_PRIVATE_EXPORT QInputDeviceIntegration : public QObject
 {
+    Q_OBJECT
+protected:
+    explicit QInputDeviceIntegration(QObject *parent = nullptr);
+    explicit QInputDeviceIntegration(QInputDeviceIntegrationPrivate &dd, QObject *parent = nullptr);
+
+    template<class Frontend>
+    void registerBackendType(const Qt3DCore::QBackendNodeMapperPtr &functor)
+    {
+        registerBackendType(Frontend::staticMetaObject, functor);
+    }
+
+    void registerBackendType(const QMetaObject &metaObject, const Qt3DCore::QBackendNodeMapperPtr &functor);
+
 public:
-    QInputDeviceIntegrationPrivate();
+    void initialize(Qt3DInput::QInputAspect *aspect);
 
-    Q_DECLARE_PUBLIC(QInputDeviceIntegration)
+    virtual QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) = 0;
+    virtual QAbstractPhysicalDevice *createPhysicalDevice(const QString &name) = 0;
+    virtual QVector<Qt3DCore::QNodeId> physicalDevices() const = 0;
+    virtual QAbstractPhysicalDeviceBackendNode *physicalDevice(Qt3DCore::QNodeId id) const = 0;
+    virtual QStringList deviceNames() const = 0;
 
-    QInputAspect *m_aspect;
+protected:
+    QInputAspect *inputAspect() const;
+
+private:
+    virtual void onInitialize() = 0;
+
+    Q_DECLARE_PRIVATE(QInputDeviceIntegration)
 };
 
-} // Qt3DInput
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 

@@ -51,11 +51,12 @@
 // We mean it.
 //
 
-#include <qglobal.h>
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DRender/qabstracttextureprovider.h>
-#include <Qt3DRender/qabstracttextureimage.h>
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/qabstracttexture.h>
+#include <Qt3DRender/qtextureimage.h>
+#include <Qt3DRender/qabstracttextureimage.h>
+#include <qglobal.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -69,66 +70,70 @@ class TextureDataManager;
 
 typedef uint TextureImageDNA;
 
-class TextureImage : public Qt3DCore::QBackendNode
+class TextureImage : public BackendNode
 {
 public:
     TextureImage();
     void cleanup();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     int m_layer;
-    int m_mipmapLevel;
-    QAbstractTextureProvider::CubeMapFace m_face;
+    int m_mipLevel;
+    QAbstractTexture::CubeMapFace m_face;
     bool m_dirty;
     inline TextureImageDNA dna() const { return m_dna; }
 
     inline int layer() const { return m_layer; }
-    inline int mipmapLevel() const { return m_mipmapLevel; }
-    inline QAbstractTextureProvider::CubeMapFace face() const { return m_face; }
+    inline int mipLevel() const { return m_mipLevel; }
+    inline QAbstractTexture::CubeMapFace face() const { return m_face; }
 
     void setTextureManager(TextureManager *manager);
     void setTextureImageManager(TextureImageManager *manager);
     void setTextureDataManager(TextureDataManager *manager);
+    void setStatus(QTextureImage::Status status);
     void unsetDirty();
 
     inline bool isDirty() const { return m_dirty; }
-    inline QTextureDataFunctorPtr textureDataFunctor() const { return m_functor; }
+    inline QTextureImageDataGeneratorPtr textureDataGenerator() const { return m_generator; }
 
     void setTextureDataHandle(HTextureData handle);
 
     inline HTextureData textureDataHandle() const { return m_textureDataHandle; }
-    inline QTextureDataFunctorPtr dataFunctor() const { return m_functor; }
+    inline QTextureImageDataGeneratorPtr dataGenerator() const { return m_generator; }
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     void updateDNA();
 
-    QTextureDataFunctorPtr m_functor;
+    QTextureImageDataGeneratorPtr m_generator;
     HTextureData m_textureDataHandle;
     TextureManager *m_textureManager;
     TextureImageManager *m_textureImageManager;
     TextureDataManager *m_textureDataManager;
-    QList<Qt3DCore::QNodeId> m_referencedTextures;
+    QVector<Qt3DCore::QNodeId> m_referencedTextures;
     HTexture m_textureProvider;
     Qt3DCore::QNodeId m_textureProviderId;
     TextureImageDNA m_dna;
 };
 
-class TextureImageFunctor : public Qt3DCore::QBackendNodeFunctor
+class TextureImageFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
-    explicit TextureImageFunctor(TextureManager *textureManager,
-                                  TextureImageManager *textureImageManager,
-                                  TextureDataManager *textureDataManager);
+    explicit TextureImageFunctor(AbstractRenderer *renderer,
+                                 TextureManager *textureManager,
+                                 TextureImageManager *textureImageManager,
+                                 TextureDataManager *textureDataManager);
 
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_FINAL;
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
 
 private:
     TextureManager *m_textureManager;
     TextureImageManager *m_textureImageManager;
     TextureDataManager *m_textureDataManager;
+    AbstractRenderer *m_renderer;
 };
 
 

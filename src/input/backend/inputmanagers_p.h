@@ -53,19 +53,19 @@
 
 #include <QtGlobal>
 #include <Qt3DInput/private/handle_types_p.h>
-#include <Qt3DInput/private/keyboardcontroller_p.h>
-#include <Qt3DInput/private/keyboardinput_p.h>
-#include <Qt3DInput/private/mousecontroller_p.h>
-#include <Qt3DInput/private/mouseinput_p.h>
+#include <Qt3DInput/private/keyboarddevice_p.h>
+#include <Qt3DInput/private/keyboardhandler_p.h>
+#include <Qt3DInput/private/mousehandler_p.h>
+#include <Qt3DInput/private/mousedevice_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DInput/private/actioninput_p.h>
 #include <Qt3DInput/private/inputsequence_p.h>
 #include <Qt3DInput/private/inputchord_p.h>
-#include <Qt3DInput/private/axisinput_p.h>
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/private/axis_p.h>
-#include <Qt3DInput/private/axisactionhandler_p.h>
 #include <Qt3DInput/private/axissetting_p.h>
+#include <Qt3DInput/private/analogaxisinput_p.h>
+#include <Qt3DInput/private/buttonaxisinput_p.h>
 #include <Qt3DInput/private/logicaldevice_p.h>
 #include <Qt3DInput/private/genericdevicebackendnode_p.h>
 
@@ -75,7 +75,7 @@ namespace Qt3DInput {
 namespace Input {
 
 class KeyboardInputManager : public Qt3DCore::QResourceManager<
-        KeyboardInput,
+        KeyboardHandler,
         Qt3DCore::QNodeId,
         16,
         Qt3DCore::ArrayAllocatingPolicy>
@@ -84,28 +84,28 @@ public:
     KeyboardInputManager() {}
 };
 
-class KeyboardControllerManager : public Qt3DCore::QResourceManager<
-        KeyboardController,
+class KeyboardDeviceManager : public Qt3DCore::QResourceManager<
+        KeyboardDevice,
         Qt3DCore::QNodeId,
         8,
         Qt3DCore::ArrayAllocatingPolicy>
 {
 public:
-    KeyboardControllerManager() {}
+    KeyboardDeviceManager() {}
 };
 
-class MouseControllerManager : public Qt3DCore::QResourceManager<
-        MouseController,
+class MouseDeviceManager : public Qt3DCore::QResourceManager<
+        MouseDevice,
         Qt3DCore::QNodeId,
         8,
         Qt3DCore::ArrayAllocatingPolicy>
 {
 public:
-    MouseControllerManager() {}
+    MouseDeviceManager() {}
 };
 
 class MouseInputManager : public Qt3DCore::QResourceManager<
-        MouseInput,
+        MouseHandler,
         Qt3DCore::QNodeId,
         16,
         Qt3DCore::ArrayAllocatingPolicy>
@@ -124,23 +124,6 @@ public:
     AxisManager() {}
 };
 
-class AxisActionHandlerManager : public Qt3DCore::QResourceManager<
-        AxisActionHandler,
-        Qt3DCore::QNodeId,
-        16,
-        Qt3DCore::ArrayAllocatingPolicy>
-{
-public:
-    AxisActionHandlerManager() {}
-
-    void addActiveAxisActionHandler(HAxisActionHandler handle) { m_activeAxisActionHandlers.push_back(handle); }
-    void removeActiveAxisActionHandler(HAxisActionHandler handle) { m_activeAxisActionHandlers.removeOne(handle); }
-    QVector<HAxisActionHandler> activeAxisActionHandlers() const { return m_activeAxisActionHandlers; }
-
-private:
-    QVector<HAxisActionHandler> m_activeAxisActionHandlers;
-};
-
 class AxisSettingManager : public Qt3DCore::QResourceManager<
         AxisSetting,
         Qt3DCore::QNodeId,
@@ -149,16 +132,6 @@ class AxisSettingManager : public Qt3DCore::QResourceManager<
 {
 public:
     AxisSettingManager() {}
-};
-
-class AxisInputManager : public Qt3DCore::QResourceManager<
-        AxisInput,
-        Qt3DCore::QNodeId,
-        16,
-        Qt3DCore::ArrayAllocatingPolicy>
-{
-public:
-    AxisInputManager() {}
 };
 
 class ActionManager : public Qt3DCore::QResourceManager<
@@ -179,6 +152,26 @@ class ActionInputManager : public Qt3DCore::QResourceManager<
 {
 public:
     ActionInputManager() {}
+};
+
+class AnalogAxisInputManager : public Qt3DCore::QResourceManager<
+        AnalogAxisInput,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy>
+{
+public:
+    AnalogAxisInputManager() {}
+};
+
+class ButtonAxisInputManager : public Qt3DCore::QResourceManager<
+        ButtonAxisInput,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy>
+{
+public:
+    ButtonAxisInputManager() {}
 };
 
 class InputChordManager : public Qt3DCore::QResourceManager<

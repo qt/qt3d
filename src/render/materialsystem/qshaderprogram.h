@@ -60,8 +60,7 @@ class QT3DRENDERSHARED_EXPORT QShaderProgram : public Qt3DCore::QNode
     Q_PROPERTY(QByteArray computeShaderCode READ computeShaderCode WRITE setComputeShaderCode NOTIFY computeShaderCodeChanged)
 
 public:
-    explicit QShaderProgram(Qt3DCore::QNode *parent = 0);
-    ~QShaderProgram();
+    explicit QShaderProgram(Qt3DCore::QNode *parent = nullptr);
 
     enum ShaderType {
         Vertex = 0,
@@ -103,12 +102,11 @@ Q_SIGNALS:
     void computeShaderCodeChanged(const QByteArray &computeShaderCode);
 
 protected:
-    QShaderProgram(QShaderProgramPrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    QShaderProgram(QShaderProgramPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QShaderProgram)
-    QT3D_CLONEABLE(QShaderProgram)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 }

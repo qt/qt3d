@@ -52,29 +52,25 @@ class QT3DRENDERSHARED_EXPORT QPolygonOffset : public QRenderState
 {
     Q_OBJECT
 
-    Q_PROPERTY(float factor READ factor WRITE setFactor NOTIFY factorChanged)
-    Q_PROPERTY(float units READ units WRITE setUnits NOTIFY unitsChanged)
+    Q_PROPERTY(float scaleFactor READ scaleFactor WRITE setScaleFactor NOTIFY scaleFactorChanged)
+    Q_PROPERTY(float depthSteps READ depthSteps WRITE setDepthSteps NOTIFY depthStepsChanged)
 public:
-    explicit QPolygonOffset(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QPolygonOffset();
+    explicit QPolygonOffset(Qt3DCore::QNode *parent = nullptr);
 
-    float factor() const;
-    float units() const;
+    float scaleFactor() const;
+    float depthSteps() const;
 
 public Q_SLOTS:
-    void setFactor(float factor);
-    void setUnits(float units);
+    void setScaleFactor(float scaleFactor);
+    void setDepthSteps(float depthSteps);
 
 Q_SIGNALS:
-    void factorChanged(float factor);
-    void unitsChanged(float units);
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void scaleFactorChanged(float scaleFactor);
+    void depthStepsChanged(float depthSteps);
 
 private:
     Q_DECLARE_PRIVATE(QPolygonOffset)
-    QT3D_CLONEABLE(QPolygonOffset)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

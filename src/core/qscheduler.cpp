@@ -53,6 +53,10 @@ QScheduler::QScheduler(QObject *parent)
 {
 }
 
+QScheduler::~QScheduler()
+{
+}
+
 void QScheduler::setAspectManager(QAspectManager *aspectManager)
 {
     m_aspectManager = aspectManager;
@@ -73,8 +77,8 @@ void QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time)
 
     // TODO: Set up dependencies between jobs as needed
     // For now just queue them up as they are
-    const QList<QAbstractAspect *> &aspects = m_aspectManager->aspects();
-    Q_FOREACH (QAbstractAspect *aspect, aspects) {
+    const QVector<QAbstractAspect *> &aspects = m_aspectManager->aspects();
+    for (QAbstractAspect *aspect : aspects) {
         QVector<QAspectJobPtr> aspectJobs = QAbstractAspectPrivate::get(aspect)->jobsToExecute(time);
         jobQueue << aspectJobs;
     }

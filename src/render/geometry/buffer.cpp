@@ -38,9 +38,10 @@
 ****************************************************************************/
 
 #include "buffer_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DRender/private/buffermanager_p.h>
+#include <Qt3DRender/private/qbuffer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,12 +51,12 @@ namespace Qt3DRender {
 namespace Render {
 
 Buffer::Buffer()
-    : QBackendNode(QBackendNode::ReadWrite)
+    : BackendNode(QBackendNode::ReadWrite)
     , m_type(QBuffer::VertexBuffer)
     , m_usage(QBuffer::StaticDraw)
     , m_bufferDirty(false)
-    , m_sync(false)
-    , m_manager(Q_NULLPTR)
+    , m_syncData(false)
+    , m_manager(nullptr)
 {
     // Maybe it could become read write if we want to inform
     // the frontend QBuffer node of any backend issue
@@ -72,7 +73,7 @@ void Buffer::cleanup()
     m_data.clear();
     m_functor.reset();
     m_bufferDirty = false;
-    m_sync = false;
+    m_syncData = false;
 }
 
 
@@ -85,36 +86,35 @@ void Buffer::executeFunctor()
 {
     Q_ASSERT(m_functor);
     m_data = (*m_functor)();
-    if (m_sync) {
+    if (m_syncData) {
         // Send data back to the frontend
-        QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
+        QBackendNodePropertyChangePtr e(new QBackendNodePropertyChange(peerId()));
         e->setPropertyName("data");
-        e->setTargetNode(peerUuid());
         e->setValue(QVariant::fromValue(m_data));
         notifyObservers(e);
     }
 }
 
-void Buffer::updateFromPeer(Qt3DCore::QNode *peer)
+void Buffer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QBuffer *buffer = static_cast<QBuffer *>(peer);
-    if (buffer != Q_NULLPTR) {
-        m_type = buffer->type();
-        m_usage = buffer->usage();
-        m_data = buffer->data();
-        m_functor = buffer->bufferFunctor();
-        // Add to dirty list in the manager
-        if (m_functor && m_manager != Q_NULLPTR)
-            m_manager->addDirtyBuffer(peerUuid());
-        m_bufferDirty = true;
-        m_sync = buffer->isSync();
-    }
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QBufferData>>(change);
+    const auto &data = typedChange->data;
+    m_data = data.data;
+    m_type = data.type;
+    m_usage = data.usage;
+    m_syncData = data.syncData;
+    m_bufferDirty = true;
+
+    m_functor = data.functor;
+    Q_ASSERT(m_manager);
+    if (m_functor)
+        m_manager->addDirtyBuffer(peerId());
 }
 
 void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == NodeUpdated) {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    if (e->type() == PropertyUpdated) {
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         QByteArray propertyName = propertyChange->propertyName();
         if (propertyName == QByteArrayLiteral("data")) {
             QByteArray newData = propertyChange->value().value<QByteArray>();
@@ -126,16 +126,18 @@ void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyName == QByteArrayLiteral("usage")) {
             m_usage = static_cast<QBuffer::UsageType>(propertyChange->value().value<int>());
             m_bufferDirty = true;
-        } else if (propertyName == QByteArrayLiteral("bufferFunctor")) {
-            QBufferFunctorPtr newFunctor = propertyChange->value().value<QBufferFunctorPtr>();
-            m_bufferDirty |= !(newFunctor && m_functor && *newFunctor == *m_functor);
-            m_functor = newFunctor;
-            if (m_functor && m_manager != Q_NULLPTR)
-                m_manager->addDirtyBuffer(peerUuid());
-        } else if (propertyName == QByteArrayLiteral("sync")) {
-            m_sync = propertyChange->value().toBool();
+        } else if (propertyName == QByteArrayLiteral("dataGenerator")) {
+            QBufferDataGeneratorPtr newGenerator = propertyChange->value().value<QBufferDataGeneratorPtr>();
+            m_bufferDirty |= !(newGenerator && m_functor && *newGenerator == *m_functor);
+            m_functor = newGenerator;
+            if (m_functor && m_manager != nullptr)
+                m_manager->addDirtyBuffer(peerId());
+        } else if (propertyName == QByteArrayLiteral("syncData")) {
+            m_syncData = propertyChange->value().toBool();
         }
+        markDirty(AbstractRenderer::AllDirty);
     }
+    BackendNode::sceneChangeEvent(e);
 }
 
 // Called by Renderer once the buffer has been uploaded to OpenGL
@@ -144,25 +146,26 @@ void Buffer::unsetDirty()
     m_bufferDirty = false;
 }
 
-BufferFunctor::BufferFunctor(BufferManager *manager)
+BufferFunctor::BufferFunctor(AbstractRenderer *renderer, BufferManager *manager)
     : m_manager(manager)
+    , m_renderer(renderer)
 {
 }
 
-Qt3DCore::QBackendNode *BufferFunctor::create(Qt3DCore::QNode *frontend) const
+Qt3DCore::QBackendNode *BufferFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
-    Buffer *buffer = m_manager->getOrCreateResource(frontend->id());
+    Buffer *buffer = m_manager->getOrCreateResource(change->subjectId());
     buffer->setManager(m_manager);
-    buffer->setPeer(frontend);
+    buffer->setRenderer(m_renderer);
     return buffer;
 }
 
-Qt3DCore::QBackendNode *BufferFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *BufferFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_manager->lookupResource(id);
 }
 
-void BufferFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void BufferFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     return m_manager->releaseResource(id);
 }

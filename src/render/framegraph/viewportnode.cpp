@@ -39,7 +39,8 @@
 
 #include "viewportnode_p.h"
 #include <Qt3DRender/qviewport.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRender/private/qviewport_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,15 +58,15 @@ ViewportNode::ViewportNode()
 {
 }
 
-void ViewportNode::updateFromPeer(Qt3DCore::QNode *peer)
+void ViewportNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QViewport *viewport = static_cast<QViewport *>(peer);
-    setXMin(viewport->rect().x());
-    setXMax(viewport->rect().width());
-    setYMin(viewport->rect().y());
-    setYMax(viewport->rect().height());
-    m_clearColor = viewport->clearColor();
-    setEnabled(viewport->isEnabled());
+    FrameGraphNode::initializeFromPeer(change);
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QViewportData>>(change);
+    const auto &data = typedChange->data;
+    m_xMin = data.normalizedRect.x();
+    m_xMax = data.normalizedRect.width();
+    m_yMin = data.normalizedRect.y();
+    m_yMax = data.normalizedRect.height();
 }
 
 float ViewportNode::xMin() const
@@ -105,28 +106,20 @@ void ViewportNode::setYMax(float yMax)
     m_yMax = yMax;
 }
 
-QColor ViewportNode::clearColor() const
-{
-    return m_clearColor;
-}
-
 void ViewportNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == NodeUpdated) {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("rect")) {
-            QRectF rect = propertyChange->value().value<QRectF>();
-            setXMin(rect.x());
-            setYMin(rect.y());
-            setXMax(rect.width());
-            setYMax(rect.height());
+    if (e->type() == PropertyUpdated) {
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
+        if (propertyChange->propertyName() == QByteArrayLiteral("normalizedRect")) {
+            QRectF normalizedRect = propertyChange->value().value<QRectF>();
+            setXMin(normalizedRect.x());
+            setYMin(normalizedRect.y());
+            setXMax(normalizedRect.width());
+            setYMax(normalizedRect.height());
         }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("clearColor")) {
-            m_clearColor = propertyChange->value().value<QColor>();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            setEnabled(propertyChange->value().toBool());
-        }
+        markDirty(AbstractRenderer::AllDirty);
     }
+    FrameGraphNode::sceneChangeEvent(e);
 }
 
 QRectF computeViewport(const QRectF &childViewport, const ViewportNode *parentViewport)

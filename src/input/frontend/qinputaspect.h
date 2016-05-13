@@ -55,15 +55,16 @@ class QT3DINPUTSHARED_EXPORT QInputAspect : public Qt3DCore::QAbstractAspect
 {
     Q_OBJECT
 public:
-    explicit QInputAspect(QObject *parent = 0);
+    explicit QInputAspect(QObject *parent = nullptr);
+
     QAbstractPhysicalDevice *createPhysicalDevice(const QString &name);
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
+    QStringList availablePhysicalDevices() const;
 
 private:
-    void onInitialize() Q_DECL_OVERRIDE;
-    void onCleanup() Q_DECL_OVERRIDE;
+    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
-    void loadInputDevicePlugins();
+    void onRegistered() Q_DECL_OVERRIDE;
+    void onUnregistered() Q_DECL_OVERRIDE;
 
     Q_DECLARE_PRIVATE(QInputAspect)
     friend class QInputDeviceIntegration;

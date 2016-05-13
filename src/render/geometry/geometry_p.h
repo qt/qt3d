@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRender/private/backendnode_p.h>
 
 
 QT_BEGIN_NAMESPACE
@@ -60,7 +60,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT Geometry : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT Geometry : public BackendNode
 {
 public:
     Geometry();
@@ -68,18 +68,17 @@ public:
 
     void cleanup();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     inline QVector<Qt3DCore::QNodeId> attributes() const { return m_attributes; }
     inline bool isDirty() const { return m_geometryDirty; }
-    inline int verticesPerPatch() const { return m_verticesPerPatch; }
     inline Qt3DCore::QNodeId boundingPositionAttribute() const { return m_boundingPositionAttribute; }
     void unsetDirty();
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QVector<Qt3DCore::QNodeId> m_attributes;
-    int m_verticesPerPatch;
     bool m_geometryDirty;
     Qt3DCore::QNodeId m_boundingPositionAttribute;
 };

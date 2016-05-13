@@ -43,6 +43,7 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,37 +55,38 @@ class QAspectManager;
 class QNode;
 class QEntity;
 class QAbstractAspectPrivate;
-class QBackendNodeFunctor;
+class QBackendNodeMapper;
 
 typedef QSharedPointer<QAspectJob> QAspectJobPtr;
-typedef QSharedPointer<QBackendNodeFunctor> QBackendNodeFunctorPtr;
+typedef QSharedPointer<QBackendNodeMapper> QBackendNodeMapperPtr;
 
 class QT3DCORESHARED_EXPORT QAbstractAspect : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit QAbstractAspect(QObject *parent = 0);
+    explicit QAbstractAspect(QObject *parent = nullptr);
+    ~QAbstractAspect();
 
 protected:
-    QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = 0);
+    QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = nullptr);
+
+    QNodeId rootEntityId() const Q_DECL_NOEXCEPT;
 
     template<class Frontend>
-    void registerBackendType(const QBackendNodeFunctorPtr &functor);
-    void registerBackendType(const QMetaObject &, const QBackendNodeFunctorPtr &functor);
+    void registerBackendType(const QBackendNodeMapperPtr &functor);
+    void registerBackendType(const QMetaObject &, const QBackendNodeMapperPtr &functor);
 
 private:
     virtual QVariant executeCommand(const QStringList &args);
 
-    virtual QVector<QAspectJobPtr> jobsToExecute(qint64 time) = 0;
+    virtual QVector<QAspectJobPtr> jobsToExecute(qint64 time);
 
-    virtual void onInitialize() = 0;
-    virtual void onCleanup() = 0;
+    virtual void onRegistered();
+    virtual void onUnregistered();
 
-    virtual void onStartup();
-    virtual void onShutdown();
-
-    virtual void onRootEntityChanged(QEntity *rootEntity);
+    virtual void onEngineStartup();
+    virtual void onEngineShutdown();
 
     Q_DECLARE_PRIVATE(QAbstractAspect)
     friend class QAspectEngine;
@@ -92,7 +94,7 @@ private:
 };
 
 template<class Frontend>
-void QAbstractAspect::registerBackendType(const QBackendNodeFunctorPtr &functor)
+void QAbstractAspect::registerBackendType(const QBackendNodeMapperPtr &functor)
 {
     registerBackendType(Frontend::staticMetaObject, functor);
 }

@@ -42,12 +42,14 @@
 #include "qshaderdata_p.h"
 #include <QMetaProperty>
 #include <QMetaObject>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qdynamicpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <private/graphicscontext_p.h>
 #include <private/qbackendnode_p.h>
 #include <private/glbuffer_p.h>
 #include <private/managers_p.h>
 #include <private/nodemanagers_p.h>
+#include <private/renderviewjobutils_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,10 +58,16 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 namespace Render {
 
-QList<Qt3DCore::QNodeId> ShaderData::m_updatedShaderData;
+namespace {
+
+const int qNodeIdTypeId = qMetaTypeId<Qt3DCore::QNodeId>();
+
+}
+
+QVector<Qt3DCore::QNodeId> ShaderData::m_updatedShaderData;
 
 ShaderData::ShaderData()
-    : m_managers(Q_NULLPTR)
+    : m_managers(nullptr)
 {
 }
 
@@ -72,27 +80,45 @@ void ShaderData::setManagers(NodeManagers *managers)
     m_managers = managers;
 }
 
-ShaderData *ShaderData::lookupResource(NodeManagers *managers, const QNodeId &id)
+void ShaderData::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
 {
-    ShaderData *shaderData = managers->shaderDataManager()->lookupResource(id);
-    if (!shaderData)
-        shaderData = managers->lightManager()->lookupResource(id);
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QShaderDataData>>(change);
+    const QShaderDataData &data = typedChange->data;
 
-    return shaderData;
+    m_propertyReader = data.propertyReader;
+
+    for (const QPair<QByteArray, QVariant> &entry : data.properties) {
+        if (entry.first == QByteArrayLiteral("data") ||
+                entry.first == QByteArrayLiteral("childNodes")) // We don't handle default Node properties
+            continue;
+        const QVariant &propertyValue = entry.second;
+        const QString propertyName = QString::fromLatin1(entry.first);
+
+        m_properties.insert(propertyName, propertyValue);
+        m_originalProperties.insert(propertyName, propertyValue);
+
+        // We check if the property is a QNodeId or QVector<QNodeId> so that we can
+        // check nested QShaderData for update
+        if (propertyValue.userType() == qNodeIdTypeId) {
+            m_nestedShaderDataProperties.insert(propertyName, propertyValue);
+        } else if (propertyValue.userType() == QMetaType::QVariantList) {
+            QVariantList list = propertyValue.value<QVariantList>();
+            if (list.count() > 0 && list.at(0).userType() == qNodeIdTypeId)
+                m_nestedShaderDataProperties.insert(propertyName, propertyValue);
+        }
+    }
+    // Note: we ignore transformed properties for now until we figure out how to best handle them
 }
 
-ShaderData *ShaderData::lookupResource(const QNodeId &id)
+
+ShaderData *ShaderData::lookupResource(NodeManagers *managers, QNodeId id)
+{
+    return managers->shaderDataManager()->lookupResource(id);
+}
+
+ShaderData *ShaderData::lookupResource(QNodeId id)
 {
     return ShaderData::lookupResource(m_managers, id);
-}
-
-void ShaderData::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    m_properties.clear();
-    const QShaderData *shaderData = static_cast<const QShaderData *>(peer);
-    m_propertyReader = shaderData->propertyReader();
-    if (!m_propertyReader.isNull())
-        readPeerProperties(const_cast<QShaderData *>(shaderData));
 }
 
 // Call by cleanup job (single thread)
@@ -104,14 +130,15 @@ void ShaderData::clearUpdatedProperties()
 
     while (it != end) {
         if (it.value().userType() == QMetaType::QVariantList) {
-            Q_FOREACH (const QVariant &v, it.value().value<QVariantList>()) {
+            const auto values = it.value().value<QVariantList>();
+            for (const QVariant &v : values) {
                 ShaderData *nested = lookupResource(v.value<QNodeId>());
-                if (nested != Q_NULLPTR)
+                if (nested != nullptr)
                     nested->clearUpdatedProperties();
             }
         } else {
             ShaderData *nested = lookupResource(it.value().value<QNodeId>());
-            if (nested != Q_NULLPTR)
+            if (nested != nullptr)
                 nested->clearUpdatedProperties();
         }
         ++it;
@@ -120,7 +147,7 @@ void ShaderData::clearUpdatedProperties()
 
 void ShaderData::cleanup(NodeManagers *managers)
 {
-    Q_FOREACH (const Qt3DCore::QNodeId &id, m_updatedShaderData) {
+    Q_FOREACH (Qt3DCore::QNodeId id, m_updatedShaderData) {
         ShaderData *shaderData = ShaderData::lookupResource(managers, id);
         if (shaderData)
             shaderData->clearUpdatedProperties();
@@ -148,11 +175,11 @@ bool ShaderData::updateViewTransform(const QMatrix4x4 &viewMatrix)
     // We check the matrices and decide if the transform has changed since the previous call to needsUpdate
     if (m_viewMatrix != viewMatrix) {
         m_viewMatrix = viewMatrix;
-        const QHash<QString, QShaderData::TransformType>::const_iterator transformedEnd = m_transformedProperties.end();
-        QHash<QString, QShaderData::TransformType>::const_iterator transformedIt = m_transformedProperties.begin();
+        const QHash<QString, TransformType>::const_iterator transformedEnd = m_transformedProperties.end();
+        QHash<QString, TransformType>::const_iterator transformedIt = m_transformedProperties.begin();
 
         while (transformedIt != transformedEnd) {
-            if (transformedIt.value() == QShaderData::ModelToEye) {
+            if (transformedIt.value() == ModelToEye) {
                 m_updatedProperties.insert(transformedIt.key(), m_viewMatrix * m_worldMatrix * m_originalProperties.value(transformedIt.key()).value<QVector3D>());
                 m_properties.insert(transformedIt.key(), m_viewMatrix * m_worldMatrix * m_originalProperties.value(transformedIt.key()).value<QVector3D>());
             }
@@ -163,12 +190,19 @@ bool ShaderData::updateViewTransform(const QMatrix4x4 &viewMatrix)
     QHash<QString, QVariant>::const_iterator it = m_nestedShaderDataProperties.begin();
 
     while (it != end) {
-        if (it.value().userType() == QMetaType::QVariantList) {
+        const int userType = it.value().userType();
+
+        if (userType == QMetaType::QVariantList) {
             QVariantList updatedNodes;
             bool nestedNeedsUpdate = false;
-            Q_FOREACH (const QVariant &v, it.value().value<QVariantList>()) {
-                ShaderData *nested = lookupResource(v.value<QNodeId>());
-                if (nested != Q_NULLPTR) {
+            const QVariantList values = variant_value<QVariantList>(it.value());
+            for (const QVariant &v : values) {
+                if (v.userType() != qNodeIdTypeId)
+                    continue;
+
+                const Qt3DCore::QNodeId nestedId = variant_value<Qt3DCore::QNodeId>(v);
+                ShaderData *nested = lookupResource(nestedId);
+                if (nested != nullptr) {
                     // We need to add the nested nodes to the updated property list
                     // as we need to maintain order
                     // if node[0] doesn't need update but node[1] does,
@@ -180,9 +214,10 @@ bool ShaderData::updateViewTransform(const QMatrix4x4 &viewMatrix)
             // Of course we only add all the nodes if at least one of the nested nodes required and update
             if (nestedNeedsUpdate && !updatedNodes.empty())
                 m_updatedProperties.insert(it.key(), updatedNodes);
-        } else {
-            ShaderData *nested = lookupResource(it.value().value<QNodeId>());
-            if (nested != Q_NULLPTR && nested->updateViewTransform(viewMatrix))
+        } else if (userType == qNodeIdTypeId) {
+            const Qt3DCore::QNodeId nestedId = variant_value<Qt3DCore::QNodeId>(it.value());
+            ShaderData *nested = lookupResource(nestedId);
+            if (nested != nullptr && nested->updateViewTransform(viewMatrix))
                 m_updatedProperties.insert(it.key(), it.value());
         }
         ++it;
@@ -195,11 +230,11 @@ bool ShaderData::updateWorldTransform(const QMatrix4x4 &worldMatrix)
     if (m_worldMatrix != worldMatrix) {
         m_worldMatrix = worldMatrix;
 
-        const QHash<QString, QShaderData::TransformType>::const_iterator transformedEnd = m_transformedProperties.end();
-        QHash<QString, QShaderData::TransformType>::const_iterator transformedIt = m_transformedProperties.begin();
+        const QHash<QString, TransformType>::const_iterator transformedEnd = m_transformedProperties.end();
+        QHash<QString, TransformType>::const_iterator transformedIt = m_transformedProperties.begin();
 
         while (transformedIt != transformedEnd) {
-            if (transformedIt.value() == QShaderData::ModelToEye) {
+            if (transformedIt.value() == ModelToEye) {
                 m_updatedProperties.insert(transformedIt.key(), m_viewMatrix * m_worldMatrix * m_originalProperties.value(transformedIt.key()).value<QVector3D>());
                 m_properties.insert(transformedIt.key(), m_viewMatrix * m_worldMatrix * m_originalProperties.value(transformedIt.key()).value<QVector3D>());
             } else {
@@ -218,11 +253,9 @@ bool ShaderData::updateWorldTransform(const QMatrix4x4 &worldMatrix)
 void ShaderData::markDirty()
 {
     QMutexLocker lock(&m_mutex);
-    if (!ShaderData::m_updatedShaderData.contains(peerUuid()))
-        ShaderData::m_updatedShaderData.append(peerUuid());
+    if (!ShaderData::m_updatedShaderData.contains(peerId()))
+        ShaderData::m_updatedShaderData.append(peerId());
 }
-
-const int qNodeIdTypeId = qMetaTypeId<Qt3DCore::QNodeId>();
 
 void ShaderData::readPeerProperties(QShaderData *shaderData)
 {
@@ -240,7 +273,7 @@ void ShaderData::readPeerProperties(QShaderData *shaderData)
         m_properties.insert(propertyName, propertyValue);
         m_originalProperties.insert(propertyName, propertyValue);
 
-        // We check if the property is a QNodeId or QList<QNodeId> so that we can
+        // We check if the property is a QNodeId or QVector<QNodeId> so that we can
         // check nested QShaderData for update
         if (propertyValue.userType() == qNodeIdTypeId) {
             m_nestedShaderDataProperties.insert(propertyName, propertyValue);
@@ -250,6 +283,19 @@ void ShaderData::readPeerProperties(QShaderData *shaderData)
                 m_nestedShaderDataProperties.insert(propertyName, propertyValue);
         }
     }
+
+    // Also check the dynamic properties
+    foreach (const QByteArray &propertyName , shaderData->dynamicPropertyNames()) {
+        if (propertyName == "data" || propertyName == "childNodes")  // We don't handle default Node properties
+            continue;
+
+        QVariant value = m_propertyReader->readProperty(shaderData->property(propertyName));
+        QString key = QString::fromLatin1(propertyName);
+
+        m_properties.insert(key, value);
+        m_originalProperties.insert(key, value);
+    }
+
 
     // We look for transformed properties
     QHash<QString, QVariant>::iterator it = m_properties.begin();
@@ -261,7 +307,7 @@ void ShaderData::readPeerProperties(QShaderData *shaderData)
             QVariant value = m_properties.value(it.key() + QStringLiteral("Transformed"));
             // if that's the case, we apply a space transformation to the property
             if (value.isValid() && value.type() == QVariant::Int)
-                m_transformedProperties.insert(it.key(), static_cast<QShaderData::TransformType>(value.toInt()));
+                m_transformedProperties.insert(it.key(), static_cast<TransformType>(value.toInt()));
         }
         ++it;
     }
@@ -269,68 +315,61 @@ void ShaderData::readPeerProperties(QShaderData *shaderData)
 
 void ShaderData::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (!m_propertyReader.isNull()) {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        QString propertyName = QString::fromLatin1(propertyChange->propertyName());
-        switch (e->type()) {
-        case NodeUpdated: {
-            // Note we aren't notified about nested QShaderData in this call
-            // only scalar / vec properties
-            if (m_properties.contains(propertyName)) {
-                QVariant val = m_propertyReader->readProperty(propertyChange->value());
-                // If this is a Transformed property, we need to multiply against the correct
-                // matrices
-                m_originalProperties.insert(propertyName, val);
-                if (m_transformedProperties.contains(propertyName)) {
-                    if (m_transformedProperties[propertyName] == QShaderData::ModelToEye)
-                        val = m_viewMatrix * m_worldMatrix * val.value<QVector3D>();
-                    else
-                        val = m_worldMatrix * val.value<QVector3D>();
-                }
-                m_properties.insert(propertyName, val);
-                m_updatedProperties.insert(propertyName, val);
+    if (!m_propertyReader.isNull() && e->type() == PropertyUpdated) {
+        QString propertyName;
+        QVariant propertyValue;
+
+        if (auto propertyChange = qSharedPointerDynamicCast<QPropertyUpdatedChange>(e)) {
+            propertyName = QString::fromLatin1(propertyChange->propertyName());
+            propertyValue =  m_propertyReader->readProperty(propertyChange->value());
+        } else if (auto propertyChange = qSharedPointerDynamicCast<QDynamicPropertyUpdatedChange>(e)) {
+            propertyName = QString::fromLatin1(propertyChange->propertyName());
+            propertyValue = m_propertyReader->readProperty(propertyChange->value());
+        } else {
+            Q_UNREACHABLE();
+        }
+
+        // Note we aren't notified about nested QShaderData in this call
+        // only scalar / vec properties
+        if (m_properties.contains(propertyName)) {
+            // If this is a Transformed property, we need to multiply against the correct
+            // matrices
+            m_originalProperties.insert(propertyName, propertyValue);
+            if (m_transformedProperties.contains(propertyName)) {
+                if (m_transformedProperties[propertyName] == ModelToEye)
+                    propertyValue = m_viewMatrix * m_worldMatrix * propertyValue.value<QVector3D>();
+                else
+                    propertyValue = m_worldMatrix * propertyValue.value<QVector3D>();
             }
-            break;
+            m_properties.insert(propertyName, propertyValue);
+            m_updatedProperties.insert(propertyName, propertyValue);
         }
-        case NodeAdded: {
-            m_properties.insert(propertyName, m_propertyReader->readProperty(propertyChange->value()));
-            m_originalProperties.insert(propertyName, m_propertyReader->readProperty(propertyChange->value()));
-            m_nestedShaderDataProperties.insert(propertyName, propertyChange->value());
-            break;
-        }
-        case NodeRemoved: {
-            if (m_properties.contains(propertyName)) {
-                m_originalProperties.remove(propertyName);
-                m_properties.remove(propertyName);
-                m_nestedShaderDataProperties.remove(propertyName);
-            }
-            break;
-        }
-        default:
-            break;
-        }
+        BackendNode::markDirty(AbstractRenderer::AllDirty);
     }
+
+    BackendNode::sceneChangeEvent(e);
 }
 
-RenderShaderDataFunctor::RenderShaderDataFunctor(NodeManagers *managers)
+RenderShaderDataFunctor::RenderShaderDataFunctor(AbstractRenderer *renderer, NodeManagers *managers)
     : m_managers(managers)
+    , m_renderer(renderer)
 {
 }
 
-Qt3DCore::QBackendNode *RenderShaderDataFunctor::create(Qt3DCore::QNode *frontend) const
+Qt3DCore::QBackendNode *RenderShaderDataFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
-    ShaderData *backend = m_managers->shaderDataManager()->getOrCreateResource(frontend->id());
+    ShaderData *backend = m_managers->shaderDataManager()->getOrCreateResource(change->subjectId());
     backend->setManagers(m_managers);
-    backend->setPeer(frontend);
+    backend->setRenderer(m_renderer);
     return backend;
 }
 
-Qt3DCore::QBackendNode *RenderShaderDataFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *RenderShaderDataFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_managers->shaderDataManager()->lookupResource(id);
 }
 
-void RenderShaderDataFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void RenderShaderDataFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     m_managers->shaderDataManager()->releaseResource(id);
 }

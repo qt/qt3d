@@ -52,31 +52,32 @@ namespace Qt3DCore {
 class QComponent;
 class QEntityPrivate;
 
-typedef QList<QComponent*> QComponentList;
+typedef QVector<QComponent*> QComponentVector;
 
 class QT3DCORESHARED_EXPORT QEntity : public QNode
 {
     Q_OBJECT
 public:
-    explicit QEntity(QNode *parent = 0);
+    explicit QEntity(QNode *parent = nullptr);
     virtual ~QEntity();
 
-    QComponentList components() const;
+    QComponentVector components() const;
 
     void addComponent(QComponent *comp);
     void removeComponent(QComponent *comp);
-    void removeAllComponents();
 
     QEntity *parentEntity() const;
 
 protected:
-    QEntity(QEntityPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QEntity(QEntityPrivate &dd, QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QEntity)
-    QT3D_CLONEABLE(QEntity)
+
+    QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
+
+typedef QSharedPointer<QEntity> QEntityPtr;
 
 } // namespace Qt3DCore
 

@@ -40,7 +40,7 @@
 #include "qseamlesscubemap.h"
 #include "qrenderstate_p.h"
 #include <private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,45 +50,16 @@ class QSeamlessCubemapPrivate : public QRenderStatePrivate
 {
 public:
     QSeamlessCubemapPrivate()
-        : QRenderStatePrivate(QRenderState::SeamlessCubemap)
-        , m_enabled(false)
+        : QRenderStatePrivate(QRenderStatePrivate::SeamlessCubemap)
     {
     }
 
     Q_DECLARE_PUBLIC(QSeamlessCubemap)
-    bool m_enabled;
 };
 
 QSeamlessCubemap::QSeamlessCubemap(QNode *parent)
     : QRenderState(*new QSeamlessCubemapPrivate, parent)
 {
-}
-
-QSeamlessCubemap::~QSeamlessCubemap()
-{
-    QNode::cleanup();
-}
-
-void QSeamlessCubemap::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QSeamlessCubemap *refState = static_cast<const QSeamlessCubemap*>(ref);
-    d_func()->m_enabled = refState->d_func()->m_enabled;
-}
-
-bool QSeamlessCubemap::enabled() const
-{
-    Q_D(const QSeamlessCubemap);
-    return d->m_enabled;
-}
-
-void QSeamlessCubemap::setEnabled(bool enabled)
-{
-    Q_D(QSeamlessCubemap);
-    if (d->m_enabled != enabled) {
-        d->m_enabled = enabled;
-        emit enabledChanged(enabled);
-    }
 }
 
 } // namespace Qt3DRender

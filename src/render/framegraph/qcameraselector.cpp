@@ -41,7 +41,7 @@
 #include "qcameraselector_p.h"
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/private/qentity_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,25 +60,13 @@ QCameraSelector::QCameraSelector(QCameraSelectorPrivate &dd, QNode *parent)
 
 QCameraSelectorPrivate::QCameraSelectorPrivate()
     : QFrameGraphNodePrivate()
-    , m_camera(Q_NULLPTR)
-{}
-
-void QCameraSelector::copy(const QNode *ref)
+    , m_camera(nullptr)
 {
-    QFrameGraphNode::copy(ref);
-    const QCameraSelector *other = static_cast<const QCameraSelector*>(ref);
-
-    if (other->d_func()->m_camera)
-        setCamera(qobject_cast<Qt3DCore::QEntity *>(QNode::clone(other->d_func()->m_camera)));
 }
 
 QCameraSelector::QCameraSelector(Qt3DCore::QNode *parent)
     :   QFrameGraphNode(*new QCameraSelectorPrivate, parent)
-{}
-
-QCameraSelector::~QCameraSelector()
 {
-    QNode::cleanup();
 }
 
 /*!
@@ -104,6 +92,15 @@ Qt3DCore::QEntity *QCameraSelector::camera() const
 {
     Q_D(const QCameraSelector);
     return d->m_camera;
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QCameraSelector::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QCameraSelectorData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QCameraSelector);
+    data.cameraId = qIdForNode(d->m_camera);
+    return creationChange;
 }
 
 } // namespace Qt3DRender

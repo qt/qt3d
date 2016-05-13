@@ -245,7 +245,7 @@ QAbstractServiceProvider *QServiceLocator::_q_getServiceHelper(int type)
     case EventFilterService:
         return eventFilterService();
     default:
-        return d->m_services.value(type, Q_NULLPTR);
+        return d->m_services.value(type, nullptr);
     }
 }
 

@@ -53,29 +53,22 @@
 GBuffer::GBuffer(Qt3DCore::QNode *parent)
     : Qt3DRender::QRenderTarget(parent)
 {
-    const Qt3DRender::QAbstractTextureProvider::TextureFormat formats[AttachmentsCount] = {
-        Qt3DRender::QAbstractTextureProvider::RGBA32F,
-        Qt3DRender::QAbstractTextureProvider::RGB32F,
-        Qt3DRender::QAbstractTextureProvider::RGB16F,
-        Qt3DRender::QAbstractTextureProvider::D32F
+    const Qt3DRender::QAbstractTexture::TextureFormat formats[AttachmentsCount] = {
+        Qt3DRender::QAbstractTexture::RGBA32F,
+        Qt3DRender::QAbstractTexture::RGB32F,
+        Qt3DRender::QAbstractTexture::RGB16F,
+        Qt3DRender::QAbstractTexture::D32F
     };
 
-    const Qt3DRender::QRenderAttachment::RenderAttachmentType attachmentTypes[AttachmentsCount] = {
-        Qt3DRender::QRenderAttachment::ColorAttachment0,
-        Qt3DRender::QRenderAttachment::ColorAttachment1,
-        Qt3DRender::QRenderAttachment::ColorAttachment2,
-        Qt3DRender::QRenderAttachment::DepthAttachment
-    };
-
-    const QString attachmentNames[AttachmentsCount] = {
-        QString::fromLatin1("color"),
-        QString::fromLatin1("position"),
-        QString::fromLatin1("normal"),
-        QString::fromLatin1("depth")
+    const Qt3DRender::QRenderTargetOutput::AttachmentPoint attachmentPoints[AttachmentsCount] = {
+        Qt3DRender::QRenderTargetOutput::Color0,
+        Qt3DRender::QRenderTargetOutput::Color1,
+        Qt3DRender::QRenderTargetOutput::Color2,
+        Qt3DRender::QRenderTargetOutput::Depth
     };
 
     for (int i = 0; i < AttachmentsCount; i++) {
-        Qt3DRender::QRenderAttachment *attachment = new Qt3DRender::QRenderAttachment(this);
+        Qt3DRender::QRenderTargetOutput *output = new Qt3DRender::QRenderTargetOutput(this);
 
         m_textures[i] = new Qt3DRender::QTexture2D();
         m_textures[i]->setFormat(formats[i]);
@@ -83,33 +76,31 @@ GBuffer::GBuffer(Qt3DCore::QNode *parent)
         m_textures[i]->setHeight(1024);
         m_textures[i]->setGenerateMipMaps(false);
         m_textures[i]->setWrapMode(Qt3DRender::QTextureWrapMode(Qt3DRender::QTextureWrapMode::ClampToEdge));
-        m_textures[i]->setMinificationFilter(Qt3DRender::QAbstractTextureProvider::Linear);
-        m_textures[i]->setMagnificationFilter(Qt3DRender::QAbstractTextureProvider::Linear);
+        m_textures[i]->setMinificationFilter(Qt3DRender::QAbstractTexture::Linear);
+        m_textures[i]->setMagnificationFilter(Qt3DRender::QAbstractTexture::Linear);
 
-        attachment->setTexture(m_textures[i]);
-        attachment->setType(attachmentTypes[i]);
-        attachment->setName(attachmentNames[i]);
-
-        addAttachment(attachment);
+        output->setTexture(m_textures[i]);
+        output->setAttachmentPoint(attachmentPoints[i]);
+        addOutput(output);
     }
 }
 
-Qt3DRender::QAbstractTextureProvider *GBuffer::colorTexture() const
+Qt3DRender::QAbstractTexture *GBuffer::colorTexture() const
 {
     return m_textures[Color];
 }
 
-Qt3DRender::QAbstractTextureProvider *GBuffer::positionTexture() const
+Qt3DRender::QAbstractTexture *GBuffer::positionTexture() const
 {
     return m_textures[Position];
 }
 
-Qt3DRender::QAbstractTextureProvider *GBuffer::normalTexture() const
+Qt3DRender::QAbstractTexture *GBuffer::normalTexture() const
 {
     return m_textures[Normal];
 }
 
-Qt3DRender::QAbstractTextureProvider *GBuffer::depthTexture() const
+Qt3DRender::QAbstractTexture *GBuffer::depthTexture() const
 {
     return m_textures[Depth];
 }

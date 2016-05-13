@@ -52,7 +52,6 @@
 //
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qray3d.h>
 #include "qopenglinformationservice_p.h"
 #include "qsysteminformationservice_p.h"
 

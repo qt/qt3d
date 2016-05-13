@@ -52,7 +52,7 @@
 //
 
 #include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
-#include <Qt3DRender/qrenderattachment.h>
+#include <Qt3DRender/qrendertargetoutput.h>
 #include <Qt3DRender/qrendertargetselector.h>
 #include <QQmlListProperty>
 #include <QVariantList>

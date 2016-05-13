@@ -52,21 +52,20 @@
 //
 
 #include <Qt3DCore/private/qresourcemanager_p.h>
-#include <Qt3DRender/private/renderattachment_p.h>
+#include <Qt3DRender/private/rendertargetoutput_p.h>
 #include <Qt3DRender/private/cameralens_p.h>
-#include <Qt3DRender/private/annotation_p.h>
+#include <Qt3DRender/private/filterkey_p.h>
 #include <Qt3DRender/private/effect_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/layer_p.h>
 #include <Qt3DRender/private/material_p.h>
 #include <Qt3DRender/private/shader_p.h>
-#include <Qt3DRender/private/sortcriterion_p.h>
 #include <Qt3DRender/private/technique_p.h>
 #include <Qt3DRender/private/texture_p.h>
 #include <Qt3DRender/private/transform_p.h>
 #include <Qt3DRender/private/rendertarget_p.h>
 #include <Qt3DRender/private/renderpass_p.h>
-#include <Qt3DRender/private/genericstate_p.h>
+#include <Qt3DRender/private/renderstatenode_p.h>
 #include <Qt3DRender/private/parameter_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
@@ -78,7 +77,7 @@
 #include <Qt3DRender/private/boundingvolumedebug_p.h>
 #include <Qt3DRender/private/openglvertexarrayobject_p.h>
 #include <Qt3DRender/private/light_p.h>
-#include <Qt3DRender/private/computejob_p.h>
+#include <Qt3DRender/private/computecommand_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -87,7 +86,7 @@ namespace Qt3DRender {
 namespace Render {
 
 class AttachmentManager : public Qt3DCore::QResourceManager<
-        RenderAttachment,
+        RenderTargetOutput,
         Qt3DCore::QNodeId,
         16,
         Qt3DCore::ArrayAllocatingPolicy,
@@ -107,8 +106,8 @@ public:
     CameraManager() {}
 };
 
-class CriterionManager : public Qt3DCore::QResourceManager<
-        Annotation,
+class FilterKeyManager : public Qt3DCore::QResourceManager<
+        FilterKey,
         Qt3DCore::QNodeId,
         16,
         Qt3DCore::ArrayAllocatingPolicy,
@@ -116,7 +115,7 @@ class CriterionManager : public Qt3DCore::QResourceManager<
 
 {
 public:
-    CriterionManager() {}
+    FilterKeyManager() {}
 };
 
 class EffectManager : public Qt3DCore::QResourceManager<
@@ -146,10 +145,10 @@ class Q_AUTOTEST_EXPORT FrameGraphManager
 public:
     FrameGraphManager() {}
 
-    bool containsNode(const Qt3DCore::QNodeId &id) const;
-    void appendNode(FrameGraphNode *node);
-    FrameGraphNode* lookupNode(const Qt3DCore::QNodeId &id) const;
-    void releaseNode(const Qt3DCore::QNodeId &id);
+    bool containsNode(Qt3DCore::QNodeId id) const;
+    void appendNode(Qt3DCore::QNodeId id, FrameGraphNode *node);
+    FrameGraphNode* lookupNode(Qt3DCore::QNodeId id) const;
+    void releaseNode(Qt3DCore::QNodeId id);
 
 private:
     QHash<Qt3DCore::QNodeId, FrameGraphNode*> m_nodes;
@@ -192,17 +191,6 @@ class ShaderManager : public Qt3DCore::QResourceManager<
 {
 public:
     ShaderManager() {}
-};
-
-class SortCriterionManager : public Qt3DCore::QResourceManager<
-        SortCriterion,
-        Qt3DCore::QNodeId,
-        8,
-        Qt3DCore::ArrayAllocatingPolicy,
-        Qt3DCore::ObjectLevelLockingPolicy>
-{
-public:
-    SortCriterionManager() {}
 };
 
 class TechniqueManager : public Qt3DCore::QResourceManager<
@@ -337,6 +325,7 @@ class ObjectPickerManager : public Qt3DCore::QResourceManager<
 {
 };
 
+#if 0
 class BoundingVolumeDebugManager : public Qt3DCore::QResourceManager<
         BoundingVolumeDebug,
         Qt3DCore::QNodeId,
@@ -345,6 +334,7 @@ class BoundingVolumeDebugManager : public Qt3DCore::QResourceManager<
         Qt3DCore::ObjectLevelLockingPolicy>
 {
 };
+#endif
 
 class LightManager : public Qt3DCore::QResourceManager<
         Light,
@@ -357,15 +347,15 @@ public:
     LightManager() {}
 };
 
-class ComputeJobManager : public Qt3DCore::QResourceManager<
-        ComputeJob,
+class ComputeCommandManager : public Qt3DCore::QResourceManager<
+        ComputeCommand,
         Qt3DCore::QNodeId,
         16,
         Qt3DCore::ArrayAllocatingPolicy,
         Qt3DCore::ObjectLevelLockingPolicy>
 {
 public:
-    ComputeJobManager() {}
+    ComputeCommandManager() {}
 };
 
 class RenderStateManager : public Qt3DCore::QResourceManager<
@@ -381,13 +371,12 @@ class RenderStateManager : public Qt3DCore::QResourceManager<
 } // namespace Render
 } // namespace Qt3DRender
 
-Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Annotation, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::FilterKey, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Effect, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Entity, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Layer, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Material, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Shader, Q_REQUIRES_CLEANUP)
-Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::SortCriterion, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderTarget, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Technique, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Texture, Q_REQUIRES_CLEANUP)
@@ -397,7 +386,7 @@ Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Attribute, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Geometry, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::ObjectPicker, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::BoundingVolumeDebug, Q_REQUIRES_CLEANUP)
-Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::ComputeJob, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::ComputeCommand, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 

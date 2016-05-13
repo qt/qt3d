@@ -60,12 +60,12 @@ PointLightBlock::~PointLightBlock()
 {
 }
 
-QList<Qt3DRender::QShaderData *> PointLightBlock::lights() const
+QVector<Qt3DRender::QAbstractLight *> PointLightBlock::lights() const
 {
     return m_lights;
 }
 
-void PointLightBlock::addLight(Qt3DRender::QShaderData *light)
+void PointLightBlock::addLight(Qt3DRender::QAbstractLight *light)
 {
     m_lights.append(light);
     emit lightsChanged();

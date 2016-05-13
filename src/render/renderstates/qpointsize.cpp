@@ -36,27 +36,14 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+
 #include "qpointsize.h"
-#include "qrenderstate_p.h"
+#include "qpointsize_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QPointSizePrivate : public QRenderStatePrivate
-{
-public:
-    QPointSizePrivate(QPointSize::Specification spec, float value)
-        : QRenderStatePrivate(QRenderState::PointSize)
-        , m_specification(spec)
-        , m_value(value)
-    {}
-
-    QPointSize::Specification m_specification;
-    float m_value;
-
-    Q_DECLARE_PUBLIC(QPointSize)
-};
 
 /*!
     \class Qt3DRender::QPointSize
@@ -70,19 +57,14 @@ public:
  */
 
 QPointSize::QPointSize(Qt3DCore::QNode *parent)
-    : QRenderState(*new QPointSizePrivate(Specification::Programmable, 0.f), parent)
+    : QRenderState(*new QPointSizePrivate(SizeMode::Programmable, 0.f), parent)
 {
 }
 
-QPointSize::~QPointSize()
-{
-    QNode::cleanup();
-}
-
-QPointSize::Specification QPointSize::specification() const
+QPointSize::SizeMode QPointSize::sizeMode() const
 {
     Q_D(const QPointSize);
-    return d->m_specification;
+    return d->m_sizeMode;
 }
 
 float QPointSize::value() const
@@ -91,16 +73,11 @@ float QPointSize::value() const
     return d->m_value;
 }
 
-bool QPointSize::isProgrammable() const
-{
-    return (specification() == QPointSize::Specification::Programmable);
-}
-
-void QPointSize::setSpecification(Specification spec)
+void QPointSize::setSizeMode(SizeMode sizeMode)
 {
     Q_D(QPointSize);
-    d->m_specification = spec;
-    emit specificationChanged(spec);
+    d->m_sizeMode = sizeMode;
+    emit sizeModeChanged(sizeMode);
 }
 
 void QPointSize::setValue(float size)
@@ -110,15 +87,14 @@ void QPointSize::setValue(float size)
     emit valueChanged(size);
 }
 
-void QPointSize::copy(const Qt3DCore::QNode *ref)
+Qt3DCore::QNodeCreatedChangeBasePtr QPointSize::createNodeCreationChange() const
 {
-    const QPointSize *refState = static_cast<const QPointSize *>(ref);
-
-    QRenderState::copy(ref);
-
-    Q_D(QPointSize);
-    d->m_value = refState->d_func()->m_value;
-    d->m_specification = refState->d_func()->m_specification;
+    auto creationChange = QRenderStateCreatedChangePtr<QPointSizeData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QPointSize);
+    data.sizeMode = d->m_sizeMode;
+    data.value = d->m_value;
+    return creationChange;
 }
 
 } // namespace Qt3DRender

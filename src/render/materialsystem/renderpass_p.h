@@ -52,13 +52,11 @@
 // We mean it.
 //
 
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qt3drender_global.h>
-#include <Qt3DRender/private/parametermapping_p.h>
 #include <Qt3DRender/private/parameterpack_p.h>
 #include <Qt3DRender/private/renderstatecollection_p.h>
 #include <Qt3DCore/private/qabstractaspect_p.h>
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -66,8 +64,7 @@ namespace Qt3DRender {
 
 class QRenderPass;
 class QAbstractShader;
-class QParameterMapping;
-class QAnnotation;
+class QFilterKey;
 class QRenderState;
 
 namespace Render {
@@ -75,7 +72,7 @@ namespace Render {
 class RenderPassManager;
 class RenderState;
 
-class Q_AUTOTEST_EXPORT RenderPass : public Qt3DCore::QBackendNode, public RenderStateCollection
+class Q_AUTOTEST_EXPORT RenderPass : public BackendNode, public RenderStateCollection
 {
 public:
     RenderPass();
@@ -83,24 +80,20 @@ public:
 
     void cleanup();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     Qt3DCore::QNodeId shaderProgram() const;
-    QList<ParameterMapping> bindings() const;
-    QList<Qt3DCore::QNodeId> annotations() const;
-    QList<Qt3DCore::QNodeId> parameters() const;
+    QVector<Qt3DCore::QNodeId> filterKeys() const;
+    QVector<Qt3DCore::QNodeId> parameters() const;
 
 private:
-    void appendAnnotation(const Qt3DCore::QNodeId &criterionId);
-    void removeAnnotation(const Qt3DCore::QNodeId &criterionId);
+    void appendFilterKey(Qt3DCore::QNodeId filterKeyId);
+    void removeFilterKey(Qt3DCore::QNodeId filterKeyId);
 
-    void appendBinding(const ParameterMapping &binding);
-    void removeBinding(const Qt3DCore::QNodeId &bindingId);
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
     Qt3DCore::QNodeId m_shaderUuid;
-    QHash<Qt3DCore::QNodeId, ParameterMapping> m_bindings;
-    QList<Qt3DCore::QNodeId> m_annotationList;
+    QVector<Qt3DCore::QNodeId> m_filterKeyList;
     ParameterPack m_parameterPack;
 };
 

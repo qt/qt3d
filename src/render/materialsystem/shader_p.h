@@ -51,11 +51,11 @@
 // We mean it.
 //
 
-#include <QMutex>
-#include <QVector>
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/quniformvalue_p.h>
 #include <Qt3DRender/private/shadervariables_p.h>
-#include <Qt3DCore/qbackendnode.h>
+#include <QMutex>
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,7 +72,7 @@ class AttachmentPack;
 
 typedef uint ProgramDNA;
 
-class Q_AUTOTEST_EXPORT Shader : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT Shader : public BackendNode
 {
 public:
     Shader();
@@ -80,9 +80,13 @@ public:
 
     void cleanup();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void updateUniforms(GraphicsContext *ctx, const ShaderParameterPack &pack);
     void setFragOutputs(const QHash<QString, int> &fragOutputs);
+
+    inline QVector<int> uniformsNamesIds() const Q_DECL_NOEXCEPT { return m_uniformsNamesIds; }
+    inline QVector<int> uniformBlockNamesIds() const Q_DECL_NOEXCEPT { return m_uniformBlockNamesIds; }
+    inline QVector<int> storageBlockNamesIds() const Q_DECL_NOEXCEPT { return m_shaderStorageBlockNamesIds; }
+    inline QVector<int> attributeNamesIds() const Q_DECL_NOEXCEPT { return m_attributeNamesIds; }
 
     QVector<QString> uniformsNames() const;
     QVector<QString> attributesNames() const;
@@ -91,38 +95,47 @@ public:
     QVector<QByteArray> shaderCode() const;
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    bool isLoaded() const;
-    ProgramDNA dna() const;
+    bool isLoaded() const Q_DECL_NOEXCEPT { return m_isLoaded; }
+    ProgramDNA dna() const Q_DECL_NOEXCEPT { return m_dna; }
 
-    QVector<ShaderUniform> uniforms() const;
-    QVector<ShaderAttribute> attributes() const;
-    QVector<ShaderUniformBlock> uniformBlocks() const;
-    QVector<ShaderStorageBlock> storageBlocks() const;
+    inline QVector<ShaderUniform> uniforms() const Q_DECL_NOEXCEPT { return m_uniforms; }
+    inline QVector<ShaderAttribute> attributes() const Q_DECL_NOEXCEPT { return m_attributes; }
+    inline QVector<ShaderUniformBlock> uniformBlocks() const Q_DECL_NOEXCEPT { return m_uniformBlocks; }
+    inline QVector<ShaderStorageBlock> storageBlocks() const Q_DECL_NOEXCEPT { return m_shaderStorageBlocks; }
 
     QHash<QString, ShaderUniform> activeUniformsForUniformBlock(int blockIndex) const;
-    ShaderUniformBlock uniformBlock(int blockIndex);
-    ShaderUniformBlock uniformBlock(const QString &blockName);
 
-    ShaderStorageBlock storageBlock(int blockIndex);
-    ShaderStorageBlock storageBlock(const QString &blockName);
+    ShaderUniformBlock uniformBlockForBlockIndex(int blockNameId);
+    ShaderUniformBlock uniformBlockForBlockNameId(int blockIndex);
+    ShaderUniformBlock uniformBlockForBlockName(const QString &blockName);
+
+    ShaderStorageBlock storageBlockForBlockIndex(int blockIndex);
+    ShaderStorageBlock storageBlockForBlockNameId(int blockNameId);
+    ShaderStorageBlock storageBlockForBlockName(const QString &blockName);
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QOpenGLShaderProgram *m_program;
 
     QOpenGLShaderProgram *createProgram(GraphicsContext *context);
     QOpenGLShaderProgram *createDefaultProgram();
 
     QVector<QString> m_uniformsNames;
+    QVector<int> m_uniformsNamesIds;
     QVector<ShaderUniform> m_uniforms;
 
     QVector<QString> m_attributesNames;
+    QVector<int> m_attributeNamesIds;
     QVector<ShaderAttribute> m_attributes;
 
     QVector<QString> m_uniformBlockNames;
+    QVector<int> m_uniformBlockNamesIds;
     QVector<ShaderUniformBlock> m_uniformBlocks;
     QHash<int, QHash<QString, ShaderUniform> > m_uniformBlockIndexToShaderUniforms;
 
     QVector<QString> m_shaderStorageBlockNames;
+    QVector<int> m_shaderStorageBlockNamesIds;
     QVector<ShaderStorageBlock> m_shaderStorageBlocks;
 
     QHash<QString, int> m_fragOutputs;
@@ -132,6 +145,7 @@ private:
     bool m_isLoaded;
     ProgramDNA m_dna;
     QMutex m_mutex;
+    GraphicsContext *m_graphicsContext;
 
     void updateDNA();
 
@@ -146,6 +160,15 @@ private:
     QOpenGLShaderProgram *getOrCreateProgram(GraphicsContext *ctx);
     friend class GraphicsContext;
 };
+
+#ifndef QT_NO_DEBUG_STREAM
+inline QDebug operator<<(QDebug dbg, const Shader &shader)
+{
+    QDebugStateSaver saver(dbg);
+    dbg << "QNodeId =" << shader.peerId() << "dna =" << shader.dna() << endl;
+    return dbg;
+}
+#endif
 
 } // namespace Render
 } // namespace Qt3DRender

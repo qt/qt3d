@@ -41,10 +41,11 @@
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DRender/qrendertargetselector.h>
+#include <Qt3DRender/private/qrendertargetselector_p.h>
 #include <Qt3DRender/qrendertarget.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/renderlogging_p.h>
-#include <Qt3DRender/qrenderattachment.h>
+#include <Qt3DRender/qrendertargetoutput.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,38 +59,27 @@ RenderTargetSelector::RenderTargetSelector() :
 {
 }
 
-void RenderTargetSelector::updateFromPeer(Qt3DCore::QNode *peer)
+void RenderTargetSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    QRenderTargetSelector *selector = static_cast<QRenderTargetSelector *>(peer);
-    m_renderTargetUuid = QNodeId();
-    if (selector->target() != Q_NULLPTR)
-        m_renderTargetUuid = selector->target()->id();
-    setEnabled(selector->isEnabled());
-    m_drawBuffers = selector->drawBuffers();
+    FrameGraphNode::initializeFromPeer(change);
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderTargetSelectorData>>(change);
+    const auto &data = typedChange->data;
+    m_renderTargetUuid = data.targetId;
+    m_outputs = data.outputs;
 }
 
 void RenderTargetSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     qCDebug(Render::Framegraph) << Q_FUNC_INFO;
-    if (e->type() == NodeUpdated) {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    if (e->type() == PropertyUpdated) {
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("target"))
             m_renderTargetUuid = propertyChange->value().value<QNodeId>();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            setEnabled(propertyChange->value().toBool());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("drawBuffers"))
-            m_drawBuffers = propertyChange->value().value<QList<Qt3DRender::QRenderAttachment::RenderAttachmentType> >();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("outputs"))
+            m_outputs = propertyChange->value().value<QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint> >();
+        markDirty(AbstractRenderer::AllDirty);
     }
-}
-
-Qt3DCore::QNodeId RenderTargetSelector::renderTargetUuid() const
-{
-    return m_renderTargetUuid;
-}
-
-QList<QRenderAttachment::RenderAttachmentType> RenderTargetSelector::drawBuffers() const
-{
-    return m_drawBuffers;
+    FrameGraphNode::sceneChangeEvent(e);
 }
 
 } // namespace Render

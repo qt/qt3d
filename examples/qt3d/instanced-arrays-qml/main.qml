@@ -51,6 +51,7 @@
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 import Qt3D.Input 2.0
+import Qt3D.Extras 2.0
 import QtQuick 2.2 as QQ2
 
 Entity {
@@ -71,7 +72,7 @@ Entity {
     FirstPersonCameraController { camera: camera }
 
     components: [
-        FrameGraph {
+        RenderSettings {
             activeFrameGraph: ForwardRenderer {
                 clearColor: Qt.rgba(0, 0.5, 1, 1)
                 camera: camera
@@ -91,11 +92,8 @@ Entity {
                     minorVersion: 2
                     majorVersion: 3
                 }
-                annotations: Annotation { name: "renderingStyle"; value: "forward" }
+                filterKeys: FilterKey { name: "renderingStyle"; value: "forward" }
                 renderPasses: RenderPass {
-                    bindings: [
-                        ParameterMapping { parameterName: "pos";  shaderVariableName: "pos"; bindingType: ParameterMapping.Attribute }
-                    ]
                     shaderProgram: ShaderProgram {
                         vertexShaderCode: loadSource("qrc:/instanced.vert")
                         fragmentShaderCode: loadSource("qrc:/instanced.frag")
@@ -157,8 +155,8 @@ Entity {
             id: instanceDataAttribute
             name: "pos"
             attributeType: Attribute.VertexAttribute
-            dataType: Attribute.Float
-            dataSize: 3
+            vertexBaseType: Attribute.Float
+            vertexSize: 3
             divisor: 1
             buffer: _instanceBuffer
         }

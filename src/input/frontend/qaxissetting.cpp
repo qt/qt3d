@@ -38,26 +38,12 @@
 ****************************************************************************/
 
 #include "qaxissetting.h"
-#include <Qt3DCore/private/qnode_p.h>
+#include "qaxissetting_p.h"
+#include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-
-class QAxisSettingPrivate : public Qt3DCore::QNodePrivate
-{
-public:
-    QAxisSettingPrivate()
-        : Qt3DCore::QNodePrivate()
-        , m_deadZone(0.0f)
-        , m_axes()
-        , m_filter(false)
-    {}
-
-    float m_deadZone;
-    QVariantList m_axes;
-    bool m_filter;
-};
 
 /*!
  * \qmltype AxisSetting
@@ -76,15 +62,9 @@ public:
  *
  */
 
-
 QAxisSetting::QAxisSetting(Qt3DCore::QNode *parent)
     : QNode(*new QAxisSettingPrivate(), parent)
 {
-}
-
-QAxisSetting::~QAxisSetting()
-{
-    QNode::cleanup();
 }
 
 QVariantList QAxisSetting::axes() const
@@ -93,26 +73,26 @@ QVariantList QAxisSetting::axes() const
     return d->m_axes;
 }
 
-float QAxisSetting::deadZone() const
+float QAxisSetting::deadZoneRadius() const
 {
     Q_D(const QAxisSetting);
-    return d->m_deadZone;
+    return d->m_deadZoneRadius;
 }
 
-bool QAxisSetting::isFilterEnabled() const
+bool QAxisSetting::isSmoothEnabled() const
 {
     Q_D(const QAxisSetting);
-    return d->m_filter;
+    return d->m_smooth;
 }
 
-void QAxisSetting::setDeadZone(float deadZone)
+void QAxisSetting::setDeadZoneRadius(float deadZoneRadius)
 {
     Q_D(QAxisSetting);
-    if (d->m_deadZone == deadZone)
+    if (d->m_deadZoneRadius == deadZoneRadius)
         return;
 
-    d->m_deadZone = deadZone;
-    emit deadZoneChanged(deadZone);
+    d->m_deadZoneRadius = deadZoneRadius;
+    emit deadZoneRadiusChanged(deadZoneRadius);
 }
 
 void QAxisSetting::setAxes(const QVariantList &axes)
@@ -125,23 +105,27 @@ void QAxisSetting::setAxes(const QVariantList &axes)
     emit axesChanged(axes);
 }
 
-void QAxisSetting::setFilterEnabled(bool enabled)
+void QAxisSetting::setSmoothEnabled(bool enabled)
 {
     Q_D(QAxisSetting);
-    if (d->m_filter == enabled)
+    if (d->m_smooth == enabled)
         return;
 
-    d->m_filter = enabled;
-    emit filterChanged(enabled);
+    d->m_smooth = enabled;
+    emit smoothChanged(enabled);
 }
 
-void QAxisSetting::copy(const Qt3DCore::QNode *ref)
+Qt3DCore::QNodeCreatedChangeBasePtr QAxisSetting::createNodeCreationChange() const
 {
-    QNode::copy(ref);
-    const QAxisSetting *setting = static_cast<const QAxisSetting *>(ref);
-    d_func()->m_deadZone = setting->d_func()->m_deadZone;
-    d_func()->m_axes = setting->d_func()->m_axes;
-    d_func()->m_filter = setting->d_func()->m_filter;
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAxisSettingData>::create(this);
+    auto &data = creationChange->data;
+
+    Q_D(const QAxisSetting);
+    data.deadZoneRadius = d->m_deadZoneRadius;
+    data.axes = d->m_axes;
+    data.smooth = d->m_smooth;
+
+    return creationChange;
 }
 
 } // namespace Qt3DInput

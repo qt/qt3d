@@ -48,31 +48,29 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QTechniqueFilterPrivate;
-class QAnnotation;
+class QFilterKey;
 class QParameter;
 
 class QT3DRENDERSHARED_EXPORT QTechniqueFilter : public QFrameGraphNode
 {
     Q_OBJECT
 public:
-    explicit QTechniqueFilter(Qt3DCore::QNode *parent = 0);
-    ~QTechniqueFilter();
+    explicit QTechniqueFilter(Qt3DCore::QNode *parent = nullptr);
 
-    QList<QAnnotation *> criteria() const;
-    void addRequirement(QAnnotation *criterion);
-    void removeRequirement(QAnnotation *criterion);
+    QVector<QFilterKey*> matchAll() const;
+    void addMatch(QFilterKey *filterKey);
+    void removeMatch(QFilterKey *filterKey);
 
     void addParameter(QParameter *p);
     void removeParameter(QParameter *p);
-    QList<QParameter *> parameters() const;
+    QVector<QParameter *> parameters() const;
 
 protected:
-    QTechniqueFilter(QTechniqueFilterPrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    QTechniqueFilter(QTechniqueFilterPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QTechniqueFilter)
-    QT3D_CLONEABLE(QTechniqueFilter)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

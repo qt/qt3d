@@ -53,7 +53,7 @@
 
 #include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
 #include <Qt3DRender/qtechniquefilter.h>
-#include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfilterkey.h>
 #include <Qt3DQuick/private/quick3dnode_p.h>
 #include <QQmlListProperty>
 
@@ -66,22 +66,22 @@ namespace Quick {
 class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DTechniqueFilter : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DRender::QAnnotation> requires READ requireList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QFilterKey> matchAll READ matchList)
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameter> parameters READ parameterList)
 
 public:
     explicit Quick3DTechniqueFilter(QObject *parent = 0);
 
-    QQmlListProperty<QAnnotation> requireList();
+    QQmlListProperty<QFilterKey> matchList();
     QQmlListProperty<QParameter> parameterList();
 
     inline QTechniqueFilter *parentTechniqueFilter() const { return qobject_cast<QTechniqueFilter*>(parent()); }
 
 private:
-    static void appendRequire(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion);
-    static QAnnotation *requireAt(QQmlListProperty<QAnnotation> *list, int index);
-    static int requiresCount(QQmlListProperty<QAnnotation> *list);
-    static void clearRequires(QQmlListProperty<QAnnotation> *list);
+    static void appendRequire(QQmlListProperty<QFilterKey> *list, QFilterKey *criterion);
+    static QFilterKey *requireAt(QQmlListProperty<QFilterKey> *list, int index);
+    static int requiresCount(QQmlListProperty<QFilterKey> *list);
+    static void clearRequires(QQmlListProperty<QFilterKey> *list);
 
     static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *param);
     static QParameter *parameterAt(QQmlListProperty<QParameter> *list, int index);

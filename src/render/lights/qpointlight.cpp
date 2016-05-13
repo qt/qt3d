@@ -61,10 +61,12 @@ namespace Qt3DRender {
   \endcode
  */
 
-QPointLightPrivate::QPointLightPrivate(QLight::Type type)
-    : QLightPrivate(type)
-    , m_attenuation(0.0f, 0.0f, 0.002f)
+QPointLightPrivate::QPointLightPrivate()
+    : QAbstractLightPrivate(QAbstractLight::PointLight)
 {
+    m_shaderData->setProperty("constantAttenuation", 0.0f);
+    m_shaderData->setProperty("linearAttenuation", 0.0f);
+    m_shaderData->setProperty("quadraticAttenuation", 0.0f);
 }
 
 /*!
@@ -88,73 +90,58 @@ QPointLightPrivate::QPointLightPrivate(QLight::Type type)
   Constructs a new QPointLight with the specified \a parent.
  */
 QPointLight::QPointLight(QNode *parent)
-    : QLight(*new QPointLightPrivate, parent)
+    : QAbstractLight(*new QPointLightPrivate, parent)
 {
 }
 
 /*! \internal */
 QPointLight::QPointLight(QPointLightPrivate &dd, QNode *parent)
-    : QLight(dd, parent)
+    : QAbstractLight(dd, parent)
 {
-}
-
-QVector3D QPointLight::attenuation() const
-{
-    Q_D(const QPointLight);
-    return d->m_attenuation;
-}
-
-void QPointLight::setAttenuation(const QVector3D &value)
-{
-    Q_D(QPointLight);
-    if (d->m_attenuation != value) {
-        d->m_attenuation = value;
-        emit attenuationChanged(value);
-    }
 }
 
 float QPointLight::constantAttenuation() const
 {
     Q_D(const QPointLight);
-    return d->m_attenuation.x();
+    return d->m_shaderData->property("constantAttenuation").toFloat();
 }
 
 void QPointLight::setConstantAttenuation(float value)
 {
     Q_D(QPointLight);
-    if (d->m_attenuation.x() != value) {
-        d->m_attenuation.setX(value);
-        emit attenuationChanged(d->m_attenuation);
+    if (constantAttenuation() != value) {
+        d->m_shaderData->setProperty("constantAttenuation", value);
+        emit constantAttenuationChanged(value);
     }
 }
 
 float QPointLight::linearAttenuation() const
 {
     Q_D(const QPointLight);
-    return d->m_attenuation.y();
+    return d->m_shaderData->property("linearAttenuation").toFloat();
 }
 
 void QPointLight::setLinearAttenuation(float value)
 {
     Q_D(QPointLight);
-    if (d->m_attenuation.y() != value) {
-        d->m_attenuation.setY(value);
-        emit attenuationChanged(d->m_attenuation);
+    if (linearAttenuation() != value) {
+        d->m_shaderData->setProperty("linearAttenuation", value);
+        emit linearAttenuationChanged(value);
     }
 }
 
 float QPointLight::quadraticAttenuation() const
 {
     Q_D(const QPointLight);
-    return d->m_attenuation.z();
+    return d->m_shaderData->property("quadraticAttenuation").toFloat();
 }
 
 void QPointLight::setQuadraticAttenuation(float value)
 {
     Q_D(QPointLight);
-    if (d->m_attenuation.z() != value) {
-        d->m_attenuation.setZ(value);
-        emit attenuationChanged(d->m_attenuation);
+    if (quadraticAttenuation() != value) {
+        d->m_shaderData->setProperty("quadraticAttenuation", value);
+        emit quadraticAttenuationChanged(value);
     }
 }
 

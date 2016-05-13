@@ -51,47 +51,47 @@
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 
-FrameGraph {
+RenderSettings {
     id: quadViewportFrameGraph
 
     property alias topLeftCamera: cameraSelectorTopLeftViewport.camera;
     property alias topRightCamera: cameraSelectorTopRightViewport.camera;
     property alias bottomLeftCamera: cameraSelectorBottomLeftViewport.camera;
     property alias bottomRightCamera: cameraSelectorBottomRightViewport.camera;
-    property alias window: surfaceSelector.window
+    property alias window: surfaceSelector.surface
 
-    RenderSurfaceSelector {
+    activeFrameGraph: RenderSurfaceSelector {
         id: surfaceSelector
 
         Viewport {
             id: mainViewport
-            rect: Qt.rect(0, 0, 1, 1)
+            normalizedRect: Qt.rect(0, 0, 1, 1)
 
-            ClearBuffer {
-                buffers: ClearBuffer.ColorDepthBuffer
+            ClearBuffers {
+                buffers: ClearBuffers.ColorDepthBuffer
             }
 
             Viewport {
                 id: topLeftViewport
-                rect: Qt.rect(0, 0, 0.5, 0.5)
+                normalizedRect: Qt.rect(0, 0, 0.5, 0.5)
                 CameraSelector { id: cameraSelectorTopLeftViewport }
             }
 
             Viewport {
                 id: topRightViewport
-                rect: Qt.rect(0.5, 0, 0.5, 0.5)
+                normalizedRect: Qt.rect(0.5, 0, 0.5, 0.5)
                 CameraSelector { id: cameraSelectorTopRightViewport }
             }
 
             Viewport {
                 id: bottomLeftViewport
-                rect: Qt.rect(0, 0.5, 0.5, 0.5)
+                normalizedRect: Qt.rect(0, 0.5, 0.5, 0.5)
                 CameraSelector { id: cameraSelectorBottomLeftViewport }
             }
 
             Viewport {
                 id: bottomRightViewport
-                rect: Qt.rect(0.5, 0.5, 0.5, 0.5)
+                normalizedRect: Qt.rect(0.5, 0.5, 0.5, 0.5)
                 CameraSelector { id: cameraSelectorBottomRightViewport }
             }
         }

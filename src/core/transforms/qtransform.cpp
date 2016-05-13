@@ -41,7 +41,7 @@
 #include "qtransform_p.h"
 #include "qmath3d_p.h"
 
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,40 +57,133 @@ QTransformPrivate::QTransformPrivate()
 {
 }
 
+/*!
+ * \qmltype Transform
+ * \inqmlmodule Qt3D.Core
+ * \inherits Component3D
+ * \instantiates Qt3DCore::QComponent
+ * \since 5.6
+ *
+ * TODO
+ */
+
+/*!
+ * \qmlproperty matrix4x4 Transform::matrix
+ *
+ * Holds the matrix4x4 of the transform.
+ */
+
+/*!
+ * \qmlproperty real Transform::rotationX
+ *
+ * Holds the x rotation of the transform as Euler angle.
+ */
+
+/*!
+ * \qmlproperty real Transform::rotationY
+ *
+ * Holds the y rotation of the transform as Euler angle.
+ */
+
+/*!
+ * \qmlproperty real Transform::rotationZ
+ *
+ * Holds the z rotation of the transform as Euler angle.
+ */
+
+/*!
+ * \qmlproperty vector3d Transform::scale3D
+ *
+ * Holds the scale of the transform as vector3d.
+ */
+
+/*!
+ * \qmlproperty float Transform::scale
+ *
+ * Holds the uniform scale of the transform. If the scale has been set with scale3D, holds
+ * the x value only.
+ */
+
+/*!
+ * \qmlproperty quaternion Transform::rotation
+ *
+ * Holds the rotation of the transform as quaternion.
+ */
+
+/*!
+ * \qmlproperty vector3d Transform::translation
+ *
+ * Holds the translation of the transform as vector3d.
+ */
+
+/*!
+ * \qmlmethod quaternion Transform::fromAxisAndAngle(vector3d axis, real angle)
+ * Creates a quaternion from \a axis and \a angle.
+ * \return the resulting quaternion.
+ */
+
+/*!
+ * \qmlmethod quaternion Transform::fromAxisAndAngle(real x, real y, real z, real angle)
+ * Creates a quaternion from \a x, \a y, \a z, and \a angle.
+ * \return the resulting quaternion.
+ */
+
+/*!
+ * \qmlmethod quaternion Transform::fromAxesAndAngles(vector3d axis1, real angle1,
+ *                                                    vector3d axis2, real angle2)
+ * Creates a quaternion from \a axis1, \a angle1, \a axis2, and \a angle2.
+ * \return the resulting quaternion.
+ */
+
+/*!
+ * \qmlmethod quaternion Transform::fromAxesAndAngles(vector3d axis1, real angle1,
+ *                                                    vector3d axis2, real angle2,
+ *                                                    vector3d axis3, real angle3)
+ * Creates a quaternion from \a axis1, \a angle1, \a axis2, \a angle2, \a axis3, and \a angle3.
+ * \return the resulting quaternion.
+ */
+
+/*!
+ * \qmlmethod quaternion Transform::fromEulerAngles(vector3d eulerAngles)
+ * Creates a quaternion from \a eulerAngles.
+ * \return the resulting quaternion.
+ */
+
+/*!
+ * \qmlmethod quaternion Transform::fromEulerAngles(real pitch, real yaw, real roll)
+ * Creates a quaternion from \a pitch, \a yaw, and \a roll.
+ * \return the resulting quaternion.
+ */
+
+/*!
+ * \qmlmethod matrix4x4 Transform::rotateAround(vector3d point, real angle, vector3d axis)
+ * Creates a rotation matrix from \a axis and \a angle around \a point.
+ * \return the resulting matrix4x4.
+ */
+
+/*!
+ * \class Qt3DCore::QTransform
+ * \inmodule Qt3DCore
+ * \inherits Qt3DCore::QComponent
+ * \since 5.6
+ *
+ * TODO
+ */
+
+/*!
+ * Constructs a new QTransform with \a parent.
+ */
 QTransform::QTransform(QNode *parent)
     : QComponent(*new QTransformPrivate, parent)
 {
 }
-/*!
-    \qmltype Transform
-    \inqmlmodule Qt3D.Core
-    \since 5.6
-    \TODO
-*/
 
-/*! \internal */
+/*!
+ * \internal
+ */
 QTransform::QTransform(QTransformPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {
-}
-
-QTransform::~QTransform()
-{
-    QNode::cleanup();
-}
-
-void QTransform::copy(const QNode *ref)
-{
-    QComponent::copy(ref);
-    const QTransform *transform = static_cast<const QTransform *>(ref);
-    // We need to copy the matrix with all the pending
-    // transformations applied
-    d_func()->m_matrix = transform->matrix();
-    d_func()->m_rotation = transform->rotation();
-    d_func()->m_scale = transform->scale3D();
-    d_func()->m_translation = transform->translation();
-    d_func()->m_eulerRotationAngles = transform->d_func()->m_eulerRotationAngles;
-    d_func()->m_matrixDirty = transform->d_func()->m_matrixDirty;
 }
 
 void QTransform::setMatrix(const QMatrix4x4 &m)
@@ -180,6 +273,11 @@ void QTransform::setRotationZ(float rotationZ)
     blockNotifications(wasBlocked);
 }
 
+/*!
+ * \property Qt3DCore::QTransform::matrix
+ *
+ * Holds the QMatrix4x4 of the transform.
+ */
 QMatrix4x4 QTransform::matrix() const
 {
     Q_D(const QTransform);
@@ -190,18 +288,33 @@ QMatrix4x4 QTransform::matrix() const
     return d->m_matrix;
 }
 
+/*!
+ * \property Qt3DCore::QTransform::rotationX
+ *
+ * Holds the x rotation of the transform as Euler angle.
+ */
 float QTransform::rotationX() const
 {
     Q_D(const QTransform);
     return d->m_eulerRotationAngles.x();
 }
 
+/*!
+ * \property Qt3DCore::QTransform::rotationY
+ *
+ * Holds the y rotation of the transform as Euler angle.
+ */
 float QTransform::rotationY() const
 {
     Q_D(const QTransform);
     return d->m_eulerRotationAngles.y();
 }
 
+/*!
+ * \property Qt3DCore::QTransform::rotationZ
+ *
+ * Holds the z rotation of the transform as Euler angle.
+ */
 float QTransform::rotationZ() const
 {
     Q_D(const QTransform);
@@ -218,6 +331,11 @@ void QTransform::setScale3D(const QVector3D &scale)
     }
 }
 
+/*!
+ * \property Qt3DCore::QTransform::scale3D
+ *
+ * Holds the scale of the transform as QVector3D.
+ */
 QVector3D QTransform::scale3D() const
 {
     Q_D(const QTransform);
@@ -235,6 +353,12 @@ void QTransform::setScale(float scale)
     }
 }
 
+/*!
+ * \property Qt3DCore::QTransform::scale
+ *
+ * Holds the uniform scale of the transform. If the scale has been set with setScale3D, holds
+ * the x value only.
+ */
 float QTransform::scale() const
 {
     Q_D(const QTransform);
@@ -252,6 +376,11 @@ void QTransform::setRotation(const QQuaternion &rotation)
     }
 }
 
+/*!
+ * \property Qt3DCore::QTransform::rotation
+ *
+ * Holds the rotation of the transform as QQuaternion.
+ */
 QQuaternion QTransform::rotation() const
 {
     Q_D(const QTransform);
@@ -268,22 +397,39 @@ void QTransform::setTranslation(const QVector3D &translation)
     }
 }
 
+/*!
+ * \property Qt3DCore::QTransform::translation
+ *
+ * Holds the translation of the transform as QVector3D.
+ */
 QVector3D QTransform::translation() const
 {
     Q_D(const QTransform);
     return d->m_translation;
 }
 
+/*!
+ * Creates a QQuaternion from \a axis and \a angle.
+ * \return the resulting QQuaternion.
+ */
 QQuaternion QTransform::fromAxisAndAngle(const QVector3D &axis, float angle)
 {
     return QQuaternion::fromAxisAndAngle(axis, angle);
 }
 
+/*!
+ * Creates a QQuaternion from \a x, \a y, \a z, and \a angle.
+ * \return the resulting QQuaternion.
+ */
 QQuaternion QTransform::fromAxisAndAngle(float x, float y, float z, float angle)
 {
     return QQuaternion::fromAxisAndAngle(x, y, z, angle);
 }
 
+/*!
+ * Creates a QQuaternion from \a axis1, \a angle1, \a axis2, and \a angle2.
+ * \return the resulting QQuaternion.
+ */
 QQuaternion QTransform::fromAxesAndAngles(const QVector3D &axis1, float angle1,
                                           const QVector3D &axis2, float angle2)
 {
@@ -292,6 +438,10 @@ QQuaternion QTransform::fromAxesAndAngles(const QVector3D &axis1, float angle1,
     return q2 * q1;
 }
 
+/*!
+ * Creates a QQuaternion from \a axis1, \a angle1, \a axis2, \a angle2, \a axis3, and \a angle3.
+ * \return the resulting QQuaternion.
+ */
 QQuaternion QTransform::fromAxesAndAngles(const QVector3D &axis1, float angle1,
                                           const QVector3D &axis2, float angle2,
                                           const QVector3D &axis3, float angle3)
@@ -302,16 +452,28 @@ QQuaternion QTransform::fromAxesAndAngles(const QVector3D &axis1, float angle1,
     return q3 * q2 * q1;
 }
 
+/*!
+ * Creates a QQuaternion from \a eulerAngles.
+ * \return the resulting QQuaternion.
+ */
 QQuaternion QTransform::fromEulerAngles(const QVector3D &eulerAngles)
 {
     return QQuaternion::fromEulerAngles(eulerAngles);
 }
 
+/*!
+ * Creates a QQuaternion from \a pitch, \a yaw, and \a roll.
+ * \return the resulting QQuaternion.
+ */
 QQuaternion QTransform::fromEulerAngles(float pitch, float yaw, float roll)
 {
     return QQuaternion::fromEulerAngles(pitch, yaw, roll);
 }
 
+/*!
+ * Creates a rotation matrix from \a axis and \a angle around \a point.
+ * \return the resulting QMatrix4x4.
+ */
 QMatrix4x4 QTransform::rotateAround(const QVector3D &point, float angle, const QVector3D &axis)
 {
     QMatrix4x4 m;
@@ -319,6 +481,19 @@ QMatrix4x4 QTransform::rotateAround(const QVector3D &point, float angle, const Q
     m.rotate(angle, axis);
     m.translate(-point);
     return m;
+}
+
+QNodeCreatedChangeBasePtr QTransform::createNodeCreationChange() const
+{
+    auto creationChange = QNodeCreatedChangePtr<QTransformData>::create(this);
+    auto &data = creationChange->data;
+
+    Q_D(const QTransform);
+    data.rotation = d->m_rotation;
+    data.scale = d->m_scale;
+    data.translation = d->m_translation;
+
+    return creationChange;
 }
 
 } // namespace Qt3DCore

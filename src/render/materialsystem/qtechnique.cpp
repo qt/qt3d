@@ -41,8 +41,9 @@
 #include "qtechnique_p.h"
 #include "qparameter.h"
 #include "qgraphicsapifilter.h"
-#include <Qt3DCore/qscenepropertychange.h>
-#include <QDebug>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -66,11 +67,6 @@ QTechnique::QTechnique(QNode *parent)
     QObject::connect(&d->m_graphicsApiFilter, SIGNAL(graphicsApiFilterChanged()), this, SLOT(_q_graphicsApiFilterChanged()));
 }
 
-QTechnique::~QTechnique()
-{
-    QNode::cleanup();
-}
-
 /*! \internal */
 QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
     : QNode(dd, parent)
@@ -79,74 +75,59 @@ QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
     QObject::connect(&d->m_graphicsApiFilter, SIGNAL(graphicsApiFilterChanged()), this, SLOT(_q_graphicsApiFilterChanged()));
 }
 
-void QTechnique::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QTechnique *tech = static_cast<const QTechnique*>(ref);
-    d_func()->m_graphicsApiFilter.copy(tech->d_func()->m_graphicsApiFilter);
-
-    Q_FOREACH (QAnnotation *annotation, tech->d_func()->m_annotationList)
-        addAnnotation(qobject_cast<QAnnotation *>(QNode::clone(annotation)));
-    Q_FOREACH (QRenderPass *pass, tech->d_func()->m_renderPasses)
-        addPass(qobject_cast<QRenderPass *>(QNode::clone(pass)));
-    Q_FOREACH (QParameter *p, tech->d_func()->m_parameters)
-        addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
-}
-
 void QTechniquePrivate::_q_graphicsApiFilterChanged()
 {
-    if (m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, m_id));
-        change->setPropertyName("graphicsApiFilter");
-        QGraphicsApiFilter *clone = new QGraphicsApiFilter();
-        clone->copy(m_graphicsApiFilter);
-        change->setValue(QVariant::fromValue(clone));
+    if (m_changeArbiter != nullptr) {
+        QPropertyUpdatedChangePtr change(new QPropertyUpdatedChange(m_id));
+        change->setPropertyName("graphicsApiFilterData");
+        change->setValue(QVariant::fromValue(QGraphicsApiFilterPrivate::get(const_cast<QGraphicsApiFilter *>(&m_graphicsApiFilter))->m_data));
         notifyObservers(change);
     }
 }
 
-void QTechnique::addAnnotation(QAnnotation *criterion)
+void QTechnique::addFilterKey(QFilterKey *filterKey)
 {
+    Q_ASSERT(filterKey);
     Q_D(QTechnique);
-    if (!d->m_annotationList.contains(criterion)) {
-        d->m_annotationList.append(criterion);
+    if (!d->m_filterKeys.contains(filterKey)) {
+        d->m_filterKeys.append(filterKey);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!criterion->parent())
-            criterion->setParent(this);
+        if (!filterKey->parent())
+            filterKey->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
-            change->setPropertyName("annotation");
-            change->setValue(QVariant::fromValue(criterion->id()));
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), filterKey);
+            change->setPropertyName("filterKeys");
             d->notifyObservers(change);
         }
     }
 }
 
-void QTechnique::removeAnnotation(QAnnotation *criterion)
+void QTechnique::removeFilterKey(QFilterKey *filterKey)
 {
+    Q_ASSERT(filterKey);
     Q_D(QTechnique);
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
-        change->setPropertyName("annotation");
-        change->setValue(QVariant::fromValue(criterion->id()));
+    if (d->m_changeArbiter != nullptr) {
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), filterKey);
+        change->setPropertyName("filterKeys");
         d->notifyObservers(change);
     }
-    d->m_annotationList.removeOne(criterion);
+    d->m_filterKeys.removeOne(filterKey);
 }
 
-QList<QAnnotation *> QTechnique::annotations() const
+QVector<QFilterKey *> QTechnique::filterKeys() const
 {
     Q_D(const QTechnique);
-    return d->m_annotationList;
+    return d->m_filterKeys;
 }
 
 void QTechnique::addParameter(QParameter *parameter)
 {
+    Q_ASSERT(parameter);
     Q_D(QTechnique);
     if (!d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
@@ -158,10 +139,9 @@ void QTechnique::addParameter(QParameter *parameter)
         if (!parameter->parent())
             parameter->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), parameter);
             change->setPropertyName("parameter");
-            change->setValue(QVariant::fromValue(parameter->id()));
             d->notifyObservers(change);
         }
     }
@@ -169,12 +149,11 @@ void QTechnique::addParameter(QParameter *parameter)
 
 void QTechnique::removeParameter(QParameter *parameter)
 {
+    Q_ASSERT(parameter);
     Q_D(QTechnique);
-
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+    if (d->m_changeArbiter != nullptr) {
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), parameter);
         change->setPropertyName("parameter");
-        change->setValue(QVariant::fromValue(parameter->id()));
         d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
@@ -185,8 +164,9 @@ void QTechnique::removeParameter(QParameter *parameter)
  * QScenePropertyChange notification to the QChangeArbiter with the
  * value being the \a pass and the property name being "pass".
  */
-void QTechnique::addPass(QRenderPass *pass)
+void QTechnique::addRenderPass(QRenderPass *pass)
 {
+    Q_ASSERT(pass);
     Q_D(QTechnique);
     if (!d->m_renderPasses.contains(pass)) {
         d->m_renderPasses.append(pass);
@@ -198,11 +178,10 @@ void QTechnique::addPass(QRenderPass *pass)
         if (!pass->parent())
             pass->setParent(this);
 
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr e(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
-            e->setPropertyName("pass");
-            e->setValue(QVariant::fromValue(pass->id()));
-            d->notifyObservers(e);
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = QPropertyNodeAddedChangePtr::create(id(), pass);
+            change->setPropertyName("pass");
+            d->notifyObservers(change);
         }
     }
 }
@@ -212,14 +191,14 @@ void QTechnique::addPass(QRenderPass *pass)
  * QScenePropertyChange notification to the QChangeArbiter with the value
  * being the id of \a pass and the property name being "pass".
  */
-void QTechnique::removePass(QRenderPass *pass)
+void QTechnique::removeRenderPass(QRenderPass *pass)
 {
+    Q_ASSERT(pass);
     Q_D(QTechnique);
     if (d->m_changeArbiter) {
-        QScenePropertyChangePtr e(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
-        e->setPropertyName("pass");
-        e->setValue(QVariant::fromValue(pass->id()));
-        d->notifyObservers(e);
+        const auto change = QPropertyNodeAddedChangePtr::create(id(), pass);
+        change->setPropertyName("pass");
+        d->notifyObservers(change);
     }
     d->m_renderPasses.removeOne(pass);
 }
@@ -227,13 +206,13 @@ void QTechnique::removePass(QRenderPass *pass)
 /*!
  * Returns the list of render passes contained in the technique.
  */
-QList<QRenderPass *> QTechnique::renderPasses() const
+QVector<QRenderPass *> QTechnique::renderPasses() const
 {
     Q_D(const QTechnique);
     return d->m_renderPasses;
 }
 
-QList<QParameter *> QTechnique::parameters() const
+QVector<QParameter *> QTechnique::parameters() const
 {
     Q_D(const QTechnique);
     return d->m_parameters;
@@ -243,6 +222,20 @@ QGraphicsApiFilter *QTechnique::graphicsApiFilter()
 {
     Q_D(QTechnique);
     return &d->m_graphicsApiFilter;
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QTechnique::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QTechniqueData>::create(this);
+    QTechniqueData &data = creationChange->data;
+
+    Q_D(const QTechnique);
+    data.graphicsApiFilterData = QGraphicsApiFilterPrivate::get(const_cast<QGraphicsApiFilter *>(&d->m_graphicsApiFilter))->m_data;
+    data.filterKeyIds = qIdsForNodes(d->m_filterKeys);
+    data.parameterIds = qIdsForNodes(d->m_parameters);
+    data.renderPassIds = qIdsForNodes(d->m_renderPasses);
+
+    return creationChange;
 }
 
 } // of namespace Qt3DRender

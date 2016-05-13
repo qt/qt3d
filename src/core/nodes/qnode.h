@@ -44,9 +44,9 @@
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qscenechange.h>
-#include <Qt3DCore/qabstractnodefactory.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 
-#define Q_NODE_NULLPTR static_cast<Qt3DCore::QNode *>(Q_NULLPTR)
+#define Q_NODE_NULLPTR static_cast<Qt3DCore::QNode *>(nullptr)
 
 QT_BEGIN_NAMESPACE
 
@@ -57,21 +57,12 @@ class QNodePrivate;
 class QEntity;
 class QAspectEngine;
 
-typedef QList<QNode *> QNodeList;
+#if defined(QT_BUILD_INTERNAL)
+class QBackendNodeTester;
+#endif
+
+typedef QVector<QNode *> QNodeVector;
 typedef QSharedPointer<QNode> QNodePtr;
-
-#define QT3DCORE_QUOTE(str) #str
-#define QT3D_CLONEABLE(Class)                \
-    friend class Qt3DCore::QAbstractNodeFactory;       \
-    QNode *doClone() const Q_DECL_OVERRIDE { \
-        Class *clone_ = Qt3DCore::QAbstractNodeFactory::createNode<Class>(QT3DCORE_QUOTE(Class)); \
-        clone_->copy(this);                   \
-        return clone_;                        \
-    }
-
-// Each QNode subclass should call QNode::cleanup in it dtor
-// QNode::cleanup checks that a flags wasn't set to true,
-// sets it to true and sends a clone to the backend
 
 class QT3DCORESHARED_EXPORT QNode : public QObject
 {
@@ -79,7 +70,7 @@ class QT3DCORESHARED_EXPORT QNode : public QObject
     Q_PROPERTY(Qt3DCore::QNode *parent READ parentNode WRITE setParent NOTIFY parentChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 public:
-    explicit QNode(QNode *parent = 0);
+    explicit QNode(QNode *parent = nullptr);
     virtual ~QNode();
 
     const QNodeId id() const;
@@ -88,12 +79,12 @@ public:
     bool notificationsBlocked() const;
     bool blockNotifications(bool block);
 
-    QNodeList childrenNodes() const;
+    QNodeVector childNodes() const;
 
     bool isEnabled() const;
 
 public Q_SLOTS:
-    virtual void setParent(QNode *parent);
+    void setParent(QNode *parent);
     void setEnabled(bool isEnabled);
 
 Q_SIGNALS:
@@ -101,30 +92,62 @@ Q_SIGNALS:
     void enabledChanged(bool enabled);
 
 protected:
-    // Clone should only be made in the main thread
-    static QNode *clone(QNode *node);
-
-    QNode(QNodePrivate &dd, QNode *parent = 0);
-    virtual void copy(const QNode *ref);
+    QNode(QNodePrivate &dd, QNode *parent = nullptr);
+    void notifyObservers(const QSceneChangePtr &change);
     virtual void sceneChangeEvent(const QSceneChangePtr &change);
-
-    void cleanup();
 
 private:
     Q_DECLARE_PRIVATE(QNode)
-    virtual QNode *doClone() const = 0;
+    virtual QNodeCreatedChangeBasePtr createNodeCreationChange() const;
 
     // We only want setParent(QNode *) to be callable
     // when dealing with QNode objects
     void setParent(QObject *) Q_DECL_EQ_DELETE;
 
-    Q_PRIVATE_SLOT(d_func(), void _q_addChild(QNode *))
-    Q_PRIVATE_SLOT(d_func(), void _q_removeChild(QNode *))
+    Q_PRIVATE_SLOT(d_func(), void _q_notifyCreationAndChildChanges())
+    Q_PRIVATE_SLOT(d_func(), void _q_addChild(Qt3DCore::QNode *))
+    Q_PRIVATE_SLOT(d_func(), void _q_removeChild(Qt3DCore::QNode *))
+    Q_PRIVATE_SLOT(d_func(), void _q_setParentHelper(Qt3DCore::QNode *))
 
     friend class QAspectEngine;
+    friend class QAspectEnginePrivate;
+    friend class QNodeCreatedChangeGenerator;
     friend class QPostman;
     friend class QScene;
+
+#if defined(QT_BUILD_INTERNAL)
+    friend class QBackendNodeTester;
+#endif
 };
+
+inline QNodeId qIdForNode(QNode *node){ return node ? node->id() : QNodeId(); }
+
+template<typename T>
+inline QNodeIdVector qIdsForNodes(const T &nodes)
+{
+    QNodeIdVector ids;
+    ids.reserve(nodes.size());
+    for (const auto n : nodes)
+        ids.push_back(n->id());
+    return ids;
+}
+
+struct QNodeIdTypePair
+{
+    QNodeIdTypePair() Q_DECL_NOEXCEPT
+        : id()
+        , type(nullptr)
+    {}
+
+    explicit QNodeIdTypePair(QNodeId _id, const QMetaObject *_type) Q_DECL_NOEXCEPT
+        : id(_id)
+        , type(_type)
+    {}
+
+    QNodeId id;
+    const QMetaObject *type;
+};
+QT3D_DECLARE_TYPEINFO(Qt3DCore, QNodeIdTypePair, Q_PRIMITIVE_TYPE)
 
 } // namespace Qt3DCore
 

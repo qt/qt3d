@@ -40,32 +40,38 @@
 
 #include "qrenderstate.h"
 #include "qrenderstate_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-QRenderStatePrivate::QRenderStatePrivate(QRenderState::Type type)
+QRenderStatePrivate::QRenderStatePrivate(Type type)
     : QNodePrivate(),
       m_type(type)
 {
 }
 
-QRenderState::~QRenderState()
+QRenderStatePrivate *QRenderStatePrivate::get(QRenderState *state)
 {
-    Q_ASSERT_X(Qt3DCore::QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DRender::QRenderState subclass didn't call QNode::cleanup in its destructor");
+    return state->d_func();
 }
 
-QRenderState::Type QRenderState::type() const
+const QRenderStatePrivate *QRenderStatePrivate::get(const QRenderState *state)
 {
-    Q_D(const QRenderState);
-    return d->m_type;
+    return state->d_func();
 }
 
 /*! \internal */
 QRenderState::QRenderState(QRenderStatePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QRenderState::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangeBasePtr::create(this);
+    return creationChange;
 }
 
 } // namespace Qt3DRender

@@ -53,6 +53,7 @@
 
 #include <QtCore/qmath.h>
 #include <QtConcurrent/QtConcurrent>
+#include <Qt3DRender/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -86,7 +87,8 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
 
             // Use the default position attribute if attribute is null
             if (!pickVolumeAttribute) {
-                Q_FOREACH (const Qt3DCore::QNodeId attrId, geom->attributes()) {
+                const auto attrIds = geom->attributes();
+                for (const Qt3DCore::QNodeId attrId : attrIds) {
                     pickVolumeAttribute = manager->lookupResource<Attribute, AttributeManager>(attrId);
                     if (pickVolumeAttribute &&
                             pickVolumeAttribute->name() == QAttribute::defaultPositionAttributeName())
@@ -96,10 +98,10 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
 
             if (pickVolumeAttribute) {
                 if (!pickVolumeAttribute
-                        || pickVolumeAttribute->attributeType() != QAbstractAttribute::VertexAttribute
-                        || pickVolumeAttribute->dataType() != QAbstractAttribute::Float
-                        || pickVolumeAttribute->dataSize() < 3) {
-                    qWarning() << "QBoundingVolumeSpecifier pickVolume Attribute not suited for bounding volume computation";
+                        || pickVolumeAttribute->attributeType() != QAttribute::VertexAttribute
+                        || pickVolumeAttribute->vertexBaseType() != QAttribute::Float
+                        || pickVolumeAttribute->vertexSize() < 3) {
+                    qWarning() << "QGeometry::boundingVolumePositionAttribute pickVolume Attribute not suited for bounding volume computation";
                     return;
                 }
 
@@ -123,7 +125,7 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
                     const QByteArray buffer = buf->data();
                     const char *rawBuffer = buffer.constData();
                     rawBuffer += pickVolumeAttribute->byteOffset();
-                    const int stride = pickVolumeAttribute->byteStride() ? pickVolumeAttribute->byteStride() : sizeof(float) * pickVolumeAttribute->dataSize();
+                    const int stride = pickVolumeAttribute->byteStride() ? pickVolumeAttribute->byteStride() : sizeof(float) * pickVolumeAttribute->vertexSize();
                     QVector<QVector3D> vertices(pickVolumeAttribute->count());
 
                     // TODO avoid copying the vertices
@@ -131,7 +133,7 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
                         QVector3D v;
                         const float *fptr = reinterpret_cast<const float*>(rawBuffer);
                         // TODO unwrap loop (switch?)
-                        for (uint i = 0, m = qMin(pickVolumeAttribute->dataSize(), 3U); i < m; ++i)
+                        for (uint i = 0, m = qMin(pickVolumeAttribute->vertexSize(), 3U); i < m; ++i)
                             v[i] = fptr[i];
                         vertices[c] = v;
                         rawBuffer += stride;
@@ -150,7 +152,8 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
         functor.manager = manager;
         QtConcurrent::blockingMap(children, functor);
     } else {
-        Q_FOREACH (Entity *child, node->children())
+        const auto children = node->children();
+        for (Entity *child : children)
             calculateLocalBoundingVolume(manager, child);
     }
 }
@@ -159,8 +162,9 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
 
 CalculateBoundingVolumeJob::CalculateBoundingVolumeJob(NodeManagers *manager)
     : m_manager(manager),
-      m_node(Q_NULLPTR)
+      m_node(nullptr)
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::CalcBoundingVolume, 0);
 }
 
 void CalculateBoundingVolumeJob::run()

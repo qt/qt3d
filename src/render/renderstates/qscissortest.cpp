@@ -39,52 +39,16 @@
 ****************************************************************************/
 
 #include "qscissortest.h"
-#include "qrenderstate_p.h"
-#include <private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
-
+#include "qscissortest_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QScissorTestPrivate : public QRenderStatePrivate
-{
-public:
-    QScissorTestPrivate()
-        : QRenderStatePrivate(QRenderState::ScissorTest)
-        , m_left(0)
-        , m_bottom(0)
-        , m_width(0)
-        , m_height(0)
-    {
-    }
-
-    Q_DECLARE_PUBLIC(QScissorTest)
-    int m_left;
-    int m_bottom;
-    int m_width;
-    int m_height;
-};
-
 QScissorTest::QScissorTest(QNode *parent)
     : QRenderState(*new QScissorTestPrivate, parent)
 {
-}
-
-QScissorTest::~QScissorTest()
-{
-    QNode::cleanup();
-}
-
-void QScissorTest::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QScissorTest *refState = static_cast<const QScissorTest*>(ref);
-    d_func()->m_left = refState->d_func()->m_left;
-    d_func()->m_bottom = refState->d_func()->m_bottom;
-    d_func()->m_width = refState->d_func()->m_width;
-    d_func()->m_height = refState->d_func()->m_height;
 }
 
 int QScissorTest::left() const
@@ -145,6 +109,18 @@ void QScissorTest::setHeight(int height)
         d->m_height = height;
         emit heightChanged(height);
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QScissorTest::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangePtr<QScissorTestData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QScissorTest);
+    data.left = d->m_left;
+    data.bottom = d->m_bottom;
+    data.width = d->m_width;
+    data.height = d->m_height;
+    return creationChange;
 }
 
 } // namespace Qt3DRender

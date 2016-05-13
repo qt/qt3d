@@ -52,6 +52,7 @@ import QtQuick 2.2 as QQ2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 import Qt3D.Input 2.0
+import Qt3D.Extras 2.0
 
 Entity {
     id: sceneRoot
@@ -68,10 +69,10 @@ Entity {
         viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
     }
 
-    FirstPersonCameraController { camera: camera }
+    OrbitCameraController { camera: camera }
 
     components: [
-        FrameGraph {
+        RenderSettings {
             activeFrameGraph: ForwardRenderer {
                 clearColor: Qt.rgba(0.5, 0.5, 1, 1)
                 camera: camera
@@ -160,8 +161,8 @@ Entity {
     GeometryRenderer {
         id: customMesh
         instanceCount: 1
-        baseVertex: 0
-        baseInstance: 0
+        indexOffset: 0
+        firstInstance: 0
         primitiveType: GeometryRenderer.Triangles
         Buffer {
             id: vertexBuffer
@@ -177,8 +178,8 @@ Entity {
         geometry:  Geometry {
             Attribute {
                 attributeType: Attribute.VertexAttribute
-                dataType: Attribute.Float
-                dataSize: 3
+                vertexBaseType: Attribute.Float
+                vertexSize: 3
                 byteOffset: 0
                 byteStride: 9 * 4
                 count: 4
@@ -188,8 +189,8 @@ Entity {
 
             Attribute {
                 attributeType: Attribute.VertexAttribute
-                dataType: Attribute.Float
-                dataSize: 3
+                vertexBaseType: Attribute.Float
+                vertexSize: 3
                 byteOffset: 3 * 4
                 byteStride: 9 * 4
                 count: 4
@@ -199,8 +200,8 @@ Entity {
 
             Attribute {
                 attributeType: Attribute.VertexAttribute
-                dataType: Attribute.Float
-                dataSize: 3
+                vertexBaseType: Attribute.Float
+                vertexSize: 3
                 byteOffset: 6 * 4
                 byteStride: 9 * 4
                 count: 4
@@ -210,8 +211,8 @@ Entity {
 
             Attribute {
                 attributeType: Attribute.IndexAttribute
-                dataType: Attribute.UnsignedShort
-                dataSize: 1
+                vertexBaseType: Attribute.UnsignedShort
+                vertexSize: 1
                 byteOffset: 0
                 byteStride: 0
                 count: 12

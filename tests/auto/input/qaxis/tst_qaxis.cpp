@@ -29,25 +29,27 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
 #include <Qt3DInput/QAxis>
-#include <Qt3DInput/QAxisInput>
+#include <Qt3DInput/QAnalogAxisInput>
+#include <Qt3DInput/private/qaxis_p.h>
+
+#include <Qt3DCore/QPropertyUpdatedChange>
+#include <Qt3DCore/QPropertyNodeAddedChange>
+#include <Qt3DCore/QPropertyNodeRemovedChange>
 
 #include "testpostmanarbiter.h"
 
 // We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QAxis: public Qt3DCore::QNode
+// We need to call QAxis::sceneChangeEvent which is protected
+// So we sublcass QAxis instead of QObject
+class tst_QAxis: public Qt3DInput::QAxis
 {
     Q_OBJECT
 public:
     tst_QAxis()
     {
-    }
-
-    ~tst_QAxis()
-    {
-        QNode::cleanup();
     }
 
 private Q_SLOTS:
@@ -60,14 +62,12 @@ private Q_SLOTS:
         QTest::newRow("defaultConstructed") << defaultConstructed;
 
         Qt3DInput::QAxis *namedAxis = new Qt3DInput::QAxis();
-        namedAxis->setName(QStringLiteral("moveForward"));
         QTest::newRow("namedAxis") << namedAxis;
 
         Qt3DInput::QAxis *namedAxisWithInputs = new Qt3DInput::QAxis();
-        Qt3DInput::QAxisInput *axisInput1 = new Qt3DInput::QAxisInput();
-        Qt3DInput::QAxisInput *axisInput2 = new Qt3DInput::QAxisInput();
-        Qt3DInput::QAxisInput *axisInput3 = new Qt3DInput::QAxisInput();
-        namedAxisWithInputs->setName("moveBackward");
+        Qt3DInput::QAbstractAxisInput *axisInput1 = new Qt3DInput::QAnalogAxisInput();
+        Qt3DInput::QAbstractAxisInput *axisInput2 = new Qt3DInput::QAnalogAxisInput();
+        Qt3DInput::QAbstractAxisInput *axisInput3 = new Qt3DInput::QAnalogAxisInput();
         namedAxisWithInputs->addInput(axisInput1);
         namedAxisWithInputs->addInput(axisInput2);
         namedAxisWithInputs->addInput(axisInput3);
@@ -80,19 +80,24 @@ private Q_SLOTS:
         QFETCH(Qt3DInput::QAxis *, axis);
 
         // WHEN
-        Qt3DInput::QAxis *clone = static_cast<Qt3DInput::QAxis *>(QNode::clone(axis));
-        QCoreApplication::processEvents();
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(axis);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(axis->id(), clone->id());
-        QCOMPARE(axis->name(), clone->name());
-        QCOMPARE(axis->inputs().count(), clone->inputs().count());
+        QCOMPARE(creationChanges.size(), 1 + axis->inputs().size());
 
-        for (int i = 0, m = axis->inputs().count(); i < m; ++i) {
-            QCOMPARE(axis->inputs().at(i)->id(), clone->inputs().at(i)->id());
-        }
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DInput::QAxisData> creationChangeData =
+               qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DInput::QAxisData>>(creationChanges.first());
+        const Qt3DInput::QAxisData &cloneData = creationChangeData->data;
 
+        // THEN
+        QCOMPARE(axis->id(), creationChangeData->subjectId());
+        QCOMPARE(axis->isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(axis->metaObject(), creationChangeData->metaObject());
+        QCOMPARE(axis->inputs().count(), cloneData.inputIds.count());
+
+        for (int i = 0, m = axis->inputs().count(); i < m; ++i)
+            QCOMPARE(axis->inputs().at(i)->id(), cloneData.inputIds.at(i));
     }
 
     void checkPropertyUpdates()
@@ -102,29 +107,16 @@ private Q_SLOTS:
         TestArbiter arbiter(axis.data());
 
         // WHEN
-        axis->setName(QStringLiteral("454"));
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "name");
-        QCOMPARE(change->value().toString(), QStringLiteral("454"));
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
-
-        arbiter.events.clear();
-
-        // WHEN
-        Qt3DInput::QAxisInput *input = new Qt3DInput::QAxisInput();
+        Qt3DInput::QAbstractAxisInput *input = new Qt3DInput::QAnalogAxisInput();
         axis->addInput(input);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        Qt3DCore::QPropertyNodeAddedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
         QCOMPARE(change->propertyName(), "input");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), input->id());
-        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
+        QCOMPARE(change->addedNodeId(), input->id());
+        QCOMPARE(change->type(), Qt3DCore::PropertyValueAdded);
 
         arbiter.events.clear();
 
@@ -134,20 +126,29 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "input");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), input->id());
-        QCOMPARE(change->type(), Qt3DCore::NodeRemoved);
+        Qt3DCore::QPropertyNodeRemovedChangePtr nodeRemovedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
+        QCOMPARE(nodeRemovedChange->propertyName(), "input");
+        QCOMPARE(nodeRemovedChange->removedNodeId(), input->id());
+        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::PropertyValueRemoved);
 
         arbiter.events.clear();
     }
 
-protected:
-    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
+    void checkValuePropertyChanged()
     {
-        return Q_NULLPTR;
-    }
+        // GIVEN
+        QCOMPARE(value(), 0.0f);
 
+        // Note: simulate backend change to frontend
+        // WHEN
+        Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        valueChange->setPropertyName("value");
+        valueChange->setValue(383.0f);
+        sceneChangeEvent(valueChange);
+
+        // THEN
+        QCOMPARE(value(), 383.0f);
+    }
 };
 
 QTEST_MAIN(tst_QAxis)

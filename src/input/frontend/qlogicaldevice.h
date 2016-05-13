@@ -41,7 +41,7 @@
 #define QT3DINPUT_QLOGICALDEVICE_H
 
 #include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qcomponent.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,12 +51,11 @@ class QLogicalDevicePrivate;
 class QAction;
 class QAxis;
 
-class QT3DINPUTSHARED_EXPORT QLogicalDevice : public Qt3DCore::QNode
+class QT3DINPUTSHARED_EXPORT QLogicalDevice : public Qt3DCore::QComponent
 {
     Q_OBJECT
 public:
-    explicit QLogicalDevice(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QLogicalDevice();
+    explicit QLogicalDevice(Qt3DCore::QNode *parent = nullptr);
 
     void addAction(QAction *action);
     void removeAction(QAction *action);
@@ -66,12 +65,9 @@ public:
     void removeAxis(QAxis *axis);
     QVector<QAxis *> axes() const;
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
 private:
     Q_DECLARE_PRIVATE(QLogicalDevice)
-    QT3D_CLONEABLE(QLogicalDevice)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3DInput

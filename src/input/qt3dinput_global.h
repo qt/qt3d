@@ -40,12 +40,12 @@
 #ifndef QT3DINPUT_GLOBAL_H
 #define QT3DINPUT_GLOBAL_H
 
-#include <QtCore/qglobal.h>
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 
 #if defined(QT_SHARED) || !defined(QT_STATIC)
-#  if defined(QT3DINPUT_LIBRARY)
+#  if defined(QT_BUILD_3DINPUT_LIB)
 #    define QT3DINPUTSHARED_EXPORT Q_DECL_EXPORT
 #  else
 #    define QT3DINPUTSHARED_EXPORT Q_DECL_IMPORT

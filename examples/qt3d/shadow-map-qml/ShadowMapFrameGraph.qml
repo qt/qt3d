@@ -52,7 +52,7 @@ import QtQuick 2.2 as QQ2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 
-FrameGraph {
+RenderSettings {
     id: root
 
     property alias viewCamera: viewCameraSelector.camera
@@ -60,55 +60,60 @@ FrameGraph {
     readonly property Texture2D shadowTexture: depthTexture
 
     activeFrameGraph: Viewport {
-        rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
-        clearColor: Qt.rgba(0.0, 0.4, 0.7, 1.0)
+        normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
 
-        RenderPassFilter {
-            includes: [ Annotation { name: "pass"; value: "shadowmap" } ]
+        ClearBuffers {
+            clearColor: Qt.rgba(0.0, 0.4, 0.7, 1.0)
+        }
 
-            RenderTargetSelector {
-                target: RenderTarget {
-                    attachments: [
-                        RenderAttachment {
-                            name: "depth"
-                            type: RenderAttachment.DepthAttachment
-                            texture: Texture2D {
-                                id: depthTexture
-                                width: 1024
-                                height: 1024
-                                format: Texture.DepthFormat
-                                generateMipMaps: false
-                                magnificationFilter: Texture.Linear
-                                minificationFilter: Texture.Linear
-                                wrapMode {
-                                    x: WrapMode.ClampToEdge
-                                    y: WrapMode.ClampToEdge
+        RenderSurfaceSelector {
+            RenderPassFilter {
+                matchAny: [ FilterKey { name: "pass"; value: "shadowmap" } ]
+
+                RenderTargetSelector {
+                    target: RenderTarget {
+                        attachments: [
+                            RenderTargetOutput {
+                                objectName: "depth"
+                                attachmentPoint: RenderTargetOutput.Depth
+                                texture: Texture2D {
+                                    id: depthTexture
+                                    width: 1024
+                                    height: 1024
+                                    format: Texture.DepthFormat
+                                    generateMipMaps: false
+                                    magnificationFilter: Texture.Linear
+                                    minificationFilter: Texture.Linear
+                                    wrapMode {
+                                        x: WrapMode.ClampToEdge
+                                        y: WrapMode.ClampToEdge
+                                    }
+                                    comparisonFunction: Texture.CompareLessEqual
+                                    comparisonMode: Texture.CompareRefToTexture
                                 }
-                                comparisonFunction: Texture.CompareLessEqual
-                                comparisonMode: Texture.CompareRefToTexture
                             }
+                        ]
+                    }
+
+                    ClearBuffers {
+                        buffers: ClearBuffers.DepthBuffer
+
+                        CameraSelector {
+                            id: lightCameraSelector
                         }
-                    ]
-                }
-
-                ClearBuffer {
-                    buffers: ClearBuffer.DepthBuffer
-
-                    CameraSelector {
-                        id: lightCameraSelector
                     }
                 }
             }
-        }
 
         RenderPassFilter {
-            includes: [ Annotation { name: "pass"; value: "forward" } ]
+            matchAny: [ FilterKey { name: "pass"; value: "forward" } ]
 
-            ClearBuffer {
-                buffers: ClearBuffer.ColorDepthBuffer
+                ClearBuffers {
+                    buffers: ClearBuffers.ColorDepthBuffer
 
-                CameraSelector {
-                    id: viewCameraSelector
+                    CameraSelector {
+                        id: viewCameraSelector
+                    }
                 }
             }
         }

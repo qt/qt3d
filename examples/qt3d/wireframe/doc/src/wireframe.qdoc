@@ -131,7 +131,7 @@
 
     \printuntil id
 
-    The FrameGraph component uses the ForwardRenderer type to completely
+    The RendererSettings component uses the ForwardRenderer type to completely
     configure the renderer without touching any C++ code:
 
     \printuntil ]

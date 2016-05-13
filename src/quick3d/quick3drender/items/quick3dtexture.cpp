@@ -72,7 +72,7 @@ QAbstractTextureImage *Quick3DTextureExtension::textureImageAt(QQmlListProperty<
     Quick3DTextureExtension *self = qobject_cast<Quick3DTextureExtension *>(list->object);
     if (self)
         return self->parentTexture()->textureImages().at(index);
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 int Quick3DTextureExtension::textureImageCount(QQmlListProperty<QAbstractTextureImage> *list)

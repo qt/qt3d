@@ -47,8 +47,8 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/QRenderAspect>
-#include <Qt3DRender/qframegraph.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
+#include <Qt3DRender/qrendersettings.h>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DInput/qinputsettings.h>
 
@@ -73,21 +73,17 @@ namespace Qt3DRender {
  */
 Scene3DItem::Scene3DItem(QQuickItem *parent)
     : QQuickItem(parent)
-    , m_entity(Q_NULLPTR)
+    , m_entity(nullptr)
     , m_aspectEngine(new Qt3DCore::QAspectEngine())
-    , m_renderAspect(new QRenderAspect(QRenderAspect::Synchronous))
-    , m_renderer(Q_NULLPTR)
+    , m_renderAspect(nullptr)
+    , m_renderer(nullptr)
     , m_rendererCleaner(new Scene3DCleaner())
     , m_multisample(true)
     , m_cameraAspectRatioMode(AutomaticAspectRatio)
 {
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::MouseButtonMask);
-    setAcceptHoverEvents(true);
-
     // TO DO: register the event source in the main thread
-
-    m_aspectEngine->registerAspect(m_renderAspect);
 }
 
 Scene3DItem::~Scene3DItem()
@@ -150,6 +146,14 @@ void Scene3DItem::setCameraAspectRatioMode(CameraAspectRatioMode mode)
     emit cameraAspectRatioModeChanged(mode);
 }
 
+void Scene3DItem::setHoverEnabled(bool enabled)
+{
+    if (enabled != acceptHoverEvents()) {
+        setAcceptHoverEvents(enabled);
+        emit hoverEnabledChanged();
+    }
+}
+
 Scene3DItem::CameraAspectRatioMode Scene3DItem::cameraAspectRatioMode() const
 {
     return m_cameraAspectRatioMode;
@@ -158,7 +162,7 @@ Scene3DItem::CameraAspectRatioMode Scene3DItem::cameraAspectRatioMode() const
 void Scene3DItem::applyRootEntityChange()
 {
     if (m_aspectEngine->rootEntity() != m_entity) {
-        m_aspectEngine->setRootEntity(m_entity);
+        m_aspectEngine->setRootEntity(Qt3DCore::QEntityPtr(m_entity));
 
         // Set the render surface
         if (!m_entity)
@@ -192,14 +196,14 @@ void Scene3DItem::setWindowSurface(QObject *rootObject)
 {
     // Find surface selector in framegraph and set ourselves up as the
     // render surface there
-    Qt3DRender::QFrameGraph *frameGraphComponent
-        = rootObject->findChild<Qt3DRender::QFrameGraph *>();
-    if (!frameGraphComponent) {
-        qWarning() << "No frame graph component found";
+    Qt3DRender::QRenderSettings *renderSettings
+        = rootObject->findChild<Qt3DRender::QRenderSettings *>();
+    if (!renderSettings) {
+        qWarning() << "No renderer settings component found";
         return;
     }
 
-    Qt3DCore::QNode *frameGraphRoot = frameGraphComponent->activeFrameGraph();
+    Qt3DCore::QNode *frameGraphRoot = renderSettings->activeFrameGraph();
     if (!frameGraphRoot) {
         qWarning() << "No active frame graph found";
         return;
@@ -214,8 +218,38 @@ void Scene3DItem::setWindowSurface(QObject *rootObject)
 
     // Set the item's window surface if it appears
     // the surface wasn't set on the surfaceSelector
-    if (!surfaceSelector->window())
-        surfaceSelector->setWindow(this->window());
+    if (!surfaceSelector->surface())
+        surfaceSelector->setSurface(this->window());
+}
+
+void Scene3DItem::setItemArea(const QSize &area)
+{
+    // Find surface selector in framegraph and set the area
+    Qt3DRender::QRenderSettings *renderSettings
+        = m_entity->findChild<Qt3DRender::QRenderSettings *>();
+    if (!renderSettings) {
+        qWarning() << "No renderer settings component found";
+        return;
+    }
+
+    Qt3DCore::QNode *frameGraphRoot = renderSettings->activeFrameGraph();
+    if (!frameGraphRoot) {
+        qWarning() << "No active frame graph found";
+        return;
+    }
+
+    Qt3DRender::QRenderSurfaceSelector *surfaceSelector
+        = frameGraphRoot->findChild<Qt3DRender::QRenderSurfaceSelector *>();
+    if (!surfaceSelector) {
+        qWarning() << "No render surface selector found in frame graph";
+        return;
+    }
+    surfaceSelector->setExternalRenderTargetSize(area);
+}
+
+bool Scene3DItem::isHoverEnabled() const
+{
+    return acceptHoverEvents();
 }
 
 void Scene3DItem::setCameraAspectModeHelper()
@@ -270,15 +304,21 @@ void Scene3DItem::setMultisample(bool enable)
 
 QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *)
 {
+    // If the render aspect wasn't created yet, do so now
+    if (!m_renderAspect) {
+        m_renderAspect = new QRenderAspect(QRenderAspect::Synchronous);
+        m_aspectEngine->registerAspect(m_renderAspect);
+    }
+
     // If the node already exists
     // we delete it and recreate it
     // as we need to resize the FBO
     if (node) {
         delete node;
-        node = Q_NULLPTR;
+        node = nullptr;
     }
 
-    if (m_renderer == Q_NULLPTR) {
+    if (m_renderer == nullptr) {
         m_renderer = new Scene3DRenderer(this, m_aspectEngine, m_renderAspect);
         m_renderer->setCleanerHelper(m_rendererCleaner);
     }

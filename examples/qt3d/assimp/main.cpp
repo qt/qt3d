@@ -48,7 +48,7 @@
 **
 ****************************************************************************/
 
-#include <qt3dquickwindow.h>
+#include <Qt3DQuickExtras/qt3dquickwindow.h>
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DCore/QEntity>
 
@@ -85,14 +85,14 @@ QObject *SceneHelper::findEntity(Qt3DRender::QSceneLoader *loader, const QString
 QObject *SceneHelper::findComponent(Qt3DCore::QEntity *entity, const QString &componentMetatype)
 {
     Q_ASSERT(entity);
-    Qt3DCore::QComponentList components = entity->components();
+    Qt3DCore::QComponentVector components = entity->components();
     Q_FOREACH (Qt3DCore::QComponent *component, components) {
         qDebug() << component->metaObject()->className();
         if (component->metaObject()->className() == componentMetatype) {
             return component;
         }
     }
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 void SceneHelper::addListEntry(const QVariant &list, QObject *entry)
@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
 
-    Qt3DQuickWindow view;
+    Qt3DExtras::Quick::Qt3DQuickWindow view;
 
     qmlRegisterType<SceneHelper>("Qt3D.Examples", 2, 0, "SceneHelper");
     view.setSource(QUrl("qrc:/main.qml"));

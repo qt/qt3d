@@ -60,9 +60,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
- * \internal
- *
+/*
  * A helper class to split a QByteArray and access its sections without
  * additional memory allocations.
  */
@@ -130,12 +128,7 @@ private:
     QVarLengthArray<Entry, 16> m_entries;
     const char *m_input;
 };
-
-} // namespace Qt3DRender
-
-Q_DECLARE_TYPEINFO(Qt3DRender::ByteArraySplitter::Entry, Q_PRIMITIVE_TYPE);
-
-namespace Qt3DRender {
+QT3D_DECLARE_TYPEINFO(Qt3DRender, ByteArraySplitter::Entry, Q_PRIMITIVE_TYPE)
 
 inline uint qHash(const FaceIndices &faceIndices)
 {
@@ -412,7 +405,7 @@ QGeometry *ObjLoader::geometry() const
     }
 
     QByteArray indexBytes;
-    QAttribute::DataType ty;
+    QAttribute::VertexBaseType ty;
     if (m_indices.size() < 65536) {
         // we can use USHORT
         ty = QAttribute::UnsignedShort;
@@ -469,7 +462,7 @@ void ObjLoader::updateIndices(const QVector<QVector3D> &positions,
     const int indexCount = faceIndexVector.size();
     m_indices.clear();
     m_indices.reserve(indexCount);
-    foreach (const FaceIndices &faceIndices, faceIndexVector) {
+    for (const FaceIndices faceIndices : faceIndexVector) {
         const unsigned int i = faceIndexMap.value(faceIndices);
         m_indices.append(i);
     }

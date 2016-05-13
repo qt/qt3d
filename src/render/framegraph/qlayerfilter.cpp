@@ -39,7 +39,10 @@
 
 #include "qlayerfilter.h"
 #include "qlayerfilter_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include "qlayer.h"
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -66,28 +69,12 @@ QLayerFilterPrivate::QLayerFilterPrivate()
     \brief For ...
 */
 
-/*! \fn void Qt3DRender::QLayerFilter::copy(const Qt3DCore::QNode *ref)
-  Copies the \a ref instance into this one.
- */
-void QLayerFilter::copy(const QNode *ref)
-{
-    QFrameGraphNode::copy(ref);
-    const QLayerFilter *layer = static_cast<const QLayerFilter*>(ref);
-    d_func()->m_layers = layer->d_func()->m_layers;
-}
-
-
 /*! \fn Qt3DRender::QLayerFilter::QLayerFilter(Qt3DCore::QNode *parent)
   Constructs a new QLayerFilter with the specified \a parent.
  */
 QLayerFilter::QLayerFilter(QNode *parent)
     : QFrameGraphNode(*new QLayerFilterPrivate, parent)
 {
-}
-
-QLayerFilter::~QLayerFilter()
-{
-    QNode::cleanup();
 }
 
 /*! \internal */
@@ -106,21 +93,54 @@ QLayerFilter::QLayerFilter(QLayerFilterPrivate &dd, QNode *parent)
 
 */
 
-void QLayerFilter::setLayers(const QStringList &layers)
+void QLayerFilter::addLayer(QLayer *layer)
 {
+    Q_ASSERT(layer);
     Q_D(QLayerFilter);
-    if (d->m_layers != layers) {
-        d->m_layers = layers;
-        emit layersChanged(layers);
+    if (!d->m_layers.contains(layer)) {
+        d->m_layers.append(layer);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, it gets destroyed as well
+        if (!layer->parent())
+            layer->setParent(this);
+
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), layer);
+            change->setPropertyName("layer");
+            d->notifyObservers(change);
+        }
     }
 }
 
-QStringList QLayerFilter::layers() const
+void QLayerFilter::removeLayer(QLayer *layer)
+{
+    Q_ASSERT(layer);
+    Q_D(QLayerFilter);
+    if (d->m_changeArbiter != nullptr) {
+        const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), layer);
+        change->setPropertyName("layer");
+        d->notifyObservers(change);
+    }
+    d->m_layers.removeOne(layer);
+}
+
+QVector<QLayer *> QLayerFilter::layers() const
 {
     Q_D(const QLayerFilter);
     return d->m_layers;
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QLayerFilter::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QLayerFilterData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QLayerFilter);
+    data.layerIds = qIdsForNodes(d->m_layers);
+    return creationChange;
+}
 
 } // namespace Qt3DRender
 

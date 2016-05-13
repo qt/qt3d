@@ -51,8 +51,8 @@
 // We mean it.
 //
 
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qt3drender_global.h>
-#include <Qt3DCore/qbackendnode.h>
 #include <QStringList>
 
 QT_BEGIN_NAMESPACE
@@ -65,22 +65,12 @@ namespace Render {
 
 class LayerManager;
 
-class Layer : public Qt3DCore::QBackendNode
+class Layer : public BackendNode
 {
 public:
     Layer();
     ~Layer();
     void cleanup();
-
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-
-    QStringList layers() const;
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    inline bool isEnabled() const { return m_enabled; }
-
-private:
-    QStringList m_layers;
-    bool m_enabled;
 };
 
 } // namespace Render

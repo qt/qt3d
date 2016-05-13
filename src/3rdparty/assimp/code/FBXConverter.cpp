@@ -1259,7 +1259,7 @@ private:
 				// taking notes so we don't need to do it twice.
 				BOOST_FOREACH(WeightIndexArray::value_type index, indices) {
 
-					unsigned int count;
+					unsigned int count = 0;
 					const unsigned int* const out_idx = geo.ToOutputVertexIndex(index, count);
 
 					index_out_indices.push_back(no_index_sentinel);

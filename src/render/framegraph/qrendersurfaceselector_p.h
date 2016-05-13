@@ -52,8 +52,10 @@
 //
 
 #include <Qt3DRender/private/qframegraphnode_p.h>
+#include <Qt3DRender/private/platformsurfacefilter_p.h>
 #include <QtGui/qsurface.h>
 #include <QtGui/qwindow.h>
+#include <QtCore/qpointer.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,7 +66,18 @@ class QRenderSurfaceSelectorPrivate : public Qt3DRender::QFrameGraphNodePrivate
 public:
     QRenderSurfaceSelectorPrivate();
 
+    void setExternalRenderTargetSize(const QSize &size);
+    QSize externalRenderTargetSize() const { return m_externalRenderTargetSize; }
+
     QSurface *m_surface;
+    QSize m_externalRenderTargetSize;
+    QScopedPointer<Qt3DRender::Render::PlatformSurfaceFilter> m_surfaceEventFilter;
+};
+
+struct QRenderSurfaceSelectorData
+{
+    QPointer<QObject> surface;
+    QSize externalRenderTargetSize;
 };
 
 } // namespace Qt3DRender

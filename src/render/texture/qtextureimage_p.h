@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_TEXTUREIMAGE_P_H
-#define QT3DRENDER_TEXTUREIMAGE_P_H
+#ifndef QT3DRENDER_QTEXTUREIMAGE_P_H
+#define QT3DRENDER_QTEXTUREIMAGE_P_H
 
 //
 //  W A R N I N G
@@ -51,28 +51,44 @@
 // We mean it.
 //
 
-#include "qabstracttextureimage.h"
+#include <Qt3DRender/private/qabstracttextureimage_p.h>
+#include <Qt3DRender/qtextureimage.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QImageTextureDataFunctor : public QTextureDataFunctor
+class QTextureImagePrivate : public QAbstractTextureImagePrivate
+{
+public:
+    QTextureImagePrivate()
+        : QAbstractTextureImagePrivate()
+        , m_status(QTextureImage::Loading)
+    {
+    }
+
+    Q_DECLARE_PUBLIC(QTextureImage)
+
+    QUrl m_source;
+    QTextureImage::Status m_status;
+};
+
+class QImageTextureDataFunctor : public QTextureImageDataGenerator
 {
 public:
     QImageTextureDataFunctor(const QUrl &url)
-        : QTextureDataFunctor()
+        : QTextureImageDataGenerator()
         , m_url(url)
     {}
 
     // Will be executed from within a QAspectJob
-    QTexImageDataPtr operator ()() Q_DECL_FINAL
+    QTextureImageDataPtr operator ()() Q_DECL_FINAL
     {
-        QTexImageDataPtr dataPtr;
+        QTextureImageDataPtr dataPtr;
         if (m_url.isLocalFile() || m_url.scheme() == QStringLiteral("qrc")) {
             QString source = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_url);
-            dataPtr.reset(new QTexImageData());
+            dataPtr.reset(new QTextureImageData());
             if (dataPtr->setCompressedFile(source))
                 return dataPtr;
             QImage img;
@@ -88,20 +104,26 @@ public:
         return dataPtr;
     }
 
-    bool operator ==(const QTextureDataFunctor &other) const Q_DECL_FINAL
+    bool operator ==(const QTextureImageDataGenerator &other) const Q_DECL_FINAL
     {
         const QImageTextureDataFunctor *otherFunctor = functor_cast<QImageTextureDataFunctor>(&other);
         return (otherFunctor != Q_NULLPTR && otherFunctor->m_url == m_url);
+    }
+
+    QTextureImage::Status status() const
+    {
+        return m_status;
     }
 
     QT3D_FUNCTOR(QImageTextureDataFunctor)
 
 private:
     QUrl m_url;
+    QTextureImage::Status m_status;
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_TEXTUREIMAGE_P_H
+#endif // QT3DRENDER_QTEXTUREIMAGE_P_H

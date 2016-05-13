@@ -65,7 +65,7 @@ Effect {
                 }
             }
             renderPasses : RenderPass {
-                annotations : Annotation { name : "pass"; value : "final" }
+                filterKeys : FilterKey { name : "pass"; value : "final" }
                 shaderProgram : ShaderProgram {
                     id : finalShaderGL3
                     vertexShaderCode:
@@ -115,7 +115,7 @@ Effect {
                                 lightColor += lights[i].color * (lights[i].intensity * max(dot(s, norm), 0.0));
                             }
                             lightColor /= float(lightCount);
-                            fragColor = col * lightColor;
+                            fragColor = col;
                         }
                                 "
                 }
@@ -133,7 +133,7 @@ Effect {
                             }
                         }
             renderPasses : RenderPass {
-                annotations : Annotation { name : "pass"; value : "final" }
+                filterKeys : FilterKey { name : "pass"; value : "final" }
                 shaderProgram : ShaderProgram {
                     id : finalShaderGL2
                     vertexShaderCode:

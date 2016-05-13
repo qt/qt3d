@@ -37,15 +37,16 @@
 **
 ****************************************************************************/
 
-#include "qboundingvolumedebug.h"
+#if 0
+
+#include "qboundingvolumedebug_p.h"
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/private/qcomponent_p.h>
-#include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qbackendnodepropertychange.h>
 #include <Qt3DRender/qspheremesh.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DRender/qphongalphamaterial.h>
 #include <Qt3DRender/qlayer.h>
-
 #include <QThread>
 
 QT_BEGIN_NAMESPACE
@@ -58,11 +59,11 @@ public:
     QBoundingVolumeDebugPrivate()
         : QComponentPrivate()
         , m_recursive(false)
-        , m_debugSubtree(Q_NULLPTR)
-        , m_sphereMesh(Q_NULLPTR)
-        , m_transform(Q_NULLPTR)
-        , m_material(Q_NULLPTR)
-        , m_layer(Q_NULLPTR)
+        , m_debugSubtree(nullptr)
+        , m_sphereMesh(nullptr)
+        , m_transform(nullptr)
+        , m_material(nullptr)
+        , m_layer(nullptr)
         , m_bvRadius(0.0f)
     {
         m_shareable = false;
@@ -109,18 +110,11 @@ bool QBoundingVolumeDebug::recursive() const
     return d->m_recursive;
 }
 
-void QBoundingVolumeDebug::copy(const Qt3DCore::QNode *ref)
-{
-    QComponent::copy(ref);
-    const QBoundingVolumeDebug *debugVolume = static_cast<const QBoundingVolumeDebug *>(ref);
-    d_func()->m_recursive = debugVolume->d_func()->m_recursive;
-}
-
 void QBoundingVolumeDebug::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QBoundingVolumeDebug);
-    Qt3DCore::QBackendScenePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QBackendScenePropertyChange>(change);
-    if (e->type() == Qt3DCore::NodeUpdated) {
+    Qt3DCore::QBackendNodePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QBackendNodePropertyChange>(change);
+    if (e->type() == Qt3DCore::PropertyUpdated) {
         if (e->propertyName() == QByteArrayLiteral("center")) {
             d->m_bvCenter = e->value().value<QVector3D>();
             d->updateSubtree();
@@ -134,9 +128,9 @@ void QBoundingVolumeDebug::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &cha
 // Executed in the frontend thread
 Qt3DCore::QEntity *QBoundingVolumeDebugPrivate::findRootEntity(Qt3DCore::QEntity *e)
 {
-    Qt3DCore::QEntity *tmp = Q_NULLPTR;
-    Qt3DCore::QEntity *parentEntity = Q_NULLPTR;
-    while (e && (tmp = e->parentEntity()) != Q_NULLPTR) {
+    Qt3DCore::QEntity *tmp = nullptr;
+    Qt3DCore::QEntity *parentEntity = nullptr;
+    while (e && (tmp = e->parentEntity()) != nullptr) {
         parentEntity = tmp;
         e = parentEntity;
     }
@@ -146,7 +140,7 @@ Qt3DCore::QEntity *QBoundingVolumeDebugPrivate::findRootEntity(Qt3DCore::QEntity
 void QBoundingVolumeDebugPrivate::updateSubtree()
 {
     Q_Q(QBoundingVolumeDebug);
-    if (m_debugSubtree == Q_NULLPTR) {
+    if (m_debugSubtree == nullptr) {
         m_debugSubtree = new Qt3DCore::QEntity();
         m_sphereMesh = new Qt3DRender::QSphereMesh();
         m_transform = new Qt3DCore::QTransform();
@@ -171,8 +165,8 @@ void QBoundingVolumeDebugPrivate::updateSubtree()
 
         // Insert into scene
         if (q->entities().size() > 0) {
-            Qt3DCore::QEntity *rootEntity = findRootEntity(q->entities().first());
-            m_debugSubtree->setParent(rootEntity ? rootEntity : q->entities().first());
+            Qt3DCore::QEntity *rootEntity = findRootEntity(q->entities().constFirst());
+            m_debugSubtree->setParent(rootEntity ? rootEntity : q->entities().constFirst());
         }
     } else {
         // Just update the mesh
@@ -184,3 +178,5 @@ void QBoundingVolumeDebugPrivate::updateSubtree()
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif

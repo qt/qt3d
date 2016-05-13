@@ -58,6 +58,9 @@
 #include <QWaitCondition>
 #include <QSurface>
 
+#if defined(QT3D_CORE_JOB_TIMING)
+#include <QElapsedTimer>
+#endif
 
 QT_BEGIN_NAMESPACE
 
@@ -65,7 +68,7 @@ namespace Qt3DCore {
 
 QAspectManager::QAspectManager(QObject *parent)
     : QObject(parent)
-    , m_root(Q_NULLPTR)
+    , m_root(nullptr)
     , m_scheduler(new QScheduler(this))
     , m_jobManager(new QAspectJobManager(this))
     , m_changeArbiter(new QChangeArbiter(this))
@@ -74,8 +77,8 @@ QAspectManager::QAspectManager(QObject *parent)
     , m_waitForQuit(0)
 {
     qRegisterMetaType<QSurface *>("QSurface*");
-    m_runMainLoop.fetchAndStoreOrdered(0);
-    m_terminated.fetchAndStoreOrdered(0);
+    m_runSimulationLoop.fetchAndStoreOrdered(0);
+    m_runMainLoop.fetchAndStoreOrdered(1);
     qCDebug(Aspects) << Q_FUNC_INFO;
 }
 
@@ -86,11 +89,41 @@ QAspectManager::~QAspectManager()
     delete m_scheduler;
 }
 
-bool QAspectManager::isShuttingDown() const
+void QAspectManager::enterSimulationLoop()
 {
-    return !m_runMainLoop.load();
+    qCDebug(Aspects) << Q_FUNC_INFO;
+    m_runSimulationLoop.fetchAndStoreOrdered(1);
 }
 
+void QAspectManager::exitSimulationLoop()
+{
+    qCDebug(Aspects) << Q_FUNC_INFO;
+    m_runSimulationLoop.fetchAndStoreOrdered(0);
+
+    // Give any aspects a chance to unqueue any asynchronous work they
+    // may have scheduled that would otherwise potentially deadlock or
+    // cause races. For example, the QLogicAspect queues up a vector of
+    // QNodeIds to be processed by a callback on the main thread. However,
+    // if we don't unqueue this work and release its semaphore, the logic
+    // aspect would cause a deadlock when trying to exit the inner loop.
+    // This is because we call this function from the main thread and the
+    // logic aspect is waiting for the main thread to execute the
+    // QLogicComponent::onFrameUpdate() callback.
+    Q_FOREACH (QAbstractAspect *aspect, m_aspects)
+        aspect->d_func()->onEngineAboutToShutdown();
+}
+
+bool QAspectManager::isShuttingDown() const
+{
+    return !m_runSimulationLoop.load();
+}
+
+/*!
+    \internal
+
+    Called by the QAspectThread's run() method immediately after the manager
+    has been created
+*/
 void QAspectManager::initialize()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
@@ -99,18 +132,23 @@ void QAspectManager::initialize()
     m_changeArbiter->initialize(m_jobManager);
 }
 
+/*!
+    \internal
+
+    Called by the QAspectThread's run() method immediately after the manager's
+    exec() function has returned.
+*/
 void QAspectManager::shutdown()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
 
-    Q_FOREACH (QAbstractAspect *aspect, m_aspects) {
-        aspect->onCleanup();
+    for (QAbstractAspect *aspect : qAsConst(m_aspects))
         m_changeArbiter->unregisterSceneObserver(aspect->d_func());
-    }
+
     // Aspects must be deleted in the Thread they were created in
 }
 
-void QAspectManager::setRootEntity(Qt3DCore::QEntity *root)
+void QAspectManager::setRootEntity(Qt3DCore::QEntity *root, const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> &changes)
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
 
@@ -118,18 +156,15 @@ void QAspectManager::setRootEntity(Qt3DCore::QEntity *root)
         return;
 
     if (m_root) {
-        // Allow each aspect chance to cleanup any resources from this scene
-        Q_FOREACH (QAbstractAspect *aspect, m_aspects) {
-            aspect->onCleanup();
-        }
+        // TODO: Delete all backend nodes. This is to be symmetric with how
+        // we create them below in the call to setRootAndCreateNodes
     }
 
     m_root = root;
 
     if (m_root) {
-        Q_FOREACH (QAbstractAspect *aspect, m_aspects)
-            aspect->d_func()->registerAspect(m_root);
-        m_runMainLoop.fetchAndStoreOrdered(1);
+        for (QAbstractAspect *aspect : qAsConst(m_aspects))
+            aspect->d_func()->setRootAndCreateNodes(m_root, changes);
     }
 }
 
@@ -140,15 +175,16 @@ void QAspectManager::registerAspect(QAbstractAspect *aspect)
 {
     qCDebug(Aspects) << "Registering aspect";
 
-    if (aspect != Q_NULLPTR) {
+    if (aspect != nullptr) {
         m_aspects.append(aspect);
         QAbstractAspectPrivate::get(aspect)->m_aspectManager = this;
         QAbstractAspectPrivate::get(aspect)->m_jobManager = m_jobManager;
         QAbstractAspectPrivate::get(aspect)->m_arbiter = m_changeArbiter;
         // Register sceneObserver with the QChangeArbiter
         m_changeArbiter->registerSceneObserver(aspect->d_func());
-        // Initialize the aspect in the main thread
-        aspect->onInitialize();
+
+        // Allow the aspect to do some work now that it is registered
+        aspect->onRegistered();
     }
     else {
         qCWarning(Aspects) << "Failed to register aspect";
@@ -161,9 +197,9 @@ void QAspectManager::exec()
     // Gentlemen, start your engines
     QEventLoop eventLoop;
 
-    // Enter the main loop
-    while (!m_terminated.load())
-    {
+    // Enter the engine loop
+    qCDebug(Aspects) << Q_FUNC_INFO << "***** Entering main loop *****";
+    while (m_runMainLoop.load()) {
         // Process any pending events, waiting for more to arrive if queue is empty
         eventLoop.processEvents(QEventLoop::WaitForMoreEvents, 16);
 
@@ -171,21 +207,24 @@ void QAspectManager::exec()
         QAbstractFrameAdvanceService *frameAdvanceService =
                 m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService);
 
-        // Start the frameAdvanceService if we're about to enter the running loop
+        // Start the frameAdvanceService if we're about to enter the simulation loop
         bool needsShutdown = false;
-        if (m_runMainLoop.load()) {
+        if (m_runSimulationLoop.load()) {
             needsShutdown = true;
             frameAdvanceService->start();
 
-            // We are about to enter the main loop. Give aspects a chance to do any last
+            // We are about to enter the simulation loop. Give aspects a chance to do any last
             // pieces of initialization
-            qCDebug(Aspects) << "Calling onStartup() for each aspect";
-            Q_FOREACH (QAbstractAspect *aspect, m_aspects)
-                aspect->onStartup();
+            qCDebug(Aspects) << "Calling onEngineStartup() for each aspect";
+            for (QAbstractAspect *aspect : qAsConst(m_aspects)) {
+                qCDebug(Aspects) << "\t" << aspect->objectName();
+                aspect->onEngineStartup();
+            }
+            qCDebug(Aspects) << "Done calling onEngineStartup() for each aspect";
         }
 
-        // Only enter main render loop once the renderer and other aspects are initialized
-        while (m_runMainLoop.load()) {
+        // Only enter main simulation loop once the renderer and other aspects are initialized
+        while (m_runSimulationLoop.load()) {
             qint64 t = frameAdvanceService->waitForNextFrame();
 
             // Distribute accumulated changes. This includes changes sent from the frontend
@@ -201,21 +240,31 @@ void QAspectManager::exec()
             // For each Aspect
             // Ask them to launch set of jobs for the current frame
             // Updates matrices, bounding volumes, render bins ...
+#if defined(QT3D_CORE_JOB_TIMING)
+            QElapsedTimer timer;
+            timer.start();
+#endif
             m_scheduler->scheduleAndWaitForFrameAspectJobs(t);
+#if defined(QT3D_CORE_JOB_TIMING)
+            qDebug() << "Jobs took" << timer.nsecsElapsed() / 1.0e6;
+#endif
 
             // Process any pending events
             eventLoop.processEvents();
-        }
+        } // End of simulation loop
 
         if (needsShutdown) {
             // Give aspects a chance to perform any shutdown actions. This may include unqueuing
             // any blocking work on the main thread that could potentially deadlock during shutdown.
-            qCDebug(Aspects) << "Calling onShutdown() for each aspect";
-            Q_FOREACH (QAbstractAspect *aspect, m_aspects)
-                aspect->onShutdown();
+            qCDebug(Aspects) << "Calling onEngineShutdown() for each aspect";
+            for (QAbstractAspect *aspect : qAsConst(m_aspects)) {
+                qCDebug(Aspects) << "\t" << aspect->objectName();
+                aspect->onEngineShutdown();
+            }
+            qCDebug(Aspects) << "Done calling onEngineShutdown() for each aspect";
         }
-    }
-    qCDebug(Aspects) << Q_FUNC_INFO << "Exiting event loop";
+    } // End of main loop
+    qCDebug(Aspects) << Q_FUNC_INFO << "***** Exited main loop *****";
 
     m_waitForEndOfExecLoop.release(1);
     m_waitForQuit.acquire(1);
@@ -225,23 +274,17 @@ void QAspectManager::quit()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
 
+    Q_ASSERT_X(m_runSimulationLoop.load() == 0, "QAspectManagr::quit()", "Inner loop is still running");
     m_runMainLoop.fetchAndStoreOrdered(0);
-    m_terminated.fetchAndStoreOrdered(1);
-
-    // Allow the Aspect thread to proceed in case it's locked by the
-    // FrameAdvanceService <=> it is still in the running loop
-    QAbstractFrameAdvanceService *advanceFrameService = m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService);
-    if (advanceFrameService)
-        advanceFrameService->stop();
 
     // We need to wait for the QAspectManager exec loop to terminate
     m_waitForEndOfExecLoop.acquire(1);
     m_waitForQuit.release(1);
 
-    qCDebug(Aspects) << Q_FUNC_INFO << "Exited event loop";
+    qCDebug(Aspects) << Q_FUNC_INFO << "Exiting";
 }
 
-const QList<QAbstractAspect *> &QAspectManager::aspects() const
+const QVector<QAbstractAspect *> &QAspectManager::aspects() const
 {
     return m_aspects;
 }

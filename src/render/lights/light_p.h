@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <private/shaderdata_p.h>
+#include <Qt3DRender/private/backendnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,23 +61,29 @@ namespace Render {
 
 class NodeManagers;
 
-class Q_AUTOTEST_EXPORT Light : public ShaderData
+class Q_AUTOTEST_EXPORT Light : public BackendNode
 {
 public:
+    Qt3DCore::QNodeId shaderData() const;
 
+private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
+    Qt3DCore::QNodeId m_shaderDataId;
 };
 
-class RenderLightFunctor : public Qt3DCore::QBackendNodeFunctor
+class RenderLightFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
-    explicit RenderLightFunctor(NodeManagers *managers);
+    explicit RenderLightFunctor(AbstractRenderer *renderer, NodeManagers *managers);
 
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_FINAL;
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
 
 private:
     NodeManagers *m_managers;
+    AbstractRenderer *m_renderer;
 };
 
 } // namespace Render

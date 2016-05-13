@@ -54,34 +54,30 @@ class QAxisSettingPrivate;
 class QT3DINPUTSHARED_EXPORT QAxisSetting : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(float deadZone READ deadZone WRITE setDeadZone NOTIFY deadZoneChanged)
+    Q_PROPERTY(float deadZoneRadius READ deadZoneRadius WRITE setDeadZoneRadius NOTIFY deadZoneRadiusChanged)
     Q_PROPERTY(QVariantList axes READ axes WRITE setAxes NOTIFY axesChanged)
-    Q_PROPERTY(bool filter READ isFilterEnabled WRITE setFilterEnabled NOTIFY filterChanged)
+    Q_PROPERTY(bool smooth READ isSmoothEnabled WRITE setSmoothEnabled NOTIFY smoothChanged)
 
 public:
-    explicit QAxisSetting(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QAxisSetting();
+    explicit QAxisSetting(Qt3DCore::QNode *parent = nullptr);
 
-    float deadZone() const;
+    float deadZoneRadius() const;
     QVariantList axes() const;
-    bool isFilterEnabled() const;
+    bool isSmoothEnabled() const;
 
 public Q_SLOTS:
-    void setDeadZone(float deadZone);
+    void setDeadZoneRadius(float deadZoneRadius);
     void setAxes(const QVariantList &axes);
-    void setFilterEnabled(bool enabled);
+    void setSmoothEnabled(bool enabled);
 
 Q_SIGNALS:
-    void deadZoneChanged(float deadZone);
+    void deadZoneRadiusChanged(float deadZoneRadius);
     void axesChanged(QVariantList axes);
-    void filterChanged(bool filter);
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void smoothChanged(bool smooth);
 
 private:
     Q_DECLARE_PRIVATE(QAxisSetting)
-    QT3D_CLONEABLE(QAxisSetting)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DInput

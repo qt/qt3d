@@ -59,7 +59,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAnnotation;
+class QFilterKey;
 class QRenderPassFilter;
 
 template <typename T, uint INDEXBITS>
@@ -67,21 +67,21 @@ class QHandle;
 
 namespace Render {
 
-class RenderPassFilter
-        : public Render::FrameGraphNode
+class RenderPassFilter : public Render::FrameGraphNode
 {
 public:
     RenderPassFilter();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    QList<Qt3DCore::QNodeId> filters() const;
-    QList<Qt3DCore::QNodeId> parameters() const;
-    void appendFilter(const Qt3DCore::QNodeId &criterionId);
-    void removeFilter(const Qt3DCore::QNodeId &criterionId);
+    QVector<Qt3DCore::QNodeId> filters() const;
+    QVector<Qt3DCore::QNodeId> parameters() const;
+    void appendFilter(Qt3DCore::QNodeId criterionId);
+    void removeFilter(Qt3DCore::QNodeId criterionId);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    QList<Qt3DCore::QNodeId> m_filters;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
+    QVector<Qt3DCore::QNodeId> m_filters;
     ParameterPack m_parameterPack;
 };
 

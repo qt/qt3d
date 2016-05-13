@@ -42,6 +42,7 @@
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qscenechange.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -52,16 +53,20 @@ class QBackendNodePrivate;
 class QBackendNode;
 class QAspectEngine;
 
-class QT3DCORESHARED_EXPORT QBackendNodeFunctor
+#if defined(QT_BUILD_INTERNAL)
+class QBackendNodeTester;
+#endif
+
+class QT3DCORESHARED_EXPORT QBackendNodeMapper
 {
 public:
-    virtual ~QBackendNodeFunctor() {}
-    virtual QBackendNode *create(QNode *frontend) const = 0;
-    virtual QBackendNode *get(const QNodeId &id) const = 0;
-    virtual void destroy(const QNodeId &id) const = 0;
+    virtual ~QBackendNodeMapper() {}
+    virtual QBackendNode *create(const QNodeCreatedChangeBasePtr &change) const = 0;
+    virtual QBackendNode *get(QNodeId id) const = 0;
+    virtual void destroy(QNodeId id) const = 0;
 };
 
-typedef QSharedPointer<QBackendNodeFunctor> QBackendNodeFunctorPtr;
+typedef QSharedPointer<QBackendNodeMapper> QBackendNodeMapperPtr;
 
 class QT3DCORESHARED_EXPORT QBackendNode
 {
@@ -74,28 +79,34 @@ public:
     explicit QBackendNode(Mode mode = ReadOnly);
     virtual ~QBackendNode();
 
-    void setPeer(QNode *peer);
-    QNodeId peerUuid() const Q_DECL_NOEXCEPT;
+    QNodeId peerId() const Q_DECL_NOEXCEPT;
+
+    void setEnabled(bool enabled) Q_DECL_NOEXCEPT;
+    bool isEnabled() const Q_DECL_NOEXCEPT;
 
     Mode mode() const Q_DECL_NOEXCEPT;
-    virtual void updateFromPeer(QNode *peer) = 0;
 
 protected:
-    QBackendNode *createBackendNode(QNode *frontend) const;
-    void notifyObservers(const QSceneChangePtr &e);
-    virtual void sceneChangeEvent(const QSceneChangePtr &e) = 0;
-
-    QBackendNode(QBackendNodePrivate &dd);
-
     Q_DECLARE_PRIVATE(QBackendNode)
+    QBackendNode(QBackendNodePrivate &dd);
+    void notifyObservers(const QSceneChangePtr &e);
+    virtual void sceneChangeEvent(const QSceneChangePtr &e);
+
     QBackendNodePrivate *d_ptr;
 
 private:
-    friend class QBackendScenePropertyChange;
+    Q_DISABLE_COPY(QBackendNode)
+    void setPeerId(QNodeId id) Q_DECL_NOEXCEPT;
+    virtual void initializeFromPeer(const QNodeCreatedChangeBasePtr &change);
+
+    friend class QBackendNodePropertyChange;
+    friend class QAbstractAspectPrivate;
+#if defined(QT_BUILD_INTERNAL)
+    friend class QBackendNodeTester;
+#endif
 };
 
-
-} // Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

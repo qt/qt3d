@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "qgenericinputdevice.h"
+#include "qgenericinputdevice_p.h"
 
 #include "qabstractphysicaldevice_p.h"
 
@@ -49,11 +49,6 @@ namespace Qt3DInput {
 QGenericInputDevice::QGenericInputDevice(Qt3DCore::QNode *parent)
     : QAbstractPhysicalDevice(parent)
 {}
-
-QGenericInputDevice::~QGenericInputDevice()
-{
-    QAbstractPhysicalDevice::cleanup();
-}
 
 static void setHashFromVariantMap(QHash<QString, int> &hash, const QVariantMap &map)
 {

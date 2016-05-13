@@ -68,8 +68,14 @@ public :
     QEffectPrivate();
 
     Q_DECLARE_PUBLIC(QEffect)
-    QList<QParameter *> m_parameters;
-    QList<QTechnique *> m_techniques;
+    QVector<QParameter *> m_parameters;
+    QVector<QTechnique *> m_techniques;
+};
+
+struct QEffectData
+{
+    Qt3DCore::QNodeIdVector parameterIds;
+    Qt3DCore::QNodeIdVector techniqueIds;
 };
 
 } // namespace Qt3DRender

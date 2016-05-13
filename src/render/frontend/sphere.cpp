@@ -39,7 +39,7 @@
 
 #include "sphere_p.h"
 
-#include <Qt3DCore/qray3d.h>
+#include <Qt3DRender/private/qray3d_p.h>
 
 #include <QPair>
 
@@ -53,7 +53,7 @@ namespace {
 
 // Intersects ray r = p + td, |d| = 1, with sphere s and, if intersecting,
 // returns true and intersection point q; false otherwise
-bool intersectRaySphere(const Qt3DCore::QRay3D &ray, const Qt3DRender::Render::Sphere &s, QVector3D *q = Q_NULLPTR)
+bool intersectRaySphere(const Qt3DRender::QRay3D &ray, const Qt3DRender::Render::Sphere &s, QVector3D *q = nullptr)
 {
     const QVector3D p = ray.origin();
     const QVector3D d = ray.direction();
@@ -61,7 +61,7 @@ bool intersectRaySphere(const Qt3DCore::QRay3D &ray, const Qt3DRender::Render::S
     const float c = QVector3D::dotProduct(m, m) - s.radius() * s.radius();
 
     // If there is definitely at least one real root, there must be an intersection
-    if (q == Q_NULLPTR && c <= 0.0f)
+    if (q == nullptr && c <= 0.0f)
         return true;
 
     const float b = QVector3D::dotProduct(m, d);
@@ -75,7 +75,7 @@ bool intersectRaySphere(const Qt3DCore::QRay3D &ray, const Qt3DRender::Render::S
         return false;
 
     // If we don't need the intersection point, return early
-    if (q == Q_NULLPTR)
+    if (q == nullptr)
         return true;
 
     // Ray now found to intersect sphere, compute smallest t value of intersection
@@ -222,7 +222,7 @@ Qt3DCore::QNodeId Sphere::id() const
     return m_id;
 }
 
-bool Sphere::intersects(const Qt3DCore::QRay3D &ray, QVector3D *q) const
+bool Sphere::intersects(const QRay3D &ray, QVector3D *q) const
 {
     return intersectRaySphere(ray, *this, q);
 }

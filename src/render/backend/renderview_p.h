@@ -53,11 +53,13 @@
 //
 
 #include <Qt3DRender/qparameter.h>
-#include <Qt3DRender/qclearbuffer.h>
+#include <Qt3DRender/qclearbuffers.h>
 #include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/clearbuffers_p.h>
 #include <Qt3DRender/private/cameralens_p.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/private/qsortpolicy_p.h>
 #include <Qt3DRender/qparameter.h>
 
 #include <Qt3DCore/private/qframeallocator_p.h>
@@ -66,6 +68,7 @@
 #include <Qt3DRender/private/renderviewjobutils_p.h>
 
 #include <QVector>
+#include <QSurface>
 #include <QMutex>
 #include <QColor>
 
@@ -152,8 +155,10 @@ public:
     inline void setEyePosition(const QVector3D &eyePos) { m_data->m_eyePos = eyePos; }
     inline QVector3D eyePosition() const { return m_data->m_eyePos; }
 
-    inline void appendLayerFilter(const QStringList &layers) { m_data->m_layers << layers; }
-    inline QStringList layerFilters() const { return m_data->m_layers; }
+    inline void setHasLayerFilter(bool filter) { m_data->m_hasLayerFilter = filter; }
+    inline bool hasLayerFilter() const { return m_data->m_hasLayerFilter; }
+    inline void appendLayerFilter(const Qt3DCore::QNodeIdVector &layerIds) { m_data->m_layerIds << layerIds; }
+    inline Qt3DCore::QNodeIdVector layerFilter() const { return m_data->m_layerIds; }
 
     inline void setRenderPassFilter(const RenderPassFilter *rpFilter) { m_data->m_passFilter = rpFilter; }
     inline const RenderPassFilter *renderPassFilter() const { return m_data->m_passFilter; }
@@ -197,44 +202,31 @@ public:
         return *m_viewport;
     }
 
-    inline void setClearColor(const QColor &c)
-    {
-        if (!m_clearColor) {
-            Q_ASSERT(m_allocator);
-            m_clearColor = m_allocator->allocate<QColor>();
-            *m_clearColor = QColor(QColor::Invalid);
-        }
-        *m_clearColor = c;
-    }
-    inline QColor clearColor() const
-    {
-        if (!m_clearColor) {
-            Q_ASSERT(m_allocator);
-            m_clearColor = m_allocator->allocate<QColor>();
-            *m_clearColor = QColor(QColor::Invalid);
-        }
-        return *m_clearColor;
-    }
-
-    inline void setClearBuffer(QClearBuffer::BufferType clearBuffer) Q_DECL_NOEXCEPT { m_clearBuffer = clearBuffer; }
-    inline QClearBuffer::BufferType clearBuffer() const Q_DECL_NOEXCEPT { return m_clearBuffer; }
+    // depth and stencil ClearBuffers are cached locally
+    // color ClearBuffers are collected, as there may be multiple
+    // color buffers to be cleared. we need to apply all these at rendering
+    void addClearBuffers(const ClearBuffers *cb);
+    inline QVector<const ClearBuffers*> specificClearColorBuffers() const { return m_specificClearColorBuffers; }
+    inline const ClearBuffers* globalClearColorBuffers() const { return m_globalClearColorBuffer; }
+    inline QClearBuffers::BufferTypeFlags clearTypes() const { return m_clearBuffer; }
+    inline float clearDepthValue() const { return m_clearDepthValue; }
+    inline int clearStencilValue() const { return m_clearStencilValue; }
 
     RenderRenderPassList passesAndParameters(ParameterInfoList *parameter, Entity *node, bool useDefaultMaterials = true);
 
-    void buildRenderCommands(Entity *preprocessedTreeRoot, const Plane *planes);
+    void buildRenderCommands(Entity *rootEntity, const Plane *planes);
     void buildDrawRenderCommands(Entity *node, const Plane *planes);
     void buildComputeRenderCommands(Entity *node);
     QVector<RenderCommand *> commands() const { return m_commands; }
     void gatherLights(Entity *preprocessedTreeRoot);
 
-    void addRenderAttachment(Attachment attachment) { m_attachmentPack.addAttachment(attachment); }
-    void setDrawBuffers(const QList<QRenderAttachment::RenderAttachmentType> &drawBuffers) { m_attachmentPack.setDrawBuffers(drawBuffers); }
-    const AttachmentPack &attachmentPack() const;
+    void setAttachmentPack(const AttachmentPack &pack) { m_attachmentPack = pack; }
+    const AttachmentPack &attachmentPack() const { return m_attachmentPack; }
 
     void setRenderTargetHandle(HTarget renderTargetHandle) Q_DECL_NOEXCEPT { m_renderTarget = renderTargetHandle; }
     HTarget renderTargetHandle() const Q_DECL_NOEXCEPT { return m_renderTarget; }
 
-    void addSortCriteria(const QList<Qt3DCore::QNodeId> &sortMethodUid) { m_data->m_sortingCriteria.append(sortMethodUid); }
+    void addSortType(const QVector<Qt3DRender::QSortPolicy::SortType> &sortTypes) { m_data->m_sortingTypes.append(sortTypes); }
 
     void setSurface(QSurface *surface) { m_surface = surface; }
     QSurface *surface() const { return m_surface; }
@@ -244,10 +236,11 @@ public:
     // But that aren't used later by the Renderer
     struct InnerData {
         InnerData()
-            : m_renderCamera(Q_NULLPTR)
-            , m_techniqueFilter(Q_NULLPTR)
-            , m_passFilter(Q_NULLPTR)
-            , m_viewMatrix(Q_NULLPTR)
+            : m_renderCamera(nullptr)
+            , m_techniqueFilter(nullptr)
+            , m_passFilter(nullptr)
+            , m_viewMatrix(nullptr)
+            , m_hasLayerFilter(false)
         {
         }
         CameraLens *m_renderCamera;
@@ -255,14 +248,15 @@ public:
         const RenderPassFilter *m_passFilter;
         QMatrix4x4 *m_viewMatrix;
         QMatrix4x4 *m_viewProjectionMatrix;
-        QStringList m_layers;
-        QList<Qt3DCore::QNodeId> m_sortingCriteria;
+        bool m_hasLayerFilter;
+        Qt3DCore::QNodeIdVector m_layerIds;
+        QVector<Qt3DRender::QSortPolicy::SortType> m_sortingTypes;
         QVector3D m_eyePos;
         UniformBlockValueBuilder m_uniformBlockBuilder;
     };
 
     struct LightSource {
-        LightSource() : entity(Q_NULLPTR) { }
+        LightSource() : entity(nullptr) { }
         LightSource(Entity *entity, const QList<Light *> &lights)
             : entity(entity), lights(lights) { }
         Entity *entity;
@@ -281,12 +275,15 @@ private:
 
     InnerData *m_data;
 
-    mutable QColor *m_clearColor;
     mutable QRectF *m_viewport;
     HTarget m_renderTarget;
     QSurface *m_surface;
     AttachmentPack m_attachmentPack;
-    QClearBuffer::BufferType m_clearBuffer;
+    QClearBuffers::BufferTypeFlags m_clearBuffer;
+    float m_clearDepthValue;
+    int m_clearStencilValue;
+    const ClearBuffers* m_globalClearColorBuffer;               // global ClearColor
+    QVector<const ClearBuffers*> m_specificClearColorBuffers;   // different draw buffers with distinct colors
     RenderStateSet *m_stateSet;
     bool m_noDraw:1;
     bool m_compute:1;
@@ -300,31 +297,29 @@ private:
 
     QVector<LightSource> m_lightSources;
 
-    typedef QHash<QString, QUniformValue* (RenderView::*)(const QMatrix4x4& model) const> StandardUniformsPFuncsHash;
+    typedef QHash<int, QUniformValue (RenderView::*)(const QMatrix4x4& model) const> StandardUniformsPFuncsHash;
     static StandardUniformsPFuncsHash ms_standardUniformSetters;
     static StandardUniformsPFuncsHash initializeStandardUniformSetters();
-    static QStringList ms_standardAttributesNames;
-    static QStringList initializeStandardAttributeNames();
 
-    QUniformValue *modelMatrix(const QMatrix4x4& model) const;
-    QUniformValue *viewMatrix(const QMatrix4x4&) const;
-    QUniformValue *projectionMatrix(const QMatrix4x4 &) const;
-    QUniformValue *modelViewMatrix(const QMatrix4x4 &model) const;
-    QUniformValue *modelViewProjectionMatrix(const QMatrix4x4 &model) const;
-    QUniformValue *inverseModelMatrix(const QMatrix4x4 &model) const;
-    QUniformValue *inverseViewMatrix(const QMatrix4x4 &) const;
-    QUniformValue *inverseProjectionMatrix(const QMatrix4x4 &) const;
-    QUniformValue *inverseModelViewMatrix(const QMatrix4x4 &model) const;
-    QUniformValue *inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const;
-    QUniformValue *modelNormalMatrix(const QMatrix4x4 &model) const;
-    QUniformValue *modelViewNormalMatrix(const QMatrix4x4 &model) const;
-    QUniformValue *viewportMatrix(const QMatrix4x4 &model) const;
-    QUniformValue *inverseViewportMatrix(const QMatrix4x4 &model) const;
-    QUniformValue *time(const QMatrix4x4 &model) const;
-    QUniformValue *eyePosition(const QMatrix4x4 &model) const;
+    QUniformValue modelMatrix(const QMatrix4x4& model) const;
+    QUniformValue viewMatrix(const QMatrix4x4&) const;
+    QUniformValue projectionMatrix(const QMatrix4x4 &) const;
+    QUniformValue modelViewMatrix(const QMatrix4x4 &model) const;
+    QUniformValue modelViewProjectionMatrix(const QMatrix4x4 &model) const;
+    QUniformValue inverseModelMatrix(const QMatrix4x4 &model) const;
+    QUniformValue inverseViewMatrix(const QMatrix4x4 &) const;
+    QUniformValue inverseProjectionMatrix(const QMatrix4x4 &) const;
+    QUniformValue inverseModelViewMatrix(const QMatrix4x4 &model) const;
+    QUniformValue inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const;
+    QUniformValue modelNormalMatrix(const QMatrix4x4 &model) const;
+    QUniformValue modelViewNormalMatrix(const QMatrix4x4 &model) const;
+    QUniformValue viewportMatrix(const QMatrix4x4 &model) const;
+    QUniformValue inverseViewportMatrix(const QMatrix4x4 &model) const;
+    QUniformValue time(const QMatrix4x4 &model) const;
+    QUniformValue eyePosition(const QMatrix4x4 &model) const;
 
-    void setUniformValue(ShaderParameterPack &uniformPack, const QString &name, const QVariant &value);
-    void setStandardUniformValue(ShaderParameterPack &uniformPack, const QString &glslName, const QString &name, const QMatrix4x4 &worldTransform);
+    void setUniformValue(ShaderParameterPack &uniformPack, int nameId, const QVariant &value);
+    void setStandardUniformValue(ShaderParameterPack &uniformPack, int glslNameId, int nameId, const QMatrix4x4 &worldTransform);
     void setUniformBlockValue(ShaderParameterPack &uniformPack,
                               Shader *shader,
                               const ShaderUniformBlock &block,

@@ -50,34 +50,40 @@
 
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import Qt3D.Extras 2.0
 import QtQuick 2.0 as QQ2
 
 Entity {
     id: sceneRoot
     property int counter: 0
 
-    components: FrameGraph {
-        Viewport {
-            rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
-            clearColor: "white"
-            enabled: counter !== 5
+    components: [
+        RenderSettings {
+            activeFrameGraph: Viewport {
+                normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
+                enabled: counter !== 5
 
-            ClearBuffer {
-                buffers : ClearBuffer.ColorDepthBuffer
-                enabled: counter !== 6
-            }
+                RenderSurfaceSelector {
 
-            CameraSelector {
-                camera: camera
-                enabled: counter !== 7
+                    ClearBuffers {
+                        buffers : ClearBuffers.ColorDepthBuffer
+                        clearColor: "white"
+                        enabled: counter !== 6
+                    }
 
-                LayerFilter {
-                    enabled: counter === 12
-                    layers: "scene"
+                    CameraSelector {
+                        camera: camera
+                        enabled: counter !== 7
+
+                        LayerFilter {
+                            enabled: counter === 12
+                            layers: sceneLayer
+                        }
+                    }
                 }
             }
         }
-    }
+    ]
 
     QQ2.Timer {
         interval: 500
@@ -119,9 +125,8 @@ Entity {
         }
 
         Layer {
-            id: layer
+            id: sceneLayer
             enabled: counter !== 2
-            names: "scene"
         }
 
         Transform {
@@ -174,7 +179,7 @@ Entity {
             }
         }
 
-        components: [sphereMesh, material, layer, transform]
+        components: [sphereMesh, material, sceneLayer, transform]
     }
 
     // Floor
@@ -195,7 +200,6 @@ Entity {
 
         Layer {
             id: floorLayer
-            names: "floor"
         }
 
         components: [planeMesh, floorMaterial, floorLayer]

@@ -53,11 +53,12 @@ import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 import Qt3D.Examples 2.0
 import Qt3D.Input 2.0
+import Qt3D.Extras 2.0
 
 Entity
 {
     components: [
-        FrameGraph {
+        RenderSettings {
             activeFrameGraph: ForwardRenderer {
                 clearColor: Qt.rgba(0, 0.5, 1, 1)
                 camera: camera
@@ -141,7 +142,7 @@ Entity
                 source: "qrc:/assets/test_scene.dae"
                 onStatusChanged: {
                     console.log("SceneLoader status: " + status);
-                    if (status == SceneLoader.Loaded) {
+                    if (status == SceneLoader.Ready) {
                         console.log("Scene is ready");
 
                         // Now find the torus and animate one of the material effect's parameters.

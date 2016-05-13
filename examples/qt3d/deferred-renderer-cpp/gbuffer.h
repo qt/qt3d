@@ -53,7 +53,7 @@
 
 #include <Qt3DRender/QRenderTarget>
 #include <Qt3DRender/qtexture.h>
-#include <Qt3DRender/QRenderAttachment>
+#include <Qt3DRender/QRenderTargetOutput>
 
 class GBuffer : public Qt3DRender::QRenderTarget
 {
@@ -68,14 +68,14 @@ public:
         AttachmentsCount
     };
 
-    Qt3DRender::QAbstractTextureProvider *colorTexture() const;
-    Qt3DRender::QAbstractTextureProvider *positionTexture() const;
-    Qt3DRender::QAbstractTextureProvider *normalTexture() const;
-    Qt3DRender::QAbstractTextureProvider *depthTexture() const;
+    Qt3DRender::QAbstractTexture *colorTexture() const;
+    Qt3DRender::QAbstractTexture *positionTexture() const;
+    Qt3DRender::QAbstractTexture *normalTexture() const;
+    Qt3DRender::QAbstractTexture *depthTexture() const;
 
 private:
-    Qt3DRender::QAbstractTextureProvider *m_textures[AttachmentsCount];
-    Qt3DRender::QRenderAttachment *m_attachments[AttachmentsCount];
+    Qt3DRender::QAbstractTexture *m_textures[AttachmentsCount];
+    Qt3DRender::QRenderTargetOutput *m_attachments[AttachmentsCount];
 };
 
 #endif // GBUFFER_H

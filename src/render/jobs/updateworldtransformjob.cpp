@@ -44,6 +44,8 @@
 #include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/transform_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DRender/private/job_common_p.h>
+
 #include <QThread>
 
 QT_BEGIN_NAMESPACE
@@ -57,14 +59,15 @@ void updateWorldTransformAndBounds(Qt3DRender::Render::Entity *node, const QMatr
 {
     QMatrix4x4 worldTransform(parentTransform);
     Transform *nodeTransform = node->renderComponent<Transform>();
-    if (nodeTransform != Q_NULLPTR && nodeTransform->isEnabled())
+    if (nodeTransform != nullptr && nodeTransform->isEnabled())
         worldTransform = worldTransform * nodeTransform->transformMatrix();
 
     *(node->worldTransform()) = worldTransform;
     *(node->worldBoundingVolume()) = node->localBoundingVolume()->transformed(worldTransform);
     *(node->worldBoundingVolumeWithChildren()) = *(node->worldBoundingVolume()); // expanded in UpdateBoundingVolumeJob
 
-    Q_FOREACH (Qt3DRender::Render::Entity *child, node->children())
+    const auto children = node->children();
+    for (Qt3DRender::Render::Entity *child : children)
         updateWorldTransformAndBounds(child, worldTransform);
 }
 
@@ -72,8 +75,9 @@ void updateWorldTransformAndBounds(Qt3DRender::Render::Entity *node, const QMatr
 
 UpdateWorldTransformJob::UpdateWorldTransformJob()
     : Qt3DCore::QAspectJob()
-    , m_node(Q_NULLPTR)
+    , m_node(nullptr)
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateTransform, 0);
 }
 
 void UpdateWorldTransformJob::setRoot(Entity *root)
@@ -94,7 +98,7 @@ void UpdateWorldTransformJob::run()
 
     QMatrix4x4 parentTransform;
     Entity *parent = m_node->parent();
-    if (parent != Q_NULLPTR)
+    if (parent != nullptr)
         parentTransform = *(parent->worldTransform());
     updateWorldTransformAndBounds(m_node, parentTransform);
 

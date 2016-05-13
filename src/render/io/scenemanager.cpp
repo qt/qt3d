@@ -52,7 +52,7 @@ SceneManager::SceneManager() : QResourceManager<Scene,
 {
 }
 
-void SceneManager::addSceneData(const QUrl &source, const Qt3DCore::QNodeId &sceneUuid)
+void SceneManager::addSceneData(const QUrl &source, Qt3DCore::QNodeId sceneUuid)
 {
     LoadSceneJobPtr newJob(new LoadSceneJob(source, sceneUuid));
 
@@ -69,18 +69,6 @@ QVector<LoadSceneJobPtr> SceneManager::pendingSceneLoaderJobs()
     QVector<LoadSceneJobPtr> copy = m_pendingJobs;
     m_pendingJobs.clear();
     return copy;
-}
-
-void SceneManager::addLoadedSceneTree(const QUrl &source, Qt3DCore::QEntity *tree)
-{
-    SceneManager::Locker lock(this);
-    m_loadedSceneTrees.insert(source, tree);
-}
-
-Qt3DCore::QEntity *SceneManager::sceneTreeFromSource(const QUrl &source)
-{
-    SceneManager::Locker lock(this);
-    return m_loadedSceneTrees.value(source);
 }
 
 } // namespace Render

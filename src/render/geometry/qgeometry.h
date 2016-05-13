@@ -47,43 +47,34 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAbstractAttribute;
+class QAttribute;
 class QGeometryPrivate;
-class QBoundingVolumeSpecifier;
-
-typedef QVector<QAbstractAttribute *> QAttributeList;
 
 class QT3DRENDERSHARED_EXPORT QGeometry : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(int verticesPerPatch READ verticesPerPatch WRITE setVerticesPerPatch NOTIFY verticesPerPatchChanged)
-    Q_PROPERTY(Qt3DRender::QBoundingVolumeSpecifier *boundingVolumeSpecifier READ boundingVolumeSpecifier CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAttribute *boundingVolumePositionAttribute READ boundingVolumePositionAttribute WRITE setBoundingVolumePositionAttribute NOTIFY boundingVolumePositionAttributeChanged)
 public:
-    explicit QGeometry(Qt3DCore::QNode *parent = 0);
-    ~QGeometry();
+    explicit QGeometry(Qt3DCore::QNode *parent = nullptr);
 
-    QAttributeList attributes() const;
-    void addAttribute(QAbstractAttribute *attribute);
-    void removeAttribute(QAbstractAttribute *attribute);
+    QVector<QAttribute *> attributes() const;
+    void addAttribute(QAttribute *attribute);
+    void removeAttribute(QAttribute *attribute);
 
-    int verticesPerPatch() const;
-
-    QBoundingVolumeSpecifier *boundingVolumeSpecifier();
+    QAttribute *boundingVolumePositionAttribute() const;
 
 public Q_SLOTS:
-    void setVerticesPerPatch(int verticesPerPatch);
+    void setBoundingVolumePositionAttribute(QAttribute *boundingVolumePositionAttribute);
 
 Q_SIGNALS:
-    void verticesPerPatchChanged(int verticesPerPatch);
+    void boundingVolumePositionAttributeChanged(QAttribute *boundingVolumePositionAttribute);
 
 protected:
-    QGeometry(QGeometryPrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    QGeometry(QGeometryPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QGeometry)
-    QT3D_CLONEABLE(QGeometry)
-    Q_PRIVATE_SLOT(d_func(), void _q_boundingVolumeSpecifierChanged(QAbstractAttribute *))
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

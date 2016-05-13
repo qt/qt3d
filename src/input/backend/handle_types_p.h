@@ -58,13 +58,13 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 namespace Input {
 
-class KeyboardController;
-class KeyboardInput;
-class MouseController;
-class MouseInput;
+class KeyboardDevice;
+class KeyboardHandler;
+class MouseHandler;
+class MouseDevice;
 class Axis;
 class AxisActionHandler;
-class AxisInput;
+class AbstractAxisInput;
 class AxisSetting;
 class Action;
 class ActionInput;
@@ -73,15 +73,15 @@ class InputChord;
 class LogicalDevice;
 class GenericDeviceBackendNode;
 
-typedef Qt3DCore::QHandle<KeyboardController, 8> HKeyboardController;
-typedef Qt3DCore::QHandle<KeyboardInput, 16> HKeyboardInput;
-typedef Qt3DCore::QHandle<MouseController, 8> HMouseController;
-typedef Qt3DCore::QHandle<MouseInput, 16> HMouseInput;
+typedef Qt3DCore::QHandle<KeyboardDevice, 8> HKeyboardDevice;
+typedef Qt3DCore::QHandle<KeyboardHandler, 16> HKeyboardHandler;
+typedef Qt3DCore::QHandle<MouseHandler, 16> HMouseHandler;
+typedef Qt3DCore::QHandle<MouseDevice, 8> HMouseDevice;
 typedef Qt3DCore::QHandle<Axis, 16> HAxis;
 typedef Qt3DCore::QHandle<AxisActionHandler, 16> HAxisActionHandler;
 typedef Qt3DCore::QHandle<AxisSetting, 16> HAxisSetting;
 typedef Qt3DCore::QHandle<Action, 16> HAction;
-typedef Qt3DCore::QHandle<AxisInput, 16> HAxisInput;
+typedef Qt3DCore::QHandle<AbstractAxisInput, 16> HAxisInput;
 typedef Qt3DCore::QHandle<ActionInput, 16> HActionInput;
 typedef Qt3DCore::QHandle<InputSequence, 16> HInputSequence;
 typedef Qt3DCore::QHandle<InputChord, 16> HInputChord;

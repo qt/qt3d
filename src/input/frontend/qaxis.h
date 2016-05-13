@@ -47,34 +47,30 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 class QAxisPrivate;
-class QAxisInput;
+class QAbstractAxisInput;
 
 class QT3DINPUTSHARED_EXPORT QAxis : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(float value READ value NOTIFY valueChanged)
 public:
-    explicit QAxis(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QAxis();
+    explicit QAxis(Qt3DCore::QNode *parent = nullptr);
 
-    QString name() const;
+    void addInput(QAbstractAxisInput *input);
+    void removeInput(QAbstractAxisInput *input);
+    QVector<QAbstractAxisInput *> inputs() const;
 
-    void addInput(QAxisInput *input);
-    void removeInput(QAxisInput *input);
-    QVector<QAxisInput *> inputs() const;
-
-public Q_SLOTS:
-    void setName(const QString &name);
+    float value() const;
 
 Q_SIGNALS:
-    void nameChanged(const QString &name);
+    void valueChanged(float value);
 
 protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QAxis)
-    QT3D_CLONEABLE(QAxis)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3DInput

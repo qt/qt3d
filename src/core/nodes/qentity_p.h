@@ -68,12 +68,18 @@ public :
 
     QNodeId parentEntityId() const;
 
-    QComponentList m_components;
+    QComponentVector m_components;
     bool m_visible;
 
     // TODO: Is a bool enough here or do we need additional states for entities?
     // Perhaps aboutToBeDeleted would be useful?
     mutable QNodeId m_parentEntityId;
+};
+
+struct QEntityData
+{
+    Qt3DCore::QNodeId parentEntityId;
+    QVector<QNodeIdTypePair> componentIdsAndTypes;
 };
 
 }

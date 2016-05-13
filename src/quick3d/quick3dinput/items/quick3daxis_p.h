@@ -53,7 +53,7 @@
 
 #include <Qt3DQuickInput/private/qt3dquickinput_global_p.h>
 #include <Qt3DInput/QAxis>
-#include <Qt3DInput/QAxisInput>
+#include <Qt3DInput/QAbstractAxisInput>
 #include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
@@ -65,18 +65,19 @@ namespace Quick {
 class QT3DQUICKINPUTSHARED_PRIVATE_EXPORT Quick3DAxis : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DInput::QAxisInput> inputs READ qmlAxisInputs CONSTANT)
+    Q_PROPERTY(QQmlListProperty<Qt3DInput::QAbstractAxisInput> inputs READ qmlAxisInputs CONSTANT)
+    Q_CLASSINFO("DefaultProperty", "inputs")
 public:
-    explicit Quick3DAxis(QObject *parent = Q_NULLPTR);
+    explicit Quick3DAxis(QObject *parent = nullptr);
 
     inline QAxis *parentAxis() const { return qobject_cast<QAxis *>(parent()); }
-    QQmlListProperty<QAxisInput> qmlAxisInputs();
+    QQmlListProperty<QAbstractAxisInput> qmlAxisInputs();
 
 private:
-    static void appendAxisInput(QQmlListProperty<QAxisInput> *list, QAxisInput *input);
-    static QAxisInput *axisInputAt(QQmlListProperty<QAxisInput> *list, int index);
-    static int axesInputCount(QQmlListProperty<QAxisInput> *list);
-    static void clearAxisInputs(QQmlListProperty<QAxisInput> *list);
+    static void appendAxisInput(QQmlListProperty<QAbstractAxisInput> *list, QAbstractAxisInput *input);
+    static QAbstractAxisInput *axisInputAt(QQmlListProperty<QAbstractAxisInput> *list, int index);
+    static int axesInputCount(QQmlListProperty<QAbstractAxisInput> *list);
+    static void clearAxisInputs(QQmlListProperty<QAbstractAxisInput> *list);
 };
 
 } // namespace Quick
