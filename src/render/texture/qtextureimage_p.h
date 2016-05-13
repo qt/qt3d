@@ -98,7 +98,7 @@ public:
             }
             dataPtr.reset();
             qWarning() << "Failed to load image : " << source;
-        } else {
+        } else if (!m_url.isEmpty()) {
             qWarning() << "implement loading from remote URLs";
         }
         return dataPtr;
