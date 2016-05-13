@@ -166,6 +166,7 @@ void Entity::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
     m_geometryRendererComponent = QNodeId();
     m_objectPickerComponent = QNodeId();
     m_boundingVolumeDebugComponent = QNodeId();
+    m_computeComponent = QNodeId();
     m_layerComponents.clear();
     m_shaderDataComponents.clear();
     m_lightComponents.clear();

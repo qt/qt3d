@@ -121,11 +121,13 @@ private slots:
         QVERIFY(!entity.componentUuid<Material>().isNull());
         QVERIFY(!entity.componentUuid<GeometryRenderer>().isNull());
         QVERIFY(!entity.componentUuid<ObjectPicker>().isNull());
-        QVERIFY(!entity.componentsUuid<Layer>().isEmpty());
+        QVERIFY(!entity.componentUuid<ComputeCommand>().isNull());
         QVERIFY(!entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(!entity.componentsUuid<ShaderData>().isEmpty());
         QVERIFY(entity.isBoundingVolumeDirty());
         QVERIFY(renderer.dirtyBits() != 0);
+        bool containsAll = entity.containsComponentsOfType<Transform, CameraLens, Material, GeometryRenderer, ObjectPicker, ComputeCommand>();
+        QVERIFY(containsAll);
 
         // WHEN
         entity.cleanup();
@@ -136,10 +138,12 @@ private slots:
         QVERIFY(entity.componentUuid<Material>().isNull());
         QVERIFY(entity.componentUuid<GeometryRenderer>().isNull());
         QVERIFY(entity.componentUuid<ObjectPicker>().isNull());
-        QVERIFY(entity.componentsUuid<Layer>().isEmpty());
+        QVERIFY(entity.componentUuid<QComputeCommand>().isNull());
         QVERIFY(entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(entity.componentsUuid<ShaderData>().isEmpty());
         QVERIFY(!entity.isBoundingVolumeDirty());
+        containsAll = entity.containsComponentsOfType<Transform, CameraLens, Material, GeometryRenderer, ObjectPicker, ComputeCommand>();
+        QVERIFY(!containsAll);
     }
 
     void shouldHandleSingleComponentEvents_data()

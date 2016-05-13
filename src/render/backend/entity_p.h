@@ -153,6 +153,19 @@ public:
         return QVector<Qt3DCore::QNodeId>();
     }
 
+    template<typename T>
+    bool containsComponentsOfType()
+    {
+        return !componentUuid<T>().isNull();
+    }
+
+    template<typename T, typename Ts, typename ... Ts2>
+    bool containsComponentsOfType()
+    {
+        return containsComponentsOfType<T>() && containsComponentsOfType<Ts, Ts2...>();
+    }
+
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
