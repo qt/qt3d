@@ -659,30 +659,30 @@ int QTextureImageDataPrivate::mipmapLevelSize(int level) const
         return w * h * m_blockSize * d;
 }
 
-QTextureImageData::QTextureImageData() Q_DECL_NOEXCEPT
+QTextureImageData::QTextureImageData()
     : d_ptr(new QTextureImageDataPrivate())
 {
 }
 
-QTextureImageData::QTextureImageData(QTextureImageDataPrivate &dd) Q_DECL_NOEXCEPT
+QTextureImageData::QTextureImageData(QTextureImageDataPrivate &dd)
     : d_ptr(&dd)
 {
 }
 
-QTextureImageData::~QTextureImageData() Q_DECL_NOEXCEPT
+QTextureImageData::~QTextureImageData()
 {
     cleanup();
     delete d_ptr;
 }
 
-QTextureImageData &QTextureImageData::operator=(const QTextureImageData &other) Q_DECL_NOEXCEPT
+QTextureImageData &QTextureImageData::operator=(const QTextureImageData &other)
 {
     Q_D(QTextureImageData);
     *d = *other.d_ptr;
     return *this;
 }
 
-void QTextureImageData::cleanup() Q_DECL_NOEXCEPT
+void QTextureImageData::cleanup() Q_DECL_NOTHROW
 {
     Q_D(QTextureImageData);
     d->m_width = -1;
@@ -696,61 +696,61 @@ void QTextureImageData::cleanup() Q_DECL_NOEXCEPT
     d->m_data.clear();
 }
 
-bool QTextureImageData::isCompressed() const Q_DECL_NOEXCEPT
+bool QTextureImageData::isCompressed() const Q_DECL_NOTHROW
 {
     Q_D(const QTextureImageData);
     return d->m_isCompressed;
 }
 
-int QTextureImageData::width() const Q_DECL_NOEXCEPT
+int QTextureImageData::width() const Q_DECL_NOTHROW
 {
     Q_D(const QTextureImageData);
     return d->m_width;
 }
 
-int QTextureImageData::height() const Q_DECL_NOEXCEPT
+int QTextureImageData::height() const Q_DECL_NOTHROW
 {
     Q_D(const QTextureImageData);
     return d->m_height;
 }
 
-int QTextureImageData::depth() const Q_DECL_NOEXCEPT
+int QTextureImageData::depth() const Q_DECL_NOTHROW
 {
     Q_D(const QTextureImageData);
     return d->m_depth;
 }
 
-int QTextureImageData::layers() const Q_DECL_NOEXCEPT
+int QTextureImageData::layers() const Q_DECL_NOTHROW
 {
     Q_D(const QTextureImageData);
     return d->m_layers;
 }
 
-int QTextureImageData::mipLevels() const Q_DECL_NOEXCEPT
+int QTextureImageData::mipLevels() const Q_DECL_NOTHROW
 {
     Q_D(const QTextureImageData);
     return d->m_mipLevels;
 }
 
-int QTextureImageData::faces() const Q_DECL_NOEXCEPT
+int QTextureImageData::faces() const Q_DECL_NOTHROW
 {
     Q_D(const QTextureImageData);
     return d->m_faces;;
 }
 
-QOpenGLTexture::Target QTextureImageData::target() const Q_DECL_NOEXCEPT
+QOpenGLTexture::Target QTextureImageData::target() const Q_DECL_NOTHROW
 {
     Q_D(const QTextureImageData);
     return d->m_target;
 }
 
-QOpenGLTexture::TextureFormat QTextureImageData::format() const Q_DECL_NOEXCEPT
+QOpenGLTexture::TextureFormat QTextureImageData::format() const Q_DECL_NOTHROW
 {
     Q_D(const QTextureImageData);
     return d->m_format;
 }
 
-void QTextureImageData::setImage(const QImage &image) Q_DECL_NOEXCEPT
+void QTextureImageData::setImage(const QImage &image)
 {
     Q_D(QTextureImageData);
     d->m_width = image.width();
@@ -767,31 +767,31 @@ void QTextureImageData::setImage(const QImage &image) Q_DECL_NOEXCEPT
 }
 
 void QTextureImageData::setData(const QByteArray &data, QOpenGLTexture::PixelFormat fmt,
-                            QOpenGLTexture::PixelType ptype) Q_DECL_NOEXCEPT
+                            QOpenGLTexture::PixelType ptype)
 {
     Q_D(QTextureImageData);
     d->setData(data, fmt, ptype);
 }
 
-bool QTextureImageData::setCompressedFile(const QString &source) Q_DECL_NOEXCEPT
+bool QTextureImageData::setCompressedFile(const QString &source)
 {
     Q_D(QTextureImageData);
     return d->setCompressedFile(source);
 }
 
-QByteArray QTextureImageData::data(int layer, int face, int mipmapLevel) const Q_DECL_NOEXCEPT
+QByteArray QTextureImageData::data(int layer, int face, int mipmapLevel) const
 {
     Q_D(const QTextureImageData);
     return d->data(layer, face, mipmapLevel);
 }
 
-QOpenGLTexture::PixelFormat QTextureImageData::pixelFormat() const Q_DECL_NOEXCEPT
+QOpenGLTexture::PixelFormat QTextureImageData::pixelFormat() const Q_DECL_NOTHROW
 {
     Q_D(const QTextureImageData);
     return d->m_pixelFormat;
 }
 
-QOpenGLTexture::PixelType QTextureImageData::pixelType() const Q_DECL_NOEXCEPT
+QOpenGLTexture::PixelType QTextureImageData::pixelType() const Q_DECL_NOTHROW
 {
     Q_D(const QTextureImageData);
     return d->m_pixelType;

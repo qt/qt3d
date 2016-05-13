@@ -54,43 +54,43 @@ class QTextureImageDataPrivate;
 class QT3DRENDERSHARED_EXPORT QTextureImageData
 {
 public:
-    QTextureImageData() Q_DECL_NOEXCEPT;
-    ~QTextureImageData() Q_DECL_NOEXCEPT;
+    QTextureImageData();
+    ~QTextureImageData();
 
-    QTextureImageData &operator=(const QTextureImageData &other) Q_DECL_NOEXCEPT;
+    QTextureImageData &operator=(const QTextureImageData &other);
 
-    void cleanup() Q_DECL_NOEXCEPT;
+    void cleanup() Q_DECL_NOTHROW;
 
-    bool isCompressed() const Q_DECL_NOEXCEPT;
+    bool isCompressed() const Q_DECL_NOTHROW;
 
-    int width() const Q_DECL_NOEXCEPT;
-    int height() const Q_DECL_NOEXCEPT;
-    int depth() const Q_DECL_NOEXCEPT;
+    int width() const Q_DECL_NOTHROW;
+    int height() const Q_DECL_NOTHROW;
+    int depth() const Q_DECL_NOTHROW;
 
-    int layers() const Q_DECL_NOEXCEPT;
-    int mipLevels() const Q_DECL_NOEXCEPT;
-    int faces() const Q_DECL_NOEXCEPT;
+    int layers() const Q_DECL_NOTHROW;
+    int mipLevels() const Q_DECL_NOTHROW;
+    int faces() const Q_DECL_NOTHROW;
 
-    QOpenGLTexture::Target target() const Q_DECL_NOEXCEPT;
+    QOpenGLTexture::Target target() const Q_DECL_NOTHROW;
 
-    QOpenGLTexture::TextureFormat format() const Q_DECL_NOEXCEPT;
+    QOpenGLTexture::TextureFormat format() const Q_DECL_NOTHROW;
 
-    void setImage(const QImage &) Q_DECL_NOEXCEPT;
+    void setImage(const QImage &);
 
     void setData(const QByteArray &data,
                  QOpenGLTexture::PixelFormat fmt,
-                 QOpenGLTexture::PixelType ptype) Q_DECL_NOEXCEPT;
+                 QOpenGLTexture::PixelType ptype);
 
-    bool setCompressedFile(const QString &source) Q_DECL_NOEXCEPT;
+    bool setCompressedFile(const QString &source);
 
-    QByteArray data(int layer = 0, int face = 0, int mipmapLevel = 0) const Q_DECL_NOEXCEPT;
+    QByteArray data(int layer = 0, int face = 0, int mipmapLevel = 0) const;
 
-    QOpenGLTexture::PixelFormat pixelFormat() const Q_DECL_NOEXCEPT;
+    QOpenGLTexture::PixelFormat pixelFormat() const Q_DECL_NOTHROW;
 
-    QOpenGLTexture::PixelType pixelType() const Q_DECL_NOEXCEPT;
+    QOpenGLTexture::PixelType pixelType() const Q_DECL_NOTHROW;
 
 protected:
-    QTextureImageData(QTextureImageDataPrivate &dd) Q_DECL_NOEXCEPT;
+    QTextureImageData(QTextureImageDataPrivate &dd);
 
 private:
     Q_DECLARE_PRIVATE(QTextureImageData)
