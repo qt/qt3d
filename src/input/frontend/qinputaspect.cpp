@@ -146,6 +146,11 @@ QInputAspect::QInputAspect(QInputAspectPrivate &dd, QObject *parent)
     d->m_inputHandler->addInputDeviceIntegration(d->m_keyboardMouseIntegration.data());
 }
 
+/*! \internal */
+QInputAspect::~QInputAspect()
+{
+}
+
 void QInputAspectPrivate::loadInputDevicePlugins()
 {
     const QStringList keys = QInputDeviceIntegrationFactory::keys();

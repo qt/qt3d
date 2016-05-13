@@ -96,6 +96,11 @@ QLogicAspect::QLogicAspect(QLogicAspectPrivate &dd, QObject *parent)
     d_func()->m_manager->setLogicAspect(this);
 }
 
+/*! \internal */
+QLogicAspect::~QLogicAspect()
+{
+}
+
 QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)
 {
     Q_D(QLogicAspect);

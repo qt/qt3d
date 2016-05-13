@@ -66,6 +66,7 @@ public:
 
     explicit QRenderAspect(QObject *parent = nullptr);
     explicit QRenderAspect(RenderType type, QObject *parent = nullptr);
+    ~QRenderAspect();
 
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 

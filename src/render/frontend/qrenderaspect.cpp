@@ -255,6 +255,11 @@ QRenderAspect::QRenderAspect(QRenderAspectPrivate &dd, QObject *parent)
     d->registerBackendTypes();
 }
 
+/*! \internal */
+QRenderAspect::~QRenderAspect()
+{
+}
+
 void QRenderAspectPrivate::renderInitialize(QOpenGLContext *context)
 {
     if (m_renderer->api() == Render::AbstractRenderer::OpenGL)
