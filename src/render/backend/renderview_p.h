@@ -257,10 +257,10 @@ public:
 
     struct LightSource {
         LightSource() : entity(nullptr) { }
-        LightSource(Entity *entity, const QList<Light *> &lights)
+        LightSource(Entity *entity, const QVector<Light *> &lights)
             : entity(entity), lights(lights) { }
         Entity *entity;
-        QList<Light *> lights;
+        QVector<Light *> lights;
     };
 
 private:

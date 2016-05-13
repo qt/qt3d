@@ -82,7 +82,7 @@ void FramePreparationJob::run()
 void FramePreparationJob::parseNodeTree(Entity *node)
 {
     // Update transform properties in ShaderDatas and Lights
-    const QList<ShaderData *> shaderDatas = node->renderComponents<ShaderData>();
+    const QVector<ShaderData *> shaderDatas = node->renderComponents<ShaderData>();
     for (ShaderData *r : shaderDatas)
         r->updateWorldTransform(*node->worldTransform());
 

@@ -107,7 +107,7 @@ bool isEntityInLayers(const Entity *entity, bool hasLayerFilter, const Qt3DCore:
     else if (filterLayerIds.isEmpty())
         return true;
 
-    const QList<Layer *> entityLayers = entity->renderComponents<Layer>();
+    const QVector<Layer *> entityLayers = entity->renderComponents<Layer>();
     for (const Layer *entityLayer : entityLayers) {
         if (!entityLayer->isEnabled())
             continue;
@@ -441,7 +441,7 @@ RenderRenderPassList RenderView::passesAndParameters(ParameterInfoList *paramete
 
 void RenderView::gatherLights(Entity *node)
 {
-    const QList<Light *> lights = node->renderComponents<Light>();
+    const QVector<Light *> lights = node->renderComponents<Light>();
     if (!lights.isEmpty())
         m_lightSources.append(LightSource(node, lights));
 
