@@ -574,11 +574,7 @@ void QNodePrivate::nodePtrDeleter(QNode *q)
      \sa setParent()
 */
 QNode::QNode(QNode *parent)
-    : QObject(*new QNodePrivate, parent)
-{
-    Q_D(QNode);
-    d->init(parent);
-}
+    : QNode(*new QNodePrivate, parent) {}
 
 /*! \internal */
 QNode::QNode(QNodePrivate &dd, QNode *parent)

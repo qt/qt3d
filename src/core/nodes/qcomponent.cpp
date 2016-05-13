@@ -107,9 +107,7 @@ void QComponentPrivate::removeEntity(QEntity *entity)
     instance one of the subclasses instead.
 */
 QComponent::QComponent(QNode *parent)
-    : QNode(*new QComponentPrivate, parent)
-{
-}
+    : QComponent(*new QComponentPrivate, parent) {}
 
 QComponent::~QComponent()
 {

@@ -67,6 +67,7 @@ private:
     void onUnregistered() Q_DECL_OVERRIDE;
 
     Q_DECLARE_PRIVATE(QInputAspect)
+    explicit QInputAspect(QInputAspectPrivate &dd, QObject *parent);
     friend class QInputDeviceIntegration;
 };
 

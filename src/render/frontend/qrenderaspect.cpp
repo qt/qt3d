@@ -238,28 +238,18 @@ void QRenderAspectPrivate::registerBackendTypes()
 }
 
 QRenderAspect::QRenderAspect(QObject *parent)
-    : QAbstractAspect(*new QRenderAspectPrivate(Threaded), parent)
-{
-    // Won't return until the private RenderThread in Renderer has been created
-    // The Renderer is set to wait the surface with a wait condition
-    // Threads modifying the Renderer should be synchronized using the Renderer's mutex
-    setObjectName(QStringLiteral("Render Aspect"));
-    Q_D(QRenderAspect);
-    d->registerBackendTypes();
-}
+    : QRenderAspect(Threaded, parent) {}
 
 QRenderAspect::QRenderAspect(QRenderAspect::RenderType type, QObject *parent)
-    : QAbstractAspect(*new QRenderAspectPrivate(type), parent)
-{
-    setObjectName(QStringLiteral("Render Aspect"));
-    Q_D(QRenderAspect);
-    d->registerBackendTypes();
-}
+    : QRenderAspect(*new QRenderAspectPrivate(type), parent) {}
 
 /*! \internal */
 QRenderAspect::QRenderAspect(QRenderAspectPrivate &dd, QObject *parent)
     : QAbstractAspect(dd, parent)
 {
+    // Won't return until the private RenderThread in Renderer has been created
+    // The Renderer is set to wait the surface with a wait condition
+    // Threads modifying the Renderer should be synchronized using the Renderer's mutex
     setObjectName(QStringLiteral("Render Aspect"));
     Q_D(QRenderAspect);
     d->registerBackendTypes();

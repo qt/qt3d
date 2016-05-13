@@ -87,9 +87,7 @@ QEntityPrivate::~QEntityPrivate()
     Constructs a new Qt3DCore::QEntity instance with \a parent as parent.
 */
 QEntity::QEntity(QNode *parent)
-    : QNode(*new QEntityPrivate, parent)
-{
-}
+    : QEntity(*new QEntityPrivate, parent) {}
 
 /*! \internal */
 QEntity::QEntity(QEntityPrivate &dd, QNode *parent)
