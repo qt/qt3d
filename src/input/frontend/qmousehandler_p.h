@@ -64,6 +64,7 @@ class QMouseHandlerPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QMouseHandlerPrivate();
+    ~QMouseHandlerPrivate();
 
     QMouseDevice *m_mouseDevice;
     bool m_containsMouse;

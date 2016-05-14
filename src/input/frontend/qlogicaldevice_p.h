@@ -64,9 +64,8 @@ namespace Qt3DInput {
 class QLogicalDevicePrivate : public Qt3DCore::QComponentPrivate
 {
 public:
-    QLogicalDevicePrivate()
-        : Qt3DCore::QComponentPrivate()
-    {}
+    QLogicalDevicePrivate();
+    ~QLogicalDevicePrivate();
 
     QVector<QAction *> m_actions;
     QVector<QAxis *> m_axes;

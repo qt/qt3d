@@ -64,6 +64,7 @@ class Q_AUTOTEST_EXPORT QAbstractLightPrivate : public Qt3DCore::QComponentPriva
 {
 public:
     explicit QAbstractLightPrivate(QAbstractLight::Type type);
+    ~QAbstractLightPrivate();
 
     Q_DECLARE_PUBLIC(QAbstractLight)
     QAbstractLight::Type m_type;

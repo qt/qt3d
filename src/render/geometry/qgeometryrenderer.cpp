@@ -66,6 +66,10 @@ QGeometryRendererPrivate::QGeometryRendererPrivate()
 {
 }
 
+QGeometryRendererPrivate::~QGeometryRendererPrivate()
+{
+}
+
 /*!
  * \qmltype GeometryRenderer
  * \instantiates Qt3DRender::QGeometryRenderer

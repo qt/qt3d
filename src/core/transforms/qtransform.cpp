@@ -57,6 +57,10 @@ QTransformPrivate::QTransformPrivate()
 {
 }
 
+QTransformPrivate::~QTransformPrivate()
+{
+}
+
 /*!
  * \qmltype Transform
  * \inqmlmodule Qt3D.Core

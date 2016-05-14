@@ -52,6 +52,10 @@ QRenderStatePrivate::QRenderStatePrivate(Type type)
 {
 }
 
+QRenderStatePrivate::~QRenderStatePrivate()
+{
+}
+
 QRenderStatePrivate *QRenderStatePrivate::get(QRenderState *state)
 {
     return state->d_func();

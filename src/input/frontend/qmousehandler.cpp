@@ -57,6 +57,10 @@ QMouseHandlerPrivate::QMouseHandlerPrivate()
     m_shareable = false;
 }
 
+QMouseHandlerPrivate::~QMouseHandlerPrivate()
+{
+}
+
 void QMouseHandlerPrivate::mouseEvent(QMouseEvent *event)
 {
     Q_Q(QMouseHandler);

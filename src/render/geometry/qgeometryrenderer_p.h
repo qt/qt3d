@@ -65,6 +65,8 @@ class QGeometryRendererPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QGeometryRendererPrivate();
+    ~QGeometryRendererPrivate();
+
     Q_DECLARE_PUBLIC(QGeometryRenderer)
 
     int m_instanceCount;

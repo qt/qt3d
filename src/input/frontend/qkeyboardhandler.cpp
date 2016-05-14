@@ -114,6 +114,10 @@ QKeyboardHandlerPrivate::QKeyboardHandlerPrivate()
     m_shareable = false;
 }
 
+QKeyboardHandlerPrivate::~QKeyboardHandlerPrivate()
+{
+}
+
 void QKeyboardHandlerPrivate::keyEvent(QKeyEvent *event)
 {
     Q_Q(QKeyboardHandler);

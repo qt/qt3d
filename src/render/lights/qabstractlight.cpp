@@ -61,6 +61,10 @@ QAbstractLightPrivate::QAbstractLightPrivate(QAbstractLight::Type type)
     m_shaderData->setProperty("type", type);
 }
 
+QAbstractLightPrivate::~QAbstractLightPrivate()
+{
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QAbstractLight::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAbstractLightData>::create(this);

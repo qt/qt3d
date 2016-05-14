@@ -65,6 +65,7 @@ class QT3DRENDERSHARED_PRIVATE_EXPORT QMaterialPrivate : public Qt3DCore::QCompo
 {
 public:
     QMaterialPrivate();
+    ~QMaterialPrivate();
 
     Q_DECLARE_PUBLIC(QMaterial)
     QVector<QParameter *> m_parameters;

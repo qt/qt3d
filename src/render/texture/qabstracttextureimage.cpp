@@ -47,6 +47,17 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
+QAbstractTextureImagePrivate::QAbstractTextureImagePrivate()
+    : QNodePrivate(),
+      m_mipLevel(0),
+      m_layer(0),
+      m_face(QAbstractTexture::CubeMapPositiveX)
+{
+}
+
+QAbstractTextureImagePrivate::~QAbstractTextureImagePrivate()
+{
+}
 
 /*!
     \qmltype AbstractTextureImage

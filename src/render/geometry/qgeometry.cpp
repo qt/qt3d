@@ -56,6 +56,16 @@ QGeometryFactory::~QGeometryFactory()
 {
 }
 
+QGeometryPrivate::QGeometryPrivate()
+    : QNodePrivate(),
+      m_boundingVolumePositionAttribute(nullptr)
+{
+}
+
+QGeometryPrivate::~QGeometryPrivate()
+{
+}
+
 /*!
  * \qmltype Geometry
  * \instantiates Qt3DRender::QGeometry
@@ -87,9 +97,7 @@ QGeometryFactory::~QGeometryFactory()
  * Constructs a new QGeometry with \a parent.
  */
 QGeometry::QGeometry(QNode *parent)
-    : QNode(*new QGeometryPrivate(), parent)
-{
-}
+    : QGeometry(*new QGeometryPrivate(), parent) {}
 
 /*!
  * \internal
