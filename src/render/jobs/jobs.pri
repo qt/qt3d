@@ -15,7 +15,8 @@ HEADERS += \
     $$PWD/pickboundingvolumejob_p.h \
     $$PWD/calcgeometrytrianglevolumes_p.h \
     $$PWD/job_common_p.h \
-    $$PWD/filterlayerentityjob_p.h
+    $$PWD/filterlayerentityjob_p.h \
+    $$PWD/filterentitybycomponentjob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
