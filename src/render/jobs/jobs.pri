@@ -17,7 +17,8 @@ HEADERS += \
     $$PWD/job_common_p.h \
     $$PWD/filterlayerentityjob_p.h \
     $$PWD/filterentitybycomponentjob_p.h \
-    $$PWD/materialparametergathererjob_p.h
+    $$PWD/materialparametergathererjob_p.h \
+    $$PWD/genericlambdajob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
