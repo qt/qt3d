@@ -73,34 +73,27 @@ public:
     FilterEntityByComponentJob()
         : Qt3DCore::QAspectJob()
         , m_manager(nullptr)
-        , m_root(nullptr)
     {
         SET_JOB_RUN_STAT_TYPE(this, JobTypes::EntityComponentTypeFiltering, 0);
     }
 
     inline void setManager(EntityManager *manager) Q_DECL_NOEXCEPT { m_manager = manager; }
-    inline void setRoot(Entity *root) Q_DECL_NOEXCEPT { m_root = root; }
     inline QVector<Entity *> filteredEntities() const Q_DECL_NOEXCEPT { return m_filteredEntities; }
 
     void run() Q_DECL_FINAL
     {
         m_filteredEntities.clear();
-        filterEntityTree(m_root);
+        const QVector<HEntity> handles = m_manager->activeHandles();
+        m_filteredEntities.reserve(handles.size());
+        for (const HEntity handle : handles) {
+            Entity *e = m_manager->data(handle);
+            if (e->containsComponentsOfType<T, Ts...>())
+                m_filteredEntities.push_back(e);
+        }
     }
 
 private:
-    void filterEntityTree(Entity *e)
-    {
-        if (e->containsComponentsOfType<T, Ts...>())
-            m_filteredEntities.push_back(e);
-
-        const QVector<HEntity> childrenHandes = e->childrenHandles();
-        for (const HEntity handle : childrenHandes)
-            filterEntityTree(m_manager->data(handle));
-    }
-
     EntityManager *m_manager;
-    Entity *m_root;
     QVector<Entity *> m_filteredEntities;
 };
 

@@ -125,12 +125,10 @@ private Q_SLOTS:
 
         QScopedPointer<Qt3DRender::TestAspect> aspect(new Qt3DRender::TestAspect(rootEntity));
 
-        Qt3DRender::Render::Entity *backendRoot = aspect->nodeManagers()->renderNodesManager()->lookupResource(rootEntity->id());
         {
             // WHEN
             Qt3DRender::Render::FilterEntityByComponentJob<Qt3DRender::Render::Transform> filterJob;
             filterJob.setManager(aspect->nodeManagers()->renderNodesManager());
-            filterJob.setRoot(backendRoot);
             filterJob.run();
 
             // THEN
@@ -143,7 +141,6 @@ private Q_SLOTS:
             // WHEN
             Qt3DRender::Render::FilterEntityByComponentJob<Qt3DRender::Render::Transform, Qt3DRender::Render::Material> filterJob;
             filterJob.setManager(aspect->nodeManagers()->renderNodesManager());
-            filterJob.setRoot(backendRoot);
             filterJob.run();
 
             // THEN
@@ -155,7 +152,6 @@ private Q_SLOTS:
             // WHEN
             Qt3DRender::Render::FilterEntityByComponentJob<Qt3DRender::Render::Transform, Qt3DRender::Render::Material, Qt3DRender::Render::ComputeCommand> filterJob;
             filterJob.setManager(aspect->nodeManagers()->renderNodesManager());
-            filterJob.setRoot(backendRoot);
             filterJob.run();
 
             // THEN
@@ -166,7 +162,6 @@ private Q_SLOTS:
             // WHEN
             Qt3DRender::Render::FilterEntityByComponentJob<Qt3DRender::Render::ComputeCommand> filterJob;
             filterJob.setManager(aspect->nodeManagers()->renderNodesManager());
-            filterJob.setRoot(backendRoot);
             filterJob.run();
 
             // THEN
