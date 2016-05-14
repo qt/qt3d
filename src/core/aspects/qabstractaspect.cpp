@@ -270,7 +270,7 @@ void QAbstractAspectPrivate::setRootAndCreateNodes(QEntity *rootObject, const QV
 
 QServiceLocator *QAbstractAspectPrivate::services() const
 {
-    return m_aspectManager->serviceLocator();
+    return m_aspectManager ? m_aspectManager->serviceLocator() : nullptr;
 }
 
 QAbstractAspectJobManager *QAbstractAspectPrivate::jobManager() const

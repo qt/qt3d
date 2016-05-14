@@ -45,5 +45,6 @@ contains(QT_CONFIG, private_tests) {
         trianglesextractor \
         triangleboundingvolume \
         ddstextures \
-        shadercache
+        shadercache \
+        layerfiltering
 }

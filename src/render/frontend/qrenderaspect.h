@@ -45,9 +45,14 @@
 
 QT_BEGIN_NAMESPACE
 
+
 class QOpenGLContext;
 
 namespace Qt3DRender {
+
+#if defined(QT_BUILD_INTERNAL)
+class TestAspect;
+#endif
 
 namespace Render {
 class Renderer;
@@ -87,6 +92,7 @@ private:
     friend class Render::Renderer;
 #if defined(QT_BUILD_INTERNAL)
     friend class QRenderAspectTester;
+    friend class TestAspect;
 #endif
 };
 
