@@ -238,7 +238,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
     \a effect specified by the \a renderView.
 */
 Technique *findTechniqueForEffect(Renderer *renderer,
-                                  RenderView *renderView,
+                                  const TechniqueFilter *techniqueFilter,
                                   Effect *effect)
 {
     if (!effect)
@@ -259,7 +259,6 @@ Technique *findTechniqueForEffect(Renderer *renderer,
         if (renderer->isRunning() && *renderer->contextInfo() == *technique->graphicsApiFilter()) {
 
             // If no techniqueFilter is present, we return the technique as it satisfies OpenGL version
-            const TechniqueFilter *techniqueFilter = renderView->techniqueFilter();
             bool foundMatch = (techniqueFilter == nullptr || techniqueFilter->filters().isEmpty());
             if (foundMatch) {
                 matchingTechniques.append(technique);
@@ -319,20 +318,19 @@ Technique *findTechniqueForEffect(Renderer *renderer,
 }
 
 
-RenderRenderPassList findRenderPassesForTechnique(NodeManagers *manager,
-                                                  RenderView *renderView,
-                                                  Technique *technique)
+RenderPassList findRenderPassesForTechnique(NodeManagers *manager,
+                                            const RenderPassFilter *passFilter,
+                                            Technique *technique)
 {
     Q_ASSERT(manager);
     Q_ASSERT(technique);
 
-    RenderRenderPassList passes;
+    RenderPassList passes;
     const auto passIds = technique->renderPasses();
     for (const QNodeId passId : passIds) {
         RenderPass *renderPass = manager->renderPassManager()->lookupResource(passId);
 
         if (renderPass && renderPass->isEnabled()) {
-            const RenderPassFilter *passFilter = renderView->renderPassFilter();
             bool foundMatch = (!passFilter || passFilter->filters().size() == 0);
 
             // A pass filter is present so we need to check for matching criteria
@@ -379,12 +377,10 @@ ParameterInfoList::const_iterator findParamInfo(ParameterInfoList *params, const
 }
 
 void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
-                         const QVector<Qt3DCore::QNodeId> &parameterIds)
+                         const Qt3DCore::QNodeIdVector &parameterIds)
 {
     for (const QNodeId paramId : parameterIds) {
         Parameter *param = manager->lookupResource(paramId);
-        if (Q_UNLIKELY(!param))
-            continue;
         ParameterInfoList::iterator it = std::lower_bound(params->begin(), params->end(), param->nameId());
         if (it == params->end() || it->nameId != param->nameId())
             params->insert(it, ParameterInfo(param->nameId(), param->value()));
@@ -486,6 +482,21 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapStructHelper(Shader
                                              it.value());
         ++it;
     }
+}
+
+ParameterInfo::ParameterInfo(const int nameId, const QVariant &value)
+    : nameId(nameId)
+    , value(value)
+{}
+
+bool ParameterInfo::operator<(const ParameterInfo &other) const Q_DECL_NOEXCEPT
+{
+    return nameId < other.nameId;
+}
+
+bool ParameterInfo::operator<(const int otherNameId) const Q_DECL_NOEXCEPT
+{
+    return nameId < otherNameId;
 }
 
 } // namespace Render

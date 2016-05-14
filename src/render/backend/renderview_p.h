@@ -212,7 +212,7 @@ public:
     inline float clearDepthValue() const { return m_clearDepthValue; }
     inline int clearStencilValue() const { return m_clearStencilValue; }
 
-    RenderRenderPassList passesAndParameters(ParameterInfoList *parameter, Entity *node, bool useDefaultMaterials = true);
+    RenderPassList passesAndParameters(ParameterInfoList *parameter, Entity *node, bool useDefaultMaterials = true);
 
     void buildRenderCommands(Entity *rootEntity, const Plane *planes);
     void buildDrawRenderCommands(Entity *node, const Plane *planes);

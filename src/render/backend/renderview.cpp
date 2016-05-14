@@ -376,8 +376,8 @@ void RenderView::sort()
                     // sharing the same material (shader) are rendered, we can't have the case
                     // where two uniforms, referencing the same texture eventually have 2 different
                     // texture unit values
-                    QUniformValue refValue = cachedUniforms.value(it.key());
-                    if (refValue == it.value()) {
+                    const QUniformValue refValue = cachedUniforms.value(it.key());
+                    if (it.value() == refValue) {
                         it = uniforms.erase(it);
                     } else {
                         cachedUniforms.insert(it.key(), it.value());
@@ -399,14 +399,14 @@ void RenderView::setRenderer(Renderer *renderer)
 }
 
 // Returns an array of Passes with the accompanying Parameter list
-RenderRenderPassList RenderView::passesAndParameters(ParameterInfoList *parameters, Entity *node, bool useDefaultMaterial)
+RenderPassList RenderView::passesAndParameters(ParameterInfoList *parameters, Entity *node, bool useDefaultMaterial)
 {
     // Find the material, effect, technique and set of render passes to use
     Material *material = nullptr;
     Effect *effect = nullptr;
     if ((material = node->renderComponent<Material>()) != nullptr && material->isEnabled())
         effect = m_renderer->nodeManagers()->effectManager()->lookupResource(material->effect());
-    Technique *technique = findTechniqueForEffect(m_renderer, this, effect);
+    Technique *technique = findTechniqueForEffect(m_renderer, m_data->m_techniqueFilter, effect);
 
     // Order set:
     // 1 Pass Filter
@@ -427,9 +427,9 @@ RenderRenderPassList RenderView::passesAndParameters(ParameterInfoList *paramete
     // Get the parameters for our selected rendering setup (override what was defined in the technique/pass filter)
     parametersFromMaterialEffectTechnique(parameters, m_manager->parameterManager(), material, effect, technique);
 
-    RenderRenderPassList passes;
-    if (technique) {
-        passes = findRenderPassesForTechnique(m_manager, this, technique);
+    RenderPassList passes;
+    if (Q_LIKELY(technique)) {
+        passes = findRenderPassesForTechnique(m_manager, m_data->m_passFilter, technique);
     } else if (useDefaultMaterial) {
         material = m_manager->data<Material, MaterialManager>(m_renderer->defaultMaterialHandle());
         effect = m_manager->data<Effect, EffectManager>(m_renderer->defaultEffectHandle());
@@ -550,7 +550,7 @@ void RenderView::buildDrawRenderCommands(Entity *node, const Plane *planes)
 
         // There is a geometry renderer with geometry
         ParameterInfoList parameters;
-        const RenderRenderPassList passes = passesAndParameters(&parameters, node, true);
+        const RenderPassList passes = passesAndParameters(&parameters, node, true);
 
         // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
         for (RenderPass *pass : passes) {
@@ -609,7 +609,7 @@ void RenderView::buildComputeRenderCommands(Entity *node)
             && computeJob->isEnabled()) {
 
         ParameterInfoList parameters;
-        const RenderRenderPassList passes = passesAndParameters(&parameters, node, true);
+        const RenderPassList passes = passesAndParameters(&parameters, node, true);
 
         for (RenderPass *pass : passes) {
             // Add the RenderPass Parameters
