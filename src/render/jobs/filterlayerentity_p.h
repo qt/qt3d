@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Paul Lemire
+** Copyright (C) 2016 Paul Lemire
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,21 +37,22 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_JOB_COMMON_P_H
-#define QT3DRENDER_RENDER_JOB_COMMON_P_H
+#ifndef QT3DRENDER_RENDER_FILTERLAYERENTITYJOB_H
+#define QT3DRENDER_RENDER_FILTERLAYERENTITYJOB_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <Qt3DCore/private/qaspectjob_p.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,26 +60,33 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace JobTypes {
+class Entity;
+class EntityManager;
 
-    enum JobType {
-        LoadBuffer = 0,
-        FrameCleanup,
-        FramePreparation,
-        CalcBoundingVolume,
-        CalcTriangleVolume,
-        LoadGeometry,
-        LoadScene,
-        LoadTextureData,
-        PickBoundingVolume,
-        RenderView,
-        UpdateTransform,
-        UpdateBoundingVolume,
-        FrameSubmission,
-        LayerFiltering
-    };
+class Q_AUTOTEST_EXPORT FilterLayerEntityJob : public Qt3DCore::QAspectJob
+{
+public:
+    FilterLayerEntityJob();
 
-} // JobTypes
+    inline void setManager(EntityManager *manager) Q_DECL_NOEXCEPT { m_manager = manager; }
+    inline void setLayers(const Qt3DCore::QNodeIdVector &layerIds) Q_DECL_NOEXCEPT { m_layerIds = layerIds; }
+    inline void setRoot(Entity *root) Q_DECL_NOEXCEPT { m_root = root; }
+    inline void setHasLayerFilter(bool hasLayerFilter) Q_DECL_NOEXCEPT { m_hasLayerFilter = hasLayerFilter; }
+    inline QVector<Entity *> filteredEntities() const Q_DECL_NOEXCEPT { return m_filteredEntities; }
+
+    // QAspectJob interface
+    void run() Q_DECL_FINAL;
+
+private:
+    void filterLayerAndEntity(Entity *entity);
+    void selectAllEntities(Entity *entity);
+
+    EntityManager *m_manager;
+    Entity *m_root;
+    Qt3DCore::QNodeIdVector m_layerIds;
+    QVector<Entity *> m_filteredEntities;
+    bool m_hasLayerFilter;
+};
 
 } // Render
 
@@ -86,4 +94,4 @@ namespace JobTypes {
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_JOB_COMMON_P_H
+#endif // QT3DRENDER_RENDER_FILTERLAYERENTITYJOB_H

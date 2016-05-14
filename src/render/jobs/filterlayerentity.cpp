@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Paul Lemire
+** Copyright (C) 2016 Paul Lemire
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,21 +37,10 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_JOB_COMMON_P_H
-#define QT3DRENDER_RENDER_JOB_COMMON_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/private/qaspectjob_p.h>
+#include "filterlayerentityjob_p.h"
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,31 +48,64 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace JobTypes {
+namespace {
 
-    enum JobType {
-        LoadBuffer = 0,
-        FrameCleanup,
-        FramePreparation,
-        CalcBoundingVolume,
-        CalcTriangleVolume,
-        LoadGeometry,
-        LoadScene,
-        LoadTextureData,
-        PickBoundingVolume,
-        RenderView,
-        UpdateTransform,
-        UpdateBoundingVolume,
-        FrameSubmission,
-        LayerFiltering
-    };
+int layerFilterJobCounter = 0;
 
-} // JobTypes
+} // anonymous
+
+FilterLayerEntityJob::FilterLayerEntityJob()
+    : Qt3DCore::QAspectJob()
+    , m_manager(nullptr)
+    , m_root(nullptr)
+{
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LayerFiltering, layerFilterJobCounter++);
+}
+
+void FilterLayerEntityJob::run()
+{
+    m_filteredEntities.clear();
+    if (m_hasLayerFilter) // LayerFilter set -> filter
+        filterLayerAndEntity(m_root);
+    else // No LayerFilter set -> retrieve all
+        selectAllEntities(m_root);
+}
+
+// Note: we assume that m_layerIds contains only enabled layers
+// -> meaning that if an Entity references such a layer, it's enabled
+void FilterLayerEntityJob::filterLayerAndEntity(Entity *entity)
+{
+    const Qt3DCore::QNodeIdVector entityLayers = entity->componentsUuid<Layer>();
+
+    // An Entity is positively filtered if it contains at least one Layer component with the same id as the
+    // layers selected by the LayerFilter
+
+    bool isValid = false;
+    for (const Qt3DCore::QNodeId id : entityLayers) {
+        if ((isValid = m_layerIds.contains(id)) == true)
+            break;
+    }
+
+    if (isValid)
+        m_filteredEntities.push_back(entity);
+
+    const QVector<HEntity> childrenHandes = entity->childrenHandles();
+    for (const HEntity handle : childrenHandes)
+        filterLayerAndEntity(m_manager->data(handle));
+}
+
+// No layer filter -> retrieve all entities
+void FilterLayerEntityJob::selectAllEntities(Entity *entity)
+{
+    m_filteredEntities.push_back(entity);
+
+    const QVector<HEntity> childrenHandes = entity->childrenHandles();
+    for (const HEntity handle : childrenHandes)
+        selectAllEntities(m_manager->data(handle));
+}
 
 } // Render
 
 } // Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_JOB_COMMON_P_H
