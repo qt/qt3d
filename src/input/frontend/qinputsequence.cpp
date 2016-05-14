@@ -50,6 +50,13 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
+QInputSequencePrivate::QInputSequencePrivate()
+    : QAbstractActionInputPrivate(),
+      m_timeout(0),
+      m_buttonInterval(0)
+{
+}
+
 /*!
     \class Qt3DInput::QInputSequence
     \inmodule Qt3DInput

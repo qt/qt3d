@@ -27,6 +27,7 @@ HEADERS += \
     $$PWD/qabstractphysicaldevice_p.h \
     $$PWD/qgenericinputdevice_p.h \
     $$PWD/qabstractactioninput.h \
+    $$PWD/qabstractactioninput_p.h \
     $$PWD/qinputchord.h \
     $$PWD/qinputsequence.h \
     $$PWD/qinputsettings.h \

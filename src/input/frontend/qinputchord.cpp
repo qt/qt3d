@@ -204,6 +204,12 @@ Qt3DCore::QNodeCreatedChangeBasePtr QInputChord::createNodeCreationChange() cons
     return creationChange;
 }
 
+QInputChordPrivate::QInputChordPrivate()
+    : QAbstractActionInputPrivate(),
+      m_timeout(0)
+{
+}
+
 } // Qt3DInput
 
 QT_END_NAMESPACE

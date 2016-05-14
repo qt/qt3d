@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DInput/private/qabstractactioninput_p.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -64,13 +64,10 @@ class QAbstractActionInput;
     \class Qt3DInput::QInputChordPrivate
     \internal
 */
-class QInputChordPrivate : public Qt3DCore::QNodePrivate
+class QInputChordPrivate : public QAbstractActionInputPrivate
 {
 public:
-    QInputChordPrivate()
-        : Qt3DCore::QNodePrivate()
-        , m_timeout(0)
-    {}
+    QInputChordPrivate();
 
     int m_timeout;
     QVector<QAbstractActionInput *> m_chords;

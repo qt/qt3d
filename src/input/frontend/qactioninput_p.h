@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DInput/private/qabstractactioninput_p.h>
 #include <QtCore/qvariant.h>
 
 QT_BEGIN_NAMESPACE
@@ -64,13 +64,10 @@ class QAbstractPhysicalDevice;
     \class Qt3DInput::QActionInputPrivate
     \internal
 */
-class QActionInputPrivate : public Qt3DCore::QNodePrivate
+class QActionInputPrivate : public QAbstractActionInputPrivate
 {
 public:
-    QActionInputPrivate()
-        : Qt3DCore::QNodePrivate()
-        , m_sourceDevice(nullptr)
-    {}
+    QActionInputPrivate();
 
     QVector<int> m_buttons;
     QAbstractPhysicalDevice *m_sourceDevice;

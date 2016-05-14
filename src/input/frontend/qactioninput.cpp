@@ -46,6 +46,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
+QActionInputPrivate::QActionInputPrivate()
+    : QAbstractActionInputPrivate(),
+      m_sourceDevice(nullptr)
+{
+}
+
 /*!
     \class Qt3DInput::QActionInput
     \inmodule Qt3DInput
