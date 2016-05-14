@@ -47,5 +47,6 @@ contains(QT_CONFIG, private_tests) {
         ddstextures \
         shadercache \
         layerfiltering \
-        filterentitybycomponent
+        filterentitybycomponent \
+        genericlambdajob
 }
