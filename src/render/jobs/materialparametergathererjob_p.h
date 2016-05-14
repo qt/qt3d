@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Paul Lemire
+** Copyright (C) 2016 Paul Lemire
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,21 +37,23 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_JOB_COMMON_P_H
-#define QT3DRENDER_RENDER_JOB_COMMON_P_H
+#ifndef QT3DRENDER_RENDER_MATERIALPARAMETERGATHERERJOB_P_H
+#define QT3DRENDER_RENDER_MATERIALPARAMETERGATHERERJOB_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <Qt3DCore/private/qaspectjob_p.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DCore/qnodeid.h>
+#include <Qt3DRender/private/renderviewjobutils_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,28 +61,35 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace JobTypes {
+class NodeManagers;
+class TechniqueFilter;
+class RenderPassFilter;
+class Renderer;
 
-    enum JobType {
-        LoadBuffer = 0,
-        FrameCleanup,
-        FramePreparation,
-        CalcBoundingVolume,
-        CalcTriangleVolume,
-        LoadGeometry,
-        LoadScene,
-        LoadTextureData,
-        PickBoundingVolume,
-        RenderView,
-        UpdateTransform,
-        UpdateBoundingVolume,
-        FrameSubmission,
-        LayerFiltering,
-        EntityComponentTypeFiltering,
-        MaterialParameterGathering
-    };
+// TO be executed for each FrameGraph branch with a given RenderPassFilter/TechniqueFilter
 
-} // JobTypes
+class Q_AUTOTEST_EXPORT MaterialParameterGathererJob : public Qt3DCore::QAspectJob
+{
+public:
+    MaterialParameterGathererJob();
+
+    inline void setNodeManagers(NodeManagers *manager) Q_DECL_NOEXCEPT { m_manager = manager; }
+    inline void setTechniqueFilter(TechniqueFilter *techniqueFilter) Q_DECL_NOEXCEPT { m_techniqueFilter = techniqueFilter; }
+    inline void setRenderPassFilter(RenderPassFilter *renderPassFilter) Q_DECL_NOEXCEPT { m_renderPassFilter = renderPassFilter; }
+    inline void setRenderer(Renderer *renderer) Q_DECL_NOEXCEPT { m_renderer = renderer; }
+    inline QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> materialToPassAndParameter() const Q_DECL_NOEXCEPT { return m_parameters; }
+
+    void run() Q_DECL_FINAL;
+
+private:
+    NodeManagers *m_manager;
+    TechniqueFilter *m_techniqueFilter;
+    RenderPassFilter *m_renderPassFilter;
+    Renderer *m_renderer;
+
+    // Material id to array of RenderPasse with parameters
+    QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> m_parameters;
+};
 
 } // Render
 
@@ -88,4 +97,4 @@ namespace JobTypes {
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_JOB_COMMON_P_H
+#endif // QT3DRENDER_RENDER_MATERIALPARAMETERGATHERERJOB_P_H
