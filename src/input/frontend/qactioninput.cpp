@@ -89,6 +89,11 @@ QActionInput::QActionInput(Qt3DCore::QNode *parent)
 
 }
 
+/*! \internal */
+QActionInput::~QActionInput()
+{
+}
+
 /*!
     Return the Buttons to trigger the QActionInput instance.
  */

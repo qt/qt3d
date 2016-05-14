@@ -344,6 +344,13 @@ QTorusGeometry::QTorusGeometry(QTorusGeometryPrivate &dd, QNode *parent)
 }
 
 /*!
+ * \internal
+ */
+QTorusGeometry::~QTorusGeometry()
+{
+}
+
+/*!
  * Updates vertices based on rings and slices.
  */
 void QTorusGeometry::updateVertices()

@@ -60,6 +60,11 @@ QRenderTargetSelector::QRenderTargetSelector(QNode *parent)
 {
 }
 
+/*! \internal */
+QRenderTargetSelector::~QRenderTargetSelector()
+{
+}
+
 void QRenderTargetSelector::setTarget(QRenderTarget *target)
 {
     Q_D(QRenderTargetSelector);

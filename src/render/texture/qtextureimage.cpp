@@ -75,6 +75,11 @@ QTextureImage::QTextureImage(QNode *parent)
 {
 }
 
+/*! \internal */
+QTextureImage::~QTextureImage()
+{
+}
+
 /*!
     Returns the source url from which data for the texture image will be loaded.
  */

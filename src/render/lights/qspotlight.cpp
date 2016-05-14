@@ -101,6 +101,11 @@ QSpotLight::QSpotLight(QNode *parent)
 }
 
 /*! \internal */
+QSpotLight::~QSpotLight()
+{
+}
+
+/*! \internal */
 QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
     : QAbstractLight(dd, parent)
 {

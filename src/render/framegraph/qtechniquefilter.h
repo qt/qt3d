@@ -56,6 +56,7 @@ class QT3DRENDERSHARED_EXPORT QTechniqueFilter : public QFrameGraphNode
     Q_OBJECT
 public:
     explicit QTechniqueFilter(Qt3DCore::QNode *parent = nullptr);
+    ~QTechniqueFilter();
 
     QVector<QFilterKey*> matchAll() const;
     void addMatch(QFilterKey *filterKey);

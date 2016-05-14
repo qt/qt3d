@@ -140,6 +140,10 @@ QLogicalDevice::QLogicalDevice(Qt3DCore::QNode *parent)
 {
 }
 
+QLogicalDevice::~QLogicalDevice()
+{
+}
+
 /*!
   \qmlproperty QQmlListProperty<Action> Qt3D.Input::LogicalDevice::actions
 

@@ -62,6 +62,11 @@ QDithering::QDithering(QNode *parent)
 {
 }
 
+/*! \internal */
+QDithering::~QDithering()
+{
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

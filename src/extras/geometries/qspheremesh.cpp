@@ -99,6 +99,11 @@ QSphereMesh::QSphereMesh(QNode *parent)
     QGeometryRenderer::setGeometry(geometry);
 }
 
+/*! \internal */
+QSphereMesh::~QSphereMesh()
+{
+}
+
 void QSphereMesh::setRings(int rings)
 {
     static_cast<QSphereGeometry *>(geometry())->setRings(rings);

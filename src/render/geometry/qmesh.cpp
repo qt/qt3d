@@ -108,6 +108,11 @@ QMesh::QMesh(QNode *parent)
 }
 
 /*! \internal */
+QMesh::~QMesh()
+{
+}
+
+/*! \internal */
 QMesh::QMesh(QMeshPrivate &dd, QNode *parent)
     : QGeometryRenderer(dd, parent)
 {

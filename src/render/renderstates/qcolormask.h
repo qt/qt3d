@@ -58,6 +58,7 @@ class QT3DRENDERSHARED_EXPORT QColorMask : public QRenderState
 
 public:
     explicit QColorMask(Qt3DCore::QNode *parent = nullptr);
+    ~QColorMask();
 
     bool isRedMasked() const;
     bool isGreenMasked() const;

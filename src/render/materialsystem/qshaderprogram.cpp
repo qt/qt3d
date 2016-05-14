@@ -61,6 +61,11 @@ QShaderProgram::QShaderProgram(QNode *parent)
 }
 
 /*! \internal */
+QShaderProgram::~QShaderProgram()
+{
+}
+
+/*! \internal */
 QShaderProgram::QShaderProgram(QShaderProgramPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

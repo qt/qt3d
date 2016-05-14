@@ -219,6 +219,11 @@ QKeyboardDevice::QKeyboardDevice(QNode *parent)
 {
 }
 
+/*! \internal */
+QKeyboardDevice::~QKeyboardDevice()
+{
+}
+
 /*!
     \qmlproperty KeyboardHandler Qt3D.Input::KeyboardDevice::activeInput
     \readonly

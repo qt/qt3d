@@ -59,6 +59,7 @@ class QT3DINPUTSHARED_EXPORT QInputSequence : public Qt3DInput::QAbstractActionI
 
 public:
     explicit QInputSequence(Qt3DCore::QNode *parent = nullptr);
+    ~QInputSequence();
 
     int timeout() const;
     int buttonInterval() const;

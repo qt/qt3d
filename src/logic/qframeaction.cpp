@@ -84,6 +84,11 @@ QFrameAction::QFrameAction(QNode *parent)
 }
 
 /*! \internal */
+QFrameAction::~QFrameAction()
+{
+}
+
+/*! \internal */
 QFrameAction::QFrameAction(QFrameActionPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {

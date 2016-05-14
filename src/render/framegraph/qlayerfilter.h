@@ -55,6 +55,7 @@ class QT3DRENDERSHARED_EXPORT QLayerFilter : public QFrameGraphNode
     Q_OBJECT
 public:
     explicit QLayerFilter(Qt3DCore::QNode *parent = nullptr);
+    ~QLayerFilter();
 
     void addLayer(QLayer *layer);
     void removeLayer(QLayer *layer);

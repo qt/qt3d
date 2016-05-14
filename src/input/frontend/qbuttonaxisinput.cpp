@@ -66,6 +66,11 @@ QButtonAxisInput::QButtonAxisInput(Qt3DCore::QNode *parent)
 {
 }
 
+/*! \internal */
+QButtonAxisInput::~QButtonAxisInput()
+{
+}
+
 void QButtonAxisInput::setScale(float scale)
 {
     Q_D(QButtonAxisInput);

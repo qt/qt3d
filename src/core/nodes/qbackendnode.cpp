@@ -48,6 +48,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+/*! \internal */
+QBackendNodeMapper::~QBackendNodeMapper()
+{
+}
+
 QBackendNodePrivate::QBackendNodePrivate(QBackendNode::Mode mode)
     : q_ptr(nullptr)
     , m_mode(mode)

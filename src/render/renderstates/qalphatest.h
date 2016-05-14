@@ -69,6 +69,7 @@ public:
     Q_ENUM(AlphaFunction)
 
     explicit QAlphaTest(Qt3DCore::QNode *parent = nullptr);
+    ~QAlphaTest();
 
     AlphaFunction alphaFunction() const;
     float referenceValue() const;

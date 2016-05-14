@@ -81,6 +81,7 @@ QRenderSettings::QRenderSettings(QRenderSettingsPrivate &dd, Qt3DCore::QNode *pa
     d->init();
 }
 
+/*! \internal */
 QRenderSettings::~QRenderSettings()
 {
 }

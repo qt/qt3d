@@ -51,6 +51,11 @@ QStencilOperation::QStencilOperation(QNode *parent)
 {
 }
 
+/*! \internal */
+QStencilOperation::~QStencilOperation()
+{
+}
+
 QStencilOperationArguments *QStencilOperation::front() const
 {
     Q_D(const QStencilOperation);

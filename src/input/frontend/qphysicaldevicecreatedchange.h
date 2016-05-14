@@ -51,6 +51,7 @@ class QT3DINPUTSHARED_EXPORT QPhysicalDeviceCreatedChangeBase : public Qt3DCore:
 {
 public:
     explicit QPhysicalDeviceCreatedChangeBase(const QAbstractPhysicalDevice *device);
+    ~QPhysicalDeviceCreatedChangeBase();
 
     Qt3DCore::QNodeIdVector axisSettingIds() const;
 

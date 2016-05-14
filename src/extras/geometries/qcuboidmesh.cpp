@@ -112,6 +112,11 @@ QCuboidMesh::QCuboidMesh(QNode *parent)
     QGeometryRenderer::setGeometry(geometry);
 }
 
+/*! \internal */
+QCuboidMesh::~QCuboidMesh()
+{
+}
+
 void QCuboidMesh::setXExtent(float xExtent)
 {
     static_cast<QCuboidGeometry *>(geometry())->setXExtent(xExtent);

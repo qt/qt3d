@@ -56,6 +56,11 @@ QPickingSettings::QPickingSettings(Qt3DCore::QNode *parent)
 {
 }
 
+/*! \internal */
+QPickingSettings::~QPickingSettings()
+{
+}
+
 QPickingSettings::QPickingSettings(QPickingSettingsPrivate &dd, Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(dd, parent)
 {

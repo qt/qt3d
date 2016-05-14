@@ -55,6 +55,7 @@ class QT3DRENDERSHARED_EXPORT QFrameGraphNode : public Qt3DCore::QNode
     Q_OBJECT
 public:
     explicit QFrameGraphNode(Qt3DCore::QNode *parent = nullptr);
+    ~QFrameGraphNode();
 
     QFrameGraphNode *parentFrameGraphNode() const;
 

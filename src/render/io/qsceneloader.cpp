@@ -65,6 +65,11 @@ QSceneLoader::QSceneLoader(QNode *parent)
 {
 }
 
+/*! \internal */
+QSceneLoader::~QSceneLoader()
+{
+}
+
 QSceneLoader::QSceneLoader(QSceneLoaderPrivate &dd, QNode *parent)
     : Qt3DCore::QComponent(dd, parent)
 {

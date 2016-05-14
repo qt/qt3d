@@ -81,6 +81,11 @@ QPropertyNodeRemovedChange::QPropertyNodeRemovedChange(QNodeId subjectId)
 {
 }
 
+/*! \internal */
+QPropertyNodeRemovedChange::~QPropertyNodeRemovedChange()
+{
+}
+
 /*!
  * \return the id of the node removed to the property.
  */

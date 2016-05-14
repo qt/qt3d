@@ -288,6 +288,13 @@ QPlaneGeometry::QPlaneGeometry(QPlaneGeometryPrivate &dd, QNode *parent)
 }
 
 /*!
+ * \internal
+ */
+QPlaneGeometry::~QPlaneGeometry()
+{
+}
+
+/*!
  * Updates vertices based on resolution.
  */
 void QPlaneGeometry::updateVertices()

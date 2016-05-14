@@ -54,6 +54,7 @@ class QT3DRENDERSHARED_EXPORT QMultiSampleAntiAliasing : public QRenderState
 
 public:
     explicit QMultiSampleAntiAliasing(Qt3DCore::QNode *parent = nullptr);
+    ~QMultiSampleAntiAliasing();
 
 private:
     Q_DECLARE_PRIVATE(QMultiSampleAntiAliasing)

@@ -75,6 +75,11 @@ QLayer::QLayer(QNode *parent)
 }
 
 /*! \internal */
+QLayer::~QLayer()
+{
+}
+
+/*! \internal */
 QLayer::QLayer(QLayerPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {

@@ -56,6 +56,7 @@ class QT3DINPUTSHARED_EXPORT QAnalogAxisInput : public QAbstractAxisInput
 
 public:
     explicit QAnalogAxisInput(Qt3DCore::QNode *parent = nullptr);
+    ~QAnalogAxisInput();
 
     int axis() const;
 

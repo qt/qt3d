@@ -66,6 +66,7 @@ class QT3DRENDERSHARED_EXPORT QRenderPass : public Qt3DCore::QNode
 
 public:
     explicit QRenderPass(Qt3DCore::QNode *parent = nullptr);
+    ~QRenderPass();
 
     QShaderProgram *shaderProgram() const;
 

@@ -76,6 +76,11 @@ QMouseDevice::QMouseDevice(QNode *parent)
 {
 }
 
+/*! \internal */
+QMouseDevice::~QMouseDevice()
+{
+}
+
 int QMouseDevice::axisCount() const
 {
     // TO DO: we could have mouse wheel later on

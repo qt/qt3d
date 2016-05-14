@@ -68,6 +68,11 @@ QCameraLens::QCameraLens(QNode *parent)
     d->updateProjectionMatrix();
 }
 
+/*! \internal */
+QCameraLens::~QCameraLens()
+{
+}
+
 /*! \class Qt3DRender::QCameraLens
  *  \inmodule Qt3DCore
  *

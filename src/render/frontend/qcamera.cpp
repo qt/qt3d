@@ -87,6 +87,11 @@ QCamera::QCamera(Qt3DCore::QNode *parent)
 }
 
 /*! \internal */
+QCamera::~QCamera()
+{
+}
+
+/*! \internal */
 QCamera::QCamera(QCameraPrivate &dd, Qt3DCore::QNode *parent)
     : Qt3DCore::QEntity(dd, parent)
 {

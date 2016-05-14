@@ -118,6 +118,10 @@ QMouseHandler::QMouseHandler(QNode *parent)
 {
 }
 
+QMouseHandler::~QMouseHandler()
+{
+}
+
 /*!
  * Sets the mouse device of the QMouseHandler instance to \a mouseDevice.
  */

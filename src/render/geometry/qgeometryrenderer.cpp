@@ -170,6 +170,13 @@ QGeometryRenderer::QGeometryRenderer(QNode *parent)
 /*!
  * \internal
  */
+QGeometryRenderer::~QGeometryRenderer()
+{
+}
+
+/*!
+ * \internal
+ */
 QGeometryRenderer::QGeometryRenderer(QGeometryRendererPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {

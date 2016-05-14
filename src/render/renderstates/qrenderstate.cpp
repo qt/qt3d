@@ -63,6 +63,11 @@ const QRenderStatePrivate *QRenderStatePrivate::get(const QRenderState *state)
 }
 
 /*! \internal */
+QRenderState::~QRenderState()
+{
+}
+
+/*! \internal */
 QRenderState::QRenderState(QRenderStatePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

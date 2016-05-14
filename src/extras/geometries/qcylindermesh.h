@@ -57,6 +57,7 @@ class QT3DEXTRASSHARED_EXPORT QCylinderMesh : public Qt3DRender::QGeometryRender
     Q_PROPERTY(float length READ length WRITE setLength NOTIFY lengthChanged)
 public:
     explicit QCylinderMesh(Qt3DCore::QNode *parent = nullptr);
+    ~QCylinderMesh();
 
     int rings() const;
     int slices() const;

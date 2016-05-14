@@ -181,6 +181,13 @@ QTransform::QTransform(QNode *parent)
 /*!
  * \internal
  */
+QTransform::~QTransform()
+{
+}
+
+/*!
+ * \internal
+ */
 QTransform::QTransform(QTransformPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {

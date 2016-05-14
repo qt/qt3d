@@ -54,6 +54,7 @@ class QT3DEXTRASSHARED_EXPORT QSkyboxEntity : public Qt3DCore::QEntity
     Q_OBJECT
 public:
     explicit QSkyboxEntity(Qt3DCore::QNode *parent = nullptr);
+    ~QSkyboxEntity();
 
     void setBaseName(const QString &path);
     QString baseName() const;

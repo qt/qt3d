@@ -94,6 +94,11 @@ QAbstractTexture::QAbstractTexture(Target target, QNode *parent)
 }
 
 /*! \internal */
+QAbstractTexture::~QAbstractTexture()
+{
+}
+
+/*! \internal */
 QAbstractTexture::QAbstractTexture(QAbstractTexturePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

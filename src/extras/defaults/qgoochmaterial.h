@@ -63,6 +63,8 @@ class QT3DEXTRASSHARED_EXPORT QGoochMaterial : public Qt3DRender::QMaterial
 
 public:
     explicit QGoochMaterial(Qt3DCore::QNode *parent = nullptr);
+    ~QGoochMaterial();
+
     QColor diffuse() const;
     QColor specular() const;
     QColor cool() const;

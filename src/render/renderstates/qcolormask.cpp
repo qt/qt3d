@@ -67,6 +67,11 @@ QColorMask::QColorMask(QNode *parent)
 {
 }
 
+/*! \internal */
+QColorMask::~QColorMask()
+{
+}
+
 bool QColorMask::isRedMasked() const
 {
     Q_D(const QColorMask);

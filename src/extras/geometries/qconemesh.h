@@ -59,6 +59,7 @@ class QT3DEXTRASSHARED_EXPORT QConeMesh : public Qt3DRender::QGeometryRenderer
     Q_PROPERTY(float length READ length WRITE setLength NOTIFY lengthChanged)
 public:
     explicit QConeMesh(Qt3DCore::QNode *parent = nullptr);
+    ~QConeMesh();
 
     int rings() const;
     int slices() const;

@@ -51,6 +51,11 @@ QCullFace::QCullFace(QNode *parent)
 {
 }
 
+/*! \internal */
+QCullFace::~QCullFace()
+{
+}
+
 QCullFace::CullingMode QCullFace::mode() const
 {
     Q_D(const QCullFace);

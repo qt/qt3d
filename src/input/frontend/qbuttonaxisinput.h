@@ -59,6 +59,7 @@ class QT3DINPUTSHARED_EXPORT QButtonAxisInput : public QAbstractAxisInput
 
 public:
     explicit QButtonAxisInput(Qt3DCore::QNode *parent = nullptr);
+    ~QButtonAxisInput();
 
     float scale() const;
     QVector<int> buttons() const;

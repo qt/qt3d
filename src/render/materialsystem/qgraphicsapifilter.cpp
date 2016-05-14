@@ -105,6 +105,11 @@ QGraphicsApiFilter::QGraphicsApiFilter(QObject *parent)
 {
 }
 
+/*! \internal */
+QGraphicsApiFilter::~QGraphicsApiFilter()
+{
+}
+
 /*!
   \enum Qt3DRender::QGraphicsApiFilter::Api
 

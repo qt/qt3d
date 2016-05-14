@@ -49,6 +49,11 @@ QDispatchCompute::QDispatchCompute(Qt3DCore::QNode *parent)
 {
 }
 
+/*! \internal */
+QDispatchCompute::~QDispatchCompute()
+{
+}
+
 int QDispatchCompute::workGroupX() const
 {
     Q_D(const QDispatchCompute);

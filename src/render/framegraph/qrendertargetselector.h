@@ -58,6 +58,7 @@ class QT3DRENDERSHARED_EXPORT QRenderTargetSelector : public QFrameGraphNode
     Q_PROPERTY(Qt3DRender::QRenderTarget *target READ target WRITE setTarget NOTIFY targetChanged)
 public:
     explicit QRenderTargetSelector(Qt3DCore::QNode *parent = nullptr);
+    ~QRenderTargetSelector();
 
     QRenderTarget *target() const;
 

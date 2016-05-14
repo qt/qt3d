@@ -59,6 +59,7 @@ class QT3DRENDERSHARED_EXPORT QRenderPassFilter : public QFrameGraphNode
 
 public:
     explicit QRenderPassFilter(Qt3DCore::QNode *parent = nullptr);
+    ~QRenderPassFilter();
 
     QVector<QFilterKey*> matchAny() const;
     void addMatch(QFilterKey *filterKey);

@@ -57,6 +57,7 @@ class QT3DRENDERSHARED_EXPORT QPointLight : public QAbstractLight
 
 public:
     explicit QPointLight(Qt3DCore::QNode *parent = nullptr);
+    ~QPointLight();
 
     float constantAttenuation() const;
     float linearAttenuation() const;

@@ -68,6 +68,11 @@ QTechnique::QTechnique(QNode *parent)
 }
 
 /*! \internal */
+QTechnique::~QTechnique()
+{
+}
+
+/*! \internal */
 QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

@@ -44,6 +44,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+PropertyReaderInterface::~PropertyReaderInterface()
+{
+}
+
 QShaderDataPrivate::QShaderDataPrivate()
     : QComponentPrivate()
     , m_propertyReader(PropertyReaderInterfacePtr(new QShaderDataPropertyReader()))
@@ -73,6 +77,11 @@ QShaderDataPrivate::QShaderDataPrivate(PropertyReaderInterfacePtr reader)
 
 QShaderData::QShaderData(QNode *parent)
     : QComponent(*new QShaderDataPrivate, parent)
+{
+}
+
+/*! \internal */
+QShaderData::~QShaderData()
 {
 }
 

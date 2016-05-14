@@ -80,6 +80,11 @@ QRenderStateSet::QRenderStateSet(QNode *parent)
 {
 }
 
+/*! \internal */
+QRenderStateSet::~QRenderStateSet()
+{
+}
+
 /*!
  * Adds a new QRenderState \a state to the QRenderStateSet instance.
  *

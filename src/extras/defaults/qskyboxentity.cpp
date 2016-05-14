@@ -218,6 +218,11 @@ QSkyboxEntity::QSkyboxEntity(QNode *parent)
     d_func()->init();
 }
 
+/*! \internal */
+QSkyboxEntity::~QSkyboxEntity()
+{
+}
+
 /*!
  * Sets the base name to \a baseName.
  */

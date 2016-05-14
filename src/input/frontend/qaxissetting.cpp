@@ -67,6 +67,11 @@ QAxisSetting::QAxisSetting(Qt3DCore::QNode *parent)
 {
 }
 
+/*! \internal */
+QAxisSetting::~QAxisSetting()
+{
+}
+
 QVariantList QAxisSetting::axes() const
 {
     Q_D(const QAxisSetting);

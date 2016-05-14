@@ -69,6 +69,7 @@ class QT3DRENDERSHARED_EXPORT QCameraLens : public Qt3DCore::QComponent
 
 public:
     explicit QCameraLens(QNode *parent = nullptr);
+    ~QCameraLens();
 
     enum ProjectionType {
         OrthographicProjection,

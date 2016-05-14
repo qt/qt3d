@@ -51,6 +51,11 @@ QAlphaTest::QAlphaTest(QNode *parent)
 {
 }
 
+/*! \internal */
+QAlphaTest::~QAlphaTest()
+{
+}
+
 QAlphaTest::AlphaFunction QAlphaTest::alphaFunction() const
 {
     Q_D(const QAlphaTest);

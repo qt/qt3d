@@ -65,6 +65,7 @@ class QT3DCORESHARED_EXPORT QTransform : public QComponent
 
 public:
     explicit QTransform(QNode *parent = nullptr);
+    ~QTransform();
 
     float scale() const;
     QVector3D scale3D() const;

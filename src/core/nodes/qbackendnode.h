@@ -60,7 +60,7 @@ class QBackendNodeTester;
 class QT3DCORESHARED_EXPORT QBackendNodeMapper
 {
 public:
-    virtual ~QBackendNodeMapper() {}
+    virtual ~QBackendNodeMapper();
     virtual QBackendNode *create(const QNodeCreatedChangeBasePtr &change) const = 0;
     virtual QBackendNode *get(QNodeId id) const = 0;
     virtual void destroy(QNodeId id) const = 0;

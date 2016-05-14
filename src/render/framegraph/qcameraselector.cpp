@@ -69,6 +69,11 @@ QCameraSelector::QCameraSelector(Qt3DCore::QNode *parent)
 {
 }
 
+/*! \internal */
+QCameraSelector::~QCameraSelector()
+{
+}
+
 /*!
     \property Qt3DRender::QCameraSelector::camera
 */

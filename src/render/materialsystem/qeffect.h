@@ -56,6 +56,7 @@ class QT3DRENDERSHARED_EXPORT QEffect : public Qt3DCore::QNode
     Q_OBJECT
 public:
     explicit QEffect(Qt3DCore::QNode *parent = nullptr);
+    ~QEffect();
 
     void addParameter(QParameter *parameter);
     void removeParameter(QParameter *parameter);

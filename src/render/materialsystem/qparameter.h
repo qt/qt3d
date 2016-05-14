@@ -61,6 +61,7 @@ public:
     explicit QParameter(Qt3DCore::QNode *parent = nullptr);
     explicit QParameter(const QString &name, const QVariant& value, Qt3DCore::QNode *parent = nullptr);
     explicit QParameter(const QString &name, QAbstractTexture *texture, Qt3DCore::QNode *parent = nullptr);
+    ~QParameter();
 
     QString name() const;
     QVariant value() const;

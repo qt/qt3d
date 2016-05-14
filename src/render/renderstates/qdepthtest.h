@@ -68,6 +68,7 @@ public:
     Q_ENUM(DepthFunction)
 
     explicit QDepthTest(Qt3DCore::QNode *parent = nullptr);
+    ~QDepthTest();
 
     DepthFunction depthFunction() const;
 

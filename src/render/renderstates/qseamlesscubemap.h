@@ -54,6 +54,7 @@ class QT3DRENDERSHARED_EXPORT QSeamlessCubemap : public QRenderState
 
 public:
     explicit QSeamlessCubemap(Qt3DCore::QNode *parent = nullptr);
+    ~QSeamlessCubemap();
 
 private:
     Q_DECLARE_PRIVATE(QSeamlessCubemap)

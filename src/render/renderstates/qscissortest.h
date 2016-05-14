@@ -59,6 +59,7 @@ class QT3DRENDERSHARED_EXPORT QScissorTest  : public QRenderState
 
 public:
     explicit QScissorTest(Qt3DCore::QNode *parent = nullptr);
+    ~QScissorTest();
 
     int left() const;
     int bottom() const;

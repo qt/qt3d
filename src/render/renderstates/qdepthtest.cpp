@@ -51,6 +51,11 @@ QDepthTest::QDepthTest(QNode *parent)
 {
 }
 
+/*! \internal */
+QDepthTest::~QDepthTest()
+{
+}
+
 QDepthTest::DepthFunction QDepthTest::depthFunction() const
 {
     Q_D(const QDepthTest);

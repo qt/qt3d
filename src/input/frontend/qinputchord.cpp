@@ -99,6 +99,11 @@ QInputChord::QInputChord(Qt3DCore::QNode *parent)
 
 }
 
+/*! \internal */
+QInputChord::~QInputChord()
+{
+}
+
 /*!
   \fn QInputChord::timeoutChanged()
 

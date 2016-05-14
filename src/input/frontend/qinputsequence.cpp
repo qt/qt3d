@@ -96,6 +96,11 @@ QInputSequence::QInputSequence(Qt3DCore::QNode *parent)
 
 }
 
+/*! \internal */
+QInputSequence::~QInputSequence()
+{
+}
+
 /*!
   \fn QInputSequence::timeoutChanged()
 

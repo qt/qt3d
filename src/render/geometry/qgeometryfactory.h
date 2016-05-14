@@ -53,7 +53,7 @@ class QGeometry;
 class QT3DRENDERSHARED_EXPORT QGeometryFactory : public QAbstractFunctor
 {
 public:
-    virtual ~QGeometryFactory() {}
+    virtual ~QGeometryFactory();
     virtual QGeometry *operator()() = 0;
     virtual bool operator ==(const QGeometryFactory &other) const = 0;
 };

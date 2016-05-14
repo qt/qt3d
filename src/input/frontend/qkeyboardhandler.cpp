@@ -158,6 +158,11 @@ QKeyboardHandler::QKeyboardHandler(QNode *parent)
 {
 }
 
+/*! \internal */
+QKeyboardHandler::~QKeyboardHandler()
+{
+}
+
 void QKeyboardHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QKeyboardHandler);

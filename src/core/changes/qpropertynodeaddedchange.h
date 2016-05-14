@@ -54,6 +54,7 @@ class QT3DCORESHARED_EXPORT QPropertyNodeAddedChange : public QStaticPropertyVal
 {
 public:
     explicit QPropertyNodeAddedChange(QNodeId subjectId, QNode *node);
+    ~QPropertyNodeAddedChange();
 
     QNodeId addedNodeId() const;
     const QMetaObject *metaObject() const;

@@ -56,6 +56,11 @@ QAbstractPhysicalDevicePrivate::QAbstractPhysicalDevicePrivate()
 {
 }
 
+/*! \internal */
+QAbstractPhysicalDevicePrivate::~QAbstractPhysicalDevicePrivate()
+{
+}
+
 /*!
     \class Qt3DInput::QAbstractPhysicalDevice
     \inmodule Qt3DInput
@@ -81,6 +86,11 @@ QAbstractPhysicalDevicePrivate::QAbstractPhysicalDevicePrivate()
  */
 QAbstractPhysicalDevice::QAbstractPhysicalDevice(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QAbstractPhysicalDevicePrivate, parent)
+{
+}
+
+/*! \internal */
+QAbstractPhysicalDevice::~QAbstractPhysicalDevice()
 {
 }
 

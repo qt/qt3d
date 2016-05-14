@@ -90,6 +90,11 @@ QMaterial::QMaterial(QNode *parent)
 }
 
 /*! \internal */
+QMaterial::~QMaterial()
+{
+}
+
+/*! \internal */
 QMaterial::QMaterial(QMaterialPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {

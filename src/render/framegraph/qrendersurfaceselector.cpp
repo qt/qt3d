@@ -106,6 +106,13 @@ QRenderSurfaceSelector::QRenderSurfaceSelector(Qt3DCore::QNode *parent)
 /*!
  * \internal
  */
+QRenderSurfaceSelector::~QRenderSurfaceSelector()
+{
+}
+
+/*!
+ * \internal
+ */
 QRenderSurfaceSelector::QRenderSurfaceSelector(QRenderSurfaceSelectorPrivate &dd, Qt3DCore::QNode *parent)
     : Qt3DRender::QFrameGraphNode(dd, parent)
 {

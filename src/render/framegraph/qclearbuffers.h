@@ -62,6 +62,7 @@ class QT3DRENDERSHARED_EXPORT QClearBuffers : public QFrameGraphNode
 
 public:
     explicit QClearBuffers(Qt3DCore::QNode *parent = nullptr);
+    ~QClearBuffers();
 
     enum BufferType {
         None = 0,

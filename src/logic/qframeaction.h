@@ -60,6 +60,7 @@ class QT3DLOGICSHARED_EXPORT QFrameAction : public Qt3DCore::QComponent
 
 public:
     explicit QFrameAction(Qt3DCore::QNode *parent = nullptr);
+    ~QFrameAction();
 
 protected:
     QFrameAction(QFrameActionPrivate &dd, QNode *parent = nullptr);

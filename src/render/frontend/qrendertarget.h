@@ -55,6 +55,7 @@ class QT3DRENDERSHARED_EXPORT QRenderTarget : public Qt3DCore::QComponent
     Q_OBJECT
 public:
     explicit QRenderTarget(Qt3DCore::QNode *parent = nullptr);
+    ~QRenderTarget();
 
     void addOutput(QRenderTargetOutput *output);
     void removeOutput(QRenderTargetOutput *output);

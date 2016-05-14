@@ -94,6 +94,11 @@ QObjectPicker::QObjectPicker(Qt3DCore::QNode *parent)
 {
 }
 
+/*! \internal */
+QObjectPicker::~QObjectPicker()
+{
+}
+
 void QObjectPicker::setHoverEnabled(bool hoverEnabled)
 {
     Q_D(QObjectPicker);

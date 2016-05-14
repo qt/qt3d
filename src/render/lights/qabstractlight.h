@@ -59,7 +59,9 @@ class QT3DRENDERSHARED_EXPORT QAbstractLight : public Qt3DCore::QComponent
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(float intensity READ intensity WRITE setIntensity NOTIFY intensityChanged)
 
-public :
+public:
+    ~QAbstractLight();
+
     enum Type {
         PointLight = 0,
         DirectionalLight,

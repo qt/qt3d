@@ -51,6 +51,11 @@ QScissorTest::QScissorTest(QNode *parent)
 {
 }
 
+/*! \internal */
+QScissorTest::~QScissorTest()
+{
+}
+
 int QScissorTest::left() const
 {
     Q_D(const QScissorTest);

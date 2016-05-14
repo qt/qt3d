@@ -83,6 +83,10 @@ QAbstractLight::QAbstractLight(QAbstractLightPrivate &dd, QNode *parent)
     d->m_shaderData->setParent(this);
 }
 
+QAbstractLight::~QAbstractLight()
+{
+}
+
 QAbstractLight::Type QAbstractLight::type() const
 {
     Q_D(const QAbstractLight);

@@ -58,6 +58,11 @@ QRenderPassFilter::QRenderPassFilter(QNode *parent)
 {}
 
 /*! \internal */
+QRenderPassFilter::~QRenderPassFilter()
+{
+}
+
+/*! \internal */
 QRenderPassFilter::QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {

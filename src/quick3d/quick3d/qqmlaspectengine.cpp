@@ -105,6 +105,11 @@ QQmlAspectEngine::QQmlAspectEngine(QObject *parent)
 {
 }
 
+/*! \internal */
+QQmlAspectEngine::~QQmlAspectEngine()
+{
+}
+
 /*!
  * \return the status.
  */

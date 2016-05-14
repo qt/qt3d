@@ -76,6 +76,11 @@ QAction::QAction(Qt3DCore::QNode *parent)
 {
 }
 
+/*! \internal */
+QAction::~QAction()
+{
+}
+
 /*!
   \fn QAction::nameChanged()
 

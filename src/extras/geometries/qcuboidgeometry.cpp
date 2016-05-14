@@ -595,6 +595,13 @@ QCuboidGeometry::QCuboidGeometry(QCuboidGeometryPrivate &dd, QNode *parent)
 }
 
 /*!
+ * \internal
+ */
+QCuboidGeometry::~QCuboidGeometry()
+{
+}
+
+/*!
  * Updates indices based on mesh resolutions.
  */
 void QCuboidGeometry::updateIndices()

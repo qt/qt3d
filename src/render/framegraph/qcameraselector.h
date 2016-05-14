@@ -56,6 +56,7 @@ class QT3DRENDERSHARED_EXPORT QCameraSelector : public QFrameGraphNode
 
 public:
     explicit QCameraSelector(Qt3DCore::QNode *parent = nullptr);
+    ~QCameraSelector();
 
     Qt3DCore::QEntity *camera() const;
 

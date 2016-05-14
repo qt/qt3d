@@ -56,6 +56,7 @@ class QT3DINPUTSHARED_EXPORT QAction : public Qt3DCore::QNode
     Q_PROPERTY(bool active READ isActive NOTIFY activeChanged)
 public:
     explicit QAction(Qt3DCore::QNode *parent = nullptr);
+    ~QAction();
 
     bool isActive() const;
 

@@ -156,6 +156,13 @@ QBuffer::QBuffer(QBuffer::BufferType ty, QNode *parent)
 /*!
  * \internal
  */
+QBuffer::~QBuffer()
+{
+}
+
+/*!
+ * \internal
+ */
 void QBuffer::sceneChangeEvent(const QSceneChangePtr &change)
 {
     QPropertyUpdatedChangePtr e = qSharedPointerCast<QPropertyUpdatedChange>(change);

@@ -58,6 +58,7 @@ class QT3DINPUTSHARED_EXPORT QKeyboardDevice : public Qt3DInput::QAbstractPhysic
 
 public:
     explicit QKeyboardDevice(QNode *parent = nullptr);
+    ~QKeyboardDevice();
 
     QKeyboardHandler *activeInput() const;
 

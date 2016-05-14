@@ -68,6 +68,7 @@ class QT3DEXTRASSHARED_EXPORT QCylinderGeometry : public Qt3DRender::QGeometry
 
 public:
     explicit QCylinderGeometry(QNode *parent = nullptr);
+    ~QCylinderGeometry();
 
     void updateVertices();
     void updateIndices();

@@ -418,6 +418,13 @@ QCylinderGeometry::QCylinderGeometry(QCylinderGeometryPrivate &dd, QNode *parent
 }
 
 /*!
+ * \internal
+ */
+QCylinderGeometry::~QCylinderGeometry()
+{
+}
+
+/*!
  * Updates the vertices based on rings and slices.
  */
 void QCylinderGeometry::updateVertices()
