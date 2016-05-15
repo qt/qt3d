@@ -3,7 +3,7 @@ TARGET = qtquickscene3dplugin
 TARGETPATH = QtQuick/Scene3D
 IMPORT_VERSION = 2.0
 
-QT += qml quick 3dcore 3drender 3drender-private 3dinput
+QT += qml quick 3dcore 3drender 3drender-private 3dinput 3dlogic
 
 # Qt3D is free of Q_FOREACH - make sure it stays that way:
 DEFINES += QT_NO_FOREACH

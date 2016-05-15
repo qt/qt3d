@@ -51,6 +51,7 @@
 #include <Qt3DRender/qrendersettings.h>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DInput/qinputsettings.h>
+#include <Qt3DLogic/qlogicaspect.h>
 
 
 #include <QtQuick/qquickwindow.h>
@@ -120,7 +121,10 @@ void Scene3DItem::setAspects(const QStringList &aspects)
             m_aspectEngine->registerAspect(new Qt3DInput::QInputAspect);
             continue;
         }
-
+        if (aspect == QLatin1String("logic"))  {
+            m_aspectEngine->registerAspect(new Qt3DLogic::QLogicAspect);
+            continue;
+        }
         m_aspectEngine->registerAspect(aspect);
     }
 
