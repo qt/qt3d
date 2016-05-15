@@ -61,6 +61,7 @@
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
 #include <Qt3DRender/private/rendersettings_p.h>
+#include <Qt3DRender/private/renderviewinitializerjob_p.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -164,7 +165,7 @@ public:
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() Q_DECL_OVERRIDE;
     Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() Q_DECL_OVERRIDE;
 
-    Qt3DCore::QAspectJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
+    RenderViewInitializerJobPtr createRenderViewInitializerJob(FrameGraphNode *node, int submitOrderIndex);
 
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const Q_DECL_OVERRIDE;
 

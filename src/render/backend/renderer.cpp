@@ -51,7 +51,7 @@
 #include <Qt3DRender/qeffect.h>
 
 #include <Qt3DRender/private/qsceneiohandler_p.h>
-#include <Qt3DRender/private/renderviewjob_p.h>
+#include <Qt3DRender/private/renderviewinitializerjob_p.h>
 #include <Qt3DRender/private/renderstates_p.h>
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/framegraphvisitor_p.h>
@@ -878,9 +878,9 @@ QAspectJobPtr Renderer::pickBoundingVolumeJob()
 }
 
 // Called during while traversing the FrameGraph for each leaf node context of QAspectThread
-Qt3DCore::QAspectJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int submitOrderIndex)
+RenderViewInitializerJobPtr Renderer::createRenderViewInitializerJob(FrameGraphNode *node, int submitOrderIndex)
 {
-    RenderViewJobPtr job(new RenderViewJob);
+    RenderViewInitializerJobPtr job(new RenderViewInitializerJob);
     job->setRenderer(this);
     //    if (m_surface)
     //        job->setSurfaceSize(m_surface->size());

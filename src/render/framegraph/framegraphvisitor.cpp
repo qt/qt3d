@@ -95,7 +95,7 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
     // TODO: Pass in only framegraph config that has changed from previous
     // index RenderViewJob.
     if (fgChildIds.empty()) {
-        QAspectJobPtr job = m_renderer->createRenderViewJob(node, m_renderviewIndex++);
+        QAspectJobPtr job = m_renderer->createRenderViewInitializerJob(node, m_renderviewIndex++);
         m_jobs->append(job);
     }
 }
