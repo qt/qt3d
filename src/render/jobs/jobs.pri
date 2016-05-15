@@ -3,7 +3,6 @@ INCLUDEPATH += $$PWD
 HEADERS += \
     $$PWD/updateworldtransformjob_p.h \
     $$PWD/updateboundingvolumejob_p.h \
-    $$PWD/renderviewjob_p.h \
     $$PWD/renderviewjobutils_p.h \
     $$PWD/loadscenejob_p.h \
     $$PWD/framecleanupjob_p.h \
@@ -19,12 +18,12 @@ HEADERS += \
     $$PWD/filterentitybycomponentjob_p.h \
     $$PWD/materialparametergathererjob_p.h \
     $$PWD/genericlambdajob_p.h \
-    $$PWD/renderviewbuilderjob_p.h
+    $$PWD/renderviewbuilderjob_p.h \
+    $$PWD/renderviewinitializerjob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
     $$PWD/updateboundingvolumejob.cpp \
-    $$PWD/renderviewjob.cpp \
     $$PWD/renderviewjobutils.cpp \
     $$PWD/loadscenejob.cpp \
     $$PWD/framecleanupjob.cpp \
@@ -37,4 +36,5 @@ SOURCES += \
     $$PWD/calcgeometrytrianglevolumes.cpp \
     $$PWD/filterlayerentityjob.cpp \
     $$PWD/materialparametergathererjob.cpp \
-    $$PWD/renderviewbuilderjob.cpp
+    $$PWD/renderviewbuilderjob.cpp \
+    $$PWD/renderviewinitializerjob.cpp

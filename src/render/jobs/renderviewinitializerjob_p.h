@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2016 Paul Lemire
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
@@ -37,8 +38,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERVIEWJOB_H
-#define QT3DRENDER_RENDER_RENDERVIEWJOB_H
+#ifndef QT3DRENDER_RENDER_RENDERVIEWINITIALIZERJOB_H
+#define QT3DRENDER_RENDER_RENDERVIEWINITIALIZERJOB_H
 
 //
 //  W A R N I N G
@@ -64,16 +65,18 @@ namespace Render {
 
 class Renderer;
 class FrameGraphNode;
+class RenderView;
 
-class Q_AUTOTEST_EXPORT RenderViewJob : public Qt3DCore::QAspectJob
+class Q_AUTOTEST_EXPORT RenderViewInitializerJob : public Qt3DCore::QAspectJob
 {
 public:
-    RenderViewJob();
-    ~RenderViewJob();
+    RenderViewInitializerJob();
+    ~RenderViewInitializerJob();
 
     inline void setRenderer(Renderer *renderer) { m_renderer = renderer; }
     inline void setSurfaceSize(const QSize &size) { m_surfaceSize = size; }
     inline void setDevicePixelRatio(qreal r) { m_devicePixelRatio = r; }
+    inline RenderView *renderView() const Q_DECL_NOTHROW { return m_renderView; }
 
     inline void setFrameGraphLeafNode(FrameGraphNode *fgLeaf)
     {
@@ -96,13 +99,14 @@ private:
     qreal m_devicePixelRatio;
     FrameGraphNode *m_fgLeaf;
     int m_index;
+    RenderView *m_renderView;
 };
 
-typedef QSharedPointer<RenderViewJob> RenderViewJobPtr;
+typedef QSharedPointer<RenderViewInitializerJob> RenderViewInitializerJobPtr;
 
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERVIEWJOB_H
+#endif // QT3DRENDER_RENDER_RENDERVIEWINITIALIZERJOB_H

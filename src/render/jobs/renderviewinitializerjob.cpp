@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Paul Lemire
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,7 +38,7 @@
 **
 ****************************************************************************/
 
-#include "renderviewjob_p.h"
+#include "renderviewinitializerjob_p.h"
 
 #include <Qt3DRender/private/renderview_p.h>
 #include <Qt3DRender/private/renderer_p.h>
@@ -58,21 +59,22 @@ namespace {
 int renderViewInstanceCounter = 0;
 } // anonymous
 
-RenderViewJob::RenderViewJob()
-    : m_renderer(0)
+RenderViewInitializerJob::RenderViewInitializerJob()
+    : m_renderer(nullptr)
     , m_devicePixelRatio(1.)
-    , m_fgLeaf(0)
+    , m_fgLeaf(nullptr)
     , m_index(0)
+    , m_renderView(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderView, renderViewInstanceCounter++);
 }
 
-RenderViewJob::~RenderViewJob()
+RenderViewInitializerJob::~RenderViewInitializerJob()
 {
     renderViewInstanceCounter--;
 }
 
-void RenderViewJob::run()
+void RenderViewInitializerJob::run()
 {
     qCDebug(Jobs) << Q_FUNC_INFO << m_index;
 #if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
@@ -86,69 +88,20 @@ void RenderViewJob::run()
     // The RenderView are created from a QFrameAllocator stored in the current Thread local storage
 
     Qt3DCore::QFrameAllocator *currentFrameAllocator = m_renderer->currentFrameAllocator();
-    RenderView *renderView = currentFrameAllocator->allocate<RenderView>();
+    m_renderView = currentFrameAllocator->allocate<RenderView>();
 
     // RenderView should allocate heap resources using only the currentFrameAllocator
-    renderView->setAllocator(currentFrameAllocator);
-    renderView->setRenderer(m_renderer);
-    renderView->setSurfaceSize(m_surfaceSize);
-    renderView->setDevicePixelRatio(m_devicePixelRatio);
+    m_renderView->setAllocator(currentFrameAllocator);
+    m_renderView->setRenderer(m_renderer);
+    m_renderView->setSurfaceSize(m_surfaceSize);
+    m_renderView->setDevicePixelRatio(m_devicePixelRatio);
 
     // Populate the renderview's configuration from the framegraph
-    setRenderViewConfigFromFrameGraphLeafNode(renderView, m_fgLeaf);
+    setRenderViewConfigFromFrameGraphLeafNode(m_renderView, m_fgLeaf);
 #if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
     qint64 gatherStateTime = timer.nsecsElapsed();
     timer.restart();
 #endif
-
-    // Build RenderCommand should perform the culling as we have no way to determine
-    // if a child has a mesh in the view frustum while its parent isn't contained in it.
-    if (!renderView->noDraw()) {
-        const QMatrix4x4 viewProjectionMatrix = renderView->viewProjectionMatrix();
-
-        const Plane planes[6] = {
-            Plane(viewProjectionMatrix.row(3) + viewProjectionMatrix.row(0)), // Left
-            Plane(viewProjectionMatrix.row(3) - viewProjectionMatrix.row(0)), // Right
-            Plane(viewProjectionMatrix.row(3) + viewProjectionMatrix.row(1)), // Top
-            Plane(viewProjectionMatrix.row(3) - viewProjectionMatrix.row(1)), // Bottom
-            Plane(viewProjectionMatrix.row(3) + viewProjectionMatrix.row(2)), // Front
-            Plane(viewProjectionMatrix.row(3) - viewProjectionMatrix.row(2)), // Back
-        };
-
-        renderView->gatherLights(m_renderer->sceneRoot());
-#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
-        gatherLightsTime = timer.nsecsElapsed();
-        timer.restart();
-#endif
-
-        renderView->buildRenderCommands(m_renderer->sceneRoot(), planes);
-#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
-        buildCommandsTime = timer.nsecsElapsed();
-        timer.restart();
-#endif
-    }
-
-#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
-    qint64 creationTime = timer.nsecsElapsed();
-    timer.restart();
-#endif
-
-    // Sorts RenderCommand
-    renderView->sort();
-#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
-    qint64 sortTime = timer.nsecsElapsed();
-#endif
-
-#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
-    qDebug() << m_index
-             << "state:" << gatherStateTime / 1.0e6
-             << "lights:" << gatherLightsTime / 1.0e6
-             << "build commands:" << buildCommandsTime / 1.0e6
-             << "sort:" << sortTime / 1.0e6;
-#endif
-
-    // Enqueue our fully populated RenderView with the RenderThread
-    m_renderer->enqueueRenderView(renderView, m_index);
 }
 
 } // namespace Render
