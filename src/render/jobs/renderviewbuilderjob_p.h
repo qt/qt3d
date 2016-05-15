@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Paul Lemire
+** Copyright (C) 2016 Paul Lemire
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,21 +37,21 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_JOB_COMMON_P_H
-#define QT3DRENDER_RENDER_JOB_COMMON_P_H
+#ifndef QT3DRENDER_RENDER_RENDERVIEWBUILDERJOB_P_H
+#define QT3DRENDER_RENDER_RENDERVIEWBUILDERJOB_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <Qt3DCore/private/qaspectjob_p.h>
+#include <Qt3DCore/qaspectjob.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,29 +59,27 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace JobTypes {
+class RenderView;
+class Renderer;
 
-    enum JobType {
-        LoadBuffer = 0,
-        FrameCleanup,
-        FramePreparation,
-        CalcBoundingVolume,
-        CalcTriangleVolume,
-        LoadGeometry,
-        LoadScene,
-        LoadTextureData,
-        PickBoundingVolume,
-        RenderView,
-        UpdateTransform,
-        UpdateBoundingVolume,
-        FrameSubmission,
-        LayerFiltering,
-        EntityComponentTypeFiltering,
-        MaterialParameterGathering,
-        RenderViewBuilder
-    };
+class Q_AUTOTEST_EXPORT RenderViewBuilderJob : public Qt3DCore::QAspectJob
+{
+public:
+    RenderViewBuilderJob();
 
-} // JobTypes
+    inline void setRenderView(RenderView *rv) Q_DECL_NOTHROW { m_renderView = rv; }
+    inline void setRenderer(Renderer *renderer) Q_DECL_NOTHROW { m_renderer = renderer; }
+    inline void setIndex(int index) Q_DECL_NOTHROW { m_index = index; }
+
+    void run() Q_DECL_FINAL;
+
+private:
+    RenderView *m_renderView;
+    Renderer *m_renderer;
+    int m_index;
+};
+
+typedef QSharedPointer<RenderViewBuilderJob> RenderViewBuilderJobPtr;
 
 } // Render
 
@@ -89,4 +87,4 @@ namespace JobTypes {
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_JOB_COMMON_P_H
+#endif // QT3DRENDER_RENDER_RENDERVIEWBUILDERJOB_P_H

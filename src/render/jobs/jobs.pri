@@ -18,7 +18,8 @@ HEADERS += \
     $$PWD/filterlayerentityjob_p.h \
     $$PWD/filterentitybycomponentjob_p.h \
     $$PWD/materialparametergathererjob_p.h \
-    $$PWD/genericlambdajob_p.h
+    $$PWD/genericlambdajob_p.h \
+    $$PWD/renderviewbuilderjob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
@@ -35,4 +36,5 @@ SOURCES += \
     $$PWD/pickboundingvolumejob.cpp \
     $$PWD/calcgeometrytrianglevolumes.cpp \
     $$PWD/filterlayerentityjob.cpp \
-    $$PWD/materialparametergathererjob.cpp
+    $$PWD/materialparametergathererjob.cpp \
+    $$PWD/renderviewbuilderjob.cpp
