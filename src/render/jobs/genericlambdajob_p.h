@@ -81,6 +81,9 @@ private:
     T m_callable;
 };
 
+template<typename T>
+using GenericLambdaJobPtr = QSharedPointer<GenericLambdaJob<T>>;
+
 } // Render
 
 } // Qt3DRender

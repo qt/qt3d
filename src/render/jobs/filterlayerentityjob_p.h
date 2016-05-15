@@ -86,6 +86,8 @@ private:
     bool m_hasLayerFilter;
 };
 
+typedef QSharedPointer<FilterLayerEntityJob> FilterLayerEntityJobPtr;
+
 } // Render
 
 } // Qt3DRender

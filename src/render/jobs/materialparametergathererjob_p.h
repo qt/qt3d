@@ -91,6 +91,8 @@ private:
     QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> m_parameters;
 };
 
+typedef QSharedPointer<MaterialParameterGathererJob> MaterialParameterGathererJobPtr;
+
 } // Render
 
 } // Qt3DRender

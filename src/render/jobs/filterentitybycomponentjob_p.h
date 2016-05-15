@@ -97,6 +97,10 @@ private:
     QVector<Entity *> m_filteredEntities;
 };
 
+template<typename T, typename ... Ts>
+using FilterEntityByComponentJobPtr = QSharedPointer<FilterEntityByComponentJob<T, Ts...>>;
+
+
 } // Render
 
 } // Qt3DRender
