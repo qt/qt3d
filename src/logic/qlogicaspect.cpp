@@ -84,7 +84,7 @@ void QLogicAspectPrivate::registerBackendTypes()
 }
 
 QLogicAspect::QLogicAspect(QObject *parent)
-    : QAbstractAspect(*new QLogicAspectPrivate(), parent) {}
+    : QLogicAspect(*new QLogicAspectPrivate(), parent) {}
 
 /*! \internal */
 QLogicAspect::QLogicAspect(QLogicAspectPrivate &dd, QObject *parent)
