@@ -51,7 +51,6 @@
 #include <Qt3DRender/qeffect.h>
 
 #include <Qt3DRender/private/qsceneiohandler_p.h>
-#include <Qt3DRender/private/renderviewinitializerjob_p.h>
 #include <Qt3DRender/private/renderstates_p.h>
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/framegraphvisitor_p.h>
@@ -618,6 +617,7 @@ void Renderer::enqueueRenderView(Render::RenderView *renderView, int submitOrder
     //   could be invalid since depending on the order of execution
     //   the counter could be complete but the renderview not yet added to the
     //   buffer depending on whichever order the cpu decides to process this
+
     if (m_renderQueue->queueRenderView(renderView, submitOrder)) {
         if (m_renderThread && m_running.load())
             Q_ASSERT(m_submitRenderViewsSemaphore.available() == 0);
@@ -863,7 +863,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     visitor.traverse(frameGraphRoot(), &renderBinJobs);
 
     // Set target number of RenderViews
-    m_renderQueue->setTargetRenderViewCount(renderBinJobs.size());
+    m_renderQueue->setTargetRenderViewCount(visitor.leafNodeCount());
     return renderBinJobs;
 }
 

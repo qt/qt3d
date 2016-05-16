@@ -64,24 +64,13 @@ void RenderViewBuilderJob::run()
     // Build RenderCommand should perform the culling as we have no way to determine
     // if a child has a mesh in the view frustum while its parent isn't contained in it.
     if (!m_renderView->noDraw()) {
-        const QMatrix4x4 viewProjectionMatrix = m_renderView->viewProjectionMatrix();
-
-        const Plane planes[6] = {
-            Plane(viewProjectionMatrix.row(3) + viewProjectionMatrix.row(0)), // Left
-            Plane(viewProjectionMatrix.row(3) - viewProjectionMatrix.row(0)), // Right
-            Plane(viewProjectionMatrix.row(3) + viewProjectionMatrix.row(1)), // Top
-            Plane(viewProjectionMatrix.row(3) - viewProjectionMatrix.row(1)), // Bottom
-            Plane(viewProjectionMatrix.row(3) + viewProjectionMatrix.row(2)), // Front
-            Plane(viewProjectionMatrix.row(3) - viewProjectionMatrix.row(2)), // Back
-        };
-
         m_renderView->gatherLights(m_renderer->sceneRoot());
 #if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
         gatherLightsTime = timer.nsecsElapsed();
         timer.restart();
 #endif
 
-        m_renderView->buildRenderCommands(m_renderer->sceneRoot(), planes);
+        m_renderView->buildRenderCommands();
 #if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
         buildCommandsTime = timer.nsecsElapsed();
         timer.restart();

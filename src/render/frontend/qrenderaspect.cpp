@@ -447,6 +447,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
             jobs.append(renderBinJob);
             d->m_cleanupJob->addDependency(renderBinJob);
         }
+
         jobs.append(d->m_cleanupJob);
     }
     return jobs;

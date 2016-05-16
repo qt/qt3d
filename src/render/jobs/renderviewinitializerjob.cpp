@@ -86,12 +86,9 @@ void RenderViewInitializerJob::run()
 
     // Create a RenderView object
     // The RenderView are created from a QFrameAllocator stored in the current Thread local storage
-
-    Qt3DCore::QFrameAllocator *currentFrameAllocator = m_renderer->currentFrameAllocator();
-    m_renderView = currentFrameAllocator->allocate<RenderView>();
+    m_renderView = new RenderView;
 
     // RenderView should allocate heap resources using only the currentFrameAllocator
-    m_renderView->setAllocator(currentFrameAllocator);
     m_renderView->setRenderer(m_renderer);
     m_renderView->setSurfaceSize(m_surfaceSize);
     m_renderView->setDevicePixelRatio(m_devicePixelRatio);

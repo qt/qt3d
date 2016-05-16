@@ -77,7 +77,7 @@ public:
     inline void setTechniqueFilter(TechniqueFilter *techniqueFilter) Q_DECL_NOEXCEPT { m_techniqueFilter = techniqueFilter; }
     inline void setRenderPassFilter(RenderPassFilter *renderPassFilter) Q_DECL_NOEXCEPT { m_renderPassFilter = renderPassFilter; }
     inline void setRenderer(Renderer *renderer) Q_DECL_NOEXCEPT { m_renderer = renderer; }
-    inline QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> materialToPassAndParameter() const Q_DECL_NOEXCEPT { return m_parameters; }
+    inline QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> &materialToPassAndParameter() Q_DECL_NOEXCEPT { return m_parameters; }
 
     void run() Q_DECL_FINAL;
 

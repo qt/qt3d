@@ -114,9 +114,6 @@ public:
     RenderView();
     ~RenderView();
 
-    static void operator delete(void *ptr);
-    static void operator delete(void *ptr, void *);
-
     // TODO: Add a way to specify a sort predicate for the RenderCommands
     void sort();
 
@@ -124,47 +121,32 @@ public:
     inline void setSurfaceSize(const QSize &size) Q_DECL_NOTHROW { m_surfaceSize = size; }
     inline Renderer *renderer() const Q_DECL_NOTHROW { return m_renderer; }
     inline NodeManagers *nodeManagers() const Q_DECL_NOTHROW { return m_manager; }
-    inline const QSize &surfaceSize() const { return m_surfaceSize; }
-    inline void setDevicePixelRatio(qreal r) { m_devicePixelRatio = r; }
-    inline qreal devicePixelRatio() const { return m_devicePixelRatio; }
+    inline const QSize &surfaceSize() const Q_DECL_NOTHROW { return m_surfaceSize; }
+    inline void setDevicePixelRatio(qreal r) Q_DECL_NOTHROW { m_devicePixelRatio = r; }
+    inline qreal devicePixelRatio() const Q_DECL_NOTHROW { return m_devicePixelRatio; }
 
-    inline void setAllocator(Qt3DCore::QFrameAllocator *allocator)
-    {
-        m_allocator = allocator;
-        m_data = m_allocator->allocate<InnerData>();
-        // If we have a viewMatrix pointer instead of directly a QMatrix4x4 object in RenderView
-        // This allows us to keep the size of RenderView smaller and avoid huge block fragmentation
-        //
-        // TODO: Is this worth it here. We don't have that many RenderViews to iterate over. This
-        // level of memory management would be better in Entity's matrices as they will
-        // help cache performance during iteration
-        m_data->m_viewMatrix = m_allocator->allocate<QMatrix4x4>();
-        m_data->m_viewProjectionMatrix = m_allocator->allocate<QMatrix4x4>();
-    }
-    inline Qt3DCore::QFrameAllocator *allocator() const { return m_allocator; }
+    inline void setRenderCamera(CameraLens *renderCamera) Q_DECL_NOTHROW { m_data.m_renderCamera = renderCamera; }
+    inline CameraLens *renderCamera() const Q_DECL_NOTHROW { return m_data.m_renderCamera; }
 
-    inline void setRenderCamera(CameraLens *renderCamera) { m_data->m_renderCamera = renderCamera; }
-    inline CameraLens *renderCamera() const { return m_data->m_renderCamera; }
+    inline void setViewMatrix(const QMatrix4x4 &viewMatrix) Q_DECL_NOTHROW { m_data.m_viewMatrix = viewMatrix; }
+    inline QMatrix4x4 viewmatrix() const Q_DECL_NOTHROW { return m_data.m_viewMatrix; }
 
-    inline void setViewMatrix(const QMatrix4x4 &viewMatrix) { *(m_data->m_viewMatrix) = viewMatrix; }
-    inline QMatrix4x4 viewmatrix() const { Q_ASSERT(m_data->m_viewMatrix); return *(m_data->m_viewMatrix); }
+    inline void setViewProjectionMatrix(const QMatrix4x4 &viewProjectionMatrix) Q_DECL_NOTHROW { m_data.m_viewProjectionMatrix = viewProjectionMatrix; }
+    inline QMatrix4x4 viewProjectionMatrix() const Q_DECL_NOTHROW { return m_data.m_viewProjectionMatrix; }
 
-    inline void setViewProjectionMatrix(const QMatrix4x4 &viewProjectionMatrix) { *(m_data->m_viewProjectionMatrix) = viewProjectionMatrix; }
-    inline QMatrix4x4 viewProjectionMatrix() const { return *(m_data->m_viewProjectionMatrix); }
+    inline void setEyePosition(const QVector3D &eyePos) Q_DECL_NOTHROW { m_data.m_eyePos = eyePos; }
+    inline QVector3D eyePosition() const Q_DECL_NOTHROW { return m_data.m_eyePos; }
 
-    inline void setEyePosition(const QVector3D &eyePos) { m_data->m_eyePos = eyePos; }
-    inline QVector3D eyePosition() const { return m_data->m_eyePos; }
+    inline void setHasLayerFilter(bool filter) Q_DECL_NOTHROW { m_data.m_hasLayerFilter = filter; }
+    inline bool hasLayerFilter() const Q_DECL_NOTHROW { return m_data.m_hasLayerFilter; }
+    inline void appendLayerFilter(const Qt3DCore::QNodeIdVector &layerIds) Q_DECL_NOTHROW { m_data.m_layerIds << layerIds; }
+    inline Qt3DCore::QNodeIdVector layerFilter() const Q_DECL_NOTHROW { return m_data.m_layerIds; }
 
-    inline void setHasLayerFilter(bool filter) { m_data->m_hasLayerFilter = filter; }
-    inline bool hasLayerFilter() const { return m_data->m_hasLayerFilter; }
-    inline void appendLayerFilter(const Qt3DCore::QNodeIdVector &layerIds) { m_data->m_layerIds << layerIds; }
-    inline Qt3DCore::QNodeIdVector layerFilter() const { return m_data->m_layerIds; }
+    inline void setRenderPassFilter(const RenderPassFilter *rpFilter) Q_DECL_NOTHROW { m_data.m_passFilter = rpFilter; }
+    inline const RenderPassFilter *renderPassFilter() const Q_DECL_NOTHROW { return m_data.m_passFilter; }
 
-    inline void setRenderPassFilter(const RenderPassFilter *rpFilter) { m_data->m_passFilter = rpFilter; }
-    inline const RenderPassFilter *renderPassFilter() const { return m_data->m_passFilter; }
-
-    inline void setTechniqueFilter(const TechniqueFilter *filter) { m_data->m_techniqueFilter = filter; }
-    inline const TechniqueFilter *techniqueFilter() const { return m_data->m_techniqueFilter; }
+    inline void setTechniqueFilter(const TechniqueFilter *filter) Q_DECL_NOTHROW { m_data.m_techniqueFilter = filter; }
+    inline const TechniqueFilter *techniqueFilter() const Q_DECL_NOTHROW { return m_data.m_techniqueFilter; }
 
     inline RenderStateSet *stateSet() const Q_DECL_NOTHROW { return m_stateSet; }
     void setStateSet(RenderStateSet *stateSet) Q_DECL_NOTHROW { m_stateSet = stateSet; }
@@ -180,27 +162,15 @@ public:
     inline bool frustumCulling() const Q_DECL_NOTHROW { return m_frustumCulling; }
     void setFrustumCulling(bool frustumCulling) Q_DECL_NOTHROW { m_frustumCulling = frustumCulling; }
 
+    inline void setRenderables(const QVector<Entity *> renderables) Q_DECL_NOTHROW { m_renderables = renderables; }
+    inline void setComputables(const QVector<Entity *> computables) Q_DECL_NOTHROW { m_computables = computables; }
+    inline void setMaterialParameterTable(const QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> &parameters) Q_DECL_NOTHROW { m_parameters = parameters; }
+
     // TODO: Get rid of this overly complex memory management by splitting out the
     // InnerData as a RenderViewConfig struct. This can be created by setRenderViewConfigFromFrameGraphLeafNode
     // and passed along with the RenderView to the functions that populate the renderview
-    inline void setViewport(const QRectF &vp)
-    {
-        if (!m_viewport) {
-            Q_ASSERT(m_allocator);
-            m_viewport = m_allocator->allocate<QRectF>();
-            *m_viewport = QRectF(0.0f, 0.0f, 1.0f, 1.0f);
-        }
-        *m_viewport = vp;
-    }
-    inline QRectF viewport() const
-    {
-        if (!m_viewport) {
-            Q_ASSERT(m_allocator);
-            m_viewport = m_allocator->allocate<QRectF>();
-            *m_viewport = QRectF(0.0f, 0.0f, 1.0f, 1.0f);
-        }
-        return *m_viewport;
-    }
+    inline void setViewport(const QRectF &vp) Q_DECL_NOTHROW { m_viewport = vp; }
+    inline QRectF viewport() const Q_DECL_NOTHROW { return m_viewport; }
 
     // depth and stencil ClearBuffers are cached locally
     // color ClearBuffers are collected, as there may be multiple
@@ -214,9 +184,9 @@ public:
 
     RenderPassList passesAndParameters(ParameterInfoList *parameter, Entity *node, bool useDefaultMaterials = true);
 
-    void buildRenderCommands(Entity *rootEntity, const Plane *planes);
-    void buildDrawRenderCommands(Entity *node, const Plane *planes);
-    void buildComputeRenderCommands(Entity *node);
+    void buildRenderCommands();
+    void buildDrawRenderCommands();
+    void buildComputeRenderCommands();
     QVector<RenderCommand *> commands() const { return m_commands; }
     void gatherLights(Entity *preprocessedTreeRoot);
 
@@ -226,7 +196,7 @@ public:
     void setRenderTargetHandle(HTarget renderTargetHandle) Q_DECL_NOTHROW { m_renderTarget = renderTargetHandle; }
     HTarget renderTargetHandle() const Q_DECL_NOTHROW { return m_renderTarget; }
 
-    void addSortType(const QVector<Qt3DRender::QSortPolicy::SortType> &sortTypes) { m_data->m_sortingTypes.append(sortTypes); }
+    void addSortType(const QVector<Qt3DRender::QSortPolicy::SortType> &sortTypes) { m_data.m_sortingTypes.append(sortTypes); }
 
     void setSurface(QSurface *surface) { m_surface = surface; }
     QSurface *surface() const { return m_surface; }
@@ -239,15 +209,14 @@ public:
             : m_renderCamera(nullptr)
             , m_techniqueFilter(nullptr)
             , m_passFilter(nullptr)
-            , m_viewMatrix(nullptr)
             , m_hasLayerFilter(false)
         {
         }
         CameraLens *m_renderCamera;
         const TechniqueFilter *m_techniqueFilter;
         const RenderPassFilter *m_passFilter;
-        QMatrix4x4 *m_viewMatrix;
-        QMatrix4x4 *m_viewProjectionMatrix;
+        QMatrix4x4 m_viewMatrix;
+        QMatrix4x4 m_viewProjectionMatrix;
         bool m_hasLayerFilter;
         Qt3DCore::QNodeIdVector m_layerIds;
         QVector<Qt3DRender::QSortPolicy::SortType> m_sortingTypes;
@@ -271,11 +240,10 @@ private:
     NodeManagers *m_manager;
     QSize m_surfaceSize;
     qreal m_devicePixelRatio;
-    Qt3DCore::QFrameAllocator *m_allocator;
 
-    InnerData *m_data;
+    InnerData m_data;
 
-    mutable QRectF *m_viewport;
+    QRectF m_viewport;
     HTarget m_renderTarget;
     QSurface *m_surface;
     AttachmentPack m_attachmentPack;
@@ -294,8 +262,11 @@ private:
     // render aspect is free to change the drawables on the next frame whilst
     // the render thread is submitting these commands.
     QVector<RenderCommand *> m_commands;
-
     QVector<LightSource> m_lightSources;
+
+    QVector<Entity *> m_renderables;
+    QVector<Entity *> m_computables;
+    QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> m_parameters;
 
     typedef QHash<int, QUniformValue (RenderView::*)(const QMatrix4x4& model) const> StandardUniformsPFuncsHash;
     static StandardUniformsPFuncsHash ms_standardUniformSetters;

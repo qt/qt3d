@@ -75,6 +75,8 @@ public:
     void traverse(FrameGraphNode *root,
                   QVector<Qt3DCore::QAspectJobPtr> *jobs);
 
+    inline int leafNodeCount() Q_DECL_NOTHROW { return m_renderviewIndex; }
+
 private:
     void visit(Render::FrameGraphNode *node);
 

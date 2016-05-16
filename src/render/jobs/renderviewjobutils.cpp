@@ -180,7 +180,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 // Create global RenderStateSet for renderView if no stateSet was set before
                 RenderStateSet *stateSet = rv->stateSet();
                 if (stateSet == nullptr) {
-                    stateSet = rv->allocator()->allocate<RenderStateSet>();
+                    stateSet = new RenderStateSet();
                     rv->setStateSet(stateSet);
                 }
 
