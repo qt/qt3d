@@ -54,6 +54,8 @@ namespace {
 
 int materialParameterGathererCounter = 0;
 
+const int likelyNumberOfParameters = 24;
+
 } // anonymous
 
 MaterialParameterGathererJob::MaterialParameterGathererJob()
@@ -78,8 +80,6 @@ MaterialParameterGathererJob::MaterialParameterGathererJob()
 // improvement
 void MaterialParameterGathererJob::run()
 {
-    m_parameters.clear();
-
     const QVector<HMaterial> materialHandles = m_manager->materialManager()->activeHandles();
     for (const HMaterial materialHandle : materialHandles) {
         Material *material = m_manager->materialManager()->data(materialHandle);
@@ -105,6 +105,8 @@ void MaterialParameterGathererJob::run()
                 // passFilter have priority over techniqueFilter
 
                 ParameterInfoList parameters;
+                // Doing the reserve allows a gain of 0.5ms on some of the demo examples
+                parameters.reserve(likelyNumberOfParameters);
 
                 if (m_renderPassFilter)
                     parametersFromParametersProvider(&parameters, m_manager->parameterManager(),
