@@ -100,8 +100,9 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DCore::QTransform> transform(new Qt3DCore::QTransform());
-        TestArbiter arbiter(transform.data());
+        arbiter.setArbiterOnNode(transform.data());
 
         // WHEN
         transform->setTranslation(QVector3D(454.0f, 427.0f, 383.0f));

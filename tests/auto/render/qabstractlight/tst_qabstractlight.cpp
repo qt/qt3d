@@ -143,41 +143,43 @@ private Q_SLOTS:
 
     void checkLightPropertyUpdates()
     {
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QAbstractLight> light(new DummyLight);
-        TestArbiter lightArbiter(light.data());
+        arbiter.setArbiterOnNode(light.data());
 
         light->setColor(Qt::red);
         light->setIntensity(0.5f);
         QCoreApplication::processEvents();
 
-        QCOMPARE(lightArbiter.events.size(), 2 * 2); // Due to contained shader data
+        QCOMPARE(arbiter.events.size(), 2 * 2); // Due to contained shader data
         for (int i = 0; i < 2; i++)
-            lightArbiter.events.removeAt(i);
-        Qt3DCore::QPropertyUpdatedChangePtr change = lightArbiter.events[0].staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            arbiter.events.removeAt(i);
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events[0].staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "color");
         QCOMPARE(change->subjectId(), light->id());
         QCOMPARE(change->value().value<QColor>(), QColor(Qt::red));
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-        change = lightArbiter.events[1].staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        change = arbiter.events[1].staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "intensity");
         QCOMPARE(change->subjectId(), light->id());
         QCOMPARE(change->value().value<float>(), 0.5f);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
-        lightArbiter.events.clear();
+        arbiter.events.clear();
 
         light->setColor(Qt::red);
         QCoreApplication::processEvents();
 
-        QCOMPARE(lightArbiter.events.size(), 0);
+        QCOMPARE(arbiter.events.size(), 0);
 
-        lightArbiter.events.clear();
+        arbiter.events.clear();
     }
 
     void checkPointLightPropertyUpdates()
     {
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QPointLight> pointLight(new Qt3DRender::QPointLight);
-        TestArbiter pointLightArbiter(pointLight.data());
+        arbiter.setArbiterOnNode(pointLight.data());
 
         pointLight->setColor(Qt::green);
         pointLight->setIntensity(0.5f);
@@ -186,69 +188,71 @@ private Q_SLOTS:
         pointLight->setQuadraticAttenuation(1.0f);
         QCoreApplication::processEvents();
 
-        QCOMPARE(pointLightArbiter.events.size(), 4 * 2); // Due to contained shader data
+        QCOMPARE(arbiter.events.size(), 4 * 2); // Due to contained shader data
         for (int i = 0; i < 4; i++)
-            pointLightArbiter.events.removeAt(i);
-        Qt3DCore::QPropertyUpdatedChangePtr change = pointLightArbiter.events[0].staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            arbiter.events.removeAt(i);
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events[0].staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "color");
         QCOMPARE(change->subjectId(), pointLight->id());
         QCOMPARE(change->value().value<QColor>(), QColor(Qt::green));
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-        change = pointLightArbiter.events[1].staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        change = arbiter.events[1].staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "intensity");
         QCOMPARE(change->subjectId(), pointLight->id());
         QCOMPARE(change->value().value<float>(), 0.5f);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-        change = pointLightArbiter.events[2].staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        change = arbiter.events[2].staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "constantAttenuation");
         QCOMPARE(change->subjectId(), pointLight->id());
         QCOMPARE(change->value().value<float>(), 0.5f);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-        change = pointLightArbiter.events[3].staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        change = arbiter.events[3].staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "quadraticAttenuation");
         QCOMPARE(change->subjectId(), pointLight->id());
         QCOMPARE(change->value().value<float>(), 1.0f);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
-        pointLightArbiter.events.clear();
+        arbiter.events.clear();
     }
 
     void checkDirectionalLightPropertyUpdates()
     {
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QDirectionalLight> dirLight(new Qt3DRender::QDirectionalLight);
-        TestArbiter dirLightArbiter(dirLight.data());
+        arbiter.setArbiterOnNode(dirLight.data());
 
         dirLight->setColor(Qt::blue);
         dirLight->setIntensity(0.5f);
         dirLight->setWorldDirection(QVector3D(0.5f, 0.0f, -1.0f));
         QCoreApplication::processEvents();
 
-        QCOMPARE(dirLightArbiter.events.size(), 3 * 2); // Due to contained shader data
+        QCOMPARE(arbiter.events.size(), 3 * 2); // Due to contained shader data
         for (int i = 0; i < 3; i++)
-            dirLightArbiter.events.removeAt(i);
-        Qt3DCore::QPropertyUpdatedChangePtr change = dirLightArbiter.events[0].staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            arbiter.events.removeAt(i);
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events[0].staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "color");
         QCOMPARE(change->subjectId(), dirLight->id());
         QCOMPARE(change->value().value<QColor>(), QColor(Qt::blue));
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-        change = dirLightArbiter.events[1].staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        change = arbiter.events[1].staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "intensity");
         QCOMPARE(change->subjectId(), dirLight->id());
         QCOMPARE(change->value().value<float>(), 0.5f);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-        change = dirLightArbiter.events[2].staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        change = arbiter.events[2].staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "worldDirection");
         QCOMPARE(change->subjectId(), dirLight->id());
         QCOMPARE(change->value().value<QVector3D>(), QVector3D(0.5f, 0.0f, -1.0f));
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
-        dirLightArbiter.events.clear();
+        arbiter.events.clear();
     }
 
     void checkSpotLightPropertyUpdates()
     {
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QSpotLight> spotLight(new Qt3DRender::QSpotLight);
-        TestArbiter spotLightArbiter(spotLight.data());
+        arbiter.setArbiterOnNode(spotLight.data());
 
         spotLight->setColor(Qt::lightGray);
         spotLight->setIntensity(0.5f);
@@ -256,31 +260,31 @@ private Q_SLOTS:
         spotLight->setCutOffAngle(0.75f);
         QCoreApplication::processEvents();
 
-        QCOMPARE(spotLightArbiter.events.size(), 4 * 2); // Due to contained shader data
+        QCOMPARE(arbiter.events.size(), 4 * 2); // Due to contained shader data
         for (int i = 0; i < 4; i++)
-            spotLightArbiter.events.removeAt(i);
-        Qt3DCore::QPropertyUpdatedChangePtr change = spotLightArbiter.events[0].staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            arbiter.events.removeAt(i);
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events[0].staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "color");
         QCOMPARE(change->subjectId(), spotLight->id());
         QCOMPARE(change->value().value<QColor>(), QColor(Qt::lightGray));
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-        change = spotLightArbiter.events[1].staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        change = arbiter.events[1].staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "intensity");
         QCOMPARE(change->subjectId(), spotLight->id());
         QCOMPARE(change->value().value<float>(), 0.5f);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-        change = spotLightArbiter.events[2].staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        change = arbiter.events[2].staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "localDirection");
         QCOMPARE(change->subjectId(), spotLight->id());
         QCOMPARE(change->value().value<QVector3D>(), QVector3D(0.5f, 0.0f, -1.0f));
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-        change = spotLightArbiter.events[3].staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        change = arbiter.events[3].staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "cutOffAngle");
         QCOMPARE(change->subjectId(), spotLight->id());
         QCOMPARE(change->value().value<float>(), 0.75f);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
-        spotLightArbiter.events.clear();
+        arbiter.events.clear();
     }
 };
 

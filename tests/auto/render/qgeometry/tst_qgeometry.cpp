@@ -108,8 +108,9 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QGeometry> geometry(new Qt3DRender::QGeometry());
-        TestArbiter arbiter(geometry.data());
+        arbiter.setArbiterOnNode(geometry.data());
 
         // WHEN
         Qt3DRender::QAttribute attr;

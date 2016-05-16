@@ -102,8 +102,9 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QFrameGraphNode> frameGraphNode(new MyFrameGraphNode());
-        TestArbiter arbiter(frameGraphNode.data());
+        arbiter.setArbiterOnNode(frameGraphNode.data());
 
         // WHEN
         frameGraphNode->setEnabled(false);

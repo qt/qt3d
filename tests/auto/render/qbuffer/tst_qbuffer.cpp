@@ -125,8 +125,9 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QBuffer> buffer(new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer));
-        TestArbiter arbiter(buffer.data());
+        arbiter.setArbiterOnNode(buffer.data());
 
         // WHEN
         buffer->setType(Qt3DRender::QBuffer::IndexBuffer);

@@ -467,8 +467,9 @@ void tst_RenderViewUtils::topLevelDynamicProperties()
 void tst_RenderViewUtils::shouldNotifyDynamicPropertyChanges()
 {
     // GIVEN
+    TestArbiter arbiter;
     QScopedPointer<Qt3DRender::QShaderData> shaderData(new Qt3DRender::QShaderData());
-    TestArbiter arbiter(shaderData.data());
+    arbiter.setArbiterOnNode(shaderData.data());
 
     // WHEN
     shaderData->setProperty("scalar", 883.0f);

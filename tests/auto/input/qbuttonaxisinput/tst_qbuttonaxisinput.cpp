@@ -102,8 +102,9 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DInput::QButtonAxisInput> axisInput(new Qt3DInput::QButtonAxisInput());
-        TestArbiter arbiter(axisInput.data());
+        arbiter.setArbiterOnNode(axisInput.data());
 
         // WHEN
         QVector<int> buttons = QVector<int>() << 555;

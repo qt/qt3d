@@ -107,8 +107,9 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QRenderTargetSelector> renderTargetSelector(new Qt3DRender::QRenderTargetSelector());
-        TestArbiter arbiter(renderTargetSelector.data());
+        arbiter.setArbiterOnNode(renderTargetSelector.data());
 
         // WHEN
         Qt3DRender::QRenderTarget *target = new Qt3DRender::QRenderTarget();

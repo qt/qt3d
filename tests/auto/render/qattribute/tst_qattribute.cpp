@@ -115,8 +115,9 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QAttribute> attribute(new Qt3DRender::QAttribute());
-        TestArbiter arbiter(attribute.data());
+        arbiter.setArbiterOnNode(attribute.data());
 
         // WHEN
         attribute->setDataType(Qt3DRender::QAttribute::Double);

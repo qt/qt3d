@@ -91,6 +91,7 @@ void QNodePrivate::init(QNode *parent)
     // in a deferred way when the object is fully constructed. This is delayed
     // until the object is fully constructed as it involves calling a virtual
     // function of QNode.
+    m_parentId = parent->id();
     const auto parentPrivate = get(parent);
     m_scene = parentPrivate->m_scene;
     Q_Q(QNode);
@@ -114,6 +115,43 @@ void QNodePrivate::notifyCreationChange()
     const auto creationChanges = generator.creationChanges();
     for (const auto &change : creationChanges)
         notifyObservers(change);
+}
+
+/*!
+ * \internal
+ *
+ * Notify the backend that the parent lost this node as a child and
+ * that this node is being destroyed. We only send the node removed
+ * change for the parent's children property iff we have an id for
+ * a parent node. This is set/unset in the _q_addChild()/_q_removeChild()
+ * functions (and initialized in init() if there is a parent at
+ * construction time).
+ *
+ * Likewise, we only send the node destroyed change, iff we have
+ * previously sent a node created change. This is tracked via the
+ * m_hasBackendNode member.
+ */
+void QNodePrivate::notifyDestructionChangesAndRemoveFromScene()
+{
+    Q_Q(QNode);
+
+//    // We notify the backend that the parent lost us as a child
+    if (m_changeArbiter != nullptr && !m_parentId.isNull()) {
+        const auto change = QPropertyNodeRemovedChangePtr::create(m_parentId, q);
+        change->setPropertyName("children");
+        notifyObservers(change);
+    }
+
+    // Tell the backend we are about to be destroyed
+    if (m_hasBackendNode) {
+        const QDestructionIdAndTypeCollector collector(q);
+        const auto destroyedChange = QNodeDestroyedChangePtr::create(q, collector.subtreeIdsAndTypes());
+        notifyObservers(destroyedChange);
+    }
+
+    // We unset the scene from the node as its backend node was/is about to be destroyed
+    QNodeVisitor visitor;
+    visitor.traverse(q, this, &QNodePrivate::unsetSceneHelper);
 }
 
 /*!
@@ -152,6 +190,14 @@ void QNodePrivate::_q_addChild(QNode *childNode)
     Q_ASSERT(childNode);
     Q_ASSERT_X(childNode->parent() == q_func(), Q_FUNC_INFO,  "not a child of this node");
 
+    // Store our id as the parentId in the child so that even if the child gets
+    // removed from the scene as part of the destruction of the parent, when the
+    // parent's children are deleted in the QObject dtor, we still have access to
+    // the parentId. If we didn't store this, we wouldn't have access at that time
+    // because the parent woudl then only be a QObject, the QNode part would have
+    // been destroyed already.
+    QNodePrivate::get(childNode)->m_parentId = m_id;
+
     if (!m_scene)
         return;
 
@@ -179,6 +225,8 @@ void QNodePrivate::_q_removeChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
     Q_ASSERT_X(childNode->parent() == q_func(), Q_FUNC_INFO, "not a child of this node");
+
+    QNodePrivate::get(childNode)->m_parentId = QNodeId();
 
     // We notify the backend that we lost a child
     if (m_changeArbiter != nullptr) {
@@ -220,18 +268,8 @@ void QNodePrivate::_q_setParentHelper(QNode *parent)
 
         // If we have an old parent but the new parent is null
         // the backend node needs to be destroyed
-        if (!parent) {
-            // Tell the backend we are about to be destroyed
-            if (m_hasBackendNode) {
-                const QDestructionIdAndTypeCollector collector(q);
-                const auto destroyedChange = QNodeDestroyedChangePtr::create(q, collector.subtreeIdsAndTypes());
-                notifyObservers(destroyedChange);
-            }
-
-            // We unset the scene from the node as its backend node was/is about to be destroyed
-            QNodeVisitor visitor;
-            visitor.traverse(q, oldParentNode->d_func(), &QNodePrivate::unsetSceneHelper);
-        }
+        if (!parent)
+            notifyDestructionChangesAndRemoveFromScene();
     }
 
     // Basically QObject::setParent but for QObjectPrivate
@@ -586,10 +624,10 @@ QNode::QNode(QNodePrivate &dd, QNode *parent)
 
 QNode::~QNode()
 {
-    // If we have a parent it makes sense to let it know we are about to be destroyed.
-    // This in turn triggers the deletion of the corresponding backend nodes for the
-    // subtree rooted at this QNode.
-    setParent(Q_NODE_NULLPTR);
+    // Notify the backend that the parent lost this node as a child and
+    // that this node is being destroyed.
+    Q_D(QNode);
+    d->notifyDestructionChangesAndRemoveFromScene();
 }
 
 /*!

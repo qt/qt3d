@@ -103,8 +103,9 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QObjectPicker> objectPicker(new Qt3DRender::QObjectPicker());
-        TestArbiter arbiter(objectPicker.data());
+        arbiter.setArbiterOnNode(objectPicker.data());
 
         // WHEN
         objectPicker->setHoverEnabled(true);

@@ -149,8 +149,9 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QTechniqueFilter> techniqueFilter(new Qt3DRender::QTechniqueFilter());
-        TestArbiter arbiter(techniqueFilter.data());
+        arbiter.setArbiterOnNode(techniqueFilter.data());
 
         // WHEN
         Qt3DRender::QParameter *param1 = new Qt3DRender::QParameter();

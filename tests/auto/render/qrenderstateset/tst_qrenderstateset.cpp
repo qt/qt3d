@@ -130,8 +130,9 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QRenderStateSet> stateSet(new Qt3DRender::QRenderStateSet());
-        TestArbiter arbiter(stateSet.data());
+        arbiter.setArbiterOnNode(stateSet.data());
 
         // WHEN
         Qt3DRender::QRenderState *state1 = new MyStateSet();

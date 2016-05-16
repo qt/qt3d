@@ -150,8 +150,9 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QGeometryRenderer> geometryRenderer(new Qt3DRender::QGeometryRenderer());
-        TestArbiter arbiter(geometryRenderer.data());
+        arbiter.setArbiterOnNode(geometryRenderer.data());
 
         // WHEN
         geometryRenderer->setInstanceCount(256);

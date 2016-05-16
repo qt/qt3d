@@ -53,8 +53,7 @@ private:
 class TestArbiter : public Qt3DCore::QAbstractArbiter
 {
 public:
-    TestArbiter(Qt3DCore::QNode *node = nullptr);
-
+    TestArbiter();
     ~TestArbiter();
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
@@ -67,11 +66,10 @@ public:
 
     QVector<Qt3DCore::QSceneChangePtr> events;
 
+    void setArbiterOnNode(Qt3DCore::QNode *node);
+
 private:
     TestPostman *m_postman;
-    Qt3DCore::QNode *m_node;
-
-    void assignArbiter(Qt3DCore::QNode *node);
 };
 
 QT_END_NAMESPACE

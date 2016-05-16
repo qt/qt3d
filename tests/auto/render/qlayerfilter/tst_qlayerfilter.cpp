@@ -112,8 +112,9 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QLayerFilter> layerFilter(new Qt3DRender::QLayerFilter());
-        TestArbiter arbiter(layerFilter.data());
+        arbiter.setArbiterOnNode(layerFilter.data());
 
         // WHEN
         auto layer = new Qt3DRender::QLayer(layersNode.data());
