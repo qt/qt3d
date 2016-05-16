@@ -45,6 +45,7 @@
 #ifdef QT3D_JOBS_RUN_STATS
 #include <QFile>
 #include <QThreadStorage>
+#include <QDateTime>
 #endif
 
 QT_BEGIN_NAMESPACE
@@ -200,7 +201,7 @@ void QThreadPooler::writeFrameJobLogStats()
     static QScopedPointer<QFile> traceFile;
     static quint32 frameId = 0;
     if (!traceFile) {
-        traceFile.reset(new QFile(QStringLiteral("trace.qt3d")));
+        traceFile.reset(new QFile(QStringLiteral("trace_") + QDateTime::currentDateTime().toString() + QStringLiteral(".qt3d")));
         if (!traceFile->open(QFile::WriteOnly|QFile::Truncate))
             qCritical("Failed to open trace file");
     }
@@ -217,7 +218,6 @@ void QThreadPooler::writeFrameJobLogStats()
 
 
     for (const QVector<JobRunStats> *storage : qAsConst(localStorages)) {
-        qDebug() << Q_FUNC_INFO << localStorages.size() << storage << storage->size();
         for (const JobRunStats &stat : *storage) {
             traceFile->write(reinterpret_cast<const char *>(&stat), sizeof(JobRunStats));
         }
