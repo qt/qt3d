@@ -156,7 +156,11 @@ QAspectEngine::~QAspectEngine()
     // Shutdown the simulation loop by setting an empty scene
     setRootEntity(QEntityPtr());
 
-    // Exit the main loop
+    // Unregister all aspects and exit the main loop
+    const auto aspects = d->m_aspects;
+    for (auto aspect : aspects)
+        unregisterAspect(aspect);
+
     d->m_aspectThread->aspectManager()->quit();
     d->m_aspectThread->wait();
 
@@ -253,6 +257,13 @@ void QAspectEngine::unregisterAspect(QAbstractAspect *aspect)
     // of aspects.
     // TODO: Implement this once we are able to cleanly shutdown
 
+    // Tell the aspect manager to give the aspect a chance to do some cleanup
+    // in its QAbstractAspect::onUnregistered() virtual
+    QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
+                              "unregisterAspect",
+                              Qt::BlockingQueuedConnection,
+                              Q_ARG(Qt3DCore::QAbstractAspect *, aspect));
+
     // Remove from our collection of named aspects (if present)
     const auto it = std::find_if(d->m_namedAspects.begin(), d->m_namedAspects.end(),
                                  [aspect](QAbstractAspect *v) { return v == aspect; });
@@ -262,6 +273,7 @@ void QAspectEngine::unregisterAspect(QAbstractAspect *aspect)
     // Finally, scheduly the aspect for deletion. Do this via the event loop
     // in case we are unregistering the aspect in response to a signal from it.
     aspect->deleteLater();
+    d->m_aspects.removeOne(aspect);
 }
 
 /*!

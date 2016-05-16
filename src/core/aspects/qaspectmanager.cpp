@@ -196,6 +196,26 @@ void QAspectManager::registerAspect(QAbstractAspect *aspect)
     qCDebug(Aspects) << "Completed registering aspect";
 }
 
+/*!
+ * \internal
+ *
+ * Calls QAbstractAspect::onUnregistered(), unregisters the aspect from the
+ * change arbiter and unsets the arbiter, job manager and aspect manager.
+ * Operations are performed in the reverse order to registerAspect.
+ */
+void QAspectManager::unregisterAspect(Qt3DCore::QAbstractAspect *aspect)
+{
+    qCDebug(Aspects) << "Unregistering aspect";
+    Q_ASSERT(aspect);
+    aspect->onUnregistered();
+    m_changeArbiter->unregisterSceneObserver(aspect->d_func());
+    QAbstractAspectPrivate::get(aspect)->m_arbiter = nullptr;
+    QAbstractAspectPrivate::get(aspect)->m_jobManager = nullptr;
+    QAbstractAspectPrivate::get(aspect)->m_aspectManager = nullptr;
+    m_aspects.removeOne(aspect);
+    qCDebug(Aspects) << "Completed unregistering aspect";
+}
+
 void QAspectManager::exec()
 {
     // Gentlemen, start your engines

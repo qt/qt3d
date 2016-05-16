@@ -92,6 +92,7 @@ public Q_SLOTS:
 
     void setRootEntity(Qt3DCore::QEntity *root, const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> &changes);
     void registerAspect(Qt3DCore::QAbstractAspect *aspect);
+    void unregisterAspect(Qt3DCore::QAbstractAspect *aspect);
 
     void exec();
     void quit();
