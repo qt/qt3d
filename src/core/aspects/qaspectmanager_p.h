@@ -112,6 +112,7 @@ private:
     QAtomicInt m_runSimulationLoop;
     QAtomicInt m_runMainLoop;
     QScopedPointer<QServiceLocator> m_serviceLocator;
+    QSemaphore m_waitForEndOfSimulationLoop;
     QSemaphore m_waitForEndOfExecLoop;
     QSemaphore m_waitForQuit;
 };

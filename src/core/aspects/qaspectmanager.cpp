@@ -73,6 +73,7 @@ QAspectManager::QAspectManager(QObject *parent)
     , m_jobManager(new QAspectJobManager(this))
     , m_changeArbiter(new QChangeArbiter(this))
     , m_serviceLocator(new QServiceLocator())
+    , m_waitForEndOfSimulationLoop(0)
     , m_waitForEndOfExecLoop(0)
     , m_waitForQuit(0)
 {
@@ -115,6 +116,10 @@ void QAspectManager::exitSimulationLoop()
     // QLogicComponent::onFrameUpdate() callback.
     for (QAbstractAspect *aspect : qAsConst(m_aspects))
         aspect->d_func()->onEngineAboutToShutdown();
+
+    // Wait until the simulation loop is fully exited and the aspects are done
+    // processing any final changes and have had onEngineShutdown() called on them
+    m_waitForEndOfSimulationLoop.acquire(1);
 }
 
 bool QAspectManager::isShuttingDown() const
@@ -278,6 +283,9 @@ void QAspectManager::exec()
         } // End of simulation loop
 
         if (needsShutdown) {
+            // Process any pending changes from the frontend before we shut the aspects down
+            m_changeArbiter->syncChanges();
+
             // Give aspects a chance to perform any shutdown actions. This may include unqueuing
             // any blocking work on the main thread that could potentially deadlock during shutdown.
             qCDebug(Aspects) << "Calling onEngineShutdown() for each aspect";
@@ -286,6 +294,9 @@ void QAspectManager::exec()
                 aspect->onEngineShutdown();
             }
             qCDebug(Aspects) << "Done calling onEngineShutdown() for each aspect";
+
+            // Wake up the main thread which is waiting for us inside of exitSimulationLoop()
+            m_waitForEndOfSimulationLoop.release(1);
         }
     } // End of main loop
     qCDebug(Aspects) << Q_FUNC_INFO << "***** Exited main loop *****";

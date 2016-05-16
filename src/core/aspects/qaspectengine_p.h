@@ -82,6 +82,7 @@ public:
     QSharedPointer<QEntity> m_root;
     QVector<QAbstractAspect*> m_aspects;
     QHash<QString, QAbstractAspect *> m_namedAspects;
+    bool m_initialized;
 
     void initialize();
     void shutdown();

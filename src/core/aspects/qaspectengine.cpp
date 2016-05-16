@@ -67,6 +67,7 @@ QAspectEnginePrivate::QAspectEnginePrivate()
     : QObjectPrivate()
     , m_postman(nullptr)
     , m_scene(nullptr)
+    , m_initialized(false)
 {
     qRegisterMetaType<Qt3DCore::QAbstractAspect *>();
     qRegisterMetaType<Qt3DCore::QObserverInterface *>();
@@ -186,6 +187,7 @@ void QAspectEnginePrivate::initialize()
     QMetaObject::invokeMethod(arbiter,
                               "setScene",
                               Q_ARG(Qt3DCore::QScene*, m_scene));
+    m_initialized = true;
 }
 
 /*!
@@ -199,10 +201,20 @@ void QAspectEnginePrivate::shutdown()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
 
+    // Flush any change batch waiting in the postman that may contain node
+    // destruction changes that the aspects should process before we exit
+    // the simulation loop
+    m_postman->submitChangeBatch();
+
+    // Exit the simulation loop. Waits for this to be completed on the aspect
+    // thread before returning
+    m_aspectThread->aspectManager()->exitSimulationLoop();
+
     // Cleanup the scene before quitting the backend
     m_scene->setArbiter(nullptr);
     QChangeArbiter *arbiter = m_aspectThread->aspectManager()->changeArbiter();
     QChangeArbiter::destroyUnmanagedThreadLocalChangeQueue(arbiter);
+    m_initialized = false;
 }
 
 /*!
@@ -350,17 +362,15 @@ void QAspectEngine::setRootEntity(QEntityPtr root)
     if (d->m_root == root)
         return;
 
-    const bool shutdownNeeded = d->m_root;
+    const bool shutdownNeeded = d->m_root && d->m_initialized;
 
     // Set the new root object. This will cause the old tree to be deleted
     // and the deletion of the old frontend tree will cause the backends to
     // free any related resources
     d->m_root = root;
 
-    if (shutdownNeeded) {
+    if (shutdownNeeded)
         d->shutdown();
-        d->m_aspectThread->aspectManager()->exitSimulationLoop();
-    }
 
     // Do we actually have a new scene?
     if (!d->m_root)

@@ -81,7 +81,7 @@ public:
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_FINAL;
     void notifyBackend(const QSceneChangePtr &change) Q_DECL_FINAL;
 
-private Q_SLOTS:
+public Q_SLOTS:
     void submitChangeBatch();
 
 private:
