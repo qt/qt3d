@@ -168,15 +168,18 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     // All world stuff depends on the RenderEntity's localBoundingVolume
     m_worldTransformJob->addDependency(m_calculateBoundingVolumeJob);
 
-    // Create property renderer implementation given
-    // a targeted rendering API -> only OpenGL for now
+    // Create a renderer implementation given
+    // a specific rendering API -> only OpenGL for now
     m_renderer = new Render::Renderer(type);
     m_renderer->setNodeManagers(m_nodeManagers);
 }
 
 QRenderAspectPrivate::~QRenderAspectPrivate()
 {
-    delete m_renderer;
+    // The renderer should have been shutdown as part of onUnregistered().
+    // If it still exists then this aspect is being deleted before the aspect
+    // engine is finished with it.
+    Q_ASSERT(m_renderer == nullptr);
     delete m_nodeManagers;
 }
 
@@ -421,8 +424,17 @@ void QRenderAspect::onRegistered()
 void QRenderAspect::onUnregistered()
 {
     Q_D(QRenderAspect);
-    if (d->m_renderer)
+    if (d->m_renderer) {
+        // Request the renderer shuts down. In the threaded renderer case, the
+        // Renderer destructor is the synchronization point where we wait for the
+        // thread to join (see below).
+        d->m_renderer->shutdown();
+
+        // Free the per-thread threadpool allocators
         d->m_renderer->destroyAllocators(d->jobManager());
+    }
+
+    // Waits for the render thread to join (if using threaded renderer)
     delete d->m_renderer;
     d->m_renderer = nullptr;
 }
