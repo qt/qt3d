@@ -453,7 +453,7 @@ void GraphicsHelperGL2::bindUniform(const QVariant &v, const ShaderUniform &desc
 void GraphicsHelperGL2::bindFrameBufferObject(GLuint frameBufferId)
 {
     if (m_fboFuncs != nullptr)
-        m_fboFuncs->glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBufferId);
+        m_fboFuncs->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBufferId);
     else
         qWarning() << "FBO not supported by your OpenGL hardware";
 }
