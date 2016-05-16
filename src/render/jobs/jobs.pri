@@ -19,7 +19,8 @@ HEADERS += \
     $$PWD/materialparametergathererjob_p.h \
     $$PWD/genericlambdajob_p.h \
     $$PWD/renderviewbuilderjob_p.h \
-    $$PWD/renderviewinitializerjob_p.h
+    $$PWD/renderviewinitializerjob_p.h \
+    $$PWD/frustumcullingjob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
@@ -37,4 +38,5 @@ SOURCES += \
     $$PWD/filterlayerentityjob.cpp \
     $$PWD/materialparametergathererjob.cpp \
     $$PWD/renderviewbuilderjob.cpp \
-    $$PWD/renderviewinitializerjob.cpp
+    $$PWD/renderviewinitializerjob.cpp \
+    $$PWD/frustumcullingjob.cpp

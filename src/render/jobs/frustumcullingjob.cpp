@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Paul Lemire
+** Copyright (C) 2016 Paul Lemire
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,21 +37,12 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_JOB_COMMON_P_H
-#define QT3DRENDER_RENDER_JOB_COMMON_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/private/qaspectjob_p.h>
+#include "frustumcullingjob_p.h"
+#include <Qt3DRender/private/job_common_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/renderview_p.h>
+#include <Qt3DRender/private/sphere_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,36 +50,56 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace JobTypes {
+FrustumCullingJob::FrustumCullingJob()
+    : Qt3DCore::QAspectJob()
+    , m_root(nullptr)
+{
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FrustumCulling, 0);
+}
 
-    enum JobType {
-        LoadBuffer = 0,
-        FrameCleanup,
-        FramePreparation,
-        CalcBoundingVolume,
-        CalcTriangleVolume,
-        LoadGeometry,
-        LoadScene,
-        LoadTextureData,
-        PickBoundingVolume,
-        RenderView,
-        UpdateTransform,
-        UpdateBoundingVolume,
-        FrameSubmission,
-        LayerFiltering,
-        EntityComponentTypeFiltering,
-        MaterialParameterGathering,
-        RenderViewBuilder,
-        GenericLambda,
-        FrustumCulling
+void FrustumCullingJob::run()
+{
+    m_visibleEntities.clear();
+
+    const Plane planes[6] = {
+        Plane(m_viewProjection.row(3) + m_viewProjection.row(0)), // Left
+        Plane(m_viewProjection.row(3) - m_viewProjection.row(0)), // Right
+        Plane(m_viewProjection.row(3) + m_viewProjection.row(1)), // Top
+        Plane(m_viewProjection.row(3) - m_viewProjection.row(1)), // Bottom
+        Plane(m_viewProjection.row(3) + m_viewProjection.row(2)), // Front
+        Plane(m_viewProjection.row(3) - m_viewProjection.row(2)), // Back
     };
 
-} // JobTypes
+    cullScene(m_root, planes);
+}
+
+void FrustumCullingJob::cullScene(Entity *e, const Plane *planes)
+{
+    const Sphere *s = e->worldBoundingVolumeWithChildren();
+
+    // Unrolled loop
+    if (!QVector3D::dotProduct(s->center(), planes[0].normal) + planes[0].d < -s->radius())
+        return;
+    if (!QVector3D::dotProduct(s->center(), planes[1].normal) + planes[1].d < -s->radius())
+        return;
+    if (!QVector3D::dotProduct(s->center(), planes[2].normal) + planes[2].d < -s->radius())
+        return;
+    if (!QVector3D::dotProduct(s->center(), planes[3].normal) + planes[3].d < -s->radius())
+        return;
+    if (!QVector3D::dotProduct(s->center(), planes[4].normal) + planes[4].d < -s->radius())
+        return;
+    if (!QVector3D::dotProduct(s->center(), planes[5].normal) + planes[5].d < -s->radius())
+        return;
+
+    m_visibleEntities.push_back(e);
+
+    const QVector<Entity *> children = e->children();
+    for (Entity *c : children)
+        cullScene(c, planes);
+}
 
 } // Render
 
 } // Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_JOB_COMMON_P_H

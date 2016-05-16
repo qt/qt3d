@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Paul Lemire
+** Copyright (C) 2016 Paul Lemire
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,21 +37,22 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_JOB_COMMON_P_H
-#define QT3DRENDER_RENDER_JOB_COMMON_P_H
+#ifndef QT3DRENDER_RENDER_FRUSTUMCULLINGJOB_P_H
+#define QT3DRENDER_RENDER_FRUSTUMCULLINGJOB_P_H
+
+#include <Qt3DCore/qaspectjob.h>
+#include <QMatrix4x4>
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
-
-#include <Qt3DCore/private/qaspectjob_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,31 +60,30 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace JobTypes {
+class Entity;
+class EntityManager;
+class Plane;
 
-    enum JobType {
-        LoadBuffer = 0,
-        FrameCleanup,
-        FramePreparation,
-        CalcBoundingVolume,
-        CalcTriangleVolume,
-        LoadGeometry,
-        LoadScene,
-        LoadTextureData,
-        PickBoundingVolume,
-        RenderView,
-        UpdateTransform,
-        UpdateBoundingVolume,
-        FrameSubmission,
-        LayerFiltering,
-        EntityComponentTypeFiltering,
-        MaterialParameterGathering,
-        RenderViewBuilder,
-        GenericLambda,
-        FrustumCulling
-    };
+class FrustumCullingJob : public Qt3DCore::QAspectJob
+{
+public:
+    FrustumCullingJob();
 
-} // JobTypes
+    inline void setRoot(Entity *root) Q_DECL_NOTHROW { m_root = root; }
+    inline void setViewProjection(const QMatrix4x4 &viewProjection) Q_DECL_NOTHROW { m_viewProjection = viewProjection; }
+
+    QVector<Entity *> visibleEntities() const Q_DECL_NOTHROW { return m_visibleEntities; }
+
+    void run() Q_DECL_FINAL;
+
+private:
+    void cullScene(Entity *e, const Plane *planes);
+    QMatrix4x4 m_viewProjection;
+    Entity *m_root;
+    QVector<Entity *> m_visibleEntities;
+};
+
+typedef QSharedPointer<FrustumCullingJob> FrustumCullingJobPtr;
 
 } // Render
 
@@ -91,4 +91,4 @@ namespace JobTypes {
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_JOB_COMMON_P_H
+#endif // QT3DRENDER_RENDER_FRUSTUMCULLINGJOB_P_H
