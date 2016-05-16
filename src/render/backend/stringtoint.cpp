@@ -87,8 +87,11 @@ int StringToInt::lookupId(const QString &str)
         if (StringToInt::m_calls % 20 == 0 && StringToInt::m_pendingStringsArray.size() > 0) {
             // Unlock reader to writeLock
             // since a read lock cannot be locked for writing
+            lock.unlock();
             readLocker.unlock();
+
             QWriteLocker writeLock(&readLock);
+            lock.relock();
 
             StringToInt::m_stringsArray += StringToInt::m_pendingStringsArray;
             StringToInt::m_pendingStringsArray.clear();
