@@ -85,6 +85,10 @@ QRenderSettings::QRenderSettings(QRenderSettingsPrivate &dd, Qt3DCore::QNode *pa
     d->init();
 }
 
+QRenderSettings::~QRenderSettings()
+{
+}
+
 QPickingSettings *QRenderSettings::pickingSettings()
 {
     Q_D(QRenderSettings);
