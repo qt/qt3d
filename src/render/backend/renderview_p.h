@@ -121,9 +121,9 @@ public:
     void sort();
 
     void setRenderer(Renderer *renderer);
-    inline void setSurfaceSize(const QSize &size) Q_DECL_NOEXCEPT { m_surfaceSize = size; }
-    inline Renderer *renderer() const Q_DECL_NOEXCEPT { return m_renderer; }
-    inline NodeManagers *nodeManagers() const Q_DECL_NOEXCEPT { return m_manager; }
+    inline void setSurfaceSize(const QSize &size) Q_DECL_NOTHROW { m_surfaceSize = size; }
+    inline Renderer *renderer() const Q_DECL_NOTHROW { return m_renderer; }
+    inline NodeManagers *nodeManagers() const Q_DECL_NOTHROW { return m_manager; }
     inline const QSize &surfaceSize() const { return m_surfaceSize; }
     inline void setDevicePixelRatio(qreal r) { m_devicePixelRatio = r; }
     inline qreal devicePixelRatio() const { return m_devicePixelRatio; }
@@ -166,19 +166,19 @@ public:
     inline void setTechniqueFilter(const TechniqueFilter *filter) { m_data->m_techniqueFilter = filter; }
     inline const TechniqueFilter *techniqueFilter() const { return m_data->m_techniqueFilter; }
 
-    inline RenderStateSet *stateSet() const Q_DECL_NOEXCEPT { return m_stateSet; }
-    void setStateSet(RenderStateSet *stateSet) Q_DECL_NOEXCEPT { m_stateSet = stateSet; }
+    inline RenderStateSet *stateSet() const Q_DECL_NOTHROW { return m_stateSet; }
+    void setStateSet(RenderStateSet *stateSet) Q_DECL_NOTHROW { m_stateSet = stateSet; }
 
-    inline bool noDraw() const Q_DECL_NOEXCEPT { return m_noDraw; }
-    void setNoDraw(bool noDraw) Q_DECL_NOEXCEPT { m_noDraw = noDraw; }
+    inline bool noDraw() const Q_DECL_NOTHROW { return m_noDraw; }
+    void setNoDraw(bool noDraw) Q_DECL_NOTHROW { m_noDraw = noDraw; }
 
-    inline bool isCompute() const Q_DECL_NOEXCEPT { return m_compute; }
-    void setCompute(bool compute) Q_DECL_NOEXCEPT { m_compute = compute; }
+    inline bool isCompute() const Q_DECL_NOTHROW { return m_compute; }
+    void setCompute(bool compute) Q_DECL_NOTHROW { m_compute = compute; }
 
-    void setComputeWorkgroups(int x, int y, int z) Q_DECL_NOEXCEPT { m_workGroups[0] = x; m_workGroups[1] = y; m_workGroups[2] = z; }
-    const int *computeWorkGroups() const Q_DECL_NOEXCEPT { return m_workGroups; }
-    inline bool frustumCulling() const Q_DECL_NOEXCEPT { return m_frustumCulling; }
-    void setFrustumCulling(bool frustumCulling) Q_DECL_NOEXCEPT { m_frustumCulling = frustumCulling; }
+    void setComputeWorkgroups(int x, int y, int z) Q_DECL_NOTHROW { m_workGroups[0] = x; m_workGroups[1] = y; m_workGroups[2] = z; }
+    const int *computeWorkGroups() const Q_DECL_NOTHROW { return m_workGroups; }
+    inline bool frustumCulling() const Q_DECL_NOTHROW { return m_frustumCulling; }
+    void setFrustumCulling(bool frustumCulling) Q_DECL_NOTHROW { m_frustumCulling = frustumCulling; }
 
     // TODO: Get rid of this overly complex memory management by splitting out the
     // InnerData as a RenderViewConfig struct. This can be created by setRenderViewConfigFromFrameGraphLeafNode
@@ -223,8 +223,8 @@ public:
     void setAttachmentPack(const AttachmentPack &pack) { m_attachmentPack = pack; }
     const AttachmentPack &attachmentPack() const { return m_attachmentPack; }
 
-    void setRenderTargetHandle(HTarget renderTargetHandle) Q_DECL_NOEXCEPT { m_renderTarget = renderTargetHandle; }
-    HTarget renderTargetHandle() const Q_DECL_NOEXCEPT { return m_renderTarget; }
+    void setRenderTargetHandle(HTarget renderTargetHandle) Q_DECL_NOTHROW { m_renderTarget = renderTargetHandle; }
+    HTarget renderTargetHandle() const Q_DECL_NOTHROW { return m_renderTarget; }
 
     void addSortType(const QVector<Qt3DRender::QSortPolicy::SortType> &sortTypes) { m_data->m_sortingTypes.append(sortTypes); }
 
