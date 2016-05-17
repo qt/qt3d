@@ -67,7 +67,6 @@ class RenderSettings : public BackendNode
 public:
     RenderSettings();
 
-    void cleanup();
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     Qt3DCore::QNodeId activeFrameGraphID() const { return m_activeFrameGraph; }

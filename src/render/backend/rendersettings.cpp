@@ -53,8 +53,11 @@ namespace Render {
 
 RenderSettings::RenderSettings()
     : BackendNode()
+    , m_renderPolicy(QRenderSettings::OnDemand)
+    , m_pickMethod(QPickingSettings::BoundingVolumePicking)
+    , m_pickResultMode(QPickingSettings::NearestPick)
+    , m_activeFrameGraph()
 {
-    cleanup();
 }
 
 void RenderSettings::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -65,14 +68,6 @@ void RenderSettings::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePt
     m_renderPolicy = data.renderPolicy;
     m_pickMethod = data.pickMethod;
     m_pickResultMode = data.pickResultMode;
-}
-
-void RenderSettings::cleanup()
-{
-    m_pickMethod = QPickingSettings::BoundingVolumePicking;
-    m_pickResultMode = QPickingSettings::NearestPick;
-    m_activeFrameGraph = Qt3DCore::QNodeId();
-    m_renderPolicy = QRenderSettings::OnDemand;
 }
 
 void RenderSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -115,13 +110,15 @@ Qt3DCore::QBackendNode *RenderSettingsFunctor::create(const Qt3DCore::QNodeCreat
 Qt3DCore::QBackendNode *RenderSettingsFunctor::get(Qt3DCore::QNodeId id) const
 {
     Q_UNUSED(id);
-    return nullptr;
+    return m_renderer->settings();
 }
 
 void RenderSettingsFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     Q_UNUSED(id);
     // Deletes the old settings object
+    auto settings = m_renderer->settings();
+    delete settings;
     m_renderer->setSettings(nullptr);
 }
 
