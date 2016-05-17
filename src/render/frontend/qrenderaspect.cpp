@@ -303,8 +303,11 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     // 6 PickBoundingVolumeJob
     // 7 Cleanup Job (depends on RV)
 
-    // Create jobs to load in any meshes that are pending
-    if (d->m_renderer != nullptr && d->m_renderer->isRunning()) {
+    // Ensure we have a settings object. It may get deleted by the call to
+    // QChangeArbiter::syncChanges() that happens just before the render aspect is
+    // asked for jobs to execute (this function). If that is the case, the RenderSettings will
+    // be null and we should not generate any jobs.
+    if (d->m_renderer != nullptr && d->m_renderer->isRunning() && d->m_renderer->settings()) {
         // don't spawn any jobs, if the renderer decides to skip this frame
         if (!d->m_renderer->shouldRender()) {
             d->m_renderer->skipNextFrame();
