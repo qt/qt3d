@@ -99,7 +99,13 @@ void QAspectManager::enterSimulationLoop()
 void QAspectManager::exitSimulationLoop()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
-    m_runSimulationLoop.fetchAndStoreOrdered(0);
+
+    // If this fails, simulation loop is already exited so nothing to do
+    if (!m_runSimulationLoop.testAndSetOrdered(1, 0)) {
+        qCDebug(Aspects) << "Simulation loop was not running. Nothing to do";
+        return;
+    }
+
     QAbstractFrameAdvanceService *frameAdvanceService =
             m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService);
     if (frameAdvanceService)

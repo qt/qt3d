@@ -63,6 +63,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+QAspectEnginePrivate *QAspectEnginePrivate::get(QAspectEngine *q)
+{
+    return q->d_func();
+}
+
 QAspectEnginePrivate::QAspectEnginePrivate()
     : QObjectPrivate()
     , m_postman(nullptr)
@@ -208,13 +213,18 @@ void QAspectEnginePrivate::shutdown()
 
     // Exit the simulation loop. Waits for this to be completed on the aspect
     // thread before returning
-    m_aspectThread->aspectManager()->exitSimulationLoop();
+    exitSimulationLoop();
 
     // Cleanup the scene before quitting the backend
     m_scene->setArbiter(nullptr);
     QChangeArbiter *arbiter = m_aspectThread->aspectManager()->changeArbiter();
     QChangeArbiter::destroyUnmanagedThreadLocalChangeQueue(arbiter);
     m_initialized = false;
+}
+
+void QAspectEnginePrivate::exitSimulationLoop()
+{
+    m_aspectThread->aspectManager()->exitSimulationLoop();
 }
 
 /*!
