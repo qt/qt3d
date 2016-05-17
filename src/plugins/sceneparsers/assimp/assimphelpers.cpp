@@ -157,29 +157,29 @@ void AssimpIOStream::Flush()
  *
  */
 
-/*!
- * Builds a new instance of AssimpIOSystem.
- */
-AssimpIOSystem::AssimpIOSystem() :
-    Assimp::IOSystem()
+static QIODevice::OpenMode openModeFromText(const char *name) noexcept
 {
-    m_openModeMaps[QByteArrayLiteral("r")] = QIODevice::ReadOnly;
-    m_openModeMaps[QByteArrayLiteral("r+")] = QIODevice::ReadWrite;
-    m_openModeMaps[QByteArrayLiteral("w")] = QIODevice::WriteOnly | QIODevice::Truncate;
-    m_openModeMaps[QByteArrayLiteral("w+")] = QIODevice::ReadWrite | QIODevice::Truncate;
-    m_openModeMaps[QByteArrayLiteral("a")] = QIODevice::WriteOnly | QIODevice::Append;
-    m_openModeMaps[QByteArrayLiteral("a+")] = QIODevice::ReadWrite | QIODevice::Append;
-    m_openModeMaps[QByteArrayLiteral("wb")] = QIODevice::WriteOnly;
-    m_openModeMaps[QByteArrayLiteral("wt")] = QIODevice::WriteOnly | QIODevice::Text;
-    m_openModeMaps[QByteArrayLiteral("rb")] = QIODevice::ReadOnly;
-    m_openModeMaps[QByteArrayLiteral("rt")] = QIODevice::ReadOnly | QIODevice::Text;
-}
+    static const struct OpenModeMapping {
+        char name[2];
+        ushort mode;
+    } openModeMapping[] = {
+        { { 'r',   0 },  QIODevice::ReadOnly  },
+        { { 'r', '+' },  QIODevice::ReadWrite },
+        { { 'w',   0 },  QIODevice::WriteOnly | QIODevice::Truncate },
+        { { 'w', '+' },  QIODevice::ReadWrite | QIODevice::Truncate },
+        { { 'a',   0 },  QIODevice::WriteOnly | QIODevice::Append },
+        { { 'a', '+' },  QIODevice::ReadWrite | QIODevice::Append },
+        { { 'w', 'b' },  QIODevice::WriteOnly },
+        { { 'w', 't' },  QIODevice::WriteOnly | QIODevice::Text },
+        { { 'r', 'b' },  QIODevice::ReadOnly  },
+        { { 'r', 't' },  QIODevice::ReadOnly  | QIODevice::Text },
+    };
 
-/*!
- * Clears an AssimpIOSystem instance before deletion.
- */
-AssimpIOSystem::~AssimpIOSystem()
-{
+    for (auto e : openModeMapping) {
+        if (qstrncmp(e.name, name, sizeof(OpenModeMapping::name)) == 0)
+            return static_cast<QIODevice::OpenMode>(e.mode);
+    }
+    return QIODevice::NotOpen;
 }
 
 /*!
@@ -205,14 +205,13 @@ char AssimpIOSystem::getOsSeparator() const
 Assimp::IOStream *AssimpIOSystem::Open(const char *pFile, const char *pMode)
 {
     const QString fileName(QString::fromUtf8(pFile));
-    const QByteArray cleanedMode(QByteArray(pMode).trimmed());
+    const QLatin1String cleanedMode = QLatin1String{pMode}.trimmed();
 
-    const QIODevice::OpenMode openMode = m_openModeMaps.value(cleanedMode, QIODevice::NotOpen);
-
-    QScopedPointer<QFile> file(new QFile(fileName));
-    if (file->open(openMode))
-        return new AssimpIOStream(file.take());
-
+    if (const QIODevice::OpenMode openMode = openModeFromText(cleanedMode.data())) {
+        QScopedPointer<QFile> file(new QFile(fileName));
+        if (file->open(openMode))
+            return new AssimpIOStream(file.take());
+    }
     return nullptr;
 }
 
