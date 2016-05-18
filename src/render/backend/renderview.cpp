@@ -371,25 +371,13 @@ void RenderView::addClearBuffers(const ClearBuffers *cb) {
     }
 }
 
-// Tries to order renderCommand by shader so as to minimize shader changes
-void RenderView::buildRenderCommands()
-{
-    if (m_compute) {
-        // 1) Look for Compute Entities if Entity -> components [ ComputeJob, Material ]
-        // when the RenderView is part of a DispatchCompute branch
-        buildComputeRenderCommands();
-    } else {
-        // 2) Look for Drawable  Entities if Entity -> components [ GeometryRenderer, Material ]
-        // when the RenderView is not part of a DispatchCompute branch
-        // Investigate if it's worth doing as separate jobs
-        buildDrawRenderCommands();
-    }
-}
-
 // If we are there, we know that entity had a GeometryRenderer + Material
-void RenderView::buildDrawRenderCommands()
+QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entity *> &entities) const
 {
-    for (Entity *node : qAsConst(m_renderables)) {
+    QVector<RenderCommand *> commands;
+    commands.reserve(entities.size());
+
+    for (Entity *node : entities) {
         GeometryRenderer *geometryRenderer = nullptr;
         HGeometryRenderer geometryRendererHandle = node->componentHandle<GeometryRenderer, 16>();
         // There is a geometry renderer with geometry
@@ -438,20 +426,23 @@ void RenderView::buildDrawRenderCommands()
                 setShaderAndUniforms(command, pass, globalParameters, *(node->worldTransform()), activeLightSources);
 
                 buildSortingKey(command);
-                m_commands.append(command);
+                commands.append(command);
             }
         }
     }
+    return commands;
 }
 
-void RenderView::buildComputeRenderCommands()
+QVector<RenderCommand *> RenderView::buildComputeRenderCommands(const QVector<Entity *> &entities) const
 {
     // If the RenderView contains only a ComputeDispatch then it cares about
     // A ComputeDispatch is also implicitely a NoDraw operation
     // enabled flag
     // layer component
     // material/effect/technique/parameters/filters/
-    for (Entity *node : qAsConst(m_computables)) {
+    QVector<RenderCommand *> commands;
+    commands.reserve(entities.size());
+    for (Entity *node : entities) {
         ComputeCommand *computeJob = nullptr;
         if ((computeJob = node->renderComponent<ComputeCommand>()) != nullptr
                 && computeJob->isEnabled()) {
@@ -476,13 +467,14 @@ void RenderView::buildComputeRenderCommands()
                                      globalParameters,
                                      *(node->worldTransform()),
                                      QVector<LightSource>());
-                m_commands.append(command);
+                commands.append(command);
             }
         }
     }
+    return commands;
 }
 
-void RenderView::setUniformValue(ShaderParameterPack &uniformPack, int nameId, const QVariant &value)
+void RenderView::setUniformValue(ShaderParameterPack &uniformPack, int nameId, const QVariant &value) const
 {
     Texture *tex = nullptr;
     // At this point a uniform value can only be a scalar type
@@ -506,7 +498,7 @@ void RenderView::setUniformValue(ShaderParameterPack &uniformPack, int nameId, c
     }
 }
 
-void RenderView::setStandardUniformValue(ShaderParameterPack &uniformPack, int glslNameId, int nameId, const QMatrix4x4 &worldTransform)
+void RenderView::setStandardUniformValue(ShaderParameterPack &uniformPack, int glslNameId, int nameId, const QMatrix4x4 &worldTransform) const
 {
     uniformPack.setUniform(glslNameId, (this->*ms_standardUniformSetters[nameId])(worldTransform));
 }
@@ -514,7 +506,7 @@ void RenderView::setStandardUniformValue(ShaderParameterPack &uniformPack, int g
 void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
                                       Shader *shader,
                                       const ShaderUniformBlock &block,
-                                      const QVariant &value)
+                                      const QVariant &value) const
 {
     Q_UNUSED(shader)
 
@@ -584,7 +576,7 @@ void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
 void RenderView::setShaderStorageValue(ShaderParameterPack &uniformPack,
                                        Shader *shader,
                                        const ShaderStorageBlock &block,
-                                       const QVariant &value)
+                                       const QVariant &value) const
 {
     Q_UNUSED(shader)
     if (static_cast<QMetaType::Type>(value.userType()) == qNodeIdTypeId) {
@@ -599,7 +591,7 @@ void RenderView::setShaderStorageValue(ShaderParameterPack &uniformPack,
     }
 }
 
-void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack, Shader *shader, ShaderData *shaderData, const QString &structName)
+void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack, Shader *shader, ShaderData *shaderData, const QString &structName) const
 {
     m_data.m_uniformBlockBuilder.activeUniformNamesToValue.clear();
 
@@ -621,7 +613,7 @@ void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &unif
     }
 }
 
-void RenderView::buildSortingKey(RenderCommand *command)
+void RenderView::buildSortingKey(RenderCommand *command) const
 {
     // Build a bitset key depending on the SortingCriterion
     int sortCount = m_data.m_sortingTypes.count();
@@ -647,7 +639,7 @@ void RenderView::buildSortingKey(RenderCommand *command)
 }
 
 void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform,
-                                      const QVector<LightSource> &activeLightSources)
+                                      const QVector<LightSource> &activeLightSources) const
 {
     // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
     // Set shader, technique, and effect by basically doing :

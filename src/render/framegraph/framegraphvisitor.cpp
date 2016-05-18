@@ -144,14 +144,24 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         computeEntityFilterer->setManager(entityManager);
         frustumCulling->setRoot(m_renderer->sceneRoot());
         lightGatherer->setManager(entityManager);
-        renderViewCommandBuilder->setIndex(currentRenderViewIndex);
-        renderViewCommandBuilder->setRenderer(m_renderer);
+
+        // RenderCommand building is the most consuming task -> split it
+        QVector<Render::RenderViewBuilderJobPtr> renderViewCommandBuilders;
+        const int commandBuilderCount = std::max(entityManager->count() / 32, 1);
+        // Estimate the number of jobs to create based on the number of entities
+
+        for (auto i = 0; i < commandBuilderCount; ++i) {
+            auto renderViewCommandBuilder = Render::RenderViewBuilderJobPtr::create();
+            renderViewCommandBuilder->setIndex(currentRenderViewIndex);
+            renderViewCommandBuilder->setRenderer(m_renderer);
+            renderViewCommandBuilders.push_back(renderViewCommandBuilder);
+        }
 
         // Since Material gathering is an heavy task, we split it
         QVector<Render::MaterialParameterGathererJobPtr> materialGatherers;
         { // Scoped to avoid copy in lambdas
             const QVector<HMaterial> materialHandles = m_renderer->nodeManagers()->materialManager()->activeHandles();
-            const int materialGathererCount = std::max(materialHandles.size() / 8, 1);
+            const int materialGathererCount = materialHandles.size() / 8 + 1;
             materialGatherers.reserve(materialGathererCount);
             for (auto i = 0; i < materialGathererCount; ++i) {
                 auto materialGatherer = Render::MaterialParameterGathererJobPtr::create();
@@ -178,6 +188,10 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
 
             // Frustum culling
             frustumCulling->setViewProjection(rv->viewProjectionMatrix());
+
+            // Command builders
+            for (const auto renderViewCommandBuilder : qAsConst(renderViewCommandBuilders))
+                renderViewCommandBuilder->setRenderView(rv);
         };
 
         // Copy shared ptr -> this is called after filtering / culling / parameter setting has been performed
@@ -210,15 +224,31 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
                                 renderableEntities.removeAt(i);
                         }
                     }
+                    // Split among the number of command builders
+                    const int packetSize = renderableEntities.size() / commandBuilderCount;
+                    for (auto i = 0; i < commandBuilderCount; ++i) {
+                        const RenderViewBuilderJobPtr renderViewCommandBuilder = renderViewCommandBuilders.at(i);
+                        if (i == commandBuilderCount - 1)
+                            renderViewCommandBuilder->setRenderables(renderableEntities.mid(i * packetSize, packetSize + renderableEntities.size() % commandBuilderCount));
+                        else
+                            renderViewCommandBuilder->setRenderables(renderableEntities.mid(i * packetSize, packetSize));
+                    }
 
-                    rv->setRenderables(std::move(renderableEntities));
                 } else {
                     QVector<Entity *> computableEntities = computeEntityFilterer->filteredEntities();
                     for (auto i = computableEntities.size() - 1; i >= 0; --i) {
                         if (!filteredEntities.contains(computableEntities.at(i)))
                             computableEntities.removeAt(i);
                     }
-                    rv->setComputables(std::move(computableEntities));
+                    // Split among the number of command builders
+                    const int packetSize = computableEntities.size() / commandBuilderCount;
+                    for (auto i = 0; i < commandBuilderCount; ++i) {
+                        const RenderViewBuilderJobPtr renderViewCommandBuilder = renderViewCommandBuilders.at(i);
+                        if (i == commandBuilderCount - 1)
+                            renderViewCommandBuilder->setRenderables(computableEntities.mid(i * packetSize, packetSize + computableEntities.size() % commandBuilderCount));
+                        else
+                            renderViewCommandBuilder->setRenderables(computableEntities.mid(i * packetSize, packetSize));
+                    }
                 }
 
                 // Reduction
@@ -228,11 +258,30 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
                 // Set all required data on the RenderView for final processing
                 rv->setMaterialParameterTable(std::move(params));
             }
-            renderViewCommandBuilder->setRenderView(renderViewJob->renderView());
+        };
+
+        Renderer *renderer = m_renderer;
+        // Called after each RenderViewBuilder has built its RenderCommands
+        auto syncRenderViewCommandBuilders = [=] () {
+            // Append all the commands and sort them
+            RenderView *rv = renderViewJob->renderView();
+
+            QVector<RenderCommand *> commands;
+            // Reduction
+            for (const auto renderViewCommandBuilder : qAsConst(renderViewCommandBuilders))
+                commands += std::move(renderViewCommandBuilder->commands());
+            rv->setCommands(commands);
+
+            // Sort the commands
+            rv->sort();
+
+            // Enqueue our fully populated RenderView with the RenderThread
+            renderer->enqueueRenderView(rv, currentRenderViewIndex);
         };
 
         auto syncRenderViewCommandBuildingJob = GenericLambdaJobPtr<decltype(syncForRenderCommandBuilding)>::create(syncForRenderCommandBuilding);
         auto syncRenderViewInitializationJob = GenericLambdaJobPtr<decltype(syncRenderViewInitialization)>::create(syncRenderViewInitialization);
+        auto syncRenderViewCommandBuildersJob = GenericLambdaJobPtr<decltype(syncRenderViewCommandBuilders)>::create(syncRenderViewCommandBuilders);
 
         // Set dependencies
         syncRenderViewInitializationJob->addDependency(renderViewJob);
@@ -250,7 +299,10 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         syncRenderViewCommandBuildingJob->addDependency(filterEntityByLayer);
         syncRenderViewCommandBuildingJob->addDependency(lightGatherer);
 
-        renderViewCommandBuilder->addDependency(syncRenderViewCommandBuildingJob);
+        for (const auto renderViewCommandBuilder : qAsConst(renderViewCommandBuilders)) {
+            renderViewCommandBuilder->addDependency(syncRenderViewCommandBuildingJob);
+            syncRenderViewCommandBuildersJob->addDependency(renderViewCommandBuilder);
+        }
 
         // Add jobs
         m_jobs->push_back(renderViewJob);
@@ -259,11 +311,16 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         m_jobs->push_back(computeEntityFilterer);
         m_jobs->push_back(syncRenderViewInitializationJob);
         m_jobs->push_back(syncRenderViewCommandBuildingJob);
-        m_jobs->push_back(renderViewCommandBuilder);
         m_jobs->push_back(frustumCulling);
         m_jobs->push_back(lightGatherer);
+        m_jobs->push_back(syncRenderViewCommandBuildersJob);
+
         for (const auto materialGatherer : qAsConst(materialGatherers))
             m_jobs->push_back(materialGatherer);
+
+        for (const auto renderViewCommandBuilder : qAsConst(renderViewCommandBuilders))
+            m_jobs->push_back(renderViewCommandBuilder);
+
     }
 }
 

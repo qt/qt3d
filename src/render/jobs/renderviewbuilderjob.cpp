@@ -68,8 +68,10 @@ void RenderViewBuilderJob::run()
         gatherLightsTime = timer.nsecsElapsed();
         timer.restart();
 #endif
-
-        m_renderView->buildRenderCommands();
+    if (!m_renderView->isCompute())
+        m_commands = m_renderView->buildDrawRenderCommands(m_renderables);
+    else
+        m_commands = m_renderView->buildComputeRenderCommands(m_renderables);
 #if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
         buildCommandsTime = timer.nsecsElapsed();
         timer.restart();
@@ -81,8 +83,6 @@ void RenderViewBuilderJob::run()
     timer.restart();
 #endif
 
-    // Sorts RenderCommand
-    m_renderView->sort();
 #if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
     qint64 sortTime = timer.nsecsElapsed();
 #endif
@@ -95,8 +95,7 @@ void RenderViewBuilderJob::run()
              << "sort:" << sortTime / 1.0e6;
 #endif
 
-    // Enqueue our fully populated RenderView with the RenderThread
-    m_renderer->enqueueRenderView(m_renderView, m_index);
+
 }
 
 } // Render

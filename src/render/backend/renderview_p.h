@@ -162,8 +162,6 @@ public:
     inline bool frustumCulling() const Q_DECL_NOTHROW { return m_frustumCulling; }
     void setFrustumCulling(bool frustumCulling) Q_DECL_NOTHROW { m_frustumCulling = frustumCulling; }
 
-    inline void setRenderables(const QVector<Entity *> renderables) Q_DECL_NOTHROW { m_renderables = renderables; }
-    inline void setComputables(const QVector<Entity *> computables) Q_DECL_NOTHROW { m_computables = computables; }
     inline void setMaterialParameterTable(const QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> &parameters) Q_DECL_NOTHROW { m_parameters = parameters; }
 
     // TODO: Get rid of this overly complex memory management by splitting out the
@@ -184,10 +182,10 @@ public:
 
     RenderPassList passesAndParameters(ParameterInfoList *parameter, Entity *node, bool useDefaultMaterials = true);
 
-    void buildRenderCommands();
-    void buildDrawRenderCommands();
-    void buildComputeRenderCommands();
-    QVector<RenderCommand *> commands() const { return m_commands; }
+    QVector<RenderCommand *> buildDrawRenderCommands(const QVector<Entity *> &entities) const;
+    QVector<RenderCommand *> buildComputeRenderCommands(const QVector<Entity *> &entities) const;
+    void setCommands(QVector<RenderCommand *> &commands) Q_DECL_NOTHROW { m_commands = commands; }
+    QVector<RenderCommand *> commands() const Q_DECL_NOTHROW { return m_commands; }
 
     void setAttachmentPack(const AttachmentPack &pack) { m_attachmentPack = pack; }
     const AttachmentPack &attachmentPack() const { return m_attachmentPack; }
@@ -222,12 +220,12 @@ public:
         Qt3DCore::QNodeIdVector m_layerIds;
         QVector<Qt3DRender::QSortPolicy::SortType> m_sortingTypes;
         QVector3D m_eyePos;
-        UniformBlockValueBuilder m_uniformBlockBuilder;
+        mutable UniformBlockValueBuilder m_uniformBlockBuilder;
     };
 
 private:
     void setShaderAndUniforms(RenderCommand *command, RenderPass *pass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform,
-                              const QVector<LightSource> &activeLightSources);
+                              const QVector<LightSource> &activeLightSources) const;
 
     Renderer *m_renderer;
     NodeManagers *m_manager;
@@ -255,10 +253,8 @@ private:
     // render aspect is free to change the drawables on the next frame whilst
     // the render thread is submitting these commands.
     QVector<RenderCommand *> m_commands;
-    QVector<LightSource> m_lightSources;
+    mutable QVector<LightSource> m_lightSources;
 
-    QVector<Entity *> m_renderables;
-    QVector<Entity *> m_computables;
     QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> m_parameters;
 
     typedef QHash<int, QUniformValue (RenderView::*)(const QMatrix4x4& model) const> StandardUniformsPFuncsHash;
@@ -282,21 +278,21 @@ private:
     QUniformValue time(const QMatrix4x4 &model) const;
     QUniformValue eyePosition(const QMatrix4x4 &model) const;
 
-    void setUniformValue(ShaderParameterPack &uniformPack, int nameId, const QVariant &value);
-    void setStandardUniformValue(ShaderParameterPack &uniformPack, int glslNameId, int nameId, const QMatrix4x4 &worldTransform);
+    void setUniformValue(ShaderParameterPack &uniformPack, int nameId, const QVariant &value) const;
+    void setStandardUniformValue(ShaderParameterPack &uniformPack, int glslNameId, int nameId, const QMatrix4x4 &worldTransform) const;
     void setUniformBlockValue(ShaderParameterPack &uniformPack,
                               Shader *shader,
                               const ShaderUniformBlock &block,
-                              const QVariant &value);
+                              const QVariant &value) const;
     void setShaderStorageValue(ShaderParameterPack &uniformPack,
                                Shader *shader,
                                const ShaderStorageBlock &block,
-                               const QVariant &value);
+                               const QVariant &value) const;
     void setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack,
                                                Shader *shader,
                                                ShaderData *shaderData,
-                                               const QString &structName);
-    void buildSortingKey(RenderCommand *command);
+                                               const QString &structName) const;
+    void buildSortingKey(RenderCommand *command) const;
 };
 
 } // namespace Render

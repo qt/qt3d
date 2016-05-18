@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DCore/qaspectjob.h>
+#include <Qt3DRender/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,6 +62,7 @@ namespace Render {
 
 class RenderView;
 class Renderer;
+class RenderCommand;
 
 class Q_AUTOTEST_EXPORT RenderViewBuilderJob : public Qt3DCore::QAspectJob
 {
@@ -70,6 +72,8 @@ public:
     inline void setRenderView(RenderView *rv) Q_DECL_NOTHROW { m_renderView = rv; }
     inline void setRenderer(Renderer *renderer) Q_DECL_NOTHROW { m_renderer = renderer; }
     inline void setIndex(int index) Q_DECL_NOTHROW { m_index = index; }
+    inline void setRenderables(const QVector<Entity *> &renderables) Q_DECL_NOTHROW { m_renderables = renderables; }
+    QVector<RenderCommand *> &commands() Q_DECL_NOTHROW { return m_commands; }
 
     void run() Q_DECL_FINAL;
 
@@ -77,6 +81,8 @@ private:
     RenderView *m_renderView;
     Renderer *m_renderer;
     int m_index;
+    QVector<Entity *> m_renderables;
+    QVector<RenderCommand *> m_commands;
 };
 
 typedef QSharedPointer<RenderViewBuilderJob> RenderViewBuilderJobPtr;
