@@ -80,8 +80,7 @@ MaterialParameterGathererJob::MaterialParameterGathererJob()
 // improvement
 void MaterialParameterGathererJob::run()
 {
-    const QVector<HMaterial> materialHandles = m_manager->materialManager()->activeHandles();
-    for (const HMaterial materialHandle : materialHandles) {
+    for (const HMaterial materialHandle : qAsConst(m_handles)) {
         Material *material = m_manager->materialManager()->data(materialHandle);
 
         if (Q_UNLIKELY(!material->isEnabled()))

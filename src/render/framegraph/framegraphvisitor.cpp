@@ -133,7 +133,6 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         // Note: do it only if OpenGL 4.3+ available
         auto computeEntityFilterer = Render::FilterEntityByComponentJobPtr<Render::ComputeCommand, Render::Material>::create();
 
-        auto materialGatherer = Render::MaterialParameterGathererJobPtr::create();
         auto frustumCulling = Render::FrustumCullingJobPtr::create();
 
         // Init what we can here
@@ -141,11 +140,24 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         filterEntityByLayer->setManager(entityManager);
         renderableEntityFilterer->setManager(entityManager);
         computeEntityFilterer->setManager(entityManager);
-        materialGatherer->setNodeManagers(m_renderer->nodeManagers());
-        materialGatherer->setRenderer(m_renderer);
         frustumCulling->setRoot(m_renderer->sceneRoot());
         renderViewCommandBuilder->setIndex(currentRenderViewIndex);
         renderViewCommandBuilder->setRenderer(m_renderer);
+
+        // Since Material gathering is an heavy task, we split it
+        QVector<Render::MaterialParameterGathererJobPtr> materialGatherers;
+        { // Scoped to avoid copy in lambdas
+            const QVector<HMaterial> materialHandles = m_renderer->nodeManagers()->materialManager()->activeHandles();
+            const int materialGathererCount = std::max(materialHandles.size() / 8, 1);
+            materialGatherers.reserve(materialGathererCount);
+            for (auto i = 0; i < materialGathererCount; ++i) {
+                auto materialGatherer = Render::MaterialParameterGathererJobPtr::create();
+                materialGatherer->setNodeManagers(m_renderer->nodeManagers());
+                materialGatherer->setRenderer(m_renderer);
+                materialGatherer->setHandles(materialHandles.mid(i * 8, 8));
+                materialGatherers.push_back(materialGatherer);
+            }
+        }
 
         // Copy shared ptr -> this is called once the FrameGraphBranch was used to fill initial data in the RenderView
         auto syncRenderViewInitialization = [=] () {
@@ -156,8 +168,10 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
             filterEntityByLayer->setLayers(rv->layerFilter());
 
             // Material Parameter building
-            materialGatherer->setRenderPassFilter(const_cast<RenderPassFilter *>(rv->renderPassFilter()));
-            materialGatherer->setTechniqueFilter(const_cast<TechniqueFilter *>(rv->techniqueFilter()));
+            for (const auto materialGatherer : qAsConst(materialGatherers)) {
+                materialGatherer->setRenderPassFilter(const_cast<RenderPassFilter *>(rv->renderPassFilter()));
+                materialGatherer->setTechniqueFilter(const_cast<TechniqueFilter *>(rv->techniqueFilter()));
+            }
 
             // Frustum culling
             frustumCulling->setViewProjection(rv->viewProjectionMatrix());
@@ -201,8 +215,12 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
                     rv->setComputables(std::move(computableEntities));
                 }
 
+                // Reduction
+                QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> params;
+                for (const auto materialGatherer : qAsConst(materialGatherers))
+                    params.unite(materialGatherer->materialToPassAndParameter());
                 // Set all required data on the RenderView for final processing
-                rv->setMaterialParameterTable(std::move(materialGatherer->materialToPassAndParameter()));
+                rv->setMaterialParameterTable(std::move(params));
             }
             renderViewCommandBuilder->setRenderView(renderViewJob->renderView());
         };
@@ -214,11 +232,13 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         syncRenderViewInitializationJob->addDependency(renderViewJob);
 
         filterEntityByLayer->addDependency(syncRenderViewInitializationJob);
-        materialGatherer->addDependency(syncRenderViewInitializationJob);
         frustumCulling->addDependency(syncRenderViewInitializationJob);
 
         syncRenderViewCommandBuildingJob->addDependency(syncRenderViewInitializationJob);
-        syncRenderViewCommandBuildingJob->addDependency(materialGatherer);
+        for (const auto materialGatherer : qAsConst(materialGatherers)) {
+            materialGatherer->addDependency(syncRenderViewInitializationJob);
+            syncRenderViewCommandBuildingJob->addDependency(materialGatherer);
+        }
         syncRenderViewCommandBuildingJob->addDependency(renderableEntityFilterer);
         syncRenderViewCommandBuildingJob->addDependency(computeEntityFilterer);
         syncRenderViewCommandBuildingJob->addDependency(filterEntityByLayer);
@@ -233,8 +253,9 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         m_jobs->push_back(syncRenderViewInitializationJob);
         m_jobs->push_back(syncRenderViewCommandBuildingJob);
         m_jobs->push_back(renderViewCommandBuilder);
-        m_jobs->push_back(materialGatherer);
         m_jobs->push_back(frustumCulling);
+        for (const auto materialGatherer : qAsConst(materialGatherers))
+            m_jobs->push_back(materialGatherer);
     }
 }
 

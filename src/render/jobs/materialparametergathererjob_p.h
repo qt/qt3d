@@ -53,6 +53,7 @@
 
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
+#include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/renderviewjobutils_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -78,6 +79,7 @@ public:
     inline void setRenderPassFilter(RenderPassFilter *renderPassFilter) Q_DECL_NOEXCEPT { m_renderPassFilter = renderPassFilter; }
     inline void setRenderer(Renderer *renderer) Q_DECL_NOEXCEPT { m_renderer = renderer; }
     inline QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> &materialToPassAndParameter() Q_DECL_NOEXCEPT { return m_parameters; }
+    inline void setHandles(const QVector<HMaterial> &handles) Q_DECL_NOTHROW { m_handles = handles; }
 
     void run() Q_DECL_FINAL;
 
@@ -89,6 +91,7 @@ private:
 
     // Material id to array of RenderPasse with parameters
     QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> m_parameters;
+    QVector<HMaterial> m_handles;
 };
 
 typedef QSharedPointer<MaterialParameterGathererJob> MaterialParameterGathererJobPtr;
