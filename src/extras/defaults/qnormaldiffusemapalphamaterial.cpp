@@ -70,6 +70,19 @@ QNormalDiffuseMapAlphaMaterialPrivate::QNormalDiffuseMapAlphaMaterialPrivate()
 
 void QNormalDiffuseMapAlphaMaterialPrivate::init()
 {
+    connect(m_ambientParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QNormalDiffuseMapMaterialPrivate::handleAmbientChanged);
+    connect(m_diffuseParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QNormalDiffuseMapMaterialPrivate::handleDiffuseChanged);
+    connect(m_normalParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QNormalDiffuseMapMaterialPrivate::handleNormalChanged);
+    connect(m_specularParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QNormalDiffuseMapMaterialPrivate::handleSpecularChanged);
+    connect(m_shininessParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QNormalDiffuseMapMaterialPrivate::handleShininessChanged);
+    connect(m_textureScaleParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QNormalDiffuseMapMaterialPrivate::handleTextureScaleChanged);
+
     m_normalDiffuseGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/normaldiffusemap.vert"))));
     m_normalDiffuseGL3Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/normaldiffusemapalpha.frag"))));
     m_normalDiffuseGL2ES2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/normaldiffusemap.vert"))));
