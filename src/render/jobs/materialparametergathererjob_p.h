@@ -74,11 +74,11 @@ class Q_AUTOTEST_EXPORT MaterialParameterGathererJob : public Qt3DCore::QAspectJ
 public:
     MaterialParameterGathererJob();
 
-    inline void setNodeManagers(NodeManagers *manager) Q_DECL_NOEXCEPT { m_manager = manager; }
-    inline void setTechniqueFilter(TechniqueFilter *techniqueFilter) Q_DECL_NOEXCEPT { m_techniqueFilter = techniqueFilter; }
-    inline void setRenderPassFilter(RenderPassFilter *renderPassFilter) Q_DECL_NOEXCEPT { m_renderPassFilter = renderPassFilter; }
-    inline void setRenderer(Renderer *renderer) Q_DECL_NOEXCEPT { m_renderer = renderer; }
-    inline QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> &materialToPassAndParameter() Q_DECL_NOEXCEPT { return m_parameters; }
+    inline void setNodeManagers(NodeManagers *manager) Q_DECL_NOTHROW { m_manager = manager; }
+    inline void setTechniqueFilter(TechniqueFilter *techniqueFilter) Q_DECL_NOTHROW { m_techniqueFilter = techniqueFilter; }
+    inline void setRenderPassFilter(RenderPassFilter *renderPassFilter) Q_DECL_NOTHROW { m_renderPassFilter = renderPassFilter; }
+    inline void setRenderer(Renderer *renderer) Q_DECL_NOTHROW { m_renderer = renderer; }
+    inline QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> &materialToPassAndParameter() Q_DECL_NOTHROW { return m_parameters; }
     inline void setHandles(const QVector<HMaterial> &handles) Q_DECL_NOTHROW { m_handles = handles; }
 
     void run() Q_DECL_FINAL;
