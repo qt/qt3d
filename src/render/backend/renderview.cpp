@@ -350,7 +350,7 @@ class LightSourceCompare
 {
 public:
     LightSourceCompare(Entity *node) { p = node->worldBoundingVolume()->center(); }
-    bool operator()(const RenderView::LightSource &a, const RenderView::LightSource &b) const {
+    bool operator()(const LightSource &a, const LightSource &b) const {
         const float distA = p.distanceToPoint(a.entity->worldBoundingVolume()->center());
         const float distB = p.distanceToPoint(b.entity->worldBoundingVolume()->center());
         return distA < distB;

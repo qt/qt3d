@@ -60,7 +60,7 @@
 #include <Qt3DRender/private/attachmentpack_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/qsortpolicy_p.h>
-#include <Qt3DRender/qparameter.h>
+#include <Qt3DRender/private/lightsource_p.h>
 
 #include <Qt3DCore/private/qframeallocator_p.h>
 
@@ -222,14 +222,6 @@ public:
         QVector<Qt3DRender::QSortPolicy::SortType> m_sortingTypes;
         QVector3D m_eyePos;
         UniformBlockValueBuilder m_uniformBlockBuilder;
-    };
-
-    struct LightSource {
-        LightSource() : entity(nullptr) { }
-        LightSource(Entity *entity, const QVector<Light *> &lights)
-            : entity(entity), lights(lights) { }
-        Entity *entity;
-        QVector<Light *> lights;
     };
 
 private:
