@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Paul Lemire
+** Copyright (C) 2016 Paul Lemire
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,21 +37,22 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_JOB_COMMON_P_H
-#define QT3DRENDER_RENDER_JOB_COMMON_P_H
+#ifndef QT3DRENDER_RENDER_LIGHTGATHERER_P_H
+#define QT3DRENDER_RENDER_LIGHTGATHERER_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <Qt3DCore/private/qaspectjob_p.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DRender/private/lightsource_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,32 +60,24 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace JobTypes {
+class EntityManager;
 
-    enum JobType {
-        LoadBuffer = 0,
-        FrameCleanup,
-        FramePreparation,
-        CalcBoundingVolume,
-        CalcTriangleVolume,
-        LoadGeometry,
-        LoadScene,
-        LoadTextureData,
-        PickBoundingVolume,
-        RenderView,
-        UpdateTransform,
-        UpdateBoundingVolume,
-        FrameSubmission,
-        LayerFiltering,
-        EntityComponentTypeFiltering,
-        MaterialParameterGathering,
-        RenderViewBuilder,
-        GenericLambda,
-        FrustumCulling,
-        LightGathering
-    };
+class Q_AUTOTEST_EXPORT LightGatherer : public Qt3DCore::QAspectJob
+{
+public:
+    LightGatherer();
 
-} // JobTypes
+    inline void setManager(EntityManager *manager) Q_DECL_NOTHROW { m_manager = manager; }
+    inline QVector<LightSource> lights() const Q_DECL_NOTHROW { return m_lights; }
+
+    void run() Q_DECL_FINAL;
+
+private:
+    EntityManager *m_manager;
+    QVector<LightSource> m_lights;
+};
+
+typedef QSharedPointer<LightGatherer> LightGathererPtr;
 
 } // Render
 
@@ -92,4 +85,4 @@ namespace JobTypes {
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_JOB_COMMON_P_H
+#endif // QT3DRENDER_RENDER_LIGHTGATHERER_P_H

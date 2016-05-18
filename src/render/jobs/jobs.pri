@@ -20,7 +20,8 @@ HEADERS += \
     $$PWD/genericlambdajob_p.h \
     $$PWD/renderviewbuilderjob_p.h \
     $$PWD/renderviewinitializerjob_p.h \
-    $$PWD/frustumcullingjob_p.h
+    $$PWD/frustumcullingjob_p.h \
+    $$PWD/lightgatherer_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
@@ -39,4 +40,5 @@ SOURCES += \
     $$PWD/materialparametergathererjob.cpp \
     $$PWD/renderviewbuilderjob.cpp \
     $$PWD/renderviewinitializerjob.cpp \
-    $$PWD/frustumcullingjob.cpp
+    $$PWD/frustumcullingjob.cpp \
+    $$PWD/lightgatherer.cpp

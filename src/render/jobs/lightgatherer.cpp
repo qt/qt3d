@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Paul Lemire
+** Copyright (C) 2016 Paul Lemire
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,21 +37,10 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_JOB_COMMON_P_H
-#define QT3DRENDER_RENDER_JOB_COMMON_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/private/qaspectjob_p.h>
+#include "lightgatherer_p.h"
+#include <Qt3DRender/private/job_common_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/entity_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,37 +48,27 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace JobTypes {
+LightGatherer::LightGatherer()
+    : Qt3DCore::QAspectJob()
+    , m_manager(nullptr)
+{
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LightGathering, 0);
+}
 
-    enum JobType {
-        LoadBuffer = 0,
-        FrameCleanup,
-        FramePreparation,
-        CalcBoundingVolume,
-        CalcTriangleVolume,
-        LoadGeometry,
-        LoadScene,
-        LoadTextureData,
-        PickBoundingVolume,
-        RenderView,
-        UpdateTransform,
-        UpdateBoundingVolume,
-        FrameSubmission,
-        LayerFiltering,
-        EntityComponentTypeFiltering,
-        MaterialParameterGathering,
-        RenderViewBuilder,
-        GenericLambda,
-        FrustumCulling,
-        LightGathering
-    };
+void LightGatherer::run()
+{
+    const QVector<HEntity> handles = m_manager->activeHandles();
 
-} // JobTypes
+    for (const HEntity handle : handles) {
+        Entity *node = m_manager->data(handle);
+        const QVector<Light *> lights = node->renderComponents<Light>();
+        if (!lights.isEmpty())
+            m_lights.push_back(LightSource(node, lights));
+    }
+}
 
 } // Render
 
 } // Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_JOB_COMMON_P_H
