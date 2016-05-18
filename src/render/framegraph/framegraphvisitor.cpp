@@ -51,6 +51,7 @@
 #include <Qt3DRender/private/renderviewbuilderjob_p.h>
 #include <Qt3DRender/private/renderview_p.h>
 #include <Qt3DRender/private/frustumcullingjob_p.h>
+#include <Qt3DRender/private/lightgatherer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -113,11 +114,11 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         //     2) One job to filter out the Entities in a layers (no dependency)
         //     2) -> One job to filter out only the Entities with a QDispatchCompute
         //     2) -> One job to filter out only the Entities with a GeometryRenderer
-        //     2) -> One job to create all ParameterInfoList for each Material
+        //     2) -> n job to create all ParameterInfoList for each Material
         //     2) -> One job to perform frustrum culling of layered filtered entities
 
         //          -> 3) Merge Parameter pack 1 / 2 + Material
-        //          ->      4) One job to prepare the commands
+        //          ->      4) n job to prepare the commands
         //                  -> One job to sort the RenderCommands
         //                  -> One job to set the active uniforms / build the ParameterPack
 
@@ -128,6 +129,7 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         RenderViewInitializerJobPtr renderViewJob = m_renderer->createRenderViewInitializerJob(node, currentRenderViewIndex);
         auto renderViewCommandBuilder = Render::RenderViewBuilderJobPtr::create();
         auto filterEntityByLayer = Render::FilterLayerEntityJobPtr::create();
+        auto lightGatherer = Render::LightGathererPtr::create();
         auto renderableEntityFilterer = Render::FilterEntityByComponentJobPtr<Render::GeometryRenderer, Render::Material>::create();
 
         // Note: do it only if OpenGL 4.3+ available
@@ -141,6 +143,7 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         renderableEntityFilterer->setManager(entityManager);
         computeEntityFilterer->setManager(entityManager);
         frustumCulling->setRoot(m_renderer->sceneRoot());
+        lightGatherer->setManager(entityManager);
         renderViewCommandBuilder->setIndex(currentRenderViewIndex);
         renderViewCommandBuilder->setRenderer(m_renderer);
 
@@ -184,6 +187,9 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
             RenderView *rv = renderViewJob->renderView();
 
             if (!rv->noDraw()) {
+                // Set the light sources
+                rv->setLightSources(std::move(lightGatherer->lights()));
+
                 // Remove all entities from the compute and renderable vectors that aren't in the filtered layer vector
                 const QVector<Entity *> filteredEntities = filterEntityByLayer->filteredEntities();
 
@@ -242,6 +248,7 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         syncRenderViewCommandBuildingJob->addDependency(renderableEntityFilterer);
         syncRenderViewCommandBuildingJob->addDependency(computeEntityFilterer);
         syncRenderViewCommandBuildingJob->addDependency(filterEntityByLayer);
+        syncRenderViewCommandBuildingJob->addDependency(lightGatherer);
 
         renderViewCommandBuilder->addDependency(syncRenderViewCommandBuildingJob);
 
@@ -254,6 +261,7 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         m_jobs->push_back(syncRenderViewCommandBuildingJob);
         m_jobs->push_back(renderViewCommandBuilder);
         m_jobs->push_back(frustumCulling);
+        m_jobs->push_back(lightGatherer);
         for (const auto materialGatherer : qAsConst(materialGatherers))
             m_jobs->push_back(materialGatherer);
     }

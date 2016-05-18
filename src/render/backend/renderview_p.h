@@ -188,7 +188,6 @@ public:
     void buildDrawRenderCommands();
     void buildComputeRenderCommands();
     QVector<RenderCommand *> commands() const { return m_commands; }
-    void gatherLights(Entity *preprocessedTreeRoot);
 
     void setAttachmentPack(const AttachmentPack &pack) { m_attachmentPack = pack; }
     const AttachmentPack &attachmentPack() const { return m_attachmentPack; }
@@ -200,6 +199,8 @@ public:
 
     void setSurface(QSurface *surface) { m_surface = surface; }
     QSurface *surface() const { return m_surface; }
+
+    void setLightSources(const QVector<LightSource> &lightSources) Q_DECL_NOTHROW { m_lightSources = lightSources; }
 
     // Helps making the size of RenderView smaller
     // Contains all the data needed for the actual building of the RenderView

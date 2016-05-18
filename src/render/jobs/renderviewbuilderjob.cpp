@@ -64,7 +64,6 @@ void RenderViewBuilderJob::run()
     // Build RenderCommand should perform the culling as we have no way to determine
     // if a child has a mesh in the view frustum while its parent isn't contained in it.
     if (!m_renderView->noDraw()) {
-        m_renderView->gatherLights(m_renderer->sceneRoot());
 #if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
         gatherLightsTime = timer.nsecsElapsed();
         timer.restart();

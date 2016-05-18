@@ -334,18 +334,6 @@ void RenderView::setRenderer(Renderer *renderer)
     m_data.m_uniformBlockBuilder.shaderDataManager = m_manager->shaderDataManager();
 }
 
-void RenderView::gatherLights(Entity *node)
-{
-    const QVector<Light *> lights = node->renderComponents<Light>();
-    if (!lights.isEmpty())
-        m_lightSources.append(LightSource(node, lights));
-
-    // Traverse children
-    const auto children = node->children();
-    for (Entity *child : children)
-        gatherLights(child);
-}
-
 class LightSourceCompare
 {
 public:
