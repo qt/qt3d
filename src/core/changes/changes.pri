@@ -10,6 +10,7 @@ HEADERS += \
     $$PWD/qcomponentremovedchange.h \
     $$PWD/qcomponentremovedchange_p.h \
     $$PWD/qnodedestroyedchange.h \
+    $$PWD/qnodedestroyedchange_p.h \
     $$PWD/qpropertyvalueaddedchangebase.h \
     $$PWD/qpropertyvalueaddedchangebase_p.h \
     $$PWD/qpropertyvalueremovedchangebase.h \

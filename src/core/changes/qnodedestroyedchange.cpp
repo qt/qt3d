@@ -35,19 +35,27 @@
 ****************************************************************************/
 
 #include "qnodedestroyedchange.h"
+#include "qnodedestroyedchange_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
 QNodeDestroyedChange::QNodeDestroyedChange(const QNode *node, const QVector<QNodeIdTypePair> &subtreeIdsAndTypes)
-    : QSceneChange(NodeDeleted, node->id())
-    , m_subtreeIdsAndTypes(subtreeIdsAndTypes)
+    : QSceneChange(*new QNodeDestroyedChangePrivate, NodeDeleted, node->id())
 {
+    Q_D(QNodeDestroyedChange);
+    d->m_subtreeIdsAndTypes = subtreeIdsAndTypes;
 }
 
 QNodeDestroyedChange::~QNodeDestroyedChange()
 {
+}
+
+QVector<QNodeIdTypePair> QNodeDestroyedChange::subtreeIdsAndTypes() const
+{
+    Q_D(const QNodeDestroyedChange);
+    return d->m_subtreeIdsAndTypes;
 }
 
 } // namespace Qt3DCore

@@ -34,35 +34,26 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QNODEDESTROYEDCHANGE_H
-#define QT3DCORE_QNODEDESTROYEDCHANGE_H
+#ifndef QT3DCORE_QNODEDESTROYEDCHANGE_P_H
+#define QT3DCORE_QNODEDESTROYEDCHANGE_P_H
 
-#include <Qt3DCore/qscenechange.h>
+#include <private/qscenechange_p.h>
 #include <Qt3DCore/qnode.h>
-#include <QtCore/qsharedpointer.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QNodeDestroyedChangePrivate;
+class QNodeDestroyedChange;
 
-class QT3DCORESHARED_EXPORT QNodeDestroyedChange : public QSceneChange
+class QNodeDestroyedChangePrivate : public QSceneChangePrivate
 {
 public:
-    explicit QNodeDestroyedChange(const QNode *node, const QVector<QNodeIdTypePair> &subtreeIdsAndTypes);
-    ~QNodeDestroyedChange();
-
-    QVector<QNodeIdTypePair> subtreeIdsAndTypes() const;
-
-private:
-    Q_DECLARE_PRIVATE(QNodeDestroyedChange)
+    QVector<QNodeIdTypePair> m_subtreeIdsAndTypes;
 };
-
-typedef QSharedPointer<QNodeDestroyedChange> QNodeDestroyedChangePtr;
 
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QNODEDESTROYEDCHANGE_H
+#endif // QT3DCORE_QNODEDESTROYEDCHANGE_P_H
