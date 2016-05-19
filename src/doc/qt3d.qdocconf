@@ -4,7 +4,7 @@ project                 = Qt3D
 description             = Qt 3D Reference Documentation
 version                 = $QT_VERSION
 
-examplesinstallpath     = qt3d/qt3d
+examplesinstallpath     = qt3d
 
 indexes +=  $QT_INSTALL_DOCS/qtcore/qtcore.index \
             $QT_INSTALL_DOCS/qtgui/qtgui.index \

@@ -26,3 +26,6 @@ qtHaveModule(multimedia): SUBDIRS += audio-visualizer-qml
 #SUBDIRS += qt3d
 
 qtHaveModule(widgets): SUBDIRS += basicshapes-cpp
+
+EXAMPLE_FILES += \
+    exampleresources
