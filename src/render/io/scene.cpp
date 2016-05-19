@@ -88,11 +88,13 @@ QUrl Scene::source() const
 
 void Scene::setSceneSubtree(Qt3DCore::QEntity *subTree)
 {
-    // Move scene sub tree to the application thread so that it can be grafted in.
-    const auto appThread = QCoreApplication::instance()->thread();
-    subTree->moveToThread(appThread);
+    if (subTree) {
+        // Move scene sub tree to the application thread so that it can be grafted in.
+        const auto appThread = QCoreApplication::instance()->thread();
+        subTree->moveToThread(appThread);
+    }
 
-    // Send the new subtree to the frontend
+    // Send the new subtree to the frontend or notify failure
     auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("scene");
