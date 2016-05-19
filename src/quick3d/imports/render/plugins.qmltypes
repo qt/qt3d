@@ -1368,10 +1368,32 @@ Module {
     }
     Component {
         name: "Qt3DRender::QSortPolicy"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::QSortPolicy"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DRender::QFrameGraphNode"
+        Enum {
+            name: "SortType"
+            values: {
+                "StateChangeCost": 1,
+                "BackToFront": 2,
+                "Material": 4
+            }
+        }
+        Property { name: "sortTypes"; type: "QVector<int>" }
+        Signal {
+            name: "sortTypesChanged"
+            Parameter { name: "sortTypes"; type: "QVector<SortType>" }
+        }
+        Signal {
+            name: "sortTypesChanged"
+            Parameter { name: "sortTypes"; type: "QVector<int>" }
+        }
+        Method {
+            name: "setSortTypes"
+            Parameter { name: "sortTypes"; type: "QVector<SortType>" }
+        }
+        Method {
+            name: "setSortTypes"
+            Parameter { name: "sortTypesInt"; type: "QVector<int>" }
+        }
     }
     Component {
         name: "Qt3DRender::QSpotLight"
