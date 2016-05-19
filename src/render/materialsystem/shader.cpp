@@ -379,7 +379,6 @@ void Shader::initializeAttributes(const QVector<ShaderAttribute> &attributesDesc
         m_attributesNames[i] = attributesDescription[i].m_name;
         m_attributes[i].m_nameId = StringToInt::lookupId(m_attributesNames[i]);
         m_attributeNamesIds[i] = m_attributes[i].m_nameId;
-        qDebug() << m_attributes[i].m_nameId << m_attributeNamesIds[i] << m_attributesNames[i];
         qCDebug(Shaders) << "Active Attribute " << attributesDescription[i].m_name;
     }
 }
