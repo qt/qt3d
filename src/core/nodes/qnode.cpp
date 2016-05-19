@@ -651,7 +651,7 @@ QNode::~QNode()
 /*!
     Returns the id that uniquely identifies the QNode instance.
 */
-const QNodeId QNode::id() const
+QNodeId QNode::id() const
 {
     Q_D(const QNode);
     return d->m_id;
