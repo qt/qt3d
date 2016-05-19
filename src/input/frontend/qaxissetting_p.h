@@ -52,7 +52,6 @@
 //
 
 #include <Qt3DCore/private/qnode_p.h>
-#include <QtCore/qvariant.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -69,14 +68,14 @@ public:
     {}
 
     float m_deadZoneRadius;
-    QVariantList m_axes;
+    QVector<int> m_axes;
     bool m_smooth;
 };
 
 struct QAxisSettingData
 {
     float deadZoneRadius;
-    QVariantList axes;
+    QVector<int> axes;
     bool smooth;
 };
 

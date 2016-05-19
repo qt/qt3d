@@ -72,7 +72,7 @@ QAxisSetting::~QAxisSetting()
 {
 }
 
-QVariantList QAxisSetting::axes() const
+QVector<int> QAxisSetting::axes() const
 {
     Q_D(const QAxisSetting);
     return d->m_axes;
@@ -100,7 +100,7 @@ void QAxisSetting::setDeadZoneRadius(float deadZoneRadius)
     emit deadZoneRadiusChanged(deadZoneRadius);
 }
 
-void QAxisSetting::setAxes(const QVariantList &axes)
+void QAxisSetting::setAxes(const QVector<int> &axes)
 {
     Q_D(QAxisSetting);
     if (d->m_axes == axes)

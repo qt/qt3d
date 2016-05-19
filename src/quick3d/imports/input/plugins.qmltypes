@@ -191,7 +191,7 @@ Module {
         exports: ["Qt3D.Input/AxisSetting 2.0"]
         exportMetaObjectRevisions: [0]
         Property { name: "deadZoneRadius"; type: "float" }
-        Property { name: "axes"; type: "QVariantList" }
+        Property { name: "axes"; type: "QVector<int>" }
         Property { name: "smooth"; type: "bool" }
         Signal {
             name: "deadZoneRadiusChanged"
@@ -199,7 +199,7 @@ Module {
         }
         Signal {
             name: "axesChanged"
-            Parameter { name: "axes"; type: "QVariantList" }
+            Parameter { name: "axes"; type: "QVector<int>" }
         }
         Signal {
             name: "smoothChanged"
@@ -211,7 +211,7 @@ Module {
         }
         Method {
             name: "setAxes"
-            Parameter { name: "axes"; type: "QVariantList" }
+            Parameter { name: "axes"; type: "QVector<int>" }
         }
         Method {
             name: "setSmoothEnabled"
