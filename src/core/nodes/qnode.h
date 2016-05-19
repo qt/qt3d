@@ -134,12 +134,12 @@ inline QNodeIdVector qIdsForNodes(const T &nodes)
 
 struct QNodeIdTypePair
 {
-    QNodeIdTypePair() Q_DECL_NOEXCEPT
+    QNodeIdTypePair() Q_DECL_NOTHROW
         : id()
         , type(nullptr)
     {}
 
-    explicit QNodeIdTypePair(QNodeId _id, const QMetaObject *_type) Q_DECL_NOEXCEPT
+    explicit QNodeIdTypePair(QNodeId _id, const QMetaObject *_type) Q_DECL_NOTHROW
         : id(_id)
         , type(_type)
     {}

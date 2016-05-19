@@ -57,9 +57,9 @@ public:
                                      const QComponent *component);
     ~QComponentRemovedChange();
 
-    QNodeId entityId() const Q_DECL_NOEXCEPT;
-    QNodeId componentId() const Q_DECL_NOEXCEPT;
-    const QMetaObject *componentMetaObject() const Q_DECL_NOEXCEPT;
+    QNodeId entityId() const Q_DECL_NOTHROW;
+    QNodeId componentId() const Q_DECL_NOTHROW;
+    const QMetaObject *componentMetaObject() const Q_DECL_NOTHROW;
 
 private:
     Q_DECLARE_PRIVATE(QComponentRemovedChange)

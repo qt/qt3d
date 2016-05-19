@@ -83,10 +83,10 @@ public:
     void updateUniforms(GraphicsContext *ctx, const ShaderParameterPack &pack);
     void setFragOutputs(const QHash<QString, int> &fragOutputs);
 
-    inline QVector<int> uniformsNamesIds() const Q_DECL_NOEXCEPT { return m_uniformsNamesIds; }
-    inline QVector<int> uniformBlockNamesIds() const Q_DECL_NOEXCEPT { return m_uniformBlockNamesIds; }
-    inline QVector<int> storageBlockNamesIds() const Q_DECL_NOEXCEPT { return m_shaderStorageBlockNamesIds; }
-    inline QVector<int> attributeNamesIds() const Q_DECL_NOEXCEPT { return m_attributeNamesIds; }
+    inline QVector<int> uniformsNamesIds() const { return m_uniformsNamesIds; }
+    inline QVector<int> uniformBlockNamesIds() const { return m_uniformBlockNamesIds; }
+    inline QVector<int> storageBlockNamesIds() const { return m_shaderStorageBlockNamesIds; }
+    inline QVector<int> attributeNamesIds() const { return m_attributeNamesIds; }
 
     QVector<QString> uniformsNames() const;
     QVector<QString> attributesNames() const;
@@ -95,13 +95,13 @@ public:
     QVector<QByteArray> shaderCode() const;
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    bool isLoaded() const Q_DECL_NOEXCEPT { return m_isLoaded; }
-    ProgramDNA dna() const Q_DECL_NOEXCEPT { return m_dna; }
+    bool isLoaded() const Q_DECL_NOTHROW { return m_isLoaded; }
+    ProgramDNA dna() const Q_DECL_NOTHROW { return m_dna; }
 
-    inline QVector<ShaderUniform> uniforms() const Q_DECL_NOEXCEPT { return m_uniforms; }
-    inline QVector<ShaderAttribute> attributes() const Q_DECL_NOEXCEPT { return m_attributes; }
-    inline QVector<ShaderUniformBlock> uniformBlocks() const Q_DECL_NOEXCEPT { return m_uniformBlocks; }
-    inline QVector<ShaderStorageBlock> storageBlocks() const Q_DECL_NOEXCEPT { return m_shaderStorageBlocks; }
+    inline QVector<ShaderUniform> uniforms() const { return m_uniforms; }
+    inline QVector<ShaderAttribute> attributes() const { return m_attributes; }
+    inline QVector<ShaderUniformBlock> uniformBlocks() const { return m_uniformBlocks; }
+    inline QVector<ShaderStorageBlock> storageBlocks() const { return m_shaderStorageBlocks; }
 
     QHash<QString, ShaderUniform> activeUniformsForUniformBlock(int blockIndex) const;
 

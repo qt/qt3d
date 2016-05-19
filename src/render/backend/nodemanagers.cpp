@@ -89,187 +89,187 @@ NodeManagers::NodeManagers()
 }
 
 template<>
-CameraManager *NodeManagers::manager<CameraLens>() const Q_DECL_NOEXCEPT
+CameraManager *NodeManagers::manager<CameraLens>() const Q_DECL_NOTHROW
 {
     return m_cameraManager;
 }
 
 template<>
-EntityManager *NodeManagers::manager<Entity>() const Q_DECL_NOEXCEPT
+EntityManager *NodeManagers::manager<Entity>() const Q_DECL_NOTHROW
 {
     return m_renderNodesManager;
 }
 
 template<>
-MaterialManager *NodeManagers::manager<Material>() const Q_DECL_NOEXCEPT
+MaterialManager *NodeManagers::manager<Material>() const Q_DECL_NOTHROW
 {
     return m_materialManager;
 }
 
 template<>
-MatrixManager *NodeManagers::manager<QMatrix4x4*>() const Q_DECL_NOEXCEPT
+MatrixManager *NodeManagers::manager<QMatrix4x4*>() const Q_DECL_NOTHROW
 {
     return m_worldMatrixManager;
 }
 
 template<>
-VAOManager *NodeManagers::manager<QOpenGLVertexArrayObject*>() const Q_DECL_NOEXCEPT
+VAOManager *NodeManagers::manager<QOpenGLVertexArrayObject*>() const Q_DECL_NOTHROW
 {
     return m_vaoManager;
 }
 
 template<>
-ShaderManager *NodeManagers::manager<Shader>() const Q_DECL_NOEXCEPT
+ShaderManager *NodeManagers::manager<Shader>() const Q_DECL_NOTHROW
 {
     return m_shaderManager;
 }
 
 template<>
-TechniqueManager *NodeManagers::manager<Technique>() const Q_DECL_NOEXCEPT
+TechniqueManager *NodeManagers::manager<Technique>() const Q_DECL_NOTHROW
 {
     return m_techniqueManager;
 }
 
 template<>
-EffectManager *NodeManagers::manager<Effect>() const Q_DECL_NOEXCEPT
+EffectManager *NodeManagers::manager<Effect>() const Q_DECL_NOTHROW
 {
     return m_effectManager;
 }
 
 template<>
-RenderPassManager *NodeManagers::manager<RenderPass>() const Q_DECL_NOEXCEPT
+RenderPassManager *NodeManagers::manager<RenderPass>() const Q_DECL_NOTHROW
 {
     return m_renderPassManager;
 }
 
 template<>
-TextureManager *NodeManagers::manager<Texture>() const Q_DECL_NOEXCEPT
+TextureManager *NodeManagers::manager<Texture>() const Q_DECL_NOTHROW
 {
     return m_textureManager;
 }
 
 template<>
-TextureDataManager *NodeManagers::manager<QTextureImageData>() const Q_DECL_NOEXCEPT
+TextureDataManager *NodeManagers::manager<QTextureImageData>() const Q_DECL_NOTHROW
 {
     return m_textureDataManager;
 }
 
 template<>
-LayerManager *NodeManagers::manager<Layer>() const Q_DECL_NOEXCEPT
+LayerManager *NodeManagers::manager<Layer>() const Q_DECL_NOTHROW
 {
     return m_layerManager;
 }
 
 template<>
-FilterKeyManager *NodeManagers::manager<FilterKey>() const Q_DECL_NOEXCEPT
+FilterKeyManager *NodeManagers::manager<FilterKey>() const Q_DECL_NOTHROW
 {
     return m_filterKeyManager;
 }
 
 template<>
-FrameGraphManager *NodeManagers::manager<FrameGraphNode*>() const Q_DECL_NOEXCEPT
+FrameGraphManager *NodeManagers::manager<FrameGraphNode*>() const Q_DECL_NOTHROW
 {
     return m_frameGraphManager;
 }
 
 template<>
-TransformManager *NodeManagers::manager<Transform>() const Q_DECL_NOEXCEPT
+TransformManager *NodeManagers::manager<Transform>() const Q_DECL_NOTHROW
 {
     return m_transformManager;
 }
 
 template<>
-RenderTargetManager *NodeManagers::manager<RenderTarget>() const Q_DECL_NOEXCEPT
+RenderTargetManager *NodeManagers::manager<RenderTarget>() const Q_DECL_NOTHROW
 {
     return m_renderTargetManager;
 }
 
 template<>
-SceneManager *NodeManagers::manager<Scene>() const Q_DECL_NOEXCEPT
+SceneManager *NodeManagers::manager<Scene>() const Q_DECL_NOTHROW
 {
     return m_sceneManager;
 }
 
 template<>
-AttachmentManager *NodeManagers::manager<RenderTargetOutput>() const Q_DECL_NOEXCEPT
+AttachmentManager *NodeManagers::manager<RenderTargetOutput>() const Q_DECL_NOTHROW
 {
     return m_attachmentManager;
 }
 
 template<>
-ParameterManager *NodeManagers::manager<Parameter>() const Q_DECL_NOEXCEPT
+ParameterManager *NodeManagers::manager<Parameter>() const Q_DECL_NOTHROW
 {
     return m_parameterManager;
 }
 
 template<>
-ShaderDataManager *NodeManagers::manager<ShaderData>() const Q_DECL_NOEXCEPT
+ShaderDataManager *NodeManagers::manager<ShaderData>() const Q_DECL_NOTHROW
 {
     return m_shaderDataManager;
 }
 
 template<>
-GLBufferManager *NodeManagers::manager<GLBuffer>() const Q_DECL_NOEXCEPT
+GLBufferManager *NodeManagers::manager<GLBuffer>() const Q_DECL_NOTHROW
 {
     return m_glBufferManager;
 }
 
 template<>
-TextureImageManager *NodeManagers::manager<TextureImage>() const Q_DECL_NOEXCEPT
+TextureImageManager *NodeManagers::manager<TextureImage>() const Q_DECL_NOTHROW
 {
     return m_textureImageManager;
 }
 
 template<>
-BufferManager *NodeManagers::manager<Buffer>() const Q_DECL_NOEXCEPT
+BufferManager *NodeManagers::manager<Buffer>() const Q_DECL_NOTHROW
 {
     return m_bufferManager;
 }
 
 template<>
-AttributeManager *NodeManagers::manager<Attribute>() const Q_DECL_NOEXCEPT
+AttributeManager *NodeManagers::manager<Attribute>() const Q_DECL_NOTHROW
 {
     return m_attributeManager;
 }
 
 template<>
-GeometryManager *NodeManagers::manager<Geometry>() const Q_DECL_NOEXCEPT
+GeometryManager *NodeManagers::manager<Geometry>() const Q_DECL_NOTHROW
 {
     return m_geometryManager;
 }
 
 template<>
-GeometryRendererManager *NodeManagers::manager<GeometryRenderer>() const Q_DECL_NOEXCEPT
+GeometryRendererManager *NodeManagers::manager<GeometryRenderer>() const Q_DECL_NOTHROW
 {
     return m_geometryRendererManager;
 }
 
 template<>
-ObjectPickerManager *NodeManagers::manager<ObjectPicker>() const Q_DECL_NOEXCEPT
+ObjectPickerManager *NodeManagers::manager<ObjectPicker>() const Q_DECL_NOTHROW
 {
     return m_objectPickerManager;
 }
 
 //template<>
-//BoundingVolumeDebugManager *NodeManagers::manager<BoundingVolumeDebug>() const Q_DECL_NOEXCEPT
+//BoundingVolumeDebugManager *NodeManagers::manager<BoundingVolumeDebug>() const Q_DECL_NOTHROW
 //{
 //    return m_boundingVolumeDebugManager;
 //}
 
 template<>
-LightManager *NodeManagers::manager<Light>() const Q_DECL_NOEXCEPT
+LightManager *NodeManagers::manager<Light>() const Q_DECL_NOTHROW
 {
     return m_lightManager;
 }
 
 template<>
-ComputeCommandManager *NodeManagers::manager<ComputeCommand>() const Q_DECL_NOEXCEPT
+ComputeCommandManager *NodeManagers::manager<ComputeCommand>() const Q_DECL_NOTHROW
 {
     return m_computeJobManager;
 }
 
 template<>
-RenderStateManager *NodeManagers::manager<RenderStateNode>() const Q_DECL_NOEXCEPT
+RenderStateManager *NodeManagers::manager<RenderStateNode>() const Q_DECL_NOTHROW
 {
     return m_renderStateManager;
 }

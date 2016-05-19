@@ -67,16 +67,16 @@ public:
     Scene3DSGNode();
     ~Scene3DSGNode();
 
-    void setTexture(QSGTexture *texture) Q_DECL_NOEXCEPT
+    void setTexture(QSGTexture *texture) Q_DECL_NOTHROW
     {
         m_material.setTexture(texture);
         m_opaqueMaterial.setTexture(texture);
         markDirty(DirtyMaterial);
     }
-    QSGTexture *texture() const Q_DECL_NOEXCEPT { return m_material.texture(); }
+    QSGTexture *texture() const Q_DECL_NOTHROW { return m_material.texture(); }
 
     void setRect(const QRectF &rect);
-    QRectF rect() const Q_DECL_NOEXCEPT { return m_rect; }
+    QRectF rect() const Q_DECL_NOTHROW { return m_rect; }
 
 private:
     Scene3DSGMaterial m_material;

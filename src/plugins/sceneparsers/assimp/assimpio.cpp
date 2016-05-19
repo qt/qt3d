@@ -125,7 +125,7 @@ const QString COLOR_ATTRIBUTE_NAME = QAttribute::defaultColorAttributeName();
 /*!
  * Returns a QMatrix4x4 from \a matrix;
  */
-QMatrix4x4 aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix) Q_DECL_NOEXCEPT
+QMatrix4x4 aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix) Q_DECL_NOTHROW
 {
     return QMatrix4x4(matrix.a1, matrix.a2, matrix.a3, matrix.a4,
                       matrix.b1, matrix.b2, matrix.b3, matrix.b4,
@@ -141,7 +141,7 @@ static inline QString aiStringToQString(const aiString &str)
     return QString::fromUtf8(str.data, int(str.length));
 }
 
-QMaterial *createBestApproachingMaterial(const aiMaterial *assimpMaterial) Q_DECL_NOEXCEPT
+QMaterial *createBestApproachingMaterial(const aiMaterial *assimpMaterial)
 {
     aiString path; // unused but necessary
     const bool hasDiffuseTexture = (assimpMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS);

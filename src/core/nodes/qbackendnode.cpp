@@ -167,7 +167,7 @@ QBackendNode::~QBackendNode()
 /*!
  * Sets the peer \a id.
  */
-void QBackendNode::setPeerId(QNodeId id) Q_DECL_NOEXCEPT
+void QBackendNode::setPeerId(QNodeId id) Q_DECL_NOTHROW
 {
     Q_D(QBackendNode);
     d->m_peerId = id;
@@ -176,7 +176,7 @@ void QBackendNode::setPeerId(QNodeId id) Q_DECL_NOEXCEPT
 /*!
  * \return the peer id of the backend node.
  */
-QNodeId QBackendNode::peerId() const Q_DECL_NOEXCEPT
+QNodeId QBackendNode::peerId() const Q_DECL_NOTHROW
 {
     Q_D(const QBackendNode);
     return d->m_peerId;
@@ -185,7 +185,7 @@ QNodeId QBackendNode::peerId() const Q_DECL_NOEXCEPT
 /*!
  * \return \c true if the backend node is enabled.
  */
-bool QBackendNode::isEnabled() const Q_DECL_NOEXCEPT
+bool QBackendNode::isEnabled() const Q_DECL_NOTHROW
 {
     Q_D(const QBackendNode);
     return d->m_enabled;
@@ -194,7 +194,7 @@ bool QBackendNode::isEnabled() const Q_DECL_NOEXCEPT
 /*!
  * \return the mode of the backend mode.
  */
-QBackendNode::Mode QBackendNode::mode() const Q_DECL_NOEXCEPT
+QBackendNode::Mode QBackendNode::mode() const Q_DECL_NOTHROW
 {
     Q_D(const QBackendNode);
     return d->m_mode;
@@ -227,7 +227,7 @@ void QBackendNode::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
 /*!
  * Enables or disables the backend node by \a enabled.
  */
-void QBackendNode::setEnabled(bool enabled) Q_DECL_NOEXCEPT
+void QBackendNode::setEnabled(bool enabled) Q_DECL_NOTHROW
 {
     Q_D(QBackendNode);
     d->m_enabled = enabled;

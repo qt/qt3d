@@ -129,7 +129,7 @@ QNodeCreatedChangeBase::~QNodeCreatedChangeBase()
 /*!
  * \return parent id.
  */
-QNodeId QNodeCreatedChangeBase::parentId() const Q_DECL_NOEXCEPT
+QNodeId QNodeCreatedChangeBase::parentId() const Q_DECL_NOTHROW
 {
     Q_D(const QNodeCreatedChangeBase);
     return d->m_parentId;
@@ -138,7 +138,7 @@ QNodeId QNodeCreatedChangeBase::parentId() const Q_DECL_NOEXCEPT
 /*!
  * \return metaobject.
  */
-const QMetaObject *QNodeCreatedChangeBase::metaObject() const Q_DECL_NOEXCEPT
+const QMetaObject *QNodeCreatedChangeBase::metaObject() const Q_DECL_NOTHROW
 {
     Q_D(const QNodeCreatedChangeBase);
     return d->m_metaObject;
@@ -147,7 +147,7 @@ const QMetaObject *QNodeCreatedChangeBase::metaObject() const Q_DECL_NOEXCEPT
 /*!
  * \return node enabled.
  */
-bool QNodeCreatedChangeBase::isNodeEnabled() const Q_DECL_NOEXCEPT
+bool QNodeCreatedChangeBase::isNodeEnabled() const Q_DECL_NOTHROW
 {
     Q_D(const QNodeCreatedChangeBase);
     return d->m_nodeEnabled;

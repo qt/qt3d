@@ -84,7 +84,7 @@ public:
     QOpenGLFramebufferObject *createMultisampledFramebufferObject(const QSize &size);
     QOpenGLFramebufferObject *createFramebufferObject(const QSize &size);
     void scheduleRootEntityChange();
-    void setSGNode(Scene3DSGNode *node) Q_DECL_NOEXCEPT;
+    void setSGNode(Scene3DSGNode *node);
     void setCleanerHelper(Scene3DCleaner *cleaner);
     void synchronize();
 

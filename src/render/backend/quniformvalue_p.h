@@ -94,10 +94,10 @@ public:
     }
 
     void setType(UniformType type) Q_DECL_NOTHROW { m_type = type; }
-    UniformType type() Q_DECL_NOEXCEPT { return m_type; }
-    bool isTexture() const Q_DECL_NOEXCEPT { return m_type == TextureSampler; }
+    UniformType type() Q_DECL_NOTHROW { return m_type; }
+    bool isTexture() const Q_DECL_NOTHROW { return m_type == TextureSampler; }
 
-    void setValue(const QVariant &value) Q_DECL_NOEXCEPT
+    void setValue(const QVariant &value)
     {
         Q_ASSERT(m_type == Value);
         m_var = value;
@@ -109,31 +109,31 @@ public:
         return m_var;
     }
 
-    void setTextureUnit(int textureUnit) Q_DECL_NOEXCEPT
+    void setTextureUnit(int textureUnit)
     {
         Q_ASSERT(m_type == TextureSampler);
         m_textureIdUnit.m_textureUnit = textureUnit;
     }
 
-    int textureUnit() const Q_DECL_NOEXCEPT
+    int textureUnit() const
     {
         Q_ASSERT(m_type == TextureSampler);
         return m_textureIdUnit.m_textureUnit;
     }
 
-    void setTextureId(Qt3DCore::QNodeId textureId) Q_DECL_NOEXCEPT
+    void setTextureId(Qt3DCore::QNodeId textureId)
     {
         Q_ASSERT(m_type == TextureSampler);
         m_textureIdUnit.m_textureId = textureId;
     }
 
-    Qt3DCore::QNodeId textureId() const Q_DECL_NOEXCEPT
+    Qt3DCore::QNodeId textureId() const
     {
         Q_ASSERT(m_type == TextureSampler);
         return m_textureIdUnit.m_textureId;
     }
 
-    bool operator ==(const QUniformValue &other) Q_DECL_NOEXCEPT
+    bool operator ==(const QUniformValue &other)
     {
         if (other.m_type != m_type)
             return false;
@@ -149,7 +149,7 @@ public:
         return false;
     }
 
-    bool operator !=(const QUniformValue &other) Q_DECL_NOEXCEPT
+    bool operator !=(const QUniformValue &other)
     {
         return !operator ==(other);
     }
@@ -166,12 +166,12 @@ protected:
             , m_textureUnit(-1)
         {}
 
-        bool operator == (const TextureIdUnit &other) const Q_DECL_NOEXCEPT
+        bool operator == (const TextureIdUnit &other) const Q_DECL_NOTHROW
         {
             return (other.m_textureId == m_textureId) && (other.m_textureUnit == m_textureUnit);
         }
 
-        bool operator !=(const TextureIdUnit &other) const Q_DECL_NOEXCEPT
+        bool operator !=(const TextureIdUnit &other) const Q_DECL_NOTHROW
         {
             return !operator ==(other);
         }

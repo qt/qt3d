@@ -65,13 +65,13 @@ class Scene3DSGMaterial : public QSGMaterial
 public:
     Scene3DSGMaterial();
 
-    void setTexture(QSGTexture *texture) Q_DECL_NOEXCEPT
+    void setTexture(QSGTexture *texture)
     {
         m_texture = texture;
         setFlag(Blending, m_texture ? m_texture->hasAlphaChannel() : false);
     }
 
-    QSGTexture *texture() const Q_DECL_NOEXCEPT { return m_texture; }
+    QSGTexture *texture() const Q_DECL_NOTHROW { return m_texture; }
     QSGMaterialType *type() const Q_DECL_FINAL { return &Scene3DSGMaterialShader::type; }
     QSGMaterialShader *createShader() const Q_DECL_FINAL { return new Scene3DSGMaterialShader(); }
 
