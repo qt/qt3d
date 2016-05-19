@@ -81,6 +81,12 @@ private:
     QAbstractTexture::Status m_status;
 };
 
+class Q_AUTOTEST_EXPORT TextureLoadingHelper
+{
+public:
+    static QTextureImageDataPtr loadTextureData(const QUrl &source, bool allow3D);
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

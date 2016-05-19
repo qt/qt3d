@@ -269,9 +269,6 @@ QOpenGLTexture *Texture::buildGLTexture()
 
     QOpenGLTexture* glTex = new QOpenGLTexture(static_cast<QOpenGLTexture::Target>(m_target));
 
-    if (m_format == QAbstractTexture::Automatic)
-        qWarning() << Q_FUNC_INFO << "something went wrong, format shouldn't be automatic at this point";
-
     // m_format may not be ES2 compatible. Now it's time to convert it, if necessary.
     QAbstractTexture::TextureFormat format = m_format;
     if (ctx->isOpenGLES() && ctx->format().majorVersion() < 3) {

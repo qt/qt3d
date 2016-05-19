@@ -39,6 +39,7 @@
 
 #include "qtextureimage.h"
 #include "qtextureimage_p.h"
+#include "qtexture_p.h"
 #include "qabstracttextureimage_p.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
@@ -147,6 +148,25 @@ void QTextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 
     if (e->propertyName() == QByteArrayLiteral("status"))
         setStatus(static_cast<QTextureImage::Status>(e->value().toInt()));
+}
+
+QImageTextureDataFunctor::QImageTextureDataFunctor(const QUrl &url)
+    : QTextureImageDataGenerator()
+    , m_url(url)
+{}
+
+QTextureImageDataPtr QImageTextureDataFunctor::operator ()()
+{
+    // We assume that a texture image is going to contain a single image data
+    // For compressed dds or ktx textures a warning should be issued if
+    // there are layers or 3D textures
+    return TextureLoadingHelper::loadTextureData(m_url, false);
+}
+
+bool QImageTextureDataFunctor::operator ==(const QTextureImageDataGenerator &other) const
+{
+    const QImageTextureDataFunctor *otherFunctor = functor_cast<QImageTextureDataFunctor>(&other);
+    return (otherFunctor != Q_NULLPTR && otherFunctor->m_url == m_url);
 }
 
 } // namespace Qt3DRender

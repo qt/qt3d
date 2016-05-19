@@ -103,11 +103,9 @@ void createTextureFromGenerator(TextureDataManager *textureDataManager,
         qWarning() << "When a texture provides a generator, it's target is expected to be TargetAutomatic";
 
     texture->setTarget(static_cast<QAbstractTexture::Target>(generatedData->target()));
-
     texture->setSize(generatedData->width(), generatedData->height(), generatedData->depth());
     texture->setLayers(generatedData->layers());
     texture->setFormat(generatedData->format());
-    texture->setFormat(static_cast<QAbstractTexture::TextureFormat>(generatedData->format()));
 
     // Note: These texture data handles aren't associated with a QTextureImageDataGenerator
     // and will therefore be destroyed when the Texture element is destroyed or cleaned up

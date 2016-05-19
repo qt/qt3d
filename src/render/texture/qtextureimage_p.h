@@ -78,44 +78,11 @@ public:
 class QImageTextureDataFunctor : public QTextureImageDataGenerator
 {
 public:
-    QImageTextureDataFunctor(const QUrl &url)
-        : QTextureImageDataGenerator()
-        , m_url(url)
-    {}
-
+    QImageTextureDataFunctor(const QUrl &url);
     // Will be executed from within a QAspectJob
-    QTextureImageDataPtr operator ()() Q_DECL_FINAL
-    {
-        QTextureImageDataPtr dataPtr;
-        if (m_url.isLocalFile() || m_url.scheme() == QLatin1String("qrc")) {
-            QString source = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_url);
-            dataPtr.reset(new QTextureImageData());
-            if (dataPtr->setCompressedFile(source))
-                return dataPtr;
-            QImage img;
-            if (img.load(source)) {
-                dataPtr->setImage(img);
-                return dataPtr;
-            }
-            dataPtr.reset();
-            qWarning() << "Failed to load image : " << source;
-        } else if (!m_url.isEmpty()) {
-            qWarning() << "implement loading from remote URLs";
-        }
-        return dataPtr;
-    }
-
-    bool operator ==(const QTextureImageDataGenerator &other) const Q_DECL_FINAL
-    {
-        const QImageTextureDataFunctor *otherFunctor = functor_cast<QImageTextureDataFunctor>(&other);
-        return (otherFunctor != Q_NULLPTR && otherFunctor->m_url == m_url);
-    }
-
-    QTextureImage::Status status() const
-    {
-        return m_status;
-    }
-
+    QTextureImageDataPtr operator ()() Q_DECL_FINAL;
+    bool operator ==(const QTextureImageDataGenerator &other) const Q_DECL_FINAL;
+    inline QTextureImage::Status status() const { return m_status; }
     QT3D_FUNCTOR(QImageTextureDataFunctor)
 
 private:
