@@ -832,9 +832,6 @@ void Renderer::clearDirtyBits(BackendNodeDirtySet changes)
 bool Renderer::shouldRender()
 {
     // Only render if something changed during the last frame, or the last frame
-    // was not rendered successfully
-    // TODO: Reinstate the proper logic here when it catches all cases
-    return true;
     // was not rendered successfully (or render-on-demand is disabled)
     return (m_settings->renderPolicy() == QRenderSettings::Always
             || m_changeSet != 0
