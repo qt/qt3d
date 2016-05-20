@@ -115,6 +115,10 @@ void QNodePrivate::init(QNode *parent)
 void QNodePrivate::notifyCreationChange()
 {
     Q_Q(QNode);
+    // Do nothing if we already have already sent a node creation change
+    // and not a subsequent node destroyed change.
+    if (m_hasBackendNode)
+        return;
     QNodeCreatedChangeGenerator generator(q);
     const auto creationChanges = generator.creationChanges();
     for (const auto &change : creationChanges)
@@ -265,6 +269,13 @@ void QNodePrivate::_q_setParentHelper(QNode *parent)
     Q_Q(QNode);
     QNode *oldParentNode = q->parentNode();
 
+    // We may get the situation where the QML engine has set the QObject
+    // parent but we have not yet set up the QNode parent requirements.
+    // This check handles this and means we propagate the scene and arbiter
+    // from the parent in the code below.
+    const bool needsSceneInit = !oldParentNode
+            || (oldParentNode && m_parentId != oldParentNode->id());
+
     // If we had a parent, we let him know that we are about to change
     // parent
     if (oldParentNode) {
@@ -283,7 +294,7 @@ void QNodePrivate::_q_setParentHelper(QNode *parent)
     if (newParentNode) {
         // If we had no parent but are about to set one,
         // we need to send a QNodeCreatedChange
-        if (!oldParentNode) {
+        if (needsSceneInit) {
             QNodePrivate *newParentPrivate = QNodePrivate::get(newParentNode);
 
             // Set the scene helper / arbiter
@@ -696,7 +707,10 @@ bool QNode::blockNotifications(bool block)
 void QNode::setParent(QNode *parent)
 {
     Q_D(QNode);
-    if (parentNode() == parent)
+
+    // If we already have a parent don't do anything. Be careful to ensure
+    // that QNode knows about the parent, not just QObject (by checking the ids)
+    if (parentNode() == parent && d->m_parentId == parentNode()->id())
         return;
     d->_q_setParentHelper(parent);
 
