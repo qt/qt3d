@@ -37,6 +37,14 @@
 **
 ****************************************************************************/
 
+/*!
+ * \class QStencilOperation
+ * \brief The QStencilOperation class allows the selection of either the front
+ * or back sides.
+ * \since 5.7
+ * \ingroup renderstates
+ */
+
 #include "qstenciloperation.h"
 #include "qstenciloperation_p.h"
 #include "qstenciloperationarguments.h"
@@ -46,6 +54,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * The constructor creates a new QStencilOperation::QStencilOperation instance with
+ * the specified \a parent.
+ */
 QStencilOperation::QStencilOperation(QNode *parent)
     : QRenderState(*new QStencilOperationPrivate(), parent)
 {
@@ -56,12 +68,18 @@ QStencilOperation::~QStencilOperation()
 {
 }
 
+/*!
+ * \return the front fragments.
+ */
 QStencilOperationArguments *QStencilOperation::front() const
 {
     Q_D(const QStencilOperation);
     return d->m_front;
 }
 
+/*!
+ * \return the back fragments.
+ */
 QStencilOperationArguments *QStencilOperation::back() const
 {
     Q_D(const QStencilOperation);
