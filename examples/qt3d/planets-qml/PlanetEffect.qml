@@ -57,12 +57,42 @@ Effect {
 
     property Texture2D shadowTexture
     property PlanetsLight light
+    property string vertexES: "qrc:/shaders/es2/planetD.vert"
+    property string fragmentES: "qrc:/shaders/es2/planetD.frag"
+    property string vertexGL: "qrc:/shaders/gl3/planetD.vert"
+    property string fragmentGL: "qrc:/shaders/gl3/planetD.frag"
 
     parameters: [
         Parameter { name: "lightViewProjection"; value: root.light.lightViewProjection },
         Parameter { name: "lightPosition";  value: root.light.lightPosition },
         Parameter { name: "lightIntensity"; value: root.light.lightIntensity }
     ]
+
+    FilterKey { id: eskey; name: "name"; value: "ES2" }
+    FilterKey { id: glkey; name: "name"; value: "Desktop" }
+    FilterKey { id: forwardkey; name : "pass"; value : "forward" }
+
+    RenderPass {
+        id: glpass
+        filterKeys: [ forwardkey ]
+
+        shaderProgram: ShaderProgram {
+            vertexShaderCode:   loadSource(vertexGL)
+            fragmentShaderCode: loadSource(fragmentGL)
+        }
+        // no special render state set => use the default set of states
+    }
+
+    RenderPass {
+        id: espass
+        filterKeys: [ forwardkey ]
+
+        shaderProgram: ShaderProgram {
+            vertexShaderCode:   loadSource(vertexES)
+            fragmentShaderCode: loadSource(fragmentES)
+        }
+        // no special render state set => use the default set of states
+    }
 
     techniques: [
         Technique {
@@ -73,20 +103,9 @@ Effect {
                 minorVersion: 2
             }
 
-            filterKeys: [ FilterKey { name: "name"; value: "Desktop" } ]
+            filterKeys: [ glkey ]
 
-            renderPasses: [
-                RenderPass {
-                    filterKeys: [ FilterKey { name : "pass"; value : "forward" } ]
-
-                    shaderProgram: ShaderProgram {
-                        vertexShaderCode:   loadSource("qrc:/shaders/gl3/planetDB.vert")
-                        fragmentShaderCode: loadSource("qrc:/shaders/gl3/planetDB.frag")
-                    }
-
-                    // no special render state set => use the default set of states
-                }
-            ]
+            renderPasses: [ glpass ]
         },
         Technique {
             graphicsApiFilter {
@@ -94,20 +113,9 @@ Effect {
                 majorVersion: 2
             }
 
-            filterKeys: [ FilterKey { name: "name"; value: "ES2" } ]
+            filterKeys: [ eskey ]
 
-            renderPasses: [
-                RenderPass {
-                    filterKeys: [ FilterKey { name : "pass"; value : "forward" } ]
-
-                    shaderProgram: ShaderProgram {
-                        vertexShaderCode:   loadSource("qrc:/shaders/es2/planetDB.vert")
-                        fragmentShaderCode: loadSource("qrc:/shaders/es2/planetDB.frag")
-                    }
-
-                    // no special render state set => use the default set of states
-                }
-            ]
+            renderPasses: [ espass ]
         },
         Technique {
             graphicsApiFilter {
@@ -116,20 +124,9 @@ Effect {
                 minorVersion: 0
             }
 
-            filterKeys: [ FilterKey { name: "name"; value: "ES2" } ]
+            filterKeys: [ eskey ]
 
-            renderPasses: [
-                RenderPass {
-                    filterKeys: [ FilterKey { name : "pass"; value : "forward" } ]
-
-                    shaderProgram: ShaderProgram {
-                        vertexShaderCode:   loadSource("qrc:/shaders/es2/planetDB.vert")
-                        fragmentShaderCode: loadSource("qrc:/shaders/es2/planetDB.frag")
-                    }
-
-                    // no special render state set => use the default set of states
-                }
-            ]
+            renderPasses: [ espass ]
         }
     ]
 }
