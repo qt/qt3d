@@ -38,6 +38,18 @@
 **
 ****************************************************************************/
 
+/*!
+ * \class QCullFace
+ * \brief The QCullFace class specifies whether front or back face culling
+ * are enabled
+ * \since 5.7
+ * \ingroup renderstates
+ *
+ * QCullFace sets whether the front or back facets are culled.
+ * Facets include triangles, quadrilaterals, polygons and rectangles.
+ *
+ * \sa QFrontFace
+ */
 #include "qcullface.h"
 #include "qcullface_p.h"
 #include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
@@ -46,6 +58,9 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ *  Constructs a new QCullFace::QCullFace instance with \a parent as parent.
+ */
 QCullFace::QCullFace(QNode *parent)
     : QRenderState(*new QCullFacePrivate, parent)
 {
@@ -56,12 +71,19 @@ QCullFace::~QCullFace()
 {
 }
 
+/*!
+ * \return which culling mode is currently enabled.
+ */
 QCullFace::CullingMode QCullFace::mode() const
 {
     Q_D(const QCullFace);
     return d->m_mode;
 }
 
+/*!
+ * Sets which faces to cull to \a mode. Default is set to back.
+ * \param mode
+ */
 void QCullFace::setMode(QCullFace::CullingMode mode)
 {
     Q_D(QCullFace);
