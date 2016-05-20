@@ -196,7 +196,6 @@ QBackendNode *QAbstractAspectPrivate::createBackendNode(const QNodeCreatedChange
 
     // TODO: Find some place else to do all of this function from the arbiter
     backend->setPeerId(change->subjectId());
-    backend->initializeFromPeer(change);
 
     // Backend could be null if the user decides that his functor should only
     // perform some action when encountering a given type of item but doesn't need to
@@ -204,6 +203,9 @@ QBackendNode *QAbstractAspectPrivate::createBackendNode(const QNodeCreatedChange
 
     QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
     backendPriv->setEnabled(change->isNodeEnabled());
+
+    backend->initializeFromPeer(change);
+
     // TO DO: Find a way to specify the changes to observe
     // Register backendNode with QChangeArbiter
     if (m_arbiter != nullptr) { // Unit tests may not have the arbiter registered
