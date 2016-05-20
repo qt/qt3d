@@ -66,7 +66,7 @@ namespace Input {
 
 class InputHandler;
 
-class KeyboardDevice : public Qt3DInput::QAbstractPhysicalDeviceBackendNode
+class Q_AUTOTEST_EXPORT KeyboardDevice : public Qt3DInput::QAbstractPhysicalDeviceBackendNode
 {
 public:
     KeyboardDevice();
