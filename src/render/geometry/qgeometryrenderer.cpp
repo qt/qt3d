@@ -398,10 +398,19 @@ void QGeometryRenderer::setGeometry(QGeometry *geometry)
         d->notifyObservers(change);
     }
 
+    if (d->m_geometry)
+        d->unregisterDestructionHelper(d->m_geometry);
+
     if (geometry && !geometry->parent())
         geometry->setParent(this);
 
     d->m_geometry = geometry;
+
+
+    // Ensures proper bookkeeping
+    if (d->m_geometry)
+        d->registerDestructionHelper(d->m_geometry, &QGeometryRenderer::setGeometry, d->m_geometry);
+
     const bool blocked = blockNotifications(true);
     emit geometryChanged(geometry);
     blockNotifications(blocked);

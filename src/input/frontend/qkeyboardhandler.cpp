@@ -196,10 +196,18 @@ void QKeyboardHandler::setSourceDevice(QKeyboardDevice *keyboardDevice)
     Q_D(QKeyboardHandler);
     if (d->m_keyboardDevice != keyboardDevice) {
 
+        if (d->m_keyboardDevice)
+            d->unregisterDestructionHelper(d->m_keyboardDevice);
+
         if (keyboardDevice && !keyboardDevice->parent())
             keyboardDevice->setParent(this);
 
         d->m_keyboardDevice = keyboardDevice;
+
+        // Ensures proper bookkeeping
+        if (d->m_keyboardDevice)
+            d->registerDestructionHelper(keyboardDevice, &QKeyboardHandler::setSourceDevice, d->m_keyboardDevice);
+
         emit sourceDeviceChanged(keyboardDevice);
     }
 }

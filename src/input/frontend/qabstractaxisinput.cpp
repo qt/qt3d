@@ -73,10 +73,21 @@ void QAbstractAxisInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
     Q_D(QAbstractAxisInput);
     if (d->m_sourceDevice != sourceDevice) {
 
+        if (d->m_sourceDevice)
+            d->unregisterDestructionHelper(d->m_sourceDevice);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, it gets destroyed as well
         if (sourceDevice && !sourceDevice->parent())
             sourceDevice->setParent(this);
 
         d->m_sourceDevice = sourceDevice;
+        // Ensures proper bookkeeping
+        if (d->m_sourceDevice)
+            d->registerDestructionHelper(sourceDevice, &QAbstractAxisInput::setSourceDevice, d->m_sourceDevice);
+
         emit sourceDeviceChanged(sourceDevice);
     }
 }

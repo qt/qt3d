@@ -258,6 +258,9 @@ void QAttribute::setBuffer(QBuffer *buffer)
     if (d->m_buffer == buffer)
         return;
 
+    if (d->m_buffer)
+        d->unregisterDestructionHelper(d->m_buffer);
+
     // We need to add it as a child of the current node if it has been declared inline
     // Or not previously added as a child of the current node so that
     // 1) The backend gets notified about it's creation
@@ -266,6 +269,11 @@ void QAttribute::setBuffer(QBuffer *buffer)
         buffer->setParent(this);
 
     d->m_buffer = buffer;
+
+    // Ensures proper bookkeeping
+    if (d->m_buffer)
+        d->registerDestructionHelper(d->m_buffer, &QAttribute::setBuffer, d->m_buffer);
+
     emit bufferChanged(buffer);
 }
 

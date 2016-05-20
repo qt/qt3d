@@ -92,21 +92,23 @@ void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
             d->notifyObservers(change);
         }
 
-        d->m_shader = shaderProgram;
-        emit shaderProgramChanged(shaderProgram);
+        if (d->m_shader)
+            d->unregisterDestructionHelper(d->m_shader);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!shaderProgram->parent())
+        if (shaderProgram && !shaderProgram->parent())
             shaderProgram->setParent(this);
 
-        if (d->m_shader && d->m_changeArbiter != nullptr) {
-            const auto change = QPropertyNodeAddedChangePtr::create(id(), d->m_shader);
-            change->setPropertyName("shaderProgram");
-            d->notifyObservers(change);
-        }
+        d->m_shader = shaderProgram;
+
+        // Ensures proper bookkeeping
+        if (d->m_shader)
+            d->registerDestructionHelper(d->m_shader, &QRenderPass::setShaderProgram, d->m_shader);
+
+        emit shaderProgramChanged(shaderProgram);
     }
 }
 
@@ -122,6 +124,9 @@ void QRenderPass::addFilterKey(QFilterKey *filterKey)
     Q_D(QRenderPass);
     if (!d->m_filterKeyList.contains(filterKey)) {
         d->m_filterKeyList.append(filterKey);
+
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(filterKey, &QRenderPass::removeFilterKey, d->m_filterKeyList);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
@@ -148,6 +153,8 @@ void QRenderPass::removeFilterKey(QFilterKey *filterKey)
         d->notifyObservers(change);
     }
     d->m_filterKeyList.removeOne(filterKey);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(filterKey);
 }
 
 QVector<QFilterKey *> QRenderPass::filterKeys() const
@@ -170,6 +177,9 @@ void QRenderPass::addRenderState(QRenderState *state)
     Q_D(QRenderPass);
     if (!d->m_renderStates.contains(state)) {
         d->m_renderStates.append(state);
+
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(state, &QRenderPass::removeRenderState, d->m_renderStates);
 
         if (!state->parent())
             state->setParent(this);
@@ -195,6 +205,8 @@ void QRenderPass::removeRenderState(QRenderState *state)
         d->notifyObservers(change);
     }
     d->m_renderStates.removeOne(state);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(state);
 }
 
 /*!
@@ -213,6 +225,9 @@ void QRenderPass::addParameter(QParameter *parameter)
     Q_D(QRenderPass);
     if (!d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
+
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(parameter, &QRenderPass::removeParameter, d->m_parameters);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
@@ -239,6 +254,8 @@ void QRenderPass::removeParameter(QParameter *parameter)
         d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(parameter);
 }
 
 

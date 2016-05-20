@@ -273,6 +273,8 @@ void QAbstractTexture::addTextureImage(QAbstractTextureImage *textureImage)
     if (!d->m_textureImages.contains(textureImage)) {
         d->m_textureImages.append(textureImage);
 
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(textureImage, &QAbstractTexture::removeTextureImage, d->m_textureImages);
 
         if (textureImage->parent() && textureImage->parent() != this)
             qWarning() << "A QAbstractTextureImage was shared, expect a crash, undefined behavior at best";
@@ -304,6 +306,8 @@ void QAbstractTexture::removeTextureImage(QAbstractTextureImage *textureImage)
         d->notifyObservers(change);
     }
     d->m_textureImages.removeOne(textureImage);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(textureImage);
 }
 
 /*!

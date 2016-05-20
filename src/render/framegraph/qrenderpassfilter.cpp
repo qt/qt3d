@@ -81,6 +81,9 @@ void QRenderPassFilter::addMatch(QFilterKey *filterKey)
     if (!d->m_matchList.contains(filterKey)) {
         d->m_matchList.append(filterKey);
 
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(filterKey, &QRenderPassFilter::removeMatch, d->m_matchList);
+
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
@@ -107,6 +110,8 @@ void QRenderPassFilter::removeMatch(QFilterKey *filterKey)
         d->notifyObservers(change);
     }
     d->m_matchList.removeOne(filterKey);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(filterKey);
 }
 
 void QRenderPassFilter::addParameter(QParameter *parameter)
@@ -115,6 +120,9 @@ void QRenderPassFilter::addParameter(QParameter *parameter)
     Q_D(QRenderPassFilter);
     if (!d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
+
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(parameter, &QRenderPassFilter::removeParameter, d->m_parameters);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
@@ -142,6 +150,8 @@ void QRenderPassFilter::removeParameter(QParameter *parameter)
         d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(parameter);
 }
 
 QVector<QParameter *> QRenderPassFilter::parameters() const

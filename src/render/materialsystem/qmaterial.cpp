@@ -112,6 +112,9 @@ void QMaterial::setEffect(QEffect *effect)
     Q_D(QMaterial);
     if (effect != d->m_effect) {
 
+        if (d->m_effect)
+            d->unregisterDestructionHelper(d->m_effect);
+
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
@@ -119,6 +122,11 @@ void QMaterial::setEffect(QEffect *effect)
         if (effect && !effect->parent())
             effect->setParent(this);
         d->m_effect = effect;
+
+        // Ensures proper bookkeeping
+        if (d->m_effect)
+            d->registerDestructionHelper(d->m_effect, &QMaterial::setEffect, d->m_effect);
+
         emit effectChanged(effect);
     }
 }
@@ -138,6 +146,9 @@ void QMaterial::addParameter(QParameter *parameter)
     Q_D(QMaterial);
     if (!d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
+
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(parameter, &QMaterial::removeParameter, d->m_parameters);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that

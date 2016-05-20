@@ -171,6 +171,9 @@ void QLogicalDevice::addAction(QAction *action)
         if (!action->parent())
             action->setParent(this);
 
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(action, &QLogicalDevice::removeAction, d->m_actions);
+
         if (d->m_changeArbiter != nullptr) {
             const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), action);
             change->setPropertyName("action");
@@ -194,6 +197,9 @@ void QLogicalDevice::removeAction(QAction *action)
         }
 
         d->m_actions.removeOne(action);
+
+        // Remove bookkeeping connection
+        d->unregisterDestructionHelper(action);
     }
 }
 
@@ -225,6 +231,9 @@ void QLogicalDevice::addAxis(QAxis *axis)
         if (!axis->parent())
             axis->setParent(this);
 
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(axis, &QLogicalDevice::removeAxis, d->m_axes);
+
         if (d->m_changeArbiter != nullptr) {
             const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), axis);
             change->setPropertyName("axis");
@@ -247,6 +256,9 @@ void QLogicalDevice::removeAxis(QAxis *axis)
         }
 
         d->m_axes.removeOne(axis);
+
+        // Remove bookkeeping connection
+        d->unregisterDestructionHelper(axis);
     }
 }
 

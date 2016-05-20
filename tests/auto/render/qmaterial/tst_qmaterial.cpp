@@ -58,9 +58,9 @@ public:
     explicit TestMaterial(Qt3DCore::QNode *parent = 0)
         : Qt3DRender::QMaterial(parent)
         , m_effect(new Qt3DRender::QEffect(this))
-        , m_technique(new Qt3DRender::QTechnique(this))
-        , m_renderPass(new Qt3DRender::QRenderPass(this))
-        , m_shaderProgram(new Qt3DRender::QShaderProgram(this))
+        , m_technique(new Qt3DRender::QTechnique(m_effect))
+        , m_renderPass(new Qt3DRender::QRenderPass(m_technique))
+        , m_shaderProgram(new Qt3DRender::QShaderProgram(m_renderPass))
     {
         m_renderPass->setShaderProgram(m_shaderProgram);
         m_technique->addRenderPass(m_renderPass);

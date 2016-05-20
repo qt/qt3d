@@ -83,6 +83,9 @@ void QAxis::addInput(QAbstractAxisInput *input)
         if (!input->parent())
             input->setParent(this);
 
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(input, &QAxis::removeInput, d->m_inputs);
+
         if (d->m_changeArbiter != nullptr) {
             const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), input);
             change->setPropertyName("input");
@@ -103,6 +106,9 @@ void QAxis::removeInput(QAbstractAxisInput *input)
         }
 
         d->m_inputs.removeOne(input);
+
+        // Remove bookkeeping connection
+        d->unregisterDestructionHelper(input);
     }
 }
 

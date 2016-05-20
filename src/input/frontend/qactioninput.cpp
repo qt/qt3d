@@ -137,12 +137,20 @@ void QActionInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
     Q_D(QActionInput);
     if (d->m_sourceDevice != sourceDevice) {
 
+        if (d->m_sourceDevice)
+            d->unregisterDestructionHelper(d->m_sourceDevice);
+
         // Check and set parent if needed
         // to force creation in the backend
         if (sourceDevice && !sourceDevice->parent())
             sourceDevice->setParent(this);
 
         d->m_sourceDevice = sourceDevice;
+
+        // Ensures proper bookkeeping
+        if (d->m_sourceDevice)
+            d->registerDestructionHelper(sourceDevice, &QActionInput::setSourceDevice, d->m_sourceDevice);
+
         emit sourceDeviceChanged(sourceDevice);
     }
 }

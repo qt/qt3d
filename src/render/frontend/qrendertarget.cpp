@@ -77,6 +77,9 @@ void QRenderTarget::addOutput(QRenderTargetOutput *output)
     if (output && !d->m_outputs.contains(output)) {
         d->m_outputs.append(output);
 
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(output, &QRenderTarget::removeOutput, d->m_outputs);
+
         if (!output->parent())
             output->setParent(this);
 
@@ -98,6 +101,8 @@ void QRenderTarget::removeOutput(QRenderTargetOutput *output)
         d->notifyObservers(change);
     }
     d->m_outputs.removeOne(output);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(output);
 }
 
 QVector<QRenderTargetOutput *> QRenderTarget::outputs() const

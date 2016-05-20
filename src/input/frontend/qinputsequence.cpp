@@ -205,6 +205,9 @@ void QInputSequence::addSequence(QAbstractActionInput *input)
     if (!d->m_sequences.contains(input)) {
         d->m_sequences.push_back(input);
 
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(input, &QInputSequence::removeSequence, d->m_sequences);
+
         if (!input->parent())
             input->setParent(this);
 
@@ -232,6 +235,9 @@ void QInputSequence::removeSequence(QAbstractActionInput *input)
         }
 
         d->m_sequences.removeOne(input);
+
+        // Remove bookkeeping connection
+        d->unregisterDestructionHelper(input);
     }
 }
 

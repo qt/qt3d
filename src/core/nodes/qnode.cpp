@@ -79,6 +79,10 @@ QNodePrivate::QNodePrivate()
 
 QNodePrivate::~QNodePrivate()
 {
+    // Disconnect each connection that was stored
+    for (auto it = m_destructionConnections.begin(), end = m_destructionConnections.end(); it != end; ++it)
+        QObject::disconnect(it.value());
+    m_destructionConnections.clear();
 }
 
 void QNodePrivate::init(QNode *parent)
@@ -626,6 +630,7 @@ QNode::~QNode()
 {
     // Notify the backend that the parent lost this node as a child and
     // that this node is being destroyed.
+    Q_EMIT nodeDestroyed();
     Q_D(QNode);
     d->notifyDestructionChangesAndRemoveFromScene();
 }

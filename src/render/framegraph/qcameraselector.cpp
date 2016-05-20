@@ -81,7 +81,9 @@ void QCameraSelector::setCamera(Qt3DCore::QEntity *camera)
 {
     Q_D(QCameraSelector);
     if (d->m_camera != camera) {
-        d->m_camera = camera;
+
+        if (d->m_camera)
+            d->unregisterDestructionHelper(d->m_camera);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
@@ -89,6 +91,12 @@ void QCameraSelector::setCamera(Qt3DCore::QEntity *camera)
         // 2) When the current node is destroyed, it gets destroyed as well
         if (camera && !camera->parent())
             camera->setParent(this);
+        d->m_camera = camera;
+
+        // Ensures proper bookkeeping
+        if (d->m_camera)
+            d->registerDestructionHelper(d->m_camera, &QCameraSelector::setCamera, d->m_camera);
+
         emit cameraChanged(camera);
     }
 }

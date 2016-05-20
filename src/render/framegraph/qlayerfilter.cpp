@@ -105,6 +105,9 @@ void QLayerFilter::addLayer(QLayer *layer)
     if (!d->m_layers.contains(layer)) {
         d->m_layers.append(layer);
 
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(layer, &QLayerFilter::removeLayer, d->m_layers);
+
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
@@ -130,6 +133,8 @@ void QLayerFilter::removeLayer(QLayer *layer)
         d->notifyObservers(change);
     }
     d->m_layers.removeOne(layer);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(layer);
 }
 
 QVector<QLayer *> QLayerFilter::layers() const

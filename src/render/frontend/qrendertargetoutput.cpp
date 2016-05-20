@@ -91,11 +91,20 @@ void QRenderTargetOutput::setTexture(QAbstractTexture *texture)
 {
     Q_D(QRenderTargetOutput);
     if (texture != d->m_texture) {
-        d->m_texture = texture;
+
+        if (d->m_texture)
+            d->unregisterDestructionHelper(d->m_texture);
 
         // Handle inline declaration
         if (!texture->parent())
             texture->setParent(this);
+
+        d->m_texture = texture;
+
+        // Ensures proper bookkeeping
+        if (d->m_texture)
+            d->registerDestructionHelper(d->m_texture, &QRenderTargetOutput::setTexture, d->m_texture);
+
         emit textureChanged(texture);
     }
 }

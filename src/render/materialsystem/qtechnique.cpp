@@ -97,6 +97,9 @@ void QTechnique::addFilterKey(QFilterKey *filterKey)
     if (!d->m_filterKeys.contains(filterKey)) {
         d->m_filterKeys.append(filterKey);
 
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(filterKey, &QTechnique::removeFilterKey, d->m_filterKeys);
+
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
@@ -122,6 +125,8 @@ void QTechnique::removeFilterKey(QFilterKey *filterKey)
         d->notifyObservers(change);
     }
     d->m_filterKeys.removeOne(filterKey);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(filterKey);
 }
 
 QVector<QFilterKey *> QTechnique::filterKeys() const
@@ -136,6 +141,9 @@ void QTechnique::addParameter(QParameter *parameter)
     Q_D(QTechnique);
     if (!d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
+
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(parameter, &QTechnique::removeParameter, d->m_parameters);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
@@ -162,6 +170,8 @@ void QTechnique::removeParameter(QParameter *parameter)
         d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(parameter);
 }
 
 /*!
@@ -175,6 +185,9 @@ void QTechnique::addRenderPass(QRenderPass *pass)
     Q_D(QTechnique);
     if (!d->m_renderPasses.contains(pass)) {
         d->m_renderPasses.append(pass);
+
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(pass, &QTechnique::removeRenderPass, d->m_renderPasses);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
@@ -206,6 +219,8 @@ void QTechnique::removeRenderPass(QRenderPass *pass)
         d->notifyObservers(change);
     }
     d->m_renderPasses.removeOne(pass);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(pass);
 }
 
 /*!

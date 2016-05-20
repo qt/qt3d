@@ -110,9 +110,18 @@ void QRenderSettings::setActiveFrameGraph(QFrameGraphNode *activeFrameGraph)
     if (d->m_activeFrameGraph == activeFrameGraph)
         return;
 
+    if (d->m_activeFrameGraph)
+        d->unregisterDestructionHelper(d->m_activeFrameGraph);
+
     if (activeFrameGraph != nullptr && !activeFrameGraph->parent())
         activeFrameGraph->setParent(this);
+
     d->m_activeFrameGraph = activeFrameGraph;
+
+    // Ensures proper bookkeeping
+    if (d->m_activeFrameGraph)
+        d->registerDestructionHelper(d->m_activeFrameGraph, &QRenderSettings::setActiveFrameGraph, d->m_activeFrameGraph);
+
     emit activeFrameGraphChanged(activeFrameGraph);
 }
 

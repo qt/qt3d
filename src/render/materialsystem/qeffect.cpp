@@ -79,6 +79,9 @@ void QEffect::addParameter(QParameter *parameter)
     if (parameter && !d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
 
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(parameter, &QEffect::removeParameter, d->m_parameters);
+
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
@@ -104,6 +107,8 @@ void QEffect::removeParameter(QParameter *parameter)
         d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(parameter);
 }
 
 QVector<QParameter *> QEffect::parameters() const
@@ -123,6 +128,9 @@ void QEffect::addTechnique(QTechnique *t)
     Q_D(QEffect);
     if (t && !d->m_techniques.contains(t)) {
         d->m_techniques.append(t);
+
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(t, &QEffect::removeTechnique, d->m_techniques);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
@@ -153,6 +161,8 @@ void QEffect::removeTechnique(QTechnique *t)
         d->notifyObservers(change);
     }
     d->m_techniques.removeOne(t);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(t);
 }
 
 /*!

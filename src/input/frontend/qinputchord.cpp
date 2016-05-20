@@ -152,6 +152,9 @@ void QInputChord::addChord(QAbstractActionInput *input)
     if (!d->m_chords.contains(input)) {
         d->m_chords.push_back(input);
 
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(input, &QInputChord::removeChord, d->m_chords);
+
         if (!input->parent())
             input->setParent(this);
 
@@ -180,6 +183,9 @@ void QInputChord::removeChord(QAbstractActionInput *input)
         }
 
         d->m_chords.removeOne(input);
+
+        // Remove bookkeeping connection
+        d->unregisterDestructionHelper(input);
     }
 }
 

@@ -90,6 +90,7 @@ public Q_SLOTS:
 Q_SIGNALS:
     void parentChanged(QObject *parent);
     void enabledChanged(bool enabled);
+    void nodeDestroyed();
 
 protected:
     explicit QNode(QNodePrivate &dd, QNode *parent = nullptr);
