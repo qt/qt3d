@@ -154,13 +154,13 @@ public:
     }
 
     template<typename T>
-    bool containsComponentsOfType()
+    bool containsComponentsOfType() const
     {
         return !componentUuid<T>().isNull();
     }
 
     template<typename T, typename Ts, typename ... Ts2>
-    bool containsComponentsOfType()
+    bool containsComponentsOfType() const
     {
         return containsComponentsOfType<T>() && containsComponentsOfType<Ts, Ts2...>();
     }
