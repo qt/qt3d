@@ -76,11 +76,6 @@ QPropertyNodeRemovedChange::QPropertyNodeRemovedChange(QNodeId subjectId, QNode 
     d->m_removedNodeIdTypePair = QNodeIdTypePair(node->id(), QNodePrivate::get(node)->m_typeInfo);
 }
 
-QPropertyNodeRemovedChange::QPropertyNodeRemovedChange(QNodeId subjectId)
-    : QStaticPropertyValueRemovedChangeBase(*new QPropertyNodeRemovedChangePrivate, subjectId)
-{
-}
-
 /*! \internal */
 QPropertyNodeRemovedChange::~QPropertyNodeRemovedChange()
 {
