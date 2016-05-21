@@ -144,6 +144,7 @@ private:
 
     bool m_isLoaded;
     ProgramDNA m_dna;
+    ProgramDNA m_oldDna;
     QMutex m_mutex;
     GraphicsContext *m_graphicsContext;
 

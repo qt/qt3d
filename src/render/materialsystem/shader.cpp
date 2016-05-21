@@ -144,22 +144,22 @@ void Shader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QPropertyUpdatedChangePtr propertyChange = e.staticCast<QPropertyUpdatedChange>();
         QVariant propertyValue = propertyChange->value();
 
-        if (propertyChange->propertyName() == QByteArrayLiteral("vertexSourceCode")) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("vertexShaderCode")) {
             m_shaderCode[QShaderProgram::Vertex] = propertyValue.toByteArray();
             m_isLoaded = false;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("fragmentSourceCode")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("fragmentShaderCode")) {
             m_shaderCode[QShaderProgram::Fragment] = propertyValue.toByteArray();
             m_isLoaded = false;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationControlSourceCode")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationControlShaderCode")) {
             m_shaderCode[QShaderProgram::TessellationControl] = propertyValue.toByteArray();
             m_isLoaded = false;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationEvaluationSourceCode")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationEvaluationShaderCode")) {
             m_shaderCode[QShaderProgram::TessellationEvaluation] = propertyValue.toByteArray();
             m_isLoaded = false;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("geometrySourceCode")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("geometryShaderCode")) {
             m_shaderCode[QShaderProgram::Geometry] = propertyValue.toByteArray();
             m_isLoaded = false;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("computeSourceCode")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("computeShaderCode")) {
             m_shaderCode[QShaderProgram::Compute] = propertyValue.toByteArray();
             m_isLoaded = false;
         }
@@ -241,6 +241,7 @@ QOpenGLShaderProgram *Shader::getOrCreateProgram(GraphicsContext *ctx)
     if (!m_isLoaded) {
         delete m_program;
         m_graphicsContext = ctx;
+        m_graphicsContext->removeProgram(m_oldDna, peerId());
         m_program = createProgram(ctx);
         if (!m_program)
             m_program = createDefaultProgram();
@@ -333,6 +334,7 @@ QOpenGLShaderProgram* Shader::createDefaultProgram()
 
 void Shader::updateDNA()
 {
+    m_oldDna = m_dna;
     uint codeHash = qHash(m_shaderCode[QShaderProgram::Vertex]
             + m_shaderCode[QShaderProgram::TessellationControl]
             + m_shaderCode[QShaderProgram::TessellationEvaluation]
