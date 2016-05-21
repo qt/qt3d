@@ -877,21 +877,6 @@ QAspectJobPtr Renderer::pickBoundingVolumeJob()
     return m_pickBoundingVolumeJob;
 }
 
-// Called during while traversing the FrameGraph for each leaf node context of QAspectThread
-RenderViewInitializerJobPtr Renderer::createRenderViewInitializerJob(FrameGraphNode *node, int submitOrderIndex)
-{
-    RenderViewInitializerJobPtr job(new RenderViewInitializerJob);
-    job->setRenderer(this);
-    //    if (m_surface)
-    //        job->setSurfaceSize(m_surface->size());
-    // TO DO: the surface size can only be set by the RenderView
-    // since the only the RenderView will know about the surface
-    // it should be renderer onto
-    job->setFrameGraphLeafNode(node);
-    job->setSubmitOrderIndex(submitOrderIndex);
-    return job;
-}
-
 QAbstractFrameAdvanceService *Renderer::frameAdvanceService() const
 {
     return static_cast<Qt3DCore::QAbstractFrameAdvanceService *>(m_vsyncFrameAdvanceService.data());

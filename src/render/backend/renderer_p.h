@@ -165,8 +165,6 @@ public:
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() Q_DECL_OVERRIDE;
     Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() Q_DECL_OVERRIDE;
 
-    RenderViewInitializerJobPtr createRenderViewInitializerJob(FrameGraphNode *node, int submitOrderIndex);
-
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const Q_DECL_OVERRIDE;
 
     void registerEventFilter(Qt3DCore::QEventFilterService *service) Q_DECL_OVERRIDE;

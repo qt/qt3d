@@ -126,8 +126,8 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         // Prefer linear iteration over tree traversal
 
         const int currentRenderViewIndex = m_renderviewIndex++;
-        RenderViewInitializerJobPtr renderViewJob = m_renderer->createRenderViewInitializerJob(node, currentRenderViewIndex);
         auto renderViewCommandBuilder = Render::RenderViewBuilderJobPtr::create();
+        auto renderViewJob = RenderViewInitializerJobPtr::create();
         auto filterEntityByLayer = Render::FilterLayerEntityJobPtr::create();
         auto lightGatherer = Render::LightGathererPtr::create();
         auto renderableEntityFilterer = Render::FilterEntityByComponentJobPtr<Render::GeometryRenderer, Render::Material>::create();
@@ -137,6 +137,9 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
 
         auto frustumCulling = Render::FrustumCullingJobPtr::create();
 
+        // Copy for lambda capture
+        Renderer *renderer = m_renderer;
+
         // Init what we can here
         EntityManager *entityManager = m_renderer->nodeManagers()->renderNodesManager();
         filterEntityByLayer->setManager(entityManager);
@@ -144,6 +147,9 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         computeEntityFilterer->setManager(entityManager);
         frustumCulling->setRoot(m_renderer->sceneRoot());
         lightGatherer->setManager(entityManager);
+        renderViewJob->setRenderer(m_renderer);
+        renderViewJob->setFrameGraphLeafNode(node);
+        renderViewJob->setSubmitOrderIndex(currentRenderViewIndex);
 
         // RenderCommand building is the most consuming task -> split it
         QVector<Render::RenderViewBuilderJobPtr> renderViewCommandBuilders;
@@ -260,7 +266,6 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
             }
         };
 
-        Renderer *renderer = m_renderer;
         // Called after each RenderViewBuilder has built its RenderCommands
         auto syncRenderViewCommandBuilders = [=] () {
             // Append all the commands and sort them
