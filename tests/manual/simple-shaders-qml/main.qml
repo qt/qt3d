@@ -110,6 +110,8 @@ Entity {
             effect: Effect {
                 techniques: [
                     Technique {
+                        filterKeys: FilterKey { name: "renderingStyle"; value: "forward" }
+
                         graphicsApiFilter {
                             api: GraphicsApiFilter.OpenGL
                             majorVersion: 3
@@ -191,6 +193,8 @@ Entity {
             effect: Effect {
                 techniques: [
                     Technique {
+                        filterKeys: FilterKey { name: "renderingStyle"; value: "forward" }
+
                         graphicsApiFilter {
                             api: GraphicsApiFilter.OpenGL
                             majorVersion: 3
