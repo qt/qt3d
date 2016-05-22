@@ -62,8 +62,7 @@ namespace Render {
 namespace JobTypes {
 
     enum JobType {
-        Unknown = 0,
-        LoadBuffer,
+        LoadBuffer = 1,
         FrameCleanup,
         FramePreparation,
         CalcBoundingVolume,
