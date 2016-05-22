@@ -51,14 +51,9 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DRender/private/updateboundingvolumejob_p.h>
-#include <Qt3DRender/private/updateworldtransformjob_p.h>
-#include <Qt3DRender/private/calcboundingvolumejob_p.h>
-#include <Qt3DRender/private/framepreparationjob_p.h>
-#include <Qt3DRender/private/framecleanupjob_p.h>
-#include <Qt3DRender/private/platformsurfacefilter_p.h>
+#include <Qt3DCore/private/qabstractaspect_p.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -86,18 +81,12 @@ public:
     void renderInitialize(QOpenGLContext *context);
     void renderSynchronous();
     void renderShutdown();
-    QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs();
     QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
 
     Render::NodeManagers *m_nodeManagers;
     Render::AbstractRenderer *m_renderer;
 
     bool m_initialized;
-    Render::FramePreparationJobPtr m_framePreparationJob;
-    Render::FrameCleanupJobPtr m_cleanupJob;
-    Render::UpdateWorldTransformJobPtr m_worldTransformJob;
-    Render::UpdateBoundingVolumeJobPtr m_updateBoundingVolumeJob;
-    Render::CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
     QList<QSceneIOHandler *> m_sceneIOHandler;
     QRenderAspect::RenderType m_renderType;
 };

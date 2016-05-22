@@ -52,8 +52,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-FrameCleanupJob::FrameCleanupJob(NodeManagers *managers)
-    : m_managers(managers)
+FrameCleanupJob::FrameCleanupJob()
+    : m_managers(nullptr)
     , m_root(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::FrameCleanup, 0);
@@ -100,6 +100,11 @@ void FrameCleanupJob::updateBoundingVolumesDebug(Entity *node)
     const auto children = node->children();
     for (Entity *c : children)
         updateBoundingVolumesDebug(c);
+}
+
+void FrameCleanupJob::setManagers(NodeManagers *managers)
+{
+    m_managers = managers;
 }
 
 } // namespace Render

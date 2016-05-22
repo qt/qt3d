@@ -62,6 +62,12 @@
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
 #include <Qt3DRender/private/rendersettings_p.h>
 #include <Qt3DRender/private/renderviewinitializerjob_p.h>
+#include <Qt3DRender/private/updateboundingvolumejob_p.h>
+#include <Qt3DRender/private/updateworldtransformjob_p.h>
+#include <Qt3DRender/private/calcboundingvolumejob_p.h>
+#include <Qt3DRender/private/framepreparationjob_p.h>
+#include <Qt3DRender/private/framecleanupjob_p.h>
+#include <Qt3DRender/private/platformsurfacefilter_p.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -131,7 +137,7 @@ public:
     qint64 time() const Q_DECL_OVERRIDE;
     void setTime(qint64 time) Q_DECL_OVERRIDE;
 
-    void setNodeManagers(NodeManagers *managers) Q_DECL_OVERRIDE { m_nodesManager = managers; }
+    void setNodeManagers(NodeManagers *managers) Q_DECL_OVERRIDE;
     void setServices(Qt3DCore::QServiceLocator *services) Q_DECL_OVERRIDE { m_services = services; }
     void setSurfaceExposed(bool exposed) Q_DECL_OVERRIDE;
 
@@ -164,6 +170,13 @@ public:
 
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() Q_DECL_OVERRIDE;
     Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() Q_DECL_OVERRIDE;
+    QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs() const;
+
+    inline FrameCleanupJobPtr frameCleanupJob() const { return m_cleanupJob; }
+    inline UpdateBoundingVolumeJobPtr updateBoundingVolumeJob() const { return m_updateBoundingVolumeJob; }
+    inline FramePreparationJobPtr framePreparationJob() const { return m_framePreparationJob; }
+    inline CalculateBoundingVolumeJobPtr calculateBoundingVolumeJob() const { return m_calculateBoundingVolumeJob; }
+    inline UpdateWorldTransformJobPtr updateWorldTransformJob() const { return m_worldTransformJob; }
 
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const Q_DECL_OVERRIDE;
 
@@ -279,6 +292,12 @@ private:
     qint64 m_time;
 
     RenderSettings *m_settings;
+
+    FramePreparationJobPtr m_framePreparationJob;
+    FrameCleanupJobPtr m_cleanupJob;
+    UpdateWorldTransformJobPtr m_worldTransformJob;
+    UpdateBoundingVolumeJobPtr m_updateBoundingVolumeJob;
+    CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
 
     void performDraw(GeometryRenderer *rGeometryRenderer,
                      GLsizei primitiveCount, Attribute *indexAttribute);

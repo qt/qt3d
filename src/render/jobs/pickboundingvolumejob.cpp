@@ -324,7 +324,7 @@ CollisionVisitor::HitList reduceToAllHits(CollisionVisitor::HitList &results, co
 
 PickBoundingVolumeJob::PickBoundingVolumeJob(Renderer *renderer)
     : m_renderer(renderer)
-    , m_manager(renderer->nodeManagers())
+    , m_manager(nullptr)
     , m_node(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::PickBoundingVolume, 0);
@@ -345,6 +345,11 @@ QRay3D PickBoundingVolumeJob::intersectionRay(const QPoint &pos, const QMatrix4x
     return QRay3D(nearPos,
                   (farPos - nearPos).normalized(),
                   (farPos - nearPos).length());
+}
+
+void PickBoundingVolumeJob::setManagers(NodeManagers *manager)
+{
+    m_manager = manager;
 }
 
 void PickBoundingVolumeJob::run()

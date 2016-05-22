@@ -111,7 +111,6 @@
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
-#include <Qt3DRender/private/loadbufferjob_p.h>
 #include <Qt3DRender/private/loadgeometryjob_p.h>
 #include <Qt3DRender/private/qsceneiofactory_p.h>
 #include <Qt3DRender/private/frustumculling_p.h>
@@ -157,25 +156,12 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_nodeManagers(new Render::NodeManagers())
     , m_renderer(nullptr)
     , m_initialized(false)
-    , m_framePreparationJob(Render::FramePreparationJobPtr::create(m_nodeManagers))
-    , m_cleanupJob(Render::FrameCleanupJobPtr::create(m_nodeManagers))
-    , m_worldTransformJob(Render::UpdateWorldTransformJobPtr::create())
-    , m_updateBoundingVolumeJob(Render::UpdateBoundingVolumeJobPtr::create())
-    , m_calculateBoundingVolumeJob(Render::CalculateBoundingVolumeJobPtr::create(m_nodeManagers))
     , m_renderType(type)
 {
     initResources();
 
     // Load the scene parsers
     loadSceneParsers();
-
-    // Create jobs to update transforms and bounding volumes
-    // We can only update bounding volumes once all world transforms are known
-    m_updateBoundingVolumeJob->addDependency(m_worldTransformJob);
-    m_framePreparationJob->addDependency(m_worldTransformJob);
-
-    // All world stuff depends on the RenderEntity's localBoundingVolume
-    m_worldTransformJob->addDependency(m_calculateBoundingVolumeJob);
 }
 
 /*! \internal */
@@ -385,14 +371,6 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         }
 
         Render::NodeManagers *manager = d->m_renderer->nodeManagers();
-        QAspectJobPtr pickBoundingVolumeJob = d->m_renderer->pickBoundingVolumeJob();
-
-        // Create the jobs to build the frame
-        d->m_framePreparationJob->setRoot(d->m_renderer->sceneRoot());
-        d->m_worldTransformJob->setRoot(d->m_renderer->sceneRoot());
-        d->m_updateBoundingVolumeJob->setRoot(d->m_renderer->sceneRoot());
-        d->m_calculateBoundingVolumeJob->setRoot(d->m_renderer->sceneRoot());
-        d->m_cleanupJob->setRoot(d->m_renderer->sceneRoot());
 
         const QVector<QNodeId> texturesPending = std::move(manager->textureDataManager()->texturesPending());
         for (const QNodeId textureId : texturesPending) {
@@ -400,6 +378,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
             loadTextureJob->setNodeManagers(manager);
             jobs.append(loadTextureJob);
         }
+
         // TO DO: Have 2 jobs queue
         // One for urgent jobs that are mandatory for the rendering of a frame
         // Another for jobs that can span across multiple frames (Scene/Mesh loading)
@@ -410,45 +389,20 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
             jobs.append(job);
         }
 
-        // Clear any previous temporary dependency
-        d->m_calculateBoundingVolumeJob->removeDependency(QWeakPointer<QAspectJob>());
-        const QVector<QAspectJobPtr> bufferJobs = d->createRenderBufferJobs();
-        for (const QAspectJobPtr &bufferJob : bufferJobs)
-            d->m_calculateBoundingVolumeJob->addDependency(bufferJob);
-        jobs.append(bufferJobs);
-
         const QVector<QAspectJobPtr> geometryJobs = d->createGeometryRendererJobs();
         jobs.append(geometryJobs);
 
-        // Only add dependency if not already present
-        const QVector<QWeakPointer<QAspectJob> > dependencies = pickBoundingVolumeJob->dependencies();
-        if (std::find(dependencies.begin(), dependencies.end(), d->m_framePreparationJob) == dependencies.end())
-            pickBoundingVolumeJob->addDependency(d->m_framePreparationJob);
 
         // Add all jobs to queue
-        jobs.append(d->m_calculateBoundingVolumeJob);
-        jobs.append(d->m_worldTransformJob);
-        jobs.append(d->m_updateBoundingVolumeJob);
-        jobs.append(d->m_framePreparationJob);
+        const Qt3DCore::QAspectJobPtr pickBoundingVolumeJob = d->m_renderer->pickBoundingVolumeJob();
         jobs.append(pickBoundingVolumeJob);
-
-        // Clear any old dependencies from previous frames
-        d->m_cleanupJob->removeDependency(QWeakPointer<QAspectJob>());
-
-        // Note: We need the RenderBinJobs to set the surface
-        // so we must create the RenderViews in all cases
 
         // Traverse the current framegraph and create jobs to populate
         // RenderBins with RenderCommands
-        QVector<QAspectJobPtr> renderBinJobs = d->m_renderer->renderBinJobs();
-        for (int i = 0; i < renderBinJobs.size(); ++i) {
-            QAspectJobPtr renderBinJob = renderBinJobs.at(i);
-            renderBinJob->addDependency(d->m_updateBoundingVolumeJob);
-            jobs.append(renderBinJob);
-            d->m_cleanupJob->addDependency(renderBinJob);
-        }
-
-        jobs.append(d->m_cleanupJob);
+        // All jobs needed to create the frame and their dependencies are set by
+        // renderBinJobs()
+        const QVector<QAspectJobPtr> renderBinJobs = d->m_renderer->renderBinJobs();
+        jobs.append(renderBinJobs);
     }
     return jobs;
 }
@@ -514,31 +468,12 @@ void QRenderAspect::onUnregistered()
     d->m_renderer = nullptr;
 }
 
-// Returns a vector of jobs to be performed for dirty buffers
-// 1 dirty buffer == 1 job, all job can be performed in parallel
-QVector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createRenderBufferJobs()
-{
-    const QVector<QNodeId> dirtyBuffers = m_nodeManagers->bufferManager()->dirtyBuffers();
-    QVector<QAspectJobPtr> dirtyBuffersJobs;
-
-    for (const QNodeId bufId : dirtyBuffers) {
-        Render::HBuffer bufferHandle = m_nodeManagers->lookupHandle<Render::Buffer, Render::BufferManager, Render::HBuffer>(bufId);
-        if (!bufferHandle.isNull()) {
-            // Create new buffer job
-            auto job = Render::LoadBufferJobPtr::create(bufferHandle);
-            job->setNodeManager(m_nodeManagers);
-            dirtyBuffersJobs.push_back(job);
-        }
-    }
-
-    return dirtyBuffersJobs;
-}
-
 QVector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createGeometryRendererJobs()
 {
     Render::GeometryRendererManager *geomRendererManager = m_nodeManagers->geometryRendererManager();
     const QVector<QNodeId> dirtyGeometryRenderers = geomRendererManager->dirtyGeometryRenderers();
     QVector<QAspectJobPtr> dirtyGeometryRendererJobs;
+    dirtyGeometryRendererJobs.reserve(dirtyGeometryRenderers.size());
 
     for (const QNodeId geoRendererId : dirtyGeometryRenderers) {
         Render::HGeometryRenderer geometryRendererHandle = geomRendererManager->lookupHandle(geoRendererId);

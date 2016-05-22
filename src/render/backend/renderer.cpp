@@ -78,6 +78,7 @@
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/openglvertexarrayobject_p.h>
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
+#include <Qt3DRender/private/loadbufferjob_p.h>
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
@@ -147,15 +148,29 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_changeSet(0)
     , m_lastFrameCorrect(0)
     , m_glContext(nullptr)
-    , m_pickBoundingVolumeJob(nullptr)
+    , m_pickBoundingVolumeJob(PickBoundingVolumeJobPtr::create(this))
     , m_time(0)
     , m_settings(nullptr)
+    , m_framePreparationJob(Render::FramePreparationJobPtr::create())
+    , m_cleanupJob(Render::FrameCleanupJobPtr::create())
+    , m_worldTransformJob(Render::UpdateWorldTransformJobPtr::create())
+    , m_updateBoundingVolumeJob(Render::UpdateBoundingVolumeJobPtr::create())
+    , m_calculateBoundingVolumeJob(Render::CalculateBoundingVolumeJobPtr::create())
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
     m_running.fetchAndStoreOrdered(1);
     if (m_renderThread)
         m_renderThread->waitForStart();
+
+    // Create jobs to update transforms and bounding volumes
+    // We can only update bounding volumes once all world transforms are known
+    m_updateBoundingVolumeJob->addDependency(m_worldTransformJob);
+    m_framePreparationJob->addDependency(m_worldTransformJob);
+
+    // All world stuff depends on the RenderEntity's localBoundingVolume
+    m_worldTransformJob->addDependency(m_calculateBoundingVolumeJob);
+    m_pickBoundingVolumeJob->addDependency(m_framePreparationJob);
 }
 
 Renderer::~Renderer()
@@ -188,6 +203,16 @@ qint64 Renderer::time() const
 void Renderer::setTime(qint64 time)
 {
     m_time = time;
+}
+
+void Renderer::setNodeManagers(NodeManagers *managers)
+{
+    m_nodesManager = managers;
+
+    m_framePreparationJob->setManagers(m_nodesManager);
+    m_cleanupJob->setManagers(m_nodesManager);
+    m_calculateBoundingVolumeJob->setManagers(m_nodesManager);
+    m_pickBoundingVolumeJob->setManagers(m_nodesManager);
 }
 
 NodeManagers *Renderer::nodeManagers() const
@@ -468,6 +493,14 @@ void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
     m_defaultTechniqueHandle = nodeManagers()->lookupHandle<Technique, TechniqueManager, HTechnique>(m_defaultTechnique->id());
     m_defaultRenderPassHandle = nodeManagers()->lookupHandle<RenderPass, RenderPassManager, HRenderPass>(m_defaultTechnique->renderPasses().constFirst()->id());
     m_defaultRenderShader = nodeManagers()->lookupResource<Shader, ShaderManager>(m_defaultTechnique->renderPasses().constFirst()->shaderProgram()->id());
+
+    // Set the scene root on the jobs
+    m_framePreparationJob->setRoot(m_renderSceneRoot);
+    m_worldTransformJob->setRoot(m_renderSceneRoot);
+    m_updateBoundingVolumeJob->setRoot(m_renderSceneRoot);
+    m_calculateBoundingVolumeJob->setRoot(m_renderSceneRoot);
+    m_cleanupJob->setRoot(m_renderSceneRoot);
+    m_pickBoundingVolumeJob->setRoot(m_renderSceneRoot);
 }
 
 void Renderer::registerEventFilter(QEventFilterService *service)
@@ -849,31 +882,47 @@ void Renderer::skipNextFrame()
 
 // Waits to be told to create jobs for the next frame
 // Called by QRenderAspect jobsToExecute context of QAspectThread
+// Returns all the jobs (and with proper dependency chain) required
+// for the rendering of the scene
 QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 {
     QVector<QAspectJobPtr> renderBinJobs;
+
+    // Create the jobs to build the frame
+    const QVector<QAspectJobPtr> bufferJobs = createRenderBufferJobs();
+
+    // Remove previous dependencies
+    m_calculateBoundingVolumeJob->removeDependency(QWeakPointer<QAspectJob>());
+    m_cleanupJob->removeDependency(QWeakPointer<QAspectJob>());
+
+    // Set dependencies
+    for (const QAspectJobPtr &bufferJob : bufferJobs)
+        m_calculateBoundingVolumeJob->addDependency(bufferJob);
+
+    // Add jobs
+    renderBinJobs.push_back(m_framePreparationJob);
+    renderBinJobs.push_back(m_updateBoundingVolumeJob);
+    renderBinJobs.push_back(m_calculateBoundingVolumeJob);
+    renderBinJobs.push_back(m_worldTransformJob);
+    renderBinJobs.push_back(m_cleanupJob);
+    renderBinJobs.append(bufferJobs);
 
     // Traverse the current framegraph. For each leaf node create a
     // RenderView and set its configuration then create a job to
     // populate the RenderView with a set of RenderCommands that get
     // their details from the RenderNodes that are visible to the
     // Camera selected by the framegraph configuration
-
     FrameGraphVisitor visitor(this, m_nodesManager->frameGraphManager());
     visitor.traverse(frameGraphRoot(), &renderBinJobs);
 
     // Set target number of RenderViews
     m_renderQueue->setTargetRenderViewCount(visitor.leafNodeCount());
+
     return renderBinJobs;
 }
 
 QAspectJobPtr Renderer::pickBoundingVolumeJob()
 {
-    // Clear any previous dependency not valid anymore
-    if (!m_pickBoundingVolumeJob)
-        m_pickBoundingVolumeJob.reset(new PickBoundingVolumeJob(this));
-    m_pickBoundingVolumeJob->removeDependency(QWeakPointer<QAspectJob>());
-    m_pickBoundingVolumeJob->setRoot(m_renderSceneRoot);
     return m_pickBoundingVolumeJob;
 }
 
@@ -1169,6 +1218,27 @@ QList<QMouseEvent> Renderer::pendingPickingEvents() const
 const GraphicsApiFilterData *Renderer::contextInfo() const
 {
     return m_graphicsContext->contextInfo();
+}
+
+// Returns a vector of jobs to be performed for dirty buffers
+// 1 dirty buffer == 1 job, all job can be performed in parallel
+QVector<Qt3DCore::QAspectJobPtr> Renderer::createRenderBufferJobs() const
+{
+    const QVector<QNodeId> dirtyBuffers = m_nodesManager->bufferManager()->dirtyBuffers();
+    QVector<QAspectJobPtr> dirtyBuffersJobs;
+    dirtyBuffersJobs.reserve(dirtyBuffers.size());
+
+    for (const QNodeId bufId : dirtyBuffers) {
+        Render::HBuffer bufferHandle = m_nodesManager->lookupHandle<Render::Buffer, Render::BufferManager, Render::HBuffer>(bufId);
+        if (!bufferHandle.isNull()) {
+            // Create new buffer job
+            auto job = Render::LoadBufferJobPtr::create(bufferHandle);
+            job->setNodeManager(m_nodesManager);
+            dirtyBuffersJobs.push_back(job);
+        }
+    }
+
+    return dirtyBuffersJobs;
 }
 
 } // namespace Render

@@ -86,6 +86,7 @@ public:
                                   const QMatrix4x4 &viewMatrix,
                                   const QMatrix4x4 &projectionMatrix,
                                   const QRect &viewport);
+    void setManagers(NodeManagers *manager);
 protected:
     void run() Q_DECL_FINAL;
 

@@ -58,9 +58,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-FramePreparationJob::FramePreparationJob(NodeManagers *manager)
+FramePreparationJob::FramePreparationJob()
     : m_root(nullptr)
-    , m_manager(manager)
+    , m_manager(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::FramePreparation, 0);
 }
@@ -72,6 +72,11 @@ FramePreparationJob::~FramePreparationJob()
 void FramePreparationJob::setRoot(Entity *root)
 {
     m_root = root;
+}
+
+void FramePreparationJob::setManagers(NodeManagers *manager)
+{
+    m_manager = manager;
 }
 
 void FramePreparationJob::run()

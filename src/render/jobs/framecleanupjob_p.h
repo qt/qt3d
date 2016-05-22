@@ -67,10 +67,11 @@ class Entity;
 class QT3DRENDERSHARED_PRIVATE_EXPORT FrameCleanupJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit FrameCleanupJob(NodeManagers *managers);
+    explicit FrameCleanupJob();
     ~FrameCleanupJob();
 
     void setRoot(Entity *root);
+    void setManagers(NodeManagers *managers);
 
 protected:
     void run() Q_DECL_FINAL;

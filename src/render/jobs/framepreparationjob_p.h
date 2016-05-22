@@ -66,10 +66,11 @@ class Entity;
 class QT3DRENDERSHARED_PRIVATE_EXPORT FramePreparationJob : public Qt3DCore::QAspectJob
 {
 public:
-    FramePreparationJob(NodeManagers *manager);
+    FramePreparationJob();
     ~FramePreparationJob();
 
     void setRoot(Entity *root);
+    void setManagers(NodeManagers *manager);
 
 protected:
     void run() Q_DECL_FINAL;
