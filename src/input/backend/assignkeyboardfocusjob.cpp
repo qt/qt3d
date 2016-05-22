@@ -42,6 +42,7 @@
 #include "keyboardhandler_p.h"
 #include "inputhandler_p.h"
 #include "inputmanagers_p.h"
+#include "job_common_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -53,6 +54,7 @@ AssignKeyboardFocusJob::AssignKeyboardFocusJob(Qt3DCore::QNodeId keyboardDevice)
     , m_inputHandler(nullptr)
     , m_keyboardDevice(keyboardDevice)
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::AssignKeyboardFocus, 0);
 }
 
 void AssignKeyboardFocusJob::setInputHandler(InputHandler *handler)

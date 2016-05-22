@@ -42,6 +42,7 @@
 #include <Qt3DInput/private/inputmanagers_p.h>
 #include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
 #include <Qt3DInput/private/qinputdeviceintegration_p.h>
+#include <Qt3DInput/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -71,6 +72,7 @@ UpdateAxisActionJob::UpdateAxisActionJob(qint64 currentTime, InputHandler *handl
     , m_handler(handler)
     , m_handle(handle)
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateAxisAction, 0);
 }
 
 void UpdateAxisActionJob::run()

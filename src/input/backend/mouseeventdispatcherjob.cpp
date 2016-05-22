@@ -41,6 +41,7 @@
 #include "inputhandler_p.h"
 #include "mousehandler_p.h"
 #include "inputmanagers_p.h"
+#include "job_common_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -56,6 +57,7 @@ MouseEventDispatcherJob::MouseEventDispatcherJob(Qt3DCore::QNodeId input,
     , m_mouseEvents(mouseEvents)
     , m_wheelEvents(wheelEvents)
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::MouseEventDispatcher, 0);
 }
 
 void MouseEventDispatcherJob::setInputHandler(InputHandler *handler)

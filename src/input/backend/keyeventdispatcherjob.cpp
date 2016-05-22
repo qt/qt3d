@@ -41,6 +41,7 @@
 #include "inputhandler_p.h"
 #include "keyboardhandler_p.h"
 #include "inputmanagers_p.h"
+#include "job_common_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -53,6 +54,7 @@ KeyEventDispatcherJob::KeyEventDispatcherJob(Qt3DCore::QNodeId input, const QLis
     , m_keyboardHandler(input)
     , m_events(events)
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::KeyEventDispatcher, 0);
 }
 
 void KeyEventDispatcherJob::setInputHandler(InputHandler *handler)
