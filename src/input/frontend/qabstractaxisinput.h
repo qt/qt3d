@@ -42,6 +42,7 @@
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DCore/qnode.h>
+#include <Qt3DInput/qabstractphysicaldevice.h>
 
 QT_BEGIN_NAMESPACE
 
