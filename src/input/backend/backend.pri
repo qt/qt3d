@@ -29,7 +29,8 @@ HEADERS += \
     $$PWD/inputchord_p.h \
     $$PWD/inputsequence_p.h \
     $$PWD/inputsettings_p.h \
-    $$PWD/eventsourcesetterhelper_p.h
+    $$PWD/eventsourcesetterhelper_p.h \
+    $$PWD/job_common_p.h
 
 SOURCES += \
     $$PWD/keyboarddevice.cpp \
