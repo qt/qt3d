@@ -44,21 +44,40 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * \class QStencilTestArguments
+ * \brief The QStencilTestArguments class
+ * \since 5.7
+ * \ingroup renderstates
+ */
+
+/*!
+ * The constructor creates a new QStencilTestArguments::QStencilTestArguments
+ * instance with the specified \a face and \a parent.
+ */
 QStencilTestArguments::QStencilTestArguments(QStencilTestArguments::StencilFaceMode face, QObject *parent)
     : QObject(*new QStencilTestArgumentsPrivate(face), parent)
 {
 }
 
+/*! \internal */
 QStencilTestArguments::~QStencilTestArguments()
 {
 }
 
+/*!
+ * \return the current comparison mask.
+ */
 uint QStencilTestArguments::comparisonMask() const
 {
     Q_D(const QStencilTestArguments);
     return d->m_comparisonMask;
 }
 
+/*!
+ * Sets the comparison mask.
+ * \param comparisonMask
+ */
 void QStencilTestArguments::setComparisonMask(uint comparisonMask)
 {
     Q_D(QStencilTestArguments);
@@ -68,12 +87,19 @@ void QStencilTestArguments::setComparisonMask(uint comparisonMask)
     }
 }
 
+/*!
+ * \return the current reference value.
+ */
 int QStencilTestArguments::referenceValue() const
 {
     Q_D(const QStencilTestArguments);
     return d->m_referenceValue;
 }
 
+/*!
+ * Sets the reference value.
+ * \param referenceValue
+ */
 void QStencilTestArguments::setReferenceValue(int referenceValue)
 {
     Q_D(QStencilTestArguments);
@@ -83,12 +109,19 @@ void QStencilTestArguments::setReferenceValue(int referenceValue)
     }
 }
 
+/*!
+ * \return the current stencil function.
+ */
 QStencilTestArguments::StencilFunction QStencilTestArguments::stencilFunction() const
 {
     Q_D(const QStencilTestArguments);
     return d->m_stencilFunction;
 }
 
+/*!
+ * Sets the stencil function.
+ * \param stencilFunction
+ */
 void QStencilTestArguments::setStencilFunction(QStencilTestArguments::StencilFunction stencilFunction)
 {
     Q_D(QStencilTestArguments);
@@ -98,6 +131,9 @@ void QStencilTestArguments::setStencilFunction(QStencilTestArguments::StencilFun
     }
 }
 
+/*!
+ * \return the current face mode.
+ */
 QStencilTestArguments::StencilFaceMode QStencilTestArguments::faceMode() const
 {
     Q_D(const QStencilTestArguments);
