@@ -58,6 +58,14 @@ using namespace Qt3DCore;
 
 namespace Qt3DLogic {
 
+/*!
+ \class Qt3DLogic::QLogicAspect
+ \inherits Qt3DCore::QAbstractAspect
+ \inmodule Qt3DLogic
+ \brief Responsible for handling frame synchronization jobs.
+ \since 5.7
+*/
+
 QLogicAspectPrivate::QLogicAspectPrivate()
     : QAbstractAspectPrivate()
     , m_time(0)
@@ -83,6 +91,9 @@ void QLogicAspectPrivate::registerBackendTypes()
     q->registerBackendType<QFrameAction>(QBackendNodeMapperPtr(new Logic::HandlerFunctor(m_manager.data())));
 }
 
+/*!
+  Constructs a new Qt3DLogic::QLogicAspect instance with /a parent.
+*/
 QLogicAspect::QLogicAspect(QObject *parent)
     : QLogicAspect(*new QLogicAspectPrivate(), parent) {}
 
@@ -101,6 +112,7 @@ QLogicAspect::~QLogicAspect()
 {
 }
 
+/*! \internal */
 QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)
 {
     Q_D(QLogicAspect);
@@ -115,10 +127,12 @@ QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)
     return jobs;
 }
 
+/*! \internal */
 void QLogicAspect::onRegistered()
 {
 }
 
+/*! \internal */
 void QLogicAspect::onEngineStartup()
 {
     Q_D(QLogicAspect);
