@@ -59,6 +59,19 @@ namespace Qt3DRender {
  * \since 5.5
  */
 
+/*!
+    \qmltype NoDraw
+    \instantiates Qt3DRender::QNoDraw
+    \inherits FrameGraphNode
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief When a NoDraw node is present in a FrameGraph branch, this
+ * prevents the renderer from rendering any primitive.
+*/
+
+/*!
+  The constructor creates an instance with the specified \a parent.
+ */
 QNoDraw::QNoDraw(QNode *parent)
     : QFrameGraphNode(parent)
 {

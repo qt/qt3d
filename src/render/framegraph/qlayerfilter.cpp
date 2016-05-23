@@ -69,8 +69,9 @@ QLayerFilterPrivate::QLayerFilterPrivate()
     \brief For ...
 */
 
-/*! \fn Qt3DRender::QLayerFilter::QLayerFilter(Qt3DCore::QNode *parent)
-  Constructs a new QLayerFilter with the specified \a parent.
+
+/*!
+  The constructor creates an instance with the specified \a parent.
  */
 QLayerFilter::QLayerFilter(QNode *parent)
     : QFrameGraphNode(*new QLayerFilterPrivate, parent)

@@ -48,8 +48,22 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
-    \class Qt3DRender::QCameraSelector
-    \inmodule Qt3DRender
+  \class Qt3DRender::QCameraSelector
+  \inmodule Qt3DRender
+  \since 5.5
+  \ingroup framegraph
+
+  \brief Class to allow for selection of camera to be used
+
+ */
+
+/*!
+    \qmltype CameraSelector
+    \inqmlmodule Qt3D.Render
+    \instantiates Qt3DRender::QCameraSelector
+    \inherits FrameGraphNode
+    \since 5.5
+    \qmlabstract
 */
 
 /*! \internal */
@@ -64,6 +78,9 @@ QCameraSelectorPrivate::QCameraSelectorPrivate()
 {
 }
 
+/*!
+  The constructor creates an instance with the specified \a parent.
+ */
 QCameraSelector::QCameraSelector(Qt3DCore::QNode *parent)
     :   QFrameGraphNode(*new QCameraSelectorPrivate, parent)
 {
@@ -76,6 +93,11 @@ QCameraSelector::~QCameraSelector()
 
 /*!
     \property Qt3DRender::QCameraSelector::camera
+*/
+
+/*!
+  \qmlproperty Entity Qt3D.Render::CameraSelector::camera
+
 */
 void QCameraSelector::setCamera(Qt3DCore::QEntity *camera)
 {
