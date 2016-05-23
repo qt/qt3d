@@ -54,90 +54,100 @@
 #include <QQmlComponent>
 #include <QScopedPointer>
 
-class TestAspect : public Qt3DRender::QRenderAspect
-{
-    Q_OBJECT
-public:
-    TestAspect(bool withWindow = false)
-        : Qt3DRender::QRenderAspect(QRenderAspect::Synchronous)
-        , m_jobManager(new Qt3DCore::QAspectJobManager())
-    {
-        Qt3DCore::QAbstractAspectPrivate::get(this)->m_jobManager = m_jobManager.data();
-        if (!withWindow) {
-            d_func()->m_renderer->createAllocators(m_jobManager.data());
-        } else {
-            m_window.reset(new QWindow());
-            m_window->resize(1024, 768);
+QT_BEGIN_NAMESPACE
 
-            QSurfaceFormat format;
-            if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
-                format.setVersion(4, 3);
-                format.setProfile(QSurfaceFormat::CoreProfile);
+namespace Qt3DRender {
+
+    class QRenderAspectTester : public Qt3DRender::QRenderAspect
+    {
+        Q_OBJECT
+    public:
+        QRenderAspectTester(bool withWindow = false)
+            : Qt3DRender::QRenderAspect(QRenderAspect::Synchronous)
+            , m_jobManager(new Qt3DCore::QAspectJobManager())
+        {
+            Qt3DCore::QAbstractAspectPrivate::get(this)->m_jobManager = m_jobManager.data();
+            if (!withWindow) {
+                d_func()->m_renderer->createAllocators(m_jobManager.data());
+            } else {
+                m_window.reset(new QWindow());
+                m_window->resize(1024, 768);
+
+                QSurfaceFormat format;
+                if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
+                    format.setVersion(4, 3);
+                    format.setProfile(QSurfaceFormat::CoreProfile);
+                }
+                format.setDepthBufferSize( 24 );
+                format.setSamples( 4 );
+                format.setStencilBufferSize(8);
+                m_window->setFormat(format);
+                m_window->create();
+
+                QRenderAspect::onRegistered();
             }
-            format.setDepthBufferSize( 24 );
-            format.setSamples( 4 );
-            format.setStencilBufferSize(8);
-            m_window->setFormat(format);
-            m_window->create();
-
-            QRenderAspect::onRegistered();
         }
-    }
 
-    QVector<Qt3DCore::QAspectJobPtr> worldTransformJob()
-    {
-        d_func()->m_worldTransformJob->setRoot(d_func()->m_renderer->sceneRoot());
-        return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_worldTransformJob;
-    }
-
-    QVector<Qt3DCore::QAspectJobPtr> updateBoundingJob()
-    {
-        d_func()->m_updateBoundingVolumeJob->setRoot(d_func()->m_renderer->sceneRoot());
-        return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_updateBoundingVolumeJob;
-    }
-
-    QVector<Qt3DCore::QAspectJobPtr> calculateBoundingVolumeJob()
-    {
-        d_func()->m_calculateBoundingVolumeJob->setRoot(d_func()->m_renderer->sceneRoot());
-        return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_calculateBoundingVolumeJob;
-    }
-
-    QVector<Qt3DCore::QAspectJobPtr> framePreparationJob()
-    {
-        d_func()->m_framePreparationJob->setRoot(d_func()->m_renderer->sceneRoot());
-        return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_framePreparationJob;
-    }
-
-    QVector<Qt3DCore::QAspectJobPtr> frameCleanupJob()
-    {
-        d_func()->m_cleanupJob->setRoot(d_func()->m_renderer->sceneRoot());
-        return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_cleanupJob;
-    }
-
-    QVector<Qt3DCore::QAspectJobPtr> renderBinJobs()
-    {
-        return d_func()->m_renderer->renderBinJobs();
-    }
-
-    void onRootEntityChanged(Qt3DCore::QEntity *root)
-    {
-        if (!m_window) {
-            const Qt3DCore::QNodeCreatedChangeGenerator generator(root);
-            const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = generator.creationChanges();
-
-            for (const Qt3DCore::QNodeCreatedChangeBasePtr change : creationChanges)
-                d_func()->createBackendNode(change);
-
-            static_cast<Qt3DRender::Render::Renderer *>(d_func()->m_renderer)->m_renderSceneRoot =
-                    d_func()->m_renderer->nodeManagers()
-                    ->lookupResource<Qt3DRender::Render::Entity, Qt3DRender::Render::EntityManager>(root->id());
+        QVector<Qt3DCore::QAspectJobPtr> worldTransformJob()
+        {
+            d_func()->m_worldTransformJob->setRoot(d_func()->m_renderer->sceneRoot());
+            return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_worldTransformJob;
         }
-    }
 
-private:
-    QScopedPointer<Qt3DCore::QAspectJobManager> m_jobManager;
-    QScopedPointer<QWindow> m_window;
-};
+        QVector<Qt3DCore::QAspectJobPtr> updateBoundingJob()
+        {
+            d_func()->m_updateBoundingVolumeJob->setRoot(d_func()->m_renderer->sceneRoot());
+            return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_updateBoundingVolumeJob;
+        }
+
+        QVector<Qt3DCore::QAspectJobPtr> calculateBoundingVolumeJob()
+        {
+            d_func()->m_calculateBoundingVolumeJob->setRoot(d_func()->m_renderer->sceneRoot());
+            return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_calculateBoundingVolumeJob;
+        }
+
+        QVector<Qt3DCore::QAspectJobPtr> framePreparationJob()
+        {
+            d_func()->m_framePreparationJob->setRoot(d_func()->m_renderer->sceneRoot());
+            return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_framePreparationJob;
+        }
+
+        QVector<Qt3DCore::QAspectJobPtr> frameCleanupJob()
+        {
+            d_func()->m_cleanupJob->setRoot(d_func()->m_renderer->sceneRoot());
+            return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_cleanupJob;
+        }
+
+        QVector<Qt3DCore::QAspectJobPtr> renderBinJobs()
+        {
+            return d_func()->m_renderer->renderBinJobs();
+        }
+
+        void onRootEntityChanged(Qt3DCore::QEntity *root)
+        {
+            if (!m_window) {
+                const Qt3DCore::QNodeCreatedChangeGenerator generator(root);
+                const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = generator.creationChanges();
+
+                for (const Qt3DCore::QNodeCreatedChangeBasePtr change : creationChanges)
+                    d_func()->createBackendNode(change);
+
+                static_cast<Qt3DRender::Render::Renderer *>(d_func()->m_renderer)->m_renderSceneRoot =
+                        d_func()->m_renderer->nodeManagers()
+                        ->lookupResource<Qt3DRender::Render::Entity, Qt3DRender::Render::EntityManager>(root->id());
+            }
+        }
+
+    private:
+        QScopedPointer<Qt3DCore::QAspectJobManager> m_jobManager;
+        QScopedPointer<QWindow> m_window;
+    };
+
+}
+
+QT_END_NAMESPACE
+
+using namespace Qt3DRender;
 
 Qt3DCore::QEntity *loadFromQML(const QUrl &source)
 {
@@ -231,7 +241,7 @@ private Q_SLOTS:
     {
         // GIVEN
         QFETCH(Qt3DCore::QEntity*, rootEntity);
-        TestAspect aspect;
+        QRenderAspectTester aspect;
 
         Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity),
                                                                               QVector<Qt3DCore::QNodeCreatedChangeBasePtr>());
@@ -255,7 +265,7 @@ private Q_SLOTS:
     {
         // GIVEN
         QFETCH(Qt3DCore::QEntity*, rootEntity);
-        TestAspect aspect;
+        QRenderAspectTester aspect;
 
         Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity),
                                                                               QVector<Qt3DCore::QNodeCreatedChangeBasePtr>());
@@ -279,7 +289,7 @@ private Q_SLOTS:
     {
         // GIVEN
         QFETCH(Qt3DCore::QEntity*, rootEntity);
-        TestAspect aspect;
+        QRenderAspectTester aspect;
 
         Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity),
                                                                               QVector<Qt3DCore::QNodeCreatedChangeBasePtr>());
@@ -303,7 +313,7 @@ private Q_SLOTS:
     {
         // GIVEN
         QFETCH(Qt3DCore::QEntity*, rootEntity);
-        TestAspect aspect;
+        QRenderAspectTester aspect;
 
         Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity),
                                                                               QVector<Qt3DCore::QNodeCreatedChangeBasePtr>());
@@ -327,7 +337,7 @@ private Q_SLOTS:
     {
         // GIVEN
         QFETCH(Qt3DCore::QEntity*, rootEntity);
-        TestAspect aspect;
+        QRenderAspectTester aspect;
 
         Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity),
                                                                               QVector<Qt3DCore::QNodeCreatedChangeBasePtr>());
@@ -353,7 +363,7 @@ private Q_SLOTS:
         // GIVEN
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         QScopedPointer<QThread> aspectThread(new QThread);
-        TestAspect aspect(true);
+        QRenderAspectTester aspect(true);
         aspect.moveToThread(aspectThread.data());
 
         qDebug() << 1;

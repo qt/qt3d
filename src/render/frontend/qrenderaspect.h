@@ -55,6 +55,10 @@ class Renderer;
 
 class QRenderAspectPrivate;
 
+#if defined(QT_BUILD_INTERNAL)
+class QRenderAspectTester;
+#endif
+
 class QT3DRENDERSHARED_EXPORT QRenderAspect : public Qt3DCore::QAbstractAspect
 {
     Q_OBJECT
@@ -68,19 +72,22 @@ public:
     explicit QRenderAspect(RenderType type, QObject *parent = nullptr);
     ~QRenderAspect();
 
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
-
 protected:
     QRenderAspect(QRenderAspectPrivate &dd, QObject *parent);
     Q_DECLARE_PRIVATE(QRenderAspect)
+
+private:
+    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
     void onRegistered() Q_DECL_OVERRIDE;
     void onUnregistered() Q_DECL_OVERRIDE;
 
     void onEngineStartup() Q_DECL_OVERRIDE;
 
-private:
     friend class Render::Renderer;
+#if defined(QT_BUILD_INTERNAL)
+    friend class QRenderAspectTester;
+#endif
 };
 
 }

@@ -1,3 +1,5 @@
 TEMPLATE=subdirs
 
-SUBDIRS += jobs
+contains(QT_CONFIG, private_tests) {
+    SUBDIRS += jobs
+}
