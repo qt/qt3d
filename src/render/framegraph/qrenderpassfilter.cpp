@@ -56,7 +56,7 @@ namespace Qt3DRender {
     \class Qt3DRender::QRenderPassFilter
     \inmodule Qt3DRender
     \since 5.7
-    \brief The QRenderPassFilter class provides storage for vectors of Filter Keys and Parameters
+    \brief Provides storage for vectors of Filter Keys and Parameters
 */
 
 /*!

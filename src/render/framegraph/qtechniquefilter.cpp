@@ -56,6 +56,16 @@ QTechniqueFilterPrivate::QTechniqueFilterPrivate()
 {
 }
 
+/*!
+    \class Qt3DRender::QTechniqueFilter
+    \inmodule Qt3DRender
+    \since 5.7
+    \brief Provides storage for vectors of Filter Keys and Parameters
+*/
+
+/*!
+  The constructor creates an instance with the specified \a parent.
+ */
 QTechniqueFilter::QTechniqueFilter(QNode *parent)
     : QFrameGraphNode(*new QTechniqueFilterPrivate, parent)
 {
@@ -72,12 +82,18 @@ QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent)
 {
 }
 
+/*!
+  Returns a vector of the current keys for the filter.
+ */
 QVector<QFilterKey *> QTechniqueFilter::matchAll() const
 {
     Q_D(const QTechniqueFilter);
     return d->m_matchList;
 }
 
+/*!
+  Add the filter key /a filterKey to the match vector.
+ */
 void QTechniqueFilter::addMatch(QFilterKey *filterKey)
 {
     Q_ASSERT(filterKey);
@@ -103,6 +119,9 @@ void QTechniqueFilter::addMatch(QFilterKey *filterKey)
     }
 }
 
+/*!
+  Remove the filter key /a filterKey from the match vector.
+ */
 void QTechniqueFilter::removeMatch(QFilterKey *filterKey)
 {
     Q_ASSERT(filterKey);
@@ -117,6 +136,9 @@ void QTechniqueFilter::removeMatch(QFilterKey *filterKey)
     d->unregisterDestructionHelper(filterKey);
 }
 
+/*!
+  Add the parameter /a parameter to the parameter vector.
+ */
 void QTechniqueFilter::addParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
@@ -142,6 +164,9 @@ void QTechniqueFilter::addParameter(QParameter *parameter)
     }
 }
 
+/*!
+  Remove the parameter /a parameter from the parameter vector.
+ */
 void QTechniqueFilter::removeParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
@@ -156,6 +181,9 @@ void QTechniqueFilter::removeParameter(QParameter *parameter)
     d->unregisterDestructionHelper(parameter);
 }
 
+/*!
+  Returns the current vector of parameters.
+ */
 QVector<QParameter *> QTechniqueFilter::parameters() const
 {
     Q_D(const QTechniqueFilter);

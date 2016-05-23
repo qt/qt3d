@@ -57,7 +57,9 @@ QLayerFilterPrivate::QLayerFilterPrivate()
     \class Qt3DRender::QLayerFilter
     \inmodule Qt3DRender
     \since 5.5
-    \brief The QLayerFilter class provides ...
+    \brief Controls layers Drawn in a frame graph branch.
+
+    A QLayerFiler can be used to instruct the renderer as to which layer(s) to draw in that branch of the frame graph.
 */
 
 /*!
@@ -66,7 +68,9 @@ QLayerFilterPrivate::QLayerFilterPrivate()
     \inherits FrameGraphNode
     \inqmlmodule Qt3D.Render
     \since 5.5
-    \brief For ...
+    \brief Controls layers Drawn in a frame graph branch.
+
+    A QLayerFiler can be used to instruct the renderer as to which layer(s) to draw in that branch of the frame graph.
 */
 
 

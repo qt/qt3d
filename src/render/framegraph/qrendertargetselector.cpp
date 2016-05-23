@@ -48,6 +48,25 @@ QT_BEGIN_NAMESPACE
 using namespace Qt3DCore;
 
 namespace Qt3DRender {
+/*!
+ * \class Qt3DRender::QRenderTargetSelector
+ * \inmodule Qt3DRender
+ * \brief Provides a way of specifying a render target
+ * \since 5.7
+ *
+ * \inherits Qt3DRender::QFrameGraphNode
+ *
+ */
+
+/*!
+ * \qmltype RenderTargetSelector
+ * \inqmlmodule Qt3D.Render
+ * \since 5.7
+ * \ingroup
+ * \instantiates Qt3DRender::QRenderTargetSelector
+ * \brief RenderTargetSelector
+ *
+ */
 
 QRenderTargetSelectorPrivate::QRenderTargetSelectorPrivate()
     : QFrameGraphNodePrivate()
@@ -55,6 +74,9 @@ QRenderTargetSelectorPrivate::QRenderTargetSelectorPrivate()
 {
 }
 
+/*!
+ * Constructs QRenderTargetSelector with given \a parent.
+ */
 QRenderTargetSelector::QRenderTargetSelector(QNode *parent)
     : QFrameGraphNode(*new QRenderTargetSelectorPrivate, parent)
 {
@@ -65,6 +87,15 @@ QRenderTargetSelector::~QRenderTargetSelector()
 {
 }
 
+/*!
+ *  \property QRenderTargetSelector::target
+ *  Specifies the target to be rendered
+ */
+
+/*! \qmlproperty QWindow Qt3D.Render::RenderTargetSelector::target
+ *
+ * the target to be rendered
+ */
 void QRenderTargetSelector::setTarget(QRenderTarget *target)
 {
     Q_D(QRenderTargetSelector);
@@ -127,6 +158,7 @@ QVector<QRenderTargetOutput::AttachmentPoint> QRenderTargetSelector::outputs() c
     return d->m_outputs;
 }
 
+/*! \internal */
 QRenderTargetSelector::QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {

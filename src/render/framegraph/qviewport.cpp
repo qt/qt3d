@@ -52,6 +52,29 @@ QViewportPrivate::QViewportPrivate()
 {
 }
 
+/*!
+ * \class Qt3DRender::QViewport
+ * \inmodule Qt3DRender
+ * \brief A viewport on the Qt3D Scene
+ * \since 5.7
+ *
+ * \inherits Qt3DRender::QFrameGraphNode
+ *
+ */
+
+/*!
+ * \qmltype Viewport
+ * \inqmlmodule Qt3D.Render
+ * \since 5.7
+ * \ingroup
+ * \instantiates Qt3DRender::QViewport
+ * \brief A viewport on the Qt3D Scene
+ *
+ */
+
+/*!
+ * Constructs QViewport with given \a parent.
+ */
 QViewport::QViewport(QNode *parent)
     : QFrameGraphNode(*new QViewportPrivate, parent)
 {
@@ -68,12 +91,22 @@ QViewport::QViewport(QViewportPrivate &dd, QNode *parent)
 {
 }
 
+
 QRectF QViewport::normalizedRect() const
 {
     Q_D(const QViewport);
     return d->m_normalizedRect;
 }
 
+/*!
+    \property Qt3DRender::QViewport::normalizedRect
+    Specifies the normalise rect for the viewport
+*/
+
+/*!
+  \qmlproperty QRectF Qt3D.Render::QViewport::normalizedRect
+
+*/
 void QViewport::setNormalizedRect(const QRectF &normalizedRect)
 {
     Q_D(QViewport);

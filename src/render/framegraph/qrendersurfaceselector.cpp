@@ -52,8 +52,8 @@ namespace Qt3DRender {
 /*!
  * \class Qt3DRender::QRenderSurfaceSelector
  * \inmodule Qt3DRender
- * \brief QRenderSurfaceSelector
- * \since
+ * \brief Provides a way of specifying the render surface
+ * \since 5.7
  *
  * \inherits Qt3DRender::QFrameGraphNode
  *
@@ -62,10 +62,10 @@ namespace Qt3DRender {
 /*!
  * \qmltype RenderSurfaceSelector
  * \inqmlmodule Qt3D.Render
- * \since
+ * \since 5.7
  * \ingroup
  * \instantiates Qt3DRender::QRenderSurfaceSelector
- * \brief RenderSurfaceSelector
+ * \brief Provides a way of specifying the render surface
  *
  */
 
