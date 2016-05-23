@@ -45,6 +45,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * \class Qt3DRender::QAlphaCoverage
+ * \brief A QAlphaCoverage class
+ * \since 5.7
+ * \ingroup renderstates
+ */
+
+/*! \internal */
 class QAlphaCoveragePrivate : public QRenderStatePrivate
 {
 public :
@@ -55,6 +63,10 @@ public :
     Q_DECLARE_PUBLIC(QAlphaCoverage)
 };
 
+/*!
+ * The constructor creates a new QAlphaCoverage::QAlphaCoverage instance
+ * with the specified \a parent.
+ */
 QAlphaCoverage::QAlphaCoverage(QNode *parent)
     : QRenderState(*new QAlphaCoveragePrivate, parent)
 {
