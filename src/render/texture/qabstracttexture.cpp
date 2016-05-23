@@ -82,11 +82,19 @@ QAbstractTexturePrivate::QAbstractTexturePrivate()
     with data.
  */
 
+/*!
+ * The constructor creates a new QAbstractTexture::QAbstractTexture
+ * instance with the specified \a parent.
+ */
 QAbstractTexture::QAbstractTexture(QNode *parent)
     : QNode(*new QAbstractTexturePrivate, parent)
 {
 }
 
+/*!
+ * The constructor creates a new QAbstractTexture::QAbstractTexture
+ * instance with the specified \a target and \a parent.
+ */
 QAbstractTexture::QAbstractTexture(Target target, QNode *parent)
     : QNode(*new QAbstractTexturePrivate, parent)
 {
@@ -156,18 +164,27 @@ void QAbstractTexture::setDepth(int depth)
     }
 }
 
+/*!
+ * \return the width of the texture
+ */
 int QAbstractTexture::width() const
 {
     Q_D(const QAbstractTexture);
     return d->m_width;
 }
 
+/*!
+ * \return the height of the texture
+ */
 int QAbstractTexture::height() const
 {
     Q_D(const QAbstractTexture);
     return d->m_height;
 }
 
+/*!
+ * \return the depth of the texture
+ */
 int QAbstractTexture::depth() const
 {
     Q_D(const QAbstractTexture);
@@ -193,7 +210,7 @@ void QAbstractTexture::setLayers(int layers)
 }
 
 /*!
-    Returns the maximum number of layers for the texture provider.
+    \return the maximum number of layers for the texture provider.
 
     \note this has a meaning only for texture providers that have 3D or
      array target formats.
@@ -219,7 +236,7 @@ void QAbstractTexture::setFormat(TextureFormat format)
 }
 
 /*!
-    Return the texture provider's format.
+    \return the texture provider's format.
  */
 QAbstractTexture::TextureFormat QAbstractTexture::format() const
 {
@@ -241,6 +258,9 @@ void QAbstractTexture::setStatus(Status status)
     }
 }
 
+/*!
+ * \return the current status
+ */
 QAbstractTexture::Status QAbstractTexture::status() const
 {
     Q_D(const QAbstractTexture);
@@ -311,7 +331,7 @@ void QAbstractTexture::removeTextureImage(QAbstractTextureImage *textureImage)
 }
 
 /*!
-    Returns a list of pointers to QAbstractTextureImage objects contained in
+    \return a list of pointers to QAbstractTextureImage objects contained in
     the texture provider.
  */
 QVector<QAbstractTextureImage *> QAbstractTexture::textureImages() const
@@ -431,6 +451,9 @@ void QAbstractTexture::setMaximumAnisotropy(float anisotropy)
     }
 }
 
+/*!
+ * \return the current maximum anisotropy
+ */
 float QAbstractTexture::maximumAnisotropy() const
 {
     Q_D(const QAbstractTexture);
@@ -451,6 +474,9 @@ void QAbstractTexture::setComparisonFunction(QAbstractTexture::ComparisonFunctio
     }
 }
 
+/*!
+ * \return the current comparison function.
+ */
 QAbstractTexture::ComparisonFunction QAbstractTexture::comparisonFunction() const
 {
     Q_D(const QAbstractTexture);
@@ -471,12 +497,18 @@ void QAbstractTexture::setComparisonMode(QAbstractTexture::ComparisonMode mode)
     }
 }
 
+/*!
+ * \return the current comparison mode.
+ */
 QAbstractTexture::ComparisonMode QAbstractTexture::comparisonMode() const
 {
     Q_D(const QAbstractTexture);
     return d->m_comparisonMode;
 }
 
+/*!
+ * \return the current data generator.
+ */
 QTextureGeneratorPtr QAbstractTexture::dataGenerator() const
 {
     Q_D(const QAbstractTexture);
