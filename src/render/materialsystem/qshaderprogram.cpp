@@ -46,6 +46,20 @@
 #include <QFileInfo>
 #include <QUrl>
 
+/*!
+ * \qmltype ShaderProgram
+ * \instantiates Qt3DRender::QShaderProgram
+ * \inqmlmodule Qt3D.Render
+ * \brief Encapsulates a Shader Program.
+ */
+
+/*!
+ * \class Qt3DRender::QShaderProgram
+ * \inmodule Qt3DRender
+ *
+ * \brief Encapsulates a Shader Program.
+ */
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -55,6 +69,10 @@ QShaderProgramPrivate::QShaderProgramPrivate()
 {
 }
 
+/*!
+  \fn Qt3DRender::QShaderProgram::QShaderProgram(Qt3DCore::QNode *parent)
+  Constructs a new QShaderProgram with the specified \a parent.
+ */
 QShaderProgram::QShaderProgram(QNode *parent)
     : QNode(*new QShaderProgramPrivate, parent)
 {
@@ -72,7 +90,13 @@ QShaderProgram::QShaderProgram(QShaderProgramPrivate &dd, QNode *parent)
 }
 
 /*!
- * Sets the vertex shader from raw data in \a vertexShaderCode.
+  \qmlproperty QByteArray Qt3D.Render::ShaderProgram::vertexShaderCode
+    Specifies the vertex shader code to be used
+*/
+
+/*!
+  \property Qt3DRender::QShaderProgram::vertexShaderCode
+    Specifies the vertex shader code to be used
  */
 void QShaderProgram::setVertexShaderCode(const QByteArray &vertexShaderCode)
 {
@@ -89,6 +113,15 @@ QByteArray QShaderProgram::vertexShaderCode() const
     return d->m_vertexShaderCode;
 }
 
+/*!
+  \qmlproperty QByteArray Qt3D.Render::ShaderProgram::tessellationControlShaderCode
+    Specifies the tessellation control shader code to be used
+*/
+
+/*!
+  \property Qt3DRender::QShaderProgram::tessellationControlShaderCode
+    Specifies the tessellation control shader code to be used
+ */
 void QShaderProgram::setTessellationControlShaderCode(const QByteArray &tessellationControlShaderCode)
 {
     Q_D(QShaderProgram);
@@ -104,6 +137,15 @@ QByteArray QShaderProgram::tessellationControlShaderCode() const
     return d->m_tessControlShaderCode;
 }
 
+/*!
+  \qmlproperty QByteArray Qt3D.Render::ShaderProgram::tessellationEvaluationShaderCode
+    Specifies the tessellation evaluation shader code to be used
+*/
+
+/*!
+  \property Qt3DRender::QShaderProgram::tessellationEvaluationShaderCode
+    Specifies the tessellation evaluation shader code to be used
+ */
 void QShaderProgram::setTessellationEvaluationShaderCode(const QByteArray &tessellationEvaluationShaderCode)
 {
     Q_D(QShaderProgram);
@@ -119,6 +161,15 @@ QByteArray QShaderProgram::tessellationEvaluationShaderCode() const
     return d->m_tessEvalShaderCode;
 }
 
+/*!
+  \qmlproperty QByteArray Qt3D.Render::ShaderProgram::geometryShaderCode
+    Specifies the geometry shader code to be used
+*/
+
+/*!
+  \property Qt3DRender::QShaderProgram::geometryShaderCode
+    Specifies the geometry shader code to be used
+ */
 void QShaderProgram::setGeometryShaderCode(const QByteArray &geometryShaderCode)
 {
     Q_D(QShaderProgram);
@@ -135,7 +186,13 @@ QByteArray QShaderProgram::geometryShaderCode() const
 }
 
 /*!
- * Sets the fragment shader from raw data in \a fragmentShaderCode.
+  \qmlproperty QByteArray Qt3D.Render::ShaderProgram::fragmentShaderCode
+    Specifies the fragment shader code to be used
+*/
+
+/*!
+  \property Qt3DRender::QShaderProgram::fragmentShaderCode
+    Specifies the fragment shader code to be used
  */
 void QShaderProgram::setFragmentShaderCode(const QByteArray &fragmentShaderCode)
 {
@@ -152,6 +209,15 @@ QByteArray QShaderProgram::fragmentShaderCode() const
     return d->m_fragmentShaderCode;
 }
 
+/*!
+  \qmlproperty QByteArray Qt3D.Render::ShaderProgram::computeShaderCode
+    Specifies the compute shader code to be used
+*/
+
+/*!
+  \property Qt3DRender::QShaderProgram::computeShaderCode
+    Specifies the compute shader code to be used
+ */
 void QShaderProgram::setComputeShaderCode(const QByteArray &computeShaderCode)
 {
     Q_D(QShaderProgram);
@@ -167,6 +233,10 @@ QByteArray QShaderProgram::computeShaderCode() const
     return d->m_computeShaderCode;
 }
 
+
+/*!
+ * Sets the \a type shader from raw data in \a shaderCode.
+ */
 void QShaderProgram::setShaderCode(ShaderType type, const QByteArray &shaderCode)
 {
     switch (type) {
@@ -193,6 +263,9 @@ void QShaderProgram::setShaderCode(ShaderType type, const QByteArray &shaderCode
     }
 }
 
+/*!
+ * Returns the \a type shader code.
+ */
 QByteArray QShaderProgram::shaderCode(ShaderType type) const
 {
     Q_D(const QShaderProgram);
@@ -246,6 +319,14 @@ static QByteArray deincludify(const QString &filePath)
     return lines.join('\n');
 }
 
+/*!
+    \qmlmethod QByteArray ShaderProgram::loadSource(const QUrl &sourceUrl)
+
+    Returns the shader code loaded from \a sourceUrl.
+*/
+/*!
+ * Returns the shader code loaded from \a sourceUrl.
+ */
 QByteArray QShaderProgram::loadSource(const QUrl &sourceUrl)
 {
     // TO DO: Handle remote path
