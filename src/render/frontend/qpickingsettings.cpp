@@ -44,6 +44,13 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * \class Qt3DRender::QPickingSettings
+ * \brief The QPickingSettings class
+ * \since 5.7
+ * \inmodule Qt3DRender
+ */
+
 QPickingSettingsPrivate::QPickingSettingsPrivate()
     : Qt3DCore::QNodePrivate()
     , m_pickMethod(QPickingSettings::BoundingVolumePicking)
@@ -51,6 +58,11 @@ QPickingSettingsPrivate::QPickingSettingsPrivate()
 {
 }
 
+/*!
+ * The constructor creates a new Qt3DRender::QPickingSettings
+ * instance with the specified \a parent.
+ * \param parent
+ */
 QPickingSettings::QPickingSettings(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QPickingSettingsPrivate, parent)
 {
@@ -61,23 +73,43 @@ QPickingSettings::~QPickingSettings()
 {
 }
 
+/*! \internal */
 QPickingSettings::QPickingSettings(QPickingSettingsPrivate &dd, Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(dd, parent)
 {
 }
 
+/*!
+ * \return the current pick method.
+ */
 QPickingSettings::PickMethod QPickingSettings::pickMethod() const
 {
     Q_D(const QPickingSettings);
     return d->m_pickMethod;
 }
 
+/*!
+ * \return the current pick result mode.
+ */
 QPickingSettings::PickResultMode QPickingSettings::pickResultMode() const
 {
     Q_D(const QPickingSettings);
     return d->m_pickResultMode;
 }
 
+/*!
+ * \enum Qt3DRender::QPickingSettings::PickMethod
+ *
+ * Specifies which parameters of Qt3DRender::QPickingSettings are used.
+ *
+ * \value BoundingVolumePicking
+ * \value TrianglePicking
+ */
+
+/*!
+ * Sets the pick method to \a pickMethod
+ * \param pickMethod
+ */
 void QPickingSettings::setPickMethod(QPickingSettings::PickMethod pickMethod)
 {
     Q_D(QPickingSettings);
@@ -88,6 +120,19 @@ void QPickingSettings::setPickMethod(QPickingSettings::PickMethod pickMethod)
     emit pickMethodChanged(pickMethod);
 }
 
+/*!
+ * \enum Qt3DRender::QPickingSettings::PickResultMode
+ *
+ * Specifies which parameters of Qt3DRender::PickResultMode are used.
+ *
+ * \value NearestPick
+ * \value AllPicks
+ */
+
+/*!
+ * Sets the pick result mode to \a pickResultMode
+ * \param pickResultMode
+ */
 void QPickingSettings::setPickResultMode(QPickingSettings::PickResultMode pickResultMode)
 {
     Q_D(QPickingSettings);
