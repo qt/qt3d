@@ -79,6 +79,7 @@ QSpotLightPrivate::QSpotLightPrivate()
   \class Qt3DRender::QSpotLight
   \inmodule Qt3DRender
   \since 5.5
+  \brief Encapsulate a Spot Light object in a Qt 3D scene.
 
  */
 
@@ -88,7 +89,8 @@ QSpotLightPrivate::QSpotLightPrivate()
     \inherits AbstractLight
     \inqmlmodule Qt3D.Render
     \since 5.5
-    \brief For OpenGL ...
+    \brief Encapsulate a Spot Light object in a Qt 3D scene.
+
 */
 
 /*!
@@ -112,15 +114,14 @@ QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
 }
 
 /*!
-  \qmlproperty vector3d Qt3D.Render::SpotLight::localDirection
-
+  \qmlproperty float Qt3D.Render::SpotLight::constantAttenuation
+    Specifies the constant attenuation of the spot light
 */
 
 /*!
-  \property Qt3DRender::QSpotLight::localDirection
-
+  \property Qt3DRender::QSpotLight::constantAttenuation
+    Specifies the constant attenuation of the spot light
  */
-
 float QSpotLight::constantAttenuation() const
 {
     Q_D(const QSpotLight);
@@ -136,6 +137,15 @@ void QSpotLight::setConstantAttenuation(float value)
     }
 }
 
+/*!
+  \qmlproperty float Qt3D.Render::SpotLight::linearAttenuation
+    Specifies the linear attenuation of the spot light
+*/
+
+/*!
+  \property Qt3DRender::QSpotLight::linearAttenuation
+    Specifies the linear attenuation of the spot light
+ */
 float QSpotLight::linearAttenuation() const
 {
     Q_D(const QSpotLight);
@@ -151,6 +161,15 @@ void QSpotLight::setLinearAttenuation(float value)
     }
 }
 
+/*!
+  \qmlproperty float Qt3D.Render::SpotLight::quadraticAttenuation
+    Specifies the quadratic attenuation of the spot light
+*/
+
+/*!
+  \property Qt3DRender::QSpotLight::quadraticAttenuation
+    Specifies the quadratic attenuation of the spot light
+ */
 float QSpotLight::quadraticAttenuation() const
 {
     Q_D(const QSpotLight);
@@ -166,21 +185,29 @@ void QSpotLight::setQuadraticAttenuation(float value)
     }
 }
 
+/*!
+  \qmlproperty vector3d Qt3D.Render::SpotLight::localDirection
+    Specifies the local direction of the spot light
+*/
+
+/*!
+  \property Qt3DRender::QSpotLight::localDirection
+    Specifies the local direction of the spot light
+ */
 QVector3D QSpotLight::localDirection() const
 {
     Q_D(const QSpotLight);
     return d->m_shaderData->property("direction").value<QVector3D>();
 }
 
-
 /*!
   \qmlproperty float Qt3D.Render::SpotLight::cutOffAngle
-
+    Specifies the cut off angle of the spot light
 */
 
 /*!
   \property Qt3DRender::QSpotLight::cutOffAngle
-
+    Specifies the cut off angle of the spot light
  */
 float QSpotLight::cutOffAngle() const
 {
