@@ -63,11 +63,45 @@ public:
     uint m_vertex3Index;
 };
 
+/*!
+    \class Qt3DRender::QPickTriangleEvent
+    \inmodule Qt3DRender
+
+    \brief The QPickTriangleEvent class holds information when a triangle is picked
+
+    \sa QPickEvent, QPickSettings
+    \since 5.7
+*/
+
+/*!
+ * \qmltype PickTriangleEvent
+ * \instantiates Qt3DRender::QPickTriangleEvent
+ * \inqmlmodule Qt3D.Render
+ * \brief PickTriangleEvent holds information when a triangle is picked.
+ * \sa ObjectPicker, PickSettings
+ */
+
+
+/*!
+  \fn Qt3DRender::QPickTriangleEvent::QPickTriangleEvent()
+  Constructs a new QPickEvent.
+ */
 QPickTriangleEvent::QPickTriangleEvent()
     : QPickEvent(*new QPickTriangleEventPrivate())
 {
 }
 
+/*!
+ * \brief QPickTriangleEvent::QPickTriangleEvent Constructs a new QPickEvent with the given parameters
+ * \param position
+ * \param intersection
+ * \param localIntersection
+ * \param distance
+ * \param triangleIndex
+ * \param vertex1Index
+ * \param vertex2Index
+ * \param vertex3Index
+ */
 QPickTriangleEvent::QPickTriangleEvent(const QPointF &position, const QVector3D &intersection, const QVector3D &localIntersection, float distance,
                                        uint triangleIndex, uint vertex1Index, uint vertex2Index, uint vertex3Index)
     : QPickEvent(*new QPickTriangleEventPrivate())
@@ -83,28 +117,77 @@ QPickTriangleEvent::QPickTriangleEvent(const QPointF &position, const QVector3D 
     d->m_vertex3Index = vertex3Index;
 }
 
+/*! \internal */
 QPickTriangleEvent::~QPickTriangleEvent()
 {
 }
 
+/*!
+    \qmlproperty uint Qt3D.Render::PickTriangleEvent::triangleIndex
+    Specifies the triangle index of the event
+*/
+/*!
+  \property Qt3DRender::QPickTriangleEvent::triangleIndex
+    Specifies the triangle index of the event
+ */
+/*!
+ * \brief QPickTriangleEvent::triangleIndex
+ * \return the index of the picked triangle
+ */
 uint QPickTriangleEvent::triangleIndex() const
 {
     Q_D(const QPickTriangleEvent);
     return d->m_triangleIndex;
 }
 
+/*!
+    \qmlproperty uint Qt3D.Render::PickTriangleEvent::vertex1Index
+    Specifies the vertex 1 index of the event
+*/
+/*!
+  \property Qt3DRender::QPickTriangleEvent::vertex1Index
+    Specifies the vertex 1 index of the event
+ */
+/*!
+ * \brief QPickTriangleEvent::vertex1Index
+ * \returns index of first point of picked triangle
+ */
 uint QPickTriangleEvent::vertex1Index() const
 {
     Q_D(const QPickTriangleEvent);
     return d->m_vertex1Index;
 }
 
+/*!
+    \qmlproperty uint Qt3D.Render::PickTriangleEvent::vertex2Index
+    Specifies the vertex 2 index of the event
+*/
+/*!
+  \property Qt3DRender::QPickTriangleEvent::vertex2Index
+    Specifies the vertex 2 index of the event
+ */
+/*!
+ * \brief QPickTriangleEvent::vertex2Index
+ * \returns index of second point of picked triangle
+ */
 uint QPickTriangleEvent::vertex2Index() const
 {
     Q_D(const QPickTriangleEvent);
     return d->m_vertex2Index;
 }
 
+/*!
+    \qmlproperty uint Qt3D.Render::PickTriangleEvent::vertex3Index
+    Specifies the vertex 3 index of the event
+*/
+/*!
+  \property Qt3DRender::QPickTriangleEvent::vertex3Index
+    Specifies the vertex 3 index of the event
+ */
+/*!
+ * \brief QPickTriangleEvent::vertex3Index
+ * \returns index of third point of picked triangle
+ */
 uint QPickTriangleEvent::vertex3Index() const
 {
     Q_D(const QPickTriangleEvent);

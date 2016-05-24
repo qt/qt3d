@@ -45,11 +45,42 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+    \class Qt3DRender::QPickEvent
+    \inmodule Qt3DRender
+
+    \brief The QPickEvent class holds information when an object is picked
+    \sa QPickingSettings, QPickTriangleEvent, QObjectPicker
+
+    \since 5.7
+*/
+
+/*!
+ * \qmltype PickEvent
+ * \instantiates Qt3DRender::QPickEvent
+ * \inqmlmodule Qt3D.Render
+ * \sa ObjectPicker PickingSettings
+ * \brief PickEvent holds information when an object is picked.
+ */
+
+
+/*!
+  \fn Qt3DRender::QPickEvent::QPickEvent()
+  Constructs a new QPickEvent.
+ */
 QPickEvent::QPickEvent()
     : QObject(*new QPickEventPrivate())
 {
 }
 
+/*!
+  \fn Qt3DRender::QPickEvent::QPickEvent(const QPointF &position, const QVector3D &intersection, const QVector3D &localIntersection, float distance)
+  Constructs a new QPickEvent with the given parameters
+  \param position
+  \param intersection
+  \param localIntersection
+  \param distance
+ */
 QPickEvent::QPickEvent(const QPointF &position, const QVector3D &intersection, const QVector3D &localIntersection, float distance)
     : QObject(*new QPickEventPrivate())
 {
@@ -60,22 +91,39 @@ QPickEvent::QPickEvent(const QPointF &position, const QVector3D &intersection, c
     d->m_localIntersection = localIntersection;
 }
 
+/*! \internal */
 QPickEvent::QPickEvent(QObjectPrivate &dd, QObject *parent)
     : QObject(dd, parent)
 {
 
 }
 
+/*! \internal */
 QPickEvent::~QPickEvent()
 {
 }
 
+/*!
+    \qmlproperty bool Qt3D.Render::PickEvent::accepted
+    Specifies if event has been accepted
+*/
+/*!
+  \property Qt3DRender::QPickEvent::accepted
+    Specifies if event has been accepted
+ */
+/*!
+ * \brief QPickEvent::isAccepted
+ * \return true if the event has been accepted
+ */
 bool QPickEvent::isAccepted() const
 {
     Q_D(const QPickEvent);
     return d->m_accepted;
 }
-
+/*!
+ * \brief QPickEvent::setAccepted set if the event has been accepted
+ * \param accepted
+ */
 void QPickEvent::setAccepted(bool accepted)
 {
     Q_D(QPickEvent);
@@ -85,24 +133,72 @@ void QPickEvent::setAccepted(bool accepted)
     }
 }
 
+/*!
+    \qmlproperty bool Qt3D.Render::PickEvent::position
+    Specifies the position of the event
+*/
+/*!
+  \property Qt3DRender::QPickEvent::position
+    Specifies the position of the event
+ */
+/*!
+ * \brief QPickEvent::position
+ * \return mouse pointer coordinate of the pick query
+ */
 QPointF QPickEvent::position() const
 {
     Q_D(const QPickEvent);
     return d->m_position;
 }
 
+/*!
+    \qmlproperty bool Qt3D.Render::PickEvent::distance
+    Specifies the distance of the event
+*/
+/*!
+  \property Qt3DRender::QPickEvent::distance
+    Specifies the distance of the event
+ */
+/*!
+ * \brief QPickEvent::distance
+ * \return distance from camera to pick point
+ */
 float QPickEvent::distance() const
 {
     Q_D(const QPickEvent);
     return d->m_distance;
 }
 
+/*!
+    \qmlproperty bool Qt3D.Render::PickEvent::worldIntersection
+    Specifies the world intersection of the event
+*/
+/*!
+  \property Qt3DRender::QPickEvent::worldIntersection
+    Specifies the world intersection of the event
+ */
+/*!
+ * \brief QPickEvent::worldIntersection
+ * \return  world coordinate of the pick point
+ */
 QVector3D QPickEvent::worldIntersection() const
 {
     Q_D(const QPickEvent);
     return d->m_worldIntersection;
 }
 
+/*!
+    \qmlproperty bool Qt3D.Render::PickEvent::localIntersection
+    Specifies the world local intersection of the event
+*/
+/*!
+  \property Qt3DRender::QPickEvent::localIntersection
+    Specifies the local intersection of the event
+ */
+/*!
+ * \brief QPickEvent::localIntersection
+ * \return local coordinate of pick point
+ */
 QVector3D QPickEvent::localIntersection() const
 {
     Q_D(const QPickEvent);
