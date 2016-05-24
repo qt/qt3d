@@ -46,7 +46,9 @@ namespace Qt3DRender {
 
 /*!
  * \class Qt3DRender::QPickingSettings
- * \brief The QPickingSettings class
+ * \brief The QPickingSettings class specifies the current framegraph to be used
+ * by the renderer and specifies whether rendering is always active or updated
+ * only on changes.
  * \since 5.7
  * \inmodule Qt3DRender
  */
