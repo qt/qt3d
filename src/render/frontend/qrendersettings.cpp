@@ -48,7 +48,7 @@ namespace Qt3DRender {
 QRenderSettingsPrivate::QRenderSettingsPrivate()
     : Qt3DCore::QComponentPrivate()
     , m_activeFrameGraph(nullptr)
-    , m_renderPolicy(QRenderSettings::OnDemand)
+    , m_renderPolicy(QRenderSettings::Always)
 {
 }
 
