@@ -59,6 +59,8 @@ QAbstractLightPrivate::QAbstractLightPrivate(QAbstractLight::Type type)
     , m_shaderData(new QShaderData)
 {
     m_shaderData->setProperty("type", type);
+    m_shaderData->setProperty("color", QColor(Qt::white));
+    m_shaderData->setProperty("intensity", 0.5f);
 }
 
 QAbstractLightPrivate::~QAbstractLightPrivate()
