@@ -52,19 +52,19 @@
  * \instantiates Qt3DRender::QMaterial
  * \inqmlmodule Qt3D.Render
  * \brief Non-creatable abstract base for materials.
+ * \inherits Component
  */
 
 /*!
  * \class Qt3DRender::QMaterial
  * \inmodule Qt3DRender
  *
- * \inherits Component
  *
  * \brief Provides an abstract class that should be the base of all
  * Material component classes in a scene.
  *
- * QAbstractMaterial provide a way to specify the rendering of an Entity.
- * Any aspect can define its own subclass of QAbstractMaterial so that a
+ * QMaterial provides a way to specify the rendering of an Entity.
+ * Any aspect can define its own subclass of QMaterial so that a
  * Material can be used to describe a visual element; for example, the way
  * sound should reflect off an element, the temperature of a surface,
  * and so on.
@@ -88,6 +88,10 @@ QMaterialPrivate::~QMaterialPrivate()
 {
 }
 
+/*!
+  \fn Qt3DRender::QMaterial::QMaterial(Qt3DCore::QNode *parent)
+  Constructs a new QMaterial with the specified \a parent.
+ */
 QMaterial::QMaterial(QNode *parent)
     : QComponent(*new QMaterialPrivate, parent)
 {
@@ -104,6 +108,15 @@ QMaterial::QMaterial(QMaterialPrivate &dd, QNode *parent)
 {
 }
 
+/*!
+  \qmlproperty QEffect Qt3D.Render::Material::effect
+    Specifies the effect to be used with the material
+*/
+
+/*!
+  \property Qt3DRender::QMaterial::effect
+    Specifies the effect to be used with the material
+ */
 /*!
  * Sets the \a effect to be used with the Material.
  */
@@ -140,6 +153,9 @@ QEffect *QMaterial::effect() const
     return d->m_effect;
 }
 
+/*!
+ * Add a parameter to the Material.
+ */
 void QMaterial::addParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
@@ -165,6 +181,9 @@ void QMaterial::addParameter(QParameter *parameter)
     }
 }
 
+/*!
+ * Remove a parameter from the Material.
+ */
 void QMaterial::removeParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
@@ -177,6 +196,9 @@ void QMaterial::removeParameter(QParameter *parameter)
     d->m_parameters.removeOne(parameter);
 }
 
+/*!
+ * Returns a vector of the materials current parameters
+ */
 QVector<QParameter *> QMaterial::parameters() const
 {
     Q_D(const QMaterial);

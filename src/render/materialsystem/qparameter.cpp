@@ -43,6 +43,21 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qtexture.h>
 
+
+/*!
+ * \qmltype Parameter
+ * \instantiates Qt3DRender::QParameter
+ * \inqmlmodule Qt3D.Render
+ * \brief Provides storage for a name and value pair.
+ */
+
+/*!
+ * \class Qt3DRender::QParameter
+ * \inmodule Qt3DRender
+ *
+ * \brief Provides storage for a name and value pair.
+ */
+
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
@@ -70,11 +85,19 @@ QParameter::QParameter(QParameterPrivate &dd, QNode *parent)
 {
 }
 
+/*!
+  \fn Qt3DRender::QParameter::QParameter(Qt3DCore::QNode *parent)
+  Constructs a new QParameter with the specified \a parent.
+ */
 QParameter::QParameter(QNode *parent)
     : QNode(*new QParameterPrivate, parent)
 {
 }
 
+/*!
+  \fn Qt3DRender::QParameter::QParameter(Qt3DCore::QNode *parent)
+  Constructs a new QParameter with the specified \a parent \a name and \a value.
+ */
 QParameter::QParameter(const QString &name, const QVariant &value, QNode *parent)
     : QNode(*new QParameterPrivate, parent)
 {
@@ -83,6 +106,10 @@ QParameter::QParameter(const QString &name, const QVariant &value, QNode *parent
     setValue(value);
 }
 
+/*!
+  \fn Qt3DRender::QParameter::QParameter(Qt3DCore::QNode *parent)
+  Constructs a new QParameter with the specified \a parent \a name and takes its value from \a texture.
+ */
 QParameter::QParameter(const QString &name, QAbstractTexture *texture, QNode *parent)
     : QNode(*new QParameterPrivate, parent)
 {
@@ -96,6 +123,15 @@ QParameter::~QParameter()
 {
 }
 
+/*!
+  \qmlproperty QString Qt3D.Render::Parameter::name
+    Specifies the name of the parameter
+*/
+
+/*!
+  \property Qt3DRender::QParameter::name
+    Specifies the name of the parameter
+ */
 void QParameter::setName(const QString &name)
 {
     Q_D(QParameter);
@@ -111,6 +147,15 @@ QString QParameter::name() const
     return d->m_name;
 }
 
+/*!
+  \qmlproperty QVariant Qt3D.Render::Parameter::value
+    Specifies the value of the parameter
+*/
+
+/*!
+  \property Qt3DRender::QParameter::value
+    Specifies the value of the parameter
+ */
 void QParameter::setValue(const QVariant &dv)
 {
     Q_D(QParameter);
