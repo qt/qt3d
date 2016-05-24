@@ -46,6 +46,15 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * \class Qt3DRender::QRenderTargetOutput
+ * \brief The QRenderTargetOutput class allows the specification of an attachment
+ * of a render target (whether it is a color texture, a depth texture, etc... ).
+ * \since 5.7
+ * \inmodule Qt3DRender
+ */
+
+/*! \internal */
 QRenderTargetOutputPrivate::QRenderTargetOutputPrivate()
     : QNodePrivate()
     , m_texture(nullptr)
@@ -56,6 +65,11 @@ QRenderTargetOutputPrivate::QRenderTargetOutputPrivate()
 {
 }
 
+/*!
+ * The constructor creates a new QRenderTargetOutput::QRenderTargetOutput instance
+ * with the specified \a parent.
+ * \param parent
+ */
 QRenderTargetOutput::QRenderTargetOutput(QNode *parent)
     : QNode(*new QRenderTargetOutputPrivate, parent)
 {
@@ -72,6 +86,10 @@ QRenderTargetOutput::QRenderTargetOutput(QRenderTargetOutputPrivate &dd, QNode *
 {
 }
 
+/*!
+ * Sets the attachment point to \a attachmentPoint.
+ * \param attachmentPoint
+ */
 void QRenderTargetOutput::setAttachmentPoint(QRenderTargetOutput::AttachmentPoint attachmentPoint)
 {
     Q_D(QRenderTargetOutput);
@@ -81,6 +99,9 @@ void QRenderTargetOutput::setAttachmentPoint(QRenderTargetOutput::AttachmentPoin
     }
 }
 
+/*!
+ * \return the current attachment point.
+ */
 QRenderTargetOutput::AttachmentPoint QRenderTargetOutput::attachmentPoint() const
 {
     Q_D(const QRenderTargetOutput);
@@ -109,12 +130,19 @@ void QRenderTargetOutput::setTexture(QAbstractTexture *texture)
     }
 }
 
+/*!
+ * \return the current texture.
+ */
 QAbstractTexture *QRenderTargetOutput::texture() const
 {
     Q_D(const QRenderTargetOutput);
     return d->m_texture;
 }
 
+/*!
+ * Sets the required mip level to \a level.
+ * \param level
+ */
 void QRenderTargetOutput::setMipLevel(int level)
 {
     Q_D(QRenderTargetOutput);
@@ -124,12 +152,19 @@ void QRenderTargetOutput::setMipLevel(int level)
     }
 }
 
+/*!
+ * \return the current mip level.
+ */
 int QRenderTargetOutput::mipLevel() const
 {
     Q_D(const QRenderTargetOutput);
     return d->m_mipLevel;
 }
 
+/*!
+ * Sets the required layer to \a layer.
+ * \param layer
+ */
 void QRenderTargetOutput::setLayer(int layer)
 {
     Q_D(QRenderTargetOutput);
@@ -139,12 +174,19 @@ void QRenderTargetOutput::setLayer(int layer)
     }
 }
 
+/*!
+ * \return the current layer.
+ */
 int QRenderTargetOutput::layer() const
 {
     Q_D(const QRenderTargetOutput);
     return d->m_layer;
 }
 
+/*!
+ * Sets the required cubemap face to \a face.
+ * \param face
+ */
 void QRenderTargetOutput::setFace(QAbstractTexture::CubeMapFace face)
 {
     Q_D(QRenderTargetOutput);
@@ -154,6 +196,9 @@ void QRenderTargetOutput::setFace(QAbstractTexture::CubeMapFace face)
     }
 }
 
+/*!
+ * \return the current cubemap face.
+ */
 QAbstractTexture::CubeMapFace QRenderTargetOutput::face() const
 {
     Q_D(const QRenderTargetOutput);
