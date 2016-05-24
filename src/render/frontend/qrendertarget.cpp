@@ -50,11 +50,24 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
+/*!
+ * \class Qt3DRender::QRenderTarget
+ * \brief The QRenderTarget class encapsulates a target (usually a frame buffer
+ * object) which the renderer can render into.
+ * \since 5.7
+ * \inmodule Qt3DRender
+ */
+
+/*! \internal */
 QRenderTargetPrivate::QRenderTargetPrivate()
     : QComponentPrivate()
 {
 }
 
+/*!
+ * The constructor creates a new QRenderTarget::QRenderTarget instance with
+ * the specified \a parent.
+ */
 QRenderTarget::QRenderTarget(QNode *parent)
     : QComponent(*new QRenderTargetPrivate, parent)
 {
@@ -71,6 +84,10 @@ QRenderTarget::QRenderTarget(QRenderTargetPrivate &dd, QNode *parent)
 {
 }
 
+/*!
+ * Adds a chosen output via \a output.
+ * \param output
+ */
 void QRenderTarget::addOutput(QRenderTargetOutput *output)
 {
     Q_D(QRenderTarget);
@@ -91,6 +108,10 @@ void QRenderTarget::addOutput(QRenderTargetOutput *output)
     }
 }
 
+/*!
+ * Removes a chosen output via \a output.
+ * \param output
+ */
 void QRenderTarget::removeOutput(QRenderTargetOutput *output)
 {
     Q_D(QRenderTarget);
@@ -105,6 +126,9 @@ void QRenderTarget::removeOutput(QRenderTargetOutput *output)
     d->unregisterDestructionHelper(output);
 }
 
+/*!
+ * \return the chosen outputs.
+ */
 QVector<QRenderTargetOutput *> QRenderTarget::outputs() const
 {
     Q_D(const QRenderTarget);
