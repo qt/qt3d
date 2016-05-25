@@ -167,7 +167,7 @@ QVector<QFilterKey *> QTechnique::filterKeys() const
 }
 
 /*!
- * Add a parameter to the technique.
+ * Add \a parameter to the techniques parameters.
  */
 void QTechnique::addParameter(QParameter *parameter)
 {
@@ -195,7 +195,7 @@ void QTechnique::addParameter(QParameter *parameter)
 }
 
 /*!
- * Remove a parameter from the technique.
+ * Remove \a parameter from the techniques parameters.
  */
 void QTechnique::removeParameter(QParameter *parameter)
 {

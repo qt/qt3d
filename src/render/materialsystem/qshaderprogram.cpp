@@ -60,6 +60,18 @@
  * \brief Encapsulates a Shader Program.
  */
 
+/*!
+    \enum QShaderProgram::ShaderType
+
+    This enum identifies the type of shader used
+    \value Vertex
+    \value Fragment
+    \value TessellationControl
+    \value TessellationEvaluation
+    \value Geometry
+    \value Compute
+*/
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
