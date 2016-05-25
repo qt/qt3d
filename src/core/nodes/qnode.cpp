@@ -712,7 +712,8 @@ void QNode::setParent(QNode *parent)
 
     // If we already have a parent don't do anything. Be careful to ensure
     // that QNode knows about the parent, not just QObject (by checking the ids)
-    if (parentNode() == parent && d->m_parentId == parentNode()->id())
+    if (parentNode() == parent &&
+            ((parent != nullptr && d->m_parentId == parentNode()->id()) || parent == nullptr))
         return;
     d->_q_setParentHelper(parent);
 
