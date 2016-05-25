@@ -83,6 +83,11 @@ QLayerFilter::QLayerFilter(QLayerFilterPrivate &dd, QNode *parent)
 {
 }
 
+/*! \internal */
+QLayerFilter::~QLayerFilter()
+{
+}
+
 /*!
   \property Qt3DRender::QLayerFilter::layers
 

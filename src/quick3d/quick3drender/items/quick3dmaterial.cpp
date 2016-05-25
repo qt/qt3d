@@ -91,9 +91,9 @@ void Quick3DMaterial::clearParameters(QQmlListProperty<QParameter> *list)
 {
     Quick3DMaterial *mat = qobject_cast<Quick3DMaterial *>(list->object);
     if (mat) {
-        Q_FOREACH (QParameter *p, mat->parentMaterial()->parameters()) {
+        const auto parameters = mat->parentMaterial()->parameters();
+        for (QParameter *p : parameters)
             mat->parentMaterial()->removeParameter(p);
-        }
     }
 }
 

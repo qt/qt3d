@@ -36,7 +36,7 @@
 ** $QT_END_LICENSE$
 ****************************************************************************/
 
-#include "qabstractactioninput.h"
+#include "qabstractactioninput_p.h"
 #include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -65,7 +65,7 @@ namespace Qt3DInput {
 /*!
     \internal
 */
-QAbstractActionInput::QAbstractActionInput(Qt3DCore::QNodePrivate &dd, Qt3DCore::QNode *parent)
+QAbstractActionInput::QAbstractActionInput(QAbstractActionInputPrivate &dd, Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(dd, parent)
 {
 }

@@ -66,6 +66,7 @@ class QT3DRENDERSHARED_EXPORT QRenderPass : public Qt3DCore::QNode
 
 public:
     explicit QRenderPass(Qt3DCore::QNode *parent = nullptr);
+    ~QRenderPass();
 
     QShaderProgram *shaderProgram() const;
 
@@ -88,7 +89,7 @@ Q_SIGNALS:
     void shaderProgramChanged(QShaderProgram *shaderProgram);
 
 protected:
-    QRenderPass(QRenderPassPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QRenderPass(QRenderPassPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QRenderPass)

@@ -199,8 +199,8 @@ public:
     void    drawArrays(GLenum primitiveType, GLint first, GLsizei count);
     void    drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances);
     void    drawArraysInstancedBaseInstance(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances, GLsizei baseinstance);
-    void    drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLint baseVertex = 0);
-    void    drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances, GLint baseVertex = 0, GLint baseInstance = 0);
+    void    drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLint baseVertex);
+    void    drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances, GLint baseVertex, GLint baseInstance);
     void    enableClipPlane(int clipPlane);
     void    enablei(GLenum cap, GLuint index);
     void    enablePrimitiveRestart(int restartIndex);

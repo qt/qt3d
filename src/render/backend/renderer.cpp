@@ -113,8 +113,6 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 namespace Render {
 
-const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
-
 /*!
     \internal
 
@@ -163,6 +161,12 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 
 Renderer::~Renderer()
 {
+    // If using a threaded rendering approach, tell the thread to exit
+    // and wait for it to be done
+    m_running.fetchAndStoreOrdered(0);
+    if (m_renderThread)
+        m_renderThread->wait();
+
     delete m_renderQueue;
     delete m_defaultMaterial;
     delete m_defaultRenderStateSet;
@@ -374,12 +378,34 @@ void Renderer::initialize()
 }
 
 /*!
+ * \internal
+ *
+ * Signals for the renderer to stop rendering. If a threaded renderer is in use,
+ * the render thread will call releaseGraphicsResources() just before the thread exits.
+ * If rendering synchronously, this function will call releaseGraphicsResources().
+ */
+void Renderer::shutdown()
+{
+    qCDebug(Backend) << Q_FUNC_INFO << "Requesting renderer shutdown";
+    m_running.store(0);
+    if (!m_renderThread) {
+        releaseGraphicsResources();
+    } else {
+        // Wake up the render thread in case it is waiting for some renderviews
+        // to be ready. The isReadyToSubmit() function checks for a shutdown
+        // having been requested.
+        m_submitRenderViewsSemaphore.release(1);
+    }
+}
+
+/*!
     \internal
 
-    Called in the context of the RenderThread to do any shutdown and cleanup
-    that needs to be performed in the thread where the OpenGL context lives
+    When using a threaded renderer this function is called in the context of the
+    RenderThread to do any shutdown and cleanup that needs to be performed in the
+    thread where the OpenGL context lives.
 */
-void Renderer::shutdown()
+void Renderer::releaseGraphicsResources()
 {
     // Clean up the graphics context
     m_graphicsContext.reset(nullptr);
@@ -621,6 +647,11 @@ bool Renderer::isReadyToSubmit()
     // we've been told to render before rendering
     if (m_renderThread) { // Prevent ouf of order execution
         m_submitRenderViewsSemaphore.acquire(1);
+
+        // Check if shutdown has been requested
+        if (m_running.load() == 0)
+            return false;
+
         // When using Thread rendering, the semaphore should only
         // be released when the frame queue is complete and there's
         // something to render
@@ -883,19 +914,21 @@ void Renderer::performDraw(GeometryRenderer *rGeometryRenderer, GLsizei primitiv
         m_graphicsContext->enablePrimitiveRestart(rGeometryRenderer->restartIndexValue());
 
     // TO DO: Add glMulti Draw variants
-    if (drawIndexed)
-        m_graphicsContext->drawElementsInstanced(primType,
-                                                 primitiveCount,
-                                                 indexType,
-                                                 reinterpret_cast<void*>(quintptr(indexAttribute->byteOffset())),
-                                                 rGeometryRenderer->instanceCount(),
-                                                 rGeometryRenderer->indexOffset());
-    else
+    if (drawIndexed) {
+        m_graphicsContext->drawElementsInstancedBaseVertexBaseInstance(primType,
+                                                                       primitiveCount,
+                                                                       indexType,
+                                                                       reinterpret_cast<void*>(quintptr(indexAttribute->byteOffset())),
+                                                                       rGeometryRenderer->instanceCount(),
+                                                                       rGeometryRenderer->indexOffset(),
+                                                                       rGeometryRenderer->firstVertex());
+    } else {
         m_graphicsContext->drawArraysInstancedBaseInstance(primType,
                                                            rGeometryRenderer->firstInstance(),
                                                            primitiveCount,
                                                            rGeometryRenderer->instanceCount(),
                                                            rGeometryRenderer->firstVertex());
+    }
 
 #if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
     int err = m_graphicsContext->openGLContext()->functions()->glGetError();

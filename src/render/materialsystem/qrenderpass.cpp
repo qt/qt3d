@@ -66,6 +66,11 @@ QRenderPass::QRenderPass(QNode *parent)
 }
 
 /*! \internal */
+QRenderPass::~QRenderPass()
+{
+}
+
+/*! \internal */
 QRenderPass::QRenderPass(QRenderPassPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

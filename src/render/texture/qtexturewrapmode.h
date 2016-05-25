@@ -67,6 +67,7 @@ public:
 
     explicit QTextureWrapMode(WrapMode wrapMode = ClampToEdge, QObject *parent = nullptr);
     explicit QTextureWrapMode(WrapMode x, WrapMode y, WrapMode z, QObject *parent = nullptr);
+    ~QTextureWrapMode();
 
     WrapMode x() const;
     WrapMode y() const;

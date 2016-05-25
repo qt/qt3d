@@ -54,7 +54,7 @@
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qgeometryfactory.h>
-#include <Qt3DCore/qbackendnodepropertychange.h>
+#include <Qt3DCore/private/qtypedpropertyupdatechange_p.h>
 #include <memory>
 
 QT_BEGIN_NAMESPACE
@@ -65,6 +65,8 @@ class QGeometryRendererPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QGeometryRendererPrivate();
+    ~QGeometryRendererPrivate();
+
     Q_DECLARE_PUBLIC(QGeometryRenderer)
 
     int m_instanceCount;
@@ -96,8 +98,8 @@ struct QGeometryRendererData
 };
 
 class QGeometry;
-typedef Qt3DCore::QTypedBackendNodePropertyChange<std::unique_ptr<QGeometry>> QGeometryChange;
-typedef Qt3DCore::QTypedBackendNodePropertyChangePtr<std::unique_ptr<QGeometry>> QGeometryChangePtr;
+typedef Qt3DCore::QTypedPropertyUpdatedChange<std::unique_ptr<QGeometry>> QGeometryChange;
+typedef Qt3DCore::QTypedPropertyUpdatedChangePtr<std::unique_ptr<QGeometry>> QGeometryChangePtr;
 
 } // namespace Qt3DRender
 

@@ -85,10 +85,11 @@ int Quick3DTextureExtension::textureImageCount(QQmlListProperty<QAbstractTexture
 
 void Quick3DTextureExtension::clearTextureImageList(QQmlListProperty<QAbstractTextureImage> *list)
 {
-    Quick3DTextureExtension *self = qobject_cast<Quick3DTextureExtension *>(list->object);
-    if (self)
-        Q_FOREACH (QAbstractTextureImage *img, self->parentTexture()->textureImages())
+    if (Quick3DTextureExtension *self = qobject_cast<Quick3DTextureExtension *>(list->object)) {
+        const auto images = self->parentTexture()->textureImages();
+        for (QAbstractTextureImage *img : images)
             self->parentTexture()->removeTextureImage(img);
+    }
 }
 
 } // namespace Quick

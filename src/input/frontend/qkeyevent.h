@@ -65,8 +65,9 @@ class QT3DINPUTSHARED_EXPORT QKeyEvent : public QObject
     Q_PROPERTY(bool accepted READ isAccepted WRITE setAccepted)
 
 public:
-    QKeyEvent(QEvent::Type type, int key, Qt::KeyboardModifiers modifiers, const QString &text=QString(), bool autorep=false, ushort count=1);
-    QKeyEvent(const QT_PREPEND_NAMESPACE(QKeyEvent) &ke);
+    explicit QKeyEvent(QEvent::Type type, int key, Qt::KeyboardModifiers modifiers, const QString &text=QString(), bool autorep=false, ushort count=1);
+    explicit QKeyEvent(const QT_PREPEND_NAMESPACE(QKeyEvent) &ke);
+    ~QKeyEvent();
 
     inline int key() const { return m_event.key(); }
     inline QString text() const { return m_event.text(); }

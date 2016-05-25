@@ -240,6 +240,7 @@ public:
         createSidesIndices(indicesPtr, m_rings, m_slices);
         createDiscIndices(indicesPtr, m_rings * (m_slices + 1), m_slices, -m_length * 0.5);
         createDiscIndices(indicesPtr, m_rings * (m_slices + 1) + m_slices + 2, m_slices, m_length * 0.5);
+        Q_ASSERT(indicesPtr == (reinterpret_cast<quint16*>(indicesBytes.data()) + indicesCount));
 
         return indicesBytes;
     }
@@ -417,6 +418,13 @@ QCylinderGeometry::QCylinderGeometry(QCylinderGeometryPrivate &dd, QNode *parent
 }
 
 /*!
+ * \internal
+ */
+QCylinderGeometry::~QCylinderGeometry()
+{
+}
+
+/*!
  * Updates the vertices based on rings and slices.
  */
 void QCylinderGeometry::updateVertices()
@@ -436,7 +444,7 @@ void QCylinderGeometry::updateVertices()
 void QCylinderGeometry::updateIndices()
 {
     Q_D(QCylinderGeometry);
-    const int faces = (d->m_slices * 2) * d->m_rings + (2 * d->m_slices);
+    const int faces = (d->m_slices * 2) * (d->m_rings - 1) + (2 * d->m_slices);
     d->m_indexAttribute->setCount(faces * 3);
     d->m_indexBuffer->setDataGenerator(QSharedPointer<CylinderIndexDataFunctor>::create(d->m_rings, d->m_slices, d->m_length));
 }

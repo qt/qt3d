@@ -51,6 +51,7 @@ class QT3DINPUTSHARED_EXPORT QPhysicalDeviceCreatedChangeBase : public Qt3DCore:
 {
 public:
     explicit QPhysicalDeviceCreatedChangeBase(const QAbstractPhysicalDevice *device);
+    ~QPhysicalDeviceCreatedChangeBase();
 
     Qt3DCore::QNodeIdVector axisSettingIds() const;
 
@@ -73,19 +74,8 @@ public:
     T data;
 };
 
-#if defined(Q_COMPILER_TEMPLATE_ALIAS)
 template<typename T>
 using QPhysicalDeviceCreatedChangePtr = QSharedPointer<QPhysicalDeviceCreatedChange<T>>;
-#else
-template <typename T>
-struct QPhysicalDeviceCreatedChangePtr
-{
-    static QSharedPointer<QPhysicalDeviceCreatedChange<T> > create(const QAbstractPhysicalDevice *device)
-    {
-        return QSharedPointer<QPhysicalDeviceCreatedChange<T> >::create(device);
-    }
-};
-#endif
 
 } // namespace Qt3DInput
 

@@ -62,11 +62,24 @@ namespace Input {
 class Q_AUTOTEST_EXPORT ButtonAxisInput : public AbstractAxisInput
 {
 public:
+    enum UpdateType {
+        Accelerate,
+        Decelerate
+    };
+
     ButtonAxisInput();
     void cleanup() Q_DECL_FINAL;
 
     inline float scale() const { return m_scale; }
     inline QVector<int> buttons() const { return m_buttons; }
+
+    inline float acceleration() const { return m_acceleration < 0.0f ? qInf() : m_acceleration; }
+    inline float deceleration() const { return m_deceleration < 0.0f ? qInf() : m_deceleration; }
+    inline float speedRatio() const { return m_speedRatio; }
+    inline qint64 lastUpdateTime() const { return m_lastUpdateTime; }
+
+    void updateSpeedRatio(qint64 currentTime, UpdateType type);
+
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
 
 private:
@@ -74,6 +87,10 @@ private:
 
     QVector<int> m_buttons;
     float m_scale;
+    float m_acceleration;
+    float m_deceleration;
+    float m_speedRatio;
+    qint64 m_lastUpdateTime;
 };
 
 } // namespace Input

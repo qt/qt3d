@@ -78,6 +78,11 @@ QFrameGraphNode::QFrameGraphNode(QNode *parent)
 {
 }
 
+/*! \internal */
+QFrameGraphNode::~QFrameGraphNode()
+{
+}
+
 /*!
   Returns a pointer to the parent.
  */

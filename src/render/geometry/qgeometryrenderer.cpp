@@ -66,6 +66,10 @@ QGeometryRendererPrivate::QGeometryRendererPrivate()
 {
 }
 
+QGeometryRendererPrivate::~QGeometryRendererPrivate()
+{
+}
+
 /*!
  * \qmltype GeometryRenderer
  * \instantiates Qt3DRender::QGeometryRenderer
@@ -164,6 +168,13 @@ QGeometryRendererPrivate::QGeometryRendererPrivate()
  */
 QGeometryRenderer::QGeometryRenderer(QNode *parent)
     : QComponent(*new QGeometryRendererPrivate(), parent)
+{
+}
+
+/*!
+ * \internal
+ */
+QGeometryRenderer::~QGeometryRenderer()
 {
 }
 
@@ -422,7 +433,7 @@ void QGeometryRenderer::setGeometryFactory(const QGeometryFactoryPtr &factory)
         return;
     d->m_geometryFactory = factory;
     if (d->m_changeArbiter != nullptr) {
-        QPropertyUpdatedChangePtr change(new QPropertyUpdatedChange(id()));
+        auto change = QPropertyUpdatedChangePtr::create(d->m_id);
         change->setPropertyName("geometryFactory");
         change->setValue(QVariant::fromValue(d->m_geometryFactory));
         d->notifyObservers(change);

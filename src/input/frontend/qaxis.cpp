@@ -69,6 +69,11 @@ QAxis::QAxis(Qt3DCore::QNode *parent)
 {
 }
 
+/*! \internal */
+QAxis::~QAxis()
+{
+}
+
 void QAxis::addInput(QAbstractAxisInput *input)
 {
     Q_D(QAxis);

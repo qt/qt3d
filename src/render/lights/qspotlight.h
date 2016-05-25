@@ -59,6 +59,7 @@ class QT3DRENDERSHARED_EXPORT QSpotLight : public QAbstractLight
 
 public:
     explicit QSpotLight(Qt3DCore::QNode *parent = nullptr);
+    ~QSpotLight();
 
     QVector3D attenuation() const;
     QVector3D localDirection() const;
@@ -83,7 +84,7 @@ Q_SIGNALS:
     void cutOffAngleChanged(float cutOffAngle);
 
 protected:
-    QSpotLight(QSpotLightPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QSpotLight(QSpotLightPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QSpotLight)

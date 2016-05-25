@@ -84,19 +84,8 @@ public:
     T data;
 };
 
-#if defined(Q_COMPILER_TEMPLATE_ALIAS)
 template<typename T>
 using QRenderStateCreatedChangePtr = QSharedPointer<QRenderStateCreatedChange<T>>;
-#else
-template <typename T>
-struct QRenderStateCreatedChangePtr
-{
-    static QSharedPointer<QRenderStateCreatedChange<T> > create(const QRenderState *renderState)
-    {
-        return QSharedPointer<QRenderStateCreatedChange<T> >::create(renderState);
-    }
-};
-#endif
 
 } // namespace Qt3DRender
 

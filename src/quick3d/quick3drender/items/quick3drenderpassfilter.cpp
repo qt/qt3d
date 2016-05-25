@@ -98,7 +98,8 @@ void Quick3DRenderPassFilter::clearIncludes(QQmlListProperty<QFilterKey> *list)
 {
     Quick3DRenderPassFilter *filter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
     if (filter) {
-        Q_FOREACH (QFilterKey *criterion, filter->parentRenderPassFilter()->matchAny())
+        const auto criteria = filter->parentRenderPassFilter()->matchAny();
+        for (QFilterKey *criterion : criteria)
             filter->parentRenderPassFilter()->removeMatch(criterion);
     }
 }
@@ -124,7 +125,8 @@ int Quick3DRenderPassFilter::parametersCount(QQmlListProperty<QParameter> *list)
 void Quick3DRenderPassFilter::clearParameterList(QQmlListProperty<QParameter> *list)
 {
     Quick3DRenderPassFilter *rPassFilter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
-    Q_FOREACH (QParameter *p, rPassFilter->parentRenderPassFilter()->parameters())
+    const auto parameters = rPassFilter->parentRenderPassFilter()->parameters();
+    for (QParameter *p : parameters)
         rPassFilter->parentRenderPassFilter()->removeParameter(p);
 }
 

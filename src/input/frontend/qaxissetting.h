@@ -60,6 +60,7 @@ class QT3DINPUTSHARED_EXPORT QAxisSetting : public Qt3DCore::QNode
 
 public:
     explicit QAxisSetting(Qt3DCore::QNode *parent = nullptr);
+    ~QAxisSetting();
 
     float deadZoneRadius() const;
     QVariantList axes() const;

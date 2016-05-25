@@ -57,6 +57,7 @@ class QT3DRENDERSHARED_EXPORT QPickingSettings : public Qt3DCore::QNode
 
 public:
     explicit QPickingSettings(Qt3DCore::QNode *parent = nullptr);
+    ~QPickingSettings();
 
     enum PickMethod {
         BoundingVolumePicking,
@@ -83,7 +84,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QPickingSettings)
-    QPickingSettings(QPickingSettingsPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QPickingSettings(QPickingSettingsPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 };
 
 } // namespace Qt3Drender

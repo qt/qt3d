@@ -97,8 +97,8 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
 
     // Register types provided as QML files compiled into the plugin
     for (int i = 0; i < int(sizeof(qmldir) / sizeof(qmldir[0])); i++) {
-        QString path = QStringLiteral("qrc:/qt-project.org/imports/Qt3D/Extras/defaults/qml/");
-        qmlRegisterType(QUrl(path + qmldir[i].type + QStringLiteral(".qml")),
+        auto path = QLatin1String("qrc:/qt-project.org/imports/Qt3D/Extras/defaults/qml/");
+        qmlRegisterType(QUrl(path + qmldir[i].type + QLatin1String(".qml")),
                         uri,
                         qmldir[i].major, qmldir[i].minor,
                         qmldir[i].type);

@@ -56,6 +56,11 @@ QInputSettings::QInputSettings(Qt3DCore::QNode *parent)
 {
 }
 
+/*! \internal */
+QInputSettings::~QInputSettings()
+{
+}
+
 QObject *QInputSettings::eventSource() const
 {
     Q_D(const QInputSettings);

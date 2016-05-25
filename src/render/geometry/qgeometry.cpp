@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "qgeometry.h"
+#include "qgeometryfactory.h"
 #include "qgeometry_p.h"
 #include <private/qnode_p.h>
 #include <Qt3DRender/qattribute.h>
@@ -50,6 +51,20 @@ QT_BEGIN_NAMESPACE
 using namespace Qt3DCore;
 
 namespace Qt3DRender {
+
+QGeometryFactory::~QGeometryFactory()
+{
+}
+
+QGeometryPrivate::QGeometryPrivate()
+    : QNodePrivate(),
+      m_boundingVolumePositionAttribute(nullptr)
+{
+}
+
+QGeometryPrivate::~QGeometryPrivate()
+{
+}
 
 /*!
  * \qmltype Geometry
@@ -82,7 +97,12 @@ namespace Qt3DRender {
  * Constructs a new QGeometry with \a parent.
  */
 QGeometry::QGeometry(QNode *parent)
-    : QNode(*new QGeometryPrivate(), parent)
+    : QGeometry(*new QGeometryPrivate(), parent) {}
+
+/*!
+ * \internal
+ */
+QGeometry::~QGeometry()
 {
 }
 

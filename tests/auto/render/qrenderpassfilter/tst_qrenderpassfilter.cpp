@@ -144,8 +144,9 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QRenderPassFilter> renderPassFilter(new Qt3DRender::QRenderPassFilter());
-        TestArbiter arbiter(renderPassFilter.data());
+        arbiter.setArbiterOnNode(renderPassFilter.data());
 
         // WHEN
         Qt3DRender::QParameter *param1 = new Qt3DRender::QParameter();

@@ -43,6 +43,7 @@
 #include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/qtextureimage_p.h>
 #include <Qt3DRender/qtextureimagedata.h>
+#include <Qt3DRender/qtexturedata.h>
 #include <QThread>
 #include <Qt3DRender/private/job_common_p.h>
 
@@ -51,18 +52,12 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-LoadTextureDataJob::LoadTextureDataJob(Qt3DCore::QNodeId textureId)
-    : m_textureId(textureId)
-{
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadTextureData, 0);
-}
+namespace {
 
-LoadTextureDataJob::~LoadTextureDataJob()
-{
-}
+typedef QPair<HTextureData, QTextureImageData *> HandleDataPair;
 
-static QPair<HTextureData, QTextureImageData *> textureDataFromGenerator(TextureDataManager *textureDataManager,
-                                                                         QTextureImageDataGeneratorPtr generator)
+HandleDataPair textureDataFromGenerator(TextureDataManager *textureDataManager,
+                                        QTextureImageDataGeneratorPtr generator)
 {
     HTextureData textureDataHandle;
     QTextureImageData *data = nullptr;
@@ -77,6 +72,7 @@ static QPair<HTextureData, QTextureImageData *> textureDataFromGenerator(Texture
     if (!textureDataHandle.isNull()) {
         data = textureDataManager->data(textureDataHandle);
     } else {
+        // Texture data is null -> we need to generate it
         QTextureImageDataPtr dataPtr = generator->operator ()();
         if (dataPtr.isNull()) {
             qCDebug(Jobs) << Q_FUNC_INFO << "Texture has no raw data";
@@ -92,6 +88,59 @@ static QPair<HTextureData, QTextureImageData *> textureDataFromGenerator(Texture
     return qMakePair(textureDataHandle, data);
 }
 
+void createTextureFromGenerator(TextureDataManager *textureDataManager,
+                                Texture *texture)
+{
+    QTextureGeneratorPtr generator = texture->dataGenerator();
+    const QTextureDataPtr generatedData = generator->operator ()();
+
+    // TO DO set the status of the texture based on the status of the functor
+
+    // Use the first QTexImageData loaded to determine the target / mipmaps
+    // if not specified
+
+    if (texture->target() != QAbstractTexture::TargetAutomatic)
+        qWarning() << "When a texture provides a generator, it's target is expected to be TargetAutomatic";
+
+    texture->setTarget(static_cast<QAbstractTexture::Target>(generatedData->target()));
+    texture->setSize(generatedData->width(), generatedData->height(), generatedData->depth());
+    texture->setLayers(generatedData->layers());
+    texture->setFormat(generatedData->format());
+
+    // Note: These texture data handles aren't associated with a QTextureImageDataGenerator
+    // and will therefore be destroyed when the Texture element is destroyed or cleaned up
+    const QVector<QTextureImageDataPtr> imageData = generatedData->imageData();
+
+    if (imageData.size() > 0) {
+        QMutexLocker locker(textureDataManager->mutex());
+        // We don't want to take the chance of having two jobs uploading the same functor
+        // because of sync issues
+
+        // Set the mips level based on the first image if autoMipMapGeneration is disabled
+        if (!texture->isAutoMipMapGenerationEnabled())
+            texture->setMipLevels(imageData.first()->mipLevels());
+
+        for (QTextureImageDataPtr dataPtr : imageData) {
+            HTextureData textureDataHandle = textureDataManager->acquire();
+            QTextureImageData *data = textureDataManager->data(textureDataHandle);
+            *data = *(dataPtr.data());
+            texture->addTextureDataHandle(textureDataHandle);
+        }
+    }
+}
+
+} // anonymous
+
+LoadTextureDataJob::LoadTextureDataJob(Qt3DCore::QNodeId textureId)
+    : m_textureId(textureId)
+{
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadTextureData, 0);
+}
+
+LoadTextureDataJob::~LoadTextureDataJob()
+{
+}
+
 void LoadTextureDataJob::run()
 {
     qCDebug(Jobs) << "Entering" << Q_FUNC_INFO << QThread::currentThread();
@@ -100,27 +149,13 @@ void LoadTextureDataJob::run()
     TextureDataManager *textureDataManager = m_manager->manager<QTextureImageData, TextureDataManager>();
 
     if (txt != nullptr) {
-        if (txt->dataGenerator()) {
-            QTextureImageDataGeneratorPtr generator = txt->dataGenerator();
+        // We need to clear the TextureData handles of the texture in case it was previously
+        // loaded with a different functor
+        txt->releaseTextureDataHandles();
 
-            QPair<HTextureData, QTextureImageData *> handleData = textureDataFromGenerator(textureDataManager, generator);
-
-            HTextureData textureDataHandle = handleData.first;
-            QTextureImageData *data = handleData.second;
-            if (!data)
-                return;
-
-            if (txt->target() == QAbstractTexture::TargetAutomatic)
-                txt->setTarget(static_cast<QAbstractTexture::Target>(data->target()));
-
-            if (!txt->isAutoMipMapGenerationEnabled())
-                txt->setMipLevels(data->mipLevels());
-
-            txt->setSize(data->width(), data->height(), data->depth());
-            txt->setLayers(data->layers());
-            txt->setFormat(static_cast<QAbstractTexture::TextureFormat>(data->format()));
-            txt->setTextureDataHandle(textureDataHandle);
-        }
+        // If the texture has a functor we used it to generate embedded TextureImages
+        if (txt->dataGenerator())
+            createTextureFromGenerator(textureDataManager, txt);
 
         // Load update each TextureImage
         const auto texImgHandles = txt->textureImages();
@@ -166,10 +201,11 @@ void LoadTextureDataJob::run()
                     }
                 }
                 // Set the textureDataHandle on the texture image
+                // Note: this internally updates the DNA of the TextureImage
                 texImg->setTextureDataHandle(textureDataHandle);
             }
         }
-        // Tell the renderer to reload the TextureImage for the Texture
+        // Tell the renderer to reload/upload to GPU the TextureImage for the Texture
         // next frame
         txt->requestTextureDataUpdate();
     }

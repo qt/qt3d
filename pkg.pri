@@ -36,14 +36,9 @@ DESTDIR = $$shadowed($$PWD)/bin
     INSTALLS += copyqmlinfra_install
 
     # put all our demos/examples and supporting files into $BUILD_DIR/bin
-    target_dir = $$DESTDIR/$$resource_dir/qml
-    # create extra qmake compiler to copy files across during build step
-    copyqmlinfra.input = QML_INFRA_FILES
-    copyqmlinfra.output = $$target_dir/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
-    copyqmlinfra.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
-    copyqmlinfra.CONFIG += no_link no_clean
-    copyqmlinfra.variable_out = POST_TARGETDEPS
-    QMAKE_EXTRA_COMPILERS += copyqmlinfra
+    copyqmlinfra.files = $$QML_INFRA_FILES
+    copyqmlinfra.path = $$DESTDIR/$$resource_dir/qml
+    COPIES += copyqmlinfra
 }
 
 !isEmpty(QML_MESHES_FILES) {
@@ -53,11 +48,7 @@ DESTDIR = $$shadowed($$PWD)/bin
     copyqmlmeshes_install.path = $$target.path/$$resource_dir/qml/meshes
     INSTALLS += copyqmlmeshes_install
 
-    target_dir = $$DESTDIR/$$resource_dir/qml/meshes
-    copyqmlmeshes.input = QML_MESHES_FILES
-    copyqmlmeshes.output = $$target_dir/${QMAKE_FILE_IN_BASE}${QMAKE_FILE_EXT}
-    copyqmlmeshes.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
-    copyqmlmeshes.CONFIG += no_link no_clean
-    copyqmlmeshes.variable_out = POST_TARGETDEPS
-    QMAKE_EXTRA_COMPILERS += copyqmlmeshes
+    copyqmlmeshes.files = $$QML_MESHES_FILES
+    copyqmlmeshes.path = $$DESTDIR/$$resource_dir/qml/meshes
+    COPIES += copyqmlmeshes
 }

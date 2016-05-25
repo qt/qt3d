@@ -48,6 +48,11 @@ QFrustumCulling::QFrustumCulling(Qt3DCore::QNode *parent)
 {
 }
 
+/*! \internal */
+QFrustumCulling::~QFrustumCulling()
+{
+}
+
 } // Qt3DRender
 
 QT_END_NAMESPACE

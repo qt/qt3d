@@ -77,6 +77,7 @@ public:
     Q_ENUM(OpenGLProfile)
 
     explicit QGraphicsApiFilter(QObject *parent = nullptr);
+    ~QGraphicsApiFilter();
 
     Api api() const;
     OpenGLProfile profile() const;

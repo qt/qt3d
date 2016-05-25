@@ -224,6 +224,11 @@ QGoochMaterial::QGoochMaterial(QNode *parent)
     d->init();
 }
 
+/*! \internal */
+QGoochMaterial::~QGoochMaterial()
+{
+}
+
 QGoochMaterial::QGoochMaterial(QGoochMaterialPrivate &dd, QNode *parent)
     : QMaterial(dd, parent)
 {

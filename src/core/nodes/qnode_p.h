@@ -69,6 +69,7 @@ class QT3DCORE_PRIVATE_EXPORT QNodePrivate : public QObjectPrivate, public QObse
 {
 public:
     QNodePrivate();
+    ~QNodePrivate();
 
     void init(QNode *parent);
 
@@ -91,6 +92,7 @@ public:
     QMetaObject *m_typeInfo;
     QScene *m_scene;
     mutable QNodeId m_id;
+    QNodeId m_parentId; // Store this so we have it even in parent's QObject dtor
     bool m_blockNotifications;
     bool m_hasBackendNode;
     bool m_enabled;
@@ -100,6 +102,7 @@ public:
 
 private:
     void notifyCreationChange();
+    void notifyDestructionChangesAndRemoveFromScene();
     void _q_notifyCreationAndChildChanges();
     void _q_addChild(QNode *childNode);
     void _q_removeChild(QNode *childNode);

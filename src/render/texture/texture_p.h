@@ -55,6 +55,7 @@
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qtextureimagedata.h>
+#include <Qt3DRender/qtexturegenerator.h>
 #include <QOpenGLContext>
 #include <QMutex>
 
@@ -111,8 +112,10 @@ public:
     inline QAbstractTexture::Target target() const { return m_target; }
     inline bool isAutoMipMapGenerationEnabled() const { return m_generateMipMaps; }
 
-    inline QTextureImageDataGeneratorPtr dataGenerator() const { return m_dataFunctor; }
-    void setTextureDataHandle(HTextureData handle) { m_textureDataHandle = handle; }
+    inline QTextureGeneratorPtr dataGenerator() const { return m_dataFunctor; }
+    void addTextureDataHandle(HTextureData handle);
+    inline QVector<HTextureData> textureDataHandles() const { return m_textureDataHandles; }
+    void releaseTextureDataHandles();
 
     inline bool dataUploadRequired() const { return m_dataUploadRequired; }
 
@@ -143,9 +146,8 @@ private:
     QAbstractTexture::ComparisonFunction m_comparisonFunction;
     QAbstractTexture::ComparisonMode m_comparisonMode;
 
-    QTextureImageDataGeneratorPtr m_dataFunctor;
-    HTextureData m_textureDataHandle;
-
+    QTextureGeneratorPtr m_dataFunctor;
+    QVector<HTextureData> m_textureDataHandles;
     QVector<HTextureImage> m_textureImages;
 
     bool m_isDirty;

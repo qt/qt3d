@@ -67,7 +67,7 @@ class QAspectThread;
 class QPostman;
 class QScene;
 
-class QAspectEnginePrivate : public QObjectPrivate
+class QT3DCORE_PRIVATE_EXPORT QAspectEnginePrivate : public QObjectPrivate
 {
 public:
     QAspectEnginePrivate();
@@ -82,9 +82,12 @@ public:
     QSharedPointer<QEntity> m_root;
     QVector<QAbstractAspect*> m_aspects;
     QHash<QString, QAbstractAspect *> m_namedAspects;
+    bool m_initialized;
 
     void initialize();
     void shutdown();
+
+    void exitSimulationLoop();
 
     void initNodeTree(QNode *node);
     void initNode(QNode *node);
@@ -92,6 +95,8 @@ public:
 
     void generateCreationChanges(QNode *rootNode);
     QVector<QNodeCreatedChangeBasePtr> m_creationChanges;
+
+    static QAspectEnginePrivate *get(QAspectEngine *engine);
 };
 
 } // Qt3D

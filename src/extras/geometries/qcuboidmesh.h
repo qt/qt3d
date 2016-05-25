@@ -61,6 +61,7 @@ class QT3DEXTRASSHARED_EXPORT QCuboidMesh : public Qt3DRender::QGeometryRenderer
 
 public:
     explicit QCuboidMesh(Qt3DCore::QNode *parent = nullptr);
+    ~QCuboidMesh();
 
     float xExtent() const;
     float yExtent() const;

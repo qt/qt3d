@@ -69,7 +69,7 @@ Q_SIGNALS:
     void shareableChanged(bool isShareable);
 
 protected:
-    QComponent(QComponentPrivate &dd, QNode *parent = nullptr);
+    explicit QComponent(QComponentPrivate &dd, QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QComponent)

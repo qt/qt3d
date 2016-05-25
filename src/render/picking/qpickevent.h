@@ -82,7 +82,7 @@ Q_SIGNALS:
     void acceptedChanged(bool accepted);
 
 protected:
-    QPickEvent(QObjectPrivate &dd, QObject *parent = nullptr);
+    explicit QPickEvent(QObjectPrivate &dd, QObject *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QPickEvent)

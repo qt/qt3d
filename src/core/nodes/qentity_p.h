@@ -63,6 +63,7 @@ class QT3DCORE_PRIVATE_EXPORT QEntityPrivate : public QNodePrivate
 {
 public :
     QEntityPrivate();
+    ~QEntityPrivate();
 
     Q_DECLARE_PUBLIC(QEntity)
 

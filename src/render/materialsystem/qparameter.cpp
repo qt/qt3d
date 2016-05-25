@@ -91,6 +91,10 @@ QParameter::QParameter(const QString &name, QAbstractTexture *texture, QNode *pa
     setValue(QVariant::fromValue(texture));
 }
 
+/*! \internal */
+QParameter::~QParameter()
+{
+}
 
 void QParameter::setName(const QString &name)
 {

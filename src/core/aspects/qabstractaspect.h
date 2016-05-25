@@ -69,7 +69,7 @@ public:
     ~QAbstractAspect();
 
 protected:
-    QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = nullptr);
+    explicit QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = nullptr);
 
     QNodeId rootEntityId() const Q_DECL_NOEXCEPT;
 

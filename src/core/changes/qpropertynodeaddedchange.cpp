@@ -76,6 +76,11 @@ QPropertyNodeAddedChange::QPropertyNodeAddedChange(QNodeId subjectId, QNode *nod
     d->m_addedNodeIdTypePair = QNodeIdTypePair(node->id(), node->metaObject());
 }
 
+/*! \internal */
+QPropertyNodeAddedChange::~QPropertyNodeAddedChange()
+{
+}
+
 /*!
  * \return the id of the node added to the property.
  */

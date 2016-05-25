@@ -96,7 +96,7 @@ public:
     void drawArraysInstancedBaseInstance(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances, GLsizei baseInstance) Q_DECL_OVERRIDE;
     void drawBuffers(GLsizei n, const int *bufs) Q_DECL_OVERRIDE;
     void drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLint baseVertex = 0) Q_DECL_OVERRIDE;
-    void drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances, GLint baseVertex = 0,  GLint baseInstance = 0) Q_DECL_OVERRIDE;
+    void drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances, GLint baseVertex = 0,  GLint baseInstance = 0) Q_DECL_OVERRIDE;
     void enableClipPlane(int clipPlane) Q_DECL_OVERRIDE;
     void enablei(GLenum cap, GLuint index) Q_DECL_OVERRIDE;
     void enablePrimitiveRestart(int primitiveRestartIndex) Q_DECL_OVERRIDE;

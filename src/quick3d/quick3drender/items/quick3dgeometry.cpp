@@ -81,10 +81,9 @@ int Quick3DGeometry::attributesCount(QQmlListProperty<Qt3DRender::QAttribute> *l
 void Quick3DGeometry::clearAttributes(QQmlListProperty<Qt3DRender::QAttribute> *list)
 {
     Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
-    QVector<Qt3DRender::QAttribute *> &managedAttributes = geometry->m_managedAttributes;
-    Q_FOREACH (Qt3DRender::QAttribute *attribute, managedAttributes)
+    for (Qt3DRender::QAttribute *attribute : qAsConst(geometry->m_managedAttributes))
         geometry->parentGeometry()->removeAttribute(attribute);
-    managedAttributes.clear();
+    geometry->m_managedAttributes.clear();
 }
 
 } // namespace Quick

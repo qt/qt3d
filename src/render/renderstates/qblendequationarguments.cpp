@@ -86,6 +86,13 @@ QBlendEquationArguments::QBlendEquationArguments(QNode *parent)
 /*!
   \internal
 */
+QBlendEquationArguments::~QBlendEquationArguments()
+{
+}
+
+/*!
+  \internal
+*/
 QBlendEquationArguments::QBlendEquationArguments(QBlendEquationArgumentsPrivate &dd, QNode *parent)
     : QRenderState(dd, parent)
 {

@@ -147,7 +147,7 @@ void ShaderData::clearUpdatedProperties()
 
 void ShaderData::cleanup(NodeManagers *managers)
 {
-    Q_FOREACH (Qt3DCore::QNodeId id, m_updatedShaderData) {
+    for (Qt3DCore::QNodeId id : qAsConst(m_updatedShaderData)) {
         ShaderData *shaderData = ShaderData::lookupResource(managers, id);
         if (shaderData)
             shaderData->clearUpdatedProperties();
@@ -285,7 +285,8 @@ void ShaderData::readPeerProperties(QShaderData *shaderData)
     }
 
     // Also check the dynamic properties
-    foreach (const QByteArray &propertyName , shaderData->dynamicPropertyNames()) {
+    const auto propertyNames = shaderData->dynamicPropertyNames();
+    for (const QByteArray &propertyName : propertyNames) {
         if (propertyName == "data" || propertyName == "childNodes")  // We don't handle default Node properties
             continue;
 
@@ -304,7 +305,7 @@ void ShaderData::readPeerProperties(QShaderData *shaderData)
     while (it != end) {
         if (static_cast<QMetaType::Type>(it.value().type()) == QMetaType::QVector3D) {
             // if there is a matching QShaderData::TransformType propertyTransformed
-            QVariant value = m_properties.value(it.key() + QStringLiteral("Transformed"));
+            QVariant value = m_properties.value(it.key() + QLatin1String("Transformed"));
             // if that's the case, we apply a space transformation to the property
             if (value.isValid() && value.type() == QVariant::Int)
                 m_transformedProperties.insert(it.key(), static_cast<TransformType>(value.toInt()));

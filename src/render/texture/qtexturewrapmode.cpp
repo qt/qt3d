@@ -90,6 +90,11 @@ QTextureWrapMode::QTextureWrapMode(WrapMode x,WrapMode y, WrapMode z, QObject *p
     d_func()->m_z = z;
 }
 
+/*! \internal */
+QTextureWrapMode::~QTextureWrapMode()
+{
+}
+
 /*!
     Sets the wrap mode of the x dimension to \a x.
  */

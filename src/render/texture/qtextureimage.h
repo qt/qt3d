@@ -57,6 +57,7 @@ class QT3DRENDERSHARED_EXPORT QTextureImage : public QAbstractTextureImage
 
 public:
     explicit QTextureImage(Qt3DCore::QNode *parent = nullptr);
+    ~QTextureImage();
 
     enum Status {
         None = 0,

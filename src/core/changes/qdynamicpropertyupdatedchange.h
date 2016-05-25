@@ -51,7 +51,7 @@ class QDynamicPropertyUpdatedChangePrivate;
 class QT3DCORESHARED_EXPORT QDynamicPropertyUpdatedChange : public QPropertyUpdatedChangeBase
 {
 public:
-    QDynamicPropertyUpdatedChange(QNodeId subjectId);
+    explicit QDynamicPropertyUpdatedChange(QNodeId subjectId);
     ~QDynamicPropertyUpdatedChange();
 
     QByteArray propertyName() const;

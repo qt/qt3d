@@ -64,6 +64,7 @@ class QKeyboardHandlerPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QKeyboardHandlerPrivate();
+    ~QKeyboardHandlerPrivate();
 
     void keyEvent(QKeyEvent *event);
 

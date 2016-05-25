@@ -80,7 +80,8 @@ int Quick3DAxis::axesInputCount(QQmlListProperty<QAbstractAxisInput> *list)
 void Quick3DAxis::clearAxisInputs(QQmlListProperty<QAbstractAxisInput> *list)
 {
     Quick3DAxis *axis = qobject_cast<Quick3DAxis *>(list->object);
-    Q_FOREACH (QAbstractAxisInput *input, axis->parentAxis()->inputs())
+    const auto inputs = axis->parentAxis()->inputs();
+    for (QAbstractAxisInput *input : inputs)
         axis->parentAxis()->removeInput(input);
 }
 

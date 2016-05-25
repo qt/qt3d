@@ -85,8 +85,9 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QCameraSelector> cameraSelector(new Qt3DRender::QCameraSelector());
-        TestArbiter arbiter(cameraSelector.data());
+        arbiter.setArbiterOnNode(cameraSelector.data());
 
         // WHEN
         Qt3DCore::QEntity *camera = new Qt3DCore::QEntity();

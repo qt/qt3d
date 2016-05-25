@@ -61,6 +61,11 @@ QRenderTarget::QRenderTarget(QNode *parent)
 }
 
 /*! \internal */
+QRenderTarget::~QRenderTarget()
+{
+}
+
+/*! \internal */
 QRenderTarget::QRenderTarget(QRenderTargetPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {

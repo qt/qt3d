@@ -69,7 +69,7 @@ public:
     QEntity *parentEntity() const;
 
 protected:
-    QEntity(QEntityPrivate &dd, QNode *parent = nullptr);
+    explicit QEntity(QEntityPrivate &dd, QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QEntity)

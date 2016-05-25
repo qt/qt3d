@@ -80,7 +80,8 @@ int Quick3DInputChord::actionInputCount(QQmlListProperty<QAbstractActionInput> *
 void Quick3DInputChord::clearActionInputs(QQmlListProperty<QAbstractActionInput> *list)
 {
     Quick3DInputChord *action = qobject_cast<Quick3DInputChord *>(list->object);
-    Q_FOREACH (QAbstractActionInput *input, action->parentChord()->chords())
+    const auto chords = action->parentChord()->chords();
+    for (QAbstractActionInput *input : chords)
         action->parentChord()->removeChord(input);
 }
 

@@ -65,6 +65,7 @@ class QT3DCORESHARED_EXPORT QTransform : public QComponent
 
 public:
     explicit QTransform(QNode *parent = nullptr);
+    ~QTransform();
 
     float scale() const;
     QVector3D scale3D() const;
@@ -113,7 +114,7 @@ Q_SIGNALS:
     void rotationZChanged(float rotationZ);
 
 protected:
-    QTransform(QTransformPrivate &dd, QNode *parent = nullptr);
+    explicit QTransform(QTransformPrivate &dd, QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QTransform)

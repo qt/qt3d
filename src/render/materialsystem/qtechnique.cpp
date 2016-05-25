@@ -68,6 +68,11 @@ QTechnique::QTechnique(QNode *parent)
 }
 
 /*! \internal */
+QTechnique::~QTechnique()
+{
+}
+
+/*! \internal */
 QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
@@ -78,7 +83,7 @@ QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
 void QTechniquePrivate::_q_graphicsApiFilterChanged()
 {
     if (m_changeArbiter != nullptr) {
-        QPropertyUpdatedChangePtr change(new QPropertyUpdatedChange(m_id));
+        auto change = QPropertyUpdatedChangePtr::create(m_id);
         change->setPropertyName("graphicsApiFilterData");
         change->setValue(QVariant::fromValue(QGraphicsApiFilterPrivate::get(const_cast<QGraphicsApiFilter *>(&m_graphicsApiFilter))->m_data));
         notifyObservers(change);

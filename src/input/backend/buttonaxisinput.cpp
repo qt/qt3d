@@ -52,6 +52,10 @@ namespace Input {
 ButtonAxisInput::ButtonAxisInput()
     : AbstractAxisInput()
     , m_scale(0.0f)
+    , m_acceleration(-1.0f)
+    , m_deceleration(-1.0f)
+    , m_speedRatio(0.0f)
+    , m_lastUpdateTime(0)
 {
 }
 
@@ -61,6 +65,8 @@ void ButtonAxisInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBaseP
     const auto &data = typedChange->data;
     m_buttons = data.buttons;
     m_scale = data.scale;
+    m_acceleration = data.acceleration;
+    m_deceleration = data.deceleration;
     AbstractAxisInput::initializeFromPeer(change);
 }
 
@@ -68,7 +74,27 @@ void ButtonAxisInput::cleanup()
 {
     m_scale = 0.0f;
     m_buttons.clear();
+    m_acceleration = -1.0f;
+    m_deceleration = -1.0f;
     AbstractAxisInput::cleanup();
+}
+
+void ButtonAxisInput::updateSpeedRatio(qint64 currentTime, ButtonAxisInput::UpdateType type)
+{
+    const float accel = (type == Accelerate) ? acceleration() : -deceleration();
+
+    // Was in nanoseconds, while acceleration will be in units per square seconds
+    const float delta = m_lastUpdateTime ? (currentTime - m_lastUpdateTime) / 1000000000.0f : 0.0f;
+    const float speedRatio = m_speedRatio + delta * accel;
+
+    // Clamp it
+    m_speedRatio = qMax(0.0f, qMin(speedRatio, 1.0f));
+
+    // If we stopped, time to start over
+    if (type == Decelerate && m_speedRatio == 0.0f)
+        m_lastUpdateTime = 0;
+    else
+        m_lastUpdateTime = currentTime;
 }
 
 void ButtonAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -79,6 +105,10 @@ void ButtonAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_scale = propertyChange->value().toFloat();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("buttons")) {
             m_buttons = propertyChange->value().value<QVector<int>>();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("acceleration")) {
+            m_acceleration = propertyChange->value().toFloat();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("deceleration")) {
+            m_deceleration = propertyChange->value().toFloat();
         }
     }
     AbstractAxisInput::sceneChangeEvent(e);

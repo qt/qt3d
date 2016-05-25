@@ -195,7 +195,7 @@ bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
 
     QRegExp subMeshMatch(subMesh);
     if (!subMeshMatch.isValid())
-        subMeshMatch.setPattern(QString(QStringLiteral("^(%1)$")).arg(subMesh));
+        subMeshMatch.setPattern(QLatin1String("^(") + subMesh + QLatin1String(")$"));
     Q_ASSERT(subMeshMatch.isValid());
 
     char lineBuffer[1024];

@@ -103,8 +103,9 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QSortPolicy> sortPolicy(new Qt3DRender::QSortPolicy());
-        TestArbiter arbiter(sortPolicy.data());
+        arbiter.setArbiterOnNode(sortPolicy.data());
 
         // WHEN
         Qt3DRender::QSortPolicy::SortType sortType1 = Qt3DRender::QSortPolicy::BackToFront;

@@ -51,7 +51,7 @@ class QPropertyUpdatedChangePrivate;
 class QT3DCORESHARED_EXPORT QPropertyUpdatedChange : public QStaticPropertyUpdatedChangeBase
 {
 public:
-    QPropertyUpdatedChange(QNodeId subjectId);
+    explicit QPropertyUpdatedChange(QNodeId subjectId);
     virtual ~QPropertyUpdatedChange();
 
     QVariant value() const;

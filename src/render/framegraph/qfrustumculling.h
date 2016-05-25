@@ -51,6 +51,7 @@ class QT3DRENDERSHARED_EXPORT QFrustumCulling : public QFrameGraphNode
     Q_OBJECT
 public:
     explicit QFrustumCulling(Qt3DCore::QNode *parent = nullptr);
+    ~QFrustumCulling();
 };
 
 } // Qt3DRender

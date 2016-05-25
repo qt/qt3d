@@ -51,9 +51,9 @@ namespace Qt3DRender {
 class QAbstractTexturePrivate;
 class QTextureWrapMode;
 class QAbstractTextureImage;
-class QTextureImageDataGenerator;
+class QTextureGenerator;
 
-typedef QSharedPointer<QTextureImageDataGenerator> QTextureImageDataGeneratorPtr;
+typedef QSharedPointer<QTextureGenerator> QTextureGeneratorPtr;
 
 class QT3DRENDERSHARED_EXPORT QAbstractTexture : public Qt3DCore::QNode
 {
@@ -266,6 +266,8 @@ public:
     };
     Q_ENUM(ComparisonMode)
 
+    ~QAbstractTexture();
+
     Target target() const;
 
     TextureFormat format() const;
@@ -292,7 +294,7 @@ public:
     int height() const;
     int depth() const;
     int layers() const;
-    QTextureImageDataGeneratorPtr dataGenerator() const;
+    QTextureGeneratorPtr dataGenerator() const;
 
 public Q_SLOTS:
     void setFormat(TextureFormat format);
@@ -324,7 +326,7 @@ Q_SIGNALS:
 protected:
     explicit QAbstractTexture(Qt3DCore::QNode *parent = nullptr);
     explicit QAbstractTexture(Target target, Qt3DCore::QNode *parent = nullptr);
-    QAbstractTexture(QAbstractTexturePrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QAbstractTexture(QAbstractTexturePrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
     void setStatus(Status status);
 

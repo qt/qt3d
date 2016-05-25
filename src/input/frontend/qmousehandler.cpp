@@ -41,7 +41,7 @@
 #include "qmousehandler_p.h"
 #include "qmousedevice.h"
 #include "qmouseevent.h"
-#include <Qt3DCore/qbackendnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,6 +55,10 @@ QMouseHandlerPrivate::QMouseHandlerPrivate()
     , m_containsMouse(false)
 {
     m_shareable = false;
+}
+
+QMouseHandlerPrivate::~QMouseHandlerPrivate()
+{
 }
 
 void QMouseHandlerPrivate::mouseEvent(QMouseEvent *event)
@@ -118,6 +122,10 @@ QMouseHandler::QMouseHandler(QNode *parent)
 {
 }
 
+QMouseHandler::~QMouseHandler()
+{
+}
+
 /*!
  * Sets the mouse device of the QMouseHandler instance to \a mouseDevice.
  */
@@ -164,7 +172,7 @@ void QMouseHandler::setContainsMouse(bool contains)
 void QMouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QMouseHandler);
-    QBackendNodePropertyChangePtr e = qSharedPointerCast<QBackendNodePropertyChange>(change);
+    QPropertyUpdatedChangePtr e = qSharedPointerCast<QPropertyUpdatedChange>(change);
     if (e->type() == PropertyUpdated) {
         if (e->propertyName() == QByteArrayLiteral("mouse")) {
             QMouseEventPtr ev = e->value().value<QMouseEventPtr>();

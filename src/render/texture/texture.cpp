@@ -60,6 +60,18 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 namespace Render {
 
+/* A Texture can get its data in two complementary ways
+ * - Usually when a texture is created it is associated with a various number of
+ *   QTextureImages <-> TextureImage which will internally contain a set of QTexImageData
+ * - A QTexture can also provide a QTextureGenerator functor which might also
+ *   return a vector of QTexImageData
+ * So internally a Texture has a vector of HTextureImage which allow to retrieve a TextureImage and HTextureData
+ * but also a vector of HTextureData filled by the QTextureGenerator if present.
+ * From a memory management point of view, the texture needs to make sure it releases the HTextureData
+ * that were generated from the QTextureGenerator as these are not shared and belong to the Texture object.
+ * The HTextureData associated to a HTextureImage are managed by the TextureImage.
+ */
+
 Texture::Texture()
     : BackendNode()
     , m_gl(nullptr)
@@ -92,10 +104,17 @@ Texture::Texture()
 
 Texture::~Texture()
 {
+    // Release the texture data handles that may have been loaded
+    // by a QTextureGenerator functor
+    releaseTextureDataHandles();
 }
 
 void Texture::cleanup()
 {
+    // Release the texture data handles that may have been loaded
+    // by a QTextureGenerator functor
+    releaseTextureDataHandles();
+
     QBackendNode::setEnabled(false);
     m_gl = nullptr;
     m_width = 1;
@@ -123,7 +142,6 @@ void Texture::cleanup()
     m_textureImageManager = nullptr;
     m_textureDataManager = nullptr;
     m_dataFunctor.clear();
-    m_textureDataHandle = HTextureData();
 }
 
 // AspectThread
@@ -251,9 +269,6 @@ QOpenGLTexture *Texture::buildGLTexture()
 
     QOpenGLTexture* glTex = new QOpenGLTexture(static_cast<QOpenGLTexture::Target>(m_target));
 
-    if (m_format == QAbstractTexture::Automatic)
-        qWarning() << Q_FUNC_INFO << "something went wrong, format shouldn't be automatic at this point";
-
     // m_format may not be ES2 compatible. Now it's time to convert it, if necessary.
     QAbstractTexture::TextureFormat format = m_format;
     if (ctx->isOpenGLES() && ctx->format().majorVersion() < 3) {
@@ -341,20 +356,20 @@ void Texture::setToGLTexture(QTextureImageData *imgData)
 
                 if (imgData->isCompressed()) {
                     m_gl->setCompressedData(level,
-                            layer,
-                            static_cast<QOpenGLTexture::CubeMapFace>(QOpenGLTexture::CubeMapPositiveX + face),
-                            bytes.size(),
-                            bytes.constData());
+                                            layer,
+                                            static_cast<QOpenGLTexture::CubeMapFace>(QOpenGLTexture::CubeMapPositiveX + face),
+                                            bytes.size(),
+                                            bytes.constData());
                 } else {
                     QOpenGLPixelTransferOptions uploadOptions;
                     uploadOptions.setAlignment(1);
                     m_gl->setData(level,
-                            layer,
-                            static_cast<QOpenGLTexture::CubeMapFace>(QOpenGLTexture::CubeMapPositiveX + face),
-                            imgData->pixelFormat(),
-                            imgData->pixelType(),
-                            bytes.constData(),
-                            &uploadOptions);
+                                  layer,
+                                  static_cast<QOpenGLTexture::CubeMapFace>(QOpenGLTexture::CubeMapPositiveX + face),
+                                  imgData->pixelFormat(),
+                                  imgData->pixelType(),
+                                  bytes.constData(),
+                                  &uploadOptions);
                 }
             }
         }
@@ -430,17 +445,17 @@ void Texture::updateWrapAndFilters()
 
 void Texture::updateDNA()
 {
-    int key = m_width + m_height + m_depth + m_layers + m_mipLevels +
-                         (m_generateMipMaps ? 1 : 0) +
-                         static_cast<int>(m_target) +
-                         static_cast<int>(m_format) +
-                         static_cast<int>(m_magnificationFilter) +
-                         static_cast<int>(m_minificationFilter) +
-                         static_cast<int>(m_wrapModeX) +
-                         static_cast<int>(m_wrapModeY) +
-                         static_cast<int>(m_wrapModeZ) +
-                         static_cast<int>(m_comparisonFunction) +
-                         static_cast<int>(m_comparisonMode);
+    const int key = m_width + m_height + m_depth + m_layers + m_mipLevels +
+            (m_generateMipMaps ? 1 : 0) +
+            static_cast<int>(m_target) +
+            static_cast<int>(m_format) +
+            static_cast<int>(m_magnificationFilter) +
+            static_cast<int>(m_minificationFilter) +
+            static_cast<int>(m_wrapModeX) +
+            static_cast<int>(m_wrapModeY) +
+            static_cast<int>(m_wrapModeZ) +
+            static_cast<int>(m_comparisonFunction) +
+            static_cast<int>(m_comparisonMode);
     m_textureDNA = ::qHash(key) + ::qHash(m_maximumAnisotropy);
 
     // apply non-unique hashes from texture images or texture data
@@ -449,11 +464,11 @@ void Texture::updateDNA()
         if (img)
             m_textureDNA += img->dna();
     }
-    if (!m_textureDataHandle.isNull())
-        m_textureDNA += ::qHash(m_textureDataHandle.index());
+    for (const HTextureData textureDataHandle : qAsConst(m_textureDataHandles))
+        m_textureDNA += ::qHash(textureDataHandle.index());
 
     // if texture contains no potentially shared image data: texture is unique
-    if (m_textureImages.empty() && m_textureDataHandle.isNull()) // Ensures uniqueness by adding unique QNode id to the dna
+    if (m_textureImages.empty() && m_textureDataHandles.isEmpty()) // Ensures uniqueness by adding unique QNode id to the dna
         m_textureDNA += qHash(peerId());
 }
 
@@ -581,6 +596,7 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_layers = propertyChange->value().toInt();
             m_isDirty |= (oldLayers != m_layers);
         }
+        // TO DO: Handle the textureGenerator change
     }
         break;
 
@@ -634,14 +650,16 @@ void Texture::setTextureDataManager(TextureDataManager *manager)
 // RenderThread
 void Texture::updateAndLoadTextureImage()
 {
-    if (!m_textureDataHandle.isNull()) {
-        QTextureImageData *data = m_textureDataManager->data(m_textureDataHandle);
-        if (data != nullptr)
+    // Upload all QTexImageData set by the QTextureGenerator
+    for (const HTextureData textureDataHandle : qAsConst(m_textureDataHandles)) {
+        QTextureImageData *data = m_textureDataManager->data(textureDataHandle);
+        if (data != Q_NULLPTR)
             setToGLTexture(data);
     }
 
+    // Upload all QTexImageData references by the TextureImages
     QVector<TextureImageDNA> dnas;
-    Q_FOREACH (HTextureImage t, m_textureImages) {
+    for (const HTextureImage t : qAsConst(m_textureImages)) {
         TextureImage *img = m_textureImageManager->data(t);
         if (img != nullptr && img->isDirty()) {
             if (dnas.contains(img->dna())) {
@@ -712,6 +730,26 @@ Qt3DCore::QBackendNode *TextureFunctor::get(Qt3DCore::QNodeId id) const
 void TextureFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     m_textureManager->releaseResource(id);
+}
+
+void Texture::addTextureDataHandle(HTextureData handle)
+{
+    m_textureDataHandles.push_back(handle);
+    // Request a new upload to the GPU
+    requestTextureDataUpdate();
+}
+
+void Texture::releaseTextureDataHandles()
+{
+    if (m_textureDataHandles.size() > 0) {
+        m_isDirty = true;
+        Q_ASSERT(m_textureDataManager);
+        for (HTextureData textureData : qAsConst(m_textureDataHandles))
+            m_textureDataManager->release(textureData);
+        m_textureDataHandles.clear();
+        // Request a new upload to the GPU
+        requestTextureDataUpdate();
+    }
 }
 
 } // namespace Render

@@ -56,6 +56,11 @@ QPhysicalDeviceCreatedChangeBase::QPhysicalDeviceCreatedChangeBase(const QAbstra
 {
 }
 
+/*! \internal */
+QPhysicalDeviceCreatedChangeBase::~QPhysicalDeviceCreatedChangeBase()
+{
+}
+
 Qt3DCore::QNodeIdVector QPhysicalDeviceCreatedChangeBase::axisSettingIds() const
 {
     Q_D(const QPhysicalDeviceCreatedChangeBase);

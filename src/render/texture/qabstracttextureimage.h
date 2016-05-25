@@ -40,8 +40,8 @@
 #ifndef QT3DRENDER_QABSTRACTTEXTUREIMAGE_H
 #define QT3DRENDER_QABSTRACTTEXTUREIMAGE_H
 
-#include <Qt3DRender/qabstractfunctor.h>
 #include <Qt3DRender/qabstracttexture.h>
+#include <Qt3DRender/qtextureimagedatagenerator.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,20 +50,6 @@ namespace Qt3DRender {
 namespace Render {
 class TextureImage;
 }
-
-// TO DO TexImageDataPtr -> QImageDataPtr + d_ptr
-// We might also get rid of the layer, face, mipmap level from
-// TexImageDataPtr and store that in the functor directly
-// or use the QTextureImage instead
-class QT3DRENDERSHARED_EXPORT QTextureImageDataGenerator : public QAbstractFunctor
-{
-public:
-    virtual ~QTextureImageDataGenerator() {}
-    virtual QTextureImageDataPtr operator()() = 0;
-    virtual bool operator ==(const QTextureImageDataGenerator &other) const = 0;
-};
-
-typedef QSharedPointer<QTextureImageDataGenerator> QTextureImageDataGeneratorPtr;
 
 class QAbstractTextureImagePrivate;
 
@@ -94,7 +80,7 @@ Q_SIGNALS:
 protected:
     void notifyDataGeneratorChanged();
     virtual QTextureImageDataGeneratorPtr dataGenerator() const = 0;
-    QAbstractTextureImage(QAbstractTextureImagePrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QAbstractTextureImage(QAbstractTextureImagePrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QAbstractTextureImage)
@@ -105,7 +91,5 @@ private:
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-Q_DECLARE_METATYPE(Qt3DRender::QTextureImageDataGeneratorPtr)
 
 #endif // QT3DRENDER_QABSTRACTTEXTUREIMAGE_H

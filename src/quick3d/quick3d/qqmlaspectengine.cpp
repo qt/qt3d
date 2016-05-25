@@ -105,6 +105,11 @@ QQmlAspectEngine::QQmlAspectEngine(QObject *parent)
 {
 }
 
+/*! \internal */
+QQmlAspectEngine::~QQmlAspectEngine()
+{
+}
+
 /*!
  * \return the status.
  */
@@ -167,8 +172,8 @@ void QQmlAspectEnginePrivate::_q_continueExecute()
                         q, SLOT(_q_continueExecute()));
 
     if (m_component->isError()) {
-        QList<QQmlError> errorList = m_component->errors();
-        Q_FOREACH ( const QQmlError& error, errorList ) {
+        const auto errors = m_component->errors();
+        for (const QQmlError &error : errors) {
             QMessageLogger(error.url().toString().toLatin1().constData(), error.line(), 0).warning()
                 << error;
         }
@@ -179,8 +184,8 @@ void QQmlAspectEnginePrivate::_q_continueExecute()
     QObject* obj = m_component->create();
 
     if (m_component->isError()) {
-        QList<QQmlError> errorList = m_component->errors();
-        Q_FOREACH ( const QQmlError& error, errorList ) {
+        const auto errors = m_component->errors();
+        for (const QQmlError &error : errors) {
             QMessageLogger(error.url().toString().toLatin1().constData(), error.line(), 0).warning()
                 << error;
         }

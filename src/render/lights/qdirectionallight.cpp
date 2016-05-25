@@ -76,6 +76,11 @@ QDirectionalLight::QDirectionalLight(QNode *parent)
 }
 
 /*! \internal */
+QDirectionalLight::~QDirectionalLight()
+{
+}
+
+/*! \internal */
 QDirectionalLight::QDirectionalLight(QDirectionalLightPrivate &dd, QNode *parent)
     : QAbstractLight(dd, parent)
 {

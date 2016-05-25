@@ -143,14 +143,14 @@ Module {
         exports: ["Qt3D.Input/ActionInput 2.0"]
         exportMetaObjectRevisions: [0]
         Property { name: "sourceDevice"; type: "Qt3DInput::QAbstractPhysicalDevice"; isPointer: true }
-        Property { name: "buttons"; type: "QList<int>" }
+        Property { name: "buttons"; type: "QVector<int>" }
         Signal {
             name: "sourceDeviceChanged"
             Parameter { name: "sourceDevice"; type: "QAbstractPhysicalDevice"; isPointer: true }
         }
         Signal {
             name: "buttonsChanged"
-            Parameter { name: "buttons"; type: "QList<int>" }
+            Parameter { name: "buttons"; type: "QVector<int>" }
         }
         Method {
             name: "setSourceDevice"
@@ -158,7 +158,7 @@ Module {
         }
         Method {
             name: "setButtons"
-            Parameter { name: "buttons"; type: "QList<int>" }
+            Parameter { name: "buttons"; type: "QVector<int>" }
         }
     }
     Component {
@@ -224,14 +224,24 @@ Module {
         exports: ["Qt3D.Input/ButtonAxisInput 2.0"]
         exportMetaObjectRevisions: [0]
         Property { name: "scale"; type: "float" }
-        Property { name: "buttons"; type: "QList<int>" }
+        Property { name: "buttons"; type: "QVector<int>" }
+        Property { name: "acceleration"; type: "float" }
+        Property { name: "deceleration"; type: "float" }
         Signal {
             name: "scaleChanged"
             Parameter { name: "scale"; type: "float" }
         }
         Signal {
             name: "buttonsChanged"
-            Parameter { name: "buttons"; type: "QList<int>" }
+            Parameter { name: "buttons"; type: "QVector<int>" }
+        }
+        Signal {
+            name: "accelerationChanged"
+            Parameter { name: "acceleration"; type: "float" }
+        }
+        Signal {
+            name: "decelerationChanged"
+            Parameter { name: "deceleration"; type: "float" }
         }
         Method {
             name: "setScale"
@@ -239,8 +249,21 @@ Module {
         }
         Method {
             name: "setButtons"
-            Parameter { name: "buttons"; type: "QList<int>" }
+            Parameter { name: "buttons"; type: "QVector<int>" }
         }
+        Method {
+            name: "setAcceleration"
+            Parameter { name: "acceleration"; type: "float" }
+        }
+        Method {
+            name: "setDeceleration"
+            Parameter { name: "deceleration"; type: "float" }
+        }
+    }
+    Component {
+        name: "Qt3DInput::QGamepadInput"
+        prototype: "Qt3DInput::QAbstractPhysicalDevice"
+        Property { name: "deviceId"; type: "int" }
     }
     Component {
         name: "Qt3DInput::QInputChord"
@@ -512,8 +535,23 @@ Module {
     Component { name: "Qt3DInput::QLogicalDevice"; prototype: "Qt3DCore::QComponent" }
     Component {
         name: "Qt3DInput::QMouseDevice"
-        prototype: "Qt3DInput::QMouseDevice"
-        Property { name: "axisSettings"; type: "Qt3DInput::QAxisSetting"; isList: true; isReadonly: true }
+        prototype: "Qt3DInput::QAbstractPhysicalDevice"
+        Enum {
+            name: "Axis"
+            values: {
+                "X": 0,
+                "Y": 1
+            }
+        }
+        Property { name: "sensitivity"; type: "float" }
+        Signal {
+            name: "sensitivityChanged"
+            Parameter { name: "value"; type: "float" }
+        }
+        Method {
+            name: "setSensitivity"
+            Parameter { name: "value"; type: "float" }
+        }
     }
     Component {
         name: "Qt3DInput::QMouseEvent"

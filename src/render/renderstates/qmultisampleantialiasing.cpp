@@ -62,6 +62,11 @@ QMultiSampleAntiAliasing::QMultiSampleAntiAliasing(QNode *parent)
 {
 }
 
+/*! \internal */
+QMultiSampleAntiAliasing::~QMultiSampleAntiAliasing()
+{
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

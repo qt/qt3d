@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qpropertyupdatedchangebase.h>
+#include <Qt3DCore/qstaticpropertyupdatedchangebase.h>
 
 QT_BEGIN_NAMESPACE
 

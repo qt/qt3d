@@ -45,16 +45,18 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+class QNodeDestroyedChangePrivate;
+
 class QT3DCORESHARED_EXPORT QNodeDestroyedChange : public QSceneChange
 {
 public:
     explicit QNodeDestroyedChange(const QNode *node, const QVector<QNodeIdTypePair> &subtreeIdsAndTypes);
     ~QNodeDestroyedChange();
 
-    QVector<QNodeIdTypePair> subtreeIdsAndTypes() const { return m_subtreeIdsAndTypes; }
+    QVector<QNodeIdTypePair> subtreeIdsAndTypes() const;
 
 private:
-    QVector<QNodeIdTypePair> m_subtreeIdsAndTypes;
+    Q_DECLARE_PRIVATE(QNodeDestroyedChange)
 };
 
 typedef QSharedPointer<QNodeDestroyedChange> QNodeDestroyedChangePtr;

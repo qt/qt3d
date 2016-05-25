@@ -93,8 +93,8 @@ int Quick3DEntity::qmlComponentsCount(QQmlListProperty<QComponent> *list)
 void Quick3DEntity::qmlClearComponents(QQmlListProperty<QComponent> *list)
 {
     Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
-    QComponentVector components = self->parentEntity()->components();
-    Q_FOREACH (QComponent *comp, components) {
+    const QComponentVector components = self->parentEntity()->components();
+    for (QComponent *comp : components) {
         self->parentEntity()->removeComponent(comp);
     }
 }

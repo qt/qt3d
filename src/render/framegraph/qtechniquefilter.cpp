@@ -62,6 +62,11 @@ QTechniqueFilter::QTechniqueFilter(QNode *parent)
 }
 
 /*! \internal */
+QTechniqueFilter::~QTechniqueFilter()
+{
+}
+
+/*! \internal */
 QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {

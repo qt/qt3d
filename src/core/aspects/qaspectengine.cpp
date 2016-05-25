@@ -63,10 +63,16 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+QAspectEnginePrivate *QAspectEnginePrivate::get(QAspectEngine *q)
+{
+    return q->d_func();
+}
+
 QAspectEnginePrivate::QAspectEnginePrivate()
     : QObjectPrivate()
     , m_postman(nullptr)
     , m_scene(nullptr)
+    , m_initialized(false)
 {
     qRegisterMetaType<Qt3DCore::QAbstractAspect *>();
     qRegisterMetaType<Qt3DCore::QObserverInterface *>();
@@ -156,7 +162,11 @@ QAspectEngine::~QAspectEngine()
     // Shutdown the simulation loop by setting an empty scene
     setRootEntity(QEntityPtr());
 
-    // Exit the main loop
+    // Unregister all aspects and exit the main loop
+    const auto aspects = d->m_aspects;
+    for (auto aspect : aspects)
+        unregisterAspect(aspect);
+
     d->m_aspectThread->aspectManager()->quit();
     d->m_aspectThread->wait();
 
@@ -182,6 +192,7 @@ void QAspectEnginePrivate::initialize()
     QMetaObject::invokeMethod(arbiter,
                               "setScene",
                               Q_ARG(Qt3DCore::QScene*, m_scene));
+    m_initialized = true;
 }
 
 /*!
@@ -195,10 +206,25 @@ void QAspectEnginePrivate::shutdown()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
 
+    // Flush any change batch waiting in the postman that may contain node
+    // destruction changes that the aspects should process before we exit
+    // the simulation loop
+    m_postman->submitChangeBatch();
+
+    // Exit the simulation loop. Waits for this to be completed on the aspect
+    // thread before returning
+    exitSimulationLoop();
+
     // Cleanup the scene before quitting the backend
     m_scene->setArbiter(nullptr);
     QChangeArbiter *arbiter = m_aspectThread->aspectManager()->changeArbiter();
     QChangeArbiter::destroyUnmanagedThreadLocalChangeQueue(arbiter);
+    m_initialized = false;
+}
+
+void QAspectEnginePrivate::exitSimulationLoop()
+{
+    m_aspectThread->aspectManager()->exitSimulationLoop();
 }
 
 /*!
@@ -253,6 +279,13 @@ void QAspectEngine::unregisterAspect(QAbstractAspect *aspect)
     // of aspects.
     // TODO: Implement this once we are able to cleanly shutdown
 
+    // Tell the aspect manager to give the aspect a chance to do some cleanup
+    // in its QAbstractAspect::onUnregistered() virtual
+    QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
+                              "unregisterAspect",
+                              Qt::BlockingQueuedConnection,
+                              Q_ARG(Qt3DCore::QAbstractAspect *, aspect));
+
     // Remove from our collection of named aspects (if present)
     const auto it = std::find_if(d->m_namedAspects.begin(), d->m_namedAspects.end(),
                                  [aspect](QAbstractAspect *v) { return v == aspect; });
@@ -262,6 +295,7 @@ void QAspectEngine::unregisterAspect(QAbstractAspect *aspect)
     // Finally, scheduly the aspect for deletion. Do this via the event loop
     // in case we are unregistering the aspect in response to a signal from it.
     aspect->deleteLater();
+    d->m_aspects.removeOne(aspect);
 }
 
 /*!
@@ -338,17 +372,15 @@ void QAspectEngine::setRootEntity(QEntityPtr root)
     if (d->m_root == root)
         return;
 
-    const bool shutdownNeeded = d->m_root;
+    const bool shutdownNeeded = d->m_root && d->m_initialized;
 
     // Set the new root object. This will cause the old tree to be deleted
     // and the deletion of the old frontend tree will cause the backends to
     // free any related resources
     d->m_root = root;
 
-    if (shutdownNeeded) {
+    if (shutdownNeeded)
         d->shutdown();
-        d->m_aspectThread->aspectManager()->exitSimulationLoop();
-    }
 
     // Do we actually have a new scene?
     if (!d->m_root)

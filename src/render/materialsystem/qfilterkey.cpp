@@ -76,6 +76,11 @@ QFilterKey::QFilterKey(QNode *parent)
 {
 }
 
+/*! \internal */
+QFilterKey::~QFilterKey()
+{
+}
+
 void QFilterKey::setValue(const QVariant &value)
 {
     Q_D(QFilterKey);

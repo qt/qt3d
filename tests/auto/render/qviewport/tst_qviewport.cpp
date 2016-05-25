@@ -87,8 +87,9 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QViewport> viewport(new Qt3DRender::QViewport());
-        TestArbiter arbiter(viewport.data());
+        arbiter.setArbiterOnNode(viewport.data());
 
         // WHEN
         viewport->setNormalizedRect(QRectF(0.5f, 0.5f, 1.0f, 1.0f));

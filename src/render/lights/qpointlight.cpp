@@ -95,6 +95,11 @@ QPointLight::QPointLight(QNode *parent)
 }
 
 /*! \internal */
+QPointLight::~QPointLight()
+{
+}
+
+/*! \internal */
 QPointLight::QPointLight(QPointLightPrivate &dd, QNode *parent)
     : QAbstractLight(dd, parent)
 {

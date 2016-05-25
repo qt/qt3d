@@ -55,6 +55,7 @@ class QT3DRENDERSHARED_EXPORT QDirectionalLight : public QAbstractLight
 
 public:
     explicit QDirectionalLight(Qt3DCore::QNode *parent = nullptr);
+    ~QDirectionalLight();
 
     QVector3D worldDirection() const;
 
@@ -65,7 +66,7 @@ Q_SIGNALS:
     void worldDirectionChanged(const QVector3D &worldDirection);
 
 protected:
-    QDirectionalLight(QDirectionalLightPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QDirectionalLight(QDirectionalLightPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QDirectionalLight)

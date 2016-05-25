@@ -68,6 +68,7 @@ class QT3DINPUTSHARED_PRIVATE_EXPORT QAbstractPhysicalDevicePrivate : public Qt3
 {
 public:
     QAbstractPhysicalDevicePrivate();
+    ~QAbstractPhysicalDevicePrivate();
 
     Q_DECLARE_PUBLIC(QAbstractPhysicalDevice)
     QVector<QAxisSetting *> m_axisSettings;

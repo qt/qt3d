@@ -99,7 +99,8 @@ int Quick3DRenderPass::filterKeysCount(QQmlListProperty<QFilterKey> *list)
 void Quick3DRenderPass::clearFilterKey(QQmlListProperty<QFilterKey> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
-    Q_FOREACH (QFilterKey *c, rPass->parentRenderPass()->filterKeys())
+    const auto keys = rPass->parentRenderPass()->filterKeys();
+    for (QFilterKey *c : keys)
         rPass->parentRenderPass()->removeFilterKey(c);
 }
 
@@ -124,7 +125,8 @@ int Quick3DRenderPass::renderStateCount(QQmlListProperty<QRenderState> *list)
 void Quick3DRenderPass::clearRenderStates(QQmlListProperty<QRenderState> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
-    Q_FOREACH (QRenderState *s, rPass->parentRenderPass()->renderStates())
+    const auto states = rPass->parentRenderPass()->renderStates();
+    for (QRenderState *s : states)
         rPass->parentRenderPass()->removeRenderState(s);
 }
 
@@ -149,7 +151,8 @@ int Quick3DRenderPass::parametersCount(QQmlListProperty<QParameter> *list)
 void Quick3DRenderPass::clearParameterList(QQmlListProperty<QParameter> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
-    Q_FOREACH (QParameter *p, rPass->parentRenderPass()->parameters())
+    const auto parameters = rPass->parentRenderPass()->parameters();
+    for (QParameter *p : parameters)
         rPass->parentRenderPass()->removeParameter(p);
 }
 

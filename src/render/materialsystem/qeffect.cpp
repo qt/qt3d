@@ -63,6 +63,11 @@ QEffect::QEffect(QNode *parent)
 }
 
 /*! \internal */
+QEffect::~QEffect()
+{
+}
+
+/*! \internal */
 QEffect::QEffect(QEffectPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

@@ -46,6 +46,7 @@
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DCore/qaspectengine.h>
+#include <Qt3DCore/private/qaspectengine_p.h>
 
 #include <QtQuick/qquickwindow.h>
 
@@ -176,6 +177,11 @@ void Scene3DRenderer::shutdown()
     // Set to null so that subsequent calls to render
     // would return early
     m_item = nullptr;
+
+    // Exit the simulation loop so no more jobs are asked for. Once this
+    // returns it is safe to shutdown the renderer.
+    auto engineD = Qt3DCore::QAspectEnginePrivate::get(m_aspectEngine);
+    engineD->exitSimulationLoop();
 
     // Shutdown the Renderer Aspect while the OpenGL context
     // is still valid

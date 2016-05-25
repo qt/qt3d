@@ -52,7 +52,7 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
 {
     Qt3DCore::Quick::Quick3D_initialize();
 
-    qmlRegisterUncreatableType<Qt3DCore::QComponent>(uri, 2, 0, "Component3D", QStringLiteral(""));
+    qmlRegisterUncreatableType<Qt3DCore::QComponent>(uri, 2, 0, "Component3D", QLatin1String(""));
 
     Qt3DCore::Quick::registerExtendedType<Qt3DCore::QEntity, Qt3DCore::Quick::Quick3DEntity>("QEntity", "Qt3D.Core/Entity", uri, 2, 0, "Entity");
     qmlRegisterType<Qt3DCore::Quick::Quick3DEntityLoader>(uri, 2, 0, "EntityLoader");

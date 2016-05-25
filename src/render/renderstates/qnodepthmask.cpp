@@ -63,6 +63,11 @@ QNoDepthMask::QNoDepthMask(QNode *parent)
 {
 }
 
+/*! \internal */
+QNoDepthMask::~QNoDepthMask()
+{
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

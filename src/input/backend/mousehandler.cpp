@@ -46,7 +46,6 @@
 #include <Qt3DInput/private/qmousehandler_p.h>
 #include <Qt3DInput/qmousedevice.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/qbackendnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -84,7 +83,8 @@ void MouseHandler::setInputHandler(InputHandler *handler)
 
 void MouseHandler::mouseEvent(const QMouseEventPtr &event)
 {
-    QBackendNodePropertyChangePtr e(new QBackendNodePropertyChange(peerId()));
+    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("mouse");
     e->setValue(QVariant::fromValue(event));
     notifyObservers(e);
@@ -92,7 +92,8 @@ void MouseHandler::mouseEvent(const QMouseEventPtr &event)
 
 void MouseHandler::wheelEvent(const QWheelEventPtr &event)
 {
-    QBackendNodePropertyChangePtr e(new QBackendNodePropertyChange(peerId()));
+    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("wheel");
     e->setValue(QVariant::fromValue(event));
     notifyObservers(e);

@@ -84,8 +84,8 @@ public:
 
 protected:
     Q_DECLARE_PRIVATE(QSceneChange)
-    QSceneChange(ChangeFlag type, QNodeId subjectId);
-    QSceneChange(QSceneChangePrivate &dd,
+    explicit QSceneChange(ChangeFlag type, QNodeId subjectId);
+    explicit QSceneChange(QSceneChangePrivate &dd,
                  ChangeFlag type, QNodeId subjectId);
     QSceneChangePrivate *d_ptr;
 

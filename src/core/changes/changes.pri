@@ -9,9 +9,8 @@ HEADERS += \
     $$PWD/qcomponentaddedchange_p.h \
     $$PWD/qcomponentremovedchange.h \
     $$PWD/qcomponentremovedchange_p.h \
-    $$PWD/qbackendnodepropertychange.h \
-    $$PWD/qbackendnodepropertychange_p.h \
     $$PWD/qnodedestroyedchange.h \
+    $$PWD/qnodedestroyedchange_p.h \
     $$PWD/qpropertyvalueaddedchangebase.h \
     $$PWD/qpropertyvalueaddedchangebase_p.h \
     $$PWD/qpropertyvalueremovedchangebase.h \
@@ -44,7 +43,6 @@ SOURCES += \
     $$PWD/qnodedestroyedchange.cpp \
     $$PWD/qcomponentaddedchange.cpp \
     $$PWD/qcomponentremovedchange.cpp \
-    $$PWD/qbackendnodepropertychange.cpp \
     $$PWD/qpropertyvalueaddedchangebase.cpp \
     $$PWD/qpropertyvalueremovedchangebase.cpp \
     $$PWD/qpropertyupdatedchangebase.cpp \

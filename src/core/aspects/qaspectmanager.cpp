@@ -73,6 +73,7 @@ QAspectManager::QAspectManager(QObject *parent)
     , m_jobManager(new QAspectJobManager(this))
     , m_changeArbiter(new QChangeArbiter(this))
     , m_serviceLocator(new QServiceLocator())
+    , m_waitForEndOfSimulationLoop(0)
     , m_waitForEndOfExecLoop(0)
     , m_waitForQuit(0)
 {
@@ -98,7 +99,17 @@ void QAspectManager::enterSimulationLoop()
 void QAspectManager::exitSimulationLoop()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
-    m_runSimulationLoop.fetchAndStoreOrdered(0);
+
+    // If this fails, simulation loop is already exited so nothing to do
+    if (!m_runSimulationLoop.testAndSetOrdered(1, 0)) {
+        qCDebug(Aspects) << "Simulation loop was not running. Nothing to do";
+        return;
+    }
+
+    QAbstractFrameAdvanceService *frameAdvanceService =
+            m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService);
+    if (frameAdvanceService)
+        frameAdvanceService->stop();
 
     // Give any aspects a chance to unqueue any asynchronous work they
     // may have scheduled that would otherwise potentially deadlock or
@@ -109,8 +120,12 @@ void QAspectManager::exitSimulationLoop()
     // This is because we call this function from the main thread and the
     // logic aspect is waiting for the main thread to execute the
     // QLogicComponent::onFrameUpdate() callback.
-    Q_FOREACH (QAbstractAspect *aspect, m_aspects)
+    for (QAbstractAspect *aspect : qAsConst(m_aspects))
         aspect->d_func()->onEngineAboutToShutdown();
+
+    // Wait until the simulation loop is fully exited and the aspects are done
+    // processing any final changes and have had onEngineShutdown() called on them
+    m_waitForEndOfSimulationLoop.acquire(1);
 }
 
 bool QAspectManager::isShuttingDown() const
@@ -192,6 +207,26 @@ void QAspectManager::registerAspect(QAbstractAspect *aspect)
     qCDebug(Aspects) << "Completed registering aspect";
 }
 
+/*!
+ * \internal
+ *
+ * Calls QAbstractAspect::onUnregistered(), unregisters the aspect from the
+ * change arbiter and unsets the arbiter, job manager and aspect manager.
+ * Operations are performed in the reverse order to registerAspect.
+ */
+void QAspectManager::unregisterAspect(Qt3DCore::QAbstractAspect *aspect)
+{
+    qCDebug(Aspects) << "Unregistering aspect";
+    Q_ASSERT(aspect);
+    aspect->onUnregistered();
+    m_changeArbiter->unregisterSceneObserver(aspect->d_func());
+    QAbstractAspectPrivate::get(aspect)->m_arbiter = nullptr;
+    QAbstractAspectPrivate::get(aspect)->m_jobManager = nullptr;
+    QAbstractAspectPrivate::get(aspect)->m_aspectManager = nullptr;
+    m_aspects.removeOne(aspect);
+    qCDebug(Aspects) << "Completed unregistering aspect";
+}
+
 void QAspectManager::exec()
 {
     // Gentlemen, start your engines
@@ -254,6 +289,9 @@ void QAspectManager::exec()
         } // End of simulation loop
 
         if (needsShutdown) {
+            // Process any pending changes from the frontend before we shut the aspects down
+            m_changeArbiter->syncChanges();
+
             // Give aspects a chance to perform any shutdown actions. This may include unqueuing
             // any blocking work on the main thread that could potentially deadlock during shutdown.
             qCDebug(Aspects) << "Calling onEngineShutdown() for each aspect";
@@ -262,6 +300,9 @@ void QAspectManager::exec()
                 aspect->onEngineShutdown();
             }
             qCDebug(Aspects) << "Done calling onEngineShutdown() for each aspect";
+
+            // Wake up the main thread which is waiting for us inside of exitSimulationLoop()
+            m_waitForEndOfSimulationLoop.release(1);
         }
     } // End of main loop
     qCDebug(Aspects) << Q_FUNC_INFO << "***** Exited main loop *****";

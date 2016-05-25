@@ -59,7 +59,9 @@ class QT3DRENDERSHARED_EXPORT QAbstractLight : public Qt3DCore::QComponent
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(float intensity READ intensity WRITE setIntensity NOTIFY intensityChanged)
 
-public :
+public:
+    ~QAbstractLight();
+
     enum Type {
         PointLight = 0,
         DirectionalLight,
@@ -75,9 +77,8 @@ public Q_SLOTS:
     void setColor(const QColor &color);
     void setIntensity(float intensity);
 
-protected :
-    QAbstractLight(QAbstractLightPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-
+protected:
+    explicit QAbstractLight(QAbstractLightPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 Q_SIGNALS:
     void colorChanged(const QColor &color);

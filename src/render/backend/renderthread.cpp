@@ -97,7 +97,7 @@ void RenderThread::run()
     m_renderer->render();
 
     // Clean up any OpenGL resources
-    m_renderer->shutdown();
+    m_renderer->releaseGraphicsResources();
 
     qCDebug(Render::Backend) << "Exiting RenderThread";
 }

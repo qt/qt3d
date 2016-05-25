@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "texturedatamanager_p.h"
-
+#include <Qt3DRender/qtextureimagedatagenerator.h>
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {

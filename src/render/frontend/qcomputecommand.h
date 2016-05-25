@@ -57,8 +57,8 @@ class QT3DRENDERSHARED_EXPORT QComputeCommand : public Qt3DCore::QComponent
     Q_PROPERTY(int workGroupZ READ workGroupZ WRITE setWorkGroupZ NOTIFY workGroupZChanged)
 
 public:
-
     explicit QComputeCommand(Qt3DCore::QNode *parent = nullptr);
+    ~QComputeCommand();
 
     int workGroupX() const;
     int workGroupY() const;

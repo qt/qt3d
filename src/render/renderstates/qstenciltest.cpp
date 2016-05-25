@@ -52,6 +52,11 @@ QStencilTest::QStencilTest(QNode *parent)
 {
 }
 
+/*! \internal */
+QStencilTest::~QStencilTest()
+{
+}
+
 QStencilTestArguments *QStencilTest::front() const
 {
     Q_D(const QStencilTest);

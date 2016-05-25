@@ -101,9 +101,8 @@ void QAbstractAspectPrivate::onEngineAboutToShutdown()
  * Constructs a new QAbstractAspect with \a parent
  */
 QAbstractAspect::QAbstractAspect(QObject *parent)
-    : QObject(*new QAbstractAspectPrivate, parent)
-{
-}
+    : QAbstractAspect(*new QAbstractAspectPrivate, parent) {}
+
 /*!
  * \typedef Qt3DCore::QAspectJobPtr
  * \relates Qt3DCore::QAbstractAspect

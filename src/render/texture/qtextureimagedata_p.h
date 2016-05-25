@@ -62,8 +62,7 @@ class QTextureImageDataPrivate
 public:
     QTextureImageDataPrivate();
 
-    void setData(const QByteArray &data, QOpenGLTexture::PixelFormat fmt,
-                 QOpenGLTexture::PixelType ptype);
+    void setData(const QByteArray &data, int blockSize, bool isCompressed);
 
     bool setCompressedFile(const QString &source);
 

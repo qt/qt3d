@@ -84,8 +84,17 @@ QMaterialPrivate::QMaterialPrivate()
 {
 }
 
+QMaterialPrivate::~QMaterialPrivate()
+{
+}
+
 QMaterial::QMaterial(QNode *parent)
     : QComponent(*new QMaterialPrivate, parent)
+{
+}
+
+/*! \internal */
+QMaterial::~QMaterial()
 {
 }
 

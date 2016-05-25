@@ -89,7 +89,8 @@ int Quick3DTechnique::parametersCount(QQmlListProperty<QParameter> *list)
 void Quick3DTechnique::clearParameterList(QQmlListProperty<QParameter> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
-    Q_FOREACH (QParameter *p, technique->parentTechnique()->parameters())
+    const auto parameters = technique->parentTechnique()->parameters();
+    for (QParameter *p : parameters)
         technique->parentTechnique()->removeParameter(p);
 }
 
@@ -121,7 +122,8 @@ void Quick3DTechnique::clearRenderPasses(QQmlListProperty<QRenderPass> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {
-        Q_FOREACH (QRenderPass *pass, technique->parentTechnique()->renderPasses())
+        const auto passes = technique->parentTechnique()->renderPasses();
+        for (QRenderPass *pass : passes)
             technique->parentTechnique()->removeRenderPass(pass);
     }
 }
@@ -165,7 +167,8 @@ void Quick3DTechnique::clearFilterKeyList(QQmlListProperty<QFilterKey> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {
-        Q_FOREACH (QFilterKey *a, technique->parentTechnique()->filterKeys())
+        const auto keys = technique->parentTechnique()->filterKeys();
+        for (QFilterKey *a : keys)
             technique->parentTechnique()->removeFilterKey(a);
     }
 }

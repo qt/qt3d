@@ -57,6 +57,10 @@ QTransformPrivate::QTransformPrivate()
 {
 }
 
+QTransformPrivate::~QTransformPrivate()
+{
+}
+
 /*!
  * \qmltype Transform
  * \inqmlmodule Qt3D.Core
@@ -175,6 +179,13 @@ QTransformPrivate::QTransformPrivate()
  */
 QTransform::QTransform(QNode *parent)
     : QComponent(*new QTransformPrivate, parent)
+{
+}
+
+/*!
+ * \internal
+ */
+QTransform::~QTransform()
 {
 }
 

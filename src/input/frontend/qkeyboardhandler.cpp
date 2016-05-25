@@ -40,7 +40,7 @@
 #include "qkeyboardhandler.h"
 #include "qkeyboardhandler_p.h"
 #include "qkeyboarddevice.h"
-#include <Qt3DCore/qbackendnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -114,6 +114,10 @@ QKeyboardHandlerPrivate::QKeyboardHandlerPrivate()
     m_shareable = false;
 }
 
+QKeyboardHandlerPrivate::~QKeyboardHandlerPrivate()
+{
+}
+
 void QKeyboardHandlerPrivate::keyEvent(QKeyEvent *event)
 {
     Q_Q(QKeyboardHandler);
@@ -158,10 +162,15 @@ QKeyboardHandler::QKeyboardHandler(QNode *parent)
 {
 }
 
+/*! \internal */
+QKeyboardHandler::~QKeyboardHandler()
+{
+}
+
 void QKeyboardHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QKeyboardHandler);
-    QBackendNodePropertyChangePtr e = qSharedPointerCast<QBackendNodePropertyChange>(change);
+    QPropertyUpdatedChangePtr e = qSharedPointerCast<QPropertyUpdatedChange>(change);
     if (e->type() == PropertyUpdated) {
         if (e->propertyName() == QByteArrayLiteral("focus")) {
             bool block = blockNotifications(true);

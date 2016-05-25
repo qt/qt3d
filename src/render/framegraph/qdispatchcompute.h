@@ -57,6 +57,7 @@ class QT3DRENDERSHARED_EXPORT QDispatchCompute : public QFrameGraphNode
     Q_PROPERTY(int workGroupZ READ workGroupZ WRITE setWorkGroupZ NOTIFY workGroupZChanged)
 public:
     explicit QDispatchCompute(Qt3DCore::QNode *parent = nullptr);
+    ~QDispatchCompute();
 
     int workGroupX() const;
     int workGroupY() const;

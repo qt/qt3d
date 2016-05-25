@@ -84,13 +84,7 @@ void QLogicAspectPrivate::registerBackendTypes()
 }
 
 QLogicAspect::QLogicAspect(QObject *parent)
-    : QAbstractAspect(*new QLogicAspectPrivate(), parent)
-{
-    Q_D(QLogicAspect);
-    setObjectName(QStringLiteral("Logic Aspect"));
-    d->registerBackendTypes();
-    d_func()->m_manager->setLogicAspect(this);
-}
+    : QLogicAspect(*new QLogicAspectPrivate(), parent) {}
 
 /*! \internal */
 QLogicAspect::QLogicAspect(QLogicAspectPrivate &dd, QObject *parent)
@@ -100,6 +94,11 @@ QLogicAspect::QLogicAspect(QLogicAspectPrivate &dd, QObject *parent)
     setObjectName(QStringLiteral("Logic Aspect"));
     d->registerBackendTypes();
     d_func()->m_manager->setLogicAspect(this);
+}
+
+/*! \internal */
+QLogicAspect::~QLogicAspect()
+{
 }
 
 QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)

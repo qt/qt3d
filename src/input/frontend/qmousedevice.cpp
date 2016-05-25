@@ -76,6 +76,11 @@ QMouseDevice::QMouseDevice(QNode *parent)
 {
 }
 
+/*! \internal */
+QMouseDevice::~QMouseDevice()
+{
+}
+
 int QMouseDevice::axisCount() const
 {
     // TO DO: we could have mouse wheel later on
@@ -104,9 +109,9 @@ QStringList QMouseDevice::buttonNames() const
 
 int QMouseDevice::axisIdentifier(const QString &name) const
 {
-    if (name == QStringLiteral("X"))
+    if (name == QLatin1String("X"))
         return X;
-    else if (name == QStringLiteral("Y"))
+    else if (name == QLatin1String("Y"))
         return Y;
     return -1;
 }

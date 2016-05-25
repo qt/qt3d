@@ -80,7 +80,8 @@ int Quick3DInputSequence::actionInputCount(QQmlListProperty<QAbstractActionInput
 void Quick3DInputSequence::clearActionInputs(QQmlListProperty<QAbstractActionInput> *list)
 {
     Quick3DInputSequence *action = qobject_cast<Quick3DInputSequence *>(list->object);
-    Q_FOREACH (QAbstractActionInput *input, action->parentSequence()->sequences())
+    const auto sequences = action->parentSequence()->sequences();
+    for (QAbstractActionInput *input : sequences)
         action->parentSequence()->removeSequence(input);
 }
 

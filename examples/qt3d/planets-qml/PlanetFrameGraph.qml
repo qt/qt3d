@@ -62,57 +62,60 @@ RenderSettings {
     activeFrameGraph: Viewport {
         normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
 
-        TechniqueFilter {
-            matchAll: [ FilterKey { name: "name"; value: "Desktop" } ]
+        RenderSurfaceSelector {
 
-            RenderPassFilter {
-                matchAny: [ FilterKey { name: "pass"; value: "shadowmap" } ]
+            TechniqueFilter {
+                matchAll: [ FilterKey { name: "name"; value: "Desktop" } ]
 
-                RenderTargetSelector {
-                    target: RenderTarget {
-                        attachments: [
-                            RenderTargetOutput {
-                                objectName: "depth"
-                                attachmentPoint: RenderTargetOutput.Depth
-                                texture: Texture2D {
-                                    id: depthTexture
-                                    width: mainview.width
-                                    height: mainview.height
-                                    format: Texture.D24
-                                    generateMipMaps: false
-                                    magnificationFilter: Texture.Linear
-                                    minificationFilter: Texture.Linear
-                                    wrapMode {
-                                        x: WrapMode.ClampToEdge
-                                        y: WrapMode.ClampToEdge
+                RenderPassFilter {
+                    matchAny: [ FilterKey { name: "pass"; value: "shadowmap" } ]
+
+                    RenderTargetSelector {
+                        target: RenderTarget {
+                            attachments: [
+                                RenderTargetOutput {
+                                    objectName: "depth"
+                                    attachmentPoint: RenderTargetOutput.Depth
+                                    texture: Texture2D {
+                                        id: depthTexture
+                                        width: mainview.width
+                                        height: mainview.height
+                                        format: Texture.D24
+                                        generateMipMaps: false
+                                        magnificationFilter: Texture.Linear
+                                        minificationFilter: Texture.Linear
+                                        wrapMode {
+                                            x: WrapMode.ClampToEdge
+                                            y: WrapMode.ClampToEdge
+                                        }
+                                        comparisonFunction: Texture.CompareLessEqual
+                                        comparisonMode: Texture.CompareRefToTexture
                                     }
-                                    comparisonFunction: Texture.CompareLessEqual
-                                    comparisonMode: Texture.CompareRefToTexture
                                 }
+                            ]
+                        }
+
+                        ClearBuffers {
+                            buffers: ClearBuffers.DepthBuffer
+                            clearColor: Qt.rgba(0., 0., 0., 1.)
+
+                            CameraSelector {
+                                id: lightCameraSelector
                             }
-                        ]
-                    }
-
-                    ClearBuffers {
-                        buffers: ClearBuffers.DepthBuffer
-                        clearColor: Qt.rgba(0., 0., 0., 1.)
-
-                        CameraSelector {
-                            id: lightCameraSelector
                         }
                     }
                 }
             }
-        }
 
-        RenderPassFilter {
-            matchAny: [ FilterKey { name: "pass"; value: "forward" } ]
+            RenderPassFilter {
+                matchAny: [ FilterKey { name: "pass"; value: "forward" } ]
 
-            ClearBuffers {
-                buffers: ClearBuffers.ColorDepthBuffer
+                ClearBuffers {
+                    buffers: ClearBuffers.ColorDepthBuffer
 
-                CameraSelector {
-                    id: viewCameraSelector
+                    CameraSelector {
+                        id: viewCameraSelector
+                    }
                 }
             }
         }

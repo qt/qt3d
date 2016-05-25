@@ -58,6 +58,7 @@ class QT3DINPUTSHARED_EXPORT QAbstractPhysicalDevice : public Qt3DCore::QNode
     Q_OBJECT
 public:
     explicit QAbstractPhysicalDevice(Qt3DCore::QNode *parent = nullptr);
+    ~QAbstractPhysicalDevice();
 
     virtual int axisCount() const;
     virtual int buttonCount() const;

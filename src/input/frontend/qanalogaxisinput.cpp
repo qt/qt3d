@@ -66,6 +66,11 @@ QAnalogAxisInput::QAnalogAxisInput(Qt3DCore::QNode *parent)
 {
 }
 
+/*! \internal */
+QAnalogAxisInput::~QAnalogAxisInput()
+{
+}
+
 void QAnalogAxisInput::setAxis(int axis)
 {
     Q_D(QAnalogAxisInput);

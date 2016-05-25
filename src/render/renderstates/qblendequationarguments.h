@@ -85,6 +85,7 @@ public:
     Q_ENUM(Blending)
 
     explicit QBlendEquationArguments(Qt3DCore::QNode *parent = nullptr);
+    ~QBlendEquationArguments();
 
     Blending sourceRgb() const;
     Blending destinationRgb() const;
@@ -112,7 +113,7 @@ Q_SIGNALS:
     void bufferIndexChanged(int index);
 
 protected:
-    QBlendEquationArguments(QBlendEquationArgumentsPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QBlendEquationArguments(QBlendEquationArgumentsPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QBlendEquationArguments)

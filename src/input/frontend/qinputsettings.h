@@ -55,6 +55,7 @@ class QT3DINPUTSHARED_EXPORT QInputSettings : public Qt3DCore::QComponent
     Q_PROPERTY(QObject *eventSource READ eventSource WRITE setEventSource NOTIFY eventSourceChanged)
 public:
     explicit QInputSettings(Qt3DCore::QNode *parent = nullptr);
+    ~QInputSettings();
 
     QObject *eventSource() const;
 

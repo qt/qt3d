@@ -53,7 +53,7 @@ class QPropertyValueRemovedChangePrivate;
 class QT3DCORESHARED_EXPORT QPropertyValueRemovedChange : public QStaticPropertyValueRemovedChangeBase
 {
 public:
-    QPropertyValueRemovedChange(QNodeId subjectId);
+    explicit QPropertyValueRemovedChange(QNodeId subjectId);
     ~QPropertyValueRemovedChange();
 
     void setRemovedValue(const QVariant &value);

@@ -53,7 +53,7 @@ class QShaderDataPrivate;
 class QT3DRENDERSHARED_EXPORT PropertyReaderInterface
 {
 public:
-    virtual ~PropertyReaderInterface() {}
+    virtual ~PropertyReaderInterface();
     virtual QVariant readProperty(const QVariant &v) = 0;
 };
 
@@ -64,13 +64,14 @@ class QT3DRENDERSHARED_EXPORT QShaderData : public Qt3DCore::QComponent
     Q_OBJECT
 public:
     explicit QShaderData(Qt3DCore::QNode *parent = nullptr);
+    ~QShaderData();
 
     PropertyReaderInterfacePtr propertyReader() const;
 
     bool event(QEvent *event) Q_DECL_OVERRIDE;
 
 protected:
-    QShaderData(QShaderDataPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QShaderData(QShaderDataPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QShaderData)

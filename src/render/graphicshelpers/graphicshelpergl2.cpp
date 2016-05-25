@@ -73,13 +73,13 @@ void GraphicsHelperGL2::initializeHelper(QOpenGLContext *context,
     }
 }
 
-void GraphicsHelperGL2::drawElementsInstanced(GLenum primitiveType,
-                                               GLsizei primitiveCount,
-                                               GLint indexType,
-                                               void *indices,
-                                               GLsizei instances,
-                                               GLint baseVertex,
-                                               GLint baseInstance)
+void GraphicsHelperGL2::drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType,
+                                                                    GLsizei primitiveCount,
+                                                                    GLint indexType,
+                                                                    void *indices,
+                                                                    GLsizei instances,
+                                                                    GLint baseVertex,
+                                                                    GLint baseInstance)
 {
     if (baseInstance != 0)
         qWarning() << "glDrawElementsInstancedBaseVertexBaseInstance is not supported with OpenGL ES 2";
@@ -453,7 +453,7 @@ void GraphicsHelperGL2::bindUniform(const QVariant &v, const ShaderUniform &desc
 void GraphicsHelperGL2::bindFrameBufferObject(GLuint frameBufferId)
 {
     if (m_fboFuncs != nullptr)
-        m_fboFuncs->glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBufferId);
+        m_fboFuncs->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBufferId);
     else
         qWarning() << "FBO not supported by your OpenGL hardware";
 }

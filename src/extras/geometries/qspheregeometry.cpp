@@ -401,6 +401,13 @@ QSphereGeometry::QSphereGeometry(QSphereGeometryPrivate &dd, QNode *parent)
 }
 
 /*!
+ * \internal
+ */
+QSphereGeometry::~QSphereGeometry()
+{
+}
+
+/*!
  * Updates vertices based on rings and slices.
  */
 void QSphereGeometry::updateVertices()

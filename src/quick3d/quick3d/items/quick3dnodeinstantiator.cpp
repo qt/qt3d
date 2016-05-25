@@ -171,7 +171,8 @@ void Quick3DNodeInstantiatorPrivate::_q_modelUpdated(const QQmlChangeSet &change
 
     int difference = 0;
     QHash<int, QVector<QPointer<QObject> > > moved;
-    Q_FOREACH (const QQmlChangeSet::Change &remove, changeSet.removes()) {
+    const auto removes = changeSet.removes();
+    for (const QQmlChangeSet::Change &remove : removes) {
         int index = qMin(remove.index, m_objects.count());
         int count = qMin(remove.index + remove.count, m_objects.count()) - index;
         if (remove.isMove()) {
@@ -192,7 +193,8 @@ void Quick3DNodeInstantiatorPrivate::_q_modelUpdated(const QQmlChangeSet &change
         difference -= remove.count;
     }
 
-    Q_FOREACH (const QQmlChangeSet::Change &insert, changeSet.inserts()) {
+    const auto inserts = changeSet.inserts();
+    for (const QQmlChangeSet::Change &insert : inserts) {
         int index = qMin(insert.index, m_objects.count());
         if (insert.isMove()) {
             QVector<QPointer<QObject> > movedObjects = moved.value(insert.moveId);

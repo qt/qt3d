@@ -100,8 +100,7 @@ void VSyncFrameAdvanceService::start()
 void VSyncFrameAdvanceService::stop()
 {
     Q_D(VSyncFrameAdvanceService);
-    if (d->m_semaphore.available() == 0)
-        d->m_semaphore.release(1);
+    d->m_semaphore.release(1);
     qCDebug(VSyncAdvanceService) << "Terminating VSyncFrameAdvanceService";
 }
 

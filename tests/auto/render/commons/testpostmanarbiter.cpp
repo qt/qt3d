@@ -46,18 +46,13 @@ void TestPostman::notifyBackend(const Qt3DCore::QSceneChangePtr &e)
     m_arbiter->sceneChangeEventWithLock(e);
 }
 
-TestArbiter::TestArbiter(Qt3DCore::QNode *node)
+TestArbiter::TestArbiter()
     : m_postman(new TestPostman(this))
-    , m_node(node)
 {
-    if (m_node)
-        assignArbiter(m_node);
 }
 
 TestArbiter::~TestArbiter()
 {
-    if (m_node)
-        Qt3DCore::QNodePrivate::get(m_node)->setArbiter(nullptr);
 }
 
 void TestArbiter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -80,11 +75,11 @@ Qt3DCore::QAbstractPostman *TestArbiter::postman() const
     return m_postman;
 }
 
-void TestArbiter::assignArbiter(Qt3DCore::QNode *node)
+void TestArbiter::setArbiterOnNode(Qt3DCore::QNode *node)
 {
     Qt3DCore::QNodePrivate::get(node)->setArbiter(this);
     Q_FOREACH (Qt3DCore::QNode *n, node->childNodes())
-        assignArbiter(n);
+        setArbiterOnNode(n);
 }
 
 QT_END_NAMESPACE

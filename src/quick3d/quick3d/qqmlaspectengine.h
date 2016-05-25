@@ -58,6 +58,7 @@ public:
     enum Status { Null, Ready, Loading, Error };
 
     explicit QQmlAspectEngine(QObject *parent = nullptr);
+    ~QQmlAspectEngine();
 
     Status status() const;
     void setSource(const QUrl &source);

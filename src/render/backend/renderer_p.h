@@ -139,6 +139,7 @@ public:
 
     void initialize() Q_DECL_OVERRIDE;
     void shutdown() Q_DECL_OVERRIDE;
+    void releaseGraphicsResources() Q_DECL_OVERRIDE;
     void createAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager) Q_DECL_OVERRIDE;
     void destroyAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager) Q_DECL_OVERRIDE;
 

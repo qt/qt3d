@@ -428,12 +428,12 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(const QStrin
                     ShaderData *subShaderData = shaderDataManager->lookupResource(list.at(i).value<QNodeId>());
                     if (subShaderData)
                         buildActiveUniformNameValueMapStructHelper(subShaderData,
-                                                                   blockName + QStringLiteral(".") + qmlPropertyName + blockArray.arg(i),
-                                                                   QStringLiteral(""));
+                                                                   blockName + QLatin1Char('.') + qmlPropertyName + blockArray.arg(i),
+                                                                   QLatin1String(""));
                 }
             }
         } else { // Array of scalar/vec  qmlPropertyName[0]
-            QString varName = blockName + QStringLiteral(".") + qmlPropertyName + QStringLiteral("[0]");
+            QString varName = blockName + QLatin1String(".") + qmlPropertyName + QLatin1String("[0]");
             if (uniforms.contains(varName)) {
                 qCDebug(Shaders) << "UBO array member " << varName << " set for update";
                 activeUniformNamesToValue.insert(StringToInt::lookupId(varName), value);
@@ -446,7 +446,7 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(const QStrin
                                                        blockName,
                                                        qmlPropertyName);
     } else { // Scalar / Vec
-        QString varName = blockName + QStringLiteral(".") + qmlPropertyName;
+        QString varName = blockName + QLatin1Char('.') + qmlPropertyName;
         if (uniforms.contains(varName)) {
             qCDebug(Shaders) << "UBO scalar member " << varName << " set for update";
             activeUniformNamesToValue.insert(StringToInt::lookupId(varName), value);
@@ -461,7 +461,7 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapStructHelper(Shader
     const QHash<QString, QVariant>::const_iterator end = properties.end();
 
     while (it != end) {
-        QString prefix = qmlPropertyName.isEmpty() ? QStringLiteral("") : QStringLiteral(".");
+        const auto prefix = qmlPropertyName.isEmpty() ? QLatin1String("") : QLatin1String(".");
         buildActiveUniformNameValueMapHelper(blockName + prefix + qmlPropertyName,
                                              it.key(),
                                              it.value());

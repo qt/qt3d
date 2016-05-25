@@ -99,7 +99,8 @@ void Quick3DEffect::clearTechniqueList(QQmlListProperty<QTechnique> *list)
     if (eff) {
         // Ownership of techniques is handled by the QmlEngine so we shouldn't class clearTechniques
         // which deletes techniques
-        Q_FOREACH (QTechnique *tech, eff->parentEffect()->techniques())
+        const auto techniques = eff->parentEffect()->techniques();
+        for (QTechnique *tech : techniques)
             eff->parentEffect()->removeTechnique(tech);
     }
 }
@@ -125,7 +126,8 @@ int Quick3DEffect::parametersCount(QQmlListProperty<QParameter> *list)
 void Quick3DEffect::clearParameterList(QQmlListProperty<QParameter> *list)
 {
     Quick3DEffect *effect = qobject_cast<Quick3DEffect *>(list->object);
-    Q_FOREACH (QParameter *p, qobject_cast<QEffect *>(effect->parentEffect())->parameters())
+    const auto parameters = qobject_cast<QEffect *>(effect->parentEffect())->parameters();
+    for (QParameter *p : parameters)
         qobject_cast<QEffect *>(effect->parentEffect())->removeParameter(p);
 }
 

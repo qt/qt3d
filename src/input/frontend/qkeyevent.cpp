@@ -75,6 +75,11 @@ QKeyEvent::QKeyEvent(const QT_PREPEND_NAMESPACE(QKeyEvent) &ke)
     m_event.setAccepted(false);
 }
 
+/*! \internal */
+QKeyEvent::~QKeyEvent()
+{
+}
+
 /*!
     \qmlproperty int Qt3D.Input::KeyEvent::key
     \readonly

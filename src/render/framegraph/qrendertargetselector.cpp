@@ -60,6 +60,11 @@ QRenderTargetSelector::QRenderTargetSelector(QNode *parent)
 {
 }
 
+/*! \internal */
+QRenderTargetSelector::~QRenderTargetSelector()
+{
+}
+
 void QRenderTargetSelector::setTarget(QRenderTarget *target)
 {
     Q_D(QRenderTargetSelector);
@@ -97,7 +102,7 @@ void QRenderTargetSelector::setOutputs(const QVector<QRenderTargetOutput::Attach
         d->m_outputs = buffers;
 
         if (d->m_changeArbiter) {
-            QPropertyUpdatedChangePtr change(new QPropertyUpdatedChange(id()));
+            auto change = QPropertyUpdatedChangePtr::create(d->m_id);
             change->setPropertyName("outputs");
             change->setValue(QVariant::fromValue(d->m_outputs));
             d->notifyObservers(change);

@@ -53,9 +53,11 @@ class QRenderStatePrivate;
 class QT3DRENDERSHARED_EXPORT QRenderState : public Qt3DCore::QNode
 {
     Q_OBJECT
+public:
+    ~QRenderState();
 
 protected:
-    QRenderState(QRenderStatePrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QRenderState(QRenderStatePrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QRenderState)

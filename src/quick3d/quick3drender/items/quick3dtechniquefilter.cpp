@@ -97,7 +97,8 @@ void Quick3DTechniqueFilter::clearRequires(QQmlListProperty<QFilterKey> *list)
 {
     Quick3DTechniqueFilter *filter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
     if (filter) {
-        Q_FOREACH (QFilterKey *criterion, filter->parentTechniqueFilter()->matchAll())
+        const auto criteria = filter->parentTechniqueFilter()->matchAll();
+        for (QFilterKey *criterion : criteria)
             filter->parentTechniqueFilter()->removeMatch(criterion);
     }
 }
@@ -123,7 +124,8 @@ int Quick3DTechniqueFilter::parametersCount(QQmlListProperty<QParameter> *list)
 void Quick3DTechniqueFilter::clearParameterList(QQmlListProperty<QParameter> *list)
 {
     Quick3DTechniqueFilter *techniqueFilter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
-    Q_FOREACH (QParameter *p, techniqueFilter->parentTechniqueFilter()->parameters())
+    const auto parameters = techniqueFilter->parentTechniqueFilter()->parameters();
+    for (QParameter *p : parameters)
         techniqueFilter->parentTechniqueFilter()->removeParameter(p);
 }
 

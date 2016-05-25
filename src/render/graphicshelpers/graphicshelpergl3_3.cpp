@@ -90,13 +90,13 @@ void GraphicsHelperGL3_3::initializeHelper(QOpenGLContext *context,
     }
 }
 
-void GraphicsHelperGL3_3::drawElementsInstanced(GLenum primitiveType,
-                                                 GLsizei primitiveCount,
-                                                 GLint indexType,
-                                                 void *indices,
-                                                 GLsizei instances,
-                                                 GLint baseVertex,
-                                                 GLint baseInstance)
+void GraphicsHelperGL3_3::drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType,
+                                                                      GLsizei primitiveCount,
+                                                                      GLint indexType,
+                                                                      void *indices,
+                                                                      GLsizei instances,
+                                                                      GLint baseVertex,
+                                                                      GLint baseInstance)
 {
     if (baseInstance != 0)
         qWarning() << "glDrawElementsInstancedBaseVertexBaseInstance is not supported with OpenGL 3";

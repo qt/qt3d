@@ -59,6 +59,7 @@ class QT3DINPUTSHARED_EXPORT QActionInput : public Qt3DInput::QAbstractActionInp
 
 public:
     explicit QActionInput(Qt3DCore::QNode *parent = nullptr);
+    ~QActionInput();
 
     QAbstractPhysicalDevice *sourceDevice() const;
     QVector<int> buttons() const;

@@ -415,6 +415,12 @@ QConeGeometry::QConeGeometry(QConeGeometryPrivate &dd, QNode *parent)
     d->init();
 }
 
+
+/*! \internal */
+QConeGeometry::~QConeGeometry()
+{
+}
+
 void QConeGeometry::updateVertices()
 {
     Q_D(QConeGeometry);

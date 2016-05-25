@@ -41,7 +41,7 @@
 #include "qobjectpicker_p.h"
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/private/qcomponent_p.h>
-#include <Qt3DCore/qbackendnodepropertychange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qpickevent.h>
 
 QT_BEGIN_NAMESPACE
@@ -91,6 +91,11 @@ namespace Qt3DRender {
 
 QObjectPicker::QObjectPicker(Qt3DCore::QNode *parent)
     : Qt3DCore::QComponent(*new QObjectPickerPrivate(), parent)
+{
+}
+
+/*! \internal */
+QObjectPicker::~QObjectPicker()
 {
 }
 
@@ -151,7 +156,7 @@ bool QObjectPicker::isPressed() const
 void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QObjectPicker);
-    Qt3DCore::QBackendNodePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QBackendNodePropertyChange>(change);
+    Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
     if (e->type() == Qt3DCore::PropertyUpdated) {
         // TO DO: Complete this part
         // to emit the correct signals

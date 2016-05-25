@@ -74,7 +74,7 @@ QByteArray Quick3DBuffer::convertToRawData(const QJSValue &jsValue)
     char *dataPtr = reinterpret_cast<char *>(typedArray->arrayData()->data());
     dataPtr += typedArray->d()->byteOffset;
     uint byteLength = typedArray->byteLength();
-    return QByteArray::fromRawData(dataPtr, byteLength);
+    return QByteArray(dataPtr, byteLength);
 }
 
 QVariant Quick3DBuffer::bufferData() const

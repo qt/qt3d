@@ -60,6 +60,11 @@ QAlphaCoverage::QAlphaCoverage(QNode *parent)
 {
 }
 
+/*! \internal */
+QAlphaCoverage::~QAlphaCoverage()
+{
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

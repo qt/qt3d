@@ -94,8 +94,6 @@ public:
     void unsetDirty();
 
     inline bool isDirty() const { return m_dirty; }
-    inline QTextureImageDataGeneratorPtr textureDataGenerator() const { return m_generator; }
-
     void setTextureDataHandle(HTextureData handle);
 
     inline HTextureData textureDataHandle() const { return m_textureDataHandle; }

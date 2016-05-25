@@ -63,6 +63,7 @@ class QTransformPrivate : public QComponentPrivate
 
 public:
     QTransformPrivate();
+    ~QTransformPrivate();
 
     // Stored in this order as QQuaternion is bigger than QVector3D
     // Operations are applied in the order of:

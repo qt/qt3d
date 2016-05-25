@@ -72,17 +72,18 @@ void QRenderSettingsPrivate::_q_onPickResultModeChanged(QPickingSettings::PickRe
 }
 
 QRenderSettings::QRenderSettings(Qt3DCore::QNode *parent)
-    : Qt3DCore::QComponent(*new QRenderSettingsPrivate, parent)
-{
-    Q_D(QRenderSettings);
-    d->init();
-}
+    : QRenderSettings(*new QRenderSettingsPrivate, parent) {}
 
 QRenderSettings::QRenderSettings(QRenderSettingsPrivate &dd, Qt3DCore::QNode *parent)
     : Qt3DCore::QComponent(dd, parent)
 {
     Q_D(QRenderSettings);
     d->init();
+}
+
+/*! \internal */
+QRenderSettings::~QRenderSettings()
+{
 }
 
 QPickingSettings *QRenderSettings::pickingSettings()

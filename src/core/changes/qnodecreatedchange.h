@@ -81,18 +81,8 @@ public:
     T data;
 };
 
-#if defined(Q_COMPILER_TEMPLATE_ALIAS)
 template<typename T>
 using QNodeCreatedChangePtr = QSharedPointer<QNodeCreatedChange<T>>;
-#else
-template <typename T>
-struct QNodeCreatedChangePtr {
-    static QSharedPointer<QNodeCreatedChange<T> > create(const QNode *node)
-    {
-        return QSharedPointer<QNodeCreatedChange<T> >::create(node);
-    }
-};
-#endif
 
 } // namespace Qt3DCore
 

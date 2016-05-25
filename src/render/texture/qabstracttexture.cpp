@@ -94,6 +94,11 @@ QAbstractTexture::QAbstractTexture(Target target, QNode *parent)
 }
 
 /*! \internal */
+QAbstractTexture::~QAbstractTexture()
+{
+}
+
+/*! \internal */
 QAbstractTexture::QAbstractTexture(QAbstractTexturePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
@@ -381,21 +386,21 @@ void QAbstractTexture::setWrapMode(const QTextureWrapMode &wrapMode)
     Q_D(QAbstractTexture);
     if (d->m_wrapMode.x() != wrapMode.x()) {
         d->m_wrapMode.setX(wrapMode.x());
-        QPropertyUpdatedChangePtr e(new QPropertyUpdatedChange(id()));
+        auto e = QPropertyUpdatedChangePtr::create(d->m_id);
         e->setPropertyName("wrapModeX");
         e->setValue(static_cast<int>(d->m_wrapMode.x()));
         d->notifyObservers(e);
     }
     if (d->m_wrapMode.y() != wrapMode.y()) {
         d->m_wrapMode.setY(wrapMode.y());
-        QPropertyUpdatedChangePtr e(new QPropertyUpdatedChange(id()));
+        auto e = QPropertyUpdatedChangePtr::create(d->m_id);
         e->setPropertyName("wrapModeY");
         e->setValue(static_cast<int>(d->m_wrapMode.y()));
         d->notifyObservers(e);
     }
     if (d->m_wrapMode.z() != wrapMode.z()) {
         d->m_wrapMode.setZ(wrapMode.z());
-        QPropertyUpdatedChangePtr e(new QPropertyUpdatedChange(id()));
+        auto e = QPropertyUpdatedChangePtr::create(d->m_id);
         e->setPropertyName("wrapModeZ");
         e->setValue(static_cast<int>(d->m_wrapMode.z()));
         d->notifyObservers(e);
@@ -468,7 +473,7 @@ QAbstractTexture::ComparisonMode QAbstractTexture::comparisonMode() const
     return d->m_comparisonMode;
 }
 
-QTextureImageDataGeneratorPtr QAbstractTexture::dataGenerator() const
+QTextureGeneratorPtr QAbstractTexture::dataGenerator() const
 {
     Q_D(const QAbstractTexture);
     return d->m_dataFunctor;

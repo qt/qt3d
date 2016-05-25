@@ -50,6 +50,15 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
+QLogicalDevicePrivate::QLogicalDevicePrivate()
+    : Qt3DCore::QComponentPrivate()
+{
+}
+
+QLogicalDevicePrivate::~QLogicalDevicePrivate()
+{
+}
+
 /*!
     \class Qt3DInput::QLogicalDevice
     \inmodule Qt3DInput
@@ -137,6 +146,10 @@ namespace Qt3DInput {
  */
 QLogicalDevice::QLogicalDevice(Qt3DCore::QNode *parent)
     : Qt3DCore::QComponent(*new QLogicalDevicePrivate(), parent)
+{
+}
+
+QLogicalDevice::~QLogicalDevice()
 {
 }
 

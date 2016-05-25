@@ -103,8 +103,9 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DInput::QAxis> axis(new Qt3DInput::QAxis());
-        TestArbiter arbiter(axis.data());
+        arbiter.setArbiterOnNode(axis.data());
 
         // WHEN
         Qt3DInput::QAbstractAxisInput *input = new Qt3DInput::QAnalogAxisInput();

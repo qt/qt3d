@@ -104,6 +104,11 @@ QTorusMesh::QTorusMesh(QNode *parent)
     QGeometryRenderer::setGeometry(geometry);
 }
 
+/*! \internal */
+QTorusMesh::~QTorusMesh()
+{
+}
+
 void QTorusMesh::setRings(int rings)
 {
     static_cast<QTorusGeometry *>(geometry())->setRings(rings);

@@ -128,7 +128,7 @@ public:
         vcaTriplets.reserve(m_leaves.count());
 
         // Find all viewport/camera pairs by traversing from leaf to root
-        Q_FOREACH (Render::FrameGraphNode *leaf, m_leaves) {
+        for (Render::FrameGraphNode *leaf : qAsConst(m_leaves)) {
             ViewportCameraAreaTriplet vcaTriplet = gatherUpViewportCameraAreas(leaf);
             if (!vcaTriplet.cameraId.isNull())
                 vcaTriplets.push_back(vcaTriplet);
@@ -349,8 +349,8 @@ QRay3D PickBoundingVolumeJob::intersectionRay(const QPoint &pos, const QMatrix4x
 
 void PickBoundingVolumeJob::run()
 {
-    m_mouseEvents = m_renderer->pendingPickingEvents();
-    if (m_mouseEvents.empty())
+    const auto mouseEvents = m_renderer->pendingPickingEvents();
+    if (mouseEvents.empty())
         return;
 
     ViewportCameraAreaGatherer vcaGatherer;
@@ -359,11 +359,11 @@ void PickBoundingVolumeJob::run()
     EntityGatherer entitiesGatherer(m_node);
 
     if (!vcaTriplets.empty()) {
-        Q_FOREACH (const QMouseEvent &event, m_mouseEvents) {
+        for (const QMouseEvent &event : mouseEvents) {
             m_hoveredPickersToClear = m_hoveredPickers;
             ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
 
-            Q_FOREACH (const ViewportCameraAreaTriplet &vca, vcaTriplets) {
+            for (const ViewportCameraAreaTriplet &vca : vcaTriplets) {
                 typedef AbstractCollisionGathererFunctor::result_type HitList;
                 HitList sphereHits;
                 QRay3D ray = rayForViewportAndCamera(vca.area, event.pos(), vca.viewport, vca.cameraId);
@@ -495,9 +495,6 @@ void PickBoundingVolumeJob::run()
         // and that aren't being hovered any longer
         clearPreviouslyHoveredPickers();
     }
-
-    // Clear mouse events so that they aren't processed again for the next frame
-    m_mouseEvents.clear();
 }
 
 void PickBoundingVolumeJob::viewMatrixForCamera(Qt3DCore::QNodeId cameraId,
@@ -545,7 +542,7 @@ QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QSize &area,
 
 void PickBoundingVolumeJob::clearPreviouslyHoveredPickers()
 {
-    Q_FOREACH (const HObjectPicker &pickHandle, m_hoveredPickersToClear) {
+    for (const HObjectPicker pickHandle : qAsConst(m_hoveredPickersToClear)) {
         ObjectPicker *pick = m_manager->objectPickerManager()->data(pickHandle);
         if (pick)
             pick->onExited();

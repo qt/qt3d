@@ -56,6 +56,7 @@ class QT3DINPUTSHARED_EXPORT QInputAspect : public Qt3DCore::QAbstractAspect
     Q_OBJECT
 public:
     explicit QInputAspect(QObject *parent = nullptr);
+    ~QInputAspect();
 
     QAbstractPhysicalDevice *createPhysicalDevice(const QString &name);
     QStringList availablePhysicalDevices() const;
@@ -67,6 +68,7 @@ private:
     void onUnregistered() Q_DECL_OVERRIDE;
 
     Q_DECLARE_PRIVATE(QInputAspect)
+    explicit QInputAspect(QInputAspectPrivate &dd, QObject *parent);
     friend class QInputDeviceIntegration;
 };
 

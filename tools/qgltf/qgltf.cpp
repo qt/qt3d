@@ -352,6 +352,17 @@ protected:
     Node *m_rootNode;
     QVector<AnimationInfo> m_animations;
 };
+QT_BEGIN_NAMESPACE
+Q_DECLARE_TYPEINFO(Importer::BufferInfo,           Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Importer::MeshInfo::BufferView, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Importer::MeshInfo::Accessor,   Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Importer::MaterialInfo,         Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Importer::CameraInfo,           Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Importer::EmbeddedTextureInfo,  Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Importer::Node,                 Q_COMPLEX_TYPE); // uses address as identity
+Q_DECLARE_TYPEINFO(Importer::KeyFrame,             Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Importer::AnimationInfo,        Q_MOVABLE_TYPE);
+QT_END_NAMESPACE
 
 Importer::Importer()
     : m_rootNode(nullptr)
@@ -1265,6 +1276,8 @@ private:
         QVector<Param> attributes;
         QVector<Param> uniforms;
     };
+    friend class QTypeInfo<ProgramInfo>;
+    friend class QTypeInfo<ProgramInfo::Param>;
 
     void writeShader(const QString &src, const QString &dst, const QVector<QPair<QByteArray, QByteArray> > &substTab);
     QString exportNode(const Importer::Node *n, QJsonObject &nodes);
@@ -1297,6 +1310,7 @@ private:
         bool opaque;
         ProgramInfo *prog;
     };
+    friend class QTypeInfo<TechniqueInfo>;
     QVector<TechniqueInfo> m_techniques;
     QSet<ProgramInfo *> m_usedPrograms;
 
@@ -1305,6 +1319,11 @@ private:
 
     QHash<QString, bool> m_imageHasAlpha;
 };
+QT_BEGIN_NAMESPACE
+Q_DECLARE_TYPEINFO(GltfExporter::ProgramInfo,        Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(GltfExporter::ProgramInfo::Param, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(GltfExporter::TechniqueInfo,      Q_MOVABLE_TYPE);
+QT_END_NAMESPACE
 
 GltfExporter::GltfExporter(Importer *importer)
     : Exporter(importer)

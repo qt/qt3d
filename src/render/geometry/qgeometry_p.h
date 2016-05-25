@@ -51,20 +51,19 @@
 // We mean it.
 //
 
+#include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QGeometryPrivate : public Qt3DCore::QNodePrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QGeometryPrivate : public Qt3DCore::QNodePrivate
 {
 public:
     Q_DECLARE_PUBLIC(QGeometry)
-    QGeometryPrivate()
-        : QNodePrivate()
-        , m_boundingVolumePositionAttribute(nullptr)
-    {}
+    QGeometryPrivate();
+    ~QGeometryPrivate();
 
 
     QVector<QAttribute *> m_attributes;

@@ -89,7 +89,8 @@ int Quick3DLogicalDevice::axesCount(QQmlListProperty<QAxis> *list)
 void Quick3DLogicalDevice::clearAxes(QQmlListProperty<QAxis> *list)
 {
     Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
-    Q_FOREACH (QAxis *axis, device->parentLogicalDevice()->axes())
+    const auto axes = device->parentLogicalDevice()->axes();
+    for (QAxis *axis : axes)
         device->parentLogicalDevice()->removeAxis(axis);
 }
 
@@ -114,7 +115,8 @@ int Quick3DLogicalDevice::actionCount(QQmlListProperty<QAction> *list)
 void Quick3DLogicalDevice::clearActions(QQmlListProperty<QAction> *list)
 {
     Quick3DLogicalDevice *device = qobject_cast<Quick3DLogicalDevice *>(list->object);
-    Q_FOREACH (QAction *action, device->parentLogicalDevice()->actions())
+    const auto actions = device->parentLogicalDevice()->actions();
+    for (QAction *action : actions)
         device->parentLogicalDevice()->removeAction(action);
 }
 

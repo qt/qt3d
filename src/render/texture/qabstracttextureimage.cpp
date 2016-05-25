@@ -40,6 +40,7 @@
 #include "qabstracttextureimage.h"
 #include "qabstracttextureimage_p.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DRender/qtextureimagedatagenerator.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,6 +48,17 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
+QAbstractTextureImagePrivate::QAbstractTextureImagePrivate()
+    : QNodePrivate(),
+      m_mipLevel(0),
+      m_layer(0),
+      m_face(QAbstractTexture::CubeMapPositiveX)
+{
+}
+
+QAbstractTextureImagePrivate::~QAbstractTextureImagePrivate()
+{
+}
 
 /*!
     \qmltype AbstractTextureImage
@@ -193,7 +205,7 @@ void QAbstractTextureImage::notifyDataGeneratorChanged()
 {
     Q_D(QAbstractTextureImage);
     if (d->m_changeArbiter != nullptr) {
-        QPropertyUpdatedChangePtr change(new QPropertyUpdatedChange(id()));
+        auto change = QPropertyUpdatedChangePtr::create(d->m_id);
         change->setPropertyName("dataGenerator");
         change->setValue(QVariant::fromValue(dataGenerator()));
         d->notifyObservers(change);

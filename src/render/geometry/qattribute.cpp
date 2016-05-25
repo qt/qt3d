@@ -148,6 +148,11 @@ QAttribute::QAttribute(QBuffer *buf, const QString &name, VertexBaseType type, u
     d->m_byteStride = stride;
 }
 
+/*! \internal */
+QAttribute::~QAttribute()
+{
+}
+
 /*!
  * \property QAttribute::buffer
  *

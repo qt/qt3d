@@ -80,7 +80,8 @@ int Quick3DPhysicalDevice::axisSettingsCount(QQmlListProperty<QAxisSetting> *lis
 void Quick3DPhysicalDevice::clearAxisSettings(QQmlListProperty<QAxisSetting> *list)
 {
     Quick3DPhysicalDevice *device = qobject_cast<Quick3DPhysicalDevice *>(list->object);
-    Q_FOREACH (QAxisSetting *axisSetting, device->parentPhysicalDevice()->axisSettings())
+    const auto axisSettings = device->parentPhysicalDevice()->axisSettings();
+    for (QAxisSetting *axisSetting : axisSettings)
         device->parentPhysicalDevice()->removeAxisSetting(axisSetting);
 }
 

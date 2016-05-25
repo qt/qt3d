@@ -58,6 +58,11 @@ QSortPolicy::QSortPolicy(QNode *parent)
 }
 
 /*! \internal */
+QSortPolicy::~QSortPolicy()
+{
+}
+
+/*! \internal */
 QSortPolicy::QSortPolicy(QSortPolicyPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {

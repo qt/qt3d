@@ -80,7 +80,8 @@ int Quick3DAction::actionInputCount(QQmlListProperty<QAbstractActionInput> *list
 void Quick3DAction::clearActionInputs(QQmlListProperty<QAbstractActionInput> *list)
 {
     Quick3DAction *action = qobject_cast<Quick3DAction *>(list->object);
-    Q_FOREACH (QAbstractActionInput *input, action->parentAction()->inputs())
+    const auto inputs = action->parentAction()->inputs();
+    for (QAbstractActionInput *input : inputs)
         action->parentAction()->removeInput(input);
 }
 

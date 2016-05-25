@@ -86,6 +86,9 @@ public:
     };
 
     QRenderStatePrivate(Type type);
+    ~QRenderStatePrivate();
+
+
     Q_DECLARE_PUBLIC(QRenderState)
 
 

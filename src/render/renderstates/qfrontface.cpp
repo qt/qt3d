@@ -51,6 +51,11 @@ QFrontFace::QFrontFace(QNode *parent)
 {
 }
 
+/*! \internal */
+QFrontFace::~QFrontFace()
+{
+}
+
 QFrontFace::WindingDirection QFrontFace::direction() const
 {
     Q_D(const QFrontFace);

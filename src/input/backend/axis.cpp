@@ -44,7 +44,6 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
-#include <Qt3DCore/qbackendnodepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -78,7 +77,8 @@ void Axis::setAxisValue(float axisValue)
         m_axisValue = axisValue;
 
         // Send a change to the frontend
-        Qt3DCore::QBackendNodePropertyChangePtr e(new Qt3DCore::QBackendNodePropertyChange(peerId()));
+        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
         e->setPropertyName("value");
         e->setValue(m_axisValue);
         notifyObservers(e);

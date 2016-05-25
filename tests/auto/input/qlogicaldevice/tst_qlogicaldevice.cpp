@@ -109,8 +109,9 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DInput::QLogicalDevice> logicalDevice(new Qt3DInput::QLogicalDevice());
-        TestArbiter arbiter(logicalDevice.data());
+        arbiter.setArbiterOnNode(logicalDevice.data());
 
         // WHEN
         Qt3DInput::QAction *action = new Qt3DInput::QAction(logicalDevice.data());

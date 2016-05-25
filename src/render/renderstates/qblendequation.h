@@ -66,6 +66,7 @@ public:
     Q_ENUM(BlendFunction)
 
     explicit QBlendEquation(Qt3DCore::QNode *parent = nullptr);
+    ~QBlendEquation();
 
     BlendFunction blendFunction() const;
 

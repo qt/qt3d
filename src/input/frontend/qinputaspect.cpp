@@ -109,7 +109,13 @@ QInputAspectPrivate::QInputAspectPrivate()
 */
 
 QInputAspect::QInputAspect(QObject *parent)
-    : QAbstractAspect(*new QInputAspectPrivate, parent)
+    : QInputAspect(*new QInputAspectPrivate, parent)
+{
+}
+
+/*! \internal */
+QInputAspect::QInputAspect(QInputAspectPrivate &dd, QObject *parent)
+    : QAbstractAspect(dd, parent)
 {
     setObjectName(QStringLiteral("Input Aspect"));
     registerBackendType<QKeyboardDevice>(QBackendNodeMapperPtr(new Input::KeyboardDeviceFunctor(this, d_func()->m_inputHandler.data())));
@@ -138,6 +144,11 @@ QInputAspect::QInputAspect(QObject *parent)
 
     // KeyboardDevice and MouseDevice also provide their own QInputDeviceIntegration
     d->m_inputHandler->addInputDeviceIntegration(d->m_keyboardMouseIntegration.data());
+}
+
+/*! \internal */
+QInputAspect::~QInputAspect()
+{
 }
 
 void QInputAspectPrivate::loadInputDevicePlugins()

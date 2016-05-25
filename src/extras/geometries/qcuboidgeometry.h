@@ -73,6 +73,7 @@ class QT3DEXTRASSHARED_EXPORT QCuboidGeometry : public Qt3DRender::QGeometry
 
 public:
     explicit QCuboidGeometry(QNode *parent = nullptr);
+    ~QCuboidGeometry();
 
     void updateIndices();
     void updateVertices();

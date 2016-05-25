@@ -111,6 +111,11 @@ QCylinderMesh::QCylinderMesh(QNode *parent)
     QGeometryRenderer::setGeometry(geometry);
 }
 
+/*! \internal */
+QCylinderMesh::~QCylinderMesh()
+{
+}
+
 void QCylinderMesh::setRings(int rings)
 {
     static_cast<QCylinderGeometry *>(geometry())->setRings(rings);

@@ -64,6 +64,7 @@ class QAbstractPhysicalDeviceBackendNode;
 namespace Input {
 
 class AbstractAxisInput;
+class ButtonAxisInput;
 class InputHandler;
 
 class UpdateAxisActionJob : public Qt3DCore::QAspectJob

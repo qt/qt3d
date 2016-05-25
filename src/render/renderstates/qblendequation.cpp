@@ -51,6 +51,11 @@ QBlendEquation::QBlendEquation(QNode *parent)
 {
 }
 
+/*! \internal */
+QBlendEquation::~QBlendEquation()
+{
+}
+
 QBlendEquation::BlendFunction QBlendEquation::blendFunction() const
 {
     Q_D(const QBlendEquation);

@@ -50,6 +50,7 @@
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qtexture.h>
+#include <Qt3DRender/qtextureimagedatagenerator.h>
 #include <Qt3DExtras/qdiffusemapmaterial.h>
 #include <Qt3DExtras/qdiffusespecularmapmaterial.h>
 #include <Qt3DExtras/qphongmaterial.h>
@@ -169,16 +170,20 @@ QString texturePath(const aiString &path)
 QParameter *findNamedParameter(const QString &name, QMaterial *material)
 {
     // Does the material contain the parameter ?
-    foreach (QParameter *p , material->parameters())
+    const auto params = material->parameters();
+    for (QParameter *p : params) {
         if (p->name() == name)
             return p;
+    }
 
     // Does the material's effect contain the parameter ?
     if (material->effect()) {
         const QEffect *e = material->effect();
-        foreach (QParameter *p, e->parameters())
+        const auto params = e->parameters();
+        for (QParameter *p : params) {
             if (p->name() == name)
                 return p;
+        }
     }
 
     // Create and add parameter to material

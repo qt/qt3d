@@ -55,6 +55,7 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DRender/qabstracttexture.h>
 #include <Qt3DRender/qtexturewrapmode.h>
+#include <Qt3DRender/qtexturegenerator.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -84,7 +85,7 @@ public :
     QVector<QAbstractTextureImage *> m_textureImages;
     int m_layers;
 
-    QTextureImageDataGeneratorPtr m_dataFunctor;
+    QTextureGeneratorPtr m_dataFunctor;
 };
 
 struct QAbstractTextureData
@@ -105,7 +106,7 @@ struct QAbstractTextureData
     QAbstractTexture::ComparisonMode comparisonMode;
     Qt3DCore::QNodeIdVector textureImageIds;
     int layers;
-    QTextureImageDataGeneratorPtr dataFunctor;
+    QTextureGeneratorPtr dataFunctor;
 };
 
 } // QT3D

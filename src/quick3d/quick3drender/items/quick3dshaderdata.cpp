@@ -77,7 +77,8 @@ public:
             Quick3DShaderDataArray *array = v.value<Quick3DShaderDataArray *>();
             QVariantList innerValues;
             if (array) {
-                Q_FOREACH (QShaderData *d, array->values()) {
+                const auto values = array->values();
+                for (QShaderData *d : values) {
                     if (d)
                         innerValues.append(QVariant::fromValue(d->id()));
                 }

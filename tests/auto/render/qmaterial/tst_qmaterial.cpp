@@ -246,8 +246,9 @@ private Q_SLOTS:
     void checkEffectUpdate()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QMaterial> material(new Qt3DRender::QMaterial());
-        TestArbiter arbiter(material.data());
+        arbiter.setArbiterOnNode(material.data());
 
         // WHEN
         Qt3DRender::QEffect effect;
@@ -264,8 +265,9 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // GIVEN
+        TestArbiter arbiter2;
         QScopedPointer<TestMaterial> material2(new TestMaterial());
-        TestArbiter arbiter2(material2.data());
+        arbiter2.setArbiterOnNode(material2.data());
 
         QCoreApplication::processEvents();
         // Clear events trigger by child generation of TestMnterial
@@ -287,8 +289,9 @@ private Q_SLOTS:
     void checkDynamicParametersAddedUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         TestMaterial *material = new TestMaterial();
-        TestArbiter arbiter(material);
+        arbiter.setArbiterOnNode(material);
 
         QCoreApplication::processEvents();
         // Clear events trigger by child generation of TestMnterial
@@ -357,8 +360,9 @@ private Q_SLOTS:
     void checkShaderProgramUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         TestMaterial *material = new TestMaterial();
-        TestArbiter arbiter(material);
+        arbiter.setArbiterOnNode(material);
 
         QCoreApplication::processEvents();
         // Clear events trigger by child generation of TestMnterial

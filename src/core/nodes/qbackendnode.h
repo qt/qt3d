@@ -60,7 +60,7 @@ class QBackendNodeTester;
 class QT3DCORESHARED_EXPORT QBackendNodeMapper
 {
 public:
-    virtual ~QBackendNodeMapper() {}
+    virtual ~QBackendNodeMapper();
     virtual QBackendNode *create(const QNodeCreatedChangeBasePtr &change) const = 0;
     virtual QBackendNode *get(QNodeId id) const = 0;
     virtual void destroy(QNodeId id) const = 0;
@@ -88,7 +88,7 @@ public:
 
 protected:
     Q_DECLARE_PRIVATE(QBackendNode)
-    QBackendNode(QBackendNodePrivate &dd);
+    explicit QBackendNode(QBackendNodePrivate &dd);
     void notifyObservers(const QSceneChangePtr &e);
     virtual void sceneChangeEvent(const QSceneChangePtr &e);
 

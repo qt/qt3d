@@ -57,6 +57,11 @@ QComputeCommand::QComputeCommand(Qt3DCore::QNode *parent)
 {
 }
 
+/*! \internal */
+QComputeCommand::~QComputeCommand()
+{
+}
+
 int QComputeCommand::workGroupX() const
 {
     Q_D(const QComputeCommand);

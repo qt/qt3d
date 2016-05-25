@@ -28,6 +28,7 @@
 
 #include <QtTest/QTest>
 #include <Qt3DRender/qtextureimagedata.h>
+#include <Qt3DRender/private/qtexture_p.h>
 
 class tst_DdsTextures : public QObject
 {
@@ -77,14 +78,14 @@ void tst_DdsTextures::ddsImageData()
     for (unsigned i = 0; i < sizeof(textures)/sizeof(*textures); i++) {
         const TextureInfo *texture = &textures[i];
 
-        Qt3DRender::QTextureImageData data;
+        Qt3DRender::QTextureImageDataPtr data = Qt3DRender::TextureLoadingHelper::loadTextureData(QUrl::fromLocalFile(QFINDTESTDATA(texture->source)), true);
 
-        QVERIFY(data.setCompressedFile(QFINDTESTDATA(texture->source)));
-        QCOMPARE(data.width(), texture->width);
-        QCOMPARE(data.height(), texture->height);
-        QCOMPARE(data.faces(), texture->faces);
-        QCOMPARE(data.mipLevels(), texture->mipmapLevels);
-        QCOMPARE(data.format(), texture->format);
+        QVERIFY(data);
+        QCOMPARE(data->width(), texture->width);
+        QCOMPARE(data->height(), texture->height);
+        QCOMPARE(data->faces(), texture->faces);
+        QCOMPARE(data->mipLevels(), texture->mipmapLevels);
+        QCOMPARE(data->format(), texture->format);
     }
 }
 

@@ -58,6 +58,11 @@ QViewport::QViewport(QNode *parent)
 }
 
 /*! \internal */
+QViewport::~QViewport()
+{
+}
+
+/*! \internal */
 QViewport::QViewport(QViewportPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {

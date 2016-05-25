@@ -379,7 +379,6 @@ void Shader::initializeAttributes(const QVector<ShaderAttribute> &attributesDesc
         m_attributesNames[i] = attributesDescription[i].m_name;
         m_attributes[i].m_nameId = StringToInt::lookupId(m_attributesNames[i]);
         m_attributeNamesIds[i] = m_attributes[i].m_nameId;
-        qDebug() << m_attributes[i].m_nameId << m_attributeNamesIds[i] << m_attributesNames[i];
         qCDebug(Shaders) << "Active Attribute " << attributesDescription[i].m_name;
     }
 }
@@ -408,7 +407,7 @@ void Shader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformB
             if (uniformsIt->m_blockIndex == uniformBlockDescription[i].m_index) {
                 QString uniformName = *uniformNamesIt;
                 if (!m_uniformBlockNames[i].isEmpty() && !uniformName.startsWith(m_uniformBlockNames[i]))
-                    uniformName = m_uniformBlockNames[i] + QStringLiteral(".") + *uniformNamesIt;
+                    uniformName = m_uniformBlockNames[i] + QLatin1Char('.') + *uniformNamesIt;
                 activeUniformsInBlock.insert(uniformName, *uniformsIt);
                 qCDebug(Shaders) << "Active Uniform Block " << uniformName << " in block " << m_uniformBlockNames[i] << " at index " << uniformsIt->m_blockIndex;
             }

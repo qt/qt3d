@@ -44,6 +44,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+PropertyReaderInterface::~PropertyReaderInterface()
+{
+}
+
 QShaderDataPrivate::QShaderDataPrivate()
     : QComponentPrivate()
     , m_propertyReader(PropertyReaderInterfacePtr(new QShaderDataPropertyReader()))
@@ -73,6 +77,11 @@ QShaderDataPrivate::QShaderDataPrivate(PropertyReaderInterfacePtr reader)
 
 QShaderData::QShaderData(QNode *parent)
     : QComponent(*new QShaderDataPrivate, parent)
+{
+}
+
+/*! \internal */
+QShaderData::~QShaderData()
 {
 }
 
@@ -122,7 +131,9 @@ Qt3DCore::QNodeCreatedChangeBasePtr QShaderData::createNodeCreationChange() cons
     const int propertyOffset = QShaderData::staticMetaObject.propertyOffset();
     const int propertyCount = metaObj->propertyCount();
 
-    data.properties.reserve(propertyCount - propertyOffset);
+    const auto propertyNames = dynamicPropertyNames();
+    data.properties.reserve(propertyCount - propertyOffset + propertyNames.size());
+
     for (int i = propertyOffset; i < propertyCount; ++i) {
         const QMetaProperty pro = metaObj->property(i);
         if (pro.isWritable()) {
@@ -131,7 +142,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QShaderData::createNodeCreationChange() cons
         }
     }
 
-    foreach (const QByteArray &propertyName, dynamicPropertyNames()) {
+    for (const QByteArray &propertyName : propertyNames) {
         data.properties.push_back(qMakePair(propertyName,
                                             propertyReader()->readProperty(property(propertyName))));
     }

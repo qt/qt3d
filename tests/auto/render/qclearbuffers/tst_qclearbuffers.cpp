@@ -98,8 +98,9 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
+        TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QClearBuffers> clearBuffer(new Qt3DRender::QClearBuffers());
-        TestArbiter arbiter(clearBuffer.data());
+        arbiter.setArbiterOnNode(clearBuffer.data());
 
         // WHEN
         clearBuffer->setBuffers(Qt3DRender::QClearBuffers::AllBuffers);

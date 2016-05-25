@@ -61,6 +61,11 @@ QPointSize::QPointSize(Qt3DCore::QNode *parent)
 {
 }
 
+/*! \internal */
+QPointSize::~QPointSize()
+{
+}
+
 QPointSize::SizeMode QPointSize::sizeMode() const
 {
     Q_D(const QPointSize);

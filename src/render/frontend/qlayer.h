@@ -55,9 +55,10 @@ class QT3DRENDERSHARED_EXPORT QLayer : public Qt3DCore::QComponent
     Q_OBJECT
 public:
     explicit QLayer(Qt3DCore::QNode *parent = nullptr);
+    ~QLayer();
 
 protected:
-    QLayer(QLayerPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QLayer(QLayerPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QLayer)

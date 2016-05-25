@@ -168,15 +168,18 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     // All world stuff depends on the RenderEntity's localBoundingVolume
     m_worldTransformJob->addDependency(m_calculateBoundingVolumeJob);
 
-    // Create property renderer implementation given
-    // a targeted rendering API -> only OpenGL for now
+    // Create a renderer implementation given
+    // a specific rendering API -> only OpenGL for now
     m_renderer = new Render::Renderer(type);
     m_renderer->setNodeManagers(m_nodeManagers);
 }
 
 QRenderAspectPrivate::~QRenderAspectPrivate()
 {
-    delete m_renderer;
+    // The renderer should have been shutdown as part of onUnregistered().
+    // If it still exists then this aspect is being deleted before the aspect
+    // engine is finished with it.
+    Q_ASSERT(m_renderer == nullptr);
     delete m_nodeManagers;
 }
 
@@ -238,7 +241,14 @@ void QRenderAspectPrivate::registerBackendTypes()
 }
 
 QRenderAspect::QRenderAspect(QObject *parent)
-    : QAbstractAspect(*new QRenderAspectPrivate(Threaded), parent)
+    : QRenderAspect(Threaded, parent) {}
+
+QRenderAspect::QRenderAspect(QRenderAspect::RenderType type, QObject *parent)
+    : QRenderAspect(*new QRenderAspectPrivate(type), parent) {}
+
+/*! \internal */
+QRenderAspect::QRenderAspect(QRenderAspectPrivate &dd, QObject *parent)
+    : QAbstractAspect(dd, parent)
 {
     // Won't return until the private RenderThread in Renderer has been created
     // The Renderer is set to wait the surface with a wait condition
@@ -248,21 +258,9 @@ QRenderAspect::QRenderAspect(QObject *parent)
     d->registerBackendTypes();
 }
 
-QRenderAspect::QRenderAspect(QRenderAspect::RenderType type, QObject *parent)
-    : QAbstractAspect(*new QRenderAspectPrivate(type), parent)
-{
-    setObjectName(QStringLiteral("Render Aspect"));
-    Q_D(QRenderAspect);
-    d->registerBackendTypes();
-}
-
 /*! \internal */
-QRenderAspect::QRenderAspect(QRenderAspectPrivate &dd, QObject *parent)
-    : QAbstractAspect(dd, parent)
+QRenderAspect::~QRenderAspect()
 {
-    setObjectName(QStringLiteral("Render Aspect"));
-    Q_D(QRenderAspect);
-    d->registerBackendTypes();
 }
 
 void QRenderAspectPrivate::renderInitialize(QOpenGLContext *context)
@@ -305,8 +303,11 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     // 6 PickBoundingVolumeJob
     // 7 Cleanup Job (depends on RV)
 
-    // Create jobs to load in any meshes that are pending
-    if (d->m_renderer != nullptr && d->m_renderer->isRunning()) {
+    // Ensure we have a settings object. It may get deleted by the call to
+    // QChangeArbiter::syncChanges() that happens just before the render aspect is
+    // asked for jobs to execute (this function). If that is the case, the RenderSettings will
+    // be null and we should not generate any jobs.
+    if (d->m_renderer != nullptr && d->m_renderer->isRunning() && d->m_renderer->settings()) {
         // don't spawn any jobs, if the renderer decides to skip this frame
         if (!d->m_renderer->shouldRender()) {
             d->m_renderer->skipNextFrame();
@@ -426,8 +427,17 @@ void QRenderAspect::onRegistered()
 void QRenderAspect::onUnregistered()
 {
     Q_D(QRenderAspect);
-    if (d->m_renderer)
+    if (d->m_renderer) {
+        // Request the renderer shuts down. In the threaded renderer case, the
+        // Renderer destructor is the synchronization point where we wait for the
+        // thread to join (see below).
+        d->m_renderer->shutdown();
+
+        // Free the per-thread threadpool allocators
         d->m_renderer->destroyAllocators(d->jobManager());
+    }
+
+    // Waits for the render thread to join (if using threaded renderer)
     delete d->m_renderer;
     d->m_renderer = nullptr;
 }
@@ -472,8 +482,8 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createGeometryRendererJob
 
 void QRenderAspectPrivate::loadSceneParsers()
 {
-    QStringList keys = QSceneIOFactory::keys();
-    Q_FOREACH (QString key, keys) {
+    const QStringList keys = QSceneIOFactory::keys();
+    for (const QString &key : keys) {
         QSceneIOHandler *sceneIOHandler = QSceneIOFactory::create(key, QStringList());
         if (sceneIOHandler != nullptr)
             m_sceneIOHandler.append(sceneIOHandler);

@@ -99,6 +99,11 @@ QInputChord::QInputChord(Qt3DCore::QNode *parent)
 
 }
 
+/*! \internal */
+QInputChord::~QInputChord()
+{
+}
+
 /*!
   \fn QInputChord::timeoutChanged()
 
@@ -197,6 +202,12 @@ Qt3DCore::QNodeCreatedChangeBasePtr QInputChord::createNodeCreationChange() cons
     data.timeout = d->m_timeout;
 
     return creationChange;
+}
+
+QInputChordPrivate::QInputChordPrivate()
+    : QAbstractActionInputPrivate(),
+      m_timeout(0)
+{
 }
 
 } // Qt3DInput

@@ -54,6 +54,7 @@ class QT3DRENDERSHARED_EXPORT QAlphaCoverage : public QRenderState
     Q_OBJECT
 public:
     explicit QAlphaCoverage(Qt3DCore::QNode *parent = nullptr);
+    ~QAlphaCoverage();
 
 private:
     Q_DECLARE_PRIVATE(QAlphaCoverage)
