@@ -47,26 +47,40 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 /*!
- * \qmltype AxisInput
- * \instantiates Qt3DInput::QAxisInput
+ * \qmltype AbstractAxisInput
  * \inqmlmodule Qt3D.Input
+ * \brief QML frontend for abstract QAbstractAxisInput C++ class.
  * \since 5.5
  * \TODO
  *
  */
 
 /*!
- * \class Qt3DInput::QAxisInput
+ * \class Qt3DInput::QAbstractAxisInput
  * \inmodule Qt3DInput
+ * \brief A QAbstractAxisInput class.
  * \since 5.5
  * \TODO
  *
  */
 
+/*!
+    \qmlproperty AbstractPhysicalDevice Qt3D.Input::AbstractAxisInput::sourceDevice
+*/
+
+/*!
+    \internal
+ */
 QAbstractAxisInput::QAbstractAxisInput(QAbstractAxisInputPrivate &dd, Qt3DCore::QNode *parent)
     : QNode(dd, parent)
 {
 }
+
+/*!
+    \property Qt3DInput::QAbstractAxisInput::sourceDevice
+
+    The source device for the QAbstractAxisInput.
+*/
 
 void QAbstractAxisInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
 {
@@ -92,6 +106,9 @@ void QAbstractAxisInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
     }
 }
 
+/*!
+    \internal
+ */
 QAbstractAxisInput::~QAbstractAxisInput()
 {
 }

@@ -55,7 +55,7 @@ QActionInputPrivate::QActionInputPrivate()
 /*!
     \class Qt3DInput::QActionInput
     \inmodule Qt3DInput
-    \inherits QAbstractActionInput
+    \inherits Qt3DInput::QAbstractActionInput
     \brief QActionInput stores Device and Buttons used to trigger an input event.
 
     \since 5.7
@@ -86,8 +86,21 @@ QActionInputPrivate::QActionInputPrivate()
     \since 5.7
 */
 
+
 /*!
-    Constructs a new QActionInput instance with parent \a parent.
+    \qmlproperty AbstractPhysicalDevice ActionInput::sourceDevice
+
+    The current source device of the ActionInput.
+*/
+
+/*!
+    \qmlproperty list<int> Qt3D.Input::ActionInput::buttons
+
+    The Buttons that can trigger this Action.
+*/
+
+/*!
+    Constructs a new QActionInput instance with \a parent.
  */
 QActionInput::QActionInput(Qt3DCore::QNode *parent)
     : Qt3DInput::QAbstractActionInput(*new QActionInputPrivate(), parent)
@@ -101,7 +114,9 @@ QActionInput::~QActionInput()
 }
 
 /*!
-    Return the Buttons to trigger the QActionInput instance.
+    \property Qt3DInput::QActionInput::buttons
+
+    Holds the buttons that can trigger this Action.
  */
 QVector<int> QActionInput::buttons() const
 {
@@ -110,28 +125,10 @@ QVector<int> QActionInput::buttons() const
 }
 
 /*!
-  \fn QAbstractPhysicalDevice::sourceDeviceChanged()
+    \property Qt3DInput::QActionInput::sourceDevice
 
-  This signal is emitted when the source device ascociated with the action input is changed.
+    The current source device of the QActionInput.
 */
-
-/*!
-  \qmlproperty QAbstractPhysicalDevice Qt3D.Input::ActionInput::sourceDevice
-
-  The current source device of the ActionInput
-*/
-
-/*!
-    \qmlsignal Qt3D.Input::ActionInput::sourceDeviceChanged()
-
-    This signal is emitted when the source device ascociated with the action input is changed.
-
-    The corresponding handeler is \c onSourceDeviceChanged
-*/
-
-/*!
-    Set the current source device of the QActionInput instance.
- */
 void QActionInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
 {
     Q_D(QActionInput);
@@ -155,38 +152,12 @@ void QActionInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
     }
 }
 
-/*!
-    Returns the current source device of the QActionInput instance.
- */
 QAbstractPhysicalDevice *QActionInput::sourceDevice() const
 {
     Q_D(const QActionInput);
     return d->m_sourceDevice;
 }
 
-/*!
-  \fn QAbstractPhysicalDevice::buttonsChanged()
-
-  This signal is emitted when the buttons ascociated with the action input is changed.
-*/
-
-/*!
-    \qmlproperty QVariantList Qt3D.Input::ActionInput::buttons
-
-    The Buttons that can trigger this Action
-*/
-
-/*!
-    \qmlsignal Qt3D.Input::ActionInput::buttonsChanged()
-
-    This signal is emitted when the buttons ascociated with the action input is changed.
-
-    The corresponding handeler is \c onbuttonsChanged
-*/
-
-/*!
-    Set the buttons to trigger the QActionInput instance.
- */
 void QActionInput::setButtons(const QVector<int> &buttons)
 {
     Q_D(QActionInput);

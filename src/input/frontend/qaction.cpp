@@ -51,10 +51,10 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 /*!
-    \class Qt3DInput::QActionInput
+    \class Qt3DInput::QAction
     \inmodule Qt3DInput
-    \inherits QAbstractActionInput
-    \brief QActionInput stores Device and Keys used to trigger an input event.
+    \inherits Qt3DCore::QNode
+    \brief Links a set of QAbstractActionInput that trigger the same event.
     \since 5.7
 */
 
@@ -64,7 +64,7 @@ namespace Qt3DInput {
     \instantiates Qt3DInput::QAction
     \brief QML frontend for the Qt3DInput::QAction C++ class.
 
-    Links a set of QAbstractActionInputs that trigger the same event.
+    Links a set of AbstractActionInput that trigger the same event.
     \since 5.7
 */
 
@@ -82,25 +82,14 @@ QAction::~QAction()
 }
 
 /*!
-  \fn QAction::nameChanged()
-
-  This signal is emitted when the name of the Action is changed.
+    \qmlproperty bool Qt3D.Input::Action::action
 */
 
 /*!
-  \qmlproperty QString Qt3D.Input::Action::name
+    \property QAction::active
 
-  the name used to identify this action
-*/
-
-/*!
-    \qmlsignal Qt3D.Input::Action::nameChanged()
-
-    This signal is emitted when the name of the Action is changed.
-
-    The corresponding handeler is \c onNameChanged
-*/
-
+    Holds \c true if the action is active.
+ */
 bool QAction::isActive() const
 {
     Q_D(const QAction);
@@ -108,9 +97,9 @@ bool QAction::isActive() const
 }
 
 /*!
-  \qmlproperty QQmlListProperty<Qt3DInput::QAbstractActionInput> Qt3D.Input::Action::inputs
+    \qmlproperty list<AbstractActionInput> Qt3D.Input::Action::inputs
 
-  the list of QAbstractActionInput that must be triggered to trigger this Action.
+    The list of AbstractActionInput that must be triggered to trigger this Action.
 */
 
 /*!

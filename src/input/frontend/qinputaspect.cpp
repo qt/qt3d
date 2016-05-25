@@ -104,10 +104,15 @@ QInputAspectPrivate::QInputAspectPrivate()
 
 /*!
     \class Qt3DInput::QInputAspect
+    \inherits Qt3DCore::QAbstractAspect
     \inmodule Qt3DInput
+    \brief A QInputAspect class.
     \since 5.5
 */
 
+/*!
+ * Constructs a new QInputAspect with \a parent.
+ */
 QInputAspect::QInputAspect(QObject *parent)
     : QInputAspect(*new QInputAspectPrivate, parent)
 {
@@ -167,7 +172,12 @@ void QInputAspectPrivate::loadInputDevicePlugins()
     }
 }
 
-// Note: caller is responsible for ownership
+
+/*!
+    Creates a physical device with \a name.
+
+    \note The caller is responsible for ownership.
+ */
 QAbstractPhysicalDevice *QInputAspect::createPhysicalDevice(const QString &name)
 {
     Q_D(QInputAspect);
@@ -179,6 +189,9 @@ QAbstractPhysicalDevice *QInputAspect::createPhysicalDevice(const QString &name)
     return nullptr;
 }
 
+/*!
+    \return a list of all available physical devices.
+ */
 QStringList QInputAspect::availablePhysicalDevices() const
 {
     Q_D(const QInputAspect);
@@ -189,6 +202,9 @@ QStringList QInputAspect::availablePhysicalDevices() const
     return deviceNamesList;
 }
 
+/*!
+    \internal
+ */
 QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
 {
     Q_UNUSED(time);
@@ -220,6 +236,9 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     return jobs;
 }
 
+/*!
+    \internal
+ */
 void QInputAspect::onRegistered()
 {
     Q_D(QInputAspect);
@@ -230,6 +249,9 @@ void QInputAspect::onRegistered()
     d->m_inputHandler->eventSourceHelper()->setEventFilterService(eventService);
 }
 
+/*!
+    \internal
+ */
 void QInputAspect::onUnregistered()
 {
     Q_D(QInputAspect);

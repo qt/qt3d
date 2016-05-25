@@ -115,6 +115,51 @@ void QMouseHandlerPrivate::mouseEvent(QMouseEvent *event)
  */
 
 /*!
+    \qmlproperty MouseDevice Qt3D.Input::MouseHandler::sourceDevice
+ */
+
+/*!
+    \qmlproperty bool Qt3D.Input::MouseHandler::containsMouse
+    \readonly
+ */
+
+/*!
+    \qmlsignal Qt3D.Input::MouseHandler::clicked()
+ */
+
+/*!
+    \qmlsignal Qt3D.Input::MouseHandler::doubleClicked()
+ */
+
+/*!
+    \qmlsignal Qt3D.Input::MouseHandler::entered()
+ */
+
+/*!
+    \qmlsignal Qt3D.Input::MouseHandler::exited()
+ */
+
+/*!
+    \qmlsignal Qt3D.Input::MouseHandler::pressed()
+ */
+
+/*!
+    \qmlsignal Qt3D.Input::MouseHandler::released()
+ */
+
+/*!
+    \qmlsignal Qt3D.Input::MouseHandler::pressAndHold()
+ */
+
+/*!
+    \qmlsignal Qt3D.Input::MouseHandler::positionChanged()
+ */
+
+/*!
+    \qmlsignal Qt3D.Input::MouseHandler::wheel()
+ */
+
+/*!
  * Constructs a new QMouseHandler instance with parent \a parent.
  */
 QMouseHandler::QMouseHandler(QNode *parent)
@@ -139,7 +184,9 @@ void QMouseHandler::setSourceDevice(QMouseDevice *mouseDevice)
 }
 
 /*!
- * Returns the current mouse source device of the QMouseHandler instance.
+ * \property QMouseHandler::sourceDevice
+ *
+ * Holds the current mouse source device of the QMouseHandler instance.
  */
 QMouseDevice *QMouseHandler::sourceDevice() const
 {
@@ -148,7 +195,9 @@ QMouseDevice *QMouseHandler::sourceDevice() const
 }
 
 /*!
- * Returns \c true if the QMouseHandler currently contains the mouse.
+ * \property QMouseHandler::containsMouse
+ *
+ * Holds \c true if the QMouseHandler currently contains the mouse.
  *
  * \note In this context, contains mean that the ray originating from the
  * mouse is intersecting with the Qt3DCore::QEntity that aggregates the current

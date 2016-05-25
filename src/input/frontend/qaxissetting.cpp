@@ -49,6 +49,7 @@ namespace Qt3DInput {
  * \qmltype AxisSetting
  * \instantiates Qt3DInput::QAxisSetting
  * \inqmlmodule Qt3D.Input
+ * \brief QML frontend for QAxisSetting C++ class.
  * \since 5.5
  * \TODO
  *
@@ -57,11 +58,27 @@ namespace Qt3DInput {
 /*!
  * \class Qt3DInput::QAxisSetting
  * \inmodule Qt3DInput
+ * \brief A QAxisSetting class.
  * \since 5.5
  * \TODO
  *
  */
 
+/*!
+    \qmlproperty real AxisSetting::deadZoneRadius
+*/
+
+/*!
+    \qmlproperty list<int> AxisSetting::axes
+*/
+
+/*!
+    \qmlproperty bool AxisSetting::smooth
+*/
+
+/*!
+    Constructs a new QAxisSetting instance with \a parent.
+ */
 QAxisSetting::QAxisSetting(Qt3DCore::QNode *parent)
     : QNode(*new QAxisSettingPrivate(), parent)
 {
@@ -72,18 +89,27 @@ QAxisSetting::~QAxisSetting()
 {
 }
 
+/*!
+    \property QAxisSetting::axes
+ */
 QVector<int> QAxisSetting::axes() const
 {
     Q_D(const QAxisSetting);
     return d->m_axes;
 }
 
+/*!
+    \property QAxisSetting::deadZoneRadius
+ */
 float QAxisSetting::deadZoneRadius() const
 {
     Q_D(const QAxisSetting);
     return d->m_deadZoneRadius;
 }
 
+/*!
+    \property QAxisSetting::smooth
+ */
 bool QAxisSetting::isSmoothEnabled() const
 {
     Q_D(const QAxisSetting);

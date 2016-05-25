@@ -49,6 +49,7 @@ namespace Qt3DInput {
  * \qmltype ButtonAxisInput
  * \instantiates Qt3DInput::QButtonAxisInput
  * \inqmlmodule Qt3D.Input
+ * \brief QML frontend for QButtonAxisInput C++ class.
  * \since 5.7
  * \TODO
  *
@@ -57,9 +58,22 @@ namespace Qt3DInput {
 /*!
  * \class Qt3DInput::QButtonAxisInput
  * \inmodule Qt3DInput
+ * \brief A QButtonAxisInput class.
  * \since 5.7
  * \TODO
  *
+ */
+/*!
+    \qmlproperty real ButtonAxisInput::scale
+*/
+
+/*!
+    \qmlproperty list<var> ButtonAxisInput::buttons
+*/
+
+
+/*!
+    Constructs a new QButtonAxisInput instance with \a parent.
  */
 QButtonAxisInput::QButtonAxisInput(Qt3DCore::QNode *parent)
     : QAbstractAxisInput(*new QButtonAxisInputPrivate, parent)
@@ -71,6 +85,9 @@ QButtonAxisInput::~QButtonAxisInput()
 {
 }
 
+/*!
+    \property QButtonAxisInput::scale
+ */
 void QButtonAxisInput::setScale(float scale)
 {
     Q_D(QButtonAxisInput);
@@ -86,6 +103,9 @@ float QButtonAxisInput::scale() const
     return d->m_scale;
 }
 
+/*!
+    \property QButtonAxisInput::buttons
+ */
 void QButtonAxisInput::setButtons(const QVector<int> &buttons)
 {
     Q_D(QButtonAxisInput);
