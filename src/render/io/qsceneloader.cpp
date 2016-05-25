@@ -65,7 +65,7 @@ QSceneLoaderPrivate::QSceneLoaderPrivate()
   \since 5.7
   \ingroup io
 
-  \brief ...
+  \brief Provides the facility to load an existing Scene
 
  */
 
@@ -75,7 +75,17 @@ QSceneLoaderPrivate::QSceneLoaderPrivate()
     \instantiates Qt3DRender::QSceneLoader
     \inherits Component
     \since 5.7
-    \qmlabstract
+    \qmlabstract Provides the facility to load an existing Scene
+*/
+
+/*!
+    \enum QSceneLoader::Status
+
+    This enum identifies the state of loading
+    \value None
+    \value Loading
+    \value Ready
+    \value Error
 */
 
 /*!
@@ -98,6 +108,7 @@ QSceneLoader::QSceneLoader(QSceneLoaderPrivate &dd, QNode *parent)
 }
 
 // Called in main thread
+/*! \internal */
 void QSceneLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QSceneLoader);
@@ -167,6 +178,7 @@ QSceneLoader::Status QSceneLoader::status() const
     return d->m_status;
 }
 
+/*! \internal */
 void QSceneLoader::setStatus(QSceneLoader::Status status)
 {
     Q_D(QSceneLoader);
