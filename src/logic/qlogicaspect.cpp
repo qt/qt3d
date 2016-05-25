@@ -92,7 +92,7 @@ void QLogicAspectPrivate::registerBackendTypes()
 }
 
 /*!
-  Constructs a new Qt3DLogic::QLogicAspect instance with /a parent.
+  Constructs a new Qt3DLogic::QLogicAspect instance with \a parent.
 */
 QLogicAspect::QLogicAspect(QObject *parent)
     : QLogicAspect(*new QLogicAspectPrivate(), parent) {}
