@@ -92,7 +92,7 @@ QVector<QFilterKey *> QTechniqueFilter::matchAll() const
 }
 
 /*!
-  Add the filter key /a filterKey to the match vector.
+  Add the filter key \a filterKey to the match vector.
  */
 void QTechniqueFilter::addMatch(QFilterKey *filterKey)
 {
@@ -120,7 +120,7 @@ void QTechniqueFilter::addMatch(QFilterKey *filterKey)
 }
 
 /*!
-  Remove the filter key /a filterKey from the match vector.
+  Remove the filter key \a filterKey from the match vector.
  */
 void QTechniqueFilter::removeMatch(QFilterKey *filterKey)
 {
@@ -137,7 +137,7 @@ void QTechniqueFilter::removeMatch(QFilterKey *filterKey)
 }
 
 /*!
-  Add the parameter /a parameter to the parameter vector.
+  Add the parameter \a parameter to the parameter vector.
  */
 void QTechniqueFilter::addParameter(QParameter *parameter)
 {
@@ -165,7 +165,7 @@ void QTechniqueFilter::addParameter(QParameter *parameter)
 }
 
 /*!
-  Remove the parameter /a parameter from the parameter vector.
+  Remove the parameter \a parameter from the parameter vector.
  */
 void QTechniqueFilter::removeParameter(QParameter *parameter)
 {

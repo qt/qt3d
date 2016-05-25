@@ -102,7 +102,9 @@ QLayerFilter::~QLayerFilter()
   \qmlproperty stringlist Qt3D.Render::LayerFilter::layers
 
 */
-
+/*!
+ Add \a layer to the current list of layers
+ */
 void QLayerFilter::addLayer(QLayer *layer)
 {
     Q_ASSERT(layer);
@@ -128,6 +130,9 @@ void QLayerFilter::addLayer(QLayer *layer)
     }
 }
 
+/*!
+ Remove \a layer from the current list of layers
+ */
 void QLayerFilter::removeLayer(QLayer *layer)
 {
     Q_ASSERT(layer);
@@ -142,6 +147,9 @@ void QLayerFilter::removeLayer(QLayer *layer)
     d->unregisterDestructionHelper(layer);
 }
 
+/*!
+ \return the current list of layers
+ */
 QVector<QLayer *> QLayerFilter::layers() const
 {
     Q_D(const QLayerFilter);
