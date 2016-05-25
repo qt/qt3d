@@ -93,14 +93,14 @@ QPickTriangleEvent::QPickTriangleEvent()
 
 /*!
  * \brief QPickTriangleEvent::QPickTriangleEvent Constructs a new QPickEvent with the given parameters
- * \param position
- * \param intersection
- * \param localIntersection
- * \param distance
- * \param triangleIndex
- * \param vertex1Index
- * \param vertex2Index
- * \param vertex3Index
+ * \a position,
+ * \a intersection,
+ * \a localIntersection,
+ * \a distance,
+ * \a triangleIndex,
+ * \a vertex1Index,
+ * \a vertex2Index and
+ * \a vertex3Index
  */
 QPickTriangleEvent::QPickTriangleEvent(const QPointF &position, const QVector3D &intersection, const QVector3D &localIntersection, float distance,
                                        uint triangleIndex, uint vertex1Index, uint vertex2Index, uint vertex3Index)

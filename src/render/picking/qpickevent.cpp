@@ -75,11 +75,7 @@ QPickEvent::QPickEvent()
 
 /*!
   \fn Qt3DRender::QPickEvent::QPickEvent(const QPointF &position, const QVector3D &intersection, const QVector3D &localIntersection, float distance)
-  Constructs a new QPickEvent with the given parameters
-  \param position
-  \param intersection
-  \param localIntersection
-  \param distance
+  Constructs a new QPickEvent with the given parameters: \a position, \a intersection, \a localIntersection and \a distance
  */
 QPickEvent::QPickEvent(const QPointF &position, const QVector3D &intersection, const QVector3D &localIntersection, float distance)
     : QObject(*new QPickEventPrivate())
@@ -121,8 +117,7 @@ bool QPickEvent::isAccepted() const
     return d->m_accepted;
 }
 /*!
- * \brief QPickEvent::setAccepted set if the event has been accepted
- * \param accepted
+ * \brief QPickEvent::setAccepted set if the event has been accepted to \a accepted
  */
 void QPickEvent::setAccepted(bool accepted)
 {
