@@ -91,7 +91,7 @@ QAttributePrivate::QAttributePrivate()
  */
 
 /*!
- * \enum QAttribute::DataType
+ * \enum QAttribute::VertexBaseType
  *
  * The type of the data.
  *
@@ -176,7 +176,7 @@ QString QAttribute::name() const
 }
 
 /*!
- * \property QAttribute::dataSize
+ * \property QAttribute::vertexSize
  *
  * Holds the data size.
  */
@@ -187,7 +187,7 @@ uint QAttribute::vertexSize() const
 }
 
 /*!
- * \property QAttribute::dataType
+ * \property QAttribute::vertexBaseType
  *
  * Holds the data type.
  */
@@ -357,27 +357,42 @@ void QAttribute::setAttributeType(AttributeType attributeType)
     d->m_attributeType = attributeType;
     emit attributeTypeChanged(attributeType);
 }
-
+/*!
+ * \brief QAttribute::defaultPositionAttributeName
+ * \return the name of the default position attribute
+ */
 QString QAttribute::defaultPositionAttributeName()
 {
     return QStringLiteral("vertexPosition");
 }
-
+/*!
+ * \brief QAttribute::defaultNormalAttributeName
+ * \return the name of the default normal attribute
+ */
 QString QAttribute::defaultNormalAttributeName()
 {
     return QStringLiteral("vertexNormal");
 }
-
+/*!
+ * \brief QAttribute::defaultColorAttributeName
+ * \return the name of the default color attribute
+ */
 QString QAttribute::defaultColorAttributeName()
 {
     return QStringLiteral("vertexColor");
 }
-
+/*!
+ * \brief QAttribute::defaultTextureCoordinateAttributeName
+ * \return the name of the default texture coordinate attribute
+ */
 QString QAttribute::defaultTextureCoordinateAttributeName()
 {
     return QStringLiteral("vertexTexCoord");
 }
-
+/*!
+ * \brief QAttribute::defaultTangentAttributeName
+ * \return the name of the default tangent attribute
+ */
 QString QAttribute::defaultTangentAttributeName()
 {
     return QStringLiteral("vertexTangent");
