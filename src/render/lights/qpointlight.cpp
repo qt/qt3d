@@ -64,7 +64,7 @@ namespace Qt3DRender {
 QPointLightPrivate::QPointLightPrivate()
     : QAbstractLightPrivate(QAbstractLight::PointLight)
 {
-    m_shaderData->setProperty("constantAttenuation", 0.0f);
+    m_shaderData->setProperty("constantAttenuation", 1.0f);
     m_shaderData->setProperty("linearAttenuation", 0.0f);
     m_shaderData->setProperty("quadraticAttenuation", 0.0f);
 }
