@@ -432,6 +432,33 @@ void QNodePrivate::setArbiter(QLockableObserverInterface *arbiter)
 }
 
 /*!
+    \class Qt3DCore::QNode
+    \inherits QObject
+
+    \inmodule Qt3DCore
+    \since 5.5
+
+    \brief QNode is the base class of all Qt3D node classes used to build a
+    Qt3D scene.
+
+    The owernship of QNode is determined by the QObject parent/child
+    relationship between nodes. By itself, a QNode has no visual appearance
+    and no particular meaning, it is there as a way of building a node based tree
+    structure.
+
+    The parent of a QNode instance can only be another QNode instance.
+
+    Each QNode instance has a unique id that allows it to be recognizable
+    from other instances.
+
+    When properties are defined on a QNode subclass, their NOTIFY signal
+    will automatically generate notifications that the Qt3D backend aspects will
+    receive.
+
+    \sa QEntity, QComponent
+*/
+
+/*!
  * Sends the \a change QSceneChangePtr to any QBackendNodes in the registered
  * aspects that correspond to this QNode.
  *
@@ -568,39 +595,6 @@ void QNodePrivate::nodePtrDeleter(QNode *q)
     p->deleteLater();
 }
 
-
-/*!
-    \class Qt3DCore::QNode
-    \inherits QObject
-
-    \inmodule Qt3DCore
-    \since 5.5
-
-    \brief QNode is the base class of all Qt3D node classes used to build a
-    Qt3D scene.
-
-    The owernship of QNode is determined by the QObject parent/child
-    relationship between nodes. By itself, a QNode has no visual appearance
-    and no particular meaning, it is there as a way of building a node based tree
-    structure.
-
-    The parent of a QNode instance can only be another QNode instance.
-
-    Each QNode instance has a unique id that allows it to be recognizable
-    from other instances.
-
-    When properties are defined on a QNode subclass, their NOTIFY signal
-    will automatically generate notifications that the Qt3D backend aspects will
-    receive.
-
-    When subclassing QNode, make sure to call QNode::cleanup() from your
-    subclass's destructor to ensure proper notification to backend aspects.
-    Faiure to do so will result in crashes when one of your QNode subclass
-    instance is eventually destroyed.
-
-    \sa QEntity, QComponent
-*/
-
 /*!
     \fn QNodeId qIdForNode(QNode *node)
     \relates Qt3DCore::QNode
@@ -633,6 +627,12 @@ QNode::QNode(QNodePrivate &dd, QNode *parent)
     d->init(parent);
 }
 
+/*!
+    \fn QNode::nodeDestroyed()
+    emitted when the node is destroyed.
+*/
+
+/*! \internal */
 QNode::~QNode()
 {
     Q_D(QNode);

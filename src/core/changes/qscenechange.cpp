@@ -75,8 +75,7 @@ QSceneChangePrivate::~QSceneChangePrivate()
 /*!
  * \class Qt3DCore::QSceneChange
  * \inmodule Qt3DCore
- *
- * TODO
+ * \brief The base class for changes that can be sent and received by Qt3D's change notification system
  */
 
 /*!
@@ -87,7 +86,17 @@ QSceneChangePrivate::~QSceneChangePrivate()
  */
 
 /*!
- * Constructs a new QSceneChange with \a type, \a senderType, \a subjectId, and \a priority.
+ * \enum QSceneChange::DeliveryFlag
+ *
+ * The types of change that can be sent and received by Qt3D's change notification system.
+ *
+ * \value BackendNodes
+ * \value Nodes
+ * \value DeliverToAll
+ */
+
+/*!
+ * Constructs a new QSceneChange with \a type and \a subjectId.
  */
 QSceneChange::QSceneChange(ChangeFlag type, QNodeId subjectId)
     : d_ptr(new QSceneChangePrivate)
@@ -123,12 +132,18 @@ ChangeFlag QSceneChange::type() const Q_DECL_NOTHROW
     return d->m_type;
 }
 
+/*!
+  Set the Delivery flags of the change to \a flags
+  */
 void QSceneChange::setDeliveryFlags(DeliveryFlags flags) Q_DECL_NOTHROW
 {
     Q_D(QSceneChange);
     d->m_deliveryFlags = flags;
 }
 
+/*!
+ \return the set delivery flags
+ */
 QSceneChange::DeliveryFlags QSceneChange::deliveryFlags() const Q_DECL_NOTHROW
 {
     Q_D(const QSceneChange);

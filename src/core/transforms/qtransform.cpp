@@ -67,8 +67,7 @@ QTransformPrivate::~QTransformPrivate()
  * \inherits Component3D
  * \instantiates Qt3DCore::QComponent
  * \since 5.6
- *
- * TODO
+ * \brief Used to perform transforms on meshes
  */
 
 /*!
@@ -170,8 +169,7 @@ QTransformPrivate::~QTransformPrivate()
  * \inmodule Qt3DCore
  * \inherits Qt3DCore::QComponent
  * \since 5.6
- *
- * TODO
+ * \brief Used to perform transforms on meshes
  */
 
 /*!

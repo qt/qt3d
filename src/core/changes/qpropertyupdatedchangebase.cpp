@@ -56,6 +56,7 @@ QPropertyUpdatedChangeBasePrivate::~QPropertyUpdatedChangeBasePrivate()
 /*!
  * \class Qt3DCore::QPropertyUpdatedChangeBase
  * \inmodule Qt3DCore
+ * \brief The QPropertyUpdatedChangeBase class is the base class for all PropertyUpdated QSceneChange events
  *
  * The QPropertyUpdatedChangeBase class is the base class for all QSceneChange events that
  * have the changeType() PropertyUpdated. You should not need to instantiate this class.
@@ -74,8 +75,7 @@ QPropertyUpdatedChangeBasePrivate::~QPropertyUpdatedChangeBasePrivate()
  */
 
 /*!
- * Constructs a new QPropertyUpdatedChangeBase with \a senderType, \a subjectId, and
- * \a priority.
+ * Constructs a new QPropertyUpdatedChangeBase with \a subjectId
  */
 QPropertyUpdatedChangeBase::QPropertyUpdatedChangeBase(QNodeId subjectId)
     : QSceneChange(*new QPropertyUpdatedChangeBasePrivate, PropertyUpdated, subjectId)

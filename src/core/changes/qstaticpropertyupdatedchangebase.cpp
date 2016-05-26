@@ -57,8 +57,9 @@ QStaticPropertyUpdatedChangeBasePrivate::~QStaticPropertyUpdatedChangeBasePrivat
 /*!
  * \class Qt3DCore::QStaticPropertyUpdatedChangeBase
  * \inmodule Qt3DCore
+ * \since 5.7
+ * \brief The QStaticPropertyUpdatedChangeBase class is the base class for all static PropertyUpdated QSceneChange events
  *
- * TODO
  */
 
 /*!
@@ -69,8 +70,7 @@ QStaticPropertyUpdatedChangeBasePrivate::~QStaticPropertyUpdatedChangeBasePrivat
  */
 
 /*!
- * Constructs a new QStaticPropertyUpdatedChangeBase with \a type, \a senderType, \a subjectId, and
- * \a priority.
+ * Constructs a new QStaticPropertyUpdatedChangeBase with \a subjectId
  */
 QStaticPropertyUpdatedChangeBase::QStaticPropertyUpdatedChangeBase(QNodeId subjectId)
     : QPropertyUpdatedChangeBase(*new QStaticPropertyUpdatedChangeBasePrivate, subjectId)
