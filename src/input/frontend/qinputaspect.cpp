@@ -106,7 +106,7 @@ QInputAspectPrivate::QInputAspectPrivate()
     \class Qt3DInput::QInputAspect
     \inherits Qt3DCore::QAbstractAspect
     \inmodule Qt3DInput
-    \brief A QInputAspect class.
+    \brief Responsible for creating physical devices and handling associated jobs.
     \since 5.5
     \brief Handles mapping between front and backend nodes
 

@@ -65,6 +65,13 @@ namespace Qt3DInput {
     are used as signal parameters in KeyboardHandler.
 */
 
+/*!
+ * \typedef Qt3DInput::QKeyEventPtr
+ * \relates Qt3DInput::QKeyEvent
+ *
+ * A shared pointer for QKeyEvent.
+ */
+
 QKeyEvent::QKeyEvent(QEvent::Type type, int key, Qt::KeyboardModifiers modifiers, const QString &text, bool autorep, ushort count)
     : QObject()
     , m_event(type, key, modifiers, text, autorep, count)
@@ -131,7 +138,7 @@ QKeyEvent::~QKeyEvent()
 */
 
 /*!
-    \qmlproperty quint32 Qt3D.Input::KeyEvent::nativeScanCodei
+    \qmlproperty quint32 Qt3D.Input::KeyEvent::nativeScanCode
     \readonly
 
     This property contains the native scan code of the key that was pressed.
@@ -157,6 +164,86 @@ QKeyEvent::~QKeyEvent()
     returns \c false.
 
     \sa QKeySequence::StandardKey
+*/
+
+/*!
+    \property QKeyEvent::key
+    \readonly
+
+    This property holds the code of the key that was pressed or released.
+
+    See \l [CPP] {Qt::Key}{Qt.Key} for the list of keyboard codes.
+
+    \sa {QKeyEvent::key}
+*/
+
+/*!
+     \property QKeyEvent::text
+    \readonly
+
+    This property holds the Unicode text that the key generated. The text
+    returned can be an empty string in cases where modifier keys, such as
+    Shift, Control, Alt, and Meta, are being pressed or released. In such
+    cases \l key will contain a valid value.
+*/
+
+/*!
+    \property QKeyEvent::modifiers
+    \readonly
+
+    This property holds the keyboard modifier flags that existed immediately
+    before the event occurred.
+
+    \sa {QKeyEvent::modifiers}
+*/
+
+/*!
+    \property QKeyEvent::isAutoRepeat
+    \readonly
+
+    Holds whether this event comes from an auto-repeating key.
+*/
+
+/*!
+    \property QKeyEvent::count
+    \readonly
+
+    Holds the number of keys involved in this event. If \l text is not empty,
+    this is simply the length of the string.
+*/
+
+/*!
+    \property QKeyEvent::nativeScanCode
+    \readonly
+
+    This property contains the native scan code of the key that was pressed.
+    It is passed through from QKeyEvent unchanged.
+
+*/
+
+/*!
+    \property  QKeyEvent::accepted
+
+    Setting \e accepted to \c true prevents the key event from being propagated
+    to the item's parent.
+
+    Generally, if the item acts on the key event then it should be accepted so
+    that ancestor items do not also respond to the same event.
+*/
+
+/*!
+    \fn bool QKeyEvent::matches(QKeySequence::StandardKey key_) const
+
+    \return \c true if the key event matches the given standard key \a key_; otherwise
+    returns \c false.
+
+    \sa QKeySequence::StandardKey
+*/
+
+/*!
+    \fn QEvent::Type QKeyEvent::type() const
+    \return the type of event
+
 */
 
 } // namespace Qt3DInput

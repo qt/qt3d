@@ -65,10 +65,6 @@ namespace Qt3DInput {
     \since 5.7
 */
 
-/*!
-    \qmlproperty Object Qt3D.Input::InputSettings::eventSource
- */
-
 QInputSettingsPrivate::QInputSettingsPrivate()
     : Qt3DCore::QComponentPrivate()
     , m_eventSource(nullptr)
@@ -94,9 +90,9 @@ QInputSettings::~QInputSettings()
     Holds the source for the QInputSettings.
  */
 /*!
-  \fn QInputSettings::eventSourceChanged()
+  \fn QInputSettings::eventSourceChanged(QObject *)
 
-  This signal is emitted when the even source ascociated with the input setting is changed.
+  This signal is emitted when the even source associated with the input setting is changed.
 */
 
 /*!
@@ -106,7 +102,7 @@ QInputSettings::~QInputSettings()
 */
 
 /*!
-    \qmlsignal Qt3D.Input::InputSettings::eventSourceChanged()
+    \qmlsignal Qt3D.Input::InputSettings::ventSourceChanged(QObject *)
 
     This signal is emitted when the even source associated with the input setting is changed.
 
@@ -124,7 +120,7 @@ QObject *QInputSettings::eventSource() const
 }
 
 /*!
-   Set the current event source of the QInputSettings instance.
+   Set the current event source of the QInputSettings instance to \a eventSource.
  */
 void QInputSettings::setEventSource(QObject *eventSource)
 {

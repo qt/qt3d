@@ -106,7 +106,7 @@ QInputAspect *QInputDeviceIntegration::inputAspect() const
 } // namespace Qt3DInput
 
 /*!
-  \fn QInputDeviceIntegration::createPhysicalDevice()
+  \fn QInputDeviceIntegration::createPhysicalDevice(const QString &name)
 
   Create the Physical device identified by \a name.
 
@@ -114,13 +114,13 @@ QInputAspect *QInputDeviceIntegration::inputAspect() const
 */
 
 /*!
-  \fn QInputDeviceIntegration::physicalDevices()
+  \fn QInputDeviceIntegration::physicalDevices() const
 
  \return the list of node ids for physical devices associated with this QInputDeviceIntegration.
 */
 
 /*!
-  \fn QInputDeviceIntegration::physicalDevice(Qt3DCore::QNodeId id)
+  \fn QInputDeviceIntegration::physicalDevice(Qt3DCore::QNodeId id) const
 
    \return the QAbstractPhysicalDevice identified by the given id if it is related to this QInputDeviceIntegration.
 */

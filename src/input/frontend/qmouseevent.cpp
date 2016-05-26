@@ -66,36 +66,43 @@ namespace Qt3DInput {
 
 /*!
  * \qmlproperty int Qt3D.Input::MouseEvent::x
+ * Specifies The X coordinate of the mouse event
  * \readonly
  */
 
 /*!
  * \qmlproperty int Qt3D.Input::MouseEvent::y
+ * Specifies The Y coordinate of the mouse event
  * \readonly
  */
 
 /*!
  * \qmlproperty bool Qt3D.Input::MouseEvent::wasHeld
+ * Specifies if a mouse button was held down during the mouse event
  * \readonly
  */
 
 /*!
  * \qmlproperty Buttons Qt3D.Input::MouseEvent::button
+ * Specifies the button triggering the mouse event
  * \readonly
  */
 
 /*!
  * \qmlproperty int Qt3D.Input::MouseEvent::buttons
+ * Specifies the button triggering the mouse event
  * \readonly
  */
 
 /*!
  * \qmlproperty Modifiers Qt3D.Input::MouseEvent::modifiers
+ * Specifies if any modifiers were applied to the mouse event
  * \readonly
  */
 
 /*!
  * \qmlproperty bool Qt3D.Input::MouseEvent::accepted
+ * Specifies if the mouse event has been accepted
  */
 
 /*!
@@ -114,6 +121,46 @@ namespace Qt3DInput {
  *
  */
 
+/*!
+ * \property QMouseEvent::x
+ * Specifies The X coordinate of the mouse event
+ * \readonly
+ */
+
+/*!
+ * \property QMouseEvent::y
+ * Specifies The y coordinate of the mouse event
+ * \readonly
+ */
+
+/*!
+ * \property QMouseEvent::wasHeld
+ * Specifies if a mouse button was held down during the mouse event
+ * \readonly
+ */
+
+/*!
+ * \property QMouseEvent::button
+ * Specifies the button triggering the mouse event
+ * \readonly
+ */
+
+/*!
+ * \property QMouseEvent::buttons
+ * Specifies the button triggering the mouse event
+ * \readonly
+ */
+
+/*!
+ * \property QMouseEvent::modifiers
+ * Specifies if any modifiers were applied to the mouse event
+ * \readonly
+ */
+
+/*!
+ * \property QMouseEvent::accepted
+ * Specifies if the mouse event has been accepted
+ */
 
 /*!
  * \enum Qt3DInput::QMouseEvent::Buttons
@@ -134,6 +181,13 @@ namespace Qt3DInput {
  * \value AltModifier
  * \value MetaModifier
  * \value KeypadModifier
+ */
+
+/*!
+ * \typedef Qt3DInput::QMouseEventPtr
+ * \relates Qt3DInput::QMouseEvent
+ *
+ * A shared pointer for QMouseEvent.
  */
 
 /*!
@@ -246,31 +300,37 @@ QMouseEvent::Modifiers QMouseEvent::modifiers() const
 
 /*!
  * \qmlproperty int Qt3D.Input::WheelEvent::x
+ * Specifies The X coordinate of the mouse wheel event
  * \readonly
  */
 
 /*!
  * \qmlproperty int Qt3D.Input::WheelEvent::y
+ * Specifies The Y coordinate of the mouse wheel event
  * \readonly
  */
 
 /*!
  * \qmlproperty Point Qt3D.Input::WheelEvent::angleDelta
+ * Specifies The change wheel angle of the mouse wheel event
  * \readonly
  */
 
 /*!
  * \qmlproperty int Qt3D.Input::WheelEvent::buttons
+ * Specifies the button if present in the mouse wheel event
  * \readonly
  */
 
 /*!
  * \qmlproperty Modifiers Qt3D.Input::WheelEvent::modifiers
+ * Specifies if any modifiers were applied to the mouse wheel event
  * \readonly
  */
 
 /*!
  * \qmlproperty bool Qt3D.Input::WheelEvent::accepted
+ * Specifies if the mouse wheel event has been accepted
  */
 
 /*!
@@ -285,6 +345,41 @@ QMouseEvent::Modifiers QMouseEvent::modifiers() const
  *
  * \sa QKeyEvent, QMouseEvent, QMouseHandler
  *
+ */
+
+/*!
+ * \property QWheelEvent::x
+ * Specifies The X coordinate of the mouse wheel event
+ * \readonly
+ */
+
+/*!
+ * \property QWheelEvent::y
+ * Specifies The Y coordinate of the mouse wheel event
+ * \readonly
+ */
+
+/*!
+ * \property QWheelEvent::angleDelta
+ * Specifies The change wheel angle of the mouse wheel event
+ * \readonly
+ */
+
+/*!
+ * \property QWheelEvent::buttons
+ * Specifies the button if present in the mouse wheel event
+ * \readonly
+ */
+
+/*!
+ * \property  QWheelEvent::modifiers
+ * Specifies if any modifiers were applied to the mouse wheel event
+ * \readonly
+ */
+
+/*!
+ * \property QWheelEvent::accepted
+ * Specifies if the mouse wheel event has been accepted
  */
 
 /*!
@@ -306,6 +401,14 @@ QMouseEvent::Modifiers QMouseEvent::modifiers() const
  * \value AltModifier
  * \value MetaModifier
  * \value KeypadModifier
+ */
+
+
+/*!
+ * \typedef Qt3DInput::QWheelEventPtr
+ * \relates Qt3DInput::QWheelEvent
+ *
+ * A shared pointer for QWheelEvent.
  */
 
 /*!

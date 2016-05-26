@@ -75,12 +75,6 @@ namespace Qt3DInput {
 */
 
 /*!
-    \qmlproperty list<AbstractAxisInput> Qt3D.Input::Axis::inputs
-
-    List of axis inputs.
-*/
-
-/*!
     Constructs a new QAxis instance with parent \a parent.
  */
 QAxis::QAxis(Qt3DCore::QNode *parent)
@@ -94,9 +88,9 @@ QAxis::~QAxis()
 }
 
 /*!
-  \qmlproperty QQmlListProperty<Qt3DInput::QAbstractAxisInput> Qt3D.Input::Axis::inputs
+  \qmlproperty list<AbstractAxisInput>  Qt3D.Input::Axis::inputs
 
-  the list of QAbstractAxisInput that can trigger this Axis.
+  the list of AbstractAxisInput that can trigger this Axis.
 */
 
 /*!
@@ -124,6 +118,12 @@ void QAxis::addInput(QAbstractAxisInput *input)
         }
     }
 }
+
+/*!
+    \qmlproperty QVariantList Qt3D.Input::Axis::buttons
+
+    The Buttons that can trigger this Action
+*/
 
 /*!
     QAxis::removeInput
@@ -172,6 +172,7 @@ float QAxis::value() const
     return d->m_value;
 }
 
+/*! \internal */
 void QAxis::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QAxis);

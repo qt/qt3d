@@ -66,16 +66,9 @@ namespace Qt3DInput {
 */
 
 /*!
-  \qmlproperty real AxisSetting::deadZoneRadius
- */
-
-/*!
   \qmlproperty list<int> AxisSetting::axes
  */
 
-/*!
-  \qmlproperty bool AxisSetting::smooth
- */
 
 /*!
     Constructs a new QAxisSetting instance with \a parent.
@@ -134,9 +127,9 @@ bool QAxisSetting::isSmoothEnabled() const
 
 
 /*!
-  \fn QAxisSetting::deadZoneRadiusChanged()
+  \fn QAxisSetting::deadZoneRadiusChanged(float deadZoneRadius)
 
-  This signal is emitted when the Dead Zone radius associated with the axis setting is changed.
+  This signal is emitted when the Dead Zone radius associated with the axis setting is changed to \a deadZoneRadius.
 */
 
 /*!
@@ -154,7 +147,7 @@ bool QAxisSetting::isSmoothEnabled() const
 */
 
 /*!
-    Set the current dead zone radius of the QAxisSetting instance.
+    Set the current dead zone radius of the QAxisSetting instance to \a deadZoneRadius.
  */
 void QAxisSetting::setDeadZoneRadius(float deadZoneRadius)
 {
@@ -167,9 +160,9 @@ void QAxisSetting::setDeadZoneRadius(float deadZoneRadius)
 }
 
 /*!
-  \fn QAxisSetting::axisChanged()
+  \fn QAxisSetting::axesChanged(const QVector<int> &axes)
 
-  This signal is emitted when the axis ascociated with the axis setting is changed.
+  This signal is emitted when the axes associated with the axis setting is changed to \a axes.
 */
 
 /*!
@@ -181,13 +174,13 @@ void QAxisSetting::setDeadZoneRadius(float deadZoneRadius)
 /*!
     \qmlsignal Qt3D.Input::AxisSetting::axisChanged()
 
-    This signal is emitted when the axis ascociated with the axis setting is changed.
+    This signal is emitted when the axis associated with the axis setting is changed.
 
     The corresponding handler is \c onAxisChanged
 */
 
 /*!
-    Set the current axis of the QAxisSetting instance.
+    Set the current axes of the QAxisSetting instance to \a axes.
  */
 void QAxisSetting::setAxes(const QVector<int> &axes)
 {
@@ -200,9 +193,9 @@ void QAxisSetting::setAxes(const QVector<int> &axes)
 }
 
 /*!
-  \fn QAxisSetting::smoothChanged()
+  \fn QAxisSetting::smoothChanged(bool smooth)
 
-  This signal is emitted when the smoothing state is changed.
+  This signal is emitted when the smoothing state is changed to \a smooth.
 */
 
 /*!
@@ -220,7 +213,7 @@ void QAxisSetting::setAxes(const QVector<int> &axes)
 */
 
 /*!
-    Set the current state of the QAxisSettings smoothing.
+    Set the current state of the QAxisSettings smoothing to \a enabled.
  */
 void QAxisSetting::setSmoothEnabled(bool enabled)
 {
