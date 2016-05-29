@@ -407,7 +407,7 @@ void Renderer::shutdown()
 */
 void Renderer::releaseGraphicsResources()
 {
-    // Clean up the graphics context
+    // Clean up the graphics context and any resources
     m_graphicsContext.reset(nullptr);
     qCDebug(Backend) << Q_FUNC_INFO << "Renderer properly shutdown";
 }

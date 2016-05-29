@@ -80,8 +80,12 @@ public:
 
     void cleanup();
 
+    void setGraphicsContext(GraphicsContext *context);
+    GraphicsContext *graphicsContext();
+
     void updateUniforms(GraphicsContext *ctx, const ShaderParameterPack &pack);
     void setFragOutputs(const QHash<QString, int> &fragOutputs);
+    const QHash<QString, int> fragOutputs() const;
 
     inline QVector<int> uniformsNamesIds() const { return m_uniformsNamesIds; }
     inline QVector<int> uniformBlockNamesIds() const { return m_uniformBlockNamesIds; }
@@ -95,7 +99,8 @@ public:
     QVector<QByteArray> shaderCode() const;
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    bool isLoaded() const Q_DECL_NOTHROW { return m_isLoaded; }
+    bool isLoaded() const { QMutexLocker lock(&m_mutex); return m_isLoaded; }
+    void setLoaded(bool loaded) { QMutexLocker lock(&m_mutex); m_isLoaded = loaded; }
     ProgramDNA dna() const Q_DECL_NOTHROW { return m_dna; }
 
     inline QVector<ShaderUniform> uniforms() const { return m_uniforms; }
@@ -115,11 +120,6 @@ public:
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
-
-    QOpenGLShaderProgram *m_program;
-
-    QOpenGLShaderProgram *createProgram(GraphicsContext *context);
-    QOpenGLShaderProgram *createDefaultProgram();
 
     QVector<QString> m_uniformsNames;
     QVector<int> m_uniformsNamesIds;
@@ -145,7 +145,7 @@ private:
     bool m_isLoaded;
     ProgramDNA m_dna;
     ProgramDNA m_oldDna;
-    QMutex m_mutex;
+    mutable QMutex m_mutex;
     GraphicsContext *m_graphicsContext;
 
     void updateDNA();
@@ -158,7 +158,6 @@ private:
 
     void initialize(const Shader &other);
 
-    QOpenGLShaderProgram *getOrCreateProgram(GraphicsContext *ctx);
     friend class GraphicsContext;
 };
 
