@@ -416,7 +416,7 @@ QMatrix4x4 QCamera::projectionMatrix() const
 void QCamera::setPosition(const QVector3D &position)
 {
     Q_D(QCamera);
-    if (d->m_position != position) {
+    if (!qFuzzyCompare(d->m_position, position)) {
         d->m_position = position;
         d->m_cameraToCenter = d->m_viewCenter - position;
         d->m_viewMatrixDirty = true;
@@ -438,7 +438,7 @@ QVector3D QCamera::position() const
 void QCamera::setUpVector(const QVector3D &upVector)
 {
     Q_D(QCamera);
-    if (d->m_upVector != upVector) {
+    if (!qFuzzyCompare(d->m_upVector, upVector)) {
         d->m_upVector = upVector;
         d->m_viewMatrixDirty = true;
         emit upVectorChanged(upVector);
@@ -458,7 +458,7 @@ QVector3D QCamera::upVector() const
 void QCamera::setViewCenter(const QVector3D &viewCenter)
 {
     Q_D(QCamera);
-    if (d->m_viewCenter != viewCenter) {
+    if (!qFuzzyCompare(d->m_viewCenter, viewCenter)) {
         d->m_viewCenter = viewCenter;
         d->m_cameraToCenter = viewCenter - d->m_position;
         d->m_viewMatrixDirty = true;
