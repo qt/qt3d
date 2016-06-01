@@ -91,7 +91,7 @@ QAttributePrivate::QAttributePrivate()
  */
 
 /*!
- * \enum QAttribute::DataType
+ * \enum QAttribute::VertexBaseType
  *
  * The type of the data.
  *
@@ -176,7 +176,7 @@ QString QAttribute::name() const
 }
 
 /*!
- * \property QAttribute::dataSize
+ * \property QAttribute::vertexSize
  *
  * Holds the data size.
  */
@@ -187,7 +187,7 @@ uint QAttribute::vertexSize() const
 }
 
 /*!
- * \property QAttribute::dataType
+ * \property QAttribute::vertexBaseType
  *
  * Holds the data type.
  */
@@ -258,6 +258,9 @@ void QAttribute::setBuffer(QBuffer *buffer)
     if (d->m_buffer == buffer)
         return;
 
+    if (d->m_buffer)
+        d->unregisterDestructionHelper(d->m_buffer);
+
     // We need to add it as a child of the current node if it has been declared inline
     // Or not previously added as a child of the current node so that
     // 1) The backend gets notified about it's creation
@@ -266,6 +269,11 @@ void QAttribute::setBuffer(QBuffer *buffer)
         buffer->setParent(this);
 
     d->m_buffer = buffer;
+
+    // Ensures proper bookkeeping
+    if (d->m_buffer)
+        d->registerDestructionHelper(d->m_buffer, &QAttribute::setBuffer, d->m_buffer);
+
     emit bufferChanged(buffer);
 }
 
@@ -349,27 +357,42 @@ void QAttribute::setAttributeType(AttributeType attributeType)
     d->m_attributeType = attributeType;
     emit attributeTypeChanged(attributeType);
 }
-
+/*!
+ * \brief QAttribute::defaultPositionAttributeName
+ * \return the name of the default position attribute
+ */
 QString QAttribute::defaultPositionAttributeName()
 {
     return QStringLiteral("vertexPosition");
 }
-
+/*!
+ * \brief QAttribute::defaultNormalAttributeName
+ * \return the name of the default normal attribute
+ */
 QString QAttribute::defaultNormalAttributeName()
 {
     return QStringLiteral("vertexNormal");
 }
-
+/*!
+ * \brief QAttribute::defaultColorAttributeName
+ * \return the name of the default color attribute
+ */
 QString QAttribute::defaultColorAttributeName()
 {
     return QStringLiteral("vertexColor");
 }
-
+/*!
+ * \brief QAttribute::defaultTextureCoordinateAttributeName
+ * \return the name of the default texture coordinate attribute
+ */
 QString QAttribute::defaultTextureCoordinateAttributeName()
 {
     return QStringLiteral("vertexTexCoord");
 }
-
+/*!
+ * \brief QAttribute::defaultTangentAttributeName
+ * \return the name of the default tangent attribute
+ */
 QString QAttribute::defaultTangentAttributeName()
 {
     return QStringLiteral("vertexTangent");

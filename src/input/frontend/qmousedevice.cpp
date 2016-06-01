@@ -71,6 +71,25 @@ QMouseDevicePrivate::QMouseDevicePrivate()
  * \since 5.5
  * \sa QMouseHandler
  */
+
+/*!
+    \qmlproperty real MouseDevice::sensitivity
+ */
+
+/*!
+    \enum QMouseDevice::Axis
+
+    The mouse axis.
+
+    \value X
+    \value Y
+
+    \sa Qt3DInput::QAnalogAxisInput::setAxis
+ */
+
+/*!
+    Constructs a new QMouseDevice instance with parent \a parent.
+ */
 QMouseDevice::QMouseDevice(QNode *parent)
     : QAbstractPhysicalDevice(*new QMouseDevicePrivate, parent)
 {
@@ -81,17 +100,32 @@ QMouseDevice::~QMouseDevice()
 {
 }
 
+/*!
+    \return the axis count.
+
+    \note Currently always returns 2.
+ */
 int QMouseDevice::axisCount() const
 {
     // TO DO: we could have mouse wheel later on
     return 2;
 }
 
+/*!
+    \return the button count.
+
+    \note Currently always returns 3.
+ */
 int QMouseDevice::buttonCount() const
 {
     return 3;
 }
 
+/*!
+    \return the names of the axis.
+
+    \note Currently always returns StringList["X", "Y"]
+ */
 QStringList QMouseDevice::axisNames() const
 {
     return QStringList()
@@ -99,6 +133,11 @@ QStringList QMouseDevice::axisNames() const
             << QStringLiteral("Y");
 }
 
+/*!
+    \return the names of the buttons.
+
+    \note Currently always returns StringList["Left", "Right", "Center"]
+ */
 QStringList QMouseDevice::buttonNames() const
 {
     return QStringList()
@@ -107,6 +146,9 @@ QStringList QMouseDevice::buttonNames() const
             << QStringLiteral("Center");
 }
 
+/*!
+    Convert axis \a name to axis identifier.
+ */
 int QMouseDevice::axisIdentifier(const QString &name) const
 {
     if (name == QLatin1String("X"))
@@ -116,6 +158,11 @@ int QMouseDevice::axisIdentifier(const QString &name) const
     return -1;
 }
 
+/*!
+  \property Qt3DInput::QMouseDevice::sensitivity
+
+  The sensitivity of the device.
+ */
 float QMouseDevice::sensitivity() const
 {
     Q_D(const QMouseDevice);

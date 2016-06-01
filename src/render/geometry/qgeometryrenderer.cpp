@@ -242,7 +242,7 @@ int QGeometryRenderer::firstVertex() const
 }
 
 /*!
- * \property QGeometryRenderer::restartIndex
+ * \property QGeometryRenderer::restartIndexValue
  *
  * Holds the restart index.
  */
@@ -253,7 +253,7 @@ int QGeometryRenderer::restartIndexValue() const
 }
 
 /*!
- * \property QGeometry::verticesPerPatch
+ * \property QGeometryRenderer::verticesPerPatch
  *
  * Holds vertices per patch.
  */
@@ -264,7 +264,7 @@ int QGeometryRenderer::verticesPerPatch() const
 }
 
 /*!
- * \property QGeometryRenderer::primitiveRestart
+ * \property QGeometryRenderer::primitiveRestartEnabled
  *
  * Holds the primitive restart flag.
  */
@@ -398,10 +398,19 @@ void QGeometryRenderer::setGeometry(QGeometry *geometry)
         d->notifyObservers(change);
     }
 
+    if (d->m_geometry)
+        d->unregisterDestructionHelper(d->m_geometry);
+
     if (geometry && !geometry->parent())
         geometry->setParent(this);
 
     d->m_geometry = geometry;
+
+
+    // Ensures proper bookkeeping
+    if (d->m_geometry)
+        d->registerDestructionHelper(d->m_geometry, &QGeometryRenderer::setGeometry, d->m_geometry);
+
     const bool blocked = blockNotifications(true);
     emit geometryChanged(geometry);
     blockNotifications(blocked);
@@ -424,7 +433,7 @@ void QGeometryRenderer::setPrimitiveType(QGeometryRenderer::PrimitiveType primit
 }
 
 /*!
- * Sets the geometry \a functor.
+ * Sets the geometry \a factory.
  */
 void QGeometryRenderer::setGeometryFactory(const QGeometryFactoryPtr &factory)
 {

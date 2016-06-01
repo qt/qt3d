@@ -46,6 +46,11 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
+FrameGraphManager::~FrameGraphManager()
+{
+    qDeleteAll(m_nodes);
+}
+
 bool FrameGraphManager::containsNode(Qt3DCore::QNodeId id) const
 {
     return m_nodes.contains(id);

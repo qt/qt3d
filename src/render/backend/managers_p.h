@@ -136,6 +136,14 @@ class Q_AUTOTEST_EXPORT EntityManager : public Qt3DCore::QResourceManager<
 {
 public:
     EntityManager() {}
+    ~EntityManager()
+    {
+        const auto entries = m_handleManager.entries();
+        for (Entity *e : entries) {
+            if (e)
+                e->setNodeManagers(nullptr);
+        }
+    }
 };
 
 class FrameGraphNode;
@@ -144,6 +152,7 @@ class Q_AUTOTEST_EXPORT FrameGraphManager
 {
 public:
     FrameGraphManager() {}
+    ~FrameGraphManager();
 
     bool containsNode(Qt3DCore::QNodeId id) const;
     void appendNode(Qt3DCore::QNodeId id, FrameGraphNode *node);

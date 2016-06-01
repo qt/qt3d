@@ -97,9 +97,7 @@ QAbstractTextureImage::QAbstractTextureImage(QNode *parent)
 {
 }
 
-/*!
-  The destructor.
- */
+/*! \internal */
 QAbstractTextureImage::~QAbstractTextureImage()
 {
 }
@@ -131,7 +129,7 @@ int QAbstractTextureImage::mipLevel() const
 /*!
     \property Qt3DRender::QAbstractTextureImage::layer
 
-    Holds the layer of the texture image.
+    \return the layer of the texture image.
  */
 int QAbstractTextureImage::layer() const
 {
@@ -171,6 +169,10 @@ QAbstractTexture::CubeMapFace QAbstractTextureImage::face() const
     return d->m_face;
 }
 
+/*!
+ * Sets the mip level of a texture to \a level.
+ * \param level
+ */
 void QAbstractTextureImage::setMipLevel(int level)
 {
     Q_D(QAbstractTextureImage);
@@ -180,6 +182,10 @@ void QAbstractTextureImage::setMipLevel(int level)
     }
 }
 
+/*!
+ * Sets the layer of a texture to \a layer.
+ * \param layer
+ */
 void QAbstractTextureImage::setLayer(int layer)
 {
     Q_D(QAbstractTextureImage);
@@ -189,6 +195,10 @@ void QAbstractTextureImage::setLayer(int layer)
     }
 }
 
+/*!
+ * Sets the texture image face to \a face.
+ * \param face
+ */
 void QAbstractTextureImage::setFace(QAbstractTexture::CubeMapFace face)
 {
     Q_D(QAbstractTextureImage);

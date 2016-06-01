@@ -111,6 +111,10 @@ QBufferPrivate::QBufferPrivate()
  *        GL_PIXEL_PACK_BUFFER
  * \value PixelUnpackBuffer
  *        GL_PIXEL_UNPACK_BUFFER
+ * \value UniformBuffer
+ *        GL_UNIFORM_BUFFER
+ * \value ShaderStorageBuffer
+ *        GL_SHADER_STORAGE_BUFFER
  */
 
 /*!
@@ -163,7 +167,7 @@ QBuffer::~QBuffer()
 /*!
  * \internal
  */
-void QBuffer::sceneChangeEvent(const QSceneChangePtr &change)
+void QBuffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     QPropertyUpdatedChangePtr e = qSharedPointerCast<QPropertyUpdatedChange>(change);
     if (e->type() == PropertyUpdated && e->propertyName() == QByteArrayLiteral("data")) {

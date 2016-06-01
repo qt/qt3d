@@ -89,7 +89,7 @@ void LayerFilterNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     FrameGraphNode::sceneChangeEvent(e);
 }
 
-QNodeIdVector LayerFilterNode::layerIds() const Q_DECL_NOEXCEPT
+QNodeIdVector LayerFilterNode::layerIds() const
 {
     return m_layerIds;
 }

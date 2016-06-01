@@ -131,6 +131,7 @@ class QT3DRENDERSHARED_PRIVATE_EXPORT NodeManagers
 {
 public:
     NodeManagers();
+    ~NodeManagers();
 
     template<class Backend, typename Manager>
     Manager *manager() const Q_DECL_NOEXCEPT

@@ -99,6 +99,9 @@ void QRenderStateSet::addRenderState(QRenderState *state)
     if (!d->m_renderStates.contains(state)) {
         d->m_renderStates.append(state);
 
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(state, &QRenderStateSet::removeRenderState, d->m_renderStates);
+
         if (!state->parent())
             state->setParent(this);
 
@@ -124,6 +127,8 @@ void QRenderStateSet::removeRenderState(QRenderState *state)
         d->notifyObservers(change);
     }
     d->m_renderStates.removeOne(state);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(state);
 }
 
 /*!

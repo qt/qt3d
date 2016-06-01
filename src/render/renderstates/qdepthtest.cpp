@@ -38,6 +38,14 @@
 **
 ****************************************************************************/
 
+/*!
+ * \class QDepthTest
+ * \brief The QDepthTest class tests the fragment shader's depth value against
+ * the depth of a sample being written to.
+ * \since 5.7
+ * \ingroup renderstates
+ *
+ */
 #include "qdepthtest.h"
 #include "qdepthtest_p.h"
 #include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
@@ -46,6 +54,9 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * The constructor creates a new QDepthTest::QDepthTest instance with the specified \a parent.
+ */
 QDepthTest::QDepthTest(QNode *parent)
     : QRenderState(*new QDepthTestPrivate, parent)
 {
@@ -56,12 +67,19 @@ QDepthTest::~QDepthTest()
 {
 }
 
+/*!
+ * \return the current enabled depth function.
+ */
 QDepthTest::DepthFunction QDepthTest::depthFunction() const
 {
     Q_D(const QDepthTest);
     return d->m_depthFunction;
 }
 
+/*!
+ * Sets the depth function being enabled to \a depthFunction
+ * \param depthFunction
+ */
 void QDepthTest::setDepthFunction(QDepthTest::DepthFunction depthFunction)
 {
     Q_D(QDepthTest);

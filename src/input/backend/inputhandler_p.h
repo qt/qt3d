@@ -89,7 +89,7 @@ class GenericDeviceBackendNodeManager;
 class InputSettings;
 class EventSourceSetterHelper;
 
-class InputHandler
+class Q_AUTOTEST_EXPORT InputHandler
 {
 public:
     InputHandler();

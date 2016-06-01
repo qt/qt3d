@@ -73,7 +73,7 @@ public:
     explicit QNode(QNode *parent = nullptr);
     virtual ~QNode();
 
-    const QNodeId id() const;
+    QNodeId id() const;
     QNode *parentNode() const;
 
     bool notificationsBlocked() const;
@@ -90,6 +90,7 @@ public Q_SLOTS:
 Q_SIGNALS:
     void parentChanged(QObject *parent);
     void enabledChanged(bool enabled);
+    void nodeDestroyed();
 
 protected:
     explicit QNode(QNodePrivate &dd, QNode *parent = nullptr);
@@ -134,12 +135,12 @@ inline QNodeIdVector qIdsForNodes(const T &nodes)
 
 struct QNodeIdTypePair
 {
-    QNodeIdTypePair() Q_DECL_NOEXCEPT
+    QNodeIdTypePair() Q_DECL_NOTHROW
         : id()
         , type(nullptr)
     {}
 
-    explicit QNodeIdTypePair(QNodeId _id, const QMetaObject *_type) Q_DECL_NOEXCEPT
+    explicit QNodeIdTypePair(QNodeId _id, const QMetaObject *_type) Q_DECL_NOTHROW
         : id(_id)
         , type(_type)
     {}

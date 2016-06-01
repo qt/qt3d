@@ -59,7 +59,26 @@ QRenderPassPrivate::QRenderPassPrivate()
     , m_shader(nullptr)
 {
 }
+/*!
+ * \qmltype RenderPass
+ * \instantiates Qt3DRender::QRenderPass
+ * \inqmlmodule Qt3D.Render
+ * \brief Encapsulates a Render Pass.
+ */
 
+/*!
+ * \class Qt3DRender::QRenderPass
+ * \inmodule Qt3DRender
+ *
+ * \inherits Node
+ *
+ * \brief Encapsulates a Render Pass.
+ */
+
+/*!
+  \fn Qt3DRender::QRenderPass::QRenderPass(Qt3DCore::QNode *parent)
+  Constructs a new QRenderPass with the specified \a parent.
+ */
 QRenderPass::QRenderPass(QNode *parent)
     : QNode(*new QRenderPassPrivate, parent)
 {
@@ -77,9 +96,16 @@ QRenderPass::QRenderPass(QRenderPassPrivate &dd, QNode *parent)
 }
 
 /*!
- * Sets the pass's \a shaderProgram. This posts a ComponentUpdated
- * QScenePropertyChange to the QChangeArbiter. The value is set to
- * the \a shaderProgram and the property name to \c {"shaderProgram"}.
+  \qmlproperty ShaderProgram Qt3D.Render::RenderPass::shaderProgram
+    Specifies the shader program to be used for this render pass
+*/
+
+/*!
+  \property Qt3DRender::QRenderPass::shaderProgram
+    Specifies the shader program to be used for this render pass
+ */
+/*!
+ * Sets the pass's \a shaderProgram.
  */
 void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
 {
@@ -92,21 +118,23 @@ void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
             d->notifyObservers(change);
         }
 
-        d->m_shader = shaderProgram;
-        emit shaderProgramChanged(shaderProgram);
+        if (d->m_shader)
+            d->unregisterDestructionHelper(d->m_shader);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!shaderProgram->parent())
+        if (shaderProgram && !shaderProgram->parent())
             shaderProgram->setParent(this);
 
-        if (d->m_shader && d->m_changeArbiter != nullptr) {
-            const auto change = QPropertyNodeAddedChangePtr::create(id(), d->m_shader);
-            change->setPropertyName("shaderProgram");
-            d->notifyObservers(change);
-        }
+        d->m_shader = shaderProgram;
+
+        // Ensures proper bookkeeping
+        if (d->m_shader)
+            d->registerDestructionHelper(d->m_shader, &QRenderPass::setShaderProgram, d->m_shader);
+
+        emit shaderProgramChanged(shaderProgram);
     }
 }
 
@@ -116,12 +144,18 @@ QShaderProgram *QRenderPass::shaderProgram() const
     return d->m_shader;
 }
 
+/*!
+ * Adds \a filterKey from to the Qt3DRender::QRenderPass local filter keys.
+ */
 void QRenderPass::addFilterKey(QFilterKey *filterKey)
 {
     Q_ASSERT(filterKey);
     Q_D(QRenderPass);
     if (!d->m_filterKeyList.contains(filterKey)) {
         d->m_filterKeyList.append(filterKey);
+
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(filterKey, &QRenderPass::removeFilterKey, d->m_filterKeyList);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
@@ -138,6 +172,9 @@ void QRenderPass::addFilterKey(QFilterKey *filterKey)
     }
 }
 
+/*!
+ * Removes \a filterKey from the Qt3DRender::QRenderPass local filter keys.
+ */
 void QRenderPass::removeFilterKey(QFilterKey *filterKey)
 {
     Q_ASSERT(filterKey);
@@ -148,8 +185,14 @@ void QRenderPass::removeFilterKey(QFilterKey *filterKey)
         d->notifyObservers(change);
     }
     d->m_filterKeyList.removeOne(filterKey);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(filterKey);
 }
 
+/*!
+ * Returns the list of Qt3DCore::QFilterKey key objects making up the filter keys
+ * of the Qt3DRender::QRenderPass.
+ */
 QVector<QFilterKey *> QRenderPass::filterKeys() const
 {
     Q_D(const QRenderPass);
@@ -170,6 +213,9 @@ void QRenderPass::addRenderState(QRenderState *state)
     Q_D(QRenderPass);
     if (!d->m_renderStates.contains(state)) {
         d->m_renderStates.append(state);
+
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(state, &QRenderPass::removeRenderState, d->m_renderStates);
 
         if (!state->parent())
             state->setParent(this);
@@ -195,6 +241,8 @@ void QRenderPass::removeRenderState(QRenderState *state)
         d->notifyObservers(change);
     }
     d->m_renderStates.removeOne(state);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(state);
 }
 
 /*!
@@ -207,12 +255,18 @@ QVector<QRenderState *> QRenderPass::renderStates() const
     return d->m_renderStates;
 }
 
+/*!
+ * Add a parameter to the Render Pass.
+ */
 void QRenderPass::addParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
     Q_D(QRenderPass);
     if (!d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
+
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(parameter, &QRenderPass::removeParameter, d->m_parameters);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
@@ -229,6 +283,9 @@ void QRenderPass::addParameter(QParameter *parameter)
     }
 }
 
+/*!
+ * Remove a parameter from the  Render Pass.
+ */
 void QRenderPass::removeParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
@@ -239,9 +296,13 @@ void QRenderPass::removeParameter(QParameter *parameter)
         d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(parameter);
 }
 
-
+/*!
+ * Returns a vector of the render pass's current parameters
+ */
 QVector<QParameter *> QRenderPass::parameters() const
 {
     Q_D(const QRenderPass);

@@ -63,11 +63,9 @@ private Q_SLOTS:
         QTest::newRow("defaultConstructed") << defaultConstructed << QVector<Qt3DRender::QSortPolicy::SortType>();
 
         Qt3DRender::QSortPolicy *sortPolicyWithSortTypes = new Qt3DRender::QSortPolicy();
-        Qt3DRender::QSortPolicy::SortType sortType1 = Qt3DRender::QSortPolicy::BackToFront;
-        Qt3DRender::QSortPolicy::SortType sortType2 = Qt3DRender::QSortPolicy::Material;
-        QVector<Qt3DRender::QSortPolicy::SortType> sortTypes; sortTypes << sortType1 << sortType2;
-        sortPolicyWithSortTypes->addSortType(sortType1);
-        sortPolicyWithSortTypes->addSortType(sortType2);
+        auto sortTypes = QVector<Qt3DRender::QSortPolicy::SortType>() << Qt3DRender::QSortPolicy::BackToFront
+                                                                      << Qt3DRender::QSortPolicy::Material;
+        sortPolicyWithSortTypes->setSortTypes(sortTypes);
         QTest::newRow("sortPolicyWithSortTypes") << sortPolicyWithSortTypes << sortTypes ;
     }
 
@@ -108,38 +106,20 @@ private Q_SLOTS:
         arbiter.setArbiterOnNode(sortPolicy.data());
 
         // WHEN
-        Qt3DRender::QSortPolicy::SortType sortType1 = Qt3DRender::QSortPolicy::BackToFront;
-        sortPolicy->addSortType(sortType1);
+        auto sortTypes = QVector<Qt3DRender::QSortPolicy::SortType>() << Qt3DRender::QSortPolicy::BackToFront
+                                                                      << Qt3DRender::QSortPolicy::Material
+                                                                      << Qt3DRender::QSortPolicy::Material;
+        auto sortTypesInt = QVector<int>();
+        transformVector(sortTypes, sortTypesInt);
+        sortPolicy->setSortTypes(sortTypes);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyValueAddedChangePtr addChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyValueAddedChange>();
-        QCOMPARE(addChange->propertyName(), "sortType");
-        QCOMPARE(addChange->subjectId(),sortPolicy->id());
-        QCOMPARE(addChange->addedValue().value<Qt3DRender::QSortPolicy::SortType>(), sortType1);
-        QCOMPARE(addChange->type(), Qt3DCore::PropertyValueAdded);
-
-        arbiter.events.clear();
-
-        // WHEN
-        sortPolicy->addSortType(sortType1);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-
-        // WHEN
-        sortPolicy->removeSortType(sortType1);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyValueRemovedChangePtr removeChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyValueRemovedChange>();
-        QCOMPARE(removeChange->propertyName(), "sortType");
-        QCOMPARE(removeChange->subjectId(), sortPolicy->id());
-        QCOMPARE(removeChange->removedValue().value<Qt3DRender::QSortPolicy::SortType>(), sortType1);
-        QCOMPARE(removeChange->type(), Qt3DCore::PropertyValueRemoved);
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "sortTypes");
+        QCOMPARE(change->value().value<QVector<int>>(), sortTypesInt);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
     }

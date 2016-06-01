@@ -63,7 +63,7 @@ namespace Input {
 
 class InputHandler;
 
-class KeyboardHandler : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT KeyboardHandler : public Qt3DCore::QBackendNode
 {
 public:
     KeyboardHandler();
@@ -73,8 +73,11 @@ public:
     void setFocus(bool focus);
     void keyEvent(const QKeyEventPtr &event);
 
-protected:
+    inline bool focus() const { return m_focus; }
+
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+protected:
     void requestFocus();
     void setSourcerDevice(Qt3DCore::QNodeId device);
 

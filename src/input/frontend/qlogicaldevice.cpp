@@ -100,7 +100,7 @@ QLogicalDevicePrivate::~QLogicalDevicePrivate()
                                 keys: [Qt.Key_S]
                             }
                         ]
-                    },
+                    }
                 ]
             },
             Action {
@@ -111,7 +111,7 @@ QLogicalDevicePrivate::~QLogicalDevicePrivate()
                         keys: [Qt.Key_Alt]
                     }
                 ]
-            }
+            },
             Action {
                 name: "combo"
                 inputs: [
@@ -136,6 +136,7 @@ QLogicalDevicePrivate::~QLogicalDevicePrivate()
                 ]
             }
         ]
+    }
     \endqml
 
     \since 5.6
@@ -154,13 +155,13 @@ QLogicalDevice::~QLogicalDevice()
 }
 
 /*!
-  \qmlproperty QQmlListProperty<Action> Qt3D.Input::LogicalDevice::actions
+  \qmlproperty list<Action> Qt3D.Input::LogicalDevice::actions
 
   The actions used by this Logical Device
 */
 
 /*!
-    Add an action to the list of actions.
+    Add an \a action to the list of actions.
  */
 void QLogicalDevice::addAction(QAction *action)
 {
@@ -171,6 +172,9 @@ void QLogicalDevice::addAction(QAction *action)
         if (!action->parent())
             action->setParent(this);
 
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(action, &QLogicalDevice::removeAction, d->m_actions);
+
         if (d->m_changeArbiter != nullptr) {
             const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), action);
             change->setPropertyName("action");
@@ -180,7 +184,7 @@ void QLogicalDevice::addAction(QAction *action)
 }
 
 /*!
-    Remove an action from the list of actions.
+    Remove an \a action from the list of actions.
  */
 void QLogicalDevice::removeAction(QAction *action)
 {
@@ -194,6 +198,9 @@ void QLogicalDevice::removeAction(QAction *action)
         }
 
         d->m_actions.removeOne(action);
+
+        // Remove bookkeeping connection
+        d->unregisterDestructionHelper(action);
     }
 }
 
@@ -207,13 +214,13 @@ QVector<QAction *> QLogicalDevice::actions() const
 }
 
 /*!
-  \qmlproperty QQmlListProperty<Axis> Qt3D.Input::LogicalDevice::axis
+  \qmlproperty list<Axis> Qt3D.Input::LogicalDevice::axis
 
   The axis used by this Logical Device
 */
 
 /*!
-    Add an axis to the list of axis.
+    Add an \a axis to the list of axis.
  */
 void QLogicalDevice::addAxis(QAxis *axis)
 {
@@ -225,6 +232,9 @@ void QLogicalDevice::addAxis(QAxis *axis)
         if (!axis->parent())
             axis->setParent(this);
 
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(axis, &QLogicalDevice::removeAxis, d->m_axes);
+
         if (d->m_changeArbiter != nullptr) {
             const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), axis);
             change->setPropertyName("axis");
@@ -234,7 +244,7 @@ void QLogicalDevice::addAxis(QAxis *axis)
 }
 
 /*!
-    Remove an axis drom the list of axis.
+    Remove an \a axis drom the list of axis.
  */
 void QLogicalDevice::removeAxis(QAxis *axis)
 {
@@ -247,6 +257,9 @@ void QLogicalDevice::removeAxis(QAxis *axis)
         }
 
         d->m_axes.removeOne(axis);
+
+        // Remove bookkeeping connection
+        d->unregisterDestructionHelper(axis);
     }
 }
 

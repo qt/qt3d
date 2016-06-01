@@ -69,11 +69,19 @@ void QRenderTargetSelector::setTarget(QRenderTarget *target)
 {
     Q_D(QRenderTargetSelector);
     if (d->m_target != target) {
-        d->m_target = target;
+
+        if (d->m_target)
+            d->unregisterDestructionHelper(d->m_target);
 
         // For inline declaration cases
         if (target != nullptr && !target->parent())
             target->setParent(this);
+
+        d->m_target = target;
+
+        if (d->m_target)
+            d->registerDestructionHelper(d->m_target, &QRenderTargetSelector::setTarget, d->m_target);
+
         emit targetChanged(target);
     }
 }

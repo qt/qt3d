@@ -65,6 +65,40 @@ namespace Qt3DInput {
  */
 
 /*!
+ * \qmlproperty int Qt3D.Input::MouseEvent::x
+ * \readonly
+ */
+
+/*!
+ * \qmlproperty int Qt3D.Input::MouseEvent::y
+ * \readonly
+ */
+
+/*!
+ * \qmlproperty bool Qt3D.Input::MouseEvent::wasHeld
+ * \readonly
+ */
+
+/*!
+ * \qmlproperty Buttons Qt3D.Input::MouseEvent::button
+ * \readonly
+ */
+
+/*!
+ * \qmlproperty int Qt3D.Input::MouseEvent::buttons
+ * \readonly
+ */
+
+/*!
+ * \qmlproperty Modifiers Qt3D.Input::MouseEvent::modifiers
+ * \readonly
+ */
+
+/*!
+ * \qmlproperty bool Qt3D.Input::MouseEvent::accepted
+ */
+
+/*!
  * \class Qt3DInput::QMouseEvent
  * \inmodule Qt3DInput
  *
@@ -78,6 +112,28 @@ namespace Qt3DInput {
  *
  * \sa QKeyEvent, QWheelEvent, QMouseHandler
  *
+ */
+
+
+/*!
+ * \enum Qt3DInput::QMouseEvent::Buttons
+ *
+ * \value LeftButton
+ * \value RightButton
+ * \value MiddleButton
+ * \value BackButton
+ * \value NoButton
+ */
+
+/*!
+ * \enum Qt3DInput::QMouseEvent::Modifiers
+ *
+ * \value NoModifier
+ * \value ShiftModifier
+ * \value ControlModifier
+ * \value AltModifier
+ * \value MetaModifier
+ * \value KeypadModifier
  */
 
 /*!
@@ -189,6 +245,35 @@ QMouseEvent::Modifiers QMouseEvent::modifiers() const
  */
 
 /*!
+ * \qmlproperty int Qt3D.Input::WheelEvent::x
+ * \readonly
+ */
+
+/*!
+ * \qmlproperty int Qt3D.Input::WheelEvent::y
+ * \readonly
+ */
+
+/*!
+ * \qmlproperty Point Qt3D.Input::WheelEvent::angleDelta
+ * \readonly
+ */
+
+/*!
+ * \qmlproperty int Qt3D.Input::WheelEvent::buttons
+ * \readonly
+ */
+
+/*!
+ * \qmlproperty Modifiers Qt3D.Input::WheelEvent::modifiers
+ * \readonly
+ */
+
+/*!
+ * \qmlproperty bool Qt3D.Input::WheelEvent::accepted
+ */
+
+/*!
  * \class Qt3DInput::QWheelEvent
  * \inmodule Qt3DInput
  *
@@ -200,6 +285,27 @@ QMouseEvent::Modifiers QMouseEvent::modifiers() const
  *
  * \sa QKeyEvent, QMouseEvent, QMouseHandler
  *
+ */
+
+/*!
+ * \enum Qt3DInput::QWheelEvent::Buttons
+ *
+ * \value LeftButton
+ * \value RightButton
+ * \value MiddleButton
+ * \value BackButton
+ * \value NoButton
+ */
+
+/*!
+ * \enum Qt3DInput::QWheelEvent::Modifiers
+ *
+ * \value NoModifier
+ * \value ShiftModifier
+ * \value ControlModifier
+ * \value AltModifier
+ * \value MetaModifier
+ * \value KeypadModifier
  */
 
 /*!

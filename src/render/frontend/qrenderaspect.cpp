@@ -144,6 +144,14 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
+/*!
+ * \class Qt3DRender::QRenderAspect
+ * \brief The QRenderAspect class
+ * \since 5.7
+ * \inmodule Qt3DRender
+ */
+
+/*! \internal */
 QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     : QAbstractAspectPrivate()
     , m_nodeManagers(new Render::NodeManagers())
@@ -174,6 +182,7 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     m_renderer->setNodeManagers(m_nodeManagers);
 }
 
+/*! \internal */
 QRenderAspectPrivate::~QRenderAspectPrivate()
 {
     // The renderer should have been shutdown as part of onUnregistered().
@@ -183,6 +192,7 @@ QRenderAspectPrivate::~QRenderAspectPrivate()
     delete m_nodeManagers;
 }
 
+/*! \internal */
 void QRenderAspectPrivate::registerBackendTypes()
 {
     Q_Q(QRenderAspect);
@@ -240,9 +250,20 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QObjectPicker>(QSharedPointer<Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager> >::create(m_renderer, m_nodeManagers->objectPickerManager()));
 }
 
+/*!
+ * The constructor creates a new QRenderAspect::QRenderAspect instance with the
+ * specified \a parent.
+ * \param parent
+ */
 QRenderAspect::QRenderAspect(QObject *parent)
     : QRenderAspect(Threaded, parent) {}
 
+/*!
+ * The constructor creates a new QRenderAspect::QRenderAspect instance with the
+ * specified \a type and \a parent.
+ * \param type
+ * \param parent
+ */
 QRenderAspect::QRenderAspect(QRenderAspect::RenderType type, QObject *parent)
     : QRenderAspect(*new QRenderAspectPrivate(type), parent) {}
 
@@ -270,6 +291,7 @@ void QRenderAspectPrivate::renderInitialize(QOpenGLContext *context)
     m_renderer->initialize();
 }
 
+/*! \internal */
 void QRenderAspectPrivate::renderSynchronous()
 {
     m_renderer->doRender();

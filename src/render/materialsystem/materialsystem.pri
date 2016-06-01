@@ -26,7 +26,8 @@ HEADERS += \
     $$PWD/shaderdata_p.h \
     $$PWD/technique_p.h \
     $$PWD/qgraphicsapifilter.h \
-    $$PWD/qgraphicsapifilter_p.h
+    $$PWD/qgraphicsapifilter_p.h \
+    $$PWD/shadercache_p.h
 
 SOURCES += \
     $$PWD/filterkey.cpp \
@@ -45,4 +46,5 @@ SOURCES += \
     $$PWD/shader.cpp \
     $$PWD/shaderdata.cpp \
     $$PWD/technique.cpp \
-    $$PWD/qgraphicsapifilter.cpp
+    $$PWD/qgraphicsapifilter.cpp \
+    $$PWD/shadercache.cpp

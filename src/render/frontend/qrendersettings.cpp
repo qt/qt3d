@@ -45,13 +45,22 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * \class Qt3DRender::QRenderSettings
+ * \brief The QRenderSettings class
+ * \since 5.7
+ * \inmodule Qt3DRender
+ */
+
+/*! \internal */
 QRenderSettingsPrivate::QRenderSettingsPrivate()
     : Qt3DCore::QComponentPrivate()
     , m_activeFrameGraph(nullptr)
-    , m_renderPolicy(QRenderSettings::OnDemand)
+    , m_renderPolicy(QRenderSettings::Always)
 {
 }
 
+/*! \internal */
 void QRenderSettingsPrivate::init()
 {
     Q_Q(QRenderSettings);
@@ -61,19 +70,27 @@ void QRenderSettingsPrivate::init()
                      q, SLOT(_q_onPickResultModeChanged(QPickingSettings::PickResultMode)));
 }
 
+/*! \internal */
 void QRenderSettingsPrivate::_q_onPickingMethodChanged(QPickingSettings::PickMethod pickMethod)
 {
     notifyPropertyChange("pickMethod", pickMethod);
 }
 
+/*! \internal */
 void QRenderSettingsPrivate::_q_onPickResultModeChanged(QPickingSettings::PickResultMode pickResultMode)
 {
     notifyPropertyChange("pickResultMode", pickResultMode);
 }
 
+/*!
+ * The constructor creates a new QRenderSettings::QRenderSettings instance with the
+ * specified \a parent.
+ * \param parent
+ */
 QRenderSettings::QRenderSettings(Qt3DCore::QNode *parent)
     : QRenderSettings(*new QRenderSettingsPrivate, parent) {}
 
+/*! \internal */
 QRenderSettings::QRenderSettings(QRenderSettingsPrivate &dd, Qt3DCore::QNode *parent)
     : Qt3DCore::QComponent(dd, parent)
 {
@@ -86,36 +103,62 @@ QRenderSettings::~QRenderSettings()
 {
 }
 
+/*!
+ * \return the current picking settings.
+ */
 QPickingSettings *QRenderSettings::pickingSettings()
 {
     Q_D(QRenderSettings);
     return &(d->m_pickingSettings);
 }
 
+/*!
+ * \return the current active framegraph.
+ */
 QFrameGraphNode *QRenderSettings::activeFrameGraph() const
 {
     Q_D(const QRenderSettings);
     return d->m_activeFrameGraph;
 }
 
+/*!
+ * \return the current render policy
+ */
 QRenderSettings::RenderPolicy QRenderSettings::renderPolicy() const
 {
     Q_D(const QRenderSettings);
     return d->m_renderPolicy;
 }
 
+/*!
+ * Sets the active framegraph to \a activeFrameGraph.
+ * \param activeFrameGraph
+ */
 void QRenderSettings::setActiveFrameGraph(QFrameGraphNode *activeFrameGraph)
 {
     Q_D(QRenderSettings);
     if (d->m_activeFrameGraph == activeFrameGraph)
         return;
 
+    if (d->m_activeFrameGraph)
+        d->unregisterDestructionHelper(d->m_activeFrameGraph);
+
     if (activeFrameGraph != nullptr && !activeFrameGraph->parent())
         activeFrameGraph->setParent(this);
+
     d->m_activeFrameGraph = activeFrameGraph;
+
+    // Ensures proper bookkeeping
+    if (d->m_activeFrameGraph)
+        d->registerDestructionHelper(d->m_activeFrameGraph, &QRenderSettings::setActiveFrameGraph, d->m_activeFrameGraph);
+
     emit activeFrameGraphChanged(activeFrameGraph);
 }
 
+/*!
+ * Sets the render policy to \a renderPolicy.
+ * \param renderPolicy
+ */
 void QRenderSettings::setRenderPolicy(QRenderSettings::RenderPolicy renderPolicy)
 {
     Q_D(QRenderSettings);

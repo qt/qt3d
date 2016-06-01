@@ -44,6 +44,13 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * \class Qt3DRender::QComputeCommand
+ * \brief The QComputerCommand class
+ * \since 5.7
+ * \inmodule Qt3DRender
+ */
+
 QComputeCommandPrivate::QComputeCommandPrivate()
     : Qt3DCore::QComponentPrivate()
     , m_workGroupX(1)
@@ -52,6 +59,11 @@ QComputeCommandPrivate::QComputeCommandPrivate()
 {
 }
 
+/*!
+ * The constructor creates a new Qt3DRender::QComputeCommand instance with the
+ * specified \a parent.
+ * \param parent
+ */
 QComputeCommand::QComputeCommand(Qt3DCore::QNode *parent)
     : Qt3DCore::QComponent(*new QComputeCommandPrivate, parent)
 {
@@ -62,24 +74,37 @@ QComputeCommand::~QComputeCommand()
 {
 }
 
+/*!
+ * \return the workgroup size for the first dimension.
+ */
 int QComputeCommand::workGroupX() const
 {
     Q_D(const QComputeCommand);
     return d->m_workGroupX;
 }
 
+/*!
+ * \return the workgroup size for the second dimension.
+ */
 int QComputeCommand::workGroupY() const
 {
     Q_D(const QComputeCommand);
     return d->m_workGroupX;
 }
 
+/*!
+ * \return the workgroup size for the third dimension.
+ */
 int QComputeCommand::workGroupZ() const
 {
     Q_D(const QComputeCommand);
     return d->m_workGroupX;
 }
 
+/*!
+ * Sets the workgroup for the first dimension to \a workGroupX.
+ * \param workGroupX
+ */
 void QComputeCommand::setWorkGroupX(int workGroupX)
 {
     Q_D(QComputeCommand);
@@ -89,6 +114,10 @@ void QComputeCommand::setWorkGroupX(int workGroupX)
     }
 }
 
+/*!
+ * Sets the workgroup for the second dimension to \a workGroupY.
+ * \param workGroupY
+ */
 void QComputeCommand::setWorkGroupY(int workGroupY)
 {
     Q_D(QComputeCommand);
@@ -98,6 +127,10 @@ void QComputeCommand::setWorkGroupY(int workGroupY)
     }
 }
 
+/*!
+ * Sets the workgroup for the third dimension to \a workGroupZ.
+ * \param workGroupZ
+ */
 void QComputeCommand::setWorkGroupZ(int workGroupZ)
 {
     Q_D(QComputeCommand);

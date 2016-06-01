@@ -53,7 +53,7 @@ namespace Qt3DInput {
 */
 
 /*!
-    \qmltype QAbstractActionInput
+    \qmltype AbstractActionInput
     \inqmlmodule Qt3D.Input
     \instantiates Qt3DInput::QAbstractActionInput
     \brief QML frontend for the abstract Qt3DInput::QAbstractActionInput C++ class.

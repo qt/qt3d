@@ -39,7 +39,6 @@
 
 #include "qabstractaxisinput.h"
 #include "qabstractaxisinput_p.h"
-#include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
@@ -47,40 +46,68 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 /*!
- * \qmltype AxisInput
- * \instantiates Qt3DInput::QAxisInput
+ * \qmltype AbstractAxisInput
  * \inqmlmodule Qt3D.Input
+ * \brief QML frontend for abstract QAbstractAxisInput C++ class.
  * \since 5.5
  * \TODO
  *
  */
 
 /*!
- * \class Qt3DInput::QAxisInput
+ * \class Qt3DInput::QAbstractAxisInput
  * \inmodule Qt3DInput
+ * \brief A QAbstractAxisInput class.
  * \since 5.5
  * \TODO
  *
  */
 
+/*!
+    \qmlproperty AbstractPhysicalDevice Qt3D.Input::AbstractAxisInput::sourceDevice
+*/
+
+/*!
+    \internal
+ */
 QAbstractAxisInput::QAbstractAxisInput(QAbstractAxisInputPrivate &dd, Qt3DCore::QNode *parent)
     : QNode(dd, parent)
 {
 }
+
+/*!
+    \property Qt3DInput::QAbstractAxisInput::sourceDevice
+
+    The source device for the QAbstractAxisInput.
+*/
 
 void QAbstractAxisInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
 {
     Q_D(QAbstractAxisInput);
     if (d->m_sourceDevice != sourceDevice) {
 
+        if (d->m_sourceDevice)
+            d->unregisterDestructionHelper(d->m_sourceDevice);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, it gets destroyed as well
         if (sourceDevice && !sourceDevice->parent())
             sourceDevice->setParent(this);
 
         d->m_sourceDevice = sourceDevice;
+        // Ensures proper bookkeeping
+        if (d->m_sourceDevice)
+            d->registerDestructionHelper(sourceDevice, &QAbstractAxisInput::setSourceDevice, d->m_sourceDevice);
+
         emit sourceDeviceChanged(sourceDevice);
     }
 }
 
+/*!
+    \internal
+ */
 QAbstractAxisInput::~QAbstractAxisInput()
 {
 }

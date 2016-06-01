@@ -8,10 +8,12 @@ contains(QT_CONFIG, private_tests) {
         qabstractaxisinput \
         qanalogaxisinput \
         qbuttonaxisinput \
+        qkeyboardhandler \
         qlogicaldevice \
         axis \
         action \
         abstractaxisinput \
         analogaxisinput \
-        buttonaxisinput
+        buttonaxisinput \
+        keyboardhandler
 }

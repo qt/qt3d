@@ -70,6 +70,8 @@ RenderPass::~RenderPass()
 
 void RenderPass::cleanup()
 {
+    if (hasRenderStates())
+        setDirty(true);
 }
 
 void RenderPass::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)

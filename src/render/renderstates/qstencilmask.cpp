@@ -37,6 +37,15 @@
 **
 ****************************************************************************/
 
+/*!
+ * \class QStencilMask
+ * \brief The QStencilMask class controls the front and back writing of
+ * individual bits in the stencil planes.
+ * \since 5.7
+ * \ingroup renderstates
+ *
+ */
+
 #include "qstencilmask.h"
 #include "qstencilmask_p.h"
 #include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
@@ -46,9 +55,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
- * QStencilMask::QStencilMask
+ * The constructor creates a new QStencilMask::QStencilMask instance with the
+ * specified \a parent.
  */
-
 QStencilMask::QStencilMask(QNode *parent)
     : QRenderState(*new QStencilMaskPrivate(), parent)
 {
@@ -59,6 +68,10 @@ QStencilMask::~QStencilMask()
 {
 }
 
+/*!
+ * Sets the front output mask to \a mask.
+ * \param mask
+ */
 void QStencilMask::setFrontOutputMask(uint mask)
 {
     Q_D(QStencilMask);
@@ -68,6 +81,10 @@ void QStencilMask::setFrontOutputMask(uint mask)
     }
 }
 
+/*!
+ * Sets the back output mask to \a mask.
+ * \param mask
+ */
 void QStencilMask::setBackOutputMask(uint mask)
 {
     Q_D(QStencilMask);
@@ -77,12 +94,18 @@ void QStencilMask::setBackOutputMask(uint mask)
     }
 }
 
+/*!
+ * \return the front output mask.
+ */
 uint QStencilMask::frontOutputMask() const
 {
     Q_D(const QStencilMask);
     return d->m_frontOutputMask;
 }
 
+/*!
+ * \return the back output mask.
+ */
 uint QStencilMask::backOutputMask() const
 {
     Q_D(const QStencilMask);

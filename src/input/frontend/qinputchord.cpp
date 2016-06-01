@@ -86,8 +86,18 @@ namespace Qt3DInput {
            }
            ]
      }
-    \end
+    \endqml
     \since 5.7
+*/
+
+/*!
+  \qmlproperty list<AbstractActionInput> Qt3D.Input::InputChord::chords
+
+  The list of AbstractActionInput that must be triggered to trigger this aggregate input.
+*/
+
+/*!
+  \qmlproperty int Qt3D.Input::InputChord::timeout
 */
 
 /*!
@@ -105,22 +115,10 @@ QInputChord::~QInputChord()
 }
 
 /*!
-  \fn QInputChord::timeoutChanged()
+    \property QInputChord::timeout
 
-  This signal is emitted when the timeout of the input chord is changed.
-*/
-
-
-
-/*!
-  \qmlproperty QQmlListProperty<Qt3DInput::QAbstractActionInput> Qt3D.Input::QInputChord::chords
-
-  The list of QAbstractActionInput that must be triggered to trigger this aggregate input.
-*/
-
-/*!
-    Returns the time in which all QAbstractActionInput's in the input chord must triggered within.
-    The time is in milliseconds
+    The time in which all QAbstractActionInput's in the input chord must triggered within.
+    The time is in milliseconds.
  */
 int QInputChord::timeout() const
 {
@@ -144,13 +142,16 @@ void QInputChord::setTimeout(int timeout)
 /*!
     Append the QAbstractActionInput \a input to the end of this QInputChord's chord vector.
 
-    \sa removeInput
+    \sa removeChord
  */
 void QInputChord::addChord(QAbstractActionInput *input)
 {
     Q_D(QInputChord);
     if (!d->m_chords.contains(input)) {
         d->m_chords.push_back(input);
+
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(input, &QInputChord::removeChord, d->m_chords);
 
         if (!input->parent())
             input->setParent(this);
@@ -166,7 +167,7 @@ void QInputChord::addChord(QAbstractActionInput *input)
 /*!
     Remove the QAbstractActionInput \a input from this QInputChord's chord vector.
 
-    \sa addInput
+    \sa addChord
  */
 void QInputChord::removeChord(QAbstractActionInput *input)
 {
@@ -180,6 +181,9 @@ void QInputChord::removeChord(QAbstractActionInput *input)
         }
 
         d->m_chords.removeOne(input);
+
+        // Remove bookkeeping connection
+        d->unregisterDestructionHelper(input);
     }
 }
 

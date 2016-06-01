@@ -66,6 +66,7 @@
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/qgraphicsapifilter_p.h>
+#include <Qt3DRender/private/shadercache_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -124,9 +125,9 @@ public:
     void activateGLHelper();
     bool hasValidGLHelper() const;
 
+    QOpenGLShaderProgram *createShaderProgram(Shader *shaderNode);
     void activateShader(Shader* shader);
-    QOpenGLShaderProgram *containsProgram(const ProgramDNA &dna);
-    void removeProgram(const ProgramDNA &dna, Qt3DCore::QNodeId id);
+    void removeShaderProgramReference(Shader *shaderNode);
 
     GLuint activeFBO() const { return m_activeFBO; }
     GLuint defaultFBO() const { return m_defaultFBO; }
@@ -245,8 +246,8 @@ private:
     GraphicsHelperInterface *m_glHelper;
     bool m_ownCurrent;
 
+    ShaderCache m_shaderCache;
     Shader *m_activeShader;
-    QHash<ProgramDNA, Shader *> m_renderShaderHash;
     QHash<Qt3DCore::QNodeId, HGLBuffer> m_renderBufferHash;
     QHash<Qt3DCore::QNodeId, GLuint> m_renderTargets;
     QHash<GLuint, QSize> m_renderTargetsSize;

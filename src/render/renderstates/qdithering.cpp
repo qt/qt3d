@@ -47,6 +47,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * \class Qt3DRender::QDithering
+ * \brief The QDithering class
+ * \since 5.7
+ * \ingroup
+ */
+
+/*! \internal */
 class QDitheringPrivate : public QRenderStatePrivate
 {
 public:
@@ -57,6 +65,10 @@ public:
     Q_DECLARE_PUBLIC(QDithering)
 };
 
+/*!
+ * The constructor creates a new QDithering::QDithering instance with
+ * the specified \a parent.
+ */
 QDithering::QDithering(QNode *parent)
     : QRenderState(*new QDitheringPrivate, parent)
 {

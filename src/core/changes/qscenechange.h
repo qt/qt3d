@@ -75,12 +75,12 @@ public:
 
     virtual ~QSceneChange();
 
-    ChangeFlag type() const Q_DECL_NOEXCEPT;
+    ChangeFlag type() const Q_DECL_NOTHROW;
 
-    void setDeliveryFlags(DeliveryFlags flags) Q_DECL_NOEXCEPT;
-    DeliveryFlags deliveryFlags() const Q_DECL_NOEXCEPT;
+    void setDeliveryFlags(DeliveryFlags flags) Q_DECL_NOTHROW;
+    DeliveryFlags deliveryFlags() const Q_DECL_NOTHROW;
 
-    QNodeId subjectId() const Q_DECL_NOEXCEPT;
+    QNodeId subjectId() const Q_DECL_NOTHROW;
 
 protected:
     Q_DECLARE_PRIVATE(QSceneChange)

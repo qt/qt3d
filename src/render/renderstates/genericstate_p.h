@@ -111,7 +111,7 @@ public:
      * number of values, e.g. when they are using arbitrary floats
      * Default: true
      */
-    virtual bool isPooledImpl() const Q_DECL_NOEXCEPT;
+    virtual bool isPooledImpl() const Q_DECL_NOTHROW;
 
     /*!
      * \brief Return pointer to pooled object with given property change

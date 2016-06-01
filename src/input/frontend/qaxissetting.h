@@ -55,7 +55,7 @@ class QT3DINPUTSHARED_EXPORT QAxisSetting : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(float deadZoneRadius READ deadZoneRadius WRITE setDeadZoneRadius NOTIFY deadZoneRadiusChanged)
-    Q_PROPERTY(QVariantList axes READ axes WRITE setAxes NOTIFY axesChanged)
+    Q_PROPERTY(QVector<int> axes READ axes WRITE setAxes NOTIFY axesChanged)
     Q_PROPERTY(bool smooth READ isSmoothEnabled WRITE setSmoothEnabled NOTIFY smoothChanged)
 
 public:
@@ -63,17 +63,17 @@ public:
     ~QAxisSetting();
 
     float deadZoneRadius() const;
-    QVariantList axes() const;
+    QVector<int> axes() const;
     bool isSmoothEnabled() const;
 
 public Q_SLOTS:
     void setDeadZoneRadius(float deadZoneRadius);
-    void setAxes(const QVariantList &axes);
+    void setAxes(const QVector<int> &axes);
     void setSmoothEnabled(bool enabled);
 
 Q_SIGNALS:
     void deadZoneRadiusChanged(float deadZoneRadius);
-    void axesChanged(QVariantList axes);
+    void axesChanged(const QVector<int> &axes);
     void smoothChanged(bool smooth);
 
 private:

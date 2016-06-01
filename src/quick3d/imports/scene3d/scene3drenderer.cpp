@@ -207,7 +207,7 @@ void Scene3DRenderer::synchronize()
     m_multisample = m_item->multisample();
 }
 
-void Scene3DRenderer::setSGNode(Scene3DSGNode *node) Q_DECL_NOEXCEPT
+void Scene3DRenderer::setSGNode(Scene3DSGNode *node)
 {
     m_node = node;
     if (!m_texture.isNull())

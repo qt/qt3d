@@ -70,6 +70,28 @@ QDirectionalLightPrivate::QDirectionalLightPrivate()
     m_shaderData->setProperty("direction", QVector3D(0.0f, -1.0f, 0.0f));
 }
 
+/*!
+  \class Qt3DRender::QDirectionalLight
+  \inmodule Qt3DRender
+  \since 5.7
+  \brief Encapsulate a Directional Light object in a Qt 3D scene.
+
+ */
+
+/*!
+    \qmltype DirectionalLight
+    \instantiates Qt3DRender::QDirectionalLight
+    \inherits AbstractLight
+    \inqmlmodule Qt3D.Render
+    \since 5.7
+    \brief Encapsulate a Directional Light object in a Qt 3D scene.
+
+*/
+
+/*!
+  \fn Qt3DRender::QDirectionalLight::QDirectionalLight(Qt3DCore::QNode *parent)
+  Constructs a new QDirectionalLight with the specified \a parent.
+ */
 QDirectionalLight::QDirectionalLight(QNode *parent)
     : QAbstractLight(*new QDirectionalLightPrivate, parent)
 {
@@ -86,6 +108,15 @@ QDirectionalLight::QDirectionalLight(QDirectionalLightPrivate &dd, QNode *parent
 {
 }
 
+/*!
+  \qmlproperty vector3d Qt3D.Render::DirectionalLight::worldDirection
+    Specifies the world direction of the directional light
+*/
+
+/*!
+  \property Qt3DRender::QDirectionalLight::worldDirection
+    Specifies the world direction of the directional light
+ */
 void QDirectionalLight::setWorldDirection(const QVector3D &direction)
 {
     Q_D(QDirectionalLight);

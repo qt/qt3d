@@ -140,11 +140,17 @@ void QEntity::addComponent(QComponent *comp)
     if (d->m_components.count(comp) != 0)
         return ;
 
-    d->m_components.append(comp);
-    // We only set the Entity as the Component's parent when it has no parent
-    // This will be the case mostly on C++ but rarely in QML
+    // We need to add it as a child of the current node if it has been declared inline
+    // Or not previously added as a child of the current node so that
+    // 1) The backend gets notified about it's creation
+    // 2) When the current node is destroyed, it gets destroyed as well
     if (!comp->parent())
         comp->setParent(this);
+
+    d->m_components.append(comp);
+
+    // Ensures proper bookkeeping
+    d->registerDestructionHelper(comp, &QEntity::removeComponent, d->m_components);
 
     if (d->m_changeArbiter) {
         const auto componentAddedChange = QComponentAddedChangePtr::create(this, comp);
@@ -170,6 +176,9 @@ void QEntity::removeComponent(QComponent *comp)
     }
 
     d->m_components.removeOne(comp);
+
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(comp);
 }
 
 /*!

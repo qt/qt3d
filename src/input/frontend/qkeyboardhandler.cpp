@@ -143,6 +143,7 @@ void QKeyboardHandlerPrivate::keyEvent(QKeyEvent *event)
 /*!
     \class Qt3DInput::QKeyboardHandler
     \inmodule Qt3DInput
+    \brief A QKeyboardHandler class.
     \since 5.5
 */
 
@@ -151,6 +152,7 @@ void QKeyboardHandlerPrivate::keyEvent(QKeyEvent *event)
     \inqmlmodule Qt3D.Input
     \instantiates Qt3DInput::QKeyboardHandler
     \inherits Component3D
+    \brief QML frontend for QKeyboardHandler C++ class.
     \since 5.5
 */
 
@@ -184,11 +186,13 @@ void QKeyboardHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 }
 
 /*!
-    \qmlproperty KeyboardDevice Qt3D.Input::KeyboardHandler::device
+    \qmlproperty KeyboardDevice Qt3D.Input::KeyboardHandler::sourceDevice
 */
 
 /*!
-    Sets the keyboard device to \a keyboardDevice. Without a valid device,
+    \property QKeyboardHandler::sourceDevice
+
+    Holds the keyboard device of the QKeyboardHandler. Without a valid device,
     the QKeyboardHandler won't receive any event.
  */
 void QKeyboardHandler::setSourceDevice(QKeyboardDevice *keyboardDevice)
@@ -196,10 +200,18 @@ void QKeyboardHandler::setSourceDevice(QKeyboardDevice *keyboardDevice)
     Q_D(QKeyboardHandler);
     if (d->m_keyboardDevice != keyboardDevice) {
 
+        if (d->m_keyboardDevice)
+            d->unregisterDestructionHelper(d->m_keyboardDevice);
+
         if (keyboardDevice && !keyboardDevice->parent())
             keyboardDevice->setParent(this);
 
         d->m_keyboardDevice = keyboardDevice;
+
+        // Ensures proper bookkeeping
+        if (d->m_keyboardDevice)
+            d->registerDestructionHelper(keyboardDevice, &QKeyboardHandler::setSourceDevice, d->m_keyboardDevice);
+
         emit sourceDeviceChanged(keyboardDevice);
     }
 }
@@ -218,7 +230,9 @@ QKeyboardDevice *QKeyboardHandler::sourceDevice() const
 */
 
 /*!
-    Returns the current focus.
+    \property QKeyboardHandler::focus
+
+    Holds \c true if the QKeyboardHandlers has focus.
  */
 bool QKeyboardHandler::focus() const
 {

@@ -42,7 +42,28 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+/*!
+  \class Qt3DRender::QFrustumCulling
+  \inmodule Qt3DRender
+  \since 5.7
+  \ingroup framegraph
 
+  \brief ...
+
+ */
+
+/*!
+    \qmltype FrustumCulling
+    \inqmlmodule Qt3D.Render
+    \instantiates Qt3DRender::QFrustumCulling
+    \inherits FrameGraphNode
+    \since 5.7
+    \qmlabstract
+*/
+
+/*!
+  The constructor creates an instance with the specified \a parent.
+ */
 QFrustumCulling::QFrustumCulling(Qt3DCore::QNode *parent)
     : QFrameGraphNode(parent)
 {

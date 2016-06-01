@@ -98,7 +98,7 @@ QVariant Parameter::value() const
     return m_value;
 }
 
-int Parameter::nameId() const Q_DECL_NOEXCEPT
+int Parameter::nameId() const Q_DECL_NOTHROW
 {
     return m_nameId;
 }

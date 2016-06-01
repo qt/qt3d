@@ -87,12 +87,12 @@ void RenderSurfaceSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChang
     const auto &data = typedChange->data;
     m_surface = surfaceFromQObject(data.surface);
     m_renderTargetSize = data.externalRenderTargetSize;
+    m_devicePixelRatio = data.surfacePixelRatio;
+
     if (m_surface && m_surface->surfaceClass() == QSurface::Window) {
         QWindow *window = static_cast<QWindow *>(m_surface);
         m_width = window->width();
         m_height = window->height();
-        if (window->screen())
-            m_devicePixelRatio = window->screen()->devicePixelRatio();
     }
 }
 
@@ -109,6 +109,8 @@ void RenderSurfaceSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_width = propertyChange->value().toInt();
         else if (propertyChange->propertyName() == QByteArrayLiteral("height"))
             m_height = propertyChange->value().toInt();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("surfacePixelRatio"))
+            m_devicePixelRatio = propertyChange->value().toFloat();
         markDirty(AbstractRenderer::AllDirty);
     }
     FrameGraphNode::sceneChangeEvent(e);

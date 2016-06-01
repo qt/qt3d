@@ -46,21 +46,32 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * \class QRenderState
+ * \brief The QRenderState class
+ * \since 5.7
+ * \ingroup renderstates
+ */
+
+/*! \internal */
 QRenderStatePrivate::QRenderStatePrivate(Type type)
     : QNodePrivate(),
       m_type(type)
 {
 }
 
+/*! \internal */
 QRenderStatePrivate::~QRenderStatePrivate()
 {
 }
 
+/*! \internal */
 QRenderStatePrivate *QRenderStatePrivate::get(QRenderState *state)
 {
     return state->d_func();
 }
 
+/*! \internal */
 const QRenderStatePrivate *QRenderStatePrivate::get(const QRenderState *state)
 {
     return state->d_func();

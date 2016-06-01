@@ -43,7 +43,28 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+/*!
+  \class Qt3DRender::QDispatchCompute
+  \inmodule Qt3DRender
+  \since 5.7
+  \ingroup framegraph
 
+  \brief ...
+
+ */
+
+/*!
+    \qmltype DispatchCompute
+    \inqmlmodule Qt3D.Render
+    \instantiates Qt3DRender::QDispatchCompute
+    \inherits FrameGraphNode
+    \since 5.7
+    \qmlabstract
+*/
+
+/*!
+  The constructor creates an instance with the specified \a parent.
+ */
 QDispatchCompute::QDispatchCompute(Qt3DCore::QNode *parent)
     : QFrameGraphNode(*new QDispatchComputePrivate(), parent)
 {
@@ -72,6 +93,10 @@ int QDispatchCompute::workGroupZ() const
     return d->m_workGroupZ;
 }
 
+/*!
+    \property Qt3DRender::QDispatchCompute::workGroupX
+    Specifies X workgroup.
+ */
 void QDispatchCompute::setWorkGroupX(int workGroupX)
 {
     Q_D(QDispatchCompute);
@@ -81,6 +106,10 @@ void QDispatchCompute::setWorkGroupX(int workGroupX)
     }
 }
 
+/*!
+    \property Qt3DRender::QDispatchCompute::workGroupY
+    Specifies Y workgroup.
+ */
 void QDispatchCompute::setWorkGroupY(int workGroupY)
 {
     Q_D(QDispatchCompute);
@@ -90,6 +119,10 @@ void QDispatchCompute::setWorkGroupY(int workGroupY)
     }
 }
 
+/*!
+    \property Qt3DRender::QDispatchCompute::workGroupZ
+    Specifies Z workgroup.
+ */
 void QDispatchCompute::setWorkGroupZ(int workGroupZ)
 {
     Q_D(QDispatchCompute);
