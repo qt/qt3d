@@ -37,51 +37,67 @@
 
 #version 150 core
 
-in vec3 vertexPosition;
-in vec3 vertexNormal;
-in vec2 vertexTexCoord;
-in vec4 vertexTangent;
-
-out vec3 lightDir;
-out vec3 viewDir;
-out vec2 texCoord;
-
 uniform mat4 viewMatrix;
-uniform mat4 modelMatrix;
-uniform mat4 modelView;
-uniform mat3 modelViewNormal;
-uniform mat4 mvp;
-
-uniform float texCoordScale;
 
 uniform vec3 lightPosition;
+uniform vec3 lightIntensity;
+
+uniform vec3 ka;            // Ambient reflectivity
+uniform vec3 ks;            // Specular reflectivity
+uniform float shininess;    // Specular shininess factor
+uniform float opacity;      // Alpha channel
+
+uniform sampler2D diffuseTexture;
+
+uniform sampler2DShadow shadowMapTexture;
+
+in vec4 positionInLightSpace;
+
+in vec3 position;
+in vec3 normal;
+in vec2 texCoord;
+
+out vec4 fragColor;
+
+vec3 dModel(const in vec2 flipYTexCoord)
+{
+    // Calculate the vector from the light to the fragment
+    vec3 s = normalize(vec3(viewMatrix * vec4(lightPosition, 1.0)) - position);
+
+    // Calculate the vector from the fragment to the eye position
+    // (origin since this is in "eye" or "camera" space)
+    vec3 v = normalize(-position);
+
+    // Reflect the light beam using the normal at this fragment
+    vec3 r = reflect(-s, normal);
+
+    // Calculate the diffuse component
+    float diffuse = max(dot(s, normal), 0.0);
+
+    // Calculate the specular component
+    float specular = 0.0;
+    if (dot(s, normal) > 0.0)
+        specular = (shininess / (8.0 * 3.14)) * pow(max(dot(r, v), 0.0), shininess);
+
+    // Lookup diffuse and specular factors
+    vec3 diffuseColor = texture(diffuseTexture, flipYTexCoord).rgb;
+
+    // Combine the ambient, diffuse and specular contributions
+    return lightIntensity * ((ka + diffuse) * diffuseColor + specular * ks);
+}
 
 void main()
 {
-    // Pass through texture coordinates
-    texCoord = vertexTexCoord * texCoordScale;
+    vec2 flipYTexCoord = texCoord;
+    flipYTexCoord.y = 1.0 - texCoord.y;
 
-    // Transform position, normal, and tangent to eye coords
-    vec3 normal = normalize(modelViewNormal * vertexNormal);
-    vec3 tangent = normalize(modelViewNormal * vertexTangent.xyz);
-    vec3 position = vec3(modelView * vec4(vertexPosition, 1.0));
+    float shadowMapSample = textureProj(shadowMapTexture, positionInLightSpace);
 
-    // Calculate binormal vector
-    vec3 binormal = normalize(cross(normal, tangent));
+    vec3 result = lightIntensity * ka * texture(diffuseTexture, flipYTexCoord).rgb;
+    if (shadowMapSample > 0)
+        result += dModel(flipYTexCoord);
 
-    // Construct matrix to transform from eye coords to tangent space
-    mat3 tangentMatrix = mat3 (
-        tangent.x, binormal.x, normal.x,
-        tangent.y, binormal.y, normal.y,
-        tangent.z, binormal.z, normal.z);
+    float alpha = opacity * texture(diffuseTexture, flipYTexCoord).a;
 
-    // Transform light direction and view direction to tangent space
-    vec3 s = lightPosition - position;
-    lightDir = normalize(tangentMatrix * vec3(viewMatrix * vec4(s, 1.0)));
-
-    vec3 v = -position;
-    viewDir = normalize(tangentMatrix * v);
-
-    // Calculate vertex position in clip coordinates
-    gl_Position = mvp * vec4(vertexPosition, 1.0);
+    fragColor = vec4(result, alpha);
 }

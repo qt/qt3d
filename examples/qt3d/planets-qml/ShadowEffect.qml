@@ -90,8 +90,8 @@ Effect {
         filterKeys: [ forwardkey ]
 
         shaderProgram: ShaderProgram {
-            vertexShaderCode:   loadSource("qrc:/shaders/gl3/planetD.vert")
-            fragmentShaderCode: loadSource("qrc:/shaders/gl3/planetD.frag")
+            vertexShaderCode:   loadSource("qrc:/shaders/gl3/planetDShadow.vert")
+            fragmentShaderCode: loadSource("qrc:/shaders/gl3/planetDShadow.frag")
         }
 
         // no special render state set => use the default set of states

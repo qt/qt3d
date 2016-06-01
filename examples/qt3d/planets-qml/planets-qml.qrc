@@ -35,5 +35,7 @@
         <file>shaders/es2/planetDB.vert</file>
         <file>shaders/es2/planetDS.frag</file>
         <file>shaders/es2/planetDSB.frag</file>
+        <file>shaders/gl3/planetDShadow.frag</file>
+        <file>shaders/gl3/planetDShadow.vert</file>
     </qresource>
 </RCC>
