@@ -300,7 +300,7 @@ void RenderView::sort()
             while (j < i) {
                 // We need the reference here as we are modifying the original container
                 // not the copy
-                PackUniformHash &uniforms = m_commands[j]->m_parameterPack.m_uniforms;
+                PackUniformHash &uniforms = m_commands.at(j)->m_parameterPack.m_uniforms;
                 PackUniformHash::iterator it = uniforms.begin();
                 const PackUniformHash::iterator end = uniforms.end();
 
