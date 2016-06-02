@@ -102,7 +102,7 @@ void QTechniqueFilter::addMatch(QFilterKey *filterKey)
         d->m_matchList.append(filterKey);
 
         // Ensures proper bookkeeping
-        d->registerDestructionHelper(filterKey, &QTechniqueFilter::addMatch, d->m_matchList);
+        d->registerDestructionHelper(filterKey, &QTechniqueFilter::removeMatch, d->m_matchList);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
