@@ -124,6 +124,40 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
+
+    void checkSourceDeviceBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DInput::QKeyboardHandler> keyboardHandler(new Qt3DInput::QKeyboardHandler);
+        {
+            // WHEN
+            Qt3DInput::QKeyboardDevice device;
+            keyboardHandler->setSourceDevice(&device);
+
+            // THEN
+            QCOMPARE(device.parent(), keyboardHandler.data());
+            QCOMPARE(keyboardHandler->sourceDevice(), &device);
+        }
+        // THEN (Should not crash and effect be unset)
+        QVERIFY(keyboardHandler->sourceDevice() == nullptr);
+
+        {
+            // WHEN
+            Qt3DInput::QKeyboardHandler someOtherKeyboardHandler;
+            QScopedPointer<Qt3DInput::QKeyboardDevice> device(new Qt3DInput::QKeyboardDevice(&someOtherKeyboardHandler));
+            keyboardHandler->setSourceDevice(device.data());
+
+            // THEN
+            QCOMPARE(device->parent(), &someOtherKeyboardHandler);
+            QCOMPARE(keyboardHandler->sourceDevice(), device.data());
+
+            // WHEN
+            keyboardHandler.reset();
+            device.reset();
+
+            // THEN Should not crash when the device is destroyed (tests for failed removal of destruction helper)
+        }
+    }
 };
 
 QTEST_MAIN(tst_QKeyboardHandler)
