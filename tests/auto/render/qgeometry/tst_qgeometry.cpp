@@ -146,6 +146,40 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
+
+    void checkAttributeBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DRender::QGeometry> geometry(new Qt3DRender::QGeometry);
+        {
+            // WHEN
+            Qt3DRender::QAttribute attribute;
+            geometry->addAttribute(&attribute);
+
+            // THEN
+            QCOMPARE(attribute.parent(), geometry.data());
+            QCOMPARE(geometry->attributes().size(), 1);
+        }
+        // THEN (Should not crash and parameter be unset)
+        QVERIFY(geometry->attributes().isEmpty());
+
+        {
+            // WHEN
+            Qt3DRender::QGeometry someOtherGeometry;
+            QScopedPointer<Qt3DRender::QAttribute> attribute(new Qt3DRender::QAttribute(&someOtherGeometry));
+            geometry->addAttribute(attribute.data());
+
+            // THEN
+            QCOMPARE(attribute->parent(), &someOtherGeometry);
+            QCOMPARE(geometry->attributes().size(), 1);
+
+            // WHEN
+            geometry.reset();
+            attribute.reset();
+
+            // THEN Should not crash when the attribute is destroyed (tests for failed removal of destruction helper)
+        }
+    }
 };
 
 QTEST_MAIN(tst_QGeometry)
