@@ -52,6 +52,7 @@
 #include <Qt3DRender/private/renderview_p.h>
 #include <Qt3DRender/private/frustumcullingjob_p.h>
 #include <Qt3DRender/private/lightgatherer_p.h>
+#include <QThreadPool>
 
 QT_BEGIN_NAMESPACE
 
@@ -126,7 +127,7 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         // Prefer linear iteration over tree traversal
 
         const int currentRenderViewIndex = m_renderviewIndex++;
-        auto renderViewCommandBuilder = Render::RenderViewBuilderJobPtr::create();
+        const int optimalParallelJobCount = std::max(QThread::idealThreadCount(), 2);
         auto renderViewJob = RenderViewInitializerJobPtr::create();
         auto filterEntityByLayer = Render::FilterLayerEntityJobPtr::create();
         auto lightGatherer = Render::LightGathererPtr::create();
@@ -153,10 +154,9 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
 
         // RenderCommand building is the most consuming task -> split it
         QVector<Render::RenderViewBuilderJobPtr> renderViewCommandBuilders;
-        const int commandBuilderCount = std::max(entityManager->count() / 32, 1);
         // Estimate the number of jobs to create based on the number of entities
-
-        for (auto i = 0; i < commandBuilderCount; ++i) {
+        renderViewCommandBuilders.reserve(optimalParallelJobCount);
+        for (auto i = 0; i < optimalParallelJobCount; ++i) {
             auto renderViewCommandBuilder = Render::RenderViewBuilderJobPtr::create();
             renderViewCommandBuilder->setIndex(currentRenderViewIndex);
             renderViewCommandBuilder->setRenderer(m_renderer);
@@ -167,13 +167,17 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         QVector<Render::MaterialParameterGathererJobPtr> materialGatherers;
         { // Scoped to avoid copy in lambdas
             const QVector<HMaterial> materialHandles = m_renderer->nodeManagers()->materialManager()->activeHandles();
-            const int materialGathererCount = materialHandles.size() / 8 + 1;
-            materialGatherers.reserve(materialGathererCount);
-            for (auto i = 0; i < materialGathererCount; ++i) {
+            const int elementsPerJob =  materialHandles.size() / optimalParallelJobCount;
+            const int lastRemaingElements = materialHandles.size() % optimalParallelJobCount;
+            materialGatherers.reserve(optimalParallelJobCount);
+            for (auto i = 0; i < optimalParallelJobCount; ++i) {
                 auto materialGatherer = Render::MaterialParameterGathererJobPtr::create();
                 materialGatherer->setNodeManagers(m_renderer->nodeManagers());
                 materialGatherer->setRenderer(m_renderer);
-                materialGatherer->setHandles(materialHandles.mid(i * 8, 8));
+                if (i == optimalParallelJobCount - 1)
+                    materialGatherer->setHandles(materialHandles.mid(i * elementsPerJob, elementsPerJob + lastRemaingElements));
+                else
+                    materialGatherer->setHandles(materialHandles.mid(i * elementsPerJob, elementsPerJob));
                 materialGatherers.push_back(materialGatherer);
             }
         }
@@ -216,7 +220,7 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
                 // Note: this could further be improved if needed
                 // Set the renderable and computable entities
                 if (!rv->isCompute()) {
-                    QVector<Entity *> renderableEntities = renderableEntityFilterer->filteredEntities();
+                    QVector<Entity *> renderableEntities = std::move(renderableEntityFilterer->filteredEntities());
 
                     for (auto i = renderableEntities.size() - 1; i >= 0; --i) {
                         if (!filteredEntities.contains(renderableEntities.at(i)))
@@ -231,27 +235,27 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
                         }
                     }
                     // Split among the number of command builders
-                    const int packetSize = renderableEntities.size() / commandBuilderCount;
-                    for (auto i = 0; i < commandBuilderCount; ++i) {
+                    const int packetSize = renderableEntities.size() / optimalParallelJobCount;
+                    for (auto i = 0; i < optimalParallelJobCount; ++i) {
                         const RenderViewBuilderJobPtr renderViewCommandBuilder = renderViewCommandBuilders.at(i);
-                        if (i == commandBuilderCount - 1)
-                            renderViewCommandBuilder->setRenderables(renderableEntities.mid(i * packetSize, packetSize + renderableEntities.size() % commandBuilderCount));
+                        if (i == optimalParallelJobCount - 1)
+                            renderViewCommandBuilder->setRenderables(renderableEntities.mid(i * packetSize, packetSize + renderableEntities.size() % optimalParallelJobCount));
                         else
                             renderViewCommandBuilder->setRenderables(renderableEntities.mid(i * packetSize, packetSize));
                     }
 
                 } else {
-                    QVector<Entity *> computableEntities = computeEntityFilterer->filteredEntities();
+                    QVector<Entity *> computableEntities = std::move(computeEntityFilterer->filteredEntities());
                     for (auto i = computableEntities.size() - 1; i >= 0; --i) {
                         if (!filteredEntities.contains(computableEntities.at(i)))
                             computableEntities.removeAt(i);
                     }
                     // Split among the number of command builders
-                    const int packetSize = computableEntities.size() / commandBuilderCount;
-                    for (auto i = 0; i < commandBuilderCount; ++i) {
+                    const int packetSize = computableEntities.size() / optimalParallelJobCount;
+                    for (auto i = 0; i < optimalParallelJobCount; ++i) {
                         const RenderViewBuilderJobPtr renderViewCommandBuilder = renderViewCommandBuilders.at(i);
-                        if (i == commandBuilderCount - 1)
-                            renderViewCommandBuilder->setRenderables(computableEntities.mid(i * packetSize, packetSize + computableEntities.size() % commandBuilderCount));
+                        if (i == optimalParallelJobCount - 1)
+                            renderViewCommandBuilder->setRenderables(computableEntities.mid(i * packetSize, packetSize + computableEntities.size() % optimalParallelJobCount));
                         else
                             renderViewCommandBuilder->setRenderables(computableEntities.mid(i * packetSize, packetSize));
                     }
@@ -271,7 +275,13 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
             // Append all the commands and sort them
             RenderView *rv = renderViewJob->renderView();
 
+            int totalCommandCount = 0;
+            for (const auto renderViewCommandBuilder : qAsConst(renderViewCommandBuilders))
+                totalCommandCount += renderViewCommandBuilder->commands().size();
+
             QVector<RenderCommand *> commands;
+            commands.reserve(totalCommandCount);
+
             // Reduction
             for (const auto renderViewCommandBuilder : qAsConst(renderViewCommandBuilders))
                 commands += std::move(renderViewCommandBuilder->commands());
