@@ -305,6 +305,40 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
+
+    void checkGeometryBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DRender::QGeometryRenderer> geometryRenderer(new Qt3DRender::QGeometryRenderer);
+        {
+            // WHEN
+            Qt3DRender::QGeometry geometry;
+            geometryRenderer->setGeometry(&geometry);
+
+            // THEN
+            QCOMPARE(geometry.parent(), geometryRenderer.data());
+            QCOMPARE(geometryRenderer->geometry(), &geometry);
+        }
+        // THEN (Should not crash and parameter be unset)
+        QVERIFY(geometryRenderer->geometry() == nullptr);
+
+        {
+            // WHEN
+            Qt3DRender::QGeometryRenderer someOtherGeometryRenderer;
+            QScopedPointer<Qt3DRender::QGeometry> geometry(new Qt3DRender::QGeometry(&someOtherGeometryRenderer));
+            geometryRenderer->setGeometry(geometry.data());
+
+            // THEN
+            QCOMPARE(geometry->parent(), &someOtherGeometryRenderer);
+            QCOMPARE(geometryRenderer->geometry(), geometry.data());
+
+            // WHEN
+            geometryRenderer.reset();
+            geometry.reset();
+
+            // THEN Should not crash when the geometry is destroyed (tests for failed removal of destruction helper)
+        }
+    }
 };
 
 QTEST_MAIN(tst_QGeometryRenderer)
