@@ -135,6 +135,12 @@ State *getOrCreateRenderStateEqualTo(const State &prototype)
             Qt3DCore::ObjectLevelLockingPolicy> manager;
     static int currIndex = 0;
 
+    if (!prototype.isPooledImpl()) {
+        State *state = new State();
+        *state = prototype;
+        return state;
+    }
+
     // find existing state?
     for (int idx = 0; idx < currIndex; ++idx) {
         State *state = manager.lookupResource(idx);
