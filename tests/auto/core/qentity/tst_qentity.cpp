@@ -63,6 +63,8 @@ private slots:
 
     void checkCloning_data();
     void checkCloning();
+
+    void checkComponentBookkeeping();
 };
 
 class MyQComponent : public Qt3DCore::QComponent
@@ -595,6 +597,40 @@ void tst_Entity::checkCloning()
     for (int i = 0, m = components.size(); i < m; ++i) {
         QCOMPARE(cloneData.componentIdsAndTypes.at(i).id, components.at(i)->id());
         QCOMPARE(cloneData.componentIdsAndTypes.at(i).type, components.at(i)->metaObject());
+    }
+}
+
+void tst_Entity::checkComponentBookkeeping()
+{
+    // GIVEN
+    QScopedPointer<Qt3DCore::QEntity> rootEntity(new Qt3DCore::QEntity);
+    {
+        // WHEN
+        QScopedPointer<Qt3DCore::QComponent> comp(new MyQComponent(rootEntity.data()));
+        rootEntity->addComponent(comp.data());
+
+        // THEN
+        QCOMPARE(comp->parent(), rootEntity.data());
+        QCOMPARE(rootEntity->components().size(), 1);
+    }
+    // THEN (Should not crash and comp should be automatically removed)
+    QVERIFY(rootEntity->components().empty());
+
+    {
+        // WHEN
+        QScopedPointer<Qt3DCore::QEntity> someOtherEntity(new Qt3DCore::QEntity);
+        QScopedPointer<Qt3DCore::QComponent> comp(new MyQComponent(someOtherEntity.data()));
+        rootEntity->addComponent(comp.data());
+
+        // THEN
+        QCOMPARE(comp->parent(), someOtherEntity.data());
+        QCOMPARE(rootEntity->components().size(), 1);
+
+        // WHEN
+        rootEntity.reset();
+        comp.reset();
+
+        // THEN (Should not crash when the comp is destroyed (tests for failed removal of destruction helper)
     }
 }
 
