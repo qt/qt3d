@@ -136,6 +136,40 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
+
+    void checkCameraBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DRender::QCameraSelector> cameraSelector(new Qt3DRender::QCameraSelector);
+        {
+            // WHEN
+            Qt3DCore::QEntity camera;
+            cameraSelector->setCamera(&camera);
+
+            // THEN
+            QCOMPARE(camera.parent(), cameraSelector.data());
+            QCOMPARE(cameraSelector->camera(), &camera);
+        }
+        // THEN (Should not crash and parameter be unset)
+        QVERIFY(cameraSelector->camera() == nullptr);
+
+        {
+            // WHEN
+            Qt3DRender::QCameraSelector someOtherCameraSelector;
+            QScopedPointer<Qt3DCore::QEntity> camera(new Qt3DCore::QEntity(&someOtherCameraSelector));
+            cameraSelector->setCamera(camera.data());
+
+            // THEN
+            QCOMPARE(camera->parent(), &someOtherCameraSelector);
+            QCOMPARE(cameraSelector->camera(), camera.data());
+
+            // WHEN
+            cameraSelector.reset();
+            camera.reset();
+
+            // THEN Should not crash when the camera is destroyed (tests for failed removal of destruction helper)
+        }
+    }
 };
 
 QTEST_MAIN(tst_QCameraSelector)
