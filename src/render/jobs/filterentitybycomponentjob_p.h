@@ -78,7 +78,7 @@ public:
     }
 
     inline void setManager(EntityManager *manager) Q_DECL_NOTHROW { m_manager = manager; }
-    inline QVector<Entity *> filteredEntities() const Q_DECL_NOTHROW { return m_filteredEntities; }
+    inline QVector<Entity *> &filteredEntities() Q_DECL_NOTHROW { return m_filteredEntities; }
 
     void run() Q_DECL_FINAL
     {
