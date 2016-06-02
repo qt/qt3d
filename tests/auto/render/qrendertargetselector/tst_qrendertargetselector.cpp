@@ -185,6 +185,40 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
+
+    void checkRenderTargetBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DRender::QRenderTargetSelector> targetSelector(new Qt3DRender::QRenderTargetSelector);
+        {
+            // WHEN
+            Qt3DRender::QRenderTarget target;
+            targetSelector->setTarget(&target);
+
+            // THEN
+            QCOMPARE(target.parent(), targetSelector.data());
+            QCOMPARE(targetSelector->target(), &target);
+        }
+        // THEN (Should not crash and effect be unset)
+        QVERIFY(targetSelector->target() == nullptr);
+
+        {
+            // WHEN
+            Qt3DRender::QRenderTargetSelector someOtherTargetSelector;
+            QScopedPointer<Qt3DRender::QRenderTarget> target(new Qt3DRender::QRenderTarget(&someOtherTargetSelector));
+            targetSelector->setTarget(target.data());
+
+            // THEN
+            QCOMPARE(target->parent(), &someOtherTargetSelector);
+            QCOMPARE(targetSelector->target(), target.data());
+
+            // WHEN
+            targetSelector.reset();
+            target.reset();
+
+            // THEN Should not crash when the target is destroyed (tests for failed removal of destruction helper)
+        }
+    }
 };
 
 QTEST_MAIN(tst_QRenderTargetSelector)
