@@ -9,7 +9,9 @@ HEADERS += \
     deferredrenderer.h \
     finaleffect.h \
     sceneeffect.h \
-    pointlightblock.h
+    pointlightblock.h \
+    screenquadentity.h \
+    sceneentity.h
 
 SOURCES += \
     main.cpp \
@@ -17,7 +19,9 @@ SOURCES += \
     deferredrenderer.cpp \
     finaleffect.cpp \
     sceneeffect.cpp \
-    pointlightblock.cpp
+    pointlightblock.cpp \
+    screenquadentity.cpp \
+    sceneentity.cpp
 
 RESOURCES += \
     deferred-renderer-cpp.qrc

@@ -49,7 +49,9 @@
 ****************************************************************************/
 
 #include "deferredrenderer.h"
-
+#include "gbuffer.h"
+#include <Qt3DRender/QParameter>
+#include <QWindow>
 
 DeferredRenderer::DeferredRenderer(Qt3DCore::QNode *parent)
     : Qt3DRender::QViewport(parent)
@@ -62,19 +64,27 @@ DeferredRenderer::DeferredRenderer(Qt3DCore::QNode *parent)
     , m_geometryPassFilter(new Qt3DRender::QRenderPassFilter(m_clearGBuffer))
     , m_finalPassFilter(new Qt3DRender::QRenderPassFilter(m_clearScreenQuad))
     , m_sceneCameraSelector(new Qt3DRender::QCameraSelector(m_geometryPassFilter))
+    , m_gBuffer(new GBuffer(this))
 {
     m_clearGBuffer->setBuffers(Qt3DRender::QClearBuffers::ColorDepthBuffer);
     m_clearScreenQuad->setBuffers(Qt3DRender::QClearBuffers::ColorDepthBuffer);
+    m_gBufferTargetSelector->setTarget(m_gBuffer);
+
+    m_finalPassFilter->addParameter(new Qt3DRender::QParameter(QStringLiteral("position"), m_gBuffer->positionTexture()));
+    m_finalPassFilter->addParameter(new Qt3DRender::QParameter(QStringLiteral("normal"), m_gBuffer->normalTexture()));
+    m_finalPassFilter->addParameter(new Qt3DRender::QParameter(QStringLiteral("color"), m_gBuffer->colorTexture()));
+
+    Qt3DRender::QParameter *winSize = new Qt3DRender::QParameter(QStringLiteral("winSize"), QSize(1024, 768));
+    QObject::connect(m_surfaceSelector, &Qt3DRender::QRenderSurfaceSelector::externalRenderTargetSizeChanged,
+                     [=] (const QSize &viewSize) {
+       winSize->setValue(viewSize);
+    });
+    m_finalPassFilter->addParameter(winSize);
 }
 
 void DeferredRenderer::setSceneCamera(Qt3DCore::QEntity *camera)
 {
     m_sceneCameraSelector->setCamera(camera);
-}
-
-void DeferredRenderer::setGBuffer(Qt3DRender::QRenderTarget *gBuffer)
-{
-    m_gBufferTargetSelector->setTarget(gBuffer);
 }
 
 void DeferredRenderer::setGeometryPassCriteria(QList<Qt3DRender::QFilterKey *> criteria)
@@ -97,4 +107,9 @@ void DeferredRenderer::setGBufferLayer(Qt3DRender::QLayer *layer)
 void DeferredRenderer::setScreenQuadLayer(Qt3DRender::QLayer *layer)
 {
     m_screenQuadFilter->addLayer(layer);
+}
+
+void DeferredRenderer::setSurface(QWindow *surface)
+{
+    m_surfaceSelector->setSurface(surface);
 }

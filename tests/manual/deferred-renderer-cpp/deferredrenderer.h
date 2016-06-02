@@ -60,6 +60,8 @@
 #include <Qt3DRender/QCameraSelector>
 #include <Qt3DRender/QFilterKey>
 
+class GBuffer;
+
 class DeferredRenderer : public Qt3DRender::QViewport
 {
 public:
@@ -71,6 +73,7 @@ public:
     void setFinalPassCriteria(QList<Qt3DRender::QFilterKey *> criteria);
     void setGBufferLayer(Qt3DRender::QLayer *layer);
     void setScreenQuadLayer(Qt3DRender::QLayer *layer);
+    void setSurface(QWindow *surface);
 
 private:
     Qt3DRender::QRenderSurfaceSelector *m_surfaceSelector;
@@ -82,6 +85,7 @@ private:
     Qt3DRender::QRenderPassFilter *m_geometryPassFilter;
     Qt3DRender::QRenderPassFilter *m_finalPassFilter;
     Qt3DRender::QCameraSelector *m_sceneCameraSelector;
+    GBuffer *m_gBuffer;
 };
 
 #endif // DEFERREDRENDERER_H

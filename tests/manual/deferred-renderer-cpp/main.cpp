@@ -68,9 +68,11 @@
 #include "finaleffect.h"
 #include "sceneeffect.h"
 #include "pointlightblock.h"
+#include "sceneentity.h"
+#include "screenquadentity.h"
+
 #include <Qt3DExtras/qt3dwindow.h>
 #include <Qt3DExtras/qfirstpersoncameracontroller.h>
-
 
 int main(int ac, char **av)
 {
@@ -80,39 +82,25 @@ int main(int ac, char **av)
 
     // Root entity
     Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
-    rootEntity->setObjectName(QStringLiteral("rootEntity"));
+
+    // Scene Content
+    SceneEntity *sceneContent = new SceneEntity(rootEntity);
+
+    // Screen Quad
+    ScreenQuadEntity *screenQuad = new ScreenQuadEntity(rootEntity);
 
     // Shared Components
-    GBuffer *gBuffer = new GBuffer();
-    FinalEffect *finalEffect = new FinalEffect();
-    SceneEffect *sceneEffect = new SceneEffect();
-
-    Qt3DExtras::QSphereMesh *sphereMesh = new Qt3DExtras::QSphereMesh();
-    sphereMesh->setRings(50);
-    sphereMesh->setSlices(100);
-
-    Qt3DRender::QLayer *sceneLayer = new Qt3DRender::QLayer();
-    Qt3DRender::QLayer *quadLayer = new Qt3DRender::QLayer();
-
-    Qt3DExtras::QPlaneMesh *planeMesh = new Qt3DExtras::QPlaneMesh();
-    planeMesh->setMeshResolution(QSize(2, 2));
-    planeMesh->setWidth(2.0f);
-    planeMesh->setHeight(2.0f);
-
-    Qt3DRender::QPointLight *light1 = new Qt3DRender::QPointLight();
-    light1->setColor(Qt::white);
-    light1->setIntensity(1.5f);
-
-    rootEntity->addComponent(light1);
+    Qt3DRender::QLayer *sceneLayer = sceneContent->layer();
+    Qt3DRender::QLayer *quadLayer = screenQuad->layer();
+    SceneEffect *sceneEffect = sceneContent->effect();
+    FinalEffect *finalEffect = screenQuad->effect();
 
     // Scene Camera
     Qt3DRender::QCamera *camera = view.camera();
-
     camera->setFieldOfView(45.0f);
     camera->setNearPlane(0.01f);
     camera->setFarPlane(1000.0f);
     camera->setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
-
     camera->setPosition(QVector3D(10.0f, 10.0f, -25.0f));
     camera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
     camera->setViewCenter(QVector3D(0.0f, 0.0f, 10.0f));
@@ -126,69 +114,12 @@ int main(int ac, char **av)
     deferredRenderer->setNormalizedRect(QRectF(0.0f, 0.0f, 1.0f, 1.0f));
     deferredRenderer->setFinalPassCriteria(finalEffect->passCriteria());
     deferredRenderer->setGeometryPassCriteria(sceneEffect->passCriteria());
-    deferredRenderer->setGBuffer(gBuffer);
     deferredRenderer->setSceneCamera(camera);
     deferredRenderer->setGBufferLayer(sceneLayer);
     deferredRenderer->setScreenQuadLayer(quadLayer);
+    deferredRenderer->setSurface(&view);
+
     view.setActiveFrameGraph(deferredRenderer);
-
-    // Scene Content
-    Qt3DCore::QEntity *sphereOne = new Qt3DCore::QEntity(rootEntity);
-    Qt3DRender::QMaterial *sphereOneMaterial = new Qt3DRender::QMaterial();
-
-    sphereOneMaterial->setEffect(sceneEffect);
-    sphereOneMaterial->addParameter(new Qt3DRender::QParameter(QStringLiteral("meshColor"), QColor(Qt::blue)));
-
-    Qt3DCore::QTransform *sphereOneTransform = new Qt3DCore::QTransform;
-    sphereOneTransform->setTranslation(QVector3D(-10.0f, 0.0f, 25.0f));
-
-    Qt3DRender::QPointLight *light2 = new Qt3DRender::QPointLight();
-    light2->setColor(Qt::white);
-    light2->setIntensity(1.5f);
-
-    sphereOne->addComponent(sphereOneTransform);
-    sphereOne->addComponent(sphereOneMaterial);
-    sphereOne->addComponent(sphereMesh);
-    sphereOne->addComponent(sceneLayer);
-    sphereOne->addComponent(light2);
-
-    Qt3DCore::QEntity *sphereTwo = new Qt3DCore::QEntity(rootEntity);
-    Qt3DRender::QMaterial *sphereTwoMaterial = new Qt3DRender::QMaterial();
-    sphereTwoMaterial->setEffect(sceneEffect);
-    sphereTwoMaterial->addParameter(new Qt3DRender::QParameter(QStringLiteral("meshColor"), QColor(Qt::yellow)));
-
-    Qt3DRender::QPointLight *light3 = new Qt3DRender::QPointLight();
-    light3->setColor(Qt::blue);
-    light3->setIntensity(0.5f);
-
-    sphereTwo->addComponent(sphereMesh);
-    sphereTwo->addComponent(sceneLayer);
-    sphereTwo->addComponent(sphereTwoMaterial);
-    sphereTwo->addComponent(light3);
-
-    // Screen Quad
-    Qt3DCore::QEntity *screenQuad = new Qt3DCore::QEntity(rootEntity);
-    Qt3DRender::QMaterial *screenQuadMaterial = new Qt3DRender::QMaterial();
-    screenQuadMaterial->addParameter(new Qt3DRender::QParameter(QStringLiteral("position"), gBuffer->positionTexture()));
-    screenQuadMaterial->addParameter(new Qt3DRender::QParameter(QStringLiteral("normal"), gBuffer->normalTexture()));
-    screenQuadMaterial->addParameter(new Qt3DRender::QParameter(QStringLiteral("color"), gBuffer->colorTexture()));
-    screenQuadMaterial->addParameter(new Qt3DRender::QParameter(QStringLiteral("winSize"), QSize(1024, 1024)));
-    PointLightBlock *lightsData = new PointLightBlock(screenQuadMaterial);
-    lightsData->addLight(light1);
-    lightsData->addLight(light2);
-    lightsData->addLight(light3);
-
-    finalEffect->gl3Technique()->addParameter(new Qt3DRender::QParameter(QStringLiteral("PointLightBlock"), QVariant::fromValue(lightsData)));
-    finalEffect->gl2Technique()->addParameter(new Qt3DRender::QParameter(QStringLiteral("pointLights"), QVariant::fromValue(lightsData)));
-    screenQuadMaterial->setEffect(finalEffect);
-
-    Qt3DCore::QTransform *screenPlaneTransform = new Qt3DCore::QTransform;
-    screenPlaneTransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1.0f, 0.0f, 0.0f), 90.0f));
-
-    screenQuad->addComponent(quadLayer);
-    screenQuad->addComponent(screenPlaneTransform);
-    screenQuad->addComponent(screenQuadMaterial);
-    screenQuad->addComponent(planeMesh);
 
     // Set root object of the scene
     view.setRootEntity(rootEntity);

@@ -54,6 +54,8 @@
 #include <Qt3DRender/QShaderProgram>
 #include <QUrl>
 
+QT_BEGIN_NAMESPACE
+
 SceneEffect::SceneEffect(Qt3DCore::QNode *parent)
     : Qt3DRender::QEffect(parent)
     , m_gl3Technique(new Qt3DRender::QTechnique())
@@ -101,3 +103,5 @@ QList<Qt3DRender::QFilterKey *> SceneEffect::passCriteria() const
 {
     return QList<Qt3DRender::QFilterKey *>() << m_passCriterion;
 }
+
+QT_END_NAMESPACE
