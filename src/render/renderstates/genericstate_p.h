@@ -180,138 +180,25 @@ public:
     }
 };
 
-
-template <class StateSetImpl, StateMaskSet mask, typename T>
-class GenericState1 : public MaskedRenderState<StateSetImpl, mask>
+template <class StateSetImpl, StateMaskSet mask, typename ... T>
+class GenericState : public MaskedRenderState<StateSetImpl, mask>
 {
 public:
-    GenericState1 *set(const T& v1)
+
+    GenericState *set(T... values)
     {
-        m_1 = v1;
+        m_values = std::tuple<T ...>(values...);
         return this;
     }
+
     bool equalTo(const RenderStateImpl &renderState) const Q_DECL_OVERRIDE
     {
-        const GenericState1 *other = static_cast<const GenericState1*>(&renderState);
-        return (other != NULL
-                && other->m_1 == m_1);
+        const GenericState *other = static_cast<const GenericState*>(&renderState);
+        return (other != NULL && other->m_values == m_values);
     }
 
 protected:
-    T m_1;
-};
-
-template <class StateSetImpl, StateMaskSet mask, typename T, typename S>
-class GenericState2 : public MaskedRenderState<StateSetImpl, mask>
-{
-public:
-    GenericState2 *set(const T& v1, const S& v2)
-    {
-        m_1 = v1;
-        m_2 = v2;
-        return this;
-    }
-    bool equalTo(const RenderStateImpl &renderState) const Q_DECL_OVERRIDE
-    {
-        const GenericState2 *other = static_cast<const GenericState2*>(&renderState);
-        return (other != NULL
-                && other->m_1 == m_1
-                && other->m_2 == m_2);
-    }
-
-protected:
-    T m_1;
-    S m_2;
-};
-
-template <class StateSetImpl, StateMaskSet mask, typename T, typename S, typename U>
-class GenericState3 : public MaskedRenderState<StateSetImpl, mask>
-{
-public:
-    GenericState3 *set(const T& v1, const S& v2, const U& v3)
-    {
-        m_1 = v1;
-        m_2 = v2;
-        m_3 = v3;
-        return this;
-    }
-    bool equalTo(const RenderStateImpl &renderState) const Q_DECL_OVERRIDE
-    {
-        const GenericState3 *other = static_cast<const GenericState3*>(&renderState);
-        return (other != NULL
-                && other->m_1 == m_1
-                && other->m_2 == m_2
-                && other->m_3 == m_3);
-    }
-
-protected:
-    T m_1;
-    S m_2;
-    U m_3;
-};
-
-template <class StateSetImpl, StateMaskSet mask, typename T, typename S, typename U, typename Z>
-class GenericState4 : public MaskedRenderState<StateSetImpl, mask>
-{
-public:
-    GenericState4 *set(const T& v1, const S& v2, const U& v3, const Z& v4)
-    {
-        m_1 = v1;
-        m_2 = v2;
-        m_3 = v3;
-        m_4 = v4;
-        return this;
-    }
-    bool equalTo(const RenderStateImpl &renderState) const Q_DECL_OVERRIDE
-    {
-        const GenericState4 *other = static_cast<const GenericState4*>(&renderState);
-        return (other != NULL
-                && other->m_1 == m_1
-                && other->m_2 == m_2
-                && other->m_3 == m_3
-                && other->m_4 == m_4);
-    }
-
-protected:
-    T m_1;
-    S m_2;
-    U m_3;
-    Z m_4;
-};
-
-template <class StateSetImpl, StateMaskSet mask, typename T, typename S, typename U, typename V, typename W, typename Z>
-class GenericState6 : public MaskedRenderState<StateSetImpl, mask>
-{
-public:
-    GenericState6 *set(const T& v1, const S& v2, const U& v3, const V& v4, const W& v5, const Z& v6)
-    {
-        m_1 = v1;
-        m_2 = v2;
-        m_3 = v3;
-        m_4 = v4;
-        m_5 = v5;
-        m_6 = v6;
-        return this;
-    }
-    bool equalTo(const RenderStateImpl &renderState) const Q_DECL_OVERRIDE
-    {
-        const GenericState6 *other = static_cast<const GenericState6*>(&renderState);
-        return (other != NULL
-                && other->m_1 == m_1
-                && other->m_2 == m_2
-                && other->m_3 == m_3
-                && other->m_4 == m_4
-                && other->m_5 == m_5
-                && other->m_6 == m_6);
-    }
-
-protected:
-    T m_1;
-    S m_2;
-    U m_3;
-    V m_4;
-    W m_5;
-    Z m_6;
+    std::tuple<T ...> m_values;
 };
 
 } // namespace Render
