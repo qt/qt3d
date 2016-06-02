@@ -159,6 +159,40 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
+
+    void checkLayerBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DRender::QLayerFilter> layerFilter(new Qt3DRender::QLayerFilter);
+        {
+            // WHEN
+            Qt3DRender::QLayer layer;
+            layerFilter->addLayer(&layer);
+
+            // THEN
+            QCOMPARE(layer.parent(), layerFilter.data());
+            QCOMPARE(layerFilter->layers().size(), 1);
+        }
+        // THEN (Should not crash and parameter be unset)
+        QVERIFY(layerFilter->layers().empty());
+
+        {
+            // WHEN
+            Qt3DRender::QLayerFilter someOtherLayerFilter;
+            QScopedPointer<Qt3DRender::QLayer> layer(new Qt3DRender::QLayer(&someOtherLayerFilter));
+            layerFilter->addLayer(layer.data());
+
+            // THEN
+            QCOMPARE(layer->parent(), &someOtherLayerFilter);
+            QCOMPARE(layerFilter->layers().size(), 1);
+
+            // WHEN
+            layerFilter.reset();
+            layer.reset();
+
+            // THEN Should not crash when the layer is destroyed (tests for failed removal of destruction helper)
+        }
+    }
 };
 
 QTEST_MAIN(tst_QLayerFilter)
