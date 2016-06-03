@@ -586,7 +586,6 @@ void Renderer::doRender()
         // Note this is safe since proceedToNextFrame is the one going to trigger
         // the write to the file, and this is performed after this step
         Qt3DCore::QThreadPooler::addJobLogStatsEntry(submissionStats);
-        QThreadPooler::writeFrameJobLogStats();
 #endif
     }
 
