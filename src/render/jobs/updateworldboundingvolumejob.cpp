@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Paul Lemire
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,60 +37,36 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_JOB_COMMON_P_H
-#define QT3DRENDER_RENDER_JOB_COMMON_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/private/qaspectjob_p.h>
+#include "updateworldboundingvolumejob_p.h"
+#include <Qt3DRender/private/job_common_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/sphere_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
 namespace Render {
 
-namespace JobTypes {
+UpdateWorldBoundingVolumeJob::UpdateWorldBoundingVolumeJob()
+    : Qt3DCore::QAspectJob()
+    , m_manager(nullptr)
+{
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateWorldBoundingVolume, 0);
+}
 
-    enum JobType {
-        LoadBuffer = 1,
-        FrameCleanup,
-        FramePreparation,
-        CalcBoundingVolume,
-        CalcTriangleVolume,
-        LoadGeometry,
-        LoadScene,
-        LoadTextureData,
-        PickBoundingVolume,
-        RenderView,
-        UpdateTransform,
-        ExpandBoundingVolume,
-        FrameSubmission,
-        LayerFiltering,
-        EntityComponentTypeFiltering,
-        MaterialParameterGathering,
-        RenderViewBuilder,
-        GenericLambda,
-        FrustumCulling,
-        LightGathering,
-        UpdateWorldBoundingVolume
-    };
+void UpdateWorldBoundingVolumeJob::run()
+{
+    const QVector<HEntity> handles = m_manager->activeHandles();
 
-} // JobTypes
+    for (const HEntity handle : handles) {
+        Entity *node = m_manager->data(handle);
+        *(node->worldBoundingVolume()) = node->localBoundingVolume()->transformed(*(node->worldTransform()));
+        *(node->worldBoundingVolumeWithChildren()) = *(node->worldBoundingVolume()); // expanded in UpdateBoundingVolumeJob
+    }
+}
 
-} // Render
-
-} // Qt3DRender
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_JOB_COMMON_P_H

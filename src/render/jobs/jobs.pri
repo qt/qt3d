@@ -21,7 +21,8 @@ HEADERS += \
     $$PWD/renderviewinitializerjob_p.h \
     $$PWD/frustumcullingjob_p.h \
     $$PWD/lightgatherer_p.h \
-    $$PWD/expandboundingvolumejob_p.h
+    $$PWD/expandboundingvolumejob_p.h \
+    $$PWD/updateworldboundingvolumejob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
@@ -41,4 +42,5 @@ SOURCES += \
     $$PWD/renderviewinitializerjob.cpp \
     $$PWD/frustumcullingjob.cpp \
     $$PWD/lightgatherer.cpp \
-    $$PWD/expandboundingvolumejob.cpp
+    $$PWD/expandboundingvolumejob.cpp \
+    $$PWD/updateworldboundingvolumejob.cpp
