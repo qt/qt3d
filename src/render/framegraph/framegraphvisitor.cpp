@@ -299,11 +299,11 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         auto syncRenderViewCommandBuildersJob = GenericLambdaJobPtr<decltype(syncRenderViewCommandBuilders)>::create(syncRenderViewCommandBuilders);
 
         // Set dependencies
-        renderViewJob->addDependency(renderer->expandBoundingVolumeJob());
+        renderViewJob->addDependency(renderer->updateWorldTransformJob());
+        frustumCulling->addDependency(renderer->expandBoundingVolumeJob());
         syncRenderViewInitializationJob->addDependency(renderViewJob);
 
         filterEntityByLayer->addDependency(syncRenderViewInitializationJob);
-        frustumCulling->addDependency(syncRenderViewInitializationJob);
 
         syncRenderViewCommandBuildingJob->addDependency(syncRenderViewInitializationJob);
         for (const auto materialGatherer : qAsConst(materialGatherers)) {
@@ -314,6 +314,7 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         syncRenderViewCommandBuildingJob->addDependency(computeEntityFilterer);
         syncRenderViewCommandBuildingJob->addDependency(filterEntityByLayer);
         syncRenderViewCommandBuildingJob->addDependency(lightGatherer);
+        syncRenderViewCommandBuildingJob->addDependency(frustumCulling);
 
         for (const auto renderViewCommandBuilder : qAsConst(renderViewCommandBuilders)) {
             renderViewCommandBuilder->addDependency(syncRenderViewCommandBuildingJob);

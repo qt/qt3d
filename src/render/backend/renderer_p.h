@@ -67,6 +67,7 @@
 #include <Qt3DRender/private/calcboundingvolumejob_p.h>
 #include <Qt3DRender/private/framepreparationjob_p.h>
 #include <Qt3DRender/private/framecleanupjob_p.h>
+#include <Qt3DRender/private/updateworldboundingvolumejob_p.h>
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
 
 #include <QHash>
@@ -177,6 +178,7 @@ public:
     inline FramePreparationJobPtr framePreparationJob() const { return m_framePreparationJob; }
     inline CalculateBoundingVolumeJobPtr calculateBoundingVolumeJob() const { return m_calculateBoundingVolumeJob; }
     inline UpdateWorldTransformJobPtr updateWorldTransformJob() const { return m_worldTransformJob; }
+    inline UpdateWorldBoundingVolumeJobPtr updateWorldBoundingVolumeJob() const { return m_updateWorldBoundingVolumeJob; }
 
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const Q_DECL_OVERRIDE;
 
@@ -298,6 +300,7 @@ private:
     UpdateWorldTransformJobPtr m_worldTransformJob;
     ExpandBoundingVolumeJobPtr m_expandBoundingVolumeJob;
     CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
+    UpdateWorldBoundingVolumeJobPtr m_updateWorldBoundingVolumeJob;
 
     void performDraw(GeometryRenderer *rGeometryRenderer,
                      GLsizei primitiveCount, Attribute *indexAttribute);

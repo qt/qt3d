@@ -156,6 +156,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_worldTransformJob(Render::UpdateWorldTransformJobPtr::create())
     , m_expandBoundingVolumeJob(Render::ExpandBoundingVolumeJobPtr::create())
     , m_calculateBoundingVolumeJob(Render::CalculateBoundingVolumeJobPtr::create())
+    , m_updateWorldBoundingVolumeJob(Render::UpdateWorldBoundingVolumeJobPtr::create())
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
@@ -165,11 +166,12 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 
     // Create jobs to update transforms and bounding volumes
     // We can only update bounding volumes once all world transforms are known
-    m_expandBoundingVolumeJob->addDependency(m_worldTransformJob);
+    m_updateWorldBoundingVolumeJob->addDependency(m_worldTransformJob);
+    m_updateWorldBoundingVolumeJob->addDependency(m_calculateBoundingVolumeJob);
+    m_expandBoundingVolumeJob->addDependency(m_updateWorldBoundingVolumeJob);
     m_framePreparationJob->addDependency(m_worldTransformJob);
 
     // All world stuff depends on the RenderEntity's localBoundingVolume
-    m_worldTransformJob->addDependency(m_calculateBoundingVolumeJob);
     m_pickBoundingVolumeJob->addDependency(m_framePreparationJob);
 }
 
@@ -213,6 +215,7 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_cleanupJob->setManagers(m_nodesManager);
     m_calculateBoundingVolumeJob->setManagers(m_nodesManager);
     m_pickBoundingVolumeJob->setManagers(m_nodesManager);
+    m_updateWorldBoundingVolumeJob->setManager(m_nodesManager->renderNodesManager());
 }
 
 NodeManagers *Renderer::nodeManagers() const
@@ -901,6 +904,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     // Add jobs
     renderBinJobs.push_back(m_framePreparationJob);
     renderBinJobs.push_back(m_expandBoundingVolumeJob);
+    renderBinJobs.push_back(m_updateWorldBoundingVolumeJob);
     renderBinJobs.push_back(m_calculateBoundingVolumeJob);
     renderBinJobs.push_back(m_worldTransformJob);
     renderBinJobs.push_back(m_cleanupJob);
