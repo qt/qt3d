@@ -346,7 +346,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         d->m_calculateBoundingVolumeJob->setRoot(d->m_renderer->sceneRoot());
         d->m_cleanupJob->setRoot(d->m_renderer->sceneRoot());
 
-        const QVector<QNodeId> texturesPending = manager->textureDataManager()->texturesPending();
+        const QVector<QNodeId> texturesPending = std::move(manager->textureDataManager()->texturesPending());
         for (const QNodeId textureId : texturesPending) {
             auto loadTextureJob = Render::LoadTextureDataJobPtr::create(textureId);
             loadTextureJob->setNodeManagers(manager);

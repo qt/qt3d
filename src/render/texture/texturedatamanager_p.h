@@ -78,7 +78,7 @@ public:
     TextureDataManager();
     void addToPendingTextures(Qt3DCore::QNodeId textureId);
 
-    QVector<Qt3DCore::QNodeId> texturesPending();
+    QVector<Qt3DCore::QNodeId> &texturesPending();
 
     HTextureData textureDataFromFunctor(const QTextureImageDataGeneratorPtr &functor) const;
     void addTextureDataForFunctor(HTextureData textureDataHandle, const QTextureImageDataGeneratorPtr &functor);

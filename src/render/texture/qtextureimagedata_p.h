@@ -84,6 +84,8 @@ public:
     bool m_isCompressed;
     QByteArray m_data;
 
+    static QTextureImageDataPrivate *get(QTextureImageData *imageData);
+
 private:
     int layerSize() const;
     int faceSize() const;

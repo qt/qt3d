@@ -73,7 +73,7 @@ class TextureManager;
 class TextureImageManager;
 class TextureDataManager;
 
-typedef uint TextureDNA;
+typedef quint64 TextureDNA;
 
 class Texture : public BackendNode
 {

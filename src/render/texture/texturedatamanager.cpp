@@ -61,14 +61,13 @@ void TextureDataManager::addToPendingTextures(Qt3DCore::QNodeId textureId)
 }
 
 // Called from AspectThread prepare jobs
-QVector<Qt3DCore::QNodeId> TextureDataManager::texturesPending()
+// Caller will often use std::move on this to clear it
+QVector<Qt3DCore::QNodeId> &TextureDataManager::texturesPending()
 {
-    QVector<Qt3DCore::QNodeId> textureIds = m_texturesPending;
-    m_texturesPending.clear();
-    return textureIds;
+    return m_texturesPending;
 }
 
-// Called from LoadMeshDataJob threads
+// Called from LoadTextureDataJob threads
 HTextureData TextureDataManager::textureDataFromFunctor(const QTextureImageDataGeneratorPtr &functor) const
 {
     QMutexLocker lock(&m_mutex);
@@ -79,14 +78,14 @@ HTextureData TextureDataManager::textureDataFromFunctor(const QTextureImageDataG
     return HTextureData();
 }
 
-// Called from LoadMeshDataJob threads
+// Called from LoadTextureDataJob threads
 void TextureDataManager::addTextureDataForFunctor(HTextureData textureDataHandle, const QTextureImageDataGeneratorPtr &functor)
 {
     QMutexLocker lock(&m_mutex);
     m_textureDataFunctors.push_back(qMakePair(functor, textureDataHandle));
 }
 
-// Called from LoadMeshDataJob threads
+// Called from LoadTextureDataJob threads
 void TextureDataManager::removeTextureDataFunctor(const QTextureImageDataGeneratorPtr &functor)
 {
     QMutexLocker lock(&m_mutex);
@@ -98,7 +97,7 @@ void TextureDataManager::removeTextureDataFunctor(const QTextureImageDataGenerat
     }
 }
 
-// Called from LoadMeshDataJob threads
+// Called from LoadTextureDataJob threads
 void TextureDataManager::assignFunctorToTextureImage(const QTextureImageDataGeneratorPtr &newFunctor, HTextureImage imageHandle)
 {
     QMutexLocker lock(&m_mutex);

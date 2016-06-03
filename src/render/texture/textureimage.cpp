@@ -105,6 +105,7 @@ void TextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
 
+    const bool wasDirty = m_dirty;
     if (e->type() == PropertyUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("layer")) {
             m_layer = propertyChange->value().toInt();
@@ -120,7 +121,7 @@ void TextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_dirty = true;
         }
     }
-    if (m_dirty) {// Notify the Texture that we were updated and request it to schedule an update job
+    if (!wasDirty && wasDirty != m_dirty) { // Notify the Texture that we were updated and request it to schedule an update job
         Texture *txt = m_textureManager->data(m_textureProvider);
         if (txt != nullptr)
             txt->addToPendingTextureJobs();
@@ -153,7 +154,6 @@ void TextureImage::unsetDirty()
 void TextureImage::setTextureDataHandle(HTextureData handle)
 {
     m_textureDataHandle = handle;
-    updateDNA();
 }
 
 void TextureImage::setStatus(QTextureImage::Status status)
@@ -166,12 +166,24 @@ void TextureImage::setStatus(QTextureImage::Status status)
     notifyObservers(e);
 }
 
-void TextureImage::updateDNA()
+union DNABuilder {
+    quint64 dna;
+    quint32 dataHash;
+    quint16 layer;
+    quint8 face;
+    quint8 mipLevel;
+};
+
+void TextureImage::updateDNA(quint32 dataHash)
 {
-    m_dna = ::qHash(m_layer
-                    + (m_mipLevel << 4)
-                    + (static_cast<int>(m_face) << 8)
-                    + (m_textureDataHandle.handle() << 12));
+    // 64 bits [ 32 bits data ] [ 16 bits layer ] [ 8 bits mip level ] [ 8 bits face ]
+    DNABuilder builder;
+    builder.dataHash = dataHash;
+    builder.layer = m_layer;
+    builder.face = m_face;
+    builder.mipLevel = m_mipLevel;
+
+    m_dna = builder.dna;
 }
 
 TextureImageFunctor::TextureImageFunctor(AbstractRenderer *renderer, TextureManager *textureManager,
