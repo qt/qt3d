@@ -143,7 +143,7 @@ QUniformValue RenderView::viewMatrix(const QMatrix4x4 &) const
 
 QUniformValue RenderView::projectionMatrix(const QMatrix4x4 &) const
 {
-    return QUniformValue(QVariant::fromValue(m_data.m_renderCamera->projection()));
+    return QUniformValue(QVariant::fromValue(m_data.m_renderCameraLens->projection()));
 }
 
 QUniformValue RenderView::modelViewMatrix(const QMatrix4x4 &model) const
@@ -169,8 +169,8 @@ QUniformValue RenderView::inverseViewMatrix(const QMatrix4x4 &) const
 QUniformValue RenderView::inverseProjectionMatrix(const QMatrix4x4 &) const
 {
     QMatrix4x4 projection;
-    if (m_data.m_renderCamera)
-        projection = m_data.m_renderCamera->projection();
+    if (m_data.m_renderCameraLens)
+        projection = m_data.m_renderCameraLens->projection();
     return QUniformValue(QVariant::fromValue(projection.inverted()));
 }
 
@@ -472,6 +472,19 @@ QVector<RenderCommand *> RenderView::buildComputeRenderCommands(const QVector<En
         }
     }
     return commands;
+}
+
+void RenderView::updateMatrices()
+{
+    if (m_data.m_renderCameraNode && m_data.m_renderCameraLens && m_data.m_renderCameraLens->isEnabled()) {
+        setViewMatrix(*m_data.m_renderCameraNode->worldTransform());
+        setViewProjectionMatrix(m_data.m_renderCameraLens->projection() * viewMatrix());
+        //To get the eyePosition of the camera, we need to use the inverse of the
+        //camera's worldTransform matrix.
+        const QMatrix4x4 inverseWorldTransform = viewMatrix().inverted();
+        const QVector3D eyePosition(inverseWorldTransform.column(3));
+        setEyePosition(eyePosition);
+    }
 }
 
 void RenderView::setUniformValue(ShaderParameterPack &uniformPack, int nameId, const QVariant &value) const

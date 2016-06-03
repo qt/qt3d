@@ -125,11 +125,14 @@ public:
     inline void setDevicePixelRatio(qreal r) Q_DECL_NOTHROW { m_devicePixelRatio = r; }
     inline qreal devicePixelRatio() const Q_DECL_NOTHROW { return m_devicePixelRatio; }
 
-    inline void setRenderCamera(CameraLens *renderCamera) Q_DECL_NOTHROW { m_data.m_renderCamera = renderCamera; }
-    inline CameraLens *renderCamera() const Q_DECL_NOTHROW { return m_data.m_renderCamera; }
+    inline void setRenderCameraLens(CameraLens *renderCameraLens) Q_DECL_NOTHROW { m_data.m_renderCameraLens = renderCameraLens; }
+    inline CameraLens *renderCameraLens() const Q_DECL_NOTHROW { return m_data.m_renderCameraLens; }
+
+    inline void setRenderCameraEntity(Entity *renderCameraNode) Q_DECL_NOTHROW { m_data.m_renderCameraNode = renderCameraNode; }
+    inline Entity *renderCameraEntity() const Q_DECL_NOTHROW { return m_data.m_renderCameraNode; }
 
     inline void setViewMatrix(const QMatrix4x4 &viewMatrix) Q_DECL_NOTHROW { m_data.m_viewMatrix = viewMatrix; }
-    inline QMatrix4x4 viewmatrix() const Q_DECL_NOTHROW { return m_data.m_viewMatrix; }
+    inline QMatrix4x4 viewMatrix() const Q_DECL_NOTHROW { return m_data.m_viewMatrix; }
 
     inline void setViewProjectionMatrix(const QMatrix4x4 &viewProjectionMatrix) Q_DECL_NOTHROW { m_data.m_viewProjectionMatrix = viewProjectionMatrix; }
     inline QMatrix4x4 viewProjectionMatrix() const Q_DECL_NOTHROW { return m_data.m_viewProjectionMatrix; }
@@ -200,18 +203,22 @@ public:
 
     void setLightSources(const QVector<LightSource> &lightSources) Q_DECL_NOTHROW { m_lightSources = lightSources; }
 
+    void updateMatrices();
+
     // Helps making the size of RenderView smaller
     // Contains all the data needed for the actual building of the RenderView
     // But that aren't used later by the Renderer
     struct InnerData {
         InnerData()
-            : m_renderCamera(nullptr)
+            : m_renderCameraLens(nullptr)
+            , m_renderCameraNode(nullptr)
             , m_techniqueFilter(nullptr)
             , m_passFilter(nullptr)
             , m_hasLayerFilter(false)
         {
         }
-        CameraLens *m_renderCamera;
+        CameraLens *m_renderCameraLens;
+        Entity *m_renderCameraNode;
         const TechniqueFilter *m_techniqueFilter;
         const RenderPassFilter *m_passFilter;
         QMatrix4x4 m_viewMatrix;

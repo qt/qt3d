@@ -93,21 +93,18 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
             switch (type) {
             case FrameGraphNode::CameraSelector:
                 // Can be set only once and we take camera nearest to the leaf node
-                if (!rv->renderCamera()) {
+                if (!rv->renderCameraLens()) {
                     const CameraSelector *cameraSelector = static_cast<const CameraSelector *>(node);
                     Entity *camNode = manager->renderNodesManager()->lookupResource(cameraSelector->cameraUuid());
                     if (camNode) {
                         CameraLens *lens = camNode->renderComponent<CameraLens>();
+                        rv->setRenderCameraEntity(camNode);
                         if (lens && lens->isEnabled()) {
-                            rv->setRenderCamera(lens);
-                            rv->setViewMatrix(*camNode->worldTransform());
-                            rv->setViewProjectionMatrix(lens->projection() * *camNode->worldTransform());
-
-                            //To get the eyePosition of the camera, we need to use the inverse of the
-                            //camera's worldTransform matrix.
-                            const QMatrix4x4 inverseWorldTransform = camNode->worldTransform()->inverted();
-                            const QVector3D eyePosition(inverseWorldTransform.column(3));
-                            rv->setEyePosition(eyePosition);
+                            rv->setRenderCameraLens(lens);
+                            // ViewMatrix and ProjectionMatrix are computed
+                            // later in updateMatrices()
+                            // since at this point the transformation matrices
+                            // may not yet have been updated
                         }
                     }
                 }

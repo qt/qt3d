@@ -70,6 +70,7 @@ public:
     FrustumCullingJob();
 
     inline void setRoot(Entity *root) Q_DECL_NOTHROW { m_root = root; }
+    inline void setActive(bool active) Q_DECL_NOTHROW { m_active = active; }
     inline void setViewProjection(const QMatrix4x4 &viewProjection) Q_DECL_NOTHROW { m_viewProjection = viewProjection; }
 
     QVector<Entity *> visibleEntities() const Q_DECL_NOTHROW { return m_visibleEntities; }
@@ -81,6 +82,7 @@ private:
     QMatrix4x4 m_viewProjection;
     Entity *m_root;
     QVector<Entity *> m_visibleEntities;
+    bool m_active;
 };
 
 typedef QSharedPointer<FrustumCullingJob> FrustumCullingJobPtr;

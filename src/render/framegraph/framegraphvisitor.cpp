@@ -196,12 +196,23 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
                 materialGatherer->setTechniqueFilter(const_cast<TechniqueFilter *>(rv->techniqueFilter()));
             }
 
-            // Frustum culling
-            frustumCulling->setViewProjection(rv->viewProjectionMatrix());
-
             // Command builders
             for (const auto renderViewCommandBuilder : qAsConst(renderViewCommandBuilders))
                 renderViewCommandBuilder->setRenderView(rv);
+
+            // Set whether frustum culling is enabled or not
+            frustumCulling->setActive(rv->frustumCulling());
+        };
+
+        // Copy shared ptr -> this is called once the FrameGraphBranch was used to fill initial data in the RenderView
+        auto syncFrustumCulling = [=] () {
+            RenderView *rv = renderViewJob->renderView();
+
+            // Update matrices now that all transforms have been updated
+            rv->updateMatrices();
+
+            // Frustum culling
+            frustumCulling->setViewProjection(rv->viewProjectionMatrix());
         };
 
         // Copy shared ptr -> this is called after filtering / culling / parameter setting has been performed
@@ -297,10 +308,15 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         auto syncRenderViewCommandBuildingJob = GenericLambdaJobPtr<decltype(syncForRenderCommandBuilding)>::create(syncForRenderCommandBuilding);
         auto syncRenderViewInitializationJob = GenericLambdaJobPtr<decltype(syncRenderViewInitialization)>::create(syncRenderViewInitialization);
         auto syncRenderViewCommandBuildersJob = GenericLambdaJobPtr<decltype(syncRenderViewCommandBuilders)>::create(syncRenderViewCommandBuilders);
+        auto syncFrustumCullingJob = GenericLambdaJobPtr<decltype(syncFrustumCulling)>::create(syncFrustumCulling);
 
         // Set dependencies
-        renderViewJob->addDependency(renderer->updateWorldTransformJob());
+        syncFrustumCullingJob->addDependency(renderer->updateWorldTransformJob());
+        syncFrustumCullingJob->addDependency(syncRenderViewInitializationJob);
+
         frustumCulling->addDependency(renderer->expandBoundingVolumeJob());
+        frustumCulling->addDependency(syncFrustumCullingJob);
+
         syncRenderViewInitializationJob->addDependency(renderViewJob);
 
         filterEntityByLayer->addDependency(syncRenderViewInitializationJob);
@@ -332,6 +348,7 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         m_jobs->push_back(frustumCulling);
         m_jobs->push_back(lightGatherer);
         m_jobs->push_back(syncRenderViewCommandBuildersJob);
+        m_jobs->push_back(syncFrustumCullingJob);
 
         for (const auto materialGatherer : qAsConst(materialGatherers))
             m_jobs->push_back(materialGatherer);

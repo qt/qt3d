@@ -53,12 +53,17 @@ namespace Render {
 FrustumCullingJob::FrustumCullingJob()
     : Qt3DCore::QAspectJob()
     , m_root(nullptr)
+    , m_active(false)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::FrustumCulling, 0);
 }
 
 void FrustumCullingJob::run()
 {
+    // Early return if not activated
+    if (!m_active)
+        return;
+
     m_visibleEntities.clear();
 
     const Plane planes[6] = {
