@@ -96,8 +96,8 @@ namespace Qt3DRender {
 
         QVector<Qt3DCore::QAspectJobPtr> updateBoundingJob()
         {
-            static_cast<Render::Renderer *>(d_func()->m_renderer)->m_updateBoundingVolumeJob->setRoot(d_func()->m_renderer->sceneRoot());
-            return QVector<Qt3DCore::QAspectJobPtr>() << static_cast<Render::Renderer *>(d_func()->m_renderer)->m_updateBoundingVolumeJob;
+            static_cast<Render::Renderer *>(d_func()->m_renderer)->m_updateWorldBoundingVolumeJob->setManager(d_func()->m_renderer->nodeManagers()->renderNodesManager());
+            return QVector<Qt3DCore::QAspectJobPtr>() << static_cast<Render::Renderer *>(d_func()->m_renderer)->m_updateWorldBoundingVolumeJob;
         }
 
         QVector<Qt3DCore::QAspectJobPtr> calculateBoundingVolumeJob()

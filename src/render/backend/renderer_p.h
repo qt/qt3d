@@ -62,7 +62,7 @@
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
 #include <Qt3DRender/private/rendersettings_p.h>
 #include <Qt3DRender/private/renderviewinitializerjob_p.h>
-#include <Qt3DRender/private/updateboundingvolumejob_p.h>
+#include <Qt3DRender/private/expandboundingvolumejob_p.h>
 #include <Qt3DRender/private/updateworldtransformjob_p.h>
 #include <Qt3DRender/private/calcboundingvolumejob_p.h>
 #include <Qt3DRender/private/framepreparationjob_p.h>
@@ -173,7 +173,7 @@ public:
     QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs() const;
 
     inline FrameCleanupJobPtr frameCleanupJob() const { return m_cleanupJob; }
-    inline UpdateBoundingVolumeJobPtr updateBoundingVolumeJob() const { return m_updateBoundingVolumeJob; }
+    inline ExpandBoundingVolumeJobPtr expandBoundingVolumeJob() const { return m_expandBoundingVolumeJob; }
     inline FramePreparationJobPtr framePreparationJob() const { return m_framePreparationJob; }
     inline CalculateBoundingVolumeJobPtr calculateBoundingVolumeJob() const { return m_calculateBoundingVolumeJob; }
     inline UpdateWorldTransformJobPtr updateWorldTransformJob() const { return m_worldTransformJob; }
@@ -296,7 +296,7 @@ private:
     FramePreparationJobPtr m_framePreparationJob;
     FrameCleanupJobPtr m_cleanupJob;
     UpdateWorldTransformJobPtr m_worldTransformJob;
-    UpdateBoundingVolumeJobPtr m_updateBoundingVolumeJob;
+    ExpandBoundingVolumeJobPtr m_expandBoundingVolumeJob;
     CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
 
     void performDraw(GeometryRenderer *rGeometryRenderer,

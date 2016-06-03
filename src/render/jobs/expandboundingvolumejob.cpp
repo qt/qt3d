@@ -37,51 +37,64 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_UPDATEBOUNDINGVOLUMEJOB_H
-#define QT3DRENDER_RENDER_UPDATEBOUNDINGVOLUMEJOB_H
+#include "expandboundingvolumejob_p.h"
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
+#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DRender/private/sphere_p.h>
+#include <Qt3DRender/private/job_common_p.h>
 
-#include <Qt3DCore/qaspectjob.h>
-#include <Qt3DRender/private/qt3drender_global_p.h>
-
-#include <QSharedPointer>
+#include <QThread>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 
-class Entity;
+namespace {
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT UpdateBoundingVolumeJob : public Qt3DCore::QAspectJob
+void expandWorldBoundingVolume(Qt3DRender::Render::Entity *node)
 {
-public:
-    UpdateBoundingVolumeJob();
+    // Go to the nodes that have the most depth
+    const auto children = node->children();
+    for (Entity *c : children)
+        expandWorldBoundingVolume(c);
 
-    void setRoot(Entity *root);
+    // Then traverse back from leaf to root
+    // Initialize parent bounding volume to be equal to that of the first child
+    if (!children.empty()) {
+        Qt3DRender::Render::Sphere *parentBoundingVolume = node->worldBoundingVolumeWithChildren();
+        for (Entity *c : children)
+            parentBoundingVolume->expandToContain(*c->worldBoundingVolumeWithChildren());
+    }
+}
 
-protected:
-    void run() Q_DECL_OVERRIDE;
+}
 
-private:
-    Entity *m_node;
-};
+ExpandBoundingVolumeJob::ExpandBoundingVolumeJob()
+    : m_node(nullptr)
+{
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::ExpendBoundingVolume, 0);
+}
 
-typedef QSharedPointer<UpdateBoundingVolumeJob> UpdateBoundingVolumeJobPtr;
+void ExpandBoundingVolumeJob::setRoot(Entity *root)
+{
+    m_node = root;
+}
+
+void ExpandBoundingVolumeJob::run()
+{
+    // Expand worldBoundingVolumeWithChildren of each node that has children by the
+    // bounding volumes of the children.
+
+    // TODO: Implement this using a parallel_for
+    qCDebug(Jobs) << "Entering" << Q_FUNC_INFO << QThread::currentThread();
+    expandWorldBoundingVolume(m_node);
+    qCDebug(Jobs) << "Exiting" << Q_FUNC_INFO << QThread::currentThread();
+}
 
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_UPDATEBOUNDINGVOLUMEJOB_H

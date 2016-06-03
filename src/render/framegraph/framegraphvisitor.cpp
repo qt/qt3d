@@ -299,7 +299,7 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         auto syncRenderViewCommandBuildersJob = GenericLambdaJobPtr<decltype(syncRenderViewCommandBuilders)>::create(syncRenderViewCommandBuilders);
 
         // Set dependencies
-        renderViewJob->addDependency(renderer->updateBoundingVolumeJob());
+        renderViewJob->addDependency(renderer->expandBoundingVolumeJob());
         syncRenderViewInitializationJob->addDependency(renderViewJob);
 
         filterEntityByLayer->addDependency(syncRenderViewInitializationJob);

@@ -2,7 +2,6 @@ INCLUDEPATH += $$PWD
 
 HEADERS += \
     $$PWD/updateworldtransformjob_p.h \
-    $$PWD/updateboundingvolumejob_p.h \
     $$PWD/renderviewjobutils_p.h \
     $$PWD/loadscenejob_p.h \
     $$PWD/framecleanupjob_p.h \
@@ -21,11 +20,11 @@ HEADERS += \
     $$PWD/renderviewbuilderjob_p.h \
     $$PWD/renderviewinitializerjob_p.h \
     $$PWD/frustumcullingjob_p.h \
-    $$PWD/lightgatherer_p.h
+    $$PWD/lightgatherer_p.h \
+    $$PWD/expandboundingvolumejob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
-    $$PWD/updateboundingvolumejob.cpp \
     $$PWD/renderviewjobutils.cpp \
     $$PWD/loadscenejob.cpp \
     $$PWD/framecleanupjob.cpp \
@@ -41,4 +40,5 @@ SOURCES += \
     $$PWD/renderviewbuilderjob.cpp \
     $$PWD/renderviewinitializerjob.cpp \
     $$PWD/frustumcullingjob.cpp \
-    $$PWD/lightgatherer.cpp
+    $$PWD/lightgatherer.cpp \
+    $$PWD/expandboundingvolumejob.cpp
