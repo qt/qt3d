@@ -121,7 +121,6 @@ public:
      */
     virtual RenderStateImpl *getOrCreateWithPropertyChange(const char *name, const QVariant &value) const = 0;
 
-    static RenderStateImpl *getOrCreateState(QRenderState *renderState);
     static RenderStateImpl *getOrCreateState(const Qt3DRender::QRenderStateCreatedChangeBasePtr change);
     virtual void updateProperty(const char *name, const QVariant &value);
 };
