@@ -50,7 +50,8 @@ namespace Qt3DRender {
     \class Qt3DRender::QBlendEquationArguments
     \inmodule Qt3DRender
     \since 5.5
-    \brief Encapsulates blending information.
+    \brief Encapsulates blending information: specifies how the incoming values (what's going to be drawn)
+    are going to affect the existing values (what is already drawn).
 
     OpenGL pre-3.0:     Set the same blend state for all draw buffers
                         (one QBlendEquationArguments)
@@ -67,7 +68,8 @@ namespace Qt3DRender {
     \inherits RenderState
     \inqmlmodule Qt3D.Render
     \since 5.5
-    \brief Encapsulates blending information.
+    \brief Encapsulates blending information: specifies how the incoming values (what's going to be drawn)
+    are going to affect the existing values (what is already drawn).
 
     OpenGL pre-3.0:     Set the same blend state for all draw buffers
     OpenGL 3.0-pre4.0:  Set the same blend state for all draw buffers,
