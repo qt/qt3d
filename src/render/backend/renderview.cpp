@@ -331,7 +331,6 @@ void RenderView::setRenderer(Renderer *renderer)
 {
     m_renderer = renderer;
     m_manager = renderer->nodeManagers();
-    m_data.m_uniformBlockBuilder.shaderDataManager = m_manager->shaderDataManager();
 }
 
 class LightSourceCompare
@@ -606,19 +605,28 @@ void RenderView::setShaderStorageValue(ShaderParameterPack &uniformPack,
 
 void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack, Shader *shader, ShaderData *shaderData, const QString &structName) const
 {
-    m_data.m_uniformBlockBuilder.activeUniformNamesToValue.clear();
+    // Note: since many threads can be building render commands
+    // we need to ensure that the UniformBlockValueBuilder they are using
+    // is only accessed from the same thread
+    if (!m_localData.hasLocalData()) {
+        m_localData.setLocalData(UniformBlockValueBuilder());
+        m_localData.localData().shaderDataManager = m_manager->shaderDataManager();
+    }
+
+    UniformBlockValueBuilder &builder = m_localData.localData();
+    builder.activeUniformNamesToValue.clear();
 
     // updates transformed properties;
     shaderData->updateViewTransform(m_data.m_viewMatrix);
     // Force to update the whole block
-    m_data.m_uniformBlockBuilder.updatedPropertiesOnly = false;
+    builder.updatedPropertiesOnly = false;
     // Retrieve names and description of each active uniforms in the uniform block
-    m_data.m_uniformBlockBuilder.uniforms = shader->activeUniformsForUniformBlock(-1);
+    builder.uniforms = shader->activeUniformsForUniformBlock(-1);
     // Build name-value map for the block
-    m_data.m_uniformBlockBuilder.buildActiveUniformNameValueMapStructHelper(shaderData, structName);
+    builder.buildActiveUniformNameValueMapStructHelper(shaderData, structName);
     // Set uniform values for each entrie of the block name-value map
-    QHash<int, QVariant>::const_iterator activeValuesIt = m_data.m_uniformBlockBuilder.activeUniformNamesToValue.constBegin();
-    const QHash<int, QVariant>::const_iterator activeValuesEnd = m_data.m_uniformBlockBuilder.activeUniformNamesToValue.constEnd();
+    QHash<int, QVariant>::const_iterator activeValuesIt = builder.activeUniformNamesToValue.constBegin();
+    const QHash<int, QVariant>::const_iterator activeValuesEnd = builder.activeUniformNamesToValue.constEnd();
 
     while (activeValuesIt != activeValuesEnd) {
         setUniformValue(uniformPack, activeValuesIt.key(), activeValuesIt.value());

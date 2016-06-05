@@ -227,12 +227,13 @@ public:
         Qt3DCore::QNodeIdVector m_layerIds;
         QVector<Qt3DRender::QSortPolicy::SortType> m_sortingTypes;
         QVector3D m_eyePos;
-        mutable UniformBlockValueBuilder m_uniformBlockBuilder;
     };
 
 private:
     void setShaderAndUniforms(RenderCommand *command, RenderPass *pass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform,
                               const QVector<LightSource> &activeLightSources) const;
+
+    mutable QThreadStorage<UniformBlockValueBuilder> m_localData;
 
     Renderer *m_renderer;
     NodeManagers *m_manager;
