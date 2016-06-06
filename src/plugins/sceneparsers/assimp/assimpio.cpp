@@ -86,35 +86,35 @@ Q_LOGGING_CATEGORY(AssimpIOLog, "Qt3D.AssimpIO")
 
 namespace {
 
-const QString ASSIMP_MATERIAL_DIFFUSE_COLOR = QStringLiteral("kd");
-const QString ASSIMP_MATERIAL_SPECULAR_COLOR = QStringLiteral("ks");
-const QString ASSIMP_MATERIAL_AMBIENT_COLOR = QStringLiteral("ka");
-const QString ASSIMP_MATERIAL_EMISSIVE_COLOR = QStringLiteral("emissive");
-const QString ASSIMP_MATERIAL_TRANSPARENT_COLOR = QStringLiteral("transparent");
-const QString ASSIMP_MATERIAL_REFLECTIVE_COLOR = QStringLiteral("reflective");
+const QString ASSIMP_MATERIAL_DIFFUSE_COLOR = QLatin1String("kd");
+const QString ASSIMP_MATERIAL_SPECULAR_COLOR = QLatin1String("ks");
+const QString ASSIMP_MATERIAL_AMBIENT_COLOR = QLatin1String("ka");
+const QString ASSIMP_MATERIAL_EMISSIVE_COLOR = QLatin1String("emissive");
+const QString ASSIMP_MATERIAL_TRANSPARENT_COLOR = QLatin1String("transparent");
+const QString ASSIMP_MATERIAL_REFLECTIVE_COLOR = QLatin1String("reflective");
 
-const QString ASSIMP_MATERIAL_DIFFUSE_TEXTURE = QStringLiteral("diffuseTexture");
-const QString ASSIMP_MATERIAL_AMBIENT_TEXTURE = QStringLiteral("ambientTex");
-const QString ASSIMP_MATERIAL_SPECULAR_TEXTURE = QStringLiteral("specularTexture");
-const QString ASSIMP_MATERIAL_EMISSIVE_TEXTURE = QStringLiteral("emissiveTex");
-const QString ASSIMP_MATERIAL_NORMALS_TEXTURE = QStringLiteral("normalsTex");
-const QString ASSIMP_MATERIAL_OPACITY_TEXTURE = QStringLiteral("opacityTex");
-const QString ASSIMP_MATERIAL_REFLECTION_TEXTURE = QStringLiteral("reflectionTex");
-const QString ASSIMP_MATERIAL_HEIGHT_TEXTURE = QStringLiteral("heightTex");
-const QString ASSIMP_MATERIAL_LIGHTMAP_TEXTURE = QStringLiteral("opacityTex");
-const QString ASSIMP_MATERIAL_DISPLACEMENT_TEXTURE = QStringLiteral("displacementTex");
-const QString ASSIMP_MATERIAL_SHININESS_TEXTURE = QStringLiteral("shininessTex");
+const QString ASSIMP_MATERIAL_DIFFUSE_TEXTURE = QLatin1String("diffuseTexture");
+const QString ASSIMP_MATERIAL_AMBIENT_TEXTURE = QLatin1String("ambientTex");
+const QString ASSIMP_MATERIAL_SPECULAR_TEXTURE = QLatin1String("specularTexture");
+const QString ASSIMP_MATERIAL_EMISSIVE_TEXTURE = QLatin1String("emissiveTex");
+const QString ASSIMP_MATERIAL_NORMALS_TEXTURE = QLatin1String("normalsTex");
+const QString ASSIMP_MATERIAL_OPACITY_TEXTURE = QLatin1String("opacityTex");
+const QString ASSIMP_MATERIAL_REFLECTION_TEXTURE = QLatin1String("reflectionTex");
+const QString ASSIMP_MATERIAL_HEIGHT_TEXTURE = QLatin1String("heightTex");
+const QString ASSIMP_MATERIAL_LIGHTMAP_TEXTURE = QLatin1String("opacityTex");
+const QString ASSIMP_MATERIAL_DISPLACEMENT_TEXTURE = QLatin1String("displacementTex");
+const QString ASSIMP_MATERIAL_SHININESS_TEXTURE = QLatin1String("shininessTex");
 
-const QString ASSIMP_MATERIAL_IS_TWOSIDED = QStringLiteral("twosided");
-const QString ASSIMP_MATERIAL_IS_WIREFRAME = QStringLiteral("wireframe");
+const QString ASSIMP_MATERIAL_IS_TWOSIDED = QLatin1String("twosided");
+const QString ASSIMP_MATERIAL_IS_WIREFRAME = QLatin1String("wireframe");
 
-const QString ASSIMP_MATERIAL_OPACITY = QStringLiteral("opacity");
-const QString ASSIMP_MATERIAL_SHININESS = QStringLiteral("shininess");
-const QString ASSIMP_MATERIAL_SHININESS_STRENGTH = QStringLiteral("shininess_strength");
-const QString ASSIMP_MATERIAL_REFRACTI = QStringLiteral("refracti");
-const QString ASSIMP_MATERIAL_REFLECTIVITY = QStringLiteral("reflectivity");
+const QString ASSIMP_MATERIAL_OPACITY = QLatin1String("opacity");
+const QString ASSIMP_MATERIAL_SHININESS = QLatin1String("shininess");
+const QString ASSIMP_MATERIAL_SHININESS_STRENGTH = QLatin1String("shininess_strength");
+const QString ASSIMP_MATERIAL_REFRACTI = QLatin1String("refracti");
+const QString ASSIMP_MATERIAL_REFLECTIVITY = QLatin1String("reflectivity");
 
-const QString ASSIMP_MATERIAL_NAME = QStringLiteral("name");
+const QString ASSIMP_MATERIAL_NAME = QLatin1String("name");
 
 const QString VERTICES_ATTRIBUTE_NAME = QAttribute::defaultPositionAttributeName();
 const QString NORMAL_ATTRIBUTE_NAME =  QAttribute::defaultNormalAttributeName();
