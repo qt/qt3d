@@ -277,6 +277,7 @@ Qt3DCore::QEntity* GLTFIO::node(const QString &id)
             break;
         case 1:
             result = qAsConst(entities).first();
+            break;
         default:
             result = new QEntity;
             for (QEntity *entity : qAsConst(entities))
