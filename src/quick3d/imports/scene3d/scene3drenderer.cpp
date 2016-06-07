@@ -143,7 +143,10 @@ QOpenGLFramebufferObject *Scene3DRenderer::createMultisampledFramebufferObject(c
 {
     QOpenGLFramebufferObjectFormat format;
     format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
-    format.setSamples(4);
+    int samples = QSurfaceFormat::defaultFormat().samples();
+    if (samples == -1)
+        samples = 4;
+    format.setSamples(samples);
     return new QOpenGLFramebufferObject(size, format);
 }
 
