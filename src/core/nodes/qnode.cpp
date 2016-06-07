@@ -274,7 +274,7 @@ void QNodePrivate::_q_setParentHelper(QNode *parent)
 
     // If we had a parent, we let him know that we are about to change
     // parent
-    if (oldParentNode) {
+    if (oldParentNode && m_hasBackendNode) {
         QNodePrivate::get(oldParentNode)->_q_removeChild(q);
 
         // If we have an old parent but the new parent is null

@@ -101,6 +101,13 @@ void RenderPass::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
 
+    case PropertyUpdated: {
+        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("shaderProgram"))
+            m_shaderUuid = change->value().value<Qt3DCore::QNodeId>();
+        break;
+    }
+
     case PropertyValueRemoved: {
         const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("filterKeys"))
