@@ -102,9 +102,21 @@ void QInputSettings::setEventSource(QObject *eventSource)
 {
     Q_D(QInputSettings);
     if (d->m_eventSource != eventSource) {
+        if (d->m_eventSource)
+            QObject::disconnect(m_connection);
         d->m_eventSource = eventSource;
         emit eventSourceChanged(eventSource);
+        m_connection = QObject::connect(eventSource, &QObject::destroyed,
+                                        this, &QInputSettings::eventSourceDestroyed);
     }
+}
+
+void QInputSettings::eventSourceDestroyed()
+{
+    Q_D(QInputSettings);
+    QObject::disconnect(m_connection);
+    d->m_eventSource = nullptr;
+    emit eventSourceChanged(nullptr);
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QInputSettings::createNodeCreationChange() const

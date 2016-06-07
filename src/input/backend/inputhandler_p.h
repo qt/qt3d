@@ -176,6 +176,7 @@ private:
     QScopedPointer<EventSourceSetterHelper> m_eventSourceSetter;
 
     void registerEventFilters(Qt3DCore::QEventFilterService *service);
+    void unregisterEventFilters(Qt3DCore::QEventFilterService *service);
     friend class EventSourceSetterHelper;
 };
 

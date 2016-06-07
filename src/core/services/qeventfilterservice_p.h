@@ -67,6 +67,7 @@ public:
     ~QEventFilterService();
 
     void initialize(QObject *eventSource);
+    void shutdown(QObject *eventSource);
     void registerEventFilter(QObject *eventFilter, int priority);
     void unregisterEventFilter(QObject *eventFilter);
 

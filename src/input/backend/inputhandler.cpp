@@ -112,6 +112,12 @@ void InputHandler::registerEventFilters(QEventFilterService *service)
     service->registerEventFilter(m_mouseEventFilter, 513);
 }
 
+void InputHandler::unregisterEventFilters(Qt3DCore::QEventFilterService *service)
+{
+    service->unregisterEventFilter(m_keyboardEventFilter);
+    service->unregisterEventFilter(m_mouseEventFilter);
+}
+
 // Called by the keyboardEventFilter in the main thread
 void InputHandler::appendKeyEvent(const QT_PREPEND_NAMESPACE(QKeyEvent) &event)
 {
@@ -271,6 +277,8 @@ void InputHandler::addInputDeviceIntegration(QInputDeviceIntegration *inputInteg
 
 void InputHandler::setInputSettings(InputSettings *settings)
 {
+    if (m_settings && settings == nullptr)
+        m_eventSourceSetter->unsetEventSource(m_settings->eventSource());
     m_settings = settings;
 }
 

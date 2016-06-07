@@ -77,6 +77,7 @@ public:
 
     // Called from any thread
     void setEventSource(QObject *eventSource);
+    void unsetEventSource(QObject *eventSource);
 
 private Q_SLOTS:
     // Called in main thread

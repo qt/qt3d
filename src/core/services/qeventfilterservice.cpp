@@ -164,6 +164,13 @@ void QEventFilterService::initialize(QObject *eventSource)
     }
 }
 
+void QEventFilterService::shutdown(QObject *eventSource)
+{
+    Q_D(QEventFilterService);
+    if (eventSource && d->m_eventDispatcher.data())
+        eventSource->removeEventFilter(d->m_eventDispatcher.data());
+}
+
 void QEventFilterService::registerEventFilter(QObject *eventFilter, int priority)
 {
     Q_D(QEventFilterService);
