@@ -1,7 +1,7 @@
 TARGET     = Qt3DCore
 MODULE     = 3dcore
 
-QT         = core-private gui-private
+QT         = core-private gui-private network
 
 # Qt3D is free of Q_FOREACH - make sure it stays that way:
 DEFINES += QT_NO_FOREACH

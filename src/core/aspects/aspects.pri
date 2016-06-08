@@ -5,7 +5,8 @@ SOURCES += \
         $$PWD/qaspectengine.cpp \
         $$PWD/qaspectfactory.cpp \
         $$PWD/qaspectmanager.cpp \
-        $$PWD/qaspectthread.cpp
+        $$PWD/qaspectthread.cpp \
+        $$PWD/aspectcommanddebugger.cpp
 
 HEADERS += \
         $$PWD/qabstractaspect.h \
@@ -14,6 +15,7 @@ HEADERS += \
         $$PWD/qaspectengine_p.h \
         $$PWD/qaspectfactory_p.h \
         $$PWD/qaspectmanager_p.h \
-        $$PWD/qaspectthread_p.h
+        $$PWD/qaspectthread_p.h \
+        $$PWD/aspectcommanddebugger_p.h
 
 INCLUDEPATH += $$PWD

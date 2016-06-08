@@ -72,6 +72,32 @@ class QAbstractAspectJobManager;
 class QChangeArbiter;
 class QServiceLocator;
 
+namespace Debug {
+
+class AsynchronousCommandReply : public QObject
+{
+    Q_OBJECT
+public:
+    explicit AsynchronousCommandReply(const QString &commandName, QObject *parent = nullptr);
+
+    inline QByteArray data() const { return m_data; }
+    inline QString commandName() const { return m_commandName; }
+    inline bool isFinished() const { return m_finished; }
+
+    void setFinished(bool finished);
+    void setData(const QByteArray &data);
+
+Q_SIGNALS:
+    void finished(AsynchronousCommandReply *reply);
+
+private:
+    QByteArray m_data;
+    QString m_commandName;
+    bool m_finished;
+};
+
+} // Debug
+
 class QT3DCORE_PRIVATE_EXPORT QAbstractAspectPrivate
         : public QObjectPrivate
         , public QBackendNodeFactory

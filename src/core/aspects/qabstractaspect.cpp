@@ -323,6 +323,29 @@ void QAbstractAspect::onEngineShutdown()
 {
 }
 
+namespace Debug {
+
+AsynchronousCommandReply::AsynchronousCommandReply(const QString &commandName, QObject *parent)
+    : QObject(parent)
+    , m_commandName(commandName)
+    , m_finished(false)
+{
+}
+
+void AsynchronousCommandReply::setFinished(bool replyFinished)
+{
+    m_finished = replyFinished;
+    if (m_finished)
+        emit finished(this);
+}
+
+void AsynchronousCommandReply::setData(const QByteArray &data)
+{
+    m_data = data;
+}
+
+} // Debug
+
 
 } // of namespace Qt3DCore
 
