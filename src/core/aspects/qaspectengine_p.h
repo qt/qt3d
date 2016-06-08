@@ -67,6 +67,12 @@ class QAspectThread;
 class QPostman;
 class QScene;
 
+#ifdef QT3D_JOBS_RUN_STATS
+namespace Debug {
+class AspectCommandDebugger;
+} // Debug
+#endif // QT3D_JOBS_RUN_STATS
+
 class QT3DCORE_PRIVATE_EXPORT QAspectEnginePrivate : public QObjectPrivate
 {
 public:
@@ -83,6 +89,10 @@ public:
     QVector<QAbstractAspect*> m_aspects;
     QHash<QString, QAbstractAspect *> m_namedAspects;
     bool m_initialized;
+
+#ifdef QT3D_JOBS_RUN_STATS
+    Debug::AspectCommandDebugger *m_commandDebugger;
+#endif // QT3D_JOBS_RUN_STATS
 
     void initialize();
     void shutdown();
