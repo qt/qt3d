@@ -65,10 +65,27 @@ struct CommandHeader
 } // anonymous
 
 AspectCommandDebugger::ReadBuffer::ReadBuffer()
-    : buffer(4096, 0)
+    : buffer()
     , startIdx(0)
     , endIdx(0)
 {
+}
+
+void AspectCommandDebugger::ReadBuffer::insert(const QByteArray &array)
+{
+    buffer.insert(endIdx, array);
+    endIdx += array.size();
+}
+
+void AspectCommandDebugger::ReadBuffer::trim()
+{
+    if (startIdx != endIdx && startIdx != 0) {
+        memcpy(buffer.data(),
+               buffer.constData() + startIdx,
+               size());
+        endIdx -= startIdx;
+        startIdx = 0;
+    }
 }
 
 AspectCommandDebugger::AspectCommandDebugger(QObject *parent)
@@ -122,14 +139,13 @@ void AspectCommandDebugger::asynchronousReplyFinished(AsynchronousCommandReply *
 void AspectCommandDebugger::onCommandReceived(QTcpSocket *socket)
 {
     const QByteArray newData = socket->readAll();
-    m_readBuffer.buffer.insert(m_readBuffer.endIdx, newData);
-    m_readBuffer.endIdx += newData.size();
+    m_readBuffer.insert(newData);
 
     const int commandPacketSize = sizeof(CommandHeader);
-    while ((m_readBuffer.endIdx - m_readBuffer.startIdx) >= commandPacketSize) {
+    while (m_readBuffer.size() >= commandPacketSize) {
         CommandHeader *header = reinterpret_cast<CommandHeader *>(m_readBuffer.buffer.data() + m_readBuffer.startIdx);
         if (header->magic == MagicNumber &&
-                (m_readBuffer.endIdx - (m_readBuffer.startIdx + commandPacketSize)) >= header->size) {
+                (m_readBuffer.size() - commandPacketSize) >= header->size) {
             // We have a valid command
             // We expect command to be a CommandHeader + some json text
             const QJsonDocument doc = QJsonDocument::fromJson(
@@ -147,15 +163,9 @@ void AspectCommandDebugger::onCommandReceived(QTcpSocket *socket)
             m_readBuffer.startIdx += commandPacketSize + header->size;
         }
     }
-    if (m_readBuffer.startIdx != m_readBuffer.endIdx && m_readBuffer.startIdx != 0) {
-        // Copy remaining length of buffer at begininning
-        memcpy(m_readBuffer.buffer.data(),
-               m_readBuffer.buffer.constData() + m_readBuffer.startIdx,
-               m_readBuffer.endIdx - m_readBuffer.startIdx);
-    }
-    m_readBuffer.endIdx -= m_readBuffer.startIdx;
-    m_readBuffer.startIdx = 0;
-
+    // Copy remaining length of buffer at begininning if we have read some commands
+    // and some partial one remain
+    m_readBuffer.trim();
 }
 
 void AspectCommandDebugger::sendReply(QTcpSocket *socket, const QByteArray &payload)

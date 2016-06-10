@@ -65,7 +65,7 @@ namespace Debug {
 
 class AsynchronousCommandReply;
 
-class AspectCommandDebugger : public QTcpServer
+class Q_AUTOTEST_EXPORT AspectCommandDebugger : public QTcpServer
 {
     Q_OBJECT
 public:
@@ -73,6 +73,18 @@ public:
 
     void initialize();
     void setAspectEngine(QAspectEngine *engine);
+
+    struct ReadBuffer {
+        ReadBuffer();
+
+        QByteArray buffer;
+        int startIdx;
+        int endIdx;
+
+        inline int size() const { return endIdx - startIdx; }
+        void insert(const QByteArray &array);
+        void trim();
+    };
 
 private Q_SLOTS:
     void asynchronousReplyFinished(AsynchronousCommandReply *reply);
@@ -85,13 +97,6 @@ private:
     QVector<QTcpSocket *> m_connections;
     QAspectEngine *m_aspectEngine;
 
-    struct ReadBuffer {
-        ReadBuffer();
-
-        QByteArray buffer;
-        int startIdx;
-        int endIdx;
-    };
     ReadBuffer m_readBuffer;
     QHash<AsynchronousCommandReply *, QTcpSocket *> m_asyncCommandToSocketEntries;
 };
