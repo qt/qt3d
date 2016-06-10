@@ -170,6 +170,7 @@ void QTextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 QImageTextureDataFunctor::QImageTextureDataFunctor(const QUrl &url)
     : QTextureImageDataGenerator()
     , m_url(url)
+    , m_status(QTextureImage::None)
 {
     if (url.isLocalFile()) {
         QFileInfo info(url.toLocalFile());
