@@ -45,7 +45,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 QStaticPropertyValueAddedChangeBasePrivate::QStaticPropertyValueAddedChangeBasePrivate()
-    : QPropertyValueAddedChangeBasePrivate()
+    : QPropertyValueAddedChangeBasePrivate(),
+      m_propertyName(nullptr)
 {
 }
 
