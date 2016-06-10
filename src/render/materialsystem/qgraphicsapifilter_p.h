@@ -71,6 +71,7 @@ struct GraphicsApiFilterData
 
     bool operator ==(const GraphicsApiFilterData &other) const;
     bool operator !=(const GraphicsApiFilterData &other) const;
+    bool operator <(const GraphicsApiFilterData &other) const;
 };
 
 class QGraphicsApiFilterPrivate : public QObjectPrivate

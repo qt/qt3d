@@ -71,6 +71,16 @@ bool GraphicsApiFilterData::operator ==(const GraphicsApiFilterData &other) cons
     return false;
 }
 
+bool GraphicsApiFilterData::operator <(const GraphicsApiFilterData &other) const
+{
+    if (this->m_major > other.m_major)
+        return false;
+    if (this->m_major == other.m_major &&
+        this->m_minor > other.m_minor)
+        return false;
+    return true;
+}
+
 bool GraphicsApiFilterData::operator !=(const GraphicsApiFilterData &other) const
 {
     return !(*this == other);

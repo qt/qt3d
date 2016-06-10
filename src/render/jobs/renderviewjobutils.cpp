@@ -245,6 +245,7 @@ Technique *findTechniqueForEffect(Renderer *renderer,
         return nullptr;
 
     NodeManagers *manager = renderer->nodeManagers();
+    QVector<Technique*> matchingTechniques;
 
     // Iterate through the techniques in the effect
     const auto techniqueIds = effect->techniques();
@@ -260,8 +261,10 @@ Technique *findTechniqueForEffect(Renderer *renderer,
             // If no techniqueFilter is present, we return the technique as it satisfies OpenGL version
             const TechniqueFilter *techniqueFilter = renderView->techniqueFilter();
             bool foundMatch = (techniqueFilter == nullptr || techniqueFilter->filters().isEmpty());
-            if (foundMatch)
-                return technique;
+            if (foundMatch) {
+                matchingTechniques.append(technique);
+                continue;
+            }
 
             // There is a technique filter so we need to check for a technique with suitable criteria.
             // Check for early bail out if the technique doesn't have sufficient number of criteria and
@@ -290,13 +293,29 @@ Technique *findTechniqueForEffect(Renderer *renderer,
                 }
             }
 
-            if (foundMatch)
-                return technique; // All criteria matched - we have a winner!
+            if (foundMatch) {
+                // All criteria matched - we have a winner!
+                matchingTechniques.append(technique);
+            }
         }
     }
 
-    // We failed to find a suitable technique to use :(
-    return nullptr;
+    if (matchingTechniques.size() == 0) // We failed to find a suitable technique to use :(
+        return nullptr;
+
+    if (matchingTechniques.size() == 1)
+        return matchingTechniques[0];
+
+    // Several compatible techniques, return technique with highest major and minor version
+    Technique* highest = matchingTechniques[0];
+    GraphicsApiFilterData filter = *highest->graphicsApiFilter();
+    for (auto it = matchingTechniques.cbegin() + 1; it < matchingTechniques.cend(); ++it) {
+        if (filter < *(*it)->graphicsApiFilter()) {
+            filter = *(*it)->graphicsApiFilter();
+            highest = *it;
+        }
+    }
+    return highest;
 }
 
 
