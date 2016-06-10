@@ -179,7 +179,7 @@ void Qt3DQuickWindow::onSceneCreated(QObject *rootObject)
     if (m_cameraAspectRatioMode == AutomaticAspectRatio) {
         // Set aspect ratio of first camera to match the window
         QList<Qt3DRender::QCamera *> cameras
-            = rootObject->findChildren<Qt3DRender::QCamera *>();
+                = rootObject->findChildren<Qt3DRender::QCamera *>();
         if (cameras.isEmpty()) {
             qWarning() << "No camera found";
         } else {
@@ -202,7 +202,7 @@ void Qt3DQuickWindow::setWindowSurface(QObject *rootObject)
     // Find surface selector in framegraph and set ourselves up as the
     // render surface there
     Qt3DRender::QRenderSettings *rendererSettings
-        = rootObject->findChild<Qt3DRender::QRenderSettings *>();
+            = rootObject->findChild<Qt3DRender::QRenderSettings *>();
     if (!rendererSettings) {
         qWarning() << "No renderer settings component found";
         return;
@@ -231,6 +231,8 @@ void Qt3DQuickWindow::setCameraAspectModeHelper()
     case AutomaticAspectRatio:
         connect(this, &QWindow::widthChanged, this, &Qt3DQuickWindow::updateCameraAspectRatio);
         connect(this, &QWindow::heightChanged, this, &Qt3DQuickWindow::updateCameraAspectRatio);
+        // Update the aspect ratio the first time the surface is set
+        updateCameraAspectRatio();
         break;
     case UserAspectRatio:
         disconnect(this, &QWindow::widthChanged, this, &Qt3DQuickWindow::updateCameraAspectRatio);
