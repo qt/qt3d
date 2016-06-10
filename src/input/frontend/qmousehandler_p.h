@@ -52,8 +52,11 @@
 //
 
 #include <private/qcomponent_p.h>
+#include <Qt3DInput/qmouseevent.h>
 
 QT_BEGIN_NAMESPACE
+
+class QTimer;
 
 namespace Qt3DInput {
 
@@ -68,8 +71,10 @@ public:
 
     QMouseDevice *m_mouseDevice;
     bool m_containsMouse;
+    QScopedPointer<QTimer> m_pressAndHoldTimer;
+    QMouseEventPtr m_lastPressedEvent;
 
-    void mouseEvent(Qt3DInput::QMouseEvent *event);
+    void mouseEvent(const QMouseEventPtr &event);
 
     Q_DECLARE_PUBLIC(QMouseHandler)
 };

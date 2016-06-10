@@ -42,6 +42,7 @@
 #include "qmousedevice.h"
 #include "qmouseevent.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,35 +54,42 @@ QMouseHandlerPrivate::QMouseHandlerPrivate()
     : QComponentPrivate()
     , m_mouseDevice(nullptr)
     , m_containsMouse(false)
+    , m_pressAndHoldTimer(new QTimer)
 {
     m_shareable = false;
+    m_pressAndHoldTimer->setSingleShot(true);
+    m_pressAndHoldTimer->setInterval(500);
+    QObject::connect(m_pressAndHoldTimer.data(), &QTimer::timeout, [this] {
+        emit q_func()->pressAndHold(m_lastPressedEvent.data());
+    });
 }
 
 QMouseHandlerPrivate::~QMouseHandlerPrivate()
 {
 }
 
-void QMouseHandlerPrivate::mouseEvent(QMouseEvent *event)
+void QMouseHandlerPrivate::mouseEvent(const QMouseEventPtr &event)
 {
     Q_Q(QMouseHandler);
     switch (event->type()) {
-    case QEvent::MouseButtonPress:
-        if (event->wasHeld())
-            emit q->pressAndHold(event);
-        else
-            emit q->pressed(event);
+    case QEvent::MouseButtonPress: {
+        m_lastPressedEvent = event;
+        m_pressAndHoldTimer->start();
+        emit q->pressed(event.data());
         break;
+    }
     case QEvent::MouseButtonRelease:
-        emit q->released(event);
+        m_pressAndHoldTimer->stop();
+        emit q->released(event.data());
         break;
     case Qt::TapGesture:
-        emit q->clicked(event);
+        emit q->clicked(event.data());
         break;
     case QEvent::MouseButtonDblClick:
-        emit q->doubleClicked(event);
+        emit q->doubleClicked(event.data());
         break;
     case QEvent::MouseMove:
-        emit q->positionChanged(event);
+        emit q->positionChanged(event.data());
         break;
     default:
         break;
@@ -285,7 +293,7 @@ void QMouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
     if (e->type() == PropertyUpdated) {
         if (e->propertyName() == QByteArrayLiteral("mouse")) {
             QMouseEventPtr ev = e->value().value<QMouseEventPtr>();
-            d->mouseEvent(ev.data());
+            d->mouseEvent(ev);
         } else if (e->propertyName() == QByteArrayLiteral("wheel")) {
             QWheelEventPtr ev = e->value().value<QWheelEventPtr>();
             emit wheel(ev.data());
