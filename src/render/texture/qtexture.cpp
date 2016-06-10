@@ -954,6 +954,7 @@ bool QTextureFromSourceGenerator::operator ==(const QTextureGenerator &other) co
 QTextureFromSourceGenerator::QTextureFromSourceGenerator(const QUrl &url)
     : QTextureGenerator()
     , m_url(url)
+    , m_status(QAbstractTexture::None)
 {
 }
 
