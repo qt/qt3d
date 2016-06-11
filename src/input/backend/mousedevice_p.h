@@ -110,6 +110,7 @@ private:
 
     MouseState m_mouseState;
     QPointF m_previousPos;
+    bool m_wasPressed;
     float m_sensitivity;
 };
 

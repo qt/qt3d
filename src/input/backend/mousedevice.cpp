@@ -55,6 +55,7 @@ namespace Input {
 MouseDevice::MouseDevice()
     : QAbstractPhysicalDeviceBackendNode(ReadOnly)
     , m_sensitivity(0.1f)
+    , m_wasPressed(false)
 {
 }
 
@@ -127,8 +128,12 @@ void MouseDevice::updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent
             m_mouseState.leftPressed = e.buttons() & (Qt::LeftButton);
             m_mouseState.centerPressed = e.buttons() & (Qt::MiddleButton);
             m_mouseState.rightPressed = e.buttons() & (Qt::RightButton);
-            m_mouseState.xAxis =  m_sensitivity * (e.screenPos().x() - m_previousPos.x());
-            m_mouseState.yAxis = m_sensitivity * (m_previousPos.y() - e.screenPos().y());
+            bool pressed = m_mouseState.leftPressed || m_mouseState.centerPressed || m_mouseState.rightPressed;
+            if (m_wasPressed && pressed) {
+                m_mouseState.xAxis = m_sensitivity * (e.screenPos().x() - m_previousPos.x());
+                m_mouseState.yAxis = m_sensitivity * (m_previousPos.y() - e.screenPos().y());
+            }
+            m_wasPressed = pressed;
             m_previousPos = e.screenPos();
         }
     } else {
