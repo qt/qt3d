@@ -262,6 +262,8 @@ void Scene3DItem::setCameraAspectModeHelper()
     case AutomaticAspectRatio:
         connect(this, &Scene3DItem::widthChanged, this, &Scene3DItem::updateCameraAspectRatio);
         connect(this, &Scene3DItem::heightChanged, this, &Scene3DItem::updateCameraAspectRatio);
+        // Update the aspect ratio the first time the surface is set
+        updateCameraAspectRatio();
         break;
     case UserAspectRatio:
         disconnect(this, &Scene3DItem::widthChanged, this, &Scene3DItem::updateCameraAspectRatio);
