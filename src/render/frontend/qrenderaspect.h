@@ -84,6 +84,8 @@ protected:
 private:
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
+    QVariant executeCommand(const QStringList &args) Q_DECL_OVERRIDE;
+
     void onRegistered() Q_DECL_OVERRIDE;
     void onUnregistered() Q_DECL_OVERRIDE;
 

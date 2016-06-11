@@ -407,6 +407,12 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     return jobs;
 }
 
+QVariant QRenderAspect::executeCommand(const QStringList &args)
+{
+    Q_D(QRenderAspect);
+    return d->m_renderer->executeCommand(args);
+}
+
 void QRenderAspect::onEngineStartup()
 {
     Q_D(QRenderAspect);

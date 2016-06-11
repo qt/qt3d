@@ -84,6 +84,7 @@
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
+#include <Qt3DCore/private/aspectcommanddebugger_p.h>
 
 #include <QStack>
 #include <QSurface>
@@ -104,6 +105,7 @@
 #ifdef QT3D_JOBS_RUN_STATS
 #include <Qt3DCore/private/qthreadpooler_p.h>
 #include <Qt3DRender/private/job_common_p.h>
+#include <Qt3DRender/private/commandexecuter_p.h>
 #endif
 
 QT_BEGIN_NAMESPACE
@@ -156,6 +158,9 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_expandBoundingVolumeJob(Render::ExpandBoundingVolumeJobPtr::create())
     , m_calculateBoundingVolumeJob(Render::CalculateBoundingVolumeJobPtr::create())
     , m_updateWorldBoundingVolumeJob(Render::UpdateWorldBoundingVolumeJobPtr::create())
+    #ifdef QT3D_JOBS_RUN_STATS
+    , m_commandExecuter(new Qt3DRender::Debug::CommandExecuter(this))
+    #endif
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
@@ -470,6 +475,9 @@ void Renderer::doRender()
         submissionStats.jobId.typeAndInstance[1] = 0;
         submissionStats.threadId = reinterpret_cast<quint64>(QThread::currentThreadId());
         submissionStats.startTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
+
+        // Execute the pending shell commands
+        m_commandExecuter->performAsynchronousCommandExecution();
 #endif
 
         // Lock the mutex to protect access to m_surface and check if we are still set
@@ -623,6 +631,17 @@ bool Renderer::isReadyToSubmit()
             return false;
     }
     return true;
+}
+
+// Main thread
+QVariant Renderer::executeCommand(const QStringList &args)
+{
+#ifdef QT3D_JOBS_RUN_STATS
+    return m_commandExecuter->executeCommand(args);
+#else
+    Q_UNUSED(args);
+#endif
+    return QVariant();
 }
 
 // Happens in RenderThread context when all RenderViewJobs are done

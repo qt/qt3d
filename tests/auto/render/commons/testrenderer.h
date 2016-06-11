@@ -74,6 +74,7 @@ public:
     void clearDirtyBits(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes) Q_DECL_OVERRIDE;
 
     void resetDirty();
+    QVariant executeCommand(const QStringList &args) Q_DECL_OVERRIDE;
 
 protected:
     Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet m_changes;

@@ -124,8 +124,12 @@ void AspectCommandDebugger::asynchronousReplyFinished(AsynchronousCommandReply *
 {
     Q_ASSERT(reply->isFinished());
     QTcpSocket *socket = m_asyncCommandToSocketEntries.take(reply);
-    if (m_connections.contains(socket))
-        sendReply(socket, reply->data());
+    if (m_connections.contains(socket)) {
+        QJsonObject replyObj;
+        replyObj.insert(QLatin1String("command"), QJsonValue(reply->commandName()));
+        replyObj.insert(QLatin1String("data"), QJsonValue(QString::fromLatin1(reply->data())));
+        sendReply(socket, QJsonDocument(replyObj).toJson());
+    }
     reply->deleteLater();
 }
 
@@ -153,7 +157,6 @@ void AspectCommandDebugger::onCommandReceived(QTcpSocket *socket)
                                    header->size));
 
             if (!doc.isNull()) {
-                qDebug() << Q_FUNC_INFO << doc.toJson();
                 // Send command to the aspectEngine
                 QJsonObject commandObj = doc.object();
                 const QJsonValue commandNameValue = commandObj.value(QLatin1String("command"));
@@ -190,7 +193,7 @@ void AspectCommandDebugger::executeCommand(const QString &command,
         AsynchronousCommandReply *reply = response.value<AsynchronousCommandReply *>();
         // Command has already been completed
         if (reply->isFinished()) {
-            sendReply(socket, reply->data());
+           asynchronousReplyFinished(reply);
         } else { // Command is not completed yet
             QObject::connect(reply, &AsynchronousCommandReply::finished,
                              this, &AspectCommandDebugger::asynchronousReplyFinished);
@@ -199,7 +202,7 @@ void AspectCommandDebugger::executeCommand(const QString &command,
     } else { // Synchronous command
         // and send response to client
         QJsonObject reply;
-        reply.insert(QStringLiteral("command"), QJsonValue(command));
+        reply.insert(QLatin1String("command"), QJsonValue(command));
         // TO DO: convert QVariant to QJsonDocument/QByteArray
         sendReply(socket, QJsonDocument(reply).toJson());
 

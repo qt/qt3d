@@ -148,6 +148,8 @@ public:
 
     virtual void setSettings(RenderSettings *settings) = 0;
     virtual RenderSettings *settings() const = 0;
+
+    virtual QVariant executeCommand(const QStringList &args) = 0;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractRenderer::BackendNodeDirtySet)

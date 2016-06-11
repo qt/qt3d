@@ -74,7 +74,7 @@ class QServiceLocator;
 
 namespace Debug {
 
-class AsynchronousCommandReply : public QObject
+class QT3DCORE_PRIVATE_EXPORT AsynchronousCommandReply : public QObject
 {
     Q_OBJECT
 public:

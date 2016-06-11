@@ -106,6 +106,12 @@ class QAbstractShapeMesh;
 struct GraphicsApiFilterData;
 class QSceneIOHandler;
 
+#ifdef QT3D_JOBS_RUN_STATS
+namespace Debug {
+class CommandExecuter;
+}
+#endif
+
 namespace Render {
 
 class CameraLens;
@@ -208,6 +214,7 @@ public:
     void enqueueRenderView(RenderView *renderView, int submitOrder);
     bool isReadyToSubmit();
 
+    QVariant executeCommand(const QStringList &args) Q_DECL_OVERRIDE;
 
     struct ViewSubmissionResultData
     {
@@ -289,6 +296,11 @@ private:
     bool createOrUpdateVAO(RenderCommand *command,
                            HVao *previousVAOHandle,
                            OpenGLVertexArrayObject **vao);
+
+#ifdef QT3D_JOBS_RUN_STATS
+    QScopedPointer<Qt3DRender::Debug::CommandExecuter> m_commandExecuter;
+    friend class Qt3DRender::Debug::CommandExecuter;
+#endif
 };
 
 } // namespace Render

@@ -35,7 +35,8 @@ HEADERS += \
     $$PWD/rendersettings_p.h \
     $$PWD/stringtoint_p.h \
     $$PWD/backendnode_p.h \
-    $$PWD/rendertargetoutput_p.h
+    $$PWD/rendertargetoutput_p.h \
+    $$PWD/commandexecuter_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
@@ -63,5 +64,6 @@ SOURCES += \
     $$PWD/stringtoint.cpp \
     $$PWD/backendnode.cpp \
     $$PWD/rendertargetoutput.cpp \
-    $$PWD/attachmentpack.cpp
+    $$PWD/attachmentpack.cpp \
+    $$PWD/commandexecuter.cpp
 

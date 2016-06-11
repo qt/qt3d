@@ -60,4 +60,10 @@ void TestRenderer::resetDirty()
     m_changes = 0;
 }
 
+QVariant TestRenderer::executeCommand(const QStringList &args)
+{
+    Q_UNUSED(args)
+    return QVariant();
+}
+
 QT_END_NAMESPACE
