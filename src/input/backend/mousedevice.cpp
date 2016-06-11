@@ -124,14 +124,18 @@ QVector<Qt3DCore::QNodeId> MouseDevice::mouseInputs() const
 void MouseDevice::updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events)
 {
     if (!events.isEmpty()) {
+        // Reset axis values before we accumulate new values for this frame
+        m_mouseState.xAxis = 0.0f;
+        m_mouseState.yAxis = 0.0f;
+
         for (const QT_PREPEND_NAMESPACE(QMouseEvent) &e : events) {
             m_mouseState.leftPressed = e.buttons() & (Qt::LeftButton);
             m_mouseState.centerPressed = e.buttons() & (Qt::MiddleButton);
             m_mouseState.rightPressed = e.buttons() & (Qt::RightButton);
             bool pressed = m_mouseState.leftPressed || m_mouseState.centerPressed || m_mouseState.rightPressed;
             if (m_wasPressed && pressed) {
-                m_mouseState.xAxis = m_sensitivity * (e.screenPos().x() - m_previousPos.x());
-                m_mouseState.yAxis = m_sensitivity * (m_previousPos.y() - e.screenPos().y());
+                m_mouseState.xAxis += m_sensitivity * (e.screenPos().x() - m_previousPos.x());
+                m_mouseState.yAxis += m_sensitivity * (m_previousPos.y() - e.screenPos().y());
             }
             m_wasPressed = pressed;
             m_previousPos = e.screenPos();
