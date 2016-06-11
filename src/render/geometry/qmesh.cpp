@@ -85,9 +85,9 @@ QMeshPrivate::QMeshPrivate()
  */
 
 /*!
- * \qmlproperty string Mesh::subMesh
+ * \qmlproperty string Mesh::meshName
  *
- * Holds the subMesh for the mesh.
+ * Holds the name of the mesh.
  */
 
 /*!
@@ -152,9 +152,9 @@ void QMesh::setMeshName(const QString &meshName)
 }
 
 /*!
- * \property QMesh::subMesh
+ * \property QMesh::meshName
  *
- * Holds the subMesh for the mesh.
+ * Holds the name of the mesh.
  */
 QString QMesh::meshName() const
 {

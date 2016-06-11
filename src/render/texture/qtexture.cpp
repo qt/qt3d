@@ -899,6 +899,9 @@ QTextureBuffer::~QTextureBuffer()
 {
 }
 
+/*!
+ * Constructs a new Qt3DRender::QTextureLoader instance with \a parent as parent.
+ */
 QTextureLoader::QTextureLoader(QNode *parent)
     : QAbstractTexture(*new QTextureLoaderPrivate, parent)
 {
@@ -910,12 +913,19 @@ QTextureLoader::~QTextureLoader()
 {
 }
 
+/*!
+ * \return the current texture source.
+ */
 QUrl QTextureLoader::source() const
 {
     Q_D(const QTextureLoader);
     return d->m_source;
 }
 
+/*!
+ * Sets the texture loader source to \a source.
+ * \param source
+ */
 void QTextureLoader::setSource(const QUrl& source)
 {
     Q_D(QTextureLoader);
@@ -926,12 +936,21 @@ void QTextureLoader::setSource(const QUrl& source)
     }
 }
 
+/*!
+ * Takes in a TextureGenerator via \a other and
+ * \return whether generators have the same source.
+ */
 bool QTextureFromSourceGenerator::operator ==(const QTextureGenerator &other) const
 {
     const QTextureFromSourceGenerator *otherFunctor = functor_cast<QTextureFromSourceGenerator>(&other);
     return (otherFunctor != Q_NULLPTR && otherFunctor->m_url == m_url);
 }
 
+/*!
+ * Constructs a new QTextureFromSourceGenerator::QTextureFromSourceGenerator
+ * instance with \a url.
+ * \param url
+ */
 QTextureFromSourceGenerator::QTextureFromSourceGenerator(const QUrl &url)
     : QTextureGenerator()
     , m_url(url)

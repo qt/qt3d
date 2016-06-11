@@ -77,62 +77,35 @@ QNodeCreatedChangeBasePtr QSortPolicy::createNodeCreationChange() const
     return creationChange;
 }
 
-void QSortPolicy::addSortType(Qt3DRender::QSortPolicy::SortType sortType)
-{
-    Q_D(QSortPolicy);
-    if (!d->m_sortTypes.contains(sortType)) {
-        d->m_sortTypes.append(sortType);
-
-        if (d->m_changeArbiter != nullptr) {
-            QPropertyValueAddedChangePtr propertyChange(new QPropertyValueAddedChange(id()));
-            propertyChange->setPropertyName("sortType");
-            propertyChange->setAddedValue(QVariant::fromValue(sortType));
-            d->notifyObservers(propertyChange);
-        }
-    }
-}
-
-void QSortPolicy::removeSortType(SortType sortType)
-{
-    Q_D(QSortPolicy);
-    if (d->m_changeArbiter != nullptr) {
-        QPropertyValueRemovedChangePtr propertyChange(new QPropertyValueRemovedChange(id()));
-        propertyChange->setPropertyName("sortType");
-        propertyChange->setRemovedValue(QVariant::fromValue(sortType));
-        d->notifyObservers(propertyChange);
-    }
-    d->m_sortTypes.removeOne(sortType);
-}
-
 QVector<QSortPolicy::SortType> QSortPolicy::sortTypes() const
 {
     Q_D(const QSortPolicy);
     return d->m_sortTypes;
 }
 
-QVariantList QSortPolicy::sortTypeList() const
+QVector<int> QSortPolicy::sortTypesInt() const
 {
     Q_D(const QSortPolicy);
-    QVariantList ret;
-    ret.reserve(d->m_sortTypes.size());
-    for (const auto type : d->m_sortTypes)
-        ret.append(QVariant(type));
-
-    return ret;
+    QVector<int> sortTypesInt;
+    transformVector(d->m_sortTypes, sortTypesInt);
+    return sortTypesInt;
 }
 
-void QSortPolicy::setSortTypes(QVector<QSortPolicy::SortType> sortTypes)
+void QSortPolicy::setSortTypes(const QVector<SortType> &sortTypes)
 {
     Q_D(QSortPolicy);
-    d->m_sortTypes = std::move(sortTypes);
+    if (sortTypes != d->m_sortTypes) {
+        d->m_sortTypes = sortTypes;
+        emit sortTypesChanged(sortTypes);
+        emit sortTypesChanged(sortTypesInt());
+    }
 }
 
-void QSortPolicy::setSortTypes(const QVariantList &sortTypes)
+void QSortPolicy::setSortTypes(const QVector<int> &sortTypesInt)
 {
-    Q_D(QSortPolicy);
-    d->m_sortTypes.clear();
-    for (const auto &typeVariant : sortTypes)
-        d->m_sortTypes.append(static_cast<QSortPolicy::SortType>(typeVariant.toInt()));
+    QVector<SortType> sortTypes;
+    transformVector(sortTypesInt, sortTypes);
+    setSortTypes(sortTypes);
 }
 
 } // namespace Qt3DRender

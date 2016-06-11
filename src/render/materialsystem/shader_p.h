@@ -80,13 +80,17 @@ public:
 
     void cleanup();
 
+    void setGraphicsContext(GraphicsContext *context);
+    GraphicsContext *graphicsContext();
+
     void updateUniforms(GraphicsContext *ctx, const ShaderParameterPack &pack);
     void setFragOutputs(const QHash<QString, int> &fragOutputs);
+    const QHash<QString, int> fragOutputs() const;
 
-    inline QVector<int> uniformsNamesIds() const Q_DECL_NOEXCEPT { return m_uniformsNamesIds; }
-    inline QVector<int> uniformBlockNamesIds() const Q_DECL_NOEXCEPT { return m_uniformBlockNamesIds; }
-    inline QVector<int> storageBlockNamesIds() const Q_DECL_NOEXCEPT { return m_shaderStorageBlockNamesIds; }
-    inline QVector<int> attributeNamesIds() const Q_DECL_NOEXCEPT { return m_attributeNamesIds; }
+    inline QVector<int> uniformsNamesIds() const { return m_uniformsNamesIds; }
+    inline QVector<int> uniformBlockNamesIds() const { return m_uniformBlockNamesIds; }
+    inline QVector<int> storageBlockNamesIds() const { return m_shaderStorageBlockNamesIds; }
+    inline QVector<int> attributeNamesIds() const { return m_attributeNamesIds; }
 
     QVector<QString> uniformsNames() const;
     QVector<QString> attributesNames() const;
@@ -95,13 +99,14 @@ public:
     QVector<QByteArray> shaderCode() const;
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    bool isLoaded() const Q_DECL_NOEXCEPT { return m_isLoaded; }
-    ProgramDNA dna() const Q_DECL_NOEXCEPT { return m_dna; }
+    bool isLoaded() const { QMutexLocker lock(&m_mutex); return m_isLoaded; }
+    void setLoaded(bool loaded) { QMutexLocker lock(&m_mutex); m_isLoaded = loaded; }
+    ProgramDNA dna() const Q_DECL_NOTHROW { return m_dna; }
 
-    inline QVector<ShaderUniform> uniforms() const Q_DECL_NOEXCEPT { return m_uniforms; }
-    inline QVector<ShaderAttribute> attributes() const Q_DECL_NOEXCEPT { return m_attributes; }
-    inline QVector<ShaderUniformBlock> uniformBlocks() const Q_DECL_NOEXCEPT { return m_uniformBlocks; }
-    inline QVector<ShaderStorageBlock> storageBlocks() const Q_DECL_NOEXCEPT { return m_shaderStorageBlocks; }
+    inline QVector<ShaderUniform> uniforms() const { return m_uniforms; }
+    inline QVector<ShaderAttribute> attributes() const { return m_attributes; }
+    inline QVector<ShaderUniformBlock> uniformBlocks() const { return m_uniformBlocks; }
+    inline QVector<ShaderStorageBlock> storageBlocks() const { return m_shaderStorageBlocks; }
 
     QHash<QString, ShaderUniform> activeUniformsForUniformBlock(int blockIndex) const;
 
@@ -115,11 +120,6 @@ public:
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
-
-    QOpenGLShaderProgram *m_program;
-
-    QOpenGLShaderProgram *createProgram(GraphicsContext *context);
-    QOpenGLShaderProgram *createDefaultProgram();
 
     QVector<QString> m_uniformsNames;
     QVector<int> m_uniformsNamesIds;
@@ -144,7 +144,8 @@ private:
 
     bool m_isLoaded;
     ProgramDNA m_dna;
-    QMutex m_mutex;
+    ProgramDNA m_oldDna;
+    mutable QMutex m_mutex;
     GraphicsContext *m_graphicsContext;
 
     void updateDNA();
@@ -157,7 +158,6 @@ private:
 
     void initialize(const Shader &other);
 
-    QOpenGLShaderProgram *getOrCreateProgram(GraphicsContext *ctx);
     friend class GraphicsContext;
 };
 

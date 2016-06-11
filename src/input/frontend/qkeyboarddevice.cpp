@@ -203,17 +203,22 @@ QKeyboardDevicePrivate::QKeyboardDevicePrivate()
 /*!
     \class Qt3DInput::QKeyboardDevice
     \inmodule Qt3DInput
+    \brief A QKeyboardDevice class.
     \since 5.5
 */
 
 /*!
     \qmltype KeyboardDevice
     \inqmlmodule Qt3D.Input
+    \brief QML frontend for QKeyboardDevice C++ class.
     \since 5.5
     \instantiates Qt3DInput::QKeyboardDevice
     \inherits Node
 */
 
+/*!
+    Constructs a new QKeyboardDevice instance with \a parent.
+ */
 QKeyboardDevice::QKeyboardDevice(QNode *parent)
     : QAbstractPhysicalDevice(*new QKeyboardDevicePrivate, parent)
 {
@@ -228,40 +233,68 @@ QKeyboardDevice::~QKeyboardDevice()
     \qmlproperty KeyboardHandler Qt3D.Input::KeyboardDevice::activeInput
     \readonly
 */
+
+/*!
+    \property QKeyboardDevice::activeInput
+
+    Holds the active QKeyboardHandler of the device.
+ */
 QKeyboardHandler *QKeyboardDevice::activeInput() const
 {
     Q_D(const QKeyboardDevice);
     return d->m_activeInput;
 }
 
+/*!
+    \return the axis count.
+
+    \note Currently always returns zero.
+ */
 int QKeyboardDevice::axisCount() const
 {
     return 0;
 }
 
+/*!
+    \return the button count.
+ */
 int QKeyboardDevice::buttonCount() const
 {
     Q_D(const QKeyboardDevice);
     return d->m_keyNames.size();
 }
 
+/*!
+    \return the axis names.
+
+    \note Currently always returns empty QStringList.
+ */
 QStringList QKeyboardDevice::axisNames() const
 {
     return QStringList();
 }
 
+/*!
+    \return the button names.
+ */
 QStringList QKeyboardDevice::buttonNames() const
 {
     Q_D(const QKeyboardDevice);
     return d->m_keyNames;
 }
 
+/*!
+    \return the axisIdentifier matching the \a name.
+ */
 int QKeyboardDevice::axisIdentifier(const QString &name) const
 {
     Q_UNUSED(name);
     return 0;
 }
 
+/*!
+    \return the buttonIdentifier matching the \a name.
+ */
 int QKeyboardDevice::buttonIdentifier(const QString &name) const
 {
     Q_D(const QKeyboardDevice);

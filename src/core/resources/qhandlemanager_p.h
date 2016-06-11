@@ -89,6 +89,7 @@ public:
     void update(const QHandle<T, INDEXBITS> &, T *d);
     T *data(const QHandle<T, INDEXBITS> &handle, bool *ok = 0);
     const T *constData(const QHandle<T, INDEXBITS> &handle, bool *ok = 0) const;
+    QVector<T *> entries() const;
 
 private:
     Q_DISABLE_COPY(QHandleManager)
@@ -242,6 +243,15 @@ QDebug operator<<(QDebug dbg, const QHandleManager<T, INDEXBITS> &manager)
     return dbg;
 }
 #endif
+
+template <typename T, uint INDEXBITS>
+QVector<T *> QHandleManager<T, INDEXBITS>::entries() const
+{
+    QVector<T *> entries;
+    for (auto handle : qAsConst(m_entries))
+        entries.append(handle.m_data);
+    return entries;
+}
 
 } // Qt3D
 

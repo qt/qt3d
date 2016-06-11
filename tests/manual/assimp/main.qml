@@ -152,15 +152,16 @@ Entity
                             console.log("  " + e.components[i]);
                             if (e.components[i].effect !== undefined) {
                                 var p = e.components[i].effect.parameters;
-                                for (var j = 0; j < p.length; ++j) {
-                                    if (p[j].name === "kd") {
-                                        var anim = animParamComp.createObject(p[j]);
-                                        anim.target = p[j];
-                                        anim.running = true;
-                                        break;
+                                if (p !== undefined) {
+                                    for (var j = 0; j < p.length; ++j) {
+                                        if (p[j].name === "kd") {
+                                            var anim = animParamComp.createObject(p[j]);
+                                            anim.target = p[j];
+                                            anim.running = true;
+                                            break;
+                                        }
                                     }
                                 }
-
                             }
                         }
 

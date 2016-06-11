@@ -130,6 +130,35 @@ Input::AxisSetting *QAbstractPhysicalDeviceBackendNodePrivate::getAxisSetting(Qt
     return axisSetting;
 }
 
+QVector<Input::AxisIdSetting> QAbstractPhysicalDeviceBackendNodePrivate::convertToAxisIdSettingVector(Qt3DCore::QNodeId axisSettingId) const
+{
+    const auto axisSetting = getAxisSetting(axisSettingId);
+    const auto axisIds = axisSetting->axes();
+
+    auto result = QVector<Input::AxisIdSetting>();
+    result.reserve(axisIds.size());
+    std::transform(axisIds.constBegin(), axisIds.constEnd(),
+                   std::back_inserter(result),
+                   [axisSettingId] (int axisId) {
+                       return Input::AxisIdSetting{ axisId, axisSettingId };
+                   });
+    return result;
+}
+
+void QAbstractPhysicalDeviceBackendNodePrivate::updatePendingAxisSettings()
+{
+    if (m_pendingAxisSettingIds.isEmpty())
+        return;
+
+    m_axisSettings = std::accumulate(
+                m_pendingAxisSettingIds.constBegin(), m_pendingAxisSettingIds.constEnd(),
+                QVector<Input::AxisIdSetting>(),
+                [this] (const QVector<Input::AxisIdSetting> &current, Qt3DCore::QNodeId axisSettingId) {
+                    return current + convertToAxisIdSettingVector(axisSettingId);
+                });
+    m_pendingAxisSettingIds.clear();
+}
+
 QAbstractPhysicalDeviceBackendNode::QAbstractPhysicalDeviceBackendNode(QBackendNode::Mode mode)
     : Qt3DCore::QBackendNode(*new QAbstractPhysicalDeviceBackendNodePrivate(mode))
 {
@@ -140,28 +169,11 @@ QAbstractPhysicalDeviceBackendNode::QAbstractPhysicalDeviceBackendNode(QAbstract
 {
 }
 
-// TODO: Fold this into a job as described below
-//void QAbstractPhysicalDeviceBackendNode::updateFromPeer(Qt3DCore::QNode *peer)
-//{
-//    Q_D(QAbstractPhysicalDeviceBackendNode);
-//    QAbstractPhysicalDevice *physicalDevice = static_cast<QAbstractPhysicalDevice *>(peer);
-//    const auto axisSettings = physicalDevice->axisSettings();
-//    for (QAxisSetting *axisSetting : axisSettings) {
-//        // Each axis setting can apply to more than one axis. If an axis is
-//        // mentioned in more than one setting, we use the last one
-//        const auto axisIds = variantListToVector(axisSetting->axes());
-//        for (int axisId : axisIds)
-//            d->addAxisSetting(axisId, axisSetting->id());
-//    }
-//}
-
 void QAbstractPhysicalDeviceBackendNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto deviceChange = qSharedPointerCast<QPhysicalDeviceCreatedChangeBase>(change);
     Q_D(QAbstractPhysicalDeviceBackendNode);
-    // Store the axis setting Ids. We will update the settings themselves from
-    // a job scheduled on the next frame.
-    // TODO: Create such a job once all types can be created this way.
+    // Store the axis setting Ids. We will update the settings themselves when needed
     d->m_pendingAxisSettingIds = deviceChange->axisSettingIds();
 }
 
@@ -218,8 +230,10 @@ QInputAspect *QAbstractPhysicalDeviceBackendNode::inputAspect() const
 
 float QAbstractPhysicalDeviceBackendNode::processedAxisValue(int axisIdentifier)
 {
-    // Find axis settings for this axis (if any)
     Q_D(QAbstractPhysicalDeviceBackendNode);
+    d->updatePendingAxisSettings();
+
+    // Find axis settings for this axis (if any)
     Qt3DCore::QNodeId axisSettingId;
     QVector<Input::AxisIdSetting>::const_iterator it;
     QVector<Input::AxisIdSetting>::const_iterator end = d->m_axisSettings.cend();

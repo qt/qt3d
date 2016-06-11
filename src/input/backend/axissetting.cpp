@@ -44,19 +44,6 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace {
-
-QVector<int> variantListToVector(const QVariantList &list)
-{
-    QVector<int> v(list.size());
-    int i = 0;
-    for (const QVariant &e : list)
-        v[i++] = e.toInt();
-    return v;
-}
-
-}
-
 namespace Qt3DInput {
 namespace Input {
 
@@ -73,7 +60,7 @@ void AxisSetting::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAxisSettingData>>(change);
     const auto &data = typedChange->data;
     m_deadZoneRadius = data.deadZoneRadius;
-    m_axes = variantListToVector(data.axes);
+    m_axes = data.axes;
     m_smooth = data.smooth;
 }
 
@@ -92,7 +79,7 @@ void AxisSetting::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (propertyChange->propertyName() == QByteArrayLiteral("deadZoneRadius")) {
             m_deadZoneRadius = propertyChange->value().toFloat();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("axes")) {
-            m_axes = variantListToVector(propertyChange->value().toList());
+            m_axes = propertyChange->value().value<QVector<int>>();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("smooth")) {
             m_smooth = propertyChange->value().toBool();
         }

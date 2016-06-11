@@ -47,6 +47,17 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * \class Qt3DRender::QStencilTest
+ * \brief The QStencilTest class
+ * \since 5.7
+ * \ingroup renderstates
+ */
+
+/*!
+ * The constructor creates a new QStencilTest::QStencilTest instance with
+ * the specified \a parent.
+ */
 QStencilTest::QStencilTest(QNode *parent)
     : QRenderState(*new QStencilTestPrivate, parent)
 {
@@ -57,12 +68,18 @@ QStencilTest::~QStencilTest()
 {
 }
 
+/*!
+ * \return the stencil test for the front
+ */
 QStencilTestArguments *QStencilTest::front() const
 {
     Q_D(const QStencilTest);
     return d->m_front;
 }
 
+/*!
+ * \return the stencil test for the back
+ */
 QStencilTestArguments *QStencilTest::back() const
 {
     Q_D(const QStencilTest);

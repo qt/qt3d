@@ -75,6 +75,25 @@ struct QSortPolicyData
 
 } // namespace Qt3DRender
 
+namespace {
+    template<class From, class To>
+    To typeCastHelper(From type)
+    {
+        return static_cast<To>(type);
+    }
+
+    template<class From, class To>
+    void transformVector(const QVector<From> &input, QVector<To> &output)
+    {
+        Q_ASSERT(output.isEmpty());
+
+        output.reserve(input.size());
+        std::transform(input.constBegin(), input.constEnd(),
+                       std::back_inserter(output),
+                       typeCastHelper<From, To>);
+    }
+}
+
 QT_END_NAMESPACE
 
 #endif // QT3DRENDER_QSORTPOLICY_P_H

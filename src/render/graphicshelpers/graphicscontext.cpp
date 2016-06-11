@@ -78,6 +78,23 @@
 
 QT_BEGIN_NAMESPACE
 
+namespace {
+
+QOpenGLShader::ShaderType shaderType(Qt3DRender::QShaderProgram::ShaderType type)
+{
+    switch (type) {
+    case Qt3DRender::QShaderProgram::Vertex: return QOpenGLShader::Vertex;
+    case Qt3DRender::QShaderProgram::TessellationControl: return QOpenGLShader::TessellationControl;
+    case Qt3DRender::QShaderProgram::TessellationEvaluation: return QOpenGLShader::TessellationEvaluation;
+    case Qt3DRender::QShaderProgram::Geometry: return QOpenGLShader::Geometry;
+    case Qt3DRender::QShaderProgram::Fragment: return QOpenGLShader::Fragment;
+    case Qt3DRender::QShaderProgram::Compute: return QOpenGLShader::Compute;
+    default: Q_UNREACHABLE();
+    }
+}
+
+} // anonymous namespace
+
 namespace Qt3DRender {
 namespace Render {
 
@@ -230,6 +247,12 @@ bool GraphicsContext::beginDrawing(QSurface *surface)
     m_activeTextures.fill(0);
     m_boundArrayBuffer = nullptr;
 
+    static int callCount = 0;
+    ++callCount;
+    const int shaderPurgePeriod = 600;
+    if (callCount % shaderPurgePeriod == 0)
+        m_shaderCache.purge();
+
     return true;
 }
 
@@ -320,7 +343,7 @@ void GraphicsContext::setViewport(const QRectF &viewport, const QSize &surfaceSi
 
 void GraphicsContext::releaseOpenGL()
 {
-    m_renderShaderHash.clear();
+    m_shaderCache.clear();
     m_renderBufferHash.clear();
 
     // Stop and destroy the OpenGL logger
@@ -382,6 +405,33 @@ void GraphicsContext::doneCurrent()
     m_gl->doneCurrent();
 }
 
+QOpenGLShaderProgram *GraphicsContext::createShaderProgram(Shader *shaderNode)
+{
+    QScopedPointer<QOpenGLShaderProgram> shaderProgram(new QOpenGLShaderProgram);
+
+    // Compile shaders
+    const auto shaderCode = shaderNode->shaderCode();
+    for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
+        QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
+        if (!shaderCode.at(i).isEmpty() &&
+            !shaderProgram->addShaderFromSourceCode(shaderType(type), shaderCode.at(i))) {
+            qWarning().noquote() << "Failed to compile shader:" << shaderProgram->log();
+        }
+    }
+
+    // Call glBindFragDataLocation and link the program
+    // Since we are sharing shaders in the backend, we assume that if using custom
+    // fragOutputs, they should all be the same for a given shader
+    bindFragOutputs(shaderProgram->programId(), shaderNode->fragOutputs());
+    if (!shaderProgram->link()) {
+        qWarning().noquote() << "Failed to link shader program:" << shaderProgram->log();
+        return nullptr;
+    }
+
+    // take from scoped-pointer so it doesn't get deleted
+    return shaderProgram.take();
+}
+
 // That assumes that the shaderProgram in Shader stays the same
 void GraphicsContext::activateShader(Shader *shader)
 {
@@ -392,55 +442,48 @@ void GraphicsContext::activateShader(Shader *shader)
         return;
     }
 
-    // If Shader has no QOpenGLShaderProgram or !shader->isLoaded (shader sources have changed)
-    if (!m_renderShaderHash.contains(shader->dna())) {
-        QOpenGLShaderProgram *prog = shader->getOrCreateProgram(this);
-        Q_ASSERT(prog);
-        m_renderShaderHash.insert(shader->dna(), shader);
-        qCDebug(Backend) << Q_FUNC_INFO << "shader count =" << m_renderShaderHash.count();
-        shader->initializeUniforms(m_glHelper->programUniformsAndLocations(prog->programId()));
-        shader->initializeAttributes(m_glHelper->programAttributesAndLocations(prog->programId()));
-        if (m_glHelper->supportsFeature(GraphicsHelperInterface::UniformBufferObject))
-            shader->initializeUniformBlocks(m_glHelper->programUniformBlocks(prog->programId()));
-        if (m_glHelper->supportsFeature(GraphicsHelperInterface::ShaderStorageObject))
-            shader->initializeShaderStorageBlocks(m_glHelper->programShaderStorageBlocks(prog->programId()));
+    QOpenGLShaderProgram *shaderProgram = m_shaderCache.getShaderProgramAndAddRef(shader->dna(), shader->peerId());
+    if (!shaderProgram) {
+        // No matching QOpenGLShader in the cache so create one
+        shaderProgram = createShaderProgram(shader);
+
+        // Store in cache
+        m_shaderCache.insert(shader->dna(), shader->peerId(), shaderProgram);
+
+        // Shader is not yet bound
         m_activeShader = nullptr;
-    } else if (!shader->isLoaded()) {
-        // Shader program is already in the m_shaderHash but we still need to
-        // ensure that the Shader has full knowledge of attributes, uniforms,
-        // and uniform blocks.
-        shader->initialize(*m_renderShaderHash.value(shader->dna()));
+    }
+
+    // Ensure the Shader node knows about the program interface
+    // TODO: Improve this so we only introspect once per actual OpenGL shader program
+    //       rather than once per ShaderNode. Could cache the interface description along
+    //       with the QOpenGLShaderProgram in the ShaderCache.
+    if (!shader->isLoaded()) {
+        // Introspect and set up interface description on Shader backend node
+        shader->initializeUniforms(m_glHelper->programUniformsAndLocations(shaderProgram->programId()));
+        shader->initializeAttributes(m_glHelper->programAttributesAndLocations(shaderProgram->programId()));
+        if (m_glHelper->supportsFeature(GraphicsHelperInterface::UniformBufferObject))
+            shader->initializeUniformBlocks(m_glHelper->programUniformBlocks(shaderProgram->programId()));
+        if (m_glHelper->supportsFeature(GraphicsHelperInterface::ShaderStorageObject))
+            shader->initializeShaderStorageBlocks(m_glHelper->programShaderStorageBlocks(shaderProgram->programId()));
+
+        shader->setGraphicsContext(this);
+        shader->setLoaded(true);
     }
 
     if (m_activeShader != nullptr && m_activeShader->dna() == shader->dna()) {
-        // no op
+        // No-op as requested shader is already bound.
     } else {
         m_activeShader = shader;
-        QOpenGLShaderProgram* prog = m_renderShaderHash[shader->dna()]->getOrCreateProgram(this);
-        prog->bind();
-        // ensure material uniforms are re-applied
+        shaderProgram->bind();
+        // Ensure material uniforms are re-applied
         m_material = nullptr;
     }
 }
 
-/*!
- * \internal
- * Returns the QOpenGLShaderProgram matching the ProgramDNA \a dna. If no match
- * is found, nullptr is returned.
- */
-QOpenGLShaderProgram *GraphicsContext::containsProgram(const ProgramDNA &dna)
+void GraphicsContext::removeShaderProgramReference(Shader *shaderNode)
 {
-    Shader *renderShader = m_renderShaderHash.value(dna, nullptr);
-    if (renderShader)
-        return renderShader->getOrCreateProgram(this);
-    return nullptr;
-}
-
-void GraphicsContext::removeProgram(const ProgramDNA &dna, Qt3DCore::QNodeId id)
-{
-    Shader *renderShader = m_renderShaderHash.value(dna, nullptr);
-    if (renderShader && renderShader->peerId() == id)
-        m_renderShaderHash.remove(dna);
+    m_shaderCache.removeRef(shaderNode->dna(), shaderNode->peerId());
 }
 
 void GraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments, GLuint defaultFboId)
@@ -995,7 +1038,7 @@ void GraphicsContext::decayTextureScores()
 QOpenGLShaderProgram* GraphicsContext::activeShader()
 {
     Q_ASSERT(m_activeShader);
-    return m_activeShader->getOrCreateProgram(this);
+    return m_shaderCache.getShaderProgramAndAddRef(m_activeShader->dna(), m_activeShader->peerId());
 }
 
 void GraphicsContext::setRenderer(Renderer *renderer)
@@ -1031,7 +1074,7 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
         }
     }
 
-    QOpenGLShaderProgram *shader = m_activeShader->getOrCreateProgram(this);
+    QOpenGLShaderProgram *shader = activeShader();
 
     // TO DO: We could cache the binding points somehow and only do the binding when necessary
     // for SSBO and UBO

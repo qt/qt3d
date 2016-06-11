@@ -49,6 +49,7 @@ namespace Qt3DInput {
  * \qmltype AnalogAxisInput
  * \instantiates Qt3DInput::QAnalogAxisInput
  * \inqmlmodule Qt3D.Input
+ * \brief QML frontend for QAnalogAxisInput C++ class.
  * \since 5.7
  * \TODO
  *
@@ -57,9 +58,21 @@ namespace Qt3DInput {
 /*!
  * \class Qt3DInput::QAnalogAxisInput
  * \inmodule Qt3DInput
+ * \brief A QAnalogAxisInput class.
  * \since 5.7
  * \TODO
  *
+ */
+
+/*!
+    \qmlproperty int AnalogAxisInput::axis
+
+    Holds the axis for the AnalogAxisInput.
+*/
+
+
+/*!
+    Constructs a new QAnalogAxisInput instance with \a parent.
  */
 QAnalogAxisInput::QAnalogAxisInput(Qt3DCore::QNode *parent)
     : QAbstractAxisInput(*new QAnalogAxisInputPrivate, parent)
@@ -71,6 +84,13 @@ QAnalogAxisInput::~QAnalogAxisInput()
 {
 }
 
+/*!
+  \property Qt3DInput::QAnalogAxisInput::axis
+
+  Axis for the analog input.
+
+  \sa Qt3DInput::QMouseDevice::Axis
+*/
 void QAnalogAxisInput::setAxis(int axis)
 {
     Q_D(QAnalogAxisInput);

@@ -55,9 +55,9 @@ public:
     explicit QNodeCreatedChangeBase(const QNode *node);
     ~QNodeCreatedChangeBase();
 
-    QNodeId parentId() const Q_DECL_NOEXCEPT;
-    const QMetaObject *metaObject() const Q_DECL_NOEXCEPT;
-    bool isNodeEnabled() const Q_DECL_NOEXCEPT;
+    QNodeId parentId() const Q_DECL_NOTHROW;
+    const QMetaObject *metaObject() const Q_DECL_NOTHROW;
+    bool isNodeEnabled() const Q_DECL_NOTHROW;
 
 protected:
     QNodeCreatedChangeBase(QNodeCreatedChangeBasePrivate &dd, const QNode *node);

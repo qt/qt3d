@@ -109,15 +109,14 @@ QInputSequence::~QInputSequence()
 }
 
 /*!
-  \fn QInputSequence::timeoutChanged()
-
-  This signal is emitted when the timeout of the input sequence is changed.
+    \qmlproperty list<AbstractActionInput> Qt3D.Input::InputSequence::sequences
 */
 
-/*!
-  \qmlproperty int Qt3D.Input::InputSequence::timeout
 
-  The time in milliseconds in which all QAbstractActionInput's in the input sequence must triggered within.
+/*!
+    \qmlproperty int Qt3D.Input::InputSequence::timeout
+
+    The time in milliseconds in which all QAbstractActionInput's in the input sequence must triggered within.
 */
 
 /*!
@@ -137,12 +136,6 @@ int QInputSequence::timeout() const
     Q_D(const QInputSequence);
     return d->m_timeout;
 }
-
-/*!
-  \fn QInputSequence::buttonIntervalChanged()
-
-  This signal is emitted when the buttonInterval of the input sequence is changed.
-*/
 
 /*!
   \qmlproperty int Qt3D.Input::InputSequence::buttonInterval
@@ -169,8 +162,10 @@ int QInputSequence::buttonInterval() const
 }
 
 /*!
-    Set the time in which all QAbstractActionInput's in the input sequence must triggered within.
-    The time is in milliseconds
+    \property QInputSequence::timeout
+
+    The time in which all QAbstractActionInput's in the input sequence must triggered within.
+    The time is in milliseconds.
  */
 void QInputSequence::setTimeout(int timeout)
 {
@@ -182,8 +177,10 @@ void QInputSequence::setTimeout(int timeout)
 }
 
 /*!
-    Set the maximum time in between consecutive QAbstractActionInput's in the input sequence.
-    The time is in milliseconds
+    \property QInputSequence::buttonInterval
+
+    The maximum time in between consecutive QAbstractActionInput's in the input sequence.
+    The time is in milliseconds.
  */
 void QInputSequence::setButtonInterval(int buttonInterval)
 {
@@ -197,13 +194,16 @@ void QInputSequence::setButtonInterval(int buttonInterval)
 /*!
     Append the QAbstractActionInput \a input to the end of this QInputSequence's sequence vector.
 
-    \sa removeInput
+    \sa removeSequence
  */
 void QInputSequence::addSequence(QAbstractActionInput *input)
 {
     Q_D(QInputSequence);
     if (!d->m_sequences.contains(input)) {
         d->m_sequences.push_back(input);
+
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(input, &QInputSequence::removeSequence, d->m_sequences);
 
         if (!input->parent())
             input->setParent(this);
@@ -219,7 +219,7 @@ void QInputSequence::addSequence(QAbstractActionInput *input)
 /*!
     Remove the QAbstractActionInput \a input from this QInputSequence's sequence vector.
 
-    \sa addInput
+    \sa addSequence
  */
 void QInputSequence::removeSequence(QAbstractActionInput *input)
 {
@@ -232,6 +232,9 @@ void QInputSequence::removeSequence(QAbstractActionInput *input)
         }
 
         d->m_sequences.removeOne(input);
+
+        // Remove bookkeeping connection
+        d->unregisterDestructionHelper(input);
     }
 }
 

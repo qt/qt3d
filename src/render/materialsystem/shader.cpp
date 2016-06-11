@@ -60,7 +60,6 @@ namespace Render {
 
 Shader::Shader()
     : BackendNode()
-    , m_program(nullptr)
     , m_isLoaded(false)
     , m_dna(0)
     , m_graphicsContext(nullptr)
@@ -78,15 +77,17 @@ void Shader::cleanup()
 {
     // Remove this shader from the hash in the graphics context so
     // nothing tries to use it after it has been recycled
-    if (m_graphicsContext)
-        m_graphicsContext->removeProgram(dna(), peerId());
+    {
+        QMutexLocker lock(&m_mutex);
+        if (m_graphicsContext)
+            m_graphicsContext->removeShaderProgramReference(this);
+        m_graphicsContext = nullptr;
+    }
 
     QBackendNode::setEnabled(false);
     m_isLoaded = false;
     m_dna = 0;
-    // TO DO: ShaderProgram is leaked as of now
-    // Fix that taking care that they may be shared given a same dna
-    m_program = nullptr;
+    m_oldDna = 0;
     m_uniformsNames.clear();
     m_attributesNames.clear();
     m_uniformBlockNames.clear();
@@ -111,6 +112,18 @@ void Shader::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chang
     m_shaderCode[QShaderProgram::Compute] = data.computeShaderCode;
     m_isLoaded = false;
     updateDNA();
+}
+
+void Shader::setGraphicsContext(GraphicsContext *context)
+{
+    QMutexLocker lock(&m_mutex);
+    m_graphicsContext = context;
+}
+
+GraphicsContext *Shader::graphicsContext()
+{
+    QMutexLocker lock(&m_mutex);
+    return m_graphicsContext;
 }
 
 QVector<QString> Shader::uniformsNames() const
@@ -144,22 +157,22 @@ void Shader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QPropertyUpdatedChangePtr propertyChange = e.staticCast<QPropertyUpdatedChange>();
         QVariant propertyValue = propertyChange->value();
 
-        if (propertyChange->propertyName() == QByteArrayLiteral("vertexSourceCode")) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("vertexShaderCode")) {
             m_shaderCode[QShaderProgram::Vertex] = propertyValue.toByteArray();
             m_isLoaded = false;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("fragmentSourceCode")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("fragmentShaderCode")) {
             m_shaderCode[QShaderProgram::Fragment] = propertyValue.toByteArray();
             m_isLoaded = false;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationControlSourceCode")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationControlShaderCode")) {
             m_shaderCode[QShaderProgram::TessellationControl] = propertyValue.toByteArray();
             m_isLoaded = false;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationEvaluationSourceCode")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationEvaluationShaderCode")) {
             m_shaderCode[QShaderProgram::TessellationEvaluation] = propertyValue.toByteArray();
             m_isLoaded = false;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("geometrySourceCode")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("geometryShaderCode")) {
             m_shaderCode[QShaderProgram::Geometry] = propertyValue.toByteArray();
             m_isLoaded = false;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("computeSourceCode")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("computeShaderCode")) {
             m_shaderCode[QShaderProgram::Compute] = propertyValue.toByteArray();
             m_isLoaded = false;
         }
@@ -233,22 +246,6 @@ ShaderStorageBlock Shader::storageBlockForBlockName(const QString &blockName)
     return ShaderStorageBlock();
 }
 
-/*!
- * Must be called with a valid, current QOpenGLContext
- */
-QOpenGLShaderProgram *Shader::getOrCreateProgram(GraphicsContext *ctx)
-{
-    if (!m_isLoaded) {
-        delete m_program;
-        m_graphicsContext = ctx;
-        m_program = createProgram(ctx);
-        if (!m_program)
-            m_program = createDefaultProgram();
-        m_isLoaded = true;
-    }
-    return m_program;
-}
-
 void Shader::updateUniforms(GraphicsContext *ctx, const ShaderParameterPack &pack)
 {
     const PackUniformHash values = pack.uniforms();
@@ -270,69 +267,15 @@ void Shader::setFragOutputs(const QHash<QString, int> &fragOutputs)
     updateDNA();
 }
 
-static QOpenGLShader::ShaderType shaderType(QShaderProgram::ShaderType type)
+const QHash<QString, int> Shader::fragOutputs() const
 {
-    switch (type) {
-    case QShaderProgram::Vertex: return QOpenGLShader::Vertex;
-    case QShaderProgram::TessellationControl: return QOpenGLShader::TessellationControl;
-    case QShaderProgram::TessellationEvaluation: return QOpenGLShader::TessellationEvaluation;
-    case QShaderProgram::Geometry: return QOpenGLShader::Geometry;
-    case QShaderProgram::Fragment: return QOpenGLShader::Fragment;
-    case QShaderProgram::Compute: return QOpenGLShader::Compute;
-    default: Q_UNREACHABLE();
-    }
-}
-
-QOpenGLShaderProgram *Shader::createProgram(GraphicsContext *context)
-{
-    Q_ASSERT(QOpenGLContext::currentContext());
-
-    // Check if we already have a shader program matching all the shaderCode
-    QOpenGLShaderProgram *existingProg = context->containsProgram(m_dna);
-    if (existingProg)
-        return existingProg;
-
-    // When we arrive at that point, that means that no matching program
-    // was found, so we need to load it
-    // Scoped pointer so early-returns delete automatically
-    QScopedPointer<QOpenGLShaderProgram> p(new QOpenGLShaderProgram);
-
-    for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
-        // Compile shaders
-        QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
-        if (!m_shaderCode[type].isEmpty() && !p->addShaderFromSourceCode(shaderType(type), m_shaderCode[type]))
-            qWarning().noquote() << "Failed to compile shader:" << p->log();
-    }
-
-    // Call glBindFragDataLocation and link the program
-    // Since we are sharing shaders in the backend, we assume that if using custom
-    // fragOutputs, they should all be the same for a given shader
-    context->bindFragOutputs(p->programId(), m_fragOutputs);
-    if (!p->link()) {
-        qWarning().noquote() << "Failed to link shader program:" << p->log();
-        return nullptr;
-    }
-
-    // take from scoped-pointer so it doesn't get deleted
-    return p.take();
-}
-
-QOpenGLShaderProgram* Shader::createDefaultProgram()
-{
-    QOpenGLShaderProgram* p = new QOpenGLShaderProgram;
-    p->addShaderFromSourceCode(QOpenGLShader::Vertex,
-                               "");
-
-    p->addShaderFromSourceCode(QOpenGLShader::Fragment,
-                               "");
-
-    p->link();
-
-    return p;
+    QMutexLocker lock(&m_mutex);
+    return m_fragOutputs;
 }
 
 void Shader::updateDNA()
 {
+    m_oldDna = m_dna;
     uint codeHash = qHash(m_shaderCode[QShaderProgram::Vertex]
             + m_shaderCode[QShaderProgram::TessellationControl]
             + m_shaderCode[QShaderProgram::TessellationEvaluation]
@@ -440,7 +383,6 @@ void Shader::initializeShaderStorageBlocks(const QVector<ShaderStorageBlock> &sh
 void Shader::initialize(const Shader &other)
 {
     Q_ASSERT(m_dna == other.m_dna);
-    m_program = other.m_program;
     m_uniformsNamesIds = other.m_uniformsNamesIds;
     m_uniformsNames = other.m_uniformsNames;
     m_uniforms = other.m_uniforms;

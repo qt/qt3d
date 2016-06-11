@@ -124,6 +124,9 @@ void QGeometry::addAttribute(QAttribute *attribute)
     if (!d->m_attributes.contains(attribute)) {
         d->m_attributes.append(attribute);
 
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(attribute, &QGeometry::removeAttribute, d->m_attributes);
+
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
@@ -152,6 +155,8 @@ void QGeometry::removeAttribute(QAttribute *attribute)
         d->notifyObservers(change);
     }
     d->m_attributes.removeOne(attribute);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(attribute);
 }
 
 void QGeometry::setBoundingVolumePositionAttribute(QAttribute *boundingVolumePositionAttribute)

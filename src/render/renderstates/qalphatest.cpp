@@ -38,6 +38,17 @@
 **
 ****************************************************************************/
 
+/*!
+ * \class QAlphaTest
+ * \brief The QAlphaTest class is an OpenGL helper.
+ * \since 5.7
+ * \ingroup renderstates
+ *
+ * As the OpenGL documentation explains; The alpha test discards a fragment
+ * conditional on the outcome of a comparison between the incoming fragment's
+ * alpha value and a constant value.
+ */
+
 #include "qalphatest.h"
 #include "qalphatest_p.h"
 #include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
@@ -56,12 +67,19 @@ QAlphaTest::~QAlphaTest()
 {
 }
 
+/*!
+ * \return the current alpha test function.
+ */
 QAlphaTest::AlphaFunction QAlphaTest::alphaFunction() const
 {
     Q_D(const QAlphaTest);
     return d->m_alphaFunction;
 }
 
+/*!
+ * Sets the alpha test function to \a alphaFunction.
+ * \param alphaFunction
+ */
 void QAlphaTest::setAlphaFunction(QAlphaTest::AlphaFunction alphaFunction)
 {
     Q_D(QAlphaTest);
@@ -71,12 +89,18 @@ void QAlphaTest::setAlphaFunction(QAlphaTest::AlphaFunction alphaFunction)
     }
 }
 
+/*!
+ * \return a float value between 0 and 1.
+ */
 float QAlphaTest::referenceValue() const
 {
     Q_D(const QAlphaTest);
     return d->m_referenceValue;
 }
 
+/*!
+ * Sets the reference value which is clamped between 0 and 1 to \a referenceValue.
+ */
 void QAlphaTest::setReferenceValue(float referenceValue)
 {
     Q_D(QAlphaTest);

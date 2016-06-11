@@ -64,7 +64,7 @@ namespace Qt3DRender {
 QPointLightPrivate::QPointLightPrivate()
     : QAbstractLightPrivate(QAbstractLight::PointLight)
 {
-    m_shaderData->setProperty("constantAttenuation", 0.0f);
+    m_shaderData->setProperty("constantAttenuation", 1.0f);
     m_shaderData->setProperty("linearAttenuation", 0.0f);
     m_shaderData->setProperty("quadraticAttenuation", 0.0f);
 }
@@ -73,6 +73,7 @@ QPointLightPrivate::QPointLightPrivate()
   \class Qt3DRender::QPointLight
   \inmodule Qt3DRender
   \since 5.5
+    \brief Encapsulate a Point Light object in a Qt 3D scene.
 
  */
 
@@ -82,7 +83,7 @@ QPointLightPrivate::QPointLightPrivate()
     \inherits AbstractLight
     \inqmlmodule Qt3D.Render
     \since 5.5
-    \brief For OpenGL ...
+    \brief Encapsulate a Point Light object in a Qt 3D scene.
 */
 
 /*!
@@ -105,6 +106,15 @@ QPointLight::QPointLight(QPointLightPrivate &dd, QNode *parent)
 {
 }
 
+/*!
+  \qmlproperty float Qt3D.Render::PointLight::constantAttenuation
+    Specifies the constant attenuation of the point light
+*/
+
+/*!
+  \property Qt3DRender::QPointLight::constantAttenuation
+    Specifies the constant attenuation of the point light
+ */
 float QPointLight::constantAttenuation() const
 {
     Q_D(const QPointLight);
@@ -120,6 +130,15 @@ void QPointLight::setConstantAttenuation(float value)
     }
 }
 
+/*!
+  \qmlproperty float Qt3D.Render::PointLight::linearAttenuation
+    Specifies the linear attenuation of the point light
+*/
+
+/*!
+  \property Qt3DRender::QPointLight::linearAttenuation
+    Specifies the linear attenuation of the point light
+ */
 float QPointLight::linearAttenuation() const
 {
     Q_D(const QPointLight);
@@ -135,6 +154,15 @@ void QPointLight::setLinearAttenuation(float value)
     }
 }
 
+/*!
+  \qmlproperty float Qt3D.Render::PointLight::quadraticAttenuation
+    Specifies the quadratic attenuation of the point light
+*/
+
+/*!
+  \property Qt3DRender::QPointLight::quadraticAttenuation
+    Specifies the quadratic attenuation of the point light
+ */
 float QPointLight::quadraticAttenuation() const
 {
     Q_D(const QPointLight);

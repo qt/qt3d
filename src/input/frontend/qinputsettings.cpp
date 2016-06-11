@@ -45,12 +45,38 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
+/*!
+    \class Qt3DInput::QInputSettings
+    \inmodule Qt3DInput
+    \inherits Qt3DCore::QComponent
+    \brief A QInputSettings class.
+    \since 5.7
+    \TODO
+*/
+
+/*!
+    \qmltype InputSettings
+    \inqmlmodule Qt3D.Input
+    \inherits Component3D
+    \instantiates Qt3DInput::QInputSettings
+    \brief QML frontend for the Qt3DInput::QInputSettings C++ class.
+    \since 5.7
+    \TODO
+*/
+
+/*!
+    \qmlproperty Object Qt3D.Input::InputSettings::eventSource
+ */
+
 QInputSettingsPrivate::QInputSettingsPrivate()
     : Qt3DCore::QComponentPrivate()
     , m_eventSource(nullptr)
 {
 }
 
+/*!
+    Constructs a new QInputSettings instance with \a parent.
+ */
 QInputSettings::QInputSettings(Qt3DCore::QNode *parent)
     : Qt3DCore::QComponent(*new QInputSettingsPrivate(), parent)
 {
@@ -61,6 +87,11 @@ QInputSettings::~QInputSettings()
 {
 }
 
+/*!
+    \property QInputSettings::eventSource
+
+    Holds the source for the QInputSettings.
+ */
 QObject *QInputSettings::eventSource() const
 {
     Q_D(const QInputSettings);
@@ -71,9 +102,21 @@ void QInputSettings::setEventSource(QObject *eventSource)
 {
     Q_D(QInputSettings);
     if (d->m_eventSource != eventSource) {
+        if (d->m_eventSource)
+            QObject::disconnect(m_connection);
         d->m_eventSource = eventSource;
         emit eventSourceChanged(eventSource);
+        m_connection = QObject::connect(eventSource, &QObject::destroyed,
+                                        this, &QInputSettings::eventSourceDestroyed);
     }
+}
+
+void QInputSettings::eventSourceDestroyed()
+{
+    Q_D(QInputSettings);
+    QObject::disconnect(m_connection);
+    d->m_eventSource = nullptr;
+    emit eventSourceChanged(nullptr);
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QInputSettings::createNodeCreationChange() const

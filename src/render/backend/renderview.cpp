@@ -896,7 +896,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                         setUniformValue(command->m_parameterPack, LIGHT_POSITION_NAMES[lightIdx], worldPos);
                         setUniformValue(command->m_parameterPack, LIGHT_TYPE_NAMES[lightIdx], int(QAbstractLight::PointLight));
                         setUniformValue(command->m_parameterPack, LIGHT_COLOR_NAMES[lightIdx], QVector3D(1.0f, 1.0f, 1.0f));
-                        setUniformValue(command->m_parameterPack, LIGHT_INTENSITY_NAMES[lightIdx], QVector3D(0.5f, 0.5f, 0.5f));
+                        setUniformValue(command->m_parameterPack, LIGHT_INTENSITY_NAMES[lightIdx], 0.5f);
                         setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, LIGHT_STRUCT_NAMES[lightIdx]);
                         ++lightIdx;
                     }
@@ -909,7 +909,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                     setUniformValue(command->m_parameterPack, LIGHT_POSITION_NAMES[0], QVector3D(10.0f, 10.0f, 0.0f));
                     setUniformValue(command->m_parameterPack, LIGHT_TYPE_NAMES[0], int(QAbstractLight::PointLight));
                     setUniformValue(command->m_parameterPack, LIGHT_COLOR_NAMES[0], QVector3D(1.0f, 1.0f, 1.0f));
-                    setUniformValue(command->m_parameterPack, LIGHT_INTENSITY_NAMES[0], QVector3D(0.5f, 0.5f, 0.5f));
+                    setUniformValue(command->m_parameterPack, LIGHT_INTENSITY_NAMES[0], 0.5f);
                 }
             }
             // Set frag outputs in the shaders if hash not empty

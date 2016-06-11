@@ -117,19 +117,19 @@ QSceneChange::~QSceneChange()
 /*!
  * \return scene change type.
  */
-ChangeFlag QSceneChange::type() const Q_DECL_NOEXCEPT
+ChangeFlag QSceneChange::type() const Q_DECL_NOTHROW
 {
     Q_D(const QSceneChange);
     return d->m_type;
 }
 
-void QSceneChange::setDeliveryFlags(DeliveryFlags flags) Q_DECL_NOEXCEPT
+void QSceneChange::setDeliveryFlags(DeliveryFlags flags) Q_DECL_NOTHROW
 {
     Q_D(QSceneChange);
     d->m_deliveryFlags = flags;
 }
 
-QSceneChange::DeliveryFlags QSceneChange::deliveryFlags() const Q_DECL_NOEXCEPT
+QSceneChange::DeliveryFlags QSceneChange::deliveryFlags() const Q_DECL_NOTHROW
 {
     Q_D(const QSceneChange);
     return d->m_deliveryFlags;
@@ -138,7 +138,7 @@ QSceneChange::DeliveryFlags QSceneChange::deliveryFlags() const Q_DECL_NOEXCEPT
 /*!
  * \return scene change subject id.
  */
-QNodeId QSceneChange::subjectId() const Q_DECL_NOEXCEPT
+QNodeId QSceneChange::subjectId() const Q_DECL_NOTHROW
 {
     Q_D(const QSceneChange);
     return d->m_subjectId;

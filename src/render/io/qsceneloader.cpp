@@ -59,7 +59,38 @@ QSceneLoaderPrivate::QSceneLoaderPrivate()
     m_shareable = false;
 }
 
+/*!
+  \class Qt3DRender::QSceneLoader
+  \inmodule Qt3DRender
+  \since 5.7
+  \ingroup io
 
+  \brief Provides the facility to load an existing Scene
+
+ */
+
+/*!
+    \qmltype SceneLoader
+    \inqmlmodule Qt3D.Render
+    \instantiates Qt3DRender::QSceneLoader
+    \inherits Component
+    \since 5.7
+    \qmlabstract Provides the facility to load an existing Scene
+*/
+
+/*!
+    \enum QSceneLoader::Status
+
+    This enum identifies the state of loading
+    \value None
+    \value Loading
+    \value Ready
+    \value Error
+*/
+
+/*!
+  The constructor creates an instance with the specified \a parent.
+ */
 QSceneLoader::QSceneLoader(QNode *parent)
     : Qt3DCore::QComponent(*new QSceneLoaderPrivate, parent)
 {
@@ -70,12 +101,14 @@ QSceneLoader::~QSceneLoader()
 {
 }
 
+/*! \internal */
 QSceneLoader::QSceneLoader(QSceneLoaderPrivate &dd, QNode *parent)
     : Qt3DCore::QComponent(dd, parent)
 {
 }
 
 // Called in main thread
+/*! \internal */
 void QSceneLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QSceneLoader);
@@ -112,6 +145,15 @@ QUrl QSceneLoader::source() const
     return d->m_source;
 }
 
+/*!
+    \property Qt3DRender::QSceneLoader::source
+    Specifies the url for the source to be loaded.
+*/
+
+/*!
+  \qmlproperty QUrl Qt3D.Render::SceneLoader::source
+
+*/
 void QSceneLoader::setSource(const QUrl &arg)
 {
     Q_D(QSceneLoader);
@@ -121,12 +163,22 @@ void QSceneLoader::setSource(const QUrl &arg)
     }
 }
 
+/*!
+    \property Qt3DRender::QSceneLoader::status
+    Indicates the status of scene loading.
+*/
+
+/*!
+  \qmlproperty Status Qt3D.Render::SceneLoader::status
+
+*/
 QSceneLoader::Status QSceneLoader::status() const
 {
     Q_D(const QSceneLoader);
     return d->m_status;
 }
 
+/*! \internal */
 void QSceneLoader::setStatus(QSceneLoader::Status status)
 {
     Q_D(QSceneLoader);

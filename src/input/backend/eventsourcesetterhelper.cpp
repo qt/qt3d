@@ -73,6 +73,15 @@ void EventSourceSetterHelper::setEventSource(QObject *eventSource)
     }
 }
 
+void EventSourceSetterHelper::unsetEventSource(QObject *eventSource)
+{
+    if (m_service) {
+        m_inputHandler->unregisterEventFilters(m_service);
+        if (eventSource)
+            m_service->shutdown(eventSource);
+    }
+}
+
 // Main Thread
 void EventSourceSetterHelper::setEventSourceHelper(QObject *eventSource)
 {

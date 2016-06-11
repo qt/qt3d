@@ -277,6 +277,7 @@ Qt3DCore::QEntity* GLTFIO::node(const QString &id)
             break;
         case 1:
             result = qAsConst(entities).first();
+            break;
         default:
             result = new QEntity;
             for (QEntity *entity : qAsConst(entities))
@@ -985,15 +986,15 @@ void GLTFIO::processJSONTechnique(const QString &id, const QJsonObject &jsonObje
     } // of parameters iteration
 
     // Program
+    QRenderPass* pass = new QRenderPass;
     QString programName = jsonObject.value(KEY_PROGRAM).toString();
     const auto progIt = qAsConst(m_programs).find(programName);
     if (Q_UNLIKELY(progIt == m_programs.cend())) {
         qCWarning(GLTFIOLog, "technique %ls: missing program %ls",
                   qUtf16PrintableImpl(id), qUtf16PrintableImpl(programName));
+    } else {
+        pass->setShaderProgram(progIt.value());
     }
-
-    QRenderPass* pass = new QRenderPass;
-    pass->setShaderProgram(progIt.value());
 
     // Attributes
     const QJsonObject attrs = jsonObject.value(KEY_ATTRIBUTES).toObject();

@@ -45,13 +45,9 @@ class tst_QLayerFilter: public QObject
 public:
     tst_QLayerFilter()
         : QObject()
-        , layersNode(new Qt3DCore::QNode)
     {
         qRegisterMetaType<Qt3DCore::QNode*>();
     }
-
-private:
-    QScopedPointer<Qt3DCore::QNode> layersNode;
 
 private Q_SLOTS:
 
@@ -65,15 +61,15 @@ private Q_SLOTS:
         QTest::newRow("defaultConstructed") << defaultConstructed << QVector<Qt3DRender::QLayer*>();
 
         Qt3DRender::QLayerFilter *singleLayer = new Qt3DRender::QLayerFilter();
-        auto layer = QVector<Qt3DRender::QLayer*>() << new Qt3DRender::QLayer(layersNode.data());
+        auto layer = QVector<Qt3DRender::QLayer*>() << new Qt3DRender::QLayer();
         QCoreApplication::processEvents();
         singleLayer->addLayer(layer.first());
         QTest::newRow("single layer") << singleLayer << layer;
 
         Qt3DRender::QLayerFilter *multiLayers = new Qt3DRender::QLayerFilter();
-        auto layers = QVector<Qt3DRender::QLayer*>() << new Qt3DRender::QLayer(layersNode.data())
-                                                     << new Qt3DRender::QLayer(layersNode.data())
-                                                     << new Qt3DRender::QLayer(layersNode.data());
+        auto layers = QVector<Qt3DRender::QLayer*>() << new Qt3DRender::QLayer()
+                                                     << new Qt3DRender::QLayer()
+                                                     << new Qt3DRender::QLayer();
         QCoreApplication::processEvents();
         for (Qt3DRender::QLayer *layer : qAsConst(layers))
             multiLayers->addLayer(layer);
@@ -94,7 +90,7 @@ private Q_SLOTS:
         QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
 
         // THEN
-        QCOMPARE(creationChanges.size(), 1);
+        QCOMPARE(creationChanges.size(), layers.size() + 1);
 
         const Qt3DCore::QNodeCreatedChangePtr<Qt3DRender::QLayerFilterData> creationChangeData =
                 qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QLayerFilterData>>(creationChanges.first());
@@ -117,7 +113,7 @@ private Q_SLOTS:
         arbiter.setArbiterOnNode(layerFilter.data());
 
         // WHEN
-        auto layer = new Qt3DRender::QLayer(layersNode.data());
+        auto layer = new Qt3DRender::QLayer(layerFilter.data());
         QCoreApplication::processEvents();
         layerFilter->addLayer(layer);
         QCoreApplication::processEvents();
@@ -133,7 +129,7 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        layer = new Qt3DRender::QLayer(layersNode.data());
+        layer = new Qt3DRender::QLayer(layerFilter.data());
         QCoreApplication::processEvents();
         layerFilter->addLayer(layer);
         QCoreApplication::processEvents();

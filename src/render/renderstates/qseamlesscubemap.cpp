@@ -46,6 +46,16 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * \class Qt3DRender::QSeamlessCubemap
+ * \brief Enables seamless cubemap texture filtering.
+ * When present in a state set, enables the seamless cubemap texture filtering
+ * as provided by the GL_ARB_seamless_cubemap extension (if available).
+ * \since 5.7
+ * \ingroup
+ */
+
+/*! \internal */
 class QSeamlessCubemapPrivate : public QRenderStatePrivate
 {
 public:
@@ -57,6 +67,10 @@ public:
     Q_DECLARE_PUBLIC(QSeamlessCubemap)
 };
 
+/*!
+ * The constructor creates a new QSeamlessCubemap::QSeamlessCubemap instance
+ * with the specified \a parent.
+ */
 QSeamlessCubemap::QSeamlessCubemap(QNode *parent)
     : QRenderState(*new QSeamlessCubemapPrivate, parent)
 {

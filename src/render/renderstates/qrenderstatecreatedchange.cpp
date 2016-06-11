@@ -41,6 +41,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * \class Qt3DRender::QRenderStateCreatedChange
+ * \brief The QRenderStateCreatedChange class
+ * \since 5.7
+ * \ingroup renderstates
+ */
+
+/*! \internal */
 class QRenderStateCreatedChangeBasePrivate : public Qt3DCore::QNodeCreatedChangeBasePrivate
 {
 public:
@@ -53,11 +61,18 @@ public:
     QRenderStatePrivate::Type m_type;
 };
 
+/*!
+ * The constructor creates a new QRenderStateCreatedChangeBase::QRenderStateCreatedChangeBase
+ * instance with the specified \a renderState.
+ */
 QRenderStateCreatedChangeBase::QRenderStateCreatedChangeBase(const QRenderState *renderState)
     : QNodeCreatedChangeBase(*new QRenderStateCreatedChangeBasePrivate(renderState), renderState)
 {
 }
 
+/*!
+ * \return the current render state type
+ */
 QRenderStatePrivate::Type QRenderStateCreatedChangeBase::renderStateType() const
 {
     Q_D(const QRenderStateCreatedChangeBase);

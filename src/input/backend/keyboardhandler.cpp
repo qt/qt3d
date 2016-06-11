@@ -108,7 +108,7 @@ void KeyboardHandler::sceneChangeEvent(const QSceneChangePtr &e)
     bool focusRequest = false;
     if (e->type() == PropertyUpdated) {
         QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("device")) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("sourceDevice")) {
             const QNodeId newId = propertyChange->value().value<QNodeId>();
             if (m_keyboardDevice != newId) {
                 setSourcerDevice(newId);

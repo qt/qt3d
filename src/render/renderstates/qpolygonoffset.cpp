@@ -37,6 +37,14 @@
 **
 ****************************************************************************/
 
+/*!
+ * \class QPolygonOffset
+ * \brief The QPolygonOffset class sets the scale and steps to calculate depth
+ * values for polygon offsets.
+ * \since 5.7
+ * \ingroup renderstates
+ *
+ */
 #include "qpolygonoffset.h"
 #include "qpolygonoffset_p.h"
 #include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
@@ -45,6 +53,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * The constructor creates a new QPolygonOffset::QPolygonOffset instance
+ * with the specified \a parent
+ */
 QPolygonOffset::QPolygonOffset(QNode *parent)
     : QRenderState(*new QPolygonOffsetPrivate, parent)
 {
@@ -55,12 +67,20 @@ QPolygonOffset::~QPolygonOffset()
 {
 }
 
+/*!
+ * \return the current scale factor.
+ */
 float QPolygonOffset::scaleFactor() const
 {
     Q_D(const QPolygonOffset);
     return d->m_scaleFactor;
 }
 
+/*!
+ * Sets the scale factor used to create a variable depth offset for
+ * each polygon, to \a scaleFactor. Default value is 0.
+ * \param scaleFactor
+ */
 void QPolygonOffset::setScaleFactor(float scaleFactor)
 {
     Q_D(QPolygonOffset);
@@ -70,12 +90,19 @@ void QPolygonOffset::setScaleFactor(float scaleFactor)
     }
 }
 
+/*!
+ * \return the current depth steps.
+ */
 float QPolygonOffset::depthSteps() const
 {
     Q_D(const QPolygonOffset);
     return d->m_depthSteps;
 }
 
+/*!
+ * Sets the units that create constant depth offsets, to depthSteps.
+ * \param depthSteps
+ */
 void QPolygonOffset::setDepthSteps(float depthSteps)
 {
     Q_D(QPolygonOffset);

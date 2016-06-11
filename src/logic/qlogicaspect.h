@@ -56,9 +56,8 @@ public:
     explicit QLogicAspect(QObject *parent = nullptr);
     ~QLogicAspect();
 
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
-
 private:
+    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
     void onRegistered() Q_DECL_OVERRIDE;
     void onEngineStartup() Q_DECL_OVERRIDE;
 
@@ -71,4 +70,3 @@ private:
 QT_END_NAMESPACE
 
 #endif // QT3DLOGIC_QLOGICASPECT_H
-

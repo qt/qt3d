@@ -38,6 +38,13 @@
 **
 ****************************************************************************/
 
+/*!
+ * \class QFrontFace
+ * \brief The QFrontFace class defines front and back facing polygons.
+ * \since 5.7
+ * \ingroup renderstates
+ *
+ */
 #include "qfrontface.h"
 #include "qfrontface_p.h"
 #include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
@@ -46,6 +53,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * The constructor creates a new QFrontFace::QFrontFace instance with the
+ * specified \a parent
+ */
 QFrontFace::QFrontFace(QNode *parent)
     : QRenderState(*new QFrontFacePrivate, parent)
 {
@@ -56,12 +67,19 @@ QFrontFace::~QFrontFace()
 {
 }
 
+/*!
+ * \return the current winding direction
+ */
 QFrontFace::WindingDirection QFrontFace::direction() const
 {
     Q_D(const QFrontFace);
     return d->m_direction;
 }
 
+/*!
+ * Sets the winding direction to \a direction
+ * \param direction
+ */
 void QFrontFace::setDirection(QFrontFace::WindingDirection direction)
 {
     Q_D(QFrontFace);

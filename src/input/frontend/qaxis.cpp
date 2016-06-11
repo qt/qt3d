@@ -51,6 +51,7 @@ namespace Qt3DInput {
 /*!
  * \qmltype Axis
  * \inqmlmodule Qt3D.Input
+ * \brief QML frontend for QAxis C++ class.
  * \since 5.5
  * \TODO
  *
@@ -59,11 +60,28 @@ namespace Qt3DInput {
 /*!
  * \class Qt3DInput::QAxis
  * \inmodule Qt3DInput
+ * \brief A QAxis class.
  * \since 5.5
  * \TODO
  *
  */
 
+/*!
+    \qmlproperty int QAxis::value
+    \readonly
+
+    Holds the value of the axis.
+*/
+
+/*!
+    \qmlproperty list<AbstractAxisInput> Qt3D.Input::Axis::inputs
+
+    List of axis inputs.
+*/
+
+/*!
+    Constructs a new QAxis instance with \a parent.
+ */
 QAxis::QAxis(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QAxisPrivate(), parent)
 {
@@ -74,6 +92,12 @@ QAxis::~QAxis()
 {
 }
 
+/*!
+    QAxis::addInput
+    Adds an \a input for the axis.
+
+    \sa Qt3DInput::QAbstractAxisInput
+ */
 void QAxis::addInput(QAbstractAxisInput *input)
 {
     Q_D(QAxis);
@@ -83,6 +107,9 @@ void QAxis::addInput(QAbstractAxisInput *input)
         if (!input->parent())
             input->setParent(this);
 
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(input, &QAxis::removeInput, d->m_inputs);
+
         if (d->m_changeArbiter != nullptr) {
             const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), input);
             change->setPropertyName("input");
@@ -91,6 +118,13 @@ void QAxis::addInput(QAbstractAxisInput *input)
     }
 }
 
+/*!
+    QAxis::removeInput
+
+    Removes an \a input from the axis.
+
+    \sa Qt3DInput::QAbstractAxisInput
+ */
 void QAxis::removeInput(QAbstractAxisInput *input)
 {
     Q_D(QAxis);
@@ -103,15 +137,28 @@ void QAxis::removeInput(QAbstractAxisInput *input)
         }
 
         d->m_inputs.removeOne(input);
+
+        // Remove bookkeeping connection
+        d->unregisterDestructionHelper(input);
     }
 }
 
+/*!
+    QAxis::inputs
+
+    \return vector of all inputs added to the axis.
+ */
 QVector<QAbstractAxisInput *> QAxis::inputs() const
 {
     Q_D(const QAxis);
     return d->m_inputs;
 }
 
+/*!
+  \property QAxis::value
+
+  The value of the axis.
+ */
 float QAxis::value() const
 {
     Q_D(const QAxis);

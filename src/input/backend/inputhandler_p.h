@@ -89,7 +89,7 @@ class GenericDeviceBackendNodeManager;
 class InputSettings;
 class EventSourceSetterHelper;
 
-class InputHandler
+class Q_AUTOTEST_EXPORT InputHandler
 {
 public:
     InputHandler();
@@ -176,6 +176,7 @@ private:
     QScopedPointer<EventSourceSetterHelper> m_eventSourceSetter;
 
     void registerEventFilters(Qt3DCore::QEventFilterService *service);
+    void unregisterEventFilters(Qt3DCore::QEventFilterService *service);
     friend class EventSourceSetterHelper;
 };
 

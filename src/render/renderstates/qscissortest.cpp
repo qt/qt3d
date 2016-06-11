@@ -38,6 +38,15 @@
 **
 ****************************************************************************/
 
+/*!
+ * \class QScissorTest
+ * \brief The QScissorTest class discards fragments that fall outside of a
+ * certain rectangular portion of the screen.
+ * \since 5.7
+ * \ingroup renderstates
+ *
+ */
+
 #include "qscissortest.h"
 #include "qscissortest_p.h"
 #include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
@@ -46,6 +55,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * The constructor creates a new QScissorTest::QScissorTest instance with the
+ * specified \a parent
+ */
 QScissorTest::QScissorTest(QNode *parent)
     : QRenderState(*new QScissorTestPrivate, parent)
 {
@@ -56,12 +69,19 @@ QScissorTest::~QScissorTest()
 {
 }
 
+/*!
+ * \return the left of the scissor box
+ */
 int QScissorTest::left() const
 {
     Q_D(const QScissorTest);
     return d->m_left;
 }
 
+/*!
+ * Sets the left of the scissor box to \a setLeft
+ * \param left
+ */
 void QScissorTest::setLeft(int left)
 {
     Q_D(QScissorTest);
@@ -71,12 +91,19 @@ void QScissorTest::setLeft(int left)
     }
 }
 
+/*!
+ * \return the bottom of the scrissor box
+ */
 int QScissorTest::bottom() const
 {
     Q_D(const QScissorTest);
     return d->m_bottom;
 }
 
+/*!
+ * Sets the bottom of the scissor box to \a bottom
+ * \param bottom
+ */
 void QScissorTest::setBottom(int bottom)
 {
     Q_D(QScissorTest);
@@ -86,12 +113,19 @@ void QScissorTest::setBottom(int bottom)
     }
 }
 
+/*!
+ * \return the width of the scissor box
+ */
 int QScissorTest::width() const
 {
     Q_D(const QScissorTest);
     return d->m_width;
 }
 
+/*!
+ * Sets the width of the scissor box to \a width
+ * \param width
+ */
 void QScissorTest::setWidth(int width)
 {
     Q_D(QScissorTest);
@@ -101,12 +135,19 @@ void QScissorTest::setWidth(int width)
     }
 }
 
+/*!
+ * \return the height of the scissor box
+ */
 int QScissorTest::height() const
 {
     Q_D(const QScissorTest);
     return d->m_height;
 }
 
+/*!
+ * Sets the height of the scissor box to \a height
+ * \param height
+ */
 void QScissorTest::setHeight(int height)
 {
     Q_D(QScissorTest);

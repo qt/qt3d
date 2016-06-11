@@ -82,6 +82,22 @@ Entity {
         InputSettings { }
     ]
 
+    Entity {
+        id: lightEntity
+        property Transform transform: Transform {
+            translation: Qt.vector3d(1.0, 1.0, 0.0)
+        }
+
+        property PointLight light: PointLight {
+            id: light
+            color: "white"
+            constantAttenuation: 1.0
+            linearAttenuation: 0.0
+            quadraticAttenuation: 0.0
+        }
+        components: [transform, light]
+    }
+
     TorusMesh {
         id: torusMesh
         radius: 5
@@ -120,11 +136,12 @@ Entity {
         components: [ sphereMesh, alphaMaterial, cylinderTransform ]
     }
 
-    Material
-    {
+    PhongAlphaMaterial {
         id: alphaMaterial
-
-        property real alpha: 0.5
+        shininess: 75.0
+        ambient: "black"
+        diffuse: "blue"
+        specular: "white"
 
         QQ2.NumberAnimation {
             duration: 2000
@@ -134,83 +151,6 @@ Entity {
             from: 0.0
             to: 1.0
             running: true
-        }
-
-        effect:  Effect {
-            FilterKey {
-                id: forward
-                name: "renderingStyle"
-                value: "forward"
-            }
-
-            parameters: [
-                Parameter { name: "alpha";  value: alphaMaterial.alpha },
-                Parameter { name: "ka";   value: "black" },
-                Parameter { name: "kd";   value: "blue" },
-                Parameter { name: "ks";  value: "white" },
-                Parameter { name: "shininess"; value: 75.0 },
-                Parameter { name: "lightPosition"; value: Qt.vector4d(1.0, 1.0, 0.0, 1.0) },
-                Parameter { name: "lightIntensity"; value: Qt.vector3d(1.0, 1.0, 1.0) }
-            ]
-
-            ShaderProgram {
-                id: alphaPhong
-                vertexShaderCode: loadSource("qrc:/phongalpha.vert")
-                fragmentShaderCode: loadSource("qrc:/phongalpha.frag")
-            }
-
-            techniques: [
-                Technique
-                {
-                    filterKeys: [ forward ]
-                    graphicsApiFilter {
-                        api: GraphicsApiFilter.OpenGL
-                        profile: GraphicsApiFilter.NoProfile
-                        majorVersion: 2
-                        minorVersion: 0
-                    }
-
-                    renderPasses: RenderPass {
-                        renderStates: [
-                            CullFace { mode : CullFace.Back },
-                            DepthTest { depthFunction: DepthTest.Less },
-                            NoDepthMask { },
-                            BlendEquationArguments {
-                                sourceRgb: BlendEquationArguments.SourceAlpha
-                                destinationRgb: BlendEquationArguments.OneMinusSourceAlpha
-                            }
-                            ,BlendEquation {blendFunction: BlendEquation.Add}
-                        ]
-
-                        shaderProgram: alphaPhong
-                    }
-                },
-                Technique
-                {
-                    filterKeys: [ forward ]
-                    graphicsApiFilter {
-                        api: GraphicsApiFilter.OpenGLES
-                        profile: GraphicsApiFilter.NoProfile
-                        majorVersion: 2
-                        minorVersion: 0
-                    }
-
-                    renderPasses: RenderPass {
-                        renderStates: [
-                            CullFace { mode : CullFace.Back },
-                            DepthTest { depthFunction: DepthTest.Less },
-                            NoDepthMask { },
-                            BlendEquationArguments {
-                                sourceRgb: BlendEquationArguments.SourceAlpha
-                                destinationRgb: BlendEquationArguments.OneMinusSourceAlpha
-                            }
-                            ,BlendEquation {blendFunction: BlendEquation.Add}
-                        ]
-
-                        shaderProgram: alphaPhong
-                    }
-                }
-            ]
         }
     }
 

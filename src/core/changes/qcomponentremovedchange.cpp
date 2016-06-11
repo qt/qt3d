@@ -66,19 +66,19 @@ QComponentRemovedChange::~QComponentRemovedChange()
 {
 }
 
-QNodeId QComponentRemovedChange::entityId() const Q_DECL_NOEXCEPT
+QNodeId QComponentRemovedChange::entityId() const Q_DECL_NOTHROW
 {
     Q_D(const QComponentRemovedChange);
     return d->m_entityId;
 }
 
-QNodeId QComponentRemovedChange::componentId() const Q_DECL_NOEXCEPT
+QNodeId QComponentRemovedChange::componentId() const Q_DECL_NOTHROW
 {
     Q_D(const QComponentRemovedChange);
     return d->m_componentId;
 }
 
-const QMetaObject *QComponentRemovedChange::componentMetaObject() const Q_DECL_NOEXCEPT
+const QMetaObject *QComponentRemovedChange::componentMetaObject() const Q_DECL_NOTHROW
 {
     Q_D(const QComponentRemovedChange);
     return d->m_componentMetaObject;

@@ -44,6 +44,23 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+/*!
+  \class Qt3DRender::QClearBuffers
+  \inmodule Qt3DRender
+  \since 5.7
+  \ingroup framegraph
+
+  \brief Class to clear buffers
+ */
+
+/*!
+    \qmltype ClearBuffers
+    \inqmlmodule Qt3D.Render
+    \instantiates Qt3DRender::QClearBuffers
+    \inherits FrameGraphNode
+    \since 5.7
+    \qmlabstract
+*/
 
 QClearBuffersPrivate::QClearBuffersPrivate()
     : QFrameGraphNodePrivate()
@@ -54,6 +71,9 @@ QClearBuffersPrivate::QClearBuffersPrivate()
 {
 }
 
+/*!
+  The constructor creates an instance with the specified \a parent.
+ */
 QClearBuffers::QClearBuffers(QNode *parent)
     : QFrameGraphNode(*new QClearBuffersPrivate, parent)
 {
@@ -101,6 +121,15 @@ QRenderTargetOutput *QClearBuffers::colorBuffer() const
     return d->m_buffer;
 }
 
+/*!
+    \property Qt3DRender::QClearBuffers::buffers
+    Specifies the buffer type to be used.
+ */
+
+/*!
+  \qmlproperty BufferType Qt3D.Render::ClearBuffers::buffers
+
+*/
 void QClearBuffers::setBuffers(QClearBuffers::BufferType buffers)
 {
     Q_D(QClearBuffers);
@@ -110,6 +139,14 @@ void QClearBuffers::setBuffers(QClearBuffers::BufferType buffers)
     }
 }
 
+/*!
+    \property Qt3DRender::QClearBuffers::clearColor
+    Specifies the clear color to be used.
+ */
+/*!
+  \qmlproperty Color Qt3D.Render::ClearBuffers::color
+
+*/
 void QClearBuffers::setClearColor(const QColor &color)
 {
     Q_D(QClearBuffers);
@@ -119,6 +156,15 @@ void QClearBuffers::setClearColor(const QColor &color)
     }
 }
 
+
+/*!
+    \property Qt3DRender::QClearBuffers::clearDepthValue
+    Specifies the clear depth value to be used.
+ */
+/*!
+  \qmlproperty float Qt3D.Render::ClearBuffers::clearDepthValue
+
+*/
 void QClearBuffers::setClearDepthValue(float clearDepthValue)
 {
     Q_D(QClearBuffers);
@@ -130,6 +176,15 @@ void QClearBuffers::setClearDepthValue(float clearDepthValue)
     }
 }
 
+
+/*!
+    \property Qt3DRender::QClearBuffers::clearStencilValue
+    Specifies the stencil value to be used.
+ */
+/*!
+  \qmlproperty int Qt3D.Render::ClearBuffers::clearStencilValue
+
+*/
 void QClearBuffers::setClearStencilValue(int clearStencilValue)
 {
     Q_D(QClearBuffers);
@@ -144,6 +199,10 @@ void QClearBuffers::setClearStencilValue(int clearStencilValue)
     Specifies a specific color buffer to clear. If set to NULL (default), and
     ColorBuffer flag is set, all color buffers will be cleared.
  */
+/*!
+  \qmlproperty Qt3D.Render::RenderTargetOutput Qt3D.Render::ClearBuffers::colorbuffer
+
+*/
 void QClearBuffers::setColorBuffer(QRenderTargetOutput *buffer)
 {
     Q_D(QClearBuffers);

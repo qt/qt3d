@@ -38,6 +38,17 @@
 **
 ****************************************************************************/
 
+/*!
+ * \class QBlendEquation
+ * \brief The QBlendEquation class specifies the equation used for both the RGB
+ *  blend equation and the Alpha blend equation
+ * \since 5.7
+ * \ingroup renderstates
+ *
+ * The blend equation is used to determine how a new pixel is combined with a pixel
+ * already in the framebuffer.
+ */
+
 #include "qblendequation.h"
 #include "qblendequation_p.h"
 #include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
@@ -46,6 +57,9 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * The constructor creates a new blend state object with the specified \a parent.
+ */
 QBlendEquation::QBlendEquation(QNode *parent)
     : QRenderState(*new QBlendEquationPrivate, parent)
 {
@@ -62,6 +76,11 @@ QBlendEquation::BlendFunction QBlendEquation::blendFunction() const
     return d->m_blendFunction;
 }
 
+/*!
+ * Sets the function used to decide how the source and destination colors are combined,
+ * to \a blendFunction.
+ * \param blendFunction
+ */
 void QBlendEquation::setBlendFunction(QBlendEquation::BlendFunction blendFunction)
 {
     Q_D(QBlendEquation);

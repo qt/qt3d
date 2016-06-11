@@ -143,7 +143,10 @@ QOpenGLFramebufferObject *Scene3DRenderer::createMultisampledFramebufferObject(c
 {
     QOpenGLFramebufferObjectFormat format;
     format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
-    format.setSamples(4);
+    int samples = QSurfaceFormat::defaultFormat().samples();
+    if (samples == -1)
+        samples = 4;
+    format.setSamples(samples);
     return new QOpenGLFramebufferObject(size, format);
 }
 
@@ -207,7 +210,7 @@ void Scene3DRenderer::synchronize()
     m_multisample = m_item->multisample();
 }
 
-void Scene3DRenderer::setSGNode(Scene3DSGNode *node) Q_DECL_NOEXCEPT
+void Scene3DRenderer::setSGNode(Scene3DSGNode *node)
 {
     m_node = node;
     if (!m_texture.isNull())

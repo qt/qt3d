@@ -113,6 +113,8 @@ private Q_SLOTS:
         n->appendChildId(childId);
         // THEN
         QCOMPARE(n->childrenIds().count(), 1);
+
+        c.take();
     }
 
     void checkParentChange()

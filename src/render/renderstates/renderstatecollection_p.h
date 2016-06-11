@@ -72,14 +72,14 @@ public:
 protected:
     void appendRenderState(Qt3DCore::QNodeId renderStateId);
     void removeRenderState(Qt3DCore::QNodeId renderStateId);
+    void setDirty(bool dirty);
 
 private:
-    QVector<Qt3DCore::QNodeId> m_renderStateIds;
-
     // Cached RenderStateNodes corresponding to the stored node IDs
     //
-    // we need these two to be mutable, because the RenderView accesses const
+    // we need these to be mutable, because the RenderView accesses const
     // instances of this class when we need to update the cached RenderStateNodes
+    mutable QVector<Qt3DCore::QNodeId> m_renderStateIds;
     mutable QVector<RenderStateNode*> m_renderStateNodes;
     mutable bool m_dirty;
 };

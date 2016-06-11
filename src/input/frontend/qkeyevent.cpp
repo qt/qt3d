@@ -48,6 +48,7 @@ namespace Qt3DInput {
 /*!
     \class Qt3DInput::QKeyEvent
     \inmodule Qt3DInput
+    \brief QKeyEvent event type send by KeyBoardHandler.
     \since 5.5
 */
 
@@ -55,6 +56,7 @@ namespace Qt3DInput {
     \qmltype KeyEvent
     \inqmlmodule Qt3D.Input
     \instantiates Qt3DInput::QKeyEvent
+    \brief QML frontend for QKeyEvent C++ class.
     \since 5.5
 
     The KeyEvent QML type cannot be directly created. Objects of this type

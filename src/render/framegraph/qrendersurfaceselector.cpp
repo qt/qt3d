@@ -40,8 +40,9 @@
 #include "qrendersurfaceselector.h"
 #include "qrendersurfaceselector_p.h"
 
-#include <QtGui/qwindow.h>
-#include <QtGui/qoffscreensurface.h>
+#include <QtGui/QWindow>
+#include <QtGui/QScreen>
+#include <QtGui/QOffscreenSurface>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
@@ -87,7 +88,15 @@ QRenderSurfaceSelectorPrivate::QRenderSurfaceSelectorPrivate()
     : Qt3DRender::QFrameGraphNodePrivate()
     , m_surface(nullptr)
     , m_surfaceEventFilter(new Qt3DRender::Render::PlatformSurfaceFilter())
+    , m_surfacePixelRatio(1.0f)
 {
+}
+
+QRenderSurfaceSelectorPrivate::~QRenderSurfaceSelectorPrivate()
+{
+    QObject::disconnect(m_heightConn);
+    QObject::disconnect(m_widthConn);
+    QObject::disconnect(m_screenConn);
 }
 
 void QRenderSurfaceSelectorPrivate::setExternalRenderTargetSize(const QSize &size)
@@ -150,6 +159,7 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
         QWindow *window = qobject_cast<QWindow *>(surfaceObject);
         if (window) {
             surface = static_cast<QSurface *>(window);
+            setSurfacePixelRatio(window->devicePixelRatio());
         } else {
             QOffscreenSurface *offscreen = qobject_cast<QOffscreenSurface *>(surfaceObject);
             if (offscreen)
@@ -161,6 +171,15 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
 
     if (d->m_surface == surface)
         return;
+
+    if (d->m_surface && d->m_surface->surfaceClass() == QSurface::Window) {
+        QWindow *prevWindow = static_cast<QWindow *>(d->m_surface);
+        if (prevWindow) {
+            QObject::disconnect(d->m_widthConn);
+            QObject::disconnect(d->m_heightConn);
+            QObject::disconnect(d->m_screenConn);
+        }
+    }
     d->m_surface = surface;
 
     // The platform surface filter only deals with QObject
@@ -172,7 +191,7 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
             d->m_surfaceEventFilter->setSurface(window);
 
             if (window) {
-                QObject::connect(window, &QWindow::widthChanged, [=] (int width) {
+                d->m_widthConn = QObject::connect(window, &QWindow::widthChanged, [=] (int width) {
                     if (d->m_changeArbiter != nullptr) {
                         Qt3DCore::QPropertyUpdatedChangePtr change(
                                     new Qt3DCore::QPropertyUpdatedChange(id()));
@@ -182,7 +201,7 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
                         d->notifyObservers(change);
                     }
                 });
-                QObject::connect(window, &QWindow::heightChanged, [=] (int height) {
+                d->m_heightConn = QObject::connect(window, &QWindow::heightChanged, [=] (int height) {
                     if (d->m_changeArbiter != nullptr) {
                         Qt3DCore::QPropertyUpdatedChangePtr change(
                                     new Qt3DCore::QPropertyUpdatedChange(id()));
@@ -190,6 +209,11 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
                         change->setPropertyName("height");
                         change->setValue(QVariant::fromValue(height));
                         d->notifyObservers(change);
+                    }
+                });
+                d->m_screenConn = QObject::connect(window, &QWindow::screenChanged, [=] (QScreen *screen) {
+                    if (screen && surfacePixelRatio() != screen->devicePixelRatio()) {
+                            setSurfacePixelRatio(screen->devicePixelRatio());
                     }
                 });
             }
@@ -218,6 +242,18 @@ QSize QRenderSurfaceSelector::externalRenderTargetSize() const
     return d->externalRenderTargetSize();
 }
 
+void QRenderSurfaceSelector::setSurfacePixelRatio(float ratio)
+{
+    Q_D(QRenderSurfaceSelector);
+    d->m_surfacePixelRatio = ratio;
+    emit surfacePixelRatioChanged(ratio);
+}
+
+float QRenderSurfaceSelector::surfacePixelRatio() const
+{
+    Q_D(const QRenderSurfaceSelector);
+    return d->m_surfacePixelRatio;
+}
 /*!
  * Sets render target \a size if different than underlying surface size.
  * Tells picking the correct size.
@@ -236,6 +272,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QRenderSurfaceSelector::createNodeCreationCh
     Q_D(const QRenderSurfaceSelector);
     data.surface = QPointer<QObject>(surface());
     data.externalRenderTargetSize = d->m_externalRenderTargetSize;
+    data.surfacePixelRatio = d->m_surfacePixelRatio;
     return creationChange;
 }
 

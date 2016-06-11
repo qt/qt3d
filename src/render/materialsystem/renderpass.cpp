@@ -70,6 +70,8 @@ RenderPass::~RenderPass()
 
 void RenderPass::cleanup()
 {
+    if (hasRenderStates())
+        setDirty(true);
 }
 
 void RenderPass::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -96,6 +98,13 @@ void RenderPass::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             appendRenderState(change->addedNodeId());
         else if (change->propertyName() == QByteArrayLiteral("parameter"))
             m_parameterPack.appendParameter(change->addedNodeId());
+        break;
+    }
+
+    case PropertyUpdated: {
+        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("shaderProgram"))
+            m_shaderUuid = change->value().value<Qt3DCore::QNodeId>();
         break;
     }
 

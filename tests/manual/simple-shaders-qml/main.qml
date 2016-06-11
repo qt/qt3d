@@ -48,7 +48,7 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.2 as QQ2
+import QtQuick 2.2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 import Qt3D.Input 2.0
@@ -102,6 +102,66 @@ Entity {
             }
         }
 
+        Timer {
+            property bool toggle: false
+            interval: 2000
+            repeat: true
+            triggeredOnStart: true
+            running: true
+
+            onTriggered: {
+                // Toggle shader code each time we are triggered
+                if (toggle) {
+                    console.log("Setting color fragment shader");
+                    changingShader.fragmentShaderCode = "
+                        #version 150
+
+                        in vec3 normal;
+                        in vec3 position;
+
+                        uniform vec3 finalColor;
+
+                        out vec4 fragColor;
+
+                        void main()
+                        {
+                            vec3 n = normalize(normal);
+                            vec3 s = normalize(vec3(1.0, 0.0, 1.0) - position);
+                            vec3 v = normalize(-position);
+                            float diffuse = max(dot(s, n), 0.0);
+                            fragColor = vec4(diffuse * finalColor, 1.0);
+                        }
+                    ";
+                } else {
+                    console.log("Setting greyscale fragment shader");
+                    changingShader.fragmentShaderCode = "
+                        #version 150
+
+                        in vec3 normal;
+                        in vec3 position;
+
+                        uniform vec3 finalColor;
+
+                        out vec4 fragColor;
+
+                        void main()
+                        {
+                            vec3 n = normalize(normal);
+                            vec3 s = normalize(vec3(1.0, 0.0, 1.0) - position);
+                            vec3 v = normalize(-position);
+                            float diffuse = max(dot(s, n), 0.0);
+                            fragColor = vec4(diffuse * finalColor, 1.0);
+
+                            float luminance = fragColor.r * 0.299 + fragColor.g * 0.587 + fragColor.b * 0.114;
+                            fragColor = vec4( luminance, luminance, luminance, 1.0f );
+                        }
+                    ";
+                }
+
+                toggle = !toggle;
+            }
+        }
+
         // Shader defined inline
         property Material material: Material {
 
@@ -110,6 +170,8 @@ Entity {
             effect: Effect {
                 techniques: [
                     Technique {
+                        filterKeys: FilterKey { name: "renderingStyle"; value: "forward" }
+
                         graphicsApiFilter {
                             api: GraphicsApiFilter.OpenGL
                             majorVersion: 3
@@ -119,6 +181,7 @@ Entity {
 
                         renderPasses: RenderPass {
                             shaderProgram: ShaderProgram {
+                                id: changingShader
 
                                 vertexShaderCode: "
                                     #version 150
@@ -141,25 +204,7 @@ Entity {
                                     }
                                 "
 
-                                fragmentShaderCode: "
-                                    #version 150
-
-                                    in vec3 normal;
-                                    in vec3 position;
-
-                                    uniform vec3 finalColor;
-
-                                    out vec4 fragColor;
-
-                                    void main()
-                                    {
-                                        vec3 n = normalize(normal);
-                                        vec3 s = normalize(vec3(1.0, 0.0, 1.0) - position);
-                                        vec3 v = normalize(-position);
-                                        float diffuse = max(dot(s, n), 0.0);
-                                        fragColor = vec4(diffuse * finalColor, 1.0);
-                                    }
-                                "
+                                fragmentShaderCode: ""
 
                             } // ShaderProgram
                         } // RenderPass
@@ -191,6 +236,8 @@ Entity {
             effect: Effect {
                 techniques: [
                     Technique {
+                        filterKeys: FilterKey { name: "renderingStyle"; value: "forward" }
+
                         graphicsApiFilter {
                             api: GraphicsApiFilter.OpenGL
                             majorVersion: 3

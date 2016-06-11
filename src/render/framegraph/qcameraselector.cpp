@@ -48,8 +48,22 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
-    \class Qt3DRender::QCameraSelector
-    \inmodule Qt3DRender
+  \class Qt3DRender::QCameraSelector
+  \inmodule Qt3DRender
+  \since 5.5
+  \ingroup framegraph
+
+  \brief Class to allow for selection of camera to be used
+
+ */
+
+/*!
+    \qmltype CameraSelector
+    \inqmlmodule Qt3D.Render
+    \instantiates Qt3DRender::QCameraSelector
+    \inherits FrameGraphNode
+    \since 5.5
+    \qmlabstract
 */
 
 /*! \internal */
@@ -64,6 +78,9 @@ QCameraSelectorPrivate::QCameraSelectorPrivate()
 {
 }
 
+/*!
+  The constructor creates an instance with the specified \a parent.
+ */
 QCameraSelector::QCameraSelector(Qt3DCore::QNode *parent)
     :   QFrameGraphNode(*new QCameraSelectorPrivate, parent)
 {
@@ -77,11 +94,18 @@ QCameraSelector::~QCameraSelector()
 /*!
     \property Qt3DRender::QCameraSelector::camera
 */
+
+/*!
+  \qmlproperty Entity Qt3D.Render::CameraSelector::camera
+
+*/
 void QCameraSelector::setCamera(Qt3DCore::QEntity *camera)
 {
     Q_D(QCameraSelector);
     if (d->m_camera != camera) {
-        d->m_camera = camera;
+
+        if (d->m_camera)
+            d->unregisterDestructionHelper(d->m_camera);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
@@ -89,6 +113,12 @@ void QCameraSelector::setCamera(Qt3DCore::QEntity *camera)
         // 2) When the current node is destroyed, it gets destroyed as well
         if (camera && !camera->parent())
             camera->setParent(this);
+        d->m_camera = camera;
+
+        // Ensures proper bookkeeping
+        if (d->m_camera)
+            d->registerDestructionHelper(d->m_camera, &QCameraSelector::setCamera, d->m_camera);
+
         emit cameraChanged(camera);
     }
 }

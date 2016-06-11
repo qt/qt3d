@@ -53,6 +53,11 @@ RenderStateCollection::~RenderStateCollection()
 {
 }
 
+void RenderStateCollection::setDirty(bool dirty)
+{
+    m_dirty = dirty;
+}
+
 QVector<RenderStateNode*> RenderStateCollection::renderStates(RenderStateManager *manager) const
 {
     if (m_dirty) {
@@ -60,7 +65,10 @@ QVector<RenderStateNode*> RenderStateCollection::renderStates(RenderStateManager
 
         for (const Qt3DCore::QNodeId id : m_renderStateIds) {
             RenderStateNode *node = manager->lookupResource(id);
-            m_renderStateNodes.append(node);
+            if (node)
+               m_renderStateNodes.append(node);
+            else
+                m_renderStateIds.removeAll(id);
         }
 
         m_dirty = false;

@@ -70,7 +70,7 @@ public:
     LayerFilterNode();
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    Qt3DCore::QNodeIdVector layerIds() const Q_DECL_NOEXCEPT;
+    Qt3DCore::QNodeIdVector layerIds() const;
     void setLayerIds(const Qt3DCore::QNodeIdVector &list);
 
 private:

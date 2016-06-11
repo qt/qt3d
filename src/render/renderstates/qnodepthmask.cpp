@@ -47,6 +47,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * \class QNoDepthMask
+ * \brief The QNoDepthMask class
+ * \since 5.7
+ * \ingroup renderstates
+ */
+
+/*! \internal */
 class QNoDepthMaskPrivate : public QRenderStatePrivate
 {
 public:
@@ -58,6 +66,10 @@ public:
     Q_DECLARE_PUBLIC(QNoDepthMask)
 };
 
+/*!
+ * the constructor creates a new QNoDepthMask::QNoDepthMask instance with
+ * the specified \a parent.
+ */
 QNoDepthMask::QNoDepthMask(QNode *parent)
     : QRenderState(*new QNoDepthMaskPrivate, parent)
 {

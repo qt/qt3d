@@ -57,7 +57,7 @@ void RenderStateImpl::updateProperty(const char *name, const QVariant &value)
     Q_UNUSED(value);
 }
 
-bool RenderStateImpl::isPooledImpl() const Q_DECL_NOEXCEPT
+bool RenderStateImpl::isPooledImpl() const Q_DECL_NOTHROW
 {
     return true;
 }

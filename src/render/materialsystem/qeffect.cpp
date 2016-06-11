@@ -57,6 +57,27 @@ QEffectPrivate::QEffectPrivate()
 {
 }
 
+/*!
+  \class Qt3DRender::QEffect
+  \inmodule Qt3DRender
+  \since 5.7
+  \brief The base class for effects in a Qt 3D scene.
+
+ */
+
+/*!
+    \qmltype Effect
+    \instantiates Qt3DRender::QEffect
+    \inherits Node
+    \inqmlmodule Qt3D.Render
+    \since 5.7
+    \brief The base class for effects in a Qt 3D scene.
+*/
+
+/*!
+  \fn Qt3DRender::QEffect::QEffect(Qt3DCore::QNode *parent)
+  Constructs a new QEffect with the specified \a parent.
+ */
 QEffect::QEffect(QNode *parent)
     : QNode(*new QEffectPrivate, parent)
 {
@@ -73,11 +94,18 @@ QEffect::QEffect(QEffectPrivate &dd, QNode *parent)
 {
 }
 
+/*!
+ * Adds \a parameter to the effect. It sends a QPropertyNodeAddedChange to the backend.
+ * The \a parameter will be used to set a corresponding uniform value in the shader used by this effect.
+ */
 void QEffect::addParameter(QParameter *parameter)
 {
     Q_D(QEffect);
     if (parameter && !d->m_parameters.contains(parameter)) {
         d->m_parameters.append(parameter);
+
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(parameter, &QEffect::removeParameter, d->m_parameters);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
@@ -94,6 +122,9 @@ void QEffect::addParameter(QParameter *parameter)
     }
 }
 
+/*!
+ * Removes a parameter \a parameter from the effect.
+ */
 void QEffect::removeParameter(QParameter *parameter)
 {
     Q_D(QEffect);
@@ -104,8 +135,13 @@ void QEffect::removeParameter(QParameter *parameter)
         d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(parameter);
 }
 
+/*!
+ * Returns the list of parameters used by the effect.
+ */
 QVector<QParameter *> QEffect::parameters() const
 {
     Q_D(const QEffect);
@@ -113,9 +149,7 @@ QVector<QParameter *> QEffect::parameters() const
 }
 
 /*!
- * Adds a new technique \a t to the effect. This posts a CommponentAdded
- * QScenePropertyChange notification to the QChangeArbiter, the value is
- * the added technique and the property name is "technique".
+ * Adds a new technique \a t to the effect. It sends a QPropertyNodeAddedChange to the backend.
  */
 void QEffect::addTechnique(QTechnique *t)
 {
@@ -123,6 +157,9 @@ void QEffect::addTechnique(QTechnique *t)
     Q_D(QEffect);
     if (t && !d->m_techniques.contains(t)) {
         d->m_techniques.append(t);
+
+        // Ensures proper bookkeeping
+        d->registerDestructionHelper(t, &QEffect::removeTechnique, d->m_techniques);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
@@ -140,9 +177,7 @@ void QEffect::addTechnique(QTechnique *t)
 }
 
 /*!
- * Removes a technique \a t from the effect. This posts a ComponentRemoved
- * QScenePropertyChange notification to the QChangeArbiter, the value is
- * the removed technique's id and the property name is "technique".
+ * Removes a technique \a t from the effect.
  */
 void QEffect::removeTechnique(QTechnique *t)
 {
@@ -153,6 +188,8 @@ void QEffect::removeTechnique(QTechnique *t)
         d->notifyObservers(change);
     }
     d->m_techniques.removeOne(t);
+    // Remove bookkeeping connection
+    d->unregisterDestructionHelper(t);
 }
 
 /*!

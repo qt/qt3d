@@ -82,7 +82,7 @@ QAbstractPhysicalDevicePrivate::~QAbstractPhysicalDevicePrivate()
 */
 
 /*!
-    Constructs a new QAbstractPhysicalDevice instance with parent \a parent.
+    Constructs a new QAbstractPhysicalDevice instance with \a parent.
  */
 QAbstractPhysicalDevice::QAbstractPhysicalDevice(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QAbstractPhysicalDevicePrivate, parent)
@@ -100,7 +100,7 @@ QAbstractPhysicalDevice::QAbstractPhysicalDevice(QAbstractPhysicalDevicePrivate 
 }
 
 /*!
-    Return the number of axis this device has.
+    \return the number of axis this device has.
  */
 int QAbstractPhysicalDevice::axisCount() const
 {
@@ -109,7 +109,7 @@ int QAbstractPhysicalDevice::axisCount() const
 }
 
 /*!
-    Return the number of buttons this device has.
+    \return the number of buttons this device has.
  */
 int QAbstractPhysicalDevice::buttonCount() const
 {
@@ -118,7 +118,7 @@ int QAbstractPhysicalDevice::buttonCount() const
 }
 
 /*!
-    Return a list of the names of device's axis.
+    \return a list of the names of device's axis.
  */
 QStringList QAbstractPhysicalDevice::axisNames() const
 {
@@ -127,7 +127,7 @@ QStringList QAbstractPhysicalDevice::axisNames() const
 }
 
 /*!
-    Return a list of the names of device's buttons.
+    \return a list of the names of device's buttons.
  */
 QStringList QAbstractPhysicalDevice::buttonNames() const
 {
@@ -136,7 +136,7 @@ QStringList QAbstractPhysicalDevice::buttonNames() const
 }
 
 /*!
-    Return the integer identifer of the axis /a name or -1 if it does not exist on this device.
+    \return the integer identifer of the axis \a name or -1 if it does not exist on this device.
  */
 int QAbstractPhysicalDevice::axisIdentifier(const QString &name) const
 {
@@ -148,7 +148,7 @@ int QAbstractPhysicalDevice::axisIdentifier(const QString &name) const
 }
 
 /*!
-    Return the integer identifer of the button /a name or -1 if it does not exist on this device.
+    \return the integer identifer of the button \a name or -1 if it does not exist on this device.
  */
 int QAbstractPhysicalDevice::buttonIdentifier(const QString &name) const
 {
@@ -160,7 +160,7 @@ int QAbstractPhysicalDevice::buttonIdentifier(const QString &name) const
 }
 
 /*!
-    Add the axisSetting /a axisSetting to this device.
+    Add the axisSetting \a axisSetting to this device.
  */
 void QAbstractPhysicalDevice::addAxisSetting(QAxisSetting *axisSetting)
 {
@@ -177,7 +177,7 @@ void QAbstractPhysicalDevice::addAxisSetting(QAxisSetting *axisSetting)
 }
 
 /*!
-    Remove the axisSetting /a axisSetting to this device.
+    Remove the axisSetting \a axisSetting to this device.
  */
 void QAbstractPhysicalDevice::removeAxisSetting(QAxisSetting *axisSetting)
 {
@@ -194,7 +194,7 @@ void QAbstractPhysicalDevice::removeAxisSetting(QAxisSetting *axisSetting)
 }
 
 /*!
-    Return the axisSettings /ascociated with this device.
+    \return the axisSettings associated with this device.
  */
 QVector<QAxisSetting *> QAbstractPhysicalDevice::axisSettings() const
 {

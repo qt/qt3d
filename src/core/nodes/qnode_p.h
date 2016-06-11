@@ -57,6 +57,7 @@
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 #include "propertychangehandler_p.h"
+#include <functional>
 
 QT_BEGIN_NAMESPACE
 
@@ -100,6 +101,33 @@ public:
     static QNodePrivate *get(QNode *q);
     static void nodePtrDeleter(QNode *q);
 
+    template<typename Caller, typename NodeType>
+    using DestructionFunction = void (Caller::*)(NodeType *);
+
+    template<typename Caller, typename NodeType, typename PropertyType>
+    void registerDestructionHelper(NodeType *, DestructionFunction<Caller, NodeType>, PropertyType);
+
+    template<typename Caller, typename NodeType>
+    void registerDestructionHelper(NodeType *node, DestructionFunction<Caller, NodeType> func, NodeType *&)
+    {
+        // If the node is destoyed, we make sure not to keep a dangling pointer to it
+        auto f = std::bind(func, static_cast<Caller *>(q_func()), nullptr);
+        m_destructionConnections.insert(node, QObject::connect(node, &QNode::nodeDestroyed, f));
+    }
+
+    template<typename Caller, typename NodeType>
+    void registerDestructionHelper(NodeType *node, DestructionFunction<Caller, NodeType> func, QVector<NodeType*> &)
+    {
+        // If the node is destoyed, we make sure not to keep a dangling pointer to it
+        auto f = std::bind(func, static_cast<Caller *>(q_func()), node);
+        m_destructionConnections.insert(node, QObject::connect(node, &QNode::nodeDestroyed, f));
+    }
+
+    void unregisterDestructionHelper(QNode *node)
+    {
+        QObject::disconnect(m_destructionConnections.take(node));
+    }
+
 private:
     void notifyCreationChange();
     void notifyDestructionChangesAndRemoveFromScene();
@@ -118,6 +146,7 @@ private:
     friend class PropertyChangeHandler<QNodePrivate>;
     bool m_propertyChangesSetup;
     PropertyChangeHandler<QNodePrivate> m_signals;
+    QHash<QNode *, QMetaObject::Connection> m_destructionConnections;
 };
 
 } // namespace Qt3DCore

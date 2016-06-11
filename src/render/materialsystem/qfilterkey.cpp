@@ -56,20 +56,20 @@ QFilterKeyPrivate::QFilterKeyPrivate()
     \class Qt3DRender::QFilterKey
     \inmodule Qt3DRender
     \since 5.5
-    \brief The QFilterKey class provides ...
+    \brief The QFilterKey class provides storage for filter keys and their values
 */
 
 /*!
-    \qmltype Annotation
+    \qmltype FilterKey
     \instantiates Qt3DRender::QFilterKey
     \inherits Node
     \inqmlmodule Qt3D.Render
     \since 5.5
-    \brief For annotating ...
+    \brief For storing filter keys and their value
 */
 
 /*!
-  The constructor creats a new annotation under \a parent.
+  The constructor creates a new QFilterKey under \a parent.
  */
 QFilterKey::QFilterKey(QNode *parent)
     : QNode(*new QFilterKeyPrivate, parent)
@@ -101,11 +101,12 @@ void QFilterKey::setName(const QString &name)
 
 /*!
   \property QFilterKey::value
-
+    Specifies the value of the filter key
 */
 
 /*!
   \qmlproperty variant Qt3D.Render::Annotation::value
+    Specifies the value of the filter key
 */
 
 QVariant QFilterKey::value() const
@@ -116,11 +117,12 @@ QVariant QFilterKey::value() const
 
 /*!
   \property QFilterKey::name
-
+    Specifies the name of the filter key
  */
 
 /*!
   \qmlproperty string Qt3D.Render::Annotation::name
+    Specifies the name of the filter key
  */
 
 QString QFilterKey::name() const

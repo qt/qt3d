@@ -165,7 +165,7 @@ class Q_AUTOTEST_EXPORT ScissorTest : public GenericState4<ScissorTest, ScissorS
 {
 public:
     virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
-    bool isPooledImpl() const Q_DECL_NOEXCEPT Q_DECL_OVERRIDE { return false; }
+    bool isPooledImpl() const Q_DECL_NOTHROW Q_DECL_OVERRIDE { return false; }
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
@@ -186,7 +186,7 @@ class Q_AUTOTEST_EXPORT PointSize : public GenericState2<PointSize, PointSizeMas
 {
 public:
     void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
-    bool isPooledImpl() const Q_DECL_NOEXCEPT Q_DECL_OVERRIDE { return false; }
+    bool isPooledImpl() const Q_DECL_NOTHROW Q_DECL_OVERRIDE { return false; }
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
@@ -194,7 +194,7 @@ class Q_AUTOTEST_EXPORT PolygonOffset : public GenericState2<PolygonOffset, Poly
 {
 public:
     void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
-    bool isPooledImpl() const Q_DECL_NOEXCEPT Q_DECL_OVERRIDE { return false; }
+    bool isPooledImpl() const Q_DECL_NOTHROW Q_DECL_OVERRIDE { return false; }
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 

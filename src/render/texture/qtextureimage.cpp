@@ -82,7 +82,7 @@ QTextureImage::~QTextureImage()
 }
 
 /*!
-    Returns the source url from which data for the texture image will be loaded.
+    \return the source url from which data for the texture image will be loaded.
  */
 QUrl QTextureImage::source() const
 {
@@ -90,6 +90,9 @@ QUrl QTextureImage::source() const
     return d->m_source;
 }
 
+/*!
+ * \return the current status.
+ */
 QTextureImage::Status QTextureImage::status() const
 {
     Q_D(const QTextureImage);
@@ -124,6 +127,10 @@ void QTextureImage::setSource(const QUrl &source)
     }
 }
 
+/*!
+ * Sets the status to \a status.
+ * \param status
+ */
 void QTextureImage::setStatus(Status status)
 {
     Q_D(QTextureImage);
@@ -134,7 +141,7 @@ void QTextureImage::setStatus(Status status)
 }
 
 /*!
-    Returns the Qt3DRender::QTextureImageDataGeneratorPtr functor to be used by the
+    \return the Qt3DRender::QTextureImageDataGeneratorPtr functor to be used by the
     backend to load the texture image data into an OpenGL texture object.
  */
 QTextureImageDataGeneratorPtr QTextureImage::dataGenerator() const
@@ -142,6 +149,10 @@ QTextureImageDataGeneratorPtr QTextureImage::dataGenerator() const
     return QTextureImageDataGeneratorPtr(new QImageTextureDataFunctor(source()));
 }
 
+/*!
+ * Sets the scene change event to \a change.
+ * \param change
+ */
 void QTextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
@@ -150,6 +161,10 @@ void QTextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
         setStatus(static_cast<QTextureImage::Status>(e->value().toInt()));
 }
 
+/*!
+ * The constructor creats a new QImageTextureDataFunctor::QImageTextureDataFunctor
+ * instance with the specified \a url.
+ */
 QImageTextureDataFunctor::QImageTextureDataFunctor(const QUrl &url)
     : QTextureImageDataGenerator()
     , m_url(url)

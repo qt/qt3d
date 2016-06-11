@@ -60,37 +60,37 @@ public:
 
     QT3DCORESHARED_EXPORT static QNodeId createId() Q_DECL_NOTHROW;
 
-    Q_DECL_CONSTEXPR bool isNull() const Q_DECL_NOEXCEPT
+    Q_DECL_CONSTEXPR bool isNull() const Q_DECL_NOTHROW
     {
         return m_id == 0;
     }
 
-    Q_DECL_CONSTEXPR bool operator ==(QNodeId other) const Q_DECL_NOEXCEPT
+    Q_DECL_CONSTEXPR bool operator ==(QNodeId other) const Q_DECL_NOTHROW
     {
         return other.m_id == m_id;
     }
 
-    Q_DECL_CONSTEXPR bool operator !=(QNodeId other) const Q_DECL_NOEXCEPT
+    Q_DECL_CONSTEXPR bool operator !=(QNodeId other) const Q_DECL_NOTHROW
     {
         return !operator ==(other);
     }
 
-    Q_DECL_CONSTEXPR bool operator <(QNodeId other) const Q_DECL_NOEXCEPT
+    Q_DECL_CONSTEXPR bool operator <(QNodeId other) const Q_DECL_NOTHROW
     {
         return m_id < other.m_id;
     }
 
-    Q_DECL_CONSTEXPR bool operator >(QNodeId other) const Q_DECL_NOEXCEPT
+    Q_DECL_CONSTEXPR bool operator >(QNodeId other) const Q_DECL_NOTHROW
     {
         return m_id > other.m_id;
     }
 
-    Q_DECL_CONSTEXPR quint64 id() const Q_DECL_NOEXCEPT
+    Q_DECL_CONSTEXPR quint64 id() const Q_DECL_NOTHROW
     {
         return m_id;
     }
 
-    Q_DECL_CONSTEXPR operator bool() const Q_DECL_NOEXCEPT
+    Q_DECL_CONSTEXPR operator bool() const Q_DECL_NOTHROW
     {
         return m_id != 0;
     }
