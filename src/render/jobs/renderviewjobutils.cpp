@@ -110,8 +110,8 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                             rv->setEyePosition(eyePosition);
                         }
                     }
-                    break;
                 }
+                break;
 
             case FrameGraphNode::LayerFilter: // Can be set multiple times in the tree
                 rv->setHasLayerFilter(true);
