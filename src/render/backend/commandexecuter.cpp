@@ -40,8 +40,11 @@
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DRender/private/graphicscontext_p.h>
+#include <Qt3DRender/private/renderview_p.h>
+#include <Qt3DRender/private/rendercommand_p.h>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QJsonArray>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,17 +52,42 @@ namespace Qt3DRender {
 
 namespace Debug {
 
+namespace {
+
+QJsonObject rectFToJson(const QRectF &rect)
+{
+    QJsonObject obj;
+
+    obj.insert(QLatin1String("x"), rect.x());
+    obj.insert(QLatin1String("y"), rect.y());
+    obj.insert(QLatin1String("width"), rect.width());
+    obj.insert(QLatin1String("height"), rect.height());
+
+    return obj;
+}
+
+QJsonObject sizeToJson(const QSize &s)
+{
+    QJsonObject obj;
+
+    obj.insert(QLatin1String("width"), s.width());
+    obj.insert(QLatin1String("height"), s.height());
+
+    return obj;
+}
+
+} // anonymous
+
 CommandExecuter::CommandExecuter(Render::Renderer *renderer)
     : m_renderer(renderer)
 {
 }
 
 // Render thread
-void CommandExecuter::performAsynchronousCommandExecution()
+void CommandExecuter::performAsynchronousCommandExecution(const QVector<Render::RenderView *> &views)
 {
-    QMutexLocker lock(m_renderer->mutex());
+    // The renderer's mutex is already locked
     const QVector<Qt3DCore::Debug::AsynchronousCommandReply *> shellCommands = std::move(m_pendingCommands);
-    lock.unlock();
 
     for (auto *reply : shellCommands) {
         if (reply->commandName() == QLatin1String("glinfo")) {
@@ -83,6 +111,38 @@ void CommandExecuter::performAsynchronousCommandExecution()
                                   : QLatin1String("None"));
             }
             reply->setData(QJsonDocument(replyObj).toJson());
+        } else if (reply->commandName() == QLatin1String("rendercommands")) {
+            QJsonObject replyObj;
+
+            QJsonArray viewArray;
+            for (Render::RenderView *v : views) {
+                QJsonObject viewObj;
+                viewObj.insert(QLatin1String("viewport"), rectFToJson(v->viewport()));
+                viewObj.insert(QLatin1String("surfaceSize"), sizeToJson(v->surfaceSize()));
+                viewObj.insert(QLatin1String("devicePixelRatio"), v->devicePixelRatio());
+                viewObj.insert(QLatin1String("noDraw"), v->noDraw());
+                viewObj.insert(QLatin1String("frustumCulling"), v->frustumCulling());
+                viewObj.insert(QLatin1String("compute"), v->isCompute());
+                viewObj.insert(QLatin1String("clearDepthValue"), v->clearDepthValue());
+                viewObj.insert(QLatin1String("clearStencilValue"), v->clearStencilValue());
+
+                QJsonArray renderCommandsArray;
+                for (Render::RenderCommand *c : v->commands()) {
+                    QJsonObject commandObj;
+                    commandObj.insert(QLatin1String("shader"), double(c->m_shader));
+                    commandObj.insert(QLatin1String("vao"),  double(c->m_vao.handle()));
+                    commandObj.insert(QLatin1String("instanceCount"), c->m_instancesCount);
+                    commandObj.insert(QLatin1String("geometry"),  double(c->m_geometry.handle()));
+                    commandObj.insert(QLatin1String("geometryRenderer"),  double(c->m_geometryRenderer.handle()));
+
+                    renderCommandsArray.push_back(commandObj);
+                }
+                viewObj.insert(QLatin1String("commands"), renderCommandsArray);
+                viewArray.push_back(viewObj);
+            }
+
+            replyObj.insert(QLatin1String("renderViews"), viewArray);
+            reply->setData(QJsonDocument(replyObj).toJson());
         }
         reply->setFinished(true);
     }
@@ -92,12 +152,15 @@ void CommandExecuter::performAsynchronousCommandExecution()
 QVariant CommandExecuter::executeCommand(const QStringList &args)
 {
     // Note: The replies will be deleted by the AspectCommandDebugger
-    if (args.length() > 0 && args.first() == QLatin1String("glinfo")) {
+    if (args.length() > 0 &&
+            (args.first() == QLatin1String("glinfo") ||
+             args.first() == QLatin1String("rendercommands"))) {
         auto reply = new Qt3DCore::Debug::AsynchronousCommandReply(args.first());
         QMutexLocker lock(m_renderer->mutex());
         m_pendingCommands.push_back(reply);
         return QVariant::fromValue(reply);
     }
+    return QVariant();
 }
 
 } // Debug

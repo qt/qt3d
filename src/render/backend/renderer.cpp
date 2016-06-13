@@ -475,16 +475,13 @@ void Renderer::doRender()
         submissionStats.jobId.typeAndInstance[1] = 0;
         submissionStats.threadId = reinterpret_cast<quint64>(QThread::currentThreadId());
         submissionStats.startTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
-
-        // Execute the pending shell commands
-        m_commandExecuter->performAsynchronousCommandExecution();
 #endif
-
         // Lock the mutex to protect access to m_surface and check if we are still set
         // to the running state and that we have a valid surface on which to draw
         // TO DO: Is that still needed given the surface changes
         QMutexLocker locker(&m_mutex);
         const QVector<Render::RenderView *> renderViews = m_renderQueue->nextFrameQueue();
+
 
         if (canRender() && (submissionSucceeded = renderViews.size() > 0) == true) {
             // Clear all dirty flags but Compute so that
@@ -505,6 +502,11 @@ void Renderer::doRender()
             // Perform any required cleanup of the Graphics resources (Buffers deleted, Shader deleted...)
             cleanGraphicsResources();
         }
+
+#ifdef QT3D_JOBS_RUN_STATS
+        // Execute the pending shell commands
+        m_commandExecuter->performAsynchronousCommandExecution(renderViews);
+#endif
 
         // Delete all the RenderViews which will clear the allocators
         // that were used for their allocation

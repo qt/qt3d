@@ -67,6 +67,7 @@ namespace Qt3DRender {
 
 namespace Render {
 class Renderer;
+class RenderView;
 } // Render
 
 namespace Debug {
@@ -76,7 +77,7 @@ class CommandExecuter
 public:
     explicit CommandExecuter(Render::Renderer *renderer);
 
-    void performAsynchronousCommandExecution();
+    void performAsynchronousCommandExecution(const QVector<Render::RenderView *> &views);
 
     QVariant executeCommand(const QStringList &args);
 
