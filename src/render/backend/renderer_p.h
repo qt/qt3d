@@ -198,10 +198,6 @@ public:
     Qt3DCore::QFrameAllocator *currentFrameAllocator();
     QThreadStorage<Qt3DCore::QFrameAllocator *> *tlsAllocators();
 
-    inline HMaterial defaultMaterialHandle() const { return m_defaultMaterialHandle; }
-    inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
-    inline HTechnique defaultTechniqueHandle() const { return m_defaultTechniqueHandle; }
-    inline HRenderPass defaultRenderPassHandle() const { return m_defaultRenderPassHandle; }
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
 
@@ -243,21 +239,8 @@ private:
 
     Entity *m_renderSceneRoot;
 
-    QHash<QMaterial*, Material*> m_materialHash;
-    QHash<QTechnique *, Technique*> m_techniqueHash;
-    QHash<QShaderProgram*, Shader*> m_shaderHash;
-
-    QMaterial* m_defaultMaterial;
-    QTechnique* m_defaultTechnique;
-
-    HMaterial m_defaultMaterialHandle;
-    HEffect m_defaultEffectHandle;
-    HTechnique m_defaultTechniqueHandle;
-    HRenderPass m_defaultRenderPassHandle;
-
     // Fail safe values that we can use if a RenderCommand
     // is missing a shader
-    Shader *m_defaultRenderShader;
     RenderStateSet *m_defaultRenderStateSet;
     ShaderParameterPack m_defaultUniformPack;
 
@@ -266,9 +249,6 @@ private:
     RenderQueue *m_renderQueue;
     QScopedPointer<RenderThread> m_renderThread;
     QScopedPointer<VSyncFrameAdvanceService> m_vsyncFrameAdvanceService;
-
-    void buildDefaultMaterial();
-    void buildDefaultTechnique();
 
     QMutex m_mutex;
     QSemaphore m_submitRenderViewsSemaphore;

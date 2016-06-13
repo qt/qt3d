@@ -136,7 +136,6 @@ namespace Render {
 Renderer::Renderer(QRenderAspect::RenderType type)
     : m_services(nullptr)
     , m_nodesManager(nullptr)
-    , m_defaultMaterial(nullptr)
     , m_defaultRenderStateSet(nullptr)
     , m_graphicsContext(nullptr)
     , m_renderQueue(new RenderQueue())
@@ -173,6 +172,11 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 
     // All world stuff depends on the RenderEntity's localBoundingVolume
     m_pickBoundingVolumeJob->addDependency(m_framePreparationJob);
+
+    m_defaultRenderStateSet = new RenderStateSet;
+    m_defaultRenderStateSet->addState(getOrCreateRenderStateImpl<DepthTest>(GL_LESS));
+    m_defaultRenderStateSet->addState(getOrCreateRenderStateImpl<CullFace>(GL_BACK));
+    m_defaultRenderStateSet->addState(getOrCreateRenderStateImpl<ColorMask>(true, true, true, true));
 }
 
 Renderer::~Renderer()
@@ -184,7 +188,6 @@ Renderer::~Renderer()
         m_renderThread->wait();
 
     delete m_renderQueue;
-    delete m_defaultMaterial;
     delete m_defaultRenderStateSet;
 }
 
@@ -226,71 +229,6 @@ NodeManagers *Renderer::nodeManagers() const
 void Renderer::setOpenGLContext(QOpenGLContext *context)
 {
     m_glContext = context;
-}
-
-void Renderer::buildDefaultTechnique()
-{
-    Q_ASSERT(m_graphicsContext);
-    Q_ASSERT(m_graphicsContext->openGLContext());
-
-    // TODO: Either use public API only or just go direct to the private backend API here
-    m_defaultTechnique = new QTechnique;
-    m_defaultTechnique->setObjectName(QStringLiteral("default-technique"));
-
-    QShaderProgram* defaultShader = new QShaderProgram;
-    QString vertexFileName;
-    QString fragmentFileName;
-    if (m_graphicsContext->openGLContext()->isOpenGLES()) {
-        vertexFileName = QStringLiteral("qrc:/shaders/es2/phong.vert");
-        fragmentFileName = QStringLiteral("qrc:/shaders/es2/phong.frag");
-    } else {
-        if (m_graphicsContext->openGLContext()->format().profile() == QSurfaceFormat::CoreProfile) {
-            vertexFileName = QStringLiteral("qrc:/shaders/gl3/phong.vert");
-            fragmentFileName = QStringLiteral("qrc:/shaders/gl3/phong.frag");
-        } else {
-            vertexFileName = QStringLiteral("qrc:/shaders/es2/phong.vert");
-            fragmentFileName = QStringLiteral("qrc:/shaders/es2/phong.frag");
-        }
-    }
-    defaultShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(vertexFileName)));
-    defaultShader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(fragmentFileName)));
-    defaultShader->setObjectName(QStringLiteral("DefaultShader"));
-
-    QRenderPass* basicPass = new QRenderPass;
-    basicPass->setShaderProgram(defaultShader);
-
-    m_defaultRenderStateSet = new RenderStateSet;
-    m_defaultRenderStateSet->addState(getOrCreateRenderStateImpl<DepthTest>(GL_LESS));
-    m_defaultRenderStateSet->addState(getOrCreateRenderStateImpl<CullFace>(GL_BACK));
-    m_defaultRenderStateSet->addState(getOrCreateRenderStateImpl<ColorMask>(true, true, true, true));
-    //basicPass->setStateSet(m_defaultRenderStateSet);
-
-    m_defaultTechnique->addRenderPass(basicPass);
-
-    QParameter* ka = new QParameter(QStringLiteral("ka"), QVector3D(0.2f, 0.2f, 0.2f));
-    m_defaultTechnique->addParameter(ka);
-
-    QParameter* kd = new QParameter(QStringLiteral("kd"), QVector3D(1.0f, 0.5f, 0.0f));
-    m_defaultTechnique->addParameter(kd);
-
-    QParameter* ks = new QParameter(QStringLiteral("ks"), QVector3D(0.01f, 0.01f, 0.01f));
-    m_defaultTechnique->addParameter(ks);
-
-    m_defaultTechnique->addParameter(new QParameter(QStringLiteral("shininess"), 150.0f));
-}
-
-void Renderer::buildDefaultMaterial()
-{
-    m_defaultMaterial = new QMaterial();
-    m_defaultMaterial->setObjectName(QStringLiteral("DefaultMaterial"));
-    m_defaultMaterial->addParameter(new QParameter(QStringLiteral("ambient"), QVector3D(0.2f, 0.2f, 0.2f)));
-    m_defaultMaterial->addParameter(new QParameter(QStringLiteral("diffuse"), QVector3D(1.0f, 0.5f, 0.0f)));
-    m_defaultMaterial->addParameter(new QParameter(QStringLiteral("specular"), QVector3D(0.01f, 0.01f, 0.01f)));
-    m_defaultMaterial->addParameter(new QParameter(QStringLiteral("shininess"), 150.0f));
-
-    QEffect* defEff = new QEffect;
-    defEff->addTechnique(m_defaultTechnique);
-    m_defaultMaterial->setEffect(defEff);
 }
 
 void Renderer::createAllocators(QAbstractAspectJobManager *jobManager)
@@ -469,33 +407,6 @@ void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
         qCWarning(Backend) << "Failed to build render scene";
     m_renderSceneRoot->dump();
     qCDebug(Backend) << Q_FUNC_INFO << "DUMPING SCENE";
-
-
-    // Create the default materials ....
-    // Needs a QOpenGLContext (for things like isOpenGLES ...)
-    // TO DO: Maybe this should be moved elsewhere
-    {
-        buildDefaultTechnique();
-        QNodeCreatedChangeGenerator creationChangeGenerator(m_defaultTechnique);
-        const QVector<QNodeCreatedChangeBasePtr> defaultMaterialCreationChanges = creationChangeGenerator.creationChanges();
-        for (const QNodeCreatedChangeBasePtr &change : defaultMaterialCreationChanges)
-            factory->createBackendNode(change);
-
-    }
-    {
-        buildDefaultMaterial();
-        QNodeCreatedChangeGenerator creationChangeGenerator(m_defaultMaterial);
-        const QVector<QNodeCreatedChangeBasePtr> defaultMaterialCreationChanges = creationChangeGenerator.creationChanges();
-        for (const QNodeCreatedChangeBasePtr &change : defaultMaterialCreationChanges)
-            factory->createBackendNode(change);
-    }
-
-
-    m_defaultMaterialHandle = nodeManagers()->lookupHandle<Material, MaterialManager, HMaterial>(m_defaultMaterial->id());
-    m_defaultEffectHandle = nodeManagers()->lookupHandle<Effect, EffectManager, HEffect>(m_defaultMaterial->effect()->id());
-    m_defaultTechniqueHandle = nodeManagers()->lookupHandle<Technique, TechniqueManager, HTechnique>(m_defaultTechnique->id());
-    m_defaultRenderPassHandle = nodeManagers()->lookupHandle<RenderPass, RenderPassManager, HRenderPass>(m_defaultTechnique->renderPasses().constFirst()->id());
-    m_defaultRenderShader = nodeManagers()->lookupResource<Shader, ShaderManager>(m_defaultTechnique->renderPasses().constFirst()->shaderProgram()->id());
 
     // Set the scene root on the jobs
     m_framePreparationJob->setRoot(m_renderSceneRoot);
@@ -1061,8 +972,8 @@ bool Renderer::executeCommands(const RenderView *rv)
 
             Shader *shader = m_nodesManager->data<Shader, ShaderManager>(command->m_shader);
             if (shader == nullptr) {
-                shader = m_defaultRenderShader;
-                command->m_parameterPack = m_defaultUniformPack;
+                qCWarning(Rendering) << "RenderCommand should have a shader to render";
+                continue;
             }
 
             // The VAO should be created only once for a QGeometry and a ShaderProgram
