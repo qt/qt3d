@@ -127,7 +127,7 @@ void AspectCommandDebugger::asynchronousReplyFinished(AsynchronousCommandReply *
     if (m_connections.contains(socket)) {
         QJsonObject replyObj;
         replyObj.insert(QLatin1String("command"), QJsonValue(reply->commandName()));
-        replyObj.insert(QLatin1String("data"), QJsonValue(QString::fromLatin1(reply->data())));
+        replyObj.insert(QLatin1String("data"), QJsonDocument::fromJson(reply->data()).object());
         sendReply(socket, QJsonDocument(replyObj).toJson());
     }
     reply->deleteLater();
