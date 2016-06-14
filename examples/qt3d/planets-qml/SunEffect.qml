@@ -55,15 +55,33 @@ import Qt3D.Render 2.0
 Effect {
     id: root
 
-    property Texture2D shadowTexture
-    property PlanetsLight light
+    FilterKey { id: desktopkey; name: "name"; value: "Desktop" }
+    FilterKey { id: forwardkey; name : "pass"; value : "forward" }
+    FilterKey { id: eskey; name: "name"; value: "ES2" }
 
-    parameters: [
-        Parameter { name: "lightViewProjection"; value: root.light.lightViewProjection },
-        Parameter { name: "lightPosition";  value: root.light.lightPosition },
-        Parameter { name: "lightIntensity"; value: root.light.lightIntensity },
-        Parameter { name: "shadowMapTexture"; value: root.shadowTexture }
-    ]
+    RenderPass {
+        id: glpass
+        filterKeys: [ forwardkey ]
+
+        shaderProgram: ShaderProgram {
+            vertexShaderCode:   loadSource("qrc:/shaders/gl3/sun.vert")
+            fragmentShaderCode: loadSource("qrc:/shaders/gl3/sun.frag")
+        }
+
+        // no special render state set => use the default set of states
+    }
+
+    RenderPass {
+        id: espass
+        filterKeys: [ forwardkey ]
+
+        shaderProgram: ShaderProgram {
+            vertexShaderCode:   loadSource("qrc:/shaders/es2/sun.vert")
+            fragmentShaderCode: loadSource("qrc:/shaders/es2/sun.frag")
+        }
+
+        // no special render state set => use the default set of states
+    }
 
     techniques: [
         Technique {
@@ -74,33 +92,9 @@ Effect {
                 minorVersion: 2
             }
 
-            filterKeys: [ FilterKey { name: "name"; value: "Desktop" } ]
+            filterKeys: [ desktopkey ]
 
-            renderPasses: [
-                RenderPass {
-                    filterKeys: [ FilterKey { name: "pass"; value: "shadowmap" } ]
-
-                    shaderProgram: ShaderProgram {
-                        vertexShaderCode:   loadSource("qrc:/shaders/gl3/shadowmap.vert")
-                        fragmentShaderCode: loadSource("qrc:/shaders/gl3/shadowmap.frag")
-                    }
-
-                    renderStates: [
-                        PolygonOffset { scaleFactor: 4; depthSteps: 4 },
-                        DepthTest { depthFunction: DepthTest.Less }
-                    ]
-                },
-                RenderPass {
-                    filterKeys: [ FilterKey { name : "pass"; value : "forward" } ]
-
-                    shaderProgram: ShaderProgram {
-                        vertexShaderCode:   loadSource("qrc:/shaders/gl3/planetD.vert")
-                        fragmentShaderCode: loadSource("qrc:/shaders/gl3/planetD.frag")
-                    }
-
-                    // no special render state set => use the default set of states
-                }
-            ]
+            renderPasses: [ glpass ]
         },
         Technique {
             graphicsApiFilter {
@@ -108,20 +102,9 @@ Effect {
                 majorVersion: 2
             }
 
-            filterKeys: [ FilterKey { name: "name"; value: "ES2" } ]
+            filterKeys: [ eskey ]
 
-            renderPasses: [
-                RenderPass {
-                    filterKeys: [ FilterKey { name : "pass"; value : "forward" } ]
-
-                    shaderProgram: ShaderProgram {
-                        vertexShaderCode:   loadSource("qrc:/shaders/es2/planetD.vert")
-                        fragmentShaderCode: loadSource("qrc:/shaders/es2/planetD.frag")
-                    }
-
-                    // no special render state set => use the default set of states
-                }
-            ]
+            renderPasses: [ espass ]
         },
         Technique {
             graphicsApiFilter {
@@ -130,20 +113,9 @@ Effect {
                 minorVersion: 0
             }
 
-            filterKeys: [ FilterKey { name: "name"; value: "ES2" } ]
+            filterKeys: [ eskey ]
 
-            renderPasses: [
-                RenderPass {
-                    filterKeys: [ FilterKey { name : "pass"; value : "forward" } ]
-
-                    shaderProgram: ShaderProgram {
-                        vertexShaderCode:   loadSource("qrc:/shaders/es2/planetD.vert")
-                        fragmentShaderCode: loadSource("qrc:/shaders/es2/planetD.frag")
-                    }
-
-                    // no special render state set => use the default set of states
-                }
-            ]
+            renderPasses: [ espass ]
         }
     ]
 }

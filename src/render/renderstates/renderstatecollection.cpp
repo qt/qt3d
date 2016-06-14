@@ -55,11 +55,13 @@ RenderStateCollection::~RenderStateCollection()
 
 void RenderStateCollection::setDirty(bool dirty)
 {
+    QMutexLocker lock(&m_mutex);
     m_dirty = dirty;
 }
 
 QVector<RenderStateNode*> RenderStateCollection::renderStates(RenderStateManager *manager) const
 {
+    QMutexLocker lock(&m_mutex);
     if (m_dirty) {
         m_renderStateNodes.clear();
 
@@ -79,11 +81,13 @@ QVector<RenderStateNode*> RenderStateCollection::renderStates(RenderStateManager
 
 bool RenderStateCollection::hasRenderStates() const
 {
+    QMutexLocker lock(&m_mutex);
     return !m_renderStateIds.empty();
 }
 
 void RenderStateCollection::appendRenderState(Qt3DCore::QNodeId renderStateId)
 {
+    QMutexLocker lock(&m_mutex);
     if (!m_renderStateIds.contains(renderStateId)) {
         m_renderStateIds.append(renderStateId);
         m_dirty = true;
@@ -92,6 +96,7 @@ void RenderStateCollection::appendRenderState(Qt3DCore::QNodeId renderStateId)
 
 void RenderStateCollection::removeRenderState(Qt3DCore::QNodeId renderStateId)
 {
+    QMutexLocker lock(&m_mutex);
     if (m_renderStateIds.removeAll(renderStateId) > 0) {
         m_dirty = true;
     }

@@ -50,16 +50,14 @@ namespace Qt3DInput {
  * \inqmlmodule Qt3D.Input
  * \brief QML frontend for abstract QAbstractAxisInput C++ class.
  * \since 5.5
- * \TODO
  *
  */
 
 /*!
  * \class Qt3DInput::QAbstractAxisInput
  * \inmodule Qt3DInput
- * \brief A QAbstractAxisInput class.
+ * \brief QAbstractActionInput is the base class for all Axis Input.
  * \since 5.5
- * \TODO
  *
  */
 

@@ -49,6 +49,7 @@
 //
 
 #include <Qt3DRender/private/renderstatenode_p.h>
+#include <QtCore/qmutex.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -82,6 +83,7 @@ private:
     mutable QVector<Qt3DCore::QNodeId> m_renderStateIds;
     mutable QVector<RenderStateNode*> m_renderStateNodes;
     mutable bool m_dirty;
+    mutable QMutex m_mutex;
 };
 
 } // namespace Render

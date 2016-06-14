@@ -155,6 +155,7 @@ QVector<QAbstractActionInput *> QAction::inputs() const
     return d->m_inputs;
 }
 
+/*! \internal */
 void QAction::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QAction);

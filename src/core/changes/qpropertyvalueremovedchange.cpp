@@ -52,9 +52,10 @@ QPropertyValueRemovedChangePrivate::QPropertyValueRemovedChangePrivate()
 
 /*!
  * \class Qt3DCore::QPropertyValueRemovedChange
+ * \inherits Qt3DCore::QStaticPropertyValueRemovedChangeBase
  * \inmodule Qt3DCore
+ * \brief Used to notify when a value is added to a property
  *
- * TODO
  */
 
 /*!
@@ -77,7 +78,7 @@ QPropertyValueRemovedChange::~QPropertyValueRemovedChange()
 }
 
 /*!
- * Sets the value Removed to the property to \a value.
+ * Sets the value removed from the property to \a value.
  */
 void QPropertyValueRemovedChange::setRemovedValue(const QVariant &value)
 {
@@ -86,7 +87,7 @@ void QPropertyValueRemovedChange::setRemovedValue(const QVariant &value)
 }
 
 /*!
- * \return the value Removed to the property.
+ * \return the value removed from the property.
  */
 QVariant QPropertyValueRemovedChange::removedValue() const
 {

@@ -58,9 +58,10 @@ namespace Qt3DInput {
 /*!
  * \class Qt3DInput::QAnalogAxisInput
  * \inmodule Qt3DInput
- * \brief A QAnalogAxisInput class.
+ * \brief An axis input controlled by an analog input
  * \since 5.7
- * \TODO
+ * The axis value is controlled like a traditional analog input such as a joystick.
+ *
  *
  */
 

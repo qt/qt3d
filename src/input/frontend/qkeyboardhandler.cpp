@@ -143,7 +143,7 @@ void QKeyboardHandlerPrivate::keyEvent(QKeyEvent *event)
 /*!
     \class Qt3DInput::QKeyboardHandler
     \inmodule Qt3DInput
-    \brief A QKeyboardHandler class.
+    \brief Provides keyboard event notification
     \since 5.5
 */
 
@@ -169,6 +169,7 @@ QKeyboardHandler::~QKeyboardHandler()
 {
 }
 
+/*! \internal */
 void QKeyboardHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QKeyboardHandler);
@@ -267,168 +268,411 @@ Qt3DCore::QNodeCreatedChangeBasePtr QKeyboardHandler::createNodeCreationChange()
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::digit0Pressed(KeyEvent event)
+    This signal is emitted when the 0 key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::digit1Pressed(KeyEvent event)
+    This signal is emitted when the 1 key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::digit2Pressed(KeyEvent event)
+    This signal is emitted when the 2 key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::digit3Pressed(KeyEvent event)
+    This signal is emitted when the 3 key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::digit4Pressed(KeyEvent event)
+    This signal is emitted when the 4 key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::digit5Pressed(KeyEvent event)
+    This signal is emitted when the 5 key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::digit6Pressed(KeyEvent event)
+    This signal is emitted when the 6 key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::digit7Pressed(KeyEvent event)
+    This signal is emitted when the 7 key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::digit8Pressed(KeyEvent event)
+    This signal is emitted when the 8 key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::digit9Pressed(KeyEvent event)
+    This signal is emitted when the 9 key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::leftPressed(KeyEvent event)
+    This signal is emitted when the left key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::rightPressed(KeyEvent event)
+    This signal is emitted when the right key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::upPressed(KeyEvent event)
+    This signal is emitted when the up key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::downPressed(KeyEvent event)
+    This signal is emitted when the down key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::tabPressed(KeyEvent event)
+    This signal is emitted when the tab key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::backtabPressed(KeyEvent event)
+    This signal is emitted when the backtab key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::asteriskPressed(KeyEvent event)
+    This signal is emitted when the * key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::numberSignPressed(KeyEvent event)
-*/
+    This signal is emitted when the number sign key is pressed with the event details being contained within \a event
 
-/*!
-    \qmlsignal Qt3D.Input::KeyboardHandler::backtabPressed(KeyEvent event)
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::escapePressed(KeyEvent event)
+    This signal is emitted when the escape key is pressed with the event details being contained within \a event
+
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::returnPressed(KeyEvent event)
+    This signal is emitted when the return key is pressed with the event details being contained within \a event
+
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::enterPressed(KeyEvent event)
+    This signal is emitted when the enter key is pressed with the event details being contained within \a event
+
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::deletePressed(KeyEvent event)
+    This signal is emitted when the delete key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::spacePressed(KeyEvent event)
+    This signal is emitted when the space key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::backPressed(KeyEvent event)
+    This signal is emitted when the back key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::cancelPressed(KeyEvent event)
+    This signal is emitted when the cancel key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::selectPressed(KeyEvent event)
+    This signal is emitted when the select key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::yesPressed(KeyEvent event)
+    This signal is emitted when the yes key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::noPressed(KeyEvent event)
+    This signal is emitted when the yes key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::context1Pressed(KeyEvent event)
+    This signal is emitted when the context 1  key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::context2Pressed(KeyEvent event)
+    This signal is emitted when the context 2  key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::context3Pressed(KeyEvent event)
+    This signal is emitted when the context 2  key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::context4Pressed(KeyEvent event)
+    This signal is emitted when the context 4  key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::callPressed(KeyEvent event)
+    This signal is emitted when the call  key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::hangupPressed(KeyEvent event)
+    This signal is emitted when the hangup  key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::flipPressed(KeyEvent event)
+    This signal is emitted when the flip key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::menuPressed(KeyEvent event)
+    This signal is emitted when the menu key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::volumeUpPressed(KeyEvent event)
+    This signal is emitted when the volume up key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::volumeDownPressed(KeyEvent event)
+    This signal is emitted when the volume down key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::pressed(KeyEvent event)
+    This signal is emitted when a key is pressed with the event details being contained within \a event
 */
 
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::released(KeyEvent event)
+    This signal is emitted when a key is released with the event details being contained within \a event
 */
 
+/*!
+    \fn QKeyboardHandler::digit0Pressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the 0 key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::digit1Pressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the 1 key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::digit2Pressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the 2 key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::digit3Pressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the 3 key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::digit4Pressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the 4 key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::digit5Pressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the 5 key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::digit6Pressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the 6 key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::digit7Pressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the 7 key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::digit8Pressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the 8 key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::digit9Pressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the 9 key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::leftPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the left key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::rightPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the right key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::upPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the up key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::downPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the down key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::tabPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the tab key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::backtabPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the backtab key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::asteriskPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the * key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::numberSignPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the number sign key is pressed with the event details being contained within \a event
+
+*/
+
+/*!
+    \fn QKeyboardHandler::escapePressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the escape key is pressed with the event details being contained within \a event
+
+*/
+
+/*!
+    \fn QKeyboardHandler::returnPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the return key is pressed with the event details being contained within \a event
+
+*/
+
+/*!
+    \fn QKeyboardHandler::enterPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the enter key is pressed with the event details being contained within \a event
+
+*/
+
+/*!
+    \fn QKeyboardHandler::deletePressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the delete key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::spacePressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the space key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::backPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the back key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::cancelPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the cancel key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::selectPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the select key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::yesPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the yes key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::noPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the yes key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::context1Pressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the context 1  key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::context2Pressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the context 2  key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::context3Pressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the context 2  key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::context4Pressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the context 4  key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::callPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the call  key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::hangupPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the hangup  key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::flipPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the flip key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::menuPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the menu key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::volumeUpPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the volume up key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::volumeDownPressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when the volume down key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::pressed(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when a key is pressed with the event details being contained within \a event
+*/
+
+/*!
+    \fn QKeyboardHandler::released(Qt3DInput::QKeyEvent *event)
+    This signal is emitted when a key is released with the event details being contained within \a event
+*/
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE

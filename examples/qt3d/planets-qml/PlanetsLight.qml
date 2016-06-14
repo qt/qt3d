@@ -63,7 +63,7 @@ Entity {
 
     readonly property Camera lightCamera: lightCamera
     readonly property matrix4x4 lightViewProjection:
-        lightCamera.projectionMatrix.times(lightCamera.matrix)
+        lightCamera.projectionMatrix.times(lightCamera.viewMatrix)
 
     Camera {
         id: lightCamera

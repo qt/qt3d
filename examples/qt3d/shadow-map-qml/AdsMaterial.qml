@@ -60,9 +60,9 @@ Material {
     property real shininess: 150.0
 
     parameters: [
-        Parameter { name: "ambient";   value: Qt.vector3d(root.ambientColor.r, root.ambientColor.g, root.ambientColor.b) },
-        Parameter { name: "diffuse";   value: Qt.vector3d(root.diffuseColor.r, root.diffuseColor.g, root.diffuseColor.b) },
-        Parameter { name: "specular";  value: Qt.vector3d(root.specularColor.r, root.specularColor.g, root.specularColor.b) },
+        Parameter { name: "ka"; value: Qt.vector3d(root.ambientColor.r, root.ambientColor.g, root.ambientColor.b) },
+        Parameter { name: "kd"; value: Qt.vector3d(root.diffuseColor.r, root.diffuseColor.g, root.diffuseColor.b) },
+        Parameter { name: "ks"; value: Qt.vector3d(root.specularColor.r, root.specularColor.g, root.specularColor.b) },
         Parameter { name: "shininess"; value: root.shininess }
     ]
 }

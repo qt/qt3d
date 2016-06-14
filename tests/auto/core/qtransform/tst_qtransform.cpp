@@ -176,6 +176,134 @@ private Q_SLOTS:
         arbiter.events.clear();
     }
 
+    void checkSignalEmittion()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DCore::QTransform> transform(new Qt3DCore::QTransform());
+
+        int rotationXChangedCount = 0;
+        int rotationYChangedCount = 0;
+        int rotationZChangedCount = 0;
+        int rotationChangedCount = 0;
+        int matrixChangedCount = 0;
+        int scaleChangedCount = 0;
+        int scale3DChangedCount = 0;
+        int translationChangedCount = 0;
+
+        QObject::connect(transform.data(), &Qt3DCore::QTransform::rotationChanged, [&] { ++rotationChangedCount; });
+        QObject::connect(transform.data(), &Qt3DCore::QTransform::rotationXChanged, [&] { ++rotationXChangedCount; });
+        QObject::connect(transform.data(), &Qt3DCore::QTransform::rotationYChanged, [&] { ++rotationYChangedCount; });
+        QObject::connect(transform.data(), &Qt3DCore::QTransform::rotationZChanged, [&] { ++rotationZChangedCount; });
+        QObject::connect(transform.data(), &Qt3DCore::QTransform::matrixChanged, [&] { ++matrixChangedCount; });
+        QObject::connect(transform.data(), &Qt3DCore::QTransform::scale3DChanged, [&] { ++scale3DChangedCount; });
+        QObject::connect(transform.data(), &Qt3DCore::QTransform::scaleChanged, [&] { ++scaleChangedCount; });
+        QObject::connect(transform.data(), &Qt3DCore::QTransform::translationChanged, [&] { ++translationChangedCount; });
+
+        // WHEN
+        transform->setRotationX(180.0f);
+
+        // THEN
+        QCOMPARE(rotationXChangedCount, 1);
+        QCOMPARE(rotationYChangedCount, 0);
+        QCOMPARE(rotationZChangedCount, 0);
+        QCOMPARE(rotationChangedCount, 1);
+        QCOMPARE(matrixChangedCount, 1);
+        QCOMPARE(scaleChangedCount, 0);
+        QCOMPARE(scale3DChangedCount, 0);
+        QCOMPARE(translationChangedCount, 0);
+
+        // WHEN
+        transform->setRotationY(180.0f);
+
+        // THEN
+        QCOMPARE(rotationXChangedCount, 1);
+        QCOMPARE(rotationYChangedCount, 1);
+        QCOMPARE(rotationZChangedCount, 0);
+        QCOMPARE(rotationChangedCount, 2);
+        QCOMPARE(matrixChangedCount, 2);
+        QCOMPARE(scaleChangedCount, 0);
+        QCOMPARE(scale3DChangedCount, 0);
+        QCOMPARE(translationChangedCount, 0);
+
+        // WHEN
+        transform->setRotationZ(180.0f);
+
+        // THEN
+        QCOMPARE(rotationXChangedCount, 1);
+        QCOMPARE(rotationYChangedCount, 1);
+        QCOMPARE(rotationZChangedCount, 1);
+        QCOMPARE(rotationChangedCount, 3);
+        QCOMPARE(matrixChangedCount, 3);
+        QCOMPARE(scaleChangedCount, 0);
+        QCOMPARE(scale3DChangedCount, 0);
+        QCOMPARE(translationChangedCount, 0);
+
+        // WHEN
+        transform->setRotation(Qt3DCore::QTransform::fromEulerAngles(15.0f, 25.0f, 84.0f));
+
+        // THEN
+        QCOMPARE(rotationXChangedCount, 2);
+        QCOMPARE(rotationYChangedCount, 2);
+        QCOMPARE(rotationZChangedCount, 2);
+        QCOMPARE(rotationChangedCount, 4);
+        QCOMPARE(matrixChangedCount, 4);
+        QCOMPARE(scaleChangedCount, 0);
+        QCOMPARE(scale3DChangedCount, 0);
+        QCOMPARE(translationChangedCount, 0);
+
+        // WHEN
+        transform->setMatrix(QMatrix4x4());
+
+        // THEN
+        QCOMPARE(rotationXChangedCount, 3);
+        QCOMPARE(rotationYChangedCount, 3);
+        QCOMPARE(rotationZChangedCount, 3);
+        QCOMPARE(rotationChangedCount, 5);
+        QCOMPARE(matrixChangedCount, 5);
+        QCOMPARE(scaleChangedCount, 1);
+        QCOMPARE(scale3DChangedCount, 1);
+        QCOMPARE(translationChangedCount, 1);
+
+        // WHEN
+        transform->setScale(18.0f);
+
+        // THEN
+        QCOMPARE(rotationXChangedCount, 3);
+        QCOMPARE(rotationYChangedCount, 3);
+        QCOMPARE(rotationZChangedCount, 3);
+        QCOMPARE(rotationChangedCount, 5);
+        QCOMPARE(matrixChangedCount, 6);
+        QCOMPARE(scaleChangedCount, 2);
+        QCOMPARE(scale3DChangedCount, 2);
+        QCOMPARE(translationChangedCount, 1);
+
+        // WHEN
+        transform->setScale3D(QVector3D(15.0f, 18.0f, 15.0f));
+
+        // THEN
+        QCOMPARE(rotationXChangedCount, 3);
+        QCOMPARE(rotationYChangedCount, 3);
+        QCOMPARE(rotationZChangedCount, 3);
+        QCOMPARE(rotationChangedCount, 5);
+        QCOMPARE(matrixChangedCount, 7);
+        QCOMPARE(scaleChangedCount, 2);
+        QCOMPARE(scale3DChangedCount, 3);
+        QCOMPARE(translationChangedCount, 1);
+
+        // WHEN
+        transform->setTranslation(QVector3D(350.0f, 383.0f, 454.0f));
+
+        // THEN
+        QCOMPARE(rotationXChangedCount, 3);
+        QCOMPARE(rotationYChangedCount, 3);
+        QCOMPARE(rotationZChangedCount, 3);
+        QCOMPARE(rotationChangedCount, 5);
+        QCOMPARE(matrixChangedCount, 8);
+        QCOMPARE(scaleChangedCount, 2);
+        QCOMPARE(scale3DChangedCount, 3);
+        QCOMPARE(translationChangedCount, 2);
+    }
+
     void checkCompositionDecomposition()
     {
         // GIVEN

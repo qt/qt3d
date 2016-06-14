@@ -51,16 +51,16 @@ namespace Qt3DInput {
  * \inqmlmodule Qt3D.Input
  * \brief QML frontend for QButtonAxisInput C++ class.
  * \since 5.7
- * \TODO
+ * The axis value is controlled by buttons rather than a traditional analog input such as a joystick.
  *
  */
 
 /*!
  * \class Qt3DInput::QButtonAxisInput
  * \inmodule Qt3DInput
- * \brief A QButtonAxisInput class.
+ * \brief An axis input controlled by buttons
  * \since 5.7
- * \TODO
+ * The axis value is controlled by buttons rather than a traditional analog input such as a joystick.
  *
  */
 /*!
@@ -69,8 +69,18 @@ namespace Qt3DInput {
 
 /*!
     \qmlproperty list<var> ButtonAxisInput::buttons
+    Specifies the buttons which control the axis
 */
 
+/*!
+    \qmlproperty real ButtonAxisInput::acceleration
+    Specifies the rate at which the axis value changes when a button is held
+*/
+
+/*!
+    \qmlproperty list<var> ButtonAxisInput::deceleration
+    Specifies the rate at which the axis value returns to normal when a button is released
+*/
 
 /*!
     Constructs a new QButtonAxisInput instance with \a parent.
@@ -105,6 +115,7 @@ float QButtonAxisInput::scale() const
 
 /*!
     \property QButtonAxisInput::buttons
+    Specifies the buttons which control the axis
  */
 void QButtonAxisInput::setButtons(const QVector<int> &buttons)
 {
@@ -121,6 +132,10 @@ QVector<int> QButtonAxisInput::buttons() const
     return d->m_buttons;
 }
 
+/*!
+    \property QButtonAxisInput::acceleration
+    Specifies the rate at which the axis value changes when a button is held
+ */
 float QButtonAxisInput::acceleration() const
 {
     Q_D(const QButtonAxisInput);
@@ -136,6 +151,10 @@ void QButtonAxisInput::setAcceleration(float acceleration)
     }
 }
 
+/*!
+    \property QButtonAxisInput::deceleration
+    Specifies the rate at which the axis value returns to normal when a button is released
+ */
 float QButtonAxisInput::deceleration() const
 {
     Q_D(const QButtonAxisInput);

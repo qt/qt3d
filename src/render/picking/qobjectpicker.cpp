@@ -59,6 +59,11 @@ namespace Qt3DRender {
     emitted when the bounding volume defined by the pickAttribute property intersects
     with a ray.
 
+    Pick queries are performed on mouse press and mouse release.
+    If drag is enabled, queries also happen on each mouse move while any button is pressed.
+    If hover is enabled, queries happen on every mouse move even if no button is pressed.
+    \sa QPickingSettings
+
     \note Instances of this component shouldn't be shared, not respecting that
     condition will most likely result in undefined behavior.
 
@@ -66,27 +71,84 @@ namespace Qt3DRender {
 */
 
 /*!
+ * \qmltype ObjectPicker
+ * \instantiates Qt3DRender::QObjectPicker
+ * \inqmlmodule Qt3D.Render
+ * \brief The ObjectPicker class instantiates a component that can
+    be used to interact with an Entity by a process known as picking.
+ */
+
+/*!
     \qmlsignal Qt3D.Render::ObjectPicker::pressed()
+  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
+    with a ray on a mouse press.
 */
 
 /*!
     \qmlsignal Qt3D.Render::ObjectPicker::released()
+  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
+    with a ray on a mouse release.
 */
 
 /*!
     \qmlsignal Qt3D.Render::ObjectPicker::clicked()
+  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
+    with a ray on a mouse click.
 */
 
 /*!
     \qmlsignal Qt3D.Render::ObjectPicker::moved()
+  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
+    with a ray on a mouse move with a button pressed.
 */
 
 /*!
     \qmlsignal Qt3D.Render::ObjectPicker::entered()
+  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
+    with a ray on the mouse entering the volume.
 */
 
 /*!
     \qmlsignal Qt3D.Render::ObjectPicker::exited()
+  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
+    with a ray on the ray exiting the volume.
+*/
+
+/*!
+  \fn QObjectPicker::clicked(Qt3DRender::QPickEvent *pick)
+  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
+    with a ray on a mouse click the QPickEvent \a pick contains details of the event.
+*/
+
+/*!
+  \fn QObjectPicker::entered()
+  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
+    with a ray on the mouse entering the volume.
+*/
+
+/*!
+  \fn QObjectPicker::exited()
+  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
+    with a ray on the ray exiting the volume.
+*/
+
+/*!
+  \fn QObjectPicker::moved(Qt3DRender::QPickEvent *pick)
+  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
+    with a ray on a mouse move with a button pressed the QPickEvent \a pick contains details of the event.
+
+*/
+
+/*!
+  \fn QObjectPicker::pressed(Qt3DRender::QPickEvent *pick)
+  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
+    with a ray on a mouse press the QPickEvent \a pick contains details of the event.
+*/
+
+/*!
+  \fn QObjectPicker::released(Qt3DRender::QPickEvent *pick)
+  This signal is emitted when the bounding volume defined by the pickAttribute property intersects
+    with a ray on a mouse release the QPickEvent \a pick contains details of the event.
 */
 
 QObjectPicker::QObjectPicker(Qt3DCore::QNode *parent)
@@ -99,6 +161,9 @@ QObjectPicker::~QObjectPicker()
 {
 }
 
+/*!
+ * Sets the hoverEnabled Property to \a hoverEnabled
+ */
 void QObjectPicker::setHoverEnabled(bool hoverEnabled)
 {
     Q_D(QObjectPicker);
@@ -110,13 +175,24 @@ void QObjectPicker::setHoverEnabled(bool hoverEnabled)
 
 /*!
     \qmlproperty bool Qt3D.Render::ObjectPicker::hoverEnabled
+    Specifies if hover is enabled
 */
+/*!
+  \property Qt3DRender::QObjectPicker::hoverEnabled
+    Specifies if hover is enabled
+ */
+/*!
+ * \return true if hover enabled
+ */
 bool QObjectPicker::isHoverEnabled() const
 {
     Q_D(const QObjectPicker);
     return d->m_hoverEnabled;
 }
 
+/*!
+ * Sets the dragEnabled Property to \a dragEnabled
+ */
 void QObjectPicker::setDragEnabled(bool dragEnabled)
 {
     Q_D(QObjectPicker);
@@ -129,6 +205,13 @@ void QObjectPicker::setDragEnabled(bool dragEnabled)
 /*!
     \qmlproperty bool Qt3D.Render::ObjectPicker::dragEnabled
 */
+/*!
+  \property Qt3DRender::QObjectPicker::dragEnabled
+    Specifies if drag is enabled
+ */
+/*!
+ * \return true if dragging is enabled
+ */
 bool QObjectPicker::isDragEnabled() const
 {
     Q_D(const QObjectPicker);
@@ -137,7 +220,15 @@ bool QObjectPicker::isDragEnabled() const
 
 /*!
     \qmlproperty bool Qt3D.Render::ObjectPicker::containsMouse
+    Specifies if the object picker currently contains the mouse
 */
+/*!
+  \property Qt3DRender::QObjectPicker::containsMouse
+    Specifies if the object picker currently contains the mouse
+ */
+/*!
+ * \return true if the object picker currently contains the mouse
+ */
 bool QObjectPicker::containsMouse() const
 {
     Q_D(const QObjectPicker);
@@ -146,13 +237,19 @@ bool QObjectPicker::containsMouse() const
 
 /*!
     \qmlproperty bool Qt3D.Render::ObjectPicker::pressed
+    Specifies if the object picker is currently pressed
 */
+/*!
+  \property Qt3DRender::QObjectPicker::pressed
+    Specifies if the object picker is currently pressed
+ */
 bool QObjectPicker::isPressed() const
 {
     Q_D(const QObjectPicker);
     return d->m_pressed;
 }
 
+/*! \internal */
 void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QObjectPicker);

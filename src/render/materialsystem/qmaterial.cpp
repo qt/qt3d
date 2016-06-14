@@ -154,7 +154,7 @@ QEffect *QMaterial::effect() const
 }
 
 /*!
- * Add a parameter to the Material.
+ * Add \a parameter to the Materials parameter.
  */
 void QMaterial::addParameter(QParameter *parameter)
 {
@@ -182,7 +182,7 @@ void QMaterial::addParameter(QParameter *parameter)
 }
 
 /*!
- * Remove a parameter from the Material.
+ * Remove \a parameter from the Material parameters.
  */
 void QMaterial::removeParameter(QParameter *parameter)
 {

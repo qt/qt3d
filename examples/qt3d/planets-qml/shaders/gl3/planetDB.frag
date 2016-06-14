@@ -50,10 +50,6 @@ uniform float opacity;      // Alpha channel
 uniform sampler2D diffuseTexture;
 uniform sampler2D normalTexture;
 
-uniform sampler2DShadow shadowMapTexture;
-
-in vec4 positionInLightSpace;
-
 in vec3 lightDir;
 in vec3 viewDir;
 in vec2 texCoord;
@@ -88,8 +84,6 @@ void main()
     vec2 flipYTexCoord = texCoord;
     flipYTexCoord.y = 1.0 - texCoord.y;
 
-    float shadowMapSample = textureProj(shadowMapTexture, positionInLightSpace);
-
     // Sample the textures at the interpolated texCoords
     vec4 normal = 2.0 * texture(normalTexture, flipYTexCoord) - vec4(1.0);
 
@@ -97,10 +91,8 @@ void main()
 
     // Calculate the lighting model, keeping the specular component separate
     vec3 ambientAndDiff, spec;
-    if (shadowMapSample > 0) {
-        dbModel(normalize(normal.xyz), flipYTexCoord, ambientAndDiff, spec);
-        result = ambientAndDiff + spec;
-    }
+    dbModel(normalize(normal.xyz), flipYTexCoord, ambientAndDiff, spec);
+    result = ambientAndDiff + spec;
 
     // Combine spec with ambient+diffuse for final fragment color
     fragColor = vec4(result, opacity);

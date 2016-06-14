@@ -87,6 +87,8 @@ Cpp.ignoredirectives += Q_DECLARE_LOGGING_CATEGORY
 manifestmeta.highlighted.names = "Qt3D/Qt 3D: Audio Visualizer Example" \
                                  "Qt3D/Qt 3D: Planets QML Example"
 
+manifestmeta.thumbnail.names += "Qt3D/Qt 3D: Deferred Renderer C++ Example"
+
 navigation.landingpage = "Qt 3D"
 navigation.cppclassespage = "Qt 3D C++ Classes"
 navigation.qmltypespage = "Qt 3D QML Types"

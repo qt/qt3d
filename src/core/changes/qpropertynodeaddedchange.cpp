@@ -53,9 +53,10 @@ QPropertyNodeAddedChangePrivate::QPropertyNodeAddedChangePrivate()
 
 /*!
  * \class Qt3DCore::QPropertyNodeAddedChange
+ * \inherits Qt3DCore::QStaticPropertyValueAddedChangeBase
  * \inmodule Qt3DCore
+ * \brief Used to notify when a node is added to a property
  *
- * TODO
  */
 
 /*!
@@ -66,8 +67,7 @@ QPropertyNodeAddedChangePrivate::QPropertyNodeAddedChangePrivate()
  */
 
 /*!
- * Constructs a new QPropertyNodeAddedChange with \a subjectId, \a addedNodeId, and
- * \a priority.
+ * Constructs a new QPropertyNodeAddedChange with \a subjectId, \a node.
  */
 QPropertyNodeAddedChange::QPropertyNodeAddedChange(QNodeId subjectId, QNode *node)
     : QStaticPropertyValueAddedChangeBase(*new QPropertyNodeAddedChangePrivate, subjectId)

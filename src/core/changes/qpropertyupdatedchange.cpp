@@ -44,10 +44,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-/*!
-    \class Qt3DCore::QPropertyUpdatedChange
-    \inmodule Qt3DCore
-*/
 QPropertyUpdatedChangePrivate::QPropertyUpdatedChangePrivate()
     : QStaticPropertyUpdatedChangeBasePrivate()
 {
@@ -59,9 +55,10 @@ QPropertyUpdatedChangePrivate::~QPropertyUpdatedChangePrivate()
 
 /*!
  * \class Qt3DCore::QPropertyUpdatedChange
+ * \inherits Qt3DCore::QStaticPropertyUpdatedChangeBase
  * \inmodule Qt3DCore
+ * \brief The QPropertyUpdatedChange class is used to notify when a property value is updated
  *
- * TODO
  */
 
 /*!
@@ -72,7 +69,7 @@ QPropertyUpdatedChangePrivate::~QPropertyUpdatedChangePrivate()
  */
 
 /*!
- * Constructs a new QPropertyUpdatedChange with \a subjectId and \a priority.
+ * Constructs a new QPropertyUpdatedChange with \a subjectId.
  */
 QPropertyUpdatedChange::QPropertyUpdatedChange(QNodeId subjectId)
     : QStaticPropertyUpdatedChangeBase(*new QPropertyUpdatedChangePrivate, subjectId)

@@ -105,7 +105,7 @@ QRenderPass::QRenderPass(QRenderPassPrivate &dd, QNode *parent)
     Specifies the shader program to be used for this render pass
  */
 /*!
- * Sets the pass's \a shaderProgram.
+ * Sets the pass' \a shaderProgram.
  */
 void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
 {
@@ -256,7 +256,7 @@ QVector<QRenderState *> QRenderPass::renderStates() const
 }
 
 /*!
- * Add a parameter to the Render Pass.
+ * Add \a parameter to the render pass' parameters.
  */
 void QRenderPass::addParameter(QParameter *parameter)
 {
@@ -284,7 +284,7 @@ void QRenderPass::addParameter(QParameter *parameter)
 }
 
 /*!
- * Remove a parameter from the  Render Pass.
+ * Remove \a parameter from the  render pass' parameters.
  */
 void QRenderPass::removeParameter(QParameter *parameter)
 {
@@ -301,7 +301,7 @@ void QRenderPass::removeParameter(QParameter *parameter)
 }
 
 /*!
- * Returns a vector of the render pass's current parameters
+ * Returns a vector of the render pass' current parameters
  */
 QVector<QParameter *> QRenderPass::parameters() const
 {

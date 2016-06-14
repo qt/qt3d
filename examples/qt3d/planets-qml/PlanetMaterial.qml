@@ -59,9 +59,9 @@ Material {
     property color diffuseColor: Qt.rgba(0.7, 0.7, 0.7, 1.0)
     property color specularColor: Qt.rgba(0.5, 0.5, 0.5, 1.0)
     property real shininess: 150.0
-    property alias diffuseMap: diffuseTextureImage.source
-    property alias specularMap: specularTextureImage.source
-    property alias normalMap: normalTextureImage.source
+    property string diffuseMap
+    property string specularMap
+    property string normalMap
     property real textureScale: 1.0
     property real opacity: 1.0
 
@@ -94,7 +94,10 @@ Material {
                 }
                 generateMipMaps: true
                 maximumAnisotropy: 16.0
-                TextureImage { id: diffuseTextureImage }
+                TextureImage {
+                    id: diffuseTextureImage
+                    source: diffuseMap
+                }
             }
         },
         Parameter {
@@ -109,7 +112,11 @@ Material {
                 }
                 generateMipMaps: true
                 maximumAnisotropy: 16.0
-                TextureImage { id: specularTextureImage }
+                TextureImage {
+                    id: specularTextureImage
+                    // Get rid of runtime warnings. It's safe, as the texture just isn't used
+                    source: specularMap !== "" ? specularMap : "qrc:/images/uranusmap.jpg"
+                }
             }
         },
         Parameter {
@@ -123,7 +130,11 @@ Material {
                     y: WrapMode.Repeat
                 }
                 maximumAnisotropy: 16.0
-                TextureImage { id: normalTextureImage }
+                TextureImage {
+                    id: normalTextureImage
+                    // Get rid of runtime warnings. It's safe, as the texture just isn't used
+                    source: normalMap !== "" ? normalMap : "qrc:/images/uranusmap.jpg"
+                }
             }
         },
         Parameter {

@@ -41,6 +41,24 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+/*!
+ * \class Qt3DCore::QNodeDestroyedChange
+ * \inherits Qt3DCore::QSceneChange
+ * \since 5.7
+ * \inmodule Qt3DCore
+ * \brief Used to notify when a node is destroyed.
+ */
+
+/*!
+ * \typedef Qt3DCore::QNodeDestroyedChangePtr
+ * \relates Qt3DCore::QNodeDestroyedChange
+ *
+ * A shared pointer for QNodeDestroyedChange.
+ */
+
+/*!
+ * Constructs a new QNodeDestroyedChange with \a node and its \a subtreeIdsAndTypes.
+ */
 QNodeDestroyedChange::QNodeDestroyedChange(const QNode *node, const QVector<QNodeIdTypePair> &subtreeIdsAndTypes)
     : QSceneChange(*new QNodeDestroyedChangePrivate, NodeDeleted, node->id())
 {
@@ -52,6 +70,9 @@ QNodeDestroyedChange::~QNodeDestroyedChange()
 {
 }
 
+/*!
+   \return a vector of subtree node id type pairs
+ */
 QVector<QNodeIdTypePair> QNodeDestroyedChange::subtreeIdsAndTypes() const
 {
     Q_D(const QNodeDestroyedChange);

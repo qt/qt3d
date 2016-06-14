@@ -62,6 +62,20 @@ namespace Qt3DRender {
     \qmlabstract
 */
 
+/*!
+    \enum QClearBuffers::BufferType
+
+    This enum type describes types of buffer to be cleared.
+    \value None
+    \value ColorBuffer
+    \value DepthBuffer
+    \value StencilBuffer
+    \value DepthStencilBuffer
+    \value ColorDepthBuffer
+    \value ColorDepthStencilBuffer
+    \value AllBuffers
+*/
+
 QClearBuffersPrivate::QClearBuffersPrivate()
     : QFrameGraphNodePrivate()
     , m_buffersType(QClearBuffers::None)

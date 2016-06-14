@@ -55,6 +55,24 @@ QComponentRemovedChangePrivate::QComponentRemovedChangePrivate(const QEntity *en
 {
 }
 
+/*!
+ * \class Qt3DCore::QComponentRemovedChange
+ * \inherits Qt3DCore::QSceneChange
+ * \inmodule Qt3DCore
+ * \brief The QComponentRemovedChange class is used to notify when a component is removed from an entity
+ *
+ */
+
+/*!
+ * \typedef Qt3DCore::QComponentRemovedChangePtr
+ * \relates Qt3DCore::QComponentRemovedChange
+ *
+ * A shared pointer for QComponentRemovedChange.
+ */
+
+/*!
+ * Constructs a new QComponentRemovedChange with \a entity and  \a component.
+ */
 QComponentRemovedChange::QComponentRemovedChange(const QEntity *entity,
                                                  const QComponent *component)
     : QSceneChange(*new QComponentRemovedChangePrivate(entity, component),
@@ -66,18 +84,27 @@ QComponentRemovedChange::~QComponentRemovedChange()
 {
 }
 
+/*!
+  \return the id of the entity the component was removed from.
+ */
 QNodeId QComponentRemovedChange::entityId() const Q_DECL_NOTHROW
 {
     Q_D(const QComponentRemovedChange);
     return d->m_entityId;
 }
 
+/*!
+  \return the id of the component removed.
+ */
 QNodeId QComponentRemovedChange::componentId() const Q_DECL_NOTHROW
 {
     Q_D(const QComponentRemovedChange);
     return d->m_componentId;
 }
 
+/*!
+ * \return the metaobject.
+ */
 const QMetaObject *QComponentRemovedChange::componentMetaObject() const Q_DECL_NOTHROW
 {
     Q_D(const QComponentRemovedChange);

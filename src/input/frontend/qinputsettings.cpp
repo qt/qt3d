@@ -48,10 +48,10 @@ namespace Qt3DInput {
 /*!
     \class Qt3DInput::QInputSettings
     \inmodule Qt3DInput
-    \inherits Qt3DCore::QComponent
-    \brief A QInputSettings class.
+    \inherits Qt3DCore::QComponant
+    \brief QInputSettings stores settings for the specified eventSource.
+
     \since 5.7
-    \TODO
 */
 
 /*!
@@ -60,13 +60,10 @@ namespace Qt3DInput {
     \inherits Component3D
     \instantiates Qt3DInput::QInputSettings
     \brief QML frontend for the Qt3DInput::QInputSettings C++ class.
-    \since 5.7
-    \TODO
-*/
 
-/*!
-    \qmlproperty Object Qt3D.Input::InputSettings::eventSource
- */
+    Stores settings the specified eventSource
+    \since 5.7
+*/
 
 QInputSettingsPrivate::QInputSettingsPrivate()
     : Qt3DCore::QComponentPrivate()
@@ -92,12 +89,39 @@ QInputSettings::~QInputSettings()
 
     Holds the source for the QInputSettings.
  */
+/*!
+  \fn QInputSettings::eventSourceChanged(QObject *)
+
+  This signal is emitted when the even source associated with the input setting is changed.
+*/
+
+/*!
+  \qmlproperty QObject Qt3D.Input::InputSettings::eventSource
+
+  The current event source of the InputSettings object
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::InputSettings::ventSourceChanged(QObject *)
+
+    This signal is emitted when the even source associated with the input setting is changed.
+
+    The corresponding handler is \c onEventSourceChanged
+*/
+
+/*!
+ * \brief QInputSettings::eventSource
+ * \return the current event source of the QInputSettings instance.
+ */
 QObject *QInputSettings::eventSource() const
 {
     Q_D(const QInputSettings);
     return d->m_eventSource;
 }
 
+/*!
+   Set the current event source of the QInputSettings instance to \a eventSource.
+ */
 void QInputSettings::setEventSource(QObject *eventSource)
 {
     Q_D(QInputSettings);
