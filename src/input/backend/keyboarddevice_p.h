@@ -75,9 +75,6 @@ public:
     void requestFocusForInput(Qt3DCore::QNodeId inputId);
     void setInputHandler(InputHandler *handler);
 
-    void addKeyboardInput(Qt3DCore::QNodeId input);
-    void removeKeyboardInput(Qt3DCore::QNodeId input);
-
     void setCurrentFocusItem(Qt3DCore::QNodeId input);
 
     float axisValue(int axisIdentifier) const Q_DECL_OVERRIDE;
@@ -87,8 +84,6 @@ public:
 
     inline Qt3DCore::QNodeId currentFocusItem() const { return m_currentFocusItem; }
     inline Qt3DCore::QNodeId lastKeyboardInputRequester() const { return m_lastRequester; }
-    inline QVector<Qt3DCore::QNodeId> keyboardInputs() const { return m_keyboardInputs; }
-    inline QVector<HKeyboardHandler> keyboardInputsHandles() const { return m_keyboardInputHandles; }
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) Q_DECL_OVERRIDE;
@@ -98,7 +93,6 @@ private:
 
     InputHandler *m_inputHandler;
     QVector<Qt3DCore::QNodeId> m_keyboardInputs;
-    QVector<HKeyboardHandler> m_keyboardInputHandles;
     Qt3DCore::QNodeId m_lastRequester;
     Qt3DCore::QNodeId m_currentFocusItem;
 

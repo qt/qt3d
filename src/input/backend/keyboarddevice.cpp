@@ -389,20 +389,6 @@ void KeyboardDevice::setInputHandler(InputHandler *handler)
     m_inputHandler = handler;
 }
 
-void KeyboardDevice::addKeyboardInput(Qt3DCore::QNodeId input)
-{
-    if (!m_keyboardInputs.contains(input)) {
-        m_keyboardInputs.append(input);
-        m_keyboardInputHandles.append(m_inputHandler->keyboardInputManager()->lookupHandle(input));
-    }
-}
-
-void KeyboardDevice::removeKeyboardInput(Qt3DCore::QNodeId input)
-{
-    m_keyboardInputs.removeAll(input);
-    m_keyboardInputHandles.removeAll(m_inputHandler->keyboardInputManager()->lookupHandle(input));
-}
-
 void KeyboardDevice::setCurrentFocusItem(Qt3DCore::QNodeId input)
 {
     m_currentFocusItem = input;
