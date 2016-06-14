@@ -244,7 +244,22 @@ void QMouseHandler::setSourceDevice(QMouseDevice *mouseDevice)
 {
     Q_D(QMouseHandler);
     if (d->m_mouseDevice != mouseDevice) {
+
+        if (d->m_mouseDevice)
+            d->unregisterDestructionHelper(d->m_mouseDevice);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, it gets destroyed as well
+        if (mouseDevice && !mouseDevice->parent())
+            mouseDevice->setParent(this);
         d->m_mouseDevice = mouseDevice;
+
+        // Ensures proper bookkeeping
+        if (d->m_mouseDevice)
+            d->registerDestructionHelper(d->m_mouseDevice, &QMouseHandler::setSourceDevice, d->m_mouseDevice);
+
         emit sourceDeviceChanged(mouseDevice);
     }
 }
