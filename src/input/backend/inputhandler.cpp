@@ -251,13 +251,20 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::mouseJobs()
         controller->updateMouseEvents(mouseEvents);
         // Event dispacthing job
         if (!mouseEvents.isEmpty() || !wheelEvents.empty()) {
-            const QVector<Qt3DCore::QNodeId> mouseInputs = controller->mouseInputs();
-            for (QNodeId input : mouseInputs) {
-                MouseEventDispatcherJob *job = new MouseEventDispatcherJob(input,
-                                                                           mouseEvents,
-                                                                           wheelEvents);
-                job->setInputHandler(this);
-                jobs.append(QAspectJobPtr(job));
+            // Send the events to the mouse handlers that have for sourceDevice controller
+            const QVector<HMouseHandler> activeMouseHandlers = m_mouseInputManager->activeHandles();
+            for (HMouseHandler mouseHandlerHandle : activeMouseHandlers) {
+
+                MouseHandler *mouseHandler = m_mouseInputManager->data(mouseHandlerHandle);
+                Q_ASSERT(mouseHandler);
+
+                if (mouseHandler->mouseDevice() == controller->peerId()) {
+                    MouseEventDispatcherJob *job = new MouseEventDispatcherJob(mouseHandler->peerId(),
+                                                                               mouseEvents,
+                                                                               wheelEvents);
+                    job->setInputHandler(this);
+                    jobs.append(QAspectJobPtr(job));
+                }
             }
         }
     }

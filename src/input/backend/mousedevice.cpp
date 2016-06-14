@@ -76,17 +76,6 @@ void MouseDevice::setInputHandler(InputHandler *handler)
     m_inputHandler = handler;
 }
 
-void MouseDevice::addMouseInput(Qt3DCore::QNodeId input)
-{
-    if (!m_mouseInputs.contains(input))
-        m_mouseInputs.append(input);
-}
-
-void MouseDevice::removeMouseInput(Qt3DCore::QNodeId input)
-{
-    m_mouseInputs.removeOne(input);
-}
-
 float MouseDevice::axisValue(int axisIdentifier) const
 {
     switch (axisIdentifier) {
@@ -114,11 +103,6 @@ bool MouseDevice::isButtonPressed(int buttonIdentifier) const
         break;
     }
     return false;
-}
-
-QVector<Qt3DCore::QNodeId> MouseDevice::mouseInputs() const
-{
-    return m_mouseInputs;
 }
 
 void MouseDevice::updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events)

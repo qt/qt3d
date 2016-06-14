@@ -72,13 +72,8 @@ public:
 
     void setInputHandler(InputHandler *handler);
 
-    void addMouseInput(Qt3DCore::QNodeId input);
-    void removeMouseInput(Qt3DCore::QNodeId input);
-
     float axisValue(int axisIdentifier) const Q_DECL_OVERRIDE;
     bool isButtonPressed(int buttonIdentifier) const Q_DECL_OVERRIDE;
-
-    QVector<Qt3DCore::QNodeId> mouseInputs() const;
 
     void updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events);
 
@@ -88,7 +83,6 @@ protected:
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
-    QVector<Qt3DCore::QNodeId> m_mouseInputs;
     InputHandler *m_inputHandler;
 
     struct MouseState {

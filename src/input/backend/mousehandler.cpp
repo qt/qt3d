@@ -115,17 +115,7 @@ void MouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
 void MouseHandler::setDevice(Qt3DCore::QNodeId device)
 {
-    if (!m_mouseDevice.isNull()) {
-        MouseDevice *device = m_inputHandler->mouseDeviceManager()->lookupResource(m_mouseDevice);
-        if (device)
-            device->removeMouseInput(peerId());
-    }
     m_mouseDevice = device;
-    if (!m_mouseDevice.isNull()) {
-        MouseDevice *device = m_inputHandler->mouseDeviceManager()->lookupResource(m_mouseDevice);
-        if (device)
-            device->addMouseInput(peerId());
-    }
 }
 
 MouseHandlerFunctor::MouseHandlerFunctor(InputHandler *handler)
