@@ -39,9 +39,12 @@
 #include "commandexecuter_p.h"
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DCore/private/qabstractaspect_p.h>
+#include <Qt3DCore/qbackendnode.h>
 #include <Qt3DRender/private/graphicscontext_p.h>
 #include <Qt3DRender/private/renderview_p.h>
 #include <Qt3DRender/private/rendercommand_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
+#include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -73,6 +76,18 @@ QJsonObject sizeToJson(const QSize &s)
     obj.insert(QLatin1String("width"), s.width());
     obj.insert(QLatin1String("height"), s.height());
 
+    return obj;
+}
+
+template<typename Handle, typename Manager>
+QJsonObject backendNodeToJSon(Handle handle, Manager *manager)
+{
+    Qt3DCore::QBackendNode *node = manager->data(handle);
+    QJsonObject obj;
+    Qt3DCore::QNodeId id;
+    if (node != nullptr)
+        id = node->peerId();
+    obj.insert(QLatin1String("id"), qint64(id.id()));
     return obj;
 }
 
@@ -129,11 +144,12 @@ void CommandExecuter::performAsynchronousCommandExecution(const QVector<Render::
                 QJsonArray renderCommandsArray;
                 for (Render::RenderCommand *c : v->commands()) {
                     QJsonObject commandObj;
-                    commandObj.insert(QLatin1String("shader"), double(c->m_shader));
+                    Render::NodeManagers *nodeManagers = m_renderer->nodeManagers();
+                    commandObj.insert(QLatin1String("shader"), backendNodeToJSon(c->m_shader, nodeManagers->shaderManager()));
                     commandObj.insert(QLatin1String("vao"),  double(c->m_vao.handle()));
                     commandObj.insert(QLatin1String("instanceCount"), c->m_instancesCount);
-                    commandObj.insert(QLatin1String("geometry"),  double(c->m_geometry.handle()));
-                    commandObj.insert(QLatin1String("geometryRenderer"),  double(c->m_geometryRenderer.handle()));
+                    commandObj.insert(QLatin1String("geometry"),  backendNodeToJSon(c->m_geometry, nodeManagers->geometryManager()));
+                    commandObj.insert(QLatin1String("geometryRenderer"),  backendNodeToJSon(c->m_geometryRenderer, nodeManagers->geometryRendererManager()));
 
                     renderCommandsArray.push_back(commandObj);
                 }
