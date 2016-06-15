@@ -97,10 +97,9 @@ Scene3D {
             rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 45)
         }
 
-        Material {
+        PhongMaterial {
             id: material
-            effect : Effect {
-            }
+            diffuse: "red"
         }
 
         Entity {
