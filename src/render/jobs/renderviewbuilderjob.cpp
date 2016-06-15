@@ -48,9 +48,11 @@ namespace Qt3DRender {
 
 namespace Render {
 
+#ifdef QT3D_JOBS_RUN_STATS
 namespace {
 int renderViewInstanceCounter = 0;
 } // anonymous
+#endif
 
 RenderViewBuilderJob::RenderViewBuilderJob()
     : Qt3DCore::QAspectJob(),

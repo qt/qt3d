@@ -52,7 +52,9 @@ namespace Render {
 
 namespace {
 
+#ifdef QT3D_JOBS_RUN_STATS
 int materialParameterGathererCounter = 0;
+#endif
 
 const int likelyNumberOfParameters = 24;
 
