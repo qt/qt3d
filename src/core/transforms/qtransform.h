@@ -108,7 +108,7 @@ Q_SIGNALS:
     void scale3DChanged(const QVector3D &scale);
     void rotationChanged(const QQuaternion &rotation);
     void translationChanged(const QVector3D &translation);
-    void matrixChanged(const QMatrix4x4 &matrix);
+    void matrixChanged();
     void rotationXChanged(float rotationX);
     void rotationYChanged(float rotationY);
     void rotationZChanged(float rotationZ);

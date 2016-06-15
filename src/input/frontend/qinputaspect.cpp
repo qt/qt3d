@@ -106,8 +106,12 @@ QInputAspectPrivate::QInputAspectPrivate()
     \class Qt3DInput::QInputAspect
     \inherits Qt3DCore::QAbstractAspect
     \inmodule Qt3DInput
-    \brief A QInputAspect class.
+    \brief Responsible for creating physical devices and handling associated jobs.
     \since 5.5
+    \brief Handles mapping between front and backend nodes
+
+    QInputAspect is responsible for creating physical devices.
+    It is also the object responsible establishing the jobs to run at a particular time from the current input setup.
 */
 
 /*!
@@ -156,6 +160,9 @@ QInputAspect::~QInputAspect()
 {
 }
 
+/*!
+   Create each of the detected input device integrations through the Integration Factory
+ */
 void QInputAspectPrivate::loadInputDevicePlugins()
 {
     const QStringList keys = QInputDeviceIntegrationFactory::keys();
@@ -172,12 +179,12 @@ void QInputAspectPrivate::loadInputDevicePlugins()
     }
 }
 
-
 /*!
-    Creates a physical device with \a name.
-
-    \note The caller is responsible for ownership.
- */
+    Create a physical device identified by \a name using the input device integrations present
+    returns a Q_NULLPTR if it is not found.
+    \note caller is responsible for ownership
+*/
+// Note: caller is responsible for ownership
 QAbstractPhysicalDevice *QInputAspect::createPhysicalDevice(const QString &name)
 {
     Q_D(QInputAspect);

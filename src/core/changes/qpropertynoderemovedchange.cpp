@@ -53,10 +53,12 @@ QPropertyNodeRemovedChangePrivate::QPropertyNodeRemovedChangePrivate()
 
 /*!
  * \class Qt3DCore::QPropertyNodeRemovedChange
+ * \inherits Qt3DCore::QStaticPropertyValueRemovedChangeBase
  * \inmodule Qt3DCore
+ * \brief The QPropertyNodeRemovedChange class is used to notify when a node is removed from a property
  *
- * TODO
  */
+
 
 /*!
  * \typedef Qt3DCore::QPropertyNodeRemovedChangePtr
@@ -66,8 +68,7 @@ QPropertyNodeRemovedChangePrivate::QPropertyNodeRemovedChangePrivate()
  */
 
 /*!
- * Constructs a new QPropertyNodeRemovedChange with \a subjectId, \a node, and
- * \a priority.
+ * Constructs a new QPropertyNodeRemovedChange with \a subjectId, \a node.
  */
 QPropertyNodeRemovedChange::QPropertyNodeRemovedChange(QNodeId subjectId, QNode *node)
     : QStaticPropertyValueRemovedChangeBase(*new QPropertyNodeRemovedChangePrivate, subjectId)

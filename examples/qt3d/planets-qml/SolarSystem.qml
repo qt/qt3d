@@ -151,29 +151,45 @@ Entity {
         InputSettings {}
     ]
 
-    CloudEffectDS {
-        id: effectDS
-        light: light
-    }
-
-    PlanetEffectD {
+    PlanetEffect {
         id: effectD
         light: light
     }
 
-    PlanetShadowEffectD {
-        id: shadowMapEffectD
-        shadowTexture: framegraph.shadowTexture
-        light: light
-    }
-
-    PlanetEffectDB {
+    PlanetEffect {
         id: effectDB
         light: light
+        vertexES: "qrc:/shaders/es2/planetDB.vert"
+        fragmentES: "qrc:/shaders/es2/planetDB.frag"
+        vertexGL: "qrc:/shaders/gl3/planetDB.vert"
+        fragmentGL: "qrc:/shaders/gl3/planetDB.frag"
     }
 
-    PlanetEffectDSB {
+    PlanetEffect {
         id: effectDSB
+        light: light
+        vertexES: "qrc:/shaders/es2/planetDB.vert"
+        fragmentES: "qrc:/shaders/es2/planetDSB.frag"
+        vertexGL: "qrc:/shaders/gl3/planetDB.vert"
+        fragmentGL: "qrc:/shaders/gl3/planetDSB.frag"
+    }
+
+    PlanetEffect {
+        id: cloudEffect
+        light: light
+        vertexES: "qrc:/shaders/es2/planetD.vert"
+        fragmentES: "qrc:/shaders/es2/planetDS.frag"
+        vertexGL: "qrc:/shaders/gl3/planetD.vert"
+        fragmentGL: "qrc:/shaders/gl3/planetDS.frag"
+    }
+
+    SunEffect {
+        id: sunEffect
+    }
+
+    ShadowEffect {
+        id: shadowMapEffect
+        shadowTexture: framegraph.shadowTexture
         light: light
     }
 
@@ -474,15 +490,16 @@ Entity {
     // STARFIELD
     //
 
-    Mesh {
-        id: starfield
-        source: "qrc:/meshes/starfield.obj"
-    }
-
     Entity {
         id: starfieldEntity
 
-        property Material materialStarfield: PlanetMaterial {
+        Mesh {
+            id: starfield
+            source: "qrc:/meshes/starfield.obj"
+        }
+
+        PlanetMaterial {
+            id: materialStarfield
             effect: effectD
             ambientLight: ambientStrengthStarfield
             specularColor: Qt.rgba(0.0, 0.0, 0.0, 1.0)
@@ -502,20 +519,19 @@ Entity {
     // SUN
     //
 
-    Planet {
-        id: sun
-        tilt: planetData[Planets.SUN].tilt
-    }
-
     Entity {
         id: sunEntity
 
-        property Material materialSun: PlanetMaterial {
-            effect: effectD
+        Planet {
+            id: sun
+            tilt: planetData[Planets.SUN].tilt
+        }
+
+        PlanetMaterial {
+            id: materialSun
+            effect: sunEffect
             ambientLight: ambientStrengthSun
-            specularColor: Qt.rgba(0.0, 0.0, 0.0, 1.0)
             diffuseMap: "qrc:/images/sunmap.jpg"
-            shininess: 1000000.0
         }
 
         property Transform transformSun: Transform {
@@ -538,15 +554,16 @@ Entity {
 
     // MERCURY
 
-    Planet {
-        id: mercury
-        tilt: planetData[Planets.MERCURY].tilt
-    }
-
     Entity {
         id: mercuryEntity
 
-        property Material materialMercury: PlanetMaterial {
+        Planet {
+            id: mercury
+            tilt: planetData[Planets.MERCURY].tilt
+        }
+
+        PlanetMaterial {
+            id: materialMercury
             effect: effectDB
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
@@ -571,15 +588,16 @@ Entity {
 
     // VENUS
 
-    Planet {
-        id: venus
-        tilt: planetData[Planets.VENUS].tilt
-    }
-
     Entity {
         id: venusEntity
 
-        property Material materialVenus: PlanetMaterial {
+        Planet {
+            id: venus
+            tilt: planetData[Planets.VENUS].tilt
+        }
+
+        PlanetMaterial {
+            id: materialVenus
             effect: effectDB
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
@@ -605,15 +623,16 @@ Entity {
     // EARTH
 
     //! [1]
-    Planet {
-        id: earth
-        tilt: planetData[Planets.EARTH].tilt
-    }
-
     Entity {
         id: earthEntity
 
-        property Material materialEarth: PlanetMaterial {
+        Planet {
+            id: earth
+            tilt: planetData[Planets.EARTH].tilt
+        }
+
+        PlanetMaterial {
+            id: materialEarth
             effect: effectDSB
             ambientLight: ambientStrengthPlanet
             diffuseMap: "qrc:/images/earthmap1k.jpg"
@@ -639,16 +658,17 @@ Entity {
 
     // EARTH CLOUDS
 
-    Planet {
-        id: earthClouds
-        tilt: planetData[Planets.EARTH].tilt
-    }
-
     Entity {
         id: earthCloudsEntity
 
-        property Material materialEarthClouds: PlanetMaterial {
-            effect: effectDS
+        Planet {
+            id: earthClouds
+            tilt: planetData[Planets.EARTH].tilt
+        }
+
+        PlanetMaterial {
+            id: materialEarthClouds
+            effect: cloudEffect
             ambientLight: ambientStrengthClouds
             diffuseMap: "qrc:/images/earthcloudmapcolortrans.png"
             specularMap: "qrc:/images/earthcloudmapspec.jpg"
@@ -672,15 +692,16 @@ Entity {
 
     // MOON
 
-    Planet {
-        id: moon
-        tilt: planetData[Planets.MOON].tilt
-    }
-
     Entity {
         id: moonEntity
 
-        property Material materialMoon: PlanetMaterial {
+        Planet {
+            id: moon
+            tilt: planetData[Planets.MOON].tilt
+        }
+
+        PlanetMaterial {
+            id: materialMoon
             effect: effectDB
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
@@ -705,15 +726,16 @@ Entity {
 
     // MARS
 
-    Planet {
-        id: mars
-        tilt: planetData[Planets.MARS].tilt
-    }
-
     Entity {
         id: marsEntity
 
-        property Material materialMars: PlanetMaterial {
+        Planet {
+            id: mars
+            tilt: planetData[Planets.MARS].tilt
+        }
+
+        PlanetMaterial {
+            id: materialMars
             effect: effectDB
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
@@ -738,15 +760,16 @@ Entity {
 
     // JUPITER
 
-    Planet {
-        id: jupiter
-        tilt: planetData[Planets.JUPITER].tilt
-    }
-
     Entity {
         id: jupiterEntity
 
-        property Material materialJupiter: PlanetMaterial {
+        Planet {
+            id: jupiter
+            tilt: planetData[Planets.JUPITER].tilt
+        }
+
+        PlanetMaterial {
+            id: materialJupiter
             effect: effectD
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
@@ -770,16 +793,17 @@ Entity {
 
     // SATURN
 
-    Planet {
-        id: saturn
-        tilt: planetData[Planets.SATURN].tilt
-    }
-
     Entity {
         id: saturnEntity
 
-        property Material materialSaturn: PlanetMaterial {
-            effect: shadowMapEffectD
+        Planet {
+            id: saturn
+            tilt: planetData[Planets.SATURN].tilt
+        }
+
+        PlanetMaterial {
+            id: materialSaturn
+            effect: shadowMapEffect
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
             diffuseMap: "qrc:/images/saturnmap.jpg"
@@ -802,17 +826,18 @@ Entity {
 
     // SATURN RING
 
-    Ring {
-        id: saturnRing
-        innerRadius: saturnRingInnerRadius
-        outerRadius: saturnRingOuterRadius
-    }
-
     Entity {
         id: saturnRingEntity
 
-        property Material materialSaturnRing: PlanetMaterial {
-            effect: shadowMapEffectD
+        Ring {
+            id: saturnRing
+            innerRadius: saturnRingInnerRadius
+            outerRadius: saturnRingOuterRadius
+        }
+
+        PlanetMaterial {
+            id: materialSaturnRing
+            effect: shadowMapEffect
             ambientLight: ambientStrengthRing
             specularColor: Qt.rgba(0.01, 0.01, 0.01, 1.0)
             diffuseMap: "qrc:/images/saturnringcolortrans.png"
@@ -836,16 +861,17 @@ Entity {
 
     // URANUS
 
-    Planet {
-        id: uranus
-        tilt: planetData[Planets.URANUS].tilt
-    }
-
     Entity {
         id: uranusEntity
 
-        property Material materialUranus: PlanetMaterial {
-            effect: shadowMapEffectD
+        Planet {
+            id: uranus
+            tilt: planetData[Planets.URANUS].tilt
+        }
+
+        PlanetMaterial {
+            id: materialUranus
+            effect: shadowMapEffect
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
             diffuseMap: "qrc:/images/uranusmap.jpg"
@@ -868,17 +894,18 @@ Entity {
 
     // URANUS RING
 
-    Ring {
-        id: uranusRing
-        innerRadius: uranusRingInnerRadius
-        outerRadius: uranusRingOuterRadius
-    }
-
     Entity {
         id: uranusRingEntity
 
-        property Material materialUranusRing: PlanetMaterial {
-            effect: shadowMapEffectD
+        Ring {
+            id: uranusRing
+            innerRadius: uranusRingInnerRadius
+            outerRadius: uranusRingOuterRadius
+        }
+
+        PlanetMaterial {
+            id: materialUranusRing
+            effect: shadowMapEffect
             ambientLight: ambientStrengthRing
             specularColor: Qt.rgba(0.01, 0.01, 0.01, 1.0)
             diffuseMap: "qrc:/images/uranusringcolortrans.png"
@@ -902,15 +929,16 @@ Entity {
 
     // NEPTUNE
 
-    Planet {
-        id: neptune
-        tilt: planetData[Planets.NEPTUNE].tilt
-    }
-
     Entity {
         id: neptuneEntity
 
-        property Material materialNeptune: PlanetMaterial {
+        Planet {
+            id: neptune
+            tilt: planetData[Planets.NEPTUNE].tilt
+        }
+
+        PlanetMaterial {
+            id: materialNeptune
             effect: effectD
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)

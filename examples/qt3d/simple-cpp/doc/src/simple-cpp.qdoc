@@ -29,4 +29,53 @@
     \example simple-cpp
     \title Qt 3D: Simple C++ Example
     \ingroup qt3d-examples-cpp
+    \brief A C++ application that demonstrates how to render a scene in Qt 3D.
+
+    \image simple-cpp.png
+
+    \e {Simple} demonstrates how to render a scene in Qt 3D.
+
+    \include examples-run.qdocinc
+
+    \section1 Setting Up the Scene
+
+    We set up the scene in the \e main.cpp file.
+
+    To be able to use the classes and functions in the Q3D Core, Q3D Render,
+    Qt 3D Input, and Qt 3D Extras modules, we must include the classes:
+
+    \quotefromfile simple-cpp/main.cpp
+    \skipto Qt3DCore
+    \printuntil QTorusMesh
+
+    First, we set up the scene and specify its root entity:
+
+    \skipto createScene()
+    \printuntil {
+    \skipto rootEntity
+    \printuntil ;
+
+    We specify the material to use for Phong rendering:
+
+    \skipto QPhongMaterial
+    \printuntil ;
+
+    The root entity is just an empty shell and its behavior is defined by the
+    components that it references. We specify the torus entity and its mesh,
+    transform, and material components:
+
+    \skipto torusEntity
+    \printuntil material
+
+    We also specify a sphere entity and its components:
+
+    \skipto sphereEntity
+    \printuntil material
+
+    We use a property animation to animate the sphere transform.
+
+    Finally, we initialize a Qt GUI application that uses a Qt 3D window:
+
+    \skipto int
+    \printuntil }
 */

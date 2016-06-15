@@ -52,8 +52,8 @@ namespace Qt3DRender {
 /*!
  * \class Qt3DRender::QRenderSurfaceSelector
  * \inmodule Qt3DRender
- * \brief QRenderSurfaceSelector
- * \since
+ * \brief Provides a way of specifying the render surface
+ * \since 5.7
  *
  * \inherits Qt3DRender::QFrameGraphNode
  *
@@ -62,10 +62,10 @@ namespace Qt3DRender {
 /*!
  * \qmltype RenderSurfaceSelector
  * \inqmlmodule Qt3D.Render
- * \since
+ * \since 5.7
  * \ingroup
  * \instantiates Qt3DRender::QRenderSurfaceSelector
- * \brief RenderSurfaceSelector
+ * \brief Provides a way of specifying the render surface
  *
  */
 
@@ -74,14 +74,19 @@ namespace Qt3DRender {
  * Holds the surface.
  */
 
-/*! \qmlproperty QWindow Qt3D.Render::RenderSurfaceSelector::window
- *
- * Holds the window.
+/*!
+ *  \property QRenderSurfaceSelector::surface
+ *  Holds the surface
  */
 
 /*! \qmlproperty QSize Qt3D.Render::RenderSurfaceSelector::externalRenderTargetSize
  *
  * Holds the size of the external render target.
+ */
+
+/*!
+ *  \property QRenderSurfaceSelector::externalRenderTargetSize
+ *  Holds the size of the external render target.
  */
 
 QRenderSurfaceSelectorPrivate::QRenderSurfaceSelectorPrivate()

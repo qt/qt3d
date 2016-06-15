@@ -127,7 +127,7 @@ int QInputChord::timeout() const
 }
 
 /*!
-    Sets the time in which all QAbstractActionInput's in the input chord must triggered within.
+    Sets the time in which all QAbstractActionInput's in the input chord must triggered within to \a timeout.
     The time is in milliseconds
  */
 void QInputChord::setTimeout(int timeout)

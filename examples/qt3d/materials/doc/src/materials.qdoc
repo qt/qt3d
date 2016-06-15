@@ -29,4 +29,11 @@
     \example materials
     \title Qt 3D: Materials QML Example
     \ingroup qt3d-examples-qml
+    \brief A QML application that demonstrates using materials.
+
+    \image materials.png
+
+    \e {Materials} demonstrates using the Qt 3D material system.
+
+    \include examples-run.qdocinc
 */

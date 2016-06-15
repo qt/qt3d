@@ -71,8 +71,7 @@ QAspectJob::QAspectJob()
 /*!
  * \class Qt3DCore::QAspectJob
  * \inmodule Qt3DCore
- *
- * TODO
+ * \brief The base class for jobs executed in an aspect
  */
 
 /*!

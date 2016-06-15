@@ -86,19 +86,6 @@ QActionInputPrivate::QActionInputPrivate()
     \since 5.7
 */
 
-
-/*!
-    \qmlproperty AbstractPhysicalDevice ActionInput::sourceDevice
-
-    The current source device of the ActionInput.
-*/
-
-/*!
-    \qmlproperty list<int> Qt3D.Input::ActionInput::buttons
-
-    The Buttons that can trigger this Action.
-*/
-
 /*!
     Constructs a new QActionInput instance with \a parent.
  */
@@ -129,6 +116,25 @@ QVector<int> QActionInput::buttons() const
 
     The current source device of the QActionInput.
 */
+/*!
+  \fn QActionInput::sourceDeviceChanged(QAbstractPhysicalDevice *sourceDevice)
+
+  This signal is emitted when the source device associated with the action input is changed to \a sourceDevice.
+*/
+
+/*!
+  \qmlproperty AbstractPhysicalDevice Qt3D.Input::ActionInput::sourceDevice
+
+  The current source device of the ActionInput
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::ActionInput::sourceDeviceChanged()
+
+    This signal is emitted when the source device associated with the action input is changed.
+
+    The corresponding handler is \c onSourceDeviceChanged
+*/
 void QActionInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
 {
     Q_D(QActionInput);
@@ -158,6 +164,30 @@ QAbstractPhysicalDevice *QActionInput::sourceDevice() const
     return d->m_sourceDevice;
 }
 
+/*!
+  \fn QActionInput::buttonsChanged(const QVector<int> &buttons)
+
+  This signal is emitted when the buttons associated with the action input is changed.
+  The buttons changed are \a buttons
+*/
+
+/*!
+    \qmlproperty list<int> Qt3D.Input::ActionInput::buttons
+
+    The Buttons that can trigger this Action.
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::ActionInput::buttonsChanged(const QVector<int> &buttons)
+
+    This signal is emitted when the buttons associated with the action input is changed.
+
+    The corresponding handler is \c onbuttonsChanged
+*/
+
+/*!
+    Set the buttons to trigger the QActionInput instance to \a buttons.
+ */
 void QActionInput::setButtons(const QVector<int> &buttons)
 {
     Q_D(QActionInput);

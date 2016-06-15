@@ -29,4 +29,12 @@
     \example wave
     \title Qt 3D: Wave QML Example
     \ingroup qt3d-examples-qml
+    \brief A QML application that demonstrates using vertex and geometry
+    shaders.
+
+    \image wave.png
+
+    \e {Wave} demonstrates using vertex and geometry shaders.
+
+    \include examples-run.qdocinc
 */

@@ -67,8 +67,7 @@ QTransformPrivate::~QTransformPrivate()
  * \inherits Component3D
  * \instantiates Qt3DCore::QComponent
  * \since 5.6
- *
- * TODO
+ * \brief Used to perform transforms on meshes
  */
 
 /*!
@@ -170,8 +169,7 @@ QTransformPrivate::~QTransformPrivate()
  * \inmodule Qt3DCore
  * \inherits Qt3DCore::QComponent
  * \since 5.6
- *
- * TODO
+ * \brief Used to perform transforms on meshes
  */
 
 /*!
@@ -217,7 +215,8 @@ void QTransform::setMatrix(const QMatrix4x4 &m)
         emit translationChanged(t);
 
         const bool wasBlocked = blockNotifications(true);
-        emit matrixChanged(m);
+        emit matrixChanged();
+        emit scaleChanged(d->m_scale.x());
         emit rotationXChanged(d->m_eulerRotationAngles.x());
         emit rotationYChanged(d->m_eulerRotationAngles.y());
         emit rotationZChanged(d->m_eulerRotationAngles.z());
@@ -242,6 +241,7 @@ void QTransform::setRotationX(float rotationX)
 
     const bool wasBlocked = blockNotifications(true);
     emit rotationXChanged(rotationX);
+    emit matrixChanged();
     blockNotifications(wasBlocked);
 }
 
@@ -262,6 +262,7 @@ void QTransform::setRotationY(float rotationY)
 
     const bool wasBlocked = blockNotifications(true);
     emit rotationYChanged(rotationY);
+    emit matrixChanged();
     blockNotifications(wasBlocked);
 }
 
@@ -281,6 +282,7 @@ void QTransform::setRotationZ(float rotationZ)
 
     const bool wasBlocked = blockNotifications(true);
     emit rotationZChanged(rotationZ);
+    emit matrixChanged();
     blockNotifications(wasBlocked);
 }
 
@@ -339,6 +341,10 @@ void QTransform::setScale3D(const QVector3D &scale)
         d->m_scale = scale;
         d->m_matrixDirty = true;
         emit scale3DChanged(scale);
+
+        const bool wasBlocked = blockNotifications(true);
+        emit matrixChanged();
+        blockNotifications(wasBlocked);
     }
 }
 
@@ -358,6 +364,7 @@ void QTransform::setScale(float scale)
     Q_D(QTransform);
     if (scale != d->m_scale.x()) {
         setScale3D(QVector3D(scale, scale, scale));
+
         const bool wasBlocked = blockNotifications(true);
         emit scaleChanged(scale);
         blockNotifications(wasBlocked);
@@ -381,9 +388,20 @@ void QTransform::setRotation(const QQuaternion &rotation)
     Q_D(QTransform);
     if (rotation != d->m_rotation) {
         d->m_rotation = rotation;
+        const QVector3D oldRotation = d->m_eulerRotationAngles;
         d->m_eulerRotationAngles = d->m_rotation.toEulerAngles();
         d->m_matrixDirty = true;
         emit rotationChanged(rotation);
+
+        const bool wasBlocked = blockNotifications(true);
+        emit matrixChanged();
+        if (d->m_eulerRotationAngles.x() != oldRotation.x())
+            emit rotationXChanged(d->m_eulerRotationAngles.x());
+        if (d->m_eulerRotationAngles.y() != oldRotation.y())
+            emit rotationYChanged(d->m_eulerRotationAngles.y());
+        if (d->m_eulerRotationAngles.z() != oldRotation.z())
+            emit rotationZChanged(d->m_eulerRotationAngles.z());
+        blockNotifications(wasBlocked);
     }
 }
 
@@ -405,6 +423,10 @@ void QTransform::setTranslation(const QVector3D &translation)
         d->m_translation = translation;
         d->m_matrixDirty = true;
         emit translationChanged(translation);
+
+        const bool wasBlocked = blockNotifications(true);
+        emit matrixChanged();
+        blockNotifications(wasBlocked);
     }
 }
 

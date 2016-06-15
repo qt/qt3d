@@ -162,7 +162,7 @@ Q_SIGNALS:
     void upVectorChanged(const QVector3D &upVector);
     void viewCenterChanged(const QVector3D &viewCenter);
     void viewVectorChanged(const QVector3D &viewVector);
-    void viewMatrixChanged(const QMatrix4x4 &viewMatrix);
+    void viewMatrixChanged();
 
 protected:
     Q_DECLARE_PRIVATE(QCamera)

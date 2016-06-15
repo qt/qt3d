@@ -48,8 +48,9 @@ namespace Qt3DRender {
   \since 5.7
   \ingroup framegraph
 
-  \brief ...
-
+  \brief If present, only tries to draw entities that are in the view of the camera.
+    The camera is selected by a QCameraSelector frame graph node in the current hierarchy.
+    \sa QCameraSelector
  */
 
 /*!
@@ -58,7 +59,9 @@ namespace Qt3DRender {
     \instantiates Qt3DRender::QFrustumCulling
     \inherits FrameGraphNode
     \since 5.7
-    \qmlabstract
+    \qmlabstract If present, only tries to draw entities that are in the view of the camera.
+    The camera is selected by a CameraSelector frame graph node in the current hierarchy
+    \sa CameraSelector
 */
 
 /*!

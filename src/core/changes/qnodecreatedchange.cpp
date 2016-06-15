@@ -98,8 +98,14 @@ QNodeCreatedChangeBasePrivate::QNodeCreatedChangeBasePrivate(const QNode *node)
  * \class Qt3DCore::QNodeCreatedChangeBase
  * \inherits Qt3DCore::QSceneChange
  * \inmodule Qt3DCore
+ * \brief The QNodeCreatedChangeBase class is the base class for all NodeCreated QSceneChange events
  *
- * TODO
+ * The QNodeCreatedChangeBase class is the base class for all QSceneChange events that
+ * have the changeType() NodeCreated. You should not need to instantiate this class.
+ * Usually you should be using one of its subclasses such as QNodeCreatedChange.
+ *
+ * You can subclass this to create your own node update types for communication between
+ * your QNode and QBackendNode subclasses when writing your own aspects.
  */
 
 /*!
@@ -110,7 +116,7 @@ QNodeCreatedChangeBasePrivate::QNodeCreatedChangeBasePrivate(const QNode *node)
  */
 
 /*!
- * Constructs a new QNodeCreatedChangeBase with \a node and \a priority.
+ * Constructs a new QNodeCreatedChangeBase with \a node.
  */
 QNodeCreatedChangeBase::QNodeCreatedChangeBase(const QNode *node)
     : QSceneChange(*new QNodeCreatedChangeBasePrivate(node), NodeCreated, node->id())
@@ -154,5 +160,13 @@ bool QNodeCreatedChangeBase::isNodeEnabled() const Q_DECL_NOTHROW
 }
 
 } // namespace Qt3DCore
+
+/*!
+ * \class Qt3DCore::QNodeCreatedChange
+ * \inherits Qt3DCore::QNodeCreatedChangeBase
+ * \since 5.7
+ * \inmodule Qt3DCore
+ * \brief Used to notify when a node is created.
+ */
 
 QT_END_NAMESPACE

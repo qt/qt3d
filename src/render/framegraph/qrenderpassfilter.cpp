@@ -56,7 +56,7 @@ namespace Qt3DRender {
     \class Qt3DRender::QRenderPassFilter
     \inmodule Qt3DRender
     \since 5.7
-    \brief The QRenderPassFilter class provides storage for vectors of Filter Keys and Parameters
+    \brief Provides storage for vectors of Filter Keys and Parameters
 */
 
 /*!
@@ -87,7 +87,7 @@ QVector<QFilterKey *> QRenderPassFilter::matchAny() const
 }
 
 /*!
-  Add the filter key /a filterKey to the match vector.
+  Add the filter key \a filterKey to the match vector.
  */
 void QRenderPassFilter::addMatch(QFilterKey *filterKey)
 {
@@ -115,7 +115,7 @@ void QRenderPassFilter::addMatch(QFilterKey *filterKey)
 }
 
 /*!
-  Remove the filter key /a filterKey from the match vector.
+  Remove the filter key \a filterKey from the match vector.
  */
 void QRenderPassFilter::removeMatch(QFilterKey *filterKey)
 {
@@ -133,7 +133,7 @@ void QRenderPassFilter::removeMatch(QFilterKey *filterKey)
 }
 
 /*!
-  Add the parameter /a parameter to the parameter vector.
+  Add the parameter \a parameter to the parameter vector.
  */
 void QRenderPassFilter::addParameter(QParameter *parameter)
 {
@@ -161,7 +161,7 @@ void QRenderPassFilter::addParameter(QParameter *parameter)
 }
 
 /*!
-  Remove the parameter /a parameter from the parameter vector.
+  Remove the parameter \a parameter from the parameter vector.
  */
 void QRenderPassFilter::removeParameter(QParameter *parameter)
 {
