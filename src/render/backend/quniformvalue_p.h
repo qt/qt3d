@@ -94,7 +94,7 @@ public:
     }
 
     void setType(UniformType type) Q_DECL_NOTHROW { m_type = type; }
-    UniformType type() Q_DECL_NOTHROW { return m_type; }
+    UniformType type() const Q_DECL_NOTHROW { return m_type; }
     bool isTexture() const Q_DECL_NOTHROW { return m_type == TextureSampler; }
 
     void setValue(const QVariant &value)
