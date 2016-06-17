@@ -148,8 +148,10 @@ void AspectCommandDebugger::onCommandReceived(QTcpSocket *socket)
     const int commandPacketSize = sizeof(CommandHeader);
     while (m_readBuffer.size() >= commandPacketSize) {
         CommandHeader *header = reinterpret_cast<CommandHeader *>(m_readBuffer.buffer.data() + m_readBuffer.startIdx);
-        if (header->magic == MagicNumber &&
-                (m_readBuffer.size() - commandPacketSize) >= header->size) {
+        if (header->magic == MagicNumber) {
+            // Early return, header is valid but we haven't yet received all the data
+            if ((m_readBuffer.size() - commandPacketSize) < header->size)
+                return;
             // We have a valid command
             // We expect command to be a CommandHeader + some json text
             const QJsonDocument doc = QJsonDocument::fromJson(
