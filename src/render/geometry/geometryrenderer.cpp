@@ -164,23 +164,8 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_geometryFactory = newFunctor;
             if (m_geometryFactory && m_manager != nullptr)
                 m_manager->addDirtyGeometryRenderer(peerId());
-        }
-        break;
-    }
-
-    case PropertyValueAdded: {
-        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("geometry")) {
-            m_geometryId = change->addedNodeId();
-            m_dirty = true;
-        }
-        break;
-    }
-
-    case PropertyValueRemoved: {
-        const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("geometry")) {
-            m_geometryId = QNodeId();
+        } else if (propertyName == QByteArrayLiteral("geometry")) {
+            m_geometryId = propertyChange->value().value<Qt3DCore::QNodeId>();
             m_dirty = true;
         }
         break;
@@ -210,7 +195,7 @@ void GeometryRenderer::executeFunctor()
     geometry->moveToThread(appThread);
 
     auto e = QGeometryChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+    e->setDeliveryFlags(Qt3DCore::QSceneChange::Nodes);
     e->setPropertyName("geometry");
     e->data = std::move(geometry);
     notifyObservers(e);
