@@ -40,57 +40,65 @@
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 
-Material {
-    id: root
+Effect {
+    property string vertexES: "qrc:/shaders/es2/phong.vert"
+    property string fragmentES: "qrc:/shaders/es2/phong.frag"
+    property string vertex: "qrc:/shaders/gl3/phong.vert"
+    property string fragment: "qrc:/shaders/gl3/phong.frag"
 
-    property color ambient:  Qt.rgba( 0.05, 0.05, 0.05, 1.0 )
-    property alias diffuse: diffuseTextureImage.source
-    property color specular: Qt.rgba( 0.01, 0.01, 0.01, 1.0 )
-    property alias normal: normalTextureImage.source
-    property real shininess: 150.0
-    property real textureScale: 1.0
-
-    parameters: [
-        Parameter { name: "ka"; value: Qt.vector3d(root.ambient.r, root.ambient.g, root.ambient.b) },
-        Parameter {
-            name: "diffuseTexture"
-            value: Texture2D {
-                id: diffuseTexture
-                minificationFilter: Texture.LinearMipMapLinear
-                magnificationFilter: Texture.Linear
-                wrapMode {
-                    x: WrapMode.Repeat
-                    y: WrapMode.Repeat
-                }
-                generateMipMaps: true
-                maximumAnisotropy: 16.0
-                TextureImage { id: diffuseTextureImage; }
-            }
-        },
-        Parameter {
-            name: "normalTexture"
-            value: Texture2D {
-                id: normalTexture
-                minificationFilter: Texture.Linear
-                magnificationFilter: Texture.Linear
-                wrapMode {
-                    x: WrapMode.Repeat
-                    y: WrapMode.Repeat
-                }
-                maximumAnisotropy: 16.0
-                TextureImage { id: normalTextureImage; }
-            }
-        },
-        Parameter { name: "ks"; value: Qt.vector3d(root.specular.r, root.specular.g, root.specular.b) },
-        Parameter { name: "shininess"; value: root.shininess },
-        Parameter { name: "texCoordScale"; value: textureScale }
-    ]
-
-    effect: DefaultEffect {
-        vertexES: "qrc:/shaders/es2/normaldiffusemap.vert"
-        fragmentES: "qrc:/shaders/es2/normaldiffusemap.frag"
-        vertex: "qrc:/shaders/gl3/normaldiffusemap.vert"
-        fragment: "qrc:/shaders/gl3/normaldiffusemap.frag"
+    FilterKey {
+        id: forward
+        name: "renderingStyle"
+        value: "forward"
     }
-}
 
+    ShaderProgram {
+        id: gl2Es2Shader
+        vertexShaderCode:   loadSource(vertexES)
+        fragmentShaderCode: loadSource(fragmentES)
+    }
+
+    ShaderProgram {
+        id: gl3Shader
+        vertexShaderCode:   loadSource(vertex)
+        fragmentShaderCode: loadSource(fragment)
+    }
+
+    techniques: [
+        // OpenGL 3.1
+        Technique {
+            filterKeys: [ forward ]
+            graphicsApiFilter {
+                api: GraphicsApiFilter.OpenGL
+                profile: GraphicsApiFilter.CoreProfile
+                majorVersion: 3
+                minorVersion: 1
+            }
+            renderPasses: RenderPass { shaderProgram: gl3Shader }
+        },
+
+        // OpenGL 2.1
+        Technique {
+            filterKeys: [ forward ]
+            graphicsApiFilter {
+                api: GraphicsApiFilter.OpenGL
+                profile: GraphicsApiFilter.NoProfile
+                majorVersion: 2
+                minorVersion: 0
+            }
+            renderPasses: RenderPass { shaderProgram: gl2Es2Shader }
+        },
+
+        // OpenGL ES 2
+        Technique {
+            filterKeys: [ forward ]
+            graphicsApiFilter {
+                api: GraphicsApiFilter.OpenGLES
+                profile: GraphicsApiFilter.NoProfile
+                majorVersion: 2
+                minorVersion: 0
+            }
+            renderPasses: RenderPass { shaderProgram: gl2Es2Shader }
+        }
+    ]
+}

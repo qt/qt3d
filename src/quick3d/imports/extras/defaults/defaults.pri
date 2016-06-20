@@ -6,6 +6,8 @@
 # To have the plugin register them as types, add an entries to the
 # qmldir array in qt3dquick3dextrasplugin.cpp
 QML_FILES = \
+    $$PWD/qml/DefaultEffect.qml \
+    $$PWD/qml/DefaultAlphaEffect.qml \
     $$PWD/qml/PhongMaterial.qml \
     $$PWD/qml/DiffuseMapMaterial.qml \
     $$PWD/qml/DiffuseSpecularMapMaterial.qml \

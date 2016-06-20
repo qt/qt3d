@@ -86,65 +86,11 @@ Material {
         Parameter { name: "texCoordScale"; value: textureScale }
     ]
 
-    effect: Effect {
-        FilterKey {
-            id: forward
-            name: "renderingStyle"
-            value: "forward"
-        }
-
-        ShaderProgram {
-            id: gl2Es2Shader
-            vertexShaderCode:   loadSource("qrc:/shaders/es2/normaldiffusemap.vert")
-            fragmentShaderCode: loadSource("qrc:/shaders/es2/normaldiffusemapalpha.frag")
-        }
-
-        ShaderProgram {
-            id: gl3Shader
-            vertexShaderCode:   loadSource("qrc:/shaders/gl3/normaldiffusemap.vert")
-            fragmentShaderCode: loadSource("qrc:/shaders/gl3/normaldiffusemapalpha.frag")
-        }
-
-        AlphaCoverage { id: alphaCoverageState }
-        DepthTest { id: depthTestState; depthFunction: DepthTest.Less }
-
-        techniques: [
-            // OpenGL 3.1
-            Technique {
-                filterKeys: [ forward ]
-                graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGL
-                    profile: GraphicsApiFilter.CoreProfile
-                    majorVersion: 3
-                    minorVersion: 1
-                }
-                renderPasses: RenderPass { shaderProgram: gl3Shader; renderStates: [alphaCoverageState, depthTestState] }
-            },
-
-            // OpenGL 2.1
-            Technique {
-                filterKeys: [ forward ]
-                graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGL
-                    profile: GraphicsApiFilter.NoProfile
-                    majorVersion: 2
-                    minorVersion: 0
-                }
-                renderPasses: RenderPass { shaderProgram: gl2Es2Shader; renderStates: [alphaCoverageState, depthTestState] }
-            },
-
-            // OpenGL ES 2
-            Technique {
-                filterKeys: [ forward ]
-                graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGLES
-                    profile: GraphicsApiFilter.NoProfile
-                    majorVersion: 2
-                    minorVersion: 0
-                }
-                renderPasses: RenderPass { shaderProgram: gl2Es2Shader; renderStates: [alphaCoverageState, depthTestState] }
-            }
-        ]
+    effect: DefaultAlphaEffect {
+        vertexES: "qrc:/shaders/es2/normaldiffusemap.vert"
+        fragmentES: "qrc:/shaders/es2/normaldiffusemapalpha.frag"
+        vertex: "qrc:/shaders/gl3/normaldiffusemap.vert"
+        fragment: "qrc:/shaders/gl3/normaldiffusemapalpha.frag"
     }
 }
 
