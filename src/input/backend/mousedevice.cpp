@@ -54,8 +54,8 @@ namespace Input {
 
 MouseDevice::MouseDevice()
     : QAbstractPhysicalDeviceBackendNode(ReadOnly)
-    , m_sensitivity(0.1f)
     , m_wasPressed(false)
+    , m_sensitivity(0.1f)
 {
 }
 
