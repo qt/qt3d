@@ -18,7 +18,9 @@ HEADERS += \
     $$PWD/qtexturedata.h \
     $$PWD/qtextureimagedatagenerator.h \
     $$PWD/qtexturegenerator.h \
-    $$PWD/qtexture_p.h
+    $$PWD/qtexture_p.h \
+    $$PWD/qpaintedtextureimage.h \
+    $$PWD/qpaintedtextureimage_p.h
 
 SOURCES += \
     $$PWD/qabstracttextureimage.cpp \
@@ -31,4 +33,5 @@ SOURCES += \
     $$PWD/qtexture.cpp \
     $$PWD/qtextureimagedata.cpp \
     $$PWD/qtexturedata.cpp \
-    $$PWD/qtexturegenerator.cpp
+    $$PWD/qtexturegenerator.cpp \
+    $$PWD/qpaintedtextureimage.cpp
