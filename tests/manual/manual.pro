@@ -30,4 +30,8 @@ SUBDIRS += \
     transparency-qml \
     transparency-qml-scene3d
 
-qtHaveModule(widgets): SUBDIRS += assimp-cpp
+qtHaveModule(widgets): {
+    SUBDIRS += \
+        assimp-cpp \
+        paintedtexture-cpp
+}
