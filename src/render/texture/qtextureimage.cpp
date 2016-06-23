@@ -42,6 +42,8 @@
 #include "qtexture_p.h"
 #include "qabstracttextureimage_p.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <QtCore/QFileInfo>
+#include <QtCore/QDateTime>
 
 QT_BEGIN_NAMESPACE
 
@@ -168,7 +170,12 @@ void QTextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 QImageTextureDataFunctor::QImageTextureDataFunctor(const QUrl &url)
     : QTextureImageDataGenerator()
     , m_url(url)
-{}
+{
+    if (url.isLocalFile()) {
+        QFileInfo info(url.toLocalFile());
+        m_lastModified = info.lastModified();
+    }
+}
 
 QTextureImageDataPtr QImageTextureDataFunctor::operator ()()
 {
@@ -181,7 +188,9 @@ QTextureImageDataPtr QImageTextureDataFunctor::operator ()()
 bool QImageTextureDataFunctor::operator ==(const QTextureImageDataGenerator &other) const
 {
     const QImageTextureDataFunctor *otherFunctor = functor_cast<QImageTextureDataFunctor>(&other);
-    return (otherFunctor != Q_NULLPTR && otherFunctor->m_url == m_url);
+
+    // if its the same URL, but different modification times, its not the same image.
+    return (otherFunctor != Q_NULLPTR && otherFunctor->m_url == m_url && otherFunctor->m_lastModified == m_lastModified);
 }
 
 } // namespace Qt3DRender

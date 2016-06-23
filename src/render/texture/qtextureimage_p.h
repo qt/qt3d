@@ -51,6 +51,8 @@
 // We mean it.
 //
 
+#include <QtCore/QDateTime>
+
 #include <Qt3DRender/private/qabstracttextureimage_p.h>
 #include <Qt3DRender/qtextureimage.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
@@ -87,6 +89,7 @@ public:
 
 private:
     QUrl m_url;
+    QDateTime m_lastModified;
     QTextureImage::Status m_status;
 };
 
