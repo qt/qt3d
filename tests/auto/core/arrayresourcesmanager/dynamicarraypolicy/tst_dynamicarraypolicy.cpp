@@ -50,6 +50,7 @@ private slots:
     void heavyDutyMultiThreadedAccess();
     void heavyDutyMultiThreadedAccessRelease();
     void maximumNumberOfResources();
+    void activeHandles();
 };
 
 class tst_ArrayResource
@@ -425,6 +426,43 @@ void tst_DynamicArrayPolicy::maximumNumberOfResources()
         resources.at(i)->m_value = 4;
     }
 }
+
+void tst_DynamicArrayPolicy::activeHandles()
+{
+    // GIVEN
+    Qt3DCore::QResourceManager<tst_ArrayResource, uint> manager;
+
+    {
+        // WHEN
+        const tHandle newHandle = manager.getOrAcquireHandle(883U);
+        // THEN
+        QCOMPARE(manager.activeHandles().size(), 1);
+        QCOMPARE(manager.activeHandles().first(), newHandle);
+    }
+
+    {
+        // WHEN
+        manager.releaseResource(883U);
+        // THEN
+        QVERIFY(manager.activeHandles().empty());
+    }
+
+    {
+        // WHEN
+        const tHandle newHandle = manager.acquire();
+        // THEN
+        QCOMPARE(manager.activeHandles().size(), 1);
+        QCOMPARE(manager.activeHandles().first(), newHandle);
+
+        // WHEN
+        manager.release(newHandle);
+        // THEN
+        QVERIFY(manager.activeHandles().empty());
+    }
+}
+
+
+
 
 QTEST_APPLESS_MAIN(tst_DynamicArrayPolicy)
 
