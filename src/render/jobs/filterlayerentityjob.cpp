@@ -57,7 +57,6 @@ int layerFilterJobCounter = 0;
 FilterLayerEntityJob::FilterLayerEntityJob()
     : Qt3DCore::QAspectJob()
     , m_manager(nullptr)
-    , m_root(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::LayerFiltering, layerFilterJobCounter++);
 }
@@ -66,42 +65,41 @@ void FilterLayerEntityJob::run()
 {
     m_filteredEntities.clear();
     if (m_hasLayerFilter) // LayerFilter set -> filter
-        filterLayerAndEntity(m_root);
+        filterLayerAndEntity();
     else // No LayerFilter set -> retrieve all
-        selectAllEntities(m_root);
+        selectAllEntities();
 }
 
 // Note: we assume that m_layerIds contains only enabled layers
 // -> meaning that if an Entity references such a layer, it's enabled
-void FilterLayerEntityJob::filterLayerAndEntity(Entity *entity)
+void FilterLayerEntityJob::filterLayerAndEntity()
 {
-    const Qt3DCore::QNodeIdVector entityLayers = entity->componentsUuid<Layer>();
+    const QVector<HEntity> handles = m_manager->activeHandles();
 
-    // An Entity is positively filtered if it contains at least one Layer component with the same id as the
-    // layers selected by the LayerFilter
+    for (const HEntity handle : handles) {
+        Entity *entity = m_manager->data(handle);
+        const Qt3DCore::QNodeIdVector entityLayers = entity->componentsUuid<Layer>();
 
-    bool isValid = false;
-    for (const Qt3DCore::QNodeId id : entityLayers) {
-        if ((isValid = m_layerIds.contains(id)) == true)
-            break;
+        // An Entity is positively filtered if it contains at least one Layer component with the same id as the
+        // layers selected by the LayerFilter
+
+        for (const Qt3DCore::QNodeId id : entityLayers) {
+            if (m_layerIds.contains(id)) {
+                m_filteredEntities.push_back(entity);
+                break;
+            }
+        }
     }
-
-    if (isValid)
-        m_filteredEntities.push_back(entity);
-
-    const QVector<HEntity> childrenHandes = entity->childrenHandles();
-    for (const HEntity handle : childrenHandes)
-        filterLayerAndEntity(m_manager->data(handle));
 }
 
 // No layer filter -> retrieve all entities
-void FilterLayerEntityJob::selectAllEntities(Entity *entity)
+void FilterLayerEntityJob::selectAllEntities()
 {
-    m_filteredEntities.push_back(entity);
+    const QVector<HEntity> handles = m_manager->activeHandles();
 
-    const QVector<HEntity> childrenHandes = entity->childrenHandles();
-    for (const HEntity handle : childrenHandes)
-        selectAllEntities(m_manager->data(handle));
+    m_filteredEntities.reserve(handles.size());
+    for (const HEntity handle : handles)
+        m_filteredEntities.push_back(m_manager->data(handle));
 }
 
 } // Render

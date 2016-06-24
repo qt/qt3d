@@ -226,8 +226,6 @@ private Q_SLOTS:
         filterJob.setLayers(layerIds);
         auto entityManager = aspect->nodeManagers()->renderNodesManager();
         filterJob.setManager(entityManager);
-        auto rootEntity = entityManager->lookupResource(entitySubtree->id());
-        filterJob.setRoot(rootEntity);
         filterJob.run();
 
         // THEN

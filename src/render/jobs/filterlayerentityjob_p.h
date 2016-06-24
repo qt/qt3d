@@ -70,7 +70,6 @@ public:
 
     inline void setManager(EntityManager *manager) Q_DECL_NOEXCEPT { m_manager = manager; }
     inline void setLayers(const Qt3DCore::QNodeIdVector &layerIds) Q_DECL_NOEXCEPT { m_layerIds = layerIds; }
-    inline void setRoot(Entity *root) Q_DECL_NOEXCEPT { m_root = root; }
     inline void setHasLayerFilter(bool hasLayerFilter) Q_DECL_NOEXCEPT { m_hasLayerFilter = hasLayerFilter; }
     inline QVector<Entity *> filteredEntities() const Q_DECL_NOEXCEPT { return m_filteredEntities; }
 
@@ -78,11 +77,10 @@ public:
     void run() Q_DECL_FINAL;
 
 private:
-    void filterLayerAndEntity(Entity *entity);
-    void selectAllEntities(Entity *entity);
+    void filterLayerAndEntity();
+    void selectAllEntities();
 
     EntityManager *m_manager;
-    Entity *m_root;
     Qt3DCore::QNodeIdVector m_layerIds;
     QVector<Entity *> m_filteredEntities;
     bool m_hasLayerFilter;
