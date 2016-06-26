@@ -163,7 +163,8 @@ Sphere Sphere::fromPoints(const QVector<QVector3D> &points)
 
 void Sphere::initializeFromPoints(const QVector<QVector3D> &points)
 {
-    constructRitterSphere(*this, points);
+    if (!points.isEmpty())
+        constructRitterSphere(*this, points);
 }
 
 void Sphere::expandToContain(const QVector3D &p)
