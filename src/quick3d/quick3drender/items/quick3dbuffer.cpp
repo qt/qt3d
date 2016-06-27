@@ -53,6 +53,10 @@ namespace Render {
 
 namespace Quick {
 
+namespace {
+const int jsValueTypeId = qMetaTypeId<QJSValue>();
+}
+
 Quick3DBuffer::Quick3DBuffer(QObject *parent)
     : QObject(parent)
     , m_engine(nullptr)
@@ -84,8 +88,12 @@ QVariant Quick3DBuffer::bufferData() const
 
 void Quick3DBuffer::setBufferData(const QVariant &bufferData)
 {
-    QJSValue jsValue = bufferData.value<QJSValue>();
-    parentBuffer()->setData(convertToRawData(jsValue));
+    if (bufferData.userType() == QMetaType::QByteArray) {
+        parentBuffer()->setData(bufferData.toByteArray());
+    } else if (bufferData.userType() == jsValueTypeId) {
+        QJSValue jsValue = bufferData.value<QJSValue>();
+        parentBuffer()->setData(convertToRawData(jsValue));
+    }
 }
 
 void Quick3DBuffer::initEngines()
