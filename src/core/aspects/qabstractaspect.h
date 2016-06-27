@@ -111,7 +111,7 @@ QT_END_NAMESPACE
     } \
     QT_END_NAMESPACE \
     namespace { \
-    QAbstractAspect *qt3d_ ## AspectType ## _createFunction(QObject *parent) \
+    Qt3DCore::QAbstractAspect *qt3d_ ## AspectType ## _createFunction(QObject *parent) \
     { \
         using namespace AspectNamespace; \
         return new AspectType(parent); \
