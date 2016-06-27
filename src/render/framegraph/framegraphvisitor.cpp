@@ -188,7 +188,21 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
 
             // Layer filtering
             filterEntityByLayer->setHasLayerFilter(rv->hasLayerFilter());
-            filterEntityByLayer->setLayers(rv->layerFilter());
+
+            // Only trouble ourselves to filter out disabled layers if layer filtering
+            // is enabled
+            if (rv->hasLayerFilter()) {
+                Qt3DCore::QNodeIdVector layerIdsToFilter = rv->layerFilter();
+                LayerManager *layerManager = renderer->nodeManagers()->layerManager();
+
+                // Remove layerIds which are not active
+                for (auto i = layerIdsToFilter.size() - 1; i >= 0; --i) {
+                    Layer *backendLayer = layerManager->lookupResource(layerIdsToFilter.at(i));
+                    if (backendLayer == nullptr || !backendLayer->isEnabled())
+                        layerIdsToFilter.removeAt(i);
+                }
+                filterEntityByLayer->setLayers(layerIdsToFilter);
+            }
 
             // Material Parameter building
             for (const auto materialGatherer : qAsConst(materialGatherers)) {
