@@ -162,6 +162,7 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_worldTransformJob(Render::UpdateWorldTransformJobPtr::create())
     , m_updateBoundingVolumeJob(Render::UpdateBoundingVolumeJobPtr::create())
     , m_calculateBoundingVolumeJob(Render::CalculateBoundingVolumeJobPtr::create(m_nodeManagers))
+    , m_renderType(type)
 {
     initResources();
 
@@ -175,11 +176,6 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
 
     // All world stuff depends on the RenderEntity's localBoundingVolume
     m_worldTransformJob->addDependency(m_calculateBoundingVolumeJob);
-
-    // Create a renderer implementation given
-    // a specific rendering API -> only OpenGL for now
-    m_renderer = new Render::Renderer(type);
-    m_renderer->setNodeManagers(m_nodeManagers);
 }
 
 /*! \internal */
@@ -250,6 +246,62 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QObjectPicker>(QSharedPointer<Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager> >::create(m_renderer, m_nodeManagers->objectPickerManager()));
 }
 
+/*! \internal */
+void QRenderAspectPrivate::unregisterBackendTypes()
+{
+    unregisterBackendType<Qt3DCore::QEntity>();
+    unregisterBackendType<Qt3DCore::QTransform>();
+
+    unregisterBackendType<Qt3DRender::QCameraLens>();
+    unregisterBackendType<QLayer>();
+    unregisterBackendType<QSceneLoader>();
+    unregisterBackendType<QRenderTarget>();
+    unregisterBackendType<QRenderTargetOutput>();
+    unregisterBackendType<QRenderSettings>();
+    unregisterBackendType<QRenderState>();
+
+    // Geometry + Compute
+    unregisterBackendType<QAttribute>();
+    unregisterBackendType<QBuffer>();
+    unregisterBackendType<QComputeCommand>();
+    unregisterBackendType<QGeometry>();
+    unregisterBackendType<QGeometryRenderer>();
+
+    // Textures
+    unregisterBackendType<QAbstractTexture>();
+    unregisterBackendType<QAbstractTextureImage>();
+
+    // Material system
+    unregisterBackendType<QEffect>();
+    unregisterBackendType<QFilterKey>();
+    unregisterBackendType<QAbstractLight>();
+    unregisterBackendType<QMaterial>();
+    unregisterBackendType<QParameter>();
+    unregisterBackendType<QRenderPass>();
+    unregisterBackendType<QShaderData>();
+    unregisterBackendType<QShaderProgram>();
+    unregisterBackendType<QTechnique>();
+
+    // Framegraph
+    unregisterBackendType<QCameraSelector>();
+    unregisterBackendType<QClearBuffers>();
+    unregisterBackendType<QDispatchCompute>();
+    unregisterBackendType<QFrustumCulling>();
+    unregisterBackendType<QLayerFilter>();
+    unregisterBackendType<QNoDraw>();
+    unregisterBackendType<QRenderPassFilter>();
+    unregisterBackendType<QRenderStateSet>();
+    unregisterBackendType<QRenderSurfaceSelector>();
+    unregisterBackendType<QRenderTargetSelector>();
+    unregisterBackendType<QSortPolicy>();
+    unregisterBackendType<QTechniqueFilter>();
+    unregisterBackendType<QViewport>();
+
+    // Picking
+    // unregisterBackendType<QBoundingVolumeDebug>();
+    unregisterBackendType<QObjectPicker>();
+}
+
 /*!
  * The constructor creates a new QRenderAspect::QRenderAspect instance with the
  * specified \a parent.
@@ -271,12 +323,7 @@ QRenderAspect::QRenderAspect(QRenderAspect::RenderType type, QObject *parent)
 QRenderAspect::QRenderAspect(QRenderAspectPrivate &dd, QObject *parent)
     : QAbstractAspect(dd, parent)
 {
-    // Won't return until the private RenderThread in Renderer has been created
-    // The Renderer is set to wait the surface with a wait condition
-    // Threads modifying the Renderer should be synchronized using the Renderer's mutex
     setObjectName(QStringLiteral("Render Aspect"));
-    Q_D(QRenderAspect);
-    d->registerBackendTypes();
 }
 
 /*! \internal */
@@ -415,9 +462,16 @@ void QRenderAspect::onEngineStartup()
 
 void QRenderAspect::onRegistered()
 {
-    // TODO: Remove the m_initialized variable and split out onInitialize()
-    // and setting a resource (the QSurface) on the aspects.
+    // Create a renderer each time as this is destroyed in onUnregistered below. If
+    // using a threaded renderer, this blocks until the render thread has been created
+    // and started.
     Q_D(QRenderAspect);
+    d->m_renderer = new Render::Renderer(d->m_renderType);
+    d->m_renderer->setNodeManagers(d->m_nodeManagers);
+
+    // Register backend types now that we have a renderer
+    d->registerBackendTypes();
+
     if (!d->m_initialized) {
 
         // Register the VSyncFrameAdvanceService to drive the aspect manager loop
@@ -433,14 +487,6 @@ void QRenderAspect::onRegistered()
         d->m_renderer->createAllocators(d->jobManager());
         d->m_initialized = true;
     }
-
-    //    QSurface *surface = nullptr;
-    //    const QVariant &v = data.value(QStringLiteral("surface"));
-    //    if (v.isValid())
-    //        surface = v.value<QSurface *>();
-
-    //    if (surface)
-    //        d->setSurface(surface);
 
     if (d->m_aspectManager)
         d->m_renderer->registerEventFilter(d->services()->eventFilterService());
@@ -458,6 +504,8 @@ void QRenderAspect::onUnregistered()
         // Free the per-thread threadpool allocators
         d->m_renderer->destroyAllocators(d->jobManager());
     }
+
+    d->unregisterBackendTypes();
 
     // Waits for the render thread to join (if using threaded renderer)
     delete d->m_renderer;

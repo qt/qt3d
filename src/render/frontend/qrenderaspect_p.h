@@ -81,6 +81,7 @@ public:
     Q_DECLARE_PUBLIC(QRenderAspect)
 
     void registerBackendTypes();
+    void unregisterBackendTypes();
     void loadSceneParsers();
     void renderInitialize(QOpenGLContext *context);
     void renderSynchronous();
@@ -98,7 +99,7 @@ public:
     Render::UpdateBoundingVolumeJobPtr m_updateBoundingVolumeJob;
     Render::CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
     QList<QSceneIOHandler *> m_sceneIOHandler;
-
+    QRenderAspect::RenderType m_renderType;
 };
 
 }

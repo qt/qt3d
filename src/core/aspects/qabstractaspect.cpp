@@ -79,6 +79,12 @@ void QAbstractAspectPrivate::onEngineAboutToShutdown()
 {
 }
 
+/*! \internal */
+void QAbstractAspectPrivate::unregisterBackendType(const QMetaObject &mo)
+{
+    m_backendCreatorFunctors.remove(&mo);
+}
+
 /*!
  * \class Qt3DCore::QAbstractAspect
  * \inherits QObject

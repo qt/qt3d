@@ -97,6 +97,11 @@ public:
 
     virtual void onEngineAboutToShutdown();
 
+    // TODO: Make these public in 5.8
+    template<class Frontend>
+    void unregisterBackendType();
+    void unregisterBackendType(const QMetaObject &mo);
+
     Q_DECLARE_PUBLIC(QAbstractAspect)
 
     QEntity *m_root;
@@ -109,7 +114,13 @@ public:
     static QAbstractAspectPrivate *get(QAbstractAspect *aspect);
 };
 
-} // Qt3D
+template<class Frontend>
+void QAbstractAspectPrivate::unregisterBackendType()
+{
+    unregisterBackendType(Frontend::staticMetaObject);
+}
+
+} // Qt3DCore
 
 QT_END_NAMESPACE
 
