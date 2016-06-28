@@ -58,6 +58,8 @@
 
 QT_BEGIN_NAMESPACE
 
+class QQmlIncubationController;
+
 namespace Qt3DCore {
 class QAbstractAspect;
 namespace Quick {
@@ -82,7 +84,8 @@ namespace Qt3DExtras {
 
 namespace Quick {
 
-class QT3DQUICKEXTRASSHARED_EXPORT Qt3DQuickWindow : public QQuickWindow
+
+class QT3DQUICKEXTRASSHARED_EXPORT Qt3DQuickWindow : public QWindow
 {
     Q_OBJECT
     Q_PROPERTY(CameraAspectRatioMode cameraAspectRatioMode READ cameraAspectRatioMode WRITE setCameraAspectRatioMode NOTIFY cameraAspectRatioModeChanged)
@@ -129,6 +132,7 @@ private:
     bool m_initialized;
     QPointer<Qt3DRender::QCamera> m_camera;
     CameraAspectRatioMode m_cameraAspectRatioMode;
+    QQmlIncubationController *m_incubationController;
 };
 
 } // Quick
