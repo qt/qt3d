@@ -143,7 +143,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
             }
 
             case FrameGraphNode::ClearBuffers: {
-                const ClearBuffers* cbNode = static_cast<const ClearBuffers *>(node);
+                const ClearBuffers *cbNode = static_cast<const ClearBuffers *>(node);
                 rv->addClearBuffers(cbNode);
                 break;
             }
