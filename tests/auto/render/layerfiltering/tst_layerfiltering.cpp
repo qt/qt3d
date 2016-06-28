@@ -224,8 +224,7 @@ private Q_SLOTS:
         Qt3DRender::Render::FilterLayerEntityJob filterJob;
         filterJob.setHasLayerFilter(hasLayerFilter);
         filterJob.setLayers(layerIds);
-        auto entityManager = aspect->nodeManagers()->renderNodesManager();
-        filterJob.setManager(entityManager);
+        filterJob.setManager(aspect->nodeManagers());
         filterJob.run();
 
         // THEN

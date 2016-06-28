@@ -61,14 +61,14 @@ namespace Qt3DRender {
 namespace Render {
 
 class Entity;
-class EntityManager;
+class NodeManagers;
 
 class Q_AUTOTEST_EXPORT FilterLayerEntityJob : public Qt3DCore::QAspectJob
 {
 public:
     FilterLayerEntityJob();
 
-    inline void setManager(EntityManager *manager) Q_DECL_NOEXCEPT { m_manager = manager; }
+    inline void setManager(NodeManagers *manager) Q_DECL_NOEXCEPT { m_manager = manager; }
     inline void setLayers(const Qt3DCore::QNodeIdVector &layerIds) Q_DECL_NOEXCEPT { m_layerIds = layerIds; }
     inline void setHasLayerFilter(bool hasLayerFilter) Q_DECL_NOEXCEPT { m_hasLayerFilter = hasLayerFilter; }
     inline QVector<Entity *> filteredEntities() const Q_DECL_NOEXCEPT { return m_filteredEntities; }
@@ -80,7 +80,7 @@ private:
     void filterLayerAndEntity();
     void selectAllEntities();
 
-    EntityManager *m_manager;
+    NodeManagers *m_manager;
     Qt3DCore::QNodeIdVector m_layerIds;
     QVector<Entity *> m_filteredEntities;
     bool m_hasLayerFilter;
