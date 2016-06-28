@@ -486,6 +486,11 @@ void Renderer::doRender()
                 changesToUnset.setFlag(Renderer::ComputeDirty, false);
             clearDirtyBits(changesToUnset);
 
+            // TO DO: Refactor rendering code
+            // 1) Execute commands for buffer uploads, texture updates, shader loading first
+            // 2) Proceed to next frame and start preparing frame n + 1
+            // 3) Submit the render commands for frame n (making sure we never reference something that could be changing)
+
             // Render using current device state and renderer configuration
             submissionData = submitRenderViews(renderViews);
 
@@ -697,7 +702,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
 
         // Set RenderTarget ...
         // Activate RenderTarget
-        m_graphicsContext->activateRenderTarget(nodeManagers()->data<RenderTarget, RenderTargetManager>(renderView->renderTargetHandle()),
+        m_graphicsContext->activateRenderTarget(renderView->renderTargetId(),
                                                 renderView->attachmentPack(),
                                                 lastBoundFBOId);
 

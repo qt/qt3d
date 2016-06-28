@@ -129,8 +129,8 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 HTarget renderTargetHandle = manager->renderTargetManager()->lookupHandle(renderTargetUid);
 
                 // Add renderTarget Handle and build renderCommand AttachmentPack
-                if (rv->renderTargetHandle().isNull()) {
-                    rv->setRenderTargetHandle(renderTargetHandle);
+                if (!rv->renderTargetId()) {
+                    rv->setRenderTargetId(renderTargetUid);
 
                     RenderTarget *renderTarget = manager->renderTargetManager()->data(renderTargetHandle);
                     if (renderTarget)

@@ -193,8 +193,8 @@ public:
     void setAttachmentPack(const AttachmentPack &pack) { m_attachmentPack = pack; }
     const AttachmentPack &attachmentPack() const { return m_attachmentPack; }
 
-    void setRenderTargetHandle(HTarget renderTargetHandle) Q_DECL_NOTHROW { m_renderTarget = renderTargetHandle; }
-    HTarget renderTargetHandle() const Q_DECL_NOTHROW { return m_renderTarget; }
+    void setRenderTargetId(Qt3DCore::QNodeId renderTargetId) Q_DECL_NOTHROW { m_renderTarget = renderTargetId; }
+    Qt3DCore::QNodeId renderTargetId() const Q_DECL_NOTHROW { return m_renderTarget; }
 
     void addSortType(const QVector<Qt3DRender::QSortPolicy::SortType> &sortTypes) { m_data.m_sortingTypes.append(sortTypes); }
 
@@ -243,7 +243,7 @@ private:
     InnerData m_data;
 
     QRectF m_viewport;
-    HTarget m_renderTarget;
+    Qt3DCore::QNodeId m_renderTarget;
     QSurface *m_surface;
     AttachmentPack m_attachmentPack;
     QClearBuffers::BufferTypeFlags m_clearBuffer;

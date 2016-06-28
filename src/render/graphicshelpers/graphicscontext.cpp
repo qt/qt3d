@@ -486,20 +486,20 @@ void GraphicsContext::removeShaderProgramReference(Shader *shaderNode)
     m_shaderCache.removeRef(shaderNode->dna(), shaderNode->peerId());
 }
 
-void GraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments, GLuint defaultFboId)
+void GraphicsContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments, GLuint defaultFboId)
 {
     GLuint fboId = defaultFboId; // Default FBO
-    if (renderTarget != nullptr) {
+    if (renderTargetNodeId) {
         // New RenderTarget
-        if (!m_renderTargets.contains(renderTarget->peerId())) {
+        if (!m_renderTargets.contains(renderTargetNodeId)) {
             if (m_defaultFBO && fboId == m_defaultFBO) {
                 // this is the default fbo that some platforms create (iOS), we just register it
                 // Insert FBO into hash
-                m_renderTargets.insert(renderTarget->peerId(), fboId);
+                m_renderTargets.insert(renderTargetNodeId, fboId);
             } else if ((fboId = m_glHelper->createFrameBufferObject()) != 0) {
                 // The FBO is created and its attachments are set once
                 // Insert FBO into hash
-                m_renderTargets.insert(renderTarget->peerId(), fboId);
+                m_renderTargets.insert(renderTargetNodeId, fboId);
                 // Bind FBO
                 m_glHelper->bindFrameBufferObject(fboId);
                 bindFrameBufferAttachmentHelper(fboId, attachments);
@@ -507,7 +507,7 @@ void GraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const Att
                 qCritical() << "Failed to create FBO";
             }
         } else {
-            fboId = m_renderTargets.value(renderTarget->peerId());
+            fboId = m_renderTargets.value(renderTargetNodeId);
 
             // We need to check if  one of the attachment was resized
             TextureManager *textureManager = m_renderer->nodeManagers()->textureManager();

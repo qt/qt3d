@@ -131,7 +131,7 @@ public:
 
     GLuint activeFBO() const { return m_activeFBO; }
     GLuint defaultFBO() const { return m_defaultFBO; }
-    void activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments, GLuint defaultFboId);
+    void activateRenderTarget(const Qt3DCore::QNodeId id, const AttachmentPack &attachments, GLuint defaultFboId);
 
     Material* activeMaterial() const { return m_material; }
 
