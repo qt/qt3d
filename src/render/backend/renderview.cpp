@@ -243,7 +243,6 @@ RenderView::RenderView()
     , m_viewport(QRectF(0.0f, 0.0f, 1.0f, 1.0f))
     , m_surface(nullptr)
     , m_clearBuffer(QClearBuffers::None)
-    , m_globalClearColorBuffer(nullptr)
     , m_stateSet(nullptr)
     , m_noDraw(false)
     , m_compute(false)
@@ -361,11 +360,22 @@ void RenderView::addClearBuffers(const ClearBuffers *cb) {
     // keep track of global ClearColor (if set) and collect all DrawBuffer-specific
     // ClearColors
     if (type & QClearBuffers::ColorBuffer) {
+        ClearBufferInfo clearBufferInfo;
+        clearBufferInfo.clearColor = cb->clearColor();
+
         if (cb->clearsAllColorBuffers()) {
-            m_globalClearColorBuffer = cb;
+            m_globalClearColorBuffer = clearBufferInfo;
             m_clearBuffer |= QClearBuffers::ColorBuffer;
         } else {
-            m_specificClearColorBuffers.push_back(cb);
+            if (cb->bufferId()) {
+                const RenderTargetOutput *targetOutput = m_manager->attachmentManager()->lookupResource(cb->bufferId());
+                if (targetOutput) {
+                    clearBufferInfo.attchmentPoint = targetOutput->point();
+                    // Note: a job is later performed to find the drawIndex from the buffer attachment point
+                    // using the AttachmentPack
+                    m_specificClearColorBuffers.push_back(clearBufferInfo);
+                }
+            }
         }
     }
 }

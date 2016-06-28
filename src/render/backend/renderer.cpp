@@ -708,8 +708,10 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
 
         // set color, depth, stencil clear values (only if needed)
         auto clearBufferTypes = renderView->clearTypes();
-        if (clearBufferTypes & QClearBuffers::ColorBuffer && renderView->globalClearColorBuffers() != nullptr)
-            m_graphicsContext->clearColor(renderView->globalClearColorBuffers()->clearColorAsColor());
+        if (clearBufferTypes & QClearBuffers::ColorBuffer) {
+            const QVector4D vCol = renderView->globalClearColorBufferInfo().clearColor;
+            m_graphicsContext->clearColor(QColor::fromRgbF(vCol.x(), vCol.y(), vCol.z(), vCol.w()));
+        }
         if (clearBufferTypes & QClearBuffers::DepthBuffer)
             m_graphicsContext->clearDepthValue(renderView->clearDepthValue());
         if (clearBufferTypes & QClearBuffers::StencilBuffer)
@@ -720,14 +722,9 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
 
         // if there are ClearColors set for different draw buffers,
         // clear each of these draw buffers individually now
-        const QVector<const ClearBuffers*> clearDrawBuffers = renderView->specificClearColorBuffers();
-        for (const ClearBuffers *clearBuffer : clearDrawBuffers) {
-            if (!clearBuffer->bufferId().isNull()) {
-                const RenderTargetOutput *buffer = m_nodesManager->attachmentManager()->lookupResource(clearBuffer->bufferId());
-                const int drawBufferIndex = renderView->attachmentPack().getDrawBufferIndex(buffer->point());
-                m_graphicsContext->clearBufferf(drawBufferIndex, clearBuffer->clearColor());
-            }
-        }
+        const QVector<ClearBufferInfo> clearDrawBuffers = renderView->specificClearColorBufferInfo();
+        for (const ClearBufferInfo &clearBuffer : clearDrawBuffers)
+            m_graphicsContext->clearBufferf(clearBuffer.drawBufferIndex, clearBuffer.clearColor);
 
         // Set the Viewport
         m_graphicsContext->setViewport(renderView->viewport(), renderView->surfaceSize() * renderView->devicePixelRatio());

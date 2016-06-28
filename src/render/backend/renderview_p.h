@@ -105,6 +105,13 @@ struct Q_AUTOTEST_EXPORT Plane
     const float d;
 };
 
+struct Q_AUTOTEST_EXPORT ClearBufferInfo
+{
+    int drawBufferIndex = 0;
+    QRenderTargetOutput::AttachmentPoint attchmentPoint = QRenderTargetOutput::Color0;
+    QVector4D clearColor;
+};
+
 // This class is kind of analogous to RenderBin but I want to avoid trampling
 // on that until we get this working
 
@@ -177,8 +184,10 @@ public:
     // color ClearBuffers are collected, as there may be multiple
     // color buffers to be cleared. we need to apply all these at rendering
     void addClearBuffers(const ClearBuffers *cb);
-    inline QVector<const ClearBuffers*> specificClearColorBuffers() const { return m_specificClearColorBuffers; }
-    inline const ClearBuffers* globalClearColorBuffers() const { return m_globalClearColorBuffer; }
+    inline QVector<ClearBufferInfo> specificClearColorBufferInfo() const { return m_specificClearColorBuffers; }
+    inline QVector<ClearBufferInfo> &specificClearColorBufferInfo() { return m_specificClearColorBuffers; }
+    inline ClearBufferInfo globalClearColorBufferInfo() const { return m_globalClearColorBuffer; }
+
     inline QClearBuffers::BufferTypeFlags clearTypes() const { return m_clearBuffer; }
     inline float clearDepthValue() const { return m_clearDepthValue; }
     inline int clearStencilValue() const { return m_clearStencilValue; }
@@ -249,8 +258,8 @@ private:
     QClearBuffers::BufferTypeFlags m_clearBuffer;
     float m_clearDepthValue;
     int m_clearStencilValue;
-    const ClearBuffers* m_globalClearColorBuffer;               // global ClearColor
-    QVector<const ClearBuffers*> m_specificClearColorBuffers;   // different draw buffers with distinct colors
+    ClearBufferInfo m_globalClearColorBuffer;               // global ClearColor
+    QVector<ClearBufferInfo> m_specificClearColorBuffers;   // different draw buffers with distinct colors
     RenderStateSet *m_stateSet;
     bool m_noDraw:1;
     bool m_compute:1;

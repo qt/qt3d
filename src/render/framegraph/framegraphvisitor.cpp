@@ -319,10 +319,19 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
             renderer->enqueueRenderView(rv, currentRenderViewIndex);
         };
 
+        auto setClearBufferDrawIndex = [=] () {
+            RenderView *rv = renderViewJob->renderView();
+            QVector<ClearBufferInfo> &clearBuffersInfo = rv->specificClearColorBufferInfo();
+            const AttachmentPack &attachmentPack = rv->attachmentPack();
+            for (ClearBufferInfo &clearBufferInfo : clearBuffersInfo)
+                clearBufferInfo.drawBufferIndex = attachmentPack.getDrawBufferIndex(clearBufferInfo.attchmentPoint);
+        };
+
         auto syncRenderViewCommandBuildingJob = GenericLambdaJobPtr<decltype(syncForRenderCommandBuilding)>::create(syncForRenderCommandBuilding);
         auto syncRenderViewInitializationJob = GenericLambdaJobPtr<decltype(syncRenderViewInitialization)>::create(syncRenderViewInitialization);
         auto syncRenderViewCommandBuildersJob = GenericLambdaJobPtr<decltype(syncRenderViewCommandBuilders)>::create(syncRenderViewCommandBuilders);
         auto syncFrustumCullingJob = GenericLambdaJobPtr<decltype(syncFrustumCulling)>::create(syncFrustumCulling);
+        auto setClearBufferDrawIndexJob = GenericLambdaJobPtr<decltype(setClearBufferDrawIndex)>::create(setClearBufferDrawIndex);
 
         // Set dependencies
         syncFrustumCullingJob->addDependency(renderer->updateWorldTransformJob());
@@ -330,6 +339,8 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
 
         frustumCulling->addDependency(renderer->expandBoundingVolumeJob());
         frustumCulling->addDependency(syncFrustumCullingJob);
+
+        setClearBufferDrawIndexJob->addDependency(syncRenderViewInitializationJob);
 
         syncRenderViewInitializationJob->addDependency(renderViewJob);
 
@@ -351,6 +362,7 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
             syncRenderViewCommandBuildersJob->addDependency(renderViewCommandBuilder);
         }
         renderer->frameCleanupJob()->addDependency(syncRenderViewCommandBuildersJob);
+        renderer->frameCleanupJob()->addDependency(setClearBufferDrawIndexJob);
 
         // Add jobs
         m_jobs->push_back(renderViewJob);
@@ -363,6 +375,7 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
         m_jobs->push_back(lightGatherer);
         m_jobs->push_back(syncRenderViewCommandBuildersJob);
         m_jobs->push_back(syncFrustumCullingJob);
+        m_jobs->push_back(setClearBufferDrawIndexJob);
 
         for (const auto materialGatherer : qAsConst(materialGatherers))
             m_jobs->push_back(materialGatherer);
