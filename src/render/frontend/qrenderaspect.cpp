@@ -184,7 +184,8 @@ QRenderAspectPrivate::~QRenderAspectPrivate()
     // The renderer should have been shutdown as part of onUnregistered().
     // If it still exists then this aspect is being deleted before the aspect
     // engine is finished with it.
-    Q_ASSERT(m_renderer == nullptr);
+    if (m_renderer != nullptr)
+        qWarning() << Q_FUNC_INFO << "The renderer should have been deleted when reaching this point (this warning may be normal when running tests)";
     delete m_nodeManagers;
 }
 
