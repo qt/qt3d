@@ -67,9 +67,7 @@ namespace Qt3DRender {
             , m_jobManager(new Qt3DCore::QAspectJobManager())
         {
             Qt3DCore::QAbstractAspectPrivate::get(this)->m_jobManager = m_jobManager.data();
-            if (!withWindow) {
-                d_func()->m_renderer->createAllocators(m_jobManager.data());
-            } else {
+            if (withWindow) {
                 m_window.reset(new QWindow());
                 m_window->resize(1024, 768);
 

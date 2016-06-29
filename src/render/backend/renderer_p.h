@@ -154,8 +154,6 @@ public:
     void initialize() Q_DECL_OVERRIDE;
     void shutdown() Q_DECL_OVERRIDE;
     void releaseGraphicsResources() Q_DECL_OVERRIDE;
-    void createAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager) Q_DECL_OVERRIDE;
-    void destroyAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager) Q_DECL_OVERRIDE;
 
     void render() Q_DECL_OVERRIDE;
     void doRender() Q_DECL_OVERRIDE;
@@ -199,11 +197,6 @@ public:
 
     void setOpenGLContext(QOpenGLContext *context);
     const GraphicsApiFilterData *contextInfo() const;
-
-    void addAllocator(Qt3DCore::QFrameAllocator *allocator);
-
-    Qt3DCore::QFrameAllocator *currentFrameAllocator();
-    QThreadStorage<Qt3DCore::QFrameAllocator *> *tlsAllocators();
 
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
@@ -262,14 +255,9 @@ private:
     QSemaphore m_submitRenderViewsSemaphore;
     QSemaphore m_waitForInitializationToBeCompleted;
 
-    static void createThreadLocalAllocator(void *renderer);
-    static void destroyThreadLocalAllocator(void *renderer);
-    QThreadStorage<Qt3DCore::QFrameAllocator *> m_tlsAllocators;
-
     QAtomicInt m_running;
 
     QScopedPointer<PickEventFilter> m_pickEventFilter;
-    QVector<Qt3DCore::QFrameAllocator *> m_allocators;
 
     QVector<Attribute *> m_dirtyAttributes;
     QVector<Geometry *> m_dirtyGeometry;

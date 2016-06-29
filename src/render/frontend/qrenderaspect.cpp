@@ -446,7 +446,6 @@ void QRenderAspect::onRegistered()
         }
 
         d->m_renderer->setServices(d->services());
-        d->m_renderer->createAllocators(d->jobManager());
         d->m_initialized = true;
     }
 
@@ -462,9 +461,6 @@ void QRenderAspect::onUnregistered()
         // Renderer destructor is the synchronization point where we wait for the
         // thread to join (see below).
         d->m_renderer->shutdown();
-
-        // Free the per-thread threadpool allocators
-        d->m_renderer->destroyAllocators(d->jobManager());
     }
 
     d->unregisterBackendTypes();

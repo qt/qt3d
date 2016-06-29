@@ -236,74 +236,6 @@ void Renderer::setOpenGLContext(QOpenGLContext *context)
     m_glContext = context;
 }
 
-void Renderer::createAllocators(QAbstractAspectJobManager *jobManager)
-{
-    // Issue a set of jobs to create an allocator in TLS for each worker thread
-    Q_ASSERT(jobManager);
-    jobManager->waitForPerThreadFunction(Renderer::createThreadLocalAllocator, this);
-}
-
-void Renderer::destroyAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager)
-{
-    // Issue a set of jobs to destroy the allocator in TLS for each worker thread
-    Q_ASSERT(jobManager);
-    jobManager->waitForPerThreadFunction(Renderer::destroyThreadLocalAllocator, this);
-}
-
-QThreadStorage<QFrameAllocator *> *Renderer::tlsAllocators()
-{
-    return &m_tlsAllocators;
-}
-
-/*!
- * For each worker thread we create a QFrameAllocatorQueue which contains m_cachedFrameCount + 1
- * QFrameAllocators. We need an additional QFrameAllocator otherwise we may be clearing the QFrameAllocator
- * of the frame we are currently rendering.
- */
-void Renderer::createThreadLocalAllocator(void *renderer)
-{
-    Q_ASSERT(renderer);
-    Renderer *theRenderer = static_cast<Renderer *>(renderer);
-    if (!theRenderer->tlsAllocators()->hasLocalData()) {
-        // RenderView has a sizeof 72
-        // RenderCommand has a sizeof 128
-        // QMatrix4x4 has a sizeof 68
-        // May need to fine tune parameters passed to QFrameAllocator for best performances
-        QFrameAllocator *allocator = new QFrameAllocator(192, 16, 128);
-        theRenderer->tlsAllocators()->setLocalData(allocator);
-
-        // Add the allocator to the renderer
-        // so that it can be accessed
-        theRenderer->addAllocator(allocator);
-    }
-}
-
-
-/*!
- * Returns the a FrameAllocator for the caller thread.
- */
-Qt3DCore::QFrameAllocator *Renderer::currentFrameAllocator()
-{
-    // return the QFrameAllocator for the current thread
-    // It is never cleared as each renderview when it is destroyed
-    // takes care of releasing anything that may have been allocated
-    // using the allocator
-    return m_tlsAllocators.localData();
-}
-
-void Renderer::destroyThreadLocalAllocator(void *renderer)
-{
-    Q_ASSERT(renderer);
-    Renderer *theRenderer = static_cast<Renderer *>(renderer);
-    if (theRenderer->tlsAllocators()->hasLocalData()) {
-        QFrameAllocator *allocator = theRenderer->tlsAllocators()->localData();
-        allocator->clear();
-        // Setting the local data to null actually deletes the allocatorQeue
-        // as the tls object takes ownership of pointers
-        theRenderer->tlsAllocators()->setLocalData(nullptr);
-    }
-}
-
 // Called in RenderThread context by the run method of RenderThread
 // RenderThread has locked the mutex already and unlocks it when this
 // method termintates
@@ -482,7 +414,6 @@ void Renderer::doRender()
         QMutexLocker locker(&m_mutex);
         const QVector<Render::RenderView *> renderViews = m_renderQueue->nextFrameQueue();
 
-
         if (canRender() && (submissionSucceeded = renderViews.size() > 0) == true) {
             // Clear all dirty flags but Compute so that
             // we still render every frame when a compute shader is used in a scene
@@ -543,17 +474,6 @@ void Renderer::doRender()
         // if the current queue was correctly submitted
         m_renderQueue->reset();
 
-        if (m_running.load()) { // Are we still running ?
-            // Make sure that all the RenderViews, RenderCommands,
-            // UniformValues ... have been completely destroyed and are leak
-            // free
-            // Note: we can check for non render thread cases (scene3d)
-            // only when we are sure that a full frame was previously submitted
-            // (submissionSucceeded == true)
-            for (QFrameAllocator *allocator : qAsConst(m_allocators)) {
-                Q_ASSERT(allocator->isEmpty());
-            }
-        }
         // We allow the RenderTickClock service to proceed to the next frame
         // In turn this will allow the aspect manager to request a new set of jobs
         // to be performed for each aspect
@@ -1151,12 +1071,6 @@ void Renderer::cleanGraphicsResources()
     const QVector<Qt3DCore::QNodeId> buffersToRelease = std::move(m_nodesManager->bufferManager()->buffersToRelease());
     for (Qt3DCore::QNodeId bufferId : buffersToRelease)
         m_graphicsContext->releaseBuffer(bufferId);
-}
-
-void Renderer::addAllocator(Qt3DCore::QFrameAllocator *allocator)
-{
-    QMutexLocker lock(&m_mutex);
-    m_allocators.append(allocator);
 }
 
 QList<QMouseEvent> Renderer::pendingPickingEvents() const
