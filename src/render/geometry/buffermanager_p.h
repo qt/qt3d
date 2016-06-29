@@ -75,8 +75,14 @@ public:
     void addDirtyBuffer(Qt3DCore::QNodeId bufferId);
     QVector<Qt3DCore::QNodeId> dirtyBuffers();
 
+    // Aspect Thread
+    void addBufferToRelease(Qt3DCore::QNodeId bufferId);
+    // Render Thread (no concurrent access)
+    QVector<Qt3DCore::QNodeId> &buffersToRelease();
+
 private:
     QVector<Qt3DCore::QNodeId> m_dirtyBuffers;
+    QVector<Qt3DCore::QNodeId> m_buffersToRelease;
 };
 
 } // namespace Render

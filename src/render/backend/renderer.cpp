@@ -488,6 +488,9 @@ void Renderer::doRender()
 
             // Render using current device state and renderer configuration
             submissionData = submitRenderViews(renderViews);
+
+            // Perform any required cleanup of the Graphics resources (Buffers deleted, Shader deleted...)
+            cleanGraphicsResources();
         }
 
         // Delete all the RenderViews which will clear the allocators
@@ -1116,6 +1119,15 @@ Attribute *Renderer::updateBuffersAndAttributes(Geometry *geometry, RenderComman
     if (count == 0)
         count = indexAttribute ? indexAttribute->count() : estimatedCount;
     return indexAttribute;
+}
+
+// Erase graphics related resources that may become unused after a frame
+void Renderer::cleanGraphicsResources()
+{
+    // Clean buffers
+    const QVector<Qt3DCore::QNodeId> buffersToRelease = std::move(m_nodesManager->bufferManager()->buffersToRelease());
+    for (Qt3DCore::QNodeId bufferId : buffersToRelease)
+        m_graphicsContext->releaseBuffer(bufferId);
 }
 
 void Renderer::addAllocator(Qt3DCore::QFrameAllocator *allocator)

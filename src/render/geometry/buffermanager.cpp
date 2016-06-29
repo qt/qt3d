@@ -65,6 +65,16 @@ QVector<Qt3DCore::QNodeId> BufferManager::dirtyBuffers()
     return vector;
 }
 
+void BufferManager::addBufferToRelease(Qt3DCore::QNodeId bufferId)
+{
+    m_buffersToRelease.push_back(bufferId);
+}
+
+QVector<Qt3DCore::QNodeId> &BufferManager::buffersToRelease()
+{
+    return m_buffersToRelease;
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 

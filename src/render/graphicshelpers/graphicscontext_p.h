@@ -150,6 +150,7 @@ public:
     void specifyAttribute(const Attribute *attribute, Buffer *buffer, const QString &shaderName);
     void specifyIndices(Buffer *buffer);
     void updateBuffer(Buffer *buffer);
+    void releaseBuffer(Qt3DCore::QNodeId bufferId);
 
     void setParameters(ShaderParameterPack &parameterPack);
 

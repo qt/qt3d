@@ -153,6 +153,7 @@ public:
 
     void render() Q_DECL_OVERRIDE;
     void doRender() Q_DECL_OVERRIDE;
+    void cleanGraphicsResources() Q_DECL_OVERRIDE;
 
     bool isRunning() const Q_DECL_OVERRIDE { return m_running.load(); }
 

@@ -125,6 +125,8 @@ public:
     // Synchronous renderer
     virtual void doRender() = 0;
 
+    virtual void cleanGraphicsResources() = 0;
+
     virtual bool isRunning() const = 0;
 
     virtual void markDirty(BackendNodeDirtySet changes, BackendNode *node) = 0;

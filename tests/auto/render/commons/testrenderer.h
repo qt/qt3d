@@ -55,6 +55,7 @@ public:
     void destroyAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager) Q_DECL_OVERRIDE { Q_UNUSED(jobManager); }
     void render() Q_DECL_OVERRIDE {}
     void doRender() Q_DECL_OVERRIDE {}
+    void cleanGraphicsResources() Q_DECL_OVERRIDE {}
     bool isRunning() const Q_DECL_OVERRIDE { return true; }
     bool shouldRender() Q_DECL_OVERRIDE { return true; }
     void skipNextFrame() Q_DECL_OVERRIDE {}

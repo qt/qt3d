@@ -1168,6 +1168,23 @@ void GraphicsContext::updateBuffer(Buffer *buffer)
         uploadDataToGLBuffer(buffer, m_renderer->nodeManagers()->glBufferManager()->data(it.value()));
 }
 
+void GraphicsContext::releaseBuffer(Qt3DCore::QNodeId bufferId)
+{
+    auto it = m_renderBufferHash.find(bufferId);
+    if (it != m_renderBufferHash.end()) {
+        HGLBuffer glBuffHandle = it.value();
+        GLBuffer *glBuff = m_renderer->nodeManagers()->glBufferManager()->data(glBuffHandle);
+
+        Q_ASSERT(glBuff);
+        // Destroy the GPU resource
+        glBuff->destroy(this);
+        // Destroy the GLBuffer instance
+        m_renderer->nodeManagers()->glBufferManager()->releaseResource(bufferId);
+        // Remove Id - HGLBuffer entry
+        m_renderBufferHash.erase(it);
+    }
+}
+
 GLBuffer *GraphicsContext::glBufferForRenderBuffer(Buffer *buf)
 {
     if (!m_renderBufferHash.contains(buf->peerId()))
