@@ -49,12 +49,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-typedef QHash<QString, QAspectFactory::CreateFunction> defaultFactories_t;
+typedef QHash<QLatin1String, QAspectFactory::CreateFunction> defaultFactories_t;
 Q_GLOBAL_STATIC(defaultFactories_t, defaultFactories)
-typedef QHash<const QMetaObject*, QString> defaultAspectNames_t;
+typedef QHash<const QMetaObject*, QLatin1String> defaultAspectNames_t;
 Q_GLOBAL_STATIC(defaultAspectNames_t, defaultAspectNames)
 
-QT3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QString &name,
+QT3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QLatin1String &name,
                                                                  const QMetaObject *metaObject,
                                                                  QAspectFactory::CreateFunction factory)
 {
@@ -85,12 +85,12 @@ QAspectFactory &QAspectFactory::operator=(const QAspectFactory &other)
     return *this;
 }
 
-QStringList QAspectFactory::availableFactories() const
+QList<QLatin1String> QAspectFactory::availableFactories() const
 {
     return m_factories.keys();
 }
 
-QAbstractAspect *QAspectFactory::createAspect(const QString &aspect, QObject *parent) const
+QAbstractAspect *QAspectFactory::createAspect(const QLatin1String &aspect, QObject *parent) const
 {
     if (m_factories.contains(aspect)) {
         return m_factories.value(aspect)(parent);
@@ -100,7 +100,7 @@ QAbstractAspect *QAspectFactory::createAspect(const QString &aspect, QObject *pa
     }
 }
 
-QString QAspectFactory::aspectName(QAbstractAspect *aspect) const
+QLatin1String QAspectFactory::aspectName(QAbstractAspect *aspect) const
 {
     return m_aspectNames.value(aspect->metaObject());
 }

@@ -254,7 +254,7 @@ void QAspectEngine::registerAspect(QAbstractAspect *aspect)
 void QAspectEngine::registerAspect(const QString &name)
 {
     Q_D(QAspectEngine);
-    QAbstractAspect *aspect = d->m_factory.createAspect(name);
+    QAbstractAspect *aspect = d->m_factory.createAspect(QLatin1String(name.toUtf8()));
     if (aspect) {
         registerAspect(aspect);
         d->m_namedAspects.insert(name, aspect);

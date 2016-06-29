@@ -67,10 +67,10 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(factory.availableFactories().size(), 1);
-        QCOMPARE(factory.availableFactories().first(), QString("default"));
+        QCOMPARE(factory.availableFactories().first(), QLatin1String("default"));
 
         // WHEN
-        QAbstractAspect *aspect = factory.createAspect(QStringLiteral("default"));
+        QAbstractAspect *aspect = factory.createAspect(QLatin1String("default"));
 
         // THEN
         QVERIFY(qobject_cast<DefaultFakeAspect*>(aspect) != nullptr);
@@ -87,8 +87,8 @@ private Q_SLOTS:
         AnotherFakeAspect missing;
 
         // THEN
-        QCOMPARE(factory.aspectName(&fake), QString("default"));
-        QCOMPARE(factory.aspectName(&missing), QString());
+        QCOMPARE(factory.aspectName(&fake), QLatin1String("default"));
+        QCOMPARE(factory.aspectName(&missing), QLatin1String());
     }
 
     void shouldGracefulyHandleMissingFactories()
@@ -97,7 +97,7 @@ private Q_SLOTS:
         QAspectFactory factory;
 
         // WHEN
-        QAbstractAspect *aspect = factory.createAspect(QStringLiteral("missing"), this);
+        QAbstractAspect *aspect = factory.createAspect(QLatin1String("missing"), this);
 
         // THEN
         QVERIFY(qobject_cast<AnotherFakeAspect*>(aspect) == nullptr);

@@ -89,13 +89,13 @@ public:
         m_aspectNames.swap(other.m_aspectNames);
     }
 
-    QStringList availableFactories() const;
-    QAbstractAspect *createAspect(const QString &aspect, QObject *parent = 0) const;
-    QString aspectName(QAbstractAspect *aspect) const;
+    QList<QLatin1String> availableFactories() const;
+    QAbstractAspect *createAspect(const QLatin1String &aspect, QObject *parent = 0) const;
+    QLatin1String aspectName(QAbstractAspect *aspect) const;
 
 private:
-    QHash<QString, QAspectFactory::CreateFunction> m_factories;
-    QHash<const QMetaObject*, QString> m_aspectNames;
+    QHash<QLatin1String, QAspectFactory::CreateFunction> m_factories;
+    QHash<const QMetaObject*, QLatin1String> m_aspectNames;
 };
 
 } // namespace Qt3DCore

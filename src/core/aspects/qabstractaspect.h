@@ -107,7 +107,7 @@ QT_END_NAMESPACE
     QT_BEGIN_NAMESPACE \
     namespace Qt3DCore { \
         typedef QAbstractAspect *(*AspectCreateFunction)(QObject *); \
-        QT3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QString &, const QMetaObject *, AspectCreateFunction); \
+        QT3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QLatin1String &, const QMetaObject *, AspectCreateFunction); \
     } \
     QT_END_NAMESPACE \
     namespace { \
@@ -120,7 +120,7 @@ QT_END_NAMESPACE
     void qt3d_ ## AspectType ## _registerFunction() \
     { \
         using namespace AspectNamespace; \
-        qt3d_QAspectFactory_addDefaultFactory(QStringLiteral(name), &AspectType::staticMetaObject, qt3d_ ## AspectType ## _createFunction); \
+        qt3d_QAspectFactory_addDefaultFactory(QLatin1String(name), &AspectType::staticMetaObject, qt3d_ ## AspectType ## _createFunction); \
     } \
     \
     Q_CONSTRUCTOR_FUNCTION(qt3d_ ## AspectType ## _registerFunction) \
