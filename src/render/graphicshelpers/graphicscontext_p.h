@@ -285,6 +285,25 @@ private:
 
     bool m_supportsVAO;
     QScopedPointer<QOpenGLDebugLogger> m_debugLogger;
+
+    friend class OpenGLVertexArrayObject;
+    OpenGLVertexArrayObject *m_currentVAO;
+
+    struct VAOVertexAttribute
+    {
+        HGLBuffer bufferHandle;
+        GLBuffer::Type bufferType;
+        int location;
+        GLint dataType;
+        uint byteOffset;
+        uint vertexSize;
+        uint byteStride;
+        uint divisor;
+    };
+
+    using VAOIndexAttribute = HGLBuffer;
+
+    void enableAttribute(const VAOVertexAttribute &attr);
 };
 
 } // namespace Render

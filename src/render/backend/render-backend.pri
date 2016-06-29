@@ -65,5 +65,6 @@ SOURCES += \
     $$PWD/backendnode.cpp \
     $$PWD/rendertargetoutput.cpp \
     $$PWD/attachmentpack.cpp \
-    $$PWD/commandexecuter.cpp
+    $$PWD/commandexecuter.cpp \
+    $$PWD/openglvertexarrayobject.cpp
 

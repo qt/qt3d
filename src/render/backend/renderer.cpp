@@ -857,29 +857,27 @@ void Renderer::performCompute(const RenderView *, RenderCommand *command)
     }
 }
 
-bool Renderer::createOrUpdateVAO(RenderCommand *command,
+void Renderer::createOrUpdateVAO(RenderCommand *command,
                                  HVao *previousVaoHandle,
                                  OpenGLVertexArrayObject **vao)
 {
     VAOManager *vaoManager = m_nodesManager->vaoManager();
-    if (m_graphicsContext->supportsVAO()) {
-        command->m_vao = vaoManager->lookupHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
+    command->m_vao = vaoManager->lookupHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
 
-        if (command->m_vao.isNull()) {
-            qCDebug(Rendering) << Q_FUNC_INFO << "Allocating new VAO";
-            command->m_vao = vaoManager->getOrAcquireHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
+    if (command->m_vao.isNull()) {
+        qCDebug(Rendering) << Q_FUNC_INFO << "Allocating new VAO";
+        command->m_vao = vaoManager->getOrAcquireHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
+        vaoManager->data(command->m_vao)->setGraphicsContext(m_graphicsContext.data());
+        if (m_graphicsContext->supportsVAO())
             vaoManager->data(command->m_vao)->setVao(new QOpenGLVertexArrayObject());
-            vaoManager->data(command->m_vao)->create();
-        }
-
-        if (*previousVaoHandle != command->m_vao) {
-            *previousVaoHandle = command->m_vao;
-            *vao = vaoManager->data(command->m_vao);
-            return true;
-        }
-        Q_ASSERT(*vao);
+        vaoManager->data(command->m_vao)->create();
     }
-    return false;
+
+    if (*previousVaoHandle != command->m_vao) {
+        *previousVaoHandle = command->m_vao;
+        *vao = vaoManager->data(command->m_vao);
+    }
+    Q_ASSERT(*vao);
 }
 
 // Called by RenderView->submit() in RenderThread context
@@ -923,9 +921,9 @@ bool Renderer::executeCommands(const RenderView *rv)
             }
 
             // The VAO should be created only once for a QGeometry and a ShaderProgram
-            // Manager should have a VAO Manager that are indexed by QMeshData and Shader
+            // Manager should have a VAO Manager that are indexed by QGeometry and Shader
             // RenderCommand should have a handle to the corresponding VAO for the Mesh and Shader
-            const bool needsToBindVAO = createOrUpdateVAO(command, &previousVaoHandle, &vao);
+            createOrUpdateVAO(command, &previousVaoHandle, &vao);
 
             //// We activate the shader here
             // This will fill the attributes & uniforms info the first time the shader is loaded
@@ -939,7 +937,7 @@ bool Renderer::executeCommands(const RenderView *rv)
             // Before the shader was loader
             Attribute *indexAttribute = nullptr;
             bool specified = false;
-            const bool requiresVAOUpdate = (!vao || !vao->isSpecified()) || (rGeometry->isDirty() || rGeometryRenderer->isDirty());
+            const bool requiresVAOUpdate = (!vao->isSpecified()) || (rGeometry->isDirty() || rGeometryRenderer->isDirty());
             GLsizei primitiveCount = rGeometryRenderer->vertexCount();
 
             // Append dirty Geometry to temporary vector
@@ -947,15 +945,14 @@ bool Renderer::executeCommands(const RenderView *rv)
             if (rGeometry->isDirty())
                 m_dirtyGeometry.push_back(rGeometry);
 
-            if (needsToBindVAO && vao != nullptr)
-                vao->bind();
+            // Bind VAO
+            vao->bind();
 
             if (!command->m_attributes.isEmpty()) {
                 // Update or set Attributes and Buffers for the given rGeometry and Command
                 indexAttribute = updateBuffersAndAttributes(rGeometry, command, primitiveCount, requiresVAOUpdate);
                 specified = true;
-                if (vao)
-                    vao->setSpecified(true);
+                vao->setSpecified(true);
             }
 
             //// Update program uniforms
@@ -977,7 +974,7 @@ bool Renderer::executeCommands(const RenderView *rv)
             // at that point
 
             //// Draw Calls
-            if (primitiveCount && (specified || (vao && vao->isSpecified()))) {
+            if (primitiveCount && (specified || vao->isSpecified())) {
                 performDraw(rGeometryRenderer, primitiveCount, indexAttribute);
             } else {
                 allCommandsIssued = false;

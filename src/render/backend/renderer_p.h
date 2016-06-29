@@ -281,7 +281,7 @@ private:
     void performDraw(GeometryRenderer *rGeometryRenderer,
                      GLsizei primitiveCount, Attribute *indexAttribute);
     void performCompute(const RenderView *rv, RenderCommand *command);
-    bool createOrUpdateVAO(RenderCommand *command,
+    void createOrUpdateVAO(RenderCommand *command,
                            HVao *previousVAOHandle,
                            OpenGLVertexArrayObject **vao);
 

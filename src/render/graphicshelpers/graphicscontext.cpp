@@ -160,6 +160,7 @@ GraphicsContext::GraphicsContext()
     , m_uboTempArray(QByteArray(1024, 0))
     , m_supportsVAO(true)
     , m_debugLogger(nullptr)
+    , m_currentVAO(nullptr)
 {
     static_contexts[m_id] = this;
 }
@@ -1122,13 +1123,29 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
     m_activeShader->updateUniforms(this, parameterPack);
 }
 
+void GraphicsContext::enableAttribute(const VAOVertexAttribute &attr)
+{
+    QOpenGLShaderProgram* prog = activeShader();
+    prog->enableAttributeArray(attr.location);
+    prog->setAttributeBuffer(attr.location,
+                             attr.dataType,
+                             attr.byteOffset,
+                             attr.vertexSize,
+                             attr.byteStride);
+
+    // Done by the helper if it supports it
+    if (attr.divisor != 0)
+        m_glHelper->vertexAttribDivisor(attr.location, attr.divisor);
+}
+
 void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffer, const QString &shaderName)
 {
     if (attribute == nullptr || buffer == nullptr)
         return;
 
     GLBuffer *buf = glBufferForRenderBuffer(buffer);
-    bindGLBuffer(buf, bufferTypeToGLBufferType(buffer->type()));
+    const GLBuffer::Type bufferType = bufferTypeToGLBufferType(buffer->type());
+    bindGLBuffer(buf, bufferType);
     // bound within the current VAO
 
     QOpenGLShaderProgram* prog = activeShader();
@@ -1137,17 +1154,24 @@ void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffe
         qCWarning(Backend) << "failed to resolve location for attribute:" << shaderName;
         return;
     }
-    prog->enableAttributeArray(location);
-    prog->setAttributeBuffer(location,
-                             glDataTypeFromAttributeDataType(attribute->vertexBaseType()),
-                             attribute->byteOffset(),
-                             attribute->vertexSize(),
-                             attribute->byteStride());
+    const GLint attributeDataType = glDataTypeFromAttributeDataType(attribute->vertexBaseType());
+    const HGLBuffer glBufferHandle = m_renderer->nodeManagers()->glBufferManager()->lookupHandle(buffer->peerId());
 
-    if (attribute->divisor() != 0) {
-        // Done by the helper if it supports it
-        m_glHelper->vertexAttribDivisor(location, attribute->divisor());
-    }
+    VAOVertexAttribute attr;
+    attr.bufferHandle = glBufferHandle;
+    attr.bufferType = bufferType;
+    attr.location = location;
+    attr.dataType = attributeDataType;
+    attr.byteOffset = attribute->byteOffset();
+    attr.vertexSize = attribute->vertexSize();
+    attr.byteStride = attribute->byteStride();
+    attr.divisor = attribute->divisor();
+
+    enableAttribute(attr);
+
+    // Save this in the current emulated VAO
+    if (m_currentVAO)
+        m_currentVAO->saveVertexAttribute(attr);
 }
 
 void GraphicsContext::specifyIndices(Buffer *buffer)
@@ -1159,6 +1183,9 @@ void GraphicsContext::specifyIndices(Buffer *buffer)
         qCWarning(Backend) << Q_FUNC_INFO << "binding index buffer failed";
 
     // bound within the current VAO
+    // Save this in the current emulated VAO
+    if (m_currentVAO)
+        m_currentVAO->saveIndexAttribute(m_renderer->nodeManagers()->glBufferManager()->lookupHandle(buffer->peerId()));
 }
 
 void GraphicsContext::updateBuffer(Buffer *buffer)
