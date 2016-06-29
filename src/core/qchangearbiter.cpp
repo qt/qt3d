@@ -128,7 +128,8 @@ void QChangeArbiter::distributeQueueChanges(QChangeQueue *changeQueue)
         if (it != m_nodeObservations.cend()) {
             const QObserverList &observers = it.value();
             for (const QObserverPair &observer : observers) {
-                if ((change->type() & observer.first))
+                if ((change->type() & observer.first) &&
+                        (change->deliveryFlags() & QSceneChange::BackendNodes))
                     observer.second->sceneChangeEvent(change);
             }
             if (change->deliveryFlags() & QSceneChange::Nodes) {
