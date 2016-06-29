@@ -118,6 +118,7 @@ public:
     void releaseTextureDataHandles();
 
     inline bool dataUploadRequired() const { return m_dataUploadRequired; }
+    inline bool isDirty() const { return m_isDirty; }
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
