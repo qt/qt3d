@@ -75,7 +75,7 @@ void expandWorldBoundingVolume(Qt3DRender::Render::Entity *node)
 ExpandBoundingVolumeJob::ExpandBoundingVolumeJob()
     : m_node(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::ExpendBoundingVolume, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::ExpandBoundingVolume, 0);
 }
 
 void ExpandBoundingVolumeJob::setRoot(Entity *root)
