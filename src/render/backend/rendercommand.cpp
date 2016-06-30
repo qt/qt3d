@@ -45,12 +45,24 @@ namespace Qt3DRender {
 namespace Render {
 
 RenderCommand::RenderCommand()
-    : m_instancesCount(0)
-    , m_stateSet(nullptr)
+    : m_stateSet(nullptr)
     , m_depth(0.0f)
     , m_changeCost(0)
     , m_type(RenderCommand::Draw)
     , m_sortBackToFront(false)
+    , m_primitiveCount(0)
+    , m_primitiveType(QGeometryRenderer::Triangles)
+    , m_restartIndexValue(-1)
+    , m_firstInstance(0)
+    , m_firstVertex(0)
+    , m_verticesPerPatch(0)
+    , m_instanceCount(0)
+    , m_indexOffset(0)
+    , m_indexAttributeByteOffset(0)
+    , m_indexAttributeDataType(GL_UNSIGNED_SHORT)
+    , m_drawIndexed(false)
+    , m_primitiveRestartEnabled(false)
+    , m_isValid(false)
 {
    m_sortingType.global = 0;
    m_workGroups[0] = 0;

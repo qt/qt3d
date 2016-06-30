@@ -55,6 +55,7 @@
 #include <qglobal.h>
 #include <Qt3DRender/private/quniformvalue_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/qgeometryrenderer.h>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 #include <QMatrix4x4>
@@ -78,7 +79,6 @@ public:
     HShader m_shader; // Shader for given pass and mesh
     ShaderParameterPack m_parameterPack; // Might need to be reworked so as to be able to destroy the
                             // Texture while submission is happening.
-    GLint m_instancesCount; // Number of instances of the mesh, if 0 regular draw otherwise glDrawArraysInstanced or glDrawElementsInstanced
     RenderStateSet *m_stateSet;
 
     HGeometry m_geometry;
@@ -106,6 +106,21 @@ public:
 
     bool m_sortBackToFront;
     int m_workGroups[3];
+
+    // Values filled for draw calls
+    GLsizei m_primitiveCount;
+    QGeometryRenderer::PrimitiveType m_primitiveType;
+    int m_restartIndexValue;
+    int m_firstInstance;
+    int m_firstVertex;
+    int m_verticesPerPatch;
+    int m_instanceCount;
+    int m_indexOffset;
+    uint m_indexAttributeByteOffset;
+    GLint m_indexAttributeDataType;
+    bool m_drawIndexed;
+    bool m_primitiveRestartEnabled;
+    bool m_isValid;
 };
 
 bool compareCommands(RenderCommand *r1, RenderCommand *r2);
