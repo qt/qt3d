@@ -335,6 +335,7 @@ Render::FrameGraphNode *Renderer::frameGraphRoot() const
 void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
 {
     Q_ASSERT(sgRoot);
+    Q_UNUSED(factory);
 
     // If initialization hasn't been completed we must wait
     m_waitForInitializationToBeCompleted.acquire();
