@@ -53,6 +53,8 @@
 //
 
 #include <Qt3DRender/private/genericstate_p.h>
+#include <Qt3DRender/private/renderstates_p.h>
+#include <Qt3DRender/private/statevariant_p.h>
 #include <QVector>
 
 QT_BEGIN_NAMESPACE
@@ -72,7 +74,11 @@ public:
     RenderStateSet();
     ~RenderStateSet();
 
-    void addState(RenderStateImpl* ds);
+    template<typename GenericState>
+    void addState(const GenericState &state)
+    {
+        addState(StateVariant::fromValue(state));
+    }
 
     /**
      * @brief changeCost - metric of cost to change to this state-set from
@@ -88,21 +94,33 @@ public:
     StateMaskSet stateMask() const;
     void merge(RenderStateSet *other);
     void resetMasked(StateMaskSet maskOfStatesToReset, GraphicsContext* gc);
+
+    template<class State, typename ... Args>
+    static StateVariant createState(Args... values)
+    {
+        State state;
+        state.set(values...);
+        return StateVariant::fromValue(state);
+    }
+
+    static StateVariant initializeStateFromPeer(const Qt3DRender::QRenderStateCreatedChangeBasePtr change);
+
 private:
     /**
      * @brief contains - check if this set contains a matching piece of state
      * @param ds
      * @return
      */
-    bool contains(RenderStateImpl* ds) const;
-
-    QVector<RenderStateImpl*> m_states;
+    bool contains(const StateVariant &ds) const;
 
     StateMaskSet m_stateMask;
-
     RenderStateSet* m_cachedPrevious;
-    QVector<RenderStateImpl*> m_cachedDeltaStates;
+    QVector<StateVariant> m_states;
+    QVector<StateVariant> m_cachedDeltaStates;
 };
+
+template<>
+void RenderStateSet::addState<StateVariant>(const StateVariant &state);
 
 } // namespace Render
 } // namespace Qt3DRender

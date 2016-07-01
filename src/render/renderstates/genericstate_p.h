@@ -56,6 +56,7 @@
 #include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DRender/private/statemask_p.h>
+//#include <Qt3DRender/private/statevariant_p.h>
 #include <QList>
 #include <QVector3D>
 #include <QOpenGLContext>
@@ -78,92 +79,15 @@ public:
     virtual ~RenderStateImpl() {}
 
     virtual void apply(GraphicsContext* gc) const = 0;
-    virtual StateMaskSet mask() const = 0;
+    virtual StateMask mask() const = 0;
     virtual bool equalTo(const RenderStateImpl &renderState) const = 0;
-
-    /*!
-     * \brief Stored statically?
-     *
-     * Should each unique RenderStateImpl be stored statically and thus shared
-     * between RenderStateNodes?
-     * This should be disabled for RenderStateImpls that may have a large
-     * number of values, e.g. when they are using arbitrary floats
-     * Default: true
-     */
-    virtual bool isPooledImpl() const Q_DECL_NOTHROW;
-
-    /*!
-     * \brief Return pointer to pooled object with given property change
-     *
-     * For pooled impls: apply property change, get pooled object reflecting
-     * new state
-     */
-    virtual RenderStateImpl *getOrCreateWithPropertyChange(const char *name, const QVariant &value) const = 0;
-
-    static RenderStateImpl *getOrCreateState(const Qt3DRender::QRenderStateCreatedChangeBasePtr change);
     virtual void updateProperty(const char *name, const QVariant &value);
 };
 
-
-template <class State>
-State *getOrCreateRenderStateEqualTo(const State &prototype)
-{
-    static Qt3DCore::QResourceManager<State, int, 16,
-            Qt3DCore::ArrayAllocatingPolicy,
-            Qt3DCore::ObjectLevelLockingPolicy> manager;
-    static int currIndex = 0;
-
-    if (!prototype.isPooledImpl()) {
-        State *state = new State();
-        *state = prototype;
-        return state;
-    }
-
-    // find existing state?
-    for (int idx = 0; idx < currIndex; ++idx) {
-        State *state = manager.lookupResource(idx);
-        if (state->equalTo(prototype))
-            return state;
-    }
-
-    // create new state
-    int thisIndex = currIndex++;
-    State *state = manager.getOrCreateResource(thisIndex);
-    *state = prototype;
-
-    return state;
-}
-
-/**
- * CRTP base class, in order to simplify object template construction
- */
-template <class StateSetImpl, StateMaskSet Mask>
-class MaskedRenderState : public RenderStateImpl
+template <class StateSetImpl, StateMask stateMask, typename ... T>
+class GenericState : public RenderStateImpl
 {
 public:
-    StateMaskSet mask() const Q_DECL_OVERRIDE
-    {
-        return Mask;
-    }
-    // apply delta on temporary template, return instance of actual pooled RenderStateImpl
-    RenderStateImpl *getOrCreateWithPropertyChange(const char *name, const QVariant &value) const Q_DECL_OVERRIDE
-    {
-        Q_ASSERT(isPooledImpl());
-        StateSetImpl newState = *(static_cast<const StateSetImpl*>(this));
-        newState.updateProperty(name, value);
-        return getOrCreateRenderStateEqualTo(newState);
-    }
-    bool equalTo(const RenderStateImpl &renderState) const Q_DECL_OVERRIDE
-    {
-        return mask() == renderState.mask();
-    }
-};
-
-template <class StateSetImpl, StateMask mask, typename ... T>
-class GenericState : public MaskedRenderState<StateSetImpl, mask>
-{
-public:
-
     GenericState *set(T... values)
     {
         m_values = std::tuple<T ...>(values...);
@@ -176,9 +100,14 @@ public:
         return (other != NULL && other->m_values == m_values);
     }
 
+    StateMask mask() const Q_DECL_OVERRIDE
+    {
+        return GenericState::type();
+    }
+
     static StateMask type()
     {
-        return mask;
+        return stateMask;
     }
 
 protected:

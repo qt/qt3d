@@ -59,25 +59,17 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-template<class State, typename ... Args>
-State *getOrCreateRenderStateImpl(Args... values)
-{
-    State state;
-    state.set(values...);
-    return getOrCreateRenderStateEqualTo<State>(state);
-}
-
 class Q_AUTOTEST_EXPORT BlendEquationArguments : public GenericState<BlendEquationArguments, BlendEquationArgumentsMask, GLenum, GLenum, GLenum, GLenum, bool, int>
 {
 public:
-    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
 class Q_AUTOTEST_EXPORT BlendEquation : public GenericState<BlendEquation, BlendStateMask, GLenum>
 {
 public:
-    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
@@ -85,62 +77,61 @@ public:
 class Q_AUTOTEST_EXPORT AlphaFunc : public GenericState<AlphaFunc, AlphaTestMask, GLenum, GLclampf>
 {
 public:
-    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
 };
 
 class Q_AUTOTEST_EXPORT MSAAEnabled : public GenericState<MSAAEnabled, MSAAEnabledStateMask, GLboolean>
 {
 public:
-    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
 class Q_AUTOTEST_EXPORT DepthTest : public GenericState<DepthTest, DepthTestStateMask, GLenum>
 {
 public:
-    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
 class Q_AUTOTEST_EXPORT NoDepthMask : public GenericState<NoDepthMask, DepthWriteStateMask, GLboolean>
 {
 public:
-    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
 class Q_AUTOTEST_EXPORT CullFace : public GenericState<CullFace, CullFaceStateMask, GLenum>
 {
 public:
-    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
 class Q_AUTOTEST_EXPORT FrontFace : public GenericState<FrontFace, FrontFaceStateMask, GLenum>
 {
 public:
-    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT Dithering : public MaskedRenderState<Dithering, DitheringStateMask>
+class Q_AUTOTEST_EXPORT Dithering : public GenericState<Dithering, DitheringStateMask>
 {
 public:
-    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
 };
 
 class Q_AUTOTEST_EXPORT ScissorTest : public GenericState<ScissorTest, ScissorStateMask, int, int, int, int>
 {
 public:
-    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
-    bool isPooledImpl() const Q_DECL_NOTHROW Q_DECL_OVERRIDE { return false; }
+    void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
 class Q_AUTOTEST_EXPORT StencilTest : public GenericState<StencilTest, StencilTestStateMask, GLenum, int, uint, GLenum, int, uint>
 {
 public:
-    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
 };
 
 class Q_AUTOTEST_EXPORT AlphaCoverage : public GenericState<AlphaCoverage, AlphaCoverageStateMask, GLboolean>
@@ -154,7 +145,6 @@ class Q_AUTOTEST_EXPORT PointSize : public GenericState<PointSize, PointSizeMask
 {
 public:
     void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
-    bool isPooledImpl() const Q_DECL_NOTHROW Q_DECL_OVERRIDE { return false; }
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
@@ -162,7 +152,6 @@ class Q_AUTOTEST_EXPORT PolygonOffset : public GenericState<PolygonOffset, Polyg
 {
 public:
     void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
-    bool isPooledImpl() const Q_DECL_NOTHROW Q_DECL_OVERRIDE { return false; }
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 

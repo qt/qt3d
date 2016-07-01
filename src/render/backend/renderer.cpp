@@ -179,9 +179,9 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     m_pickBoundingVolumeJob->addDependency(m_framePreparationJob);
 
     m_defaultRenderStateSet = new RenderStateSet;
-    m_defaultRenderStateSet->addState(getOrCreateRenderStateImpl<DepthTest>(GL_LESS));
-    m_defaultRenderStateSet->addState(getOrCreateRenderStateImpl<CullFace>(GL_BACK));
-    m_defaultRenderStateSet->addState(getOrCreateRenderStateImpl<ColorMask>(true, true, true, true));
+    m_defaultRenderStateSet->addState(RenderStateSet::createState<DepthTest>(GL_LESS));
+    m_defaultRenderStateSet->addState(RenderStateSet::createState<CullFace>(GL_BACK));
+    m_defaultRenderStateSet->addState(RenderStateSet::createState<ColorMask>(true, true, true, true));
 }
 
 Renderer::~Renderer()

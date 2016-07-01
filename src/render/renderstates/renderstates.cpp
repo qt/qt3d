@@ -57,11 +57,6 @@ void RenderStateImpl::updateProperty(const char *name, const QVariant &value)
     Q_UNUSED(value);
 }
 
-bool RenderStateImpl::isPooledImpl() const Q_DECL_NOTHROW
-{
-    return true;
-}
-
 void BlendEquationArguments::apply(GraphicsContext* gc) const
 {
     // Un-indexed BlendEquationArguments -> Use normal GL1.0 functions

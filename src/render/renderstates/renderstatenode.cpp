@@ -38,6 +38,7 @@
 #include <Qt3DRender/qrenderstate.h>
 #include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DRender/private/renderstateset_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,7 +47,6 @@ namespace Render {
 
 RenderStateNode::RenderStateNode()
     : BackendNode()
-    , m_impl(NULL)
 {
 }
 
@@ -57,30 +57,20 @@ RenderStateNode::~RenderStateNode()
 
 void RenderStateNode::cleanup()
 {
-    if (m_impl != nullptr) {
-        if (!m_impl->isPooledImpl())
-            delete m_impl;
-        m_impl = nullptr;
-    }
 }
 
 void RenderStateNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     cleanup();
     const auto renderStateChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChangeBase>(change);
-    m_impl = RenderStateImpl::getOrCreateState(renderStateChange);
+    m_impl = std::move(RenderStateSet::initializeStateFromPeer(renderStateChange));
 }
 
 void RenderStateNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::PropertyUpdated) {
         Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-
-        if (m_impl->isPooledImpl()) {
-            m_impl = m_impl->getOrCreateWithPropertyChange(propertyChange->propertyName(), propertyChange->value());
-        } else {
-            m_impl->updateProperty(propertyChange->propertyName(), propertyChange->value());
-        }
+        m_impl.state()->updateProperty(propertyChange->propertyName(), propertyChange->value());
         markDirty(AbstractRenderer::AllDirty);
     }
     BackendNode::sceneChangeEvent(e);
