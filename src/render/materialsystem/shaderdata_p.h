@@ -114,7 +114,6 @@ protected:
     QMatrix4x4 m_viewMatrix;
     NodeManagers *m_managers;
 
-    void readPeerProperties(QShaderData *peer);
     void clearUpdatedProperties();
     static ShaderData *lookupResource(NodeManagers *managers, Qt3DCore::QNodeId id);
     ShaderData *lookupResource(Qt3DCore::QNodeId id);
