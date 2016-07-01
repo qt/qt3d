@@ -77,6 +77,9 @@ public:
     void purge();
     void clear();
 
+    // Only ever used from the OpenGL submission thread
+    QOpenGLShaderProgram *getShaderProgramForDNA(ProgramDNA dna) const;
+
 private:
     // Only ever used from the OpenGL submission thread
     QHash<ProgramDNA, QOpenGLShaderProgram *> m_programHash;

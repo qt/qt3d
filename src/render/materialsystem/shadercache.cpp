@@ -146,6 +146,11 @@ void ShaderCache::clear()
     m_pendingRemoval.clear();
 }
 
+QOpenGLShaderProgram *ShaderCache::getShaderProgramForDNA(ProgramDNA dna) const
+{
+    return m_programHash.value(dna, nullptr);
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 
