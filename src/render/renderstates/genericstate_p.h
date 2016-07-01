@@ -159,7 +159,7 @@ public:
     }
 };
 
-template <class StateSetImpl, StateMaskSet mask, typename ... T>
+template <class StateSetImpl, StateMask mask, typename ... T>
 class GenericState : public MaskedRenderState<StateSetImpl, mask>
 {
 public:
@@ -174,6 +174,11 @@ public:
     {
         const GenericState *other = static_cast<const GenericState*>(&renderState);
         return (other != NULL && other->m_values == m_values);
+    }
+
+    static StateMask type()
+    {
+        return mask;
     }
 
 protected:

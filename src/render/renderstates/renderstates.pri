@@ -46,7 +46,8 @@ HEADERS += \
     $$PWD/qstenciltestarguments_p.h \
     $$PWD/renderstatenode_p.h \
     $$PWD/qmultisampleantialiasing.h \
-    $$PWD/statemask_p.h
+    $$PWD/statemask_p.h \
+    $$PWD/statevariant_p.h
 
 
 SOURCES += \
@@ -76,4 +77,5 @@ SOURCES += \
     $$PWD/qnodepthmask.cpp \
     $$PWD/qrenderstatecreatedchange.cpp \
     $$PWD/renderstatenode.cpp \
-    $$PWD/qmultisampleantialiasing.cpp
+    $$PWD/qmultisampleantialiasing.cpp \
+    $$PWD/statevariant.cpp

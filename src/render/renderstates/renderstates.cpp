@@ -92,7 +92,7 @@ void BlendEquationArguments::apply(GraphicsContext* gc) const
 
 void BlendEquationArguments::updateProperty(const char *name, const QVariant &value)
 {
-         if (name == QByteArrayLiteral("sourceRgb")) std::get<0>(m_values) = value.toInt();
+    if (name == QByteArrayLiteral("sourceRgb")) std::get<0>(m_values) = value.toInt();
     else if (name == QByteArrayLiteral("destinationRgb")) std::get<1>(m_values) = value.toInt();
     else if (name == QByteArrayLiteral("sourceAlpha")) std::get<2>(m_values) = value.toInt();
     else if (name == QByteArrayLiteral("destinationAlpha")) std::get<3>(m_values) = value.toInt();
@@ -163,7 +163,7 @@ void FrontFace::updateProperty(const char *name, const QVariant &value)
 
 void NoDepthMask::apply(GraphicsContext *gc) const
 {
-   gc->depthMask(std::get<0>(m_values));
+    gc->depthMask(std::get<0>(m_values));
 }
 
 void NoDepthMask::updateProperty(const char *name, const QVariant &value)
@@ -184,7 +184,7 @@ void ScissorTest::apply(GraphicsContext *gc) const
 
 void ScissorTest::updateProperty(const char *name, const QVariant &value)
 {
-         if (name == QByteArrayLiteral("left")) std::get<0>(m_values) = value.toInt();
+    if (name == QByteArrayLiteral("left")) std::get<0>(m_values) = value.toInt();
     else if (name == QByteArrayLiteral("bottom")) std::get<1>(m_values) = value.toInt();
     else if (name == QByteArrayLiteral("width")) std::get<2>(m_values) = value.toInt();
     else if (name == QByteArrayLiteral("height")) std::get<3>(m_values) = value.toInt();
@@ -215,7 +215,7 @@ void PointSize::apply(GraphicsContext *gc) const
 
 void PointSize::updateProperty(const char *name, const QVariant &value)
 {
-         if (name == QByteArrayLiteral("specification")) std::get<0>(m_values) = value.toBool();
+    if (name == QByteArrayLiteral("specification")) std::get<0>(m_values) = value.toBool();
     else if (name == QByteArrayLiteral("value")) std::get<1>(m_values) = value.toFloat();
 }
 
@@ -227,7 +227,7 @@ void PolygonOffset::apply(GraphicsContext *gc) const
 
 void PolygonOffset::updateProperty(const char *name, const QVariant &value)
 {
-         if (name == QByteArrayLiteral("factor")) std::get<0>(m_values) = value.toFloat();
+    if (name == QByteArrayLiteral("factor")) std::get<0>(m_values) = value.toFloat();
     else if (name == QByteArrayLiteral("units")) std::get<1>(m_values) = value.toFloat();
 }
 
@@ -238,7 +238,7 @@ void ColorMask::apply(GraphicsContext *gc) const
 
 void ColorMask::updateProperty(const char *name, const QVariant &value)
 {
-         if (name == QByteArrayLiteral("red")) std::get<0>(m_values) = value.toBool();
+    if (name == QByteArrayLiteral("red")) std::get<0>(m_values) = value.toBool();
     else if (name == QByteArrayLiteral("green")) std::get<1>(m_values) = value.toBool();
     else if (name == QByteArrayLiteral("blue")) std::get<2>(m_values) = value.toBool();
     else if (name == QByteArrayLiteral("alpha")) std::get<3>(m_values) = value.toBool();
@@ -281,7 +281,7 @@ void StencilMask::apply(GraphicsContext *gc) const
 
 void StencilMask::updateProperty(const char *name, const QVariant &value)
 {
-         if (name == QByteArrayLiteral("frontMask")) std::get<0>(m_values) = value.toInt();
+    if (name == QByteArrayLiteral("frontMask")) std::get<0>(m_values) = value.toInt();
     else if (name == QByteArrayLiteral("backMask")) std::get<1>(m_values) = value.toInt();
 }
 
