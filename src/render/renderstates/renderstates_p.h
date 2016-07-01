@@ -59,43 +59,11 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-template <class State, class S>
-State* getOrCreateRenderStateImpl(const S& m1)
+template<class State, typename ... Args>
+State *getOrCreateRenderStateImpl(Args... values)
 {
     State state;
-    state.set(m1);
-    return getOrCreateRenderStateEqualTo<State>(state);
-}
-
-template <class State, class S, class T>
-State* getOrCreateRenderStateImpl(const S& m1, const T& m2)
-{
-    State state;
-    state.set(m1, m2);
-    return getOrCreateRenderStateEqualTo<State>(state);
-}
-
-template <class State, class S, class T, class U>
-State* getOrCreateRenderStateImpl(const S& m1, const T& m2, const U& m3)
-{
-    State state;
-    state.set(m1, m2, m3);
-    return getOrCreateRenderStateEqualTo<State>(state);
-}
-
-template <class State, class S, class T, class U, class V>
-State* getOrCreateRenderStateImpl(const S& m1, const T& m2, const U& m3, const V& m4)
-{
-    State state;
-    state.set(m1, m2, m3, m4);
-    return getOrCreateRenderStateEqualTo<State>(state);
-}
-
-template <class State, class S, class T, class U, class V, class W, class Z>
-State* getOrCreateRenderStateImpl(const S& m1, const T& m2, const U& m3, const V& m4, const W& m5, const Z& m6)
-{
-    State state;
-    state.set(m1, m2, m3, m4, m5, m6);
+    state.set(values...);
     return getOrCreateRenderStateEqualTo<State>(state);
 }
 
