@@ -148,6 +148,7 @@ GraphicsContext::GraphicsContext()
     , m_glHelper(nullptr)
     , m_ownCurrent(true)
     , m_activeShader(nullptr)
+    , m_activeShaderDNA(0)
     , m_currClearStencilValue(0)
     , m_currClearDepthValue(1.f)
     , m_currClearColorValue(0,0,0,0)
@@ -242,8 +243,10 @@ bool GraphicsContext::beginDrawing(QSurface *surface)
     m_gl->functions()->glClearStencil(m_currClearStencilValue);
 
 
-    if (m_activeShader)
-        m_activeShader = NULL;
+    if (m_activeShader) {
+        m_activeShader = nullptr;
+        m_activeShaderDNA = 0;
+    }
 
     m_activeTextures.fill(0);
     m_boundArrayBuffer = nullptr;
@@ -415,7 +418,7 @@ QOpenGLShaderProgram *GraphicsContext::createShaderProgram(Shader *shaderNode)
     for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
         QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
         if (!shaderCode.at(i).isEmpty() &&
-            !shaderProgram->addShaderFromSourceCode(shaderType(type), shaderCode.at(i))) {
+                !shaderProgram->addShaderFromSourceCode(shaderType(type), shaderCode.at(i))) {
             qWarning().noquote() << "Failed to compile shader:" << shaderProgram->log();
         }
     }
@@ -434,15 +437,8 @@ QOpenGLShaderProgram *GraphicsContext::createShaderProgram(Shader *shaderNode)
 }
 
 // That assumes that the shaderProgram in Shader stays the same
-void GraphicsContext::activateShader(Shader *shader)
+void GraphicsContext::loadShader(Shader *shader)
 {
-    if (shader == nullptr) {
-        m_activeShader = nullptr;
-        m_material = nullptr;
-        m_glHelper->useProgram(0);
-        return;
-    }
-
     QOpenGLShaderProgram *shaderProgram = m_shaderCache.getShaderProgramAndAddRef(shader->dna(), shader->peerId());
     if (!shaderProgram) {
         // No matching QOpenGLShader in the cache so create one
@@ -450,9 +446,6 @@ void GraphicsContext::activateShader(Shader *shader)
 
         // Store in cache
         m_shaderCache.insert(shader->dna(), shader->peerId(), shaderProgram);
-
-        // Shader is not yet bound
-        m_activeShader = nullptr;
     }
 
     // Ensure the Shader node knows about the program interface
@@ -471,12 +464,21 @@ void GraphicsContext::activateShader(Shader *shader)
         shader->setGraphicsContext(this);
         shader->setLoaded(true);
     }
+}
 
-    if (m_activeShader != nullptr && m_activeShader->dna() == shader->dna()) {
-        // No-op as requested shader is already bound.
-    } else {
-        m_activeShader = shader;
-        shaderProgram->bind();
+// Called only from RenderThread
+void GraphicsContext::activateShader(ProgramDNA shaderDNA)
+{
+    if (shaderDNA != m_activeShaderDNA) {
+        m_activeShader = m_shaderCache.getShaderProgramForDNA(shaderDNA);
+        if (Q_LIKELY(m_activeShader != nullptr)) {
+            m_activeShader->bind();
+            m_activeShaderDNA = shaderDNA;
+        } else {
+            m_glHelper->useProgram(0);
+            qWarning() << "No shader program found for DNA";
+            m_activeShaderDNA = 0;
+        }
         // Ensure material uniforms are re-applied
         m_material = nullptr;
     }
@@ -1036,10 +1038,10 @@ void GraphicsContext::decayTextureScores()
     }
 }
 
-QOpenGLShaderProgram* GraphicsContext::activeShader()
+QOpenGLShaderProgram* GraphicsContext::activeShader() const
 {
     Q_ASSERT(m_activeShader);
-    return m_shaderCache.getShaderProgramAndAddRef(m_activeShader->dna(), m_activeShader->peerId());
+    return m_activeShader;
 }
 
 void GraphicsContext::setRenderer(Renderer *renderer)
@@ -1120,7 +1122,15 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
     }
 
     // Update uniforms in the Default Uniform Block
-    m_activeShader->updateUniforms(this, parameterPack);
+    const PackUniformHash values = parameterPack.uniforms();
+    const QVector<ShaderUniform> activeUniforms = parameterPack.submissionUniforms();
+
+    for (const ShaderUniform &uniform : activeUniforms) {
+        // We can use [] as we are sure the the uniform wouldn't
+        // be un activeUniforms if there wasn't a matching value
+        const QUniformValue &value = values[uniform.m_nameId];
+        value.apply(this, uniform);
+    }
 }
 
 void GraphicsContext::enableAttribute(const VAOVertexAttribute &attr)

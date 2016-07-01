@@ -638,7 +638,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
 
                     if (!command->m_attributes.isEmpty() && (requiresFullVAOUpdate || requiresPartialVAOUpdate)) {
                         // Activate shader
-                        m_graphicsContext->activateShader(shader);
+                        m_graphicsContext->activateShader(shader->dna());
                         // Bind VAO
                         vao->bind();
                         // Update or set Attributes and Buffers for the given rGeometry and Command
@@ -653,6 +653,9 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                 // so we cannot unset its dirtiness at this point
                 if (rGeometryRenderer->isDirty())
                     rGeometryRenderer->unsetDirty();
+
+                // Prepare the ShaderParameterPack based on the active uniforms of the shader
+                shader->prepareUniforms(command->m_parameterPack);
 
                 // TO DO: The step below could be performed by the RenderCommand builder job
                 { // Scoped to show extent
@@ -699,6 +702,12 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                     command->m_indexOffset = rGeometryRenderer->indexOffset();
                     command->m_verticesPerPatch = rGeometryRenderer->verticesPerPatch();
                 }
+            } else if (command->m_type == RenderCommand::Compute) {
+                Shader *shader = m_nodesManager->data<Shader, ShaderManager>(command->m_shader);
+                Q_ASSERT(shader);
+
+                // Prepare the ShaderParameterPack based on the active uniforms of the shader
+                shader->prepareUniforms(command->m_parameterPack);
             }
         }
     }
@@ -743,7 +752,7 @@ void Renderer::updateGLResources()
         Shader *shader = m_nodesManager->shaderManager()->data(handle);
         if (!shader->isLoaded()) {
             // Compile shader
-            m_graphicsContext->activateShader(shader);
+            m_graphicsContext->loadShader(shader);
         }
     }
 
@@ -1019,23 +1028,20 @@ void Renderer::performDraw(RenderCommand *command)
 
 void Renderer::performCompute(const RenderView *, RenderCommand *command)
 {
-    Shader *shader = m_nodesManager->data<Shader, ShaderManager>(command->m_shader);
-    if (shader != nullptr) {
-        m_graphicsContext->activateShader(shader);
-        m_graphicsContext->setParameters(command->m_parameterPack);
-        m_graphicsContext->dispatchCompute(command->m_workGroups[0],
-                command->m_workGroups[1],
-                command->m_workGroups[2]);
+    m_graphicsContext->activateShader(command->m_shaderDna);
+    m_graphicsContext->setParameters(command->m_parameterPack);
+    m_graphicsContext->dispatchCompute(command->m_workGroups[0],
+            command->m_workGroups[1],
+            command->m_workGroups[2]);
 
-        // HACK: Reset the compute flag to dirty
-        m_changeSet |= AbstractRenderer::ComputeDirty;
+    // HACK: Reset the compute flag to dirty
+    m_changeSet |= AbstractRenderer::ComputeDirty;
 
 #if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
-        int err = m_graphicsContext->openGLContext()->functions()->glGetError();
-        if (err)
-            qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
+    int err = m_graphicsContext->openGLContext()->functions()->glGetError();
+    if (err)
+        qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
 #endif
-    }
 }
 
 void Renderer::createOrUpdateVAO(RenderCommand *command,
@@ -1089,13 +1095,10 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
                 continue;
             }
 
-            Shader *shader = m_nodesManager->data<Shader, ShaderManager>(command->m_shader);
             vao = m_nodesManager->vaoManager()->data(command->m_vao);
 
             //// We activate the shader here
-            // TO DO: Make that use something that doesn't depend on the Shader object directly
-            // This will fill the attributes & uniforms info the first time the shader is loaded
-            m_graphicsContext->activateShader(shader);
+            m_graphicsContext->activateShader(command->m_shaderDna);
 
             // Bind VAO
             vao->bind();
@@ -1140,8 +1143,6 @@ void Renderer::updateVAOWithAttributes(Geometry *geometry,
                                        Shader *shader,
                                        bool forceUpdate)
 {
-    Attribute *indexAttribute = nullptr;
-
     m_dirtyAttributes.reserve(m_dirtyAttributes.size() + geometry->attributes().size());
     const auto attributeIds = geometry->attributes();
     for (QNodeId attributeId : attributeIds) {
@@ -1163,7 +1164,6 @@ void Renderer::updateVAOWithAttributes(Geometry *geometry,
         if (attribute->attributeType() == QAttribute::IndexAttribute) {
             if ((attributeWasDirty = attribute->isDirty()) == true || forceUpdate)
                 m_graphicsContext->specifyIndices(buffer);
-            indexAttribute = attribute;
             // Vertex Attribute
         } else if (command->m_attributes.contains(attribute->nameId())) {
             if ((attributeWasDirty = attribute->isDirty()) == true || forceUpdate) {
@@ -1185,7 +1185,7 @@ void Renderer::updateVAOWithAttributes(Geometry *geometry,
         if (attributeWasDirty)
             m_dirtyAttributes.push_back(attribute);
 
-        // Note: We cannont call unsertDirty on the Attribute at this
+        // Note: We cannot call unsertDirty on the Attribute at this
         // point as we don't know if the attributes are being shared
         // with other geometry / geometryRenderer in which case they still
         // should remain dirty so that VAO for these commands are properly

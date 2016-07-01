@@ -126,7 +126,8 @@ public:
     bool hasValidGLHelper() const;
 
     QOpenGLShaderProgram *createShaderProgram(Shader *shaderNode);
-    void activateShader(Shader* shader);
+    void loadShader(Shader* shader);
+    void activateShader(ProgramDNA shaderDNA);
     void removeShaderProgramReference(Shader *shaderNode);
 
     GLuint activeFBO() const { return m_activeFBO; }
@@ -143,7 +144,7 @@ public:
      * @brief activeShader
      * @return
      */
-    QOpenGLShaderProgram* activeShader();
+    QOpenGLShaderProgram* activeShader() const;
 
     void setRenderer(Renderer *renderer);
 
@@ -249,7 +250,9 @@ private:
     bool m_ownCurrent;
 
     ShaderCache m_shaderCache;
-    Shader *m_activeShader;
+    QOpenGLShaderProgram *m_activeShader;
+    ProgramDNA m_activeShaderDNA;
+
     QHash<Qt3DCore::QNodeId, HGLBuffer> m_renderBufferHash;
     QHash<Qt3DCore::QNodeId, GLuint> m_renderTargets;
     QHash<GLuint, QSize> m_renderTargetsSize;

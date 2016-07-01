@@ -246,15 +246,21 @@ ShaderStorageBlock Shader::storageBlockForBlockName(const QString &blockName)
     return ShaderStorageBlock();
 }
 
-void Shader::updateUniforms(GraphicsContext *ctx, const ShaderParameterPack &pack)
+void Shader::prepareUniforms(ShaderParameterPack &pack)
 {
-    const PackUniformHash values = pack.uniforms();
-    const PackUniformHash::const_iterator valueEnd = values.constEnd();
+    const PackUniformHash &values = pack.uniforms();
 
-    for (const ShaderUniform &uniform : qAsConst(m_uniforms)) {
-        PackUniformHash::const_iterator valueIt = values.constFind(uniform.m_nameId);
-        if (valueIt != valueEnd)
-            valueIt.value().apply(ctx, uniform);
+    auto it = values.cbegin();
+    const auto end = values.cend();
+    while (it != end) {
+        // Find if there's a uniform with the same name id
+        for (const ShaderUniform &uniform : m_uniforms) {
+            if (uniform.m_nameId == it.key()) {
+                pack.setSubmissionUniform(uniform);
+                break;
+            }
+        }
+        ++it;
     }
 }
 

@@ -210,6 +210,7 @@ public:
     void setTexture(const int glslNameId, Qt3DCore::QNodeId id);
     void setUniformBuffer(BlockToUBO blockToUBO);
     void setShaderStorageBuffer(BlockToSSBO blockToSSBO);
+    void setSubmissionUniform(const ShaderUniform &uniform);
 
     inline PackUniformHash &uniforms() { return m_uniforms; }
     inline const PackUniformHash &uniforms() const { return m_uniforms; }
@@ -230,12 +231,14 @@ public:
     inline QVector<NamedTexture> textures() const { return m_textures; }
     inline QVector<BlockToUBO> uniformBuffers() const { return m_uniformBuffers; }
     inline QVector<BlockToSSBO> shaderStorageBuffers() const { return m_shaderStorageBuffers; }
+    inline QVector<ShaderUniform> submissionUniforms() const { return m_submissionUniforms; }
 private:
     PackUniformHash m_uniforms;
 
     QVector<NamedTexture> m_textures;
     QVector<BlockToUBO> m_uniformBuffers;
     QVector<BlockToSSBO> m_shaderStorageBuffers;
+    QVector<ShaderUniform> m_submissionUniforms;
 
     friend class RenderView;
 };
