@@ -39,6 +39,7 @@
 
 #include "qspotlight.h"
 #include "qspotlight_p.h"
+#include "shaderdata_p.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
@@ -72,6 +73,7 @@ QSpotLightPrivate::QSpotLightPrivate()
     m_shaderData->setProperty("linearAttenuation", 0.0f);
     m_shaderData->setProperty("quadraticAttenuation", 0.0f);
     m_shaderData->setProperty("direction", QVector3D(0.0f, -1.0f, 0.0f));
+    m_shaderData->setProperty("directionTransformed", Render::ShaderData::ModelToWorldDirection);
     m_shaderData->setProperty("cutOffAngle", 45.0f);
 }
 
