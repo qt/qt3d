@@ -277,68 +277,66 @@ bool RenderStateSet::contains(RenderStateImpl *ds) const
 RenderStateImpl* RenderStateImpl::getOrCreateState(const Qt3DRender::QRenderStateCreatedChangeBasePtr change)
 {
     switch (change->renderStateType()) {
-    case QRenderStatePrivate::AlphaCoverage: {
+    case AlphaCoverageStateMask: {
         return getOrCreateRenderStateImpl<AlphaCoverage>(change->isNodeEnabled());
     }
 
-    case QRenderStatePrivate::AlphaTest: {
+    case AlphaTestMask: {
         const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QAlphaTestData>>(change);
         const auto &data = typedChange->data;
         return getOrCreateRenderStateImpl<AlphaFunc>(data.alphaFunction, data.referenceValue);
     }
 
-    case QRenderStatePrivate::BlendEquation: {
+    case BlendStateMask: {
         const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QBlendEquationData>>(change);
         const auto &data = typedChange->data;
         return getOrCreateRenderStateImpl<BlendEquation>(data.blendFunction);
     }
 
-    case QRenderStatePrivate::BlendEquationArguments: {
+    case BlendEquationArgumentsMask: {
         const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QBlendEquationArgumentsData>>(change);
         const auto &data = typedChange->data;
         return getOrCreateRenderStateImpl<BlendEquationArguments>(
-            data.sourceRgb, data.destinationRgb,
-            data.sourceAlpha, data.destinationAlpha,
-            change->isNodeEnabled(),
-            data.bufferIndex);
+                    data.sourceRgb, data.destinationRgb,
+                    data.sourceAlpha, data.destinationAlpha,
+                    change->isNodeEnabled(),
+                    data.bufferIndex);
     }
 
-    case QRenderStatePrivate::MSAAEnabled: {
+    case MSAAEnabledStateMask: {
         return getOrCreateRenderStateImpl<MSAAEnabled>(change->isNodeEnabled());
     }
 
-    case QRenderStatePrivate::CullFace: {
+    case CullFaceStateMask: {
         const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QCullFaceData>>(change);
         const auto &data = typedChange->data;
         return getOrCreateRenderStateImpl<CullFace>(data.mode);
     }
 
-    case QRenderStatePrivate::NoDepthMask: {
+    case DepthWriteStateMask: {
         return getOrCreateRenderStateImpl<NoDepthMask>(false);
     }
 
-    case QRenderStatePrivate::DepthTest: {
+    case DepthTestStateMask: {
         const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QDepthTestData>>(change);
         const auto &data = typedChange->data;
         return getOrCreateRenderStateImpl<DepthTest>(data.depthFunction);
     }
 
-    // TODO: Fix Dithering state
-    case QRenderStatePrivate::Dithering:
-    case QRenderStatePrivate::FrontFace: {
+    case FrontFaceStateMask: {
         const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QFrontFaceData>>(change);
         const auto &data = typedChange->data;
         return getOrCreateRenderStateImpl<FrontFace>(data.direction);
     }
 
-    case QRenderStatePrivate::ScissorTest: {
+    case ScissorStateMask: {
         const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QScissorTestData>>(change);
         const auto &data = typedChange->data;
         return getOrCreateRenderStateImpl<ScissorTest>(data.left, data.bottom,
                                                        data.width, data.height);
     }
 
-    case QRenderStatePrivate::StencilTest: {
+    case StencilTestStateMask: {
         const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QStencilTestData>>(change);
         const auto &data = typedChange->data;
         return getOrCreateRenderStateImpl<StencilTest>(data.front.stencilFunction,
@@ -349,27 +347,27 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(const Qt3DRender::QRenderStat
                                                        data.back.comparisonMask);
     }
 
-    case QRenderStatePrivate::PointSize: {
+    case PointSizeMask: {
         const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QPointSizeData>>(change);
         const auto &data = typedChange->data;
         const bool isProgrammable = (data.sizeMode == QPointSize::Programmable);
         return getOrCreateRenderStateImpl<PointSize>(isProgrammable, data.value);
     }
 
-    case QRenderStatePrivate::PolygonOffset: {
+    case PolygonOffsetStateMask: {
         const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QPolygonOffsetData>>(change);
         const auto &data = typedChange->data;
         return getOrCreateRenderStateImpl<PolygonOffset>(data.scaleFactor, data.depthSteps);
     }
 
-    case QRenderStatePrivate::ColorMask: {
+    case ColorStateMask: {
         const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QColorMaskData>>(change);
         const auto &data = typedChange->data;
         return getOrCreateRenderStateImpl<ColorMask>(data.redMasked, data.greenMasked,
                                                      data.blueMasked, data.alphaMasked);
     }
 
-    case QRenderStatePrivate::ClipPlane: {
+    case ClipPlaneMask: {
         const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QClipPlaneData>>(change);
         const auto &data = typedChange->data;
         return getOrCreateRenderStateImpl<ClipPlane>(data.planeIndex,
@@ -377,11 +375,11 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(const Qt3DRender::QRenderStat
                                                      data.distance);
     }
 
-    case QRenderStatePrivate::SeamlessCubemap: {
+    case SeamlessCubemapMask: {
         return getOrCreateRenderStateImpl<SeamlessCubemap>(change->isNodeEnabled());
     }
 
-    case QRenderStatePrivate::StencilOp: {
+    case StencilOpMask: {
         const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QStencilOperationData>>(change);
         const auto &data = typedChange->data;
         return getOrCreateRenderStateImpl<StencilOp>(data.front.stencilTestFailureOperation,
@@ -392,13 +390,15 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(const Qt3DRender::QRenderStat
                                                      data.back.allTestsPassOperation);
     }
 
-    case QRenderStatePrivate::StencilMask: {
+    case StencilWriteStateMask: {
         const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QStencilMaskData>>(change);
         const auto &data = typedChange->data;
         return getOrCreateRenderStateImpl<StencilMask>(data.frontOutputMask,
                                                        data.backOutputMask);
     }
 
+        // TODO: Fix Dithering state
+    case DitheringStateMask:
     default:
         Q_UNREACHABLE();
         qFatal("Should not happen");

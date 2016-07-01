@@ -67,7 +67,7 @@ State *getOrCreateRenderStateImpl(Args... values)
     return getOrCreateRenderStateEqualTo<State>(state);
 }
 
-class Q_AUTOTEST_EXPORT BlendEquationArguments : public GenericState<BlendEquationArguments, BlendStateMask, GLenum, GLenum, GLenum, GLenum, bool, int>
+class Q_AUTOTEST_EXPORT BlendEquationArguments : public GenericState<BlendEquationArguments, BlendEquationArgumentsMask, GLenum, GLenum, GLenum, GLenum, bool, int>
 {
 public:
     virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;

@@ -45,7 +45,8 @@ HEADERS += \
     $$PWD/qstenciltest_p.h \
     $$PWD/qstenciltestarguments_p.h \
     $$PWD/renderstatenode_p.h \
-    $$PWD/qmultisampleantialiasing.h
+    $$PWD/qmultisampleantialiasing.h \
+    $$PWD/statemask_p.h
 
 
 SOURCES += \

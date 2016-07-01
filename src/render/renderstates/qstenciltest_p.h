@@ -61,7 +61,7 @@ class QStencilTestPrivate : public QRenderStatePrivate
 {
 public:
     QStencilTestPrivate()
-        : QRenderStatePrivate(QRenderStatePrivate::StencilTest)
+        : QRenderStatePrivate(Render::StencilTestStateMask)
         , m_front(new QStencilTestArguments(QStencilTestArguments::Front))
         , m_back(new QStencilTestArguments(QStencilTestArguments::Back))
     {

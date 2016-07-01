@@ -59,7 +59,7 @@ class QAlphaTestPrivate : public QRenderStatePrivate
 {
 public:
     QAlphaTestPrivate()
-        : QRenderStatePrivate(QRenderStatePrivate::AlphaTest)
+        : QRenderStatePrivate(Render::AlphaTestMask)
         , m_alphaFunction(QAlphaTest::Never)
         , m_referenceValue(0.0f)
     {

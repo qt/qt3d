@@ -48,7 +48,7 @@ class MyStateSetPrivate : public Qt3DRender::QRenderStatePrivate
 {
 public :
     MyStateSetPrivate()
-        : QRenderStatePrivate(Qt3DRender::QRenderStatePrivate::DepthTest)
+        : QRenderStatePrivate(Qt3DRender::Render::DepthTestStateMask)
     {}
 };
 

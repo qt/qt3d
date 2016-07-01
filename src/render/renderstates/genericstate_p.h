@@ -55,6 +55,7 @@
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>
+#include <Qt3DRender/private/statemask_p.h>
 #include <QList>
 #include <QVector3D>
 #include <QOpenGLContext>
@@ -68,28 +69,6 @@ class QRenderState;
 namespace Render {
 
 class GraphicsContext;
-
-enum StateMask
-{
-    BlendStateMask          = 1 << 0,
-    StencilWriteStateMask   = 1 << 1,
-    StencilTestStateMask    = 1 << 2,
-    ScissorStateMask        = 1 << 3,
-    DepthTestStateMask      = 1 << 4,
-    DepthWriteStateMask     = 1 << 5,
-    CullFaceStateMask       = 1 << 6,
-    AlphaTestMask           = 1 << 7,
-    FrontFaceStateMask      = 1 << 8,
-    DitheringStateMask      = 1 << 9,
-    AlphaCoverageStateMask  = 1 << 10,
-    PolygonOffsetStateMask  = 1 << 11,
-    ColorStateMask          = 1 << 12,
-    ClipPlaneMask           = 1 << 13,
-    StencilOpMask           = 1 << 14,
-    PointSizeMask           = 1 << 15,
-    SeamlessCubemapMask     = 1 << 16,
-    MSAAEnabledStateMask    = 1 << 17
-};
 
 typedef quint64 StateMaskSet;
 

@@ -59,7 +59,7 @@ class QStencilMaskPrivate : public QRenderStatePrivate
 {
 public:
     QStencilMaskPrivate()
-        : QRenderStatePrivate(QRenderStatePrivate::StencilMask)
+        : QRenderStatePrivate(Render::StencilTestStateMask)
         , m_frontOutputMask(0)
         , m_backOutputMask(0)
     {}

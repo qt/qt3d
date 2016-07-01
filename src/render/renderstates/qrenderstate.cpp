@@ -54,7 +54,7 @@ namespace Qt3DRender {
  */
 
 /*! \internal */
-QRenderStatePrivate::QRenderStatePrivate(Type type)
+QRenderStatePrivate::QRenderStatePrivate(Render::StateMask type)
     : QNodePrivate(),
       m_type(type)
 {

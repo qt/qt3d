@@ -58,7 +58,7 @@ namespace Qt3DRender {
 class QBlendEquationArgumentsPrivate : public QRenderStatePrivate
 {
 public:
-    QBlendEquationArgumentsPrivate(QRenderStatePrivate::Type type = QRenderStatePrivate::BlendEquationArguments)
+    QBlendEquationArgumentsPrivate(Render::StateMask type = Render::BlendEquationArgumentsMask)
         : QRenderStatePrivate(type)
         , m_sourceRgb(QBlendEquationArguments::Zero)
         , m_sourceAlpha(QBlendEquationArguments::One)

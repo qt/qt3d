@@ -59,7 +59,7 @@ class QBlendEquationPrivate : public QRenderStatePrivate
 {
 public:
     QBlendEquationPrivate()
-        : QRenderStatePrivate(QRenderStatePrivate::BlendEquation)
+        : QRenderStatePrivate(Render::BlendStateMask)
         , m_blendFunction(QBlendEquation::Add)
     {
     }
