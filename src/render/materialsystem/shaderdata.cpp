@@ -251,6 +251,11 @@ bool ShaderData::updateWorldTransform(const QMatrix4x4 &worldMatrix)
             if (transformedIt.value() == ModelToEye) {
                 m_updatedProperties.insert(transformedIt.key(), m_viewMatrix * m_worldMatrix * m_originalProperties.value(transformedIt.key()).value<QVector3D>());
                 m_properties.insert(transformedIt.key(), m_viewMatrix * m_worldMatrix * m_originalProperties.value(transformedIt.key()).value<QVector3D>());
+            } else if (transformedIt.value() == ModelToWorldDirection) {
+                auto localDirection = QVector4D(m_originalProperties.value(transformedIt.key()).value<QVector3D>(), 0.0f);
+                auto worldDirection = (m_worldMatrix * localDirection).toVector3D();
+                m_updatedProperties.insert(transformedIt.key(), worldDirection);
+                m_properties.insert(transformedIt.key(), worldDirection);
             } else {
                 m_updatedProperties.insert(transformedIt.key(), m_worldMatrix * m_originalProperties.value(transformedIt.key()).value<QVector3D>());
                 m_properties.insert(transformedIt.key(), m_worldMatrix * m_originalProperties.value(transformedIt.key()).value<QVector3D>());

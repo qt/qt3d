@@ -72,7 +72,8 @@ class Q_AUTOTEST_EXPORT ShaderData : public BackendNode
 public:
     enum TransformType {
         ModelToEye = 0,
-        ModelToWorld
+        ModelToWorld,
+        ModelToWorldDirection
     };
 
     ShaderData();
