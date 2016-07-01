@@ -897,6 +897,11 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                         setUniformValue(command->m_parameterPack, LIGHT_TYPE_NAMES[lightIdx], int(QAbstractLight::PointLight));
                         setUniformValue(command->m_parameterPack, LIGHT_COLOR_NAMES[lightIdx], QVector3D(1.0f, 1.0f, 1.0f));
                         setUniformValue(command->m_parameterPack, LIGHT_INTENSITY_NAMES[lightIdx], 0.5f);
+
+                        QMatrix4x4 *worldTransform = lightEntity->worldTransform();
+                        if (worldTransform)
+                            shaderData->updateWorldTransform(*worldTransform);
+
                         setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, LIGHT_STRUCT_NAMES[lightIdx]);
                         ++lightIdx;
                     }
