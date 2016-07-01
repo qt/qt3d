@@ -147,10 +147,11 @@ public:
 
     void setRenderer(Renderer *renderer);
 
-    void specifyAttribute(const Attribute *attribute, Buffer *buffer, const QString &shaderName);
+    void specifyAttribute(const Attribute *attribute, Buffer *buffer, int attributeLocation);
     void specifyIndices(Buffer *buffer);
     void updateBuffer(Buffer *buffer);
     void releaseBuffer(Qt3DCore::QNodeId bufferId);
+    bool hasGLBufferForBuffer(Buffer *buffer);
 
     void setParameters(ShaderParameterPack &parameterPack);
 

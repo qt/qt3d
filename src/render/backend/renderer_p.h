@@ -192,8 +192,16 @@ public:
     virtual void setSettings(RenderSettings *settings) Q_DECL_OVERRIDE;
     virtual RenderSettings *settings() const Q_DECL_OVERRIDE;
 
-    bool executeCommands(const RenderView *rv);
-    Attribute *updateBuffersAndAttributes(Geometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate);
+    void updateGLResources();
+    void prepareCommandsSubmission(const QVector<RenderView *> &renderViews);
+    bool executeCommandsSubmission(const RenderView *rv);
+    void updateVAOWithAttributes(Geometry *geometry,
+                                 RenderCommand *command,
+                                 Shader *shader,
+                                 bool forceUpdate);
+
+    bool requiresVAOAttributeUpdate(Geometry *geometry,
+                                    RenderCommand *command) const;
 
     void setOpenGLContext(QOpenGLContext *context);
     const GraphicsApiFilterData *contextInfo() const;
@@ -278,8 +286,7 @@ private:
     CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
     UpdateWorldBoundingVolumeJobPtr m_updateWorldBoundingVolumeJob;
 
-    void performDraw(GeometryRenderer *rGeometryRenderer,
-                     GLsizei primitiveCount, Attribute *indexAttribute);
+    void performDraw(RenderCommand *command);
     void performCompute(const RenderView *rv, RenderCommand *command);
     void createOrUpdateVAO(RenderCommand *command,
                            HVao *previousVAOHandle,

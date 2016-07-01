@@ -74,7 +74,7 @@ namespace JobTypes {
         RenderView,
         UpdateTransform,
         ExpandBoundingVolume,
-        FrameSubmission,
+        FrameSubmissionPart1,
         LayerFiltering,
         EntityComponentTypeFiltering,
         MaterialParameterGathering,
@@ -82,7 +82,8 @@ namespace JobTypes {
         GenericLambda,
         FrustumCulling,
         LightGathering,
-        UpdateWorldBoundingVolume
+        UpdateWorldBoundingVolume,
+        FrameSubmissionPart2
     };
 
 } // JobTypes

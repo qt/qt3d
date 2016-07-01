@@ -1125,7 +1125,12 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
 
 void GraphicsContext::enableAttribute(const VAOVertexAttribute &attr)
 {
-    QOpenGLShaderProgram* prog = activeShader();
+    // Bind buffer within the current VAO
+    GLBuffer *buf = m_renderer->nodeManagers()->glBufferManager()->data(attr.bufferHandle);
+    Q_ASSERT(buf);
+    bindGLBuffer(buf, attr.bufferType);
+
+    QOpenGLShaderProgram *prog = activeShader();
     prog->enableAttributeArray(attr.location);
     prog->setAttributeBuffer(attr.location,
                              attr.dataType,
@@ -1138,24 +1143,17 @@ void GraphicsContext::enableAttribute(const VAOVertexAttribute &attr)
         m_glHelper->vertexAttribDivisor(attr.location, attr.divisor);
 }
 
-void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffer, const QString &shaderName)
+// Note: needs to be called while VAO is bound
+void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffer, int location)
 {
-    if (attribute == nullptr || buffer == nullptr)
-        return;
-
-    GLBuffer *buf = glBufferForRenderBuffer(buffer);
-    const GLBuffer::Type bufferType = bufferTypeToGLBufferType(buffer->type());
-    bindGLBuffer(buf, bufferType);
-    // bound within the current VAO
-
-    QOpenGLShaderProgram* prog = activeShader();
-    int location = prog->attributeLocation(shaderName);
     if (location < 0) {
-        qCWarning(Backend) << "failed to resolve location for attribute:" << shaderName;
+        qCWarning(Backend) << "failed to resolve location for attribute:" << attribute->name();
         return;
     }
+
     const GLint attributeDataType = glDataTypeFromAttributeDataType(attribute->vertexBaseType());
     const HGLBuffer glBufferHandle = m_renderer->nodeManagers()->glBufferManager()->lookupHandle(buffer->peerId());
+    const GLBuffer::Type bufferType = bufferTypeToGLBufferType(buffer->type());
 
     VAOVertexAttribute attr;
     attr.bufferHandle = glBufferHandle;
@@ -1210,6 +1208,12 @@ void GraphicsContext::releaseBuffer(Qt3DCore::QNodeId bufferId)
         // Remove Id - HGLBuffer entry
         m_renderBufferHash.erase(it);
     }
+}
+
+bool GraphicsContext::hasGLBufferForBuffer(Buffer *buffer)
+{
+    const QHash<Qt3DCore::QNodeId, HGLBuffer>::iterator it = m_renderBufferHash.find(buffer->peerId());
+    return (it != m_renderBufferHash.end());
 }
 
 GLBuffer *GraphicsContext::glBufferForRenderBuffer(Buffer *buf)
