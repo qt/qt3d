@@ -291,7 +291,16 @@ void Shader::updateDNA()
         attachmentHash += ::qHash(it.value()) + ::qHash(it.key());
         ++it;
     }
-    m_dna = codeHash + attachmentHash;
+    const ProgramDNA newDNA = codeHash + attachmentHash;
+
+    // Remove reference to shader based on DNA in the ShaderCache
+    // In turn this will allow to purge the shader program if no other
+    // Shader backend node references it
+    // Note: the purge is actually happening occasionally in GraphicsContext::beginDrawing
+    if (m_graphicsContext && newDNA != m_oldDna)
+        m_graphicsContext->removeShaderProgramReference(this);
+
+    m_dna = newDNA;
 }
 
 void Shader::initializeUniforms(const QVector<ShaderUniform> &uniformsDescription)
