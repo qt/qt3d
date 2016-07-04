@@ -55,7 +55,6 @@
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DRender/private/parameterpack_p.h>
-#include <Qt3DRender/private/renderstatecollection_p.h>
 #include <Qt3DCore/private/qabstractaspect_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -72,7 +71,7 @@ namespace Render {
 class RenderPassManager;
 class RenderState;
 
-class Q_AUTOTEST_EXPORT RenderPass : public BackendNode, public RenderStateCollection
+class Q_AUTOTEST_EXPORT RenderPass : public BackendNode
 {
 public:
     RenderPass();
@@ -85,16 +84,23 @@ public:
     Qt3DCore::QNodeId shaderProgram() const;
     QVector<Qt3DCore::QNodeId> filterKeys() const;
     QVector<Qt3DCore::QNodeId> parameters() const;
+    QVector<Qt3DCore::QNodeId> renderStates() const;
+
+    inline bool hasRenderStates() const { return !m_renderStates.empty(); }
 
 private:
     void appendFilterKey(Qt3DCore::QNodeId filterKeyId);
     void removeFilterKey(Qt3DCore::QNodeId filterKeyId);
+
+    void addRenderState(Qt3DCore::QNodeId renderStateId);
+    void removeRenderState(Qt3DCore::QNodeId renderStateId);
 
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
     Qt3DCore::QNodeId m_shaderUuid;
     QVector<Qt3DCore::QNodeId> m_filterKeyList;
     ParameterPack m_parameterPack;
+    QVector<Qt3DCore::QNodeId> m_renderStates;
 };
 
 } // namespace Render

@@ -63,13 +63,18 @@ StateSetNode::~StateSetNode()
 {
 }
 
+QVector<QNodeId> StateSetNode::renderStates() const
+{
+    return m_renderStates;
+}
+
 void StateSetNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     FrameGraphNode::initializeFromPeer(change);
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderStateSetData>>(change);
     const auto &data = typedChange->data;
     for (const auto &stateId : qAsConst(data.renderStateIds))
-        appendRenderState(stateId);
+        addRenderState(stateId);
 }
 
 void StateSetNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -78,7 +83,7 @@ void StateSetNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     case PropertyValueAdded: {
         const auto change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("renderState")) {
-            appendRenderState(change->addedNodeId());
+            addRenderState(change->addedNodeId());
             markDirty(AbstractRenderer::AllDirty);
         }
         break;
@@ -97,6 +102,17 @@ void StateSetNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
     FrameGraphNode::sceneChangeEvent(e);
+}
+
+void StateSetNode::addRenderState(QNodeId renderStateId)
+{
+    if (!m_renderStates.contains(renderStateId))
+        m_renderStates.push_back(renderStateId);
+}
+
+void StateSetNode::removeRenderState(QNodeId renderStateId)
+{
+    m_renderStates.removeOne(renderStateId);
 }
 
 } // namespace Render

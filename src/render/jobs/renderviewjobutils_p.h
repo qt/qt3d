@@ -147,7 +147,7 @@ Q_AUTOTEST_EXPORT ParameterInfoList::const_iterator findParamInfo(ParameterInfoL
                                                                   const int nameId);
 
 Q_AUTOTEST_EXPORT void addToRenderStateSet(RenderStateSet *stateSet,
-                                           const RenderStateCollection *collection,
+                                           const QVector<Qt3DCore::QNodeId> stateIds,
                                            RenderStateManager *manager);
 
 typedef QHash<int, QVariant> UniformBlockValueBuilderHash;

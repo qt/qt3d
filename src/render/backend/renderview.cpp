@@ -411,7 +411,7 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
                 RenderPass *pass = passData.pass;
                 if (pass->hasRenderStates()) {
                     command->m_stateSet = new RenderStateSet();
-                    addToRenderStateSet(command->m_stateSet, pass, m_manager->renderStateManager());
+                    addToRenderStateSet(command->m_stateSet, pass->renderStates(), m_manager->renderStateManager());
 
                     // Merge per pass stateset with global stateset
                     // so that the local stateset only overrides

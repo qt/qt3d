@@ -87,7 +87,7 @@ private slots:
         // THEN
         QVERIFY(backend.shaderProgram().isNull());
         QVERIFY(backend.filterKeys().isEmpty());
-        QVERIFY(backend.renderStates(m_renderStateManager).isEmpty());
+        QVERIFY(backend.renderStates().isEmpty());
         QVERIFY(backend.parameters().isEmpty());
     }
 
@@ -122,8 +122,8 @@ private slots:
         QCOMPARE(backend.parameters().size(), 1);
         QCOMPARE(backend.parameters().first(), frontend.parameters().first()->id());
 
-        QCOMPARE(backend.renderStates(m_renderStateManager).size(), 1);
-        QCOMPARE(backend.renderStates(m_renderStateManager).first(), backendState);
+        QCOMPARE(backend.renderStates().size(), 1);
+        QCOMPARE(backend.renderStates().first(), backendState->peerId());
     }
 
     void shouldHandleShaderPropertyChangeEvents()
@@ -227,8 +227,8 @@ private slots:
         backend.sceneChangeEvent(addChange);
 
         // THEN
-        QCOMPARE(backend.renderStates(m_renderStateManager).size(), 1);
-        QCOMPARE(backend.renderStates(m_renderStateManager).first(), backendState);
+        QCOMPARE(backend.renderStates().size(), 1);
+        QCOMPARE(backend.renderStates().first(), backendState->peerId());
         QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
@@ -237,7 +237,7 @@ private slots:
         backend.sceneChangeEvent(removeChange);
 
         // THEN
-        QVERIFY(backend.renderStates(m_renderStateManager).isEmpty());
+        QVERIFY(backend.renderStates().isEmpty());
     }
 
 private:

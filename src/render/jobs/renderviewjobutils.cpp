@@ -176,12 +176,13 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 const Render::StateSetNode *rStateSet = static_cast<const Render::StateSetNode *>(node);
                 // Create global RenderStateSet for renderView if no stateSet was set before
                 RenderStateSet *stateSet = rv->stateSet();
-                if (stateSet == nullptr) {
+                if (stateSet == nullptr && rStateSet->hasRenderStates()) {
                     stateSet = new RenderStateSet();
                     rv->setStateSet(stateSet);
                 }
 
-                addToRenderStateSet(stateSet, rStateSet, manager->renderStateManager());
+                if (rStateSet->hasRenderStates())
+                    addToRenderStateSet(stateSet, rStateSet->renderStates(), manager->renderStateManager());
                 break;
             }
 
@@ -404,12 +405,11 @@ void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
 }
 
 void addToRenderStateSet(RenderStateSet *stateSet,
-                         const RenderStateCollection *collection,
+                         const QVector<Qt3DCore::QNodeId> stateIds,
                          RenderStateManager *manager)
 {
-    const auto rstates = collection->renderStates(manager);
-    for (RenderStateNode *rstate : rstates)
-        stateSet->addState(rstate->impl());
+    for (const Qt3DCore::QNodeId &stateId : stateIds)
+        stateSet->addState(manager->lookupResource(stateId)->impl());
 }
 
 namespace {
