@@ -69,6 +69,10 @@ void OpenGLVertexArrayObject::bind()
         Q_ASSERT(m_vao->isCreated());
         m_vao->bind();
     } else {
+        // Unbind any other VAO that may have been bound and not released correctly
+        if (m_ctx->m_currentVAO != nullptr && m_ctx->m_currentVAO != this)
+            m_ctx->m_currentVAO->release();
+
         m_ctx->m_currentVAO = this;
         // We need to specify array and vertex attributes
         for (const GraphicsContext::VAOVertexAttribute &attr : m_vertexAttributes)
@@ -87,7 +91,11 @@ void OpenGLVertexArrayObject::release()
         Q_ASSERT(m_vao->isCreated());
         m_vao->release();
     } else {
-        m_ctx->m_currentVAO = nullptr;
+        if (m_ctx->m_currentVAO == this) {
+            for (const GraphicsContext::VAOVertexAttribute &attr : m_vertexAttributes)
+                m_ctx->disableAttribute(attr);
+            m_ctx->m_currentVAO = nullptr;
+        }
     }
 }
 
