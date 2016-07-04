@@ -397,6 +397,7 @@ void Renderer::render()
 void Renderer::doRender()
 {
     bool submissionSucceeded = false;
+    bool hasCleanedQueueAndProceeded = false;
     Renderer::ViewSubmissionResultData submissionData;
 
     if (isReadyToSubmit()) {
@@ -428,7 +429,6 @@ void Renderer::doRender()
             clearDirtyBits(changesToUnset);
 
             bool preprocessingComplete = false;
-            // TO DO: Refactor rendering code
             { // Scoped to destroy surfaceLock
                 QSurface *surface = renderViews.first()->surface();
                 SurfaceLocker surfaceLock(surface);
@@ -441,13 +441,17 @@ void Renderer::doRender()
                     preprocessingComplete = true;
                 }
             }
-            // 2) TO DO: Proceed to next frame and start preparing frame n + 1
+            // 2) Proceed to next frame and start preparing frame n + 1
+            m_renderQueue->reset();
+            m_vsyncFrameAdvanceService->proceedToNextFrame();
+            hasCleanedQueueAndProceeded = true;
 
 #ifdef QT3D_JOBS_RUN_STATS
             submissionStatsPart2.startTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
             submissionStatsPart1.endTime = submissionStatsPart2.startTime;
 #endif
-            // Only try to submit the RenderViews if the preprocessing success
+            // Only try to submit the RenderViews if the preprocessing was successful
+            // This part of the submission is happening in parallel to the RV building for the next frame
             if (preprocessingComplete) {
                 // 3) Submit the render commands for frame n (making sure we never reference something that could be changing)
                 // Render using current device state and renderer configuration
@@ -488,21 +492,25 @@ void Renderer::doRender()
     // call proceedToNextFrame despite rendering errors that aren't fatal
 
     // Only reset renderQueue and proceed to next frame if the submission
-    // succeeded or it we are using a render thread.
+    // succeeded or it we are using a render thread and that is wasn't performed
+    // already
 
     // If submissionSucceeded isn't true this implies that something went wrong
     // with the rendering and/or the renderqueue is incomplete from some reason
     // (in the case of scene3d the render jobs may be taking too long ....)
     if (m_renderThread || submissionSucceeded) {
-        // Reset the m_renderQueue so that we won't try to render
-        // with a queue used by a previous frame with corrupted content
-        // if the current queue was correctly submitted
-        m_renderQueue->reset();
 
-        // We allow the RenderTickClock service to proceed to the next frame
-        // In turn this will allow the aspect manager to request a new set of jobs
-        // to be performed for each aspect
-        m_vsyncFrameAdvanceService->proceedToNextFrame();
+        if (!hasCleanedQueueAndProceeded) {
+            // Reset the m_renderQueue so that we won't try to render
+            // with a queue used by a previous frame with corrupted content
+            // if the current queue was correctly submitted
+            m_renderQueue->reset();
+
+            // We allow the RenderTickClock service to proceed to the next frame
+            // In turn this will allow the aspect manager to request a new set of jobs
+            // to be performed for each aspect
+            m_vsyncFrameAdvanceService->proceedToNextFrame();
+        }
 
         // Perform the last swapBuffers calls after the proceedToNextFrame
         // as this allows us to gain a bit of time for the preparation of the
