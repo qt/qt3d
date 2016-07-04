@@ -830,10 +830,8 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
         }
 
         // Set RenderView render state
-        // TO DO: The RenderStateSet is created for each renderView but it references
-        // RenderStateImpl which are directly updated by the frontend events.
-        // If we want submission to happen in parallel to frame preparation, this needs
-        // to be changed
+        // Note: the RenderStateSet is allocated once per RV if needed
+        // and it contains a list of StateVariant value types
         RenderStateSet *renderViewStateSet = renderView->stateSet();
         if (renderViewStateSet)
             m_graphicsContext->setCurrentStateSet(renderViewStateSet);
