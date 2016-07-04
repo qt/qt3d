@@ -308,6 +308,7 @@ private:
     using VAOIndexAttribute = HGLBuffer;
 
     void enableAttribute(const VAOVertexAttribute &attr);
+    void disableAttribute(const VAOVertexAttribute &attr);
 };
 
 } // namespace Render

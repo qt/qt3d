@@ -1153,6 +1153,12 @@ void GraphicsContext::enableAttribute(const VAOVertexAttribute &attr)
         m_glHelper->vertexAttribDivisor(attr.location, attr.divisor);
 }
 
+void GraphicsContext::disableAttribute(const GraphicsContext::VAOVertexAttribute &attr)
+{
+    QOpenGLShaderProgram *prog = activeShader();
+    prog->disableAttributeArray(attr.location);
+}
+
 // Note: needs to be called while VAO is bound
 void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffer, int location)
 {
