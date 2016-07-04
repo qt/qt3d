@@ -71,6 +71,9 @@ RenderPass::~RenderPass()
 void RenderPass::cleanup()
 {
     m_renderStates.clear();
+    m_filterKeyList.clear();
+    m_parameterPack.clear();
+    m_shaderUuid = Qt3DCore::QNodeId();
 }
 
 void RenderPass::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
