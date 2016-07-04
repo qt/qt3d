@@ -399,8 +399,15 @@ void Renderer::doRender()
     bool submissionSucceeded = false;
     bool hasCleanedQueueAndProceeded = false;
     Renderer::ViewSubmissionResultData submissionData;
+    bool preprocessingComplete = false;
 
     if (isReadyToSubmit()) {
+
+        // Lock the mutex to protect access to m_surface and check if we are still set
+        // to the running state and that we have a valid surface on which to draw
+        // TO DO: Is that still needed given the surface changes
+        QMutexLocker locker(&m_mutex);
+        const QVector<Render::RenderView *> renderViews = m_renderQueue->nextFrameQueue();
 
 #ifdef QT3D_JOBS_RUN_STATS
         // Save start of frame
@@ -414,11 +421,6 @@ void Renderer::doRender()
         submissionStatsPart2.jobId.typeAndInstance[1] = 0;
         submissionStatsPart2.threadId = reinterpret_cast<quint64>(QThread::currentThreadId());
 #endif
-        // Lock the mutex to protect access to m_surface and check if we are still set
-        // to the running state and that we have a valid surface on which to draw
-        // TO DO: Is that still needed given the surface changes
-        QMutexLocker locker(&m_mutex);
-        const QVector<Render::RenderView *> renderViews = m_renderQueue->nextFrameQueue();
 
         if (canRender() && (submissionSucceeded = renderViews.size() > 0) == true) {
             // Clear all dirty flags but Compute so that
@@ -428,7 +430,6 @@ void Renderer::doRender()
                 changesToUnset.setFlag(Renderer::ComputeDirty, false);
             clearDirtyBits(changesToUnset);
 
-            bool preprocessingComplete = false;
             { // Scoped to destroy surfaceLock
                 QSurface *surface = renderViews.first()->surface();
                 SurfaceLocker surfaceLock(surface);
@@ -447,8 +448,10 @@ void Renderer::doRender()
             hasCleanedQueueAndProceeded = true;
 
 #ifdef QT3D_JOBS_RUN_STATS
-            submissionStatsPart2.startTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
-            submissionStatsPart1.endTime = submissionStatsPart2.startTime;
+            if (preprocessingComplete) {
+                submissionStatsPart2.startTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
+                submissionStatsPart1.endTime = submissionStatsPart2.startTime;
+            }
 #endif
             // Only try to submit the RenderViews if the preprocessing was successful
             // This part of the submission is happening in parallel to the RV building for the next frame
@@ -472,12 +475,14 @@ void Renderer::doRender()
         qDeleteAll(renderViews);
 
 #ifdef QT3D_JOBS_RUN_STATS
-        // Save submission elapsed time
-        submissionStatsPart2.endTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
-        // Note this is safe since proceedToNextFrame is the one going to trigger
-        // the write to the file, and this is performed after this step
-        Qt3DCore::QThreadPooler::addJobLogStatsEntry(submissionStatsPart1);
-        Qt3DCore::QThreadPooler::addJobLogStatsEntry(submissionStatsPart2);
+        if (preprocessingComplete) {
+            // Save submission elapsed time
+            submissionStatsPart2.endTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
+            // Note this is safe since proceedToNextFrame is the one going to trigger
+            // the write to the file, and this is performed after this step
+            Qt3DCore::QThreadPooler::addSubmissionLogStatsEntry(submissionStatsPart1);
+            Qt3DCore::QThreadPooler::addSubmissionLogStatsEntry(submissionStatsPart2);
+        }
 #endif
     }
 

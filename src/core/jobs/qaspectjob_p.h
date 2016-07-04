@@ -63,8 +63,21 @@ class QAspectJob;
 #ifdef QT3D_JOBS_RUN_STATS
 struct FrameHeader
 {
+    FrameHeader()
+        : frameId(0)
+        , jobCount(0)
+        , frameType(WorkerJob)
+    {
+    }
+
+    enum FrameType {
+        WorkerJob = 0,
+        Submission
+    };
+
     quint32 frameId;
-    quint32 jobCount;
+    quint16 jobCount;
+    quint16 frameType; // Submission or worker job
 };
 
 union JobId
