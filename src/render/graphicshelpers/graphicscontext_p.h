@@ -188,7 +188,6 @@ public:
     void    bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer);
     void    bindFragOutputs(GLuint shader, const QHash<QString, int> &outputs);
     void    bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
-    void    bindUniform(const QVariant &v, const ShaderUniform &description);
     void    bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding);
     void    blendEquation(GLenum mode);
     void    blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor);

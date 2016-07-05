@@ -879,11 +879,6 @@ void GraphicsContext::bindFragOutputs(GLuint shader, const QHash<QString, int> &
         m_glHelper->bindFragDataLocation(shader, outputs);
 }
 
-void GraphicsContext::bindUniform(const QVariant &v, const ShaderUniform &description)
-{
-    m_glHelper->bindUniform(v, description);
-}
-
 void GraphicsContext::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
 {
     m_glHelper->bindUniformBlock(programId, uniformBlockIndex, uniformBlockBinding);

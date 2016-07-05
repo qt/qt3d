@@ -67,12 +67,14 @@ public:
 
     // QGraphicHelperInterface interface
     virtual void bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment) Q_DECL_OVERRIDE;
-    virtual void bindUniform(const QVariant &v, const ShaderUniform &description) Q_DECL_OVERRIDE;
     virtual void drawBuffers(GLsizei n, const int *bufs) Q_DECL_OVERRIDE;
     virtual void drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances, GLint baseVertex = 0,  GLint baseInstance = 0) Q_DECL_OVERRIDE;
     virtual void initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) Q_DECL_OVERRIDE;
     virtual bool supportsFeature(Feature feature) const Q_DECL_OVERRIDE;
     virtual void vertexAttribDivisor(GLuint index, GLuint divisor) Q_DECL_OVERRIDE;
+
+    UniformType uniformTypeFromGLType(GLenum glType) Q_DECL_OVERRIDE;
+
 protected:
     QOpenGLExtraFunctions *m_extraFuncs = Q_NULLPTR;
 };
