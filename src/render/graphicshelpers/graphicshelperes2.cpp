@@ -760,6 +760,49 @@ void GraphicsHelperES2::glUniformMatrix4x3fv(GLint , GLsizei , const GLfloat *)
     qWarning() << "glUniformMatrix4x3fv not supported by ES 2";
 }
 
+UniformType GraphicsHelperES2::uniformTypeFromGLType(GLenum type)
+{
+    switch (type) {
+    case GL_FLOAT:
+        return UniformType::Float;
+    case GL_FLOAT_VEC2:
+        return UniformType::Vec2;
+    case GL_FLOAT_VEC3:
+        return UniformType::Vec3;
+    case GL_FLOAT_VEC4:
+        return UniformType::Vec4;
+    case GL_FLOAT_MAT2:
+        return UniformType::Mat2;
+    case GL_FLOAT_MAT3:
+        return UniformType::Mat3;
+    case GL_FLOAT_MAT4:
+        return UniformType::Mat4;
+    case GL_INT:
+        return UniformType::Int;
+    case GL_INT_VEC2:
+        return UniformType::IVec2;
+    case GL_INT_VEC3:
+        return UniformType::IVec3;
+    case GL_INT_VEC4:
+        return UniformType::IVec4;
+    case GL_BOOL:
+        return UniformType::Bool;
+    case GL_BOOL_VEC2:
+        return UniformType::BVec2;
+    case GL_BOOL_VEC3:
+        return UniformType::BVec3;
+    case GL_BOOL_VEC4:
+        return UniformType::BVec4;
+
+    case GL_SAMPLER_2D:
+    case GL_SAMPLER_CUBE:
+        return UniformType::Sampler;
+    default:
+        Q_UNREACHABLE();
+        return UniformType::Float;
+    }
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 

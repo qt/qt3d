@@ -371,6 +371,105 @@ void GraphicsHelperGL4::glUniformMatrix4x3fv(GLint location, GLsizei count, cons
     m_funcs->glUniformMatrix4x3fv(location, count, false, values);
 }
 
+UniformType GraphicsHelperGL4::uniformTypeFromGLType(GLenum type)
+{
+    switch (type) {
+    case GL_FLOAT:
+        return UniformType::Float;
+    case GL_FLOAT_VEC2:
+        return UniformType::Vec2;
+    case GL_FLOAT_VEC3:
+        return UniformType::Vec3;
+    case GL_FLOAT_VEC4:
+        return UniformType::Vec4;
+    case GL_FLOAT_MAT2:
+        return UniformType::Mat2;
+    case GL_FLOAT_MAT3:
+        return UniformType::Mat3;
+    case GL_FLOAT_MAT4:
+        return UniformType::Mat4;
+    case GL_FLOAT_MAT2x3:
+        return UniformType::Mat2x3;
+    case GL_FLOAT_MAT3x2:
+        return UniformType::Mat3x2;
+    case GL_FLOAT_MAT2x4:
+        return UniformType::Mat2x4;
+    case GL_FLOAT_MAT4x2:
+        return UniformType::Mat4x2;
+    case GL_FLOAT_MAT3x4:
+        return UniformType::Mat3x4;
+    case GL_FLOAT_MAT4x3:
+        return UniformType::Mat4x3;
+    case GL_INT:
+        return UniformType::Int;
+    case GL_INT_VEC2:
+        return UniformType::IVec2;
+    case GL_INT_VEC3:
+        return UniformType::IVec3;
+    case GL_INT_VEC4:
+        return UniformType::IVec4;
+    case GL_UNSIGNED_INT:
+        return UniformType::UInt;
+    case GL_UNSIGNED_INT_VEC2:
+        return UniformType::UIVec2;
+    case GL_UNSIGNED_INT_VEC3:
+        return UniformType::UIVec3;
+    case GL_UNSIGNED_INT_VEC4:
+        return UniformType::UIVec4;
+    case GL_BOOL:
+        return UniformType::Bool;
+    case GL_BOOL_VEC2:
+        return UniformType::BVec2;
+    case GL_BOOL_VEC3:
+        return UniformType::BVec3;
+    case GL_BOOL_VEC4:
+        return UniformType::BVec4;
+
+    case GL_SAMPLER_1D:
+    case GL_SAMPLER_1D_ARRAY:
+    case GL_SAMPLER_1D_SHADOW:
+    case GL_SAMPLER_2D:
+    case GL_SAMPLER_2D_RECT:
+    case GL_SAMPLER_2D_SHADOW:
+    case GL_SAMPLER_2D_RECT_SHADOW:
+    case GL_SAMPLER_CUBE:
+    case GL_SAMPLER_CUBE_SHADOW:
+    case GL_SAMPLER_CUBE_MAP_ARRAY:
+    case GL_SAMPLER_CUBE_MAP_ARRAY_SHADOW:
+    case GL_SAMPLER_2D_ARRAY:
+    case GL_SAMPLER_2D_ARRAY_SHADOW:
+    case GL_SAMPLER_2D_MULTISAMPLE:
+    case GL_SAMPLER_2D_MULTISAMPLE_ARRAY:
+    case GL_SAMPLER_3D:
+    case GL_SAMPLER_BUFFER:
+    case GL_INT_SAMPLER_1D:
+    case GL_INT_SAMPLER_2D:
+    case GL_INT_SAMPLER_3D:
+    case GL_INT_SAMPLER_BUFFER:
+    case GL_INT_SAMPLER_CUBE:
+    case GL_INT_SAMPLER_CUBE_MAP_ARRAY:
+    case GL_INT_SAMPLER_1D_ARRAY:
+    case GL_INT_SAMPLER_2D_ARRAY:
+    case GL_INT_SAMPLER_2D_MULTISAMPLE:
+    case GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY:
+    case GL_UNSIGNED_INT_SAMPLER_1D:
+    case GL_UNSIGNED_INT_SAMPLER_2D:
+    case GL_UNSIGNED_INT_SAMPLER_3D:
+    case GL_UNSIGNED_INT_SAMPLER_BUFFER:
+    case GL_UNSIGNED_INT_SAMPLER_1D_ARRAY:
+    case GL_UNSIGNED_INT_SAMPLER_2D_ARRAY:
+    case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE:
+    case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY:
+    case GL_UNSIGNED_INT_SAMPLER_CUBE:
+    case GL_UNSIGNED_INT_SAMPLER_CUBE_MAP_ARRAY:
+        return UniformType::Sampler;
+    default:
+        // TO DO: Add support for Doubles and Images
+        Q_UNREACHABLE();
+        return UniformType::Float;
+    }
+}
+
 void GraphicsHelperGL4::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);

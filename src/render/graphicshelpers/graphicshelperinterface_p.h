@@ -55,6 +55,7 @@
 #include <QOpenGLTexture>
 #include <QVector>
 #include <Qt3DRender/private/shadervariables_p.h>
+#include <Qt3DRender/private/uniform_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -157,6 +158,7 @@ public:
     virtual void glUniformMatrix3x4fv(GLint location, GLsizei count, const GLfloat *value) = 0;
     virtual void glUniformMatrix4x3fv(GLint location, GLsizei count, const GLfloat *value) = 0;
 
+    virtual UniformType uniformTypeFromGLType(GLenum glType) = 0;
 };
 
 

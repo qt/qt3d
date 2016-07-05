@@ -146,6 +146,8 @@ public:
     void glUniformMatrix3x4fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;
     void glUniformMatrix4x3fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;
 
+    UniformType uniformTypeFromGLType(GLenum glType) Q_DECL_OVERRIDE;
+
 private:
     QOpenGLFunctions_2_0 *m_funcs;
     QOpenGLExtension_ARB_framebuffer_object *m_fboFuncs;
