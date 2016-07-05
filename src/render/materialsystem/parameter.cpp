@@ -68,7 +68,6 @@ void Parameter::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
     const auto &data = typedChange->data;
     m_name = data.name;
     m_nameId = StringToInt::lookupId(m_name);
-    m_value = data.backendValue;
     m_uniformValue = UniformValue::fromVariant(data.backendValue);
 }
 
@@ -81,7 +80,6 @@ void Parameter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_name = propertyChange->value().toString();
             m_nameId = StringToInt::lookupId(m_name);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("value")) {
-            m_value = propertyChange->value();
             m_uniformValue = UniformValue::fromVariant(propertyChange->value());
         }
         markDirty(AbstractRenderer::AllDirty);
@@ -93,11 +91,6 @@ void Parameter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 QString Parameter::name() const
 {
     return m_name;
-}
-
-QVariant Parameter::value() const
-{
-    return m_value;
 }
 
 int Parameter::nameId() const Q_DECL_NOTHROW
