@@ -58,5 +58,6 @@ qtConfig(private_tests) {
         qrendertargetoutput \
         qcameralens \
         qcomputecommand \
-        qrendercapture
+        qrendercapture \
+        uniform
 }
