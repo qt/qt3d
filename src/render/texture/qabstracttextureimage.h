@@ -47,10 +47,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-namespace Render {
-class TextureImage;
-}
-
 class QAbstractTextureImagePrivate;
 
 class QT3DRENDERSHARED_EXPORT QAbstractTextureImage : public Qt3DCore::QNode
@@ -84,7 +80,6 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QAbstractTextureImage)
-    friend class Render::TextureImage;
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
