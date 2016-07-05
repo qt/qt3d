@@ -7,7 +7,6 @@ HEADERS += \
     $$PWD/renderthread_p.h \
     $$PWD/renderconfiguration_p.h \
     $$PWD/renderer_p.h \
-    $$PWD/quniformvalue_p.h \
     $$PWD/renderview_p.h \
     $$PWD/rendercommand_p.h \
     $$PWD/renderqueue_p.h \
@@ -37,13 +36,13 @@ HEADERS += \
     $$PWD/backendnode_p.h \
     $$PWD/rendertargetoutput_p.h \
     $$PWD/commandexecuter_p.h \
-    $$PWD/uniform_p.h
+    $$PWD/uniform_p.h \
+    $$PWD/shaderparameterpack_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
     $$PWD/renderconfiguration.cpp \
     $$PWD/renderer.cpp \
-    $$PWD/quniformvalue.cpp \
     $$PWD/renderview.cpp \
     $$PWD/rendercommand.cpp \
     $$PWD/renderqueue.cpp \
@@ -68,5 +67,6 @@ SOURCES += \
     $$PWD/attachmentpack.cpp \
     $$PWD/commandexecuter.cpp \
     $$PWD/openglvertexarrayobject.cpp \
-    $$PWD/uniform.cpp
+    $$PWD/uniform.cpp \
+    $$PWD/shaderparameterpack.cpp
 

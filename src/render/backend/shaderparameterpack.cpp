@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "quniformvalue_p.h"
+#include "shaderparameterpack_p.h"
 
 #include <Qt3DRender/private/graphicscontext_p.h>
 #include <Qt3DRender/private/texture_p.h>

@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QUNIFORMVALUE_H
-#define QT3DRENDER_RENDER_QUNIFORMVALUE_H
+#ifndef QT3DRENDER_RENDER_SHADERPARAMETERPACK_P_H
+#define QT3DRENDER_RENDER_SHADERPARAMETERPACK_P_H
 
 //
 //  W A R N I N G
@@ -138,4 +138,4 @@ QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ShaderParameterPack::NamedTexture, Q
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_QUNIFORMVALUE_H
+#endif // QT3DRENDER_RENDER_SHADERPARAMETERPACK_P_H

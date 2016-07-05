@@ -60,7 +60,7 @@
 #include <QMatrix4x4>
 #include <QBitArray>
 #include <QImage>
-#include <Qt3DRender/private/quniformvalue_p.h>
+#include <Qt3DRender/private/shaderparameterpack_p.h>
 #include <Qt3DRender/qclearbuffers.h>
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DRender/private/glbuffer_p.h>
