@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -54,9 +54,7 @@
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/qabstracttexture.h>
-#include <Qt3DRender/qtextureimage.h>
-#include <Qt3DRender/qabstracttextureimage.h>
-#include <qglobal.h>
+#include <Qt3DRender/qtextureimagedatagenerator.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -68,51 +66,37 @@ class TextureManager;
 class TextureImageManager;
 class TextureDataManager;
 
-typedef quint64 TextureImageDNA;
-
+/**
+ * Backend class for QAbstractTextureImage.
+ * Will only hold the generator and some info values.
+ */
 class TextureImage : public BackendNode
 {
 public:
     TextureImage();
-    void cleanup();
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    ~TextureImage();
 
-    int m_layer;
-    int m_mipLevel;
-    QAbstractTexture::CubeMapFace m_face;
-    bool m_dirty;
-    inline TextureImageDNA dna() const { return m_dna; }
+    void cleanup();
+
+    void setTextureManager(TextureManager *manager);
+
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     inline int layer() const { return m_layer; }
     inline int mipLevel() const { return m_mipLevel; }
     inline QAbstractTexture::CubeMapFace face() const { return m_face; }
-
-    void setTextureManager(TextureManager *manager);
-    void setTextureImageManager(TextureImageManager *manager);
-    void setTextureDataManager(TextureDataManager *manager);
-    void setStatus(QTextureImage::Status status);
-    void unsetDirty();
-
-    inline bool isDirty() const { return m_dirty; }
-    void setTextureDataHandle(HTextureData handle);
-
-    inline HTextureData textureDataHandle() const { return m_textureDataHandle; }
     inline QTextureImageDataGeneratorPtr dataGenerator() const { return m_generator; }
 
-    void updateDNA(quint32 dataHash);
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
-
+    int m_layer;
+    int m_mipLevel;
+    QAbstractTexture::CubeMapFace m_face;
     QTextureImageDataGeneratorPtr m_generator;
-    HTextureData m_textureDataHandle;
+
     TextureManager *m_textureManager;
-    TextureImageManager *m_textureImageManager;
-    TextureDataManager *m_textureDataManager;
-    QVector<Qt3DCore::QNodeId> m_referencedTextures;
     HTexture m_textureProvider;
-    Qt3DCore::QNodeId m_textureProviderId;
-    TextureImageDNA m_dna;
 };
 
 class TextureImageFunctor : public Qt3DCore::QBackendNodeMapper
@@ -120,18 +104,16 @@ class TextureImageFunctor : public Qt3DCore::QBackendNodeMapper
 public:
     explicit TextureImageFunctor(AbstractRenderer *renderer,
                                  TextureManager *textureManager,
-                                 TextureImageManager *textureImageManager,
-                                 TextureDataManager *textureDataManager);
+                                 TextureImageManager *textureImageManager);
 
     Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_FINAL;
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
     void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
 
 private:
+    AbstractRenderer *m_renderer;
     TextureManager *m_textureManager;
     TextureImageManager *m_textureImageManager;
-    TextureDataManager *m_textureDataManager;
-    AbstractRenderer *m_renderer;
 };
 
 

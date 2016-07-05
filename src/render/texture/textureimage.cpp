@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,9 +39,8 @@
 
 #include "textureimage_p.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DRender/qtextureimagedatagenerator.h>
+#include <Qt3DRender/qtextureimage.h>
 #include <Qt3DRender/private/managers_p.h>
-#include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/qabstracttextureimage_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -56,27 +55,16 @@ TextureImage::TextureImage()
     , m_layer(0)
     , m_mipLevel(0)
     , m_face(QAbstractTexture::CubeMapPositiveX)
-    , m_dirty(true)
     , m_textureManager(nullptr)
-    , m_textureImageManager(nullptr)
-    , m_textureDataManager(nullptr)
-    , m_dna(0)
+{
+}
+
+TextureImage::~TextureImage()
 {
 }
 
 void TextureImage::cleanup()
 {
-    QBackendNode::setEnabled(false);
-    m_layer = 0;
-    m_mipLevel = 0;
-    m_dirty = true;
-    m_face = QAbstractTexture::CubeMapPositiveX;
-    m_generator.reset();
-    m_textureManager = nullptr;
-    m_textureImageManager = nullptr;
-    m_textureDataManager = nullptr;
-    m_referencedTextures.clear();
-    m_dna = 0;
 }
 
 void TextureImage::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -89,15 +77,14 @@ void TextureImage::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
     m_generator = data.generator;
 
     if (!change->parentId()) {
-        qWarning() << "No QAbstractTextureProvider parent found";
+        qWarning() << "No QAbstractTexture parent found";
     } else {
-        m_textureProviderId = change->parentId();
-        m_textureProvider = m_textureManager->lookupHandle(m_textureProviderId);
+        const QNodeId id = change->parentId();
+        m_textureProvider = m_textureManager->lookupHandle(id);
         Texture *texture = m_textureManager->data(m_textureProvider);
         Q_ASSERT(texture);
         // Notify the Texture that it has a new TextureImage and needs an update
-        texture->addTextureImageData(m_textureImageManager->lookupHandle(peerId()));
-        texture->addToPendingTextureJobs();
+        texture->addTextureImage(peerId());
     }
 }
 
@@ -105,27 +92,23 @@ void TextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
 
-    const bool wasDirty = m_dirty;
     if (e->type() == PropertyUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("layer")) {
             m_layer = propertyChange->value().toInt();
-            m_dirty = true;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("mipLevel")) {
             m_mipLevel = propertyChange->value().toInt();
-            m_dirty = true;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("face")) {
             m_face = static_cast<QAbstractTexture::CubeMapFace>(propertyChange->value().toInt());
-            m_dirty = true;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("dataGenerator")) {
             m_generator = propertyChange->value().value<QTextureImageDataGeneratorPtr>();
-            m_dirty = true;
         }
-    }
-    if (!wasDirty && wasDirty != m_dirty) { // Notify the Texture that we were updated and request it to schedule an update job
+
+        // Notify the Texture that we were updated and request it to schedule an update job
         Texture *txt = m_textureManager->data(m_textureProvider);
         if (txt != nullptr)
-            txt->addToPendingTextureJobs();
+            txt->addDirtyFlag(Texture::Generators);
     }
+
     markDirty(AbstractRenderer::AllDirty);
     BackendNode::sceneChangeEvent(e);
 }
@@ -135,64 +118,12 @@ void TextureImage::setTextureManager(TextureManager *manager)
     m_textureManager = manager;
 }
 
-void TextureImage::setTextureImageManager(TextureImageManager *manager)
-{
-    m_textureImageManager = manager;
-}
-
-void TextureImage::setTextureDataManager(TextureDataManager *manager)
-{
-    m_textureDataManager = manager;
-}
-
-void TextureImage::unsetDirty()
-{
-    m_dirty = false;
-}
-
-// Called by LoadDataTextureJob when the texture data has been successfully load
-void TextureImage::setTextureDataHandle(HTextureData handle)
-{
-    m_textureDataHandle = handle;
-}
-
-void TextureImage::setStatus(QTextureImage::Status status)
-{
-    // Notify the frontend
-    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
-    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    e->setPropertyName("status");
-    e->setValue(status);
-    notifyObservers(e);
-}
-
-union DNABuilder {
-    quint64 dna;
-    quint32 dataHash;
-    quint16 layer;
-    quint8 face;
-    quint8 mipLevel;
-};
-
-void TextureImage::updateDNA(quint32 dataHash)
-{
-    // 64 bits [ 32 bits data ] [ 16 bits layer ] [ 8 bits mip level ] [ 8 bits face ]
-    DNABuilder builder;
-    builder.dataHash = dataHash;
-    builder.layer = m_layer;
-    builder.face = m_face;
-    builder.mipLevel = m_mipLevel;
-
-    m_dna = builder.dna;
-}
-
-TextureImageFunctor::TextureImageFunctor(AbstractRenderer *renderer, TextureManager *textureManager,
-                                         TextureImageManager *textureImageManager,
-                                         TextureDataManager *textureDataManager)
-    : m_textureManager(textureManager)
+TextureImageFunctor::TextureImageFunctor(AbstractRenderer *renderer,
+                                         TextureManager *textureManager,
+                                         TextureImageManager *textureImageManager)
+    : m_renderer(renderer)
+    , m_textureManager(textureManager)
     , m_textureImageManager(textureImageManager)
-    , m_textureDataManager(textureDataManager)
-    , m_renderer(renderer)
 {
 }
 
@@ -200,8 +131,6 @@ Qt3DCore::QBackendNode *TextureImageFunctor::create(const Qt3DCore::QNodeCreated
 {
     TextureImage *backend = m_textureImageManager->getOrCreateResource(change->subjectId());
     backend->setTextureManager(m_textureManager);
-    backend->setTextureImageManager(m_textureImageManager);
-    backend->setTextureDataManager(m_textureDataManager);
     backend->setRenderer(m_renderer);
     return backend;
 }
