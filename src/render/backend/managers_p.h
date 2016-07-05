@@ -230,6 +230,8 @@ class TextureManager : public Qt3DCore::QResourceManager<
 {
 public:
     TextureManager() {}
+
+    GLTexture *glTextureForNode(Qt3DCore::QNodeId nodeId);
 };
 
 class TransformManager : public Qt3DCore::QResourceManager<

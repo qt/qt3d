@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -69,124 +69,131 @@ class QAbstractTexture;
 
 namespace Render {
 
+class GLTextureManager;
 class TextureManager;
 class TextureImageManager;
-class TextureDataManager;
+class GLTexture;
 
-typedef quint64 TextureDNA;
+/**
+ * General, constant properties of a texture
+ */
+struct TextureProperties
+{
+    int width;
+    int height;
+    int depth;
+    int layers;
+    int mipLevels;
+    int samples;
+    QAbstractTexture::Target target;
+    QAbstractTexture::TextureFormat format;
+    bool generateMipMaps;
 
+    bool operator==(const TextureProperties &o) const {
+        return (width == o.width) && (height == o.height) && (depth == o.depth)
+            && (layers == o.layers) && (mipLevels == o.mipLevels) && (target == o.target)
+            && (format == o.format) && (generateMipMaps == o.generateMipMaps)
+            && (samples == o.samples);
+    }
+    inline bool operator!=(const TextureProperties &o) const { return !(*this == o); }
+};
+
+/**
+ *   Texture parameters that are independent of texture data and that may
+ *   change without the re-uploading the texture
+ */
+struct TextureParameters
+{
+    QAbstractTexture::Filter magnificationFilter;
+    QAbstractTexture::Filter minificationFilter;
+    QTextureWrapMode::WrapMode wrapModeX;
+    QTextureWrapMode::WrapMode wrapModeY;
+    QTextureWrapMode::WrapMode wrapModeZ;
+    float maximumAnisotropy;
+    QAbstractTexture::ComparisonFunction comparisonFunction;
+    QAbstractTexture::ComparisonMode comparisonMode;
+
+    bool operator==(const TextureParameters &o) const {
+        return (magnificationFilter == o.magnificationFilter) && (minificationFilter == o.minificationFilter)
+            && (wrapModeX == o.wrapModeX) && (wrapModeY == o.wrapModeY) && (wrapModeZ == o.wrapModeZ)
+            && (maximumAnisotropy == o.maximumAnisotropy)
+            && (comparisonFunction == o.comparisonFunction) && (comparisonMode == o.comparisonMode);
+    }
+    inline bool operator!=(const TextureParameters &o) const { return !(*this == o); }
+};
+
+/**
+ *   Backend object for QAbstractTexture. Just holds texture properties and parameters.
+ *   Will query the TextureImplManager for an instance of TextureImpl that matches it's
+ *   properties.
+ */
 class Q_AUTOTEST_EXPORT Texture : public BackendNode
 {
 public:
     Texture();
     ~Texture();
+
+    enum DirtyFlag {
+        Properties = 0x1,
+        Parameters = 0x2,
+        Generators = 0x4
+    };
+    Q_DECLARE_FLAGS(DirtyFlags, DirtyFlag)
+
+    void setTextureManager(GLTextureManager *manager);
+    void setTextureImageManager(TextureImageManager *manager);
+
+    void addDirtyFlag(DirtyFlags flags);
+    void addTextureImage(Qt3DCore::QNodeId id);
+    void removeTextureImage(Qt3DCore::QNodeId id);
     void cleanup();
 
-    QOpenGLTexture *getOrCreateGLTexture();
-
-    GLint textureId();
-
-    bool isTextureReset() const;
+    /**
+     * Asks the TextureManager for a Texture that fits this TextureNode's properties.
+     * If this node controls a non-shared texture already, this texture will just be
+     * modified.
+     */
+    void updateTexture();
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    TextureDNA dna() const;
 
-    void setTextureManager(TextureManager *manager);
-    void setTextureImageManager(TextureImageManager *manager);
-    void setTextureDataManager(TextureDataManager *manager);
-
-    void updateAndLoadTextureImage();
-    void addTextureImageData(HTextureImage handle);
-    void removeTextureImageData(HTextureImage handle);
-
-    void requestTextureDataUpdate();
-    void addToPendingTextureJobs();
-    void setTarget(QAbstractTexture::Target target);
-    void setSize(int width, int height, int depth);
-    void setFormat(QAbstractTexture::TextureFormat format);
-    void setMipLevels(int mipmapLevels);
-    void setLayers(int layers);
-
-    int width() const;
-    int height() const;
-    int depth() const;
-    int layers() const;
-    int samples() const;
-
-    inline QVector<HTextureImage> textureImages() const { return m_textureImages; }
-    inline QAbstractTexture::TextureFormat format() const { return m_format; }
-    inline QAbstractTexture::Target target() const { return m_target; }
-    inline bool isAutoMipMapGenerationEnabled() const { return m_generateMipMaps; }
-
-    inline QTextureGeneratorPtr dataGenerator() const { return m_dataFunctor; }
-    void addTextureDataHandle(HTextureData handle);
-    inline QVector<HTextureData> textureDataHandles() const { return m_textureDataHandles; }
-    void releaseTextureDataHandles();
-
-    inline bool dataUploadRequired() const { return m_dataUploadRequired; }
-    inline bool isDirty() const { return m_isDirty; }
+    inline const TextureProperties& properties() const { return m_properties; }
+    inline const TextureParameters& parameters() const { return m_parameters; }
+    inline const QVector<HTextureImage>& textureImages() const { return m_textureImages; }
+    inline const QTextureGeneratorPtr& dataGenerator() const { return m_dataFunctor; }
+    inline GLTexture* texture() const { return m_texture; }
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
-    QOpenGLTexture *m_gl;
-
-    QOpenGLTexture *buildGLTexture();
-    void setToGLTexture(QTextureImageData *imgData);
-    void setToGLTexture(TextureImage *rImg, QTextureImageData *imgData);
-    void updateWrapAndFilters();
-
-    int m_width;
-    int m_height;
-    int m_depth;
-    int m_layers;
-    int m_samples;
-    int m_mipLevels;
-    bool m_generateMipMaps;
-    QAbstractTexture::Target m_target;
-    QAbstractTexture::TextureFormat m_format;
-    QAbstractTexture::Filter m_magnificationFilter;
-    QAbstractTexture::Filter m_minificationFilter;
-    QTextureWrapMode::WrapMode m_wrapModeX;
-    QTextureWrapMode::WrapMode m_wrapModeY;
-    QTextureWrapMode::WrapMode m_wrapModeZ;
-    float m_maximumAnisotropy;
-    QAbstractTexture::ComparisonFunction m_comparisonFunction;
-    QAbstractTexture::ComparisonMode m_comparisonMode;
+    DirtyFlags m_dirty;
+    TextureProperties m_properties;
+    TextureParameters m_parameters;
 
     QTextureGeneratorPtr m_dataFunctor;
-    QVector<HTextureData> m_textureDataHandles;
     QVector<HTextureImage> m_textureImages;
 
-    bool m_isDirty;
-    bool m_filtersAndWrapUpdated;
-    bool m_dataUploadRequired;
-
-    mutable QMutex m_lock;
-    TextureDNA m_textureDNA;
-    TextureManager *m_textureManager;
+    GLTexture *m_texture;
+    GLTextureManager *m_textureManager;
     TextureImageManager *m_textureImageManager;
-    TextureDataManager *m_textureDataManager;
-
-    void updateDNA();
 };
 
 class TextureFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit TextureFunctor(AbstractRenderer *renderer,
-                            TextureManager *textureManager,
-                            TextureImageManager *textureImageManager,
-                            TextureDataManager *textureDataManager);
+                            TextureManager *textureNodeManager,
+                            GLTextureManager *textureManager,
+                            TextureImageManager *textureImageManager);
     Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_FINAL;
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
     void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
 
 private:
     AbstractRenderer *m_renderer;
-    TextureManager *m_textureManager;
+    TextureManager *m_textureNodeManager;
+    GLTextureManager *m_textureManager;
     TextureImageManager *m_textureImageManager;
-    TextureDataManager *m_textureDataManager;
 };
 
 } // namespace Render

@@ -75,6 +75,12 @@ void FrameGraphManager::releaseNode(Qt3DCore::QNodeId id)
     delete m_nodes.take(id);
 }
 
+GLTexture *TextureManager::glTextureForNode(Qt3DCore::QNodeId nodeId)
+{
+    const Texture *node = lookupResource(nodeId);
+    return node ? node->texture() : nullptr;
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 
