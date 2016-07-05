@@ -1033,6 +1033,111 @@ void GraphicsHelperGL3_3::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
     qWarning() << "Compute Shaders are not supported by OpenGL 3.3 (since OpenGL 4.3)";
 }
 
+void GraphicsHelperGL3_3::glUniform1fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniform1fv(location, count, values);
+}
+
+void GraphicsHelperGL3_3::glUniform2fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniform2fv(location, count, values);
+}
+
+void GraphicsHelperGL3_3::glUniform3fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniform3fv(location, count, values);
+}
+
+void GraphicsHelperGL3_3::glUniform4fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniform4fv(location, count, values);
+}
+
+void GraphicsHelperGL3_3::glUniform1iv(GLint location, GLsizei count, const GLint *values)
+{
+    m_funcs->glUniform1iv(location, count, values);
+}
+
+void GraphicsHelperGL3_3::glUniform2iv(GLint location, GLsizei count, const GLint *values)
+{
+    m_funcs->glUniform2iv(location, count, values);
+}
+
+void GraphicsHelperGL3_3::glUniform3iv(GLint location, GLsizei count, const GLint *values)
+{
+    m_funcs->glUniform3iv(location, count, values);
+}
+
+void GraphicsHelperGL3_3::glUniform4iv(GLint location, GLsizei count, const GLint *values)
+{
+    m_funcs->glUniform4iv(location, count, values);
+}
+
+void GraphicsHelperGL3_3::glUniform1uiv(GLint location, GLsizei count, const GLuint *values)
+{
+    m_funcs->glUniform1uiv(location, count, values);
+}
+
+void GraphicsHelperGL3_3::glUniform2uiv(GLint location, GLsizei count, const GLuint *values)
+{
+    m_funcs->glUniform2uiv(location, count, values);
+}
+
+void GraphicsHelperGL3_3::glUniform3uiv(GLint location, GLsizei count, const GLuint *values)
+{
+    m_funcs->glUniform3uiv(location, count, values);
+}
+
+void GraphicsHelperGL3_3::glUniform4uiv(GLint location, GLsizei count, const GLuint *values)
+{
+    m_funcs->glUniform4uiv(location, count, values);
+}
+
+void GraphicsHelperGL3_3::glUniformMatrix2fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniformMatrix2fv(location, count, false, values);
+}
+
+void GraphicsHelperGL3_3::glUniformMatrix3fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniformMatrix3fv(location, count, false, values);
+}
+
+void GraphicsHelperGL3_3::glUniformMatrix4fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniformMatrix4fv(location, count, false, values);
+}
+
+void GraphicsHelperGL3_3::glUniformMatrix2x3fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniformMatrix2x3fv(location, count, false, values);
+}
+
+void GraphicsHelperGL3_3::glUniformMatrix3x2fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniformMatrix3x2fv(location, count, false, values);
+}
+
+void GraphicsHelperGL3_3::glUniformMatrix2x4fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniformMatrix2x4fv(location, count, false, values);
+}
+
+void GraphicsHelperGL3_3::glUniformMatrix4x2fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniformMatrix4x2fv(location, count, false, values);
+}
+
+void GraphicsHelperGL3_3::glUniformMatrix3x4fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniformMatrix3x4fv(location, count, false, values);
+}
+
+void GraphicsHelperGL3_3::glUniformMatrix4x3fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniformMatrix4x3fv(location, count, false, values);
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 

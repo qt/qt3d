@@ -131,6 +131,32 @@ public:
     virtual uint    uniformByteSize(const ShaderUniform &description) = 0;
     virtual void    useProgram(GLuint programId) = 0;
     virtual void    vertexAttribDivisor(GLuint index, GLuint divisor) = 0;
+
+    virtual void glUniform1fv(GLint location, GLsizei count, const GLfloat *value) = 0;
+    virtual void glUniform2fv(GLint location, GLsizei count, const GLfloat *value) = 0;
+    virtual void glUniform3fv(GLint location, GLsizei count, const GLfloat *value) = 0;
+    virtual void glUniform4fv(GLint location, GLsizei count, const GLfloat *value) = 0;
+
+    virtual void glUniform1iv(GLint location, GLsizei count, const GLint *value) = 0;
+    virtual void glUniform2iv(GLint location, GLsizei count, const GLint *value) = 0;
+    virtual void glUniform3iv(GLint location, GLsizei count, const GLint *value) = 0;
+    virtual void glUniform4iv(GLint location, GLsizei count, const GLint *value) = 0;
+
+    virtual void glUniform1uiv(GLint location, GLsizei count, const GLuint *value) = 0;
+    virtual void glUniform2uiv(GLint location, GLsizei count, const GLuint *value) = 0;
+    virtual void glUniform3uiv(GLint location, GLsizei count, const GLuint *value) = 0;
+    virtual void glUniform4uiv(GLint location, GLsizei count, const GLuint *value) = 0;
+
+    virtual void glUniformMatrix2fv(GLint location, GLsizei count, const GLfloat *value) = 0;
+    virtual void glUniformMatrix3fv(GLint location, GLsizei count, const GLfloat *value) = 0;
+    virtual void glUniformMatrix4fv(GLint location, GLsizei count, const GLfloat *value) = 0;
+    virtual void glUniformMatrix2x3fv(GLint location, GLsizei count, const GLfloat *value) = 0;
+    virtual void glUniformMatrix3x2fv(GLint location, GLsizei count, const GLfloat *value) = 0;
+    virtual void glUniformMatrix2x4fv(GLint location, GLsizei count, const GLfloat *value) = 0;
+    virtual void glUniformMatrix4x2fv(GLint location, GLsizei count, const GLfloat *value) = 0;
+    virtual void glUniformMatrix3x4fv(GLint location, GLsizei count, const GLfloat *value) = 0;
+    virtual void glUniformMatrix4x3fv(GLint location, GLsizei count, const GLfloat *value) = 0;
+
 };
 
 

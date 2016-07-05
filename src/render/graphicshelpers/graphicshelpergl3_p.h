@@ -122,6 +122,31 @@ public:
     void useProgram(GLuint programId) Q_DECL_OVERRIDE;
     void vertexAttribDivisor(GLuint index, GLuint divisor) Q_DECL_OVERRIDE;
 
+    void glUniform1fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;
+    void glUniform2fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;
+    void glUniform3fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;
+    void glUniform4fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;
+
+    void glUniform1iv(GLint location, GLsizei count, const GLint *value) Q_DECL_OVERRIDE;
+    void glUniform2iv(GLint location, GLsizei count, const GLint *value) Q_DECL_OVERRIDE;
+    void glUniform3iv(GLint location, GLsizei count, const GLint *value) Q_DECL_OVERRIDE;
+    void glUniform4iv(GLint location, GLsizei count, const GLint *value) Q_DECL_OVERRIDE;
+
+    void glUniform1uiv(GLint location, GLsizei count, const GLuint *value) Q_DECL_OVERRIDE;
+    void glUniform2uiv(GLint location, GLsizei count, const GLuint *value) Q_DECL_OVERRIDE;
+    void glUniform3uiv(GLint location, GLsizei count, const GLuint *value) Q_DECL_OVERRIDE;
+    void glUniform4uiv(GLint location, GLsizei count, const GLuint *value) Q_DECL_OVERRIDE;
+
+    void glUniformMatrix2fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;
+    void glUniformMatrix3fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;
+    void glUniformMatrix4fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;
+    void glUniformMatrix2x3fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;
+    void glUniformMatrix3x2fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;
+    void glUniformMatrix2x4fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;
+    void glUniformMatrix4x2fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;
+    void glUniformMatrix3x4fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;
+    void glUniformMatrix4x3fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;
+
 private:
     QOpenGLFunctions_3_2_Core *m_funcs;
     QScopedPointer<QOpenGLExtension_ARB_tessellation_shader> m_tessFuncs;

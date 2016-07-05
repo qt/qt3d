@@ -663,6 +663,111 @@ void GraphicsHelperGL2::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
     qWarning() << "Compute Shaders are not supported by OpenGL 2.0 (since OpenGL 4.3)";
 }
 
+void GraphicsHelperGL2::glUniform1fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniform1fv(location, count, values);
+}
+
+void GraphicsHelperGL2::glUniform2fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniform2fv(location, count, values);
+}
+
+void GraphicsHelperGL2::glUniform3fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniform3fv(location, count, values);
+}
+
+void GraphicsHelperGL2::glUniform4fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniform4fv(location, count, values);
+}
+
+void GraphicsHelperGL2::glUniform1iv(GLint location, GLsizei count, const GLint *values)
+{
+    m_funcs->glUniform1iv(location, count, values);
+}
+
+void GraphicsHelperGL2::glUniform2iv(GLint location, GLsizei count, const GLint *values)
+{
+    m_funcs->glUniform2iv(location, count, values);
+}
+
+void GraphicsHelperGL2::glUniform3iv(GLint location, GLsizei count, const GLint *values)
+{
+    m_funcs->glUniform3iv(location, count, values);
+}
+
+void GraphicsHelperGL2::glUniform4iv(GLint location, GLsizei count, const GLint *values)
+{
+    m_funcs->glUniform4iv(location, count, values);
+}
+
+void GraphicsHelperGL2::glUniform1uiv(GLint , GLsizei , const GLuint *)
+{
+    qWarning() << "glUniform1uiv not supported by GL 2";
+}
+
+void GraphicsHelperGL2::glUniform2uiv(GLint , GLsizei , const GLuint *)
+{
+    qWarning() << "glUniform2uiv not supported by GL 2";
+}
+
+void GraphicsHelperGL2::glUniform3uiv(GLint , GLsizei , const GLuint *)
+{
+    qWarning() << "glUniform3uiv not supported by GL 2";
+}
+
+void GraphicsHelperGL2::glUniform4uiv(GLint , GLsizei , const GLuint *)
+{
+    qWarning() << "glUniform4uiv not supported by GL 2";
+}
+
+void GraphicsHelperGL2::glUniformMatrix2fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniformMatrix2fv(location, count, false, values);
+}
+
+void GraphicsHelperGL2::glUniformMatrix3fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniformMatrix3fv(location, count, false, values);
+}
+
+void GraphicsHelperGL2::glUniformMatrix4fv(GLint location, GLsizei count, const GLfloat *values)
+{
+    m_funcs->glUniformMatrix4fv(location, count, false, values);
+}
+
+void GraphicsHelperGL2::glUniformMatrix2x3fv(GLint , GLsizei , const GLfloat *)
+{
+    qWarning() << "glUniformMatrix2x3fv not supported by GL 2";
+}
+
+void GraphicsHelperGL2::glUniformMatrix3x2fv(GLint , GLsizei , const GLfloat *)
+{
+    qWarning() << "glUniformMatrix3x2fv not supported by GL 2";
+}
+
+void GraphicsHelperGL2::glUniformMatrix2x4fv(GLint , GLsizei , const GLfloat *)
+{
+    qWarning() << "glUniformMatrix2x4fv not supported by GL 2";
+}
+
+void GraphicsHelperGL2::glUniformMatrix4x2fv(GLint , GLsizei , const GLfloat *)
+{
+    qWarning() << "glUniformMatrix4x2fv not supported by GL 2";
+}
+
+void GraphicsHelperGL2::glUniformMatrix3x4fv(GLint , GLsizei , const GLfloat *)
+{
+    qWarning() << "glUniformMatrix3x4fv not supported by GL 2";
+}
+
+void GraphicsHelperGL2::glUniformMatrix4x3fv(GLint , GLsizei , const GLfloat *)
+{
+    qWarning() << "glUniformMatrix4x3fv not supported by GL 2";
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 
