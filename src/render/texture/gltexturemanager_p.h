@@ -66,7 +66,7 @@ class TextureDataManager;
 class TextureImageManager;
 class TextureImageDataManager;
 
-class GLTextureManager
+class Q_AUTOTEST_EXPORT GLTextureManager
 {
 public:
 

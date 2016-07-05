@@ -70,7 +70,7 @@ class TextureDataManager;
  * Backend class for QAbstractTextureImage.
  * Will only hold the generator and some info values.
  */
-class TextureImage : public BackendNode
+class Q_AUTOTEST_EXPORT TextureImage : public BackendNode
 {
 public:
     TextureImage();

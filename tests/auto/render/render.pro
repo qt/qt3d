@@ -65,7 +65,8 @@ qtConfig(private_tests) {
         graphicshelpergl3_2 \
         graphicshelpergl2 \
         pickboundingvolumejob \
-        sendrendercapturejob
+        sendrendercapturejob \
+        textures
 
     !macos: SUBDIRS += graphicshelpergl4
 }

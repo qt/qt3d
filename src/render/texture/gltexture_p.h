@@ -87,7 +87,7 @@ class TextureImageDataManager;
  *   A GLTexture can be unique though. In that case, it will not be shared
  *   between QTextures, but private to one QTexture only.
  */
-class GLTexture
+class Q_AUTOTEST_EXPORT GLTexture
 {
 public:
     GLTexture(TextureDataManager *texDataMgr,
