@@ -1457,6 +1457,37 @@ QImage GraphicsContext::readFramebuffer(QSize size)
     return qt_gl_read_framebuffer(size, true, true);
 }
 
+QT3D_UNIFORM_TYPE_IMPL(UniformType::Float, float, glUniform1fv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::Vec2, float, glUniform2fv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::Vec3, float, glUniform3fv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::Vec4, float, glUniform4fv)
+
+// OpenGL expects int* as values for booleans
+QT3D_UNIFORM_TYPE_IMPL(UniformType::Bool, int, glUniform1iv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::BVec2, int, glUniform2iv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::BVec3, int, glUniform3iv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::BVec4, int, glUniform4iv)
+
+QT3D_UNIFORM_TYPE_IMPL(UniformType::Int, int, glUniform1iv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::IVec2, int, glUniform2iv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::IVec3, int, glUniform3iv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::IVec4, int, glUniform4iv)
+
+QT3D_UNIFORM_TYPE_IMPL(UniformType::UInt, uint, glUniform1uiv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::UIVec2, uint, glUniform2uiv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::UIVec3, uint, glUniform3uiv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::UIVec4, uint, glUniform4uiv)
+
+QT3D_UNIFORM_TYPE_IMPL(UniformType::Mat2, float, glUniformMatrix2fv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::Mat3, float, glUniformMatrix3fv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::Mat4, float, glUniformMatrix4fv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::Mat2x3, float, glUniformMatrix2x3fv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::Mat3x2, float, glUniformMatrix3x2fv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::Mat2x4, float, glUniformMatrix2x4fv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::Mat4x2, float, glUniformMatrix4x2fv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::Mat3x4, float, glUniformMatrix3x4fv)
+QT3D_UNIFORM_TYPE_IMPL(UniformType::Mat4x3, float, glUniformMatrix4x3fv)
+
 } // namespace Render
 } // namespace Qt3DRender of namespace
 
