@@ -45,7 +45,7 @@
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DRender/private/material_p.h>
-#include <Qt3DRender/private/texture_p.h>
+#include <Qt3DRender/private/gltexture_p.h>
 #include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/private/rendercommand_p.h>
@@ -278,7 +278,7 @@ bool GraphicsContext::beginDrawing(QSurface *surface)
 
     // reset active textures
     for (int u = 0; u < m_activeTextures.size(); ++u)
-        m_activeTextures[u].textureDna = 0;
+        m_activeTextures[u].texture = nullptr;
 
     m_boundArrayBuffer = nullptr;
 
@@ -549,17 +549,20 @@ void GraphicsContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId,
             fboId = m_renderTargets.value(renderTargetNodeId);
 
             // We need to check if  one of the attachment was resized
-            TextureManager *textureManager = m_renderer->nodeManagers()->textureManager();
-            bool needsResize = false;
-            const auto attachments_ = attachments.attachments();
-            for (const Attachment &attachment : attachments_) {
-                Texture *rTex = textureManager->lookupResource(attachment.m_textureUuid);
-                if (rTex != nullptr) {
-                    needsResize |= rTex->isTextureReset();
+            bool needsResize = !m_renderTargetsSize.contains(fboId);    // not even initialized yet?
+            if (!needsResize) {
+                // render target exists, has attachment been resized?
+                TextureManager *textureManager = m_renderer->nodeManagers()->textureManager();
+                const QSize s = m_renderTargetsSize[fboId];
+                const auto attachments_ = attachments.attachments();
+                for (const Attachment &attachment : attachments_) {
+                    GLTexture *rTex = textureManager->glTextureForNode(attachment.m_textureUuid);
+                    needsResize |= (rTex != nullptr && rTex->size() != s);
                     if (attachment.m_point == QRenderTargetOutput::Color0)
-                        m_renderTargetFormat = rTex->format();
+                        m_renderTargetFormat = rTex->properties().format;
                 }
             }
+
             if (needsResize) {
                 m_glHelper->bindFrameBufferObject(fboId);
                 bindFrameBufferAttachmentHelper(fboId, attachments);
@@ -580,16 +583,14 @@ void GraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const Attach
     TextureManager *textureManager = m_renderer->nodeManagers()->textureManager();
     const auto attachments_ = attachments.attachments();
     for (const Attachment &attachment : attachments_) {
-        Texture *rTex =textureManager->lookupResource(attachment.m_textureUuid);
-        if (rTex != nullptr) {
-            QOpenGLTexture *glTex = rTex->getOrCreateGLTexture();
-            if (glTex != nullptr) {
-                if (fboSize.isEmpty())
-                    fboSize = QSize(glTex->width(), glTex->height());
-                else
-                    fboSize = QSize(qMin(fboSize.width(), glTex->width()), qMin(fboSize.height(), glTex->height()));
-                m_glHelper->bindFrameBufferAttachment(glTex, attachment);
-            }
+        GLTexture *rTex = textureManager->glTextureForNode(attachment.m_textureUuid);
+        QOpenGLTexture *glTex = rTex ? rTex->getGLTexture() : nullptr;
+        if (glTex != nullptr) {
+            if (fboSize.isEmpty())
+                fboSize = QSize(glTex->width(), glTex->height());
+            else
+                fboSize = QSize(qMin(fboSize.width(), glTex->width()), qMin(fboSize.height(), glTex->height()));
+            m_glHelper->bindFrameBufferAttachment(glTex, attachment);
         }
     }
     m_renderTargetsSize.insert(fboId, fboSize);
@@ -621,7 +622,7 @@ void GraphicsContext::setActiveMaterial(Material *rmat)
     m_material = rmat;
 }
 
-int GraphicsContext::activateTexture(TextureScope scope, Texture *tex, int onUnit)
+int GraphicsContext::activateTexture(TextureScope scope, GLTexture *tex, int onUnit)
 {
     // Returns the texture unit to use for the texture
     // This always return a valid unit, unless there are more textures than
@@ -634,10 +635,10 @@ int GraphicsContext::activateTexture(TextureScope scope, Texture *tex, int onUni
 
     // actually re-bind if required, the tex->dna on the unit not being the same
     // Note: tex->dna() could be 0 if the texture has not been created yet
-    if (m_activeTextures[onUnit].textureDna != tex->dna() || tex->dna() == 0 || tex->dataUploadRequired()) {
+    if (m_activeTextures[onUnit].texture != tex) {
         QOpenGLTexture *glTex = tex->getOrCreateGLTexture();
         glTex->bind(onUnit);
-        m_activeTextures[onUnit].textureDna = tex->dna();
+        m_activeTextures[onUnit].texture = tex;
     }
 
 #if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
@@ -747,10 +748,10 @@ GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
     return glHelper;
 }
 
-void GraphicsContext::deactivateTexture(Texture* tex)
+void GraphicsContext::deactivateTexture(GLTexture* tex)
 {
     for (int u=0; u<m_activeTextures.size(); ++u) {
-        if (m_activeTextures[u].textureDna == tex->dna()) {
+        if (m_activeTextures[u].texture == tex) {
             Q_ASSERT(m_activeTextures[u].pinned);
             m_activeTextures[u].pinned = false;
             return;
@@ -1037,13 +1038,13 @@ void GraphicsContext::setSeamlessCubemap(bool enable)
     Tries to use the texture unit with the texture that hasn't been used for the longest time
     if the texture happens not to be already pinned on a texture unit.
  */
-GLint GraphicsContext::assignUnitForTexture(Texture *tex)
+GLint GraphicsContext::assignUnitForTexture(GLTexture *tex)
 {
     int lowestScoredUnit = -1;
     int lowestScore = 0xfffffff;
 
     for (int u=0; u<m_activeTextures.size(); ++u) {
-        if (m_activeTextures[u].textureDna == tex->dna())
+        if (m_activeTextures[u].texture == tex)
             return u;
 
         // No texture is currently active on the texture unit
@@ -1098,7 +1099,8 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
 
     for (int i = 0; i < parameterPack.textures().size(); ++i) {
         const ShaderParameterPack::NamedTexture &namedTex = parameterPack.textures().at(i);
-        Texture *t = manager->lookupResource<Texture, TextureManager>(namedTex.texId);
+        GLTexture *t = manager->textureManager()->glTextureForNode(namedTex.texId);
+        // TO DO : Rework the way textures are loaded
         if (t != nullptr) {
             int texUnit = activateTexture(TextureScopeMaterial, t);
             if (uniformValues.contains(namedTex.glslNameId)) {

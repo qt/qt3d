@@ -75,6 +75,8 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
+#include <Qt3DRender/private/gltexturemanager_p.h>
+#include <Qt3DRender/private/gltexture_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/openglvertexarrayobject_p.h>
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
@@ -730,7 +732,7 @@ void Renderer::lookForDirtyTextures()
     const QVector<HTexture> activeTextureHandles = m_nodesManager->textureManager()->activeHandles();
     for (HTexture handle: activeTextureHandles) {
         Texture *texture = m_nodesManager->textureManager()->data(handle);
-        if (texture->isDirty())
+        if (texture->texture() == nullptr)
             m_dirtyTextures.push_back(handle);
     }
 }
@@ -782,7 +784,7 @@ void Renderer::updateGLResources()
     for (HTexture handle: activeTextureHandles) {
         Texture *texture = m_nodesManager->textureManager()->data(handle);
         // Upload/Update texture
-        texture->getOrCreateGLTexture();
+        texture->texture()->getOrCreateGLTexture();
     }
 }
 
@@ -1277,6 +1279,13 @@ void Renderer::cleanGraphicsResources()
     const QVector<Qt3DCore::QNodeId> buffersToRelease = std::move(m_nodesManager->bufferManager()->buffersToRelease());
     for (Qt3DCore::QNodeId bufferId : buffersToRelease)
         m_graphicsContext->releaseBuffer(bufferId);
+
+    // Delete abandoned textures
+    const QVector<GLTexture*> abandonedTextures = m_nodesManager->glTextureManager()->takeAbandonedTextures();
+    for (GLTexture *tex : abandonedTextures) {
+        tex->destroyGLTexture();
+        delete tex;
+    }
 }
 
 QList<QMouseEvent> Renderer::pendingPickingEvents() const

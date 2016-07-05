@@ -196,8 +196,8 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QGeometryRenderer>(QSharedPointer<Render::GeometryRendererFunctor>::create(m_renderer, m_nodeManagers->geometryRendererManager()));
 
     // Textures
-    q->registerBackendType<QAbstractTexture>(QSharedPointer<Render::TextureFunctor>::create(m_renderer, m_nodeManagers->textureManager(), m_nodeManagers->textureImageManager(), m_nodeManagers->textureDataManager()));
-    q->registerBackendType<QAbstractTextureImage>(QSharedPointer<Render::TextureImageFunctor>::create(m_renderer, m_nodeManagers->textureManager(), m_nodeManagers->textureImageManager(), m_nodeManagers->textureDataManager()));
+    q->registerBackendType<QAbstractTexture>(QSharedPointer<Render::TextureFunctor>::create(m_renderer, m_nodeManagers->textureManager(), m_nodeManagers->glTextureManager(), m_nodeManagers->textureImageManager()));
+    q->registerBackendType<QAbstractTextureImage>(QSharedPointer<Render::TextureImageFunctor>::create(m_renderer, m_nodeManagers->textureManager(), m_nodeManagers->textureImageManager()));
 
     // Material system
     q->registerBackendType<QEffect>(QSharedPointer<Render::NodeFunctor<Render::Effect, Render::EffectManager> >::create(m_renderer, m_nodeManagers->effectManager()));
@@ -369,9 +369,16 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 
         Render::NodeManagers *manager = d->m_renderer->nodeManagers();
 
-        const QVector<QNodeId> texturesPending = std::move(manager->textureDataManager()->texturesPending());
-        for (const QNodeId textureId : texturesPending) {
-            auto loadTextureJob = Render::LoadTextureDataJobPtr::create(textureId);
+        // Launch texture generator jobs
+        const QVector<QTextureImageDataGeneratorPtr> pendingImgGen = manager->textureImageDataManager()->pendingGenerators();
+        for (const QTextureImageDataGeneratorPtr &imgGen : pendingImgGen) {
+            auto loadTextureJob = Render::LoadTextureDataJobPtr::create(imgGen);
+            loadTextureJob->setNodeManagers(manager);
+            jobs.append(loadTextureJob);
+        }
+        const QVector<QTextureGeneratorPtr> pendingTexGen = manager->textureDataManager()->pendingGenerators();
+        for (const QTextureGeneratorPtr &texGen : pendingTexGen) {
+            auto loadTextureJob = Render::LoadTextureDataJobPtr::create(texGen);
             loadTextureJob->setNodeManagers(manager);
             jobs.append(loadTextureJob);
         }

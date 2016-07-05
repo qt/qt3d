@@ -73,10 +73,6 @@ void FrameCleanupJob::run()
     // mark each ShaderData clean
     ShaderData::cleanup(m_managers);
 
-    // Cleanup texture handles
-    TextureDataManager *textureDataManager = m_managers->textureDataManager();
-    textureDataManager->cleanup();
-
     // Debug bounding volume debug
     updateBoundingVolumesDebug(m_root);
 }

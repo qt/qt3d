@@ -84,7 +84,7 @@ class Renderer;
 class GraphicsHelperInterface;
 class RenderStateSet;
 class Material;
-class Texture;
+class GLTexture;
 class RenderCommand;
 class RenderTarget;
 class AttachmentPack;
@@ -174,9 +174,9 @@ public:
      * @param onUnit - option, specify the explicit unit to activate on
      * @return - the unit the texture was activated on
      */
-    int activateTexture(TextureScope scope, Texture* tex, int onUnit = -1);
+    int activateTexture(TextureScope scope, GLTexture* tex, int onUnit = -1);
 
-    void deactivateTexture(Texture *tex);
+    void deactivateTexture(GLTexture *tex);
 
     void setCurrentStateSet(RenderStateSet* ss);
     RenderStateSet *currentStateSet() const;
@@ -237,7 +237,7 @@ private:
 
     void decayTextureScores();
 
-    GLint assignUnitForTexture(Texture* tex);
+    GLint assignUnitForTexture(GLTexture* tex);
     void deactivateTexturesWithScope(TextureScope ts);
 
     GraphicsHelperInterface *resolveHighestOpenGLFunctions();
@@ -269,7 +269,7 @@ private:
 
     // active textures, indexed by texture unit
     struct ActiveTexture {
-        uint textureDna = 0;
+        GLTexture *texture = nullptr;
         int score = 0;
         TextureScope scope = TextureScopeMaterial;
         bool pinned = false;

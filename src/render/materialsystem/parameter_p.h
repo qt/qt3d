@@ -63,7 +63,6 @@ namespace Render {
 
 class ParameterManager;
 class ShaderDataManager;
-class TextureManager;
 
 class Parameter : public BackendNode
 {

@@ -586,11 +586,11 @@ void RenderView::setUniformValue(ShaderParameterPack &uniformPack, int nameId, c
     // ShaderData/Buffers would be handled as UBO/SSBO and would therefore
     // not be in the default uniform block
     if (value.valueType() == UniformValue::NodeId) {
-        Texture *tex = nullptr;
+        GLTexture *tex = nullptr;
         const Qt3DCore::QNodeId texId = *value.constData<Qt3DCore::QNodeId>();
-        if ((tex = m_manager->textureManager()->lookupResource(texId))
+        if ((tex = m_manager->textureManager()->glTextureForNode(texId))
                 != nullptr) {
-            uniformPack.setTexture(nameId, tex->peerId());
+            uniformPack.setTexture(nameId, texId);
             UniformValue::Texture textureValue;
             textureValue.nodeId = texId;
             uniformPack.setUniform(nameId, UniformValue(textureValue));
