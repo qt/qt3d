@@ -251,13 +251,9 @@ QJsonObject parameterPackToJson(const Render::ShaderParameterPack &pack)
     for (auto it = uniforms.cbegin(), end = uniforms.cend(); it != end; ++it) {
         QJsonObject uniformObj;
         uniformObj.insert(QLatin1String("name"), Render::StringToInt::lookupString(it.key()));
-        const Render::QUniformValue::UniformType type = it.value().type();
-        uniformObj.insert(QLatin1String("value"),
-                          type == Render::QUniformValue::Value
-                          ? typeToJsonValue(it.value().value())
-                          : typeToJsonValue(it.value().textureId()));
+        const Render::UniformValue::ValueType type = it.value().valueType();
         uniformObj.insert(QLatin1String("type"),
-                          type == Render::QUniformValue::Value
+                          type == Render::UniformValue::ScalarValue
                           ? QLatin1String("value")
                           : QLatin1String("texture"));
         uniformsArray.push_back(uniformObj);

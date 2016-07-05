@@ -317,6 +317,8 @@ private:
     void enableAttribute(const VAOVertexAttribute &attr);
     void disableAttribute(const VAOVertexAttribute &attr);
 
+    void applyUniform(const ShaderUniform &description, const UniformValue &v);
+
     template<UniformType>
     void applyUniformHelper(int, const UniformValue &) const
     {

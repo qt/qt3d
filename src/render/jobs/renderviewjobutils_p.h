@@ -55,6 +55,7 @@
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/qhash.h>
 #include <QtCore/qvariant.h>
+#include <Qt3DRender/private/uniform_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -106,10 +107,10 @@ Q_AUTOTEST_EXPORT inline T variant_value(const QVariant &v)
 
 struct ParameterInfo
 {
-    explicit ParameterInfo(const int nameId = -1, const QVariant &value = QVariant());
+    explicit ParameterInfo(const int nameId = -1, const UniformValue &value = UniformValue());
 
     int nameId;
-    QVariant value;
+    UniformValue value;
 
     bool operator<(const int otherNameId) const Q_DECL_NOEXCEPT;
     bool operator<(const ParameterInfo &other) const Q_DECL_NOEXCEPT;

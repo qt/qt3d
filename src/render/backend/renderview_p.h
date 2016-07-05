@@ -279,39 +279,39 @@ private:
 
     QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> m_parameters;
 
-    typedef QHash<int, QUniformValue (RenderView::*)(const QMatrix4x4& model) const> StandardUniformsPFuncsHash;
+    typedef QHash<int, UniformValue (RenderView::*)(const QMatrix4x4& model) const> StandardUniformsPFuncsHash;
     static StandardUniformsPFuncsHash ms_standardUniformSetters;
     static StandardUniformsPFuncsHash initializeStandardUniformSetters();
 
-    QUniformValue modelMatrix(const QMatrix4x4& model) const;
-    QUniformValue viewMatrix(const QMatrix4x4&) const;
-    QUniformValue projectionMatrix(const QMatrix4x4 &) const;
-    QUniformValue modelViewMatrix(const QMatrix4x4 &model) const;
-    QUniformValue viewProjectionMatrix(const QMatrix4x4 &model) const;
-    QUniformValue modelViewProjectionMatrix(const QMatrix4x4 &model) const;
-    QUniformValue inverseModelMatrix(const QMatrix4x4 &model) const;
-    QUniformValue inverseViewMatrix(const QMatrix4x4 &) const;
-    QUniformValue inverseProjectionMatrix(const QMatrix4x4 &) const;
-    QUniformValue inverseModelViewMatrix(const QMatrix4x4 &model) const;
-    QUniformValue inverseViewProjectionMatrix(const QMatrix4x4 &model) const;
-    QUniformValue inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const;
-    QUniformValue modelNormalMatrix(const QMatrix4x4 &model) const;
-    QUniformValue modelViewNormalMatrix(const QMatrix4x4 &model) const;
-    QUniformValue viewportMatrix(const QMatrix4x4 &model) const;
-    QUniformValue inverseViewportMatrix(const QMatrix4x4 &model) const;
-    QUniformValue time(const QMatrix4x4 &model) const;
-    QUniformValue eyePosition(const QMatrix4x4 &model) const;
+    UniformValue modelMatrix(const QMatrix4x4& model) const;
+    UniformValue viewMatrix(const QMatrix4x4&) const;
+    UniformValue projectionMatrix(const QMatrix4x4 &) const;
+    UniformValue modelViewMatrix(const QMatrix4x4 &model) const;
+    UniformValue viewProjectionMatrix(const QMatrix4x4 &model) const;
+    UniformValue modelViewProjectionMatrix(const QMatrix4x4 &model) const;
+    UniformValue inverseModelMatrix(const QMatrix4x4 &model) const;
+    UniformValue inverseViewMatrix(const QMatrix4x4 &) const;
+    UniformValue inverseProjectionMatrix(const QMatrix4x4 &) const;
+    UniformValue inverseModelViewMatrix(const QMatrix4x4 &model) const;
+    UniformValue inverseViewProjectionMatrix(const QMatrix4x4 &model) const;
+    UniformValue inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const;
+    UniformValue modelNormalMatrix(const QMatrix4x4 &model) const;
+    UniformValue modelViewNormalMatrix(const QMatrix4x4 &model) const;
+    UniformValue viewportMatrix(const QMatrix4x4 &model) const;
+    UniformValue inverseViewportMatrix(const QMatrix4x4 &model) const;
+    UniformValue time(const QMatrix4x4 &model) const;
+    UniformValue eyePosition(const QMatrix4x4 &model) const;
 
-    void setUniformValue(ShaderParameterPack &uniformPack, int nameId, const QVariant &value) const;
+    void setUniformValue(ShaderParameterPack &uniformPack, int nameId, const UniformValue &value) const;
     void setStandardUniformValue(ShaderParameterPack &uniformPack, int glslNameId, int nameId, const QMatrix4x4 &worldTransform) const;
     void setUniformBlockValue(ShaderParameterPack &uniformPack,
                               Shader *shader,
                               const ShaderUniformBlock &block,
-                              const QVariant &value) const;
+                              const UniformValue &value) const;
     void setShaderStorageValue(ShaderParameterPack &uniformPack,
                                Shader *shader,
                                const ShaderStorageBlock &block,
-                               const QVariant &value) const;
+                               const UniformValue &value) const;
     void setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack,
                                                Shader *shader,
                                                ShaderData *shaderData,

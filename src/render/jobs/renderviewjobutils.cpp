@@ -391,7 +391,7 @@ void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
         Parameter *param = manager->lookupResource(paramId);
         ParameterInfoList::iterator it = std::lower_bound(params->begin(), params->end(), param->nameId());
         if (it == params->end() || it->nameId != param->nameId())
-            params->insert(it, ParameterInfo(param->nameId(), param->value()));
+            params->insert(it, ParameterInfo(param->nameId(), param->uniformValue()));
     }
 }
 
@@ -491,7 +491,7 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapStructHelper(Shader
     }
 }
 
-ParameterInfo::ParameterInfo(const int nameId, const QVariant &value)
+ParameterInfo::ParameterInfo(const int nameId, const UniformValue &value)
     : nameId(nameId)
     , value(value)
 {}
