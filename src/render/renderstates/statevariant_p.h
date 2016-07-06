@@ -62,6 +62,7 @@ struct StateVariant
 {
     StateMask type;
 
+#if !defined(_MSC_VER) || (_MSC_VER > 1800)
     union u_Data {
         BlendEquationArguments blendEquationArguments;
         BlendEquation blendEquation;
@@ -105,6 +106,10 @@ struct StateVariant
             // Assumes the above types don't need to have their dtor called
         }
     } data;
+#else
+    // Workaround for MSVC 2013 which doesn't support unrestricted unions
+    QSharedPointer<RenderStateImpl> m_impl;
+#endif
 
     void apply(GraphicsContext *gc) const;
 
@@ -113,9 +118,13 @@ struct StateVariant
     {
         StateVariant v;
         v.type = GenericState::type();
+#if !defined(_MSC_VER) || (_MSC_VER > 1800)
         // all union members start at the same memory address
         // so we can just write into whichever we want
         memcpy(&(v.data), &state, sizeof(state));
+#else
+        v.m_impl.reset(new GenericState(state));
+#endif
         return std::move(v);
     }
 
