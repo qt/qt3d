@@ -87,11 +87,6 @@ Material {
         Parameter { name: "texCoordScale"; value: textureScale }
     ]
 
-    effect: DefaultAlphaEffect {
-        vertexES: "qrc:/shaders/es2/normaldiffusemap.vert"
-        fragmentES: "qrc:/shaders/es2/normaldiffusemapalpha.frag"
-        vertex: "qrc:/shaders/gl3/normaldiffusemap.vert"
-        fragment: "qrc:/shaders/gl3/normaldiffusemapalpha.frag"
-    }
+    effect: NormalDiffuseMapAlphaEffect { }
 }
 
