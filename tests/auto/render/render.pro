@@ -61,4 +61,6 @@ qtConfig(private_tests) {
         loadscenejob \
         qrendercapture \
         uniform
+
+    !macos: SUBDIRS += graphicshelpergl4
 }

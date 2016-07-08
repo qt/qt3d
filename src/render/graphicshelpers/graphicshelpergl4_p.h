@@ -63,7 +63,7 @@ class QOpenGLFunctions_4_3_Core;
 namespace Qt3DRender {
 namespace Render {
 
-class GraphicsHelperGL4 : public GraphicsHelperInterface
+class Q_AUTOTEST_EXPORT GraphicsHelperGL4 : public GraphicsHelperInterface
 {
 public:
     GraphicsHelperGL4();
