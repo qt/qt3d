@@ -579,6 +579,8 @@ bool GraphicsHelperGL4::supportsFeature(GraphicsHelperInterface::Feature feature
     case MRT:
     case Tessellation:
     case UniformBufferObject:
+    case BindableFragmentOutputs:
+    case PrimitiveRestart:
     case RenderBufferDimensionRetrieval:
     case TextureDimensionRetrieval:
     case ShaderStorageObject:
