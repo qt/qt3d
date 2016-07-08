@@ -423,16 +423,13 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
                 // Pick which lights to take in to account.
                 // For now decide based on the distance by taking the MAX_LIGHTS closest lights.
                 // Replace with more sophisticated mechanisms later.
-                std::sort(m_lightSources.begin(), m_lightSources.end(), LightSourceCompare(node));
-                QVector<LightSource> activeLightSources; // NB! the total number of lights here may still exceed MAX_LIGHTS
-                int lightCount = 0;
-                for (int i = 0; i < m_lightSources.count() && lightCount < MAX_LIGHTS; ++i) {
-                    activeLightSources.append(m_lightSources[i]);
-                    lightCount += m_lightSources[i].lights.count();
-                }
+                // Copy vector so that we can sort it concurrently and we only want to sort the one for the current command
+                QVector<LightSource> lightSources = m_lightSources;
+                if (lightSources.size() > 1)
+                    std::sort(lightSources.begin(), lightSources.end(), LightSourceCompare(node));
 
                 ParameterInfoList globalParameters = passData.parameterInfo;
-                setShaderAndUniforms(command, pass, globalParameters, *(node->worldTransform()), activeLightSources);
+                setShaderAndUniforms(command, pass, globalParameters, *(node->worldTransform()), lightSources.mid(0, std::max(lightSources.size(), MAX_LIGHTS)));
 
                 buildSortingKey(command);
                 commands.append(command);

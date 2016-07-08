@@ -68,7 +68,7 @@ public:
     LightGatherer();
 
     inline void setManager(EntityManager *manager) Q_DECL_NOTHROW { m_manager = manager; }
-    inline QVector<LightSource> lights() const Q_DECL_NOTHROW { return m_lights; }
+    inline QVector<LightSource> &lights() { return m_lights; }
 
     void run() Q_DECL_FINAL;
 
