@@ -77,6 +77,7 @@ Material {
                     x: WrapMode.Repeat
                     y: WrapMode.Repeat
                 }
+                generateMipMaps: true
                 maximumAnisotropy: 16.0
                 TextureImage { id: normalTextureImage; }
             }
