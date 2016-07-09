@@ -70,9 +70,6 @@ Entity
         id: camera
         projectionType: CameraLens.PerspectiveProjection
         fieldOfView: 45
-        aspectRatio: 16/9
-        nearPlane : 0.1
-        farPlane : 1000.0
         position: Qt.vector3d( 0.0, 40.0, 300.0 )
         upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
         viewCenter: Qt.vector3d( 0.0, -10.0, -1.0 )
@@ -109,6 +106,9 @@ Entity
                     Quick.NumberAnimation { from: 40.0; to: 8.0; duration: 3000 }
                 }
             },
+            PhongMaterial {
+                diffuse: "red"
+            },
             PointLight {
                 color: Qt.rgba(1, 0, 0, 1)
             }
@@ -129,6 +129,9 @@ Entity
                     Quick.NumberAnimation { from: 40.0; to: 4.0; duration: 5000 }
                 }
             },
+            PhongMaterial {
+                diffuse: "green"
+            },
             PointLight {
                 color: Qt.rgba(0, 1, 0, 1)
             }
@@ -143,6 +146,9 @@ Entity
             },
             Transform {
                 translation: Qt.vector3d(-5.0, 40.0, -5.0)
+            },
+            PhongMaterial {
+                diffuse: "white"
             },
             SpotLight {
                 localDirection: Qt.vector3d(1.0, -4.0, 0.0)
