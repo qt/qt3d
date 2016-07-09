@@ -83,17 +83,17 @@ void FrustumCullingJob::cullScene(Entity *e, const Plane *planes)
     const Sphere *s = e->worldBoundingVolumeWithChildren();
 
     // Unrolled loop
-    if (!QVector3D::dotProduct(s->center(), planes[0].normal) + planes[0].d < -s->radius())
+    if (QVector3D::dotProduct(s->center(), planes[0].normal) + planes[0].d < -s->radius())
         return;
-    if (!QVector3D::dotProduct(s->center(), planes[1].normal) + planes[1].d < -s->radius())
+    if (QVector3D::dotProduct(s->center(), planes[1].normal) + planes[1].d < -s->radius())
         return;
-    if (!QVector3D::dotProduct(s->center(), planes[2].normal) + planes[2].d < -s->radius())
+    if (QVector3D::dotProduct(s->center(), planes[2].normal) + planes[2].d < -s->radius())
         return;
-    if (!QVector3D::dotProduct(s->center(), planes[3].normal) + planes[3].d < -s->radius())
+    if (QVector3D::dotProduct(s->center(), planes[3].normal) + planes[3].d < -s->radius())
         return;
-    if (!QVector3D::dotProduct(s->center(), planes[4].normal) + planes[4].d < -s->radius())
+    if (QVector3D::dotProduct(s->center(), planes[4].normal) + planes[4].d < -s->radius())
         return;
-    if (!QVector3D::dotProduct(s->center(), planes[5].normal) + planes[5].d < -s->radius())
+    if (QVector3D::dotProduct(s->center(), planes[5].normal) + planes[5].d < -s->radius())
         return;
 
     m_visibleEntities.push_back(e);
