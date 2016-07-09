@@ -73,7 +73,7 @@ Entity {
             diffuse: "assets/houseplants/pot.webp"
             normal: "assets/houseplants/pot_normal.webp"
             specular: Qt.rgba( 0.75, 0.75, 0.75, 1.0 )
-            shininess: 10.0
+            shininess: 5.0
         }
 
         RenderableEntity {

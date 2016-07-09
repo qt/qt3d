@@ -73,6 +73,7 @@ Entity {
 
         material: NormalDiffuseSpecularMapMaterial {
             id: material
+            ambient: "black"
             diffuse: "assets/metalbarrel/diffus_" + root.diffuseColor + ".webp"
             normal: "assets/metalbarrel/normal_" + root.bump + ".webp"
             specular: {
@@ -82,7 +83,7 @@ Entity {
                     return "assets/metalbarrel/specular.webp"
             }
 
-            shininess: 10.0
+            shininess: 5.0
         }
     }
 }
