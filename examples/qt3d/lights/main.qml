@@ -145,21 +145,30 @@ Entity
                 radius: 1
             },
             Transform {
-                translation: Qt.vector3d(-5.0, 40.0, -5.0)
+                translation: Qt.vector3d(-20.0, 40.0, 0.0)
+
+                Quick.SequentialAnimation on translation {
+                    loops: Quick.Animation.Infinite
+                    running: true
+                    Quick.Vector3dAnimation { from: Qt.vector3d(-40.0, 40.0, 0.0); to: Qt.vector3d(40.0, 40.0, 0.0); duration: 5000 }
+                    Quick.Vector3dAnimation { from: Qt.vector3d(40.0, 40.0, 0.0); to: Qt.vector3d(-40.0, 40.0, 0.0); duration: 5000 }
+                }
             },
             PhongMaterial {
                 diffuse: "white"
             },
             SpotLight {
-                localDirection: Qt.vector3d(1.0, -4.0, 0.0)
-                Quick.SequentialAnimation on localDirection.x {
-                    Quick.NumberAnimation { from: -4.0; to: 4.0; duration: 5000 }
-                    Quick.NumberAnimation { from: 4.0; to: -4.0; duration: 5000 }
+                localDirection: Qt.vector3d(0.0, -4.0, 0.0)
+                Quick.SequentialAnimation on localDirection {
                     loops: Quick.Animation.Infinite
+                    running: true
+                    Quick.Vector3dAnimation { from: Qt.vector3d(0.0, -4.0, -4.0); to: Qt.vector3d(0.0, -4.0, 4.0); duration: 1000 }
+                    Quick.Vector3dAnimation { from: Qt.vector3d(0.0, -4.0, 4.0); to: Qt.vector3d(0.0, -4.0, -4.0); duration: 1000 }
                 }
+                color: "white"
                 cutOffAngle: 30
                 constantAttenuation: 1
-                intensity: 4
+                intensity: 2.5
             }
         ]
     }
