@@ -221,8 +221,9 @@ void QSpotLight::setLocalDirection(const QVector3D &direction)
 {
     Q_D(QSpotLight);
     if (localDirection() != direction) {
-        d->m_shaderData->setProperty("direction", direction);
-        emit localDirectionChanged(direction);
+        const QVector3D dir = direction.normalized();
+        d->m_shaderData->setProperty("direction", dir);
+        emit localDirectionChanged(dir);
     }
 }
 

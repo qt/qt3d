@@ -276,7 +276,7 @@ private Q_SLOTS:
         change = arbiter.events[2].staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "localDirection");
         QCOMPARE(change->subjectId(), spotLight->id());
-        QCOMPARE(change->value().value<QVector3D>(), QVector3D(0.5f, 0.0f, -1.0f));
+        QCOMPARE(change->value().value<QVector3D>(), QVector3D(0.5f, 0.0f, -1.0f).normalized());
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
         change = arbiter.events[3].staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "cutOffAngle");
