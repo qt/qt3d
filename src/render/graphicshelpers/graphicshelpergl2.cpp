@@ -550,10 +550,17 @@ uint GraphicsHelperGL2::uniformByteSize(const ShaderUniform &description)
 
     case GL_INT:
     case GL_FLOAT:
+    case GL_SAMPLER_1D:
+    case GL_SAMPLER_1D_SHADOW:
     case GL_SAMPLER_2D:
+    case GL_SAMPLER_2D_SHADOW:
+    case GL_SAMPLER_3D:
     case GL_SAMPLER_CUBE:
         rawByteSize = 4;
         break;
+
+    default:
+        Q_UNREACHABLE();
     }
 
     return arrayStride ? rawByteSize * arrayStride : rawByteSize;

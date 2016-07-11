@@ -63,7 +63,7 @@ class QOpenGLExtension_ARB_framebuffer_object;
 namespace Qt3DRender {
 namespace Render {
 
-class GraphicsHelperGL2 : public GraphicsHelperInterface
+class Q_AUTOTEST_EXPORT GraphicsHelperGL2 : public GraphicsHelperInterface
 {
 public:
     GraphicsHelperGL2();
