@@ -94,12 +94,13 @@ Entity {
     readonly property int floatSize: 4
 
     function buildParticlesBuffer() {
-        var bufferData = new Float32Array(particlesCount * 4 * 3);
+        var byteSizeOfParticleData = 12;
+        var bufferData = new Float32Array(particlesCount * byteSizeOfParticleData);
         var factor = 500.0;
         for (var i = 0; i < particlesCount; ++i) {
-            var positionIdx = i * 12;
-            var velocityIdx = i * 12 + 4;
-            var colorIdx = i * 12 + 8;
+            var positionIdx = i * byteSizeOfParticleData;
+            var velocityIdx = i * byteSizeOfParticleData + 4;
+            var colorIdx = i * byteSizeOfParticleData + 8;
 
             for (var j = 0; j < 3; ++j) {
                 bufferData[positionIdx + j] = (Math.random() - 0.5) * factor;
