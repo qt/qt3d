@@ -62,7 +62,8 @@ qtConfig(private_tests) {
         qrendercapture \
         uniform \
         graphicshelpergl3_3 \
-        graphicshelpergl3_2
+        graphicshelpergl3_2 \
+        graphicshelpergl2
 
     !macos: SUBDIRS += graphicshelpergl4
 }
