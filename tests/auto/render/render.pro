@@ -60,7 +60,8 @@ qtConfig(private_tests) {
         qcomputecommand \
         loadscenejob \
         qrendercapture \
-        uniform
+        uniform \
+        graphicshelpergl3_3
 
     !macos: SUBDIRS += graphicshelpergl4
 }
