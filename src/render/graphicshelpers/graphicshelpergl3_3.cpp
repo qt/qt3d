@@ -76,6 +76,10 @@ GraphicsHelperGL3_3::GraphicsHelperGL3_3()
 {
 }
 
+GraphicsHelperGL3_3::~GraphicsHelperGL3_3()
+{
+}
+
 void GraphicsHelperGL3_3::initializeHelper(QOpenGLContext *context,
                                             QAbstractOpenGLFunctions *functions)
 {
@@ -383,6 +387,7 @@ bool GraphicsHelperGL3_3::supportsFeature(GraphicsHelperInterface::Feature featu
     case PrimitiveRestart:
     case RenderBufferDimensionRetrieval:
     case TextureDimensionRetrieval:
+    case BindableFragmentOutputs:
         return true;
     case Tessellation:
         return !m_tessFuncs.isNull();
@@ -1175,6 +1180,14 @@ UniformType GraphicsHelperGL3_3::uniformTypeFromGLType(GLenum type)
         return UniformType::IVec3;
     case GL_INT_VEC4:
         return UniformType::IVec4;
+    case GL_UNSIGNED_INT:
+        return UniformType::UInt;
+    case GL_UNSIGNED_INT_VEC2:
+        return UniformType::UIVec2;
+    case GL_UNSIGNED_INT_VEC3:
+        return UniformType::UIVec3;
+    case GL_UNSIGNED_INT_VEC4:
+        return UniformType::UIVec4;
     case GL_BOOL:
         return UniformType::Bool;
     case GL_BOOL_VEC2:
@@ -1184,8 +1197,10 @@ UniformType GraphicsHelperGL3_3::uniformTypeFromGLType(GLenum type)
     case GL_BOOL_VEC4:
         return UniformType::BVec4;
 
+    case GL_SAMPLER_BUFFER:
     case GL_SAMPLER_1D:
     case GL_SAMPLER_1D_SHADOW:
+    case GL_SAMPLER_1D_ARRAY:
     case GL_SAMPLER_2D:
     case GL_SAMPLER_2D_RECT:
     case GL_SAMPLER_2D_SHADOW:
@@ -1197,6 +1212,7 @@ UniformType GraphicsHelperGL3_3::uniformTypeFromGLType(GLenum type)
     case GL_SAMPLER_2D_MULTISAMPLE:
     case GL_SAMPLER_2D_MULTISAMPLE_ARRAY:
     case GL_SAMPLER_3D:
+    case GL_INT_SAMPLER_BUFFER:
     case GL_INT_SAMPLER_1D:
     case GL_INT_SAMPLER_2D:
     case GL_INT_SAMPLER_3D:
@@ -1205,6 +1221,7 @@ UniformType GraphicsHelperGL3_3::uniformTypeFromGLType(GLenum type)
     case GL_INT_SAMPLER_2D_ARRAY:
     case GL_INT_SAMPLER_2D_MULTISAMPLE:
     case GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY:
+    case GL_UNSIGNED_INT_SAMPLER_BUFFER:
     case GL_UNSIGNED_INT_SAMPLER_1D:
     case GL_UNSIGNED_INT_SAMPLER_2D:
     case GL_UNSIGNED_INT_SAMPLER_3D:
