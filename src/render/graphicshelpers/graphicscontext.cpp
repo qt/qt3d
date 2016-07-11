@@ -66,7 +66,7 @@
 #include <QOpenGLFunctions_3_3_Core>
 #include <QOpenGLFunctions_4_3_Core>
 #include <Qt3DRender/private/graphicshelpergl2_p.h>
-#include <Qt3DRender/private/graphicshelpergl3_p.h>
+#include <Qt3DRender/private/graphicshelpergl3_2_p.h>
 #include <Qt3DRender/private/graphicshelpergl3_3_p.h>
 #include <Qt3DRender/private/graphicshelpergl4_p.h>
 #endif
@@ -665,7 +665,7 @@ GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
             glHelper = new GraphicsHelperGL3_3();
         } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != nullptr) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.2";
-            glHelper = new GraphicsHelperGL3();
+            glHelper = new GraphicsHelperGL3_2();
         } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_2_0>()) != nullptr) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2 Helper";
             glHelper = new GraphicsHelperGL2();

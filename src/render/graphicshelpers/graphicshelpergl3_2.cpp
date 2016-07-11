@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "graphicshelpergl3_p.h"
+#include "graphicshelpergl3_2_p.h"
 
 #ifndef QT_OPENGL_ES_2
 #include <QOpenGLFunctions_3_2_Core>
@@ -71,13 +71,17 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-GraphicsHelperGL3::GraphicsHelperGL3()
+GraphicsHelperGL3_2::GraphicsHelperGL3_2()
     : m_funcs(nullptr)
     , m_tessFuncs()
 {
 }
 
-void GraphicsHelperGL3::initializeHelper(QOpenGLContext *context,
+GraphicsHelperGL3_2::~GraphicsHelperGL3_2()
+{
+}
+
+void GraphicsHelperGL3_2::initializeHelper(QOpenGLContext *context,
                                           QAbstractOpenGLFunctions *functions)
 {
     m_funcs = static_cast<QOpenGLFunctions_3_2_Core*>(functions);
@@ -91,7 +95,7 @@ void GraphicsHelperGL3::initializeHelper(QOpenGLContext *context,
     }
 }
 
-void GraphicsHelperGL3::drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType,
+void GraphicsHelperGL3_2::drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType,
                                                                     GLsizei primitiveCount,
                                                                     GLint indexType,
                                                                     void *indices,
@@ -111,7 +115,7 @@ void GraphicsHelperGL3::drawElementsInstancedBaseVertexBaseInstance(GLenum primi
                                                baseVertex);
 }
 
-void GraphicsHelperGL3::drawArraysInstanced(GLenum primitiveType,
+void GraphicsHelperGL3_2::drawArraysInstanced(GLenum primitiveType,
                                              GLint first,
                                              GLsizei count,
                                              GLsizei instances)
@@ -123,7 +127,7 @@ void GraphicsHelperGL3::drawArraysInstanced(GLenum primitiveType,
                                    instances);
 }
 
-void GraphicsHelperGL3::drawArraysInstancedBaseInstance(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances, GLsizei baseInstance)
+void GraphicsHelperGL3_2::drawArraysInstancedBaseInstance(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances, GLsizei baseInstance)
 {
     if (baseInstance != 0)
         qWarning() << "glDrawArraysInstancedBaseInstance is not supported with OpenGL 3";
@@ -133,7 +137,7 @@ void GraphicsHelperGL3::drawArraysInstancedBaseInstance(GLenum primitiveType, GL
                                    instances);
 }
 
-void GraphicsHelperGL3::drawElements(GLenum primitiveType,
+void GraphicsHelperGL3_2::drawElements(GLenum primitiveType,
                                       GLsizei primitiveCount,
                                       GLint indexType,
                                       void *indices,
@@ -146,7 +150,7 @@ void GraphicsHelperGL3::drawElements(GLenum primitiveType,
                                       baseVertex);
 }
 
-void GraphicsHelperGL3::drawArrays(GLenum primitiveType,
+void GraphicsHelperGL3_2::drawArrays(GLenum primitiveType,
                                     GLint first,
                                     GLsizei count)
 {
@@ -155,7 +159,7 @@ void GraphicsHelperGL3::drawArrays(GLenum primitiveType,
                           count);
 }
 
-void GraphicsHelperGL3::setVerticesPerPatch(GLint verticesPerPatch)
+void GraphicsHelperGL3_2::setVerticesPerPatch(GLint verticesPerPatch)
 {
 #if defined(QT_OPENGL_4)
     if (!m_tessFuncs) {
@@ -170,12 +174,12 @@ void GraphicsHelperGL3::setVerticesPerPatch(GLint verticesPerPatch)
 #endif
 }
 
-void GraphicsHelperGL3::useProgram(GLuint programId)
+void GraphicsHelperGL3_2::useProgram(GLuint programId)
 {
     m_funcs->glUseProgram(programId);
 }
 
-QVector<ShaderUniform> GraphicsHelperGL3::programUniformsAndLocations(GLuint programId)
+QVector<ShaderUniform> GraphicsHelperGL3_2::programUniformsAndLocations(GLuint programId)
 {
     QVector<ShaderUniform> uniforms;
 
@@ -207,7 +211,7 @@ QVector<ShaderUniform> GraphicsHelperGL3::programUniformsAndLocations(GLuint pro
     return uniforms;
 }
 
-QVector<ShaderAttribute> GraphicsHelperGL3::programAttributesAndLocations(GLuint programId)
+QVector<ShaderAttribute> GraphicsHelperGL3_2::programAttributesAndLocations(GLuint programId)
 {
     QVector<ShaderAttribute> attributes;
     GLint nbrActiveAttributes = 0;
@@ -229,7 +233,7 @@ QVector<ShaderAttribute> GraphicsHelperGL3::programAttributesAndLocations(GLuint
     return attributes;
 }
 
-QVector<ShaderUniformBlock> GraphicsHelperGL3::programUniformBlocks(GLuint programId)
+QVector<ShaderUniformBlock> GraphicsHelperGL3_2::programUniformBlocks(GLuint programId)
 {
     QVector<ShaderUniformBlock> blocks;
     GLint nbrActiveUniformsBlocks = 0;
@@ -250,7 +254,7 @@ QVector<ShaderUniformBlock> GraphicsHelperGL3::programUniformBlocks(GLuint progr
     return blocks;
 }
 
-QVector<ShaderStorageBlock> GraphicsHelperGL3::programShaderStorageBlocks(GLuint programId)
+QVector<ShaderStorageBlock> GraphicsHelperGL3_2::programShaderStorageBlocks(GLuint programId)
 {
     Q_UNUSED(programId);
     QVector<ShaderStorageBlock> blocks;
@@ -258,19 +262,19 @@ QVector<ShaderStorageBlock> GraphicsHelperGL3::programShaderStorageBlocks(GLuint
     return blocks;
 }
 
-void GraphicsHelperGL3::vertexAttribDivisor(GLuint index, GLuint divisor)
+void GraphicsHelperGL3_2::vertexAttribDivisor(GLuint index, GLuint divisor)
 {
     Q_UNUSED(index);
     Q_UNUSED(divisor);
     qCWarning(Render::Rendering) << "Vertex attribute divisor not available with OpenGL 3.2 core";
 }
 
-void GraphicsHelperGL3::blendEquation(GLenum mode)
+void GraphicsHelperGL3_2::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);
 }
 
-void GraphicsHelperGL3::blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor)
+void GraphicsHelperGL3_2::blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor)
 {
     Q_UNUSED(buf);
     Q_UNUSED(sfactor);
@@ -279,7 +283,7 @@ void GraphicsHelperGL3::blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor)
     qWarning() << "glBlendFunci() not supported by OpenGL 3.0 (since OpenGL 4.0)";
 }
 
-void GraphicsHelperGL3::blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRGB, GLenum sAlpha, GLenum dAlpha)
+void GraphicsHelperGL3_2::blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRGB, GLenum sAlpha, GLenum dAlpha)
 {
     Q_UNUSED(buf);
     Q_UNUSED(sRGB);
@@ -290,70 +294,70 @@ void GraphicsHelperGL3::blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRGB,
     qWarning() << "glBlendFuncSeparatei() not supported by OpenGL 3.0 (since OpenGL 4.0)";
 }
 
-void GraphicsHelperGL3::alphaTest(GLenum, GLenum)
+void GraphicsHelperGL3_2::alphaTest(GLenum, GLenum)
 {
     qCWarning(Render::Rendering) << "AlphaTest not available with OpenGL 3.2 core";
 }
 
-void GraphicsHelperGL3::depthTest(GLenum mode)
+void GraphicsHelperGL3_2::depthTest(GLenum mode)
 {
     m_funcs->glEnable(GL_DEPTH_TEST);
     m_funcs->glDepthFunc(mode);
 }
 
-void GraphicsHelperGL3::depthMask(GLenum mode)
+void GraphicsHelperGL3_2::depthMask(GLenum mode)
 {
     m_funcs->glDepthMask(mode);
 }
 
-void GraphicsHelperGL3::frontFace(GLenum mode)
+void GraphicsHelperGL3_2::frontFace(GLenum mode)
 {
     m_funcs->glFrontFace(mode);
 
 }
 
-void GraphicsHelperGL3::setMSAAEnabled(bool enabled)
+void GraphicsHelperGL3_2::setMSAAEnabled(bool enabled)
 {
     enabled ? m_funcs->glEnable(GL_MULTISAMPLE)
             : m_funcs->glDisable(GL_MULTISAMPLE);
 }
 
-void GraphicsHelperGL3::setAlphaCoverageEnabled(bool enabled)
+void GraphicsHelperGL3_2::setAlphaCoverageEnabled(bool enabled)
 {
     enabled ? m_funcs->glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE)
             : m_funcs->glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 }
 
-GLuint GraphicsHelperGL3::createFrameBufferObject()
+GLuint GraphicsHelperGL3_2::createFrameBufferObject()
 {
     GLuint id;
     m_funcs->glGenFramebuffers(1, &id);
     return id;
 }
 
-void GraphicsHelperGL3::releaseFrameBufferObject(GLuint frameBufferId)
+void GraphicsHelperGL3_2::releaseFrameBufferObject(GLuint frameBufferId)
 {
     m_funcs->glDeleteFramebuffers(1, &frameBufferId);
 }
 
-void GraphicsHelperGL3::bindFrameBufferObject(GLuint frameBufferId)
+void GraphicsHelperGL3_2::bindFrameBufferObject(GLuint frameBufferId)
 {
     m_funcs->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBufferId);
 }
 
-GLuint GraphicsHelperGL3::boundFrameBufferObject()
+GLuint GraphicsHelperGL3_2::boundFrameBufferObject()
 {
     GLint id = 0;
     m_funcs->glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &id);
     return id;
 }
 
-bool GraphicsHelperGL3::checkFrameBufferComplete()
+bool GraphicsHelperGL3_2::checkFrameBufferComplete()
 {
     return (m_funcs->glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
 }
 
-void GraphicsHelperGL3::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
+void GraphicsHelperGL3_2::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
 {
     GLenum attr = GL_DEPTH_STENCIL_ATTACHMENT;
 
@@ -378,7 +382,7 @@ void GraphicsHelperGL3::bindFrameBufferAttachment(QOpenGLTexture *texture, const
     texture->release();
 }
 
-bool GraphicsHelperGL3::supportsFeature(GraphicsHelperInterface::Feature feature) const
+bool GraphicsHelperGL3_2::supportsFeature(GraphicsHelperInterface::Feature feature) const
 {
     switch (feature) {
     case MRT:
@@ -386,6 +390,7 @@ bool GraphicsHelperGL3::supportsFeature(GraphicsHelperInterface::Feature feature
     case PrimitiveRestart:
     case RenderBufferDimensionRetrieval:
     case TextureDimensionRetrieval:
+    case BindableFragmentOutputs:
         return true;
     case Tessellation:
         return !m_tessFuncs.isNull();
@@ -394,7 +399,7 @@ bool GraphicsHelperGL3::supportsFeature(GraphicsHelperInterface::Feature feature
     }
 }
 
-void GraphicsHelperGL3::drawBuffers(GLsizei n, const int *bufs)
+void GraphicsHelperGL3_2::drawBuffers(GLsizei n, const int *bufs)
 {
     // Use QVarLengthArray here
     QVarLengthArray<GLenum, 16> drawBufs(n);
@@ -404,18 +409,18 @@ void GraphicsHelperGL3::drawBuffers(GLsizei n, const int *bufs)
     m_funcs->glDrawBuffers(n, drawBufs.constData());
 }
 
-void GraphicsHelperGL3::bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs)
+void GraphicsHelperGL3_2::bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs)
 {
     for (auto it = outputs.begin(), end = outputs.end(); it != end; ++it)
         m_funcs->glBindFragDataLocation(shader, it.value(), it.key().toStdString().c_str());
 }
 
-void GraphicsHelperGL3::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
+void GraphicsHelperGL3_2::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
 {
     m_funcs->glUniformBlockBinding(programId, uniformBlockIndex, uniformBlockBinding);
 }
 
-void GraphicsHelperGL3::bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding)
+void GraphicsHelperGL3_2::bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding)
 {
     Q_UNUSED(programId);
     Q_UNUSED(shaderStorageBlockIndex);
@@ -423,12 +428,12 @@ void GraphicsHelperGL3::bindShaderStorageBlock(GLuint programId, GLuint shaderSt
     qWarning() << "SSBO are not supported by OpenGL 3.0 (since OpenGL 4.3)";
 }
 
-void GraphicsHelperGL3::bindBufferBase(GLenum target, GLuint index, GLuint buffer)
+void GraphicsHelperGL3_2::bindBufferBase(GLenum target, GLuint index, GLuint buffer)
 {
     m_funcs->glBindBufferBase(target, index, buffer);
 }
 
-void GraphicsHelperGL3::buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer)
+void GraphicsHelperGL3_2::buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer)
 {
     char *bufferData = buffer.data();
 
@@ -632,7 +637,7 @@ void GraphicsHelperGL3::buildUniformBuffer(const QVariant &v, const ShaderUnifor
     }
 }
 
-uint GraphicsHelperGL3::uniformByteSize(const ShaderUniform &description)
+uint GraphicsHelperGL3_2::uniformByteSize(const ShaderUniform &description)
 {
     uint rawByteSize = 0;
     int arrayStride = qMax(description.m_arrayStride, 0);
@@ -756,17 +761,17 @@ uint GraphicsHelperGL3::uniformByteSize(const ShaderUniform &description)
     return arrayStride ? rawByteSize * arrayStride : rawByteSize;
 }
 
-void GraphicsHelperGL3::enableClipPlane(int clipPlane)
+void GraphicsHelperGL3_2::enableClipPlane(int clipPlane)
 {
     m_funcs->glEnable(GL_CLIP_DISTANCE0 + clipPlane);
 }
 
-void GraphicsHelperGL3::disableClipPlane(int clipPlane)
+void GraphicsHelperGL3_2::disableClipPlane(int clipPlane)
 {
     m_funcs->glDisable(GL_CLIP_DISTANCE0 + clipPlane);
 }
 
-void GraphicsHelperGL3::setClipPlane(int clipPlane, const QVector3D &normal, float distance)
+void GraphicsHelperGL3_2::setClipPlane(int clipPlane, const QVector3D &normal, float distance)
 {
     // deprecated
     Q_UNUSED(clipPlane);
@@ -774,31 +779,31 @@ void GraphicsHelperGL3::setClipPlane(int clipPlane, const QVector3D &normal, flo
     Q_UNUSED(distance);
 }
 
-GLint GraphicsHelperGL3::maxClipPlaneCount()
+GLint GraphicsHelperGL3_2::maxClipPlaneCount()
 {
     GLint max = 0;
     m_funcs->glGetIntegerv(GL_MAX_CLIP_DISTANCES, &max);
     return max;
 }
 
-void GraphicsHelperGL3::enablePrimitiveRestart(int primitiveRestartIndex)
+void GraphicsHelperGL3_2::enablePrimitiveRestart(int primitiveRestartIndex)
 {
     m_funcs->glPrimitiveRestartIndex(primitiveRestartIndex);
     m_funcs->glEnable(GL_PRIMITIVE_RESTART);
 }
 
-void GraphicsHelperGL3::disablePrimitiveRestart()
+void GraphicsHelperGL3_2::disablePrimitiveRestart()
 {
     m_funcs->glDisable(GL_PRIMITIVE_RESTART);
 }
 
-void GraphicsHelperGL3::clearBufferf(GLint drawbuffer, const QVector4D &values)
+void GraphicsHelperGL3_2::clearBufferf(GLint drawbuffer, const QVector4D &values)
 {
     GLfloat vec[4] = {values[0], values[1], values[2], values[3]};
     m_funcs->glClearBufferfv(GL_COLOR, drawbuffer, vec);
 }
 
-void GraphicsHelperGL3::pointSize(bool programmable, GLfloat value)
+void GraphicsHelperGL3_2::pointSize(bool programmable, GLfloat value)
 {
     if (programmable) {
         m_funcs->glEnable(GL_PROGRAM_POINT_SIZE);
@@ -808,23 +813,25 @@ void GraphicsHelperGL3::pointSize(bool programmable, GLfloat value)
     }
 }
 
-void GraphicsHelperGL3::enablei(GLenum cap, GLuint index)
+void GraphicsHelperGL3_2::enablei(GLenum cap, GLuint index)
 {
     m_funcs->glEnablei(cap, index);
 }
 
-void GraphicsHelperGL3::disablei(GLenum cap, GLuint index)
+void GraphicsHelperGL3_2::disablei(GLenum cap, GLuint index)
 {
     m_funcs->glDisablei(cap, index);
 }
 
-void GraphicsHelperGL3::setSeamlessCubemap(bool enable)
+void GraphicsHelperGL3_2::setSeamlessCubemap(bool enable)
 {
-    Q_UNUSED(enable);
-    qWarning() << "GL_TEXTURE_CUBE_MAP_SEAMLESS not supported by OpenGL 3.0 (since 3.2)";
+    if (enable)
+        m_funcs->glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+    else
+        m_funcs->glDisable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 }
 
-QSize GraphicsHelperGL3::getRenderBufferDimensions(GLuint renderBufferId)
+QSize GraphicsHelperGL3_2::getRenderBufferDimensions(GLuint renderBufferId)
 {
     GLint width = 0;
     GLint height = 0;
@@ -837,7 +844,7 @@ QSize GraphicsHelperGL3::getRenderBufferDimensions(GLuint renderBufferId)
     return QSize(width, height);
 }
 
-QSize GraphicsHelperGL3::getTextureDimensions(GLuint textureId, GLenum target, uint level)
+QSize GraphicsHelperGL3_2::getTextureDimensions(GLuint textureId, GLenum target, uint level)
 {
     GLint width = 0;
     GLint height = 0;
@@ -850,120 +857,120 @@ QSize GraphicsHelperGL3::getTextureDimensions(GLuint textureId, GLenum target, u
     return QSize(width, height);
 }
 
-void GraphicsHelperGL3::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
+void GraphicsHelperGL3_2::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
 {
     Q_UNUSED(wx);
     Q_UNUSED(wy);
     Q_UNUSED(wz);
-    qWarning() << "Compute Shaders are not supported by OpenGL 3.0 (since OpenGL 4.3)";
+    qWarning() << "Compute Shaders are not supported by OpenGL 3.2 (since OpenGL 4.3)";
 }
 
-void GraphicsHelperGL3::glUniform1fv(GLint location, GLsizei count, const GLfloat *values)
+void GraphicsHelperGL3_2::glUniform1fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniform1fv(location, count, values);
 }
 
-void GraphicsHelperGL3::glUniform2fv(GLint location, GLsizei count, const GLfloat *values)
+void GraphicsHelperGL3_2::glUniform2fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniform2fv(location, count, values);
 }
 
-void GraphicsHelperGL3::glUniform3fv(GLint location, GLsizei count, const GLfloat *values)
+void GraphicsHelperGL3_2::glUniform3fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniform3fv(location, count, values);
 }
 
-void GraphicsHelperGL3::glUniform4fv(GLint location, GLsizei count, const GLfloat *values)
+void GraphicsHelperGL3_2::glUniform4fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniform4fv(location, count, values);
 }
 
-void GraphicsHelperGL3::glUniform1iv(GLint location, GLsizei count, const GLint *values)
+void GraphicsHelperGL3_2::glUniform1iv(GLint location, GLsizei count, const GLint *values)
 {
     m_funcs->glUniform1iv(location, count, values);
 }
 
-void GraphicsHelperGL3::glUniform2iv(GLint location, GLsizei count, const GLint *values)
+void GraphicsHelperGL3_2::glUniform2iv(GLint location, GLsizei count, const GLint *values)
 {
     m_funcs->glUniform2iv(location, count, values);
 }
 
-void GraphicsHelperGL3::glUniform3iv(GLint location, GLsizei count, const GLint *values)
+void GraphicsHelperGL3_2::glUniform3iv(GLint location, GLsizei count, const GLint *values)
 {
     m_funcs->glUniform3iv(location, count, values);
 }
 
-void GraphicsHelperGL3::glUniform4iv(GLint location, GLsizei count, const GLint *values)
+void GraphicsHelperGL3_2::glUniform4iv(GLint location, GLsizei count, const GLint *values)
 {
     m_funcs->glUniform4iv(location, count, values);
 }
 
-void GraphicsHelperGL3::glUniform1uiv(GLint location, GLsizei count, const GLuint *values)
+void GraphicsHelperGL3_2::glUniform1uiv(GLint location, GLsizei count, const GLuint *values)
 {
     m_funcs->glUniform1uiv(location, count, values);
 }
 
-void GraphicsHelperGL3::glUniform2uiv(GLint location, GLsizei count, const GLuint *values)
+void GraphicsHelperGL3_2::glUniform2uiv(GLint location, GLsizei count, const GLuint *values)
 {
     m_funcs->glUniform2uiv(location, count, values);
 }
 
-void GraphicsHelperGL3::glUniform3uiv(GLint location, GLsizei count, const GLuint *values)
+void GraphicsHelperGL3_2::glUniform3uiv(GLint location, GLsizei count, const GLuint *values)
 {
     m_funcs->glUniform3uiv(location, count, values);
 }
 
-void GraphicsHelperGL3::glUniform4uiv(GLint location, GLsizei count, const GLuint *values)
+void GraphicsHelperGL3_2::glUniform4uiv(GLint location, GLsizei count, const GLuint *values)
 {
     m_funcs->glUniform4uiv(location, count, values);
 }
 
-void GraphicsHelperGL3::glUniformMatrix2fv(GLint location, GLsizei count, const GLfloat *values)
+void GraphicsHelperGL3_2::glUniformMatrix2fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniformMatrix2fv(location, count, false, values);
 }
 
-void GraphicsHelperGL3::glUniformMatrix3fv(GLint location, GLsizei count, const GLfloat *values)
+void GraphicsHelperGL3_2::glUniformMatrix3fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniformMatrix3fv(location, count, false, values);
 }
 
-void GraphicsHelperGL3::glUniformMatrix4fv(GLint location, GLsizei count, const GLfloat *values)
+void GraphicsHelperGL3_2::glUniformMatrix4fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniformMatrix4fv(location, count, false, values);
 }
 
-void GraphicsHelperGL3::glUniformMatrix2x3fv(GLint location, GLsizei count, const GLfloat *values)
+void GraphicsHelperGL3_2::glUniformMatrix2x3fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniformMatrix2x3fv(location, count, false, values);
 }
 
-void GraphicsHelperGL3::glUniformMatrix3x2fv(GLint location, GLsizei count, const GLfloat *values)
+void GraphicsHelperGL3_2::glUniformMatrix3x2fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniformMatrix3x2fv(location, count, false, values);
 }
 
-void GraphicsHelperGL3::glUniformMatrix2x4fv(GLint location, GLsizei count, const GLfloat *values)
+void GraphicsHelperGL3_2::glUniformMatrix2x4fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniformMatrix2x4fv(location, count, false, values);
 }
 
-void GraphicsHelperGL3::glUniformMatrix4x2fv(GLint location, GLsizei count, const GLfloat *values)
+void GraphicsHelperGL3_2::glUniformMatrix4x2fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniformMatrix4x2fv(location, count, false, values);
 }
 
-void GraphicsHelperGL3::glUniformMatrix3x4fv(GLint location, GLsizei count, const GLfloat *values)
+void GraphicsHelperGL3_2::glUniformMatrix3x4fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniformMatrix3x4fv(location, count, false, values);
 }
 
-void GraphicsHelperGL3::glUniformMatrix4x3fv(GLint location, GLsizei count, const GLfloat *values)
+void GraphicsHelperGL3_2::glUniformMatrix4x3fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniformMatrix4x3fv(location, count, false, values);
 }
 
-UniformType GraphicsHelperGL3::uniformTypeFromGLType(GLenum type)
+UniformType GraphicsHelperGL3_2::uniformTypeFromGLType(GLenum type)
 {
     switch (type) {
     case GL_FLOAT:
@@ -1000,6 +1007,14 @@ UniformType GraphicsHelperGL3::uniformTypeFromGLType(GLenum type)
         return UniformType::IVec3;
     case GL_INT_VEC4:
         return UniformType::IVec4;
+    case GL_UNSIGNED_INT:
+        return UniformType::UInt;
+    case GL_UNSIGNED_INT_VEC2:
+        return UniformType::UIVec2;
+    case GL_UNSIGNED_INT_VEC3:
+        return UniformType::UIVec3;
+    case GL_UNSIGNED_INT_VEC4:
+        return UniformType::UIVec4;
     case GL_BOOL:
         return UniformType::Bool;
     case GL_BOOL_VEC2:
@@ -1009,6 +1024,7 @@ UniformType GraphicsHelperGL3::uniformTypeFromGLType(GLenum type)
     case GL_BOOL_VEC4:
         return UniformType::BVec4;
 
+    case GL_SAMPLER_BUFFER:
     case GL_SAMPLER_1D:
     case GL_SAMPLER_1D_SHADOW:
     case GL_SAMPLER_2D:
@@ -1017,11 +1033,13 @@ UniformType GraphicsHelperGL3::uniformTypeFromGLType(GLenum type)
     case GL_SAMPLER_2D_RECT_SHADOW:
     case GL_SAMPLER_CUBE:
     case GL_SAMPLER_CUBE_SHADOW:
+    case GL_SAMPLER_1D_ARRAY:
     case GL_SAMPLER_2D_ARRAY:
     case GL_SAMPLER_2D_ARRAY_SHADOW:
     case GL_SAMPLER_2D_MULTISAMPLE:
     case GL_SAMPLER_2D_MULTISAMPLE_ARRAY:
     case GL_SAMPLER_3D:
+    case GL_INT_SAMPLER_BUFFER:
     case GL_INT_SAMPLER_1D:
     case GL_INT_SAMPLER_2D:
     case GL_INT_SAMPLER_3D:
@@ -1030,6 +1048,7 @@ UniformType GraphicsHelperGL3::uniformTypeFromGLType(GLenum type)
     case GL_INT_SAMPLER_2D_ARRAY:
     case GL_INT_SAMPLER_2D_MULTISAMPLE:
     case GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY:
+    case GL_UNSIGNED_INT_SAMPLER_BUFFER:
     case GL_UNSIGNED_INT_SAMPLER_1D:
     case GL_UNSIGNED_INT_SAMPLER_2D:
     case GL_UNSIGNED_INT_SAMPLER_3D:
