@@ -733,12 +733,22 @@ void Renderer::lookForDirtyTextures()
 // Executed in a job
 void Renderer::lookForDirtyShaders()
 {
-    const QVector<HShader> activeShaderHandles = m_nodesManager->shaderManager()->activeHandles();
-    for (HShader handle: activeShaderHandles) {
-        Shader *shader = m_nodesManager->shaderManager()->data(handle);
-        // TO DO: Perform additional check for Graphics API compatibility
-        if (!shader->isLoaded())
-            m_dirtyShaders.push_back(handle);
+    if (isRunning()) {
+        const QVector<HTechnique> activeTechniques = m_nodesManager->techniqueManager()->activeHandles();
+        for (HTechnique techniqueHandle : activeTechniques) {
+            Technique *technique = m_nodesManager->techniqueManager()->data(techniqueHandle);
+            // If api of the renderer matches the one from the technique
+            if (*contextInfo() == *technique->graphicsApiFilter()) {
+                const auto passIds = technique->renderPasses();
+                for (const QNodeId passId : passIds) {
+                    RenderPass *renderPass = m_nodesManager->renderPassManager()->lookupResource(passId);
+                    HShader shaderHandle = m_nodesManager->shaderManager()->lookupHandle(renderPass->shaderProgram());
+                    Shader *shader = m_nodesManager->shaderManager()->data(shaderHandle);
+                    if (shader != nullptr && !shader->isLoaded())
+                        m_dirtyShaders.push_back(shaderHandle);
+                }
+            }
+        }
     }
 }
 
