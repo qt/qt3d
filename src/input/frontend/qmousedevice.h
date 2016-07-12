@@ -63,7 +63,9 @@ public:
 
     enum Axis {
         X,
-        Y
+        Y,
+        WheelX,
+        WheelY
     };
     Q_ENUM(Axis)
 

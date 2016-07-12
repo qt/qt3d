@@ -83,6 +83,8 @@ QMouseDevicePrivate::QMouseDevicePrivate()
 
     \value X
     \value Y
+    \value WheelX
+    \value WheelY
 
     \sa Qt3DInput::QAnalogAxisInput::setAxis
  */
@@ -103,12 +105,11 @@ QMouseDevice::~QMouseDevice()
 /*!
     \return the axis count.
 
-    \note Currently always returns 2.
+    \note Currently always returns 4.
  */
 int QMouseDevice::axisCount() const
 {
-    // TO DO: we could have mouse wheel later on
-    return 2;
+    return 4;
 }
 
 /*!
@@ -130,7 +131,9 @@ QStringList QMouseDevice::axisNames() const
 {
     return QStringList()
             << QStringLiteral("X")
-            << QStringLiteral("Y");
+            << QStringLiteral("Y")
+            << QStringLiteral("WheelX")
+            << QStringLiteral("WheelY");
 }
 
 /*!
@@ -155,6 +158,10 @@ int QMouseDevice::axisIdentifier(const QString &name) const
         return X;
     else if (name == QLatin1String("Y"))
         return Y;
+    else if (name == QLatin1String("WheelX"))
+        return WheelX;
+    else if (name == QLatin1String("WheelY"))
+        return WheelY;
     return -1;
 }
 
