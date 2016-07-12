@@ -160,6 +160,9 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_calculateBoundingVolumeJob(Render::CalculateBoundingVolumeJobPtr::create())
     , m_updateWorldBoundingVolumeJob(Render::UpdateWorldBoundingVolumeJobPtr::create())
     , m_sendRenderCaptureJob(Render::SendRenderCaptureJobPtr::create(this))
+    , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
+    , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
+    , m_shaderGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyShaders(); }, JobTypes::DirtyShaderGathering))
     #ifdef QT3D_JOBS_RUN_STATS
     , m_commandExecuter(new Qt3DRender::Debug::CommandExecuter(this))
     #endif
@@ -750,48 +753,66 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
     m_dirtyGeometry.clear();
 }
 
-void Renderer::updateGLResources()
+// Executed in a job
+void Renderer::lookForDirtyBuffers()
 {
-    // TO DO: The loops could be performed in a job so that we only
-    // have the actual dirty elements
-
     const QVector<HBuffer> activeBufferHandles = m_nodesManager->bufferManager()->activeHandles();
     for (HBuffer handle: activeBufferHandles) {
         Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
-        // Perform data upload
-        if (buffer->isDirty()) {
-            // Forces creation if it doesn't exit
-            if (!m_graphicsContext->hasGLBufferForBuffer(buffer))
-                m_graphicsContext->glBufferForRenderBuffer(buffer);
-            else // Otherwise update the glBuffer
-                m_graphicsContext->updateBuffer(buffer);
-            buffer->unsetDirty();
-        }
+        if (buffer->isDirty())
+            m_dirtyBuffers.push_back(handle);
     }
+}
 
-    const QVector<HTechnique> activeTechniques = m_nodesManager->techniqueManager()->activeHandles();
-    for (HTechnique techniqueHandle : activeTechniques) {
-        Technique *technique = m_nodesManager->techniqueManager()->data(techniqueHandle);
-        // If api of the renderer matches the one from the technique
-        if (*contextInfo() == *technique->graphicsApiFilter()) {
-            const auto passIds = technique->renderPasses();
-            for (const QNodeId passId : passIds) {
-                RenderPass *renderPass = m_nodesManager->renderPassManager()->lookupResource(passId);
-                HShader shaderHandle = m_nodesManager->shaderManager()->lookupHandle(renderPass->shaderProgram());
-                Shader *shader = m_nodesManager->shaderManager()->data(shaderHandle);
-                if (shader != nullptr && !shader->isLoaded())
-                    m_graphicsContext->loadShader(shader);
-            }
-        }
-    }
-
+// Executed in a job
+void Renderer::lookForDirtyTextures()
+{
     const QVector<HTexture> activeTextureHandles = m_nodesManager->textureManager()->activeHandles();
     for (HTexture handle: activeTextureHandles) {
         Texture *texture = m_nodesManager->textureManager()->data(handle);
-        if (texture->isDirty()) {
-            // Upload/Update texture
-            texture->getOrCreateGLTexture();
-        }
+        if (texture->isDirty())
+            m_dirtyTextures.push_back(handle);
+    }
+}
+
+// Executed in a job
+void Renderer::lookForDirtyShaders()
+{
+    const QVector<HShader> activeShaderHandles = m_nodesManager->shaderManager()->activeHandles();
+    for (HShader handle: activeShaderHandles) {
+        Shader *shader = m_nodesManager->shaderManager()->data(handle);
+        // TO DO: Perform additional check for Graphics API compatibility
+        if (!shader->isLoaded())
+            m_dirtyShaders.push_back(handle);
+    }
+}
+
+void Renderer::updateGLResources()
+{
+    const QVector<HBuffer> dirtyBufferHandles = std::move(m_dirtyBuffers);
+    for (HBuffer handle: dirtyBufferHandles) {
+        Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
+        // Perform data upload
+        // Forces creation if it doesn't exit
+        if (!m_graphicsContext->hasGLBufferForBuffer(buffer))
+            m_graphicsContext->glBufferForRenderBuffer(buffer);
+        else // Otherwise update the glBuffer
+            m_graphicsContext->updateBuffer(buffer);
+        buffer->unsetDirty();
+    }
+
+    const QVector<HShader> dirtyShaderHandles = std::move(m_dirtyShaders);
+    for (HShader handle: dirtyShaderHandles) {
+        Shader *shader = m_nodesManager->shaderManager()->data(handle);
+        // Compile shader
+        m_graphicsContext->loadShader(shader);
+    }
+
+    const QVector<HTexture> activeTextureHandles = std::move(m_dirtyTextures);
+    for (HTexture handle: activeTextureHandles) {
+        Texture *texture = m_nodesManager->textureManager()->data(handle);
+        // Upload/Update texture
+        texture->getOrCreateGLTexture();
     }
 }
 
@@ -1000,6 +1021,22 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     for (const QAspectJobPtr &bufferJob : bufferJobs)
         m_calculateBoundingVolumeJob->addDependency(bufferJob);
 
+
+    // Traverse the current framegraph. For each leaf node create a
+    // RenderView and set its configuration then create a job to
+    // populate the RenderView with a set of RenderCommands that get
+    // their details from the RenderNodes that are visible to the
+    // Camera selected by the framegraph configuration
+    FrameGraphVisitor visitor(this, m_nodesManager->frameGraphManager());
+    visitor.traverse(frameGraphRoot(), &renderBinJobs);
+
+    // Set dependencies of resource gatherer
+    for (const QAspectJobPtr &jobPtr : renderBinJobs) {
+        jobPtr->addDependency(m_bufferGathererJob);
+        jobPtr->addDependency(m_textureGathererJob);
+        jobPtr->addDependency(m_shaderGathererJob);
+    }
+
     // Add jobs
     renderBinJobs.push_back(m_framePreparationJob);
     renderBinJobs.push_back(m_expandBoundingVolumeJob);
@@ -1010,13 +1047,10 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     renderBinJobs.push_back(m_sendRenderCaptureJob);
     renderBinJobs.append(bufferJobs);
 
-    // Traverse the current framegraph. For each leaf node create a
-    // RenderView and set its configuration then create a job to
-    // populate the RenderView with a set of RenderCommands that get
-    // their details from the RenderNodes that are visible to the
-    // Camera selected by the framegraph configuration
-    FrameGraphVisitor visitor(this, m_nodesManager->frameGraphManager());
-    visitor.traverse(frameGraphRoot(), &renderBinJobs);
+    // Jobs to prepare GL Resource upload
+    renderBinJobs.push_back(m_bufferGathererJob);
+    renderBinJobs.push_back(m_textureGathererJob);
+    renderBinJobs.push_back(m_shaderGathererJob);
 
     // Set target number of RenderViews
     m_renderQueue->setTargetRenderViewCount(visitor.leafNodeCount());
