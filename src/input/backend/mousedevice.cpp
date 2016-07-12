@@ -84,7 +84,10 @@ float MouseDevice::axisValue(int axisIdentifier) const
         return m_mouseState.xAxis;
     case QMouseDevice::Y:
         return m_mouseState.yAxis;
-        break;
+    case QMouseDevice::WheelX:
+        return m_mouseState.wXAxis;
+    case QMouseDevice::WheelY:
+        return m_mouseState.wYAxis;
     default:
         break;
     }
@@ -104,6 +107,19 @@ bool MouseDevice::isButtonPressed(int buttonIdentifier) const
         break;
     }
     return false;
+}
+
+void MouseDevice::updateWheelEvents(const QList<QT_PREPEND_NAMESPACE (QWheelEvent)> &events)
+{
+    // Reset axis values before we accumulate new values for this frame
+    m_mouseState.wXAxis = 0.0f;
+    m_mouseState.wYAxis = 0.0f;
+    if (!events.isEmpty()) {
+        for (const QT_PREPEND_NAMESPACE(QWheelEvent) &e : events) {
+            m_mouseState.wXAxis += m_sensitivity * e.angleDelta().x();
+            m_mouseState.wYAxis += m_sensitivity * e.angleDelta().y();
+        }
+    }
 }
 
 void MouseDevice::updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events)

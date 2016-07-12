@@ -76,6 +76,7 @@ public:
     bool isButtonPressed(int buttonIdentifier) const Q_DECL_OVERRIDE;
 
     void updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events);
+    void updateWheelEvents(const QList<QT_PREPEND_NAMESPACE(QWheelEvent)> &events);
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
@@ -90,6 +91,8 @@ private:
         MouseState()
             : xAxis(0.0f)
             , yAxis(0.0f)
+            , wXAxis(0.0f)
+            , wYAxis(0.0f)
             , leftPressed(false)
             , rightPressed(false)
             , centerPressed(false)
@@ -97,6 +100,8 @@ private:
 
         float xAxis;
         float yAxis;
+        float wXAxis;
+        float wYAxis;
         bool leftPressed;
         bool rightPressed;
         bool centerPressed;
