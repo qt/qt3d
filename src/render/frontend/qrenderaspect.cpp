@@ -132,11 +132,6 @@
 #include <QThread>
 #include <QWindow>
 
-static void initResources()
-{
-    Q_INIT_RESOURCE(render);
-}
-
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
@@ -158,8 +153,6 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_initialized(false)
     , m_renderType(type)
 {
-    initResources();
-
     // Load the scene parsers
     loadSceneParsers();
 }
