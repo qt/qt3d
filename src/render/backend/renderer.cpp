@@ -682,51 +682,6 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                 // Prepare the ShaderParameterPack based on the active uniforms of the shader
                 shader->prepareUniforms(command->m_parameterPack);
 
-                // TO DO: The step below could be performed by the RenderCommand builder job
-                { // Scoped to show extent
-                    if ((command->m_isValid = !command->m_attributes.empty()) == false)
-                        continue;
-
-                    // Update the draw command with what's going to be needed for the drawing
-                    uint primitiveCount = rGeometryRenderer->vertexCount();
-                    uint estimatedCount = 0;
-                    Attribute *indexAttribute = nullptr;
-
-                    const QVector<Qt3DCore::QNodeId> attributeIds = rGeometry->attributes();
-                    for (Qt3DCore::QNodeId attributeId : attributeIds) {
-                        Attribute *attribute = m_nodesManager->attributeManager()->lookupResource(attributeId);
-                        if (attribute->attributeType() == QAttribute::IndexAttribute)
-                            indexAttribute = attribute;
-                        else if (command->m_attributes.contains(attribute->nameId()))
-                            estimatedCount = qMax(attribute->count(), estimatedCount);
-                    }
-
-                    // Update the draw command with all the information required for the drawing
-                    if ((command->m_drawIndexed = (indexAttribute != nullptr)) == true) {
-                        command->m_indexAttributeDataType = GraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->vertexBaseType());
-                        command->m_indexAttributeByteOffset = indexAttribute->byteOffset();
-                    }
-
-                    // Use the count specified by the GeometryRender
-                    // If not specify use the indexAttribute count if present
-                    // Otherwise tries to use the count from the attribute with the highest count
-                    if (primitiveCount == 0) {
-                        if (indexAttribute)
-                            primitiveCount = indexAttribute->count();
-                        else
-                            primitiveCount = estimatedCount;
-                    }
-
-                    command->m_primitiveCount = primitiveCount;
-                    command->m_primitiveType = rGeometryRenderer->primitiveType();
-                    command->m_primitiveRestartEnabled = rGeometryRenderer->primitiveRestartEnabled();
-                    command->m_restartIndexValue = rGeometryRenderer->restartIndexValue();
-                    command->m_firstInstance = rGeometryRenderer->firstInstance();
-                    command->m_instanceCount = rGeometryRenderer->instanceCount();
-                    command->m_firstVertex = rGeometryRenderer->firstVertex();
-                    command->m_indexOffset = rGeometryRenderer->indexOffset();
-                    command->m_verticesPerPatch = rGeometryRenderer->verticesPerPatch();
-                }
             } else if (command->m_type == RenderCommand::Compute) {
                 Shader *shader = m_nodesManager->data<Shader, ShaderManager>(command->m_shader);
                 Q_ASSERT(shader);
