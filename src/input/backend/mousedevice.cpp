@@ -107,11 +107,11 @@ bool MouseDevice::isButtonPressed(int buttonIdentifier) const
 
 void MouseDevice::updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events)
 {
-    if (!events.isEmpty()) {
-        // Reset axis values before we accumulate new values for this frame
-        m_mouseState.xAxis = 0.0f;
-        m_mouseState.yAxis = 0.0f;
+    // Reset axis values before we accumulate new values for this frame
+    m_mouseState.xAxis = 0.0f;
+    m_mouseState.yAxis = 0.0f;
 
+    if (!events.isEmpty()) {
         for (const QT_PREPEND_NAMESPACE(QMouseEvent) &e : events) {
             m_mouseState.leftPressed = e.buttons() & (Qt::LeftButton);
             m_mouseState.centerPressed = e.buttons() & (Qt::MiddleButton);
@@ -124,8 +124,6 @@ void MouseDevice::updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent
             m_wasPressed = pressed;
             m_previousPos = e.screenPos();
         }
-    } else {
-        m_mouseState = MouseState();
     }
 }
 
