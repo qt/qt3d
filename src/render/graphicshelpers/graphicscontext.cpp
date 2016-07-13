@@ -188,9 +188,7 @@ void GraphicsContext::initialize()
     m_gl->functions()->glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &numTexUnits);
     qCDebug(Backend) << "context supports" << numTexUnits << "texture units";
 
-    m_pinnedTextureUnits = QBitArray(numTexUnits);
     m_activeTextures.resize(numTexUnits);
-    m_textureScopes.resize(numTexUnits);
 
     if (m_gl->format().majorVersion() >= 3) {
         m_supportsVAO = true;
@@ -252,7 +250,10 @@ bool GraphicsContext::beginDrawing(QSurface *surface)
         m_activeShaderDNA = 0;
     }
 
-    m_activeTextures.fill(0);
+    // reset active textures
+    for (int u = 0; u < m_activeTextures.size(); ++u)
+        m_activeTextures[u].textureDna = 0;
+
     m_boundArrayBuffer = nullptr;
 
     static int callCount = 0;
@@ -604,10 +605,10 @@ int GraphicsContext::activateTexture(TextureScope scope, Texture *tex, int onUni
 
     // actually re-bind if required, the tex->dna on the unit not being the same
     // Note: tex->dna() could be 0 if the texture has not been created yet
-    if (m_activeTextures[onUnit] != tex->dna() || tex->dna() == 0 || tex->dataUploadRequired()) {
+    if (m_activeTextures[onUnit].textureDna != tex->dna() || tex->dna() == 0 || tex->dataUploadRequired()) {
         QOpenGLTexture *glTex = tex->getOrCreateGLTexture();
         glTex->bind(onUnit);
-        m_activeTextures[onUnit] = tex->dna();
+        m_activeTextures[onUnit].textureDna = tex->dna();
     }
 
 #if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
@@ -617,9 +618,9 @@ int GraphicsContext::activateTexture(TextureScope scope, Texture *tex, int onUni
                            << tex->textureId() << "on unit" << onUnit;
 #endif
 
-    m_textureScores.insert(m_activeTextures[onUnit], 200);
-    m_pinnedTextureUnits[onUnit] = true;
-    m_textureScopes[onUnit] = scope;
+    m_activeTextures[onUnit].score = 200;
+    m_activeTextures[onUnit].pinned = true;
+    m_activeTextures[onUnit].scope = scope;
 
     return onUnit;
 }
@@ -627,12 +628,12 @@ int GraphicsContext::activateTexture(TextureScope scope, Texture *tex, int onUni
 void GraphicsContext::deactivateTexturesWithScope(TextureScope ts)
 {
     for (int u=0; u<m_activeTextures.size(); ++u) {
-        if (!m_pinnedTextureUnits[u])
+        if (!m_activeTextures[u].pinned)
             continue; // inactive, ignore
 
-        if (m_textureScopes[u] == ts) {
-            m_pinnedTextureUnits[u] = false;
-            m_textureScores.insert(m_activeTextures[u], m_textureScores.value(m_activeTextures[u], 1) - 1);
+        if (m_activeTextures[u].scope == ts) {
+            m_activeTextures[u].pinned = false;
+            m_activeTextures[u].score = qMax(m_activeTextures[u].score, 1) - 1;
         }
     } // of units iteration
 }
@@ -720,9 +721,9 @@ GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
 void GraphicsContext::deactivateTexture(Texture* tex)
 {
     for (int u=0; u<m_activeTextures.size(); ++u) {
-        if (m_activeTextures[u] == tex->dna()) {
-            Q_ASSERT(m_pinnedTextureUnits[u]);
-            m_pinnedTextureUnits[u] = false;
+        if (m_activeTextures[u].textureDna == tex->dna()) {
+            Q_ASSERT(m_activeTextures[u].pinned);
+            m_activeTextures[u].pinned = false;
             return;
         }
     } // of units iteration
@@ -1013,14 +1014,14 @@ GLint GraphicsContext::assignUnitForTexture(Texture *tex)
     int lowestScore = 0xfffffff;
 
     for (int u=0; u<m_activeTextures.size(); ++u) {
-        if (m_activeTextures[u] == tex->dna())
+        if (m_activeTextures[u].textureDna == tex->dna())
             return u;
 
         // No texture is currently active on the texture unit
         // we save the texture unit with the texture that has been on there
         // the longest time while not being used
-        if (!m_pinnedTextureUnits[u]) {
-            int score = m_textureScores.value(m_activeTextures[u], 0);
+        if (!m_activeTextures[u].pinned) {
+            int score = m_activeTextures[u].score;
             if (score < lowestScore) {
                 lowestScore = score;
                 lowestScoredUnit = u;
@@ -1036,18 +1037,8 @@ GLint GraphicsContext::assignUnitForTexture(Texture *tex)
 
 void GraphicsContext::decayTextureScores()
 {
-    QHash<uint, int>::iterator it = m_textureScores.begin();
-    const QHash<uint, int>::iterator end = m_textureScores.end();
-
-    while (it != end) {
-        it.value()--;
-        if (it.value() <= 0) {
-            qCDebug(Backend) << "removing inactive texture" << it.key();
-            it = m_textureScores.erase(it);
-        } else {
-            ++it;
-        }
-    }
+    for (int u = 0; u < m_activeTextures.size(); u++)
+        m_activeTextures[u].score = qMax(m_activeTextures[u].score - 1, 0);
 }
 
 QOpenGLShaderProgram* GraphicsContext::activeShader() const

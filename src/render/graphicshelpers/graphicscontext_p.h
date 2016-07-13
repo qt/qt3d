@@ -266,18 +266,18 @@ private:
     QHash<QSurface *, GraphicsHelperInterface*> m_glHelpers;
 
     // active textures, indexed by texture unit
-    QVector<uint> m_activeTextures;
-    QBitArray m_pinnedTextureUnits;
-    QVector<TextureScope> m_textureScopes;
+    struct ActiveTexture {
+        uint textureDna = 0;
+        int score = 0;
+        TextureScope scope = TextureScopeMaterial;
+        bool pinned = false;
+    };
+    QVector<ActiveTexture> m_activeTextures;
 
     // cache some current state, to make sure we don't issue unnecessary GL calls
     int m_currClearStencilValue;
     float m_currClearDepthValue;
     QColor m_currClearColorValue;
-
-    // recency score for all render-textures we've seen. Higher scores
-    // mean more recently used.
-    QHash<uint, int> m_textureScores;
 
     Material* m_material;
     QRectF m_viewport;
