@@ -241,6 +241,9 @@ bool ShaderData::updateViewTransform(const QMatrix4x4 &viewMatrix)
 
 bool ShaderData::updateWorldTransform(const QMatrix4x4 &worldMatrix)
 {
+    // TODO: Factor this out into a job that populates data in the corresponding
+    // renderview or other intermediate data structure. See QTBUG-54818
+    QMutexLocker lock(&m_mutex);
     if (m_worldMatrix != worldMatrix) {
         m_worldMatrix = worldMatrix;
 
