@@ -49,7 +49,7 @@ namespace Qt3DRender {
   \since 5.7
   \ingroup framegraph
 
-  \brief ...
+  \brief Allows a glDispatchCompute call to be issued to do work in a compute shader on the GPU.
 
  */
 
@@ -59,7 +59,7 @@ namespace Qt3DRender {
     \instantiates Qt3DRender::QDispatchCompute
     \inherits FrameGraphNode
     \since 5.7
-    \qmlabstract
+    \qmlabstract Allows a glDispatchCompute call to be issued to do work in a compute shader on the GPU.
 */
 
 /*!

@@ -83,7 +83,7 @@ public:
     void setGraphicsContext(GraphicsContext *context);
     GraphicsContext *graphicsContext();
 
-    void updateUniforms(GraphicsContext *ctx, const ShaderParameterPack &pack);
+    void prepareUniforms(ShaderParameterPack &pack);
     void setFragOutputs(const QHash<QString, int> &fragOutputs);
     const QHash<QString, int> fragOutputs() const;
 

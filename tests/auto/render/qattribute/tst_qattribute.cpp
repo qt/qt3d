@@ -250,6 +250,40 @@ private Q_SLOTS:
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
     }
+
+    void checkBufferBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DRender::QAttribute> attribute(new Qt3DRender::QAttribute);
+        {
+            // WHEN
+            Qt3DRender::QBuffer buf;
+            attribute->setBuffer(&buf);
+
+            // THEN
+            QCOMPARE(buf.parent(), attribute.data());
+            QCOMPARE(attribute->buffer(), &buf);
+        }
+        // THEN (Should not crash and parameter be unset)
+        QVERIFY(attribute->buffer() == nullptr);
+
+        {
+            // WHEN
+            Qt3DRender::QAttribute someOtherAttribute;
+            QScopedPointer<Qt3DRender::QBuffer> buf(new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, &someOtherAttribute));
+            attribute->setBuffer(buf.data());
+
+            // THEN
+            QCOMPARE(buf->parent(), &someOtherAttribute);
+            QCOMPARE(attribute->buffer(), buf.data());
+
+            // WHEN
+            attribute.reset();
+            buf.reset();
+
+            // THEN Should not crash when the buffer is destroyed (tests for failed removal of destruction helper)
+        }
+    }
 };
 
 QTEST_MAIN(tst_QAttribute)

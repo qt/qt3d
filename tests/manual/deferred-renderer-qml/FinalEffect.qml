@@ -56,135 +56,24 @@ Effect {
         // OpenGL 3.1
         Technique {
             graphicsApiFilter {api : GraphicsApiFilter.OpenGL; profile : GraphicsApiFilter.CoreProfile; minorVersion : 1; majorVersion : 3 }
-            parameters:  Parameter { name: "PointLightBlock"; value: ShaderData {
-                    property ShaderDataArray lights: ShaderDataArray {
-                        // hard coded lights until we have a way to filter
-                        // ShaderData in a scene
-                        values: [sceneEntity.light, sphere1.light, sphere2.light, light3.light, light4.light]
-                    }
-                }
-            }
             renderPasses : RenderPass {
                 filterKeys : FilterKey { name : "pass"; value : "final" }
                 shaderProgram : ShaderProgram {
                     id : finalShaderGL3
-                    vertexShaderCode:
-                        "#version 140
-
-                        in vec4 vertexPosition;
-                        uniform mat4 modelMatrix;
-
-                        void main()
-                        {
-                            gl_Position = modelMatrix * vertexPosition;
-                        }
-                        "
-                    fragmentShaderCode:
-                        "#version 140
-
-                        uniform sampler2D color;
-                        uniform sampler2D position;
-                        uniform sampler2D normal;
-                        uniform vec2 winSize;
-
-                        out vec4 fragColor;
-
-                        struct PointLight
-                        {
-                            vec3 position;
-                            vec3 direction;
-                            vec4 color;
-                            float intensity;
-                        };
-
-                        const int lightCount = 5;
-                        uniform PointLightBlock {
-                             PointLight lights[lightCount];
-                        };
-
-                        void main()
-                        {
-                            vec2 texCoord = gl_FragCoord.xy / winSize;
-                            vec4 col = texture(color, texCoord);
-                            vec3 pos = texture(position, texCoord).xyz;
-                            vec3 norm = texture(normal, texCoord).xyz;
-
-                            vec4 lightColor;
-                            for (int i = 0; i < lightCount; i++) {
-                                vec3 s = normalize(lights[i].position - pos);
-                                lightColor += lights[i].color * (lights[i].intensity * max(dot(s, norm), 0.0));
-                            }
-                            lightColor /= float(lightCount);
-                            fragColor = col;
-                        }
-                                "
+                    vertexShaderCode:  loadSource("qrc:/final_gl3.vert")
+                    fragmentShaderCode: loadSource("qrc:/final_gl3.frag")
                 }
             }
         },
         // OpenGL 2.0 with FBO extension
         Technique {
             graphicsApiFilter {api : GraphicsApiFilter.OpenGL; profile : GraphicsApiFilter.NoProfile; minorVersion : 0; majorVersion : 2 }
-            parameters: Parameter { name: "pointLights"; value: ShaderData {
-                                property ShaderDataArray lights: ShaderDataArray {
-                                    // hard coded lights until we have a way to filter
-                                    // ShaderData in a scene
-                                    values: [sceneEntity.light, sphere1.light, sphere2.light, light3.light, light4.light]
-                                }
-                            }
-                        }
             renderPasses : RenderPass {
                 filterKeys : FilterKey { name : "pass"; value : "final" }
                 shaderProgram : ShaderProgram {
                     id : finalShaderGL2
-                    vertexShaderCode:
-                        "#version 110
-
-                        attribute vec4 vertexPosition;
-                        uniform mat4 modelMatrix;
-
-                        void main()
-                        {
-                            gl_Position = modelMatrix * vertexPosition;
-                        }
-                                "
-                    fragmentShaderCode:
-                        "#version 110
-
-                        uniform sampler2D color;
-                        uniform sampler2D position;
-                        uniform sampler2D normal;
-                        uniform vec2 winSize;
-
-                        struct PointLight
-                        {
-                            vec3 position;
-                            vec3 direction;
-                            vec4 color;
-                            float intensity;
-                        };
-
-                        const int lightCount = 5;
-                        uniform struct
-                        {
-                            PointLight lights[lightCount];
-                        };
-
-                        void main()
-                        {
-                            vec2 texCoord = gl_FragCoord.xy / winSize;
-                            vec4 col = texture2D(color, texCoord);
-                            vec3 pos = texture2D(position, texCoord).xyz;
-                            vec3 norm = texture2D(normal, texCoord).xyz;
-
-                            vec4 lightColor;
-                            for (int i = 0; i < lightCount; i++) {
-                                vec3 s = lights[i].position - pos);
-                                lightColor += lights[i].color * (lights[i].intensity * max(dot(s, norm), 0.0));
-                            }
-                            lightColor /= float(lightCount);
-                            gl_FragColor = col * lightColor;
-                        }
-                    "
+                    vertexShaderCode: loadSource("qrc:/final_es2.vert")
+                    fragmentShaderCode:  loadSource("qrc:/final_es2.frag")
                 }
             }
         }]

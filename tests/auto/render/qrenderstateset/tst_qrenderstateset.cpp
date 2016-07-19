@@ -48,7 +48,7 @@ class MyStateSetPrivate : public Qt3DRender::QRenderStatePrivate
 {
 public :
     MyStateSetPrivate()
-        : QRenderStatePrivate(Qt3DRender::QRenderStatePrivate::DepthTest)
+        : QRenderStatePrivate(Qt3DRender::Render::DepthTestStateMask)
     {}
 };
 
@@ -169,6 +169,40 @@ private Q_SLOTS:
         QCOMPARE(nodeRemovedChange->type(), Qt3DCore::PropertyValueRemoved);
 
         arbiter.events.clear();
+    }
+
+    void checkRenderStateBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DRender::QRenderStateSet> renderStateSet(new Qt3DRender::QRenderStateSet);
+        {
+            // WHEN
+            MyStateSet state;
+            renderStateSet->addRenderState(&state);
+
+            // THEN
+            QCOMPARE(state.parent(), renderStateSet.data());
+            QCOMPARE(renderStateSet->renderStates().size(), 1);
+        }
+        // THEN (Should not crash and parameter be unset)
+        QVERIFY(renderStateSet->renderStates().empty());
+
+        {
+            // WHEN
+            Qt3DRender::QRenderStateSet someOtherStateSet;
+            QScopedPointer<Qt3DRender::QRenderState> state(new MyStateSet(&someOtherStateSet));
+            renderStateSet->addRenderState(state.data());
+
+            // THEN
+            QCOMPARE(state->parent(), &someOtherStateSet);
+            QCOMPARE(renderStateSet->renderStates().size(), 1);
+
+            // WHEN
+            renderStateSet.reset();
+            state.reset();
+
+            // THEN Should not crash when the state is destroyed (tests for failed removal of destruction helper)
+        }
     }
 };
 

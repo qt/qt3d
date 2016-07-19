@@ -62,7 +62,7 @@ namespace Render {
 namespace JobTypes {
 
     enum JobType {
-        LoadBuffer = 0,
+        LoadBuffer = 1,
         FrameCleanup,
         FramePreparation,
         CalcBoundingVolume,
@@ -73,8 +73,17 @@ namespace JobTypes {
         PickBoundingVolume,
         RenderView,
         UpdateTransform,
-        UpdateBoundingVolume,
-        FrameSubmission
+        ExpandBoundingVolume,
+        FrameSubmissionPart1,
+        LayerFiltering,
+        EntityComponentTypeFiltering,
+        MaterialParameterGathering,
+        RenderViewBuilder,
+        GenericLambda,
+        FrustumCulling,
+        LightGathering,
+        UpdateWorldBoundingVolume,
+        FrameSubmissionPart2
     };
 
 } // JobTypes
@@ -82,20 +91,6 @@ namespace JobTypes {
 } // Render
 
 } // Qt3DRender
-
-#ifdef QT3D_JOBS_RUN_STATS
-
-#include <Qt3DCore/private/qaspectjob_p.h>
-
-#define SET_JOB_RUN_STAT_TYPE(job, type, instance) \
-    Qt3DCore::QAspectJobPrivate::get(job)->m_stats.jobId.typeAndInstance[0] = type; \
-    Qt3DCore::QAspectJobPrivate::get(job)->m_stats.jobId.typeAndInstance[1] = instance;
-
-#else
-
-#define SET_JOB_RUN_STAT_TYPE(job, type, instance)
-
-#endif
 
 QT_END_NAMESPACE
 

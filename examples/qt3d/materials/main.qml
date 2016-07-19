@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -48,7 +48,7 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.1 as QQ2
+import QtQuick 2.1
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 import Qt3D.Input 2.0
@@ -79,9 +79,11 @@ Entity {
 
     FirstPersonCameraController { camera: mainCamera }
 
+    Lights { }
+
     PhongMaterial {
         id: redAdsMaterial
-        ambient: Qt.rgba( 0.2, 0.0, 0.0, 1.0 )
+        ambient: Qt.rgba( 0.02, 0.02, 0.02, 1.0 )
         diffuse: Qt.rgba( 0.8, 0.0, 0.0, 1.0 )
     }
 
@@ -93,12 +95,12 @@ Entity {
         resolution: Qt.size(20, 20)
 
         material: NormalDiffuseSpecularMapMaterial {
-            ambient: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
+            ambient: Qt.rgba( 0.05, 0.05, 0.05, 1.0 )
             diffuse:  "assets/textures/pattern_09/diffuse.webp"
             specular: "assets/textures/pattern_09/specular.webp"
             normal:   "assets/textures/pattern_09/normal.webp"
             textureScale: 10.0
-            shininess: 80.0
+            shininess: 10.0
         }
     }
 
@@ -108,18 +110,18 @@ Entity {
         y: 3.5
         scale: 0.5
 
-        QQ2.ParallelAnimation {
-            loops: QQ2.Animation.Infinite
+        ParallelAnimation {
+            loops: Animation.Infinite
             running: true
 
-            QQ2.NumberAnimation {
+            NumberAnimation {
                 target: trefoilKnot
                 property: "theta"
                 from: 0; to: 360
                 duration: 2000
             }
 
-            QQ2.NumberAnimation {
+            NumberAnimation {
                 target: trefoilKnot
                 property: "phi"
                 from: 0; to: 360
@@ -198,6 +200,6 @@ Entity {
         diffuseColor: "stainless_steel"
         bump: "no_bumps"
         specular: "stainless_steel"
-        shininess: 150
+        shininess: 15
     }
 }

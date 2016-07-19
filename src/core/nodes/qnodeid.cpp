@@ -46,8 +46,7 @@ namespace Qt3DCore {
 /*!
  * \class Qt3DCore::QNodeId
  * \inmodule Qt3DCore
- *
- * TODO
+ * \brief Uniquely identifies a QNode
  */
 
 /*!

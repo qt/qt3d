@@ -96,17 +96,7 @@ QBackendNodePrivate *QBackendNodePrivate::get(QBackendNode *n)
  * \class Qt3DCore::QBackendNodeMapper
  * \inmodule Qt3DCore
  *
- * TODO
- */
-
-/*!
- * \fn QBackendNode *QBackendNodeMapper::create(QNode *frontend) const
- *
- * TODO
- *
- * \a frontend
- *
- * \return created node.
+ * \brief Creates and maps backend nodes to their respective frontend nodes
  */
 
 /*!
@@ -135,13 +125,7 @@ QBackendNodePrivate *QBackendNodePrivate::get(QBackendNode *n)
  * \class Qt3DCore::QBackendNode
  * \inmodule Qt3DCore
  *
- * TODO
- */
-
-/*!
- * \fn void Qt3DCore::QBackendNode::updateFromPeer(QNode *peer)
- *
- * Updates the backend node from \a peer.
+ * \brief The base class for all Qt3D backend nodes
  */
 
 /*!

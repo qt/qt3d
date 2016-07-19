@@ -55,6 +55,7 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DRender/qrenderstate.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
+#include <Qt3DRender/private/statemask_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,36 +64,14 @@ namespace Qt3DRender {
 class QT3DRENDERSHARED_PRIVATE_EXPORT QRenderStatePrivate : public Qt3DCore::QNodePrivate
 {
 public:
-    enum Type {
-        AlphaCoverage,
-        AlphaTest,
-        BlendEquation,
-        BlendEquationArguments,
-        ColorMask,
-        CullFace,
-        MSAAEnabled,
-        NoDepthMask,
-        DepthTest,
-        Dithering,
-        FrontFace,
-        PointSize,
-        PolygonOffset,
-        ScissorTest,
-        StencilTest,
-        StencilMask,
-        StencilOp,
-        ClipPlane,
-        SeamlessCubemap
-    };
-
-    QRenderStatePrivate(Type type);
+    explicit QRenderStatePrivate(Render::StateMask type);
     ~QRenderStatePrivate();
 
 
     Q_DECLARE_PUBLIC(QRenderState)
 
 
-    const Type m_type;
+    const Render::StateMask m_type;
 
     static QRenderStatePrivate *get(QRenderState *state);
     static const QRenderStatePrivate *get(const QRenderState *state);

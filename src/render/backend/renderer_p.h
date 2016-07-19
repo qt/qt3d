@@ -61,6 +61,14 @@
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
 #include <Qt3DRender/private/rendersettings_p.h>
+#include <Qt3DRender/private/renderviewinitializerjob_p.h>
+#include <Qt3DRender/private/expandboundingvolumejob_p.h>
+#include <Qt3DRender/private/updateworldtransformjob_p.h>
+#include <Qt3DRender/private/calcboundingvolumejob_p.h>
+#include <Qt3DRender/private/framepreparationjob_p.h>
+#include <Qt3DRender/private/framecleanupjob_p.h>
+#include <Qt3DRender/private/updateworldboundingvolumejob_p.h>
+#include <Qt3DRender/private/platformsurfacefilter_p.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -98,6 +106,12 @@ class QAbstractShapeMesh;
 struct GraphicsApiFilterData;
 class QSceneIOHandler;
 
+#ifdef QT3D_JOBS_RUN_STATS
+namespace Debug {
+class CommandExecuter;
+}
+#endif
+
 namespace Render {
 
 class CameraLens;
@@ -130,7 +144,7 @@ public:
     qint64 time() const Q_DECL_OVERRIDE;
     void setTime(qint64 time) Q_DECL_OVERRIDE;
 
-    void setNodeManagers(NodeManagers *managers) Q_DECL_OVERRIDE { m_nodesManager = managers; }
+    void setNodeManagers(NodeManagers *managers) Q_DECL_OVERRIDE;
     void setServices(Qt3DCore::QServiceLocator *services) Q_DECL_OVERRIDE { m_services = services; }
     void setSurfaceExposed(bool exposed) Q_DECL_OVERRIDE;
 
@@ -140,11 +154,10 @@ public:
     void initialize() Q_DECL_OVERRIDE;
     void shutdown() Q_DECL_OVERRIDE;
     void releaseGraphicsResources() Q_DECL_OVERRIDE;
-    void createAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager) Q_DECL_OVERRIDE;
-    void destroyAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager) Q_DECL_OVERRIDE;
 
     void render() Q_DECL_OVERRIDE;
     void doRender() Q_DECL_OVERRIDE;
+    void cleanGraphicsResources() Q_DECL_OVERRIDE;
 
     bool isRunning() const Q_DECL_OVERRIDE { return m_running.load(); }
 
@@ -163,8 +176,14 @@ public:
 
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() Q_DECL_OVERRIDE;
     Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() Q_DECL_OVERRIDE;
+    QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs() const;
 
-    Qt3DCore::QAspectJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
+    inline FrameCleanupJobPtr frameCleanupJob() const { return m_cleanupJob; }
+    inline ExpandBoundingVolumeJobPtr expandBoundingVolumeJob() const { return m_expandBoundingVolumeJob; }
+    inline FramePreparationJobPtr framePreparationJob() const { return m_framePreparationJob; }
+    inline CalculateBoundingVolumeJobPtr calculateBoundingVolumeJob() const { return m_calculateBoundingVolumeJob; }
+    inline UpdateWorldTransformJobPtr updateWorldTransformJob() const { return m_worldTransformJob; }
+    inline UpdateWorldBoundingVolumeJobPtr updateWorldBoundingVolumeJob() const { return m_updateWorldBoundingVolumeJob; }
 
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const Q_DECL_OVERRIDE;
 
@@ -173,21 +192,20 @@ public:
     virtual void setSettings(RenderSettings *settings) Q_DECL_OVERRIDE;
     virtual RenderSettings *settings() const Q_DECL_OVERRIDE;
 
-    bool executeCommands(const RenderView *rv);
-    Attribute *updateBuffersAndAttributes(Geometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate);
+    void updateGLResources();
+    void prepareCommandsSubmission(const QVector<RenderView *> &renderViews);
+    bool executeCommandsSubmission(const RenderView *rv);
+    void updateVAOWithAttributes(Geometry *geometry,
+                                 RenderCommand *command,
+                                 Shader *shader,
+                                 bool forceUpdate);
+
+    bool requiresVAOAttributeUpdate(Geometry *geometry,
+                                    RenderCommand *command) const;
 
     void setOpenGLContext(QOpenGLContext *context);
     const GraphicsApiFilterData *contextInfo() const;
 
-    void addAllocator(Qt3DCore::QFrameAllocator *allocator);
-
-    Qt3DCore::QFrameAllocator *currentFrameAllocator();
-    QThreadStorage<Qt3DCore::QFrameAllocator *> *tlsAllocators();
-
-    inline HMaterial defaultMaterialHandle() const { return m_defaultMaterialHandle; }
-    inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
-    inline HTechnique defaultTechniqueHandle() const { return m_defaultTechniqueHandle; }
-    inline HRenderPass defaultRenderPassHandle() const { return m_defaultRenderPassHandle; }
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
 
@@ -197,6 +215,7 @@ public:
     void enqueueRenderView(RenderView *renderView, int submitOrder);
     bool isReadyToSubmit();
 
+    QVariant executeCommand(const QStringList &args) Q_DECL_OVERRIDE;
 
     struct ViewSubmissionResultData
     {
@@ -229,21 +248,8 @@ private:
 
     Entity *m_renderSceneRoot;
 
-    QHash<QMaterial*, Material*> m_materialHash;
-    QHash<QTechnique *, Technique*> m_techniqueHash;
-    QHash<QShaderProgram*, Shader*> m_shaderHash;
-
-    QMaterial* m_defaultMaterial;
-    QTechnique* m_defaultTechnique;
-
-    HMaterial m_defaultMaterialHandle;
-    HEffect m_defaultEffectHandle;
-    HTechnique m_defaultTechniqueHandle;
-    HRenderPass m_defaultRenderPassHandle;
-
     // Fail safe values that we can use if a RenderCommand
     // is missing a shader
-    Shader *m_defaultRenderShader;
     RenderStateSet *m_defaultRenderStateSet;
     ShaderParameterPack m_defaultUniformPack;
 
@@ -253,21 +259,13 @@ private:
     QScopedPointer<RenderThread> m_renderThread;
     QScopedPointer<VSyncFrameAdvanceService> m_vsyncFrameAdvanceService;
 
-    void buildDefaultMaterial();
-    void buildDefaultTechnique();
-
     QMutex m_mutex;
     QSemaphore m_submitRenderViewsSemaphore;
     QSemaphore m_waitForInitializationToBeCompleted;
 
-    static void createThreadLocalAllocator(void *renderer);
-    static void destroyThreadLocalAllocator(void *renderer);
-    QThreadStorage<Qt3DCore::QFrameAllocator *> m_tlsAllocators;
-
     QAtomicInt m_running;
 
     QScopedPointer<PickEventFilter> m_pickEventFilter;
-    QVector<Qt3DCore::QFrameAllocator *> m_allocators;
 
     QVector<Attribute *> m_dirtyAttributes;
     QVector<Geometry *> m_dirtyGeometry;
@@ -281,12 +279,23 @@ private:
 
     RenderSettings *m_settings;
 
-    void performDraw(GeometryRenderer *rGeometryRenderer,
-                     GLsizei primitiveCount, Attribute *indexAttribute);
+    FramePreparationJobPtr m_framePreparationJob;
+    FrameCleanupJobPtr m_cleanupJob;
+    UpdateWorldTransformJobPtr m_worldTransformJob;
+    ExpandBoundingVolumeJobPtr m_expandBoundingVolumeJob;
+    CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
+    UpdateWorldBoundingVolumeJobPtr m_updateWorldBoundingVolumeJob;
+
+    void performDraw(RenderCommand *command);
     void performCompute(const RenderView *rv, RenderCommand *command);
-    bool createOrUpdateVAO(RenderCommand *command,
+    void createOrUpdateVAO(RenderCommand *command,
                            HVao *previousVAOHandle,
                            OpenGLVertexArrayObject **vao);
+
+#ifdef QT3D_JOBS_RUN_STATS
+    QScopedPointer<Qt3DRender::Debug::CommandExecuter> m_commandExecuter;
+    friend class Qt3DRender::Debug::CommandExecuter;
+#endif
 };
 
 } // namespace Render

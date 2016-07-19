@@ -58,9 +58,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-FramePreparationJob::FramePreparationJob(NodeManagers *manager)
+FramePreparationJob::FramePreparationJob()
     : m_root(nullptr)
-    , m_manager(manager)
+    , m_manager(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::FramePreparation, 0);
 }
@@ -74,6 +74,11 @@ void FramePreparationJob::setRoot(Entity *root)
     m_root = root;
 }
 
+void FramePreparationJob::setManagers(NodeManagers *manager)
+{
+    m_manager = manager;
+}
+
 void FramePreparationJob::run()
 {
     parseNodeTree(m_root);
@@ -82,7 +87,7 @@ void FramePreparationJob::run()
 void FramePreparationJob::parseNodeTree(Entity *node)
 {
     // Update transform properties in ShaderDatas and Lights
-    const QList<ShaderData *> shaderDatas = node->renderComponents<ShaderData>();
+    const QVector<ShaderData *> shaderDatas = node->renderComponents<ShaderData>();
     for (ShaderData *r : shaderDatas)
         r->updateWorldTransform(*node->worldTransform());
 

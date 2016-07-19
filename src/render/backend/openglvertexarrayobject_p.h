@@ -52,9 +52,9 @@
 //
 
 #include <QtGui/qopenglvertexarrayobject.h>
+#include <Qt3DRender/private/graphicscontext_p.h>
 
 QT_BEGIN_NAMESPACE
-
 
 namespace Qt3DRender {
 namespace Render {
@@ -62,35 +62,13 @@ namespace Render {
 class OpenGLVertexArrayObject
 {
 public:
-    OpenGLVertexArrayObject()
-        : m_specified(false)
-    {}
+    OpenGLVertexArrayObject();
 
-    void bind()
-    {
-        Q_ASSERT(!m_vao.isNull());
-        Q_ASSERT(m_vao->isCreated());
-        m_vao->bind();
-    }
-
-    void release()
-    {
-        Q_ASSERT(!m_vao.isNull());
-        Q_ASSERT(m_vao->isCreated());
-        m_vao->release();
-    }
-
-    void create()
-    {
-        Q_ASSERT(!m_vao.isNull());
-        m_vao->create();
-    }
-
-    bool isCreated() const
-    {
-        Q_ASSERT(!m_vao.isNull());
-        return m_vao->isCreated();
-    }
+    void setGraphicsContext(GraphicsContext *ctx);
+    void bind();
+    void release();
+    void create();
+    bool isCreated() const;
 
     QOpenGLVertexArrayObject *vao() { return m_vao.data(); }
     const QOpenGLVertexArrayObject *vao() const { return m_vao.data(); }
@@ -100,8 +78,19 @@ public:
     bool isSpecified() const { return m_specified; }
 
 private:
+    GraphicsContext *m_ctx;
     QScopedPointer<QOpenGLVertexArrayObject> m_vao;
     bool m_specified;
+    bool m_supportsVao;
+    bool m_createdEmulatedVAO;
+
+    friend class GraphicsContext;
+
+    void saveVertexAttribute(const GraphicsContext::VAOVertexAttribute &attr);
+    inline void saveIndexAttribute(HGLBuffer glBufferHandle) { m_indexAttribute = glBufferHandle; }
+
+    QVector<GraphicsContext::VAOVertexAttribute> m_vertexAttributes;
+    GraphicsContext::VAOIndexAttribute m_indexAttribute;
 };
 
 } // namespace Render

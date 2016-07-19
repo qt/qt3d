@@ -83,6 +83,40 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
+
+    void checkSourceDeviceBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DInput::QAbstractAxisInput> axisInput(new DummyAxisInput);
+        {
+            // WHEN
+            Qt3DInput::QAbstractPhysicalDevice device;
+            axisInput->setSourceDevice(&device);
+
+            // THEN
+            QCOMPARE(device.parent(), axisInput.data());
+            QCOMPARE(axisInput->sourceDevice(), &device);
+        }
+        // THEN (Should not crash and effect be unset)
+        QVERIFY(axisInput->sourceDevice() == nullptr);
+
+        {
+            // WHEN
+            DummyAxisInput someOtherAxisInput;
+            QScopedPointer<Qt3DInput::QAbstractPhysicalDevice> device(new Qt3DInput::QAbstractPhysicalDevice(&someOtherAxisInput));
+            axisInput->setSourceDevice(device.data());
+
+            // THEN
+            QCOMPARE(device->parent(), &someOtherAxisInput);
+            QCOMPARE(axisInput->sourceDevice(), device.data());
+
+            // WHEN
+            axisInput.reset();
+            device.reset();
+
+            // THEN Should not crash when the device is destroyed (tests for failed removal of destruction helper)
+        }
+    }
 };
 
 QTEST_MAIN(tst_QAbstractAxisInput)

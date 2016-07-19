@@ -64,20 +64,24 @@ namespace Render {
 
 class FrameGraphNode;
 class Renderer;
+class FrameGraphManager;
 
 class FrameGraphVisitor
 {
 public:
-    FrameGraphVisitor();
+    explicit FrameGraphVisitor(Renderer *renderer,
+                               const FrameGraphManager *nodeManager);
 
     void traverse(FrameGraphNode *root,
-                  Renderer *renderer,
                   QVector<Qt3DCore::QAspectJobPtr> *jobs);
+
+    inline int leafNodeCount() Q_DECL_NOTHROW { return m_renderviewIndex; }
 
 private:
     void visit(Render::FrameGraphNode *node);
 
     Renderer *m_renderer;
+    const FrameGraphManager *m_manager;
     QVector<Qt3DCore::QAspectJobPtr> *m_jobs;
     int m_renderviewIndex;
 };

@@ -390,14 +390,6 @@ void QGeometryRenderer::setGeometry(QGeometry *geometry)
     if (d->m_geometry == geometry)
         return;
 
-    // TODO: Investigate if we can rely upon the automatic property change notifications
-    // rather than having to manually send a PropertyValueRemoved followed by a PropertyValueAdded change.
-    if (d->m_geometry && d->m_changeArbiter) {
-        const auto change = QPropertyNodeRemovedChangePtr::create(id(), d->m_geometry);
-        change->setPropertyName("geometry");
-        d->notifyObservers(change);
-    }
-
     if (d->m_geometry)
         d->unregisterDestructionHelper(d->m_geometry);
 
@@ -406,20 +398,11 @@ void QGeometryRenderer::setGeometry(QGeometry *geometry)
 
     d->m_geometry = geometry;
 
-
     // Ensures proper bookkeeping
     if (d->m_geometry)
         d->registerDestructionHelper(d->m_geometry, &QGeometryRenderer::setGeometry, d->m_geometry);
 
-    const bool blocked = blockNotifications(true);
     emit geometryChanged(geometry);
-    blockNotifications(blocked);
-
-    if (d->m_geometry && d->m_changeArbiter) {
-        const auto change = QPropertyNodeAddedChangePtr::create(id(), d->m_geometry);
-        change->setPropertyName("geometry");
-        d->notifyObservers(change);
-    }
 }
 
 void QGeometryRenderer::setPrimitiveType(QGeometryRenderer::PrimitiveType primitiveType)

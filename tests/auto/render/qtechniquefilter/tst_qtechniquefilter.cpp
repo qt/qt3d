@@ -225,6 +225,74 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
+
+    void checkParameterBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DRender::QTechniqueFilter> techniqueFilter(new Qt3DRender::QTechniqueFilter);
+        {
+            // WHEN
+            Qt3DRender::QParameter param;
+            techniqueFilter->addParameter(&param);
+
+            // THEN
+            QCOMPARE(param.parent(), techniqueFilter.data());
+            QCOMPARE(techniqueFilter->parameters().size(), 1);
+        }
+        // THEN (Should not crash and parameter be unset)
+        QVERIFY(techniqueFilter->parameters().empty());
+
+        {
+            // WHEN
+            Qt3DRender::QTechniqueFilter someOtherTechniqueFilter;
+            QScopedPointer<Qt3DRender::QParameter> param(new Qt3DRender::QParameter(&someOtherTechniqueFilter));
+            techniqueFilter->addParameter(param.data());
+
+            // THEN
+            QCOMPARE(param->parent(), &someOtherTechniqueFilter);
+            QCOMPARE(techniqueFilter->parameters().size(), 1);
+
+            // WHEN
+            techniqueFilter.reset();
+            param.reset();
+
+            // THEN Should not crash when the parameter is destroyed (tests for failed removal of destruction helper)
+        }
+    }
+
+    void checkFilterKeyBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DRender::QTechniqueFilter> techniqueFilter(new Qt3DRender::QTechniqueFilter);
+        {
+            // WHEN
+            Qt3DRender::QFilterKey filterKey;
+            techniqueFilter->addMatch(&filterKey);
+
+            // THEN
+            QCOMPARE(filterKey.parent(), techniqueFilter.data());
+            QCOMPARE(techniqueFilter->matchAll().size(), 1);
+        }
+        // THEN (Should not crash and parameter be unset)
+        QVERIFY(techniqueFilter->matchAll().empty());
+
+        {
+            // WHEN
+            Qt3DRender::QTechniqueFilter someOtherTechniqueFilter;
+            QScopedPointer<Qt3DRender::QFilterKey> filterKey(new Qt3DRender::QFilterKey(&someOtherTechniqueFilter));
+            techniqueFilter->addMatch(filterKey.data());
+
+            // THEN
+            QCOMPARE(filterKey->parent(), &someOtherTechniqueFilter);
+            QCOMPARE(techniqueFilter->matchAll().size(), 1);
+
+            // WHEN
+            techniqueFilter.reset();
+            filterKey.reset();
+
+            // THEN Should not crash when the filterKey is destroyed (tests for failed removal of destruction helper)
+        }
+    }
 };
 
 QTEST_MAIN(tst_QTechniqueFilter)

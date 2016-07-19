@@ -98,6 +98,7 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
     format.setSamples(4);
     format.setStencilBufferSize(8);
     setFormat(format);
+    QSurfaceFormat::setDefaultFormat(format);
     create();
 
     m_aspectEngine->registerAspect(m_renderAspect);

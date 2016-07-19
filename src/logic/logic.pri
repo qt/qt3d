@@ -11,7 +11,8 @@ HEADERS += \
     $$PWD/executor_p.h \
     $$PWD/handler_p.h \
     $$PWD/manager_p.h \
-    $$PWD/managers_p.h
+    $$PWD/managers_p.h \
+    $$PWD/job_common_p.h
 
 SOURCES += \
     $$PWD/qlogicaspect.cpp \

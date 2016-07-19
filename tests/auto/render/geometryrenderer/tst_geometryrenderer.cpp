@@ -291,8 +291,9 @@ private Q_SLOTS:
         // WHEN
         DummyGeometry geometry;
         const Qt3DCore::QNodeId geometryId = geometry.id();
-        const auto nodeAddedChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &geometry);
+        const auto nodeAddedChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
         nodeAddedChange->setPropertyName("geometry");
+        nodeAddedChange->setValue(QVariant::fromValue(geometryId));
         renderGeometryRenderer.sceneChangeEvent(nodeAddedChange);
 
         // THEN
@@ -303,8 +304,9 @@ private Q_SLOTS:
         QVERIFY(!renderGeometryRenderer.isDirty());
 
         // WHEN
-        const auto nodeRemovedChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &geometry);
+        const auto nodeRemovedChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
         nodeRemovedChange->setPropertyName("geometry");
+        nodeRemovedChange->setValue(QVariant::fromValue(Qt3DCore::QNodeId()));
         renderGeometryRenderer.sceneChangeEvent(nodeRemovedChange);
 
         // THEN

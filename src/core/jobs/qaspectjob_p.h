@@ -63,8 +63,21 @@ class QAspectJob;
 #ifdef QT3D_JOBS_RUN_STATS
 struct FrameHeader
 {
+    FrameHeader()
+        : frameId(0)
+        , jobCount(0)
+        , frameType(WorkerJob)
+    {
+    }
+
+    enum FrameType {
+        WorkerJob = 0,
+        Submission
+    };
+
     quint32 frameId;
-    quint32 jobCount;
+    quint16 jobCount;
+    quint16 frameType; // Submission or worker job
 };
 
 union JobId
@@ -102,6 +115,20 @@ public:
 };
 
 } // Qt3D
+
+#ifdef QT3D_JOBS_RUN_STATS
+
+#include <Qt3DCore/private/qaspectjob_p.h>
+
+#define SET_JOB_RUN_STAT_TYPE(job, type, instance) \
+    Qt3DCore::QAspectJobPrivate::get(job)->m_stats.jobId.typeAndInstance[0] = type; \
+    Qt3DCore::QAspectJobPrivate::get(job)->m_stats.jobId.typeAndInstance[1] = instance;
+
+#else
+
+#define SET_JOB_RUN_STAT_TYPE(job, type, instance)
+
+#endif
 
 QT_END_NAMESPACE
 

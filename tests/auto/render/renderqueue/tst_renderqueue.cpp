@@ -138,9 +138,8 @@ class SimpleWorker : public QThread
 {
     Q_OBJECT
 public:
-    QWaitCondition m_waitTimeToSubmit;
-    QWaitCondition m_waitToFillQueue;
-    QMutex m_mutex;
+    QSemaphore m_waitSubmit;
+    QSemaphore m_waitQueue;
     Qt3DRender::Render::RenderQueue *m_renderQueues;
 
 public Q_SLOTS:
@@ -148,9 +147,7 @@ public Q_SLOTS:
     void run() Q_DECL_FINAL // In Thread
     {
         for (int i = 0; i < 5; i++) {
-            QMutexLocker lock(&m_mutex);
-            m_waitToFillQueue.wait(&m_mutex);
-            lock.unlock();
+            m_waitQueue.acquire();
 
             QVERIFY(m_renderQueues->currentRenderViewCount() == 0);
             QVERIFY(!m_renderQueues->isFrameQueueComplete());
@@ -168,7 +165,7 @@ public Q_SLOTS:
             }
 
             QVERIFY(m_renderQueues->isFrameQueueComplete());
-            m_waitTimeToSubmit.wakeOne();
+            m_waitSubmit.release();
         }
     }
 };
@@ -187,18 +184,13 @@ void tst_RenderQueue::concurrentQueueAccess()
     QVERIFY(jobsThread->m_renderQueues->targetRenderViewCount() == renderQueue->targetRenderViewCount());
     QVERIFY(jobsThread->m_renderQueues->currentRenderViewCount() == renderQueue->currentRenderViewCount());
 
-
     // Start thread
     jobsThread->start();
 
-    QThread::msleep(500); // To be sure the thread is properly started
-
-    jobsThread->m_waitToFillQueue.wakeAll();
+    jobsThread->m_waitQueue.release();
 
     for (int i = 0; i < 5; ++i) {
-        QMutexLocker lock(&jobsThread->m_mutex);
-        jobsThread->m_waitTimeToSubmit.wait(&jobsThread->m_mutex);
-        lock.unlock();
+        jobsThread->m_waitSubmit.acquire();
 
         // WHEN unlocked
         // THEN
@@ -208,7 +200,7 @@ void tst_RenderQueue::concurrentQueueAccess()
         // reset queue for next frame
         renderQueue->reset();
         renderQueue->setTargetRenderViewCount(7);
-        jobsThread->m_waitToFillQueue.wakeAll();
+        jobsThread->m_waitQueue.release();
     }
     jobsThread->wait();
 }

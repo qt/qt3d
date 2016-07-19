@@ -56,6 +56,7 @@ QPropertyValueAddedChangeBasePrivate::~QPropertyValueAddedChangeBasePrivate()
 /*!
  * \class Qt3DCore::QPropertyValueAddedChangeBase
  * \inmodule Qt3DCore
+ * \brief The QPropertyValueAddedChangeBase class is the base class for all PropertyValueAdded QSceneChange events
  *
  * The QPropertyValueAddedChangeBase class is the base class for all QSceneChange events that
  * have the changeType() PropertyValueAdded. You should not need to instantiate this class.
@@ -73,15 +74,14 @@ QPropertyValueAddedChangeBasePrivate::~QPropertyValueAddedChangeBasePrivate()
  */
 
 /*!
- * Constructs a new QPropertyValueAddedChangeBase with \a senderType, \a subjectId, and
- * \a priority.
+ * Constructs a new QPropertyValueAddedChangeBase with \a subjectId
  */
 QPropertyValueAddedChangeBase::QPropertyValueAddedChangeBase(QNodeId subjectId)
     : QSceneChange(*new QPropertyValueAddedChangeBasePrivate, PropertyValueAdded, subjectId)
 {
 }
 
-/*! internal */
+/*! \internal */
 QPropertyValueAddedChangeBase::QPropertyValueAddedChangeBase(QPropertyValueAddedChangeBasePrivate &dd,
                                                              QNodeId subjectId)
     : QSceneChange(dd, PropertyValueAdded, subjectId)

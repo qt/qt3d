@@ -38,6 +38,7 @@ private Q_SLOTS:
 
     void checkRenderViewSizeFitsWithAllocator()
     {
+        QSKIP("Allocated Disabled");
         QVERIFY(sizeof(Qt3DRender::Render::RenderView) <= 192);
         QVERIFY(sizeof(Qt3DRender::Render::RenderView::InnerData) <= 192);
     }
@@ -49,10 +50,10 @@ private Q_SLOTS:
 
     void checkRenderViewDoesNotLeak()
     {
+        QSKIP("Allocated Disabled");
         // GIVEN
         Qt3DCore::QFrameAllocator allocator(192, 16, 128);
         Qt3DRender::Render::RenderView *rv = allocator.allocate<Qt3DRender::Render::RenderView>();
-        rv->setAllocator(&allocator);
 
         // THEN
         QVERIFY(!allocator.isEmpty());

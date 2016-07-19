@@ -54,6 +54,7 @@ namespace Input {
 
 MouseDevice::MouseDevice()
     : QAbstractPhysicalDeviceBackendNode(ReadOnly)
+    , m_wasPressed(false)
     , m_sensitivity(0.1f)
 {
 }
@@ -73,17 +74,6 @@ void MouseDevice::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &
 void MouseDevice::setInputHandler(InputHandler *handler)
 {
     m_inputHandler = handler;
-}
-
-void MouseDevice::addMouseInput(Qt3DCore::QNodeId input)
-{
-    if (!m_mouseInputs.contains(input))
-        m_mouseInputs.append(input);
-}
-
-void MouseDevice::removeMouseInput(Qt3DCore::QNodeId input)
-{
-    m_mouseInputs.removeOne(input);
 }
 
 float MouseDevice::axisValue(int axisIdentifier) const
@@ -115,24 +105,25 @@ bool MouseDevice::isButtonPressed(int buttonIdentifier) const
     return false;
 }
 
-QVector<Qt3DCore::QNodeId> MouseDevice::mouseInputs() const
-{
-    return m_mouseInputs;
-}
-
 void MouseDevice::updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events)
 {
+    // Reset axis values before we accumulate new values for this frame
+    m_mouseState.xAxis = 0.0f;
+    m_mouseState.yAxis = 0.0f;
+
     if (!events.isEmpty()) {
         for (const QT_PREPEND_NAMESPACE(QMouseEvent) &e : events) {
             m_mouseState.leftPressed = e.buttons() & (Qt::LeftButton);
             m_mouseState.centerPressed = e.buttons() & (Qt::MiddleButton);
             m_mouseState.rightPressed = e.buttons() & (Qt::RightButton);
-            m_mouseState.xAxis =  m_sensitivity * (e.screenPos().x() - m_previousPos.x());
-            m_mouseState.yAxis = m_sensitivity * (m_previousPos.y() - e.screenPos().y());
+            bool pressed = m_mouseState.leftPressed || m_mouseState.centerPressed || m_mouseState.rightPressed;
+            if (m_wasPressed && pressed) {
+                m_mouseState.xAxis += m_sensitivity * (e.screenPos().x() - m_previousPos.x());
+                m_mouseState.yAxis += m_sensitivity * (m_previousPos.y() - e.screenPos().y());
+            }
+            m_wasPressed = pressed;
             m_previousPos = e.screenPos();
         }
-    } else {
-        m_mouseState = MouseState();
     }
 }
 

@@ -148,6 +148,7 @@ GraphicsContext::GraphicsContext()
     , m_glHelper(nullptr)
     , m_ownCurrent(true)
     , m_activeShader(nullptr)
+    , m_activeShaderDNA(0)
     , m_currClearStencilValue(0)
     , m_currClearDepthValue(1.f)
     , m_currClearColorValue(0,0,0,0)
@@ -160,6 +161,7 @@ GraphicsContext::GraphicsContext()
     , m_uboTempArray(QByteArray(1024, 0))
     , m_supportsVAO(true)
     , m_debugLogger(nullptr)
+    , m_currentVAO(nullptr)
 {
     static_contexts[m_id] = this;
 }
@@ -241,8 +243,10 @@ bool GraphicsContext::beginDrawing(QSurface *surface)
     m_gl->functions()->glClearStencil(m_currClearStencilValue);
 
 
-    if (m_activeShader)
-        m_activeShader = NULL;
+    if (m_activeShader) {
+        m_activeShader = nullptr;
+        m_activeShaderDNA = 0;
+    }
 
     m_activeTextures.fill(0);
     m_boundArrayBuffer = nullptr;
@@ -414,7 +418,7 @@ QOpenGLShaderProgram *GraphicsContext::createShaderProgram(Shader *shaderNode)
     for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
         QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
         if (!shaderCode.at(i).isEmpty() &&
-            !shaderProgram->addShaderFromSourceCode(shaderType(type), shaderCode.at(i))) {
+                !shaderProgram->addShaderFromSourceCode(shaderType(type), shaderCode.at(i))) {
             qWarning().noquote() << "Failed to compile shader:" << shaderProgram->log();
         }
     }
@@ -433,15 +437,8 @@ QOpenGLShaderProgram *GraphicsContext::createShaderProgram(Shader *shaderNode)
 }
 
 // That assumes that the shaderProgram in Shader stays the same
-void GraphicsContext::activateShader(Shader *shader)
+void GraphicsContext::loadShader(Shader *shader)
 {
-    if (shader == nullptr) {
-        m_activeShader = nullptr;
-        m_material = nullptr;
-        m_glHelper->useProgram(0);
-        return;
-    }
-
     QOpenGLShaderProgram *shaderProgram = m_shaderCache.getShaderProgramAndAddRef(shader->dna(), shader->peerId());
     if (!shaderProgram) {
         // No matching QOpenGLShader in the cache so create one
@@ -449,9 +446,6 @@ void GraphicsContext::activateShader(Shader *shader)
 
         // Store in cache
         m_shaderCache.insert(shader->dna(), shader->peerId(), shaderProgram);
-
-        // Shader is not yet bound
-        m_activeShader = nullptr;
     }
 
     // Ensure the Shader node knows about the program interface
@@ -470,12 +464,21 @@ void GraphicsContext::activateShader(Shader *shader)
         shader->setGraphicsContext(this);
         shader->setLoaded(true);
     }
+}
 
-    if (m_activeShader != nullptr && m_activeShader->dna() == shader->dna()) {
-        // No-op as requested shader is already bound.
-    } else {
-        m_activeShader = shader;
-        shaderProgram->bind();
+// Called only from RenderThread
+void GraphicsContext::activateShader(ProgramDNA shaderDNA)
+{
+    if (shaderDNA != m_activeShaderDNA) {
+        m_activeShader = m_shaderCache.getShaderProgramForDNA(shaderDNA);
+        if (Q_LIKELY(m_activeShader != nullptr)) {
+            m_activeShader->bind();
+            m_activeShaderDNA = shaderDNA;
+        } else {
+            m_glHelper->useProgram(0);
+            qWarning() << "No shader program found for DNA";
+            m_activeShaderDNA = 0;
+        }
         // Ensure material uniforms are re-applied
         m_material = nullptr;
     }
@@ -486,20 +489,20 @@ void GraphicsContext::removeShaderProgramReference(Shader *shaderNode)
     m_shaderCache.removeRef(shaderNode->dna(), shaderNode->peerId());
 }
 
-void GraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments, GLuint defaultFboId)
+void GraphicsContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId, const AttachmentPack &attachments, GLuint defaultFboId)
 {
     GLuint fboId = defaultFboId; // Default FBO
-    if (renderTarget != nullptr) {
+    if (renderTargetNodeId) {
         // New RenderTarget
-        if (!m_renderTargets.contains(renderTarget->peerId())) {
+        if (!m_renderTargets.contains(renderTargetNodeId)) {
             if (m_defaultFBO && fboId == m_defaultFBO) {
                 // this is the default fbo that some platforms create (iOS), we just register it
                 // Insert FBO into hash
-                m_renderTargets.insert(renderTarget->peerId(), fboId);
+                m_renderTargets.insert(renderTargetNodeId, fboId);
             } else if ((fboId = m_glHelper->createFrameBufferObject()) != 0) {
                 // The FBO is created and its attachments are set once
                 // Insert FBO into hash
-                m_renderTargets.insert(renderTarget->peerId(), fboId);
+                m_renderTargets.insert(renderTargetNodeId, fboId);
                 // Bind FBO
                 m_glHelper->bindFrameBufferObject(fboId);
                 bindFrameBufferAttachmentHelper(fboId, attachments);
@@ -507,7 +510,7 @@ void GraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const Att
                 qCritical() << "Failed to create FBO";
             }
         } else {
-            fboId = m_renderTargets.value(renderTarget->peerId());
+            fboId = m_renderTargets.value(renderTargetNodeId);
 
             // We need to check if  one of the attachment was resized
             TextureManager *textureManager = m_renderer->nodeManagers()->textureManager();
@@ -1035,10 +1038,10 @@ void GraphicsContext::decayTextureScores()
     }
 }
 
-QOpenGLShaderProgram* GraphicsContext::activeShader()
+QOpenGLShaderProgram* GraphicsContext::activeShader() const
 {
     Q_ASSERT(m_activeShader);
-    return m_shaderCache.getShaderProgramAndAddRef(m_activeShader->dna(), m_activeShader->peerId());
+    return m_activeShader;
 }
 
 void GraphicsContext::setRenderer(Renderer *renderer)
@@ -1119,35 +1122,70 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
     }
 
     // Update uniforms in the Default Uniform Block
-    m_activeShader->updateUniforms(this, parameterPack);
+    const PackUniformHash values = parameterPack.uniforms();
+    const QVector<ShaderUniform> activeUniforms = parameterPack.submissionUniforms();
+
+    for (const ShaderUniform &uniform : activeUniforms) {
+        // We can use [] as we are sure the the uniform wouldn't
+        // be un activeUniforms if there wasn't a matching value
+        const QUniformValue &value = values[uniform.m_nameId];
+        value.apply(this, uniform);
+    }
 }
 
-void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffer, const QString &shaderName)
+void GraphicsContext::enableAttribute(const VAOVertexAttribute &attr)
 {
-    if (attribute == nullptr || buffer == nullptr)
-        return;
+    // Bind buffer within the current VAO
+    GLBuffer *buf = m_renderer->nodeManagers()->glBufferManager()->data(attr.bufferHandle);
+    Q_ASSERT(buf);
+    bindGLBuffer(buf, attr.bufferType);
 
-    GLBuffer *buf = glBufferForRenderBuffer(buffer);
-    bindGLBuffer(buf, bufferTypeToGLBufferType(buffer->type()));
-    // bound within the current VAO
+    QOpenGLShaderProgram *prog = activeShader();
+    prog->enableAttributeArray(attr.location);
+    prog->setAttributeBuffer(attr.location,
+                             attr.dataType,
+                             attr.byteOffset,
+                             attr.vertexSize,
+                             attr.byteStride);
 
-    QOpenGLShaderProgram* prog = activeShader();
-    int location = prog->attributeLocation(shaderName);
+    // Done by the helper if it supports it
+    if (attr.divisor != 0)
+        m_glHelper->vertexAttribDivisor(attr.location, attr.divisor);
+}
+
+void GraphicsContext::disableAttribute(const GraphicsContext::VAOVertexAttribute &attr)
+{
+    QOpenGLShaderProgram *prog = activeShader();
+    prog->disableAttributeArray(attr.location);
+}
+
+// Note: needs to be called while VAO is bound
+void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffer, int location)
+{
     if (location < 0) {
-        qCWarning(Backend) << "failed to resolve location for attribute:" << shaderName;
+        qCWarning(Backend) << "failed to resolve location for attribute:" << attribute->name();
         return;
     }
-    prog->enableAttributeArray(location);
-    prog->setAttributeBuffer(location,
-                             glDataTypeFromAttributeDataType(attribute->vertexBaseType()),
-                             attribute->byteOffset(),
-                             attribute->vertexSize(),
-                             attribute->byteStride());
 
-    if (attribute->divisor() != 0) {
-        // Done by the helper if it supports it
-        m_glHelper->vertexAttribDivisor(location, attribute->divisor());
-    }
+    const GLint attributeDataType = glDataTypeFromAttributeDataType(attribute->vertexBaseType());
+    const HGLBuffer glBufferHandle = m_renderer->nodeManagers()->glBufferManager()->lookupHandle(buffer->peerId());
+    const GLBuffer::Type bufferType = bufferTypeToGLBufferType(buffer->type());
+
+    VAOVertexAttribute attr;
+    attr.bufferHandle = glBufferHandle;
+    attr.bufferType = bufferType;
+    attr.location = location;
+    attr.dataType = attributeDataType;
+    attr.byteOffset = attribute->byteOffset();
+    attr.vertexSize = attribute->vertexSize();
+    attr.byteStride = attribute->byteStride();
+    attr.divisor = attribute->divisor();
+
+    enableAttribute(attr);
+
+    // Save this in the current emulated VAO
+    if (m_currentVAO)
+        m_currentVAO->saveVertexAttribute(attr);
 }
 
 void GraphicsContext::specifyIndices(Buffer *buffer)
@@ -1159,6 +1197,9 @@ void GraphicsContext::specifyIndices(Buffer *buffer)
         qCWarning(Backend) << Q_FUNC_INFO << "binding index buffer failed";
 
     // bound within the current VAO
+    // Save this in the current emulated VAO
+    if (m_currentVAO)
+        m_currentVAO->saveIndexAttribute(m_renderer->nodeManagers()->glBufferManager()->lookupHandle(buffer->peerId()));
 }
 
 void GraphicsContext::updateBuffer(Buffer *buffer)
@@ -1166,6 +1207,29 @@ void GraphicsContext::updateBuffer(Buffer *buffer)
     const QHash<Qt3DCore::QNodeId, HGLBuffer>::iterator it = m_renderBufferHash.find(buffer->peerId());
     if (it != m_renderBufferHash.end())
         uploadDataToGLBuffer(buffer, m_renderer->nodeManagers()->glBufferManager()->data(it.value()));
+}
+
+void GraphicsContext::releaseBuffer(Qt3DCore::QNodeId bufferId)
+{
+    auto it = m_renderBufferHash.find(bufferId);
+    if (it != m_renderBufferHash.end()) {
+        HGLBuffer glBuffHandle = it.value();
+        GLBuffer *glBuff = m_renderer->nodeManagers()->glBufferManager()->data(glBuffHandle);
+
+        Q_ASSERT(glBuff);
+        // Destroy the GPU resource
+        glBuff->destroy(this);
+        // Destroy the GLBuffer instance
+        m_renderer->nodeManagers()->glBufferManager()->releaseResource(bufferId);
+        // Remove Id - HGLBuffer entry
+        m_renderBufferHash.erase(it);
+    }
+}
+
+bool GraphicsContext::hasGLBufferForBuffer(Buffer *buffer)
+{
+    const QHash<Qt3DCore::QNodeId, HGLBuffer>::iterator it = m_renderBufferHash.find(buffer->peerId());
+    return (it != m_renderBufferHash.end());
 }
 
 GLBuffer *GraphicsContext::glBufferForRenderBuffer(Buffer *buf)

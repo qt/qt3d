@@ -46,6 +46,7 @@
 #include <Qt3DRender/qtexturedata.h>
 #include <QThread>
 #include <Qt3DRender/private/job_common_p.h>
+#include <Qt3DRender/private/qtextureimagedata_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -203,6 +204,7 @@ void LoadTextureDataJob::run()
                 // Set the textureDataHandle on the texture image
                 // Note: this internally updates the DNA of the TextureImage
                 texImg->setTextureDataHandle(textureDataHandle);
+                texImg->updateDNA(::qHash(QTextureImageDataPrivate::get(data)->m_data));
             }
         }
         // Tell the renderer to reload/upload to GPU the TextureImage for the Texture

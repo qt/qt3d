@@ -279,10 +279,10 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QPropertyNodeAddedChangePtr nodeAddedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
+        Qt3DCore::QPropertyUpdatedChangePtr nodeAddedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(nodeAddedChange->propertyName(), "geometry");
-        QCOMPARE(nodeAddedChange->addedNodeId(), geom.id());
-        QCOMPARE(nodeAddedChange->type(), Qt3DCore::PropertyValueAdded);
+        QCOMPARE(nodeAddedChange->value().value<Qt3DCore::QNodeId>(), geom.id());
+        QCOMPARE(nodeAddedChange->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
 
@@ -292,18 +292,47 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 2);
-        Qt3DCore::QPropertyNodeRemovedChangePtr nodeRemovedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyNodeRemovedChange>();
+        QCOMPARE(arbiter.events.size(), 1);
+        Qt3DCore::QPropertyUpdatedChangePtr nodeRemovedChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(nodeRemovedChange->propertyName(), "geometry");
-        QCOMPARE(nodeRemovedChange->removedNodeId(), geom.id());
-        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::PropertyValueRemoved);
-
-        nodeAddedChange = arbiter.events.last().staticCast<Qt3DCore::QPropertyNodeAddedChange>();
-        QCOMPARE(nodeAddedChange->propertyName(), "geometry");
-        QCOMPARE(nodeAddedChange->addedNodeId(), geom2.id());
-        QCOMPARE(nodeAddedChange->type(), Qt3DCore::PropertyValueAdded);
+        QCOMPARE(nodeRemovedChange->value().value<Qt3DCore::QNodeId>(), geom2.id());
+        QCOMPARE(nodeRemovedChange->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
+    }
+
+    void checkGeometryBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DRender::QGeometryRenderer> geometryRenderer(new Qt3DRender::QGeometryRenderer);
+        {
+            // WHEN
+            Qt3DRender::QGeometry geometry;
+            geometryRenderer->setGeometry(&geometry);
+
+            // THEN
+            QCOMPARE(geometry.parent(), geometryRenderer.data());
+            QCOMPARE(geometryRenderer->geometry(), &geometry);
+        }
+        // THEN (Should not crash and parameter be unset)
+        QVERIFY(geometryRenderer->geometry() == nullptr);
+
+        {
+            // WHEN
+            Qt3DRender::QGeometryRenderer someOtherGeometryRenderer;
+            QScopedPointer<Qt3DRender::QGeometry> geometry(new Qt3DRender::QGeometry(&someOtherGeometryRenderer));
+            geometryRenderer->setGeometry(geometry.data());
+
+            // THEN
+            QCOMPARE(geometry->parent(), &someOtherGeometryRenderer);
+            QCOMPARE(geometryRenderer->geometry(), geometry.data());
+
+            // WHEN
+            geometryRenderer.reset();
+            geometry.reset();
+
+            // THEN Should not crash when the geometry is destroyed (tests for failed removal of destruction helper)
+        }
     }
 };
 

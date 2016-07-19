@@ -220,6 +220,74 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
+
+    void checkParameterBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DRender::QRenderPassFilter> passFilter(new Qt3DRender::QRenderPassFilter);
+        {
+            // WHEN
+            Qt3DRender::QParameter param;
+            passFilter->addParameter(&param);
+
+            // THEN
+            QCOMPARE(param.parent(), passFilter.data());
+            QCOMPARE(passFilter->parameters().size(), 1);
+        }
+        // THEN (Should not crash and parameter be unset)
+        QVERIFY(passFilter->parameters().empty());
+
+        {
+            // WHEN
+            Qt3DRender::QRenderPassFilter someOtherPassFilter;
+            QScopedPointer<Qt3DRender::QParameter> param(new Qt3DRender::QParameter(&someOtherPassFilter));
+            passFilter->addParameter(param.data());
+
+            // THEN
+            QCOMPARE(param->parent(), &someOtherPassFilter);
+            QCOMPARE(passFilter->parameters().size(), 1);
+
+            // WHEN
+            passFilter.reset();
+            param.reset();
+
+            // THEN Should not crash when the parameter is destroyed (tests for failed removal of destruction helper)
+        }
+    }
+
+    void checkFilterKeyBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DRender::QRenderPassFilter> passFilter(new Qt3DRender::QRenderPassFilter);
+        {
+            // WHEN
+            Qt3DRender::QFilterKey filterKey;
+            passFilter->addMatch(&filterKey);
+
+            // THEN
+            QCOMPARE(filterKey.parent(), passFilter.data());
+            QCOMPARE(passFilter->matchAny().size(), 1);
+        }
+        // THEN (Should not crash and parameter be unset)
+        QVERIFY(passFilter->matchAny().empty());
+
+        {
+            // WHEN
+            Qt3DRender::QRenderPassFilter someOtherPassFilter;
+            QScopedPointer<Qt3DRender::QFilterKey> filterKey(new Qt3DRender::QFilterKey(&someOtherPassFilter));
+            passFilter->addMatch(filterKey.data());
+
+            // THEN
+            QCOMPARE(filterKey->parent(), &someOtherPassFilter);
+            QCOMPARE(passFilter->matchAny().size(), 1);
+
+            // WHEN
+            passFilter.reset();
+            filterKey.reset();
+
+            // THEN Should not crash when the parameter is destroyed (tests for failed removal of destruction helper)
+        }
+    }
 };
 
 QTEST_MAIN(tst_QRenderPassFilter)

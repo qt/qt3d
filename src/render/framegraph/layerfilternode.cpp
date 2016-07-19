@@ -77,7 +77,7 @@ void LayerFilterNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     case PropertyValueRemoved: {
         const auto change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("layer"))
-            m_layerIds.remove(change->removedNodeId());
+            m_layerIds.removeOne(change->removedNodeId());
         break;
     }
 

@@ -41,7 +41,8 @@ import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 
 Material {
-    id:root
+    id: root
+
     property color diffuse: Qt.rgba( 0.0, 0.0, 0.0, 1.0 )
     property color specular: Qt.rgba( 0.0, 0.0, 0.0, 1.0 )
     property color coolColor: Qt.rgba( 0.0, 0.0, 0.4, 1.0 )
@@ -50,79 +51,21 @@ Material {
     property real beta: 0.5
     property real shininess: 100.0
 
-    ShaderProgram {
-        id: gl3GoochShader
-        vertexShaderCode: loadSource("qrc:/shaders/gl3/gooch.vert")
-        fragmentShaderCode: loadSource("qrc:/shaders/gl3/gooch.frag")
-    }
+    parameters: [
+        Parameter { name: "kd";             value: root.diffuse },
+        Parameter { name: "ks";             value: root.specular },
+        Parameter { name: "kblue";          value: root.coolColor },
+        Parameter { name: "kyellow";        value: root.warmColor },
+        Parameter { name: "alpha";          value: root.alpha },
+        Parameter { name: "beta";           value: root.beta },
+        Parameter { name: "shininess";      value: root.shininess }
+    ]
 
-    ShaderProgram {
-        id: gl2es2GoochShader
-        vertexShaderCode: loadSource("qrc:/shaders/es2/gooch.vert")
-        fragmentShaderCode: loadSource("qrc:/shaders/es2/gooch.frag")
-    }
-
-    effect: Effect {
-
-        FilterKey {
-            id: forward
-            name: "renderingStyle"
-            value: "forward"
-        }
-
-        parameters: [
-            Parameter { name: "kd";             value: root.diffuse },
-            Parameter { name: "ks";             value: root.specular },
-            Parameter { name: "kblue";          value: root.coolColor },
-            Parameter { name: "kyellow";        value: root.warmColor },
-            Parameter { name: "alpha";          value: root.alpha },
-            Parameter { name: "beta";           value: root.beta },
-            Parameter { name: "shininess";      value: root.shininess }
-        ]
-
-        techniques: [
-            // GL 3 Technique
-            Technique {
-                filterKeys: [ forward ]
-                graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGL
-                    profile: GraphicsApiFilter.CoreProfile
-                    majorVersion: 3
-                    minorVersion: 2
-                }
-                renderPasses: RenderPass {
-                    shaderProgram: gl3GoochShader
-                }
-            },
-
-            // GL 2 Technique
-            Technique {
-                filterKeys: [ forward ]
-                graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGL
-                    profile: GraphicsApiFilter.NoProfile
-                    majorVersion: 2
-                    minorVersion: 0
-                }
-                renderPasses: RenderPass {
-                    shaderProgram: gl2es2GoochShader
-                }
-            },
-
-            // ES 2 Technique
-            Technique {
-                filterKeys: [ forward ]
-                graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGLES
-                    profile: GraphicsApiFilter.NoProfile
-                    majorVersion: 2
-                    minorVersion: 0
-                }
-                renderPasses: RenderPass {
-                    shaderProgram: gl2es2GoochShader
-                }
-            }
-        ]
+    effect: DefaultEffect {
+        vertexES: "qrc:/shaders/es2/gooch.vert"
+        fragmentES: "qrc:/shaders/es2/gooch.frag"
+        vertex: "qrc:/shaders/gl3/gooch.vert"
+        fragment: "qrc:/shaders/gl3/gooch.frag"
     }
 }
 

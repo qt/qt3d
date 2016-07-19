@@ -49,10 +49,6 @@ uniform float opacity;      // Alpha channel
 
 uniform sampler2D diffuseTexture;
 
-uniform sampler2DShadow shadowMapTexture;
-
-in vec4 positionInLightSpace;
-
 in vec3 position;
 in vec3 normal;
 in vec2 texCoord;
@@ -91,11 +87,8 @@ void main()
     vec2 flipYTexCoord = texCoord;
     flipYTexCoord.y = 1.0 - texCoord.y;
 
-    float shadowMapSample = textureProj(shadowMapTexture, positionInLightSpace);
-
     vec3 result = lightIntensity * ka * texture(diffuseTexture, flipYTexCoord).rgb;
-    if (shadowMapSample > 0)
-        result = dModel(flipYTexCoord);
+    result += dModel(flipYTexCoord);
 
     float alpha = opacity * texture(diffuseTexture, flipYTexCoord).a;
 

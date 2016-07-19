@@ -60,6 +60,26 @@ QTechniquePrivate::~QTechniquePrivate()
 {
 }
 
+/*!
+ * \qmltype Technique
+ * \instantiates Qt3DRender::QTechnique
+ * \inqmlmodule Qt3D.Render
+ * \brief Encapsulates a Technique.
+ */
+
+/*!
+ * \class Qt3DRender::QTechnique
+ * \inmodule Qt3DRender
+ *
+ * \inherits Node
+ *
+ * \brief Encapsulates a Technique.
+ */
+
+/*!
+  \fn Qt3DRender::QTechnique::QTechnique(Qt3DCore::QNode *parent)
+  Constructs a new QTechnique with the specified \a parent.
+ */
 QTechnique::QTechnique(QNode *parent)
     : QNode(*new QTechniquePrivate, parent)
 {
@@ -80,6 +100,7 @@ QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
     QObject::connect(&d->m_graphicsApiFilter, SIGNAL(graphicsApiFilterChanged()), this, SLOT(_q_graphicsApiFilterChanged()));
 }
 
+/*! \internal */
 void QTechniquePrivate::_q_graphicsApiFilterChanged()
 {
     if (m_changeArbiter != nullptr) {
@@ -90,6 +111,9 @@ void QTechniquePrivate::_q_graphicsApiFilterChanged()
     }
 }
 
+/*!
+ * Add \a filterKey to the Qt3DRender::QTechnique local filter keys.
+ */
 void QTechnique::addFilterKey(QFilterKey *filterKey)
 {
     Q_ASSERT(filterKey);
@@ -115,6 +139,9 @@ void QTechnique::addFilterKey(QFilterKey *filterKey)
     }
 }
 
+/*!
+ * Removes \a filterKey from the Qt3DRender::QTechnique local filter keys.
+ */
 void QTechnique::removeFilterKey(QFilterKey *filterKey)
 {
     Q_ASSERT(filterKey);
@@ -129,12 +156,19 @@ void QTechnique::removeFilterKey(QFilterKey *filterKey)
     d->unregisterDestructionHelper(filterKey);
 }
 
+/*!
+ * Returns the list of Qt3DCore::QFilterKey key objects making up the filter keys
+ * of the Qt3DRender::QTechnique.
+ */
 QVector<QFilterKey *> QTechnique::filterKeys() const
 {
     Q_D(const QTechnique);
     return d->m_filterKeys;
 }
 
+/*!
+ * Add \a parameter to the techniques parameters.
+ */
 void QTechnique::addParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
@@ -160,6 +194,9 @@ void QTechnique::addParameter(QParameter *parameter)
     }
 }
 
+/*!
+ * Remove \a parameter from the techniques parameters.
+ */
 void QTechnique::removeParameter(QParameter *parameter)
 {
     Q_ASSERT(parameter);
@@ -175,9 +212,7 @@ void QTechnique::removeParameter(QParameter *parameter)
 }
 
 /*!
- * Appends a \a pass to the technique. This posts a ComponentAdded
- * QScenePropertyChange notification to the QChangeArbiter with the
- * value being the \a pass and the property name being "pass".
+ * Appends a \a pass to the technique.
  */
 void QTechnique::addRenderPass(QRenderPass *pass)
 {
@@ -205,9 +240,7 @@ void QTechnique::addRenderPass(QRenderPass *pass)
 }
 
 /*!
- * Removes a \a pass from the technique. This posts a ComponentRemoved
- * QScenePropertyChange notification to the QChangeArbiter with the value
- * being the id of \a pass and the property name being "pass".
+ * Removes a \a pass from the technique.
  */
 void QTechnique::removeRenderPass(QRenderPass *pass)
 {
@@ -232,12 +265,24 @@ QVector<QRenderPass *> QTechnique::renderPasses() const
     return d->m_renderPasses;
 }
 
+/*!
+ * Returns a vector of the techniques current parameters
+ */
 QVector<QParameter *> QTechnique::parameters() const
 {
     Q_D(const QTechnique);
     return d->m_parameters;
 }
 
+/*!
+  \qmlproperty QByteArray Qt3D.Render::Technique::graphicsApiFilter
+    Specifies the graphics API filter being used
+*/
+
+/*!
+  \property Qt3DRender::QTechnique::graphicsApiFilter
+    Specifies the graphics API filter being used
+ */
 QGraphicsApiFilter *QTechnique::graphicsApiFilter()
 {
     Q_D(QTechnique);

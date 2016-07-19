@@ -60,7 +60,7 @@ class QSeamlessCubemapPrivate : public QRenderStatePrivate
 {
 public:
     QSeamlessCubemapPrivate()
-        : QRenderStatePrivate(QRenderStatePrivate::SeamlessCubemap)
+        : QRenderStatePrivate(Render::SeamlessCubemapMask)
     {
     }
 

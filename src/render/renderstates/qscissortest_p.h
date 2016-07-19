@@ -59,7 +59,7 @@ class QScissorTestPrivate : public QRenderStatePrivate
 {
 public:
     QScissorTestPrivate()
-        : QRenderStatePrivate(QRenderStatePrivate::ScissorTest)
+        : QRenderStatePrivate(Render::ScissorStateMask)
         , m_left(0)
         , m_bottom(0)
         , m_width(0)

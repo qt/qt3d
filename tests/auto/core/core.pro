@@ -19,5 +19,6 @@ contains(QT_CONFIG, private_tests) {
     qentity \
     qframeallocator \
     qtransform \
-    threadpooler
+    threadpooler \
+    aspectcommanddebugger
 }

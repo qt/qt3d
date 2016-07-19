@@ -29,4 +29,56 @@
     \example simple-qml
     \title Qt 3D: Simple QML Example
     \ingroup qt3d-examples-qml
+    \brief A QML application that demonstrates how to render a scene in Qt 3D.
+
+    \image simple-qml.png
+
+    \e {Simple} demonstrates how to render a scene in Qt 3D.
+
+    \include examples-run.qdocinc
+
+    \section1 Setting Up the Scene
+
+    We set up the entire scene in the \e main.qml file.
+
+    To be able to use the types in the Q3D and Q3D Render modules, we must
+    import the modules:
+
+    \quotefromfile simple-qml/main.qml
+    \skipto import Qt3D.Core
+    \printuntil Render 2.0
+
+    The first entities we create are a \l Camera, which represents the camera
+    used for the final rendering, and a camera controller, which allows us to
+    control this camera using the keyboard or the mouse:
+
+    \skipto Camera {
+    \printuntil }
+    \printuntil }
+
+    A \l RenderSettings entity specifies a ForwardRenderer as the active
+    framegraph:
+
+    \printuntil },
+
+    The event source is set by the Qt3DQuickWindow:
+
+    \skipto InputSettings
+    \printuntil }
+
+    \section1
+
+    \section1 Specifying Settings and Axes
+
+    In the \e CameraController.qml file, we use the LogicalDevice type to define
+    a set of actions and axes to use within the application:
+
+    \quotefromfile simple-qml/CameraController.qml
+    \skipto LogicalDevice {
+    \printuntil ]
+    \dots
+    \skipto axes
+    \printuntil ]
+    \dots
+    \skipto /^\}/
 */

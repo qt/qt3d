@@ -70,8 +70,10 @@ RenderPass::~RenderPass()
 
 void RenderPass::cleanup()
 {
-    if (hasRenderStates())
-        setDirty(true);
+    m_renderStates.clear();
+    m_filterKeyList.clear();
+    m_parameterPack.clear();
+    m_shaderUuid = Qt3DCore::QNodeId();
 }
 
 void RenderPass::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -81,7 +83,7 @@ void RenderPass::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &c
     m_filterKeyList = data.filterKeyIds;
     m_parameterPack.setParameters(data.parameterIds);
     for (const auto &renderStateId : qAsConst(data.renderStateIds))
-        appendRenderState(renderStateId);
+        addRenderState(renderStateId);
     m_shaderUuid = data.shaderId;
 }
 
@@ -95,7 +97,7 @@ void RenderPass::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         else if (change->propertyName() == QByteArrayLiteral("shaderProgram"))
             m_shaderUuid = change->addedNodeId();
         else if (change->propertyName() == QByteArrayLiteral("renderState"))
-            appendRenderState(change->addedNodeId());
+            addRenderState(change->addedNodeId());
         else if (change->propertyName() == QByteArrayLiteral("parameter"))
             m_parameterPack.appendParameter(change->addedNodeId());
         break;
@@ -144,6 +146,11 @@ QVector<Qt3DCore::QNodeId> RenderPass::parameters() const
     return m_parameterPack.parameters();
 }
 
+QVector<QNodeId> RenderPass::renderStates() const
+{
+    return m_renderStates;
+}
+
 void RenderPass::appendFilterKey(Qt3DCore::QNodeId filterKeyId)
 {
     if (!m_filterKeyList.contains(filterKeyId))
@@ -154,6 +161,18 @@ void RenderPass::removeFilterKey(Qt3DCore::QNodeId filterKeyId)
 {
     m_filterKeyList.removeOne(filterKeyId);
 }
+
+void RenderPass::addRenderState(QNodeId renderStateId)
+{
+    if (!m_renderStates.contains(renderStateId))
+        m_renderStates.push_back(renderStateId);
+}
+
+void RenderPass::removeRenderState(QNodeId renderStateId)
+{
+    m_renderStates.removeOne(renderStateId);
+}
+
 
 } // namespace Render
 } // namespace Qt3DRender

@@ -67,9 +67,7 @@ namespace Qt3DRender {
             , m_jobManager(new Qt3DCore::QAspectJobManager())
         {
             Qt3DCore::QAbstractAspectPrivate::get(this)->m_jobManager = m_jobManager.data();
-            if (!withWindow) {
-                d_func()->m_renderer->createAllocators(m_jobManager.data());
-            } else {
+            if (withWindow) {
                 m_window.reset(new QWindow());
                 m_window->resize(1024, 768);
 
@@ -90,32 +88,32 @@ namespace Qt3DRender {
 
         QVector<Qt3DCore::QAspectJobPtr> worldTransformJob()
         {
-            d_func()->m_worldTransformJob->setRoot(d_func()->m_renderer->sceneRoot());
-            return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_worldTransformJob;
+            static_cast<Render::Renderer *>(d_func()->m_renderer)->m_worldTransformJob->setRoot(d_func()->m_renderer->sceneRoot());
+            return QVector<Qt3DCore::QAspectJobPtr>() << static_cast<Render::Renderer *>(d_func()->m_renderer)->m_worldTransformJob;
         }
 
         QVector<Qt3DCore::QAspectJobPtr> updateBoundingJob()
         {
-            d_func()->m_updateBoundingVolumeJob->setRoot(d_func()->m_renderer->sceneRoot());
-            return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_updateBoundingVolumeJob;
+            static_cast<Render::Renderer *>(d_func()->m_renderer)->m_updateWorldBoundingVolumeJob->setManager(d_func()->m_renderer->nodeManagers()->renderNodesManager());
+            return QVector<Qt3DCore::QAspectJobPtr>() << static_cast<Render::Renderer *>(d_func()->m_renderer)->m_updateWorldBoundingVolumeJob;
         }
 
         QVector<Qt3DCore::QAspectJobPtr> calculateBoundingVolumeJob()
         {
-            d_func()->m_calculateBoundingVolumeJob->setRoot(d_func()->m_renderer->sceneRoot());
-            return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_calculateBoundingVolumeJob;
+            static_cast<Render::Renderer *>(d_func()->m_renderer)->m_calculateBoundingVolumeJob->setRoot(d_func()->m_renderer->sceneRoot());
+            return QVector<Qt3DCore::QAspectJobPtr>() << static_cast<Render::Renderer *>(d_func()->m_renderer)->m_calculateBoundingVolumeJob;
         }
 
         QVector<Qt3DCore::QAspectJobPtr> framePreparationJob()
         {
-            d_func()->m_framePreparationJob->setRoot(d_func()->m_renderer->sceneRoot());
-            return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_framePreparationJob;
+            static_cast<Render::Renderer *>(d_func()->m_renderer)->m_framePreparationJob->setRoot(d_func()->m_renderer->sceneRoot());
+            return QVector<Qt3DCore::QAspectJobPtr>() << static_cast<Render::Renderer *>(d_func()->m_renderer)->m_framePreparationJob;
         }
 
         QVector<Qt3DCore::QAspectJobPtr> frameCleanupJob()
         {
-            d_func()->m_cleanupJob->setRoot(d_func()->m_renderer->sceneRoot());
-            return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_cleanupJob;
+            static_cast<Render::Renderer *>(d_func()->m_renderer)->m_cleanupJob->setRoot(d_func()->m_renderer->sceneRoot());
+            return QVector<Qt3DCore::QAspectJobPtr>() << static_cast<Render::Renderer *>(d_func()->m_renderer)->m_cleanupJob;
         }
 
         QVector<Qt3DCore::QAspectJobPtr> renderBinJobs()

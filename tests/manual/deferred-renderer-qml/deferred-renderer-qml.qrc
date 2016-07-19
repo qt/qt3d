@@ -5,5 +5,12 @@
         <file>FinalEffect.qml</file>
         <file>SceneEffect.qml</file>
         <file>GBuffer.qml</file>
+        <file>ScreenQuadEntity.qml</file>
+        <file>SceneEntity.qml</file>
+        <file>final_es2.vert</file>
+        <file>final_gl3.frag</file>
+        <file>final_gl3.vert</file>
+        <file>final_es2.frag</file>
+        <file>GBufferDebugger.qml</file>
     </qresource>
 </RCC>

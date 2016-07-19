@@ -42,84 +42,27 @@ import Qt3D.Render 2.0
 
 Material {
     id: root
+
     property Texture2D texture: Texture2D {}
     property alias textureOffset: texCoordOffset.offset
 
-    ShaderProgram {
-        id: gl3Shader
-        vertexShaderCode: loadSource("qrc:/shaders/gl3/unlittexture.vert")
-        fragmentShaderCode: loadSource("qrc:/shaders/gl3/unlittexture.frag")
-    }
-
-    ShaderProgram {
-        id: gl2es2Shader
-        vertexShaderCode: loadSource("qrc:/shaders/es2/unlittexture.vert")
-        fragmentShaderCode: loadSource("qrc:/shaders/es2/unlittexture.frag")
-    }
-
-    effect: Effect {
-
-        FilterKey {
-            id: forward
-            name: "renderingStyle"
-            value: "forward"
+    parameters: [
+        Parameter {
+            name: "diffuseTexture"
+            value: root.texture
+        },
+        Parameter {
+            id: texCoordOffset
+            property vector2d offset: Qt.vector2d(0, 0)
+            name: "texCoordOffset"
+            value: offset
         }
+    ]
 
-        parameters: [
-            Parameter {
-                name: "diffuseTexture"
-                value: root.texture
-            },
-            Parameter {
-                id: texCoordOffset
-                property vector2d offset: Qt.vector2d(0, 0)
-                name: "texCoordOffset"
-                value: offset
-            }
-
-        ]
-
-        techniques: [
-            // OpenGL 3.1
-            Technique {
-                filterKeys: [ forward ]
-                graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGL
-                    profile: GraphicsApiFilter.CoreProfile
-                    majorVersion: 3
-                    minorVersion: 1
-                }
-                renderPasses: RenderPass {
-                    shaderProgram: gl3Shader
-                }
-            },
-
-            // GL 2 Technique
-            Technique {
-                filterKeys: [ forward ]
-                graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGL
-                    majorVersion: 2
-                    minorVersion: 0
-                }
-                renderPasses: RenderPass {
-                    shaderProgram: gl2es2Shader
-                }
-            },
-
-            // ES 2 Technique
-            Technique {
-                filterKeys: [ forward ]
-                graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGLES
-                    profile: GraphicsApiFilter.NoProfile
-                    majorVersion: 2
-                    minorVersion: 0
-                }
-                renderPasses: RenderPass {
-                    shaderProgram: gl2es2Shader
-                }
-            }
-        ]
+    effect: DefaultEffect {
+        vertexES: "qrc:/shaders/es2/unlittexture.vert"
+        fragmentES: "qrc:/shaders/es2/unlittexture.frag"
+        vertex: "qrc:/shaders/gl3/unlittexture.vert"
+        fragment: "qrc:/shaders/gl3/unlittexture.frag"
     }
 }

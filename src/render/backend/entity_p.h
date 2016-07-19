@@ -99,7 +99,7 @@ public:
     HEntity parentHandle() const { return m_parentHandle; }
 
     void appendChildHandle(HEntity childHandle);
-    void removeChildHandle(HEntity childHandle);
+    void removeChildHandle(HEntity childHandle) { m_childrenHandles.removeOne(childHandle); }
     QVector<HEntity> childrenHandles() const { return m_childrenHandles; }
     QVector<Entity *> children() const;
     bool hasChildren() const { return !m_childrenHandles.empty(); }
@@ -124,9 +124,9 @@ public:
     }
 
     template<class Backend, uint INDEXBITS>
-    QList<Qt3DCore::QHandle<Backend, INDEXBITS> > componentsHandle() const
+    QVector<Qt3DCore::QHandle<Backend, INDEXBITS> > componentsHandle() const
     {
-        return QList<Qt3DCore::QHandle<Backend, INDEXBITS> >();
+        return QVector<Qt3DCore::QHandle<Backend, INDEXBITS> >();
     }
 
     template<class Backend>
@@ -136,9 +136,9 @@ public:
     }
 
     template<class Backend>
-    QList<Backend *> renderComponents() const
+    QVector<Backend *> renderComponents() const
     {
-        return QList<Backend *>();
+        return QVector<Backend *>();
     }
 
     template<class Backend>
@@ -152,6 +152,19 @@ public:
     {
         return QVector<Qt3DCore::QNodeId>();
     }
+
+    template<typename T>
+    bool containsComponentsOfType() const
+    {
+        return !componentUuid<T>().isNull();
+    }
+
+    template<typename T, typename Ts, typename ... Ts2>
+    bool containsComponentsOfType() const
+    {
+        return containsComponentsOfType<T>() && containsComponentsOfType<Ts, Ts2...>();
+    }
+
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
@@ -199,16 +212,16 @@ template<>
 Q_AUTOTEST_EXPORT HObjectPicker Entity::componentHandle<ObjectPicker>() const;
 
 template<>
-QList<HLayer> Entity::componentsHandle<Layer>() const;
+QVector<HLayer> Entity::componentsHandle<Layer>() const;
 
 template<>
-QList<HShaderData> Entity::componentsHandle<ShaderData>() const;
+QVector<HShaderData> Entity::componentsHandle<ShaderData>() const;
 
 //template<>
 //Q_AUTOTEST_EXPORT HBoundingVolumeDebug Entity::componentHandle<BoundingVolumeDebug>() const;
 
 template<>
-QList<HLight> Entity::componentsHandle<Light>() const;
+QVector<HLight> Entity::componentsHandle<Light>() const;
 
 template<>
 Q_AUTOTEST_EXPORT HComputeCommand Entity::componentHandle<ComputeCommand>() const;
@@ -230,16 +243,16 @@ template<>
 Q_AUTOTEST_EXPORT ObjectPicker *Entity::renderComponent<ObjectPicker>() const;
 
 template<>
-QList<Layer *> Entity::renderComponents<Layer>() const;
+QVector<Layer *> Entity::renderComponents<Layer>() const;
 
 template<>
-QList<ShaderData *> Entity::renderComponents<ShaderData>() const;
+QVector<ShaderData *> Entity::renderComponents<ShaderData>() const;
 
 //template<>
 //Q_AUTOTEST_EXPORT BoundingVolumeDebug *Entity::renderComponent<BoundingVolumeDebug>() const;
 
 template<>
-QList<Light *> Entity::renderComponents<Light>() const;
+QVector<Light *> Entity::renderComponents<Light>() const;
 
 template<>
 Q_AUTOTEST_EXPORT ComputeCommand *Entity::renderComponent<ComputeCommand>() const;

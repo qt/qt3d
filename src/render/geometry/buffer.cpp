@@ -167,6 +167,7 @@ Qt3DCore::QBackendNode *BufferFunctor::get(Qt3DCore::QNodeId id) const
 
 void BufferFunctor::destroy(Qt3DCore::QNodeId id) const
 {
+    m_manager->addBufferToRelease(id);
     return m_manager->releaseResource(id);
 }
 

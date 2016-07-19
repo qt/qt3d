@@ -37,6 +37,7 @@
 
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
+#include <Qt3DCore/private/qthreadpooler_p.h>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qt3dcore_global.h>
 #include <qmath.h>
@@ -56,8 +57,8 @@ private:
     Qt3DCore::QAspectJobManager *m_jobManager;
 
 private Q_SLOTS:
-    void init();
-    void cleanup();
+    void initTestCase();
+    void cleanupTestCase();
 
     void defaultPerThread();
     void defaultAspectQueue();
@@ -178,12 +179,12 @@ void massTestFunction(QVector3D *data)
     data->setZ(result.z());
 }
 
-void tst_ThreadPooler::init()
+void tst_ThreadPooler::initTestCase()
 {
     m_jobManager = new JobManager(this);
 }
 
-void tst_ThreadPooler::cleanup()
+void tst_ThreadPooler::cleanupTestCase()
 {
     delete m_jobManager;
 }

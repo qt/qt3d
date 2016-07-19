@@ -42,13 +42,11 @@ in vec3 vertexNormal;
 in vec2 vertexTexCoord;
 in vec4 vertexTangent;
 
-out vec4 positionInLightSpace;
 out vec3 lightDir;
 out vec3 viewDir;
 out vec2 texCoord;
 
 uniform mat4 viewMatrix;
-uniform mat4 lightViewProjection;
 uniform mat4 modelMatrix;
 uniform mat4 modelView;
 uniform mat3 modelViewNormal;
@@ -60,13 +58,6 @@ uniform vec3 lightPosition;
 
 void main()
 {
-    const mat4 shadowMatrix = mat4(0.5, 0.0, 0.0, 0.0,
-                                   0.0, 0.5, 0.0, 0.0,
-                                   0.0, 0.0, 0.5, 0.0,
-                                   0.5, 0.5, 0.5, 1.0);
-
-    positionInLightSpace = shadowMatrix * lightViewProjection * modelMatrix * vec4(vertexPosition, 1.0);
-
     // Pass through texture coordinates
     texCoord = vertexTexCoord * texCoordScale;
 

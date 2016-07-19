@@ -72,7 +72,8 @@ class Q_AUTOTEST_EXPORT ShaderData : public BackendNode
 public:
     enum TransformType {
         ModelToEye = 0,
-        ModelToWorld
+        ModelToWorld,
+        ModelToWorldDirection
     };
 
     ShaderData();
@@ -114,7 +115,6 @@ protected:
     QMatrix4x4 m_viewMatrix;
     NodeManagers *m_managers;
 
-    void readPeerProperties(QShaderData *peer);
     void clearUpdatedProperties();
     static ShaderData *lookupResource(NodeManagers *managers, Qt3DCore::QNodeId id);
     ShaderData *lookupResource(Qt3DCore::QNodeId id);

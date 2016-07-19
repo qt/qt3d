@@ -58,7 +58,7 @@ public:
     {
     }
 
-    QRenderStatePrivate::Type m_type;
+    Render::StateMask m_type;
 };
 
 /*!
@@ -73,7 +73,7 @@ QRenderStateCreatedChangeBase::QRenderStateCreatedChangeBase(const QRenderState 
 /*!
  * \return the current render state type
  */
-QRenderStatePrivate::Type QRenderStateCreatedChangeBase::renderStateType() const
+Render::StateMask QRenderStateCreatedChangeBase::renderStateType() const
 {
     Q_D(const QRenderStateCreatedChangeBase);
     return d->m_type;

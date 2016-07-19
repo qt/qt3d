@@ -53,7 +53,24 @@ QDynamicPropertyUpdatedChangePrivate::~QDynamicPropertyUpdatedChangePrivate()
 {
 }
 
+/*!
+ * \class Qt3DCore::QDynamicPropertyUpdatedChange
+ * \inherits Qt3DCore::QPropertyUpdatedChangeBase
+ * \inmodule Qt3DCore
+ * \brief The QDynamicPropertyUpdatedChange class is used to notify when a dynamic property value is updated
+ *
+ */
 
+/*!
+ * \typedef Qt3DCore::QDynamicPropertyUpdatedChangePtr
+ * \relates Qt3DCore::QDynamicPropertyUpdatedChange
+ *
+ * A shared pointer for QDynamicPropertyUpdatedChange.
+ */
+
+/*!
+ * Constructs a new QDynamicPropertyUpdatedChange with \a subjectId.
+ */
 QDynamicPropertyUpdatedChange::QDynamicPropertyUpdatedChange(QNodeId subjectId)
     : QPropertyUpdatedChangeBase(*new QDynamicPropertyUpdatedChangePrivate, subjectId)
 {

@@ -52,22 +52,40 @@ QInputDeviceIntegrationPrivate::QInputDeviceIntegrationPrivate()
 {
 }
 
+/*!
+    \class Qt3DInput::QInputDeviceIntegration
+    \inmodule Qt3DInput
+    \since 5.5
+    \brief Abstract base class used to define new input methods such as game controllers
+
+*/
+
+/*!
+   Create a new QInputDeviceIntegration with parent /a parent
+ */
 QInputDeviceIntegration::QInputDeviceIntegration(QObject *parent)
     : QObject(*new QInputDeviceIntegrationPrivate, parent)
 {
 }
 
+/*! \internal */
 QInputDeviceIntegration::QInputDeviceIntegration(QInputDeviceIntegrationPrivate &dd, QObject *parent)
     : QObject(dd, parent)
 {
 }
 
+/*!
+   Register a corresponding backend class for this front end implementation
+ */
 void QInputDeviceIntegration::registerBackendType(const QMetaObject &metaObject, const Qt3DCore::QBackendNodeMapperPtr &functor)
 {
     Q_D(QInputDeviceIntegration);
     d->m_aspect->registerBackendType(metaObject, functor);
 }
 
+/*!
+   Called by the InputAspect object after the Integration has been created
+ */
 void QInputDeviceIntegration::initialize(QInputAspect *aspect)
 {
     Q_D(QInputDeviceIntegration);
@@ -75,6 +93,10 @@ void QInputDeviceIntegration::initialize(QInputAspect *aspect)
     onInitialize();
 }
 
+/*!
+ * \brief QInputDeviceIntegration::inputAspect
+ * \return the Input Aspect associated with the InputDeviceIntegration
+ */
 QInputAspect *QInputDeviceIntegration::inputAspect() const
 {
     Q_D(const QInputDeviceIntegration);
@@ -82,5 +104,25 @@ QInputAspect *QInputDeviceIntegration::inputAspect() const
 }
 
 } // namespace Qt3DInput
+
+/*!
+  \fn QInputDeviceIntegration::createPhysicalDevice(const QString &name)
+
+  Create the Physical device identified by \a name.
+
+  If not recognized return Q_NULLPTR
+*/
+
+/*!
+  \fn QInputDeviceIntegration::physicalDevices() const
+
+ \return the list of node ids for physical devices associated with this QInputDeviceIntegration.
+*/
+
+/*!
+  \fn QInputDeviceIntegration::physicalDevice(Qt3DCore::QNodeId id) const
+
+   \return the QAbstractPhysicalDevice identified by the given id if it is related to this QInputDeviceIntegration.
+*/
 
 QT_END_NAMESPACE

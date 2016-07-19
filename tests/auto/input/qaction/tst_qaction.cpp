@@ -153,6 +153,40 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(isActive(), true);
     }
+
+    void checkActionInputBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DInput::QAction> action(new Qt3DInput::QAction);
+        {
+            // WHEN
+            Qt3DInput::QActionInput input;
+            action->addInput(&input);
+
+            // THEN
+            QCOMPARE(input.parent(), action.data());
+            QCOMPARE(action->inputs().size(), 1);
+        }
+        // THEN (Should not crash and parameter be unset)
+        QVERIFY(action->inputs().empty());
+
+        {
+            // WHEN
+            Qt3DInput::QAction someOtherAction;
+            QScopedPointer<Qt3DInput::QActionInput> input(new Qt3DInput::QActionInput(&someOtherAction));
+            action->addInput(input.data());
+
+            // THEN
+            QCOMPARE(input->parent(), &someOtherAction);
+            QCOMPARE(action->inputs().size(), 1);
+
+            // WHEN
+            action.reset();
+            input.reset();
+
+            // THEN Should not crash when the input is destroyed (tests for failed removal of destruction helper)
+        }
+    }
 };
 
 QTEST_MAIN(tst_QAction)

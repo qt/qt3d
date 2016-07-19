@@ -59,7 +59,7 @@ class QPointSizePrivate : public QRenderStatePrivate
 {
 public:
     QPointSizePrivate(QPointSize::SizeMode sizeMode, float value)
-        : QRenderStatePrivate(QRenderStatePrivate::PointSize)
+        : QRenderStatePrivate(Render::PointSizeMask)
         , m_sizeMode(sizeMode)
         , m_value(value)
     {}

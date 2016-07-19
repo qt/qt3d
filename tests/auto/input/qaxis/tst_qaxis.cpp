@@ -150,6 +150,40 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(value(), 383.0f);
     }
+
+    void checkAxisInputBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DInput::QAxis> axis(new Qt3DInput::QAxis);
+        {
+            // WHEN
+            Qt3DInput::QAnalogAxisInput input;
+            axis->addInput(&input);
+
+            // THEN
+            QCOMPARE(input.parent(), axis.data());
+            QCOMPARE(axis->inputs().size(), 1);
+        }
+        // THEN (Should not crash and parameter be unset)
+        QVERIFY(axis->inputs().empty());
+
+        {
+            // WHEN
+            Qt3DInput::QAxis someOtherAxis;
+            QScopedPointer<Qt3DInput::QAbstractAxisInput> input(new Qt3DInput::QAnalogAxisInput(&someOtherAxis));
+            axis->addInput(input.data());
+
+            // THEN
+            QCOMPARE(input->parent(), &someOtherAxis);
+            QCOMPARE(axis->inputs().size(), 1);
+
+            // WHEN
+            axis.reset();
+            input.reset();
+
+            // THEN Should not crash when the input is destroyed (tests for failed removal of destruction helper)
+        }
+    }
 };
 
 QTEST_MAIN(tst_QAxis)

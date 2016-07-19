@@ -9,5 +9,6 @@
         <file>Barrel.qml</file>
         <file>Chest.qml</file>
         <file>SortedForwardRenderer.qml</file>
+        <file>Lights.qml</file>
     </qresource>
 </RCC>

@@ -56,6 +56,7 @@ QPropertyValueRemovedChangeBasePrivate::~QPropertyValueRemovedChangeBasePrivate(
 /*!
  * \class Qt3DCore::QPropertyValueRemovedChangeBase
  * \inmodule Qt3DCore
+ * \brief The QPropertyValueRemovedChangeBase class is the base class for all PropertyValueRemoved QSceneChange events
  *
  * The QPropertyValueRemovedChangeBase class is the base class for all QSceneChange events that
  * have the changeType() PropertyValueRemoved. You should not need to instantiate this class.
@@ -73,15 +74,14 @@ QPropertyValueRemovedChangeBasePrivate::~QPropertyValueRemovedChangeBasePrivate(
  */
 
 /*!
- * Constructs a new QPropertyValueRemovedChangeBase with \a senderType, \a subjectId, and
- * \a priority.
+ * Constructs a new QPropertyValueRemovedChangeBase with \a subjectId
  */
 QPropertyValueRemovedChangeBase::QPropertyValueRemovedChangeBase(QNodeId subjectId)
     : QSceneChange(*new QPropertyValueRemovedChangeBasePrivate, PropertyValueRemoved, subjectId)
 {
 }
 
-/*! internal */
+/*! \internal */
 QPropertyValueRemovedChangeBase::QPropertyValueRemovedChangeBase(QPropertyValueRemovedChangeBasePrivate &dd,
                                                                  QNodeId subjectId)
     : QSceneChange(dd, PropertyValueRemoved, subjectId)

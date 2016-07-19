@@ -55,6 +55,24 @@ QComponentAddedChangePrivate::QComponentAddedChangePrivate(const QEntity *entity
 {
 }
 
+/*!
+ * \class Qt3DCore::QComponentAddedChange
+ * \inherits Qt3DCore::QSceneChange
+ * \inmodule Qt3DCore
+ * \brief The QComponentAddedChange class is used to notify when a component is added to an entity
+ *
+ */
+
+/*!
+ * \typedef Qt3DCore::QComponentAddedChangePtr
+ * \relates Qt3DCore::QComponentAddedChange
+ *
+ * A shared pointer for QComponentAddedChange.
+ */
+
+/*!
+ * Constructs a new QComponentAddedChange with with \a entity and  \a component.
+ */
 QComponentAddedChange::QComponentAddedChange(const QEntity *entity,
                                              const QComponent *component)
     : QSceneChange(*new QComponentAddedChangePrivate(entity, component),
@@ -66,18 +84,27 @@ QComponentAddedChange::~QComponentAddedChange()
 {
 }
 
+/*!
+  \return the id of the entity the component was added to.
+ */
 QNodeId QComponentAddedChange::entityId() const Q_DECL_NOTHROW
 {
     Q_D(const QComponentAddedChange);
     return d->m_entityId;
 }
 
+/*!
+  \return the id of the component added.
+ */
 QNodeId QComponentAddedChange::componentId() const Q_DECL_NOTHROW
 {
     Q_D(const QComponentAddedChange);
     return d->m_componentId;
 }
 
+/*!
+ * \return the metaobject.
+ */
 const QMetaObject *QComponentAddedChange::componentMetaObject() const Q_DECL_NOTHROW
 {
     Q_D(const QComponentAddedChange);

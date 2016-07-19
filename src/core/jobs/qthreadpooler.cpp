@@ -45,6 +45,7 @@
 #ifdef QT3D_JOBS_RUN_STATS
 #include <QFile>
 #include <QThreadStorage>
+#include <QDateTime>
 #endif
 
 QT_BEGIN_NAMESPACE
@@ -173,6 +174,8 @@ int QThreadPooler::maxThreadCount() const
 QThreadStorage<QVector<JobRunStats> *> jobStatsCached;
 
 QVector<QVector<JobRunStats> *> localStorages;
+QVector<JobRunStats> *submissionStorage = nullptr;
+
 QMutex localStoragesMutex;
 
 // Called by the jobs
@@ -187,44 +190,68 @@ void QThreadPooler::addJobLogStatsEntry(JobRunStats &stats)
     jobStatsCached.localData()->push_back(stats);
 }
 
-// Called before jobs are executed (AspectThread)
-void QThreadPooler::starNewFrameJobLogsStats()
-{
-    for (QVector<JobRunStats> *storage : qAsConst(localStorages))
-        storage->clear();
-}
-
-// Called after jobs have been executed
+// Called after jobs have been executed (AspectThread QAspectJobManager::enqueueJobs)
 void QThreadPooler::writeFrameJobLogStats()
 {
     static QScopedPointer<QFile> traceFile;
     static quint32 frameId = 0;
     if (!traceFile) {
-        traceFile.reset(new QFile(QStringLiteral("trace.qt3d")));
+        traceFile.reset(new QFile(QStringLiteral("trace_") + QDateTime::currentDateTime().toString() + QStringLiteral(".qt3d")));
         if (!traceFile->open(QFile::WriteOnly|QFile::Truncate))
             qCritical("Failed to open trace file");
     }
 
-    FrameHeader header;
-    header.frameId = frameId;
-    header.jobCount = 0;
+    // Write Aspect + Job threads
+    {
+        FrameHeader header;
+        header.frameId = frameId;
+        header.jobCount = 0;
 
-    for (const QVector<JobRunStats> *storage : qAsConst(localStorages))
-        header.jobCount += storage->size();
+        for (const QVector<JobRunStats> *storage : qAsConst(localStorages))
+            header.jobCount += storage->size();
 
-    traceFile->write(reinterpret_cast<char *>(&header), sizeof(FrameHeader));
+        traceFile->write(reinterpret_cast<char *>(&header), sizeof(FrameHeader));
 
-
-
-    for (const QVector<JobRunStats> *storage : qAsConst(localStorages)) {
-        qDebug() << Q_FUNC_INFO << localStorages.size() << storage << storage->size();
-        for (const JobRunStats &stat : *storage) {
-            traceFile->write(reinterpret_cast<const char *>(&stat), sizeof(JobRunStats));
+        for (QVector<JobRunStats> *storage : qAsConst(localStorages)) {
+            for (const JobRunStats &stat : *storage)
+                traceFile->write(reinterpret_cast<const char *>(&stat), sizeof(JobRunStats));
+            storage->clear();
         }
     }
+
+    // Write submission thread
+    {
+        QMutexLocker lock(&localStoragesMutex);
+        const int submissionJobSize = submissionStorage != nullptr ? submissionStorage->size() : 0;
+        if (submissionJobSize > 0) {
+            FrameHeader header;
+            header.frameId = frameId;
+            header.jobCount = submissionJobSize;
+            header.frameType = FrameHeader::Submission;
+
+            traceFile->write(reinterpret_cast<char *>(&header), sizeof(FrameHeader));
+
+            for (const JobRunStats &stat : *submissionStorage)
+                traceFile->write(reinterpret_cast<const char *>(&stat), sizeof(JobRunStats));
+            submissionStorage->clear();
+        }
+    }
+
     traceFile->flush();
     ++frameId;
 }
+
+// Called from Submission thread
+void QThreadPooler::addSubmissionLogStatsEntry(JobRunStats &stats)
+{
+    QMutexLocker lock(&localStoragesMutex);
+    if (!jobStatsCached.hasLocalData()) {
+        submissionStorage = new QVector<JobRunStats>;
+        jobStatsCached.setLocalData(submissionStorage);
+    }
+    submissionStorage->push_back(stats);
+}
+
 #endif
 
 } // namespace Qt3DCore

@@ -104,7 +104,7 @@ public:
     QVector<Qt3DCore::QNodeId> childrenIds() const;
 
     FrameGraphNode *parent() const;
-    QList<FrameGraphNode *> children() const;
+    QVector<FrameGraphNode *> children() const;
 
 protected:
     FrameGraphNode(FrameGraphNodeType nodeType);

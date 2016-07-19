@@ -645,7 +645,7 @@ QTextureImageDataPtr TextureLoadingHelper::loadTextureData(const QUrl &url, bool
             break;
         }
 
-        if (!allow3D && (textureData->layers() > 1 || textureData->depth() > 1))
+        if (!allow3D && textureData && (textureData->layers() > 1 || textureData->depth() > 1))
             qWarning() << "Texture data has a 3rd dimension which wasn't expected";
     }
     return textureData;

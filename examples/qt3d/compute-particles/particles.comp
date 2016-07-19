@@ -7,9 +7,9 @@ layout (local_size_x = 1024) in;
 
 struct ParticleData
 {
-    vec3 position;
-    vec3 direction;
-    vec3 color;
+    vec4 position;
+    vec4 direction;
+    vec4 color;
 };
 
 // Particles from previouse frame
@@ -29,7 +29,7 @@ void main(void)
     currentParticle.position = currentParticle.position + currentParticle.direction * particleStep;
 
     // Make acceleration more or less point toward the center of the scene
-    vec3 acceleration =  normalize(vec3(0.0) - currentParticle.position) * finalCollisionFactor;
+    vec4 acceleration =  normalize(vec4(0.0) - currentParticle.position) * finalCollisionFactor;
 
     // New velocity = old velocity + acceleration over step duration
     currentParticle.direction = currentParticle.direction + acceleration * particleStep;

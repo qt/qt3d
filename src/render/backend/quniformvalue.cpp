@@ -119,6 +119,11 @@ void ShaderParameterPack::setShaderStorageBuffer(BlockToSSBO blockToSSBO)
     m_shaderStorageBuffers.push_back(std::move(blockToSSBO));
 }
 
+void ShaderParameterPack::setSubmissionUniform(const ShaderUniform &uniform)
+{
+    m_submissionUniforms.push_back(uniform);
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 

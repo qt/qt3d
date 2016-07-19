@@ -21,32 +21,42 @@ void adsModelNormalMapped(const in FP vec3 vpos, const in FP vec3 vnormal, const
     diffuseColor = vec3(0.0);
     specularColor = vec3(0.0);
 
+    FP vec3 snormal = normalize( vec3( tangentMatrix[0][2], tangentMatrix[1][2], tangentMatrix[2][2] ) );
+
     FP vec3 n = normalize( vnormal );
 
     int i;
-    FP vec3 s;
+    FP vec3 s, ts;
     for (i = 0; i < lightCount; ++i) {
         FP float att = 1.0;
         if ( lights[i].type != TYPE_DIRECTIONAL ) {
-            s = tangentMatrix * ( lights[i].position - vpos );
-            if (length( lights[i].attenuation ) != 0.0) {
-                FP float dist = length(s);
-                att = 1.0 / (lights[i].attenuation.x + lights[i].attenuation.y * dist + lights[i].attenuation.z * dist * dist);
-            }
-            s = normalize( s );
-            if ( lights[i].type == TYPE_SPOT ) {
-                if ( degrees(acos(dot(-s, normalize(lights[i].direction))) ) > lights[i].cutOffAngle)
-                    att = 0.0;
+            s = lights[i].position - vpos;
+            if ( dot(snormal, s) < 0.0 )
+                att = 0.0;
+            else {
+                ts = normalize( tangentMatrix * s );
+                if (length( lights[i].attenuation ) != 0.0) {
+                    FP float dist = length(s);
+                    att = 1.0 / (lights[i].attenuation.x + lights[i].attenuation.y * dist + lights[i].attenuation.z * dist * dist);
+                }
+                s = normalize( s );
+                if ( lights[i].type == TYPE_SPOT ) {
+                    if ( degrees(acos(dot(-s, normalize(lights[i].direction))) ) > lights[i].cutOffAngle)
+                        att = 0.0;
+                }
             }
         } else {
-            s = normalize( tangentMatrix * -lights[i].direction );
+            if ( dot(snormal, -lights[i].direction) > 0.0 )
+                s = normalize( tangentMatrix * -lights[i].direction );
+            else
+                att = 0.0;
         }
 
-        FP float diffuse = max( dot( s, n ), 0.0 );
+        FP float diffuse = max( dot( ts, n ), 0.0 );
 
         FP float specular = 0.0;
         if (diffuse > 0.0 && shininess > 0.0 && att > 0.0) {
-            FP vec3 r = reflect( -s, n );
+            FP vec3 r = reflect( -ts, n );
             FP vec3 v = normalize( tangentMatrix * ( eye - vpos ) );
             FP float normFactor = ( shininess + 2.0 ) / 2.0;
             specular = normFactor * pow( max( dot( r, v ), 0.0 ), shininess );

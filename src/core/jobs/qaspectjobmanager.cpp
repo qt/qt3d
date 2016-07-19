@@ -102,7 +102,7 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
     }
     m_dependencyHandler->addDependencies(qMove(dependencyList));
 #ifdef QT3D_JOBS_RUN_STATS
-    QThreadPooler::starNewFrameJobLogsStats();
+    QThreadPooler::writeFrameJobLogStats();
 #endif
     m_threadPooler->mapDependables(taskList);
 }

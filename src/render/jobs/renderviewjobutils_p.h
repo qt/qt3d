@@ -74,6 +74,8 @@ class RenderPass;
 class RenderStateSet;
 class Technique;
 class RenderView;
+class TechniqueFilter;
+class RenderPassFilter;
 class Renderer;
 class NodeManagers;
 class ShaderDataManager;
@@ -86,13 +88,13 @@ Q_AUTOTEST_EXPORT void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,
                                                                  const FrameGraphNode *fgLeaf);
 
 Q_AUTOTEST_EXPORT Technique *findTechniqueForEffect(Renderer *renderer,
-                                                    RenderView *renderView,
+                                                    const TechniqueFilter *techniqueFilter,
                                                     Effect *effect);
 
-typedef QVarLengthArray<RenderPass*, 4> RenderRenderPassList;
-Q_AUTOTEST_EXPORT RenderRenderPassList findRenderPassesForTechnique(NodeManagers *manager,
-                                                                    RenderView *renderView,
-                                                                    Technique *technique);
+typedef QVarLengthArray<RenderPass*, 4> RenderPassList;
+Q_AUTOTEST_EXPORT RenderPassList findRenderPassesForTechnique(NodeManagers *manager,
+                                                              const RenderPassFilter *passFilter,
+                                                              Technique *technique);
 
 // Extracts the type T from a QVariant v without using QVariant::value which is slow
 // Note: Assumes you are 100% sure about the type you requested
@@ -104,29 +106,24 @@ Q_AUTOTEST_EXPORT inline T variant_value(const QVariant &v)
 
 struct ParameterInfo
 {
-    ParameterInfo(const int nameId = -1, const QVariant &value = QVariant())
-        : nameId(nameId)
-        , value(value)
-    {}
+    explicit ParameterInfo(const int nameId = -1, const QVariant &value = QVariant());
 
     int nameId;
     QVariant value;
 
-    bool operator<(const int otherNameId) const
-    {
-        return nameId < otherNameId;
-    }
-
-    bool operator<(const ParameterInfo &other) const
-    {
-        return nameId < other.nameId;
-    }
+    bool operator<(const int otherNameId) const Q_DECL_NOEXCEPT;
+    bool operator<(const ParameterInfo &other) const Q_DECL_NOEXCEPT;
 };
 QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ParameterInfo, Q_MOVABLE_TYPE)
+typedef QVector<ParameterInfo> ParameterInfoList;
 
+struct RenderPassParameterData
+{
+    RenderPass *pass;
+    ParameterInfoList parameterInfo;
+};
+QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, RenderPassParameterData, Q_MOVABLE_TYPE)
 
-
-typedef QVarLengthArray<ParameterInfo, 16> ParameterInfoList;
 
 Q_AUTOTEST_EXPORT void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
                                                              ParameterManager *manager,
@@ -140,17 +137,17 @@ Q_AUTOTEST_EXPORT void addParametersForIds(ParameterInfoList *params, ParameterM
 template<class T>
 void parametersFromParametersProvider(ParameterInfoList *infoList,
                                       ParameterManager *manager,
-                                      T *pass)
+                                      T *provider)
 {
-    if (pass)
-        addParametersForIds(infoList, manager, pass->parameters());
+    if (provider != nullptr)
+        addParametersForIds(infoList, manager, provider->parameters());
 }
 
 Q_AUTOTEST_EXPORT ParameterInfoList::const_iterator findParamInfo(ParameterInfoList *infoList,
                                                                   const int nameId);
 
 Q_AUTOTEST_EXPORT void addToRenderStateSet(RenderStateSet *stateSet,
-                                           const RenderStateCollection *collection,
+                                           const QVector<Qt3DCore::QNodeId> stateIds,
                                            RenderStateManager *manager);
 
 typedef QHash<int, QVariant> UniformBlockValueBuilderHash;

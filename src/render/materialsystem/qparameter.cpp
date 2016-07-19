@@ -95,7 +95,7 @@ QParameter::QParameter(QNode *parent)
 }
 
 /*!
-  \fn Qt3DRender::QParameter::QParameter(Qt3DCore::QNode *parent)
+  \fn Qt3DRender::QParameter::QParameter(const QString &name, const QVariant &value, QNode *parent)
   Constructs a new QParameter with the specified \a parent \a name and \a value.
  */
 QParameter::QParameter(const QString &name, const QVariant &value, QNode *parent)
@@ -107,7 +107,7 @@ QParameter::QParameter(const QString &name, const QVariant &value, QNode *parent
 }
 
 /*!
-  \fn Qt3DRender::QParameter::QParameter(Qt3DCore::QNode *parent)
+  \fn Qt3DRender::QParameter::QParameter(const QString &name, QAbstractTexture *texture, QNode *parent)
   Constructs a new QParameter with the specified \a parent \a name and takes its value from \a texture.
  */
 QParameter::QParameter(const QString &name, QAbstractTexture *texture, QNode *parent)

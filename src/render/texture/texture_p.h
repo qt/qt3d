@@ -73,7 +73,7 @@ class TextureManager;
 class TextureImageManager;
 class TextureDataManager;
 
-typedef uint TextureDNA;
+typedef quint64 TextureDNA;
 
 class Texture : public BackendNode
 {
@@ -118,6 +118,7 @@ public:
     void releaseTextureDataHandles();
 
     inline bool dataUploadRequired() const { return m_dataUploadRequired; }
+    inline bool isDirty() const { return m_isDirty; }
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;

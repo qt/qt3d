@@ -77,6 +77,7 @@ Material {
                     x: WrapMode.Repeat
                     y: WrapMode.Repeat
                 }
+                generateMipMaps: true
                 maximumAnisotropy: 16.0
                 TextureImage { id: normalTextureImage; }
             }
@@ -86,63 +87,11 @@ Material {
         Parameter { name: "texCoordScale"; value: textureScale }
     ]
 
-    effect: Effect {
-
-        FilterKey {
-            id: forward
-            name: "renderingStyle"
-            value: "forward"
-        }
-
-        ShaderProgram {
-            id: gl2Es2Shader
-            vertexShaderCode:   loadSource("qrc:/shaders/es2/normaldiffusemap.vert")
-            fragmentShaderCode: loadSource("qrc:/shaders/es2/normaldiffusemap.frag")
-        }
-
-        ShaderProgram {
-            id: gl3Shader
-            vertexShaderCode:   loadSource("qrc:/shaders/gl3/normaldiffusemap.vert")
-            fragmentShaderCode: loadSource("qrc:/shaders/gl3/normaldiffusemap.frag")
-        }
-
-        techniques: [
-            // OpenGL 3.1
-            Technique {
-                filterKeys: [ forward ]
-                graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGL
-                    profile: GraphicsApiFilter.CoreProfile
-                    majorVersion: 3
-                    minorVersion: 1
-                }
-                renderPasses: RenderPass { shaderProgram: gl3Shader }
-            },
-
-            // OpenGL 2.1
-            Technique {
-                filterKeys: [ forward ]
-                graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGL
-                    profile: GraphicsApiFilter.NoProfile
-                    majorVersion: 2
-                    minorVersion: 0
-                }
-                renderPasses: RenderPass { shaderProgram: gl2Es2Shader }
-            },
-
-            // OpenGL ES 2
-            Technique {
-                filterKeys: [ forward ]
-                graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGLES
-                    profile: GraphicsApiFilter.NoProfile
-                    majorVersion: 2
-                    minorVersion: 0
-                }
-                renderPasses: RenderPass { shaderProgram: gl2Es2Shader }
-            }
-        ]
+    effect: DefaultEffect {
+        vertexES: "qrc:/shaders/es2/normaldiffusemap.vert"
+        fragmentES: "qrc:/shaders/es2/normaldiffusemap.frag"
+        vertex: "qrc:/shaders/gl3/normaldiffusemap.vert"
+        fragment: "qrc:/shaders/gl3/normaldiffusemap.frag"
     }
 }
 

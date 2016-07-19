@@ -69,6 +69,9 @@ static const struct {
     { "PerVertexColorMaterial", 2, 0 },
     { "GoochMaterial", 2, 0 },
     { "TextureMaterial", 2, 0 },
+    // Effects
+    { "DefaultEffect", 2, 0 },
+    { "DefaultAlphaEffect", 2, 0 },
     // FrameGraphs
     { "ForwardRenderer", 2, 0 },
     // Entities

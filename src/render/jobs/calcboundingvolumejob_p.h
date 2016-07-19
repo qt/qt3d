@@ -68,9 +68,10 @@ class Entity;
 class QT3DRENDERSHARED_PRIVATE_EXPORT CalculateBoundingVolumeJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit CalculateBoundingVolumeJob(NodeManagers *manager);
+    explicit CalculateBoundingVolumeJob();
 
     void setRoot(Entity *node);
+    void setManagers(NodeManagers *manager);
 
 protected:
     void run() Q_DECL_OVERRIDE;

@@ -54,6 +54,8 @@
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QTechnique>
 
+QT_BEGIN_NAMESPACE
+
 class SceneEffect : public Qt3DRender::QEffect
 {
 public:
@@ -68,5 +70,7 @@ private:
     Qt3DRender::QRenderPass *m_gl3Pass;
     Qt3DRender::QFilterKey *m_passCriterion;
 };
+
+QT_END_NAMESPACE
 
 #endif // SCENEEFFECT_H

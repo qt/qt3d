@@ -179,6 +179,7 @@ void QMouseDevice::setSensitivity(float value)
     emit sensitivityChanged(value);
 }
 
+/*! \internal */
 void QMouseDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_UNUSED(change);

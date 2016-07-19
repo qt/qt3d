@@ -203,7 +203,8 @@ QKeyboardDevicePrivate::QKeyboardDevicePrivate()
 /*!
     \class Qt3DInput::QKeyboardDevice
     \inmodule Qt3DInput
-    \brief A QKeyboardDevice class.
+    \brief QKeyboardDevice is in charge of dispatching keyboard events to
+    attached QQKeyboardHandler objects.
     \since 5.5
 */
 
@@ -307,6 +308,7 @@ QKeyboardDevice::QKeyboardDevice(QKeyboardDevicePrivate &dd, QNode *parent)
 {
 }
 
+/*! \internal */
 void QKeyboardDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QKeyboardDevice);
@@ -316,7 +318,9 @@ void QKeyboardDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
         setActiveInput(qobject_cast<QKeyboardHandler *>(d->scene()->lookupNode(activeInputId)));
     }
 }
-
+/*!
+ * Set the active input to \a activeInput
+ */
 void QKeyboardDevice::setActiveInput(QKeyboardHandler *activeInput)
 {
     Q_D(QKeyboardDevice);

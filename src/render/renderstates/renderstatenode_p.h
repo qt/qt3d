@@ -50,6 +50,7 @@
 
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/genericstate_p.h>
+#include <Qt3DRender/private/statevariant_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,9 +65,8 @@ public:
 
     virtual void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-    void apply(GraphicsContext* gc) const { m_impl->apply(gc); }
-    StateMaskSet mask() const { return m_impl->mask(); }
-    RenderStateImpl *impl() const { return m_impl; }
+    StateMaskSet mask() const { return m_impl.type; }
+    StateVariant impl() const { return m_impl; }
 
 protected:
     void cleanup();
@@ -74,7 +74,7 @@ protected:
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
-    RenderStateImpl *m_impl;
+    StateVariant m_impl;
 };
 
 } // namespace Render

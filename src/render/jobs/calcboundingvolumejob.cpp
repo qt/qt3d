@@ -160,9 +160,9 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
 
 } // anonymous
 
-CalculateBoundingVolumeJob::CalculateBoundingVolumeJob(NodeManagers *manager)
-    : m_manager(manager),
-      m_node(nullptr)
+CalculateBoundingVolumeJob::CalculateBoundingVolumeJob()
+    : m_manager(nullptr)
+    , m_node(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::CalcBoundingVolume, 0);
 }
@@ -175,6 +175,11 @@ void CalculateBoundingVolumeJob::run()
 void CalculateBoundingVolumeJob::setRoot(Entity *node)
 {
     m_node = node;
+}
+
+void CalculateBoundingVolumeJob::setManagers(NodeManagers *manager)
+{
+    m_manager = manager;
 }
 
 } // namespace Render

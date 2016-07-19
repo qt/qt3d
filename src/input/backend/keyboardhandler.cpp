@@ -132,17 +132,7 @@ void KeyboardHandler::requestFocus()
 
 void KeyboardHandler::setSourcerDevice(QNodeId device)
 {
-    if (!m_keyboardDevice.isNull()) {
-        KeyboardDevice *device = m_inputHandler->keyboardDeviceManager()->lookupResource(m_keyboardDevice);
-        if (device)
-            device->removeKeyboardInput(peerId());
-    }
     m_keyboardDevice = device;
-    if (!m_keyboardDevice.isNull()) {
-        KeyboardDevice *device = m_inputHandler->keyboardDeviceManager()->lookupResource(m_keyboardDevice);
-        if (device)
-            device->addKeyboardInput(peerId());
-    }
 }
 
 KeyboardHandlerFunctor::KeyboardHandlerFunctor(InputHandler *handler)

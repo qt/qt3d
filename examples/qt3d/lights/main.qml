@@ -70,9 +70,6 @@ Entity
         id: camera
         projectionType: CameraLens.PerspectiveProjection
         fieldOfView: 45
-        aspectRatio: 16/9
-        nearPlane : 0.1
-        farPlane : 1000.0
         position: Qt.vector3d( 0.0, 40.0, 300.0 )
         upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
         viewCenter: Qt.vector3d( 0.0, -10.0, -1.0 )
@@ -109,6 +106,9 @@ Entity
                     Quick.NumberAnimation { from: 40.0; to: 8.0; duration: 3000 }
                 }
             },
+            PhongMaterial {
+                diffuse: "red"
+            },
             PointLight {
                 color: Qt.rgba(1, 0, 0, 1)
             }
@@ -129,6 +129,9 @@ Entity
                     Quick.NumberAnimation { from: 40.0; to: 4.0; duration: 5000 }
                 }
             },
+            PhongMaterial {
+                diffuse: "green"
+            },
             PointLight {
                 color: Qt.rgba(0, 1, 0, 1)
             }
@@ -142,18 +145,30 @@ Entity
                 radius: 1
             },
             Transform {
-                translation: Qt.vector3d(-5.0, 40.0, -5.0)
+                translation: Qt.vector3d(-20.0, 40.0, 0.0)
+
+                Quick.SequentialAnimation on translation {
+                    loops: Quick.Animation.Infinite
+                    running: true
+                    Quick.Vector3dAnimation { from: Qt.vector3d(-40.0, 40.0, 0.0); to: Qt.vector3d(40.0, 40.0, 0.0); duration: 5000 }
+                    Quick.Vector3dAnimation { from: Qt.vector3d(40.0, 40.0, 0.0); to: Qt.vector3d(-40.0, 40.0, 0.0); duration: 5000 }
+                }
+            },
+            PhongMaterial {
+                diffuse: "white"
             },
             SpotLight {
-                localDirection: Qt.vector3d(1.0, -4.0, 0.0)
-                Quick.SequentialAnimation on localDirection.x {
-                    Quick.NumberAnimation { from: -4.0; to: 4.0; duration: 5000 }
-                    Quick.NumberAnimation { from: 4.0; to: -4.0; duration: 5000 }
+                localDirection: Qt.vector3d(0.0, -4.0, 0.0)
+                Quick.SequentialAnimation on localDirection {
                     loops: Quick.Animation.Infinite
+                    running: true
+                    Quick.Vector3dAnimation { from: Qt.vector3d(0.0, -4.0, -4.0); to: Qt.vector3d(0.0, -4.0, 4.0); duration: 1000 }
+                    Quick.Vector3dAnimation { from: Qt.vector3d(0.0, -4.0, 4.0); to: Qt.vector3d(0.0, -4.0, -4.0); duration: 1000 }
                 }
+                color: "white"
                 cutOffAngle: 30
                 constantAttenuation: 1
-                intensity: 4
+                intensity: 2.5
             }
         ]
     }

@@ -79,6 +79,12 @@ void QAbstractAspectPrivate::onEngineAboutToShutdown()
 {
 }
 
+/*! \internal */
+void QAbstractAspectPrivate::unregisterBackendType(const QMetaObject &mo)
+{
+    m_backendCreatorFunctors.remove(&mo);
+}
+
 /*!
  * \class Qt3DCore::QAbstractAspect
  * \inherits QObject
@@ -264,7 +270,7 @@ void QAbstractAspectPrivate::setRootAndCreateNodes(QEntity *rootObject, const QV
 
 QServiceLocator *QAbstractAspectPrivate::services() const
 {
-    return m_aspectManager->serviceLocator();
+    return m_aspectManager ? m_aspectManager->serviceLocator() : nullptr;
 }
 
 QAbstractAspectJobManager *QAbstractAspectPrivate::jobManager() const
@@ -316,6 +322,29 @@ void QAbstractAspect::onEngineStartup()
 void QAbstractAspect::onEngineShutdown()
 {
 }
+
+namespace Debug {
+
+AsynchronousCommandReply::AsynchronousCommandReply(const QString &commandName, QObject *parent)
+    : QObject(parent)
+    , m_commandName(commandName)
+    , m_finished(false)
+{
+}
+
+void AsynchronousCommandReply::setFinished(bool replyFinished)
+{
+    m_finished = replyFinished;
+    if (m_finished)
+        emit finished(this);
+}
+
+void AsynchronousCommandReply::setData(const QByteArray &data)
+{
+    m_data = data;
+}
+
+} // Debug
 
 
 } // of namespace Qt3DCore

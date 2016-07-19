@@ -58,6 +58,7 @@
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
+#include <Qt3DCore/private/aspectcommanddebugger_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -73,6 +74,9 @@ QAspectEnginePrivate::QAspectEnginePrivate()
     , m_postman(nullptr)
     , m_scene(nullptr)
     , m_initialized(false)
+    #ifdef QT3D_JOBS_RUN_STATS
+    , m_commandDebugger(new Debug::AspectCommandDebugger(q_func()))
+    #endif // QT3D_JOBS_RUN_STATS
 {
     qRegisterMetaType<Qt3DCore::QAbstractAspect *>();
     qRegisterMetaType<Qt3DCore::QObserverInterface *>();
@@ -122,8 +126,7 @@ void QAspectEnginePrivate::generateCreationChanges(QNode *root)
  * \class Qt3DCore::QAspectEngine
  * \inherits QObject
  * \inmodule Qt3DCore
- *
- * TODO
+ * \brief Responsible for handling all the QAbstractAspect subclasses that have been registered with the scene.
  */
 
 /*!
@@ -193,6 +196,10 @@ void QAspectEnginePrivate::initialize()
                               "setScene",
                               Q_ARG(Qt3DCore::QScene*, m_scene));
     m_initialized = true;
+#ifdef QT3D_JOBS_RUN_STATS
+    m_commandDebugger->setAspectEngine(q_func());
+    m_commandDebugger->initialize();
+#endif // QT3D_JOBS_RUN_STATS
 }
 
 /*!
@@ -255,7 +262,7 @@ void QAspectEngine::registerAspect(QAbstractAspect *aspect)
 void QAspectEngine::registerAspect(const QString &name)
 {
     Q_D(QAspectEngine);
-    QAbstractAspect *aspect = d->m_factory.createAspect(name);
+    QAbstractAspect *aspect = d->m_factory.createAspect(QLatin1String(name.toUtf8()));
     if (aspect) {
         registerAspect(aspect);
         d->m_namedAspects.insert(name, aspect);

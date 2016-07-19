@@ -42,6 +42,7 @@
 #include "keyboardhandler_p.h"
 #include "inputhandler_p.h"
 #include "inputmanagers_p.h"
+#include "job_common_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -53,6 +54,7 @@ AssignKeyboardFocusJob::AssignKeyboardFocusJob(Qt3DCore::QNodeId keyboardDevice)
     , m_inputHandler(nullptr)
     , m_keyboardDevice(keyboardDevice)
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::AssignKeyboardFocus, 0);
 }
 
 void AssignKeyboardFocusJob::setInputHandler(InputHandler *handler)
@@ -63,10 +65,11 @@ void AssignKeyboardFocusJob::setInputHandler(InputHandler *handler)
 void AssignKeyboardFocusJob::run()
 {
     KeyboardDevice *keyboardDevice = m_inputHandler->keyboardDeviceManager()->lookupResource(m_keyboardDevice);
-    const auto handles = keyboardDevice->keyboardInputsHandles();
+    const auto handles = m_inputHandler->keyboardInputManager()->activeHandles();
     for (const HKeyboardHandler handle : handles) {
         KeyboardHandler *input = m_inputHandler->keyboardInputManager()->data(handle);
-        if (input) {
+        Q_ASSERT(input);
+        if (input->keyboardDevice() == m_keyboardDevice) {
             bool hasFocus = input->peerId() == keyboardDevice->lastKeyboardInputRequester();
             input->setFocus(hasFocus);
             if (hasFocus)

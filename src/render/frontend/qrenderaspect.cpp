@@ -111,7 +111,6 @@
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
-#include <Qt3DRender/private/loadbufferjob_p.h>
 #include <Qt3DRender/private/loadgeometryjob_p.h>
 #include <Qt3DRender/private/qsceneiofactory_p.h>
 #include <Qt3DRender/private/frustumculling_p.h>
@@ -133,11 +132,6 @@
 #include <QThread>
 #include <QWindow>
 
-static void initResources()
-{
-    Q_INIT_RESOURCE(render);
-}
-
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
@@ -157,29 +151,10 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_nodeManagers(new Render::NodeManagers())
     , m_renderer(nullptr)
     , m_initialized(false)
-    , m_framePreparationJob(Render::FramePreparationJobPtr::create(m_nodeManagers))
-    , m_cleanupJob(Render::FrameCleanupJobPtr::create(m_nodeManagers))
-    , m_worldTransformJob(Render::UpdateWorldTransformJobPtr::create())
-    , m_updateBoundingVolumeJob(Render::UpdateBoundingVolumeJobPtr::create())
-    , m_calculateBoundingVolumeJob(Render::CalculateBoundingVolumeJobPtr::create(m_nodeManagers))
+    , m_renderType(type)
 {
-    initResources();
-
     // Load the scene parsers
     loadSceneParsers();
-
-    // Create jobs to update transforms and bounding volumes
-    // We can only update bounding volumes once all world transforms are known
-    m_updateBoundingVolumeJob->addDependency(m_worldTransformJob);
-    m_framePreparationJob->addDependency(m_worldTransformJob);
-
-    // All world stuff depends on the RenderEntity's localBoundingVolume
-    m_worldTransformJob->addDependency(m_calculateBoundingVolumeJob);
-
-    // Create a renderer implementation given
-    // a specific rendering API -> only OpenGL for now
-    m_renderer = new Render::Renderer(type);
-    m_renderer->setNodeManagers(m_nodeManagers);
 }
 
 /*! \internal */
@@ -188,7 +163,8 @@ QRenderAspectPrivate::~QRenderAspectPrivate()
     // The renderer should have been shutdown as part of onUnregistered().
     // If it still exists then this aspect is being deleted before the aspect
     // engine is finished with it.
-    Q_ASSERT(m_renderer == nullptr);
+    if (m_renderer != nullptr)
+        qWarning() << Q_FUNC_INFO << "The renderer should have been deleted when reaching this point (this warning may be normal when running tests)";
     delete m_nodeManagers;
 }
 
@@ -250,6 +226,62 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QObjectPicker>(QSharedPointer<Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager> >::create(m_renderer, m_nodeManagers->objectPickerManager()));
 }
 
+/*! \internal */
+void QRenderAspectPrivate::unregisterBackendTypes()
+{
+    unregisterBackendType<Qt3DCore::QEntity>();
+    unregisterBackendType<Qt3DCore::QTransform>();
+
+    unregisterBackendType<Qt3DRender::QCameraLens>();
+    unregisterBackendType<QLayer>();
+    unregisterBackendType<QSceneLoader>();
+    unregisterBackendType<QRenderTarget>();
+    unregisterBackendType<QRenderTargetOutput>();
+    unregisterBackendType<QRenderSettings>();
+    unregisterBackendType<QRenderState>();
+
+    // Geometry + Compute
+    unregisterBackendType<QAttribute>();
+    unregisterBackendType<QBuffer>();
+    unregisterBackendType<QComputeCommand>();
+    unregisterBackendType<QGeometry>();
+    unregisterBackendType<QGeometryRenderer>();
+
+    // Textures
+    unregisterBackendType<QAbstractTexture>();
+    unregisterBackendType<QAbstractTextureImage>();
+
+    // Material system
+    unregisterBackendType<QEffect>();
+    unregisterBackendType<QFilterKey>();
+    unregisterBackendType<QAbstractLight>();
+    unregisterBackendType<QMaterial>();
+    unregisterBackendType<QParameter>();
+    unregisterBackendType<QRenderPass>();
+    unregisterBackendType<QShaderData>();
+    unregisterBackendType<QShaderProgram>();
+    unregisterBackendType<QTechnique>();
+
+    // Framegraph
+    unregisterBackendType<QCameraSelector>();
+    unregisterBackendType<QClearBuffers>();
+    unregisterBackendType<QDispatchCompute>();
+    unregisterBackendType<QFrustumCulling>();
+    unregisterBackendType<QLayerFilter>();
+    unregisterBackendType<QNoDraw>();
+    unregisterBackendType<QRenderPassFilter>();
+    unregisterBackendType<QRenderStateSet>();
+    unregisterBackendType<QRenderSurfaceSelector>();
+    unregisterBackendType<QRenderTargetSelector>();
+    unregisterBackendType<QSortPolicy>();
+    unregisterBackendType<QTechniqueFilter>();
+    unregisterBackendType<QViewport>();
+
+    // Picking
+    // unregisterBackendType<QBoundingVolumeDebug>();
+    unregisterBackendType<QObjectPicker>();
+}
+
 /*!
  * The constructor creates a new QRenderAspect::QRenderAspect instance with the
  * specified \a parent.
@@ -271,12 +303,7 @@ QRenderAspect::QRenderAspect(QRenderAspect::RenderType type, QObject *parent)
 QRenderAspect::QRenderAspect(QRenderAspectPrivate &dd, QObject *parent)
     : QAbstractAspect(dd, parent)
 {
-    // Won't return until the private RenderThread in Renderer has been created
-    // The Renderer is set to wait the surface with a wait condition
-    // Threads modifying the Renderer should be synchronized using the Renderer's mutex
     setObjectName(QStringLiteral("Render Aspect"));
-    Q_D(QRenderAspect);
-    d->registerBackendTypes();
 }
 
 /*! \internal */
@@ -337,21 +364,14 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         }
 
         Render::NodeManagers *manager = d->m_renderer->nodeManagers();
-        QAspectJobPtr pickBoundingVolumeJob = d->m_renderer->pickBoundingVolumeJob();
 
-        // Create the jobs to build the frame
-        d->m_framePreparationJob->setRoot(d->m_renderer->sceneRoot());
-        d->m_worldTransformJob->setRoot(d->m_renderer->sceneRoot());
-        d->m_updateBoundingVolumeJob->setRoot(d->m_renderer->sceneRoot());
-        d->m_calculateBoundingVolumeJob->setRoot(d->m_renderer->sceneRoot());
-        d->m_cleanupJob->setRoot(d->m_renderer->sceneRoot());
-
-        const QVector<QNodeId> texturesPending = manager->textureDataManager()->texturesPending();
+        const QVector<QNodeId> texturesPending = std::move(manager->textureDataManager()->texturesPending());
         for (const QNodeId textureId : texturesPending) {
             auto loadTextureJob = Render::LoadTextureDataJobPtr::create(textureId);
             loadTextureJob->setNodeManagers(manager);
             jobs.append(loadTextureJob);
         }
+
         // TO DO: Have 2 jobs queue
         // One for urgent jobs that are mandatory for the rendering of a frame
         // Another for jobs that can span across multiple frames (Scene/Mesh loading)
@@ -362,46 +382,28 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
             jobs.append(job);
         }
 
-        // Clear any previous temporary dependency
-        d->m_calculateBoundingVolumeJob->removeDependency(QWeakPointer<QAspectJob>());
-        const QVector<QAspectJobPtr> bufferJobs = d->createRenderBufferJobs();
-        for (const QAspectJobPtr &bufferJob : bufferJobs)
-            d->m_calculateBoundingVolumeJob->addDependency(bufferJob);
-        jobs.append(bufferJobs);
-
         const QVector<QAspectJobPtr> geometryJobs = d->createGeometryRendererJobs();
         jobs.append(geometryJobs);
 
-        // Only add dependency if not already present
-        const QVector<QWeakPointer<QAspectJob> > dependencies = pickBoundingVolumeJob->dependencies();
-        if (std::find(dependencies.begin(), dependencies.end(), d->m_framePreparationJob) == dependencies.end())
-            pickBoundingVolumeJob->addDependency(d->m_framePreparationJob);
 
         // Add all jobs to queue
-        jobs.append(d->m_calculateBoundingVolumeJob);
-        jobs.append(d->m_worldTransformJob);
-        jobs.append(d->m_updateBoundingVolumeJob);
-        jobs.append(d->m_framePreparationJob);
+        const Qt3DCore::QAspectJobPtr pickBoundingVolumeJob = d->m_renderer->pickBoundingVolumeJob();
         jobs.append(pickBoundingVolumeJob);
-
-        // Clear any old dependencies from previous frames
-        d->m_cleanupJob->removeDependency(QWeakPointer<QAspectJob>());
-
-        // Note: We need the RenderBinJobs to set the surface
-        // so we must create the RenderViews in all cases
 
         // Traverse the current framegraph and create jobs to populate
         // RenderBins with RenderCommands
-        QVector<QAspectJobPtr> renderBinJobs = d->m_renderer->renderBinJobs();
-        for (int i = 0; i < renderBinJobs.size(); ++i) {
-            QAspectJobPtr renderBinJob = renderBinJobs.at(i);
-            renderBinJob->addDependency(d->m_updateBoundingVolumeJob);
-            jobs.append(renderBinJob);
-            d->m_cleanupJob->addDependency(renderBinJob);
-        }
-        jobs.append(d->m_cleanupJob);
+        // All jobs needed to create the frame and their dependencies are set by
+        // renderBinJobs()
+        const QVector<QAspectJobPtr> renderBinJobs = d->m_renderer->renderBinJobs();
+        jobs.append(renderBinJobs);
     }
     return jobs;
+}
+
+QVariant QRenderAspect::executeCommand(const QStringList &args)
+{
+    Q_D(QRenderAspect);
+    return d->m_renderer->executeCommand(args);
 }
 
 void QRenderAspect::onEngineStartup()
@@ -415,9 +417,16 @@ void QRenderAspect::onEngineStartup()
 
 void QRenderAspect::onRegistered()
 {
-    // TODO: Remove the m_initialized variable and split out onInitialize()
-    // and setting a resource (the QSurface) on the aspects.
+    // Create a renderer each time as this is destroyed in onUnregistered below. If
+    // using a threaded renderer, this blocks until the render thread has been created
+    // and started.
     Q_D(QRenderAspect);
+    d->m_renderer = new Render::Renderer(d->m_renderType);
+    d->m_renderer->setNodeManagers(d->m_nodeManagers);
+
+    // Register backend types now that we have a renderer
+    d->registerBackendTypes();
+
     if (!d->m_initialized) {
 
         // Register the VSyncFrameAdvanceService to drive the aspect manager loop
@@ -430,17 +439,8 @@ void QRenderAspect::onRegistered()
         }
 
         d->m_renderer->setServices(d->services());
-        d->m_renderer->createAllocators(d->jobManager());
         d->m_initialized = true;
     }
-
-    //    QSurface *surface = nullptr;
-    //    const QVariant &v = data.value(QStringLiteral("surface"));
-    //    if (v.isValid())
-    //        surface = v.value<QSurface *>();
-
-    //    if (surface)
-    //        d->setSurface(surface);
 
     if (d->m_aspectManager)
         d->m_renderer->registerEventFilter(d->services()->eventFilterService());
@@ -454,34 +454,13 @@ void QRenderAspect::onUnregistered()
         // Renderer destructor is the synchronization point where we wait for the
         // thread to join (see below).
         d->m_renderer->shutdown();
-
-        // Free the per-thread threadpool allocators
-        d->m_renderer->destroyAllocators(d->jobManager());
     }
+
+    d->unregisterBackendTypes();
 
     // Waits for the render thread to join (if using threaded renderer)
     delete d->m_renderer;
     d->m_renderer = nullptr;
-}
-
-// Returns a vector of jobs to be performed for dirty buffers
-// 1 dirty buffer == 1 job, all job can be performed in parallel
-QVector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createRenderBufferJobs()
-{
-    const QVector<QNodeId> dirtyBuffers = m_nodeManagers->bufferManager()->dirtyBuffers();
-    QVector<QAspectJobPtr> dirtyBuffersJobs;
-
-    for (const QNodeId bufId : dirtyBuffers) {
-        Render::HBuffer bufferHandle = m_nodeManagers->lookupHandle<Render::Buffer, Render::BufferManager, Render::HBuffer>(bufId);
-        if (!bufferHandle.isNull()) {
-            // Create new buffer job
-            auto job = Render::LoadBufferJobPtr::create(bufferHandle);
-            job->setNodeManager(m_nodeManagers);
-            dirtyBuffersJobs.push_back(job);
-        }
-    }
-
-    return dirtyBuffersJobs;
 }
 
 QVector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createGeometryRendererJobs()
@@ -489,6 +468,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createGeometryRendererJob
     Render::GeometryRendererManager *geomRendererManager = m_nodeManagers->geometryRendererManager();
     const QVector<QNodeId> dirtyGeometryRenderers = geomRendererManager->dirtyGeometryRenderers();
     QVector<QAspectJobPtr> dirtyGeometryRendererJobs;
+    dirtyGeometryRendererJobs.reserve(dirtyGeometryRenderers.size());
 
     for (const QNodeId geoRendererId : dirtyGeometryRenderers) {
         Render::HGeometryRenderer geometryRendererHandle = geomRendererManager->lookupHandle(geoRendererId);

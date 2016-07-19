@@ -452,6 +452,74 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
+
+    void checkEffectBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DRender::QMaterial> material(new Qt3DRender::QMaterial);
+        {
+            // WHEN
+            Qt3DRender::QEffect effect;
+            material->setEffect(&effect);
+
+            // THEN
+            QCOMPARE(effect.parent(), material.data());
+            QCOMPARE(material->effect(), &effect);
+        }
+        // THEN (Should not crash and effect be unset)
+        QVERIFY(material->effect() == nullptr);
+
+        {
+            // WHEN
+            Qt3DRender::QMaterial someOtherMaterial;
+            QScopedPointer<Qt3DRender::QEffect> effect(new Qt3DRender::QEffect(&someOtherMaterial));
+            material->setEffect(effect.data());
+
+            // THEN
+            QCOMPARE(effect->parent(), &someOtherMaterial);
+            QCOMPARE(material->effect(), effect.data());
+
+            // WHEN
+            material.reset();
+            effect.reset();
+
+            // THEN Should not crash when the effect is destroyed (tests for failed removal of destruction helper)
+        }
+    }
+
+    void checkParametersBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DRender::QMaterial> material(new Qt3DRender::QMaterial);
+        {
+            // WHEN
+            Qt3DRender::QParameter param;
+            material->addParameter(&param);
+
+            // THEN
+            QCOMPARE(param.parent(), material.data());
+            QCOMPARE(material->parameters().size(), 1);
+        }
+        // THEN (Should not crash and parameter be unset)
+        QVERIFY(material->parameters().empty());
+
+        {
+            // WHEN
+            Qt3DRender::QMaterial someOtherMaterial;
+            QScopedPointer<Qt3DRender::QParameter> param(new Qt3DRender::QParameter(&someOtherMaterial));
+            material->addParameter(param.data());
+
+            // THEN
+            QCOMPARE(param->parent(), &someOtherMaterial);
+            QCOMPARE(material->parameters().size(), 1);
+
+            // WHEN
+            material.reset();
+            param.reset();
+
+            // THEN Should not crash when the parameter is destroyed (tests for failed removal of destruction helper)
+        }
+    }
 };
 
 QTEST_MAIN(tst_QMaterial)

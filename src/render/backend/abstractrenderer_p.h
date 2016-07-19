@@ -117,13 +117,13 @@ public:
     virtual void initialize() = 0;
     virtual void shutdown() = 0;
     virtual void releaseGraphicsResources() = 0;
-    virtual void createAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager) = 0;
-    virtual void destroyAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager) = 0;
 
     // Threaded renderer
     virtual void render() = 0;
     // Synchronous renderer
     virtual void doRender() = 0;
+
+    virtual void cleanGraphicsResources() = 0;
 
     virtual bool isRunning() const = 0;
 
@@ -146,6 +146,8 @@ public:
 
     virtual void setSettings(RenderSettings *settings) = 0;
     virtual RenderSettings *settings() const = 0;
+
+    virtual QVariant executeCommand(const QStringList &args) = 0;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractRenderer::BackendNodeDirtySet)

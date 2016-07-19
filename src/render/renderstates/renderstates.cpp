@@ -57,18 +57,13 @@ void RenderStateImpl::updateProperty(const char *name, const QVariant &value)
     Q_UNUSED(value);
 }
 
-bool RenderStateImpl::isPooledImpl() const Q_DECL_NOTHROW
-{
-    return true;
-}
-
 void BlendEquationArguments::apply(GraphicsContext* gc) const
 {
     // Un-indexed BlendEquationArguments -> Use normal GL1.0 functions
-    if (m_6 < 0) {
-        if (m_5) {
+    if (std::get<5>(m_values) < 0) {
+        if (std::get<4>(m_values)) {
             gc->openGLContext()->functions()->glEnable(GL_BLEND);
-            gc->openGLContext()->functions()->glBlendFuncSeparate(m_1, m_2, m_3, m_4);
+            gc->openGLContext()->functions()->glBlendFuncSeparate(std::get<0>(m_values), std::get<1>(m_values), std::get<2>(m_values), std::get<3>(m_values));
         } else {
             gc->openGLContext()->functions()->glDisable(GL_BLEND);
         }
@@ -79,96 +74,96 @@ void BlendEquationArguments::apply(GraphicsContext* gc) const
     // We just ignore blend func parameter for (1), so no warnings get
     // printed.
     else {
-        if (m_5) {
-            gc->enablei(GL_BLEND, m_6);
+        if (std::get<4>(m_values)) {
+            gc->enablei(GL_BLEND, std::get<5>(m_values));
             if (gc->supportsDrawBuffersBlend()) {
-                gc->blendFuncSeparatei(m_6, m_1, m_2, m_3, m_4);
+                gc->blendFuncSeparatei(std::get<5>(m_values), std::get<0>(m_values), std::get<1>(m_values), std::get<2>(m_values), std::get<3>(m_values));
             }
         } else {
-            gc->disablei(GL_BLEND, m_6);
+            gc->disablei(GL_BLEND, std::get<5>(m_values));
         }
     }
 }
 
 void BlendEquationArguments::updateProperty(const char *name, const QVariant &value)
 {
-         if (name == QByteArrayLiteral("sourceRgb")) m_1 = value.toInt();
-    else if (name == QByteArrayLiteral("destinationRgb")) m_2 = value.toInt();
-    else if (name == QByteArrayLiteral("sourceAlpha")) m_3 = value.toInt();
-    else if (name == QByteArrayLiteral("destinationAlpha")) m_4 = value.toInt();
-    else if (name == QByteArrayLiteral("enabled")) m_5 = value.toBool();
-    else if (name == QByteArrayLiteral("bufferIndex")) m_6 = value.toInt();
+    if (name == QByteArrayLiteral("sourceRgb")) std::get<0>(m_values) = value.toInt();
+    else if (name == QByteArrayLiteral("destinationRgb")) std::get<1>(m_values) = value.toInt();
+    else if (name == QByteArrayLiteral("sourceAlpha")) std::get<2>(m_values) = value.toInt();
+    else if (name == QByteArrayLiteral("destinationAlpha")) std::get<3>(m_values) = value.toInt();
+    else if (name == QByteArrayLiteral("enabled")) std::get<4>(m_values) = value.toBool();
+    else if (name == QByteArrayLiteral("bufferIndex")) std::get<5>(m_values) = value.toInt();
 }
 
 void BlendEquation::apply(GraphicsContext *gc) const
 {
-    gc->blendEquation(m_1);
+    gc->blendEquation(std::get<0>(m_values));
 }
 
 void BlendEquation::updateProperty(const char *name, const QVariant &value)
 {
-    if (name == QByteArrayLiteral("mode")) m_1 = value.toInt();
+    if (name == QByteArrayLiteral("mode")) std::get<0>(m_values) = value.toInt();
 }
 
 void AlphaFunc::apply(GraphicsContext* gc) const
 {
-    gc->alphaTest(m_1, m_2);
+    gc->alphaTest(std::get<0>(m_values), std::get<1>(m_values));
 }
 
 void MSAAEnabled::apply(GraphicsContext *gc) const
 {
-    gc->setMSAAEnabled(m_1);
+    gc->setMSAAEnabled(std::get<0>(m_values));
 }
 
 void MSAAEnabled::updateProperty(const char *name, const QVariant &value)
 {
     if (name == QByteArrayLiteral("enabled"))
-        m_1 = value.toBool();
+        std::get<0>(m_values) = value.toBool();
 }
 
 void DepthTest::apply(GraphicsContext *gc) const
 {
-    gc->depthTest(m_1);
+    gc->depthTest(std::get<0>(m_values));
 }
 
 void DepthTest::updateProperty(const char *name, const QVariant &value)
 {
-    if (name == QByteArrayLiteral("func")) m_1 = value.toInt();
+    if (name == QByteArrayLiteral("func")) std::get<0>(m_values) = value.toInt();
 }
 
 void CullFace::apply(GraphicsContext *gc) const
 {
-    if (m_1 == QCullFace::NoCulling) {
+    if (std::get<0>(m_values) == QCullFace::NoCulling) {
         gc->openGLContext()->functions()->glDisable(GL_CULL_FACE);
     } else {
         gc->openGLContext()->functions()->glEnable(GL_CULL_FACE);
-        gc->openGLContext()->functions()->glCullFace(m_1);
+        gc->openGLContext()->functions()->glCullFace(std::get<0>(m_values));
     }
 }
 
 void CullFace::updateProperty(const char *name, const QVariant &value)
 {
-    if (name == QByteArrayLiteral("mode")) m_1 = value.toInt();
+    if (name == QByteArrayLiteral("mode")) std::get<0>(m_values) = value.toInt();
 }
 
 void FrontFace::apply(GraphicsContext *gc) const
 {
-    gc->frontFace(m_1);
+    gc->frontFace(std::get<0>(m_values));
 }
 
 void FrontFace::updateProperty(const char *name, const QVariant &value)
 {
-    if (name == QByteArrayLiteral("direction")) m_1 = value.toInt();
+    if (name == QByteArrayLiteral("direction")) std::get<0>(m_values) = value.toInt();
 }
 
 void NoDepthMask::apply(GraphicsContext *gc) const
 {
-   gc->depthMask(m_1);
+    gc->depthMask(std::get<0>(m_values));
 }
 
 void NoDepthMask::updateProperty(const char *name, const QVariant &value)
 {
-    if (name == QByteArrayLiteral("mask")) m_1 = value.toBool();
+    if (name == QByteArrayLiteral("mask")) std::get<0>(m_values) = value.toBool();
 }
 
 void Dithering::apply(GraphicsContext *gc) const
@@ -179,110 +174,110 @@ void Dithering::apply(GraphicsContext *gc) const
 void ScissorTest::apply(GraphicsContext *gc) const
 {
     gc->openGLContext()->functions()->glEnable(GL_SCISSOR_TEST);
-    gc->openGLContext()->functions()->glScissor(m_1, m_2, m_3, m_4);
+    gc->openGLContext()->functions()->glScissor(std::get<0>(m_values), std::get<1>(m_values), std::get<2>(m_values), std::get<3>(m_values));
 }
 
 void ScissorTest::updateProperty(const char *name, const QVariant &value)
 {
-         if (name == QByteArrayLiteral("left")) m_1 = value.toInt();
-    else if (name == QByteArrayLiteral("bottom")) m_2 = value.toInt();
-    else if (name == QByteArrayLiteral("width")) m_3 = value.toInt();
-    else if (name == QByteArrayLiteral("height")) m_4 = value.toInt();
+    if (name == QByteArrayLiteral("left")) std::get<0>(m_values) = value.toInt();
+    else if (name == QByteArrayLiteral("bottom")) std::get<1>(m_values) = value.toInt();
+    else if (name == QByteArrayLiteral("width")) std::get<2>(m_values) = value.toInt();
+    else if (name == QByteArrayLiteral("height")) std::get<3>(m_values) = value.toInt();
 }
 
 void StencilTest::apply(GraphicsContext *gc) const
 {
     gc->openGLContext()->functions()->glEnable(GL_STENCIL_TEST);
-    gc->openGLContext()->functions()->glStencilFuncSeparate(GL_FRONT, m_1, m_2, m_3);
-    gc->openGLContext()->functions()->glStencilFuncSeparate(GL_BACK, m_4, m_5, m_6);
+    gc->openGLContext()->functions()->glStencilFuncSeparate(GL_FRONT, std::get<0>(m_values), std::get<1>(m_values), std::get<2>(m_values));
+    gc->openGLContext()->functions()->glStencilFuncSeparate(GL_BACK, std::get<3>(m_values), std::get<4>(m_values), std::get<5>(m_values));
 }
 
 void AlphaCoverage::apply(GraphicsContext *gc) const
 {
-    gc->setAlphaCoverageEnabled(m_1);
+    gc->setAlphaCoverageEnabled(std::get<0>(m_values));
 }
 
 void AlphaCoverage::updateProperty(const char *name, const QVariant &value)
 {
     if (name == QByteArrayLiteral("enabled"))
-        m_1 = value.toBool();
+        std::get<0>(m_values) = value.toBool();
 }
 
 void PointSize::apply(GraphicsContext *gc) const
 {
-    gc->pointSize(m_1, m_2);
+    gc->pointSize(std::get<0>(m_values), std::get<1>(m_values));
 }
 
 void PointSize::updateProperty(const char *name, const QVariant &value)
 {
-         if (name == QByteArrayLiteral("specification")) m_1 = value.toBool();
-    else if (name == QByteArrayLiteral("value")) m_2 = value.toFloat();
+    if (name == QByteArrayLiteral("specification")) std::get<0>(m_values) = value.toBool();
+    else if (name == QByteArrayLiteral("value")) std::get<1>(m_values) = value.toFloat();
 }
 
 void PolygonOffset::apply(GraphicsContext *gc) const
 {
     gc->openGLContext()->functions()->glEnable(GL_POLYGON_OFFSET_FILL);
-    gc->openGLContext()->functions()->glPolygonOffset(m_1, m_2);
+    gc->openGLContext()->functions()->glPolygonOffset(std::get<0>(m_values), std::get<1>(m_values));
 }
 
 void PolygonOffset::updateProperty(const char *name, const QVariant &value)
 {
-         if (name == QByteArrayLiteral("factor")) m_1 = value.toFloat();
-    else if (name == QByteArrayLiteral("units")) m_2 = value.toFloat();
+    if (name == QByteArrayLiteral("factor")) std::get<0>(m_values) = value.toFloat();
+    else if (name == QByteArrayLiteral("units")) std::get<1>(m_values) = value.toFloat();
 }
 
 void ColorMask::apply(GraphicsContext *gc) const
 {
-    gc->openGLContext()->functions()->glColorMask(m_1, m_2, m_3, m_4);
+    gc->openGLContext()->functions()->glColorMask(std::get<0>(m_values), std::get<1>(m_values), std::get<2>(m_values), std::get<3>(m_values));
 }
 
 void ColorMask::updateProperty(const char *name, const QVariant &value)
 {
-         if (name == QByteArrayLiteral("red")) m_1 = value.toBool();
-    else if (name == QByteArrayLiteral("green")) m_2 = value.toBool();
-    else if (name == QByteArrayLiteral("blue")) m_3 = value.toBool();
-    else if (name == QByteArrayLiteral("alpha")) m_4 = value.toBool();
+    if (name == QByteArrayLiteral("red")) std::get<0>(m_values) = value.toBool();
+    else if (name == QByteArrayLiteral("green")) std::get<1>(m_values) = value.toBool();
+    else if (name == QByteArrayLiteral("blue")) std::get<2>(m_values) = value.toBool();
+    else if (name == QByteArrayLiteral("alpha")) std::get<3>(m_values) = value.toBool();
 }
 
 void ClipPlane::apply(GraphicsContext *gc) const
 {
-    gc->enableClipPlane(m_1);
-    gc->setClipPlane(m_1, m_2, m_3);
+    gc->enableClipPlane(std::get<0>(m_values));
+    gc->setClipPlane(std::get<0>(m_values), std::get<1>(m_values), std::get<2>(m_values));
 }
 
 void ClipPlane::updateProperty(const char *name, const QVariant &value)
 {
-    if (name == QByteArrayLiteral("planeIndex")) m_1 = value.toInt();
-    else if (name == QByteArrayLiteral("normal")) m_2 = value.value<QVector3D>();
-    else if (name == QByteArrayLiteral("distance")) m_3 = value.toFloat();
+    if (name == QByteArrayLiteral("planeIndex")) std::get<0>(m_values) = value.toInt();
+    else if (name == QByteArrayLiteral("normal")) std::get<1>(m_values) = value.value<QVector3D>();
+    else if (name == QByteArrayLiteral("distance")) std::get<2>(m_values) = value.toFloat();
 }
 
 void SeamlessCubemap::apply(GraphicsContext *gc) const
 {
-    gc->setSeamlessCubemap(m_1);
+    gc->setSeamlessCubemap(std::get<0>(m_values));
 }
 
 void SeamlessCubemap::updateProperty(const char *name, const QVariant &value)
 {
-    if (name == QByteArrayLiteral("enabled")) m_1 = value.toBool();
+    if (name == QByteArrayLiteral("enabled")) std::get<0>(m_values) = value.toBool();
 }
 
 void StencilOp::apply(GraphicsContext *gc) const
 {
-    gc->openGLContext()->functions()->glStencilOpSeparate(GL_FRONT, m_1, m_2, m_3);
-    gc->openGLContext()->functions()->glStencilOpSeparate(GL_BACK, m_4, m_5, m_6);
+    gc->openGLContext()->functions()->glStencilOpSeparate(GL_FRONT, std::get<0>(m_values), std::get<1>(m_values), std::get<2>(m_values));
+    gc->openGLContext()->functions()->glStencilOpSeparate(GL_BACK, std::get<3>(m_values), std::get<4>(m_values), std::get<5>(m_values));
 }
 
 void StencilMask::apply(GraphicsContext *gc) const
 {
-    gc->openGLContext()->functions()->glStencilMaskSeparate(GL_FRONT, m_1);
-    gc->openGLContext()->functions()->glStencilMaskSeparate(GL_BACK, m_2);
+    gc->openGLContext()->functions()->glStencilMaskSeparate(GL_FRONT, std::get<0>(m_values));
+    gc->openGLContext()->functions()->glStencilMaskSeparate(GL_BACK, std::get<1>(m_values));
 }
 
 void StencilMask::updateProperty(const char *name, const QVariant &value)
 {
-         if (name == QByteArrayLiteral("frontMask")) m_1 = value.toInt();
-    else if (name == QByteArrayLiteral("backMask")) m_2 = value.toInt();
+    if (name == QByteArrayLiteral("frontMask")) std::get<0>(m_values) = value.toInt();
+    else if (name == QByteArrayLiteral("backMask")) std::get<1>(m_values) = value.toInt();
 }
 
 } // namespace Render

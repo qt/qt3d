@@ -45,9 +45,14 @@
 
 QT_BEGIN_NAMESPACE
 
+
 class QOpenGLContext;
 
 namespace Qt3DRender {
+
+#if defined(QT_BUILD_INTERNAL)
+class TestAspect;
+#endif
 
 namespace Render {
 class Renderer;
@@ -79,6 +84,8 @@ protected:
 private:
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
+    QVariant executeCommand(const QStringList &args) Q_DECL_OVERRIDE;
+
     void onRegistered() Q_DECL_OVERRIDE;
     void onUnregistered() Q_DECL_OVERRIDE;
 
@@ -87,6 +94,7 @@ private:
     friend class Render::Renderer;
 #if defined(QT_BUILD_INTERNAL)
     friend class QRenderAspectTester;
+    friend class TestAspect;
 #endif
 };
 

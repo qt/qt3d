@@ -86,9 +86,13 @@ public:
 #ifdef QT3D_JOBS_RUN_STATS
     static QElapsedTimer m_jobsStatTimer;
 
+    // Aspects + Job threads
     static void addJobLogStatsEntry(JobRunStats &stats);
-    static void starNewFrameJobLogsStats();
     static void writeFrameJobLogStats();
+
+    // Submission thread
+    static void addSubmissionLogStatsEntry(JobRunStats &stats);
+
 #endif
 
 private:

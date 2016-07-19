@@ -52,6 +52,38 @@ QSortPolicyPrivate::QSortPolicyPrivate()
 {
 }
 
+/*!
+ * \class Qt3DRender::QSortPolicy
+ * \inmodule Qt3DRender
+ * \brief Provides storage for the sort types to be used
+ * \since 5.7
+ *
+ * \inherits Qt3DRender::QFrameGraphNode
+ *
+ */
+
+/*!
+ * \qmltype SortPolicy
+ * \inqmlmodule Qt3D.Render
+ * \since 5.7
+ * \ingroup
+ * \instantiates Qt3DRender::QSortPolicy
+ * \brief Provides storage for the sort types to be used
+ *
+ */
+
+/*!
+    \enum QSortPolicy::SortType
+
+    This enum type describes sort types that can be employed
+    \value StateChangeCost sort the objects so as to minimize the cost of changing from the currently rendered state
+    \value BackToFront sort the objects from back to front inverted z order
+    \value Material sort the objects based on their material value
+*/
+
+/*!
+ * Constructs QSortPolicy with given \a parent.
+ */
 QSortPolicy::QSortPolicy(QNode *parent)
     : QFrameGraphNode(*new QSortPolicyPrivate, parent)
 {
@@ -77,6 +109,19 @@ QNodeCreatedChangeBasePtr QSortPolicy::createNodeCreationChange() const
     return creationChange;
 }
 
+/*!
+    \property Qt3DRender::QSortPolicy::sortTypes
+    Specifies the sorting types to be used.
+*/
+
+/*!
+  \qmlproperty QVariantList Qt3D.Render::QSortPolicy::sortTypes
+    Specifies the sorting types to be used.
+
+*/
+/*!
+ * \return the current sort types in use
+ */
 QVector<QSortPolicy::SortType> QSortPolicy::sortTypes() const
 {
     Q_D(const QSortPolicy);

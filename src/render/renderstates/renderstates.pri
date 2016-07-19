@@ -24,7 +24,6 @@ HEADERS += \
     $$PWD/renderstates_p.h \
     $$PWD/renderstateset_p.h \
     $$PWD/qpointsize.h \
-    $$PWD/renderstatecollection_p.h \
     $$PWD/qseamlesscubemap.h \
     $$PWD/qdepthtest.h \
     $$PWD/qnodepthmask.h \
@@ -45,7 +44,9 @@ HEADERS += \
     $$PWD/qstenciltest_p.h \
     $$PWD/qstenciltestarguments_p.h \
     $$PWD/renderstatenode_p.h \
-    $$PWD/qmultisampleantialiasing.h
+    $$PWD/qmultisampleantialiasing.h \
+    $$PWD/statemask_p.h \
+    $$PWD/statevariant_p.h
 
 
 SOURCES += \
@@ -70,9 +71,9 @@ SOURCES += \
     $$PWD/renderstates.cpp \
     $$PWD/renderstateset.cpp \
     $$PWD/qpointsize.cpp \
-    $$PWD/renderstatecollection.cpp \
     $$PWD/qseamlesscubemap.cpp \
     $$PWD/qnodepthmask.cpp \
     $$PWD/qrenderstatecreatedchange.cpp \
     $$PWD/renderstatenode.cpp \
-    $$PWD/qmultisampleantialiasing.cpp
+    $$PWD/qmultisampleantialiasing.cpp \
+    $$PWD/statevariant.cpp

@@ -41,71 +41,13 @@ import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 
 Material {
-    id:root
+    id: root
 
-    ShaderProgram {
-        id: gl3PerVertexColorShader
-        vertexShaderCode: loadSource("qrc:/shaders/gl3/pervertexcolor.vert")
-        fragmentShaderCode: loadSource("qrc:/shaders/gl3/pervertexcolor.frag")
-    }
-
-    ShaderProgram {
-        id: gl2es2PerVertexColorShader
-        vertexShaderCode: loadSource("qrc:/shaders/es2/pervertexcolor.vert")
-        fragmentShaderCode: loadSource("qrc:/shaders/es2/pervertexcolor.frag")
-    }
-
-    effect: Effect {
-
-        FilterKey {
-            id: forward
-            name: "renderingStyle"
-            value: "forward"
-        }
-
-        techniques: [
-            // GL 3 Technique
-            Technique {
-                filterKeys: [ forward ]
-                graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGL
-                    profile: GraphicsApiFilter.CoreProfile
-                    majorVersion: 3
-                    minorVersion: 1
-                }
-                renderPasses: RenderPass {
-                    shaderProgram: gl3PerVertexColorShader
-                }
-            },
-
-            // GL 2 Technique
-            Technique {
-                filterKeys: [ forward ]
-                graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGL
-                    profile: GraphicsApiFilter.NoProfile
-                    majorVersion: 2
-                    minorVersion: 0
-                }
-                renderPasses: RenderPass {
-                    shaderProgram: gl2es2PerVertexColorShader
-                }
-            },
-
-            // ES 2 Technique
-            Technique {
-                filterKeys: [ forward ]
-                graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGLES
-                    profile: GraphicsApiFilter.NoProfile
-                    majorVersion: 2
-                    minorVersion: 0
-                }
-                renderPasses: RenderPass {
-                    shaderProgram: gl2es2PerVertexColorShader
-                }
-            }
-        ]
+    effect: DefaultEffect {
+        vertexES: "qrc:/shaders/es2/pervertexcolor.vert"
+        fragmentES: "qrc:/shaders/es2/pervertexcolor.frag"
+        vertex: "qrc:/shaders/gl3/pervertexcolor.vert"
+        fragment: "qrc:/shaders/gl3/pervertexcolor.frag"
     }
 }
 

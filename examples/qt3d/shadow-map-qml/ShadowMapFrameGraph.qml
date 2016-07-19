@@ -62,10 +62,6 @@ RenderSettings {
     activeFrameGraph: Viewport {
         normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
 
-        ClearBuffers {
-            clearColor: Qt.rgba(0.0, 0.4, 0.7, 1.0)
-        }
-
         RenderSurfaceSelector {
             RenderPassFilter {
                 matchAny: [ FilterKey { name: "pass"; value: "shadowmap" } ]
@@ -105,10 +101,11 @@ RenderSettings {
                 }
             }
 
-        RenderPassFilter {
-            matchAny: [ FilterKey { name: "pass"; value: "forward" } ]
+            RenderPassFilter {
+                matchAny: [ FilterKey { name: "pass"; value: "forward" } ]
 
                 ClearBuffers {
+                    clearColor: Qt.rgba(0.0, 0.4, 0.7, 1.0)
                     buffers: ClearBuffers.ColorDepthBuffer
 
                     CameraSelector {

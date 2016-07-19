@@ -68,7 +68,7 @@ class TextureManager;
 class TextureImageManager;
 class TextureDataManager;
 
-typedef uint TextureImageDNA;
+typedef quint64 TextureImageDNA;
 
 class TextureImage : public BackendNode
 {
@@ -99,10 +99,10 @@ public:
     inline HTextureData textureDataHandle() const { return m_textureDataHandle; }
     inline QTextureImageDataGeneratorPtr dataGenerator() const { return m_generator; }
 
+    void updateDNA(quint32 dataHash);
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
-    void updateDNA();
 
     QTextureImageDataGeneratorPtr m_generator;
     HTextureData m_textureDataHandle;

@@ -126,12 +126,13 @@ public:
     bool hasValidGLHelper() const;
 
     QOpenGLShaderProgram *createShaderProgram(Shader *shaderNode);
-    void activateShader(Shader* shader);
+    void loadShader(Shader* shader);
+    void activateShader(ProgramDNA shaderDNA);
     void removeShaderProgramReference(Shader *shaderNode);
 
     GLuint activeFBO() const { return m_activeFBO; }
     GLuint defaultFBO() const { return m_defaultFBO; }
-    void activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments, GLuint defaultFboId);
+    void activateRenderTarget(const Qt3DCore::QNodeId id, const AttachmentPack &attachments, GLuint defaultFboId);
 
     Material* activeMaterial() const { return m_material; }
 
@@ -143,13 +144,15 @@ public:
      * @brief activeShader
      * @return
      */
-    QOpenGLShaderProgram* activeShader();
+    QOpenGLShaderProgram* activeShader() const;
 
     void setRenderer(Renderer *renderer);
 
-    void specifyAttribute(const Attribute *attribute, Buffer *buffer, const QString &shaderName);
+    void specifyAttribute(const Attribute *attribute, Buffer *buffer, int attributeLocation);
     void specifyIndices(Buffer *buffer);
     void updateBuffer(Buffer *buffer);
+    void releaseBuffer(Qt3DCore::QNodeId bufferId);
+    bool hasGLBufferForBuffer(Buffer *buffer);
 
     void setParameters(ShaderParameterPack &parameterPack);
 
@@ -247,7 +250,9 @@ private:
     bool m_ownCurrent;
 
     ShaderCache m_shaderCache;
-    Shader *m_activeShader;
+    QOpenGLShaderProgram *m_activeShader;
+    ProgramDNA m_activeShaderDNA;
+
     QHash<Qt3DCore::QNodeId, HGLBuffer> m_renderBufferHash;
     QHash<Qt3DCore::QNodeId, GLuint> m_renderTargets;
     QHash<GLuint, QSize> m_renderTargetsSize;
@@ -284,6 +289,26 @@ private:
 
     bool m_supportsVAO;
     QScopedPointer<QOpenGLDebugLogger> m_debugLogger;
+
+    friend class OpenGLVertexArrayObject;
+    OpenGLVertexArrayObject *m_currentVAO;
+
+    struct VAOVertexAttribute
+    {
+        HGLBuffer bufferHandle;
+        GLBuffer::Type bufferType;
+        int location;
+        GLint dataType;
+        uint byteOffset;
+        uint vertexSize;
+        uint byteStride;
+        uint divisor;
+    };
+
+    using VAOIndexAttribute = HGLBuffer;
+
+    void enableAttribute(const VAOVertexAttribute &attr);
+    void disableAttribute(const VAOVertexAttribute &attr);
 };
 
 } // namespace Render

@@ -79,6 +79,11 @@ QByteArray QTextureImageDataPrivate::data(int layer, int face, int mipmapLevel) 
     return QByteArray::fromRawData(m_data.constData() + offset, mipmapLevelSize(mipmapLevel));
 }
 
+QTextureImageDataPrivate *QTextureImageDataPrivate::get(QTextureImageData *imageData)
+{
+    return imageData->d_func();
+}
+
 void QTextureImageDataPrivate::setData(const QByteArray &data,
                                        int blockSize,
                                        bool isCompressed)

@@ -85,6 +85,9 @@ struct ShaderUniform
         , m_offset(-1)
         , m_location(-1)
         , m_blockIndex(-1)
+        , m_arrayStride(-1)
+        , m_matrixStride(-1)
+        , m_rawByteSize(0)
     {}
 
     QString m_name;
@@ -123,7 +126,8 @@ QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ShaderUniformBlock, Q_MOVABLE_TYPE)
 struct ShaderStorageBlock
 {
     ShaderStorageBlock()
-        : m_index(-1)
+        : m_nameId(-1)
+        , m_index(-1)
         , m_binding(-1)
         , m_size(0)
         , m_activeVariablesCount(0)

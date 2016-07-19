@@ -41,7 +41,6 @@
 
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/entity_p.h>
-#include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/transform_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/job_common_p.h>
@@ -59,12 +58,11 @@ void updateWorldTransformAndBounds(Qt3DRender::Render::Entity *node, const QMatr
 {
     QMatrix4x4 worldTransform(parentTransform);
     Transform *nodeTransform = node->renderComponent<Transform>();
+
     if (nodeTransform != nullptr && nodeTransform->isEnabled())
         worldTransform = worldTransform * nodeTransform->transformMatrix();
 
     *(node->worldTransform()) = worldTransform;
-    *(node->worldBoundingVolume()) = node->localBoundingVolume()->transformed(worldTransform);
-    *(node->worldBoundingVolumeWithChildren()) = *(node->worldBoundingVolume()); // expanded in UpdateBoundingVolumeJob
 
     const auto children = node->children();
     for (Qt3DRender::Render::Entity *child : children)

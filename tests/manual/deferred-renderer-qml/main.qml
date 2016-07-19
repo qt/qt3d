@@ -57,197 +57,24 @@ import Qt3D.Extras 2.0
 Entity {
     id : root
 
-    GBuffer {
-        id : gBuffer
-    }
-
     components : [
         RenderSettings {
             activeFrameGraph: DeferredRenderer {
                 id: frameGraph
-                camera : camera
-                gBuffer: gBuffer
+                camera : sceneEntity.camera
+                gBuffer: GBuffer {}
+                sceneLayer: sceneEntity.layer
+                screenQuadLayer: screenQuadEntity.layer
+                debugLayer: debugEntity.layer
             }
-
             renderPolicy: RenderSettings.Always
         },
         InputSettings {}
     ]
 
-    FirstPersonCameraController { camera: camera }
+    FirstPersonCameraController { camera: sceneEntity.camera }
 
-    Entity {
-        id : screenQuadEntity
-        PlaneMesh {
-            id: mesh
-            width: 2.0
-            height: 2.0
-            meshResolution: Qt.size(2, 2)
-        }
-
-        Transform { // We rotate the plane so that it faces us
-            id: transform
-            rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 90)
-        }
-
-        Material {
-            id: material
-            parameters : [
-                Parameter { name: "color"; value : gBuffer.color },
-                Parameter { name: "position"; value : gBuffer.position },
-                Parameter { name: "normal"; value : gBuffer.normal },
-                Parameter { name: "winSize"; value : Qt.size(1024, 1024) }
-            ]
-            effect : FinalEffect {}
-        }
-
-        components : [ frameGraph.screenQuadLayer, mesh, transform, material ]
-    }
-
-    Entity {
-        id : sceneEntity
-
-        property PointLight light: PointLight {
-            color : "white"
-            intensity : 4.0
-            QQ2.ColorAnimation on color { from: "white"; to: "blue"; duration: 4000; loops: 2 }
-            QQ2.NumberAnimation on intensity { from: 0; to: 5.0; duration: 1000; loops: QQ2.Animation.Infinite }
-        }
-
-        components: [ sceneEntity.light ]
-
-        Camera {
-            id: camera
-            projectionType: CameraLens.PerspectiveProjection
-            fieldOfView: 45
-            aspectRatio: 16/9
-            nearPlane : 0.01
-            farPlane : 1000.0
-            position: Qt.vector3d( 0.0, 0.0, -25.0 )
-            upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-            viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
-        }
-
-        SphereMesh {
-            id : sphereMesh
-            rings: 50
-            slices: 100
-        }
-
-        SceneEffect {
-            id : sceneMaterialEffect
-        }
-
-        Entity {
-            id : sphere1
-
-            property Material material : Material {
-                effect : sceneMaterialEffect
-                parameters : Parameter { name : "meshColor"; value : "dodgerblue" }
-            }
-
-            property Transform transform: Transform {
-                id: sphere1Transform
-                property real x: -10.0
-                translation: Qt.vector3d(x, 0, 5)
-            }
-
-            QQ2.SequentialAnimation {
-                loops: QQ2.Animation.Infinite
-                running: false
-                QQ2.NumberAnimation { target: sphere1Transform; property: "x"; to: 6; duration: 2000 }
-                QQ2.NumberAnimation { target: sphere1Transform; property: "x"; to: -10; duration: 2000 }
-            }
-
-            property PointLight light : PointLight {
-                color : "green"
-                intensity : 5.0
-            }
-
-            components : [
-                sphereMesh,
-                material,
-                sphere1.transform,
-                sphere1.light,
-                frameGraph.sceneLayer
-            ]
-        }
-
-        Entity {
-            id : sphere2
-
-            property Material material : Material {
-                effect : sceneMaterialEffect
-                parameters : Parameter { name : "meshColor"; value : "green" }
-            }
-
-            property PointLight light : PointLight {
-                color : "orange"
-                intensity : 2.0
-            }
-
-            property Transform transform: Transform {
-                translation: Qt.vector3d(5, 0, 5)
-            }
-
-            components : [
-                sphereMesh,
-                sphere2.transform,
-                material,
-                sphere2.light,
-                frameGraph.sceneLayer
-            ]
-        }
-
-        Entity {
-            id: light3
-            property PointLight light : PointLight {
-                color : "white"
-                intensity : 2.0
-            }
-
-            property Material material : Material {
-                effect : sceneMaterialEffect
-                parameters : Parameter { name : "meshColor"; value : "red" }
-            }
-
-            property Transform transform: Transform {
-                id: light3Transform
-                property real y: 2.0
-                translation: Qt.vector3d(2, y, 7)
-            }
-
-            QQ2.SequentialAnimation {
-                loops: QQ2.Animation.Infinite
-                running: true
-                QQ2.NumberAnimation { target: light3Transform; property: "y"; to: 6; duration: 1000; easing.type: QQ2.Easing.InOutQuad }
-                QQ2.NumberAnimation { target: light3Transform; property: "y"; to: -6; duration: 1000; easing.type: QQ2.Easing.InOutQuint }
-            }
-
-            components: [
-                sphereMesh,
-                material,
-                light,
-                transform,
-                frameGraph.sceneLayer
-            ]
-        }
-
-        Entity {
-            id: light4
-            property PointLight light : PointLight {
-                color : "white"
-                intensity : 3.0
-            }
-            property Transform transform: Transform {
-                translation: Qt.vector3d(5, 2, 7)
-            }
-
-            components: [
-                light4.light,
-                light4.transform,
-                frameGraph.sceneLayer
-            ]
-        }
-    }
+    ScreenQuadEntity { id: screenQuadEntity }
+    SceneEntity { id: sceneEntity }
+    GBufferDebugger { id: debugEntity }
 }

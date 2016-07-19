@@ -58,7 +58,7 @@ class QMultiSampleAntiAliasingPrivate : public QRenderStatePrivate
 {
 public:
     QMultiSampleAntiAliasingPrivate()
-        : QRenderStatePrivate(QRenderStatePrivate::MSAAEnabled)
+        : QRenderStatePrivate(Render::MSAAEnabledStateMask)
     {
     }
 

@@ -75,6 +75,14 @@ QShaderDataPrivate::QShaderDataPrivate(PropertyReaderInterfacePtr reader)
  * \since 5.5
  */
 
+/*!
+  \fn Qt3DRender::PropertyReaderInterface::readProperty(const QVariant &v)
+  \return the property identifies by \a v
+ */
+
+/*!
+ *   Constructs a new QShaderData with the specified \a parent.
+ */
 QShaderData::QShaderData(QNode *parent)
     : QComponent(*new QShaderDataPrivate, parent)
 {
@@ -84,7 +92,10 @@ QShaderData::QShaderData(QNode *parent)
 QShaderData::~QShaderData()
 {
 }
-
+/*!
+ * \brief QShaderData::propertyReader
+ * \return PropertyReaderInterfacePtr for this shader data
+ */
 PropertyReaderInterfacePtr QShaderData::propertyReader() const
 {
     Q_D(const QShaderData);
@@ -97,6 +108,7 @@ QShaderData::QShaderData(QShaderDataPrivate &dd, QNode *parent)
 {
 }
 
+/*! \internal */
 bool QShaderData::event(QEvent *event)
 {
     Q_D(QShaderData);

@@ -42,6 +42,7 @@
 #include "qmousedevice.h"
 #include "qmouseevent.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,35 +54,42 @@ QMouseHandlerPrivate::QMouseHandlerPrivate()
     : QComponentPrivate()
     , m_mouseDevice(nullptr)
     , m_containsMouse(false)
+    , m_pressAndHoldTimer(new QTimer)
 {
     m_shareable = false;
+    m_pressAndHoldTimer->setSingleShot(true);
+    m_pressAndHoldTimer->setInterval(500);
+    QObject::connect(m_pressAndHoldTimer.data(), &QTimer::timeout, [this] {
+        emit q_func()->pressAndHold(m_lastPressedEvent.data());
+    });
 }
 
 QMouseHandlerPrivate::~QMouseHandlerPrivate()
 {
 }
 
-void QMouseHandlerPrivate::mouseEvent(QMouseEvent *event)
+void QMouseHandlerPrivate::mouseEvent(const QMouseEventPtr &event)
 {
     Q_Q(QMouseHandler);
     switch (event->type()) {
-    case QEvent::MouseButtonPress:
-        if (event->wasHeld())
-            emit q->pressAndHold(event);
-        else
-            emit q->pressed(event);
+    case QEvent::MouseButtonPress: {
+        m_lastPressedEvent = event;
+        m_pressAndHoldTimer->start();
+        emit q->pressed(event.data());
         break;
+    }
     case QEvent::MouseButtonRelease:
-        emit q->released(event);
+        m_pressAndHoldTimer->stop();
+        emit q->released(event.data());
         break;
     case Qt::TapGesture:
-        emit q->clicked(event);
+        emit q->clicked(event.data());
         break;
     case QEvent::MouseButtonDblClick:
-        emit q->doubleClicked(event);
+        emit q->doubleClicked(event.data());
         break;
     case QEvent::MouseMove:
-        emit q->positionChanged(event);
+        emit q->positionChanged(event.data());
         break;
     default:
         break;
@@ -116,19 +124,23 @@ void QMouseHandlerPrivate::mouseEvent(QMouseEvent *event)
 
 /*!
     \qmlproperty MouseDevice Qt3D.Input::MouseHandler::sourceDevice
+    Holds the current mouse source device of the MouseHandler instance.
  */
 
 /*!
     \qmlproperty bool Qt3D.Input::MouseHandler::containsMouse
     \readonly
+    Holds \c true if the QMouseHandler currently contains the mouse.
  */
 
 /*!
     \qmlsignal Qt3D.Input::MouseHandler::clicked()
+    This signal is emitted when a mouse button is clicked
  */
 
 /*!
     \qmlsignal Qt3D.Input::MouseHandler::doubleClicked()
+    This signal is emitted when a mouse button is double clicked
  */
 
 /*!
@@ -141,22 +153,76 @@ void QMouseHandlerPrivate::mouseEvent(QMouseEvent *event)
 
 /*!
     \qmlsignal Qt3D.Input::MouseHandler::pressed()
+    This signal is emitted when a mouse button is pressed
  */
 
 /*!
     \qmlsignal Qt3D.Input::MouseHandler::released()
+    This signal is emitted when a mouse button is released
  */
 
 /*!
     \qmlsignal Qt3D.Input::MouseHandler::pressAndHold()
+    This signal is emitted when a mouse button is pressed and held down
  */
 
 /*!
     \qmlsignal Qt3D.Input::MouseHandler::positionChanged()
+    This signal is emitted when the mouse position changes
  */
 
 /*!
     \qmlsignal Qt3D.Input::MouseHandler::wheel()
+    This signal is emitted when the mouse wheel is used
+ */
+
+
+
+/*!
+    \fn QMouseHandler::clicked(Qt3DInput::QMouseEvent *mouse)
+    This signal is emitted when a mouse button is clicked with the event details being contained within \a mouse
+ */
+
+/*!
+    \fn QMouseHandler::doubleClicked(Qt3DInput::QMouseEvent *mouse)
+    This signal is emitted when a mouse button is double clicked with the event details being contained within \a mouse
+
+ */
+
+/*!
+    \fn QMouseHandler::entered()
+ */
+
+/*!
+    \fn QMouseHandler::exited()
+ */
+
+/*!
+    \fn QMouseHandler::pressed(Qt3DInput::QMouseEvent *mouse)
+    This signal is emitted when a mouse button is pressed with the event details being contained within \a mouse
+ */
+
+/*!
+    \fn QMouseHandler::released(Qt3DInput::QMouseEvent *mouse)
+    This signal is emitted when a mouse button is released with the event details being contained within \a mouse
+
+ */
+
+/*!
+    \fn QMouseHandler::pressAndHold(Qt3DInput::QMouseEvent *mouse)
+    This signal is emitted when a mouse button is pressed and held down with the event details being contained within \a mouse
+ */
+
+/*!
+    \fn QMouseHandler::positionChanged(Qt3DInput::QMouseEvent *mouse)
+    This signal is emitted when the mouse position changes with the event details being contained within \a mouse
+
+ */
+
+/*!
+    \fn QMouseHandler::wheel(Qt3DInput::QWheelEvent *wheel)
+    This signal is emitted when the mouse wheel is used with the event details being contained within \a wheel
+
  */
 
 /*!
@@ -178,7 +244,22 @@ void QMouseHandler::setSourceDevice(QMouseDevice *mouseDevice)
 {
     Q_D(QMouseHandler);
     if (d->m_mouseDevice != mouseDevice) {
+
+        if (d->m_mouseDevice)
+            d->unregisterDestructionHelper(d->m_mouseDevice);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, it gets destroyed as well
+        if (mouseDevice && !mouseDevice->parent())
+            mouseDevice->setParent(this);
         d->m_mouseDevice = mouseDevice;
+
+        // Ensures proper bookkeeping
+        if (d->m_mouseDevice)
+            d->registerDestructionHelper(d->m_mouseDevice, &QMouseHandler::setSourceDevice, d->m_mouseDevice);
+
         emit sourceDeviceChanged(mouseDevice);
     }
 }
@@ -209,6 +290,7 @@ bool QMouseHandler::containsMouse() const
     return d->m_containsMouse;
 }
 
+/*! \internal */
 void QMouseHandler::setContainsMouse(bool contains)
 {
     Q_D(QMouseHandler);
@@ -218,6 +300,7 @@ void QMouseHandler::setContainsMouse(bool contains)
     }
 }
 
+/*! \internal */
 void QMouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QMouseHandler);
@@ -225,7 +308,7 @@ void QMouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
     if (e->type() == PropertyUpdated) {
         if (e->propertyName() == QByteArrayLiteral("mouse")) {
             QMouseEventPtr ev = e->value().value<QMouseEventPtr>();
-            d->mouseEvent(ev.data());
+            d->mouseEvent(ev);
         } else if (e->propertyName() == QByteArrayLiteral("wheel")) {
             QWheelEventPtr ev = e->value().value<QWheelEventPtr>();
             emit wheel(ev.data());

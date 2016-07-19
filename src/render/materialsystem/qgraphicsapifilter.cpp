@@ -71,6 +71,16 @@ bool GraphicsApiFilterData::operator ==(const GraphicsApiFilterData &other) cons
     return false;
 }
 
+bool GraphicsApiFilterData::operator <(const GraphicsApiFilterData &other) const
+{
+    if (this->m_major > other.m_major)
+        return false;
+    if (this->m_major == other.m_major &&
+        this->m_minor > other.m_minor)
+        return false;
+    return true;
+}
+
 bool GraphicsApiFilterData::operator !=(const GraphicsApiFilterData &other) const
 {
     return !(*this == other);
@@ -85,7 +95,7 @@ QGraphicsApiFilterPrivate *QGraphicsApiFilterPrivate::get(QGraphicsApiFilter *q)
     \class Qt3DRender::QGraphicsApiFilter
     \inmodule Qt3DRender
     \since 5.5
-    \brief The QGraphicsApiFilter class provides ...
+    \brief The QGraphicsApiFilter class identifies the API required for the attached QTechnique
 */
 
 /*!
@@ -94,7 +104,16 @@ QGraphicsApiFilterPrivate *QGraphicsApiFilterPrivate::get(QGraphicsApiFilter *q)
     \inherits QtObject
     \inqmlmodule Qt3D.Render
     \since 5.5
-    \brief For OpenGL ...
+    \brief For OpenGL identifies the API required for the attached technique
+*/
+
+/*!
+    \enum QGraphicsApiFilter::OpenGLProfile
+
+    This enum identifies the type of profile required
+    \value NoProfile
+    \value CoreProfile
+    \value CompatibilityProfile
 */
 
 /*! \fn Qt3DRender::QGraphicsApiFilter::QGraphicsApiFilter(QObject *parent)

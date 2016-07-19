@@ -59,7 +59,7 @@ class QClipPlanePrivate : public QRenderStatePrivate
 {
 public:
     QClipPlanePrivate()
-        : QRenderStatePrivate(QRenderStatePrivate::ClipPlane)
+        : QRenderStatePrivate(Render::ClipPlaneMask)
         , m_planeIndex(0)
         , m_normal()
         , m_distance(0.0f)
