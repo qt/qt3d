@@ -640,7 +640,7 @@ QTextureImageDataPtr TextureLoadingHelper::loadTextureData(const QUrl &url, bool
             QImage img;
             if (img.load(source)) {
                 textureData = QTextureImageDataPtr::create();
-                textureData->setImage(img);
+                textureData->setImage(img.mirrored());
             }
             break;
         }
