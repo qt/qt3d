@@ -120,6 +120,7 @@ public:
     void vertexAttribDivisor(GLuint index, GLuint divisor) Q_DECL_OVERRIDE;
 private:
     QOpenGLFunctions *m_funcs;
+    QOpenGLExtraFunctions *m_extraFuncs = nullptr;
     bool m_isES3;
 };
 

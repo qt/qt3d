@@ -81,6 +81,8 @@ void GraphicsHelperES2::initializeHelper(QOpenGLContext *context,
     m_funcs = context->functions();
     Q_ASSERT(m_funcs);
     m_isES3 = context->format().majorVersion() >= 3;
+    if (m_isES3)
+        m_extraFuncs = QOpenGLContext::currentContext()->extraFunctions();
 }
 
 void GraphicsHelperES2::drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType,
@@ -97,11 +99,19 @@ void GraphicsHelperES2::drawElementsInstancedBaseVertexBaseInstance(GLenum primi
     if (baseVertex != 0)
         qWarning() << "glDrawElementsInstancedBaseVertex is not supported with OpenGL ES 2";
 
-    for (GLint i = 0; i < instances; i++)
-        drawElements(primitiveType,
-                     primitiveCount,
-                     indexType,
-                     indices);
+    if (m_isES3 && m_extraFuncs) {
+        m_extraFuncs->glDrawElementsInstanced(primitiveType,
+                                              primitiveCount,
+                                              indexType,
+                                              indices,
+                                              instances);
+    } else {
+        for (GLint i = 0; i < instances; i++)
+            drawElements(primitiveType,
+                         primitiveCount,
+                         indexType,
+                         indices);
+    }
 }
 
 void GraphicsHelperES2::drawArraysInstanced(GLenum primitiveType,
@@ -231,8 +241,8 @@ QVector<ShaderStorageBlock> GraphicsHelperES2::programShaderStorageBlocks(GLuint
 
 void GraphicsHelperES2::vertexAttribDivisor(GLuint index, GLuint divisor)
 {
-    Q_UNUSED(index);
-    Q_UNUSED(divisor);
+    if (m_isES3 && m_extraFuncs)
+        m_extraFuncs->glVertexAttribDivisor(index, divisor);
 }
 
 void GraphicsHelperES2::blendEquation(GLenum mode)
