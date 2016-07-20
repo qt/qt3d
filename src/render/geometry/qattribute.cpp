@@ -287,7 +287,7 @@ void QAttribute::setName(const QString &name)
     emit nameChanged(name);
 }
 
-void QAttribute::setDataType(VertexBaseType type)
+void QAttribute::setVertexBaseType(VertexBaseType type)
 {
     Q_D(QAttribute);
 
@@ -295,17 +295,29 @@ void QAttribute::setDataType(VertexBaseType type)
         return;
 
     d->m_dataType = type;
+    emit vertexBaseTypeChanged(type);
     emit dataTypeChanged(type);
 }
 
-void QAttribute::setDataSize(uint size)
+void QAttribute::setVertexSize(uint size)
 {
     Q_D(QAttribute);
     if (d->m_dataSize == size)
         return;
     Q_ASSERT(size >= 1 && size <= 4);
     d->m_dataSize = size;
+    emit vertexSizeChanged(size);
     emit dataSizeChanged(size);
+}
+
+void QAttribute::setDataType(VertexBaseType type)
+{
+    setVertexBaseType(type);
+}
+
+void QAttribute::setDataSize(uint size)
+{
+    setVertexSize(size);
 }
 
 void QAttribute::setCount(uint count)

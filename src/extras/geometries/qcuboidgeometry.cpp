@@ -443,16 +443,16 @@ void QCuboidGeometryPrivate::init()
     const int indexCount = 2 * (yzIndices + xzIndices + xyIndices);
 
     m_positionAttribute->setName(QAttribute::defaultPositionAttributeName());
-    m_positionAttribute->setDataType(QAttribute::Float);
-    m_positionAttribute->setDataSize(3);
+    m_positionAttribute->setVertexBaseType(QAttribute::Float);
+    m_positionAttribute->setVertexSize(3);
     m_positionAttribute->setAttributeType(QAttribute::VertexAttribute);
     m_positionAttribute->setBuffer(m_vertexBuffer);
     m_positionAttribute->setByteStride(stride);
     m_positionAttribute->setCount(nVerts);
 
     m_texCoordAttribute->setName(QAttribute::defaultTextureCoordinateAttributeName());
-    m_texCoordAttribute->setDataType(QAttribute::Float);
-    m_texCoordAttribute->setDataSize(2);
+    m_texCoordAttribute->setVertexBaseType(QAttribute::Float);
+    m_texCoordAttribute->setVertexSize(2);
     m_texCoordAttribute->setAttributeType(QAttribute::VertexAttribute);
     m_texCoordAttribute->setBuffer(m_vertexBuffer);
     m_texCoordAttribute->setByteStride(stride);
@@ -460,8 +460,8 @@ void QCuboidGeometryPrivate::init()
     m_texCoordAttribute->setCount(nVerts);
 
     m_normalAttribute->setName(QAttribute::defaultNormalAttributeName());
-    m_normalAttribute->setDataType(QAttribute::Float);
-    m_normalAttribute->setDataSize(3);
+    m_normalAttribute->setVertexBaseType(QAttribute::Float);
+    m_normalAttribute->setVertexSize(3);
     m_normalAttribute->setAttributeType(QAttribute::VertexAttribute);
     m_normalAttribute->setBuffer(m_vertexBuffer);
     m_normalAttribute->setByteStride(stride);
@@ -469,8 +469,8 @@ void QCuboidGeometryPrivate::init()
     m_normalAttribute->setCount(nVerts);
 
     m_tangentAttribute->setName(QAttribute::defaultTangentAttributeName());
-    m_tangentAttribute->setDataType(QAttribute::Float);
-    m_tangentAttribute->setDataSize(4);
+    m_tangentAttribute->setVertexBaseType(QAttribute::Float);
+    m_tangentAttribute->setVertexSize(4);
     m_tangentAttribute->setAttributeType(QAttribute::VertexAttribute);
     m_tangentAttribute->setBuffer(m_vertexBuffer);
     m_tangentAttribute->setByteStride(stride);
@@ -478,7 +478,7 @@ void QCuboidGeometryPrivate::init()
     m_tangentAttribute->setCount(nVerts);
 
     m_indexAttribute->setAttributeType(QAttribute::IndexAttribute);
-    m_indexAttribute->setDataType(QAttribute::UnsignedShort);
+    m_indexAttribute->setVertexBaseType(QAttribute::UnsignedShort);
     m_indexAttribute->setBuffer(m_indexBuffer);
 
     m_indexAttribute->setCount(indexCount);

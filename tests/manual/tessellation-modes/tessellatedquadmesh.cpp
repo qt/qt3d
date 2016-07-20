@@ -79,8 +79,8 @@ public:
         m_vertexBuffer->setData(positionBytes);
 
         m_positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-        m_positionAttribute->setDataType(Qt3DRender::QAttribute::Float);
-        m_positionAttribute->setDataSize(3);
+        m_positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        m_positionAttribute->setVertexSize(3);
         m_positionAttribute->setCount(nVerts);
         m_positionAttribute->setByteStride(3 * sizeof(float));
         m_positionAttribute->setBuffer(m_vertexBuffer);

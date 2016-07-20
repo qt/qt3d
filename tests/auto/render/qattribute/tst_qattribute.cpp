@@ -64,8 +64,8 @@ private Q_SLOTS:
         customVertex->setByteOffset(305);
         customVertex->setDivisor(235);
         customVertex->setName("BB");
-        customVertex->setDataType(Qt3DRender::QAttribute::Float);
-        customVertex->setDataSize(4);
+        customVertex->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        customVertex->setVertexSize(4);
         QTest::newRow("vertex") << customVertex;
 
         Qt3DRender::QAttribute *customIndex = new Qt3DRender::QAttribute();
@@ -77,8 +77,8 @@ private Q_SLOTS:
         customIndex->setByteOffset(327);
         customIndex->setDivisor(355);
         customIndex->setName("SB");
-        customIndex->setDataType(Qt3DRender::QAttribute::Float);
-        customIndex->setDataSize(3);
+        customIndex->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        customIndex->setVertexSize(3);
         QTest::newRow("index") << customIndex;
     }
 
@@ -120,7 +120,7 @@ private Q_SLOTS:
         arbiter.setArbiterOnNode(attribute.data());
 
         // WHEN
-        attribute->setDataType(Qt3DRender::QAttribute::Double);
+        attribute->setVertexBaseType(Qt3DRender::QAttribute::Double);
         QCoreApplication::processEvents();
 
         // THEN
@@ -133,7 +133,7 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        attribute->setDataSize(4);
+        attribute->setVertexSize(4);
         QCoreApplication::processEvents();
 
         // THEN

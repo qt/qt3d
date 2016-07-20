@@ -212,8 +212,8 @@ QAttribute *createAttribute(QBuffer *buffer,
     QAttribute *attribute = QAbstractNodeFactory::createNode<QAttribute>("QAttribute");
     attribute->setBuffer(buffer);
     attribute->setName(name);
-    attribute->setDataType(vertexBaseType);
-    attribute->setDataSize(vertexSize);
+    attribute->setVertexBaseType(vertexBaseType);
+    attribute->setVertexSize(vertexSize);
     attribute->setCount(count);
     attribute->setByteOffset(byteOffset);
     attribute->setByteStride(byteStride);
@@ -231,8 +231,8 @@ QAttribute *createAttribute(QBuffer *buffer,
 {
     QAttribute *attribute = QAbstractNodeFactory::createNode<QAttribute>("QAttribute");
     attribute->setBuffer(buffer);
-    attribute->setDataType(vertexBaseType);
-    attribute->setDataSize(vertexSize);
+    attribute->setVertexBaseType(vertexBaseType);
+    attribute->setVertexSize(vertexSize);
     attribute->setCount(count);
     attribute->setByteOffset(byteOffset);
     attribute->setByteStride(byteStride);

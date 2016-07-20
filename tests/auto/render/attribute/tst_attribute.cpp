@@ -50,8 +50,8 @@ private Q_SLOTS:
         attribute.setCount(427);
         attribute.setDivisor(305);
         attribute.setName(QStringLiteral("C3"));
-        attribute.setDataType(Qt3DRender::QAttribute::UnsignedShort);
-        attribute.setDataSize(3);
+        attribute.setVertexBaseType(Qt3DRender::QAttribute::UnsignedShort);
+        attribute.setVertexSize(3);
 
         Qt3DRender::QBuffer buffer(Qt3DRender::QBuffer::IndexBuffer);
         buffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
@@ -103,8 +103,8 @@ private Q_SLOTS:
         attribute.setCount(427);
         attribute.setDivisor(305);
         attribute.setName(QStringLiteral("C3"));
-        attribute.setDataType(Qt3DRender::QAttribute::Double);
-        attribute.setDataSize(4);
+        attribute.setVertexBaseType(Qt3DRender::QAttribute::Double);
+        attribute.setVertexSize(4);
         Qt3DRender::QBuffer buffer(Qt3DRender::QBuffer::IndexBuffer);
         buffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
         buffer.setData(QByteArrayLiteral("C7"));

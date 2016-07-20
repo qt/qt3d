@@ -58,8 +58,8 @@ class QT3DRENDERSHARED_EXPORT QAttribute : public Qt3DCore::QNode
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QBuffer *buffer READ buffer WRITE setBuffer NOTIFY bufferChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
-    Q_PROPERTY(VertexBaseType vertexBaseType READ vertexBaseType WRITE setDataType NOTIFY dataTypeChanged)
-    Q_PROPERTY(uint vertexSize READ vertexSize WRITE setDataSize NOTIFY dataSizeChanged)
+    Q_PROPERTY(VertexBaseType vertexBaseType READ vertexBaseType WRITE setVertexBaseType NOTIFY vertexBaseTypeChanged)
+    Q_PROPERTY(uint vertexSize READ vertexSize WRITE setVertexSize NOTIFY vertexSizeChanged)
     Q_PROPERTY(uint count READ count WRITE setCount NOTIFY countChanged)
     Q_PROPERTY(uint byteStride READ byteStride WRITE setByteStride NOTIFY byteStrideChanged)
     Q_PROPERTY(uint byteOffset READ byteOffset WRITE setByteOffset NOTIFY byteOffsetChanged)
@@ -111,8 +111,10 @@ public:
 public Q_SLOTS:
     void setBuffer(QBuffer *buffer);
     void setName(const QString &name);
-    void setDataType(VertexBaseType type);
-    void setDataSize(uint size);
+    void setVertexBaseType(VertexBaseType type);
+    void setVertexSize(uint size);
+    QT_DEPRECATED void setDataType(VertexBaseType type);
+    QT_DEPRECATED void setDataSize(uint size);
     void setCount(uint count);
     void setByteStride(uint byteStride);
     void setByteOffset(uint byteOffset);
@@ -122,6 +124,8 @@ public Q_SLOTS:
 Q_SIGNALS:
     void bufferChanged(QBuffer *buffer);
     void nameChanged(const QString &name);
+    void vertexBaseTypeChanged(VertexBaseType vertexBaseType);
+    void vertexSizeChanged(uint vertexSize);
     void dataTypeChanged(VertexBaseType vertexBaseType);
     void dataSizeChanged(uint vertexSize);
     void countChanged(uint count);
