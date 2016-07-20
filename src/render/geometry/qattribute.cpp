@@ -51,8 +51,8 @@ QAttributePrivate::QAttributePrivate()
     : QNodePrivate()
     , m_buffer(nullptr)
     , m_name()
-    , m_dataType(QAttribute::Float)
-    , m_dataSize(1)
+    , m_vertexBaseType(QAttribute::Float)
+    , m_vertexSize(1)
     , m_count(0)
     , m_byteStride(0)
     , m_byteOffset(0)
@@ -125,8 +125,8 @@ QAttribute::QAttribute(QBuffer *buf, VertexBaseType type, uint dataSize, uint co
     setBuffer(buf);
     d->m_count = count;
     d->m_byteOffset = offset;
-    d->m_dataType = type;
-    d->m_dataSize = dataSize;
+    d->m_vertexBaseType = type;
+    d->m_vertexSize = dataSize;
     d->m_byteStride = stride;
 }
 
@@ -143,8 +143,8 @@ QAttribute::QAttribute(QBuffer *buf, const QString &name, VertexBaseType type, u
     d->m_name = name;
     d->m_count = count;
     d->m_byteOffset = offset;
-    d->m_dataType = type;
-    d->m_dataSize = dataSize;
+    d->m_vertexBaseType = type;
+    d->m_vertexSize = dataSize;
     d->m_byteStride = stride;
 }
 
@@ -183,7 +183,7 @@ QString QAttribute::name() const
 uint QAttribute::vertexSize() const
 {
     Q_D(const QAttribute);
-    return d->m_dataSize;
+    return d->m_vertexSize;
 }
 
 /*!
@@ -194,7 +194,7 @@ uint QAttribute::vertexSize() const
 QAttribute::VertexBaseType QAttribute::vertexBaseType() const
 {
     Q_D(const QAttribute);
-    return d->m_dataType;
+    return d->m_vertexBaseType;
 }
 
 /*!
@@ -291,10 +291,10 @@ void QAttribute::setVertexBaseType(VertexBaseType type)
 {
     Q_D(QAttribute);
 
-    if (d->m_dataType == type)
+    if (d->m_vertexBaseType == type)
         return;
 
-    d->m_dataType = type;
+    d->m_vertexBaseType = type;
     emit vertexBaseTypeChanged(type);
     emit dataTypeChanged(type);
 }
@@ -302,10 +302,10 @@ void QAttribute::setVertexBaseType(VertexBaseType type)
 void QAttribute::setVertexSize(uint size)
 {
     Q_D(QAttribute);
-    if (d->m_dataSize == size)
+    if (d->m_vertexSize == size)
         return;
     Q_ASSERT(size >= 1 && size <= 4);
-    d->m_dataSize = size;
+    d->m_vertexSize = size;
     emit vertexSizeChanged(size);
     emit dataSizeChanged(size);
 }
@@ -417,8 +417,8 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAttribute::createNodeCreationChange() const
     Q_D(const QAttribute);
     data.bufferId = qIdForNode(d->m_buffer);
     data.name = d->m_name;
-    data.dataType = d->m_dataType;
-    data.dataSize = d->m_dataSize;
+    data.vertexBaseType = d->m_vertexBaseType;
+    data.vertexSize = d->m_vertexSize;
     data.count = d->m_count;
     data.byteStride = d->m_byteStride;
     data.byteOffset = d->m_byteOffset;

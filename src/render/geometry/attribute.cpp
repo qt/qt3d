@@ -53,7 +53,7 @@ namespace Render {
 Attribute::Attribute()
     : BackendNode(ReadOnly)
     , m_nameId(0)
-    , m_vertexDataType(QAttribute::Float)
+    , m_vertexBaseType(QAttribute::Float)
     , m_vertexSize(1)
     , m_count(0)
     , m_byteStride(0)
@@ -70,7 +70,7 @@ Attribute::~Attribute()
 
 void Attribute::cleanup()
 {
-    m_vertexDataType = QAttribute::Float;
+    m_vertexBaseType = QAttribute::Float;
     m_vertexSize = 1;
     m_count = 0;
     m_byteStride = 0;
@@ -90,8 +90,8 @@ void Attribute::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
     m_bufferId = data.bufferId;
     m_name = data.name;
     m_nameId = StringToInt::lookupId(m_name);
-    m_vertexDataType = data.dataType;
-    m_vertexSize = data.dataSize;
+    m_vertexBaseType = data.vertexBaseType;
+    m_vertexSize = data.vertexSize;
     m_count = data.count;
     m_byteStride = data.byteStride;
     m_byteOffset = data.byteOffset;
@@ -112,7 +112,7 @@ void Attribute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_nameId = StringToInt::lookupId(m_name);
             m_attributeDirty = true;
         } else if (propertyName == QByteArrayLiteral("vertexBaseType")) {
-            m_vertexDataType = static_cast<QAttribute::VertexBaseType>(propertyChange->value().value<int>());
+            m_vertexBaseType = static_cast<QAttribute::VertexBaseType>(propertyChange->value().value<int>());
             m_attributeDirty = true;
         } else if (propertyName == QByteArrayLiteral("vertexSize")) {
             m_vertexSize = propertyChange->value().value<uint>();

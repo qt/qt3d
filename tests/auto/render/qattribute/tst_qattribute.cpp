@@ -106,8 +106,8 @@ private Q_SLOTS:
         QCOMPARE(attribute->byteStride(), cloneData.byteStride);
         QCOMPARE(attribute->byteOffset(), cloneData.byteOffset);
         QCOMPARE(attribute->divisor(), cloneData.divisor);
-        QCOMPARE(attribute->vertexBaseType(), cloneData.dataType);
-        QCOMPARE(attribute->vertexSize(), cloneData.dataSize);
+        QCOMPARE(attribute->vertexBaseType(), cloneData.vertexBaseType);
+        QCOMPARE(attribute->vertexSize(), cloneData.vertexSize);
         QVERIFY(attribute->attributeType() == cloneData.attributeType);
         QCOMPARE(attribute->buffer() ? attribute->buffer()->id() : Qt3DCore::QNodeId(), cloneData.bufferId);
     }

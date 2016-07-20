@@ -71,8 +71,8 @@ public:
 
     QBuffer *m_buffer;
     QString m_name;
-    QAttribute::VertexBaseType m_dataType;
-    uint m_dataSize;
+    QAttribute::VertexBaseType m_vertexBaseType;
+    uint m_vertexSize;
     uint m_count;
     uint m_byteStride;
     uint m_byteOffset;
@@ -84,8 +84,8 @@ struct QAttributeData
 {
     Qt3DCore::QNodeId bufferId;
     QString name;
-    QAttribute::VertexBaseType dataType;
-    uint dataSize;
+    QAttribute::VertexBaseType vertexBaseType;
+    uint vertexSize;
     uint count;
     uint byteStride;
     uint byteOffset;
