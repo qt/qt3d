@@ -125,7 +125,7 @@ struct StateVariant
 #else
         v.m_impl.reset(new GenericState(state));
 #endif
-        return std::move(v);
+        return v;
     }
 
     RenderStateImpl *state();
