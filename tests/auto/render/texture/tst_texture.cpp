@@ -145,6 +145,26 @@ void tst_RenderTexture::checkFrontendPropertyNotifications()
 
     // THEN
     QCOMPARE(arbiter.events.size(), 0);
+
+    // WHEN
+    texture.setSamples(32);
+    QCoreApplication::processEvents();
+
+    // THEN
+    QCOMPARE(arbiter.events.size(), 1);
+    change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+    QCOMPARE(change->propertyName(), "samples");
+    QCOMPARE(change->value().value<int>(), 32);
+    QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+    arbiter.events.clear();
+
+    // WHEN
+    texture.setSamples(32);
+    QCoreApplication::processEvents();
+
+    // THEN
+    QCOMPARE(arbiter.events.size(), 0);
 }
 
 template <typename FrontendTextureType, Qt3DRender::QAbstractTexture::Target Target>
@@ -158,6 +178,7 @@ void tst_RenderTexture::checkPropertyMirroring()
     frontend.setHeight(128);
     frontend.setDepth(16);
     frontend.setLayers(8);
+    frontend.setSamples(32);
 
     // WHEN
     simulateInitialization(&frontend, &backend);
@@ -169,6 +190,7 @@ void tst_RenderTexture::checkPropertyMirroring()
     QCOMPARE(backend.height(), frontend.height());
     QCOMPARE(backend.depth(), frontend.depth());
     QCOMPARE(backend.layers(), frontend.layers());
+    QCOMPARE(backend.samples(), frontend.samples());
 }
 
 void tst_RenderTexture::checkPropertyMirroring()
@@ -228,6 +250,15 @@ void tst_RenderTexture::checkPropertyChanges()
 
     // THEN
     QCOMPARE(backend.layers(), 32);
+
+    // WHEN
+    updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+    updateChange->setValue(64);
+    updateChange->setPropertyName("samples");
+    backend.sceneChangeEvent(updateChange);
+
+    // THEN
+    QCOMPARE(backend.samples(), 64);
 }
 
 QTEST_APPLESS_MAIN(tst_RenderTexture)

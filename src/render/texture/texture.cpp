@@ -79,6 +79,7 @@ Texture::Texture()
     , m_height(1)
     , m_depth(1)
     , m_layers(1)
+    , m_samples(1)
     , m_mipLevels(1)
     , m_generateMipMaps(false)
     , m_target(QAbstractTexture::Target2D)
@@ -121,6 +122,7 @@ void Texture::cleanup()
     m_height = 1;
     m_depth = 1;
     m_layers = 1;
+    m_samples = 1;
     m_mipLevels = 1;
     m_generateMipMaps = false;
     m_target = QAbstractTexture::Target2D;
@@ -166,6 +168,7 @@ void Texture::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chan
     m_comparisonFunction = data.comparisonFunction;
     m_comparisonMode = data.comparisonMode;
     m_layers = data.layers;
+    m_samples = data.samples;
     m_dataFunctor = data.dataFunctor;
     if (m_dataFunctor)
         addToPendingTextureJobs();
@@ -313,7 +316,12 @@ QOpenGLTexture *Texture::buildGLTexture()
         glTex->setLayers(m_layers);
     }
 
-    if (m_generateMipMaps) {
+    if (m_target == QAbstractTexture::Target2DMultisample ||
+        m_target == QAbstractTexture::Target2DMultisampleArray) {
+        // Set samples count if multisampled texture
+        // (multisampled textures don't have mipmaps)
+        glTex->setSamples(m_samples);
+    } else if (m_generateMipMaps) {
         glTex->setMipLevels(glTex->maximumMipLevels());
     } else {
         glTex->setAutoMipMapGenerationEnabled(false);
@@ -426,6 +434,12 @@ void Texture::setToGLTexture(TextureImage *rImg, QTextureImageData *imgData)
 // RenderThread
 void Texture::updateWrapAndFilters()
 {
+    // multisample texture targets don't support sampler state
+    if (m_target == QAbstractTexture::Target2DMultisample ||
+        m_target == QAbstractTexture::Target2DMultisampleArray) {
+        return;
+    }
+
     m_gl->setWrapMode(QOpenGLTexture::DirectionS, static_cast<QOpenGLTexture::WrapMode>(m_wrapModeX));
     if (m_target != QAbstractTexture::Target1D &&
             m_target != QAbstractTexture::Target1DArray &&
@@ -553,6 +567,11 @@ int Texture::layers() const
     return m_layers;
 }
 
+int Texture::samples() const
+{
+    return m_samples;
+}
+
 // ChangeArbiter/Aspect Thread
 void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
@@ -615,7 +634,12 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             const int oldLayers = m_layers;
             m_layers = propertyChange->value().toInt();
             m_isDirty |= (oldLayers != m_layers);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("samples")) {
+            const int oldSamples = m_samples;
+            m_samples = propertyChange->value().toInt();
+            m_isDirty |= (oldSamples != m_samples);
         }
+
         // TO DO: Handle the textureGenerator change
     }
         break;

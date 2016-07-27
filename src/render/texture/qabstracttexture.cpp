@@ -65,6 +65,7 @@ QAbstractTexturePrivate::QAbstractTexturePrivate()
     , m_comparisonFunction(QAbstractTexture::CompareLessEqual)
     , m_comparisonMode(QAbstractTexture::CompareNone)
     , m_layers(1)
+    , m_samples(1)
 {
 }
 
@@ -219,6 +220,36 @@ int QAbstractTexture::layers() const
 {
     Q_D(const QAbstractTexture);
     return d->m_layers;
+}
+
+/*!
+    \property Qt3DRender::QAbstractTexture::samples
+
+    Holds the number of samples per texel for the texture provider.
+    By default, the number of samples is 1.
+
+    \note this has a meaning only for texture providers that have multisample
+    formats.
+ */
+void QAbstractTexture::setSamples(int samples)
+{
+    Q_D(QAbstractTexture);
+    if (d->m_samples != samples) {
+        d->m_samples = samples;
+        emit samplesChanged(samples);
+    }
+}
+
+/*!
+    \return the number of samples per texel for the texture provider.
+
+    \note this has a meaning only for texture providers that have multisample
+    formats.
+ */
+int QAbstractTexture::samples() const
+{
+    Q_D(const QAbstractTexture);
+    return d->m_samples;
 }
 
 /*!
@@ -536,6 +567,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAbstractTexture::createNodeCreationChange()
     data.comparisonMode = d->m_comparisonMode;
     data.textureImageIds = qIdsForNodes(d->m_textureImages);
     data.layers = d->m_layers;
+    data.samples = d->m_samples;
     data.dataFunctor = d->m_dataFunctor;
     return creationChange;
 }

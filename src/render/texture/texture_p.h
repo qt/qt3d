@@ -111,6 +111,7 @@ public:
     int height() const;
     int depth() const;
     int layers() const;
+    int samples() const;
 
     inline QVector<HTextureImage> textureImages() const { return m_textureImages; }
     inline QAbstractTexture::TextureFormat format() const { return m_format; }
@@ -139,6 +140,7 @@ private:
     int m_height;
     int m_depth;
     int m_layers;
+    int m_samples;
     int m_mipLevels;
     bool m_generateMipMaps;
     QAbstractTexture::Target m_target;

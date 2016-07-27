@@ -84,6 +84,7 @@ public :
     QAbstractTexture::ComparisonMode m_comparisonMode;
     QVector<QAbstractTextureImage *> m_textureImages;
     int m_layers;
+    int m_samples;
 
     QTextureGeneratorPtr m_dataFunctor;
 };
@@ -106,6 +107,7 @@ struct QAbstractTextureData
     QAbstractTexture::ComparisonMode comparisonMode;
     Qt3DCore::QNodeIdVector textureImageIds;
     int layers;
+    int samples;
     QTextureGeneratorPtr dataFunctor;
 };
 

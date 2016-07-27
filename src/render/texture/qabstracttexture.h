@@ -72,6 +72,7 @@ class QT3DRENDERSHARED_EXPORT QAbstractTexture : public Qt3DCore::QNode
     Q_PROPERTY(ComparisonFunction comparisonFunction READ comparisonFunction WRITE setComparisonFunction NOTIFY comparisonFunctionChanged)
     Q_PROPERTY(ComparisonMode comparisonMode READ comparisonMode WRITE setComparisonMode NOTIFY comparisonModeChanged)
     Q_PROPERTY(int layers READ layers WRITE setLayers NOTIFY layersChanged)
+    Q_PROPERTY(int samples READ samples WRITE setSamples NOTIFY samplesChanged)
 
 public:
 
@@ -294,6 +295,7 @@ public:
     int height() const;
     int depth() const;
     int layers() const;
+    int samples() const;
     QTextureGeneratorPtr dataGenerator() const;
 
 public Q_SLOTS:
@@ -308,6 +310,7 @@ public Q_SLOTS:
     void setComparisonFunction(ComparisonFunction function);
     void setComparisonMode(ComparisonMode mode);
     void setLayers(int layers);
+    void setSamples(int samples);
 
 Q_SIGNALS:
     void formatChanged(TextureFormat format);
@@ -322,6 +325,7 @@ Q_SIGNALS:
     void comparisonFunctionChanged(ComparisonFunction comparisonFunction);
     void comparisonModeChanged(ComparisonMode comparisonMode);
     void layersChanged(int layers);
+    void samplesChanged(int samples);
 
 protected:
     explicit QAbstractTexture(Qt3DCore::QNode *parent = nullptr);
