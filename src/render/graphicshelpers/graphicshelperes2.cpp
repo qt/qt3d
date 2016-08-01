@@ -80,9 +80,6 @@ void GraphicsHelperES2::initializeHelper(QOpenGLContext *context,
     Q_ASSERT(context);
     m_funcs = context->functions();
     Q_ASSERT(m_funcs);
-    m_isES3 = context->format().majorVersion() >= 3;
-    if (m_isES3)
-        m_extraFuncs = QOpenGLContext::currentContext()->extraFunctions();
 }
 
 void GraphicsHelperES2::drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType,
@@ -99,19 +96,11 @@ void GraphicsHelperES2::drawElementsInstancedBaseVertexBaseInstance(GLenum primi
     if (baseVertex != 0)
         qWarning() << "glDrawElementsInstancedBaseVertex is not supported with OpenGL ES 2";
 
-    if (m_isES3 && m_extraFuncs) {
-        m_extraFuncs->glDrawElementsInstanced(primitiveType,
-                                              primitiveCount,
-                                              indexType,
-                                              indices,
-                                              instances);
-    } else {
-        for (GLint i = 0; i < instances; i++)
-            drawElements(primitiveType,
-                         primitiveCount,
-                         indexType,
-                         indices);
-    }
+    for (GLint i = 0; i < instances; i++)
+        drawElements(primitiveType,
+                     primitiveCount,
+                     indexType,
+                     indices);
 }
 
 void GraphicsHelperES2::drawArraysInstanced(GLenum primitiveType,
@@ -241,8 +230,8 @@ QVector<ShaderStorageBlock> GraphicsHelperES2::programShaderStorageBlocks(GLuint
 
 void GraphicsHelperES2::vertexAttribDivisor(GLuint index, GLuint divisor)
 {
-    if (m_isES3 && m_extraFuncs)
-        m_extraFuncs->glVertexAttribDivisor(index, divisor);
+    Q_UNUSED(index);
+    Q_UNUSED(divisor);
 }
 
 void GraphicsHelperES2::blendEquation(GLenum mode)
@@ -365,7 +354,7 @@ bool GraphicsHelperES2::supportsFeature(GraphicsHelperInterface::Feature feature
         return false;
     }
 }
-void GraphicsHelperES2::drawBuffers(GLsizei , const int *)
+void GraphicsHelperES2::drawBuffers(GLsizei, const int *)
 {
     qWarning() << "drawBuffers is not supported by ES 2.0";
 }
@@ -462,13 +451,8 @@ void GraphicsHelperES2::bindUniform(const QVariant &v, const ShaderUniform &desc
     case GL_SAMPLER_CUBE_SHADOW:
     case GL_SAMPLER_2D_ARRAY:
     case GL_SAMPLER_2D_ARRAY_SHADOW:
-        if (m_isES3) {
-            Q_ASSERT(description.m_size == 1);
-            m_funcs->glUniform1i(description.m_location, v.toInt());
-        } else {
-            qWarning() << Q_FUNC_INFO << "ES 3.0 uniform type" << description.m_type << "for"
-                       << description.m_name << "is not supported in ES 2.0";
-        }
+        qWarning() << Q_FUNC_INFO << "ES 3.0 uniform type" << description.m_type << "for"
+                   << description.m_name << "is not supported in ES 2.0";
         break;
 
     default:
