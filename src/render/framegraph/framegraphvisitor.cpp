@@ -315,11 +315,11 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
                 clearBufferInfo.drawBufferIndex = attachmentPack.getDrawBufferIndex(clearBufferInfo.attchmentPoint);
         };
 
-        auto syncRenderViewCommandBuildingJob = GenericLambdaJobPtr<decltype(syncForRenderCommandBuilding)>::create(syncForRenderCommandBuilding);
-        auto syncRenderViewInitializationJob = GenericLambdaJobPtr<decltype(syncRenderViewInitialization)>::create(syncRenderViewInitialization);
-        auto syncRenderViewCommandBuildersJob = GenericLambdaJobPtr<decltype(syncRenderViewCommandBuilders)>::create(syncRenderViewCommandBuilders);
-        auto syncFrustumCullingJob = GenericLambdaJobPtr<decltype(syncFrustumCulling)>::create(syncFrustumCulling);
-        auto setClearBufferDrawIndexJob = GenericLambdaJobPtr<decltype(setClearBufferDrawIndex)>::create(setClearBufferDrawIndex);
+        auto syncRenderViewCommandBuildingJob = GenericLambdaJobPtr<decltype(syncForRenderCommandBuilding)>::create(syncForRenderCommandBuilding, JobTypes::SyncRenderViewCommandBuilding);
+        auto syncRenderViewInitializationJob = GenericLambdaJobPtr<decltype(syncRenderViewInitialization)>::create(syncRenderViewInitialization, JobTypes::SyncRenderViewInitialization);
+        auto syncRenderViewCommandBuildersJob = GenericLambdaJobPtr<decltype(syncRenderViewCommandBuilders)>::create(syncRenderViewCommandBuilders, JobTypes::SyncRenderViewCommandBuilder);
+        auto syncFrustumCullingJob = GenericLambdaJobPtr<decltype(syncFrustumCulling)>::create(syncFrustumCulling, JobTypes::SyncFrustumCulling);
+        auto setClearBufferDrawIndexJob = GenericLambdaJobPtr<decltype(setClearBufferDrawIndex)>::create(setClearBufferDrawIndex, JobTypes::ClearBufferDrawIndex);
 
         // Set dependencies
         syncFrustumCullingJob->addDependency(renderer->updateWorldTransformJob());

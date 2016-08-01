@@ -85,6 +85,11 @@ namespace JobTypes {
         UpdateWorldBoundingVolume,
         FrameSubmissionPart2,
         SendRenderCapture,
+        SyncRenderViewCommandBuilding,
+        SyncRenderViewInitialization,
+        SyncRenderViewCommandBuilder,
+        SyncFrustumCulling,
+        ClearBufferDrawIndex
     };
 
 } // JobTypes
