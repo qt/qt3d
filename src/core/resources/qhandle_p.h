@@ -54,6 +54,8 @@
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QtCore/QDebug>
 
+class tst_Handle;  // needed for friend class declaration below
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
@@ -103,6 +105,7 @@ private:
 
 
     friend class QHandleManager<T, INDEXBITS>;
+    friend class ::tst_Handle;
 
     struct Data {
         quint32 m_index : IndexBits;
