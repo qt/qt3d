@@ -53,7 +53,38 @@ QLayerPrivate::QLayerPrivate()
     \class Qt3DRender::QLayer
     \inmodule Qt3DRender
     \since 5.5
-    \brief The QLayer class provides ...
+    \brief The QLayer class provides a way of filtering which entities will be rendered.
+
+    Qt3DRender::QLayer works in conjunction with the Qt3DRender::QLayerFilter in the FrameGraph.
+    \sa Qt3DRender::QLayerFilter
+
+    Qt3DRender::QLayer doesn't define any new properties but is supposed to only be referenced.
+
+    \code
+     #include <Qt3DCore/QEntity>
+     #include <Qt3DRender/QGeometryRenderer>
+     #include <Qt3DRender/QLayer>
+     #include <Qt3DRender/QLayerFilter>
+     #include <Qt3DRender/QViewport>
+
+    // Scene
+    Qt3DCore::QEntity *rootEntity = new Qt3DCore::Qt3DCore::QEntity;
+
+    Qt3DCore::QEntity *renderableEntity = new Qt3DCore::Qt3DCore::QEntity(rootEntity);
+    Qt3DRender::QGeometryRenderer *geometryRenderer = new Qt3DCore::QGeometryRenderer(renderableEntity);
+    Qt3DRender::QLayer *layer1 = new Qt3DCore::QLayer(renderableEntity);
+    renderableEntity->addComponent(geometryRenderer);
+    renderableEntity->addComponent(layer1);
+
+    ...
+
+    // FrameGraph
+    Qt3DRender::QViewport *viewport = new Qt3DRender::QViewport;
+    Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter(viewport);
+    layerFilter->addLayer(layer1);
+
+    ...
+    \endcode
 */
 
 /*!
@@ -62,7 +93,48 @@ QLayerPrivate::QLayerPrivate()
     \inherits Component3D
     \inqmlmodule Qt3D.Render
     \since 5.5
-    \brief For ...
+    \sa LayerFilter
+    \brief Layer provides a way of filtering which entities will be rendered.
+
+    Layer works in conjunction with the LayerFilter in the FrameGraph.
+
+    Layer doesn't define any new properties but is supposed to only be referenced.
+
+    \code
+    import Qt3D.Core 2.0
+    import Qt3D.Render 2.0
+
+    Entity {
+        id: root
+
+        components: RenderSettings {
+            // FrameGraph
+            Viewport {
+                ClearBuffers {
+                    buffers: ClearBuffers.ColorDepthBuffer
+                    CameraSelector {
+                        camera: mainCamera
+                        LayerFilter {
+                            layers: [layer1]
+                        }
+                    }
+                }
+            }
+        }
+
+        // Scene
+        Camera { id: mainCamera }
+
+        Layer { id: layer1 }
+
+        GeometryRenderer { id: mesh }
+
+        Entity {
+            id: renderableEntity
+            components: [ mesh, layer1 ]
+        }
+    }
+    \endcode
 */
 
 /*! \fn Qt3DRender::QLayer::QLayer(Qt3DCore::QNode *parent)
