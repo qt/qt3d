@@ -21,4 +21,5 @@ QML_FILES = \
     $$PWD/qml/PhongAlphaMaterial.qml \
     $$PWD/qml/TextureMaterial.qml \
     $$PWD/qml/OrbitCameraController.qml \
-    $$PWD/qml/FirstPersonCameraController.qml
+    $$PWD/qml/FirstPersonCameraController.qml \
+    $$PWD/qml/NormalDiffuseMapAlphaEffect.qml

@@ -1171,21 +1171,38 @@ void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffe
     const HGLBuffer glBufferHandle = m_renderer->nodeManagers()->glBufferManager()->lookupHandle(buffer->peerId());
     const GLBuffer::Type bufferType = bufferTypeToGLBufferType(buffer->type());
 
-    VAOVertexAttribute attr;
-    attr.bufferHandle = glBufferHandle;
-    attr.bufferType = bufferType;
-    attr.location = location;
-    attr.dataType = attributeDataType;
-    attr.byteOffset = attribute->byteOffset();
-    attr.vertexSize = attribute->vertexSize();
-    attr.byteStride = attribute->byteStride();
-    attr.divisor = attribute->divisor();
+    int typeSize = 0;
+    int attrCount = 0;
 
-    enableAttribute(attr);
+    if (attribute->vertexSize() >= 1 && attribute->vertexSize() <= 4) {
+        attrCount = 1;
+    } else if (attribute->vertexSize() == 9) {
+        typeSize = byteSizeFromType(attributeDataType);
+        attrCount = 3;
+    } else if (attribute->vertexSize() == 16) {
+        typeSize = byteSizeFromType(attributeDataType);
+        attrCount = 4;
+    } else {
+        Q_UNREACHABLE();
+    }
 
-    // Save this in the current emulated VAO
-    if (m_currentVAO)
-        m_currentVAO->saveVertexAttribute(attr);
+    for (int i = 0; i < attrCount; i++) {
+        VAOVertexAttribute attr;
+        attr.bufferHandle = glBufferHandle;
+        attr.bufferType = bufferType;
+        attr.location = (location >= 0 ? location + i : location);
+        attr.dataType = attributeDataType;
+        attr.byteOffset = attribute->byteOffset() + (i * attrCount * typeSize);
+        attr.vertexSize = attribute->vertexSize() / attrCount;
+        attr.byteStride = attribute->byteStride() + (attrCount * attrCount * typeSize);
+        attr.divisor = attribute->divisor();
+
+        enableAttribute(attr);
+
+        // Save this in the current emulated VAO
+        if (m_currentVAO)
+            m_currentVAO->saveVertexAttribute(attr);
+    }
 }
 
 void GraphicsContext::specifyIndices(Buffer *buffer)

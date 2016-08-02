@@ -27,11 +27,13 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
-
-// Not really clean but as the QHandle(idx, counter) is private
-// This allows to use this constructor in the tests
-#define private public
 #include <Qt3DCore/private/qhandle_p.h>
+
+#if Q_BYTE_ORDER == Q_BIG_ENDIAN
+#define GET_EXPECTED_HANDLE(qHandle) ((qHandle.index() << (qHandle.CounterBits + 2)) + (qHandle.counter() << 2))
+#else /* Q_LITTLE_ENDIAN */
+#define GET_EXPECTED_HANDLE(qHandle) (qHandle.index() + (qHandle.counter() << qHandle.IndexBits))
+#endif
 
 class tst_Handle : public QObject
 {
@@ -80,14 +82,14 @@ void tst_Handle::construction()
     QVERIFY(h.index() == 0);
     QVERIFY(h.counter() == 1);
     qDebug() << h;
-    QVERIFY(h.handle() == 65536);
+    QVERIFY(h.handle() == GET_EXPECTED_HANDLE(h));
 
     Handle h2(1, 1);
     QVERIFY(h2.isNull() == false);
     QVERIFY(h2.index() == 1);
     QVERIFY(h2.counter() == 1);
     qDebug() << h2;
-    QVERIFY(h2.handle() == 65537);
+    QVERIFY(h2.handle() == GET_EXPECTED_HANDLE(h2));
 }
 
 void tst_Handle::copyConstruction()
@@ -97,7 +99,7 @@ void tst_Handle::copyConstruction()
     QVERIFY(h2.isNull() == false);
     QVERIFY(h2.index() == 0);
     QVERIFY(h2.counter() == 1);
-    QVERIFY(h2.handle() == 65536);
+    QVERIFY(h2.handle() == GET_EXPECTED_HANDLE(h2));
 }
 
 void tst_Handle::assignment()
@@ -107,7 +109,7 @@ void tst_Handle::assignment()
     QVERIFY(h2.isNull() == false);
     QVERIFY(h2.index() == 0);
     QVERIFY(h2.counter() == 1);
-    QVERIFY(h2.handle() == 65536);
+    QVERIFY(h2.handle() == GET_EXPECTED_HANDLE(h2));
 }
 
 void tst_Handle::equality()
@@ -117,7 +119,7 @@ void tst_Handle::equality()
     QVERIFY(h1.isNull() == false);
     QVERIFY(h1.index() == 2);
     QVERIFY(h1.counter() == 1);
-    QVERIFY(h1.handle() == 65538);
+    QVERIFY(h1.handle() == GET_EXPECTED_HANDLE(h1));
     QVERIFY(h1 == h2);
 }
 
@@ -128,7 +130,7 @@ void tst_Handle::inequality()
     QVERIFY(h1.isNull() == false);
     QVERIFY(h1.index() == 2);
     QVERIFY(h1.counter() == 1);
-    QVERIFY(h1.handle() == 65538);
+    QVERIFY(h1.handle() == GET_EXPECTED_HANDLE(h1));
     QVERIFY(h1 != h2);
 
     Handle h3(2, 2);
@@ -153,13 +155,13 @@ void tst_Handle::bigHandle()
     QVERIFY(h1.isNull() == false);
     QVERIFY(h1.index() == 0);
     QVERIFY(h1.counter() == 1);
-    QVERIFY(h1.handle() == 4194304);
+    QVERIFY(h1.handle() == GET_EXPECTED_HANDLE(h1));
 
     BigHandle h2(1, 1);
     QVERIFY(h2.isNull() == false);
     QVERIFY(h2.index() == 1);
     QVERIFY(h2.counter() == 1);
-    QVERIFY(h2.handle() == 4194305);
+    QVERIFY(h2.handle() == GET_EXPECTED_HANDLE(h2));
 
     QVERIFY(BigHandle::maxIndex() == (1 << 22) - 1);
     QVERIFY(BigHandle::maxCounter() == (1 << (32 - 22 - 2)) - 1);

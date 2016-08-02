@@ -71,7 +71,7 @@ Material {
             name: "normalTexture"
             value: Texture2D {
                 id: normalTexture
-                minificationFilter: Texture.Linear
+                minificationFilter: Texture.LinearMipMapLinear
                 magnificationFilter: Texture.Linear
                 wrapMode {
                     x: WrapMode.Repeat

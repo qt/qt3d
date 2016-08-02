@@ -72,6 +72,7 @@ static const struct {
     // Effects
     { "DefaultEffect", 2, 0 },
     { "DefaultAlphaEffect", 2, 0 },
+    { "NormalDiffuseMapAlphaEffect", 2, 0 },
     // FrameGraphs
     { "ForwardRenderer", 2, 0 },
     // Entities

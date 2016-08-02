@@ -178,7 +178,8 @@ QString QAttribute::name() const
 /*!
  * \property QAttribute::vertexSize
  *
- * Holds the data size.
+ * Holds the data size, it can only be 1 to 4 units (scalars and vectors),
+ * 9 units (3x3 matrices) or 16 units (4x4 matrices).
  */
 uint QAttribute::vertexSize() const
 {
@@ -304,7 +305,7 @@ void QAttribute::setVertexSize(uint size)
     Q_D(QAttribute);
     if (d->m_vertexSize == size)
         return;
-    Q_ASSERT(size >= 1 && size <= 4);
+    Q_ASSERT((size >= 1 && size <= 4) || (size == 9) || (size == 16));
     d->m_vertexSize = size;
     emit vertexSizeChanged(size);
     emit dataSizeChanged(size);

@@ -79,7 +79,7 @@ void RenderSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         else if (propertyChange->propertyName() == QByteArrayLiteral("pickResult"))
             m_pickResultMode = propertyChange->value().value<QPickingSettings::PickResultMode>();
         else if (propertyChange->propertyName() == QByteArrayLiteral("activeFrameGraph"))
-            m_activeFrameGraph = propertyChange->value().value<QNodePtr>()->id();
+            m_activeFrameGraph = propertyChange->value().value<QNodeId>();
         else if (propertyChange->propertyName() == QByteArrayLiteral("renderPolicy"))
             m_renderPolicy = propertyChange->value().value<QRenderSettings::RenderPolicy>();
         markDirty(AbstractRenderer::AllDirty);

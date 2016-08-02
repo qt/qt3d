@@ -241,8 +241,6 @@ bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
                         // Process texture coordinate
                         float s = tokens.floatAt(1);
                         float t = tokens.floatAt(2);
-                        //FlipUVs
-                        t = 1.0f - t;
                         texCoords.append(QVector2D( s, t ));
                     } else {
                         texCoordsOffset++;

@@ -71,7 +71,7 @@ Material {
             name: "normalTexture"
             value: Texture2D {
                 id: normalTexture
-                minificationFilter: Texture.Linear
+                minificationFilter: Texture.LinearMipMapLinear
                 magnificationFilter: Texture.Linear
                 wrapMode {
                     x: WrapMode.Repeat
@@ -87,11 +87,6 @@ Material {
         Parameter { name: "texCoordScale"; value: textureScale }
     ]
 
-    effect: DefaultAlphaEffect {
-        vertexES: "qrc:/shaders/es2/normaldiffusemap.vert"
-        fragmentES: "qrc:/shaders/es2/normaldiffusemapalpha.frag"
-        vertex: "qrc:/shaders/gl3/normaldiffusemap.vert"
-        fragment: "qrc:/shaders/gl3/normaldiffusemapalpha.frag"
-    }
+    effect: NormalDiffuseMapAlphaEffect { }
 }
 

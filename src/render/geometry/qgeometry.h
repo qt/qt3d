@@ -59,8 +59,8 @@ public:
     ~QGeometry();
 
     QVector<QAttribute *> attributes() const;
-    void addAttribute(QAttribute *attribute);
-    void removeAttribute(QAttribute *attribute);
+    Q_INVOKABLE void addAttribute(Qt3DRender::QAttribute *attribute);
+    Q_INVOKABLE void removeAttribute(Qt3DRender::QAttribute *attribute);
 
     QAttribute *boundingVolumePositionAttribute() const;
 
