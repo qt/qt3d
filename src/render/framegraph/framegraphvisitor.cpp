@@ -335,6 +335,7 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
 
         // Set dependencies
         syncFrustumCullingJob->addDependency(renderer->updateWorldTransformJob());
+        syncFrustumCullingJob->addDependency(renderer->updateShaderDataTransformJob());
         syncFrustumCullingJob->addDependency(syncRenderViewInitializationJob);
 
         frustumCulling->addDependency(renderer->expandBoundingVolumeJob());

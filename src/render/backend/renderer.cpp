@@ -160,6 +160,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_calculateBoundingVolumeJob(Render::CalculateBoundingVolumeJobPtr::create())
     , m_updateWorldBoundingVolumeJob(Render::UpdateWorldBoundingVolumeJobPtr::create())
     , m_sendRenderCaptureJob(Render::SendRenderCaptureJobPtr::create(this))
+    , m_updateMeshTriangleListJob(Render::UpdateMeshTriangleListJobPtr::create())
     , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
     , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
     , m_shaderGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyShaders(); }, JobTypes::DirtyShaderGathering))
@@ -181,7 +182,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     m_updateShaderDataTransformJob->addDependency(m_worldTransformJob);
 
     // All world stuff depends on the RenderEntity's localBoundingVolume
-    m_pickBoundingVolumeJob->addDependency(m_updateShaderDataTransformJob);
+    m_pickBoundingVolumeJob->addDependency(m_updateMeshTriangleListJob);
 
     m_defaultRenderStateSet = new RenderStateSet;
     m_defaultRenderStateSet->addState(RenderStateSet::createState<DepthTest>(GL_LESS));
@@ -230,6 +231,7 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_pickBoundingVolumeJob->setManagers(m_nodesManager);
     m_updateWorldBoundingVolumeJob->setManager(m_nodesManager->renderNodesManager());
     m_sendRenderCaptureJob->setManagers(m_nodesManager);
+    m_updateMeshTriangleListJob->setManagers(m_nodesManager);
 }
 
 NodeManagers *Renderer::nodeManagers() const
@@ -1011,6 +1013,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 
     // Add jobs
     renderBinJobs.push_back(m_updateShaderDataTransformJob);
+    renderBinJobs.push_back(m_updateMeshTriangleListJob);
     renderBinJobs.push_back(m_expandBoundingVolumeJob);
     renderBinJobs.push_back(m_updateWorldBoundingVolumeJob);
     renderBinJobs.push_back(m_calculateBoundingVolumeJob);
