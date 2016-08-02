@@ -23,7 +23,8 @@ HEADERS += \
     $$PWD/expandboundingvolumejob_p.h \
     $$PWD/updateworldboundingvolumejob_p.h \
     $$PWD/sendrendercapturejob_p.h \
-    $$PWD/updateshaderdatatransformjob_p.h
+    $$PWD/updateshaderdatatransformjob_p.h \
+    $$PWD/updatemeshtrianglelistjob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
@@ -45,4 +46,5 @@ SOURCES += \
     $$PWD/expandboundingvolumejob.cpp \
     $$PWD/updateworldboundingvolumejob.cpp \
     $$PWD/sendrendercapturejob.cpp \
-    $$PWD/updateshaderdatatransformjob.cpp
+    $$PWD/updateshaderdatatransformjob.cpp \
+    $$PWD/updatemeshtrianglelistjob.cpp
