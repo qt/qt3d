@@ -61,7 +61,6 @@ namespace Qt3DRender {
 namespace Render {
 
 class NodeManagers;
-class Entity;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT UpdateShaderDataTransformJob : public Qt3DCore::QAspectJob
 {
@@ -75,8 +74,6 @@ protected:
     void run() Q_DECL_FINAL;
 
 private:
-    void parseNodes();
-
     NodeManagers *m_manager;
 };
 

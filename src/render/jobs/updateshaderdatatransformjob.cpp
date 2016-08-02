@@ -75,11 +75,6 @@ void UpdateShaderDataTransformJob::setManagers(NodeManagers *manager)
 
 void UpdateShaderDataTransformJob::run()
 {
-    parseNodes();
-}
-
-void UpdateShaderDataTransformJob::parseNodes()
-{
     EntityManager *manager = m_manager->renderNodesManager();
     const QVector<HEntity> handles = manager->activeHandles();
 
@@ -89,37 +84,6 @@ void UpdateShaderDataTransformJob::parseNodes()
         const QVector<ShaderData *> shaderDatas = node->renderComponents<ShaderData>();
         for (ShaderData *r : shaderDatas)
             r->updateWorldTransform(*node->worldTransform());
-
-        // TO DO: This will be moved to a separate job in a follow up commit
-
-        // Look if for the GeometryRender/Geometry the attributes and or buffers are dirty
-        // in which case we need to recompute the triangle list
-        GeometryRenderer *geomRenderer = node->renderComponent<GeometryRenderer>();
-        Geometry *geom = nullptr;
-        if (geomRenderer &&
-                (geom = m_manager->lookupResource<Geometry, GeometryManager>(geomRenderer->geometryId())) != nullptr) {
-            const Qt3DCore::QNodeId geomRendererId = geomRenderer->peerId();
-            if (!m_manager->geometryRendererManager()->isGeometryRendererScheduledForTriangleDataRefresh(geomRendererId)) {
-                // Check if the attributes or buffers are dirty
-                bool dirty = geomRenderer->isDirty();
-                Attribute *attr = nullptr;
-                const auto attrIds = geom->attributes();
-                for (const Qt3DCore::QNodeId attrId : attrIds) {
-                    if ((attr = m_manager->attributeManager()->lookupResource(attrId)) != nullptr) {
-                        dirty |= attr->isDirty();
-                        if (!dirty) {
-                            Buffer *buffer = nullptr;
-                            if ((buffer = m_manager->bufferManager()->lookupResource(attr->bufferId())) != nullptr)
-                                dirty = buffer->isDirty();
-                        }
-                        if (dirty)
-                            break;
-                    }
-                }
-                if (dirty)
-                    m_manager->geometryRendererManager()->requestTriangleDataRefreshForGeometryRenderer(geomRendererId);
-            }
-        }
     }
 }
 
