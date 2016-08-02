@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_FRAMEPREPARATIONJOB_H
-#define QT3DRENDER_RENDER_FRAMEPREPARATIONJOB_H
+#ifndef QT3DRENDER_RENDER_UPDATESHADERDATATRANSFORMJOB_H
+#define QT3DRENDER_RENDER_UPDATESHADERDATATRANSFORMJOB_H
 
 //
 //  W A R N I N G
@@ -63,26 +63,24 @@ namespace Render {
 class NodeManagers;
 class Entity;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT FramePreparationJob : public Qt3DCore::QAspectJob
+class QT3DRENDERSHARED_PRIVATE_EXPORT UpdateShaderDataTransformJob : public Qt3DCore::QAspectJob
 {
 public:
-    FramePreparationJob();
-    ~FramePreparationJob();
+    UpdateShaderDataTransformJob();
+    ~UpdateShaderDataTransformJob();
 
-    void setRoot(Entity *root);
     void setManagers(NodeManagers *manager);
 
 protected:
     void run() Q_DECL_FINAL;
 
 private:
-    void parseNodeTree(Entity *node);
+    void parseNodes();
 
-    Entity *m_root;
     NodeManagers *m_manager;
 };
 
-typedef QSharedPointer<FramePreparationJob> FramePreparationJobPtr;
+typedef QSharedPointer<UpdateShaderDataTransformJob> UpdateShaderDataTransformJobPtr;
 
 } // namespace Render
 
@@ -90,4 +88,4 @@ typedef QSharedPointer<FramePreparationJob> FramePreparationJobPtr;
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_FRAMEPREPARATIONJOB_H
+#endif // QT3DRENDER_RENDER_UPDATESHADERDATATRANSFORMJOB_H

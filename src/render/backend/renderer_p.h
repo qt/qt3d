@@ -65,7 +65,7 @@
 #include <Qt3DRender/private/expandboundingvolumejob_p.h>
 #include <Qt3DRender/private/updateworldtransformjob_p.h>
 #include <Qt3DRender/private/calcboundingvolumejob_p.h>
-#include <Qt3DRender/private/framepreparationjob_p.h>
+#include <Qt3DRender/private/updateshaderdatatransformjob_p.h>
 #include <Qt3DRender/private/framecleanupjob_p.h>
 #include <Qt3DRender/private/updateworldboundingvolumejob_p.h>
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
@@ -183,7 +183,7 @@ public:
 
     inline FrameCleanupJobPtr frameCleanupJob() const { return m_cleanupJob; }
     inline ExpandBoundingVolumeJobPtr expandBoundingVolumeJob() const { return m_expandBoundingVolumeJob; }
-    inline FramePreparationJobPtr framePreparationJob() const { return m_framePreparationJob; }
+    inline UpdateShaderDataTransformJobPtr updateShaderDataTransformJob() const { return m_updateShaderDataTransformJob; }
     inline CalculateBoundingVolumeJobPtr calculateBoundingVolumeJob() const { return m_calculateBoundingVolumeJob; }
     inline UpdateWorldTransformJobPtr updateWorldTransformJob() const { return m_worldTransformJob; }
     inline UpdateWorldBoundingVolumeJobPtr updateWorldBoundingVolumeJob() const { return m_updateWorldBoundingVolumeJob; }
@@ -284,7 +284,7 @@ private:
 
     RenderSettings *m_settings;
 
-    FramePreparationJobPtr m_framePreparationJob;
+    UpdateShaderDataTransformJobPtr m_updateShaderDataTransformJob;
     FrameCleanupJobPtr m_cleanupJob;
     UpdateWorldTransformJobPtr m_worldTransformJob;
     ExpandBoundingVolumeJobPtr m_expandBoundingVolumeJob;

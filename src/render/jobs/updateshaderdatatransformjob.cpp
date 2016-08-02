@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "framepreparationjob_p.h"
+#include "updateshaderdatatransformjob_p.h"
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
@@ -58,71 +58,69 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-FramePreparationJob::FramePreparationJob()
-    : m_root(nullptr)
-    , m_manager(nullptr)
+UpdateShaderDataTransformJob::UpdateShaderDataTransformJob()
+    : m_manager(nullptr)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FramePreparation, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateShaderDataTransform, 0);
 }
 
-FramePreparationJob::~FramePreparationJob()
+UpdateShaderDataTransformJob::~UpdateShaderDataTransformJob()
 {
 }
 
-void FramePreparationJob::setRoot(Entity *root)
-{
-    m_root = root;
-}
-
-void FramePreparationJob::setManagers(NodeManagers *manager)
+void UpdateShaderDataTransformJob::setManagers(NodeManagers *manager)
 {
     m_manager = manager;
 }
 
-void FramePreparationJob::run()
+void UpdateShaderDataTransformJob::run()
 {
-    parseNodeTree(m_root);
+    parseNodes();
 }
 
-void FramePreparationJob::parseNodeTree(Entity *node)
+void UpdateShaderDataTransformJob::parseNodes()
 {
-    // Update transform properties in ShaderDatas and Lights
-    const QVector<ShaderData *> shaderDatas = node->renderComponents<ShaderData>();
-    for (ShaderData *r : shaderDatas)
-        r->updateWorldTransform(*node->worldTransform());
+    EntityManager *manager = m_manager->renderNodesManager();
+    const QVector<HEntity> handles = manager->activeHandles();
 
-    // Look if for the GeometryRender/Geometry the attributes and or buffers are dirty
-    // in which case we need to recompute the triangle list
-    GeometryRenderer *geomRenderer = node->renderComponent<GeometryRenderer>();
-    const Qt3DCore::QNodeId geomRendererId = node->componentUuid<GeometryRenderer>();
-    Geometry *geom = nullptr;
-    if (geomRenderer &&
-            (geom = m_manager->lookupResource<Geometry, GeometryManager>(geomRenderer->geometryId())) != nullptr) {
-        if (!m_manager->geometryRendererManager()->isGeometryRendererScheduledForTriangleDataRefresh(geomRendererId)) {
-            // Check if the attributes or buffers are dirty
-            bool dirty = geomRenderer->isDirty();
-            Attribute *attr = nullptr;
-            const auto attrIds = geom->attributes();
-            for (const Qt3DCore::QNodeId attrId : attrIds) {
-                if ((attr = m_manager->attributeManager()->lookupResource(attrId)) != nullptr) {
-                    dirty |= attr->isDirty();
-                    if (!dirty) {
-                        Buffer *buffer = nullptr;
-                        if ((buffer = m_manager->bufferManager()->lookupResource(attr->bufferId())) != nullptr)
-                            dirty = buffer->isDirty();
+    for (const HEntity handle : handles) {
+        Entity *node = manager->data(handle);
+        // Update transform properties in ShaderDatas and Lights
+        const QVector<ShaderData *> shaderDatas = node->renderComponents<ShaderData>();
+        for (ShaderData *r : shaderDatas)
+            r->updateWorldTransform(*node->worldTransform());
+
+        // TO DO: This will be moved to a separate job in a follow up commit
+
+        // Look if for the GeometryRender/Geometry the attributes and or buffers are dirty
+        // in which case we need to recompute the triangle list
+        GeometryRenderer *geomRenderer = node->renderComponent<GeometryRenderer>();
+        Geometry *geom = nullptr;
+        if (geomRenderer &&
+                (geom = m_manager->lookupResource<Geometry, GeometryManager>(geomRenderer->geometryId())) != nullptr) {
+            const Qt3DCore::QNodeId geomRendererId = geomRenderer->peerId();
+            if (!m_manager->geometryRendererManager()->isGeometryRendererScheduledForTriangleDataRefresh(geomRendererId)) {
+                // Check if the attributes or buffers are dirty
+                bool dirty = geomRenderer->isDirty();
+                Attribute *attr = nullptr;
+                const auto attrIds = geom->attributes();
+                for (const Qt3DCore::QNodeId attrId : attrIds) {
+                    if ((attr = m_manager->attributeManager()->lookupResource(attrId)) != nullptr) {
+                        dirty |= attr->isDirty();
+                        if (!dirty) {
+                            Buffer *buffer = nullptr;
+                            if ((buffer = m_manager->bufferManager()->lookupResource(attr->bufferId())) != nullptr)
+                                dirty = buffer->isDirty();
+                        }
+                        if (dirty)
+                            break;
                     }
-                    if (dirty)
-                        break;
                 }
+                if (dirty)
+                    m_manager->geometryRendererManager()->requestTriangleDataRefreshForGeometryRenderer(geomRendererId);
             }
-            if (dirty)
-                m_manager->geometryRendererManager()->requestTriangleDataRefreshForGeometryRenderer(geomRendererId);
         }
     }
-
-    const QVector<Entity *> children = node->children();
-    for (Entity *c : children)
-        parseNodeTree(c);
 }
 
 } // namespace Render

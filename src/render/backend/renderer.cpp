@@ -153,7 +153,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_pickBoundingVolumeJob(PickBoundingVolumeJobPtr::create(this))
     , m_time(0)
     , m_settings(nullptr)
-    , m_framePreparationJob(Render::FramePreparationJobPtr::create())
+    , m_updateShaderDataTransformJob(Render::UpdateShaderDataTransformJobPtr::create())
     , m_cleanupJob(Render::FrameCleanupJobPtr::create())
     , m_worldTransformJob(Render::UpdateWorldTransformJobPtr::create())
     , m_expandBoundingVolumeJob(Render::ExpandBoundingVolumeJobPtr::create())
@@ -178,10 +178,10 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     m_updateWorldBoundingVolumeJob->addDependency(m_worldTransformJob);
     m_updateWorldBoundingVolumeJob->addDependency(m_calculateBoundingVolumeJob);
     m_expandBoundingVolumeJob->addDependency(m_updateWorldBoundingVolumeJob);
-    m_framePreparationJob->addDependency(m_worldTransformJob);
+    m_updateShaderDataTransformJob->addDependency(m_worldTransformJob);
 
     // All world stuff depends on the RenderEntity's localBoundingVolume
-    m_pickBoundingVolumeJob->addDependency(m_framePreparationJob);
+    m_pickBoundingVolumeJob->addDependency(m_updateShaderDataTransformJob);
 
     m_defaultRenderStateSet = new RenderStateSet;
     m_defaultRenderStateSet->addState(RenderStateSet::createState<DepthTest>(GL_LESS));
@@ -224,7 +224,7 @@ void Renderer::setNodeManagers(NodeManagers *managers)
 {
     m_nodesManager = managers;
 
-    m_framePreparationJob->setManagers(m_nodesManager);
+    m_updateShaderDataTransformJob->setManagers(m_nodesManager);
     m_cleanupJob->setManagers(m_nodesManager);
     m_calculateBoundingVolumeJob->setManagers(m_nodesManager);
     m_pickBoundingVolumeJob->setManagers(m_nodesManager);
@@ -359,7 +359,6 @@ void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
     qCDebug(Backend) << Q_FUNC_INFO << "DUMPING SCENE";
 
     // Set the scene root on the jobs
-    m_framePreparationJob->setRoot(m_renderSceneRoot);
     m_worldTransformJob->setRoot(m_renderSceneRoot);
     m_expandBoundingVolumeJob->setRoot(m_renderSceneRoot);
     m_calculateBoundingVolumeJob->setRoot(m_renderSceneRoot);
@@ -1011,7 +1010,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     }
 
     // Add jobs
-    renderBinJobs.push_back(m_framePreparationJob);
+    renderBinJobs.push_back(m_updateShaderDataTransformJob);
     renderBinJobs.push_back(m_expandBoundingVolumeJob);
     renderBinJobs.push_back(m_updateWorldBoundingVolumeJob);
     renderBinJobs.push_back(m_calculateBoundingVolumeJob);

@@ -64,7 +64,7 @@ namespace JobTypes {
     enum JobType {
         LoadBuffer = 1,
         FrameCleanup,
-        FramePreparation,
+        UpdateShaderDataTransform,
         CalcBoundingVolume,
         CalcTriangleVolume,
         LoadGeometry,
