@@ -74,30 +74,31 @@ void UpdateMeshTriangleListJob::setManagers(NodeManagers *manager)
 
 void UpdateMeshTriangleListJob::run()
 {
-    EntityManager *manager = m_manager->renderNodesManager();
-    const QVector<HEntity> handles = manager->activeHandles();
+    GeometryRendererManager *geomRenderermanager = m_manager->geometryRendererManager();
+    GeometryManager *geomManager = m_manager->geometryManager();
+    BufferManager *bufferManager = m_manager->bufferManager();
+    AttributeManager *attributeManager = m_manager->attributeManager();
 
-    for (const HEntity handle : handles) {
-        Entity *node = manager->data(handle);
+    const QVector<HGeometryRenderer> handles = geomRenderermanager->activeHandles();
 
+    for (const HGeometryRenderer handle : handles) {
         // Look if for the GeometryRender/Geometry the attributes and or buffers are dirty
         // in which case we need to recompute the triangle list
-        const GeometryRenderer *geomRenderer = node->renderComponent<GeometryRenderer>();
+        const GeometryRenderer *geomRenderer = geomRenderermanager->data(handle);
         if (geomRenderer != nullptr) {
-            const Geometry *geom = m_manager->lookupResource<Geometry, GeometryManager>(geomRenderer->geometryId());
+            const Geometry *geom = geomManager->lookupResource(geomRenderer->geometryId());
             if (geom != nullptr) {
                 const Qt3DCore::QNodeId geomRendererId = geomRenderer->peerId();
-                if (!m_manager->geometryRendererManager()->isGeometryRendererScheduledForTriangleDataRefresh(geomRendererId)) {
+                if (!geomRenderermanager->isGeometryRendererScheduledForTriangleDataRefresh(geomRendererId)) {
                     // Check if the attributes or buffers are dirty
                     bool dirty = geomRenderer->isDirty();
-                    Attribute *attr = nullptr;
                     const auto attrIds = geom->attributes();
                     for (const Qt3DCore::QNodeId attrId : attrIds) {
-                        attr = m_manager->attributeManager()->lookupResource(attrId);
+                        const Attribute *attr = attributeManager->lookupResource(attrId);
                         if (attr != nullptr) {
                             dirty |= attr->isDirty();
                             if (!dirty) {
-                                const Buffer *buffer = m_manager->bufferManager()->lookupResource(attr->bufferId());
+                                const Buffer *buffer = bufferManager->lookupResource(attr->bufferId());
                                 if (buffer != nullptr)
                                     dirty = buffer->isDirty();
                             }
