@@ -68,6 +68,7 @@ public:
     QTextureImagePrivate()
         : QAbstractTextureImagePrivate()
         , m_status(QTextureImage::Loading)
+        , m_mirrored(true)
     {
     }
 
@@ -75,12 +76,13 @@ public:
 
     QUrl m_source;
     QTextureImage::Status m_status;
+    bool m_mirrored;
 };
 
 class QImageTextureDataFunctor : public QTextureImageDataGenerator
 {
 public:
-    QImageTextureDataFunctor(const QUrl &url);
+    explicit QImageTextureDataFunctor(const QUrl &url, bool mirrored);
     // Will be executed from within a QAspectJob
     QTextureImageDataPtr operator ()() Q_DECL_FINAL;
     bool operator ==(const QTextureImageDataGenerator &other) const Q_DECL_FINAL;
@@ -91,6 +93,7 @@ private:
     QUrl m_url;
     QDateTime m_lastModified;
     QTextureImage::Status m_status;
+    bool m_mirrored;
 };
 
 } // namespace Qt3DRender
