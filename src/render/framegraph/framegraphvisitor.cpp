@@ -228,22 +228,29 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
                 rv->setLightSources(std::move(lightGatherer->lights()));
 
                 // Remove all entities from the compute and renderable vectors that aren't in the filtered layer vector
-                const QVector<Entity *> filteredEntities = filterEntityByLayer->filteredEntities();
+                QVector<Entity *> filteredEntities = filterEntityByLayer->filteredEntities();
 
-                // Note: this could further be improved if needed
-                // Set the renderable and computable entities
+                // We sort the vector so that the removal can then be performed linearly
                 if (!rv->isCompute()) {
                     QVector<Entity *> renderableEntities = std::move(renderableEntityFilterer->filteredEntities());
+                    std::sort(renderableEntities.begin(), renderableEntities.end());
+                    std::sort(filteredEntities.begin(), filteredEntities.end());
 
-                    for (auto i = renderableEntities.size() - 1; i >= 0; --i) {
-                        if (!filteredEntities.contains(renderableEntities.at(i)))
+                    for (auto i = renderableEntities.size() - 1, j = filteredEntities.size() - 1; i >= 0; --i) {
+                        while (j >= 0 && filteredEntities.at(j) > renderableEntities.at(i))
+                            --j;
+                        if (j < 0 || renderableEntities.at(i) != filteredEntities.at(j))
                             renderableEntities.removeAt(i);
                     }
 
                     if (rv->frustumCulling()) {
-                        const QVector<Entity *> visibleEntities = frustumCulling->visibleEntities();
-                        for (auto i = renderableEntities.size() - 1; i >= 0; --i) {
-                            if (!visibleEntities.contains(renderableEntities.at(i)))
+                        QVector<Entity *> visibleEntities = frustumCulling->visibleEntities();
+                        std::sort(visibleEntities.begin(), visibleEntities.end());
+
+                        for (auto i = renderableEntities.size() - 1, j = visibleEntities.size() - 1; i >= 0; --i) {
+                            while (j >= 0 && visibleEntities.at(j) > renderableEntities.at(i))
+                                --j;
+                            if (j < 0 || renderableEntities.at(i) != visibleEntities.at(j))
                                 renderableEntities.removeAt(i);
                         }
                     }
@@ -259,10 +266,15 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
 
                 } else {
                     QVector<Entity *> computableEntities = std::move(computeEntityFilterer->filteredEntities());
-                    for (auto i = computableEntities.size() - 1; i >= 0; --i) {
-                        if (!filteredEntities.contains(computableEntities.at(i)))
+                    std::sort(computableEntities.begin(), computableEntities.end());
+
+                    for (auto i = computableEntities.size() - 1, j = filteredEntities.size() - 1; i >= 0; --i) {
+                        while (j >= 0 && filteredEntities.at(j) > computableEntities.at(i))
+                            --j;
+                        if (j < 0 || computableEntities.at(i) != filteredEntities.at(j))
                             computableEntities.removeAt(i);
                     }
+
                     // Split among the number of command builders
                     const int packetSize = computableEntities.size() / optimalParallelJobCount;
                     for (auto i = 0; i < optimalParallelJobCount; ++i) {
