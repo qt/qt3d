@@ -123,40 +123,49 @@ public:
     // and not float. Otherwise, at when filling the uniforms, calling constData<float>
     // on something that contains a double will result in wrong values
 
-    UniformValue() {}
-    UniformValue(int i) { m_data.ivec[0] = i; }
-    UniformValue(uint i) { m_data.ivec[0] = i; }
-    UniformValue(float f) { m_data.fvec[0] = f; }
-    UniformValue(double d) { m_data.fvec[0] = d; } // Double to float conversion
-    UniformValue(bool b) { m_data.ivec[0] = b; }
-    UniformValue(const QVector2D &vec2) { memcpy(&m_data, &vec2, sizeof(QVector2D)); }
-    UniformValue(const QVector3D &vec3) { memcpy(&m_data, &vec3, sizeof(QVector3D)); }
-    UniformValue(const QVector4D &vec4) { memcpy(&m_data, &vec4, sizeof(QVector4D)); }
+    UniformValue()
+        : m_data(4)
+    {
+        memset(m_data.data(), 0, m_data.size() * sizeof(float));
+    }
+
+    UniformValue(int i) : UniformValue() { data<int>()[0] = i; }
+    UniformValue(uint i) : UniformValue() { data<uint>()[0] = i; }
+    UniformValue(float f) : UniformValue() { data<float>()[0] = f; }
+    UniformValue(double d) : UniformValue() { data<float>()[0] = d; } // Double to float conversion
+    UniformValue(bool b) : UniformValue() { data<bool>()[0] = b; }
+    UniformValue(const QVector2D &vec2) : UniformValue() { memcpy(m_data.data(), &vec2, sizeof(QVector2D)); }
+    UniformValue(const QVector3D &vec3) : UniformValue() { memcpy(m_data.data(), &vec3, sizeof(QVector3D)); }
+    UniformValue(const QVector4D &vec4) : m_data(4) { memcpy(m_data.data(), &vec4, sizeof(QVector4D)); }
 
     UniformValue(const QMatrix3x3 &mat33)
+        : m_data(9)
     {
         // Use constData because we want column-major layout
-        memcpy(&m_data, mat33.constData(), 9 * sizeof(float));
+        memcpy(m_data.data(), mat33.constData(), 9 * sizeof(float));
     }
 
     UniformValue(const QMatrix4x4 &mat44)
+        : m_data(16)
     {
         // Use constData because we want column-major layout
-        memcpy(&m_data, mat44.constData(), 16 * sizeof(float));
+        memcpy(m_data.data(), mat44.constData(), 16 * sizeof(float));
     }
 
     // For nodes which will later be replaced by a Texture or Buffer
     UniformValue(Qt3DCore::QNodeId id)
+        : UniformValue()
     {
         m_valueType = NodeId;
-        memcpy(&m_data, &id, sizeof(Qt3DCore::QNodeId));
+        memcpy(m_data.data(), &id, sizeof(Qt3DCore::QNodeId));
     }
 
     // For textures
     UniformValue(UniformValue::Texture t)
+        : UniformValue()
     {
         m_valueType = TextureValue;
-        memcpy(&m_data, &t, sizeof(Texture));
+        memcpy(m_data.data(), &t, sizeof(Texture));
     }
 
     ValueType valueType() const { return m_valueType; }
@@ -166,18 +175,18 @@ public:
     template<typename T>
     const T *constData() const
     {
-        return reinterpret_cast<const T *>(&m_data);
+        return reinterpret_cast<const T *>(m_data.constData());
     }
 
     template<typename T>
     T *data()
     {
-        return reinterpret_cast<T *>(&m_data);
+        return reinterpret_cast<T *>(m_data.data());
     }
 
     bool operator==(const UniformValue &other) const
     {
-        return memcmp(&m_data, &other.m_data, sizeof(u_Uniform)) == 0;
+        return other.m_data == m_data;
     }
 
     bool operator!=(const UniformValue &other) const
@@ -185,15 +194,9 @@ public:
         return !(*this == other);
     }
 private:
-    union u_Uniform {
-        int ivec[4]; // store uint/ints/bools
-        float fvec[16]; // for matrix4 (note: we could have a special case for matrices)
-
-        u_Uniform()
-        {
-            memset(this, 0, sizeof(u_Uniform));
-        }
-    } m_data;
+    // Allocate 4 floats on stack
+    // For larger elements, heap allocation will be used
+    QVarLengthArray<float, 4> m_data;
 
     ValueType m_valueType = ScalarValue;
 };

@@ -59,7 +59,7 @@ UniformValue UniformValue::fromVariant(const QVariant &variant)
     UniformValue v;
     switch (variant.userType()) {
     case QMetaType::Bool:
-        v.m_data.ivec[0] = variant.toBool();
+        v.data<bool>()[0] = variant.toBool();
         break;
     case QMetaType::Int:
     case QMetaType::UInt:
@@ -71,84 +71,85 @@ UniformValue UniformValue::fromVariant(const QVariant &variant)
     case QMetaType::UShort:
     case QMetaType::Char:
     case QMetaType::UChar:
-        v.m_data.ivec[0] = variant.toInt();
+        v.data<int>()[0] = variant.toInt();
         break;
     case QMetaType::Float:
     case QMetaType::Double: // Convert double to floats
-        v.m_data.fvec[0] = variant.toFloat();
+        v.m_data[0] = variant.toFloat();
         break;
     case QMetaType::QPoint: {
         const QPoint p = variant.toPoint();
-        v.m_data.ivec[0] = p.x();
-        v.m_data.ivec[1] = p.y();
+        v.data<int>()[0] = p.x();
+        v.data<int>()[1] = p.y();
         break;
     }
     case QMetaType::QSize: {
         const QSize s = variant.toSize();
-        v.m_data.ivec[0] = s.width();
-        v.m_data.ivec[1] = s.height();
+        v.data<int>()[0] = s.width();
+        v.data<int>()[1] = s.height();
         break;
     }
     case QMetaType::QRect: {
         const QRect r = variant.toRect();
-        v.m_data.ivec[0] = r.x();
-        v.m_data.ivec[1] = r.y();
-        v.m_data.ivec[2] = r.width();
-        v.m_data.ivec[3] = r.height();
+        v.data<int>()[0] = r.x();
+        v.data<int>()[1] = r.y();
+        v.data<int>()[2] = r.width();
+        v.data<int>()[3] = r.height();
         break;
     }
     case QMetaType::QSizeF: {
         const QSizeF s = variant.toSize();
-        v.m_data.fvec[0] = s.width();
-        v.m_data.fvec[1] = s.height();
+        v.m_data[0] = s.width();
+        v.m_data[1] = s.height();
         break;
     }
     case QMetaType::QPointF: {
         const QPointF p = variant.toPointF();
-        v.m_data.fvec[0] = p.x();
-        v.m_data.fvec[1] = p.y();
+        v.m_data[0] = p.x();
+        v.m_data[1] = p.y();
         break;
     }
     case QMetaType::QRectF: {
         const QRectF r = variant.toRect();
-        v.m_data.fvec[0] = r.x();
-        v.m_data.fvec[1] = r.y();
-        v.m_data.fvec[2] = r.width();
-        v.m_data.fvec[3] = r.height();
+        v.m_data[0] = r.x();
+        v.m_data[1] = r.y();
+        v.m_data[2] = r.width();
+        v.m_data[3] = r.height();
         break;
     }
     case QMetaType::QVector2D: {
         const QVector2D vec2 = variant.value<QVector2D>();
-        v.m_data.fvec[0] = vec2.x();
-        v.m_data.fvec[1] = vec2.y();
+        v.m_data[0] = vec2.x();
+        v.m_data[1] = vec2.y();
         break;
     }
     case QMetaType::QVector3D: {
         const QVector3D vec3 = variant.value<QVector3D>();
-        v.m_data.fvec[0] = vec3.x();
-        v.m_data.fvec[1] = vec3.y();
-        v.m_data.fvec[2] = vec3.z();
+        v.m_data[0] = vec3.x();
+        v.m_data[1] = vec3.y();
+        v.m_data[2] = vec3.z();
         break;
     }
     case QMetaType::QVector4D: {
         const QVector4D vec4 = variant.value<QVector4D>();
-        v.m_data.fvec[0] = vec4.x();
-        v.m_data.fvec[1] = vec4.y();
-        v.m_data.fvec[2] = vec4.z();
-        v.m_data.fvec[3] = vec4.w();
+        v.m_data[0] = vec4.x();
+        v.m_data[1] = vec4.y();
+        v.m_data[2] = vec4.z();
+        v.m_data[3] = vec4.w();
         break;
     }
     case QMetaType::QColor: {
         const QColor col = variant.value<QColor>();
-        v.m_data.fvec[0] = col.redF();
-        v.m_data.fvec[1] = col.greenF();
-        v.m_data.fvec[2] = col.blueF();
-        v.m_data.fvec[3] = col.alphaF();
+        v.m_data[0] = col.redF();
+        v.m_data[1] = col.greenF();
+        v.m_data[2] = col.blueF();
+        v.m_data[3] = col.alphaF();
         break;
     }
     case QMetaType::QMatrix4x4: {
         const QMatrix4x4 mat44 = variant.value<QMatrix4x4>();
         // Use constData because we want column-major layout
+        v.m_data.resize(16);
         memcpy(v.data<float>(), mat44.constData(), 16 * sizeof(float));
         break;
     }
