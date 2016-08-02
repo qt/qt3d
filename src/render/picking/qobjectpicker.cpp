@@ -313,7 +313,7 @@ void QObjectPickerPrivate::propagateEvent(QPickEvent *event, EventType type)
     if (!m_entities.isEmpty()) {
         Qt3DCore::QEntity *entity = m_entities.first();
         Qt3DCore::QEntity *parentEntity = nullptr;
-        while (entity != nullptr && entity->parent() != nullptr && !event->isAccepted()) {
+        while (entity != nullptr && entity->parentEntity() != nullptr && !event->isAccepted()) {
             parentEntity = entity->parentEntity();
             const auto components = parentEntity->components();
             for (Qt3DCore::QComponent *c : components) {
