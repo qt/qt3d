@@ -425,9 +425,39 @@ void PickBoundingVolumeJob::run()
     ViewportCameraAreaGatherer vcaGatherer;
     const QVector<ViewportCameraAreaTriplet> vcaTriplets = vcaGatherer.gather(m_renderer->frameGraphRoot());
 
-    EntityGatherer entitiesGatherer(m_node);
 
     if (!vcaTriplets.empty()) {
+        bool hasMoveEvent = false;
+        bool hasOtherEvent = false;
+
+        for (const QMouseEvent &event : mouseEvents) {
+            const bool isMove = (event.type() == QEvent::MouseMove);
+            hasMoveEvent |= isMove;
+            hasOtherEvent |= !isMove;
+        }
+
+        // We gather when we have a click/release event or a move
+        // event and a QObjectPicker enabled to receive it
+        ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
+
+        // In the case we have a move event, find if we actually have
+        // an object picker that cares about these
+        if (!hasOtherEvent) {
+            // The only way to set lastCurrentPicker is to click
+            // so we can return since if we're there it means we
+            // have only move events
+            if (lastCurrentPicker == nullptr)
+                return;
+
+            const bool caresAboutMove = (hasMoveEvent && lastCurrentPicker->isDragEnabled());
+            // Early return if the current object picker doesn't care about move events
+            if (!caresAboutMove)
+                return;
+        }
+
+        // Gather the entities for the frame
+        EntityGatherer entitiesGatherer(m_node);
+
         for (const QMouseEvent &event : mouseEvents) {
             QPickEvent::Buttons eventButton = QPickEvent::NoButton;
             switch (event.button()) {
@@ -459,7 +489,7 @@ void PickBoundingVolumeJob::run()
                 eventModifiers |= QPickEvent::KeypadModifier;
 
             m_hoveredPickersToClear = m_hoveredPickers;
-            ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
+            lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
 
             for (const ViewportCameraAreaTriplet &vca : vcaTriplets) {
                 typedef AbstractCollisionGathererFunctor::result_type HitList;
