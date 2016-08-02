@@ -119,6 +119,15 @@ private:
         return vca;
     }
 
+    bool isUnique(const QVector<ViewportCameraAreaTriplet> &vcaTriplets, const ViewportCameraAreaTriplet &vca) const
+    {
+        for (const ViewportCameraAreaTriplet &triplet : vcaTriplets) {
+            if (vca.cameraId == triplet.cameraId && vca.viewport == triplet.viewport && vca.area == triplet.area)
+                return false;
+        }
+        return true;
+    }
+
 public:
     QVector<ViewportCameraAreaTriplet> gather(FrameGraphNode *root)
     {
@@ -130,7 +139,7 @@ public:
         // Find all viewport/camera pairs by traversing from leaf to root
         for (Render::FrameGraphNode *leaf : qAsConst(m_leaves)) {
             ViewportCameraAreaTriplet vcaTriplet = gatherUpViewportCameraAreas(leaf);
-            if (!vcaTriplet.cameraId.isNull())
+            if (!vcaTriplet.cameraId.isNull() && isUnique(vcaTriplets, vcaTriplet))
                 vcaTriplets.push_back(vcaTriplet);
         }
         return vcaTriplets;
