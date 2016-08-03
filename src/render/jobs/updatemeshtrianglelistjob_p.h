@@ -69,8 +69,6 @@ public:
     ~UpdateMeshTriangleListJob();
 
     void setManagers(NodeManagers *manager);
-
-protected:
     void run() Q_DECL_FINAL;
 
 private:
