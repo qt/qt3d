@@ -56,6 +56,8 @@
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/qboundingvolumeprovider_p.h>
 #include <Qt3DRender/private/qcollisionqueryresult_p.h>
+#include <Qt3DRender/private/pickboundingvolumeutils_p.h>
+#include <Qt3DRender/qpickevent.h>
 #include <QMouseEvent>
 #include <QSharedPointer>
 
@@ -74,26 +76,42 @@ namespace Render {
 class Entity;
 class Renderer;
 class NodeManagers;
+class RenderSettings;
 
 class Q_AUTOTEST_EXPORT PickBoundingVolumeJob : public Qt3DCore::QAspectJob
 {
 public:
-    PickBoundingVolumeJob(Renderer *renderer);
+    PickBoundingVolumeJob();
 
     void setRoot(Entity *root);
+    void setMouseEvents(const QList<QMouseEvent> &pendingEvents);
+    void setFrameGraphRoot(FrameGraphNode *frameGraphRoot);
+    void setRenderSettings(RenderSettings *settings);
+    void setManagers(NodeManagers *manager);
 
     static QRay3D intersectionRay(const QPoint &pos,
                                   const QMatrix4x4 &viewMatrix,
                                   const QMatrix4x4 &projectionMatrix,
                                   const QRect &viewport);
-    void setManagers(NodeManagers *manager);
+
+    // For unit tests
+    inline HObjectPicker currentPicker() const { return m_currentPicker; }
+    inline QVector<HObjectPicker> hoveredPickers() const { return m_hoveredPickers; }
+    bool runHelper();
+
 protected:
     void run() Q_DECL_FINAL;
+    void dispatchPickEvents(const QMouseEvent &event, const PickingUtils::CollisionVisitor::HitList &sphereHits,
+                            QPickEvent::Buttons eventButton,
+                            int eventButtons,
+                            int eventModifiers);
 
 private:
-    Renderer *m_renderer;
     NodeManagers *m_manager;
     Entity *m_node;
+    FrameGraphNode *m_frameGraphRoot;
+    RenderSettings *m_renderSettings;
+    QList<QMouseEvent> m_pendingMouseEvents;
 
     void viewMatrixForCamera(Qt3DCore::QNodeId cameraId,
                              QMatrix4x4 &viewMatrix,

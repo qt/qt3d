@@ -150,7 +150,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_changeSet(0)
     , m_lastFrameCorrect(0)
     , m_glContext(nullptr)
-    , m_pickBoundingVolumeJob(PickBoundingVolumeJobPtr::create(this))
+    , m_pickBoundingVolumeJob(PickBoundingVolumeJobPtr::create())
     , m_time(0)
     , m_settings(nullptr)
     , m_updateShaderDataTransformJob(Render::UpdateShaderDataTransformJobPtr::create())
@@ -994,6 +994,11 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     // Set dependencies
     for (const QAspectJobPtr &bufferJob : bufferJobs)
         m_calculateBoundingVolumeJob->addDependency(bufferJob);
+
+    // Set values on pickBoundingVolumeJob
+    m_pickBoundingVolumeJob->setFrameGraphRoot(frameGraphRoot());
+    m_pickBoundingVolumeJob->setRenderSettings(settings());
+    m_pickBoundingVolumeJob->setMouseEvents(pendingPickingEvents());
 
 
     // Traverse the current framegraph. For each leaf node create a
