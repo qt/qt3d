@@ -62,7 +62,7 @@ namespace Render {
 
 class AbstractRenderer;
 
-class RenderSettings : public BackendNode
+class Q_AUTOTEST_EXPORT RenderSettings : public BackendNode
 {
 public:
     RenderSettings();
