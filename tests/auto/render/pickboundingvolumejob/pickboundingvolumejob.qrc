@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>testscene_dragdisabled.qml</file>
+        <file>testscene_dragenabled.qml</file>
+        <file>testscene_improperframegraph.qml</file>
+        <file>testscene_dragenabledhoverenabled.qml</file>
+    </qresource>
+</RCC>
