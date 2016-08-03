@@ -548,7 +548,7 @@ void GraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const Attach
                 if (fboSize.isEmpty())
                     fboSize = QSize(glTex->width(), glTex->height());
                 else
-                    fboSize = QSize(qMin(fboSize.width(), glTex->width()), qMin(fboSize.width(), glTex->width()));
+                    fboSize = QSize(qMin(fboSize.width(), glTex->width()), qMin(fboSize.height(), glTex->height()));
                 m_glHelper->bindFrameBufferAttachment(glTex, attachment);
             }
         }
