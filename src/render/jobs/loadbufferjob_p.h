@@ -64,16 +64,16 @@ namespace Render {
 
 class NodeManagers;
 
-class LoadBufferJob : public Qt3DCore::QAspectJob
+class Q_AUTOTEST_EXPORT LoadBufferJob : public Qt3DCore::QAspectJob
 {
 public:
     explicit LoadBufferJob(const HBuffer &handle);
     ~LoadBufferJob();
 
     void setNodeManager(NodeManagers *nodeManagers) { m_nodeManagers = nodeManagers; }
+    void run() Q_DECL_OVERRIDE;
 
 protected:
-    void run() Q_DECL_OVERRIDE;
     HBuffer m_handle;
     NodeManagers *m_nodeManagers;
 };
