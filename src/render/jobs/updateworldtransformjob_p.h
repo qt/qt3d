@@ -69,8 +69,6 @@ public:
     UpdateWorldTransformJob();
 
     void setRoot(Entity *root);
-
-protected:
     void run() Q_DECL_OVERRIDE;
 
 private:
