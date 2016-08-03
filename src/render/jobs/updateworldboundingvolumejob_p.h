@@ -68,8 +68,6 @@ public:
     UpdateWorldBoundingVolumeJob();
 
     inline void setManager(EntityManager *manager) Q_DECL_NOTHROW { m_manager = manager; }
-
-protected:
     void run() Q_DECL_OVERRIDE;
 
 private:
