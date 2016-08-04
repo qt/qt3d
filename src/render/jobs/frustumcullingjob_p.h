@@ -62,7 +62,7 @@ namespace Render {
 
 class Entity;
 class EntityManager;
-class Plane;
+struct Plane;
 
 class FrustumCullingJob : public Qt3DCore::QAspectJob
 {
