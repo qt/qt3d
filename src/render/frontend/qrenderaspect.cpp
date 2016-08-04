@@ -77,7 +77,6 @@
 #include <Qt3DRender/qrendersurfaceselector.h>
 #include <Qt3DRender/qrendersettings.h>
 
-#include <Qt3DRender/private/qboundingvolumedebug_p.h>
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
 #include <Qt3DRender/private/filterkey_p.h>
@@ -222,7 +221,6 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QViewport>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::ViewportNode, QViewport> >::create(m_renderer, m_nodeManagers->frameGraphManager()));
 
     // Picking
-    // q->registerBackendType<QBoundingVolumeDebug>(QSharedPointer<Render::NodeFunctor<Render::BoundingVolumeDebug, Render::BoundingVolumeDebugManager> >::create(m_renderer, m_nodeManagers->boundingVolumeDebugManager()));
     q->registerBackendType<QObjectPicker>(QSharedPointer<Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager> >::create(m_renderer, m_nodeManagers->objectPickerManager()));
 }
 
@@ -278,7 +276,6 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     unregisterBackendType<QViewport>();
 
     // Picking
-    // unregisterBackendType<QBoundingVolumeDebug>();
     unregisterBackendType<QObjectPicker>();
 }
 
