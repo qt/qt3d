@@ -59,7 +59,7 @@ src_quick3d_imports_logic.depends = src_logic
 
 src_quick3d_imports_extras.file = $$PWD/quick3d/imports/extras/importsextras.pro
 src_quick3d_imports_extras.target = sub-quick3d-imports-extras
-src_quick3d_imports_extras.depends = src_extras
+src_quick3d_imports_extras.depends = src_extras src_quick3d_extras
 
 # Qt3D Scene Parser plugins
 src_plugins_sceneparsers.file = $$PWD/plugins/sceneparsers/sceneparsers.pro
