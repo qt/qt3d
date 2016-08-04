@@ -89,7 +89,10 @@ Texture::Texture()
 
 Texture::~Texture()
 {
-    cleanup();
+    // We do not abandon the api texture
+    // because if the dtor is called that means
+    // the manager was destroyed otherwise cleanup
+    // would have been called
 }
 
 void Texture::setTextureManager(GLTextureManager *manager)

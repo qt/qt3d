@@ -51,81 +51,26 @@
 // We mean it.
 //
 
-#include <Qt3DRender/qtexturegenerator.h>
-#include <Qt3DRender/qtextureimagedatagenerator.h>
-#include <Qt3DRender/private/texture_p.h>
+#include <Qt3DRender/private/apitexturemanager_p.h>
 #include <Qt3DRender/private/gltexture_p.h>
-#include <Qt3DCore/private/qresourcemanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 
-class TextureDataManager;
-class TextureImageManager;
-class TextureImageDataManager;
-
-class Q_AUTOTEST_EXPORT GLTextureManager
+class Q_AUTOTEST_EXPORT GLTextureManager : public APITextureManager<GLTexture, GLTexture::Image>
 {
 public:
-
-    GLTextureManager(TextureManager *textureNodeManager,
-                     TextureImageManager *textureImageManager,
-                     TextureDataManager *textureDataManager,
-                     TextureImageDataManager *textureImageDataManager);
-
-    ~GLTextureManager();
-
-    GLTexture *getOrCreateShared(const Texture *node);
-    GLTexture *tryFindShared(const Texture *node);
-    GLTexture *createUnique(const Texture *node);
-    void abandon(GLTexture *tex, const Texture *node);
-    bool setProperties(GLTexture *tex, const TextureProperties &props);
-    bool setParameters(GLTexture *tex, const TextureParameters &params);
-    bool setImages(GLTexture *tex, const QVector<HTextureImage> &images);
-    QVector<GLTexture*> takeAbandonedTextures();
-
-    /**
-     * @brief Retrieves textures that have been modified
-     */
-    QVector<GLTexture*> takeUpdatedTextures();
-
-    /**
-     * @brief Returns whether the given GLTexture is shared between multiple TextureNodes
-     */
-    bool isShared(GLTexture *impl);
-
-private:
-
-    /**
-     * @brief Check if the given GLTexture matches the TextureNode
-     */
-    bool isSameTexture(const GLTexture &tex, const Texture &texNode);
-
-    /**
-     * @brief
-     *  Create GLTexture from given TextureNode. Also make sure the generators
-     *  will be executed by jobs soon.
-     */
-    GLTexture *createTexture(const Texture &node, bool unique);
-
-    QVector<GLTexture::Image> texImgsFromNodes(const QVector<HTextureImage> &images) const;
-
-    QMutex m_mutex;
-
-    TextureManager *m_textureNodeManager;
-    TextureImageManager *m_textureImageManager;
-    TextureDataManager *m_textureDataManager;
-    TextureImageDataManager *m_textureImageDataManager;
-
-    /* each non-unique texture is associated with a number of Texture nodes referencing it */
-    QHash<GLTexture*, QVector<HTexture>> m_sharedTextures;
-
-    QVector<GLTexture*> m_uniqueTextures;
-
-    QVector<GLTexture*> m_abandonedTextures;
-    QVector<GLTexture*> m_updatedTextures;
+    explicit GLTextureManager(TextureManager *textureNodeManager,
+                              TextureImageManager *textureImageManager,
+                              TextureDataManager *textureDataManager,
+                              TextureImageDataManager *textureImageDataManager)
+        : APITextureManager<GLTexture, GLTexture::Image>(textureNodeManager,
+                                                        textureImageManager,
+                                                        textureDataManager,
+                                                        textureImageDataManager)
+    {}
 };
 
 } // namespace Render

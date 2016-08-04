@@ -321,7 +321,7 @@ QOpenGLTexture *GLTexture::buildGLTexture()
             m_properties.target == QAbstractTexture::Target2DMultisampleArray) {
         // Set samples count if multisampled texture
         // (multisampled textures don't have mipmaps)
-        glTex->setSamples(m_samples);
+        glTex->setSamples(m_properties.samples);
     } else if (m_properties.generateMipMaps) {
         glTex->setMipLevels(glTex->maximumMipLevels());
     } else {

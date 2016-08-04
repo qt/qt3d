@@ -69,7 +69,6 @@ class QOpenGLTexture;
 namespace Qt3DRender {
 namespace Render {
 
-class GLTextureManager;
 class TextureImageManager;
 class TextureDataManager;
 class TextureImageDataManager;
@@ -143,7 +142,8 @@ public:
 
 protected:
 
-    friend class GLTextureManager;
+    template<class APITexture, class APITextureImage>
+    friend class APITextureManager;
 
     /*
      * These methods are to be accessed from the GLTextureManager.
