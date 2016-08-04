@@ -36,6 +36,11 @@ intel_icc: {
     QMAKE_CXXFLAGS_WARN_ON = $$QMAKE_CFLAGS_WARN_ON
 }
 
+clang: {
+    QMAKE_CFLAGS_WARN_ON += -Wno-unused-private-field
+    QMAKE_CXXFLAGS_WARN_ON = $$QMAKE_CFLAGS_WARN_ON
+}
+
 CONFIG += warn_on
 
 VPATH += \
