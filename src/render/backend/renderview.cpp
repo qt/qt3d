@@ -114,12 +114,14 @@ RenderView::StandardUniformsPFuncsHash RenderView::initializeStandardUniformSett
     setters.insert(StringToInt::lookupId(QLatin1String("viewMatrix")), &RenderView::viewMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("projectionMatrix")), &RenderView::projectionMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("modelView")), &RenderView::modelViewMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("viewProjectionMatrix")), &RenderView::viewProjectionMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("modelViewProjection")), &RenderView::modelViewProjectionMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("mvp")), &RenderView::modelViewProjectionMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("inverseModelMatrix")), &RenderView::inverseModelMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("inverseViewMatrix")), &RenderView::inverseViewMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("inverseProjectionMatrix")), &RenderView::inverseProjectionMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("inverseModelView")), &RenderView::inverseModelViewMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("inverseViewProjectionMatrix")), &RenderView::inverseViewProjectionMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("inverseModelViewProjection")), &RenderView::inverseModelViewProjectionMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("modelNormalMatrix")), &RenderView::modelNormalMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("modelViewNormal")), &RenderView::modelViewNormalMatrix);
@@ -151,6 +153,12 @@ QUniformValue RenderView::modelViewMatrix(const QMatrix4x4 &model) const
     return QUniformValue(QVariant::fromValue(m_data.m_viewMatrix * model));
 }
 
+QUniformValue RenderView::viewProjectionMatrix(const QMatrix4x4 &model) const
+{
+    Q_UNUSED(model);
+    return QUniformValue(QVariant::fromValue(m_data.m_renderCameraLens->projection() * m_data.m_viewMatrix));
+}
+
 QUniformValue RenderView::modelViewProjectionMatrix(const QMatrix4x4 &model) const
 {
     return QUniformValue(QVariant::fromValue(m_data.m_viewProjectionMatrix * model));
@@ -177,6 +185,13 @@ QUniformValue RenderView::inverseProjectionMatrix(const QMatrix4x4 &) const
 QUniformValue RenderView::inverseModelViewMatrix(const QMatrix4x4 &model) const
 {
     return QUniformValue(QVariant::fromValue((m_data.m_viewMatrix * model).inverted()));
+}
+
+QUniformValue RenderView::inverseViewProjectionMatrix(const QMatrix4x4 &model) const
+{
+    Q_UNUSED(model);
+    const auto viewProjectionMatrix = m_data.m_renderCameraLens->projection() * m_data.m_viewMatrix;
+    return QUniformValue(QVariant::fromValue(viewProjectionMatrix.inverted()));
 }
 
 QUniformValue RenderView::inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const

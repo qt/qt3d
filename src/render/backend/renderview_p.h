@@ -282,11 +282,13 @@ private:
     QUniformValue viewMatrix(const QMatrix4x4&) const;
     QUniformValue projectionMatrix(const QMatrix4x4 &) const;
     QUniformValue modelViewMatrix(const QMatrix4x4 &model) const;
+    QUniformValue viewProjectionMatrix(const QMatrix4x4 &model) const;
     QUniformValue modelViewProjectionMatrix(const QMatrix4x4 &model) const;
     QUniformValue inverseModelMatrix(const QMatrix4x4 &model) const;
     QUniformValue inverseViewMatrix(const QMatrix4x4 &) const;
     QUniformValue inverseProjectionMatrix(const QMatrix4x4 &) const;
     QUniformValue inverseModelViewMatrix(const QMatrix4x4 &model) const;
+    QUniformValue inverseViewProjectionMatrix(const QMatrix4x4 &model) const;
     QUniformValue inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const;
     QUniformValue modelNormalMatrix(const QMatrix4x4 &model) const;
     QUniformValue modelViewNormalMatrix(const QMatrix4x4 &model) const;
