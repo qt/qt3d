@@ -48,5 +48,6 @@ contains(QT_CONFIG, private_tests) {
         shadercache \
         layerfiltering \
         filterentitybycomponent \
-        genericlambdajob
+        genericlambdajob \
+        qgraphicsapifilter
 }

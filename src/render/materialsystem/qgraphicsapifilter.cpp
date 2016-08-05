@@ -55,20 +55,36 @@ GraphicsApiFilterData::GraphicsApiFilterData()
 
 bool GraphicsApiFilterData::operator ==(const GraphicsApiFilterData &other) const
 {
-    if (other.m_api == m_api
-            && other.m_profile <= m_profile
-            && (other.m_major < m_major
-                || (other.m_major == m_major && other.m_minor <= m_minor))) {
-        for (const QString &neededExt : other.m_extensions)
-            if (!m_extensions.contains(neededExt))
-                return false;
-        // If a vendor name was specified in sample, we perform comparison,
-        // otherwise we assume the vendor name doesn't matter
-        if (!other.m_vendor.isEmpty())
-            return (other.m_vendor == m_vendor);
-        return true;
+    // Check API
+    if (other.m_api != m_api)
+        return false;
+
+    // Check versions
+    const bool versionsCompatible = other.m_major < m_major
+            || (other.m_major == m_major && other.m_minor <= m_minor);
+    if (!versionsCompatible)
+        return false;
+
+    // Check profiles if requiring OpenGL (profiles not relevant for OpenGL ES)
+    if (other.m_api == QGraphicsApiFilter::OpenGL) {
+        const bool profilesCompatible = m_profile != QGraphicsApiFilter::CoreProfile
+                || other.m_profile == m_profile;
+        if (!profilesCompatible)
+            return false;
     }
-    return false;
+
+    // Check extensions
+    for (const QString &neededExt : other.m_extensions) {
+        if (!m_extensions.contains(neededExt))
+            return false;
+    }
+
+    // Check vendor
+    if (!other.m_vendor.isEmpty())
+        return (other.m_vendor == m_vendor);
+
+    // If we get here everything looks good :)
+    return true;
 }
 
 bool GraphicsApiFilterData::operator <(const GraphicsApiFilterData &other) const
