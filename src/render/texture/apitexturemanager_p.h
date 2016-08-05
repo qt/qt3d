@@ -71,13 +71,10 @@ class APITextureManager
 {
 public:
 
-    explicit APITextureManager(TextureManager *textureNodeManager,
-                               TextureImageManager *textureImageManager,
+    explicit APITextureManager(TextureImageManager *textureImageManager,
                                TextureDataManager *textureDataManager,
                                TextureImageDataManager *textureImageDataManager)
-        : m_mutex(QMutex::Recursive)
-        , m_textureNodeManager(textureNodeManager)
-        , m_textureImageManager(textureImageManager)
+        : m_textureImageManager(textureImageManager)
         , m_textureDataManager(textureDataManager)
         , m_textureImageDataManager(textureImageDataManager)
     {
@@ -85,6 +82,26 @@ public:
 
     ~APITextureManager()
     {
+        qDeleteAll(activeResources());
+        m_nodeIdToGLTexture.clear();
+        m_sharedTextures.clear();
+        m_updatedTextures.clear();
+    }
+
+    // Used to retrieve all resources that needs to be destroyed on the GPU
+    QVector<APITexture *> activeResources() const
+    {
+        // Active Resources are
+        // all shared textures
+        // all unique textures
+        // all textures that haven't yet been destroyed
+        // Note: updatedTextures only referenced textures in one of these 3 vectors
+        return m_sharedTextures.keys().toVector() + m_uniqueTextures + m_abandonedTextures;
+    }
+
+    APITexture *lookupResource(Qt3DCore::QNodeId textureId)
+    {
+        return m_nodeIdToGLTexture.value(textureId);
     }
 
     // Returns a APITexture that matches the given QTexture node. Will make sure
@@ -93,44 +110,41 @@ public:
     APITexture *getOrCreateShared(const Texture *node)
     {
         Q_ASSERT(node);
-        QMutexLocker lock(&m_mutex);
 
-        APITexture *shared = tryFindShared(node);
-        if (shared)
-            return shared;
-
-        // get TextureNode handle
-        const HTexture handle = m_textureNodeManager->lookupHandle(node->peerId());
-        Q_ASSERT(!handle.isNull());
+        APITexture *shared = findMatchingShared(node);
 
         // no matching shared texture was found; create a new one:
-        APITexture *newTex = createTexture(*node, false);
-        m_sharedTextures[newTex] << handle;
+        if (shared == nullptr)
+            shared = createTexture(node, false);
 
-        return newTex;
+        // store texture node to shared texture relationship
+        adoptShared(shared, node);
+
+        return shared;
+    }
+
+    // Store that the shared texture references node
+    void adoptShared(APITexture *sharedApiTexture, const Texture *node)
+    {
+        if (!m_sharedTextures[sharedApiTexture].contains(node->peerId())) {
+            m_sharedTextures[sharedApiTexture].push_back(node->peerId());
+            m_nodeIdToGLTexture.insert(node->peerId(), sharedApiTexture);
+        }
     }
 
     // If there is already a shared texture with the properties of the given
     // texture node, return this instance, else NULL.
-    APITexture *tryFindShared(const Texture *node)
+    // Note: the reference to the texture node is added if the shared texture
+    // wasn't referencing it already
+    APITexture *findMatchingShared(const Texture *node)
     {
         Q_ASSERT(node);
-        QMutexLocker lock(&m_mutex);
-
-        // get TextureNode handle
-        const HTexture handle = m_textureNodeManager->lookupHandle(node->peerId());
-        Q_ASSERT(!handle.isNull());
 
         // search for existing texture
         const auto end = m_sharedTextures.end();
-        for (auto it = m_sharedTextures.begin(); it != end; ++it) {
-            if (isSameTexture(*it.key(), *node)) {
-                QVector<HTexture> &values = it.value();
-                if (values.contains(handle))
-                    values.push_back(handle);
+        for (auto it = m_sharedTextures.begin(); it != end; ++it)
+            if (isSameTexture(it.key(), node))
                 return it.key();
-            }
-        }
         return nullptr;
     }
 
@@ -138,39 +152,36 @@ public:
     // that texture data generator jobs are launched, if necessary.
     APITexture *createUnique(const Texture *node)
     {
-        QMutexLocker lock(&m_mutex);
-
         Q_ASSERT(node);
-        APITexture *newTex = createTexture(*node, true);
-        m_uniqueTextures << newTex;
-        return newTex;
+        APITexture *uniqueTex = createTexture(node, true);
+        m_uniqueTextures.push_back(uniqueTex);
+        m_nodeIdToGLTexture.insert(node->peerId(), uniqueTex);
+        return uniqueTex;
     }
 
     // De-associate the given APITexture from the backend node. If the texture
     // is no longer referenced by any other node, it will be deleted.
     void abandon(APITexture *tex, const Texture *node)
     {
-        QMutexLocker lock(&m_mutex);
+        APITexture *apiTexture = m_nodeIdToGLTexture.take(node->peerId());
+        Q_ASSERT(tex == apiTexture);
+
+        if (Q_UNLIKELY(!apiTexture)) {
+            qWarning() << "[Qt3DRender::TextureManager] abandon: could not find Texture";
+            return;
+        }
 
         if (tex->isUnique()) {
-            m_uniqueTextures.removeAll(tex);
-            m_abandonedTextures << tex;
+            m_uniqueTextures.removeAll(apiTexture);
+            m_abandonedTextures.push_back(apiTexture);
         } else {
-            // search for texture
-            auto it = m_sharedTextures.find(tex);
-            if (it != m_sharedTextures.end()) {
-                // remove TextureNode reference
-                const HTexture handle = m_textureNodeManager->lookupHandle(node->peerId());
-                Q_ASSERT(!handle.isNull());
-                it.value().removeAll(handle);
+            QVector<Qt3DCore::QNodeId> &referencedTextureNodes = m_sharedTextures[apiTexture];
+            referencedTextureNodes.removeAll(node->peerId());
 
-                // if that was the last reference, mark the texture to be deleted
-                if (it.value().empty()) {
-                    m_abandonedTextures << tex;
-                    m_sharedTextures.erase(it);
-                }
-            } else {
-                qWarning() << "[Qt3DRender::TextureManager] abandon: could not find Texture";
+            // If no texture nodes is referencing the shared APITexture, remove it
+            if (referencedTextureNodes.empty()) {
+                m_abandonedTextures.push_back(apiTexture);
+                m_sharedTextures.remove(apiTexture);
             }
         }
     }
@@ -179,14 +190,13 @@ public:
     // Returns true, if it was changed successfully, false otherwise
     bool setProperties(APITexture *tex, const TextureProperties &props)
     {
-        QMutexLocker lock(&m_mutex);
         Q_ASSERT(tex);
 
         if (isShared(tex))
             return false;
 
         tex->setProperties(props);
-        m_updatedTextures << tex;
+        m_updatedTextures.push_back(tex);
 
         return true;
     }
@@ -195,14 +205,13 @@ public:
     // Returns true, if it was changed successfully, false otherwise
     bool setParameters(APITexture *tex, const TextureParameters &params)
     {
-        QMutexLocker lock(&m_mutex);
         Q_ASSERT(tex);
 
         if (isShared(tex))
             return false;
 
         tex->setParameters(params);
-        m_updatedTextures << tex;
+        m_updatedTextures.push_back(tex);
 
         return true;
     }
@@ -211,7 +220,6 @@ public:
     // Return true, if it was changed successfully, false otherwise
     bool setImages(APITexture *tex, const QVector<HTextureImage> &images)
     {
-        QMutexLocker lock(&m_mutex);
         Q_ASSERT(tex);
 
         if (isShared(tex))
@@ -223,7 +231,7 @@ public:
             return false;
 
         tex->setImages(texImgs);
-        m_updatedTextures << tex;
+        m_updatedTextures.push_back(tex);
 
         return true;
     }
@@ -232,25 +240,18 @@ public:
     // to make sure needed GL resources are de-allocated.
     QVector<APITexture*> takeAbandonedTextures()
     {
-        QMutexLocker lock(&m_mutex);
-        const QVector<APITexture*> ret = m_abandonedTextures;
-        m_abandonedTextures.clear();
-        return ret;
+        return std::move(m_abandonedTextures);
     }
 
     // Retrieves textures that have been modified
     QVector<APITexture*> takeUpdatedTextures()
     {
-        QMutexLocker lock(&m_mutex);
-        const QVector<APITexture*> ret = m_updatedTextures;
-        m_updatedTextures.clear();
-        return ret;
+        return std::move(m_updatedTextures);
     }
 
     // Returns whether the given APITexture is shared between multiple TextureNodes
     bool isShared(APITexture *impl)
     {
-        QMutexLocker lock(&m_mutex);
         Q_ASSERT(impl);
 
         if (impl->isUnique())
@@ -266,17 +267,17 @@ public:
 private:
 
     // Check if the given APITexture matches the TextureNode
-    bool isSameTexture(const APITexture &tex, const Texture &texNode)
+    bool isSameTexture(const APITexture *tex, const Texture *texNode)
     {
         // make sure there either are no texture generators, or the two are the same
-        if (tex.textureGenerator().isNull() != texNode.dataGenerator().isNull())
+        if (tex->textureGenerator().isNull() != texNode->dataGenerator().isNull())
             return false;
-        if (!tex.textureGenerator().isNull() && !(*tex.textureGenerator() == *texNode.dataGenerator()))
+        if (!tex->textureGenerator().isNull() && !(*tex->textureGenerator() == *texNode->dataGenerator()))
             return false;
 
         // make sure the image generators are the same
-        const QVector<APITextureImage> texImgGens = tex.images();
-        const QVector<HTextureImage> texImgs = texNode.textureImages();
+        const QVector<APITextureImage> texImgGens = tex->images();
+        const QVector<HTextureImage> texImgs = texNode->textureImages();
         if (texImgGens.size() != texImgs.size())
             return false;
         for (int i = 0; i < texImgGens.size(); ++i) {
@@ -291,47 +292,39 @@ private:
 
         // if the texture has a texture generator, this generator will mostly determine
         // the properties of the texture.
-        if (!tex.textureGenerator().isNull()) {
-            return (tex.properties().generateMipMaps == texNode.properties().generateMipMaps
-                    && tex.parameters() == texNode.parameters());
-        }
+        if (!tex->textureGenerator().isNull())
+            return (tex->properties().generateMipMaps == texNode->properties().generateMipMaps
+                    && tex->parameters() == texNode->parameters());
 
         // if it doesn't have a texture generator, but texture image generators,
         // few more properties will influence the texture type
-        if (!texImgGens.empty()) {
-            return (tex.properties().target == texNode.properties().target
-                    && tex.properties().format == texNode.properties().format
-                    && tex.properties().generateMipMaps == texNode.properties().generateMipMaps
-                    && tex.parameters() == texNode.parameters());
-        }
+        if (!texImgGens.empty())
+            return (tex->properties().target == texNode->properties().target
+                    && tex->properties().format == texNode->properties().format
+                    && tex->properties().generateMipMaps == texNode->properties().generateMipMaps
+                    && tex->parameters() == texNode->parameters());
 
         // texture without images
-        return tex.properties() == texNode.properties()
-                && tex.parameters() == tex.parameters();
+        return tex->properties() == texNode->properties()
+                && tex->parameters() == texNode->parameters();
     }
 
     // Create APITexture from given TextureNode. Also make sure the generators
     // will be executed by jobs soon.
-    APITexture *createTexture(const Texture &node, bool unique)
+    APITexture *createTexture(const Texture *node, bool unique)
     {
-        QMutexLocker lock(&m_mutex);
-
-        // get handle of given texture node
-        const HTexture handle = m_textureNodeManager->lookupHandle(node.peerId());
-        Q_ASSERT(!handle.isNull());
-
         // create Image structs
-        const QVector<APITextureImage> texImgs = texImgsFromNodes(node.textureImages());
-        if (texImgs.empty() && !node.textureImages().empty())
+        const QVector<APITextureImage> texImgs = texImgsFromNodes(node->textureImages());
+        if (texImgs.empty() && !node->textureImages().empty())
             return nullptr;
 
         // no matching shared texture was found, create a new one
-        APITexture *newTex = new APITexture(m_textureDataManager, m_textureImageDataManager, node.dataGenerator(), unique);
-        newTex->setProperties(node.properties());
-        newTex->setParameters(node.parameters());
+        APITexture *newTex = new APITexture(m_textureDataManager, m_textureImageDataManager, node->dataGenerator(), unique);
+        newTex->setProperties(node->properties());
+        newTex->setParameters(node->parameters());
         newTex->setImages(texImgs);
 
-        m_updatedTextures << newTex;
+        m_updatedTextures.push_back(newTex);
 
         return newTex;
     }
@@ -357,18 +350,17 @@ private:
         return ret;
     }
 
-    QMutex m_mutex;
-
-    TextureManager *m_textureNodeManager;
     TextureImageManager *m_textureImageManager;
     TextureDataManager *m_textureDataManager;
     TextureImageDataManager *m_textureImageDataManager;
 
     /* each non-unique texture is associated with a number of Texture nodes referencing it */
-    QHash<APITexture*,QVector<HTexture>> m_sharedTextures;
+    QHash<APITexture*, QVector<Qt3DCore::QNodeId>> m_sharedTextures;
+
+    // Texture id -> APITexture (both shared and unique ones)
+    QHash<Qt3DCore::QNodeId, APITexture *> m_nodeIdToGLTexture;
 
     QVector<APITexture*> m_uniqueTextures;
-
     QVector<APITexture*> m_abandonedTextures;
     QVector<APITexture*> m_updatedTextures;
 };

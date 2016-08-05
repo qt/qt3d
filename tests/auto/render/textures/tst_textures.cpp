@@ -33,6 +33,7 @@
 #include <Qt3DRender/qtextureimage.h>
 #include <Qt3DRender/qtexturedata.h>
 
+#include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/texture_p.h>
 #include <Qt3DRender/private/textureimage_p.h>
 #include <Qt3DRender/private/texturedatamanager_p.h>
@@ -140,9 +141,8 @@ class tst_RenderTextures : public Qt3DCore::QBackendNodeTester
         return tex;
     }
 
-    Qt3DRender::Render::Texture *createBackendTexture(Qt3DRender::QAbstractTexture *frontend, Qt3DRender::Render::TextureManager *texMgr, Qt3DRender::Render::GLTextureManager *glTexMgr, Qt3DRender::Render::TextureImageManager *texImgMgr) {
+    Qt3DRender::Render::Texture *createBackendTexture(Qt3DRender::QAbstractTexture *frontend, Qt3DRender::Render::TextureManager *texMgr, Qt3DRender::Render::TextureImageManager *texImgMgr) {
         Qt3DRender::Render::Texture *backend = texMgr->getOrCreateResource(frontend->id());
-        backend->setTextureManager(glTexMgr);
         backend->setTextureImageManager(texImgMgr);
         simulateInitialization(frontend, backend);
 
@@ -163,22 +163,28 @@ class tst_RenderTextures : public Qt3DCore::QBackendNodeTester
 private Q_SLOTS:
 
     void shouldCreateSameGLTextures() {
-        Qt3DRender::Render::NodeManagers *mgrs = new Qt3DRender::Render::NodeManagers();
+        QScopedPointer<Qt3DRender::Render::NodeManagers> mgrs(new Qt3DRender::Render::NodeManagers());
+        Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        renderer.setNodeManagers(mgrs.data());
 
         // GIVEN
-        auto *tex1a = createQTexture(-1, {1,2}, true);
-        auto *tex1b = createQTexture(-1, {1,2}, true);
+        Qt3DRender::QAbstractTexture *tex1a = createQTexture(-1, {1,2}, true);
+        Qt3DRender::QAbstractTexture *tex1b = createQTexture(-1, {1,2}, true);
 
         // WHEN
-        auto *bt1a = createBackendTexture(tex1a, mgrs->textureManager(), mgrs->glTextureManager(), mgrs->textureImageManager());
-        auto *bt1b = createBackendTexture(tex1b, mgrs->textureManager(), mgrs->glTextureManager(), mgrs->textureImageManager());
+        Qt3DRender::Render::Texture *bt1a = createBackendTexture(tex1a, mgrs->textureManager(), mgrs->textureImageManager());
+        Qt3DRender::Render::Texture *bt1b = createBackendTexture(tex1b, mgrs->textureManager(), mgrs->textureImageManager());
+        renderer.updateTexture(bt1a);
+        renderer.updateTexture(bt1b);
 
         // THEN
-        QCOMPARE(bt1a->texture(), bt1b->texture());
+        QCOMPARE(mgrs->glTextureManager()->lookupResource(bt1a->peerId()), mgrs->glTextureManager()->lookupResource(bt1b->peerId()));
     }
 
     void shouldCreateDifferentGLTexturess() {
-        Qt3DRender::Render::NodeManagers *mgrs = new Qt3DRender::Render::NodeManagers();
+        QScopedPointer<Qt3DRender::Render::NodeManagers> mgrs(new Qt3DRender::Render::NodeManagers());
+        Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        renderer.setNodeManagers(mgrs.data());
 
         // GIVEN
         QVector<Qt3DRender::QAbstractTexture*> textures;
@@ -191,34 +197,43 @@ private Q_SLOTS:
 
         // WHEN
         QVector<Qt3DRender::Render::Texture*> backend;
-        for (auto *t : textures)
-            backend << createBackendTexture(t, mgrs->textureManager(), mgrs->glTextureManager(), mgrs->textureImageManager());
+        for (auto *t : textures) {
+            Qt3DRender::Render::Texture *backendTexture = createBackendTexture(t, mgrs->textureManager(), mgrs->textureImageManager());
+            backend.push_back(backendTexture);
+            renderer.updateTexture(backendTexture);
+        }
 
         // THEN
 
         // no 2 textures must be the same
         for (int i = 0; i < backend.size(); i++)
             for (int k = i+1; k < backend.size(); k++)
-                QVERIFY(backend[i]->texture() != backend[k]->texture());
+                QVERIFY(mgrs->glTextureManager()->lookupResource(backend[i]->peerId()) != mgrs->glTextureManager()->lookupResource(backend[k]->peerId()));
+
+        QVector<Qt3DRender::Render::GLTexture *> glTextures;
+        for (Qt3DRender::Render::Texture *t : backend)
+            glTextures.push_back(mgrs->glTextureManager()->lookupResource(t->peerId()));
 
         // some texture generators must be the same
-        QVERIFY(backend[0]->texture()->textureGenerator().data() == nullptr);
-        QVERIFY(backend[1]->texture()->textureGenerator().data() == nullptr);
-        QCOMPARE(*backend[2]->texture()->textureGenerator(), *backend[3]->texture()->textureGenerator());
+        QVERIFY(glTextures[0]->textureGenerator().data() == nullptr);
+        QVERIFY(glTextures[1]->textureGenerator().data() == nullptr);
+        QCOMPARE(*(glTextures[2]->textureGenerator()), *(glTextures[3]->textureGenerator()));
 
         // some images must be the same
-        QCOMPARE(backend[0]->texture()->images(), backend[1]->texture()->images());
-        QCOMPARE(backend[0]->texture()->images(), backend[2]->texture()->images());
-        QCOMPARE(backend[0]->texture()->images(), backend[3]->texture()->images());
-        QCOMPARE(backend[4]->texture()->images(), backend[5]->texture()->images());
+        QCOMPARE(glTextures[0]->images(), glTextures[1]->images());
+        QCOMPARE(glTextures[0]->images(), glTextures[2]->images());
+        QCOMPARE(glTextures[0]->images(), glTextures[3]->images());
+        QCOMPARE(glTextures[4]->images(), glTextures[5]->images());
 
-        QCOMPARE(backend[0]->texture()->properties(), backend[2]->texture()->properties());
-        QCOMPARE(backend[1]->texture()->properties(), backend[3]->texture()->properties());
-        QVERIFY(backend[0]->texture()->properties() != backend[1]->texture()->properties());
+        QCOMPARE(glTextures[0]->properties(), glTextures[2]->properties());
+        QCOMPARE(glTextures[1]->properties(), glTextures[3]->properties());
+        QVERIFY(glTextures[0]->properties() != glTextures[1]->properties());
     }
 
     void generatorsShouldCreateSameData() {
-        Qt3DRender::Render::NodeManagers *mgrs = new Qt3DRender::Render::NodeManagers();
+        QScopedPointer<Qt3DRender::Render::NodeManagers> mgrs(new Qt3DRender::Render::NodeManagers());
+        Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
+        renderer.setNodeManagers(mgrs.data());
 
         // GIVEN
         QVector<Qt3DRender::QAbstractTexture*> textures;
@@ -228,15 +243,18 @@ private Q_SLOTS:
 
         // WHEN
         QVector<Qt3DRender::Render::Texture*> backend;
-        for (auto *t : textures)
-            backend << createBackendTexture(t, mgrs->textureManager(), mgrs->glTextureManager(), mgrs->textureImageManager());
+        for (auto *t : textures) {
+            Qt3DRender::Render::Texture *backendTexture = createBackendTexture(t, mgrs->textureManager(), mgrs->textureImageManager());
+            backend.push_back(backendTexture);
+            renderer.updateTexture(backendTexture);
+        }
 
-        Qt3DRender::QTextureImageDataGeneratorPtr idg1a = backend[0]->texture()->images()[0].generator;
-        Qt3DRender::QTextureImageDataGeneratorPtr idg1b = backend[1]->texture()->images()[0].generator;
-        Qt3DRender::QTextureImageDataGeneratorPtr idg2 = backend[1]->texture()->images()[1].generator;
-        Qt3DRender::QTextureGeneratorPtr tg1a = backend[0]->texture()->textureGenerator();
-        Qt3DRender::QTextureGeneratorPtr tg1b = backend[2]->texture()->textureGenerator();
-        Qt3DRender::QTextureGeneratorPtr tg2 = backend[1]->texture()->textureGenerator();
+        Qt3DRender::QTextureImageDataGeneratorPtr idg1a = mgrs->glTextureManager()->lookupResource(backend[0]->peerId())->images()[0].generator;
+        Qt3DRender::QTextureImageDataGeneratorPtr idg1b = mgrs->glTextureManager()->lookupResource(backend[1]->peerId())->images()[0].generator;
+        Qt3DRender::QTextureImageDataGeneratorPtr idg2 = mgrs->glTextureManager()->lookupResource(backend[1]->peerId())->images()[1].generator;
+        Qt3DRender::QTextureGeneratorPtr tg1a = mgrs->glTextureManager()->lookupResource(backend[0]->peerId())->textureGenerator();
+        Qt3DRender::QTextureGeneratorPtr tg1b = mgrs->glTextureManager()->lookupResource(backend[2]->peerId())->textureGenerator();
+        Qt3DRender::QTextureGeneratorPtr tg2 = mgrs->glTextureManager()->lookupResource(backend[1]->peerId())->textureGenerator();
 
         // THEN
         QCOMPARE(*idg1a, *idg1b);
@@ -273,6 +291,6 @@ private Q_SLOTS:
 
 };
 
-QTEST_APPLESS_MAIN(tst_RenderTextures)
+QTEST_MAIN(tst_RenderTextures)
 
 #include "tst_textures.moc"

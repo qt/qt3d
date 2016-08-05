@@ -198,6 +198,8 @@ public:
     virtual RenderSettings *settings() const Q_DECL_OVERRIDE;
 
     void updateGLResources();
+    void updateTexture(Texture *texture);
+
     void prepareCommandsSubmission(const QVector<RenderView *> &renderViews);
     bool executeCommandsSubmission(const RenderView *rv);
     void updateVAOWithAttributes(Geometry *geometry,

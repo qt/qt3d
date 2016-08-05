@@ -69,25 +69,23 @@ class QAbstractTexture;
 
 namespace Render {
 
-class GLTextureManager;
 class TextureManager;
 class TextureImageManager;
-class GLTexture;
 
 /**
  * General, constant properties of a texture
  */
 struct TextureProperties
 {
-    int width;
-    int height;
-    int depth;
-    int layers;
-    int mipLevels;
-    int samples;
-    QAbstractTexture::Target target;
-    QAbstractTexture::TextureFormat format;
-    bool generateMipMaps;
+    int width = 1;
+    int height = 1;
+    int depth = 1;
+    int layers = 1;
+    int mipLevels = 1;
+    int samples = 1;
+    QAbstractTexture::Target target = QAbstractTexture::Target2D;
+    QAbstractTexture::TextureFormat format = QAbstractTexture::RGBA8_UNorm;
+    bool generateMipMaps = false;
 
     bool operator==(const TextureProperties &o) const {
         return (width == o.width) && (height == o.height) && (depth == o.depth)
@@ -104,14 +102,14 @@ struct TextureProperties
  */
 struct TextureParameters
 {
-    QAbstractTexture::Filter magnificationFilter;
-    QAbstractTexture::Filter minificationFilter;
-    QTextureWrapMode::WrapMode wrapModeX;
-    QTextureWrapMode::WrapMode wrapModeY;
-    QTextureWrapMode::WrapMode wrapModeZ;
-    float maximumAnisotropy;
-    QAbstractTexture::ComparisonFunction comparisonFunction;
-    QAbstractTexture::ComparisonMode comparisonMode;
+    QAbstractTexture::Filter magnificationFilter = QAbstractTexture::Nearest;
+    QAbstractTexture::Filter minificationFilter = QAbstractTexture::Nearest;
+    QTextureWrapMode::WrapMode wrapModeX = QTextureWrapMode::ClampToEdge;
+    QTextureWrapMode::WrapMode wrapModeY = QTextureWrapMode::ClampToEdge;
+    QTextureWrapMode::WrapMode wrapModeZ = QTextureWrapMode::ClampToEdge;
+    float maximumAnisotropy = 1.0f;
+    QAbstractTexture::ComparisonFunction comparisonFunction = QAbstractTexture::CompareLessEqual;
+    QAbstractTexture::ComparisonMode comparisonMode = QAbstractTexture::CompareNone;
 
     bool operator==(const TextureParameters &o) const {
         return (magnificationFilter == o.magnificationFilter) && (minificationFilter == o.minificationFilter)
@@ -134,26 +132,22 @@ public:
     ~Texture();
 
     enum DirtyFlag {
-        Properties = 0x1,
-        Parameters = 0x2,
-        Generators = 0x4
+        NotDirty = 0,
+        DirtyProperties = 0x1,
+        DirtyParameters = 0x2,
+        DirtyGenerators = 0x4
     };
     Q_DECLARE_FLAGS(DirtyFlags, DirtyFlag)
 
-    void setTextureManager(GLTextureManager *manager);
     void setTextureImageManager(TextureImageManager *manager);
 
     void addDirtyFlag(DirtyFlags flags);
+    inline DirtyFlags dirtyFlags() const { return m_dirty; }
+    void unsetDirty();
+
     void addTextureImage(Qt3DCore::QNodeId id);
     void removeTextureImage(Qt3DCore::QNodeId id);
     void cleanup();
-
-    /**
-     * Asks the TextureManager for a Texture that fits this TextureNode's properties.
-     * If this node controls a non-shared texture already, this texture will just be
-     * modified.
-     */
-    void updateTexture();
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
@@ -161,7 +155,6 @@ public:
     inline const TextureParameters& parameters() const { return m_parameters; }
     inline const QVector<HTextureImage>& textureImages() const { return m_textureImages; }
     inline const QTextureGeneratorPtr& dataGenerator() const { return m_dataFunctor; }
-    inline GLTexture* texture() const { return m_texture; }
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
@@ -173,8 +166,6 @@ private:
     QTextureGeneratorPtr m_dataFunctor;
     QVector<HTextureImage> m_textureImages;
 
-    GLTexture *m_texture;
-    GLTextureManager *m_textureManager;
     TextureImageManager *m_textureImageManager;
 };
 
@@ -183,7 +174,6 @@ class TextureFunctor : public Qt3DCore::QBackendNodeMapper
 public:
     explicit TextureFunctor(AbstractRenderer *renderer,
                             TextureManager *textureNodeManager,
-                            GLTextureManager *textureManager,
                             TextureImageManager *textureImageManager);
     Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_FINAL;
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
@@ -192,7 +182,6 @@ public:
 private:
     AbstractRenderer *m_renderer;
     TextureManager *m_textureNodeManager;
-    GLTextureManager *m_textureManager;
     TextureImageManager *m_textureImageManager;
 };
 

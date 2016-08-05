@@ -61,30 +61,9 @@ namespace Render {
 Texture::Texture()
     // We need backend -> frontend notifications to update the status of the texture
     : BackendNode(ReadWrite)
-    , m_dirty(Generators|Properties|Parameters)
-    , m_texture(nullptr)
-    , m_textureManager(nullptr)
+    , m_dirty(DirtyGenerators|DirtyProperties|DirtyParameters)
     , m_textureImageManager(nullptr)
 {
-    // set default values
-    m_properties.width = 1;
-    m_properties.height = 1;
-    m_properties.depth = 1;
-    m_properties.layers = 1;
-    m_properties.mipLevels = 1;
-    m_properties.samples = 1;
-    m_properties.generateMipMaps = false;
-    m_properties.format = QAbstractTexture::RGBA8_UNorm;
-    m_properties.target = QAbstractTexture::Target2D;
-
-    m_parameters.magnificationFilter = QAbstractTexture::Nearest;
-    m_parameters.minificationFilter = QAbstractTexture::Nearest;
-    m_parameters.wrapModeX = QTextureWrapMode::ClampToEdge;
-    m_parameters.wrapModeY = QTextureWrapMode::ClampToEdge;
-    m_parameters.wrapModeZ = QTextureWrapMode::ClampToEdge;
-    m_parameters.maximumAnisotropy = 1.0f;
-    m_parameters.comparisonFunction = QAbstractTexture::CompareLessEqual;
-    m_parameters.comparisonMode = QAbstractTexture::CompareNone;
 }
 
 Texture::~Texture()
@@ -95,88 +74,19 @@ Texture::~Texture()
     // would have been called
 }
 
-void Texture::setTextureManager(GLTextureManager *manager)
-{
-    m_textureManager = manager;
-}
-
 void Texture::setTextureImageManager(TextureImageManager *manager)
 {
     m_textureImageManager = manager;
 }
 
-/**
- * Asks the TextureManager for a Texture that fits this TextureNode's Properties.
- * If this node controls a non-shared texture already, this texture will just be
- * modified.
- */
-void Texture::updateTexture()
-{
-    // TODO: for implementing unique, non-shared, non-cached textures.
-    // for now, every texture is shared by default
-    const bool isUnique = false;
-
-    // first call? just allocate and leave
-    if (!m_texture) {
-        m_texture = isUnique ? m_textureManager->createUnique(this) : m_textureManager->getOrCreateShared(this);
-        m_dirty = 0;
-        return;
-    }
-
-    // if this texture is a shared texture, we might need to look for a new TextureImpl
-    // and abandon the old one
-    if (m_textureManager->isShared(m_texture)) {
-        m_textureManager->abandon(m_texture, this);
-        m_texture = m_textureManager->getOrCreateShared(this);
-        m_dirty = 0;
-        return;
-    }
-
-    // this texture node is the only one referring to the TextureImpl.
-    // we could thus directly modify the texture. Instead, for non-unique textures,
-    // we first see if there is already a matching texture present.
-    if (!isUnique) {
-        GLTexture *newSharedTex = m_textureManager->tryFindShared(this);
-
-        if (newSharedTex && newSharedTex != m_texture) {
-            m_textureManager->abandon(m_texture, this);
-            m_texture = newSharedTex;
-            m_dirty = 0;
-            return;
-        }
-    }
-
-
-    // we hold a reference to a unique or exclusive access to a shared texture
-    // we can thus modify the texture directly.
-
-    if (m_dirty.testFlag(Properties)) {
-        if (m_textureManager->setProperties(m_texture, m_properties))
-            m_dirty.setFlag(Properties, false);
-        else
-            qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setProperties failed, should be non-shared";
-    }
-
-    if (m_dirty.testFlag(Parameters)) {
-        if (m_textureManager->setParameters(m_texture, m_parameters))
-            m_dirty.setFlag(Parameters, false);
-        else
-            qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setParameters failed, should be non-shared";
-    }
-
-    if (m_dirty.testFlag(Generators)) {
-        if (m_textureManager->setImages(m_texture, m_textureImages))
-            m_dirty.setFlag(Generators, false);
-        else
-            qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setGenerators failed, should be non-shared";
-    }
-
-}
-
 void Texture::addDirtyFlag(DirtyFlags flags)
 {
     m_dirty |= flags;
-    updateTexture();
+}
+
+void Texture::unsetDirty()
+{
+    m_dirty = Texture::NotDirty;
 }
 
 void Texture::addTextureImage(Qt3DCore::QNodeId id)
@@ -191,7 +101,7 @@ void Texture::addTextureImage(Qt3DCore::QNodeId id)
         qWarning() << "[Qt3DRender::TextureNode] addTextureImage: image handle is NULL";
     } else if (!m_textureImages.contains(handle)) {
         m_textureImages << handle;
-        addDirtyFlag(Generators);
+        addDirtyFlag(DirtyGenerators);
     }
 }
 
@@ -207,15 +117,14 @@ void Texture::removeTextureImage(Qt3DCore::QNodeId id)
         qWarning() << "[Qt3DRender::TextureNode] removeTextureImage: image handle is NULL";
     } else {
         m_textureImages.removeAll(handle);
-        addDirtyFlag(Generators);
+        addDirtyFlag(DirtyGenerators);
     }
 }
 
 void Texture::cleanup()
 {
-    if (m_texture)
-        m_textureManager->abandon(m_texture, this);
-    m_texture = nullptr;
+    // Whoever calls this must make sure to also check if this
+    // texture is being referenced by a shared API specific texture (GLTexture)
     m_dataFunctor.reset();
     m_textureImages.clear();
 
@@ -250,55 +159,55 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("width")) {
             m_properties.width = propertyChange->value().toInt();
-            dirty = Properties;
+            dirty = DirtyProperties;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("height")) {
             m_properties.height = propertyChange->value().toInt();
-            dirty = Properties;
+            dirty = DirtyProperties;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("depth")) {
             m_properties.depth = propertyChange->value().toInt();
-            dirty = Properties;
+            dirty = DirtyProperties;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("maximumLayers")) {
             m_properties.layers = propertyChange->value().toInt();
-            dirty = Properties;
+            dirty = DirtyProperties;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("format")) {
             m_properties.format = static_cast<QAbstractTexture::TextureFormat>(propertyChange->value().toInt());
-            dirty = Properties;
+            dirty = DirtyProperties;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("target")) {
             m_properties.target = static_cast<QAbstractTexture::Target>(propertyChange->value().toInt());
-            dirty = Properties;
+            dirty = DirtyProperties;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("mipmaps")) {
             m_properties.generateMipMaps = propertyChange->value().toBool();
-            dirty = Properties;
+            dirty = DirtyProperties;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("minificationFilter")) {
             m_parameters.minificationFilter = static_cast<QAbstractTexture::Filter>(propertyChange->value().toInt());
-            dirty = Parameters;
+            dirty = DirtyParameters;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("magnificationFilter")) {
             m_parameters.magnificationFilter = static_cast<QAbstractTexture::Filter>(propertyChange->value().toInt());
-            dirty = Parameters;
+            dirty = DirtyParameters;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("wrapModeX")) {
             m_parameters.wrapModeX = static_cast<QTextureWrapMode::WrapMode>(propertyChange->value().toInt());
-            dirty = Parameters;
+            dirty = DirtyParameters;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("wrapModeY")) {
             m_parameters.wrapModeY = static_cast<QTextureWrapMode::WrapMode>(propertyChange->value().toInt());
-            dirty = Parameters;
+            dirty = DirtyParameters;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("wrapModeZ")) {
             m_parameters.wrapModeZ =static_cast<QTextureWrapMode::WrapMode>(propertyChange->value().toInt());
-            dirty = Parameters;
+            dirty = DirtyParameters;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("maximumAnisotropy")) {
             m_parameters.maximumAnisotropy = propertyChange->value().toFloat();
-            dirty = Parameters;
+            dirty = DirtyParameters;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("comparisonFunction")) {
             m_parameters.comparisonFunction = propertyChange->value().value<QAbstractTexture::ComparisonFunction>();
-            dirty = Parameters;
+            dirty = DirtyParameters;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("comparisonMode")) {
             m_parameters.comparisonMode = propertyChange->value().value<QAbstractTexture::ComparisonMode>();
-            dirty = Parameters;
+            dirty = DirtyParameters;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("layers")) {
             m_properties.layers = propertyChange->value().toInt();
-            dirty = Properties;
+            dirty = DirtyProperties;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("samples")) {
             m_properties.samples = propertyChange->value().toInt();
-            dirty = Properties;
+            dirty = DirtyProperties;
         }
 
         // TO DO: Handle the textureGenerator change
@@ -355,17 +264,15 @@ void Texture::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chan
     m_parameters.comparisonMode = data.comparisonMode;
     m_dataFunctor = data.dataFunctor;
 
-    addDirtyFlag(DirtyFlags(Generators|Properties|Parameters));
+    addDirtyFlag(DirtyFlags(DirtyGenerators|DirtyProperties|DirtyParameters));
 }
 
 
 TextureFunctor::TextureFunctor(AbstractRenderer *renderer,
                                TextureManager *textureNodeManager,
-                               GLTextureManager *textureManager,
                                TextureImageManager *textureImageManager)
     : m_renderer(renderer)
     , m_textureNodeManager(textureNodeManager)
-    , m_textureManager(textureManager)
     , m_textureImageManager(textureImageManager)
 {
 }
@@ -373,7 +280,6 @@ TextureFunctor::TextureFunctor(AbstractRenderer *renderer,
 Qt3DCore::QBackendNode *TextureFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
 {
     Texture *backend = m_textureNodeManager->getOrCreateResource(change->subjectId());
-    backend->setTextureManager(m_textureManager);
     backend->setTextureImageManager(m_textureImageManager);
     backend->setRenderer(m_renderer);
     return backend;

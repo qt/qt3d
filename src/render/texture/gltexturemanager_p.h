@@ -62,14 +62,12 @@ namespace Render {
 class Q_AUTOTEST_EXPORT GLTextureManager : public APITextureManager<GLTexture, GLTexture::Image>
 {
 public:
-    explicit GLTextureManager(TextureManager *textureNodeManager,
-                              TextureImageManager *textureImageManager,
+    explicit GLTextureManager(TextureImageManager *textureImageManager,
                               TextureDataManager *textureDataManager,
                               TextureImageDataManager *textureImageDataManager)
-        : APITextureManager<GLTexture, GLTexture::Image>(textureNodeManager,
-                                                        textureImageManager,
-                                                        textureDataManager,
-                                                        textureImageDataManager)
+        : APITextureManager<GLTexture, GLTexture::Image>(textureImageManager,
+                                                         textureDataManager,
+                                                         textureImageDataManager)
     {}
 };
 

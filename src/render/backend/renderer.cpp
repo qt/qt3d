@@ -326,6 +326,12 @@ void Renderer::shutdown()
 void Renderer::releaseGraphicsResources()
 {
     // Clean up the graphics context and any resources
+    const QVector<GLTexture*> activeTextures = m_nodesManager->glTextureManager()->activeResources();
+    for (GLTexture *tex : activeTextures)
+        tex->destroyGLTexture();
+
+    // TO DO: Do the same thing with buffers
+
     m_graphicsContext.reset(nullptr);
     qCDebug(Backend) << Q_FUNC_INFO << "Renderer properly shutdown";
 }
@@ -732,7 +738,9 @@ void Renderer::lookForDirtyTextures()
     const QVector<HTexture> activeTextureHandles = m_nodesManager->textureManager()->activeHandles();
     for (HTexture handle: activeTextureHandles) {
         Texture *texture = m_nodesManager->textureManager()->data(handle);
-        if (texture->texture() == nullptr)
+        // Dirty meaning that something has changed on the texture
+        // either properties, parameters, generator or a texture image
+        if (texture->dirtyFlags() != Texture::NotDirty)
             m_dirtyTextures.push_back(handle);
     }
 }
@@ -784,9 +792,72 @@ void Renderer::updateGLResources()
     for (HTexture handle: activeTextureHandles) {
         Texture *texture = m_nodesManager->textureManager()->data(handle);
         // Upload/Update texture
-        texture->texture()->getOrCreateGLTexture();
+        updateTexture(texture);
     }
 }
+
+void Renderer::updateTexture(Texture *texture)
+{
+    // TODO: for implementing unique, non-shared, non-cached textures.
+    // for now, every texture is shared by default
+    const bool isUnique = false;
+
+    // Try to find the associated GLTexture for the backend Texture
+    GLTextureManager *glTextureManager = m_nodesManager->glTextureManager();
+    GLTexture *glTexture = glTextureManager->lookupResource(texture->peerId());
+
+    // No GLTexture associated yet -> create it
+    if (glTexture == nullptr) {
+        if (isUnique)
+            glTextureManager->createUnique(texture);
+        else
+            glTextureManager->getOrCreateShared(texture);
+        texture->unsetDirty();
+        return;
+    }
+
+    // if this texture is a shared texture, we might need to look for a new TextureImpl
+    // and abandon the old one
+    if (glTextureManager->isShared(glTexture)) {
+        glTextureManager->abandon(glTexture, texture);
+        glTextureManager->getOrCreateShared(texture);
+        texture->unsetDirty();
+        return;
+    }
+
+    // this texture node is the only one referring to the GLTexture.
+    // we could thus directly modify the texture. Instead, for non-unique textures,
+    // we first see if there is already a matching texture present.
+    if (!isUnique) {
+        GLTexture *newSharedTex = glTextureManager->findMatchingShared(texture);
+        if (newSharedTex && newSharedTex != glTexture) {
+            glTextureManager->abandon(glTexture, texture);
+            glTextureManager->adoptShared(newSharedTex, texture);
+            texture->unsetDirty();
+            return;
+        }
+    }
+
+    // we hold a reference to a unique or exclusive access to a shared texture
+    // we can thus modify the texture directly.
+    const Texture::DirtyFlags dirtyFlags = texture->dirtyFlags();
+
+    if (dirtyFlags.testFlag(Texture::DirtyProperties) &&
+            !glTextureManager->setProperties(glTexture, texture->properties()))
+        qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setProperties failed, should be non-shared";
+
+    if (dirtyFlags.testFlag(Texture::DirtyParameters) &&
+            !glTextureManager->setParameters(glTexture, texture->parameters()))
+        qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setParameters failed, should be non-shared";
+
+    if (dirtyFlags.testFlag(Texture::DirtyGenerators) &&
+            !glTextureManager->setImages(glTexture, texture->textureImages()))
+        qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setGenerators failed, should be non-shared";
+
+    // Unset the dirty flag on the texture
+    texture->unsetDirty();
+}
+
 
 // Happens in RenderThread context when all RenderViewJobs are done
 // Returns the id of the last bound FBO

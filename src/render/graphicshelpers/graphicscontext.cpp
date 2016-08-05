@@ -56,6 +56,7 @@
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/gltexturemanager_p.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
 #include <Qt3DRender/private/qbuffer_p.h>
 #include <QOpenGLShaderProgram>
@@ -552,11 +553,11 @@ void GraphicsContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId,
             bool needsResize = !m_renderTargetsSize.contains(fboId);    // not even initialized yet?
             if (!needsResize) {
                 // render target exists, has attachment been resized?
-                TextureManager *textureManager = m_renderer->nodeManagers()->textureManager();
+                GLTextureManager *glTextureManager = m_renderer->nodeManagers()->glTextureManager();
                 const QSize s = m_renderTargetsSize[fboId];
                 const auto attachments_ = attachments.attachments();
                 for (const Attachment &attachment : attachments_) {
-                    GLTexture *rTex = textureManager->glTextureForNode(attachment.m_textureUuid);
+                    GLTexture *rTex = glTextureManager->lookupResource(attachment.m_textureUuid);
                     needsResize |= (rTex != nullptr && rTex->size() != s);
                     if (attachment.m_point == QRenderTargetOutput::Color0)
                         m_renderTargetFormat = rTex->properties().format;
@@ -580,11 +581,11 @@ void GraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const Attach
     // Set FBO attachments
 
     QSize fboSize;
-    TextureManager *textureManager = m_renderer->nodeManagers()->textureManager();
+    GLTextureManager *glTextureManager = m_renderer->nodeManagers()->glTextureManager();
     const auto attachments_ = attachments.attachments();
     for (const Attachment &attachment : attachments_) {
-        GLTexture *rTex = textureManager->glTextureForNode(attachment.m_textureUuid);
-        QOpenGLTexture *glTex = rTex ? rTex->getGLTexture() : nullptr;
+        GLTexture *rTex = glTextureManager->lookupResource(attachment.m_textureUuid);
+        QOpenGLTexture *glTex = rTex ? rTex->getOrCreateGLTexture() : nullptr;
         if (glTex != nullptr) {
             if (fboSize.isEmpty())
                 fboSize = QSize(glTex->width(), glTex->height());
@@ -1099,13 +1100,13 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
 
     for (int i = 0; i < parameterPack.textures().size(); ++i) {
         const ShaderParameterPack::NamedTexture &namedTex = parameterPack.textures().at(i);
-        GLTexture *t = manager->textureManager()->glTextureForNode(namedTex.texId);
-        // TO DO : Rework the way textures are loaded
-        if (t != nullptr) {
-            int texUnit = activateTexture(TextureScopeMaterial, t);
-            if (uniformValues.contains(namedTex.glslNameId)) {
+        // Given a Texture QNodeId, we retrieve the associated shared GLTexture
+        if (uniformValues.contains(namedTex.glslNameId)) {
+            GLTexture *t = manager->glTextureManager()->lookupResource(namedTex.texId);
+            if (t != nullptr) {
                 UniformValue &texUniform = uniformValues[namedTex.glslNameId];
                 Q_ASSERT(texUniform.valueType() == UniformValue::TextureValue);
+                const int texUnit = activateTexture(TextureScopeMaterial, t);
                 texUniform.data<UniformValue::Texture>()->textureId = texUnit;
             }
         }
