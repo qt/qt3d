@@ -49,5 +49,6 @@ contains(QT_CONFIG, private_tests) {
         layerfiltering \
         filterentitybycomponent \
         genericlambdajob \
-        qgraphicsapifilter
+        qgraphicsapifilter \
+        qrendersurfaceselector
 }

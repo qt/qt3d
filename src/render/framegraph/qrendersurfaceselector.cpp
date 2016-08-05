@@ -43,7 +43,9 @@
 #include <QtGui/QWindow>
 #include <QtGui/QScreen>
 #include <QtGui/QOffscreenSurface>
+#include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DRender/qrendersettings.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -102,6 +104,30 @@ QRenderSurfaceSelectorPrivate::~QRenderSurfaceSelectorPrivate()
     QObject::disconnect(m_heightConn);
     QObject::disconnect(m_widthConn);
     QObject::disconnect(m_screenConn);
+}
+
+QRenderSurfaceSelector *QRenderSurfaceSelectorPrivate::find(QObject *rootObject)
+{
+    auto rendererSettings = rootObject->findChild<Qt3DRender::QRenderSettings *>();
+    if (!rendererSettings) {
+        qWarning() << "No renderer settings component found";
+        return nullptr;
+    }
+
+    auto frameGraphRoot = rendererSettings->activeFrameGraph();
+    if (!frameGraphRoot) {
+        qWarning() << "No active frame graph found";
+        return nullptr;
+    }
+
+    auto surfaceSelector = qobject_cast<Qt3DRender::QRenderSurfaceSelector *>(frameGraphRoot);
+    if (!surfaceSelector)
+        surfaceSelector = frameGraphRoot->findChild<Qt3DRender::QRenderSurfaceSelector *>();
+
+    if (!surfaceSelector)
+        qWarning() << "No render surface selector found in frame graph";
+
+    return surfaceSelector;
 }
 
 void QRenderSurfaceSelectorPrivate::setExternalRenderTargetSize(const QSize &size)
