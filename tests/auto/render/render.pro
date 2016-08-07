@@ -51,5 +51,6 @@ contains(QT_CONFIG, private_tests) {
         genericlambdajob \
         qgraphicsapifilter \
         qrendersurfaceselector \
-        sortpolicy
+        sortpolicy \
+        qcuboidgeometry
 }
