@@ -533,6 +533,26 @@ void Texture::setLayers(int layers)
     }
 }
 
+int Texture::width() const
+{
+    return m_width;
+}
+
+int Texture::height() const
+{
+    return m_height;
+}
+
+int Texture::depth() const
+{
+    return m_depth;
+}
+
+int Texture::layers() const
+{
+    return m_layers;
+}
+
 // ChangeArbiter/Aspect Thread
 void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {

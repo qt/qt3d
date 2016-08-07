@@ -75,7 +75,7 @@ class TextureDataManager;
 
 typedef quint64 TextureDNA;
 
-class Texture : public BackendNode
+class Q_AUTOTEST_EXPORT Texture : public BackendNode
 {
 public:
     Texture();
@@ -106,6 +106,11 @@ public:
     void setFormat(QAbstractTexture::TextureFormat format);
     void setMipLevels(int mipmapLevels);
     void setLayers(int layers);
+
+    int width() const;
+    int height() const;
+    int depth() const;
+    int layers() const;
 
     inline QVector<HTextureImage> textureImages() const { return m_textureImages; }
     inline QAbstractTexture::TextureFormat format() const { return m_format; }

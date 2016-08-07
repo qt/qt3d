@@ -7,6 +7,7 @@ contains(QT_CONFIG, private_tests) {
         renderpass \
         qgraphicsutils \
         shader \
+        texture \
         renderviewutils \
         renderviews \
         material \
