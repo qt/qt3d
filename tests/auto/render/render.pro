@@ -50,5 +50,6 @@ contains(QT_CONFIG, private_tests) {
         filterentitybycomponent \
         genericlambdajob \
         qgraphicsapifilter \
-        qrendersurfaceselector
+        qrendersurfaceselector \
+        sortpolicy
 }

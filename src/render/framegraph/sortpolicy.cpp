@@ -74,6 +74,7 @@ QVector<QSortPolicy::SortType> SortPolicy::sortTypes() const
 
 void SortPolicy::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
 {
+    FrameGraphNode::initializeFromPeer(change);
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QSortPolicyData>>(change);
     const QSortPolicyData &data = typedChange->data;
     m_sortTypes = data.sortTypes;
