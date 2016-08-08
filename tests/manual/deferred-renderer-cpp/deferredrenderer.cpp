@@ -74,10 +74,10 @@ DeferredRenderer::DeferredRenderer(Qt3DCore::QNode *parent)
     m_finalPassFilter->addParameter(new Qt3DRender::QParameter(QStringLiteral("normal"), m_gBuffer->normalTexture()));
     m_finalPassFilter->addParameter(new Qt3DRender::QParameter(QStringLiteral("color"), m_gBuffer->colorTexture()));
 
-    Qt3DRender::QParameter *winSize = new Qt3DRender::QParameter(QStringLiteral("winSize"), QSize(1024, 768));
+    Qt3DRender::QParameter *winSize = new Qt3DRender::QParameter(QStringLiteral("winSize"), QSizeF(1024.0f, 768.0f));
     QObject::connect(m_surfaceSelector, &Qt3DRender::QRenderSurfaceSelector::externalRenderTargetSizeChanged,
                      [=] (const QSize &viewSize) {
-       winSize->setValue(viewSize);
+       winSize->setValue(QSizeF(viewSize));
     });
     m_finalPassFilter->addParameter(winSize);
 }
