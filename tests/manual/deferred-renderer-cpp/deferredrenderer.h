@@ -85,7 +85,12 @@ private:
     Qt3DRender::QRenderPassFilter *m_geometryPassFilter;
     Qt3DRender::QRenderPassFilter *m_finalPassFilter;
     Qt3DRender::QCameraSelector *m_sceneCameraSelector;
+    Qt3DRender::QParameter *m_winSize;
     GBuffer *m_gBuffer;
+    QWindow *m_window;
+
+    QMetaObject::Connection m_widthChangedConnection;
+    QMetaObject::Connection m_heightChangedConnection;
 };
 
 #endif // DEFERREDRENDERER_H
