@@ -242,7 +242,7 @@ private:
     void setShaderAndUniforms(RenderCommand *command, RenderPass *pass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform,
                               const QVector<LightSource> &activeLightSources) const;
 
-    mutable QThreadStorage<UniformBlockValueBuilder> m_localData;
+    mutable QThreadStorage<UniformBlockValueBuilder*> m_localData;
 
     Renderer *m_renderer;
     NodeManagers *m_manager;
