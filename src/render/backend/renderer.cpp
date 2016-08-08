@@ -290,6 +290,12 @@ void Renderer::shutdown()
 {
     qCDebug(Backend) << Q_FUNC_INFO << "Requesting renderer shutdown";
     m_running.store(0);
+
+    // We delete any renderqueue that we may not have had time to render
+    // before the surface was destroyed
+    qDeleteAll(m_renderQueue->nextFrameQueue());
+    m_renderQueue->reset();
+
     if (!m_renderThread) {
         releaseGraphicsResources();
     } else {
