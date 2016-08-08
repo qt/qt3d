@@ -60,6 +60,14 @@
 #include "qhandle_p.h"
 #include "qhandlemanager_p.h"
 
+// Silence complaints about unreferenced local variables in
+// ArrayAllocatingPolicy::deallocateBuckets() when the compiler
+// inlines the call to the dtor and it is empty. Default warning
+// setting re-enabled at bottom of this file
+#if defined(Q_CC_MSVC)
+#pragma warning(disable : 4189)
+#endif
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
@@ -541,5 +549,9 @@ QDebug operator<<(QDebug dbg, const QResourceManager<ValueType, KeyType, INDEXBI
 }// Qt3D
 
 QT_END_NAMESPACE
+
+#if defined(Q_CC_MSVC)
+#pragma warning(default : 4189)
+#endif
 
 #endif // QT3DCORE_QABSTRACTRESOURCESMANAGER_H
