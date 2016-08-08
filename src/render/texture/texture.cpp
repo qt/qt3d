@@ -591,7 +591,7 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             QAbstractTexture::ComparisonMode oldComparisonMode = m_comparisonMode;
             m_comparisonMode = propertyChange->value().value<QAbstractTexture::ComparisonMode>();
             m_filtersAndWrapUpdated |= (oldComparisonMode != m_comparisonMode);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("maximumLayers")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("layers")) {
             const int oldLayers = m_layers;
             m_layers = propertyChange->value().toInt();
             m_isDirty |= (oldLayers != m_layers);
