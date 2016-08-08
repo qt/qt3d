@@ -82,7 +82,6 @@
 #include <QAtomicInt>
 #include <QScopedPointer>
 #include <QSemaphore>
-#include <QThreadStorage>
 
 QT_BEGIN_NAMESPACE
 
