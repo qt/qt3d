@@ -94,7 +94,6 @@ namespace Render {
 
 RenderStateSet::RenderStateSet()
     : m_stateMask(0)
-    , m_cachedPrevious(0)
 {
 }
 
@@ -153,24 +152,15 @@ void RenderStateSet::apply(GraphicsContext *gc)
     }
     qCDebug(RenderStates) << " current states " << QString::number(stateMask(), 2)  << "inverse " << QString::number(invOurState, 2) << " -> states to change:  " << QString::number(stateToReset, 2);
 
+    // Reset states that aren't active in the current state set
     resetMasked(stateToReset, gc);
 
-    if (m_cachedPrevious && previousStates == m_cachedPrevious) {
-        // state-change cache hit
-        for (const StateVariant &ds : qAsConst(m_cachedDeltaStates))
-            ds.apply(gc);
-    } else {
-        // compute deltas and cache for next frame
-        m_cachedDeltaStates.clear();
-        m_cachedPrevious = previousStates;
-
-        for (const StateVariant &ds : qAsConst(m_states)) {
-            if (previousStates && previousStates->contains(ds))
-                continue;
-
-            m_cachedDeltaStates.push_back(ds);
-            ds.apply(gc);
-        }
+    // Apply states that weren't in the previous state or that have
+    // different values
+    for (const StateVariant &ds : qAsConst(m_states)) {
+        if (previousStates && previousStates->contains(ds))
+            continue;
+        ds.apply(gc);
     }
 }
 

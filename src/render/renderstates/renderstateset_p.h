@@ -114,9 +114,7 @@ private:
     bool contains(const StateVariant &ds) const;
 
     StateMaskSet m_stateMask;
-    RenderStateSet* m_cachedPrevious;
     QVector<StateVariant> m_states;
-    QVector<StateVariant> m_cachedDeltaStates;
 };
 
 template<>
