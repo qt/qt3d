@@ -282,7 +282,6 @@ void GraphicsContext::endDrawing(bool swapBuffers)
         m_gl->swapBuffers(m_surface);
     if (m_ownCurrent)
         m_gl->doneCurrent();
-    m_stateSet = nullptr;
     decayTextureScores();
 }
 
