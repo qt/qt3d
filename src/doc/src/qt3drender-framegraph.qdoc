@@ -122,17 +122,17 @@
     \section2 Setting the Framegraph
 
     The FrameGraph tree should be assigned to the activeFrameGraph property of
-    a QFrameGraph component, itself being a component of the root entity in the
-    Qt 3D scene. This is what makes it the active framegraph for the renderer.
-    Of course, since this is a QML property binding, the active framegraph (or
-    parts of it) can be changed on the fly at runtime. For example, if you want
-    to use different rendering approaches for indoor and outdoor scenes or to
-    enable or disable some special effect.
+    a QRenderSettings component, itself being a component of the root entity in
+    the Qt 3D scene. This is what makes it the active framegraph for the
+    renderer. Of course, since this is a QML property binding, the active
+    framegraph (or parts of it) can be changed on the fly at runtime. For
+    example, if you want to use different rendering approaches for indoor and
+    outdoor scenes or to enable or disable some special effect.
 
     \badcode
     Entity {
         id: sceneRoot
-        components: FrameGraph {
+        components: RenderSettings {
              activeFrameGraph: ... // FrameGraph tree
         }
     }
@@ -144,7 +144,7 @@
     \badcode
     Entity {
         id: sceneRoot
-        components: FrameGraph {
+        components: RenderSettings {
              ... // FrameGraph tree
         }
     }
