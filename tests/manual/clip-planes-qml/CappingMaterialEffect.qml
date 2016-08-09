@@ -70,7 +70,7 @@ Effect {
 
             graphicsApiFilter {
                 api: GraphicsApiFilter.OpenGL
-                profile: GraphicsApiFilter.NoProfile
+                profile: GraphicsApiFilter.CoreProfile
                 majorVersion: 3
                 minorVersion: 2
             }
