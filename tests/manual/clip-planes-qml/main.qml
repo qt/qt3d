@@ -91,7 +91,7 @@ Entity {
     ClippingPlanes {
         id: clippingPlanes
         visualizationLayer: frameGraph.visualizationLayer
-        capsLayer: frameGraph.contentLayer
+        capsLayer: frameGraph.capsLayer
     }
 
     // Entity being clipped
