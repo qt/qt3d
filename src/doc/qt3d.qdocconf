@@ -46,7 +46,8 @@ headerdirs += . \
               ../logic \
               ../plugins \
               ../quick3d/quick3d \
-              ../input
+              ../input \
+              ../extras
 
 # Exclude private header files from the documentation build
 excludefiles += "*_p.h"
@@ -57,7 +58,8 @@ sourcedirs += . \
               ../logic \
               ../plugins \
               ../quick3d/quick3d \
-              ../input
+              ../input \
+              ../extras
 
 exampledirs += ../../examples/qt3d \
                snippets
@@ -80,7 +82,8 @@ Cpp.ignoretokens     += QT3DINPUTSHARED_EXPORT \
                         QT3DLOGICSHARED_EXPORT \
                         QT3DRENDERSHARED_EXPORT \
                         QT3DRENDERSHARED_PRIVATE_EXPORT \
-                        QT3DQUICKSHARED_PRIVATE_EXPORT
+                        QT3DQUICKSHARED_PRIVATE_EXPORT \
+                        QT3DEXTRASSHARED_EXPORT
 
 Cpp.ignoredirectives += Q_DECLARE_LOGGING_CATEGORY
 
