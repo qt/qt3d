@@ -811,6 +811,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
     QSurface *surface = nullptr;
     QSurface *previousSurface = renderViews.first()->surface();
     QSurface *lastUsedSurface = nullptr;
+
     for (int i = 0; i < renderViewsCount; ++i) {
         // Initialize GraphicsContext for drawing
         // If the RenderView has a RenderStateSet defined
@@ -855,13 +856,14 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
             lastBoundFBOId = m_graphicsContext->boundFrameBufferObject();
         }
 
-        // Set RenderView render state
         // Note: the RenderStateSet is allocated once per RV if needed
         // and it contains a list of StateVariant value types
         RenderStateSet *renderViewStateSet = renderView->stateSet();
-        if (renderViewStateSet)
+
+        // Set the RV state if not null,
+        if (renderViewStateSet != nullptr)
             m_graphicsContext->setCurrentStateSet(renderViewStateSet);
-        else if (surfaceHasChanged || i == 0) // Reset state to the default state on initial render view or on surface change
+        else
             m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
 
         // Set RenderTarget ...
