@@ -132,7 +132,7 @@ QAttribute::QAttribute(QNode *parent)
  * and \a stride with \a parent.
  */
 QAttribute::QAttribute(QBuffer *buf, VertexBaseType type, uint dataSize, uint count, uint offset, uint stride, QNode *parent)
-    : QNode(*new QAttributePrivate(), parent)
+    : QAttribute(parent)
 {
     Q_D(QAttribute);
     setBuffer(buf);
@@ -149,7 +149,7 @@ QAttribute::QAttribute(QBuffer *buf, VertexBaseType type, uint dataSize, uint co
  * dataSize, \a count, \a offset, and \a stride with \a parent.
  */
 QAttribute::QAttribute(QBuffer *buf, const QString &name, VertexBaseType type, uint dataSize, uint count, uint offset, uint stride, QNode *parent)
-    : QNode(*new QAttributePrivate(), parent)
+    : QAttribute(parent)
 {
     Q_D(QAttribute);
     setBuffer(buf);
