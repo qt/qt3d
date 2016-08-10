@@ -56,10 +56,10 @@ Window {
     visible: true
     width: 1024
     height: 768
+    color: "black"
 
-    Rectangle {
+    Item {
         anchors.fill: parent
-        color: Qt.rgba(0.0, 0.5, 1, 1)
         Scene3D {
             id: scene3D
             anchors.fill: parent
