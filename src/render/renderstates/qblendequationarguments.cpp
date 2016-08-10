@@ -103,25 +103,25 @@ QBlendEquationArguments::QBlendEquationArguments(QBlendEquationArgumentsPrivate 
 /*!
   \enum Qt3DRender::QBlendEquationArguments::Blending
 
-  \value Zero 0
-  \value One 1
-  \value SrcColor 0x0300
-  \value SourceAlpha 0x0302
-  \value Src1Alpha
-  \value Src1Color
-  \value DstColor 0x0306
-  \value destinationAlpha 0x0304
-  \value SourceAlphaSaturate 0x0308
-  \value ConstantColor 0x8001
-  \value ConstantAlpha 0x8003
-  \value OneMinusSrcColor 0x0301
-  \value OneMinusSourceAlpha 0x0303
-  \value OneMinusdestinationAlpha 0x0305
-  \value OneMinusDstColor 0x0307
-  \value OneMinusConstantColor 0x8002
-  \value OneMinusConstantAlpha 0x8004
-  \value OneMinusSrc1Alpha
-  \value OneMinusSrc1Color0
+  \value Zero GL_ZERO
+  \value One GL_ONE
+  \value SourceColor GL_SRC_COLOR
+  \value SourceAlpha GL_SRC_ALPHA
+  \value Source1Alpha GL_SRC1_ALPHA
+  \value Source1Color GL_SRC1_COLOR
+  \value DestinationColor GL_DST_COLOR
+  \value DestinationAlpha GL_DST_ALPHA
+  \value SourceAlphaSaturate GL_SRC_ALPHA_SATURATE
+  \value ConstantColor 0GL_CONSTANT_COLOR
+  \value ConstantAlpha GL_CONSTANT_ALPHA
+  \value OneMinusSourceColor GL_ONE_MINUS_SRC_COLOR
+  \value OneMinusSourceAlpha GL_ONE_MINUS_SRC_ALPHA
+  \value OneMinusDestinationAlpha GL_ONE_MINUS_DST_ALPHA
+  \value OneMinusDestinationColor GL_ONE_MINUS_DST_COLOR
+  \value OneMinusConstantColor GL_ONE_MINUS_CONSTANT_COLOR
+  \value OneMinusConstantAlpha GL_ONE_MINUS_CONSTANT_ALPHA
+  \value OneMinusSource1Alpha GL_ONE_MINUS_SRC1_ALPHA
+  \value OneMinusSource1Color0 GL_ONE_MINUS_SRC1_COLOR
 */
 
 /*!
