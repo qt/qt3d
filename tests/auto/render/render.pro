@@ -53,5 +53,6 @@ contains(QT_CONFIG, private_tests) {
         qrendersurfaceselector \
         sortpolicy \
         qcuboidgeometry \
-        sceneloader
+        sceneloader \
+        qsceneloader
 }
