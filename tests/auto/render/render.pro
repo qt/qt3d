@@ -52,7 +52,6 @@ contains(QT_CONFIG, private_tests) {
         qgraphicsapifilter \
         qrendersurfaceselector \
         sortpolicy \
-        qcuboidgeometry \
         sceneloader \
         qsceneloader \
         qrendertargetoutput \
