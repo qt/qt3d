@@ -193,6 +193,32 @@ private Q_SLOTS:
         actual->setMinorVersion(2);
         expected = false;
         QTest::newRow("wrong_api") << required << actual << expected;
+
+        required = QSharedPointer<Qt3DRender::QGraphicsApiFilter>::create();
+        required->setApi(Qt3DRender::QGraphicsApiFilter::OpenGL);
+        required->setProfile(Qt3DRender::QGraphicsApiFilter::NoProfile);
+        required->setMajorVersion(2);
+        required->setMinorVersion(0);
+        actual = QSharedPointer<Qt3DRender::QGraphicsApiFilter>::create();
+        actual->setApi(Qt3DRender::QGraphicsApiFilter::OpenGL);
+        actual->setProfile(Qt3DRender::QGraphicsApiFilter::CompatibilityProfile);
+        actual->setMajorVersion(3);
+        actual->setMinorVersion(2);
+        expected = true;
+        QTest::newRow("gl_3_2_compatibility_can_use_gl_2_0") << required << actual << expected;
+
+        required = QSharedPointer<Qt3DRender::QGraphicsApiFilter>::create();
+        required->setApi(Qt3DRender::QGraphicsApiFilter::OpenGL);
+        required->setProfile(Qt3DRender::QGraphicsApiFilter::NoProfile);
+        required->setMajorVersion(2);
+        required->setMinorVersion(0);
+        actual = QSharedPointer<Qt3DRender::QGraphicsApiFilter>::create();
+        actual->setApi(Qt3DRender::QGraphicsApiFilter::OpenGL);
+        actual->setProfile(Qt3DRender::QGraphicsApiFilter::CoreProfile);
+        actual->setMajorVersion(3);
+        actual->setMinorVersion(2);
+        expected = false;
+        QTest::newRow("gl_3_2_core_cant_use_gl_2_0") << required << actual << expected;
     }
 
     void shouldDetermineCompatibility()
