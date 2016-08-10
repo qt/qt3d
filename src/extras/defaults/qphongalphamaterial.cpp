@@ -226,6 +226,17 @@ QPhongAlphaMaterial::QPhongAlphaMaterial(QNode *parent)
 {
     Q_D(QPhongAlphaMaterial);
     d->init();
+
+    QObject::connect(d->m_blendEquation, &Qt3DRender::QBlendEquation::blendFunctionChanged,
+                     this, &QPhongAlphaMaterial::blendFunctionArgChanged);
+    QObject::connect(d->m_blendState, &Qt3DRender::QBlendEquationArguments::destinationAlphaChanged,
+                     this, &QPhongAlphaMaterial::destinationAlphaArgChanged);
+    QObject::connect(d->m_blendState, &Qt3DRender::QBlendEquationArguments::destinationRgbChanged,
+                     this, &QPhongAlphaMaterial::destinationRgbArgChanged);
+    QObject::connect(d->m_blendState, &Qt3DRender::QBlendEquationArguments::sourceAlphaChanged,
+                     this, &QPhongAlphaMaterial::sourceAlphaArgChanged);
+    QObject::connect(d->m_blendState, &Qt3DRender::QBlendEquationArguments::sourceRgbChanged,
+                     this, &QPhongAlphaMaterial::sourceRgbArgChanged);
 }
 
 /*!
@@ -292,6 +303,36 @@ float QPhongAlphaMaterial::alpha() const
     return d->m_alphaParameter->value().toFloat();
 }
 
+QBlendEquationArguments::Blending QPhongAlphaMaterial::sourceRgbArg() const
+{
+    Q_D(const QPhongAlphaMaterial);
+    return d->m_blendState->sourceRgb();
+}
+
+QBlendEquationArguments::Blending QPhongAlphaMaterial::destinationRgbArg() const
+{
+    Q_D(const QPhongAlphaMaterial);
+    return d->m_blendState->destinationRgb();
+}
+
+QBlendEquationArguments::Blending QPhongAlphaMaterial::sourceAlphaArg() const
+{
+    Q_D(const QPhongAlphaMaterial);
+    return d->m_blendState->sourceAlpha();
+}
+
+QBlendEquationArguments::Blending QPhongAlphaMaterial::destinationAlphaArg() const
+{
+    Q_D(const QPhongAlphaMaterial);
+    return d->m_blendState->destinationAlpha();
+}
+
+QBlendEquation::BlendFunction QPhongAlphaMaterial::blendFunctionArg() const
+{
+    Q_D(const QPhongAlphaMaterial);
+    return d->m_blendEquation->blendFunction();
+}
+
 void QPhongAlphaMaterial::setAmbient(const QColor &ambient)
 {
     Q_D(QPhongAlphaMaterial);
@@ -320,6 +361,36 @@ void QPhongAlphaMaterial::setAlpha(float alpha)
 {
     Q_D(QPhongAlphaMaterial);
     d->m_alphaParameter->setValue(alpha);
+}
+
+void QPhongAlphaMaterial::setSourceRgbArg(QBlendEquationArguments::Blending sourceRgbArg)
+{
+    Q_D(QPhongAlphaMaterial);
+    d->m_blendState->setSourceRgb(sourceRgbArg);
+}
+
+void QPhongAlphaMaterial::setDestinationRgbArg(QBlendEquationArguments::Blending destinationRgbArg)
+{
+    Q_D(QPhongAlphaMaterial);
+    d->m_blendState->setDestinationRgb(destinationRgbArg);
+}
+
+void QPhongAlphaMaterial::setSourceAlphaArg(QBlendEquationArguments::Blending sourceAlphaArg)
+{
+    Q_D(QPhongAlphaMaterial);
+    d->m_blendState->setSourceAlpha(sourceAlphaArg);
+}
+
+void QPhongAlphaMaterial::setDestinationAlphaArg(QBlendEquationArguments::Blending destinationAlphaArg)
+{
+    Q_D(QPhongAlphaMaterial);
+    d->m_blendState->setDestinationAlpha(destinationAlphaArg);
+}
+
+void QPhongAlphaMaterial::setBlendFunctionArg(QBlendEquation::BlendFunction blendFunctionArg)
+{
+    Q_D(QPhongAlphaMaterial);
+    d->m_blendEquation->setBlendFunction(blendFunctionArg);
 }
 
 } // namespace Qt3DExtras
