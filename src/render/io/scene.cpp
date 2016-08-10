@@ -60,6 +60,11 @@ Scene::Scene()
 {
 }
 
+void Scene::cleanup()
+{
+    m_source.clear();
+}
+
 void Scene::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QSceneLoaderData>>(change);

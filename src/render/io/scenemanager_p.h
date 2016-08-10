@@ -84,6 +84,8 @@ private:
 } // namespace Render
 } // namespace Qt3DRender
 
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Scene, Q_REQUIRES_CLEANUP)
+
 QT_END_NAMESPACE
 
 #endif // SCENEMANAGER_P_H
