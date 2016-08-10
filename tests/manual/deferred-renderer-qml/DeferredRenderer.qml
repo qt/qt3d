@@ -61,7 +61,12 @@ Viewport {
     property alias screenQuadLayer: screenQuadLayerFilter.layers
     property alias debugLayer: debugLayerFilter.layers
 
+    readonly property real windowWidth: surfaceSelector.surface !== null ? surfaceSelector.surface.width: 0
+    readonly property real windowHeight: surfaceSelector.surface !== null ? surfaceSelector.surface.height: 0
+
     RenderSurfaceSelector {
+        id: surfaceSelector
+
         CameraSelector {
             id : sceneCameraSelector
 
@@ -104,7 +109,7 @@ Viewport {
                             buffers: ClearBuffers.ColorDepthBuffer
                             RenderPassFilter {
                                 matchAny : FilterKey { name : "pass"; value : "final" }
-                                parameters: Parameter { name: "winSize"; value : Qt.size(1024, 768) }
+                                parameters: Parameter { name: "winSize"; value : Qt.size(windowWidth, windowHeight) }
 
                             }
                         }
@@ -116,7 +121,7 @@ Viewport {
                             normalizedRect : Qt.rect(0.5, 0.5, 0.5, 0.5)
                             RenderPassFilter {
                                 matchAny : FilterKey { name : "pass"; value : "final" }
-                                parameters: Parameter { name: "winSize"; value : Qt.size(1024 * 0.5, 768 * 0.5) }
+                                parameters: Parameter { name: "winSize"; value : Qt.size(windowWidth * 0.5, windowHeight * 0.5) }
                             }
                         }
                     }
