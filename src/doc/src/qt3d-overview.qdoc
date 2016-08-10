@@ -72,6 +72,7 @@
         \li Multitexturing
         \li \l {Instanced Rendering}{Instanced rendering}
         \li \l {Uniform Buffer Objects}
+        \li \l {Pro Tips}
     \endlist
 
     \section2 Materials
@@ -180,6 +181,11 @@
     A Uniform Buffer Object (UBO) can be bound to OpenGL shader programs to make
     large amounts of data readily available. Typical use cases for UBOs are for
     sets of material or lighting parameters.
+
+    \section2 Pro Tips
+
+    Because Murphy's law proves to often be true when it comes to 3D rendering,
+    \l {Qt 3D Render Pro Tips}{here} are a few points that might help you.
 
     \section1 Configurable Renderer
 
