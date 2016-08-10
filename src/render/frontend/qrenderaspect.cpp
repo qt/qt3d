@@ -172,6 +172,8 @@ void QRenderAspectPrivate::registerBackendTypes()
 {
     Q_Q(QRenderAspect);
 
+    qRegisterMetaType<Qt3DRender::QBuffer*>();
+
     q->registerBackendType<Qt3DCore::QEntity>(QSharedPointer<Render::RenderEntityFunctor>::create(m_renderer, m_nodeManagers));
     q->registerBackendType<Qt3DCore::QTransform>(QSharedPointer<Render::NodeFunctor<Render::Transform, Render::TransformManager> >::create(m_renderer, m_nodeManagers->transformManager()));
 
