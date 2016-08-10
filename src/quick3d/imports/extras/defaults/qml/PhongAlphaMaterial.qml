@@ -49,6 +49,12 @@ Material {
     property real shininess: 150.0
     property real alpha: 0.5
 
+    property alias sourceRgbArg: alphaEffect.sourceRgbArg
+    property alias destinationRgbArg: alphaEffect.destinationRgbArg
+    property alias sourceAlphaArg: alphaEffect.sourceAlphaArg
+    property alias destinationAlphaArg: alphaEffect.destinationAlphaArg
+    property alias blendFunctionArg: alphaEffect.blendFunctionArg
+
     parameters: [
         Parameter { name: "alpha";  value: root.alpha },
         Parameter { name: "ka";   value: Qt.vector3d(root.ambient.r, root.ambient.g, root.ambient.b) },
@@ -57,6 +63,6 @@ Material {
         Parameter { name: "shininess"; value: root.shininess }
     ]
 
-    effect: DefaultAlphaEffect {}
+    effect: DefaultAlphaEffect { id: alphaEffect }
 }
 
