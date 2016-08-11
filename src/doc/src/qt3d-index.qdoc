@@ -98,7 +98,7 @@
     \list
         \li Microsoft Windows (win32) - Supported
         \li Linux X11 - Supported
-        \li OS X - Supported although there may be some retina scaling issues
+        \li \macos - Supported although there may be some retina scaling issues
         \li Android - Supported
         \li Embedded Linux - Supported
         \li iOS - Not supported yet (coming in Qt 5.6)
