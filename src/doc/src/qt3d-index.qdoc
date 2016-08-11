@@ -97,7 +97,7 @@
 
     \section1 Qt 3D Platform Support
 
-    In this Technology Preview Qt 3D has the following support for platforms:
+    Qt 3D has the following support for platforms:
 
     \list
         \li Microsoft Windows (win32) - Supported
