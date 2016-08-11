@@ -91,7 +91,7 @@ void Entity::cleanup()
         Entity *parentEntity = parent();
         if (parentEntity != nullptr)
             parentEntity->removeChildHandle(m_handle);
-        for (int i = 0; i < m_childrenHandles.size(); i++)
+        for (int i = 0; i < m_childrenHandles.size(); ++i)
             m_nodeManagers->renderNodesManager()->release(m_childrenHandles[i]);
         // We need to release using peerId otherwise the handle will be cleared
         // but would still remain in the Id to Handle table
@@ -111,6 +111,7 @@ void Entity::cleanup()
     m_objectPickerComponent = QNodeId();
     m_boundingVolumeDebugComponent = QNodeId();
     m_computeComponent = QNodeId();
+    m_childrenHandles.clear();
     m_layerComponents.clear();
     m_shaderDataComponents.clear();
     m_lightComponents.clear();

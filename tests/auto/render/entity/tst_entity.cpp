@@ -28,9 +28,12 @@
 
 #include <QtTest/QtTest>
 #include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
+#include <Qt3DRender/private/managers_p.h>
 
 #include <Qt3DRender/QCameraLens>
 #include <Qt3DCore/QPropertyUpdatedChange>
+#include <Qt3DCore/QPropertyNodeAddedChange>
 #include <Qt3DCore/QComponentAddedChange>
 #include <Qt3DCore/QComponentRemovedChange>
 #include <Qt3DCore/QTransform>
@@ -94,9 +97,11 @@ private slots:
         QFETCH(QList<QComponent*>, components);
 
         TestRenderer renderer;
+        NodeManagers nodeManagers;
         Qt3DRender::Render::Entity entity;
         Qt3DCore::QEntity dummyFrontendEntity;
         entity.setRenderer(&renderer);
+        entity.setNodeManagers(&nodeManagers);
 
         // THEN
         QVERIFY(entity.componentUuid<Transform>().isNull());
@@ -108,12 +113,22 @@ private slots:
         QVERIFY(entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(entity.componentsUuid<ShaderData>().isEmpty());
         QVERIFY(!entity.isBoundingVolumeDirty());
+        QVERIFY(entity.childrenHandles().isEmpty());
 
         // WHEN
         Q_FOREACH (QComponent *component, components) {
             const auto addChange = QComponentAddedChangePtr::create(&dummyFrontendEntity, component);
             entity.sceneChangeEvent(addChange);
         }
+
+        Qt3DCore::QEntity dummyFrontendEntityChild;
+        // Create nodes in the backend manager
+        nodeManagers.renderNodesManager()->getOrCreateResource(dummyFrontendEntity.id());
+        nodeManagers.renderNodesManager()->getOrCreateResource(dummyFrontendEntityChild.id());
+        // Send children added event to entity
+        const auto addEntityChange = QPropertyNodeAddedChangePtr::create(dummyFrontendEntity.id(), &dummyFrontendEntityChild);
+        entity.sceneChangeEvent(addEntityChange);
+
 
         // THEN
         QVERIFY(!entity.componentUuid<Transform>().isNull());
@@ -125,6 +140,7 @@ private slots:
         QVERIFY(!entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(!entity.componentsUuid<ShaderData>().isEmpty());
         QVERIFY(entity.isBoundingVolumeDirty());
+        QVERIFY(!entity.childrenHandles().isEmpty());
         QVERIFY(renderer.dirtyBits() != 0);
         bool containsAll = entity.containsComponentsOfType<Transform, CameraLens, Material, GeometryRenderer, ObjectPicker, ComputeCommand>();
         QVERIFY(containsAll);
@@ -142,6 +158,7 @@ private slots:
         QVERIFY(entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(entity.componentsUuid<ShaderData>().isEmpty());
         QVERIFY(!entity.isBoundingVolumeDirty());
+        QVERIFY(entity.childrenHandles().isEmpty());
         containsAll = entity.containsComponentsOfType<Transform, CameraLens, Material, GeometryRenderer, ObjectPicker, ComputeCommand>();
         QVERIFY(!containsAll);
     }
