@@ -153,6 +153,9 @@ QHandle<T, INDEXBITS> QHandleManager<T, INDEXBITS>::acquire(T *d)
     m_firstFreeEntry = m_entries[newIndex].m_nextFreeIndex;
     m_entries[newIndex].m_nextFreeIndex = 0;
     ++m_entries[newIndex].m_counter;
+    // Check if the counter is about to overflow and reset if necessary
+    if (m_entries[newIndex].m_counter == qHandle::MaxCounter)
+        m_entries[newIndex].m_counter = 0;
     if (m_entries[newIndex].m_counter == 0)
         m_entries[newIndex].m_counter = 1;
     m_entries[newIndex].m_active = true;
