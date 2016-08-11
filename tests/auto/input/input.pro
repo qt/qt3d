@@ -27,5 +27,6 @@ qtConfig(private_tests) {
         loadproxydevicejob \
         qmousedevice \
         mousedevice \
-        utils
+        utils \
+        axisaccumulator
 }
