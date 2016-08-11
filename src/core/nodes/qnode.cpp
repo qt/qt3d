@@ -139,7 +139,7 @@ void QNodePrivate::notifyDestructionChangesAndRemoveFromScene()
 {
     Q_Q(QNode);
 
-//    // We notify the backend that the parent lost us as a child
+    // We notify the backend that the parent lost us as a child
     if (m_changeArbiter != nullptr && !m_parentId.isNull()) {
         const auto change = QPropertyNodeRemovedChangePtr::create(m_parentId, q);
         change->setPropertyName("children");
