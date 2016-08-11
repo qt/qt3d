@@ -98,7 +98,7 @@ public:
 
     void setActiveFrameGraph(Qt3DRender::QFrameGraphNode *activeFrameGraph);
     Qt3DRender::QFrameGraphNode *activeFrameGraph() const;
-    Qt3DExtras::QForwardRenderer *defaultFramegraph() const;
+    Qt3DExtras::QForwardRenderer *defaultFrameGraph() const;
 
     Qt3DRender::QCamera *camera() const;
 

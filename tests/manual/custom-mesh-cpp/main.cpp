@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
     Qt3DExtras::Qt3DWindow view;
-    view.defaultFramegraph()->setClearColor(QColor::fromRgbF(0.0, 0.5, 1.0, 1.0));
+    view.defaultFrameGraph()->setClearColor(QColor::fromRgbF(0.0, 0.5, 1.0, 1.0));
 
     // Root entity
     Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();

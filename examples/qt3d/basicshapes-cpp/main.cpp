@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
     Qt3DExtras::Qt3DWindow *view = new Qt3DExtras::Qt3DWindow();
-    view->defaultFramegraph()->setClearColor(QColor(QRgb(0x4d4d4f)));
+    view->defaultFrameGraph()->setClearColor(QColor(QRgb(0x4d4d4f)));
     QWidget *container = QWidget::createWindowContainer(view);
     QSize screenSize = view->screen()->size();
     container->setMinimumSize(QSize(200, 100));
