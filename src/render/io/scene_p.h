@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DRender/private/backendnode_p.h>
+#include <Qt3DRender/qsceneloader.h>
 #include <QtGlobal>
 #include <QUrl>
 
@@ -77,6 +78,7 @@ public:
     void setSceneManager(SceneManager *manager);
 
     void cleanup();
+    void setStatus(QSceneLoader::Status status);
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;

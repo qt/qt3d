@@ -65,6 +65,16 @@ void Scene::cleanup()
     m_source.clear();
 }
 
+void Scene::setStatus(QSceneLoader::Status status)
+{
+    // Send the new subtree to the frontend or notify failure
+    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+    e->setPropertyName("status");
+    e->setValue(QVariant::fromValue(status));
+    notifyObservers(e);
+}
+
 void Scene::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QSceneLoaderData>>(change);

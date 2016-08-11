@@ -149,6 +149,28 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
+
+    void checkStatusTransmission()
+    {
+        // GIVEN
+        TestRenderer renderer;
+        TestArbiter arbiter;
+        Qt3DRender::Render::Scene sceneLoader;
+
+        Qt3DCore::QBackendNodePrivate::get(&sceneLoader)->setArbiter(&arbiter);
+        sceneLoader.setRenderer(&renderer);
+
+        // WHEN
+        sceneLoader.setStatus(Qt3DRender::QSceneLoader::Ready);
+
+        // THEN
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(arbiter.events.count(), 1);
+        QCOMPARE(change->propertyName(), "status");
+        QCOMPARE(change->value().value<Qt3DRender::QSceneLoader::Status>(), Qt3DRender::QSceneLoader::Ready);
+
+        arbiter.events.clear();
+    }
 };
 
 // Note: setSceneSubtree needs a QCoreApplication
