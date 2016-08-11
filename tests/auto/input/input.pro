@@ -15,5 +15,6 @@ contains(QT_CONFIG, private_tests) {
         abstractaxisinput \
         analogaxisinput \
         buttonaxisinput \
-        keyboardhandler
+        keyboardhandler \
+        qaxisaccumulator
 }
