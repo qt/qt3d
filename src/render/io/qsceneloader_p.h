@@ -53,6 +53,7 @@
 
 #include <private/qcomponent_p.h>
 #include <Qt3DRender/qsceneloader.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,7 +61,7 @@ namespace Qt3DRender {
 
 class QSceneIOHandler;
 
-class QSceneLoaderPrivate : public Qt3DCore::QComponentPrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QSceneLoaderPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QSceneLoaderPrivate();
