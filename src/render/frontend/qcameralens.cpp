@@ -111,7 +111,11 @@ void QCameraLens::setProjectionType(QCameraLens::ProjectionType projectionType)
     Q_D(QCameraLens);
     if (d->m_projectionType != projectionType) {
         d->m_projectionType = projectionType;
+
+        const bool wasBlocked = blockNotifications(true);
         emit projectionTypeChanged(projectionType);
+        blockNotifications(wasBlocked);
+
         d->updateProjectionMatrix();
     }
 }
@@ -195,7 +199,11 @@ void QCameraLens::setNearPlane(float nearPlane)
     if (qFuzzyCompare(d->m_nearPlane, nearPlane))
         return;
     d->m_nearPlane = nearPlane;
+
+    const bool wasBlocked = blockNotifications(true);
     emit nearPlaneChanged(nearPlane);
+    blockNotifications(wasBlocked);
+
     d->updateProjectionMatrix();
 }
 
@@ -218,7 +226,11 @@ void QCameraLens::setFarPlane(float farPlane)
     if (qFuzzyCompare(d->m_farPlane, farPlane))
         return;
     d->m_farPlane = farPlane;
+
+    const bool wasBlocked = blockNotifications(true);
     emit farPlaneChanged(farPlane);
+    blockNotifications(wasBlocked);
+
     d->updateProjectionMatrix();
 }
 
@@ -244,7 +256,11 @@ void QCameraLens::setFieldOfView(float fieldOfView)
     if (qFuzzyCompare(d->m_fieldOfView, fieldOfView))
         return;
     d->m_fieldOfView = fieldOfView;
+
+    const bool wasBlocked = blockNotifications(true);
     emit fieldOfViewChanged(fieldOfView);
+    blockNotifications(wasBlocked);
+
     d->updateProjectionMatrix();
 }
 
@@ -273,7 +289,11 @@ void QCameraLens::setAspectRatio(float aspectRatio)
     if (qFuzzyCompare(d->m_aspectRatio, aspectRatio))
         return;
     d->m_aspectRatio = aspectRatio;
+
+    const bool wasBlocked = blockNotifications(true);
     emit aspectRatioChanged(aspectRatio);
+    blockNotifications(wasBlocked);
+
     d->updateProjectionMatrix();
 }
 
@@ -302,7 +322,11 @@ void QCameraLens::setLeft(float left)
     if (qFuzzyCompare(d->m_left, left))
         return;
     d->m_left = left;
+
+    const bool wasBlocked = blockNotifications(true);
     emit leftChanged(left);
+    blockNotifications(wasBlocked);
+
     d->updateProjectionMatrix();
 }
 
@@ -331,7 +355,11 @@ void QCameraLens::setRight(float right)
     if (qFuzzyCompare(d->m_right, right))
         return;
     d->m_right = right;
+
+    const bool wasBlocked = blockNotifications(true);
     emit rightChanged(right);
+    blockNotifications(wasBlocked);
+
     d->updateProjectionMatrix();
 }
 
@@ -360,7 +388,11 @@ void QCameraLens::setBottom(float bottom)
     if (qFuzzyCompare(d->m_bottom, bottom))
         return;
     d->m_bottom = bottom;
+
+    const bool wasBlocked = blockNotifications(true);
     emit bottomChanged(bottom);
+    blockNotifications(wasBlocked);
+
     d->updateProjectionMatrix();
 }
 
@@ -389,7 +421,11 @@ void QCameraLens::setTop(float top)
     if (qFuzzyCompare(d->m_top, top))
         return;
     d->m_top = top;
+
+    const bool wasBlocked = blockNotifications(true);
     emit topChanged(top);
+    blockNotifications(wasBlocked);
+
     d->updateProjectionMatrix();
 }
 
