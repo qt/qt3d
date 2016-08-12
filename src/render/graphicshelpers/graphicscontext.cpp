@@ -286,9 +286,8 @@ void GraphicsContext::endDrawing(bool swapBuffers)
     decayTextureScores();
 }
 
-void GraphicsContext::setViewport(const QRectF &viewport, const QSize &surfaceSize)
+QSize GraphicsContext::renderTargetSize(const QSize &surfaceSize) const
 {
-    m_viewport = viewport;
     QSize renderTargetSize;
     if (m_activeFBO != m_defaultFBO) {
         // For external FBOs we may not have a m_renderTargets entry.
@@ -317,7 +316,7 @@ void GraphicsContext::setViewport(const QRectF &viewport, const QSize &surfaceSi
                 // Assumes texture level 0 and GL_TEXTURE_2D target
                 renderTargetSize = m_glHelper->getTextureDimensions(attachment0Name, GL_TEXTURE_2D);
             else
-                return;
+                return renderTargetSize;
         }
     } else {
         renderTargetSize = m_surface->size();
@@ -326,9 +325,16 @@ void GraphicsContext::setViewport(const QRectF &viewport, const QSize &surfaceSi
             renderTargetSize *= dpr;
         }
     }
+    return renderTargetSize;
+}
+
+void GraphicsContext::setViewport(const QRectF &viewport, const QSize &surfaceSize)
+{
+    m_viewport = viewport;
+    QSize size = renderTargetSize(surfaceSize);
 
     // Check that the returned size is before calling glViewport
-    if (renderTargetSize.isEmpty())
+    if (size.isEmpty())
         return;
 
     // Qt3D 0------------------> 1  OpenGL  1^
@@ -339,10 +345,10 @@ void GraphicsContext::setViewport(const QRectF &viewport, const QSize &surfaceSi
     //      1                                0---------------------> 1
     // The Viewport is defined between 0 and 1 which allows us to automatically
     // scale to the size of the provided window surface
-    m_gl->functions()->glViewport(m_viewport.x() * renderTargetSize.width(),
-                                  (1.0 - m_viewport.y() - m_viewport.height()) * renderTargetSize.height(),
-                                  m_viewport.width() * renderTargetSize.width(),
-                                  m_viewport.height() * renderTargetSize.height());
+    m_gl->functions()->glViewport(m_viewport.x() * size.width(),
+                                  (1.0 - m_viewport.y() - m_viewport.height()) * size.height(),
+                                  m_viewport.width() * size.width(),
+                                  m_viewport.height() * size.height());
 }
 
 void GraphicsContext::releaseOpenGL()

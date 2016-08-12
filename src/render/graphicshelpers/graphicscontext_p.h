@@ -140,6 +140,8 @@ public:
 
     void executeCommand(const RenderCommand *command);
 
+    QSize renderTargetSize(const QSize &surfaceSize) const;
+
     /**
      * @brief activeShader
      * @return
