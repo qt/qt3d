@@ -53,8 +53,9 @@ FrameGraphNode::FrameGraphNode()
 {
 }
 
-FrameGraphNode::FrameGraphNode(FrameGraphNodeType nodeType)
-    : m_nodeType(nodeType)
+FrameGraphNode::FrameGraphNode(FrameGraphNodeType nodeType, QBackendNode::Mode mode)
+    : BackendNode(mode)
+    , m_nodeType(nodeType)
     , m_manager(nullptr)
 {
 }

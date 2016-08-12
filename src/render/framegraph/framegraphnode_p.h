@@ -107,7 +107,7 @@ public:
     QVector<FrameGraphNode *> children() const;
 
 protected:
-    FrameGraphNode(FrameGraphNodeType nodeType);
+    FrameGraphNode(FrameGraphNodeType nodeType, QBackendNode::Mode mode = QBackendNode::ReadOnly);
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
 
 private:
