@@ -189,6 +189,19 @@ private Q_SLOTS:
         QCOMPARE(change->value().toBool(), true);
 
         arbiter.events.clear();
+
+        // WHEN
+        buffer->updateData(1, QByteArrayLiteral("L1"));
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        QCOMPARE(buffer->data(), QByteArrayLiteral("ZL1"));
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "updateData");
+        Qt3DRender::QBufferUpdate updateData = change->value().value<Qt3DRender::QBufferUpdate>();
+        QCOMPARE(updateData.offset, 1);
+        QCOMPARE(updateData.data, QByteArrayLiteral("L1"));
     }
 };
 

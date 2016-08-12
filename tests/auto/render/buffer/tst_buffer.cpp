@@ -29,6 +29,7 @@
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
 #include <Qt3DRender/private/buffer_p.h>
+#include <Qt3DRender/private/qbuffer_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
@@ -95,6 +96,7 @@ private Q_SLOTS:
         // GIVEN
         Qt3DRender::Render::Buffer renderBuffer;
         Qt3DRender::Render::BufferManager bufferManager;
+        TestRenderer renderer;
 
         // THEN
         QCOMPARE(renderBuffer.isDirty(), false);
@@ -103,6 +105,7 @@ private Q_SLOTS:
         QVERIFY(renderBuffer.data().isEmpty());
         QVERIFY(renderBuffer.peerId().isNull());
         QVERIFY(renderBuffer.dataGenerator().isNull());
+        QVERIFY(renderBuffer.pendingBufferUpdates().empty());
 
         // GIVEN
         Qt3DRender::QBuffer buffer(Qt3DRender::QBuffer::IndexBuffer);
@@ -112,7 +115,26 @@ private Q_SLOTS:
 
         // WHEN
         renderBuffer.setManager(&bufferManager);
+        renderBuffer.setRenderer(&renderer);
         simulateInitialization(&buffer, &renderBuffer);
+
+        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        Qt3DRender::QBufferUpdate updateData;
+        updateData.offset = 2;
+        updateData.data = QByteArrayLiteral("LS5");
+        updateChange->setValue(QVariant::fromValue(updateData));
+        updateChange->setPropertyName("updateData");
+        renderBuffer.sceneChangeEvent(updateChange);
+
+        // THEN
+        QCOMPARE(renderBuffer.type(), Qt3DRender::QBuffer::IndexBuffer);
+        QCOMPARE(renderBuffer.usage(), Qt3DRender::QBuffer::DynamicCopy);
+        QCOMPARE(renderBuffer.isDirty(), true);
+        QCOMPARE(renderBuffer.data(), QByteArrayLiteral("C7"));
+        QVERIFY(!renderBuffer.dataGenerator().isNull());
+        QVERIFY(!renderBuffer.pendingBufferUpdates().empty());
+
+        // WHEN
         renderBuffer.cleanup();
 
         // THEN
@@ -121,6 +143,7 @@ private Q_SLOTS:
         QCOMPARE(renderBuffer.usage(), Qt3DRender::QBuffer::StaticDraw);
         QVERIFY(renderBuffer.data().isEmpty());
         QVERIFY(renderBuffer.dataGenerator().isNull());
+        QVERIFY(renderBuffer.pendingBufferUpdates().empty());
     }
 
     void checkPropertyChanges()
@@ -174,9 +197,7 @@ private Q_SLOTS:
         QVERIFY(renderBuffer.isDirty());
 
         renderBuffer.unsetDirty();
-
         QVERIFY(!renderBuffer.isDirty());
-
 
         // WHEN
         Qt3DRender::QBufferDataGeneratorPtr functor(new TestFunctor(355));
@@ -213,6 +234,23 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "data");
         QCOMPARE(change->value().toByteArray(), QByteArrayLiteral("454"));
 
+        arbiter.events.clear();
+
+        // WHEN
+        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        Qt3DRender::QBufferUpdate updateData;
+        updateData.offset = 2;
+        updateData.data = QByteArrayLiteral("LS5");
+        updateChange->setValue(QVariant::fromValue(updateData));
+        updateChange->setPropertyName("updateData");
+        renderBuffer.sceneChangeEvent(updateChange);
+
+        // THEN
+        QVERIFY(!renderBuffer.pendingBufferUpdates().empty());
+        QVERIFY(renderBuffer.isDirty());
+
+        renderBuffer.unsetDirty();
+        QVERIFY(!renderBuffer.isDirty());
     }
 };
 
