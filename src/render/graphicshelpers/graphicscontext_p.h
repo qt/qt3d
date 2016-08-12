@@ -59,6 +59,7 @@
 #include <QColor>
 #include <QMatrix4x4>
 #include <QBitArray>
+#include <QImage>
 #include <Qt3DRender/private/quniformvalue_p.h>
 #include <Qt3DRender/qclearbuffers.h>
 #include <Qt3DRender/private/shader_p.h>
@@ -227,6 +228,8 @@ public:
 
     bool supportsDrawBuffersBlend() const;
     bool supportsVAO() const { return m_supportsVAO; }
+
+    QImage readFramebuffer(QSize size);
 
 private:
     void initialize();

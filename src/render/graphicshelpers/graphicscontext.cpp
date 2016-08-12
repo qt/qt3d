@@ -78,6 +78,8 @@
 
 QT_BEGIN_NAMESPACE
 
+extern Q_GUI_EXPORT QImage qt_gl_read_framebuffer(const QSize &size, bool alpha_format, bool include_alpha);
+
 namespace {
 
 QOpenGLShader::ShaderType shaderType(Qt3DRender::QShaderProgram::ShaderType type)
@@ -1422,6 +1424,12 @@ GLint GraphicsContext::glDataTypeFromAttributeDataType(QAttribute::VertexBaseTyp
         qWarning() << Q_FUNC_INFO << "unsupported dataType:" << dataType;
     }
     return GL_FLOAT;
+}
+
+QImage GraphicsContext::readFramebuffer(QSize size)
+{
+    // todo: own implementation
+    return qt_gl_read_framebuffer(size, true, true);
 }
 
 } // namespace Render
