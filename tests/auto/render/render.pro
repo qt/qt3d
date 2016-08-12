@@ -57,5 +57,6 @@ qtConfig(private_tests) {
         qsceneloader \
         qrendertargetoutput \
         qcameralens \
-        qcomputecommand
+        qcomputecommand \
+        qrendercapture
 }
