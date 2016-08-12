@@ -200,7 +200,7 @@ private Q_SLOTS:
         }
 
         // THEN (Should not crash and parameter be unset)
-        QCOMPARE(accumulator->sourceAxis(), nullptr);
+        QVERIFY(accumulator->sourceAxis() == nullptr);
 
         {
             // WHEN
