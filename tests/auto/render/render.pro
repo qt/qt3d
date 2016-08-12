@@ -55,5 +55,6 @@ contains(QT_CONFIG, private_tests) {
         qcuboidgeometry \
         sceneloader \
         qsceneloader \
-        qrendertargetoutput
+        qrendertargetoutput \
+        qcameralens
 }
