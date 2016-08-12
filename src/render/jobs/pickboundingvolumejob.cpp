@@ -52,7 +52,6 @@
 #include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/geometryrenderer_p.h>
 #include <Qt3DRender/private/trianglesvisitor_p.h>
-#include <Qt3DRender/private/triangleboundingvolume_p.h>
 #include <Qt3DRender/private/qraycastingservice_p.h>
 #include <Qt3DRender/private/rendersurfaceselector_p.h>
 #include <Qt3DRender/private/rendersettings_p.h>
@@ -181,23 +180,30 @@ public:
     typedef QVector<QCollisionQueryResult::Hit> HitList;
     HitList hits;
 
-    CollisionVisitor(NodeManagers* manager, const Entity *root, const QRay3D& ray) : TrianglesVisitor(manager), m_root(root), m_ray(ray), m_triangleIndex(0) { }
+    CollisionVisitor(NodeManagers* manager, const Entity *root, const QRay3D& ray, QPickingSettings::FaceOrientationPickingMode faceOrientationPickingMode) : TrianglesVisitor(manager), m_root(root), m_ray(ray), m_faceOrientationPickingMode(faceOrientationPickingMode), m_triangleIndex(0) { }
 private:
     const Entity *m_root;
     QRay3D m_ray;
-    Qt3DRender::QRayCastingService rayCasting;
+    QPickingSettings::FaceOrientationPickingMode m_faceOrientationPickingMode;
     uint m_triangleIndex;
 
     void visit(uint andx, const QVector3D &a,
                uint bndx, const QVector3D &b,
                uint cndx, const QVector3D &c)
     {
-        TriangleBoundingVolume volume(m_root->peerId(), a, b, c);
-        volume = volume.transform(*m_root->worldTransform());
+        const QMatrix4x4* mat = m_root->worldTransform();
+        const QVector3D tA = *mat * a;
+        const QVector3D tB = *mat * b;
+        const QVector3D tC = *mat * c;
 
-        QCollisionQueryResult::Hit queryResult = rayCasting.query(m_ray, &volume);
-        if (queryResult.m_distance > 0.) {
-            queryResult.m_triangleIndex = m_triangleIndex;
+        float t = 0.f;
+        QVector3D uvw;
+        bool intersects = intersectsSegmentTriangle(m_ray, tC, tB, tA, uvw, t);
+        if (intersects) {
+            QCollisionQueryResult::Hit queryResult;
+            queryResult.m_intersection = m_ray.point(t * m_ray.distance());
+            queryResult.m_distance = m_ray.projectedDistance(queryResult.m_intersection);
+            queryResult.m_entityId = m_root->peerId();
             queryResult.m_vertexIndex[0] = andx;
             queryResult.m_vertexIndex[1] = bndx;
             queryResult.m_vertexIndex[2] = cndx;
@@ -205,6 +211,51 @@ private:
         }
 
         m_triangleIndex++;
+    }
+
+    // Note: a, b, c in clockwise order
+    // RealTime Collision Detection page 192
+    bool intersectsSegmentTriangle(const QRay3D &ray,
+                                   const QVector3D &a,
+                                   const QVector3D &b,
+                                   const QVector3D &c,
+                                   QVector3D &uvw,
+                                   float &t)
+    {
+        const QVector3D ab = b - a;
+        const QVector3D ac = c - a;
+        const QVector3D qp = (ray.origin() - ray.point(ray.distance()));
+
+        const QVector3D n = QVector3D::crossProduct(ab, ac);
+        const float d = QVector3D::dotProduct(qp, n);
+
+        if (d <= 0.0f && 0 == (m_faceOrientationPickingMode & QPickingSettings::BackFace))
+            return false;
+
+        const QVector3D ap = ray.origin() - a;
+        t = QVector3D::dotProduct(ap, n);
+
+        if (t < 0.0f || t > d)
+            return false;
+
+        const QVector3D e = QVector3D::crossProduct(qp, ap);
+        uvw.setY(QVector3D::dotProduct(ac, e));
+
+        if (uvw.y() < 0.0f || uvw.y() > d)
+            return false;
+
+        uvw.setZ(-QVector3D::dotProduct(ab, e));
+
+        if (uvw.z() < 0.0f || uvw.y() + uvw.z() > d)
+            return false;
+
+        const float ood = 1.0f / d;
+        t *= ood;
+        uvw.setY(uvw.y() * ood);
+        uvw.setZ(uvw.z() * ood);
+        uvw.setX(1.0f - uvw.y() - uvw.z());
+
+        return true;
     }
 };
 
@@ -260,6 +311,10 @@ struct EntityCollisionGathererFunctor : public AbstractCollisionGathererFunctor
 
 struct TriangleCollisionGathererFunctor : public AbstractCollisionGathererFunctor
 {
+    TriangleCollisionGathererFunctor() : AbstractCollisionGathererFunctor(), m_pickBackFacingTriangles(QPickingSettings::FrontFace) { }
+
+    QPickingSettings::FaceOrientationPickingMode m_pickBackFacingTriangles;
+
     result_type pick(QAbstractCollisionQueryService *rayCasting, const Entity *entity) const Q_DECL_OVERRIDE
     {
         result_type result;
@@ -269,7 +324,7 @@ struct TriangleCollisionGathererFunctor : public AbstractCollisionGathererFuncto
             return result;
 
         if (rayHitsEntity(rayCasting, entity)) {
-            CollisionVisitor visitor(m_renderer->nodeManagers(), entity, m_ray);
+            CollisionVisitor visitor(m_renderer->nodeManagers(), entity, m_ray, m_pickBackFacingTriangles);
             visitor.apply(gRenderer, entity->peerId());
             result = visitor.hits;
 
@@ -406,6 +461,7 @@ void PickBoundingVolumeJob::run()
                     TriangleCollisionGathererFunctor gathererFunctor;
                     gathererFunctor.m_renderer = m_renderer;
                     gathererFunctor.m_ray = ray;
+                    gathererFunctor.m_pickBackFacingTriangles = m_renderer->settings()->faceOrientationPickingMode();
                     sphereHits = QtConcurrent::blockingMappedReduced<HitList>(entitiesGatherer.entities(), gathererFunctor, reducerOp);
                 } else {
                     EntityCollisionGathererFunctor gathererFunctor;

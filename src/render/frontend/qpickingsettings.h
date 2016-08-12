@@ -54,6 +54,7 @@ class QT3DRENDERSHARED_EXPORT QPickingSettings : public Qt3DCore::QNode
     Q_OBJECT
     Q_PROPERTY(PickMethod pickMethod READ pickMethod WRITE setPickMethod NOTIFY pickMethodChanged)
     Q_PROPERTY(PickResultMode pickResultMode READ pickResultMode WRITE setPickResultMode NOTIFY pickResultModeChanged)
+    Q_PROPERTY(FaceOrientationPickingMode faceOrientationPickingMode READ faceOrientationPickingMode WRITE setFaceOrientationPickingMode NOTIFY faceOrientationPickingModeChanged)
 
 public:
     explicit QPickingSettings(Qt3DCore::QNode *parent = nullptr);
@@ -71,16 +72,26 @@ public:
     };
     Q_ENUM(PickResultMode)
 
+    enum FaceOrientationPickingMode {
+        FrontFace = 0x01,
+        BackFace = 0x02,
+        FrontAndBackFace = 0x03
+    };
+    Q_ENUM(FaceOrientationPickingMode)
+
     PickMethod pickMethod() const;
     PickResultMode pickResultMode() const;
+    FaceOrientationPickingMode faceOrientationPickingMode() const;
 
 public Q_SLOTS:
     void setPickMethod(PickMethod pickMethod);
     void setPickResultMode(PickResultMode pickResultMode);
+    void setFaceOrientationPickingMode(FaceOrientationPickingMode faceOrientationPickingMode);
 
 Q_SIGNALS:
     void pickMethodChanged(QPickingSettings::PickMethod pickMethod);
     void pickResultModeChanged(QPickingSettings::PickResultMode pickResult);
+    void faceOrientationPickingModeChanged(QPickingSettings::FaceOrientationPickingMode faceOrientationPickingMode);
 
 protected:
     Q_DECLARE_PRIVATE(QPickingSettings)

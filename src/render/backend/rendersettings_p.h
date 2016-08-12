@@ -73,6 +73,7 @@ public:
     QRenderSettings::RenderPolicy renderPolicy() const { return m_renderPolicy; }
     QPickingSettings::PickMethod pickMethod() const { return m_pickMethod; }
     QPickingSettings::PickResultMode pickResultMode() const { return m_pickResultMode; }
+    QPickingSettings::FaceOrientationPickingMode faceOrientationPickingMode() const { return m_faceOrientationPickingMode; }
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
@@ -80,6 +81,7 @@ private:
     QRenderSettings::RenderPolicy m_renderPolicy;
     QPickingSettings::PickMethod m_pickMethod;
     QPickingSettings::PickResultMode m_pickResultMode;
+    QPickingSettings::FaceOrientationPickingMode m_faceOrientationPickingMode;
     Qt3DCore::QNodeId m_activeFrameGraph;
 };
 

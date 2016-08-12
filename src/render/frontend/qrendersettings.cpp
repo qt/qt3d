@@ -68,6 +68,8 @@ void QRenderSettingsPrivate::init()
                      q, SLOT(_q_onPickingMethodChanged(QPickingSettings::PickMethod)));
     QObject::connect(&m_pickingSettings, SIGNAL(pickResultModeChanged(QPickingSettings::PickResultMode)),
                      q, SLOT(_q_onPickResultModeChanged(QPickingSettings::PickResultMode)));
+    QObject::connect(&m_pickingSettings, SIGNAL(faceOrientationPickingModeChanged(QPickingSettings::FaceOrientationPickingMode)),
+                     q, SLOT(_q_onFaceOrientationPickingMode(QPickingSettings::FaceOrientationPickingMode)));
 }
 
 /*! \internal */
@@ -80,6 +82,12 @@ void QRenderSettingsPrivate::_q_onPickingMethodChanged(QPickingSettings::PickMet
 void QRenderSettingsPrivate::_q_onPickResultModeChanged(QPickingSettings::PickResultMode pickResultMode)
 {
     notifyPropertyChange("pickResultMode", pickResultMode);
+}
+
+/*! \internal */
+void QRenderSettingsPrivate::_q_onFaceOrientationPickingModeChanged(bool faceOrientationPickingMode)
+{
+    notifyPropertyChange("faceOrientationPickingMode", faceOrientationPickingMode);
 }
 
 /*!
@@ -178,6 +186,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QRenderSettings::createNodeCreationChange() 
     data.renderPolicy = d->m_renderPolicy;
     data.pickMethod = d->m_pickingSettings.pickMethod();
     data.pickResultMode = d->m_pickingSettings.pickResultMode();
+    data.faceOrientationPickingMode = d->m_pickingSettings.faceOrientationPickingMode();
     return creationChange;
 }
 

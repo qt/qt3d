@@ -72,6 +72,7 @@ public:
 
     void _q_onPickingMethodChanged(QPickingSettings::PickMethod pickMethod);
     void _q_onPickResultModeChanged(QPickingSettings::PickResultMode pickResultMode);
+    void _q_onFaceOrientationPickingModeChanged(bool faceOrientationPickingMode);
 
     Q_DECLARE_PUBLIC(QRenderSettings)
 };
@@ -82,6 +83,7 @@ struct QRenderSettingsData
     QRenderSettings::RenderPolicy renderPolicy;
     QPickingSettings::PickMethod pickMethod;
     QPickingSettings::PickResultMode pickResultMode;
+    QPickingSettings::FaceOrientationPickingMode faceOrientationPickingMode;
 };
 
 } // namespace Qt3Drender

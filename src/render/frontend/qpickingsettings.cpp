@@ -57,6 +57,7 @@ QPickingSettingsPrivate::QPickingSettingsPrivate()
     : Qt3DCore::QNodePrivate()
     , m_pickMethod(QPickingSettings::BoundingVolumePicking)
     , m_pickResultMode(QPickingSettings::NearestPick)
+    , m_faceOrientationPickingMode(QPickingSettings::FrontFace)
 {
 }
 
@@ -97,6 +98,15 @@ QPickingSettings::PickResultMode QPickingSettings::pickResultMode() const
 {
     Q_D(const QPickingSettings);
     return d->m_pickResultMode;
+}
+
+/*!
+ * \return the back facing picking flag
+ */
+QPickingSettings::FaceOrientationPickingMode QPickingSettings::faceOrientationPickingMode() const
+{
+    Q_D(const QPickingSettings);
+    return d->m_faceOrientationPickingMode;
 }
 
 /*!
@@ -143,6 +153,20 @@ void QPickingSettings::setPickResultMode(QPickingSettings::PickResultMode pickRe
 
     d->m_pickResultMode = pickResultMode;
     emit pickResultModeChanged(pickResultMode);
+}
+
+/*!
+ * Sets whether back facing faces are picked or not
+ * \param faceOrientationPickingMode
+ */
+void QPickingSettings::setFaceOrientationPickingMode(QPickingSettings::FaceOrientationPickingMode faceOrientationPickingMode)
+{
+    Q_D(QPickingSettings);
+    if (d->m_faceOrientationPickingMode == faceOrientationPickingMode)
+        return;
+
+    d->m_faceOrientationPickingMode = faceOrientationPickingMode;
+    emit faceOrientationPickingModeChanged(faceOrientationPickingMode);
 }
 
 } // namespace Qt3Drender

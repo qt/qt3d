@@ -65,6 +65,7 @@ public:
 
     QPickingSettings::PickMethod m_pickMethod;
     QPickingSettings::PickResultMode m_pickResultMode;
+    QPickingSettings::FaceOrientationPickingMode m_faceOrientationPickingMode;
 };
 
 } // namespace Qt3Drender
