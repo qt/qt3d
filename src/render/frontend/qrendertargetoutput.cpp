@@ -117,7 +117,7 @@ void QRenderTargetOutput::setTexture(QAbstractTexture *texture)
             d->unregisterDestructionHelper(d->m_texture);
 
         // Handle inline declaration
-        if (!texture->parent())
+        if (texture && !texture->parent())
             texture->setParent(this);
 
         d->m_texture = texture;
