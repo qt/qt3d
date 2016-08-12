@@ -65,7 +65,7 @@
 #include <Qt3DRender/private/viewportnode_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
-
+#include <Qt3DRender/private/rendercapture_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <Qt3DCore/qentity.h>
 #include <QtGui/qsurface.h>

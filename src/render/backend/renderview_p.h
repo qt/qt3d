@@ -214,6 +214,9 @@ public:
 
     void updateMatrices();
 
+    inline void setRenderCaptureNodeId(const Qt3DCore::QNodeId nodeId) Q_DECL_NOTHROW { m_renderCaptureNodeId = nodeId; }
+    inline const Qt3DCore::QNodeId renderCaptureNodeId() const Q_DECL_NOTHROW { return m_renderCaptureNodeId; }
+
     // Helps making the size of RenderView smaller
     // Contains all the data needed for the actual building of the RenderView
     // But that aren't used later by the Renderer
@@ -243,6 +246,8 @@ private:
                               const QVector<LightSource> &activeLightSources) const;
 
     mutable QThreadStorage<UniformBlockValueBuilder*> m_localData;
+
+    Qt3DCore::QNodeId m_renderCaptureNodeId;
 
     Renderer *m_renderer;
     NodeManagers *m_manager;

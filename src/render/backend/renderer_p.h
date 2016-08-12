@@ -69,6 +69,7 @@
 #include <Qt3DRender/private/framecleanupjob_p.h>
 #include <Qt3DRender/private/updateworldboundingvolumejob_p.h>
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
+#include <Qt3DRender/private/sendrendercapturejob_p.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -286,6 +287,7 @@ private:
     ExpandBoundingVolumeJobPtr m_expandBoundingVolumeJob;
     CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
     UpdateWorldBoundingVolumeJobPtr m_updateWorldBoundingVolumeJob;
+    SendRenderCaptureJobPtr m_sendRenderCaptureJob;
 
     QVector<Qt3DCore::QNodeId> m_pendingRenderCaptureSendRequests;
 

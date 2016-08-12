@@ -62,6 +62,7 @@
 #include <Qt3DRender/private/statesetnode_p.h>
 #include <Qt3DRender/private/dispatchcompute_p.h>
 #include <Qt3DRender/private/rendersurfaceselector_p.h>
+#include <Qt3DRender/private/rendercapture_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -217,6 +218,15 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                             = static_cast<const Render::RenderSurfaceSelector *>(node);
                     rv->setSurface(surfaceSelector->surface());
                     rv->setSurfaceSize(surfaceSelector->renderTargetSize() * surfaceSelector->devicePixelRatio());
+                }
+                break;
+            }
+            case FrameGraphNode::RenderCapture: {
+                auto *renderCapture = const_cast<Render::RenderCapture *>(
+                                            static_cast<const Render::RenderCapture *>(node));
+                if (rv->renderCaptureNodeId().isNull() && renderCapture->wasCaptureRequested()) {
+                    renderCapture->acknowledgeCaptureRequest();
+                    rv->setRenderCaptureNodeId(renderCapture->peerId());
                 }
                 break;
             }

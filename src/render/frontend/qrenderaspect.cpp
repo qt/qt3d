@@ -76,7 +76,7 @@
 #include <Qt3DRender/qcomputecommand.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
 #include <Qt3DRender/qrendersettings.h>
-
+#include <Qt3DRender/qrendercapture.h>
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
 #include <Qt3DRender/private/filterkey_p.h>
@@ -119,6 +119,7 @@
 #include <Qt3DRender/private/rendersurfaceselector_p.h>
 #include <Qt3DRender/private/rendersettings_p.h>
 #include <Qt3DRender/private/backendnode_p.h>
+#include <Qt3DRender/private/rendercapture_p.h>
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
@@ -223,6 +224,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QSortPolicy>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::SortPolicy, QSortPolicy> >::create(m_renderer, m_nodeManagers->frameGraphManager()));
     q->registerBackendType<QTechniqueFilter>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::TechniqueFilter, QTechniqueFilter> >::create(m_renderer, m_nodeManagers->frameGraphManager()));
     q->registerBackendType<QViewport>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::ViewportNode, QViewport> >::create(m_renderer, m_nodeManagers->frameGraphManager()));
+    q->registerBackendType<QRenderCapture>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::RenderCapture, QRenderCapture> >::create(m_renderer, m_nodeManagers->frameGraphManager()));
 
     // Picking
     q->registerBackendType<QObjectPicker>(QSharedPointer<Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager> >::create(m_renderer, m_nodeManagers->objectPickerManager()));
@@ -278,6 +280,7 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     unregisterBackendType<QSortPolicy>();
     unregisterBackendType<QTechniqueFilter>();
     unregisterBackendType<QViewport>();
+    unregisterBackendType<QRenderCapture>();
 
     // Picking
     unregisterBackendType<QObjectPicker>();

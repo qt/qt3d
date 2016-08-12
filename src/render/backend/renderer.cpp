@@ -79,6 +79,7 @@
 #include <Qt3DRender/private/openglvertexarrayobject_p.h>
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
 #include <Qt3DRender/private/loadbufferjob_p.h>
+#include <Qt3DRender/private/rendercapture_p.h>
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
@@ -158,6 +159,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_expandBoundingVolumeJob(Render::ExpandBoundingVolumeJobPtr::create())
     , m_calculateBoundingVolumeJob(Render::CalculateBoundingVolumeJobPtr::create())
     , m_updateWorldBoundingVolumeJob(Render::UpdateWorldBoundingVolumeJobPtr::create())
+    , m_sendRenderCaptureJob(Render::SendRenderCaptureJobPtr::create(this))
     #ifdef QT3D_JOBS_RUN_STATS
     , m_commandExecuter(new Qt3DRender::Debug::CommandExecuter(this))
     #endif
@@ -224,6 +226,7 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_calculateBoundingVolumeJob->setManagers(m_nodesManager);
     m_pickBoundingVolumeJob->setManagers(m_nodesManager);
     m_updateWorldBoundingVolumeJob->setManager(m_nodesManager->renderNodesManager());
+    m_sendRenderCaptureJob->setManagers(m_nodesManager);
 }
 
 NodeManagers *Renderer::nodeManagers() const
@@ -902,6 +905,14 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
         // executeCommands takes care of restoring the stateset to the value
         // of gc->currentContext() at the moment it was called (either
         // renderViewStateSet or m_defaultRenderStateSet)
+        if (!renderView->renderCaptureNodeId().isNull()) {
+            QSize size = m_graphicsContext->renderTargetSize(renderView->surfaceSize() * renderView->devicePixelRatio());
+            QImage image = m_graphicsContext->readFramebuffer(size);
+            Render::RenderCapture *renderCapture =
+                    static_cast<Render::RenderCapture*>(m_nodesManager->frameGraphManager()->lookupNode(renderView->renderCaptureNodeId()));
+            renderCapture->addRenderCapture(image);
+            addRenderCaptureSendRequest(renderView->renderCaptureNodeId());
+        }
 
         frameElapsed = timer.elapsed() - frameElapsed;
         qCDebug(Rendering) << Q_FUNC_INFO << "Submitted Renderview " << i + 1 << "/" << renderViewsCount  << "in " << frameElapsed << "ms";
@@ -990,6 +1001,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     renderBinJobs.push_back(m_calculateBoundingVolumeJob);
     renderBinJobs.push_back(m_worldTransformJob);
     renderBinJobs.push_back(m_cleanupJob);
+    renderBinJobs.push_back(m_sendRenderCaptureJob);
     renderBinJobs.append(bufferJobs);
 
     // Traverse the current framegraph. For each leaf node create a
