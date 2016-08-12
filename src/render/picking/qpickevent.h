@@ -62,9 +62,32 @@ class QT3DRENDERSHARED_EXPORT QPickEvent : public QObject
     Q_PROPERTY(float distance READ distance CONSTANT)
     Q_PROPERTY(QVector3D localIntersection READ localIntersection CONSTANT)
     Q_PROPERTY(QVector3D worldIntersection READ worldIntersection CONSTANT)
+    Q_PROPERTY(Qt3DRender::QPickEvent::Buttons button READ button CONSTANT)
+    Q_PROPERTY(int buttons READ buttons CONSTANT)
+    Q_PROPERTY(int modifiers READ modifiers CONSTANT)
 public:
+    enum Buttons {
+        LeftButton = Qt::LeftButton,
+        RightButton = Qt::RightButton,
+        MiddleButton = Qt::MiddleButton,
+        BackButton = Qt::BackButton,
+        NoButton = Qt::NoButton
+    };
+    Q_ENUM(Buttons)
+
+    enum Modifiers {
+        NoModifier = Qt::NoModifier,
+        ShiftModifier = Qt::ShiftModifier,
+        ControlModifier = Qt::ControlModifier,
+        AltModifier = Qt::AltModifier,
+        MetaModifier = Qt::MetaModifier,
+        KeypadModifier = Qt::KeypadModifier
+    };
+    Q_ENUM(Modifiers)
+
     QPickEvent();
     QPickEvent(const QPointF &position, const QVector3D& worldIntersection, const QVector3D& localIntersection, float distance);
+    QPickEvent(const QPointF &position, const QVector3D& worldIntersection, const QVector3D& localIntersection, float distance, Buttons button, int buttons, int modifiers);
     ~QPickEvent();
 
     bool isAccepted() const;
@@ -77,6 +100,9 @@ public:
     float distance() const;
     QVector3D worldIntersection() const;
     QVector3D localIntersection() const;
+    Buttons button() const;
+    int buttons() const;
+    int modifiers() const;
 
 Q_SIGNALS:
     void acceptedChanged(bool accepted);

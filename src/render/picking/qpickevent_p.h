@@ -61,6 +61,9 @@ public:
         : QObjectPrivate()
         , m_accepted(true)
         , m_distance(-1.f)
+        , m_button(QPickEvent::NoButton)
+        , m_buttons(QPickEvent::NoButton)
+        , m_modifiers(QPickEvent::NoModifier)
     {
     }
 
@@ -69,6 +72,9 @@ public:
     QVector3D m_worldIntersection;
     QVector3D m_localIntersection;
     float m_distance;
+    QPickEvent::Buttons m_button;
+    int m_buttons;
+    int m_modifiers;
 };
 
 } // Qt3DRender

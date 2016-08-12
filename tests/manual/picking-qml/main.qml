@@ -165,7 +165,7 @@ Entity {
 
         property bool toggled: false
         onClicked: {
-            console.log("Clicked cube 2")
+            console.log("Clicked cube 2", event.button)
             toggled = !toggled
         }
     }

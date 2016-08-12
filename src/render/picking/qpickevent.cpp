@@ -77,14 +77,32 @@ QPickEvent::QPickEvent()
   \fn Qt3DRender::QPickEvent::QPickEvent(const QPointF &position, const QVector3D &intersection, const QVector3D &localIntersection, float distance)
   Constructs a new QPickEvent with the given parameters: \a position, \a intersection, \a localIntersection and \a distance
  */
-QPickEvent::QPickEvent(const QPointF &position, const QVector3D &intersection, const QVector3D &localIntersection, float distance)
+// NOTE: remove in Qt6
+QPickEvent::QPickEvent(const QPointF &position, const QVector3D &worldIntersection, const QVector3D &localIntersection, float distance)
     : QObject(*new QPickEventPrivate())
 {
     Q_D(QPickEvent);
     d->m_position = position;
     d->m_distance = distance;
-    d->m_worldIntersection = intersection;
+    d->m_worldIntersection = worldIntersection;
     d->m_localIntersection = localIntersection;
+}
+
+/*!
+  \fn Qt3DRender::QPickEvent::QPickEvent(const QPointF &position, const QVector3D &intersection, const QVector3D &localIntersection, float distance)
+  Constructs a new QPickEvent with the given parameters: \a position, \a intersection, \a localIntersection, \a distance, \a button, \a buttons and \a modifiers
+ */
+QPickEvent::QPickEvent(const QPointF &position, const QVector3D &worldIntersection, const QVector3D &localIntersection, float distance, QPickEvent::Buttons button, int buttons, int modifiers)
+    : QObject(*new QPickEventPrivate())
+{
+    Q_D(QPickEvent);
+    d->m_position = position;
+    d->m_distance = distance;
+    d->m_worldIntersection = worldIntersection;
+    d->m_localIntersection = localIntersection;
+    d->m_button = button;
+    d->m_buttons = buttons;
+    d->m_modifiers = modifiers;
 }
 
 /*! \internal */
@@ -198,6 +216,81 @@ QVector3D QPickEvent::localIntersection() const
 {
     Q_D(const QPickEvent);
     return d->m_localIntersection;
+}
+
+/*!
+ * \enum Qt3DRender::QPickEvent::Buttons
+ *
+ * \value LeftButton
+ * \value RightButton
+ * \value MiddleButton
+ * \value BackButton
+ * \value NoButton
+ */
+
+/*!
+    \qmlproperty bool Qt3D.Render::PickEvent::button
+    Specifies mouse button that caused the event
+*/
+/*!
+  \property Qt3DRender::QPickEvent::button
+    Specifies mouse button that caused the event
+ */
+/*!
+ * \brief QPickEvent::button
+ * \return mouse button that caused the event
+ */
+QPickEvent::Buttons QPickEvent::button() const
+{
+    Q_D(const QPickEvent);
+    return d->m_button;
+}
+
+/*!
+    \qmlproperty bool Qt3D.Render::PickEvent::buttons
+    Specifies state of the mouse buttons for the event
+*/
+/*!
+  \property Qt3DRender::QPickEvent::buttons
+    Specifies state of the mouse buttons for the event
+ */
+/*!
+ * \brief QPickEvent::buttons
+ * \return bitfield to be used to check for mouse buttons that may be accompanying the pick event.
+ */
+int QPickEvent::buttons() const
+{
+    Q_D(const QPickEvent);
+    return d->m_buttons;
+}
+
+/*!
+ * \enum Qt3DRender::QPickEvent::Modifiers
+ *
+ * \value NoModifier
+ * \value ShiftModifier
+ * \value ControlModifier
+ * \value AltModifier
+ * \value MetaModifier
+ * \value KeypadModifier
+ */
+
+/*!
+    \qmlproperty bool Qt3D.Render::PickEvent::modifiers
+    Specifies state of the mouse buttons for the event
+*/
+/*!
+  \property Qt3DRender::QPickEvent::modifiers
+    Specifies state of the mouse buttons for the event
+ */
+/*!
+ * \brief QPickEvent::modifiers
+ * \return bitfield to be used to check for keyboard modifiers that may be accompanying the pick event.
+ */
+int QPickEvent::modifiers() const
+{
+    Q_D(const QPickEvent);
+    return d->m_modifiers;
 }
 
 } // Qt3DRender

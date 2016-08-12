@@ -102,19 +102,37 @@ QPickTriangleEvent::QPickTriangleEvent()
  * \a vertex2Index and
  * \a vertex3Index
  */
-QPickTriangleEvent::QPickTriangleEvent(const QPointF &position, const QVector3D &intersection, const QVector3D &localIntersection, float distance,
+// NOTE: remove in Qt6
+QPickTriangleEvent::QPickTriangleEvent(const QPointF &position, const QVector3D &worldIntersection, const QVector3D &localIntersection, float distance,
                                        uint triangleIndex, uint vertex1Index, uint vertex2Index, uint vertex3Index)
     : QPickEvent(*new QPickTriangleEventPrivate())
 {
     Q_D(QPickTriangleEvent);
     d->m_position = position;
     d->m_distance = distance;
-    d->m_worldIntersection = intersection;
+    d->m_worldIntersection = worldIntersection;
     d->m_localIntersection = localIntersection;
     d->m_triangleIndex = triangleIndex;
     d->m_vertex1Index = vertex1Index;
     d->m_vertex2Index = vertex2Index;
     d->m_vertex3Index = vertex3Index;
+}
+
+QPickTriangleEvent::QPickTriangleEvent(const QPointF &position, const QVector3D &worldIntersection, const QVector3D &localIntersection, float distance, uint triangleIndex, uint vertex1Index, uint vertex2Index, uint vertex3Index, QPickEvent::Buttons button, int buttons, int modifiers)
+    : QPickEvent(*new QPickTriangleEventPrivate())
+{
+    Q_D(QPickTriangleEvent);
+    d->m_position = position;
+    d->m_distance = distance;
+    d->m_worldIntersection = worldIntersection;
+    d->m_localIntersection = localIntersection;
+    d->m_triangleIndex = triangleIndex;
+    d->m_vertex1Index = vertex1Index;
+    d->m_vertex2Index = vertex2Index;
+    d->m_vertex3Index = vertex3Index;
+    d->m_button = button;
+    d->m_buttons = buttons;
+    d->m_modifiers = modifiers;
 }
 
 /*! \internal */

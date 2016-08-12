@@ -365,6 +365,35 @@ void PickBoundingVolumeJob::run()
 
     if (!vcaTriplets.empty()) {
         for (const QMouseEvent &event : mouseEvents) {
+            QPickEvent::Buttons eventButton = QPickEvent::NoButton;
+            switch (event.button()) {
+            case Qt::LeftButton: eventButton = QPickEvent::LeftButton; break;
+            case Qt::RightButton: eventButton = QPickEvent::RightButton; break;
+            case Qt::MiddleButton: eventButton = QPickEvent::MiddleButton; break;
+            case Qt::BackButton: eventButton = QPickEvent::BackButton; break;
+            default: break;
+            }
+            int eventButtons = 0;
+            if (event.buttons() & Qt::LeftButton)
+                eventButtons |= QPickEvent::LeftButton;
+            if (event.buttons() & Qt::RightButton)
+                eventButtons |= QPickEvent::RightButton;
+            if (event.buttons() & Qt::MiddleButton)
+                eventButtons |= QPickEvent::MiddleButton;
+            if (event.buttons() & Qt::BackButton)
+                eventButtons |= QPickEvent::BackButton;
+            int eventModifiers = QPickEvent::NoModifier;
+            if (event.modifiers() & Qt::ShiftModifier)
+                eventModifiers |= QPickEvent::ShiftModifier;
+            if (event.modifiers() & Qt::ControlModifier)
+                eventModifiers |= QPickEvent::ControlModifier;
+            if (event.modifiers() & Qt::AltModifier)
+                eventModifiers |= QPickEvent::AltModifier;
+            if (event.modifiers() & Qt::MetaModifier)
+                eventModifiers |= QPickEvent::MetaModifier;
+            if (event.modifiers() & Qt::KeypadModifier)
+                eventModifiers |= QPickEvent::KeypadModifier;
+
             m_hoveredPickersToClear = m_hoveredPickers;
             ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
 
@@ -417,9 +446,11 @@ void PickBoundingVolumeJob::run()
                             QPickEventPtr pickEvent;
                             if (m_renderer->settings() && m_renderer->settings()->pickMethod() == QPickingSettings::TrianglePicking) {
                                 pickEvent.reset(new QPickTriangleEvent(event.localPos(), hit.m_intersection, localIntersection, hit.m_distance,
-                                                                       hit.m_triangleIndex, hit.m_vertexIndex[0], hit.m_vertexIndex[1], hit.m_vertexIndex[2]));
+                                                                       hit.m_triangleIndex, hit.m_vertexIndex[0], hit.m_vertexIndex[1], hit.m_vertexIndex[2],
+                                                                       eventButton, eventButtons, eventModifiers));
                             } else {
-                                pickEvent.reset(new QPickEvent(event.localPos(), hit.m_intersection, localIntersection, hit.m_distance));
+                                pickEvent.reset(new QPickEvent(event.localPos(), hit.m_intersection, localIntersection, hit.m_distance,
+                                                               eventButton, eventButtons, eventModifiers));
                             }
 
                             switch (event.type()) {

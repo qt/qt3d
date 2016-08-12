@@ -58,6 +58,8 @@ public:
     QPickTriangleEvent();
     QPickTriangleEvent(const QPointF &position, const QVector3D& worldIntersection, const QVector3D& localIntersection, float distance,
                        uint triangleIndex, uint vertex1Index, uint vertex2Index, uint vertex3Index);
+    QPickTriangleEvent(const QPointF &position, const QVector3D& worldIntersection, const QVector3D& localIntersection, float distance,
+                       uint triangleIndex, uint vertex1Index, uint vertex2Index, uint vertex3Index, Buttons button, int buttons, int modifiers);
     ~QPickTriangleEvent();
 
 public:
