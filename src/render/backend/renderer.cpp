@@ -1257,6 +1257,17 @@ const GraphicsApiFilterData *Renderer::contextInfo() const
     return m_graphicsContext->contextInfo();
 }
 
+void Renderer::addRenderCaptureSendRequest(Qt3DCore::QNodeId nodeId)
+{
+    if (!m_pendingRenderCaptureSendRequests.contains(nodeId))
+        m_pendingRenderCaptureSendRequests.push_back(nodeId);
+}
+
+const QVector<Qt3DCore::QNodeId> Renderer::takePendingRenderCaptureSendRequests()
+{
+    return std::move(m_pendingRenderCaptureSendRequests);
+}
+
 // Returns a vector of jobs to be performed for dirty buffers
 // 1 dirty buffer == 1 job, all job can be performed in parallel
 QVector<Qt3DCore::QAspectJobPtr> Renderer::createRenderBufferJobs() const

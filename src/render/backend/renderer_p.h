@@ -210,6 +210,8 @@ public:
 
     QList<QMouseEvent> pendingPickingEvents() const;
 
+    void addRenderCaptureSendRequest(Qt3DCore::QNodeId nodeId);
+    const QVector<Qt3DCore::QNodeId> takePendingRenderCaptureSendRequests();
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
     bool isReadyToSubmit();
@@ -284,6 +286,8 @@ private:
     ExpandBoundingVolumeJobPtr m_expandBoundingVolumeJob;
     CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
     UpdateWorldBoundingVolumeJobPtr m_updateWorldBoundingVolumeJob;
+
+    QVector<Qt3DCore::QNodeId> m_pendingRenderCaptureSendRequests;
 
     void performDraw(RenderCommand *command);
     void performCompute(const RenderView *rv, RenderCommand *command);

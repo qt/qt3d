@@ -22,7 +22,8 @@ HEADERS += \
     $$PWD/frustumcullingjob_p.h \
     $$PWD/lightgatherer_p.h \
     $$PWD/expandboundingvolumejob_p.h \
-    $$PWD/updateworldboundingvolumejob_p.h
+    $$PWD/updateworldboundingvolumejob_p.h \
+    $$PWD/sendrendercapturejob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
@@ -43,4 +44,5 @@ SOURCES += \
     $$PWD/frustumcullingjob.cpp \
     $$PWD/lightgatherer.cpp \
     $$PWD/expandboundingvolumejob.cpp \
-    $$PWD/updateworldboundingvolumejob.cpp
+    $$PWD/updateworldboundingvolumejob.cpp \
+    $$PWD/sendrendercapturejob.cpp

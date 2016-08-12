@@ -83,7 +83,8 @@ namespace JobTypes {
         FrustumCulling,
         LightGathering,
         UpdateWorldBoundingVolume,
-        FrameSubmissionPart2
+        FrameSubmissionPart2,
+        SendRenderCapture,
     };
 
 } // JobTypes
