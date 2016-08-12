@@ -79,15 +79,16 @@ public:
     ShaderData();
     ~ShaderData();
 
-    QHash<QString, QVariant> properties() const { return m_properties; }
-    QHash<QString, QVariant> updatedProperties() const { return m_updatedProperties; }
+    QHash<QString, QVariant> properties() const { return m_originalProperties; }
 
     // Called by FramePreparationJob
-    bool updateWorldTransform(const QMatrix4x4 &worldMatrix);
+    void updateWorldTransform(const QMatrix4x4 &worldMatrix);
 
     // Call by RenderViewJob
     void markDirty();
-    bool updateViewTransform(const QMatrix4x4 &viewMatrix);
+
+    bool isPropertyToBeTransformed(const QString &name) const;
+    QVariant getTransformedProperty(const QString &name, const QMatrix4x4 &viewMatrix);
 
     // Called by FrameCleanupJob
     static void cleanup(NodeManagers *managers);
@@ -98,17 +99,18 @@ protected:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
+    PropertyReaderInterfacePtr m_propertyReader;
+
     // 1 to 1 match with frontend properties, modified only by sceneChangeEvent
     QHash<QString, QVariant> m_originalProperties;
-    // 1 to 1 match with frontend properties apart from Transformed
-    // properties which contain the matrices product
-    QHash<QString, QVariant> m_properties;
-    // only updated properties, Transformed properties have the same
-    // value as in m_properties
-    QHash<QString, QVariant> m_updatedProperties;
-    PropertyReaderInterfacePtr m_propertyReader;
+
+    // Contains properties thar are of type ShaderData
     QHash<QString, QVariant> m_nestedShaderDataProperties;
+
+    // Contains property that are defined like: postionTransformed: ModelToEye
     QHash<QString, TransformType> m_transformedProperties;
+
+
     QMutex m_mutex;
     static QVector<Qt3DCore::QNodeId> m_updatedShaderData;
     QMatrix4x4 m_worldMatrix;
