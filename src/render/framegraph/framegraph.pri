@@ -41,7 +41,9 @@ HEADERS += \
     $$PWD/qrendersurfaceselector.h \
     $$PWD/qrendersurfaceselector_p.h \
     $$PWD/rendersurfaceselector_p.h \
-    $$PWD/qdispatchcompute_p.h
+    $$PWD/qdispatchcompute_p.h \
+    $$PWD/qrendercapture.h \
+    $$PWD/qrendercapture_p.h
 
 SOURCES += \
     $$PWD/cameraselectornode.cpp \
@@ -72,4 +74,5 @@ SOURCES += \
     $$PWD/qdispatchcompute.cpp \
     $$PWD/dispatchcompute.cpp \
     $$PWD/qrendersurfaceselector.cpp \
-    $$PWD/rendersurfaceselector.cpp
+    $$PWD/rendersurfaceselector.cpp \
+    $$PWD/qrendercapture.cpp
