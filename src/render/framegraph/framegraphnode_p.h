@@ -89,7 +89,8 @@ public:
         FrustumCulling,
         Lighting,
         ComputeDispatch,
-        Surface
+        Surface,
+        RenderCapture
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 
