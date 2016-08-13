@@ -56,5 +56,6 @@ contains(QT_CONFIG, private_tests) {
         sceneloader \
         qsceneloader \
         qrendertargetoutput \
-        qcameralens
+        qcameralens \
+        qcomputecommand
 }
