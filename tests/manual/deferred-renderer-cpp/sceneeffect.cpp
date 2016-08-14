@@ -65,10 +65,10 @@ SceneEffect::SceneEffect(Qt3DCore::QNode *parent)
     , m_passCriterion(new Qt3DRender::QFilterKey(this))
 {
 
-    m_gl3Technique->graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::NoProfile);
+    m_gl3Technique->graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::CoreProfile);
     m_gl3Technique->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::OpenGL);
     m_gl3Technique->graphicsApiFilter()->setMajorVersion(3);
-    m_gl3Technique->graphicsApiFilter()->setMinorVersion(3);
+    m_gl3Technique->graphicsApiFilter()->setMinorVersion(1);
 
     m_gl2Technique->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::OpenGL);
     m_gl2Technique->graphicsApiFilter()->setMajorVersion(2);

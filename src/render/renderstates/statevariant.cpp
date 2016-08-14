@@ -79,7 +79,7 @@ void StateVariant::apply(GraphicsContext *gc) const
         data.scissorTest.apply(gc);
         return;
     case StencilTestStateMask:
-        data.scissorTest.apply(gc);
+        data.stencilTest.apply(gc);
         return;
     case AlphaCoverageStateMask:
         data.alphaCoverage.apply(gc);

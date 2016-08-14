@@ -1,7 +1,7 @@
 TARGET   = Qt3DQuickExtras
 MODULE   = 3dquickextras
 
-QT      += core core-private qml qml-private 3dcore 3dinput 3dquick 3drender 3dlogic
+QT      += core core-private qml qml-private 3dcore 3dinput 3dquick 3drender 3drender-private 3dlogic
 CONFIG -= precompile_header
 
 # Qt3D is free of Q_FOREACH - make sure it stays that way:

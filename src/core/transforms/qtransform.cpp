@@ -55,6 +55,7 @@ QTransformPrivate::QTransformPrivate()
     , m_eulerRotationAngles()
     , m_matrixDirty(false)
 {
+    m_shareable = false;
 }
 
 QTransformPrivate::~QTransformPrivate()
@@ -68,6 +69,8 @@ QTransformPrivate::~QTransformPrivate()
  * \instantiates Qt3DCore::QComponent
  * \since 5.6
  * \brief Used to perform transforms on meshes
+ *
+ * The Transform component is not shareable between multiple Entity's.
  */
 
 /*!
@@ -170,6 +173,8 @@ QTransformPrivate::~QTransformPrivate()
  * \inherits Qt3DCore::QComponent
  * \since 5.6
  * \brief Used to perform transforms on meshes
+ *
+ * The QTransform component is not shareable between multiple QEntity's.
  */
 
 /*!

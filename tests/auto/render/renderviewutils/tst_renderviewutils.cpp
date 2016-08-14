@@ -290,35 +290,45 @@ private:
 
 void tst_RenderViewUtils::topLevelScalarValueNoUniforms()
 {
+    // GIVEN
     QScopedPointer<ScalarShaderData> shaderData(new ScalarShaderData());
     QScopedPointer<Qt3DRender::Render::ShaderDataManager> manager(new Qt3DRender::Render::ShaderDataManager());
 
+    // WHEN
     shaderData->setScalar(883.0f);
     initBackendShaderData(shaderData.data(), manager.data());
 
+    // THEN
     Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
     QVERIFY(backendShaderData != nullptr);
 
+    // WHEB
     Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
     blockBuilder.shaderDataManager = manager.data();
     blockBuilder.updatedPropertiesOnly = false;
     // build name-value map
     blockBuilder.buildActiveUniformNameValueMapStructHelper(backendShaderData, QStringLiteral(""));
+
+    // THEN
     // activeUniformNamesToValue should be empty as blockBuilder.uniforms is
     QVERIFY(blockBuilder.activeUniformNamesToValue.isEmpty());
 }
 
 void tst_RenderViewUtils::topLevelScalarValue()
 {
+    // GIVEN
     QScopedPointer<ScalarShaderData> shaderData(new ScalarShaderData());
     QScopedPointer<Qt3DRender::Render::ShaderDataManager> manager(new Qt3DRender::Render::ShaderDataManager());
 
+    // WHEN
     shaderData->setScalar(883.0f);
     initBackendShaderData(shaderData.data(), manager.data());
 
+    // THEN
     Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
     QVERIFY(backendShaderData != nullptr);
 
+    // WHEN
     Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
     blockBuilder.shaderDataManager = manager.data();
     blockBuilder.updatedPropertiesOnly = false;
@@ -326,13 +336,16 @@ void tst_RenderViewUtils::topLevelScalarValue()
     // build name-value map
     blockBuilder.buildActiveUniformNameValueMapStructHelper(backendShaderData, QStringLiteral("MyBlock"));
 
+    // THEN
     QVERIFY(blockBuilder.uniforms.count() == 1);
     QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), 1);
 
+    // WHEN
     Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
     const Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
 
     while (it != end) {
+        // THEN
         QVERIFY(blockBuilder.uniforms.contains(Qt3DRender::Render::StringToInt::lookupString(it.key())));
         QCOMPARE(it.value(), QVariant(shaderData->scalar()));
         ++it;
@@ -341,16 +354,20 @@ void tst_RenderViewUtils::topLevelScalarValue()
 
 void tst_RenderViewUtils::topLevelArrayValue()
 {
+    // GIVEN
     QScopedPointer<ArrayShaderData> shaderData(new ArrayShaderData());
     QScopedPointer<Qt3DRender::Render::ShaderDataManager> manager(new Qt3DRender::Render::ShaderDataManager());
 
+    // WHEN
     QVariantList arrayValues = QVariantList() << 454 << 350 << 383 << 427 << 552;
     shaderData->setArray(arrayValues);
     initBackendShaderData(shaderData.data(), manager.data());
 
+    // THEN
     Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
     QVERIFY(backendShaderData != nullptr);
 
+    // WHEN
     Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
     blockBuilder.shaderDataManager = manager.data();
     blockBuilder.updatedPropertiesOnly = false;
@@ -358,13 +375,16 @@ void tst_RenderViewUtils::topLevelArrayValue()
     // build name-value map
     blockBuilder.buildActiveUniformNameValueMapStructHelper(backendShaderData, QStringLiteral("MyBlock"));
 
+    // THEN
     QVERIFY(blockBuilder.uniforms.count() == 1);
     QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), 1);
 
+    // WHEN
     Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
     const Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
 
     while (it != end) {
+        // THEN
         QVERIFY(blockBuilder.uniforms.contains(Qt3DRender::Render::StringToInt::lookupString(it.key())));
         QCOMPARE(it.value(), QVariant(arrayValues));
         ++it;
@@ -405,15 +425,19 @@ void tst_RenderViewUtils::topLevelStructValue_data()
 
 void tst_RenderViewUtils::topLevelStructValue()
 {
+    // GIVEN
     QFETCH(StructShaderData *, shaderData);
     QFETCH(QString, blockName);
     QScopedPointer<Qt3DRender::Render::ShaderDataManager> manager(new Qt3DRender::Render::ShaderDataManager());
 
+    // WHEN
     initBackendShaderData(shaderData, manager.data());
 
+    // THEN
     Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
     QVERIFY(backendShaderData != nullptr);
 
+    // WHEN
     Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
     blockBuilder.shaderDataManager = manager.data();
     blockBuilder.updatedPropertiesOnly = false;
@@ -422,12 +446,15 @@ void tst_RenderViewUtils::topLevelStructValue()
     // build name-value map
     blockBuilder.buildActiveUniformNameValueMapStructHelper(backendShaderData, blockName);
 
+    // THEN
     QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), blockBuilder.uniforms.count());
 
+    // WHEN
     Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
     const Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
 
     while (it != end) {
+        // THEN
         QVERIFY(blockBuilder.uniforms.contains(Qt3DRender::Render::StringToInt::lookupString(it.key())));
         QVERIFY(expectedValues.contains(Qt3DRender::Render::StringToInt::lookupString(it.key())));
         QCOMPARE(it.value(), expectedValues.value(Qt3DRender::Render::StringToInt::lookupString(it.key())));
@@ -437,16 +464,20 @@ void tst_RenderViewUtils::topLevelStructValue()
 
 void tst_RenderViewUtils::topLevelDynamicProperties()
 {
+    // GIVEN
     QScopedPointer<Qt3DRender::QShaderData> shaderData(new Qt3DRender::QShaderData());
     QScopedPointer<Qt3DRender::Render::ShaderDataManager> manager(new Qt3DRender::Render::ShaderDataManager());
 
+    // WHEN
     shaderData->setProperty("scalar", 883.0f);
     shaderData->setProperty("array", QVariantList() << 454 << 350 << 383 << 427 << 552);
     initBackendShaderData(shaderData.data(), manager.data());
 
+    // THEN
     Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
     QVERIFY(backendShaderData != nullptr);
 
+    // WHEN
     Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
     blockBuilder.shaderDataManager = manager.data();
     blockBuilder.updatedPropertiesOnly = false;
@@ -455,6 +486,7 @@ void tst_RenderViewUtils::topLevelDynamicProperties()
     // build name-value map
     blockBuilder.buildActiveUniformNameValueMapStructHelper(backendShaderData, QStringLiteral("MyBlock"));
 
+    // THEN
     QVERIFY(blockBuilder.uniforms.count() == 2);
     QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), 2);
 

@@ -47,6 +47,7 @@ namespace Qt3DCore {
 
 QPropertyNodeRemovedChangePrivate::QPropertyNodeRemovedChangePrivate()
     : QStaticPropertyValueRemovedChangeBasePrivate()
+    , m_propertyName(nullptr)
     , m_removedNodeIdTypePair()
 {
 }

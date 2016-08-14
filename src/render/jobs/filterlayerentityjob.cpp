@@ -93,6 +93,10 @@ void FilterLayerEntityJob::filterLayerAndEntity()
 
     for (const HEntity handle : handles) {
         Entity *entity = entityManager->data(handle);
+
+        if (!entity->isEnabled())
+            continue;
+
         const Qt3DCore::QNodeIdVector entityLayers = entity->componentsUuid<Layer>();
 
         // An Entity is positively filtered if it contains at least one Layer component with the same id as the
@@ -114,8 +118,11 @@ void FilterLayerEntityJob::selectAllEntities()
     const QVector<HEntity> handles = entityManager->activeHandles();
 
     m_filteredEntities.reserve(handles.size());
-    for (const HEntity handle : handles)
-        m_filteredEntities.push_back(entityManager->data(handle));
+    for (const HEntity handle : handles) {
+        Entity *e = entityManager->data(handle);
+        if (e->isEnabled())
+            m_filteredEntities.push_back(e);
+    }
 }
 
 } // Render

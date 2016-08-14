@@ -74,6 +74,9 @@
 
     \section2 Qt 3D Render Module
     \generatelist {classesbymodule Qt3DRender}
+
+    \section2 Qt 3D Extras Module
+    \generatelist {classesbymodule Qt3DExtras}
 */
 
 /*!
@@ -107,6 +110,7 @@
    import Qt3D.Render 2.0
    import Qt3D.Input 2.0
    import Qt3D.Logic 2.0
+   import Qt3D.Extras 2.0
    \endcode
 
    \section1 QML Types
@@ -122,5 +126,9 @@
 
    \section2 Qt 3D Render Module
    \generatelist {qmltypesbymodule Qt3D.Render}
+   \noautolist
+
+   \section2 Qt 3D Extras Module
+   \generatelist {qmltypesbymodule Qt3D.Extras}
    \noautolist
 */

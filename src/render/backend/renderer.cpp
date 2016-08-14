@@ -290,6 +290,12 @@ void Renderer::shutdown()
 {
     qCDebug(Backend) << Q_FUNC_INFO << "Requesting renderer shutdown";
     m_running.store(0);
+
+    // We delete any renderqueue that we may not have had time to render
+    // before the surface was destroyed
+    qDeleteAll(m_renderQueue->nextFrameQueue());
+    m_renderQueue->reset();
+
     if (!m_renderThread) {
         releaseGraphicsResources();
     } else {
@@ -760,12 +766,19 @@ void Renderer::updateGLResources()
         }
     }
 
-    const QVector<HShader> activeShaderHandles = m_nodesManager->shaderManager()->activeHandles();
-    for (HShader handle: activeShaderHandles) {
-        Shader *shader = m_nodesManager->shaderManager()->data(handle);
-        if (!shader->isLoaded()) {
-            // Compile shader
-            m_graphicsContext->loadShader(shader);
+    const QVector<HTechnique> activeTechniques = m_nodesManager->techniqueManager()->activeHandles();
+    for (HTechnique techniqueHandle : activeTechniques) {
+        Technique *technique = m_nodesManager->techniqueManager()->data(techniqueHandle);
+        // If api of the renderer matches the one from the technique
+        if (*contextInfo() == *technique->graphicsApiFilter()) {
+            const auto passIds = technique->renderPasses();
+            for (const QNodeId passId : passIds) {
+                RenderPass *renderPass = m_nodesManager->renderPassManager()->lookupResource(passId);
+                HShader shaderHandle = m_nodesManager->shaderManager()->lookupHandle(renderPass->shaderProgram());
+                Shader *shader = m_nodesManager->shaderManager()->data(shaderHandle);
+                if (shader != nullptr && !shader->isLoaded())
+                    m_graphicsContext->loadShader(shader);
+            }
         }
     }
 
@@ -798,6 +811,7 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
     QSurface *surface = nullptr;
     QSurface *previousSurface = renderViews.first()->surface();
     QSurface *lastUsedSurface = nullptr;
+
     for (int i = 0; i < renderViewsCount; ++i) {
         // Initialize GraphicsContext for drawing
         // If the RenderView has a RenderStateSet defined
@@ -842,13 +856,14 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
             lastBoundFBOId = m_graphicsContext->boundFrameBufferObject();
         }
 
-        // Set RenderView render state
         // Note: the RenderStateSet is allocated once per RV if needed
         // and it contains a list of StateVariant value types
         RenderStateSet *renderViewStateSet = renderView->stateSet();
-        if (renderViewStateSet)
+
+        // Set the RV state if not null,
+        if (renderViewStateSet != nullptr)
             m_graphicsContext->setCurrentStateSet(renderViewStateSet);
-        else if (surfaceHasChanged || i == 0) // Reset state to the default state on initial render view or on surface change
+        else
             m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
 
         // Set RenderTarget ...

@@ -65,7 +65,12 @@ QAttributePrivate::QAttributePrivate()
  * \qmltype Attribute
  * \instantiates Qt3DRender::QAttribute
  * \inqmlmodule Qt3D.Render
- * \brief Uncreatable
+ * \brief Defines an attribute and how data should be read from a Buffer.
+ *
+ * When providing your own attributes, it may make sense to name your attribute
+ * using helpers such as QAttribute::defaultPositionAttributeName() as that
+ * will ensure your geometry will be compatible with picking and the various
+ * materials provided in the Qt3DExtras module.
  */
 
 /*!
@@ -74,6 +79,14 @@ QAttributePrivate::QAttributePrivate()
  *
  * \inherits Qt3DCore::QNode
  *
+ * \brief Defines an attribute and how data should be read from a QBuffer.
+ *
+ * When providing your own attributes, it may make sense to name your attribute
+ * using helpers such as QAttribute::defaultPositionAttributeName() as that
+ * will ensure your geometry will be compatible with picking and the various
+ * materials provided in the Qt3DExtras module.
+ *
+ * \sa QBuffer.
  */
 
 /*!
@@ -119,7 +132,7 @@ QAttribute::QAttribute(QNode *parent)
  * and \a stride with \a parent.
  */
 QAttribute::QAttribute(QBuffer *buf, VertexBaseType type, uint dataSize, uint count, uint offset, uint stride, QNode *parent)
-    : QNode(*new QAttributePrivate(), parent)
+    : QAttribute(parent)
 {
     Q_D(QAttribute);
     setBuffer(buf);
@@ -136,7 +149,7 @@ QAttribute::QAttribute(QBuffer *buf, VertexBaseType type, uint dataSize, uint co
  * dataSize, \a count, \a offset, and \a stride with \a parent.
  */
 QAttribute::QAttribute(QBuffer *buf, const QString &name, VertexBaseType type, uint dataSize, uint count, uint offset, uint stride, QNode *parent)
-    : QNode(*new QAttributePrivate(), parent)
+    : QAttribute(parent)
 {
     Q_D(QAttribute);
     setBuffer(buf);

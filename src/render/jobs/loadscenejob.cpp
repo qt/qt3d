@@ -63,23 +63,29 @@ void LoadSceneJob::run()
 {
     // Iterate scene IO handlers until we find one that can handle this file type
     Qt3DCore::QEntity *sceneSubTree = nullptr;
-    for (QSceneIOHandler *sceneIOHandler : qAsConst(m_sceneIOHandlers)) {
-        if (!sceneIOHandler->isFileTypeSupported(m_source))
-            continue;
 
-        // File type is supported, try to load it
-        sceneIOHandler->setSource(m_source);
-        Qt3DCore::QEntity *sub = sceneIOHandler->scene();
-        if (sub) {
-            sceneSubTree = sub;
-            break;
+    // Perform the loading only if the source wasn't explicitly set to empty
+    if (!m_source.isEmpty()) {
+        for (QSceneIOHandler *sceneIOHandler : qAsConst(m_sceneIOHandlers)) {
+            if (!sceneIOHandler->isFileTypeSupported(m_source))
+                continue;
+
+            // File type is supported, try to load it
+            sceneIOHandler->setSource(m_source);
+            Qt3DCore::QEntity *sub = sceneIOHandler->scene();
+            if (sub) {
+                sceneSubTree = sub;
+                break;
+            }
         }
     }
-
     // Set clone of sceneTree in sceneComponent. This will move the sceneSubTree
     // to the QCoreApplication thread which is where the frontend object tree lives.
     Scene *scene = m_managers->sceneManager()->lookupResource(m_sceneComponent);
-    if (scene && sceneSubTree)
+
+    // If the sceneSubTree is null it will trigger the frontend to unload
+    // any subtree it may hold
+    if (scene)
         scene->setSceneSubtree(sceneSubTree);
 }
 

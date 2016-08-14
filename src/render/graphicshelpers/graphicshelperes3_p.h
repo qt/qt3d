@@ -1,6 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Svenn-Arne Dragly.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,10 +38,8 @@
 **
 ****************************************************************************/
 
-#if 0
-
-#ifndef QT3DRENDER_QBOUNDINGVOLUMEDEBUG_P_H
-#define QT3DRENDER_QBOUNDINGVOLUMEDEBUG_P_H
+#ifndef QT3DRENDER_RENDER_GRAPHICSHELPERES3_H
+#define QT3DRENDER_RENDER_GRAPHICSHELPERES3_H
 
 //
 //  W A R N I N G
@@ -53,46 +52,34 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qcomponent.h>
-#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/private/graphicshelperes2_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+namespace Render {
 
-class QGeometry;
-class QBoundingVolumeDebugPrivate;
-
-class QT3DRENDERSHARED_EXPORT QBoundingVolumeDebug : public Qt3DCore::QComponent
+class GraphicsHelperES3 : public GraphicsHelperES2
 {
-    Q_OBJECT
-    Q_PROPERTY(bool recursive READ recursive WRITE setRecursive NOTIFY recursiveChanged)
-
 public:
-    explicit QBoundingVolumeDebug(Qt3DCore::QNode *parent = nullptr);
-    ~QBoundingVolumeDebug();
+    GraphicsHelperES3();
+    virtual ~GraphicsHelperES3();
 
-    bool recursive() const;
-
-public Q_SLOTS:
-    void setRecursive(bool recursive);
-
-Q_SIGNALS:
-    void recursiveChanged(bool recursive);
-
+    // QGraphicHelperInterface interface
+    virtual void bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment) Q_DECL_OVERRIDE;
+    virtual void bindUniform(const QVariant &v, const ShaderUniform &description) Q_DECL_OVERRIDE;
+    virtual void drawBuffers(GLsizei n, const int *bufs) Q_DECL_OVERRIDE;
+    virtual void drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances, GLint baseVertex = 0,  GLint baseInstance = 0) Q_DECL_OVERRIDE;
+    virtual void initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) Q_DECL_OVERRIDE;
+    virtual bool supportsFeature(Feature feature) const Q_DECL_OVERRIDE;
+    virtual void vertexAttribDivisor(GLuint index, GLuint divisor) Q_DECL_OVERRIDE;
 protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(QBoundingVolumeDebug)
-
-    // TODO: Handle creation changes
+    QOpenGLExtraFunctions *m_extraFuncs = Q_NULLPTR;
 };
 
-} // Qt3DRender
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QBOUNDINGVOLUMEDEBUG_P_H
-
-#endif
+#endif // QT3DRENDER_RENDER_GRAPHICSHELPERES3_H

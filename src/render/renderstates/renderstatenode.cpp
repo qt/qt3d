@@ -63,7 +63,7 @@ void RenderStateNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBaseP
 {
     cleanup();
     const auto renderStateChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChangeBase>(change);
-    m_impl = std::move(RenderStateSet::initializeStateFromPeer(renderStateChange));
+    m_impl = RenderStateSet::initializeStateFromPeer(renderStateChange);
 }
 
 void RenderStateNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

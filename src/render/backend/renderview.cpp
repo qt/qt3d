@@ -114,12 +114,14 @@ RenderView::StandardUniformsPFuncsHash RenderView::initializeStandardUniformSett
     setters.insert(StringToInt::lookupId(QLatin1String("viewMatrix")), &RenderView::viewMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("projectionMatrix")), &RenderView::projectionMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("modelView")), &RenderView::modelViewMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("viewProjectionMatrix")), &RenderView::viewProjectionMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("modelViewProjection")), &RenderView::modelViewProjectionMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("mvp")), &RenderView::modelViewProjectionMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("inverseModelMatrix")), &RenderView::inverseModelMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("inverseViewMatrix")), &RenderView::inverseViewMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("inverseProjectionMatrix")), &RenderView::inverseProjectionMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("inverseModelView")), &RenderView::inverseModelViewMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("inverseViewProjectionMatrix")), &RenderView::inverseViewProjectionMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("inverseModelViewProjection")), &RenderView::inverseModelViewProjectionMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("modelNormalMatrix")), &RenderView::modelNormalMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("modelViewNormal")), &RenderView::modelViewNormalMatrix);
@@ -151,6 +153,12 @@ QUniformValue RenderView::modelViewMatrix(const QMatrix4x4 &model) const
     return QUniformValue(QVariant::fromValue(m_data.m_viewMatrix * model));
 }
 
+QUniformValue RenderView::viewProjectionMatrix(const QMatrix4x4 &model) const
+{
+    Q_UNUSED(model);
+    return QUniformValue(QVariant::fromValue(m_data.m_renderCameraLens->projection() * m_data.m_viewMatrix));
+}
+
 QUniformValue RenderView::modelViewProjectionMatrix(const QMatrix4x4 &model) const
 {
     return QUniformValue(QVariant::fromValue(m_data.m_viewProjectionMatrix * model));
@@ -177,6 +185,13 @@ QUniformValue RenderView::inverseProjectionMatrix(const QMatrix4x4 &) const
 QUniformValue RenderView::inverseModelViewMatrix(const QMatrix4x4 &model) const
 {
     return QUniformValue(QVariant::fromValue((m_data.m_viewMatrix * model).inverted()));
+}
+
+QUniformValue RenderView::inverseViewProjectionMatrix(const QMatrix4x4 &model) const
+{
+    Q_UNUSED(model);
+    const auto viewProjectionMatrix = m_data.m_renderCameraLens->projection() * m_data.m_viewMatrix;
+    return QUniformValue(QVariant::fromValue(viewProjectionMatrix.inverted()));
 }
 
 QUniformValue RenderView::inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const
@@ -383,6 +398,13 @@ void RenderView::addClearBuffers(const ClearBuffers *cb) {
 // If we are there, we know that entity had a GeometryRenderer + Material
 QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entity *> &entities) const
 {
+    // Note: since many threads can be building render commands
+    // we need to ensure that the UniformBlockValueBuilder they are using
+    // is only accessed from the same thread
+    UniformBlockValueBuilder *builder = new UniformBlockValueBuilder();
+    builder->shaderDataManager = m_manager->shaderDataManager();
+    m_localData.setLocalData(builder);
+
     QVector<RenderCommand *> commands;
     commands.reserve(entities.size());
 
@@ -429,6 +451,8 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
                     std::sort(lightSources.begin(), lightSources.end(), LightSourceCompare(node));
 
                 ParameterInfoList globalParameters = passData.parameterInfo;
+                // setShaderAndUniforms can initialize a localData
+                // make sure this is cleared before we leave this function
                 setShaderAndUniforms(command, pass, globalParameters, *(node->worldTransform()), lightSources.mid(0, std::max(lightSources.size(), MAX_LIGHTS)));
 
                 buildSortingKey(command);
@@ -436,11 +460,22 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
             }
         }
     }
+
+    // We reset the local data once we are done with it
+    m_localData.setLocalData(nullptr);
+
     return commands;
 }
 
 QVector<RenderCommand *> RenderView::buildComputeRenderCommands(const QVector<Entity *> &entities) const
 {
+    // Note: since many threads can be building render commands
+    // we need to ensure that the UniformBlockValueBuilder they are using
+    // is only accessed from the same thread
+    UniformBlockValueBuilder *builder = new UniformBlockValueBuilder();
+    builder->shaderDataManager = m_manager->shaderDataManager();
+    m_localData.setLocalData(builder);
+
     // If the RenderView contains only a ComputeDispatch then it cares about
     // A ComputeDispatch is also implicitely a NoDraw operation
     // enabled flag
@@ -477,6 +512,10 @@ QVector<RenderCommand *> RenderView::buildComputeRenderCommands(const QVector<En
             }
         }
     }
+
+    // We reset the local data once we are done with it
+    m_localData.setLocalData(nullptr);
+
     return commands;
 }
 
@@ -612,28 +651,22 @@ void RenderView::setShaderStorageValue(ShaderParameterPack &uniformPack,
 
 void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack, Shader *shader, ShaderData *shaderData, const QString &structName) const
 {
-    // Note: since many threads can be building render commands
-    // we need to ensure that the UniformBlockValueBuilder they are using
-    // is only accessed from the same thread
-    if (!m_localData.hasLocalData()) {
-        m_localData.setLocalData(UniformBlockValueBuilder());
-        m_localData.localData().shaderDataManager = m_manager->shaderDataManager();
-    }
-
-    UniformBlockValueBuilder &builder = m_localData.localData();
-    builder.activeUniformNamesToValue.clear();
+    UniformBlockValueBuilder *builder = m_localData.localData();
+    builder->activeUniformNamesToValue.clear();
 
     // updates transformed properties;
+    // Fix me: this will lead to races when having multiple cameras
     shaderData->updateViewTransform(m_data.m_viewMatrix);
+
     // Force to update the whole block
-    builder.updatedPropertiesOnly = false;
+    builder->updatedPropertiesOnly = false;
     // Retrieve names and description of each active uniforms in the uniform block
-    builder.uniforms = shader->activeUniformsForUniformBlock(-1);
+    builder->uniforms = shader->activeUniformsForUniformBlock(-1);
     // Build name-value map for the block
-    builder.buildActiveUniformNameValueMapStructHelper(shaderData, structName);
+    builder->buildActiveUniformNameValueMapStructHelper(shaderData, structName);
     // Set uniform values for each entrie of the block name-value map
-    QHash<int, QVariant>::const_iterator activeValuesIt = builder.activeUniformNamesToValue.constBegin();
-    const QHash<int, QVariant>::const_iterator activeValuesEnd = builder.activeUniformNamesToValue.constEnd();
+    QHash<int, QVariant>::const_iterator activeValuesIt = builder->activeUniformNamesToValue.constBegin();
+    const QHash<int, QVariant>::const_iterator activeValuesEnd = builder->activeUniformNamesToValue.constEnd();
 
     while (activeValuesIt != activeValuesEnd) {
         setUniformValue(uniformPack, activeValuesIt.key(), activeValuesIt.value());

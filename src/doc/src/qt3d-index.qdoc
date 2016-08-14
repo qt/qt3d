@@ -61,7 +61,7 @@
     \l qmake \c .pro file:
 
     \badcode
-    QT += 3dcore 3drender 3dinput 3dlogic
+    QT += 3dcore 3drender 3dinput 3dlogic 3dextras
     \endcode
 
     To include the definitions of the modules' classes, use the following
@@ -72,6 +72,7 @@
     #include <Qt3DRender>
     #include <Qt3DInput>
     #include <Qt3DLogic>
+    #include <Qt3DExtras>
     \endcode
 
     A Qt Quick application requires also additional dependencies:
@@ -96,15 +97,15 @@
 
     \section1 Qt 3D Platform Support
 
-    In this Technology Preview Qt 3D has the following support for platforms:
+    Qt 3D has the following support for platforms:
 
     \list
         \li Microsoft Windows (win32) - Supported
         \li Linux X11 - Supported
-        \li OS X - Supported although there may be some retina scaling issues
+        \li \macos - Supported although there may be some retina scaling issues
         \li Android - Supported
         \li Embedded Linux - Supported
-        \li iOS - Not supported yet (coming in Qt 5.6)
+        \li iOS - Supported since (Qt 5.7)
         \li WinRT - Not supported yet
         \li Windows CE - Compiles but not tested
     \endlist

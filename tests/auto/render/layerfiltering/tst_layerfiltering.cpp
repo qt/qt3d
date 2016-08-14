@@ -164,9 +164,9 @@ private Q_SLOTS:
             childEntity3->addComponent(layer);
 
             QTest::newRow("LayerWithLayerFilterWithFilter-ShouldSelectAllButRoot") << rootEntity
-                                                                               << (Qt3DCore::QNodeIdVector() << layer->id())
-                                                                               << true
-                                                                               << (Qt3DCore::QNodeIdVector() << childEntity1->id() << childEntity2->id() << childEntity3->id());
+                                                                                   << (Qt3DCore::QNodeIdVector() << layer->id())
+                                                                                   << true
+                                                                                   << (Qt3DCore::QNodeIdVector() << childEntity1->id() << childEntity2->id() << childEntity3->id());
         }
 
         {
@@ -202,9 +202,28 @@ private Q_SLOTS:
             childEntity3->addComponent(layer);
 
             QTest::newRow("LayerWithLayerFilterWithFilter-ShouldSelectNone") << rootEntity
-                                                                                   << (Qt3DCore::QNodeIdVector() << layer2->id())
+                                                                             << (Qt3DCore::QNodeIdVector() << layer2->id())
+                                                                             << true
+                                                                             << Qt3DCore::QNodeIdVector();
+        }
+
+        {
+            Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
+            Qt3DCore::QEntity *childEntity1 = new Qt3DCore::QEntity(rootEntity);
+            Qt3DCore::QEntity *childEntity2 = new Qt3DCore::QEntity(rootEntity);
+            Qt3DCore::QEntity *childEntity3 = new Qt3DCore::QEntity(rootEntity);
+
+            childEntity1->setEnabled(false);
+
+            Qt3DRender::QLayer *layer = new Qt3DRender::QLayer(rootEntity);
+            childEntity1->addComponent(layer);
+            childEntity2->addComponent(layer);
+            childEntity3->addComponent(layer);
+
+            QTest::newRow("LayerWithEntityDisabled-ShouldSelectOnlyEntityEnabled") << rootEntity
+                                                                                   << (Qt3DCore::QNodeIdVector() << layer->id())
                                                                                    << true
-                                                                                   << Qt3DCore::QNodeIdVector();
+                                                                                   << (Qt3DCore::QNodeIdVector() << childEntity2->id() << childEntity3->id());
         }
 
     }

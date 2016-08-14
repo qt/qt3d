@@ -52,8 +52,8 @@
 #include <Qt3DQuick/QQmlAspectEngine>
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DRender/qrendersettings.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
+#include <Qt3DRender/private/qrendersurfaceselector_p.h>
 #include <Qt3DInput/qinputaspect.h>
 #include <Qt3DInput/qinputsettings.h>
 #include <Qt3DLogic/qlogicaspect.h>
@@ -230,30 +230,9 @@ void Qt3DQuickWindow::onSceneCreated(QObject *rootObject)
 
 void Qt3DQuickWindow::setWindowSurface(QObject *rootObject)
 {
-    // Find surface selector in framegraph and set ourselves up as the
-    // render surface there
-    Qt3DRender::QRenderSettings *rendererSettings
-            = rootObject->findChild<Qt3DRender::QRenderSettings *>();
-    if (!rendererSettings) {
-        qWarning() << "No renderer settings component found";
-        return;
-    }
-
-    Qt3DCore::QNode *frameGraphRoot = rendererSettings->activeFrameGraph();
-    if (!frameGraphRoot) {
-        qWarning() << "No active frame graph found";
-        return;
-    }
-
-    Qt3DRender::QRenderSurfaceSelector *surfaceSelector = qobject_cast<Qt3DRender::QRenderSurfaceSelector *>(frameGraphRoot);
-    if (!surfaceSelector)
-        surfaceSelector = frameGraphRoot->findChild<Qt3DRender::QRenderSurfaceSelector *>();
-    if (!surfaceSelector) {
-        qWarning() << "No render surface selector found in frame graph";
-        return;
-    }
-
-    surfaceSelector->setSurface(this);
+    Qt3DRender::QRenderSurfaceSelector *surfaceSelector = Qt3DRender::QRenderSurfaceSelectorPrivate::find(rootObject);
+    if (surfaceSelector)
+        surfaceSelector->setSurface(this);
 }
 
 void Qt3DQuickWindow::setCameraAspectModeHelper()

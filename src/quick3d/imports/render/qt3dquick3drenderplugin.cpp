@@ -100,7 +100,6 @@
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qrendersettings.h>
 #include <Qt3DRender/qpickingsettings.h>
-#include <Qt3DRender/private/qboundingvolumedebug_p.h>
 #include <Qt3DQuickRender/private/quick3dlayerfilter_p.h>
 #include <Qt3DQuickRender/private/quick3dtechnique_p.h>
 #include <Qt3DQuickRender/private/quick3dmaterial_p.h>
@@ -191,9 +190,6 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::Render::Quick::Quick3DBuffer>(uri, 2, 0, "Buffer");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QGeometry, Qt3DRender::Render::Quick::Quick3DGeometry>("QGeometry", "Qt3D.Render/Geometry", uri, 2, 0, "Geometry");
     qmlRegisterType<Qt3DRender::QGeometryRenderer>(uri, 2, 0, "GeometryRenderer");
-
-    // Debug components
-//    qmlRegisterType<Qt3DRender::QBoundingVolumeDebug>(uri, 2, 0, "BoundingVolumeDebug");
 
     // Mesh
     qmlRegisterType<Qt3DRender::QMesh>(uri, 2, 0, "Mesh");

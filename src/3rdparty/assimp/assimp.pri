@@ -34,6 +34,19 @@ intel_icc: {
     # Stop compiler complaining about ignored qualifiers on return types
     QMAKE_CFLAGS_WARN_ON += -Wno-ignored-qualifiers -Wno-unused-parameter -Wno-unused-variable -Wno-deprecated-declarations -Wno-unused-function -Wno-reorder
     QMAKE_CXXFLAGS_WARN_ON = $$QMAKE_CFLAGS_WARN_ON
+} else:msvc {
+    # Disabled Warnings:
+    #   4100: 'identifier' : unreferenced formal parameter
+    #   4189: 'identifier' : local variable is initialized but not referenced
+    #   4267: coversion from 'size_t' to 'int', possible loss of data
+    #   4996: Function call with parameters that may be unsafe
+    QMAKE_CFLAGS_WARN_ON += -wd"4100" -wd"4189" -wd"4267" -wd"4996"
+    QMAKE_CXXFLAGS_WARN_ON = $$QMAKE_CFLAGS_WARN_ON
+}
+
+clang: {
+    QMAKE_CFLAGS_WARN_ON += -Wno-unused-private-field
+    QMAKE_CXXFLAGS_WARN_ON = $$QMAKE_CFLAGS_WARN_ON
 }
 
 CONFIG += warn_on

@@ -118,10 +118,8 @@ public:
     uint uniformByteSize(const ShaderUniform &description) Q_DECL_OVERRIDE;
     void useProgram(GLuint programId) Q_DECL_OVERRIDE;
     void vertexAttribDivisor(GLuint index, GLuint divisor) Q_DECL_OVERRIDE;
-private:
+protected:
     QOpenGLFunctions *m_funcs;
-    QOpenGLExtraFunctions *m_extraFuncs = nullptr;
-    bool m_isES3;
 };
 
 } // namespace Render

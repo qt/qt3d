@@ -118,7 +118,7 @@ int main(int ac, char **av)
 {
     QApplication app(ac, av);
     Qt3DExtras::Qt3DWindow view;
-    view.defaultFramegraph()->setClearColor(Qt::black);
+    view.defaultFrameGraph()->setClearColor(Qt::black);
 
     // Root entity
     Qt3DCore::QEntity *sceneRoot = new Qt3DCore::QEntity();

@@ -48,7 +48,7 @@
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DRender/qrendersurfaceselector.h>
-#include <Qt3DRender/qrendersettings.h>
+#include <Qt3DRender/private/qrendersurfaceselector_p.h>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DInput/qinputsettings.h>
 #include <Qt3DLogic/qlogicaspect.h>
@@ -198,57 +198,19 @@ void Scene3DItem::applyRootEntityChange()
 
 void Scene3DItem::setWindowSurface(QObject *rootObject)
 {
-    // Find surface selector in framegraph and set ourselves up as the
-    // render surface there
-    Qt3DRender::QRenderSettings *renderSettings
-        = rootObject->findChild<Qt3DRender::QRenderSettings *>();
-    if (!renderSettings) {
-        qWarning() << "No renderer settings component found";
-        return;
-    }
-
-    Qt3DCore::QNode *frameGraphRoot = renderSettings->activeFrameGraph();
-    if (!frameGraphRoot) {
-        qWarning() << "No active frame graph found";
-        return;
-    }
-
-    Qt3DRender::QRenderSurfaceSelector *surfaceSelector
-        = frameGraphRoot->findChild<Qt3DRender::QRenderSurfaceSelector *>();
-    if (!surfaceSelector) {
-        qWarning() << "No render surface selector found in frame graph";
-        return;
-    }
+    Qt3DRender::QRenderSurfaceSelector *surfaceSelector = Qt3DRender::QRenderSurfaceSelectorPrivate::find(rootObject);
 
     // Set the item's window surface if it appears
     // the surface wasn't set on the surfaceSelector
-    if (!surfaceSelector->surface())
+    if (surfaceSelector && !surfaceSelector->surface())
         surfaceSelector->setSurface(this->window());
 }
 
 void Scene3DItem::setItemArea(const QSize &area)
 {
-    // Find surface selector in framegraph and set the area
-    Qt3DRender::QRenderSettings *renderSettings
-        = m_entity->findChild<Qt3DRender::QRenderSettings *>();
-    if (!renderSettings) {
-        qWarning() << "No renderer settings component found";
-        return;
-    }
-
-    Qt3DCore::QNode *frameGraphRoot = renderSettings->activeFrameGraph();
-    if (!frameGraphRoot) {
-        qWarning() << "No active frame graph found";
-        return;
-    }
-
-    Qt3DRender::QRenderSurfaceSelector *surfaceSelector
-        = frameGraphRoot->findChild<Qt3DRender::QRenderSurfaceSelector *>();
-    if (!surfaceSelector) {
-        qWarning() << "No render surface selector found in frame graph";
-        return;
-    }
-    surfaceSelector->setExternalRenderTargetSize(area);
+    Qt3DRender::QRenderSurfaceSelector *surfaceSelector = Qt3DRender::QRenderSurfaceSelectorPrivate::find(m_entity);
+    if (surfaceSelector)
+        surfaceSelector->setExternalRenderTargetSize(area);
 }
 
 bool Scene3DItem::isHoverEnabled() const

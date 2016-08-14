@@ -10,7 +10,6 @@ HEADERS += \
     $$PWD/qrendertarget.h \
     $$PWD/qrendertarget_p.h \
     $$PWD/sphere_p.h \
-    $$PWD/qboundingvolumedebug_p.h \
     $$PWD/qcamera_p.h \
     $$PWD/qcamera.h \
     $$PWD/qcameralens.h \
@@ -31,7 +30,6 @@ SOURCES += \
     $$PWD/sphere.cpp \
     $$PWD/qlayer.cpp \
     $$PWD/qrendertarget.cpp \
-    $$PWD/qboundingvolumedebug.cpp \
     $$PWD/qcamera.cpp \
     $$PWD/qcameralens.cpp \
     $$PWD/qrendersettings.cpp \

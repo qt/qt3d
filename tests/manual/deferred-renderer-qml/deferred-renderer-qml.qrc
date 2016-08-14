@@ -12,5 +12,9 @@
         <file>final_gl3.vert</file>
         <file>final_es2.frag</file>
         <file>GBufferDebugger.qml</file>
+        <file>debug_gl3.vert</file>
+        <file>debug_gl3.frag</file>
+        <file>debug_es2.frag</file>
+        <file>debug_es2.vert</file>
     </qresource>
 </RCC>

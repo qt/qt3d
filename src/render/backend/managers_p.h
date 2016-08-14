@@ -310,7 +310,7 @@ class TextureImageManager : public Qt3DCore::QResourceManager<
 class AttributeManager : public Qt3DCore::QResourceManager<
         Attribute,
         Qt3DCore::QNodeId,
-        16,
+        20,
         Qt3DCore::ArrayAllocatingPolicy,
         Qt3DCore::ObjectLevelLockingPolicy>
 {

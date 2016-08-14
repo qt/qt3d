@@ -95,8 +95,8 @@ public Q_SLOTS:
     void setVendor(const QString &vendor);
 
 Q_SIGNALS:
-    void apiChanged(Api api);
-    void profileChanged(OpenGLProfile profile);
+    void apiChanged(Qt3DRender::QGraphicsApiFilter::Api api);
+    void profileChanged(Qt3DRender::QGraphicsApiFilter::OpenGLProfile profile);
     void minorVersionChanged(int minorVersion);
     void majorVersionChanged(int majorVersion);
     void extensionsChanged(const QStringList &extensions);
@@ -107,8 +107,8 @@ private:
     Q_DECLARE_PRIVATE(QGraphicsApiFilter)
 };
 
-bool operator ==(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &sample);
-bool operator !=(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &sample);
+Q_AUTOTEST_EXPORT bool operator ==(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &sample);
+Q_AUTOTEST_EXPORT bool operator !=(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &sample);
 
 } // namespace Qt3DRender
 

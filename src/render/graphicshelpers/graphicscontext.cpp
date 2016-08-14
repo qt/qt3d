@@ -71,6 +71,7 @@
 #include <Qt3DRender/private/graphicshelpergl4_p.h>
 #endif
 #include <Qt3DRender/private/graphicshelperes2_p.h>
+#include <Qt3DRender/private/graphicshelperes3_p.h>
 
 #include <QSurface>
 #include <QWindow>
@@ -285,7 +286,6 @@ void GraphicsContext::endDrawing(bool swapBuffers)
         m_gl->swapBuffers(m_surface);
     if (m_ownCurrent)
         m_gl->doneCurrent();
-    m_stateSet = nullptr;
     decayTextureScores();
 }
 
@@ -557,7 +557,7 @@ void GraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const Attach
                 if (fboSize.isEmpty())
                     fboSize = QSize(glTex->width(), glTex->height());
                 else
-                    fboSize = QSize(qMin(fboSize.width(), glTex->width()), qMin(fboSize.width(), glTex->width()));
+                    fboSize = QSize(qMin(fboSize.width(), glTex->width()), qMin(fboSize.height(), glTex->height()));
                 m_glHelper->bindFrameBufferAttachment(glTex, attachment);
             }
         }
@@ -647,7 +647,10 @@ GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
     GraphicsHelperInterface *glHelper = nullptr;
 
     if (m_gl->isOpenGLES()) {
-        glHelper = new GraphicsHelperES2();
+        if (m_gl->format().majorVersion() >= 3)
+            glHelper = new GraphicsHelperES3();
+        else
+            glHelper = new GraphicsHelperES2();
         glHelper->initializeHelper(m_gl, nullptr);
         qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2/ES2 Helper";
     }

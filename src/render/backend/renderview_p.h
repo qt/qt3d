@@ -242,7 +242,7 @@ private:
     void setShaderAndUniforms(RenderCommand *command, RenderPass *pass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform,
                               const QVector<LightSource> &activeLightSources) const;
 
-    mutable QThreadStorage<UniformBlockValueBuilder> m_localData;
+    mutable QThreadStorage<UniformBlockValueBuilder*> m_localData;
 
     Renderer *m_renderer;
     NodeManagers *m_manager;
@@ -282,11 +282,13 @@ private:
     QUniformValue viewMatrix(const QMatrix4x4&) const;
     QUniformValue projectionMatrix(const QMatrix4x4 &) const;
     QUniformValue modelViewMatrix(const QMatrix4x4 &model) const;
+    QUniformValue viewProjectionMatrix(const QMatrix4x4 &model) const;
     QUniformValue modelViewProjectionMatrix(const QMatrix4x4 &model) const;
     QUniformValue inverseModelMatrix(const QMatrix4x4 &model) const;
     QUniformValue inverseViewMatrix(const QMatrix4x4 &) const;
     QUniformValue inverseProjectionMatrix(const QMatrix4x4 &) const;
     QUniformValue inverseModelViewMatrix(const QMatrix4x4 &model) const;
+    QUniformValue inverseViewProjectionMatrix(const QMatrix4x4 &model) const;
     QUniformValue inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const;
     QUniformValue modelNormalMatrix(const QMatrix4x4 &model) const;
     QUniformValue modelViewNormalMatrix(const QMatrix4x4 &model) const;

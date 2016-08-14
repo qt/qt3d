@@ -62,7 +62,7 @@
 
     \list
         \li 2D and 3D rendering for C++ and Qt Quick applications
-        \li Meshes
+        \li Meshes and \l {Qt 3D Render Geometry}{Geometry}
         \li \l {Materials}
         \li \l {Shaders}
         \li \l {Shadow Mapping}{Shadow mapping}
