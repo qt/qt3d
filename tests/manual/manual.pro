@@ -28,6 +28,7 @@ SUBDIRS += \
     tessellation-modes \
     transforms-qml \
     transparency-qml \
-    transparency-qml-scene3d
+    transparency-qml-scene3d \
+    multiplewindows-qml
 
 qtHaveModule(widgets): SUBDIRS += assimp-cpp
