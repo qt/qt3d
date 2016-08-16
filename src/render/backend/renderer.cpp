@@ -798,9 +798,21 @@ void Renderer::updateGLResources()
 
 void Renderer::updateTexture(Texture *texture)
 {
-    // TODO: for implementing unique, non-shared, non-cached textures.
+    // For implementing unique, non-shared, non-cached textures.
     // for now, every texture is shared by default
-    const bool isUnique = false;
+
+    bool isUnique = false;
+
+    // TO DO: Update the vector once per frame (or in a job)
+    const QVector<HAttachment> activeRenderTargetOutputs = m_nodesManager->attachmentManager()->activeHandles();
+    // A texture is unique if it's being reference by a render target output
+    for (const HAttachment attachmentHandle : activeRenderTargetOutputs) {
+        RenderTargetOutput *attachment = m_nodesManager->attachmentManager()->data(attachmentHandle);
+        if (attachment->textureUuid() == texture->peerId()) {
+            isUnique = true;
+            break;
+        }
+    }
 
     // Try to find the associated GLTexture for the backend Texture
     GLTextureManager *glTextureManager = m_nodesManager->glTextureManager();
@@ -820,7 +832,11 @@ void Renderer::updateTexture(Texture *texture)
     // and abandon the old one
     if (glTextureManager->isShared(glTexture)) {
         glTextureManager->abandon(glTexture, texture);
-        glTextureManager->getOrCreateShared(texture);
+        // Check if a shared texture should become unique
+        if (isUnique)
+            glTextureManager->createUnique(texture);
+        else
+            glTextureManager->getOrCreateShared(texture);
         texture->unsetDirty();
         return;
     }
