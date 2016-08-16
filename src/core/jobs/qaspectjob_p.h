@@ -126,7 +126,10 @@ public:
 
 #else
 
-#define SET_JOB_RUN_STAT_TYPE(job, type, instance)
+#define SET_JOB_RUN_STAT_TYPE(job, type, instance) \
+    Q_UNUSED(job) \
+    Q_UNUSED(type) \
+    Q_UNUSED(instance)
 
 #endif
 
