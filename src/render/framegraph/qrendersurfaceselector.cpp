@@ -59,6 +59,13 @@ namespace Qt3DRender {
  *
  * \inherits Qt3DRender::QFrameGraphNode
  *
+ * Qt3DRender::QRenderSurfaceSelector specifies which window should be used for
+ * the rendering of a FrameGraph branch. In some cases you may also want to
+ * specify the size of what needs to be drawn when rendering with a frame
+ * buffer object. In such cases, the externalRenderTargetSize should be set and
+ * updated accordingly. If it is not set, the renderer will assume it should use
+ * the surface's size.
+ *
  */
 
 /*!
@@ -68,6 +75,13 @@ namespace Qt3DRender {
  * \ingroup
  * \instantiates Qt3DRender::QRenderSurfaceSelector
  * \brief Provides a way of specifying the render surface
+ *
+ * RenderSurfaceSelector specifies which window should be used for
+ * the rendering of a FrameGraph branch. In some cases you may also want to
+ * specify the size of what needs to be drawn when rendering with a frame
+ * buffer object. In such cases, the externalRenderTargetSize should be set and
+ * updated accordingly. If it is not set, the renderer will assume it should use
+ * the surface's size.
  *
  */
 
