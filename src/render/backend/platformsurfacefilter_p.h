@@ -82,7 +82,6 @@ public:
     template<class T>
     void setSurface(T *surface)
     {
-        Q_ASSERT(surface);
         if (m_obj == surface)
             return;
 
