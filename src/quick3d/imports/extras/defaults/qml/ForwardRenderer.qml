@@ -47,6 +47,7 @@ TechniqueFilter {
     property alias viewportRect: viewport.normalizedRect
     property alias window: surfaceSelector.surface
     property alias externalRenderTargetSize: surfaceSelector.externalRenderTargetSize
+    property alias frustumCulling: frustumCulling.enabled
 
     // Select the forward rendering Technique of any used Effect
     matchAll: [ FilterKey { name: "renderingStyle"; value: "forward" } ]
@@ -63,6 +64,7 @@ TechniqueFilter {
             CameraSelector {
                 id : cameraSelector
                 FrustumCulling {
+                    id: frustumCulling
                     ClearBuffers {
                         id: clearBuffer
                         clearColor: "white"
