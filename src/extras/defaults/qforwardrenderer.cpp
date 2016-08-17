@@ -40,6 +40,7 @@
 #include "qforwardrenderer.h"
 #include "qforwardrenderer_p.h"
 
+#include <Qt3DCore/qentity.h>
 #include <Qt3DRender/qviewport.h>
 #include <Qt3DRender/qcameraselector.h>
 #include <Qt3DRender/qclearbuffers.h>
@@ -108,11 +109,11 @@ QForwardRenderer::QForwardRenderer(QNode *parent)
     : QTechniqueFilter(*new QForwardRendererPrivate, parent)
 {
     Q_D(QForwardRenderer);
-    QObject::connect(d->m_clearBuffer, SIGNAL(clearColorChanged(const QColor &)), this, SIGNAL(clearColorChanged(const QColor &)));
-    QObject::connect(d->m_viewport, SIGNAL(normalizedRectChanged(const QRectF &)), this, SIGNAL(viewportRectChanged(const QRectF &)));
-    QObject::connect(d->m_cameraSelector, SIGNAL(cameraChanged(Qt3DCore::QEntity *)), this, SIGNAL(cameraChanged(Qt3DCore::QEntity *)));
-    QObject::connect(d->m_surfaceSelector, SIGNAL(surfaceChanged(QObject *)), this, SIGNAL(surfaceChanged(QObject *)));
-    QObject::connect(d->m_surfaceSelector, SIGNAL(externalRenderTargetSizeChanged(QSize)), this, SIGNAL(externalRenderTargetSizeChanged(QSize)));
+    QObject::connect(d->m_clearBuffer, &QClearBuffers::clearColorChanged, this, &QForwardRenderer::clearColorChanged);
+    QObject::connect(d->m_viewport, &QViewport::normalizedRectChanged, this, &QForwardRenderer::viewportRectChanged);
+    QObject::connect(d->m_cameraSelector, &QCameraSelector::cameraChanged, this, &QForwardRenderer::cameraChanged);
+    QObject::connect(d->m_surfaceSelector, &QRenderSurfaceSelector::surfaceChanged, this, &QForwardRenderer::surfaceChanged);
+    QObject::connect(d->m_surfaceSelector, &QRenderSurfaceSelector::externalRenderTargetSizeChanged, this, &QForwardRenderer::externalRenderTargetSizeChanged);
     d->init();
 }
 
