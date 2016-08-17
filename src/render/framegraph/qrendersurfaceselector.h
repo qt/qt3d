@@ -57,7 +57,7 @@ class QT3DRENDERSHARED_EXPORT QRenderSurfaceSelector : public Qt3DRender::QFrame
 {
     Q_OBJECT
     Q_PROPERTY(QObject *surface READ surface WRITE setSurface NOTIFY surfaceChanged)
-    Q_PROPERTY(QSize externalRenderTargetSize READ externalRenderTargetSize NOTIFY externalRenderTargetSizeChanged)
+    Q_PROPERTY(QSize externalRenderTargetSize READ externalRenderTargetSize WRITE setExternalRenderTargetSize NOTIFY externalRenderTargetSizeChanged)
     Q_PROPERTY(float surfacePixelRatio READ surfacePixelRatio WRITE setSurfacePixelRatio NOTIFY surfacePixelRatioChanged)
 
 public:
@@ -66,12 +66,12 @@ public:
 
     QObject *surface() const;
     QSize externalRenderTargetSize() const;
-    void setExternalRenderTargetSize(const QSize &size);
     float surfacePixelRatio() const;
 
 public Q_SLOTS:
     void setSurface(QObject *surfaceObject);
     void setSurfacePixelRatio(float ratio);
+    void setExternalRenderTargetSize(const QSize &size);
 
 Q_SIGNALS:
     void surfaceChanged(QObject *surface);
