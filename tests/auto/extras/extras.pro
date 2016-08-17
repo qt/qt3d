@@ -1,5 +1,8 @@
 TEMPLATE = subdirs
 
-SUBDIRS = \
-    qcuboidgeometry \
-    qtorusgeometry
+contains(QT_CONFIG, private_tests) {
+    SUBDIRS += \
+        qcuboidgeometry \
+        qtorusgeometry \
+        qforwardrenderer
+}
