@@ -46,6 +46,7 @@ TechniqueFilter {
     property alias clearColor: clearBuffer.clearColor
     property alias viewportRect: viewport.normalizedRect
     property alias window: surfaceSelector.surface
+    property alias externalRenderTargetSize: surfaceSelector.externalRenderTargetSize
 
     // Select the forward rendering Technique of any used Effect
     matchAll: [ FilterKey { name: "renderingStyle"; value: "forward" } ]
