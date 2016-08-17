@@ -112,6 +112,7 @@ QForwardRenderer::QForwardRenderer(QNode *parent)
     QObject::connect(d->m_viewport, SIGNAL(normalizedRectChanged(const QRectF &)), this, SIGNAL(viewportRectChanged(const QRectF &)));
     QObject::connect(d->m_cameraSelector, SIGNAL(cameraChanged(Qt3DCore::QEntity *)), this, SIGNAL(cameraChanged(Qt3DCore::QEntity *)));
     QObject::connect(d->m_surfaceSelector, SIGNAL(surfaceChanged(QObject *)), this, SIGNAL(surfaceChanged(QObject *)));
+    QObject::connect(d->m_surfaceSelector, SIGNAL(externalRenderTargetSizeChanged(QSize)), this, SIGNAL(externalRenderTargetSizeChanged(QSize)));
     d->init();
 }
 
@@ -149,6 +150,12 @@ void QForwardRenderer::setSurface(QObject *surface)
 {
     Q_D(QForwardRenderer);
     d->m_surfaceSelector->setSurface(surface);
+}
+
+void QForwardRenderer::setExternalRenderTargetSize(const QSize &size)
+{
+    Q_D(QForwardRenderer);
+    d->m_surfaceSelector->setExternalRenderTargetSize(size);
 }
 
 /*!
@@ -190,6 +197,12 @@ QObject *QForwardRenderer::surface() const
 {
     Q_D(const QForwardRenderer);
     return d->m_surfaceSelector->surface();
+}
+
+QSize QForwardRenderer::externalRenderTargetSize() const
+{
+    Q_D(const QForwardRenderer);
+    return d->m_surfaceSelector->externalRenderTargetSize();
 }
 
 } // namespace Qt3DExtras

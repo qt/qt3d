@@ -60,6 +60,7 @@ class QT3DEXTRASSHARED_EXPORT QForwardRenderer : public Qt3DRender::QTechniqueFi
     Q_PROPERTY(QRectF viewportRect READ viewportRect WRITE setViewportRect NOTIFY viewportRectChanged)
     Q_PROPERTY(QColor clearColor READ clearColor WRITE setClearColor NOTIFY clearColorChanged)
     Q_PROPERTY(Qt3DCore::QEntity *camera READ camera WRITE setCamera NOTIFY cameraChanged)
+    Q_PROPERTY(QSize externalRenderTargetSize READ externalRenderTargetSize WRITE setExternalRenderTargetSize NOTIFY externalRenderTargetSizeChanged)
 public:
     explicit QForwardRenderer(Qt3DCore::QNode *parent = nullptr);
     ~QForwardRenderer();
@@ -68,18 +69,21 @@ public:
     QColor clearColor() const;
     Qt3DCore::QEntity *camera() const;
     QObject *surface() const;
+    QSize externalRenderTargetSize() const;
 
 public Q_SLOTS:
     void setViewportRect(const QRectF &viewportRect);
     void setClearColor(const QColor &clearColor);
     void setCamera(Qt3DCore::QEntity *camera);
     void setSurface(QObject * surface);
+    void setExternalRenderTargetSize(const QSize &size);
 
 Q_SIGNALS:
     void viewportRectChanged(const QRectF &viewportRect);
     void clearColorChanged(const QColor &clearColor);
     void cameraChanged(Qt3DCore::QEntity *camera);
     void surfaceChanged(QObject *surface);
+    void externalRenderTargetSizeChanged(const QSize &size);
 
 private:
     Q_DECLARE_PRIVATE(QForwardRenderer)
