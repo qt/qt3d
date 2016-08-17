@@ -73,8 +73,6 @@ public:
     ~RenderViewInitializerJob();
 
     inline void setRenderer(Renderer *renderer) { m_renderer = renderer; }
-    inline void setSurfaceSize(const QSize &size) { m_surfaceSize = size; }
-    inline void setDevicePixelRatio(qreal r) { m_devicePixelRatio = r; }
     inline RenderView *renderView() const Q_DECL_NOTHROW { return m_renderView; }
 
     inline void setFrameGraphLeafNode(FrameGraphNode *fgLeaf)
@@ -94,8 +92,6 @@ protected:
 
 private:
     Renderer *m_renderer;
-    QSize m_surfaceSize;
-    qreal m_devicePixelRatio;
     FrameGraphNode *m_fgLeaf;
     int m_index;
     RenderView *m_renderView;

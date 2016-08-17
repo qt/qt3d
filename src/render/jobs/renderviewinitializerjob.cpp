@@ -61,7 +61,6 @@ int renderViewInstanceCounter = 0;
 
 RenderViewInitializerJob::RenderViewInitializerJob()
     : m_renderer(nullptr)
-    , m_devicePixelRatio(1.)
     , m_fgLeaf(nullptr)
     , m_index(0)
     , m_renderView(nullptr)
@@ -90,8 +89,6 @@ void RenderViewInitializerJob::run()
 
     // RenderView should allocate heap resources using only the currentFrameAllocator
     m_renderView->setRenderer(m_renderer);
-    m_renderView->setSurfaceSize(m_surfaceSize);
-    m_renderView->setDevicePixelRatio(m_devicePixelRatio);
 
     // Populate the renderview's configuration from the framegraph
     setRenderViewConfigFromFrameGraphLeafNode(m_renderView, m_fgLeaf);
