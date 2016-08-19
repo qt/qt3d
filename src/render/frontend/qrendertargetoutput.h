@@ -58,7 +58,7 @@ class QT3DRENDERSHARED_EXPORT QRenderTargetOutput : public Qt3DCore::QNode
     Q_PROPERTY(QAbstractTexture *texture READ texture WRITE setTexture NOTIFY textureChanged)
     Q_PROPERTY(int mipLevel READ mipLevel WRITE setMipLevel NOTIFY mipLevelChanged)
     Q_PROPERTY(int layer READ layer WRITE setLayer NOTIFY layerChanged)
-    Q_PROPERTY(QAbstractTexture::CubeMapFace face READ face WRITE setFace NOTIFY faceChanged)
+    Q_PROPERTY(Qt3DRender::QAbstractTexture::CubeMapFace face READ face WRITE setFace NOTIFY faceChanged)
 
 public:
     enum AttachmentPoint {
