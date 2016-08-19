@@ -71,7 +71,6 @@ public:
 
     void setManagers(NodeManagers *managers);
 
-protected:
     void run() Q_DECL_FINAL;
 
 private:
