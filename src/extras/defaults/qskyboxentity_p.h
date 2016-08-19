@@ -56,10 +56,6 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-class QTransform;
-}
-
 namespace Qt3DRender {
 
 class QFilterKey;
@@ -101,7 +97,6 @@ class QSkyboxEntityPrivate : public Qt3DCore::QEntityPrivate
     Qt3DRender::QRenderPass *m_es2RenderPass;
     Qt3DRender::QRenderPass *m_gl3RenderPass;
     QCuboidMesh *m_mesh;
-    Qt3DCore::QTransform *m_transform;
     Qt3DRender::QParameter *m_textureParameter;
     Qt3DRender::QTextureImage *m_posXImage;
     Qt3DRender:: QTextureImage *m_posYImage;

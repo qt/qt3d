@@ -40,7 +40,6 @@
 #include "qskyboxentity.h"
 #include "qskyboxentity_p.h"
 
-#include <Qt3DCore/qtransform.h>
 #include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qtexture.h>
@@ -76,7 +75,6 @@ QSkyboxEntityPrivate::QSkyboxEntityPrivate()
     , m_es2RenderPass(new QRenderPass())
     , m_gl3RenderPass(new QRenderPass())
     , m_mesh(new QCuboidMesh())
-    , m_transform(new Qt3DCore::QTransform())
     , m_textureParameter(new QParameter(QStringLiteral("skyboxTexture"), m_skyboxTexture))
     , m_posXImage(new QTextureImage())
     , m_posYImage(new QTextureImage())
@@ -173,7 +171,6 @@ void QSkyboxEntityPrivate::init()
 
     q_func()->addComponent(m_mesh);
     q_func()->addComponent(m_material);
-    q_func()->addComponent(m_transform);
 }
 
 /*!
@@ -264,28 +261,6 @@ QString QSkyboxEntity::extension() const
 {
     Q_D(const QSkyboxEntity);
     return d->m_extension;
-}
-
-/*!
- * Sets the camera position to \a cameraPosition.
- */
-void QSkyboxEntity::setCameraPosition(const QVector3D &cameraPosition)
-{
-    Q_D(QSkyboxEntity);
-    if (cameraPosition != d->m_position) {
-        d->m_position = cameraPosition;
-        d->m_transform->setTranslation(d->m_position);
-        emit cameraPositionChanged(cameraPosition);
-    }
-}
-
-/*!
- * Returns the camera position.
- */
-QVector3D QSkyboxEntity::cameraPosition() const
-{
-    Q_D(const QSkyboxEntity);
-    return d->m_position;
 }
 
 } // namespace Qt3DExtras

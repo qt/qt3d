@@ -42,8 +42,6 @@ import Qt3D.Render 2.0
 import Qt3D.Extras 2.0
 
 Entity {
-
-    property alias cameraPosition: transform.translation;
     property string baseName: "";
     property string extension: ".png"
 
@@ -80,10 +78,6 @@ Entity {
         yzMeshResolution: Qt.size(2, 2)
         xzMeshResolution: Qt.size(2, 2)
         xyMeshResolution: Qt.size(2, 2)
-    }
-
-    Transform {
-        id: transform
     }
 
     Material {
@@ -152,6 +146,6 @@ Entity {
         }
     }
 
-    components: [cuboidMesh, skyboxMaterial, transform]
+    components: [cuboidMesh, skyboxMaterial]
 }
 

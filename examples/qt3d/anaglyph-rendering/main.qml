@@ -86,7 +86,6 @@ Entity {
 
     // Skybox
     SkyboxEntity {
-        cameraPosition: stereoCamera.position
         baseName: "qrc:/assets/cubemaps/miramar/miramar"
         extension: ".webp"
     }

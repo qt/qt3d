@@ -3,12 +3,14 @@
 in vec3 vertexPosition;
 out vec3 texCoord0;
 
-uniform mat4 mvp;
-uniform mat4 inverseProjectionMatrix;
-uniform mat4 inverseModelView;
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
 
 void main()
 {
     texCoord0 = vertexPosition.xyz;
-    gl_Position = vec4(mvp * vec4(vertexPosition, 1.0)).xyww;
+    // Converting the viewMatrix to a mat3, then back to a mat4
+    // removes the translation component from it
+    gl_Position = vec4(projectionMatrix * mat4(mat3(viewMatrix)) * modelMatrix * vec4(vertexPosition, 1.0)).xyww;
 }

@@ -62,13 +62,9 @@ public:
     void setExtension(const QString &extension);
     QString extension() const;
 
-    void setCameraPosition(const QVector3D &cameraPosition);
-    QVector3D cameraPosition() const;
-
 Q_SIGNALS:
     void sourceDirectoryChanged(const QString &path);
     void extensionChanged(const QString &extension);
-    void cameraPositionChanged(const QVector3D &cameraPosition);
 
 private:
     Q_DECLARE_PRIVATE(QSkyboxEntity)
