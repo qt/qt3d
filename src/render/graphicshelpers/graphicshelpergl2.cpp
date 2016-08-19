@@ -316,8 +316,14 @@ void GraphicsHelperGL2::bindFrameBufferAttachment(QOpenGLTexture *texture, const
         else
             qCritical() << "DepthStencil Attachment not supported on OpenGL 2.0";
 
+        const QOpenGLTexture::Target target = texture->target();
+
+        if (target == QOpenGLTexture::TargetCubeMap && attachment.m_face == QAbstractTexture::AllFaces) {
+            qWarning() << "OpenGL 2.0 doesn't handle attaching all the faces of a cube map texture at once to an FBO";
+            return;
+        }
+
         texture->bind();
-        QOpenGLTexture::Target target = texture->target();
         if (target == QOpenGLTexture::Target3D)
             m_fboFuncs->glFramebufferTexture3D(GL_DRAW_FRAMEBUFFER, attr, target, texture->textureId(), attachment.m_mipLevel, attachment.m_layer);
         else if (target == QOpenGLTexture::TargetCubeMap)

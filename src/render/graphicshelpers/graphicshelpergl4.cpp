@@ -566,7 +566,7 @@ void GraphicsHelperGL4::bindFrameBufferAttachment(QOpenGLTexture *texture, const
         m_funcs->glFramebufferTextureLayer(GL_DRAW_FRAMEBUFFER, attr, texture->textureId(), attachment.m_mipLevel, attachment.m_layer);
     else if (target == QOpenGLTexture::TargetCubeMapArray)
         m_funcs->glFramebufferTexture3D(GL_DRAW_FRAMEBUFFER, attr, attachment.m_face, texture->textureId(), attachment.m_mipLevel, attachment.m_layer);
-    else if (target == QOpenGLTexture::TargetCubeMap)
+    else if (target == QOpenGLTexture::TargetCubeMap && attachment.m_face != QAbstractTexture::AllFaces)
         m_funcs->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attr, attachment.m_face, texture->textureId(), attachment.m_mipLevel);
     else
         m_funcs->glFramebufferTexture(GL_DRAW_FRAMEBUFFER, attr, texture->textureId(), attachment.m_mipLevel);
