@@ -84,6 +84,26 @@ QAbstractTexturePrivate::QAbstractTexturePrivate()
  */
 
 /*!
+    \enum Qt3DRender::QAbstractTexture::CubeMapFace
+
+    This enum identifies the faces of a cube map texture
+    \value CubeMapPositiveX     Specify the positive X face of a cube map
+    \value CubeMapNegativeX     Specify the negative X face of a cube map
+    \value CubeMapPositiveY     Specify the positive Y face of a cube map
+    \value CubeMapNegativeY     Specify the negative Y face of a cube map
+    \value CubeMapPositiveZ     Specify the positive Z face of a cube map
+    \value CubeMapNegativeZ     Specify the negative Z face of a cube map
+    \value AllFaces             Specify all the faces of a cube map
+
+    \note AllFaces should only be used when a behavior needs to be applied to
+    all the faces of a cubemap. This is the case for example when using a cube
+    map as a texture attachment. Using AllFaces in the attachment specfication
+    would result in all faces being bound to the attachment point. On the other
+    hand, if a specific face is specified, the attachment would only be using
+    the specified face.
+*/
+
+/*!
  * The constructor creates a new QAbstractTexture::QAbstractTexture
  * instance with the specified \a parent.
  */

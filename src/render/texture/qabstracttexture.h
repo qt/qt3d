@@ -245,7 +245,8 @@ public:
         CubeMapPositiveY = 0x8517,  // GL_TEXTURE_CUBE_MAP_POSITIVE_Y
         CubeMapNegativeY = 0x8518,  // GL_TEXTURE_CUBE_MAP_NEGATIVE_Y
         CubeMapPositiveZ = 0x8519,  // GL_TEXTURE_CUBE_MAP_POSITIVE_Z
-        CubeMapNegativeZ = 0x851A   // GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+        CubeMapNegativeZ = 0x851A,  // GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+        AllFaces
     };
     Q_ENUM(CubeMapFace)
 
