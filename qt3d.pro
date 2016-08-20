@@ -1,4 +1,4 @@
-requires(contains(QT_CONFIG, opengl))
+requires(qtConfig(opengl))
 
 load(configure)
 qtCompileTest(assimp)

@@ -34,8 +34,6 @@ HEADERS += \
     qt3drender_global.h \
     qt3drender_global_p.h
 
-!contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
-
 # otherwise mingw headers do not declare common functions like ::strcasecmp
 win32-g++*:QMAKE_CXXFLAGS_CXX11 = -std=gnu++0x
 
