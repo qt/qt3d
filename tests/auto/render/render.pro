@@ -92,7 +92,8 @@ qtConfig(private_tests) {
         technique \
         materialparametergathererjob \
         renderviewbuilder \
-        filtercompatibletechniquejob
+        filtercompatibletechniquejob \
+        rendercapture
 
     !macos: SUBDIRS += graphicshelpergl4
 }

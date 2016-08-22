@@ -74,7 +74,6 @@ void RenderCapture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             requestCapture(propertyChange->value().toInt());
         }
     }
-    markDirty(AbstractRenderer::AllDirty);
     FrameGraphNode::sceneChangeEvent(e);
 }
 

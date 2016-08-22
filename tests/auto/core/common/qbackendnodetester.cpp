@@ -57,6 +57,11 @@ void QBackendNodeTester::simulateInitialization(QNode *frontend, QBackendNode *b
     backend->initializeFromPeer(change);
 }
 
+void QBackendNodeTester::sceneChangeEvent(QBackendNode *backend, const Qt3DCore::QSceneChangePtr &e)
+{
+    backend->sceneChangeEvent(e);
+}
+
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE

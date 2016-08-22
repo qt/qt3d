@@ -39,6 +39,7 @@
 
 #include <QObject>
 #include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/qscenechange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,6 +56,7 @@ public:
 
     // Proxies to allow test classes to call private methods on QBackendNode
     void simulateInitialization(QNode *frontend, QBackendNode *backend);
+    void sceneChangeEvent(QBackendNode *backend, const Qt3DCore::QSceneChangePtr &e);
 };
 
 } // namespace Qt3DCore
