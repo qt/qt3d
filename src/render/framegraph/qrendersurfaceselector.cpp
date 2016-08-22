@@ -257,9 +257,8 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
                     }
                 });
                 d->m_screenConn = QObject::connect(window, &QWindow::screenChanged, [=] (QScreen *screen) {
-                    if (screen && surfacePixelRatio() != screen->devicePixelRatio()) {
-                            setSurfacePixelRatio(screen->devicePixelRatio());
-                    }
+                    if (screen && surfacePixelRatio() != screen->devicePixelRatio())
+                        setSurfacePixelRatio(screen->devicePixelRatio());
                 });
             }
 
