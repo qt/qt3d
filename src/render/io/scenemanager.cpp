@@ -61,14 +61,13 @@ void SceneManager::addSceneData(const QUrl &source, Qt3DCore::QNodeId sceneUuid)
     if (!m_pendingJobs.isEmpty())
         newJob->addDependency(m_pendingJobs.last());
 
-    m_pendingJobs.append(newJob);
+    m_pendingJobs.push_back(newJob);
 }
 
 QVector<LoadSceneJobPtr> SceneManager::pendingSceneLoaderJobs()
 {
-    QVector<LoadSceneJobPtr> copy = m_pendingJobs;
-    m_pendingJobs.clear();
-    return copy;
+    // Explicitly use std::move to clear the m_pendingJobs vector
+    return std::move(m_pendingJobs);
 }
 
 } // namespace Render
