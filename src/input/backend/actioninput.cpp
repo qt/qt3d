@@ -50,7 +50,7 @@ namespace Qt3DInput {
 namespace Input {
 
 ActionInput::ActionInput()
-    : Qt3DCore::QBackendNode()
+    : AbstractActionInput()
     , m_buttons(0)
 {
 }
@@ -65,7 +65,7 @@ void ActionInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &
 
 void ActionInput::cleanup()
 {
-    QBackendNode::setEnabled(false);
+    setEnabled(false);
     m_sourceDevice = Qt3DCore::QNodeId();
     m_buttons.clear();
 }
@@ -80,7 +80,12 @@ void ActionInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_buttons = propertyChange->value().value<QVector<int>>();
         }
     }
-    QBackendNode::sceneChangeEvent(e);
+    AbstractActionInput::sceneChangeEvent(e);
+}
+
+bool ActionInput::process(InputHandler *inputHandler, qint64 currentTime)
+{
+    return false;
 }
 
 } // namespace Input

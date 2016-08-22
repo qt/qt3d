@@ -53,7 +53,7 @@ namespace Qt3DInput {
 namespace Input {
 
 InputSequence::InputSequence()
-    : Qt3DCore::QBackendNode()
+    : AbstractActionInput()
     , m_sequences()
     , m_inputsToTrigger()
     , m_timeout(0)
@@ -74,7 +74,7 @@ void InputSequence::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr
 
 void InputSequence::cleanup()
 {
-    QBackendNode::setEnabled(false);
+    setEnabled(false);
     m_timeout = 0;
     m_buttonInterval = 0;
     m_startTime = 0;
@@ -154,7 +154,12 @@ void InputSequence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     default:
         break;
     }
-    QBackendNode::sceneChangeEvent(e);
+    AbstractActionInput::sceneChangeEvent(e);
+}
+
+bool InputSequence::process(InputHandler *inputHandler, qint64 currentTime)
+{
+    return false;
 }
 
 } // namespace Input

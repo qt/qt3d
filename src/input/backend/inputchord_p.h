@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DInput/private/abstractactioninput_p.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -60,7 +60,7 @@ namespace Qt3DInput {
 
 namespace Input {
 
-class Q_AUTOTEST_EXPORT InputChord : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT InputChord : public AbstractActionInput
 {
 public:
     InputChord();
@@ -73,6 +73,8 @@ public:
     void reset();
     bool actionTriggered(Qt3DCore::QNodeId input);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+    bool process(InputHandler *inputHandler, qint64 currentTime) Q_DECL_OVERRIDE;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
