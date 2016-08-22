@@ -65,7 +65,7 @@ Viewport {
 
         // Compute Pass
         DispatchCompute {
-            workGroupX: 1024; workGroupY: 1; workGroupZ: 1
+            workGroupX: 50; workGroupY: 1; workGroupZ: 1
             TechniqueFilter {
                 matchAll: [
                     FilterKey { name: "type"; value: "compute"}
