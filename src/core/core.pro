@@ -24,6 +24,4 @@ include(transforms/transforms.pri)
 include(resources/resources.pri)
 include(services/services.pri)
 
-!contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
-
 load(qt_module)

@@ -21,8 +21,6 @@ HEADERS += \
     qt3dquickextras_global.h \
     qt3dquickwindow.h
 
-!contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
-
 # otherwise mingw headers do not declare common functions like ::strcasecmp
 win32-g++*:QMAKE_CXXFLAGS_CXX11 = -std=gnu++0x
 

@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
 
-contains(QT_CONFIG, private_tests) {
+qtConfig(private_tests) {
     SUBDIRS += \
         qaxis \
         qaction \
