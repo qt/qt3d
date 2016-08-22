@@ -309,6 +309,16 @@ void InputHandler::updateEventSource()
     }
 }
 
+AbstractActionInput *InputHandler::lookupActionInput(Qt3DCore::QNodeId id) const
+{
+    AbstractActionInput *input = nullptr;
+    if ((input = actionInputManager()->lookupResource(id)) != nullptr)
+        return input;
+    if ((input = inputSequenceManager()->lookupResource(id)) != nullptr)
+        return input;
+    return inputChordManager()->lookupResource(id); // nullptr if not found
+}
+
 } // namespace Input
 } // namespace Qt3DInput
 
