@@ -66,6 +66,7 @@ void InputChord::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &c
     const QInputChordData &data = typedChange->data;
     m_chords = data.chordIds;
     m_timeout = data.timeout;
+    m_inputsToTrigger = m_chords;
 }
 
 void InputChord::cleanup()

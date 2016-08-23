@@ -180,8 +180,7 @@ private Q_SLOTS:
         deviceBackend->setButtonPressed(Qt::Key_Q, true);
 
         // THEN
-        QCOMPARE(backendInputChord.process(&handler, 1000000100), true); // Yes, that's a bug
-        QCOMPARE(backendInputChord.process(&handler, 1000000150), false);
+        QCOMPARE(backendInputChord.process(&handler, 1000000100), false);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_A, true);
@@ -261,8 +260,7 @@ private Q_SLOTS:
         deviceBackend->setButtonPressed(Qt::Key_Q, true);
 
         // THEN
-        QCOMPARE(backendInputChord.process(&handler, 1000000000), true); // Yes, that's a bug
-        QCOMPARE(backendInputChord.process(&handler, 1000000050), false);
+        QCOMPARE(backendInputChord.process(&handler, 1000000000), false);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_W, true);
