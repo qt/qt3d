@@ -53,5 +53,7 @@ qtConfig(private_tests) {
         qgraphicsapifilter \
         qrendersurfaceselector \
         sortpolicy \
-        qcuboidgeometry
+        qcuboidgeometry \
+        sceneloader \
+        qsceneloader
 }

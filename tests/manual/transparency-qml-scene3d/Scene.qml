@@ -97,6 +97,12 @@ Entity {
         components: [transform, light]
     }
 
+    SkyboxEntity {
+        cameraPosition: camera.position
+        baseName: "qrc:/assets/cubemaps/miramar/miramar"
+        extension: ".webp"
+    }
+
     TorusMesh {
         id: torusMesh
         radius: 5
@@ -141,7 +147,9 @@ Entity {
         ambient: "black"
         diffuse: "blue"
         specular: "white"
-        alpha: 0.0
+        alpha: 0.1
+        sourceAlphaArg: BlendEquationArguments.Zero
+        destinationAlphaArg: BlendEquationArguments.One
 
         QQ2.NumberAnimation {
             duration: 2000

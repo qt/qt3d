@@ -349,6 +349,7 @@ QConeGeometryPrivate::QConeGeometryPrivate()
     , m_normalAttribute(nullptr)
     , m_texCoordAttribute(nullptr)
     , m_indexAttribute(nullptr)
+    , m_positionBuffer(nullptr)
     , m_vertexBuffer(nullptr)
     , m_indexBuffer(nullptr)
 {

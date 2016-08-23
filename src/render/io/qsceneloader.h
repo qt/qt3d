@@ -74,7 +74,7 @@ public:
 
 public Q_SLOTS:
     void setSource(const QUrl &arg);
-    void setStatus(Status status);
+    QT_DEPRECATED void setStatus(Status status);
 
 Q_SIGNALS:
     void sourceChanged(const QUrl &source);

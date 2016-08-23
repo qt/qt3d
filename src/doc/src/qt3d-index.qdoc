@@ -107,6 +107,5 @@
         \li Embedded Linux - Supported
         \li iOS - Supported since (Qt 5.7)
         \li WinRT - Not supported yet
-        \li Windows CE - Compiles but not tested
     \endlist
 */

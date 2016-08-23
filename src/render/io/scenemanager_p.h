@@ -65,11 +65,12 @@ class QEntity;
 namespace Qt3DRender {
 namespace Render {
 
-class SceneManager : public Qt3DCore::QResourceManager<Scene,
-                                             Qt3DCore::QNodeId,
-                                             8,
-                                             Qt3DCore::ArrayAllocatingPolicy,
-                                             Qt3DCore::ObjectLevelLockingPolicy>
+class Q_AUTOTEST_EXPORT SceneManager : public Qt3DCore::QResourceManager<
+        Scene,
+        Qt3DCore::QNodeId,
+        8,
+        Qt3DCore::ArrayAllocatingPolicy,
+        Qt3DCore::ObjectLevelLockingPolicy>
 {
 public:
     SceneManager();
@@ -83,6 +84,8 @@ private:
 
 } // namespace Render
 } // namespace Qt3DRender
+
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Scene, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 

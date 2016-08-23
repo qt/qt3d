@@ -89,7 +89,7 @@ int QComputeCommand::workGroupX() const
 int QComputeCommand::workGroupY() const
 {
     Q_D(const QComputeCommand);
-    return d->m_workGroupX;
+    return d->m_workGroupY;
 }
 
 /*!
@@ -98,7 +98,7 @@ int QComputeCommand::workGroupY() const
 int QComputeCommand::workGroupZ() const
 {
     Q_D(const QComputeCommand);
-    return d->m_workGroupX;
+    return d->m_workGroupZ;
 }
 
 /*!
