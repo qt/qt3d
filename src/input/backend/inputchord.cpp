@@ -40,6 +40,7 @@
 #include "inputchord_p.h"
 #include <Qt3DInput/qinputchord.h>
 #include <Qt3DInput/private/qinputchord_p.h>
+#include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
@@ -134,7 +135,24 @@ void InputChord::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
 bool InputChord::process(InputHandler *inputHandler, qint64 currentTime)
 {
-    return false;
+    if (m_startTime != 0) {
+        // Check if we are still inside the time limit for the chord
+        if ((currentTime - m_startTime) > m_timeout) {
+            reset();
+            return false;
+        }
+    }
+
+    bool triggered = false;
+    for (const Qt3DCore::QNodeId &actionInputId : qAsConst(m_chords)) {
+        AbstractActionInput *actionInput = inputHandler->lookupActionInput(actionInputId);
+        if (actionInput && actionInput->process(inputHandler, currentTime)) {
+            triggered |= actionTriggered(actionInputId);
+            if (m_startTime == 0)
+                m_startTime = currentTime;
+        }
+    }
+    return triggered;
 }
 
 } // namespace Input

@@ -32,6 +32,7 @@
 
 #include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DInput/private/actioninput_p.h>
+#include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DInput/QActionInput>
 
 class tst_ActionInput : public Qt3DCore::QBackendNodeTester
@@ -118,6 +119,58 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendActionInput.sourceDevice(), device.id());
+    }
+
+    void shouldDealWithKeyPresses()
+    {
+        // GIVEN
+        TestDeviceIntegration deviceIntegration;
+        TestDevice *device = deviceIntegration.createPhysicalDevice("keyboard");
+        TestDeviceBackendNode *deviceBackend = deviceIntegration.physicalDevice(device->id());
+        Qt3DInput::Input::InputHandler handler;
+        handler.addInputDeviceIntegration(&deviceIntegration);
+
+        Qt3DInput::Input::ActionInput backendActionInput;
+        Qt3DInput::QActionInput actionInput;
+        actionInput.setButtons(QVector<int>() << Qt::Key_Space << Qt::Key_Return);
+        actionInput.setSourceDevice(device);
+        simulateInitialization(&actionInput, &backendActionInput);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Up, true);
+
+        // THEN
+        QCOMPARE(backendActionInput.process(&handler, 1000000000), false);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Space, true);
+
+        // THEN
+        QCOMPARE(backendActionInput.process(&handler, 1000000000), true);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Return, true);
+
+        // THEN
+        QCOMPARE(backendActionInput.process(&handler, 1000000000), true);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Space, false);
+
+        // THEN
+        QCOMPARE(backendActionInput.process(&handler, 1000000000), true);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Up, false);
+
+        // THEN
+        QCOMPARE(backendActionInput.process(&handler, 1000000000), true);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Return, false);
+
+        // THEN
+        QCOMPARE(backendActionInput.process(&handler, 1000000000), false);
     }
 };
 

@@ -28,10 +28,14 @@
 
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
+#include "testdevice.h"
 
 #include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DCore/QPropertyNodeAddedChange>
 #include <Qt3DCore/QPropertyNodeRemovedChange>
+#include <Qt3DInput/private/actioninput_p.h>
+#include <Qt3DInput/private/inputhandler_p.h>
+#include <Qt3DInput/private/inputmanagers_p.h>
 #include <Qt3DInput/private/inputsequence_p.h>
 #include <Qt3DInput/QActionInput>
 #include <Qt3DInput/QInputSequence>
@@ -149,6 +153,248 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendInputSequence.sequences().size(), 0);
+    }
+
+    void shouldActivateWhenSequenceIsConsumedInOrderOnly()
+    {
+        // GIVEN
+        TestDeviceIntegration deviceIntegration;
+        TestDevice *device = deviceIntegration.createPhysicalDevice("keyboard");
+        TestDeviceBackendNode *deviceBackend = deviceIntegration.physicalDevice(device->id());
+        Qt3DInput::Input::InputHandler handler;
+        handler.addInputDeviceIntegration(&deviceIntegration);
+
+        auto firstInput = new Qt3DInput::QActionInput;
+        firstInput->setButtons(QVector<int>() << Qt::Key_Q << Qt::Key_A);
+        firstInput->setSourceDevice(device);
+        auto backendFirstInput = handler.actionInputManager()->getOrCreateResource(firstInput->id());
+        simulateInitialization(firstInput, backendFirstInput);
+
+        auto secondInput = new Qt3DInput::QActionInput;
+        secondInput->setButtons(QVector<int>() << Qt::Key_S << Qt::Key_W);
+        secondInput->setSourceDevice(device);
+        auto backendSecondInput = handler.actionInputManager()->getOrCreateResource(secondInput->id());
+        simulateInitialization(secondInput, backendSecondInput);
+
+        auto thirdInput = new Qt3DInput::QActionInput;
+        thirdInput->setButtons(QVector<int>() << Qt::Key_D << Qt::Key_E);
+        thirdInput->setSourceDevice(device);
+        auto backendThirdInput = handler.actionInputManager()->getOrCreateResource(thirdInput->id());
+        simulateInitialization(thirdInput, backendThirdInput);
+
+        Qt3DInput::Input::InputSequence backendInputSequence;
+        Qt3DInput::QInputSequence inputSequence;
+        inputSequence.setButtonInterval(150);
+        inputSequence.setTimeout(450);
+        inputSequence.addSequence(firstInput);
+        inputSequence.addSequence(secondInput);
+        inputSequence.addSequence(thirdInput);
+        simulateInitialization(&inputSequence, &backendInputSequence);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Up, true);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000000000), false);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Up, false);
+        deviceBackend->setButtonPressed(Qt::Key_Q, true);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000000100), true); // Yes, that's a bug
+        QCOMPARE(backendInputSequence.process(&handler, 1000000150), false);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Q, false);
+        deviceBackend->setButtonPressed(Qt::Key_S, true);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000000200), false);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_S, false);
+        deviceBackend->setButtonPressed(Qt::Key_E, true);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000000300), true);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_E, false);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000000400), false);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Q, true);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000000500), false);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Q, false);
+        deviceBackend->setButtonPressed(Qt::Key_S, true);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000000600), false);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_S, false);
+        deviceBackend->setButtonPressed(Qt::Key_E, true);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000000700), true);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_E, false);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000000800), false);
+
+
+        // Now out of order
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_S, true);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000000900), false);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_S, false);
+        deviceBackend->setButtonPressed(Qt::Key_Q, true);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000001000), false);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Q, false);
+        deviceBackend->setButtonPressed(Qt::Key_D, true);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000001100), true); // Yes, that's another bug
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_D, false);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000001200), false);
+    }
+
+    void shouldRespectSequenceTimeout()
+    {
+        // GIVEN
+        TestDeviceIntegration deviceIntegration;
+        TestDevice *device = deviceIntegration.createPhysicalDevice("keyboard");
+        TestDeviceBackendNode *deviceBackend = deviceIntegration.physicalDevice(device->id());
+        Qt3DInput::Input::InputHandler handler;
+        handler.addInputDeviceIntegration(&deviceIntegration);
+
+        auto firstInput = new Qt3DInput::QActionInput;
+        firstInput->setButtons(QVector<int>() << Qt::Key_Q << Qt::Key_A);
+        firstInput->setSourceDevice(device);
+        auto backendFirstInput = handler.actionInputManager()->getOrCreateResource(firstInput->id());
+        simulateInitialization(firstInput, backendFirstInput);
+
+        auto secondInput = new Qt3DInput::QActionInput;
+        secondInput->setButtons(QVector<int>() << Qt::Key_S << Qt::Key_W);
+        secondInput->setSourceDevice(device);
+        auto backendSecondInput = handler.actionInputManager()->getOrCreateResource(secondInput->id());
+        simulateInitialization(secondInput, backendSecondInput);
+
+        auto thirdInput = new Qt3DInput::QActionInput;
+        thirdInput->setButtons(QVector<int>() << Qt::Key_D << Qt::Key_E);
+        thirdInput->setSourceDevice(device);
+        auto backendThirdInput = handler.actionInputManager()->getOrCreateResource(thirdInput->id());
+        simulateInitialization(thirdInput, backendThirdInput);
+
+        Qt3DInput::Input::InputSequence backendInputSequence;
+        Qt3DInput::QInputSequence inputSequence;
+        inputSequence.setButtonInterval(250);
+        inputSequence.setTimeout(450);
+        inputSequence.addSequence(firstInput);
+        inputSequence.addSequence(secondInput);
+        inputSequence.addSequence(thirdInput);
+        simulateInitialization(&inputSequence, &backendInputSequence);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Q, true);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000000100), true); // Yes, that's a bug
+        QCOMPARE(backendInputSequence.process(&handler, 1000000150), false);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Q, false);
+        deviceBackend->setButtonPressed(Qt::Key_S, true);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000000300), false);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_S, false);
+        deviceBackend->setButtonPressed(Qt::Key_E, true);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000000600), false); // Too late
+    }
+
+    void shouldRespectSequenceButtonInterval()
+    {
+        // GIVEN
+        TestDeviceIntegration deviceIntegration;
+        TestDevice *device = deviceIntegration.createPhysicalDevice("keyboard");
+        TestDeviceBackendNode *deviceBackend = deviceIntegration.physicalDevice(device->id());
+        Qt3DInput::Input::InputHandler handler;
+        handler.addInputDeviceIntegration(&deviceIntegration);
+
+        auto firstInput = new Qt3DInput::QActionInput;
+        firstInput->setButtons(QVector<int>() << Qt::Key_Q << Qt::Key_A);
+        firstInput->setSourceDevice(device);
+        auto backendFirstInput = handler.actionInputManager()->getOrCreateResource(firstInput->id());
+        simulateInitialization(firstInput, backendFirstInput);
+
+        auto secondInput = new Qt3DInput::QActionInput;
+        secondInput->setButtons(QVector<int>() << Qt::Key_S << Qt::Key_W);
+        secondInput->setSourceDevice(device);
+        auto backendSecondInput = handler.actionInputManager()->getOrCreateResource(secondInput->id());
+        simulateInitialization(secondInput, backendSecondInput);
+
+        auto thirdInput = new Qt3DInput::QActionInput;
+        thirdInput->setButtons(QVector<int>() << Qt::Key_D << Qt::Key_E);
+        thirdInput->setSourceDevice(device);
+        auto backendThirdInput = handler.actionInputManager()->getOrCreateResource(thirdInput->id());
+        simulateInitialization(thirdInput, backendThirdInput);
+
+        Qt3DInput::Input::InputSequence backendInputSequence;
+        Qt3DInput::QInputSequence inputSequence;
+        inputSequence.setButtonInterval(100);
+        inputSequence.setTimeout(450);
+        inputSequence.addSequence(firstInput);
+        inputSequence.addSequence(secondInput);
+        inputSequence.addSequence(thirdInput);
+        simulateInitialization(&inputSequence, &backendInputSequence);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Q, true);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000000100), true); // Yes, that's a bug
+        QCOMPARE(backendInputSequence.process(&handler, 1000000150), false);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Q, false);
+        deviceBackend->setButtonPressed(Qt::Key_S, true);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000000250), false); // Too late
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_S, false);
+        deviceBackend->setButtonPressed(Qt::Key_E, true);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000000300), true); // Yes, that's yet another bug
     }
 };
 

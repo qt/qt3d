@@ -41,6 +41,8 @@
 #include <Qt3DInput/qactioninput.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/private/qactioninput_p.h>
+#include <Qt3DInput/private/qinputdeviceintegration_p.h>
+#include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
@@ -85,6 +87,25 @@ void ActionInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
 bool ActionInput::process(InputHandler *inputHandler, qint64 currentTime)
 {
+    Q_UNUSED(currentTime);
+
+    QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = nullptr;
+
+    const auto integrations = inputHandler->inputDeviceIntegrations();
+    for (QInputDeviceIntegration *integration : integrations) {
+        physicalDeviceBackend = integration->physicalDevice(sourceDevice());
+        if (physicalDeviceBackend)
+            break;
+    }
+
+    if (!physicalDeviceBackend)
+        return false;
+
+    for (int button : qAsConst(m_buttons)) {
+        if (physicalDeviceBackend->isButtonPressed(button))
+            return true;
+    }
+
     return false;
 }
 

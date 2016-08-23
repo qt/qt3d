@@ -101,65 +101,9 @@ void UpdateAxisActionJob::updateAction(LogicalDevice *device)
 
 bool UpdateAxisActionJob::processActionInput(const Qt3DCore::QNodeId actionInputId)
 {
-
-    if (m_handler->actionInputManager()->lookupResource(actionInputId)) {
-        ActionInput *actionInput = m_handler->actionInputManager()->lookupResource(actionInputId);
-        QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = nullptr;
-
-        const auto integrations = m_handler->inputDeviceIntegrations();
-        for (QInputDeviceIntegration *integration : integrations) {
-            if ((physicalDeviceBackend = integration->physicalDevice(actionInput->sourceDevice())) != nullptr)
-                break;
-        }
-
-        if (physicalDeviceBackend != nullptr) {
-            // Update the value
-            return anyOfRequiredButtonsPressed(actionInput->buttons(), physicalDeviceBackend);
-        }
-    } else if (m_handler->inputSequenceManager()->lookupResource(actionInputId)) {
-        InputSequence *inputSequence = m_handler->inputSequenceManager()->lookupResource(actionInputId);
-        const qint64 startTime = inputSequence->startTime();
-        if (startTime != 0) {
-            // Check if we are still inside the time limit for the chord
-            if ((m_currentTime - startTime) > inputSequence->timeout()) {
-                inputSequence->reset();
-                return false;
-            }
-        }
-        bool actionTriggered = false;
-        const auto actionInputIds = inputSequence->sequences();
-        for (const Qt3DCore::QNodeId actionInputId : actionInputIds) {
-            if (processActionInput(actionInputId)){
-                actionTriggered |= inputSequence->actionTriggered(actionInputId, m_currentTime);
-                // Set the start time if it wasn't set before
-                if (startTime == 0)
-                    inputSequence->setStartTime(m_currentTime);
-            }
-        }
-        return actionTriggered;
-    } else if (m_handler->inputChordManager()->lookupResource(actionInputId)) {
-        InputChord *inputChord = m_handler->inputChordManager()->lookupResource(actionInputId);
-        const qint64 startTime = inputChord->startTime();
-        if (startTime != 0) {
-            // Check if we are still inside the time limit for the chord
-            if ((m_currentTime - startTime) > inputChord->timeout()) {
-                inputChord->reset();
-                return false;
-            }
-        }
-        bool actionTriggered = false;
-        const auto actionInputIds = inputChord->chords();
-        for (const Qt3DCore::QNodeId actionInputId : actionInputIds) {
-            if (processActionInput(actionInputId)){
-                actionTriggered |= inputChord->actionTriggered(actionInputId);
-                if (startTime == 0)
-                    inputChord->setStartTime(m_currentTime);
-            }
-        }
-        return actionTriggered;
-    }
-    //Should Never reach this point
-    return false;
+    AbstractActionInput *actionInput = m_handler->lookupActionInput(actionInputId);
+    Q_ASSERT(actionInput);
+    return actionInput->process(m_handler, m_currentTime);
 }
 
 void UpdateAxisActionJob::updateAxis(LogicalDevice *device)

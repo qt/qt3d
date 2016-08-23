@@ -41,6 +41,7 @@
 #include <Qt3DInput/qinputsequence.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/private/qinputsequence_p.h>
+#include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
@@ -159,7 +160,24 @@ void InputSequence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
 bool InputSequence::process(InputHandler *inputHandler, qint64 currentTime)
 {
-    return false;
+    if (m_startTime != 0) {
+        // Check if we are still inside the time limit for the sequence
+        if ((currentTime - m_startTime) > m_timeout) {
+            reset();
+            return false;
+        }
+    }
+
+    bool triggered = false;
+    for (const Qt3DCore::QNodeId &actionInputId : qAsConst(m_sequences)) {
+        AbstractActionInput *actionInput = inputHandler->lookupActionInput(actionInputId);
+        if (actionInput && actionInput->process(inputHandler, currentTime)) {
+            triggered |= actionTriggered(actionInputId, currentTime);
+            if (m_startTime == 0)
+                m_startTime = currentTime;
+        }
+    }
+    return triggered;
 }
 
 } // namespace Input
