@@ -8,5 +8,4 @@ CONFIG += testcase
 
 SOURCES += tst_analogaxisinput.cpp
 
-include(../../core/common/common.pri)
 include(../commons/commons.pri)

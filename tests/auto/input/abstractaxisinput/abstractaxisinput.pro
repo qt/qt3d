@@ -8,5 +8,4 @@ CONFIG += testcase
 
 SOURCES += tst_abstractaxisinput.cpp
 
-include(../../core/common/common.pri)
 include(../commons/commons.pri)
