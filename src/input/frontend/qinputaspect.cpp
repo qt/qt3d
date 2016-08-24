@@ -189,11 +189,12 @@ QAbstractPhysicalDevice *QInputAspect::createPhysicalDevice(const QString &name)
 {
     Q_D(QInputAspect);
     const auto integrations = d->m_inputHandler->inputDeviceIntegrations();
+    QAbstractPhysicalDevice *device = nullptr;
     for (Qt3DInput::QInputDeviceIntegration *integration : integrations) {
-        if (auto dev = integration->createPhysicalDevice(name))
-            return dev;
+        if ((device = integration->createPhysicalDevice(name)) != nullptr)
+            break;
     }
-    return nullptr;
+    return device;
 }
 
 /*!
