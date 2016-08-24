@@ -277,7 +277,19 @@ void QFirstPersonCameraController::setCamera(Qt3DRender::QCamera *camera)
 {
     Q_D(QFirstPersonCameraController);
     if (d->m_camera != camera) {
+
+        if (d->m_camera)
+            d->unregisterDestructionHelper(d->m_camera);
+
+        if (camera && !camera->parent())
+            camera->setParent(this);
+
         d->m_camera = camera;
+
+        // Ensures proper bookkeeping
+        if (d->m_camera)
+            d->registerDestructionHelper(d->m_camera, &QFirstPersonCameraController::setCamera, d->m_camera);
+
         emit cameraChanged();
     }
 }
