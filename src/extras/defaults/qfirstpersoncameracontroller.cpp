@@ -173,6 +173,10 @@ void QFirstPersonCameraControllerPrivate::init()
     QObject::connect(m_frameAction, SIGNAL(triggered(float)),
                      q, SLOT(_q_onTriggered(float)));
 
+    // Disable the logical device when the entity is disabled
+    QObject::connect(q, &Qt3DCore::QEntity::enabledChanged,
+                     m_logicalDevice, &Qt3DInput::QLogicalDevice::setEnabled);
+
     q->addComponent(m_frameAction);
     q->addComponent(m_logicalDevice);
 }
