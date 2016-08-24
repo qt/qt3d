@@ -101,6 +101,9 @@ void InputSequence::reset()
 
 bool InputSequence::actionTriggered(Qt3DCore::QNodeId input, const qint64 currentTime)
 {
+    if (input != m_inputsToTrigger.first())
+        return false;
+
     // Save the last input
     m_lastInputId = input;
     // Return false if we've spent too much time in between two sequences

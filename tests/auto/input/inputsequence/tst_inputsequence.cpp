@@ -271,7 +271,7 @@ private Q_SLOTS:
         deviceBackend->setButtonPressed(Qt::Key_D, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000001100), true); // Yes, that's another bug
+        QCOMPARE(backendInputSequence.process(&handler, 1000001100), false);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_D, false);
