@@ -136,23 +136,29 @@ void InputChord::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
 bool InputChord::process(InputHandler *inputHandler, qint64 currentTime)
 {
-    if (m_startTime != 0) {
-        // Check if we are still inside the time limit for the chord
-        if ((currentTime - m_startTime) > m_timeout) {
-            reset();
-            return false;
-        }
-    }
-
+    const qint64 startTime = m_startTime;
     bool triggered = false;
+    int activeInputs = 0;
     for (const Qt3DCore::QNodeId &actionInputId : qAsConst(m_chords)) {
         AbstractActionInput *actionInput = inputHandler->lookupActionInput(actionInputId);
         if (actionInput && actionInput->process(inputHandler, currentTime)) {
             triggered |= actionTriggered(actionInputId);
-            if (m_startTime == 0)
+            activeInputs++;
+            if (startTime == 0)
                 m_startTime = currentTime;
         }
     }
+
+    if (startTime != 0) {
+        // Check if we are still inside the time limit for the chord
+        if ((currentTime - startTime) > m_timeout) {
+            reset();
+            if (activeInputs > 0)
+                m_startTime = startTime;
+            return false;
+        }
+    }
+
     return triggered;
 }
 

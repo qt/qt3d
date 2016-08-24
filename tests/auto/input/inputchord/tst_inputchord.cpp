@@ -269,10 +269,10 @@ private Q_SLOTS:
         QCOMPARE(backendInputChord.process(&handler, 1000000400), false); // Too late
 
         // THEN
-        QCOMPARE(backendInputChord.process(&handler, 1000000600), true); // Yes, that's yet another bug
+        QCOMPARE(backendInputChord.process(&handler, 1000000600), false);
 
         // THEN
-        QCOMPARE(backendInputChord.process(&handler, 1000000800), true); // Yes, that's yet another bug
+        QCOMPARE(backendInputChord.process(&handler, 1000000800), false);
     }
 };
 
