@@ -71,6 +71,7 @@ void InputSequence::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr
     m_sequences = data.sequenceIds;
     m_timeout = data.timeout;
     m_buttonInterval = data.buttonInterval;
+    m_inputsToTrigger = m_sequences;
 }
 
 void InputSequence::cleanup()

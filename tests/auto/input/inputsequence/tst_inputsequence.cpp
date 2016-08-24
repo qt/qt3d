@@ -202,8 +202,7 @@ private Q_SLOTS:
         deviceBackend->setButtonPressed(Qt::Key_Q, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000000100), true); // Yes, that's a bug
-        QCOMPARE(backendInputSequence.process(&handler, 1000000150), false);
+        QCOMPARE(backendInputSequence.process(&handler, 1000000100), false);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Q, false);
@@ -321,8 +320,7 @@ private Q_SLOTS:
         deviceBackend->setButtonPressed(Qt::Key_Q, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000000100), true); // Yes, that's a bug
-        QCOMPARE(backendInputSequence.process(&handler, 1000000150), false);
+        QCOMPARE(backendInputSequence.process(&handler, 1000000100), false);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Q, false);
@@ -379,8 +377,7 @@ private Q_SLOTS:
         deviceBackend->setButtonPressed(Qt::Key_Q, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000000100), true); // Yes, that's a bug
-        QCOMPARE(backendInputSequence.process(&handler, 1000000150), false);
+        QCOMPARE(backendInputSequence.process(&handler, 1000000100), false);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Q, false);
@@ -394,7 +391,7 @@ private Q_SLOTS:
         deviceBackend->setButtonPressed(Qt::Key_E, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000000300), true); // Yes, that's yet another bug
+        QCOMPARE(backendInputSequence.process(&handler, 1000000300), false);
     }
 };
 
