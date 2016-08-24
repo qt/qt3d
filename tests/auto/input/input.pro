@@ -20,5 +20,6 @@ qtConfig(private_tests) {
         qaxisaccumulator \
         inputsequence \
         inputchord \
-        qabstractphysicaldevicebackendnode
+        qabstractphysicaldevicebackendnode \
+        logicaldevice
 }
