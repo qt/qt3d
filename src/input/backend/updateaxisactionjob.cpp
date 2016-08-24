@@ -80,6 +80,10 @@ void UpdateAxisActionJob::run()
     // Note: we assume axis/action are not really shared:
     // there's no benefit in sharing those when it comes to computing
     LogicalDevice *device = m_handler->logicalDeviceManager()->data(m_handle);
+
+    if (!device->isEnabled())
+        return;
+
     updateAction(device);
     updateAxis(device);
 }
