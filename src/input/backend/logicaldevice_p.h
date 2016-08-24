@@ -62,7 +62,7 @@ namespace Input {
 
 class LogicalDeviceManager;
 
-class LogicalDevice : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT LogicalDevice : public Qt3DCore::QBackendNode
 {
 public:
     LogicalDevice();
@@ -71,7 +71,6 @@ public:
     inline QVector<Qt3DCore::QNodeId> axes() const { return m_axes; }
     inline QVector<Qt3DCore::QNodeId> actions() const { return m_actions; }
 
-protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
