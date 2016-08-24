@@ -4,5 +4,6 @@ contains(QT_CONFIG, private_tests) {
     SUBDIRS += \
         qcuboidgeometry \
         qtorusgeometry \
-        qforwardrenderer
+        qforwardrenderer \
+        qfirstpersoncameracontroller
 }
