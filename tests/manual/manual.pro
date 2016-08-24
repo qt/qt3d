@@ -31,8 +31,8 @@ SUBDIRS += \
     tessellation-modes \
     transforms-qml \
     transparency-qml \
-    transparency-qml-scene3d
-
+    transparency-qml-scene3d \
+    rendercapture-qml
 
 qtHaveModule(widgets): {
     SUBDIRS += \
