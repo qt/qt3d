@@ -97,6 +97,7 @@ Entity {
     components: [
 
         LogicalDevice {
+            enabled: root.enabled
             actions: [
                 Action {
                     id: leftMouseButtonAction
