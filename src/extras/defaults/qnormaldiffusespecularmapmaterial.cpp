@@ -87,8 +87,9 @@ QNormalDiffuseSpecularMapMaterialPrivate::QNormalDiffuseSpecularMapMaterialPriva
     m_diffuseTexture->setMaximumAnisotropy(16.0f);
 
     m_normalTexture->setMagnificationFilter(QAbstractTexture::Linear);
-    m_normalTexture->setMinificationFilter(QAbstractTexture::Linear);
+    m_normalTexture->setMinificationFilter(QAbstractTexture::LinearMipMapLinear);
     m_normalTexture->setWrapMode(QTextureWrapMode(QTextureWrapMode::Repeat));
+    m_normalTexture->setGenerateMipMaps(true);
     m_normalTexture->setMaximumAnisotropy(16.0f);
 
     m_specularTexture->setMagnificationFilter(QAbstractTexture::Linear);

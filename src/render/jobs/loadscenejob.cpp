@@ -44,6 +44,7 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DRender/private/job_common_p.h>
 #include <Qt3DRender/private/qsceneiohandler_p.h>
+#include <Qt3DRender/qsceneloader.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,29 +65,41 @@ void LoadSceneJob::run()
     // Iterate scene IO handlers until we find one that can handle this file type
     Qt3DCore::QEntity *sceneSubTree = nullptr;
 
+    Scene *scene = m_managers->sceneManager()->lookupResource(m_sceneComponent);
+    Q_ASSERT(scene);
+
+    // Reset status
+    scene->setStatus(QSceneLoader::None);
+
     // Perform the loading only if the source wasn't explicitly set to empty
     if (!m_source.isEmpty()) {
         for (QSceneIOHandler *sceneIOHandler : qAsConst(m_sceneIOHandlers)) {
             if (!sceneIOHandler->isFileTypeSupported(m_source))
                 continue;
 
+            // If the file type is supported -> enter Loading status
+            scene->setStatus(QSceneLoader::Loading);
+
             // File type is supported, try to load it
             sceneIOHandler->setSource(m_source);
             Qt3DCore::QEntity *sub = sceneIOHandler->scene();
             if (sub) {
                 sceneSubTree = sub;
+                // Successfully built a subtree
+                scene->setStatus(QSceneLoader::Ready);
                 break;
+            } else {
+                // Tree wasn't build so something went wrong obviously
+                scene->setStatus(QSceneLoader::Error);
             }
         }
     }
-    // Set clone of sceneTree in sceneComponent. This will move the sceneSubTree
-    // to the QCoreApplication thread which is where the frontend object tree lives.
-    Scene *scene = m_managers->sceneManager()->lookupResource(m_sceneComponent);
 
     // If the sceneSubTree is null it will trigger the frontend to unload
     // any subtree it may hold
-    if (scene)
-        scene->setSceneSubtree(sceneSubTree);
+    // Set clone of sceneTree in sceneComponent. This will move the sceneSubTree
+    // to the QCoreApplication thread which is where the frontend object tree lives.
+    scene->setSceneSubtree(sceneSubTree);
 }
 
 } // namespace Render

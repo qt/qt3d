@@ -40,6 +40,7 @@
 #include "inputchord_p.h"
 #include <Qt3DInput/qinputchord.h>
 #include <Qt3DInput/private/qinputchord_p.h>
+#include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
@@ -51,7 +52,7 @@ namespace Qt3DInput {
 namespace Input {
 
 InputChord::InputChord()
-    : Qt3DCore::QBackendNode()
+    : AbstractActionInput()
     , m_chords()
     , m_inputsToTrigger()
     , m_timeout(0)
@@ -64,12 +65,13 @@ void InputChord::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &c
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QInputChordData>>(change);
     const QInputChordData &data = typedChange->data;
     m_chords = data.chordIds;
-    m_timeout = data.timeout;
+    m_timeout = milliToNano(data.timeout);
+    m_inputsToTrigger = m_chords;
 }
 
 void InputChord::cleanup()
 {
-    QBackendNode::setEnabled(false);
+    setEnabled(false);
     m_timeout = 0;
     m_startTime = 0;
     m_chords.clear();
@@ -104,7 +106,7 @@ void InputChord::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     case Qt3DCore::PropertyUpdated: {
         const auto change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("timeout"))
-            m_timeout = change->value().toInt();
+            m_timeout = milliToNano(change->value().toInt());
         break;
     }
 
@@ -129,7 +131,35 @@ void InputChord::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     default:
         break;
     }
-    QBackendNode::sceneChangeEvent(e);
+    AbstractActionInput::sceneChangeEvent(e);
+}
+
+bool InputChord::process(InputHandler *inputHandler, qint64 currentTime)
+{
+    const qint64 startTime = m_startTime;
+    bool triggered = false;
+    int activeInputs = 0;
+    for (const Qt3DCore::QNodeId &actionInputId : qAsConst(m_chords)) {
+        AbstractActionInput *actionInput = inputHandler->lookupActionInput(actionInputId);
+        if (actionInput && actionInput->process(inputHandler, currentTime)) {
+            triggered |= actionTriggered(actionInputId);
+            activeInputs++;
+            if (startTime == 0)
+                m_startTime = currentTime;
+        }
+    }
+
+    if (startTime != 0) {
+        // Check if we are still inside the time limit for the chord
+        if ((currentTime - startTime) > m_timeout) {
+            reset();
+            if (activeInputs > 0)
+                m_startTime = startTime;
+            return false;
+        }
+    }
+
+    return triggered;
 }
 
 } // namespace Input

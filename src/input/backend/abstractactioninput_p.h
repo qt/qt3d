@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_INPUT_INPUTSEQUENCE_H
-#define QT3DINPUT_INPUT_INPUTSEQUENCE_H
+#ifndef QT3DINPUT_INPUT_ABSTRACTACTIONINPUT_H
+#define QT3DINPUT_INPUT_ABSTRACTACTIONINPUT_H
 
 //
 //  W A R N I N G
@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DInput/private/abstractactioninput_p.h>
+#include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -60,34 +60,16 @@ namespace Qt3DInput {
 
 namespace Input {
 
-class Q_AUTOTEST_EXPORT InputSequence : public AbstractActionInput
+class InputHandler;
+
+class Q_AUTOTEST_EXPORT AbstractActionInput : public Qt3DCore::QBackendNode
 {
 public:
-    InputSequence();
-    void cleanup();
+    AbstractActionInput();
 
-    inline QVector<Qt3DCore::QNodeId> sequences() const { return m_sequences; }
-    inline qint64 timeout() const { return m_timeout; }
-    inline qint64 buttonInterval() const { return m_buttonInterval; }
-    inline qint64 startTime() const { return m_startTime; }
-    void setStartTime(qint64 time);
-    bool sequenceTriggered() const;
-    void reset();
-    bool actionTriggered(Qt3DCore::QNodeId input, const qint64 currentTime);
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    inline static qint64 milliToNano(qint64 milli) { return milli * 1000000; }
 
-    bool process(InputHandler *inputHandler, qint64 currentTime) Q_DECL_OVERRIDE;
-
-private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
-
-    QVector<Qt3DCore::QNodeId> m_sequences;
-    QVector<Qt3DCore::QNodeId> m_inputsToTrigger;
-    qint64 m_timeout;
-    qint64 m_buttonInterval;
-    qint64 m_startTime;
-    qint64 m_lastInputTime;
-    Qt3DCore::QNodeId m_lastInputId;
+    virtual bool process(InputHandler *inputHandler, qint64 currentTime) = 0;
 };
 
 } // namespace Input
@@ -96,4 +78,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_INPUT_INPUTSEQUENCE_H
+#endif // QT3DINPUT_INPUT_ABSTRACTACTIONINPUT_H

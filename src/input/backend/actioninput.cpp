@@ -41,6 +41,8 @@
 #include <Qt3DInput/qactioninput.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/private/qactioninput_p.h>
+#include <Qt3DInput/private/qinputdeviceintegration_p.h>
+#include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
@@ -50,7 +52,7 @@ namespace Qt3DInput {
 namespace Input {
 
 ActionInput::ActionInput()
-    : Qt3DCore::QBackendNode()
+    : AbstractActionInput()
     , m_buttons(0)
 {
 }
@@ -65,7 +67,7 @@ void ActionInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &
 
 void ActionInput::cleanup()
 {
-    QBackendNode::setEnabled(false);
+    setEnabled(false);
     m_sourceDevice = Qt3DCore::QNodeId();
     m_buttons.clear();
 }
@@ -80,7 +82,31 @@ void ActionInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_buttons = propertyChange->value().value<QVector<int>>();
         }
     }
-    QBackendNode::sceneChangeEvent(e);
+    AbstractActionInput::sceneChangeEvent(e);
+}
+
+bool ActionInput::process(InputHandler *inputHandler, qint64 currentTime)
+{
+    Q_UNUSED(currentTime);
+
+    QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = nullptr;
+
+    const auto integrations = inputHandler->inputDeviceIntegrations();
+    for (QInputDeviceIntegration *integration : integrations) {
+        physicalDeviceBackend = integration->physicalDevice(sourceDevice());
+        if (physicalDeviceBackend)
+            break;
+    }
+
+    if (!physicalDeviceBackend)
+        return false;
+
+    for (int button : qAsConst(m_buttons)) {
+        if (physicalDeviceBackend->isButtonPressed(button))
+            return true;
+    }
+
+    return false;
 }
 
 } // namespace Input

@@ -53,7 +53,7 @@ namespace Qt3DRender {
 
 QSceneLoaderPrivate::QSceneLoaderPrivate()
     : QComponentPrivate()
-    , m_status(QSceneLoader::Loading)
+    , m_status(QSceneLoader::None)
     , m_subTreeRoot(nullptr)
 {
     m_shareable = false;
@@ -178,9 +178,8 @@ void QSceneLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
                 subTreeRoot->setParent(parentEntity);
                 d->m_subTreeRoot = subTreeRoot;
             }
-
-            // Update status property
-            setStatus(subTreeRoot ? QSceneLoader::Ready : QSceneLoader::Error);
+        } else if (e->propertyName() == QByteArrayLiteral("status")) {
+            setStatus(e->value().value<QSceneLoader::Status>());
         }
     }
 }
@@ -230,7 +229,9 @@ void QSceneLoader::setStatus(QSceneLoader::Status status)
     Q_D(QSceneLoader);
     if (d->m_status != status) {
         d->m_status = status;
+        const bool wasBlocked = blockNotifications(true);
         emit statusChanged(status);
+        blockNotifications(wasBlocked);
     }
 }
 

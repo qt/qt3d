@@ -53,7 +53,9 @@ qtConfig(private_tests) {
         qgraphicsapifilter \
         qrendersurfaceselector \
         sortpolicy \
-        qcuboidgeometry \
         sceneloader \
-        qsceneloader
+        qsceneloader \
+        qrendertargetoutput \
+        qcameralens \
+        qcomputecommand
 }

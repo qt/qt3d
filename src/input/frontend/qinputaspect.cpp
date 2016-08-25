@@ -214,7 +214,6 @@ QStringList QInputAspect::availablePhysicalDevices() const
  */
 QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
 {
-    Q_UNUSED(time);
     Q_D(QInputAspect);
     QVector<QAspectJobPtr> jobs;
 

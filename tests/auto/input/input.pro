@@ -13,8 +13,11 @@ qtConfig(private_tests) {
         axis \
         action \
         abstractaxisinput \
+        actioninput \
         analogaxisinput \
         buttonaxisinput \
         keyboardhandler \
-        qaxisaccumulator
+        qaxisaccumulator \
+        inputsequence \
+        inputchord
 }
