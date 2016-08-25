@@ -68,7 +68,8 @@ qtConfig(private_tests) {
         sendrendercapturejob \
         textures \
         qparameter \
-        parameter
+        parameter \
+        qtextureloader
 
     !macos: SUBDIRS += graphicshelpergl4
 }
