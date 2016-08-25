@@ -64,28 +64,9 @@ namespace Input {
 
 class InputHandler;
 
-class MouseDevice : public Qt3DInput::QAbstractPhysicalDeviceBackendNode
+class Q_AUTOTEST_EXPORT MouseDevice : public Qt3DInput::QAbstractPhysicalDeviceBackendNode
 {
 public:
-    MouseDevice();
-    ~MouseDevice();
-
-    void setInputHandler(InputHandler *handler);
-
-    float axisValue(int axisIdentifier) const Q_DECL_OVERRIDE;
-    bool isButtonPressed(int buttonIdentifier) const Q_DECL_OVERRIDE;
-
-    void updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events);
-    void updateWheelEvents(const QList<QT_PREPEND_NAMESPACE(QWheelEvent)> &events);
-
-protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-
-private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
-
-    InputHandler *m_inputHandler;
-
     struct MouseState {
 
         MouseState()
@@ -106,6 +87,30 @@ private:
         bool rightPressed;
         bool centerPressed;
     };
+
+    MouseDevice();
+    ~MouseDevice();
+
+    void setInputHandler(InputHandler *handler);
+    InputHandler *inputHandler() const;
+
+    float axisValue(int axisIdentifier) const Q_DECL_OVERRIDE;
+    bool isButtonPressed(int buttonIdentifier) const Q_DECL_OVERRIDE;
+
+    void updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events);
+    void updateWheelEvents(const QList<QT_PREPEND_NAMESPACE(QWheelEvent)> &events);
+
+    MouseState mouseState() const;
+    QPointF previousPos() const;
+    bool wasPressed() const;
+    float sensitivity() const;
+
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
+    InputHandler *m_inputHandler;
 
     MouseState m_mouseState;
     QPointF m_previousPos;
