@@ -72,6 +72,7 @@ InputHandler::InputHandler()
     , m_inputSequenceManager(new InputSequenceManager())
     , m_logicalDeviceManager(new LogicalDeviceManager())
     , m_genericPhysicalDeviceBackendNodeManager(new GenericDeviceBackendNodeManager)
+    , m_physicalDeviceProxyManager(new PhysicalDeviceProxyManager())
     , m_settings(nullptr)
     , m_eventSourceSetter(new Qt3DInput::Input::EventSourceSetterHelper(this))
 {
@@ -100,6 +101,7 @@ InputHandler::~InputHandler()
     delete m_inputSequenceManager;
     delete m_logicalDeviceManager;
     delete m_genericPhysicalDeviceBackendNodeManager;
+    delete m_physicalDeviceProxyManager;
 }
 
 // Called in MainThread (by the EventSourceHelperSetter)

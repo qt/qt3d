@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_INPUT_HANDLE_TYPES_P_H
-#define QT3DINPUT_INPUT_HANDLE_TYPES_P_H
+#ifndef QT3DINPUT_INPUT_PHYSICALDEVICEPROXY_P_H
+#define QT3DINPUT_INPUT_PHYSICALDEVICEPROXY_P_H
 
 //
 //  W A R N I N G
@@ -51,48 +51,57 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qhandle_p.h>
+#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
+
+class QAbstractPhysicalDevice;
+
 namespace Input {
 
-class KeyboardDevice;
-class KeyboardHandler;
-class MouseHandler;
-class MouseDevice;
-class Axis;
-class AxisActionHandler;
-class AbstractAxisInput;
-class AxisSetting;
-class Action;
-class ActionInput;
-class InputSequence;
-class InputChord;
-class LogicalDevice;
-class GenericDeviceBackendNode;
-class PhysicalDeviceProxy;
+class PhysicalDeviceProxyManager;
 
-typedef Qt3DCore::QHandle<KeyboardDevice, 8> HKeyboardDevice;
-typedef Qt3DCore::QHandle<KeyboardHandler, 16> HKeyboardHandler;
-typedef Qt3DCore::QHandle<MouseHandler, 16> HMouseHandler;
-typedef Qt3DCore::QHandle<MouseDevice, 8> HMouseDevice;
-typedef Qt3DCore::QHandle<Axis, 16> HAxis;
-typedef Qt3DCore::QHandle<AxisActionHandler, 16> HAxisActionHandler;
-typedef Qt3DCore::QHandle<AxisSetting, 16> HAxisSetting;
-typedef Qt3DCore::QHandle<Action, 16> HAction;
-typedef Qt3DCore::QHandle<AbstractAxisInput, 16> HAxisInput;
-typedef Qt3DCore::QHandle<ActionInput, 16> HActionInput;
-typedef Qt3DCore::QHandle<InputSequence, 16> HInputSequence;
-typedef Qt3DCore::QHandle<InputChord, 16> HInputChord;
-typedef Qt3DCore::QHandle<LogicalDevice, 16> HLogicalDevice;
-typedef Qt3DCore::QHandle<GenericDeviceBackendNode, 8> HGenericDeviceBackendNode;
-typedef Qt3DCore::QHandle<PhysicalDeviceProxy, 16> HPhysicalDeviceProxy;
+class Q_AUTOTEST_EXPORT PhysicalDeviceProxy : public Qt3DCore::QBackendNode
+{
+public:
+    PhysicalDeviceProxy();
+    void cleanup();
+
+    QString deviceName() const;
+
+    void setManager(PhysicalDeviceProxyManager *manager);
+    PhysicalDeviceProxyManager *manager() const;
+
+    // Called from a job to update the frontend
+    void setDevice(QAbstractPhysicalDevice *device);
+
+private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
+    QString m_deviceName;
+    PhysicalDeviceProxyManager *m_manager;
+};
+
+class PhysicalDeviceProxyNodeFunctor: public Qt3DCore::QBackendNodeMapper
+{
+public:
+    explicit PhysicalDeviceProxyNodeFunctor(PhysicalDeviceProxyManager *manager);
+
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
+
+private:
+    PhysicalDeviceProxyManager *m_manager;
+};
 
 } // namespace Input
+
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_INPUT_HANDLE_TYPES_P_H
+#endif // QT3DINPUT_INPUT_PHYSICALDEVICEPROXY_P_H

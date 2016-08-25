@@ -68,6 +68,7 @@
 #include <Qt3DInput/private/buttonaxisinput_p.h>
 #include <Qt3DInput/private/logicaldevice_p.h>
 #include <Qt3DInput/private/genericdevicebackendnode_p.h>
+#include <Qt3DInput/private/physicaldeviceproxy_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -219,6 +220,22 @@ class GenericDeviceBackendNodeManager : public Qt3DCore::QResourceManager<
 {
 public:
     GenericDeviceBackendNodeManager() {}
+};
+
+class Q_AUTOTEST_EXPORT PhysicalDeviceProxyManager : public Qt3DCore::QResourceManager<
+        PhysicalDeviceProxy,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy>
+{
+public:
+    PhysicalDeviceProxyManager() {}
+
+    void addPendingProxyToLoad(Qt3DCore::QNodeId id) { m_pendingProxies.push_back(id); }
+    QVector<Qt3DCore::QNodeId> takePendingProxiesToLoad() { return std::move(m_pendingProxies); }
+
+private:
+    QVector<Qt3DCore::QNodeId> m_pendingProxies;
 };
 
 } // namespace Input
