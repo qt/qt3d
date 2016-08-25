@@ -61,8 +61,8 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendInputSequence.peerId(), inputSequence.id());
         QCOMPARE(backendInputSequence.isEnabled(), inputSequence.isEnabled());
-        QCOMPARE(backendInputSequence.timeout(), inputSequence.timeout());
-        QCOMPARE(backendInputSequence.buttonInterval(), inputSequence.buttonInterval());
+        QCOMPARE(backendInputSequence.timeout(), inputSequence.timeout() * 1000000);
+        QCOMPARE(backendInputSequence.buttonInterval(), inputSequence.buttonInterval() * 1000000);
         QCOMPARE(backendInputSequence.sequences().size(), inputSequence.sequences().size());
 
         const int inputsCount = backendInputSequence.sequences().size();
@@ -115,7 +115,7 @@ private Q_SLOTS:
         backendInputSequence.sceneChangeEvent(updateChange);
 
         // THEN
-        QCOMPARE(backendInputSequence.timeout(), 250);
+        QCOMPARE(backendInputSequence.timeout(), 250000000);
 
         // WHEN
         updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
@@ -124,7 +124,7 @@ private Q_SLOTS:
         backendInputSequence.sceneChangeEvent(updateChange);
 
         // THEN
-        QCOMPARE(backendInputSequence.buttonInterval(), 150);
+        QCOMPARE(backendInputSequence.buttonInterval(), 150000000);
 
         // WHEN
         updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
@@ -202,53 +202,53 @@ private Q_SLOTS:
         deviceBackend->setButtonPressed(Qt::Key_Q, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000000100), false);
+        QCOMPARE(backendInputSequence.process(&handler, 1100000000), false);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Q, false);
         deviceBackend->setButtonPressed(Qt::Key_S, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000000200), false);
+        QCOMPARE(backendInputSequence.process(&handler, 1200000000), false);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_S, false);
         deviceBackend->setButtonPressed(Qt::Key_E, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000000300), true);
+        QCOMPARE(backendInputSequence.process(&handler, 1300000000), true);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_E, false);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000000400), false);
+        QCOMPARE(backendInputSequence.process(&handler, 1400000000), false);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Q, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000000500), false);
+        QCOMPARE(backendInputSequence.process(&handler, 1500000000), false);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Q, false);
         deviceBackend->setButtonPressed(Qt::Key_S, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000000600), false);
+        QCOMPARE(backendInputSequence.process(&handler, 1600000000), false);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_S, false);
         deviceBackend->setButtonPressed(Qt::Key_E, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000000700), true);
+        QCOMPARE(backendInputSequence.process(&handler, 1700000000), true);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_E, false);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000000800), false);
+        QCOMPARE(backendInputSequence.process(&handler, 1800000000), false);
 
 
         // Now out of order
@@ -257,27 +257,27 @@ private Q_SLOTS:
         deviceBackend->setButtonPressed(Qt::Key_S, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000000900), false);
+        QCOMPARE(backendInputSequence.process(&handler, 1900000000), false);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_S, false);
         deviceBackend->setButtonPressed(Qt::Key_Q, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000001000), false);
+        QCOMPARE(backendInputSequence.process(&handler, 2000000000), false);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Q, false);
         deviceBackend->setButtonPressed(Qt::Key_D, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000001100), false);
+        QCOMPARE(backendInputSequence.process(&handler, 2100000000), false);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_D, false);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000001200), false);
+        QCOMPARE(backendInputSequence.process(&handler, 22000000000), false);
     }
 
     void shouldRespectSequenceTimeout()
@@ -320,21 +320,21 @@ private Q_SLOTS:
         deviceBackend->setButtonPressed(Qt::Key_Q, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000000100), false);
+        QCOMPARE(backendInputSequence.process(&handler, 1100000000), false);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Q, false);
         deviceBackend->setButtonPressed(Qt::Key_S, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000000300), false);
+        QCOMPARE(backendInputSequence.process(&handler, 1300000000), false);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_S, false);
         deviceBackend->setButtonPressed(Qt::Key_E, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000000600), false); // Too late
+        QCOMPARE(backendInputSequence.process(&handler, 1600000000), false); // Too late
     }
 
     void shouldRespectSequenceButtonInterval()
@@ -377,21 +377,21 @@ private Q_SLOTS:
         deviceBackend->setButtonPressed(Qt::Key_Q, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000000100), false);
+        QCOMPARE(backendInputSequence.process(&handler, 1100000000), false);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Q, false);
         deviceBackend->setButtonPressed(Qt::Key_S, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000000250), false); // Too late
+        QCOMPARE(backendInputSequence.process(&handler, 1250000000), false); // Too late
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_S, false);
         deviceBackend->setButtonPressed(Qt::Key_E, true);
 
         // THEN
-        QCOMPARE(backendInputSequence.process(&handler, 1000000300), false);
+        QCOMPARE(backendInputSequence.process(&handler, 1300000000), false);
     }
 };
 

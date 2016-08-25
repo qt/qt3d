@@ -67,6 +67,8 @@ class Q_AUTOTEST_EXPORT AbstractActionInput : public Qt3DCore::QBackendNode
 public:
     AbstractActionInput();
 
+    inline static qint64 milliToNano(qint64 milli) { return milli * 1000000; }
+
     virtual bool process(InputHandler *inputHandler, qint64 currentTime) = 0;
 };
 

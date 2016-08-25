@@ -69,8 +69,8 @@ void InputSequence::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QInputSequenceData>>(change);
     const QInputSequenceData &data = typedChange->data;
     m_sequences = data.sequenceIds;
-    m_timeout = data.timeout;
-    m_buttonInterval = data.buttonInterval;
+    m_timeout = milliToNano(data.timeout);
+    m_buttonInterval = milliToNano(data.buttonInterval);
     m_inputsToTrigger = m_sequences;
 }
 
@@ -131,9 +131,9 @@ void InputSequence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     case Qt3DCore::PropertyUpdated: {
         const auto change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("timeout")) {
-            m_timeout = change->value().toInt();
+            m_timeout = milliToNano(change->value().toInt());
         } else if (change->propertyName() == QByteArrayLiteral("buttonInterval")) {
-            m_buttonInterval = change->value().toInt();
+            m_buttonInterval = milliToNano(change->value().toInt());
         }
         break;
     }

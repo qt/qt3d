@@ -67,8 +67,8 @@ public:
     void cleanup();
 
     inline QVector<Qt3DCore::QNodeId> sequences() const { return m_sequences; }
-    inline int timeout() const { return m_timeout; }
-    inline int buttonInterval() const { return m_buttonInterval; }
+    inline qint64 timeout() const { return m_timeout; }
+    inline qint64 buttonInterval() const { return m_buttonInterval; }
     inline qint64 startTime() const { return m_startTime; }
     void setStartTime(qint64 time);
     bool sequenceTriggered() const;
@@ -83,8 +83,8 @@ private:
 
     QVector<Qt3DCore::QNodeId> m_sequences;
     QVector<Qt3DCore::QNodeId> m_inputsToTrigger;
-    int m_timeout;
-    int m_buttonInterval;
+    qint64 m_timeout;
+    qint64 m_buttonInterval;
     qint64 m_startTime;
     qint64 m_lastInputTime;
     Qt3DCore::QNodeId m_lastInputId;

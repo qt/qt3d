@@ -67,7 +67,7 @@ public:
     void cleanup();
 
     inline QVector<Qt3DCore::QNodeId> chords() const { return m_chords; }
-    inline int timeout() const { return m_timeout; }
+    inline qint64 timeout() const { return m_timeout; }
     inline qint64 startTime() const { return m_startTime; }
     void setStartTime(qint64 time);
     void reset();
@@ -81,7 +81,7 @@ private:
 
     QVector<Qt3DCore::QNodeId> m_chords;
     QVector<Qt3DCore::QNodeId> m_inputsToTrigger;
-    int m_timeout;
+    qint64 m_timeout;
     qint64 m_startTime;
 };
 

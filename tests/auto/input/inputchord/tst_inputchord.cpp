@@ -60,7 +60,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendInputChord.peerId(), inputChord.id());
         QCOMPARE(backendInputChord.isEnabled(), inputChord.isEnabled());
-        QCOMPARE(backendInputChord.timeout(), inputChord.timeout());
+        QCOMPARE(backendInputChord.timeout(), inputChord.timeout() * 1000000);
         QCOMPARE(backendInputChord.chords().size(), inputChord.chords().size());
 
         const int inputsCount = backendInputChord.chords().size();
@@ -110,7 +110,7 @@ private Q_SLOTS:
         backendInputChord.sceneChangeEvent(updateChange);
 
         // THEN
-        QCOMPARE(backendInputChord.timeout(), 250);
+        QCOMPARE(backendInputChord.timeout(), 250000000);
 
         // WHEN
         updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
@@ -180,52 +180,52 @@ private Q_SLOTS:
         deviceBackend->setButtonPressed(Qt::Key_Q, true);
 
         // THEN
-        QCOMPARE(backendInputChord.process(&handler, 1000000100), false);
+        QCOMPARE(backendInputChord.process(&handler, 1100000000), false);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_A, true);
 
         // THEN
-        QCOMPARE(backendInputChord.process(&handler, 1000000200), true);
+        QCOMPARE(backendInputChord.process(&handler, 1200000000), true);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_S, true);
 
         // THEN
-        QCOMPARE(backendInputChord.process(&handler, 1000000300), true);
+        QCOMPARE(backendInputChord.process(&handler, 1300000000), true);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_W, true);
 
         // THEN
-        QCOMPARE(backendInputChord.process(&handler, 1000000400), true);
+        QCOMPARE(backendInputChord.process(&handler, 1400000000), true);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_W, false);
 
         // THEN
-        QCOMPARE(backendInputChord.process(&handler, 1000000500), true);
+        QCOMPARE(backendInputChord.process(&handler, 1500000000), true);
 
         // THEN
-        QCOMPARE(backendInputChord.process(&handler, 1000000600), true);
+        QCOMPARE(backendInputChord.process(&handler, 1600000000), true);
 
         // THEN
-        QCOMPARE(backendInputChord.process(&handler, 1000000700), true);
+        QCOMPARE(backendInputChord.process(&handler, 1700000000), true);
 
         // THEN
-        QCOMPARE(backendInputChord.process(&handler, 1000000800), true);
+        QCOMPARE(backendInputChord.process(&handler, 1800000000), true);
 
         // THEN
-        QCOMPARE(backendInputChord.process(&handler, 1000000900), true);
+        QCOMPARE(backendInputChord.process(&handler, 1900000000), true);
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Q, false);
 
         // THEN
-        QCOMPARE(backendInputChord.process(&handler, 1000001000), false);
+        QCOMPARE(backendInputChord.process(&handler, 2000000000), false);
 
         // THEN
-        QCOMPARE(backendInputChord.process(&handler, 1000001100), false);
+        QCOMPARE(backendInputChord.process(&handler, 2100000000), false);
     }
 
     void shouldRespectChordTimeout()
@@ -266,13 +266,13 @@ private Q_SLOTS:
         deviceBackend->setButtonPressed(Qt::Key_W, true);
 
         // THEN
-        QCOMPARE(backendInputChord.process(&handler, 1000000400), false); // Too late
+        QCOMPARE(backendInputChord.process(&handler, 1400000000), false); // Too late
 
         // THEN
-        QCOMPARE(backendInputChord.process(&handler, 1000000600), false);
+        QCOMPARE(backendInputChord.process(&handler, 1600000000), false);
 
         // THEN
-        QCOMPARE(backendInputChord.process(&handler, 1000000800), false);
+        QCOMPARE(backendInputChord.process(&handler, 1800000000), false);
     }
 };
 

@@ -65,7 +65,7 @@ void InputChord::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &c
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QInputChordData>>(change);
     const QInputChordData &data = typedChange->data;
     m_chords = data.chordIds;
-    m_timeout = data.timeout;
+    m_timeout = milliToNano(data.timeout);
     m_inputsToTrigger = m_chords;
 }
 
@@ -106,7 +106,7 @@ void InputChord::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     case Qt3DCore::PropertyUpdated: {
         const auto change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("timeout"))
-            m_timeout = change->value().toInt();
+            m_timeout = milliToNano(change->value().toInt());
         break;
     }
 
