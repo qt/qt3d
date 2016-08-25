@@ -58,7 +58,7 @@ GraphicsHelperGL2::GraphicsHelperGL2()
 }
 
 void GraphicsHelperGL2::initializeHelper(QOpenGLContext *context,
-                                          QAbstractOpenGLFunctions *functions)
+                                         QAbstractOpenGLFunctions *functions)
 {
     Q_UNUSED(context);
     m_funcs = static_cast<QOpenGLFunctions_2_0*>(functions);
@@ -95,9 +95,9 @@ void GraphicsHelperGL2::drawElementsInstancedBaseVertexBaseInstance(GLenum primi
 }
 
 void GraphicsHelperGL2::drawArraysInstanced(GLenum primitiveType,
-                                             GLint first,
-                                             GLsizei count,
-                                             GLsizei instances)
+                                            GLint first,
+                                            GLsizei count,
+                                            GLsizei instances)
 {
     for (GLint i = 0; i < instances; i++)
         drawArrays(primitiveType,
@@ -116,10 +116,10 @@ void GraphicsHelperGL2::drawArraysInstancedBaseInstance(GLenum primitiveType, GL
 }
 
 void GraphicsHelperGL2::drawElements(GLenum primitiveType,
-                                      GLsizei primitiveCount,
-                                      GLint indexType,
-                                      void *indices,
-                                      GLint baseVertex)
+                                     GLsizei primitiveCount,
+                                     GLint indexType,
+                                     void *indices,
+                                     GLint baseVertex)
 {
     if (baseVertex != 0)
         qWarning() << "glDrawElementsBaseVertex is not supported with OpenGL 2";
@@ -131,8 +131,8 @@ void GraphicsHelperGL2::drawElements(GLenum primitiveType,
 }
 
 void GraphicsHelperGL2::drawArrays(GLenum primitiveType,
-                                    GLint first,
-                                    GLsizei count)
+                                   GLint first,
+                                   GLsizei count)
 {
     m_funcs->glDrawArrays(primitiveType,
                           first,
@@ -211,7 +211,7 @@ QVector<ShaderStorageBlock> GraphicsHelperGL2::programShaderStorageBlocks(GLuint
 }
 
 void GraphicsHelperGL2::vertexAttribDivisor(GLuint index,
-                                             GLuint divisor)
+                                            GLuint divisor)
 {
     Q_UNUSED(index);
     Q_UNUSED(divisor);
