@@ -22,5 +22,6 @@ qtConfig(private_tests) {
         inputchord \
         qabstractphysicaldevicebackendnode \
         logicaldevice \
-        qabstractphysicaldeviceproxy
+        qabstractphysicaldeviceproxy \
+        physicaldeviceproxy
 }
