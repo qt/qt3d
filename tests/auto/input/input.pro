@@ -23,5 +23,6 @@ qtConfig(private_tests) {
         qabstractphysicaldevicebackendnode \
         logicaldevice \
         qabstractphysicaldeviceproxy \
-        physicaldeviceproxy
+        physicaldeviceproxy \
+        loadproxydevicejob
 }
