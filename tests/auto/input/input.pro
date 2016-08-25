@@ -25,5 +25,6 @@ qtConfig(private_tests) {
         qabstractphysicaldeviceproxy \
         physicaldeviceproxy \
         loadproxydevicejob \
-        qmousedevice
+        qmousedevice \
+        mousedevice
 }
