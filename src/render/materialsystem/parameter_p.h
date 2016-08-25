@@ -69,6 +69,8 @@ class Parameter : public BackendNode
 public:
     Parameter();
 
+    void cleanup();
+
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     QString name() const;
