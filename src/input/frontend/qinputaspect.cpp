@@ -84,6 +84,7 @@
 #include <Qt3DInput/private/genericdevicebackendnode_p.h>
 #include <Qt3DInput/private/inputsettings_p.h>
 #include <Qt3DInput/private/eventsourcesetterhelper_p.h>
+#include <Qt3DInput/private/loadproxydevicejob_p.h>
 
 #ifdef HAVE_QGAMEPAD
 # include <Qt3DInput/private/qgamepadinput_p.h>
@@ -220,6 +221,16 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     const auto integrations = d->m_inputHandler->inputDeviceIntegrations();
     for (QInputDeviceIntegration *integration : integrations)
         jobs += integration->jobsToExecute(time);
+
+    const QVector<Qt3DCore::QNodeId> proxiesToLoad = d->m_inputHandler->physicalDeviceProxyManager()->takePendingProxiesToLoad();
+    if (!proxiesToLoad.isEmpty()) {
+        // Since loading wrappers occurs quite rarely, no point in keeping the job in a
+        // member variable
+        auto loadWrappersJob = Input::LoadProxyDeviceJobPtr::create();
+        loadWrappersJob->setProxiesToLoad(std::move(proxiesToLoad));
+        loadWrappersJob->setInputHandler(d->m_inputHandler.data());
+        jobs.push_back(loadWrappersJob);
+    }
 
     // All the jobs added up until this point are independents
     // but the axis action jobs will be dependent on these
