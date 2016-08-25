@@ -24,5 +24,6 @@ qtConfig(private_tests) {
         logicaldevice \
         qabstractphysicaldeviceproxy \
         physicaldeviceproxy \
-        loadproxydevicejob
+        loadproxydevicejob \
+        qmousedevice
 }
