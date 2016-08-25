@@ -85,6 +85,8 @@ public:
     QT3D_FUNCTOR(TestTextureGenerator)
 };
 
+typedef QSharedPointer<TestTextureGenerator> TestTextureGeneratorPtr;
+
 class TestTexturePrivate : public Qt3DRender::QAbstractTexturePrivate
 {
 public:
@@ -102,7 +104,7 @@ public:
     {
         d_func()->genId = genId;
         if (genId > 0)
-            d_func()->m_dataFunctor.reset(new TestTextureGenerator(genId));
+            d_func()->setDataFunctor(TestTextureGeneratorPtr::create(genId));
     }
 private:
     Q_DECLARE_PRIVATE(TestTexture)
@@ -122,7 +124,8 @@ public:
 
 protected:
     int m_genId;
-    Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const {
+    Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const
+    {
         return Qt3DRender::QTextureImageDataGeneratorPtr(new TestImageDataGenerator(m_genId));
     }
 };
@@ -131,7 +134,10 @@ class tst_RenderTextures : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 
-    Qt3DRender::QAbstractTexture *createQTexture(int genId, const QVector<int> &imgGenIds, bool genMipMaps) {
+    Qt3DRender::QAbstractTexture *createQTexture(int genId,
+                                                 const QVector<int> &imgGenIds,
+                                                 bool genMipMaps)
+    {
         TestTexture *tex = new TestTexture(genId);
 
         for (int imgGen : imgGenIds)
@@ -141,7 +147,10 @@ class tst_RenderTextures : public Qt3DCore::QBackendNodeTester
         return tex;
     }
 
-    Qt3DRender::Render::Texture *createBackendTexture(Qt3DRender::QAbstractTexture *frontend, Qt3DRender::Render::TextureManager *texMgr, Qt3DRender::Render::TextureImageManager *texImgMgr) {
+    Qt3DRender::Render::Texture *createBackendTexture(Qt3DRender::QAbstractTexture *frontend,
+                                                      Qt3DRender::Render::TextureManager *texMgr,
+                                                      Qt3DRender::Render::TextureImageManager *texImgMgr)
+    {
         Qt3DRender::Render::Texture *backend = texMgr->getOrCreateResource(frontend->id());
         backend->setTextureImageManager(texImgMgr);
         simulateInitialization(frontend, backend);
@@ -162,7 +171,8 @@ class tst_RenderTextures : public Qt3DCore::QBackendNodeTester
 
 private Q_SLOTS:
 
-    void shouldCreateSameGLTextures() {
+    void shouldCreateSameGLTextures()
+    {
         QScopedPointer<Qt3DRender::Render::NodeManagers> mgrs(new Qt3DRender::Render::NodeManagers());
         Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
         renderer.setNodeManagers(mgrs.data());
@@ -181,7 +191,8 @@ private Q_SLOTS:
         QCOMPARE(mgrs->glTextureManager()->lookupResource(bt1a->peerId()), mgrs->glTextureManager()->lookupResource(bt1b->peerId()));
     }
 
-    void shouldCreateDifferentGLTexturess() {
+    void shouldCreateDifferentGLTexturess()
+    {
         QScopedPointer<Qt3DRender::Render::NodeManagers> mgrs(new Qt3DRender::Render::NodeManagers());
         Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
         renderer.setNodeManagers(mgrs.data());
@@ -230,7 +241,8 @@ private Q_SLOTS:
         QVERIFY(glTextures[0]->properties() != glTextures[1]->properties());
     }
 
-    void generatorsShouldCreateSameData() {
+    void generatorsShouldCreateSameData()
+    {
         QScopedPointer<Qt3DRender::Render::NodeManagers> mgrs(new Qt3DRender::Render::NodeManagers());
         Qt3DRender::Render::Renderer renderer(Qt3DRender::QRenderAspect::Synchronous);
         renderer.setNodeManagers(mgrs.data());
@@ -257,6 +269,13 @@ private Q_SLOTS:
         Qt3DRender::QTextureGeneratorPtr tg2 = mgrs->glTextureManager()->lookupResource(backend[1]->peerId())->textureGenerator();
 
         // THEN
+        QVERIFY(idg1a);
+        QVERIFY(idg1b);
+        QVERIFY(idg2);
+        QVERIFY(tg1a);
+        QVERIFY(tg1b);
+        QVERIFY(tg2);
+
         QCOMPARE(*idg1a, *idg1b);
         QVERIFY(!(*idg1a == *idg2));
         QCOMPARE(*tg1a, *tg1b);

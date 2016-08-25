@@ -938,8 +938,10 @@ void QTextureLoader::setSource(const QUrl& source)
     Q_D(QTextureLoader);
     if (source != d->m_source) {
         d->m_source = source;
-        d->m_dataFunctor.reset(new QTextureFromSourceGenerator(source, d->m_mirrored));
+        d->setDataFunctor(QTextureFromSourceGeneratorPtr::create(d->m_source, d->m_mirrored));
+        const bool blocked = blockNotifications(true);
         emit sourceChanged(source);
+        blockNotifications(blocked);
     }
 }
 
@@ -984,8 +986,10 @@ void QTextureLoader::setMirrored(bool mirrored)
     Q_D(QTextureLoader);
     if (mirrored != d->m_mirrored) {
         d->m_mirrored = mirrored;
-        d->m_dataFunctor.reset(new QTextureFromSourceGenerator(d->m_source, d->m_mirrored));
+        d->setDataFunctor(QTextureFromSourceGeneratorPtr::create(d->m_source, d->m_mirrored));
+        const bool blocked = blockNotifications(true);
         emit mirroredChanged(mirrored);
+        blockNotifications(blocked);
     }
 }
 
@@ -999,6 +1003,16 @@ bool QTextureFromSourceGenerator::operator ==(const QTextureGenerator &other) co
     return (otherFunctor != nullptr &&
             otherFunctor->m_url == m_url &&
             otherFunctor->m_mirrored == m_mirrored);
+}
+
+QUrl QTextureFromSourceGenerator::url() const
+{
+    return m_url;
+}
+
+bool QTextureFromSourceGenerator::isMirrored() const
+{
+    return m_mirrored;
 }
 
 /*!

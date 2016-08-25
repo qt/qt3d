@@ -86,6 +86,9 @@ public :
     int m_layers;
     int m_samples;
 
+    void setDataFunctor(const QTextureGeneratorPtr &generator);
+
+private:
     QTextureGeneratorPtr m_dataFunctor;
 };
 

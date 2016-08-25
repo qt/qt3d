@@ -67,7 +67,7 @@ public:
     bool m_mirrored;
 };
 
-class QTextureFromSourceGenerator : public QTextureGenerator
+class Q_AUTOTEST_EXPORT QTextureFromSourceGenerator : public QTextureGenerator
 {
 public:
     explicit QTextureFromSourceGenerator(const QUrl &url, bool mirrored);
@@ -77,11 +77,15 @@ public:
 
     QT3D_FUNCTOR(QTextureFromSourceGenerator)
 
+    QUrl url() const;
+    bool isMirrored() const;
+
 private:
     QUrl m_url;
     QAbstractTexture::Status m_status;
     bool m_mirrored;
 };
+typedef QSharedPointer<QTextureFromSourceGenerator> QTextureFromSourceGeneratorPtr;
 
 class Q_AUTOTEST_EXPORT TextureLoadingHelper
 {
