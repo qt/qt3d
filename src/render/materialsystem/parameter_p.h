@@ -64,7 +64,7 @@ namespace Render {
 class ParameterManager;
 class ShaderDataManager;
 
-class Parameter : public BackendNode
+class Q_AUTOTEST_EXPORT Parameter : public BackendNode
 {
 public:
     Parameter();
