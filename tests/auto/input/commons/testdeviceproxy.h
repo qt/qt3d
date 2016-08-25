@@ -84,8 +84,8 @@ public:
 class TestProxyPrivate : public Qt3DInput::QAbstractPhysicalDeviceProxyPrivate
 {
 public:
-    TestProxyPrivate()
-        : Qt3DInput::QAbstractPhysicalDeviceProxyPrivate(QStringLiteral("TestProxy"))
+    explicit TestProxyPrivate(const QString &name)
+        : Qt3DInput::QAbstractPhysicalDeviceProxyPrivate(name)
     {}
 };
 
@@ -93,8 +93,8 @@ class TestProxy : public Qt3DInput::QAbstractPhysicalDeviceProxy
 {
     Q_OBJECT
 public:
-    TestProxy()
-        : Qt3DInput::QAbstractPhysicalDeviceProxy(*new TestProxyPrivate)
+    explicit TestProxy(const QString &name = QStringLiteral("TestProxy"))
+        : Qt3DInput::QAbstractPhysicalDeviceProxy(*new TestProxyPrivate(name))
     {}
 
     Qt3DInput::QAbstractPhysicalDevice *device() const
