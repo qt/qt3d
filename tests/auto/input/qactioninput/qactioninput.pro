@@ -8,5 +8,4 @@ CONFIG += testcase
 
 SOURCES += tst_qactioninput.cpp
 
-include(../../render/commons/commons.pri)
 include(../commons/commons.pri)

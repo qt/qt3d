@@ -9,3 +9,4 @@ CONFIG += testcase
 SOURCES += tst_sendrendercapturejob.cpp
 
 include(../commons/commons.pri)
+include(../../core/common/common.pri)

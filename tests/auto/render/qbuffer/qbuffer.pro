@@ -8,4 +8,5 @@ CONFIG += testcase
 
 SOURCES += tst_qbuffer.cpp
 
+include(../../core/common/common.pri)
 include(../commons/commons.pri)
