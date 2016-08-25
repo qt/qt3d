@@ -84,7 +84,7 @@ private:
     HLogicalDevice m_handle;
 };
 
-typedef QScopedPointer<UpdateAxisActionJob> UpdateAxisActionJobPtr;
+typedef QSharedPointer<UpdateAxisActionJob> UpdateAxisActionJobPtr;
 
 } // Input
 
