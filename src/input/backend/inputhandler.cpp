@@ -47,6 +47,7 @@
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include "inputsettings_p.h"
 #include "eventsourcesetterhelper_p.h"
+#include <Qt3DInput/private/qinputdeviceintegration_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -300,6 +301,16 @@ void InputHandler::setEventSourceHelper(EventSourceSetterHelper *helper)
 EventSourceSetterHelper *InputHandler::eventSourceHelper() const
 {
     return m_eventSourceSetter.data();
+}
+
+QAbstractPhysicalDevice *Qt3DInput::Input::InputHandler::createPhysicalDevice(const QString &name)
+{
+    QAbstractPhysicalDevice *device = nullptr;
+    for (Qt3DInput::QInputDeviceIntegration *integration : qAsConst(m_inputDeviceIntegrations)) {
+        if ((device = integration->createPhysicalDevice(name)) != nullptr)
+            break;
+    }
+    return device;
 }
 
 void InputHandler::updateEventSource()

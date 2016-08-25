@@ -67,6 +67,7 @@ class QNodeId;
 namespace Qt3DInput {
 
 class QInputDeviceIntegration;
+class QAbstractPhysicalDevice;
 
 namespace Input {
 
@@ -145,6 +146,8 @@ public:
     void setInputSettings(InputSettings *settings);
     void setEventSourceHelper(EventSourceSetterHelper *helper);
     EventSourceSetterHelper *eventSourceHelper() const;
+
+    QAbstractPhysicalDevice *createPhysicalDevice(const QString &name);
 
     void updateEventSource();
 
