@@ -73,7 +73,8 @@ qtConfig(private_tests) {
         qtextureimage \
         qabstracttexture \
         qabstracttextureimage \
-        qrendersettings
+        qrendersettings \
+        updatemeshtrianglelistjob
 
     !macos: SUBDIRS += graphicshelpergl4
 }
