@@ -67,7 +67,7 @@ class QTextureImagePrivate : public QAbstractTextureImagePrivate
 public:
     QTextureImagePrivate()
         : QAbstractTextureImagePrivate()
-        , m_status(QTextureImage::Loading)
+        , m_status(QTextureImage::None)
         , m_mirrored(true)
     {
     }
