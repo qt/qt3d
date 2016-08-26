@@ -71,9 +71,9 @@ Item {
             color: "blue"
 
             Scene3D {
-
+                id: scene3d
                 anchors.fill: parent
-                multisample: false
+                multisample: msacheckbox.checked
 
                 aspects: ["input", "logic"]
 
@@ -91,7 +91,7 @@ Item {
                 text: "Render Capture"
 
                 property var reply
-                property bool continuous : false
+                property bool continuous : checkbox.checked
                 property int cid: 1
 
                 function doRenderCapture()
@@ -112,11 +112,14 @@ Item {
 
                 onClicked: doRenderCapture()
             }
-            CheckBox {
-                id: checkbox
-                text: "continuous"
-                onCheckedChanged: {
-                    button.continuous = checkbox.checked
+            RowLayout {
+                CheckBox {
+                    id: checkbox
+                    text: "continuous"
+                }
+                CheckBox {
+                    id: msacheckbox
+                    text: "multisample"
                 }
             }
             Image {
