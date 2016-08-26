@@ -56,7 +56,7 @@ QT_BEGIN_NAMESPACE
 class Qt3DQuick3DExtrasPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
+    Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
 public:
     Qt3DQuick3DExtrasPlugin(QObject *parent = nullptr) : QQmlExtensionPlugin(parent) { initResources(); }
     void registerTypes(const char *uri) Q_DECL_OVERRIDE;
