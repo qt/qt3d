@@ -44,6 +44,7 @@
 #include <Qt3DRender/qattribute.h>
 #include <qmath.h>
 #include <QVector3D>
+#include <QVector4D>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,8 +59,8 @@ QByteArray createTorusVertexData(double radius, double minorRadius,
 {
     const int nVerts  = sides * (rings + 1);
     QByteArray bufferBytes;
-    // vec3 pos, vec2 texCoord, vec3 normal
-    const quint32 elementSize = 3 + 2 + 3;
+    // vec3 pos, vec2 texCoord, vec3 normal, vec4 tangent
+    const quint32 elementSize = 3 + 2 + 3 + 4;
     const quint32 stride = elementSize * sizeof(float);
     bufferBytes.resize(stride * nVerts);
 
@@ -91,6 +92,13 @@ QByteArray createTorusVertexData(double radius, double minorRadius,
             *fptr++ = n.x();
             *fptr++ = n.y();
             *fptr++ = n.z();
+
+            QVector4D t(-su, cu, 0.0f, 1.0f);
+            t.normalize();
+            *fptr++ = t.x();
+            *fptr++ = t.y();
+            *fptr++ = t.z();
+            *fptr++ = t.w();
         }
     }
 
@@ -200,6 +208,7 @@ QTorusGeometryPrivate::QTorusGeometryPrivate()
     , m_positionAttribute(nullptr)
     , m_normalAttribute(nullptr)
     , m_texCoordAttribute(nullptr)
+    , m_tangentAttribute(nullptr)
     , m_indexAttribute(nullptr)
     , m_vertexBuffer(nullptr)
     , m_indexBuffer(nullptr)
@@ -212,11 +221,12 @@ void QTorusGeometryPrivate::init()
     m_positionAttribute = new QAttribute(q);
     m_normalAttribute = new QAttribute(q);
     m_texCoordAttribute = new QAttribute(q);
+    m_tangentAttribute = new QAttribute(q);
     m_indexAttribute = new QAttribute(q);
     m_vertexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, q);
     m_indexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer, q);
-    // vec3 pos, vec2 tex, vec3 normal
-    const quint32 elementSize = 3 + 2 + 3;
+    // vec3 pos, vec2 tex, vec3 normal, vec4 tangent
+    const quint32 elementSize = 3 + 2 + 3 + 4;
     const quint32 stride = elementSize * sizeof(float);
     const int nVerts = (m_slices + 1) * (m_rings + 1);
     const int faces = (m_slices * 2) * m_rings;
@@ -247,6 +257,15 @@ void QTorusGeometryPrivate::init()
     m_normalAttribute->setByteOffset(5 * sizeof(float));
     m_normalAttribute->setCount(nVerts);
 
+    m_tangentAttribute->setName(QAttribute::defaultTangentAttributeName());
+    m_tangentAttribute->setDataType(QAttribute::Float);
+    m_tangentAttribute->setDataSize(4);
+    m_tangentAttribute->setAttributeType(QAttribute::VertexAttribute);
+    m_tangentAttribute->setBuffer(m_vertexBuffer);
+    m_tangentAttribute->setByteStride(stride);
+    m_tangentAttribute->setByteOffset(8 * sizeof(float));
+    m_tangentAttribute->setCount(nVerts);
+
     m_indexAttribute->setAttributeType(QAttribute::IndexAttribute);
     m_indexAttribute->setDataType(QAttribute::UnsignedShort);
     m_indexAttribute->setBuffer(m_indexBuffer);
@@ -259,6 +278,7 @@ void QTorusGeometryPrivate::init()
     q->addAttribute(m_positionAttribute);
     q->addAttribute(m_texCoordAttribute);
     q->addAttribute(m_normalAttribute);
+    q->addAttribute(m_tangentAttribute);
     q->addAttribute(m_indexAttribute);
 }
 
