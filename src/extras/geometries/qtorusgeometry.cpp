@@ -75,7 +75,7 @@ QByteArray createTorusVertexData(double radius, double minorRadius,
 
         for (int side = 0; side < sides; ++side) {
             const float v = side * sideFactor;
-            const float cv = qCos( v );
+            const float cv = qCos( v + M_PI );
             const float sv = qSin( v );
             const float r = (radius + minorRadius * cv);
 
@@ -111,12 +111,12 @@ QByteArray createTorusIndexData(int rings, int sides)
         const int nextRingStart = (ring + 1) * sides;
         for (int side = 0; side < sides; ++side) {
             const int nextSide = (side + 1) % sides;
-            *indexPtr++ = (ringStart + side);
-            *indexPtr++ = (nextRingStart + side);
-            *indexPtr++ = (nextRingStart + nextSide);
             *indexPtr++ = ringStart + side;
+            *indexPtr++ = ringStart + nextSide;
+            *indexPtr++ = nextRingStart + side;
+            *indexPtr++ = ringStart + nextSide;
             *indexPtr++ = nextRingStart + nextSide;
-            *indexPtr++ = (ringStart + nextSide);
+            *indexPtr++ = nextRingStart + side;
         }
     }
 
