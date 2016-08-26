@@ -72,7 +72,8 @@ qtConfig(private_tests) {
         qtextureloader \
         qtextureimage \
         qabstracttexture \
-        qabstracttextureimage
+        qabstracttextureimage \
+        qrendersettings
 
     !macos: SUBDIRS += graphicshelpergl4
 }
