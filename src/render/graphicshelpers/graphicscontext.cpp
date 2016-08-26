@@ -80,8 +80,6 @@
 
 QT_BEGIN_NAMESPACE
 
-extern Q_GUI_EXPORT QImage qt_gl_read_framebuffer(const QSize &size, bool alpha_format, bool include_alpha);
-
 namespace {
 
 QOpenGLShader::ShaderType shaderType(Qt3DRender::QShaderProgram::ShaderType type)
@@ -203,6 +201,31 @@ void GraphicsContext::initialize()
     qCDebug(Backend) << "VAO support = " << m_supportsVAO;
 }
 
+void GraphicsContext::resolveRenderTargetFormat()
+{
+    const QSurfaceFormat format = m_gl->format();
+    const uint a = format.alphaBufferSize();
+    const uint r = format.redBufferSize();
+    const uint g = format.greenBufferSize();
+    const uint b = format.blueBufferSize();
+
+#define RGBA_BITS(r,g,b,a) (r | (g << 6) | (b << 12) | (a << 18))
+
+    const uint bits = RGBA_BITS(r,g,b,a);
+    switch (bits) {
+    case RGBA_BITS(8,8,8,8):
+        m_renderTargetFormat = QAbstractTexture::RGBA8U;
+        break;
+    case RGBA_BITS(8,8,8,0):
+        m_renderTargetFormat = QAbstractTexture::RGB8U;
+        break;
+    case RGBA_BITS(5,6,5,0):
+        m_renderTargetFormat = QAbstractTexture::R5G6B5;
+        break;
+    }
+#undef RGBA_BITS
+}
+
 bool GraphicsContext::beginDrawing(QSurface *surface)
 {
     Q_ASSERT(surface);
@@ -223,6 +246,9 @@ bool GraphicsContext::beginDrawing(QSurface *surface)
     m_ownCurrent = !(m_gl->surface() == m_surface);
     if (m_ownCurrent && !makeCurrent(m_surface))
         return false;
+
+    // TODO: cache surface format somewhere rather than doing this every time render surface changes
+    resolveRenderTargetFormat();
 
     // Sets or Create the correct m_glHelper
     // for the current surface
@@ -528,8 +554,11 @@ void GraphicsContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId,
             const auto attachments_ = attachments.attachments();
             for (const Attachment &attachment : attachments_) {
                 Texture *rTex = textureManager->lookupResource(attachment.m_textureUuid);
-                if (rTex != nullptr)
+                if (rTex != nullptr) {
                     needsResize |= rTex->isTextureReset();
+                    if (attachment.m_point == QRenderTargetOutput::Color0)
+                        m_renderTargetFormat = rTex->format();
+                }
             }
             if (needsResize) {
                 m_glHelper->bindFrameBufferObject(fboId);
@@ -1540,10 +1569,148 @@ GLint GraphicsContext::glDataTypeFromAttributeDataType(QAttribute::VertexBaseTyp
     return GL_FLOAT;
 }
 
+static void copyGLFramebufferDataToImage(QImage &img, const uchar *srcData, uint stride, uint width, uint height, QAbstractTexture::TextureFormat format)
+{
+    switch (format) {
+    case QAbstractTexture::RGBA32F:
+        {
+            uchar *srcScanline = (uchar *)srcData + stride * (height - 1);
+            for (uint i = 0; i < height; ++i) {
+                uchar *dstScanline = img.scanLine(i);
+                float *pSrc = (float*)srcScanline;
+                for (uint j = 0; j < width; j++) {
+                    *dstScanline++ = (uchar)(255.0f * (pSrc[4*j+2] / (1.0f + pSrc[4*j+2])));
+                    *dstScanline++ = (uchar)(255.0f * (pSrc[4*j+1] / (1.0f + pSrc[4*j+1])));
+                    *dstScanline++ = (uchar)(255.0f * (pSrc[4*j+0] / (1.0f + pSrc[4*j+0])));
+                    *dstScanline++ = (uchar)(255.0f * qBound(0.0f, pSrc[4*j+3], 1.0f));
+                }
+                srcScanline -= stride;
+            }
+        } break;
+    default:
+        {
+            uchar* srcScanline = (uchar *)srcData + stride * (height - 1);
+            for (uint i = 0; i < height; ++i) {
+                memcpy(img.scanLine(i), srcScanline, stride);
+                srcScanline -= stride;
+            }
+        } break;
+    }
+}
+
 QImage GraphicsContext::readFramebuffer(QSize size)
 {
-    // todo: own implementation
-    return qt_gl_read_framebuffer(size, true, true);
+    QImage img;
+    const unsigned int area = size.width() * size.height();
+    unsigned int bytes;
+    GLenum format, type;
+    GLenum internalFormat;
+    QImage::Format imageFormat;
+    uint stride;
+
+    switch (m_renderTargetFormat) {
+    case QAbstractTexture::RGBA8U:
+#ifdef QT_OPENGL_ES_2
+        format = GL_RGBA;
+        imageFormat = QImage::Format_RGBA8888_Premultiplied;
+#else
+        format = GL_BGRA;
+        imageFormat = QImage::Format_ARGB32_Premultiplied;
+        internalFormat = GL_RGBA8;
+#endif
+        type = GL_UNSIGNED_BYTE;
+        bytes = area * 4;
+        stride = size.width() * 4;
+        break;
+    case QAbstractTexture::RGB8U:
+#ifdef QT_OPENGL_ES_2
+        format = GL_RGBA;
+        imageFormat = QImage::Format_RGBX8888;
+#else
+        format = GL_BGRA;
+        imageFormat = QImage::Format_RGB32;
+        internalFormat = GL_RGB8;
+#endif
+        type = GL_UNSIGNED_BYTE;
+        bytes = area * 4;
+        stride = size.width() * 4;
+        break;
+#ifndef QT_OPENGL_ES_2
+    case QAbstractTexture::R5G6B5:
+        bytes = area * 2;
+        format = GL_RGB;
+        type = GL_UNSIGNED_SHORT;
+        internalFormat = GL_UNSIGNED_SHORT_5_6_5_REV;
+        imageFormat = QImage::Format_RGB16;
+        stride = size.width() * 2;
+        break;
+    case QAbstractTexture::RGBA32F:
+        bytes = area * 16;
+        format = GL_RGBA;
+        type = GL_RGBA32F;
+        imageFormat = QImage::Format_ARGB32_Premultiplied;
+        stride = size.width() * 16;
+        break;
+#endif
+    default:
+        // unsupported format
+        Q_UNREACHABLE();
+        return img;
+    }
+
+#ifndef QT_OPENGL_ES_2
+    GLint samples = 0;
+    m_gl->functions()->glGetIntegerv(GL_SAMPLES, &samples);
+    if (samples > 0 && !m_glHelper->supportsFeature(GraphicsHelperInterface::BlitFramebuffer))
+        return img;
+#endif
+
+    img = QImage(size.width(), size.height(), imageFormat);
+
+    QScopedArrayPointer<uchar> data(new uchar [bytes]);
+
+#ifndef QT_OPENGL_ES_2
+    if (samples > 0) {
+        // resolve multisample-framebuffer to renderbuffer and read pixels from it
+        GLuint fbo, rb;
+        QOpenGLFunctions *gl = m_gl->functions();
+        gl->glGenFramebuffers(1, &fbo);
+        gl->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+        gl->glGenRenderbuffers(1, &rb);
+        gl->glBindRenderbuffer(GL_RENDERBUFFER, rb);
+        gl->glRenderbufferStorage(GL_RENDERBUFFER, internalFormat, size.width(), size.height());
+        gl->glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, rb);
+
+        const GLenum status = gl->glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
+        if (status != GL_FRAMEBUFFER_COMPLETE) {
+            gl->glDeleteRenderbuffers(1, &rb);
+            gl->glDeleteFramebuffers(1, &fbo);
+            return img;
+        }
+
+        m_glHelper->blitFramebuffer(0, 0, size.width(), size.height(),
+                                    0, 0, size.width(), size.height(),
+                                    GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        gl->glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
+        gl->glReadPixels(0,0,size.width(), size.height(), format, type, data.data());
+
+        copyGLFramebufferDataToImage(img, data.data(), stride, size.width(), size.height(), m_renderTargetFormat);
+
+        gl->glBindRenderbuffer(GL_RENDERBUFFER, rb);
+        gl->glDeleteRenderbuffers(1, &rb);
+        gl->glBindFramebuffer(GL_FRAMEBUFFER, m_activeFBO);
+        gl->glDeleteFramebuffers(1, &fbo);
+    } else {
+#endif
+        // read pixels directly from framebuffer
+        m_gl->functions()->glReadPixels(0,0,size.width(), size.height(), format, type, data.data());
+        copyGLFramebufferDataToImage(img, data.data(), stride, size.width(), size.height(), m_renderTargetFormat);
+
+#ifndef QT_OPENGL_ES_2
+    }
+#endif
+
+    return img;
 }
 
 QT3D_UNIFORM_TYPE_IMPL(UniformType::Float, float, glUniform1fv)

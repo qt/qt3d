@@ -247,6 +247,7 @@ private:
     HGLBuffer createGLBufferFor(Buffer *buffer);
     void uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool releaseBuffer = false);
     bool bindGLBuffer(GLBuffer *buffer, GLBuffer::Type type);
+    void resolveRenderTargetFormat();
 
     bool m_initialized;
     const unsigned int m_id;
@@ -262,6 +263,7 @@ private:
     QHash<Qt3DCore::QNodeId, HGLBuffer> m_renderBufferHash;
     QHash<Qt3DCore::QNodeId, GLuint> m_renderTargets;
     QHash<GLuint, QSize> m_renderTargetsSize;
+    QAbstractTexture::TextureFormat m_renderTargetFormat;
 
     QHash<QSurface *, GraphicsHelperInterface*> m_glHelpers;
 
