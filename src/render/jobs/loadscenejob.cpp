@@ -60,6 +60,26 @@ LoadSceneJob::LoadSceneJob(const QUrl &source, Qt3DCore::QNodeId m_sceneComponen
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadScene, 0);
 }
 
+NodeManagers *LoadSceneJob::nodeManagers() const
+{
+    return m_managers;
+}
+
+QList<QSceneIOHandler *> LoadSceneJob::sceneIOHandlers() const
+{
+    return m_sceneIOHandlers;
+}
+
+QUrl LoadSceneJob::source() const
+{
+    return m_source;
+}
+
+Qt3DCore::QNodeId LoadSceneJob::sceneComponentId() const
+{
+    return m_sceneComponent;
+}
+
 void LoadSceneJob::run()
 {
     // Iterate scene IO handlers until we find one that can handle this file type
