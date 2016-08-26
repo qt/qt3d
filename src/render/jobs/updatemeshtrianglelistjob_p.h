@@ -71,6 +71,8 @@ public:
     void setManagers(NodeManagers *manager);
     void run() Q_DECL_FINAL;
 
+    NodeManagers *managers() const;
+
 private:
     NodeManagers *m_manager;
 };

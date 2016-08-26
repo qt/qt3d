@@ -114,6 +114,11 @@ void UpdateMeshTriangleListJob::run()
     }
 }
 
+NodeManagers *UpdateMeshTriangleListJob::managers() const
+{
+    return m_manager;
+}
+
 } // Render
 
 } // Qt3DRender
