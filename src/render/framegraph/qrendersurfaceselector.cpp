@@ -216,7 +216,6 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
         QWindow *window = qobject_cast<QWindow *>(surfaceObject);
         if (window) {
             surface = static_cast<QSurface *>(window);
-            setSurfacePixelRatio(window->devicePixelRatio());
         } else {
             QOffscreenSurface *offscreen = qobject_cast<QOffscreenSurface *>(surfaceObject);
             if (offscreen)
@@ -272,6 +271,7 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
                     if (screen && surfacePixelRatio() != screen->devicePixelRatio())
                         setSurfacePixelRatio(screen->devicePixelRatio());
                 });
+                setSurfacePixelRatio(window->devicePixelRatio());
             }
 
             break;
@@ -301,6 +301,8 @@ QSize QRenderSurfaceSelector::externalRenderTargetSize() const
 void QRenderSurfaceSelector::setSurfacePixelRatio(float ratio)
 {
     Q_D(QRenderSurfaceSelector);
+    if (d->m_surfacePixelRatio == ratio)
+        return;
     d->m_surfacePixelRatio = ratio;
     emit surfacePixelRatioChanged(ratio);
 }
