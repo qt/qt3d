@@ -69,7 +69,8 @@ qtConfig(private_tests) {
         textures \
         qparameter \
         parameter \
-        qtextureloader
+        qtextureloader \
+        qtextureimage
 
     !macos: SUBDIRS += graphicshelpergl4
 }
