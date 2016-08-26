@@ -90,9 +90,11 @@ void LoadSceneJob::run()
 
     // Reset status
     scene->setStatus(QSceneLoader::None);
+    QSceneLoader::Status finalStatus = QSceneLoader::None;
 
     // Perform the loading only if the source wasn't explicitly set to empty
     if (!m_source.isEmpty()) {
+        finalStatus = QSceneLoader::Error;
         for (QSceneIOHandler *sceneIOHandler : qAsConst(m_sceneIOHandlers)) {
             if (!sceneIOHandler->isFileTypeSupported(m_source))
                 continue;
@@ -102,15 +104,11 @@ void LoadSceneJob::run()
 
             // File type is supported, try to load it
             sceneIOHandler->setSource(m_source);
-            Qt3DCore::QEntity *sub = sceneIOHandler->scene();
-            if (sub) {
-                sceneSubTree = sub;
+            sceneSubTree = sceneIOHandler->scene();
+            if (sceneSubTree != nullptr) {
                 // Successfully built a subtree
-                scene->setStatus(QSceneLoader::Ready);
+                finalStatus = QSceneLoader::Ready;
                 break;
-            } else {
-                // Tree wasn't build so something went wrong obviously
-                scene->setStatus(QSceneLoader::Error);
             }
         }
     }
@@ -120,6 +118,10 @@ void LoadSceneJob::run()
     // Set clone of sceneTree in sceneComponent. This will move the sceneSubTree
     // to the QCoreApplication thread which is where the frontend object tree lives.
     scene->setSceneSubtree(sceneSubTree);
+
+    // Note: the status is set after the subtree so that bindinds depending on the status
+    // in the frontend will be consistent
+    scene->setStatus(finalStatus);
 }
 
 } // namespace Render
