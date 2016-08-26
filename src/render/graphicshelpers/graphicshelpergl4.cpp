@@ -586,6 +586,7 @@ bool GraphicsHelperGL4::supportsFeature(GraphicsHelperInterface::Feature feature
     case ShaderStorageObject:
     case Compute:
     case DrawBuffersBlend:
+    case BlitFramebuffer:
         return true;
     default:
         return false;
@@ -1047,6 +1048,11 @@ QSize GraphicsHelperGL4::getTextureDimensions(GLuint textureId, GLenum target, u
 void GraphicsHelperGL4::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
 {
     m_funcs->glDispatchCompute(wx, wy, wz);
+}
+
+void GraphicsHelperGL4::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter)
+{
+    m_funcs->glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
 }
 
 } // namespace Render

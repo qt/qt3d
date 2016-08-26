@@ -731,6 +731,21 @@ UniformType GraphicsHelperGL2::uniformTypeFromGLType(GLenum type)
     }
 }
 
+void GraphicsHelperGL2::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter)
+{
+    Q_UNUSED(srcX0);
+    Q_UNUSED(srcX1);
+    Q_UNUSED(srcY0);
+    Q_UNUSED(srcY1);
+    Q_UNUSED(dstX0);
+    Q_UNUSED(dstX1);
+    Q_UNUSED(dstY0);
+    Q_UNUSED(dstY1);
+    Q_UNUSED(mask);
+    Q_UNUSED(filter);
+    qWarning() << "Framebuffer blits are not supported by ES 2.0 (since ES 3.1)";
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 

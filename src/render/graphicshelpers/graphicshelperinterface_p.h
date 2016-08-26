@@ -77,7 +77,8 @@ public:
         TextureDimensionRetrieval,
         ShaderStorageObject,
         Compute,
-        DrawBuffersBlend
+        DrawBuffersBlend,
+        BlitFramebuffer
     };
 
     virtual ~GraphicsHelperInterface() {}
@@ -91,6 +92,7 @@ public:
     virtual void    blendEquation(GLenum mode) = 0;
     virtual void    blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor) = 0;
     virtual void    blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRGB, GLenum sAlpha, GLenum dAlpha) = 0;
+    virtual void    blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) = 0;
     virtual GLuint  boundFrameBufferObject() = 0;
     virtual void    buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) = 0;
     virtual bool    checkFrameBufferComplete() = 0;
