@@ -186,7 +186,9 @@ void QTextureImage::setSource(const QUrl &source)
     Q_D(QTextureImage);
     if (source != d->m_source) {
         d->m_source = source;
+        const bool blocked = blockNotifications(true);
         emit sourceChanged(source);
+        blockNotifications(blocked);
         notifyDataGeneratorChanged();
     }
 }
@@ -232,7 +234,9 @@ void QTextureImage::setMirrored(bool mirrored)
     Q_D(QTextureImage);
     if (mirrored != d->m_mirrored) {
         d->m_mirrored = mirrored;
+        const bool blocked = blockNotifications(true);
         emit mirroredChanged(mirrored);
+        blockNotifications(blocked);
         notifyDataGeneratorChanged();
     }
 }
@@ -304,6 +308,16 @@ bool QImageTextureDataFunctor::operator ==(const QTextureImageDataGenerator &oth
             otherFunctor->m_url == m_url &&
             otherFunctor->m_lastModified == m_lastModified &&
             otherFunctor->m_mirrored == m_mirrored);
+}
+
+QUrl QImageTextureDataFunctor::url() const
+{
+    return m_url;
+}
+
+bool QImageTextureDataFunctor::isMirrored() const
+{
+    return m_mirrored;
 }
 
 } // namespace Qt3DRender
