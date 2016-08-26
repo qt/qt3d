@@ -67,7 +67,7 @@ QByteArray createTorusVertexData(double radius, double minorRadius,
     float* fptr = reinterpret_cast<float*>(bufferBytes.data());
 
     const float ringFactor = (M_PI * 2) / static_cast<float>( rings );
-    const float sideFactor = (M_PI * 2) / static_cast<float>( sides );
+    const float sideFactor = (M_PI * 2) / static_cast<float>( sides - 1 );
 
     for (int ring = 0; ring <= rings; ++ring) {
         const float u = ring * ringFactor;
