@@ -49,6 +49,8 @@ namespace Qt3DRender {
 
 class QPickingSettingsPrivate;
 
+// TO DO: Qt 6 -> Make this a QObject
+
 class QT3DRENDERSHARED_EXPORT QPickingSettings : public Qt3DCore::QNode
 {
     Q_OBJECT

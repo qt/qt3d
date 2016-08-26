@@ -77,6 +77,8 @@ QPickingSettingsPrivate::QPickingSettingsPrivate()
 QPickingSettings::QPickingSettings(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QPickingSettingsPrivate, parent)
 {
+    // Block all notifications for this class as it should have been a QObject
+    blockNotifications(true);
 }
 
 /*! \internal */
