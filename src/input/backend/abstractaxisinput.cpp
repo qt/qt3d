@@ -80,18 +80,6 @@ void AbstractAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     QBackendNode::sceneChangeEvent(e);
 }
 
-QAbstractPhysicalDeviceBackendNode *AbstractAxisInput::findAxisInputPhysicalDevice(InputHandler *handler)
-{
-    const auto integrations = handler->inputDeviceIntegrations();
-    for (QInputDeviceIntegration *integration : integrations) {
-        QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = integration->physicalDevice(m_sourceDevice);
-        if (physicalDeviceBackend)
-            return physicalDeviceBackend;
-    }
-
-    return nullptr;
-}
-
 } // Input
 
 } // Qt3DInput

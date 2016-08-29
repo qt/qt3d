@@ -43,6 +43,7 @@
 #include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
 #include <Qt3DInput/private/qbuttonaxisinput_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DInput/private/utils_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -139,7 +140,7 @@ float ButtonAxisInput::process(InputHandler *inputHandler, qint64 currentTime)
     if (m_buttons.isEmpty())
         return 0.0f;
 
-    QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = findAxisInputPhysicalDevice(inputHandler);
+    QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = Utils::physicalDeviceForInput(this, inputHandler);
     if (!physicalDeviceBackend)
         return 0.0f;
 

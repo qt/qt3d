@@ -75,8 +75,6 @@ public:
     virtual float process(InputHandler *inputHandler, qint64 currentTime) = 0;
 
 protected:
-    QAbstractPhysicalDeviceBackendNode *findAxisInputPhysicalDevice(InputHandler *handler);
-
     AbstractAxisInput();
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
 
