@@ -317,8 +317,10 @@ float QRenderSurfaceSelector::surfacePixelRatio() const
 void QRenderSurfaceSelector::setExternalRenderTargetSize(const QSize &size)
 {
     Q_D(QRenderSurfaceSelector);
-    d->setExternalRenderTargetSize(size);
-    emit externalRenderTargetSizeChanged(size);
+    if (size != d->m_externalRenderTargetSize) {
+        d->setExternalRenderTargetSize(size);
+        emit externalRenderTargetSizeChanged(size);
+    }
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QRenderSurfaceSelector::createNodeCreationChange() const
