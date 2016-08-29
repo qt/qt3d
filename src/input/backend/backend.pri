@@ -33,7 +33,8 @@ HEADERS += \
     $$PWD/eventsourcesetterhelper_p.h \
     $$PWD/job_common_p.h \
     $$PWD/physicaldeviceproxy_p.h \
-    $$PWD/loadproxydevicejob_p.h
+    $$PWD/loadproxydevicejob_p.h \
+    $$PWD/utils_p.h
 
 SOURCES += \
     $$PWD/keyboarddevice.cpp \
