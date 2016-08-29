@@ -75,11 +75,10 @@ void ActionInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::PropertyUpdated) {
         Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("sourceDevice")) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("sourceDevice"))
             m_sourceDevice = propertyChange->value().value<Qt3DCore::QNodeId>();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("buttons")) {
+        else if (propertyChange->propertyName() == QByteArrayLiteral("buttons"))
             m_buttons = propertyChange->value().value<QVector<int>>();
-        }
     }
     AbstractActionInput::sceneChangeEvent(e);
 }
