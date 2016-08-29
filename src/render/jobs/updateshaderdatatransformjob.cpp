@@ -73,6 +73,11 @@ void UpdateShaderDataTransformJob::setManagers(NodeManagers *manager)
     m_manager = manager;
 }
 
+NodeManagers *UpdateShaderDataTransformJob::managers() const
+{
+    return m_manager;
+}
+
 void UpdateShaderDataTransformJob::run()
 {
     EntityManager *manager = m_manager->renderNodesManager();

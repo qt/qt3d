@@ -69,8 +69,8 @@ public:
     ~UpdateShaderDataTransformJob();
 
     void setManagers(NodeManagers *manager);
+    NodeManagers *managers() const;
 
-protected:
     void run() Q_DECL_FINAL;
 
 private:
