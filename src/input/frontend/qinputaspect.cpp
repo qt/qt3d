@@ -70,6 +70,7 @@
 #include <Qt3DInput/qinputsequence.h>
 #include <Qt3DInput/qlogicaldevice.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DInput/private/qabstractphysicaldeviceproxy_p.h>
 #include <Qt3DInput/private/axis_p.h>
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/private/axissetting_p.h>
@@ -143,6 +144,7 @@ QInputAspect::QInputAspect(QInputAspectPrivate &dd, QObject *parent)
     registerBackendType<QLogicalDevice>(QBackendNodeMapperPtr(new Input::LogicalDeviceNodeFunctor(d_func()->m_inputHandler->logicalDeviceManager())));
     registerBackendType<QGenericInputDevice>(QBackendNodeMapperPtr(new Input::GenericDeviceBackendFunctor(this, d_func()->m_inputHandler.data())));
     registerBackendType<QInputSettings>(QBackendNodeMapperPtr(new Input::InputSettingsFunctor(d_func()->m_inputHandler.data())));
+    registerBackendType<QAbstractPhysicalDeviceProxy>(QBackendNodeMapperPtr(new Input::PhysicalDeviceProxyNodeFunctor(d_func()->m_inputHandler->physicalDeviceProxyManager())));
 
 #ifdef HAVE_QGAMEPAD
     registerBackendType<QGamepadInput>(QBackendNodeMapperPtr(new Input::GenericDeviceBackendFunctor(this, d_func()->m_inputHandler.data())));
