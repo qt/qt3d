@@ -77,12 +77,14 @@ public:
 
     // Called from a job to update the frontend
     void setDevice(QAbstractPhysicalDevice *device);
+    Qt3DCore::QNodeId physicalDeviceId() const;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
     QString m_deviceName;
     PhysicalDeviceProxyManager *m_manager;
+    Qt3DCore::QNodeId m_physicalDeviceId;
 };
 
 class PhysicalDeviceProxyNodeFunctor: public Qt3DCore::QBackendNodeMapper

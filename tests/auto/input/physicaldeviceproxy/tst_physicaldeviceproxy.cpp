@@ -54,6 +54,7 @@ private Q_SLOTS:
         QVERIFY(backendPhysicalDeviceProxy.peerId().isNull());
         QCOMPARE(backendPhysicalDeviceProxy.deviceName(), QString());
         QVERIFY(backendPhysicalDeviceProxy.manager() == nullptr);
+        QVERIFY(backendPhysicalDeviceProxy.physicalDeviceId().isNull());
     }
 
     void checkInitializeFromPeer()
@@ -73,6 +74,7 @@ private Q_SLOTS:
             QCOMPARE(backendPhysicalDeviceProxy.peerId(), PhysicalDeviceProxy.id());
             QCOMPARE(backendPhysicalDeviceProxy.deviceName(), QStringLiteral("TestProxy"));
             QVERIFY(backendPhysicalDeviceProxy.manager() == &manager);
+            QVERIFY(backendPhysicalDeviceProxy.physicalDeviceId().isNull());
         }
         {
             // WHEN
@@ -123,6 +125,7 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "device");
         QCOMPARE(change->value().value<Qt3DInput::QAbstractPhysicalDevice *>(), &physicalDevice);
         QCOMPARE(change->subjectId(), backendPhysicalDeviceProxy.peerId());
+        QCOMPARE(backendPhysicalDeviceProxy.physicalDeviceId(), physicalDevice.id());
     }
 
     void checkCleanupState()
@@ -142,6 +145,7 @@ private Q_SLOTS:
         QCOMPARE(backendPhysicalDeviceProxy.isEnabled(), false);
         QCOMPARE(backendPhysicalDeviceProxy.deviceName(), QString());
         QVERIFY(backendPhysicalDeviceProxy.manager() == nullptr);
+        QVERIFY(backendPhysicalDeviceProxy.physicalDeviceId().isNull());
     }
 
 };

@@ -61,6 +61,7 @@ void PhysicalDeviceProxy::cleanup()
     QBackendNode::setEnabled(false);
     m_deviceName.clear();
     m_manager = nullptr;
+    m_physicalDeviceId = Qt3DCore::QNodeId();
 }
 
 QString PhysicalDeviceProxy::deviceName() const
@@ -80,15 +81,23 @@ PhysicalDeviceProxyManager *PhysicalDeviceProxy::manager() const
 
 void PhysicalDeviceProxy::setDevice(QAbstractPhysicalDevice *device)
 {
+    m_physicalDeviceId = Qt3DCore::QNodeId();
     // Move the device to the main thread
-    if (device != nullptr)
+    if (device != nullptr) {
+        m_physicalDeviceId = device->id();
         device->moveToThread(QCoreApplication::instance()->thread());
+    }
 
     auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("device");
     e->setValue(QVariant::fromValue(device));
     notifyObservers(e);
+}
+
+Qt3DCore::QNodeId PhysicalDeviceProxy::physicalDeviceId() const
+{
+    return m_physicalDeviceId;
 }
 
 void PhysicalDeviceProxy::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
