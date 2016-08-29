@@ -214,10 +214,10 @@ void GraphicsContext::resolveRenderTargetFormat()
     const uint bits = RGBA_BITS(r,g,b,a);
     switch (bits) {
     case RGBA_BITS(8,8,8,8):
-        m_renderTargetFormat = QAbstractTexture::RGBA8U;
+        m_renderTargetFormat = QAbstractTexture::RGBA8_UNorm;
         break;
     case RGBA_BITS(8,8,8,0):
-        m_renderTargetFormat = QAbstractTexture::RGB8U;
+        m_renderTargetFormat = QAbstractTexture::RGB8_UNorm;
         break;
     case RGBA_BITS(5,6,5,0):
         m_renderTargetFormat = QAbstractTexture::R5G6B5;
@@ -1604,12 +1604,20 @@ QImage GraphicsContext::readFramebuffer(QSize size)
     const unsigned int area = size.width() * size.height();
     unsigned int bytes;
     GLenum format, type;
-    GLenum internalFormat;
     QImage::Format imageFormat;
     uint stride;
 
+#ifndef QT_OPENGL_ES_2
+    /* format value should match GL internalFormat */
+    GLenum internalFormat = m_renderTargetFormat;
+#endif
+
     switch (m_renderTargetFormat) {
+    case QAbstractTexture::RGBAFormat:
+    case QAbstractTexture::RGBA8_SNorm:
+    case QAbstractTexture::RGBA8_UNorm:
     case QAbstractTexture::RGBA8U:
+    case QAbstractTexture::SRGB8_Alpha8:
 #ifdef QT_OPENGL_ES_2
         format = GL_RGBA;
         imageFormat = QImage::Format_RGBA8888_Premultiplied;
@@ -1622,6 +1630,8 @@ QImage GraphicsContext::readFramebuffer(QSize size)
         bytes = area * 4;
         stride = size.width() * 4;
         break;
+    case QAbstractTexture::SRGB8:
+    case QAbstractTexture::RGBFormat:
     case QAbstractTexture::RGB8U:
 #ifdef QT_OPENGL_ES_2
         format = GL_RGBA;
@@ -1636,6 +1646,20 @@ QImage GraphicsContext::readFramebuffer(QSize size)
         stride = size.width() * 4;
         break;
 #ifndef QT_OPENGL_ES_2
+    case QAbstractTexture::RG11B10F:
+        bytes = area * 4;
+        format = GL_RGB;
+        type = GL_UNSIGNED_INT_10F_11F_11F_REV;
+        imageFormat = QImage::Format_RGB30;
+        stride = size.width() * 4;
+        break;
+    case QAbstractTexture::RGB10A2:
+        bytes = area * 4;
+        format = GL_RGBA;
+        type = GL_UNSIGNED_INT_2_10_10_10_REV;
+        imageFormat = QImage::Format_A2BGR30_Premultiplied;
+        stride = size.width() * 4;
+        break;
     case QAbstractTexture::R5G6B5:
         bytes = area * 2;
         format = GL_RGB;
@@ -1644,10 +1668,13 @@ QImage GraphicsContext::readFramebuffer(QSize size)
         imageFormat = QImage::Format_RGB16;
         stride = size.width() * 2;
         break;
+    case QAbstractTexture::RGBA16F:
+    case QAbstractTexture::RGBA16U:
     case QAbstractTexture::RGBA32F:
+    case QAbstractTexture::RGBA32U:
         bytes = area * 16;
         format = GL_RGBA;
-        type = GL_RGBA32F;
+        type = GL_FLOAT;
         imageFormat = QImage::Format_ARGB32_Premultiplied;
         stride = size.width() * 16;
         break;
