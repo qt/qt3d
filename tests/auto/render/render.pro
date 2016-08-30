@@ -75,7 +75,8 @@ qtConfig(private_tests) {
         qabstracttextureimage \
         qrendersettings \
         updatemeshtrianglelistjob \
-        updateshaderdatatransformjob
+        updateshaderdatatransformjob \
+        texturedatamanager
 
     !macos: SUBDIRS += graphicshelpergl4
 }
