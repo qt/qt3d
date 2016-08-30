@@ -95,7 +95,9 @@ public:
     {
         QMutexLocker lock(&m_mutex);
 
-        Entry *entry = findEntry(generator, true);
+        Entry *entry = findEntry(generator);
+        if (entry == nullptr)
+            entry = createEntry(generator);
         Q_ASSERT(entry);
         if (!entry->referencingTextures.contains(tex))
             entry->referencingTextures.push_back(tex);
@@ -130,7 +132,7 @@ public:
     {
         QMutexLocker lock(&m_mutex);
 
-        const Entry *entry = findEntry(generator, false);
+        const Entry *entry = findEntry(generator);
         return entry ? entry->data : DataPtr();
     }
 
@@ -156,7 +158,7 @@ public:
     {
         QMutexLocker lock(&m_mutex);
 
-        Entry *entry = findEntry(generator, false);
+        Entry *entry = findEntry(generator);
         if (!entry)
             qWarning() << "[TextureDataManager] assignData() called with non-existent generator";
         else
@@ -172,23 +174,24 @@ private:
     };
 
     /*!
-     * Helper function: return entry for given generator.
-     * if create == true, create a new entry if not existent yet
+     * Helper function: return entry for given generator if it exists, nullptr
+     * otherwise.
      */
-    Entry* findEntry(const GeneratorPtr &generator, bool create)
+    Entry* findEntry(const GeneratorPtr &generator)
     {
         for (int i = 0, sz = m_data.size(); i < sz; ++i)
             if (*m_data[i].generator == *generator)
                 return &m_data[i];
-
-        if (create) {
-            Entry newEntry;
-            newEntry.generator = generator;
-
-            m_data.push_back(newEntry);
-            return &m_data.back();
-        }
         return nullptr;
+    }
+
+    Entry *createEntry(const GeneratorPtr &generator)
+    {
+        Entry newEntry;
+        newEntry.generator = generator;
+
+        m_data.push_back(newEntry);
+        return &m_data.back();
     }
 
     QMutex m_mutex;
