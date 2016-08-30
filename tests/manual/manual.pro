@@ -32,7 +32,8 @@ SUBDIRS += \
     transforms-qml \
     transparency-qml \
     transparency-qml-scene3d \
-    rendercapture-qml
+    rendercapture-qml \
+    additional-attributes-qml
 
 qtHaveModule(widgets): {
     SUBDIRS += \
