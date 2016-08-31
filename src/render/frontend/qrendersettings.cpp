@@ -69,7 +69,7 @@ void QRenderSettingsPrivate::init()
     QObject::connect(&m_pickingSettings, SIGNAL(pickResultModeChanged(QPickingSettings::PickResultMode)),
                      q, SLOT(_q_onPickResultModeChanged(QPickingSettings::PickResultMode)));
     QObject::connect(&m_pickingSettings, SIGNAL(faceOrientationPickingModeChanged(QPickingSettings::FaceOrientationPickingMode)),
-                     q, SLOT(_q_onFaceOrientationPickingMode(QPickingSettings::FaceOrientationPickingMode)));
+                     q, SLOT(_q_onFaceOrientationPickingModeChanged(QPickingSettings::FaceOrientationPickingMode)));
 }
 
 /*! \internal */
@@ -85,7 +85,7 @@ void QRenderSettingsPrivate::_q_onPickResultModeChanged(QPickingSettings::PickRe
 }
 
 /*! \internal */
-void QRenderSettingsPrivate::_q_onFaceOrientationPickingModeChanged(bool faceOrientationPickingMode)
+void QRenderSettingsPrivate::_q_onFaceOrientationPickingModeChanged(QPickingSettings::FaceOrientationPickingMode faceOrientationPickingMode)
 {
     notifyPropertyChange("faceOrientationPickingMode", faceOrientationPickingMode);
 }

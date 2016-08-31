@@ -89,6 +89,7 @@ protected:
 private:
     Q_PRIVATE_SLOT(d_func(), void _q_onPickingMethodChanged(QPickingSettings::PickMethod))
     Q_PRIVATE_SLOT(d_func(), void _q_onPickResultModeChanged(QPickingSettings::PickResultMode))
+    Q_PRIVATE_SLOT(d_func(), void _q_onFaceOrientationPickingModeChanged(QPickingSettings::FaceOrientationPickingMode))
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
