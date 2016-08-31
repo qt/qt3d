@@ -180,6 +180,7 @@ public:
 
     // Wrapper methods
     void    alphaTest(GLenum mode1, GLenum mode2);
+    void    bindFramebuffer(GLuint fbo);
     void    bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer);
     void    bindFragOutputs(GLuint shader, const QHash<QString, int> &outputs);
     void    bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
