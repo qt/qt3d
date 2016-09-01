@@ -83,7 +83,7 @@ public:
         Slerp = 0,
         Nlerp
     };
-    Q_ENUM(Type)
+    Q_ENUM(Type) // LCOV_EXCL_LINE
 
     QQuaternionAnimation(QObject *parent = 0);
 

@@ -77,7 +77,7 @@ public:
         IndexAttribute
     };
 
-    Q_ENUM(AttributeType)
+    Q_ENUM(AttributeType) // LCOV_EXCL_LINE
 
     enum VertexBaseType {
         Byte = 0,
@@ -90,7 +90,7 @@ public:
         Float,
         Double
     };
-    Q_ENUM(VertexBaseType)
+    Q_ENUM(VertexBaseType) // LCOV_EXCL_LINE
 
     explicit QAttribute(QNode *parent = nullptr);
     explicit QAttribute(QBuffer *buf, VertexBaseType vertexBaseType, uint vertexSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = nullptr);

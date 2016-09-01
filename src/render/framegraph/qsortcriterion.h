@@ -61,7 +61,7 @@ public:
         BackToFront = (1 << 1),
         Material = (1 << 2)
     };
-    Q_ENUM(SortType)
+    Q_ENUM(SortType) // LCOV_EXCL_LINE
 
     SortType sort() const;
 

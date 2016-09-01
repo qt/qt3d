@@ -94,6 +94,6 @@ struct QBufferUpdate
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
-Q_DECLARE_METATYPE(Qt3DRender::QBufferUpdate)
+Q_DECLARE_METATYPE(Qt3DRender::QBufferUpdate) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_QBUFFER_P_H

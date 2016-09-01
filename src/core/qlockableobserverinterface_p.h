@@ -72,6 +72,6 @@ public:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DCore::QLockableObserverInterface *)
+Q_DECLARE_METATYPE(Qt3DCore::QLockableObserverInterface *) // LCOV_EXCL_LINE
 
 #endif // QT3DCORE_QLOCKABLEOBSERVERINTERFACE_P_H

@@ -190,6 +190,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::Render::Texture*)
+Q_DECLARE_METATYPE(Qt3DRender::Render::Texture*) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_RENDER_TEXTURE_H

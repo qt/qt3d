@@ -67,14 +67,14 @@ public:
         OpenGLES = QSurfaceFormat::OpenGLES,
         OpenGL = QSurfaceFormat::OpenGL
     };
-    Q_ENUM(Api)
+    Q_ENUM(Api) // LCOV_EXCL_LINE
 
     enum OpenGLProfile {
         NoProfile = QSurfaceFormat::NoProfile,
         CoreProfile = QSurfaceFormat::CoreProfile,
         CompatibilityProfile = QSurfaceFormat::CompatibilityProfile
     };
-    Q_ENUM(OpenGLProfile)
+    Q_ENUM(OpenGLProfile) // LCOV_EXCL_LINE
 
     explicit QGraphicsApiFilter(QObject *parent = nullptr);
     ~QGraphicsApiFilter();

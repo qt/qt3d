@@ -77,7 +77,7 @@ public:
         FrustumProjection,
         CustomProjection
     };
-    Q_ENUM(ProjectionType)
+    Q_ENUM(ProjectionType) // LCOV_EXCL_LINE
 
     ProjectionType projectionType() const;
     float nearPlane() const;

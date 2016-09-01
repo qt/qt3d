@@ -67,7 +67,7 @@ public:
         WheelX,
         WheelY
     };
-    Q_ENUM(Axis)
+    Q_ENUM(Axis) // LCOV_EXCL_LINE
 
     int axisCount() const Q_DECL_FINAL;
     int buttonCount() const Q_DECL_FINAL;
@@ -96,6 +96,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DInput::QMouseDevice*)
+Q_DECLARE_METATYPE(Qt3DInput::QMouseDevice*) // LCOV_EXCL_LINE
 
 #endif // QT3DINPUT_QMOUSEDEVICE_H

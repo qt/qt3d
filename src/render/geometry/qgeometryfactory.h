@@ -64,7 +64,7 @@ typedef QSharedPointer<QGeometryFactory> QGeometryFactoryPtr;
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::QGeometryFactoryPtr)
+Q_DECLARE_METATYPE(Qt3DRender::QGeometryFactoryPtr) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_QGEOMETRYFACTORY
 

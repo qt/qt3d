@@ -71,7 +71,7 @@ public:
         Ready = 0,
         NotFound
     };
-    Q_ENUM(DeviceStatus)
+    Q_ENUM(DeviceStatus) // LCOV_EXCL_LINE
 
     QString deviceName() const;
     DeviceStatus status() const;

@@ -83,7 +83,7 @@ public:
         OneMinusSource1Color,
         OneMinusSource1Color0 = OneMinusSource1Color // ### Qt 6: Remove
     };
-    Q_ENUM(Blending)
+    Q_ENUM(Blending) // LCOV_EXCL_LINE
 
     explicit QBlendEquationArguments(Qt3DCore::QNode *parent = nullptr);
     ~QBlendEquationArguments();

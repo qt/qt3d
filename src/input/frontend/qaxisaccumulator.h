@@ -63,7 +63,7 @@ public:
         Velocity,
         Acceleration
     };
-    Q_ENUM(SourceAxisType)
+    Q_ENUM(SourceAxisType) // LCOV_EXCL_LINE
 
     QAxisAccumulator(Qt3DCore::QNode *parent = nullptr);
     ~QAxisAccumulator();

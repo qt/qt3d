@@ -58,7 +58,7 @@ public:
         Fixed = 0,
         Programmable = 1
     };
-    Q_ENUM(SizeMode)
+    Q_ENUM(SizeMode) // LCOV_EXCL_LINE
 
     explicit QPointSize(Qt3DCore::QNode *parent = nullptr);
     ~QPointSize();

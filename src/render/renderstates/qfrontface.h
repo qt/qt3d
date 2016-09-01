@@ -60,7 +60,7 @@ public:
         ClockWise = 0x0900,
         CounterClockWise = 0x0901
     };
-    Q_ENUM(WindingDirection)
+    Q_ENUM(WindingDirection) // LCOV_EXCL_LINE
 
     explicit QFrontFace(Qt3DCore::QNode *parent = nullptr);
     ~QFrontFace();

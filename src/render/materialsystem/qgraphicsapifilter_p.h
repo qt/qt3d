@@ -92,6 +92,6 @@ public:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::GraphicsApiFilterData);
+Q_DECLARE_METATYPE(Qt3DRender::GraphicsApiFilterData); // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_QGRAPHICSAPIFILTER_P_H

@@ -99,6 +99,6 @@ typedef QSharedPointer<RenderCaptureData> RenderCaptureDataPtr;
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::RenderCaptureDataPtr)
+Q_DECLARE_METATYPE(Qt3DRender::RenderCaptureDataPtr) // LCOV_EXCL_LINE
 
 #endif // QRENDERCAPTURE_P_H

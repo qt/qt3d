@@ -66,7 +66,7 @@ public:
         Ready,
         Error
     };
-    Q_ENUM(Status)
+    Q_ENUM(Status) // LCOV_EXCL_LINE
 
     QUrl source() const;
     Status status() const;
