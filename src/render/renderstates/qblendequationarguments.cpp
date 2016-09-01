@@ -125,12 +125,12 @@ QBlendEquationArguments::QBlendEquationArguments(QBlendEquationArgumentsPrivate 
 */
 
 /*!
-    \qmlproperty enumeration Qt3D.Render::BlendEquationArguments::sourceRgb
+    \qmlproperty enumeration BlendEquationArguments::sourceRgb
 
  */
 
 /*!
-    \property Qt3DRender::QBlendEquationArguments::sourceRgb
+    \property QBlendEquationArguments::sourceRgb
 
  */
 QBlendEquationArguments::Blending QBlendEquationArguments::sourceRgb() const
@@ -152,12 +152,12 @@ void QBlendEquationArguments::setSourceRgb(QBlendEquationArguments::Blending sou
 }
 
 /*!
-    \qmlproperty enumeration Qt3D.Render::BlendEquationArguments::destinationRgb
+    \qmlproperty enumeration BlendEquationArguments::destinationRgb
 
  */
 
 /*!
-    \property Qt3DRender::QBlendEquationArguments::destinationRgb
+    \property QBlendEquationArguments::destinationRgb
 
  */
 QBlendEquationArguments::Blending QBlendEquationArguments::destinationRgb() const
@@ -179,12 +179,12 @@ void QBlendEquationArguments::setDestinationRgb(QBlendEquationArguments::Blendin
 }
 
 /*!
-    \qmlproperty enumeration Qt3D.Render::BlendEquationArguments::sourceAlpha
+    \qmlproperty enumeration BlendEquationArguments::sourceAlpha
 
  */
 
 /*!
-    \property Qt3DRender::QBlendEquationArguments::sourceAlpha
+    \property QBlendEquationArguments::sourceAlpha
 
  */
 QBlendEquationArguments::Blending QBlendEquationArguments::sourceAlpha() const
@@ -206,12 +206,12 @@ void QBlendEquationArguments::setSourceAlpha(QBlendEquationArguments::Blending s
 }
 
 /*!
-    \qmlproperty enumeration Qt3D.Render::BlendEquationArguments::DestinationAlpha
+    \qmlproperty enumeration BlendEquationArguments::DestinationAlpha
 
  */
 
 /*!
-    \property Qt3DRender::QBlendEquationArguments::destinationAlpha
+    \property QBlendEquationArguments::destinationAlpha
 
  */
 QBlendEquationArguments::Blending QBlendEquationArguments::destinationAlpha() const
@@ -232,12 +232,30 @@ void QBlendEquationArguments::setDestinationAlpha(QBlendEquationArguments::Blend
     }
 }
 
+/*!
+    \fn QBlendEquationArguments::sourceRgbaChanged(Blending sourceRgba)
+
+    Notify that both sourceRgb and sourceAlpha properties have changed to \a sourceRgba.
+*/
+/*!
+    \fn QBlendEquationArguments::destinationRgbaChanged(Blending destinationRgba)
+
+    Notify that both destinationRgb and destinationAlpha properties have changed to
+    \a destinationRgba.
+*/
+
+/*!
+    Change both sourceRgb and sourceAlpha properties to \a sourceRgba.
+*/
 void QBlendEquationArguments::setSourceRgba(Blending sourceRgba)
 {
     setSourceRgb(sourceRgba);
     setSourceAlpha(sourceRgba);
 }
 
+/*!
+    Change both destinationRgb and destinationAlpha properties to \a destinationRgba.
+*/
 void QBlendEquationArguments::setDestinationRgba(Blending destinationRgba)
 {
     setDestinationRgb(destinationRgba);
@@ -245,14 +263,14 @@ void QBlendEquationArguments::setDestinationRgba(Blending destinationRgba)
 }
 
 /*!
-    \qmlproperty int Qt3D.Render::BlendEquationArguments::bufferIndex
+    \qmlproperty int BlendEquationArguments::bufferIndex
 
     Specifies the index of the Draw Buffer that this BlendEquationArguments applies to.
     If negative, this will apply to all Draw Buffers.
  */
 
 /*!
-    \property Qt3DRender::QBlendEquationArguments::bufferIndex
+    \property QBlendEquationArguments::bufferIndex
 
     Specifies the index of the Draw Buffer that this BlendEquationArguments applies to.
     If negative, this will apply to all Draw Buffers.
