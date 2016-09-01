@@ -77,7 +77,8 @@ qtConfig(private_tests) {
         updatemeshtrianglelistjob \
         updateshaderdatatransformjob \
         texturedatamanager \
-        rendertarget
+        rendertarget \
+        transform
 
     !macos: SUBDIRS += graphicshelpergl4
 }
