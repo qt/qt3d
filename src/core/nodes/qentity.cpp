@@ -55,15 +55,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-QEntityPrivate::QEntityPrivate()
-    : QNodePrivate()
-    , m_parentEntityId()
-{}
-
-QEntityPrivate::~QEntityPrivate()
-{
-}
-
 /*!
     \class Qt3DCore::QEntity
     \inmodule Qt3DCore
@@ -78,14 +69,25 @@ QEntityPrivate::~QEntityPrivate()
     backend aspect will be able to interpret and process an Entity by
     recognizing which components it is made up of. One aspect may decide to only
     process entities composed of a single Qt3DCore::QTransform component whilst
-    another may focus on Qt3DCore::QMouseHandler.
+    another may focus on Qt3DInput::QMouseHandler.
 
     \sa Qt3DCore::QComponent, Qt3DCore::QTransform
-*/
+ */
+
+/*! \internal */
+QEntityPrivate::QEntityPrivate()
+    : QNodePrivate()
+    , m_parentEntityId()
+{}
+
+/*! \internal */
+QEntityPrivate::~QEntityPrivate()
+{
+}
 
 /*!
     Constructs a new Qt3DCore::QEntity instance with \a parent as parent.
-*/
+ */
 QEntity::QEntity(QNode *parent)
     : QEntity(*new QEntityPrivate, parent) {}
 
@@ -113,11 +115,11 @@ QEntity::~QEntity()
     \relates Qt3DCore::QEntity
 
     List of QComponent pointers.
-*/
+ */
 
 /*!
     Returns the list of Qt3DCore::QComponent instances the entity is referencing.
-*/
+ */
 QComponentVector QEntity::components() const
 {
     Q_D(const QEntity);
@@ -129,7 +131,7 @@ QComponentVector QEntity::components() const
 
     \note If the Qt3DCore::QComponent has no parent, the Qt3DCore::QEntity will set
     itself as its parent thereby taking ownership of the component.
-*/
+ */
 void QEntity::addComponent(QComponent *comp)
 {
     Q_D(QEntity);
@@ -161,7 +163,7 @@ void QEntity::addComponent(QComponent *comp)
 
 /*!
     Removes the reference to \a comp.
-*/
+ */
 void QEntity::removeComponent(QComponent *comp)
 {
     Q_CHECK_PTR(comp);
@@ -186,7 +188,7 @@ void QEntity::removeComponent(QComponent *comp)
     immediate parent isn't a Qt3DCore::QEntity, this function traverses up the
     scene hierarchy until a parent Qt3DCore::QEntity is found. If no
     Qt3DCore::QEntity parent can be found, returns null.
-*/
+ */
 QEntity *QEntity::parentEntity() const
 {
     Q_D(const QEntity);
@@ -208,10 +210,10 @@ QEntity *QEntity::parentEntity() const
 }
 
 /*!
- Returns the Qt3DCore::QNodeId id of the parent Qt3DCore::QEntity instance of the
- current Qt3DCore::QEntity object. The QNodeId isNull method will return true if
- there is no Qt3DCore::QEntity parent of the current Qt3DCore::QEntity in the scene
- hierarchy.
+    Returns the Qt3DCore::QNodeId id of the parent Qt3DCore::QEntity instance of the
+    current Qt3DCore::QEntity object. The QNodeId isNull method will return true if
+    there is no Qt3DCore::QEntity parent of the current Qt3DCore::QEntity in the scene
+    hierarchy.
  */
 QNodeId QEntityPrivate::parentEntityId() const
 {
