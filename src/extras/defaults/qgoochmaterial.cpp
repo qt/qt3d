@@ -191,7 +191,8 @@ void QGoochMaterialPrivate::handleShininessChanged(const QVariant &var)
     \brief The QGoochMaterial provides a material that implements the Gooch
     shading model, popular in CAD and CAM applications.
     \inmodule Qt3DExtras
-    \since 5.5
+    \since 5.7
+    \inherits Qt3DRender::QMaterial
 
     The Gooch lighting model uses both color and brightness to help show the
     curvature of 3D surfaces. This is often better than models such as Phong
@@ -201,7 +202,7 @@ void QGoochMaterialPrivate::handleShininessChanged(const QVariant &var)
     solution.
 
     The Gooch lighting model is explained fully in the \l{original Gooch
-    paper}. The Gooch model mixes a diffuse objetc color with a user-provided
+    paper}. The Gooch model mixes a diffuse object color with a user-provided
     cool color and warm color to produce the end points of a color ramp that is
     used to shade the object based upon the cosine of the angle between the
     vector from the fragment to the light source and the fragment's normal
@@ -215,7 +216,7 @@ void QGoochMaterialPrivate::handleShininessChanged(const QVariant &var)
 */
 
 /*!
-    Constructs a new Qt3DExtras::QGoochMaterial instance with parent object \a parent.
+    Constructs a new QGoochMaterial instance with parent object \a parent.
 */
 QGoochMaterial::QGoochMaterial(QNode *parent)
     : QMaterial(*new QGoochMaterialPrivate, parent)
@@ -237,7 +238,7 @@ QGoochMaterial::QGoochMaterial(QGoochMaterialPrivate &dd, QNode *parent)
 }
 
 /*!
-    \property Qt3DExtras::QGoochMaterial::diffuse
+    \property QGoochMaterial::diffuse
 
     Holds the current diffuse color.
 */
@@ -248,7 +249,7 @@ QColor QGoochMaterial::diffuse() const
 }
 
 /*!
-    \property Qt3DExtras::QGoochMaterial::specular
+    \property QGoochMaterial::specular
 
     Holds the current specular color.
 */
@@ -259,7 +260,7 @@ QColor QGoochMaterial::specular() const
 }
 
 /*!
-    \property Qt3DExtras::QGoochMaterial::cool
+    \property QGoochMaterial::cool
 
     Holds the current cool color.
 */
@@ -270,7 +271,7 @@ QColor QGoochMaterial::cool() const
 }
 
 /*!
-    \property Qt3DExtras::QGoochMaterial::warm
+    \property QGoochMaterial::warm
 
     Holds the current warm color.
 */
@@ -281,7 +282,7 @@ QColor QGoochMaterial::warm() const
 }
 
 /*!
-    \property Qt3DExtras::QGoochMaterial::alpha
+    \property QGoochMaterial::alpha
 
     Holds the current alpha value. The start point of the color ramp
     used by the Gooch shader is calculated as {c = cool + alpha * diffuse}.
@@ -293,7 +294,7 @@ float QGoochMaterial::alpha() const
 }
 
 /*!
-    \property Qt3DExtras::QGoochMaterial::beta
+    \property QGoochMaterial::beta
 
     Holds the current beta value. The start point of the color ramp
     used by the Gooch shader is calculated as {c = warm + beta * diffuse}.
@@ -305,7 +306,7 @@ float QGoochMaterial::beta() const
 }
 
 /*!
-    \property Qt3DExtras::QGoochMaterial::shininess
+    \property QGoochMaterial::shininess
 
     Holds the current shininess value. Higher values of shininess result in
     a smaller and brighter highlight.
