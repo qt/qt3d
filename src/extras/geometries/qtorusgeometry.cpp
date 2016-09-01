@@ -264,8 +264,12 @@ void QTorusGeometryPrivate::init()
 
 /*!
  * \qmltype TorusGeometry
- * \instantiates Qt3DRender::QTorusGeometry
- * \inqmlmodule Qt3D.Render
+ * \instantiates Qt3DExtras::QTorusGeometry
+ * \inqmlmodule Qt3D.Extras
+ * \brief TorusGeometry allows creation of a torus in 3D space.
+ *
+ * The TorusGeometry type is most commonly used internally by the TorusMesh type
+ * but can also be used in custom GeometryRenderer types.
  */
 
 /*!
@@ -281,13 +285,13 @@ void QTorusGeometryPrivate::init()
  */
 
 /*!
- * \qmlproperty float TorusGeometry::radius
+ * \qmlproperty real TorusGeometry::radius
  *
  * Holds the outer radius of the torus.
  */
 
 /*!
- * \qmlproperty float TorusGeometry::minorRadius
+ * \qmlproperty real TorusGeometry::minorRadius
  *
  * Holds the inner radius of the torus.
  */
@@ -317,10 +321,15 @@ void QTorusGeometryPrivate::init()
  */
 
 /*!
- * \class Qt3DRender::QTorusGeometry
- * \inmodule Qt3DRender
- *
+ * \class Qt3DExtras::QTorusGeometry
+ * \inmodule Qt3DExtras
+ * \brief The QTorusGeometry class allows creation of a torus in 3D space.
+ * \since 5.7
+ * \ingroup geometries
  * \inherits Qt3DRender::QGeometry
+ *
+ * The QTorusGeometry class is most commonly used internally by the QTorusMesh
+ * but can also be used in custom Qt3DRender::QGeometryRenderer subclasses.
  */
 
 /*!
@@ -351,7 +360,7 @@ QTorusGeometry::~QTorusGeometry()
 }
 
 /*!
- * Updates vertices based on rings and slices.
+ * Updates vertices based on rings, slices, and radius properties.
  */
 void QTorusGeometry::updateVertices()
 {
@@ -364,7 +373,7 @@ void QTorusGeometry::updateVertices()
 }
 
 /*!
- * Updates indices based on rings and slices.
+ * Updates indices based on rings and slices properties.
  */
 void QTorusGeometry::updateIndices()
 {

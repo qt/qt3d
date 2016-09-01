@@ -51,9 +51,9 @@ namespace  Qt3DExtras {
 
 /*!
  * \qmltype TorusMesh
- * \instantiates Qt3DRender::QTorusMesh
- * \inqmlmodule Qt3D.Render
- * \brief A custom mesh.
+ * \instantiates Qt3DExtras::QTorusMesh
+ * \inqmlmodule Qt3D.Extras
+ * \brief A toroidal mesh.
  */
 
 /*!
@@ -69,24 +69,24 @@ namespace  Qt3DExtras {
  */
 
 /*!
- * \qmlproperty float TorusMesh::radius
+ * \qmlproperty real TorusMesh::radius
  *
  * Holds the outer radius of the torus.
  */
 
 /*!
- * \qmlproperty float TorusMesh::minorRadius
+ * \qmlproperty real TorusMesh::minorRadius
  *
  * Holds the inner radius of the torus.
  */
 
 /*!
- * \class Qt3DRender::QTorusMesh
- * \inmodule Qt3DRender
+ * \class Qt3DExtras::QTorusMesh
+ * \inmodule Qt3DExtras
  *
  * \inherits Qt3DRender::QGeometryRenderer
  *
- * \brief A custom mesh.
+ * \brief A toroidal mesh.
  */
 
 /*!

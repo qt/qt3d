@@ -338,8 +338,12 @@ void QCylinderGeometryPrivate::init()
 
 /*!
  * \qmltype CylinderGeometry
- * \instantiates Qt3DRender::QCylinderGeometry
- * \inqmlmodule Qt3D.Render
+ * \instantiates Qt3DExtras::QCylinderGeometry
+ * \inqmlmodule Qt3D.Extras
+ * \brief CylinderGeometry allows creation of a cylinder in 3D space.
+ *
+ * The CylinderGeometry type is most commonly used internally by the CylinderMesh type
+ * but can also be used in custom GeometryRenderer types.
  */
 
 /*!
@@ -355,13 +359,13 @@ void QCylinderGeometryPrivate::init()
  */
 
 /*!
- * \qmlproperty float CylinderGeometry::radius
+ * \qmlproperty real CylinderGeometry::radius
  *
  * Holds the radius of the cylinder.
  */
 
 /*!
- * \qmlproperty float CylinderGeometry::length
+ * \qmlproperty real CylinderGeometry::length
  *
  * Holds the length of the cylinder.
  */
@@ -391,10 +395,15 @@ void QCylinderGeometryPrivate::init()
  */
 
 /*!
- * \class Qt3DRender::QCylinderGeometry
- * \inmodule Qt3DRender
- *
+ * \class Qt3DExtras::QCylinderGeometry
+ * \inmodule Qt3DExtras
+ * \brief The QCylinderGeometry class allows creation of a cylinder in 3D space.
+ * \since 5.7
+ * \ingroup geometries
  * \inherits Qt3DRender::QGeometry
+ *
+ * The QCylinderGeometry class is most commonly used internally by the QCylinderMesh
+ * but can also be used in custom Qt3DRender::QGeometryRenderer subclasses.
  */
 
 /*!
@@ -425,7 +434,7 @@ QCylinderGeometry::~QCylinderGeometry()
 }
 
 /*!
- * Updates the vertices based on rings and slices.
+ * Updates the vertices based on rings, slices, and length properties.
  */
 void QCylinderGeometry::updateVertices()
 {
@@ -439,7 +448,7 @@ void QCylinderGeometry::updateVertices()
 }
 
 /*!
- * Updates the indices based on rings and slices.
+ * Updates the indices based on rings, slices, and length properties.
  */
 void QCylinderGeometry::updateIndices()
 {

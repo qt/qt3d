@@ -208,18 +208,22 @@ public:
 
 /*!
  * \qmltype PlaneGeometry
- * \instantiates Qt3DRender::QPlaneGeometry
- * \inqmlmodule Qt3D.Render
+ * \instantiates Qt3DExtras::QPlaneGeometry
+ * \inqmlmodule Qt3D.Extras
+ * \brief PlaneGeometry allows creation of a plane in 3D space.
+ *
+ * The PlaneGeometry type is most commonly used internally by the PlaneMesh type
+ * but can also be used in custom GeometryRenderer types.
  */
 
 /*!
- * \qmlproperty float PlaneGeometry::width
+ * \qmlproperty real PlaneGeometry::width
  *
  * Holds the plane width.
  */
 
 /*!
- * \qmlproperty float PlaneGeometry::height
+ * \qmlproperty real PlaneGeometry::height
  *
  * Holds the plane height.
  */
@@ -261,10 +265,15 @@ public:
  */
 
 /*!
- * \class Qt3DRender::QPlaneGeometry
- * \inmodule Qt3DRender
- *
+ * \class Qt3DExtras::QPlaneGeometry
+ * \inmodule Qt3DExtras
+ * \brief The QPlaneGeometry class allows creation of a plane in 3D space.
+ * \since 5.7
+ * \ingroup geometries
  * \inherits Qt3DRender::QGeometry
+ *
+ * The QPlaneGeometry class is most commonly used internally by the QPlaneMesh
+ * but can also be used in custom Qt3DRender::QGeometryRenderer subclasses.
  */
 
 /*!
@@ -295,7 +304,7 @@ QPlaneGeometry::~QPlaneGeometry()
 }
 
 /*!
- * Updates vertices based on resolution.
+ * Updates vertices based on mesh resolution, width, and height properties.
  */
 void QPlaneGeometry::updateVertices()
 {
@@ -310,7 +319,7 @@ void QPlaneGeometry::updateVertices()
 }
 
 /*!
- * Updates indices based on resolution.
+ * Updates indices based on mesh resolution.
  */
 void QPlaneGeometry::updateIndices()
 {

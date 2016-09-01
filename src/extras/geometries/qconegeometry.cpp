@@ -38,18 +38,16 @@
 ****************************************************************************/
 
 /*!
- * \class QConeGeometry
+ * \class Qt3DExtras::QConeGeometry
+ * \inmodule Qt3DExtras
  * \brief The QConeGeometry class allows creation of a cone in 3D space.
  * \since 5.7
  * \ingroup geometries
+ * \inherits Qt3DRender::QGeometry
  *
- * The Cone is a common sight in 3D software shape libraries.
- *
- * The QConeGeometry class is most commonly used as part of the QConeMesh
- * but can also be used in custom QGeometryRenderer subclasses. The class
- * allows for creation of both the cone and truncated cone.
- *
- * \sa Qt3DExtras::QCylinderGeometry, Qt3DExtras::QConeMesh, Qt3DExtras::QGeometryRenderer
+ * The QConeGeometry class is most commonly used internally by the QConeMesh
+ * but can also be used in custom Qt3DRender::QGeometryRenderer subclasses. The class
+ * allows for creation of both a cone and a truncated cone.
  */
 
 #ifndef _USE_MATH_DEFINES
@@ -417,6 +415,83 @@ void QConeGeometryPrivate::init()
     q->addAttribute(m_indexAttribute);
 }
 
+/*!
+ * \qmltype ConeGeometry
+ * \instantiates Qt3DExtras::QConeGeometry
+ * \inqmlmodule Qt3D.Extras
+ * \brief ConeGeometry allows creation of a cone in 3D space.
+ *
+ * The ConeGeometry type is most commonly used internally by the ConeMesh type
+ * but can also be used in custom GeometryRenderer types.
+ * The ConeGeometry type allows for creation of both a cone and a truncated cone.
+ */
+
+/*!
+ * \qmlproperty bool ConeGeometry::hasTopEndcap
+ *
+ * Determines if the cone top is capped or open.
+ */
+
+/*!
+ * \qmlproperty bool ConeGeometry::hasBottomEndcap
+ *
+ * Determines if the cone bottom is capped or open.
+ */
+
+/*!
+ * \qmlproperty int ConeGeometry::rings
+ *
+ * Holds the number of rings in the geometry.
+ */
+
+/*!
+ * \qmlproperty int ConeGeometry::slices
+ *
+ * Holds the number of slices in the geometry.
+ */
+
+/*!
+ * \qmlproperty real ConeGeometry::topRadius
+ *
+ * Holds the top radius of the cone.
+ */
+
+/*!
+ * \qmlproperty real ConeGeometry::bottomRadius
+ *
+ * Holds the bottom radius of the cone.
+ */
+
+/*!
+ * \qmlproperty real ConeGeometry::length
+ *
+ * Holds the length of the cone.
+ */
+
+/*!
+ * \qmlproperty Attribute ConeGeometry::positionAttribute
+ *
+ * Holds the geometry position attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute ConeGeometry::normalAttribute
+ *
+ * Holds the geometry normal attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute ConeGeometry::texCoordAttribute
+ *
+ * Holds the geometry texture coordinate attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute ConeGeometry::indexAttribute
+ *
+ * Holds the geometry index attribute.
+ */
+
 QConeGeometry::QConeGeometry(QNode *parent)
     : QGeometry(*new QConeGeometryPrivate, parent)
 {
@@ -437,6 +512,9 @@ QConeGeometry::~QConeGeometry()
 {
 }
 
+/*!
+ * Updates vertices based on geometry properties.
+ */
 void QConeGeometry::updateVertices()
 {
     Q_D(QConeGeometry);
@@ -448,6 +526,9 @@ void QConeGeometry::updateVertices()
                                                                                       d->m_topRadius, d->m_bottomRadius, d->m_length));
 }
 
+/*!
+ * Updates indices based on geometry properties.
+ */
 void QConeGeometry::updateIndices()
 {
     Q_D(QConeGeometry);
@@ -462,8 +543,70 @@ void QConeGeometry::updateIndices()
 }
 
 /*!
- * Sets whether the cone has a sealed top to \a hasTopEndcap.
+ * \property QConeGeometry::hasTopEndcap
+ *
+ * Determines if the cone top is capped or open.
  */
+/*!
+ * \property QConeGeometry::hasBottomEndcap
+ *
+ * Determines if the cone bottom is capped or open.
+ */
+
+/*!
+ * \property QConeGeometry::rings
+ *
+ * Holds the number of rings in the geometry.
+ */
+
+/*!
+ * \property QConeGeometry::slices
+ *
+ * Holds the number of slices in the geometry.
+ */
+
+/*!
+ * \property QConeGeometry::topRadius
+ *
+ * Holds the top radius of the cone.
+ */
+
+/*!
+ * \property QConeGeometry::bottomRadius
+ *
+ * Holds the bottom radius of the cone.
+ */
+
+/*!
+ * \property QConeGeometry::length
+ *
+ * Holds the length of the cone.
+ */
+
+/*!
+ * \property QConeGeometry::positionAttribute
+ *
+ * Holds the geometry position attribute.
+ */
+
+/*!
+ * \property QConeGeometry::normalAttribute
+ *
+ * Holds the geometry normal attribute.
+ */
+
+/*!
+ * \property QConeGeometry::texCoordAttribute
+ *
+ * Holds the geometry texture coordinate attribute.
+ */
+
+/*!
+ * \property QConeGeometry::indexAttribute
+ *
+ * Holds the geometry index attribute.
+ */
+
 void QConeGeometry::setHasTopEndcap(bool hasTopEndcap)
 {
     Q_D(QConeGeometry);
@@ -474,9 +617,6 @@ void QConeGeometry::setHasTopEndcap(bool hasTopEndcap)
     }
 }
 
-/*!
- * Sets whether the cone has a sealed bottom to \a hasBottomEndcap.
- */
 void QConeGeometry::setHasBottomEndcap(bool hasBottomEndcap)
 {
     Q_D(QConeGeometry);
@@ -487,9 +627,6 @@ void QConeGeometry::setHasBottomEndcap(bool hasBottomEndcap)
     }
 }
 
-/*!
- * Sets the number of rings used in the cone's construction tp \a rings.
- */
 void QConeGeometry::setRings(int rings)
 {
     Q_D(QConeGeometry);
@@ -501,9 +638,6 @@ void QConeGeometry::setRings(int rings)
     }
 }
 
-/*!
- * Sets the number of slices used in the cone's construction to \a slices.
- */
 void QConeGeometry::setSlices(int slices)
 {
     Q_D(QConeGeometry);
@@ -515,9 +649,6 @@ void QConeGeometry::setSlices(int slices)
     }
 }
 
-/*!
- * Sets the radius for the top of the cone tp \a topRadius.
- */
 void QConeGeometry::setTopRadius(float topRadius)
 {
     Q_D(QConeGeometry);
@@ -528,9 +659,6 @@ void QConeGeometry::setTopRadius(float topRadius)
     }
 }
 
-/*!
- * Sets the radius for the bottom of the cone to \a bottomRadius.
- */
 void QConeGeometry::setBottomRadius(float bottomRadius)
 {
     Q_D(QConeGeometry);
@@ -541,9 +669,6 @@ void QConeGeometry::setBottomRadius(float bottomRadius)
     }
 }
 
-/*!
- * Sets the cone's length to \a length.
- */
 void QConeGeometry::setLength(float length)
 {
     Q_D(QConeGeometry);
@@ -555,63 +680,42 @@ void QConeGeometry::setLength(float length)
     }
 }
 
-/*!
- * \return whether the cone has a top endcap.
- */
 bool QConeGeometry::hasTopEndcap() const
 {
     Q_D(const QConeGeometry);
     return d->m_hasTopEndcap;
 }
 
-/*!
- * \return whether the cone has a bottom endcap.
- */
 bool QConeGeometry::hasBottomEndcap() const
 {
     Q_D(const QConeGeometry);
     return d->m_hasBottomEndcap;
 }
 
-/*!
- * \return the top radius of the cone.
- */
 float QConeGeometry::topRadius() const
 {
     Q_D(const QConeGeometry);
     return d->m_topRadius;
 }
 
-/*!
- * \return the bottom radius of the cone.
- */
 float QConeGeometry::bottomRadius() const
 {
     Q_D(const QConeGeometry);
     return d->m_bottomRadius;
 }
 
-/*!
- * \return the number of rings used in the construction of the cone.
- */
 int QConeGeometry::rings() const
 {
     Q_D(const QConeGeometry);
     return d->m_rings;
 }
 
-/*!
- * \return the number of slices used in the construction of the cone.
- */
 int QConeGeometry::slices() const
 {
     Q_D(const QConeGeometry);
     return d->m_slices;
 }
 
-/*!
- * \return the cone's length.
- */
 float QConeGeometry::length() const
 {
     Q_D(const QConeGeometry);

@@ -45,59 +45,65 @@ QT_BEGIN_NAMESPACE
 namespace  Qt3DExtras {
 
 /*!
- * \qmltype QCuboidMesh
- * \instantiates Qt3DRender::QCuboidMesh
- * \inqmlmodule Qt3D.Render
- * \brief A cube mesh.
+ * \qmltype CuboidMesh
+ * \instantiates Qt3DExtras::QCuboidMesh
+ * \inqmlmodule Qt3D.Extras
+ * \brief A cuboid mesh.
  */
 
 /*!
- * \qmlproperty float CuboidMesh::xExtent
+ * \qmlproperty real CuboidMesh::xExtent
  *
- * Holds the x extent.
+ * Holds the x extent of the mesh.
  */
 
 /*!
- * \qmlproperty float CuboidMesh::yExtent
+ * \qmlproperty real CuboidMesh::yExtent
  *
- * Holds the y extent.
+ * Holds the y extent of the mesh.
  */
 
 /*!
- * \qmlproperty float CuboidMesh::zExtent
+ * \qmlproperty real CuboidMesh::zExtent
  *
- * Holds the z extent.
+ * Holds the z extent of the mesh.
  */
 
 /*!
  * \qmlproperty size CuboidMesh::yzMeshResolution
  *
- * Holds the y-z resolution.
+ * Holds the y-z resolution of the mesh.
+ * The width and height values of this property specify the number of vertices generated for
+ * the y-z faces of the mesh.
  */
 
 /*!
  * \qmlproperty size CuboidMesh::xzMeshResolution
  *
- * Holds the x-z resolution.
+ * Holds the x-z resolution of the mesh.
+ * The width and height values of this property specify the number of vertices generated for
+ * the x-z faces of the mesh.
  */
 
 /*!
  * \qmlproperty size CuboidMesh::xyMeshResolution
  *
- * Holds the x-y resolution.
+ * Holds the x-y resolution of the mesh.
+ * The width and height values of this property specify the number of vertices generated for
+ * the x-y faces of the mesh.
  */
 
 /*!
- * \class Qt3DRender::QCuboidMesh
- * \inmodule Qt3DRender
+ * \class Qt3DExtras::QCuboidMesh
+ * \inmodule Qt3DExtras
  *
  * \inherits Qt3DRender::QGeometryRenderer
  *
- * \brief A cube mesh.
+ * \brief A cuboid mesh.
  */
 
 /*!
- * Constructs a new QCuboidMedh with \a parent.
+ * Constructs a new QCuboidMesh with \a parent.
  */
 QCuboidMesh::QCuboidMesh(QNode *parent)
     : QGeometryRenderer(parent)
@@ -125,7 +131,7 @@ void QCuboidMesh::setXExtent(float xExtent)
 /*!
  * \property QCuboidMesh::xExtent
  *
- * Holds the x extent.
+ * Holds the x extent of the mesh.
  */
 float QCuboidMesh::xExtent() const
 {
@@ -140,7 +146,7 @@ void QCuboidMesh::setYExtent(float yExtent)
 /*!
  * \property QCuboidMesh::yExtent
  *
- * Holds the y extent.
+ * Holds the y extent of the mesh.
  */
 float QCuboidMesh::yExtent() const
 {
@@ -155,7 +161,7 @@ void QCuboidMesh::setZExtent(float zExtent)
 /*!
  * \property QCuboidMesh::zExtent
  *
- * Holds the z extent.
+ * Holds the z extent of the mesh.
  */
 float QCuboidMesh::zExtent() const
 {
@@ -170,7 +176,9 @@ void QCuboidMesh::setYZMeshResolution(const QSize &resolution)
 /*!
  * \property QCuboidMesh::yzMeshResolution
  *
- * Holds the y-z resolution.
+ * Holds the y-z resolution of the mesh.
+ * The width and height values of this property specify the number of vertices generated for
+ * the y-z faces of the mesh.
  */
 QSize QCuboidMesh::yzMeshResolution() const
 {
@@ -185,7 +193,9 @@ void QCuboidMesh::setXZMeshResolution(const QSize &resolution)
 /*!
  * \property QCuboidMesh::xzMeshResolution
  *
- * Holds the x-z resolution.
+ * Holds the x-z resolution of the mesh.
+ * The width and height values of this property specify the number of vertices generated for
+ * the x-z faces of the mesh.
  */
 QSize QCuboidMesh::xzMeshResolution() const
 {
@@ -200,7 +210,9 @@ void QCuboidMesh::setXYMeshResolution(const QSize &resolution)
 /*!
  * \property QCuboidMesh::xyMeshResolution
  *
- * Holds the x-y resolution.
+ * Holds the x-y resolution of the mesh.
+ * The width and height values of this property specify the number of vertices generated for
+ * the x-y faces of the mesh.
  */
 QSize QCuboidMesh::xyMeshResolution() const
 {
