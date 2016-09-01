@@ -78,7 +78,8 @@ qtConfig(private_tests) {
         updateshaderdatatransformjob \
         texturedatamanager \
         rendertarget \
-        transform
+        transform \
+        computecommand
 
     !macos: SUBDIRS += graphicshelpergl4
 }
