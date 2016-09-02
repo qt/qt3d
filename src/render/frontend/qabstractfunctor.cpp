@@ -43,8 +43,44 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+    \class Qt3DRender::QAbstractFunctor
+    \inmodule Qt3DRender
+    \since 5.7
+    \brief QAbstractFunctor is an abstract base class for all functors.
+
+    The QAbstractFunctor is used as a base class for all functors and data
+    generators in Qt3DRender module.
+
+    When user defines a new functor or generator, they need to implement the
+    \l QAbstractFunctor::id() method, which should be done using the \c {QT3D_FUNCTOR}
+    macro in the class definition.
+ */
+/*!
+    \fn qintptr QAbstractFunctor::id() const
+ */
+/*!
+    \macro QT3D_FUNCTOR(Class)
+    \relates Qt3DRender::QAbstractFunctor
+
+    This macro assigns functor id to the \a Class, which is used by QAbstractFunctor::functor_cast
+    to determine if the cast can be done.
+ */
+
+/*!
+    \fn const T *QAbstractFunctor::functor_cast(const QAbstractFunctor *other) const
+
+    This method is used to cast functor \a other to type T if the other is of
+    type T (or of subclass); otherwise returns 0. This method works similarly
+    to \l QObject::qobject_cast, except with functors derived from QAbstractFunctor.
+
+    \warning If T was not declared with \l QT3D_FUNCTOR macro, then the results are undefined.
+  */
+
+/*! Desctructor */
 QAbstractFunctor::~QAbstractFunctor()
 {
+
 }
 
 } // Qt3D

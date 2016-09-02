@@ -48,6 +48,40 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
+/*!
+    \class Qt3DRender::QTextureImageDataGenerator
+    \inmodule Qt3DRender
+    \since 5.7
+    \brief Provides texture image data for QAbstractTextureImage
+
+    QTextureImageDataGenerator is a data provider for QAbstractTexture.
+    QTextureImageDataGenerator can be used to expand Qt3D with more ways to load
+    texture image data as well as support user-defined formats and formats Qt3D
+    does not natively support. The data is returned by the QTextureImageDataPtr
+    which contains the data that will be loaded to the texture.
+    QTextureImageDataGenerator is executed by Aspect jobs in the backend.
+ */
+/*!
+    \typedef Qt3DRender::QTextureImageDataPtr
+    \relates Qt3DRender::QTextureImageDataGenerator
+
+    Shared pointer to \l QTextureImageData.
+*/
+
+/*!
+    \fn QTextureImageDataPtr QTextureImageDataGenerator::operator()()
+
+    Implement the method to return the texture image data.
+*/
+
+/*!
+    \fn bool QTextureImageDataGenerator::operator ==(const QTextureImageDataGenerator &other) const
+
+    Implement the method to compare this texture data generator to \a other.
+    The operator is used to check if the \l QAbstractTextureImage needs to reload
+    the \l QTextureImageData.
+*/
+
 QAbstractTextureImagePrivate::QAbstractTextureImagePrivate()
     : QNodePrivate(),
       m_mipLevel(0),
@@ -88,6 +122,13 @@ QAbstractTextureImagePrivate::~QAbstractTextureImagePrivate()
     \note: QAbstractTextureImage should never be shared. Expect crashes, undefined
     behavior at best if this rule is not respected.
  */
+
+/*!
+   \fn QTextureImageDataGeneratorPtr QAbstractTextureImage::dataGenerator() const
+
+    Implement this method to return the \l QTextureImageDataGeneratorPtr, which will
+    provide the data for the texture image.
+*/
 
 /*!
     Constructs a new QAbstractTextureImage instance with \a parent as parent.
