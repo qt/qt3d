@@ -184,11 +184,44 @@ void QFirstPersonCameraControllerPrivate::_q_onTriggered(float dt)
                                       m_tyAxis->value() * m_linearSpeed,
                                       m_tzAxis->value() * m_linearSpeed) * dt);
         if (m_leftMouseButtonAction->isActive()) {
-            m_camera->pan(m_rxAxis->value() * m_lookSpeed * dt, m_firstPersonUp);
-            m_camera->tilt(m_ryAxis->value() * m_lookSpeed * dt);
+            float lookSpeed = m_lookSpeed;
+            if (m_fineMotionAction->isActive())
+                lookSpeed *= 0.2f;
+            m_camera->pan(m_rxAxis->value() * lookSpeed * dt, m_firstPersonUp);
+            m_camera->tilt(m_ryAxis->value() * lookSpeed * dt);
         }
     }
 }
+
+/*!
+    \class Qt3DExtras::QFirstPersonCameraController
+    \brief The QFirstPersonCameraController class allows controlling the scene camera
+    from the first person perspective.
+    \inmodule Qt3DExtras
+    \since 5.7
+    \inherits Qt3DCore::QEntity
+
+    The controls are:
+    \table
+    \header
+        \li Input
+        \li Action
+    \row
+        \li Left mouse button
+        \li While the left mouse button is pressed, mouse movement along x-axis pans the camera and
+        movement along y-axis tilts it.
+    \row
+        \li Shift key
+        \li Turns the fine motion control active while pressed. Makes mouse pan and tilt less
+        sensitive.
+    \row
+        \li Arrow keys
+        \li Move the camera horizontally relative to camera viewport.
+    \row
+        \li Page up and page down keys
+        \li Move the camera vertically relative to camera viewport.
+    \endtable
+*/
 
 QFirstPersonCameraController::QFirstPersonCameraController(Qt3DCore::QNode *parent)
     : Qt3DCore::QEntity(*new QFirstPersonCameraControllerPrivate, parent)
@@ -201,18 +234,35 @@ QFirstPersonCameraController::~QFirstPersonCameraController()
 {
 }
 
+/*!
+    \property QFirstPersonCameraController::camera
+
+    Holds the currently controlled camera.
+*/
 Qt3DRender::QCamera *QFirstPersonCameraController::camera() const
 {
     Q_D(const QFirstPersonCameraController);
     return d->m_camera;
 }
 
+/*!
+    \property QFirstPersonCameraController::linearSpeed
+
+    Holds the current linear speed of the camera controller. Linear speed determines the
+    movement speed of the camera.
+*/
 float QFirstPersonCameraController::linearSpeed() const
 {
     Q_D(const QFirstPersonCameraController);
     return d->m_linearSpeed;
 }
 
+/*!
+    \property QFirstPersonCameraController::lookSpeed
+
+    Holds the current look speed of the camera controller. The look speed determines the turn rate
+    of the camera pan and tilt.
+*/
 float QFirstPersonCameraController::lookSpeed() const
 {
     Q_D(const QFirstPersonCameraController);

@@ -54,9 +54,46 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DExtras {
 
 /*!
- * \class QOrbitCameraController::QOrbitCameraController
- * \internal
- */
+    \class Qt3DExtras::QOrbitCameraController
+    \brief The QOrbitCameraController class allows controlling the scene camera along orbital path.
+    \inmodule Qt3DExtras
+    \since 5.7
+    \inherits Qt3DCore::QEntity
+
+    The controls are:
+    \table
+    \header
+        \li Input
+        \li Action
+    \row
+        \li Left mouse button
+        \li While the left mouse button is pressed, mouse movement along x-axis moves the camera
+        left and right and movement along y-axis moves it up and down.
+    \row
+        \li Right mouse button
+        \li While the right mouse button is pressed, mouse movement along x-axis pans the camera
+        around the camera view center and movement along y-axis tilts it around the camera
+        view center.
+    \row
+        \li Both left and right mouse button
+        \li While both the left and the right mouse button are pressed, mouse movement along y-axis
+        zooms the camera in and out without changing the view center.
+    \row
+        \li Arrow keys
+        \li Move the camera vertically and horizontally relative to camera viewport.
+    \row
+        \li Page up and page down keys
+        \li Move the camera forwards and backwards.
+    \row
+        \li Shift key
+        \li Changes the behavior of the up and down arrow keys to zoom the camera in and out
+        without changing the view center. The other movement keys are disabled.
+    \row
+        \li Alt key
+        \li Changes the behovior of the arrow keys to pan and tilt the camera around the view
+        center. Disables the page up and page down keys.
+    \endtable
+*/
 
 QOrbitCameraControllerPrivate::QOrbitCameraControllerPrivate()
     : Qt3DCore::QEntityPrivate()
@@ -214,8 +251,8 @@ void QOrbitCameraControllerPrivate::_q_onTriggered(float dt)
                 m_camera->translate(QVector3D(clampInputs(m_rxAxis->value(), m_txAxis->value()) * m_linearSpeed,
                                               clampInputs(m_ryAxis->value(), m_tyAxis->value()) * m_linearSpeed,
                                               0) * dt);
-                return;
             }
+            return;
         }
         else if (m_rightMouseButtonAction->isActive()) {
             // Orbit
@@ -254,24 +291,47 @@ QOrbitCameraController::~QOrbitCameraController()
 {
 }
 
+/*!
+    \property QOrbitCameraController::camera
+
+    Holds the currently controlled camera.
+*/
 Qt3DRender::QCamera *QOrbitCameraController::camera() const
 {
     Q_D(const QOrbitCameraController);
     return d->m_camera;
 }
 
+/*!
+    \property QOrbitCameraController::linearSpeed
+
+    Holds the current linear speed of the camera controller. Linear speed determines the
+    movement speed of the camera.
+*/
 float QOrbitCameraController::linearSpeed() const
 {
     Q_D(const QOrbitCameraController);
     return d->m_linearSpeed;
 }
 
+/*!
+    \property QOrbitCameraController::lookSpeed
+
+    Holds the current look speed of the camera controller. The look speed determines the turn rate
+    of the camera pan and tilt.
+*/
 float QOrbitCameraController::lookSpeed() const
 {
     Q_D(const QOrbitCameraController);
     return d->m_lookSpeed;
 }
 
+/*!
+    \property QOrbitCameraController::zoomInLimit
+
+    Holds the current zoom-in limit. The zoom-in limit determines how close to the view center
+    the camera can be zoomed.
+*/
 float QOrbitCameraController::zoomInLimit() const
 {
     Q_D(const QOrbitCameraController);
