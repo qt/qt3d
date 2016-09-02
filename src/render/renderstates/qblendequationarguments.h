@@ -92,7 +92,6 @@ public:
     Blending sourceAlpha() const;
     Blending destinationAlpha() const;
     int bufferIndex() const;
-    bool specifiesAllDrawBuffers() const;
 
 public Q_SLOTS:
     void setSourceRgb(Blending sourceRgb);
