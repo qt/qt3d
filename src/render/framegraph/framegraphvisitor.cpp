@@ -188,9 +188,7 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
 
             // Layer filtering
             filterEntityByLayer->setHasLayerFilter(rv->hasLayerFilter());
-
-            if (rv->hasLayerFilter())
-                filterEntityByLayer->setLayers(rv->layerFilter());
+            filterEntityByLayer->setLayers(rv->layerFilter());
 
             // Material Parameter building
             for (const auto materialGatherer : qAsConst(materialGatherers)) {
