@@ -53,6 +53,7 @@
 
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,7 +64,7 @@ namespace Render {
 class Entity;
 class NodeManagers;
 
-class Q_AUTOTEST_EXPORT FilterLayerEntityJob : public Qt3DCore::QAspectJob
+class QT3DRENDERSHARED_PRIVATE_EXPORT FilterLayerEntityJob : public Qt3DCore::QAspectJob
 {
 public:
     FilterLayerEntityJob();
