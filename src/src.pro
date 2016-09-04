@@ -15,6 +15,10 @@ src_input.subdir = $$PWD/input
 src_input.target = sub-input
 src_input.depends = src_render
 
+src_animation.subdir = $$PWD/animation
+src_animation.target = sub-animation
+src_animation.depends = src_render
+
 src_extras.subdir = $$PWD/extras
 src_extras.target = src_extras
 src_extras.depends = src_render src_input src_logic
@@ -71,6 +75,7 @@ SUBDIRS += \
     src_render \
     src_logic \
     src_input \
+    src_animation \
     src_extras \
     src_quick3d_core \
     src_quick3d_core_imports \
