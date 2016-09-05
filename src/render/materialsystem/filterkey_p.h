@@ -62,7 +62,7 @@ class QFilterKey;
 
 namespace Render {
 
-class FilterKey : public BackendNode
+class Q_AUTOTEST_EXPORT FilterKey : public BackendNode
 {
 public:
     FilterKey();
