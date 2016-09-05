@@ -58,8 +58,8 @@ namespace Qt3DExtras {
 
 /*!
  * \qmltype CylinderMesh
- * \instantiates Qt3DRender::QCylinderMesh
- * \inqmlmodule Qt3D.Render
+ * \instantiates Qt3DExtras::QCylinderMesh
+ * \inqmlmodule Qt3D.Extras
  * \brief A cylindrical mesh.
  */
 
@@ -76,20 +76,20 @@ namespace Qt3DExtras {
  */
 
 /*!
- * \qmlproperty float CylinderMesh::radius
+ * \qmlproperty real CylinderMesh::radius
  *
  * Holds the radius of the cylinder.
  */
 
 /*!
- * \qmlproperty float CylinderMesh::length
+ * \qmlproperty real CylinderMesh::length
  *
  * Holds the length of the cylinder.
  */
 
 /*!
- * \class Qt3DRender::QCylinderMesh
- * \inmodule Qt3DRender
+ * \class Qt3DExtras::QCylinderMesh
+ * \inmodule Qt3DExtras
  *
  * \inherits Qt3DRender::QGeometryRenderer
  *

@@ -194,15 +194,17 @@ void QPhongAlphaMaterialPrivate::handleAlphaChanged(const QVariant &var)
 }
 
 /*!
-    \class Qt3DRender::QPhongAlphaMaterial
+    \class Qt3DExtras::QPhongAlphaMaterial
 
     \brief The QPhongAlphaMaterial class provides a default implementation of
     the phong lighting effect with alpha.
-    \inmodule Qt3DRenderer
-    \since 5.5
+    \inmodule Qt3DExtras
+    \since 5.7
+    \inherits Qt3DRender::QMaterial
 
-    The phong lighting effect is based on the combination of 3 lighting components ambient, diffuse and specular.
-    The relative strengths of these components is controlled by means of their reflectivity coefficients which are modelled as RGB triplets:
+    The phong lighting effect is based on the combination of 3 lighting components ambient, diffuse
+    and specular. The relative strengths of these components are controlled by means of their
+    reflectivity coefficients which are modelled as RGB triplets:
 
     \list
     \li Ambient is the color that is emitted by an object without any other light source.
@@ -212,13 +214,11 @@ void QPhongAlphaMaterialPrivate::handleAlphaChanged(const QVariant &var)
     \li Alpha is the transparency of the surface between 0 (fully transparent) and 1 (opaque).
     \endlist
 
-    This material uses an effect with a single render pass approach and performs per fragment lighting.
-    Techniques are provided for OpenGL 2, OpenGL 3 or above as well as OpenGL ES 2.
+    This material uses an effect with a single render pass approach and performs per fragment
+    lighting. Techniques are provided for OpenGL 2, OpenGL 3 or above as well as OpenGL ES 2.
 */
 
 /*!
-    \fn Qt3DRender::QPhongAlphaMaterial::QPhongAlphaMaterial(Qt3DCore::QNode *parent)
-
     Constructs a new QPhongAlphaMaterial instance with parent object \a parent.
 */
 QPhongAlphaMaterial::QPhongAlphaMaterial(QNode *parent)
@@ -247,7 +247,7 @@ QPhongAlphaMaterial::~QPhongAlphaMaterial()
 }
 
 /*!
-    \property Qt3DRender::QPhongAlphaMaterial::ambient
+    \property QPhongAlphaMaterial::ambient
 
     Holds the ambient color.
 */
@@ -258,7 +258,7 @@ QColor QPhongAlphaMaterial::ambient() const
 }
 
 /*!
-    \property Qt3DRender::QPhongAlphaMaterial::diffuse
+    \property QPhongAlphaMaterial::diffuse
 
     Holds the diffuse color.
 */
@@ -269,7 +269,7 @@ QColor QPhongAlphaMaterial::diffuse() const
 }
 
 /*!
-    \property Qt3DRender::QPhongAlphaMaterial::specular
+    \property QPhongAlphaMaterial::specular
 
     Holds the specular color.
 */
@@ -280,7 +280,7 @@ QColor QPhongAlphaMaterial::specular() const
 }
 
 /*!
-    \property Qt3DRender::QPhongAlphaMaterial::shininess
+    \property QPhongAlphaMaterial::shininess
 
     Holds the shininess exponent.
 */
@@ -291,11 +291,11 @@ float QPhongAlphaMaterial::shininess() const
 }
 
 /*!
-    \property Qt3DRender::QPhongAlphaMaterial::alpha
+    \property QPhongAlphaMaterial::alpha
 
     Holds the alpha component of the object which varies between 0 and 1.
 
-    \note: default value is 0.5f
+    The default value is 0.5f.
 */
 float QPhongAlphaMaterial::alpha() const
 {
@@ -303,30 +303,65 @@ float QPhongAlphaMaterial::alpha() const
     return d->m_alphaParameter->value().toFloat();
 }
 
+/*!
+    \property QPhongAlphaMaterial::sourceRgbArg
+
+    Holds the blend equation source RGB blending argument.
+
+    \sa Qt3DRender::QBlendEquationArguments::Blending
+*/
 QBlendEquationArguments::Blending QPhongAlphaMaterial::sourceRgbArg() const
 {
     Q_D(const QPhongAlphaMaterial);
     return d->m_blendState->sourceRgb();
 }
 
+/*!
+    \property QPhongAlphaMaterial::destinationRgbArg
+
+    Holds the blend equation destination RGB blending argument.
+
+    \sa Qt3DRender::QBlendEquationArguments::Blending
+*/
 QBlendEquationArguments::Blending QPhongAlphaMaterial::destinationRgbArg() const
 {
     Q_D(const QPhongAlphaMaterial);
     return d->m_blendState->destinationRgb();
 }
 
+/*!
+    \property QPhongAlphaMaterial::sourceAlphaArg
+
+    Holds the blend equation source alpha blending argument.
+
+    \sa Qt3DRender::QBlendEquationArguments::Blending
+*/
 QBlendEquationArguments::Blending QPhongAlphaMaterial::sourceAlphaArg() const
 {
     Q_D(const QPhongAlphaMaterial);
     return d->m_blendState->sourceAlpha();
 }
 
+/*!
+    \property QPhongAlphaMaterial::destinationAlphaArg
+
+    Holds the blend equation destination alpha blending argument.
+
+    \sa Qt3DRender::QBlendEquationArguments::Blending
+*/
 QBlendEquationArguments::Blending QPhongAlphaMaterial::destinationAlphaArg() const
 {
     Q_D(const QPhongAlphaMaterial);
     return d->m_blendState->destinationAlpha();
 }
 
+/*!
+    \property QPhongAlphaMaterial::blendFunctionArg
+
+    Holds the blend equation function argument.
+
+    \sa Qt3DRender::QBlendEquation::BlendFunction
+*/
 QBlendEquation::BlendFunction QPhongAlphaMaterial::blendFunctionArg() const
 {
     Q_D(const QPhongAlphaMaterial);

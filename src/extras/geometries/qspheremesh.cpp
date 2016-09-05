@@ -47,8 +47,8 @@ namespace  Qt3DExtras {
 
 /*!
  * \qmltype SphereMesh
- * \instantiates Qt3DRender::QSphereMesh
- * \inqmlmodule Qt3D.Render
+ * \instantiates Qt3DExtras::QSphereMesh
+ * \inqmlmodule Qt3D.Extras
  * \brief A spherical mesh.
  */
 
@@ -65,7 +65,7 @@ namespace  Qt3DExtras {
  */
 
 /*!
- * \qmlproperty float SphereMesh::radius
+ * \qmlproperty real SphereMesh::radius
  *
  * Holds the radius of the sphere.
  */
@@ -73,12 +73,13 @@ namespace  Qt3DExtras {
 /*!
  * \qmlproperty bool SphereMesh::generateTangents
  *
- * Holds the value of the automatic tangent generation flag.
+ * Holds the value of the automatic tangent vectors generation flag.
+ * Tangent vectors are orthogonal to normal vectors.
  */
 
 /*!
- * \class Qt3DRender::QSphereMesh
- * \inmodule Qt3DRender
+ * \class Qt3DExtras::QSphereMesh
+ * \inmodule Qt3DExtras
  *
  * \inherits Qt3DRender::QGeometryRenderer
  *
@@ -127,7 +128,8 @@ void QSphereMesh::setGenerateTangents(bool gen)
 /*!
  * \property QSphereMesh::generateTangents
  *
- * Holds the value of the automatic tangent generation flag.
+ * Holds the value of the automatic tangent vectors generation flag.
+ * Tangent vectors are orthogonal to normal vectors.
  */
 bool QSphereMesh::generateTangents() const
 {

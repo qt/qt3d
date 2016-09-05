@@ -46,19 +46,19 @@ namespace  Qt3DExtras {
 
 /*!
  * \qmltype PlaneMesh
- * \instantiates Qt3DRender::QPlaneMesh
- * \inqmlmodule Qt3D.Render
+ * \instantiates Qt3DExtras::QPlaneMesh
+ * \inqmlmodule Qt3D.Extras
  * \brief A square planar mesh.
  */
 
 /*!
- * \qmlproperty float PlaneMesh::width
+ * \qmlproperty real PlaneMesh::width
  *
  * Holds the plane width.
  */
 
 /*!
- * \qmlproperty float PlaneMesh::height
+ * \qmlproperty real PlaneMesh::height
  *
  * Holds the plane height.
  */
@@ -67,11 +67,13 @@ namespace  Qt3DExtras {
  * \qmlproperty size PlaneMesh::meshResolution
  *
  * Holds the plane resolution.
+ * The width and height values of this property specify the number of vertices generated for
+ * the mesh in the respective dimensions.
  */
 
 /*!
- * \class Qt3DRender::QPlaneMesh
- * \inmodule Qt3DRender
+ * \class Qt3DExtras::QPlaneMesh
+ * \inmodule Qt3DExtras
  *
  * \inherits Qt3DRender::QGeometryRenderer
  *
@@ -135,6 +137,8 @@ void QPlaneMesh::setMeshResolution(const QSize &resolution)
  * \property QPlaneMesh::meshResolution
  *
  * Holds the plane resolution.
+ * The width and height values of this property specify the number of vertices generated for
+ * the mesh in the respective dimensions.
  */
 QSize QPlaneMesh::meshResolution() const
 {

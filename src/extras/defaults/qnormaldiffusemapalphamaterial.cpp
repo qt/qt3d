@@ -146,15 +146,16 @@ void QNormalDiffuseMapAlphaMaterialPrivate::init()
 
 
 /*!
-    \class Qt3DRender::QNormalDiffuseMapAlphaMaterial
-    \brief The QNormalDiffuseMapAlphaMaterial provides a default implementation of the phong lighting and bump effect where the diffuse light component
-    is read from a texture map and the normals of the mesh being rendered from a normal texture map. In addition, it defines an alpha to coverage and
-    a depth test to be performed in the rendering pass.
-    \inmodule Qt3DRender
-    \since 5.5
+    \class Qt3DExtras::QNormalDiffuseMapAlphaMaterial
+    \brief The QNormalDiffuseMapAlphaMaterial provides a specialization of QNormalDiffuseMapMaterial
+    with alpha coverage and a depth test performed in the rendering pass.
+    \inmodule Qt3DExtras
+    \since 5.7
+    \inherits Qt3DExtras::QNormalDiffuseMapMaterial
 
-    The specular lighting effect is based on the combination of 3 lighting components ambient, diffuse and specular.
-    The relative strengths of these components is controlled by means of their reflectivity coefficients which are modelled as RGB triplets:
+    The specular lighting effect is based on the combination of 3 lighting components ambient,
+    diffuse and specular. The relative strengths of these components are controlled by means of
+    their reflectivity coefficients which are modelled as RGB triplets:
 
     \list
     \li Ambient is the color that is emitted by an object without any other light source.
@@ -163,11 +164,11 @@ void QNormalDiffuseMapAlphaMaterialPrivate::init()
     \li The shininess of a surface is controlled by a float property.
     \endlist
 
-    This material uses an effect with a single render pass approach and performs per fragment lighting.
-    Techniques are provided for OpenGL 2, OpenGL 3 or above as well as OpenGL ES 2.
+    This material uses an effect with a single render pass approach and performs per fragment
+    lighting. Techniques are provided for OpenGL 2, OpenGL 3 or above as well as OpenGL ES 2.
 */
 /*!
-    Constructs a new Qt3DRender::QNormalDiffuseMapAlphaMaterial instance with parent object \a parent.
+    Constructs a new QNormalDiffuseMapAlphaMaterial instance with parent object \a parent.
 */
 QNormalDiffuseMapAlphaMaterial::QNormalDiffuseMapAlphaMaterial(QNode *parent)
     : QNormalDiffuseMapMaterial(*new QNormalDiffuseMapAlphaMaterialPrivate, parent)

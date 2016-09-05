@@ -66,14 +66,18 @@ namespace Render {
 
 class NodeManagers;
 
-class LoadSceneJob : public Qt3DCore::QAspectJob
+class Q_AUTOTEST_EXPORT LoadSceneJob : public Qt3DCore::QAspectJob
 {
 public:
     explicit LoadSceneJob(const QUrl &source, Qt3DCore::QNodeId sceneComponent);
     void setNodeManagers(NodeManagers *managers) { m_managers = managers; }
     void setSceneIOHandlers(const QList<QSceneIOHandler *> sceneIOHandlers) { m_sceneIOHandlers = sceneIOHandlers; }
 
-protected:
+    NodeManagers *nodeManagers() const;
+    QList<QSceneIOHandler *> sceneIOHandlers() const;
+    QUrl source() const;
+    Qt3DCore::QNodeId sceneComponentId() const;
+
     void run() Q_DECL_OVERRIDE;
 
 private:

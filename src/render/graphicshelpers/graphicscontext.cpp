@@ -852,6 +852,11 @@ void GraphicsContext::alphaTest(GLenum mode1, GLenum mode2)
     m_glHelper->alphaTest(mode1, mode2);
 }
 
+void GraphicsContext::bindFramebuffer(GLuint fbo)
+{
+    m_glHelper->bindFrameBufferObject(fbo);
+}
+
 void GraphicsContext::depthTest(GLenum mode)
 {
     m_glHelper->depthTest(mode);
