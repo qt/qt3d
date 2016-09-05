@@ -71,6 +71,7 @@ class Q_AUTOTEST_EXPORT ShaderData : public BackendNode
 {
 public:
     enum TransformType {
+        NoTransform = -1,
         ModelToEye = 0,
         ModelToWorld,
         ModelToWorldDirection
@@ -87,7 +88,7 @@ public:
     // Call by RenderViewJob
     void markDirty();
 
-    bool isPropertyToBeTransformed(const QString &name) const;
+    TransformType propertyTransformType(const QString &name) const;
     QVariant getTransformedProperty(const QString &name, const QMatrix4x4 &viewMatrix);
 
     // Called by FrameCleanupJob

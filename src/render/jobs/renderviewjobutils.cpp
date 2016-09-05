@@ -465,7 +465,7 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(ShaderData *
             // If the property needs to be transformed, we transform it here as
             // the shaderdata cannot hold transformed properties for multiple
             // thread contexts at once
-            if (currentShaderData->isPropertyToBeTransformed(qmlPropertyName))
+            if (currentShaderData->propertyTransformType(qmlPropertyName) != ShaderData::NoTransform)
                 activeUniformNamesToValue.insert(StringToInt::lookupId(varName),
                                                  currentShaderData->getTransformedProperty(qmlPropertyName, viewMatrix));
             else

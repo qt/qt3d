@@ -171,21 +171,6 @@ void ShaderData::cleanup(NodeManagers *managers)
     m_updatedShaderData.clear();
 }
 
-/*!
-  \internal
-  Lookup if the current ShaderData or a nested ShaderData has updated properties.
-  UpdateProperties contains either the value of the propertie of a QNodeId if it's another ShaderData.
-  Transformed properties are updated for all of ShaderData that have ones at the point.
-
-  \note This needs to be performed for every top level ShaderData every time it is used.
-  As we don't know if the transformed properties use the same viewMatrix for all RenderViews.
- */
-
-bool ShaderData::isPropertyToBeTransformed(const QString &name) const
-{
-    return m_transformedProperties.contains(name);
-}
-
 QVariant ShaderData::getTransformedProperty(const QString &name, const QMatrix4x4 &viewMatrix)
 {
     // Note protecting m_worldMatrix at this point as we assume all world updates
@@ -200,6 +185,8 @@ QVariant ShaderData::getTransformedProperty(const QString &name, const QMatrix4x
             return QVariant::fromValue(m_worldMatrix * m_originalProperties.value(it.key()).value<QVector3D>());
         case ModelToWorldDirection:
             return QVariant::fromValue((m_worldMatrix * QVector4D(m_originalProperties.value(it.key()).value<QVector3D>(), 0.0f)).toVector3D());
+        case NoTransform:
+            break;
         }
     }
     return QVariant();
@@ -222,6 +209,21 @@ void ShaderData::markDirty()
     QMutexLocker lock(&m_mutex);
     if (!ShaderData::m_updatedShaderData.contains(peerId()))
         ShaderData::m_updatedShaderData.append(peerId());
+}
+
+/*!
+  \internal
+  Lookup if the current ShaderData or a nested ShaderData has updated properties.
+  UpdateProperties contains either the value of the propertie of a QNodeId if it's another ShaderData.
+  Transformed properties are updated for all of ShaderData that have ones at the point.
+
+  \note This needs to be performed for every top level ShaderData every time it is used.
+  As we don't know if the transformed properties use the same viewMatrix for all RenderViews.
+ */
+
+ShaderData::TransformType ShaderData::propertyTransformType(const QString &name) const
+{
+    return m_transformedProperties.value(name, TransformType::NoTransform);
 }
 
 void ShaderData::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

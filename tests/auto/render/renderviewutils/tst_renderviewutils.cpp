@@ -523,18 +523,20 @@ void tst_RenderViewUtils::transformedProperties()
     // THEN
     Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
     QVERIFY(backendShaderData != nullptr);
-    QVERIFY(!backendShaderData->isPropertyToBeTransformed(QStringLiteral("position0")));
-    QVERIFY(backendShaderData->isPropertyToBeTransformed(QStringLiteral("position1")));
-    QVERIFY(backendShaderData->isPropertyToBeTransformed(QStringLiteral("position2")));
-    QVERIFY(backendShaderData->isPropertyToBeTransformed(QStringLiteral("position3")));
+    QCOMPARE(backendShaderData->propertyTransformType(QStringLiteral("position0")), Qt3DRender::Render::ShaderData::NoTransform);
+    QCOMPARE(backendShaderData->propertyTransformType(QStringLiteral("position1")), Qt3DRender::Render::ShaderData::ModelToEye);
+    QCOMPARE(backendShaderData->propertyTransformType(QStringLiteral("position2")), Qt3DRender::Render::ShaderData::ModelToWorld);
+    QCOMPARE(backendShaderData->propertyTransformType(QStringLiteral("position3")), Qt3DRender::Render::ShaderData::ModelToWorldDirection);
 
     // WHEN
     backendShaderData->updateWorldTransform(worldMatrix);
     const QVector3D position1Value = backendShaderData->getTransformedProperty(QStringLiteral("position1"), viewMatrix).value<QVector3D>();
     const QVector3D position2Value = backendShaderData->getTransformedProperty(QStringLiteral("position2"), viewMatrix).value<QVector3D>();
     const QVector3D position3Value = backendShaderData->getTransformedProperty(QStringLiteral("position3"), viewMatrix).value<QVector3D>();
+    const QVariant position0Value = backendShaderData->getTransformedProperty(QStringLiteral("position0"), viewMatrix);
 
     // THEN
+    QCOMPARE(position0Value, QVariant());
     QCOMPARE(position1Value, viewMatrix * worldMatrix * position);
     QCOMPARE(position2Value, worldMatrix * position);
     QCOMPARE(position3Value, (worldMatrix * QVector4D(position, 0.0f)).toVector3D());
