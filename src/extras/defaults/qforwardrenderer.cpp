@@ -84,26 +84,46 @@ void QForwardRendererPrivate::init()
 }
 
 /*!
-    \class Qt3DRender::QForwardRenderer
-    \brief The Qt3DRender::QForwardRenderer provides a default \l {QFrameGraph}{FrameGraph} implementation of a forward renderer.
-    \inmodule Qt3DRender
-    \since 5.5
+    \class Qt3DExtras::QForwardRenderer
+    \brief The QForwardRenderer provides a default \l{Qt 3D Render Framegraph}{FrameGraph}
+    implementation of a forward renderer.
+    \inmodule Qt3DExtras
+    \since 5.7
+    \inherits Qt3DRender::QTechniqueFilter
 
-    Forward rendering is how OpenGL is traditionally. It renders directly to the backbuffer
+    Forward rendering is what OpenGL traditionally uses. It renders directly to the backbuffer
     one object at a time shading each one as it goes.
 
-    Internally the Qt3DRender::QForwardRenderer is a subclass of Qt3DRender::QTechniqueFilter.
-    This a is a single leaf Framegraph tree which contains a Qt3DRender::QViewport, a Qt3DRender::QCameraSelector
-    and a Qt3DRender::QClearBuffers.
-    The Qt3DRender::QForwardRenderer has a default requirement annotation whose name is "renderingStyle" and value "forward".
-    If you need to filter out your techniques, you should do so based on that annotation.
+    QForwardRenderer is a single leaf \l{Qt 3D Render Framegraph}{FrameGraph} tree which contains
+    a Qt3DRender::QViewport, a Qt3DRender::QCameraSelector, and a Qt3DRender::QClearBuffers.
+    The QForwardRenderer has a default requirement filter key whose name is "renderingStyle" and
+    value "forward".
+    If you need to filter out your techniques, you should do so based on that filter key.
 
-    By default the viewport occupies the whole screen and the clear color is white. Frustum culling is also enabled.
+    By default the viewport occupies the whole screen and the clear color is white.
+    Frustum culling is also enabled.
 */
-
 /*!
-    Constructs a new Qt3DRender::QForwardRenderer instance with parent object \a parent.
+    \qmltype ForwardRenderer
+    \brief The ForwardRenderer provides a default \l{Qt 3D Render Framegraph}{FrameGraph}
+    implementation of a forward renderer.
+    \since 5.7
+    \inqmlmodule Qt3D.Extras
+    \instantiates Qt3DExtras::QForwardRenderer
+
+    Forward rendering is what OpenGL traditionally uses. It renders directly to the backbuffer
+    one object at a time shading each one as it goes.
+
+    ForwardRenderer is a single leaf \l{Qt 3D Render Framegraph}{FrameGraph} tree which contains
+    a Viewport, a CameraSelector, and a ClearBuffers.
+    The ForwardRenderer has a default requirement filter key whose name is "renderingStyle" and
+    value "forward".
+    If you need to filter out your techniques, you should do so based on that filter key.
+
+    By default the viewport occupies the whole screen and the clear color is white.
+    Frustum culling is also enabled.
  */
+
 QForwardRenderer::QForwardRenderer(QNode *parent)
     : QTechniqueFilter(*new QForwardRendererPrivate, parent)
 {
@@ -115,9 +135,6 @@ QForwardRenderer::QForwardRenderer(QNode *parent)
     d->init();
 }
 
-/*!
-    Destroys the QForwardRenderer instance.
-*/
 QForwardRenderer::~QForwardRenderer()
 {
 }
@@ -134,11 +151,6 @@ void QForwardRenderer::setClearColor(const QColor &clearColor)
     d->m_clearBuffer->setClearColor(clearColor);
 }
 
-/*!
-    Sets the camera which should be used to render the scene to \a camera.
-
-    \note A camera is a QEntity having a QCameraLens as one of its components.
-*/
 void QForwardRenderer::setCamera(Qt3DCore::QEntity *camera)
 {
     Q_D(QForwardRenderer);
@@ -152,10 +164,15 @@ void QForwardRenderer::setSurface(QObject *surface)
 }
 
 /*!
-    \property Qt3DRender::QForwardRenderer::viewportRect
+    \qmlproperty rect ForwardRenderer::viewportRect
 
-    Holds the current viewport normalizedRect.
- */
+    Holds the current normalized viewport rectangle.
+*/
+/*!
+    \property QForwardRenderer::viewportRect
+
+    Holds the current normalized viewport rectangle.
+*/
 QRectF QForwardRenderer::viewportRect() const
 {
     Q_D(const QForwardRenderer);
@@ -163,9 +180,16 @@ QRectF QForwardRenderer::viewportRect() const
 }
 
 /*!
-    \property Qt3DRender::QForwardRenderer::clearColor
+    \qmlproperty color ForwardRenderer::clearColor
 
-    Holds the current clearColor.
+    Holds the current clear color of the scene. The frame buffer is initialized to the clear color
+    before rendering.
+*/
+/*!
+    \property QForwardRenderer::clearColor
+
+    Holds the current clear color of the scene. The frame buffer is initialized to the clear color
+    before rendering.
 */
 QColor QForwardRenderer::clearColor() const
 {
@@ -174,9 +198,16 @@ QColor QForwardRenderer::clearColor() const
 }
 
 /*!
-    \property Qt3DRender::QForwardRenderer::camera
+    \qmlproperty Entity ForwardRenderer::camera
 
-    Holds the current QEntity camera used to render the scene.
+    Holds the current camera entity used to render the scene.
+
+    \note A camera is an Entity that has a CameraLens as one of its components.
+*/
+/*!
+    \property QForwardRenderer::camera
+
+    Holds the current camera entity used to render the scene.
 
     \note A camera is a QEntity that has a QCameraLens as one of its components.
 */
@@ -186,6 +217,16 @@ Qt3DCore::QEntity *QForwardRenderer::camera() const
     return d->m_cameraSelector->camera();
 }
 
+/*!
+    \qmlproperty Object ForwardRenderer::surface
+
+    Holds the current render surface.
+*/
+/*!
+    \property QForwardRenderer::surface
+
+    Holds the current render surface.
+*/
 QObject *QForwardRenderer::surface() const
 {
     Q_D(const QForwardRenderer);
