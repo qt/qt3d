@@ -55,8 +55,12 @@ QFilterKeyPrivate::QFilterKeyPrivate()
 /*!
     \class Qt3DRender::QFilterKey
     \inmodule Qt3DRender
+    \inherits Qt3DCore::QNode
     \since 5.5
-    \brief The QFilterKey class provides storage for filter keys and their values
+    \brief The QFilterKey class provides storage for filter keys and their values.
+
+    Filter keys are used by QTechnique and QRenderPass to specify at which stage of rendering the
+    technique or the render pass is used.
 */
 
 /*!
@@ -65,18 +69,18 @@ QFilterKeyPrivate::QFilterKeyPrivate()
     \inherits Node
     \inqmlmodule Qt3D.Render
     \since 5.5
-    \brief For storing filter keys and their value
+    \brief Stores filter keys and their values.
+
+    A FilterKey is a storage type for filter key and value pair.
+    Filter keys are used by Technique and RenderPass to specify at which stage of rendering the
+    technique or the render pass is used.
 */
 
-/*!
-  The constructor creates a new QFilterKey under \a parent.
- */
 QFilterKey::QFilterKey(QNode *parent)
     : QNode(*new QFilterKeyPrivate, parent)
 {
 }
 
-/*! \internal */
 QFilterKey::~QFilterKey()
 {
 }
@@ -100,13 +104,15 @@ void QFilterKey::setName(const QString &name)
 }
 
 /*!
-  \property QFilterKey::value
-    Specifies the value of the filter key
+    \property QFilterKey::value
+
+    Holds the value of the filter key.
 */
 
 /*!
-  \qmlproperty variant Qt3D.Render::Annotation::value
-    Specifies the value of the filter key
+    \qmlproperty variant FilterKey::value
+
+    Holds the value of the filter key.
 */
 
 QVariant QFilterKey::value() const
@@ -116,14 +122,16 @@ QVariant QFilterKey::value() const
 }
 
 /*!
-  \property QFilterKey::name
-    Specifies the name of the filter key
- */
+    \property QFilterKey::name
+
+    Holds the name of the filter key.
+*/
 
 /*!
-  \qmlproperty string Qt3D.Render::Annotation::name
-    Specifies the name of the filter key
- */
+    \qmlproperty string FilterKey::name
+
+    Holds the name of the filter key.
+*/
 
 QString QFilterKey::name() const
 {
