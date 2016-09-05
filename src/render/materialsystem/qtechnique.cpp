@@ -284,7 +284,7 @@ void QTechnique::removeRenderPass(QRenderPass *pass)
     Q_ASSERT(pass);
     Q_D(QTechnique);
     if (d->m_changeArbiter) {
-        const auto change = QPropertyNodeAddedChangePtr::create(id(), pass);
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), pass);
         change->setPropertyName("pass");
         d->notifyObservers(change);
     }
