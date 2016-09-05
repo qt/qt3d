@@ -80,7 +80,8 @@ qtConfig(private_tests) {
         rendertarget \
         transform \
         computecommand \
-        qrendertarget
+        qrendertarget \
+        qdispatchcompute
 
     !macos: SUBDIRS += graphicshelpergl4
 }
