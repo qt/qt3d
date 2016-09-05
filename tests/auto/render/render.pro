@@ -83,7 +83,8 @@ qtConfig(private_tests) {
         qrendertarget \
         qdispatchcompute \
         qtechnique \
-        qeffect
+        qeffect \
+        qrenderpass
 
     !macos: SUBDIRS += graphicshelpergl4
 }
