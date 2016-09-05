@@ -85,10 +85,45 @@ private slots:
         RenderPass backend;
 
         // THEN
+        QVERIFY(!backend.isEnabled());
         QVERIFY(backend.shaderProgram().isNull());
         QVERIFY(backend.filterKeys().isEmpty());
         QVERIFY(backend.renderStates().isEmpty());
         QVERIFY(backend.parameters().isEmpty());
+    }
+
+    void checkCleanupState()
+    {
+        // GIVEN
+        RenderPass backend;
+
+        // WHEN
+        backend.setEnabled(true);
+
+        {
+            QRenderPass frontend;
+            QShaderProgram program;
+            QBlendEquationArguments state;
+            QParameter parameter;
+            QFilterKey filterKey;
+
+            frontend.addFilterKey(&filterKey);
+            frontend.addParameter(&parameter);
+            frontend.addRenderState(&state);
+            frontend.setShaderProgram(&program);
+
+            simulateInitialization(&frontend, &backend);
+        }
+
+        backend.cleanup();
+
+        // THEN
+        QVERIFY(!backend.isEnabled());
+        QVERIFY(backend.shaderProgram().isNull());
+        QVERIFY(backend.filterKeys().isEmpty());
+        QVERIFY(backend.renderStates().isEmpty());
+        QVERIFY(backend.parameters().isEmpty());
+        QVERIFY(!backend.hasRenderStates());
     }
 
     void shouldHavePropertiesMirroringItsPeer()
@@ -124,6 +159,7 @@ private slots:
 
         QCOMPARE(backend.renderStates().size(), 1);
         QCOMPARE(backend.renderStates().first(), backendState->peerId());
+        QVERIFY(backend.hasRenderStates());
     }
 
     void shouldHandleShaderPropertyChangeEvents()
@@ -209,10 +245,9 @@ private slots:
         QVERIFY(backend.parameters().isEmpty());
     }
 
-    void shouldHandlePropertyChangeEvents()
+    void shouldHandleRenderStatePropertyChangeEvents()
     {
         QRenderState *frontendState = new QBlendEquationArguments();
-        QNodePtr frontendStatePtr(frontendState);
 
         RenderPass backend;
         TestRenderer renderer;
@@ -238,6 +273,24 @@ private slots:
 
         // THEN
         QVERIFY(backend.renderStates().isEmpty());
+    }
+
+    void shouldHandleShaderProgramPropertyChangeEvents()
+    {
+        // GIVEN
+        RenderPass backend;
+        TestRenderer renderer;
+        backend.setRenderer(&renderer);
+
+        // WHEN
+        Qt3DCore::QNodeId shaderId = Qt3DCore::QNodeId::createId();
+        const auto shaderChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+        shaderChange->setPropertyName("shaderProgram");
+        shaderChange->setValue(QVariant::fromValue(shaderId));
+        backend.sceneChangeEvent(shaderChange);
+
+        // THEN
+        QCOMPARE(backend.shaderProgram(), shaderId);
     }
 
 private:
