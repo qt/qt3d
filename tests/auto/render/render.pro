@@ -88,7 +88,8 @@ qtConfig(private_tests) {
         qfilterkey \
         effect \
         filterkey \
-        qmesh
+        qmesh \
+        technique
 
     !macos: SUBDIRS += graphicshelpergl4
 }
