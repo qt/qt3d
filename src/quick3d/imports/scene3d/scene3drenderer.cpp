@@ -129,6 +129,7 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     QObject::connect(m_item->window(), &QQuickWindow::beforeRendering, this, &Scene3DRenderer::render, Qt::DirectConnection);
     QObject::connect(m_item, &QQuickItem::windowChanged, this, &Scene3DRenderer::onWindowChangedQueued, Qt::QueuedConnection);
 
+    Q_ASSERT(QOpenGLContext::currentContext());
     ContextSaver saver;
     static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderInitialize(saver.context());
     scheduleRootEntityChange();
@@ -233,17 +234,17 @@ void Scene3DRenderer::render()
 
     const QSize boundingRectSize = m_item->boundingRect().size().toSize();
     const QSize currentSize = boundingRectSize * window->effectiveDevicePixelRatio();
-    const bool forceRecreate = currentSize != m_lastSize || m_multisample != m_lastMultisample;
+    const bool sizeHasChanged = currentSize != m_lastSize;
+    const bool multisampleHasChanged = m_multisample != m_lastMultisample;
+    const bool forceRecreate = sizeHasChanged || multisampleHasChanged;
 
-    if (currentSize != m_lastSize)
+    if (sizeHasChanged)
         m_item->setItemArea(boundingRectSize);
 
     // Rebuild FBO and textures if never created or a resize has occurred
     if ((m_multisampledFBO.isNull() || forceRecreate) && m_multisample) {
-        qCDebug(Scene3D) << Q_FUNC_INFO << "Creating multisample framebuffer";
         m_multisampledFBO.reset(createMultisampledFramebufferObject(currentSize));
         if (m_multisampledFBO->format().samples() == 0 || !QOpenGLFramebufferObject::hasOpenGLFramebufferBlit()) {
-            qCDebug(Scene3D) << Q_FUNC_INFO << "Failed to create multisample framebuffer";
             m_multisample = false;
             m_multisampledFBO.reset(nullptr);
         }
@@ -260,18 +261,21 @@ void Scene3DRenderer::render()
     m_lastSize = currentSize;
     m_lastMultisample = m_multisample;
 
-    //Only try to use MSAA when available
-    if (m_multisample) {
-        // Bind FBO
+    // Bind FBO
+    if (m_multisample) //Only try to use MSAA when available
         m_multisampledFBO->bind();
+    else
+        m_finalFBO->bind();
 
-        // Render Qt3D Scene
-        static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderSynchronous();
+    // Render Qt3D Scene
+    static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderSynchronous();
 
-        // We may have called doneCurrent() so restore the context.
-        if (saver.context()->surface() != saver.surface())
-            saver.context()->makeCurrent(saver.surface());
+    // We may have called doneCurrent() so restore the context if the rendering surface was changed
+    // Note: keep in mind that the ContextSave also restores the surface when destroyed
+    if (saver.context()->surface() != saver.surface())
+        saver.context()->makeCurrent(saver.surface());
 
+    if (m_multisample) {
         // Blit multisampled FBO with non multisampled FBO with texture attachment
         const QRect dstRect(QPoint(0, 0), m_finalFBO->size());
         const QRect srcRect(QPoint(0, 0), m_multisampledFBO->size());
@@ -281,23 +285,10 @@ void Scene3DRenderer::render()
                                                   GL_NEAREST,
                                                   0, 0,
                                                   QOpenGLFramebufferObject::DontRestoreFramebufferBinding);
-
-        // Restore QtQuick FBO
-        m_multisampledFBO->bindDefault();
-    } else {
-        // Bind FBO
-        m_finalFBO->bind();
-
-        // Render Qt3D Scene
-        static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderSynchronous();
-
-        // We may have called doneCurrent() so restore the context.
-        if (saver.context()->surface() != saver.surface())
-            saver.context()->makeCurrent(saver.surface());
-
-        // Restore QtQuick FBO
-        m_finalFBO->bindDefault();
     }
+
+    // Restore QtQuick FBO
+    QOpenGLFramebufferObject::bindDefault();
 
     // Reset the state used by the Qt Quick scenegraph to avoid any
     // interference when rendering the rest of the UI.
