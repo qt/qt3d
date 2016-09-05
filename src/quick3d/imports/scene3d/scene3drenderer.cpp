@@ -70,7 +70,7 @@ public:
 
     ~ContextSaver()
     {
-        if (m_context)
+        if (m_context && m_context->surface() != m_surface)
             m_context->makeCurrent(m_surface);
     }
 
