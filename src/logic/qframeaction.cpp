@@ -55,8 +55,8 @@ QFrameActionPrivate::QFrameActionPrivate()
     \since 5.5
     \brief Provides a way to have a synchronous function executed each frame.
 
-    The QFrameAction provides a way to perform tasks each frame in
-    synchronized with the Qt3D backend. This is useful to implement some
+    The QFrameAction provides a way to perform tasks each frame in a
+    synchronized way with the Qt3D backend. This is useful to implement some
     aspects of application logic and to prototype functionality that can later
     be folded into an additional Qt3D aspect.
 
@@ -64,7 +64,7 @@ QFrameActionPrivate::QFrameActionPrivate()
     with the Qt3D engine where a Qt Quick animation element is not perfectly
     synchronized and may lead to stutters in some cases.
 
-    To execute your own code each frame override the onTriggered function.
+    To execute your own code each frame connect to the QFrameAction::triggered signal.
 */
 
 /*!
@@ -73,6 +73,18 @@ QFrameActionPrivate::QFrameActionPrivate()
     \instantiates Qt3DLogic::QFrameAction
     \inherits Component3D
     \since 5.5
+    \brief Provides a way to have a synchronous function executed each frame.
+
+    The FrameAction provides a way to perform tasks each frame in a
+    synchronized way with the Qt3D backend. This is useful to implement some
+    aspects of application logic and to prototype functionality that can later
+    be folded into an additional Qt3D aspect.
+
+    For example, the FrameAction can be used to animate a property in sync
+    with the Qt3D engine where a Qt Quick animation element is not perfectly
+    synchronized and may lead to stutters in some cases.
+
+    To execute your own code each frame connect to the FrameAction::triggered signal.
 */
 
 /*!
@@ -107,15 +119,13 @@ void QFrameAction::onTriggered(float dt)
 }
 
 /*!
-    \qmlsignal Qt3D.Logic::FrameAction::triggered(float dt)
+    \qmlsignal Qt3D.Logic::FrameAction::triggered(real dt)
     This signal is emitted each frame.
-
-    The corresponding handler is \c onTriggered
 */
 
 /*!
-  \fn QFrameAction::triggered(float dt)
-  This signal is emitted each frame with \a dt being the time since the last triggering.
+    \fn QFrameAction::triggered(float dt)
+    This signal is emitted each frame with \a dt being the time since the last triggering.
 */
 } // namespace Qt3DLogic
 
