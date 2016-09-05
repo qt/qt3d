@@ -69,8 +69,8 @@ public:
     ~FilterKey();
     void cleanup();
 
-    QVariant criterionValue() const;
-    QString criterionName() const;
+    QVariant value() const;
+    QString name() const;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     bool operator ==(const FilterKey &other);
     bool operator !=(const FilterKey &other);
