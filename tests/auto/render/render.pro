@@ -86,7 +86,8 @@ qtConfig(private_tests) {
         qeffect \
         qrenderpass \
         qfilterkey \
-        effect
+        effect \
+        filterkey
 
     !macos: SUBDIRS += graphicshelpergl4
 }
