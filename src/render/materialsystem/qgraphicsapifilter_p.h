@@ -58,7 +58,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-struct GraphicsApiFilterData
+struct Q_AUTOTEST_EXPORT GraphicsApiFilterData
 {
     GraphicsApiFilterData();
 
