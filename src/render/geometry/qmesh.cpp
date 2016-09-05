@@ -52,20 +52,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class MeshFunctor : public QGeometryFactory
-{
-public :
-    MeshFunctor(const QUrl &sourcePath, const QString &meshName = QString());
-    QGeometry *operator()() Q_DECL_OVERRIDE;
-    bool operator ==(const QGeometryFactory &other) const Q_DECL_OVERRIDE;
-    QT3D_FUNCTOR(MeshFunctor)
-
-private:
-    QUrl m_sourcePath;
-    QString m_meshName;
-};
-
-
 QMeshPrivate::QMeshPrivate()
     : QGeometryRendererPrivate()
 {
