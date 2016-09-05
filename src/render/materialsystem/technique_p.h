@@ -73,7 +73,7 @@ namespace Render {
 
 class TechniqueManager;
 
-class Technique : public BackendNode
+class Q_AUTOTEST_EXPORT Technique : public BackendNode
 {
 public:
     Technique();
