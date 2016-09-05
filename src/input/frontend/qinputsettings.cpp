@@ -48,10 +48,15 @@ namespace Qt3DInput {
 /*!
     \class Qt3DInput::QInputSettings
     \inmodule Qt3DInput
-    \inherits Qt3DCore::QComponant
-    \brief QInputSettings stores settings for the specified eventSource.
-
+    \inherits Qt3DCore::QComponent
+    \brief QInputSettings class holds the pointer to an input event source object.
     \since 5.7
+
+    The QInputSettings component must be set as a component of the scene root entity.
+    It stores a pointer to the object that acts as the source of input events to be handled
+    by various input classes. For example, a QWindow instance can be an event source.
+
+    \sa QMouseDevice, QKeyboardDevice
 */
 
 /*!
@@ -59,10 +64,14 @@ namespace Qt3DInput {
     \inqmlmodule Qt3D.Input
     \inherits Component3D
     \instantiates Qt3DInput::QInputSettings
-    \brief QML frontend for the Qt3DInput::QInputSettings C++ class.
-
-    Stores settings the specified eventSource
+    \brief InputSettings holds the pointer to an input event source object.
     \since 5.7
+
+    The InputSettings component must be set as a component of the scene root entity.
+    It stores a pointer to the object that acts as the source of input events to be handled
+    by various input classes. For example, a Window instance can be an event source.
+
+    \sa MouseDevice, KeyboardDevice
 */
 
 QInputSettingsPrivate::QInputSettingsPrivate()
@@ -71,15 +80,11 @@ QInputSettingsPrivate::QInputSettingsPrivate()
 {
 }
 
-/*!
-    Constructs a new QInputSettings instance with \a parent.
- */
 QInputSettings::QInputSettings(Qt3DCore::QNode *parent)
     : Qt3DCore::QComponent(*new QInputSettingsPrivate(), parent)
 {
 }
 
-/*! \internal */
 QInputSettings::~QInputSettings()
 {
 }
@@ -87,41 +92,24 @@ QInputSettings::~QInputSettings()
 /*!
     \property QInputSettings::eventSource
 
-    Holds the source for the QInputSettings.
+    Holds the current event source. An event source is an object that is capable
+    of receiving various input events, such as mouse or keyboard events.
+    Typically it is a QWindow instance.
  */
-/*!
-  \fn QInputSettings::eventSourceChanged(QObject *)
 
-  This signal is emitted when the even source associated with the input setting is changed.
+/*!
+    \qmlproperty Object InputSettings::eventSource
+
+    Holds the current event source. An event source is an object that is capable
+    of receiving various input events, such as mouse or keyboard events.
+    Typically it is a Window instance.
 */
-
-/*!
-  \qmlproperty QObject Qt3D.Input::InputSettings::eventSource
-
-  The current event source of the InputSettings object
-*/
-
-/*!
-    \qmlsignal Qt3D.Input::InputSettings::ventSourceChanged(QObject *)
-
-    This signal is emitted when the even source associated with the input setting is changed.
-
-    The corresponding handler is \c onEventSourceChanged
-*/
-
-/*!
- * \brief QInputSettings::eventSource
- * \return the current event source of the QInputSettings instance.
- */
 QObject *QInputSettings::eventSource() const
 {
     Q_D(const QInputSettings);
     return d->m_eventSource;
 }
 
-/*!
-   Set the current event source of the QInputSettings instance to \a eventSource.
- */
 void QInputSettings::setEventSource(QObject *eventSource)
 {
     Q_D(QInputSettings);
