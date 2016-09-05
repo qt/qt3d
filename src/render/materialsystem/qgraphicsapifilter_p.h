@@ -74,7 +74,7 @@ struct Q_AUTOTEST_EXPORT GraphicsApiFilterData
     bool operator <(const GraphicsApiFilterData &other) const;
 };
 
-class QGraphicsApiFilterPrivate : public QObjectPrivate
+class Q_AUTOTEST_EXPORT QGraphicsApiFilterPrivate : public QObjectPrivate
 {
 public:
     QGraphicsApiFilterPrivate()
