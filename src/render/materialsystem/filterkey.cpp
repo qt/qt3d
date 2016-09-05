@@ -60,6 +60,9 @@ FilterKey::~FilterKey()
 
 void FilterKey::cleanup()
 {
+    QBackendNode::setEnabled(false);
+    m_name.clear();
+    m_value.clear();
 }
 
 void FilterKey::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
