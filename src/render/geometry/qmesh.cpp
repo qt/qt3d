@@ -126,7 +126,9 @@ void QMesh::setSource(const QUrl& source)
     d->m_source = source;
     // update the functor
     QGeometryRenderer::setGeometryFactory(QGeometryFactoryPtr(new MeshFunctor(d->m_source, d->m_meshName)));
+    const bool blocked = blockNotifications(true);
     emit sourceChanged(source);
+    blockNotifications(blocked);
 }
 
 /*!
@@ -148,7 +150,9 @@ void QMesh::setMeshName(const QString &meshName)
     d->m_meshName = meshName;
     // update the functor
     QGeometryRenderer::setGeometryFactory(QGeometryFactoryPtr(new MeshFunctor(d->m_source, d->m_meshName)));
+    const bool blocked = blockNotifications(true);
     emit meshNameChanged(meshName);
+    blockNotifications(blocked);
 }
 
 /*!
