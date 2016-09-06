@@ -89,7 +89,8 @@ qtConfig(private_tests) {
         effect \
         filterkey \
         qmesh \
-        technique
+        technique \
+        materialparametergathererjob
 
     !macos: SUBDIRS += graphicshelpergl4
 }
