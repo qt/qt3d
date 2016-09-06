@@ -74,6 +74,9 @@ public:
     inline void setHasLayerFilter(bool hasLayerFilter) Q_DECL_NOEXCEPT { m_hasLayerFilter = hasLayerFilter; }
     inline QVector<Entity *> filteredEntities() const Q_DECL_NOEXCEPT { return m_filteredEntities; }
 
+    inline bool hasLayerFilter() const Q_DECL_NOTHROW { return m_hasLayerFilter; }
+    inline Qt3DCore::QNodeIdVector layers() const { return m_layerIds; }
+
     // QAspectJob interface
     void run() Q_DECL_FINAL;
 
