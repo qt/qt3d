@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 /*!
  * \class Qt3DRender::QCameraLens
- * \inmodule Qt3DCore
+ * \inmodule Qt3DRender
  *
  * \brief Qt3DRender::QCameraLens specifies the projection matrix that will be used to
  * define a Camera for a 3D scene.
@@ -57,7 +57,7 @@ namespace Qt3DRender {
 /*!
  * \qmltype CameraLens
  * \instantiates Qt3DRender::QCameraLens
- * \inqmlmodule Qt3D.Core
+ * \inqmlmodule Qt3D.Render
  * \inherits Component3D
  * \since 5.5
  * \brief Provides the projection matrix that is used to define a Camera for 3D scene.
