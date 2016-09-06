@@ -67,48 +67,63 @@ QGeometryPrivate::~QGeometryPrivate()
 }
 
 /*!
- * \qmltype Geometry
- * \instantiates Qt3DRender::QGeometry
- * \inqmlmodule Qt3D.Render
+    \qmltype Geometry
+    \instantiates Qt3DRender::QGeometry
+    \inqmlmodule Qt3D.Render
+    \inherits Node
+    \since 5.7
+    \brief Encapsulates geometry
+
+    A Geometry type is used to group a list of Attribute objects together
+    to form a geometric shape Qt3D is able to render using GeometryRenderer.
+    Special attribute can be set in order to calculate bounding volume of the shape.
  */
 
 /*!
- * \qmlproperty QAttribute Geometry::boundingVolumePositionAttribute
- *
- * Holds the property used to compute the bounding volume.
+    \class Qt3DRender::QGeometry
+    \inmodule Qt3DRender
+    \since 5.7
+    \brief Encapsulates geometry
+
+    A Qt3DRender::QGeometry class is used to group a list of Qt3DRender::QAttribute
+    objects together to form a geometric shape Qt3D is able to render using
+    Qt3DRender::QGeometryRenderer. Special attribute can be set in order to calculate
+    bounding volume of the shape.
  */
 
 /*!
- * \class Qt3DRender::QGeometry
- * \inheaderfile Qt3DRender/QGeometry
- * \inmodule Qt3DRender
- *
- * \inherits Qt3DCore::QNode
- *
+    \qmlproperty Attribute Geometry::boundingVolumePositionAttribute
+
+    Holds the attribute used to compute the bounding volume.
+ */
+/*!
+    \qmlproperty list<Attribute> Geometry::attributes
+
+    Holds the list of attributes the geometry comprises of.
  */
 
 /*!
- * \typedef Qt3DRender::QAttributeList
- * \relates Qt3DRender::QGeometry
- *
- * A vector of \l {Qt3DRender::}{QAttribute}s.
+    \property QGeometry::boundingVolumePositionAttribute
+
+    Holds the attribute used to compute the bounding volume.
  */
 
+
 /*!
- * Constructs a new QGeometry with \a parent.
+    Constructs a new QGeometry with \a parent.
  */
 QGeometry::QGeometry(QNode *parent)
     : QGeometry(*new QGeometryPrivate(), parent) {}
 
 /*!
- * \internal
+    \internal
  */
 QGeometry::~QGeometry()
 {
 }
 
 /*!
- * \internal
+    \internal
  */
 QGeometry::QGeometry(QGeometryPrivate &dd, QNode *parent)
     : QNode(dd, parent)
@@ -116,7 +131,7 @@ QGeometry::QGeometry(QGeometryPrivate &dd, QNode *parent)
 }
 
 /*!
- * Adds an \a attribute to this geometry.
+    Adds an \a attribute to this geometry.
  */
 void QGeometry::addAttribute(QAttribute *attribute)
 {
@@ -144,7 +159,7 @@ void QGeometry::addAttribute(QAttribute *attribute)
 }
 
 /*!
- * Removes the given \a attribute from this geometry.
+    Removes the given \a attribute from this geometry.
  */
 void QGeometry::removeAttribute(QAttribute *attribute)
 {
@@ -169,11 +184,6 @@ void QGeometry::setBoundingVolumePositionAttribute(QAttribute *boundingVolumePos
     }
 }
 
-/*!
- * \property QGeometry::boundingVolumePositionAttribute
- *
- * Holds the attribute used to compute the bounding volume.
- */
 QAttribute *QGeometry::boundingVolumePositionAttribute() const
 {
     Q_D(const QGeometry);
@@ -181,7 +191,7 @@ QAttribute *QGeometry::boundingVolumePositionAttribute() const
 }
 
 /*!
- * \return the list of attributes in this geometry.
+    Returns the list of attributes in this geometry.
  */
 QVector<QAttribute *> QGeometry::attributes() const
 {
