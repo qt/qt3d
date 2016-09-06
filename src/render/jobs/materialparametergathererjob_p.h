@@ -81,6 +81,9 @@ public:
     inline QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> &materialToPassAndParameter() Q_DECL_NOTHROW { return m_parameters; }
     inline void setHandles(const QVector<HMaterial> &handles) Q_DECL_NOTHROW { m_handles = handles; }
 
+    inline TechniqueFilter *techniqueFilter() const Q_DECL_NOTHROW { return m_techniqueFilter; }
+    inline RenderPassFilter *renderPassFilter() const Q_DECL_NOTHROW { return m_renderPassFilter; }
+
     void run() Q_DECL_FINAL;
 
 private:
