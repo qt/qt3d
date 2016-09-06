@@ -86,8 +86,8 @@ public:
     // a shadow map texture is submitted before the RenderView that
     // contains commands making use of the shadow map
     inline void setSubmitOrderIndex(int index) { m_index = index; }
+    inline int submitOrderIndex() const { return m_index; }
 
-protected:
     void run() Q_DECL_OVERRIDE;
 
 private:
