@@ -90,7 +90,8 @@ qtConfig(private_tests) {
         filterkey \
         qmesh \
         technique \
-        materialparametergathererjob
+        materialparametergathererjob \
+        renderviewbuilder
 
     !macos: SUBDIRS += graphicshelpergl4
 }
