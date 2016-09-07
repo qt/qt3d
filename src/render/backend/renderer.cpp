@@ -1104,14 +1104,6 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     m_pickBoundingVolumeJob->setRenderSettings(settings());
     m_pickBoundingVolumeJob->setMouseEvents(pendingPickingEvents());
 
-    // Traverse the current framegraph. For each leaf node create a
-    // RenderView and set its configuration then create a job to
-    // populate the RenderView with a set of RenderCommands that get
-    // their details from the RenderNodes that are visible to the
-    // Camera selected by the framegraph configuration
-    FrameGraphVisitor visitor(this, m_nodesManager->frameGraphManager());
-    visitor.traverse(frameGraphRoot(), &renderBinJobs);
-
     // Set dependencies of resource gatherer
     for (const QAspectJobPtr &jobPtr : renderBinJobs) {
         jobPtr->addDependency(m_bufferGathererJob);
@@ -1135,6 +1127,14 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     renderBinJobs.push_back(m_bufferGathererJob);
     renderBinJobs.push_back(m_textureGathererJob);
     renderBinJobs.push_back(m_shaderGathererJob);
+
+    // Traverse the current framegraph. For each leaf node create a
+    // RenderView and set its configuration then create a job to
+    // populate the RenderView with a set of RenderCommands that get
+    // their details from the RenderNodes that are visible to the
+    // Camera selected by the framegraph configuration
+    FrameGraphVisitor visitor(this, m_nodesManager->frameGraphManager());
+    visitor.traverse(frameGraphRoot(), &renderBinJobs);
 
     // Set target number of RenderViews
     m_renderQueue->setTargetRenderViewCount(visitor.leafNodeCount());
