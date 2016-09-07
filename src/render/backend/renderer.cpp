@@ -1393,6 +1393,11 @@ const GraphicsApiFilterData *Renderer::contextInfo() const
     return m_graphicsContext->contextInfo();
 }
 
+GraphicsContext *Renderer::graphicsContext() const
+{
+    return m_graphicsContext.data();
+}
+
 void Renderer::addRenderCaptureSendRequest(Qt3DCore::QNodeId nodeId)
 {
     if (!m_pendingRenderCaptureSendRequests.contains(nodeId))

@@ -212,6 +212,7 @@ public:
 
     void setOpenGLContext(QOpenGLContext *context);
     const GraphicsApiFilterData *contextInfo() const;
+    GraphicsContext *graphicsContext() const;
 
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
