@@ -49,6 +49,19 @@ TechniqueManager::TechniqueManager()
 {
 }
 
+// AspectThread
+void TechniqueManager::addDirtyTechnique(Qt3DCore::QNodeId techniqueId)
+{
+    if (!m_dirtyTechniques.contains(techniqueId))
+        m_dirtyTechniques.push_back(techniqueId);
+}
+
+// AspectThread
+QVector<Qt3DCore::QNodeId> TechniqueManager::takeDirtyTechniques()
+{
+    return std::move(m_dirtyTechniques);
+}
+
 } // Render
 } // Qt3DRender
 
