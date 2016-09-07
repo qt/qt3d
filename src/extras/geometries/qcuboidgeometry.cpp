@@ -76,23 +76,23 @@ void createPlaneVertexData(float w, float h, const QSize &resolution,
     switch (normal) {
     case NegativeX:
         // Iterate over z
-        for (int j = resolution.width() - 1; j >= 0; --j) {
-            const float a = a0 + static_cast<float>(j) * da;
-            const float u = static_cast<float>(j) * du;
+        for (int j = resolution.height() - 1; j >= 0; --j) {
+            const float b = b0 + static_cast<float>(j) * db;
+            const float v = static_cast<float>(j) * dv;
 
             // Iterate over y
-            for (int i = 0; i < resolution.height(); ++i) {
-                const float b = b0 + static_cast<float>(i) * db;
-                const float v = static_cast<float>(i) * dv;
+            for (int i = 0; i < resolution.width(); ++i) {
+                const float a = a0 + static_cast<float>(i) * da;
+                const float u = static_cast<float>(i) * du;
 
                 // position
                 *vertices++ = planeDistance;
-                *vertices++ = b;
                 *vertices++ = a;
+                *vertices++ = b;
 
                 // texture coordinates
-                *vertices++ = 1.0f - u;
                 *vertices++ = v;
+                *vertices++ = u;
 
                 // normal
                 *vertices++ = -1.0f;
@@ -102,8 +102,8 @@ void createPlaneVertexData(float w, float h, const QSize &resolution,
                 // tangent
                 *vertices++ = 0.0f;
                 *vertices++ = 0.0f;
-                *vertices++ = -1.0f;
-                *vertices++ = -1.0f;
+                *vertices++ = 1.0f;
+                *vertices++ = 1.0f;
             }
         }
         break;
@@ -111,22 +111,22 @@ void createPlaneVertexData(float w, float h, const QSize &resolution,
     case PositiveX: {
         // Iterate over z
         for (int j = 0; j < resolution.height(); ++j) {
-            const float a = a0 + static_cast<float>(j) * da;
-            const float u = static_cast<float>(j) * du;
+            const float b = b0 + static_cast<float>(j) * db;
+            const float v = static_cast<float>(j) * dv;
 
             // Iterate over y
             for (int i = 0; i < resolution.width(); ++i) {
-                const float b = b0 + static_cast<float>(i) * db;
-                const float v = static_cast<float>(i) * dv;
+                const float a = a0 + static_cast<float>(i) * da;
+                const float u = static_cast<float>(i) * du;
 
                 // position
                 *vertices++ = planeDistance;
-                *vertices++ = b;
                 *vertices++ = a;
+                *vertices++ = b;
 
                 // texture coordinates
+                *vertices++ = 1.0f - v;
                 *vertices++ = u;
-                *vertices++ = v;
 
                 // normal
                 *vertices++ = 1.0f;
@@ -136,8 +136,8 @@ void createPlaneVertexData(float w, float h, const QSize &resolution,
                 // tangent
                 *vertices++ = 0.0f;
                 *vertices++ = 0.0f;
-                *vertices++ = 1.0f;
                 *vertices++ = -1.0f;
+                *vertices++ = 1.0f;
             }
         }
         break;
