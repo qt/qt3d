@@ -120,6 +120,7 @@
 #include <Qt3DRender/private/rendersettings_p.h>
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
+#include <Qt3DRender/private/technique_p.h>
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>

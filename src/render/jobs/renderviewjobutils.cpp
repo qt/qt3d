@@ -64,6 +64,7 @@
 #include <Qt3DRender/private/rendersurfaceselector_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
+#include <Qt3DRender/private/techniquemanager_p.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -45,6 +45,7 @@
 #include <Qt3DRender/private/gltexturemanager_p.h>
 #include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
+#include <Qt3DRender/private/techniquemanager_p.h>
 
 #include <QOpenGLVertexArrayObject>
 
