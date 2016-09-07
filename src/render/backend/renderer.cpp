@@ -164,6 +164,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_updateWorldBoundingVolumeJob(Render::UpdateWorldBoundingVolumeJobPtr::create())
     , m_sendRenderCaptureJob(Render::SendRenderCaptureJobPtr::create(this))
     , m_updateMeshTriangleListJob(Render::UpdateMeshTriangleListJobPtr::create())
+    , m_filterCompatibleTechniqueJob(Render::FilterCompatibleTechniqueJobPtr::create())
     , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
     , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
     , m_shaderGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyShaders(); }, JobTypes::DirtyShaderGathering))
@@ -187,6 +188,8 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 
     // All world stuff depends on the RenderEntity's localBoundingVolume
     m_pickBoundingVolumeJob->addDependency(m_updateMeshTriangleListJob);
+
+    m_filterCompatibleTechniqueJob->setRenderer(this);
 
     m_defaultRenderStateSet = new RenderStateSet;
     m_defaultRenderStateSet->addState(RenderStateSet::createState<DepthTest>(GL_LESS));
@@ -236,6 +239,7 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_updateWorldBoundingVolumeJob->setManager(m_nodesManager->renderNodesManager());
     m_sendRenderCaptureJob->setManagers(m_nodesManager);
     m_updateMeshTriangleListJob->setManagers(m_nodesManager);
+    m_filterCompatibleTechniqueJob->setManager(m_nodesManager->techniqueManager());
 }
 
 NodeManagers *Renderer::nodeManagers() const
@@ -1100,7 +1104,6 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     m_pickBoundingVolumeJob->setRenderSettings(settings());
     m_pickBoundingVolumeJob->setMouseEvents(pendingPickingEvents());
 
-
     // Traverse the current framegraph. For each leaf node create a
     // RenderView and set its configuration then create a job to
     // populate the RenderView with a set of RenderCommands that get
@@ -1125,6 +1128,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     renderBinJobs.push_back(m_worldTransformJob);
     renderBinJobs.push_back(m_cleanupJob);
     renderBinJobs.push_back(m_sendRenderCaptureJob);
+    renderBinJobs.push_back(m_filterCompatibleTechniqueJob);
     renderBinJobs.append(bufferJobs);
 
     // Jobs to prepare GL Resource upload

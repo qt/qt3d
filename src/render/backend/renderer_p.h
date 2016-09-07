@@ -72,6 +72,7 @@
 #include <Qt3DRender/private/sendrendercapturejob_p.h>
 #include <Qt3DRender/private/genericlambdajob_p.h>
 #include <Qt3DRender/private/updatemeshtrianglelistjob_p.h>
+#include <Qt3DRender/private/filtercompatibletechniquejob_p.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -189,6 +190,7 @@ public:
     inline UpdateWorldTransformJobPtr updateWorldTransformJob() const { return m_worldTransformJob; }
     inline UpdateWorldBoundingVolumeJobPtr updateWorldBoundingVolumeJob() const { return m_updateWorldBoundingVolumeJob; }
     inline UpdateMeshTriangleListJobPtr updateMeshTriangleListJob() const { return m_updateMeshTriangleListJob; }
+    inline FilterCompatibleTechniqueJobPtr filterCompatibleTechniqueJob() const { return m_filterCompatibleTechniqueJob; }
 
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const Q_DECL_OVERRIDE;
 
@@ -297,6 +299,7 @@ private:
     UpdateWorldBoundingVolumeJobPtr m_updateWorldBoundingVolumeJob;
     SendRenderCaptureJobPtr m_sendRenderCaptureJob;
     UpdateMeshTriangleListJobPtr m_updateMeshTriangleListJob;
+    FilterCompatibleTechniqueJobPtr m_filterCompatibleTechniqueJob;
 
     QVector<Qt3DCore::QNodeId> m_pendingRenderCaptureSendRequests;
 
