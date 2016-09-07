@@ -100,7 +100,7 @@ enum TextureScope
 
 typedef QPair<QString, int> NamedUniformLocation;
 
-class GraphicsContext
+class Q_AUTOTEST_EXPORT GraphicsContext
 {
 public:
     GraphicsContext();
