@@ -94,6 +94,7 @@ void Technique::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
     m_filterKeyList = data.filterKeyIds;
     m_parameterPack.setParameters(data.parameterIds);
     m_renderPasses = data.renderPassIds;
+    m_nodeManager->techniqueManager()->addDirtyTechnique(peerId());
 }
 
 void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -107,6 +108,7 @@ void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             // Notify the manager that our graphicsApiFilterData has changed
             // and that we therefore need to be check for compatibility again
             m_isCompatibleWithRenderer = false;
+            m_nodeManager->techniqueManager()->addDirtyTechnique(peerId());
         }
         break;
     }

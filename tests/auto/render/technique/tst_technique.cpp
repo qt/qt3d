@@ -38,6 +38,7 @@
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/filterkey_p.h>
+#include <Qt3DRender/private/techniquemanager_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
@@ -76,9 +77,11 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::Technique backendTechnique;
+        Qt3DRender::Render::NodeManagers nodeManagers;
 
         // WHEN
         backendTechnique.setEnabled(true);
+        backendTechnique.setNodeManager(&nodeManagers);
         backendTechnique.setCompatibleWithRenderer(true);
 
         {
@@ -119,6 +122,9 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DRender::Render::Technique backendTechnique;
+            Qt3DRender::Render::NodeManagers nodeManagers;
+
+            backendTechnique.setNodeManager(&nodeManagers);
             simulateInitialization(&technique, &backendTechnique);
 
             // THEN
@@ -133,10 +139,16 @@ private Q_SLOTS:
             QCOMPARE(backendTechnique.renderPasses().size(), 1);
             QCOMPARE(backendTechnique.renderPasses().first(), pass.id());
             QCOMPARE(backendTechnique.isCompatibleWithRenderer(), false);
+            const QVector<Qt3DCore::QNodeId> dirtyTechniques = nodeManagers.techniqueManager()->takeDirtyTechniques();
+            QCOMPARE(dirtyTechniques.size(), 1);
+            QCOMPARE(dirtyTechniques.first(), backendTechnique.peerId());
         }
         {
             // WHEN
             Qt3DRender::Render::Technique backendTechnique;
+            Qt3DRender::Render::NodeManagers nodeManagers;
+
+            backendTechnique.setNodeManager(&nodeManagers);
             technique.setEnabled(false);
             simulateInitialization(&technique, &backendTechnique);
 
@@ -165,8 +177,11 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::Technique backendTechnique;
+        Qt3DRender::Render::NodeManagers nodeManagers;
+
         TestRenderer renderer;
         backendTechnique.setRenderer(&renderer);
+        backendTechnique.setNodeManager(&nodeManagers);
 
         {
             // WHEN
@@ -182,6 +197,8 @@ private Q_SLOTS:
         {
             // WHEN
             backendTechnique.setCompatibleWithRenderer(true);
+            QCOMPARE(nodeManagers.techniqueManager()->takeDirtyTechniques().size(), 0);
+
             Qt3DRender::GraphicsApiFilterData newValue;
             newValue.m_major = 4;
             newValue.m_minor = 5;
@@ -195,6 +212,11 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(*backendTechnique.graphicsApiFilter(), newValue);
             QCOMPARE(backendTechnique.isCompatibleWithRenderer(), false);
+
+            const QVector<Qt3DCore::QNodeId> dirtyTechniques = nodeManagers.techniqueManager()->takeDirtyTechniques();
+            QCOMPARE(dirtyTechniques.size(), 1);
+            QCOMPARE(dirtyTechniques.first(), backendTechnique.peerId());
+
         }
         {
             Qt3DRender::QParameter parameter;
