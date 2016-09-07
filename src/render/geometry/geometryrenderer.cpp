@@ -241,7 +241,7 @@ Qt3DCore::QBackendNode *GeometryRendererFunctor::get(Qt3DCore::QNodeId id) const
 
 void GeometryRendererFunctor::destroy(Qt3DCore::QNodeId id) const
 {
-    return m_manager->releaseResource(id);
+    m_manager->releaseResource(id);
 }
 
 } // namespace Render
