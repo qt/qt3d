@@ -260,8 +260,8 @@ Technique *findTechniqueForEffect(Renderer *renderer,
     for (const QNodeId techniqueId : techniqueIds) {
         Technique *technique = manager->techniqueManager()->lookupResource(techniqueId);
 
-        if (!technique)
-            continue;
+        // Should be valid, if not there likely a problem with node addition/destruction changes
+        Q_ASSERT(technique);
 
         // We need to be sure the renderer is still running <=> still has a GraphicsContext
         if (renderer->isRunning() && *renderer->contextInfo() == *technique->graphicsApiFilter()) {
