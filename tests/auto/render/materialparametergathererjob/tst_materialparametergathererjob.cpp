@@ -37,6 +37,8 @@
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/materialparametergathererjob_p.h>
 #include <Qt3DRender/private/techniquefilternode_p.h>
+#include <Qt3DRender/private/technique_p.h>
+#include <Qt3DRender/private/techniquemanager_p.h>
 #include <Qt3DRender/private/renderpassfilternode_p.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DRender/qeffect.h>
@@ -68,6 +70,12 @@ public:
 
         for (const Qt3DCore::QNodeCreatedChangeBasePtr change : creationChanges)
             d_func()->createBackendNode(change);
+
+        const auto handles = nodeManagers()->techniqueManager()->activeHandles();
+        for (const auto handle: handles) {
+            Render::Technique *technique = nodeManagers()->techniqueManager()->data(handle);
+            technique->setCompatibleWithRenderer(true);
+        }
     }
 
     ~TestAspect()
