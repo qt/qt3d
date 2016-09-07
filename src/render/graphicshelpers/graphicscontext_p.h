@@ -126,6 +126,7 @@ public:
     void doneCurrent();
     void activateGLHelper();
     bool hasValidGLHelper() const;
+    bool isInitialized() const;
 
     QOpenGLShaderProgram *createShaderProgram(Shader *shaderNode);
     void loadShader(Shader* shader);
