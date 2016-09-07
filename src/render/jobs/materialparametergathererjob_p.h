@@ -55,6 +55,7 @@
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/renderviewjobutils_p.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -69,7 +70,7 @@ class Renderer;
 
 // TO be executed for each FrameGraph branch with a given RenderPassFilter/TechniqueFilter
 
-class Q_AUTOTEST_EXPORT MaterialParameterGathererJob : public Qt3DCore::QAspectJob
+class QT3DRENDERSHARED_PRIVATE_EXPORT MaterialParameterGathererJob : public Qt3DCore::QAspectJob
 {
 public:
     MaterialParameterGathererJob();
