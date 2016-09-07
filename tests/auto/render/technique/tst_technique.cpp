@@ -65,6 +65,7 @@ private Q_SLOTS:
         QCOMPARE(backendTechnique.parameters().size(), 0);
         QCOMPARE(backendTechnique.filterKeys().size(), 0);
         QCOMPARE(backendTechnique.renderPasses().size(), 0);
+        QCOMPARE(backendTechnique.isCompatibleWithRenderer(), false);
     }
 
     void checkCleanupState()
@@ -74,6 +75,7 @@ private Q_SLOTS:
 
         // WHEN
         backendTechnique.setEnabled(true);
+        backendTechnique.setCompatibleWithRenderer(true);
 
         {
             Qt3DRender::QTechnique technique;
@@ -95,6 +97,7 @@ private Q_SLOTS:
         QCOMPARE(backendTechnique.parameters().size(), 0);
         QCOMPARE(backendTechnique.filterKeys().size(), 0);
         QCOMPARE(backendTechnique.renderPasses().size(), 0);
+        QCOMPARE(backendTechnique.isCompatibleWithRenderer(), false);
     }
 
     void checkInitializeFromPeer()
@@ -125,6 +128,7 @@ private Q_SLOTS:
             QCOMPARE(backendTechnique.filterKeys().first(), filterKey.id());
             QCOMPARE(backendTechnique.renderPasses().size(), 1);
             QCOMPARE(backendTechnique.renderPasses().first(), pass.id());
+            QCOMPARE(backendTechnique.isCompatibleWithRenderer(), false);
         }
         {
             // WHEN
@@ -136,6 +140,21 @@ private Q_SLOTS:
             QCOMPARE(backendTechnique.peerId(), technique.id());
             QCOMPARE(backendTechnique.isEnabled(), false);
         }
+    }
+
+    void checkSetCompatibleWithRenderer()
+    {
+        // GIVEN
+        Qt3DRender::Render::Technique backendTechnique;
+
+        // THEN
+        QCOMPARE(backendTechnique.isCompatibleWithRenderer(), false);
+
+        // WHEN
+        backendTechnique.setCompatibleWithRenderer(true);
+
+        // THEN
+        QCOMPARE(backendTechnique.isCompatibleWithRenderer(), true);
     }
 
     void checkSceneChangeEvents()
@@ -158,6 +177,7 @@ private Q_SLOTS:
         }
         {
             // WHEN
+            backendTechnique.setCompatibleWithRenderer(true);
             Qt3DRender::GraphicsApiFilterData newValue;
             newValue.m_major = 4;
             newValue.m_minor = 5;
@@ -170,6 +190,7 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(*backendTechnique.graphicsApiFilter(), newValue);
+            QCOMPARE(backendTechnique.isCompatibleWithRenderer(), false);
         }
         {
             Qt3DRender::QParameter parameter;

@@ -63,6 +63,7 @@ namespace Render {
 
 Technique::Technique()
     : BackendNode()
+    , m_isCompatibleWithRenderer(false)
 {
 }
 
@@ -77,6 +78,7 @@ void Technique::cleanup()
     m_parameterPack.clear();
     m_renderPasses.clear();
     m_filterKeyList.clear();
+    m_isCompatibleWithRenderer = false;
 }
 
 void Technique::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -98,6 +100,9 @@ void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (change->propertyName() == QByteArrayLiteral("graphicsApiFilterData")) {
             GraphicsApiFilterData filterData = change->value().value<GraphicsApiFilterData>();
             m_graphicsApiFilterData = filterData;
+            // Notify the manager that our graphicsApiFilterData has changed
+            // and that we therefore need to be check for compatibility again
+            m_isCompatibleWithRenderer = false;
         }
         break;
     }
@@ -160,6 +165,16 @@ QVector<Qt3DCore::QNodeId> Technique::renderPasses() const
 const GraphicsApiFilterData *Technique::graphicsApiFilter() const
 {
     return &m_graphicsApiFilterData;
+}
+
+bool Technique::isCompatibleWithRenderer() const
+{
+    return m_isCompatibleWithRenderer;
+}
+
+void Technique::setCompatibleWithRenderer(bool compatible)
+{
+    m_isCompatibleWithRenderer = compatible;
 }
 
 void Technique::appendFilterKey(Qt3DCore::QNodeId criterionId)

@@ -93,6 +93,9 @@ public:
     QVector<Qt3DCore::QNodeId> renderPasses() const;
     const GraphicsApiFilterData *graphicsApiFilter() const;
 
+    bool isCompatibleWithRenderer() const;
+    void setCompatibleWithRenderer(bool compatible);
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
@@ -100,6 +103,7 @@ private:
     ParameterPack m_parameterPack;
     QVector<Qt3DCore::QNodeId> m_filterKeyList;
     QVector<Qt3DCore::QNodeId> m_renderPasses;
+    bool m_isCompatibleWithRenderer;
 };
 
 } // namespace Render
