@@ -241,8 +241,9 @@ private Q_SLOTS:
         QVERIFY(renderViewBuilder.syncFrustumCullingJob()->dependencies().contains(testAspect.renderer()->updateShaderDataTransformJob()));
 
         for (const auto materialGatherer : renderViewBuilder.materialGathererJobs()) {
-            QCOMPARE(materialGatherer->dependencies().size(), 1);
-            QCOMPARE(materialGatherer->dependencies().first().data(), renderViewBuilder.syncRenderViewInitializationJob().data());
+            QCOMPARE(materialGatherer->dependencies().size(), 2);
+            QVERIFY(materialGatherer->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
+            QVERIFY(materialGatherer->dependencies().contains(testAspect.renderer()->filterCompatibleTechniqueJob()));
         }
 
         // Step 4
