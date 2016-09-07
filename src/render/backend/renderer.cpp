@@ -767,7 +767,7 @@ void Renderer::lookForDirtyShaders()
         for (HTechnique techniqueHandle : activeTechniques) {
             Technique *technique = m_nodesManager->techniqueManager()->data(techniqueHandle);
             // If api of the renderer matches the one from the technique
-            if (*contextInfo() == *technique->graphicsApiFilter()) {
+            if (technique->isCompatibleWithRenderer()) {
                 const auto passIds = technique->renderPasses();
                 for (const QNodeId passId : passIds) {
                     RenderPass *renderPass = m_nodesManager->renderPassManager()->lookupResource(passId);
