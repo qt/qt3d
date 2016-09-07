@@ -73,7 +73,7 @@ namespace Render {
 
 class TechniqueManager;
 
-class Q_AUTOTEST_EXPORT Technique : public BackendNode
+class QT3DRENDERSHARED_PRIVATE_EXPORT Technique : public BackendNode
 {
 public:
     Technique();
