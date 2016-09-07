@@ -208,7 +208,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QRenderPass>(QSharedPointer<Render::NodeFunctor<Render::RenderPass, Render::RenderPassManager> >::create(m_renderer, m_nodeManagers->renderPassManager()));
     q->registerBackendType<QShaderData>(QSharedPointer<Render::RenderShaderDataFunctor>::create(m_renderer, m_nodeManagers));
     q->registerBackendType<QShaderProgram>(QSharedPointer<Render::NodeFunctor<Render::Shader, Render::ShaderManager> >::create(m_renderer, m_nodeManagers->shaderManager()));
-    q->registerBackendType<QTechnique>(QSharedPointer<Render::NodeFunctor<Render::Technique, Render::TechniqueManager> >::create(m_renderer, m_nodeManagers->techniqueManager()));
+    q->registerBackendType<QTechnique>(QSharedPointer<Render::TechniqueFunctor>::create(m_renderer, m_nodeManagers));
 
     // Framegraph
     q->registerBackendType<QCameraSelector>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::CameraSelector, QCameraSelector> >::create(m_renderer, m_nodeManagers->frameGraphManager()));

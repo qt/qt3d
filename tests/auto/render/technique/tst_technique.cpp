@@ -35,6 +35,9 @@
 #include <Qt3DRender/private/qtechnique_p.h>
 #include <Qt3DRender/private/technique_p.h>
 #include <Qt3DRender/private/shaderparameterpack_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/filterkey_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
@@ -66,6 +69,7 @@ private Q_SLOTS:
         QCOMPARE(backendTechnique.filterKeys().size(), 0);
         QCOMPARE(backendTechnique.renderPasses().size(), 0);
         QCOMPARE(backendTechnique.isCompatibleWithRenderer(), false);
+        QVERIFY(backendTechnique.nodeManager() == nullptr);
     }
 
     void checkCleanupState()
@@ -263,6 +267,194 @@ private Q_SLOTS:
         }
     }
 
+    void checkIsCompatibleWithFilters()
+    {
+        // GIVEN
+        Qt3DRender::Render::Technique backendTechnique;
+        Qt3DRender::Render::NodeManagers nodeManagers;
+
+        backendTechnique.setNodeManager(&nodeManagers);
+
+        Qt3DRender::QFilterKey *filterKey1 = new Qt3DRender::QFilterKey();
+        Qt3DRender::QFilterKey *filterKey2 = new Qt3DRender::QFilterKey();
+        Qt3DRender::QFilterKey *filterKey3 = new Qt3DRender::QFilterKey();
+        Qt3DRender::QFilterKey *filterKey4 = new Qt3DRender::QFilterKey();
+        Qt3DRender::QFilterKey *filterKey5 = new Qt3DRender::QFilterKey();
+
+        filterKey1->setName(QStringLiteral("displacement"));
+        filterKey2->setName(QStringLiteral("diffRatio"));
+        filterKey3->setName(QStringLiteral("oil"));
+        filterKey4->setName(QStringLiteral("oil"));
+        filterKey5->setName(QStringLiteral("heads"));
+
+        filterKey1->setValue(QVariant(427.0f));
+        filterKey2->setValue(QVariant(4.11f));
+        filterKey3->setValue(QVariant(QStringLiteral("Valvoline-VR1")));
+        filterKey4->setValue(QVariant(QStringLiteral("Mobil-1")));
+        filterKey5->setName(QStringLiteral("AFR"));
+
+        // Create backend nodes
+        // WHEN
+        Qt3DRender::Render::FilterKey *backendFilterKey1 = nodeManagers.filterKeyManager()->getOrCreateResource(filterKey1->id());
+        Qt3DRender::Render::FilterKey *backendFilterKey2 = nodeManagers.filterKeyManager()->getOrCreateResource(filterKey2->id());
+        Qt3DRender::Render::FilterKey *backendFilterKey3 = nodeManagers.filterKeyManager()->getOrCreateResource(filterKey3->id());
+        Qt3DRender::Render::FilterKey *backendFilterKey4 = nodeManagers.filterKeyManager()->getOrCreateResource(filterKey4->id());
+        Qt3DRender::Render::FilterKey *backendFilterKey5 = nodeManagers.filterKeyManager()->getOrCreateResource(filterKey5->id());
+
+        simulateInitialization(filterKey1, backendFilterKey1);
+        simulateInitialization(filterKey2, backendFilterKey2);
+        simulateInitialization(filterKey3, backendFilterKey3);
+        simulateInitialization(filterKey4, backendFilterKey4);
+        simulateInitialization(filterKey5, backendFilterKey5);
+
+        // THEN
+        QCOMPARE(nodeManagers.filterKeyManager()->activeHandles().size(), 5);
+
+        {
+            // WHEN
+            backendTechnique.appendFilterKey(filterKey1->id());
+            backendTechnique.appendFilterKey(filterKey2->id());
+
+            // THEN
+            QCOMPARE(backendTechnique.filterKeys().size(), 2);
+
+            // WHEN
+            Qt3DCore::QNodeIdVector techniqueFilters;
+            techniqueFilters.push_back(filterKey1->id());
+            techniqueFilters.push_back(filterKey2->id());
+            techniqueFilters.push_back(filterKey3->id());
+            techniqueFilters.push_back(filterKey5->id());
+
+            // THEN -> incompatible technique doesn't have enough filters
+            QCOMPARE(backendTechnique.isCompatibleWithFilters(techniqueFilters), false);
+
+            // WHEN
+            backendTechnique.removeFilterKey(filterKey1->id());
+            backendTechnique.removeFilterKey(filterKey2->id());
+
+            // THEN
+            QCOMPARE(backendTechnique.filterKeys().size(), 0);
+        }
+
+        {
+            // WHEN
+            backendTechnique.appendFilterKey(filterKey1->id());
+            backendTechnique.appendFilterKey(filterKey2->id());
+            backendTechnique.appendFilterKey(filterKey3->id());
+            backendTechnique.appendFilterKey(filterKey5->id());
+
+            // THEN
+            QCOMPARE(backendTechnique.filterKeys().size(), 4);
+
+            // WHEN
+            Qt3DCore::QNodeIdVector techniqueFilters;
+            techniqueFilters.push_back(filterKey1->id());
+            techniqueFilters.push_back(filterKey2->id());
+            techniqueFilters.push_back(filterKey3->id());
+            techniqueFilters.push_back(filterKey5->id());
+
+            // THEN -> compatible same number
+            QCOMPARE(backendTechnique.isCompatibleWithFilters(techniqueFilters), true);
+
+            // WHEN
+            backendTechnique.removeFilterKey(filterKey1->id());
+            backendTechnique.removeFilterKey(filterKey2->id());
+            backendTechnique.removeFilterKey(filterKey3->id());
+            backendTechnique.removeFilterKey(filterKey5->id());
+
+            // THEN
+            QCOMPARE(backendTechnique.filterKeys().size(), 0);
+        }
+
+        {
+            // WHEN
+            backendTechnique.appendFilterKey(filterKey1->id());
+            backendTechnique.appendFilterKey(filterKey2->id());
+            backendTechnique.appendFilterKey(filterKey3->id());
+            backendTechnique.appendFilterKey(filterKey5->id());
+
+            // THEN
+            QCOMPARE(backendTechnique.filterKeys().size(), 4);
+
+            // WHEN
+            Qt3DCore::QNodeIdVector techniqueFilters;
+            techniqueFilters.push_back(filterKey1->id());
+            techniqueFilters.push_back(filterKey2->id());
+            techniqueFilters.push_back(filterKey4->id());
+            techniqueFilters.push_back(filterKey5->id());
+
+            // THEN -> compatible same number, one not matching
+            QCOMPARE(backendTechnique.isCompatibleWithFilters(techniqueFilters), false);
+
+            // WHEN
+            backendTechnique.removeFilterKey(filterKey1->id());
+            backendTechnique.removeFilterKey(filterKey2->id());
+            backendTechnique.removeFilterKey(filterKey3->id());
+            backendTechnique.removeFilterKey(filterKey5->id());
+
+            // THEN
+            QCOMPARE(backendTechnique.filterKeys().size(), 0);
+        }
+
+        {
+            // WHEN
+            backendTechnique.appendFilterKey(filterKey1->id());
+            backendTechnique.appendFilterKey(filterKey2->id());
+            backendTechnique.appendFilterKey(filterKey3->id());
+            backendTechnique.appendFilterKey(filterKey5->id());
+
+            // THEN
+            QCOMPARE(backendTechnique.filterKeys().size(), 4);
+
+            // WHEN
+            Qt3DCore::QNodeIdVector techniqueFilters;
+            techniqueFilters.push_back(filterKey1->id());
+            techniqueFilters.push_back(filterKey2->id());
+            techniqueFilters.push_back(filterKey3->id());
+
+            // THEN -> technique has more than necessary filters
+            QCOMPARE(backendTechnique.isCompatibleWithFilters(techniqueFilters), true);
+
+            // WHEN
+            backendTechnique.removeFilterKey(filterKey1->id());
+            backendTechnique.removeFilterKey(filterKey2->id());
+            backendTechnique.removeFilterKey(filterKey3->id());
+            backendTechnique.removeFilterKey(filterKey5->id());
+
+            // THEN
+            QCOMPARE(backendTechnique.filterKeys().size(), 0);
+        }
+
+        {
+            // WHEN
+            backendTechnique.appendFilterKey(filterKey1->id());
+            backendTechnique.appendFilterKey(filterKey2->id());
+            backendTechnique.appendFilterKey(filterKey3->id());
+            backendTechnique.appendFilterKey(filterKey5->id());
+
+            // THEN
+            QCOMPARE(backendTechnique.filterKeys().size(), 4);
+
+            // WHEN
+            Qt3DCore::QNodeIdVector techniqueFilters;
+            techniqueFilters.push_back(filterKey1->id());
+            techniqueFilters.push_back(filterKey2->id());
+            techniqueFilters.push_back(filterKey4->id());
+
+            // THEN -> technique has more than necessary filters
+            // but one is not matching
+            QCOMPARE(backendTechnique.isCompatibleWithFilters(techniqueFilters), false);
+
+            // WHEN
+            backendTechnique.removeFilterKey(filterKey1->id());
+            backendTechnique.removeFilterKey(filterKey2->id());
+            backendTechnique.removeFilterKey(filterKey3->id());
+            backendTechnique.removeFilterKey(filterKey5->id());
+
+            // THEN
+            QCOMPARE(backendTechnique.filterKeys().size(), 0);
+        }
+    }
 };
 
 QTEST_MAIN(tst_Technique)
