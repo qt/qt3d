@@ -47,10 +47,25 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
- * \class QRenderState
- * \brief The QRenderState class
- * \since 5.7
- * \ingroup renderstates
+    \class Qt3DRender::QRenderState
+    \brief An abstract base class for all render states
+    \since 5.7
+    \ingroup renderstates
+
+    A Qt3DRender::QRenderState class is abstract base class for all render states.
+    One can not instantiate QRenderState directly, but through its subclasses.
+ */
+
+/*!
+    \qmltype RenderState
+    \brief An abstract base type for all render states
+    \since 5.7
+    \inherits Node
+    \instantiates Qt3DRender::QRenderState
+    \ingroup renderstates
+
+    A RenderState type is abstract base class for all render states.
+    One can not instantiate RenderState directly, but through its subclasses.
  */
 
 /*! \internal */

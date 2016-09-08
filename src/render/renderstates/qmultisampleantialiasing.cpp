@@ -47,13 +47,29 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
- * \class QMultiSampleAntiAliasing
- * \brief The QMultiSampleAntiAliasing class
- * \since 5.7
- * \ingroup renderstates
+    \class Qt3DRender::QMultiSampleAntiAliasing
+    \brief Enable multisample antialiasing
+    \since 5.7
+    \ingroup renderstates
+    \inmodule Qt3DRender
+
+    A Qt3DRender::QMultiSampleAntiAliasing class enables multisample antialiasing.
+    The render target must have been allocated with multisampling enabled.
  */
 
-/*! \internal */
+/*!
+    \qmltype MultiSampleAntiAliasing
+    \brief Enable multisample antialiasing
+    \since 5.7
+    \ingroup renderstates
+    \inqmlmodule Qt3D.Render
+    \inherits RenderState
+    \instantiates Qt3DRender::QMultiSampleAntiAliasing
+
+    A MultiSampleAntiAliasing type enables multisample antialiasing.
+    The render target must have been allocated with multisampling enabled.
+ */
+
 class QMultiSampleAntiAliasingPrivate : public QRenderStatePrivate
 {
 public:
@@ -66,8 +82,8 @@ public:
 };
 
 /*!
- * The constructor creates a new QMultiSampleAntiAliasing::QMultiSampleAntiAliasing
- * instance with the specified \a parent.
+    The constructor creates a new QMultiSampleAntiAliasing::QMultiSampleAntiAliasing
+    instance with the specified \a parent.
  */
 QMultiSampleAntiAliasing::QMultiSampleAntiAliasing(QNode *parent)
     : QRenderState(*new QMultiSampleAntiAliasingPrivate, parent)

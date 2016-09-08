@@ -48,13 +48,31 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
- * \class QNoDepthMask
- * \brief The QNoDepthMask class
- * \since 5.7
- * \ingroup renderstates
+    \class Qt3DRender::QNoDepthMask
+    \brief Disable depth write
+    \since 5.7
+    \ingroup renderstates
+    \inmodule Qt3DRender
+
+    A Qt3DRender::QNoDepthMask class disables fragment depth write to depth buffer.
+
+    \sa Qt3DRender::QDepthTest
  */
 
-/*! \internal */
+/*!
+    \qmltype NoDepthMask
+    \brief Disable depth write
+    \since 5.7
+    \ingroup renderstates
+    \inqmlmodule Qt3D.Render
+    \inherits RenderState
+    \instantiates Qt3DRender::QNoDepthMask
+
+    A NoDepthMask type disables fragment depth write to depth buffer.
+
+    \sa Qt3DRender::QDepthTest
+ */
+
 class QNoDepthMaskPrivate : public QRenderStatePrivate
 {
 public:
@@ -67,8 +85,8 @@ public:
 };
 
 /*!
- * the constructor creates a new QNoDepthMask::QNoDepthMask instance with
- * the specified \a parent.
+    The constructor creates a new QNoDepthMask::QNoDepthMask instance with
+    the specified \a parent.
  */
 QNoDepthMask::QNoDepthMask(QNode *parent)
     : QRenderState(*new QNoDepthMaskPrivate, parent)
