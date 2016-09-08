@@ -58,24 +58,45 @@ QRenderStateSetPrivate::QRenderStateSetPrivate()
 }
 
 /*!
- * \class Qt3DRender::QRenderStateSet
- * \inheaderfile Qt3DRender/QRenderStateSet
- * \inmodule Qt3DRender
- *
- * \brief The QRenderStateSet \l {QFrameGraphNode}{FrameGraph} node offers a way of
- * specifying a set of QRenderState objects to be applied during the execution
- * of a framegraph branch.
- *
- * States set on a QRenderStateSet are set globally, contrary to the per-material
- * states that can be set on a QRenderPass. By default, an empty
- * QRenderStateSet will result in all render states being disabled when
- * executed. Adding a QRenderState state explicitly enables that render
- * state at runtime.
- *
- * \since 5.5
- *
- * \sa QRenderState, QRenderPass
+    \class Qt3DRender::QRenderStateSet
+    \inmodule Qt3DRender
+    \since 5.5
+    \brief The QRenderStateSet \l {QFrameGraphNode}{FrameGraph} node offers a way of
+    specifying a set of QRenderState objects to be applied during the execution
+    of a framegraph branch.
+
+    States set on a QRenderStateSet are set globally, contrary to the per-material
+    states that can be set on a QRenderPass. By default, an empty
+    QRenderStateSet will result in all render states being disabled when
+    executed. Adding a QRenderState state explicitly enables that render
+    state at runtime.
+
+    \sa QRenderState, QRenderPass
  */
+
+/*!
+    \qmltype RenderStateSet
+    \inmodule Qt3D.Render
+    \since 5.5
+    \inherits FrameGraphNode
+    \instantiates Qt3DRender::QRenderStateSet
+    \brief The RenderStateSet \l {FrameGraphNode}{FrameGraph} node offers a way of
+    specifying a set of RenderState objects to be applied during the execution
+    of a framegraph branch.
+
+    States set on a RenderStateSet are set globally, contrary to the per-material
+    states that can be set on a RenderPass. By default, an empty
+    RenderStateSet will result in all render states being disabled when
+    executed. Adding a RenderState state explicitly enables that render
+    state at runtime.
+
+    \sa RenderState, RenderPass
+ */
+
+/*!
+    \qmlproperty list<RenderState> RenderStateSet::renderStates
+    Holds the list of RenderState objects used by the RenderStateSet.
+*/
 
 QRenderStateSet::QRenderStateSet(QNode *parent)
     : QFrameGraphNode(*new QRenderStateSetPrivate, parent)
@@ -88,10 +109,10 @@ QRenderStateSet::~QRenderStateSet()
 }
 
 /*!
- * Adds a new QRenderState \a state to the QRenderStateSet instance.
- *
- * \note Not setting any QRenderState state on a QRenderStateSet instance
- * implies all the render states will be disabled at render time.
+    Adds a new QRenderState \a state to the QRenderStateSet instance.
+
+    \note Not setting any QRenderState state on a QRenderStateSet instance
+    implies all the render states will be disabled at render time.
  */
 void QRenderStateSet::addRenderState(QRenderState *state)
 {
@@ -116,7 +137,7 @@ void QRenderStateSet::addRenderState(QRenderState *state)
 }
 
 /*!
- * Removes the QRenderState \a state from the QRenderStateSet instance.
+    Removes the QRenderState \a state from the QRenderStateSet instance.
  */
 void QRenderStateSet::removeRenderState(QRenderState *state)
 {
@@ -134,7 +155,7 @@ void QRenderStateSet::removeRenderState(QRenderState *state)
 }
 
 /*!
- * Returns the list of QRenderState objects that compose the QRenderStateSet instance.
+    Returns the list of QRenderState objects that compose the QRenderStateSet instance.
  */
 QVector<QRenderState *> QRenderStateSet::renderStates() const
 {

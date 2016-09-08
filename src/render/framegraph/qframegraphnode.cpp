@@ -95,6 +95,9 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
         \li Qt3DRender::QRenderSurfaceSelector
         \li Select which surface to draw to
     \row
+        \li Qt3DRender::QRenderTargetSelector
+        \li Select which QRenderTarget to draw to
+    \row
         \li Qt3DRender::QSortPolicy
         \li Specify how entities are sorted to determine draw order
     \row
@@ -133,7 +136,7 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
         \li Specify which buffers to clear and to what values
     \row
         \li DispatchCompute
-        \li Specify Compute operation kernels
+        \li Specify compute operation kernels
     \row
         \li FrustumCulling
         \li Enable frustum culling
@@ -152,6 +155,9 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
     \row
         \li RenderSurfaceSelector
         \li Select which surface to draw to
+    \row
+        \li RenderTargetSelector
+        \li Select which RenderTarget to draw to
     \row
         \li SortPolicy
         \li Specify how entities are sorted to determine draw order
