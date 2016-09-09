@@ -39,6 +39,7 @@
 
 #include "qframegraphnode.h"
 #include "qframegraphnode_p.h"
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -196,6 +197,11 @@ QFrameGraphNode *QFrameGraphNode::parentFrameGraphNode() const
 QFrameGraphNode::QFrameGraphNode(QFrameGraphNodePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QFrameGraphNode::createNodeCreationChange() const
+{
+    return QFrameGraphNodeCreatedChangeBasePtr::create(this);
 }
 
 } // namespace Qt3DRender

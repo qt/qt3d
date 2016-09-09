@@ -45,6 +45,7 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -189,7 +190,7 @@ QVector<QParameter *> QRenderPassFilter::parameters() const
 
 Qt3DCore::QNodeCreatedChangeBasePtr QRenderPassFilter::createNodeCreationChange() const
 {
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderPassFilterData>::create(this);
+    auto creationChange = QFrameGraphNodeCreatedChangePtr<QRenderPassFilterData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QRenderPassFilter);
     data.matchIds = qIdsForNodes(d->m_matchList);

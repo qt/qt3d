@@ -38,6 +38,7 @@
 #include <Qt3DRender/private/qrendercapture_p.h>
 #include <Qt3DCore/QSceneChange>
 #include <Qt3DCore/QPropertyUpdatedChange>
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -281,7 +282,7 @@ void QRenderCapture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
  */
 Qt3DCore::QNodeCreatedChangeBasePtr QRenderCapture::createNodeCreationChange() const
 {
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderCaptureInitData>::create(this);
+    auto creationChange = QFrameGraphNodeCreatedChangePtr<QRenderCaptureInitData>::create(this);
     QRenderCaptureInitData &data = creationChange->data;
     data.captureId = 0;
     return creationChange;
