@@ -106,6 +106,8 @@ public:
     FrameGraphNode *parent() const;
     QVector<FrameGraphNode *> children() const;
 
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
 protected:
     FrameGraphNode(FrameGraphNodeType nodeType);
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
