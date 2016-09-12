@@ -46,13 +46,41 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
- * \class Qt3DRender::QAlphaCoverage
- * \brief A QAlphaCoverage class
- * \since 5.7
- * \ingroup renderstates
+    \class Qt3DRender::QAlphaCoverage
+    \since 5.7
+    \ingroup renderstates
+    \inmodule Qt3DRender
+    \brief Enable alpha-to-coverage multisampling mode
+
+    A Qt3DRender::QAlphaCoverage class enables alpha-to-coverage multisampling mode.
+    When enabled, the fragment alpha value is used as a coverage for the sample
+    and combined with fragment coverage value. Qt3DRender::QAlphaCoverage does
+    nothing if multisampling is disabled. Alpha-to-coverage is most useful when
+    order independent blending is required, for example when rendering leaves,
+    grass and other rich vegetation.
+
+    \sa Qt3DRender::QMultiSampleAntiAliasing
  */
 
-/*! \internal */
+/*!
+    \qmltype AlphaCoverage
+    \since 5.7
+    \ingroup renderstates
+    \inqmlmodule Qt3D.Render
+    \instantiates Qt3DRender::QAlphaCoverage
+    \inherits RenderState
+    \brief Enable alpha-to-coverage multisampling mode
+
+    An AlphaCoverage type enables alpha-to-coverage multisampling mode.
+    When enabled, the fragment alpha value is used as a coverage for the sample
+    and combined with fragment coverage value. AlphaCoverage does nothing if
+    multisampling is disabled. Alpha-to-coverage is most useful when
+    order independent blending is required, for example when rendering leaves,
+    grass and other rich vegetation.
+
+    \sa MultiSampleAntiAliasing
+ */
+
 class QAlphaCoveragePrivate : public QRenderStatePrivate
 {
 public :
@@ -64,8 +92,8 @@ public :
 };
 
 /*!
- * The constructor creates a new QAlphaCoverage::QAlphaCoverage instance
- * with the specified \a parent.
+    The constructor creates a new QAlphaCoverage::QAlphaCoverage instance
+    with the specified \a parent.
  */
 QAlphaCoverage::QAlphaCoverage(QNode *parent)
     : QRenderState(*new QAlphaCoveragePrivate, parent)

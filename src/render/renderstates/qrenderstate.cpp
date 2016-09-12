@@ -51,6 +51,7 @@ namespace Qt3DRender {
     \brief An abstract base class for all render states
     \since 5.7
     \ingroup renderstates
+    \inmodule Qt3DRender
 
     A Qt3DRender::QRenderState class is abstract base class for all render states.
     One can not instantiate QRenderState directly, but through its subclasses.
