@@ -2014,13 +2014,13 @@ void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
         programMap[prog].name = programName;
         programs[programMap[prog].name] = program;
         if (opts.genCore) {
-            program["vertexShader"] = shaderMap[QString(prog->vertShader + QStringLiteral("_core"))];
-            program["fragmentShader"] = shaderMap[QString(prog->fragShader + QStringLiteral("_core"))];
+            program["vertexShader"] = shaderMap[QString(prog->vertShader + QLatin1String("_core"))];
+            program["fragmentShader"] = shaderMap[QString(prog->fragShader + QLatin1String("_core"))];
             QJsonArray attrs;
             foreach (const ProgramInfo::Param &param, prog->attributes)
                 attrs << param.nameInShader;
             program["attributes"] = attrs;
-            programMap[prog].coreName = programName + QStringLiteral("_core");
+            programMap[prog].coreName = programName + QLatin1String("_core");
             programs[programMap[prog].coreName] = program;
         }
     }
