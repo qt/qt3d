@@ -4,7 +4,6 @@ HEADERS += \
     $$PWD/qphongmaterial.h \
     $$PWD/qphongmaterial_p.h \
     $$PWD/qdiffusemapmaterial_p.h \
-    $$PWD/qdiffusemapmaterial.h \
     $$PWD/qnormaldiffusespecularmapmaterial.h \
     $$PWD/qnormaldiffusespecularmapmaterial_p.h \
     $$PWD/qnormaldiffusemapmaterial.h \
@@ -27,7 +26,10 @@ HEADERS += \
     $$PWD/qfirstpersoncameracontroller.h \
     $$PWD/qfirstpersoncameracontroller_p.h \
     $$PWD/qorbitcameracontroller.h \
-    $$PWD/qorbitcameracontroller_p.h
+    $$PWD/qorbitcameracontroller_p.h \
+    $$PWD/qmorphphongmaterial.h \
+    $$PWD/qmorphphongmaterial_p.h \
+    $$PWD/qdiffusemapmaterial.h
 
 SOURCES += \
     $$PWD/qphongmaterial.cpp \
@@ -43,5 +45,6 @@ SOURCES += \
     $$PWD/qphongalphamaterial.cpp \
     $$PWD/qt3dwindow.cpp \
     $$PWD/qfirstpersoncameracontroller.cpp \
-    $$PWD/qorbitcameracontroller.cpp
+    $$PWD/qorbitcameracontroller.cpp \
+    $$PWD/qmorphphongmaterial.cpp
 

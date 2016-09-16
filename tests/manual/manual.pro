@@ -38,7 +38,9 @@ SUBDIRS += \
     rendercapture-qml \
     additional-attributes-qml \
     dynamic-model-loader-qml \
-    animation-keyframe-simple
+    animation-keyframe-simple \
+    mesh-morphing \
+    anim-viewer
 
 qtHaveModule(widgets): {
     SUBDIRS += \

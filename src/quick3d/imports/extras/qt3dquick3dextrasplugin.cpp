@@ -52,6 +52,19 @@
 #include <Qt3DExtras/qcylindergeometry.h>
 #include <Qt3DExtras/qtext3dgeometry.h>
 #include <Qt3DExtras/qtext3dmesh.h>
+#include <Qt3DExtras/qkeyframeanimation.h>
+#include <Qt3DExtras/qanimationcontroller.h>
+#include <Qt3DExtras/qabstractanimation.h>
+#include <Qt3DExtras/qmorphinganimation.h>
+#include <Qt3DExtras/qanimationgroup.h>
+#include <Qt3DExtras/qmorphtarget.h>
+
+#include <Qt3DQuickExtras/private/quick3dkeyframeanimation_p.h>
+#include <Qt3DQuickExtras/private/quick3danimationgroup_p.h>
+#include <Qt3DQuickExtras/private/quick3danimationcontroller_p.h>
+#include <Qt3DQuickExtras/private/quick3dmorphtarget_p.h>
+#include <Qt3DQuickExtras/private/quick3dmorphinganimation_p.h>
+
 #include <QtQml/qqml.h>
 
 QT_BEGIN_NAMESPACE
@@ -105,6 +118,13 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
     // 3D Text
     qmlRegisterType<Qt3DExtras::QText3DGeometry>(uri, 2, 2, "Text3DGeometry");
     qmlRegisterType<Qt3DExtras::QText3DMesh>(uri, 2, 2, "Text3DMesh");
+
+    qmlRegisterUncreatableType<Qt3DExtras::QAbstractAnimation>(uri, 2, 0, "AbstractAnimation", QStringLiteral("AbstractAnimation is abstract"));
+    qmlRegisterExtendedType<Qt3DExtras::QKeyframeAnimation, Qt3DExtras::Quick::QQuick3DKeyframeAnimation>(uri, 2, 2, "KeyframeAnimation");
+    qmlRegisterExtendedType<Qt3DExtras::QAnimationGroup, Qt3DExtras::Quick::QQuick3DAnimationGroup>(uri, 2, 2, "AnimationGroup");
+    qmlRegisterExtendedType<Qt3DExtras::QAnimationController, Qt3DExtras::Quick::QQuick3DAnimationController>(uri, 2, 2, "AnimationController");
+    qmlRegisterExtendedType<Qt3DExtras::QMorphingAnimation, Qt3DExtras::Quick::QQuick3DMorphingAnimation>(uri, 2, 2, "MorphingAnimation");
+    qmlRegisterExtendedType<Qt3DExtras::QMorphTarget, Qt3DExtras::Quick::QQuick3DMorphTarget>(uri, 2, 2, "MorphTarget");
 
     // Register types provided as QML files compiled into the plugin
     for (int i = 0; i < int(sizeof(qmldir) / sizeof(qmldir[0])); i++) {

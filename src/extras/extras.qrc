@@ -39,5 +39,7 @@
         <file>shaders/gl3/unlittexture.frag</file>
         <file>shaders/es2/unlittexture.frag</file>
         <file>shaders/es2/unlittexture.vert</file>
+        <file>shaders/gl3/morphphong.vert</file>
+        <file>shaders/es2/morphphong.vert</file>
     </qresource>
 </RCC>

@@ -61,6 +61,7 @@
 
 #include <QMap>
 #include <QDir>
+#include <QVector>
 #include <QLoggingCategory>
 
 QT_BEGIN_NAMESPACE
@@ -69,6 +70,11 @@ class QFile;
 
 namespace Qt3DCore {
 class QCamera;
+}
+
+namespace Qt3DExtras {
+class QKeyframeAnimation;
+class QMorphingAnimation;
 }
 
 namespace Qt3DRender {
@@ -138,6 +144,8 @@ private:
         QMap<QString, QAbstractTexture *> m_materialTextures;
         QMap<aiNode*, Qt3DCore::QEntity*> m_cameras;
         QHash<aiTextureType, QString> m_textureToParameterName;
+        QVector<Qt3DExtras::QKeyframeAnimation *> m_animations;
+        QVector<Qt3DExtras::QMorphingAnimation *> m_morphAnimations;
 //    QMap<aiNode*, Light*> m_lights;
     };
 
