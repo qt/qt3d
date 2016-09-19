@@ -1,4 +1,3 @@
-
 SOURCES += \
     $$PWD/qtransform.cpp \
     $$PWD/qjoint.cpp \
@@ -20,6 +19,17 @@ HEADERS += \
     $$PWD/qskeletonloader.h \
     $$PWD/qskeletonloader_p.h \
     $$PWD/qarmature.h \
-    $$PWD/qarmature_p.h
+    $$PWD/qarmature_p.h \
+    $$PWD/vector4d_p.h
 
 INCLUDEPATH += $$PWD
+
+qtConfig(qt3d-simd-sse2) {
+    CONFIG += simd
+
+    SSE2_HEADERS += \
+            $$PWD/vector4d_sse_p.h
+
+    SSE2_SOURCES += \
+            $$PWD/vector4d_sse.cpp
+}
