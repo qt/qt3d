@@ -58,6 +58,7 @@ qtConfig(private_tests) {
         qrendertargetoutput \
         qcameralens \
         qcomputecommand \
+        loadscenejob \
         qrendercapture \
         uniform
 }

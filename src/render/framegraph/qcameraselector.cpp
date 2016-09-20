@@ -48,13 +48,15 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
-  \class Qt3DRender::QCameraSelector
-  \inmodule Qt3DRender
-  \since 5.5
-  \ingroup framegraph
+    \class Qt3DRender::QCameraSelector
+    \inmodule Qt3DRender
+    \since 5.5
+    \ingroup framegraph
 
-  \brief Class to allow for selection of camera to be used
+    \brief Class to allow for selection of camera to be used
 
+    A Qt3DRender::QCameraSelector can be used to select the camera, which is used
+    by the FrameGraph when drawing the entities.
  */
 
 /*!
@@ -63,8 +65,24 @@ namespace Qt3DRender {
     \instantiates Qt3DRender::QCameraSelector
     \inherits FrameGraphNode
     \since 5.5
-    \qmlabstract
+    \brief Class to allow for selection of camera to be used
+
+    A CameraSelector can be used to select the camera, which is used
+    by the FrameGraph when drawing the entities.
 */
+
+/*!
+    \qmlproperty Entity Qt3D.Render::CameraSelector::camera
+
+    Holds the currently selected camera.
+*/
+
+/*!
+    \property Qt3DRender::QCameraSelector::camera
+
+    Holds the currently selected camera.
+*/
+
 
 /*! \internal */
 QCameraSelector::QCameraSelector(QCameraSelectorPrivate &dd, QNode *parent)
@@ -91,14 +109,6 @@ QCameraSelector::~QCameraSelector()
 {
 }
 
-/*!
-    \property Qt3DRender::QCameraSelector::camera
-*/
-
-/*!
-  \qmlproperty Entity Qt3D.Render::CameraSelector::camera
-
-*/
 void QCameraSelector::setCamera(Qt3DCore::QEntity *camera)
 {
     Q_D(QCameraSelector);

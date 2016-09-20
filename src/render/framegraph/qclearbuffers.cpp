@@ -45,12 +45,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 /*!
-  \class Qt3DRender::QClearBuffers
-  \inmodule Qt3DRender
-  \since 5.7
-  \ingroup framegraph
+    \class Qt3DRender::QClearBuffers
+    \inmodule Qt3DRender
+    \since 5.7
+    \ingroup framegraph
+    \brief Class to clear buffers
 
-  \brief Class to clear buffers
+    A Qt3DRender::QClearBuffers FrameGraph node enables clearing of the specific
+    render target buffers with specific values.
  */
 
 /*!
@@ -59,21 +61,24 @@ namespace Qt3DRender {
     \instantiates Qt3DRender::QClearBuffers
     \inherits FrameGraphNode
     \since 5.7
-    \qmlabstract
+    \brief Class to clear buffers
+
+    A Qt3DRender::QClearBuffers FrameGraph node enables clearing of the specific
+    render target buffers with specific values.
 */
 
 /*!
     \enum QClearBuffers::BufferType
 
     This enum type describes types of buffer to be cleared.
-    \value None
-    \value ColorBuffer
-    \value DepthBuffer
-    \value StencilBuffer
-    \value DepthStencilBuffer
-    \value ColorDepthBuffer
-    \value ColorDepthStencilBuffer
-    \value AllBuffers
+    \value None No buffers will be cleared
+    \value ColorBuffer Clear color buffers
+    \value DepthBuffer Clear depth buffer
+    \value StencilBuffer Clear stencil buffer
+    \value DepthStencilBuffer Clear depth and stencil buffers
+    \value ColorDepthBuffer Clear color and depth buffers
+    \value ColorDepthStencilBuffer Clear color, depth and stencil buffers
+    \value AllBuffers Clear all buffers
 */
 
 QClearBuffersPrivate::QClearBuffersPrivate()
@@ -86,7 +91,7 @@ QClearBuffersPrivate::QClearBuffersPrivate()
 }
 
 /*!
-  The constructor creates an instance with the specified \a parent.
+    The constructor creates an instance with the specified \a parent.
  */
 QClearBuffers::QClearBuffers(QNode *parent)
     : QFrameGraphNode(*new QClearBuffersPrivate, parent)
@@ -141,8 +146,8 @@ QRenderTargetOutput *QClearBuffers::colorBuffer() const
  */
 
 /*!
-  \qmlproperty BufferType Qt3D.Render::ClearBuffers::buffers
-
+    \qmlproperty enumeration Qt3D.Render::ClearBuffers::buffers
+    Specifies the buffer type to be used.
 */
 void QClearBuffers::setBuffers(QClearBuffers::BufferType buffers)
 {
@@ -158,8 +163,8 @@ void QClearBuffers::setBuffers(QClearBuffers::BufferType buffers)
     Specifies the clear color to be used.
  */
 /*!
-  \qmlproperty Color Qt3D.Render::ClearBuffers::color
-
+    \qmlproperty color Qt3D.Render::ClearBuffers::color
+    Specifies the clear color to be used.
 */
 void QClearBuffers::setClearColor(const QColor &color)
 {
@@ -176,8 +181,8 @@ void QClearBuffers::setClearColor(const QColor &color)
     Specifies the clear depth value to be used.
  */
 /*!
-  \qmlproperty float Qt3D.Render::ClearBuffers::clearDepthValue
-
+    \qmlproperty real Qt3D.Render::ClearBuffers::clearDepthValue
+    Specifies the clear depth value to be used.
 */
 void QClearBuffers::setClearDepthValue(float clearDepthValue)
 {
@@ -196,8 +201,8 @@ void QClearBuffers::setClearDepthValue(float clearDepthValue)
     Specifies the stencil value to be used.
  */
 /*!
-  \qmlproperty int Qt3D.Render::ClearBuffers::clearStencilValue
-
+    \qmlproperty int Qt3D.Render::ClearBuffers::clearStencilValue
+    Specifies the stencil value to be used.
 */
 void QClearBuffers::setClearStencilValue(int clearStencilValue)
 {
@@ -214,8 +219,9 @@ void QClearBuffers::setClearStencilValue(int clearStencilValue)
     ColorBuffer flag is set, all color buffers will be cleared.
  */
 /*!
-  \qmlproperty Qt3D.Render::RenderTargetOutput Qt3D.Render::ClearBuffers::colorbuffer
-
+    \qmlproperty RenderTargetOutput Qt3D.Render::ClearBuffers::colorbuffer
+    Specifies a specific color buffer to clear. If set to NULL (default), and
+    ColorBuffer flag is set, all color buffers will be cleared.
 */
 void QClearBuffers::setColorBuffer(QRenderTargetOutput *buffer)
 {

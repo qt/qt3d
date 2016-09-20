@@ -163,13 +163,13 @@ Entity {
                     id: keyboardZAxis
                     ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
-                        buttons: [Qt.Key_Up]
-                        scale: d.shiftPressed ? 1.0 : 0.0
+                        buttons: [Qt.Key_PageUp]
+                        scale: 1.0
                     }
                     ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
-                        buttons: [Qt.Key_Down]
-                        scale: d.shiftPressed ? -1.0 : 0.0
+                        buttons: [Qt.Key_PageDown]
+                        scale: -1.0
                     }
                 },
                 Axis {
@@ -177,12 +177,12 @@ Entity {
                     ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_Up]
-                        scale: d.shiftPressed ? 0.0 : 1.0
+                        scale: 1.0
                     }
                     ButtonAxisInput {
                         sourceDevice: keyboardSourceDevice
                         buttons: [Qt.Key_Down]
-                        scale: d.shiftPressed ? 0.0 : -1.0
+                        scale: -1.0
                     }
                 }
             ] // axes
@@ -206,8 +206,8 @@ Entity {
                     } else {
                         // Translate
                         root.camera.translate(Qt.vector3d(d.translationX, d.translationY, 0).times(dt));
-                        return
                     }
+                    return
                 } else if (d.rightMouseButtonPressed) {
                     // Orbit
                     root.camera.panAboutViewCenter(d.orbitX * dt, d.firstPersonUp);
@@ -221,14 +221,14 @@ Entity {
                 } else if (d.shiftPressed) {
                     if (zoomDistance(root.camera.position, root.camera.viewCenter) > root.zoomLimit * root.zoomLimit) {
                         // Dolly up to limit
-                        root.camera.translate(Qt.vector3d(0, 0, d.translationZ).times(dt), Camera.DontTranslateViewCenter);
+                        root.camera.translate(Qt.vector3d(0, 0, d.translationY).times(dt), Camera.DontTranslateViewCenter);
                     } else {
                         // Too close, Dolly backwards
                         root.camera.translate(Qt.vector3d(0, 0, -1).times(dt), Camera.DontTranslateViewCenter);
                     }
                 } else {
                     // Translate
-                    root.camera.translate(Qt.vector3d(d.translationX, d.translationY, 0).times(dt));
+                    root.camera.translate(Qt.vector3d(d.translationX, d.translationY, d.translationZ).times(dt));
                 }
             }
         }

@@ -61,25 +61,62 @@ QTechniquePrivate::~QTechniquePrivate()
 }
 
 /*!
- * \qmltype Technique
- * \instantiates Qt3DRender::QTechnique
- * \inqmlmodule Qt3D.Render
- * \brief Encapsulates a Technique.
+    \qmltype Technique
+    \instantiates Qt3DRender::QTechnique
+    \inqmlmodule Qt3D.Render
+    \inherits Qt3DCore::QNode
+    \since 5.7
+    \brief Encapsulates a Technique.
+
+    A Technique specifies a set of RenderPass objects, FilterKey objects, Parameter objects
+    and a GraphicsApiFilter, which together define a rendering technique the given
+    graphics API can render. The filter keys are used by TechniqueFilter
+    to select specific techinques at specific parts of the FrameGraph.
+    If the same parameter is specified both in Technique and RenderPass, the one
+    in Technique overrides the one used in the RenderPass.
+
+    \sa Qt3D.Render::Effect
  */
 
 /*!
- * \class Qt3DRender::QTechnique
- * \inmodule Qt3DRender
- *
- * \inherits Node
- *
- * \brief Encapsulates a Technique.
+    \class Qt3DRender::QTechnique
+    \inmodule Qt3DRender
+    \inherits Node
+    \since 5.7
+    \brief Encapsulates a Technique.
+
+    A Qt3DRender::QTechnique specifies a set of Qt3DRender::QRenderPass objects,
+    Qt3DRender::QFilterKey objects, Qt3DRender::QParameter objects and
+    a Qt3DRender::QGraphicsApiFilter, which together define a rendering technique the given
+    graphics API can render. The filter keys are used by Qt3DRender::QTechniqueFilter
+    to select specific techinques at specific parts of the FrameGraph.
+    If the same parameter is specified both in QTechnique and QRenderPass, the one
+    in QTechnique overrides the one used in the QRenderPass.
+
+    \sa Qt3DRender::QEffect
  */
 
 /*!
-  \fn Qt3DRender::QTechnique::QTechnique(Qt3DCore::QNode *parent)
-  Constructs a new QTechnique with the specified \a parent.
+    \qmlproperty GraphicsApiFilter Qt3D.Render::Technique::graphicsApiFilter
+    Specifies the graphics API filter being used
+*/
+/*!
+    \qmlproperty list<FilterKey> Qt3D.Render::Technique::filterKeys
+    Specifies the list of filter keys enabling this technique
+*/
+/*!
+    \qmlproperty list<RenderPass> Qt3D.Render::Technique::renderPasses
+    Specifies the render passes used by the tehcnique
+*/
+/*!
+    \qmlproperty list<Parameter> Qt3D.Render::Technique::parameters
+    Specifies the parameters used by the technique
+*/
+/*!
+    \property Qt3DRender::QTechnique::graphicsApiFilter
+    Specifies the graphics API filter being used
  */
+
 QTechnique::QTechnique(QNode *parent)
     : QNode(*new QTechniquePrivate, parent)
 {
@@ -112,7 +149,7 @@ void QTechniquePrivate::_q_graphicsApiFilterChanged()
 }
 
 /*!
- * Add \a filterKey to the Qt3DRender::QTechnique local filter keys.
+    Add \a filterKey to the Qt3DRender::QTechnique local filter keys.
  */
 void QTechnique::addFilterKey(QFilterKey *filterKey)
 {
@@ -140,7 +177,7 @@ void QTechnique::addFilterKey(QFilterKey *filterKey)
 }
 
 /*!
- * Removes \a filterKey from the Qt3DRender::QTechnique local filter keys.
+    Removes \a filterKey from the Qt3DRender::QTechnique local filter keys.
  */
 void QTechnique::removeFilterKey(QFilterKey *filterKey)
 {
@@ -157,8 +194,8 @@ void QTechnique::removeFilterKey(QFilterKey *filterKey)
 }
 
 /*!
- * Returns the list of Qt3DCore::QFilterKey key objects making up the filter keys
- * of the Qt3DRender::QTechnique.
+    Returns the list of Qt3DCore::QFilterKey key objects making up the filter keys
+    of the Qt3DRender::QTechnique.
  */
 QVector<QFilterKey *> QTechnique::filterKeys() const
 {
@@ -167,7 +204,7 @@ QVector<QFilterKey *> QTechnique::filterKeys() const
 }
 
 /*!
- * Add \a parameter to the techniques parameters.
+    Add \a parameter to the technique's parameters.
  */
 void QTechnique::addParameter(QParameter *parameter)
 {
@@ -195,7 +232,7 @@ void QTechnique::addParameter(QParameter *parameter)
 }
 
 /*!
- * Remove \a parameter from the techniques parameters.
+    Remove \a parameter from the technique's parameters.
  */
 void QTechnique::removeParameter(QParameter *parameter)
 {
@@ -212,7 +249,7 @@ void QTechnique::removeParameter(QParameter *parameter)
 }
 
 /*!
- * Appends a \a pass to the technique.
+    Appends a \a pass to the technique.
  */
 void QTechnique::addRenderPass(QRenderPass *pass)
 {
@@ -240,14 +277,14 @@ void QTechnique::addRenderPass(QRenderPass *pass)
 }
 
 /*!
- * Removes a \a pass from the technique.
+    Removes a \a pass from the technique.
  */
 void QTechnique::removeRenderPass(QRenderPass *pass)
 {
     Q_ASSERT(pass);
     Q_D(QTechnique);
     if (d->m_changeArbiter) {
-        const auto change = QPropertyNodeAddedChangePtr::create(id(), pass);
+        const auto change = QPropertyNodeRemovedChangePtr::create(id(), pass);
         change->setPropertyName("pass");
         d->notifyObservers(change);
     }
@@ -257,7 +294,7 @@ void QTechnique::removeRenderPass(QRenderPass *pass)
 }
 
 /*!
- * Returns the list of render passes contained in the technique.
+    Returns the list of render passes contained in the technique.
  */
 QVector<QRenderPass *> QTechnique::renderPasses() const
 {
@@ -266,7 +303,7 @@ QVector<QRenderPass *> QTechnique::renderPasses() const
 }
 
 /*!
- * Returns a vector of the techniques current parameters
+    Returns a vector of the techniques current parameters
  */
 QVector<QParameter *> QTechnique::parameters() const
 {
@@ -274,15 +311,6 @@ QVector<QParameter *> QTechnique::parameters() const
     return d->m_parameters;
 }
 
-/*!
-  \qmlproperty QByteArray Qt3D.Render::Technique::graphicsApiFilter
-    Specifies the graphics API filter being used
-*/
-
-/*!
-  \property Qt3DRender::QTechnique::graphicsApiFilter
-    Specifies the graphics API filter being used
- */
 QGraphicsApiFilter *QTechnique::graphicsApiFilter()
 {
     Q_D(QTechnique);

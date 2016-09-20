@@ -651,10 +651,8 @@ void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &unif
     UniformBlockValueBuilder *builder = m_localData.localData();
     builder->activeUniformNamesToValue.clear();
 
-    // updates transformed properties;
-    // Fix me: this will lead to races when having multiple cameras
-    shaderData->updateViewTransform(m_data.m_viewMatrix);
-
+    // Set the view matrix to be used to transform "Transformed" properties in the ShaderData
+    builder->viewMatrix = m_data.m_viewMatrix;
     // Force to update the whole block
     builder->updatedPropertiesOnly = false;
     // Retrieve names and description of each active uniforms in the uniform block
@@ -801,6 +799,9 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                         setUniformValue(command->m_parameterPack, LIGHT_COLOR_NAMES[lightIdx], QVector3D(1.0f, 1.0f, 1.0f));
                         setUniformValue(command->m_parameterPack, LIGHT_INTENSITY_NAMES[lightIdx], 0.5f);
 
+                        // There is no risk in doing that even if multithreaded
+                        // since we are sure that a shaderData is unique for a given light
+                        // and won't ever be referenced as a Component either
                         QMatrix4x4 *worldTransform = lightEntity->worldTransform();
                         if (worldTransform)
                             shaderData->updateWorldTransform(*worldTransform);

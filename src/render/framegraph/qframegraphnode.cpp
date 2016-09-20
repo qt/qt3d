@@ -50,14 +50,57 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
 }
 
 /*!
-  \class Qt3DRender::QFrameGraphNode
-  \inmodule Qt3DRender
-  \since 5.5
+    \class Qt3DRender::QFrameGraphNode
+    \inmodule Qt3DRender
+    \since 5.5
 
-  \brief Base class of all FrameGraph configuration nodes.
+    \brief Base class of all FrameGraph configuration nodes.
 
-  This is an abstract class so it cannot be instanced directly
-  but rather through one of its subclasses.
+    This is an abstract class so it cannot be instanced directly
+    but rather through one of its subclasses.
+
+    The subclasses are:
+    \table
+    \header
+        \li class
+        \li description
+    \row
+        \li Qt3DRender::QCameraSelector
+        \li Select camera from all available cameras in the scene
+    \row
+        \li Qt3DRender::QClearBuffers
+        \li Specify which buffers to clear and to what values
+    \row
+        \li Qt3DRender::QDispatchCompute
+        \li Specify Compute operation kernels
+    \row
+        \li Qt3DRender::QFrustumCulling
+        \li Enable frustum culling
+    \row
+        \li Qt3DRender::QLayerFilter
+        \li Select which layers to draw
+    \row
+        \li Qt3DRender::QNoDraw
+        \li Disable drawing
+    \row
+        \li Qt3DRender::QRenderPassFilter
+        \li Select which render passes to draw
+    \row
+        \li Qt3DRender::QRenderStateSet
+        \li Set render states
+    \row
+        \li Qt3DRender::QRenderSurfaceSelector
+        \li Select which surface to draw to
+    \row
+        \li Qt3DRender::QSortPolicy
+        \li Specify how entities are sorted to determine draw order
+    \row
+        \li Qt3DRender::QTechniqueFilter
+        \li Select which techniques to draw
+    \row
+        \li Qt3DRender::QViewport
+        \li Specify viewport
+    \endtable
 
  */
 
@@ -67,11 +110,57 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
     \instantiates Qt3DRender::QFrameGraphNode
     \inherits Node
     \since 5.5
-    \qmlabstract
+    \brief Base class of all FrameGraph configuration nodes.
+
+    This is an abstract class so it cannot be instanced directly
+    but rather through one of its subclasses.
+
+    The subclasses are:
+    \table
+    \header
+        \li class
+        \li description
+    \row
+        \li CameraSelector
+        \li Select camera from all available cameras in the scene
+    \row
+        \li ClearBuffers
+        \li Specify which buffers to clear and to what values
+    \row
+        \li DispatchCompute
+        \li Specify Compute operation kernels
+    \row
+        \li FrustumCulling
+        \li Enable frustum culling
+    \row
+        \li LayerFilter
+        \li Select which layers to draw
+    \row
+        \li NoDraw
+        \li Disable drawing
+    \row
+        \li RenderPassFilter
+        \li Select which render passes to draw
+    \row
+        \li RenderStateSet
+        \li Set render states
+    \row
+        \li RenderSurfaceSelector
+        \li Select which surface to draw to
+    \row
+        \li SortPolicy
+        \li Specify how entities are sorted to determine draw order
+    \row
+        \li TechniqueFilter
+        \li Select which techniques to draw
+    \row
+        \li Viewport
+        \li Specify viewport
+    \endtable
 */
 
 /*!
-  The constructor creates an instance with the specified \a parent.
+    The constructor creates an instance with the specified \a parent.
  */
 QFrameGraphNode::QFrameGraphNode(QNode *parent)
     : QNode(*new QFrameGraphNodePrivate, parent)
@@ -84,7 +173,7 @@ QFrameGraphNode::~QFrameGraphNode()
 }
 
 /*!
-  Returns a pointer to the parent.
+    Returns a pointer to the parent.
  */
 QFrameGraphNode *QFrameGraphNode::parentFrameGraphNode() const
 {

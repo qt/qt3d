@@ -60,19 +60,65 @@ QRenderPassPrivate::QRenderPassPrivate()
 {
 }
 /*!
- * \qmltype RenderPass
- * \instantiates Qt3DRender::QRenderPass
- * \inqmlmodule Qt3D.Render
- * \brief Encapsulates a Render Pass.
+    \qmltype RenderPass
+    \instantiates Qt3DRender::QRenderPass
+    \inqmlmodule Qt3D.Render
+    \inherits Node
+    \since 5.7
+    \brief Encapsulates a Render Pass.
+
+    A RenderPass specifies a single rendering pass - an instance of shader program
+    execution - used by Technique. A Render pass consists of a ShaderProgram and
+    a list of FilterKey objects, a list of RenderState objects and a list
+    of \l Parameter objects.
+
+    RenderPass executes the ShaderProgram using the given render states and parameters
+    when its filter keys match the filter keys in RenderPassFilter or when no filter
+    keys are specified and no RenderPassFilter is present in the FrameGraph.
  */
 
 /*!
- * \class Qt3DRender::QRenderPass
- * \inmodule Qt3DRender
- *
- * \inherits Node
- *
- * \brief Encapsulates a Render Pass.
+    \class Qt3DRender::QRenderPass
+    \inmodule Qt3DRender
+    \since 5.7
+    \brief Encapsulates a Render Pass.
+
+    A Qt3DRender::QRenderPass specifies a single rendering pass - an instance of shader
+    program execution - used by Qt3DRender::QTechnique. Render pass consists
+    of a Qt3DRender::QShaderProgram and a list of Qt3DRender::QFilterKey objects,
+    a list of Qt3DRender::QRenderState objects and a list of Qt3DRender::QParameter objects.
+
+    QRenderPass executes the QShaderProgram using the given render states and parameters
+    when its filter keys match the filter keys in Qt3DRender::QRenderPassFilter or
+    when no filter keys are specified and no QRenderPassFilter is present
+    in the FrameGraph.
+ */
+/*!
+    \typedef ParameterList
+    \relates Qt3DRender::QRenderPass
+
+    A list of Qt3DRender::QParameter parameters.
+*/
+/*!
+    \qmlproperty ShaderProgram Qt3D.Render::RenderPass::shaderProgram
+    Holds the shader program to be used for this render pass.
+*/
+/*!
+    \qmlproperty list<FilterKey> Qt3D.Render::RenderPass::filterKeys
+    Holds the filter keys enabling the use of this render pass.
+*/
+/*!
+    \qmlproperty list<RenderState> Qt3D.Render::RenderPass::renderStates
+    Holds the render states used by the render pass.
+*/
+/*!
+    \qmlproperty list<Parameter> Qt3D.Render::RenderPass::parameters
+    Holds the shader parameter values used by the render pass.
+*/
+
+/*!
+    \property Qt3DRender::QRenderPass::shaderProgram
+    Specifies the shader program to be used for this render pass.
  */
 
 /*!
@@ -95,18 +141,6 @@ QRenderPass::QRenderPass(QRenderPassPrivate &dd, QNode *parent)
 {
 }
 
-/*!
-  \qmlproperty ShaderProgram Qt3D.Render::RenderPass::shaderProgram
-    Specifies the shader program to be used for this render pass
-*/
-
-/*!
-  \property Qt3DRender::QRenderPass::shaderProgram
-    Specifies the shader program to be used for this render pass
- */
-/*!
- * Sets the pass' \a shaderProgram.
- */
 void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
 {
     Q_D(QRenderPass);
@@ -145,7 +179,7 @@ QShaderProgram *QRenderPass::shaderProgram() const
 }
 
 /*!
- * Adds \a filterKey from to the Qt3DRender::QRenderPass local filter keys.
+    Adds \a filterKey to the Qt3DRender::QRenderPass local filter keys.
  */
 void QRenderPass::addFilterKey(QFilterKey *filterKey)
 {
@@ -173,7 +207,7 @@ void QRenderPass::addFilterKey(QFilterKey *filterKey)
 }
 
 /*!
- * Removes \a filterKey from the Qt3DRender::QRenderPass local filter keys.
+    Removes \a filterKey from the Qt3DRender::QRenderPass local filter keys.
  */
 void QRenderPass::removeFilterKey(QFilterKey *filterKey)
 {
@@ -190,8 +224,8 @@ void QRenderPass::removeFilterKey(QFilterKey *filterKey)
 }
 
 /*!
- * Returns the list of Qt3DCore::QFilterKey key objects making up the filter keys
- * of the Qt3DRender::QRenderPass.
+    Returns the list of Qt3DRender::QFilterKey key objects making up the filter keys
+    of the Qt3DRender::QRenderPass.
  */
 QVector<QFilterKey *> QRenderPass::filterKeys() const
 {
@@ -200,12 +234,12 @@ QVector<QFilterKey *> QRenderPass::filterKeys() const
 }
 
 /*!
- * Adds a Qt3DCore::QRenderState \a state to the rendering pass. That implies that
- * when the pass is executed at render time, the globally set render state will
- * be modifed by the states defined locally by the Qt3DRender::QRenderPass.
- *
- * \note not defining any Qt3DCore::QRenderState in a pass will result in the pass using
- * the globally set render state for a given FrameGraph branch execution path.
+    Adds a render \a state to the rendering pass. That implies that
+    when the pass is executed at render time, the globally set render state will
+    be modifed by the states defined locally by the Qt3DRender::QRenderPass.
+
+    \note not defining any Qt3DRender::QRenderState in a pass will result in the pass using
+    the globally set render state for a given FrameGraph branch execution path.
  */
 void QRenderPass::addRenderState(QRenderState *state)
 {
@@ -229,7 +263,7 @@ void QRenderPass::addRenderState(QRenderState *state)
 }
 
 /*!
- * Removes \a state from the Qt3DRender::QRenderPass local render state.
+    Removes \a state from the Qt3DRender::QRenderPass local render state.
  */
 void QRenderPass::removeRenderState(QRenderState *state)
 {
@@ -246,8 +280,8 @@ void QRenderPass::removeRenderState(QRenderState *state)
 }
 
 /*!
- * Returns the list of Qt3DCore::QRenderState state objects making up the render
- * state of the Qt3DRender::QRenderPass.
+    Returns the list of Qt3DRender::QRenderState state objects making up the render
+    state of the Qt3DRender::QRenderPass.
  */
 QVector<QRenderState *> QRenderPass::renderStates() const
 {
@@ -256,7 +290,7 @@ QVector<QRenderState *> QRenderPass::renderStates() const
 }
 
 /*!
- * Add \a parameter to the render pass' parameters.
+    Add \a parameter to the render pass' parameters.
  */
 void QRenderPass::addParameter(QParameter *parameter)
 {
@@ -284,7 +318,7 @@ void QRenderPass::addParameter(QParameter *parameter)
 }
 
 /*!
- * Remove \a parameter from the  render pass' parameters.
+    Remove \a parameter from the render pass' parameters.
  */
 void QRenderPass::removeParameter(QParameter *parameter)
 {
@@ -301,9 +335,9 @@ void QRenderPass::removeParameter(QParameter *parameter)
 }
 
 /*!
- * Returns a vector of the render pass' current parameters
+    Returns a vector of the render pass' current parameters
  */
-QVector<QParameter *> QRenderPass::parameters() const
+ParameterList QRenderPass::parameters() const
 {
     Q_D(const QRenderPass);
     return d->m_parameters;

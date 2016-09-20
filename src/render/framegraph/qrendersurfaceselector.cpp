@@ -52,57 +52,70 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
- * \class Qt3DRender::QRenderSurfaceSelector
- * \inmodule Qt3DRender
- * \brief Provides a way of specifying the render surface
- * \since 5.7
- *
- * \inherits Qt3DRender::QFrameGraphNode
- *
- * Qt3DRender::QRenderSurfaceSelector specifies which window should be used for
- * the rendering of a FrameGraph branch. In some cases you may also want to
- * specify the size of what needs to be drawn when rendering with a frame
- * buffer object. In such cases, the externalRenderTargetSize should be set and
- * updated accordingly. If it is not set, the renderer will assume it should use
- * the surface's size.
- *
+    \class Qt3DRender::QRenderSurfaceSelector
+    \inmodule Qt3DRender
+    \brief Provides a way of specifying the render surface
+    \since 5.7
+
+    The Qt3DRender::QRenderSurfaceSelector can be used to select the surface, where
+    Qt3D renders the content. The surface can either be window surface or offscreen
+    surface. The externalRenderTargetSize is used to specify the actual size of the
+    surface when offscreen surface is used.
+
+    When DPI scaling is used by the system, the logical surface size, which is used
+    by mouse events, and the actual 'physical' size of the surface can differ.
+    The surfacePixelRatio is the factor to convert the logical size to the physical
+    size.
+
+    \sa QWindow, QOffscreenSurface, QSurface
  */
 
 /*!
- * \qmltype RenderSurfaceSelector
- * \inqmlmodule Qt3D.Render
- * \since 5.7
- * \ingroup
- * \instantiates Qt3DRender::QRenderSurfaceSelector
- * \brief Provides a way of specifying the render surface
- *
- * RenderSurfaceSelector specifies which window should be used for
- * the rendering of a FrameGraph branch. In some cases you may also want to
- * specify the size of what needs to be drawn when rendering with a frame
- * buffer object. In such cases, the externalRenderTargetSize should be set and
- * updated accordingly. If it is not set, the renderer will assume it should use
- * the surface's size.
- *
+    \qmltype RenderSurfaceSelector
+    \inqmlmodule Qt3D.Render
+    \since 5.7
+    \instantiates Qt3DRender::QRenderSurfaceSelector
+    \inherits FrameGraphNode
+    \brief Provides a way of specifying the render surface
+
+    The RenderSurfaceSelector can be used to select the surface, where
+    Qt3D renders the content. The surface can either be window surface or offscreen
+    surface. The externalRenderTargetSize is used to specify the actual size of the
+    render target when offscreen surface is used.
+
+    When DPI scaling is used by the system, the logical surface size, which is used
+    by mouse events, and the actual 'physical' size of the surface can differ.
+    The surfacePixelRatio is the factor to convert the logical size to the physical
+    size.
  */
 
 /*! \qmlproperty QSurface Qt3D.Render::RenderSurfaceSelector::surface
- *
- * Holds the surface.
+    Holds the surface.
+ */
+
+/*! \qmlproperty size Qt3D.Render::RenderSurfaceSelector::externalRenderTargetSize
+
+    Holds the size of the external render target.
+ */
+
+/*! \qmlproperty real Qt3D.Render::RenderSurfaceSelector::surfacePixelRatio
+
+    Holds the surfacePixelRatio of the surface.
  */
 
 /*!
- *  \property QRenderSurfaceSelector::surface
- *  Holds the surface
- */
-
-/*! \qmlproperty QSize Qt3D.Render::RenderSurfaceSelector::externalRenderTargetSize
- *
- * Holds the size of the external render target.
+     \property QRenderSurfaceSelector::surface
+     Holds the surface
  */
 
 /*!
- *  \property QRenderSurfaceSelector::externalRenderTargetSize
- *  Holds the size of the external render target.
+     \property QRenderSurfaceSelector::externalRenderTargetSize
+     Holds the size of the external render target.
+ */
+
+/*! \property QRenderSurfaceSelector::surfacePixelRatio
+
+    Holds the surfacePixelRatio of the surface.
  */
 
 QRenderSurfaceSelectorPrivate::QRenderSurfaceSelectorPrivate()
@@ -150,7 +163,7 @@ void QRenderSurfaceSelectorPrivate::setExternalRenderTargetSize(const QSize &siz
 }
 
 /*!
- * Constructs QRenderSurfaceSelector with given \a parent.
+    Constructs QRenderSurfaceSelector with given \a parent.
  */
 QRenderSurfaceSelector::QRenderSurfaceSelector(Qt3DCore::QNode *parent)
     : Qt3DRender::QFrameGraphNode(*new QRenderSurfaceSelectorPrivate, parent)
@@ -158,14 +171,14 @@ QRenderSurfaceSelector::QRenderSurfaceSelector(Qt3DCore::QNode *parent)
 }
 
 /*!
- * \internal
+    \internal
  */
 QRenderSurfaceSelector::~QRenderSurfaceSelector()
 {
 }
 
 /*!
- * \internal
+    \internal
  */
 QRenderSurfaceSelector::QRenderSurfaceSelector(QRenderSurfaceSelectorPrivate &dd, Qt3DCore::QNode *parent)
     : Qt3DRender::QFrameGraphNode(dd, parent)
@@ -192,9 +205,8 @@ QObject *QRenderSurfaceSelector::surface() const
     return surfaceObj;
 }
 
-/*! \property QRenderSurfaceSelector::surface
- *
- * Sets \a surface.
+/*!
+    Sets \a surfaceObject.
  */
 void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
 {
@@ -211,7 +223,7 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
                 surface = static_cast<QSurface *>(offscreen);
         }
 
-        Q_ASSERT_X(surface, Q_FUNC_INFO, "surfaceObject is not a valid QSurface * object");
+        Q_ASSERT_X(surface, Q_FUNC_INFO, "surfaceObject is not a valid QSurface    object");
     }
 
     if (d->m_surface == surface)
@@ -299,8 +311,8 @@ float QRenderSurfaceSelector::surfacePixelRatio() const
     return d->m_surfacePixelRatio;
 }
 /*!
- * Sets render target \a size if different than underlying surface size.
- * Tells picking the correct size.
+    Sets render target \a size if different than underlying surface size.
+    Tells picking the correct size.
  */
 void QRenderSurfaceSelector::setExternalRenderTargetSize(const QSize &size)
 {

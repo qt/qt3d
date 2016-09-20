@@ -46,10 +46,29 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
- * \class Qt3DRender::QRenderSettings
- * \brief The QRenderSettings class
- * \since 5.7
- * \inmodule Qt3DRender
+   \class Qt3DRender::QRenderSettings
+   \brief The QRenderSettings class holds settings related to rendering process and host the active
+   \l{Qt 3D Render Framegraph}{FrameGraph}.
+   \since 5.7
+   \inmodule Qt3DRender
+   \inherits Qt3DCore::QComponent
+
+   The QRenderSettings component must be set as a component of the scene root entity. It specifies
+   render policy and picking settings, as well as hosts the active
+   \l{Qt 3D Render Framegraph}{FrameGraph}.
+ */
+
+/*!
+   \qmltype RenderSettings
+   \brief The RenderSettings type holds settings related to rendering process and host the active
+   \l{Qt 3D Render Framegraph}{FrameGraph}.
+   \since 5.7
+   \inqmlmodule Qt3D.Render
+   \instantiates Qt3DRender::QRenderSettings
+
+   The RenderSettings component must be set as a component of the scene root entity. It specifies
+   render policy and picking settings, as well as hosts the active
+   \l{Qt 3D Render Framegraph}{FrameGraph}.
  */
 
 /*! \internal */
@@ -90,11 +109,6 @@ void QRenderSettingsPrivate::_q_onFaceOrientationPickingModeChanged(QPickingSett
     notifyPropertyChange("faceOrientationPickingMode", faceOrientationPickingMode);
 }
 
-/*!
- * The constructor creates a new QRenderSettings::QRenderSettings instance with the
- * specified \a parent.
- * \param parent
- */
 QRenderSettings::QRenderSettings(Qt3DCore::QNode *parent)
     : QRenderSettings(*new QRenderSettingsPrivate, parent) {}
 
@@ -112,8 +126,19 @@ QRenderSettings::~QRenderSettings()
 }
 
 /*!
- * \return the current picking settings.
- */
+    \qmlproperty PickingSettings RenderSettings::pickingSettings
+
+    Holds the current pick settings for the \l{Qt 3D Render Framegraph}{FrameGraph}.
+
+    \readonly
+*/
+/*!
+    \property QRenderSettings::pickingSettings
+
+    Holds the current pick settings for the \l{Qt 3D Render Framegraph}{FrameGraph}.
+
+    \readonly
+*/
 QPickingSettings *QRenderSettings::pickingSettings()
 {
     Q_D(QRenderSettings);
@@ -121,27 +146,56 @@ QPickingSettings *QRenderSettings::pickingSettings()
 }
 
 /*!
- * \return the current active framegraph.
- */
+    \qmlproperty FrameGraphNode RenderSettings::activeFrameGraph
+
+    Holds the currently active \l{Qt 3D Render Framegraph}{FrameGraph}.
+*/
+/*!
+    \property QRenderSettings::activeFrameGraph
+
+    Holds the currently active \l{Qt 3D Render Framegraph}{FrameGraph}.
+*/
 QFrameGraphNode *QRenderSettings::activeFrameGraph() const
 {
     Q_D(const QRenderSettings);
     return d->m_activeFrameGraph;
 }
 
+
 /*!
- * \return the current render policy
- */
+    \enum QRenderSettings::RenderPolicy
+
+    The render policy.
+
+    \value OnDemand The \l{Qt 3D Render Framegraph}{FrameGraph} is rendered only when something
+    changes.
+    \value Always The \l{Qt 3D Render Framegraph}{FrameGraph} is rendered continuously, even if
+    nothing has changed.
+*/
+
+/*!
+    \qmlproperty enumeration RenderSettings::renderPolicy
+
+    Holds the current render policy.
+
+    \list
+        \li RenderSettings.OnDemand
+        \li RenderSettings.Always
+    \endlist
+
+    \sa Qt3DRender::QRenderSettings::RenderPolicy
+*/
+/*!
+    \property QRenderSettings::renderPolicy
+
+    Holds the current render policy.
+*/
 QRenderSettings::RenderPolicy QRenderSettings::renderPolicy() const
 {
     Q_D(const QRenderSettings);
     return d->m_renderPolicy;
 }
 
-/*!
- * Sets the active framegraph to \a activeFrameGraph.
- * \param activeFrameGraph
- */
 void QRenderSettings::setActiveFrameGraph(QFrameGraphNode *activeFrameGraph)
 {
     Q_D(QRenderSettings);
@@ -163,10 +217,6 @@ void QRenderSettings::setActiveFrameGraph(QFrameGraphNode *activeFrameGraph)
     emit activeFrameGraphChanged(activeFrameGraph);
 }
 
-/*!
- * Sets the render policy to \a renderPolicy.
- * \param renderPolicy
- */
 void QRenderSettings::setRenderPolicy(QRenderSettings::RenderPolicy renderPolicy)
 {
     Q_D(QRenderSettings);

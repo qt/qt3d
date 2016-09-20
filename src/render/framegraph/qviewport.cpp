@@ -53,27 +53,39 @@ QViewportPrivate::QViewportPrivate()
 }
 
 /*!
- * \class Qt3DRender::QViewport
- * \inmodule Qt3DRender
- * \brief A viewport on the Qt3D Scene
- * \since 5.7
- *
- * \inherits Qt3DRender::QFrameGraphNode
- *
+    \class Qt3DRender::QViewport
+    \inmodule Qt3DRender
+    \brief A viewport on the Qt3D Scene
+    \since 5.7
+
+    \inherits Qt3DRender::QFrameGraphNode
+
+    Qt3DRender::QViewport of the scene specifies at which portion of the render surface Qt3D
+    is rendering to. Area outside the viewport is left untouched.
  */
 
 /*!
- * \qmltype Viewport
- * \inqmlmodule Qt3D.Render
- * \since 5.7
- * \ingroup
- * \instantiates Qt3DRender::QViewport
- * \brief A viewport on the Qt3D Scene
- *
+    \qmltype Viewport
+    \inqmlmodule Qt3D.Render
+    \since 5.7
+    \ingroup
+    \instantiates Qt3DRender::QViewport
+    \brief A viewport on the Qt3D Scene
+
+    Viewport of the scene specifies at which portion of the render surface Qt3D is
+    rendering to. Area outside the viewport is left untouched.
  */
 
 /*!
- * Constructs QViewport with given \a parent.
+    \qmlproperty rect Viewport::normalizedRect
+
+    Specifies the normalised rectangle for the viewport, i.e. the viewport rectangle
+    is specified relative to the render surface size. Whole surface sized viewport
+    is specified as [0.0, 0.0, 1.0, 1.0], which is the default.
+ */
+
+/*!
+    Constructs QViewport with given \a parent.
  */
 QViewport::QViewport(QNode *parent)
     : QFrameGraphNode(*new QViewportPrivate, parent)
@@ -99,14 +111,12 @@ QRectF QViewport::normalizedRect() const
 }
 
 /*!
-    \property Qt3DRender::QViewport::normalizedRect
-    Specifies the normalise rect for the viewport
-*/
+    \property QViewport::normalizedRect
 
-/*!
-  \qmlproperty QRectF Qt3D.Render::QViewport::normalizedRect
-
-*/
+    Specifies the normalised rectangle for the viewport, i.e. the viewport rectangle
+    is specified relative to the render surface size. Whole surface sized viewport
+    is specified as [0.0, 0.0, 1.0, 1.0], which is the default.
+ */
 void QViewport::setNormalizedRect(const QRectF &normalizedRect)
 {
     Q_D(QViewport);

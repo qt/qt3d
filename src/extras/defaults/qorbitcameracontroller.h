@@ -62,7 +62,6 @@ public:
     explicit QOrbitCameraController(Qt3DCore::QNode *parent = nullptr);
     ~QOrbitCameraController();
 
-    float clampInputs(float input1, float input2);
     Qt3DRender::QCamera *camera() const;
     float linearSpeed() const;
     float lookSpeed() const;
