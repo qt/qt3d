@@ -55,7 +55,7 @@ class QT3DRENDERSHARED_EXPORT QRenderSettings : public Qt3DCore::QComponent
 {
     Q_OBJECT
 
-    Q_PROPERTY(QPickingSettings* pickingSettings READ pickingSettings CONSTANT)
+    Q_PROPERTY(Qt3DRender::QPickingSettings* pickingSettings READ pickingSettings CONSTANT)
     Q_PROPERTY(RenderPolicy renderPolicy READ renderPolicy WRITE setRenderPolicy NOTIFY renderPolicyChanged)
     Q_PROPERTY(Qt3DRender::QFrameGraphNode *activeFrameGraph READ activeFrameGraph WRITE setActiveFrameGraph NOTIFY activeFrameGraphChanged)
     Q_CLASSINFO("DefaultProperty", "activeFrameGraph")
