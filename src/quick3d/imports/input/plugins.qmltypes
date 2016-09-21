@@ -7,7 +7,7 @@ import QtQuick.tooling 1.2
 // 'qmlplugindump -nonrelocatable Qt3D.Input 2.0'
 
 Module {
-    dependencies: ["QtQuick 2.0"]
+    dependencies: ["QtQuick 2.7"]
     Component {
         name: "Qt3DCore::QComponent"
         prototype: "Qt3DCore::QNode"
@@ -34,6 +34,7 @@ Module {
             name: "enabledChanged"
             Parameter { name: "enabled"; type: "bool" }
         }
+        Signal { name: "nodeDestroyed" }
         Method {
             name: "setParent"
             Parameter { name: "parent"; type: "QNode"; isPointer: true }
@@ -100,7 +101,6 @@ Module {
         name: "Qt3DInput::Input::Quick::Quick3DPhysicalDevice"
         prototype: "Qt3DInput::QAbstractPhysicalDevice"
         exports: ["Qt3D.Input/QAbstractPhysicalDevice 2.0"]
-        isCreatable: false
         exportMetaObjectRevisions: [0]
         Property { name: "axisSettings"; type: "Qt3DInput::QAxisSetting"; isList: true; isReadonly: true }
     }
@@ -262,8 +262,8 @@ Module {
     }
     Component {
         name: "Qt3DInput::QGamepadInput"
-        prototype: "Qt3DInput::QAbstractPhysicalDevice"
-        Property { name: "deviceId"; type: "int" }
+        prototype: "Qt3DInput::QGamepadInput"
+        Property { name: "axisSettings"; type: "Qt3DInput::QAxisSetting"; isList: true; isReadonly: true }
     }
     Component {
         name: "Qt3DInput::QInputChord"
@@ -336,8 +336,18 @@ Module {
     }
     Component {
         name: "Qt3DInput::QKeyboardDevice"
-        prototype: "Qt3DInput::QKeyboardDevice"
-        Property { name: "axisSettings"; type: "Qt3DInput::QAxisSetting"; isList: true; isReadonly: true }
+        prototype: "Qt3DInput::QAbstractPhysicalDevice"
+        exports: ["Qt3D.Input/KeyboardDevice 2.0"]
+        Property {
+            name: "activeInput"
+            type: "Qt3DInput::QKeyboardHandler"
+            isReadonly: true
+            isPointer: true
+        }
+        Signal {
+            name: "activeInputChanged"
+            Parameter { name: "activeInput"; type: "QKeyboardHandler"; isPointer: true }
+        }
     }
     Component {
         name: "Qt3DInput::QKeyboardHandler"
@@ -526,8 +536,24 @@ Module {
     Component { name: "Qt3DInput::QLogicalDevice"; prototype: "Qt3DCore::QComponent" }
     Component {
         name: "Qt3DInput::QMouseDevice"
-        prototype: "Qt3DInput::QMouseDevice"
-        Property { name: "axisSettings"; type: "Qt3DInput::QAxisSetting"; isList: true; isReadonly: true }
+        prototype: "Qt3DInput::QAbstractPhysicalDevice"
+        exports: ["Qt3D.Input/MouseDevice 2.0"]
+        Enum {
+            name: "Axis"
+            values: {
+                "X": 0,
+                "Y": 1
+            }
+        }
+        Property { name: "sensitivity"; type: "float" }
+        Signal {
+            name: "sensitivityChanged"
+            Parameter { name: "value"; type: "float" }
+        }
+        Method {
+            name: "setSensitivity"
+            Parameter { name: "value"; type: "float" }
+        }
     }
     Component {
         name: "Qt3DInput::QMouseEvent"
