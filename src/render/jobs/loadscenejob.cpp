@@ -60,6 +60,26 @@ LoadSceneJob::LoadSceneJob(const QUrl &source, Qt3DCore::QNodeId m_sceneComponen
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadScene, 0);
 }
 
+NodeManagers *LoadSceneJob::nodeManagers() const
+{
+    return m_managers;
+}
+
+QList<QSceneIOHandler *> LoadSceneJob::sceneIOHandlers() const
+{
+    return m_sceneIOHandlers;
+}
+
+QUrl LoadSceneJob::source() const
+{
+    return m_source;
+}
+
+Qt3DCore::QNodeId LoadSceneJob::sceneComponentId() const
+{
+    return m_sceneComponent;
+}
+
 void LoadSceneJob::run()
 {
     // Iterate scene IO handlers until we find one that can handle this file type
@@ -70,9 +90,11 @@ void LoadSceneJob::run()
 
     // Reset status
     scene->setStatus(QSceneLoader::None);
+    QSceneLoader::Status finalStatus = QSceneLoader::None;
 
     // Perform the loading only if the source wasn't explicitly set to empty
     if (!m_source.isEmpty()) {
+        finalStatus = QSceneLoader::Error;
         for (QSceneIOHandler *sceneIOHandler : qAsConst(m_sceneIOHandlers)) {
             if (!sceneIOHandler->isFileTypeSupported(m_source))
                 continue;
@@ -82,15 +104,11 @@ void LoadSceneJob::run()
 
             // File type is supported, try to load it
             sceneIOHandler->setSource(m_source);
-            Qt3DCore::QEntity *sub = sceneIOHandler->scene();
-            if (sub) {
-                sceneSubTree = sub;
+            sceneSubTree = sceneIOHandler->scene();
+            if (sceneSubTree != nullptr) {
                 // Successfully built a subtree
-                scene->setStatus(QSceneLoader::Ready);
+                finalStatus = QSceneLoader::Ready;
                 break;
-            } else {
-                // Tree wasn't build so something went wrong obviously
-                scene->setStatus(QSceneLoader::Error);
             }
         }
     }
@@ -100,6 +118,10 @@ void LoadSceneJob::run()
     // Set clone of sceneTree in sceneComponent. This will move the sceneSubTree
     // to the QCoreApplication thread which is where the frontend object tree lives.
     scene->setSceneSubtree(sceneSubTree);
+
+    // Note: the status is set after the subtree so that bindinds depending on the status
+    // in the frontend will be consistent
+    scene->setStatus(finalStatus);
 }
 
 } // namespace Render

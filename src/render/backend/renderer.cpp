@@ -919,6 +919,12 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
         frameElapsed = timer.elapsed();
     }
 
+    // Bind lastBoundFBOId back. Needed also in threaded mode.
+    // lastBoundFBOId != m_graphicsContext->activeFBO() when the last FrameGraph leaf node/renderView
+    // contains RenderTargetSelector/RenderTarget
+    if (lastBoundFBOId != m_graphicsContext->activeFBO())
+        m_graphicsContext->bindFramebuffer(lastBoundFBOId);
+
     // Reset state and call doneCurrent if the surface
     // is valid and was actually activated
     if (surface && m_graphicsContext->hasValidGLHelper()) {

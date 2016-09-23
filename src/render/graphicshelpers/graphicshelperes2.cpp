@@ -359,108 +359,6 @@ void GraphicsHelperES2::drawBuffers(GLsizei, const int *)
     qWarning() << "drawBuffers is not supported by ES 2.0";
 }
 
-void GraphicsHelperES2::bindUniform(const QVariant &v, const ShaderUniform &description)
-{
-    switch (description.m_type) {
-
-    case GL_FLOAT:
-        m_funcs->glUniform1fv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 1));
-        break;
-
-    case GL_FLOAT_VEC2:
-        m_funcs->glUniform2fv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 2));
-        break;
-
-    case GL_FLOAT_VEC3:
-        m_funcs->glUniform3fv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 3));
-        break;
-
-    case GL_FLOAT_VEC4:
-        m_funcs->glUniform4fv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 4));
-        break;
-
-    case GL_FLOAT_MAT2:
-        m_funcs->glUniformMatrix2fv(description.m_location, description.m_size, GL_FALSE,
-                                    QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 4));
-        break;
-
-    case GL_FLOAT_MAT3:
-        m_funcs->glUniformMatrix3fv(description.m_location, description.m_size, GL_FALSE,
-                                    QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 9));
-        break;
-
-    case GL_FLOAT_MAT4:
-        m_funcs->glUniformMatrix4fv(description.m_location, description.m_size, GL_FALSE,
-                                    QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 16));
-        break;
-
-    case GL_INT:
-        m_funcs->glUniform1iv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 1));
-        break;
-
-    case GL_INT_VEC2:
-        m_funcs->glUniform2iv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 2));
-        break;
-
-    case GL_INT_VEC3:
-        m_funcs->glUniform3iv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 3));
-        break;
-
-    case GL_INT_VEC4:
-        m_funcs->glUniform4iv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 4));
-        break;
-
-    case GL_BOOL:
-        m_funcs->glUniform1iv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 1));
-        break;
-
-    case GL_BOOL_VEC2:
-        m_funcs->glUniform2iv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 2));
-        break;
-
-    case GL_BOOL_VEC3:
-        m_funcs->glUniform3iv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 3));
-        break;
-
-    case GL_BOOL_VEC4:
-        m_funcs->glUniform4iv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 4));
-        break;
-
-    case GL_SAMPLER_2D:
-    case GL_SAMPLER_CUBE: {
-        Q_ASSERT(description.m_size == 1);
-        m_funcs->glUniform1i(description.m_location, v.toInt());
-        break;
-    }
-
-        // ES 3.0+
-    case GL_SAMPLER_3D:
-    case GL_SAMPLER_2D_SHADOW:
-    case GL_SAMPLER_CUBE_SHADOW:
-    case GL_SAMPLER_2D_ARRAY:
-    case GL_SAMPLER_2D_ARRAY_SHADOW:
-        qWarning() << Q_FUNC_INFO << "ES 3.0 uniform type" << description.m_type << "for"
-                   << description.m_name << "is not supported in ES 2.0";
-        break;
-
-    default:
-        qWarning() << Q_FUNC_INFO << "unsupported uniform type:" << description.m_type << "for " << description.m_name;
-        break;
-    }
-}
-
 void GraphicsHelperES2::bindFragDataLocation(GLuint , const QHash<QString, int> &)
 {
     qCritical() << "bindFragDataLocation is not supported by ES 2.0";
@@ -758,6 +656,49 @@ void GraphicsHelperES2::glUniformMatrix3x4fv(GLint , GLsizei , const GLfloat *)
 void GraphicsHelperES2::glUniformMatrix4x3fv(GLint , GLsizei , const GLfloat *)
 {
     qWarning() << "glUniformMatrix4x3fv not supported by ES 2";
+}
+
+UniformType GraphicsHelperES2::uniformTypeFromGLType(GLenum type)
+{
+    switch (type) {
+    case GL_FLOAT:
+        return UniformType::Float;
+    case GL_FLOAT_VEC2:
+        return UniformType::Vec2;
+    case GL_FLOAT_VEC3:
+        return UniformType::Vec3;
+    case GL_FLOAT_VEC4:
+        return UniformType::Vec4;
+    case GL_FLOAT_MAT2:
+        return UniformType::Mat2;
+    case GL_FLOAT_MAT3:
+        return UniformType::Mat3;
+    case GL_FLOAT_MAT4:
+        return UniformType::Mat4;
+    case GL_INT:
+        return UniformType::Int;
+    case GL_INT_VEC2:
+        return UniformType::IVec2;
+    case GL_INT_VEC3:
+        return UniformType::IVec3;
+    case GL_INT_VEC4:
+        return UniformType::IVec4;
+    case GL_BOOL:
+        return UniformType::Bool;
+    case GL_BOOL_VEC2:
+        return UniformType::BVec2;
+    case GL_BOOL_VEC3:
+        return UniformType::BVec3;
+    case GL_BOOL_VEC4:
+        return UniformType::BVec4;
+
+    case GL_SAMPLER_2D:
+    case GL_SAMPLER_CUBE:
+        return UniformType::Sampler;
+    default:
+        Q_UNREACHABLE();
+        return UniformType::Float;
+    }
 }
 
 } // namespace Render

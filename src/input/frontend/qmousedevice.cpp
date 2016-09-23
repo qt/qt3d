@@ -45,35 +45,43 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
+
 /*! \internal */
 QMouseDevicePrivate::QMouseDevicePrivate()
     : QAbstractPhysicalDevicePrivate()
     , m_sensitivity(0.1f)
 {
 }
+
 /*!
- * \qmltype MouseDevice
- * \instantiates Qt3DInput::QMouseDevice
- * \inqmlmodule Qt3D.Input
- * \since 5.5
- * \brief Delegates mouse events to the attached MouseHandler objects.
- * \TODO
- * \sa MouseHandler
+    \qmltype MouseDevice
+    \instantiates Qt3DInput::QMouseDevice
+    \inqmlmodule Qt3D.Input
+    \since 5.5
+    \brief Delegates mouse events to the attached MouseHandler objects.
+
+    A MouseDevice delegates mouse events from physical mouse device to
+    MouseHandler objects. The sensitivity of the mouse can be controlled
+    with the \l MouseDevice::sensitivity property, which specifies the rate
+    in which the logical mouse coordinates change in response to physical
+    movement of the mouse.
+
+    \sa MouseHandler
  */
 
 /*!
- * \class Qt3DInput::QMouseDevice
- * \inmodule Qt3DInput
- *
- * \brief QMouseDevice is in charge of dispatching mouse events to
- * attached QMouseHandler objects.
- *
- * \since 5.5
- * \sa QMouseHandler
- */
+    \class Qt3DInput::QMouseDevice
+    \inmodule Qt3DInput
+    \since 5.5
+    \brief Delegates mouse events to the attached MouseHandler objects.
 
-/*!
-    \qmlproperty real MouseDevice::sensitivity
+    A QMouseDevice delegates mouse events from physical mouse device to
+    QMouseHandler objects.  The sensitivity of the mouse can be controlled
+    with the \l QMouseDevice::sensitivity property, which specifies the rate
+    in which the logical mouse coordinates change in response to physical
+    movement of the mouse.
+
+    \sa QMouseHandler
  */
 
 /*!
@@ -83,8 +91,24 @@ QMouseDevicePrivate::QMouseDevicePrivate()
 
     \value X
     \value Y
+    \value WheelX
+    \value WheelY
 
     \sa Qt3DInput::QAnalogAxisInput::setAxis
+ */
+
+/*!
+    \qmlproperty real MouseDevice::sensitivity
+
+    Holds the current sensitivity of the mouse device.
+    Default is 0.1.
+ */
+
+/*!
+    \property Qt3DInput::QMouseDevice::sensitivity
+
+    Holds the sensitivity of the mouse device.
+    Default is 0.1.
  */
 
 /*!
@@ -103,12 +127,11 @@ QMouseDevice::~QMouseDevice()
 /*!
     \return the axis count.
 
-    \note Currently always returns 2.
+    \note Currently always returns 4.
  */
 int QMouseDevice::axisCount() const
 {
-    // TO DO: we could have mouse wheel later on
-    return 2;
+    return 4;
 }
 
 /*!
@@ -130,7 +153,9 @@ QStringList QMouseDevice::axisNames() const
 {
     return QStringList()
             << QStringLiteral("X")
-            << QStringLiteral("Y");
+            << QStringLiteral("Y")
+            << QStringLiteral("WheelX")
+            << QStringLiteral("WheelY");
 }
 
 /*!
@@ -155,14 +180,13 @@ int QMouseDevice::axisIdentifier(const QString &name) const
         return X;
     else if (name == QLatin1String("Y"))
         return Y;
+    else if (name == QLatin1String("WheelX"))
+        return WheelX;
+    else if (name == QLatin1String("WheelY"))
+        return WheelY;
     return -1;
 }
 
-/*!
-  \property Qt3DInput::QMouseDevice::sensitivity
-
-  The sensitivity of the device.
- */
 float QMouseDevice::sensitivity() const
 {
     Q_D(const QMouseDevice);

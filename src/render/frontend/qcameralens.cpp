@@ -45,8 +45,164 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
-    \internal
-*/
+ * \class Qt3DRender::QCameraLens
+ * \inmodule Qt3DRender
+ *
+ * \brief Qt3DRender::QCameraLens specifies the projection matrix that will be used to
+ * define a Camera for a 3D scene.
+ *
+ * \since 5.5
+ */
+
+/*!
+ * \qmltype CameraLens
+ * \instantiates Qt3DRender::QCameraLens
+ * \inqmlmodule Qt3D.Render
+ * \inherits Component3D
+ * \since 5.5
+ * \brief Provides the projection matrix that is used to define a Camera for 3D scene.
+ */
+
+/*!
+ * \enum Qt3DRender::QCameraLens::ProjectionType
+ *
+ * Specifies which parameters of Qt3DRender::QCameraLens are used to compute the projection matrix.
+ *
+ * \value OrthographicProjection Orthogonal projection
+ * \value PerspectiveProjection Perspective projection
+ * \value FrustumProjection Frustum projection
+ * \value CustomProjection Custom user-defined projection
+ */
+
+/*!
+ * \qmlproperty enumeration CameraLens::projectionType
+ *
+ * Holds the type of the camera projection.
+ *
+ * \list
+ * \li CameraLens.OrthographicProjection
+ * \li CameraLens.PerspectiveProjection
+ * \li CameraLens.FrustumProjection
+ * \li CameraLens.CustomProjection
+ * \endlist
+ * \sa Qt3DRender::QCameraLens::ProjectionType
+ */
+
+/*!
+ * \qmlproperty real CameraLens::nearPlane
+ * Holds the current near plane of the camera lens.
+ */
+
+/*!
+ * \qmlproperty real CameraLens::farPlane
+ * Holds the current near plane of the camera lens.
+ */
+
+/*!
+ * \qmlproperty real CameraLens::fieldOfView
+ * Holds the current field of view of the camera lens in degrees.
+ */
+
+/*!
+ * \qmlproperty real CameraLens::aspectRatio
+ * Holds the current aspect ratio of the camera lens.
+ */
+
+/*!
+ * \qmlproperty real CameraLens::left
+ * Holds the current left plane of the camera lens.
+ */
+
+/*!
+ * \qmlproperty real CameraLens::right
+ * Holds the current right plane of the camera lens.
+ */
+
+/*!
+ * \qmlproperty real CameraLens::bottom
+ * Holds the current bottom plane of the camera lens.
+ */
+
+/*!
+ * \qmlproperty real CameraLens::top
+ * Holds the current top plane of the camera lens.
+ */
+
+/*!
+ * \qmlproperty matrix4x4 CameraLens::projectionMatrix
+ * Holds the current projection matrix of the camera lens.
+ * \readonly
+ */
+
+
+/*!
+ * \property QCameraLens::projectionType
+ *
+ * Holds the type of the camera projection.
+ * \sa Qt3DRender::QCameraLens::ProjectionType
+ */
+
+/*!
+ * \property QCameraLens::nearPlane
+ * Holds the current near plane of the camera lens.
+ */
+
+/*!
+ * \property QCameraLens::farPlane
+ * Holds the current near plane of the camera lens.
+ */
+
+/*!
+ * \property QCameraLens::fieldOfView
+ * Holds the current field of view of the camera lens.
+ * \note: The return value may be undefined if the projection type is not
+ * Qt3DRender::QCameraLens::PerspectiveProjection.
+ */
+
+/*!
+ * \property QCameraLens::aspectRatio
+ * Holds the current aspect ratio of the camera lens.
+ * \note: The return value may be undefined if the projection type is not
+ * Qt3DRender::QCameraLens::PerspectiveProjection.
+ */
+
+/*!
+ * \property QCameraLens::left
+ * Holds the current left plane of the camera lens.
+ * \note The return value may be undefined if the projection type is
+ * Qt3DRender::QCameraLens::PerspectiveProjection.
+ */
+
+/*!
+ * \property QCameraLens::right
+ * Holds the current right plane of the camera lens.
+ * \note The return value may be undefined if the projection type is
+ * Qt3DRender::QCameraLens::PerspectiveProjection.
+ */
+
+/*!
+ * \property QCameraLens::bottom
+ * Holds the current bottom plane of the camera lens.
+ * \note The return value may be undefined if the projection type is
+ * Qt3DRender::QCameraLens::PerspectiveProjection.
+ */
+
+/*!
+ * \property QCameraLens::top
+ * Holds the current top plane of the camera lens.
+ * \note The return value may be undefined if the projection type is
+ * Qt3DRender::QCameraLens::PerspectiveProjection.
+ */
+
+/*!
+ * \property QCameraLens::projectionMatrix
+ * Holds the current projection matrix of the camera lens.
+ * \readonly
+ */
+
+/*!
+ *   \internal
+ */
 QCameraLensPrivate::QCameraLensPrivate()
     : Qt3DCore::QComponentPrivate()
     , m_projectionType(QCameraLens::PerspectiveProjection)
@@ -61,6 +217,9 @@ QCameraLensPrivate::QCameraLensPrivate()
 {
 }
 
+/*!
+ * Constructs a QCameraLens with given \a parent
+ */
 QCameraLens::QCameraLens(QNode *parent)
     : Qt3DCore::QComponent(*new QCameraLensPrivate, parent)
 {
@@ -73,31 +232,12 @@ QCameraLens::~QCameraLens()
 {
 }
 
-/*! \class Qt3DRender::QCameraLens
- *  \inmodule Qt3DCore
- *
- * \brief Qt3DRender::QCameraLens specifies the projection matrix that will be used to
- * define a Camera for a 3D scene.
- *
- *  \since 5.5
- */
 QCameraLens::QCameraLens(QCameraLensPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {
     Q_D(QCameraLens);
     d->updateOrthographicProjection();
 }
-
-/*!
- * \enum Qt3DRender::QCameraLens::ProjectionType
- *
- * Specifies which parameters of Qt3DRender::QCameraLens are used to compute the projection matrix.
- *
- * \value OrthographicProjection
- * \value PerspectiveProjection
- * \value FrustumProjection
- * \value CustomProjection
- */
 
 /*!
  * Sets the lens' projection type \a projectionType.
@@ -120,9 +260,6 @@ void QCameraLens::setProjectionType(QCameraLens::ProjectionType projectionType)
     }
 }
 
-/*!
- * Returns the lens' projection type.
- */
 QCameraLens::ProjectionType QCameraLens::projectionType() const
 {
     Q_D(const QCameraLens);
@@ -207,9 +344,6 @@ void QCameraLens::setNearPlane(float nearPlane)
     d->updateProjectionMatrix();
 }
 
-/*!
- * Returns the projection's near plane.
- */
 float QCameraLens::nearPlane() const
 {
     Q_D(const QCameraLens);
@@ -234,9 +368,6 @@ void QCameraLens::setFarPlane(float farPlane)
     d->updateProjectionMatrix();
 }
 
-/*!
- * Returns the projection's far plane.
- */
 float QCameraLens::farPlane() const
 {
     Q_D(const QCameraLens);
@@ -264,12 +395,6 @@ void QCameraLens::setFieldOfView(float fieldOfView)
     d->updateProjectionMatrix();
 }
 
-/*!
- * Returns the projection's field of view in degrees.
- *
- * \note: The return value may be undefined if the projection type is not
- * Qt3DRender::QCameraLens::PerspectiveProjection.
- */
 float QCameraLens::fieldOfView() const
 {
     Q_D(const QCameraLens);
@@ -297,12 +422,6 @@ void QCameraLens::setAspectRatio(float aspectRatio)
     d->updateProjectionMatrix();
 }
 
-/*!
- * Returns the projection's aspect ratio.
- *
- * \note: The return value may be undefined if the projection type is not
- * Qt3DRender::QCameraLens::PerspectiveProjection.
- */
 float QCameraLens::aspectRatio() const
 {
     Q_D(const QCameraLens);
@@ -330,12 +449,6 @@ void QCameraLens::setLeft(float left)
     d->updateProjectionMatrix();
 }
 
-/*!
- * Returns the lower left window coordinate of the projection.
- *
- * \note The return value may be undefined if the projection type is
- * Qt3DRender::QCameraLens::PerspectiveProjection.
- */
 float QCameraLens::left() const
 {
     Q_D(const QCameraLens);
@@ -363,12 +476,6 @@ void QCameraLens::setRight(float right)
     d->updateProjectionMatrix();
 }
 
-/*!
- * Returns the upper right window coordinate of the projection.
- *
- * \note The return value may be undefined if the projection type is
- * Qt3DRender::QCameraLens::PerspectiveProjection.
- */
 float QCameraLens::right() const
 {
     Q_D(const QCameraLens);
@@ -396,12 +503,6 @@ void QCameraLens::setBottom(float bottom)
     d->updateProjectionMatrix();
 }
 
-/*!
- * Returns the bottom window coordinate of the projection.
- *
- * \note The return value may be undefined if the projection type is
- * Qt3DRender::QCameraLens::PerspectiveProjection.
- */
 float QCameraLens::bottom() const
 {
     Q_D(const QCameraLens);
@@ -429,12 +530,6 @@ void QCameraLens::setTop(float top)
     d->updateProjectionMatrix();
 }
 
-/*!
- * Returns the bottom window coordinate of the projection.
- *
- * \note The return value may be undefined if the projection type is
- * Qt3DRender::QCameraLens::PerspectiveProjection.
- */
 float QCameraLens::top() const
 {
     Q_D(const QCameraLens);
@@ -442,7 +537,7 @@ float QCameraLens::top() const
 }
 
 /*!
- * Sets the project matrix.
+ * Sets the project matrix to \a projectionMatrix.
  *
  * \note This will set the projection type to Qt3DRender::QCameraLens::CustomProjection and thus
  * ignore all other camera parameters that might have been specified.
@@ -457,9 +552,6 @@ void QCameraLens::setProjectionMatrix(const QMatrix4x4 &projectionMatrix)
     emit projectionMatrixChanged(projectionMatrix);
 }
 
-/*!
- * Returns the projection matrix.
- */
 QMatrix4x4 QCameraLens::projectionMatrix() const
 {
     Q_D(const QCameraLens);
@@ -475,60 +567,5 @@ Qt3DCore::QNodeCreatedChangeBasePtr QCameraLens::createNodeCreationChange() cons
 }
 
 } // Qt3DRender
-
-/*!
-    \qmltype CameraLens
-    \instantiates Qt3DRender::QCameraLens
-    \inqmlmodule Qt3D.Core
-    \inherits Component3D
-    \since 5.5
-    \brief Provides the projection matrix that is used to define a Camera for 3D scene.
-*/
-
-/*!
-    \qmlproperty enumeration Qt3DCore::CameraLens::projectionType
-
-    Holds the type of the camera projection (orthogonal or perspective).
-
-    \value CameraLens.OrthographicProjection Orthogonal projection
-    \value CameraLens.PerspectiveProjection Perspective projection
-*/
-
-/*!
-    \qmlproperty float Qt3DCore::CameraLens::nearPlane
-*/
-
-/*!
-    \qmlproperty float Qt3DCore::CameraLens::farPlane
-*/
-
-/*!
-    \qmlproperty float Qt3DCore::CameraLens::fieldOfView
-*/
-
-/*!
-    \qmlproperty float Qt3DCore::CameraLens::aspectRatio
-*/
-
-/*!
-    \qmlproperty float Qt3DCore::CameraLens::left
-*/
-
-/*!
-    \qmlproperty float Qt3DCore::CameraLens::right
-*/
-
-/*!
-    \qmlproperty float Qt3DCore::CameraLens::bottom
-*/
-
-/*!
-    \qmlproperty float Qt3DCore::CameraLens::top
-*/
-
-/*!
-    \qmlproperty matrix4x4 Qt3DCore::CameraLens::projectionMatrix
-    \readonly
-*/
 
 QT_END_NAMESPACE

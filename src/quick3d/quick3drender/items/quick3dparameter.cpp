@@ -37,10 +37,10 @@
 **
 ****************************************************************************/
 
-#include "quick3dparameter_p_p.h"
-
 #include <QJSValue>
 #include <QJSValueIterator>
+
+#include "quick3dparameter_p_p.h"
 
 QT_BEGIN_NAMESPACE
 

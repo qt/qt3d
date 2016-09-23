@@ -178,14 +178,16 @@ void QDiffuseMapMaterialPrivate::handleTextureScaleChanged(const QVariant &var)
 }
 
 /*!
-    \class Qt3DRender::QDiffuseMapMaterial
-    \brief The QDiffuseMapMaterial provides a default implementation of the phong lighting effect where the diffuse light component
-    is read from a texture map.
-    \inmodule Qt3DRender
-    \since 5.5
+    \class Qt3DExtras::QDiffuseMapMaterial
+    \brief The QDiffuseMapMaterial provides a default implementation of the phong lighting effect
+    where the diffuse light component is read from a texture map.
+    \inmodule Qt3DExtras
+    \since 5.7
+    \inherits Qt3DRender::QMaterial
 
-    The specular lighting effect is based on the combination of 3 lighting components ambient, diffuse and specular.
-    The relative strengths of these components is controlled by means of their reflectivity coefficients which are modelled as RGB triplets:
+    The specular lighting effect is based on the combination of 3 lighting components ambient,
+    diffuse and specular. The relative strengths of these components are controlled by means of
+    their reflectivity coefficients which are modelled as RGB triplets:
 
     \list
     \li Ambient is the color that is emitted by an object without any other light source.
@@ -194,12 +196,12 @@ void QDiffuseMapMaterialPrivate::handleTextureScaleChanged(const QVariant &var)
     \li The shininess of a surface is controlled by a float property.
     \endlist
 
-    This material uses an effect with a single render pass approach and performs per fragment lighting.
-    Techniques are provided for OpenGL 2, OpenGL 3 or above as well as OpenGL ES 2.
+    This material uses an effect with a single render pass approach and performs per fragment
+    lighting. Techniques are provided for OpenGL 2, OpenGL 3 or above as well as OpenGL ES 2.
 */
 
 /*!
-    Constructs a new Qt3DRender::QDiffuseMapMaterial instance with parent object \a parent.
+    Constructs a new QDiffuseMapMaterial instance with parent object \a parent.
  */
 QDiffuseMapMaterial::QDiffuseMapMaterial(QNode *parent)
     : QMaterial(*new QDiffuseMapMaterialPrivate, parent)
@@ -216,7 +218,7 @@ QDiffuseMapMaterial::~QDiffuseMapMaterial()
 }
 
 /*!
-    \property Qt3DRender::QDiffuseMapMaterial::ambient
+    \property QDiffuseMapMaterial::ambient
 
     Holds the current ambient color.
 */
@@ -228,7 +230,7 @@ QColor QDiffuseMapMaterial::ambient() const
 }
 
 /*!
-    \property Qt3DRender::QDiffuseMapMaterial::specular
+    \property QDiffuseMapMaterial::specular
 
     Holds the current specular color.
 */
@@ -239,7 +241,7 @@ QColor QDiffuseMapMaterial::specular() const
 }
 
 /*!
-    \property Qt3DRender::QDiffuseMapMaterial::shininess
+    \property QDiffuseMapMaterial::shininess
 
     Holds the current shininess as a float value.
 */
@@ -250,9 +252,9 @@ float QDiffuseMapMaterial::shininess() const
 }
 
 /*!
-    \property Qt3DRender::QDiffuseMapMaterial::diffuse
+    \property QDiffuseMapMaterial::diffuse
 
-    Holds the current QTexture used as the diffuse map.
+    Holds the current texture used as the diffuse map.
 
     By default, the diffuse texture has the following properties:
 
@@ -270,9 +272,10 @@ QAbstractTexture *QDiffuseMapMaterial::diffuse() const
 }
 
 /*!
-    \property Qt3DRender::QDiffuseMapMaterial::textureScale
+    \property QDiffuseMapMaterial::textureScale
 
-    Holds the current texture scale as a float value.
+    Holds the current texture scale. It is applied as a multiplier to texture
+    coordinates at render time. Defaults to 1.0.
 
 */
 float QDiffuseMapMaterial::textureScale() const

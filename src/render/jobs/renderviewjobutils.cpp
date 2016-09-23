@@ -391,7 +391,7 @@ void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
         Parameter *param = manager->lookupResource(paramId);
         ParameterInfoList::iterator it = std::lower_bound(params->begin(), params->end(), param->nameId());
         if (it == params->end() || it->nameId != param->nameId())
-            params->insert(it, ParameterInfo(param->nameId(), param->value()));
+            params->insert(it, ParameterInfo(param->nameId(), param->uniformValue()));
     }
 }
 
@@ -438,7 +438,7 @@ UniformBlockValueBuilder::~UniformBlockValueBuilder()
 {
 }
 
-void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(const QString &blockName, const QString &qmlPropertyName, const QVariant &value)
+void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(ShaderData *currentShaderData, const QString &blockName, const QString &qmlPropertyName, const QVariant &value)
 {
     // In the end, values are either scalar or a scalar array
     // Composed elements (structs, structs array) are simplified into simple scalars
@@ -471,27 +471,36 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(const QStrin
         QString varName = blockName + QLatin1Char('.') + qmlPropertyName;
         if (uniforms.contains(varName)) {
             qCDebug(Shaders) << "UBO scalar member " << varName << " set for update";
-            activeUniformNamesToValue.insert(StringToInt::lookupId(varName), value);
+
+            // If the property needs to be transformed, we transform it here as
+            // the shaderdata cannot hold transformed properties for multiple
+            // thread contexts at once
+            if (currentShaderData->propertyTransformType(qmlPropertyName) != ShaderData::NoTransform)
+                activeUniformNamesToValue.insert(StringToInt::lookupId(varName),
+                                                 currentShaderData->getTransformedProperty(qmlPropertyName, viewMatrix));
+            else
+                activeUniformNamesToValue.insert(StringToInt::lookupId(varName), value);
         }
     }
 }
 
 void UniformBlockValueBuilder::buildActiveUniformNameValueMapStructHelper(ShaderData *rShaderData, const QString &blockName, const QString &qmlPropertyName)
 {
-    const QHash<QString, QVariant> &properties = updatedPropertiesOnly ? rShaderData->updatedProperties() : rShaderData->properties();
+    const QHash<QString, QVariant> &properties = rShaderData->properties();
     QHash<QString, QVariant>::const_iterator it = properties.begin();
     const QHash<QString, QVariant>::const_iterator end = properties.end();
 
     while (it != end) {
         const auto prefix = qmlPropertyName.isEmpty() ? QLatin1String("") : QLatin1String(".");
-        buildActiveUniformNameValueMapHelper(blockName + prefix + qmlPropertyName,
+        buildActiveUniformNameValueMapHelper(rShaderData,
+                                             blockName + prefix + qmlPropertyName,
                                              it.key(),
                                              it.value());
         ++it;
     }
 }
 
-ParameterInfo::ParameterInfo(const int nameId, const QVariant &value)
+ParameterInfo::ParameterInfo(const int nameId, const UniformValue &value)
     : nameId(nameId)
     , value(value)
 {}

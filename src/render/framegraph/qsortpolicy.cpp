@@ -53,23 +53,34 @@ QSortPolicyPrivate::QSortPolicyPrivate()
 }
 
 /*!
- * \class Qt3DRender::QSortPolicy
- * \inmodule Qt3DRender
- * \brief Provides storage for the sort types to be used
- * \since 5.7
- *
- * \inherits Qt3DRender::QFrameGraphNode
- *
+    \class Qt3DRender::QSortPolicy
+    \inmodule Qt3DRender
+    \brief Provides storage for the sort types to be used
+    \since 5.7
+
+    \inherits Qt3DRender::QFrameGraphNode
+
+    A Qt3DRender::QSortPolicy class stores the sorting type used by the FrameGraph.
+    The sort types determine how drawable entities are sorted before drawing to
+    determine the drawing order. When QSortPolicy is present in the FrameGraph,
+    the sorting mechanism is determined by the SortTypes list. Multiple sort types
+    can be used simultanously. If QSortPolicy is not present in the FrameGraph,
+    entities are drawn in the order they appear in the entity hierarchy.
  */
 
 /*!
- * \qmltype SortPolicy
- * \inqmlmodule Qt3D.Render
- * \since 5.7
- * \ingroup
- * \instantiates Qt3DRender::QSortPolicy
- * \brief Provides storage for the sort types to be used
- *
+    \qmltype SortPolicy
+    \inqmlmodule Qt3D.Render
+    \since 5.7
+    \instantiates Qt3DRender::QSortPolicy
+    \brief Provides storage for the sort types to be used
+
+    A SortPolicy class stores the sorting type used by the FrameGraph.
+    The sort types determine how drawable entities are sorted before drawing to
+    determine the drawing order. When SortPolicy is present in the FrameGraph,
+    the sorting mechanism is determined by the SortTypes list. Multiple sort
+    types can be used simultanously. If SortPolicy is not present in the FrameGraph,
+    entities are drawn in the order they appear in the entity hierarchy.
  */
 
 /*!
@@ -82,7 +93,17 @@ QSortPolicyPrivate::QSortPolicyPrivate()
 */
 
 /*!
- * Constructs QSortPolicy with given \a parent.
+    \property QSortPolicy::sortTypes
+    Specifies the sorting types to be used.
+*/
+
+/*!
+    \qmlproperty QVariantList SortPolicy::sortTypes
+    Specifies the sorting types to be used.
+*/
+
+/*!
+    Constructs QSortPolicy with given \a parent.
  */
 QSortPolicy::QSortPolicy(QNode *parent)
     : QFrameGraphNode(*new QSortPolicyPrivate, parent)
@@ -110,17 +131,7 @@ QNodeCreatedChangeBasePtr QSortPolicy::createNodeCreationChange() const
 }
 
 /*!
-    \property Qt3DRender::QSortPolicy::sortTypes
-    Specifies the sorting types to be used.
-*/
-
-/*!
-  \qmlproperty QVariantList Qt3D.Render::QSortPolicy::sortTypes
-    Specifies the sorting types to be used.
-
-*/
-/*!
- * \return the current sort types in use
+    \return the current sort types in use
  */
 QVector<QSortPolicy::SortType> QSortPolicy::sortTypes() const
 {

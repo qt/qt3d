@@ -53,7 +53,7 @@
 //
 
 #include <qglobal.h>
-#include <Qt3DRender/private/quniformvalue_p.h>
+#include <Qt3DRender/private/shaderparameterpack_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <QOpenGLShaderProgram>

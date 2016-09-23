@@ -74,7 +74,6 @@ public:
     void bindFrameBufferObject(GLuint frameBufferId) Q_DECL_OVERRIDE;
     void bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding) Q_DECL_OVERRIDE;
     void bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) Q_DECL_OVERRIDE;
-    void bindUniform(const QVariant &v, const ShaderUniform &description) Q_DECL_OVERRIDE;
     void blendEquation(GLenum mode) Q_DECL_OVERRIDE;
     void blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor) Q_DECL_OVERRIDE;
     void blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRGB, GLenum sAlpha, GLenum dAlpha) Q_DECL_OVERRIDE;
@@ -143,6 +142,8 @@ public:
     void glUniformMatrix4x2fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;
     void glUniformMatrix3x4fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;
     void glUniformMatrix4x3fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;
+
+    UniformType uniformTypeFromGLType(GLenum glType) Q_DECL_OVERRIDE;
 
 protected:
     QOpenGLFunctions *m_funcs;

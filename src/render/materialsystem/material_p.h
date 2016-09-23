@@ -54,7 +54,7 @@
 #include <QVariant>
 
 #include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DRender/private/quniformvalue_p.h>
+#include <Qt3DRender/private/shaderparameterpack_p.h>
 #include <Qt3DRender/private/parameterpack_p.h>
 
 QT_BEGIN_NAMESPACE

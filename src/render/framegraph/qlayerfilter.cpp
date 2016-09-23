@@ -59,7 +59,10 @@ QLayerFilterPrivate::QLayerFilterPrivate()
     \since 5.5
     \brief Controls layers Drawn in a frame graph branch.
 
-    A QLayerFiler can be used to instruct the renderer as to which layer(s) to draw in that branch of the frame graph.
+    A Qt3DRender::QLayerFilter can be used to instruct the renderer as to which layer(s)
+    to draw in that branch of the frame graph. The Qt3DRender::QLayerFilter selects which
+    entities to draw based on the Qt3DRender::QLayer instances added to the QLayerFilter
+    and as components to the \l Qt3DCore::QEntity.
 */
 
 /*!
@@ -70,12 +73,20 @@ QLayerFilterPrivate::QLayerFilterPrivate()
     \since 5.5
     \brief Controls layers Drawn in a frame graph branch.
 
-    A QLayerFiler can be used to instruct the renderer as to which layer(s) to draw in that branch of the frame graph.
+    A LayerFilter can be used to instruct the renderer as to which layer(s)
+    to draw in that branch of the frame graph. The LayerFilter selects which
+    entities to draw based on the \l Layer instances added to the LayerFilter
+    and as components to the \l Entity.
 */
 
+/*!
+    \qmlproperty list<Layer> Qt3D.Render::LayerFilter::layers
+    Holds a list of layers specifying the layers to select for drawing.
+    \readonly
+ */
 
 /*!
-  The constructor creates an instance with the specified \a parent.
+    The constructor creates an instance with the specified \a parent.
  */
 QLayerFilter::QLayerFilter(QNode *parent)
     : QFrameGraphNode(*new QLayerFilterPrivate, parent)
@@ -94,16 +105,7 @@ QLayerFilter::~QLayerFilter()
 }
 
 /*!
-  \property Qt3DRender::QLayerFilter::layers
-
- */
-
-/*!
-  \qmlproperty stringlist Qt3D.Render::LayerFilter::layers
-
-*/
-/*!
- Add \a layer to the current list of layers
+    Add \a layer to the current list of layers
  */
 void QLayerFilter::addLayer(QLayer *layer)
 {
@@ -131,7 +133,7 @@ void QLayerFilter::addLayer(QLayer *layer)
 }
 
 /*!
- Remove \a layer from the current list of layers
+    Remove \a layer from the current list of layers
  */
 void QLayerFilter::removeLayer(QLayer *layer)
 {
@@ -148,7 +150,7 @@ void QLayerFilter::removeLayer(QLayer *layer)
 }
 
 /*!
- \return the current list of layers
+    \return the current list of layers
  */
 QVector<QLayer *> QLayerFilter::layers() const
 {

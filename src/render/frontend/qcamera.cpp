@@ -78,6 +78,298 @@ QCameraPrivate::QCameraPrivate()
  */
 
 /*!
+ * \enum Qt3DRender::QCamera::CameraTranslationOption
+ *
+ * This enum specifies how camera view center is translated
+ * \value TranslateViewCenter Translate the view center causing the view direction to remain the same
+ * \value DontTranslateViewCenter Don't translate the view center causing the view direction to change
+ */
+
+/*!
+ * \qmlmethod quaternion Qt3D.Render::Camera::tiltRotation(real angle)
+ *
+ * Returns the calculated tilt rotation in relation to the \a angle in degrees taken in
+ * to adjust the camera's tilt or up/down rotation on the X axis.
+ */
+
+/*!
+ * \qmlmethod quaternion Qt3D.Render::Camera::panRotation(real angle)
+ *
+ * Returns the calculated pan rotation in relation to the \a angle in degrees taken in
+ * to adjust the camera's pan or left/right rotation on the Y axis.
+ */
+
+/*!
+ * \qmlmethod quaternion Qt3D.Render::Camera::rollRotation(real angle)
+ *
+ * Returns the calculated roll rotation in relation to the \a angle in degrees taken in
+ * to adjust the camera's roll or lean left/right rotation on the Z axis.
+ */
+
+/*!
+ * \qmlmethod quaternion Qt3D.Render::Camera::rotation(real angle, vector3d axis)
+ *
+ * Returns the calculated rotation in relation to the \a angle in degrees and
+ * chosen \a axis taken in.
+ */
+
+/*!
+ * \qmlmethod void Qt3D.Render::Camera::translate(vector3d vLocal, enumeration option)
+ *
+ * Translates the camera's position and its view vector by \a vLocal in local coordinates.
+ * The \a option allows for toggling whether the view center should be translated.
+ * \list
+ * \li Camera.TranslateViewCenter
+ * \li Camera.DontTranslateViewCenter
+ * \endlist
+ * \sa Qt3DRender::QCamera::CameraTranslationOption
+ */
+
+/*!
+ * \qmlmethod void Qt3D.Render::Camera::translateWorld(vector3d vWorld, enumeration option)
+ *
+ * Translates the camera's position and its view vector by \a vWorld in world coordinates.
+ * The \a option allows for toggling whether the view center should be translated.
+ * \list
+ * \li Camera.TranslateViewCenter
+ * \li Camera.DontTranslateViewCenter
+ * \endlist
+ * \sa Qt3DRender::QCamera::CameraTranslationOption
+ */
+
+/*!
+ * \qmlmethod void Qt3D.Render::Camera::tilt(real angle)
+ *
+ * Adjusts the tilt angle of the camera by \a angle in degrees.
+ */
+
+/*!
+ * \qmlmethod void Qt3D.Render::Camera::pan(real angle)
+ *
+ * Adjusts the pan angle of the camera by \a angle in degrees.
+ */
+
+/*!
+ * \qmlmethod void Qt3D.Render::Camera::pan(real angle, vector3d axis)
+ *
+ * Adjusts the camera pan about view center by \a angle in degrees on \a axis.
+ */
+
+/*!
+ * \qmlmethod void Qt3D.Render::Camera::roll(real angle)
+ *
+ * Adjusts the camera roll by \a angle in degrees.
+ */
+
+/*!
+ * \qmlmethod void Qt3D.Render::Camera::tiltAboutViewCenter(real angle)
+ *
+ * Adjusts the camera tilt about view center by \a angle in degrees.
+ */
+
+/*!
+ * \qmlmethod void Qt3D.Render::Camera::panAboutViewCenter(real angle)
+ *
+ * Adjusts the camera pan about view center by \a angle in degrees.
+ */
+
+/*!
+ * \qmlmethod void Qt3D.Render::Camera::panAboutViewCenter(real angle, vector3d axis)
+ *
+ * Adjusts the camera pan about view center by \a angle in degrees on \a axis.
+ */
+
+/*!
+ * \qmlmethod void Qt3D.Render::Camera::rollAboutViewCenter(real angle)
+ *
+ * Adjusts the camera roll about view center by \a angle in degrees.
+ */
+
+/*!
+ * \qmlmethod void Qt3D.Render::Camera::rotate(quaternion q)
+ *
+ * Rotates the camera with the use of a Quaternion in \a q.
+ */
+
+/*!
+ * \qmlmethod void Qt3D.Render::Camera::rotateAboutViewCenter(quaternion q)
+ *
+ * Rotates the camera about the view center with the use of a Quaternion in \a q.
+ */
+
+/*!
+ * \qmlproperty enumeration Qt3D.Render::Camera::projectionType
+ *
+ * Holds the type of the camera projection.
+ *
+ * \list
+ * \li CameraLens.OrthographicProjection
+ * \li CameraLens.PerspectiveProjection
+ * \li CameraLens.FrustumProjection
+ * \li CameraLens.CustomProjection
+ * \endlist
+ * \sa Qt3DRender::QCameraLens::ProjectionType
+ */
+
+/*!
+ * \qmlproperty real Qt3D.Render::Camera::nearPlane
+ * Holds the current camera near plane of the camera.
+ */
+
+/*!
+ * \qmlproperty real Qt3D.Render::Camera::farPlane
+ * Holds the current camera far plane of the camera.
+ */
+
+/*!
+ * \qmlproperty real Qt3D.Render::Camera::fieldOfView
+ * Holds the current field of view of the camera in degrees.
+ */
+
+/*!
+ * \qmlproperty real Qt3D.Render::Camera::aspectRatio
+ * Holds the current aspect ratio of the camera.
+ */
+
+/*!
+ *\qmlproperty real Qt3D.Render::Camera::left
+ * Holds the current left of the camera.
+ */
+
+/*!
+ * \qmlproperty real Qt3D.Render::Camera::right
+ * Holds the current right of the camera.
+ */
+
+/*!
+ * \qmlproperty real Qt3D.Render::Camera::bottom
+ * Holds the current bottom of the camera.
+ */
+
+/*!
+ * \qmlproperty real Qt3D.Render::Camera::top
+ * Holds the current top of the camera.
+ */
+
+/*!
+ * \qmlproperty matrix4x4 Qt3D.Render::Camera::projectionMatrix
+ * Holds the current projection matrix of the camera.
+ */
+
+
+/*!
+ * \qmlproperty vector3d Qt3D.Render::Camera::position
+ * Holds the current position of the camera.
+ */
+
+/*!
+ * \qmlproperty vector3d Qt3D.Render::Camera::upVector
+ * Holds the current up vector of the camera.
+ */
+
+/*!
+ * \qmlproperty vector3d Qt3D.Render::Camera::viewCenter
+ * Holds the current view center of the camera.
+ * \readonly
+ */
+
+/*!
+ * \qmlproperty vector3d Qt3D.Render::Camera::viewVector
+ * Holds the camera's view vector.
+ * \readonly
+ */
+
+/*!
+ * \qmlproperty matrix4x4 Qt3D.Render::Camera::viewMatrix
+ * Holds the camera's view matrix.
+ * \readonly
+ */
+
+/*!
+ * \property QCamera::projectionType
+ *
+ * Holds the type of the camera projection.
+ *
+ * \list
+ * \li CameraLens.OrthographicProjection
+ * \li CameraLens.PerspectiveProjection
+ * \li CameraLens.FrustumProjection
+ * \li CameraLens.CustomProjection
+ * \endlist
+ * \sa Qt3DRender::QCameraLens::ProjectionType
+ */
+
+/*!
+ * \property QCamera::nearPlane
+ * Holds the current camera near plane.
+ */
+
+/*!
+ * \property QCamera::farPlane
+ * Holds the current camera far plane.
+ */
+
+/*!
+ * \property QCamera::fieldOfView
+ * Holds the current field of view in degrees.
+ */
+
+/*!
+ * \property QCamera::aspectRatio
+ * Holds the current aspect ratio.
+ */
+
+/*!
+ *\property QCamera::left
+ * Holds the current left of the camera.
+ */
+
+/*!
+ * \property QCamera::right
+ * Holds the current right of the camera.
+ */
+
+/*!
+ * \property QCamera::bottom
+ * Holds the current bottom of the camera.
+ */
+
+/*!
+ * \property QCamera::top
+ * Holds the current top of the camera.
+ */
+
+/*!
+ * \property QCamera::projectionMatrix
+ * Holds the current projection matrix of the camera.
+ */
+
+/*!
+ * \property QCamera::position
+ * Holds the camera's position.
+ */
+
+/*!
+ * \property QCamera::upVector
+ * Holds the camera's up vector.
+ */
+
+/*!
+ * \property QCamera::viewCenter
+ * Holds the camera's view center.
+ */
+
+/*!
+ * \property QCamera::viewVector
+ * Holds the camera's view vector.
+ */
+
+/*!
+ * \property QCamera::viewMatrix
+ * Holds the camera's view matrix.
+ */
+
+/*!
  * Creates a new QCamera instance with the
  * specified \a parent.
  */
@@ -202,8 +494,8 @@ void QCamera::translateWorld(const QVector3D &vWorld, CameraTranslationOption op
 }
 
 /*!
- * Returns the calculated tilt rotation in relation to the \a angle taken in to adjust the camera's
- * tilt or up/down rotation on the X axis.
+ * Returns the calculated tilt rotation in relation to the \a angle in degrees taken in
+ * to adjust the camera's tilt or up/down rotation on the X axis.
  */
 QQuaternion QCamera::tiltRotation(float angle) const
 {
@@ -213,8 +505,8 @@ QQuaternion QCamera::tiltRotation(float angle) const
 }
 
 /*!
- * Returns the calculated pan rotation in relation to the \a angle taken in to adjust the camera's
- * pan or left/right rotation on the Y axis.
+ * Returns the calculated pan rotation in relation to the \a angle in degrees taken in
+ * to adjust the camera's pan or left/right rotation on the Y axis.
  */
 QQuaternion QCamera::panRotation(float angle) const
 {
@@ -222,8 +514,8 @@ QQuaternion QCamera::panRotation(float angle) const
 }
 
 /*!
- * Returns the calculated roll rotation in relation to the \a angle taken in to adjust the camera's
- * roll or lean left/right rotation on the Z axis.
+ * Returns the calculated roll rotation in relation to the \a angle in degrees taken in
+ * to adjust the camera's roll or lean left/right rotation on the Z axis.
  */
 QQuaternion QCamera::rollRotation(float angle) const
 {
@@ -232,7 +524,8 @@ QQuaternion QCamera::rollRotation(float angle) const
 }
 
 /*!
- * Returns the calculated rotation in relation to the \a angle and chosen \a axis taken in.
+ * Returns the calculated rotation in relation to the \a angle in degrees and
+ * chosen \a axis taken in.
  */
 QQuaternion QCamera::rotation(float angle, const QVector3D &axis) const
 {
@@ -240,7 +533,7 @@ QQuaternion QCamera::rotation(float angle, const QVector3D &axis) const
 }
 
 /*!
- * Adjusts the tilt angle of the camera by \a angle.
+ * Adjusts the tilt angle of the camera by \a angle in degrees.
  */
 void QCamera::tilt(float angle)
 {
@@ -249,7 +542,7 @@ void QCamera::tilt(float angle)
 }
 
 /*!
- * Adjusts the pan angle of the camera by \a angle.
+ * Adjusts the pan angle of the camera by \a angle in degrees.
  */
 void QCamera::pan(float angle)
 {
@@ -258,7 +551,7 @@ void QCamera::pan(float angle)
 }
 
 /*!
- * Adjusts the pan angle of the camera by \a angle on a chosen \a axis.
+ * Adjusts the pan angle of the camera by \a angle in degrees on a chosen \a axis.
  */
 void QCamera::pan(float angle, const QVector3D &axis)
 {
@@ -267,7 +560,7 @@ void QCamera::pan(float angle, const QVector3D &axis)
 }
 
 /*!
- * Adjusts the camera roll by \a angle.
+ * Adjusts the camera roll by \a angle in degrees.
  */
 void QCamera::roll(float angle)
 {
@@ -276,7 +569,7 @@ void QCamera::roll(float angle)
 }
 
 /*!
- * Adjusts the camera tilt about view center by \a angle.
+ * Adjusts the camera tilt about view center by \a angle in degrees.
  */
 void QCamera::tiltAboutViewCenter(float angle)
 {
@@ -285,7 +578,7 @@ void QCamera::tiltAboutViewCenter(float angle)
 }
 
 /*!
- * Adjusts the camera pan about view center by \a angle.
+ * Adjusts the camera pan about view center by \a angle in degrees.
  */
 void QCamera::panAboutViewCenter(float angle)
 {
@@ -294,7 +587,7 @@ void QCamera::panAboutViewCenter(float angle)
 }
 
 /*!
- * Adjusts the camera pan about view center by \a angle on \a axis.
+ * Adjusts the camera pan about view center by \a angle in degrees on \a axis.
  */
 void QCamera::panAboutViewCenter(float angle, const QVector3D &axis)
 {
@@ -303,7 +596,7 @@ void QCamera::panAboutViewCenter(float angle, const QVector3D &axis)
 }
 
 /*!
- * Adjusts the camera roll about view center by \a angle.
+ * Adjusts the camera roll about view center by \a angle in degrees.
  */
 void QCamera::rollAboutViewCenter(float angle)
 {
@@ -344,14 +637,6 @@ void QCamera::setProjectionType(QCameraLens::ProjectionType type)
     d->m_lens->setProjectionType(type);
 }
 
-/*!
- * \qmlproperty enumeration Qt3DCore::Camera::projectionType
- *
- * Holds the type of the camera projection (orthogonal or perspective).
- *
- * \value CameraLens.OrthographicProjection Orthographic projection
- * \value CameraLens.PerspectiveProjection Perspective projection
- */
 QCameraLens::ProjectionType QCamera::projectionType() const
 {
     Q_D(const QCamera);
@@ -367,10 +652,6 @@ void QCamera::setNearPlane(float nearPlane)
     d->m_lens->setNearPlane(nearPlane);
 }
 
-/*!
- * \qmlproperty float Qt3DCore::Camera::nearPlane
- * The current camera near plane.
- */
 float QCamera::nearPlane() const
 {
     Q_D(const QCamera);
@@ -386,10 +667,6 @@ void QCamera::setFarPlane(float farPlane)
     d->m_lens->setFarPlane(farPlane);
 }
 
-/*!
- * \qmlproperty float Qt3DCore::Camera::farPlane
- * The current camera far plane.
- */
 float QCamera::farPlane() const
 {
     Q_D(const QCamera);
@@ -397,7 +674,7 @@ float QCamera::farPlane() const
 }
 
 /*!
- * Sets the camera's field of view to \a fiedOfView.
+ * Sets the camera's field of view to \a fieldOfView in degrees.
  */
 void QCamera::setFieldOfView(float fieldOfView)
 {
@@ -405,10 +682,6 @@ void QCamera::setFieldOfView(float fieldOfView)
     d->m_lens->setFieldOfView(fieldOfView);
 }
 
-/*!
- * \qmlproperty float Qt3DCore::Camera::fieldOfView
- * The current field of view.
- */
 float QCamera::fieldOfView() const
 {
     Q_D(const QCamera);
@@ -424,10 +697,6 @@ void QCamera::setAspectRatio(float aspectRatio)
     d->m_lens->setAspectRatio(aspectRatio);
 }
 
-/*!
- * \qmlproperty float Qt3DCore::Camera::aspectRatio
- * The current aspect ratio.
- */
 float QCamera::aspectRatio() const
 {
     Q_D(const QCamera);
@@ -443,10 +712,6 @@ void QCamera::setLeft(float left)
     d->m_lens->setLeft(left);
 }
 
-/*!
- *\qmlproperty float Qt3DCore::Camera::left
- * The current left of the camera.
- */
 float QCamera::left() const
 {
     Q_D(const QCamera);
@@ -462,10 +727,6 @@ void QCamera::setRight(float right)
     d->m_lens->setRight(right);
 }
 
-/*!
- * \qmlproperty float Qt3DCore::Camera::right
- * The current right of the camera.
- */
 float QCamera::right() const
 {
     Q_D(const QCamera);
@@ -481,10 +742,6 @@ void QCamera::setBottom(float bottom)
     d->m_lens->setBottom(bottom);
 }
 
-/*!
- * \qmlproperty float Qt3DCore::Camera::bottom
- * The current bottom of the camera.
- */
 float QCamera::bottom() const
 {
     Q_D(const QCamera);
@@ -500,10 +757,6 @@ void QCamera::setTop(float top)
     d->m_lens->setTop(top);
 }
 
-/*!
- * \qmlproperty float Qt3DCore::Camera::top
- * The current top of the camera.
- */
 float QCamera::top() const
 {
     Q_D(const QCamera);
@@ -511,7 +764,7 @@ float QCamera::top() const
 }
 
 /*!
- * Sets the camera's projection matrix.
+ * Sets the camera's projection matrix to \a projectionMatrix.
  */
 void QCamera::setProjectionMatrix(const QMatrix4x4 &projectionMatrix)
 {
@@ -519,10 +772,6 @@ void QCamera::setProjectionMatrix(const QMatrix4x4 &projectionMatrix)
     d->m_lens->setProjectionMatrix(projectionMatrix);
 }
 
-/*!
- * \qmlproperty QMatri4x4 Qt3DCore::Camera:projectionMatrix
- * The current projection matrix of the camera.
- */
 QMatrix4x4 QCamera::projectionMatrix() const
 {
     Q_D(const QCamera);
@@ -545,10 +794,6 @@ void QCamera::setPosition(const QVector3D &position)
     }
 }
 
-/*!
- * \qmlproperty vector3d Qt3DCore::Camera::position
- * The camera's position.
- */
 QVector3D QCamera::position() const
 {
     Q_D(const QCamera);
@@ -569,10 +814,6 @@ void QCamera::setUpVector(const QVector3D &upVector)
     }
 }
 
-/*!
- * \qmlproperty vector3d Qt3DCore::Camera::upVector
- * The camera's up vector.
- */
 QVector3D QCamera::upVector() const
 {
     Q_D(const QCamera);
@@ -595,30 +836,18 @@ void QCamera::setViewCenter(const QVector3D &viewCenter)
     }
 }
 
-/*!
- * \qmlproperty vector3d Qt3DCore::Camera::viewCenter
- * The camera's view center.
- */
 QVector3D QCamera::viewCenter() const
 {
     Q_D(const QCamera);
     return d->m_viewCenter;
 }
 
-/*!
- * \qmlproperty vector3d Qt3DCore::Camera::viewVector
- * The camera's view vector.
- */
 QVector3D QCamera::viewVector() const
 {
     Q_D(const QCamera);
     return d->m_cameraToCenter;
 }
 
-/*!
- * \qmlproperty matrix4x4 Qt3DCore::Camera::viewMatrix
- * The camera's view matrix.
- */
 QMatrix4x4 QCamera::viewMatrix() const
 {
     Q_D(const QCamera);

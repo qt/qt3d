@@ -72,7 +72,7 @@ public:
 
     void _q_onPickingMethodChanged(QPickingSettings::PickMethod pickMethod);
     void _q_onPickResultModeChanged(QPickingSettings::PickResultMode pickResultMode);
-    void _q_onFaceOrientationPickingModeChanged(bool faceOrientationPickingMode);
+    void _q_onFaceOrientationPickingModeChanged(QPickingSettings::FaceOrientationPickingMode faceOrientationPickingMode);
 
     Q_DECLARE_PUBLIC(QRenderSettings)
 };

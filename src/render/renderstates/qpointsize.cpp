@@ -51,10 +51,35 @@ namespace Qt3DRender {
     \brief Specifies the size of rasterized points. May either be set statically
     or by shader programs.
 
-    When using StaticValue, the value is set using glPointSize(), if available.
-    When using Programmable, gl_PointSize must be set within shader programs,
-    the value provided to this RenderState is ignored in that case.
+    When the sizeMode property is set to SizeMode::Fixed, the value is set
+    using glPointSize(), if available. When using SizeMode::Programmable,
+    gl_PointSize must be set within shader programs, the value provided to this
+    RenderState is ignored in that case.
  */
+
+/*!
+    \qmltype PointSize
+    \instantiates Qt3DRender::QPointSize
+    \inqmlmodule Qt3D.Render
+
+    \brief Specifies the size of rasterized points. May either be set statically
+    or by shader programs.
+
+    When the sizeMode property is set to SizeMode::Fixed, the value is set
+    using glPointSize(), if available. When using SizeMode::Programmable,
+    gl_PointSize must be set within shader programs, the value provided to this
+    RenderState is ignored in that case.
+ */
+
+/*!
+    \qmlproperty float Qt3D.Render::QPointSize::value
+    Specifies the point size value to be used.
+*/
+
+/*!
+    \qmlproperty QPointSize::SizeMode Qt3D.Render::QPointSize::sizeMode
+    Specifies the sizeMode to be used.
+*/
 
 QPointSize::QPointSize(Qt3DCore::QNode *parent)
     : QRenderState(*new QPointSizePrivate(SizeMode::Programmable, 0.f), parent)

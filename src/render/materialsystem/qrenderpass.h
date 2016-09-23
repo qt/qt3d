@@ -70,8 +70,8 @@ public:
 
     QShaderProgram *shaderProgram() const;
 
-    void addFilterKey(QFilterKey*filterKey);
-    void removeFilterKey(QFilterKey*filterKey);
+    void addFilterKey(QFilterKey *filterKey);
+    void removeFilterKey(QFilterKey *filterKey);
     QVector<QFilterKey*> filterKeys() const;
 
     void addRenderState(QRenderState *state);

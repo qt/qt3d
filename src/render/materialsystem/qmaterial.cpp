@@ -48,29 +48,37 @@
 #include <Qt3DCore/qpropertynoderemovedchange.h>
 
 /*!
- * \qmltype Material
- * \instantiates Qt3DRender::QMaterial
- * \inqmlmodule Qt3D.Render
- * \brief Non-creatable abstract base for materials.
- * \inherits Component
- */
+    \qmltype Material
+    \instantiates Qt3DRender::QMaterial
+    \inqmlmodule Qt3D.Render
+    \brief Non-creatable abstract base for materials.
+    \since 5.5
+
+    Material provides a way to specify the rendering of an \l{Qt3D.Core::Entity}{entity}.
+    Any aspect can define its own subtype of Material so that a
+    Material can be used to describe a visual element; for example, the way
+    sound should reflect off an element, the temperature of a surface,
+    and so on.
+
+    \sa Effect
+*/
 
 /*!
- * \class Qt3DRender::QMaterial
- * \inmodule Qt3DRender
- *
- *
- * \brief Provides an abstract class that should be the base of all
- * Material component classes in a scene.
- *
- * QMaterial provides a way to specify the rendering of an Entity.
- * Any aspect can define its own subclass of QMaterial so that a
- * Material can be used to describe a visual element; for example, the way
- * sound should reflect off an element, the temperature of a surface,
- * and so on.
- *
- * \sa QEffect, QMesh, {Qt3DCore::}{QComponent}
- */
+    \class Qt3DRender::QMaterial
+    \inmodule Qt3DRender
+    \inherits Qt3DCore::QComponent
+    \brief Provides an abstract class that should be the base of all material component classes
+    in a scene.
+    \since 5.5
+
+    QMaterial provides a way to specify the rendering of an \l{Qt3DCore::QEntity}{entity}.
+    Any aspect can define its own subclass of QMaterial so that a
+    Material can be used to describe a visual element; for example, the way
+    sound should reflect off an element, the temperature of a surface,
+    and so on.
+
+    \sa QEffect
+*/
 
 QT_BEGIN_NAMESPACE
 
@@ -88,16 +96,11 @@ QMaterialPrivate::~QMaterialPrivate()
 {
 }
 
-/*!
-  \fn Qt3DRender::QMaterial::QMaterial(Qt3DCore::QNode *parent)
-  Constructs a new QMaterial with the specified \a parent.
- */
 QMaterial::QMaterial(QNode *parent)
     : QComponent(*new QMaterialPrivate, parent)
 {
 }
 
-/*! \internal */
 QMaterial::~QMaterial()
 {
 }
@@ -109,16 +112,20 @@ QMaterial::QMaterial(QMaterialPrivate &dd, QNode *parent)
 }
 
 /*!
-  \qmlproperty QEffect Qt3D.Render::Material::effect
-    Specifies the effect to be used with the material
+    \qmlproperty list<Parameter> Material::parameters
+
+    Holds the list of parameters used by the material.
 */
 
 /*!
-  \property Qt3DRender::QMaterial::effect
-    Specifies the effect to be used with the material
- */
+    \qmlproperty Effect Material::effect
+
+    Specifies the effect to be used with the material.
+*/
 /*!
- * Sets the \a effect to be used with the Material.
+    \property QMaterial::effect
+
+    Specifies the effect to be used with the material.
  */
 void QMaterial::setEffect(QEffect *effect)
 {
@@ -144,9 +151,6 @@ void QMaterial::setEffect(QEffect *effect)
     }
 }
 
-/*!
- * Returns the effect used by the Material.
- */
 QEffect *QMaterial::effect() const
 {
     Q_D(const QMaterial);
@@ -154,7 +158,7 @@ QEffect *QMaterial::effect() const
 }
 
 /*!
- * Add \a parameter to the Materials parameter.
+ * Add a \a parameter to the material's parameters.
  */
 void QMaterial::addParameter(QParameter *parameter)
 {
@@ -182,7 +186,7 @@ void QMaterial::addParameter(QParameter *parameter)
 }
 
 /*!
- * Remove \a parameter from the Material parameters.
+ * Remove a \a parameter from the material's parameters.
  */
 void QMaterial::removeParameter(QParameter *parameter)
 {
@@ -197,7 +201,7 @@ void QMaterial::removeParameter(QParameter *parameter)
 }
 
 /*!
- * Returns a vector of the materials current parameters
+ * Returns a vector of the material's current parameters
  */
 QVector<QParameter *> QMaterial::parameters() const
 {

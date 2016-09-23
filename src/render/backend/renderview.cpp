@@ -133,80 +133,80 @@ RenderView::StandardUniformsPFuncsHash RenderView::initializeStandardUniformSett
     return setters;
 }
 
-QUniformValue RenderView::modelMatrix(const QMatrix4x4 &model) const
+UniformValue RenderView::modelMatrix(const QMatrix4x4 &model) const
 {
-    return QUniformValue(QVariant::fromValue(model));
+    return UniformValue(model);
 }
 
-QUniformValue RenderView::viewMatrix(const QMatrix4x4 &) const
+UniformValue RenderView::viewMatrix(const QMatrix4x4 &) const
 {
-    return QUniformValue(QVariant::fromValue(m_data.m_viewMatrix));
+    return UniformValue(m_data.m_viewMatrix);
 }
 
-QUniformValue RenderView::projectionMatrix(const QMatrix4x4 &) const
+UniformValue RenderView::projectionMatrix(const QMatrix4x4 &) const
 {
-    return QUniformValue(QVariant::fromValue(m_data.m_renderCameraLens->projection()));
+    return UniformValue(m_data.m_renderCameraLens->projection());
 }
 
-QUniformValue RenderView::modelViewMatrix(const QMatrix4x4 &model) const
+UniformValue RenderView::modelViewMatrix(const QMatrix4x4 &model) const
 {
-    return QUniformValue(QVariant::fromValue(m_data.m_viewMatrix * model));
+    return UniformValue(m_data.m_viewMatrix * model);
 }
 
-QUniformValue RenderView::viewProjectionMatrix(const QMatrix4x4 &model) const
+UniformValue RenderView::viewProjectionMatrix(const QMatrix4x4 &model) const
 {
     Q_UNUSED(model);
-    return QUniformValue(QVariant::fromValue(m_data.m_renderCameraLens->projection() * m_data.m_viewMatrix));
+    return UniformValue(m_data.m_renderCameraLens->projection() * m_data.m_viewMatrix);
 }
 
-QUniformValue RenderView::modelViewProjectionMatrix(const QMatrix4x4 &model) const
+UniformValue RenderView::modelViewProjectionMatrix(const QMatrix4x4 &model) const
 {
-    return QUniformValue(QVariant::fromValue(m_data.m_viewProjectionMatrix * model));
+    return UniformValue(m_data.m_viewProjectionMatrix * model);
 }
 
-QUniformValue RenderView::inverseModelMatrix(const QMatrix4x4 &model) const
+UniformValue RenderView::inverseModelMatrix(const QMatrix4x4 &model) const
 {
-    return QUniformValue(QVariant::fromValue(model.inverted()));
+    return UniformValue(model.inverted());
 }
 
-QUniformValue RenderView::inverseViewMatrix(const QMatrix4x4 &) const
+UniformValue RenderView::inverseViewMatrix(const QMatrix4x4 &) const
 {
-    return QUniformValue(QVariant::fromValue(m_data.m_viewMatrix.inverted()));
+    return UniformValue(m_data.m_viewMatrix.inverted());
 }
 
-QUniformValue RenderView::inverseProjectionMatrix(const QMatrix4x4 &) const
+UniformValue RenderView::inverseProjectionMatrix(const QMatrix4x4 &) const
 {
     QMatrix4x4 projection;
     if (m_data.m_renderCameraLens)
         projection = m_data.m_renderCameraLens->projection();
-    return QUniformValue(QVariant::fromValue(projection.inverted()));
+    return UniformValue(projection.inverted());
 }
 
-QUniformValue RenderView::inverseModelViewMatrix(const QMatrix4x4 &model) const
+UniformValue RenderView::inverseModelViewMatrix(const QMatrix4x4 &model) const
 {
-    return QUniformValue(QVariant::fromValue((m_data.m_viewMatrix * model).inverted()));
+    return UniformValue((m_data.m_viewMatrix * model).inverted());
 }
 
-QUniformValue RenderView::inverseViewProjectionMatrix(const QMatrix4x4 &model) const
+UniformValue RenderView::inverseViewProjectionMatrix(const QMatrix4x4 &model) const
 {
     Q_UNUSED(model);
     const auto viewProjectionMatrix = m_data.m_renderCameraLens->projection() * m_data.m_viewMatrix;
-    return QUniformValue(QVariant::fromValue(viewProjectionMatrix.inverted()));
+    return UniformValue(viewProjectionMatrix.inverted());
 }
 
-QUniformValue RenderView::inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const
+UniformValue RenderView::inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const
 {
-    return QUniformValue(QVariant::fromValue((m_data.m_viewProjectionMatrix * model).inverted(0)));
+    return UniformValue((m_data.m_viewProjectionMatrix * model).inverted(0));
 }
 
-QUniformValue RenderView::modelNormalMatrix(const QMatrix4x4 &model) const
+UniformValue RenderView::modelNormalMatrix(const QMatrix4x4 &model) const
 {
-    return QUniformValue(QVariant::fromValue(model.normalMatrix()));
+    return UniformValue(model.normalMatrix());
 }
 
-QUniformValue RenderView::modelViewNormalMatrix(const QMatrix4x4 &model) const
+UniformValue RenderView::modelViewNormalMatrix(const QMatrix4x4 &model) const
 {
-    return QUniformValue(QVariant::fromValue((m_data.m_viewMatrix * model).normalMatrix()));
+    return UniformValue((m_data.m_viewMatrix * model).normalMatrix());
 }
 
 // TODO: Move this somewhere global where GraphicsContext::setViewport() can use it too
@@ -218,38 +218,38 @@ static QRectF resolveViewport(const QRectF &fractionalViewport, const QSize &sur
                   fractionalViewport.height() * surfaceSize.height());
 }
 
-QUniformValue RenderView::viewportMatrix(const QMatrix4x4 &model) const
+UniformValue RenderView::viewportMatrix(const QMatrix4x4 &model) const
 {
     // TODO: Can we avoid having to pass the model matrix in to these functions?
     Q_UNUSED(model);
     QMatrix4x4 viewportMatrix;
     viewportMatrix.viewport(resolveViewport(m_viewport, m_surfaceSize));
-    return QUniformValue(QVariant::fromValue(viewportMatrix));
+    return UniformValue(viewportMatrix);
 
 }
 
-QUniformValue RenderView::inverseViewportMatrix(const QMatrix4x4 &model) const
+UniformValue RenderView::inverseViewportMatrix(const QMatrix4x4 &model) const
 {
     Q_UNUSED(model);
     QMatrix4x4 viewportMatrix;
     viewportMatrix.viewport(resolveViewport(m_viewport, m_surfaceSize));
     QMatrix4x4 inverseViewportMatrix = viewportMatrix.inverted();
-    return QUniformValue(QVariant::fromValue(inverseViewportMatrix));
+    return UniformValue(inverseViewportMatrix);
 
 }
 
-QUniformValue RenderView::time(const QMatrix4x4 &model) const
+UniformValue RenderView::time(const QMatrix4x4 &model) const
 {
     Q_UNUSED(model);
     qint64 time = m_renderer->time();
     float t = time / 1000000000.0f;
-    return QUniformValue(QVariant(t));
+    return UniformValue(t);
 }
 
-QUniformValue RenderView::eyePosition(const QMatrix4x4 &model) const
+UniformValue RenderView::eyePosition(const QMatrix4x4 &model) const
 {
     Q_UNUSED(model);
-    return QUniformValue(QVariant::fromValue(m_data.m_eyePos));
+    return UniformValue(m_data.m_eyePos);
 }
 
 RenderView::RenderView()
@@ -326,7 +326,7 @@ void RenderView::sort()
                     // sharing the same material (shader) are rendered, we can't have the case
                     // where two uniforms, referencing the same texture eventually have 2 different
                     // texture unit values
-                    const QUniformValue refValue = cachedUniforms.value(it.key());
+                    const UniformValue refValue = cachedUniforms.value(it.key());
                     if (it.value() == refValue) {
                         it = uniforms.erase(it);
                     } else {
@@ -532,27 +532,24 @@ void RenderView::updateMatrices()
     }
 }
 
-void RenderView::setUniformValue(ShaderParameterPack &uniformPack, int nameId, const QVariant &value) const
+void RenderView::setUniformValue(ShaderParameterPack &uniformPack, int nameId, const UniformValue &value) const
 {
-    Texture *tex = nullptr;
     // At this point a uniform value can only be a scalar type
     // or a Qt3DCore::QNodeId corresponding to a Texture
     // ShaderData/Buffers would be handled as UBO/SSBO and would therefore
     // not be in the default uniform block
-    if (static_cast<QMetaType::Type>(value.userType()) == qNodeIdTypeId) {
-        // Speed up conversion to avoid using QVariant::value()
-        const Qt3DCore::QNodeId texId = variant_value<Qt3DCore::QNodeId>(value);
+    if (value.valueType() == UniformValue::NodeId) {
+        Texture *tex = nullptr;
+        const Qt3DCore::QNodeId texId = *value.constData<Qt3DCore::QNodeId>();
         if ((tex = m_manager->textureManager()->lookupResource(texId))
                 != nullptr) {
             uniformPack.setTexture(nameId, tex->peerId());
-            //TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
-            QUniformValue texUniform;
-            texUniform.setType(QUniformValue::TextureSampler);
-            texUniform.setTextureId(tex->peerId());
-            uniformPack.setUniform(nameId, texUniform);
+            UniformValue::Texture textureValue;
+            textureValue.nodeId = texId;
+            uniformPack.setUniform(nameId, UniformValue(textureValue));
         }
     } else {
-        uniformPack.setUniform(nameId, QUniformValue(value));
+        uniformPack.setUniform(nameId, value);
     }
 }
 
@@ -564,14 +561,14 @@ void RenderView::setStandardUniformValue(ShaderParameterPack &uniformPack, int g
 void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
                                       Shader *shader,
                                       const ShaderUniformBlock &block,
-                                      const QVariant &value) const
+                                      const UniformValue &value) const
 {
     Q_UNUSED(shader)
 
-    if (static_cast<QMetaType::Type>(value.userType()) == qNodeIdTypeId) {
+    if (value.valueType() == UniformValue::NodeId) {
 
         Buffer *buffer = nullptr;
-        if ((buffer = m_manager->bufferManager()->lookupResource(variant_value<Qt3DCore::QNodeId>(value))) != nullptr) {
+        if ((buffer = m_manager->bufferManager()->lookupResource(*value.constData<Qt3DCore::QNodeId>())) != nullptr) {
             BlockToUBO uniformBlockUBO;
             uniformBlockUBO.m_blockIndex = block.m_index;
             uniformBlockUBO.m_bufferID = buffer->peerId();
@@ -634,12 +631,12 @@ void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
 void RenderView::setShaderStorageValue(ShaderParameterPack &uniformPack,
                                        Shader *shader,
                                        const ShaderStorageBlock &block,
-                                       const QVariant &value) const
+                                       const UniformValue &value) const
 {
     Q_UNUSED(shader)
-    if (static_cast<QMetaType::Type>(value.userType()) == qNodeIdTypeId) {
+    if (value.valueType() == UniformValue::NodeId) {
         Buffer *buffer = nullptr;
-        if ((buffer = m_manager->bufferManager()->lookupResource(variant_value<Qt3DCore::QNodeId>(value))) != nullptr) {
+        if ((buffer = m_manager->bufferManager()->lookupResource(*value.constData<Qt3DCore::QNodeId>())) != nullptr) {
             BlockToSSBO shaderStorageBlock;
             shaderStorageBlock.m_blockIndex = block.m_index;
             shaderStorageBlock.m_bufferID = buffer->peerId();
@@ -654,10 +651,8 @@ void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &unif
     UniformBlockValueBuilder *builder = m_localData.localData();
     builder->activeUniformNamesToValue.clear();
 
-    // updates transformed properties;
-    // Fix me: this will lead to races when having multiple cameras
-    shaderData->updateViewTransform(m_data.m_viewMatrix);
-
+    // Set the view matrix to be used to transform "Transformed" properties in the ShaderData
+    builder->viewMatrix = m_data.m_viewMatrix;
     // Force to update the whole block
     builder->updatedPropertiesOnly = false;
     // Retrieve names and description of each active uniforms in the uniform block
@@ -668,8 +663,9 @@ void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &unif
     QHash<int, QVariant>::const_iterator activeValuesIt = builder->activeUniformNamesToValue.constBegin();
     const QHash<int, QVariant>::const_iterator activeValuesEnd = builder->activeUniformNamesToValue.constEnd();
 
+    // TO DO: Make the ShaderData store UniformValue
     while (activeValuesIt != activeValuesEnd) {
-        setUniformValue(uniformPack, activeValuesIt.key(), activeValuesIt.value());
+        setUniformValue(uniformPack, activeValuesIt.key(), UniformValue::fromVariant(activeValuesIt.value()));
         ++activeValuesIt;
     }
 }
@@ -769,10 +765,10 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                     } else if (shaderStorageBlockNamesIds.indexOf(it->nameId) != -1) { // Parameters is a SSBO
                         setShaderStorageValue(command->m_parameterPack, shader, shader->storageBlockForBlockNameId(it->nameId), it->value);
                     } else { // Parameter is a struct
-                        const QVariant &v = it->value;
+                        const UniformValue &v = it->value;
                         ShaderData *shaderData = nullptr;
-                        if (static_cast<QMetaType::Type>(v.userType()) == qNodeIdTypeId &&
-                                (shaderData = m_manager->shaderDataManager()->lookupResource(variant_value<Qt3DCore::QNodeId>(v))) != nullptr) {
+                        if (v.valueType() == UniformValue::NodeId &&
+                                (shaderData = m_manager->shaderDataManager()->lookupResource(*v.constData<Qt3DCore::QNodeId>())) != nullptr) {
                             // Try to check if we have a struct or array matching a QShaderData parameter
                             setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, StringToInt::lookupString(it->nameId));
                         }
@@ -797,11 +793,15 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                         if (lightIdx == MAX_LIGHTS)
                             break;
 
+                        // Note: implicit conversion of values to UniformValue
                         setUniformValue(command->m_parameterPack, LIGHT_POSITION_NAMES[lightIdx], worldPos);
                         setUniformValue(command->m_parameterPack, LIGHT_TYPE_NAMES[lightIdx], int(QAbstractLight::PointLight));
                         setUniformValue(command->m_parameterPack, LIGHT_COLOR_NAMES[lightIdx], QVector3D(1.0f, 1.0f, 1.0f));
                         setUniformValue(command->m_parameterPack, LIGHT_INTENSITY_NAMES[lightIdx], 0.5f);
 
+                        // There is no risk in doing that even if multithreaded
+                        // since we are sure that a shaderData is unique for a given light
+                        // and won't ever be referenced as a Component either
                         QMatrix4x4 *worldTransform = lightEntity->worldTransform();
                         if (worldTransform)
                             shaderData->updateWorldTransform(*worldTransform);
@@ -812,9 +812,10 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                 }
 
                 if (uniformNamesIds.contains(LIGHT_COUNT_NAME_ID))
-                    setUniformValue(command->m_parameterPack, LIGHT_COUNT_NAME_ID, qMax(1, lightIdx));
+                    setUniformValue(command->m_parameterPack, LIGHT_COUNT_NAME_ID, UniformValue(qMax(1, lightIdx)));
 
                 if (activeLightSources.isEmpty()) {
+                    // Note: implicit conversion of values to UniformValue
                     setUniformValue(command->m_parameterPack, LIGHT_POSITION_NAMES[0], QVector3D(10.0f, 10.0f, 0.0f));
                     setUniformValue(command->m_parameterPack, LIGHT_TYPE_NAMES[0], int(QAbstractLight::PointLight));
                     setUniformValue(command->m_parameterPack, LIGHT_COLOR_NAMES[0], QVector3D(1.0f, 1.0f, 1.0f));

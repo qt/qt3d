@@ -202,14 +202,17 @@ void QNormalDiffuseSpecularMapMaterialPrivate::handleTextureScaleChanged(const Q
 }
 
 /*!
-    \class Qt3DRender::QNormalDiffuseSpecularMapMaterial
-    \brief The QNormalDiffuseSpecularMapMaterial provides a default implementation of the phong lighting and bump effect where the diffuse and specular light components
-    are read from texture maps and the normals of the mesh being rendered from a normal texture map.
-    \inmodule Qt3DRender
-    \since 5.5
+    \class Qt3DExtras::QNormalDiffuseSpecularMapMaterial
+    \brief The QNormalDiffuseSpecularMapMaterial provides a default implementation of the phong
+    lighting and bump effect where the diffuse and specular light components are read from texture
+    maps and the normals of the mesh being rendered from a normal texture map.
+    \inmodule Qt3DExtras
+    \since 5.7
+    \inherits Qt3DRender::QMaterial
 
-    The specular lighting effect is based on the combination of 3 lighting components ambient, diffuse and specular.
-    The relative strengths of these components is controlled by means of their reflectivity coefficients which are modelled as RGB triplets:
+    The specular lighting effect is based on the combination of 3 lighting components ambient,
+    diffuse and specular. The relative strengths of these components are controlled by means of
+    their reflectivity coefficients which are modelled as RGB triplets:
 
     \list
     \li Ambient is the color that is emitted by an object without any other light source.
@@ -218,12 +221,12 @@ void QNormalDiffuseSpecularMapMaterialPrivate::handleTextureScaleChanged(const Q
     \li The shininess of a surface is controlled by a float property.
     \endlist
 
-    This material uses an effect with a single render pass approach and performs per fragment lighting.
-    Techniques are provided for OpenGL 2, OpenGL 3 or above as well as OpenGL ES 2.
+    This material uses an effect with a single render pass approach and performs per fragment
+    lighting. Techniques are provided for OpenGL 2, OpenGL 3 or above as well as OpenGL ES 2.
 */
 
 /*!
-    Constructs a new Qt3DRender::QNormalDiffuseSpecularMapMaterial instance with parent object \a parent.
+    Constructs a new QNormalDiffuseSpecularMapMaterial instance with parent object \a parent.
 */
 QNormalDiffuseSpecularMapMaterial::QNormalDiffuseSpecularMapMaterial(QNode *parent)
     : QMaterial(*new QNormalDiffuseSpecularMapMaterialPrivate, parent)
@@ -241,14 +244,14 @@ QNormalDiffuseSpecularMapMaterial::QNormalDiffuseSpecularMapMaterial(QNormalDiff
 }
 
 /*!
-    Destroys the Qt3DRender::QNormalDiffuseSpecularMapMaterial instance.
+    Destroys the QNormalDiffuseSpecularMapMaterial instance.
 */
 QNormalDiffuseSpecularMapMaterial::~QNormalDiffuseSpecularMapMaterial()
 {
 }
 
 /*!
-    \property Qt3DRender::QNormalDiffuseSpecularMapMaterial::ambient
+    \property QNormalDiffuseSpecularMapMaterial::ambient
 
     Holds the current ambient color.
 */
@@ -259,7 +262,7 @@ QColor QNormalDiffuseSpecularMapMaterial::ambient() const
 }
 
 /*!
-    \property Qt3DRender::QNormalDiffuseSpecularMapMaterial::diffuse
+    \property QNormalDiffuseSpecularMapMaterial::diffuse
 
     Holds the current diffuse map texture.
 
@@ -279,7 +282,7 @@ QAbstractTexture *QNormalDiffuseSpecularMapMaterial::diffuse() const
 }
 
 /*!
-    \property Qt3DRender::QNormalDiffuseSpecularMapMaterial::normal
+    \property QNormalDiffuseSpecularMapMaterial::normal
 
     Holds the current normal map texture.
 
@@ -298,7 +301,7 @@ QAbstractTexture *QNormalDiffuseSpecularMapMaterial::normal() const
 }
 
 /*!
-    \property Qt3DRender::QNormalDiffuseSpecularMapMaterial::specular
+    \property QNormalDiffuseSpecularMapMaterial::specular
 
     Holds the current specular map texture.
 
@@ -318,7 +321,7 @@ QAbstractTexture *QNormalDiffuseSpecularMapMaterial::specular() const
 }
 
 /*!
-    \property Qt3DRender::QNormalDiffuseSpecularMapMaterial::shininess
+    \property QNormalDiffuseSpecularMapMaterial::shininess
 
     Holds the current shininess as a float value.
 */
@@ -329,9 +332,10 @@ float QNormalDiffuseSpecularMapMaterial::shininess() const
 }
 
 /*!
-    \property Qt3DRender::QNormalDiffuseSpecularMapMaterial::textureScale
+    \property QNormalDiffuseSpecularMapMaterial::textureScale
 
-    Holds the current texture scale as a float value.
+    Holds the current texture scale. It is applied as a multiplier to texture
+    coordinates at render time. Defaults to 1.0.
 */
 float QNormalDiffuseSpecularMapMaterial::textureScale() const
 {

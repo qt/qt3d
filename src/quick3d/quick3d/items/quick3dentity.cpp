@@ -47,20 +47,37 @@ namespace Quick {
 
 /*!
     \qmltype Entity
+    \instantiates Qt3DCore::QEntity
     \inherits Node
     \inqmlmodule Qt3D.Core
     \since 5.5
-*/
+
+    \brief Entity is a \l Node subclass that can aggregate several
+    \l Component3D instances that will specify its behavior.
+
+    By itself a Entity is an empty shell. The behavior of a Entity
+    object is defined by the \l Component3D objects it references. Each Qt3D
+    backend aspect will be able to interpret and process an Entity by
+    recognizing which components it is made up of. One aspect may decide to only
+    process entities composed of a single \l Transform component whilst
+    another may focus on \l MouseHandler.
+
+    \sa Qt3D.Core::Component3D, Qt3D.Core::Transform
+ */
+
+/*!
+    \qmlproperty list<Component3D> Entity::components
+    Holds the list of \l Component3D instances, which define the behavior
+    of the entity.
+    \readonly
+ */
 
 Quick3DEntity::Quick3DEntity(QObject *parent)
     : QObject(parent)
 {
 }
 
-/*!
-    \qmlproperty list<Component3D> Qt3DCore::Entity::components
-    \readonly
-*/
+
 QQmlListProperty<QComponent> Quick3DEntity::componentList()
 {
     return QQmlListProperty<Qt3DCore::QComponent>(this, 0,

@@ -410,182 +410,6 @@ void GraphicsHelperGL3::bindFragDataLocation(GLuint shader, const QHash<QString,
         m_funcs->glBindFragDataLocation(shader, it.value(), it.key().toStdString().c_str());
 }
 
-void GraphicsHelperGL3::bindUniform(const QVariant &v, const ShaderUniform &description)
-{
-    switch (description.m_type) {
-
-    case GL_FLOAT:
-        m_funcs->glUniform1fv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 1));
-        break;
-
-    case GL_FLOAT_VEC2:
-        m_funcs->glUniform2fv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 2));
-        break;
-
-    case GL_FLOAT_VEC3:
-        m_funcs->glUniform3fv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 3));
-        break;
-
-    case GL_FLOAT_VEC4:
-        m_funcs->glUniform4fv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 4));
-        break;
-
-    case GL_FLOAT_MAT2:
-        m_funcs->glUniformMatrix2fv(description.m_location, description.m_size, GL_FALSE,
-                                    QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 4));
-        break;
-
-    case GL_FLOAT_MAT2x3:
-        m_funcs->glUniformMatrix2x3fv(description.m_location, description.m_size, GL_FALSE,
-                                      QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 6));
-        break;
-
-    case GL_FLOAT_MAT2x4:
-        m_funcs->glUniformMatrix2x4fv(description.m_location, description.m_size, GL_FALSE,
-                                      QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 8));
-        break;
-
-    case GL_FLOAT_MAT3:
-        m_funcs->glUniformMatrix3fv(description.m_location, description.m_size, GL_FALSE,
-                                    QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 9));
-        break;
-
-    case GL_FLOAT_MAT3x2:
-        m_funcs->glUniformMatrix3x2fv(description.m_location, description.m_size,  GL_FALSE,
-                                      QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 6));
-        break;
-
-    case GL_FLOAT_MAT3x4:
-        m_funcs->glUniformMatrix3x4fv(description.m_location, description.m_size, GL_FALSE,
-                                      QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 12));
-        break;
-
-    case GL_FLOAT_MAT4:
-        m_funcs->glUniformMatrix4fv(description.m_location, description.m_size, GL_FALSE,
-                                    QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 16));
-        break;
-
-    case GL_FLOAT_MAT4x2:
-        m_funcs->glUniformMatrix4x2fv(description.m_location, description.m_size, GL_FALSE,
-                                      QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 8));
-        break;
-
-    case GL_FLOAT_MAT4x3:
-        m_funcs->glUniformMatrix4x3fv(description.m_location, description.m_size, GL_FALSE,
-                                      QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 12));
-        break;
-
-    case GL_INT:
-        m_funcs->glUniform1iv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 1));
-        break;
-
-    case GL_INT_VEC2:
-        m_funcs->glUniform2iv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 2));
-        break;
-
-    case GL_INT_VEC3:
-        m_funcs->glUniform3iv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 3));
-        break;
-
-    case GL_INT_VEC4:
-        m_funcs->glUniform4iv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 4));
-        break;
-
-    case GL_UNSIGNED_INT:
-        m_funcs->glUniform1uiv(description.m_location, description.m_size,
-                               QGraphicsUtils::valueArrayFromVariant<GLuint>(v, description.m_size, 1));
-        break;
-
-    case GL_UNSIGNED_INT_VEC2:
-        m_funcs->glUniform2uiv(description.m_location, description.m_size,
-                               QGraphicsUtils::valueArrayFromVariant<GLuint>(v, description.m_size, 2));
-        break;
-
-    case GL_UNSIGNED_INT_VEC3:
-        m_funcs->glUniform3uiv(description.m_location, description.m_size,
-                               QGraphicsUtils::valueArrayFromVariant<GLuint>(v, description.m_size, 3));
-        break;
-
-    case GL_UNSIGNED_INT_VEC4:
-        m_funcs->glUniform4uiv(description.m_location, description.m_size,
-                               QGraphicsUtils::valueArrayFromVariant<GLuint>(v, description.m_size, 4));
-        break;
-
-    case GL_BOOL:
-        m_funcs->glUniform1iv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 1));
-        break;
-
-    case GL_BOOL_VEC2:
-        m_funcs->glUniform2iv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 2));
-        break;
-
-    case GL_BOOL_VEC3:
-        m_funcs->glUniform3iv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 3));
-        break;
-
-    case GL_BOOL_VEC4:
-        m_funcs->glUniform4iv(description.m_location, description.m_size,
-                              QGraphicsUtils::valueArrayFromVariant<GLint>(v, description.m_size, 4));
-        break;
-
-    case GL_SAMPLER_1D:
-    case GL_SAMPLER_2D:
-    case GL_SAMPLER_3D:
-    case GL_SAMPLER_CUBE:
-    case GL_SAMPLER_BUFFER:
-    case GL_SAMPLER_2D_RECT:
-    case GL_INT_SAMPLER_1D:
-    case GL_INT_SAMPLER_2D:
-    case GL_INT_SAMPLER_3D:
-    case GL_INT_SAMPLER_CUBE:
-    case GL_INT_SAMPLER_BUFFER:
-    case GL_INT_SAMPLER_2D_RECT:
-    case GL_UNSIGNED_INT_SAMPLER_1D:
-    case GL_UNSIGNED_INT_SAMPLER_2D:
-    case GL_UNSIGNED_INT_SAMPLER_3D:
-    case GL_UNSIGNED_INT_SAMPLER_CUBE:
-    case GL_UNSIGNED_INT_SAMPLER_BUFFER:
-    case GL_UNSIGNED_INT_SAMPLER_2D_RECT:
-    case GL_SAMPLER_1D_SHADOW:
-    case GL_SAMPLER_2D_SHADOW:
-    case GL_SAMPLER_CUBE_SHADOW:
-    case GL_SAMPLER_1D_ARRAY:
-    case GL_SAMPLER_2D_ARRAY:
-    case GL_INT_SAMPLER_1D_ARRAY:
-    case GL_INT_SAMPLER_2D_ARRAY:
-    case GL_UNSIGNED_INT_SAMPLER_1D_ARRAY:
-    case GL_UNSIGNED_INT_SAMPLER_2D_ARRAY:
-    case GL_SAMPLER_1D_ARRAY_SHADOW:
-    case GL_SAMPLER_2D_ARRAY_SHADOW:
-    case GL_SAMPLER_2D_RECT_SHADOW:
-    case GL_SAMPLER_2D_MULTISAMPLE:
-    case GL_INT_SAMPLER_2D_MULTISAMPLE:
-    case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE:
-    case GL_SAMPLER_2D_MULTISAMPLE_ARRAY:
-    case GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY:
-    case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY: {
-        Q_ASSERT(description.m_size == 1);
-        m_funcs->glUniform1i(description.m_location, v.toInt());
-        break;
-    }
-
-    default:
-        qWarning() << Q_FUNC_INFO << "unsupported uniform type:" << description.m_type << "for " << description.m_name;
-        break;
-    }
-}
-
 void GraphicsHelperGL3::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
 {
     m_funcs->glUniformBlockBinding(programId, uniformBlockIndex, uniformBlockBinding);
@@ -1137,6 +961,88 @@ void GraphicsHelperGL3::glUniformMatrix3x4fv(GLint location, GLsizei count, cons
 void GraphicsHelperGL3::glUniformMatrix4x3fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniformMatrix4x3fv(location, count, false, values);
+}
+
+UniformType GraphicsHelperGL3::uniformTypeFromGLType(GLenum type)
+{
+    switch (type) {
+    case GL_FLOAT:
+        return UniformType::Float;
+    case GL_FLOAT_VEC2:
+        return UniformType::Vec2;
+    case GL_FLOAT_VEC3:
+        return UniformType::Vec3;
+    case GL_FLOAT_VEC4:
+        return UniformType::Vec4;
+    case GL_FLOAT_MAT2:
+        return UniformType::Mat2;
+    case GL_FLOAT_MAT3:
+        return UniformType::Mat3;
+    case GL_FLOAT_MAT4:
+        return UniformType::Mat4;
+    case GL_FLOAT_MAT2x3:
+        return UniformType::Mat2x3;
+    case GL_FLOAT_MAT3x2:
+        return UniformType::Mat3x2;
+    case GL_FLOAT_MAT2x4:
+        return UniformType::Mat2x4;
+    case GL_FLOAT_MAT4x2:
+        return UniformType::Mat4x2;
+    case GL_FLOAT_MAT3x4:
+        return UniformType::Mat3x4;
+    case GL_FLOAT_MAT4x3:
+        return UniformType::Mat4x3;
+    case GL_INT:
+        return UniformType::Int;
+    case GL_INT_VEC2:
+        return UniformType::IVec2;
+    case GL_INT_VEC3:
+        return UniformType::IVec3;
+    case GL_INT_VEC4:
+        return UniformType::IVec4;
+    case GL_BOOL:
+        return UniformType::Bool;
+    case GL_BOOL_VEC2:
+        return UniformType::BVec2;
+    case GL_BOOL_VEC3:
+        return UniformType::BVec3;
+    case GL_BOOL_VEC4:
+        return UniformType::BVec4;
+
+    case GL_SAMPLER_1D:
+    case GL_SAMPLER_1D_SHADOW:
+    case GL_SAMPLER_2D:
+    case GL_SAMPLER_2D_RECT:
+    case GL_SAMPLER_2D_SHADOW:
+    case GL_SAMPLER_2D_RECT_SHADOW:
+    case GL_SAMPLER_CUBE:
+    case GL_SAMPLER_CUBE_SHADOW:
+    case GL_SAMPLER_2D_ARRAY:
+    case GL_SAMPLER_2D_ARRAY_SHADOW:
+    case GL_SAMPLER_2D_MULTISAMPLE:
+    case GL_SAMPLER_2D_MULTISAMPLE_ARRAY:
+    case GL_SAMPLER_3D:
+    case GL_INT_SAMPLER_1D:
+    case GL_INT_SAMPLER_2D:
+    case GL_INT_SAMPLER_3D:
+    case GL_INT_SAMPLER_CUBE:
+    case GL_INT_SAMPLER_1D_ARRAY:
+    case GL_INT_SAMPLER_2D_ARRAY:
+    case GL_INT_SAMPLER_2D_MULTISAMPLE:
+    case GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY:
+    case GL_UNSIGNED_INT_SAMPLER_1D:
+    case GL_UNSIGNED_INT_SAMPLER_2D:
+    case GL_UNSIGNED_INT_SAMPLER_3D:
+    case GL_UNSIGNED_INT_SAMPLER_CUBE:
+    case GL_UNSIGNED_INT_SAMPLER_1D_ARRAY:
+    case GL_UNSIGNED_INT_SAMPLER_2D_ARRAY:
+    case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE:
+    case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY:
+        return UniformType::Sampler;
+    default:
+        Q_UNREACHABLE();
+        return UniformType::Float;
+    }
 }
 
 } // namespace Render

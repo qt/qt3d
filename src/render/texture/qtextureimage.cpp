@@ -71,6 +71,59 @@ namespace Qt3DRender {
 */
 
 /*!
+    \enum QTextureImage::Status
+
+    This  enumeration specifies the status values for texture image loading.
+
+    \value None The texture image loading has not been started yet.
+    \value Loading The texture image loading has started, but not finised.
+    \value Ready The texture image loading has finished.
+    \value Error The texture image loading confronted an error.
+*/
+
+/*!
+    \qmlproperty url TextureImage::source
+
+    This property holds the source url from which data for the texture
+    image will be loaded.
+*/
+
+/*!
+    \qmlproperty enumeration TextureImage::status
+
+    This property holds the status of the texture image loading.
+
+    \list
+    \li TextureImage.None
+    \li TextureImage.Loading
+    \li TextureImage.Ready
+    \li TextureImage.Error
+    \endlist
+    \readonly
+*/
+
+/*!
+    \property QTextureImage::source
+
+    This property holds the source url from which data for the texture
+    image will be loaded.
+*/
+
+/*!
+    \property QTextureImage::status
+
+    This property holds the status of the texture image loading.
+
+    \list
+    \li TextureImage.None
+    \li TextureImage.Loading
+    \li TextureImage.Ready
+    \li TextureImage.Error
+    \endlist
+    \readonly
+*/
+
+/*!
     Constructs a new Qt3DRender::QTextureImage instance with \a parent as parent.
  */
 QTextureImage::QTextureImage(QNode *parent)
@@ -93,27 +146,13 @@ QUrl QTextureImage::source() const
 }
 
 /*!
- * \return the current status.
+    \return the current status.
  */
 QTextureImage::Status QTextureImage::status() const
 {
     Q_D(const QTextureImage);
     return d->m_status;
 }
-
-/*!
-  \property Qt3DRender::QTextureImage::source
-
-  This property holds the source url from which data for the texture
-  image will be loaded.
-*/
-
-/*!
-  \qmlproperty url Qt3D.Render::TextureImage::source
-
-  This property holds the source url from which data for the texture
-  image will be loaded.
-*/
 
 /*!
     Sets the source url of the texture image to \a source.
@@ -130,8 +169,8 @@ void QTextureImage::setSource(const QUrl &source)
 }
 
 /*!
- * Sets the status to \a status.
- * \param status
+    Sets the status to \a status.
+    \param status
  */
 void QTextureImage::setStatus(Status status)
 {
@@ -152,8 +191,8 @@ QTextureImageDataGeneratorPtr QTextureImage::dataGenerator() const
 }
 
 /*!
- * Sets the scene change event to \a change.
- * \param change
+    Sets the scene change event to \a change.
+    \param change
  */
 void QTextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
@@ -164,8 +203,8 @@ void QTextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 }
 
 /*!
- * The constructor creats a new QImageTextureDataFunctor::QImageTextureDataFunctor
- * instance with the specified \a url.
+    The constructor creates a new QImageTextureDataFunctor::QImageTextureDataFunctor
+    instance with the specified \a url.
  */
 QImageTextureDataFunctor::QImageTextureDataFunctor(const QUrl &url)
     : QTextureImageDataGenerator()

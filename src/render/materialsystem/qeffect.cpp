@@ -58,12 +58,17 @@ QEffectPrivate::QEffectPrivate()
 }
 
 /*!
-  \class Qt3DRender::QEffect
-  \inmodule Qt3DRender
-  \since 5.7
-  \brief The base class for effects in a Qt 3D scene.
+    \class Qt3DRender::QEffect
+    \inmodule Qt3DRender
+    \inherits Qt3DCore::QNode
+    \since 5.7
+    \brief The base class for effects in a Qt 3D scene.
 
- */
+    The QEffect class combines a set of techniques and parameters used by those techniques to
+    produce a rendering effect for a material.
+
+    \sa QMaterial, QTechnique, QParameter
+*/
 
 /*!
     \qmltype Effect
@@ -72,18 +77,18 @@ QEffectPrivate::QEffectPrivate()
     \inqmlmodule Qt3D.Render
     \since 5.7
     \brief The base class for effects in a Qt 3D scene.
+
+    The Effect type combines a set of techniques and parameters used by those techniques to
+    produce a rendering effect for a material.
+
+    \sa Material, Technique, Parameter
 */
 
-/*!
-  \fn Qt3DRender::QEffect::QEffect(Qt3DCore::QNode *parent)
-  Constructs a new QEffect with the specified \a parent.
- */
 QEffect::QEffect(QNode *parent)
     : QNode(*new QEffectPrivate, parent)
 {
 }
 
-/*! \internal */
 QEffect::~QEffect()
 {
 }
@@ -95,8 +100,21 @@ QEffect::QEffect(QEffectPrivate &dd, QNode *parent)
 }
 
 /*!
+    \qmlproperty list<Technique> Effect::techniques
+
+    Holds the list of techniques used by this effect.
+*/
+/*!
+    \qmlproperty list<Parameter> Effect::parameters
+
+    Holds the list of parameters used by this effect.
+    A parameter is used to set a corresponding uniform value in the shader used by this effect.
+*/
+
+/*!
  * Adds \a parameter to the effect. It sends a QPropertyNodeAddedChange to the backend.
- * The \a parameter will be used to set a corresponding uniform value in the shader used by this effect.
+ * The \a parameter will be used to set a corresponding uniform value in the shader used
+ * by this effect.
  */
 void QEffect::addParameter(QParameter *parameter)
 {

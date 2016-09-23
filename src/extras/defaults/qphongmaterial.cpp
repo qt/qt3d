@@ -162,13 +162,15 @@ void QPhongMaterialPrivate::handleShininessChanged(const QVariant &var)
 }
 
 /*!
-    \class Qt3DRender::QPhongMaterial
+    \class Qt3DExtras::QPhongMaterial
     \brief The QPhongMaterial class provides a default implementation of the phong lighting effect.
-    \inmodule Qt3DRender
-    \since 5.5
+    \inmodule Qt3DExtras
+    \since 5.7
+    \inherits Qt3DRender::QMaterial
 
-    The phong lighting effect is based on the combination of 3 lighting components ambient, diffuse and specular.
-    The relative strengths of these components is controlled by means of their reflectivity coefficients which are modelled as RGB triplets:
+    The phong lighting effect is based on the combination of 3 lighting components ambient, diffuse
+    and specular. The relative strengths of these components are controlled by means of their
+    reflectivity coefficients which are modelled as RGB triplets:
 
     \list
     \li Ambient is the color that is emitted by an object without any other light source.
@@ -177,13 +179,11 @@ void QPhongMaterialPrivate::handleShininessChanged(const QVariant &var)
     \li The shininess of a surface is controlled by a float property.
     \endlist
 
-    This material uses an effect with a single render pass approach and performs per fragment lighting.
-    Techniques are provided for OpenGL 2, OpenGL 3 or above as well as OpenGL ES 2.
+    This material uses an effect with a single render pass approach and performs per fragment
+    lighting. Techniques are provided for OpenGL 2, OpenGL 3 or above as well as OpenGL ES 2.
 */
 
 /*!
-    \fn Qt3DRender::QPhongMaterial::QPhongMaterial(Qt3DCore::QNode *parent)
-
     Constructs a new QPhongMaterial instance with parent object \a parent.
 */
 QPhongMaterial::QPhongMaterial(QNode *parent)
@@ -194,8 +194,6 @@ QPhongMaterial::QPhongMaterial(QNode *parent)
 }
 
 /*!
-   \fn Qt3DRender::QPhongMaterial::~QPhongMaterial()
-
    Destroys the QPhongMaterial.
 */
 QPhongMaterial::~QPhongMaterial()
@@ -203,7 +201,7 @@ QPhongMaterial::~QPhongMaterial()
 }
 
 /*!
-    \property Qt3DRender::QPhongMaterial::ambient
+    \property QPhongMaterial::ambient
 
     Holds the ambient color.
 */
@@ -214,7 +212,7 @@ QColor QPhongMaterial::ambient() const
 }
 
 /*!
-    \property Qt3DRender::QPhongMaterial::diffuse
+    \property QPhongMaterial::diffuse
 
     Holds the diffuse color.
 */
@@ -225,7 +223,7 @@ QColor QPhongMaterial::diffuse() const
 }
 
 /*!
-    \property Qt3DRender::QPhongMaterial::specular
+    \property QPhongMaterial::specular
 
     Holds the specular color.
 */
@@ -236,7 +234,7 @@ QColor QPhongMaterial::specular() const
 }
 
 /*!
-    \property Qt3DRender::QPhongMaterial::shininess
+    \property QPhongMaterial::shininess
 
     Holds the shininess exponent.
 */

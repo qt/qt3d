@@ -55,6 +55,8 @@
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/qhash.h>
 #include <QtCore/qvariant.h>
+#include <QMatrix4x4>
+#include <Qt3DRender/private/uniform_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -106,10 +108,10 @@ Q_AUTOTEST_EXPORT inline T variant_value(const QVariant &v)
 
 struct ParameterInfo
 {
-    explicit ParameterInfo(const int nameId = -1, const QVariant &value = QVariant());
+    explicit ParameterInfo(const int nameId = -1, const UniformValue &value = UniformValue());
 
     int nameId;
-    QVariant value;
+    UniformValue value;
 
     bool operator<(const int otherNameId) const Q_DECL_NOEXCEPT;
     bool operator<(const ParameterInfo &other) const Q_DECL_NOEXCEPT;
@@ -157,7 +159,8 @@ struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
     UniformBlockValueBuilder();
     ~UniformBlockValueBuilder();
 
-    void buildActiveUniformNameValueMapHelper(const QString &blockName,
+    void buildActiveUniformNameValueMapHelper(ShaderData *currentShaderData,
+                                              const QString &blockName,
                                               const QString &qmlPropertyName,
                                               const QVariant &value);
     void buildActiveUniformNameValueMapStructHelper(ShaderData *rShaderData,
@@ -168,6 +171,7 @@ struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
     QHash<QString, ShaderUniform> uniforms;
     UniformBlockValueBuilderHash activeUniformNamesToValue;
     ShaderDataManager *shaderDataManager;
+    QMatrix4x4 viewMatrix;
 };
 
 } // namespace Render

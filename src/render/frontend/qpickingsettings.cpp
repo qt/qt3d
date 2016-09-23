@@ -45,12 +45,25 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
- * \class Qt3DRender::QPickingSettings
- * \brief The QPickingSettings class specifies the current framegraph to be used
- * by the renderer and specifies whether rendering is always active or updated
- * only on changes.
- * \since 5.7
- * \inmodule Qt3DRender
+    \class Qt3DRender::QPickingSettings
+    \brief The QPickingSettings class specifies how entity picking is handled.
+    \since 5.7
+    \inmodule Qt3DRender
+    \inherits Qt3DCore::QNode
+
+    The picking settings determine how the entity picking is handled. For more details about
+    entity picking, see QObjectPicker component documentation.
+ */
+
+/*!
+    \qmltype PickingSettings
+    \brief The PickingSettings class specifies how entity picking is handled.
+    \since 5.7
+    \inqmlmodule Qt3D.Render
+    \instantiates Qt3DRender::QPickingSettings
+
+    The picking settings determine how the entity picking is handled. For more details about
+    entity picking, see Qt3DRender::QObjectPicker component documentation.
  */
 
 QPickingSettingsPrivate::QPickingSettingsPrivate()
@@ -61,11 +74,6 @@ QPickingSettingsPrivate::QPickingSettingsPrivate()
 {
 }
 
-/*!
- * The constructor creates a new Qt3DRender::QPickingSettings
- * instance with the specified \a parent.
- * \param parent
- */
 QPickingSettings::QPickingSettings(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QPickingSettingsPrivate, parent)
 {
@@ -82,18 +90,12 @@ QPickingSettings::QPickingSettings(QPickingSettingsPrivate &dd, Qt3DCore::QNode 
 {
 }
 
-/*!
- * \return the current pick method.
- */
 QPickingSettings::PickMethod QPickingSettings::pickMethod() const
 {
     Q_D(const QPickingSettings);
     return d->m_pickMethod;
 }
 
-/*!
- * \return the current pick result mode.
- */
 QPickingSettings::PickResultMode QPickingSettings::pickResultMode() const
 {
     Q_D(const QPickingSettings);
@@ -112,16 +114,31 @@ QPickingSettings::FaceOrientationPickingMode QPickingSettings::faceOrientationPi
 /*!
  * \enum Qt3DRender::QPickingSettings::PickMethod
  *
- * Specifies which parameters of Qt3DRender::QPickingSettings are used.
+ * Specifies the picking method.
  *
- * \value BoundingVolumePicking
- * \value TrianglePicking
+ * \value BoundingVolumePicking An entity is considered picked if the picking ray intersects
+ * the bounding volume of the entity.
+ * \value TrianglePicking An entity is considered picked if the picking ray intersects with
+ * any triangle of the entity's mesh component.
  */
 
 /*!
- * Sets the pick method to \a pickMethod
- * \param pickMethod
- */
+    \qmlproperty enumeration PickingSettings::pickMethod
+
+    Holds the current pick method.
+
+    \list
+        \li PickingSettings.BoundingVolumePicking
+        \li PickingSettings.TrianglePicking
+    \endlist
+
+    \sa Qt3DRender::QPickingSettings::PickMethod
+*/
+/*!
+    \property QPickingSettings::pickMethod
+
+    Holds the current pick method.
+*/
 void QPickingSettings::setPickMethod(QPickingSettings::PickMethod pickMethod)
 {
     Q_D(QPickingSettings);
@@ -135,16 +152,30 @@ void QPickingSettings::setPickMethod(QPickingSettings::PickMethod pickMethod)
 /*!
  * \enum Qt3DRender::QPickingSettings::PickResultMode
  *
- * Specifies which parameters of Qt3DRender::PickResultMode are used.
+ * Specifies what is included into the picking results.
  *
- * \value NearestPick
- * \value AllPicks
+ * \value NearestPick Only the nearest entity to picking ray origin intersected by the picking ray
+ * is picked.
+ * \value AllPicks All entities that intersect the picking ray are picked.
  */
 
 /*!
- * Sets the pick result mode to \a pickResultMode
- * \param pickResultMode
- */
+    \qmlproperty enumeration PickingSettings::pickResultMode
+
+    Holds the current pick results mode.
+
+    \list
+        \li PickingSettings.NearestPick
+        \li PickingSettings.AllPicks
+    \endlist
+
+    \sa Qt3DRender::QPickingSettings::PickResultMode
+*/
+/*!
+    \property QPickingSettings::pickResultMode
+
+    Holds the current pick results mode.
+*/
 void QPickingSettings::setPickResultMode(QPickingSettings::PickResultMode pickResultMode)
 {
     Q_D(QPickingSettings);

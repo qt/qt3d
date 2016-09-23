@@ -9,6 +9,8 @@ SUBDIRS += \
     component-changes \
     custom-mesh-cpp \
     custom-mesh-qml \
+    custom-mesh-update-data-cpp \
+    custom-mesh-update-data-qml \
     cylinder-cpp \
     cylinder-qml \
     deferred-renderer-cpp \
@@ -20,6 +22,7 @@ SUBDIRS += \
     keyboardinput-qml \
     loader-qml \
     mouseinput-qml \
+    multiplewindows-qml \
     picking-qml \
     plasma \
     scene3d-loader \
@@ -28,9 +31,7 @@ SUBDIRS += \
     tessellation-modes \
     transforms-qml \
     transparency-qml \
-    transparency-qml-scene3d \
-    custom-mesh-update-data-cpp \
-    custom-mesh-update-data-qml
+    transparency-qml-scene3d
 
 qtHaveModule(widgets): {
     SUBDIRS += \

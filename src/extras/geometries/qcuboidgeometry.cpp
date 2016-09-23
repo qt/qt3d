@@ -76,23 +76,23 @@ void createPlaneVertexData(float w, float h, const QSize &resolution,
     switch (normal) {
     case NegativeX:
         // Iterate over z
-        for (int j = resolution.width() - 1; j >= 0; --j) {
-            const float a = a0 + static_cast<float>(j) * da;
-            const float u = static_cast<float>(j) * du;
+        for (int j = resolution.height() - 1; j >= 0; --j) {
+            const float b = b0 + static_cast<float>(j) * db;
+            const float v = static_cast<float>(j) * dv;
 
             // Iterate over y
-            for (int i = 0; i < resolution.height(); ++i) {
-                const float b = b0 + static_cast<float>(i) * db;
-                const float v = static_cast<float>(i) * dv;
+            for (int i = 0; i < resolution.width(); ++i) {
+                const float a = a0 + static_cast<float>(i) * da;
+                const float u = static_cast<float>(i) * du;
 
                 // position
                 *vertices++ = planeDistance;
-                *vertices++ = b;
                 *vertices++ = a;
+                *vertices++ = b;
 
                 // texture coordinates
-                *vertices++ = 1.0f - u;
                 *vertices++ = v;
+                *vertices++ = u;
 
                 // normal
                 *vertices++ = -1.0f;
@@ -102,8 +102,8 @@ void createPlaneVertexData(float w, float h, const QSize &resolution,
                 // tangent
                 *vertices++ = 0.0f;
                 *vertices++ = 0.0f;
-                *vertices++ = -1.0f;
-                *vertices++ = -1.0f;
+                *vertices++ = 1.0f;
+                *vertices++ = 1.0f;
             }
         }
         break;
@@ -111,22 +111,22 @@ void createPlaneVertexData(float w, float h, const QSize &resolution,
     case PositiveX: {
         // Iterate over z
         for (int j = 0; j < resolution.height(); ++j) {
-            const float a = a0 + static_cast<float>(j) * da;
-            const float u = static_cast<float>(j) * du;
+            const float b = b0 + static_cast<float>(j) * db;
+            const float v = static_cast<float>(j) * dv;
 
             // Iterate over y
             for (int i = 0; i < resolution.width(); ++i) {
-                const float b = b0 + static_cast<float>(i) * db;
-                const float v = static_cast<float>(i) * dv;
+                const float a = a0 + static_cast<float>(i) * da;
+                const float u = static_cast<float>(i) * du;
 
                 // position
                 *vertices++ = planeDistance;
-                *vertices++ = b;
                 *vertices++ = a;
+                *vertices++ = b;
 
                 // texture coordinates
+                *vertices++ = 1.0f - v;
                 *vertices++ = u;
-                *vertices++ = v;
 
                 // normal
                 *vertices++ = 1.0f;
@@ -136,8 +136,8 @@ void createPlaneVertexData(float w, float h, const QSize &resolution,
                 // tangent
                 *vertices++ = 0.0f;
                 *vertices++ = 0.0f;
-                *vertices++ = 1.0f;
                 *vertices++ = -1.0f;
+                *vertices++ = 1.0f;
             }
         }
         break;
@@ -563,44 +563,54 @@ void QCuboidGeometryPrivate::init()
 
 /*!
  * \qmltype CuboidGeometry
- * \instantiates Qt3DRender::QCuboidGeometry
- * \inqmlmodule Qt3D.Render
+ * \instantiates Qt3DExtras::QCuboidGeometry
+ * \inqmlmodule Qt3D.Extras
+ * \brief CuboidGeometry allows creation of a cuboid in 3D space.
+ *
+ * The CuboidGeometry type is most commonly used internally by the CuboidMesh type
+ * but can also be used in custom GeometryRenderer types.
  */
 
 /*!
- * \qmlproperty float CuboidGeometry::xExtent
+ * \qmlproperty real CuboidGeometry::xExtent
  *
- * Holds the x extent.
+ * Holds the x extent of the geometry.
  */
 
 /*!
- * \qmlproperty float CuboidGeometry::yExtent
+ * \qmlproperty real CuboidGeometry::yExtent
  *
- * Holds the y extent.
+ * Holds the y extent of the geometry.
  */
 
 /*!
- * \qmlproperty float CuboidGeometry::zExtent
+ * \qmlproperty real CuboidGeometry::zExtent
  *
- * Holds the z extent.
+ * Holds the z extent of the geometry.
  */
 
 /*!
  * \qmlproperty size CuboidGeometry::yzMeshResolution
  *
  * Holds the y-z resolution.
+ * The width and height values of this property specify the number of vertices generated for
+ * the y-z faces of the mesh.
  */
 
 /*!
  * \qmlproperty size CuboidGeometry::xzMeshResolution
  *
  * Holds the x-z resolution.
+ * The width and height values of this property specify the number of vertices generated for
+ * the x-z faces of the mesh.
  */
 
 /*!
  * \qmlproperty size CuboidGeometry::xyMeshResolution
  *
  * Holds the x-y resolution.
+ * The width and height values of this property specify the number of vertices generated for
+ * the x-y faces of the mesh.
  */
 
 /*!
@@ -634,11 +644,15 @@ void QCuboidGeometryPrivate::init()
  */
 
 /*!
- * \class Qt3DRender::QCuboidGeometry
- * \inmodule Qt3DRender
- *
+ * \class Qt3DExtras::QCuboidGeometry
+ * \inmodule Qt3DExtras
+ * \brief The QCuboidGeometry class allows creation of a cuboid in 3D space.
+ * \since 5.7
+ * \ingroup geometries
  * \inherits Qt3DRender::QGeometry
  *
+ * The QCuboidGeometry class is most commonly used internally by the QCuboidMesh
+ * but can also be used in custom Qt3DRender::QGeometryRenderer subclasses.
  */
 
 /*!
@@ -770,7 +784,7 @@ void QCuboidGeometry::setXYMeshResolution(const QSize &resolution)
 /*!
  * \property QCuboidGeometry::xExtent
  *
- * Holds the x extent.
+ * Holds the x extent of the geometry.
  */
 float QCuboidGeometry::xExtent() const
 {
@@ -781,7 +795,7 @@ float QCuboidGeometry::xExtent() const
 /*!
  * \property QCuboidGeometry::yExtent
  *
- * Holds the y extent.
+ * Holds the y extent of the geometry.
  */
 float QCuboidGeometry::yExtent() const
 {
@@ -792,7 +806,7 @@ float QCuboidGeometry::yExtent() const
 /*!
  * \property QCuboidGeometry::zExtent
  *
- * Holds the z extent.
+ * Holds the z extent of the geometry.
  */
 float QCuboidGeometry::zExtent() const
 {
@@ -804,6 +818,8 @@ float QCuboidGeometry::zExtent() const
  * \property QCuboidGeometry::yzMeshResolution
  *
  * Holds the y-z resolution.
+ * The width and height values of this property specify the number of vertices generated for
+ * the y-z faces of the mesh.
  */
 QSize QCuboidGeometry::yzMeshResolution() const
 {
@@ -815,6 +831,8 @@ QSize QCuboidGeometry::yzMeshResolution() const
  * \property QCuboidGeometry::xzMeshResolution
  *
  * Holds the x-z resolution.
+ * The width and height values of this property specify the number of vertices generated for
+ * the x-z faces of the mesh.
  */
 QSize QCuboidGeometry::xyMeshResolution() const
 {
@@ -826,6 +844,8 @@ QSize QCuboidGeometry::xyMeshResolution() const
  * \property QCuboidGeometry::xyMeshResolution
  *
  * Holds the x-y resolution.
+ * The width and height values of this property specify the number of vertices generated for
+ * the x-y faces of the mesh.
  */
 QSize QCuboidGeometry::xzMeshResolution() const
 {

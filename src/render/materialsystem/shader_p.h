@@ -52,7 +52,7 @@
 //
 
 #include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DRender/private/quniformvalue_p.h>
+#include <Qt3DRender/private/shaderparameterpack_p.h>
 #include <Qt3DRender/private/shadervariables_p.h>
 #include <QMutex>
 #include <QVector>

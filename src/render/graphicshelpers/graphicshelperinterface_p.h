@@ -55,6 +55,7 @@
 #include <QOpenGLTexture>
 #include <QVector>
 #include <Qt3DRender/private/shadervariables_p.h>
+#include <Qt3DRender/private/uniform_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -87,7 +88,6 @@ public:
     virtual void    bindFrameBufferObject(GLuint frameBufferId) = 0;
     virtual void    bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding) = 0;
     virtual void    bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) = 0;
-    virtual void    bindUniform(const QVariant &v, const ShaderUniform &description) = 0;
     virtual void    blendEquation(GLenum mode) = 0;
     virtual void    blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor) = 0;
     virtual void    blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRGB, GLenum sAlpha, GLenum dAlpha) = 0;
@@ -157,6 +157,7 @@ public:
     virtual void glUniformMatrix3x4fv(GLint location, GLsizei count, const GLfloat *value) = 0;
     virtual void glUniformMatrix4x3fv(GLint location, GLsizei count, const GLfloat *value) = 0;
 
+    virtual UniformType uniformTypeFromGLType(GLenum glType) = 0;
 };
 
 

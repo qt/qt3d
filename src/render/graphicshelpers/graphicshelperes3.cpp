@@ -150,20 +150,17 @@ void GraphicsHelperES3::drawBuffers(GLsizei n, const int *bufs)
     m_extraFuncs->glDrawBuffers(n, drawBufs.constData());
 }
 
-void GraphicsHelperES3::bindUniform(const QVariant &v, const ShaderUniform &description)
+UniformType GraphicsHelperES3::uniformTypeFromGLType(GLenum glType)
 {
-    switch (description.m_type) {
+    switch (glType) {
     case GL_SAMPLER_3D:
     case GL_SAMPLER_2D_SHADOW:
     case GL_SAMPLER_CUBE_SHADOW:
     case GL_SAMPLER_2D_ARRAY:
     case GL_SAMPLER_2D_ARRAY_SHADOW:
-        Q_ASSERT(description.m_size == 1);
-        m_funcs->glUniform1i(description.m_location, v.toInt());
-        break;
+        return UniformType::Sampler;
     default:
-        GraphicsHelperES2::bindUniform(v, description);
-        break;
+       return GraphicsHelperES2::uniformTypeFromGLType(glType);
     }
 }
 

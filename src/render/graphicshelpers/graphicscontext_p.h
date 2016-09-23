@@ -60,7 +60,7 @@
 #include <QMatrix4x4>
 #include <QBitArray>
 #include <QImage>
-#include <Qt3DRender/private/quniformvalue_p.h>
+#include <Qt3DRender/private/shaderparameterpack_p.h>
 #include <Qt3DRender/qclearbuffers.h>
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DRender/private/glbuffer_p.h>
@@ -68,6 +68,7 @@
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/qgraphicsapifilter_p.h>
 #include <Qt3DRender/private/shadercache_p.h>
+#include <Qt3DRender/private/uniform_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -183,10 +184,10 @@ public:
 
     // Wrapper methods
     void    alphaTest(GLenum mode1, GLenum mode2);
+    void    bindFramebuffer(GLuint fbo);
     void    bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer);
     void    bindFragOutputs(GLuint shader, const QHash<QString, int> &outputs);
     void    bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
-    void    bindUniform(const QVariant &v, const ShaderUniform &description);
     void    bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding);
     void    blendEquation(GLenum mode);
     void    blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor);
@@ -314,7 +315,58 @@ private:
 
     void enableAttribute(const VAOVertexAttribute &attr);
     void disableAttribute(const VAOVertexAttribute &attr);
+
+    void applyUniform(const ShaderUniform &description, const UniformValue &v);
+
+    template<UniformType>
+    void applyUniformHelper(int, const UniformValue &) const
+    {
+        Q_ASSERT_X(false, Q_FUNC_INFO, "Uniform: Didn't provide specialized apply() implementation");
+    }
 };
+
+#define QT3D_UNIFORM_TYPE_PROTO(UniformTypeEnum, BaseType, Func) \
+template<> \
+void GraphicsContext::applyUniformHelper<UniformTypeEnum>(int location, const UniformValue &value) const;
+
+#define QT3D_UNIFORM_TYPE_IMPL(UniformTypeEnum, BaseType, Func) \
+    template<> \
+    void GraphicsContext::applyUniformHelper<UniformTypeEnum>(int location, const UniformValue &value) const \
+{ \
+    m_glHelper->Func(location, 1, value.constData<BaseType>()); \
+}
+
+
+QT3D_UNIFORM_TYPE_PROTO(UniformType::Float, float, glUniform1fv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::Vec2, float, glUniform2fv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::Vec3, float, glUniform3fv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::Vec4, float, glUniform4fv)
+
+// OpenGL expects int* as values for booleans
+QT3D_UNIFORM_TYPE_PROTO(UniformType::Bool, int, glUniform1iv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::BVec2, int, glUniform2iv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::BVec3, int, glUniform3iv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::BVec4, int, glUniform4iv)
+
+QT3D_UNIFORM_TYPE_PROTO(UniformType::Int, int, glUniform1iv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::IVec2, int, glUniform2iv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::IVec3, int, glUniform3iv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::IVec4, int, glUniform4iv)
+
+QT3D_UNIFORM_TYPE_PROTO(UniformType::UInt, uint, glUniform1uiv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::UIVec2, uint, glUniform2uiv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::UIVec3, uint, glUniform3uiv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::UIVec4, uint, glUniform4uiv)
+
+QT3D_UNIFORM_TYPE_PROTO(UniformType::Mat2, float, glUniformMatrix2fv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::Mat3, float, glUniformMatrix3fv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::Mat4, float, glUniformMatrix4fv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::Mat2x3, float, glUniformMatrix2x3fv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::Mat3x2, float, glUniformMatrix3x2fv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::Mat2x4, float, glUniformMatrix2x4fv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::Mat4x2, float, glUniformMatrix4x2fv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::Mat3x4, float, glUniformMatrix3x4fv)
+QT3D_UNIFORM_TYPE_PROTO(UniformType::Mat4x3, float, glUniformMatrix4x3fv)
 
 } // namespace Render
 } // namespace Qt3DRender

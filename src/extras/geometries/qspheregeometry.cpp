@@ -315,8 +315,12 @@ void QSphereGeometryPrivate::init()
 
 /*!
  * \qmltype SphereGeometry
- * \instantiates QSphereGeometry
- * \inqmlmodule Qt3D.Render
+ * \instantiates Qt3DExtras::QSphereGeometry
+ * \inqmlmodule Qt3D.Extras
+ * \brief SphereGeometry allows creation of a sphere in 3D space.
+ *
+ * The SphereGeometry type is most commonly used internally by the SphereMesh type
+ * but can also be used in custom GeometryRenderer types.
  */
 
 /*!
@@ -332,7 +336,7 @@ void QSphereGeometryPrivate::init()
  */
 
 /*!
- * \qmlproperty float SphereGeometry::radius
+ * \qmlproperty real SphereGeometry::radius
  *
  * Holds the radius of the sphere.
  */
@@ -340,7 +344,8 @@ void QSphereGeometryPrivate::init()
 /*!
  * \qmlproperty bool SphereGeometry::generateTangents
  *
- * Holds the value of the automatic tangent generation flag.
+ * Holds the value of the automatic tangent vectors generation flag.
+ * Tangent vectors are orthogonal to normal vectors.
  */
 
 /*!
@@ -374,10 +379,15 @@ void QSphereGeometryPrivate::init()
  */
 
 /*!
- * \class QSphereGeometry
- * \inmodule Qt3DRender
+ * \class Qt3DExtras::QSphereGeometry
+ * \inmodule Qt3DExtras
+ * \brief The QSphereGeometry class allows creation of a sphere in 3D space.
+ * \since 5.7
+ * \ingroup geometries
+ * \inherits Qt3DRender::QGeometry
  *
- * \inherits QGeometry
+ * The QSphereGeometry class is most commonly used internally by the QSphereMesh
+ * but can also be used in custom Qt3DRender::QGeometryRenderer subclasses.
  */
 
 /*!
@@ -408,7 +418,7 @@ QSphereGeometry::~QSphereGeometry()
 }
 
 /*!
- * Updates vertices based on rings and slices.
+ * Updates vertices based on rings, slices, and radius properties
  */
 void QSphereGeometry::updateVertices()
 {
@@ -422,7 +432,7 @@ void QSphereGeometry::updateVertices()
 }
 
 /*!
- * Updates indices based on rings and slices.
+ * Updates indices based on rings and slices properties.
  */
 void QSphereGeometry::updateIndices()
 {
@@ -481,7 +491,8 @@ void QSphereGeometry::setGenerateTangents(bool gen)
 /*!
  * \property QSphereGeometry::generateTangents
  *
- * Holds the value of the automatic tangent generation flag.
+ * Holds the value of the automatic tangent vectors generation flag.
+ * Tangent vectors are orthogonal to normal vectors.
  */
 bool QSphereGeometry::generateTangents() const
 {

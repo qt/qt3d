@@ -301,6 +301,7 @@ QStringList AssimpIO::assimpSupportedFormats()
     formats.append(QStringLiteral("vta"));
     formats.append(QStringLiteral("x"));
     formats.append(QStringLiteral("xml"));
+    formats.append(QStringLiteral("fbx"));
 
     return formats;
 }

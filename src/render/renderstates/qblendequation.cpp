@@ -39,15 +39,29 @@
 ****************************************************************************/
 
 /*!
- * \class QBlendEquation
+ * \class Qt3DRender::QBlendEquation
  * \brief The QBlendEquation class specifies the equation used for both the RGB
  *  blend equation and the Alpha blend equation
+ * \inmodule Qt3DRender
  * \since 5.7
  * \ingroup renderstates
  *
  * The blend equation is used to determine how a new pixel is combined with a pixel
  * already in the framebuffer.
  */
+
+/*!
+    \qmltype BlendEquation
+    \instantiates Qt3DRender::QBlendEquation
+    \inherits RenderState
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief The BlendEquation class specifies the equation used for both the RGB
+     blend equation and the Alpha blend equation
+
+    The blend equation is used to determine how a new pixel is combined with a pixel
+    already in the framebuffer.
+*/
 
 #include "qblendequation.h"
 #include "qblendequation_p.h"
@@ -70,17 +84,34 @@ QBlendEquation::~QBlendEquation()
 {
 }
 
+/*!
+  \enum Qt3DRender::QBlendEquation::BlendFunction
+
+  \value Add GL_FUNC_ADD
+  \value Subtract GL_FUNC_SUBTRACT
+  \value ReverseSubtract GL_FUNC_REVERSE_SUBTRACT
+  \value Min GL_MIN
+  \value Max GL_MAX
+*/
+
+/*!
+    \qmlproperty enumeration BlendEquation::blendFunction
+
+    Holds the blend function, which determines how source and destination colors are combined.
+ */
+
+/*!
+    \property QBlendEquation::blendFunction
+
+    Holds the blend function, which determines how source and destination colors are combined.
+ */
+
 QBlendEquation::BlendFunction QBlendEquation::blendFunction() const
 {
     Q_D(const QBlendEquation);
     return d->m_blendFunction;
 }
 
-/*!
- * Sets the function used to decide how the source and destination colors are combined,
- * to \a blendFunction.
- * \param blendFunction
- */
 void QBlendEquation::setBlendFunction(QBlendEquation::BlendFunction blendFunction)
 {
     Q_D(QBlendEquation);

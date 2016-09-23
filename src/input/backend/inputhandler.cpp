@@ -249,6 +249,7 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::mouseJobs()
         MouseDevice *controller = m_mouseDeviceManager->data(cHandle);
 
         controller->updateMouseEvents(mouseEvents);
+        controller->updateWheelEvents(wheelEvents);
         // Event dispacthing job
         if (!mouseEvents.isEmpty() || !wheelEvents.empty()) {
             // Send the events to the mouse handlers that have for sourceDevice controller
