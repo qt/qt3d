@@ -25,9 +25,8 @@ void adsModelNormalMapped(const in FP vec3 vpos, const in FP vec3 vnormal, const
 
     FP vec3 n = normalize( vnormal );
 
-    int i;
     FP vec3 s, ts;
-    for (i = 0; i < lightCount; ++i) {
+    for (int i = 0; i < lightCount; ++i) {
         FP float att = 1.0;
         if ( lights[i].type != TYPE_DIRECTIONAL ) {
             s = lights[i].position - vpos;
@@ -75,9 +74,8 @@ void adsModel(const in FP vec3 vpos, const in FP vec3 vnormal, const in FP vec3 
 
     FP vec3 n = normalize( vnormal );
 
-    int i;
     FP vec3 s;
-    for (i = 0; i < lightCount; ++i) {
+    for (int i = 0; i < lightCount; ++i) {
         FP float att = 1.0;
         if ( lights[i].type != TYPE_DIRECTIONAL ) {
             s = lights[i].position - vpos;
@@ -115,9 +113,8 @@ void adModel(const in FP vec3 vpos, const in FP vec3 vnormal, out FP vec3 diffus
 
     FP vec3 n = normalize( vnormal );
 
-    int i;
     FP vec3 s;
-    for (i = 0; i < lightCount; ++i) {
+    for (int i = 0; i < lightCount; ++i) {
         FP float att = 1.0;
         if ( lights[i].type != TYPE_DIRECTIONAL ) {
             s = lights[i].position - vpos;
