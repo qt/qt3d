@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_VECTOR4D_SSE_P_H
-#define QT3DCORE_VECTOR4D_SSE_P_H
+#ifndef QT3DCORE_VECTOR3D_SSE_P_H
+#define QT3DCORE_VECTOR3D_SSE_P_H
 
 //
 //  W A R N I N G
@@ -51,8 +51,12 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/vector3d_p.h>
-#include <QtGui/qvector4d.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
+#include <QtCore/private/qsimd_p.h>
+#include <QtCore/QtGlobal>
+#include <QtGui/qvector3d.h>
+#include <QDebug>
+#include <math.h>
 
 #ifdef QT_COMPILER_SUPPORTS_SSE2
 
@@ -62,101 +66,96 @@ namespace Qt3DCore {
 
 class Matrix4x4_SSE;
 class Matrix4x4_AVX2;
+class Vector4D_SSE;
 
-class Vector4D_SSE
+class Vector3D_SSE
 {
 public:
-    Q_ALWAYS_INLINE Vector4D_SSE()
+
+    Q_ALWAYS_INLINE Vector3D_SSE()
         : m_xyzw(_mm_setzero_ps())
     {
     }
 
-    explicit Q_ALWAYS_INLINE Vector4D_SSE(Qt::Initialization) {}
+    explicit Q_ALWAYS_INLINE Vector3D_SSE(Qt::Initialization) {}
 
-    explicit Q_ALWAYS_INLINE Vector4D_SSE(float x, float y, float z, float w)
-        : m_xyzw(_mm_set_ps(w, z, y, x))
+    explicit Q_ALWAYS_INLINE Vector3D_SSE(float x, float y, float z)
+        : m_xyzw(_mm_set_ps(0.0f, z, y, x))
     {
     }
 
-    explicit Q_ALWAYS_INLINE Vector4D_SSE(QVector4D v)
-        : m_xyzw(_mm_set_ps(v.w(), v.z(), v.y(), v.x()))
+    explicit Q_ALWAYS_INLINE Vector3D_SSE(QVector3D v)
+        : m_xyzw(_mm_set_ps(0.0f, v.z(), v.y(), v.x()))
     {
     }
 
-    explicit Q_ALWAYS_INLINE Vector4D_SSE(const Vector3D_SSE &vec3, float w = 0.0f)
-        : m_xyzw(vec3.m_xyzw)
-    {
-        setW(w);
-    }
+    explicit QT3DCORE_PRIVATE_EXPORT Vector3D_SSE(const Vector4D_SSE &v);
 
-    explicit Q_ALWAYS_INLINE Vector4D_SSE(QVector3D v, float w = 0.0f)
-        : m_xyzw(_mm_set_ps(w, v.z(), v.y(), v.x()))
-    {
-    }
-
-    Q_ALWAYS_INLINE Vector4D_SSE &operator+=(Vector4D_SSE vector)
+    Q_ALWAYS_INLINE Vector3D_SSE &operator+=(Vector3D_SSE vector)
     {
         m_xyzw = _mm_add_ps(m_xyzw, vector.m_xyzw);
         return *this;
     }
 
-    Q_ALWAYS_INLINE Vector4D_SSE &operator-=(Vector4D_SSE vector)
+    Q_ALWAYS_INLINE Vector3D_SSE &operator-=(Vector3D_SSE vector)
     {
         m_xyzw = _mm_sub_ps(m_xyzw, vector.m_xyzw);
         return *this;
     }
 
-    Q_ALWAYS_INLINE Vector4D_SSE &operator*=(Vector4D_SSE vector)
+    Q_ALWAYS_INLINE Vector3D_SSE &operator*=(Vector3D_SSE vector)
     {
         m_xyzw = _mm_mul_ps(m_xyzw, vector.m_xyzw);
         return *this;
     }
 
-    Q_ALWAYS_INLINE Vector4D_SSE &operator/=(Vector4D_SSE vector)
+    Q_ALWAYS_INLINE Vector3D_SSE &operator/=(Vector3D_SSE vector)
     {
         m_xyzw = _mm_div_ps(m_xyzw, vector.m_xyzw);
         return *this;
     }
 
-    Q_ALWAYS_INLINE Vector4D_SSE &operator*=(float factor)
+    Q_ALWAYS_INLINE Vector3D_SSE &operator*=(float factor)
     {
         m_xyzw = _mm_mul_ps(m_xyzw, _mm_set1_ps(factor));
         return *this;
     }
 
-    Q_ALWAYS_INLINE Vector4D_SSE &operator/=(float factor)
+    Q_ALWAYS_INLINE Vector3D_SSE &operator/=(float factor)
     {
         m_xyzw = _mm_div_ps(m_xyzw, _mm_set1_ps(factor));
         return *this;
     }
 
-    Q_ALWAYS_INLINE bool operator==(Vector4D_SSE other) const
+    Q_ALWAYS_INLINE bool operator==(Vector3D_SSE other) const
     {
-        // 0b1111 == 0xf
-        return (_mm_movemask_ps(_mm_cmpeq_ps(m_xyzw, other.m_xyzw)) == 0xf);
+        // 0b111 == 0x7
+        return ((_mm_movemask_ps(_mm_cmpeq_ps(m_xyzw, other.m_xyzw)) & 0x7) == 0x7);
     }
 
-    Q_ALWAYS_INLINE bool operator!=(Vector4D_SSE other) const
+    Q_ALWAYS_INLINE bool operator!=(Vector3D_SSE other) const
     {
         return !(*this == other);
     }
 
-    Q_ALWAYS_INLINE QVector4D toQVector4D() const
+    Q_ALWAYS_INLINE QVector3D toQVector3D() const
     {
-        return QVector4D(x(), y(), z(), w());
+        return QVector3D(x(), y(), z());
     }
-
-    // TODO: Uncomment when we introduce Vector3D_SSE
-    //Q_ALWAYS_INLINE Vector3D_SSE toVector3D() const { return Vector3D_SSE(*this); }
 
     Q_ALWAYS_INLINE float lengthSquared() const
     {
-        return dotProduct(*this, *this);
+        return Qt3DCore::Vector3D_SSE::dotProduct(*this, *this);
     }
 
     Q_ALWAYS_INLINE float length() const
     {
-        return sqrt(dotProduct(*this, *this));
+        return sqrt(Qt3DCore::Vector3D_SSE::dotProduct(*this, *this));
+    }
+
+    Q_ALWAYS_INLINE float distanceToPoint(const Vector3D_SSE &point) const
+    {
+        return (*this - point).length();
     }
 
     Q_ALWAYS_INLINE void normalize()
@@ -165,17 +164,18 @@ public:
         m_xyzw = _mm_div_ps(m_xyzw, _mm_set_ps1(len));
     }
 
-    Q_ALWAYS_INLINE Vector4D_SSE normalized() const
+    Q_ALWAYS_INLINE Vector3D_SSE normalized() const
     {
-        Vector4D_SSE v = *this;
+        Vector3D_SSE v = *this;
         v.normalize();
         return v;
     }
 
     Q_ALWAYS_INLINE bool isNull() const
     {
-        // 0b1111 == 0xf
-        return _mm_movemask_ps(_mm_cmpeq_ps(m_xyzw, _mm_setzero_ps())) == 0xf;
+        // Ignore last bit
+        // 0b111 = 0x7
+        return ((_mm_movemask_ps(_mm_cmpeq_ps(m_xyzw, _mm_set_ps1(0.0f))) & 0x7) == 0x7);
     }
 
     Q_ALWAYS_INLINE float x() const { return _mm_cvtss_f32(m_xyzw); }
@@ -190,12 +190,6 @@ public:
     {
         // 0b10101010 = 0xaa
         return _mm_cvtss_f32(_mm_unpackhi_ps(m_xyzw, m_xyzw));
-    }
-
-    Q_ALWAYS_INLINE float w() const
-    {
-        // 0b11111111 = 0xff
-        return _mm_cvtss_f32(_mm_shuffle_ps(m_xyzw, m_xyzw, 0xff));
     }
 
     Q_ALWAYS_INLINE void setX(float x)
@@ -235,36 +229,24 @@ public:
         m_xyzw = _mm_shuffle_ps(m_xyzw, zdVec, 0x84);
     }
 
-    Q_ALWAYS_INLINE void setW(float w)
-    {
-#ifdef __SSE4_1__
-        const __m128 wVec = _mm_set_ss(w);
-        // insert element 0 of wVec into position 3 in vec3, don't zero anything
-        m_xyzw = _mm_insert_ps(m_xyzw, wVec, 0x30);
-#else
-        // m_xyzw = a, b, c, d
-
-        // w, w, w, w
-        const __m128 wVec = _mm_set_ps1(w);
-
-        // c, c, w, w
-        const __m128 cwVec = _mm_shuffle_ps(m_xyzw, wVec, _MM_SHUFFLE(0, 0, 2, 2));
-
-        // a, b, c, w
-        m_xyzw = _mm_shuffle_ps(m_xyzw, cwVec, _MM_SHUFFLE(2, 0, 1, 0));
-#endif
-    }
-
     Q_ALWAYS_INLINE float operator[](int idx) const
     {
-        Q_DECL_ALIGN(16) float vec[4];
-        _mm_store_ps(vec, m_xyzw);
-        return vec[idx];
+        switch (idx) {
+        case 0:
+            return x();
+        case 1:
+            return y();
+        case 2:
+            return z();
+        default:
+            Q_UNREACHABLE();
+            return 0.0f;
+        }
     }
 
     struct DigitWrapper
     {
-        explicit DigitWrapper(int idx, Vector4D_SSE *vec)
+        explicit DigitWrapper(int idx, Vector3D_SSE *vec)
             : m_vec(vec)
             , m_idx(idx)
         {}
@@ -278,13 +260,12 @@ public:
                 return m_vec->y();
             case 2:
                 return m_vec->z();
-            case 3:
-                return m_vec->w();
             default:
                 Q_UNREACHABLE();
                 return 0.0f;
             }
         }
+
         void operator =(float value)
         {
             switch (m_idx) {
@@ -297,16 +278,13 @@ public:
             case 2:
                 m_vec->setZ(value);
                 break;
-            case 3:
-                m_vec->setW(value);
-                break;
             default:
                 Q_UNREACHABLE();
             }
         }
 
     private:
-        Vector4D_SSE *m_vec;
+        Vector3D_SSE *m_vec;
         const int m_idx;
     };
 
@@ -315,11 +293,11 @@ public:
         return DigitWrapper(idx, this);
     }
 
-    static Q_ALWAYS_INLINE float dotProduct(Vector4D_SSE a, Vector4D_SSE b)
+    static Q_ALWAYS_INLINE float dotProduct(Vector3D_SSE a, Vector3D_SSE b)
     {
 #if defined(__SSE4_1__)
-        // 0b11111111 = 0xff
-        return _mm_cvtss_f32(_mm_dp_ps(a.m_xyzw, b.m_xyzw, 0xff));
+        // 0b01111111 = 0x7f
+        return _mm_cvtss_f32(_mm_dp_ps(a.m_xyzw, b.m_xyzw, 0x7f));
 #elif defined(__SSE3__)
         const __m128 mult = _mm_mul_ps(a.m_xyzw, b.m_xyzw);
         // a + b, c + d, a + d, c + d
@@ -330,52 +308,69 @@ public:
         return _mm_cvtss_f32(_mm_hadd_ps(partialSum, partialSumShuffle));
 #else
         const __m128 mult = _mm_mul_ps(a.m_xyzw, b.m_xyzw);
-        // (multX, multY, 0, 0) + (multZ, multW, 0, 0) -> (multX + multZ, multY + multW, 0, 0)
-        // 0b00001110 == 0xe
-        const __m128 shuffled = _mm_shuffle_ps(mult, mult, 0xe);
-        __m128 result = _mm_add_ps(shuffled, mult);
-        // (multX + multZ, 0, 0, 0) + (multY + multW, 0, 0, 0);
-        // 0b00000001 == 0x1
-        const __m128 shuffled2 = _mm_shuffle_ps(result, result, 0x1);
-        result = _mm_add_ps(result, shuffled2);
+
+        // (multX, 0, 0, 0) + (multY, 0, 0, 0) -> (multX + multY, 0, 0, 0)
+        // 0b11111101 == 0xfd
+        const __m128 shuffled = _mm_shuffle_ps(mult, mult, 0xfd);
+        // (multX + multY, 0, 0, 0) + (multZ, 0, 0, 0);
+        // 0b11111110 == 0xfe
+        const __m128 shuffled2 = _mm_shuffle_ps(mult, mult, 0xfe);
+        const __m128 result = _mm_add_ps(_mm_add_ps(shuffled, mult), shuffled2);
         return _mm_cvtss_f32(result);
 #endif
     }
 
+    static Q_ALWAYS_INLINE Vector3D_SSE crossProduct(Vector3D_SSE a, Vector3D_SSE b)
+    {
+        // a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x
+        // (a.y, a.z, a.z, a.x, a.x, a.y) (b.z, b.y, b.x, b.z, b.y, b.x)
+        // (a.y, a.z, a.x) * (b.z, b.x, b.y) - (a.z, a.x, a.y) (b.y, b.z, b.x)
+
+        // 0b11001001 == 0xc9
+        const __m128 a1 = _mm_shuffle_ps(a.m_xyzw, a.m_xyzw, 0xc9);
+        const __m128 b2 = _mm_shuffle_ps(b.m_xyzw, b.m_xyzw, 0xc9);
+        // 0b11010010 == 0xd2
+        const __m128 a2 = _mm_shuffle_ps(a.m_xyzw, a.m_xyzw, 0xd2);
+        const __m128 b1 = _mm_shuffle_ps(b.m_xyzw, b.m_xyzw, 0xd2);
+
+        Vector3D_SSE v(Qt::Uninitialized);
+        v.m_xyzw = _mm_sub_ps(_mm_mul_ps(a1, b1), _mm_mul_ps(a2, b2));
+        return v;
+    }
+
     friend class Matrix4x4_AVX2;
     friend class Matrix4x4_SSE;
-    friend class Vector3D_SSE;
+    friend class Vector4D_SSE;
 
-    friend Vector4D_SSE operator*(Vector4D_SSE vector, Matrix4x4_SSE matrix);
-    friend Vector4D_SSE operator*(Matrix4x4_SSE matrix, Vector4D_SSE vector);
+    friend QT3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(Vector3D_SSE vector, Matrix4x4_SSE matrix);
+    friend QT3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(Matrix4x4_SSE matrix, Vector3D_SSE vector);
 
-    friend Vector4D_SSE operator*(Vector4D_SSE vector, Matrix4x4_AVX2 matrix);
-    friend Vector4D_SSE operator*(Matrix4x4_AVX2 matrix, Vector4D_SSE vector);
+    friend QT3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(Vector3D_SSE vector, Matrix4x4_AVX2 matrix);
+    friend QT3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(Matrix4x4_AVX2 matrix, Vector3D_SSE vector);
 
-    friend Q_ALWAYS_INLINE const Vector4D_SSE operator+(Vector4D_SSE v1, Vector4D_SSE v2) { return v1 += v2; }
-    friend Q_ALWAYS_INLINE const Vector4D_SSE operator-(Vector4D_SSE v1, Vector4D_SSE v2) { return v1 -= v2; }
-    friend Q_ALWAYS_INLINE const Vector4D_SSE operator*(float factor, Vector4D_SSE vector) { return vector *= factor; }
-    friend Q_ALWAYS_INLINE const Vector4D_SSE operator*(Vector4D_SSE vector, float factor) { return vector *= factor; }
-    friend Q_ALWAYS_INLINE const Vector4D_SSE operator*(Vector4D_SSE v1, Vector4D_SSE v2) { return v1 *= v2; }
-    friend Q_ALWAYS_INLINE const Vector4D_SSE operator-(Vector4D_SSE vector)
+    friend Q_ALWAYS_INLINE const Vector3D_SSE operator+(Vector3D_SSE v1, Vector3D_SSE v2) { return v1 += v2; }
+    friend Q_ALWAYS_INLINE const Vector3D_SSE operator-(Vector3D_SSE v1, Vector3D_SSE v2) { return v1 -= v2; }
+    friend Q_ALWAYS_INLINE const Vector3D_SSE operator*(float factor, Vector3D_SSE vector) { return vector *= factor; }
+    friend Q_ALWAYS_INLINE const Vector3D_SSE operator*(Vector3D_SSE vector, float factor) { return vector *= factor; }
+    friend Q_ALWAYS_INLINE const Vector3D_SSE operator*(Vector3D_SSE v1, Vector3D_SSE v2) { return v1 *= v2; }
+    friend Q_ALWAYS_INLINE const Vector3D_SSE operator-(Vector3D_SSE vector)
     {
-        Vector4D_SSE c(Qt::Uninitialized);
+        Vector3D_SSE c(Qt::Uninitialized);
 
         c.m_xyzw = _mm_xor_ps(vector.m_xyzw, _mm_set1_ps(-0.0f));
 
         return c;
     }
 
-    friend Q_ALWAYS_INLINE const Vector4D_SSE operator/(Vector4D_SSE vector, float divisor) { return vector /= divisor; }
-    friend Q_ALWAYS_INLINE const Vector4D_SSE operator/(Vector4D_SSE vector, Vector4D_SSE divisor) { return vector /= divisor; }
+    friend Q_ALWAYS_INLINE const Vector3D_SSE operator/(Vector3D_SSE vector, float divisor) { return vector /= divisor; }
+    friend Q_ALWAYS_INLINE const Vector3D_SSE operator/(Vector3D_SSE vector, Vector3D_SSE divisor) { return vector /= divisor; }
 
-    friend QT3DCORE_PRIVATE_EXPORT QDebug operator<<(QDebug dbg, const Vector4D_SSE &v);
-    friend Q_ALWAYS_INLINE bool qFuzzyCompare(const Vector4D_SSE& v1, const Vector4D_SSE& v2)
+    friend QT3DCORE_PRIVATE_EXPORT QDebug operator<<(QDebug dbg, const Vector3D_SSE &v);
+    friend Q_ALWAYS_INLINE bool qFuzzyCompare(const Vector3D_SSE& v1, const Vector3D_SSE& v2)
     {
         return ::qFuzzyCompare(v1.x(), v2.x()) &&
                ::qFuzzyCompare(v1.y(), v2.y()) &&
-               ::qFuzzyCompare(v1.z(), v2.z()) &&
-               ::qFuzzyCompare(v1.w(), v2.w());
+               ::qFuzzyCompare(v1.z(), v2.z());
     }
 
 private:
@@ -385,12 +380,12 @@ private:
 
 } // Qt3DCore
 
-Q_DECLARE_TYPEINFO(Qt3DCore::Vector4D_SSE, Q_PRIMITIVE_TYPE);
+Q_DECLARE_TYPEINFO(Qt3DCore::Vector3D_SSE, Q_PRIMITIVE_TYPE);
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DCore::Vector4D_SSE)
+Q_DECLARE_METATYPE(Qt3DCore::Vector3D_SSE)
 
 #endif // QT_COMPILER_SUPPORTS_SSE2
 
-#endif // QT3DCORE_VECTOR4D_SSE_P_H
+#endif // QT3DCORE_VECTOR3D_SSE_P_H
