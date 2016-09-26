@@ -24,8 +24,10 @@ qtConfig(private_tests) {
     qframeallocator \
     qtransform \
     threadpooler \
-    qpostman
+    qpostman \
+    vector4d_base
 
     QT_FOR_CONFIG += 3dcore-private
     qtConfig(qt3d-profile-jobs): SUBDIRS += aspectcommanddebugger
+    qtConfig(qt3d-simd-sse2): SUBDIRS += vector4d_sse
 }
