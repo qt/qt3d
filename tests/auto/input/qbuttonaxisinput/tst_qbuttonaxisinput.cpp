@@ -49,6 +49,18 @@ public:
     }
 
 private Q_SLOTS:
+    void shouldHaveDefaultState()
+    {
+        // GIVEN
+        Qt3DInput::QButtonAxisInput axisInput;
+
+        // THEN
+        QVERIFY(axisInput.buttons().isEmpty());
+        QCOMPARE(axisInput.scale(), 1.0f);
+        QCOMPARE(axisInput.acceleration(), -1.0f);
+        QCOMPARE(axisInput.deceleration(), -1.0f);
+    }
+
     void checkCloning_data()
     {
         QTest::addColumn<Qt3DInput::QButtonAxisInput *>("axisInput");
