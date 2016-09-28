@@ -111,7 +111,7 @@
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/loadgeometryjob_p.h>
-#include <Qt3DRender/private/qsceneiofactory_p.h>
+#include <Qt3DRender/private/qsceneimportfactory_p.h>
 #include <Qt3DRender/private/frustumculling_p.h>
 #include <Qt3DRender/private/light_p.h>
 #include <Qt3DRender/private/dispatchcompute_p.h>
@@ -382,7 +382,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         const QVector<Render::LoadSceneJobPtr> sceneJobs = manager->sceneManager()->pendingSceneLoaderJobs();
         for (const Render::LoadSceneJobPtr &job : sceneJobs) {
             job->setNodeManagers(d->m_nodeManagers);
-            job->setSceneIOHandlers(d->m_sceneIOHandler);
+            job->setSceneImporters(d->m_sceneImporter);
             jobs.append(job);
         }
 
@@ -488,11 +488,11 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createGeometryRendererJob
 
 void QRenderAspectPrivate::loadSceneParsers()
 {
-    const QStringList keys = QSceneIOFactory::keys();
+    const QStringList keys = QSceneImportFactory::keys();
     for (const QString &key : keys) {
-        QSceneIOHandler *sceneIOHandler = QSceneIOFactory::create(key, QStringList());
+        QSceneImporter *sceneIOHandler = QSceneImportFactory::create(key, QStringList());
         if (sceneIOHandler != nullptr)
-            m_sceneIOHandler.append(sceneIOHandler);
+            m_sceneImporter.append(sceneIOHandler);
     }
 }
 

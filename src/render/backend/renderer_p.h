@@ -104,7 +104,7 @@ class QMesh;
 class QRenderPass;
 class QAbstractShapeMesh;
 struct GraphicsApiFilterData;
-class QSceneIOHandler;
+class QSceneImporter;
 
 #ifdef QT3D_JOBS_RUN_STATS
 namespace Debug {

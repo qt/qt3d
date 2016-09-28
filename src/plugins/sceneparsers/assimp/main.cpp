@@ -37,22 +37,22 @@
 **
 ****************************************************************************/
 
-#include "assimpio.h"
+#include "assimpimporter.h"
 
-#include <Qt3DRender/private/qsceneioplugin_p.h>
+#include <Qt3DRender/private/qsceneimportplugin_p.h>
 
 QT_BEGIN_NAMESPACE
 
-class AssimpSceneIOPlugin : public Qt3DRender::QSceneIOPlugin
+class AssimpSceneImportPlugin : public Qt3DRender::QSceneImportPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID QSceneIOFactoryInterface_iid FILE "assimp.json")
+    Q_PLUGIN_METADATA(IID QSceneImportFactoryInterface_iid FILE "assimp.json")
 
-    Qt3DRender::QSceneIOHandler *create(const QString &key, const QStringList &paramList) Q_DECL_OVERRIDE
+    Qt3DRender::QSceneImporter *create(const QString &key, const QStringList &paramList) Q_DECL_OVERRIDE
     {
         Q_UNUSED(key)
         Q_UNUSED(paramList)
-        return new Qt3DRender::AssimpIO();
+        return new Qt3DRender::AssimpImporter();
     }
 };
 

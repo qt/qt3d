@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd and/or its subsidiary(-ies).
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,60 +37,78 @@
 **
 ****************************************************************************/
 
-#include "qsceneiofactory_p.h"
-#include "qsceneioplugin_p.h"
-#include "qsceneiohandler_p.h"
+#ifndef QT3DRENDER_QSCENE_IMPORTER_P_H
+#define QT3DRENDER_QSCENE_IMPORTER_P_H
 
-#include <QtCore/private/qfactoryloader_p.h>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDir>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <QObject>
+#include <QStringList>
+#include <QLoggingCategory>
+#include <QUrl>
+#include <private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
+namespace Qt3DCore {
+class QEntity;
+}
+
 namespace Qt3DRender {
 
-#ifndef QT_NO_LIBRARY
-Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader, (QSceneIOFactoryInterface_iid, QLatin1String("/sceneparsers"), Qt::CaseInsensitive))
-Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, directLoader, (QSceneIOFactoryInterface_iid, QLatin1String(""), Qt::CaseInsensitive))
-#endif
+Q_DECLARE_LOGGING_CATEGORY(SceneParsers)
 
-QStringList QSceneIOFactory::keys(const QString &pluginPath)
+class QT3DRENDERSHARED_PRIVATE_EXPORT QSceneImporter : public QObject
 {
-#ifndef QT_NO_LIBRARY
-    QStringList list;
-    if (!pluginPath.isEmpty()) {
-        QCoreApplication::addLibraryPath(pluginPath);
-        list = directLoader()->keyMap().values();
-        if (!list.isEmpty()) {
-            const QString postFix = QLatin1String(" (from ")
-                    + QDir::toNativeSeparators(pluginPath)
-                    + QLatin1Char(')');
-            const QStringList::iterator end = list.end();
-            for (QStringList::iterator it = list.begin(); it != end; ++it)
-                (*it).append(postFix);
-        }
-    }
-    list.append(loader()->keyMap().values());
-    return list;
-#else
-    return QStringList();
-#endif
-}
+    Q_OBJECT
+    Q_PROPERTY(ParserStatus status READ status NOTIFY statusChanged)
+    Q_PROPERTY(QStringList errors READ errors NOTIFY errorsChanged)
 
-QSceneIOHandler *QSceneIOFactory::create(const QString &name, const QStringList &args, const QString &pluginPath)
-{
-#ifndef QT_NO_LIBRARY
-    if (!pluginPath.isEmpty()) {
-        QCoreApplication::addLibraryPath(pluginPath);
-        if (QSceneIOHandler *ret = qLoadPlugin<QSceneIOHandler, QSceneIOPlugin>(directLoader(), name, args))
-            return ret;
-    }
-    if (QSceneIOHandler *ret = qLoadPlugin<QSceneIOHandler, QSceneIOPlugin>(loader(), name, args))
-        return ret;
-#endif
-    return nullptr;
-}
+public:
+    enum ParserStatus {
+        Empty,
+        Loading,
+        Loaded,
+        Error
+    };
+    Q_ENUM(ParserStatus)
+
+    QSceneImporter();
+    virtual ~QSceneImporter();
+
+    virtual void setSource(const QUrl &source) = 0;
+    virtual bool isFileTypeSupported(const QUrl &source) const = 0;
+    virtual Qt3DCore::QEntity *scene(const QString &id = QString()) = 0;
+    virtual Qt3DCore::QEntity *node(const QString &id) = 0;
+
+    ParserStatus status() const;
+    QStringList errors() const;
+
+Q_SIGNALS:
+    void statusChanged(ParserStatus status);
+    void errorsChanged(const QStringList &errors);
+
+protected:
+    void setStatus(ParserStatus status);
+    void logError(const QString &error);
+    void logInfo(const QString &info);
+
+private:
+    ParserStatus m_status;
+    QStringList m_errors;
+};
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_QSCENE_IMPORTER_P_H

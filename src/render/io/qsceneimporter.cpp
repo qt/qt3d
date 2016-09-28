@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "qsceneiohandler_p.h"
+#include "qsceneimporter_p.h"
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <QStringList>
 
@@ -45,26 +45,26 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-QSceneIOHandler::QSceneIOHandler() : QObject(),
+QSceneImporter::QSceneImporter() : QObject(),
     m_status(Empty)
 {
 }
 
-QSceneIOHandler::~QSceneIOHandler()
+QSceneImporter::~QSceneImporter()
 {
 }
 
-QSceneIOHandler::ParserStatus QSceneIOHandler::status() const
+QSceneImporter::ParserStatus QSceneImporter::status() const
 {
     return m_status;
 }
 
-QStringList QSceneIOHandler::errors() const
+QStringList QSceneImporter::errors() const
 {
     return m_errors;
 }
 
-void QSceneIOHandler::setStatus(ParserStatus status)
+void QSceneImporter::setStatus(ParserStatus status)
 {
     if (status != m_status) {
         m_status = status;
@@ -72,13 +72,13 @@ void QSceneIOHandler::setStatus(ParserStatus status)
     }
 }
 
-void QSceneIOHandler::logError(const QString &error)
+void QSceneImporter::logError(const QString &error)
 {
     m_errors.append(error);
     emit errorsChanged(m_errors);
 }
 
-void QSceneIOHandler::logInfo(const QString &info)
+void QSceneImporter::logInfo(const QString &info)
 {
     qCDebug(Render::Io) << info;
 }

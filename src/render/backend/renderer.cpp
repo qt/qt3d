@@ -50,7 +50,7 @@
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DRender/qeffect.h>
 
-#include <Qt3DRender/private/qsceneiohandler_p.h>
+#include <Qt3DRender/private/qsceneimporter_p.h>
 #include <Qt3DRender/private/renderstates_p.h>
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/framegraphvisitor_p.h>

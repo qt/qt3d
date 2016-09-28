@@ -37,30 +37,60 @@
 **
 ****************************************************************************/
 
-#include "qsceneioplugin_p.h"
+#include "qsceneimportfactory_p.h"
+#include "qsceneimportplugin_p.h"
+#include "qsceneimporter_p.h"
+
+#include <QtCore/private/qfactoryloader_p.h>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDir>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-QSceneIOPlugin::QSceneIOPlugin(QObject *parent) : QObject(parent)
-{
+#ifndef QT_NO_LIBRARY
+Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader, (QSceneImportFactoryInterface_iid, QLatin1String("/sceneparsers"), Qt::CaseInsensitive))
+Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, directLoader, (QSceneImportFactoryInterface_iid, QLatin1String(""), Qt::CaseInsensitive))
+#endif
 
+QStringList QSceneImportFactory::keys(const QString &pluginPath)
+{
+#ifndef QT_NO_LIBRARY
+    QStringList list;
+    if (!pluginPath.isEmpty()) {
+        QCoreApplication::addLibraryPath(pluginPath);
+        list = directLoader()->keyMap().values();
+        if (!list.isEmpty()) {
+            const QString postFix = QLatin1String(" (from ")
+                    + QDir::toNativeSeparators(pluginPath)
+                    + QLatin1Char(')');
+            const QStringList::iterator end = list.end();
+            for (QStringList::iterator it = list.begin(); it != end; ++it)
+                (*it).append(postFix);
+        }
+    }
+    list.append(loader()->keyMap().values());
+    return list;
+#else
+    return QStringList();
+#endif
 }
 
-QSceneIOPlugin::~QSceneIOPlugin()
+QSceneImporter *QSceneImportFactory::create(const QString &name, const QStringList &args, const QString &pluginPath)
 {
-
-}
-
-QSceneIOHandler *QSceneIOPlugin::create(const QString &key, const QStringList &paramList)
-{
-    Q_UNUSED(key)
-    Q_UNUSED(paramList)
+#ifndef QT_NO_LIBRARY
+    if (!pluginPath.isEmpty()) {
+        QCoreApplication::addLibraryPath(pluginPath);
+        if (QSceneImporter *ret = qLoadPlugin<QSceneImporter, QSceneImportPlugin>(directLoader(), name, args))
+            return ret;
+    }
+    if (QSceneImporter *ret = qLoadPlugin<QSceneImporter, QSceneImportPlugin>(loader(), name, args))
+        return ret;
+#endif
     return nullptr;
 }
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
-

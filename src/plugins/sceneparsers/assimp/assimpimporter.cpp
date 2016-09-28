@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "assimpio.h"
+#include "assimpimporter.h"
 
 #include <Qt3DCore/private/qabstractnodefactory_p.h>
 #include <Qt3DCore/qentity.h>
@@ -70,7 +70,7 @@ using namespace Qt3DExtras;
 namespace Qt3DRender {
 
 /*!
-    \class Qt3DRender::AssimpIO
+    \class Qt3DRender::AssimpImporter
     \inmodule Qt3DRender
     \since 5.5
 
@@ -82,7 +82,7 @@ namespace Qt3DRender {
     \sa GLTFPIO
 */
 
-Q_LOGGING_CATEGORY(AssimpIOLog, "Qt3D.AssimpIO")
+Q_LOGGING_CATEGORY(AssimpImporterLog, "Qt3D.AssimpImporter")
 
 namespace {
 
@@ -242,12 +242,12 @@ QAttribute *createAttribute(QBuffer *buffer,
 
 } // anonymous
 
-QStringList AssimpIO::assimpSupportedFormatsList = AssimpIO::assimpSupportedFormats();
+QStringList AssimpImporter::assimpSupportedFormatsList = AssimpImporter::assimpSupportedFormats();
 
 /*!
  * Returns a QStringlist with the suffixes of the various supported asset formats.
  */
-QStringList AssimpIO::assimpSupportedFormats()
+QStringList AssimpImporter::assimpSupportedFormats()
 {
     QStringList formats;
 
@@ -334,9 +334,9 @@ private:
 };
 
 /*!
- *  Constructor. Initializes a new instance of AssimpIO.
+ *  Constructor. Initializes a new instance of AssimpImporter.
  */
-AssimpIO::AssimpIO() : QSceneIOHandler(),
+AssimpImporter::AssimpImporter() : QSceneImporter(),
     m_sceneParsed(false),
     m_scene(nullptr)
 {
@@ -345,7 +345,7 @@ AssimpIO::AssimpIO() : QSceneIOHandler(),
 /*!
  * Destructor. Cleans the parser properly before destroying it.
  */
-AssimpIO::~AssimpIO()
+AssimpImporter::~AssimpImporter()
 {
     cleanup();
 }
@@ -354,12 +354,12 @@ AssimpIO::~AssimpIO()
  *  Returns \c true if the provided \a path has a suffix supported
  *  by the Assimp Assets importer.
  */
-bool AssimpIO::isAssimpPath(const QString &path)
+bool AssimpImporter::isAssimpPath(const QString &path)
 {
     QFileInfo fileInfo(path);
 
     if (!fileInfo.exists() ||
-            !AssimpIO::assimpSupportedFormatsList.contains(fileInfo.suffix().toLower()))
+            !AssimpImporter::assimpSupportedFormatsList.contains(fileInfo.suffix().toLower()))
         return false;
     return true;
 }
@@ -368,13 +368,13 @@ bool AssimpIO::isAssimpPath(const QString &path)
  * Sets the \a source used by the parser to load the asset file.
  * If the file is valid, this will trigger parsing of the file.
  */
-void AssimpIO::setSource(const QUrl &source)
+void AssimpImporter::setSource(const QUrl &source)
 {
     const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
     QFileInfo file(path);
     m_sceneDir = file.absoluteDir();
     if (!file.exists()) {
-        qCWarning(AssimpIOLog) << "File missing " << path;
+        qCWarning(AssimpImporterLog) << "File missing " << path;
         return ;
     }
     readSceneFile(path);
@@ -384,10 +384,10 @@ void AssimpIO::setSource(const QUrl &source)
  * Returns \c true if the extension of \a source is supported by
  * the assimp parser.
  */
-bool AssimpIO::isFileTypeSupported(const QUrl &source) const
+bool AssimpImporter::isFileTypeSupported(const QUrl &source) const
 {
     const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
-    return AssimpIO::isAssimpPath(path);
+    return AssimpImporter::isAssimpPath(path);
 }
 
 /*!
@@ -397,7 +397,7 @@ bool AssimpIO::isFileTypeSupported(const QUrl &source) const
  *
  * Returns \c nullptr if \a id was specified but no node matching it was found.
  */
-Qt3DCore::QEntity *AssimpIO::scene(const QString &id)
+Qt3DCore::QEntity *AssimpImporter::scene(const QString &id)
 {
     // m_aiScene shouldn't be null.
     // If it is either, the file failed to be imported or
@@ -409,7 +409,7 @@ Qt3DCore::QEntity *AssimpIO::scene(const QString &id)
     // if id specified, tries to find node
     if (!id.isEmpty() &&
             !(rootNode = rootNode->FindNode(id.toUtf8().constData()))) {
-        qCDebug(AssimpIOLog) << Q_FUNC_INFO << " Couldn't find requested scene node";
+        qCDebug(AssimpImporterLog) << Q_FUNC_INFO << " Couldn't find requested scene node";
         return nullptr;
     }
 
@@ -422,7 +422,7 @@ Qt3DCore::QEntity *AssimpIO::scene(const QString &id)
  *  Returns a Node from the scene identified by \a id.
  *  Returns \c nullptr if the node was not found.
  */
-Qt3DCore::QEntity *AssimpIO::node(const QString &id)
+Qt3DCore::QEntity *AssimpImporter::node(const QString &id)
 {
     if (m_scene == nullptr || m_scene->m_aiScene == nullptr)
         return nullptr;
@@ -434,7 +434,7 @@ Qt3DCore::QEntity *AssimpIO::node(const QString &id)
 /*!
  * Returns a Node from an Assimp aiNode \a node.
  */
-Qt3DCore::QEntity *AssimpIO::node(aiNode *node)
+Qt3DCore::QEntity *AssimpImporter::node(aiNode *node)
 {
     if (node == nullptr)
         return nullptr;
@@ -483,7 +483,7 @@ Qt3DCore::QEntity *AssimpIO::node(aiNode *node)
  * the scene using Assimp, after having cleaned up previously saved values
  * from eventual previous parsings.
  */
-void AssimpIO::readSceneFile(const QString &path)
+void AssimpImporter::readSceneFile(const QString &path)
 {
     cleanup();
 
@@ -495,7 +495,7 @@ void AssimpIO::readSceneFile(const QString &path)
     m_scene->m_importer->SetIOHandler(new AssimpHelper::AssimpIOSystem());
 
     // type and aiProcess_Triangulate discompose polygons with more than 3 points in triangles
-    // aiProcess_SortByPType makes sur that meshes data are triangles
+    // aiProcess_SortByPType makes sure that meshes data are triangles
     m_scene->m_aiScene = m_scene->m_importer->ReadFile(path.toUtf8().constData(),
                                                        aiProcess_SortByPType|
                                                        aiProcess_Triangulate|
@@ -503,7 +503,7 @@ void AssimpIO::readSceneFile(const QString &path)
                                                        aiProcess_GenSmoothNormals|
                                                        aiProcess_FlipUVs);
     if (m_scene->m_aiScene == nullptr) {
-        qCWarning(AssimpIOLog) << "Assimp scene import failed";
+        qCWarning(AssimpImporterLog) << "Assimp scene import failed";
         return ;
     }
     parse();
@@ -512,7 +512,7 @@ void AssimpIO::readSceneFile(const QString &path)
 /*!
  * Cleans the various dictionaries holding the scene's information.
  */
-void AssimpIO::cleanup()
+void AssimpImporter::cleanup()
 {
     m_sceneParsed = false;
     delete m_scene;
@@ -523,7 +523,7 @@ void AssimpIO::cleanup()
  * Parses the aiScene provided py Assimp and converts Assimp
  * values to Qt3D values.
  */
-void AssimpIO::parse()
+void AssimpImporter::parse()
 {
     if (!m_sceneParsed) {
         // Set parsed flags
@@ -549,7 +549,7 @@ void AssimpIO::parse()
  * Qt3D material and adds it to a dictionary of materials.
  * \sa Material
  */
-void AssimpIO::loadMaterial(uint materialIndex)
+void AssimpImporter::loadMaterial(uint materialIndex)
 {
     // Generates default material based on what the assimp material contains
     aiMaterial *assimpMaterial = m_scene->m_aiScene->mMaterials[materialIndex];
@@ -571,7 +571,7 @@ void AssimpIO::loadMaterial(uint materialIndex)
  * and adds it to a dictionary of meshes.
  * \sa QGeometryRenderer
  */
-void AssimpIO::loadMesh(uint meshIndex)
+void AssimpImporter::loadMesh(uint meshIndex)
 {
     aiMesh *mesh = m_scene->m_aiScene->mMeshes[meshIndex];
 
@@ -715,7 +715,7 @@ void AssimpIO::loadMesh(uint meshIndex)
 
     m_scene->m_meshes[meshIndex] = geometryRenderer;
 
-    qCDebug(AssimpIOLog) << Q_FUNC_INFO << " Mesh " << aiStringToQString(mesh->mName)
+    qCDebug(AssimpImporterLog) << Q_FUNC_INFO << " Mesh " << aiStringToQString(mesh->mName)
                              << " Vertices " << mesh->mNumVertices << " Faces " << mesh->mNumFaces << " Indices " << indices;
 }
 
@@ -724,7 +724,7 @@ void AssimpIO::loadMesh(uint meshIndex)
  * adds it to a dictionary of textures.
  * \sa Texture
  */
-void AssimpIO::loadEmbeddedTexture(uint textureIndex)
+void AssimpImporter::loadEmbeddedTexture(uint textureIndex)
 {
     aiTexture *assimpTexture = m_scene->m_aiScene->mTextures[textureIndex];
     QAbstractTexture *texture = QAbstractNodeFactory::createNode<QTexture2D>("QTexture2D");
@@ -752,7 +752,7 @@ void AssimpIO::loadEmbeddedTexture(uint textureIndex)
 /*!
  * Loads the light in the current scene located at \a lightIndex.
  */
-void AssimpIO::loadLight(uint lightIndex)
+void AssimpImporter::loadLight(uint lightIndex)
 {
     aiLight *light = m_scene->m_aiScene->mLights[lightIndex];
     // TODO: Implement me!
@@ -762,7 +762,7 @@ void AssimpIO::loadLight(uint lightIndex)
 /*!
  * Parses the camera at cameraIndex and saves it to a dictionary of cameras.
  */
-void AssimpIO::loadCamera(uint cameraIndex)
+void AssimpImporter::loadCamera(uint cameraIndex)
 {
     aiCamera *assimpCamera = m_scene->m_aiScene->mCameras[cameraIndex];
     aiNode *cameraNode = m_scene->m_aiScene->mRootNode->FindNode(assimpCamera->mName);
@@ -793,7 +793,7 @@ void AssimpIO::loadCamera(uint cameraIndex)
 }
 
 // OPTIONAL
-void AssimpIO::loadAnimation(uint animationIndex)
+void AssimpImporter::loadAnimation(uint animationIndex)
 {
     Q_UNUSED(animationIndex);
 }
@@ -801,21 +801,21 @@ void AssimpIO::loadAnimation(uint animationIndex)
 /*!
  *  Sets the object name of \a material to the name of \a assimpMaterial.
  */
-void AssimpIO::copyMaterialName(QMaterial *material, aiMaterial *assimpMaterial)
+void AssimpImporter::copyMaterialName(QMaterial *material, aiMaterial *assimpMaterial)
 {
     aiString name;
     if (assimpMaterial->Get(AI_MATKEY_NAME, name) == aiReturn_SUCCESS) {
         // May not be necessary
         // Kept for debug purposes at the moment
         material->setObjectName(aiStringToQString(name));
-        qCDebug(AssimpIOLog) << Q_FUNC_INFO << "Assimp Material " << material->objectName();
+        qCDebug(AssimpImporterLog) << Q_FUNC_INFO << "Assimp Material " << material->objectName();
     }
 }
 
 /*!
  *  Fills \a material color properties with \a assimpMaterial color properties.
  */
-void AssimpIO::copyMaterialColorProperties(QMaterial *material, aiMaterial *assimpMaterial)
+void AssimpImporter::copyMaterialColorProperties(QMaterial *material, aiMaterial *assimpMaterial)
 {
     aiColor3D color;
     if (assimpMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, color) == aiReturn_SUCCESS)
@@ -835,7 +835,7 @@ void AssimpIO::copyMaterialColorProperties(QMaterial *material, aiMaterial *assi
 /*!
  * Retrieves a \a material bool property.
  */
-void AssimpIO::copyMaterialBoolProperties(QMaterial *material, aiMaterial *assimpMaterial)
+void AssimpImporter::copyMaterialBoolProperties(QMaterial *material, aiMaterial *assimpMaterial)
 {
     int value;
     if (assimpMaterial->Get(AI_MATKEY_TWOSIDED, value) == aiReturn_SUCCESS)
@@ -844,7 +844,7 @@ void AssimpIO::copyMaterialBoolProperties(QMaterial *material, aiMaterial *assim
         setParameterValue(ASSIMP_MATERIAL_IS_WIREFRAME, material, (value == 0) ? false : true);
 }
 
-void AssimpIO::copyMaterialShadingModel(QMaterial *material, aiMaterial *assimpMaterial)
+void AssimpImporter::copyMaterialShadingModel(QMaterial *material, aiMaterial *assimpMaterial)
 {
     Q_UNUSED(material);
     Q_UNUSED(assimpMaterial);
@@ -855,7 +855,7 @@ void AssimpIO::copyMaterialShadingModel(QMaterial *material, aiMaterial *assimpM
     //    AssimpIO::assimpMaterialAttributesMap[AI_MATKEY_BLEND_FUNC] = &AssimpIO::getMaterialBlendingFunction;
 }
 
-void AssimpIO::copyMaterialBlendingFunction(QMaterial *material, aiMaterial *assimpMaterial)
+void AssimpImporter::copyMaterialBlendingFunction(QMaterial *material, aiMaterial *assimpMaterial)
 {
     Q_UNUSED(material);
     Q_UNUSED(assimpMaterial);
@@ -865,7 +865,7 @@ void AssimpIO::copyMaterialBlendingFunction(QMaterial *material, aiMaterial *ass
 /*!
  *
  */
-void AssimpIO::copyMaterialTextures(QMaterial *material, aiMaterial *assimpMaterial)
+void AssimpImporter::copyMaterialTextures(QMaterial *material, aiMaterial *assimpMaterial)
 {
     static const aiTextureType textureType[] = {aiTextureType_AMBIENT,
                                                 aiTextureType_DIFFUSE,
@@ -904,7 +904,7 @@ void AssimpIO::copyMaterialTextures(QMaterial *material, aiMaterial *assimpMater
                 texImage->setSource(QUrl::fromLocalFile(fullPath));
                 tex->addTextureImage(texImage);
                 m_scene->m_materialTextures.insert(fullPath, tex);
-                qCDebug(AssimpIOLog) << Q_FUNC_INFO << " Loaded Texture " << fullPath;
+                qCDebug(AssimpImporterLog) << Q_FUNC_INFO << " Loaded Texture " << fullPath;
             }
             setParameterValue(m_scene->m_textureToParameterName[textureType[i]],
                     material, QVariant::fromValue(m_scene->m_materialTextures[fullPath]));
@@ -915,7 +915,7 @@ void AssimpIO::copyMaterialTextures(QMaterial *material, aiMaterial *assimpMater
 /*!
  * Retrieves a \a material float property.
  */
-void AssimpIO::copyMaterialFloatProperties(QMaterial *material, aiMaterial *assimpMaterial)
+void AssimpImporter::copyMaterialFloatProperties(QMaterial *material, aiMaterial *assimpMaterial)
 {
     float value = 0;
     if (assimpMaterial->Get(AI_MATKEY_OPACITY, value) == aiReturn_SUCCESS)
@@ -967,14 +967,14 @@ bool AssimpRawTextureImage::AssimpRawTextureImageFunctor::operator ==(const QTex
     return (otherFunctor != nullptr && otherFunctor->m_data == m_data);
 }
 
-AssimpIO::SceneImporter::SceneImporter()
+AssimpImporter::SceneImporter::SceneImporter()
     : m_importer(new Assimp::Importer())
     , m_aiScene(nullptr)
 {
     // The Assimp::Importer manages the lifetime of the aiScene object
 }
 
-AssimpIO::SceneImporter::~SceneImporter()
+AssimpImporter::SceneImporter::~SceneImporter()
 {
     delete m_importer;
 }
@@ -983,4 +983,4 @@ AssimpIO::SceneImporter::~SceneImporter()
 
 QT_END_NAMESPACE
 
-#include "assimpio.moc"
+#include "assimpimporter.moc"

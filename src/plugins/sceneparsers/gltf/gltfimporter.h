@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-#ifndef GLTFIO_H
-#define GLTFIO_H
+#ifndef GLTFIMPORTER_H
+#define GLTFIMPORTER_H
 
 //
 //  W A R N I N G
@@ -57,7 +57,7 @@
 
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/private/qsceneiohandler_p.h>
+#include <Qt3DRender/private/qsceneimporter_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -80,15 +80,15 @@ class QTechnique;
 class QParameter;
 class QGeometryRenderer;
 
-Q_DECLARE_LOGGING_CATEGORY(GLTFIOLog)
+Q_DECLARE_LOGGING_CATEGORY(GLTFImporterLog)
 
-class GLTFIO : public QSceneIOHandler
+class GLTFImporter : public QSceneImporter
 {
     Q_OBJECT
 
 public:
-    GLTFIO();
-    ~GLTFIO();
+    GLTFImporter();
+    ~GLTFImporter();
 
     void setBasePath(const QString& path);
     bool setJSON( const QJsonDocument &json );
@@ -208,4 +208,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // GLTFIO_H
+#endif // GLTFIMPORTER_H

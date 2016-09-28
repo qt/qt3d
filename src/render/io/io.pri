@@ -8,10 +8,10 @@ HEADERS += \
     $$PWD/qurlhelper_p.h \
     $$PWD/scene_p.h \
     $$PWD/scenemanager_p.h \
-    $$PWD/qsceneiohandler_p.h \
-    $$PWD/qsceneioplugin_p.h \
+    $$PWD/qsceneimporter_p.h \
+    $$PWD/qsceneimportplugin_p.h \
     $$PWD/glbuffer_p.h \
-    $$PWD/qsceneiofactory_p.h
+    $$PWD/qsceneimportfactory_p.h
 
 SOURCES += \
     $$PWD/objloader.cpp \
@@ -20,7 +20,7 @@ SOURCES += \
     $$PWD/qurlhelper.cpp \
     $$PWD/scene.cpp \
     $$PWD/scenemanager.cpp \
-    $$PWD/qsceneiohandler.cpp \
-    $$PWD/qsceneioplugin.cpp \
+    $$PWD/qsceneimporter.cpp \
+    $$PWD/qsceneimportplugin.cpp \
     $$PWD/glbuffer.cpp \
-    $$PWD/qsceneiofactory.cpp
+    $$PWD/qsceneimportfactory.cpp

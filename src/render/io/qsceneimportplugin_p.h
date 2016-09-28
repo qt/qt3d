@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QSCENEIOPLUGIN_P_H
-#define QSCENEIOPLUGIN_P_H
+#ifndef QSCENEIMPORTPLUGIN_P_H
+#define QSCENEIMPORTPLUGIN_P_H
 
 //
 //  W A R N I N G
@@ -61,22 +61,22 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-#define QSceneIOFactoryInterface_iid "org.qt-project.Qt3DRender.QSceneIOFactoryInterface 5.6"
+#define QSceneImportFactoryInterface_iid "org.qt-project.Qt3DRender.QSceneImportFactoryInterface 5.7"
 
-class QSceneIOHandler;
+class QSceneImporter;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QSceneIOPlugin : public QObject
+class QT3DRENDERSHARED_PRIVATE_EXPORT QSceneImportPlugin : public QObject
 {
     Q_OBJECT
 public:
-    explicit QSceneIOPlugin(QObject *parent = nullptr);
-    ~QSceneIOPlugin();
+    explicit QSceneImportPlugin(QObject *parent = nullptr);
+    ~QSceneImportPlugin();
 
-    virtual QSceneIOHandler *create(const QString &key, const QStringList &paramList);
+    virtual QSceneImporter *create(const QString &key, const QStringList &paramList);
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QSCENEIOPLUGIN_P_H
+#endif // QSCENEIMPORTPLUGIN_P_H

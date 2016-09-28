@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,78 +37,38 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QSCENE_IOHANDLER_H
-#define QT3DRENDER_QSCENE_IOHANDLER_H
+#ifndef QSCENEIMPORTFACTORY_P_H
+#define QSCENEIMPORTFACTORY_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <QObject>
-#include <QStringList>
-#include <QLoggingCategory>
-#include <QUrl>
 #include <private/qt3drender_global_p.h>
+#include <QtCore/QStringList>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-class QEntity;
-}
-
 namespace Qt3DRender {
 
-Q_DECLARE_LOGGING_CATEGORY(SceneParsers)
+class QSceneImporter;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT QSceneIOHandler : public QObject
+class QT3DRENDERSHARED_PRIVATE_EXPORT QSceneImportFactory
 {
-    Q_OBJECT
-    Q_PROPERTY(ParserStatus status READ status NOTIFY statusChanged)
-    Q_PROPERTY(QStringList errors READ errors NOTIFY errorsChanged)
-
 public:
-    enum ParserStatus {
-        Empty,
-        Loading,
-        Loaded,
-        Error
-    };
-    Q_ENUM(ParserStatus)
-
-    QSceneIOHandler();
-    virtual ~QSceneIOHandler();
-
-    virtual void setSource(const QUrl &source) = 0;
-    virtual bool isFileTypeSupported(const QUrl &source) const = 0;
-    virtual Qt3DCore::QEntity *scene(const QString &id = QString()) = 0;
-    virtual Qt3DCore::QEntity *node(const QString &id) = 0;
-
-    ParserStatus status() const;
-    QStringList errors() const;
-
-Q_SIGNALS:
-    void statusChanged(ParserStatus status);
-    void errorsChanged(const QStringList &errors);
-
-protected:
-    void setStatus(ParserStatus status);
-    void logError(const QString &error);
-    void logInfo(const QString &info);
-
-private:
-    ParserStatus m_status;
-    QStringList m_errors;
+    static QStringList keys(const QString &pluginPath = QString());
+    static QSceneImporter *create(const QString &name, const QStringList &args, const QString &pluginPath = QString());
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QSCENE_IOHANDLER_H
+#endif // QSCENEIMPORTFACTORY_P_H
