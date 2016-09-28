@@ -38,7 +38,8 @@ HEADERS += \
     $$PWD/commandexecuter_p.h \
     $$PWD/uniform_p.h \
     $$PWD/shaderparameterpack_p.h \
-    $$PWD/renderviewbuilder_p.h
+    $$PWD/renderviewbuilder_p.h \
+    $$PWD/frameprofiler_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
