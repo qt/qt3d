@@ -494,7 +494,7 @@ void GraphicsContext::loadShader(Shader *shader)
     // TODO: Improve this so we only introspect once per actual OpenGL shader program
     //       rather than once per ShaderNode. Could cache the interface description along
     //       with the QOpenGLShaderProgram in the ShaderCache.
-    if (!shader->isLoaded()) {
+    if (Q_LIKELY(shaderProgram != nullptr) && !shader->isLoaded()) {
         // Introspect and set up interface description on Shader backend node
         shader->initializeUniforms(m_glHelper->programUniformsAndLocations(shaderProgram->programId()));
         shader->initializeAttributes(m_glHelper->programAttributesAndLocations(shaderProgram->programId()));
