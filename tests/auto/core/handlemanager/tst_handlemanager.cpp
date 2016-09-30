@@ -75,7 +75,7 @@ void tst_HandleManager::correctPointer()
 {
     // GIVEN
     Qt3DCore::QHandleManager<SimpleResource> manager;
-    SimpleResource *p1 = (SimpleResource *)0xdeadbeef;
+    SimpleResource *p1 = (SimpleResource *)(quintptr)0xdeadbeef;
 
     // WHEN
     const Handle h = manager.acquire(p1);
@@ -93,9 +93,9 @@ void tst_HandleManager::correctPointers()
     // GIVEN
     Qt3DCore::QHandleManager<SimpleResource> manager;
     SimpleResource *p[3];
-    p[0] = (SimpleResource *)0xdeadbeef;
-    p[1] = (SimpleResource *)0x11111111;
-    p[2] = (SimpleResource *)0x22222222;
+    p[0] = (SimpleResource *)(quintptr)0xdeadbeef;
+    p[1] = (SimpleResource *)(quintptr)0x11111111;
+    p[2] = (SimpleResource *)(quintptr)0x22222222;
 
     // WHEN
     for (int i = 0; i < 3; ++i) {
@@ -211,7 +211,7 @@ void tst_HandleManager::resetRemovesAllEntries()
 
     // WHEN
     for (int i = 0; i < 100; ++i) {
-        SimpleResource *p = (SimpleResource *) 0xdead0000 + i;
+        SimpleResource *p = (SimpleResource *)(quintptr)(0xdead0000 + i);
         const Handle h = manager.acquire(p);
 
         bool ok = false;
@@ -240,7 +240,7 @@ void tst_HandleManager::maximumEntries()
 
     // WHEN
     for (int i = 0; i < (int)Handle::maxIndex(); ++i) {
-        SimpleResource *p = (SimpleResource *) 0xdead0000 + i;
+        SimpleResource *p = (SimpleResource *)(quintptr)(0xdead0000 + i);
         const Handle h = manager.acquire(p);
 
         bool ok = false;
@@ -264,7 +264,7 @@ void tst_HandleManager::checkNoCounterOverflow()
     // GIVEN
     const int indexBits = 16;
     Qt3DCore::QHandleManager<SimpleResource, indexBits> manager;
-    SimpleResource *p = (SimpleResource *) 0xdead0000;
+    SimpleResource *p = (SimpleResource *)(quintptr)0xdead0000;
     Qt3DCore::QHandle<SimpleResource, indexBits> h = manager.acquire(p);
 
     // THEN

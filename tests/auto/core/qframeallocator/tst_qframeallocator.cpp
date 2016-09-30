@@ -294,8 +294,8 @@ void tst_QFrameAllocator::containsCheckQFrameChunk()
         ptrs << c.allocate(16);
     }
 
-    QVERIFY(!c.contains((void *)0xffffffff, 16));
-    QVERIFY(!c2.contains((void *)0xffffffff, 16));
+    QVERIFY(!c.contains((void *)(quintptr)0xffffffff, 16));
+    QVERIFY(!c2.contains((void *)(quintptr)0xffffffff, 16));
     QVERIFY(c.contains(ptrs.first(), 16));
     QVERIFY(!c2.contains(ptrs.first(), 16));
     QVERIFY(c.contains(ptrs.last(), 16));
@@ -305,7 +305,7 @@ void tst_QFrameAllocator::containsCheckQFrameChunk()
         ptrs << c2.allocate(16);
     }
 
-    QVERIFY(!c.contains((void *)0xffffffff, 16));
+    QVERIFY(!c.contains((void *)(quintptr)0xffffffff, 16));
     QVERIFY(!c.contains(ptrs.last(), 16));
     QVERIFY(c.contains(ptrs.first(), 16));
     QVERIFY(c2.contains(ptrs.last(), 16));
