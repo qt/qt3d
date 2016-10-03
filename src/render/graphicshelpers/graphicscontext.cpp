@@ -858,6 +858,13 @@ void GraphicsContext::drawElements(GLenum primitiveType,
                              baseVertex);
 }
 
+void GraphicsContext::drawElementsIndirect(GLenum mode,
+                                           GLenum type,
+                                           void *indirect)
+{
+    m_glHelper->drawElementsIndirect(mode, type, indirect);
+}
+
 /*!
  * Wraps an OpenGL call to glDrawArrays.
  */
@@ -868,6 +875,11 @@ void GraphicsContext::drawArrays(GLenum primitiveType,
     m_glHelper->drawArrays(primitiveType,
                            first,
                            count);
+}
+
+void GraphicsContext::drawArraysIndirect(GLenum mode, void *indirect)
+{
+    m_glHelper->drawArraysIndirect(mode, indirect);
 }
 
 void GraphicsContext::setVerticesPerPatch(GLint verticesPerPatch)
