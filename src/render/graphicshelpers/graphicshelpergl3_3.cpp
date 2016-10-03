@@ -149,6 +149,11 @@ void GraphicsHelperGL3_3::drawElements(GLenum primitiveType,
                                       baseVertex);
 }
 
+void GraphicsHelperGL3_3::drawElementsIndirect(GLenum, GLenum, void *)
+{
+    qWarning() << "Indirect Drawing is not supported with OpenGL 3";
+}
+
 void GraphicsHelperGL3_3::drawArrays(GLenum primitiveType,
                                       GLint first,
                                       GLsizei count)
@@ -156,6 +161,11 @@ void GraphicsHelperGL3_3::drawArrays(GLenum primitiveType,
     m_funcs->glDrawArrays(primitiveType,
                           first,
                           count);
+}
+
+void GraphicsHelperGL3_3::drawArraysIndirect(GLenum , void *)
+{
+    qWarning() << "Indirect Drawing is not supported with OpenGL 3";
 }
 
 void GraphicsHelperGL3_3::setVerticesPerPatch(GLint verticesPerPatch)
