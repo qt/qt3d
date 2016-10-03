@@ -60,6 +60,12 @@
 #include <qglobal.h>
 #include <QVector>
 
+// Windows had the smart idea of using a #define MemoryBarrier
+// https://msdn.microsoft.com/en-us/library/windows/desktop/ms684208(v=vs.85).aspx
+#if defined(Q_OS_WIN) && defined(MemoryBarrier)
+#undef MemoryBarrier
+#endif
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -91,7 +97,8 @@ public:
         Lighting,
         ComputeDispatch,
         Surface,
-        RenderCapture
+        RenderCapture,
+        MemoryBarrier
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 
