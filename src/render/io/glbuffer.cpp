@@ -86,7 +86,7 @@ GLenum glBufferTypes[] = {
 } // anonymous
 
 GLBuffer::GLBuffer()
-    : m_bufferId(~0)
+    : m_bufferId(0)
     , m_isCreated(false)
     , m_bound(false)
     , m_lastTarget(GL_ARRAY_BUFFER)
