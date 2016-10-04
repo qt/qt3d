@@ -149,7 +149,7 @@ UniformValue UniformValue::fromVariant(const QVariant &variant)
     case QMetaType::QMatrix4x4: {
         const QMatrix4x4 mat44 = variant.value<QMatrix4x4>();
         // Use constData because we want column-major layout
-        memcpy(v.data<float>(), mat44.constData(), sizeof(16 * sizeof(float)));
+        memcpy(v.data<float>(), mat44.constData(), 16 * sizeof(float));
         break;
     }
     default:
