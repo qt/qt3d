@@ -27,11 +27,21 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <qbackendnodetester.h>
 #include <private/renderview_p.h>
 #include <private/qframeallocator_p.h>
 #include <private/qframeallocator_p_p.h>
+#include <private/memorybarrier_p.h>
+#include <private/renderviewjobutils_p.h>
+#include <testpostmanarbiter.h>
 
-class tst_RenderViews : public QObject
+QT_BEGIN_NAMESPACE
+
+namespace Qt3DRender {
+
+namespace Render {
+
+class tst_RenderViews : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 private Q_SLOTS:
@@ -39,8 +49,8 @@ private Q_SLOTS:
     void checkRenderViewSizeFitsWithAllocator()
     {
         QSKIP("Allocated Disabled");
-        QVERIFY(sizeof(Qt3DRender::Render::RenderView) <= 192);
-        QVERIFY(sizeof(Qt3DRender::Render::RenderView::InnerData) <= 192);
+        QVERIFY(sizeof(RenderView) <= 192);
+        QVERIFY(sizeof(RenderView::InnerData) <= 192);
     }
 
     void testSort()
@@ -53,7 +63,7 @@ private Q_SLOTS:
         QSKIP("Allocated Disabled");
         // GIVEN
         Qt3DCore::QFrameAllocator allocator(192, 16, 128);
-        Qt3DRender::Render::RenderView *rv = allocator.allocate<Qt3DRender::Render::RenderView>();
+        RenderView *rv = allocator.allocate<RenderView>();
 
         // THEN
         QVERIFY(!allocator.isEmpty());
@@ -65,10 +75,70 @@ private Q_SLOTS:
         QVERIFY(allocator.isEmpty());
     }
 
+    void checkRenderViewInitialState()
+    {
+        // GIVEN
+        RenderView renderView;
+
+        // THEN
+        QCOMPARE(renderView.memoryBarrier(), QMemoryBarrier::None);
+    }
+
+    void checkMemoryBarrierInitialization()
+    {
+        // GIVEN
+        RenderView renderView;
+
+        // THEN
+        QCOMPARE(renderView.memoryBarrier(), QMemoryBarrier::None);
+
+        // WHEN
+        const QMemoryBarrier::BarrierTypes barriers(QMemoryBarrier::BufferUpdateBarrier|QMemoryBarrier::ShaderImageAccessBarrier);
+        renderView.setMemoryBarrier(barriers);
+
+        // THEN
+        QCOMPARE(renderView.memoryBarrier(), barriers);
+    }
+
+    void checkSetRenderViewConfig()
+    {
+        {
+            // GIVEN
+            const QMemoryBarrier::BarrierTypes barriers(QMemoryBarrier::AtomicCounterBarrier|QMemoryBarrier::ShaderStorageBarrier);
+            Qt3DRender::QMemoryBarrier frontendBarrier;
+            FrameGraphManager frameGraphManager;
+            MemoryBarrier backendBarrier;
+            RenderView renderView;
+            // setRenderViewConfigFromFrameGraphLeafNode assumes node has a manager
+            backendBarrier.setFrameGraphManager(&frameGraphManager);
+
+            // WHEN
+            frontendBarrier.setBarrierTypes(barriers);
+            simulateInitialization(&frontendBarrier, &backendBarrier);
+
+            // THEN
+            QCOMPARE(renderView.memoryBarrier(), QMemoryBarrier::None);
+            QCOMPARE(backendBarrier.barrierTypes(), barriers);
+
+            // WHEN
+            Qt3DRender::Render::setRenderViewConfigFromFrameGraphLeafNode(&renderView, &backendBarrier);
+
+            // THEN
+            QCOMPARE(backendBarrier.barrierTypes(), renderView.memoryBarrier());
+        }
+        // TO DO: Complete tests for other framegraph node types
+    }
+
 private:
 };
 
+} // Render
 
-QTEST_APPLESS_MAIN(tst_RenderViews)
+} // Qt3DRender
+
+QT_END_NAMESPACE
+
+
+QTEST_APPLESS_MAIN(Qt3DRender::Render::tst_RenderViews)
 
 #include "tst_renderviews.moc"

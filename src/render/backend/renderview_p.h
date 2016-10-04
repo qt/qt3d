@@ -61,6 +61,7 @@
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/qsortpolicy_p.h>
 #include <Qt3DRender/private/lightsource_p.h>
+#include <Qt3DRender/private/qmemorybarrier_p.h>
 
 #include <Qt3DCore/private/qframeallocator_p.h>
 
@@ -217,6 +218,9 @@ public:
     inline void setRenderCaptureNodeId(const Qt3DCore::QNodeId nodeId) Q_DECL_NOTHROW { m_renderCaptureNodeId = nodeId; }
     inline const Qt3DCore::QNodeId renderCaptureNodeId() const Q_DECL_NOTHROW { return m_renderCaptureNodeId; }
 
+    void setMemoryBarrier(QMemoryBarrier::BarrierTypes barrier) Q_DECL_NOTHROW { m_memoryBarrier = barrier; }
+    QMemoryBarrier::BarrierTypes memoryBarrier() const Q_DECL_NOTHROW { return m_memoryBarrier; }
+
     // Helps making the size of RenderView smaller
     // Contains all the data needed for the actual building of the RenderView
     // But that aren't used later by the Renderer
@@ -270,6 +274,7 @@ private:
     bool m_compute:1;
     bool m_frustumCulling:1;
     int m_workGroups[3];
+    QMemoryBarrier::BarrierTypes m_memoryBarrier;
 
     // We do not use pointers to RenderNodes or Drawable's here so that the
     // render aspect is free to change the drawables on the next frame whilst

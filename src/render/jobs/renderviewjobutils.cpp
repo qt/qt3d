@@ -65,6 +65,7 @@
 #include <Qt3DRender/private/rendercapture_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <Qt3DRender/private/techniquemanager_p.h>
+#include <Qt3DRender/private/memorybarrier_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -232,6 +233,12 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                     renderCapture->acknowledgeCaptureRequest();
                     rv->setRenderCaptureNodeId(renderCapture->peerId());
                 }
+                break;
+            }
+
+            case FrameGraphNode::MemoryBarrier: {
+                const Render::MemoryBarrier *barrier = static_cast<const Render::MemoryBarrier *>(node);
+                rv->setMemoryBarrier(barrier->barrierTypes()|rv->memoryBarrier());
                 break;
             }
 
