@@ -71,6 +71,14 @@ namespace Qt3DRender {
    \l{Qt 3D Render Framegraph}{FrameGraph}.
  */
 
+/*!
+    \enum QRenderSettings::RenderPolicy
+
+    This enum type describes types of render policies available.
+    \value Always Always try to render (default)
+    \value OnDemand Only render when something changes
+*/
+
 /*! \internal */
 QRenderSettingsPrivate::QRenderSettingsPrivate()
     : Qt3DCore::QComponentPrivate()
