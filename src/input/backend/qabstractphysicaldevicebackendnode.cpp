@@ -101,8 +101,10 @@ void QAbstractPhysicalDeviceBackendNodePrivate::removeAxisSetting(Qt3DCore::QNod
 {
     QVector<Input::AxisIdSetting>::iterator it;
     for (it = m_axisSettings.begin(); it != m_axisSettings.end(); ++it) {
-        if (it->m_axisSettingsId == axisSettingsId)
+        if (it->m_axisSettingsId == axisSettingsId) {
             m_axisSettings.erase(it);
+            break;
+        }
     }
 }
 
