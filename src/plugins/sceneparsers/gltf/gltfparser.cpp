@@ -196,13 +196,11 @@ bool GLTFParser::setJSON(const QJsonDocument &json )
 void GLTFParser::setSource(const QUrl &source)
 {
     const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
-    QFileInfo finfo(path);
-    if (!finfo.exists()) {
-        qCWarning(GLTFParserLog) << "missing file:" << path;
+    QFile f(path);
+    if (Q_UNLIKELY(!f.open(QIODevice::ReadOnly))) {
+        qCWarning(GLTFParserLog) << "cannot open " << path << ": " << f.errorString();
         return;
     }
-    QFile f(path);
-    f.open(QIODevice::ReadOnly);
 
     QByteArray jsonData = f.readAll();
     QJsonDocument sceneDocument = QJsonDocument::fromBinaryData(jsonData);
@@ -214,7 +212,7 @@ void GLTFParser::setSource(const QUrl &source)
         return;
     }
 
-    setBasePath(finfo.dir().absolutePath());
+    setBasePath(QFileInfo(path).dir().absolutePath());
 }
 
 /*!
