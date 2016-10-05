@@ -226,7 +226,6 @@ void QAbstractPhysicalDeviceBackendNode::setInputAspect(QInputAspect *aspect)
 QInputAspect *QAbstractPhysicalDeviceBackendNode::inputAspect() const
 {
     Q_D(const QAbstractPhysicalDeviceBackendNode);
-    Q_ASSERT_X(d->m_inputAspect, "QAbstractPhysicalDeviceBackendNode::inputAspect()" , "No input aspect set");
     return d->m_inputAspect;
 }
 
