@@ -316,7 +316,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     // 7 Cleanup Job (depends on RV)
 
     // Create jobs to load in any meshes that are pending
-    if (d->m_renderer != Q_NULLPTR && d->m_renderer->isRunning()) {
+    if (d->m_renderer->isRunning()) {
 
         Render::NodeManagers *manager = d->m_renderer->nodeManagers();
         QAspectJobPtr pickBoundingVolumeJob = d->m_renderer->pickBoundingVolumeJob();
