@@ -125,12 +125,11 @@ void UpdateAxisActionJob::updateAxis(LogicalDevice *device)
                 continue;
             }
 
-            ButtonAxisInput *buttonInput = m_handler->buttonAxisInputManager()->lookupResource(axisInputId);
-            if (buttonInput) {
+            if (ButtonAxisInput * const buttonInput = m_handler->buttonAxisInputManager()->lookupResource(axisInputId)) {
                 QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = findAxisInputPhysicalDevice(buttonInput);
                 if (physicalDeviceBackend != nullptr) {
                     // Update the value
-                    const QVector<int> buttons = buttonInput ? buttonInput->buttons() : QVector<int>();
+                    const QVector<int> buttons = buttonInput->buttons();
                     if (!buttons.isEmpty()) {
                         // TO DO: Linear Curver for the progression of the scale value
                         if (anyOfRequiredButtonsPressed(buttons, physicalDeviceBackend))
