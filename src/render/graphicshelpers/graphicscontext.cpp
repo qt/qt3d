@@ -1261,6 +1261,7 @@ void GraphicsContext::applyUniform(const ShaderUniform &description, const Unifo
         break;
     case UniformType::Mat4x2:
         applyUniformHelper<UniformType::Mat4x2>(description.m_location, v);
+        break;
     case UniformType::Mat3x4:
         applyUniformHelper<UniformType::Mat3x4>(description.m_location, v);
         break;
