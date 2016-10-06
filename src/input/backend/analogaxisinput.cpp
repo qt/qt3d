@@ -85,6 +85,9 @@ float AnalogAxisInput::process(InputHandler *inputHandler, qint64 currentTime)
 {
     Q_UNUSED(currentTime);
 
+    if (!isEnabled())
+        return 0.0f;
+
     if (m_axis == -1)
         return 0.0f;
 
