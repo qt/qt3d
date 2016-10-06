@@ -65,6 +65,11 @@ class QT3DRENDERSHARED_EXPORT QAttribute : public Qt3DCore::QNode
     Q_PROPERTY(uint byteOffset READ byteOffset WRITE setByteOffset NOTIFY byteOffsetChanged)
     Q_PROPERTY(uint divisor READ divisor WRITE setDivisor NOTIFY divisorChanged)
     Q_PROPERTY(AttributeType attributeType READ attributeType WRITE setAttributeType NOTIFY attributeTypeChanged)
+    Q_PROPERTY(QString defaultPositionAttributeName READ defaultPositionAttributeName CONSTANT)
+    Q_PROPERTY(QString defaultNormalAttributeName READ defaultNormalAttributeName CONSTANT)
+    Q_PROPERTY(QString defaultColorAttributeName READ defaultColorAttributeName CONSTANT)
+    Q_PROPERTY(QString defaultTextureCoordinateAttributeName READ defaultTextureCoordinateAttributeName CONSTANT)
+    Q_PROPERTY(QString defaultTangentAttributeName READ defaultTangentAttributeName CONSTANT)
 
 public:
     enum AttributeType {
