@@ -80,7 +80,8 @@ public:
         OneMinusConstantColor = 0x8002,
         OneMinusConstantAlpha = 0x8004,
         OneMinusSource1Alpha,
-        OneMinusSource1Color0
+        OneMinusSource1Color,
+        OneMinusSource1Color0 = OneMinusSource1Color // ### Qt 6: Remove
     };
     Q_ENUM(Blending)
 
