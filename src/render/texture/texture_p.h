@@ -82,7 +82,7 @@ public:
     ~Texture();
     void cleanup();
 
-    QOpenGLTexture* getOrCreateGLTexture() ;
+    QOpenGLTexture *getOrCreateGLTexture();
 
     GLint textureId();
 
