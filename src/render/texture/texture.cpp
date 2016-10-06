@@ -356,9 +356,9 @@ void Texture::setToGLTexture(QTextureImageData *imgData)
     const int faces = imgData->faces();
     const int mipLevels = m_generateMipMaps ? 1 : imgData->mipLevels();
 
-    for (int layer = 0; layer < layers; layer++) {
-        for (int face = 0; face < faces; face++) {
-            for (int level = 0; level < mipLevels; level++) {
+    for (int layer = 0; layer < layers; ++layer) {
+        for (int face = 0; face < faces; ++face) {
+            for (int level = 0; level < mipLevels; ++level) {
                 // ensure we don't accidently cause a detach / copy of the raw bytes
                 const QByteArray &bytes(imgData->data(layer, face, level));
 
