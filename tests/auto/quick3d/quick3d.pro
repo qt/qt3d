@@ -5,5 +5,6 @@ qtConfig(private_tests) {
         quick3dnodeinstantiator \
         dynamicnodecreation \
         3drender \
-        3dinput
+        3dinput \
+        3dcore
 }
