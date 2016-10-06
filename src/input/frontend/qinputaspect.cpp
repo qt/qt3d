@@ -234,6 +234,10 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     // Jobs that update Axis/Action (store combined axis/action value)
     const auto devHandles = d->m_inputHandler->logicalDeviceManager()->activeDevices();
     for (Input::HLogicalDevice devHandle : devHandles) {
+        const auto device = d->m_inputHandler->logicalDeviceManager()->data(devHandle);
+        if (!device->isEnabled())
+            continue;
+
         QAspectJobPtr updateAxisActionJob(new Input::UpdateAxisActionJob(time, d->m_inputHandler.data(), devHandle));
         jobs += updateAxisActionJob;
         for (const QAspectJobPtr &job : dependsOnJobs)
