@@ -89,6 +89,9 @@ bool ActionInput::process(InputHandler *inputHandler, qint64 currentTime)
 {
     Q_UNUSED(currentTime);
 
+    if (!isEnabled())
+        return false;
+
     QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = nullptr;
 
     const auto integrations = inputHandler->inputDeviceIntegrations();
