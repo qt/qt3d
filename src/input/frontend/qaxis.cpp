@@ -72,6 +72,8 @@ namespace Qt3DInput {
     \readonly
 
     Holds the value of the axis.
+
+    Note this property is not updated when the axis is disabled.
 */
 
 /*!
