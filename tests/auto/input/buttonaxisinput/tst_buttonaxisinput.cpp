@@ -204,6 +204,7 @@ private Q_SLOTS:
 
         Qt3DInput::Input::ButtonAxisInput backendAxisInput;
         Qt3DInput::QButtonAxisInput axisInput;
+        axisInput.setEnabled(true);
         axisInput.setButtons(QVector<int>() << Qt::Key_Space);
         axisInput.setScale(-1.0f);
         axisInput.setAcceleration(0.15f);
@@ -285,6 +286,47 @@ private Q_SLOTS:
 
         // WHEN
         QCOMPARE(backendAxisInput.process(&handler, 46 * s), 0.0f);
+
+        // THEN
+        QCOMPARE(backendAxisInput.speedRatio(), 0.0f);
+        QCOMPARE(backendAxisInput.lastUpdateTime(), 0);
+    }
+
+    void shouldNotProcessWhenDisabled()
+    {
+        const qint64 s = 1000000000;
+
+        // GIVEN
+        TestDeviceIntegration deviceIntegration;
+        TestDevice *device = deviceIntegration.createPhysicalDevice("keyboard");
+        TestDeviceBackendNode *deviceBackend = deviceIntegration.physicalDevice(device->id());
+        Qt3DInput::Input::InputHandler handler;
+        handler.addInputDeviceIntegration(&deviceIntegration);
+
+        Qt3DInput::Input::ButtonAxisInput backendAxisInput;
+        Qt3DInput::QButtonAxisInput axisInput;
+        axisInput.setEnabled(false);
+        axisInput.setButtons(QVector<int>() << Qt::Key_Space);
+        axisInput.setScale(-1.0f);
+        axisInput.setAcceleration(0.15f);
+        axisInput.setDeceleration(0.3f);
+        axisInput.setSourceDevice(device);
+        simulateInitialization(&axisInput, &backendAxisInput);
+        QCOMPARE(backendAxisInput.speedRatio(), 0.0f);
+        QCOMPARE(backendAxisInput.lastUpdateTime(), 0);
+
+        // WHEN (accelerate)
+        deviceBackend->setButtonPressed(Qt::Key_Space, true);
+
+        // WHEN
+        QCOMPARE(backendAxisInput.process(&handler, 30 * s), 0.0f);
+
+        // THEN
+        QCOMPARE(backendAxisInput.speedRatio(), 0.0f);
+        QCOMPARE(backendAxisInput.lastUpdateTime(), 0);
+
+        // WHEN
+        QCOMPARE(backendAxisInput.process(&handler, 31 * s), 0.0f);
 
         // THEN
         QCOMPARE(backendAxisInput.speedRatio(), 0.0f);

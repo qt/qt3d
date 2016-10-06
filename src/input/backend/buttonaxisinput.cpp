@@ -133,6 +133,9 @@ bool anyOfRequiredButtonsPressed(const QVector<int> &buttons, QAbstractPhysicalD
 
 float ButtonAxisInput::process(InputHandler *inputHandler, qint64 currentTime)
 {
+    if (!isEnabled())
+        return 0.0f;
+
     if (m_buttons.isEmpty())
         return 0.0f;
 
