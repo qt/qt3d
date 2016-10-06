@@ -40,7 +40,9 @@
 #include "abstractaxisinput_p.h"
 #include <Qt3DInput/qabstractaxisinput.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DInput/private/qabstractaxisinput_p.h>
+#include <Qt3DInput/private/qinputdeviceintegration_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
@@ -76,6 +78,18 @@ void AbstractAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         }
     }
     QBackendNode::sceneChangeEvent(e);
+}
+
+QAbstractPhysicalDeviceBackendNode *AbstractAxisInput::findAxisInputPhysicalDevice(InputHandler *handler)
+{
+    const auto integrations = handler->inputDeviceIntegrations();
+    for (QInputDeviceIntegration *integration : integrations) {
+        QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = integration->physicalDevice(m_sourceDevice);
+        if (physicalDeviceBackend)
+            return physicalDeviceBackend;
+    }
+
+    return nullptr;
 }
 
 } // Input

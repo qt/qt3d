@@ -40,6 +40,7 @@
 #include "buttonaxisinput_p.h"
 #include <Qt3DInput/qbuttonaxisinput.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
 #include <Qt3DInput/private/qbuttonaxisinput_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
@@ -112,6 +113,40 @@ void ButtonAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         }
     }
     AbstractAxisInput::sceneChangeEvent(e);
+}
+
+namespace {
+
+bool anyOfRequiredButtonsPressed(const QVector<int> &buttons, QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend)
+{
+    bool validButtonWasPressed = false;
+    for (int button : buttons) {
+        if (physicalDeviceBackend->isButtonPressed(button)) {
+            validButtonWasPressed = true;
+            break;
+        }
+    }
+    return validButtonWasPressed;
+}
+
+} // anonymous
+
+float ButtonAxisInput::process(InputHandler *inputHandler, qint64 currentTime)
+{
+    if (m_buttons.isEmpty())
+        return 0.0f;
+
+    QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = findAxisInputPhysicalDevice(inputHandler);
+    if (!physicalDeviceBackend)
+        return 0.0f;
+
+    // TO DO: Linear Curver for the progression of the scale value
+    if (anyOfRequiredButtonsPressed(m_buttons, physicalDeviceBackend))
+        updateSpeedRatio(currentTime, ButtonAxisInput::Accelerate);
+    else if (m_speedRatio != 0.0f)
+        updateSpeedRatio(currentTime, ButtonAxisInput::Decelerate);
+
+    return m_speedRatio * m_scale;
 }
 
 } // Input

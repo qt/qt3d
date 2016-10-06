@@ -28,13 +28,15 @@
 
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
+#include "testdevice.h"
+
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DInput/private/buttonaxisinput_p.h>
+#include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DInput/QButtonAxisInput>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include "testdevice.h"
 
 class tst_ButtonAxisInput: public Qt3DCore::QBackendNodeTester
 {
@@ -189,84 +191,100 @@ private Q_SLOTS:
         QVERIFY(qIsInf(backendAxisInput.deceleration()));
     }
 
-    void shouldUpdateSpeedRatioOverTime()
+    void shouldProcessAndUpdateSpeedRatioOverTime()
     {
         const qint64 s = 1000000000;
 
         // GIVEN
+        TestDeviceIntegration deviceIntegration;
+        TestDevice *device = deviceIntegration.createPhysicalDevice("keyboard");
+        TestDeviceBackendNode *deviceBackend = deviceIntegration.physicalDevice(device->id());
+        Qt3DInput::Input::InputHandler handler;
+        handler.addInputDeviceIntegration(&deviceIntegration);
+
         Qt3DInput::Input::ButtonAxisInput backendAxisInput;
         Qt3DInput::QButtonAxisInput axisInput;
+        axisInput.setButtons(QVector<int>() << Qt::Key_Space);
+        axisInput.setScale(-1.0f);
         axisInput.setAcceleration(0.15f);
         axisInput.setDeceleration(0.3f);
+        axisInput.setSourceDevice(device);
         simulateInitialization(&axisInput, &backendAxisInput);
         QCOMPARE(backendAxisInput.speedRatio(), 0.0f);
         QCOMPARE(backendAxisInput.lastUpdateTime(), 0);
 
+        // WHEN (accelerate)
+        deviceBackend->setButtonPressed(Qt::Key_Space, true);
+
         // WHEN
-        backendAxisInput.updateSpeedRatio(30 * s, Qt3DInput::Input::ButtonAxisInput::Accelerate);
+        QCOMPARE(backendAxisInput.process(&handler, 30 * s), 0.0f);
 
         // THEN
         QCOMPARE(backendAxisInput.speedRatio(), 0.0f);
         QCOMPARE(backendAxisInput.lastUpdateTime(), 30 * s);
 
         // WHEN
-        backendAxisInput.updateSpeedRatio(31 * s, Qt3DInput::Input::ButtonAxisInput::Accelerate);
+        QCOMPARE(backendAxisInput.process(&handler, 31 * s), -0.15f);
 
         // THEN
         QCOMPARE(backendAxisInput.speedRatio(), 0.15f);
         QCOMPARE(backendAxisInput.lastUpdateTime(), 31 * s);
 
         // WHEN
-        backendAxisInput.updateSpeedRatio(32 * s, Qt3DInput::Input::ButtonAxisInput::Accelerate);
+        QCOMPARE(backendAxisInput.process(&handler, 32 * s), -0.3f);
 
         // THEN
         QCOMPARE(backendAxisInput.speedRatio(), 0.3f);
         QCOMPARE(backendAxisInput.lastUpdateTime(), 32 * s);
 
         // WHEN
-        backendAxisInput.updateSpeedRatio(35 * s, Qt3DInput::Input::ButtonAxisInput::Accelerate);
+        QCOMPARE(backendAxisInput.process(&handler, 35 * s), -0.75f);
 
         // THEN
         QCOMPARE(backendAxisInput.speedRatio(), 0.75f);
         QCOMPARE(backendAxisInput.lastUpdateTime(), 35 * s);
 
         // WHEN
-        backendAxisInput.updateSpeedRatio(37 * s, Qt3DInput::Input::ButtonAxisInput::Accelerate);
+        QCOMPARE(backendAxisInput.process(&handler, 37 * s), -1.0f);
 
         // THEN
         QCOMPARE(backendAxisInput.speedRatio(), 1.0f);
         QCOMPARE(backendAxisInput.lastUpdateTime(), 37 * s);
 
         // WHEN
-        backendAxisInput.updateSpeedRatio(38 * s, Qt3DInput::Input::ButtonAxisInput::Accelerate);
+        QCOMPARE(backendAxisInput.process(&handler, 38 * s), -1.0f);
 
         // THEN
         QCOMPARE(backendAxisInput.speedRatio(), 1.0f);
         QCOMPARE(backendAxisInput.lastUpdateTime(), 38 * s);
 
         // WHEN
-        backendAxisInput.updateSpeedRatio(42 * s, Qt3DInput::Input::ButtonAxisInput::Accelerate);
+        QCOMPARE(backendAxisInput.process(&handler, 42 * s), -1.0f);
 
         // THEN
         QCOMPARE(backendAxisInput.speedRatio(), 1.0f);
         QCOMPARE(backendAxisInput.lastUpdateTime(), 42 * s);
 
+
+        // WHEN (decelerate)
+        deviceBackend->setButtonPressed(Qt::Key_Space, false);
+
         // WHEN
-        backendAxisInput.updateSpeedRatio(43 * s, Qt3DInput::Input::ButtonAxisInput::Decelerate);
+        QCOMPARE(backendAxisInput.process(&handler, 43 * s), -0.7f);
 
         // THEN
         QCOMPARE(backendAxisInput.speedRatio(), 0.7f);
         QCOMPARE(backendAxisInput.lastUpdateTime(), 43 * s);
 
         // WHEN
-        backendAxisInput.updateSpeedRatio(45 * s, Qt3DInput::Input::ButtonAxisInput::Decelerate);
+        QCOMPARE(backendAxisInput.process(&handler, 45 * s), -0.1f);
 
         // THEN
         QCOMPARE(backendAxisInput.speedRatio(), 0.1f);
         QCOMPARE(backendAxisInput.lastUpdateTime(), 45 * s);
 
         // WHEN
-        backendAxisInput.updateSpeedRatio(46 * s, Qt3DInput::Input::ButtonAxisInput::Decelerate);
+        QCOMPARE(backendAxisInput.process(&handler, 46 * s), 0.0f);
 
         // THEN
         QCOMPARE(backendAxisInput.speedRatio(), 0.0f);

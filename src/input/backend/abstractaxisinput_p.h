@@ -58,7 +58,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
+class QAbstractPhysicalDeviceBackendNode;
+
 namespace Input {
+
+class InputHandler;
 
 class Q_AUTOTEST_EXPORT AbstractAxisInput : public Qt3DCore::QBackendNode
 {
@@ -68,7 +72,11 @@ public:
     inline Qt3DCore::QNodeId sourceDevice() const { return m_sourceDevice; }
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
+    virtual float process(InputHandler *inputHandler, qint64 currentTime) = 0;
+
 protected:
+    QAbstractPhysicalDeviceBackendNode *findAxisInputPhysicalDevice(InputHandler *handler);
+
     AbstractAxisInput();
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
 
