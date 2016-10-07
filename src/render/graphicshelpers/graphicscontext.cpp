@@ -684,12 +684,14 @@ GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
     GraphicsHelperInterface *glHelper = nullptr;
 
     if (m_gl->isOpenGLES()) {
-        if (m_gl->format().majorVersion() >= 3)
+        if (m_gl->format().majorVersion() >= 3) {
             glHelper = new GraphicsHelperES3();
-        else
+            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES3 Helper";
+        } else {
             glHelper = new GraphicsHelperES2();
+            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES2 Helper";
+        }
         glHelper->initializeHelper(m_gl, nullptr);
-        qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2/ES2 Helper";
     }
 #ifndef QT_OPENGL_ES_2
     else {
