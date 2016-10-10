@@ -28,8 +28,7 @@ vec3 goochModel( const in vec3 pos, const in vec3 n )
     vec3 kwarm = clamp(kyellow + beta * kd, 0.0, 1.0);
 
     vec3 result = vec3(0.0);
-    int i;
-    for (i = 0; i < lightCount; ++i) {
+    for (int i = 0; i < lightCount; ++i) {
         // Calculate the vector from the light to the fragment
         vec3 s = normalize( vec3( lights[i].position ) - pos );
 

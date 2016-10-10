@@ -104,7 +104,7 @@ private Q_SLOTS:
         Qt3DRender::QCamera camera;
         camera.setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
         camera.setFieldOfView(45.0f);
-        camera.setAspectRatio(800.0/600.0f);
+        camera.setAspectRatio(800.0f/600.0f);
         camera.setNearPlane(0.1f);
         camera.setFarPlane(1000.0f);
         camera.setPosition(QVector3D(0.0f, 0.0f, 40.0f));

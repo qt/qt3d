@@ -833,6 +833,9 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                     Entity *lightEntity = lightSource.entity;
                     const QVector3D worldPos = lightEntity->worldBoundingVolume()->center();
                     for (Light *light : lightSource.lights) {
+                        if (!light->isEnabled())
+                            continue;
+
                         ShaderData *shaderData = m_manager->shaderDataManager()->lookupResource(light->shaderData());
                         if (!shaderData)
                             continue;

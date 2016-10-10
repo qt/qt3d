@@ -73,7 +73,7 @@ ExampleScene::~ExampleScene()
 void ExampleScene::updateScene()
 {
     for (int i = 0; i < m_entities.size(); ++i) {
-        const bool visible = (i % 2) ^ m_even;
+        const bool visible = (i % 2) ^ static_cast<int>(m_even);
         m_entities[i]->setParent(visible ? this : nullptr);
     }
     m_even = !m_even;

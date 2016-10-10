@@ -7,7 +7,7 @@ import QtQuick.tooling 1.2
 // 'qmlplugindump -nonrelocatable QtQuick.Scene3D 2.0'
 
 Module {
-    dependencies: ["QtQuick 2.0"]
+    dependencies: ["QtQuick 2.7"]
     Component {
         name: "Qt3DRender::Scene3DItem"
         defaultProperty: "entity"

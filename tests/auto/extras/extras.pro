@@ -1,4 +1,5 @@
 TEMPLATE = subdirs
 
 SUBDIRS = \
-        qcuboidgeometry
+    qcuboidgeometry \
+    qtorusgeometry
