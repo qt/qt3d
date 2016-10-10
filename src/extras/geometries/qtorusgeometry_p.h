@@ -77,6 +77,7 @@ public:
     Qt3DRender::QAttribute *m_positionAttribute;
     Qt3DRender::QAttribute *m_normalAttribute;
     Qt3DRender::QAttribute *m_texCoordAttribute;
+    Qt3DRender::QAttribute *m_tangentAttribute;
     Qt3DRender::QAttribute *m_indexAttribute;
     Qt3DRender::QBuffer *m_vertexBuffer;
     Qt3DRender::QBuffer *m_indexBuffer;

@@ -7,7 +7,7 @@ import QtQuick.tooling 1.2
 // 'qmlplugindump -nonrelocatable Qt3D.Core 2.0'
 
 Module {
-    dependencies: ["QtQuick 2.0"]
+    dependencies: ["QtQuick 2.7"]
     Component {
         name: "Qt3DCore::QComponent"
         prototype: "Qt3DCore::QNode"
@@ -35,6 +35,7 @@ Module {
             name: "enabledChanged"
             Parameter { name: "enabled"; type: "bool" }
         }
+        Signal { name: "nodeDestroyed" }
         Method {
             name: "setParent"
             Parameter { name: "parent"; type: "QNode"; isPointer: true }
@@ -46,10 +47,127 @@ Module {
     }
     Component {
         name: "Qt3DCore::QTransform"
-        defaultProperty: "data"
-        prototype: "Qt3DCore::QTransform"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DCore::QComponent"
+        exports: ["Qt3D.Core/Transform 2.0"]
+        Property { name: "matrix"; type: "QMatrix4x4" }
+        Property { name: "scale"; type: "float" }
+        Property { name: "scale3D"; type: "QVector3D" }
+        Property { name: "rotation"; type: "QQuaternion" }
+        Property { name: "translation"; type: "QVector3D" }
+        Property { name: "rotationX"; type: "float" }
+        Property { name: "rotationY"; type: "float" }
+        Property { name: "rotationZ"; type: "float" }
+        Signal {
+            name: "scaleChanged"
+            Parameter { name: "scale"; type: "float" }
+        }
+        Signal {
+            name: "scale3DChanged"
+            Parameter { name: "scale"; type: "QVector3D" }
+        }
+        Signal {
+            name: "rotationChanged"
+            Parameter { name: "rotation"; type: "QQuaternion" }
+        }
+        Signal {
+            name: "translationChanged"
+            Parameter { name: "translation"; type: "QVector3D" }
+        }
+        Signal {
+            name: "rotationXChanged"
+            Parameter { name: "rotationX"; type: "float" }
+        }
+        Signal {
+            name: "rotationYChanged"
+            Parameter { name: "rotationY"; type: "float" }
+        }
+        Signal {
+            name: "rotationZChanged"
+            Parameter { name: "rotationZ"; type: "float" }
+        }
+        Method {
+            name: "setScale"
+            Parameter { name: "scale"; type: "float" }
+        }
+        Method {
+            name: "setScale3D"
+            Parameter { name: "scale"; type: "QVector3D" }
+        }
+        Method {
+            name: "setRotation"
+            Parameter { name: "rotation"; type: "QQuaternion" }
+        }
+        Method {
+            name: "setTranslation"
+            Parameter { name: "translation"; type: "QVector3D" }
+        }
+        Method {
+            name: "setMatrix"
+            Parameter { name: "matrix"; type: "QMatrix4x4" }
+        }
+        Method {
+            name: "setRotationX"
+            Parameter { name: "rotationX"; type: "float" }
+        }
+        Method {
+            name: "setRotationY"
+            Parameter { name: "rotationY"; type: "float" }
+        }
+        Method {
+            name: "setRotationZ"
+            Parameter { name: "rotationZ"; type: "float" }
+        }
+        Method {
+            name: "fromAxisAndAngle"
+            type: "QQuaternion"
+            Parameter { name: "axis"; type: "QVector3D" }
+            Parameter { name: "angle"; type: "float" }
+        }
+        Method {
+            name: "fromAxisAndAngle"
+            type: "QQuaternion"
+            Parameter { name: "x"; type: "float" }
+            Parameter { name: "y"; type: "float" }
+            Parameter { name: "z"; type: "float" }
+            Parameter { name: "angle"; type: "float" }
+        }
+        Method {
+            name: "fromAxesAndAngles"
+            type: "QQuaternion"
+            Parameter { name: "axis1"; type: "QVector3D" }
+            Parameter { name: "angle1"; type: "float" }
+            Parameter { name: "axis2"; type: "QVector3D" }
+            Parameter { name: "angle2"; type: "float" }
+        }
+        Method {
+            name: "fromAxesAndAngles"
+            type: "QQuaternion"
+            Parameter { name: "axis1"; type: "QVector3D" }
+            Parameter { name: "angle1"; type: "float" }
+            Parameter { name: "axis2"; type: "QVector3D" }
+            Parameter { name: "angle2"; type: "float" }
+            Parameter { name: "axis3"; type: "QVector3D" }
+            Parameter { name: "angle3"; type: "float" }
+        }
+        Method {
+            name: "fromEulerAngles"
+            type: "QQuaternion"
+            Parameter { name: "eulerAngles"; type: "QVector3D" }
+        }
+        Method {
+            name: "fromEulerAngles"
+            type: "QQuaternion"
+            Parameter { name: "pitch"; type: "float" }
+            Parameter { name: "yaw"; type: "float" }
+            Parameter { name: "roll"; type: "float" }
+        }
+        Method {
+            name: "rotateAround"
+            type: "QMatrix4x4"
+            Parameter { name: "point"; type: "QVector3D" }
+            Parameter { name: "angle"; type: "float" }
+            Parameter { name: "axis"; type: "QVector3D" }
+        }
     }
     Component {
         name: "Qt3DCore::Quick::QQuaternionAnimation"
@@ -112,8 +230,10 @@ Module {
     Component {
         name: "Qt3DCore::Quick::Quick3DEntityLoader"
         defaultProperty: "data"
-        prototype: "Qt3DCore::Quick::Quick3DEntityLoader"
-        Property { name: "components"; type: "Qt3DCore::QComponent"; isList: true; isReadonly: true }
+        prototype: "Qt3DCore::QEntity"
+        exports: ["Qt3D.Core/EntityLoader 2.0"]
+        Property { name: "entity"; type: "Qt3DCore::QEntity"; isPointer: true; isReadonly: true }
+        Property { name: "source"; type: "QUrl" }
     }
     Component {
         name: "Qt3DCore::Quick::Quick3DNode"
@@ -128,8 +248,13 @@ Module {
     Component {
         name: "Qt3DCore::Quick::Quick3DNodeInstantiator"
         defaultProperty: "delegate"
-        prototype: "Qt3DCore::Quick::Quick3DNodeInstantiator"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DCore::QNode"
+        exports: ["Qt3D.Core/NodeInstantiator 2.0"]
+        Property { name: "active"; type: "bool" }
+        Property { name: "asynchronous"; type: "bool" }
+        Property { name: "model"; type: "QVariant" }
+        Property { name: "count"; type: "int"; isReadonly: true }
+        Property { name: "delegate"; type: "QQmlComponent" }
+        Property { name: "object"; type: "QObject"; isReadonly: true }
     }
 }

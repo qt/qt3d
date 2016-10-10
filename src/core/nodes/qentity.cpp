@@ -232,8 +232,8 @@ QNodeCreatedChangeBasePtr QEntity::createNodeCreationChange() const
     data.parentEntityId = parentEntity() ? parentEntity()->id() : Qt3DCore::QNodeId();
     data.componentIdsAndTypes.reserve(d->m_components.size());
     const QComponentVector &components = d->m_components;
-    for (const auto &c : components) {
-        const auto idAndType = QNodeIdTypePair(c->id(), c->metaObject());
+    for (QComponent *c : components) {
+        const auto idAndType = QNodeIdTypePair(c->id(), QNodePrivate::findStaticMetaObject(c->metaObject()));
         data.componentIdsAndTypes.push_back(idAndType);
     }
 

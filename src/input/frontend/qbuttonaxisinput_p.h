@@ -62,7 +62,7 @@ class QButtonAxisInputPrivate : public QAbstractAxisInputPrivate
 public:
     QButtonAxisInputPrivate()
         : QAbstractAxisInputPrivate()
-        , m_scale(0.0f)
+        , m_scale(1.0f)
         , m_acceleration(-1.0f)
         , m_deceleration(-1.0f)
     {}

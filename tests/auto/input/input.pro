@@ -19,5 +19,6 @@ qtConfig(private_tests) {
         keyboardhandler \
         qaxisaccumulator \
         inputsequence \
-        inputchord
+        inputchord \
+        qabstractphysicaldevicebackendnode
 }

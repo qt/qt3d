@@ -7,7 +7,7 @@ import QtQuick.tooling 1.2
 // 'qmlplugindump -nonrelocatable Qt3D.Render 2.0'
 
 Module {
-    dependencies: ["Qt3D.Core 2.0"]
+    dependencies: ["QtQuick 2.7"]
     Component {
         name: "QWindow"
         prototype: "QObject"
@@ -171,22 +171,380 @@ Module {
         Method { name: "requestUpdate"; revision: 3 }
     }
     Component {
-        name: "Qt3DRender::QAbstractLight"
+        name: "Qt3DCore::QComponent"
+        prototype: "Qt3DCore::QNode"
+        Property { name: "isShareable"; type: "bool" }
+        Signal {
+            name: "shareableChanged"
+            Parameter { name: "isShareable"; type: "bool" }
+        }
+        Method {
+            name: "setShareable"
+            Parameter { name: "isShareable"; type: "bool" }
+        }
+    }
+    Component { name: "Qt3DCore::QEntity"; prototype: "Qt3DCore::QNode" }
+    Component {
+        name: "Qt3DCore::QNode"
+        prototype: "QObject"
+        Property { name: "parent"; type: "Qt3DCore::QNode"; isPointer: true }
+        Property { name: "enabled"; type: "bool" }
+        Signal {
+            name: "parentChanged"
+            Parameter { name: "parent"; type: "QObject"; isPointer: true }
+        }
+        Signal {
+            name: "enabledChanged"
+            Parameter { name: "enabled"; type: "bool" }
+        }
+        Signal { name: "nodeDestroyed" }
+        Method {
+            name: "setParent"
+            Parameter { name: "parent"; type: "QNode"; isPointer: true }
+        }
+        Method {
+            name: "setEnabled"
+            Parameter { name: "isEnabled"; type: "bool" }
+        }
+    }
+    Component {
+        name: "Qt3DCore::Quick::Quick3DNode"
         defaultProperty: "data"
-        prototype: "Qt3DRender::QAbstractLight"
+        prototype: "Qt3DRender::QCameraSelector"
+        exports: ["Qt3D.Render/CameraSelector 2.0"]
+        exportMetaObjectRevisions: [0]
         Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
         Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
     }
     Component {
+        name: "Qt3DRender::QAbstractLight"
+        prototype: "Qt3DCore::QComponent"
+        exports: ["Qt3D.Render/Light 2.0"]
+        isCreatable: false
+        exportMetaObjectRevisions: [0]
+        Enum {
+            name: "Type"
+            values: {
+                "PointLight": 0,
+                "DirectionalLight": 1,
+                "SpotLight": 2
+            }
+        }
+        Property { name: "type"; type: "Type"; isReadonly: true }
+        Property { name: "color"; type: "QColor" }
+        Property { name: "intensity"; type: "float" }
+        Signal {
+            name: "colorChanged"
+            Parameter { name: "color"; type: "QColor" }
+        }
+        Signal {
+            name: "intensityChanged"
+            Parameter { name: "intensity"; type: "float" }
+        }
+        Method {
+            name: "setColor"
+            Parameter { name: "color"; type: "QColor" }
+        }
+        Method {
+            name: "setIntensity"
+            Parameter { name: "intensity"; type: "float" }
+        }
+    }
+    Component {
         name: "Qt3DRender::QAbstractTexture"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::QAbstractTexture"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DCore::QNode"
+        exports: ["Qt3D.Render/Texture 2.0"]
+        isCreatable: false
+        exportMetaObjectRevisions: [0]
+        Enum {
+            name: "Status"
+            values: {
+                "None": 0,
+                "Loading": 1,
+                "Ready": 2,
+                "Error": 3
+            }
+        }
+        Enum {
+            name: "Target"
+            values: {
+                "TargetAutomatic": 0,
+                "Target1D": 3552,
+                "Target1DArray": 35864,
+                "Target2D": 3553,
+                "Target2DArray": 35866,
+                "Target3D": 32879,
+                "TargetCubeMap": 34067,
+                "TargetCubeMapArray": 36873,
+                "Target2DMultisample": 37120,
+                "Target2DMultisampleArray": 37122,
+                "TargetRectangle": 34037,
+                "TargetBuffer": 35882
+            }
+        }
+        Enum {
+            name: "TextureFormat"
+            values: {
+                "NoFormat": 0,
+                "Automatic": 1,
+                "R8_UNorm": 33321,
+                "RG8_UNorm": 33323,
+                "RGB8_UNorm": 32849,
+                "RGBA8_UNorm": 32856,
+                "R16_UNorm": 33322,
+                "RG16_UNorm": 33324,
+                "RGB16_UNorm": 32852,
+                "RGBA16_UNorm": 32859,
+                "R8_SNorm": 36756,
+                "RG8_SNorm": 36757,
+                "RGB8_SNorm": 36758,
+                "RGBA8_SNorm": 36759,
+                "R16_SNorm": 36760,
+                "RG16_SNorm": 36761,
+                "RGB16_SNorm": 36762,
+                "RGBA16_SNorm": 36763,
+                "R8U": 33330,
+                "RG8U": 33336,
+                "RGB8U": 36221,
+                "RGBA8U": 36220,
+                "R16U": 33332,
+                "RG16U": 33338,
+                "RGB16U": 36215,
+                "RGBA16U": 36214,
+                "R32U": 33334,
+                "RG32U": 33340,
+                "RGB32U": 36209,
+                "RGBA32U": 36208,
+                "R8I": 33329,
+                "RG8I": 33335,
+                "RGB8I": 36239,
+                "RGBA8I": 36238,
+                "R16I": 33331,
+                "RG16I": 33337,
+                "RGB16I": 36233,
+                "RGBA16I": 36232,
+                "R32I": 33333,
+                "RG32I": 33339,
+                "RGB32I": 36227,
+                "RGBA32I": 36226,
+                "R16F": 33325,
+                "RG16F": 33327,
+                "RGB16F": 34843,
+                "RGBA16F": 34842,
+                "R32F": 33326,
+                "RG32F": 33328,
+                "RGB32F": 34837,
+                "RGBA32F": 34836,
+                "RGB9E5": 35901,
+                "RG11B10F": 35898,
+                "RG3B2": 10768,
+                "R5G6B5": 36194,
+                "RGB5A1": 32855,
+                "RGBA4": 32854,
+                "RGB10A2": 36975,
+                "D16": 33189,
+                "D24": 33190,
+                "D24S8": 35056,
+                "D32": 33191,
+                "D32F": 36012,
+                "D32FS8X24": 36013,
+                "RGB_DXT1": 33776,
+                "RGBA_DXT1": 33777,
+                "RGBA_DXT3": 33778,
+                "RGBA_DXT5": 33779,
+                "R_ATI1N_UNorm": 36283,
+                "R_ATI1N_SNorm": 36284,
+                "RG_ATI2N_UNorm": 36285,
+                "RG_ATI2N_SNorm": 36286,
+                "RGB_BP_UNSIGNED_FLOAT": 36495,
+                "RGB_BP_SIGNED_FLOAT": 36494,
+                "RGB_BP_UNorm": 36492,
+                "R11_EAC_UNorm": 37488,
+                "R11_EAC_SNorm": 37489,
+                "RG11_EAC_UNorm": 37490,
+                "RG11_EAC_SNorm": 37491,
+                "RGB8_ETC2": 37492,
+                "SRGB8_ETC2": 37493,
+                "RGB8_PunchThrough_Alpha1_ETC2": 37494,
+                "SRGB8_PunchThrough_Alpha1_ETC2": 37495,
+                "RGBA8_ETC2_EAC": 37496,
+                "SRGB8_Alpha8_ETC2_EAC": 37497,
+                "RGB8_ETC1": 36196,
+                "SRGB8": 35905,
+                "SRGB8_Alpha8": 35907,
+                "SRGB_DXT1": 35916,
+                "SRGB_Alpha_DXT1": 35917,
+                "SRGB_Alpha_DXT3": 35918,
+                "SRGB_Alpha_DXT5": 35919,
+                "SRGB_BP_UNorm": 36493,
+                "DepthFormat": 6402,
+                "AlphaFormat": 6406,
+                "RGBFormat": 6407,
+                "RGBAFormat": 6408,
+                "LuminanceFormat": 6409,
+                "LuminanceAlphaFormat": 6410
+            }
+        }
+        Enum {
+            name: "Filter"
+            values: {
+                "Nearest": 9728,
+                "Linear": 9729,
+                "NearestMipMapNearest": 9984,
+                "NearestMipMapLinear": 9986,
+                "LinearMipMapNearest": 9985,
+                "LinearMipMapLinear": 9987
+            }
+        }
+        Enum {
+            name: "CubeMapFace"
+            values: {
+                "CubeMapPositiveX": 34069,
+                "CubeMapNegativeX": 34070,
+                "CubeMapPositiveY": 34071,
+                "CubeMapNegativeY": 34072,
+                "CubeMapPositiveZ": 34073,
+                "CubeMapNegativeZ": 34074
+            }
+        }
+        Enum {
+            name: "ComparisonFunction"
+            values: {
+                "CompareLessEqual": 515,
+                "CompareGreaterEqual": 518,
+                "CompareLess": 513,
+                "CompareGreater": 516,
+                "CompareEqual": 514,
+                "CommpareNotEqual": 517,
+                "CompareAlways": 519,
+                "CompareNever": 512
+            }
+        }
+        Enum {
+            name: "ComparisonMode"
+            values: {
+                "CompareRefToTexture": 34894,
+                "CompareNone": 0
+            }
+        }
+        Property { name: "target"; type: "Target"; isReadonly: true }
+        Property { name: "format"; type: "TextureFormat" }
+        Property { name: "generateMipMaps"; type: "bool" }
+        Property {
+            name: "wrapMode"
+            type: "Qt3DRender::QTextureWrapMode"
+            isReadonly: true
+            isPointer: true
+        }
+        Property { name: "status"; type: "Status"; isReadonly: true }
+        Property { name: "width"; type: "int" }
+        Property { name: "height"; type: "int" }
+        Property { name: "depth"; type: "int" }
+        Property { name: "magnificationFilter"; type: "Filter" }
+        Property { name: "minificationFilter"; type: "Filter" }
+        Property { name: "maximumAnisotropy"; type: "float" }
+        Property { name: "comparisonFunction"; type: "ComparisonFunction" }
+        Property { name: "comparisonMode"; type: "ComparisonMode" }
+        Property { name: "layers"; type: "int" }
+        Signal {
+            name: "formatChanged"
+            Parameter { name: "format"; type: "TextureFormat" }
+        }
+        Signal {
+            name: "statusChanged"
+            Parameter { name: "status"; type: "Status" }
+        }
+        Signal {
+            name: "generateMipMapsChanged"
+            Parameter { name: "generateMipMaps"; type: "bool" }
+        }
+        Signal {
+            name: "widthChanged"
+            Parameter { name: "width"; type: "int" }
+        }
+        Signal {
+            name: "heightChanged"
+            Parameter { name: "height"; type: "int" }
+        }
+        Signal {
+            name: "depthChanged"
+            Parameter { name: "depth"; type: "int" }
+        }
+        Signal {
+            name: "magnificationFilterChanged"
+            Parameter { name: "magnificationFilter"; type: "Filter" }
+        }
+        Signal {
+            name: "minificationFilterChanged"
+            Parameter { name: "minificationFilter"; type: "Filter" }
+        }
+        Signal {
+            name: "maximumAnisotropyChanged"
+            Parameter { name: "maximumAnisotropy"; type: "float" }
+        }
+        Signal {
+            name: "comparisonFunctionChanged"
+            Parameter { name: "comparisonFunction"; type: "ComparisonFunction" }
+        }
+        Signal {
+            name: "comparisonModeChanged"
+            Parameter { name: "comparisonMode"; type: "ComparisonMode" }
+        }
+        Signal {
+            name: "layersChanged"
+            Parameter { name: "layers"; type: "int" }
+        }
+        Method {
+            name: "setFormat"
+            Parameter { name: "format"; type: "TextureFormat" }
+        }
+        Method {
+            name: "setGenerateMipMaps"
+            Parameter { name: "gen"; type: "bool" }
+        }
+        Method {
+            name: "setWidth"
+            Parameter { name: "width"; type: "int" }
+        }
+        Method {
+            name: "setHeight"
+            Parameter { name: "height"; type: "int" }
+        }
+        Method {
+            name: "setDepth"
+            Parameter { name: "depth"; type: "int" }
+        }
+        Method {
+            name: "setMinificationFilter"
+            Parameter { name: "f"; type: "Filter" }
+        }
+        Method {
+            name: "setMagnificationFilter"
+            Parameter { name: "f"; type: "Filter" }
+        }
+        Method {
+            name: "setMaximumAnisotropy"
+            Parameter { name: "anisotropy"; type: "float" }
+        }
+        Method {
+            name: "setComparisonFunction"
+            Parameter { name: "function"; type: "ComparisonFunction" }
+        }
+        Method {
+            name: "setComparisonMode"
+            Parameter { name: "mode"; type: "ComparisonMode" }
+        }
+        Method {
+            name: "setLayers"
+            Parameter { name: "layers"; type: "int" }
+        }
     }
     Component {
         name: "Qt3DRender::QAbstractTextureImage"
         prototype: "Qt3DCore::QNode"
+        exports: ["Qt3D.Render/QAbstractTextureImage 2.0"]
+        isCreatable: false
+        exportMetaObjectRevisions: [0]
         Property { name: "mipLevel"; type: "int" }
         Property { name: "layer"; type: "int" }
         Property { name: "face"; type: "Qt3DRender::QAbstractTexture::CubeMapFace" }
@@ -215,10 +573,17 @@ Module {
             Parameter { name: "face"; type: "QAbstractTexture::CubeMapFace" }
         }
     }
-    Component { name: "Qt3DRender::QAlphaCoverage"; prototype: "Qt3DRender::QRenderState" }
+    Component {
+        name: "Qt3DRender::QAlphaCoverage"
+        prototype: "Qt3DRender::QRenderState"
+        exports: ["Qt3D.Render/AlphaCoverage 2.0"]
+        exportMetaObjectRevisions: [0]
+    }
     Component {
         name: "Qt3DRender::QAlphaTest"
         prototype: "Qt3DRender::QRenderState"
+        exports: ["Qt3D.Render/AlphaTest 2.0"]
+        exportMetaObjectRevisions: [0]
         Enum {
             name: "AlphaFunction"
             values: {
@@ -253,14 +618,122 @@ Module {
     }
     Component {
         name: "Qt3DRender::QAttribute"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::QAttribute"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DCore::QNode"
+        exports: ["Qt3D.Render/Attribute 2.0"]
+        exportMetaObjectRevisions: [0]
+        Enum {
+            name: "AttributeType"
+            values: {
+                "VertexAttribute": 0,
+                "IndexAttribute": 1
+            }
+        }
+        Enum {
+            name: "VertexBaseType"
+            values: {
+                "Byte": 0,
+                "UnsignedByte": 1,
+                "Short": 2,
+                "UnsignedShort": 3,
+                "Int": 4,
+                "UnsignedInt": 5,
+                "HalfFloat": 6,
+                "Float": 7,
+                "Double": 8
+            }
+        }
+        Property { name: "buffer"; type: "Qt3DRender::QBuffer"; isPointer: true }
+        Property { name: "name"; type: "string" }
+        Property { name: "vertexBaseType"; type: "VertexBaseType" }
+        Property { name: "vertexSize"; type: "uint" }
+        Property { name: "count"; type: "uint" }
+        Property { name: "byteStride"; type: "uint" }
+        Property { name: "byteOffset"; type: "uint" }
+        Property { name: "divisor"; type: "uint" }
+        Property { name: "attributeType"; type: "AttributeType" }
+        Signal {
+            name: "bufferChanged"
+            Parameter { name: "buffer"; type: "QBuffer"; isPointer: true }
+        }
+        Signal {
+            name: "nameChanged"
+            Parameter { name: "name"; type: "string" }
+        }
+        Signal {
+            name: "dataTypeChanged"
+            Parameter { name: "vertexBaseType"; type: "VertexBaseType" }
+        }
+        Signal {
+            name: "dataSizeChanged"
+            Parameter { name: "vertexSize"; type: "uint" }
+        }
+        Signal {
+            name: "countChanged"
+            Parameter { name: "count"; type: "uint" }
+        }
+        Signal {
+            name: "byteStrideChanged"
+            Parameter { name: "byteStride"; type: "uint" }
+        }
+        Signal {
+            name: "byteOffsetChanged"
+            Parameter { name: "byteOffset"; type: "uint" }
+        }
+        Signal {
+            name: "divisorChanged"
+            Parameter { name: "divisor"; type: "uint" }
+        }
+        Signal {
+            name: "attributeTypeChanged"
+            Parameter { name: "attributeType"; type: "AttributeType" }
+        }
+        Method {
+            name: "setBuffer"
+            Parameter { name: "buffer"; type: "QBuffer"; isPointer: true }
+        }
+        Method {
+            name: "setName"
+            Parameter { name: "name"; type: "string" }
+        }
+        Method {
+            name: "setDataType"
+            Parameter { name: "type"; type: "VertexBaseType" }
+        }
+        Method {
+            name: "setDataSize"
+            Parameter { name: "size"; type: "uint" }
+        }
+        Method {
+            name: "setCount"
+            Parameter { name: "count"; type: "uint" }
+        }
+        Method {
+            name: "setByteStride"
+            Parameter { name: "byteStride"; type: "uint" }
+        }
+        Method {
+            name: "setByteOffset"
+            Parameter { name: "byteOffset"; type: "uint" }
+        }
+        Method {
+            name: "setDivisor"
+            Parameter { name: "divisor"; type: "uint" }
+        }
+        Method {
+            name: "setAttributeType"
+            Parameter { name: "attributeType"; type: "AttributeType" }
+        }
+        Method { name: "defaultPositionAttributeName"; type: "string" }
+        Method { name: "defaultNormalAttributeName"; type: "string" }
+        Method { name: "defaultColorAttributeName"; type: "string" }
+        Method { name: "defaultTextureCoordinateAttributeName"; type: "string" }
+        Method { name: "defaultTangentAttributeName"; type: "string" }
     }
     Component {
         name: "Qt3DRender::QBlendEquation"
         prototype: "Qt3DRender::QRenderState"
+        exports: ["Qt3D.Render/BlendEquation 2.0"]
+        exportMetaObjectRevisions: [0]
         Enum {
             name: "BlendFunction"
             values: {
@@ -284,6 +757,8 @@ Module {
     Component {
         name: "Qt3DRender::QBlendEquationArguments"
         prototype: "Qt3DRender::QRenderState"
+        exports: ["Qt3D.Render/BlendEquationArguments 2.0"]
+        exportMetaObjectRevisions: [0]
         Enum {
             name: "Blending"
             values: {
@@ -432,13 +907,226 @@ Module {
     }
     Component {
         name: "Qt3DRender::QCamera"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::QCamera"
-        Property { name: "components"; type: "Qt3DCore::QComponent"; isList: true; isReadonly: true }
+        prototype: "Qt3DCore::QEntity"
+        exports: ["Qt3D.Render/Camera 2.0"]
+        exportMetaObjectRevisions: [0]
+        Enum {
+            name: "CameraTranslationOption"
+            values: {
+                "TranslateViewCenter": 0,
+                "DontTranslateViewCenter": 1
+            }
+        }
+        Property { name: "projectionType"; type: "Qt3DRender::QCameraLens::ProjectionType" }
+        Property { name: "nearPlane"; type: "float" }
+        Property { name: "farPlane"; type: "float" }
+        Property { name: "fieldOfView"; type: "float" }
+        Property { name: "aspectRatio"; type: "float" }
+        Property { name: "left"; type: "float" }
+        Property { name: "right"; type: "float" }
+        Property { name: "bottom"; type: "float" }
+        Property { name: "top"; type: "float" }
+        Property { name: "projectionMatrix"; type: "QMatrix4x4" }
+        Property { name: "position"; type: "QVector3D" }
+        Property { name: "upVector"; type: "QVector3D" }
+        Property { name: "viewCenter"; type: "QVector3D" }
+        Property { name: "viewVector"; type: "QVector3D"; isReadonly: true }
+        Property { name: "viewMatrix"; type: "QMatrix4x4"; isReadonly: true }
+        Signal {
+            name: "projectionTypeChanged"
+            Parameter { name: "projectionType"; type: "QCameraLens::ProjectionType" }
+        }
+        Signal {
+            name: "nearPlaneChanged"
+            Parameter { name: "nearPlane"; type: "float" }
+        }
+        Signal {
+            name: "farPlaneChanged"
+            Parameter { name: "farPlane"; type: "float" }
+        }
+        Signal {
+            name: "fieldOfViewChanged"
+            Parameter { name: "fieldOfView"; type: "float" }
+        }
+        Signal {
+            name: "aspectRatioChanged"
+            Parameter { name: "aspectRatio"; type: "float" }
+        }
+        Signal {
+            name: "leftChanged"
+            Parameter { name: "left"; type: "float" }
+        }
+        Signal {
+            name: "rightChanged"
+            Parameter { name: "right"; type: "float" }
+        }
+        Signal {
+            name: "bottomChanged"
+            Parameter { name: "bottom"; type: "float" }
+        }
+        Signal {
+            name: "topChanged"
+            Parameter { name: "top"; type: "float" }
+        }
+        Signal {
+            name: "projectionMatrixChanged"
+            Parameter { name: "projectionMatrix"; type: "QMatrix4x4" }
+        }
+        Signal {
+            name: "positionChanged"
+            Parameter { name: "position"; type: "QVector3D" }
+        }
+        Signal {
+            name: "upVectorChanged"
+            Parameter { name: "upVector"; type: "QVector3D" }
+        }
+        Signal {
+            name: "viewCenterChanged"
+            Parameter { name: "viewCenter"; type: "QVector3D" }
+        }
+        Signal {
+            name: "viewVectorChanged"
+            Parameter { name: "viewVector"; type: "QVector3D" }
+        }
+        Method {
+            name: "setProjectionType"
+            Parameter { name: "type"; type: "QCameraLens::ProjectionType" }
+        }
+        Method {
+            name: "setNearPlane"
+            Parameter { name: "nearPlane"; type: "float" }
+        }
+        Method {
+            name: "setFarPlane"
+            Parameter { name: "farPlane"; type: "float" }
+        }
+        Method {
+            name: "setFieldOfView"
+            Parameter { name: "fieldOfView"; type: "float" }
+        }
+        Method {
+            name: "setAspectRatio"
+            Parameter { name: "aspectRatio"; type: "float" }
+        }
+        Method {
+            name: "setLeft"
+            Parameter { name: "left"; type: "float" }
+        }
+        Method {
+            name: "setRight"
+            Parameter { name: "right"; type: "float" }
+        }
+        Method {
+            name: "setBottom"
+            Parameter { name: "bottom"; type: "float" }
+        }
+        Method {
+            name: "setTop"
+            Parameter { name: "top"; type: "float" }
+        }
+        Method {
+            name: "setProjectionMatrix"
+            Parameter { name: "projectionMatrix"; type: "QMatrix4x4" }
+        }
+        Method {
+            name: "setPosition"
+            Parameter { name: "position"; type: "QVector3D" }
+        }
+        Method {
+            name: "setUpVector"
+            Parameter { name: "upVector"; type: "QVector3D" }
+        }
+        Method {
+            name: "setViewCenter"
+            Parameter { name: "viewCenter"; type: "QVector3D" }
+        }
+        Method {
+            name: "tiltRotation"
+            type: "QQuaternion"
+            Parameter { name: "angle"; type: "float" }
+        }
+        Method {
+            name: "panRotation"
+            type: "QQuaternion"
+            Parameter { name: "angle"; type: "float" }
+        }
+        Method {
+            name: "rollRotation"
+            type: "QQuaternion"
+            Parameter { name: "angle"; type: "float" }
+        }
+        Method {
+            name: "rotation"
+            type: "QQuaternion"
+            Parameter { name: "angle"; type: "float" }
+            Parameter { name: "axis"; type: "QVector3D" }
+        }
+        Method {
+            name: "translate"
+            Parameter { name: "vLocal"; type: "QVector3D" }
+            Parameter { name: "option"; type: "CameraTranslationOption" }
+        }
+        Method {
+            name: "translate"
+            Parameter { name: "vLocal"; type: "QVector3D" }
+        }
+        Method {
+            name: "translateWorld"
+            Parameter { name: "vWorld"; type: "QVector3D" }
+            Parameter { name: "option"; type: "CameraTranslationOption" }
+        }
+        Method {
+            name: "translateWorld"
+            Parameter { name: "vWorld"; type: "QVector3D" }
+        }
+        Method {
+            name: "tilt"
+            Parameter { name: "angle"; type: "float" }
+        }
+        Method {
+            name: "pan"
+            Parameter { name: "angle"; type: "float" }
+        }
+        Method {
+            name: "pan"
+            Parameter { name: "angle"; type: "float" }
+            Parameter { name: "axis"; type: "QVector3D" }
+        }
+        Method {
+            name: "roll"
+            Parameter { name: "angle"; type: "float" }
+        }
+        Method {
+            name: "tiltAboutViewCenter"
+            Parameter { name: "angle"; type: "float" }
+        }
+        Method {
+            name: "panAboutViewCenter"
+            Parameter { name: "angle"; type: "float" }
+        }
+        Method {
+            name: "panAboutViewCenter"
+            Parameter { name: "angle"; type: "float" }
+            Parameter { name: "axis"; type: "QVector3D" }
+        }
+        Method {
+            name: "rollAboutViewCenter"
+            Parameter { name: "angle"; type: "float" }
+        }
+        Method {
+            name: "rotate"
+            Parameter { name: "q"; type: "QQuaternion" }
+        }
+        Method {
+            name: "rotateAboutViewCenter"
+            Parameter { name: "q"; type: "QQuaternion" }
+        }
     }
     Component {
         name: "Qt3DRender::QCameraLens"
         prototype: "Qt3DCore::QComponent"
+        exports: ["Qt3D.Render/CameraLens 2.0"]
+        exportMetaObjectRevisions: [0]
         Enum {
             name: "ProjectionType"
             values: {
@@ -555,6 +1243,8 @@ Module {
     Component {
         name: "Qt3DRender::QClearBuffers"
         prototype: "Qt3DRender::QFrameGraphNode"
+        exports: ["Qt3D.Render/ClearBuffers 2.0"]
+        exportMetaObjectRevisions: [0]
         Enum {
             name: "BufferType"
             values: {
@@ -572,6 +1262,7 @@ Module {
         Property { name: "clearColor"; type: "QColor" }
         Property { name: "clearDepthValue"; type: "float" }
         Property { name: "clearStencilValue"; type: "int" }
+        Property { name: "colorBuffer"; type: "Qt3DRender::QRenderTargetOutput"; isPointer: true }
         Signal {
             name: "buffersChanged"
             Parameter { name: "buffers"; type: "BufferType" }
@@ -587,6 +1278,10 @@ Module {
         Signal {
             name: "clearStencilValueChanged"
             Parameter { name: "clearStencilValue"; type: "int" }
+        }
+        Signal {
+            name: "colorBufferChanged"
+            Parameter { name: "buffer"; type: "QRenderTargetOutput"; isPointer: true }
         }
         Method {
             name: "setBuffers"
@@ -604,17 +1299,49 @@ Module {
             name: "setClearStencilValue"
             Parameter { name: "clearStencilValue"; type: "int" }
         }
+        Method {
+            name: "setColorBuffer"
+            Parameter { name: "buffer"; type: "QRenderTargetOutput"; isPointer: true }
+        }
     }
     Component {
         name: "Qt3DRender::QClipPlane"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::QClipPlane"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DRender::QRenderState"
+        exports: ["Qt3D.Render/ClipPlane 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "planeIndex"; type: "int" }
+        Property { name: "normal"; type: "QVector3D" }
+        Property { name: "distance"; type: "float" }
+        Signal {
+            name: "planeIndexChanged"
+            Parameter { name: "planeIndex"; type: "int" }
+        }
+        Signal {
+            name: "normalChanged"
+            Parameter { name: "normal"; type: "QVector3D" }
+        }
+        Signal {
+            name: "distanceChanged"
+            Parameter { name: "distance"; type: "float" }
+        }
+        Method {
+            name: "setPlaneIndex"
+            Parameter { type: "int" }
+        }
+        Method {
+            name: "setNormal"
+            Parameter { type: "QVector3D" }
+        }
+        Method {
+            name: "setDistance"
+            Parameter { type: "float" }
+        }
     }
     Component {
         name: "Qt3DRender::QColorMask"
         prototype: "Qt3DRender::QRenderState"
+        exports: ["Qt3D.Render/ColorMask 2.0"]
+        exportMetaObjectRevisions: [0]
         Property { name: "redMasked"; type: "bool" }
         Property { name: "greenMasked"; type: "bool" }
         Property { name: "blueMasked"; type: "bool" }
@@ -654,14 +1381,30 @@ Module {
     }
     Component {
         name: "Qt3DRender::QComputeCommand"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::QComputeCommand"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DCore::QComponent"
+        exports: ["Qt3D.Render/ComputeCommand 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "workGroupX"; type: "int" }
+        Property { name: "workGroupY"; type: "int" }
+        Property { name: "workGroupZ"; type: "int" }
+        Method {
+            name: "setWorkGroupX"
+            Parameter { name: "workGroupX"; type: "int" }
+        }
+        Method {
+            name: "setWorkGroupY"
+            Parameter { name: "workGroupY"; type: "int" }
+        }
+        Method {
+            name: "setWorkGroupZ"
+            Parameter { name: "workGroupZ"; type: "int" }
+        }
     }
     Component {
         name: "Qt3DRender::QCullFace"
         prototype: "Qt3DRender::QRenderState"
+        exports: ["Qt3D.Render/CullFace 2.0"]
+        exportMetaObjectRevisions: [0]
         Enum {
             name: "CullingMode"
             values: {
@@ -684,6 +1427,8 @@ Module {
     Component {
         name: "Qt3DRender::QDepthTest"
         prototype: "Qt3DRender::QRenderState"
+        exports: ["Qt3D.Render/DepthTest 2.0"]
+        exportMetaObjectRevisions: [0]
         Enum {
             name: "DepthFunction"
             values: {
@@ -709,23 +1454,52 @@ Module {
     }
     Component {
         name: "Qt3DRender::QDirectionalLight"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::QDirectionalLight"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DRender::QAbstractLight"
+        exports: ["Qt3D.Render/DirectionalLight 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "worldDirection"; type: "QVector3D" }
+        Signal {
+            name: "worldDirectionChanged"
+            Parameter { name: "worldDirection"; type: "QVector3D" }
+        }
+        Method {
+            name: "setWorldDirection"
+            Parameter { name: "worldDirection"; type: "QVector3D" }
+        }
     }
     Component {
         name: "Qt3DRender::QDispatchCompute"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::QDispatchCompute"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DRender::QFrameGraphNode"
+        exports: ["Qt3D.Render/DispatchCompute 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "workGroupX"; type: "int" }
+        Property { name: "workGroupY"; type: "int" }
+        Property { name: "workGroupZ"; type: "int" }
+        Method {
+            name: "setWorkGroupX"
+            Parameter { name: "workGroupX"; type: "int" }
+        }
+        Method {
+            name: "setWorkGroupY"
+            Parameter { name: "workGroupY"; type: "int" }
+        }
+        Method {
+            name: "setWorkGroupZ"
+            Parameter { name: "workGroupZ"; type: "int" }
+        }
     }
-    Component { name: "Qt3DRender::QDithering"; prototype: "Qt3DRender::QRenderState" }
+    Component {
+        name: "Qt3DRender::QDithering"
+        prototype: "Qt3DRender::QRenderState"
+        exports: ["Qt3D.Render/Dithering 2.0"]
+        exportMetaObjectRevisions: [0]
+    }
     Component { name: "Qt3DRender::QEffect"; prototype: "Qt3DCore::QNode" }
     Component {
         name: "Qt3DRender::QFilterKey"
         prototype: "Qt3DCore::QNode"
+        exports: ["Qt3D.Render/FilterKey 2.0"]
+        exportMetaObjectRevisions: [0]
         Property { name: "value"; type: "QVariant" }
         Property { name: "name"; type: "string" }
         Signal {
@@ -745,10 +1519,18 @@ Module {
             Parameter { name: "customType"; type: "string" }
         }
     }
-    Component { name: "Qt3DRender::QFrameGraphNode"; prototype: "Qt3DCore::QNode" }
+    Component {
+        name: "Qt3DRender::QFrameGraphNode"
+        prototype: "Qt3DCore::QNode"
+        exports: ["Qt3D.Render/FrameGraphNode 2.0"]
+        isCreatable: false
+        exportMetaObjectRevisions: [0]
+    }
     Component {
         name: "Qt3DRender::QFrontFace"
         prototype: "Qt3DRender::QRenderState"
+        exports: ["Qt3D.Render/FrontFace 2.0"]
+        exportMetaObjectRevisions: [0]
         Enum {
             name: "WindingDirection"
             values: {
@@ -766,7 +1548,12 @@ Module {
             Parameter { name: "direction"; type: "WindingDirection" }
         }
     }
-    Component { name: "Qt3DRender::QFrustumCulling"; prototype: "Qt3DRender::QFrameGraphNode" }
+    Component {
+        name: "Qt3DRender::QFrustumCulling"
+        prototype: "Qt3DRender::QFrameGraphNode"
+        exports: ["Qt3D.Render/FrustumCulling 2.0"]
+        exportMetaObjectRevisions: [0]
+    }
     Component {
         name: "Qt3DRender::QGeometry"
         prototype: "Qt3DCore::QNode"
@@ -783,10 +1570,20 @@ Module {
             name: "setBoundingVolumePositionAttribute"
             Parameter { name: "boundingVolumePositionAttribute"; type: "QAttribute"; isPointer: true }
         }
+        Method {
+            name: "addAttribute"
+            Parameter { name: "attribute"; type: "Qt3DRender::QAttribute"; isPointer: true }
+        }
+        Method {
+            name: "removeAttribute"
+            Parameter { name: "attribute"; type: "Qt3DRender::QAttribute"; isPointer: true }
+        }
     }
     Component {
         name: "Qt3DRender::QGeometryRenderer"
         prototype: "Qt3DCore::QComponent"
+        exports: ["Qt3D.Render/GeometryRenderer 2.0"]
+        exportMetaObjectRevisions: [0]
         Enum {
             name: "PrimitiveType"
             values: {
@@ -808,6 +1605,7 @@ Module {
         Property { name: "vertexCount"; type: "int" }
         Property { name: "indexOffset"; type: "int" }
         Property { name: "firstInstance"; type: "int" }
+        Property { name: "firstVertex"; type: "int" }
         Property { name: "restartIndexValue"; type: "int" }
         Property { name: "verticesPerPatch"; type: "int" }
         Property { name: "primitiveRestartEnabled"; type: "bool" }
@@ -828,6 +1626,10 @@ Module {
         Signal {
             name: "firstInstanceChanged"
             Parameter { name: "firstInstance"; type: "int" }
+        }
+        Signal {
+            name: "firstVertexChanged"
+            Parameter { name: "firstVertex"; type: "int" }
         }
         Signal {
             name: "restartIndexValueChanged"
@@ -864,6 +1666,10 @@ Module {
         Method {
             name: "setFirstInstance"
             Parameter { name: "firstInstance"; type: "int" }
+        }
+        Method {
+            name: "setFirstVertex"
+            Parameter { name: "firstVertex"; type: "int" }
         }
         Method {
             name: "setRestartIndexValue"
@@ -914,11 +1720,11 @@ Module {
         Property { name: "vendor"; type: "string" }
         Signal {
             name: "apiChanged"
-            Parameter { name: "api"; type: "Api" }
+            Parameter { name: "api"; type: "Qt3DRender::QGraphicsApiFilter::Api" }
         }
         Signal {
             name: "profileChanged"
-            Parameter { name: "profile"; type: "OpenGLProfile" }
+            Parameter { name: "profile"; type: "Qt3DRender::QGraphicsApiFilter::OpenGLProfile" }
         }
         Signal {
             name: "minorVersionChanged"
@@ -964,18 +1770,11 @@ Module {
     }
     Component {
         name: "Qt3DRender::QLayer"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::QLayer"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DCore::QComponent"
+        exports: ["Qt3D.Render/Layer 2.0"]
+        exportMetaObjectRevisions: [0]
     }
-    Component {
-        name: "Qt3DRender::QLayerFilter"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::QLayerFilter"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
-    }
+    Component { name: "Qt3DRender::QLayerFilter"; prototype: "Qt3DRender::QFrameGraphNode" }
     Component {
         name: "Qt3DRender::QMaterial"
         prototype: "Qt3DCore::QComponent"
@@ -992,6 +1791,8 @@ Module {
     Component {
         name: "Qt3DRender::QMesh"
         prototype: "Qt3DRender::QGeometryRenderer"
+        exports: ["Qt3D.Render/Mesh 2.0"]
+        exportMetaObjectRevisions: [0]
         Property { name: "source"; type: "QUrl" }
         Property { name: "meshName"; type: "string" }
         Signal {
@@ -1014,28 +1815,97 @@ Module {
     Component {
         name: "Qt3DRender::QMultiSampleAntiAliasing"
         prototype: "Qt3DRender::QRenderState"
+        exports: ["Qt3D.Render/MultiSampleAntiAliasing 2.0"]
+        exportMetaObjectRevisions: [0]
     }
     Component {
         name: "Qt3DRender::QNoDepthMask"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::QNoDepthMask"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DRender::QRenderState"
+        exports: ["Qt3D.Render/NoDepthMask 2.0"]
+        exportMetaObjectRevisions: [0]
     }
-    Component { name: "Qt3DRender::QNoDraw"; prototype: "Qt3DRender::QFrameGraphNode" }
+    Component {
+        name: "Qt3DRender::QNoDraw"
+        prototype: "Qt3DRender::QFrameGraphNode"
+        exports: ["Qt3D.Render/NoDraw 2.0"]
+        exportMetaObjectRevisions: [0]
+    }
     Component {
         name: "Qt3DRender::QObjectPicker"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::QObjectPicker"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DCore::QComponent"
+        exports: ["Qt3D.Render/ObjectPicker 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "hoverEnabled"; type: "bool" }
+        Property { name: "dragEnabled"; type: "bool" }
+        Property { name: "pressed"; type: "bool"; isReadonly: true }
+        Property { name: "containsMouse"; type: "bool"; isReadonly: true }
+        Signal {
+            name: "pressed"
+            Parameter { name: "pick"; type: "Qt3DRender::QPickEvent"; isPointer: true }
+        }
+        Signal {
+            name: "released"
+            Parameter { name: "pick"; type: "Qt3DRender::QPickEvent"; isPointer: true }
+        }
+        Signal {
+            name: "clicked"
+            Parameter { name: "pick"; type: "Qt3DRender::QPickEvent"; isPointer: true }
+        }
+        Signal {
+            name: "moved"
+            Parameter { name: "pick"; type: "Qt3DRender::QPickEvent"; isPointer: true }
+        }
+        Signal { name: "entered" }
+        Signal { name: "exited" }
+        Signal {
+            name: "hoverEnabledChanged"
+            Parameter { name: "hoverEnabled"; type: "bool" }
+        }
+        Signal {
+            name: "dragEnabledChanged"
+            Parameter { name: "dragEnabled"; type: "bool" }
+        }
+        Signal {
+            name: "pressedChanged"
+            Parameter { name: "pressed"; type: "bool" }
+        }
+        Signal {
+            name: "containsMouseChanged"
+            Parameter { name: "containsMouse"; type: "bool" }
+        }
+        Method {
+            name: "setHoverEnabled"
+            Parameter { name: "hoverEnabled"; type: "bool" }
+        }
+        Method {
+            name: "setDragEnabled"
+            Parameter { name: "dragEnabled"; type: "bool" }
+        }
     }
     Component {
         name: "Qt3DRender::QParameter"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::QParameter"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DCore::QNode"
+        exports: ["Qt3D.Render/QParameter 2.0"]
+        isCreatable: false
+        exportMetaObjectRevisions: [0]
+        Property { name: "name"; type: "string" }
+        Property { name: "value"; type: "QVariant" }
+        Signal {
+            name: "valueChanged"
+            Parameter { name: "value"; type: "QVariant" }
+        }
+        Signal {
+            name: "nameChanged"
+            Parameter { name: "name"; type: "string" }
+        }
+        Method {
+            name: "setName"
+            Parameter { name: "name"; type: "string" }
+        }
+        Method {
+            name: "setValue"
+            Parameter { name: "dv"; type: "QVariant" }
+        }
     }
     Component {
         name: "Qt3DRender::QPickEvent"
@@ -1060,6 +1930,8 @@ Module {
     Component {
         name: "Qt3DRender::QPickingSettings"
         prototype: "Qt3DCore::QNode"
+        exports: ["Qt3D.Render/PickingSettings 2.0"]
+        exportMetaObjectRevisions: [0]
         Enum {
             name: "PickMethod"
             values: {
@@ -1095,21 +1967,73 @@ Module {
     }
     Component {
         name: "Qt3DRender::QPointLight"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::QPointLight"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DRender::QAbstractLight"
+        exports: ["Qt3D.Render/PointLight 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "constantAttenuation"; type: "float" }
+        Property { name: "linearAttenuation"; type: "float" }
+        Property { name: "quadraticAttenuation"; type: "float" }
+        Signal {
+            name: "constantAttenuationChanged"
+            Parameter { name: "constantAttenuation"; type: "float" }
+        }
+        Signal {
+            name: "linearAttenuationChanged"
+            Parameter { name: "linearAttenuation"; type: "float" }
+        }
+        Signal {
+            name: "quadraticAttenuationChanged"
+            Parameter { name: "quadraticAttenuation"; type: "float" }
+        }
+        Method {
+            name: "setConstantAttenuation"
+            Parameter { name: "value"; type: "float" }
+        }
+        Method {
+            name: "setLinearAttenuation"
+            Parameter { name: "value"; type: "float" }
+        }
+        Method {
+            name: "setQuadraticAttenuation"
+            Parameter { name: "value"; type: "float" }
+        }
     }
     Component {
         name: "Qt3DRender::QPointSize"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::QPointSize"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DRender::QRenderState"
+        exports: ["Qt3D.Render/PointSize 2.0"]
+        exportMetaObjectRevisions: [0]
+        Enum {
+            name: "SizeMode"
+            values: {
+                "Fixed": 0,
+                "Programmable": 1
+            }
+        }
+        Property { name: "sizeMode"; type: "SizeMode" }
+        Property { name: "value"; type: "float" }
+        Signal {
+            name: "sizeModeChanged"
+            Parameter { name: "sizeMode"; type: "SizeMode" }
+        }
+        Signal {
+            name: "valueChanged"
+            Parameter { name: "value"; type: "float" }
+        }
+        Method {
+            name: "setSizeMode"
+            Parameter { name: "sizeMode"; type: "SizeMode" }
+        }
+        Method {
+            name: "setValue"
+            Parameter { name: "value"; type: "float" }
+        }
     }
     Component {
         name: "Qt3DRender::QPolygonOffset"
         prototype: "Qt3DRender::QRenderState"
+        exports: ["Qt3D.Render/PolygonOffset 2.0"]
+        exportMetaObjectRevisions: [0]
         Property { name: "scaleFactor"; type: "float" }
         Property { name: "depthSteps"; type: "float" }
         Signal {
@@ -1146,23 +2070,84 @@ Module {
     Component {
         name: "Qt3DRender::QRenderSettings"
         defaultProperty: "activeFrameGraph"
-        prototype: "Qt3DRender::QRenderSettings"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DCore::QComponent"
+        exports: ["Qt3D.Render/RenderSettings 2.0"]
+        exportMetaObjectRevisions: [0]
+        Enum {
+            name: "RenderPolicy"
+            values: {
+                "OnDemand": 0,
+                "Always": 1
+            }
+        }
+        Property {
+            name: "pickingSettings"
+            type: "Qt3DRender::QPickingSettings"
+            isReadonly: true
+            isPointer: true
+        }
+        Property { name: "renderPolicy"; type: "RenderPolicy" }
+        Property { name: "activeFrameGraph"; type: "Qt3DRender::QFrameGraphNode"; isPointer: true }
+        Signal {
+            name: "activeFrameGraphChanged"
+            Parameter { name: "activeFrameGraph"; type: "QFrameGraphNode"; isPointer: true }
+        }
+        Signal {
+            name: "renderPolicyChanged"
+            Parameter { name: "renderPolicy"; type: "RenderPolicy" }
+        }
+        Method {
+            name: "setActiveFrameGraph"
+            Parameter { name: "activeFrameGraph"; type: "QFrameGraphNode"; isPointer: true }
+        }
+        Method {
+            name: "setRenderPolicy"
+            Parameter { name: "renderPolicy"; type: "RenderPolicy" }
+        }
     }
-    Component { name: "Qt3DRender::QRenderState"; prototype: "Qt3DCore::QNode" }
+    Component {
+        name: "Qt3DRender::QRenderState"
+        prototype: "Qt3DCore::QNode"
+        exports: ["Qt3D.Render/RenderState 2.0"]
+        isCreatable: false
+        exportMetaObjectRevisions: [0]
+    }
     Component { name: "Qt3DRender::QRenderStateSet"; prototype: "Qt3DRender::QFrameGraphNode" }
     Component {
         name: "Qt3DRender::QRenderSurfaceSelector"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::QRenderSurfaceSelector"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DRender::QFrameGraphNode"
+        exports: ["Qt3D.Render/RenderSurfaceSelector 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "surface"; type: "QObject"; isPointer: true }
+        Property { name: "externalRenderTargetSize"; type: "QSize"; isReadonly: true }
+        Property { name: "surfacePixelRatio"; type: "float" }
+        Signal {
+            name: "surfaceChanged"
+            Parameter { name: "surface"; type: "QObject"; isPointer: true }
+        }
+        Signal {
+            name: "externalRenderTargetSizeChanged"
+            Parameter { name: "size"; type: "QSize" }
+        }
+        Signal {
+            name: "surfacePixelRatioChanged"
+            Parameter { name: "ratio"; type: "float" }
+        }
+        Method {
+            name: "setSurface"
+            Parameter { name: "surfaceObject"; type: "QObject"; isPointer: true }
+        }
+        Method {
+            name: "setSurfacePixelRatio"
+            Parameter { name: "ratio"; type: "float" }
+        }
     }
     Component { name: "Qt3DRender::QRenderTarget"; prototype: "Qt3DCore::QComponent" }
     Component {
         name: "Qt3DRender::QRenderTargetOutput"
         prototype: "Qt3DCore::QNode"
+        exports: ["Qt3D.Render/RenderTargetOutput 2.0"]
+        exportMetaObjectRevisions: [0]
         Enum {
             name: "AttachmentPoint"
             values: {
@@ -1279,22 +2264,64 @@ Module {
     }
     Component {
         name: "Qt3DRender::QScissorTest"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::QScissorTest"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DRender::QRenderState"
+        exports: ["Qt3D.Render/ScissorTest 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "left"; type: "int" }
+        Property { name: "bottom"; type: "int" }
+        Property { name: "width"; type: "int" }
+        Property { name: "height"; type: "int" }
+        Signal {
+            name: "leftChanged"
+            Parameter { name: "left"; type: "int" }
+        }
+        Signal {
+            name: "bottomChanged"
+            Parameter { name: "bottom"; type: "int" }
+        }
+        Signal {
+            name: "widthChanged"
+            Parameter { name: "width"; type: "int" }
+        }
+        Signal {
+            name: "heightChanged"
+            Parameter { name: "height"; type: "int" }
+        }
+        Method {
+            name: "setLeft"
+            Parameter { name: "left"; type: "int" }
+        }
+        Method {
+            name: "setBottom"
+            Parameter { name: "bottom"; type: "int" }
+        }
+        Method {
+            name: "setWidth"
+            Parameter { name: "width"; type: "int" }
+        }
+        Method {
+            name: "setHeight"
+            Parameter { name: "height"; type: "int" }
+        }
     }
     Component {
         name: "Qt3DRender::QSeamlessCubemap"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::QSeamlessCubemap"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DRender::QRenderState"
+        exports: ["Qt3D.Render/SeamlessCubemap 2.0"]
+        exportMetaObjectRevisions: [0]
     }
-    Component { name: "Qt3DRender::QShaderData"; prototype: "Qt3DCore::QComponent" }
+    Component {
+        name: "Qt3DRender::QShaderData"
+        prototype: "Qt3DCore::QComponent"
+        exports: ["Qt3D.Render/QShaderData 2.0"]
+        isCreatable: false
+        exportMetaObjectRevisions: [0]
+    }
     Component {
         name: "Qt3DRender::QShaderProgram"
         prototype: "Qt3DCore::QNode"
+        exports: ["Qt3D.Render/ShaderProgram 2.0"]
+        exportMetaObjectRevisions: [0]
         Enum {
             name: "ShaderType"
             values: {
@@ -1369,6 +2396,8 @@ Module {
     Component {
         name: "Qt3DRender::QSortPolicy"
         prototype: "Qt3DRender::QFrameGraphNode"
+        exports: ["Qt3D.Render/SortPolicy 2.0"]
+        exportMetaObjectRevisions: [0]
         Enum {
             name: "SortType"
             values: {
@@ -1398,6 +2427,8 @@ Module {
     Component {
         name: "Qt3DRender::QSpotLight"
         prototype: "Qt3DRender::QAbstractLight"
+        exports: ["Qt3D.Render/SpotLight 2.0"]
+        exportMetaObjectRevisions: [0]
         Property { name: "constantAttenuation"; type: "float" }
         Property { name: "linearAttenuation"; type: "float" }
         Property { name: "quadraticAttenuation"; type: "float" }
@@ -1447,6 +2478,8 @@ Module {
     Component {
         name: "Qt3DRender::QStencilMask"
         prototype: "Qt3DRender::QRenderState"
+        exports: ["Qt3D.Render/StencilMask 2.0"]
+        exportMetaObjectRevisions: [0]
         Property { name: "frontOutputMask"; type: "uint" }
         Property { name: "backOutputMask"; type: "uint" }
         Signal {
@@ -1469,6 +2502,8 @@ Module {
     Component {
         name: "Qt3DRender::QStencilOperation"
         prototype: "Qt3DRender::QRenderState"
+        exports: ["Qt3D.Render/StencilOperation 2.0"]
+        exportMetaObjectRevisions: [0]
         Property {
             name: "front"
             type: "Qt3DRender::QStencilOperationArguments"
@@ -1545,6 +2580,8 @@ Module {
     Component {
         name: "Qt3DRender::QStencilTest"
         prototype: "Qt3DRender::QRenderState"
+        exports: ["Qt3D.Render/StencilTest 2.0"]
+        exportMetaObjectRevisions: [0]
         Property {
             name: "front"
             type: "Qt3DRender::QStencilTestArguments"
@@ -1651,6 +2688,8 @@ Module {
     Component {
         name: "Qt3DRender::QTextureImage"
         prototype: "Qt3DRender::QAbstractTextureImage"
+        exports: ["Qt3D.Render/TextureImage 2.0"]
+        exportMetaObjectRevisions: [0]
         Enum {
             name: "Status"
             values: {
@@ -1746,7 +2785,6 @@ Module {
     }
     Component {
         name: "Qt3DRender::Render::Quick::Quick3DBuffer"
-        defaultProperty: "data"
         prototype: "Qt3DRender::QBuffer"
         exports: ["Qt3D.Render/Buffer 2.0"]
         exportMetaObjectRevisions: [0]
@@ -1756,7 +2794,6 @@ Module {
     }
     Component {
         name: "Qt3DRender::Render::Quick::Quick3DEffect"
-        defaultProperty: "data"
         prototype: "Qt3DRender::QEffect"
         exports: ["Qt3D.Render/Effect 2.0"]
         exportMetaObjectRevisions: [0]
@@ -1772,8 +2809,14 @@ Module {
         Property { name: "attributes"; type: "Qt3DRender::QAttribute"; isList: true; isReadonly: true }
     }
     Component {
+        name: "Qt3DRender::Render::Quick::Quick3DLayerFilter"
+        prototype: "Qt3DRender::QLayerFilter"
+        exports: ["Qt3D.Render/LayerFilter 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "layers"; type: "Qt3DRender::QLayer"; isList: true; isReadonly: true }
+    }
+    Component {
         name: "Qt3DRender::Render::Quick::Quick3DMaterial"
-        defaultProperty: "data"
         prototype: "Qt3DRender::QMaterial"
         exports: ["Qt3D.Render/Material 2.0"]
         exportMetaObjectRevisions: [0]
@@ -1781,14 +2824,12 @@ Module {
     }
     Component {
         name: "Qt3DRender::Render::Quick::Quick3DParameter"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::Render::Quick::Quick3DParameter"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DRender::QParameter"
+        exports: ["Qt3D.Render/Parameter 2.0"]
+        exportMetaObjectRevisions: [0]
     }
     Component {
         name: "Qt3DRender::Render::Quick::Quick3DRenderPass"
-        defaultProperty: "data"
         prototype: "Qt3DRender::QRenderPass"
         exports: ["Qt3D.Render/RenderPass 2.0"]
         exportMetaObjectRevisions: [0]
@@ -1803,7 +2844,6 @@ Module {
     }
     Component {
         name: "Qt3DRender::Render::Quick::Quick3DRenderPassFilter"
-        defaultProperty: "data"
         prototype: "Qt3DRender::QRenderPassFilter"
         exports: ["Qt3D.Render/RenderPassFilter 2.0"]
         exportMetaObjectRevisions: [0]
@@ -1812,7 +2852,6 @@ Module {
     }
     Component {
         name: "Qt3DRender::Render::Quick::Quick3DRenderTargetOutput"
-        defaultProperty: "data"
         prototype: "Qt3DRender::QRenderTarget"
         exports: ["Qt3D.Render/RenderTarget 2.0"]
         exportMetaObjectRevisions: [0]
@@ -1825,7 +2864,6 @@ Module {
     }
     Component {
         name: "Qt3DRender::Render::Quick::Quick3DRenderTargetSelector"
-        defaultProperty: "data"
         prototype: "Qt3DRender::QRenderTargetSelector"
         exports: ["Qt3D.Render/RenderTargetSelector 2.0"]
         exportMetaObjectRevisions: [0]
@@ -1833,27 +2871,26 @@ Module {
     }
     Component {
         name: "Qt3DRender::Render::Quick::Quick3DScene"
-        defaultProperty: "data"
         prototype: "Qt3DRender::QSceneLoader"
         exports: ["Qt3D.Render/SceneLoader 2.0"]
         exportMetaObjectRevisions: [0]
     }
     Component {
         name: "Qt3DRender::Render::Quick::Quick3DShaderData"
-        defaultProperty: "data"
-        prototype: "Qt3DRender::Render::Quick::Quick3DShaderData"
-        Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-        Property { name: "childNodes"; type: "Qt3DCore::QNode"; isList: true; isReadonly: true }
+        prototype: "Qt3DRender::QShaderData"
+        exports: ["Qt3D.Render/ShaderData 2.0"]
+        exportMetaObjectRevisions: [0]
     }
     Component {
         name: "Qt3DRender::Render::Quick::Quick3DShaderDataArray"
         defaultProperty: "values"
         prototype: "Qt3DCore::QNode"
+        exports: ["Qt3D.Render/ShaderDataArray 2.0"]
+        exportMetaObjectRevisions: [0]
         Property { name: "values"; type: "Qt3DRender::QShaderData"; isList: true; isReadonly: true }
     }
     Component {
         name: "Qt3DRender::Render::Quick::Quick3DStateSet"
-        defaultProperty: "data"
         prototype: "Qt3DRender::QRenderStateSet"
         exports: ["Qt3D.Render/RenderStateSet 2.0"]
         exportMetaObjectRevisions: [0]
@@ -1866,7 +2903,6 @@ Module {
     }
     Component {
         name: "Qt3DRender::Render::Quick::Quick3DTechnique"
-        defaultProperty: "data"
         prototype: "Qt3DRender::QTechnique"
         exports: ["Qt3D.Render/Technique 2.0"]
         exportMetaObjectRevisions: [0]
@@ -1876,7 +2912,6 @@ Module {
     }
     Component {
         name: "Qt3DRender::Render::Quick::Quick3DTechniqueFilter"
-        defaultProperty: "data"
         prototype: "Qt3DRender::QTechniqueFilter"
         exports: ["Qt3D.Render/TechniqueFilter 2.0"]
         exportMetaObjectRevisions: [0]
@@ -1886,7 +2921,7 @@ Module {
     Component {
         name: "Qt3DRender::Render::Quick::Quick3DTextureExtension"
         defaultProperty: "textureImages"
-        prototype: "Qt3DRender::QTexture1D"
+        prototype: "Qt3DRender::QTextureLoader"
         exports: [
             "Qt3D.Render/Texture1D 2.0",
             "Qt3D.Render/Texture1DArray 2.0",
@@ -1911,7 +2946,6 @@ Module {
     }
     Component {
         name: "Qt3DRender::Render::Quick::Quick3DViewport"
-        defaultProperty: "data"
         prototype: "Qt3DRender::QViewport"
         exports: ["Qt3D.Render/Viewport 2.0"]
         exportMetaObjectRevisions: [0]

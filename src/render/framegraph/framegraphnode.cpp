@@ -40,6 +40,8 @@
 #include "framegraphnode_p.h"
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -84,6 +86,12 @@ FrameGraphManager *FrameGraphNode::manager() const
 void FrameGraphNode::setParentId(Qt3DCore::QNodeId parentId)
 {
     if (m_parentId != parentId) {
+        // We already had a parent, tell it to abandon us
+        if (!m_parentId.isNull()) {
+            FrameGraphNode *parent = m_manager->lookupNode(m_parentId);
+            if (parent != nullptr)
+                parent->m_childrenIds.removeAll(peerId());
+        }
         m_parentId = parentId;
         FrameGraphNode *parent = m_manager->lookupNode(m_parentId);
         if (parent != nullptr && !parent->m_childrenIds.contains(peerId()))
@@ -139,6 +147,31 @@ QVector<FrameGraphNode *> FrameGraphNode::children() const
             children << child;
     }
     return children;
+}
+
+void FrameGraphNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+{
+    switch (e->type()) {
+
+    case Qt3DCore::PropertyValueAdded: {
+       Qt3DCore::QPropertyNodeAddedChangePtr change = qSharedPointerCast<Qt3DCore::QPropertyNodeAddedChange>(e);
+        if (change->metaObject()->inherits(&QFrameGraphNode::staticMetaObject))
+            appendChildId(change->addedNodeId());
+        break;
+    }
+
+    case Qt3DCore::PropertyValueRemoved: {
+        Qt3DCore::QPropertyNodeRemovedChangePtr change = qSharedPointerCast<Qt3DCore::QPropertyNodeRemovedChange>(e);
+        if (change->metaObject()->inherits(&QFrameGraphNode::staticMetaObject))
+            removeChildId(change->removedNodeId());
+        break;
+    }
+    default:
+        break;
+    }
+
+    markDirty(AbstractRenderer::AllDirty);
+    BackendNode::sceneChangeEvent(e);
 }
 
 } // namespace Render
