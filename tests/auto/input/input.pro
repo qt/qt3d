@@ -18,5 +18,6 @@ contains(QT_CONFIG, private_tests) {
         buttonaxisinput \
         inputsequence \
         inputchord \
-        keyboardhandler
+        keyboardhandler \
+        qabstractphysicaldevicebackendnode
 }

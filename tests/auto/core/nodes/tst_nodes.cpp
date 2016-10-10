@@ -130,7 +130,7 @@ public:
 
     void sceneChangeEventWithLock(const Qt3DCore::QSceneChangeList &e) Q_DECL_OVERRIDE
     {
-        for (uint i = 0, m = e.size(); i < m; ++i) {
+        for (size_t i = 0, m = e.size(); i < m; ++i) {
             events << ChangeRecord(e.at(i), false);
         }
     }

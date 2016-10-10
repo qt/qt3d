@@ -130,6 +130,8 @@ public:
         QObject::disconnect(m_destructionConnections.take(node));
     }
 
+    static const QMetaObject *findStaticMetaObject(const QMetaObject *metaObject);
+
 private:
     void notifyCreationChange();
     void notifyDestructionChangesAndRemoveFromScene();
