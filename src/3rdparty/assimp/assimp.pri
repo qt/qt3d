@@ -318,7 +318,8 @@ HEADERS += revision.h \
            code/STEPFileEncoding.h \
            code/OgreBinarySerializer.h \
            code/OgreStructs.h \
-           code/OgreXmlSerializer.h
+           code/OgreXmlSerializer.h \
+           code/CreateAnimMesh.h
 
 SOURCES += code/3DSConverter.cpp \
            code/3DSLoader.cpp \
@@ -470,7 +471,8 @@ SOURCES += code/3DSConverter.cpp \
            code/STEPFileEncoding.cpp \
            code/OgreBinarySerializer.cpp \
            code/OgreStructs.cpp \
-           code/OgreXmlSerializer.cpp
+           code/OgreXmlSerializer.cpp \
+           code/CreateAnimMesh.cpp
 
 
 

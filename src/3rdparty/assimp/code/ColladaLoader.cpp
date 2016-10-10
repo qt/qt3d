@@ -51,6 +51,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "fast_atof.h"
 #include "ParsingUtils.h"
 #include "SkeletonMeshBuilder.h"
+#include "CreateAnimMesh.h"
 
 #include "time.h"
 
@@ -125,15 +126,16 @@ void ColladaLoader::InternReadFile( const std::string& pFile, aiScene* pScene, I
 {
 	mFileName = pFile;
 
-	// clean all member arrays - just for safety, it should work even if we did not
-	mMeshIndexByID.clear();
-	mMaterialIndexByName.clear();
-	mMeshes.clear();
-	newMats.clear();
-	mLights.clear();
-	mCameras.clear();
-	mTextures.clear();
-	mAnims.clear();
+    // clean all member arrays - just for safety, it should work even if we did not
+    mMeshIndexByID.clear();
+    mMaterialIndexByName.clear();
+    mMeshes.clear();
+    mTargetMeshes.clear();
+    newMats.clear();
+    mLights.clear();
+    mCameras.clear();
+    mTextures.clear();
+    mAnims.clear();
 
 	// parse the input file
 	ColladaParser parser( pIOHandler, pFile);
@@ -540,6 +542,21 @@ void ColladaLoader::BuildMeshesForNode( const ColladaParser& pParser, const Coll
 }
 
 // ------------------------------------------------------------------------------------------------
+// Find mesh from either meshes or morph target meshes
+aiMesh *ColladaLoader::findMesh(std::string meshid)
+{
+    for (unsigned int i = 0; i < mMeshes.size(); i++)
+        if (std::string(mMeshes[i]->mName.data) == meshid)
+            return mMeshes[i];
+
+    for (unsigned int i = 0; i < mTargetMeshes.size(); i++)
+        if (std::string(mTargetMeshes[i]->mName.data) == meshid)
+            return mTargetMeshes[i];
+
+    return NULL;
+}
+
+// ------------------------------------------------------------------------------------------------
 // Creates a mesh for the given ColladaMesh face subset and returns the newly created mesh
 aiMesh* ColladaLoader::CreateMesh( const ColladaParser& pParser, const Collada::Mesh* pSrcMesh, const Collada::SubMesh& pSubMesh, 
 	const Collada::Controller* pSrcController, size_t pStartVertex, size_t pStartFace)
@@ -624,149 +641,211 @@ aiMesh* ColladaLoader::CreateMesh( const ColladaParser& pParser, const Collada::
 			face.mIndices[b] = vertex++;
 	}
 
+    // create morph target meshes if any
+    std::vector<aiMesh*> targetMeshes;
+    std::vector<float> targetWeights;
+    Collada::MorphMethod method;
+
+    for(std::map<std::string, Collada::Controller>::const_iterator it = pParser.mControllerLibrary.begin();
+        it != pParser.mControllerLibrary.end(); it++)
+    {
+        const Collada::Controller &c = it->second;
+        const Collada::Mesh* baseMesh = pParser.ResolveLibraryReference( pParser.mMeshLibrary, c.mMeshId);
+
+        if (c.mType == Collada::Morph && baseMesh->mName == pSrcMesh->mName)
+        {
+            const Collada::Accessor& targetAccessor = pParser.ResolveLibraryReference( pParser.mAccessorLibrary, c.mMorphTarget);
+            const Collada::Accessor& weightAccessor = pParser.ResolveLibraryReference( pParser.mAccessorLibrary, c.mMorphWeight);
+            const Collada::Data& targetData = pParser.ResolveLibraryReference( pParser.mDataLibrary, targetAccessor.mSource);
+            const Collada::Data& weightData = pParser.ResolveLibraryReference( pParser.mDataLibrary, weightAccessor.mSource);
+
+            // take method
+            method = c.mMethod;
+
+            if (!targetData.mIsStringArray)
+                throw DeadlyImportError( "target data must contain id. ");
+            if (weightData.mIsStringArray)
+                throw DeadlyImportError( "target weight data must not be textual ");
+
+            for (unsigned int i = 0; i < targetData.mStrings.size(); ++i)
+            {
+                const Collada::Mesh* targetMesh = pParser.ResolveLibraryReference(pParser.mMeshLibrary, targetData.mStrings.at(i));
+
+                aiMesh *aimesh = findMesh(targetMesh->mName);
+                if (!aimesh)
+                {
+                    if (targetMesh->mSubMeshes.size() > 1)
+                        throw DeadlyImportError( "Morhing target mesh must be a single");
+                    aimesh = CreateMesh(pParser, targetMesh, targetMesh->mSubMeshes.at(0), NULL, 0, 0);
+                    mTargetMeshes.push_back(aimesh);
+                }
+                targetMeshes.push_back(aimesh);
+            }
+            for (unsigned int i = 0; i < weightData.mValues.size(); ++i)
+                targetWeights.push_back(weightData.mValues.at(i));
+        }
+    }
+    if (targetMeshes.size() > 0 && targetWeights.size() == targetMeshes.size())
+    {
+        std::vector<aiAnimMesh*> animMeshes;
+        for (unsigned int i = 0; i < targetMeshes.size(); i++)
+        {
+            aiAnimMesh *animMesh = aiCreateAnimMesh(targetMeshes.at(i));
+            animMesh->mWeight = targetWeights[i];
+            animMeshes.push_back(animMesh);
+        }
+        dstMesh->mMethod = (method == Collada::Relative)
+                                ? aiMorphingMethod_MORPH_RELATIVE
+                                : aiMorphingMethod_MORPH_NORMALIZED;
+        dstMesh->mAnimMeshes = new aiAnimMesh*[animMeshes.size()];
+        dstMesh->mNumAnimMeshes = animMeshes.size();
+        for (unsigned int i = 0; i < animMeshes.size(); i++)
+            dstMesh->mAnimMeshes[i] = animMeshes.at(i);
+    }
+
 	// create bones if given
-	if( pSrcController)
+    if( pSrcController && pSrcController->mType == Collada::Skin)
 	{
 		// refuse if the vertex count does not match
 //		if( pSrcController->mWeightCounts.size() != dstMesh->mNumVertices)
 //			throw DeadlyImportError( "Joint Controller vertex count does not match mesh vertex count");
 
-		// resolve references - joint names
-		const Collada::Accessor& jointNamesAcc = pParser.ResolveLibraryReference( pParser.mAccessorLibrary, pSrcController->mJointNameSource);
-		const Collada::Data& jointNames = pParser.ResolveLibraryReference( pParser.mDataLibrary, jointNamesAcc.mSource);
-		// joint offset matrices
-		const Collada::Accessor& jointMatrixAcc = pParser.ResolveLibraryReference( pParser.mAccessorLibrary, pSrcController->mJointOffsetMatrixSource);
-		const Collada::Data& jointMatrices = pParser.ResolveLibraryReference( pParser.mDataLibrary, jointMatrixAcc.mSource);
-		// joint vertex_weight name list - should refer to the same list as the joint names above. If not, report and reconsider
-		const Collada::Accessor& weightNamesAcc = pParser.ResolveLibraryReference( pParser.mAccessorLibrary, pSrcController->mWeightInputJoints.mAccessor);
-		if( &weightNamesAcc != &jointNamesAcc)
-			throw DeadlyImportError( "Temporary implementational lazyness. If you read this, please report to the author.");
-		// vertex weights
-		const Collada::Accessor& weightsAcc = pParser.ResolveLibraryReference( pParser.mAccessorLibrary, pSrcController->mWeightInputWeights.mAccessor);
-		const Collada::Data& weights = pParser.ResolveLibraryReference( pParser.mDataLibrary, weightsAcc.mSource);
+        // resolve references - joint names
+        const Collada::Accessor& jointNamesAcc = pParser.ResolveLibraryReference( pParser.mAccessorLibrary, pSrcController->mJointNameSource);
+        const Collada::Data& jointNames = pParser.ResolveLibraryReference( pParser.mDataLibrary, jointNamesAcc.mSource);
+        // joint offset matrices
+        const Collada::Accessor& jointMatrixAcc = pParser.ResolveLibraryReference( pParser.mAccessorLibrary, pSrcController->mJointOffsetMatrixSource);
+        const Collada::Data& jointMatrices = pParser.ResolveLibraryReference( pParser.mDataLibrary, jointMatrixAcc.mSource);
+        // joint vertex_weight name list - should refer to the same list as the joint names above. If not, report and reconsider
+        const Collada::Accessor& weightNamesAcc = pParser.ResolveLibraryReference( pParser.mAccessorLibrary, pSrcController->mWeightInputJoints.mAccessor);
+        if( &weightNamesAcc != &jointNamesAcc)
+            throw DeadlyImportError( "Temporary implementational lazyness. If you read this, please report to the author.");
+        // vertex weights
+        const Collada::Accessor& weightsAcc = pParser.ResolveLibraryReference( pParser.mAccessorLibrary, pSrcController->mWeightInputWeights.mAccessor);
+        const Collada::Data& weights = pParser.ResolveLibraryReference( pParser.mDataLibrary, weightsAcc.mSource);
 
-		if( !jointNames.mIsStringArray || jointMatrices.mIsStringArray || weights.mIsStringArray)
-			throw DeadlyImportError( "Data type mismatch while resolving mesh joints");
-		// sanity check: we rely on the vertex weights always coming as pairs of BoneIndex-WeightIndex
-		if( pSrcController->mWeightInputJoints.mOffset != 0 || pSrcController->mWeightInputWeights.mOffset != 1)
-			throw DeadlyImportError( "Unsupported vertex_weight addressing scheme. ");
+        if( !jointNames.mIsStringArray || jointMatrices.mIsStringArray || weights.mIsStringArray)
+            throw DeadlyImportError( "Data type mismatch while resolving mesh joints");
+        // sanity check: we rely on the vertex weights always coming as pairs of BoneIndex-WeightIndex
+        if( pSrcController->mWeightInputJoints.mOffset != 0 || pSrcController->mWeightInputWeights.mOffset != 1)
+            throw DeadlyImportError( "Unsupported vertex_weight addressing scheme. ");
 
-		// create containers to collect the weights for each bone
-		size_t numBones = jointNames.mStrings.size();
-		std::vector<std::vector<aiVertexWeight> > dstBones( numBones);
+        // create containers to collect the weights for each bone
+        size_t numBones = jointNames.mStrings.size();
+        std::vector<std::vector<aiVertexWeight> > dstBones( numBones);
 
-		// build a temporary array of pointers to the start of each vertex's weights
-		typedef std::vector< std::pair<size_t, size_t> > IndexPairVector;
-		std::vector<IndexPairVector::const_iterator> weightStartPerVertex;
-		weightStartPerVertex.resize(pSrcController->mWeightCounts.size(),pSrcController->mWeights.end());
+        // build a temporary array of pointers to the start of each vertex's weights
+        typedef std::vector< std::pair<size_t, size_t> > IndexPairVector;
+        std::vector<IndexPairVector::const_iterator> weightStartPerVertex;
+        weightStartPerVertex.resize(pSrcController->mWeightCounts.size(),pSrcController->mWeights.end());
 
-		IndexPairVector::const_iterator pit = pSrcController->mWeights.begin();
-		for( size_t a = 0; a < pSrcController->mWeightCounts.size(); ++a)
-		{
-			weightStartPerVertex[a] = pit;
-			pit += pSrcController->mWeightCounts[a];
-		}
+        IndexPairVector::const_iterator pit = pSrcController->mWeights.begin();
+        for( size_t a = 0; a < pSrcController->mWeightCounts.size(); ++a)
+        {
+            weightStartPerVertex[a] = pit;
+            pit += pSrcController->mWeightCounts[a];
+        }
 
-		// now for each vertex put the corresponding vertex weights into each bone's weight collection
-		for( size_t a = pStartVertex; a < pStartVertex + numVertices; ++a)
-		{
-			// which position index was responsible for this vertex? that's also the index by which
-			// the controller assigns the vertex weights
-			size_t orgIndex = pSrcMesh->mFacePosIndices[a];
-			// find the vertex weights for this vertex
-			IndexPairVector::const_iterator iit = weightStartPerVertex[orgIndex];
-			size_t pairCount = pSrcController->mWeightCounts[orgIndex];
+        // now for each vertex put the corresponding vertex weights into each bone's weight collection
+        for( size_t a = pStartVertex; a < pStartVertex + numVertices; ++a)
+        {
+            // which position index was responsible for this vertex? that's also the index by which
+            // the controller assigns the vertex weights
+            size_t orgIndex = pSrcMesh->mFacePosIndices[a];
+            // find the vertex weights for this vertex
+            IndexPairVector::const_iterator iit = weightStartPerVertex[orgIndex];
+            size_t pairCount = pSrcController->mWeightCounts[orgIndex];
 
-			for( size_t b = 0; b < pairCount; ++b, ++iit)
-			{
-				size_t jointIndex = iit->first;
-				size_t vertexIndex = iit->second;
+            for( size_t b = 0; b < pairCount; ++b, ++iit)
+            {
+                size_t jointIndex = iit->first;
+                size_t vertexIndex = iit->second;
 
-				float weight = ReadFloat( weightsAcc, weights, vertexIndex, 0);
+                float weight = ReadFloat( weightsAcc, weights, vertexIndex, 0);
 
-				// one day I gonna kill that XSI Collada exporter
-				if( weight > 0.0f)
-				{
-					aiVertexWeight w;
-					w.mVertexId = a - pStartVertex;
-					w.mWeight = weight;
-					dstBones[jointIndex].push_back( w);
-				}
-			}
-		}
+                // one day I gonna kill that XSI Collada exporter
+                if( weight > 0.0f)
+                {
+                    aiVertexWeight w;
+                    w.mVertexId = a - pStartVertex;
+                    w.mWeight = weight;
+                    dstBones[jointIndex].push_back( w);
+                }
+            }
+        }
 
-		// count the number of bones which influence vertices of the current submesh
-		size_t numRemainingBones = 0;
-		for( std::vector<std::vector<aiVertexWeight> >::const_iterator it = dstBones.begin(); it != dstBones.end(); ++it)
-			if( it->size() > 0)
-				numRemainingBones++;
+        // count the number of bones which influence vertices of the current submesh
+        size_t numRemainingBones = 0;
+        for( std::vector<std::vector<aiVertexWeight> >::const_iterator it = dstBones.begin(); it != dstBones.end(); ++it)
+            if( it->size() > 0)
+                numRemainingBones++;
 
-		// create bone array and copy bone weights one by one
-		dstMesh->mNumBones = numRemainingBones;
-		dstMesh->mBones = new aiBone*[numRemainingBones];
-		size_t boneCount = 0;
-		for( size_t a = 0; a < numBones; ++a)
-		{
-			// omit bones without weights
-			if( dstBones[a].size() == 0)
-				continue;
+        // create bone array and copy bone weights one by one
+        dstMesh->mNumBones = numRemainingBones;
+        dstMesh->mBones = new aiBone*[numRemainingBones];
+        size_t boneCount = 0;
+        for( size_t a = 0; a < numBones; ++a)
+        {
+            // omit bones without weights
+            if( dstBones[a].size() == 0)
+                continue;
 
-			// create bone with its weights
-			aiBone* bone = new aiBone;
-			bone->mName = ReadString( jointNamesAcc, jointNames, a);
-			bone->mOffsetMatrix.a1 = ReadFloat( jointMatrixAcc, jointMatrices, a, 0);
-			bone->mOffsetMatrix.a2 = ReadFloat( jointMatrixAcc, jointMatrices, a, 1);
-			bone->mOffsetMatrix.a3 = ReadFloat( jointMatrixAcc, jointMatrices, a, 2);
-			bone->mOffsetMatrix.a4 = ReadFloat( jointMatrixAcc, jointMatrices, a, 3);
-			bone->mOffsetMatrix.b1 = ReadFloat( jointMatrixAcc, jointMatrices, a, 4);
-			bone->mOffsetMatrix.b2 = ReadFloat( jointMatrixAcc, jointMatrices, a, 5);
-			bone->mOffsetMatrix.b3 = ReadFloat( jointMatrixAcc, jointMatrices, a, 6);
-			bone->mOffsetMatrix.b4 = ReadFloat( jointMatrixAcc, jointMatrices, a, 7);
-			bone->mOffsetMatrix.c1 = ReadFloat( jointMatrixAcc, jointMatrices, a, 8);
-			bone->mOffsetMatrix.c2 = ReadFloat( jointMatrixAcc, jointMatrices, a, 9);
-			bone->mOffsetMatrix.c3 = ReadFloat( jointMatrixAcc, jointMatrices, a, 10);
-			bone->mOffsetMatrix.c4 = ReadFloat( jointMatrixAcc, jointMatrices, a, 11);
-			bone->mNumWeights = dstBones[a].size();
-			bone->mWeights = new aiVertexWeight[bone->mNumWeights];
-			std::copy( dstBones[a].begin(), dstBones[a].end(), bone->mWeights);
+            // create bone with its weights
+            aiBone* bone = new aiBone;
+            bone->mName = ReadString( jointNamesAcc, jointNames, a);
+            bone->mOffsetMatrix.a1 = ReadFloat( jointMatrixAcc, jointMatrices, a, 0);
+            bone->mOffsetMatrix.a2 = ReadFloat( jointMatrixAcc, jointMatrices, a, 1);
+            bone->mOffsetMatrix.a3 = ReadFloat( jointMatrixAcc, jointMatrices, a, 2);
+            bone->mOffsetMatrix.a4 = ReadFloat( jointMatrixAcc, jointMatrices, a, 3);
+            bone->mOffsetMatrix.b1 = ReadFloat( jointMatrixAcc, jointMatrices, a, 4);
+            bone->mOffsetMatrix.b2 = ReadFloat( jointMatrixAcc, jointMatrices, a, 5);
+            bone->mOffsetMatrix.b3 = ReadFloat( jointMatrixAcc, jointMatrices, a, 6);
+            bone->mOffsetMatrix.b4 = ReadFloat( jointMatrixAcc, jointMatrices, a, 7);
+            bone->mOffsetMatrix.c1 = ReadFloat( jointMatrixAcc, jointMatrices, a, 8);
+            bone->mOffsetMatrix.c2 = ReadFloat( jointMatrixAcc, jointMatrices, a, 9);
+            bone->mOffsetMatrix.c3 = ReadFloat( jointMatrixAcc, jointMatrices, a, 10);
+            bone->mOffsetMatrix.c4 = ReadFloat( jointMatrixAcc, jointMatrices, a, 11);
+            bone->mNumWeights = dstBones[a].size();
+            bone->mWeights = new aiVertexWeight[bone->mNumWeights];
+            std::copy( dstBones[a].begin(), dstBones[a].end(), bone->mWeights);
 
-			// apply bind shape matrix to offset matrix
-			aiMatrix4x4 bindShapeMatrix;
-			bindShapeMatrix.a1 = pSrcController->mBindShapeMatrix[0];
-			bindShapeMatrix.a2 = pSrcController->mBindShapeMatrix[1];
-			bindShapeMatrix.a3 = pSrcController->mBindShapeMatrix[2];
-			bindShapeMatrix.a4 = pSrcController->mBindShapeMatrix[3];
-			bindShapeMatrix.b1 = pSrcController->mBindShapeMatrix[4];
-			bindShapeMatrix.b2 = pSrcController->mBindShapeMatrix[5];
-			bindShapeMatrix.b3 = pSrcController->mBindShapeMatrix[6];
-			bindShapeMatrix.b4 = pSrcController->mBindShapeMatrix[7];
-			bindShapeMatrix.c1 = pSrcController->mBindShapeMatrix[8];
-			bindShapeMatrix.c2 = pSrcController->mBindShapeMatrix[9];
-			bindShapeMatrix.c3 = pSrcController->mBindShapeMatrix[10];
-			bindShapeMatrix.c4 = pSrcController->mBindShapeMatrix[11];
-			bindShapeMatrix.d1 = pSrcController->mBindShapeMatrix[12];
-			bindShapeMatrix.d2 = pSrcController->mBindShapeMatrix[13];
-			bindShapeMatrix.d3 = pSrcController->mBindShapeMatrix[14];
-			bindShapeMatrix.d4 = pSrcController->mBindShapeMatrix[15];
-			bone->mOffsetMatrix *= bindShapeMatrix;
+            // apply bind shape matrix to offset matrix
+            aiMatrix4x4 bindShapeMatrix;
+            bindShapeMatrix.a1 = pSrcController->mBindShapeMatrix[0];
+            bindShapeMatrix.a2 = pSrcController->mBindShapeMatrix[1];
+            bindShapeMatrix.a3 = pSrcController->mBindShapeMatrix[2];
+            bindShapeMatrix.a4 = pSrcController->mBindShapeMatrix[3];
+            bindShapeMatrix.b1 = pSrcController->mBindShapeMatrix[4];
+            bindShapeMatrix.b2 = pSrcController->mBindShapeMatrix[5];
+            bindShapeMatrix.b3 = pSrcController->mBindShapeMatrix[6];
+            bindShapeMatrix.b4 = pSrcController->mBindShapeMatrix[7];
+            bindShapeMatrix.c1 = pSrcController->mBindShapeMatrix[8];
+            bindShapeMatrix.c2 = pSrcController->mBindShapeMatrix[9];
+            bindShapeMatrix.c3 = pSrcController->mBindShapeMatrix[10];
+            bindShapeMatrix.c4 = pSrcController->mBindShapeMatrix[11];
+            bindShapeMatrix.d1 = pSrcController->mBindShapeMatrix[12];
+            bindShapeMatrix.d2 = pSrcController->mBindShapeMatrix[13];
+            bindShapeMatrix.d3 = pSrcController->mBindShapeMatrix[14];
+            bindShapeMatrix.d4 = pSrcController->mBindShapeMatrix[15];
+            bone->mOffsetMatrix *= bindShapeMatrix;
 
-			// HACK: (thom) Some exporters address the bone nodes by SID, others address them by ID or even name.
-			// Therefore I added a little name replacement here: I search for the bone's node by either name, ID or SID,
-			// and replace the bone's name by the node's name so that the user can use the standard
-			// find-by-name method to associate nodes with bones.
-			const Collada::Node* bnode = FindNode( pParser.mRootNode, bone->mName.data);
-			if( !bnode)
-				bnode = FindNodeBySID( pParser.mRootNode, bone->mName.data);
+            // HACK: (thom) Some exporters address the bone nodes by SID, others address them by ID or even name.
+            // Therefore I added a little name replacement here: I search for the bone's node by either name, ID or SID,
+            // and replace the bone's name by the node's name so that the user can use the standard
+            // find-by-name method to associate nodes with bones.
+            const Collada::Node* bnode = FindNode( pParser.mRootNode, bone->mName.data);
+            if( !bnode)
+                bnode = FindNodeBySID( pParser.mRootNode, bone->mName.data);
 
-			// assign the name that we would have assigned for the source node
-			if( bnode)
-				bone->mName.Set( FindNameForNode( bnode));
-			else
-				DefaultLogger::get()->warn( boost::str( boost::format( "ColladaLoader::CreateMesh(): could not find corresponding node for joint \"%s\".") % bone->mName.data));
+            // assign the name that we would have assigned for the source node
+            if( bnode)
+                bone->mName.Set( FindNameForNode( bnode));
+            else
+                DefaultLogger::get()->warn( boost::str( boost::format( "ColladaLoader::CreateMesh(): could not find corresponding node for joint \"%s\".") % bone->mName.data));
 
-			// and insert bone
-			dstMesh->mBones[boneCount++] = bone;
-		}
+            // and insert bone
+            dstMesh->mBones[boneCount++] = bone;
+        }
 	}
 
 	return dstMesh;
@@ -924,15 +1003,79 @@ void ColladaLoader::StoreAnimations( aiScene* pScene, const ColladaParser& pPars
 		CreateAnimation( pScene, pParser, pSrcAnim, animName);
 }
 
+struct MorphTimeValues
+{
+    float mTime;
+    struct key
+    {
+        float mWeight;
+        unsigned int mValue;
+    };
+    std::vector<key> mKeys;
+};
+
+void insertMorphTimeValue(std::vector<MorphTimeValues> &values, float time, float weight, unsigned int value)
+{
+    MorphTimeValues::key k;
+    k.mValue = value;
+    k.mWeight = weight;
+    if (values.size() == 0 || time < values[0].mTime)
+    {
+        MorphTimeValues val;
+        val.mTime = time;
+        val.mKeys.push_back(k);
+        values.insert(values.begin(), val);
+        return;
+    }
+    if (time > values.back().mTime)
+    {
+        MorphTimeValues val;
+        val.mTime = time;
+        val.mKeys.push_back(k);
+        values.insert(values.end(), val);
+        return;
+    }
+    for (unsigned int i = 0; i < values.size(); i++)
+    {
+        if (std::abs(time - values[i].mTime) < 1e-6f)
+        {
+            values[i].mKeys.push_back(k);
+            return;
+        } else if (time > values[i].mTime && time < values[i+1].mTime)
+        {
+            MorphTimeValues val;
+            val.mTime = time;
+            val.mKeys.push_back(k);
+            values.insert(values.begin() + i, val);
+            return;
+        }
+    }
+    // should not get here
+}
+
+float getWeightAtKey(const std::vector<MorphTimeValues> &values, int key, unsigned int value)
+{
+    for (unsigned int i = 0; i < values[key].mKeys.size(); i++)
+    {
+        if (values[key].mKeys[i].mValue == value)
+            return values[key].mKeys[i].mWeight;
+    }
+    // no value at key found, try to interpolate if present at other keys. if not, return zero
+    // TODO: interpolation
+    return 0.0f;
+}
+
 // ------------------------------------------------------------------------------------------------
 // Constructs the animation for the given source anim
 void ColladaLoader::CreateAnimation( aiScene* pScene, const ColladaParser& pParser, const Collada::Animation* pSrcAnim, const std::string& pName)
 {
-	// collect a list of animatable nodes
-	std::vector<const aiNode*> nodes;
-	CollectNodes( pScene->mRootNode, nodes);
+    // collect a list of animatable nodes
+    std::vector<const aiNode*> nodes;
+    CollectNodes( pScene->mRootNode, nodes);
 
-	std::vector<aiNodeAnim*> anims;
+    std::vector<aiNodeAnim*> anims;
+    std::vector<aiMeshMorphAnim*> morphAnims;
+
 	for( std::vector<const aiNode*>::const_iterator nit = nodes.begin(); nit != nodes.end(); ++nit)
 	{
 		// find all the collada anim channels which refer to the current node
@@ -955,8 +1098,20 @@ void ColladaLoader::CreateAnimation( aiScene* pScene, const ColladaParser& pPars
 			// we expect the animation target to be of type "nodeName/transformID.subElement". Ignore all others
 			// find the slash that separates the node name - there should be only one
 			std::string::size_type slashPos = srcChannel.mTarget.find( '/');
-			if( slashPos == std::string::npos)
-				continue;
+            if( slashPos == std::string::npos) {
+                std::string::size_type targetPos = srcChannel.mTarget.find(srcNode->mID);
+                if (targetPos == std::string::npos)
+                    continue;
+
+                // not node transform, but something else. store as unknown animation channel for now
+                entry.mChannel = &(*cit);
+                entry.mTargetId = srcChannel.mTarget.substr(targetPos + pSrcAnim->mName.length(),
+                                        srcChannel.mTarget.length() - targetPos - pSrcAnim->mName.length());
+                if (entry.mTargetId.front() == '-')
+                    entry.mTargetId = entry.mTargetId.substr(1);
+                entries.push_back(entry);
+                continue;
+            }
 			if( srcChannel.mTarget.find( '/', slashPos+1) != std::string::npos)
 				continue;
 			std::string targetID = srcChannel.mTarget.substr( 0, slashPos);
@@ -995,9 +1150,15 @@ void ColladaLoader::CreateAnimation( aiScene* pScene, const ColladaParser& pPars
 				if( srcNode->mTransforms[a].mID == entry.mTransformId)
 					entry.mTransformIndex = a;
 
-			if( entry.mTransformIndex == SIZE_MAX) {
-				continue;
-			}
+            if( entry.mTransformIndex == SIZE_MAX)
+            {
+                if (entry.mTransformId.find("morph-weights") != std::string::npos)
+                {
+                    entry.mTargetId = entry.mTransformId;
+                    entry.mTransformId = "";
+                } else
+                    continue;
+            }
 
 			entry.mChannel = &(*cit);
 			entries.push_back( entry);
@@ -1021,143 +1182,219 @@ void ColladaLoader::CreateAnimation( aiScene* pScene, const ColladaParser& pPars
 			if( e.mTimeAccessor->mCount != e.mValueAccessor->mCount)
 				throw DeadlyImportError( boost::str( boost::format( "Time count / value count mismatch in animation channel \"%s\".") % e.mChannel->mTarget));
 
-      if( e.mTimeAccessor->mCount > 0 )
-      {
-			  // find bounding times
-			  startTime = std::min( startTime, ReadFloat( *e.mTimeAccessor, *e.mTimeData, 0, 0));
-  			endTime = std::max( endTime, ReadFloat( *e.mTimeAccessor, *e.mTimeData, e.mTimeAccessor->mCount-1, 0));
-      }
-		}
+            if( e.mTimeAccessor->mCount > 0 )
+            {
+                  // find bounding times
+                  startTime = std::min( startTime, ReadFloat( *e.mTimeAccessor, *e.mTimeData, 0, 0));
+                endTime = std::max( endTime, ReadFloat( *e.mTimeAccessor, *e.mTimeData, e.mTimeAccessor->mCount-1, 0));
+            }
+        }
 
-    std::vector<aiMatrix4x4> resultTrafos;
-    if( !entries.empty() && entries.front().mTimeAccessor->mCount > 0 )
-    {
-		  // create a local transformation chain of the node's transforms
-		  std::vector<Collada::Transform> transforms = srcNode->mTransforms;
+        std::vector<aiMatrix4x4> resultTrafos;
+        if( !entries.empty() && entries.front().mTimeAccessor->mCount > 0 )
+        {
+              // create a local transformation chain of the node's transforms
+              std::vector<Collada::Transform> transforms = srcNode->mTransforms;
 
-		  // now for every unique point in time, find or interpolate the key values for that time
-		  // and apply them to the transform chain. Then the node's present transformation can be calculated.
-		  float time = startTime;
-		  while( 1)
-		  {
-			  for( std::vector<Collada::ChannelEntry>::iterator it = entries.begin(); it != entries.end(); ++it)
-			  {
-				  Collada::ChannelEntry& e = *it;
+              // now for every unique point in time, find or interpolate the key values for that time
+              // and apply them to the transform chain. Then the node's present transformation can be calculated.
+              float time = startTime;
+              while( 1)
+              {
+                  for( std::vector<Collada::ChannelEntry>::iterator it = entries.begin(); it != entries.end(); ++it)
+                  {
+                      Collada::ChannelEntry& e = *it;
 
-				  // find the keyframe behind the current point in time
-				  size_t pos = 0;
-				  float postTime = 0.f;
-				  while( 1)
-				  {
-					  if( pos >= e.mTimeAccessor->mCount)
-						  break;
-					  postTime = ReadFloat( *e.mTimeAccessor, *e.mTimeData, pos, 0);
-					  if( postTime >= time)
-						  break;
-					  ++pos;
-				  }
+                      // skip non-transform types
+                      if (e.mTransformId.empty())
+                          continue;
 
-				  pos = std::min( pos, e.mTimeAccessor->mCount-1);
+                      // find the keyframe behind the current point in time
+                      size_t pos = 0;
+                      float postTime = 0.f;
+                      while( 1)
+                      {
+                          if( pos >= e.mTimeAccessor->mCount)
+                              break;
+                          postTime = ReadFloat( *e.mTimeAccessor, *e.mTimeData, pos, 0);
+                          if( postTime >= time)
+                              break;
+                          ++pos;
+                      }
 
-				  // read values from there
-				  float temp[16];
-				  for( size_t c = 0; c < e.mValueAccessor->mSize; ++c)
-					  temp[c] = ReadFloat( *e.mValueAccessor, *e.mValueData, pos, c);
+                      pos = std::min( pos, e.mTimeAccessor->mCount-1);
 
-				  // if not exactly at the key time, interpolate with previous value set
-				  if( postTime > time && pos > 0)
-				  {
-					  float preTime = ReadFloat( *e.mTimeAccessor, *e.mTimeData, pos-1, 0);
-					  float factor = (time - postTime) / (preTime - postTime);
+                      // read values from there
+                      float temp[16];
+                      for( size_t c = 0; c < e.mValueAccessor->mSize; ++c)
+                          temp[c] = ReadFloat( *e.mValueAccessor, *e.mValueData, pos, c);
 
-					  for( size_t c = 0; c < e.mValueAccessor->mSize; ++c)
-					  {
-						  float v = ReadFloat( *e.mValueAccessor, *e.mValueData, pos-1, c);
-						  temp[c] += (v - temp[c]) * factor;
-					  }
-				  }
+                      // if not exactly at the key time, interpolate with previous value set
+                      if( postTime > time && pos > 0)
+                      {
+                          float preTime = ReadFloat( *e.mTimeAccessor, *e.mTimeData, pos-1, 0);
+                          float factor = (time - postTime) / (preTime - postTime);
 
-				  // Apply values to current transformation
-				  std::copy( temp, temp + e.mValueAccessor->mSize, transforms[e.mTransformIndex].f + e.mSubElement);
-			  }
+                          for( size_t c = 0; c < e.mValueAccessor->mSize; ++c)
+                          {
+                              float v = ReadFloat( *e.mValueAccessor, *e.mValueData, pos-1, c);
+                              temp[c] += (v - temp[c]) * factor;
+                          }
+                      }
 
-			  // Calculate resulting transformation
-			  aiMatrix4x4 mat = pParser.CalculateResultTransform( transforms);
+                      // Apply values to current transformation
+                      std::copy( temp, temp + e.mValueAccessor->mSize, transforms[e.mTransformIndex].f + e.mSubElement);
+                  }
 
-			  // out of lazyness: we store the time in matrix.d4
-			  mat.d4 = time;
-			  resultTrafos.push_back( mat);
+                  // Calculate resulting transformation
+                  aiMatrix4x4 mat = pParser.CalculateResultTransform( transforms);
 
-			  // find next point in time to evaluate. That's the closest frame larger than the current in any channel
-			  float nextTime = 1e20f;
-			  for( std::vector<Collada::ChannelEntry>::iterator it = entries.begin(); it != entries.end(); ++it)
-			  {
-				  Collada::ChannelEntry& e = *it;
+                  // out of lazyness: we store the time in matrix.d4
+                  mat.d4 = time;
+                  resultTrafos.push_back( mat);
 
-				  // find the next time value larger than the current
-				  size_t pos = 0;
-				  while( pos < e.mTimeAccessor->mCount)
-				  {
-					  float t = ReadFloat( *e.mTimeAccessor, *e.mTimeData, pos, 0);
-					  if( t > time)
-					  {
-						  nextTime = std::min( nextTime, t);
-						  break;
-					  }
-					  ++pos;
-				  }
-			  }
+                  // find next point in time to evaluate. That's the closest frame larger than the current in any channel
+                  float nextTime = 1e20f;
+                  for( std::vector<Collada::ChannelEntry>::iterator it = entries.begin(); it != entries.end(); ++it)
+                  {
+                      Collada::ChannelEntry& e = *it;
 
-			  // no more keys on any channel after the current time -> we're done
-			  if( nextTime > 1e19)
-				  break;
+                      // find the next time value larger than the current
+                      size_t pos = 0;
+                      while( pos < e.mTimeAccessor->mCount)
+                      {
+                          float t = ReadFloat( *e.mTimeAccessor, *e.mTimeData, pos, 0);
+                          if( t > time)
+                          {
+                              nextTime = std::min( nextTime, t);
+                              break;
+                          }
+                          ++pos;
+                      }
+                  }
 
-			  // else construct next keyframe at this following time point
-			  time = nextTime;
-		  }
-    }
+                  // no more keys on any channel after the current time -> we're done
+                  if( nextTime > 1e19)
+                      break;
+
+                  // else construct next keyframe at this following time point
+                  time = nextTime;
+              }
+        }
 
 		// there should be some keyframes, but we aren't that fixated on valid input data
 //		ai_assert( resultTrafos.size() > 0);
 
 		// build an animation channel for the given node out of these trafo keys
-    if( !resultTrafos.empty() )
-    {
-		  aiNodeAnim* dstAnim = new aiNodeAnim;
-		  dstAnim->mNodeName = nodeName;
-		  dstAnim->mNumPositionKeys = resultTrafos.size();
-		  dstAnim->mNumRotationKeys= resultTrafos.size();
-		  dstAnim->mNumScalingKeys = resultTrafos.size();
-		  dstAnim->mPositionKeys = new aiVectorKey[resultTrafos.size()];
-		  dstAnim->mRotationKeys = new aiQuatKey[resultTrafos.size()];
-		  dstAnim->mScalingKeys = new aiVectorKey[resultTrafos.size()];
+        if( !resultTrafos.empty() )
+        {
+              aiNodeAnim* dstAnim = new aiNodeAnim;
+              dstAnim->mNodeName = nodeName;
+              dstAnim->mNumPositionKeys = resultTrafos.size();
+              dstAnim->mNumRotationKeys= resultTrafos.size();
+              dstAnim->mNumScalingKeys = resultTrafos.size();
+              dstAnim->mPositionKeys = new aiVectorKey[resultTrafos.size()];
+              dstAnim->mRotationKeys = new aiQuatKey[resultTrafos.size()];
+              dstAnim->mScalingKeys = new aiVectorKey[resultTrafos.size()];
 
-		  for( size_t a = 0; a < resultTrafos.size(); ++a)
-		  {
-			  aiMatrix4x4 mat = resultTrafos[a];
-			  double time = double( mat.d4); // remember? time is stored in mat.d4
-        mat.d4 = 1.0f;
+              for( size_t a = 0; a < resultTrafos.size(); ++a)
+              {
+                  aiMatrix4x4 mat = resultTrafos[a];
+                  double time = double( mat.d4); // remember? time is stored in mat.d4
+                    mat.d4 = 1.0f;
 
-			  dstAnim->mPositionKeys[a].mTime = time;
-			  dstAnim->mRotationKeys[a].mTime = time;
-			  dstAnim->mScalingKeys[a].mTime = time;
-			  mat.Decompose( dstAnim->mScalingKeys[a].mValue, dstAnim->mRotationKeys[a].mValue, dstAnim->mPositionKeys[a].mValue);
-		  }
+                  dstAnim->mPositionKeys[a].mTime = time;
+                  dstAnim->mRotationKeys[a].mTime = time;
+                  dstAnim->mScalingKeys[a].mTime = time;
+                  mat.Decompose( dstAnim->mScalingKeys[a].mValue, dstAnim->mRotationKeys[a].mValue, dstAnim->mPositionKeys[a].mValue);
+              }
 
-		  anims.push_back( dstAnim);
-    } else
-    {
-      DefaultLogger::get()->warn( "Collada loader: found empty animation channel, ignored. Please check your exporter.");
-    }
+              anims.push_back( dstAnim);
+        } else
+        {
+          DefaultLogger::get()->warn( "Collada loader: found empty animation channel, ignored. Please check your exporter.");
+        }
+
+        if( !entries.empty() && entries.front().mTimeAccessor->mCount > 0 )
+        {
+            std::vector<Collada::ChannelEntry> morphChannels;
+            for( std::vector<Collada::ChannelEntry>::iterator it = entries.begin(); it != entries.end(); ++it)
+            {
+                Collada::ChannelEntry& e = *it;
+
+                // skip non-transform types
+                if (e.mTargetId.empty())
+                    continue;
+
+                if (e.mTargetId.find("morph-weights") != std::string::npos)
+                    morphChannels.push_back(e);
+            }
+            if (morphChannels.size() > 0)
+            {
+                // either 1) morph weight animation count should contain morph target count channels
+                // or     2) one channel with morph target count arrays
+                // assume first
+
+                aiMeshMorphAnim *morphAnim = new aiMeshMorphAnim;
+                morphAnim->mName.Set(nodeName);
+
+                std::vector<MorphTimeValues> morphTimeValues;
+
+                int morphAnimChannelIndex = 0;
+                for( std::vector<Collada::ChannelEntry>::iterator it = morphChannels.begin(); it != morphChannels.end(); ++it)
+                {
+                    Collada::ChannelEntry& e = *it;
+                    std::string::size_type apos = e.mTargetId.find('(');
+                    std::string::size_type bpos = e.mTargetId.find(')');
+                    if (apos == std::string::npos || bpos == std::string::npos)
+                        // unknown way to specify weight -> ignore this animation
+                        continue;
+
+                    // weight target can be in format Weight_M_N, Weight_N, WeightN, or some other way
+                    // we ignore the name and just assume the channels are in the right order
+                    for (unsigned int i = 0; i < e.mTimeData->mValues.size(); i++)
+                        insertMorphTimeValue(morphTimeValues, e.mTimeData->mValues.at(i), e.mValueData->mValues.at(i), morphAnimChannelIndex);
+
+                    ++morphAnimChannelIndex;
+                }
+
+                morphAnim->mNumKeys = morphTimeValues.size();
+                morphAnim->mKeys = new aiMeshMorphKey[morphAnim->mNumKeys];
+                for (unsigned int key = 0; key < morphAnim->mNumKeys; key++)
+                {
+                    morphAnim->mKeys[key].mNumValuesAndWeights = morphChannels.size();
+                    morphAnim->mKeys[key].mValues = new unsigned int [morphChannels.size()];
+                    morphAnim->mKeys[key].mWeights = new double [morphChannels.size()];
+
+                    morphAnim->mKeys[key].mTime = morphTimeValues[key].mTime;
+                    for (unsigned int valueIndex = 0; valueIndex < morphChannels.size(); valueIndex++)
+                    {
+                        morphAnim->mKeys[key].mValues[valueIndex] = valueIndex;
+                        morphAnim->mKeys[key].mWeights[valueIndex] = getWeightAtKey(morphTimeValues, key, valueIndex);
+                    }
+                }
+
+                morphAnims.push_back(morphAnim);
+            }
+        }
 	}
 
-	if( !anims.empty())
+    if( !anims.empty() || !morphAnims.empty())
 	{
 		aiAnimation* anim = new aiAnimation;
 		anim->mName.Set( pName);
 		anim->mNumChannels = anims.size();
-		anim->mChannels = new aiNodeAnim*[anims.size()];
-		std::copy( anims.begin(), anims.end(), anim->mChannels);
+        if (anim->mNumChannels > 0)
+        {
+            anim->mChannels = new aiNodeAnim*[anims.size()];
+            std::copy( anims.begin(), anims.end(), anim->mChannels);
+        }
+        anim->mNumMorphMeshChannels = morphAnims.size();
+        if (anim->mNumMorphMeshChannels > 0)
+        {
+            anim->mMorphMeshChannels = new aiMeshMorphAnim*[anim->mNumMorphMeshChannels];
+            std::copy( morphAnims.begin(), morphAnims.end(), anim->mMorphMeshChannels);
+        }
 		anim->mDuration = 0.0f;
 		for( size_t a = 0; a < anims.size(); ++a)
 		{
@@ -1165,6 +1402,10 @@ void ColladaLoader::CreateAnimation( aiScene* pScene, const ColladaParser& pPars
 			anim->mDuration = std::max( anim->mDuration, anims[a]->mRotationKeys[anims[a]->mNumRotationKeys-1].mTime);
 			anim->mDuration = std::max( anim->mDuration, anims[a]->mScalingKeys[anims[a]->mNumScalingKeys-1].mTime);
 		}
+        for (size_t a = 0; a < morphAnims.size(); ++a)
+        {
+            anim->mDuration = std::max(anim->mDuration, morphAnims[a]->mKeys[morphAnims[a]->mNumKeys-1].mTime);
+        }
 		anim->mTicksPerSecond = 1;
 		mAnims.push_back( anim);
 	}
