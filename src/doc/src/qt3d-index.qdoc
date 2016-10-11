@@ -78,7 +78,7 @@
     A Qt Quick application requires also additional dependencies:
 
     \badcode
-    QT += 3dcore 3drenderer 3dinput qml quick 3dquick
+    QT += 3dcore 3drender 3dinput 3dlogic 3dextras qml quick 3dquick
     \endcode
 
     \section1 Overview
