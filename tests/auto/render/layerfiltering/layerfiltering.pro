@@ -8,4 +8,6 @@ CONFIG += testcase
 
 SOURCES += tst_layerfiltering.cpp
 
+CONFIG += useCommonTestAspect
+
 include(../commons/commons.pri)
