@@ -66,7 +66,7 @@
 #include <QOpenGLFunctions_3_3_Core>
 #include <QOpenGLFunctions_4_3_Core>
 #include <Qt3DRender/private/graphicshelpergl2_p.h>
-#include <Qt3DRender/private/graphicshelpergl3_p.h>
+#include <Qt3DRender/private/graphicshelpergl3_2_p.h>
 #include <Qt3DRender/private/graphicshelpergl3_3_p.h>
 #include <Qt3DRender/private/graphicshelpergl4_p.h>
 #endif
@@ -665,7 +665,7 @@ GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
             glHelper = new GraphicsHelperGL3_3();
         } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != nullptr) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.2";
-            glHelper = new GraphicsHelperGL3();
+            glHelper = new GraphicsHelperGL3_2();
         } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_2_0>()) != nullptr) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2 Helper";
             glHelper = new GraphicsHelperGL2();
@@ -1261,6 +1261,7 @@ void GraphicsContext::applyUniform(const ShaderUniform &description, const Unifo
         break;
     case UniformType::Mat4x2:
         applyUniformHelper<UniformType::Mat4x2>(description.m_location, v);
+        break;
     case UniformType::Mat3x4:
         applyUniformHelper<UniformType::Mat3x4>(description.m_location, v);
         break;

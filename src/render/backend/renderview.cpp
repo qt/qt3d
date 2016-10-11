@@ -418,13 +418,15 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
 
             const Qt3DCore::QNodeId materialComponentId = node->componentUuid<Material>();
             const  QVector<RenderPassParameterData> renderPassData = m_parameters.value(materialComponentId);
+            HGeometry geometryHandle = m_manager->lookupHandle<Geometry, GeometryManager, HGeometry>(geometryRenderer->geometryId());
+            Geometry *geometry = m_manager->data<Geometry, GeometryManager>(geometryHandle);
 
             // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
             for (const RenderPassParameterData &passData : renderPassData) {
                 // Add the RenderPass Parameters
                 RenderCommand *command = new RenderCommand();
                 command->m_depth = m_data.m_eyePos.distanceToPoint(node->worldBoundingVolume()->center());
-                command->m_geometry = m_manager->lookupHandle<Geometry, GeometryManager, HGeometry>(geometryRenderer->geometryId());
+                command->m_geometry = geometryHandle;
                 command->m_geometryRenderer = geometryRendererHandle;
                 // For RenderPass based states we use the globally set RenderState
                 // if no renderstates are defined as part of the pass. That means:
@@ -454,6 +456,51 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
                 // setShaderAndUniforms can initialize a localData
                 // make sure this is cleared before we leave this function
                 setShaderAndUniforms(command, pass, globalParameters, *(node->worldTransform()), lightSources.mid(0, std::max(lightSources.size(), MAX_LIGHTS)));
+
+                // Store all necessary information for actual drawing if command is valid
+                command->m_isValid = !command->m_attributes.empty();
+                if (command->m_isValid) {
+                    // Update the draw command with what's going to be needed for the drawing
+                    uint primitiveCount = geometryRenderer->vertexCount();
+                    uint estimatedCount = 0;
+                    Attribute *indexAttribute = nullptr;
+
+                    const QVector<Qt3DCore::QNodeId> attributeIds = geometry->attributes();
+                    for (Qt3DCore::QNodeId attributeId : attributeIds) {
+                        Attribute *attribute = m_manager->attributeManager()->lookupResource(attributeId);
+                        if (attribute->attributeType() == QAttribute::IndexAttribute)
+                            indexAttribute = attribute;
+                        else if (command->m_attributes.contains(attribute->nameId()))
+                            estimatedCount = qMax(attribute->count(), estimatedCount);
+                    }
+
+                    // Update the draw command with all the information required for the drawing
+                    command->m_drawIndexed = (indexAttribute != nullptr);
+                    if (command->m_drawIndexed) {
+                        command->m_indexAttributeDataType = GraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->vertexBaseType());
+                        command->m_indexAttributeByteOffset = indexAttribute->byteOffset();
+                    }
+
+                    // Use the count specified by the GeometryRender
+                    // If not specified use the indexAttribute count if present
+                    // Otherwise tries to use the count from the attribute with the highest count
+                    if (primitiveCount == 0) {
+                        if (indexAttribute)
+                            primitiveCount = indexAttribute->count();
+                        else
+                            primitiveCount = estimatedCount;
+                    }
+
+                    command->m_primitiveCount = primitiveCount;
+                    command->m_primitiveType = geometryRenderer->primitiveType();
+                    command->m_primitiveRestartEnabled = geometryRenderer->primitiveRestartEnabled();
+                    command->m_restartIndexValue = geometryRenderer->restartIndexValue();
+                    command->m_firstInstance = geometryRenderer->firstInstance();
+                    command->m_instanceCount = geometryRenderer->instanceCount();
+                    command->m_firstVertex = geometryRenderer->firstVertex();
+                    command->m_indexOffset = geometryRenderer->indexOffset();
+                    command->m_verticesPerPatch = geometryRenderer->verticesPerPatch();
+                }
 
                 buildSortingKey(command);
                 commands.append(command);
@@ -786,6 +833,9 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                     Entity *lightEntity = lightSource.entity;
                     const QVector3D worldPos = lightEntity->worldBoundingVolume()->center();
                     for (Light *light : lightSource.lights) {
+                        if (!light->isEnabled())
+                            continue;
+
                         ShaderData *shaderData = m_manager->shaderDataManager()->lookupResource(light->shaderData());
                         if (!shaderData)
                             continue;

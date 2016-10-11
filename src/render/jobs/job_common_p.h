@@ -84,7 +84,15 @@ namespace JobTypes {
         LightGathering,
         UpdateWorldBoundingVolume,
         FrameSubmissionPart2,
+        DirtyBufferGathering,
+        DirtyTextureGathering,
+        DirtyShaderGathering,
         SendRenderCapture,
+        SyncRenderViewCommandBuilding,
+        SyncRenderViewInitialization,
+        SyncRenderViewCommandBuilder,
+        SyncFrustumCulling,
+        ClearBufferDrawIndex
     };
 
 } // JobTypes

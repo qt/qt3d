@@ -149,18 +149,21 @@ class QT3DRENDERSHARED_EXPORT QTextureLoader : public QAbstractTexture
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
-
+    Q_PROPERTY(bool mirrored READ isMirrored WRITE setMirrored NOTIFY mirroredChanged)
 public:
     explicit QTextureLoader(Qt3DCore::QNode *parent = nullptr);
     ~QTextureLoader();
 
     QUrl source() const;
+    bool isMirrored() const;
 
 public Q_SLOTS:
     void setSource(const QUrl &source);
+    void setMirrored(bool mirrored);
 
 Q_SIGNALS:
     void sourceChanged(const QUrl &source);
+    void mirroredChanged(bool mirrored);
 
 private:
     Q_DECLARE_PRIVATE(QTextureLoader)

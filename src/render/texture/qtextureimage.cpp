@@ -155,8 +155,31 @@ QTextureImage::Status QTextureImage::status() const
 }
 
 /*!
+ * \return whether mirroring is enabled or not.
+ */
+bool QTextureImage::isMirrored() const
+{
+    Q_D(const QTextureImage);
+    return d->m_mirrored;
+}
+
+/*!
+  \property Qt3DRender::QTextureImage::source
+
+  This property holds the source url from which data for the texture
+  image will be loaded.
+*/
+
+/*!
+  \qmlproperty url Qt3D.Render::TextureImage::source
+
+  This property holds the source url from which data for the texture
+  image will be loaded.
+*/
+
+/*!
     Sets the source url of the texture image to \a source.
-    \note This triggers a call to update()
+    \note This internally triggers a call to update the data generator.
  */
 void QTextureImage::setSource(const QUrl &source)
 {
@@ -169,8 +192,54 @@ void QTextureImage::setSource(const QUrl &source)
 }
 
 /*!
-    Sets the status to \a status.
-    \param status
+  \property Qt3DRender::QTextureImage::mirrored
+
+  This property specifies whether the image should be mirrored when loaded. This
+  is a convenience to avoid having to manipulate images to match the origin of
+  the texture coordinates used by the rendering API. By default this property
+  is set to true. This has no effect when using compressed texture formats.
+
+  \note OpenGL specifies the origin of texture coordinates from the lower left
+  hand corner whereas DirectX uses the the upper left hand corner.
+
+  \note When using cube map texture you'll probably want mirroring disabled as
+  the cube map sampler takes a direction rather than regular texture
+  coordinates.
+*/
+
+/*!
+  \qmlproperty bool Qt3DRender::QTextureImage::mirrored
+
+  This property specifies whether the image should be mirrored when loaded. This
+  is a convenience to avoid having to manipulate images to match the origin of
+  the texture coordinates used by the rendering API. By default this property
+  is set to true. This has no effect when using compressed texture formats.
+
+  \note OpenGL specifies the origin of texture coordinates from the lower left
+  hand corner whereas DirectX uses the the upper left hand corner.
+
+  \note When using cube map texture you'll probably want mirroring disabled as
+  the cube map sampler takes a direction rather than regular texture
+  coordinates.
+*/
+
+/*!
+    Sets mirroring to \a mirrored.
+    \note This internally triggers a call to update the data generator.
+ */
+void QTextureImage::setMirrored(bool mirrored)
+{
+    Q_D(QTextureImage);
+    if (mirrored != d->m_mirrored) {
+        d->m_mirrored = mirrored;
+        emit mirroredChanged(mirrored);
+        notifyDataGeneratorChanged();
+    }
+}
+
+/*!
+ * Sets the status to \a status.
+ * \param status
  */
 void QTextureImage::setStatus(Status status)
 {
@@ -187,7 +256,7 @@ void QTextureImage::setStatus(Status status)
  */
 QTextureImageDataGeneratorPtr QTextureImage::dataGenerator() const
 {
-    return QTextureImageDataGeneratorPtr(new QImageTextureDataFunctor(source()));
+    return QTextureImageDataGeneratorPtr(new QImageTextureDataFunctor(source(), isMirrored()));
 }
 
 /*!
@@ -206,10 +275,11 @@ void QTextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
     The constructor creates a new QImageTextureDataFunctor::QImageTextureDataFunctor
     instance with the specified \a url.
  */
-QImageTextureDataFunctor::QImageTextureDataFunctor(const QUrl &url)
+QImageTextureDataFunctor::QImageTextureDataFunctor(const QUrl &url, bool mirrored)
     : QTextureImageDataGenerator()
     , m_url(url)
     , m_status(QTextureImage::None)
+    , m_mirrored(mirrored)
 {
     if (url.isLocalFile()) {
         QFileInfo info(url.toLocalFile());
@@ -222,7 +292,7 @@ QTextureImageDataPtr QImageTextureDataFunctor::operator ()()
     // We assume that a texture image is going to contain a single image data
     // For compressed dds or ktx textures a warning should be issued if
     // there are layers or 3D textures
-    return TextureLoadingHelper::loadTextureData(m_url, false);
+    return TextureLoadingHelper::loadTextureData(m_url, false, m_mirrored);
 }
 
 bool QImageTextureDataFunctor::operator ==(const QTextureImageDataGenerator &other) const
@@ -230,7 +300,10 @@ bool QImageTextureDataFunctor::operator ==(const QTextureImageDataGenerator &oth
     const QImageTextureDataFunctor *otherFunctor = functor_cast<QImageTextureDataFunctor>(&other);
 
     // if its the same URL, but different modification times, its not the same image.
-    return (otherFunctor != Q_NULLPTR && otherFunctor->m_url == m_url && otherFunctor->m_lastModified == m_lastModified);
+    return (otherFunctor != nullptr &&
+            otherFunctor->m_url == m_url &&
+            otherFunctor->m_lastModified == m_lastModified &&
+            otherFunctor->m_mirrored == m_mirrored);
 }
 
 } // namespace Qt3DRender

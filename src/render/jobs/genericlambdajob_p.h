@@ -64,11 +64,11 @@ template<typename T>
 class GenericLambdaJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit GenericLambdaJob(T callable)
+    explicit GenericLambdaJob(T callable, JobTypes::JobType type = JobTypes::GenericLambda)
         : Qt3DCore::QAspectJob()
         , m_callable(callable)
     {
-        SET_JOB_RUN_STAT_TYPE(this, JobTypes::GenericLambda, 0);
+        SET_JOB_RUN_STAT_TYPE(this, type, 0);
     }
 
     // QAspectJob interface

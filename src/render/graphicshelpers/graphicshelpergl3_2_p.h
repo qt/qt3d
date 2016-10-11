@@ -64,10 +64,11 @@ class QOpenGLExtension_ARB_tessellation_shader;
 namespace Qt3DRender {
 namespace Render {
 
-class GraphicsHelperGL3 : public GraphicsHelperInterface
+class Q_AUTOTEST_EXPORT GraphicsHelperGL3_2 : public GraphicsHelperInterface
 {
 public:
-    GraphicsHelperGL3();
+    GraphicsHelperGL3_2();
+    ~GraphicsHelperGL3_2();
 
     // QGraphicHelperInterface interface
     void alphaTest(GLenum mode1, GLenum mode2) Q_DECL_OVERRIDE;

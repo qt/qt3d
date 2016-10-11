@@ -238,10 +238,10 @@ void tst_QRay3D::point()
     QFETCH(QVector3D, point_on_line_pos_0_6);
     QFETCH(QVector3D, point_on_line_neg_7_2);
     Qt3DRender::QRay3D line(point, direction);
-    QVERIFY(fuzzyCompare(line.point(0.6), point_on_line_pos_0_6));
-    QVERIFY(fuzzyCompare(line.point(-7.2), point_on_line_neg_7_2));
-    QVERIFY(fuzzyCompare(line.projectedDistance(point_on_line_pos_0_6), 0.6));
-    QVERIFY(fuzzyCompare(line.projectedDistance(point_on_line_neg_7_2), -7.2));
+    QVERIFY(fuzzyCompare(line.point(0.6f), point_on_line_pos_0_6));
+    QVERIFY(fuzzyCompare(line.point(-7.2f), point_on_line_neg_7_2));
+    QVERIFY(fuzzyCompare(line.projectedDistance(point_on_line_pos_0_6), 0.6f));
+    QVERIFY(fuzzyCompare(line.projectedDistance(point_on_line_neg_7_2), -7.2f));
 }
 
 void tst_QRay3D::contains_point_data()

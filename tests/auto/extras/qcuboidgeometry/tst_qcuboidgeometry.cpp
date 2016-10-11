@@ -40,77 +40,7 @@
 #include <QtCore/qsharedpointer.h>
 #include <QSignalSpy>
 
-namespace {
-
-void generateGeometry(Qt3DRender::QGeometry &geometry)
-{
-    // Get all attributes
-    const QVector<Qt3DRender::QAttribute *> attributes = geometry.attributes();
-
-    // Get all unique data generators from the buffers referenced by the attributes
-    QHash<Qt3DRender::QBufferDataGeneratorPtr, Qt3DRender::QBuffer *> dataGenerators;
-    for (const auto attribute : attributes) {
-        const auto dataGenerator = attribute->buffer()->dataGenerator();
-        if (!dataGenerators.contains(dataGenerator))
-            dataGenerators.insert(dataGenerator, attribute->buffer());
-    }
-
-    // Generate data for each buffer
-    const auto end = dataGenerators.end();
-    for (auto it = dataGenerators.begin(); it != end; ++it) {
-        Qt3DRender::QBufferDataGeneratorPtr dataGenerator = it.key();
-        const QByteArray data = (*dataGenerator)();
-
-        Qt3DRender::QBuffer *buffer = it.value();
-        buffer->setData(data);
-    }
-}
-
-template<typename IndexType>
-IndexType extractIndexData(Qt3DRender::QAttribute *attribute, int index)
-{
-    // Get the raw data
-    const IndexType *typedData = reinterpret_cast<const IndexType *>(attribute->buffer()->data().constData());
-
-    // Offset into the data taking stride and offset into account
-    const IndexType indexValue = *(typedData + index);
-    return indexValue;
-}
-
-template<typename VertexType, typename IndexType>
-VertexType extractVertexData(Qt3DRender::QAttribute *attribute, IndexType index)
-{
-    // Get the raw data
-    const char *rawData = attribute->buffer()->data().constData();
-
-    // Offset into the data taking stride and offset into account
-    const char *vertexData = rawData + (index * attribute->byteStride() + attribute->byteOffset());
-
-    // Construct vertex from the typed data
-    VertexType vertex;
-    const Qt3DRender::QAttribute::VertexBaseType type = attribute->vertexBaseType();
-    switch (type)
-    {
-    case Qt3DRender::QAttribute::Float: {
-        const float *typedVertexData = reinterpret_cast<const float *>(vertexData);
-        const int components = attribute->vertexSize();
-        for (int i = 0; i < components; ++i)
-            vertex[i] = typedVertexData[i];
-        break;
-
-        // TODO: Handle other types as needed
-    }
-
-    default:
-        qWarning() << "Unhandled type";
-        Q_UNREACHABLE();
-        break;
-    }
-
-    return vertex;
-}
-
-}
+#include "geometrytesthelper.h"
 
 class tst_QCuboidGeometry : public QObject
 {

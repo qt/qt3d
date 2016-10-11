@@ -254,6 +254,30 @@ private Q_SLOTS:
             QCOMPARE(v.constData<float>()[2], 454.0f);
             QCOMPARE(v.constData<float>()[3], 1584.0f);
         }
+        {
+            // GIVEN
+            UniformValue v = UniformValue::fromVariant(QVariant::fromValue(QMatrix4x4()));
+            // THEN
+            QCOMPARE(v.constData<float>()[ 0], 1.0f);
+            QCOMPARE(v.constData<float>()[ 1], 0.0f);
+            QCOMPARE(v.constData<float>()[ 2], 0.0f);
+            QCOMPARE(v.constData<float>()[ 3], 0.0f);
+
+            QCOMPARE(v.constData<float>()[ 4], 0.0f);
+            QCOMPARE(v.constData<float>()[ 5], 1.0f);
+            QCOMPARE(v.constData<float>()[ 6], 0.0f);
+            QCOMPARE(v.constData<float>()[ 7], 0.0f);
+
+            QCOMPARE(v.constData<float>()[ 8], 0.0f);
+            QCOMPARE(v.constData<float>()[ 9], 0.0f);
+            QCOMPARE(v.constData<float>()[10], 1.0f);
+            QCOMPARE(v.constData<float>()[11], 0.0f);
+
+            QCOMPARE(v.constData<float>()[12], 0.0f);
+            QCOMPARE(v.constData<float>()[13], 0.0f);
+            QCOMPARE(v.constData<float>()[14], 0.0f);
+            QCOMPARE(v.constData<float>()[15], 1.0f);
+        }
     }
 
     void checkComparison()

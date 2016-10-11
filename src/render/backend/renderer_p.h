@@ -70,6 +70,7 @@
 #include <Qt3DRender/private/updateworldboundingvolumejob_p.h>
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
 #include <Qt3DRender/private/sendrendercapturejob_p.h>
+#include <Qt3DRender/private/genericlambdajob_p.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -83,6 +84,8 @@
 #include <QAtomicInt>
 #include <QScopedPointer>
 #include <QSemaphore>
+
+#include <functional>
 
 QT_BEGIN_NAMESPACE
 
@@ -296,6 +299,18 @@ private:
     void createOrUpdateVAO(RenderCommand *command,
                            HVao *previousVAOHandle,
                            OpenGLVertexArrayObject **vao);
+
+    GenericLambdaJobPtr<std::function<void ()>> m_bufferGathererJob;
+    GenericLambdaJobPtr<std::function<void ()>> m_textureGathererJob;
+    GenericLambdaJobPtr<std::function<void ()>> m_shaderGathererJob;
+
+    void lookForDirtyBuffers();
+    void lookForDirtyTextures();
+    void lookForDirtyShaders();
+
+    QVector<HBuffer> m_dirtyBuffers;
+    QVector<HShader> m_dirtyShaders;
+    QVector<HTexture> m_dirtyTextures;
 
 #ifdef QT3D_JOBS_RUN_STATS
     QScopedPointer<Qt3DRender::Debug::CommandExecuter> m_commandExecuter;

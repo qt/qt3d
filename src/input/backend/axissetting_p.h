@@ -58,7 +58,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 namespace Input {
 
-class AxisSetting : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT AxisSetting : public Qt3DCore::QBackendNode
 {
 public:
     AxisSetting();

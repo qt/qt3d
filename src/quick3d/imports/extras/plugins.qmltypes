@@ -762,6 +762,14 @@ Module {
             name: "setBoundingVolumePositionAttribute"
             Parameter { name: "boundingVolumePositionAttribute"; type: "QAttribute"; isPointer: true }
         }
+        Method {
+            name: "addAttribute"
+            Parameter { name: "attribute"; type: "Qt3DRender::QAttribute"; isPointer: true }
+        }
+        Method {
+            name: "removeAttribute"
+            Parameter { name: "attribute"; type: "Qt3DRender::QAttribute"; isPointer: true }
+        }
     }
     Component {
         name: "Qt3DRender::QGeometryRenderer"
@@ -787,6 +795,7 @@ Module {
         Property { name: "vertexCount"; type: "int" }
         Property { name: "indexOffset"; type: "int" }
         Property { name: "firstInstance"; type: "int" }
+        Property { name: "firstVertex"; type: "int" }
         Property { name: "restartIndexValue"; type: "int" }
         Property { name: "verticesPerPatch"; type: "int" }
         Property { name: "primitiveRestartEnabled"; type: "bool" }
@@ -807,6 +816,10 @@ Module {
         Signal {
             name: "firstInstanceChanged"
             Parameter { name: "firstInstance"; type: "int" }
+        }
+        Signal {
+            name: "firstVertexChanged"
+            Parameter { name: "firstVertex"; type: "int" }
         }
         Signal {
             name: "restartIndexValueChanged"
@@ -845,6 +858,10 @@ Module {
             Parameter { name: "firstInstance"; type: "int" }
         }
         Method {
+            name: "setFirstVertex"
+            Parameter { name: "firstVertex"; type: "int" }
+        }
+        Method {
             name: "setRestartIndexValue"
             Parameter { name: "index"; type: "int" }
         }
@@ -864,6 +881,35 @@ Module {
             name: "setPrimitiveType"
             Parameter { name: "primitiveType"; type: "PrimitiveType" }
         }
+    }
+    Component {
+        prototype: "Qt3DCore::QNode"
+        name: "Qt3D.Extras/DefaultAlphaEffect 2.0"
+        exports: ["Qt3D.Extras/DefaultAlphaEffect 2.0"]
+        exportMetaObjectRevisions: [0]
+        isComposite: true
+        defaultProperty: "data"
+        Property { name: "vertexES"; type: "string" }
+        Property { name: "fragmentES"; type: "string" }
+        Property { name: "vertex"; type: "string" }
+        Property { name: "fragment"; type: "string" }
+        Property { name: "sourceRgbArg"; type: "int" }
+        Property { name: "destinationRgbArg"; type: "int" }
+        Property { name: "sourceAlphaArg"; type: "int" }
+        Property { name: "destinationAlphaArg"; type: "int" }
+        Property { name: "blendFunctionArg"; type: "int" }
+    }
+    Component {
+        prototype: "Qt3DCore::QNode"
+        name: "Qt3D.Extras/DefaultEffect 2.0"
+        exports: ["Qt3D.Extras/DefaultEffect 2.0"]
+        exportMetaObjectRevisions: [0]
+        isComposite: true
+        defaultProperty: "data"
+        Property { name: "vertexES"; type: "string" }
+        Property { name: "fragmentES"; type: "string" }
+        Property { name: "vertex"; type: "string" }
+        Property { name: "fragment"; type: "string" }
     }
     Component {
         prototype: "Qt3DCore::QComponent"
@@ -919,6 +965,8 @@ Module {
         Property { name: "camera"; type: "Qt3DRender::QCamera"; isPointer: true }
         Property { name: "linearSpeed"; type: "double" }
         Property { name: "lookSpeed"; type: "double" }
+        Property { name: "acceleration"; type: "double" }
+        Property { name: "deceleration"; type: "double" }
     }
     Component {
         prototype: "Qt3DCore::QNode"
@@ -955,6 +1003,18 @@ Module {
             name: "setEffect"
             Parameter { name: "effect"; type: "QEffect"; isPointer: true }
         }
+    }
+    Component {
+        prototype: "Qt3DCore::QNode"
+        name: "Qt3D.Extras/NormalDiffuseMapAlphaEffect 2.0"
+        exports: ["Qt3D.Extras/NormalDiffuseMapAlphaEffect 2.0"]
+        exportMetaObjectRevisions: [0]
+        isComposite: true
+        defaultProperty: "data"
+        Property { name: "vertexES"; type: "string" }
+        Property { name: "fragmentES"; type: "string" }
+        Property { name: "vertex"; type: "string" }
+        Property { name: "fragment"; type: "string" }
     }
     Component {
         prototype: "Qt3DCore::QComponent"
@@ -1027,8 +1087,8 @@ Module {
     }
     Component {
         prototype: "Qt3DCore::QNode"
-        name: "Qt3D.Extras/OrbitController 2.0"
-        exports: ["Qt3D.Extras/OrbitController 2.0"]
+        name: "Qt3D.Extras/OrbitCameraController 2.0"
+        exports: ["Qt3D.Extras/OrbitCameraController 2.0"]
         exportMetaObjectRevisions: [0]
         isComposite: true
         defaultProperty: "data"
@@ -1078,6 +1138,11 @@ Module {
         Property { name: "specular"; type: "QColor" }
         Property { name: "shininess"; type: "double" }
         Property { name: "alpha"; type: "double" }
+        Property { name: "sourceRgbArg"; type: "int" }
+        Property { name: "destinationRgbArg"; type: "int" }
+        Property { name: "sourceAlphaArg"; type: "int" }
+        Property { name: "destinationAlphaArg"; type: "int" }
+        Property { name: "blendFunctionArg"; type: "int" }
         Property { name: "effect"; type: "Qt3DRender::QEffect"; isPointer: true }
         Signal {
             name: "effectChanged"
@@ -1110,15 +1175,22 @@ Module {
         }
     }
     Component {
-        prototype: "Qt3DCore::QNode"
-        name: "Qt3D.Extras/SkyboxEntity 2.0"
-        exports: ["Qt3D.Extras/SkyboxEntity 2.0"]
+        prototype: "Qt3DCore::QComponent"
+        name: "Qt3D.Extras/TextureMaterial 2.0"
+        exports: ["Qt3D.Extras/TextureMaterial 2.0"]
         exportMetaObjectRevisions: [0]
         isComposite: true
         defaultProperty: "data"
-        Property { name: "baseName"; type: "string" }
-        Property { name: "extension"; type: "string" }
-        Property { name: "skyboxTexture"; type: "Qt3DRender::QTextureCubeMap"; isPointer: true }
-        Property { name: "cameraPosition"; type: "QVector3D" }
+        Property { name: "texture"; type: "Qt3DRender::QTexture2D"; isPointer: true }
+        Property { name: "textureOffset"; type: "QVector2D" }
+        Property { name: "effect"; type: "Qt3DRender::QEffect"; isPointer: true }
+        Signal {
+            name: "effectChanged"
+            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
+        }
+        Method {
+            name: "setEffect"
+            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
+        }
     }
 }

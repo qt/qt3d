@@ -8,3 +8,5 @@ CONFIG += testcase
 
 SOURCES += \
     tst_qcuboidgeometry.cpp
+
+include(../common/common.pri)
