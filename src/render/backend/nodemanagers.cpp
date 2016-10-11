@@ -154,7 +154,7 @@ MatrixManager *NodeManagers::manager<QMatrix4x4*>() const Q_DECL_NOTHROW
 }
 
 template<>
-VAOManager *NodeManagers::manager<QOpenGLVertexArrayObject*>() const Q_DECL_NOTHROW
+VAOManager *NodeManagers::manager<OpenGLVertexArrayObject>() const Q_DECL_NOTHROW
 {
     return m_vaoManager;
 }

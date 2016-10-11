@@ -57,7 +57,6 @@
 QT_BEGIN_NAMESPACE
 
 class QMatrix4x4;
-class QOpenGLVertexArrayObject;
 
 namespace Qt3DRender {
 
@@ -128,6 +127,7 @@ class ObjectPicker;
 class Light;
 class ComputeCommand;
 class RenderStateNode;
+class OpenGLVertexArrayObject;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT NodeManagers
 {
@@ -254,7 +254,7 @@ template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT MatrixManager *NodeManagers::manager<QMatrix4x4*>() const Q_DECL_NOEXCEPT;
 
 template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT VAOManager *NodeManagers::manager<QOpenGLVertexArrayObject*>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT VAOManager *NodeManagers::manager<OpenGLVertexArrayObject>() const Q_DECL_NOEXCEPT;
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT ShaderManager *NodeManagers::manager<Shader>() const Q_DECL_NOEXCEPT;
