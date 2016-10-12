@@ -61,6 +61,7 @@ private Q_SLOTS:
     void testOBJLoader();
     void testPLYLoader();
     void testSTLLoader();
+    void testGLTFLoader();
 };
 
 void tst_geometryloaders::testOBJLoader()
@@ -168,6 +169,45 @@ void tst_geometryloaders::testSTLLoader()
     QCOMPARE(geometry->attributes().count(), 3);
     for (QAttribute *attr : geometry->attributes()) {
         QCOMPARE(attr->count(), 36u);
+    }
+
+    file.close();
+}
+
+void tst_geometryloaders::testGLTFLoader()
+{
+    QScopedPointer<QGeometryLoaderInterface> loader;
+    loader.reset(qLoadPlugin<QGeometryLoaderInterface, QGeometryLoaderFactory>(geometryLoader(), QStringLiteral("gltf")));
+    QVERIFY(loader);
+    if (!loader)
+        return;
+
+    QFile file(QStringLiteral(":/cube.gltf"));
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qDebug("Could not open test file for reading");
+        return;
+    }
+
+    bool loaded = loader->load(&file, QStringLiteral("Cube"));
+    QVERIFY(loaded);
+    if (!loaded)
+        return;
+
+    QGeometry *geometry = loader->geometry();
+    QVERIFY(geometry);
+    if (!geometry)
+        return;
+
+    QCOMPARE(geometry->attributes().count(), 3);
+    for (QAttribute *attr : geometry->attributes()) {
+        switch (attr->attributeType()) {
+        case QAttribute::IndexAttribute:
+            QCOMPARE(attr->count(), 36u);
+            break;
+        case QAttribute::VertexAttribute:
+            QCOMPARE(attr->count(), 24u);
+            break;
+        }
     }
 
     file.close();
