@@ -11,6 +11,8 @@ SOURCES += \
     main.cpp \
     basegeometryloader.cpp \
     objgeometryloader.cpp \
+    plygeometryloader.cpp \
+    stlgeometryloader.cpp \
 
 DISTFILES += \
     default.json

@@ -63,7 +63,7 @@ namespace Qt3DRender {
 
 #define QGeometryLoaderFactory_iid "org.qt-project.Qt3DRender.QGeometryLoaderFactory 5.8"
 
-struct QGeometryLoaderInterface;
+class QGeometryLoaderInterface;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT QGeometryLoaderFactory : public QObject, public QFactoryInterface
 {

@@ -37,39 +37,40 @@
 **
 ****************************************************************************/
 
-#include <Qt3DRender/private/qgeometryloaderfactory_p.h>
+#ifndef STLGEOMETRYLOADER_H
+#define STLGEOMETRYLOADER_H
 
-#include "objgeometryloader.h"
-#include "plygeometryloader.h"
-#include "stlgeometryloader.h"
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include "basegeometryloader_p.h"
 
 QT_BEGIN_NAMESPACE
 
-class DefaultGeometryLoaderPlugin : public Qt3DRender::QGeometryLoaderFactory
+namespace Qt3DRender {
+
+#define STLGEOMETRYLOADER_EXT QLatin1String("stl")
+
+class StlGeometryLoader : public BaseGeometryLoader
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID QGeometryLoaderFactory_iid FILE "default.json")
-public:
+protected:
+    bool doLoad(QIODevice *ioDev, const QString &subMesh) Q_DECL_FINAL;
 
-    QStringList keys() const Q_DECL_OVERRIDE
-    {
-        return QStringList() << OBJGEOMETRYLOADER_EXT
-                             << PLYGEOMETRYLOADER_EXT
-                             << STLGEOMETRYLOADER_EXT;
-    }
-
-    Qt3DRender::QGeometryLoaderInterface *create(const QString &ext) Q_DECL_OVERRIDE
-    {
-        if (ext.compare(OBJGEOMETRYLOADER_EXT, Qt::CaseInsensitive) == 0)
-            return new Qt3DRender::ObjGeometryLoader;
-        else if (ext.compare(PLYGEOMETRYLOADER_EXT, Qt::CaseInsensitive) == 0)
-            return new Qt3DRender::PlyGeometryLoader;
-        else if (ext.compare(STLGEOMETRYLOADER_EXT, Qt::CaseInsensitive) == 0)
-            return new Qt3DRender::StlGeometryLoader;
-        return nullptr;
-    }
+private:
+    bool loadAscii(QIODevice *ioDev);
+    bool loadBinary(QIODevice *ioDev);
 };
+
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#include "main.moc"
+#endif // STLGEOMETRYLOADER_H
