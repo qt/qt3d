@@ -106,7 +106,7 @@ float QClipPlane::distance() const
 }
 
 /*!
- * Sets the index of the clip plane to \a plane.
+ * Sets the index of the clip plane to \a planeIndex
  * \note above 7, support is not garanteed
  */
 void QClipPlane::setPlaneIndex(int planeIndex)
