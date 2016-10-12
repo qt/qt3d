@@ -150,7 +150,7 @@ QPickTriangleEvent::~QPickTriangleEvent()
  */
 /*!
  * \brief QPickTriangleEvent::triangleIndex
- * \return the index of the picked triangle
+ * Returns the index of the picked triangle
  */
 uint QPickTriangleEvent::triangleIndex() const
 {
@@ -168,7 +168,7 @@ uint QPickTriangleEvent::triangleIndex() const
  */
 /*!
  * \brief QPickTriangleEvent::vertex1Index
- * \returns index of first point of picked triangle
+ * Returns the index of the first point of the picked triangle
  */
 uint QPickTriangleEvent::vertex1Index() const
 {
@@ -186,7 +186,7 @@ uint QPickTriangleEvent::vertex1Index() const
  */
 /*!
  * \brief QPickTriangleEvent::vertex2Index
- * \returns index of second point of picked triangle
+ * Returns the index of the second point of the picked triangle
  */
 uint QPickTriangleEvent::vertex2Index() const
 {
