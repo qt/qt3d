@@ -69,7 +69,7 @@ public:
 
     \brief The QPickTriangleEvent class holds information when a triangle is picked
 
-    \sa QPickEvent, QPickSettings
+    \sa QPickEvent
     \since 5.7
 */
 
@@ -78,7 +78,7 @@ public:
  * \instantiates Qt3DRender::QPickTriangleEvent
  * \inqmlmodule Qt3D.Render
  * \brief PickTriangleEvent holds information when a triangle is picked.
- * \sa ObjectPicker, PickSettings
+ * \sa ObjectPicker
  */
 
 

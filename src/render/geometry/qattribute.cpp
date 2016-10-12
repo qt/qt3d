@@ -86,7 +86,7 @@ QAttributePrivate::QAttributePrivate()
  * will ensure your geometry will be compatible with picking and the various
  * materials provided in the Qt3DExtras module.
  *
- * \sa QBuffer.
+ * \sa QBuffer
  */
 
 /*!

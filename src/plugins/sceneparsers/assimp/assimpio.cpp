@@ -78,8 +78,6 @@ namespace Qt3DRender {
     format into a Qt3D scene.
 
     It should be noted that Assimp aiString is explicitly defined to be UTF-8.
-
-    \sa GLTFPIO
 */
 
 Q_LOGGING_CATEGORY(AssimpIOLog, "Qt3D.AssimpIO")
