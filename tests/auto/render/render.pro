@@ -21,6 +21,7 @@ qtConfig(private_tests) {
         buffer \
         attribute \
         geometry \
+        geometryloaders \
         geometryrenderer \
         raycasting \
         qcameraselector \
