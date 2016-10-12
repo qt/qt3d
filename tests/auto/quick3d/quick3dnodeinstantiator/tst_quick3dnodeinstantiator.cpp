@@ -60,7 +60,9 @@ void tst_quick3dnodeinstantiator::createNone()
 {
     QQmlEngine engine;
     QQmlComponent component(&engine, testFileUrl("createNone.qml"));
-    Quick3DNodeInstantiator *instantiator = qobject_cast<Quick3DNodeInstantiator*>(component.create());
+    const auto root = qobject_cast<Qt3DCore::QNode*>(component.create());
+    QVERIFY(root != 0);
+    const auto instantiator = root->findChild<Quick3DNodeInstantiator*>();
     QVERIFY(instantiator != 0);
     QCOMPARE(instantiator->isActive(), true);
     QCOMPARE(instantiator->count(), 0);
@@ -72,7 +74,9 @@ void tst_quick3dnodeinstantiator::createSingle()
 {
     QQmlEngine engine;
     QQmlComponent component(&engine, testFileUrl("createSingle.qml"));
-    Quick3DNodeInstantiator *instantiator = qobject_cast<Quick3DNodeInstantiator*>(component.create());
+    const auto root = qobject_cast<Qt3DCore::QNode*>(component.create());
+    QVERIFY(root != 0);
+    const auto instantiator = root->findChild<Quick3DNodeInstantiator*>();
     QVERIFY(instantiator != 0);
     QCOMPARE(instantiator->isActive(), true);
     QCOMPARE(instantiator->count(), 1);
@@ -80,7 +84,7 @@ void tst_quick3dnodeinstantiator::createSingle()
 
     QObject *object = instantiator->object();
     QVERIFY(object);
-    QCOMPARE(object->parent(), instantiator);
+    QCOMPARE(object->parent(), root);
     QCOMPARE(object->property("success").toBool(), true);
     QCOMPARE(object->property("idx").toInt(), 0);
 }
@@ -89,7 +93,9 @@ void tst_quick3dnodeinstantiator::createMultiple()
 {
     QQmlEngine engine;
     QQmlComponent component(&engine, testFileUrl("createMultiple.qml"));
-    Quick3DNodeInstantiator *instantiator = qobject_cast<Quick3DNodeInstantiator*>(component.create());
+    const auto root = qobject_cast<Qt3DCore::QNode*>(component.create());
+    QVERIFY(root != 0);
+    const auto instantiator = root->findChild<Quick3DNodeInstantiator*>();
     QVERIFY(instantiator != 0);
     QCOMPARE(instantiator->isActive(), true);
     QCOMPARE(instantiator->count(), 10);
@@ -97,7 +103,7 @@ void tst_quick3dnodeinstantiator::createMultiple()
     for (int i = 0; i < 10; i++) {
         QObject *object = instantiator->objectAt(i);
         QVERIFY(object);
-        QCOMPARE(object->parent(), instantiator);
+        QCOMPARE(object->parent(), root);
         QCOMPARE(object->property("success").toBool(), true);
         QCOMPARE(object->property("idx").toInt(), i);
     }
@@ -107,7 +113,9 @@ void tst_quick3dnodeinstantiator::stringModel()
 {
     QQmlEngine engine;
     QQmlComponent component(&engine, testFileUrl("stringModel.qml"));
-    Quick3DNodeInstantiator *instantiator = qobject_cast<Quick3DNodeInstantiator*>(component.create());
+    const auto root = qobject_cast<Qt3DCore::QNode*>(component.create());
+    QVERIFY(root != 0);
+    const auto instantiator = root->findChild<Quick3DNodeInstantiator*>();
     QVERIFY(instantiator != 0);
     QCOMPARE(instantiator->isActive(), true);
     QCOMPARE(instantiator->count(), 4);
@@ -115,7 +123,7 @@ void tst_quick3dnodeinstantiator::stringModel()
     for (int i = 0; i < 4; i++) {
         QObject *object = instantiator->objectAt(i);
         QVERIFY(object);
-        QCOMPARE(object->parent(), instantiator);
+        QCOMPARE(object->parent(), root);
         QCOMPARE(object->property("success").toBool(), true);
     }
 }
@@ -124,7 +132,9 @@ void tst_quick3dnodeinstantiator::activeProperty()
 {
     QQmlEngine engine;
     QQmlComponent component(&engine, testFileUrl("inactive.qml"));
-    Quick3DNodeInstantiator *instantiator = qobject_cast<Quick3DNodeInstantiator*>(component.create());
+    const auto root = qobject_cast<Qt3DCore::QNode*>(component.create());
+    QVERIFY(root != 0);
+    const auto instantiator = root->findChild<Quick3DNodeInstantiator*>();
     QVERIFY(instantiator != 0);
     QSignalSpy activeSpy(instantiator, SIGNAL(activeChanged()));
     QSignalSpy countSpy(instantiator, SIGNAL(countChanged()));
@@ -150,7 +160,7 @@ void tst_quick3dnodeinstantiator::activeProperty()
 
     QObject *object = instantiator->object();
     QVERIFY(object);
-    QCOMPARE(object->parent(), instantiator);
+    QCOMPARE(object->parent(), root);
     QCOMPARE(object->property("success").toBool(), true);
     QCOMPARE(object->property("idx").toInt(), 0);
 }
@@ -159,7 +169,9 @@ void tst_quick3dnodeinstantiator::intModelChange()
 {
     QQmlEngine engine;
     QQmlComponent component(&engine, testFileUrl("createMultiple.qml"));
-    Quick3DNodeInstantiator *instantiator = qobject_cast<Quick3DNodeInstantiator*>(component.create());
+    const auto root = qobject_cast<Qt3DCore::QNode*>(component.create());
+    QVERIFY(root != 0);
+    const auto instantiator = root->findChild<Quick3DNodeInstantiator*>();
     QVERIFY(instantiator != 0);
     QSignalSpy activeSpy(instantiator, SIGNAL(activeChanged()));
     QSignalSpy countSpy(instantiator, SIGNAL(countChanged()));
@@ -183,7 +195,7 @@ void tst_quick3dnodeinstantiator::intModelChange()
     for (int i = 0; i < 2; i++) {
         QObject *object = instantiator->objectAt(i);
         QVERIFY(object);
-        QCOMPARE(object->parent(), instantiator);
+        QCOMPARE(object->parent(), root);
         QCOMPARE(object->property("success").toBool(), true);
         QCOMPARE(object->property("idx").toInt(), i);
     }
