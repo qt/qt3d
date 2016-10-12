@@ -443,7 +443,11 @@ void Renderer::doRender()
             clearDirtyBits(changesToUnset);
 
             { // Scoped to destroy surfaceLock
-                QSurface *surface = renderViews.first()->surface();
+                QSurface *surface = nullptr;
+                for (const Render::RenderView *rv: renderViews) {
+                    if (surface = rv->surface())
+                        break;
+                }
                 SurfaceLocker surfaceLock(surface);
                 const bool surfaceIsValid = (surface && surfaceLock.isSurfaceValid());
                 if (surfaceIsValid && m_graphicsContext->beginDrawing(surface)) {
@@ -798,7 +802,11 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
     // We might not want to render on the default FBO
     uint lastBoundFBOId = m_graphicsContext->boundFrameBufferObject();
     QSurface *surface = nullptr;
-    QSurface *previousSurface = renderViews.first()->surface();
+    QSurface *previousSurface = nullptr;
+    for (const Render::RenderView *rv: renderViews) {
+        if (previousSurface = rv->surface())
+            break;
+    }
     QSurface *lastUsedSurface = nullptr;
 
     for (int i = 0; i < renderViewsCount; ++i) {
