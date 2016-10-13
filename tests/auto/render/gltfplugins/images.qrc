@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qtlogo.png</file>
+        <file>qtlogo_normal.png</file>
+        <file>qtlogo_specular.png</file>
+        <file>qtlogo_with_alpha.png</file>
+    </qresource>
+</RCC>

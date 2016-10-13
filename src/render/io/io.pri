@@ -11,7 +11,10 @@ HEADERS += \
     $$PWD/qsceneimporter_p.h \
     $$PWD/qsceneimportplugin_p.h \
     $$PWD/glbuffer_p.h \
-    $$PWD/qsceneimportfactory_p.h
+    $$PWD/qsceneimportfactory_p.h \
+    $$PWD/qsceneexportfactory_p.h \
+    $$PWD/qsceneexporter_p.h \
+    $$PWD/qsceneexportplugin_p.h
 
 SOURCES += \
     $$PWD/objloader.cpp \
@@ -23,4 +26,7 @@ SOURCES += \
     $$PWD/qsceneimporter.cpp \
     $$PWD/qsceneimportplugin.cpp \
     $$PWD/glbuffer.cpp \
-    $$PWD/qsceneimportfactory.cpp
+    $$PWD/qsceneimportfactory.cpp \
+    $$PWD/qsceneexportfactory.cpp \
+    $$PWD/qsceneexporter.cpp \
+    $$PWD/qsceneexportplugin.cpp

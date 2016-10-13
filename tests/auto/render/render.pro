@@ -63,7 +63,8 @@ qtConfig(private_tests) {
         uniform \
         graphicshelpergl3_3 \
         graphicshelpergl3_2 \
-        graphicshelpergl2
+        graphicshelpergl2 \
+        gltfplugins
 
     !macos: SUBDIRS += graphicshelpergl4
 }

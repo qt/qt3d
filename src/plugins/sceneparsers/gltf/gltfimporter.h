@@ -79,6 +79,7 @@ class QRenderState;
 class QTechnique;
 class QParameter;
 class QGeometryRenderer;
+class QAbstractLight;
 
 Q_DECLARE_LOGGING_CATEGORY(GLTFImporterLog)
 
@@ -144,7 +145,7 @@ private:
 
     Qt3DCore::QEntity *defaultScene();
     QMaterial *material(const QString &id);
-    QCameraLens *camera(const QString &id) const;
+    bool fillCameraLens(QCameraLens &lens, const QString &id) const;
 
     void parse();
     void cleanup();
@@ -158,6 +159,7 @@ private:
     void processJSONMesh(const QString &id, const QJsonObject &json);
     void processJSONImage(const QString &id, const QJsonObject &jsonObject);
     void processJSONTexture(const QString &id, const QJsonObject &jsonObject);
+    void processJSONExtensions(const QString &id, const QJsonObject &jsonObject);
 
     void loadBufferData();
     void unloadBufferData();
@@ -202,6 +204,7 @@ private:
 
     QHash<QString, QAbstractTexture*> m_textures;
     QHash<QString, QString> m_imagePaths;
+    QHash<QString, QAbstractLight *> m_lights;
 };
 
 } // namespace Qt3DRender

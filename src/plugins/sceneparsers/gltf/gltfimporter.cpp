@@ -44,10 +44,12 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QJsonArray>
 #include <QtCore/QJsonObject>
+#include <QtCore/QtMath>
 
 #include <QtGui/QVector2D>
 
 #include <Qt3DRender/QCameraLens>
+#include <Qt3DRender/QCamera>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
 
@@ -73,12 +75,19 @@
 #include <Qt3DRender/QShaderProgram>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QTexture>
+#include <Qt3DRender/QDirectionalLight>
+#include <Qt3DRender/QSpotLight>
+#include <Qt3DRender/QPointLight>
 
 #include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QPhongAlphaMaterial>
 #include <Qt3DExtras/QDiffuseMapMaterial>
 #include <Qt3DExtras/QDiffuseSpecularMapMaterial>
 #include <Qt3DExtras/QNormalDiffuseMapMaterial>
+#include <Qt3DExtras/QNormalDiffuseMapAlphaMaterial>
 #include <Qt3DExtras/QNormalDiffuseSpecularMapMaterial>
+#include <Qt3DExtras/QGoochMaterial>
+#include <Qt3DExtras/QPerVertexColorMaterial>
 
 #ifndef qUtf16PrintableImpl // -Impl is a Qt 5.8 feature
 #  define qUtf16PrintableImpl(string) \
@@ -90,64 +99,101 @@ QT_BEGIN_NAMESPACE
 using namespace Qt3DCore;
 using namespace Qt3DExtras;
 
+namespace {
+
+inline QVector3D jsonArrToVec3(const QJsonArray &array)
+{
+    return QVector3D(array[0].toDouble(), array[1].toDouble(), array[2].toDouble());
+}
+
+inline QColor vec4ToQColor(const QVariant &vec4Var)
+{
+    const QVector4D v = vec4Var.value<QVector4D>();
+    return QColor::fromRgbF(v.x(), v.y(), v.z());
+}
+
+inline QVariant vec4ToColorVariant(const QVariant &vec4Var)
+{
+    return QVariant(vec4ToQColor(vec4Var));
+}
+
+} // namespace
+
 namespace Qt3DRender {
 
 Q_LOGGING_CATEGORY(GLTFImporterLog, "Qt3D.GLTFImport")
 
-#define KEY_CAMERA       QLatin1String("camera")
-#define KEY_CAMERAS      QLatin1String("cameras")
-#define KEY_SCENES       QLatin1String("scenes")
-#define KEY_NODES        QLatin1String("nodes")
-#define KEY_MESHES       QLatin1String("meshes")
-#define KEY_CHILDREN     QLatin1String("children")
-#define KEY_MATRIX       QLatin1String("matrix")
-#define KEY_ROTATION     QLatin1String("rotation")
-#define KEY_SCALE        QLatin1String("scale")
-#define KEY_TRANSLATION  QLatin1String("translation")
-#define KEY_TYPE         QLatin1String("type")
-#define KEY_PERSPECTIVE  QLatin1String("perspective")
-#define KEY_NAME         QLatin1String("name")
-#define KEY_COUNT        QLatin1String("count")
-#define KEY_YFOV         QLatin1String("yfov")
-#define KEY_ZNEAR        QLatin1String("znear")
-#define KEY_ZFAR         QLatin1String("zfar")
-#define KEY_MATERIALS    QLatin1String("materials")
-#define KEY_EXTENSIONS   QLatin1String("extensions")
-#define KEY_COMMON_MAT   QLatin1String("KHR_materials_common")
-#define KEY_TECHNIQUE    QLatin1String("technique")
-#define KEY_VALUES       QLatin1String("values")
-#define KEY_BUFFERS      QLatin1String("buffers")
-#define KEY_SHADERS      QLatin1String("shaders")
-#define KEY_PROGRAMS     QLatin1String("programs")
-#define KEY_PROGRAM      QLatin1String("program")
-#define KEY_TECHNIQUES   QLatin1String("techniques")
-#define KEY_ACCESSORS    QLatin1String("accessors")
-#define KEY_IMAGES       QLatin1String("images")
-#define KEY_TEXTURES     QLatin1String("textures")
-#define KEY_SCENE        QLatin1String("scene")
-#define KEY_BUFFER       QLatin1String("buffer")
-#define KEY_TARGET       QLatin1String("target")
-#define KEY_BYTE_OFFSET  QLatin1String("byteOffset")
-#define KEY_BYTE_LENGTH  QLatin1String("byteLength")
-#define KEY_BYTE_STRIDE  QLatin1String("byteStride")
-#define KEY_PRIMITIVES   QLatin1String("primitives")
-#define KEY_MODE         QLatin1String("mode")
-#define KEY_MATERIAL     QLatin1String("material")
-#define KEY_ATTRIBUTES   QLatin1String("attributes")
-#define KEY_INDICES      QLatin1String("indices")
-#define KEY_URI          QLatin1String("uri")
-#define KEY_FORMAT       QLatin1String("format")
-#define KEY_PASSES       QLatin1String("passes")
-#define KEY_SOURCE       QLatin1String("source")
-#define KEY_SAMPLER      QLatin1String("sampler")
-#define KEY_SAMPLERS     QLatin1String("samplers")
-#define KEY_SEMANTIC     QLatin1String("semantic")
-#define KEY_STATES       QLatin1String("states")
-#define KEY_UNIFORMS     QLatin1String("uniforms")
-#define KEY_PARAMETERS   QLatin1String("parameters")
-#define KEY_WRAP_S       QLatin1String("wrapS")
-#define KEY_MIN_FILTER   QLatin1String("minFilter")
-#define KEY_MAG_FILTER   QLatin1String("magFilter")
+#define KEY_CAMERA             QLatin1String("camera")
+#define KEY_CAMERAS            QLatin1String("cameras")
+#define KEY_SCENES             QLatin1String("scenes")
+#define KEY_NODES              QLatin1String("nodes")
+#define KEY_MESHES             QLatin1String("meshes")
+#define KEY_CHILDREN           QLatin1String("children")
+#define KEY_MATRIX             QLatin1String("matrix")
+#define KEY_ROTATION           QLatin1String("rotation")
+#define KEY_SCALE              QLatin1String("scale")
+#define KEY_TRANSLATION        QLatin1String("translation")
+#define KEY_TYPE               QLatin1String("type")
+#define KEY_PERSPECTIVE        QLatin1String("perspective")
+#define KEY_ORTHOGRAPHIC       QLatin1String("orthographic")
+#define KEY_NAME               QLatin1String("name")
+#define KEY_COUNT              QLatin1String("count")
+#define KEY_YFOV               QLatin1String("yfov")
+#define KEY_ZNEAR              QLatin1String("znear")
+#define KEY_ZFAR               QLatin1String("zfar")
+#define KEY_XMAG               QLatin1String("xmag")
+#define KEY_YMAG               QLatin1String("ymag")
+#define KEY_MATERIALS          QLatin1String("materials")
+#define KEY_EXTENSIONS         QLatin1String("extensions")
+#define KEY_COMMON_MAT         QLatin1String("KHR_materials_common")
+#define KEY_TECHNIQUE          QLatin1String("technique")
+#define KEY_VALUES             QLatin1String("values")
+#define KEY_BUFFERS            QLatin1String("buffers")
+#define KEY_SHADERS            QLatin1String("shaders")
+#define KEY_PROGRAMS           QLatin1String("programs")
+#define KEY_PROGRAM            QLatin1String("program")
+#define KEY_TECHNIQUES         QLatin1String("techniques")
+#define KEY_ACCESSORS          QLatin1String("accessors")
+#define KEY_IMAGES             QLatin1String("images")
+#define KEY_TEXTURES           QLatin1String("textures")
+#define KEY_SCENE              QLatin1String("scene")
+#define KEY_BUFFER             QLatin1String("buffer")
+#define KEY_TARGET             QLatin1String("target")
+#define KEY_BYTE_OFFSET        QLatin1String("byteOffset")
+#define KEY_BYTE_LENGTH        QLatin1String("byteLength")
+#define KEY_BYTE_STRIDE        QLatin1String("byteStride")
+#define KEY_PRIMITIVES         QLatin1String("primitives")
+#define KEY_MODE               QLatin1String("mode")
+#define KEY_MATERIAL           QLatin1String("material")
+#define KEY_ATTRIBUTES         QLatin1String("attributes")
+#define KEY_INDICES            QLatin1String("indices")
+#define KEY_URI                QLatin1String("uri")
+#define KEY_FORMAT             QLatin1String("format")
+#define KEY_PASSES             QLatin1String("passes")
+#define KEY_SOURCE             QLatin1String("source")
+#define KEY_SAMPLER            QLatin1String("sampler")
+#define KEY_SAMPLERS           QLatin1String("samplers")
+#define KEY_SEMANTIC           QLatin1String("semantic")
+#define KEY_STATES             QLatin1String("states")
+#define KEY_UNIFORMS           QLatin1String("uniforms")
+#define KEY_PARAMETERS         QLatin1String("parameters")
+#define KEY_WRAP_S             QLatin1String("wrapS")
+#define KEY_MIN_FILTER         QLatin1String("minFilter")
+#define KEY_MAG_FILTER         QLatin1String("magFilter")
+#define KEY_LIGHT              QLatin1String("light")
+#define KEY_LIGHTS             QLatin1String("lights")
+#define KEY_POINT_LIGHT        QLatin1String("point")
+#define KEY_DIRECTIONAL_LIGHT  QLatin1String("directional")
+#define KEY_SPOT_LIGHT         QLatin1String("spot")
+#define KEY_AMBIENT_LIGHT      QLatin1String("ambient")
+#define KEY_TYPE               QLatin1String("type")
+#define KEY_COLOR              QLatin1String("color")
+#define KEY_FALLOFF_ANGLE      QLatin1String("falloffAngle")
+#define KEY_DIRECTION          QLatin1String("direction")
+#define KEY_CONST_ATTENUATION  QLatin1String("constantAttenuation")
+#define KEY_LINEAR_ATTENUATION QLatin1String("linearAttenuation")
+#define KEY_QUAD_ATTENUATION   QLatin1String("quadraticAttenuation")
+#define KEY_INTENSITY          QLatin1String("intensity")
 
 #define KEY_INSTANCE_TECHNIQUE  QLatin1String("instanceTechnique")
 #define KEY_INSTANCE_PROGRAM    QLatin1String("instanceProgram")
@@ -161,6 +207,8 @@ Q_LOGGING_CATEGORY(GLTFImporterLog, "Qt3D.GLTFImport")
 #define KEY_VALUE               QLatin1String("value")
 #define KEY_ENABLE              QLatin1String("enable")
 #define KEY_FUNCTIONS           QLatin1String("functions")
+#define KEY_BLEND_EQUATION      QLatin1String("blendEquationSeparate")
+#define KEY_BLEND_FUNCTION      QLatin1String("blendFuncSeparate")
 #define KEY_TECHNIQUE_CORE      QLatin1String("techniqueCore")
 #define KEY_TECHNIQUE_GL2       QLatin1String("techniqueGL2")
 
@@ -285,9 +333,29 @@ Qt3DCore::QEntity* GLTFImporter::node(const QString &id)
         }
     }
 
-    //If the entity contains no meshes, results will still be null here
-    if (result == nullptr)
-        result = new QEntity;
+    const auto cameraVal = jsonObj.value(KEY_CAMERA);
+    const auto matrix = jsonObj.value(KEY_MATRIX);
+    const auto rotation = jsonObj.value(KEY_ROTATION);
+    const auto translation = jsonObj.value(KEY_TRANSLATION);
+    const auto scale = jsonObj.value(KEY_SCALE);
+    Qt3DCore::QTransform *trans = nullptr;
+    QCameraLens* cameraLens = nullptr;
+
+    // If the node contains no meshes, results will still be null here.
+    // If the node has camera and transform, promote it to QCamera, as that makes it more
+    // convenient to adjust the imported camera in the application.
+    if (result == nullptr) {
+        if (!cameraVal.isUndefined()
+                && (!matrix.isUndefined() || !rotation.isUndefined() || !translation.isUndefined()
+                    || !scale.isUndefined())) {
+            auto camera = new QCamera;
+            trans = camera->transform();
+            cameraLens = camera->lens();
+            result = camera;
+        } else {
+            result = new QEntity;
+        }
+    }
 
     {
         const auto children = jsonObj.value(KEY_CHILDREN).toArray();
@@ -301,10 +369,7 @@ Qt3DCore::QEntity* GLTFImporter::node(const QString &id)
 
     renameFromJson(jsonObj, result);
 
-
     // Node Transforms
-    Qt3DCore::QTransform *trans = nullptr;
-    const auto matrix = jsonObj.value(KEY_MATRIX);
     if (!matrix.isUndefined()) {
         QMatrix4x4 m(Qt::Uninitialized);
 
@@ -314,14 +379,12 @@ Qt3DCore::QEntity* GLTFImporter::node(const QString &id)
             m(i % 4, i >> 2) = v;
         }
 
-        // ADD MATRIX TRANSFORM COMPONENT TO ENTITY
-        if (trans == nullptr)
+        if (!trans)
             trans = new Qt3DCore::QTransform;
         trans->setMatrix(m);
     }
 
     // Rotation quaternion
-    const auto rotation = jsonObj.value(KEY_ROTATION);
     if (!rotation.isUndefined()) {
         if (!trans)
             trans = new Qt3DCore::QTransform;
@@ -335,43 +398,49 @@ Qt3DCore::QEntity* GLTFImporter::node(const QString &id)
     }
 
     // Translation
-    const auto translation = jsonObj.value(KEY_TRANSLATION);
     if (!translation.isUndefined()) {
         if (!trans)
             trans = new Qt3DCore::QTransform;
-
-        const QJsonArray translationValues = translation.toArray();
-        trans->setTranslation(QVector3D(translationValues[0].toDouble(),
-                                        translationValues[1].toDouble(),
-                                        translationValues[2].toDouble()));
+        trans->setTranslation(jsonArrToVec3(translation.toArray()));
     }
 
     // Scale
-    const auto scale = jsonObj.value(KEY_SCALE);
     if (!scale.isUndefined()) {
         if (!trans)
             trans = new Qt3DCore::QTransform;
-
-        const QJsonArray scaleValues = scale.toArray();
-        trans->setScale3D(QVector3D(scaleValues[0].toDouble(),
-                                    scaleValues[1].toDouble(),
-                                    scaleValues[2].toDouble()));
+        trans->setScale3D(jsonArrToVec3(scale.toArray()));
     }
 
     // Add the Transform component
     if (trans != nullptr)
         result->addComponent(trans);
 
-    const auto cameraVal = jsonObj.value(KEY_CAMERA);
     if (!cameraVal.isUndefined()) {
-        QCameraLens* cam = camera(cameraVal.toString());
-        if (Q_UNLIKELY(!cam)) {
-            qCWarning(GLTFImporterLog) << "failed to build camera:" << cameraVal
-                                     << "on node" << id;
-        } else {
-            result->addComponent(cam);
+        const bool newLens = cameraLens == nullptr;
+        if (newLens)
+            cameraLens = new QCameraLens;
+        if (!fillCameraLens(*cameraLens, cameraVal.toString())) {
+            qCWarning(GLTFImporterLog, "failed to build camera: %ls on node %ls",
+                      qUtf16PrintableImpl(cameraVal.toString()), qUtf16PrintableImpl(id));
+        } else if (newLens) {
+            result->addComponent(cameraLens);
         }
-    } // of have camera attribute
+    }
+
+    const auto extensionsVal = jsonObj.value(KEY_EXTENSIONS);
+    if (!extensionsVal.isUndefined()) {
+        const auto commonMat = extensionsVal.toObject().value(KEY_COMMON_MAT);
+        if (!commonMat.isUndefined()) {
+            const auto lightId = commonMat.toObject().value(KEY_LIGHT).toString();
+            QAbstractLight *lightComp = m_lights.value(lightId);
+            if (Q_UNLIKELY(!lightComp)) {
+                qCWarning(GLTFImporterLog, "failed to find light: %ls for node %ls",
+                          qUtf16PrintableImpl(lightId), qUtf16PrintableImpl(id));
+            } else {
+                result->addComponent(lightComp);
+            }
+        }
+    }
 
     return result;
 }
@@ -641,41 +710,45 @@ QMaterial *GLTFImporter::materialWithCustomShader(const QString &id, const QJson
     return mat;
 }
 
-static inline QVariant vec4ToRgb(const QVariant &vec4Var)
-{
-    const QVector4D v = vec4Var.value<QVector4D>();
-    return QVariant(QColor::fromRgbF(v.x(), v.y(), v.z()));
-}
-
 QMaterial *GLTFImporter::commonMaterial(const QJsonObject &jsonObj)
 {
+    const auto jsonExt =
+            jsonObj.value(KEY_EXTENSIONS).toObject().value(KEY_COMMON_MAT).toObject();
+    if (jsonExt.isEmpty())
+        return nullptr;
+
     QVariantHash params;
     bool hasDiffuseMap = false;
     bool hasSpecularMap = false;
     bool hasNormalMap = false;
+    bool hasAlpha = false;
 
-    const QJsonObject values = jsonObj.value(KEY_VALUES).toObject();
+    const QJsonObject values = jsonExt.value(KEY_VALUES).toObject();
     for (auto it = values.begin(), end = values.end(); it != end; ++it) {
         const QString vName = it.key();
         const QJsonValue val = it.value();
         QVariant var;
         QString propertyName = vName;
         if (vName == QLatin1String("ambient") && val.isArray()) {
-            var = vec4ToRgb(parameterValueFromJSON(GL_FLOAT_VEC4, val));
+            var = vec4ToColorVariant(parameterValueFromJSON(GL_FLOAT_VEC4, val));
         } else if (vName == QLatin1String("diffuse")) {
             if (val.isString()) {
                 var = parameterValueFromJSON(GL_SAMPLER_2D, val);
                 hasDiffuseMap = true;
             } else if (val.isArray()) {
-                var = vec4ToRgb(parameterValueFromJSON(GL_FLOAT_VEC4, val));
+                var = vec4ToColorVariant(parameterValueFromJSON(GL_FLOAT_VEC4, val));
             }
         } else if (vName == QLatin1String("specular")) {
             if (val.isString()) {
                 var = parameterValueFromJSON(GL_SAMPLER_2D, val);
                 hasSpecularMap = true;
             } else if (val.isArray()) {
-                var = vec4ToRgb(parameterValueFromJSON(GL_FLOAT_VEC4, val));
+                var = vec4ToColorVariant(parameterValueFromJSON(GL_FLOAT_VEC4, val));
             }
+        } else if (vName == QLatin1String("cool")) { // Custom Qt3D extension for gooch
+            var = vec4ToColorVariant(parameterValueFromJSON(GL_FLOAT_VEC4, val));
+        } else if (vName == QLatin1String("warm")) { // Custom Qt3D extension for gooch
+            var = vec4ToColorVariant(parameterValueFromJSON(GL_FLOAT_VEC4, val));
         } else if (vName == QLatin1String("shininess") && val.isDouble()) {
             var = parameterValueFromJSON(GL_FLOAT, val);
         } else if (vName == QLatin1String("normalmap") && val.isString()) {
@@ -683,33 +756,74 @@ QMaterial *GLTFImporter::commonMaterial(const QJsonObject &jsonObj)
             propertyName = QStringLiteral("normal");
             hasNormalMap = true;
         } else if (vName == QLatin1String("transparency")) {
-            qCWarning(GLTFImporterLog, "Semi-transparent common materials are not currently supported, ignoring alpha");
+            var = parameterValueFromJSON(GL_FLOAT, val);
+            propertyName = QStringLiteral("alpha");
+            hasAlpha = true;
+        } else if (vName == QLatin1String("transparent")) {
+            hasAlpha = parameterValueFromJSON(GL_BOOL, val).toBool();
+        } else if (vName == QLatin1String("textureScale")) {
+            var = parameterValueFromJSON(GL_FLOAT, val);
+            propertyName = QStringLiteral("textureScale");
+        } else if (vName == QLatin1String("alpha")) { // Custom Qt3D extension for gooch
+            var = parameterValueFromJSON(GL_FLOAT, val);
+        } else if (vName == QLatin1String("beta")) { // Custom Qt3D extension for gooch
+            var = parameterValueFromJSON(GL_FLOAT, val);
         }
         if (var.isValid())
             params[propertyName] = var;
     }
 
+    const QJsonObject funcValues = jsonExt.value(KEY_FUNCTIONS).toObject();
+    if (!funcValues.isEmpty()) {
+        const QJsonArray fArray = funcValues[KEY_BLEND_FUNCTION].toArray();
+        const QJsonArray eArray = funcValues[KEY_BLEND_EQUATION].toArray();
+        if (fArray.size() == 4) {
+            params[QStringLiteral("sourceRgbArg")] = fArray[0].toInt();
+            params[QStringLiteral("sourceAlphaArg")] = fArray[1].toInt();
+            params[QStringLiteral("destinationRgbArg")] = fArray[2].toInt();
+            params[QStringLiteral("destinationAlphaArg")] = fArray[3].toInt();
+        }
+        // We get separate values but our QPhongAlphaMaterial only supports single argument,
+        // so we just use the first one.
+        if (eArray.size() == 2)
+            params[QStringLiteral("blendFunctionArg")] = eArray[0].toInt();
+    }
+
     QMaterial *mat = nullptr;
-    if (hasNormalMap) {
-        if (hasSpecularMap) {
-            mat = new QNormalDiffuseSpecularMapMaterial;
+    const QString technique = jsonExt.value(KEY_TECHNIQUE).toString();
+    if (technique == QStringLiteral("PHONG")) {
+        if (hasNormalMap) {
+            if (hasSpecularMap) {
+                mat = new QNormalDiffuseSpecularMapMaterial;
+            } else {
+                if (Q_UNLIKELY(!hasDiffuseMap)) {
+                    qCWarning(GLTFImporterLog, "Common material with normal and specular maps needs a diffuse map as well");
+                } else {
+                    if (hasAlpha)
+                        mat = new QNormalDiffuseMapAlphaMaterial;
+                    else
+                        mat = new QNormalDiffuseMapMaterial;
+                }
+            }
         } else {
-            if (Q_UNLIKELY(!hasDiffuseMap))
-                qCWarning(GLTFImporterLog, "Common material with normal and specular maps needs a diffuse map as well");
-            else
-                mat = new QNormalDiffuseMapMaterial;
+            if (hasSpecularMap) {
+                if (Q_UNLIKELY(!hasDiffuseMap))
+                    qCWarning(GLTFImporterLog, "Common material with specular map needs a diffuse map as well");
+                else
+                    mat = new QDiffuseSpecularMapMaterial;
+            } else if (hasDiffuseMap) {
+                mat = new QDiffuseMapMaterial;
+            } else {
+                if (hasAlpha)
+                    mat = new QPhongAlphaMaterial;
+                else
+                    mat = new QPhongMaterial;
+            }
         }
-    } else {
-        if (hasSpecularMap) {
-            if (Q_UNLIKELY(!hasDiffuseMap))
-                qCWarning(GLTFImporterLog, "Common material with specular map needs a diffuse map as well");
-            else
-                mat = new QDiffuseSpecularMapMaterial;
-        } else if (hasDiffuseMap) {
-            mat = new QDiffuseMapMaterial;
-        } else {
-            mat = new QPhongMaterial;
-        }
+    } else if (technique == QStringLiteral("GOOCH")) { // Qt3D specific extension
+        mat = new QGoochMaterial;
+    } else if (technique == QStringLiteral("PERVERTEX")) { // Qt3D specific extension
+        mat = new QPerVertexColorMaterial;
     }
 
     if (Q_UNLIKELY(!mat)) {
@@ -718,6 +832,8 @@ QMaterial *GLTFImporter::commonMaterial(const QJsonObject &jsonObj)
         for (QVariantHash::const_iterator it = params.constBegin(), itEnd = params.constEnd(); it != itEnd; ++it)
             mat->setProperty(it.key().toUtf8(), it.value());
     }
+
+    renameFromJson(jsonObj, mat);
 
     return mat;
 }
@@ -741,10 +857,7 @@ QMaterial* GLTFImporter::material(const QString &id)
     QMaterial *mat = nullptr;
 
     // Prefer common materials over custom shaders.
-    const auto extensionMat = jsonObj.value(KEY_EXTENSIONS).toObject().value(KEY_COMMON_MAT);
-    if (!extensionMat.isUndefined())
-        mat = commonMaterial(extensionMat.toObject());
-
+    mat = commonMaterial(jsonObj);
     if (!mat)
         mat = materialWithCustomShader(id, jsonObj);
 
@@ -752,13 +865,13 @@ QMaterial* GLTFImporter::material(const QString &id)
     return mat;
 }
 
-QCameraLens* GLTFImporter::camera(const QString &id) const
+bool GLTFImporter::fillCameraLens(QCameraLens &lens, const QString &id) const
 {
     const auto jsonVal = m_json.object().value(KEY_CAMERAS).toObject().value(id);
     if (Q_UNLIKELY(jsonVal.isUndefined())) {
         qCWarning(GLTFImporterLog, "unknown camera %ls in GLTF file %ls",
                   qUtf16PrintableImpl(id), qUtf16PrintableImpl(m_basePath));
-        return nullptr;
+        return false;
     }
 
     QJsonObject jsonObj = jsonVal.toObject();
@@ -769,7 +882,7 @@ QCameraLens* GLTFImporter::camera(const QString &id) const
         if (Q_UNLIKELY(pVal.isUndefined())) {
             qCWarning(GLTFImporterLog, "camera: %ls missing 'perspective' object",
                       qUtf16PrintableImpl(id));
-            return nullptr;
+            return false;
         }
 
         const QJsonObject pObj = pVal.toObject();
@@ -778,18 +891,30 @@ QCameraLens* GLTFImporter::camera(const QString &id) const
         double frustumNear = pObj.value(KEY_ZNEAR).toDouble();
         double frustumFar = pObj.value(KEY_ZFAR).toDouble();
 
-        QCameraLens* result = new QCameraLens;
-        result->setPerspectiveProjection(yfov, aspectRatio, frustumNear, frustumFar);
-        return result;
+        lens.setPerspectiveProjection(qRadiansToDegrees(yfov), aspectRatio, frustumNear,
+                                         frustumFar);
     } else if (camTy == QLatin1String("orthographic")) {
-        qCWarning(GLTFImporterLog, "implement me");
+        const auto pVal = jsonObj.value(KEY_ORTHOGRAPHIC);
+        if (Q_UNLIKELY(pVal.isUndefined())) {
+            qCWarning(GLTFImporterLog, "camera: %ls missing 'orthographic' object",
+                      qUtf16PrintableImpl(id));
+            return false;
+        }
 
-        return nullptr;
+        const QJsonObject pObj = pVal.toObject();
+        double xmag = pObj.value(KEY_XMAG).toDouble() / 2.0f;
+        double ymag = pObj.value(KEY_YMAG).toDouble() / 2.0f;
+        double frustumNear = pObj.value(KEY_ZNEAR).toDouble();
+        double frustumFar = pObj.value(KEY_ZFAR).toDouble();
+
+        lens.setOrthographicProjection(-xmag, xmag, -ymag, ymag, frustumNear, frustumFar);
     } else {
         qCWarning(GLTFImporterLog, "camera: %ls has unsupported type: %ls",
                   qUtf16PrintableImpl(id), qUtf16PrintableImpl(camTy));
-        return nullptr;
+        return false;
     }
+    renameFromJson(jsonObj, &lens);
+    return true;
 }
 
 
@@ -835,6 +960,10 @@ void GLTFImporter::parse()
     const QJsonObject textures = m_json.object().value(KEY_TEXTURES).toObject();
     for (auto it = textures.begin(), end = textures.end(); it != end; ++it)
         processJSONTexture(it.key(), it.value().toObject());
+
+    const QJsonObject extensions = m_json.object().value(KEY_EXTENSIONS).toObject();
+    for (auto it = extensions.begin(), end = extensions.end(); it != end; ++it)
+        processJSONExtensions(it.key(), it.value().toObject());
 
     m_defaultScene = m_json.object().value(KEY_SCENE).toString();
     m_parseDone = true;
@@ -1081,6 +1210,7 @@ void GLTFImporter::processJSONAccessor( const QString &id, const QJsonObject& js
 void GLTFImporter::processJSONMesh(const QString &id, const QJsonObject &json)
 {
     const QJsonArray primitivesArray = json.value(KEY_PRIMITIVES).toArray();
+    const QString meshName = json.value(KEY_NAME).toString();
     for (const QJsonValue &primitiveValue : primitivesArray) {
         QJsonObject primitiveObject = primitiveValue.toObject();
         int type = primitiveObject.value(KEY_MODE).toInt();
@@ -1163,6 +1293,7 @@ void GLTFImporter::processJSONMesh(const QString &id, const QJsonObject &json)
         } // of has indices
 
         geometryRenderer->setGeometry(meshGeometry);
+        geometryRenderer->setObjectName(meshName);
 
         m_meshDict.insert( id, geometryRenderer);
     } // of primitives iteration
@@ -1232,6 +1363,64 @@ void GLTFImporter::processJSONTexture(const QString &id, const QJsonObject &json
     tex->setMagnificationFilter(static_cast<QAbstractTexture::Filter>(sampler.value(KEY_MAG_FILTER).toInt()));
 
     m_textures[id] = tex;
+}
+
+void GLTFImporter::processJSONExtensions(const QString &id, const QJsonObject &jsonObject)
+{
+    // Lights are defined in "KHR_materials_common" property of "extensions" property of the top
+    // level GLTF item.
+    if (id == KEY_COMMON_MAT) {
+        const auto lights = jsonObject.value(KEY_LIGHTS).toObject();
+        for (auto lightKey : lights.keys()) {
+            const auto light = lights.value(lightKey).toObject();
+            auto lightType = light.value(KEY_TYPE).toString();
+            const auto lightValues = light.value(lightType).toObject();
+            QAbstractLight *lightComp = nullptr;
+            if (lightType == KEY_DIRECTIONAL_LIGHT) {
+                auto dirLight = new QDirectionalLight;
+                dirLight->setWorldDirection(
+                            jsonArrToVec3(lightValues.value(KEY_DIRECTION).toArray()));
+                lightComp = dirLight;
+            } else if (lightType == KEY_SPOT_LIGHT) {
+                auto spotLight = new QSpotLight;
+                spotLight->setLocalDirection(
+                            jsonArrToVec3(lightValues.value(KEY_DIRECTION).toArray()));
+                spotLight->setConstantAttenuation(
+                            lightValues.value(KEY_CONST_ATTENUATION).toDouble());
+                spotLight->setLinearAttenuation(
+                            lightValues.value(KEY_LINEAR_ATTENUATION).toDouble());
+                spotLight->setQuadraticAttenuation(
+                            lightValues.value(KEY_QUAD_ATTENUATION).toDouble());
+                spotLight->setCutOffAngle(
+                            lightValues.value(KEY_FALLOFF_ANGLE).toDouble());
+                lightComp = spotLight;
+            } else if (lightType == KEY_POINT_LIGHT) {
+                auto pointLight = new QPointLight;
+                pointLight->setConstantAttenuation(
+                            lightValues.value(KEY_CONST_ATTENUATION).toDouble());
+                pointLight->setLinearAttenuation(
+                            lightValues.value(KEY_LINEAR_ATTENUATION).toDouble());
+                pointLight->setQuadraticAttenuation(
+                            lightValues.value(KEY_QUAD_ATTENUATION).toDouble());
+                lightComp = pointLight;
+            } else if (lightType == KEY_AMBIENT_LIGHT) {
+                qCWarning(GLTFImporterLog, "Ambient lights are not supported.");
+            } else {
+                qCWarning(GLTFImporterLog, "Unknown light type: %ls",
+                          qUtf16PrintableImpl(lightType));
+            }
+
+            if (lightComp) {
+                auto colorVal = lightValues.value(KEY_COLOR);
+                lightComp->setColor(vec4ToQColor(parameterValueFromJSON(GL_FLOAT_VEC4, colorVal)));
+                lightComp->setIntensity(lightValues.value(KEY_INTENSITY).toDouble());
+                lightComp->setObjectName(light.value(KEY_NAME).toString());
+
+                m_lights.insert(lightKey, lightComp);
+            }
+        }
+    }
+
 }
 
 void GLTFImporter::loadBufferData()
