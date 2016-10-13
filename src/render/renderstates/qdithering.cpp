@@ -50,8 +50,9 @@ namespace Qt3DRender {
 /*!
  * \class Qt3DRender::QDithering
  * \brief The QDithering class
+ * \inmodule Qt3DRender
  * \since 5.7
- * \ingroup
+ * \ingroup renderstates
  */
 
 /*! \internal */

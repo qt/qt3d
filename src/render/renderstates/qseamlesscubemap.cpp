@@ -49,10 +49,11 @@ namespace Qt3DRender {
 /*!
  * \class Qt3DRender::QSeamlessCubemap
  * \brief Enables seamless cubemap texture filtering.
+ * \inmodule Qt3DRender
+ * \since 5.7
+ * \ingroup renderstates
  * When present in a state set, enables the seamless cubemap texture filtering
  * as provided by the GL_ARB_seamless_cubemap extension (if available).
- * \since 5.7
- * \ingroup
  */
 
 /*! \internal */

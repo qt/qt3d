@@ -48,6 +48,7 @@ namespace Qt3DRender {
 /*!
  * \class Qt3DRender::QAlphaCoverage
  * \brief A QAlphaCoverage class
+ * \inmodule Qt3DRender
  * \since 5.7
  * \ingroup renderstates
  */

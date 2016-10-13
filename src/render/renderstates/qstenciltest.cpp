@@ -50,8 +50,9 @@ namespace Qt3DRender {
 /*!
  * \class Qt3DRender::QStencilTest
  * \brief The QStencilTest class
- * \since 5.7
+ * \inmodule Qt3DRender
  * \ingroup renderstates
+ * \since 5.7
  */
 
 /*!
