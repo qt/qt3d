@@ -625,9 +625,10 @@ private Q_SLOTS:
         textures[3]->bind();
         m_func->glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, colors.data());
         textures[3]->release();
-        for (const QVector4D c : colors)
-            QVERIFY(c == clearValue1);
 
+        for (const QVector4D c : colors) {
+            QVERIFY(c == clearValue1);
+        }
 
         // WHEN
         const QVector4D clearValue2 = QVector4D(0.4f, 0.5f, 0.4f, 1.0f);
@@ -637,9 +638,9 @@ private Q_SLOTS:
         textures[3]->bind();
         m_func->glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, colors.data());
         textures[3]->release();
-        for (const QVector4D c : colors)
+        for (const QVector4D c : colors) {
             QVERIFY(c == clearValue2);
-
+        }
         // Restore
         m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
         m_func->glDeleteFramebuffers(1, &fboId);
@@ -1258,7 +1259,7 @@ private Q_SLOTS:
 
     void supportsFeature()
     {
-        for (int i = 0; i <= GraphicsHelperInterface::DrawBuffersBlend; ++i)
+        for (int i = 0; i <= GraphicsHelperInterface::BlitFramebuffer; ++i)
             QVERIFY(m_glHelper.supportsFeature(static_cast<GraphicsHelperInterface::Feature>(i)));
     }
 
@@ -1761,7 +1762,7 @@ private Q_SLOTS:
 
         // WHEN
         m_func->glUseProgram(shaderProgram.programId());
-        GLfloat values[16] = { 454.0f, 350.0f, 883.0f, 355.0f, 1340.0f, 1584.0f, 1200.0f, 427.0f, 396.0f, 1603.0f, 55.0f, 5.7, 383.0f, 6.2f, 5.3f, 327.0f };
+        GLfloat values[16] = { 454.0f, 350.0f, 883.0f, 355.0f, 1340.0f, 1584.0f, 1200.0f, 427.0f, 396.0f, 1603.0f, 55.0f, 5.7f, 383.0f, 6.2f, 5.3f, 327.0f };
         m_glHelper.glUniformMatrix4fv(9, 1, values);
 
         // THEN
@@ -1891,7 +1892,7 @@ private Q_SLOTS:
 
         // WHEN
         m_func->glUseProgram(shaderProgram.programId());
-        GLfloat values[12] = { 55.0f, 5.7, 383.0f, 6.2f, 5.3f, 383.0f, 427.0f, 454.0f, 350.0f, 883.0f, 355.0f, 1340.0f,};
+        GLfloat values[12] = { 55.0f, 5.7f, 383.0f, 6.2f, 5.3f, 383.0f, 427.0f, 454.0f, 350.0f, 883.0f, 355.0f, 1340.0f,};
         m_glHelper.glUniformMatrix3x4fv(7, 1, values);
 
         // THEN
@@ -1917,7 +1918,7 @@ private Q_SLOTS:
 
         // WHEN
         m_func->glUseProgram(shaderProgram.programId());
-        GLfloat values[12] = {  55.0f, 5.7, 383.0f, 6.2f, 383.0f, 427.0f, 454.0f, 350.0f, 883.0f, 355.0f, 1340.0f, 1584.0f};
+        GLfloat values[12] = {  55.0f, 5.7f, 383.0f, 6.2f, 383.0f, 427.0f, 454.0f, 350.0f, 883.0f, 355.0f, 1340.0f, 1584.0f};
         m_glHelper.glUniformMatrix4x3fv(8, 1, values);
 
         // THEN
@@ -1928,6 +1929,67 @@ private Q_SLOTS:
 
         // Restore
         m_func->glUseProgram(0);
+    }
+
+
+    void blitFramebuffer()
+    {
+        if (!m_initializationSuccessful)
+            QSKIP("Initialization failed, OpenGL 4.3 Core functions not supported");
+
+        // GIVEN
+        GLuint fbos[2];
+        GLuint fboTextures[2];
+
+        m_func->glGenFramebuffers(2, fbos);
+        m_func->glGenTextures(2, fboTextures);
+
+        m_func->glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, fboTextures[0]);
+        m_func->glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA8, 10, 10, true);
+        m_func->glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+
+        m_func->glBindTexture(GL_TEXTURE_2D, fboTextures[1]);
+        m_func->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 10, 10, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        m_func->glBindTexture(GL_TEXTURE_2D, 0);
+
+        m_func->glBindFramebuffer(GL_FRAMEBUFFER, fbos[1]);
+        m_func->glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, fboTextures[1], 0);
+
+        GLenum status = m_func->glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        QVERIFY(status == GL_FRAMEBUFFER_COMPLETE);
+
+        m_func->glBindFramebuffer(GL_FRAMEBUFFER, fbos[0]);
+        m_func->glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, fboTextures[0], 0);
+
+        status = m_func->glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        QVERIFY(status == GL_FRAMEBUFFER_COMPLETE);
+
+        m_func->glEnable(GL_MULTISAMPLE);
+        m_func->glClearColor(0.2f, 0.2f, 0.2f, 0.2f);
+        m_func->glClear(GL_COLOR_BUFFER_BIT);
+        m_func->glDisable(GL_MULTISAMPLE);
+
+        m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbos[1]);
+
+        // WHEN
+        m_glHelper.blitFramebuffer(0,0,10,10,0,0,10,10, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+        m_func->glBindFramebuffer(GL_READ_FRAMEBUFFER, fbos[1]);
+
+        GLuint result[10*10];
+        m_func->glReadPixels(0,0,10,10,GL_RGBA, GL_UNSIGNED_BYTE, result);
+
+        // THEN
+        GLuint v = (0.2f) * 255;
+        v = v | (v<<8) | (v<<16) | (v<<24);
+        for (GLuint value : result) {
+            QCOMPARE(value, v);
+        }
+        m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        m_func->glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
+        m_func->glDeleteFramebuffers(2, fbos);
+        m_func->glDeleteTextures(2, fboTextures);
     }
 
 #define ADD_GL_TYPE_ENTRY(Type, Expected) \
