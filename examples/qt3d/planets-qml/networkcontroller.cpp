@@ -48,75 +48,58 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.0
+#include "NetworkController.h"
 
-Rectangle {
-    id: infoSheet
+NetworkController::NetworkController(QObject *parent) :
+    QObject(parent)
+{
+    QObject::connect(&m_server, &QTcpServer::newConnection, this, &NetworkController::newConnection);
 
-    width: 200
-    height: 450
-    anchors.verticalCenter: parent.verticalCenter
-
-    property alias planet: planetText.planet
-    property alias radius: infoText.radius
-    property alias temperature: infoText.temperature
-    property alias orbitalPeriod: infoText.orbitalPeriod
-    property alias distance: infoText.distance
-    property alias exampleDetails: infoText.exampleDetails
-
-    Behavior on opacity { PropertyAnimation {} }
-
-    color: "black"
-
-    Text {
-        id: planetText
-        anchors.top: parent.top
-        anchors.topMargin: 20
-        anchors.horizontalCenter: parent.horizontalCenter
-
-        property string planet: ""
-
-        font.family: "Helvetica"
-        font.pixelSize: 32
-        font.weight: Font.Light
-        color: "white"
-
-        text: "<p>" + planet + "</p>"
-    }
-
-    Text {
-        id: infoText
-        anchors.top: planetText.bottom
-        anchors.horizontalCenter: parent.horizontalCenter
-
-        property string radius: ""
-        property string temperature: ""
-        property string orbitalPeriod: ""
-        property string distance: ""
-        property string exampleDetails: ""
-
-        font.family: "Helvetica"
-        font.pixelSize: 18
-        font.weight: Font.Light
-        lineHeight: 1.625 * 18
-        lineHeightMode: Text.FixedHeight
-        color: "white"
-
-        text: {
-            if (planet == "Solar System") {
-                "<p>" + exampleDetails + "</p>"
-            } else if (planet == "Sun") {
-                "<p>Equatorial Diameter:</p><p>" + radius + "</p></br>"
-                + "<p>Surface Temperature:</p><p>" + temperature + "</p>"
-            } else {
-                "<p>Equatorial Diameter:</p><p>" + radius + "</p></br>"
-                + "<p>Surface Temperature:</p><p>" + temperature + "</p></br>"
-                + "<p>Solar Orbit Period:</p><p>" + orbitalPeriod + "</p></br>"
-                + "<p>Distance from Sun:</p><p>" + distance + "</p>"
-            }
-        }
-
-        onLinkActivated: Qt.openUrlExternally(link)
+    if (!m_server.listen(QHostAddress::Any, 8080)) {
+        qDebug() << "Failed to run http server";
     }
 }
 
+void NetworkController::newConnection()
+{
+    QTcpSocket *socket = m_server.nextPendingConnection();
+
+    if (!socket)
+        return;
+
+    QObject::connect(socket, &QAbstractSocket::disconnected, this, &NetworkController::disconnected);
+    QObject::connect(socket, &QIODevice::readyRead, this, &NetworkController::readyRead);
+}
+
+void NetworkController::disconnected()
+{
+    QTcpSocket *socket = qobject_cast<QTcpSocket *>(sender());
+    if (!socket)
+        return;
+
+    socket->disconnect();
+    socket->deleteLater();
+}
+
+void NetworkController::readyRead()
+{
+    QTcpSocket *socket = qobject_cast<QTcpSocket *>(sender());
+    if (!socket || socket->state() == QTcpSocket::ClosingState)
+        return;
+
+    QString requestData = socket->readAll();
+    QStringList list = requestData.split(' ');
+    QString path = list[1];
+    list = path.split('/');
+
+    QByteArray reply;
+    if (list.count() == 3) {
+        reply = "Command accepted.";
+        emit commandAccepted(list[1], list[2]);
+    } else {
+        reply = "Command rejected.";
+    }
+
+    socket->write(reply);
+    socket->disconnectFromHost();
+}

@@ -48,6 +48,8 @@
 **
 ****************************************************************************/
 
+.pragma library
+
 var SUN = 0;
 var MERCURY = 1;
 var VENUS = 2;
@@ -60,6 +62,56 @@ var NEPTUNE = 8;
 var NUM_SELECTABLE_PLANETS = 9;
 var MOON = 9;
 var SOLAR_SYSTEM = 100;
+
+function planetId(planetName) {
+    switch (planetName) {
+    case "Sun":
+        return SUN
+    case "Mercury":
+        return MERCURY
+    case "Venus":
+        return VENUS
+    case "Earth":
+        return EARTH
+    case "Mars":
+        return MARS
+    case "Jupiter":
+        return JUPITER
+    case "Saturn":
+        return SATURN
+    case "Uranus":
+        return URANUS
+    case "Neptune":
+        return NEPTUNE
+    case "Solar System":
+        return SOLAR_SYSTEM
+    }
+}
+
+function planetIndex(planetName) {
+    switch (planetName) {
+    case "Sun":
+        return 0
+    case "Mercury":
+        return 1
+    case "Venus":
+        return 2
+    case "Earth":
+        return 3
+    case "Mars":
+        return 4
+    case "Jupiter":
+        return 5
+    case "Saturn":
+        return 6
+    case "Uranus":
+        return 7
+    case "Neptune":
+        return 8
+    case "Solar System":
+        return 9
+    }
+}
 
 var planets = []; // Planet data info
 
