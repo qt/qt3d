@@ -125,6 +125,8 @@ GLBuffer::Type bufferTypeToGLBufferType(QBuffer::BufferType type)
         return GLBuffer::UniformBuffer;
     case QBuffer::ShaderStorageBuffer:
         return GLBuffer::ShaderStorageBuffer;
+    case QBuffer::DrawIndirectBuffer:
+        return GLBuffer::DrawIndirectBuffer;
     default:
         Q_UNREACHABLE();
     }
