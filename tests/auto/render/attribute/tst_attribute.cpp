@@ -184,6 +184,21 @@ private Q_SLOTS:
 
         // WHEN
         updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange->setValue(static_cast<int>(Qt3DRender::QAttribute::DrawIndirectAttribute));
+        updateChange->setPropertyName("attributeType");
+        renderAttribute.sceneChangeEvent(updateChange);
+
+        // THEN
+        QCOMPARE(renderAttribute.attributeType(), Qt3DRender::QAttribute::DrawIndirectAttribute);
+        QVERIFY(renderAttribute.isDirty());
+        QVERIFY(renderer.dirtyBits() != 0);
+
+        renderAttribute.unsetDirty();
+        renderer.resetDirty();
+        QVERIFY(!renderAttribute.isDirty());
+
+        // WHEN
+        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         updateChange->setValue(1340);
         updateChange->setPropertyName("count");
         renderAttribute.sceneChangeEvent(updateChange);

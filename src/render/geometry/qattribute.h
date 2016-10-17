@@ -74,7 +74,8 @@ class QT3DRENDERSHARED_EXPORT QAttribute : public Qt3DCore::QNode
 public:
     enum AttributeType {
         VertexAttribute,
-        IndexAttribute
+        IndexAttribute,
+        DrawIndirectAttribute
     };
 
     Q_ENUM(AttributeType) // LCOV_EXCL_LINE
