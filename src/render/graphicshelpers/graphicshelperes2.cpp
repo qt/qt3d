@@ -492,6 +492,12 @@ GLint GraphicsHelperES2::maxClipPlaneCount()
     return 0;
 }
 
+void GraphicsHelperES2::memoryBarrier(QMemoryBarrier::BarrierTypes barriers)
+{
+    Q_UNUSED(barriers);
+    qWarning() << "memory barrier is not supported by OpenGL ES 2.0 (since 4.3)";
+}
+
 void GraphicsHelperES2::enablePrimitiveRestart(int)
 {
 }
