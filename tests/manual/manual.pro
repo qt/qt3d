@@ -8,6 +8,7 @@ SUBDIRS += \
     clip-planes-qml \
     component-changes \
     custom-mesh-cpp \
+    custom-mesh-cpp-indirect \
     custom-mesh-qml \
     custom-mesh-update-data-cpp \
     custom-mesh-update-data-qml \
