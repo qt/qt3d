@@ -70,6 +70,16 @@ namespace Qt3DExtras {
 
 namespace {
 
+int faceCount(int slices, int rings, int capCount)
+{
+    return (slices * 2) * (rings - 1) + slices * capCount;
+}
+
+int vertexCount(int slices, int rings, int capCount)
+{
+    return (slices + 1) * rings + capCount * (slices + 2);
+}
+
 void createSidesVertices(float *&verticesPtr,
                          int rings,
                          int slices,
@@ -227,10 +237,8 @@ public:
 
     QByteArray operator ()() Q_DECL_OVERRIDE
     {
-        int verticesCount = 0;
-
-        verticesCount = ( m_slices + 1 ) * m_rings      // Sides
-                + (m_hasTopEndcap + m_hasBottomEndcap) * (m_slices + 1) + 2; // endcaps
+        const int verticesCount =
+                vertexCount(m_slices, m_rings, (m_hasTopEndcap + m_hasBottomEndcap));
 
         // vec3 pos, vec2 texCoord, vec3 normal
         const quint32 vertexSize = (3 + 2 + 3) * sizeof(float);
@@ -289,10 +297,7 @@ public:
 
     QByteArray operator ()() Q_DECL_OVERRIDE
     {
-        int facesCount = 0;
-
-        facesCount = (m_slices * 2) * m_rings // 2 x tris per side, for all rings
-                + m_slices * (m_hasTopEndcap + m_hasBottomEndcap); // endcaps
+        const int facesCount = faceCount(m_slices, m_rings, (m_hasTopEndcap + m_hasBottomEndcap));
 
         const int indicesCount = facesCount * 3;
         const int indexSize = sizeof(quint16);
@@ -366,11 +371,8 @@ void QConeGeometryPrivate::init()
     // vec3 pos, vec2 tex, vec3 normal
     const quint32 elementSize = 3 + 2 + 3;
     const quint32 stride = elementSize * sizeof(float);
-    const int faces = (m_slices + 1) * (m_rings + 1);
-    int nVerts = 0;
-
-    nVerts = (m_slices * 2) * m_rings    // Sides
-            + m_slices * (m_hasTopEndcap + m_hasBottomEndcap);  // endcaps
+    const int faces = faceCount(m_slices, m_rings, (m_hasTopEndcap + m_hasBottomEndcap));
+    const int nVerts = vertexCount(m_slices, m_rings, (m_hasTopEndcap + m_hasBottomEndcap));
 
     m_positionAttribute->setName(QAttribute::defaultPositionAttributeName());
     m_positionAttribute->setVertexBaseType(QAttribute::Float);
@@ -518,7 +520,9 @@ QConeGeometry::~QConeGeometry()
 void QConeGeometry::updateVertices()
 {
     Q_D(QConeGeometry);
-    const int nVerts = (d->m_slices + 1) * (d->m_rings + 1);
+    const int nVerts = vertexCount(d->m_slices, d->m_rings,
+                                   (d->m_hasTopEndcap + d->m_hasBottomEndcap));
+
     d->m_positionAttribute->setCount(nVerts);
     d->m_texCoordAttribute->setCount(nVerts);
     d->m_normalAttribute->setCount(nVerts);
@@ -532,10 +536,8 @@ void QConeGeometry::updateVertices()
 void QConeGeometry::updateIndices()
 {
     Q_D(QConeGeometry);
-    int faces = 0;
-
-    faces = (d->m_slices * 2) * d->m_rings // 2 x tris per side, for all rings
-            + d->m_slices * (d->m_hasTopEndcap + d->m_hasBottomEndcap); // 2 x endcaps
+    const int faces = faceCount(d->m_slices, d->m_rings,
+                                (d->m_hasTopEndcap + d->m_hasBottomEndcap));
 
     d->m_indexAttribute->setCount(faces * 3);
     d->m_indexBuffer->setDataGenerator(QSharedPointer<ConeIndexDataFunctor>::create(d->m_hasTopEndcap, d->m_hasBottomEndcap, d->m_rings, d->m_slices,
