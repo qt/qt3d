@@ -25,5 +25,6 @@ HEADERS += \
 win32-g++*:QMAKE_CXXFLAGS_CXX11 = -std=gnu++0x
 
 include(./items/items.pri)
+include(./scene2d/scene2d.pri)
 
 load(qt_module)
