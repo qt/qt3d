@@ -34,9 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERQMLTOTEXTURE_P_H
-#define QT3DRENDER_RENDER_RENDERQMLTOTEXTURE_P_H
-
+#ifndef QT3DRENDER_RENDER_SCENE2D_P_H
+#define QT3DRENDER_RENDER_SCENE2D_P_H
 
 //
 //  W A R N I N G
@@ -52,7 +51,7 @@
 #include <Qt3DCore/qnodeid.h>
 
 #include <Qt3DRender/private/framegraphnode_p.h>
-#include <Qt3DRender/private/qrenderqmltotexture_p.h>
+#include <Qt3DRender/private/qscene2d_p.h>
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QSemaphore>
@@ -64,29 +63,29 @@ namespace Qt3DRender {
 namespace Render {
 
 class GraphicsContext;
-class RenderQmlToTexture;
+class Scene2D;
 
 class RenderQmlEventHandler : public QObject
 {
     Q_OBJECT
 public:
-    RenderQmlEventHandler(RenderQmlToTexture *node);
+    RenderQmlEventHandler(Scene2D *node);
     bool event(QEvent *e) Q_DECL_OVERRIDE;
 
 private:
-    RenderQmlToTexture *m_node;
+    Scene2D *m_node;
 };
 
-class Q_AUTOTEST_EXPORT RenderQmlToTexture : public FrameGraphNode
+class Q_AUTOTEST_EXPORT Scene2D : public FrameGraphNode
 {
 public:
-    RenderQmlToTexture();
-    ~RenderQmlToTexture();
+    Scene2D();
+    ~Scene2D();
 
     void attach();
     void render();
     void initializeRender();
-    void setSharedObject(RenderQmlToTextureSharedObjectPtr sharedObject);
+    void setSharedObject(Scene2DSharedObjectPtr sharedObject);
     void cleanup();
     void setTexture(Qt3DCore::QNodeId textureId);
     void checkInitialized();
@@ -98,7 +97,7 @@ public:
     GraphicsContext *m_graphicsContext;
     QThread *m_renderThread;
     Qt3DCore::QNodeId m_textureId;
-    QSharedPointer<RenderQmlToTextureSharedObject> m_sharedObject;
+    QSharedPointer<Scene2DSharedObject> m_sharedObject;
     AttachmentPack m_attachments;
     Texture *m_texture;
 
@@ -113,4 +112,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERQMLTOTEXTURE_P_H
+#endif // QT3DRENDER_RENDER_SCENE2D_P_H

@@ -34,9 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERQMLTOTEXTURE_P_H
-#define QT3DRENDER_QRENDERQMLTOTEXTURE_P_H
-
+#ifndef QT3DRENDER_QSCENE2D_P_H
+#define QT3DRENDER_QSCENE2D_P_H
 
 //
 //  W A R N I N G
@@ -52,7 +51,7 @@
 #include <private/qobject_p.h>
 #include <private/qframegraphnode_p.h>
 
-#include <Qt3DRender/qrenderqmltotexture.h>
+#include <Qt3DRender/qscene2d.h>
 #include <Qt3DRender/QAbstractTexture>
 
 #include <QtQml/QQmlEngine>
@@ -69,8 +68,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QRenderQmlToTexture;
-class RenderQmlToTextureManager;
+class QScene2D;
+class Scene2DManager;
 
 // render thread -> render thread
 static const QEvent::Type INITIALIZE = QEvent::Type(QEvent::User + 1);
@@ -89,15 +88,15 @@ static const QEvent::Type RENDERED = QEvent::Type(QEvent::User + 6);
 // main thread -> render thread
 static const QEvent::Type QUIT = QEvent::Type(QEvent::User + 7);
 
-class Q_AUTOTEST_EXPORT RenderQmlToTextureSharedObject
+class Q_AUTOTEST_EXPORT Scene2DSharedObject
 {
 public:
-    RenderQmlToTextureSharedObject(RenderQmlToTextureManager *manager);
-    ~RenderQmlToTextureSharedObject();
+    Scene2DSharedObject(Scene2DManager *manager);
+    ~Scene2DSharedObject();
 
     QQuickRenderControl *m_renderControl;
     QQuickWindow *m_quickWindow;
-    RenderQmlToTextureManager *m_renderManager;
+    Scene2DManager *m_renderManager;
     QOffscreenSurface *m_surface;
 
     QThread *m_renderThread;
@@ -138,42 +137,43 @@ private:
     bool m_initialized;
 };
 
-typedef QSharedPointer<RenderQmlToTextureSharedObject> RenderQmlToTextureSharedObjectPtr;
+typedef QSharedPointer<Scene2DSharedObject> Scene2DSharedObjectPtr;
 
-class Q_AUTOTEST_EXPORT QRenderQmlToTexturePrivate : public QFrameGraphNodePrivate
+class Q_AUTOTEST_EXPORT QScene2DPrivate : public QFrameGraphNodePrivate
 {
 public:
-    Q_DECLARE_PUBLIC(QRenderQmlToTexture)
+    Q_DECLARE_PUBLIC(QScene2D)
 
-    QRenderQmlToTexturePrivate();
-    ~QRenderQmlToTexturePrivate();
+    QScene2DPrivate();
+    ~QScene2DPrivate();
 
-    static RenderQmlToTextureSharedObject *getSharedObject(QRenderQmlToTexture *rqtt);
+    static Scene2DSharedObject *getSharedObject(QScene2D *rqtt);
 
-    RenderQmlToTextureManager *m_renderManager;
+    Scene2DManager *m_renderManager;
     QMetaObject::Connection m_textureDestroyedConnection;
 };
 
-struct QRenderQmlToTextureData
+struct QScene2DData
 {
     bool renderOnce;
     Qt3DCore::QNodeId textureId;
-    RenderQmlToTextureSharedObjectPtr sharedObject;
+    Scene2DSharedObjectPtr sharedObject;
 };
 
 
-class RenderQmlToTextureManager : public QWindow
+class Scene2DManager : public QWindow
 {
     Q_OBJECT
 public:
-    RenderQmlToTextureManager(QRenderQmlToTexturePrivate *priv);
-    ~RenderQmlToTextureManager();
+    Scene2DManager(QScene2DPrivate *priv);
+    ~Scene2DManager();
 
     QQmlEngine *m_qmlEngine;
     QQmlComponent *m_qmlComponent;
     QQuickItem *m_rootItem;
-    QRenderQmlToTexturePrivate *m_priv;
-    QSharedPointer<RenderQmlToTextureSharedObject> m_sharedObject;
+
+    QScene2DPrivate *m_priv;
+    QSharedPointer<Scene2DSharedObject> m_sharedObject;
 
     QAbstractTexture *m_texture;
     QUrl m_source;
@@ -208,5 +208,4 @@ public:
 
 QT_END_NAMESPACE
 
-
-#endif // QT3DRENDER_QRENDERQMLTOTEXTURE_P_H
+#endif // QT3DRENDER_QSCENE2D_P_H

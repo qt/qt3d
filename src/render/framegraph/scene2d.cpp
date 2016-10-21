@@ -34,9 +34,9 @@
 **
 ****************************************************************************/
 
-#include <Qt3DRender/qrenderqmltotexture.h>
-#include <Qt3DRender/private/qrenderqmltotexture_p.h>
-#include <Qt3DRender/private/renderqmltotexture_p.h>
+#include <Qt3DRender/qscene2d.h>
+#include <Qt3DRender/private/qscene2d_p.h>
+#include <Qt3DRender/private/scene2d_p.h>
 #include <Qt3DRender/private/graphicscontext_p.h>
 #include <Qt3DRender/private/texture_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
@@ -48,7 +48,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-RenderQmlEventHandler::RenderQmlEventHandler(RenderQmlToTexture *node)
+RenderQmlEventHandler::RenderQmlEventHandler(Scene2D *node)
     : QObject()
     , m_node(node)
 {
@@ -80,7 +80,7 @@ bool RenderQmlEventHandler::event(QEvent *e)
     return QObject::event(e);
 }
 
-RenderQmlToTexture::RenderQmlToTexture()
+Scene2D::Scene2D()
     : FrameGraphNode(FrameGraphNode::InvalidNodeType)
     , m_context(nullptr)
     , m_sharedObject(nullptr)
@@ -94,7 +94,7 @@ RenderQmlToTexture::RenderQmlToTexture()
 
 }
 
-RenderQmlToTexture::~RenderQmlToTexture()
+Scene2D::~Scene2D()
 {
     // this gets called from aspect thread. Wait for the render thread then delete it.
     if (m_renderThread) {
@@ -103,20 +103,20 @@ RenderQmlToTexture::~RenderQmlToTexture()
     }
 }
 
-void RenderQmlToTexture::setTexture(Qt3DCore::QNodeId textureId)
+void Scene2D::setTexture(Qt3DCore::QNodeId textureId)
 {
     m_textureId = textureId;
     attach();
     checkInitialized();
 }
 
-void RenderQmlToTexture::checkInitialized()
+void Scene2D::checkInitialized()
 {
     if (!m_initialized && m_textureId != Qt3DCore::QNodeId()) {
 
         // Create render thread
         m_renderThread = new QThread();
-        m_renderThread->setObjectName(QStringLiteral("RenderQmlToTexture::renderThread"));
+        m_renderThread->setObjectName(QStringLiteral("Scene2D::renderThread"));
         m_sharedObject->m_renderThread = m_renderThread;
 
         // Create event handler for the render thread
@@ -134,16 +134,16 @@ void RenderQmlToTexture::checkInitialized()
     }
 }
 
-void RenderQmlToTexture::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void Scene2D::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderQmlToTextureData>>(change);
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QScene2DData>>(change);
     const auto &data = typedChange->data;
     m_renderOnce = m_renderOnce;
     setSharedObject(data.sharedObject);
     setTexture(data.textureId);
 }
 
-void RenderQmlToTexture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void Scene2D::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::PropertyUpdated) {
         Qt3DCore::QPropertyUpdatedChangePtr propertyChange
@@ -165,12 +165,12 @@ void RenderQmlToTexture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     FrameGraphNode::sceneChangeEvent(e);
 }
 
-void RenderQmlToTexture::setSharedObject(Qt3DRender::RenderQmlToTextureSharedObjectPtr sharedObject)
+void Scene2D::setSharedObject(Qt3DRender::Scene2DSharedObjectPtr sharedObject)
 {
     m_sharedObject = sharedObject;
 }
 
-void RenderQmlToTexture::initializeRender()
+void Scene2D::initializeRender()
 {
     if (!m_renderInitialized) {
         Qt3DRender::Render::Renderer *renderer
@@ -201,7 +201,7 @@ void RenderQmlToTexture::initializeRender()
     }
 }
 
-void RenderQmlToTexture::attach()
+void Scene2D::attach()
 {
     m_attachments = AttachmentPack();
     Attachment attach;
@@ -212,7 +212,7 @@ void RenderQmlToTexture::attach()
 //    m_attachments.addAttachment(attach);
 }
 
-void RenderQmlToTexture::render()
+void Scene2D::render()
 {
     if (m_initialized && m_sharedObject && this->isEnabled()) {
 
@@ -237,8 +237,7 @@ void RenderQmlToTexture::render()
             QOpenGLTexture *glTex = m_texture->getOrCreateGLTexture();
             const QSize textureSize = QSize(glTex->width(), glTex->height());
 
-            // TODO: create fbo from the texture.
-            GLuint fbo = 0;//m_graphicsContext->activateRenderTargetForQmlRender(this, m_attachments, 0);
+            GLuint fbo = 0; //m_graphicsContext->activateRenderTargetForQmlRender(this, m_attachments, 0);
 
             if (fbo != m_sharedObject->m_quickWindow->renderTargetId())
                 m_sharedObject->m_quickWindow->setRenderTarget(fbo, textureSize);
@@ -278,7 +277,7 @@ void RenderQmlToTexture::render()
     }
 }
 
-void RenderQmlToTexture::cleanup()
+void Scene2D::cleanup()
 {
     if (m_renderInitialized && m_initialized) {
         m_context->makeCurrent(m_sharedObject->m_surface);

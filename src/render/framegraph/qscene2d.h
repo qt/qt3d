@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERQMLTOTEXTURE_H
-#define QT3DRENDER_QRENDERQMLTOTEXTURE_H
+#ifndef QT3DRENDER_QSCENE2D_H
+#define QT3DRENDER_QSCENE2D_H
 
 #include <QtCore/QUrl>
 #include <QtCore/QEvent>
@@ -48,9 +48,9 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QRenderQmlToTexturePrivate;
+class QScene2DPrivate;
 
-class QT3DRENDERSHARED_EXPORT QRenderQmlToTexture : public Qt3DRender::QFrameGraphNode
+class QT3DRENDERSHARED_EXPORT QScene2D : public Qt3DRender::QFrameGraphNode
 {
     Q_OBJECT
 
@@ -60,8 +60,8 @@ class QT3DRENDERSHARED_EXPORT QRenderQmlToTexture : public Qt3DRender::QFrameGra
     Q_PROPERTY(bool loaded READ loaded NOTIFY loadedChanged)
 
 public:
-    explicit QRenderQmlToTexture(Qt3DCore::QNode *parent = nullptr);
-    ~QRenderQmlToTexture();
+    explicit QScene2D(Qt3DCore::QNode *parent = nullptr);
+    ~QScene2D();
 
     QUrl source() const;
     QAbstractTexture *texture() const;
@@ -80,7 +80,7 @@ Q_SIGNALS:
     void renderOnceChanged(bool once);
 
 protected:
-    Q_DECLARE_PRIVATE(QRenderQmlToTexture)
+    Q_DECLARE_PRIVATE(QScene2D)
 
 private:
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
@@ -93,4 +93,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QRENDERQMLTOTEXTURE_H
+#endif // QT3DRENDER_QSCENE2D_H
