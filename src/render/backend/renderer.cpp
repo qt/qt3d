@@ -1153,6 +1153,10 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
             lastBoundFBOId = m_graphicsContext->boundFrameBufferObject();
         }
 
+        // Apply Memory Barrier if needed
+        if (renderView->memoryBarrier() != QMemoryBarrier::None)
+            m_graphicsContext->memoryBarrier(renderView->memoryBarrier());
+
         // Note: the RenderStateSet is allocated once per RV if needed
         // and it contains a list of StateVariant value types
         RenderStateSet *renderViewStateSet = renderView->stateSet();

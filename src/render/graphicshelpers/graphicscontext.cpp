@@ -1421,6 +1421,11 @@ bool GraphicsContext::hasGLBufferForBuffer(Buffer *buffer)
     return (it != m_renderBufferHash.end());
 }
 
+void GraphicsContext::memoryBarrier(QMemoryBarrier::BarrierTypes barriers)
+{
+    m_glHelper->memoryBarrier(barriers);
+}
+
 GLBuffer *GraphicsContext::glBufferForRenderBuffer(Buffer *buf)
 {
     if (!m_renderBufferHash.contains(buf->peerId()))
