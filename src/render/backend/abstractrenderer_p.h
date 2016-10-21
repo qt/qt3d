@@ -56,6 +56,8 @@
 #include <Qt3DCore/qnodeid.h>
 #include <QtGui/qsurfaceformat.h>
 
+#include <QtGui/qopenglcontext.h>
+
 QT_BEGIN_NAMESPACE
 
 class QSurface;
@@ -153,6 +155,7 @@ public:
 
     virtual void setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper) = 0;
     virtual QSurfaceFormat format() = 0;
+    virtual QOpenGLContext *shareContext() const = 0;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractRenderer::BackendNodeDirtySet)

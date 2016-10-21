@@ -205,6 +205,7 @@ public:
 
     virtual void setSettings(RenderSettings *settings) Q_DECL_OVERRIDE;
     virtual RenderSettings *settings() const Q_DECL_OVERRIDE;
+    QOpenGLContext *shareContext() const Q_DECL_OVERRIDE;
 
     void updateGLResources();
     void updateTexture(Texture *texture);
@@ -296,6 +297,7 @@ private:
     BackendNodeDirtySet m_changeSet;
     QAtomicInt m_lastFrameCorrect;
     QOpenGLContext *m_glContext;
+    QOpenGLContext *m_shareContext;
     PickBoundingVolumeJobPtr m_pickBoundingVolumeJob;
 
     qint64 m_time;

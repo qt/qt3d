@@ -153,6 +153,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_waitForInitializationToBeCompleted(0)
     , m_pickEventFilter(new PickEventFilter())
     , m_exposed(0)
+    , m_shareContext(nullptr)
     , m_changeSet(0)
     , m_lastFrameCorrect(0)
     , m_glContext(nullptr)
@@ -261,6 +262,17 @@ NodeManagers *Renderer::nodeManagers() const
     return m_nodesManager;
 }
 
+/*!
+    \internal
+
+    Return context which can be used to share resources safely
+    with qt3d main render context.
+*/
+QOpenGLContext *Renderer::shareContext() const
+{
+    return m_shareContext ? m_shareContext : m_graphicsContext->openGLContext();
+}
+
 void Renderer::setOpenGLContext(QOpenGLContext *context)
 {
     m_glContext = context;
@@ -302,6 +314,10 @@ void Renderer::initialize()
         // Context is not owned by us, so we need to know if it gets destroyed
         m_contextConnection = QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed,
                                                [this] { releaseGraphicsResources(); });
+        m_shareContext = new QOpenGLContext;
+        m_shareContext->setFormat(m_glContext->format());
+        m_shareContext->setShareContext(m_glContext);
+        m_shareContext->create();
     }
 
     // Note: we don't have a surface at this point
@@ -400,6 +416,8 @@ void Renderer::releaseGraphicsResources()
 
     if (m_ownedContext)
         delete context;
+    if (m_shareContext)
+        delete m_shareContext;
 
     m_graphicsContext.reset(nullptr);
     qCDebug(Backend) << Q_FUNC_INFO << "Renderer properly shutdown";
