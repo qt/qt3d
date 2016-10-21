@@ -68,6 +68,7 @@ public:
     ~BackendNode();
 
     void setRenderer(AbstractRenderer *renderer);
+    AbstractRenderer *renderer() const;
 
 protected:
     void markDirty(AbstractRenderer::BackendNodeDirtySet changes);
