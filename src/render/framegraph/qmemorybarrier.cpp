@@ -139,6 +139,7 @@ void QMemoryBarrier::setBarrierTypes(QMemoryBarrier::BarrierTypes barrierTypes)
     if (barrierTypes != d->m_barrierTypes) {
         d->m_barrierTypes = barrierTypes;
         emit barrierTypesChanged(barrierTypes);
+        d->notifyPropertyChange("barrierTypes", QVariant::fromValue(barrierTypes));
     }
 }
 

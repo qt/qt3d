@@ -17,7 +17,8 @@ HEADERS += \
     $$PWD/quick3dviewport_p.h \
     $$PWD/quick3dparameter_p_p.h \
     $$PWD/quick3dparameter_p.h \
-    $$PWD/quick3drendertargetoutput_p.h
+    $$PWD/quick3drendertargetoutput_p.h \
+    $$PWD/quick3dmemorybarrier_p.h
 
 SOURCES += \
     $$PWD/quick3drenderpassfilter.cpp \
@@ -37,6 +38,7 @@ SOURCES += \
     $$PWD/quick3drendertargetselector.cpp \
     $$PWD/quick3dgeometry.cpp \
     $$PWD/quick3dbuffer.cpp \
-    $$PWD/quick3drendertargetoutput.cpp
+    $$PWD/quick3drendertargetoutput.cpp \
+    $$PWD/quick3dmemorybarrier.cpp
 
 INCLUDEPATH += $$PWD

@@ -37,64 +37,38 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QMEMORYBARRIER_H
-#define QT3DRENDER_QMEMORYBARRIER_H
-
-#include <Qt3DRender/qframegraphnode.h>
+#include "quick3dmemorybarrier_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+namespace Render {
+namespace Quick {
 
-class QMemoryBarrierPrivate;
 
-class QT3DRENDERSHARED_EXPORT QMemoryBarrier : public QFrameGraphNode
+Quick3DMemoryBarrier::Quick3DMemoryBarrier(QObject *parent)
+    : QObject(parent)
 {
-    Q_OBJECT
-public:
-    explicit QMemoryBarrier(Qt3DCore::QNode *parent = nullptr);
-    ~QMemoryBarrier();
+}
 
-    enum BarrierType {
-        None = 0,
-        VertexAttributeArrayBarrier = (1 << 0),
-        ElementArrayBarrier = (1 << 1),
-        UniformBarrier = (1 << 2),
-        TextureFetchBarrier = (1 << 3),
-        ShaderImageAccessBarrier = (1 << 4),
-        CommandBarrier = (1 << 5),
-        PixelBufferBarrier = (1 << 6),
-        TextureUpdateBarrier = (1 << 7),
-        BufferUpdateBarrier = (1 << 8),
-        FrameBufferBarrier = (1 << 9),
-        TransformFeedbackBarrier = (1 << 10),
-        AtomicCounterBarrier = (1 << 11),
-        ShaderStorageBarrier = (1 << 12),
-        QueryBufferBarrier = (1 << 13),
-        AllBarrier = 0xFFFFFFFF
-    };
-    Q_ENUM(BarrierType)
-    Q_DECLARE_FLAGS(BarrierTypes, BarrierType)
+Quick3DMemoryBarrier::~Quick3DMemoryBarrier()
+{
+}
 
-public Q_SLOTS:
-    void setBarrierTypes(QMemoryBarrier::BarrierTypes barrierTypes);
-    BarrierTypes barrierTypes() const;
+void Quick3DMemoryBarrier::setBarrierTypesInt(int barrierTypes)
+{
+    QMemoryBarrier::BarrierTypes types(QMemoryBarrier::AllBarrier);
+    types &= barrierTypes; // Will only keep flags that are actually set
+    parentBarrier()->setBarrierTypes(types);
+}
 
-Q_SIGNALS:
-    void barrierTypesChanged(QMemoryBarrier::BarrierTypes barrierTypes);
+int Quick3DMemoryBarrier::barrierTypesInt() const
+{
+    return QMemoryBarrier::BarrierTypes::Int(parentBarrier()->barrierTypes());
+}
 
-protected:
-    explicit QMemoryBarrier(QMemoryBarrierPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-
-private:
-    Q_DECLARE_PRIVATE(QMemoryBarrier)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
-};
-
-} // Qt3DRender
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-Q_DECLARE_METATYPE(Qt3DRender::QMemoryBarrier::BarrierTypes)
-
-#endif // QT3DRENDER_QMEMORYBARRIER_H

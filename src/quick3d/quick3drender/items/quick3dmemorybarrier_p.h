@@ -37,64 +37,49 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QMEMORYBARRIER_H
-#define QT3DRENDER_QMEMORYBARRIER_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DMEMORYBARRIER_P_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DMEMORYBARRIER_P_H
 
-#include <Qt3DRender/qframegraphnode.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
+#include <Qt3DRender/qmemorybarrier.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+namespace Render {
+namespace Quick {
 
-class QMemoryBarrierPrivate;
+// Qt6: Handle QFlags as Q_PROPERTY in QML
 
-class QT3DRENDERSHARED_EXPORT QMemoryBarrier : public QFrameGraphNode
+class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DMemoryBarrier : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(int barrierTypes READ barrierTypesInt WRITE setBarrierTypesInt)
 public:
-    explicit QMemoryBarrier(Qt3DCore::QNode *parent = nullptr);
-    ~QMemoryBarrier();
+    explicit Quick3DMemoryBarrier(QObject *parent = nullptr);
+    ~Quick3DMemoryBarrier();
 
-    enum BarrierType {
-        None = 0,
-        VertexAttributeArrayBarrier = (1 << 0),
-        ElementArrayBarrier = (1 << 1),
-        UniformBarrier = (1 << 2),
-        TextureFetchBarrier = (1 << 3),
-        ShaderImageAccessBarrier = (1 << 4),
-        CommandBarrier = (1 << 5),
-        PixelBufferBarrier = (1 << 6),
-        TextureUpdateBarrier = (1 << 7),
-        BufferUpdateBarrier = (1 << 8),
-        FrameBufferBarrier = (1 << 9),
-        TransformFeedbackBarrier = (1 << 10),
-        AtomicCounterBarrier = (1 << 11),
-        ShaderStorageBarrier = (1 << 12),
-        QueryBufferBarrier = (1 << 13),
-        AllBarrier = 0xFFFFFFFF
-    };
-    Q_ENUM(BarrierType)
-    Q_DECLARE_FLAGS(BarrierTypes, BarrierType)
+    inline QMemoryBarrier *parentBarrier() const { return qobject_cast<QMemoryBarrier*>(parent()); }
 
-public Q_SLOTS:
-    void setBarrierTypes(QMemoryBarrier::BarrierTypes barrierTypes);
-    BarrierTypes barrierTypes() const;
-
-Q_SIGNALS:
-    void barrierTypesChanged(QMemoryBarrier::BarrierTypes barrierTypes);
-
-protected:
-    explicit QMemoryBarrier(QMemoryBarrierPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-
-private:
-    Q_DECLARE_PRIVATE(QMemoryBarrier)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+    void setBarrierTypesInt(int barrierTypes);
+    int barrierTypesInt() const;
 };
 
-} // Qt3DRender
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::QMemoryBarrier::BarrierTypes)
-
-#endif // QT3DRENDER_QMEMORYBARRIER_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DMEMORYBARRIER_P_H
