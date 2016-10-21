@@ -77,6 +77,7 @@ Viewport {
         CameraSelector {
             id: selector
             TechniqueFilter {
+                MemoryBarrier { barrierTypes: MemoryBarrier.VertexAttributeArrayBarrier }
                 matchAll: [
                     FilterKey { name: "type"; value: "draw"}
                 ]
