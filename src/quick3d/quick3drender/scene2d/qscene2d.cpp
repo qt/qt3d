@@ -47,6 +47,7 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
+namespace Quick {
 
 /*!
     \class Qt3DRender::QScene2D
@@ -615,6 +616,8 @@ void QScene2D::sourceLoaded()
 {
     emit loadedChanged(true);
 }
+
+} // namespace Quick
 
 } // namespace Qt3DRender
 

@@ -34,23 +34,25 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QSCENE2D_H
-#define QT3DRENDER_QSCENE2D_H
+#ifndef QT3DRENDER_QUICK3DRENDER_QSCENE2D_H
+#define QT3DRENDER_QUICK3DRENDER_QSCENE2D_H
 
 #include <QtCore/QUrl>
 #include <QtCore/QEvent>
 
 #include <Qt3DRender/qframegraphnode.h>
 #include <Qt3DRender/qabstracttexture.h>
-#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DQuickRender/qt3dquickrender_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+namespace Quick {
+
 class QScene2DPrivate;
 
-class QT3DRENDERSHARED_EXPORT QScene2D : public Qt3DRender::QFrameGraphNode
+class QT3DQUICKRENDERSHARED_EXPORT QScene2D : public Qt3DRender::QFrameGraphNode
 {
     Q_OBJECT
 
@@ -89,8 +91,9 @@ private:
     void sourceLoaded();
 };
 
+} // namespace Quick
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QSCENE2D_H
+#endif // QT3DRENDER_QUICK3DRENDER_QSCENE2D_H

@@ -34,19 +34,25 @@
 **
 ****************************************************************************/
 
-#include <Qt3DRender/qscene2d.h>
-#include <Qt3DRender/private/qscene2d_p.h>
-#include <Qt3DRender/private/scene2d_p.h>
-#include <Qt3DRender/private/graphicscontext_p.h>
-#include <Qt3DRender/private/texture_p.h>
-#include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DQuickRender/qscene2d.h>
+
+#include <private/qscene2d_p.h>
+#include <private/scene2d_p.h>
+#include <private/graphicscontext_p.h>
+#include <private/texture_p.h>
+#include <private/nodemanagers_p.h>
+
 
 QT_BEGIN_NAMESPACE
+
+using namespace Qt3DRender::Quick;
 
 namespace Qt3DRender {
 
 namespace Render {
+
+namespace Quick {
 
 RenderQmlEventHandler::RenderQmlEventHandler(Scene2D *node)
     : QObject()
@@ -165,7 +171,7 @@ void Scene2D::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     FrameGraphNode::sceneChangeEvent(e);
 }
 
-void Scene2D::setSharedObject(Qt3DRender::Scene2DSharedObjectPtr sharedObject)
+void Scene2D::setSharedObject(Qt3DRender::Quick::Scene2DSharedObjectPtr sharedObject)
 {
     m_sharedObject = sharedObject;
 }
@@ -295,6 +301,8 @@ void Scene2D::cleanup()
         m_initialized = false;
     }
 }
+
+} // namespace Quick
 
 } // namespace Render
 

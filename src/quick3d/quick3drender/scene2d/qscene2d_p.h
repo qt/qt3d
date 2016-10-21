@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QSCENE2D_P_H
-#define QT3DRENDER_QSCENE2D_P_H
+#ifndef QT3DRENDER_QUICK3DRENDER_QSCENE2D_P_H
+#define QT3DRENDER_QUICK3DRENDER_QSCENE2D_P_H
 
 //
 //  W A R N I N G
@@ -51,7 +51,7 @@
 #include <private/qobject_p.h>
 #include <private/qframegraphnode_p.h>
 
-#include <Qt3DRender/qscene2d.h>
+#include <Qt3DQuickRender/qscene2d.h>
 #include <Qt3DRender/QAbstractTexture>
 
 #include <QtQml/QQmlEngine>
@@ -67,6 +67,8 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+
+namespace Quick {
 
 class QScene2D;
 class Scene2DManager;
@@ -203,9 +205,10 @@ public:
     void cleanup();
 };
 
+} // namespace Quick
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QSCENE2D_P_H
+#endif // QT3DRENDER_QUICK3DRENDER_QSCENE2D_P_H
