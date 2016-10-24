@@ -100,6 +100,7 @@
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qrendersettings.h>
 #include <Qt3DRender/qpickingsettings.h>
+#include <Qt3DRender/qeventforward.h>
 #include <Qt3DRender/qrendercapture.h>
 #include <Qt3DQuickRender/private/quick3dlayerfilter_p.h>
 #include <Qt3DQuickRender/private/quick3dtechnique_p.h>
@@ -197,6 +198,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 
     // Picking
     qmlRegisterType<Qt3DRender::QObjectPicker>(uri, 2, 0, "ObjectPicker");
+    qmlRegisterType<Qt3DRender::QEventForward>(uri, 2, 2, "EventForward");
     qmlRegisterUncreatableType<Qt3DRender::QPickEvent>(uri, 2, 0, "PickEvent", QStringLiteral("Events cannot be created"));
 
         // Compute Job
