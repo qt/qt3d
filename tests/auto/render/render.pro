@@ -97,7 +97,8 @@ qtConfig(private_tests) {
         rendercapture \
         trianglevisitor \
         qmemorybarrier \
-        qeventforward
+        qeventforward \
+        eventforward
 
     !macos: SUBDIRS += graphicshelpergl4
 }
