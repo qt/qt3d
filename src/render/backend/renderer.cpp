@@ -1576,7 +1576,12 @@ void Renderer::cleanGraphicsResources()
 
 QList<QMouseEvent> Renderer::pendingPickingEvents() const
 {
-    return m_pickEventFilter->pendingEvents();
+    return m_pickEventFilter->pendingMouseEvents();
+}
+
+QList<QKeyEvent> Renderer::pendingKeyEvents() const
+{
+    return m_pickEventFilter->pendingKeyEvents();
 }
 
 const GraphicsApiFilterData *Renderer::contextInfo() const

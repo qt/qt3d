@@ -59,6 +59,7 @@
 #include <Qt3DRender/private/pickboundingvolumeutils_p.h>
 #include <Qt3DRender/qpickevent.h>
 #include <QMouseEvent>
+#include <QKeyEvent>
 #include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
@@ -85,6 +86,7 @@ public:
 
     void setRoot(Entity *root);
     void setMouseEvents(const QList<QMouseEvent> &pendingEvents);
+    void setKeyEvents(const QList<QKeyEvent> &pendingEvents);
     void setFrameGraphRoot(FrameGraphNode *frameGraphRoot);
     void setRenderSettings(RenderSettings *settings);
     void setManagers(NodeManagers *manager);
@@ -104,7 +106,8 @@ protected:
     void dispatchPickEvents(const QMouseEvent &event, const PickingUtils::CollisionVisitor::HitList &sphereHits,
                             QPickEvent::Buttons eventButton,
                             int eventButtons,
-                            int eventModifiers, bool trianglePickingRequested);
+                            int eventModifiers, bool trianglePickingRequested,
+                            const QRay3D &ray);
 
 private:
     NodeManagers *m_manager;
@@ -112,6 +115,7 @@ private:
     FrameGraphNode *m_frameGraphRoot;
     RenderSettings *m_renderSettings;
     QList<QMouseEvent> m_pendingMouseEvents;
+    QList<QKeyEvent> m_pendingKeyEvents;
 
     void viewMatrixForCamera(Qt3DCore::QNodeId cameraId,
                              QMatrix4x4 &viewMatrix,

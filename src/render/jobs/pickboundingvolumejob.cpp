@@ -58,6 +58,8 @@ namespace Render {
 
 namespace {
 
+typedef PickingUtils::AbstractCollisionGathererFunctor::result_type HitList;
+
 void setEventButtonAndModifiers(const QMouseEvent &event, QPickEvent::Buttons &eventButton, int &eventButtons, int &eventModifiers)
 {
     switch (event.button()) {
@@ -118,6 +120,11 @@ void PickBoundingVolumeJob::setMouseEvents(const QList<QMouseEvent> &pendingEven
     m_pendingMouseEvents = pendingEvents;
 }
 
+void PickBoundingVolumeJob::setKeyEvents(const QList<QKeyEvent> &pendingEvents)
+{
+    m_pendingKeyEvents = pendingEvents;
+}
+
 void PickBoundingVolumeJob::setFrameGraphRoot(FrameGraphNode *frameGraphRoot)
 {
     m_frameGraphRoot = frameGraphRoot;
@@ -145,9 +152,10 @@ bool PickBoundingVolumeJob::runHelper()
     // Move to clear the events so that we don't process them several times
     // if run is called several times
     const auto mouseEvents = std::move(m_pendingMouseEvents);
+    const auto keyEvents = std::move(m_pendingKeyEvents);
 
     // If we have no events return early
-    if (mouseEvents.empty())
+    if (mouseEvents.empty() && keyEvents.empty())
         return false;
 
     // bail out early if no picker is enabled
@@ -178,6 +186,23 @@ bool PickBoundingVolumeJob::runHelper()
     // that the tree structure has changed
     PickingUtils::EntityGatherer entitiesGatherer(m_node);
 
+    // Forward keyboard events
+    if (keyEvents.size() > 0) {
+        for (Entity *e : entitiesGatherer.entities()) {
+            ObjectPicker *picker = e->renderComponent<ObjectPicker>();
+            if (picker != nullptr) {
+                if (picker->isEventForwardingEnabled()) {
+                    EventForward *eventForward
+                            = m_manager->eventForwardManager()->lookupResource(picker->eventForward());
+                    if (eventForward->focus() && eventForward->forwardKeyboardEvents()) {
+                        eventForward->forward(keyEvents);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     // Store the reducer function which varies depending on the picking settings set on the renderer
     using ReducerFunction = PickingUtils::CollisionVisitor::HitList (*)(PickingUtils::CollisionVisitor::HitList &results, const PickingUtils::CollisionVisitor::HitList &intermediate);
 
@@ -203,7 +228,6 @@ bool PickBoundingVolumeJob::runHelper()
 
         // For each triplet of Viewport / Camera and Area
         for (const PickingUtils::ViewportCameraAreaTriplet &vca : vcaTriplets) {
-            typedef PickingUtils::AbstractCollisionGathererFunctor::result_type HitList;
             HitList sphereHits;
             QRay3D ray = rayForViewportAndCamera(vca.area, event.pos(), vca.viewport, vca.cameraId);
             if (trianglePickingRequested) {
@@ -221,7 +245,8 @@ bool PickBoundingVolumeJob::runHelper()
             }
 
             // Dispatch events based on hit results
-            dispatchPickEvents(event, sphereHits, eventButton, eventButtons, eventModifiers, trianglePickingRequested);
+            dispatchPickEvents(event, sphereHits, eventButton, eventButtons,
+                               eventModifiers, trianglePickingRequested, ray);
         }
     }
 
@@ -249,7 +274,8 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                                                QPickEvent::Buttons eventButton,
                                                int eventButtons,
                                                int eventModifiers,
-                                               bool trianglePickingRequested)
+                                               bool trianglePickingRequested,
+                                               const QRay3D &ray)
 {
     ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
     // If we have hits
@@ -336,6 +362,49 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
 
                 default:
                     break;
+                }
+                if (objectPicker->isEventForwardingEnabled()) {
+                    EventForward *eventForward
+                            = m_manager->eventForwardManager()->lookupResource(objectPicker->eventForward());
+                    QCollisionQueryResult::Hit triangleHit = hit;
+                    bool valid = true;
+                    if (eventForward->isEnabled() && eventForward->forwardMouseEvents()) {
+                        if (!trianglePickingRequested) {
+                            // Triangle picking is not enables so the triangle is not already in the
+                            // query results. We need to redo the picking to get the triangle.
+                            Qt3DRender::QRayCastingService rayCasting;
+                            PickingUtils::TriangleCollisionGathererFunctor gathererFunctor;
+                            const bool frontFaceRequested =
+                                    m_renderSettings->faceOrientationPickingMode() != QPickingSettings::BackFace;
+                            const bool backFaceRequested =
+                                    m_renderSettings->faceOrientationPickingMode() != QPickingSettings::FrontFace;
+                            gathererFunctor.m_frontFaceRequested = frontFaceRequested;
+                            gathererFunctor.m_backFaceRequested = backFaceRequested;
+                            gathererFunctor.m_manager = m_manager;
+                            gathererFunctor.m_ray = ray;
+
+                            // The bounding method is inaccurate so the triangle picking doesn't
+                            // necessarely produce any results
+                            HitList hitlist = gathererFunctor.pick(&rayCasting, entity);
+                            if (hitlist.size() > 0)
+                                triangleHit = hitlist.at(0);
+                            else
+                                valid = false;
+                        }
+                        if (valid) {
+                            CoordinateReader reader(m_manager);
+                            if (reader.setGeometry(entity->renderComponent<GeometryRenderer>(),
+                                                   eventForward->coordinateAttribute())) {
+                                QVector4D c0 = reader.getCoordinate(triangleHit.m_vertexIndex[0]);
+                                QVector4D c1 = reader.getCoordinate(triangleHit.m_vertexIndex[1]);
+                                QVector4D c2 = reader.getCoordinate(triangleHit.m_vertexIndex[2]);
+                                QVector4D ci = c2 * triangleHit.m_uvw.x()
+                                        + c1 * triangleHit.m_uvw.y() + c0 * triangleHit.m_uvw.z();
+                                ci.setW(1.0f);
+                                eventForward->forward(event, ci);
+                            }
+                        }
+                    }
                 }
             }
 
