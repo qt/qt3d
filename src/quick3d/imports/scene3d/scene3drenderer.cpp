@@ -183,8 +183,10 @@ void Scene3DRenderer::shutdown()
 
     // Exit the simulation loop so no more jobs are asked for. Once this
     // returns it is safe to shutdown the renderer.
-    auto engineD = Qt3DCore::QAspectEnginePrivate::get(m_aspectEngine);
-    engineD->exitSimulationLoop();
+    if (m_aspectEngine) {
+        auto engineD = Qt3DCore::QAspectEnginePrivate::get(m_aspectEngine);
+        engineD->exitSimulationLoop();
+    }
 
     // Shutdown the Renderer Aspect while the OpenGL context
     // is still valid
