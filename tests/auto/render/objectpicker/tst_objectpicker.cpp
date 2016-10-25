@@ -46,7 +46,9 @@ private Q_SLOTS:
         // GIVEN
         Qt3DRender::Render::ObjectPicker objectPicker;
         Qt3DRender::QObjectPicker picker;
+        Qt3DRender::QEventForward eventForward;
         picker.setHoverEnabled(true);
+        picker.setEventForward(&eventForward);
 
         // WHEN
         simulateInitialization(&picker, &objectPicker);
@@ -55,6 +57,7 @@ private Q_SLOTS:
         QVERIFY(!objectPicker.peerId().isNull());
         QCOMPARE(objectPicker.isHoverEnabled(), true);
         QCOMPARE(objectPicker.isDirty(), true);
+        QCOMPARE(objectPicker.eventForward(), eventForward.id());
     }
 
     void checkInitialAndCleanedUpState()
@@ -66,6 +69,8 @@ private Q_SLOTS:
         QVERIFY(objectPicker.peerId().isNull());
         QCOMPARE(objectPicker.isHoverEnabled(), false);
         QCOMPARE(objectPicker.isDirty(), false);
+        QCOMPARE(objectPicker.isEventForwardingEnabled(), false);
+        QCOMPARE(objectPicker.eventForward(), Qt3DCore::QNodeId());
 
         // GIVEN
         Qt3DRender::QObjectPicker picker;
@@ -78,12 +83,15 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(objectPicker.isHoverEnabled(), false);
         QCOMPARE(objectPicker.isDirty(), false);
+        QCOMPARE(objectPicker.isEventForwardingEnabled(), false);
+        QCOMPARE(objectPicker.eventForward(), Qt3DCore::QNodeId());
     }
 
     void checkPropertyChanges()
     {
         // GIVEN
         Qt3DRender::Render::ObjectPicker objectPicker;
+        Qt3DRender::QEventForward eventForward;
         TestRenderer renderer;
         objectPicker.setRenderer(&renderer);
 
@@ -102,6 +110,15 @@ private Q_SLOTS:
 
         objectPicker.unsetDirty();
         QVERIFY(!objectPicker.isDirty());
+
+        // WHEN
+        updateChange->setValue(QVariant::fromValue(eventForward.id()));
+        updateChange->setPropertyName("eventForward");
+        objectPicker.sceneChangeEvent(updateChange);
+
+        // THEN
+        QCOMPARE(objectPicker.isEventForwardingEnabled(), true);
+        QCOMPARE(objectPicker.eventForward(), eventForward.id());
     }
 
     void checkBackendPropertyNotifications()
