@@ -54,6 +54,7 @@ private Q_SLOTS:
         QCOMPARE(eventForward.forwardKeyboardEvents(), false);
         QCOMPARE(eventForward.coordinateTransform(), QMatrix4x4());
         QCOMPARE(eventForward.coordinateAttribute(), QStringLiteral("default"));
+        QCOMPARE(eventForward.focus(), false);
     }
 
     void checkPropertyChanges()
@@ -158,6 +159,25 @@ private Q_SLOTS:
             QCOMPARE(eventForward.coordinateAttribute(), newValue);
             QCOMPARE(spy.count(), 0);
         }
+        {
+            // WHEN
+            QSignalSpy spy(&eventForward, SIGNAL(focusChanged(bool)));
+            const bool newValue = true;
+            eventForward.setFocus(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(eventForward.focus(), newValue);
+            QCOMPARE(spy.count(), 1);
+
+            // WHEN
+            spy.clear();
+            eventForward.setFocus(newValue);
+
+            // THEN
+            QCOMPARE(eventForward.focus(), newValue);
+            QCOMPARE(spy.count(), 0);
+        }
     }
 
     void checkCreationData()
@@ -173,6 +193,7 @@ private Q_SLOTS:
         eventForward.setForwardKeyboardEvents(true);
         eventForward.setCoordinateTransform(transform);
         eventForward.setCoordinateAttribute(QStringLiteral("position"));
+        eventForward.setFocus(true);
 
         // WHEN
         QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
@@ -196,6 +217,7 @@ private Q_SLOTS:
             QCOMPARE(eventForward.forwardKeyboardEvents(), cloneData.forwardKeyboardEvents);
             QCOMPARE(eventForward.coordinateTransform(), cloneData.coordinateTransform);
             QCOMPARE(eventForward.coordinateAttribute(), cloneData.coordinateAttribute);
+            QCOMPARE(eventForward.focus(), cloneData.focus);
             QCOMPARE(eventForward.id(), creationChangeData->subjectId());
             QCOMPARE(eventForward.isEnabled(), true);
             QCOMPARE(eventForward.isEnabled(), creationChangeData->isNodeEnabled());
@@ -224,6 +246,7 @@ private Q_SLOTS:
             QCOMPARE(eventForward.forwardKeyboardEvents(), cloneData.forwardKeyboardEvents);
             QCOMPARE(eventForward.coordinateTransform(), cloneData.coordinateTransform);
             QCOMPARE(eventForward.coordinateAttribute(), cloneData.coordinateAttribute);
+            QCOMPARE(eventForward.focus(), cloneData.focus);
             QCOMPARE(eventForward.id(), creationChangeData->subjectId());
             QCOMPARE(eventForward.isEnabled(), false);
             QCOMPARE(eventForward.isEnabled(), creationChangeData->isNodeEnabled());
@@ -391,6 +414,39 @@ private Q_SLOTS:
         {
             // WHEN
             eventForward.setCoordinateAttribute(QStringLiteral("normal"));
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+        }
+
+    }
+
+    void checkFocusUpdate()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DRender::QEventForward eventForward;
+        arbiter.setArbiterOnNode(&eventForward);
+
+        {
+            // WHEN
+            eventForward.setFocus(true);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 1);
+            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "focus");
+            QCOMPARE(change->value().toBool(), eventForward.focus());
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+            arbiter.events.clear();
+        }
+
+        {
+            // WHEN
+            eventForward.setFocus(true);
             QCoreApplication::processEvents();
 
             // THEN

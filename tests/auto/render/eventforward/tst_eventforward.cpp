@@ -53,6 +53,7 @@ private Q_SLOTS:
         QCOMPARE(backendEventForward.coordinateTransform(), QMatrix4x4());
         QCOMPARE(backendEventForward.forwardMouseEvents(), false);
         QCOMPARE(backendEventForward.forwardKeyboardEvents(), false);
+        QCOMPARE(backendEventForward.focus(), false);
     }
 
     void checkCleanupState()
@@ -70,6 +71,7 @@ private Q_SLOTS:
         backendEventForward.setCoordinateTransform(transform);
         backendEventForward.setForwardMouseEvents(true);
         backendEventForward.setForwardKeyboardEvents(true);
+        backendEventForward.setFocus(true);
 
         backendEventForward.cleanup();
 
@@ -80,6 +82,7 @@ private Q_SLOTS:
         QCOMPARE(backendEventForward.coordinateTransform(), QMatrix4x4());
         QCOMPARE(backendEventForward.forwardMouseEvents(), false);
         QCOMPARE(backendEventForward.forwardKeyboardEvents(), false);
+        QCOMPARE(backendEventForward.focus(), false);
     }
 
     void checkInitializeFromPeer()
@@ -100,16 +103,19 @@ private Q_SLOTS:
             QCOMPARE(backendEventForward.coordinateTransform(), QMatrix4x4());
             QCOMPARE(backendEventForward.forwardMouseEvents(), true);
             QCOMPARE(backendEventForward.forwardKeyboardEvents(), false);
+            QCOMPARE(backendEventForward.focus(), false);
         }
         {
             // WHEN
             Qt3DRender::Render::EventForward backendEventForward;
             eventForward.setEnabled(false);
+            eventForward.setFocus(true);
             simulateInitialization(&eventForward, &backendEventForward);
 
             // THEN
             QCOMPARE(backendEventForward.peerId(), eventForward.id());
             QCOMPARE(backendEventForward.isEnabled(), false);
+            QCOMPARE(backendEventForward.focus(), true);
         }
     }
 
@@ -187,6 +193,17 @@ private Q_SLOTS:
 
              // THEN
             QCOMPARE(backendEventForward.forwardKeyboardEvents(), newValue);
+        }
+        {
+             // WHEN
+             const bool newValue = true;
+             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+             change->setPropertyName("focus");
+             change->setValue(QVariant::fromValue(newValue));
+             backendEventForward.sceneChangeEvent(change);
+
+             // THEN
+            QCOMPARE(backendEventForward.focus(), newValue);
         }
     }
 
