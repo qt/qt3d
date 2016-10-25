@@ -70,6 +70,7 @@ void ObjectPicker::cleanup()
     m_isPressed = false;
     m_hoverEnabled = false;
     m_dragEnabled = false;
+    m_eventForward = Qt3DCore::QNodeId();
 }
 
 void ObjectPicker::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -78,6 +79,7 @@ void ObjectPicker::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
     const auto &data = typedChange->data;
     m_hoverEnabled = data.hoverEnabled;
     m_dragEnabled = data.dragEnabled;
+    m_eventForward = data.eventForward;
     m_isDirty = true;
 }
 
@@ -91,6 +93,9 @@ void ObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_isDirty = true;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("dragEnabled")) {
             m_dragEnabled = propertyChange->value().toBool();
+            m_isDirty = true;
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("eventForward")) {
+            m_eventForward = propertyChange->value().value<Qt3DCore::QNodeId>();
             m_isDirty = true;
         }
         markDirty(AbstractRenderer::AllDirty);
@@ -127,6 +132,16 @@ bool ObjectPicker::isHoverEnabled() const
 bool ObjectPicker::isDragEnabled() const
 {
     return m_dragEnabled;
+}
+
+bool ObjectPicker::isEventForwardingEnabled() const
+{
+    return Qt3DCore::QNodeId() != m_eventForward;
+}
+
+Qt3DCore::QNodeId ObjectPicker::eventForward() const
+{
+    return m_eventForward;
 }
 
 void ObjectPicker::onClicked(QPickEventPtr event)
