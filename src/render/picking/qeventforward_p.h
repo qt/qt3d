@@ -68,6 +68,7 @@ public:
         , m_attribute("default")
         , m_forwardMouseEvents(true)
         , m_forwardKeyboardEvents(false)
+        , m_focus(false)
     {
 
     }
@@ -79,6 +80,7 @@ public:
     QString m_attribute;
     bool m_forwardMouseEvents;
     bool m_forwardKeyboardEvents;
+    bool m_focus;
 };
 
 struct QEventForwardData
@@ -88,6 +90,7 @@ struct QEventForwardData
     QString coordinateAttribute;
     bool forwardMouseEvents;
     bool forwardKeyboardEvents;
+    bool focus;
 };
 
 } // namespace Qt3DRender

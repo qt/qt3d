@@ -99,6 +99,10 @@ namespace Qt3DRender {
     \qmlproperty string Qt3D.Render::EventForward::coordinateAttribute
     Holds the name of the coordinate attribute the mouse coordinates are calculated from.
 */
+/*!
+    \qmlproperty bool Qt3D.Render::EventForward::focus
+    Holds whether the QObjectPicker has focus.
+*/
 
 /*!
     \property QEventForward::target
@@ -120,7 +124,14 @@ namespace Qt3DRender {
     \property QEventForward::coordinateAttribute
     Holds the name of the coordinate attribute the mouse coordinates are calculated from.
 */
+/*!
+    \property QEventForward::focus
+    Holds whether the ObjectPicker has focus.
+ */
 
+/*!
+
+ */
 QEventForward::QEventForward(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QEventForwardPrivate(), parent)
 {
@@ -206,6 +217,21 @@ void QEventForward::setForwardKeyboardEvents(bool forward)
     }
 }
 
+bool QEventForward::focus() const
+{
+    Q_D(const QEventForward);
+    return d->m_focus;
+}
+
+void QEventForward::setFocus(bool focus)
+{
+    Q_D(QEventForward);
+    if (d->m_focus != focus) {
+        d->m_focus = focus;
+        emit focusChanged(focus);
+    }
+}
+
 /*!
     \internal
  */
@@ -219,6 +245,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QEventForward::createNodeCreationChange() co
     data.coordinateAttribute = d->m_attribute;
     data.forwardMouseEvents = d->m_forwardMouseEvents;
     data.forwardKeyboardEvents = d->m_forwardKeyboardEvents;
+    data.focus = d->m_focus;
     return creationChange;
 }
 

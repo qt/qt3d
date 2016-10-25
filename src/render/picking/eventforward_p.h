@@ -74,12 +74,14 @@ public:
     QMatrix4x4 coordinateTransform() const;
     bool forwardMouseEvents() const;
     bool forwardKeyboardEvents() const;
+    bool focus() const;
 
     void setTarget(QObject *target);
     void setCoordinateTransform(const QMatrix4x4 &transform);
     void setCoordinateAttribute(const QString &attribute);
     void setForwardMouseEvents(bool enabled);
     void setForwardKeyboardEvents(bool enabled);
+    void setFocus(bool focus);
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
 
@@ -94,6 +96,7 @@ private:
     QMatrix4x4 m_coordinateTransform;
     bool m_forwardMouseEvents;
     bool m_forwardKeyboardEvents;
+    bool m_focus;
 };
 
 } // Render

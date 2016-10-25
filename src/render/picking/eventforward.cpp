@@ -54,6 +54,7 @@ EventForward::EventForward()
     : m_target(nullptr)
     , m_forwardMouseEvents(false)
     , m_forwardKeyboardEvents(false)
+    , m_focus(false)
 {
 
 }
@@ -71,6 +72,7 @@ void EventForward::cleanup()
     m_coordinateTransform.setToIdentity();
     m_forwardMouseEvents = false;
     m_forwardKeyboardEvents = false;
+    m_focus = false;
 }
 
 QObject *EventForward::target() const
@@ -98,6 +100,11 @@ bool EventForward::forwardKeyboardEvents() const
     return m_forwardKeyboardEvents;
 }
 
+bool EventForward::focus() const
+{
+    return m_focus;
+}
+
 void EventForward::setTarget(QObject *target)
 {
     m_target = target;
@@ -123,6 +130,11 @@ void EventForward::setForwardKeyboardEvents(bool enabled)
     m_forwardKeyboardEvents = enabled;
 }
 
+void EventForward::setFocus(bool focus)
+{
+    m_focus = focus;
+}
+
 void EventForward::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QEventForwardData>>(change);
@@ -132,6 +144,7 @@ void EventForward::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
     setCoordinateTransform(data.coordinateTransform);
     setForwardMouseEvents(data.forwardMouseEvents);
     setForwardKeyboardEvents(data.forwardKeyboardEvents);
+    setFocus(data.focus);
 }
 
 void EventForward::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -150,6 +163,8 @@ void EventForward::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             setForwardMouseEvents(propertyChange->value().toBool());
         else if (propertyChange->propertyName() == QByteArrayLiteral("forwardKeyboardEvents"))
             setForwardKeyboardEvents(propertyChange->value().toBool());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("focus"))
+            setFocus(propertyChange->value().toBool());
     }
 
     BackendNode::sceneChangeEvent(e);

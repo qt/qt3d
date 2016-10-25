@@ -58,6 +58,7 @@ class QT3DRENDERSHARED_EXPORT QEventForward : public Qt3DCore::QNode
     Q_PROPERTY(bool forwardKeyboardEvents READ forwardKeyboardEvents WRITE setForwardKeyboardEvents NOTIFY forwardKeyboardEventsChanged)
     Q_PROPERTY(QMatrix4x4 coordinateTransform READ coordinateTransform WRITE setCoordinateTransform NOTIFY coordinateTransformChanged)
     Q_PROPERTY(QString coordinateAttribute READ coordinateAttribute WRITE setCoordinateAttribute NOTIFY coordinateAttributeChanged)
+    Q_PROPERTY(bool focus READ focus WRITE setFocus NOTIFY focusChanged)
 
 public:
     explicit QEventForward(Qt3DCore::QNode *parent = nullptr);
@@ -68,6 +69,7 @@ public:
     QString coordinateAttribute() const;
     bool forwardMouseEvents() const;
     bool forwardKeyboardEvents() const;
+    bool focus() const;
 
 public Q_SLOTS:
     void setTarget(QObject *target);
@@ -75,6 +77,7 @@ public Q_SLOTS:
     void setCoordinateAttribute(const QString &coordinateAttribute);
     void setForwardMouseEvents(bool forward);
     void setForwardKeyboardEvents(bool forward);
+    void setFocus(bool focus);
 
 Q_SIGNALS:
     void targetChanged(QObject *target);
@@ -82,6 +85,7 @@ Q_SIGNALS:
     void coordinateAttributeChanged(const QString &coordinateAttribute);
     void forwardMouseEventsChanged(bool forward);
     void forwardKeyboardEventsChanged(bool forward);
+    void focusChanged(bool focus);
 
 private:
     Q_DECLARE_PRIVATE(QEventForward)
