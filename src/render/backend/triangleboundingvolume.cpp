@@ -112,15 +112,18 @@ Qt3DCore::QNodeId TriangleBoundingVolume::id() const
     return m_id;
 }
 
-bool TriangleBoundingVolume::intersects(const QRay3D &ray, QVector3D *q) const
+bool TriangleBoundingVolume::intersects(const QRay3D &ray, QVector3D *q, QVector3D *uvw) const
 {
     float t = 0.0f;
-    QVector3D uvw;
-    const bool intersected = intersectsSegmentTriangle(ray, m_c, m_b, m_a, uvw, t);
+    QVector3D uvwr;
+    const float intersected = intersectsSegmentTriangle(ray, m_c, m_b, m_a, uvwr, t);
 
-    if (intersected && q != nullptr)
-        *q = ray.point(t * ray.distance());
-
+    if (intersected) {
+        if (q != nullptr)
+            *q = ray.point(t);
+        if (uvw != nullptr)
+            *uvw = uvwr;
+    }
     return intersected;
 }
 

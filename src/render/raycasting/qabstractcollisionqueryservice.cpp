@@ -60,9 +60,11 @@ void QAbstractCollisionQueryService::setResultHandle(QCollisionQueryResult &resu
     result.d_func()->setHandle(handle);
 }
 
-void QAbstractCollisionQueryService::addEntityHit(QCollisionQueryResult &result, Qt3DCore::QNodeId entity, const QVector3D& intersection, float distance)
+void QAbstractCollisionQueryService::addEntityHit(QCollisionQueryResult &result, Qt3DCore::QNodeId entity,
+                                                  const QVector3D& intersection, float distance,
+                                                  const QVector3D& uvw)
 {
-    result.d_func()->addEntityHit(entity, intersection, distance);
+    result.d_func()->addEntityHit(entity, intersection, distance, uvw);
 }
 
 } // Qt3DRender

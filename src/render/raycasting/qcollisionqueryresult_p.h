@@ -69,12 +69,14 @@ class QT3DRENDERSHARED_EXPORT QCollisionQueryResult
 public:
     struct Hit {
         Hit() : m_distance(-1.f), m_triangleIndex(0) { m_vertexIndex[0] = m_vertexIndex[1] = m_vertexIndex[2] = 0; }
-        Hit(Qt3DCore::QNodeId entity, const QVector3D &intersection, float distance) : m_entityId(entity), m_intersection(intersection), m_distance(distance) { }
+        Hit(Qt3DCore::QNodeId entity, const QVector3D &intersection, float distance, const QVector3D &uvw)
+            : m_entityId(entity), m_intersection(intersection), m_distance(distance), m_uvw(uvw) { }
         Qt3DCore::QNodeId m_entityId;
         QVector3D m_intersection;
         float m_distance;
         uint m_triangleIndex;
         uint m_vertexIndex[3];
+        QVector3D m_uvw;
     };
 
     QCollisionQueryResult();
@@ -122,7 +124,8 @@ public:
     explicit QCollisionQueryResultPrivate(const QCollisionQueryResultPrivate &copy);
 
     void setHandle(const QQueryHandle &handle);
-    void addEntityHit(Qt3DCore::QNodeId entity, const QVector3D& intersection, float distance);
+    void addEntityHit(Qt3DCore::QNodeId entity, const QVector3D& intersection, float distance,
+                      const QVector3D& uvw);
 
     QQueryHandle m_handle;
     QVector<QCollisionQueryResult::Hit> m_hits;
