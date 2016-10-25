@@ -78,6 +78,8 @@
 #include <Qt3DRender/qrendersurfaceselector.h>
 #include <Qt3DRender/qrendersettings.h>
 #include <Qt3DRender/qrendercapture.h>
+#include <Qt3DRender/qeventforward.h>
+
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
 #include <Qt3DRender/private/filterkey_p.h>
@@ -123,6 +125,7 @@
 #include <Qt3DRender/private/rendercapture_p.h>
 #include <Qt3DRender/private/technique_p.h>
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
+#include <Qt3DRender/private/eventforward_p.h>
 
 #include <private/qrenderpluginfactory_p.h>
 #include <private/qrenderplugin_p.h>
@@ -238,6 +241,11 @@ void QRenderAspectPrivate::registerBackendTypes()
 
     // Picking
     q->registerBackendType<QObjectPicker>(QSharedPointer<Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager> >::create(m_renderer));
+    q->registerBackendType<QEventForward>(QSharedPointer<Render::NodeFunctor<Render::EventForward, Render::EventForwardManager> >::create(m_renderer));
+
+    // Plugins
+    for (Render::QRenderPlugin *plugin : m_renderPlugins)
+        plugin->registerBackendTypes(q, m_renderer);
 }
 
 /*! \internal */
@@ -295,6 +303,18 @@ void QRenderAspectPrivate::unregisterBackendTypes()
 
     // Picking
     unregisterBackendType<QObjectPicker>();
+    unregisterBackendType<QEventForward>();
+
+    // Plugins
+    for (Render::QRenderPlugin *plugin : m_renderPlugins)
+        plugin->unregisterBackendTypes(q);
+}
+
+void QRenderAspectPrivate::registerBackendType(const QMetaObject &obj,
+                                               const QBackendNodeMapperPtr &functor)
+{
+    Q_Q(QRenderAspect);
+    q->registerBackendType(obj, functor);
 }
 
 /*!
