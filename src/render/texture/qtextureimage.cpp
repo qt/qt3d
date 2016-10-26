@@ -137,7 +137,7 @@ QTextureImage::~QTextureImage()
 }
 
 /*!
-    \return the source url from which data for the texture image will be loaded.
+    Returns the source url from which data for the texture image will be loaded.
  */
 QUrl QTextureImage::source() const
 {
@@ -146,7 +146,7 @@ QUrl QTextureImage::source() const
 }
 
 /*!
-    \return the current status.
+    Returns the current status.
  */
 QTextureImage::Status QTextureImage::status() const
 {
@@ -155,7 +155,7 @@ QTextureImage::Status QTextureImage::status() const
 }
 
 /*!
- * \return whether mirroring is enabled or not.
+ * Returns whether mirroring is enabled or not.
  */
 bool QTextureImage::isMirrored() const
 {
@@ -255,7 +255,7 @@ void QTextureImage::setStatus(Status status)
 }
 
 /*!
-    \return the Qt3DRender::QTextureImageDataGeneratorPtr functor to be used by the
+    Returns the Qt3DRender::QTextureImageDataGeneratorPtr functor to be used by the
     backend to load the texture image data into an OpenGL texture object.
  */
 QTextureImageDataGeneratorPtr QTextureImage::dataGenerator() const

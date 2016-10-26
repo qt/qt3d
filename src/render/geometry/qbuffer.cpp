@@ -289,7 +289,7 @@ void QBuffer::setData(const QByteArray &bytes)
 }
 
 /*!
- * \Update the data.
+ * Update the data.
  */
 void QBuffer::updateData(int offset, const QByteArray &bytes)
 {
