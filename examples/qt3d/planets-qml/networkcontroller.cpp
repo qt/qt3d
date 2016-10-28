@@ -94,12 +94,18 @@ void NetworkController::readyRead()
 
     QByteArray reply;
     if (list.count() == 3) {
-        reply = "Command accepted.";
+        socket->write("HTTP/1.1 200 OK\r\n");
+        reply = QStringLiteral("Command accepted: %1 %2").arg(list[1], list[2]).toUtf8();
         emit commandAccepted(list[1], list[2]);
     } else {
-        reply = "Command rejected.";
+        socket->write("HTTP/1.1 404 Not Found\r\n");
+        reply = "Command rejected";
     }
 
+    socket->write("Content-Type: text/plain\r\n");
+    socket->write(QStringLiteral("Content-Length: %1\r\n").arg(reply.size()).toUtf8());
+    socket->write("Connection: close\r\n");
+    socket->write("\r\n");
     socket->write(reply);
     socket->disconnectFromHost();
 }
