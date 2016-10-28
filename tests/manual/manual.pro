@@ -36,7 +36,8 @@ SUBDIRS += \
     additional-attributes-qml \
     dynamic-model-loader-qml \
     render-qml-to-texture \
-    render-qml-to-texture-qml
+    render-qml-to-texture-qml \
+    video-texture-qml
 
 qtHaveModule(widgets): {
     SUBDIRS += \
