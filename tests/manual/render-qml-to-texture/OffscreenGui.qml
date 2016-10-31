@@ -38,9 +38,10 @@ import QtQuick 2.0
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Styles 1.3
 
-Item {
+Rectangle {
     width: 1024
     height: 1024
+    color: "white"
 
     TextRectangle {
         id: textRect

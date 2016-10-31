@@ -49,9 +49,10 @@ QQ2.Item {
 
     Scene3D {
         id: scene
+        focus: true
         anchors.fill: parent
 
-        aspects: ["input"]
+        aspects: ["input", "logic"]
 
         Entity {
             id: sceneRoot
@@ -70,7 +71,6 @@ QQ2.Item {
 
             Scene2D {
                 id: qmlTexture
-                source: "qrc:/OffscreenGui.qml"
                 renderOnce: false
                 output: RenderTargetOutput {
                     attachmentPoint: RenderTargetOutput.Color0
@@ -88,8 +88,9 @@ QQ2.Item {
                         }
                     }
                 }
-                onLoadedChanged: {
-                    console.log("qmlTexture loaded:" + loaded)
+
+                OffscreenGui {
+
                 }
             }
 
