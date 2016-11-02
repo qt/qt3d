@@ -767,7 +767,8 @@ void GraphicsContext::setCurrentStateSet(RenderStateSet *ss)
     if (ss == m_stateSet)
         return;
 
-    ss->apply(this);
+    if (ss)
+        ss->apply(this);
     m_stateSet = ss;
 }
 

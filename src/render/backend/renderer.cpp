@@ -166,6 +166,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
     , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
     , m_shaderGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyShaders(); }, JobTypes::DirtyShaderGathering))
+    , m_ownedContext(false)
     #ifdef QT3D_JOBS_RUN_STATS
     , m_commandExecuter(new Qt3DRender::Debug::CommandExecuter(this))
     #endif
@@ -277,6 +278,7 @@ void Renderer::initialize()
             qCDebug(Backend) << "OpenGL context created with actual format" << ctx->format();
         else
             qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
+        m_ownedContext = true;
     }
 
     // Note: we don't have a surface at this point
@@ -457,14 +459,20 @@ void Renderer::doRender()
                     if (surface = rv->surface())
                         break;
                 }
+
                 SurfaceLocker surfaceLock(surface);
                 const bool surfaceIsValid = (surface && surfaceLock.isSurfaceValid());
-                if (surfaceIsValid && m_graphicsContext->beginDrawing(surface)) {
+                if (surfaceIsValid) {
+                    // Reset state for each draw if we don't have complete control of the context
+                    if (!m_ownedContext)
+                        m_graphicsContext->setCurrentStateSet(nullptr);
+                    if (m_graphicsContext->beginDrawing(surface)) {
                     // 1) Execute commands for buffer uploads, texture updates, shader loading first
                     updateGLResources();
                     // 2) Update VAO and copy data into commands to allow concurrent submission
                     prepareCommandsSubmission(renderViews);
                     preprocessingComplete = true;
+                    }
                 }
             }
             // 2) Proceed to next frame and start preparing frame n + 1

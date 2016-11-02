@@ -317,6 +317,8 @@ private:
     QVector<HShader> m_dirtyShaders;
     QVector<HTexture> m_dirtyTextures;
 
+    bool m_ownedContext;
+
 #ifdef QT3D_JOBS_RUN_STATS
     QScopedPointer<Qt3DRender::Debug::CommandExecuter> m_commandExecuter;
     friend class Qt3DRender::Debug::CommandExecuter;
