@@ -21,7 +21,10 @@ HEADERS += \
     $$PWD/qpickingsettings.h \
     $$PWD/qpickingsettings_p.h \
     $$PWD/qcomputecommand_p.h \
-    $$PWD/qcomputecommand.h
+    $$PWD/qcomputecommand.h \
+    $$PWD/qrenderplugin_p.h \
+    $$PWD/qrenderpluginfactory_p.h \
+    $$PWD/qrenderpluginfactoryif_p.h
 
 SOURCES += \
     $$PWD/qabstractfunctor.cpp \
@@ -35,5 +38,7 @@ SOURCES += \
     $$PWD/qrendersettings.cpp \
     $$PWD/qpickingsettings.cpp \
     $$PWD/qrendertargetoutput.cpp \
-    $$PWD/qcomputecommand.cpp
+    $$PWD/qcomputecommand.cpp \
+    $$PWD/qrenderpluginfactory.cpp \
+    $$PWD/qrenderpluginfactoryif.cpp
 

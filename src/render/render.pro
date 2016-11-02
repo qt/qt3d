@@ -40,5 +40,6 @@ SOURCES += \
     renderlogging.cpp
 
 MODULE_PLUGIN_TYPES = \
-    sceneparsers
+    sceneparsers \
+    renderplugins
 load(qt_module)
