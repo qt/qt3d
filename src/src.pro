@@ -66,6 +66,10 @@ src_plugins_sceneparsers.file = $$PWD/plugins/sceneparsers/sceneparsers.pro
 src_plugins_sceneparsers.target = sub-plugins-sceneparsers
 src_plugins_sceneparsers.depends = src_render src_extras
 
+src_plugins_render.file = $$PWD/plugins/renderplugins/renderplugins.pro
+src_plugins_render.target = sub-plugins-render
+src_plugins_render.depends = src_render src_extras src_quick3d_render
+
 SUBDIRS += \
     src_core \
     src_render \
@@ -83,6 +87,7 @@ SUBDIRS += \
     src_quick3d_imports_logic \
     src_quick3d_imports_extras \
     src_plugins_sceneparsers \
+    src_plugins_render \
     doc
 
 
