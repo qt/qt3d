@@ -456,7 +456,8 @@ void Renderer::doRender()
             { // Scoped to destroy surfaceLock
                 QSurface *surface = nullptr;
                 for (const Render::RenderView *rv: renderViews) {
-                    if (surface = rv->surface())
+                    surface = rv->surface();
+                    if (surface)
                         break;
                 }
 
@@ -902,7 +903,8 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
     QSurface *surface = nullptr;
     QSurface *previousSurface = nullptr;
     for (const Render::RenderView *rv: renderViews) {
-        if (previousSurface = rv->surface())
+        previousSurface = rv->surface();
+        if (previousSurface)
             break;
     }
     QSurface *lastUsedSurface = nullptr;
