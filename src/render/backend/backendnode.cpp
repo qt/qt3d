@@ -37,7 +37,10 @@
 **
 ****************************************************************************/
 
-#include "backendnode_p.h"
+#include <private/backendnode_p.h>
+#include <private/renderer_p.h>
+#include <private/resourceaccessor_p.h>
+#include <private/nodemanagers_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -70,6 +73,12 @@ void BackendNode::markDirty(AbstractRenderer::BackendNodeDirtySet changes)
 {
     Q_ASSERT(m_renderer);
     m_renderer->markDirty(changes, this);
+}
+
+QSharedPointer<RenderBackendResourceAccessor> BackendNode::resourceAccessor()
+{
+    Render::Renderer *r = static_cast<Render::Renderer *>(renderer());
+    return r->nodeManagers()->resourceAccessor();
 }
 
 } // namespace Render

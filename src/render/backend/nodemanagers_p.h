@@ -129,6 +129,8 @@ class Light;
 class ComputeCommand;
 class RenderStateNode;
 
+class ResourceAccessor;
+
 class QT3DRENDERSHARED_PRIVATE_EXPORT NodeManagers
 {
 public:
@@ -203,6 +205,8 @@ public:
     inline ComputeCommandManager *computeJobManager() const Q_DECL_NOEXCEPT { return m_computeJobManager; }
     inline RenderStateManager *renderStateManager() const Q_DECL_NOEXCEPT { return m_renderStateManager; }
 
+    QSharedPointer<ResourceAccessor> resourceAccessor();
+
 private:
     CameraManager *m_cameraManager;
     EntityManager *m_renderNodesManager;
@@ -237,6 +241,8 @@ private:
     LightManager *m_lightManager;
     ComputeCommandManager *m_computeJobManager;
     RenderStateManager *m_renderStateManager;
+
+    QSharedPointer<ResourceAccessor> m_resourceAccessor;
 };
 
 // Specializations
