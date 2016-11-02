@@ -37,12 +37,15 @@
 #ifndef QT3DRENDER_QUICK3DRENDER_QSCENE2D_H
 #define QT3DRENDER_QUICK3DRENDER_QSCENE2D_H
 
+#include <Qt3DQuickRender/qt3dquickrender_global.h>
+#include <Qt3DRender/qrendertargetoutput.h>
+
 #include <QtCore/QUrl>
 #include <QtCore/QEvent>
 
-#include <Qt3DRender/qframegraphnode.h>
-#include <Qt3DRender/qabstracttexture.h>
-#include <Qt3DQuickRender/qt3dquickrender_global.h>
+#include <Qt3DCore/qnode.h>
+
+#include <QtQuick/qquickitem.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,41 +55,46 @@ namespace Quick {
 
 class QScene2DPrivate;
 
-class QT3DQUICKRENDERSHARED_EXPORT QScene2D : public Qt3DRender::QFrameGraphNode
+class QT3DQUICKRENDERSHARED_EXPORT QScene2D : public Qt3DCore::QNode
 {
     Q_OBJECT
 
-    Q_PROPERTY(Qt3DRender::QAbstractTexture *texture READ texture WRITE setTexture NOTIFY textureChanged)
+    Q_PROPERTY(Qt3DRender::QRenderTargetOutput *output READ output WRITE setOutput NOTIFY outputChanged)
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(bool renderOnce READ renderOnce WRITE setRenderOnce NOTIFY renderOnceChanged)
     Q_PROPERTY(bool loaded READ loaded NOTIFY loadedChanged)
+    Q_PROPERTY(QQuickItem *item READ item WRITE setItem NOTIFY itemChanged)
+
+    Q_CLASSINFO("DefaultProperty", "item")
 
 public:
     explicit QScene2D(Qt3DCore::QNode *parent = nullptr);
     ~QScene2D();
 
+    Qt3DRender::QRenderTargetOutput *output() const;
     QUrl source() const;
-    QAbstractTexture *texture() const;
     bool loaded() const;
     bool renderOnce() const;
-
+    QQuickItem *item() const;
+    bool event(QEvent *event) Q_DECL_OVERRIDE;
 public Q_SLOTS:
+    void setOutput(Qt3DRender::QRenderTargetOutput *output);
     void setSource(const QUrl &url);
-    void setTexture(QAbstractTexture *texture);
     void setRenderOnce(bool once);
+    void setItem(QQuickItem *item);
 
 Q_SIGNALS:
+    void outputChanged(Qt3DRender::QRenderTargetOutput *output);
     void sourceChanged(const QUrl &url);
-    void textureChanged(QAbstractTexture *texture);
     void loadedChanged(bool loaded);
     void renderOnceChanged(bool once);
+    void itemChanged(QQuickItem *item);
 
 protected:
     Q_DECLARE_PRIVATE(QScene2D)
 
 private:
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
-    void textureDestroyed(QObject *object);
 
     void sourceLoaded();
 };

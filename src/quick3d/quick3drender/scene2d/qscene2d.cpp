@@ -36,6 +36,7 @@
 
 #include "qscene2d.h"
 #include "qscene2d_p.h"
+#include "scene2d_p.h"
 
 #include <Qt3DCore/QPropertyUpdatedChange>
 
@@ -75,8 +76,8 @@ namespace Quick {
  */
 
 /*!
-    \qmlproperty Qt3DRender::QAbstractTexture Qt3D.Render::Scene2D::texture
-    Holds the texture being rendered to.
+    \qmlproperty RenderTargetOutput Qt3D.Render::Scene2D::output
+    Holds the RenderTargetOutput, which specifies where the Scene2D is rendering to.
  */
 
 /*!
@@ -227,32 +228,25 @@ Scene2DManager::Scene2DManager(QScene2DPrivate *priv)
     , m_qmlComponent(nullptr)
     , m_rootItem(nullptr)
     , m_source(nullptr)
-    , m_texture(nullptr)
     , m_requested(false)
     , m_initialized(false)
     , m_renderSyncRequested(false)
     , m_sharedObject(new Scene2DSharedObject(this))
     , m_renderOnce(false)
     , m_backendInitialized(false)
+    , m_noSourceMode(false)
+    , m_item(nullptr)
 {
-    setFormat(QSurfaceFormat::defaultFormat());
-
     m_sharedObject->m_surface = new QOffscreenSurface;
     m_sharedObject->m_surface->setFormat(QSurfaceFormat::defaultFormat());
     m_sharedObject->m_surface->create();
 
     // Create render control
-    m_sharedObject->m_renderControl = new RenderControl(this);
+    m_sharedObject->m_renderControl = new RenderControl(nullptr);
 
     // Create window to render the QML with
     m_sharedObject->m_quickWindow = new QQuickWindow(m_sharedObject->m_renderControl);
-    m_sharedObject->m_quickWindow->setClearBeforeRendering(true);
-    m_sharedObject->m_quickWindow->setDefaultAlphaBuffer(true);
-
-    // Create a QML engine.
-    m_qmlEngine = new QQmlEngine;
-    if (!m_qmlEngine->incubationController())
-        m_qmlEngine->setIncubationController(m_sharedObject->m_quickWindow->incubationController());
+    m_sharedObject->m_quickWindow->setClearBeforeRendering(false);
 
     connect(m_sharedObject->m_renderControl, &QQuickRenderControl::renderRequested,
             this, &Scene2DManager::requestRender);
@@ -291,8 +285,14 @@ void Scene2DManager::requestRenderSync()
 
 void Scene2DManager::startIfInitialized()
 {
-    if (!m_initialized) {
-        if (m_backendInitialized && m_source.isValid()) {
+    if (!m_initialized && m_backendInitialized) {
+        if (m_source.isValid() && !m_noSourceMode) {
+            // Create a QML engine.
+            m_qmlEngine = new QQmlEngine;
+            if (!m_qmlEngine->incubationController())
+                m_qmlEngine->setIncubationController(m_sharedObject->m_quickWindow->incubationController());
+
+            // create component
             m_qmlComponent = new QQmlComponent(m_qmlEngine, m_source);
             if (m_qmlComponent->isLoading()) {
                 connect(m_qmlComponent, &QQmlComponent::statusChanged,
@@ -300,6 +300,17 @@ void Scene2DManager::startIfInitialized()
             } else {
                 run();
             }
+        } else if (m_item != nullptr) {
+            m_rootItem = m_item;
+
+            // Associate root item with the window.
+            m_rootItem->setParentItem(m_sharedObject->m_quickWindow->contentItem());
+
+            // Update window size.
+            updateSizes();
+
+            m_initialized = true;
+            m_sharedObject->setInitialized();
         }
     }
 }
@@ -364,19 +375,19 @@ void Scene2DManager::updateSizes()
         qWarning() << "QScene2D: Root item size not set.";
         return;
     }
-    resize(width, height);
     m_sharedObject->m_quickWindow->setGeometry(0, 0, width, height);
-}
-
-void Scene2DManager::setTexture(QAbstractTexture *texture)
-{
-    m_texture = texture;
-    startIfInitialized();
 }
 
 void Scene2DManager::setSource(const QUrl &url)
 {
     m_source = url;
+    startIfInitialized();
+}
+
+void Scene2DManager::setItem(QQuickItem *item)
+{
+    m_noSourceMode = true;
+    m_item = item;
     startIfInitialized();
 }
 
@@ -388,12 +399,6 @@ bool Scene2DManager::event(QEvent *e)
         // just render request, don't need to call sync in render thread
         QMutexLocker lock(&m_sharedObject->m_mutex);
         m_sharedObject->requestRender(false);
-
-        Qt3DCore::QPropertyUpdatedChangePtr change(new Qt3DCore::QPropertyUpdatedChange(m_priv->m_id));
-        change->setPropertyName("dirty");
-        change->setValue(QVariant::fromValue(true));
-        m_priv->notifyObservers(change);
-
         m_requested = false;
         return true;
     }
@@ -436,7 +441,34 @@ bool Scene2DManager::event(QEvent *e)
     default:
         break;
     }
-    return QWindow::event(e);
+    return QObject::event(e);
+}
+
+bool Scene2DManager::forwardEvent(QEvent *event)
+{
+    switch (event->type()) {
+
+    case QEvent::MouseMove:
+    case QEvent::MouseButtonDblClick:
+    case QEvent::MouseButtonPress:
+    case QEvent::MouseButtonRelease: {
+        QMouseEvent* me = static_cast<QMouseEvent *>(event);
+        QPointF pos = me->localPos();
+        pos = QPointF(pos.x() * m_rootItem->width(), pos.y() * m_rootItem->height());
+        QMouseEvent nme = QMouseEvent(me->type(), pos, pos, pos, me->button(), me->buttons(),
+                                      me->modifiers(), Qt::MouseEventSynthesizedByApplication);
+        QCoreApplication::sendEvent(m_sharedObject->m_quickWindow, &nme);
+    } break;
+
+    case QEvent::KeyPress:
+    case QEvent::KeyRelease: {
+        QCoreApplication::sendEvent(m_sharedObject->m_quickWindow, event);
+    } break;
+
+    default:
+        break;
+    }
+    return false;
 }
 
 void Scene2DManager::doRenderSync()
@@ -445,12 +477,6 @@ void Scene2DManager::doRenderSync()
 
     m_sharedObject->requestRender(true);
     m_sharedObject->m_renderControl->polishItems();
-
-    Qt3DCore::QPropertyUpdatedChangePtr change(new Qt3DCore::QPropertyUpdatedChange(m_priv->m_id));
-
-    change->setPropertyName("dirty");
-    change->setValue(QVariant::fromValue(true));
-    m_priv->notifyObservers(change);
 
     // begin waiting render thread
     m_sharedObject->waitRender();
@@ -464,7 +490,7 @@ void Scene2DManager::cleanup()
 
 
 QScene2DPrivate::QScene2DPrivate()
-    : QFrameGraphNodePrivate()
+    : Qt3DCore::QNodePrivate()
     , m_renderManager(new Scene2DManager(this))
 {
 }
@@ -476,26 +502,17 @@ QScene2DPrivate::~QScene2DPrivate()
 }
 
 
-Scene2DSharedObject *QScene2DPrivate::getSharedObject(QScene2D *rqtt)
-{
-    return rqtt->d_func()->m_renderManager->m_sharedObject.data();
-}
-
-
 /*!
-  The constructor creates an instance with the specified \a parent.
+    The constructor creates a new QScene2D instance with the specified \a parent.
  */
 QScene2D::QScene2D(Qt3DCore::QNode *parent)
-    : QFrameGraphNode(*new QScene2DPrivate, parent)
+    : Qt3DCore::QNode(*new QScene2DPrivate, parent)
 {
     Q_D(QScene2D);
     connect(d->m_renderManager, &Scene2DManager::onLoadedChanged,
             this, &QScene2D::sourceLoaded);
 }
 
-/*!
-  Destructor.
- */
 QScene2D::~QScene2D()
 {
 }
@@ -532,6 +549,23 @@ void QScene2D::setSource(const QUrl &url)
     emit sourceChanged(url);
 }
 
+QQuickItem* QScene2D::item() const
+{
+    Q_D(const QScene2D);
+    return d->m_renderManager->m_rootItem;
+}
+
+void QScene2D::setItem(QQuickItem *item)
+{
+    Q_D(QScene2D);
+    if (d->m_renderManager->m_initialized) {
+        qWarning() << "Unable to set item after initialization.";
+        return;
+    }
+    d->m_renderManager->setItem(item);
+    emit itemChanged(item);
+}
+
 /*!
     \property QScene2D::renderOnce
     \brief Property to specify if the texture will be rendered only once.
@@ -557,44 +591,27 @@ void QScene2D::setRenderOnce(bool once)
 }
 
 /*!
-    \property QScene2D::texture
-    \brief The texture being rendered to.
-
-    This property specifies the texture being rendered to. Once the texture has been
-    set and the rendering begins, the texture can not be changed anymore.
+    \property QScene2D::output
+    Holds the QRenderTargetOutput, which specifies where the QScene2D is
+    rendering to.
  */
-QAbstractTexture *QScene2D::texture() const
+Qt3DRender::QRenderTargetOutput *QScene2D::output() const
 {
     Q_D(const QScene2D);
-    return d->m_renderManager->m_texture;
+    return d->m_output;
 }
 
-void QScene2D::setTexture(QAbstractTexture *texture)
+void QScene2D::setOutput(Qt3DRender::QRenderTargetOutput *output)
 {
     Q_D(QScene2D);
-    if (d->m_renderManager->m_initialized) {
-        qWarning() << "Unable to set texture after initialization.";
-        return;
+    if (d->m_output != output) {
+        if (d->m_output)
+            d->unregisterDestructionHelper(d->m_output);
+        d->m_output = output;
+        if (output)
+            d->registerDestructionHelper(output, &QScene2D::setOutput, d->m_output);
+        emit outputChanged(output);
     }
-    if (d->m_renderManager->m_texture != texture) {
-        if (d->m_renderManager->m_texture)
-            QObject::disconnect(d->m_textureDestroyedConnection);
-        if (texture && !texture->parent())
-            texture->setParent(this);
-        d->m_renderManager->setTexture(texture);
-        if (texture)
-            d->m_textureDestroyedConnection
-                    = QObject::connect(texture, &QAbstractTexture::destroyed,
-                                       this, &QScene2D::textureDestroyed);
-        emit textureChanged(texture);
-    }
-}
-
-void QScene2D::textureDestroyed(QObject *object)
-{
-    Q_D(QScene2D);
-    Q_UNUSED(object);
-    d->m_renderManager->setTexture(nullptr);
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QScene2D::createNodeCreationChange() const
@@ -603,10 +620,16 @@ Qt3DCore::QNodeCreatedChangeBasePtr QScene2D::createNodeCreationChange() const
     auto &data = creationChange->data;
     Q_D(const QScene2D);
     data.renderOnce = d->m_renderManager->m_renderOnce;
-    data.textureId = d->m_renderManager->m_texture
-                        ? d->m_renderManager->m_texture->id() : Qt3DCore::QNodeId();
     data.sharedObject = d->m_renderManager->m_sharedObject;
+    data.output = d->m_output ? d->m_output->id() : Qt3DCore::QNodeId();
     return creationChange;
+}
+
+bool QScene2D::event(QEvent *event)
+{
+    Q_D(QScene2D);
+    d->m_renderManager->forwardEvent(event);
+    return true;
 }
 
 /*!
@@ -618,7 +641,6 @@ void QScene2D::sourceLoaded()
 }
 
 } // namespace Quick
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

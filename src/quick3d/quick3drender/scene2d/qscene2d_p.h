@@ -48,12 +48,6 @@
 // We mean it.
 //
 
-#include <private/qobject_p.h>
-#include <private/qframegraphnode_p.h>
-
-#include <Qt3DQuickRender/qscene2d.h>
-#include <Qt3DRender/QAbstractTexture>
-
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlComponent>
 #include <QtQuick/QQuickItem>
@@ -63,6 +57,12 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QWaitCondition>
 #include <QtCore/QThread>
+
+#include <Qt3DQuickRender/qscene2d.h>
+#include <Qt3DRender/qabstracttexture.h>
+
+#include <private/qobject_p.h>
+#include <private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -141,7 +141,7 @@ private:
 
 typedef QSharedPointer<Scene2DSharedObject> Scene2DSharedObjectPtr;
 
-class Q_AUTOTEST_EXPORT QScene2DPrivate : public QFrameGraphNodePrivate
+class Q_AUTOTEST_EXPORT QScene2DPrivate : public Qt3DCore::QNodePrivate
 {
 public:
     Q_DECLARE_PUBLIC(QScene2D)
@@ -149,21 +149,19 @@ public:
     QScene2DPrivate();
     ~QScene2DPrivate();
 
-    static Scene2DSharedObject *getSharedObject(QScene2D *rqtt);
-
     Scene2DManager *m_renderManager;
     QMetaObject::Connection m_textureDestroyedConnection;
+    Qt3DRender::QRenderTargetOutput *m_output;
 };
 
 struct QScene2DData
 {
     bool renderOnce;
-    Qt3DCore::QNodeId textureId;
     Scene2DSharedObjectPtr sharedObject;
+    Qt3DCore::QNodeId output;
 };
 
-
-class Scene2DManager : public QWindow
+class Scene2DManager : public QObject
 {
     Q_OBJECT
 public:
@@ -173,11 +171,11 @@ public:
     QQmlEngine *m_qmlEngine;
     QQmlComponent *m_qmlComponent;
     QQuickItem *m_rootItem;
+    QQuickItem *m_item;
 
     QScene2DPrivate *m_priv;
     QSharedPointer<Scene2DSharedObject> m_sharedObject;
 
-    QAbstractTexture *m_texture;
     QUrl m_source;
     Qt3DCore::QNodeId m_id;
 
@@ -186,6 +184,7 @@ public:
     bool m_renderSyncRequested;
     bool m_renderOnce;
     bool m_backendInitialized;
+    bool m_noSourceMode;
 
     void requestRender();
     void requestRenderSync();
@@ -195,10 +194,11 @@ public:
     void run();
     void updateSizes();
 
-    void setTexture(QAbstractTexture *texture);
     void setSource(const QUrl &url);
+    void setItem(QQuickItem *item);
 
     bool event(QEvent *e) Q_DECL_OVERRIDE;
+    bool forwardEvent(QEvent *event);
 
     Q_SIGNAL void onLoadedChanged();
 
@@ -206,9 +206,10 @@ public:
 };
 
 } // namespace Quick
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3DRender::Quick::Scene2DSharedObjectPtr)
 
 #endif // QT3DRENDER_QUICK3DRENDER_QSCENE2D_P_H

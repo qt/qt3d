@@ -50,11 +50,13 @@
 
 #include <Qt3DCore/qnodeid.h>
 
-#include <private/framegraphnode_p.h>
-#include <private/qscene2d_p.h>
-
 #include <QtCore/QCoreApplication>
 #include <QtCore/QSemaphore>
+
+#include <private/qscene2d_p.h>
+#include <private/qrendertargetoutput_p.h>
+#include <private/backendnode_p.h>
+#include <private/attachmentpack_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -79,30 +81,37 @@ private:
     Scene2D *m_node;
 };
 
-class Q_AUTOTEST_EXPORT Scene2D : public FrameGraphNode
+class Q_AUTOTEST_EXPORT Scene2D : public Qt3DRender::Render::BackendNode
 {
 public:
     Scene2D();
     ~Scene2D();
 
-    void attach();
     void render();
     void initializeRender();
     void setSharedObject(Qt3DRender::Quick::Scene2DSharedObjectPtr sharedObject);
     void cleanup();
-    void setTexture(Qt3DCore::QNodeId textureId);
-    void checkInitialized();
+    void setOutput(Qt3DCore::QNodeId outputId);
+    void initializeSharedObject();
 
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
+    bool updateFbo(QOpenGLTexture *texture);
+    void syncRenderControl();
 
     QOpenGLContext *m_context;
-    GraphicsContext *m_graphicsContext;
+    QOpenGLContext *m_shareContext;
     QThread *m_renderThread;
-    Qt3DCore::QNodeId m_textureId;
+    Qt3DCore::QNodeId m_outputId;
     QSharedPointer<Qt3DRender::Quick::Scene2DSharedObject> m_sharedObject;
-    AttachmentPack m_attachments;
-    Texture *m_texture;
+    Qt3DCore::QNodeId m_peerId;
+    QSharedPointer<RenderBackendResourceAccessor> m_accessor;
+    Qt3DRender::Render::Attachment m_attachmentData;
+
+    GLuint m_fbo;
+    GLuint m_rbo;
+    QSize m_textureSize;
 
     bool m_initialized;
     bool m_renderInitialized;
