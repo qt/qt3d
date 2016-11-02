@@ -56,6 +56,7 @@ class TestAspect;
 
 namespace Render {
 class Renderer;
+class QRenderPlugin;
 }
 
 class QRenderAspectPrivate;
@@ -92,6 +93,7 @@ private:
     void onEngineStartup() Q_DECL_OVERRIDE;
 
     friend class Render::Renderer;
+    friend class Render::QRenderPlugin;
 #if defined(QT_BUILD_INTERNAL)
     friend class QRenderAspectTester;
     friend class TestAspect;

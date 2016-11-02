@@ -76,6 +76,9 @@ protected:
     template<class Frontend>
     void registerBackendType(const QBackendNodeMapperPtr &functor);
     void registerBackendType(const QMetaObject &, const QBackendNodeMapperPtr &functor);
+    template<class Frontend>
+    void unregisterBackendType();
+    void unregisterBackendType(const QMetaObject &);
 
 private:
     virtual QVariant executeCommand(const QStringList &args);
@@ -97,6 +100,12 @@ template<class Frontend>
 void QAbstractAspect::registerBackendType(const QBackendNodeMapperPtr &functor)
 {
     registerBackendType(Frontend::staticMetaObject, functor);
+}
+
+template<class Frontend>
+void QAbstractAspect::unregisterBackendType()
+{
+    unregisterBackendType(Frontend::staticMetaObject);
 }
 
 } // namespace Qt3DCore

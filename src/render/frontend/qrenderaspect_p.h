@@ -62,9 +62,11 @@ class QSurface;
 namespace Qt3DRender {
 
 class QSceneImporter;
+
 namespace Render {
 class AbstractRenderer;
 class NodeManagers;
+class QRenderPlugin;
 }
 
 namespace Render {
@@ -82,9 +84,11 @@ public:
     void registerBackendTypes();
     void unregisterBackendTypes();
     void loadSceneParsers();
+    void loadRenderPlugins();
     void renderInitialize(QOpenGLContext *context);
     void renderSynchronous();
     void renderShutdown();
+    void registerBackendType(const QMetaObject &, const Qt3DCore::QBackendNodeMapperPtr &functor);
     QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
 
     Render::NodeManagers *m_nodeManagers;
@@ -92,6 +96,7 @@ public:
 
     bool m_initialized;
     QList<QSceneImporter *> m_sceneImporter;
+    QVector<Render::QRenderPlugin *> m_renderPlugins;
     QRenderAspect::RenderType m_renderType;
     Render::OffscreenSurfaceHelper *m_offscreenHelper;
 };

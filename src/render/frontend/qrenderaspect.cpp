@@ -124,6 +124,9 @@
 #include <Qt3DRender/private/technique_p.h>
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
 
+#include <private/qrenderpluginfactory_p.h>
+#include <private/qrenderplugin_p.h>
+
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 
@@ -158,8 +161,8 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_renderType(type)
     , m_offscreenHelper(nullptr)
 {
-    // Load the scene parsers
     loadSceneParsers();
+    loadRenderPlugins();
 }
 
 /*! \internal */
@@ -240,6 +243,7 @@ void QRenderAspectPrivate::registerBackendTypes()
 /*! \internal */
 void QRenderAspectPrivate::unregisterBackendTypes()
 {
+    Q_Q(QRenderAspect);
     unregisterBackendType<Qt3DCore::QEntity>();
     unregisterBackendType<Qt3DCore::QTransform>();
 
@@ -522,6 +526,16 @@ void QRenderAspectPrivate::loadSceneParsers()
         QSceneImporter *sceneIOHandler = QSceneImportFactory::create(key, QStringList());
         if (sceneIOHandler != nullptr)
             m_sceneImporter.append(sceneIOHandler);
+    }
+}
+
+void QRenderAspectPrivate::loadRenderPlugins()
+{
+    const QStringList keys = Render::QRenderPluginFactory::keys();
+    for (const QString &key : keys) {
+        Render::QRenderPlugin *plugin = Render::QRenderPluginFactory::create(key, QStringList());
+        if (plugin != nullptr)
+            m_renderPlugins.append(plugin);
     }
 }
 
