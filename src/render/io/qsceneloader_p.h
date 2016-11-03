@@ -68,9 +68,12 @@ public:
 
     Q_DECLARE_PUBLIC(QSceneLoader)
 
+    void populateEntityMap(Qt3DCore::QEntity *parentEntity);
+
     QUrl m_source;
     QSceneLoader::Status m_status;
     Qt3DCore::QEntity *m_subTreeRoot;
+    QHash<QString, Qt3DCore::QEntity *> m_entityMap;
 };
 
 struct QSceneLoaderData

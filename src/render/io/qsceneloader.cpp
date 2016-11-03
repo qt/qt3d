@@ -40,9 +40,17 @@
 #include "qsceneloader.h"
 #include "qsceneloader_p.h"
 #include <Qt3DCore/private/qscene_p.h>
+
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DCore/qtransform.h>
+#include <Qt3DRender/qgeometryrenderer.h>
+#include <Qt3DRender/qmaterial.h>
+#include <Qt3DRender/qabstractlight.h>
+#include <Qt3DRender/qcameralens.h>
+
+#include <private/renderlogging_p.h>
+
 #include <QThread>
 
 QT_BEGIN_NAMESPACE
@@ -127,6 +135,18 @@ namespace Qt3DRender {
  */
 
 /*!
+    \enum QSceneLoader::ComponentType
+
+    This enum specifies a component type.
+    \value UnknownComponent Unknown component type
+    \value GeometryRendererComponent Qt3DRender::QGeometryRenderer component
+    \value TransformComponent Qt3DCore::QTransform component
+    \value MaterialComponent Qt3DRender::QMaterial component
+    \value LightComponent Qt3DRender::QAbstractLight component
+    \value CameraLensComponent Qt3DRender::QCameraLens component
+ */
+
+/*!
     \qmlproperty url SceneLoader::source
 
     Holds the url to the source to be loaded.
@@ -174,6 +194,19 @@ QSceneLoaderPrivate::QSceneLoaderPrivate()
     m_shareable = false;
 }
 
+void QSceneLoaderPrivate::populateEntityMap(QEntity *parentEntity)
+{
+    // Topmost parent entity is not considered part of the scene as that is typically
+    // an unnamed entity inserted by importer.
+    for (auto childNode : parentEntity->childNodes()) {
+        auto childEntity = qobject_cast<QEntity *>(childNode);
+        if (childEntity) {
+            m_entityMap.insert(childEntity->objectName(), childEntity);
+            populateEntityMap(childEntity);
+        }
+    }
+}
+
 /*!
     The constructor creates an instance with the specified \a parent.
  */
@@ -217,6 +250,7 @@ void QSceneLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
                 QEntity *parentEntity = qobject_cast<QEntity *>(d->m_scene->lookupNode(parentEntityId));
                 subTreeRoot->setParent(parentEntity);
                 d->m_subTreeRoot = subTreeRoot;
+                d->populateEntityMap(d->m_subTreeRoot);
             }
         } else if (e->propertyName() == QByteArrayLiteral("status")) {
             setStatus(e->value().value<QSceneLoader::Status>());
@@ -234,6 +268,7 @@ void QSceneLoader::setSource(const QUrl &arg)
 {
     Q_D(QSceneLoader);
     if (d->m_source != arg) {
+        d->m_entityMap.clear();
         d->m_source = arg;
         emit sourceChanged(arg);
     }
@@ -243,6 +278,93 @@ QSceneLoader::Status QSceneLoader::status() const
 {
     Q_D(const QSceneLoader);
     return d->m_status;
+}
+
+/*!
+    \qmlmethod Entity SceneLoader::entity(string entityName)
+    Returns a loaded entity with the \c objectName matching the \a entityName parameter.
+    If multiple entities have the same name, it is undefined which one of them is returned, but it
+    will always be the same one.
+*/
+/*!
+    Returns a loaded entity with an \c objectName matching the \a entityName parameter.
+    If multiple entities have the same name, it is undefined which one of them is returned, but it
+    will always be the same one.
+*/
+QEntity *QSceneLoader::entity(const QString &entityName) const
+{
+    Q_D(const QSceneLoader);
+    return d->m_entityMap.value(entityName);
+}
+
+/*!
+    \qmlmethod list SceneLoader::entityNames()
+    Returns a list of the \c objectNames of the loaded entities.
+*/
+/*!
+    Returns a list of the \c objectNames of the loaded entities.
+*/
+QStringList QSceneLoader::entityNames() const
+{
+    Q_D(const QSceneLoader);
+    return d->m_entityMap.keys();
+}
+
+/*!
+    \qmlmethod Entity SceneLoader::component(string entityName, enumeration componentType)
+    Returns a component matching \a componentType of a loaded entity with an \a objectName matching
+    the \a entityName.
+    If the entity has multiple matching components, the first match in the component list of
+    the entity is returned.
+    If there is no match, an undefined item is returned.
+    \list
+    \li SceneLoader.UnknownComponent Unknown component type
+    \li SceneLoader.GeometryRendererComponent Qt3DRender::QGeometryRenderer component
+    \li SceneLoader.TransformComponent Qt3DCore::QTransform component
+    \li SceneLoader.MaterialComponent Qt3DRender::QMaterial component
+    \li SceneLoader.LightComponent Qt3DRender::QAbstractLight component
+    \li SceneLoader.CameraLensComponent Qt3DRender::QCameraLens component
+    \endlist
+    \sa Qt3DRender::QSceneLoader::ComponentType
+*/
+/*!
+    Returns a component matching \a componentType of a loaded entity with an \a objectName matching
+    the \a entityName.
+    If the entity has multiple matching components, the first match in the component list of
+    the entity is returned.
+    If there is no match, a null pointer is returned.
+*/
+QComponent *QSceneLoader::component(const QString &entityName,
+                                    QSceneLoader::ComponentType componentType) const
+{
+    QEntity *e = entity(entityName);
+    for (auto component : e->components()) {
+        switch (componentType) {
+        case GeometryRendererComponent:
+            if (qobject_cast<Qt3DRender::QGeometryRenderer *>(component))
+                return component;
+            break;
+        case TransformComponent:
+            if (qobject_cast<Qt3DCore::QTransform *>(component))
+                return component;
+            break;
+        case MaterialComponent:
+            if (qobject_cast<Qt3DRender::QMaterial *>(component))
+                return component;
+            break;
+        case LightComponent:
+            if (qobject_cast<Qt3DRender::QAbstractLight *>(component))
+                return component;
+            break;
+        case CameraLensComponent:
+            if (qobject_cast<Qt3DRender::QCameraLens *>(component))
+                return component;
+            break;
+        default:
+            break;
+        }
+    }
+    return nullptr;
 }
 
 /*! \internal */
