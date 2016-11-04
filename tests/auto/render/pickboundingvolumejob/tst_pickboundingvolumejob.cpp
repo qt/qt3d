@@ -153,6 +153,62 @@ void initializePickBoundingVolumeJob(Qt3DRender::Render::PickBoundingVolumeJob *
 class tst_PickBoundingVolumeJob : public QObject
 {
     Q_OBJECT
+private:
+    void generateAllPickingSettingsCombinations()
+    {
+        QTest::addColumn<Qt3DRender::QPickingSettings::PickMethod>("pickMethod");
+        QTest::addColumn<Qt3DRender::QPickingSettings::PickResultMode>("pickResultMode");
+        QTest::addColumn<Qt3DRender::QPickingSettings::FaceOrientationPickingMode>("faceOrientationPickingMode");
+
+        QTest::newRow("volume, nearest, front") << Qt3DRender::QPickingSettings::BoundingVolumePicking
+                                                << Qt3DRender::QPickingSettings::NearestPick
+                                                << Qt3DRender::QPickingSettings::FrontFace;
+
+        QTest::newRow("volume, nearest, back") << Qt3DRender::QPickingSettings::BoundingVolumePicking
+                                               << Qt3DRender::QPickingSettings::NearestPick
+                                               << Qt3DRender::QPickingSettings::BackFace;
+
+        QTest::newRow("volume, nearest, front+back") << Qt3DRender::QPickingSettings::BoundingVolumePicking
+                                                     << Qt3DRender::QPickingSettings::NearestPick
+                                                     << Qt3DRender::QPickingSettings::FrontAndBackFace;
+
+        QTest::newRow("volume, all, front") << Qt3DRender::QPickingSettings::BoundingVolumePicking
+                                            << Qt3DRender::QPickingSettings::AllPicks
+                                            << Qt3DRender::QPickingSettings::FrontFace;
+
+        QTest::newRow("volume, all, back") << Qt3DRender::QPickingSettings::BoundingVolumePicking
+                                           << Qt3DRender::QPickingSettings::AllPicks
+                                           << Qt3DRender::QPickingSettings::BackFace;
+
+        QTest::newRow("volume, all, front+back") << Qt3DRender::QPickingSettings::BoundingVolumePicking
+                                                 << Qt3DRender::QPickingSettings::AllPicks
+                                                 << Qt3DRender::QPickingSettings::FrontAndBackFace;
+
+        QTest::newRow("triangle, nearest, front") << Qt3DRender::QPickingSettings::TrianglePicking
+                                                  << Qt3DRender::QPickingSettings::NearestPick
+                                                  << Qt3DRender::QPickingSettings::FrontFace;
+
+        QTest::newRow("triangle, nearest, back") << Qt3DRender::QPickingSettings::TrianglePicking
+                                                 << Qt3DRender::QPickingSettings::NearestPick
+                                                 << Qt3DRender::QPickingSettings::BackFace;
+
+        QTest::newRow("triangle, nearest, front+back") << Qt3DRender::QPickingSettings::TrianglePicking
+                                                       << Qt3DRender::QPickingSettings::NearestPick
+                                                       << Qt3DRender::QPickingSettings::FrontAndBackFace;
+
+        QTest::newRow("triangle, all, front") << Qt3DRender::QPickingSettings::TrianglePicking
+                                              << Qt3DRender::QPickingSettings::AllPicks
+                                              << Qt3DRender::QPickingSettings::FrontFace;
+
+        QTest::newRow("triangle, all, back") << Qt3DRender::QPickingSettings::TrianglePicking
+                                             << Qt3DRender::QPickingSettings::AllPicks
+                                             << Qt3DRender::QPickingSettings::BackFace;
+
+        QTest::newRow("triangle, all, front+back") << Qt3DRender::QPickingSettings::TrianglePicking
+                                                   << Qt3DRender::QPickingSettings::AllPicks
+                                                   << Qt3DRender::QPickingSettings::FrontAndBackFace;
+    }
+
 private Q_SLOTS:
 
     void viewportCameraAreaGather()
@@ -213,12 +269,29 @@ private Q_SLOTS:
             QCOMPARE(frontendEntities.at(i)->id(), entities.at(i)->peerId());
     }
 
+    void checkCurrentPickerChange_data()
+    {
+        generateAllPickingSettingsCombinations();
+    }
+
     void checkCurrentPickerChange()
     {
         // GIVEN
         QmlSceneReader sceneReader(QUrl("qrc:/testscene_dragenabled.qml"));
         QScopedPointer<Qt3DCore::QNode> root(qobject_cast<Qt3DCore::QNode *>(sceneReader.root()));
         QVERIFY(root);
+
+        QList<Qt3DRender::QRenderSettings *> renderSettings = root->findChildren<Qt3DRender::QRenderSettings *>();
+        QCOMPARE(renderSettings.size(), 1);
+        Qt3DRender::QPickingSettings *settings = renderSettings.first()->pickingSettings();
+
+        QFETCH(Qt3DRender::QPickingSettings::PickMethod, pickMethod);
+        QFETCH(Qt3DRender::QPickingSettings::PickResultMode, pickResultMode);
+        QFETCH(Qt3DRender::QPickingSettings::FaceOrientationPickingMode, faceOrientationPickingMode);
+        settings->setPickMethod(pickMethod);
+        settings->setPickResultMode(pickResultMode);
+        settings->setFaceOrientationPickingMode(faceOrientationPickingMode);
+
         QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(root.data()));
 
         // Runs Required jobs
@@ -238,6 +311,10 @@ private Q_SLOTS:
             picker1 = pickers.last();
             picker2 = pickers.first();
         }
+
+        QCOMPARE(test->renderSettings()->pickMethod(), pickMethod);
+        QCOMPARE(test->renderSettings()->pickResultMode(), pickResultMode);
+        QCOMPARE(test->renderSettings()->faceOrientationPickingMode(), faceOrientationPickingMode);
 
         // WHEN
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
@@ -293,12 +370,29 @@ private Q_SLOTS:
         QVERIFY(pickBVJob.currentPicker().isNull());
     }
 
+    void checkEarlyReturnWhenNoMouseEvents_data()
+    {
+        generateAllPickingSettingsCombinations();
+    }
+
     void checkEarlyReturnWhenNoMouseEvents()
     {
         // GIVEN
         QmlSceneReader sceneReader(QUrl("qrc:/testscene_dragenabled.qml"));
         QScopedPointer<Qt3DCore::QNode> root(qobject_cast<Qt3DCore::QNode *>(sceneReader.root()));
         QVERIFY(root);
+
+        QList<Qt3DRender::QRenderSettings *> renderSettings = root->findChildren<Qt3DRender::QRenderSettings *>();
+        QCOMPARE(renderSettings.size(), 1);
+        Qt3DRender::QPickingSettings *settings = renderSettings.first()->pickingSettings();
+
+        QFETCH(Qt3DRender::QPickingSettings::PickMethod, pickMethod);
+        QFETCH(Qt3DRender::QPickingSettings::PickResultMode, pickResultMode);
+        QFETCH(Qt3DRender::QPickingSettings::FaceOrientationPickingMode, faceOrientationPickingMode);
+        settings->setPickMethod(pickMethod);
+        settings->setPickResultMode(pickResultMode);
+        settings->setFaceOrientationPickingMode(faceOrientationPickingMode);
+
         QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(root.data()));
 
         // Runs Required jobs
@@ -307,6 +401,10 @@ private Q_SLOTS:
         // THEN
         QList<Qt3DRender::QObjectPicker *> pickers = root->findChildren<Qt3DRender::QObjectPicker *>();
         QCOMPARE(pickers.size(), 2);
+
+        QCOMPARE(test->renderSettings()->pickMethod(), pickMethod);
+        QCOMPARE(test->renderSettings()->pickResultMode(), pickResultMode);
+        QCOMPARE(test->renderSettings()->faceOrientationPickingMode(), faceOrientationPickingMode);
 
         // WHEN
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
@@ -331,12 +429,29 @@ private Q_SLOTS:
         QVERIFY(!earlyReturn);
     }
 
+    void checkEarlyReturnWhenMoveEventsAndNoCurrentPickers_data()
+    {
+        generateAllPickingSettingsCombinations();
+    }
+
     void checkEarlyReturnWhenMoveEventsAndNoCurrentPickers()
     {
         // GIVEN
         QmlSceneReader sceneReader(QUrl("qrc:/testscene_dragenabled.qml"));
         QScopedPointer<Qt3DCore::QNode> root(qobject_cast<Qt3DCore::QNode *>(sceneReader.root()));
         QVERIFY(root);
+
+        QList<Qt3DRender::QRenderSettings *> renderSettings = root->findChildren<Qt3DRender::QRenderSettings *>();
+        QCOMPARE(renderSettings.size(), 1);
+        Qt3DRender::QPickingSettings *settings = renderSettings.first()->pickingSettings();
+
+        QFETCH(Qt3DRender::QPickingSettings::PickMethod, pickMethod);
+        QFETCH(Qt3DRender::QPickingSettings::PickResultMode, pickResultMode);
+        QFETCH(Qt3DRender::QPickingSettings::FaceOrientationPickingMode, faceOrientationPickingMode);
+        settings->setPickMethod(pickMethod);
+        settings->setPickResultMode(pickResultMode);
+        settings->setFaceOrientationPickingMode(faceOrientationPickingMode);
+
         QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(root.data()));
 
         // Runs Required jobs
@@ -345,6 +460,10 @@ private Q_SLOTS:
         // THEN
         QList<Qt3DRender::QObjectPicker *> pickers = root->findChildren<Qt3DRender::QObjectPicker *>();
         QCOMPARE(pickers.size(), 2);
+
+        QCOMPARE(test->renderSettings()->pickMethod(), pickMethod);
+        QCOMPARE(test->renderSettings()->pickResultMode(), pickResultMode);
+        QCOMPARE(test->renderSettings()->faceOrientationPickingMode(), faceOrientationPickingMode);
 
         // WHEN
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
@@ -362,6 +481,11 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(earlyReturn);
+    }
+
+    void checkEarlyReturnWhenMoveEventsAndDragDisabledPickers_data()
+    {
+        generateAllPickingSettingsCombinations();
     }
 
     void checkEarlyReturnWhenMoveEventsAndDragDisabledPickers()
@@ -370,6 +494,18 @@ private Q_SLOTS:
         QmlSceneReader sceneReader(QUrl("qrc:/testscene_dragdisabled.qml"));
         QScopedPointer<Qt3DCore::QNode> root(qobject_cast<Qt3DCore::QNode *>(sceneReader.root()));
         QVERIFY(root);
+
+        QList<Qt3DRender::QRenderSettings *> renderSettings = root->findChildren<Qt3DRender::QRenderSettings *>();
+        QCOMPARE(renderSettings.size(), 1);
+        Qt3DRender::QPickingSettings *settings = renderSettings.first()->pickingSettings();
+
+        QFETCH(Qt3DRender::QPickingSettings::PickMethod, pickMethod);
+        QFETCH(Qt3DRender::QPickingSettings::PickResultMode, pickResultMode);
+        QFETCH(Qt3DRender::QPickingSettings::FaceOrientationPickingMode, faceOrientationPickingMode);
+        settings->setPickMethod(pickMethod);
+        settings->setPickResultMode(pickResultMode);
+        settings->setFaceOrientationPickingMode(faceOrientationPickingMode);
+
         QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(root.data()));
 
         // Runs Required jobs
@@ -378,6 +514,10 @@ private Q_SLOTS:
         // THEN
         QList<Qt3DRender::QObjectPicker *> pickers = root->findChildren<Qt3DRender::QObjectPicker *>();
         QCOMPARE(pickers.size(), 2);
+
+        QCOMPARE(test->renderSettings()->pickMethod(), pickMethod);
+        QCOMPARE(test->renderSettings()->pickResultMode(), pickResultMode);
+        QCOMPARE(test->renderSettings()->faceOrientationPickingMode(), faceOrientationPickingMode);
 
         // WHEN
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
@@ -402,12 +542,29 @@ private Q_SLOTS:
         QVERIFY(earlyReturn);
     }
 
+    void checkNoEarlyReturnWhenMoveEventsAndDragEnabledPickers_data()
+    {
+        generateAllPickingSettingsCombinations();
+    }
+
     void checkNoEarlyReturnWhenMoveEventsAndDragEnabledPickers()
     {
         // GIVEN
         QmlSceneReader sceneReader(QUrl("qrc:/testscene_dragenabled.qml"));
         QScopedPointer<Qt3DCore::QNode> root(qobject_cast<Qt3DCore::QNode *>(sceneReader.root()));
         QVERIFY(root);
+
+        QList<Qt3DRender::QRenderSettings *> renderSettings = root->findChildren<Qt3DRender::QRenderSettings *>();
+        QCOMPARE(renderSettings.size(), 1);
+        Qt3DRender::QPickingSettings *settings = renderSettings.first()->pickingSettings();
+
+        QFETCH(Qt3DRender::QPickingSettings::PickMethod, pickMethod);
+        QFETCH(Qt3DRender::QPickingSettings::PickResultMode, pickResultMode);
+        QFETCH(Qt3DRender::QPickingSettings::FaceOrientationPickingMode, faceOrientationPickingMode);
+        settings->setPickMethod(pickMethod);
+        settings->setPickResultMode(pickResultMode);
+        settings->setFaceOrientationPickingMode(faceOrientationPickingMode);
+
         QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(root.data()));
 
         // Runs Required jobs
@@ -416,6 +573,10 @@ private Q_SLOTS:
         // THEN
         QList<Qt3DRender::QObjectPicker *> pickers = root->findChildren<Qt3DRender::QObjectPicker *>();
         QCOMPARE(pickers.size(), 2);
+
+        QCOMPARE(test->renderSettings()->pickMethod(), pickMethod);
+        QCOMPARE(test->renderSettings()->pickResultMode(), pickResultMode);
+        QCOMPARE(test->renderSettings()->faceOrientationPickingMode(), faceOrientationPickingMode);
 
         // WHEN
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
@@ -440,12 +601,29 @@ private Q_SLOTS:
         QVERIFY(!earlyReturn);
     }
 
+    void checkEarlyReturnWhenNoProperFrameGraph_data()
+    {
+        generateAllPickingSettingsCombinations();
+    }
+
     void checkEarlyReturnWhenNoProperFrameGraph()
     {
         // GIVEN
         QmlSceneReader sceneReader(QUrl("qrc:/testscene_improperframegraph.qml"));
         QScopedPointer<Qt3DCore::QNode> root(qobject_cast<Qt3DCore::QNode *>(sceneReader.root()));
         QVERIFY(root);
+
+        QList<Qt3DRender::QRenderSettings *> renderSettings = root->findChildren<Qt3DRender::QRenderSettings *>();
+        QCOMPARE(renderSettings.size(), 1);
+        Qt3DRender::QPickingSettings *settings = renderSettings.first()->pickingSettings();
+
+        QFETCH(Qt3DRender::QPickingSettings::PickMethod, pickMethod);
+        QFETCH(Qt3DRender::QPickingSettings::PickResultMode, pickResultMode);
+        QFETCH(Qt3DRender::QPickingSettings::FaceOrientationPickingMode, faceOrientationPickingMode);
+        settings->setPickMethod(pickMethod);
+        settings->setPickResultMode(pickResultMode);
+        settings->setFaceOrientationPickingMode(faceOrientationPickingMode);
+
         QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(root.data()));
 
         // Runs Required jobs
@@ -454,6 +632,10 @@ private Q_SLOTS:
         // THEN
         QList<Qt3DRender::QObjectPicker *> pickers = root->findChildren<Qt3DRender::QObjectPicker *>();
         QCOMPARE(pickers.size(), 2);
+
+        QCOMPARE(test->renderSettings()->pickMethod(), pickMethod);
+        QCOMPARE(test->renderSettings()->pickResultMode(), pickResultMode);
+        QCOMPARE(test->renderSettings()->faceOrientationPickingMode(), faceOrientationPickingMode);
 
         // WHEN
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
@@ -469,12 +651,29 @@ private Q_SLOTS:
         QVERIFY(earlyReturn);
     }
 
+    void checkDispatchMouseEvent_data()
+    {
+        generateAllPickingSettingsCombinations();
+    }
+
     void checkDispatchMouseEvent()
     {
         // GIVEN
         QmlSceneReader sceneReader(QUrl("qrc:/testscene_dragenabled.qml"));
         QScopedPointer<Qt3DCore::QNode> root(qobject_cast<Qt3DCore::QNode *>(sceneReader.root()));
         QVERIFY(root);
+
+        QList<Qt3DRender::QRenderSettings *> renderSettings = root->findChildren<Qt3DRender::QRenderSettings *>();
+        QCOMPARE(renderSettings.size(), 1);
+        Qt3DRender::QPickingSettings *settings = renderSettings.first()->pickingSettings();
+
+        QFETCH(Qt3DRender::QPickingSettings::PickMethod, pickMethod);
+        QFETCH(Qt3DRender::QPickingSettings::PickResultMode, pickResultMode);
+        QFETCH(Qt3DRender::QPickingSettings::FaceOrientationPickingMode, faceOrientationPickingMode);
+        settings->setPickMethod(pickMethod);
+        settings->setPickResultMode(pickResultMode);
+        settings->setFaceOrientationPickingMode(faceOrientationPickingMode);
+
         QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(root.data()));
         TestArbiter arbiter;
 
@@ -494,6 +693,10 @@ private Q_SLOTS:
         Qt3DRender::Render::ObjectPicker *backendPicker1 = test->nodeManagers()->objectPickerManager()->lookupResource(picker1->id());
         QVERIFY(backendPicker1);
         Qt3DCore::QBackendNodePrivate::get(backendPicker1)->setArbiter(&arbiter);
+
+        QCOMPARE(test->renderSettings()->pickMethod(), pickMethod);
+        QCOMPARE(test->renderSettings()->pickResultMode(), pickResultMode);
+        QCOMPARE(test->renderSettings()->faceOrientationPickingMode(), faceOrientationPickingMode);
 
         // WHEN -> Pressed on object
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
@@ -564,12 +767,29 @@ private Q_SLOTS:
         arbiter.events.clear();
     }
 
+    void checkDispatchHoverEvent_data()
+    {
+        generateAllPickingSettingsCombinations();
+    }
+
     void checkDispatchHoverEvent()
     {
         // GIVEN
         QmlSceneReader sceneReader(QUrl("qrc:/testscene_dragenabledhoverenabled.qml"));
         QScopedPointer<Qt3DCore::QNode> root(qobject_cast<Qt3DCore::QNode *>(sceneReader.root()));
         QVERIFY(root);
+
+        QList<Qt3DRender::QRenderSettings *> renderSettings = root->findChildren<Qt3DRender::QRenderSettings *>();
+        QCOMPARE(renderSettings.size(), 1);
+        Qt3DRender::QPickingSettings *settings = renderSettings.first()->pickingSettings();
+
+        QFETCH(Qt3DRender::QPickingSettings::PickMethod, pickMethod);
+        QFETCH(Qt3DRender::QPickingSettings::PickResultMode, pickResultMode);
+        QFETCH(Qt3DRender::QPickingSettings::FaceOrientationPickingMode, faceOrientationPickingMode);
+        settings->setPickMethod(pickMethod);
+        settings->setPickResultMode(pickResultMode);
+        settings->setFaceOrientationPickingMode(faceOrientationPickingMode);
+
         QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(root.data()));
         TestArbiter arbiter;
 
@@ -589,6 +809,10 @@ private Q_SLOTS:
         Qt3DRender::Render::ObjectPicker *backendPicker1 = test->nodeManagers()->objectPickerManager()->lookupResource(picker1->id());
         QVERIFY(backendPicker1);
         Qt3DCore::QBackendNodePrivate::get(backendPicker1)->setArbiter(&arbiter);
+
+        QCOMPARE(test->renderSettings()->pickMethod(), pickMethod);
+        QCOMPARE(test->renderSettings()->pickResultMode(), pickResultMode);
+        QCOMPARE(test->renderSettings()->faceOrientationPickingMode(), faceOrientationPickingMode);
 
         // WHEN -> Hover on object
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
