@@ -174,10 +174,11 @@ AbstractCollisionGathererFunctor::result_type AbstractCollisionGathererFunctor::
 
     // If the Entity which actually received the hit doesn't have
     // an object picker component, we need to check the parent if it has one ...
-    while (objectPickerHandle.isNull() && entity != nullptr) {
-        entity = entity->parent();
-        if (entity != nullptr)
-            objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
+    auto parentEntity = entity;
+    while (objectPickerHandle.isNull() && parentEntity != nullptr) {
+        parentEntity = parentEntity->parent();
+        if (parentEntity != nullptr)
+            objectPickerHandle = parentEntity->componentHandle<ObjectPicker, 16>();
     }
 
     ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
