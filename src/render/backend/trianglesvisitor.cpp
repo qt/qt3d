@@ -108,8 +108,8 @@ void traverseTrianglesIndexed(index *indices,
     QVector3D abc[3];
     while (i < indexInfo.count) {
         for (uint u = 0; u < 3; ++u) {
-            uint idx = indices[i + u] * verticesStride;
-            ndx[u] = idx;
+            ndx[u] = indices[i + u];
+            uint idx = ndx[u] * verticesStride;
             for (uint j = 0; j < maxVerticesDataSize; ++j) {
                 abc[u][j] = vertices[idx + j];
             }
@@ -134,8 +134,8 @@ void traverseTriangles(vertex *vertices,
     QVector3D abc[3];
     while (i < vertexInfo.count) {
         for (uint u = 0; u < 3; ++u) {
-            uint idx = (i + u) * verticesStride;
-            ndx[u] = idx;
+            ndx[u] = (i + u);
+            uint idx = ndx[u] * verticesStride;
             for (uint j = 0; j < maxVerticesDataSize; ++j) {
                 abc[u][j] = vertices[idx + j];
             }
@@ -171,12 +171,12 @@ void traverseTriangleStripIndexed(index *indices,
     while (i < indexInfo.count - 2) {
         bool degenerate = false;
         for (uint u = 0; u < 3; ++u) {
-            uint idx = indices[i + u] * verticesStride;
-            if (checkDegenerate(ndx, idx, u)) {
+            ndx[u] = indices[i + u];
+            if (checkDegenerate(ndx, ndx[u], u)) {
                 degenerate = true;
                 break;
             }
-            ndx[u] = idx;
+            uint idx = ndx[u] * verticesStride;
             for (uint j = 0; j < maxVerticesDataSize; ++j)
                 abc[u][j] = vertices[idx + j];
         }
@@ -201,8 +201,8 @@ void traverseTriangleStrip(vertex *vertices,
     QVector3D abc[3];
     while (i < vertexInfo.count) {
         for (uint u = 0; u < 3; ++u) {
-            uint idx = (i + u) * verticesStride;
-            ndx[u] = idx;
+            ndx[u] = (i + u);
+            uint idx = ndx[u] * verticesStride;
             for (uint j = 0; j < maxVerticesDataSize; ++j) {
                 abc[u][j] = vertices[idx + j];
             }
@@ -233,8 +233,8 @@ void traverseTriangleFanIndexed(index *indices,
     uint i = 1;
     while (i < indexInfo.count) {
         for (uint u = 0; u < 2; ++u) {
-            uint idx = indices[i + u] * verticesStride;
-            ndx[i] = idx;
+            ndx[i] = indices[i + u];
+            uint idx = ndx[i] * verticesStride;
             for (uint j = 0; j < maxVerticesDataSize; ++j) {
                 abc[u + 1][j] = vertices[idx + j];
             }
@@ -263,8 +263,8 @@ void traverseTriangleFan(vertex *vertices,
     uint i = 1;
     while (i < vertexInfo.count) {
         for (uint u = 0; u < 2; ++u) {
-            uint idx = (i + u) * verticesStride;
-            ndx[u] = idx;
+            ndx[u] = (i + u);
+            uint idx = ndx[u] * verticesStride;
             for (uint j = 0; j < maxVerticesDataSize; ++j) {
                 abc[u + 1][j] = vertices[idx + j];
             }
@@ -290,8 +290,8 @@ void traverseTriangleAdjacencyIndexed(index *indices,
     QVector3D abc[3];
     while (i < indexInfo.count) {
         for (uint u = 0; u < 6; u += 2) {
-            uint idx = indices[i + u] * verticesStride;
-            ndx[u / 2] = idx;
+            ndx[u / 2] = indices[i + u];
+            uint idx = ndx[u / 2] * verticesStride;
             for (uint j = 0; j < maxVerticesDataSize; ++j) {
                 abc[u / 2][j] = vertices[idx + j];
             }
@@ -316,8 +316,8 @@ void traverseTriangleAdjacency(Vertex *vertices,
     QVector3D abc[3];
     while (i < vertexInfo.count) {
         for (uint u = 0; u < 6; u += 2) {
-            uint idx = (i + u) * verticesStride;
-            ndx[u / 2] = idx;
+            ndx[u / 2] = (i + u);
+            uint idx = ndx[u / 2] * verticesStride;
             for (uint j = 0; j < maxVerticesDataSize; ++j) {
                 abc[u / 2][j] = vertices[idx + j];
             }
