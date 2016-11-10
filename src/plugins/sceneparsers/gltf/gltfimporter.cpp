@@ -236,8 +236,6 @@ bool GLTFImporter::setJSON(const QJsonDocument &json )
     m_json = json;
     m_parseDone = false;
 
-    cleanup();
-
     return true;
 }
 
@@ -468,6 +466,8 @@ Qt3DCore::QEntity* GLTFImporter::scene(const QString &id)
             continue;
         child->setParent(sceneEntity);
     }
+
+    cleanup();
 
     return sceneEntity;
 }
