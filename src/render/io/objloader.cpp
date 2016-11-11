@@ -217,6 +217,8 @@ bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
         if (lineSize > 0 && line[0] != '#') {
             if (line[lineSize - 1] == '\n')
                 --lineSize; // chop newline
+            while (lineSize > 0 && line[lineSize-1] == ' ')
+                --lineSize; // trim trailing whitespaces
 
             const ByteArraySplitter tokens(line, line + lineSize, ' ', QString::SkipEmptyParts);
 
