@@ -1200,97 +1200,97 @@ void GraphicsContext::applyUniform(const ShaderUniform &description, const Unifo
 
     switch (type) {
     case UniformType::Float:
-        applyUniformHelper<UniformType::Float>(description.m_location, v);
+        applyUniformHelper<UniformType::Float>(description.m_location, description.m_size, v);
         break;
     case UniformType::Vec2:
-        applyUniformHelper<UniformType::Vec2>(description.m_location, v);
+        applyUniformHelper<UniformType::Vec2>(description.m_location, description.m_size, v);
         break;
     case UniformType::Vec3:
-        applyUniformHelper<UniformType::Vec3>(description.m_location, v);
+        applyUniformHelper<UniformType::Vec3>(description.m_location, description.m_size, v);
         break;
     case UniformType::Vec4:
-        applyUniformHelper<UniformType::Vec4>(description.m_location, v);
+        applyUniformHelper<UniformType::Vec4>(description.m_location, description.m_size, v);
         break;
 
     case UniformType::Double:
-        applyUniformHelper<UniformType::Double>(description.m_location, v);
+        applyUniformHelper<UniformType::Double>(description.m_location, description.m_size, v);
         break;
     case UniformType::DVec2:
-        applyUniformHelper<UniformType::DVec2>(description.m_location, v);
+        applyUniformHelper<UniformType::DVec2>(description.m_location, description.m_size, v);
         break;
     case UniformType::DVec3:
-        applyUniformHelper<UniformType::DVec3>(description.m_location, v);
+        applyUniformHelper<UniformType::DVec3>(description.m_location, description.m_size, v);
         break;
     case UniformType::DVec4:
-        applyUniformHelper<UniformType::DVec4>(description.m_location, v);
+        applyUniformHelper<UniformType::DVec4>(description.m_location, description.m_size, v);
         break;
 
     case UniformType::Sampler:
     case UniformType::Int:
-        applyUniformHelper<UniformType::Int>(description.m_location, v);
+        applyUniformHelper<UniformType::Int>(description.m_location, description.m_size, v);
         break;
     case UniformType::IVec2:
-        applyUniformHelper<UniformType::IVec2>(description.m_location, v);
+        applyUniformHelper<UniformType::IVec2>(description.m_location, description.m_size, v);
         break;
     case UniformType::IVec3:
-        applyUniformHelper<UniformType::IVec3>(description.m_location, v);
+        applyUniformHelper<UniformType::IVec3>(description.m_location, description.m_size, v);
         break;
     case UniformType::IVec4:
-        applyUniformHelper<UniformType::IVec4>(description.m_location, v);
+        applyUniformHelper<UniformType::IVec4>(description.m_location, description.m_size, v);
         break;
 
     case UniformType::UInt:
-        applyUniformHelper<UniformType::Int>(description.m_location, v);
+        applyUniformHelper<UniformType::Int>(description.m_location, description.m_size, v);
         break;
     case UniformType::UIVec2:
-        applyUniformHelper<UniformType::IVec2>(description.m_location, v);
+        applyUniformHelper<UniformType::IVec2>(description.m_location, description.m_size, v);
         break;
     case UniformType::UIVec3:
-        applyUniformHelper<UniformType::IVec3>(description.m_location, v);
+        applyUniformHelper<UniformType::IVec3>(description.m_location, description.m_size, v);
         break;
     case UniformType::UIVec4:
-        applyUniformHelper<UniformType::IVec4>(description.m_location, v);
+        applyUniformHelper<UniformType::IVec4>(description.m_location, description.m_size, v);
         break;
 
     case UniformType::Bool:
-        applyUniformHelper<UniformType::Bool>(description.m_location, v);
+        applyUniformHelper<UniformType::Bool>(description.m_location, description.m_size, v);
         break;
     case UniformType::BVec2:
-        applyUniformHelper<UniformType::BVec2>(description.m_location, v);
+        applyUniformHelper<UniformType::BVec2>(description.m_location, description.m_size, v);
         break;
     case UniformType::BVec3:
-        applyUniformHelper<UniformType::BVec3>(description.m_location, v);
+        applyUniformHelper<UniformType::BVec3>(description.m_location, description.m_size, v);
         break;
     case UniformType::BVec4:
-        applyUniformHelper<UniformType::BVec4>(description.m_location, v);
+        applyUniformHelper<UniformType::BVec4>(description.m_location, description.m_size, v);
         break;
 
     case UniformType::Mat2:
-        applyUniformHelper<UniformType::Mat2>(description.m_location, v);
+        applyUniformHelper<UniformType::Mat2>(description.m_location, description.m_size, v);
         break;
     case UniformType::Mat3:
-        applyUniformHelper<UniformType::Mat3>(description.m_location, v);
+        applyUniformHelper<UniformType::Mat3>(description.m_location, description.m_size, v);
         break;
     case UniformType::Mat4:
-        applyUniformHelper<UniformType::Mat4>(description.m_location, v);
+        applyUniformHelper<UniformType::Mat4>(description.m_location, description.m_size, v);
         break;
     case UniformType::Mat2x3:
-        applyUniformHelper<UniformType::Mat2x3>(description.m_location, v);
+        applyUniformHelper<UniformType::Mat2x3>(description.m_location, description.m_size, v);
         break;
     case UniformType::Mat3x2:
-        applyUniformHelper<UniformType::Mat3x2>(description.m_location, v);
+        applyUniformHelper<UniformType::Mat3x2>(description.m_location, description.m_size, v);
         break;
     case UniformType::Mat2x4:
-        applyUniformHelper<UniformType::Mat2x4>(description.m_location, v);
+        applyUniformHelper<UniformType::Mat2x4>(description.m_location, description.m_size, v);
         break;
     case UniformType::Mat4x2:
-        applyUniformHelper<UniformType::Mat4x2>(description.m_location, v);
+        applyUniformHelper<UniformType::Mat4x2>(description.m_location, description.m_size, v);
         break;
     case UniformType::Mat3x4:
-        applyUniformHelper<UniformType::Mat3x4>(description.m_location, v);
+        applyUniformHelper<UniformType::Mat3x4>(description.m_location, description.m_size, v);
         break;
     case UniformType::Mat4x3:
-        applyUniformHelper<UniformType::Mat4x3>(description.m_location, v);
+        applyUniformHelper<UniformType::Mat4x3>(description.m_location, description.m_size, v);
         break;
 
     default:

@@ -321,7 +321,7 @@ private:
     void applyUniform(const ShaderUniform &description, const UniformValue &v);
 
     template<UniformType>
-    void applyUniformHelper(int, const UniformValue &) const
+    void applyUniformHelper(int, int, const UniformValue &) const
     {
         Q_ASSERT_X(false, Q_FUNC_INFO, "Uniform: Didn't provide specialized apply() implementation");
     }
@@ -329,13 +329,13 @@ private:
 
 #define QT3D_UNIFORM_TYPE_PROTO(UniformTypeEnum, BaseType, Func) \
 template<> \
-void GraphicsContext::applyUniformHelper<UniformTypeEnum>(int location, const UniformValue &value) const;
+void GraphicsContext::applyUniformHelper<UniformTypeEnum>(int location, int count, const UniformValue &value) const;
 
 #define QT3D_UNIFORM_TYPE_IMPL(UniformTypeEnum, BaseType, Func) \
     template<> \
-    void GraphicsContext::applyUniformHelper<UniformTypeEnum>(int location, const UniformValue &value) const \
+    void GraphicsContext::applyUniformHelper<UniformTypeEnum>(int location, int count, const UniformValue &value) const \
 { \
-    m_glHelper->Func(location, 1, value.constData<BaseType>()); \
+    m_glHelper->Func(location, count, value.constData<BaseType>()); \
 }
 
 
