@@ -492,6 +492,7 @@ void Scene2DManager::cleanup()
 QScene2DPrivate::QScene2DPrivate()
     : Qt3DCore::QNodePrivate()
     , m_renderManager(new Scene2DManager(this))
+    , m_output(nullptr)
 {
 }
 
@@ -545,14 +546,16 @@ void QScene2D::setSource(const QUrl &url)
         qWarning() << "Unable to set source after initialization.";
         return;
     }
-    d->m_renderManager->setSource(url);
-    emit sourceChanged(url);
+    if (d->m_renderManager->m_source != url) {
+        d->m_renderManager->setSource(url);
+        emit sourceChanged(url);
+    }
 }
 
 QQuickItem* QScene2D::item() const
 {
     Q_D(const QScene2D);
-    return d->m_renderManager->m_rootItem;
+    return d->m_renderManager->m_item;
 }
 
 void QScene2D::setItem(QQuickItem *item)
@@ -562,8 +565,10 @@ void QScene2D::setItem(QQuickItem *item)
         qWarning() << "Unable to set item after initialization.";
         return;
     }
-    d->m_renderManager->setItem(item);
-    emit itemChanged(item);
+    if (d->m_renderManager->m_item != item) {
+        d->m_renderManager->setItem(item);
+        emit itemChanged(item);
+    }
 }
 
 /*!
