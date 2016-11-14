@@ -134,7 +134,8 @@ void Scene2D::initializeSharedObject()
         m_sharedObject->m_renderThread->start();
 
         // Notify main thread we have been initialized
-        QCoreApplication::postEvent(m_sharedObject->m_renderManager, new QEvent(INITIALIZED));
+        if (m_sharedObject->m_renderManager)
+            QCoreApplication::postEvent(m_sharedObject->m_renderManager, new QEvent(INITIALIZED));
 
         // Initialize render thread
         QCoreApplication::postEvent(m_sharedObject->m_renderObject, new QEvent(INITIALIZE));
@@ -151,7 +152,6 @@ void Scene2D::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chan
     setSharedObject(data.sharedObject);
     setOutput(data.output);
     m_shareContext = renderer()->shareContext();
-    m_accessor = resourceAccessor();
 }
 
 void Scene2D::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -170,6 +170,7 @@ void Scene2D::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             setSharedObject(sharedObject);
         }
     }
+    BackendNode::sceneChangeEvent(e);
 }
 
 void Scene2D::setSharedObject(Qt3DRender::Quick::Scene2DSharedObjectPtr sharedObject)
@@ -181,9 +182,7 @@ void Scene2D::setSharedObject(Qt3DRender::Quick::Scene2DSharedObjectPtr sharedOb
 
 void Scene2D::initializeRender()
 {
-    if (!m_renderInitialized) {
-
-        Q_ASSERT(m_shareContext);
+    if (!m_renderInitialized && m_sharedObject.data() != nullptr) {
 
         QSurfaceFormat format;
         format.setDepthBufferSize(24);
@@ -252,8 +251,10 @@ void Scene2D::render()
         QMutex *textureLock = nullptr;
 
         m_context->makeCurrent(m_sharedObject->m_surface);
-        if (m_accessor->accessResource(m_outputId, (void**)&attachmentData, nullptr)) {
-            if (!m_accessor->accessResource(attachmentData->m_textureUuid, (void**)&texture, &textureLock)) {
+
+        if (resourceAccessor()->accessResource(m_outputId, (void**)&attachmentData, nullptr)) {
+            if (!resourceAccessor()->accessResource(attachmentData->m_textureUuid,
+                                                       (void**)&texture, &textureLock)) {
                 // Need to call sync even if the texture is not in use
                 syncRenderControl();
                 m_context->doneCurrent();
@@ -320,13 +321,15 @@ void Scene2D::cleanup()
         m_context->functions()->glDeleteFramebuffers(1, &m_fbo);
         m_context->functions()->glDeleteRenderbuffers(1, &m_rbo);
         m_context->doneCurrent();
+        m_renderInitialized = false;
+    }
+    if (m_initialized) {
         m_sharedObject->m_renderThread->quit();
         delete m_sharedObject->m_renderObject;
         m_sharedObject->m_renderObject = nullptr;
         delete m_context;
         m_context = nullptr;
         m_sharedObject = nullptr;
-        m_renderInitialized = false;
         m_initialized = false;
     }
 }

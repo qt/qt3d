@@ -106,7 +106,6 @@ public:
     Qt3DCore::QNodeId m_outputId;
     QSharedPointer<Qt3DRender::Quick::Scene2DSharedObject> m_sharedObject;
     Qt3DCore::QNodeId m_peerId;
-    QSharedPointer<RenderBackendResourceAccessor> m_accessor;
     Qt3DRender::Render::Attachment m_attachmentData;
 
     GLuint m_fbo;
