@@ -99,7 +99,8 @@ qtConfig(private_tests) {
         qmemorybarrier \
         qeventforward \
         eventforward \
-        qscene2d
+        qscene2d \
+        scene2d
 
     !macos: SUBDIRS += graphicshelpergl4
 }
