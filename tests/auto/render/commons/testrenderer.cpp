@@ -76,4 +76,9 @@ QSurfaceFormat TestRenderer::format()
     return QSurfaceFormat();
 }
 
+QOpenGLContext *TestRenderer::shareContext() const
+{
+    return nullptr;
+}
+
 QT_END_NAMESPACE
