@@ -93,7 +93,8 @@ qtConfig(private_tests) {
         materialparametergathererjob \
         renderviewbuilder \
         filtercompatibletechniquejob \
-        rendercapture
+        rendercapture \
+        trianglevisitor
 
     !macos: SUBDIRS += graphicshelpergl4
 }
