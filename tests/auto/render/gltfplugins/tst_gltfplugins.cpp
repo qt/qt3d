@@ -59,6 +59,14 @@
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qeffect.h>
+#include <Qt3DRender/qshaderprogram.h>
+#include <Qt3DRender/qtechnique.h>
+#include <Qt3DRender/qparameter.h>
+#include <Qt3DRender/qgraphicsapifilter.h>
+#include <Qt3DRender/qfilterkey.h>
+#include <Qt3DRender/qtexture.h>
+#include <Qt3DRender/qcolormask.h>
+#include <Qt3DRender/qblendequation.h>
 
 #include <Qt3DExtras/qconemesh.h>
 #include <Qt3DExtras/qcuboidmesh.h>
@@ -120,6 +128,15 @@ private:
                                           Qt3DRender::QAttribute::AttributeType type,
                                           Qt3DRender::QGeometry *geometry);
     void compareAttributes(Qt3DRender::QAttribute *a1, Qt3DRender::QAttribute *a2);
+    void compareParameters(const QVector<Qt3DRender::QParameter *> &params1,
+                           const QVector<Qt3DRender::QParameter *> &params2);
+    void compareRenderPasses(const QVector<Qt3DRender::QRenderPass *> &passes1,
+                             const QVector<Qt3DRender::QRenderPass *> &passes2);
+    void compareFilterKeys(const QVector<Qt3DRender::QFilterKey *> &keys1,
+                           const QVector<Qt3DRender::QFilterKey *> &keys2);
+    QUrl getTextureUrl(Qt3DRender::QAbstractTexture *tex);
+    Qt3DRender::QGeometryRenderer *createCustomCube();
+    Qt3DRender::QEffect *createOnTopEffect();
 
     QTemporaryDir *m_exportDir;
     Qt3DExtras::Qt3DWindow *m_view1;
@@ -493,70 +510,23 @@ void tst_gltfPlugins::createTestScene()
         transform->setTranslation(QVector3D(4.0f, 3.0f, -15.0f));
         transform->setRotation(Qt3DCore::QTransform::fromAxisAndAngle(1.0f, 1.0f, 1.0f, 270.0f));
 
-        Qt3DRender::QGeometryRenderer *boxMesh = new Qt3DRender::QGeometryRenderer();
-        Qt3DRender::QGeometry *boxGeometry = new Qt3DRender::QGeometry(boxMesh);
-        Qt3DRender::QBuffer *boxDataBuffer =
-                new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, boxGeometry);
+        Qt3DRender::QGeometryRenderer *boxMesh = createCustomCube();
         Qt3DRender::QBuffer *colorDataBuffer =
-                new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, boxGeometry);
-        Qt3DRender::QBuffer *indexDataBuffer =
-                new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer, boxGeometry);
-        QByteArray vertexBufferData;
+                new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, boxMesh->geometry());
         QByteArray colorBufferData;
-        QByteArray indexBufferData;
-
-        vertexBufferData.resize(8 * 3 * sizeof(float));
         colorBufferData.resize(8 * 4 * sizeof(float));
-        indexBufferData.resize(12 * 3 * sizeof(ushort));
-
-        float dimension = 1.0f;
-
-        float *vPtr = reinterpret_cast<float *>(vertexBufferData.data());
-        vPtr[0]  = -dimension; vPtr[1]  = -dimension; vPtr[2]  = -dimension;
-        vPtr[3]  = dimension;  vPtr[4]  = -dimension; vPtr[5]  = -dimension;
-        vPtr[6]  = dimension;  vPtr[7]  = -dimension; vPtr[8]  = dimension;
-        vPtr[9]  = -dimension; vPtr[10] = -dimension; vPtr[11] = dimension;
-        vPtr[12] = -dimension; vPtr[13] = dimension;  vPtr[14] = -dimension;
-        vPtr[15] = dimension;  vPtr[16] = dimension;  vPtr[17] = -dimension;
-        vPtr[18] = dimension;  vPtr[19] = dimension;  vPtr[20] = dimension;
-        vPtr[21] = -dimension; vPtr[22] = dimension;  vPtr[23] = dimension;
 
         float *cPtr = reinterpret_cast<float *>(colorBufferData.data());
         for (int i = 0; i < 8; i++) {
-            cPtr[i * 4] = vPtr[i * 3];
-            cPtr[i * 4 + 1] = vPtr[i * 3 + 1];
-            cPtr[i * 4 + 2] = vPtr[i * 3 + 2];
+            cPtr[i * 4] = float(i) / 8.0f;
+            cPtr[i * 4 + 1] = float(8 - i) / 8.0f;
+            cPtr[i * 4 + 2] = float((i + 4) % 8) / 8.0f;
             cPtr[i * 4 + 3] = 1.0f;
         }
 
-        ushort *iPtr = reinterpret_cast<ushort *>(indexBufferData.data());
-        iPtr[0]  = 2; iPtr[1]  = 0; iPtr[2]  = 1;
-        iPtr[3]  = 2; iPtr[4]  = 3; iPtr[5]  = 0;
-        iPtr[6]  = 1; iPtr[7]  = 6; iPtr[8]  = 2;
-        iPtr[9]  = 1; iPtr[10] = 5; iPtr[11] = 6;
-        iPtr[12] = 2; iPtr[13] = 7; iPtr[14] = 3;
-        iPtr[15] = 2; iPtr[16] = 6; iPtr[17] = 7;
-        iPtr[18] = 6; iPtr[19] = 5; iPtr[20] = 4;
-        iPtr[21] = 6; iPtr[22] = 4; iPtr[23] = 7;
-        iPtr[24] = 7; iPtr[25] = 0; iPtr[26] = 3;
-        iPtr[27] = 7; iPtr[28] = 4; iPtr[29] = 0;
-        iPtr[30] = 4; iPtr[31] = 1; iPtr[32] = 0;
-        iPtr[33] = 4; iPtr[34] = 5; iPtr[35] = 1;
-
-        boxDataBuffer->setData(vertexBufferData);
         colorDataBuffer->setData(colorBufferData);
-        indexDataBuffer->setData(indexBufferData);
 
-        addPositionAttributeToGeometry(boxGeometry, boxDataBuffer, 8);
-        addColorAttributeToGeometry(boxGeometry, colorDataBuffer, 8);
-        addIndexAttributeToGeometry(boxGeometry, indexDataBuffer, 36);
-
-        boxMesh->setInstanceCount(1);
-        boxMesh->setIndexOffset(0);
-        boxMesh->setFirstInstance(0);
-        boxMesh->setVertexCount(36);
-        boxMesh->setPrimitiveType(Qt3DRender::QGeometryRenderer::Triangles);
-        boxMesh->setGeometry(boxGeometry);
+        addColorAttributeToGeometry(boxMesh->geometry(), colorDataBuffer, 8);
 
         createAndAddEntity(QStringLiteral("Custom cube with per-vertex colors"),
                            boxMesh, material, transform);
@@ -580,6 +550,52 @@ void tst_gltfPlugins::createTestScene()
         createAndAddEntity(QStringLiteral("Child with Phong"),
                            mesh, material, transform, parentEntity);
     }
+    // Cube with custom material
+    {
+        Qt3DRender::QMaterial *material = new Qt3DRender::QMaterial;
+        material->setEffect(createOnTopEffect());
+        material->addParameter(new Qt3DRender::QParameter(QStringLiteral("globalOffset"),
+                                                          QVector3D(-3.0f, 0.0f, 3.0f)));
+        material->addParameter(new Qt3DRender::QParameter(QStringLiteral("extraYOffset"), 3));
+        material->effect()->addParameter(new Qt3DRender::QParameter(QStringLiteral("handleColor"),
+                                                                    QColor(Qt::magenta)));
+        material->effect()->addParameter(new Qt3DRender::QParameter(QStringLiteral("reverseOffset"),
+                                                                    QVariant::fromValue(true)));
+
+        Qt3DCore::QTransform *transform = new Qt3DCore::QTransform;
+        transform->setTranslation(QVector3D(0.0f, 2.0f, -40.0f));
+        transform->setRotation(Qt3DCore::QTransform::fromAxisAndAngle(1.0f, 2.0f, 3.0f, 90.0f));
+        Qt3DRender::QGeometryRenderer *boxMesh = createCustomCube();
+        Qt3DRender::QBuffer *offsetBuffer =
+                new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, boxMesh->geometry());
+        QByteArray offsetBufferData;
+        offsetBufferData.resize(8 * 3 * sizeof(float));
+
+        float *oPtr = reinterpret_cast<float *>(offsetBufferData.data());
+        for (int i = 0; i < 8; i++) {
+            oPtr[i * 3] = float(i) / 4.0f;
+            oPtr[i * 3 + 1] = float(8 - i) / 4.0f + 2.0f;
+            oPtr[i * 3 + 2] = float((i + 4) % 8) / 4.0f;
+        }
+
+        offsetBuffer->setData(offsetBufferData);
+
+        Qt3DRender::QAttribute *customAttribute = new Qt3DRender::QAttribute();
+        customAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+        customAttribute->setBuffer(offsetBuffer);
+        customAttribute->setDataType(Qt3DRender::QAttribute::Float);
+        customAttribute->setDataSize(3);
+        customAttribute->setByteOffset(0);
+        customAttribute->setByteStride(0);
+        customAttribute->setCount(8);
+        customAttribute->setName(QStringLiteral("vertexOffset"));
+
+        boxMesh->geometry()->addAttribute(customAttribute);
+
+        createAndAddEntity(QStringLiteral("Custom cube with on-top material"),
+                           boxMesh, material, transform);
+    }
+
 #ifdef VISUAL_CHECK
     m_view1->setGeometry(30, 30, 400, 400);
     m_view1->setRootEntity(m_sceneRoot1);
@@ -775,6 +791,47 @@ void tst_gltfPlugins::compareComponents(Qt3DCore::QComponent *c1, Qt3DCore::QCom
                     QVERIFY(qFuzzyCompare(v1.toFloat(), v2.toFloat()));
                 }
             }
+            if (QString::fromLatin1(c1->metaObject()->className())
+                    .endsWith(QStringLiteral("Qt3DRender::QMaterial"))) {
+                auto m1 = qobject_cast<Qt3DRender::QMaterial *>(c1);
+                auto m2 = qobject_cast<Qt3DRender::QMaterial *>(c2);
+                QVERIFY(m1);
+                QVERIFY(m2);
+                auto e1 = m1->effect();
+                auto e2 = m2->effect();
+                QVERIFY(e1);
+                QVERIFY(e2);
+                QCOMPARE(e1->objectName(), e2->objectName());
+                QCOMPARE(e1->techniques().size(), e2->techniques().size());
+
+                compareParameters(m1->parameters(), m2->parameters());
+                compareParameters(e1->parameters(), e2->parameters());
+
+                for (auto t1 : e1->techniques()) {
+                    bool techMatch = false;
+                    for (auto t2 : e2->techniques()) {
+                        if (t1->objectName() == t2->objectName()) {
+                            techMatch = true;
+                            compareParameters(t1->parameters(), t2->parameters());
+                            compareFilterKeys(t1->filterKeys(), t2->filterKeys());
+                            compareRenderPasses(t1->renderPasses(), t2->renderPasses());
+                            QCOMPARE(t1->graphicsApiFilter()->api(),
+                                     t2->graphicsApiFilter()->api());
+                            QCOMPARE(t1->graphicsApiFilter()->profile(),
+                                     t2->graphicsApiFilter()->profile());
+                            QCOMPARE(t1->graphicsApiFilter()->minorVersion(),
+                                     t2->graphicsApiFilter()->minorVersion());
+                            QCOMPARE(t1->graphicsApiFilter()->majorVersion(),
+                                     t2->graphicsApiFilter()->majorVersion());
+                            QCOMPARE(t1->graphicsApiFilter()->extensions(),
+                                     t2->graphicsApiFilter()->extensions());
+                            QCOMPARE(t1->graphicsApiFilter()->vendor(),
+                                     t2->graphicsApiFilter()->vendor());
+                        }
+                    }
+                    QVERIFY(techMatch);
+                }
+            }
         }
     }
 }
@@ -801,6 +858,253 @@ void tst_gltfPlugins::compareAttributes(Qt3DRender::QAttribute *a1, Qt3DRender::
         QCOMPARE(a1->vertexSize(), a2->vertexSize());
         QCOMPARE(a1->count(), a2->count());
     }
+}
+
+void tst_gltfPlugins::compareParameters(const QVector<Qt3DRender::QParameter *> &params1,
+                                        const QVector<Qt3DRender::QParameter *> &params2)
+{
+    QCOMPARE(params1.size(), params2.size());
+    for (auto p1 : params1) {
+        bool pMatch = false;
+        for (auto p2 : params2) {
+            if (p1->name() == p2->name()) {
+                pMatch = true;
+                if (p1->value().type() == QVariant::Color) {
+                    // Colors are imported as QVector4Ds
+                    QColor color = p1->value().value<QColor>();
+                    QVector4D vec = p2->value().value<QVector4D>();
+                    QCOMPARE(color.redF(), vec.x());
+                    QCOMPARE(color.greenF(), vec.y());
+                    QCOMPARE(color.blueF(), vec.z());
+                    QCOMPARE(color.alphaF(), vec.w());
+                } else if (p1->value().canConvert<Qt3DRender::QAbstractTexture *>()) {
+                    QUrl u1 = getTextureUrl(p1->value().value<Qt3DRender::QAbstractTexture *>());
+                    QUrl u2 = getTextureUrl(p2->value().value<Qt3DRender::QAbstractTexture *>());
+                    QCOMPARE(u1.fileName(), u2.fileName());
+                } else {
+                    QCOMPARE(p1->value(), p2->value());
+                }
+            }
+        }
+        QVERIFY(pMatch);
+    }
+}
+
+void tst_gltfPlugins::compareRenderPasses(const QVector<Qt3DRender::QRenderPass *> &passes1,
+                                          const QVector<Qt3DRender::QRenderPass *> &passes2)
+{
+    QCOMPARE(passes1.size(), passes2.size());
+    for (auto pass1 : passes1) {
+        bool passMatch = false;
+        for (auto pass2 : passes2) {
+            if (pass1->objectName() == pass2->objectName()) {
+                passMatch = true;
+                compareFilterKeys(pass1->filterKeys(), pass2->filterKeys());
+                compareParameters(pass1->parameters(), pass2->parameters());
+
+                QVector<Qt3DRender::QRenderState *> states1 = pass1->renderStates();
+                QVector<Qt3DRender::QRenderState *> states2 = pass2->renderStates();
+                QCOMPARE(states1.size(), states2.size());
+                for (auto state1 : states1) {
+                    bool stateMatch = false;
+                    for (auto state2 : states2) {
+                        if (state1->metaObject()->className()
+                                == state2->metaObject()->className()) {
+                            stateMatch = true;
+                        }
+                    }
+                    QVERIFY(stateMatch);
+                }
+
+                QCOMPARE(pass1->shaderProgram()->vertexShaderCode(),
+                         pass2->shaderProgram()->vertexShaderCode());
+                QCOMPARE(pass1->shaderProgram()->fragmentShaderCode(),
+                         pass2->shaderProgram()->fragmentShaderCode());
+            }
+        }
+        QVERIFY(passMatch);
+    }
+}
+
+void tst_gltfPlugins::compareFilterKeys(const QVector<Qt3DRender::QFilterKey *> &keys1,
+                                        const QVector<Qt3DRender::QFilterKey *> &keys2)
+{
+    QCOMPARE(keys1.size(), keys2.size());
+    for (auto k1 : keys1) {
+        bool kMatch = false;
+        for (auto k2 : keys2) {
+            if (k1->name() == k2->name()) {
+                kMatch = true;
+                QCOMPARE(k1->value(), k2->value());
+            }
+        }
+        QVERIFY(kMatch);
+    }
+}
+
+QUrl tst_gltfPlugins::getTextureUrl(Qt3DRender::QAbstractTexture *tex)
+{
+    QUrl url;
+    if (tex->textureImages().size()) {
+        Qt3DRender::QTextureImage *img =
+                qobject_cast<Qt3DRender::QTextureImage *>(
+                    tex->textureImages().at(0));
+        if (img)
+            url = img->source();
+    }
+    return url;
+}
+
+Qt3DRender::QGeometryRenderer *tst_gltfPlugins::createCustomCube()
+{
+    Qt3DRender::QGeometryRenderer *boxMesh = new Qt3DRender::QGeometryRenderer;
+    Qt3DRender::QGeometry *boxGeometry = new Qt3DRender::QGeometry(boxMesh);
+    Qt3DRender::QBuffer *boxDataBuffer =
+            new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, boxGeometry);
+    Qt3DRender::QBuffer *indexDataBuffer =
+            new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer, boxGeometry);
+    QByteArray vertexBufferData;
+    QByteArray indexBufferData;
+
+    vertexBufferData.resize(8 * 3 * sizeof(float));
+    indexBufferData.resize(12 * 3 * sizeof(ushort));
+
+    float dimension = 1.0f;
+
+    float *vPtr = reinterpret_cast<float *>(vertexBufferData.data());
+    vPtr[0]  = -dimension; vPtr[1]  = -dimension; vPtr[2]  = -dimension;
+    vPtr[3]  = dimension;  vPtr[4]  = -dimension; vPtr[5]  = -dimension;
+    vPtr[6]  = dimension;  vPtr[7]  = -dimension; vPtr[8]  = dimension;
+    vPtr[9]  = -dimension; vPtr[10] = -dimension; vPtr[11] = dimension;
+    vPtr[12] = -dimension; vPtr[13] = dimension;  vPtr[14] = -dimension;
+    vPtr[15] = dimension;  vPtr[16] = dimension;  vPtr[17] = -dimension;
+    vPtr[18] = dimension;  vPtr[19] = dimension;  vPtr[20] = dimension;
+    vPtr[21] = -dimension; vPtr[22] = dimension;  vPtr[23] = dimension;
+
+    ushort *iPtr = reinterpret_cast<ushort *>(indexBufferData.data());
+    iPtr[0]  = 2; iPtr[1]  = 0; iPtr[2]  = 1;
+    iPtr[3]  = 2; iPtr[4]  = 3; iPtr[5]  = 0;
+    iPtr[6]  = 1; iPtr[7]  = 6; iPtr[8]  = 2;
+    iPtr[9]  = 1; iPtr[10] = 5; iPtr[11] = 6;
+    iPtr[12] = 2; iPtr[13] = 7; iPtr[14] = 3;
+    iPtr[15] = 2; iPtr[16] = 6; iPtr[17] = 7;
+    iPtr[18] = 6; iPtr[19] = 5; iPtr[20] = 4;
+    iPtr[21] = 6; iPtr[22] = 4; iPtr[23] = 7;
+    iPtr[24] = 7; iPtr[25] = 0; iPtr[26] = 3;
+    iPtr[27] = 7; iPtr[28] = 4; iPtr[29] = 0;
+    iPtr[30] = 4; iPtr[31] = 1; iPtr[32] = 0;
+    iPtr[33] = 4; iPtr[34] = 5; iPtr[35] = 1;
+
+    boxDataBuffer->setData(vertexBufferData);
+    indexDataBuffer->setData(indexBufferData);
+
+    addPositionAttributeToGeometry(boxGeometry, boxDataBuffer, 8);
+    addIndexAttributeToGeometry(boxGeometry, indexDataBuffer, 36);
+
+    boxMesh->setInstanceCount(1);
+    boxMesh->setIndexOffset(0);
+    boxMesh->setFirstInstance(0);
+    boxMesh->setVertexCount(36);
+    boxMesh->setPrimitiveType(Qt3DRender::QGeometryRenderer::Triangles);
+    boxMesh->setGeometry(boxGeometry);
+
+    return boxMesh;
+}
+
+Qt3DRender::QEffect *tst_gltfPlugins::createOnTopEffect()
+{
+    Qt3DRender::QEffect *effect = new Qt3DRender::QEffect;
+
+    Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique();
+    technique->graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::NoProfile);
+    technique->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::OpenGL);
+    technique->graphicsApiFilter()->setMajorVersion(2);
+    technique->graphicsApiFilter()->setMinorVersion(1);
+
+    Qt3DRender::QTechnique *techniqueCore = new Qt3DRender::QTechnique();
+    techniqueCore->graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::CoreProfile);
+    techniqueCore->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::OpenGL);
+    techniqueCore->graphicsApiFilter()->setMajorVersion(3);
+    techniqueCore->graphicsApiFilter()->setMinorVersion(1);
+
+    Qt3DRender::QTechnique *techniqueES2 = new Qt3DRender::QTechnique();
+    techniqueES2->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::OpenGLES);
+    techniqueES2->graphicsApiFilter()->setMajorVersion(2);
+    techniqueES2->graphicsApiFilter()->setMinorVersion(0);
+    techniqueES2->graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::NoProfile);
+
+    Qt3DRender::QFilterKey *filterkey1 = new Qt3DRender::QFilterKey(effect);
+    Qt3DRender::QFilterKey *filterkey2 = new Qt3DRender::QFilterKey();
+    filterkey1->setName(QStringLiteral("renderingStyle"));
+    filterkey1->setValue(QStringLiteral("forward"));
+    filterkey2->setName(QStringLiteral("dummyKey"));
+    filterkey2->setValue(QStringLiteral("dummyValue"));
+
+    Qt3DRender::QParameter *parameter1 = new Qt3DRender::QParameter(QStringLiteral("handleColor"),
+                                                                    QColor(Qt::yellow));
+    Qt3DRender::QParameter *parameter2 = new Qt3DRender::QParameter(QStringLiteral("customAlpha"),
+                                                                    1.0f);
+    Qt3DRender::QParameter *parameter3 = new Qt3DRender::QParameter(QStringLiteral("handleColor"),
+                                                                    QColor(Qt::blue));
+    Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D;
+    Qt3DRender::QParameter *parameter4 =
+            new Qt3DRender::QParameter(QStringLiteral("customTexture"), texture);
+    Qt3DRender::QTextureImage *ti = new Qt3DRender::QTextureImage();
+    parameter4->value().value<Qt3DRender::QAbstractTexture *>()->addTextureImage(ti);
+    ti->setSource(QUrl(QStringLiteral("qrc:/qtlogo.png")));
+
+    technique->addFilterKey(filterkey1);
+    technique->addFilterKey(filterkey2);
+    techniqueES2->addFilterKey(filterkey1);
+    techniqueES2->addFilterKey(filterkey2);
+    techniqueCore->addFilterKey(filterkey1);
+
+    technique->addParameter(parameter1);
+    technique->addParameter(parameter2);
+    technique->addParameter(parameter4);
+    techniqueES2->addParameter(parameter1);
+    techniqueES2->addParameter(parameter2);
+
+    Qt3DRender::QShaderProgram *shader = new Qt3DRender::QShaderProgram();
+    Qt3DRender::QShaderProgram *shaderES2 = new Qt3DRender::QShaderProgram();
+    shader->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(
+                                    QUrl(QStringLiteral("qrc:/ontopmaterial.vert"))));
+    shader->setFragmentShaderCode(Qt3DRender::QShaderProgram::loadSource(
+                                      QUrl(QStringLiteral("qrc:/ontopmaterial.frag"))));
+    shaderES2->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(
+                                       QUrl(QStringLiteral("qrc:/ontopmaterialES2.vert"))));
+    shaderES2->setFragmentShaderCode(Qt3DRender::QShaderProgram::loadSource(
+                                         QUrl(QStringLiteral("qrc:/ontopmaterialES2.frag"))));
+    shader->setObjectName(QStringLiteral("Basic shader"));
+    shaderES2->setObjectName(QStringLiteral("ES2 shader"));
+
+    Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass();
+    Qt3DRender::QRenderPass *renderPassES2 = new Qt3DRender::QRenderPass();
+    renderPass->setShaderProgram(shader);
+    renderPassES2->setShaderProgram(shaderES2);
+    renderPass->addFilterKey(filterkey2);
+    renderPass->addParameter(parameter3);
+    Qt3DRender::QColorMask *cmask = new Qt3DRender::QColorMask;
+    cmask->setRedMasked(false);
+    renderPass->addRenderState(cmask);
+    Qt3DRender::QBlendEquation *be = new Qt3DRender::QBlendEquation;
+    be->setBlendFunction(Qt3DRender::QBlendEquation::Subtract);
+    renderPass->addRenderState(be);
+    technique->addRenderPass(renderPassES2);
+    techniqueES2->addRenderPass(renderPassES2);
+    techniqueCore->addRenderPass(renderPass);
+    technique->setObjectName(QStringLiteral("Basic technique"));
+    techniqueES2->setObjectName(QStringLiteral("ES2 technique"));
+    techniqueCore->setObjectName(QStringLiteral("Core technique"));
+    renderPass->setObjectName(QStringLiteral("Basic pass"));
+    renderPassES2->setObjectName(QStringLiteral("ES2 pass"));
+
+    effect->addTechnique(technique);
+    effect->addTechnique(techniqueES2);
+    effect->addTechnique(techniqueCore);
+    effect->setObjectName(QStringLiteral("OnTopEffect"));
+
+    return effect;
 }
 
 Qt3DCore::QEntity *tst_gltfPlugins::findCameraChild(Qt3DCore::QEntity *entity,

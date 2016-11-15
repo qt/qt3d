@@ -57,6 +57,7 @@
 #include <QtGui/qvector3d.h>
 
 #include <Qt3DRender/qabstractlight.h>
+#include <Qt3DRender/qshaderprogram.h>
 
 #include <private/qsceneexporter_p.h>
 
@@ -74,6 +75,9 @@ namespace Qt3DRender {
 class QCameraLens;
 class QMaterial;
 class QGeometryRenderer;
+class QTechnique;
+class QRenderPass;
+class QEffect;
 
 Q_DECLARE_LOGGING_CATEGORY(GLTFExporterLog)
 
@@ -115,8 +119,6 @@ private:
             uint count;
             uint componentType;
             QString type;
-            QVector<float> minVal;
-            QVector<float> maxVal;
         };
         QVector<Accessor> accessors;
         QString name; // generated
@@ -141,12 +143,30 @@ private:
         QString name;
         QString originalName;
         MaterialType type;
+
+        // These are only used for default materials
         QHash<QString, QColor> colors;
         QHash<QString, QString> textures;
         QHash<QString, QVariant> values;
-        QHash<QString, QString> techniques;
         QVector<int> blendArguments;
         QVector<int> blendEquations;
+    };
+
+    struct ProgramInfo {
+        QString name;
+        QString vertexShader;
+        QString tessellationControlShader;
+        QString tessellationEvaluationShader;
+        QString geometryShader;
+        QString fragmentShader;
+        QString computeShader;
+    };
+
+    struct ShaderInfo {
+        QString name;
+        QString uri;
+        QShaderProgram::ShaderType type;
+        QByteArray code;
     };
 
     struct CameraInfo {
@@ -183,18 +203,24 @@ private:
     };
 
     void copyTextures();
+    void createShaders();
     void parseEntities(const Qt3DCore::QEntity *entity, Node *parentNode);
     void parseScene();
     void parseMaterials();
     void parseMeshes();
     void parseCameras();
     void parseLights();
+    void parseTechniques(QMaterial *material);
+    void parseRenderPasses(QTechnique *technique);
+    QString addShaderInfo(QShaderProgram::ShaderType type, QByteArray code);
 
     bool saveScene();
     void delNode(Node *n);
     QString exportNodes(Node *n, QJsonObject &nodes);
-    void exportMaterials(QJsonObject &materials, QHash<QString, QString> *textureNameMap);
+    void exportMaterials(QJsonObject &materials);
     void clearOldExport(const QString &dir);
+    void exportParameter(QJsonObject &jsonObj, const QString &name, const QVariant &variant);
+    void exportRenderStates(QJsonObject &jsonObj, const QRenderPass *pass);
 
     QString newBufferViewName();
     QString newAccessorName();
@@ -208,6 +234,11 @@ private:
     QString newNodeName();
     QString newCameraName();
     QString newLightName();
+    QString newRenderPassName();
+    QString newEffectName();
+
+    QString textureVariantToUrl(const QVariant &var);
+    void setVarToJSonObject(QJsonObject &jsObj, const QString &key, const QVariant &var);
 
     int m_bufferViewCount;
     int m_accessorCount;
@@ -221,6 +252,8 @@ private:
     int m_nodeCount;
     int m_cameraCount;
     int m_lightCount;
+    int m_renderPassCount;
+    int m_effectCount;
 
     Qt3DCore::QEntity *m_sceneRoot;
     QString m_exportName;
@@ -238,11 +271,18 @@ private:
     QHash<Node *, Qt3DRender::QAbstractLight *> m_lightMap;
     QHash<Node *, Qt3DCore::QTransform *> m_transformMap;
     QHash<QString, QString> m_imageMap; // Original texture URL -> generated filename
+    QHash<QString, QString> m_textureIdMap;
+    QHash<Qt3DRender::QRenderPass *, QString> m_renderPassIdMap;
+    QHash<Qt3DRender::QEffect *, QString> m_effectIdMap;
+    QHash<Qt3DRender::QTechnique *, QString> m_techniqueIdMap;
 
     QHash<Qt3DRender::QGeometryRenderer *, MeshInfo> m_meshInfo;
     QHash<Qt3DRender::QMaterial *, MaterialInfo> m_materialInfo;
     QHash<Qt3DRender::QCameraLens *, CameraInfo> m_cameraInfo;
     QHash<Qt3DRender::QAbstractLight *, LightInfo> m_lightInfo;
+    QHash<Qt3DRender::QShaderProgram *, ProgramInfo> m_programInfo;
+    QVector<ShaderInfo> m_shaderInfo;
+
 
     Node *m_rootNode;
     bool m_rootNodeEmpty;

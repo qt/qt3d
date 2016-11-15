@@ -52,12 +52,13 @@
 // We mean it.
 //
 
-#include <QtCore/QJsonDocument>
-#include <QtCore/QMultiHash>
+#include <QtCore/qjsondocument.h>
+#include <QtCore/qjsonobject.h>
+#include <QtCore/qhash.h>
 
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/private/qsceneimporter_p.h>
+#include <private/qsceneimporter_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -80,6 +81,7 @@ class QTechnique;
 class QParameter;
 class QGeometryRenderer;
 class QAbstractLight;
+class QRenderPass;
 
 Q_DECLARE_LOGGING_CATEGORY(GLTFImporterLog)
 
@@ -141,7 +143,7 @@ private:
     static void renameFromJson(const QJsonObject& json, QObject * const object );
     static bool hasStandardUniformNameFromSemantic(const QString &semantic);
     static QString standardAttributeNameFromSemantic(const QString &semantic);
-    static QParameter *parameterFromTechnique(QTechnique *technique, const QString &parameterName);
+    QParameter *parameterFromTechnique(QTechnique *technique, const QString &parameterName);
 
     Qt3DCore::QEntity *defaultScene();
     QMaterial *material(const QString &id);
@@ -160,6 +162,8 @@ private:
     void processJSONImage(const QString &id, const QJsonObject &jsonObject);
     void processJSONTexture(const QString &id, const QJsonObject &jsonObject);
     void processJSONExtensions(const QString &id, const QJsonObject &jsonObject);
+    void processJSONEffect(const QString &id, const QJsonObject &jsonObject);
+    void processJSONRenderPass(const QString &id, const QJsonObject &jsonObject);
 
     void loadBufferData();
     void unloadBufferData();
@@ -172,6 +176,9 @@ private:
 
     static QRenderState *buildStateEnable(int state);
     static QRenderState *buildState(const QString& functionName, const QJsonValue &value, int &type);
+    QParameter *buildParameter(const QString &key, const QJsonObject &paramObj);
+    void populateRenderStates(QRenderPass *pass, const QJsonObject &states);
+    void addProgramToPass(QRenderPass *pass, const QString &progName);
 
     QMaterial *materialWithCustomShader(const QString &id, const QJsonObject &jsonObj);
     QMaterial *commonMaterial(const QJsonObject &jsonObj);
@@ -200,6 +207,9 @@ private:
     QHash<QString, QShaderProgram*> m_programs;
 
     QHash<QString, QTechnique *> m_techniques;
+    QHash<QString, QRenderPass *> m_renderPasses;
+    QHash<QString, QEffect *> m_effects;
+    QHash<QTechnique *, QList<QParameter *> > m_techniqueParameters;
     QHash<QParameter*, ParameterData> m_parameterDataDict;
 
     QHash<QString, QAbstractTexture*> m_textures;

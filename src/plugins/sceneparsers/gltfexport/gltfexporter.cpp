@@ -77,6 +77,26 @@
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qgeometryfactory.h>
+#include <Qt3DRender/qtechnique.h>
+#include <Qt3DRender/qalphacoverage.h>
+#include <Qt3DRender/qalphatest.h>
+#include <Qt3DRender/qclipplane.h>
+#include <Qt3DRender/qcolormask.h>
+#include <Qt3DRender/qcullface.h>
+#include <Qt3DRender/qdepthtest.h>
+#include <Qt3DRender/qdithering.h>
+#include <Qt3DRender/qfrontface.h>
+#include <Qt3DRender/qmultisampleantialiasing.h>
+#include <Qt3DRender/qnodepthmask.h>
+#include <Qt3DRender/qpointsize.h>
+#include <Qt3DRender/qpolygonoffset.h>
+#include <Qt3DRender/qscissortest.h>
+#include <Qt3DRender/qseamlesscubemap.h>
+#include <Qt3DRender/qstencilmask.h>
+#include <Qt3DRender/qstenciloperation.h>
+#include <Qt3DRender/qstenciloperationarguments.h>
+#include <Qt3DRender/qstenciltest.h>
+#include <Qt3DRender/qstenciltestarguments.h>
 #include <Qt3DExtras/qconemesh.h>
 #include <Qt3DExtras/qcuboidmesh.h>
 #include <Qt3DExtras/qcylindermesh.h>
@@ -95,16 +115,101 @@
 
 #include <private/qurlhelper_p.h>
 
-#define GLT_UNSIGNED_SHORT 0x1403
-#define GLT_UNSIGNED_INT 0x1405
-#define GLT_FLOAT 0x1406
-#define GLT_ARRAY_BUFFER 0x8892
-#define GLT_ELEMENT_ARRAY_BUFFER 0x8893
-
 #ifndef qUtf16PrintableImpl
 #  define qUtf16PrintableImpl(string) \
     static_cast<const wchar_t*>(static_cast<const void*>(string.utf16()))
 #endif
+
+namespace {
+
+inline QJsonArray col2jsvec(const QColor &color, bool alpha = false)
+{
+    QJsonArray arr;
+    arr << color.redF() << color.greenF() << color.blueF();
+    if (alpha)
+        arr << color.alphaF();
+    return arr;
+}
+
+template <typename T>
+inline QJsonArray vec2jsvec(const QVector<T> &v)
+{
+    QJsonArray arr;
+    for (int i = 0; i < v.count(); ++i)
+        arr << v.at(i);
+    return arr;
+}
+
+inline QJsonArray vec2jsvec(const QVector2D &v)
+{
+    QJsonArray arr;
+    arr << v.x() << v.y();
+    return arr;
+}
+
+inline QJsonArray vec2jsvec(const QVector3D &v)
+{
+    QJsonArray arr;
+    arr << v.x() << v.y() << v.z();
+    return arr;
+}
+
+inline QJsonArray vec2jsvec(const QVector4D &v)
+{
+    QJsonArray arr;
+    arr << v.x() << v.y() << v.z() << v.w();
+    return arr;
+}
+
+inline QJsonArray matrix2jsvec(const QMatrix2x2 &matrix)
+{
+    QJsonArray jm;
+    const float *mtxp = matrix.constData();
+    for (int j = 0; j < 4; ++j)
+        jm.append(*mtxp++);
+    return jm;
+}
+
+inline QJsonArray matrix2jsvec(const QMatrix3x3 &matrix)
+{
+    QJsonArray jm;
+    const float *mtxp = matrix.constData();
+    for (int j = 0; j < 9; ++j)
+        jm.append(*mtxp++);
+    return jm;
+}
+
+inline QJsonArray matrix2jsvec(const QMatrix4x4 &matrix)
+{
+    QJsonArray jm;
+    const float *mtxp = matrix.constData();
+    for (int j = 0; j < 16; ++j)
+        jm.append(*mtxp++);
+    return jm;
+}
+
+inline void promoteColorsToRGBA(QJsonObject *obj)
+{
+    auto it = obj->begin();
+    auto itEnd = obj->end();
+    while (it != itEnd) {
+        QJsonArray arr = it.value().toArray();
+        if (arr.count() == 3) {
+            const QString key = it.key();
+            if (key == QStringLiteral("ambient")
+                    || key == QStringLiteral("diffuse")
+                    || key == QStringLiteral("specular")
+                    || key == QStringLiteral("warm")
+                    || key == QStringLiteral("cool")) {
+                arr.append(1);
+                *it = arr;
+            }
+        }
+        ++it;
+    }
+}
+
+} // namespace
 
 QT_BEGIN_NAMESPACE
 
@@ -152,31 +257,6 @@ GLTFExporter::~GLTFExporter()
 {
 }
 
-// Calculate bounding box
-void calcBB(QVector<float> &minVal, QVector<float> &maxVal, const float *data,
-            int vertexCount, int compCount, int offset, int stride)
-{
-    minVal.resize(compCount);
-    maxVal.resize(compCount);
-    int dataIndex = offset;
-    const int adjustedStride = stride > 0 ? stride - compCount : 0;
-    for (int i = 0; i < vertexCount; ++i) {
-        for (int j = 0; j < compCount; ++j) {
-            if (i == 0) {
-                minVal[j] = data[dataIndex];
-                maxVal[j] = data[dataIndex];
-            } else {
-                if (data[dataIndex] < minVal[j])
-                    minVal[j] = data[dataIndex];
-                if (data[dataIndex] > maxVal[j])
-                    maxVal[j] = data[dataIndex];
-            }
-            dataIndex++;
-        }
-        dataIndex += adjustedStride;
-    }
-}
-
 // sceneRoot  : The root entity that contains the exported scene. If the sceneRoot doesn't have
 //              any exportable components, it is not exported itself. This is because importing a
 //              scene creates an empty top level entity to hold the scene.
@@ -197,11 +277,19 @@ bool GLTFExporter::exportScene(QEntity *sceneRoot, const QString &outDir,
     m_materialMap.clear();
     m_cameraMap.clear();
     m_lightMap.clear();
+    m_transformMap.clear();
     m_imageMap.clear();
+    m_textureIdMap.clear();
     m_meshInfo.clear();
     m_materialInfo.clear();
     m_cameraInfo.clear();
+    m_lightInfo.clear();
     m_exportedFiles.clear();
+    m_renderPassIdMap.clear();
+    m_shaderInfo.clear();
+    m_programInfo.clear();
+    m_techniqueIdMap.clear();
+    m_effectIdMap.clear();
 
     delNode(m_rootNode);
 
@@ -217,6 +305,8 @@ bool GLTFExporter::exportScene(QEntity *sceneRoot, const QString &outDir,
     m_nodeCount = 0;
     m_cameraCount = 0;
     m_lightCount = 0;
+    m_renderPassCount = 0;
+    m_effectCount = 0;
 
     m_gltfOpts.binaryJson = options.value(QStringLiteral("binaryJson"),
                                           QVariant(false)).toBool();
@@ -260,15 +350,12 @@ bool GLTFExporter::exportScene(QEntity *sceneRoot, const QString &outDir,
     m_exportDir = exportDir.path();
     m_exportDir.append(QStringLiteral("/"));
 
-    qCDebug(GLTFExporterLog, "Output directory: &ls", qUtf16PrintableImpl(absoluteOutDir));
-    qCDebug(GLTFExporterLog, "Export name: &ls", qUtf16PrintableImpl(m_exportName));
-    qCDebug(GLTFExporterLog, "Temp export dir: &ls", qUtf16PrintableImpl(m_exportDir));
-    qCDebug(GLTFExporterLog, "Final export dir: &ls", qUtf16PrintableImpl(finalExportDir));
+    qCDebug(GLTFExporterLog, "Output directory: %ls", qUtf16PrintableImpl(absoluteOutDir));
+    qCDebug(GLTFExporterLog, "Export name: %ls", qUtf16PrintableImpl(m_exportName));
+    qCDebug(GLTFExporterLog, "Temp export dir: %ls", qUtf16PrintableImpl(m_exportDir));
+    qCDebug(GLTFExporterLog, "Final export dir: %ls", qUtf16PrintableImpl(finalExportDir));
 
     parseScene();
-
-    // Copy textures into temporary directory
-    copyTextures();
 
     // Export scene to temporary directory
     if (!saveScene()) {
@@ -327,54 +414,67 @@ void GLTFExporter::copyTextures()
 {
     qCDebug(GLTFExporterLog, "Copying textures...");
     QHash<QString, QString> copiedMap;
-    for (auto it = m_materialInfo.constBegin(); it != m_materialInfo.constEnd(); ++it) {
-        const MaterialInfo &matInfo = it.value();
-        for (auto texIt = matInfo.textures.constBegin(); texIt != matInfo.textures.constEnd();
-             ++texIt) {
-            QString texKey = texIt.key();
-            QFileInfo fi(texIt.value());
-            QString absoluteFilePath;
-            if (texIt.value().startsWith(QStringLiteral(":")))
-                absoluteFilePath = texIt.value();
-            else
-                absoluteFilePath = fi.absoluteFilePath();
-            if (copiedMap.contains(absoluteFilePath)) {
-                // Texture has already been copied
-                qCDebug(GLTFExporterLog, "  Skipped copying duplicate texture: '%ls'",
-                        qUtf16PrintableImpl(absoluteFilePath));
-                if (!m_imageMap.contains(texIt.value()))
-                    m_imageMap.insert(texIt.value(), copiedMap.value(absoluteFilePath));
-            } else {
-                QString fileName = fi.fileName();
-                QString outFile = m_exportDir;
-                outFile.append(fileName);
-                QFileInfo fiTry(outFile);
-                if (fiTry.exists()) {
-                    static const QString outFileTemplate = QStringLiteral("%2_%3.%4");
-                    int counter = 0;
-                    QString tryFile = outFile;
-                    QString suffix = fiTry.suffix();
-                    QString base = fiTry.baseName();
-                    while (fiTry.exists()) {
-                        fileName = outFileTemplate.arg(base).arg(counter++).arg(suffix);
-                        tryFile = m_exportDir;
-                        tryFile.append(fileName);
-                        fiTry.setFile(tryFile);
-                    }
-                    outFile = tryFile;
+    for (auto texIt = m_textureIdMap.constBegin(); texIt != m_textureIdMap.constEnd(); ++texIt) {
+        QFileInfo fi(texIt.key());
+        QString absoluteFilePath;
+        if (texIt.key().startsWith(QStringLiteral(":")))
+            absoluteFilePath = texIt.key();
+        else
+            absoluteFilePath = fi.absoluteFilePath();
+        if (copiedMap.contains(absoluteFilePath)) {
+            // Texture has already been copied
+            qCDebug(GLTFExporterLog, "  Skipped copying duplicate texture: '%ls'",
+                    qUtf16PrintableImpl(absoluteFilePath));
+            if (!m_imageMap.contains(texIt.key()))
+                m_imageMap.insert(texIt.key(), copiedMap.value(absoluteFilePath));
+        } else {
+            QString fileName = fi.fileName();
+            QString outFile = m_exportDir;
+            outFile.append(fileName);
+            QFileInfo fiTry(outFile);
+            if (fiTry.exists()) {
+                static const QString outFileTemplate = QStringLiteral("%2_%3.%4");
+                int counter = 0;
+                QString tryFile = outFile;
+                QString suffix = fiTry.suffix();
+                QString base = fiTry.baseName();
+                while (fiTry.exists()) {
+                    fileName = outFileTemplate.arg(base).arg(counter++).arg(suffix);
+                    tryFile = m_exportDir;
+                    tryFile.append(fileName);
+                    fiTry.setFile(tryFile);
                 }
-                if (!QFile(absoluteFilePath).copy(outFile)) {
-                    qCWarning(GLTFExporterLog, "  Failed to copy texture: '%ls' -> '%ls'",
-                              qUtf16PrintableImpl(absoluteFilePath), qUtf16PrintableImpl(outFile));
-                } else {
-                    qCDebug(GLTFExporterLog, "  Copied texture: '%ls' -> '%ls'",
-                            qUtf16PrintableImpl(absoluteFilePath), qUtf16PrintableImpl(outFile));
-                }
-                // Generate actual target file (as current exportDir is temp dir)
-                copiedMap.insert(absoluteFilePath, fileName);
-                m_exportedFiles.insert(fileName);
-                m_imageMap.insert(texIt.value(), fileName);
+                outFile = tryFile;
             }
+            if (!QFile(absoluteFilePath).copy(outFile)) {
+                qCWarning(GLTFExporterLog, "  Failed to copy texture: '%ls' -> '%ls'",
+                          qUtf16PrintableImpl(absoluteFilePath), qUtf16PrintableImpl(outFile));
+            } else {
+                qCDebug(GLTFExporterLog, "  Copied texture: '%ls' -> '%ls'",
+                        qUtf16PrintableImpl(absoluteFilePath), qUtf16PrintableImpl(outFile));
+            }
+            // Generate actual target file (as current exportDir is temp dir)
+            copiedMap.insert(absoluteFilePath, fileName);
+            m_exportedFiles.insert(fileName);
+            m_imageMap.insert(texIt.key(), fileName);
+        }
+    }
+}
+
+// Creates shaders to the temporary export directory.
+void GLTFExporter::createShaders()
+{
+    qCDebug(GLTFExporterLog, "Creating shaders...");
+    for (auto si : m_shaderInfo) {
+        const QString fileName = m_exportDir + si.uri;
+        QFile f(fileName);
+        if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+            m_exportedFiles.insert(QFileInfo(f.fileName()).fileName());
+            f.write(si.code);
+            f.close();
+        } else {
+            qCWarning(GLTFExporterLog, "  Writing shaderfile '%ls' failed!",
+                      qUtf16PrintableImpl(fileName));
         }
     }
 }
@@ -468,38 +568,36 @@ void GLTFExporter::parseMaterials()
             matInfo.type = MaterialInfo::TypePerVertex;
         } else {
             matInfo.type = MaterialInfo::TypeCustom;
-            // TODO: Implement support for custom materials
-            qCDebug(GLTFExporterLog, "Exporting custom materials is not supported: %s",
-                    material->metaObject()->className());
-            continue;
         }
 
-        if (material->effect()) {
-            QVector<QParameter *> parameters = material->effect()->parameters();
-            for (auto param : parameters) {
-                if (param->value().type() == QVariant::Color) {
-                    QColor color = param->value().value<QColor>();
-                    if (param->name() == MATERIAL_AMBIENT_COLOR)
-                        matInfo.colors.insert(QStringLiteral("ambient"), color);
-                    else if (param->name() == MATERIAL_DIFFUSE_COLOR)
-                        matInfo.colors.insert(QStringLiteral("diffuse"), color);
-                    else if (param->name() == MATERIAL_SPECULAR_COLOR)
-                        matInfo.colors.insert(QStringLiteral("specular"), color);
-                    else if (param->name() == MATERIAL_COOL_COLOR) // Custom Qt3D param for gooch
-                        matInfo.colors.insert(QStringLiteral("cool"), color);
-                    else if (param->name() == MATERIAL_WARM_COLOR) // Custom Qt3D param for gooch
-                        matInfo.colors.insert(QStringLiteral("warm"), color);
-                    else
-                        matInfo.colors.insert(param->name(), color);
-                } else if (param->value().canConvert<QAbstractTexture *>()) {
-                    QAbstractTexture *texture = param->value().value<QAbstractTexture *>();
-                    for (auto ti : texture->textureImages()) {
-                        QString urlString;
-                        Qt3DRender::QTextureImage *image =
-                                qobject_cast<Qt3DRender::QTextureImage *>(ti);
-                        if (image)
-                            urlString = QUrlHelper::urlToLocalFileOrQrc(image->source());
-
+        if (matInfo.type == MaterialInfo::TypeCustom) {
+            if (material->effect()) {
+                if (!m_effectIdMap.contains(material->effect()))
+                    m_effectIdMap.insert(material->effect(), newEffectName());
+                parseTechniques(material);
+            }
+        } else {
+            // Default materials do not have separate effect, all effect parameters are stored as
+            // material values.
+            if (material->effect()) {
+                QVector<QParameter *> parameters = material->effect()->parameters();
+                for (auto param : parameters) {
+                    if (param->value().type() == QVariant::Color) {
+                        QColor color = param->value().value<QColor>();
+                        if (param->name() == MATERIAL_AMBIENT_COLOR)
+                            matInfo.colors.insert(QStringLiteral("ambient"), color);
+                        else if (param->name() == MATERIAL_DIFFUSE_COLOR)
+                            matInfo.colors.insert(QStringLiteral("diffuse"), color);
+                        else if (param->name() == MATERIAL_SPECULAR_COLOR)
+                            matInfo.colors.insert(QStringLiteral("specular"), color);
+                        else if (param->name() == MATERIAL_COOL_COLOR) // Custom Qt3D gooch
+                            matInfo.colors.insert(QStringLiteral("cool"), color);
+                        else if (param->name() == MATERIAL_WARM_COLOR) // Custom Qt3D gooch
+                            matInfo.colors.insert(QStringLiteral("warm"), color);
+                        else
+                            matInfo.colors.insert(param->name(), color);
+                    } else if (param->value().canConvert<QAbstractTexture *>()) {
+                        const QString urlString = textureVariantToUrl(param->value());
                         if (param->name() == MATERIAL_DIFFUSE_TEXTURE)
                             matInfo.textures.insert(QStringLiteral("diffuse"), urlString);
                         else if (param->name() == MATERIAL_SPECULAR_TEXTURE)
@@ -508,21 +606,17 @@ void GLTFExporter::parseMaterials()
                             matInfo.textures.insert(QStringLiteral("normal"), urlString);
                         else
                             matInfo.textures.insert(param->name(), urlString);
-                    }
-                } else if (param->name() == MATERIAL_SHININESS) {
-                    matInfo.values.insert(QStringLiteral("shininess"), param->value());
-                } else if (param->name() == MATERIAL_BETA) { // Custom Qt3D param for gooch
-                    matInfo.values.insert(QStringLiteral("beta"), param->value());
-                } else if (param->name() == MATERIAL_ALPHA) {
-                    if (matInfo.type == MaterialInfo::TypeGooch)
-                        matInfo.values.insert(QStringLiteral("alpha"), param->value());
-                    else
-                        matInfo.values.insert(QStringLiteral("transparency"), param->value());
-                } else if (param->name() == MATERIAL_TEXTURE_SCALE) { // Custom Qt3D param
-                    matInfo.values.insert(QStringLiteral("textureScale"), param->value());
-                } else {
-                    if (matInfo.type == MaterialInfo::TypeCustom) {
-                        matInfo.values.insert(param->name(), param->value());
+                    } else if (param->name() == MATERIAL_SHININESS) {
+                        matInfo.values.insert(QStringLiteral("shininess"), param->value());
+                    } else if (param->name() == MATERIAL_BETA) { // Custom Qt3D param for gooch
+                        matInfo.values.insert(QStringLiteral("beta"), param->value());
+                    } else if (param->name() == MATERIAL_ALPHA) {
+                        if (matInfo.type == MaterialInfo::TypeGooch)
+                            matInfo.values.insert(QStringLiteral("alpha"), param->value());
+                        else
+                            matInfo.values.insert(QStringLiteral("transparency"), param->value());
+                    } else if (param->name() == MATERIAL_TEXTURE_SCALE) { // Custom Qt3D param
+                        matInfo.values.insert(QStringLiteral("textureScale"), param->value());
                     } else {
                         qCDebug(GLTFExporterLog,
                                 "Common material had unknown parameter: '%ls'",
@@ -531,6 +625,7 @@ void GLTFExporter::parseMaterials()
                 }
             }
         }
+
         if (GLTFExporterLog().isDebugEnabled()) {
             qCDebug(GLTFExporterLog, "  Material #%i", materialCount);
             qCDebug(GLTFExporterLog, "    name: '%ls'", qUtf16PrintableImpl(matInfo.name));
@@ -581,154 +676,87 @@ void GLTFExporter::parseMeshes()
         }
 
         QAttribute *indexAttrib = nullptr;
-        QAttribute *verticesAttrib = nullptr;
-        QAttribute *normalsAttrib = nullptr;
-        QAttribute *texCoordsAttrib = nullptr;
-        QAttribute *colorAttrib = nullptr;
-        QAttribute *tangentsAttrib = nullptr;
-
-        const float *vertexPtr = nullptr;
-        const float *normalsPtr = nullptr;
-        const float *texCoordsPtr = nullptr;
-        const float *colorPtr = nullptr;
-        const float *tangentsPtr = nullptr;
         const quint16 *indexPtr = nullptr;
 
-        for (auto att : meshGeometry->attributes()) {
+        struct VertexAttrib {
+            QAttribute *att;
+            const float *ptr;
+            QString usage;
+            uint offset;
+            uint stride;
+            int index;
+        };
+
+        QVector<VertexAttrib> vAttribs;
+        vAttribs.reserve(meshGeometry->attributes().size());
+
+        uint stride(0);
+
+        for (QAttribute *att : meshGeometry->attributes()) {
             if (att->attributeType() == QAttribute::IndexAttribute) {
                 indexAttrib = att;
                 indexPtr = reinterpret_cast<const quint16 *>(att->buffer()->data().constData());
-            } else if (att->name() == VERTICES_ATTRIBUTE_NAME) {
-                verticesAttrib = att;
-                vertexPtr = reinterpret_cast<const float *>(att->buffer()->data().constData());
-            } else if (att->name() == NORMAL_ATTRIBUTE_NAME) {
-                normalsAttrib = att;
-                normalsPtr = reinterpret_cast<const float *>(att->buffer()->data().constData());
-            } else if (att->name() == TEXTCOORD_ATTRIBUTE_NAME) {
-                texCoordsAttrib = att;
-                texCoordsPtr = reinterpret_cast<const float *>(att->buffer()->data().constData());
-            } else if (att->name() == COLOR_ATTRIBUTE_NAME) {
-                colorAttrib = att;
-                colorPtr = reinterpret_cast<const float *>(att->buffer()->data().constData());
-            } else if (att->name() == TANGENT_ATTRIBUTE_NAME) {
-                tangentsAttrib = att;
-                tangentsPtr = reinterpret_cast<const float *>(att->buffer()->data().constData());
+            } else {
+                VertexAttrib vAtt;
+                vAtt.att = att;
+                vAtt.ptr = reinterpret_cast<const float *>(att->buffer()->data().constData());
+                if (att->name() == VERTICES_ATTRIBUTE_NAME)
+                    vAtt.usage = QStringLiteral("POSITION");
+                else if (att->name() == NORMAL_ATTRIBUTE_NAME)
+                    vAtt.usage = QStringLiteral("NORMAL");
+                else if (att->name() == TEXTCOORD_ATTRIBUTE_NAME)
+                    vAtt.usage = QStringLiteral("TEXCOORD_0");
+                else if (att->name() == COLOR_ATTRIBUTE_NAME)
+                    vAtt.usage = QStringLiteral("COLOR");
+                else if (att->name() == TANGENT_ATTRIBUTE_NAME)
+                    vAtt.usage = QStringLiteral("TANGENT");
+                else
+                    vAtt.usage = att->name();
+
+                vAtt.offset = att->byteOffset() / sizeof(float);
+                vAtt.index = vAtt.offset;
+                vAtt.stride = att->byteStride() > 0
+                        ? att->byteStride() / sizeof(float) - att->vertexSize() : 0;
+                stride += att->vertexSize();
+
+                vAttribs << vAtt;
             }
         }
 
-        Q_ASSERT(verticesAttrib);
+        int attribCount(vAttribs.size());
+        if (!attribCount) {
+            qCWarning(GLTFExporterLog, "Ignoring mesh without any attributes!");
+            continue;
+        }
 
         // Default types use single interleaved buffer for all vertex data, but we must regenerate
         // it as it is not available on the frontend by default.
         QByteArray defaultVertexArray;
         QByteArray defaultIndexArray;
         if (defaultType) {
-            defaultVertexArray = verticesAttrib->buffer()->dataGenerator().data()->operator()();
+            defaultVertexArray =
+                    vAttribs.at(0).att->buffer()->dataGenerator().data()->operator()();
             const float *defaultVertexBufferPtr =
                     reinterpret_cast<const float *>(defaultVertexArray.constData());
-            vertexPtr = defaultVertexBufferPtr;
-            if (normalsPtr)
-                normalsPtr = defaultVertexBufferPtr;
-            if (texCoordsPtr)
-                texCoordsPtr = defaultVertexBufferPtr;
-            if (colorPtr)
-                colorPtr = defaultVertexBufferPtr;
-            if (tangentsPtr)
-                tangentsPtr = defaultVertexBufferPtr;
+            for (int i = 0; i < attribCount; i++)
+                vAttribs[i].ptr = defaultVertexBufferPtr;
 
             defaultIndexArray = indexAttrib->buffer()->dataGenerator().data()->operator()();
             indexPtr = reinterpret_cast<const quint16 *>(defaultIndexArray.constData());
         }
 
-        const uint vertexOffset = verticesAttrib->byteOffset() / sizeof(float);
-        uint normalOffset = 0;
-        uint textCoordOffset = 0;
-        uint colorOffset = 0;
-        uint tangentOffset = 0;
-
-        const uint vertexStride = verticesAttrib->byteStride() > 0
-                ? verticesAttrib->byteStride() / sizeof(float) - 3 : 0;
-        uint normalStride = 0;
-        uint textCoordStride = 0;
-        uint colorStride = 0;
-        uint tangentStride = 0;
-
-        uint stride = 3;
-
-        if (normalsAttrib) {
-            normalOffset = normalsAttrib->byteOffset() / sizeof(float);
-            normalStride = normalsAttrib->byteStride() / sizeof(float);
-            if (normalStride > 0)
-                normalStride -= 3;
-            stride += 3;
-        }
-        if (texCoordsAttrib) {
-            textCoordOffset = texCoordsAttrib->byteOffset() / sizeof(float);
-            textCoordStride = texCoordsAttrib->byteStride() / sizeof(float);
-            if (textCoordStride > 0)
-                textCoordStride -= 2;
-            stride += 2;
-        }
-        if (colorAttrib) {
-            colorOffset = colorAttrib->byteOffset() / sizeof(float);
-            colorStride = colorAttrib->byteStride() / sizeof(float);
-            if (colorStride > 0)
-                colorStride -= 4;
-            stride += 4;
-        }
-        if (tangentsAttrib) {
-            tangentOffset = tangentsAttrib->byteOffset() / sizeof(float);
-            tangentStride = tangentsAttrib->byteStride() / sizeof(float);
-            if (tangentStride > 0)
-                tangentStride -= 4;
-            stride += 4;
-        }
-
         QByteArray vertexBuf;
-        const int vertexCount = verticesAttrib->count();
+        const int vertexCount = vAttribs.at(0).att->count();
         vertexBuf.resize(stride * vertexCount * sizeof(float));
         float *p = reinterpret_cast<float *>(vertexBuf.data());
 
-        uint vertexIndex = vertexOffset;
-        uint normalIndex = normalOffset;
-        uint textCoordIndex = textCoordOffset;
-        uint colorIndex = colorOffset;
-        uint tangentIndex = tangentOffset;
-
         // Create interleaved buffer
-        for (int j = 0; j < vertexCount; ++j) {
-            *p++ = vertexPtr[vertexIndex++];
-            *p++ = vertexPtr[vertexIndex++];
-            *p++ = vertexPtr[vertexIndex++];
-            vertexIndex += vertexStride;
-
-            if (normalsPtr) {
-                *p++ = normalsPtr[normalIndex++];
-                *p++ = normalsPtr[normalIndex++];
-                *p++ = normalsPtr[normalIndex++];
-                normalIndex += normalStride;
-            }
-
-            if (texCoordsPtr) {
-                *p++ = texCoordsPtr[textCoordIndex++];
-                *p++ = texCoordsPtr[textCoordIndex++];
-                textCoordIndex += textCoordStride;
-            }
-
-            if (colorPtr) {
-                *p++ = colorPtr[colorIndex++];
-                *p++ = colorPtr[colorIndex++];
-                *p++ = colorPtr[colorIndex++];
-                *p++ = colorPtr[colorIndex++];
-                colorIndex += colorStride;
-            }
-
-            if (tangentsPtr) {
-                *p++ = tangentsPtr[tangentIndex++];
-                *p++ = tangentsPtr[tangentIndex++];
-                *p++ = tangentsPtr[tangentIndex++];
-                *p++ = tangentsPtr[tangentIndex++];
-                tangentIndex += tangentStride;
+        for (int i = 0; i < vertexCount; ++i) {
+            for (int j = 0; j < attribCount; ++j) {
+                VertexAttrib &vAtt = vAttribs[j];
+                for (uint k = 0; k < vAtt.att->vertexSize(); ++k)
+                    *p++ = vAtt.ptr[vAtt.index++];
+                vAtt.index += vAtt.stride;
             }
         }
 
@@ -736,8 +764,8 @@ void GLTFExporter::parseMeshes()
         vertexBufView.name = newBufferViewName();
         vertexBufView.length = vertexBuf.size();
         vertexBufView.offset = m_buffer.size();
-        vertexBufView.componentType = GLT_FLOAT;
-        vertexBufView.target = GLT_ARRAY_BUFFER;
+        vertexBufView.componentType = GL_FLOAT;
+        vertexBufView.target = GL_ARRAY_BUFFER;
         meshInfo.views.append(vertexBufView);
 
         QByteArray indexBuf;
@@ -770,60 +798,48 @@ void GLTFExporter::parseMeshes()
             indexBufView.length = indexBuf.size();
             indexBufView.offset = vertexBufView.offset + vertexBufView.length;
             indexBufView.componentType = indexSize == sizeof(quint32)
-                    ? GLT_UNSIGNED_INT : GLT_UNSIGNED_SHORT;
-            indexBufView.target = GLT_ELEMENT_ARRAY_BUFFER;
+                    ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT;
+            indexBufView.target = GL_ELEMENT_ARRAY_BUFFER;
             meshInfo.views.append(indexBufView);
         }
 
         MeshInfo::Accessor acc;
         uint startOffset = 0;
-        const float *bufPtr = reinterpret_cast<const float *>(vertexBuf.constData());
-        acc.name = newAccessorName();
-        acc.usage = QStringLiteral("POSITION");
+
         acc.bufferView = vertexBufView.name;
-        acc.offset = 0;
         acc.stride = stride * sizeof(float);
         acc.count = vertexCount;
         acc.componentType = vertexBufView.componentType;
-        acc.type = QStringLiteral("VEC3");
-        calcBB(acc.minVal, acc.maxVal, bufPtr, vertexCount, 3, startOffset, stride);
-        meshInfo.accessors.append(acc);
-        startOffset += 3;
-
-        if (normalsAttrib) {
+        for (int i = 0; i < attribCount; ++i) {
+            const VertexAttrib &vAtt = vAttribs.at(i);
             acc.name = newAccessorName();
-            acc.usage = QStringLiteral("NORMAL");
+            acc.usage = vAtt.usage;
             acc.offset = startOffset * sizeof(float);
-            calcBB(acc.minVal, acc.maxVal, bufPtr, vertexCount, 3, startOffset, stride);
+            switch (vAtt.att->vertexSize()) {
+            case 1:
+                acc.type = QStringLiteral("SCALAR");
+                break;
+            case 2:
+                acc.type = QStringLiteral("VEC2");
+                break;
+            case 3:
+                acc.type = QStringLiteral("VEC3");
+                break;
+            case 4:
+                acc.type = QStringLiteral("VEC4");
+                break;
+            case 9:
+                acc.type = QStringLiteral("MAT3");
+                break;
+            case 16:
+                acc.type = QStringLiteral("MAT4");
+                break;
+            default:
+                qCWarning(GLTFExporterLog, "Invalid vertex size: %d", vAtt.att->vertexSize());
+                break;
+            }
             meshInfo.accessors.append(acc);
-            startOffset += 3;
-        }
-        if (texCoordsAttrib) {
-            acc.name = newAccessorName();
-            acc.usage = QStringLiteral("TEXCOORD_0");
-            acc.offset = startOffset * sizeof(float);
-            acc.type = QStringLiteral("VEC2");
-            calcBB(acc.minVal, acc.maxVal, bufPtr, vertexCount, 2, startOffset, stride);
-            meshInfo.accessors.append(acc);
-            startOffset += 2;
-        }
-        if (colorAttrib) {
-            acc.name = newAccessorName();
-            acc.usage = QStringLiteral("COLOR");
-            acc.offset = startOffset * sizeof(float);
-            acc.type = QStringLiteral("VEC4");
-            calcBB(acc.minVal, acc.maxVal, bufPtr, vertexCount, 4, startOffset, stride);
-            meshInfo.accessors.append(acc);
-            startOffset += 4;
-        }
-        if (tangentsAttrib) {
-            acc.name = newAccessorName();
-            acc.usage = QStringLiteral("TANGENT");
-            acc.offset = startOffset * sizeof(float);
-            acc.type = QStringLiteral("VEC4");
-            calcBB(acc.minVal, acc.maxVal, bufPtr, vertexCount, 4, startOffset, stride);
-            meshInfo.accessors.append(acc);
-            startOffset += 4;
+            startOffset += vAtt.att->vertexSize();
         }
 
         // Index
@@ -836,7 +852,6 @@ void GLTFExporter::parseMeshes()
             acc.count = indexCount;
             acc.componentType = indexBufView.componentType;
             acc.type = QStringLiteral("SCALAR");
-            acc.minVal = acc.maxVal = QVector<float>();
             meshInfo.accessors.append(acc);
         }
 
@@ -903,10 +918,10 @@ void GLTFExporter::parseCameras()
         if (GLTFExporterLog().isDebugEnabled()) {
             qCDebug(GLTFExporterLog, "  Camera: #%i: (%ls/%ls)", cameraCount++,
                     qUtf16PrintableImpl(c.name), qUtf16PrintableImpl(c.originalName));
-            qCDebug(GLTFExporterLog, "    Aspect ratio: %i", c.aspectRatio);
-            qCDebug(GLTFExporterLog, "    Fov: %i", c.yfov);
-            qCDebug(GLTFExporterLog, "    Near: %i", c.znear);
-            qCDebug(GLTFExporterLog, "    Far: %i", c.zfar);
+            qCDebug(GLTFExporterLog, "    Aspect ratio: %f", c.aspectRatio);
+            qCDebug(GLTFExporterLog, "    Fov: %f", c.yfov);
+            qCDebug(GLTFExporterLog, "    Near: %f", c.znear);
+            qCDebug(GLTFExporterLog, "    Far: %f", c.zfar);
         }
     }
 }
@@ -952,110 +967,104 @@ void GLTFExporter::parseLights()
             qCDebug(GLTFExporterLog, "    Type: %i", lightInfo.type);
             qCDebug(GLTFExporterLog, "    Color: (%i, %i, %i, %i)", lightInfo.color.red(),
                     lightInfo.color.green(), lightInfo.color.blue(), lightInfo.color.alpha());
-            qCDebug(GLTFExporterLog, "    Intensity: %i", lightInfo.intensity);
+            qCDebug(GLTFExporterLog, "    Intensity: %f", lightInfo.intensity);
             qCDebug(GLTFExporterLog, "    Direction: (%f, %f, %f)", lightInfo.direction.x(),
                     lightInfo.direction.y(), lightInfo.direction.z());
             qCDebug(GLTFExporterLog, "    Attenuation: (%f, %f, %f)", lightInfo.attenuation.x(),
                     lightInfo.attenuation.y(), lightInfo.attenuation.z());
-            qCDebug(GLTFExporterLog, "    CutOffAngle: %i", lightInfo.cutOffAngle);
+            qCDebug(GLTFExporterLog, "    CutOffAngle: %f", lightInfo.cutOffAngle);
         }
     }
 }
 
-static inline QJsonArray col2jsvec(const QColor &color, bool alpha = false)
+void GLTFExporter::parseTechniques(QMaterial *material)
 {
-    QJsonArray arr;
-    arr << color.redF() << color.greenF() << color.blueF();
-    if (alpha)
-        arr << color.alphaF();
-    return arr;
-}
+    int techniqueCount = 0;
+    qCDebug(GLTFExporterLog, "  Parsing material techniques...");
 
-template <typename T>
-static inline QJsonArray vec2jsvec(const QVector<T> &v)
-{
-    QJsonArray arr;
-    for (int i = 0; i < v.count(); ++i)
-        arr << v.at(i);
-    return arr;
-}
+    for (auto technique : material->effect()->techniques()) {
+        QString techName;
+        if (m_techniqueIdMap.contains(technique)) {
+            techName = m_techniqueIdMap.value(technique);
+        } else {
+            techName = newTechniqueName();
+            parseRenderPasses(technique);
 
-static inline QJsonArray vec2jsvec(const QVector2D &v)
-{
-    QJsonArray arr;
-    arr << v.x() << v.y();
-    return arr;
-}
+        }
+        m_techniqueIdMap.insert(technique, techName);
 
-static inline QJsonArray vec2jsvec(const QVector3D &v)
-{
-    QJsonArray arr;
-    arr << v.x() << v.y() << v.z();
-    return arr;
-}
+        techniqueCount++;
 
-static inline QJsonArray vec2jsvec(const QVector4D &v)
-{
-    QJsonArray arr;
-    arr << v.x() << v.y() << v.z() << v.w();
-    return arr;
-}
-
-static inline QJsonArray matrix2jsvec(const QMatrix4x4 &matrix)
-{
-    QJsonArray jm;
-    const float *mtxp = matrix.constData();
-    for (int j = 0; j < 16; ++j)
-        jm.append(*mtxp++);
-    return jm;
-}
-
-static inline void setVarToJSonObject(QJsonObject &jsObj, const QString &key, const QVariant &var)
-{
-    switch (var.type()) {
-    case QVariant::Bool:
-        jsObj[key] = var.toBool();
-        break;
-    case QMetaType::Float:
-        jsObj[key] = var.value<float>();
-        break;
-    case QVariant::Vector2D:
-        jsObj[key] = vec2jsvec(var.value<QVector2D>());
-        break;
-    case QVariant::Vector3D:
-        jsObj[key] = vec2jsvec(var.value<QVector3D>());
-        break;
-    case QVariant::Vector4D:
-        jsObj[key] = vec2jsvec(var.value<QVector4D>());
-        break;
-    case QVariant::Matrix4x4:
-        jsObj[key] = matrix2jsvec(var.value<QMatrix4x4>());
-        break;
-    default:
-        qCWarning(GLTFExporterLog, "Unknown value type for '%ls'", qUtf16PrintableImpl(key));
-        break;
+        if (GLTFExporterLog().isDebugEnabled()) {
+            qCDebug(GLTFExporterLog, "    Technique #%i", techniqueCount);
+            qCDebug(GLTFExporterLog, "      name: '%ls'", qUtf16PrintableImpl(techName));
+        }
     }
 }
 
-static inline void promoteColorsToRGBA(QJsonObject *obj)
+void GLTFExporter::parseRenderPasses(QTechnique *technique)
 {
-    auto it = obj->begin();
-    auto itEnd = obj->end();
-    while (it != itEnd) {
-        QJsonArray arr = it.value().toArray();
-        if (arr.count() == 3) {
-            const QString key = it.key();
-            if (key == QStringLiteral("ambient")
-                    || key == QStringLiteral("diffuse")
-                    || key == QStringLiteral("specular")
-                    || key == QStringLiteral("warm")
-                    || key == QStringLiteral("cool")) {
-                arr.append(1);
-                *it = arr;
+    int passCount = 0;
+    qCDebug(GLTFExporterLog, "    Parsing render passes for technique...");
+
+    for (auto pass : technique->renderPasses()) {
+        QString name;
+        if (m_renderPassIdMap.contains(pass)) {
+            name = m_renderPassIdMap.value(pass);
+        } else {
+            name = newRenderPassName();
+            m_renderPassIdMap.insert(pass, name);
+            if (pass->shaderProgram() && !m_programInfo.contains(pass->shaderProgram())) {
+                ProgramInfo pi;
+                pi.name = newProgramName();
+                pi.vertexShader = addShaderInfo(QShaderProgram::Vertex,
+                                                pass->shaderProgram()->vertexShaderCode());
+                pi.tessellationControlShader =
+                        addShaderInfo(QShaderProgram::Fragment,
+                                      pass->shaderProgram()->tessellationControlShaderCode());
+                pi.tessellationEvaluationShader =
+                        addShaderInfo(QShaderProgram::TessellationControl,
+                                      pass->shaderProgram()->tessellationEvaluationShaderCode());
+                pi.geometryShader = addShaderInfo(QShaderProgram::TessellationEvaluation,
+                                                  pass->shaderProgram()->geometryShaderCode());
+                pi.fragmentShader = addShaderInfo(QShaderProgram::Geometry,
+                                                  pass->shaderProgram()->fragmentShaderCode());
+                pi.computeShader = addShaderInfo(QShaderProgram::Compute,
+                                                 pass->shaderProgram()->computeShaderCode());
+                m_programInfo.insert(pass->shaderProgram(), pi);
+                qCDebug(GLTFExporterLog, "      program: '%ls'", qUtf16PrintableImpl(pi.name));
             }
         }
-        ++it;
+        passCount++;
+
+        if (GLTFExporterLog().isDebugEnabled()) {
+            qCDebug(GLTFExporterLog, "      Render pass #%i", passCount);
+            qCDebug(GLTFExporterLog, "        name: '%ls'", qUtf16PrintableImpl(name));
+        }
     }
+}
+
+QString GLTFExporter::addShaderInfo(QShaderProgram::ShaderType type, QByteArray code)
+{
+    if (code.isEmpty())
+        return QString();
+
+    for (auto si : m_shaderInfo) {
+        if (si.type == QShaderProgram::Vertex && code == si.code)
+            return si.name;
+    }
+
+    ShaderInfo newInfo;
+    newInfo.type = type;
+    newInfo.code = code;
+    newInfo.name = newShaderName();
+    newInfo.uri = newInfo.name + QStringLiteral(".glsl");
+
+    m_shaderInfo.append(newInfo);
+
+    qCDebug(GLTFExporterLog, "      shader: '%ls'", qUtf16PrintableImpl(newInfo.name));
+
+    return newInfo.name;
 }
 
 bool GLTFExporter::saveScene()
@@ -1125,10 +1134,6 @@ bool GLTFExporter::saveScene()
         accessor["count"] = int(acc.count);
         accessor["componentType"] = int(acc.componentType);
         accessor["type"] = acc.type;
-        if (!acc.minVal.isEmpty() && !acc.maxVal.isEmpty()) {
-            accessor["min"] = vec2jsvec(acc.minVal);
-            accessor["max"] = vec2jsvec(acc.maxVal);
-        }
         accessors[acc.name] = accessor;
     }
     if (accessors.size())
@@ -1200,45 +1205,10 @@ bool GLTFExporter::saveScene()
     m_obj["scene"] = QStringLiteral("defaultScene");
 
     QJsonObject materials;
-    QHash<QString, QString> textureNameMap;
-    exportMaterials(materials, &textureNameMap);
+
+    exportMaterials(materials);
     if (materials.size())
         m_obj["materials"] = materials;
-
-    QJsonObject textures;
-    QHash<QString, QString> imageKeyMap; // uri -> key
-    for (auto it = textureNameMap.constBegin(); it != textureNameMap.constEnd(); ++it) {
-        QJsonObject texture;
-        if (!imageKeyMap.contains(it.key()))
-            imageKeyMap[it.key()] = newImageName();
-        texture["source"] = imageKeyMap[it.key()];
-        texture["format"] = 0x1908; // RGBA
-        texture["internalFormat"] = 0x1908;
-        texture["sampler"] = QStringLiteral("sampler_mip_rep");
-        texture["target"] = 3553; // TEXTURE_2D
-        texture["type"] = 5121; // UNSIGNED_BYTE
-        textures[it.value()] = texture;
-    }
-    if (textures.size()) {
-        m_obj["textures"] = textures;
-        QJsonObject samplers;
-        QJsonObject sampler;
-        sampler["magFilter"] = 9729; // LINEAR
-        sampler["minFilter"] = 9987; // LINEAR_MIPMAP_LINEAR
-        sampler["wrapS"] = 10497; // REPEAT
-        sampler["wrapT"] = 10497;
-        samplers["sampler_mip_rep"] = sampler;
-        m_obj["samplers"] = samplers;
-    }
-
-    QJsonObject images;
-    for (auto it = imageKeyMap.constBegin(); it != imageKeyMap.constEnd(); ++it) {
-        QJsonObject image;
-        image["uri"] = m_imageMap.value(it.key());
-        images[it.value()] = image;
-    }
-    if (images.size())
-        m_obj["images"] = images;
 
     // Lights must be declared as extensions to the top-level glTF object
     QJsonObject lights;
@@ -1283,7 +1253,192 @@ bool GLTFExporter::saveScene()
         m_obj["extensions"] = extensions;
     }
 
-    // TODO: Save techniques, programs, and shaders for custom materials
+    // Save effects for custom materials
+    // Note that we are not saving effects, techniques, render passes, shader programs, or shaders
+    // strictly according to GLTF format, but rather in our expanded QGLTF custom format,
+    // since the GLTF format doesn't quite match our needs.
+    // Having our own format also vastly simplifies export and import of custom materials,
+    // since we are not trying to push a round peg into a square hole.
+    // If use cases arise in future where our exported GLTF scenes need to be loaded by third party
+    // GLTF loaders, we could add an export option to do so, but the exported scene would never
+    // be quite the same as the original.
+    QJsonObject effects;
+    for (auto it = m_effectIdMap.constBegin(); it != m_effectIdMap.constEnd(); ++it) {
+        QEffect *effect = it.key();
+        const QString effectName = it.value();
+        QJsonObject effectObj;
+        QJsonObject paramObj;
+
+        for (QParameter *param : effect->parameters())
+            exportParameter(paramObj, param->name(), param->value());
+        if (!effect->objectName().isEmpty())
+            effectObj["name"] = effect->objectName();
+        if (!paramObj.isEmpty())
+            effectObj["parameters"] = paramObj;
+        QJsonArray techs;
+        for (auto tech : effect->techniques())
+            techs << m_techniqueIdMap.value(tech);
+        effectObj["techniques"] = techs;
+        effects[effectName] = effectObj;
+    }
+    if (effects.size())
+        m_obj["effects"] = effects;
+
+    // Save techniques for custom materials.
+    QJsonObject techniques;
+    for (auto it = m_techniqueIdMap.constBegin(); it != m_techniqueIdMap.constEnd(); ++it) {
+        QTechnique *technique = it.key();
+
+        QJsonObject techObj;
+        QJsonObject filterKeyObj;
+        QJsonObject paramObj;
+        QJsonArray renderPassArr;
+
+        for (QFilterKey *filterKey : technique->filterKeys())
+            setVarToJSonObject(filterKeyObj, filterKey->name(), filterKey->value());
+
+        for (QRenderPass *pass : technique->renderPasses())
+            renderPassArr << m_renderPassIdMap.value(pass);
+
+        for (QParameter *param : technique->parameters())
+            exportParameter(paramObj, param->name(), param->value());
+
+        const QGraphicsApiFilter *gFilter = technique->graphicsApiFilter();
+        if (gFilter) {
+            QJsonObject graphicsApiFilterObj;
+            graphicsApiFilterObj["api"] = gFilter->api();
+            graphicsApiFilterObj["profile"] = gFilter->profile();
+            graphicsApiFilterObj["minorVersion"] = gFilter->minorVersion();
+            graphicsApiFilterObj["majorVersion"] = gFilter->majorVersion();
+            if (!gFilter->vendor().isEmpty())
+                graphicsApiFilterObj["vendor"] = gFilter->vendor();
+            QJsonArray extensions;
+            for (auto extName : gFilter->extensions())
+                extensions << extName;
+            if (!extensions.isEmpty())
+                graphicsApiFilterObj["extensions"] = extensions;
+            techObj["gapifilter"] = graphicsApiFilterObj;
+        }
+        if (!technique->objectName().isEmpty())
+            techObj["name"] = technique->objectName();
+        if (!filterKeyObj.isEmpty())
+            techObj["filterkeys"] = filterKeyObj;
+        if (!paramObj.isEmpty())
+            techObj["parameters"] = paramObj;
+        if (!renderPassArr.isEmpty())
+            techObj["renderpasses"] = renderPassArr;
+        techniques[it.value()] = techObj;
+    }
+    if (techniques.size())
+        m_obj["techniques"] = techniques;
+
+    // Save render passes for custom materials.
+    QJsonObject passes;
+    for (auto it = m_renderPassIdMap.constBegin(); it != m_renderPassIdMap.constEnd(); ++it) {
+        const QRenderPass *pass = it.key();
+        const QString passId = it.value();
+
+        QJsonObject passObj;
+        QJsonObject filterKeyObj;
+        QJsonObject paramObj;
+        QJsonObject stateObj;
+
+        for (QFilterKey *filterKey : pass->filterKeys())
+            setVarToJSonObject(filterKeyObj, filterKey->name(), filterKey->value());
+        for (QParameter *param : pass->parameters())
+            exportParameter(paramObj, param->name(), param->value());
+        exportRenderStates(stateObj, pass);
+
+        if (!pass->objectName().isEmpty())
+            passObj["name"] = pass->objectName();
+        if (!filterKeyObj.isEmpty())
+            passObj["filterkeys"] = filterKeyObj;
+        if (!paramObj.isEmpty())
+            passObj["parameters"] = paramObj;
+        if (!stateObj.isEmpty())
+            passObj["states"] = stateObj;
+        passObj["program"] = m_programInfo.value(pass->shaderProgram()).name;
+        passes[passId] = passObj;
+
+    }
+    if (passes.size())
+        m_obj["renderpasses"] = passes;
+
+    // Save programs for custom materials
+    QJsonObject programs;
+    for (auto it = m_programInfo.constBegin(); it != m_programInfo.constEnd(); ++it) {
+        const QShaderProgram *program = it.key();
+        const ProgramInfo pi = it.value();
+
+        QJsonObject progObj;
+        if (!program->objectName().isEmpty())
+            progObj["name"] = program->objectName();
+        progObj["vertexShader"] = pi.vertexShader;
+        progObj["fragmentShader"] = pi.fragmentShader;
+        // Qt3D additions
+        if (!pi.tessellationControlShader.isEmpty())
+            progObj["tessCtrlShader"] = pi.tessellationControlShader;
+        if (!pi.tessellationEvaluationShader.isEmpty())
+            progObj["tessEvalShader"] = pi.tessellationEvaluationShader;
+        if (!pi.geometryShader.isEmpty())
+            progObj["geometryShader"] = pi.geometryShader;
+        if (!pi.computeShader.isEmpty())
+            progObj["computeShader"] = pi.computeShader;
+        programs[pi.name] = progObj;
+
+    }
+    if (programs.size())
+        m_obj["programs"] = programs;
+
+    // Save shaders for custom materials
+    QJsonObject shaders;
+    for (auto si : m_shaderInfo) {
+        QJsonObject shaderObj;
+        shaderObj["uri"] = si.uri;
+        shaders[si.name] = shaderObj;
+
+    }
+    if (shaders.size())
+        m_obj["shaders"] = shaders;
+
+    // Copy textures and shaders into temporary directory
+    copyTextures();
+    createShaders();
+
+    QJsonObject textures;
+    QHash<QString, QString> imageKeyMap; // uri -> key
+    for (auto it = m_textureIdMap.constBegin(); it != m_textureIdMap.constEnd(); ++it) {
+        QJsonObject texture;
+        if (!imageKeyMap.contains(it.key()))
+            imageKeyMap[it.key()] = newImageName();
+        texture["source"] = imageKeyMap[it.key()];
+        texture["format"] = GL_RGBA;
+        texture["internalFormat"] = GL_RGBA;
+        texture["sampler"] = QStringLiteral("sampler_mip_rep");
+        texture["target"] = GL_TEXTURE_2D;
+        texture["type"] = GL_UNSIGNED_BYTE;
+        textures[it.value()] = texture;
+    }
+    if (textures.size()) {
+        m_obj["textures"] = textures;
+        QJsonObject samplers;
+        QJsonObject sampler;
+        sampler["magFilter"] = GL_LINEAR;
+        sampler["minFilter"] = GL_LINEAR_MIPMAP_LINEAR;
+        sampler["wrapS"] = GL_REPEAT;
+        sampler["wrapT"] = GL_REPEAT;
+        samplers["sampler_mip_rep"] = sampler;
+        m_obj["samplers"] = samplers;
+    }
+
+    QJsonObject images;
+    for (auto it = imageKeyMap.constBegin(); it != imageKeyMap.constEnd(); ++it) {
+        QJsonObject image;
+        image["uri"] = m_imageMap.value(it.key());
+        images[it.value()] = image;
+    }
+    if (images.size())
+        m_obj["images"] = images;
 
     m_doc.setObject(m_obj);
 
@@ -1383,70 +1538,75 @@ QString GLTFExporter::exportNodes(GLTFExporter::Node *n, QJsonObject &nodes)
     return n->uniqueName;
 }
 
-void GLTFExporter::exportMaterials(QJsonObject &materials, QHash<QString, QString> *textureNameMap)
+void GLTFExporter::exportMaterials(QJsonObject &materials)
 {
     QHash<QString, bool> imageHasAlpha;
 
-    QHashIterator<Qt3DRender::QMaterial *, MaterialInfo> matIt(m_materialInfo);
+    QHashIterator<QMaterial *, MaterialInfo> matIt(m_materialInfo);
     for (auto matIt = m_materialInfo.constBegin(); matIt != m_materialInfo.constEnd(); ++matIt) {
+        const QMaterial *material = matIt.key();
         const MaterialInfo &matInfo = matIt.value();
 
-        QJsonObject material;
-        material["name"] = matInfo.originalName;
+        QJsonObject materialObj;
+        materialObj["name"] = matInfo.originalName;
 
-        bool opaque = true;
-        QJsonObject vals;
-        for (auto it = matInfo.textures.constBegin(); it != matInfo.textures.constEnd(); ++it) {
-            if (!textureNameMap->contains(it.value()))
-                textureNameMap->insert(it.value(), newTextureName());
-            QString key = it.key();
-            if (key == QStringLiteral("normal")) // avoid clashing with the vertex normals
-                key = QStringLiteral("normalmap");
-            // Alpha is supported for diffuse textures, but have to check the image data to decide
-            // if blending is needed
-            if (key == QStringLiteral("diffuse")) {
-                QString imgFn = it.value();
-                if (imageHasAlpha.contains(imgFn)) {
-                    if (imageHasAlpha[imgFn])
-                        opaque = false;
-                } else {
-                    QImage img(imgFn);
-                    if (!img.isNull()) {
-                        if (img.hasAlphaChannel()) {
-                            for (int y = 0; opaque && y < img.height(); ++y) {
-                                for (int x = 0; opaque && x < img.width(); ++x) {
-                                    if (qAlpha(img.pixel(x, y)) < 255)
-                                        opaque = false;
+        if (matInfo.type == MaterialInfo::TypeCustom) {
+            QVector<QParameter *> parameters = material->parameters();
+            QJsonObject paramObj;
+            for (auto param : parameters)
+                exportParameter(paramObj, param->name(), param->value());
+            materialObj["effect"] = m_effectIdMap.value(material->effect());
+            materialObj["parameters"] = paramObj;
+        } else {
+            bool opaque = true;
+            QJsonObject vals;
+            for (auto it = matInfo.textures.constBegin(); it != matInfo.textures.constEnd(); ++it) {
+                QString key = it.key();
+                if (key == QStringLiteral("normal")) // avoid clashing with the vertex normals
+                    key = QStringLiteral("normalmap");
+                // Alpha is supported for diffuse textures, but have to check the image data to
+                // decide if blending is needed
+                if (key == QStringLiteral("diffuse")) {
+                    QString imgFn = it.value();
+                    if (imageHasAlpha.contains(imgFn)) {
+                        if (imageHasAlpha[imgFn])
+                            opaque = false;
+                    } else {
+                        QImage img(imgFn);
+                        if (!img.isNull()) {
+                            if (img.hasAlphaChannel()) {
+                                for (int y = 0; opaque && y < img.height(); ++y) {
+                                    for (int x = 0; opaque && x < img.width(); ++x) {
+                                        if (qAlpha(img.pixel(x, y)) < 255)
+                                            opaque = false;
+                                    }
                                 }
                             }
+                            imageHasAlpha[imgFn] = !opaque;
+                        } else {
+                            qCWarning(GLTFExporterLog,
+                                      "Cannot determine presence of alpha for '%ls'",
+                                      qUtf16PrintableImpl(imgFn));
                         }
-                        imageHasAlpha[imgFn] = !opaque;
-                    } else {
-                        qCWarning(GLTFExporterLog, "Cannot determine presence of alpha for '%ls'",
-                                  qUtf16PrintableImpl(imgFn));
                     }
                 }
+                vals[key] = m_textureIdMap.value(it.value());
             }
-            vals[key] = textureNameMap->value(it.value());
-        }
-        for (auto it = matInfo.values.constBegin(); it != matInfo.values.constEnd(); ++it) {
-            if (vals.contains(it.key()))
-                continue;
-            setVarToJSonObject(vals, it.key(), it.value());
-        }
-        for (auto it = matInfo.colors.constBegin(); it != matInfo.colors.constEnd(); ++it) {
-            if (vals.contains(it.key()))
-                continue;
-            // Alpha is supported for the diffuse color. < 1 will enable blending.
-            const bool alpha = it.key() == QStringLiteral("diffuse");
-            if (alpha && it.value().alphaF() < 1.0f)
-                opaque = false;
-            vals[it.key()] = col2jsvec(it.value(), alpha);
-        }
-        if (matInfo.type == MaterialInfo::TypeCustom) {
-            material["values"] = vals;
-            // TODO: custom materials
-        } else {
+            for (auto it = matInfo.values.constBegin(); it != matInfo.values.constEnd(); ++it) {
+                if (vals.contains(it.key()))
+                    continue;
+                setVarToJSonObject(vals, it.key(), it.value());
+            }
+            for (auto it = matInfo.colors.constBegin(); it != matInfo.colors.constEnd(); ++it) {
+                if (vals.contains(it.key()))
+                    continue;
+                // Alpha is supported for the diffuse color. < 1 will enable blending.
+                const bool alpha = (it.key() == QStringLiteral("diffuse"))
+                        && (matInfo.type != MaterialInfo::TypeCustom);
+                if (alpha && it.value().alphaF() < 1.0f)
+                    opaque = false;
+                vals[it.key()] = col2jsvec(it.value(), alpha);
+            }
             // Material is a common material, so export it as such.
             QJsonObject commonMat;
             if (matInfo.type == MaterialInfo::TypeGooch)
@@ -1473,10 +1633,10 @@ void GLTFExporter::exportMaterials(QJsonObject &materials, QHash<QString, QStrin
                 commonMat["functions"] = functions;
             QJsonObject extensions;
             extensions["KHR_materials_common"] = commonMat;
-            material["extensions"] = extensions;
+            materialObj["extensions"] = extensions;
         }
 
-        materials[matInfo.name] = material;
+        materials[matInfo.name] = materialObj;
     }
 }
 
@@ -1502,6 +1662,197 @@ void GLTFExporter::clearOldExport(const QString &dir)
         qCDebug(GLTFExporterLog, "Removed old file: '%ls'",
                 qUtf16PrintableImpl(qrcFile.fileName()));
     }
+}
+
+void GLTFExporter::exportParameter(QJsonObject &jsonObj, const QString &name,
+                                   const QVariant &variant)
+{
+    QLatin1String typeStr("type");
+    QLatin1String valueStr("value");
+
+    QJsonObject paramObj;
+
+    if (variant.canConvert<QAbstractTexture *>()) {
+        paramObj[typeStr] = GL_SAMPLER_2D;
+        paramObj[valueStr] = m_textureIdMap.value(textureVariantToUrl(variant));
+    } else {
+        switch (QMetaType::Type(variant.type())) {
+        case QMetaType::Bool:
+            paramObj[typeStr] = GL_BOOL;
+            paramObj[valueStr] = variant.toBool();
+            break;
+        case QMetaType::Int: // fall through
+        case QMetaType::Long: // fall through
+        case QMetaType::LongLong:
+            paramObj[typeStr] = GL_INT;
+            paramObj[valueStr] = variant.toInt();
+            break;
+        case QMetaType::UInt: // fall through
+        case QMetaType::ULong: // fall through
+        case QMetaType::ULongLong:
+            paramObj[typeStr] = GL_UNSIGNED_INT;
+            paramObj[valueStr] = variant.toInt();
+            break;
+        case QMetaType::Short:
+            paramObj[typeStr] = GL_SHORT;
+            paramObj[valueStr] = variant.toInt();
+            break;
+        case QMetaType::UShort:
+            paramObj[typeStr] = GL_UNSIGNED_SHORT;
+            paramObj[valueStr] = variant.toInt();
+            break;
+        case QMetaType::Char:
+            paramObj[typeStr] = GL_BYTE;
+            paramObj[valueStr] = variant.toInt();
+            break;
+        case QMetaType::UChar:
+            paramObj[typeStr] = GL_UNSIGNED_BYTE;
+            paramObj[valueStr] = variant.toInt();
+            break;
+        case QMetaType::QColor:
+            paramObj[typeStr] = GL_FLOAT_VEC4;
+            paramObj[valueStr] = col2jsvec(variant.value<QColor>(), true);
+            break;
+        case QMetaType::Float:
+            paramObj[typeStr] = GL_FLOAT;
+            paramObj[valueStr] = variant.value<float>();
+            break;
+        case QMetaType::QVector2D:
+            paramObj[typeStr] = GL_FLOAT_VEC2;
+            paramObj[valueStr] = vec2jsvec(variant.value<QVector2D>());
+            break;
+        case QMetaType::QVector3D:
+            paramObj[typeStr] = GL_FLOAT_VEC3;
+            paramObj[valueStr] = vec2jsvec(variant.value<QVector3D>());
+            break;
+        case QMetaType::QVector4D:
+            paramObj[typeStr] = GL_FLOAT_VEC4;
+            paramObj[valueStr] = vec2jsvec(variant.value<QVector4D>());
+            break;
+        case QMetaType::QMatrix4x4:
+            paramObj[typeStr] = GL_FLOAT_MAT4;
+            paramObj[valueStr] = matrix2jsvec(variant.value<QMatrix4x4>());
+            break;
+        default:
+            qCWarning(GLTFExporterLog, "Unknown value type for '%ls'", qUtf16PrintableImpl(name));
+            break;
+        }
+    }
+
+    jsonObj[name] = paramObj;
+}
+
+void GLTFExporter::exportRenderStates(QJsonObject &jsonObj, const QRenderPass *pass)
+{
+    QJsonArray enableStates;
+    QJsonObject funcObj;
+    for (QRenderState *state : pass->renderStates()) {
+        QJsonArray arr;
+        if (qobject_cast<QAlphaCoverage *>(state)) {
+            enableStates << GL_SAMPLE_ALPHA_TO_COVERAGE;
+        } else if (qobject_cast<QAlphaTest *>(state)) {
+            auto s = qobject_cast<QAlphaTest *>(state);
+            arr << s->alphaFunction();
+            arr << s->referenceValue();
+            funcObj["alphaTest"] = arr;
+        } else if (qobject_cast<QBlendEquation *>(state)) {
+            auto s = qobject_cast<QBlendEquation *>(state);
+            arr << s->blendFunction();
+            funcObj["blendEquationSeparate"] = arr;
+        } else if (qobject_cast<QBlendEquationArguments *>(state)) {
+            auto s = qobject_cast<QBlendEquationArguments *>(state);
+            arr << s->sourceRgb();
+            arr << s->sourceAlpha();
+            arr << s->destinationRgb();
+            arr << s->destinationAlpha();
+            arr << s->bufferIndex();
+            funcObj["blendFuncSeparate"] = arr;
+        } else if (qobject_cast<QClipPlane *>(state)) {
+            auto s = qobject_cast<QClipPlane *>(state);
+            arr << s->planeIndex();
+            arr << s->normal().x();
+            arr << s->normal().y();
+            arr << s->normal().z();
+            arr << s->distance();
+            funcObj["clipPlane"] = arr;
+        } else if (qobject_cast<QColorMask *>(state)) {
+            auto s = qobject_cast<QColorMask *>(state);
+            arr << s->isRedMasked();
+            arr << s->isGreenMasked();
+            arr << s->isBlueMasked();
+            arr << s->isAlphaMasked();
+            funcObj["colorMask"] = arr;
+        } else if (qobject_cast<QCullFace *>(state)) {
+            auto s = qobject_cast<QCullFace *>(state);
+            arr << s->mode();
+            funcObj["cullFace"] = arr;
+        } else if (qobject_cast<QDepthTest *>(state)) {
+            auto s = qobject_cast<QDepthTest *>(state);
+            arr << s->depthFunction();
+            funcObj["depthFunc"] = arr;
+        } else if (qobject_cast<QDithering *>(state)) {
+            enableStates << GL_DITHER;
+        } else if (qobject_cast<QFrontFace *>(state)) {
+            auto s = qobject_cast<QFrontFace *>(state);
+            arr << s->direction();
+            funcObj["frontFace"] = arr;
+        } else if (qobject_cast<QFrontFace *>(state)) {
+            auto s = qobject_cast<QFrontFace *>(state);
+            arr << s->direction();
+            funcObj["frontFace"] = arr;
+        } else if (qobject_cast<QMultiSampleAntiAliasing *>(state)) {
+            enableStates << 0x809D; // GL_MULTISAMPLE
+        } else if (qobject_cast<QNoDepthMask *>(state)) {
+            arr << false;
+            funcObj["depthMask"] = arr;
+        } else if (qobject_cast<QPointSize *>(state)) {
+            auto s = qobject_cast<QPointSize *>(state);
+            arr << s->sizeMode();
+            arr << s->value();
+            funcObj["pointSize"] = arr;
+        } else if (qobject_cast<QPolygonOffset *>(state)) {
+            auto s = qobject_cast<QPolygonOffset *>(state);
+            arr << s->scaleFactor();
+            arr << s->depthSteps();
+            funcObj["polygonOffset"] = arr;
+        } else if (qobject_cast<QScissorTest *>(state)) {
+            auto s = qobject_cast<QScissorTest *>(state);
+            arr << s->left();
+            arr << s->bottom();
+            arr << s->width();
+            arr << s->height();
+            funcObj["scissor"] = arr;
+        } else if (qobject_cast<QSeamlessCubemap *>(state)) {
+            enableStates << 0x884F; // GL_TEXTURE_CUBE_MAP_SEAMLESS
+        } else if (qobject_cast<QStencilMask *>(state)) {
+            auto s = qobject_cast<QStencilMask *>(state);
+            arr << int(s->frontOutputMask());
+            arr << int(s->backOutputMask());
+            funcObj["stencilMask"] = arr;
+        } else if (qobject_cast<QStencilOperation *>(state)) {
+            auto s = qobject_cast<QStencilOperation *>(state);
+            arr << s->front()->stencilTestFailureOperation();
+            arr << s->front()->depthTestFailureOperation();
+            arr << s->front()->allTestsPassOperation();
+            arr << s->back()->stencilTestFailureOperation();
+            arr << s->back()->depthTestFailureOperation();
+            arr << s->back()->allTestsPassOperation();
+            funcObj["stencilOperation"] = arr;
+        } else if (qobject_cast<QStencilTest *>(state)) {
+            auto s = qobject_cast<QStencilTest *>(state);
+            arr << int(s->front()->comparisonMask());
+            arr << s->front()->referenceValue();
+            arr << s->front()->stencilFunction();
+            arr << int(s->back()->comparisonMask());
+            arr << s->back()->referenceValue();
+            arr << s->back()->stencilFunction();
+            funcObj["stencilTest"] = arr;
+        }
+    }
+    if (!enableStates.isEmpty())
+        jsonObj["enable"] = enableStates;
+    if (!funcObj.isEmpty())
+        jsonObj["functions"] = funcObj;
 }
 
 QString GLTFExporter::newBufferViewName()
@@ -1562,6 +1913,64 @@ QString GLTFExporter::newCameraName()
 QString GLTFExporter::newLightName()
 {
     return QString(QStringLiteral("light_%1")).arg(++m_lightCount);
+}
+
+QString GLTFExporter::newRenderPassName()
+{
+    return QString(QStringLiteral("renderpass_%1")).arg(++m_renderPassCount);
+}
+
+QString GLTFExporter::newEffectName()
+{
+    return QString(QStringLiteral("effect_%1")).arg(++m_effectCount);
+}
+
+QString GLTFExporter::textureVariantToUrl(const QVariant &var)
+{
+    QString urlString;
+    QAbstractTexture *texture = var.value<QAbstractTexture *>();
+    if (texture->textureImages().size()) {
+        QTextureImage *image = qobject_cast<QTextureImage *>(texture->textureImages().at(0));
+        if (image) {
+            urlString = QUrlHelper::urlToLocalFileOrQrc(image->source());
+            if (!m_textureIdMap.contains(urlString))
+                m_textureIdMap.insert(urlString, newTextureName());
+        }
+    }
+    return urlString;
+}
+
+void GLTFExporter::setVarToJSonObject(QJsonObject &jsObj, const QString &key, const QVariant &var)
+{
+    switch (QMetaType::Type(var.type())) {
+    case QMetaType::Bool:
+        jsObj[key] = var.toBool();
+        break;
+    case QMetaType::Float:
+        jsObj[key] = var.value<float>();
+        break;
+    case QMetaType::QVector2D:
+        jsObj[key] = vec2jsvec(var.value<QVector2D>());
+        break;
+    case QMetaType::QVector3D:
+        jsObj[key] = vec2jsvec(var.value<QVector3D>());
+        break;
+    case QMetaType::QVector4D:
+        jsObj[key] = vec2jsvec(var.value<QVector4D>());
+        break;
+    case QMetaType::QMatrix4x4:
+        jsObj[key] = matrix2jsvec(var.value<QMatrix4x4>());
+        break;
+    case QMetaType::QString:
+        jsObj[key] = var.toString();
+        break;
+    case QMetaType::QColor:
+        jsObj[key] = col2jsvec(var.value<QColor>(), true);
+        break;
+    default:
+        qCWarning(GLTFExporterLog, "Unknown value type for '%ls'", qUtf16PrintableImpl(key));
+        break;
+    }
 }
 
 } // namespace Qt3DRender
