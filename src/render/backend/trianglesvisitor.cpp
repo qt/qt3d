@@ -199,7 +199,7 @@ void traverseTriangleStrip(vertex *vertices,
 
     uint ndx[3];
     QVector3D abc[3];
-    while (i < vertexInfo.count) {
+    while (i < vertexInfo.count - 2) {
         for (uint u = 0; u < 3; ++u) {
             ndx[u] = (i + u);
             uint idx = ndx[u] * verticesStride;
@@ -207,7 +207,7 @@ void traverseTriangleStrip(vertex *vertices,
                 abc[u][j] = vertices[idx + j];
             }
         }
-        visitor->visit(ndx[2], abc[2], ndx[1], abc[1], ndx[2], abc[0]);
+        visitor->visit(ndx[2], abc[2], ndx[1], abc[1], ndx[0], abc[0]);
         ++i;
     }
 }
@@ -229,18 +229,18 @@ void traverseTriangleFanIndexed(index *indices,
     for (uint j = 0; j < maxVerticesDataSize; ++j) {
         abc[0][j] = vertices[static_cast<int>(indices[0]) * verticesStride + j];
     }
-
+    ndx[0] = indices[0];
     uint i = 1;
-    while (i < indexInfo.count) {
+    while (i < indexInfo.count - 1) {
         for (uint u = 0; u < 2; ++u) {
-            ndx[i] = indices[i + u];
-            uint idx = ndx[i] * verticesStride;
+            ndx[u + 1] = indices[i + u];
+            uint idx = ndx[u + 1] * verticesStride;
             for (uint j = 0; j < maxVerticesDataSize; ++j) {
                 abc[u + 1][j] = vertices[idx + j];
             }
         }
         visitor->visit(ndx[2], abc[2], ndx[1], abc[1], ndx[0], abc[0]);
-        i += 2;
+        i += 1;
     }
 }
 
@@ -259,18 +259,19 @@ void traverseTriangleFan(vertex *vertices,
     for (uint j = 0; j < maxVerticesDataSize; ++j) {
         abc[0][j] = vertices[j];
     }
+    ndx[0] = 0;
 
     uint i = 1;
-    while (i < vertexInfo.count) {
+    while (i < vertexInfo.count - 1) {
         for (uint u = 0; u < 2; ++u) {
-            ndx[u] = (i + u);
-            uint idx = ndx[u] * verticesStride;
+            ndx[u + 1] = (i + u);
+            uint idx = ndx[u + 1] * verticesStride;
             for (uint j = 0; j < maxVerticesDataSize; ++j) {
                 abc[u + 1][j] = vertices[idx + j];
             }
         }
         visitor->visit(ndx[2], abc[2], ndx[1], abc[1], ndx[0], abc[0]);
-        i += 2;
+        i += 1;
     }
 }
 
