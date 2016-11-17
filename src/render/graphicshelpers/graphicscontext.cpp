@@ -507,6 +507,7 @@ void GraphicsContext::loadShader(Shader *shader)
 
         shader->setGraphicsContext(this);
         shader->setLoaded(true);
+        shader->markDirty(AbstractRenderer::AllDirty);
     }
 }
 
