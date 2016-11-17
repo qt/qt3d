@@ -44,6 +44,7 @@
 #include <private/nodemanagers_p.h>
 #include <private/resourceaccessor_p.h>
 #include <private/attachmentpack_p.h>
+#include <private/qt3dquickrender_logging_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -258,8 +259,7 @@ void Scene2D::render()
                 // Need to call sync even if the texture is not in use
                 syncRenderControl();
                 m_context->doneCurrent();
-                // TODO: add logging category for scene2d
-                //qCWarning(Scene2D) << "Texture not in use.";
+                qCWarning(Qt3DRender::Quick::Scene2D) << Q_FUNC_INFO << "Texture not in use.";
                 return;
             }
             textureLock->lock();
@@ -277,7 +277,7 @@ void Scene2D::render()
                     syncRenderControl();
                     textureLock->unlock();
                     m_context->doneCurrent();
-                    //qCWarning(Scene2D) << "Fbo not initialized.";
+                    qCWarning(Qt3DRender::Quick::Scene2D) << Q_FUNC_INFO << "Fbo not initialized.";
                     return;
                 }
             }
