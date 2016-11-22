@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 import Qt3D.Core 2.0
-import Qt3D.Render 2.0
+import Qt3D.Render 2.2
 import Qt3D.Input 2.0
 import QtQuick 2.0 as QQ2
 import QtQuick.Scene3D 2.0
@@ -79,31 +79,33 @@ QQ2.Item {
                         width: 1024
                         height: 1024
                         format: Texture.RGBA8_UNorm
-                        generateMipMaps: false
+                        generateMipMaps: true
                         magnificationFilter: Texture.Linear
-                        minificationFilter: Texture.Linear
+                        minificationFilter: Texture.LinearMipMapLinear
                         wrapMode {
                             x: WrapMode.ClampToEdge
                             y: WrapMode.ClampToEdge
                         }
                     }
-                }
 
-                OffscreenGui {
+                }
+                InteractiveGui {
 
                 }
             }
 
             FirstPersonCameraController {
+                id: controller
                 camera: camera
             }
 
             components: [
                 RenderSettings {
+                    pickingSettings.pickMethod: PickingSettings.TrianglePicking
                     activeFrameGraph:
                         ForwardRenderer {
                             camera: camera
-                        }
+                    }
                 },
                 InputSettings {}
             ]
@@ -127,7 +129,23 @@ QQ2.Item {
                     texture: offscreenTexture
                 }
 
-                components: [planeMesh, material, transform]
+                property ObjectPicker picker: ObjectPicker {
+                    hoverEnabled: true
+                    dragEnabled: true
+                    eventForward: EventForward {
+                        id: eventForward
+                        target: qmlTexture
+                        focus: true
+                    }
+                    onPressed: {
+                        controller.enabled = false
+                    }
+                    onReleased: {
+                        controller.enabled = true
+                    }
+                }
+
+                components: [planeMesh, material, transform, picker]
             }
         }
     }

@@ -16,6 +16,6 @@ RESOURCES += \
 OTHER_FILES += \
     main.qml
 
-DISTFILES += \
-    PlaneMaterial.qml \
+HEADERS +=
+
 
