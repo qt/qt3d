@@ -81,6 +81,7 @@ public:
     bool m_forwardMouseEvents;
     bool m_forwardKeyboardEvents;
     bool m_focus;
+    QMetaObject::Connection m_destructionConnection;
 };
 
 struct QEventForwardData

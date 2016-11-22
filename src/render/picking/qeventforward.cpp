@@ -36,8 +36,12 @@
 
 #include "qeventforward.h"
 #include "qeventforward_p.h"
+#include "posteventstofrontend_p.h"
 
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <QtCore/qcoreapplication.h>
+
+#include <QtGui/qevent.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -148,11 +152,24 @@ QObject *QEventForward::target() const
     return d->m_target;
 }
 
+void QEventForward::targetDestroyed(QObject *target)
+{
+    Q_D(QEventForward);
+    Q_ASSERT(target == d->m_target);
+    setTarget(nullptr);
+}
+
 void QEventForward::setTarget(QObject *target)
 {
     Q_D(QEventForward);
     if (target != d->m_target) {
+        if (d->m_target != nullptr)
+            QObject::disconnect(d->m_destructionConnection);
         d->m_target = target;
+        if (d->m_target) {
+            d->m_destructionConnection = QObject::connect(target, &QObject::destroyed,
+                                                          this, &QEventForward::targetDestroyed);
+        }
         emit targetChanged(target);
     }
 }
@@ -247,6 +264,20 @@ Qt3DCore::QNodeCreatedChangeBasePtr QEventForward::createNodeCreationChange() co
     data.forwardKeyboardEvents = d->m_forwardKeyboardEvents;
     data.focus = d->m_focus;
     return creationChange;
+}
+
+void QEventForward::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
+{
+    Q_D(QEventForward);
+    Qt3DCore::QPropertyUpdatedChangePtr e
+            = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
+    if (e->type() == Qt3DCore::PropertyUpdated && d->m_target != nullptr) {
+        if (e->propertyName() == QByteArrayLiteral("events")) {
+            PostEventsToFrontendPtr postedEvents = e->value().value<PostEventsToFrontendPtr>();
+            for (QEvent *event : postedEvents->events())
+                QCoreApplication::sendEvent(d->m_target, event);
+        }
+    }
 }
 
 } // Qt3DRender

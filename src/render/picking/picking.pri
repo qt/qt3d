@@ -10,7 +10,8 @@ HEADERS += \
     $$PWD/qobjectpicker_p.h \
     $$PWD/qeventforward.h \
     $$PWD/qeventforward_p.h \
-    $$PWD/eventforward_p.h
+    $$PWD/eventforward_p.h \
+    $$PWD/posteventstofrontend_p.h
 
 SOURCES += \
     $$PWD/qobjectpicker.cpp \
@@ -19,4 +20,5 @@ SOURCES += \
     $$PWD/objectpicker.cpp \
     $$PWD/pickeventfilter.cpp \
     $$PWD/qeventforward.cpp \
-    $$PWD/eventforward.cpp
+    $$PWD/eventforward.cpp \
+    $$PWD/posteventstofrontend.cpp

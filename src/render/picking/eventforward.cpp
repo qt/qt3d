@@ -40,6 +40,7 @@
 
 #include <private/qeventforward_p.h>
 #include <private/eventforward_p.h>
+#include <private/posteventstofrontend_p.h>
 
 #include <QtGui/qevent.h>
 #include <QtCore/qcoreapplication.h>
@@ -51,7 +52,7 @@ namespace Qt3DRender {
 namespace Render {
 
 EventForward::EventForward()
-    : m_target(nullptr)
+    : BackendNode(QBackendNode::ReadWrite)
     , m_forwardMouseEvents(false)
     , m_forwardKeyboardEvents(false)
     , m_focus(false)
@@ -67,17 +68,11 @@ EventForward::~EventForward()
 void EventForward::cleanup()
 {
     setEnabled(false);
-    m_target = nullptr;
     m_coordinateAttribute = "";
     m_coordinateTransform.setToIdentity();
     m_forwardMouseEvents = false;
     m_forwardKeyboardEvents = false;
     m_focus = false;
-}
-
-QObject *EventForward::target() const
-{
-    return m_target;
 }
 
 QString EventForward::coordinateAttribute() const
@@ -103,11 +98,6 @@ bool EventForward::forwardKeyboardEvents() const
 bool EventForward::focus() const
 {
     return m_focus;
-}
-
-void EventForward::setTarget(QObject *target)
-{
-    m_target = target;
 }
 
 void EventForward::setCoordinateTransform(const QMatrix4x4 &transform)
@@ -139,7 +129,6 @@ void EventForward::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QEventForwardData>>(change);
     const auto &data = typedChange->data;
-    setTarget(data.target);
     setCoordinateAttribute(data.coordinateAttribute);
     setCoordinateTransform(data.coordinateTransform);
     setForwardMouseEvents(data.forwardMouseEvents);
@@ -153,9 +142,7 @@ void EventForward::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         const Qt3DCore::QPropertyUpdatedChangePtr propertyChange
                 = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
 
-        if (propertyChange->propertyName() == QByteArrayLiteral("target"))
-            setTarget(propertyChange->value().value<QObject*>());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("coordinateTransform"))
+        if (propertyChange->propertyName() == QByteArrayLiteral("coordinateTransform"))
             setCoordinateTransform(propertyChange->value().value<QMatrix4x4>());
         else if (propertyChange->propertyName() == QByteArrayLiteral("coordinateAttribute"))
             setCoordinateAttribute(propertyChange->value().toString());
@@ -177,16 +164,30 @@ void EventForward::forward(const QMouseEvent &event, const QVector4D &coordinate
     QMouseEvent *mouseEvent = new QMouseEvent(event.type(), local, local, local, event.button(),
                                       event.buttons(), event.modifiers(),
                                       Qt::MouseEventSynthesizedByApplication);
-    QCoreApplication::postEvent(m_target, mouseEvent);
+
+    PostEventsToFrontendPtr events = PostEventsToFrontendPtr::create(mouseEvent);
+
+    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+    e->setPropertyName("events");
+    e->setValue(QVariant::fromValue(events));
+    notifyObservers(e);
 }
 
-void EventForward::forward(const QList<QKeyEvent> &events)
+void EventForward::forward(const QList<QKeyEvent> &keyEvents)
 {
-    for (const QKeyEvent &e : events) {
+    QVector<QEvent *> eventsToSend;
+    for (const QKeyEvent &e : keyEvents) {
         QKeyEvent *keyEvent = new QKeyEvent(e.type(), e.key(), e.modifiers(), e.nativeScanCode(),
                                       e.nativeVirtualKey(), e.nativeModifiers());
-        QCoreApplication::postEvent(m_target, keyEvent);
+        eventsToSend.append(keyEvent);
     }
+    PostEventsToFrontendPtr events = PostEventsToFrontendPtr::create(eventsToSend);
+    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+    e->setPropertyName("events");
+    e->setValue(QVariant::fromValue(events));
+    notifyObservers(e);
 }
 
 } // Render

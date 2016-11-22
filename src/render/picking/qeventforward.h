@@ -87,9 +87,13 @@ Q_SIGNALS:
     void forwardKeyboardEventsChanged(bool forward);
     void focusChanged(bool focus);
 
+protected:
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
+
 private:
     Q_DECLARE_PRIVATE(QEventForward)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+    void targetDestroyed(QObject *target);
 };
 
 } // Qt3DRender

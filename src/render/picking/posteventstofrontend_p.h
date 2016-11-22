@@ -34,9 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_EVENTFORWARD_P_H
-#define QT3DRENDER_RENDER_EVENTFORWARD_P_H
-
+#ifndef QT3DRENDER_POSTEVENTSTOFRONTEND_P_H
+#define QT3DRENDER_POSTEVENTSTOFRONTEND_P_H
 
 //
 //  W A R N I N G
@@ -49,57 +48,34 @@
 // We mean it.
 //
 
-#include <private/backendnode_p.h>
-
-#include <QtGui/qmatrix4x4.h>
 #include <QtGui/qevent.h>
-#include <QtCore/qstring.h>
+#include <QtCore/qvector.h>
+#include <QtCore/qsharedpointer.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-namespace Render {
-
-class Q_AUTOTEST_EXPORT EventForward : public BackendNode
+class Q_AUTOTEST_EXPORT PostEventsToFrontend : public QObject
 {
+    Q_OBJECT
 public:
-    EventForward();
-    ~EventForward();
+    PostEventsToFrontend();
+    PostEventsToFrontend(QEvent *event);
+    PostEventsToFrontend(const QVector<QEvent *> &events);
+    ~PostEventsToFrontend();
 
-    void cleanup();
-
-    QString coordinateAttribute() const;
-    QMatrix4x4 coordinateTransform() const;
-    bool forwardMouseEvents() const;
-    bool forwardKeyboardEvents() const;
-    bool focus() const;
-
-    void setTarget(QObject *target);
-    void setCoordinateTransform(const QMatrix4x4 &transform);
-    void setCoordinateAttribute(const QString &attribute);
-    void setForwardMouseEvents(bool enabled);
-    void setForwardKeyboardEvents(bool enabled);
-    void setFocus(bool focus);
-
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
-
-    void forward(const QMouseEvent &event, const QVector4D &coordinate);
-    void forward(const QList<QKeyEvent> &keyEvents);
-
+    QVector<QEvent *> &events();
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
-
-    QString m_coordinateAttribute;
-    QMatrix4x4 m_coordinateTransform;
-    bool m_forwardMouseEvents;
-    bool m_forwardKeyboardEvents;
-    bool m_focus;
+    QVector<QEvent *> m_events;
 };
 
-} // Render
+typedef QSharedPointer<PostEventsToFrontend> PostEventsToFrontendPtr;
+
 } // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_EVENTFORWARD_P_H
+Q_DECLARE_METATYPE(Qt3DRender::PostEventsToFrontend*)
+
+#endif // QT3DRENDER_POSTEVENTSTOFRONTEND_P_H

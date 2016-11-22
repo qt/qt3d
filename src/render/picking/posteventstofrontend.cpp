@@ -34,72 +34,41 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_EVENTFORWARD_P_H
-#define QT3DRENDER_RENDER_EVENTFORWARD_P_H
-
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <private/backendnode_p.h>
-
-#include <QtGui/qmatrix4x4.h>
-#include <QtGui/qevent.h>
-#include <QtCore/qstring.h>
+#include "posteventstofrontend_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-namespace Render {
-
-class Q_AUTOTEST_EXPORT EventForward : public BackendNode
+PostEventsToFrontend::PostEventsToFrontend()
+    : QObject()
 {
-public:
-    EventForward();
-    ~EventForward();
 
-    void cleanup();
+}
 
-    QString coordinateAttribute() const;
-    QMatrix4x4 coordinateTransform() const;
-    bool forwardMouseEvents() const;
-    bool forwardKeyboardEvents() const;
-    bool focus() const;
+PostEventsToFrontend::PostEventsToFrontend(QEvent *event)
+    : QObject()
+{
+    m_events.append(event);
+}
 
-    void setTarget(QObject *target);
-    void setCoordinateTransform(const QMatrix4x4 &transform);
-    void setCoordinateAttribute(const QString &attribute);
-    void setForwardMouseEvents(bool enabled);
-    void setForwardKeyboardEvents(bool enabled);
-    void setFocus(bool focus);
+PostEventsToFrontend::PostEventsToFrontend(const QVector<QEvent *> &events)
+    : QObject()
+{
+    m_events = events;
+}
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
+PostEventsToFrontend::~PostEventsToFrontend()
+{
+    for (QEvent *e : m_events)
+        delete e;
+}
 
-    void forward(const QMouseEvent &event, const QVector4D &coordinate);
-    void forward(const QList<QKeyEvent> &keyEvents);
+QVector<QEvent *> &PostEventsToFrontend::events()
+{
+    return m_events;
+}
 
-private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
-
-    QString m_coordinateAttribute;
-    QMatrix4x4 m_coordinateTransform;
-    bool m_forwardMouseEvents;
-    bool m_forwardKeyboardEvents;
-    bool m_focus;
-};
-
-} // Render
-} // Qt3DRender
+}
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_EVENTFORWARD_P_H
