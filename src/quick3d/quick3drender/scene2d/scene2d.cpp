@@ -260,6 +260,7 @@ void Scene2D::render()
                 syncRenderControl();
                 m_context->doneCurrent();
                 qCWarning(Qt3DRender::Quick::Scene2D) << Q_FUNC_INFO << "Texture not in use.";
+                QCoreApplication::postEvent(m_sharedObject->m_renderObject, new QEvent(RENDER));
                 return;
             }
             textureLock->lock();
