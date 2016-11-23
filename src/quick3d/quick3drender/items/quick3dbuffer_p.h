@@ -79,6 +79,8 @@ public:
     QVariant bufferData() const;
     void setBufferData(const QVariant &bufferData);
 
+    Q_INVOKABLE QVariant readBinaryFile(const QUrl &fileUrl);
+
 public Q_SLOTS:
     void updateData(int offset, const QVariant &bytes);
 
