@@ -148,7 +148,7 @@ void Quick3DNodeInstantiatorPrivate::_q_createdItem(int idx, QObject *item)
     Q_Q(Quick3DNodeInstantiator);
     if (m_objects.contains(item)) //Case when it was created synchronously in regenerate
         return;
-    static_cast<QNode *>(item)->setParent(q);
+    static_cast<QNode *>(item)->setParent(q->parentNode());
     m_objects.insert(idx, item);
     if (m_objects.count() == 1)
         q->objectChanged();

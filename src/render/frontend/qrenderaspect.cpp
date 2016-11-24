@@ -210,6 +210,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QTechnique>(QSharedPointer<Render::NodeFunctor<Render::Technique, Render::TechniqueManager> >::create(m_renderer, m_nodeManagers->techniqueManager()));
 
     // Framegraph
+    q->registerBackendType<QFrameGraphNode>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::FrameGraphNode, QFrameGraphNode> >::create(m_renderer, m_nodeManagers->frameGraphManager()));
     q->registerBackendType<QCameraSelector>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::CameraSelector, QCameraSelector> >::create(m_renderer, m_nodeManagers->frameGraphManager()));
     q->registerBackendType<QClearBuffers>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::ClearBuffers, QClearBuffers> >::create(m_renderer, m_nodeManagers->frameGraphManager()));
     q->registerBackendType<QDispatchCompute>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::DispatchCompute, QDispatchCompute> >::create(m_renderer, m_nodeManagers->frameGraphManager()));
