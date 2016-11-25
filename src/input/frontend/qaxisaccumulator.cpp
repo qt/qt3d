@@ -51,7 +51,7 @@ namespace Qt3DInput {
     Constructs a new QAxisAccumulator instance with \a parent.
     \class Qt3DInput::QAxisAccumulator
     \inmodule Qt3DInput
-    \inherits Qt3DCore::QNode
+    \inherits Qt3DCore::QComponent
     \brief QAxisAccumulator processes velocity or acceleration data from a QAxis.
     \since 5.8
 
@@ -103,7 +103,7 @@ namespace Qt3DInput {
 
 /*! \internal */
 QAxisAccumulatorPrivate::QAxisAccumulatorPrivate()
-    : Qt3DCore::QNodePrivate()
+    : Qt3DCore::QComponentPrivate()
     , m_sourceAxis(nullptr)
     , m_sourceAxisType(QAxisAccumulator::Velocity)
     , m_scale(1.0f)
@@ -124,7 +124,7 @@ void QAxisAccumulatorPrivate::setValue(float value)
     Constructs a new QAxisAccumulator instance with parent \a parent.
  */
 QAxisAccumulator::QAxisAccumulator(Qt3DCore::QNode *parent)
-    : Qt3DCore::QNode(*new QAxisAccumulatorPrivate, parent)
+    : Qt3DCore::QComponent(*new QAxisAccumulatorPrivate, parent)
 {
 }
 

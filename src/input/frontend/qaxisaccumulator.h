@@ -41,7 +41,7 @@
 #define QT3DINPUT_QAXISACCUMULATOR_H
 
 #include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qcomponent.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,7 +50,7 @@ namespace Qt3DInput {
 class QAxis;
 class QAxisAccumulatorPrivate;
 
-class QT3DINPUTSHARED_EXPORT QAxisAccumulator : public Qt3DCore::QNode
+class QT3DINPUTSHARED_EXPORT QAxisAccumulator : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DInput::QAxis *sourceAxis READ sourceAxis WRITE setSourceAxis NOTIFY sourceAxisChanged)

@@ -51,14 +51,14 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DInput/qaxisaccumulator.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAxisAccumulatorPrivate : public Qt3DCore::QNodePrivate
+class QAxisAccumulatorPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QAxisAccumulatorPrivate();
