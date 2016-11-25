@@ -28,5 +28,6 @@ qtConfig(private_tests) {
         qmousedevice \
         mousedevice \
         utils \
-        axisaccumulator
+        axisaccumulator \
+        axisaccumulatorjob
 }

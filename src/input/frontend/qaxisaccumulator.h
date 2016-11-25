@@ -57,6 +57,7 @@ class QT3DINPUTSHARED_EXPORT QAxisAccumulator : public Qt3DCore::QComponent
     Q_PROPERTY(SourceAxisType sourceAxisType READ sourceAxisType WRITE setSourceAxisType NOTIFY sourceAxisTypeChanged)
     Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scaleChanged)
     Q_PROPERTY(float value READ value NOTIFY valueChanged)
+    Q_PROPERTY(float velocity READ velocity NOTIFY velocityChanged)
 
 public:
     enum SourceAxisType {
@@ -71,6 +72,7 @@ public:
     Qt3DInput::QAxis *sourceAxis() const;
     SourceAxisType sourceAxisType() const;
     float value() const;
+    float velocity() const;
     float scale() const;
 
 public Q_SLOTS:
@@ -82,6 +84,7 @@ Q_SIGNALS:
     void sourceAxisChanged(Qt3DInput::QAxis *sourceAxis);
     void sourceAxisTypeChanged(QAxisAccumulator::SourceAxisType sourceAxisType);
     void valueChanged(float value);
+    void velocityChanged(float value);
     void scaleChanged(float scale);
 
 protected:

@@ -108,6 +108,7 @@ QAxisAccumulatorPrivate::QAxisAccumulatorPrivate()
     , m_sourceAxisType(QAxisAccumulator::Velocity)
     , m_scale(1.0f)
     , m_value(0.0f)
+    , m_velocity(0.0f)
 {
 }
 
@@ -115,8 +116,23 @@ QAxisAccumulatorPrivate::QAxisAccumulatorPrivate()
 void QAxisAccumulatorPrivate::setValue(float value)
 {
     if (value != m_value) {
+        Q_Q(QAxisAccumulator);
         m_value = value;
-        q_func()->valueChanged(m_value);
+        const bool wasBlocked = q->blockNotifications(true);
+        q->valueChanged(m_value);
+        q->blockNotifications(wasBlocked);
+    }
+}
+
+/*! \internal */
+void QAxisAccumulatorPrivate::setVelocity(float velocity)
+{
+    if (velocity != m_velocity) {
+        Q_Q(QAxisAccumulator);
+        m_velocity = velocity;
+        const bool wasBlocked = q->blockNotifications(true);
+        q->velocityChanged(m_velocity);
+        q->blockNotifications(wasBlocked);
     }
 }
 
@@ -177,6 +193,18 @@ float QAxisAccumulator::value() const
 {
     Q_D(const QAxisAccumulator);
     return d->m_value;
+}
+
+/*!
+   Returns the velocity. If the sourceAxisType is set to Velocity this is
+   simply the value of the source axis multiplied by the scale. If the
+   sourceAxisType is set to Acceleration, the velocity is integrated using
+   the source axis' value as an acceleration.
+ */
+float QAxisAccumulator::velocity() const
+{
+    Q_D(const QAxisAccumulator);
+    return d->m_velocity;
 }
 
 /*!
@@ -255,6 +283,8 @@ void QAxisAccumulator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
     auto e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
     if (e->type() == Qt3DCore::PropertyUpdated && e->propertyName() == QByteArrayLiteral("value"))
         d->setValue(e->value().toFloat());
+    else if (e->type() == Qt3DCore::PropertyUpdated && e->propertyName() == QByteArrayLiteral("velocity"))
+        d->setVelocity(e->value().toFloat());
 }
 
 /*! \internal */

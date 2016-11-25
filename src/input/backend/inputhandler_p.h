@@ -79,6 +79,7 @@ class MouseDeviceManager;
 class MouseInputManager;
 class MouseEventFilter;
 class AxisManager;
+class AxisAccumulatorManager;
 class ActionManager;
 class AxisSettingManager;
 class ActionInputManager;
@@ -104,6 +105,7 @@ public:
     inline MouseDeviceManager *mouseDeviceManager() const { return m_mouseDeviceManager; }
     inline MouseInputManager *mouseInputManager() const { return m_mouseInputManager; }
     inline AxisManager *axisManager() const { return m_axisManager; }
+    inline AxisAccumulatorManager *axisAccumulatorManager() const { return m_axisAccumulatorManager; }
     inline ActionManager *actionManager() const { return m_actionManager; }
     inline AxisSettingManager *axisSettingManager() const { return m_axisSettingManager; }
     inline ActionInputManager *actionInputManager() const { return m_actionInputManager; }
@@ -171,6 +173,7 @@ private:
     mutable QMutex m_mutex;
 
     AxisManager *m_axisManager;
+    AxisAccumulatorManager *m_axisAccumulatorManager;
     ActionManager *m_actionManager;
     AxisSettingManager *m_axisSettingManager;
     ActionInputManager *m_actionInputManager;

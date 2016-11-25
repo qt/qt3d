@@ -61,6 +61,7 @@
 #include <QPluginLoader>
 
 #include <Qt3DInput/qaxis.h>
+#include <Qt3DInput/qaxisaccumulator.h>
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qaxissetting.h>
 #include <Qt3DInput/qactioninput.h>
@@ -72,6 +73,7 @@
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/private/qabstractphysicaldeviceproxy_p.h>
 #include <Qt3DInput/private/axis_p.h>
+#include <Qt3DInput/private/axisaccumulator_p.h>
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/private/axissetting_p.h>
 #include <Qt3DInput/private/actioninput_p.h>
@@ -86,6 +88,7 @@
 #include <Qt3DInput/private/inputsettings_p.h>
 #include <Qt3DInput/private/eventsourcesetterhelper_p.h>
 #include <Qt3DInput/private/loadproxydevicejob_p.h>
+#include <Qt3DInput/private/axisaccumulatorjob_p.h>
 
 #ifdef HAVE_QGAMEPAD
 # include <Qt3DInput/private/qgamepadinput_p.h>
@@ -101,6 +104,7 @@ QInputAspectPrivate::QInputAspectPrivate()
     : QAbstractAspectPrivate()
     , m_inputHandler(new Input::InputHandler())
     , m_keyboardMouseIntegration(new Input::KeyboardMouseGenericDeviceIntegration(m_inputHandler.data()))
+    , m_time(0)
 {
 }
 
@@ -134,6 +138,7 @@ QInputAspect::QInputAspect(QInputAspectPrivate &dd, QObject *parent)
     registerBackendType<QMouseDevice>(QBackendNodeMapperPtr(new Input::MouseDeviceFunctor(this, d_func()->m_inputHandler.data())));
     registerBackendType<QMouseHandler>(QBackendNodeMapperPtr(new Input::MouseHandlerFunctor(d_func()->m_inputHandler.data())));
     registerBackendType<QAxis>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::Axis, Input::AxisManager>(d_func()->m_inputHandler->axisManager())));
+    registerBackendType<QAxisAccumulator>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::AxisAccumulator, Input::AxisAccumulatorManager>(d_func()->m_inputHandler->axisAccumulatorManager())));
     registerBackendType<QAnalogAxisInput>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::AnalogAxisInput, Input::AnalogAxisInputManager>(d_func()->m_inputHandler->analogAxisInputManager())));
     registerBackendType<QButtonAxisInput>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::ButtonAxisInput, Input::ButtonAxisInputManager>(d_func()->m_inputHandler->buttonAxisInputManager())));
     registerBackendType<QAxisSetting>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::AxisSetting, Input::AxisSettingManager>(d_func()->m_inputHandler->axisSettingManager())));
@@ -213,6 +218,10 @@ QStringList QInputAspect::availablePhysicalDevices() const
 QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
 {
     Q_D(QInputAspect);
+    const qint64 deltaTime = time - d->m_time;
+    const float dt = static_cast<const float>(deltaTime) / 1.0e9;
+    d->m_time = time;
+
     QVector<QAspectJobPtr> jobs;
 
     d->m_inputHandler->updateEventSource();
@@ -240,6 +249,8 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
 
     // Jobs that update Axis/Action (store combined axis/action value)
     const auto devHandles = d->m_inputHandler->logicalDeviceManager()->activeDevices();
+    QVector<QAspectJobPtr> axisActionJobs;
+    axisActionJobs.reserve(devHandles.size());
     for (Input::HLogicalDevice devHandle : devHandles) {
         const auto device = d->m_inputHandler->logicalDeviceManager()->data(devHandle);
         if (!device->isEnabled())
@@ -247,9 +258,19 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
 
         QAspectJobPtr updateAxisActionJob(new Input::UpdateAxisActionJob(time, d->m_inputHandler.data(), devHandle));
         jobs += updateAxisActionJob;
+        axisActionJobs.push_back(updateAxisActionJob);
         for (const QAspectJobPtr &job : dependsOnJobs)
             updateAxisActionJob->addDependency(job);
     }
+
+    // Once all the axes have been updated we can step the integrations on
+    // the AxisAccumulators
+    auto accumulateJob = Input::AxisAccumulatorJobPtr::create(d->m_inputHandler->axisAccumulatorManager(),
+                                                              d->m_inputHandler->axisManager());
+    accumulateJob->setDeltaTime(dt);
+    for (const QAspectJobPtr &job : qAsConst(axisActionJobs))
+        accumulateJob->addDependency(job);
+    jobs.push_back(accumulateJob);
 
     return jobs;
 }

@@ -66,11 +66,13 @@ public:
     Q_DECLARE_PUBLIC(QAxisAccumulator)
 
     void setValue(float value);
+    void setVelocity(float velocity);
 
     QAxis *m_sourceAxis;
     QAxisAccumulator::SourceAxisType m_sourceAxisType;
     float m_scale;
     float m_value;
+    float m_velocity;
 };
 
 struct QAxisAccumulatorData

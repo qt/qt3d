@@ -39,6 +39,7 @@
 
 #include "axisaccumulator_p.h"
 #include <Qt3DInput/private/qaxisaccumulator_p.h>
+#include <Qt3DInput/private/inputmanagers_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
@@ -52,6 +53,7 @@ AxisAccumulator::AxisAccumulator()
     , m_sourceAxisType(QAxisAccumulator::Velocity)
     , m_scale(1.0f)
     , m_value(0.0f)
+    , m_velocity(0.0f)
 {
 }
 
@@ -62,6 +64,8 @@ void AxisAccumulator::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBaseP
     m_sourceAxisId = data.sourceAxisId;
     m_sourceAxisType = data.sourceAxisType;
     m_scale = data.scale;
+    m_value = 0.0f;
+    m_velocity = 0.0f;
 }
 
 void AxisAccumulator::cleanup()
@@ -87,6 +91,20 @@ void AxisAccumulator::setValue(float value)
     }
 }
 
+void AxisAccumulator::setVelocity(float velocity)
+{
+    if (isEnabled() && velocity != m_velocity) {
+        m_velocity = velocity;
+
+        // Send a change to the frontend
+        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+        e->setPropertyName("velocity");
+        e->setValue(m_velocity);
+        notifyObservers(e);
+    }
+}
+
 void AxisAccumulator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
@@ -105,6 +123,30 @@ void AxisAccumulator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
     QBackendNode::sceneChangeEvent(e);
+}
+
+void AxisAccumulator::stepIntegration(AxisManager *axisManager, float dt)
+{
+    Axis *sourceAxis = axisManager->lookupResource(m_sourceAxisId);
+    if (!sourceAxis)
+        return;
+
+    const float axisValue = sourceAxis->axisValue();
+    float newVelocity = 0.0f;
+    float newValue = 0.0f;
+    switch (m_sourceAxisType) {
+    case QAxisAccumulator::Velocity:
+        newVelocity = axisValue * m_scale;
+        newValue = m_value + newVelocity * dt;
+        break;
+
+    case QAxisAccumulator::Acceleration:
+        newVelocity = m_velocity + axisValue * m_scale * dt;
+        newValue = m_value + newVelocity * dt;
+        break;
+    }
+    setVelocity(newVelocity);
+    setValue(newValue);
 }
 
 } // namespace Input

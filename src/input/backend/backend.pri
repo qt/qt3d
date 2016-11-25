@@ -35,7 +35,8 @@ HEADERS += \
     $$PWD/physicaldeviceproxy_p.h \
     $$PWD/loadproxydevicejob_p.h \
     $$PWD/utils_p.h \
-    $$PWD/axisaccumulator_p.h
+    $$PWD/axisaccumulator_p.h \
+    $$PWD/axisaccumulatorjob_p.h
 
 SOURCES += \
     $$PWD/keyboarddevice.cpp \
@@ -68,6 +69,7 @@ SOURCES += \
     $$PWD/eventsourcesetterhelper.cpp \
     $$PWD/physicaldeviceproxy.cpp \
     $$PWD/loadproxydevicejob.cpp \
-    $$PWD/axisaccumulator.cpp
+    $$PWD/axisaccumulator.cpp \
+    $$PWD/axisaccumulatorjob.cpp
 
 INCLUDEPATH += $$PWD

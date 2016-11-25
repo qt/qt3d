@@ -61,6 +61,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 namespace Input {
 
+class AxisManager;
+
 class Q_AUTOTEST_EXPORT AxisAccumulator : public Qt3DCore::QBackendNode
 {
 public:
@@ -74,7 +76,12 @@ public:
     float value() const Q_DECL_NOTHROW { return m_value; }
     void setValue(float value);
 
+    float velocity() const Q_DECL_NOTHROW { return  m_velocity; }
+    void setVelocity(float velocity);
+
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+    void stepIntegration(AxisManager *axisManager, float dt);
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
@@ -83,6 +90,7 @@ private:
     QAxisAccumulator::SourceAxisType m_sourceAxisType;
     float m_scale;
     float m_value;
+    float m_velocity;
 };
 
 } // namespace Input
