@@ -1334,7 +1334,7 @@ void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffe
         VAOVertexAttribute attr;
         attr.bufferHandle = glBufferHandle;
         attr.bufferType = bufferType;
-        attr.location = (location >= 0 ? location + i : location);
+        attr.location = location + i;
         attr.dataType = attributeDataType;
         attr.byteOffset = attribute->byteOffset() + (i * attrCount * typeSize);
         attr.vertexSize = attribute->vertexSize() / attrCount;

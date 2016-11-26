@@ -147,25 +147,30 @@ void QFixedFrameAllocator::init(uint blockSize, uchar pageSize)
 
 void *QFixedFrameAllocator::allocate()
 {
-    Q_ASSERT(m_blockSize && m_nbrBlock);
-    if (m_lastAllocatedChunck == nullptr ||
-            m_lastAllocatedChunck->m_blocksAvailable == 0) {
-        int i = 0;
-        for (; i < m_chunks.size(); i++) {
-            if (m_chunks[i].m_blocksAvailable > 0) {
-                m_lastAllocatedChunck = m_chunks.begin() + i;
-                break;
-            }
-        }
-        if (i == m_chunks.size()) {
-            m_chunks.resize(m_chunks.size() + 1);
-            QFrameChunk &newChunk = m_chunks.last();
-            newChunk.init(m_blockSize, m_nbrBlock);
-            m_lastAllocatedChunck = &newChunk;
-            m_lastFreedChunck = m_lastAllocatedChunck;
+    Q_ASSERT(m_blockSize);
+    return scan().allocate(m_blockSize);
+}
+
+QFrameChunk &QFixedFrameAllocator::scan()
+{
+    Q_ASSERT(m_blockSize);
+    Q_ASSERT(m_nbrBlock);
+
+    if (m_lastAllocatedChunck && m_lastAllocatedChunck->m_blocksAvailable)
+        return *m_lastAllocatedChunck;
+
+    for (int i = 0; i < m_chunks.size(); i++) {
+        if (m_chunks[i].m_blocksAvailable > 0) {
+            m_lastAllocatedChunck = m_chunks.begin() + i;
+            return *m_lastAllocatedChunck;
         }
     }
-    return m_lastAllocatedChunck->allocate(m_blockSize);
+    m_chunks.resize(m_chunks.size() + 1);
+    QFrameChunk &newChunk = m_chunks.last();
+    newChunk.init(m_blockSize, m_nbrBlock);
+    m_lastAllocatedChunck = &newChunk;
+    m_lastFreedChunck = &newChunk;
+    return newChunk;
 }
 
 void QFixedFrameAllocator::deallocate(void *ptr)

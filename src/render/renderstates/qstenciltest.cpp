@@ -48,16 +48,60 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
- * \class Qt3DRender::QStencilTest
- * \brief The QStencilTest class
- * \inmodule Qt3DRender
- * \ingroup renderstates
- * \since 5.7
+    \class Qt3DRender::QStencilTest
+    \since 5.7
+    \ingroup renderstates
+    \inmodule Qt3DRender
+    \brief The QStencilTest class specifies arguments for the stecil test
+
+    A Qt3DRender::QStencilTest class specifies argument for the stencil test.
+    The stencil test comprises of three arguments: stencil test function,
+    stencil test mask and stencil reference value. QStencilTest allows these
+    arguments to be set for both front- and back-facing polygons separately.
+
+    \sa Qt3DRender::QStencilMask, Qt3DRender::QStencilOperation
  */
 
 /*!
- * The constructor creates a new QStencilTest::QStencilTest instance with
- * the specified \a parent.
+    \qmltype StencilTest
+    \since 5.7
+    \ingroup renderstates
+    \inqmlmodule Qt3D.Render
+    \brief The StencilTest type specifies arguments for the stecil test
+    \inherits RenderState
+    \instantiates Qt3DRender::QStencilTest
+
+    A StencilTest type specifies argument for the stencil test.
+    The stencil test comprises of three arguments: stencil test function,
+    stencil test mask and stencil reference value. StencilTest allows these
+    arguments to be set for both front- and back-facing polygons separately.
+
+    \sa StencilMask, StencilOperation
+ */
+
+/*!
+    \qmlproperty StencilTestArguments StencilTest::front
+    Holds the stencil test arguments for front-facing polygons.
+*/
+
+/*!
+    \qmlproperty StencilTestArguments StencilTest::back
+    Holds the stencil test arguments for back-facing polygons.
+*/
+
+/*!
+    \property QStencilTest::front
+    Holds the stencil test arguments for front-facing polygons.
+*/
+
+/*!
+    \property QStencilTest::back
+    Holds the stencil test arguments for back-facing polygons.
+*/
+
+/*!
+    The constructor creates a new QStencilTest::QStencilTest instance with
+    the specified \a parent.
  */
 QStencilTest::QStencilTest(QNode *parent)
     : QRenderState(*new QStencilTestPrivate, parent)
@@ -69,18 +113,12 @@ QStencilTest::~QStencilTest()
 {
 }
 
-/*!
- * \return the stencil test for the front
- */
 QStencilTestArguments *QStencilTest::front() const
 {
     Q_D(const QStencilTest);
     return d->m_front;
 }
 
-/*!
- * \return the stencil test for the back
- */
 QStencilTestArguments *QStencilTest::back() const
 {
     Q_D(const QStencilTest);

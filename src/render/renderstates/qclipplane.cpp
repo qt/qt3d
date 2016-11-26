@@ -55,7 +55,8 @@ namespace Qt3DRender {
     By default, OpenGL supports up to 8 additional clipping planes.
     Qt3DCore::QClipPlane allows to enable one of these additional planes. These
     planes can then be manipulated in the shaders using gl_ClipDistance[i]
-    where i varies between 0 and 8.
+    where i varies between 0 and 7. The underlying implementation may support more
+    than 8 clip planes, but it is not guaranteed.
  */
 
 /*!
@@ -70,8 +71,43 @@ namespace Qt3DRender {
     By default, OpenGL supports up to 8 additional clipping planes. ClipPlane
     allows to enable one of these additional planes. These planes can then be
     manipulated in the shaders using gl_ClipDistance[i] where i varies between
-    0 and 8.
+    0 and 7. The underlying implementation may support more than 8 clip planes,
+    but it is not guaranteed.
 */
+
+/*!
+    \qmlproperty int ClipPlane::planeIndex
+    Holds the index of the plane.
+    \note Usually between 0-7.
+*/
+
+/*!
+    \qmlproperty vector3d ClipPlane::normal
+    Holds the normal of the plane.
+*/
+
+/*!
+    \qmlproperty real ClipPlane::distance
+    Holds the distance of the plane from the world origin.
+*/
+
+
+/*!
+    \property QClipPlane::planeIndex
+    Holds the index of the plane.
+    \note Usually between 0-7.
+*/
+
+/*!
+    \property QClipPlane::normal
+    Holds the normal of the plane.
+*/
+
+/*!
+    \property QClipPlane::distance
+    Holds the distance of the plane from the world origin.
+*/
+
 
 QClipPlane::QClipPlane(QNode *parent)
     : QRenderState(*new QClipPlanePrivate(), parent)
@@ -83,10 +119,6 @@ QClipPlane::~QClipPlane()
 {
 }
 
-/*!
- * Returns the index of the clip plane.
- * \note usually between 0-7
- */
 int QClipPlane::planeIndex() const
 {
     Q_D(const QClipPlane);
@@ -105,10 +137,6 @@ float QClipPlane::distance() const
     return d->m_distance;
 }
 
-/*!
- * Sets the index of the clip plane to \a planeIndex
- * \note above 7, support is not garanteed
- */
 void QClipPlane::setPlaneIndex(int planeIndex)
 {
     Q_D(QClipPlane);

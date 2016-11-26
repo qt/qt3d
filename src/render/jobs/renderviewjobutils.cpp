@@ -92,6 +92,9 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
         FrameGraphNode::FrameGraphNodeType type = node->nodeType();
         if (node->isEnabled())
             switch (type) {
+            case FrameGraphNode::InvalidNodeType:
+                // A base FrameGraphNode, can be used for grouping purposes
+                break;
             case FrameGraphNode::CameraSelector:
                 // Can be set only once and we take camera nearest to the leaf node
                 if (!rv->renderCameraLens()) {

@@ -47,16 +47,28 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
- * \class Qt3DRender::QSeamlessCubemap
- * \brief Enables seamless cubemap texture filtering.
- * \inmodule Qt3DRender
- * \since 5.7
- * \ingroup renderstates
- * When present in a state set, enables the seamless cubemap texture filtering
- * as provided by the GL_ARB_seamless_cubemap extension (if available).
+    \class Qt3DRender::QSeamlessCubemap
+    \brief Enables seamless cubemap texture filtering.
+    \since 5.7
+    \inmodule Qt3DRender
+
+    When present in a state set, enables the seamless cubemap texture filtering
+    as provided by the GL_ARB_seamless_cubemap extension (if available).
  */
 
-/*! \internal */
+/*!
+    \qmltype SeamlessCubemap
+    \brief Enables seamless cubemap texture filtering.
+    \since 5.7
+    \inqmlmodule Qt3D.Render
+    \instantiates Qt3DRender::QSeamlessCubemap
+    \inherits RenderState
+
+    When present in a state set, enables the seamless cubemap texture filtering
+    as provided by the GL_ARB_seamless_cubemap extension (if available).
+ */
+
+
 class QSeamlessCubemapPrivate : public QRenderStatePrivate
 {
 public:
@@ -69,8 +81,8 @@ public:
 };
 
 /*!
- * The constructor creates a new QSeamlessCubemap::QSeamlessCubemap instance
- * with the specified \a parent.
+    The constructor creates a new QSeamlessCubemap::QSeamlessCubemap instance
+    with the specified \a parent.
  */
 QSeamlessCubemap::QSeamlessCubemap(QNode *parent)
     : QRenderState(*new QSeamlessCubemapPrivate, parent)

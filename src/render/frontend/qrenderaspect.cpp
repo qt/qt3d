@@ -211,6 +211,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QTechnique>(QSharedPointer<Render::TechniqueFunctor>::create(m_renderer, m_nodeManagers));
 
     // Framegraph
+    q->registerBackendType<QFrameGraphNode>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::FrameGraphNode, QFrameGraphNode> >::create(m_renderer, m_nodeManagers->frameGraphManager()));
     q->registerBackendType<QCameraSelector>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::CameraSelector, QCameraSelector> >::create(m_renderer, m_nodeManagers->frameGraphManager()));
     q->registerBackendType<QClearBuffers>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::ClearBuffers, QClearBuffers> >::create(m_renderer, m_nodeManagers->frameGraphManager()));
     q->registerBackendType<QDispatchCompute>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::DispatchCompute, QDispatchCompute> >::create(m_renderer, m_nodeManagers->frameGraphManager()));
@@ -360,7 +361,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     // QChangeArbiter::syncChanges() that happens just before the render aspect is
     // asked for jobs to execute (this function). If that is the case, the RenderSettings will
     // be null and we should not generate any jobs.
-    if (d->m_renderer != nullptr && d->m_renderer->isRunning() && d->m_renderer->settings()) {
+    if (d->m_renderer->isRunning() && d->m_renderer->settings()) {
         // don't spawn any jobs, if the renderer decides to skip this frame
         if (!d->m_renderer->shouldRender()) {
             d->m_renderer->skipNextFrame();

@@ -56,8 +56,10 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
 
     \brief Base class of all FrameGraph configuration nodes.
 
-    This is an abstract class so it cannot be instanced directly
-    but rather through one of its subclasses.
+    This class is rarely instanced directly since it doesn't provide
+    any frame graph specific behavior, although it can be convenient
+    to use for grouping other nodes together in dynamic frame graphs.
+    The actual behavior comes from the subclasses.
 
     The subclasses are:
     \table
@@ -112,8 +114,10 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
     \since 5.5
     \brief Base class of all FrameGraph configuration nodes.
 
-    This is an abstract class so it cannot be instanced directly
-    but rather through one of its subclasses.
+    This class is rarely instanced directly since it doesn't provide
+    any frame graph specific behavior, although it can be convenient
+    to use for grouping other nodes together in dynamic frame graphs.
+    The actual behavior comes from the subclasses.
 
     The subclasses are:
     \table

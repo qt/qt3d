@@ -148,7 +148,7 @@ void Quick3DNodeInstantiatorPrivate::_q_createdItem(int idx, QObject *item)
     Q_Q(Quick3DNodeInstantiator);
     if (m_objects.contains(item)) //Case when it was created synchronously in regenerate
         return;
-    static_cast<QNode *>(item)->setParent(q);
+    static_cast<QNode *>(item)->setParent(q->parentNode());
     m_objects.insert(idx, item);
     if (m_objects.count() == 1)
         q->objectChanged();
@@ -247,10 +247,10 @@ Quick3DNodeInstantiator::Quick3DNodeInstantiator(QNode *parent)
 }
 
 /*!
-    \qmlsignal Qt3D.Core::NodeInstantiator::objectAdded(int index, QtObject node)
+    \qmlsignal Qt3D.Core::NodeInstantiator::objectAdded(int index, QtObject object)
 
     This signal is emitted when a node is added to the NodeInstantiator. The \a index
-    parameter holds the index which the node has been given, and the \a node
+    parameter holds the index which the node has been given, and the \a object
     parameter holds the \l Node that has been added.
 
     The corresponding handler is \c onNodeAdded.
