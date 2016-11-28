@@ -178,6 +178,7 @@ public:
 
     QUrl m_source;
     Qt3DCore::QNodeId m_id;
+    QMetaObject::Connection m_connection;
 
     bool m_requested;
     bool m_initialized;
@@ -185,6 +186,7 @@ public:
     bool m_renderOnce;
     bool m_backendInitialized;
     bool m_noSourceMode;
+    bool m_ownEngine;
 
     void requestRender();
     void requestRenderSync();
@@ -203,6 +205,8 @@ public:
     Q_SIGNAL void onLoadedChanged();
 
     void cleanup();
+    void setEngine(QQmlEngine *engine);
+    void engineDestroyed();
 };
 
 } // namespace Quick

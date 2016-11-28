@@ -69,6 +69,7 @@ class QT3DQUICKRENDERSHARED_EXPORT QScene2D : public Qt3DCore::QNode
 
 public:
     explicit QScene2D(Qt3DCore::QNode *parent = nullptr);
+    QScene2D(QQmlEngine *engine, Qt3DCore::QNode *parent = nullptr);
     ~QScene2D();
 
     Qt3DRender::QRenderTargetOutput *output() const;
@@ -76,7 +77,9 @@ public:
     bool loaded() const;
     bool renderOnce() const;
     QQuickItem *item() const;
+    QQmlEngine *engine() const;
     bool event(QEvent *event) Q_DECL_OVERRIDE;
+
 public Q_SLOTS:
     void setOutput(Qt3DRender::QRenderTargetOutput *output);
     void setSource(const QUrl &url);
