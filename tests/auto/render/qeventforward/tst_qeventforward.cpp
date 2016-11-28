@@ -29,13 +29,72 @@
 #include <QtTest/QTest>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qeventforward.h>
-#include <Qt3DRender/private/qeventforward_p.h>
+#include <private/qeventforward_p.h>
 #include <QObject>
 #include <QSignalSpy>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
+#include <private/qnodecreatedchangegenerator_p.h>
+#include <private/posteventstofrontend_p.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 #include "testpostmanarbiter.h"
+
+
+class EventReceiver : public QObject
+{
+public:
+    EventReceiver()
+        : QObject()
+    {
+
+    }
+
+    ~EventReceiver()
+    {
+
+    }
+
+    int eventCount()
+    {
+        return m_events.size();
+    }
+
+    QEvent *eventAt(int index) const
+    {
+        return m_events.at(index);
+    }
+    bool event(QEvent *event) Q_DECL_OVERRIDE
+    {
+        m_events.push_back(event);
+        return true;
+    }
+
+    void clearEvents()
+    {
+        m_events.clear();
+    }
+
+private:
+    QVector<QEvent *> m_events;
+};
+
+class TestEventForward : public Qt3DRender::QEventForward
+{
+    Q_OBJECT
+public:
+    TestEventForward(Qt3DCore::QNode *parent = nullptr)
+        : Qt3DRender::QEventForward(parent)
+    {}
+
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_FINAL
+    {
+        Qt3DRender::QEventForward::sceneChangeEvent(change);
+    }
+
+private:
+    friend class tst_QEventForward;
+
+};
+
 
 class tst_QEventForward : public QObject
 {
@@ -452,9 +511,72 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(arbiter.events.size(), 0);
         }
-
     }
 
+    void checkReceiveEvents()
+    {
+        EventReceiver receiver;
+        TestEventForward eventForward;
+        eventForward.setTarget(&receiver);
+        eventForward.setForwardKeyboardEvents(true);
+        eventForward.setForwardMouseEvents(true);
+
+        {
+            // WHEN
+            const QPointF local = QPointF();
+            QMouseEvent* mouseEvent
+                    = new QMouseEvent(QEvent::MouseButtonPress, local, local, local,
+                            Qt::LeftButton,0,0, Qt::MouseEventSynthesizedByApplication);
+            Qt3DRender::PostEventsToFrontendPtr events
+                    = Qt3DRender::PostEventsToFrontendPtr::create(mouseEvent);
+
+            auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+            e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+            e->setPropertyName("events");
+            e->setValue(QVariant::fromValue(events));
+
+            eventForward.sceneChangeEvent(e);
+
+            // THEN
+            QVERIFY(receiver.eventCount() == 1);
+            QEvent *event = receiver.eventAt(0);
+            QCOMPARE(event->type(), QEvent::MouseButtonPress);
+
+            QMouseEvent *me = static_cast<QMouseEvent *>(receiver.eventAt(0));
+            QCOMPARE(me->localPos(), local);
+            QCOMPARE(me->button(), Qt::LeftButton);
+
+            receiver.clearEvents();
+        }
+
+        {
+            // WHEN
+            QKeyEvent *event1 = new QKeyEvent(QEvent::KeyPress, 48, 0);
+            QKeyEvent *event2 = new QKeyEvent(QEvent::KeyRelease, 48, 0);
+            QVector<QEvent *> eventList;
+            eventList.push_back(event1);
+            eventList.push_back(event2);
+            Qt3DRender::PostEventsToFrontendPtr events
+                    = Qt3DRender::PostEventsToFrontendPtr::create(eventList);
+
+            auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+            e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+            e->setPropertyName("events");
+            e->setValue(QVariant::fromValue(events));
+
+            eventForward.sceneChangeEvent(e);
+
+            // THEN
+            QVERIFY(receiver.eventCount() == 2);
+            QEvent *event = receiver.eventAt(0);
+            QCOMPARE(event->type(), QEvent::KeyPress);
+            QCOMPARE(static_cast<QKeyEvent *>(event)->key(), 48);
+
+            event = receiver.eventAt(1);
+            QCOMPARE(event->type(), QEvent::KeyRelease);
+            QCOMPARE(static_cast<QKeyEvent *>(event)->key(), 48);
+        }
+    }
 };
 
 QTEST_MAIN(tst_QEventForward)

@@ -28,11 +28,15 @@
 
 #include <QtTest/QTest>
 #include <Qt3DRender/qeventforward.h>
-#include <Qt3DRender/private/qeventforward_p.h>
-#include <Qt3DRender/private/eventforward_p.h>
+#include <private/qeventforward_p.h>
+#include <private/eventforward_p.h>
+#include <private/posteventstofrontend_p.h>
+#include <private/qbackendnode_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 #include "testrenderer.h"
+#include "testpostmanarbiter.h"
+
 
 class tst_EventForward : public Qt3DCore::QBackendNodeTester
 {
@@ -48,7 +52,6 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendEventForward.isEnabled(), false);
         QVERIFY(backendEventForward.peerId().isNull());
-        QCOMPARE(backendEventForward.target(), nullptr);
         QCOMPARE(backendEventForward.coordinateAttribute(), QStringLiteral(""));
         QCOMPARE(backendEventForward.coordinateTransform(), QMatrix4x4());
         QCOMPARE(backendEventForward.forwardMouseEvents(), false);
@@ -66,7 +69,6 @@ private Q_SLOTS:
 
         // WHEN
         backendEventForward.setEnabled(true);
-        backendEventForward.setTarget(obj.data());
         backendEventForward.setCoordinateAttribute(QStringLiteral("default"));
         backendEventForward.setCoordinateTransform(transform);
         backendEventForward.setForwardMouseEvents(true);
@@ -77,7 +79,6 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendEventForward.isEnabled(), false);
-        QCOMPARE(backendEventForward.target(), nullptr);
         QCOMPARE(backendEventForward.coordinateAttribute(), QStringLiteral(""));
         QCOMPARE(backendEventForward.coordinateTransform(), QMatrix4x4());
         QCOMPARE(backendEventForward.forwardMouseEvents(), false);
@@ -98,7 +99,6 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(backendEventForward.isEnabled(), true);
             QCOMPARE(backendEventForward.peerId(), eventForward.id());
-            QCOMPARE(backendEventForward.target(), nullptr);
             QCOMPARE(backendEventForward.coordinateAttribute(), QStringLiteral("default"));
             QCOMPARE(backendEventForward.coordinateTransform(), QMatrix4x4());
             QCOMPARE(backendEventForward.forwardMouseEvents(), true);
@@ -136,18 +136,6 @@ private Q_SLOTS:
 
              // THEN
             QCOMPARE(backendEventForward.isEnabled(), newValue);
-        }
-        {
-             // WHEN
-             QScopedPointer<Qt3DRender::QEventForward> obj(new Qt3DRender::QEventForward());
-             Qt3DRender::QEventForward * newValue = obj.data();
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("target");
-             change->setValue(QVariant::fromValue(newValue));
-             backendEventForward.sceneChangeEvent(change);
-
-             // THEN
-            QCOMPARE(backendEventForward.target(), newValue);
         }
         {
              // WHEN
@@ -206,7 +194,83 @@ private Q_SLOTS:
             QCOMPARE(backendEventForward.focus(), newValue);
         }
     }
+    void checkEventForwarding()
+    {
+        Qt3DRender::Render::EventForward backendEventForward;
+        TestRenderer renderer;
+        TestArbiter arbiter;
+        backendEventForward.setRenderer(&renderer);
+        Qt3DCore::QBackendNodePrivate::get(&backendEventForward)->setArbiter(&arbiter);
 
+        {
+            // WHEN
+            const QPointF localPos;
+            QMouseEvent event = QMouseEvent(QEvent::MouseButtonPress, localPos,
+                                            Qt::LeftButton, Qt::LeftButton, 0);
+
+            const QVector4D coordinate;
+            backendEventForward.forward(event, coordinate);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QVERIFY(arbiter.events.size() == 1);
+            Qt3DCore::QPropertyUpdatedChangePtr change
+                    = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "events");
+
+            Qt3DRender::PostEventsToFrontendPtr postedEvents
+                    = change->value().value<Qt3DRender::PostEventsToFrontendPtr>();
+            QVERIFY(postedEvents->events().size() == 1);
+
+            QEvent *receivedEvent = postedEvents->events().first();
+            QCOMPARE(receivedEvent->type(), QEvent::MouseButtonPress);
+
+            QMouseEvent *me = static_cast<QMouseEvent*>(receivedEvent);
+            QCOMPARE(me->localPos(), localPos);
+            QCOMPARE(me->button(), Qt::LeftButton);
+            QCOMPARE(me->buttons(), Qt::LeftButton);
+            QCOMPARE(me->modifiers(), 0);
+
+            arbiter.events.clear();
+        }
+
+        {
+            // WHEN
+            QKeyEvent event1 = QKeyEvent(QEvent::KeyPress, 48, 0);
+            QKeyEvent event2 = QKeyEvent(QEvent::KeyRelease, 48, 0);
+            QList<QKeyEvent> eventList;
+            eventList.push_back(event1);
+            eventList.push_back(event2);
+
+            backendEventForward.forward(eventList);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QVERIFY(arbiter.events.size() == 1);
+            Qt3DCore::QPropertyUpdatedChangePtr change
+                    = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "events");
+
+            Qt3DRender::PostEventsToFrontendPtr postedEvents
+                    = change->value().value<Qt3DRender::PostEventsToFrontendPtr>();
+            QVERIFY(postedEvents->events().size() == 2);
+
+            QEvent *receivedEvent1 = postedEvents->events().first();
+            QCOMPARE(receivedEvent1->type(), QEvent::KeyPress);
+
+            QEvent *receivedEvent2 = postedEvents->events().at(1);
+            QCOMPARE(receivedEvent2->type(), QEvent::KeyRelease);
+
+            QKeyEvent *ke1 = static_cast<QKeyEvent*>(receivedEvent1);
+            QKeyEvent *ke2 = static_cast<QKeyEvent*>(receivedEvent2);
+            QCOMPARE(ke1->key(), 48);
+            QCOMPARE(ke1->modifiers(), 0);
+            QCOMPARE(ke2->key(), 48);
+            QCOMPARE(ke2->modifiers(), 0);
+
+            arbiter.events.clear();
+        }
+    }
 };
 
 QTEST_MAIN(tst_EventForward)
