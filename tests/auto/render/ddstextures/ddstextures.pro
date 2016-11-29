@@ -30,7 +30,9 @@ OTHER_FILES = \
     data/16x16x1-6-lumi.dds \
     data/16x16x1-6-lumi-nomips.dds \
     data/16x16x1-6-rgb.dds \
-    data/16x16x1-6-rgb-nomips.dds
+    data/16x16x1-6-rgb-nomips.dds \
+    data/16x16-etc1.pkm \
+    data/16x16-etc2.pkm
 
 TESTDATA = data/*
 

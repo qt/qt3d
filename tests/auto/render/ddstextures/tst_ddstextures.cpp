@@ -73,6 +73,8 @@ void tst_DdsTextures::ddsImageData()
         { "data/16x16x1-6-bc1-dx10.dds",        16, 16, 1, 6, 5, QOpenGLTexture::RGBA_DXT1 },
         { "data/16x16x1-6-bc3-nomips-dx10.dds", 16, 16, 1, 6, 1, QOpenGLTexture::RGBA_DXT5 },
         { "data/16x16x1-6-bc3-dx10.dds",        16, 16, 1, 6, 5, QOpenGLTexture::RGBA_DXT5 },
+        { "data/16x16-etc1.pkm",                16, 16, 1, 1, 1, QOpenGLTexture::RGB8_ETC1 },
+        { "data/16x16-etc2.pkm",                16, 16, 1, 1, 1, QOpenGLTexture::RGB8_ETC2 },
     };
 
     for (unsigned i = 0; i < sizeof(textures)/sizeof(*textures); i++) {
