@@ -82,13 +82,6 @@ namespace Qt3DRender {
 */
 
 /*!
-    \qmlproperty url TextureImage::source
-
-    This property holds the source url from which data for the texture
-    image will be loaded.
-*/
-
-/*!
     \qmlproperty enumeration TextureImage::status
 
     This property holds the status of the texture image loading.
@@ -103,7 +96,7 @@ namespace Qt3DRender {
 */
 
 /*!
-    \property QTextureImage::source
+    \property Qt3DRender::QTextureImage::source
 
     This property holds the source url from which data for the texture
     image will be loaded.
@@ -162,13 +155,6 @@ bool QTextureImage::isMirrored() const
     Q_D(const QTextureImage);
     return d->m_mirrored;
 }
-
-/*!
-  \property Qt3DRender::QTextureImage::source
-
-  This property holds the source url from which data for the texture
-  image will be loaded.
-*/
 
 /*!
   \qmlproperty url Qt3D.Render::TextureImage::source

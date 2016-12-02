@@ -105,12 +105,6 @@ QMouseDevicePrivate::QMouseDevicePrivate()
     Default is 0.1.
  */
 
-/*!
-    \property Qt3DInput::QMouseDevice::sensitivity
-
-    Holds the sensitivity of the mouse device.
-    Default is 0.1.
- */
 
 /*!
     Constructs a new QMouseDevice instance with parent \a parent.
@@ -202,8 +196,9 @@ int QMouseDevice::buttonIdentifier(const QString &name) const
 /*!
   \property Qt3DInput::QMouseDevice::sensitivity
 
-  The sensitivity of the device.
- */
+  Holds the sensitivity of the mouse device.
+  The default is 0.1.
+*/
 float QMouseDevice::sensitivity() const
 {
     Q_D(const QMouseDevice);
