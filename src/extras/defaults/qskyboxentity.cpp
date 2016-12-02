@@ -187,13 +187,13 @@ void QSkyboxEntityPrivate::reloadTexture()
 }
 
 /*!
- * \class Qt3DRender::QSkyboxEntity
- * \inmodule Qt3DRender
+ * \class Qt3DExtras::QSkyboxEntity
+ * \inmodule Qt3DExtras
  *
- * \brief Qt3DRender::QSkyboxEntity is a convenience Qt3DCore::QEntity subclass that can
+ * \brief Qt3DExtras::QSkyboxEntity is a convenience Qt3DCore::QEntity subclass that can
  * be used to insert a skybox in a 3D scene.
  *
- * By specifying a base name and an extension, Qt3DCore::QSkyboxEntity
+ * By specifying a base name and an extension, Qt3DExtras::QSkyboxEntity
  * will take care of building a TextureCubeMap to be rendered at runtime. The
  * images in the source directory should match the pattern:
  * \b base name + * "_posx|_posy|_posz|_negx|_negy|_negz" + extension
@@ -207,7 +207,7 @@ void QSkyboxEntityPrivate::reloadTexture()
  */
 
 /*!
- * Constructs a new Qt3DCore::QSkyboxEntity object with \a parent as parent.
+ * Constructs a new Qt3DExtras::QSkyboxEntity object with \a parent as parent.
  */
 QSkyboxEntity::QSkyboxEntity(QNode *parent)
     : QEntity(*new QSkyboxEntityPrivate, parent)
