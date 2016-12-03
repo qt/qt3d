@@ -84,7 +84,8 @@ namespace Render {
 
 namespace  {
 
-const int qNodeIdTypeId = qMetaTypeId<Qt3DCore::QNodeId>();
+// register our QNodeId's as a metatype during program loading
+const int Q_DECL_UNUSED qNodeIdTypeId = qMetaTypeId<Qt3DCore::QNodeId>();
 
 const int MAX_LIGHTS = 8;
 
