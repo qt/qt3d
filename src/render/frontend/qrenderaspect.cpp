@@ -47,6 +47,7 @@
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 
 #include <Qt3DRender/qsceneloader.h>
+#include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qcameraselector.h>
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qlayerfilter.h>
@@ -176,6 +177,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     qRegisterMetaType<Qt3DRender::QBuffer*>();
     qRegisterMetaType<Qt3DRender::QEffect*>();
     qRegisterMetaType<Qt3DRender::QFrameGraphNode *>();
+    qRegisterMetaType<Qt3DRender::QCamera*>();
 
     q->registerBackendType<Qt3DCore::QEntity>(QSharedPointer<Render::RenderEntityFunctor>::create(m_renderer, m_nodeManagers));
     q->registerBackendType<Qt3DCore::QTransform>(QSharedPointer<Render::NodeFunctor<Render::Transform, Render::TransformManager> >::create(m_renderer, m_nodeManagers->transformManager()));
