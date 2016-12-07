@@ -87,6 +87,7 @@ void QAbstractAspectPrivate::unregisterBackendType(const QMetaObject &mo)
 
 /*!
  * \class Qt3DCore::QAbstractAspect
+ * \inheaderfile Qt3DCore/QAbstractAspect
  * \inherits QObject
  * \inmodule Qt3DCore
  * \brief QAbstractAspect is the base class for aspects that provide a vertical slice of behavior.

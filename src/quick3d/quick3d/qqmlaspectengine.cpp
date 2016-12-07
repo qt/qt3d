@@ -65,6 +65,7 @@ QQmlAspectEnginePrivate::QQmlAspectEnginePrivate()
 
 /*!
  * \class Qt3DCore::Quick::QQmlAspectEngine
+ * \inheaderfile Qt3DQuick/QQmlAspectEngine
  * \inmodule Qt3DCore
  *
  * \brief The QQmlAspectEngine provides an environment for the QAspectEngine and

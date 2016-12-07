@@ -46,6 +46,7 @@ namespace Qt3DRender {
 
 /*!
  * \class Qt3DRender::QTextureData
+ * \inheaderfile Qt3DRender/QTextureData
  * \brief The QTextureData class stores texture information such as
  * the target, height, width, depth, layers, wrap, and if mipmaps are enabled.
  * \since 5.7

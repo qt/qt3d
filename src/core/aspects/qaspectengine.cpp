@@ -124,6 +124,7 @@ void QAspectEnginePrivate::generateCreationChanges(QNode *root)
 
 /*!
  * \class Qt3DCore::QAspectEngine
+ * \inheaderfile Qt3DCore/QAspectEngine
  * \inherits QObject
  * \inmodule Qt3DCore
  *

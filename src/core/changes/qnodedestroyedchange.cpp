@@ -43,6 +43,7 @@ namespace Qt3DCore {
 
 /*!
  * \class Qt3DCore::QNodeDestroyedChange
+ * \inheaderfile Qt3DCore/QNodeDestroyedChange
  * \inherits Qt3DCore::QSceneChange
  * \since 5.7
  * \inmodule Qt3DCore

@@ -45,6 +45,7 @@ namespace Qt3DCore {
 
 /*!
  * \class Qt3DCore::QAbstractNodeFactory
+ * \inheaderfile Qt3DCore/QAbstractNodeFactory
  * \inmodule Qt3DCore
  *
  * TODO

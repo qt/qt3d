@@ -104,6 +104,7 @@ namespace Qt3DExtras {
 
 /*!
  * \class Qt3DExtras::QConeMesh
+ * \inheaderfile Qt3DExtras/QConeMesh
  * \inmodule Qt3DExtras
  *
  * \inherits Qt3DRender::QGeometryRenderer

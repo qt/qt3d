@@ -89,6 +89,7 @@ QBufferPrivate::QBufferPrivate()
 
 /*!
  * \class Qt3DRender::QBuffer
+ * \inheaderfile Qt3DRender/QBuffer
  * \inmodule Qt3DRender
  *
  * \inherits Qt3DCore::QNode

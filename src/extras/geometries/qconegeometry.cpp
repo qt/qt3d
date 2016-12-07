@@ -39,6 +39,7 @@
 
 /*!
  * \class Qt3DExtras::QConeGeometry
+ * \inheaderfile Qt3DExtras/QConeGeometry
  * \inmodule Qt3DExtras
  * \brief The QConeGeometry class allows creation of a cone in 3D space.
  * \since 5.7

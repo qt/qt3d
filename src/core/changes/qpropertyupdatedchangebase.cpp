@@ -55,6 +55,7 @@ QPropertyUpdatedChangeBasePrivate::~QPropertyUpdatedChangeBasePrivate()
 
 /*!
  * \class Qt3DCore::QPropertyUpdatedChangeBase
+ * \inheaderfile Qt3DCore/QPropertyUpdatedChangeBase
  * \inmodule Qt3DCore
  * \brief The QPropertyUpdatedChangeBase class is the base class for all PropertyUpdated QSceneChange events
  *

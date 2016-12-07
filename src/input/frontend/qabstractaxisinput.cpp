@@ -55,6 +55,7 @@ namespace Qt3DInput {
 
 /*!
  * \class Qt3DInput::QAbstractAxisInput
+ * \inheaderfile Qt3DInput/QAbstractAxisInput
  * \inmodule Qt3DInput
  * \brief QAbstractActionInput is the base class for all Axis Input.
  * \since 5.5

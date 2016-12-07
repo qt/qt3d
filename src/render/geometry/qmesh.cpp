@@ -78,6 +78,7 @@ QMeshPrivate::QMeshPrivate()
 
 /*!
  * \class Qt3DRender::QMesh
+ * \inheaderfile Qt3DRender/QMesh
  * \inmodule Qt3DRender
  *
  * \inherits Qt3DRender::QGeometryRenderer

@@ -53,6 +53,7 @@ QPropertyNodeAddedChangePrivate::QPropertyNodeAddedChangePrivate()
 
 /*!
  * \class Qt3DCore::QPropertyNodeAddedChange
+ * \inheaderfile Qt3DCore/QPropertyNodeAddedChange
  * \inherits Qt3DCore::QStaticPropertyValueAddedChangeBase
  * \inmodule Qt3DCore
  * \brief Used to notify when a node is added to a property

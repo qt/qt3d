@@ -80,6 +80,7 @@ QGeometryPrivate::~QGeometryPrivate()
 
 /*!
  * \class Qt3DRender::QGeometry
+ * \inheaderfile Qt3DRender/QGeometry
  * \inmodule Qt3DRender
  *
  * \inherits Qt3DCore::QNode

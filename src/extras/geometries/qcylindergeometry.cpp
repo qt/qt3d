@@ -406,6 +406,7 @@ void QCylinderGeometryPrivate::init()
 
 /*!
  * \class Qt3DExtras::QCylinderGeometry
+ * \inheaderfile Qt3DExtras/QCylinderGeometry
  * \inmodule Qt3DExtras
  * \brief The QCylinderGeometry class allows creation of a cylinder in 3D space.
  * \since 5.7

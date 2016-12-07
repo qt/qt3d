@@ -73,6 +73,7 @@ namespace  Qt3DExtras {
 
 /*!
  * \class Qt3DExtras::QPlaneMesh
+ * \inheaderfile Qt3DExtras/QPlaneMesh
  * \inmodule Qt3DExtras
  *
  * \inherits Qt3DRender::QGeometryRenderer

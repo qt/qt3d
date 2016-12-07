@@ -75,6 +75,7 @@ QAttributePrivate::QAttributePrivate()
 
 /*!
  * \class Qt3DRender::QAttribute
+ * \inheaderfile Qt3DRender/QAttribute
  * \inmodule Qt3DRender
  *
  * \inherits Qt3DCore::QNode

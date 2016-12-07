@@ -360,6 +360,7 @@ void QTorusGeometryPrivate::init()
 
 /*!
  * \class Qt3DExtras::QTorusGeometry
+ * \inheaderfile Qt3DExtras/QTorusGeometry
  * \inmodule Qt3DExtras
  * \brief The QTorusGeometry class allows creation of a torus in 3D space.
  * \since 5.7

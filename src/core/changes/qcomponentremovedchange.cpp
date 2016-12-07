@@ -57,6 +57,7 @@ QComponentRemovedChangePrivate::QComponentRemovedChangePrivate(const QEntity *en
 
 /*!
  * \class Qt3DCore::QComponentRemovedChange
+ * \inheaderfile Qt3DCore/QComponentRemovedChange
  * \inherits Qt3DCore::QSceneChange
  * \inmodule Qt3DCore
  * \brief The QComponentRemovedChange class is used to notify when a component is removed from an entity

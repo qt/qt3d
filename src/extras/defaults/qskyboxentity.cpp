@@ -188,6 +188,7 @@ void QSkyboxEntityPrivate::reloadTexture()
 
 /*!
  * \class Qt3DExtras::QSkyboxEntity
+ * \inheaderfile Qt3DExtras/QSkyboxEntity
  * \inmodule Qt3DExtras
  *
  * \brief Qt3DExtras::QSkyboxEntity is a convenience Qt3DCore::QEntity subclass that can

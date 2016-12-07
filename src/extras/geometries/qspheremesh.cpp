@@ -79,6 +79,7 @@ namespace  Qt3DExtras {
 
 /*!
  * \class Qt3DExtras::QSphereMesh
+ * \inheaderfile Qt3DExtras/QSphereMesh
  * \inmodule Qt3DExtras
  *
  * \inherits Qt3DRender::QGeometryRenderer

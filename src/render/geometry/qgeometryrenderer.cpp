@@ -138,6 +138,7 @@ QGeometryRendererPrivate::~QGeometryRendererPrivate()
 
 /*!
  * \class Qt3DRender::QGeometryRenderer
+ * \inheaderfile Qt3DRender/QGeometryRenderer
  * \inmodule Qt3DRender
  *
  * \inherits Qt3DCore::QComponent
