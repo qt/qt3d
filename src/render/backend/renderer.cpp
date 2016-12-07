@@ -90,6 +90,7 @@
 #include <Qt3DCore/private/aspectcommanddebugger_p.h>
 
 #include <QStack>
+#include <QOffscreenSurface>
 #include <QSurface>
 #include <QElapsedTimer>
 #include <QLibraryInfo>
@@ -327,12 +328,32 @@ void Renderer::shutdown()
 */
 void Renderer::releaseGraphicsResources()
 {
-    // Clean up the graphics context and any resources
-    const QVector<GLTexture*> activeTextures = m_nodesManager->glTextureManager()->activeResources();
-    for (GLTexture *tex : activeTextures)
-        tex->destroyGLTexture();
+    // We may get called twice when running inside of a Scene3D. Once when Qt Quick
+    // wants to shutdown, and again when the render aspect gets unregistered. So
+    // check that we haven't already cleaned up before going any further.
+    if (!m_graphicsContext)
+        return;
 
-    // TO DO: Do the same thing with buffers
+    // Try to temporarily make the context current so we can free up any resources
+    QOpenGLContext *context = m_graphicsContext->openGLContext();
+    Q_ASSERT(context);
+    QSurfaceFormat format = context->format();
+    QOffscreenSurface offscreenSurface;
+    offscreenSurface.setFormat(format);
+    offscreenSurface.create();
+    if (context->makeCurrent(&offscreenSurface)) {
+
+        // Clean up the graphics context and any resources
+        const QVector<GLTexture*> activeTextures = m_nodesManager->glTextureManager()->activeResources();
+        for (GLTexture *tex : activeTextures)
+            tex->destroyGLTexture();
+
+        // TO DO: Do the same thing with buffers
+
+        context->doneCurrent();
+    } else {
+        qWarning() << "Failed to make context current: OpenGL resources will not be destroyed";
+    }
 
     m_graphicsContext.reset(nullptr);
     qCDebug(Backend) << Q_FUNC_INFO << "Renderer properly shutdown";
