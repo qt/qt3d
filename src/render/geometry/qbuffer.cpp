@@ -242,7 +242,7 @@ QBufferPrivate::QBufferPrivate()
 
 /*!
  * \typedef Qt3DRender::QBufferDataGeneratorPtr
- * \relates QBuffer
+ * \relates Qt3DRender::QBuffer
  */
 
 /*!
@@ -289,7 +289,7 @@ void QBuffer::setData(const QByteArray &bytes)
 }
 
 /*!
- * Update the data.
+ * Updates the data by replacing it with \a bytes at \a offset.
  */
 void QBuffer::updateData(int offset, const QByteArray &bytes)
 {
