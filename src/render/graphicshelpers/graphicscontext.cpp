@@ -1205,7 +1205,14 @@ void GraphicsContext::applyUniform(const ShaderUniform &description, const Unifo
 
     switch (type) {
     case UniformType::Float:
-        applyUniformHelper<UniformType::Float>(description.m_location, description.m_size, v);
+        // See QTBUG-57510 and uniform_p.h
+        if (v.storedType() == Int) {
+            float value = float(*v.constData<int>());
+            UniformValue floatV(value);
+            applyUniformHelper<UniformType::Float>(description.m_location, description.m_size, floatV);
+        } else {
+            applyUniformHelper<UniformType::Float>(description.m_location, description.m_size, v);
+        }
         break;
     case UniformType::Vec2:
         applyUniformHelper<UniformType::Vec2>(description.m_location, description.m_size, v);
