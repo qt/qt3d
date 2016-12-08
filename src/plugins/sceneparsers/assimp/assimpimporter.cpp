@@ -260,6 +260,7 @@ QStringList AssimpImporter::assimpSupportedFormats()
     formats.append(QStringLiteral("acc"));
     formats.append(QStringLiteral("ase"));
     formats.append(QStringLiteral("ask"));
+    formats.append(QStringLiteral("assbin"));
     formats.append(QStringLiteral("b3d"));
     formats.append(QStringLiteral("blend"));
     formats.append(QStringLiteral("bvh"));
@@ -268,6 +269,7 @@ QStringList AssimpImporter::assimpSupportedFormats()
     formats.append(QStringLiteral("dae"));
     formats.append(QStringLiteral("dxf"));
     formats.append(QStringLiteral("enff"));
+    formats.append(QStringLiteral("fbx"));
     formats.append(QStringLiteral("hmp"));
     formats.append(QStringLiteral("irr"));
     formats.append(QStringLiteral("irrmesh"));
@@ -288,6 +290,7 @@ QStringList AssimpImporter::assimpSupportedFormats()
     formats.append(QStringLiteral("nff"));
     formats.append(QStringLiteral("obj"));
     formats.append(QStringLiteral("off"));
+    formats.append(QStringLiteral("ogex"));
     formats.append(QStringLiteral("pk3"));
     formats.append(QStringLiteral("ply"));
     formats.append(QStringLiteral("prj"));
@@ -295,6 +298,7 @@ QStringList AssimpImporter::assimpSupportedFormats()
     formats.append(QStringLiteral("q3s"));
     formats.append(QStringLiteral("raw"));
     formats.append(QStringLiteral("scn"));
+    formats.append(QStringLiteral("sib"));
     formats.append(QStringLiteral("smd"));
     formats.append(QStringLiteral("stl"));
     formats.append(QStringLiteral("ter"));
@@ -302,7 +306,6 @@ QStringList AssimpImporter::assimpSupportedFormats()
     formats.append(QStringLiteral("vta"));
     formats.append(QStringLiteral("x"));
     formats.append(QStringLiteral("xml"));
-    formats.append(QStringLiteral("fbx"));
 
     return formats;
 }
