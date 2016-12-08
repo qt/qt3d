@@ -249,7 +249,10 @@ void GLTexture::setImages(const QVector<Image> &images)
         }
 
         m_images = images;
-        m_dirty |= TextureData;
+
+        // Don't mark the texture data as dirty yet. We defer this until the
+        // generators have been executed and the data is made available to the
+        // TextureDataManager.
 
         // make sure the generators are executed
         for (const Image& img : qAsConst(images)) {

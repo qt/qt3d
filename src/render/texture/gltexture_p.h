@@ -140,6 +140,10 @@ public:
      */
     void destroyGLTexture();
 
+    // Called by TextureDataManager when it has new texture data from
+    // a generator that needs to be uploaded.
+    void requestUpload() { m_dirty |= TextureData; }
+
 protected:
 
     template<class APITexture, class APITextureImage>
@@ -160,9 +164,10 @@ protected:
 private:
 
     enum DirtyFlag {
-        TextureData = 0x1,     // one or more generators need to be executed
-        Properties   = 0x2,     // texture needs to be (re-)created
-        Parameters   = 0x4      // texture parameters need to be (re-)set
+        TextureData  = 0x01,     // one or more generators have been executed, data needs uploading to GPU
+        Properties   = 0x02,     // texture needs to be (re-)created
+        Parameters   = 0x04      // texture parameters need to be (re-)set
+
     };
     Q_DECLARE_FLAGS(DirtyFlags, DirtyFlag)
 
