@@ -89,8 +89,7 @@ QPickEvent::QPickEvent(const QPointF &position, const QVector3D &worldIntersecti
 }
 
 /*!
-  \fn Qt3DRender::QPickEvent::QPickEvent(const QPointF &position, const QVector3D &intersection, const QVector3D &localIntersection, float distance)
-  Constructs a new QPickEvent with the given parameters: \a position, \a intersection, \a localIntersection, \a distance, \a button, \a buttons and \a modifiers
+  Constructs a new QPickEvent with the given parameters: \a position, \a worldIntersection, \a localIntersection, \a distance, \a button, \a buttons and \a modifiers
  */
 QPickEvent::QPickEvent(const QPointF &position, const QVector3D &worldIntersection, const QVector3D &localIntersection, float distance, QPickEvent::Buttons button, int buttons, int modifiers)
     : QObject(*new QPickEventPrivate())

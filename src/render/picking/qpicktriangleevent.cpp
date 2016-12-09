@@ -94,7 +94,7 @@ QPickTriangleEvent::QPickTriangleEvent()
 /*!
  * \brief QPickTriangleEvent::QPickTriangleEvent Constructs a new QPickEvent with the given parameters
  * \a position,
- * \a intersection,
+ * \a worldIntersection,
  * \a localIntersection,
  * \a distance,
  * \a triangleIndex,
