@@ -52,6 +52,7 @@
 #include <QtCore/qmath.h>
 #include <QtCore/qtemporarydir.h>
 #include <QtCore/qregularexpression.h>
+#include <QtCore/qmetaobject.h>
 #include <QtGui/qvector2d.h>
 #include <QtGui/qvector4d.h>
 #include <QtGui/qmatrix4x4.h>
@@ -137,6 +138,12 @@ inline QJsonArray vec2jsvec(const QVector<T> &v)
     QJsonArray arr;
     for (int i = 0; i < v.count(); ++i)
         arr << v.at(i);
+    return arr;
+}
+
+inline QJsonArray size2jsvec(const QSize &size) {
+    QJsonArray arr;
+    arr << size.width() << size.height();
     return arr;
 }
 
@@ -272,27 +279,6 @@ GLTFExporter::~GLTFExporter()
 bool GLTFExporter::exportScene(QEntity *sceneRoot, const QString &outDir,
                                const QString &exportName, const QVariantHash &options)
 {
-    m_buffer.clear();
-    m_meshMap.clear();
-    m_materialMap.clear();
-    m_cameraMap.clear();
-    m_lightMap.clear();
-    m_transformMap.clear();
-    m_imageMap.clear();
-    m_textureIdMap.clear();
-    m_meshInfo.clear();
-    m_materialInfo.clear();
-    m_cameraInfo.clear();
-    m_lightInfo.clear();
-    m_exportedFiles.clear();
-    m_renderPassIdMap.clear();
-    m_shaderInfo.clear();
-    m_programInfo.clear();
-    m_techniqueIdMap.clear();
-    m_effectIdMap.clear();
-
-    delNode(m_rootNode);
-
     m_bufferViewCount = 0;
     m_accessorCount = 0;
     m_meshCount = 0;
@@ -405,7 +391,78 @@ bool GLTFExporter::exportScene(QEntity *sceneRoot, const QString &outDir,
         }
     }
 
+    // Clean up after export
+
+    m_buffer.clear();
+    m_meshMap.clear();
+    m_materialMap.clear();
+    m_cameraMap.clear();
+    m_lightMap.clear();
+    m_transformMap.clear();
+    m_imageMap.clear();
+    m_textureIdMap.clear();
+    m_meshInfo.clear();
+    m_materialInfo.clear();
+    m_cameraInfo.clear();
+    m_lightInfo.clear();
+    m_exportedFiles.clear();
+    m_renderPassIdMap.clear();
+    m_shaderInfo.clear();
+    m_programInfo.clear();
+    m_techniqueIdMap.clear();
+    m_effectIdMap.clear();
+    qDeleteAll(m_defaultObjectCache);
+    m_defaultObjectCache.clear();
+    m_propertyCache.clear();
+
+    delNode(m_rootNode);
+
     return true;
+}
+
+void GLTFExporter::cacheDefaultProperties(GLTFExporter::PropertyCacheType type)
+{
+    if (m_defaultObjectCache.contains(type))
+        return;
+
+    QObject *defaultObject = nullptr;
+
+    switch (type) {
+    case TypeConeMesh:
+        defaultObject = new QConeMesh;
+        break;
+    case TypeCuboidMesh:
+        defaultObject = new QCuboidMesh;
+        break;
+    case TypeCylinderMesh:
+        defaultObject = new QCylinderMesh;
+        break;
+    case TypePlaneMesh:
+        defaultObject = new QPlaneMesh;
+        break;
+    case TypeSphereMesh:
+        defaultObject = new QSphereMesh;
+        break;
+    case TypeTorusMesh:
+        defaultObject = new QTorusMesh;
+        break;
+    default:
+        return; // Unsupported type
+    }
+
+    // Store the default object for property comparisons
+    m_defaultObjectCache.insert(type, defaultObject);
+
+    // Cache metaproperties of supported types (but not their parent class types)
+    const QMetaObject *meta = defaultObject->metaObject();
+    QVector<QMetaProperty> properties;
+    properties.reserve(meta->propertyCount() - meta->propertyOffset());
+    for (int i = meta->propertyOffset(); i < meta->propertyCount(); ++i) {
+        if (meta->property(i).isWritable())
+            properties.append(meta->property(i));
+    }
+
+    m_propertyCache.insert(type, properties);
 }
 
 // Copies textures from original locations to the temporary export directory.
@@ -656,230 +713,245 @@ void GLTFExporter::parseMeshes()
         meshInfo.name = newMeshName();
         meshInfo.materialName = m_materialInfo.value(m_materialMap.value(node)).name;
 
-        bool defaultType = qobject_cast<QConeMesh *>(mesh) || qobject_cast<QCuboidMesh *>(mesh)
-                || qobject_cast<QCylinderMesh *>(mesh) || qobject_cast<QPlaneMesh *>(mesh)
-                || qobject_cast<QSphereMesh *>(mesh) || qobject_cast<QTorusMesh *>(mesh);
-
-        QGeometry *meshGeometry = nullptr;
-        QGeometryFactoryPtr geometryFunctorPtr = mesh->geometryFactory();
-        if (defaultType || !geometryFunctorPtr.data()) {
-            meshGeometry = mesh->geometry();
+        if (qobject_cast<QConeMesh *>(mesh)) {
+            meshInfo.meshType = TypeConeMesh;
+            meshInfo.meshTypeStr = QStringLiteral("cone");
+        } else if (qobject_cast<QCuboidMesh *>(mesh)) {
+            meshInfo.meshType = TypeCuboidMesh;
+            meshInfo.meshTypeStr = QStringLiteral("cuboid");
+        } else if (qobject_cast<QCylinderMesh *>(mesh)) {
+            meshInfo.meshType = TypeCylinderMesh;
+            meshInfo.meshTypeStr = QStringLiteral("cylinder");
+        } else if (qobject_cast<QPlaneMesh *>(mesh)) {
+            meshInfo.meshType = TypePlaneMesh;
+            meshInfo.meshTypeStr = QStringLiteral("plane");
+        } else if (qobject_cast<QSphereMesh *>(mesh)) {
+            meshInfo.meshType = TypeSphereMesh;
+            meshInfo.meshTypeStr = QStringLiteral("sphere");
+        } else if (qobject_cast<QTorusMesh *>(mesh)) {
+            meshInfo.meshType = TypeTorusMesh;
+            meshInfo.meshTypeStr = QStringLiteral("torus");
         } else {
-            // Execute the geometry functor to get the geometry, if it is available.
-            // Functor gives us the latest data if geometry has changed.
-            meshGeometry = geometryFunctorPtr.data()->operator()();
+            meshInfo.meshType = TypeNone;
         }
 
-        if (!meshGeometry) {
-            qCWarning(GLTFExporterLog, "Ignoring mesh without geometry!");
-            continue;
-        }
+        if (meshInfo.meshType != TypeNone) {
+            meshInfo.meshComponent = mesh;
+            cacheDefaultProperties(meshInfo.meshType);
 
-        QAttribute *indexAttrib = nullptr;
-        const quint16 *indexPtr = nullptr;
-
-        struct VertexAttrib {
-            QAttribute *att;
-            const float *ptr;
-            QString usage;
-            uint offset;
-            uint stride;
-            int index;
-        };
-
-        QVector<VertexAttrib> vAttribs;
-        vAttribs.reserve(meshGeometry->attributes().size());
-
-        uint stride(0);
-
-        for (QAttribute *att : meshGeometry->attributes()) {
-            if (att->attributeType() == QAttribute::IndexAttribute) {
-                indexAttrib = att;
-                indexPtr = reinterpret_cast<const quint16 *>(att->buffer()->data().constData());
-            } else {
-                VertexAttrib vAtt;
-                vAtt.att = att;
-                vAtt.ptr = reinterpret_cast<const float *>(att->buffer()->data().constData());
-                if (att->name() == VERTICES_ATTRIBUTE_NAME)
-                    vAtt.usage = QStringLiteral("POSITION");
-                else if (att->name() == NORMAL_ATTRIBUTE_NAME)
-                    vAtt.usage = QStringLiteral("NORMAL");
-                else if (att->name() == TEXTCOORD_ATTRIBUTE_NAME)
-                    vAtt.usage = QStringLiteral("TEXCOORD_0");
-                else if (att->name() == COLOR_ATTRIBUTE_NAME)
-                    vAtt.usage = QStringLiteral("COLOR");
-                else if (att->name() == TANGENT_ATTRIBUTE_NAME)
-                    vAtt.usage = QStringLiteral("TANGENT");
-                else
-                    vAtt.usage = att->name();
-
-                vAtt.offset = att->byteOffset() / sizeof(float);
-                vAtt.index = vAtt.offset;
-                vAtt.stride = att->byteStride() > 0
-                        ? att->byteStride() / sizeof(float) - att->vertexSize() : 0;
-                stride += att->vertexSize();
-
-                vAttribs << vAtt;
+            if (GLTFExporterLog().isDebugEnabled()) {
+                qCDebug(GLTFExporterLog, "  Mesh #%i: (%ls/%ls)", meshCount,
+                        qUtf16PrintableImpl(meshInfo.name), qUtf16PrintableImpl(meshInfo.originalName));
+                qCDebug(GLTFExporterLog, "    material: '%ls'",
+                        qUtf16PrintableImpl(meshInfo.materialName));
+                qCDebug(GLTFExporterLog, "    basic mesh type: '%s'",
+                        mesh->metaObject()->className());
             }
-        }
-
-        int attribCount(vAttribs.size());
-        if (!attribCount) {
-            qCWarning(GLTFExporterLog, "Ignoring mesh without any attributes!");
-            continue;
-        }
-
-        // Default types use single interleaved buffer for all vertex data, but we must regenerate
-        // it as it is not available on the frontend by default.
-        QByteArray defaultVertexArray;
-        QByteArray defaultIndexArray;
-        if (defaultType) {
-            defaultVertexArray =
-                    vAttribs.at(0).att->buffer()->dataGenerator().data()->operator()();
-            const float *defaultVertexBufferPtr =
-                    reinterpret_cast<const float *>(defaultVertexArray.constData());
-            for (int i = 0; i < attribCount; i++)
-                vAttribs[i].ptr = defaultVertexBufferPtr;
-
-            defaultIndexArray = indexAttrib->buffer()->dataGenerator().data()->operator()();
-            indexPtr = reinterpret_cast<const quint16 *>(defaultIndexArray.constData());
-        }
-
-        QByteArray vertexBuf;
-        const int vertexCount = vAttribs.at(0).att->count();
-        vertexBuf.resize(stride * vertexCount * sizeof(float));
-        float *p = reinterpret_cast<float *>(vertexBuf.data());
-
-        // Create interleaved buffer
-        for (int i = 0; i < vertexCount; ++i) {
-            for (int j = 0; j < attribCount; ++j) {
-                VertexAttrib &vAtt = vAttribs[j];
-                for (uint k = 0; k < vAtt.att->vertexSize(); ++k)
-                    *p++ = vAtt.ptr[vAtt.index++];
-                vAtt.index += vAtt.stride;
-            }
-        }
-
-        MeshInfo::BufferView vertexBufView;
-        vertexBufView.name = newBufferViewName();
-        vertexBufView.length = vertexBuf.size();
-        vertexBufView.offset = m_buffer.size();
-        vertexBufView.componentType = GL_FLOAT;
-        vertexBufView.target = GL_ARRAY_BUFFER;
-        meshInfo.views.append(vertexBufView);
-
-        QByteArray indexBuf;
-        MeshInfo::BufferView indexBufView;
-        uint indexCount = 0;
-        if (indexAttrib) {
-            const uint indexSize = indexAttrib->vertexBaseType() == QAttribute::UnsignedShort
-                    ? sizeof(quint16) : sizeof(quint32);
-            indexCount = indexAttrib->count();
-            uint srcIndex = indexAttrib->byteOffset() / indexSize;
-            const uint indexStride = indexAttrib->byteStride()
-                    ? indexAttrib->byteStride() / indexSize - 1: 0;
-            indexBuf.resize(indexCount * indexSize);
-            if (indexSize == sizeof(quint32)) {
-                quint32 *dst = reinterpret_cast<quint32 *>(indexBuf.data());
-                const quint32 *src = reinterpret_cast<const quint32 *>(indexPtr);
-                for (uint j = 0; j < indexCount; ++j) {
-                    *dst++ = src[srcIndex++];
-                    srcIndex += indexStride;
-                }
+        } else {
+            meshInfo.meshComponent = nullptr;
+            QGeometry *meshGeometry = nullptr;
+            QGeometryFactoryPtr geometryFunctorPtr = mesh->geometryFactory();
+            if (!geometryFunctorPtr.data()) {
+                meshGeometry = mesh->geometry();
             } else {
-                quint16 *dst = reinterpret_cast<quint16 *>(indexBuf.data());
-                for (uint j = 0; j < indexCount; ++j) {
-                    *dst++ = indexPtr[srcIndex++];
-                    srcIndex += indexStride;
+                // Execute the geometry functor to get the geometry, if it is available.
+                // Functor gives us the latest data if geometry has changed.
+                meshGeometry = geometryFunctorPtr.data()->operator()();
+            }
+
+            if (!meshGeometry) {
+                qCWarning(GLTFExporterLog, "Ignoring mesh without geometry!");
+                continue;
+            }
+
+            QAttribute *indexAttrib = nullptr;
+            const quint16 *indexPtr = nullptr;
+
+            struct VertexAttrib {
+                QAttribute *att;
+                const float *ptr;
+                QString usage;
+                uint offset;
+                uint stride;
+                int index;
+            };
+
+            QVector<VertexAttrib> vAttribs;
+            vAttribs.reserve(meshGeometry->attributes().size());
+
+            uint stride(0);
+
+            for (QAttribute *att : meshGeometry->attributes()) {
+                if (att->attributeType() == QAttribute::IndexAttribute) {
+                    indexAttrib = att;
+                    indexPtr = reinterpret_cast<const quint16 *>(att->buffer()->data().constData());
+                } else {
+                    VertexAttrib vAtt;
+                    vAtt.att = att;
+                    vAtt.ptr = reinterpret_cast<const float *>(att->buffer()->data().constData());
+                    if (att->name() == VERTICES_ATTRIBUTE_NAME)
+                        vAtt.usage = QStringLiteral("POSITION");
+                    else if (att->name() == NORMAL_ATTRIBUTE_NAME)
+                        vAtt.usage = QStringLiteral("NORMAL");
+                    else if (att->name() == TEXTCOORD_ATTRIBUTE_NAME)
+                        vAtt.usage = QStringLiteral("TEXCOORD_0");
+                    else if (att->name() == COLOR_ATTRIBUTE_NAME)
+                        vAtt.usage = QStringLiteral("COLOR");
+                    else if (att->name() == TANGENT_ATTRIBUTE_NAME)
+                        vAtt.usage = QStringLiteral("TANGENT");
+                    else
+                        vAtt.usage = att->name();
+
+                    vAtt.offset = att->byteOffset() / sizeof(float);
+                    vAtt.index = vAtt.offset;
+                    vAtt.stride = att->byteStride() > 0
+                            ? att->byteStride() / sizeof(float) - att->vertexSize() : 0;
+                    stride += att->vertexSize();
+
+                    vAttribs << vAtt;
                 }
             }
 
-            indexBufView.name = newBufferViewName();
-            indexBufView.length = indexBuf.size();
-            indexBufView.offset = vertexBufView.offset + vertexBufView.length;
-            indexBufView.componentType = indexSize == sizeof(quint32)
-                    ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT;
-            indexBufView.target = GL_ELEMENT_ARRAY_BUFFER;
-            meshInfo.views.append(indexBufView);
-        }
+            int attribCount(vAttribs.size());
+            if (!attribCount) {
+                qCWarning(GLTFExporterLog, "Ignoring mesh without any attributes!");
+                continue;
+            }
 
-        MeshInfo::Accessor acc;
-        uint startOffset = 0;
+            QByteArray vertexBuf;
+            const int vertexCount = vAttribs.at(0).att->count();
+            vertexBuf.resize(stride * vertexCount * sizeof(float));
+            float *p = reinterpret_cast<float *>(vertexBuf.data());
 
-        acc.bufferView = vertexBufView.name;
-        acc.stride = stride * sizeof(float);
-        acc.count = vertexCount;
-        acc.componentType = vertexBufView.componentType;
-        for (int i = 0; i < attribCount; ++i) {
-            const VertexAttrib &vAtt = vAttribs.at(i);
-            acc.name = newAccessorName();
-            acc.usage = vAtt.usage;
-            acc.offset = startOffset * sizeof(float);
-            switch (vAtt.att->vertexSize()) {
-            case 1:
+            // Create interleaved buffer
+            for (int i = 0; i < vertexCount; ++i) {
+                for (int j = 0; j < attribCount; ++j) {
+                    VertexAttrib &vAtt = vAttribs[j];
+                    for (uint k = 0; k < vAtt.att->vertexSize(); ++k)
+                        *p++ = vAtt.ptr[vAtt.index++];
+                    vAtt.index += vAtt.stride;
+                }
+            }
+
+            MeshInfo::BufferView vertexBufView;
+            vertexBufView.name = newBufferViewName();
+            vertexBufView.length = vertexBuf.size();
+            vertexBufView.offset = m_buffer.size();
+            vertexBufView.componentType = GL_FLOAT;
+            vertexBufView.target = GL_ARRAY_BUFFER;
+            meshInfo.views.append(vertexBufView);
+
+            QByteArray indexBuf;
+            MeshInfo::BufferView indexBufView;
+            uint indexCount = 0;
+            if (indexAttrib) {
+                const uint indexSize = indexAttrib->vertexBaseType() == QAttribute::UnsignedShort
+                        ? sizeof(quint16) : sizeof(quint32);
+                indexCount = indexAttrib->count();
+                uint srcIndex = indexAttrib->byteOffset() / indexSize;
+                const uint indexStride = indexAttrib->byteStride()
+                        ? indexAttrib->byteStride() / indexSize - 1: 0;
+                indexBuf.resize(indexCount * indexSize);
+                if (indexSize == sizeof(quint32)) {
+                    quint32 *dst = reinterpret_cast<quint32 *>(indexBuf.data());
+                    const quint32 *src = reinterpret_cast<const quint32 *>(indexPtr);
+                    for (uint j = 0; j < indexCount; ++j) {
+                        *dst++ = src[srcIndex++];
+                        srcIndex += indexStride;
+                    }
+                } else {
+                    quint16 *dst = reinterpret_cast<quint16 *>(indexBuf.data());
+                    for (uint j = 0; j < indexCount; ++j) {
+                        *dst++ = indexPtr[srcIndex++];
+                        srcIndex += indexStride;
+                    }
+                }
+
+                indexBufView.name = newBufferViewName();
+                indexBufView.length = indexBuf.size();
+                indexBufView.offset = vertexBufView.offset + vertexBufView.length;
+                indexBufView.componentType = indexSize == sizeof(quint32)
+                        ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT;
+                indexBufView.target = GL_ELEMENT_ARRAY_BUFFER;
+                meshInfo.views.append(indexBufView);
+            }
+
+            MeshInfo::Accessor acc;
+            uint startOffset = 0;
+
+            acc.bufferView = vertexBufView.name;
+            acc.stride = stride * sizeof(float);
+            acc.count = vertexCount;
+            acc.componentType = vertexBufView.componentType;
+            for (int i = 0; i < attribCount; ++i) {
+                const VertexAttrib &vAtt = vAttribs.at(i);
+                acc.name = newAccessorName();
+                acc.usage = vAtt.usage;
+                acc.offset = startOffset * sizeof(float);
+                switch (vAtt.att->vertexSize()) {
+                case 1:
+                    acc.type = QStringLiteral("SCALAR");
+                    break;
+                case 2:
+                    acc.type = QStringLiteral("VEC2");
+                    break;
+                case 3:
+                    acc.type = QStringLiteral("VEC3");
+                    break;
+                case 4:
+                    acc.type = QStringLiteral("VEC4");
+                    break;
+                case 9:
+                    acc.type = QStringLiteral("MAT3");
+                    break;
+                case 16:
+                    acc.type = QStringLiteral("MAT4");
+                    break;
+                default:
+                    qCWarning(GLTFExporterLog, "Invalid vertex size: %d", vAtt.att->vertexSize());
+                    break;
+                }
+                meshInfo.accessors.append(acc);
+                startOffset += vAtt.att->vertexSize();
+            }
+
+            // Index
+            if (indexAttrib) {
+                acc.name = newAccessorName();
+                acc.usage = QStringLiteral("INDEX");
+                acc.bufferView = indexBufView.name;
+                acc.offset = 0;
+                acc.stride = 0;
+                acc.count = indexCount;
+                acc.componentType = indexBufView.componentType;
                 acc.type = QStringLiteral("SCALAR");
-                break;
-            case 2:
-                acc.type = QStringLiteral("VEC2");
-                break;
-            case 3:
-                acc.type = QStringLiteral("VEC3");
-                break;
-            case 4:
-                acc.type = QStringLiteral("VEC4");
-                break;
-            case 9:
-                acc.type = QStringLiteral("MAT3");
-                break;
-            case 16:
-                acc.type = QStringLiteral("MAT4");
-                break;
-            default:
-                qCWarning(GLTFExporterLog, "Invalid vertex size: %d", vAtt.att->vertexSize());
-                break;
+                meshInfo.accessors.append(acc);
             }
-            meshInfo.accessors.append(acc);
-            startOffset += vAtt.att->vertexSize();
+            m_buffer.append(vertexBuf);
+            m_buffer.append(indexBuf);
+
+            if (GLTFExporterLog().isDebugEnabled()) {
+                qCDebug(GLTFExporterLog, "  Mesh #%i: (%ls/%ls)", meshCount,
+                        qUtf16PrintableImpl(meshInfo.name), qUtf16PrintableImpl(meshInfo.originalName));
+                qCDebug(GLTFExporterLog, "    Vertex count: %i", vertexCount);
+                qCDebug(GLTFExporterLog, "    Bytes per vertex: %i", stride);
+                qCDebug(GLTFExporterLog, "    Vertex buffer size (bytes): %i", vertexBuf.size());
+                qCDebug(GLTFExporterLog, "    Index buffer size (bytes): %i", indexBuf.size());
+                QStringList sl;
+                for (auto bv : meshInfo.views)
+                    sl << bv.name;
+                qCDebug(GLTFExporterLog) << "    buffer views:" << sl;
+                sl.clear();
+                for (auto acc : meshInfo.accessors)
+                    sl << acc.name;
+                qCDebug(GLTFExporterLog) << "    accessors:" << sl;
+                qCDebug(GLTFExporterLog, "    material: '%ls'",
+                        qUtf16PrintableImpl(meshInfo.materialName));
+            }
         }
 
-        // Index
-        if (indexAttrib) {
-            acc.name = newAccessorName();
-            acc.usage = QStringLiteral("INDEX");
-            acc.bufferView = indexBufView.name;
-            acc.offset = 0;
-            acc.stride = 0;
-            acc.count = indexCount;
-            acc.componentType = indexBufView.componentType;
-            acc.type = QStringLiteral("SCALAR");
-            meshInfo.accessors.append(acc);
-        }
-
-        if (GLTFExporterLog().isDebugEnabled()) {
-            qCDebug(GLTFExporterLog, "  Mesh #%i: (%ls/%ls)", meshCount,
-                    qUtf16PrintableImpl(meshInfo.name), qUtf16PrintableImpl(meshInfo.originalName));
-            qCDebug(GLTFExporterLog, "    Vertex count: %i", vertexCount);
-            qCDebug(GLTFExporterLog, "    Bytes per vertex: %i", stride);
-            qCDebug(GLTFExporterLog, "    Vertex buffer size (bytes): %i", vertexBuf.size());
-            qCDebug(GLTFExporterLog, "    Index buffer size (bytes): %i", indexBuf.size());
-
-            QStringList sl;
-            for (auto bv : meshInfo.views)
-                sl << bv.name;
-            qCDebug(GLTFExporterLog) << "  buffer views:" << sl;
-            sl.clear();
-            for (auto acc : meshInfo.accessors)
-                sl << acc.name;
-            qCDebug(GLTFExporterLog) << "  accessors:" << sl;
-            qCDebug(GLTFExporterLog, "  material: '%ls'",
-                    qUtf16PrintableImpl(meshInfo.materialName));
-        }
-
-        m_buffer.append(vertexBuf);
-        m_buffer.append(indexBuf);
-
-        m_meshInfo.insert(mesh, meshInfo);
         meshCount++;
+        m_meshInfo.insert(mesh, meshInfo);
     }
 
     qCDebug(GLTFExporterLog, "Total buffer size: %i", m_buffer.size());
@@ -1143,20 +1215,28 @@ bool GLTFExporter::saveScene()
     for (auto meshInfo : m_meshInfo.values()) {
         QJsonObject mesh;
         mesh["name"] = meshInfo.originalName;
-        QJsonArray prims;
-        QJsonObject prim;
-        prim["mode"] = 4; // triangles
-        QJsonObject attrs;
-        for (auto acc : meshInfo.accessors) {
-            if (acc.usage != QStringLiteral("INDEX"))
-                attrs[acc.usage] = acc.name;
-            else
-                prim["indices"] = acc.name;
+        if (meshInfo.meshType != TypeNone) {
+            QJsonObject properties;
+            exportGenericProperties(properties, meshInfo.meshType, meshInfo.meshComponent);
+            mesh["type"] = meshInfo.meshTypeStr;
+            mesh["properties"] = properties;
+            mesh["material"] = meshInfo.materialName;
+        } else {
+            QJsonArray prims;
+            QJsonObject prim;
+            prim["mode"] = 4; // triangles
+            QJsonObject attrs;
+            for (auto acc : meshInfo.accessors) {
+                if (acc.usage != QStringLiteral("INDEX"))
+                    attrs[acc.usage] = acc.name;
+                else
+                    prim["indices"] = acc.name;
+            }
+            prim["attributes"] = attrs;
+            prim["material"] = meshInfo.materialName;
+            prims.append(prim);
+            mesh["primitives"] = prims;
         }
-        prim["attributes"] = attrs;
-        prim["material"] = meshInfo.materialName;
-        prims.append(prim);
-        mesh["primitives"] = prims;
         meshes[meshInfo.name] = mesh;
     }
     if (meshes.size())
@@ -1640,6 +1720,20 @@ void GLTFExporter::exportMaterials(QJsonObject &materials)
     }
 }
 
+void GLTFExporter::exportGenericProperties(QJsonObject &jsonObj, PropertyCacheType type,
+                                           QObject *obj)
+{
+    QVector<QMetaProperty> properties = m_propertyCache.value(type);
+    QObject *defaultObject = m_defaultObjectCache.value(type);
+    for (const QMetaProperty &property : properties) {
+        // Only output property if it is different from default
+        QVariant defaultValue = defaultObject->property(property.name());
+        QVariant objectValue = obj->property(property.name());
+        if (defaultValue != objectValue)
+            setVarToJSonObject(jsonObj, QString::fromLatin1(property.name()), objectValue);
+    }
+}
+
 void GLTFExporter::clearOldExport(const QString &dir)
 {
     // Look for .qrc file with same name
@@ -1946,8 +2040,14 @@ void GLTFExporter::setVarToJSonObject(QJsonObject &jsObj, const QString &key, co
     case QMetaType::Bool:
         jsObj[key] = var.toBool();
         break;
+    case QMetaType::Int:
+        jsObj[key] = var.toInt();
+        break;
     case QMetaType::Float:
         jsObj[key] = var.value<float>();
+        break;
+    case QMetaType::QSize:
+        jsObj[key] = size2jsvec(var.value<QSize>());
         break;
     case QMetaType::QVector2D:
         jsObj[key] = vec2jsvec(var.value<QVector2D>());

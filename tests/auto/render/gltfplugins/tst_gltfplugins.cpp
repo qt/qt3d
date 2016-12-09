@@ -723,6 +723,7 @@ void tst_gltfPlugins::compareComponents(Qt3DCore::QComponent *c1, Qt3DCore::QCom
         // Transform names are lost in export, as the transform is just part of the node item
         if (!qobject_cast<Qt3DCore::QTransform *>(c1))
             QCOMPARE(c1->objectName(), c2->objectName());
+        QCOMPARE(c1->metaObject()->className(), c2->metaObject()->className());
         // Meshes are all imported as generic meshes
         if (auto mesh1 = qobject_cast<Qt3DRender::QGeometryRenderer *>(c1)) {
             auto mesh2 = qobject_cast<Qt3DRender::QGeometryRenderer *>(c2);
@@ -773,7 +774,6 @@ void tst_gltfPlugins::compareComponents(Qt3DCore::QComponent *c1, Qt3DCore::QCom
                                       Qt3DRender::QAttribute::IndexAttribute,
                                       geometry2));
         } else {
-            QCOMPARE(c1->metaObject()->className(), c2->metaObject()->className());
             int count = c1->metaObject()->propertyCount();
             for (int i = 0; i < count; i++) {
                 auto property = c1->metaObject()->property(i);

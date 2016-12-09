@@ -97,6 +97,12 @@
 #include <Qt3DExtras/qnormaldiffusespecularmapmaterial.h>
 #include <Qt3DExtras/qgoochmaterial.h>
 #include <Qt3DExtras/qpervertexcolormaterial.h>
+#include <Qt3DExtras/qconemesh.h>
+#include <Qt3DExtras/qcuboidmesh.h>
+#include <Qt3DExtras/qcylindermesh.h>
+#include <Qt3DExtras/qplanemesh.h>
+#include <Qt3DExtras/qspheremesh.h>
+#include <Qt3DExtras/qtorusmesh.h>
 
 #include <private/qurlhelper_p.h>
 
@@ -206,6 +212,7 @@
 #define KEY_RENDERPASSES        QLatin1String("renderpasses")
 #define KEY_EFFECT              QLatin1String("effect")
 #define KEY_EFFECTS             QLatin1String("effects")
+#define KEY_PROPERTIES          QLatin1String("properties")
 
 QT_BEGIN_NAMESPACE
 
@@ -1312,94 +1319,147 @@ void GLTFImporter::processJSONAccessor( const QString &id, const QJsonObject& js
 
 void GLTFImporter::processJSONMesh(const QString &id, const QJsonObject &json)
 {
-    const QJsonArray primitivesArray = json.value(KEY_PRIMITIVES).toArray();
     const QString meshName = json.value(KEY_NAME).toString();
-    for (const QJsonValue &primitiveValue : primitivesArray) {
-        QJsonObject primitiveObject = primitiveValue.toObject();
-        int type = primitiveObject.value(KEY_MODE).toInt();
-        QString material = primitiveObject.value(KEY_MATERIAL).toString();
+    const QString meshType = json.value(KEY_TYPE).toString();
+    if (meshType.isEmpty()) {
+        // Custom mesh
+        const QJsonArray primitivesArray = json.value(KEY_PRIMITIVES).toArray();
+        for (const QJsonValue &primitiveValue : primitivesArray) {
+            QJsonObject primitiveObject = primitiveValue.toObject();
+            int type = primitiveObject.value(KEY_MODE).toInt();
+            QString material = primitiveObject.value(KEY_MATERIAL).toString();
 
-        if (Q_UNLIKELY(material.isEmpty())) {
-            qCWarning(GLTFImporterLog, "malformed primitive on %ls, missing material value %ls",
-                      qUtf16PrintableImpl(id), qUtf16PrintableImpl(material));
-            continue;
-        }
+            QGeometryRenderer *geometryRenderer = new QGeometryRenderer;
+            QGeometry *meshGeometry = new QGeometry(geometryRenderer);
 
-        QGeometryRenderer *geometryRenderer = new QGeometryRenderer;
-        QGeometry *meshGeometry = new QGeometry(geometryRenderer);
+            //Set Primitive Type
+            geometryRenderer->setPrimitiveType(static_cast<QGeometryRenderer::PrimitiveType>(type));
 
-        //Set Primitive Type
-        geometryRenderer->setPrimitiveType(static_cast<QGeometryRenderer::PrimitiveType>(type));
+            //Save Material for mesh
+            m_meshMaterialDict[geometryRenderer] = material;
 
-        //Save Material for mesh
-        m_meshMaterialDict[geometryRenderer] = material;
+            const QJsonObject attrs = primitiveObject.value(KEY_ATTRIBUTES).toObject();
+            for (auto it = attrs.begin(), end = attrs.end(); it != end; ++it) {
+                QString k = it.value().toString();
+                const auto accessorIt = qAsConst(m_accessorDict).find(k);
+                if (Q_UNLIKELY(accessorIt == m_accessorDict.cend())) {
+                    qCWarning(GLTFImporterLog, "unknown attribute accessor: %ls on mesh %ls",
+                              qUtf16PrintableImpl(k), qUtf16PrintableImpl(id));
+                    continue;
+                }
 
-        const QJsonObject attrs = primitiveObject.value(KEY_ATTRIBUTES).toObject();
-        for (auto it = attrs.begin(), end = attrs.end(); it != end; ++it) {
-            QString k = it.value().toString();
-            const auto accessorIt = qAsConst(m_accessorDict).find(k);
-            if (Q_UNLIKELY(accessorIt == m_accessorDict.cend())) {
-                qCWarning(GLTFImporterLog, "unknown attribute accessor: %ls on mesh %ls",
-                          qUtf16PrintableImpl(k), qUtf16PrintableImpl(id));
-                continue;
-            }
+                const QString attrName = it.key();
+                QString attributeName = standardAttributeNameFromSemantic(attrName);
+                if (attributeName.isEmpty())
+                    attributeName = attrName;
 
-            const QString attrName = it.key();
-            QString attributeName = standardAttributeNameFromSemantic(attrName);
-            if (attributeName.isEmpty())
-                attributeName = attrName;
-
-            //Get buffer handle for accessor
-            Qt3DRender::QBuffer *buffer = m_buffers.value(accessorIt->bufferViewName, nullptr);
-            if (Q_UNLIKELY(!buffer)) {
-                qCWarning(GLTFImporterLog, "unknown buffer-view: %ls processing accessor: %ls",
-                          qUtf16PrintableImpl(accessorIt->bufferViewName), qUtf16PrintableImpl(id));
-                continue;
-            }
-
-            QAttribute *attribute = new QAttribute(buffer,
-                                                   attributeName,
-                                                   accessorIt->type,
-                                                   accessorIt->dataSize,
-                                                   accessorIt->count,
-                                                   accessorIt->offset,
-                                                   accessorIt->stride);
-            attribute->setAttributeType(QAttribute::VertexAttribute);
-            meshGeometry->addAttribute(attribute);
-        }
-
-        const auto indices = primitiveObject.value(KEY_INDICES);
-        if (!indices.isUndefined()) {
-            QString k = indices.toString();
-            const auto accessorIt = qAsConst(m_accessorDict).find(k);
-            if (Q_UNLIKELY(accessorIt == m_accessorDict.cend())) {
-                qCWarning(GLTFImporterLog, "unknown index accessor: %ls on mesh %ls",
-                          qUtf16PrintableImpl(k), qUtf16PrintableImpl(id));
-            } else {
                 //Get buffer handle for accessor
                 Qt3DRender::QBuffer *buffer = m_buffers.value(accessorIt->bufferViewName, nullptr);
                 if (Q_UNLIKELY(!buffer)) {
                     qCWarning(GLTFImporterLog, "unknown buffer-view: %ls processing accessor: %ls",
-                              qUtf16PrintableImpl(accessorIt->bufferViewName), qUtf16PrintableImpl(id));
+                              qUtf16PrintableImpl(accessorIt->bufferViewName),
+                              qUtf16PrintableImpl(id));
                     continue;
                 }
 
                 QAttribute *attribute = new QAttribute(buffer,
+                                                       attributeName,
                                                        accessorIt->type,
                                                        accessorIt->dataSize,
                                                        accessorIt->count,
                                                        accessorIt->offset,
                                                        accessorIt->stride);
-                attribute->setAttributeType(QAttribute::IndexAttribute);
+                attribute->setAttributeType(QAttribute::VertexAttribute);
                 meshGeometry->addAttribute(attribute);
             }
-        } // of has indices
 
-        geometryRenderer->setGeometry(meshGeometry);
-        geometryRenderer->setObjectName(meshName);
+            const auto indices = primitiveObject.value(KEY_INDICES);
+            if (!indices.isUndefined()) {
+                QString k = indices.toString();
+                const auto accessorIt = qAsConst(m_accessorDict).find(k);
+                if (Q_UNLIKELY(accessorIt == m_accessorDict.cend())) {
+                    qCWarning(GLTFImporterLog, "unknown index accessor: %ls on mesh %ls",
+                              qUtf16PrintableImpl(k), qUtf16PrintableImpl(id));
+                } else {
+                    //Get buffer handle for accessor
+                    Qt3DRender::QBuffer *buffer = m_buffers.value(accessorIt->bufferViewName,
+                                                                  nullptr);
+                    if (Q_UNLIKELY(!buffer)) {
+                        qCWarning(GLTFImporterLog,
+                                  "unknown buffer-view: %ls processing accessor: %ls",
+                                  qUtf16PrintableImpl(accessorIt->bufferViewName),
+                                  qUtf16PrintableImpl(id));
+                        continue;
+                    }
 
-        m_meshDict.insert( id, geometryRenderer);
-    } // of primitives iteration
+                    QAttribute *attribute = new QAttribute(buffer,
+                                                           accessorIt->type,
+                                                           accessorIt->dataSize,
+                                                           accessorIt->count,
+                                                           accessorIt->offset,
+                                                           accessorIt->stride);
+                    attribute->setAttributeType(QAttribute::IndexAttribute);
+                    meshGeometry->addAttribute(attribute);
+                }
+            } // of has indices
+
+            geometryRenderer->setGeometry(meshGeometry);
+            geometryRenderer->setObjectName(meshName);
+
+            m_meshDict.insert(id, geometryRenderer);
+        } // of primitives iteration
+    } else {
+        QGeometryRenderer *mesh = nullptr;
+        if (meshType == QStringLiteral("cone")) {
+            mesh = new QConeMesh;
+        } else if (meshType == QStringLiteral("cuboid")) {
+            mesh = new QCuboidMesh;
+        } else if (meshType == QStringLiteral("cylinder")) {
+            mesh = new QCylinderMesh;
+        } else if (meshType == QStringLiteral("plane")) {
+            mesh = new QPlaneMesh;
+        } else if (meshType == QStringLiteral("sphere")) {
+            mesh = new QSphereMesh;
+        } else if (meshType == QStringLiteral("torus")) {
+            mesh = new QTorusMesh;
+        } else {
+            qCWarning(GLTFImporterLog,
+                      "Invalid mesh type: %ls for mesh: %ls",
+                      qUtf16PrintableImpl(meshType),
+                      qUtf16PrintableImpl(id));
+        }
+
+        if (mesh) {
+            // Read and set properties
+            const QJsonObject propObj = json.value(KEY_PROPERTIES).toObject();
+            for (auto it = propObj.begin(), end = propObj.end(); it != end; ++it) {
+                const QByteArray propName = it.key().toLatin1();
+                // Basic mesh types only have bool, int, float, and QSize type properties
+                if (it.value().isBool()) {
+                    mesh->setProperty(propName.constData(), QVariant(it.value().toBool()));
+                } else if (it.value().isArray()) {
+                    const QJsonArray valueArray = it.value().toArray();
+                    if (valueArray.size() == 2) {
+                        QSize size;
+                        size.setWidth(valueArray.at(0).toInt());
+                        size.setHeight(valueArray.at(1).toInt());
+                        mesh->setProperty(propName.constData(), QVariant(size));
+                    }
+                } else {
+                    const QVariant::Type propType = mesh->property(propName.constData()).type();
+                    if (propType == QVariant::Int) {
+                        mesh->setProperty(propName.constData(), QVariant(it.value().toInt()));
+                    } else {
+                        mesh->setProperty(propName.constData(),
+                                          QVariant(float(it.value().toDouble())));
+                    }
+                }
+            }
+            mesh->setObjectName(meshName);
+            m_meshMaterialDict[mesh] = json.value(KEY_MATERIAL).toString();
+            m_meshDict.insert(id, mesh);
+        }
+    }
 }
 
 void GLTFImporter::processJSONImage(const QString &id, const QJsonObject &jsonObject)

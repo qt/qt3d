@@ -98,6 +98,16 @@ public:
     };
 
 private:
+    enum PropertyCacheType {
+        TypeNone = 0,
+        TypeConeMesh,
+        TypeCuboidMesh,
+        TypeCylinderMesh,
+        TypePlaneMesh,
+        TypeSphereMesh,
+        TypeTorusMesh
+    };
+
     struct MeshInfo {
         struct BufferView {
             BufferView() : bufIndex(0), offset(0), length(0), componentType(0), target(0) { }
@@ -124,6 +134,9 @@ private:
         QString name; // generated
         QString originalName; // may be empty
         QString materialName;
+        Qt3DRender::QGeometryRenderer *meshComponent;
+        PropertyCacheType meshType;
+        QString meshTypeStr;
     };
 
     struct MaterialInfo {
@@ -202,6 +215,7 @@ private:
         QVector<Node *> children;
     };
 
+    void cacheDefaultProperties(PropertyCacheType type);
     void copyTextures();
     void createShaders();
     void parseEntities(const Qt3DCore::QEntity *entity, Node *parentNode);
@@ -218,6 +232,7 @@ private:
     void delNode(Node *n);
     QString exportNodes(Node *n, QJsonObject &nodes);
     void exportMaterials(QJsonObject &materials);
+    void exportGenericProperties(QJsonObject &jsonObj, PropertyCacheType type, QObject *obj);
     void clearOldExport(const QString &dir);
     void exportParameter(QJsonObject &jsonObj, const QString &name, const QVariant &variant);
     void exportRenderStates(QJsonObject &jsonObj, const QRenderPass *pass);
@@ -275,6 +290,8 @@ private:
     QHash<Qt3DRender::QRenderPass *, QString> m_renderPassIdMap;
     QHash<Qt3DRender::QEffect *, QString> m_effectIdMap;
     QHash<Qt3DRender::QTechnique *, QString> m_techniqueIdMap;
+    QHash<PropertyCacheType, QObject *> m_defaultObjectCache;
+    QHash<PropertyCacheType, QVector<QMetaProperty> > m_propertyCache;
 
     QHash<Qt3DRender::QGeometryRenderer *, MeshInfo> m_meshInfo;
     QHash<Qt3DRender::QMaterial *, MaterialInfo> m_materialInfo;
@@ -282,7 +299,6 @@ private:
     QHash<Qt3DRender::QAbstractLight *, LightInfo> m_lightInfo;
     QHash<Qt3DRender::QShaderProgram *, ProgramInfo> m_programInfo;
     QVector<ShaderInfo> m_shaderInfo;
-
 
     Node *m_rootNode;
     bool m_rootNodeEmpty;
