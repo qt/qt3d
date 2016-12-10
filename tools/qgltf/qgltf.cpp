@@ -167,7 +167,7 @@ AssimpIOSystem::AssimpIOSystem()
 
 bool AssimpIOSystem::Exists(const char *pFile) const
 {
-    return QFileInfo(QString::fromUtf8(pFile)).exists();
+    return QFileInfo::exists(QString::fromUtf8(pFile));
 }
 
 char AssimpIOSystem::getOsSeparator() const
