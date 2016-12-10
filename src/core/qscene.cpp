@@ -220,7 +220,8 @@ bool QScene::hasEntityForComponent(QNodeId componentUuid, QNodeId entityUuid)
 {
     Q_D(QScene);
     QReadLocker lock(&d->m_lock);
-    return d->m_componentToEntities.values(componentUuid).contains(entityUuid);
+    const auto range = d->m_componentToEntities.equal_range(componentUuid);
+    return std::find(range.first, range.second, entityUuid) != range.second;
 }
 
 QScene::NodePropertyTrackData QScene::lookupNodePropertyTrackData(QNodeId id) const

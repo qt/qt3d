@@ -1249,7 +1249,7 @@ bool GLTFExporter::saveScene()
         m_obj["meshes"] = meshes;
 
     QJsonObject cameras;
-    for (auto camInfo : m_cameraInfo.values()) {
+    for (auto camInfo : qAsConst(m_cameraInfo)) {
         QJsonObject camera;
         QJsonObject proj;
         proj["znear"] = camInfo.znear;
