@@ -686,7 +686,7 @@ GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
             if (m_debugLogger->initialize()) {
                 QObject::connect(m_debugLogger.data(), &QOpenGLDebugLogger::messageLogged, &logOpenGLDebugMessage);
                 const QString mode = QString::fromLocal8Bit(debugLoggingMode);
-                m_debugLogger->startLogging(mode.toLower().startsWith(QLatin1String("sync"))
+                m_debugLogger->startLogging(mode.startsWith(QLatin1String("sync"), Qt::CaseInsensitive)
                                             ? QOpenGLDebugLogger::SynchronousLogging
                                             : QOpenGLDebugLogger::AsynchronousLogging);
 
