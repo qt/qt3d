@@ -6,5 +6,6 @@ qtConfig(private_tests) {
         dynamicnodecreation \
         3drender \
         3dinput \
-        3dcore
+        3dcore \
+        quick3dbuffer
 }
