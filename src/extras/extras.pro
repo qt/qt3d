@@ -12,6 +12,7 @@ load(qt_module)
 include (geometries/geometries.pri)
 include (3dtext/3dtext.pri)
 include (defaults/defaults.pri)
+include (text/text.pri)
 
 HEADERS += \
     qt3dextras_global.h
