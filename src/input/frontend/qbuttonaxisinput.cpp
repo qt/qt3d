@@ -57,6 +57,7 @@ namespace Qt3DInput {
 
 /*!
  * \class Qt3DInput::QButtonAxisInput
+ * \inheaderfile Qt3DInput/QButtonAxisInput
  * \inmodule Qt3DInput
  * \brief An axis input controlled by buttons
  * \since 5.7

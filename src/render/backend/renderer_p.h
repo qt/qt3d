@@ -65,12 +65,14 @@
 #include <Qt3DRender/private/expandboundingvolumejob_p.h>
 #include <Qt3DRender/private/updateworldtransformjob_p.h>
 #include <Qt3DRender/private/calcboundingvolumejob_p.h>
-#include <Qt3DRender/private/framepreparationjob_p.h>
+#include <Qt3DRender/private/updateshaderdatatransformjob_p.h>
 #include <Qt3DRender/private/framecleanupjob_p.h>
 #include <Qt3DRender/private/updateworldboundingvolumejob_p.h>
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
 #include <Qt3DRender/private/sendrendercapturejob_p.h>
 #include <Qt3DRender/private/genericlambdajob_p.h>
+#include <Qt3DRender/private/updatemeshtrianglelistjob_p.h>
+#include <Qt3DRender/private/filtercompatibletechniquejob_p.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -183,10 +185,12 @@ public:
 
     inline FrameCleanupJobPtr frameCleanupJob() const { return m_cleanupJob; }
     inline ExpandBoundingVolumeJobPtr expandBoundingVolumeJob() const { return m_expandBoundingVolumeJob; }
-    inline FramePreparationJobPtr framePreparationJob() const { return m_framePreparationJob; }
+    inline UpdateShaderDataTransformJobPtr updateShaderDataTransformJob() const { return m_updateShaderDataTransformJob; }
     inline CalculateBoundingVolumeJobPtr calculateBoundingVolumeJob() const { return m_calculateBoundingVolumeJob; }
     inline UpdateWorldTransformJobPtr updateWorldTransformJob() const { return m_worldTransformJob; }
     inline UpdateWorldBoundingVolumeJobPtr updateWorldBoundingVolumeJob() const { return m_updateWorldBoundingVolumeJob; }
+    inline UpdateMeshTriangleListJobPtr updateMeshTriangleListJob() const { return m_updateMeshTriangleListJob; }
+    inline FilterCompatibleTechniqueJobPtr filterCompatibleTechniqueJob() const { return m_filterCompatibleTechniqueJob; }
 
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const Q_DECL_OVERRIDE;
 
@@ -196,6 +200,8 @@ public:
     virtual RenderSettings *settings() const Q_DECL_OVERRIDE;
 
     void updateGLResources();
+    void updateTexture(Texture *texture);
+
     void prepareCommandsSubmission(const QVector<RenderView *> &renderViews);
     bool executeCommandsSubmission(const RenderView *rv);
     void updateVAOWithAttributes(Geometry *geometry,
@@ -208,6 +214,7 @@ public:
 
     void setOpenGLContext(QOpenGLContext *context);
     const GraphicsApiFilterData *contextInfo() const;
+    GraphicsContext *graphicsContext() const;
 
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
@@ -284,13 +291,15 @@ private:
 
     RenderSettings *m_settings;
 
-    FramePreparationJobPtr m_framePreparationJob;
+    UpdateShaderDataTransformJobPtr m_updateShaderDataTransformJob;
     FrameCleanupJobPtr m_cleanupJob;
     UpdateWorldTransformJobPtr m_worldTransformJob;
     ExpandBoundingVolumeJobPtr m_expandBoundingVolumeJob;
     CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
     UpdateWorldBoundingVolumeJobPtr m_updateWorldBoundingVolumeJob;
     SendRenderCaptureJobPtr m_sendRenderCaptureJob;
+    UpdateMeshTriangleListJobPtr m_updateMeshTriangleListJob;
+    FilterCompatibleTechniqueJobPtr m_filterCompatibleTechniqueJob;
 
     QVector<Qt3DCore::QNodeId> m_pendingRenderCaptureSendRequests;
 
@@ -311,6 +320,8 @@ private:
     QVector<HBuffer> m_dirtyBuffers;
     QVector<HShader> m_dirtyShaders;
     QVector<HTexture> m_dirtyTextures;
+
+    bool m_ownedContext;
 
 #ifdef QT3D_JOBS_RUN_STATS
     QScopedPointer<Qt3DRender::Debug::CommandExecuter> m_commandExecuter;

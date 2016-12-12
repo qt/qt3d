@@ -70,6 +70,7 @@ RenderPass::~RenderPass()
 
 void RenderPass::cleanup()
 {
+    QBackendNode::setEnabled(false);
     m_renderStates.clear();
     m_filterKeyList.clear();
     m_parameterPack.clear();

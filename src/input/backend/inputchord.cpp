@@ -136,6 +136,9 @@ void InputChord::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
 bool InputChord::process(InputHandler *inputHandler, qint64 currentTime)
 {
+    if (!isEnabled())
+        return false;
+
     const qint64 startTime = m_startTime;
     bool triggered = false;
     int activeInputs = 0;

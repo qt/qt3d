@@ -57,6 +57,17 @@ namespace Qt3DExtras {
 
 namespace {
 
+int faceCount(int slices, int rings)
+{
+    return (slices * 2) * (rings - 1) // two tris per side, for each pair of adjacent rings
+            + slices * 2; // two caps
+}
+
+int vertexCount(int slices, int rings)
+{
+    return (slices + 1) * rings + 2 * (slices + 1) + 2;
+}
+
 void createSidesVertices(float *&verticesPtr,
                          int rings,
                          int slices,
@@ -180,7 +191,7 @@ public:
 
     QByteArray operator ()() Q_DECL_OVERRIDE
     {
-        const int verticesCount  = (m_slices + 1) * m_rings + 2 * (m_slices + 1) + 2;
+        const int verticesCount = vertexCount(m_slices, m_rings);
         // vec3 pos, vec2 texCoord, vec3 normal
         const quint32 vertexSize = (3 + 2 + 3) * sizeof(float);
 
@@ -227,8 +238,7 @@ public:
 
     QByteArray operator ()() Q_DECL_OVERRIDE
     {
-        const int facesCount = (m_slices * 2) * (m_rings - 1) // two tris per side, for each pair of adjacent rings
-                + m_slices * 2; // two caps
+        const int facesCount = faceCount(m_slices, m_rings);
         const int indicesCount = facesCount * 3;
         const int indexSize = sizeof(quint16);
         Q_ASSERT(indicesCount < 65536);
@@ -292,8 +302,8 @@ void QCylinderGeometryPrivate::init()
     // vec3 pos, vec2 tex, vec3 normal
     const quint32 elementSize = 3 + 2 + 3;
     const quint32 stride = elementSize * sizeof(float);
-    const int nVerts = (m_slices + 1) * m_rings + 2 * (m_slices + 1) + 2;
-    const int faces = (m_slices * 2) * (m_rings - 1) + (m_slices * 2);
+    const int nVerts = vertexCount(m_slices, m_rings);
+    const int faces = faceCount(m_slices, m_rings);
 
     m_positionAttribute->setName(QAttribute::defaultPositionAttributeName());
     m_positionAttribute->setVertexBaseType(QAttribute::Float);
@@ -396,6 +406,7 @@ void QCylinderGeometryPrivate::init()
 
 /*!
  * \class Qt3DExtras::QCylinderGeometry
+ * \inheaderfile Qt3DExtras/QCylinderGeometry
  * \inmodule Qt3DExtras
  * \brief The QCylinderGeometry class allows creation of a cylinder in 3D space.
  * \since 5.7
@@ -439,7 +450,7 @@ QCylinderGeometry::~QCylinderGeometry()
 void QCylinderGeometry::updateVertices()
 {
     Q_D(QCylinderGeometry);
-    const int nVerts = (d->m_slices + 1) * (d->m_rings + 1);
+    const int nVerts = vertexCount(d->m_slices, d->m_rings);
     d->m_positionAttribute->setCount(nVerts);
     d->m_texCoordAttribute->setCount(nVerts);
     d->m_normalAttribute->setCount(nVerts);
@@ -453,7 +464,7 @@ void QCylinderGeometry::updateVertices()
 void QCylinderGeometry::updateIndices()
 {
     Q_D(QCylinderGeometry);
-    const int faces = (d->m_slices * 2) * (d->m_rings - 1) + (2 * d->m_slices);
+    const int faces = faceCount(d->m_slices, d->m_rings);
     d->m_indexAttribute->setCount(faces * 3);
     d->m_indexBuffer->setDataGenerator(QSharedPointer<CylinderIndexDataFunctor>::create(d->m_rings, d->m_slices, d->m_length));
 }

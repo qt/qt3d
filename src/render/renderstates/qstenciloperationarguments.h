@@ -65,7 +65,7 @@ public:
         Back = 0x0405,
         FrontAndBack = 0x0408
     };
-    Q_ENUM(FaceMode)
+    Q_ENUM(FaceMode) // LCOV_EXCL_LINE
 
     enum Operation
     {
@@ -78,7 +78,7 @@ public:
         DecrementWrap = 0x8508,
         Invert = 0x150A
     };
-    Q_ENUM(Operation)
+    Q_ENUM(Operation) // LCOV_EXCL_LINE
 
     ~QStencilOperationArguments();
 

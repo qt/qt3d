@@ -67,7 +67,7 @@ public:
         Ready,
         Error
     };
-    Q_ENUM(Status)
+    Q_ENUM(Status) // LCOV_EXCL_LINE
 
     enum ComponentType {
         UnknownComponent = 0,

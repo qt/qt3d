@@ -72,6 +72,7 @@ class InputSequence;
 class InputChord;
 class LogicalDevice;
 class GenericDeviceBackendNode;
+class PhysicalDeviceProxy;
 
 typedef Qt3DCore::QHandle<KeyboardDevice, 8> HKeyboardDevice;
 typedef Qt3DCore::QHandle<KeyboardHandler, 16> HKeyboardHandler;
@@ -87,6 +88,7 @@ typedef Qt3DCore::QHandle<InputSequence, 16> HInputSequence;
 typedef Qt3DCore::QHandle<InputChord, 16> HInputChord;
 typedef Qt3DCore::QHandle<LogicalDevice, 16> HLogicalDevice;
 typedef Qt3DCore::QHandle<GenericDeviceBackendNode, 8> HGenericDeviceBackendNode;
+typedef Qt3DCore::QHandle<PhysicalDeviceProxy, 16> HPhysicalDeviceProxy;
 
 } // namespace Input
 } // namespace Qt3DInput

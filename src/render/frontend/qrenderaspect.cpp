@@ -120,6 +120,7 @@
 #include <Qt3DRender/private/rendersettings_p.h>
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
+#include <Qt3DRender/private/technique_p.h>
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
@@ -140,6 +141,7 @@ namespace Qt3DRender {
 
 /*!
  * \class Qt3DRender::QRenderAspect
+ * \inheaderfile Qt3DRender/QRenderAspect
  * \brief The QRenderAspect class
  * \since 5.7
  * \inmodule Qt3DRender
@@ -196,8 +198,8 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QGeometryRenderer>(QSharedPointer<Render::GeometryRendererFunctor>::create(m_renderer, m_nodeManagers->geometryRendererManager()));
 
     // Textures
-    q->registerBackendType<QAbstractTexture>(QSharedPointer<Render::TextureFunctor>::create(m_renderer, m_nodeManagers->textureManager(), m_nodeManagers->textureImageManager(), m_nodeManagers->textureDataManager()));
-    q->registerBackendType<QAbstractTextureImage>(QSharedPointer<Render::TextureImageFunctor>::create(m_renderer, m_nodeManagers->textureManager(), m_nodeManagers->textureImageManager(), m_nodeManagers->textureDataManager()));
+    q->registerBackendType<QAbstractTexture>(QSharedPointer<Render::TextureFunctor>::create(m_renderer, m_nodeManagers->textureManager(), m_nodeManagers->textureImageManager()));
+    q->registerBackendType<QAbstractTextureImage>(QSharedPointer<Render::TextureImageFunctor>::create(m_renderer, m_nodeManagers->textureManager(), m_nodeManagers->textureImageManager()));
 
     // Material system
     q->registerBackendType<QEffect>(QSharedPointer<Render::NodeFunctor<Render::Effect, Render::EffectManager> >::create(m_renderer, m_nodeManagers->effectManager()));
@@ -208,9 +210,10 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QRenderPass>(QSharedPointer<Render::NodeFunctor<Render::RenderPass, Render::RenderPassManager> >::create(m_renderer, m_nodeManagers->renderPassManager()));
     q->registerBackendType<QShaderData>(QSharedPointer<Render::RenderShaderDataFunctor>::create(m_renderer, m_nodeManagers));
     q->registerBackendType<QShaderProgram>(QSharedPointer<Render::NodeFunctor<Render::Shader, Render::ShaderManager> >::create(m_renderer, m_nodeManagers->shaderManager()));
-    q->registerBackendType<QTechnique>(QSharedPointer<Render::NodeFunctor<Render::Technique, Render::TechniqueManager> >::create(m_renderer, m_nodeManagers->techniqueManager()));
+    q->registerBackendType<QTechnique>(QSharedPointer<Render::TechniqueFunctor>::create(m_renderer, m_nodeManagers));
 
     // Framegraph
+    q->registerBackendType<QFrameGraphNode>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::FrameGraphNode, QFrameGraphNode> >::create(m_renderer, m_nodeManagers->frameGraphManager()));
     q->registerBackendType<QCameraSelector>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::CameraSelector, QCameraSelector> >::create(m_renderer, m_nodeManagers->frameGraphManager()));
     q->registerBackendType<QClearBuffers>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::ClearBuffers, QClearBuffers> >::create(m_renderer, m_nodeManagers->frameGraphManager()));
     q->registerBackendType<QDispatchCompute>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::DispatchCompute, QDispatchCompute> >::create(m_renderer, m_nodeManagers->frameGraphManager()));
@@ -360,7 +363,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     // QChangeArbiter::syncChanges() that happens just before the render aspect is
     // asked for jobs to execute (this function). If that is the case, the RenderSettings will
     // be null and we should not generate any jobs.
-    if (d->m_renderer != nullptr && d->m_renderer->isRunning() && d->m_renderer->settings()) {
+    if (d->m_renderer->isRunning() && d->m_renderer->settings()) {
         // don't spawn any jobs, if the renderer decides to skip this frame
         if (!d->m_renderer->shouldRender()) {
             d->m_renderer->skipNextFrame();
@@ -369,9 +372,16 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 
         Render::NodeManagers *manager = d->m_renderer->nodeManagers();
 
-        const QVector<QNodeId> texturesPending = std::move(manager->textureDataManager()->texturesPending());
-        for (const QNodeId textureId : texturesPending) {
-            auto loadTextureJob = Render::LoadTextureDataJobPtr::create(textureId);
+        // Launch texture generator jobs
+        const QVector<QTextureImageDataGeneratorPtr> pendingImgGen = manager->textureImageDataManager()->pendingGenerators();
+        for (const QTextureImageDataGeneratorPtr &imgGen : pendingImgGen) {
+            auto loadTextureJob = Render::LoadTextureDataJobPtr::create(imgGen);
+            loadTextureJob->setNodeManagers(manager);
+            jobs.append(loadTextureJob);
+        }
+        const QVector<QTextureGeneratorPtr> pendingTexGen = manager->textureDataManager()->pendingGenerators();
+        for (const QTextureGeneratorPtr &texGen : pendingTexGen) {
+            auto loadTextureJob = Render::LoadTextureDataJobPtr::create(texGen);
             loadTextureJob->setNodeManagers(manager);
             jobs.append(loadTextureJob);
         }

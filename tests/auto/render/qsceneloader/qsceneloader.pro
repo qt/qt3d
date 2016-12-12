@@ -8,4 +8,4 @@ CONFIG += testcase
 
 SOURCES += tst_qsceneloader.cpp
 
-include(../commons/commons.pri)
+include(../../core/common/common.pri)

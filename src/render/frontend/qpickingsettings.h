@@ -49,6 +49,8 @@ namespace Qt3DRender {
 
 class QPickingSettingsPrivate;
 
+// TO DO: Qt 6 -> Make this a QObject
+
 class QT3DRENDERSHARED_EXPORT QPickingSettings : public Qt3DCore::QNode
 {
     Q_OBJECT
@@ -64,20 +66,20 @@ public:
         BoundingVolumePicking,
         TrianglePicking
     };
-    Q_ENUM(PickMethod)
+    Q_ENUM(PickMethod) // LCOV_EXCL_LINE
 
     enum PickResultMode {
         NearestPick,
         AllPicks
     };
-    Q_ENUM(PickResultMode)
+    Q_ENUM(PickResultMode) // LCOV_EXCL_LINE
 
     enum FaceOrientationPickingMode {
         FrontFace = 0x01,
         BackFace = 0x02,
         FrontAndBackFace = 0x03
     };
-    Q_ENUM(FaceOrientationPickingMode)
+    Q_ENUM(FaceOrientationPickingMode) // LCOV_EXCL_LINE
 
     PickMethod pickMethod() const;
     PickResultMode pickResultMode() const;

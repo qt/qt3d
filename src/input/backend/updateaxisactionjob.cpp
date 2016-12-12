@@ -40,8 +40,6 @@
 #include "updateaxisactionjob_p.h"
 #include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
-#include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
-#include <Qt3DInput/private/qinputdeviceintegration_p.h>
 #include <Qt3DInput/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -49,22 +47,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 namespace Input {
-
-namespace {
-
-bool anyOfRequiredButtonsPressed(const QVector<int> &buttons, QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend)
-{
-    bool validButtonWasPressed = false;
-    for (int button : buttons) {
-        if (physicalDeviceBackend->isButtonPressed(button)) {
-            validButtonWasPressed = true;
-            break;
-        }
-    }
-    return validButtonWasPressed;
-}
-
-} // anonymous
 
 UpdateAxisActionJob::UpdateAxisActionJob(qint64 currentTime, InputHandler *handler, HLogicalDevice handle)
     : Qt3DCore::QAspectJob()
@@ -118,39 +100,8 @@ void UpdateAxisActionJob::updateAxis(LogicalDevice *device)
         float axisValue = 0.0f;
 
         const auto axisInputIds = axis->inputs();
-        for (const Qt3DCore::QNodeId axisInputId : axisInputIds) {
-            AnalogAxisInput *analogInput = m_handler->analogAxisInputManager()->lookupResource(axisInputId);
-            if (analogInput) {
-                QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = findAxisInputPhysicalDevice(analogInput);
-                if (physicalDeviceBackend && analogInput->axis() != -1) {
-                    // Update the value
-                    axisValue += physicalDeviceBackend->processedAxisValue(analogInput->axis());
-                }
-                continue;
-            }
-
-            ButtonAxisInput *buttonInput = m_handler->buttonAxisInputManager()->lookupResource(axisInputId);
-            if (buttonInput) {
-                QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = findAxisInputPhysicalDevice(buttonInput);
-                if (physicalDeviceBackend != nullptr) {
-                    // Update the value
-                    const QVector<int> buttons = buttonInput ? buttonInput->buttons() : QVector<int>();
-                    if (!buttons.isEmpty()) {
-                        // TO DO: Linear Curver for the progression of the scale value
-                        if (anyOfRequiredButtonsPressed(buttons, physicalDeviceBackend))
-                            buttonInput->updateSpeedRatio(m_currentTime, ButtonAxisInput::Accelerate);
-                        else if (buttonInput->speedRatio() != 0.0f)
-                            buttonInput->updateSpeedRatio(m_currentTime, ButtonAxisInput::Decelerate);
-
-                        axisValue += buttonInput->speedRatio() * buttonInput->scale();
-                    }
-                }
-
-                continue;
-            }
-
-            Q_UNREACHABLE();
-        }
+        for (const Qt3DCore::QNodeId axisInputId : axisInputIds)
+            axisValue += processAxisInput(axisInputId);
 
         // Clamp the axisValue -1/1
         axisValue = qMin(1.0f, qMax(axisValue, -1.0f));
@@ -158,16 +109,18 @@ void UpdateAxisActionJob::updateAxis(LogicalDevice *device)
     }
 }
 
-QAbstractPhysicalDeviceBackendNode *UpdateAxisActionJob::findAxisInputPhysicalDevice(AbstractAxisInput *axisInput)
+float UpdateAxisActionJob::processAxisInput(const Qt3DCore::QNodeId axisInputId)
 {
-    const auto integrations = m_handler->inputDeviceIntegrations();
-    for (QInputDeviceIntegration *integration : integrations) {
-        QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = integration->physicalDevice(axisInput->sourceDevice());
-        if (physicalDeviceBackend)
-            return physicalDeviceBackend;
-    }
+    AnalogAxisInput *analogInput = m_handler->analogAxisInputManager()->lookupResource(axisInputId);
+    if (analogInput)
+        return analogInput->process(m_handler, m_currentTime);
 
-    return nullptr;
+    ButtonAxisInput *buttonInput = m_handler->buttonAxisInputManager()->lookupResource(axisInputId);
+    if (buttonInput)
+        return buttonInput->process(m_handler, m_currentTime);
+
+    Q_UNREACHABLE();
+    return 0.0f;
 }
 
 } // Input

@@ -7,7 +7,6 @@ QT      += core-private gui-private qml qml-private quick quick-private 3dcore 3
 DEFINES += QT_NO_FOREACH
 
 gcov {
-    CONFIG += static
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
     QMAKE_LFLAGS += -fprofile-arcs -ftest-coverage
 }

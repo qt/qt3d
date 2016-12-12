@@ -118,6 +118,6 @@ inline bool qFuzzyCompare(const Qt3DRender::QRay3D &ray1, const Qt3DRender::QRay
            qFuzzyCompare(ray1.direction(), ray2.direction());
 }
 
-Q_DECLARE_METATYPE(Qt3DRender::QRay3D)
+Q_DECLARE_METATYPE(Qt3DRender::QRay3D) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_QRAY3D_H

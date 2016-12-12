@@ -121,7 +121,8 @@ QBlendEquationArguments::QBlendEquationArguments(QBlendEquationArgumentsPrivate 
   \value OneMinusConstantColor GL_ONE_MINUS_CONSTANT_COLOR
   \value OneMinusConstantAlpha GL_ONE_MINUS_CONSTANT_ALPHA
   \value OneMinusSource1Alpha GL_ONE_MINUS_SRC1_ALPHA
-  \value OneMinusSource1Color0 GL_ONE_MINUS_SRC1_COLOR
+  \value OneMinusSource1Color GL_ONE_MINUS_SRC1_COLOR
+  \value OneMinusSource1Color0 GL_ONE_MINUS_SRC1_COLOR (deprecated)
 */
 
 /*!

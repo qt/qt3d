@@ -52,6 +52,7 @@ QStaticPropertyValueAddedChangeBasePrivate::QStaticPropertyValueAddedChangeBaseP
 
 /*!
  * \class Qt3DCore::QStaticPropertyValueAddedChangeBase
+ * \inheaderfile Qt3DCore/QStaticPropertyValueAddedChangeBase
  * \inmodule Qt3DCore
  * \since 5.7
  * \brief The QStaticPropertyValueAddedChangeBase class is the base class for all static PropertyValueAdded QSceneChange events

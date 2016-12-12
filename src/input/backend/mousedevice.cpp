@@ -77,6 +77,11 @@ void MouseDevice::setInputHandler(InputHandler *handler)
     m_inputHandler = handler;
 }
 
+InputHandler *MouseDevice::inputHandler() const
+{
+    return m_inputHandler;
+}
+
 float MouseDevice::axisValue(int axisIdentifier) const
 {
     switch (axisIdentifier) {
@@ -107,6 +112,26 @@ bool MouseDevice::isButtonPressed(int buttonIdentifier) const
         break;
     }
     return false;
+}
+
+MouseDevice::MouseState MouseDevice::mouseState() const
+{
+    return m_mouseState;
+}
+
+QPointF MouseDevice::previousPos() const
+{
+    return m_previousPos;
+}
+
+bool MouseDevice::wasPressed() const
+{
+    return m_wasPressed;
+}
+
+float MouseDevice::sensitivity() const
+{
+    return m_sensitivity;
 }
 
 void MouseDevice::updateWheelEvents(const QList<QT_PREPEND_NAMESPACE (QWheelEvent)> &events)

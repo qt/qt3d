@@ -163,6 +163,6 @@ inline bool intersects(const Sphere &a, const Sphere &b)
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::Render::Sphere)
+Q_DECLARE_METATYPE(Qt3DRender::Render::Sphere) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_RENDER_SPHERE_H

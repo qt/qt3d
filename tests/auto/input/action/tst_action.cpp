@@ -146,6 +146,7 @@ private Q_SLOTS:
         // GIVEN
         TestArbiter arbiter;
         Qt3DInput::Input::Action backendAction;
+        backendAction.setEnabled(true);
         Qt3DCore::QBackendNodePrivate::get(&backendAction)->setArbiter(&arbiter);
         const bool currentActionTriggeredValue = backendAction.actionTriggered();
 
@@ -169,6 +170,22 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.count(), 0);
 
         arbiter.events.clear();
+    }
+
+    void shouldNotActivateWhenDisabled()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DInput::Input::Action backendAction;
+        backendAction.setEnabled(false);
+        Qt3DCore::QBackendNodePrivate::get(&backendAction)->setArbiter(&arbiter);
+
+        // WHEN
+        backendAction.setActionTriggered(true);
+
+        // THEN
+        QVERIFY(!backendAction.actionTriggered());
+        QCOMPARE(arbiter.events.count(), 0);
     }
 };
 

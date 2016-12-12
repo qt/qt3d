@@ -82,6 +82,7 @@ namespace  Qt3DExtras {
 
 /*!
  * \class Qt3DExtras::QTorusMesh
+ * \inheaderfile Qt3DExtras/QTorusMesh
  * \inmodule Qt3DExtras
  *
  * \inherits Qt3DRender::QGeometryRenderer

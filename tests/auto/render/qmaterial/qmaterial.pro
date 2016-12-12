@@ -8,4 +8,5 @@ CONFIG += testcase
 
 SOURCES += tst_qmaterial.cpp
 
+include(../../core/common/common.pri)
 include(../commons/commons.pri)

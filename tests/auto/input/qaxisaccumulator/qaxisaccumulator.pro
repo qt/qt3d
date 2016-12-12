@@ -8,4 +8,4 @@ CONFIG += testcase
 
 SOURCES += tst_qaxisaccumulator.cpp
 
-include(../../render/commons/commons.pri)
+include(../commons/commons.pri)

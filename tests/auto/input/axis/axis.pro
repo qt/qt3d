@@ -9,4 +9,3 @@ CONFIG += testcase
 SOURCES += tst_axis.cpp
 
 include(../../core/common/common.pri)
-include(../../render/commons/commons.pri)

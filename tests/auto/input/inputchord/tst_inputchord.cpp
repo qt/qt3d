@@ -164,6 +164,7 @@ private Q_SLOTS:
 
         Qt3DInput::Input::InputChord backendInputChord;
         Qt3DInput::QInputChord inputChord;
+        inputChord.setEnabled(true);
         inputChord.setTimeout(300);
         inputChord.addChord(firstInput);
         inputChord.addChord(secondInput);
@@ -251,6 +252,7 @@ private Q_SLOTS:
 
         Qt3DInput::Input::InputChord backendInputChord;
         Qt3DInput::QInputChord inputChord;
+        inputChord.setEnabled(true);
         inputChord.setTimeout(300);
         inputChord.addChord(firstInput);
         inputChord.addChord(secondInput);
@@ -273,6 +275,43 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendInputChord.process(&handler, 1800000000), false);
+    }
+
+    void shouldNotProcessWhenDisabled()
+    {
+        // GIVEN
+        TestDeviceIntegration deviceIntegration;
+        TestDevice *device = deviceIntegration.createPhysicalDevice("keyboard");
+        TestDeviceBackendNode *deviceBackend = deviceIntegration.physicalDevice(device->id());
+        Qt3DInput::Input::InputHandler handler;
+        handler.addInputDeviceIntegration(&deviceIntegration);
+
+        auto firstInput = new Qt3DInput::QActionInput;
+        firstInput->setButtons(QVector<int>() << Qt::Key_Q);
+        firstInput->setSourceDevice(device);
+        auto backendFirstInput = handler.actionInputManager()->getOrCreateResource(firstInput->id());
+        simulateInitialization(firstInput, backendFirstInput);
+
+        auto secondInput = new Qt3DInput::QActionInput;
+        secondInput->setButtons(QVector<int>() << Qt::Key_W);
+        secondInput->setSourceDevice(device);
+        auto backendSecondInput = handler.actionInputManager()->getOrCreateResource(secondInput->id());
+        simulateInitialization(secondInput, backendSecondInput);
+
+        Qt3DInput::Input::InputChord backendInputChord;
+        Qt3DInput::QInputChord inputChord;
+        inputChord.setEnabled(false);
+        inputChord.setTimeout(300);
+        inputChord.addChord(firstInput);
+        inputChord.addChord(secondInput);
+        simulateInitialization(&inputChord, &backendInputChord);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Q, true);
+        deviceBackend->setButtonPressed(Qt::Key_W, true);
+
+        // THEN
+        QCOMPARE(backendInputChord.process(&handler, 1000000000), false);
     }
 };
 

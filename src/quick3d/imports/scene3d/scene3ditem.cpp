@@ -273,17 +273,9 @@ void Scene3DItem::setMultisample(bool enable)
 QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *)
 {
     // If the render aspect wasn't created yet, do so now
-    if (!m_renderAspect) {
+    if (m_renderAspect == nullptr) {
         m_renderAspect = new QRenderAspect(QRenderAspect::Synchronous);
         m_aspectEngine->registerAspect(m_renderAspect);
-    }
-
-    // If the node already exists
-    // we delete it and recreate it
-    // as we need to resize the FBO
-    if (node) {
-        delete node;
-        node = nullptr;
     }
 
     if (m_renderer == nullptr) {
@@ -294,9 +286,13 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
     // The main thread is blocked, it is now time to sync data between the renderer and the item.
     m_renderer->synchronize();
 
-    Scene3DSGNode *fboNode = new Scene3DSGNode();
+    Scene3DSGNode *fboNode = static_cast<Scene3DSGNode *>(node);
+    if (fboNode == nullptr) {
+        fboNode = new Scene3DSGNode();
+        m_renderer->setSGNode(fboNode);
+    }
     fboNode->setRect(boundingRect());
-    m_renderer->setSGNode(fboNode);
+
     return fboNode;
 }
 

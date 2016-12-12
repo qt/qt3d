@@ -1,8 +1,10 @@
 SOURCES += \
-    $$PWD/qbackendnodetester.cpp
+    $$PWD/qbackendnodetester.cpp \
+    $$PWD/testpostmanarbiter.cpp
 
 HEADERS += \
-    $$PWD/qbackendnodetester.h
+    $$PWD/qbackendnodetester.h \
+    $$PWD/testpostmanarbiter.h
 
 INCLUDEPATH += $$PWD
 

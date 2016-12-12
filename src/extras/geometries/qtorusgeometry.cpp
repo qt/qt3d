@@ -276,8 +276,8 @@ void QTorusGeometryPrivate::init()
     m_normalAttribute->setCount(nVerts);
 
     m_tangentAttribute->setName(QAttribute::defaultTangentAttributeName());
-    m_tangentAttribute->setDataType(QAttribute::Float);
-    m_tangentAttribute->setDataSize(4);
+    m_tangentAttribute->setVertexBaseType(QAttribute::Float);
+    m_tangentAttribute->setVertexSize(4);
     m_tangentAttribute->setAttributeType(QAttribute::VertexAttribute);
     m_tangentAttribute->setBuffer(m_vertexBuffer);
     m_tangentAttribute->setByteStride(stride);
@@ -360,6 +360,7 @@ void QTorusGeometryPrivate::init()
 
 /*!
  * \class Qt3DExtras::QTorusGeometry
+ * \inheaderfile Qt3DExtras/QTorusGeometry
  * \inmodule Qt3DExtras
  * \brief The QTorusGeometry class allows creation of a torus in 3D space.
  * \since 5.7

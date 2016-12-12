@@ -140,8 +140,7 @@ void parametersFromParametersProvider(ParameterInfoList *infoList,
                                       ParameterManager *manager,
                                       T *provider)
 {
-    if (provider != nullptr)
-        addParametersForIds(infoList, manager, provider->parameters());
+    addParametersForIds(infoList, manager, provider->parameters());
 }
 
 Q_AUTOTEST_EXPORT ParameterInfoList::const_iterator findParamInfo(ParameterInfoList *infoList,

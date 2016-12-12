@@ -65,7 +65,8 @@ namespace JobTypes {
         AssignKeyboardFocus = 1024,
         KeyEventDispatcher,
         MouseEventDispatcher,
-        UpdateAxisAction
+        UpdateAxisAction,
+        DeviceProxyLoading
     };
 
 } // JobTypes

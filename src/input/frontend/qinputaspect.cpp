@@ -70,6 +70,7 @@
 #include <Qt3DInput/qinputsequence.h>
 #include <Qt3DInput/qlogicaldevice.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DInput/private/qabstractphysicaldeviceproxy_p.h>
 #include <Qt3DInput/private/axis_p.h>
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/private/axissetting_p.h>
@@ -84,6 +85,7 @@
 #include <Qt3DInput/private/genericdevicebackendnode_p.h>
 #include <Qt3DInput/private/inputsettings_p.h>
 #include <Qt3DInput/private/eventsourcesetterhelper_p.h>
+#include <Qt3DInput/private/loadproxydevicejob_p.h>
 
 #ifdef HAVE_QGAMEPAD
 # include <Qt3DInput/private/qgamepadinput_p.h>
@@ -142,6 +144,7 @@ QInputAspect::QInputAspect(QInputAspectPrivate &dd, QObject *parent)
     registerBackendType<QLogicalDevice>(QBackendNodeMapperPtr(new Input::LogicalDeviceNodeFunctor(d_func()->m_inputHandler->logicalDeviceManager())));
     registerBackendType<QGenericInputDevice>(QBackendNodeMapperPtr(new Input::GenericDeviceBackendFunctor(this, d_func()->m_inputHandler.data())));
     registerBackendType<QInputSettings>(QBackendNodeMapperPtr(new Input::InputSettingsFunctor(d_func()->m_inputHandler.data())));
+    registerBackendType<QAbstractPhysicalDeviceProxy>(QBackendNodeMapperPtr(new Input::PhysicalDeviceProxyNodeFunctor(d_func()->m_inputHandler->physicalDeviceProxyManager())));
 
 #ifdef HAVE_QGAMEPAD
     registerBackendType<QGamepadInput>(QBackendNodeMapperPtr(new Input::GenericDeviceBackendFunctor(this, d_func()->m_inputHandler.data())));
@@ -188,13 +191,7 @@ void QInputAspectPrivate::loadInputDevicePlugins()
 QAbstractPhysicalDevice *QInputAspect::createPhysicalDevice(const QString &name)
 {
     Q_D(QInputAspect);
-    const auto integrations = d->m_inputHandler->inputDeviceIntegrations();
-    QAbstractPhysicalDevice *device = nullptr;
-    for (Qt3DInput::QInputDeviceIntegration *integration : integrations) {
-        if ((device = integration->createPhysicalDevice(name)) != nullptr)
-            break;
-    }
-    return device;
+    return d->m_inputHandler->createPhysicalDevice(name);
 }
 
 /*!
@@ -227,6 +224,16 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     for (QInputDeviceIntegration *integration : integrations)
         jobs += integration->jobsToExecute(time);
 
+    const QVector<Qt3DCore::QNodeId> proxiesToLoad = d->m_inputHandler->physicalDeviceProxyManager()->takePendingProxiesToLoad();
+    if (!proxiesToLoad.isEmpty()) {
+        // Since loading wrappers occurs quite rarely, no point in keeping the job in a
+        // member variable
+        auto loadWrappersJob = Input::LoadProxyDeviceJobPtr::create();
+        loadWrappersJob->setProxiesToLoad(std::move(proxiesToLoad));
+        loadWrappersJob->setInputHandler(d->m_inputHandler.data());
+        jobs.push_back(loadWrappersJob);
+    }
+
     // All the jobs added up until this point are independents
     // but the axis action jobs will be dependent on these
     const QVector<QAspectJobPtr> dependsOnJobs = jobs;
@@ -234,6 +241,10 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     // Jobs that update Axis/Action (store combined axis/action value)
     const auto devHandles = d->m_inputHandler->logicalDeviceManager()->activeDevices();
     for (Input::HLogicalDevice devHandle : devHandles) {
+        const auto device = d->m_inputHandler->logicalDeviceManager()->data(devHandle);
+        if (!device->isEnabled())
+            continue;
+
         QAspectJobPtr updateAxisActionJob(new Input::UpdateAxisActionJob(time, d->m_inputHandler.data(), devHandle));
         jobs += updateAxisActionJob;
         for (const QAspectJobPtr &job : dependsOnJobs)

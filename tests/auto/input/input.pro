@@ -20,5 +20,12 @@ qtConfig(private_tests) {
         qaxisaccumulator \
         inputsequence \
         inputchord \
-        qabstractphysicaldevicebackendnode
+        qabstractphysicaldevicebackendnode \
+        logicaldevice \
+        qabstractphysicaldeviceproxy \
+        physicaldeviceproxy \
+        loadproxydevicejob \
+        qmousedevice \
+        mousedevice \
+        utils
 }

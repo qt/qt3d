@@ -78,7 +78,7 @@ namespace Qt3DRender {
     \fn bool QTextureImageDataGenerator::operator ==(const QTextureImageDataGenerator &other) const
 
     Implement the method to compare this texture data generator to \a other.
-    The operator is used to check if the \l QAbstractTextureImage needs to reload
+    Returns a boolean that indicates whether the \l QAbstractTextureImage needs to reload
     the \l QTextureImageData.
 */
 

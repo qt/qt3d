@@ -68,7 +68,7 @@ public:
         OnDemand,
         Always
     };
-    Q_ENUM(RenderPolicy)
+    Q_ENUM(RenderPolicy) // LCOV_EXCL_LINE
 
     QPickingSettings* pickingSettings();
     QFrameGraphNode *activeFrameGraph() const;

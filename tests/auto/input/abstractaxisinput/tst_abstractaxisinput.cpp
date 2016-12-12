@@ -63,6 +63,13 @@ public:
         : AbstractAxisInput()
     {
     }
+
+    float process(Qt3DInput::Input::InputHandler *inputHandler, qint64 currentTime) Q_DECL_OVERRIDE
+    {
+        Q_UNUSED(inputHandler);
+        Q_UNUSED(currentTime);
+        return 0.0f;
+    }
 };
 
 

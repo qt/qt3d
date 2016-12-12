@@ -77,14 +77,14 @@ private:
     void updateAction(LogicalDevice *device);
     bool processActionInput(const Qt3DCore::QNodeId actionInputId);
     void updateAxis(LogicalDevice *device);
-    QAbstractPhysicalDeviceBackendNode *findAxisInputPhysicalDevice(AbstractAxisInput *axisInput);
+    float processAxisInput(const Qt3DCore::QNodeId axisInputId);
 
     const qint64 m_currentTime;
     InputHandler *m_handler;
     HLogicalDevice m_handle;
 };
 
-typedef QScopedPointer<UpdateAxisActionJob> UpdateAxisActionJobPtr;
+typedef QSharedPointer<UpdateAxisActionJob> UpdateAxisActionJobPtr;
 
 } // Input
 

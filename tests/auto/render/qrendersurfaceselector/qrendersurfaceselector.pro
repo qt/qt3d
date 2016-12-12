@@ -7,4 +7,5 @@ CONFIG += testcase
 
 SOURCES += tst_qrendersurfaceselector.cpp
 
+include(../../core/common/common.pri)
 include(../commons/commons.pri)

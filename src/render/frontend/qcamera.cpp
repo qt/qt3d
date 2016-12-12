@@ -62,6 +62,7 @@ QCameraPrivate::QCameraPrivate()
 
 /*!
  * \class Qt3DRender::QCamera
+ * \inheaderfile Qt3DRender/QCamera
  * \brief The QCamera class defines a view point through which the scene will be
  * rendered.
  * \inmodule Qt3DRender

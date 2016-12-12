@@ -48,7 +48,56 @@ namespace {
 
 const int qNodeIdTypeId = qMetaTypeId<Qt3DCore::QNodeId>();
 
+// glUniform*fv/glUniform*iv/glUniform*uiv -> only handles sizeof(float)/sizeof(int)
+int byteSizeForMetaType(int type)
+{
+    switch (type) {
+    case QMetaType::Bool:
+    case QMetaType::Int:
+    case QMetaType::UInt:
+    case QMetaType::ULongLong:
+    case QMetaType::LongLong:
+    case QMetaType::Long:
+    case QMetaType::ULong:
+    case QMetaType::Short:
+    case QMetaType::UShort:
+    case QMetaType::Char:
+    case QMetaType::UChar:
+        return sizeof(int);
+
+    case QMetaType::Float:
+    case QMetaType::Double: // Assumes conversion to float
+        return sizeof(float);
+
+    case QMetaType::QPoint:
+    case QMetaType::QSize:
+        return 2 * sizeof(int);
+
+    case QMetaType::QRect:
+        return 4 * sizeof(int);
+
+    case QMetaType::QPointF:
+    case QMetaType::QSizeF:
+    case QMetaType::QVector2D:
+        return 2 * sizeof(float);
+
+    case QMetaType::QVector3D:
+        return 3 * sizeof(float);
+
+    case QMetaType::QRectF:
+    case QMetaType::QVector4D:
+    case QMetaType::QColor:
+        return 4 * sizeof(float);
+
+    case QMetaType::QMatrix4x4:
+        return 16 * sizeof(float);
+    default:
+        Q_UNREACHABLE();
+        return -1;
+    }
 }
+
+} // anonymous
 
 UniformValue UniformValue::fromVariant(const QVariant &variant)
 {
@@ -153,6 +202,28 @@ UniformValue UniformValue::fromVariant(const QVariant &variant)
         memcpy(v.data<float>(), mat44.constData(), 16 * sizeof(float));
         break;
     }
+    case QMetaType::QVariantList: {
+        const QVariantList variants = variant.toList();
+        if (variants.size() < 1)
+            break;
+
+        const int listEntryType = variants.first().userType();
+        const int stride = byteSizeForMetaType(listEntryType) / sizeof(float);
+        // Resize v.m_data
+        v.m_data.resize(stride * variants.size());
+
+        int idx = 0;
+        for (const QVariant &variant : variants) {
+            Q_ASSERT_X(variant.userType() == listEntryType,
+                       Q_FUNC_INFO,
+                       "Uniform array doesn't contain elements of the same type");
+            UniformValue vi = UniformValue::fromVariant(variant);
+            memcpy(v.data<float>() + idx, vi.data<float>(), stride * sizeof(float));
+            idx += stride;
+        }
+        break;
+    }
+
     default:
         Q_UNREACHABLE();
     }

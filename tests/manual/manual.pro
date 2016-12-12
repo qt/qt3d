@@ -31,10 +31,13 @@ SUBDIRS += \
     tessellation-modes \
     transforms-qml \
     transparency-qml \
-    transparency-qml-scene3d
+    transparency-qml-scene3d \
+    rendercapture-qml \
+    additional-attributes-qml
 
 qtHaveModule(widgets): {
     SUBDIRS += \
         assimp-cpp \
-        paintedtexture-cpp
+        paintedtexture-cpp \
+        rendercapture-cpp
 }

@@ -98,7 +98,6 @@
     fragment shaders. Compute shaders are planned for a future release.
 
     For examples of using shaders, see the Simple Shaders QML Example,
-    \l {Qt 3D: Tessellation Modes QML Example},
     \l {Qt 3D: Shadow Map QML Example}, \l{Qt 3D: Wireframe QML Example}, and
     \l {Qt 3D: Wave QML Example}.
 

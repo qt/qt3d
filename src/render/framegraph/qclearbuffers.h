@@ -74,7 +74,7 @@ public:
         ColorDepthStencilBuffer = ColorBuffer | DepthStencilBuffer,
         AllBuffers = 0xFFFFFFFF
     };
-    Q_ENUM(BufferType)
+    Q_ENUM(BufferType) // LCOV_EXCL_LINE
     Q_DECLARE_FLAGS(BufferTypeFlags, BufferType)
 
     BufferType buffers() const;

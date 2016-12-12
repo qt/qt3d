@@ -61,7 +61,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAbstractTexturePrivate : public Qt3DCore::QNodePrivate
+class Q_AUTOTEST_EXPORT QAbstractTexturePrivate : public Qt3DCore::QNodePrivate
 {
 public :
     QAbstractTexturePrivate();
@@ -86,6 +86,9 @@ public :
     int m_layers;
     int m_samples;
 
+    void setDataFunctor(const QTextureGeneratorPtr &generator);
+
+private:
     QTextureGeneratorPtr m_dataFunctor;
 };
 

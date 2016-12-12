@@ -52,6 +52,7 @@ QPropertyValueAddedChangePrivate::QPropertyValueAddedChangePrivate()
 
 /*!
  * \class Qt3DCore::QPropertyValueAddedChange
+ * \inheaderfile Qt3DCore/QPropertyValueAddedChange
  * \inherits Qt3DCore::QStaticPropertyValueAddedChangeBase
  * \inmodule Qt3DCore
  * \brief Used to notify when a value is added to a property

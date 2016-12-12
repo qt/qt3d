@@ -372,7 +372,7 @@ void GraphicsHelperGL3_3::bindFrameBufferAttachment(QOpenGLTexture *texture, con
         m_funcs->glFramebufferTextureLayer(GL_DRAW_FRAMEBUFFER, attr, texture->textureId(), attachment.m_mipLevel, attachment.m_layer);
     else if (target == QOpenGLTexture::TargetCubeMapArray)
         m_funcs->glFramebufferTexture3D(GL_DRAW_FRAMEBUFFER, attr, attachment.m_face, texture->textureId(), attachment.m_mipLevel, attachment.m_layer);
-    else if (target == QOpenGLTexture::TargetCubeMap)
+    else if (target == QOpenGLTexture::TargetCubeMap && attachment.m_face != QAbstractTexture::AllFaces)
         m_funcs->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attr, attachment.m_face, texture->textureId(), attachment.m_mipLevel);
     else
         m_funcs->glFramebufferTexture(GL_DRAW_FRAMEBUFFER, attr, texture->textureId(), attachment.m_mipLevel);
@@ -388,6 +388,7 @@ bool GraphicsHelperGL3_3::supportsFeature(GraphicsHelperInterface::Feature featu
     case RenderBufferDimensionRetrieval:
     case TextureDimensionRetrieval:
     case BindableFragmentOutputs:
+    case BlitFramebuffer:
         return true;
     case Tessellation:
         return !m_tessFuncs.isNull();
@@ -1059,6 +1060,11 @@ UniformType GraphicsHelperGL3_3::uniformTypeFromGLType(GLenum type)
         Q_UNREACHABLE();
         return UniformType::Float;
     }
+}
+
+void GraphicsHelperGL3_3::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter)
+{
+    m_funcs->glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
 }
 
 } // namespace Render

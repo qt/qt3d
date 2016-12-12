@@ -89,6 +89,8 @@ QAction::~QAction()
     \property QAction::active
 
     Holds \c true if the action is active.
+
+    Note this property is not updated when the action is disabled.
  */
 bool QAction::isActive() const
 {

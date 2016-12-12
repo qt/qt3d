@@ -80,6 +80,7 @@ QGeometryPrivate::~QGeometryPrivate()
 
 /*!
  * \class Qt3DRender::QGeometry
+ * \inheaderfile Qt3DRender/QGeometry
  * \inmodule Qt3DRender
  *
  * \inherits Qt3DCore::QNode
@@ -90,7 +91,7 @@ QGeometryPrivate::~QGeometryPrivate()
  * \typedef Qt3DRender::QAttributeList
  * \relates Qt3DRender::QGeometry
  *
- * A vector of {QAttribute}s.
+ * A vector of \l {Qt3DRender::}{QAttribute}s.
  */
 
 /*!
@@ -171,7 +172,7 @@ void QGeometry::setBoundingVolumePositionAttribute(QAttribute *boundingVolumePos
 /*!
  * \property QGeometry::boundingVolumePositionAttribute
  *
- * Holds atribute used to compute the bounding volume .
+ * Holds the attribute used to compute the bounding volume.
  */
 QAttribute *QGeometry::boundingVolumePositionAttribute() const
 {

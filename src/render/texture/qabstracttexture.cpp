@@ -69,6 +69,17 @@ QAbstractTexturePrivate::QAbstractTexturePrivate()
 {
 }
 
+void QAbstractTexturePrivate::setDataFunctor(const QTextureGeneratorPtr &generator)
+{
+    if (generator != m_dataFunctor) {
+        m_dataFunctor = generator;
+        auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(m_id);
+        change->setPropertyName("generator");
+        change->setValue(QVariant::fromValue(generator));
+        notifyObservers(change);
+    }
+}
+
 /*!
     \class Qt3DRender::QAbstractTexture
     \inmodule Qt3DRender

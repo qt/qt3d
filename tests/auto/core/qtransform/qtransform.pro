@@ -6,4 +6,4 @@ SOURCES += tst_qtransform.cpp
 
 QT += testlib 3dcore
 
-include(../../render/commons/commons.pri)
+include(../../core/common/common.pri)

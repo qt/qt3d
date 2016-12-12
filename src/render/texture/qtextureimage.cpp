@@ -82,13 +82,6 @@ namespace Qt3DRender {
 */
 
 /*!
-    \qmlproperty url TextureImage::source
-
-    This property holds the source url from which data for the texture
-    image will be loaded.
-*/
-
-/*!
     \qmlproperty enumeration TextureImage::status
 
     This property holds the status of the texture image loading.
@@ -103,7 +96,7 @@ namespace Qt3DRender {
 */
 
 /*!
-    \property QTextureImage::source
+    \property Qt3DRender::QTextureImage::source
 
     This property holds the source url from which data for the texture
     image will be loaded.
@@ -137,7 +130,7 @@ QTextureImage::~QTextureImage()
 }
 
 /*!
-    \return the source url from which data for the texture image will be loaded.
+    Returns the source url from which data for the texture image will be loaded.
  */
 QUrl QTextureImage::source() const
 {
@@ -146,7 +139,7 @@ QUrl QTextureImage::source() const
 }
 
 /*!
-    \return the current status.
+    Returns the current status.
  */
 QTextureImage::Status QTextureImage::status() const
 {
@@ -155,20 +148,13 @@ QTextureImage::Status QTextureImage::status() const
 }
 
 /*!
- * \return whether mirroring is enabled or not.
+ * Returns whether mirroring is enabled or not.
  */
 bool QTextureImage::isMirrored() const
 {
     Q_D(const QTextureImage);
     return d->m_mirrored;
 }
-
-/*!
-  \property Qt3DRender::QTextureImage::source
-
-  This property holds the source url from which data for the texture
-  image will be loaded.
-*/
 
 /*!
   \qmlproperty url Qt3D.Render::TextureImage::source
@@ -186,7 +172,9 @@ void QTextureImage::setSource(const QUrl &source)
     Q_D(QTextureImage);
     if (source != d->m_source) {
         d->m_source = source;
+        const bool blocked = blockNotifications(true);
         emit sourceChanged(source);
+        blockNotifications(blocked);
         notifyDataGeneratorChanged();
     }
 }
@@ -232,7 +220,9 @@ void QTextureImage::setMirrored(bool mirrored)
     Q_D(QTextureImage);
     if (mirrored != d->m_mirrored) {
         d->m_mirrored = mirrored;
+        const bool blocked = blockNotifications(true);
         emit mirroredChanged(mirrored);
+        blockNotifications(blocked);
         notifyDataGeneratorChanged();
     }
 }
@@ -251,7 +241,7 @@ void QTextureImage::setStatus(Status status)
 }
 
 /*!
-    \return the Qt3DRender::QTextureImageDataGeneratorPtr functor to be used by the
+    Returns the Qt3DRender::QTextureImageDataGeneratorPtr functor to be used by the
     backend to load the texture image data into an OpenGL texture object.
  */
 QTextureImageDataGeneratorPtr QTextureImage::dataGenerator() const
@@ -304,6 +294,16 @@ bool QImageTextureDataFunctor::operator ==(const QTextureImageDataGenerator &oth
             otherFunctor->m_url == m_url &&
             otherFunctor->m_lastModified == m_lastModified &&
             otherFunctor->m_mirrored == m_mirrored);
+}
+
+QUrl QImageTextureDataFunctor::url() const
+{
+    return m_url;
+}
+
+bool QImageTextureDataFunctor::isMirrored() const
+{
+    return m_mirrored;
 }
 
 } // namespace Qt3DRender

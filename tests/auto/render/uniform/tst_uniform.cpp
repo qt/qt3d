@@ -278,6 +278,43 @@ private Q_SLOTS:
             QCOMPARE(v.constData<float>()[14], 0.0f);
             QCOMPARE(v.constData<float>()[15], 1.0f);
         }
+        {
+            // GIVEN
+            QVariant variants = QVariantList() << QVariant(427.0f) << QVariant(454.0f) << QVariant(883.0f) << QVariant(1340.0f);
+            UniformValue v = UniformValue::fromVariant(variants);
+
+            // THEN
+            QCOMPARE(v.constData<float>()[0], 427.0f);
+            QCOMPARE(v.constData<float>()[1], 454.0f);
+            QCOMPARE(v.constData<float>()[2], 883.0f);
+            QCOMPARE(v.constData<float>()[3], 1340.0f);
+        }
+        {
+            // GIVEN
+            QVariant variants = QVariantList() << QVariant::fromValue(QVector4D(2.0f, 16.0f, 8.0f, 4.0f)) << QVariant(QVector4D(3.0f, 24.0f, 12.0f, 6.0f));
+            UniformValue v = UniformValue::fromVariant(variants);
+
+            // THEN
+            QCOMPARE(v.constData<float>()[0], 2.0f);
+            QCOMPARE(v.constData<float>()[1], 16.0f);
+            QCOMPARE(v.constData<float>()[2], 8.0f);
+            QCOMPARE(v.constData<float>()[3], 4.0f);
+            QCOMPARE(v.constData<float>()[4], 3.0f);
+            QCOMPARE(v.constData<float>()[5], 24.0f);
+            QCOMPARE(v.constData<float>()[6], 12.0f);
+            QCOMPARE(v.constData<float>()[7], 6.0f);
+        }
+        {
+            // GIVEN
+            QVariant variants = QVariantList() << QVariant(427) << QVariant(454) << QVariant(883) << QVariant(1340);
+            UniformValue v = UniformValue::fromVariant(variants);
+
+            // THEN
+            QCOMPARE(v.constData<int>()[0], 427);
+            QCOMPARE(v.constData<int>()[1], 454);
+            QCOMPARE(v.constData<int>()[2], 883);
+            QCOMPARE(v.constData<int>()[3], 1340);
+        }
     }
 
     void checkComparison()

@@ -65,7 +65,7 @@ namespace Render {
 
 class RenderTargetManager;
 
-class RenderTarget : public BackendNode
+class Q_AUTOTEST_EXPORT RenderTarget : public BackendNode
 {
 public:
     RenderTarget();

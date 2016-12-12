@@ -871,6 +871,7 @@ private Q_SLOTS:
         SUPPORTS_FEATURE(GraphicsHelperInterface::Compute, false);
         SUPPORTS_FEATURE(GraphicsHelperInterface::DrawBuffersBlend, false);
         SUPPORTS_FEATURE(GraphicsHelperInterface::Tessellation, false);
+        SUPPORTS_FEATURE(GraphicsHelperInterface::BlitFramebuffer, false);
     }
 
 
@@ -1346,6 +1347,13 @@ private Q_SLOTS:
     }
 
     void glUniformMatrix4x3fv()
+    {
+        if (!m_initializationSuccessful)
+            QSKIP("Initialization failed, OpenGL 2.0 functions not supported");
+        // Not supported by GL2
+    }
+
+    void blitFramebuffer()
     {
         if (!m_initializationSuccessful)
             QSKIP("Initialization failed, OpenGL 2.0 functions not supported");

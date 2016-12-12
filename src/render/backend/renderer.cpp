@@ -75,7 +75,10 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
+#include <Qt3DRender/private/gltexturemanager_p.h>
+#include <Qt3DRender/private/gltexture_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
+#include <Qt3DRender/private/techniquemanager_p.h>
 #include <Qt3DRender/private/openglvertexarrayobject_p.h>
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
 #include <Qt3DRender/private/loadbufferjob_p.h>
@@ -150,19 +153,22 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_changeSet(0)
     , m_lastFrameCorrect(0)
     , m_glContext(nullptr)
-    , m_pickBoundingVolumeJob(PickBoundingVolumeJobPtr::create(this))
+    , m_pickBoundingVolumeJob(PickBoundingVolumeJobPtr::create())
     , m_time(0)
     , m_settings(nullptr)
-    , m_framePreparationJob(Render::FramePreparationJobPtr::create())
+    , m_updateShaderDataTransformJob(Render::UpdateShaderDataTransformJobPtr::create())
     , m_cleanupJob(Render::FrameCleanupJobPtr::create())
     , m_worldTransformJob(Render::UpdateWorldTransformJobPtr::create())
     , m_expandBoundingVolumeJob(Render::ExpandBoundingVolumeJobPtr::create())
     , m_calculateBoundingVolumeJob(Render::CalculateBoundingVolumeJobPtr::create())
     , m_updateWorldBoundingVolumeJob(Render::UpdateWorldBoundingVolumeJobPtr::create())
     , m_sendRenderCaptureJob(Render::SendRenderCaptureJobPtr::create(this))
+    , m_updateMeshTriangleListJob(Render::UpdateMeshTriangleListJobPtr::create())
+    , m_filterCompatibleTechniqueJob(Render::FilterCompatibleTechniqueJobPtr::create())
     , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
     , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
     , m_shaderGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyShaders(); }, JobTypes::DirtyShaderGathering))
+    , m_ownedContext(false)
     #ifdef QT3D_JOBS_RUN_STATS
     , m_commandExecuter(new Qt3DRender::Debug::CommandExecuter(this))
     #endif
@@ -178,10 +184,12 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     m_updateWorldBoundingVolumeJob->addDependency(m_worldTransformJob);
     m_updateWorldBoundingVolumeJob->addDependency(m_calculateBoundingVolumeJob);
     m_expandBoundingVolumeJob->addDependency(m_updateWorldBoundingVolumeJob);
-    m_framePreparationJob->addDependency(m_worldTransformJob);
+    m_updateShaderDataTransformJob->addDependency(m_worldTransformJob);
 
     // All world stuff depends on the RenderEntity's localBoundingVolume
-    m_pickBoundingVolumeJob->addDependency(m_framePreparationJob);
+    m_pickBoundingVolumeJob->addDependency(m_updateMeshTriangleListJob);
+
+    m_filterCompatibleTechniqueJob->setRenderer(this);
 
     m_defaultRenderStateSet = new RenderStateSet;
     m_defaultRenderStateSet->addState(RenderStateSet::createState<DepthTest>(GL_LESS));
@@ -224,12 +232,14 @@ void Renderer::setNodeManagers(NodeManagers *managers)
 {
     m_nodesManager = managers;
 
-    m_framePreparationJob->setManagers(m_nodesManager);
+    m_updateShaderDataTransformJob->setManagers(m_nodesManager);
     m_cleanupJob->setManagers(m_nodesManager);
     m_calculateBoundingVolumeJob->setManagers(m_nodesManager);
     m_pickBoundingVolumeJob->setManagers(m_nodesManager);
     m_updateWorldBoundingVolumeJob->setManager(m_nodesManager->renderNodesManager());
     m_sendRenderCaptureJob->setManagers(m_nodesManager);
+    m_updateMeshTriangleListJob->setManagers(m_nodesManager);
+    m_filterCompatibleTechniqueJob->setManager(m_nodesManager->techniqueManager());
 }
 
 NodeManagers *Renderer::nodeManagers() const
@@ -273,6 +283,7 @@ void Renderer::initialize()
             qCDebug(Backend) << "OpenGL context created with actual format" << ctx->format();
         else
             qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
+        m_ownedContext = true;
     }
 
     // Note: we don't have a surface at this point
@@ -322,6 +333,12 @@ void Renderer::shutdown()
 void Renderer::releaseGraphicsResources()
 {
     // Clean up the graphics context and any resources
+    const QVector<GLTexture*> activeTextures = m_nodesManager->glTextureManager()->activeResources();
+    for (GLTexture *tex : activeTextures)
+        tex->destroyGLTexture();
+
+    // TO DO: Do the same thing with buffers
+
     m_graphicsContext.reset(nullptr);
     qCDebug(Backend) << Q_FUNC_INFO << "Renderer properly shutdown";
 }
@@ -359,7 +376,6 @@ void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
     qCDebug(Backend) << Q_FUNC_INFO << "DUMPING SCENE";
 
     // Set the scene root on the jobs
-    m_framePreparationJob->setRoot(m_renderSceneRoot);
     m_worldTransformJob->setRoot(m_renderSceneRoot);
     m_expandBoundingVolumeJob->setRoot(m_renderSceneRoot);
     m_calculateBoundingVolumeJob->setRoot(m_renderSceneRoot);
@@ -443,15 +459,26 @@ void Renderer::doRender()
             clearDirtyBits(changesToUnset);
 
             { // Scoped to destroy surfaceLock
-                QSurface *surface = renderViews.first()->surface();
+                QSurface *surface = nullptr;
+                for (const Render::RenderView *rv: renderViews) {
+                    surface = rv->surface();
+                    if (surface)
+                        break;
+                }
+
                 SurfaceLocker surfaceLock(surface);
                 const bool surfaceIsValid = (surface && surfaceLock.isSurfaceValid());
-                if (surfaceIsValid && m_graphicsContext->beginDrawing(surface)) {
+                if (surfaceIsValid) {
+                    // Reset state for each draw if we don't have complete control of the context
+                    if (!m_ownedContext)
+                        m_graphicsContext->setCurrentStateSet(nullptr);
+                    if (m_graphicsContext->beginDrawing(surface)) {
                     // 1) Execute commands for buffer uploads, texture updates, shader loading first
                     updateGLResources();
                     // 2) Update VAO and copy data into commands to allow concurrent submission
                     prepareCommandsSubmission(renderViews);
                     preprocessingComplete = true;
+                    }
                 }
             }
             // 2) Proceed to next frame and start preparing frame n + 1
@@ -725,7 +752,9 @@ void Renderer::lookForDirtyTextures()
     const QVector<HTexture> activeTextureHandles = m_nodesManager->textureManager()->activeHandles();
     for (HTexture handle: activeTextureHandles) {
         Texture *texture = m_nodesManager->textureManager()->data(handle);
-        if (texture->isDirty())
+        // Dirty meaning that something has changed on the texture
+        // either properties, parameters, generator or a texture image
+        if (texture->dirtyFlags() != Texture::NotDirty)
             m_dirtyTextures.push_back(handle);
     }
 }
@@ -777,9 +806,88 @@ void Renderer::updateGLResources()
     for (HTexture handle: activeTextureHandles) {
         Texture *texture = m_nodesManager->textureManager()->data(handle);
         // Upload/Update texture
-        texture->getOrCreateGLTexture();
+        updateTexture(texture);
     }
 }
+
+void Renderer::updateTexture(Texture *texture)
+{
+    // For implementing unique, non-shared, non-cached textures.
+    // for now, every texture is shared by default
+
+    bool isUnique = false;
+
+    // TO DO: Update the vector once per frame (or in a job)
+    const QVector<HAttachment> activeRenderTargetOutputs = m_nodesManager->attachmentManager()->activeHandles();
+    // A texture is unique if it's being reference by a render target output
+    for (const HAttachment attachmentHandle : activeRenderTargetOutputs) {
+        RenderTargetOutput *attachment = m_nodesManager->attachmentManager()->data(attachmentHandle);
+        if (attachment->textureUuid() == texture->peerId()) {
+            isUnique = true;
+            break;
+        }
+    }
+
+    // Try to find the associated GLTexture for the backend Texture
+    GLTextureManager *glTextureManager = m_nodesManager->glTextureManager();
+    GLTexture *glTexture = glTextureManager->lookupResource(texture->peerId());
+
+    // No GLTexture associated yet -> create it
+    if (glTexture == nullptr) {
+        if (isUnique)
+            glTextureManager->createUnique(texture);
+        else
+            glTextureManager->getOrCreateShared(texture);
+        texture->unsetDirty();
+        return;
+    }
+
+    // if this texture is a shared texture, we might need to look for a new TextureImpl
+    // and abandon the old one
+    if (glTextureManager->isShared(glTexture)) {
+        glTextureManager->abandon(glTexture, texture);
+        // Check if a shared texture should become unique
+        if (isUnique)
+            glTextureManager->createUnique(texture);
+        else
+            glTextureManager->getOrCreateShared(texture);
+        texture->unsetDirty();
+        return;
+    }
+
+    // this texture node is the only one referring to the GLTexture.
+    // we could thus directly modify the texture. Instead, for non-unique textures,
+    // we first see if there is already a matching texture present.
+    if (!isUnique) {
+        GLTexture *newSharedTex = glTextureManager->findMatchingShared(texture);
+        if (newSharedTex && newSharedTex != glTexture) {
+            glTextureManager->abandon(glTexture, texture);
+            glTextureManager->adoptShared(newSharedTex, texture);
+            texture->unsetDirty();
+            return;
+        }
+    }
+
+    // we hold a reference to a unique or exclusive access to a shared texture
+    // we can thus modify the texture directly.
+    const Texture::DirtyFlags dirtyFlags = texture->dirtyFlags();
+
+    if (dirtyFlags.testFlag(Texture::DirtyProperties) &&
+            !glTextureManager->setProperties(glTexture, texture->properties()))
+        qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setProperties failed, should be non-shared";
+
+    if (dirtyFlags.testFlag(Texture::DirtyParameters) &&
+            !glTextureManager->setParameters(glTexture, texture->parameters()))
+        qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setParameters failed, should be non-shared";
+
+    if (dirtyFlags.testFlag(Texture::DirtyGenerators) &&
+            !glTextureManager->setImages(glTexture, texture->textureImages()))
+        qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setGenerators failed, should be non-shared";
+
+    // Unset the dirty flag on the texture
+    texture->unsetDirty();
+}
+
 
 // Happens in RenderThread context when all RenderViewJobs are done
 // Returns the id of the last bound FBO
@@ -798,7 +906,12 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
     // We might not want to render on the default FBO
     uint lastBoundFBOId = m_graphicsContext->boundFrameBufferObject();
     QSurface *surface = nullptr;
-    QSurface *previousSurface = renderViews.first()->surface();
+    QSurface *previousSurface = nullptr;
+    for (const Render::RenderView *rv: renderViews) {
+        previousSurface = rv->surface();
+        if (previousSurface)
+            break;
+    }
     QSurface *lastUsedSurface = nullptr;
 
     for (int i = 0; i < renderViewsCount; ++i) {
@@ -986,6 +1099,10 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     for (const QAspectJobPtr &bufferJob : bufferJobs)
         m_calculateBoundingVolumeJob->addDependency(bufferJob);
 
+    // Set values on pickBoundingVolumeJob
+    m_pickBoundingVolumeJob->setFrameGraphRoot(frameGraphRoot());
+    m_pickBoundingVolumeJob->setRenderSettings(settings());
+    m_pickBoundingVolumeJob->setMouseEvents(pendingPickingEvents());
 
     // Traverse the current framegraph. For each leaf node create a
     // RenderView and set its configuration then create a job to
@@ -1003,13 +1120,15 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     }
 
     // Add jobs
-    renderBinJobs.push_back(m_framePreparationJob);
+    renderBinJobs.push_back(m_updateShaderDataTransformJob);
+    renderBinJobs.push_back(m_updateMeshTriangleListJob);
     renderBinJobs.push_back(m_expandBoundingVolumeJob);
     renderBinJobs.push_back(m_updateWorldBoundingVolumeJob);
     renderBinJobs.push_back(m_calculateBoundingVolumeJob);
     renderBinJobs.push_back(m_worldTransformJob);
     renderBinJobs.push_back(m_cleanupJob);
     renderBinJobs.push_back(m_sendRenderCaptureJob);
+    renderBinJobs.push_back(m_filterCompatibleTechniqueJob);
     renderBinJobs.append(bufferJobs);
 
     // Jobs to prepare GL Resource upload
@@ -1262,6 +1381,13 @@ void Renderer::cleanGraphicsResources()
     const QVector<Qt3DCore::QNodeId> buffersToRelease = std::move(m_nodesManager->bufferManager()->buffersToRelease());
     for (Qt3DCore::QNodeId bufferId : buffersToRelease)
         m_graphicsContext->releaseBuffer(bufferId);
+
+    // Delete abandoned textures
+    const QVector<GLTexture*> abandonedTextures = m_nodesManager->glTextureManager()->takeAbandonedTextures();
+    for (GLTexture *tex : abandonedTextures) {
+        tex->destroyGLTexture();
+        delete tex;
+    }
 }
 
 QList<QMouseEvent> Renderer::pendingPickingEvents() const
@@ -1272,6 +1398,11 @@ QList<QMouseEvent> Renderer::pendingPickingEvents() const
 const GraphicsApiFilterData *Renderer::contextInfo() const
 {
     return m_graphicsContext->contextInfo();
+}
+
+GraphicsContext *Renderer::graphicsContext() const
+{
+    return m_graphicsContext.data();
 }
 
 void Renderer::addRenderCaptureSendRequest(Qt3DCore::QNodeId nodeId)

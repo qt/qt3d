@@ -64,6 +64,7 @@
 #include <Qt3DRender/private/rendersurfaceselector_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
+#include <Qt3DRender/private/techniquemanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -92,6 +93,9 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
         FrameGraphNode::FrameGraphNodeType type = node->nodeType();
         if (node->isEnabled())
             switch (type) {
+            case FrameGraphNode::InvalidNodeType:
+                // A base FrameGraphNode, can be used for grouping purposes
+                break;
             case FrameGraphNode::CameraSelector:
                 // Can be set only once and we take camera nearest to the leaf node
                 if (!rv->renderCameraLens()) {
@@ -260,8 +264,8 @@ Technique *findTechniqueForEffect(Renderer *renderer,
     for (const QNodeId techniqueId : techniqueIds) {
         Technique *technique = manager->techniqueManager()->lookupResource(techniqueId);
 
-        if (!technique)
-            continue;
+        // Should be valid, if not there likely a problem with node addition/destruction changes
+        Q_ASSERT(technique);
 
         // We need to be sure the renderer is still running <=> still has a GraphicsContext
         if (renderer->isRunning() && *renderer->contextInfo() == *technique->graphicsApiFilter()) {

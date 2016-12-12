@@ -52,6 +52,7 @@ QPropertyValueRemovedChangePrivate::QPropertyValueRemovedChangePrivate()
 
 /*!
  * \class Qt3DCore::QPropertyValueRemovedChange
+ * \inheaderfile Qt3DCore/QPropertyValueRemovedChange
  * \inherits Qt3DCore::QStaticPropertyValueRemovedChangeBase
  * \inmodule Qt3DCore
  * \brief Used to notify when a value is added to a property

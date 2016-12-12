@@ -80,7 +80,7 @@ public:
         Loaded,
         Error
     };
-    Q_ENUM(ParserStatus)
+    Q_ENUM(ParserStatus) // LCOV_EXCL_LINE
 
     QSceneImporter();
     virtual ~QSceneImporter();

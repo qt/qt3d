@@ -50,6 +50,12 @@ RenderCapture::RenderCapture()
 
 }
 
+void RenderCapture::requestCapture(int captureId)
+{
+    QMutexLocker lock(&m_mutex);
+    m_requestedCaptures.push_back(captureId);
+}
+
 bool RenderCapture::wasCaptureRequested() const
 {
     return m_requestedCaptures.size() > 0 && isEnabled();
@@ -65,8 +71,7 @@ void RenderCapture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     if (e->type() == Qt3DCore::PropertyUpdated) {
         Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("renderCaptureRequest")) {
-            QMutexLocker lock(&m_mutex);
-            m_requestedCaptures.push_back(propertyChange->value().toInt());
+            requestCapture(propertyChange->value().toInt());
         }
     }
     markDirty(AbstractRenderer::AllDirty);

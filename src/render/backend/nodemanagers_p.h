@@ -90,8 +90,10 @@ class TextureImageManager;
 class FilterKeyManager;
 class FrameGraphManager;
 class TransformManager;
+class GLTextureManager;
 class TextureManager;
 class TextureDataManager;
+class TextureImageDataManager;
 class LayerManager;
 class LightManager;
 class ComputeCommandManager;
@@ -176,8 +178,10 @@ public:
     inline TechniqueManager *techniqueManager() const Q_DECL_NOEXCEPT { return m_techniqueManager; }
     inline EffectManager *effectManager() const Q_DECL_NOEXCEPT { return m_effectManager; }
     inline RenderPassManager *renderPassManager() const Q_DECL_NOEXCEPT { return m_renderPassManager; }
+    inline GLTextureManager *glTextureManager() const Q_DECL_NOEXCEPT { return m_glTextureManager; }
     inline TextureManager *textureManager() const Q_DECL_NOEXCEPT { return m_textureManager; }
     inline TextureDataManager *textureDataManager() const Q_DECL_NOEXCEPT { return m_textureDataManager; }
+    inline TextureImageDataManager *textureImageDataManager() const Q_DECL_NOEXCEPT { return m_textureImageDataManager; }
     inline LayerManager *layerManager() const Q_DECL_NOEXCEPT { return m_layerManager; }
     inline FilterKeyManager *filterKeyManager() const Q_DECL_NOEXCEPT { return m_filterKeyManager; }
     inline FrameGraphManager *frameGraphManager() const Q_DECL_NOEXCEPT { return m_frameGraphManager; }
@@ -210,7 +214,10 @@ private:
     EffectManager *m_effectManager;
     RenderPassManager *m_renderPassManager;
     TextureManager *m_textureManager;
+    TextureImageManager *m_textureImageManager;
     TextureDataManager *m_textureDataManager;
+    TextureImageDataManager *m_textureImageDataManager;
+    GLTextureManager *m_glTextureManager;
     LayerManager *m_layerManager;
     FilterKeyManager *m_filterKeyManager;
     FrameGraphManager *m_frameGraphManager;
@@ -221,7 +228,6 @@ private:
     ParameterManager *m_parameterManager;
     ShaderDataManager *m_shaderDataManager;
     GLBufferManager *m_glBufferManager;
-    TextureImageManager *m_textureImageManager;
     BufferManager *m_bufferManager;
     AttributeManager *m_attributeManager;
     GeometryManager *m_geometryManager;

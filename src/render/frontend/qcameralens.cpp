@@ -46,6 +46,7 @@ namespace Qt3DRender {
 
 /*!
  * \class Qt3DRender::QCameraLens
+ * \inheaderfile Qt3DRender/QCameraLens
  * \inmodule Qt3DRender
  *
  * \brief Qt3DRender::QCameraLens specifies the projection matrix that will be used to

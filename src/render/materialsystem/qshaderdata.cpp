@@ -62,6 +62,7 @@ QShaderDataPrivate::QShaderDataPrivate(PropertyReaderInterfacePtr reader)
 
 /*!
  * \class Qt3DRender::QShaderData
+ * \inheaderfile Qt3DRender/QShaderData
  * \inmodule Qt3DRender
  *
  * \brief Provides a way of specifying values of a Uniform Block or a shader

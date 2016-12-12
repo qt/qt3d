@@ -69,7 +69,7 @@ public:
 
     \brief The QPickTriangleEvent class holds information when a triangle is picked
 
-    \sa QPickEvent, QPickSettings
+    \sa QPickEvent
     \since 5.7
 */
 
@@ -78,7 +78,7 @@ public:
  * \instantiates Qt3DRender::QPickTriangleEvent
  * \inqmlmodule Qt3D.Render
  * \brief PickTriangleEvent holds information when a triangle is picked.
- * \sa ObjectPicker, PickSettings
+ * \sa ObjectPicker
  */
 
 
@@ -94,7 +94,7 @@ QPickTriangleEvent::QPickTriangleEvent()
 /*!
  * \brief QPickTriangleEvent::QPickTriangleEvent Constructs a new QPickEvent with the given parameters
  * \a position,
- * \a intersection,
+ * \a worldIntersection,
  * \a localIntersection,
  * \a distance,
  * \a triangleIndex,
@@ -150,7 +150,7 @@ QPickTriangleEvent::~QPickTriangleEvent()
  */
 /*!
  * \brief QPickTriangleEvent::triangleIndex
- * \return the index of the picked triangle
+ * Returns the index of the picked triangle
  */
 uint QPickTriangleEvent::triangleIndex() const
 {
@@ -168,7 +168,7 @@ uint QPickTriangleEvent::triangleIndex() const
  */
 /*!
  * \brief QPickTriangleEvent::vertex1Index
- * \returns index of first point of picked triangle
+ * Returns the index of the first point of the picked triangle
  */
 uint QPickTriangleEvent::vertex1Index() const
 {
@@ -186,7 +186,7 @@ uint QPickTriangleEvent::vertex1Index() const
  */
 /*!
  * \brief QPickTriangleEvent::vertex2Index
- * \returns index of second point of picked triangle
+ * Returns the index of the second point of the picked triangle
  */
 uint QPickTriangleEvent::vertex2Index() const
 {

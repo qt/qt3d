@@ -45,7 +45,7 @@
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DRender/private/material_p.h>
-#include <Qt3DRender/private/texture_p.h>
+#include <Qt3DRender/private/gltexture_p.h>
 #include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/private/rendercommand_p.h>
@@ -56,6 +56,7 @@
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/gltexturemanager_p.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
 #include <Qt3DRender/private/qbuffer_p.h>
 #include <QOpenGLShaderProgram>
@@ -79,8 +80,6 @@
 #include <QOpenGLDebugLogger>
 
 QT_BEGIN_NAMESPACE
-
-extern Q_GUI_EXPORT QImage qt_gl_read_framebuffer(const QSize &size, bool alpha_format, bool include_alpha);
 
 namespace {
 
@@ -188,9 +187,7 @@ void GraphicsContext::initialize()
     m_gl->functions()->glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &numTexUnits);
     qCDebug(Backend) << "context supports" << numTexUnits << "texture units";
 
-    m_pinnedTextureUnits = QBitArray(numTexUnits);
     m_activeTextures.resize(numTexUnits);
-    m_textureScopes.resize(numTexUnits);
 
     if (m_gl->format().majorVersion() >= 3) {
         m_supportsVAO = true;
@@ -203,6 +200,31 @@ void GraphicsContext::initialize()
 
     m_defaultFBO = m_gl->defaultFramebufferObject();
     qCDebug(Backend) << "VAO support = " << m_supportsVAO;
+}
+
+void GraphicsContext::resolveRenderTargetFormat()
+{
+    const QSurfaceFormat format = m_gl->format();
+    const uint a = format.alphaBufferSize();
+    const uint r = format.redBufferSize();
+    const uint g = format.greenBufferSize();
+    const uint b = format.blueBufferSize();
+
+#define RGBA_BITS(r,g,b,a) (r | (g << 6) | (b << 12) | (a << 18))
+
+    const uint bits = RGBA_BITS(r,g,b,a);
+    switch (bits) {
+    case RGBA_BITS(8,8,8,8):
+        m_renderTargetFormat = QAbstractTexture::RGBA8_UNorm;
+        break;
+    case RGBA_BITS(8,8,8,0):
+        m_renderTargetFormat = QAbstractTexture::RGB8_UNorm;
+        break;
+    case RGBA_BITS(5,6,5,0):
+        m_renderTargetFormat = QAbstractTexture::R5G6B5;
+        break;
+    }
+#undef RGBA_BITS
 }
 
 bool GraphicsContext::beginDrawing(QSurface *surface)
@@ -225,6 +247,9 @@ bool GraphicsContext::beginDrawing(QSurface *surface)
     m_ownCurrent = !(m_gl->surface() == m_surface);
     if (m_ownCurrent && !makeCurrent(m_surface))
         return false;
+
+    // TODO: cache surface format somewhere rather than doing this every time render surface changes
+    resolveRenderTargetFormat();
 
     // Sets or Create the correct m_glHelper
     // for the current surface
@@ -252,7 +277,10 @@ bool GraphicsContext::beginDrawing(QSurface *surface)
         m_activeShaderDNA = 0;
     }
 
-    m_activeTextures.fill(0);
+    // reset active textures
+    for (int u = 0; u < m_activeTextures.size(); ++u)
+        m_activeTextures[u].texture = nullptr;
+
     m_boundArrayBuffer = nullptr;
 
     static int callCount = 0;
@@ -393,6 +421,11 @@ bool GraphicsContext::hasValidGLHelper() const
     return m_glHelper != nullptr;
 }
 
+bool GraphicsContext::isInitialized() const
+{
+    return m_initialized;
+}
+
 bool GraphicsContext::makeCurrent(QSurface *surface)
 {
     Q_ASSERT(m_gl);
@@ -522,14 +555,20 @@ void GraphicsContext::activateRenderTarget(Qt3DCore::QNodeId renderTargetNodeId,
             fboId = m_renderTargets.value(renderTargetNodeId);
 
             // We need to check if  one of the attachment was resized
-            TextureManager *textureManager = m_renderer->nodeManagers()->textureManager();
-            bool needsResize = false;
-            const auto attachments_ = attachments.attachments();
-            for (const Attachment &attachment : attachments_) {
-                Texture *rTex = textureManager->lookupResource(attachment.m_textureUuid);
-                if (rTex != nullptr)
-                    needsResize |= rTex->isTextureReset();
+            bool needsResize = !m_renderTargetsSize.contains(fboId);    // not even initialized yet?
+            if (!needsResize) {
+                // render target exists, has attachment been resized?
+                GLTextureManager *glTextureManager = m_renderer->nodeManagers()->glTextureManager();
+                const QSize s = m_renderTargetsSize[fboId];
+                const auto attachments_ = attachments.attachments();
+                for (const Attachment &attachment : attachments_) {
+                    GLTexture *rTex = glTextureManager->lookupResource(attachment.m_textureUuid);
+                    needsResize |= (rTex != nullptr && rTex->size() != s);
+                    if (attachment.m_point == QRenderTargetOutput::Color0)
+                        m_renderTargetFormat = rTex->properties().format;
+                }
             }
+
             if (needsResize) {
                 m_glHelper->bindFrameBufferObject(fboId);
                 bindFrameBufferAttachmentHelper(fboId, attachments);
@@ -547,19 +586,17 @@ void GraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const Attach
     // Set FBO attachments
 
     QSize fboSize;
-    TextureManager *textureManager = m_renderer->nodeManagers()->textureManager();
+    GLTextureManager *glTextureManager = m_renderer->nodeManagers()->glTextureManager();
     const auto attachments_ = attachments.attachments();
     for (const Attachment &attachment : attachments_) {
-        Texture *rTex =textureManager->lookupResource(attachment.m_textureUuid);
-        if (rTex != nullptr) {
-            QOpenGLTexture *glTex = rTex->getOrCreateGLTexture();
-            if (glTex != nullptr) {
-                if (fboSize.isEmpty())
-                    fboSize = QSize(glTex->width(), glTex->height());
-                else
-                    fboSize = QSize(qMin(fboSize.width(), glTex->width()), qMin(fboSize.height(), glTex->height()));
-                m_glHelper->bindFrameBufferAttachment(glTex, attachment);
-            }
+        GLTexture *rTex = glTextureManager->lookupResource(attachment.m_textureUuid);
+        QOpenGLTexture *glTex = rTex ? rTex->getOrCreateGLTexture() : nullptr;
+        if (glTex != nullptr) {
+            if (fboSize.isEmpty())
+                fboSize = QSize(glTex->width(), glTex->height());
+            else
+                fboSize = QSize(qMin(fboSize.width(), glTex->width()), qMin(fboSize.height(), glTex->height()));
+            m_glHelper->bindFrameBufferAttachment(glTex, attachment);
         }
     }
     m_renderTargetsSize.insert(fboId, fboSize);
@@ -591,7 +628,7 @@ void GraphicsContext::setActiveMaterial(Material *rmat)
     m_material = rmat;
 }
 
-int GraphicsContext::activateTexture(TextureScope scope, Texture *tex, int onUnit)
+int GraphicsContext::activateTexture(TextureScope scope, GLTexture *tex, int onUnit)
 {
     // Returns the texture unit to use for the texture
     // This always return a valid unit, unless there are more textures than
@@ -604,10 +641,10 @@ int GraphicsContext::activateTexture(TextureScope scope, Texture *tex, int onUni
 
     // actually re-bind if required, the tex->dna on the unit not being the same
     // Note: tex->dna() could be 0 if the texture has not been created yet
-    if (m_activeTextures[onUnit] != tex->dna() || tex->dna() == 0 || tex->dataUploadRequired()) {
+    if (m_activeTextures[onUnit].texture != tex) {
         QOpenGLTexture *glTex = tex->getOrCreateGLTexture();
         glTex->bind(onUnit);
-        m_activeTextures[onUnit] = tex->dna();
+        m_activeTextures[onUnit].texture = tex;
     }
 
 #if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
@@ -617,9 +654,9 @@ int GraphicsContext::activateTexture(TextureScope scope, Texture *tex, int onUni
                            << tex->textureId() << "on unit" << onUnit;
 #endif
 
-    m_textureScores.insert(m_activeTextures[onUnit], 200);
-    m_pinnedTextureUnits[onUnit] = true;
-    m_textureScopes[onUnit] = scope;
+    m_activeTextures[onUnit].score = 200;
+    m_activeTextures[onUnit].pinned = true;
+    m_activeTextures[onUnit].scope = scope;
 
     return onUnit;
 }
@@ -627,12 +664,12 @@ int GraphicsContext::activateTexture(TextureScope scope, Texture *tex, int onUni
 void GraphicsContext::deactivateTexturesWithScope(TextureScope ts)
 {
     for (int u=0; u<m_activeTextures.size(); ++u) {
-        if (!m_pinnedTextureUnits[u])
+        if (!m_activeTextures[u].pinned)
             continue; // inactive, ignore
 
-        if (m_textureScopes[u] == ts) {
-            m_pinnedTextureUnits[u] = false;
-            m_textureScores.insert(m_activeTextures[u], m_textureScores.value(m_activeTextures[u], 1) - 1);
+        if (m_activeTextures[u].scope == ts) {
+            m_activeTextures[u].pinned = false;
+            m_activeTextures[u].score = qMax(m_activeTextures[u].score, 1) - 1;
         }
     } // of units iteration
 }
@@ -717,12 +754,12 @@ GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
     return glHelper;
 }
 
-void GraphicsContext::deactivateTexture(Texture* tex)
+void GraphicsContext::deactivateTexture(GLTexture* tex)
 {
     for (int u=0; u<m_activeTextures.size(); ++u) {
-        if (m_activeTextures[u] == tex->dna()) {
-            Q_ASSERT(m_pinnedTextureUnits[u]);
-            m_pinnedTextureUnits[u] = false;
+        if (m_activeTextures[u].texture == tex) {
+            Q_ASSERT(m_activeTextures[u].pinned);
+            m_activeTextures[u].pinned = false;
             return;
         }
     } // of units iteration
@@ -735,7 +772,8 @@ void GraphicsContext::setCurrentStateSet(RenderStateSet *ss)
     if (ss == m_stateSet)
         return;
 
-    ss->apply(this);
+    if (ss)
+        ss->apply(this);
     m_stateSet = ss;
 }
 
@@ -1007,20 +1045,20 @@ void GraphicsContext::setSeamlessCubemap(bool enable)
     Tries to use the texture unit with the texture that hasn't been used for the longest time
     if the texture happens not to be already pinned on a texture unit.
  */
-GLint GraphicsContext::assignUnitForTexture(Texture *tex)
+GLint GraphicsContext::assignUnitForTexture(GLTexture *tex)
 {
     int lowestScoredUnit = -1;
     int lowestScore = 0xfffffff;
 
     for (int u=0; u<m_activeTextures.size(); ++u) {
-        if (m_activeTextures[u] == tex->dna())
+        if (m_activeTextures[u].texture == tex)
             return u;
 
         // No texture is currently active on the texture unit
         // we save the texture unit with the texture that has been on there
         // the longest time while not being used
-        if (!m_pinnedTextureUnits[u]) {
-            int score = m_textureScores.value(m_activeTextures[u], 0);
+        if (!m_activeTextures[u].pinned) {
+            int score = m_activeTextures[u].score;
             if (score < lowestScore) {
                 lowestScore = score;
                 lowestScoredUnit = u;
@@ -1036,18 +1074,8 @@ GLint GraphicsContext::assignUnitForTexture(Texture *tex)
 
 void GraphicsContext::decayTextureScores()
 {
-    QHash<uint, int>::iterator it = m_textureScores.begin();
-    const QHash<uint, int>::iterator end = m_textureScores.end();
-
-    while (it != end) {
-        it.value()--;
-        if (it.value() <= 0) {
-            qCDebug(Backend) << "removing inactive texture" << it.key();
-            it = m_textureScores.erase(it);
-        } else {
-            ++it;
-        }
-    }
+    for (int u = 0; u < m_activeTextures.size(); u++)
+        m_activeTextures[u].score = qMax(m_activeTextures[u].score - 1, 0);
 }
 
 QOpenGLShaderProgram* GraphicsContext::activeShader() const
@@ -1078,12 +1106,13 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
 
     for (int i = 0; i < parameterPack.textures().size(); ++i) {
         const ShaderParameterPack::NamedTexture &namedTex = parameterPack.textures().at(i);
-        Texture *t = manager->lookupResource<Texture, TextureManager>(namedTex.texId);
-        if (t != nullptr) {
-            int texUnit = activateTexture(TextureScopeMaterial, t);
-            if (uniformValues.contains(namedTex.glslNameId)) {
+        // Given a Texture QNodeId, we retrieve the associated shared GLTexture
+        if (uniformValues.contains(namedTex.glslNameId)) {
+            GLTexture *t = manager->glTextureManager()->lookupResource(namedTex.texId);
+            if (t != nullptr) {
                 UniformValue &texUniform = uniformValues[namedTex.glslNameId];
                 Q_ASSERT(texUniform.valueType() == UniformValue::TextureValue);
+                const int texUnit = activateTexture(TextureScopeMaterial, t);
                 texUniform.data<UniformValue::Texture>()->textureId = texUnit;
             }
         }
@@ -1176,97 +1205,97 @@ void GraphicsContext::applyUniform(const ShaderUniform &description, const Unifo
 
     switch (type) {
     case UniformType::Float:
-        applyUniformHelper<UniformType::Float>(description.m_location, v);
+        applyUniformHelper<UniformType::Float>(description.m_location, description.m_size, v);
         break;
     case UniformType::Vec2:
-        applyUniformHelper<UniformType::Vec2>(description.m_location, v);
+        applyUniformHelper<UniformType::Vec2>(description.m_location, description.m_size, v);
         break;
     case UniformType::Vec3:
-        applyUniformHelper<UniformType::Vec3>(description.m_location, v);
+        applyUniformHelper<UniformType::Vec3>(description.m_location, description.m_size, v);
         break;
     case UniformType::Vec4:
-        applyUniformHelper<UniformType::Vec4>(description.m_location, v);
+        applyUniformHelper<UniformType::Vec4>(description.m_location, description.m_size, v);
         break;
 
     case UniformType::Double:
-        applyUniformHelper<UniformType::Double>(description.m_location, v);
+        applyUniformHelper<UniformType::Double>(description.m_location, description.m_size, v);
         break;
     case UniformType::DVec2:
-        applyUniformHelper<UniformType::DVec2>(description.m_location, v);
+        applyUniformHelper<UniformType::DVec2>(description.m_location, description.m_size, v);
         break;
     case UniformType::DVec3:
-        applyUniformHelper<UniformType::DVec3>(description.m_location, v);
+        applyUniformHelper<UniformType::DVec3>(description.m_location, description.m_size, v);
         break;
     case UniformType::DVec4:
-        applyUniformHelper<UniformType::DVec4>(description.m_location, v);
+        applyUniformHelper<UniformType::DVec4>(description.m_location, description.m_size, v);
         break;
 
     case UniformType::Sampler:
     case UniformType::Int:
-        applyUniformHelper<UniformType::Int>(description.m_location, v);
+        applyUniformHelper<UniformType::Int>(description.m_location, description.m_size, v);
         break;
     case UniformType::IVec2:
-        applyUniformHelper<UniformType::IVec2>(description.m_location, v);
+        applyUniformHelper<UniformType::IVec2>(description.m_location, description.m_size, v);
         break;
     case UniformType::IVec3:
-        applyUniformHelper<UniformType::IVec3>(description.m_location, v);
+        applyUniformHelper<UniformType::IVec3>(description.m_location, description.m_size, v);
         break;
     case UniformType::IVec4:
-        applyUniformHelper<UniformType::IVec4>(description.m_location, v);
+        applyUniformHelper<UniformType::IVec4>(description.m_location, description.m_size, v);
         break;
 
     case UniformType::UInt:
-        applyUniformHelper<UniformType::Int>(description.m_location, v);
+        applyUniformHelper<UniformType::Int>(description.m_location, description.m_size, v);
         break;
     case UniformType::UIVec2:
-        applyUniformHelper<UniformType::IVec2>(description.m_location, v);
+        applyUniformHelper<UniformType::IVec2>(description.m_location, description.m_size, v);
         break;
     case UniformType::UIVec3:
-        applyUniformHelper<UniformType::IVec3>(description.m_location, v);
+        applyUniformHelper<UniformType::IVec3>(description.m_location, description.m_size, v);
         break;
     case UniformType::UIVec4:
-        applyUniformHelper<UniformType::IVec4>(description.m_location, v);
+        applyUniformHelper<UniformType::IVec4>(description.m_location, description.m_size, v);
         break;
 
     case UniformType::Bool:
-        applyUniformHelper<UniformType::Bool>(description.m_location, v);
+        applyUniformHelper<UniformType::Bool>(description.m_location, description.m_size, v);
         break;
     case UniformType::BVec2:
-        applyUniformHelper<UniformType::BVec2>(description.m_location, v);
+        applyUniformHelper<UniformType::BVec2>(description.m_location, description.m_size, v);
         break;
     case UniformType::BVec3:
-        applyUniformHelper<UniformType::BVec3>(description.m_location, v);
+        applyUniformHelper<UniformType::BVec3>(description.m_location, description.m_size, v);
         break;
     case UniformType::BVec4:
-        applyUniformHelper<UniformType::BVec4>(description.m_location, v);
+        applyUniformHelper<UniformType::BVec4>(description.m_location, description.m_size, v);
         break;
 
     case UniformType::Mat2:
-        applyUniformHelper<UniformType::Mat2>(description.m_location, v);
+        applyUniformHelper<UniformType::Mat2>(description.m_location, description.m_size, v);
         break;
     case UniformType::Mat3:
-        applyUniformHelper<UniformType::Mat3>(description.m_location, v);
+        applyUniformHelper<UniformType::Mat3>(description.m_location, description.m_size, v);
         break;
     case UniformType::Mat4:
-        applyUniformHelper<UniformType::Mat4>(description.m_location, v);
+        applyUniformHelper<UniformType::Mat4>(description.m_location, description.m_size, v);
         break;
     case UniformType::Mat2x3:
-        applyUniformHelper<UniformType::Mat2x3>(description.m_location, v);
+        applyUniformHelper<UniformType::Mat2x3>(description.m_location, description.m_size, v);
         break;
     case UniformType::Mat3x2:
-        applyUniformHelper<UniformType::Mat3x2>(description.m_location, v);
+        applyUniformHelper<UniformType::Mat3x2>(description.m_location, description.m_size, v);
         break;
     case UniformType::Mat2x4:
-        applyUniformHelper<UniformType::Mat2x4>(description.m_location, v);
+        applyUniformHelper<UniformType::Mat2x4>(description.m_location, description.m_size, v);
         break;
     case UniformType::Mat4x2:
-        applyUniformHelper<UniformType::Mat4x2>(description.m_location, v);
+        applyUniformHelper<UniformType::Mat4x2>(description.m_location, description.m_size, v);
         break;
     case UniformType::Mat3x4:
-        applyUniformHelper<UniformType::Mat3x4>(description.m_location, v);
+        applyUniformHelper<UniformType::Mat3x4>(description.m_location, description.m_size, v);
         break;
     case UniformType::Mat4x3:
-        applyUniformHelper<UniformType::Mat4x3>(description.m_location, v);
+        applyUniformHelper<UniformType::Mat4x3>(description.m_location, description.m_size, v);
         break;
 
     default:
@@ -1305,7 +1334,7 @@ void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffe
         VAOVertexAttribute attr;
         attr.bufferHandle = glBufferHandle;
         attr.bufferType = bufferType;
-        attr.location = (location >= 0 ? location + i : location);
+        attr.location = location + i;
         attr.dataType = attributeDataType;
         attr.byteOffset = attribute->byteOffset() + (i * attrCount * typeSize);
         attr.vertexSize = attribute->vertexSize() / attrCount;
@@ -1549,10 +1578,175 @@ GLint GraphicsContext::glDataTypeFromAttributeDataType(QAttribute::VertexBaseTyp
     return GL_FLOAT;
 }
 
+static void copyGLFramebufferDataToImage(QImage &img, const uchar *srcData, uint stride, uint width, uint height, QAbstractTexture::TextureFormat format)
+{
+    switch (format) {
+    case QAbstractTexture::RGBA32F:
+        {
+            uchar *srcScanline = (uchar *)srcData + stride * (height - 1);
+            for (uint i = 0; i < height; ++i) {
+                uchar *dstScanline = img.scanLine(i);
+                float *pSrc = (float*)srcScanline;
+                for (uint j = 0; j < width; j++) {
+                    *dstScanline++ = (uchar)(255.0f * (pSrc[4*j+2] / (1.0f + pSrc[4*j+2])));
+                    *dstScanline++ = (uchar)(255.0f * (pSrc[4*j+1] / (1.0f + pSrc[4*j+1])));
+                    *dstScanline++ = (uchar)(255.0f * (pSrc[4*j+0] / (1.0f + pSrc[4*j+0])));
+                    *dstScanline++ = (uchar)(255.0f * qBound(0.0f, pSrc[4*j+3], 1.0f));
+                }
+                srcScanline -= stride;
+            }
+        } break;
+    default:
+        {
+            uchar* srcScanline = (uchar *)srcData + stride * (height - 1);
+            for (uint i = 0; i < height; ++i) {
+                memcpy(img.scanLine(i), srcScanline, stride);
+                srcScanline -= stride;
+            }
+        } break;
+    }
+}
+
 QImage GraphicsContext::readFramebuffer(QSize size)
 {
-    // todo: own implementation
-    return qt_gl_read_framebuffer(size, true, true);
+    QImage img;
+    const unsigned int area = size.width() * size.height();
+    unsigned int bytes;
+    GLenum format, type;
+    QImage::Format imageFormat;
+    uint stride;
+
+#ifndef QT_OPENGL_ES_2
+    /* format value should match GL internalFormat */
+    GLenum internalFormat = m_renderTargetFormat;
+#endif
+
+    switch (m_renderTargetFormat) {
+    case QAbstractTexture::RGBAFormat:
+    case QAbstractTexture::RGBA8_SNorm:
+    case QAbstractTexture::RGBA8_UNorm:
+    case QAbstractTexture::RGBA8U:
+    case QAbstractTexture::SRGB8_Alpha8:
+#ifdef QT_OPENGL_ES_2
+        format = GL_RGBA;
+        imageFormat = QImage::Format_RGBA8888_Premultiplied;
+#else
+        format = GL_BGRA;
+        imageFormat = QImage::Format_ARGB32_Premultiplied;
+        internalFormat = GL_RGBA8;
+#endif
+        type = GL_UNSIGNED_BYTE;
+        bytes = area * 4;
+        stride = size.width() * 4;
+        break;
+    case QAbstractTexture::SRGB8:
+    case QAbstractTexture::RGBFormat:
+    case QAbstractTexture::RGB8U:
+#ifdef QT_OPENGL_ES_2
+        format = GL_RGBA;
+        imageFormat = QImage::Format_RGBX8888;
+#else
+        format = GL_BGRA;
+        imageFormat = QImage::Format_RGB32;
+        internalFormat = GL_RGB8;
+#endif
+        type = GL_UNSIGNED_BYTE;
+        bytes = area * 4;
+        stride = size.width() * 4;
+        break;
+#ifndef QT_OPENGL_ES_2
+    case QAbstractTexture::RG11B10F:
+        bytes = area * 4;
+        format = GL_RGB;
+        type = GL_UNSIGNED_INT_10F_11F_11F_REV;
+        imageFormat = QImage::Format_RGB30;
+        stride = size.width() * 4;
+        break;
+    case QAbstractTexture::RGB10A2:
+        bytes = area * 4;
+        format = GL_RGBA;
+        type = GL_UNSIGNED_INT_2_10_10_10_REV;
+        imageFormat = QImage::Format_A2BGR30_Premultiplied;
+        stride = size.width() * 4;
+        break;
+    case QAbstractTexture::R5G6B5:
+        bytes = area * 2;
+        format = GL_RGB;
+        type = GL_UNSIGNED_SHORT;
+        internalFormat = GL_UNSIGNED_SHORT_5_6_5_REV;
+        imageFormat = QImage::Format_RGB16;
+        stride = size.width() * 2;
+        break;
+    case QAbstractTexture::RGBA16F:
+    case QAbstractTexture::RGBA16U:
+    case QAbstractTexture::RGBA32F:
+    case QAbstractTexture::RGBA32U:
+        bytes = area * 16;
+        format = GL_RGBA;
+        type = GL_FLOAT;
+        imageFormat = QImage::Format_ARGB32_Premultiplied;
+        stride = size.width() * 16;
+        break;
+#endif
+    default:
+        // unsupported format
+        Q_UNREACHABLE();
+        return img;
+    }
+
+#ifndef QT_OPENGL_ES_2
+    GLint samples = 0;
+    m_gl->functions()->glGetIntegerv(GL_SAMPLES, &samples);
+    if (samples > 0 && !m_glHelper->supportsFeature(GraphicsHelperInterface::BlitFramebuffer))
+        return img;
+#endif
+
+    img = QImage(size.width(), size.height(), imageFormat);
+
+    QScopedArrayPointer<uchar> data(new uchar [bytes]);
+
+#ifndef QT_OPENGL_ES_2
+    if (samples > 0) {
+        // resolve multisample-framebuffer to renderbuffer and read pixels from it
+        GLuint fbo, rb;
+        QOpenGLFunctions *gl = m_gl->functions();
+        gl->glGenFramebuffers(1, &fbo);
+        gl->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+        gl->glGenRenderbuffers(1, &rb);
+        gl->glBindRenderbuffer(GL_RENDERBUFFER, rb);
+        gl->glRenderbufferStorage(GL_RENDERBUFFER, internalFormat, size.width(), size.height());
+        gl->glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, rb);
+
+        const GLenum status = gl->glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
+        if (status != GL_FRAMEBUFFER_COMPLETE) {
+            gl->glDeleteRenderbuffers(1, &rb);
+            gl->glDeleteFramebuffers(1, &fbo);
+            return img;
+        }
+
+        m_glHelper->blitFramebuffer(0, 0, size.width(), size.height(),
+                                    0, 0, size.width(), size.height(),
+                                    GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        gl->glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
+        gl->glReadPixels(0,0,size.width(), size.height(), format, type, data.data());
+
+        copyGLFramebufferDataToImage(img, data.data(), stride, size.width(), size.height(), m_renderTargetFormat);
+
+        gl->glBindRenderbuffer(GL_RENDERBUFFER, rb);
+        gl->glDeleteRenderbuffers(1, &rb);
+        gl->glBindFramebuffer(GL_FRAMEBUFFER, m_activeFBO);
+        gl->glDeleteFramebuffers(1, &fbo);
+    } else {
+#endif
+        // read pixels directly from framebuffer
+        m_gl->functions()->glReadPixels(0,0,size.width(), size.height(), format, type, data.data());
+        copyGLFramebufferDataToImage(img, data.data(), stride, size.width(), size.height(), m_renderTargetFormat);
+
+#ifndef QT_OPENGL_ES_2
+    }
+#endif
+
+    return img;
 }
 
 QT3D_UNIFORM_TYPE_IMPL(UniformType::Float, float, glUniform1fv)

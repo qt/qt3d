@@ -1,3 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS = qgltf
+!android:SUBDIRS += qgltf
 qgltf.CONFIG += host_build

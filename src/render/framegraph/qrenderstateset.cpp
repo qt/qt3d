@@ -58,6 +58,7 @@ QRenderStateSetPrivate::QRenderStateSetPrivate()
 
 /*!
  * \class Qt3DRender::QRenderStateSet
+ * \inheaderfile Qt3DRender/QRenderStateSet
  * \inmodule Qt3DRender
  *
  * \brief The QRenderStateSet \l {QFrameGraphNode}{FrameGraph} node offers a way of

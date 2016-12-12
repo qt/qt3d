@@ -108,6 +108,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::Render::TriangleBoundingVolume*)
+Q_DECLARE_METATYPE(Qt3DRender::Render::TriangleBoundingVolume*) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_RENDER_TRIANGLEBOUNDINGVOLUME_P_H

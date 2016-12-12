@@ -780,7 +780,7 @@ Module {
                 "OneMinusConstantColor": 32770,
                 "OneMinusConstantAlpha": 32772,
                 "OneMinusSource1Alpha": 32773,
-                "OneMinusSource1Color0": 32774
+                "OneMinusSource1Color": 32774
             }
         }
         Property { name: "sourceRgb"; type: "Blending" }

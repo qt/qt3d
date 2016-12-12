@@ -1,4 +1,5 @@
-HEADERS += $$PWD/testdevice.h
+HEADERS += $$PWD/testdevice.h \
+           $$PWD/testdeviceproxy.h
 
 INCLUDEPATH += $$PWD
 

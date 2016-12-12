@@ -73,7 +73,7 @@ void Axis::cleanup()
 
 void Axis::setAxisValue(float axisValue)
 {
-    if (axisValue != m_axisValue) {
+    if (isEnabled() && (axisValue != m_axisValue)) {
         m_axisValue = axisValue;
 
         // Send a change to the frontend

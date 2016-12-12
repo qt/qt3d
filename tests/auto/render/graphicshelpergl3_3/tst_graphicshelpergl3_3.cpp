@@ -275,53 +275,147 @@ private Q_SLOTS:
         if (!m_initializationSuccessful)
             QSKIP("Initialization failed, OpenGL 3.3 Core functions not supported");
 
-        // GIVEN
-        GLuint fboId;
-        m_func->glGenFramebuffers(1, &fboId);
+        {
+            // GIVEN
+            GLuint fboId;
+            m_func->glGenFramebuffers(1, &fboId);
 
-        Attachment attachment;
-        attachment.m_point = QRenderTargetOutput::Color0;
+            Attachment attachment;
+            attachment.m_point = QRenderTargetOutput::Color0;
 
-        GLint maxAttachmentsCount = 0;
-        m_func->glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &maxAttachmentsCount);
+            GLint maxAttachmentsCount = 0;
+            m_func->glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &maxAttachmentsCount);
 
-        // THEN
-        QVERIFY(fboId != 0);
-        QVERIFY(maxAttachmentsCount >= 3);
+            // THEN
+            QVERIFY(fboId != 0);
+            QVERIFY(maxAttachmentsCount >= 3);
 
-        // WHEN
-        m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboId);
+            // WHEN
+            m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboId);
 
-        QOpenGLTexture texture(QOpenGLTexture::Target2D);
-        texture.setSize(512, 512);
-        texture.setFormat(QOpenGLTexture::RGBA8U);
-        texture.setMinificationFilter(QOpenGLTexture::Linear);
-        texture.setMagnificationFilter(QOpenGLTexture::Linear);
-        texture.setWrapMode(QOpenGLTexture::ClampToEdge);
-        if (!texture.create())
-            qWarning() << "Texture creation failed";
-        texture.allocateStorage();
-        QVERIFY(texture.isStorageAllocated());
-        GLint error = m_func->glGetError();
-        QVERIFY(error == 0);
-        m_glHelper.bindFrameBufferAttachment(&texture, attachment);
+            QOpenGLTexture texture(QOpenGLTexture::Target2D);
+            texture.setSize(512, 512);
+            texture.setFormat(QOpenGLTexture::RGBA8U);
+            texture.setMinificationFilter(QOpenGLTexture::Linear);
+            texture.setMagnificationFilter(QOpenGLTexture::Linear);
+            texture.setWrapMode(QOpenGLTexture::ClampToEdge);
+            if (!texture.create())
+                qWarning() << "Texture creation failed";
+            texture.allocateStorage();
+            QVERIFY(texture.isStorageAllocated());
+            GLint error = m_func->glGetError();
+            QVERIFY(error == 0);
+            m_glHelper.bindFrameBufferAttachment(&texture, attachment);
 
-        // THEN
-        GLenum status = m_func->glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
-        QCOMPARE(int(status), GL_FRAMEBUFFER_COMPLETE);
+            // THEN
+            GLenum status = m_func->glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
+            QCOMPARE(int(status), GL_FRAMEBUFFER_COMPLETE);
 
-        error = m_func->glGetError();
-        QVERIFY(error == 0);
-        GLint textureAttachmentId = 0;
-        m_func->glGetFramebufferAttachmentParameteriv(GL_DRAW_FRAMEBUFFER,
-                                                      GL_COLOR_ATTACHMENT0,
-                                                      GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME,
-                                                      &textureAttachmentId);
-        QCOMPARE(GLuint(textureAttachmentId), texture.textureId());
+            error = m_func->glGetError();
+            QVERIFY(error == 0);
+            GLint textureAttachmentId = 0;
+            m_func->glGetFramebufferAttachmentParameteriv(GL_DRAW_FRAMEBUFFER,
+                                                          GL_COLOR_ATTACHMENT0,
+                                                          GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME,
+                                                          &textureAttachmentId);
+            QCOMPARE(GLuint(textureAttachmentId), texture.textureId());
 
-        // Restore state
-        m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-        m_func->glDeleteFramebuffers(1, &fboId);
+            // Restore state
+            m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+            m_func->glDeleteFramebuffers(1, &fboId);
+        }
+        {
+            // GIVEN
+            QOpenGLTexture texture(QOpenGLTexture::TargetCubeMap);
+            texture.setSize(512, 512);
+            texture.setFormat(QOpenGLTexture::RGBA32F);
+            texture.setMinificationFilter(QOpenGLTexture::Linear);
+            texture.setMagnificationFilter(QOpenGLTexture::Linear);
+            texture.setWrapMode(QOpenGLTexture::ClampToEdge);
+            if (!texture.create())
+                qWarning() << "Texture creation failed";
+            texture.allocateStorage();
+            QVERIFY(texture.isStorageAllocated());
+            GLint error = m_func->glGetError();
+            QVERIFY(error == 0);
+
+            { // Check All Faces
+
+                // GIVEN
+                GLuint fboId;
+                m_func->glGenFramebuffers(1, &fboId);
+
+                // THEN
+                QVERIFY(fboId != 0);
+
+                // WHEN
+                m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboId);
+
+                Attachment attachment;
+                attachment.m_point = QRenderTargetOutput::Color0;
+                attachment.m_face = Qt3DRender::QAbstractTexture::AllFaces;
+
+                m_glHelper.bindFrameBufferAttachment(&texture, attachment);
+
+                // THEN
+                GLenum status = m_func->glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
+                QVERIFY(status == GL_FRAMEBUFFER_COMPLETE);
+
+                error = m_func->glGetError();
+                QVERIFY(error == 0);
+                GLint textureIsLayered = 0;
+                m_func->glGetFramebufferAttachmentParameteriv(GL_DRAW_FRAMEBUFFER,
+                                                              GL_COLOR_ATTACHMENT0,
+                                                              GL_FRAMEBUFFER_ATTACHMENT_LAYERED,
+                                                              &textureIsLayered);
+                QCOMPARE(textureIsLayered, GL_TRUE);
+
+                // Restore state
+                m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+                m_func->glDeleteFramebuffers(1, &fboId);
+            }
+            { // Check Specific Faces
+
+                // GIVEN
+                GLuint fboId;
+                m_func->glGenFramebuffers(1, &fboId);
+
+                // THEN
+                QVERIFY(fboId != 0);
+
+                // WHEN
+                m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboId);
+
+                Attachment attachment;
+                attachment.m_point = QRenderTargetOutput::Color0;
+                attachment.m_face = Qt3DRender::QAbstractTexture::CubeMapNegativeZ;
+
+                m_glHelper.bindFrameBufferAttachment(&texture, attachment);
+
+                // THEN
+                GLenum status = m_func->glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
+                QVERIFY(status == GL_FRAMEBUFFER_COMPLETE);
+
+                error = m_func->glGetError();
+                QVERIFY(error == 0);
+                GLint textureFace = 0;
+                m_func->glGetFramebufferAttachmentParameteriv(GL_DRAW_FRAMEBUFFER,
+                                                              GL_COLOR_ATTACHMENT0,
+                                                              GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE,
+                                                              &textureFace);
+                QCOMPARE(textureFace, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z);
+                GLint textureIsLayered = 0;
+                m_func->glGetFramebufferAttachmentParameteriv(GL_DRAW_FRAMEBUFFER,
+                                                              GL_COLOR_ATTACHMENT0,
+                                                              GL_FRAMEBUFFER_ATTACHMENT_LAYERED,
+                                                              &textureIsLayered);
+                QCOMPARE(textureIsLayered, GL_FALSE);
+
+                // Restore state
+                m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+                m_func->glDeleteFramebuffers(1, &fboId);
+            }
+        }
     }
 
     void bindFrameBufferObject()
@@ -527,9 +621,10 @@ private Q_SLOTS:
         textures[3]->bind();
         m_func->glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, colors.data());
         textures[3]->release();
-        for (const QVector4D c : colors)
-            QVERIFY(c == clearValue1);
 
+        for (const QVector4D c : colors) {
+            QVERIFY(c == clearValue1);
+        }
 
         // WHEN
         const QVector4D clearValue2 = QVector4D(0.4f, 0.5f, 0.4f, 1.0f);
@@ -539,9 +634,9 @@ private Q_SLOTS:
         textures[3]->bind();
         m_func->glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, colors.data());
         textures[3]->release();
-        for (const QVector4D c : colors)
+        for (const QVector4D c : colors) {
             QVERIFY(c == clearValue2);
-
+        }
         // Restore
         m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
         m_func->glDeleteFramebuffers(1, &fboId);
@@ -1166,6 +1261,7 @@ private Q_SLOTS:
         SUPPORTS_FEATURE(GraphicsHelperInterface::Compute, false);
         SUPPORTS_FEATURE(GraphicsHelperInterface::DrawBuffersBlend, false);
         // Tesselation could be true or false depending on extensions so not tested
+        SUPPORTS_FEATURE(GraphicsHelperInterface::BlitFramebuffer, true);
     }
 
 
@@ -1684,7 +1780,7 @@ private Q_SLOTS:
 
         // WHEN
         m_func->glUseProgram(shaderProgram.programId());
-        GLfloat values[16] = { 454.0f, 350.0f, 883.0f, 355.0f, 1340.0f, 1584.0f, 1200.0f, 427.0f, 396.0f, 1603.0f, 55.0f, 5.7, 383.0f, 6.2f, 5.3f, 327.0f };
+        GLfloat values[16] = { 454.0f, 350.0f, 883.0f, 355.0f, 1340.0f, 1584.0f, 1200.0f, 427.0f, 396.0f, 1603.0f, 55.0f, 5.7f, 383.0f, 6.2f, 5.3f, 327.0f };
         const GLint location = shaderProgram.uniformLocation("m4");
         m_glHelper.glUniformMatrix4fv(location, 1, values);
 
@@ -1819,7 +1915,7 @@ private Q_SLOTS:
 
         // WHEN
         m_func->glUseProgram(shaderProgram.programId());
-        GLfloat values[12] = { 55.0f, 5.7, 383.0f, 6.2f, 5.3f, 383.0f, 427.0f, 454.0f, 350.0f, 883.0f, 355.0f, 1340.0f};
+        GLfloat values[12] = { 55.0f, 5.7f, 383.0f, 6.2f, 5.3f, 383.0f, 427.0f, 454.0f, 350.0f, 883.0f, 355.0f, 1340.0f};
         const GLint location = shaderProgram.uniformLocation("m34");
         m_glHelper.glUniformMatrix3x4fv(location, 1, values);
 
@@ -1846,7 +1942,7 @@ private Q_SLOTS:
 
         // WHEN
         m_func->glUseProgram(shaderProgram.programId());
-        GLfloat values[12] = {  55.0f, 5.7, 383.0f, 6.2f, 383.0f, 427.0f, 454.0f, 350.0f, 883.0f, 355.0f, 1340.0f, 1584.0f};
+        GLfloat values[12] = {  55.0f, 5.7f, 383.0f, 6.2f, 383.0f, 427.0f, 454.0f, 350.0f, 883.0f, 355.0f, 1340.0f, 1584.0f};
         const GLint location = shaderProgram.uniformLocation("m43");
         m_glHelper.glUniformMatrix4x3fv(location, 1, values);
 
@@ -1858,6 +1954,67 @@ private Q_SLOTS:
 
         // Restore
         m_func->glUseProgram(0);
+    }
+
+
+    void blitFramebuffer()
+    {
+        if (!m_initializationSuccessful)
+            QSKIP("Initialization failed, OpenGL 3.3 Core functions not supported");
+
+        // GIVEN
+        GLuint fbos[2];
+        GLuint fboTextures[2];
+
+        m_func->glGenFramebuffers(2, fbos);
+        m_func->glGenTextures(2, fboTextures);
+
+        m_func->glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, fboTextures[0]);
+        m_func->glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA8, 10, 10, true);
+        m_func->glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+
+        m_func->glBindTexture(GL_TEXTURE_2D, fboTextures[1]);
+        m_func->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 10, 10, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        m_func->glBindTexture(GL_TEXTURE_2D, 0);
+
+        m_func->glBindFramebuffer(GL_FRAMEBUFFER, fbos[1]);
+        m_func->glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, fboTextures[1], 0);
+
+        GLenum status = m_func->glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        QVERIFY(status == GL_FRAMEBUFFER_COMPLETE);
+
+        m_func->glBindFramebuffer(GL_FRAMEBUFFER, fbos[0]);
+        m_func->glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, fboTextures[0], 0);
+
+        status = m_func->glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        QVERIFY(status == GL_FRAMEBUFFER_COMPLETE);
+
+        m_func->glEnable(GL_MULTISAMPLE);
+        m_func->glClearColor(0.2f, 0.2f, 0.2f, 0.2f);
+        m_func->glClear(GL_COLOR_BUFFER_BIT);
+        m_func->glDisable(GL_MULTISAMPLE);
+
+        m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbos[1]);
+
+        // WHEN
+        m_glHelper.blitFramebuffer(0,0,10,10,0,0,10,10, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+        m_func->glBindFramebuffer(GL_READ_FRAMEBUFFER, fbos[1]);
+
+        GLuint result[10*10];
+        m_func->glReadPixels(0,0,10,10,GL_RGBA, GL_UNSIGNED_BYTE, result);
+
+        // THEN
+        GLuint v = (0.2f) * 255;
+        v = v | (v<<8) | (v<<16) | (v<<24);
+        for (GLuint value : result) {
+            QCOMPARE(value, v);
+        }
+        m_func->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        m_func->glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+
+        m_func->glDeleteFramebuffers(2, fbos);
+        m_func->glDeleteTextures(2, fboTextures);
     }
 
 #define ADD_GL_TYPE_ENTRY(Type, Expected) \

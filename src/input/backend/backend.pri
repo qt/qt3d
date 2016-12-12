@@ -31,7 +31,10 @@ HEADERS += \
     $$PWD/inputsequence_p.h \
     $$PWD/inputsettings_p.h \
     $$PWD/eventsourcesetterhelper_p.h \
-    $$PWD/job_common_p.h
+    $$PWD/job_common_p.h \
+    $$PWD/physicaldeviceproxy_p.h \
+    $$PWD/loadproxydevicejob_p.h \
+    $$PWD/utils_p.h
 
 SOURCES += \
     $$PWD/keyboarddevice.cpp \
@@ -61,6 +64,8 @@ SOURCES += \
     $$PWD/inputchord.cpp \
     $$PWD/inputsequence.cpp \
     $$PWD/inputsettings.cpp \
-    $$PWD/eventsourcesetterhelper.cpp
+    $$PWD/eventsourcesetterhelper.cpp \
+    $$PWD/physicaldeviceproxy.cpp \
+    $$PWD/loadproxydevicejob.cpp
 
 INCLUDEPATH += $$PWD

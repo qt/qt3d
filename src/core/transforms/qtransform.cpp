@@ -169,6 +169,7 @@ QTransformPrivate::~QTransformPrivate()
 
 /*!
  * \class Qt3DCore::QTransform
+ * \inheaderfile Qt3DCore/QTransform
  * \inmodule Qt3DCore
  * \inherits Qt3DCore::QComponent
  * \since 5.6

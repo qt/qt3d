@@ -64,7 +64,7 @@ namespace JobTypes {
     enum JobType {
         LoadBuffer = 1,
         FrameCleanup,
-        FramePreparation,
+        UpdateShaderDataTransform,
         CalcBoundingVolume,
         CalcTriangleVolume,
         LoadGeometry,
@@ -92,7 +92,9 @@ namespace JobTypes {
         SyncRenderViewInitialization,
         SyncRenderViewCommandBuilder,
         SyncFrustumCulling,
-        ClearBufferDrawIndex
+        ClearBufferDrawIndex,
+        UpdateMeshTriangleList,
+        FilterCompatibleTechniques
     };
 
 } // JobTypes

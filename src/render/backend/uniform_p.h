@@ -206,6 +206,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::Render::UniformType)
+Q_DECLARE_METATYPE(Qt3DRender::Render::UniformType) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_RENDER_UNIFORM_P_H

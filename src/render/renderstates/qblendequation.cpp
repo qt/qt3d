@@ -40,6 +40,7 @@
 
 /*!
  * \class Qt3DRender::QBlendEquation
+ * \inheaderfile Qt3DRender/QBlendEquation
  * \brief The QBlendEquation class specifies the equation used for both the RGB
  *  blend equation and the Alpha blend equation
  * \inmodule Qt3DRender

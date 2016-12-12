@@ -83,6 +83,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint>)
+Q_DECLARE_METATYPE(QVector<Qt3DRender::QRenderTargetOutput::AttachmentPoint>) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_QRENDERTARGETSELECTOR_H

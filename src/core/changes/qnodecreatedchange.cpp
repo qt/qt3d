@@ -53,6 +53,7 @@ QNodeCreatedChangeBasePrivate::QNodeCreatedChangeBasePrivate(const QNode *node)
 
 /*!
  * \class Qt3DCore::QNodeCreatedChangeBase
+ * \inheaderfile Qt3DCore/QNodeCreatedChangeBase
  * \inherits Qt3DCore::QSceneChange
  * \inmodule Qt3DCore
  * \brief The QNodeCreatedChangeBase class is the base class for all NodeCreated QSceneChange events
@@ -120,6 +121,7 @@ bool QNodeCreatedChangeBase::isNodeEnabled() const Q_DECL_NOTHROW
 
 /*!
  * \class Qt3DCore::QNodeCreatedChange
+ * \inheaderfile Qt3DCore/QNodeCreatedChange
  * \inherits Qt3DCore::QNodeCreatedChangeBase
  * \since 5.7
  * \inmodule Qt3DCore

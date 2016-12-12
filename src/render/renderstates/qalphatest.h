@@ -66,7 +66,7 @@ public:
         Greater = 0x0204,
         NotEqual = 0x0205
     };
-    Q_ENUM(AlphaFunction)
+    Q_ENUM(AlphaFunction) // LCOV_EXCL_LINE
 
     explicit QAlphaTest(Qt3DCore::QNode *parent = nullptr);
     ~QAlphaTest();

@@ -73,7 +73,7 @@ public:
         BackButton = Qt::BackButton,
         NoButton = Qt::NoButton
     };
-    Q_ENUM(Buttons)
+    Q_ENUM(Buttons) // LCOV_EXCL_LINE
 
     enum Modifiers {
         NoModifier = Qt::NoModifier,
@@ -83,7 +83,7 @@ public:
         MetaModifier = Qt::MetaModifier,
         KeypadModifier = Qt::KeypadModifier
     };
-    Q_ENUM(Modifiers)
+    Q_ENUM(Modifiers) // LCOV_EXCL_LINE
 
     QPickEvent();
     QPickEvent(const QPointF &position, const QVector3D& worldIntersection, const QVector3D& localIntersection, float distance);
@@ -118,6 +118,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::QPickEvent*)
+Q_DECLARE_METATYPE(Qt3DRender::QPickEvent*) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_QPICKEVENT_H

@@ -45,6 +45,7 @@ namespace Qt3DRender {
 
 /*!
  * \class Qt3DRender::QRenderCapture
+ * \inheaderfile Qt3DRender/QRenderCapture
  * \inmodule Qt3DRender
  *
  * \brief Frame graph node for render capture
@@ -68,6 +69,7 @@ namespace Qt3DRender {
 
 /*!
  * \class Qt3DRender::QRenderCaptureReply
+ * \inheaderfile Qt3DRender/QRenderCaptureReply
  * \inmodule Qt3DRender
  *
  * \brief Receives the result of render capture request.
