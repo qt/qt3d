@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,67 +37,45 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERASPECT_P_H
-#define QT3DRENDER_QRENDERASPECT_P_H
+#include "offscreensurfacehelper_p.h"
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DCore/private/qabstractaspect_p.h>
-#include <Qt3DRender/private/qt3drender_global_p.h>
+#include <Qt3DRender/private/abstractrenderer_p.h>
+#include <QtGui/qoffscreensurface.h>
+#include <QtGui/qsurfaceformat.h>
+#include <QtCore/qcoreapplication.h>
+#include <QtCore/qthread.h>
 
 QT_BEGIN_NAMESPACE
 
-class QSurface;
-
 namespace Qt3DRender {
-
-class QSceneIOHandler;
 namespace Render {
-class AbstractRenderer;
-class NodeManagers;
-}
 
-namespace Render {
-class OffscreenSurfaceHelper;
-}
-
-class QT3DRENDERSHARED_PRIVATE_EXPORT QRenderAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
+/*! \internal */
+OffscreenSurfaceHelper::OffscreenSurfaceHelper(AbstractRenderer *renderer,
+                                               QObject *parent)
+    : QObject(parent)
+    , m_renderer(renderer)
+    , m_offscreenSurface(nullptr)
 {
-public:
-    QRenderAspectPrivate(QRenderAspect::RenderType type);
-    ~QRenderAspectPrivate();
-
-    Q_DECLARE_PUBLIC(QRenderAspect)
-
-    void registerBackendTypes();
-    void unregisterBackendTypes();
-    void loadSceneParsers();
-    void renderInitialize(QOpenGLContext *context);
-    void renderSynchronous();
-    void renderShutdown();
-    QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
-
-    Render::NodeManagers *m_nodeManagers;
-    Render::AbstractRenderer *m_renderer;
-
-    bool m_initialized;
-    QList<QSceneIOHandler *> m_sceneIOHandler;
-    QRenderAspect::RenderType m_renderType;
-    Render::OffscreenSurfaceHelper *m_offscreenHelper;
-};
-
+    Q_ASSERT(renderer);
 }
+
+/*!
+ * \internal
+ * Called in context of main thread to create an offscreen surface
+ * which can later be made current with the Qt 3D OpenGL context to
+ * then allow graphics resources to be released cleanly.
+ */
+void OffscreenSurfaceHelper::createOffscreenSurface()
+{
+    Q_ASSERT(QThread::currentThread() == QCoreApplication::instance()->thread());
+    m_offscreenSurface = new QOffscreenSurface;
+    m_offscreenSurface->setParent(this);
+    m_offscreenSurface->setFormat(m_renderer->format());
+    m_offscreenSurface->create();
+}
+
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_QRENDERASPECT_P_H

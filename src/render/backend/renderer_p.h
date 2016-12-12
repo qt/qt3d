@@ -232,6 +232,8 @@ public:
     bool isReadyToSubmit();
 
     QVariant executeCommand(const QStringList &args) Q_DECL_OVERRIDE;
+    void setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper) Q_DECL_OVERRIDE;
+    QSurfaceFormat format() Q_DECL_OVERRIDE;
 
     struct ViewSubmissionResultData
     {
@@ -270,6 +272,7 @@ private:
     ShaderParameterPack m_defaultUniformPack;
 
     QScopedPointer<GraphicsContext> m_graphicsContext;
+    QSurfaceFormat m_format;
 
     RenderQueue *m_renderQueue;
     QScopedPointer<RenderThread> m_renderThread;
@@ -327,6 +330,9 @@ private:
     QVector<HTexture> m_dirtyTextures;
 
     bool m_ownedContext;
+
+    OffscreenSurfaceHelper *m_offscreenHelper;
+    QMutex m_offscreenSurfaceMutex;
 
 #ifdef QT3D_JOBS_RUN_STATS
     QScopedPointer<Qt3DRender::Debug::CommandExecuter> m_commandExecuter;

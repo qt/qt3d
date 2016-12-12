@@ -82,6 +82,7 @@
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
 #include <Qt3DRender/private/loadbufferjob_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
+#include <Qt3DRender/private/offscreensurfacehelper_p.h>
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
@@ -169,6 +170,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_shaderGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyShaders(); }, JobTypes::DirtyShaderGathering))
     , m_syncTextureLoadingJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([] {}, JobTypes::SyncTextureLoading))
     , m_ownedContext(false)
+    , m_offscreenHelper(nullptr)
     #ifdef QT3D_JOBS_RUN_STATS
     , m_commandExecuter(new Qt3DRender::Debug::CommandExecuter(this))
     #endif
@@ -291,6 +293,14 @@ void Renderer::initialize()
     // The context will be made current later on (at render time)
     m_graphicsContext->setOpenGLContext(ctx);
 
+    // Store the format used by the context and queue up creating an
+    // offscreen surface in the main thread so that it is available
+    // for use when we want to shutdown the renderer. We need to create
+    // the offscreen surface on the main thread because on some platforms
+    // (MS Windows), an offscreen surface is just a hidden QWindow.
+    m_format = ctx->format();
+    QMetaObject::invokeMethod(m_offscreenHelper, "createOffscreenSurface");
+
     // Awake setScenegraphRoot in case it was waiting
     m_waitForInitializationToBeCompleted.release(1);
     // Allow the aspect manager to proceed
@@ -340,13 +350,16 @@ void Renderer::releaseGraphicsResources()
         return;
 
     // Try to temporarily make the context current so we can free up any resources
+    QMutexLocker locker(&m_offscreenSurfaceMutex);
+    QOffscreenSurface *offscreenSurface = m_offscreenHelper->offscreenSurface();
+    if (!offscreenSurface) {
+        qWarning() << "Failed to make context current: OpenGL resources will not be destroyed";
+        return;
+    }
+
     QOpenGLContext *context = m_graphicsContext->openGLContext();
     Q_ASSERT(context);
-    QSurfaceFormat format = context->format();
-    QOffscreenSurface offscreenSurface;
-    offscreenSurface.setFormat(format);
-    offscreenSurface.create();
-    if (context->makeCurrent(&offscreenSurface)) {
+    if (context->makeCurrent(offscreenSurface)) {
 
         // Clean up the graphics context and any resources
         const QVector<GLTexture*> activeTextures = m_nodesManager->glTextureManager()->activeResources();
@@ -662,6 +675,21 @@ QVariant Renderer::executeCommand(const QStringList &args)
     Q_UNUSED(args);
 #endif
     return QVariant();
+}
+
+/*!
+    \internal
+    Called in the context of the aspect thread from QRenderAspect::onRegistered
+*/
+void Renderer::setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper)
+{
+    QMutexLocker locker(&m_offscreenSurfaceMutex);
+    m_offscreenHelper = helper;
+}
+
+QSurfaceFormat Renderer::format()
+{
+    return m_format;
 }
 
 // When this function is called, we must not be processing the commands for frame n+1

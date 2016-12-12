@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERASPECT_P_H
-#define QT3DRENDER_QRENDERASPECT_P_H
+#ifndef QT3DRENDER_RENDER_OFFSCREENSURFACEHELPER_H
+#define QT3DRENDER_RENDER_OFFSCREENSURFACEHELPER_H
 
 //
 //  W A R N I N G
@@ -51,53 +51,36 @@
 // We mean it.
 //
 
-#include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DCore/private/qabstractaspect_p.h>
-#include <Qt3DRender/private/qt3drender_global_p.h>
+#include <QObject>
 
 QT_BEGIN_NAMESPACE
 
-class QSurface;
+class QOffscreenSurface;
 
 namespace Qt3DRender {
-
-class QSceneIOHandler;
 namespace Render {
+
 class AbstractRenderer;
-class NodeManagers;
-}
 
-namespace Render {
-class OffscreenSurfaceHelper;
-}
-
-class QT3DRENDERSHARED_PRIVATE_EXPORT QRenderAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
+class OffscreenSurfaceHelper : public QObject
 {
+    Q_OBJECT
 public:
-    QRenderAspectPrivate(QRenderAspect::RenderType type);
-    ~QRenderAspectPrivate();
+    OffscreenSurfaceHelper(AbstractRenderer *renderer,
+                           QObject *parent = nullptr);
+    inline QOffscreenSurface *offscreenSurface() const { return m_offscreenSurface; }
 
-    Q_DECLARE_PUBLIC(QRenderAspect)
+public slots:
+    void createOffscreenSurface();
 
-    void registerBackendTypes();
-    void unregisterBackendTypes();
-    void loadSceneParsers();
-    void renderInitialize(QOpenGLContext *context);
-    void renderSynchronous();
-    void renderShutdown();
-    QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
-
-    Render::NodeManagers *m_nodeManagers;
+private:
     Render::AbstractRenderer *m_renderer;
-
-    bool m_initialized;
-    QList<QSceneIOHandler *> m_sceneIOHandler;
-    QRenderAspect::RenderType m_renderType;
-    Render::OffscreenSurfaceHelper *m_offscreenHelper;
+    QOffscreenSurface *m_offscreenSurface;
 };
 
-}
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QRENDERASPECT_P_H
+#endif // QT3DRENDER_RENDER_OFFSCREENSURFACEHELPER_H

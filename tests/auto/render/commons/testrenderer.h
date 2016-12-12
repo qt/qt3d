@@ -75,6 +75,9 @@ public:
     void resetDirty();
     QVariant executeCommand(const QStringList &args) Q_DECL_OVERRIDE;
 
+    void setOffscreenSurfaceHelper(Qt3DRender::Render::OffscreenSurfaceHelper *helper) Q_DECL_OVERRIDE;
+    QSurfaceFormat format() Q_DECL_OVERRIDE;
+
 protected:
     Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet m_changes;
 };

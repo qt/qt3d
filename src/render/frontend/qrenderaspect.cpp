@@ -121,6 +121,7 @@
 #include <Qt3DRender/private/rendersettings_p.h>
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
+#include <Qt3DRender/private/offscreensurfacehelper_p.h>
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
@@ -442,6 +443,12 @@ void QRenderAspect::onRegistered()
     d->m_renderer = new Render::Renderer(d->m_renderType);
     d->m_renderer->setNodeManagers(d->m_nodeManagers);
 
+    // Create a helper for deferring creation of an offscreen surface used during cleanup
+    // to the main thread, after we knwo what the surface format in use is.
+    d->m_offscreenHelper = new Render::OffscreenSurfaceHelper(d->m_renderer);
+    d->m_offscreenHelper->moveToThread(QCoreApplication::instance()->thread());
+    d->m_renderer->setOffscreenSurfaceHelper(d->m_offscreenHelper);
+
     // Register backend types now that we have a renderer
     d->registerBackendTypes();
 
@@ -479,6 +486,11 @@ void QRenderAspect::onUnregistered()
     // Waits for the render thread to join (if using threaded renderer)
     delete d->m_renderer;
     d->m_renderer = nullptr;
+
+    // Queue the offscreen surface helper for deletion on the main thread.
+    // That will take care of deleting the offscreen surface itself.
+    d->m_offscreenHelper->deleteLater();
+    d->m_offscreenHelper = nullptr;
 }
 
 QVector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createGeometryRendererJobs()
