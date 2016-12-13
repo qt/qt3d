@@ -351,7 +351,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     // Create jobs that will get exectued by the threadpool
     QVector<QAspectJobPtr> jobs;
 
-    // 1 LoadBufferJobs, GeometryJobs, SceneLoaderJobs
+    // 1 LoadBufferJobs, GeometryJobs, SceneLoaderJobs, LoadTextureJobs
     // 2 CalculateBoundingVolumeJob (depends on LoadBuffer)
     // 3 WorldTransformJob
     // 4 UpdateBoundingVolume, FramePreparationJob (depend on WorlTransformJob)
@@ -371,17 +371,21 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         }
 
         Render::NodeManagers *manager = d->m_renderer->nodeManagers();
+        QAspectJobPtr textureLoadingSync = d->m_renderer->syncTextureLoadingJob();
+        textureLoadingSync->removeDependency(QWeakPointer<QAspectJob>());
 
         // Launch texture generator jobs
         const QVector<QTextureImageDataGeneratorPtr> pendingImgGen = manager->textureImageDataManager()->pendingGenerators();
         for (const QTextureImageDataGeneratorPtr &imgGen : pendingImgGen) {
             auto loadTextureJob = Render::LoadTextureDataJobPtr::create(imgGen);
+            textureLoadingSync->addDependency(loadTextureJob);
             loadTextureJob->setNodeManagers(manager);
             jobs.append(loadTextureJob);
         }
         const QVector<QTextureGeneratorPtr> pendingTexGen = manager->textureDataManager()->pendingGenerators();
         for (const QTextureGeneratorPtr &texGen : pendingTexGen) {
             auto loadTextureJob = Render::LoadTextureDataJobPtr::create(texGen);
+            textureLoadingSync->addDependency(loadTextureJob);
             loadTextureJob->setNodeManagers(manager);
             jobs.append(loadTextureJob);
         }

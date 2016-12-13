@@ -136,6 +136,8 @@ class VSyncFrameAdvanceService;
 class PickEventFilter;
 class NodeManagers;
 
+using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
+
 class QT3DRENDERSHARED_PRIVATE_EXPORT Renderer : public AbstractRenderer
 {
 public:
@@ -180,6 +182,8 @@ public:
 
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() Q_DECL_OVERRIDE;
     Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() Q_DECL_OVERRIDE;
+    Qt3DCore::QAspectJobPtr syncTextureLoadingJob() Q_DECL_OVERRIDE;
+
     QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs() const;
 
     inline FrameCleanupJobPtr frameCleanupJob() const { return m_cleanupJob; }
@@ -189,6 +193,7 @@ public:
     inline UpdateWorldTransformJobPtr updateWorldTransformJob() const { return m_worldTransformJob; }
     inline UpdateWorldBoundingVolumeJobPtr updateWorldBoundingVolumeJob() const { return m_updateWorldBoundingVolumeJob; }
     inline UpdateMeshTriangleListJobPtr updateMeshTriangleListJob() const { return m_updateMeshTriangleListJob; }
+    inline SynchronizerJobPtr textureLoadSyncJob() const { return m_syncTextureLoadingJob; }
 
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const Q_DECL_OVERRIDE;
 
@@ -310,6 +315,8 @@ private:
     GenericLambdaJobPtr<std::function<void ()>> m_bufferGathererJob;
     GenericLambdaJobPtr<std::function<void ()>> m_textureGathererJob;
     GenericLambdaJobPtr<std::function<void ()>> m_shaderGathererJob;
+
+    SynchronizerJobPtr m_syncTextureLoadingJob;
 
     void lookForDirtyBuffers();
     void lookForDirtyTextures();

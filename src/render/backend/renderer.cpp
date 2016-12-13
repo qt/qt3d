@@ -167,6 +167,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
     , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
     , m_shaderGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyShaders(); }, JobTypes::DirtyShaderGathering))
+    , m_syncTextureLoadingJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([] {}, JobTypes::SyncTextureLoading))
     , m_ownedContext(false)
     #ifdef QT3D_JOBS_RUN_STATS
     , m_commandExecuter(new Qt3DRender::Debug::CommandExecuter(this))
@@ -184,6 +185,10 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     m_updateWorldBoundingVolumeJob->addDependency(m_calculateBoundingVolumeJob);
     m_expandBoundingVolumeJob->addDependency(m_updateWorldBoundingVolumeJob);
     m_updateShaderDataTransformJob->addDependency(m_worldTransformJob);
+
+    // Dirty texture gathering depends on m_syncTextureLoadingJob
+    // m_syncTextureLoadingJob will depend on the texture loading jobs
+    m_textureGathererJob->addDependency(m_syncTextureLoadingJob);
 
     // All world stuff depends on the RenderEntity's localBoundingVolume
     m_pickBoundingVolumeJob->addDependency(m_updateMeshTriangleListJob);
@@ -1172,6 +1177,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     renderBinJobs.append(bufferJobs);
 
     // Jobs to prepare GL Resource upload
+    renderBinJobs.push_back(m_syncTextureLoadingJob);
     renderBinJobs.push_back(m_bufferGathererJob);
     renderBinJobs.push_back(m_textureGathererJob);
     renderBinJobs.push_back(m_shaderGathererJob);
@@ -1185,6 +1191,11 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 QAspectJobPtr Renderer::pickBoundingVolumeJob()
 {
     return m_pickBoundingVolumeJob;
+}
+
+QAspectJobPtr Renderer::syncTextureLoadingJob()
+{
+    return m_syncTextureLoadingJob;
 }
 
 QAbstractFrameAdvanceService *Renderer::frameAdvanceService() const
