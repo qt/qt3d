@@ -118,8 +118,8 @@ public:
     bool isSyncRequested() const;
     void clearSyncRequest();
 
-    void waitRender();
-    void wakeWaiting();
+    void wait();
+    void wake();
 
     bool isPrepared() const;
     void setPrepared();

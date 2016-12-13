@@ -37,6 +37,9 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DQuickRender/qscene2d.h>
 
+#include <QtCore/qthread.h>
+#include <QtCore/qatomic.h>
+
 #include <private/qscene2d_p.h>
 #include <private/scene2d_p.h>
 #include <private/graphicscontext_p.h>
@@ -59,6 +62,13 @@ namespace Qt3DRender {
 namespace Render {
 
 namespace Quick {
+
+Q_GLOBAL_STATIC(QThread, renderThread)
+Q_GLOBAL_STATIC(QAtomicInt, renderThreadClientCount)
+
+#ifndef GL_DEPTH24_STENCIL8
+#define GL_DEPTH24_STENCIL8 0x88F0
+#endif
 
 RenderQmlEventHandler::RenderQmlEventHandler(Scene2D *node)
     : QObject()
@@ -103,16 +113,17 @@ Scene2D::Scene2D()
     , m_fbo(0)
     , m_rbo(0)
 {
-
+    renderThreadClientCount->fetchAndAddAcquire(1);
 }
 
 Scene2D::~Scene2D()
 {
     // this gets called from aspect thread. Wait for the render thread then delete it.
-    if (m_renderThread) {
-        m_renderThread->wait(1000);
-        delete m_renderThread;
-    }
+    // TODO: render thread deletion
+//     if (m_renderThread) {
+//        m_renderThread->wait(1000);
+//        delete m_renderThread;
+//    }
 }
 
 void Scene2D::setOutput(Qt3DCore::QNodeId outputId)
@@ -124,15 +135,15 @@ void Scene2D::initializeSharedObject()
 {
     if (!m_initialized) {
 
-        // Create render thread
-        m_renderThread = new QThread();
-        m_renderThread->setObjectName(QStringLiteral("Scene2D::renderThread"));
+        renderThread->setObjectName(QStringLiteral("Scene2D::renderThread"));
+        m_renderThread = renderThread;
         m_sharedObject->m_renderThread = m_renderThread;
 
         // Create event handler for the render thread
         m_sharedObject->m_renderObject = new RenderQmlEventHandler(this);
         m_sharedObject->m_renderObject->moveToThread(m_sharedObject->m_renderThread);
-        m_sharedObject->m_renderThread->start();
+        if (!m_sharedObject->m_renderThread->isRunning())
+            m_sharedObject->m_renderThread->start();
 
         // Notify main thread we have been initialized
         if (m_sharedObject->m_renderManager)
@@ -237,7 +248,7 @@ void Scene2D::syncRenderControl()
         m_sharedObject->m_renderControl->sync();
 
         // gui thread can now continue
-        m_sharedObject->wakeWaiting();
+        m_sharedObject->wake();
     }
 }
 
@@ -292,11 +303,12 @@ void Scene2D::render()
             m_sharedObject->disallowRender();
 
         // Sync
-        syncRenderControl();
+        if (m_sharedObject->isSyncRequested()) {
 
-        // The lock is not needed anymore so release it before the following
-        // time comsuming operations
-        lock.unlock();
+            m_sharedObject->clearSyncRequest();
+
+            m_sharedObject->m_renderControl->sync();
+        }
 
         // Render
         m_sharedObject->m_renderControl->render();
@@ -311,9 +323,13 @@ void Scene2D::render()
             texture->generateMipMaps();
         textureLock->unlock();
         m_context->doneCurrent();
+
+        // gui thread can now continue
+        m_sharedObject->wake();
     }
 }
 
+// this function gets called while the main thread is waiting
 void Scene2D::cleanup()
 {
     if (m_renderInitialized && m_initialized) {
@@ -325,14 +341,19 @@ void Scene2D::cleanup()
         m_renderInitialized = false;
     }
     if (m_initialized) {
-        m_sharedObject->m_renderThread->quit();
         delete m_sharedObject->m_renderObject;
         m_sharedObject->m_renderObject = nullptr;
         delete m_context;
         m_context = nullptr;
-        m_sharedObject = nullptr;
         m_initialized = false;
     }
+    // wake up the main thread
+    m_sharedObject->wake();
+    m_sharedObject = nullptr;
+
+    renderThreadClientCount->fetchAndSubAcquire(1);
+    if (renderThreadClientCount->load() == 0)
+        renderThread->quit();
 }
 
 } // namespace Quick

@@ -203,12 +203,12 @@ void Scene2DSharedObject::requestRender(bool sync)
     QCoreApplication::postEvent(m_renderObject, new QEvent(RENDER));
 }
 
-void Scene2DSharedObject::waitRender()
+void Scene2DSharedObject::wait()
 {
     m_cond.wait(&m_mutex);
 }
 
-void Scene2DSharedObject::wakeWaiting()
+void Scene2DSharedObject::wake()
 {
     m_cond.wakeOne();
 }
@@ -320,7 +320,7 @@ void Scene2DManager::stopAndClean()
     if (m_sharedObject->isInitialized()) {
         QMutexLocker lock(&m_sharedObject->m_mutex);
         m_sharedObject->requestQuit();
-        m_sharedObject->m_renderThread->wait();
+        m_sharedObject->wait();
         m_sharedObject->cleanup();
         delete m_qmlEngine;
         delete m_qmlComponent;
@@ -479,7 +479,7 @@ void Scene2DManager::doRenderSync()
     m_sharedObject->m_renderControl->polishItems();
 
     // begin waiting render thread
-    m_sharedObject->waitRender();
+    m_sharedObject->wait();
     m_requested = false;
 }
 

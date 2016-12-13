@@ -81,7 +81,7 @@ private:
     Scene2D *m_node;
 };
 
-class Q_AUTOTEST_EXPORT Scene2D : public Qt3DRender::Render::BackendNode
+class QT3DQUICKRENDERSHARED_EXPORT Scene2D : public Qt3DRender::Render::BackendNode
 {
 public:
     Scene2D();
