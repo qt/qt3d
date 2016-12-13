@@ -199,6 +199,7 @@ public:
 
     void updateGLResources();
     void updateTexture(Texture *texture);
+    void cleanupTexture(const Texture *texture);
 
     void prepareCommandsSubmission(const QVector<RenderView *> &renderViews);
     bool executeCommandsSubmission(const RenderView *rv);

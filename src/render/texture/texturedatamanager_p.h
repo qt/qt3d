@@ -91,17 +91,21 @@ public:
      * If no data for the given generator exists, make sure that the
      * generators are executed the next frame. Reference generator by
      * given texture
+     *
+     * Returns true if the Entry for a given generator had to be created
      */
-    void requestData(const GeneratorPtr &generator, APITexture *tex)
+    bool requestData(const GeneratorPtr &generator, APITexture *tex)
     {
         QMutexLocker lock(&m_mutex);
 
         Entry *entry = findEntry(generator);
-        if (entry == nullptr)
+        const bool needsToBeCreated = (entry == nullptr);
+        if (needsToBeCreated)
             entry = createEntry(generator);
         Q_ASSERT(entry);
         if (!entry->referencingTextures.contains(tex))
             entry->referencingTextures.push_back(tex);
+        return needsToBeCreated;
     }
 
     /*!

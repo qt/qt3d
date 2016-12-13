@@ -230,6 +230,21 @@ class TextureManager : public Qt3DCore::QResourceManager<
 {
 public:
     TextureManager() {}
+
+    // Called in AspectThread by Texture node functor destroy
+    void addTextureIdToCleanup(Qt3DCore::QNodeId id)
+    {
+        m_textureIdsToCleanup.push_back(id);
+    }
+
+    // Called by RenderThread in updateGLResources (locked)
+    QVector<Qt3DCore::QNodeId> takeTexturesIdsToCleanup()
+    {
+        return std::move(m_textureIdsToCleanup);
+    }
+
+private:
+    QVector<Qt3DCore::QNodeId> m_textureIdsToCleanup;
 };
 
 class TransformManager : public Qt3DCore::QResourceManager<

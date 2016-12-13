@@ -72,17 +72,19 @@ GLTexture::GLTexture(TextureDataManager *texDataMgr,
     , m_dataFunctor(texGen)
 {
     // make sure texture generator is executed
+    // this is needed when Texture have the TargetAutomatic
+    // to ensure they are loaded before trying to instantiate the QOpenGLTexture
     if (!texGen.isNull())
         m_textureDataManager->requestData(texGen, this);
 }
 
 GLTexture::~GLTexture()
 {
-    if (m_gl) {
-        qWarning() << "[Qt3DRender::GLTexture] Destructor called without properly deleting texture";
-        delete m_gl;
-    }
+    destroyGLTexture();
+}
 
+void GLTexture::destroyResources()
+{
     // release texture data
     for (const Image &img : qAsConst(m_images))
         m_textureImageDataManager->releaseData(img.generator, this);
@@ -96,6 +98,8 @@ void GLTexture::destroyGLTexture()
     delete m_gl;
     m_gl = nullptr;
     m_dirty = 0;
+
+    destroyResources();
 }
 
 QOpenGLTexture* GLTexture::getOrCreateGLTexture()
@@ -255,8 +259,15 @@ void GLTexture::setImages(const QVector<Image> &images)
         // TextureDataManager.
 
         // make sure the generators are executed
+        bool newEntriesCreated = false;
         for (const Image& img : qAsConst(images)) {
-            m_textureImageDataManager->requestData(img.generator, this);
+            newEntriesCreated |= m_textureImageDataManager->requestData(img.generator, this);
+        }
+
+        if (!newEntriesCreated) {
+            // request a data upload (very important in case the image data already
+            // exists and wouldn't trigger an update)
+            requestUpload();
         }
     }
 }

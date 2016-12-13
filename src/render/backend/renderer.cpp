@@ -489,11 +489,11 @@ void Renderer::doRender()
                     if (!m_ownedContext)
                         m_graphicsContext->setCurrentStateSet(nullptr);
                     if (m_graphicsContext->beginDrawing(surface)) {
-                    // 1) Execute commands for buffer uploads, texture updates, shader loading first
-                    updateGLResources();
-                    // 2) Update VAO and copy data into commands to allow concurrent submission
-                    prepareCommandsSubmission(renderViews);
-                    preprocessingComplete = true;
+                        // 1) Execute commands for buffer uploads, texture updates, shader loading first
+                        updateGLResources();
+                        // 2) Update VAO and copy data into commands to allow concurrent submission
+                        prepareCommandsSubmission(renderViews);
+                        preprocessingComplete = true;
                     }
                 }
             }
@@ -797,6 +797,7 @@ void Renderer::lookForDirtyShaders()
     }
 }
 
+// Render Thread
 void Renderer::updateGLResources()
 {
     const QVector<HBuffer> dirtyBufferHandles = std::move(m_dirtyBuffers);
@@ -824,8 +825,21 @@ void Renderer::updateGLResources()
         // Upload/Update texture
         updateTexture(texture);
     }
+    // When Textures are cleaned up, their id is saved
+    // so that they can be cleaned up in the render thread
+    // Note: we perform this step in second so that the previous updateTexture call
+    // has a chance to find a shared texture
+    const QVector<Qt3DCore::QNodeId> cleanedUpTextureIds = m_nodesManager->textureManager()->takeTexturesIdsToCleanup();
+    for (const Qt3DCore::QNodeId textureCleanedUpId: cleanedUpTextureIds) {
+        cleanupTexture(m_nodesManager->textureManager()->lookupResource(textureCleanedUpId));
+        // We can really release the texture at this point
+        m_nodesManager->textureManager()->releaseResource(textureCleanedUpId);
+    }
+
+
 }
 
+// Render Thread
 void Renderer::updateTexture(Texture *texture)
 {
     // For implementing unique, non-shared, non-cached textures.
@@ -902,6 +916,16 @@ void Renderer::updateTexture(Texture *texture)
 
     // Unset the dirty flag on the texture
     texture->unsetDirty();
+}
+
+// Render Thread
+void Renderer::cleanupTexture(const Texture *texture)
+{
+    GLTextureManager *glTextureManager = m_nodesManager->glTextureManager();
+    GLTexture *glTexture = glTextureManager->lookupResource(texture->peerId());
+
+    if (glTexture != nullptr)
+        glTextureManager->abandon(glTexture, texture);
 }
 
 

@@ -174,6 +174,7 @@ private:
     QOpenGLTexture *buildGLTexture();
     void uploadGLTextureData();
     void updateGLTextureParameters();
+    void destroyResources();
 
     bool m_unique;
     DirtyFlags m_dirty;
