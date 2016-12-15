@@ -211,6 +211,9 @@ Renderer::~Renderer()
 
     delete m_renderQueue;
     delete m_defaultRenderStateSet;
+
+    if (!m_ownedContext)
+        QObject::disconnect(m_contextConnection);
 }
 
 void Renderer::dumpInfo() const
@@ -287,6 +290,10 @@ void Renderer::initialize()
         else
             qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
         m_ownedContext = true;
+    } else {
+        // Context is not owned by us, so we need to know if it gets destroyed
+        m_contextConnection = QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed,
+                                               [this] { releaseGraphicsResources(); });
     }
 
     // Note: we don't have a surface at this point
@@ -340,6 +347,11 @@ void Renderer::shutdown()
     When using a threaded renderer this function is called in the context of the
     RenderThread to do any shutdown and cleanup that needs to be performed in the
     thread where the OpenGL context lives.
+
+    When using Scene3D or anything that provides a custom QOpenGLContext (not
+    owned by Qt3D) this function is called whenever the signal
+    QOpenGLContext::aboutToBeDestroyed is emitted. In that case this function
+    is called in the context of the emitter's thread.
 */
 void Renderer::releaseGraphicsResources()
 {
@@ -372,6 +384,9 @@ void Renderer::releaseGraphicsResources()
     } else {
         qWarning() << "Failed to make context current: OpenGL resources will not be destroyed";
     }
+
+    if (m_ownedContext)
+        delete context;
 
     m_graphicsContext.reset(nullptr);
     qCDebug(Backend) << Q_FUNC_INFO << "Renderer properly shutdown";

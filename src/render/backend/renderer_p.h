@@ -338,6 +338,8 @@ private:
     QScopedPointer<Qt3DRender::Debug::CommandExecuter> m_commandExecuter;
     friend class Qt3DRender::Debug::CommandExecuter;
 #endif
+
+    QMetaObject::Connection m_contextConnection;
 };
 
 } // namespace Render
