@@ -100,7 +100,8 @@ qtConfig(private_tests) {
         rendercapture \
         trianglevisitor \
         qmemorybarrier \
-        memorybarrier
+        memorybarrier \
+        qshaderprogram
 
     !macos: SUBDIRS += graphicshelpergl4
 }
