@@ -54,6 +54,8 @@
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/shaderparameterpack_p.h>
 #include <Qt3DRender/private/shadervariables_p.h>
+#include <Qt3DRender/qshaderprogram.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <QMutex>
 #include <QVector>
 
@@ -62,8 +64,6 @@ QT_BEGIN_NAMESPACE
 class QOpenGLShaderProgram;
 
 namespace Qt3DRender {
-
-class QShaderProgram;
 
 namespace Render {
 
@@ -118,6 +118,12 @@ public:
     ShaderStorageBlock storageBlockForBlockNameId(int blockNameId);
     ShaderStorageBlock storageBlockForBlockName(const QString &blockName);
 
+    inline QString log() const { return m_log; }
+    inline QShaderProgram::ShaderStatus status() const { return m_status; }
+
+    void submitPendingNotifications();
+    inline bool hasPendingNotifications() const { return !m_pendingNotifications.empty(); }
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
@@ -148,6 +154,10 @@ private:
     mutable QMutex m_mutex;
     GraphicsContext *m_graphicsContext;
     QMetaObject::Connection m_contextConnection;
+    QString m_log;
+    QShaderProgram::ShaderStatus m_status;
+
+    QVector<Qt3DCore::QPropertyUpdatedChangePtr> m_pendingNotifications;
 
     void updateDNA();
 
@@ -158,6 +168,8 @@ private:
     void initializeShaderStorageBlocks(const QVector<ShaderStorageBlock> &shaderStorageBlockDescription);
 
     void initializeFromReference(const Shader &other);
+    void setLog(const QString &log);
+    void setStatus(QShaderProgram::ShaderStatus status);
 
     friend class GraphicsContext;
 };

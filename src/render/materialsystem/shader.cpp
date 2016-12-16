@@ -59,10 +59,11 @@ namespace Qt3DRender {
 namespace Render {
 
 Shader::Shader()
-    : BackendNode()
+    : BackendNode(ReadWrite)
     , m_isLoaded(false)
     , m_dna(0)
     , m_graphicsContext(nullptr)
+    , m_status(QShaderProgram::NotReady)
 {
     m_shaderCode.resize(static_cast<int>(QShaderProgram::Compute) + 1);
 }
@@ -96,6 +97,7 @@ void Shader::cleanup()
     m_uniforms.clear();
     m_attributes.clear();
     m_uniformBlocks.clear();
+    m_status = QShaderProgram::NotReady;
 }
 
 void Shader::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -183,8 +185,10 @@ void Shader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_shaderCode[QShaderProgram::Compute] = propertyValue.toByteArray();
             m_isLoaded = false;
         }
-        if (!m_isLoaded)
+        if (!m_isLoaded) {
+            setStatus(QShaderProgram::NotReady);
             updateDNA();
+        }
         markDirty(AbstractRenderer::AllDirty);
     }
 
@@ -251,6 +255,14 @@ ShaderStorageBlock Shader::storageBlockForBlockName(const QString &blockName)
             return m_shaderStorageBlocks[i];
     }
     return ShaderStorageBlock();
+}
+
+// To be called from a worker thread
+void Shader::submitPendingNotifications()
+{
+    const  QVector<Qt3DCore::QPropertyUpdatedChangePtr> notifications = std::move(m_pendingNotifications);
+    for (const Qt3DCore::QPropertyUpdatedChangePtr &notification : notifications)
+        notifyObservers(notification);
 }
 
 void Shader::prepareUniforms(ShaderParameterPack &pack)
@@ -420,6 +432,32 @@ void Shader::initializeFromReference(const Shader &other)
     m_shaderStorageBlockNames = other.m_shaderStorageBlockNames;
     m_shaderStorageBlocks = other.m_shaderStorageBlocks;
     m_isLoaded = other.m_isLoaded;
+    setStatus(other.status());
+    setLog(other.log());
+}
+
+void Shader::setLog(const QString &log)
+{
+    if (log != m_log) {
+        m_log = log;
+        Qt3DCore::QPropertyUpdatedChangePtr e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+        e->setPropertyName("log");
+        e->setValue(QVariant::fromValue(m_log));
+        m_pendingNotifications.push_back(e);
+    }
+}
+
+void Shader::setStatus(QShaderProgram::ShaderStatus status)
+{
+    if (status != m_status) {
+        m_status = status;
+        Qt3DCore::QPropertyUpdatedChangePtr e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+        e->setPropertyName("status");
+        e->setValue(QVariant::fromValue(m_status));
+        m_pendingNotifications.push_back(e);
+    }
 }
 
 } // namespace Render

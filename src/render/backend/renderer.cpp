@@ -935,6 +935,8 @@ void Renderer::lookForDirtyShaders()
                     RenderPass *renderPass = m_nodesManager->renderPassManager()->lookupResource(passId);
                     HShader shaderHandle = m_nodesManager->shaderManager()->lookupHandle(renderPass->shaderProgram());
                     Shader *shader = m_nodesManager->shaderManager()->data(shaderHandle);
+                    if (Q_UNLIKELY(shader->hasPendingNotifications()))
+                        shader->submitPendingNotifications();
                     if (shader != nullptr && !shader->isLoaded())
                         m_dirtyShaders.push_back(shaderHandle);
                 }

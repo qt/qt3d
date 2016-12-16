@@ -459,11 +459,14 @@ QOpenGLShaderProgram *GraphicsContext::createShaderProgram(Shader *shaderNode)
 
     // Compile shaders
     const auto shaderCode = shaderNode->shaderCode();
+    QString logs;
     for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
         QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
-        if (!shaderCode.at(i).isEmpty() &&
-                !shaderProgram->addShaderFromSourceCode(shaderType(type), shaderCode.at(i))) {
-            qWarning().noquote() << "Failed to compile shader:" << shaderProgram->log();
+        if (!shaderCode.at(i).isEmpty()) {
+            // Note: logs only return the error but not all the shader code
+            // we could append it
+            if (!shaderProgram->addShaderFromSourceCode(shaderType(type), shaderCode.at(i)))
+                logs += shaderProgram->log();
         }
     }
 
@@ -473,10 +476,12 @@ QOpenGLShaderProgram *GraphicsContext::createShaderProgram(Shader *shaderNode)
     bindFragOutputs(shaderProgram->programId(), shaderNode->fragOutputs());
 
     const bool linkSucceeded = shaderProgram->link();
-    if (!linkSucceeded) {
-        qWarning().noquote() << "Failed to link shader program:" << shaderProgram->log();
+    logs += shaderProgram->log();
+    shaderNode->setLog(logs);
+    shaderNode->setStatus(linkSucceeded ? QShaderProgram::Ready : QShaderProgram::Error);
+
+    if (!linkSucceeded)
         return nullptr;
-    }
 
     // take from scoped-pointer so it doesn't get deleted
     return shaderProgram.take();
