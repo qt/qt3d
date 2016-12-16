@@ -183,7 +183,7 @@ Entity {
                 byteOffset: 0
                 byteStride: 9 * 4
                 count: 4
-                name: defaultPositionAttributeName()
+                name: defaultPositionAttributeName
                 buffer: vertexBuffer
             }
 
@@ -194,7 +194,7 @@ Entity {
                 byteOffset: 3 * 4
                 byteStride: 9 * 4
                 count: 4
-                name: defaultNormalAttributeName()
+                name: defaultNormalAttributeName
                 buffer: vertexBuffer
             }
 
@@ -205,7 +205,7 @@ Entity {
                 byteOffset: 6 * 4
                 byteStride: 9 * 4
                 count: 4
-                name: defaultColorAttributeName()
+                name: defaultColorAttributeName
                 buffer: vertexBuffer
             }
 
