@@ -71,6 +71,12 @@ protected:
             Q_ASSERT(priv->m_entity != nullptr);
             priv->m_entity->setParent(m_loader);
             emit m_loader->entityChanged();
+            priv->setStatus(Quick3DEntityLoader::Ready);
+            break;
+        }
+
+        case Loading: {
+            priv->setStatus(Quick3DEntityLoader::Loading);
             break;
         }
 
@@ -78,6 +84,7 @@ protected:
             QQmlEnginePrivate::warning(qmlEngine(m_loader), errors());
             priv->clear();
             emit m_loader->entityChanged();
+            priv->setStatus(Quick3DEntityLoader::Error);
             break;
         }
 
@@ -95,13 +102,21 @@ private:
     \inqmlmodule Qt3D.Core
     \inherits Entity
     \since 5.5
-    \brief Provides the facility to load entities from qml source
+    \brief Provides a way to dynamically load an Entity subtree
 
     An EntityLoader provides the facitily to load predefined set of entities
     from qml source file. EntityLoader itself is an entity and the loaded entity
     tree is set as a child of the loader. The loaded entity tree root can be
     accessed with EntityLoader::entity property.
+
+    \badcode
+        EntityLoader {
+            id: loader
+            source: "./SphereEntity.qml"
+        }
+    \endcode
 */
+
 Quick3DEntityLoader::Quick3DEntityLoader(QNode *parent)
     : QEntity(*new Quick3DEntityLoaderPrivate, parent)
 {
@@ -117,6 +132,10 @@ Quick3DEntityLoader::~Quick3DEntityLoader()
     \qmlproperty QtQml::QtObject EntityLoader::entity
     Holds the loaded entity tree root.
     \readonly
+
+    This property allows access to the content of the loader. It references
+    either a valid Entity object if the status property equals
+    EntityLoader.Ready, it is equal to null otherwise.
 */
 QObject *Quick3DEntityLoader::entity() const
 {
@@ -147,12 +166,30 @@ void Quick3DEntityLoader::setSource(const QUrl &url)
     d->loadFromSource();
 }
 
+/*!
+    \qmlproperty Status Qt3DCore::EntityLoader::status
+
+    Holds the status of the entity loader.
+    \list
+    \li EntityLoader.Null
+    \li EntityLoader.Loading
+    \li EntityLoader.Ready
+    \li EntityLoader.Error
+    \endlist
+ */
+Quick3DEntityLoader::Status Quick3DEntityLoader::status() const
+{
+    Q_D(const Quick3DEntityLoader);
+    return d->m_status;
+}
+
 Quick3DEntityLoaderPrivate::Quick3DEntityLoaderPrivate()
     : QEntityPrivate(),
       m_incubator(nullptr),
       m_context(nullptr),
       m_component(nullptr),
-      m_entity(nullptr)
+      m_entity(nullptr),
+      m_status(Quick3DEntityLoader::Null)
 {
 }
 
@@ -232,6 +269,17 @@ void Quick3DEntityLoaderPrivate::_q_componentStatusChanged(QQmlComponent::Status
 
     m_incubator = new Quick3DEntityLoaderIncubator(q);
     m_component->create(*m_incubator, m_context);
+}
+
+void Quick3DEntityLoaderPrivate::setStatus(Quick3DEntityLoader::Status status)
+{
+    Q_Q(Quick3DEntityLoader);
+    if (status != m_status) {
+        m_status = status;
+        const bool blocked = q->blockNotifications(true);
+        emit q->statusChanged(m_status);
+        q->blockNotifications(blocked);
+    }
 }
 
 } // namespace Quick
