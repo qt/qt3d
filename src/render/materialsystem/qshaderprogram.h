@@ -58,6 +58,8 @@ class QT3DRENDERSHARED_EXPORT QShaderProgram : public Qt3DCore::QNode
     Q_PROPERTY(QByteArray geometryShaderCode READ geometryShaderCode WRITE setGeometryShaderCode NOTIFY geometryShaderCodeChanged)
     Q_PROPERTY(QByteArray fragmentShaderCode READ fragmentShaderCode WRITE setFragmentShaderCode NOTIFY fragmentShaderCodeChanged)
     Q_PROPERTY(QByteArray computeShaderCode READ computeShaderCode WRITE setComputeShaderCode NOTIFY computeShaderCodeChanged)
+    Q_PROPERTY(QString log READ log NOTIFY logChanged)
+    Q_PROPERTY(ShaderStatus status READ status NOTIFY statusChanged)
 
 public:
     explicit QShaderProgram(Qt3DCore::QNode *parent = nullptr);
@@ -73,6 +75,13 @@ public:
     };
     Q_ENUM(ShaderType) // LCOV_EXCL_LINE
 
+    enum ShaderStatus {
+        NotReady = 0,
+        Ready,
+        Error
+    };
+    Q_ENUM(ShaderStatus) // LCOV_EXCL_LINE
+
     // Source code in-line
     QByteArray vertexShaderCode() const;
     QByteArray tessellationControlShaderCode() const;
@@ -83,6 +92,9 @@ public:
 
     void setShaderCode(ShaderType type, const QByteArray &shaderCode);
     QByteArray shaderCode(ShaderType type) const;
+
+    QString log() const;
+    ShaderStatus status() const;
 
     Q_INVOKABLE static QByteArray loadSource(const QUrl &sourceUrl);
 
@@ -101,9 +113,12 @@ Q_SIGNALS:
     void geometryShaderCodeChanged(const QByteArray &geometryShaderCode);
     void fragmentShaderCodeChanged(const QByteArray &fragmentShaderCode);
     void computeShaderCodeChanged(const QByteArray &computeShaderCode);
+    void logChanged(const QString &log);
+    void statusChanged(ShaderStatus status);
 
 protected:
     explicit QShaderProgram(QShaderProgramPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QShaderProgram)
