@@ -33,7 +33,8 @@ SUBDIRS += \
     transparency-qml \
     transparency-qml-scene3d \
     rendercapture-qml \
-    additional-attributes-qml
+    additional-attributes-qml \
+    dynamic-model-loader-qml
 
 qtHaveModule(widgets): {
     SUBDIRS += \
