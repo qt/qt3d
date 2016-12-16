@@ -28,6 +28,7 @@
 
 
 import Qt3D.Render 2.0 as QQ3Render20
+import Qt3D.Render 2.1 as QQ3Render21
 import QtQuick 2.0
 
 Item {
@@ -117,8 +118,8 @@ Item {
     QQ3Render20.NoDraw {}                      //Qt3DRender::QNoDraw
     QQ3Render20.FrustumCulling {}              //Qt3DRender::QFrustumCulling
     QQ3Render20.DispatchCompute {}             //Qt3DRender::QDispatchCompute
-    QQ3Render20.RenderCapture {}               //Qt3DRender::QRenderCapture
-    //QQ3Render20.RenderCaptureReply           // (uncreatable) Qt3DRender::QRenderCaptureReply
+    QQ3Render21.RenderCapture {}               //Qt3DRender::QRenderCapture
+    //QQ3Render21.RenderCaptureReply           // (uncreatable) Qt3DRender::QRenderCaptureReply
 
     // RenderTarget
     QQ3Render20.RenderTargetOutput {}          //Qt3DRender::QRenderTargetOutput
