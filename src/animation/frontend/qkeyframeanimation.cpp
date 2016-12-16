@@ -45,7 +45,6 @@ namespace Qt3DAnimation {
 
 QKeyframeAnimationPrivate::QKeyframeAnimationPrivate()
     : QAbstractAnimationPrivate(QAbstractAnimation::KeyframeAnimation)
-    , m_prevPosition(-1.0f)
     , m_target(nullptr)
     , m_minposition(0.0f)
     , m_maxposition(0.0f)
@@ -68,7 +67,7 @@ void QKeyframeAnimation::setFramePositions(const QVector<float> &positions)
 {
     Q_D(QKeyframeAnimation);
     d->m_framePositions = positions;
-    d->m_prevPosition = -1.0f;
+    d->m_position = -1.0f;
     if (d->m_framePositions.size() == 0) {
         d->m_minposition = d->m_maxposition = 0.0f;
         return;
@@ -116,9 +115,35 @@ QQuaternion lslerp(QQuaternion q1, QQuaternion q2, float t)
 void QKeyframeAnimationPrivate::calculateFrame(float position)
 {
     if (m_target && m_framePositions.size() > 0
-        && m_keyframes.size() == m_framePositions.size()
-        && m_prevPosition != m_position) {
-        if (m_position >= m_minposition && m_position < m_maxposition) {
+        && m_keyframes.size() == m_framePositions.size()) {
+        if (position < m_minposition) {
+            if (m_startMode == QKeyframeAnimation::None) {
+                return;
+            } else if (m_startMode == QKeyframeAnimation::Constant) {
+                m_target->setRotation(m_keyframes.first()->rotation());
+                m_target->setScale3D(m_keyframes.first()->scale3D());
+                m_target->setTranslation(m_keyframes.first()->translation());
+                return;
+            } else {
+                // must be repeat
+                position = std::fmod(-(position - m_minposition), m_maxposition - m_minposition)
+                                     + m_minposition;
+            }
+        } else if (position >= m_maxposition) {
+            if (m_endMode == QKeyframeAnimation::None) {
+                return;
+            } else if (m_endMode == QKeyframeAnimation::Constant) {
+                m_target->setRotation(m_keyframes.last()->rotation());
+                m_target->setScale3D(m_keyframes.last()->scale3D());
+                m_target->setTranslation(m_keyframes.last()->translation());
+                return;
+            } else {
+                // must be repeat
+                position = std::fmod(position - m_minposition, m_maxposition - m_minposition)
+                                     + m_minposition;
+            }
+        }
+        if (position >= m_minposition && position < m_maxposition) {
             for (int i = 0; i < m_framePositions.size() - 1; i++) {
                 if (position >= m_framePositions.at(i)
                     && position < m_framePositions.at(i+1)) {
@@ -140,16 +165,7 @@ void QKeyframeAnimationPrivate::calculateFrame(float position)
                     return;
                 }
             }
-        } else if (position < m_minposition) {
-            m_target->setRotation(m_keyframes.first()->rotation());
-            m_target->setScale3D(m_keyframes.first()->scale3D());
-            m_target->setTranslation(m_keyframes.first()->translation());
-        } else {
-            m_target->setRotation(m_keyframes.last()->rotation());
-            m_target->setScale3D(m_keyframes.last()->scale3D());
-            m_target->setTranslation(m_keyframes.last()->translation());
         }
-        m_prevPosition = m_position;
     }
 }
 
@@ -177,7 +193,7 @@ void QKeyframeAnimation::setTarget(Qt3DCore::QTransform *target)
     if (d->m_target != target) {
         d->m_target = target;
         emit targetChanged(d->m_target);
-        d->m_prevPosition = -1.0f;
+        d->m_position = -1.0f;
 
         if (target) {
             d->m_baseScale = target->scale3D();
@@ -199,11 +215,11 @@ QKeyframeAnimation::RepeatMode QKeyframeAnimation::endMode() const
     return d->m_endMode;
 }
 
-void QKeyframeAnimation::setEasing(QEasingCurve::Type easing)
+void QKeyframeAnimation::setEasing(const QEasingCurve &easing)
 {
     Q_D(QKeyframeAnimation);
-    if (d->m_easing.type() != easing) {
-        d->m_easing.setType(easing);
+    if (d->m_easing != easing) {
+        d->m_easing = easing;
         emit easingChanged(easing);
     }
 }
@@ -211,8 +227,10 @@ void QKeyframeAnimation::setEasing(QEasingCurve::Type easing)
 void QKeyframeAnimation::setTargetName(const QString &name)
 {
     Q_D(QKeyframeAnimation);
-    d->m_targetName = name;
-    emit targetNameChanged(name);
+    if (d->m_targetName != name) {
+        d->m_targetName = name;
+        emit targetNameChanged(name);
+    }
 }
 
 void QKeyframeAnimation::setStartMode(QKeyframeAnimation::RepeatMode mode)
@@ -245,10 +263,10 @@ QString QKeyframeAnimation::targetName() const
     return d->m_targetName;
 }
 
-QEasingCurve::Type QKeyframeAnimation::easing() const
+QEasingCurve QKeyframeAnimation::easing() const
 {
     Q_D(const QKeyframeAnimation);
-    return d->m_easing.type();
+    return d->m_easing;
 }
 
 Qt3DCore::QTransform *QKeyframeAnimation::target() const

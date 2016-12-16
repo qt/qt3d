@@ -47,6 +47,7 @@ QAnimationControllerPrivate::QAnimationControllerPrivate()
     : QObjectPrivate()
     , m_activeAnimationGroup(0)
     , m_position(0.0f)
+    , m_scaledPosition(0.0f)
     , m_positionScale(1.0f)
     , m_positionOffset(0.0f)
     , m_entity(nullptr)
@@ -58,10 +59,14 @@ QAnimationControllerPrivate::QAnimationControllerPrivate()
 void QAnimationControllerPrivate::updatePosition(float position)
 {
     m_position = position;
-    if (m_activeAnimationGroup >= 0 && m_activeAnimationGroup < m_animationGroups.size()) {
-        const float pos = m_positionScale * position + m_positionOffset;
-        m_animationGroups[m_activeAnimationGroup]->setPosition(pos);
-    }
+    m_scaledPosition = scaledPosition(position);
+    if (m_activeAnimationGroup >= 0 && m_activeAnimationGroup < m_animationGroups.size())
+        m_animationGroups[m_activeAnimationGroup]->setPosition(m_scaledPosition);
+}
+
+float QAnimationControllerPrivate::scaledPosition(float position) const
+{
+    return m_positionScale * position + m_positionOffset;
 }
 
 QAnimationGroup *QAnimationControllerPrivate::findGroup(const QString &name)
@@ -186,7 +191,7 @@ void QAnimationController::setActiveAnimationGroup(int index)
 void QAnimationController::setPosition(float position)
 {
     Q_D(QAnimationController);
-    if (!qFuzzyCompare(d->m_position, position)) {
+    if (!qFuzzyCompare(d->m_scaledPosition, d->scaledPosition(position))) {
         d->updatePosition(position);
         emit positionChanged(position);
     }

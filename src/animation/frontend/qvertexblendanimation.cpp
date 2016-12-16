@@ -44,6 +44,8 @@ namespace Qt3DAnimation {
 
 QVertexBlendAnimationPrivate::QVertexBlendAnimationPrivate()
     : QAbstractAnimationPrivate(QAbstractAnimation::VertexBlendAnimation)
+    , m_interpolator(0.0f)
+    , m_target(nullptr)
     , m_currentBase(nullptr)
     , m_currentTarget(nullptr)
 {

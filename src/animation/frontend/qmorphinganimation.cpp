@@ -43,13 +43,15 @@ namespace Qt3DAnimation {
 
 QMorphingAnimationPrivate::QMorphingAnimationPrivate()
     : QAbstractAnimationPrivate(QAbstractAnimation::MorphingAnimation)
+    , m_minposition(0.0f)
+    , m_maxposition(0.0f)
     , m_flattened(nullptr)
     , m_method(QMorphingAnimation::Relative)
     , m_interpolator(0.0f)
     , m_target(nullptr)
     , m_currentTarget(nullptr)
 {
-    m_easing.setType(QEasingCurve::InOutCubic);
+
 }
 
 QMorphingAnimationPrivate::~QMorphingAnimationPrivate()
@@ -64,45 +66,59 @@ void QMorphingAnimationPrivate::updateAnimation(float position)
     if (!m_target || !m_target->geometry())
         return;
 
+    QVector<int> relevantValues;
+    float sum = 0.0f;
+    float interpolator;
     m_morphKey.resize(m_morphTargets.size());
 
-    for (int i = 0; i < m_targetPositions.size() - 1; ++i) {
-        if (position > m_targetPositions.at(i) && position <= m_targetPositions.at(i + 1)) {
-            float interpolator = (position - m_targetPositions.at(i))
-                    / (m_targetPositions.at(i + 1) - m_targetPositions.at(i));
-            interpolator = m_easing.valueForProgress(interpolator);
-            float iip = 1.0f - interpolator;
-            float sum = 0.0f;
-            QVector<int> relevantValues;
-            for (int j = 0; j < m_morphTargets.size(); ++j) {
-                m_morphKey[j] = interpolator * m_weights.at(i + 1)->at(j)
-                                    + iip * m_weights.at(i)->at(j);
-                sum += m_morphKey[j];
-                if (!qFuzzyIsNull(m_morphKey[j]))
-                    relevantValues.push_back(j);
-            }
+    // calculate morph key
+    if (position < m_minposition) {
+        m_morphKey = *m_weights.first();
+    } else if (position >= m_maxposition) {
+        m_morphKey = *m_weights.last();
+    } else {
+        for (int i = 0; i < m_targetPositions.size() - 1; ++i) {
+            if (position >= m_targetPositions.at(i) && position < m_targetPositions.at(i + 1)) {
+                interpolator = (position - m_targetPositions.at(i))
+                        / (m_targetPositions.at(i + 1) - m_targetPositions.at(i));
+                interpolator = m_easing.valueForProgress(interpolator);
+                float iip = 1.0f - interpolator;
 
-            if (relevantValues.size() == 0 || qFuzzyIsNull(sum)) {
-                // only base is used
-                interpolator = 0.0f;
-            } else if (relevantValues.size() == 1) {
-                // one morph target has non-zero weight
-                setTargetInterpolated(relevantValues[0]);
-                interpolator = sum;
-            } else {
-                // more than one morph target has non-zero weight
-                // flatten morph targets to one
-                qWarning() << Q_FUNC_INFO << "Flattening required";
+                for (int j = 0; j < m_morphTargets.size(); ++j) {
+                    m_morphKey[j] = interpolator * m_weights.at(i + 1)->at(j)
+                                        + iip * m_weights.at(i)->at(j);
+                }
             }
-            if (!qFuzzyCompare(interpolator, m_interpolator)) {
-                if (m_method == QMorphingAnimation::Normalized)
-                    m_interpolator = interpolator;
-                else
-                    m_interpolator = -interpolator;
-                emit q->interpolatorChanged(m_interpolator);
-            }
-            return;
         }
+    }
+
+    // check relevant values
+    for (int j = 0; j < m_morphKey.size(); ++j) {
+        sum += m_morphKey[j];
+        if (!qFuzzyIsNull(m_morphKey[j]))
+            relevantValues.push_back(j);
+    }
+
+    if (relevantValues.size() == 0 || qFuzzyIsNull(sum)) {
+        // only base is used
+        interpolator = 0.0f;
+    } else if (relevantValues.size() == 1) {
+        // one morph target has non-zero weight
+        setTargetInterpolated(relevantValues[0]);
+        interpolator = sum;
+    } else {
+        // more than one morph target has non-zero weight
+        // flatten morph targets to one
+        qWarning() << Q_FUNC_INFO << "Flattening required";
+    }
+
+    // Relative method uses negative interpolator, normalized uses positive
+    if (m_method == QMorphingAnimation::Relative)
+        interpolator = -interpolator;
+
+    if (!qFuzzyCompare(interpolator, m_interpolator)) {
+        m_interpolator = interpolator;
+        emit q->interpolatorChanged(m_interpolator);
     }
 }
 
@@ -170,10 +186,10 @@ QMorphingAnimation::Method QMorphingAnimation::method() const
     return d->m_method;
 }
 
-QEasingCurve::Type QMorphingAnimation::easing() const
+QEasingCurve QMorphingAnimation::easing() const
 {
     Q_D(const QMorphingAnimation);
-    return d->m_easing.type();
+    return d->m_easing;
 }
 
 void QMorphingAnimation::setMorphTargets(const QVector<Qt3DAnimation::QMorphTarget *> &targets)
@@ -181,19 +197,25 @@ void QMorphingAnimation::setMorphTargets(const QVector<Qt3DAnimation::QMorphTarg
     Q_D(QMorphingAnimation);
     d->m_morphTargets = targets;
     d->m_attributeNames = targets[0]->attributeNames();
+    d->m_position = -1.0f;
 }
 
 void QMorphingAnimation::addMorphTarget(Qt3DAnimation::QMorphTarget *target)
 {
     Q_D(QMorphingAnimation);
-    if (!d->m_morphTargets.contains(target))
+    if (!d->m_morphTargets.contains(target)) {
         d->m_morphTargets.push_back(target);
+        d->m_position = -1.0f;
+        if (d->m_attributeNames.empty())
+            d->m_attributeNames = target->attributeNames();
+    }
 }
 
 void QMorphingAnimation::removeMorphTarget(Qt3DAnimation::QMorphTarget *target)
 {
     Q_D(QMorphingAnimation);
     d->m_morphTargets.removeAll(target);
+    d->m_position = -1.0f;
 }
 
 void QMorphingAnimation::setTargetPositions(const QVector<float> &targetPositions)
@@ -201,6 +223,8 @@ void QMorphingAnimation::setTargetPositions(const QVector<float> &targetPosition
     Q_D(QMorphingAnimation);
     d->m_targetPositions = targetPositions;
     emit targetPositionsChanged(targetPositions);
+    d->m_minposition = targetPositions.first();
+    d->m_maxposition = targetPositions.last();
     setDuration(d->m_targetPositions.last());
     if (d->m_weights.size() < targetPositions.size()) {
         d->m_weights.resize(targetPositions.size());
@@ -209,12 +233,14 @@ void QMorphingAnimation::setTargetPositions(const QVector<float> &targetPosition
                 d->m_weights[i] = new QVector<float>();
         }
     }
+    d->m_position = -1.0f;
 }
 
 void QMorphingAnimation::setTarget(Qt3DRender::QGeometryRenderer *target)
 {
     Q_D(QMorphingAnimation);
     if (d->m_target != target) {
+        d->m_position = -1.0f;
         d->m_target = target;
         emit targetChanged(target);
     }
@@ -228,6 +254,7 @@ void QMorphingAnimation::setWeights(int positionIndex, const QVector<float> &wei
     if (d->m_weights[positionIndex] == nullptr)
         d->m_weights[positionIndex] = new QVector<float>();
     *d->m_weights[positionIndex] = weights;
+    d->m_position = -1.0f;
 }
 
 QVector<float> QMorphingAnimation::getWeights(int positionIndex)
@@ -256,15 +283,17 @@ void QMorphingAnimation::setMethod(QMorphingAnimation::Method method)
     Q_D(QMorphingAnimation);
     if (d->m_method != method) {
         d->m_method = method;
+        d->m_position = -1.0f;
         emit methodChanged(method);
     }
 }
 
-void QMorphingAnimation::setEasing(QEasingCurve::Type easing)
+void QMorphingAnimation::setEasing(const QEasingCurve &easing)
 {
     Q_D(QMorphingAnimation);
-    if (d->m_easing.type() != easing) {
-        d->m_easing.setType(easing);
+    if (d->m_easing != easing) {
+        d->m_easing = easing;
+        d->m_position = -1.0f;
         emit easingChanged(easing);
     }
 }
