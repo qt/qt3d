@@ -57,6 +57,7 @@
 #include <Qt3DRender/qtextureimagedata.h>
 #include <Qt3DRender/qtexturegenerator.h>
 #include <Qt3DRender/qtextureimagedatagenerator.h>
+#include <Qt3DRender/private/gltexture_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -90,24 +91,28 @@ public:
      * If no data for the given generator exists, make sure that the
      * generators are executed the next frame. Reference generator by
      * given texture
+     *
+     * Returns true if the Entry for a given generator had to be created
      */
-    void requestData(const GeneratorPtr &generator, const APITexture *tex)
+    bool requestData(const GeneratorPtr &generator, APITexture *tex)
     {
         QMutexLocker lock(&m_mutex);
 
         Entry *entry = findEntry(generator);
-        if (entry == nullptr)
+        const bool needsToBeCreated = (entry == nullptr);
+        if (needsToBeCreated)
             entry = createEntry(generator);
         Q_ASSERT(entry);
         if (!entry->referencingTextures.contains(tex))
             entry->referencingTextures.push_back(tex);
+        return needsToBeCreated;
     }
 
     /*!
      * Dereference given generator from texture. If no other textures still reference
      * the generator, the associated data will be deleted
      */
-    void releaseData(const GeneratorPtr &generator, const APITexture *tex)
+    void releaseData(const GeneratorPtr &generator, APITexture *tex)
     {
         QMutexLocker lock(&m_mutex);
 
@@ -159,17 +164,24 @@ public:
         QMutexLocker lock(&m_mutex);
 
         Entry *entry = findEntry(generator);
-        if (!entry)
+        if (!entry) {
             qWarning() << "[TextureDataManager] assignData() called with non-existent generator";
-        else
+        } else {
             entry->data = data;
+
+            // Mark each texture that references this data as being dirty
+            // so that the submission thread knows to upload
+            for (auto texture : qAsConst(entry->referencingTextures)) {
+                texture->requestUpload();
+            }
+        }
     }
 
 private:
 
     struct Entry {
         GeneratorPtr generator;
-        QVector<const APITexture*> referencingTextures;
+        QVector<APITexture*> referencingTextures;
         DataPtr data;
     };
 
@@ -197,8 +209,6 @@ private:
     QMutex m_mutex;
     QVector<Entry> m_data;
 };
-
-class GLTexture;
 
 class Q_AUTOTEST_EXPORT TextureDataManager
         : public GeneratorDataManager<QTextureGeneratorPtr, QTextureDataPtr, GLTexture>

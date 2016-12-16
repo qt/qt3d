@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QINPUTASPECT_P_H
-#define QT3DINPUT_QINPUTASPECT_P_H
+#ifndef QT3DINPUT_INPUT_AXISACCUMULATOR_H
+#define QT3DINPUT_INPUT_AXISACCUMULATOR_H
 
 //
 //  W A R N I N G
@@ -51,33 +51,51 @@
 // We mean it.
 //
 
-#include <private/qabstractaspect_p.h>
+#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DCore/qnodeid.h>
+
+#include <Qt3DInput/qaxisaccumulator.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-
-class QInputAspect;
-
 namespace Input {
-class InputHandler;
-class KeyboardMouseGenericDeviceIntegration;
-}
 
-class QInputAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
+class AxisManager;
+
+class Q_AUTOTEST_EXPORT AxisAccumulator : public Qt3DCore::QBackendNode
 {
 public:
-    QInputAspectPrivate();
-    void loadInputDevicePlugins();
+    AxisAccumulator();
+    void cleanup();
 
-    Q_DECLARE_PUBLIC(QInputAspect)
-    QScopedPointer<Input::InputHandler> m_inputHandler;
-    QScopedPointer<Input::KeyboardMouseGenericDeviceIntegration> m_keyboardMouseIntegration;
-    qint64 m_time;
+    Qt3DCore::QNodeId sourceAxisId() const { return m_sourceAxisId; }
+    QAxisAccumulator::SourceAxisType sourceAxisType() const { return m_sourceAxisType; }
+    float scale() const { return m_scale; }
+
+    float value() const Q_DECL_NOTHROW { return m_value; }
+    void setValue(float value);
+
+    float velocity() const Q_DECL_NOTHROW { return  m_velocity; }
+    void setVelocity(float velocity);
+
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+    void stepIntegration(AxisManager *axisManager, float dt);
+
+private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
+    Qt3DCore::QNodeId m_sourceAxisId;
+    QAxisAccumulator::SourceAxisType m_sourceAxisType;
+    float m_scale;
+    float m_value;
+    float m_velocity;
 };
 
+} // namespace Input
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QINPUTASPECT_P_H
+#endif // QT3DINPUT_INPUT_AXISACCUMULATOR_H

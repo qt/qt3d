@@ -63,6 +63,7 @@
 #include <Qt3DInput/private/inputchord_p.h>
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/private/axis_p.h>
+#include <Qt3DInput/private/axisaccumulator_p.h>
 #include <Qt3DInput/private/axissetting_p.h>
 #include <Qt3DInput/private/analogaxisinput_p.h>
 #include <Qt3DInput/private/buttonaxisinput_p.h>
@@ -236,6 +237,16 @@ public:
 
 private:
     QVector<Qt3DCore::QNodeId> m_pendingProxies;
+};
+
+class AxisAccumulatorManager : public Qt3DCore::QResourceManager<
+        AxisAccumulator,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy>
+{
+public:
+    AxisAccumulatorManager() {}
 };
 
 } // namespace Input

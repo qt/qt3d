@@ -54,6 +54,7 @@
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
+#include <QtGui/qsurfaceformat.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -79,7 +80,7 @@ class Entity;
 class FrameGraphNode;
 class RenderSettings;
 class BackendNode;
-
+class OffscreenSurfaceHelper;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT AbstractRenderer
 {
@@ -135,6 +136,7 @@ public:
 
     virtual QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() = 0;
     virtual Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() = 0;
+    virtual Qt3DCore::QAspectJobPtr syncTextureLoadingJob() = 0;
 
     virtual void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Entity *root) = 0;
 
@@ -148,6 +150,9 @@ public:
     virtual RenderSettings *settings() const = 0;
 
     virtual QVariant executeCommand(const QStringList &args) = 0;
+
+    virtual void setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper) = 0;
+    virtual QSurfaceFormat format() = 0;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractRenderer::BackendNodeDirtySet)

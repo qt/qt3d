@@ -224,8 +224,8 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QNoDraw>(uri, 2, 0, "NoDraw");
     qmlRegisterType<Qt3DRender::QFrustumCulling>(uri, 2, 0, "FrustumCulling");
     qmlRegisterType<Qt3DRender::QDispatchCompute>(uri, 2, 0, "DispatchCompute");
-    qmlRegisterType<Qt3DRender::QRenderCapture>(uri, 2, 0, "RenderCapture");
-    qmlRegisterUncreatableType<Qt3DRender::QRenderCaptureReply>(uri, 2, 0, "RenderCaptureReply", QStringLiteral("RenderCaptureReply is only instantiated by RenderCapture"));
+    qmlRegisterType<Qt3DRender::QRenderCapture>(uri, 2, 1, "RenderCapture");
+    qmlRegisterUncreatableType<Qt3DRender::QRenderCaptureReply>(uri, 2, 1, "RenderCaptureReply", QStringLiteral("RenderCaptureReply is only instantiated by RenderCapture"));
 
     // RenderTarget
     qmlRegisterType<Qt3DRender::QRenderTargetOutput>(uri, 2, 0, "RenderTargetOutput");

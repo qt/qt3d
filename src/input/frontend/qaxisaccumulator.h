@@ -41,7 +41,7 @@
 #define QT3DINPUT_QAXISACCUMULATOR_H
 
 #include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qcomponent.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,13 +50,14 @@ namespace Qt3DInput {
 class QAxis;
 class QAxisAccumulatorPrivate;
 
-class QT3DINPUTSHARED_EXPORT QAxisAccumulator : public Qt3DCore::QNode
+class QT3DINPUTSHARED_EXPORT QAxisAccumulator : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DInput::QAxis *sourceAxis READ sourceAxis WRITE setSourceAxis NOTIFY sourceAxisChanged)
     Q_PROPERTY(SourceAxisType sourceAxisType READ sourceAxisType WRITE setSourceAxisType NOTIFY sourceAxisTypeChanged)
     Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scaleChanged)
     Q_PROPERTY(float value READ value NOTIFY valueChanged)
+    Q_PROPERTY(float velocity READ velocity NOTIFY velocityChanged)
 
 public:
     enum SourceAxisType {
@@ -71,6 +72,7 @@ public:
     Qt3DInput::QAxis *sourceAxis() const;
     SourceAxisType sourceAxisType() const;
     float value() const;
+    float velocity() const;
     float scale() const;
 
 public Q_SLOTS:
@@ -82,6 +84,7 @@ Q_SIGNALS:
     void sourceAxisChanged(Qt3DInput::QAxis *sourceAxis);
     void sourceAxisTypeChanged(QAxisAccumulator::SourceAxisType sourceAxisType);
     void valueChanged(float value);
+    void velocityChanged(float value);
     void scaleChanged(float scale);
 
 protected:

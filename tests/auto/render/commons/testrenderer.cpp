@@ -66,4 +66,14 @@ QVariant TestRenderer::executeCommand(const QStringList &args)
     return QVariant();
 }
 
+void TestRenderer::setOffscreenSurfaceHelper(Qt3DRender::Render::OffscreenSurfaceHelper *helper)
+{
+    Q_UNUSED(helper);
+}
+
+QSurfaceFormat TestRenderer::format()
+{
+    return QSurfaceFormat();
+}
+
 QT_END_NAMESPACE
