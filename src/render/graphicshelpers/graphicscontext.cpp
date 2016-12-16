@@ -471,7 +471,9 @@ QOpenGLShaderProgram *GraphicsContext::createShaderProgram(Shader *shaderNode)
     // Since we are sharing shaders in the backend, we assume that if using custom
     // fragOutputs, they should all be the same for a given shader
     bindFragOutputs(shaderProgram->programId(), shaderNode->fragOutputs());
-    if (!shaderProgram->link()) {
+
+    const bool linkSucceeded = shaderProgram->link();
+    if (!linkSucceeded) {
         qWarning().noquote() << "Failed to link shader program:" << shaderProgram->log();
         return nullptr;
     }
@@ -481,7 +483,17 @@ QOpenGLShaderProgram *GraphicsContext::createShaderProgram(Shader *shaderNode)
 }
 
 // That assumes that the shaderProgram in Shader stays the same
-void GraphicsContext::loadShader(Shader *shader)
+void GraphicsContext::introspectShaderInterface(Shader *shader, QOpenGLShaderProgram *shaderProgram)
+{
+    shader->initializeUniforms(m_glHelper->programUniformsAndLocations(shaderProgram->programId()));
+    shader->initializeAttributes(m_glHelper->programAttributesAndLocations(shaderProgram->programId()));
+    if (m_glHelper->supportsFeature(GraphicsHelperInterface::UniformBufferObject))
+        shader->initializeUniformBlocks(m_glHelper->programUniformBlocks(shaderProgram->programId()));
+    if (m_glHelper->supportsFeature(GraphicsHelperInterface::ShaderStorageObject))
+        shader->initializeShaderStorageBlocks(m_glHelper->programShaderStorageBlocks(shaderProgram->programId()));
+}
+
+void GraphicsContext::loadShader(Shader *shader, ShaderManager *manager)
 {
     QOpenGLShaderProgram *shaderProgram = m_shaderCache.getShaderProgramAndAddRef(shader->dna(), shader->peerId());
     if (!shaderProgram) {
@@ -493,17 +505,27 @@ void GraphicsContext::loadShader(Shader *shader)
     }
 
     // Ensure the Shader node knows about the program interface
-    // TODO: Improve this so we only introspect once per actual OpenGL shader program
-    //       rather than once per ShaderNode. Could cache the interface description along
-    //       with the QOpenGLShaderProgram in the ShaderCache.
     if (Q_LIKELY(shaderProgram != nullptr) && !shader->isLoaded()) {
-        // Introspect and set up interface description on Shader backend node
-        shader->initializeUniforms(m_glHelper->programUniformsAndLocations(shaderProgram->programId()));
-        shader->initializeAttributes(m_glHelper->programAttributesAndLocations(shaderProgram->programId()));
-        if (m_glHelper->supportsFeature(GraphicsHelperInterface::UniformBufferObject))
-            shader->initializeUniformBlocks(m_glHelper->programUniformBlocks(shaderProgram->programId()));
-        if (m_glHelper->supportsFeature(GraphicsHelperInterface::ShaderStorageObject))
-            shader->initializeShaderStorageBlocks(m_glHelper->programShaderStorageBlocks(shaderProgram->programId()));
+
+        // Find an already loaded shader that shares the same QOpenGLShaderProgram
+        Shader *refShader = nullptr;
+        const QVector<Qt3DCore::QNodeId> sharedShaderIds = m_shaderCache.shaderIdsForProgram(shader->dna());
+        for (const Qt3DCore::QNodeId sharedShaderId : sharedShaderIds) {
+            Shader *sharedShader = manager->lookupResource(sharedShaderId);
+            // Note: no need to check if shader->peerId != sharedShader->peerId
+            // as we are sure that this code path is executed only if !shared->isLoaded
+            if (sharedShader->isLoaded()) {
+                refShader = sharedShader;
+                break;
+            }
+        }
+
+        // We only introspect once per actual OpenGL shader program
+        // rather than once per ShaderNode.
+        if (refShader != nullptr)
+            shader->initializeFromReference(*refShader);
+        else // Introspect and set up interface description on Shader backend node
+            introspectShaderInterface(shader, shaderProgram);
 
         shader->setGraphicsContext(this);
         shader->setLoaded(true);

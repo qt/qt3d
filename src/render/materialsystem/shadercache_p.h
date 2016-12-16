@@ -79,6 +79,7 @@ public:
 
     // Only ever used from the OpenGL submission thread
     QOpenGLShaderProgram *getShaderProgramForDNA(ProgramDNA dna) const;
+    QVector<Qt3DCore::QNodeId> shaderIdsForProgram(ProgramDNA dna) const;
 
 private:
     // Only ever used from the OpenGL submission thread

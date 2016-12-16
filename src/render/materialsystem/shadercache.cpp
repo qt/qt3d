@@ -151,6 +151,11 @@ QOpenGLShaderProgram *ShaderCache::getShaderProgramForDNA(ProgramDNA dna) const
     return m_programHash.value(dna, nullptr);
 }
 
+QVector<Qt3DCore::QNodeId> ShaderCache::shaderIdsForProgram(ProgramDNA dna) const
+{
+    return m_programRefs.value(dna);
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 

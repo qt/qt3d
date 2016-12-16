@@ -157,7 +157,7 @@ private:
     void initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformBlockDescription);
     void initializeShaderStorageBlocks(const QVector<ShaderStorageBlock> &shaderStorageBlockDescription);
 
-    void initialize(const Shader &other);
+    void initializeFromReference(const Shader &other);
 
     friend class GraphicsContext;
 };

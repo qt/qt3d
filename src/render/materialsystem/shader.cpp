@@ -402,7 +402,7 @@ void Shader::initializeShaderStorageBlocks(const QVector<ShaderStorageBlock> &sh
    Initializes this Shader's state relating to attributes, global block uniforms and
    and named uniform blocks by copying these details from \a other.
 */
-void Shader::initialize(const Shader &other)
+void Shader::initializeFromReference(const Shader &other)
 {
     Q_ASSERT(m_dna == other.m_dna);
     m_uniformsNamesIds = other.m_uniformsNamesIds;

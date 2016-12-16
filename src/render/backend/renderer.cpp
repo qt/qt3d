@@ -964,10 +964,11 @@ void Renderer::updateGLResources()
     {
         Profiling::GLTimeRecorder recorder(Profiling::ShaderUpload);
         const QVector<HShader> dirtyShaderHandles = std::move(m_dirtyShaders);
+        ShaderManager *shaderManager = m_nodesManager->shaderManager();
         for (HShader handle: dirtyShaderHandles) {
-            Shader *shader = m_nodesManager->shaderManager()->data(handle);
+            Shader *shader = shaderManager->data(handle);
             // Compile shader
-            m_graphicsContext->loadShader(shader);
+            m_graphicsContext->loadShader(shader, shaderManager);
         }
     }
 

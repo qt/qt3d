@@ -91,6 +91,7 @@ class RenderTarget;
 class AttachmentPack;
 class Attribute;
 class Buffer;
+class ShaderManager;
 
 enum TextureScope
 {
@@ -130,9 +131,10 @@ public:
     bool isInitialized() const;
 
     QOpenGLShaderProgram *createShaderProgram(Shader *shaderNode);
-    void loadShader(Shader* shader);
+    void loadShader(Shader* shader, ShaderManager *manager);
     bool activateShader(ProgramDNA shaderDNA);
     void removeShaderProgramReference(Shader *shaderNode);
+    void introspectShaderInterface(Shader *shader, QOpenGLShaderProgram *shaderProgram);
 
     GLuint activeFBO() const { return m_activeFBO; }
     GLuint defaultFBO() const { return m_defaultFBO; }
