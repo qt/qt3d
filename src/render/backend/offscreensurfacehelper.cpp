@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,47 +37,45 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QINPUTASPECT_P_H
-#define QT3DINPUT_QINPUTASPECT_P_H
+#include "offscreensurfacehelper_p.h"
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <private/qabstractaspect_p.h>
+#include <Qt3DRender/private/abstractrenderer_p.h>
+#include <QtGui/qoffscreensurface.h>
+#include <QtGui/qsurfaceformat.h>
+#include <QtCore/qcoreapplication.h>
+#include <QtCore/qthread.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DInput {
+namespace Qt3DRender {
+namespace Render {
 
-class QInputAspect;
-
-namespace Input {
-class InputHandler;
-class KeyboardMouseGenericDeviceIntegration;
+/*! \internal */
+OffscreenSurfaceHelper::OffscreenSurfaceHelper(AbstractRenderer *renderer,
+                                               QObject *parent)
+    : QObject(parent)
+    , m_renderer(renderer)
+    , m_offscreenSurface(nullptr)
+{
+    Q_ASSERT(renderer);
 }
 
-class QInputAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
+/*!
+ * \internal
+ * Called in context of main thread to create an offscreen surface
+ * which can later be made current with the Qt 3D OpenGL context to
+ * then allow graphics resources to be released cleanly.
+ */
+void OffscreenSurfaceHelper::createOffscreenSurface()
 {
-public:
-    QInputAspectPrivate();
-    void loadInputDevicePlugins();
+    Q_ASSERT(QThread::currentThread() == QCoreApplication::instance()->thread());
+    m_offscreenSurface = new QOffscreenSurface;
+    m_offscreenSurface->setParent(this);
+    m_offscreenSurface->setFormat(m_renderer->format());
+    m_offscreenSurface->create();
+}
 
-    Q_DECLARE_PUBLIC(QInputAspect)
-    QScopedPointer<Input::InputHandler> m_inputHandler;
-    QScopedPointer<Input::KeyboardMouseGenericDeviceIntegration> m_keyboardMouseIntegration;
-    qint64 m_time;
-};
-
-} // namespace Qt3DInput
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DINPUT_QINPUTASPECT_P_H

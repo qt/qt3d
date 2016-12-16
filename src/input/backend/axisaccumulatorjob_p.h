@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QINPUTASPECT_P_H
-#define QT3DINPUT_QINPUTASPECT_P_H
+#ifndef QT3DINPUT_INPUT_AXISACCUMULATORJOB_H
+#define QT3DINPUT_INPUT_AXISACCUMULATORJOB_H
 
 //
 //  W A R N I N G
@@ -51,33 +51,39 @@
 // We mean it.
 //
 
-#include <private/qabstractaspect_p.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DCore/qnodeid.h>
+#include <Qt3DInput/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-
-class QInputAspect;
-
 namespace Input {
-class InputHandler;
-class KeyboardMouseGenericDeviceIntegration;
-}
 
-class QInputAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
+class AxisAccumulatorManager;
+class AxisManager;
+
+class Q_AUTOTEST_EXPORT AxisAccumulatorJob : public Qt3DCore::QAspectJob
 {
 public:
-    QInputAspectPrivate();
-    void loadInputDevicePlugins();
+    AxisAccumulatorJob(AxisAccumulatorManager *axisAccumulatormanager,
+                       AxisManager *axisManager);
 
-    Q_DECLARE_PUBLIC(QInputAspect)
-    QScopedPointer<Input::InputHandler> m_inputHandler;
-    QScopedPointer<Input::KeyboardMouseGenericDeviceIntegration> m_keyboardMouseIntegration;
-    qint64 m_time;
+    void setDeltaTime(float dt) { m_dt = dt; }
+
+    void run() override;
+
+private:
+    AxisAccumulatorManager *m_axisAccumulatorManager;
+    AxisManager *m_axisManager;
+    float m_dt;
 };
 
+typedef QSharedPointer<AxisAccumulatorJob> AxisAccumulatorJobPtr;
+
+} // namespace Input
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QINPUTASPECT_P_H
+#endif // QT3DINPUT_INPUT_AXISACCUMULATORJOB_H

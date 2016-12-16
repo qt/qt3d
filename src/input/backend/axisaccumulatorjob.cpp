@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,47 +37,37 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QINPUTASPECT_P_H
-#define QT3DINPUT_QINPUTASPECT_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <private/qabstractaspect_p.h>
+#include "axisaccumulatorjob_p.h"
+#include <Qt3DInput/private/axisaccumulator_p.h>
+#include <Qt3DInput/private/job_common_p.h>
+#include <Qt3DInput/private/inputmanagers_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-
-class QInputAspect;
-
 namespace Input {
-class InputHandler;
-class KeyboardMouseGenericDeviceIntegration;
+
+AxisAccumulatorJob::AxisAccumulatorJob(AxisAccumulatorManager *axisAccumulatormanager,
+                                       AxisManager *axisManager)
+    : Qt3DCore::QAspectJob()
+    , m_axisAccumulatorManager(axisAccumulatormanager)
+    , m_axisManager(axisManager)
+    , m_dt(0.0f)
+{
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::AxisAccumulatorIntegration, 0);
 }
 
-class QInputAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
+void AxisAccumulatorJob::run()
 {
-public:
-    QInputAspectPrivate();
-    void loadInputDevicePlugins();
+    // Iterate over the accumulators and ask each to step the integrations
+    for (auto accumulatorHandle : m_axisAccumulatorManager->activeHandles()) {
+        AxisAccumulator *accumulator = m_axisAccumulatorManager->data(accumulatorHandle);
+        if (accumulator->isEnabled())
+            accumulator->stepIntegration(m_axisManager, m_dt);
+    }
+}
 
-    Q_DECLARE_PUBLIC(QInputAspect)
-    QScopedPointer<Input::InputHandler> m_inputHandler;
-    QScopedPointer<Input::KeyboardMouseGenericDeviceIntegration> m_keyboardMouseIntegration;
-    qint64 m_time;
-};
-
+} // namespace Input
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
-
-#endif // QT3DINPUT_QINPUTASPECT_P_H

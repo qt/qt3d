@@ -47,6 +47,7 @@
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 
 #include <Qt3DRender/qsceneloader.h>
+#include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qcameraselector.h>
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qlayerfilter.h>
@@ -121,6 +122,7 @@
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
 #include <Qt3DRender/private/technique_p.h>
+#include <Qt3DRender/private/offscreensurfacehelper_p.h>
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
@@ -178,6 +180,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     qRegisterMetaType<Qt3DRender::QBuffer*>();
     qRegisterMetaType<Qt3DRender::QEffect*>();
     qRegisterMetaType<Qt3DRender::QFrameGraphNode *>();
+    qRegisterMetaType<Qt3DRender::QCamera*>();
 
     q->registerBackendType<Qt3DCore::QEntity>(QSharedPointer<Render::RenderEntityFunctor>::create(m_renderer, m_nodeManagers));
     q->registerBackendType<Qt3DCore::QTransform>(QSharedPointer<Render::NodeFunctor<Render::Transform, Render::TransformManager> >::create(m_renderer));
@@ -351,7 +354,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     // Create jobs that will get exectued by the threadpool
     QVector<QAspectJobPtr> jobs;
 
-    // 1 LoadBufferJobs, GeometryJobs, SceneLoaderJobs
+    // 1 LoadBufferJobs, GeometryJobs, SceneLoaderJobs, LoadTextureJobs
     // 2 CalculateBoundingVolumeJob (depends on LoadBuffer)
     // 3 WorldTransformJob
     // 4 UpdateBoundingVolume, FramePreparationJob (depend on WorlTransformJob)
@@ -371,17 +374,21 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         }
 
         Render::NodeManagers *manager = d->m_renderer->nodeManagers();
+        QAspectJobPtr textureLoadingSync = d->m_renderer->syncTextureLoadingJob();
+        textureLoadingSync->removeDependency(QWeakPointer<QAspectJob>());
 
         // Launch texture generator jobs
         const QVector<QTextureImageDataGeneratorPtr> pendingImgGen = manager->textureImageDataManager()->pendingGenerators();
         for (const QTextureImageDataGeneratorPtr &imgGen : pendingImgGen) {
             auto loadTextureJob = Render::LoadTextureDataJobPtr::create(imgGen);
+            textureLoadingSync->addDependency(loadTextureJob);
             loadTextureJob->setNodeManagers(manager);
             jobs.append(loadTextureJob);
         }
         const QVector<QTextureGeneratorPtr> pendingTexGen = manager->textureDataManager()->pendingGenerators();
         for (const QTextureGeneratorPtr &texGen : pendingTexGen) {
             auto loadTextureJob = Render::LoadTextureDataJobPtr::create(texGen);
+            textureLoadingSync->addDependency(loadTextureJob);
             loadTextureJob->setNodeManagers(manager);
             jobs.append(loadTextureJob);
         }
@@ -438,6 +445,12 @@ void QRenderAspect::onRegistered()
     d->m_renderer = new Render::Renderer(d->m_renderType);
     d->m_renderer->setNodeManagers(d->m_nodeManagers);
 
+    // Create a helper for deferring creation of an offscreen surface used during cleanup
+    // to the main thread, after we knwo what the surface format in use is.
+    d->m_offscreenHelper = new Render::OffscreenSurfaceHelper(d->m_renderer);
+    d->m_offscreenHelper->moveToThread(QCoreApplication::instance()->thread());
+    d->m_renderer->setOffscreenSurfaceHelper(d->m_offscreenHelper);
+
     // Register backend types now that we have a renderer
     d->registerBackendTypes();
 
@@ -475,6 +488,11 @@ void QRenderAspect::onUnregistered()
     // Waits for the render thread to join (if using threaded renderer)
     delete d->m_renderer;
     d->m_renderer = nullptr;
+
+    // Queue the offscreen surface helper for deletion on the main thread.
+    // That will take care of deleting the offscreen surface itself.
+    d->m_offscreenHelper->deleteLater();
+    d->m_offscreenHelper = nullptr;
 }
 
 QVector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createGeometryRendererJobs()

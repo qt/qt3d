@@ -169,6 +169,7 @@ public:
     }
 
     ValueType valueType() const { return m_valueType; }
+    UniformType storedType() const { return m_storedType; }
 
     static UniformValue fromVariant(const QVariant &variant);
 
@@ -199,6 +200,9 @@ private:
     QVarLengthArray<float, 4> m_data;
 
     ValueType m_valueType = ScalarValue;
+
+    // TODO: Replace this hack see QTBUG-57510
+    UniformType m_storedType = Unknown;
 };
 
 } // namespace Render

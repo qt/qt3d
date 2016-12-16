@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QINPUTASPECT_P_H
-#define QT3DINPUT_QINPUTASPECT_P_H
+#ifndef QT3DRENDER_RENDER_OFFSCREENSURFACEHELPER_H
+#define QT3DRENDER_RENDER_OFFSCREENSURFACEHELPER_H
 
 //
 //  W A R N I N G
@@ -51,33 +51,36 @@
 // We mean it.
 //
 
-#include <private/qabstractaspect_p.h>
+#include <QObject>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DInput {
+class QOffscreenSurface;
 
-class QInputAspect;
+namespace Qt3DRender {
+namespace Render {
 
-namespace Input {
-class InputHandler;
-class KeyboardMouseGenericDeviceIntegration;
-}
+class AbstractRenderer;
 
-class QInputAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
+class OffscreenSurfaceHelper : public QObject
 {
+    Q_OBJECT
 public:
-    QInputAspectPrivate();
-    void loadInputDevicePlugins();
+    OffscreenSurfaceHelper(AbstractRenderer *renderer,
+                           QObject *parent = nullptr);
+    inline QOffscreenSurface *offscreenSurface() const { return m_offscreenSurface; }
 
-    Q_DECLARE_PUBLIC(QInputAspect)
-    QScopedPointer<Input::InputHandler> m_inputHandler;
-    QScopedPointer<Input::KeyboardMouseGenericDeviceIntegration> m_keyboardMouseIntegration;
-    qint64 m_time;
+public slots:
+    void createOffscreenSurface();
+
+private:
+    Render::AbstractRenderer *m_renderer;
+    QOffscreenSurface *m_offscreenSurface;
 };
 
-} // namespace Qt3DInput
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QINPUTASPECT_P_H
+#endif // QT3DRENDER_RENDER_OFFSCREENSURFACEHELPER_H

@@ -66,7 +66,8 @@ namespace JobTypes {
         KeyEventDispatcher,
         MouseEventDispatcher,
         UpdateAxisAction,
-        DeviceProxyLoading
+        DeviceProxyLoading,
+        AxisAccumulatorIntegration
     };
 
 } // JobTypes

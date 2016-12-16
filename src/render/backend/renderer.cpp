@@ -83,6 +83,7 @@
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
 #include <Qt3DRender/private/loadbufferjob_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
+#include <Qt3DRender/private/offscreensurfacehelper_p.h>
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
@@ -91,6 +92,7 @@
 #include <Qt3DCore/private/aspectcommanddebugger_p.h>
 
 #include <QStack>
+#include <QOffscreenSurface>
 #include <QSurface>
 #include <QElapsedTimer>
 #include <QLibraryInfo>
@@ -169,7 +171,9 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
     , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
     , m_shaderGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyShaders(); }, JobTypes::DirtyShaderGathering))
+    , m_syncTextureLoadingJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([] {}, JobTypes::SyncTextureLoading))
     , m_ownedContext(false)
+    , m_offscreenHelper(nullptr)
     #ifdef QT3D_JOBS_RUN_STATS
     , m_commandExecuter(new Qt3DRender::Debug::CommandExecuter(this))
     #endif
@@ -186,6 +190,10 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     m_updateWorldBoundingVolumeJob->addDependency(m_calculateBoundingVolumeJob);
     m_expandBoundingVolumeJob->addDependency(m_updateWorldBoundingVolumeJob);
     m_updateShaderDataTransformJob->addDependency(m_worldTransformJob);
+
+    // Dirty texture gathering depends on m_syncTextureLoadingJob
+    // m_syncTextureLoadingJob will depend on the texture loading jobs
+    m_textureGathererJob->addDependency(m_syncTextureLoadingJob);
 
     // All world stuff depends on the RenderEntity's localBoundingVolume
     m_pickBoundingVolumeJob->addDependency(m_updateMeshTriangleListJob);
@@ -208,6 +216,9 @@ Renderer::~Renderer()
 
     delete m_renderQueue;
     delete m_defaultRenderStateSet;
+
+    if (!m_ownedContext)
+        QObject::disconnect(m_contextConnection);
 }
 
 void Renderer::dumpInfo() const
@@ -285,11 +296,23 @@ void Renderer::initialize()
         else
             qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
         m_ownedContext = true;
+    } else {
+        // Context is not owned by us, so we need to know if it gets destroyed
+        m_contextConnection = QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed,
+                                               [this] { releaseGraphicsResources(); });
     }
 
     // Note: we don't have a surface at this point
     // The context will be made current later on (at render time)
     m_graphicsContext->setOpenGLContext(ctx);
+
+    // Store the format used by the context and queue up creating an
+    // offscreen surface in the main thread so that it is available
+    // for use when we want to shutdown the renderer. We need to create
+    // the offscreen surface on the main thread because on some platforms
+    // (MS Windows), an offscreen surface is just a hidden QWindow.
+    m_format = ctx->format();
+    QMetaObject::invokeMethod(m_offscreenHelper, "createOffscreenSurface");
 
     // Awake setScenegraphRoot in case it was waiting
     m_waitForInitializationToBeCompleted.release(1);
@@ -330,15 +353,46 @@ void Renderer::shutdown()
     When using a threaded renderer this function is called in the context of the
     RenderThread to do any shutdown and cleanup that needs to be performed in the
     thread where the OpenGL context lives.
+
+    When using Scene3D or anything that provides a custom QOpenGLContext (not
+    owned by Qt3D) this function is called whenever the signal
+    QOpenGLContext::aboutToBeDestroyed is emitted. In that case this function
+    is called in the context of the emitter's thread.
 */
 void Renderer::releaseGraphicsResources()
 {
-    // Clean up the graphics context and any resources
-    const QVector<GLTexture*> activeTextures = m_nodesManager->glTextureManager()->activeResources();
-    for (GLTexture *tex : activeTextures)
-        tex->destroyGLTexture();
+    // We may get called twice when running inside of a Scene3D. Once when Qt Quick
+    // wants to shutdown, and again when the render aspect gets unregistered. So
+    // check that we haven't already cleaned up before going any further.
+    if (!m_graphicsContext)
+        return;
 
-    // TO DO: Do the same thing with buffers
+    // Try to temporarily make the context current so we can free up any resources
+    QMutexLocker locker(&m_offscreenSurfaceMutex);
+    QOffscreenSurface *offscreenSurface = m_offscreenHelper->offscreenSurface();
+    if (!offscreenSurface) {
+        qWarning() << "Failed to make context current: OpenGL resources will not be destroyed";
+        return;
+    }
+
+    QOpenGLContext *context = m_graphicsContext->openGLContext();
+    Q_ASSERT(context);
+    if (context->makeCurrent(offscreenSurface)) {
+
+        // Clean up the graphics context and any resources
+        const QVector<GLTexture*> activeTextures = m_nodesManager->glTextureManager()->activeResources();
+        for (GLTexture *tex : activeTextures)
+            tex->destroyGLTexture();
+
+        // TO DO: Do the same thing with buffers
+
+        context->doneCurrent();
+    } else {
+        qWarning() << "Failed to make context current: OpenGL resources will not be destroyed";
+    }
+
+    if (m_ownedContext)
+        delete context;
 
     m_graphicsContext.reset(nullptr);
     qCDebug(Backend) << Q_FUNC_INFO << "Renderer properly shutdown";
@@ -474,11 +528,11 @@ void Renderer::doRender()
                     if (!m_ownedContext)
                         m_graphicsContext->setCurrentStateSet(nullptr);
                     if (m_graphicsContext->beginDrawing(surface)) {
-                    // 1) Execute commands for buffer uploads, texture updates, shader loading first
-                    updateGLResources();
-                    // 2) Update VAO and copy data into commands to allow concurrent submission
-                    prepareCommandsSubmission(renderViews);
-                    preprocessingComplete = true;
+                        // 1) Execute commands for buffer uploads, texture updates, shader loading first
+                        updateGLResources();
+                        // 2) Update VAO and copy data into commands to allow concurrent submission
+                        prepareCommandsSubmission(renderViews);
+                        preprocessingComplete = true;
                     }
                 }
             }
@@ -645,6 +699,21 @@ QVariant Renderer::executeCommand(const QStringList &args)
     return QVariant();
 }
 
+/*!
+    \internal
+    Called in the context of the aspect thread from QRenderAspect::onRegistered
+*/
+void Renderer::setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper)
+{
+    QMutexLocker locker(&m_offscreenSurfaceMutex);
+    m_offscreenHelper = helper;
+}
+
+QSurfaceFormat Renderer::format()
+{
+    return m_format;
+}
+
 // When this function is called, we must not be processing the commands for frame n+1
 void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderViews)
 {
@@ -784,6 +853,7 @@ void Renderer::lookForDirtyShaders()
     }
 }
 
+// Render Thread
 void Renderer::updateGLResources()
 {
     {
@@ -820,8 +890,21 @@ void Renderer::updateGLResources()
             updateTexture(texture);
         }
     }
+    // When Textures are cleaned up, their id is saved
+    // so that they can be cleaned up in the render thread
+    // Note: we perform this step in second so that the previous updateTexture call
+    // has a chance to find a shared texture
+    const QVector<Qt3DCore::QNodeId> cleanedUpTextureIds = m_nodesManager->textureManager()->takeTexturesIdsToCleanup();
+    for (const Qt3DCore::QNodeId textureCleanedUpId: cleanedUpTextureIds) {
+        cleanupTexture(m_nodesManager->textureManager()->lookupResource(textureCleanedUpId));
+        // We can really release the texture at this point
+        m_nodesManager->textureManager()->releaseResource(textureCleanedUpId);
+    }
+
+
 }
 
+// Render Thread
 void Renderer::updateTexture(Texture *texture)
 {
     // For implementing unique, non-shared, non-cached textures.
@@ -898,6 +981,16 @@ void Renderer::updateTexture(Texture *texture)
 
     // Unset the dirty flag on the texture
     texture->unsetDirty();
+}
+
+// Render Thread
+void Renderer::cleanupTexture(const Texture *texture)
+{
+    GLTextureManager *glTextureManager = m_nodesManager->glTextureManager();
+    GLTexture *glTexture = glTextureManager->lookupResource(texture->peerId());
+
+    if (glTexture != nullptr)
+        glTextureManager->abandon(glTexture, texture);
 }
 
 
@@ -1145,6 +1238,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     renderBinJobs.append(bufferJobs);
 
     // Jobs to prepare GL Resource upload
+    renderBinJobs.push_back(m_syncTextureLoadingJob);
     renderBinJobs.push_back(m_bufferGathererJob);
     renderBinJobs.push_back(m_textureGathererJob);
     renderBinJobs.push_back(m_shaderGathererJob);
@@ -1166,6 +1260,11 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 QAspectJobPtr Renderer::pickBoundingVolumeJob()
 {
     return m_pickBoundingVolumeJob;
+}
+
+QAspectJobPtr Renderer::syncTextureLoadingJob()
+{
+    return m_syncTextureLoadingJob;
 }
 
 QAbstractFrameAdvanceService *Renderer::frameAdvanceService() const

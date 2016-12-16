@@ -68,6 +68,7 @@ typedef QSharedPointer<FakeData> FakeDataPtr;
 
 struct FakeAPITexture
 {
+    void requestUpload() {}
 };
 
 using Manager = Qt3DRender::Render::GeneratorDataManager<FakeGeneratorPtr, FakeDataPtr, FakeAPITexture>;

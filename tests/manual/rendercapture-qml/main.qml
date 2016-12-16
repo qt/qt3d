@@ -51,7 +51,7 @@
 import QtQuick 2.2
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 1.4
-import Qt3D.Render 2.0
+import Qt3D.Render 2.1
 import QtQuick.Scene3D 2.0
 
 Item {

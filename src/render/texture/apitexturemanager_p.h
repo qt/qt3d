@@ -182,6 +182,7 @@ public:
             if (referencedTextureNodes.empty()) {
                 m_abandonedTextures.push_back(apiTexture);
                 m_sharedTextures.remove(apiTexture);
+                tex->destroyResources();
             }
         }
     }

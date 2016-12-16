@@ -54,7 +54,7 @@ class Quick3DEntityLoaderIncubator : public QQmlIncubator
 {
 public:
     Quick3DEntityLoaderIncubator(Quick3DEntityLoader *loader)
-        : QQmlIncubator(Asynchronous),
+        : QQmlIncubator(AsynchronousIfNested),
           m_loader(loader)
     {
     }
@@ -98,6 +98,12 @@ private:
 Quick3DEntityLoader::Quick3DEntityLoader(QNode *parent)
     : QEntity(*new Quick3DEntityLoaderPrivate, parent)
 {
+}
+
+Quick3DEntityLoader::~Quick3DEntityLoader()
+{
+    Q_D(Quick3DEntityLoader);
+    d->clear();
 }
 
 /*!

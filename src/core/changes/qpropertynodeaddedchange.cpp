@@ -74,7 +74,7 @@ QPropertyNodeAddedChange::QPropertyNodeAddedChange(QNodeId subjectId, QNode *nod
     : QStaticPropertyValueAddedChangeBase(*new QPropertyNodeAddedChangePrivate, subjectId)
 {
     Q_D(QPropertyNodeAddedChange);
-    d->m_addedNodeIdTypePair = QNodeIdTypePair(node->id(), node->metaObject());
+    d->m_addedNodeIdTypePair = QNodeIdTypePair(node->id(), QNodePrivate::findStaticMetaObject(node->metaObject()));
 }
 
 /*! \internal */

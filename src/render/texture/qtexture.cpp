@@ -626,7 +626,11 @@ QTextureImageDataPtr setDdsFile(const QString &source)
 QTextureImageDataPtr TextureLoadingHelper::loadTextureData(const QUrl &url, bool allow3D, bool mirrored)
 {
     QTextureImageDataPtr textureData;
-    if (url.isLocalFile() || url.scheme() == QLatin1String("qrc")) {
+    if (url.isLocalFile() || url.scheme() == QLatin1String("qrc")
+#ifdef Q_OS_ANDROID
+            || url.scheme() == QLatin1String("assets")
+#endif
+            ) {
         const QString source = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(url);
         const CompressedFormatExtension formatExtension = texturedCompressedFormat(source);
         switch (formatExtension) {
