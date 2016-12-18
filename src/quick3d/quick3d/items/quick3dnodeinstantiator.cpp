@@ -110,11 +110,11 @@ void Quick3DNodeInstantiatorPrivate::clear()
         return;
 
     for (int i = 0; i < m_objects.count(); i++) {
-        q->objectRemoved(i, m_objects[i]);
+        emit q->objectRemoved(i, m_objects[i]);
         m_instanceModel->release(m_objects[i]);
     }
     m_objects.clear();
-    q->objectChanged();
+    emit q->objectChanged();
 }
 
 void Quick3DNodeInstantiatorPrivate::regenerate()
@@ -129,7 +129,7 @@ void Quick3DNodeInstantiatorPrivate::regenerate()
 
     if (!m_active || !m_instanceModel || !m_instanceModel->count() || !m_instanceModel->isValid()) {
         if (prevCount)
-            q->countChanged();
+            emit q->countChanged();
         return;
     }
 
@@ -140,7 +140,7 @@ void Quick3DNodeInstantiatorPrivate::regenerate()
             _q_createdItem(i, object);
     }
     if (q->count() != prevCount)
-        q->countChanged();
+        emit q->countChanged();
 }
 
 void Quick3DNodeInstantiatorPrivate::_q_createdItem(int idx, QObject *item)
@@ -151,8 +151,8 @@ void Quick3DNodeInstantiatorPrivate::_q_createdItem(int idx, QObject *item)
     static_cast<QNode *>(item)->setParent(q->parentNode());
     m_objects.insert(idx, item);
     if (m_objects.count() == 1)
-        q->objectChanged();
-    q->objectAdded(idx, item);
+        emit q->objectChanged();
+    emit q->objectAdded(idx, item);
 }
 
 void Quick3DNodeInstantiatorPrivate::_q_modelUpdated(const QQmlChangeSet &changeSet, bool reset)
@@ -165,7 +165,7 @@ void Quick3DNodeInstantiatorPrivate::_q_modelUpdated(const QQmlChangeSet &change
     if (reset) {
         regenerate();
         if (changeSet.difference() != 0)
-            q->countChanged();
+            emit q->countChanged();
         return;
     }
 
@@ -184,7 +184,7 @@ void Quick3DNodeInstantiatorPrivate::_q_modelUpdated(const QQmlChangeSet &change
             while (count--) {
                 QObject *obj = m_objects.at(index);
                 m_objects.remove(index);
-                q->objectRemoved(index, obj);
+                emit q->objectRemoved(index, obj);
                 if (obj)
                     m_instanceModel->release(obj);
             }
@@ -209,7 +209,7 @@ void Quick3DNodeInstantiatorPrivate::_q_modelUpdated(const QQmlChangeSet &change
     }
 
     if (difference != 0)
-        q->countChanged();
+        emit q->countChanged();
 }
 
 void Quick3DNodeInstantiatorPrivate::makeModel()

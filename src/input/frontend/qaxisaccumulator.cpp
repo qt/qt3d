@@ -116,7 +116,7 @@ void QAxisAccumulatorPrivate::setValue(float value)
 {
     if (value != m_value) {
         m_value = value;
-        q_func()->valueChanged(m_value);
+        emit q_func()->valueChanged(m_value);
     }
 }
 
