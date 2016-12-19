@@ -41,7 +41,8 @@ SUBDIRS += \
     render-qml-to-texture \
     render-qml-to-texture-qml \
     video-texture-qml \
-    animation-keyframe-simple
+    animation-keyframe-simple \
+    distancefieldtext
 
 qtHaveModule(widgets): {
     SUBDIRS += \
