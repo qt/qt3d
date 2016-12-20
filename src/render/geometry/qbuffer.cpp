@@ -42,6 +42,7 @@
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
+
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
@@ -52,6 +53,7 @@ QBufferPrivate::QBufferPrivate()
     : QNodePrivate()
     , m_usage(QBuffer::StaticDraw)
     , m_syncData(false)
+    , m_access(QBuffer::Write)
 {
 }
 
@@ -271,11 +273,19 @@ QBuffer::~QBuffer()
  */
 void QBuffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
-    QPropertyUpdatedChangePtr e = qSharedPointerCast<QPropertyUpdatedChange>(change);
-    if (e->type() == PropertyUpdated && e->propertyName() == QByteArrayLiteral("data")) {
-        const bool blocked = blockNotifications(true);
-        setData(e->value().toByteArray());
-        blockNotifications(blocked);
+    if (change->type() == PropertyUpdated) {
+        QPropertyUpdatedChangePtr e = qSharedPointerCast<QPropertyUpdatedChange>(change);
+        const QByteArray propertyName = e->propertyName();
+        if (propertyName == QByteArrayLiteral("data")) {
+            const bool blocked = blockNotifications(true);
+            setData(e->value().toByteArray());
+            blockNotifications(blocked);
+        } else if (propertyName == QByteArrayLiteral("downloadedData")) {
+            const bool blocked = blockNotifications(true);
+            setData(e->value().toByteArray());
+            blockNotifications(blocked);
+            Q_EMIT dataAvailable();
+        }
     }
 }
 
@@ -401,10 +411,25 @@ void QBuffer::setSyncData(bool syncData)
     }
 }
 
+void QBuffer::setAccess(QBuffer::AccessType access)
+{
+    Q_D(QBuffer);
+    if (d->m_access != access) {
+        d->m_access = access;
+        Q_EMIT accessChanged(access);
+    }
+}
+
 bool QBuffer::isSyncData() const
 {
     Q_D(const QBuffer);
     return d->m_syncData;
+}
+
+QBuffer::AccessType QBuffer::access() const
+{
+    Q_D(const QBuffer);
+    return d->m_access;
 }
 
 void QBuffer::setType(QBuffer::BufferType type)
@@ -426,6 +451,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QBuffer::createNodeCreationChange() const
     data.usage = d->m_usage;
     data.functor = d->m_functor;
     data.syncData = d->m_syncData;
+    data.access = d->m_access;
     return creationChange;
 }
 

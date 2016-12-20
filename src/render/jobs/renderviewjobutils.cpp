@@ -63,6 +63,7 @@
 #include <Qt3DRender/private/dispatchcompute_p.h>
 #include <Qt3DRender/private/rendersurfaceselector_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
+#include <Qt3DRender/private/buffercapture_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <Qt3DRender/private/techniquemanager_p.h>
 #include <Qt3DRender/private/memorybarrier_p.h>
@@ -239,6 +240,14 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
             case FrameGraphNode::MemoryBarrier: {
                 const Render::MemoryBarrier *barrier = static_cast<const Render::MemoryBarrier *>(node);
                 rv->setMemoryBarrier(barrier->barrierTypes()|rv->memoryBarrier());
+                break;
+            }
+
+            case FrameGraphNode::BufferCapture: {
+                auto *bufferCapture = const_cast<Render::BufferCapture *>(
+                                            static_cast<const Render::BufferCapture *>(node));
+                if (bufferCapture != nullptr)
+                     rv->setIsDownloadBuffersEnable(bufferCapture->isEnabled());
                 break;
             }
 

@@ -600,6 +600,16 @@ void GraphicsHelperGL2::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
     qWarning() << "Compute Shaders are not supported by OpenGL 2.0 (since OpenGL 4.3)";
 }
 
+char *GraphicsHelperGL2::mapBuffer(GLenum target)
+{
+    return static_cast<char*>(m_funcs->glMapBuffer(target, GL_READ_WRITE));
+}
+
+GLboolean GraphicsHelperGL2::unmapBuffer(GLenum target)
+{
+    return m_funcs->glUnmapBuffer(target);
+}
+
 void GraphicsHelperGL2::glUniform1fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniform1fv(location, count, values);

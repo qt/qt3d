@@ -98,6 +98,7 @@ public:
         ComputeDispatch,
         Surface,
         RenderCapture,
+        BufferCapture,
         MemoryBarrier
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }

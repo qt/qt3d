@@ -56,6 +56,7 @@ Buffer::Buffer()
     , m_usage(QBuffer::StaticDraw)
     , m_bufferDirty(false)
     , m_syncData(false)
+    , m_access(QBuffer::Write)
     , m_manager(nullptr)
 {
     // Maybe it could become read write if we want to inform
@@ -75,6 +76,7 @@ void Buffer::cleanup()
     m_functor.reset();
     m_bufferDirty = false;
     m_syncData = false;
+    m_access = QBuffer::Write;
 }
 
 
@@ -98,6 +100,19 @@ void Buffer::executeFunctor()
     }
 }
 
+//Called from th sendBufferJob
+void Buffer::updateDataFromGPUToCPU(QByteArray data)
+{
+    m_data = data;
+    // Send data back to the frontend
+    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+    e->setPropertyName("downloadedData");
+    e->setValue(QVariant::fromValue(m_data));
+    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
+    notifyObservers(e);
+}
+
 void Buffer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QBufferData>>(change);
@@ -106,6 +121,7 @@ void Buffer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chang
     m_type = data.type;
     m_usage = data.usage;
     m_syncData = data.syncData;
+    m_access = data.access;
     m_bufferDirty = true;
 
     m_functor = data.functor;
@@ -133,6 +149,8 @@ void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyName == QByteArrayLiteral("usage")) {
             m_usage = static_cast<QBuffer::UsageType>(propertyChange->value().value<int>());
             m_bufferDirty = true;
+        } else if (propertyName == QByteArrayLiteral("access")) {
+            m_access = static_cast<QBuffer::AccessType>(propertyChange->value().value<int>());
         } else if (propertyName == QByteArrayLiteral("dataGenerator")) {
             QBufferDataGeneratorPtr newGenerator = propertyChange->value().value<QBufferDataGeneratorPtr>();
             m_bufferDirty |= !(newGenerator && m_functor && *newGenerator == *m_functor);

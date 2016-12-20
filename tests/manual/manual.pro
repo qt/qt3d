@@ -38,6 +38,7 @@ SUBDIRS += \
     rendercapture-qml \
     additional-attributes-qml \
     dynamic-model-loader-qml \
+    buffercapture-qml \
     render-qml-to-texture \
     render-qml-to-texture-qml \
     video-texture-qml \

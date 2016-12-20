@@ -1073,6 +1073,16 @@ void GraphicsContext::dispatchCompute(int x, int y, int z)
         m_glHelper->dispatchCompute(x, y, z);
 }
 
+GLboolean GraphicsContext::unmapBuffer(GLenum target)
+{
+    return m_glHelper->unmapBuffer(target);
+}
+
+char *GraphicsContext::mapBuffer(GLenum target)
+{
+    return m_glHelper->mapBuffer(target);
+}
+
 void GraphicsContext::enablei(GLenum cap, GLuint index)
 {
     m_glHelper->enablei(cap, index);
@@ -1426,6 +1436,16 @@ void GraphicsContext::updateBuffer(Buffer *buffer)
         uploadDataToGLBuffer(buffer, m_renderer->nodeManagers()->glBufferManager()->data(it.value()));
 }
 
+QByteArray GraphicsContext::downloadBufferContent(Buffer *buffer)
+{
+    const QHash<Qt3DCore::QNodeId, HGLBuffer>::iterator it = m_renderBufferHash.find(buffer->peerId());
+    if (it != m_renderBufferHash.end())
+        return downloadDataFromGLBuffer(buffer, m_renderer->nodeManagers()->glBufferManager()->data(it.value()));
+    return QByteArray();
+}
+
+
+
 void GraphicsContext::releaseBuffer(Qt3DCore::QNodeId bufferId)
 {
     auto it = m_renderBufferHash.find(bufferId);
@@ -1520,6 +1540,15 @@ void GraphicsContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool rel
             m_boundArrayBuffer = nullptr;
     }
     qCDebug(Render::Io) << "uploaded buffer size=" << buffer->data().size();
+}
+
+QByteArray GraphicsContext::downloadDataFromGLBuffer(Buffer *buffer, GLBuffer *b)
+{
+    if (!bindGLBuffer(b, bufferTypeToGLBufferType(buffer->type())))
+        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer bind failed";
+
+    QByteArray data = b->download(this, buffer->data().size());
+    return data;
 }
 
 GLint GraphicsContext::elementType(GLint type)

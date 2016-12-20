@@ -80,6 +80,7 @@
 #include <Qt3DRender/qrendersurfaceselector.h>
 #include <Qt3DRender/qrendersettings.h>
 #include <Qt3DRender/qrendercapture.h>
+#include <Qt3DRender/qbuffercapture.h>
 #include <Qt3DRender/qmemorybarrier.h>
 #include <Qt3DRender/qeventforward.h>
 
@@ -126,6 +127,7 @@
 #include <Qt3DRender/private/rendersettings_p.h>
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
+#include <Qt3DRender/private/buffercapture_p.h>
 #include <Qt3DRender/private/technique_p.h>
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
 #include <Qt3DRender/private/memorybarrier_p.h>
@@ -244,6 +246,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QTechniqueFilter>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::TechniqueFilter, QTechniqueFilter> >::create(m_renderer));
     q->registerBackendType<QViewport>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::ViewportNode, QViewport> >::create(m_renderer));
     q->registerBackendType<QRenderCapture>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::RenderCapture, QRenderCapture> >::create(m_renderer));
+    q->registerBackendType<QBufferCapture>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::BufferCapture, QBufferCapture> >::create(m_renderer));
     q->registerBackendType<QMemoryBarrier>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::MemoryBarrier, QMemoryBarrier> >::create(m_renderer));
 
     // Picking
@@ -307,6 +310,7 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     unregisterBackendType<QTechniqueFilter>();
     unregisterBackendType<QViewport>();
     unregisterBackendType<QRenderCapture>();
+    unregisterBackendType<QBufferCapture>();
     unregisterBackendType<QMemoryBarrier>();
 
     // Picking

@@ -66,6 +66,7 @@
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
+#include <Qt3DRender/private/buffercapture_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <Qt3DCore/qentity.h>
 #include <QtGui/qsurface.h>
@@ -209,6 +210,7 @@ RenderView::RenderView()
     , m_stateSet(nullptr)
     , m_noDraw(false)
     , m_compute(false)
+    , m_isDownloadBuffersEnable(false)
     , m_frustumCulling(false)
     , m_memoryBarrier(QMemoryBarrier::None)
 {
@@ -828,6 +830,16 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
     else {
         qCWarning(Render::Backend) << Q_FUNC_INFO << "Using default effect as none was provided";
     }
+}
+
+bool RenderView::isDownloadBuffersEnable() const
+{
+    return m_isDownloadBuffersEnable;
+}
+
+void RenderView::setIsDownloadBuffersEnable(bool isDownloadBuffersEnable)
+{
+    m_isDownloadBuffersEnable = isDownloadBuffersEnable;
 }
 
 } // namespace Render

@@ -89,6 +89,7 @@ namespace JobTypes {
         DirtyTextureGathering,
         DirtyShaderGathering,
         SendRenderCapture,
+        SendBufferCapture,
         SyncRenderViewCommandBuilding,
         SyncRenderViewInitialization,
         SyncRenderViewCommandBuilder,

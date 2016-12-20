@@ -71,6 +71,7 @@
 #include <Qt3DRender/private/updatetreeenabledjob_p.h>
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
 #include <Qt3DRender/private/sendrendercapturejob_p.h>
+#include <Qt3DRender/private/sendbuffercapturejob_p.h>
 #include <Qt3DRender/private/genericlambdajob_p.h>
 #include <Qt3DRender/private/updatemeshtrianglelistjob_p.h>
 #include <Qt3DRender/private/filtercompatibletechniquejob_p.h>
@@ -214,6 +215,7 @@ public:
     void updateGLResources();
     void updateTexture(Texture *texture);
     void cleanupTexture(const Texture *texture);
+    void downloadGLBuffers();
 
     void prepareCommandsSubmission(const QVector<RenderView *> &renderViews);
     bool executeCommandsSubmission(const RenderView *rv);
@@ -263,6 +265,7 @@ public:
 #ifdef QT3D_RENDER_UNIT_TESTS
 public:
 #else
+
 private:
 #endif
     bool canRender() const;
@@ -316,6 +319,7 @@ private:
     UpdateWorldBoundingVolumeJobPtr m_updateWorldBoundingVolumeJob;
     UpdateTreeEnabledJobPtr m_updateTreeEnabledJob;
     SendRenderCaptureJobPtr m_sendRenderCaptureJob;
+    SendBufferCaptureJobPtr m_sendBufferCaptureJob;
     UpdateLevelOfDetailJobPtr m_updateLevelOfDetailJob;
     UpdateMeshTriangleListJobPtr m_updateMeshTriangleListJob;
     FilterCompatibleTechniqueJobPtr m_filterCompatibleTechniqueJob;
@@ -335,10 +339,12 @@ private:
     SynchronizerJobPtr m_syncTextureLoadingJob;
 
     void lookForDirtyBuffers();
+    void lookForDownloadableBuffers();
     void lookForDirtyTextures();
     void lookForDirtyShaders();
 
     QVector<HBuffer> m_dirtyBuffers;
+    QVector<HBuffer> m_downloadableBuffers;
     QVector<HShader> m_dirtyShaders;
     QVector<HTexture> m_dirtyTextures;
 

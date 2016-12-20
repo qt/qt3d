@@ -105,6 +105,7 @@
 #include <Qt3DRender/qpickingsettings.h>
 #include <Qt3DRender/qeventforward.h>
 #include <Qt3DRender/qrendercapture.h>
+#include <Qt3DRender/qbuffercapture.h>
 #include <Qt3DRender/qmemorybarrier.h>
 
 #include <Qt3DQuickRender/qscene2d.h>
@@ -238,6 +239,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QDispatchCompute>(uri, 2, 0, "DispatchCompute");
     qmlRegisterType<Qt3DRender::QRenderCapture>(uri, 2, 1, "RenderCapture");
     qmlRegisterUncreatableType<Qt3DRender::QRenderCaptureReply>(uri, 2, 1, "RenderCaptureReply", QStringLiteral("RenderCaptureReply is only instantiated by RenderCapture"));
+    qmlRegisterType<Qt3DRender::QBufferCapture>(uri, 2, 0, "BufferCapture");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QMemoryBarrier, Qt3DRender::Render::Quick::Quick3DMemoryBarrier>("QMemoryBarrier", "Qt3D.Render/MemoryBarrier", uri, 2, 0, "MemoryBarrier");
 
     // RenderTarget

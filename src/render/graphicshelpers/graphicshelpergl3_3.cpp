@@ -879,6 +879,16 @@ void GraphicsHelperGL3_3::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
     qWarning() << "Compute Shaders are not supported by OpenGL 3.3 (since OpenGL 4.3)";
 }
 
+char *GraphicsHelperGL3_3::mapBuffer(GLenum target)
+{
+    return static_cast<char*>(m_funcs->glMapBuffer(target, GL_READ_WRITE));
+}
+
+GLboolean GraphicsHelperGL3_3::unmapBuffer(GLenum target)
+{
+    return m_funcs->glUnmapBuffer(target);
+}
+
 void GraphicsHelperGL3_3::glUniform1fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniform1fv(location, count, values);

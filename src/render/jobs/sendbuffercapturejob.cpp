@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 Juan José Casafranca
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,23 +37,13 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_GLBUFFER_P_H
-#define QT3DRENDER_RENDER_GLBUFFER_P_H
+#include "sendbuffercapturejob_p.h"
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
 
-#include <QOpenGLContext>
-#include <Qt3DCore/qnodeid.h>
-#include <qbytearray.h>
+#include "Qt3DRender/private/renderer_p.h"
+#include "Qt3DRender/private/nodemanagers_p.h"
+#include <Qt3DRender/private/job_common_p.h>
+#include <Qt3DRender/private/buffer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,50 +51,40 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class GraphicsContext;
-
-class GLBuffer
+SendBufferCaptureJob::SendBufferCaptureJob(Renderer *renderer)
+    : Qt3DCore::QAspectJob()
+    , m_renderer(renderer)
 {
-public:
-    GLBuffer();
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::SendBufferCapture, 0);
+}
 
-    enum Type
-    {
-        ArrayBuffer = 0,
-        UniformBuffer,
-        IndexBuffer,
-        ShaderStorageBuffer,
-        PixelPackBuffer,
-        PixelUnpackBuffer,
-        DrawIndirectBuffer
-    };
+SendBufferCaptureJob::~SendBufferCaptureJob()
+{
+}
 
-    bool bind(GraphicsContext *ctx, Type t);
-    bool release(GraphicsContext *ctx);
-    bool create(GraphicsContext *ctx);
-    void destroy(GraphicsContext *ctx);
-    void allocate(GraphicsContext *ctx, uint size, bool dynamic = true);
-    void allocate(GraphicsContext *ctx, const void *data, uint size, bool dynamic = true);
-    void update(GraphicsContext *ctx, const void *data, uint size, int offset = 0);
-    QByteArray download(GraphicsContext *ctx, uint size);
-    void bindBufferBase(GraphicsContext *ctx, int bindingPoint, Type t);
-    void bindBufferBase(GraphicsContext *ctx, int bindingPoint);
+void SendBufferCaptureJob::setManagers(NodeManagers *managers)
+{
+    m_managers = managers;
+}
 
-    inline GLuint bufferId() const { return m_bufferId; }
-    inline bool isCreated() const { return m_isCreated; }
-    inline bool isBound() const { return m_bound; }
+void SendBufferCaptureJob::addRequest(QPair<Buffer *, QByteArray> request)
+{
+    QMutexLocker locker(&m_mutex);
+    m_pendingSendBufferCaptures.push_back(request);
+}
 
-private:
-    GLuint m_bufferId;
-    bool m_isCreated;
-    bool m_bound;
-    GLenum m_lastTarget;
-};
+void SendBufferCaptureJob::run()
+{
+    QMutexLocker locker(&m_mutex);
+    for (QPair<Buffer*, QByteArray> pendingCapture : m_pendingSendBufferCaptures) {
+        pendingCapture.first->updateDataFromGPUToCPU(pendingCapture.second);
+    }
 
-} // namespace Render
+    m_pendingSendBufferCaptures.clear();
+}
 
-} // namespace Qt3DRender
+} // Render
+
+} // Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_GLBUFFER_P_H

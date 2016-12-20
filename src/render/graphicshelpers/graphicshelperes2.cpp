@@ -575,6 +575,20 @@ void GraphicsHelperES2::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
     qWarning() << "Compute Shaders are not supported by ES 2.0 (since ES 3.1)";
 }
 
+char *GraphicsHelperES2::mapBuffer(GLenum target)
+{
+    Q_UNUSED(target);
+    qWarning() << "Map buffer is not a core requirement for ES 2.0";
+    return nullptr;
+}
+
+GLboolean GraphicsHelperES2::unmapBuffer(GLenum target)
+{
+    Q_UNUSED(target);
+    qWarning() << "unMap buffer is not a core requirement for ES 2.0";
+    return false;
+}
+
 void GraphicsHelperES2::glUniform1fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniform1fv(location, count, values);

@@ -74,6 +74,7 @@ public:
     QBuffer::UsageType m_usage;
     QBufferDataGeneratorPtr m_functor;
     bool m_syncData;
+    QBuffer::AccessType m_access;
 };
 
 struct QBufferData
@@ -83,6 +84,7 @@ struct QBufferData
     QBuffer::UsageType usage;
     QBufferDataGeneratorPtr functor;
     bool syncData;
+    QBuffer::AccessType access;
 };
 
 struct QBufferUpdate

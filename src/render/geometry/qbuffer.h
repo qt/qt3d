@@ -59,6 +59,7 @@ class QT3DRENDERSHARED_EXPORT QBuffer : public Qt3DCore::QNode
     Q_PROPERTY(BufferType type READ type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(UsageType usage READ usage WRITE setUsage NOTIFY usageChanged)
     Q_PROPERTY(bool syncData READ isSyncData WRITE setSyncData NOTIFY syncDataChanged)
+    Q_PROPERTY(AccessType access READ access WRITE setAccess NOTIFY accessChanged)
 
 public:
     enum BufferType
@@ -87,12 +88,20 @@ public:
     };
     Q_ENUM(UsageType) // LCOV_EXCL_LINE
 
+    enum AccessType {
+        Write = 0x0,
+        Read = 0x1,
+        ReadWrite = 0x2
+    };
+    Q_ENUM(AccessType) // LCOV_EXCL_LINE
+
     explicit QBuffer(BufferType ty = QBuffer::VertexBuffer, Qt3DCore::QNode *parent = nullptr);
     ~QBuffer();
 
     UsageType usage() const;
     BufferType type() const;
     bool isSyncData() const;
+    AccessType access() const;
 
     void setData(const QByteArray &bytes);
     QByteArray data() const;
@@ -106,6 +115,7 @@ public Q_SLOTS:
     void setType(BufferType type);
     void setUsage(UsageType usage);
     void setSyncData(bool syncData);
+    void setAccess(AccessType access);
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
@@ -115,6 +125,8 @@ Q_SIGNALS:
     void typeChanged(BufferType type);
     void usageChanged(UsageType usage);
     void syncDataChanged(bool syncData);
+    void accessChanged(AccessType access);
+    void dataAvailable();
 
 private:
     Q_DECLARE_PRIVATE(QBuffer)

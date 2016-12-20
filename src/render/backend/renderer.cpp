@@ -84,6 +84,7 @@
 #include <Qt3DRender/private/loadbufferjob_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
 #include <Qt3DRender/private/updatelevelofdetailjob_p.h>
+#include <Qt3DRender/private/buffercapture_p.h>
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
 
 #include <Qt3DRender/qcameralens.h>
@@ -170,6 +171,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_updateTreeEnabledJob(Render::UpdateTreeEnabledJobPtr::create())
     , m_sendRenderCaptureJob(Render::SendRenderCaptureJobPtr::create(this))
     , m_updateLevelOfDetailJob(Render::UpdateLevelOfDetailJobPtr::create())
+    , m_sendBufferCaptureJob(Render::SendBufferCaptureJobPtr::create(this))
     , m_updateMeshTriangleListJob(Render::UpdateMeshTriangleListJobPtr::create())
     , m_filterCompatibleTechniqueJob(Render::FilterCompatibleTechniqueJobPtr::create())
     , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
@@ -264,6 +266,7 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_pickBoundingVolumeJob->setManagers(m_nodesManager);
     m_updateWorldBoundingVolumeJob->setManager(m_nodesManager->renderNodesManager());
     m_sendRenderCaptureJob->setManagers(m_nodesManager);
+    m_sendBufferCaptureJob->setManagers(m_nodesManager);
     m_updateLevelOfDetailJob->setManagers(m_nodesManager);
     m_updateMeshTriangleListJob->setManagers(m_nodesManager);
     m_filterCompatibleTechniqueJob->setManager(m_nodesManager->techniqueManager());
@@ -927,6 +930,17 @@ void Renderer::lookForDirtyBuffers()
     }
 }
 
+void Renderer::lookForDownloadableBuffers()
+{
+    m_downloadableBuffers.clear();
+    const QVector<HBuffer> activeBufferHandles = m_nodesManager->bufferManager()->activeHandles();
+    for (HBuffer handle : activeBufferHandles) {
+        Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
+        if (buffer->access() & QBuffer::Read)
+            m_downloadableBuffers.push_back(handle);
+    }
+}
+
 // Executed in a job
 void Renderer::lookForDirtyTextures()
 {
@@ -1109,6 +1123,17 @@ void Renderer::cleanupTexture(const Texture *texture)
         glTextureManager->abandon(glTexture, texture);
 }
 
+void Renderer::downloadGLBuffers()
+{
+    lookForDownloadableBuffers();
+    const QVector<HBuffer> downloadableHandles = std::move(m_downloadableBuffers);
+    for (HBuffer handle : downloadableHandles) {
+        Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
+        QByteArray content = m_graphicsContext->downloadBufferContent(buffer);
+        m_sendBufferCaptureJob->addRequest(QPair<Buffer*, QByteArray>(buffer, content));
+    }
+}
+
 
 // Happens in RenderThread context when all RenderViewJobs are done
 // Returns the id of the last bound FBO
@@ -1247,6 +1272,9 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
             addRenderCaptureSendRequest(renderView->renderCaptureNodeId());
         }
 
+        if (renderView->isDownloadBuffersEnable())
+            downloadGLBuffers();
+
         frameElapsed = timer.elapsed() - frameElapsed;
         qCDebug(Rendering) << Q_FUNC_INFO << "Submitted Renderview " << i + 1 << "/" << renderViewsCount  << "in " << frameElapsed << "ms";
         frameElapsed = timer.elapsed();
@@ -1357,6 +1385,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     renderBinJobs.push_back(m_worldTransformJob);
     renderBinJobs.push_back(m_cleanupJob);
     renderBinJobs.push_back(m_sendRenderCaptureJob);
+    renderBinJobs.push_back(m_sendBufferCaptureJob);
     renderBinJobs.push_back(m_filterCompatibleTechniqueJob);
     renderBinJobs.append(bufferJobs);
 

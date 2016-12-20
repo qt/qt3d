@@ -82,7 +82,7 @@ GraphicsHelperGL3_2::~GraphicsHelperGL3_2()
 }
 
 void GraphicsHelperGL3_2::initializeHelper(QOpenGLContext *context,
-                                          QAbstractOpenGLFunctions *functions)
+                                           QAbstractOpenGLFunctions *functions)
 {
     m_funcs = static_cast<QOpenGLFunctions_3_2_Core*>(functions);
     const bool ok = m_funcs->initializeOpenGLFunctions();
@@ -96,12 +96,12 @@ void GraphicsHelperGL3_2::initializeHelper(QOpenGLContext *context,
 }
 
 void GraphicsHelperGL3_2::drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType,
-                                                                    GLsizei primitiveCount,
-                                                                    GLint indexType,
-                                                                    void *indices,
-                                                                    GLsizei instances,
-                                                                    GLint baseVertex,
-                                                                    GLint baseInstance)
+                                                                      GLsizei primitiveCount,
+                                                                      GLint indexType,
+                                                                      void *indices,
+                                                                      GLsizei instances,
+                                                                      GLint baseVertex,
+                                                                      GLint baseInstance)
 {
     if (baseInstance != 0)
         qWarning() << "glDrawElementsInstancedBaseVertexBaseInstance is not supported with OpenGL ES 2";
@@ -116,9 +116,9 @@ void GraphicsHelperGL3_2::drawElementsInstancedBaseVertexBaseInstance(GLenum pri
 }
 
 void GraphicsHelperGL3_2::drawArraysInstanced(GLenum primitiveType,
-                                             GLint first,
-                                             GLsizei count,
-                                             GLsizei instances)
+                                              GLint first,
+                                              GLsizei count,
+                                              GLsizei instances)
 {
     // glDrawArraysInstanced OpenGL 3.1 or greater
     m_funcs->glDrawArraysInstanced(primitiveType,
@@ -138,10 +138,10 @@ void GraphicsHelperGL3_2::drawArraysInstancedBaseInstance(GLenum primitiveType, 
 }
 
 void GraphicsHelperGL3_2::drawElements(GLenum primitiveType,
-                                      GLsizei primitiveCount,
-                                      GLint indexType,
-                                      void *indices,
-                                      GLint baseVertex)
+                                       GLsizei primitiveCount,
+                                       GLint indexType,
+                                       void *indices,
+                                       GLint baseVertex)
 {
     m_funcs->glDrawElementsBaseVertex(primitiveType,
                                       primitiveCount,
@@ -151,8 +151,8 @@ void GraphicsHelperGL3_2::drawElements(GLenum primitiveType,
 }
 
 void GraphicsHelperGL3_2::drawArrays(GLenum primitiveType,
-                                    GLint first,
-                                    GLsizei count)
+                                     GLint first,
+                                     GLsizei count)
 {
     m_funcs->glDrawArrays(primitiveType,
                           first,
@@ -880,6 +880,16 @@ void GraphicsHelperGL3_2::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
     Q_UNUSED(wy);
     Q_UNUSED(wz);
     qWarning() << "Compute Shaders are not supported by OpenGL 3.2 (since OpenGL 4.3)";
+}
+
+char *GraphicsHelperGL3_2::mapBuffer(GLenum target)
+{
+    return static_cast<char*>(m_funcs->glMapBuffer(target, GL_READ_WRITE));
+}
+
+GLboolean GraphicsHelperGL3_2::unmapBuffer(GLenum target)
+{
+    return m_funcs->glUnmapBuffer(target);
 }
 
 void GraphicsHelperGL3_2::glUniform1fv(GLint location, GLsizei count, const GLfloat *values)

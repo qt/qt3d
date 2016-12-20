@@ -245,6 +245,9 @@ public:
         QVector3D m_eyePos;
     };
 
+    bool isDownloadBuffersEnable() const;
+    void setIsDownloadBuffersEnable(bool isDownloadBuffersEnable);
+
 private:
     void setShaderAndUniforms(RenderCommand *command, RenderPass *pass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform,
                               const QVector<LightSource> &activeLightSources) const;
@@ -252,6 +255,7 @@ private:
     mutable QThreadStorage<UniformBlockValueBuilder*> m_localData;
 
     Qt3DCore::QNodeId m_renderCaptureNodeId;
+    bool m_isDownloadBuffersEnable;
 
     Renderer *m_renderer;
     NodeManagers *m_manager;
