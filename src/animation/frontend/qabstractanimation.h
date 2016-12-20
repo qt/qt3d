@@ -62,6 +62,7 @@ public:
         MorphingAnimation = 2,
         VertexBlendAnimation = 3,
     };
+    Q_ENUM(AnimationType)
 
     QString animationName() const;
     QAbstractAnimation::AnimationType animationType() const;

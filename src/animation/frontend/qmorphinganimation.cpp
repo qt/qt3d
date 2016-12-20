@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -40,6 +40,129 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
+
+/*!
+    \class Qt3DAnimation::QMorphingAnimation
+    \brief A class implementing blend-shape morphing animation
+    \inmodule Qt3DAnimation
+    \since 5.9
+    \inherits Qt3DAnimation::QAbstractAnimation
+
+    A Qt3DAnimation::QMorphingAnimation class implements blend-shape morphing animation
+    to a target \l {Qt3DRender::QGeometryRenderer}{QGeometryRenderer}. The QMorphingAnimation
+    sets the correct \l {Qt3DRender::QAttribute}{QAttributes} from the
+    \l {Qt3DAnimation::QMorphTarget}{morph targets} to the target
+    \l {Qt3DRender::QGeometryRenderer::geometry} {QGeometryRenderer::geometry} and calculates
+    interpolator for the current position. The actual blending between the attributes must
+    be implemented in the material. Qt3DAnimation::QMorphPhongMaterial implements material
+    with morphing support for phong lighting model. The blending happens between
+    2 attributes - 'base' and 'target'. The names for the base and target attributes are taken from
+    the morph target names, where the base attribute retains the name it already has and the
+    target attribute name gets 'Target' appended to the name. The interpolator can be
+    set as a \l {Qt3DRender::QParameter}{QParameter} to the used material.
+    All morph targets in the animation should contain the attributes with same names as those
+    in the base geometry.
+
+*/
+/*!
+    \qmltype MorphingAnimation
+    \brief A type implementing blend-shape morphing animation
+    \inqmlmodule Qt3D.Animation
+    \since 5.9
+    \inherits AbstractAnimation
+    \instantiates Qt3DAnimation::QMorphingAnimation
+
+    A MorphingAnimation type implements blend-shape morphing animation
+    to a target \l GeometryRenderer. The MorphingAnimation sets the correct
+    \l {Attribute}{Attributes} from the morph targets to the target
+    \l {Qt3D.Render::GeometryRenderer::geometry}{GeometryRenderer::geometry} and calculates
+    interpolator for the current position. The actual blending between the attributes must
+    be implemented in the material. MorphPhongMaterial implements material
+    with morphing support for phong lighting model. The blending happens between
+    2 attributes - 'base' and 'target'. The names for the base and target attributes are taken from
+    the morph target names, where the base attribute retains the name it already has and the
+    target attribute name gets 'Target' appended to the name. All morph targets in the animation
+    should contain the attributes with same names as those in the base geometry.
+
+*/
+/*!
+    \property Qt3DAnimation::QMorphingAnimation::targetPositions
+    Holds the position values of the morph target. Each position in the list specifies the position
+    of the corresponding morph target with the same index. The values must be in an ascending order.
+    Values can be positive or negative and do not have any predefined unit.
+*/
+/*!
+    \property Qt3DAnimation::QMorphingAnimation::interpolator
+    Holds the interpolator between base and target attributes.
+    \readonly
+*/
+/*!
+    \property Qt3DAnimation::QMorphingAnimation::target
+    Holds the target QGeometryRenderer the morphing animation is applied to.
+*/
+/*!
+    \property Qt3DAnimation::QMorphingAnimation::targetName
+    Holds the name of the target geometry. This is a convenience property making it
+    easier to match the target geometry to the morphing animation. The name
+    is usually same as the name of the parent entity of the target QGeometryRenderer, but
+    does not have to be.
+*/
+/*!
+    \property Qt3DAnimation::QMorphingAnimation::method
+    Holds the morphing method. The default is Relative.
+*/
+/*!
+    \property Qt3DAnimation::QMorphingAnimation::easing
+    Holds the easing curve of the interpolator between morph targets.
+*/
+/*!
+    \enum Qt3DAnimation::QMorphingAnimation::Method
+
+    This enumeration specifies the morphing method.
+    \value Normalized The blending should use the normalized formula;
+                      V' = Vbase * (1.0 - sum(Wi)) + sum[Vi * Wi]
+    \value Relative The blending should use the relative formula;
+                      V' = Vbase + sum[Vi * Wi]
+*/
+
+/*!
+    \qmlproperty list<real> MorphingAnimation::targetPositions
+    Holds the position values of the morph target. Each position in the list specifies the position
+    of the corresponding morph target with the same index. The values must be in an ascending order.
+    Values can be positive or negative and do not have any predefined unit.
+*/
+/*!
+    \qmlproperty real MorphingAnimation::interpolator
+    Holds the interpolator between base and target attributes.
+    \readonly
+*/
+/*!
+    \qmlproperty GeometryRenderer MorphingAnimation::target
+    Holds the target GeometryRenderer the morphing animation is applied to.
+*/
+/*!
+    \qmlproperty string MorphingAnimation::targetName
+    Holds the name of the target geometry. This is a convenience property making it
+    easier to match the target geometry to the morphing animation. The name
+    is usually same as the name of the parent entity of the target GeometryRenderer, but
+    does not have to be.
+*/
+/*!
+    \qmlproperty enumeration MorphingAnimation::method
+    Holds the morphing method.  The default is Relative.
+    \list
+    \li Normalized
+    \li Relative
+    \endlist
+*/
+/*!
+    \qmlproperty EasingCurve MorphingAnimation::easing
+    Holds the easing curve of the interpolator between morph targets.
+*/
+/*!
+    \qmlproperty list<MorphTarget> MorphingAnimation::morphTargets
+    Holds the list of morph targets in the morphing animation.
+*/
 
 QMorphingAnimationPrivate::QMorphingAnimationPrivate()
     : QAbstractAnimationPrivate(QAbstractAnimation::MorphingAnimation)
@@ -148,6 +271,9 @@ void QMorphingAnimationPrivate::setTargetInterpolated(int morphTarget)
     m_currentTarget = target;
 }
 
+/*!
+    Construct a new QMorphingAnimation with \a parent.
+ */
 QMorphingAnimation::QMorphingAnimation(QObject *parent)
     : QAbstractAnimation(*new QMorphingAnimationPrivate, parent)
 {
@@ -192,6 +318,9 @@ QEasingCurve QMorphingAnimation::easing() const
     return d->m_easing;
 }
 
+/*!
+    Set morph \a targets to animation. Old targets are cleared.
+*/
 void QMorphingAnimation::setMorphTargets(const QVector<Qt3DAnimation::QMorphTarget *> &targets)
 {
     Q_D(QMorphingAnimation);
@@ -200,6 +329,9 @@ void QMorphingAnimation::setMorphTargets(const QVector<Qt3DAnimation::QMorphTarg
     d->m_position = -1.0f;
 }
 
+/*!
+    Add new morph \a target at the end of the animation.
+*/
 void QMorphingAnimation::addMorphTarget(Qt3DAnimation::QMorphTarget *target)
 {
     Q_D(QMorphingAnimation);
@@ -211,6 +343,9 @@ void QMorphingAnimation::addMorphTarget(Qt3DAnimation::QMorphTarget *target)
     }
 }
 
+/*!
+    Remove morph \a target from the animation.
+*/
 void QMorphingAnimation::removeMorphTarget(Qt3DAnimation::QMorphTarget *target)
 {
     Q_D(QMorphingAnimation);
@@ -246,6 +381,9 @@ void QMorphingAnimation::setTarget(Qt3DRender::QGeometryRenderer *target)
     }
 }
 
+/*!
+    Sets morph \a weights at \a positionIndex.
+*/
 void QMorphingAnimation::setWeights(int positionIndex, const QVector<float> &weights)
 {
     Q_D(QMorphingAnimation);
@@ -257,12 +395,18 @@ void QMorphingAnimation::setWeights(int positionIndex, const QVector<float> &wei
     d->m_position = -1.0f;
 }
 
+/*!
+    Return morph weights at \a positionIndex.
+*/
 QVector<float> QMorphingAnimation::getWeights(int positionIndex)
 {
     Q_D(QMorphingAnimation);
     return *d->m_weights[positionIndex];
 }
 
+/*!
+    Return morph target list.
+*/
 QVector<Qt3DAnimation::QMorphTarget *> QMorphingAnimation::morphTargetList()
 {
     Q_D(QMorphingAnimation);

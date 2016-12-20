@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -42,6 +42,117 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
+
+/*!
+    \class Qt3DAnimation::QAnimationController
+    \brief A controller class for animations
+    \inmodule Qt3DAnimation
+    \since 5.9
+    \inherits QObject
+
+    Qt3DAnimation::QAnimationController class controls the selection and playback of animations.
+    The class can be used to find all animations from Qt3DCore::QEntity tree and create
+    \l {Qt3DAnimation::QAnimationGroup} {QAnimationGroups} from the animations with the same name.
+    The user can select which animation group is currently controlled with the animation
+    controller by setting the active animation. The animation position is then propagated to
+    that group after scaling and offsetting the provided position value with the
+    positionScale and positionOffset values.
+
+    \note that the animation controller doesn't have internal timer, but instead the user
+    is responsible for updating the position property in timely manner.
+*/
+
+/*!
+    \qmltype AnimationController
+    \brief A controller type for animations
+    \inqmlmodule Qt3D.Animation
+    \since 5.9
+    \instantiates Qt3DAnimation::QAnimationController
+
+    AnimationController type controls the selection and playback of animations.
+    The type can be used to find all animations from Entity tree and create
+    \l {AnimationGroup} {AnimationGroups} from the animations with the same name.
+    The user can select which animation group is currently controlled with the animation
+    controller by setting the active animation. The animation position is then propagated to
+    that group after scaling and offsetting the provided position value with the
+    positionScale and positionOffset values.
+
+    \note that the animation controller doesn't have internal timer, but instead the user
+    is responsible for updating the position property in timely manner.
+*/
+
+/*!
+    \property Qt3DAnimation::QAnimationController::activeAnimationGroup
+    Holds the currectly active animation group.
+*/
+/*!
+    \property Qt3DAnimation::QAnimationController::position
+    Holds the current position of the animation. When the position is set,
+    it is scaled and offset with positionScale/positionOffset and propagated
+    to the active animation group.
+*/
+/*!
+    \property Qt3DAnimation::QAnimationController::positionScale
+    Holds the position scale of the animation.
+*/
+/*!
+    \property Qt3DAnimation::QAnimationController::positionOffset
+    Holds the position offset of the animation.
+*/
+/*!
+    \property Qt3DAnimation::QAnimationController::entity
+    Holds the entity animations are gathered and grouped from. If the controller already
+    holds animations, they are cleared.
+*/
+/*!
+    \property Qt3DAnimation::QAnimationController::recursive
+    Holds whether the recursively search the entity tree when gathering animations from the entity.
+    If set to true, the animations are searched also from the child entities of the entity.
+    If set to false, only the entity passed to the controller is searched.
+*/
+
+/*!
+    \qmlproperty int AnimationController::activeAnimationGroup
+    Holds the currectly active animation group.
+*/
+/*!
+    \qmlproperty real AnimationController::position
+    Holds the current position of the animation. When the position is set,
+    it is scaled and offset with positionScale/positionOffset and propagated
+    to the active animation group.
+*/
+/*!
+    \qmlproperty real AnimationController::positionScale
+    Holds the position scale of the animation.
+*/
+/*!
+    \qmlproperty real AnimationController::positionOffset
+    Holds the position offset of the animation.
+*/
+/*!
+    \qmlproperty Entity AnimationController::entity
+    Holds the entity animations are gathered and grouped from. If the controller already
+    holds animations, they are cleared.
+*/
+/*!
+    \qmlproperty bool AnimationController::recursive
+    Holds whether the recursively search the entity tree when gathering animations from the entity.
+    If set to true, the animations are searched also from the child entities of the entity.
+    If set to false, only the entity passed to the controller is searched.
+*/
+/*!
+    \qmlproperty list<AnimationGroup> AnimationController::animationGroups
+    Holds the list of animation groups in the controller.
+*/
+/*!
+    \qmlmethod int Qt3D.Animation::AnimationController::getAnimationIndex(name)
+    Returns the index of the animation with \a name. Returns -1 if no AnimationGroup
+    with the given name is found.
+*/
+/*!
+    \qmlmethod AnimationGroup Qt3D.Animation::AnimationController::getGroup(index)
+    Returns the AnimationGroup with the given \a index.
+*/
 
 QAnimationControllerPrivate::QAnimationControllerPrivate()
     : QObjectPrivate()
@@ -106,12 +217,18 @@ void QAnimationControllerPrivate::clearAnimations()
     m_activeAnimationGroup = 0;
 }
 
+/*!
+    Constructs a new QAnimationController with \a parent.
+ */
 QAnimationController::QAnimationController(QObject *parent)
     : QObject(*new QAnimationControllerPrivate, parent)
 {
 
 }
 
+/*!
+    Returns the list of animation groups the conroller is currently holding.
+ */
 QVector<QAnimationGroup *> QAnimationController::animationGroupList()
 {
     Q_D(QAnimationController);
@@ -154,7 +271,10 @@ bool QAnimationController::recursive() const
     return d->m_recursive;
 }
 
-void QAnimationController::setAnimationGroups(const QVector<QAnimationGroup *> &animationGroups)
+/*!
+    Sets the \a animationGroups for the controller. Old groups are cleared.
+ */
+void QAnimationController::setAnimationGroups(const QVector<Qt3DAnimation::QAnimationGroup *> &animationGroups)
 {
     Q_D(QAnimationController);
     d->m_animationGroups = animationGroups;
@@ -163,6 +283,9 @@ void QAnimationController::setAnimationGroups(const QVector<QAnimationGroup *> &
     d->updatePosition(d->m_position);
 }
 
+/*!
+    Adds the given \a animationGroup to the controller.
+ */
 void QAnimationController::addAnimationGroup(Qt3DAnimation::QAnimationGroup *animationGroup)
 {
     Q_D(QAnimationController);
@@ -170,6 +293,9 @@ void QAnimationController::addAnimationGroup(Qt3DAnimation::QAnimationGroup *ani
         d->m_animationGroups.push_back(animationGroup);
 }
 
+/*!
+    Removes the given \a animationGroup from the controller.
+ */
 void QAnimationController::removeAnimationGroup(Qt3DAnimation::QAnimationGroup *animationGroup)
 {
     Q_D(QAnimationController);
@@ -236,6 +362,10 @@ void QAnimationController::setRecursive(bool recursive)
     }
 }
 
+/*!
+    Returns the index of the animation with \a name. Returns -1 if no AnimationGroup
+    with the given name is found.
+*/
 int QAnimationController::getAnimationIndex(const QString &name) const
 {
     Q_D(const QAnimationController);
@@ -246,6 +376,9 @@ int QAnimationController::getAnimationIndex(const QString &name) const
     return -1;
 }
 
+/*!
+    Returns the AnimationGroup with the given \a index.
+*/
 QAnimationGroup *QAnimationController::getGroup(int index) const
 {
     Q_D(const QAnimationController);

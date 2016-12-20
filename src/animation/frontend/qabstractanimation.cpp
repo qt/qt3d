@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -40,6 +40,80 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
+
+/*!
+    \class Qt3DAnimation::QAbstractAnimation
+    \brief An abstract base class for Qt3D animations
+    \inmodule Qt3DAnimation
+    \since 5.9
+    \inherits QObject
+
+    Qt3DAnimation::QAbstractAnimation is an abstract base class for all animations.
+    Qt3DAnimation::QAbstractAnimation can not be directly instantiated, but rather
+    through its subclasses. QAbstractAnimation specifies common properties
+    for all Qt3D animations, such as animation name and type, current position and animation
+    duration, while leaving the actual animating for the subclasses.
+*/
+
+/*!
+    \qmltype AbstractAnimation
+    \brief An abstract base type for Qt3D animations
+    \inqmlmodule Qt3D.Animation
+    \since 5.9
+    \instantiates Qt3DAnimation::QAbstractAnimation
+
+    AbstractAnimation is an abstract base type for all animations.
+    AbstractAnimation can not be directly instantiated, but rather
+    through its subtypes. AbstractAnimation specifies common properties
+    for all Qt3D animations, such as animation type, current position and animation
+    duration, while leaving the actual animating for the subtypes.
+*/
+/*!
+    \enum QAbstractAnimation::AnimationType
+
+    This enumeration specifies the type of the animation
+    \value KeyframeAnimation Simple keyframe animation implementation for QTransform
+    \value MorphingAnimation Blend-shape morphing animation
+    \value VertexBlendAnimation Vertex-blend animation
+*/
+/*!
+    \property Qt3DAnimation::QAbstractAnimation::animationName
+    Holds the name of the animation.
+*/
+/*!
+    \property Qt3DAnimation::QAbstractAnimation::animationType
+    Holds the type of the animation.
+*/
+/*!
+    \property Qt3DAnimation::QAbstractAnimation::position
+    Holds the current position of the animation.
+*/
+/*!
+    \property Qt3DAnimation::QAbstractAnimation::duration
+    Holds the duration of the animation.
+*/
+
+/*!
+    \qmlproperty string AbstractAnimation::animationName
+    Holds the name of the animation.
+*/
+/*!
+    \qmlproperty enumeration AbstractAnimation::animationType
+    Holds the type of the animation.
+    \list
+    \li KeyframeAnimation
+    \li MorphingAnimation
+    \li VertexBlendAnimation
+    \endlist
+*/
+/*!
+    \qmlproperty real AbstractAnimation::position
+    Holds the current position of the animation.
+*/
+/*!
+    \qmlproperty real AbstractAnimation::duration
+    Holds the duration of the animation.
+*/
 
 QAbstractAnimationPrivate::QAbstractAnimationPrivate(QAbstractAnimation::AnimationType type)
     : QObjectPrivate()
@@ -98,6 +172,9 @@ void QAbstractAnimation::setPosition(float position)
     }
 }
 
+/*!
+    Sets the \a duration of the animation.
+*/
 void QAbstractAnimation::setDuration(float duration)
 {
     Q_D(QAbstractAnimation);
