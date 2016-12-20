@@ -1651,6 +1651,7 @@ QImage GraphicsContext::readFramebuffer(QSize size)
     case QAbstractTexture::SRGB8:
     case QAbstractTexture::RGBFormat:
     case QAbstractTexture::RGB8U:
+    case QAbstractTexture::RGB8_UNorm:
 #ifdef QT_OPENGL_ES_2
         format = GL_RGBA;
         imageFormat = QImage::Format_RGBX8888;
