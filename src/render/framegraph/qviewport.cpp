@@ -41,6 +41,7 @@
 #include "qviewport_p.h"
 
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -128,7 +129,7 @@ void QViewport::setNormalizedRect(const QRectF &normalizedRect)
 
 Qt3DCore::QNodeCreatedChangeBasePtr QViewport::createNodeCreationChange() const
 {
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QViewportData>::create(this);
+    auto creationChange = QFrameGraphNodeCreatedChangePtr<QViewportData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QViewport);
     data.normalizedRect = d->m_normalizedRect;

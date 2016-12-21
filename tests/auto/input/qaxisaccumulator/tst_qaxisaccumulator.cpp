@@ -183,6 +183,17 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(value(), 383.0f);
+        QCOMPARE(velocity(), 0.0f);
+
+        // WHEN
+        valueChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        valueChange->setPropertyName("velocity");
+        valueChange->setValue(123.0f);
+        sceneChangeEvent(valueChange);
+
+        // THEN
+        QCOMPARE(value(), 383.0f);
+        QCOMPARE(velocity(), 123.0f);
     }
 
     void checkAxisInputBookkeeping()

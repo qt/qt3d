@@ -46,6 +46,7 @@
 #include <Qt3DInput/qmouseevent.h>
 
 #include <Qt3DInput/qaxis.h>
+#include <Qt3DInput/qaxisaccumulator.h>
 #include <Qt3DInput/qaxissetting.h>
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qactioninput.h>
@@ -96,6 +97,7 @@ void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3DInput::QInputSequence, Qt3DInput::Input::Quick::Quick3DInputSequence>(uri, 2, 0, "InputSequence");
     qmlRegisterExtendedType<Qt3DInput::QInputChord, Qt3DInput::Input::Quick::Quick3DInputChord>(uri, 2, 0, "InputChord");
     qmlRegisterExtendedUncreatableType<Qt3DInput::QAbstractPhysicalDevice, Qt3DInput::Input::Quick::Quick3DPhysicalDevice>(uri, 2, 0, "QAbstractPhysicalDevice", QStringLiteral("QAbstractPhysicalDevice is abstract"));
+    qmlRegisterType<Qt3DInput::QAxisAccumulator>(uri, 2, 1, "AxisAccumulator");
 
 #ifdef HAVE_QGAMEPAD
     qmlRegisterType<Qt3DInput::QGamepadInput>(uri, 2, 0, "GamepadInput");

@@ -42,6 +42,7 @@
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -69,7 +70,8 @@ FrameGraphNode::~FrameGraphNode()
 void FrameGraphNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     // Set up the parent child relationship and enabled state
-    setParentId(change->parentId());
+    const auto creationChange = qSharedPointerCast<QFrameGraphNodeCreatedChangeBase>(change);
+    setParentId(creationChange->parentFrameGraphNodeId());
 }
 
 void FrameGraphNode::setFrameGraphManager(FrameGraphManager *manager)

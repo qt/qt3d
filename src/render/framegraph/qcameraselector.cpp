@@ -42,6 +42,7 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/private/qentity_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -141,7 +142,7 @@ Qt3DCore::QEntity *QCameraSelector::camera() const
 
 Qt3DCore::QNodeCreatedChangeBasePtr QCameraSelector::createNodeCreationChange() const
 {
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QCameraSelectorData>::create(this);
+    auto creationChange = QFrameGraphNodeCreatedChangePtr<QCameraSelectorData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QCameraSelector);
     data.cameraId = qIdForNode(d->m_camera);

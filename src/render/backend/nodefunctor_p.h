@@ -66,8 +66,8 @@ template<class Backend, class Manager>
 class NodeFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
-    explicit NodeFunctor(AbstractRenderer *renderer, Manager *manager)
-        : m_manager(manager)
+    explicit NodeFunctor(AbstractRenderer *renderer)
+        : m_manager(renderer->nodeManagers()->manager<Backend, Manager>())
         , m_renderer(renderer)
     {
     }

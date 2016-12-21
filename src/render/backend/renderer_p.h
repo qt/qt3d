@@ -137,6 +137,8 @@ class VSyncFrameAdvanceService;
 class PickEventFilter;
 class NodeManagers;
 
+using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
+
 class QT3DRENDERSHARED_PRIVATE_EXPORT Renderer : public AbstractRenderer
 {
 public:
@@ -181,6 +183,8 @@ public:
 
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() Q_DECL_OVERRIDE;
     Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() Q_DECL_OVERRIDE;
+    Qt3DCore::QAspectJobPtr syncTextureLoadingJob() Q_DECL_OVERRIDE;
+
     QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs() const;
 
     inline FrameCleanupJobPtr frameCleanupJob() const { return m_cleanupJob; }
@@ -191,6 +195,7 @@ public:
     inline UpdateWorldBoundingVolumeJobPtr updateWorldBoundingVolumeJob() const { return m_updateWorldBoundingVolumeJob; }
     inline UpdateMeshTriangleListJobPtr updateMeshTriangleListJob() const { return m_updateMeshTriangleListJob; }
     inline FilterCompatibleTechniqueJobPtr filterCompatibleTechniqueJob() const { return m_filterCompatibleTechniqueJob; }
+    inline SynchronizerJobPtr textureLoadSyncJob() const { return m_syncTextureLoadingJob; }
 
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const Q_DECL_OVERRIDE;
 
@@ -201,6 +206,7 @@ public:
 
     void updateGLResources();
     void updateTexture(Texture *texture);
+    void cleanupTexture(const Texture *texture);
 
     void prepareCommandsSubmission(const QVector<RenderView *> &renderViews);
     bool executeCommandsSubmission(const RenderView *rv);
@@ -228,6 +234,8 @@ public:
     bool isReadyToSubmit();
 
     QVariant executeCommand(const QStringList &args) Q_DECL_OVERRIDE;
+    void setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper) Q_DECL_OVERRIDE;
+    QSurfaceFormat format() Q_DECL_OVERRIDE;
 
     struct ViewSubmissionResultData
     {
@@ -266,6 +274,7 @@ private:
     ShaderParameterPack m_defaultUniformPack;
 
     QScopedPointer<GraphicsContext> m_graphicsContext;
+    QSurfaceFormat m_format;
 
     RenderQueue *m_renderQueue;
     QScopedPointer<RenderThread> m_renderThread;
@@ -313,6 +322,8 @@ private:
     GenericLambdaJobPtr<std::function<void ()>> m_textureGathererJob;
     GenericLambdaJobPtr<std::function<void ()>> m_shaderGathererJob;
 
+    SynchronizerJobPtr m_syncTextureLoadingJob;
+
     void lookForDirtyBuffers();
     void lookForDirtyTextures();
     void lookForDirtyShaders();
@@ -323,10 +334,15 @@ private:
 
     bool m_ownedContext;
 
+    OffscreenSurfaceHelper *m_offscreenHelper;
+    QMutex m_offscreenSurfaceMutex;
+
 #ifdef QT3D_JOBS_RUN_STATS
     QScopedPointer<Qt3DRender::Debug::CommandExecuter> m_commandExecuter;
     friend class Qt3DRender::Debug::CommandExecuter;
 #endif
+
+    QMetaObject::Connection m_contextConnection;
 };
 
 } // namespace Render

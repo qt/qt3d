@@ -56,6 +56,7 @@
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRender/qframegraphnode.h>
 #include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 #include <qglobal.h>
 #include <QVector>
 
@@ -126,8 +127,8 @@ template<typename Backend, typename Frontend>
 class FrameGraphNodeFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
-    explicit FrameGraphNodeFunctor(AbstractRenderer *renderer, FrameGraphManager *manager)
-        : m_manager(manager)
+    explicit FrameGraphNodeFunctor(AbstractRenderer *renderer)
+        : m_manager(renderer->nodeManagers()->frameGraphManager())
         , m_renderer(renderer)
     {
     }

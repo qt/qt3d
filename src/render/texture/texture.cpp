@@ -121,6 +121,8 @@ void Texture::removeTextureImage(Qt3DCore::QNodeId id)
     }
 }
 
+// This is called by Renderer::updateGLResources
+// when the texture has been marked for cleanup
 void Texture::cleanup()
 {
     // Whoever calls this must make sure to also check if this
@@ -147,6 +149,8 @@ void Texture::cleanup()
     m_parameters.maximumAnisotropy = 1.0f;
     m_parameters.comparisonFunction = QAbstractTexture::CompareLessEqual;
     m_parameters.comparisonMode = QAbstractTexture::CompareNone;
+
+    m_dirty = NotDirty;
 }
 
 // ChangeArbiter/Aspect Thread
@@ -292,7 +296,10 @@ Qt3DCore::QBackendNode *TextureFunctor::get(Qt3DCore::QNodeId id) const
 
 void TextureFunctor::destroy(Qt3DCore::QNodeId id) const
 {
-    m_textureNodeManager->releaseResource(id);
+    m_textureNodeManager->addTextureIdToCleanup(id);
+    // We only add ourselves to the dirty list
+    // The actual removal needs to be performed after we have
+    // destroyed the associated APITexture in the RenderThread
 }
 
 

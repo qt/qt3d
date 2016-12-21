@@ -121,6 +121,7 @@ UniformValue UniformValue::fromVariant(const QVariant &variant)
     case QMetaType::Char:
     case QMetaType::UChar:
         v.data<int>()[0] = variant.toInt();
+        v.m_storedType = Int;
         break;
     case QMetaType::Float:
     case QMetaType::Double: // Convert double to floats

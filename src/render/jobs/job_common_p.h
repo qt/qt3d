@@ -94,7 +94,8 @@ namespace JobTypes {
         SyncFrustumCulling,
         ClearBufferDrawIndex,
         UpdateMeshTriangleList,
-        FilterCompatibleTechniques
+        FilterCompatibleTechniques,
+        SyncTextureLoading
     };
 
 } // JobTypes

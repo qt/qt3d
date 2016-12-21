@@ -158,35 +158,6 @@ bool PickBoundingVolumeJob::runHelper()
     if (vcaTriplets.empty())
         return false;
 
-    bool hasMoveEvent = false;
-    bool hasOtherEvent = false;
-
-    // Quickly look which types of events we've got
-    for (const QMouseEvent &event : mouseEvents) {
-        const bool isMove = (event.type() == QEvent::MouseMove);
-        hasMoveEvent |= isMove;
-        hasOtherEvent |= !isMove;
-    }
-
-    // In the case we have a move event, find if we actually have
-    // an object picker that cares about these
-    if (!hasOtherEvent) {
-        // Retrieve the last used object picker
-        ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
-
-        // The only way to set lastCurrentPicker is to click
-        // so we can return since if we're there it means we
-        // have only move events
-        if (lastCurrentPicker == nullptr)
-            return false;
-
-        const bool caresAboutMove = (hasMoveEvent && lastCurrentPicker->isDragEnabled());
-        // Early return if the current object picker doesn't care about move events
-        if (!caresAboutMove)
-            return false;
-    }
-
-
     // TO DO:
     // If we have move or hover move events that someone cares about, we try to avoid expensive computations
     // by compressing them into a single one

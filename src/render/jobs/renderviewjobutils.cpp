@@ -258,6 +258,7 @@ Technique *findTechniqueForEffect(Renderer *renderer,
 
     NodeManagers *manager = renderer->nodeManagers();
     QVector<Technique*> matchingTechniques;
+    const bool hasInvalidTechniqueFilter = (techniqueFilter == nullptr || techniqueFilter->filters().isEmpty());
 
     // Iterate through the techniques in the effect
     const auto techniqueIds = effect->techniques();
@@ -267,58 +268,20 @@ Technique *findTechniqueForEffect(Renderer *renderer,
         // Should be valid, if not there likely a problem with node addition/destruction changes
         Q_ASSERT(technique);
 
-        // We need to be sure the renderer is still running <=> still has a GraphicsContext
-        if (renderer->isRunning() && *renderer->contextInfo() == *technique->graphicsApiFilter()) {
-
-            // If no techniqueFilter is present, we return the technique as it satisfies OpenGL version
-            bool foundMatch = (techniqueFilter == nullptr || techniqueFilter->filters().isEmpty());
-            if (foundMatch) {
-                matchingTechniques.append(technique);
-                continue;
-            }
-
-            // There is a technique filter so we need to check for a technique with suitable criteria.
-            // Check for early bail out if the technique doesn't have sufficient number of criteria and
-            // can therefore never satisfy the filter
-            if (technique->filterKeys().size() < techniqueFilter->filters().size())
-                continue;
-
-            // Iterate through the filter criteria and for each one search for a criteria on the
-            // technique that satisfies it
-            const auto filterKeyIds = techniqueFilter->filters();
-            for (const QNodeId filterKeyId : filterKeyIds) {
-                foundMatch = false;
-                FilterKey *filterKey = manager->filterKeyManager()->lookupResource(filterKeyId);
-
-                const auto techniqueFilterKeyIds = technique->filterKeys();
-                for (const QNodeId techniqueFilterKeyId : techniqueFilterKeyIds) {
-                    FilterKey *techniqueFilterKey = manager->filterKeyManager()->lookupResource(techniqueFilterKeyId);
-                    if ((foundMatch = (*techniqueFilterKey == *filterKey)))
-                        break;
-                }
-
-                if (!foundMatch) {
-                    // No match for TechniqueFilter criterion in any of the technique's criteria.
-                    // So no way this can match. Don't bother checking the rest of the criteria.
-                    break;
-                }
-            }
-
-            if (foundMatch) {
-                // All criteria matched - we have a winner!
-                matchingTechniques.append(technique);
-            }
-        }
+        // Check if the technique is compatible with the rendering API
+        // If no techniqueFilter is present, we return the technique as it satisfies OpenGL version
+        if (technique->isCompatibleWithRenderer() && (hasInvalidTechniqueFilter || technique->isCompatibleWithFilters(techniqueFilter->filters())))
+            matchingTechniques.append(technique);
     }
 
     if (matchingTechniques.size() == 0) // We failed to find a suitable technique to use :(
         return nullptr;
 
     if (matchingTechniques.size() == 1)
-        return matchingTechniques[0];
+        return matchingTechniques.first();
 
     // Several compatible techniques, return technique with highest major and minor version
-    Technique* highest = matchingTechniques[0];
+    Technique* highest = matchingTechniques.first();
     GraphicsApiFilterData filter = *highest->graphicsApiFilter();
     for (auto it = matchingTechniques.cbegin() + 1; it < matchingTechniques.cend(); ++it) {
         if (filter < *(*it)->graphicsApiFilter()) {

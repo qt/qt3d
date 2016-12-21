@@ -46,6 +46,7 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qrendersettings.h>
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -327,7 +328,7 @@ void QRenderSurfaceSelector::setExternalRenderTargetSize(const QSize &size)
 
 Qt3DCore::QNodeCreatedChangeBasePtr QRenderSurfaceSelector::createNodeCreationChange() const
 {
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderSurfaceSelectorData>::create(this);
+    auto creationChange = QFrameGraphNodeCreatedChangePtr<QRenderSurfaceSelectorData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QRenderSurfaceSelector);
     data.surface = QPointer<QObject>(surface());

@@ -42,6 +42,7 @@
 #include <Qt3DRender/qrendertarget.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/qrenderpass_p.h>
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -179,7 +180,7 @@ QRenderTargetSelector::QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, Q
 
 Qt3DCore::QNodeCreatedChangeBasePtr QRenderTargetSelector::createNodeCreationChange() const
 {
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderTargetSelectorData>::create(this);
+    auto creationChange = QFrameGraphNodeCreatedChangePtr<QRenderTargetSelectorData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QRenderTargetSelector);
     data.targetId = qIdForNode(d->m_target);

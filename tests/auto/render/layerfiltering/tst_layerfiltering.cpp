@@ -86,6 +86,17 @@ class tst_LayerFiltering : public QObject
     Q_OBJECT
 private Q_SLOTS:
 
+    void checkInitialState()
+    {
+        // GIVEN
+        Qt3DRender::Render::FilterLayerEntityJob filterJob;
+
+        // THEN
+        QCOMPARE(filterJob.hasLayerFilter(), false);
+        QCOMPARE(filterJob.filteredEntities().size(), 0);
+        QCOMPARE(filterJob.layers().size(), 0);
+    }
+
     void filterEntities_data()
     {
         QTest::addColumn<Qt3DCore::QEntity *>("entitySubtree");

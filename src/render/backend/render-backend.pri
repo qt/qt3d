@@ -38,7 +38,9 @@ HEADERS += \
     $$PWD/commandexecuter_p.h \
     $$PWD/uniform_p.h \
     $$PWD/shaderparameterpack_p.h \
-    $$PWD/renderviewbuilder_p.h
+    $$PWD/renderviewbuilder_p.h \
+    $$PWD/frameprofiler_p.h \
+    $$PWD/offscreensurfacehelper_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
@@ -70,5 +72,6 @@ SOURCES += \
     $$PWD/openglvertexarrayobject.cpp \
     $$PWD/uniform.cpp \
     $$PWD/shaderparameterpack.cpp \
-    $$PWD/renderviewbuilder.cpp
+    $$PWD/renderviewbuilder.cpp \
+    $$PWD/offscreensurfacehelper.cpp
 

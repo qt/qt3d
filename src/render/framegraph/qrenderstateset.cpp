@@ -44,6 +44,7 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -143,7 +144,7 @@ QVector<QRenderState *> QRenderStateSet::renderStates() const
 
 Qt3DCore::QNodeCreatedChangeBasePtr QRenderStateSet::createNodeCreationChange() const
 {
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderStateSetData>::create(this);
+    auto creationChange = QFrameGraphNodeCreatedChangePtr<QRenderStateSetData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QRenderStateSet);
     data.renderStateIds = qIdsForNodes(d->m_renderStates);

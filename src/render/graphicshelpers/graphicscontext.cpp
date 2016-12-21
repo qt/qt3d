@@ -494,7 +494,7 @@ void GraphicsContext::loadShader(Shader *shader)
     // TODO: Improve this so we only introspect once per actual OpenGL shader program
     //       rather than once per ShaderNode. Could cache the interface description along
     //       with the QOpenGLShaderProgram in the ShaderCache.
-    if (!shader->isLoaded()) {
+    if (Q_LIKELY(shaderProgram != nullptr) && !shader->isLoaded()) {
         // Introspect and set up interface description on Shader backend node
         shader->initializeUniforms(m_glHelper->programUniformsAndLocations(shaderProgram->programId()));
         shader->initializeAttributes(m_glHelper->programAttributesAndLocations(shaderProgram->programId()));
@@ -684,12 +684,14 @@ GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
     GraphicsHelperInterface *glHelper = nullptr;
 
     if (m_gl->isOpenGLES()) {
-        if (m_gl->format().majorVersion() >= 3)
+        if (m_gl->format().majorVersion() >= 3) {
             glHelper = new GraphicsHelperES3();
-        else
+            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES3 Helper";
+        } else {
             glHelper = new GraphicsHelperES2();
+            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL ES2 Helper";
+        }
         glHelper->initializeHelper(m_gl, nullptr);
-        qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2/ES2 Helper";
     }
 #ifndef QT_OPENGL_ES_2
     else {
@@ -1205,7 +1207,14 @@ void GraphicsContext::applyUniform(const ShaderUniform &description, const Unifo
 
     switch (type) {
     case UniformType::Float:
-        applyUniformHelper<UniformType::Float>(description.m_location, description.m_size, v);
+        // See QTBUG-57510 and uniform_p.h
+        if (v.storedType() == Int) {
+            float value = float(*v.constData<int>());
+            UniformValue floatV(value);
+            applyUniformHelper<UniformType::Float>(description.m_location, description.m_size, floatV);
+        } else {
+            applyUniformHelper<UniformType::Float>(description.m_location, description.m_size, v);
+        }
         break;
     case UniformType::Vec2:
         applyUniformHelper<UniformType::Vec2>(description.m_location, description.m_size, v);
@@ -1642,6 +1651,7 @@ QImage GraphicsContext::readFramebuffer(QSize size)
     case QAbstractTexture::SRGB8:
     case QAbstractTexture::RGBFormat:
     case QAbstractTexture::RGB8U:
+    case QAbstractTexture::RGB8_UNorm:
 #ifdef QT_OPENGL_ES_2
         format = GL_RGBA;
         imageFormat = QImage::Format_RGBX8888;

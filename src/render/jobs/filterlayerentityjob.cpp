@@ -56,6 +56,7 @@ int layerFilterJobCounter = 0;
 FilterLayerEntityJob::FilterLayerEntityJob()
     : Qt3DCore::QAspectJob()
     , m_manager(nullptr)
+    , m_hasLayerFilter(false)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::LayerFiltering, layerFilterJobCounter++);
 }

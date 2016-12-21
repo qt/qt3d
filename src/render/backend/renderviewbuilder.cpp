@@ -191,42 +191,36 @@ public:
             // Set the light sources
             rv->setLightSources(std::move(m_lightGathererJob->lights()));
 
+            // We sort the vector so that the removal can then be performed linearly
+
+            QVector<Entity *> renderableEntities;
+            const bool isDraw = !rv->isCompute();
+            if (isDraw)
+                renderableEntities = std::move(m_renderableEntityFilterJob->filteredEntities());
+            else
+                renderableEntities = std::move(m_computableEntityFilterJob->filteredEntities());
+
+            // Filter out entities that weren't selected by the layer filters
+            std::sort(renderableEntities.begin(), renderableEntities.end());
+
             // Remove all entities from the compute and renderable vectors that aren't in the filtered layer vector
             QVector<Entity *> filteredEntities = m_filterEntityByLayerJob->filteredEntities();
+            RenderViewBuilder::removeEntitiesNotInSubset(renderableEntities, filteredEntities);
 
-            // We sort the vector so that the removal can then be performed linearly
-            if (!rv->isCompute()) {
-                QVector<Entity *> renderableEntities = std::move(m_renderableEntityFilterJob->filteredEntities());
-                std::sort(renderableEntities.begin(), renderableEntities.end());
-                RenderViewBuilder::removeEntitiesNotInSubset(renderableEntities, filteredEntities);
+            // Filter out frustum culled entity for drawable entities
+            if (isDraw && rv->frustumCulling())
+                RenderViewBuilder::removeEntitiesNotInSubset(renderableEntities, m_frustumCullingJob->visibleEntities());
 
-                if (rv->frustumCulling())
-                    RenderViewBuilder::removeEntitiesNotInSubset(renderableEntities, m_frustumCullingJob->visibleEntities());
-
-                // Split among the number of command builders
-                const int packetSize = renderableEntities.size() / RenderViewBuilder::optimalJobCount();
-                for (auto i = 0, m = RenderViewBuilder::optimalJobCount(); i < m; ++i) {
-                    const RenderViewBuilderJobPtr renderViewCommandBuilder = m_renderViewBuilderJobs.at(i);
-                    if (i == m - 1)
-                        renderViewCommandBuilder->setRenderables(renderableEntities.mid(i * packetSize, packetSize + renderableEntities.size() % m));
-                    else
-                        renderViewCommandBuilder->setRenderables(renderableEntities.mid(i * packetSize, packetSize));
-                }
-            } else {
-                QVector<Entity *> computableEntities = std::move(m_computableEntityFilterJob->filteredEntities());
-                std::sort(computableEntities.begin(), computableEntities.end());
-                RenderViewBuilder::removeEntitiesNotInSubset(computableEntities, filteredEntities);
-
-                // Split among the number of command builders
-                const int packetSize = computableEntities.size() / RenderViewBuilder::optimalJobCount();
-                for (auto i = 0, m = RenderViewBuilder::optimalJobCount(); i < m; ++i) {
-                    const RenderViewBuilderJobPtr renderViewCommandBuilder = m_renderViewBuilderJobs.at(i);
-                    if (i == m - 1)
-                        renderViewCommandBuilder->setRenderables(computableEntities.mid(i * packetSize, packetSize + computableEntities.size() % m));
-                    else
-                        renderViewCommandBuilder->setRenderables(computableEntities.mid(i * packetSize, packetSize));
-                }
+            // Split among the number of command builders
+            int i = 0;
+            const int m = RenderViewBuilder::optimalJobCount() - 1;
+            const int packetSize = renderableEntities.size() / RenderViewBuilder::optimalJobCount();
+            while (i < m) {
+                const RenderViewBuilderJobPtr renderViewCommandBuilder = m_renderViewBuilderJobs.at(i);
+                renderViewCommandBuilder->setRenderables(renderableEntities.mid(i * packetSize, packetSize));
+                ++i;
             }
+            m_renderViewBuilderJobs.at(i)->setRenderables(renderableEntities.mid(i * packetSize, packetSize + renderableEntities.size() % (m + 1)));
 
             // Reduction
             QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> params;
@@ -431,6 +425,7 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     m_syncRenderCommandBuildingJob->addDependency(m_syncRenderViewInitializationJob);
     for (const auto materialGatherer : qAsConst(m_materialGathererJobs)) {
         materialGatherer->addDependency(m_syncRenderViewInitializationJob);
+        materialGatherer->addDependency(m_renderer->filterCompatibleTechniqueJob());
         m_syncRenderCommandBuildingJob->addDependency(materialGatherer);
     }
     m_syncRenderCommandBuildingJob->addDependency(m_renderableEntityFilterJob);

@@ -83,6 +83,7 @@
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
 #include <Qt3DRender/private/loadbufferjob_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
+#include <Qt3DRender/private/offscreensurfacehelper_p.h>
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
@@ -91,6 +92,7 @@
 #include <Qt3DCore/private/aspectcommanddebugger_p.h>
 
 #include <QStack>
+#include <QOffscreenSurface>
 #include <QSurface>
 #include <QElapsedTimer>
 #include <QLibraryInfo>
@@ -112,13 +114,14 @@
 #include <Qt3DRender/private/commandexecuter_p.h>
 #endif
 
+#include <Qt3DRender/private/frameprofiler_p.h>
+
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
-
 /*!
     \internal
 
@@ -168,7 +171,9 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
     , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
     , m_shaderGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyShaders(); }, JobTypes::DirtyShaderGathering))
+    , m_syncTextureLoadingJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([] {}, JobTypes::SyncTextureLoading))
     , m_ownedContext(false)
+    , m_offscreenHelper(nullptr)
     #ifdef QT3D_JOBS_RUN_STATS
     , m_commandExecuter(new Qt3DRender::Debug::CommandExecuter(this))
     #endif
@@ -185,6 +190,10 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     m_updateWorldBoundingVolumeJob->addDependency(m_calculateBoundingVolumeJob);
     m_expandBoundingVolumeJob->addDependency(m_updateWorldBoundingVolumeJob);
     m_updateShaderDataTransformJob->addDependency(m_worldTransformJob);
+
+    // Dirty texture gathering depends on m_syncTextureLoadingJob
+    // m_syncTextureLoadingJob will depend on the texture loading jobs
+    m_textureGathererJob->addDependency(m_syncTextureLoadingJob);
 
     // All world stuff depends on the RenderEntity's localBoundingVolume
     m_pickBoundingVolumeJob->addDependency(m_updateMeshTriangleListJob);
@@ -207,6 +216,9 @@ Renderer::~Renderer()
 
     delete m_renderQueue;
     delete m_defaultRenderStateSet;
+
+    if (!m_ownedContext)
+        QObject::disconnect(m_contextConnection);
 }
 
 void Renderer::dumpInfo() const
@@ -284,11 +296,23 @@ void Renderer::initialize()
         else
             qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
         m_ownedContext = true;
+    } else {
+        // Context is not owned by us, so we need to know if it gets destroyed
+        m_contextConnection = QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed,
+                                               [this] { releaseGraphicsResources(); });
     }
 
     // Note: we don't have a surface at this point
     // The context will be made current later on (at render time)
     m_graphicsContext->setOpenGLContext(ctx);
+
+    // Store the format used by the context and queue up creating an
+    // offscreen surface in the main thread so that it is available
+    // for use when we want to shutdown the renderer. We need to create
+    // the offscreen surface on the main thread because on some platforms
+    // (MS Windows), an offscreen surface is just a hidden QWindow.
+    m_format = ctx->format();
+    QMetaObject::invokeMethod(m_offscreenHelper, "createOffscreenSurface");
 
     // Awake setScenegraphRoot in case it was waiting
     m_waitForInitializationToBeCompleted.release(1);
@@ -329,15 +353,46 @@ void Renderer::shutdown()
     When using a threaded renderer this function is called in the context of the
     RenderThread to do any shutdown and cleanup that needs to be performed in the
     thread where the OpenGL context lives.
+
+    When using Scene3D or anything that provides a custom QOpenGLContext (not
+    owned by Qt3D) this function is called whenever the signal
+    QOpenGLContext::aboutToBeDestroyed is emitted. In that case this function
+    is called in the context of the emitter's thread.
 */
 void Renderer::releaseGraphicsResources()
 {
-    // Clean up the graphics context and any resources
-    const QVector<GLTexture*> activeTextures = m_nodesManager->glTextureManager()->activeResources();
-    for (GLTexture *tex : activeTextures)
-        tex->destroyGLTexture();
+    // We may get called twice when running inside of a Scene3D. Once when Qt Quick
+    // wants to shutdown, and again when the render aspect gets unregistered. So
+    // check that we haven't already cleaned up before going any further.
+    if (!m_graphicsContext)
+        return;
 
-    // TO DO: Do the same thing with buffers
+    // Try to temporarily make the context current so we can free up any resources
+    QMutexLocker locker(&m_offscreenSurfaceMutex);
+    QOffscreenSurface *offscreenSurface = m_offscreenHelper->offscreenSurface();
+    if (!offscreenSurface) {
+        qWarning() << "Failed to make context current: OpenGL resources will not be destroyed";
+        return;
+    }
+
+    QOpenGLContext *context = m_graphicsContext->openGLContext();
+    Q_ASSERT(context);
+    if (context->makeCurrent(offscreenSurface)) {
+
+        // Clean up the graphics context and any resources
+        const QVector<GLTexture*> activeTextures = m_nodesManager->glTextureManager()->activeResources();
+        for (GLTexture *tex : activeTextures)
+            tex->destroyGLTexture();
+
+        // TO DO: Do the same thing with buffers
+
+        context->doneCurrent();
+    } else {
+        qWarning() << "Failed to make context current: OpenGL resources will not be destroyed";
+    }
+
+    if (m_ownedContext)
+        delete context;
 
     m_graphicsContext.reset(nullptr);
     qCDebug(Backend) << Q_FUNC_INFO << "Renderer properly shutdown";
@@ -473,11 +528,11 @@ void Renderer::doRender()
                     if (!m_ownedContext)
                         m_graphicsContext->setCurrentStateSet(nullptr);
                     if (m_graphicsContext->beginDrawing(surface)) {
-                    // 1) Execute commands for buffer uploads, texture updates, shader loading first
-                    updateGLResources();
-                    // 2) Update VAO and copy data into commands to allow concurrent submission
-                    prepareCommandsSubmission(renderViews);
-                    preprocessingComplete = true;
+                        // 1) Execute commands for buffer uploads, texture updates, shader loading first
+                        updateGLResources();
+                        // 2) Update VAO and copy data into commands to allow concurrent submission
+                        prepareCommandsSubmission(renderViews);
+                        preprocessingComplete = true;
                     }
                 }
             }
@@ -521,6 +576,7 @@ void Renderer::doRender()
             // the write to the file, and this is performed after this step
             Qt3DCore::QThreadPooler::addSubmissionLogStatsEntry(submissionStatsPart1);
             Qt3DCore::QThreadPooler::addSubmissionLogStatsEntry(submissionStatsPart2);
+            Profiling::GLTimeRecorder::writeResults();
         }
 #endif
     }
@@ -643,6 +699,21 @@ QVariant Renderer::executeCommand(const QStringList &args)
     return QVariant();
 }
 
+/*!
+    \internal
+    Called in the context of the aspect thread from QRenderAspect::onRegistered
+*/
+void Renderer::setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper)
+{
+    QMutexLocker locker(&m_offscreenSurfaceMutex);
+    m_offscreenHelper = helper;
+}
+
+QSurfaceFormat Renderer::format()
+{
+    return m_format;
+}
+
 // When this function is called, we must not be processing the commands for frame n+1
 void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderViews)
 {
@@ -689,6 +760,7 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                         m_dirtyGeometry.push_back(rGeometry);
 
                     if (!command->m_attributes.isEmpty() && (requiresFullVAOUpdate || requiresPartialVAOUpdate)) {
+                        Profiling::GLTimeRecorder recorder(Profiling::VAOUpload);
                         // Activate shader
                         m_graphicsContext->activateShader(shader->dna());
                         // Bind VAO
@@ -767,7 +839,7 @@ void Renderer::lookForDirtyShaders()
         for (HTechnique techniqueHandle : activeTechniques) {
             Technique *technique = m_nodesManager->techniqueManager()->data(techniqueHandle);
             // If api of the renderer matches the one from the technique
-            if (*contextInfo() == *technique->graphicsApiFilter()) {
+            if (technique->isCompatibleWithRenderer()) {
                 const auto passIds = technique->renderPasses();
                 for (const QNodeId passId : passIds) {
                     RenderPass *renderPass = m_nodesManager->renderPassManager()->lookupResource(passId);
@@ -781,35 +853,58 @@ void Renderer::lookForDirtyShaders()
     }
 }
 
+// Render Thread
 void Renderer::updateGLResources()
 {
-    const QVector<HBuffer> dirtyBufferHandles = std::move(m_dirtyBuffers);
-    for (HBuffer handle: dirtyBufferHandles) {
-        Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
-        // Perform data upload
-        // Forces creation if it doesn't exit
-        if (!m_graphicsContext->hasGLBufferForBuffer(buffer))
-            m_graphicsContext->glBufferForRenderBuffer(buffer);
-        else // Otherwise update the glBuffer
-            m_graphicsContext->updateBuffer(buffer);
-        buffer->unsetDirty();
+    {
+        Profiling::GLTimeRecorder recorder(Profiling::BufferUpload);
+        const QVector<HBuffer> dirtyBufferHandles = std::move(m_dirtyBuffers);
+        for (HBuffer handle: dirtyBufferHandles) {
+            Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
+            // Perform data upload
+            // Forces creation if it doesn't exit
+            if (!m_graphicsContext->hasGLBufferForBuffer(buffer))
+                m_graphicsContext->glBufferForRenderBuffer(buffer);
+            else // Otherwise update the glBuffer
+                m_graphicsContext->updateBuffer(buffer);
+            buffer->unsetDirty();
+        }
     }
 
-    const QVector<HShader> dirtyShaderHandles = std::move(m_dirtyShaders);
-    for (HShader handle: dirtyShaderHandles) {
-        Shader *shader = m_nodesManager->shaderManager()->data(handle);
-        // Compile shader
-        m_graphicsContext->loadShader(shader);
+    {
+        Profiling::GLTimeRecorder recorder(Profiling::ShaderUpload);
+        const QVector<HShader> dirtyShaderHandles = std::move(m_dirtyShaders);
+        for (HShader handle: dirtyShaderHandles) {
+            Shader *shader = m_nodesManager->shaderManager()->data(handle);
+            // Compile shader
+            m_graphicsContext->loadShader(shader);
+        }
     }
 
-    const QVector<HTexture> activeTextureHandles = std::move(m_dirtyTextures);
-    for (HTexture handle: activeTextureHandles) {
-        Texture *texture = m_nodesManager->textureManager()->data(handle);
-        // Upload/Update texture
-        updateTexture(texture);
+    {
+        Profiling::GLTimeRecorder recorder(Profiling::TextureUpload);
+        const QVector<HTexture> activeTextureHandles = std::move(m_dirtyTextures);
+        for (HTexture handle: activeTextureHandles) {
+            Texture *texture = m_nodesManager->textureManager()->data(handle);
+            // Upload/Update texture
+            updateTexture(texture);
+        }
     }
+    // When Textures are cleaned up, their id is saved
+    // so that they can be cleaned up in the render thread
+    // Note: we perform this step in second so that the previous updateTexture call
+    // has a chance to find a shared texture
+    const QVector<Qt3DCore::QNodeId> cleanedUpTextureIds = m_nodesManager->textureManager()->takeTexturesIdsToCleanup();
+    for (const Qt3DCore::QNodeId textureCleanedUpId: cleanedUpTextureIds) {
+        cleanupTexture(m_nodesManager->textureManager()->lookupResource(textureCleanedUpId));
+        // We can really release the texture at this point
+        m_nodesManager->textureManager()->releaseResource(textureCleanedUpId);
+    }
+
+
 }
 
+// Render Thread
 void Renderer::updateTexture(Texture *texture)
 {
     // For implementing unique, non-shared, non-cached textures.
@@ -888,6 +983,16 @@ void Renderer::updateTexture(Texture *texture)
     texture->unsetDirty();
 }
 
+// Render Thread
+void Renderer::cleanupTexture(const Texture *texture)
+{
+    GLTextureManager *glTextureManager = m_nodesManager->glTextureManager();
+    GLTexture *glTexture = glTextureManager->lookupResource(texture->peerId());
+
+    if (glTexture != nullptr)
+        glTextureManager->abandon(glTexture, texture);
+}
+
 
 // Happens in RenderThread context when all RenderViewJobs are done
 // Returns the id of the last bound FBO
@@ -962,37 +1067,46 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
         // and it contains a list of StateVariant value types
         RenderStateSet *renderViewStateSet = renderView->stateSet();
 
-        // Set the RV state if not null,
-        if (renderViewStateSet != nullptr)
-            m_graphicsContext->setCurrentStateSet(renderViewStateSet);
-        else
-            m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
+        {
+            Profiling::GLTimeRecorder recorder(Profiling::StateUpdate);
+            // Set the RV state if not null,
+            if (renderViewStateSet != nullptr)
+                m_graphicsContext->setCurrentStateSet(renderViewStateSet);
+            else
+                m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
+        }
 
         // Set RenderTarget ...
         // Activate RenderTarget
-        m_graphicsContext->activateRenderTarget(renderView->renderTargetId(),
-                                                renderView->attachmentPack(),
-                                                lastBoundFBOId);
-
-        // set color, depth, stencil clear values (only if needed)
-        auto clearBufferTypes = renderView->clearTypes();
-        if (clearBufferTypes & QClearBuffers::ColorBuffer) {
-            const QVector4D vCol = renderView->globalClearColorBufferInfo().clearColor;
-            m_graphicsContext->clearColor(QColor::fromRgbF(vCol.x(), vCol.y(), vCol.z(), vCol.w()));
+        {
+            Profiling::GLTimeRecorder recorder(Profiling::RenderTargetUpdate);
+            m_graphicsContext->activateRenderTarget(renderView->renderTargetId(),
+                                                    renderView->attachmentPack(),
+                                                    lastBoundFBOId);
         }
-        if (clearBufferTypes & QClearBuffers::DepthBuffer)
-            m_graphicsContext->clearDepthValue(renderView->clearDepthValue());
-        if (clearBufferTypes & QClearBuffers::StencilBuffer)
-            m_graphicsContext->clearStencilValue(renderView->clearStencilValue());
 
-        // Clear BackBuffer
-        m_graphicsContext->clearBackBuffer(clearBufferTypes);
+        {
+            Profiling::GLTimeRecorder recorder(Profiling::ClearBuffer);
+            // set color, depth, stencil clear values (only if needed)
+            auto clearBufferTypes = renderView->clearTypes();
+            if (clearBufferTypes & QClearBuffers::ColorBuffer) {
+                const QVector4D vCol = renderView->globalClearColorBufferInfo().clearColor;
+                m_graphicsContext->clearColor(QColor::fromRgbF(vCol.x(), vCol.y(), vCol.z(), vCol.w()));
+            }
+            if (clearBufferTypes & QClearBuffers::DepthBuffer)
+                m_graphicsContext->clearDepthValue(renderView->clearDepthValue());
+            if (clearBufferTypes & QClearBuffers::StencilBuffer)
+                m_graphicsContext->clearStencilValue(renderView->clearStencilValue());
 
-        // if there are ClearColors set for different draw buffers,
-        // clear each of these draw buffers individually now
-        const QVector<ClearBufferInfo> clearDrawBuffers = renderView->specificClearColorBufferInfo();
-        for (const ClearBufferInfo &clearBuffer : clearDrawBuffers)
-            m_graphicsContext->clearBufferf(clearBuffer.drawBufferIndex, clearBuffer.clearColor);
+            // Clear BackBuffer
+            m_graphicsContext->clearBackBuffer(clearBufferTypes);
+
+            // if there are ClearColors set for different draw buffers,
+            // clear each of these draw buffers individually now
+            const QVector<ClearBufferInfo> clearDrawBuffers = renderView->specificClearColorBufferInfo();
+            for (const ClearBufferInfo &clearBuffer : clearDrawBuffers)
+                m_graphicsContext->clearBufferf(clearBuffer.drawBufferIndex, clearBuffer.clearColor);
+        }
 
         // Set the Viewport
         m_graphicsContext->setViewport(renderView->viewport(), renderView->surfaceSize() * renderView->devicePixelRatio());
@@ -1104,14 +1218,6 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     m_pickBoundingVolumeJob->setRenderSettings(settings());
     m_pickBoundingVolumeJob->setMouseEvents(pendingPickingEvents());
 
-    // Traverse the current framegraph. For each leaf node create a
-    // RenderView and set its configuration then create a job to
-    // populate the RenderView with a set of RenderCommands that get
-    // their details from the RenderNodes that are visible to the
-    // Camera selected by the framegraph configuration
-    FrameGraphVisitor visitor(this, m_nodesManager->frameGraphManager());
-    visitor.traverse(frameGraphRoot(), &renderBinJobs);
-
     // Set dependencies of resource gatherer
     for (const QAspectJobPtr &jobPtr : renderBinJobs) {
         jobPtr->addDependency(m_bufferGathererJob);
@@ -1132,9 +1238,18 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     renderBinJobs.append(bufferJobs);
 
     // Jobs to prepare GL Resource upload
+    renderBinJobs.push_back(m_syncTextureLoadingJob);
     renderBinJobs.push_back(m_bufferGathererJob);
     renderBinJobs.push_back(m_textureGathererJob);
     renderBinJobs.push_back(m_shaderGathererJob);
+
+    // Traverse the current framegraph. For each leaf node create a
+    // RenderView and set its configuration then create a job to
+    // populate the RenderView with a set of RenderCommands that get
+    // their details from the RenderNodes that are visible to the
+    // Camera selected by the framegraph configuration
+    FrameGraphVisitor visitor(this, m_nodesManager->frameGraphManager());
+    visitor.traverse(frameGraphRoot(), &renderBinJobs);
 
     // Set target number of RenderViews
     m_renderQueue->setTargetRenderViewCount(visitor.leafNodeCount());
@@ -1145,6 +1260,11 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 QAspectJobPtr Renderer::pickBoundingVolumeJob()
 {
     return m_pickBoundingVolumeJob;
+}
+
+QAspectJobPtr Renderer::syncTextureLoadingJob()
+{
+    return m_syncTextureLoadingJob;
 }
 
 QAbstractFrameAdvanceService *Renderer::frameAdvanceService() const
@@ -1163,6 +1283,7 @@ void Renderer::performDraw(RenderCommand *command)
 
     // TO DO: Add glMulti Draw variants
     if (command->m_drawIndexed) {
+        Profiling::GLTimeRecorder recorder(Profiling::DrawElement);
         m_graphicsContext->drawElementsInstancedBaseVertexBaseInstance(command->m_primitiveType,
                                                                        command->m_primitiveCount,
                                                                        command->m_indexAttributeDataType,
@@ -1171,6 +1292,7 @@ void Renderer::performDraw(RenderCommand *command)
                                                                        command->m_indexOffset,
                                                                        command->m_firstVertex);
     } else {
+        Profiling::GLTimeRecorder recorder(Profiling::DrawArray);
         m_graphicsContext->drawArraysInstancedBaseInstance(command->m_primitiveType,
                                                            command->m_firstInstance,
                                                            command->m_primitiveCount,
@@ -1190,12 +1312,20 @@ void Renderer::performDraw(RenderCommand *command)
 
 void Renderer::performCompute(const RenderView *, RenderCommand *command)
 {
-    m_graphicsContext->activateShader(command->m_shaderDna);
-    m_graphicsContext->setParameters(command->m_parameterPack);
-    m_graphicsContext->dispatchCompute(command->m_workGroups[0],
-            command->m_workGroups[1],
-            command->m_workGroups[2]);
-
+    {
+        Profiling::GLTimeRecorder recorder(Profiling::ShaderUpdate);
+        m_graphicsContext->activateShader(command->m_shaderDna);
+    }
+    {
+        Profiling::GLTimeRecorder recorder(Profiling::UniformUpdate);
+        m_graphicsContext->setParameters(command->m_parameterPack);
+    }
+    {
+        Profiling::GLTimeRecorder recorder(Profiling::DispatchCompute);
+        m_graphicsContext->dispatchCompute(command->m_workGroups[0],
+                command->m_workGroups[1],
+                command->m_workGroups[2]);
+    }
     // HACK: Reset the compute flag to dirty
     m_changeSet |= AbstractRenderer::ComputeDirty;
 
@@ -1250,7 +1380,6 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
         if (command->m_type == RenderCommand::Compute) { // Compute Call
             performCompute(rv, command);
         } else { // Draw Command
-
             // Check if we have a valid command that can be drawn
             if (!command->m_isValid) {
                 allCommandsIssued = false;
@@ -1259,26 +1388,40 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
 
             vao = m_nodesManager->vaoManager()->data(command->m_vao);
 
-            //// We activate the shader here
-            m_graphicsContext->activateShader(command->m_shaderDna);
+            {
+                Profiling::GLTimeRecorder recorder(Profiling::ShaderUpdate);
+                //// We activate the shader here
+                m_graphicsContext->activateShader(command->m_shaderDna);
+            }
 
-            // Bind VAO
-            vao->bind();
+            {
+                Profiling::GLTimeRecorder recorder(Profiling::VAOUpdate);
+                // Bind VAO
+                vao->bind();
+            }
 
-            //// Update program uniforms
-            m_graphicsContext->setParameters(command->m_parameterPack);
+            {
+                Profiling::GLTimeRecorder recorder(Profiling::UniformUpdate);
+                //// Update program uniforms
+                m_graphicsContext->setParameters(command->m_parameterPack);
+            }
 
             //// OpenGL State
             // TO DO: Make states not dependendent on their backend node for this step
             // Set state
             RenderStateSet *localState = command->m_stateSet;
-            // Merge the RenderCommand state with the globalState of the RenderView
-            // Or restore the globalState if no stateSet for the RenderCommand
-            if (localState != nullptr) {
-                command->m_stateSet->merge(globalState);
-                m_graphicsContext->setCurrentStateSet(command->m_stateSet);
-            } else {
-                m_graphicsContext->setCurrentStateSet(globalState);
+
+
+            {
+                Profiling::GLTimeRecorder recorder(Profiling::StateUpdate);
+                // Merge the RenderCommand state with the globalState of the RenderView
+                // Or restore the globalState if no stateSet for the RenderCommand
+                if (localState != nullptr) {
+                    command->m_stateSet->merge(globalState);
+                    m_graphicsContext->setCurrentStateSet(command->m_stateSet);
+                } else {
+                    m_graphicsContext->setCurrentStateSet(globalState);
+                }
             }
             // All Uniforms for a pass are stored in the QUniformPack of the command
             // Uniforms for Effect, Material and Technique should already have been correctly resolved

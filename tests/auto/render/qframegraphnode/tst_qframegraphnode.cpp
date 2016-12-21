@@ -34,7 +34,7 @@
 
 #include <Qt3DRender/qframegraphnode.h>
 #include <Qt3DRender/private/qframegraphnode_p.h>
-
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 #include "testpostmanarbiter.h"
 
 class MyFrameGraphNode : public Qt3DRender::QFrameGraphNode
@@ -97,6 +97,41 @@ private Q_SLOTS:
         QCOMPARE(frameGraphNode->metaObject(), creationChangeData->metaObject());
 
         delete frameGraphNode;
+    }
+
+    void checkCreationData()
+    {
+        // GIVEN
+        Qt3DRender::QFrameGraphNode *parentFrameGraphNode = new MyFrameGraphNode();
+        Qt3DRender::QFrameGraphNode *childFrameGraphNode = new MyFrameGraphNode(parentFrameGraphNode);
+
+        // WHEN
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
+
+        {
+            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(parentFrameGraphNode);
+            creationChanges = creationChangeGenerator.creationChanges();
+        }
+
+        {
+            // THEN
+            QCOMPARE(creationChanges.size(), 2);
+            {
+
+                const auto creationChangeData = qSharedPointerCast<Qt3DRender::QFrameGraphNodeCreatedChangeBase>(creationChanges.first());
+                QCOMPARE(parentFrameGraphNode->isEnabled(), creationChangeData->isNodeEnabled());
+                QCOMPARE(parentFrameGraphNode->metaObject(), creationChangeData->metaObject());
+                QCOMPARE(Qt3DCore::qIdForNode(parentFrameGraphNode->parentFrameGraphNode()), creationChangeData->parentFrameGraphNodeId());
+            }
+            // THEN
+            {
+                const auto creationChangeData = qSharedPointerCast<Qt3DRender::QFrameGraphNodeCreatedChangeBase>(creationChanges.last());
+                QCOMPARE(childFrameGraphNode->isEnabled(), creationChangeData->isNodeEnabled());
+                QCOMPARE(childFrameGraphNode->metaObject(), creationChangeData->metaObject());
+                QCOMPARE(Qt3DCore::qIdForNode(childFrameGraphNode->parentFrameGraphNode()), parentFrameGraphNode->id());
+                QCOMPARE(Qt3DCore::qIdForNode(childFrameGraphNode->parentFrameGraphNode()), creationChangeData->parentFrameGraphNodeId());
+            }
+        }
     }
 
     void checkPropertyUpdates()

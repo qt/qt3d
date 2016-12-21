@@ -39,6 +39,7 @@
 
 #include "qdispatchcompute.h"
 #include "qdispatchcompute_p.h"
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -163,7 +164,7 @@ void QDispatchCompute::setWorkGroupZ(int workGroupZ)
 
 Qt3DCore::QNodeCreatedChangeBasePtr QDispatchCompute::createNodeCreationChange() const
 {
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QDispatchComputeData>::create(this);
+    auto creationChange = QFrameGraphNodeCreatedChangePtr<QDispatchComputeData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QDispatchCompute);
     data.workGroupX = d->m_workGroupX;
