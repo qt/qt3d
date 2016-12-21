@@ -61,7 +61,7 @@ namespace Render {
 Texture::Texture()
     // We need backend -> frontend notifications to update the status of the texture
     : BackendNode(ReadWrite)
-    , m_dirty(DirtyGenerators|DirtyProperties|DirtyParameters)
+    , m_dirty(DirtyGenerators|DirtyProperties|DirtyParameters|DirtyDataGenerator)
     , m_textureImageManager(nullptr)
 {
 }
@@ -214,7 +214,7 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             dirty = DirtyProperties;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("generator")) {
             m_dataFunctor = propertyChange->value().value<QTextureGeneratorPtr>();
-            dirty = DirtyGenerators;
+            dirty = DirtyDataGenerator;
         }
     }
         break;

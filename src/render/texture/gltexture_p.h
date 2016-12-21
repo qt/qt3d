@@ -164,11 +164,12 @@ protected:
     void setParameters(const TextureParameters &params);
     void setProperties(const TextureProperties &props);
     void setImages(const QVector<Image> &images);
+    void setGenerator(const QTextureGeneratorPtr &generator);
 
 private:
 
     enum DirtyFlag {
-        TextureData  = 0x01,     // one or more generators have been executed, data needs uploading to GPU
+        TextureData  = 0x01,     // one or more image generators have been executed, data needs uploading to GPU
         Properties   = 0x02,     // texture needs to be (re-)created
         Parameters   = 0x04      // texture parameters need to be (re-)set
 
@@ -188,6 +189,8 @@ private:
     TextureDataManager *m_textureDataManager;
     TextureImageDataManager *m_textureImageDataManager;
 
+    // target which is actually used for GL texture
+    QAbstractTexture::Target m_actualTarget;
     TextureProperties m_properties;
     TextureParameters m_parameters;
 
