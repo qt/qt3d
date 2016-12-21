@@ -61,7 +61,7 @@ namespace Render {
 Texture::Texture()
     // We need backend -> frontend notifications to update the status of the texture
     : BackendNode(ReadWrite)
-    , m_dirty(DirtyGenerators|DirtyProperties|DirtyParameters|DirtyDataGenerator)
+    , m_dirty(DirtyImageGenerators|DirtyProperties|DirtyParameters|DirtyDataGenerator)
     , m_textureImageManager(nullptr)
 {
 }
@@ -101,7 +101,7 @@ void Texture::addTextureImage(Qt3DCore::QNodeId id)
         qWarning() << "[Qt3DRender::TextureNode] addTextureImage: image handle is NULL";
     } else if (!m_textureImages.contains(handle)) {
         m_textureImages << handle;
-        addDirtyFlag(DirtyGenerators);
+        addDirtyFlag(DirtyImageGenerators);
     }
 }
 
@@ -117,7 +117,7 @@ void Texture::removeTextureImage(Qt3DCore::QNodeId id)
         qWarning() << "[Qt3DRender::TextureNode] removeTextureImage: image handle is NULL";
     } else {
         m_textureImages.removeAll(handle);
-        addDirtyFlag(DirtyGenerators);
+        addDirtyFlag(DirtyImageGenerators);
     }
 }
 
@@ -269,7 +269,7 @@ void Texture::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chan
     m_parameters.comparisonMode = data.comparisonMode;
     m_dataFunctor = data.dataFunctor;
 
-    addDirtyFlag(DirtyFlags(DirtyGenerators|DirtyProperties|DirtyParameters));
+    addDirtyFlag(DirtyFlags(DirtyImageGenerators|DirtyProperties|DirtyParameters));
 }
 
 

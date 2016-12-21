@@ -135,7 +135,7 @@ public:
         NotDirty = 0,
         DirtyProperties = 0x1,
         DirtyParameters = 0x2,
-        DirtyGenerators = 0x4,
+        DirtyImageGenerators = 0x4,
         DirtyDataGenerator = 0x8
     };
     Q_DECLARE_FLAGS(DirtyFlags, DirtyFlag)
