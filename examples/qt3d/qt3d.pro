@@ -15,7 +15,8 @@ SUBDIRS += \
     planets-qml \
     instanced-arrays-qml \
     lights \
-    compute-particles
+    compute-particles \
+    3d-text
 
 qtHaveModule(multimedia): SUBDIRS += audio-visualizer-qml
 
