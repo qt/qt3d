@@ -135,7 +135,7 @@ public:
 private:
     void notifyCreationChange();
     void notifyDestructionChangesAndRemoveFromScene();
-    void _q_notifyCreationAndChildChanges();
+    void _q_postConstructorInit();
     void _q_addChild(QNode *childNode);
     void _q_removeChild(QNode *childNode);
     void _q_setParentHelper(QNode *parent);

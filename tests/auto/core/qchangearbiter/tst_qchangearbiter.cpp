@@ -59,6 +59,7 @@ private slots:
     void unregisterObservers();
     void unregisterSceneObservers();
     void distributeFrontendChanges();
+    void distributePropertyChanges();
     void distributeBackendChanges();
 };
 
@@ -136,6 +137,44 @@ public:
 
 private:
     QList<Qt3DCore::QSceneChangePtr> m_lastChanges;
+};
+
+// used to test property change notifications
+class PropertyTestNode : public Qt3DCore::QNode
+{
+    Q_OBJECT
+    Q_PROPERTY(int prop1 READ prop1 WRITE setProp1 NOTIFY prop1Changed)
+    Q_PROPERTY(float prop2 READ prop2 WRITE setProp2 NOTIFY prop2Changed)
+
+public:
+    explicit PropertyTestNode(Qt3DCore::QNode *parent = 0) : Qt3DCore::QNode(parent)
+    {}
+
+    int prop1() const { return m_prop1; }
+    void setProp1(int v)
+    {
+        if (m_prop1 != v) {
+            m_prop1 = v;
+            Q_EMIT prop1Changed(v);
+        }
+    }
+
+    float prop2() const { return m_prop2; }
+    void setProp2(float v)
+    {
+        if (m_prop2 != v) {
+            m_prop2 = v;
+            Q_EMIT prop2Changed(v);
+        }
+    }
+
+Q_SIGNALS:
+    void prop1Changed(int v);
+    void prop2Changed(float v);
+
+private:
+    int m_prop1 = 0;
+    float m_prop2 = 0.0f;
 };
 
 class tst_SimpleObserver : public Qt3DCore::QObserverInterface
@@ -709,6 +748,94 @@ void tst_QChangeArbiter::distributeFrontendChanges()
     QCOMPARE(backendNodeRemovedObserver->lastChanges().count(), 2);
     QCOMPARE(backendComponentAddedObserver->lastChanges().count(), 2);
     QCOMPARE(backendComponentRemovedObserver->lastChanges().count(), 2);
+
+    Qt3DCore::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter.data());
+}
+
+void tst_QChangeArbiter::distributePropertyChanges()
+{
+    // GIVEN
+    QScopedPointer<Qt3DCore::QChangeArbiter> arbiter(new Qt3DCore::QChangeArbiter());
+    QScopedPointer<Qt3DCore::QScene> scene(new Qt3DCore::QScene());
+    QScopedPointer<Qt3DCore::QAbstractPostman> postman(new tst_PostManObserver);
+    arbiter->setPostman(postman.data());
+    arbiter->setScene(scene.data());
+    postman->setScene(scene.data());
+    scene->setArbiter(arbiter.data());
+    // Replaces initialize as we have no JobManager in this case
+    Qt3DCore::QChangeArbiter::createThreadLocalChangeQueue(arbiter.data());
+
+    // Test change notifications made to the root node:
+
+    // WHEN
+    PropertyTestNode *root = new PropertyTestNode();
+    Qt3DCore::QNodePrivate::get(root)->setScene(scene.data());
+    scene->addObservable(root);
+
+    tst_SimpleObserver *rootObserver = new tst_SimpleObserver();
+    arbiter->registerObserver(rootObserver, root->id());
+    arbiter->syncChanges();
+
+    // THEN
+    QVERIFY(rootObserver->lastChange().isNull());
+
+    // WHEN
+    root->setProp1(root->prop1() + 1);
+    arbiter->syncChanges();
+
+    // THEN
+    QVERIFY(!rootObserver->lastChange().isNull());
+    QCOMPARE(rootObserver->lastChange()->type(), Qt3DCore::PropertyUpdated);
+    Qt3DCore::QPropertyUpdatedChangePtr propChange = qSharedPointerDynamicCast<Qt3DCore::QPropertyUpdatedChange>(rootObserver->lastChange());
+    QCOMPARE(root->id(), propChange->subjectId());
+    QCOMPARE(QString(propChange->propertyName()), QString("prop1"));
+
+    // WHEN
+    root->setProp2(root->prop2() + 1.f);
+    arbiter->syncChanges();
+
+    // THEN
+    QVERIFY(!rootObserver->lastChange().isNull());
+    QCOMPARE(rootObserver->lastChange()->type(), Qt3DCore::PropertyUpdated);
+    propChange = qSharedPointerDynamicCast<Qt3DCore::QPropertyUpdatedChange>(rootObserver->lastChange());
+    QCOMPARE(root->id(), propChange->subjectId());
+    QCOMPARE(QString(propChange->propertyName()), QString("prop2"));
+
+    // Test change notifications made to an entity that was added to the scene
+    // via QNode::setParent()
+
+    // WHEN
+    PropertyTestNode *setParentChild = new PropertyTestNode();
+    setParentChild->setParent(root);
+    tst_SimpleObserver *setParentChildObserver = new tst_SimpleObserver();
+    arbiter->registerObserver(setParentChildObserver, setParentChild->id());
+    setParentChild->setProp2(setParentChild->prop2() + 1.f);
+    arbiter->syncChanges();
+
+    // THEN
+    QVERIFY(!setParentChildObserver->lastChange().isNull());
+    QCOMPARE(setParentChildObserver->lastChange()->type(), Qt3DCore::PropertyUpdated);
+    propChange = qSharedPointerDynamicCast<Qt3DCore::QPropertyUpdatedChange>(setParentChildObserver->lastChange());
+    QCOMPARE(setParentChild->id(), propChange->subjectId());
+    QCOMPARE(QString(propChange->propertyName()), QString("prop2"));
+
+    // Test change notifications made to an entity that was added to the scene
+    // via the QNode() constructor parent parameter
+
+    // WHEN
+    PropertyTestNode *directChild = new PropertyTestNode(root);
+    QCoreApplication::processEvents();  // make sure the post-ctor initialization is executed for the node
+    tst_SimpleObserver *directChildObserver = new tst_SimpleObserver();
+    arbiter->registerObserver(directChildObserver, directChild->id());
+    directChild->setProp1(directChild->prop1() + 1);
+    arbiter->syncChanges();
+
+    // THEN
+    QVERIFY(!directChildObserver->lastChange().isNull());
+    QCOMPARE(directChildObserver->lastChange()->type(), Qt3DCore::PropertyUpdated);
+    propChange = qSharedPointerDynamicCast<Qt3DCore::QPropertyUpdatedChange>(directChildObserver->lastChange());
+    QCOMPARE(directChild->id(), propChange->subjectId());
+    QCOMPARE(QString(propChange->propertyName()), QString("prop1"));
 
     Qt3DCore::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter.data());
 }

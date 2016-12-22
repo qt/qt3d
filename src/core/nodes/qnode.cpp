@@ -97,10 +97,8 @@ void QNodePrivate::init(QNode *parent)
     m_scene = parentPrivate->m_scene;
     Q_Q(QNode);
     if (m_scene) {
-        m_scene->addObservable(q); // Sets the m_changeArbiter to that of the scene
-
-        // Scehdule the backend notification
-        QMetaObject::invokeMethod(q, "_q_notifyCreationAndChildChanges", Qt::QueuedConnection);
+        // schedule the backend notification and scene registering -> set observers through scene
+        QMetaObject::invokeMethod(q, "_q_postConstructorInit", Qt::QueuedConnection);
     }
 }
 
@@ -166,8 +164,10 @@ void QNodePrivate::notifyDestructionChangesAndRemoveFromScene()
  * parent backend node of its new child. This is called in a deferred manner
  * by the QNodePrivate::init() method to notify the backend of newly created
  * nodes with a parent that is already part of the scene.
+ *
+ * Also notify the scene of this node, so it may set it's change arbiter.
  */
-void QNodePrivate::_q_notifyCreationAndChildChanges()
+void QNodePrivate::_q_postConstructorInit()
 {
     Q_Q(QNode);
 
@@ -175,6 +175,9 @@ void QNodePrivate::_q_notifyCreationAndChildChanges()
     auto parentNode = q->parentNode();
     if (!parentNode)
         return;
+
+    if (m_scene)
+        m_scene->addObservable(q); // Sets the m_changeArbiter to that of the scene
 
     // Let the backend know we have been added to the scene
     notifyCreationChange();
@@ -187,7 +190,7 @@ void QNodePrivate::_q_notifyCreationAndChildChanges()
 /*!
  * \internal
  *
- * Called by _q_setParentHelper() or _q_notifyCreationAndChildChanges()
+ * Called by _q_setParentHelper() or _q_postConstructorInit()
  * on the main thread.
  */
 void QNodePrivate::_q_addChild(QNode *childNode)
