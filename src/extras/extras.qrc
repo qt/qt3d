@@ -41,5 +41,9 @@
         <file>shaders/es2/unlittexture.vert</file>
         <file>shaders/gl3/metalrough.vert</file>
         <file>shaders/gl3/metalrough.frag</file>
+        <file>shaders/gl3/distancefieldtext.vert</file>
+        <file>shaders/gl3/distancefieldtext.frag</file>
+        <file>shaders/es2/distancefieldtext.frag</file>
+        <file>shaders/es2/distancefieldtext.vert</file>
     </qresource>
 </RCC>
