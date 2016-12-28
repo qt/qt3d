@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Paul Lemire
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,74 +37,51 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_JOB_COMMON_P_H
-#define QT3DRENDER_RENDER_JOB_COMMON_P_H
+#include "updatetreeenabledjob_p.h"
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
+#include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/job_common_p.h>
 
-#include <Qt3DCore/private/qaspectjob_p.h>
+#include <QThread>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
 namespace Render {
 
-namespace JobTypes {
+namespace {
 
-    enum JobType {
-        LoadBuffer = 1,
-        FrameCleanup,
-        UpdateShaderDataTransform,
-        CalcBoundingVolume,
-        CalcTriangleVolume,
-        LoadGeometry,
-        LoadScene,
-        LoadTextureData,
-        PickBoundingVolume,
-        RenderView,
-        UpdateTransform,
-        UpdateTreeEnabled,
-        ExpandBoundingVolume,
-        FrameSubmissionPart1,
-        LayerFiltering,
-        EntityComponentTypeFiltering,
-        MaterialParameterGathering,
-        RenderViewBuilder,
-        GenericLambda,
-        FrustumCulling,
-        LightGathering,
-        UpdateWorldBoundingVolume,
-        FrameSubmissionPart2,
-        DirtyBufferGathering,
-        DirtyTextureGathering,
-        DirtyShaderGathering,
-        SendRenderCapture,
-        SyncRenderViewCommandBuilding,
-        SyncRenderViewInitialization,
-        SyncRenderViewCommandBuilder,
-        SyncFrustumCulling,
-        ClearBufferDrawIndex,
-        UpdateMeshTriangleList,
-        FilterCompatibleTechniques,
-        SyncTextureLoading
-    };
+void updateTreeEnabled(Entity *node, bool parentEnabled)
+{
+    const bool treeEnabled = node->isEnabled() && parentEnabled;
+    node->setTreeEnabled(treeEnabled);
 
-} // JobTypes
+    const QVector<Entity*> children = node->children();
+    for (Entity *child : children)
+        updateTreeEnabled(child, treeEnabled);
+}
 
-} // Render
+}
 
-} // Qt3DRender
+UpdateTreeEnabledJob::UpdateTreeEnabledJob()
+    : Qt3DCore::QAspectJob()
+    , m_node(nullptr)
+{
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateTreeEnabled, 0);
+}
+
+void UpdateTreeEnabledJob::setRoot(Entity *root)
+{
+    m_node = root;
+}
+
+void UpdateTreeEnabledJob::run()
+{
+    if (m_node)
+        updateTreeEnabled(m_node, true);
+}
+
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_JOB_COMMON_P_H

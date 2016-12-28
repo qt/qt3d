@@ -229,8 +229,9 @@ private Q_SLOTS:
         QCOMPARE(renderViewBuilder.syncRenderViewInitializationJob()->dependencies().first().data(), renderViewBuilder.renderViewJob().data());
 
         // Step 3
-        QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->dependencies().size(), 1);
-        QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->dependencies().first().data(), renderViewBuilder.syncRenderViewInitializationJob().data());
+        QCOMPARE(renderViewBuilder.filterEntityByLayerJob()->dependencies().size(), 2);
+        QVERIFY(renderViewBuilder.filterEntityByLayerJob()->dependencies().contains(renderViewBuilder.syncRenderViewInitializationJob()));
+        QVERIFY(renderViewBuilder.filterEntityByLayerJob()->dependencies().contains(testAspect.renderer()->updateTreeEnabledJob()));
 
         QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().size(), 1);
         QCOMPARE(renderViewBuilder.setClearDrawBufferIndexJob()->dependencies().first().data(), renderViewBuilder.syncRenderViewInitializationJob().data());

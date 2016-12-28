@@ -165,6 +165,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_expandBoundingVolumeJob(Render::ExpandBoundingVolumeJobPtr::create())
     , m_calculateBoundingVolumeJob(Render::CalculateBoundingVolumeJobPtr::create())
     , m_updateWorldBoundingVolumeJob(Render::UpdateWorldBoundingVolumeJobPtr::create())
+    , m_updateTreeEnabledJob(Render::UpdateTreeEnabledJobPtr::create())
     , m_sendRenderCaptureJob(Render::SendRenderCaptureJobPtr::create(this))
     , m_updateMeshTriangleListJob(Render::UpdateMeshTriangleListJobPtr::create())
     , m_filterCompatibleTechniqueJob(Render::FilterCompatibleTechniqueJobPtr::create())
@@ -436,6 +437,7 @@ void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
     m_calculateBoundingVolumeJob->setRoot(m_renderSceneRoot);
     m_cleanupJob->setRoot(m_renderSceneRoot);
     m_pickBoundingVolumeJob->setRoot(m_renderSceneRoot);
+    m_updateTreeEnabledJob->setRoot(m_renderSceneRoot);
 }
 
 void Renderer::registerEventFilter(QEventFilterService *service)
@@ -1228,6 +1230,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     // Add jobs
     renderBinJobs.push_back(m_updateShaderDataTransformJob);
     renderBinJobs.push_back(m_updateMeshTriangleListJob);
+    renderBinJobs.push_back(m_updateTreeEnabledJob);
     renderBinJobs.push_back(m_expandBoundingVolumeJob);
     renderBinJobs.push_back(m_updateWorldBoundingVolumeJob);
     renderBinJobs.push_back(m_calculateBoundingVolumeJob);
