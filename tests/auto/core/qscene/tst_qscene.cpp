@@ -48,6 +48,7 @@ private slots:
     void removeObservable();
     void removeNodeObservable();
     void addChildNode();
+    void deleteChildNode();
     void removeChildNode();
     void addEntityForComponent();
     void removeEntityForComponent();
@@ -277,6 +278,69 @@ void tst_QScene::addChildNode()
     // THEN
     Q_FOREACH (Qt3DCore::QNode *n, nodes) {
         QVERIFY(scene->lookupNode(n->id()) == n);
+    }
+}
+
+void tst_QScene::deleteChildNode()
+{
+    // GIVEN
+    Qt3DCore::QScene *scene = new Qt3DCore::QScene;
+
+    QList<Qt3DCore::QNode *> nodes1, nodes2;
+
+    Qt3DCore::QNode *root1 = new tst_Node();
+    Qt3DCore::QNode *root2 = new tst_Node();
+    Qt3DCore::QNodePrivate::get(root1)->setScene(scene);
+    Qt3DCore::QNodePrivate::get(root2)->setScene(scene);
+
+    // WHEN
+    scene->addObservable(root1);
+    scene->addObservable(root2);
+    // THEN
+    QVERIFY(scene->lookupNode(root1->id()) == root1);
+    QVERIFY(scene->lookupNode(root2->id()) == root2);
+
+    // WHEN
+    for (int i = 0; i < 10; i++) {
+        Qt3DCore::QNode *child1 = new tst_Node();
+        child1->setParent(nodes1.isEmpty() ? root1 : nodes1.last());
+        nodes1.append(child1);
+
+        Qt3DCore::QNode *child2 = new tst_Node();
+        child2->setParent(nodes2.isEmpty() ? root2 : nodes2.last());
+        nodes2.append(child2);
+    }
+    QCoreApplication::processEvents();
+
+    // THEN
+    for (Qt3DCore::QNode *n : qAsConst(nodes1)) {
+        QVERIFY(scene->lookupNode(n->id()) == n);
+    }
+    for (Qt3DCore::QNode *n : qAsConst(nodes2)) {
+        QVERIFY(scene->lookupNode(n->id()) == n);
+    }
+
+    // gather node IDs
+    Qt3DCore::QNodeIdVector root1ChildIds;
+    for (Qt3DCore::QNode *n : qAsConst(nodes1))
+        root1ChildIds << n->id();
+
+    // WHEN
+    delete root1;
+    QCoreApplication::processEvents();
+
+    // THEN
+    for (Qt3DCore::QNodeId id : qAsConst(root1ChildIds)) {
+        QVERIFY(scene->lookupNode(id) == nullptr);
+    }
+
+    // WHEN
+    nodes2.first()->setParent(static_cast<Qt3DCore::QNode*>(nullptr));
+    QCoreApplication::processEvents();
+
+    // THEN
+    for (Qt3DCore::QNode *n : qAsConst(nodes2)) {
+        QVERIFY(scene->lookupNode(n->id()) == nullptr);
     }
 }
 
