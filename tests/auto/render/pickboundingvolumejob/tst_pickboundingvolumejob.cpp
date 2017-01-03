@@ -38,6 +38,8 @@
 
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QObjectPicker>
+#include <Qt3DRender/QPickEvent>
+#include <Qt3DRender/QPickTriangleEvent>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/entity_p.h>
@@ -719,6 +721,10 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.count(), 1);
         Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "pressed");
+        Qt3DRender::QPickEventPtr pickEvent = change->value().value<Qt3DRender::QPickEventPtr>();
+        QVERIFY(pickEvent);
+        if (pickMethod == Qt3DRender::QPickingSettings::TrianglePicking)
+            QVERIFY(pickEvent.dynamicCast<Qt3DRender::QPickTriangleEvent>());
 
         arbiter.events.clear();
 
@@ -734,6 +740,10 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.count(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "moved");
+        pickEvent = change->value().value<Qt3DRender::QPickEventPtr>();
+        QVERIFY(pickEvent);
+        if (pickMethod == Qt3DRender::QPickingSettings::TrianglePicking)
+            QVERIFY(pickEvent.dynamicCast<Qt3DRender::QPickTriangleEvent>());
 
         arbiter.events.clear();
 
@@ -749,8 +759,16 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.count(), 2);
         change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "clicked");
+        pickEvent = change->value().value<Qt3DRender::QPickEventPtr>();
+        QVERIFY(pickEvent);
+        if (pickMethod == Qt3DRender::QPickingSettings::TrianglePicking)
+            QVERIFY(pickEvent.dynamicCast<Qt3DRender::QPickTriangleEvent>());
         change = arbiter.events.last().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "released");
+        pickEvent = change->value().value<Qt3DRender::QPickEventPtr>();
+        QVERIFY(pickEvent);
+        if (pickMethod == Qt3DRender::QPickingSettings::TrianglePicking)
+            QVERIFY(pickEvent.dynamicCast<Qt3DRender::QPickTriangleEvent>());
 
         arbiter.events.clear();
 

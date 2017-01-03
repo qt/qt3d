@@ -204,7 +204,7 @@ bool PickBoundingVolumeJob::runHelper()
             }
 
             // Dispatch events based on hit results
-            dispatchPickEvents(event, sphereHits, eventButton, eventButtons, eventModifiers);
+            dispatchPickEvents(event, sphereHits, eventButton, eventButtons, eventModifiers, trianglePickingRequested);
         }
     }
 
@@ -231,13 +231,12 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                                                const PickingUtils::CollisionVisitor::HitList &sphereHits,
                                                QPickEvent::Buttons eventButton,
                                                int eventButtons,
-                                               int eventModifiers)
+                                               int eventModifiers,
+                                               bool trianglePickingRequested)
 {
     ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
     // If we have hits
     if (!sphereHits.isEmpty()) {
-
-        const bool trianglePickingRequested = (m_renderSettings->pickResultMode() == QPickingSettings::AllPicks);
         // Note: how can we control that we want the first/last/all elements along the ray to be picked
 
         // How do we differentiate betwnee an Entity with no GeometryRenderer and one with one, both having

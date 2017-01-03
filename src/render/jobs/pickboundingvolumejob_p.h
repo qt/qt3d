@@ -104,7 +104,7 @@ protected:
     void dispatchPickEvents(const QMouseEvent &event, const PickingUtils::CollisionVisitor::HitList &sphereHits,
                             QPickEvent::Buttons eventButton,
                             int eventButtons,
-                            int eventModifiers);
+                            int eventModifiers, bool trianglePickingRequested);
 
 private:
     NodeManagers *m_manager;
