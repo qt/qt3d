@@ -487,6 +487,58 @@ private Q_SLOTS:
         QVERIFY(earlyReturn);
     }
 
+    void checkEarlyReturnWhenAllPickersDisabled_data()
+    {
+        generateAllPickingSettingsCombinations();
+    }
+
+    void checkEarlyReturnWhenAllPickersDisabled()
+    {
+        // GIVEN
+        QmlSceneReader sceneReader(QUrl("qrc:/testscene_pickersdisabled.qml"));
+        QScopedPointer<Qt3DCore::QNode> root(qobject_cast<Qt3DCore::QNode *>(sceneReader.root()));
+        QVERIFY(root);
+
+        QList<Qt3DRender::QRenderSettings *> renderSettings =
+                root->findChildren<Qt3DRender::QRenderSettings *>();
+        QCOMPARE(renderSettings.size(), 1);
+        Qt3DRender::QPickingSettings *settings = renderSettings.first()->pickingSettings();
+
+        QFETCH(Qt3DRender::QPickingSettings::PickMethod, pickMethod);
+        QFETCH(Qt3DRender::QPickingSettings::PickResultMode, pickResultMode);
+        QFETCH(Qt3DRender::QPickingSettings::FaceOrientationPickingMode, faceOrientationPickingMode);
+        settings->setPickMethod(pickMethod);
+        settings->setPickResultMode(pickResultMode);
+        settings->setFaceOrientationPickingMode(faceOrientationPickingMode);
+
+        QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(root.data()));
+
+        // Runs Required jobs
+        runRequiredJobs(test.data());
+
+        // THEN
+        QList<Qt3DRender::QObjectPicker *> pickers =
+                root->findChildren<Qt3DRender::QObjectPicker *>();
+        QCOMPARE(pickers.size(), 2);
+
+        QCOMPARE(test->renderSettings()->pickMethod(), pickMethod);
+        QCOMPARE(test->renderSettings()->pickResultMode(), pickResultMode);
+        QCOMPARE(test->renderSettings()->faceOrientationPickingMode(), faceOrientationPickingMode);
+
+        // WHEN
+        Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
+        initializePickBoundingVolumeJob(&pickBVJob, test.data());
+
+        QList<QMouseEvent> events;
+        events.push_back(QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207.0f, 303.0f),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier));
+        pickBVJob.setMouseEvents(events);
+        bool earlyReturn = !pickBVJob.runHelper();
+
+        // THEN
+        QVERIFY(earlyReturn);
+    }
+
     void checkEarlyReturnWhenMoveEventsAndDragDisabledPickers_data()
     {
         QSKIP("Disabled following removal of early return checks");

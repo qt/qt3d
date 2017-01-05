@@ -150,6 +150,17 @@ bool PickBoundingVolumeJob::runHelper()
     if (mouseEvents.empty())
         return false;
 
+    // bail out early if no picker is enabled
+    bool oneEnabledAtLeast = false;
+    for (auto handle: m_manager->objectPickerManager()->activeHandles()) {
+        if (m_manager->objectPickerManager()->data(handle)->isEnabled()) {
+            oneEnabledAtLeast = true;
+            break;
+        }
+    }
+    if (!oneEnabledAtLeast)
+        return false;
+
     PickingUtils::ViewportCameraAreaGatherer vcaGatherer;
     // TO DO: We could cache this and only gather when we know the FrameGraph tree has changed
     const QVector<PickingUtils::ViewportCameraAreaTriplet> vcaTriplets = vcaGatherer.gather(m_frameGraphRoot);
@@ -256,9 +267,9 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                 if (entity != nullptr)
                     objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
             }
-            ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
 
-            if (objectPicker != nullptr) {
+            ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
+            if (objectPicker != nullptr && objectPicker->isEnabled()) {
                 // Send the corresponding event
                 QVector3D localIntersection = hit.m_intersection;
                 if (entity && entity->worldTransform())

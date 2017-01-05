@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -51,45 +51,81 @@
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 import Qt3D.Extras 2.0
+import QtQuick.Window 2.0
 
 Entity {
-    id: root
-    signal pressed(var event)
-    signal clicked(var event)
-    signal released(var event)
-    signal entered()
-    signal exited()
+    id: sceneRoot
 
-    property Layer layer
-    property real x: 0
-    property real y: 0
-    property real z: 0
-    property alias scale: transform.scale
-    property alias hoverEnabled: objectPicker.hoverEnabled
-    property alias diffuseColor: material.diffuse
-    property alias ambientColor: material.ambient
-    property alias pickingEnabled: objectPicker.enabled
-    readonly property bool containsMouse: objectPicker.containsMouse
-    readonly property bool isPressed: objectPicker.pressed
-
-    property GeometryRenderer mesh;
-
-    ObjectPicker {
-        id: objectPicker
-        onClicked: root.clicked(pick)
-        onPressed: root.pressed(pick)
-        onReleased: root.released(pick)
-        onEntered: root.entered()
-        onExited: root.exited();
+    Window {
+        id: win
+        width: 600
+        height: 600
+        visible: true
     }
 
+    Camera {
+        id: camera
+        projectionType: CameraLens.PerspectiveProjection
+        fieldOfView: 45
+        nearPlane : 0.1
+        farPlane : 1000.0
+        position: Qt.vector3d( 0.0, 0.0, -40.0 )
+        upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+        viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
+    }
+
+    components: [
+        RenderSettings {
+            Viewport {
+                normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
+
+                RenderSurfaceSelector {
+
+                    surface: win
+
+                    ClearBuffers {
+                        buffers : ClearBuffers.ColorDepthBuffer
+                        NoDraw {}
+                    }
+
+                    CameraSelector {
+                        camera: camera
+                    }
+                }
+            }
+        }
+    ]
+
+    CuboidMesh { id: cubeMesh }
     PhongMaterial { id: material }
 
-    Transform {
-        id: transform
-        translation: Qt.vector3d(x, y, z)
+    // Entity 1
+    Entity {
+        property ObjectPicker picker: ObjectPicker {
+            objectName: "Picker1"
+            enabled: false
+        }
+
+        property Transform transform: Transform {
+            translation: Qt.vector3d(5, 0, 0)
+            scale: 2.0
+        }
+
+        components: [cubeMesh, material, picker, transform]
     }
 
-    components: [mesh, material, transform, objectPicker, layer]
-}
+    // Entity 2
+    Entity {
+        property ObjectPicker picker: ObjectPicker {
+            objectName: "Picker2"
+            enabled: false
+        }
 
+        property Transform transform: Transform {
+            translation: Qt.vector3d(-5, 0, 0)
+            scale: 2.0
+        }
+
+        components: [cubeMesh, material, picker, transform]
+    }
+}

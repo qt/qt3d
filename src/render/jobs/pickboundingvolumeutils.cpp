@@ -118,7 +118,7 @@ bool PickingUtils::ViewportCameraAreaGatherer::isUnique(const QVector<ViewportCa
 
 QVector<Entity *> gatherEntities(Entity *entity, QVector<Entity *> entities)
 {
-    if (entity != nullptr) {
+    if (entity != nullptr && entity->isEnabled()) {
         entities.push_back(entity);
         // Traverse children
         const auto children = entity->children();
@@ -182,8 +182,9 @@ AbstractCollisionGathererFunctor::result_type AbstractCollisionGathererFunctor::
     }
 
     ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
-    if (objectPicker == nullptr)
-        return result_type();  // don't bother picking entities that don't have an object picker
+    if (objectPicker == nullptr || !objectPicker->isEnabled())
+        return result_type();   // don't bother picking entities that don't
+                                // have an object picker, or if it's disabled
 
     Qt3DRender::QRayCastingService rayCasting;
 
