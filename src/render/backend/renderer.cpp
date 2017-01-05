@@ -187,6 +187,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 
     // Create jobs to update transforms and bounding volumes
     // We can only update bounding volumes once all world transforms are known
+    m_calculateBoundingVolumeJob->addDependency(m_updateTreeEnabledJob);
     m_updateWorldBoundingVolumeJob->addDependency(m_worldTransformJob);
     m_updateWorldBoundingVolumeJob->addDependency(m_calculateBoundingVolumeJob);
     m_expandBoundingVolumeJob->addDependency(m_updateWorldBoundingVolumeJob);

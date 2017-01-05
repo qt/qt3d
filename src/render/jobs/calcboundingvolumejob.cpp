@@ -78,6 +78,9 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
     // The Bounding volume will only be computed if the position Buffer
     // isDirty
 
+    if (!node->isTreeEnabled())
+        return;
+
     GeometryRenderer *gRenderer = node->renderComponent<GeometryRenderer>();
     if (gRenderer) {
         Geometry *geom = manager->lookupResource<Geometry, GeometryManager>(gRenderer->geometryId());
