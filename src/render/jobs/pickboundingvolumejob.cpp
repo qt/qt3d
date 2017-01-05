@@ -183,6 +183,10 @@ bool PickBoundingVolumeJob::runHelper()
 
     const bool trianglePickingRequested = (m_renderSettings->pickMethod() == QPickingSettings::TrianglePicking);
     const bool allHitsRequested = (m_renderSettings->pickResultMode() == QPickingSettings::AllPicks);
+    const bool frontFaceRequested =
+            m_renderSettings->faceOrientationPickingMode() != QPickingSettings::BackFace;
+    const bool backFaceRequested =
+            m_renderSettings->faceOrientationPickingMode() != QPickingSettings::FrontFace;
 
     // Select the best reduction function based on the settings
     const ReducerFunction reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
@@ -204,6 +208,8 @@ bool PickBoundingVolumeJob::runHelper()
             QRay3D ray = rayForViewportAndCamera(vca.area, event.pos(), vca.viewport, vca.cameraId);
             if (trianglePickingRequested) {
                 PickingUtils::TriangleCollisionGathererFunctor gathererFunctor;
+                gathererFunctor.m_frontFaceRequested = frontFaceRequested;
+                gathererFunctor.m_backFaceRequested = backFaceRequested;
                 gathererFunctor.m_manager = m_manager;
                 gathererFunctor.m_ray = ray;
                 sphereHits = QtConcurrent::blockingMappedReduced<HitList>(entitiesGatherer.entities(), gathererFunctor, reducerOp);

@@ -110,16 +110,25 @@ public:
     typedef QVector<QCollisionQueryResult::Hit> HitList;
     HitList hits;
 
-    CollisionVisitor(NodeManagers* manager, const Entity *root, const QRay3D& ray) : TrianglesVisitor(manager), m_root(root), m_ray(ray), m_triangleIndex(0) { }
+    CollisionVisitor(NodeManagers* manager, const Entity *root, const QRay3D& ray, bool frontFaceRequested, bool backFaceRequested)
+        : TrianglesVisitor(manager), m_root(root), m_ray(ray), m_triangleIndex(0)
+        , m_frontFaceRequested(frontFaceRequested), m_backFaceRequested(backFaceRequested)
+    {
+    }
+
 private:
     const Entity *m_root;
     QRay3D m_ray;
-    Qt3DRender::QRayCastingService rayCasting;
     uint m_triangleIndex;
+    bool m_frontFaceRequested;
+    bool m_backFaceRequested;
 
     void visit(uint andx, const QVector3D &a,
                uint bndx, const QVector3D &b,
-               uint cndx, const QVector3D &c);
+               uint cndx, const QVector3D &c) Q_DECL_OVERRIDE;
+    bool intersectsSegmentTriangle(uint andx, const QVector3D &a,
+                                   uint bndx, const QVector3D &b,
+                                   uint cndx, const QVector3D &c);
 };
 
 struct Q_AUTOTEST_EXPORT AbstractCollisionGathererFunctor
@@ -143,6 +152,9 @@ struct Q_AUTOTEST_EXPORT EntityCollisionGathererFunctor : public AbstractCollisi
 
 struct Q_AUTOTEST_EXPORT TriangleCollisionGathererFunctor : public AbstractCollisionGathererFunctor
 {
+    bool m_frontFaceRequested;
+    bool m_backFaceRequested;
+
     result_type pick(QAbstractCollisionQueryService *rayCasting, const Entity *entity) const Q_DECL_OVERRIDE;
 
     bool rayHitsEntity(QAbstractCollisionQueryService *rayCasting, const Entity *entity) const;

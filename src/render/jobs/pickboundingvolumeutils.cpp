@@ -146,19 +146,37 @@ QVector<Entity *> EntityGatherer::entities() const
 
 void CollisionVisitor::visit(uint andx, const QVector3D &a, uint bndx, const QVector3D &b, uint cndx, const QVector3D &c)
 {
-    TriangleBoundingVolume volume(m_root->peerId(), a, b, c);
-    volume = volume.transform(*m_root->worldTransform());
+    const QMatrix4x4 &mat = *m_root->worldTransform();
+    const QVector3D tA = mat * a;
+    const QVector3D tB = mat * b;
+    const QVector3D tC = mat * c;
 
-    QCollisionQueryResult::Hit queryResult = rayCasting.query(m_ray, &volume);
-    if (queryResult.m_distance > 0.) {
+    bool intersected = m_frontFaceRequested &&
+            intersectsSegmentTriangle(cndx, tC, bndx, tB, andx, tA);    // front facing
+    if (!intersected && m_backFaceRequested) {
+        intersected = intersectsSegmentTriangle(andx, tA, bndx, tB, cndx, tC);    // back facing
+    }
+
+    m_triangleIndex++;
+}
+
+bool CollisionVisitor::intersectsSegmentTriangle(uint andx, const QVector3D &a, uint bndx, const QVector3D &b, uint cndx, const QVector3D &c)
+{
+    float t = 0.0f;
+    QVector3D uvw;
+    bool intersected = Render::intersectsSegmentTriangle(m_ray, a, b, c, uvw, t);
+    if (intersected) {
+        QCollisionQueryResult::Hit queryResult;
+        queryResult.m_entityId = m_root->peerId();
         queryResult.m_triangleIndex = m_triangleIndex;
         queryResult.m_vertexIndex[0] = andx;
         queryResult.m_vertexIndex[1] = bndx;
         queryResult.m_vertexIndex[2] = cndx;
+        queryResult.m_intersection = m_ray.point(t * m_ray.distance());
+        queryResult.m_distance = m_ray.projectedDistance(queryResult.m_intersection);
         hits.push_back(queryResult);
     }
-
-    m_triangleIndex++;
+    return intersected;
 }
 
 AbstractCollisionGathererFunctor::AbstractCollisionGathererFunctor()
@@ -211,7 +229,7 @@ AbstractCollisionGathererFunctor::result_type TriangleCollisionGathererFunctor::
         return result;
 
     if (rayHitsEntity(rayCasting, entity)) {
-        CollisionVisitor visitor(m_manager, entity, m_ray);
+        CollisionVisitor visitor(m_manager, entity, m_ray, m_frontFaceRequested, m_backFaceRequested);
         visitor.apply(gRenderer, entity->peerId());
         result = visitor.hits;
 
