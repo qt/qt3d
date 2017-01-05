@@ -770,8 +770,8 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                         vao->bind();
                         // Update or set Attributes and Buffers for the given rGeometry and Command
                         // Note: this fills m_dirtyAttributes as well
-                        updateVAOWithAttributes(rGeometry, command, shader, requiresFullVAOUpdate);
-                        vao->setSpecified(true);
+                        if (updateVAOWithAttributes(rGeometry, command, shader, requiresFullVAOUpdate))
+                            vao->setSpecified(true);
                     }
                 }
 
@@ -1392,6 +1392,12 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
 
             vao = m_nodesManager->vaoManager()->data(command->m_vao);
 
+            // something may have went wrong when initializing the VAO
+            if (!vao->isSpecified()) {
+                allCommandsIssued = false;
+                continue;
+            }
+
             {
                 Profiling::GLTimeRecorder recorder(Profiling::ShaderUpdate);
                 //// We activate the shader here
@@ -1447,26 +1453,27 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
     return allCommandsIssued;
 }
 
-void Renderer::updateVAOWithAttributes(Geometry *geometry,
+bool Renderer::updateVAOWithAttributes(Geometry *geometry,
                                        RenderCommand *command,
                                        Shader *shader,
                                        bool forceUpdate)
 {
     m_dirtyAttributes.reserve(m_dirtyAttributes.size() + geometry->attributes().size());
     const auto attributeIds = geometry->attributes();
+
     for (QNodeId attributeId : attributeIds) {
         // TO DO: Improvement we could store handles and use the non locking policy on the attributeManager
         Attribute *attribute = m_nodesManager->attributeManager()->lookupResource(attributeId);
 
         if (attribute == nullptr)
-            continue;
+            return false;
 
         Buffer *buffer = m_nodesManager->bufferManager()->lookupResource(attribute->bufferId());
 
         // Buffer update was already performed at this point
         // Just make sure the attribute reference a valid buffer
         if (buffer == nullptr)
-            continue;
+            return false;
 
         // Index Attribute
         bool attributeWasDirty = false;
@@ -1485,6 +1492,8 @@ void Renderer::updateVAOWithAttributes(Geometry *geometry,
                         break;
                     }
                 }
+                if (attributeLocation < 0)
+                    return false;
                 m_graphicsContext->specifyAttribute(attribute, buffer, attributeLocation);
             }
         }
@@ -1500,6 +1509,8 @@ void Renderer::updateVAOWithAttributes(Geometry *geometry,
         // should remain dirty so that VAO for these commands are properly
         // updated
     }
+
+    return true;
 }
 
 bool Renderer::requiresVAOAttributeUpdate(Geometry *geometry,

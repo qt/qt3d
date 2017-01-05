@@ -212,7 +212,7 @@ public:
 
     void prepareCommandsSubmission(const QVector<RenderView *> &renderViews);
     bool executeCommandsSubmission(const RenderView *rv);
-    void updateVAOWithAttributes(Geometry *geometry,
+    bool updateVAOWithAttributes(Geometry *geometry,
                                  RenderCommand *command,
                                  Shader *shader,
                                  bool forceUpdate);
