@@ -1536,7 +1536,7 @@ bool Renderer::requiresVAOAttributeUpdate(Geometry *geometry,
 void Renderer::cleanGraphicsResources()
 {
     // Clean buffers
-    const QVector<Qt3DCore::QNodeId> buffersToRelease = std::move(m_nodesManager->bufferManager()->buffersToRelease());
+    const QVector<Qt3DCore::QNodeId> buffersToRelease = m_nodesManager->bufferManager()->takeBuffersToRelease();
     for (Qt3DCore::QNodeId bufferId : buffersToRelease)
         m_graphicsContext->releaseBuffer(bufferId);
 
