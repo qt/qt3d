@@ -230,6 +230,14 @@ void Renderer::dumpInfo() const
     const ShaderManager *shaderManager = m_nodesManager->shaderManager();
     qDebug() << "=== Shader Manager ===";
     qDebug() << *shaderManager;
+
+    const TextureManager *textureManager = m_nodesManager->textureManager();
+    qDebug() << "=== Texture Manager ===";
+    qDebug() << *textureManager;
+
+    const TextureImageManager *textureImageManager = m_nodesManager->textureImageManager();
+    qDebug() << "=== Texture Image Manager ===";
+    qDebug() << *textureImageManager;
 }
 
 qint64 Renderer::time() const

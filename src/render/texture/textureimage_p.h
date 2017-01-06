@@ -116,6 +116,19 @@ private:
     TextureImageManager *m_textureImageManager;
 };
 
+#ifndef QT_NO_DEBUG_STREAM
+inline QDebug operator<<(QDebug dbg, const TextureImage &textureImage)
+{
+    QDebugStateSaver saver(dbg);
+    dbg << "QNodeId =" << textureImage.peerId()
+        << "mip level =" << textureImage.mipLevel()
+        << "layer =" << textureImage.layer()
+        << "cube face =" << textureImage.face()
+        << "dataGenerator =" << textureImage.dataGenerator() << endl;
+    return dbg;
+}
+#endif
+
 
 } // namespace Render
 
