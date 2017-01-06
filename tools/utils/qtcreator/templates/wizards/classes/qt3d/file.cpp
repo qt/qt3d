@@ -22,19 +22,19 @@ QT_BEGIN_NAMESPACE
 
 %{CN}::~%{CN}()
 {
-    QNode::cleanup();
 }
 @else
 // TODO: Implement QBackendNode template
 @endif
 
 @if '%{Base}' === 'QNode' || '%{Base}' === 'QComponent' || '%{Base}' === 'QEntity'
-void %{CN}::copy(const QNode *ref)
+Qt3DCore::QNodeCreatedChangeBasePtr %{CN}::createNodeCreationChange() const
 {
-    %{Base}::copy(ref);
-    const %{CN} *object = static_cast<const %{CN} *>(ref);
-
-    // TODO: Copy the objects's members
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<%{CN}Data>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const %{CN});
+    // TODO: Send data members in creation change
+    return creationChange;
 }
 @endif
 %{JS: Cpp.closeNamespaces('%{Class}')}\

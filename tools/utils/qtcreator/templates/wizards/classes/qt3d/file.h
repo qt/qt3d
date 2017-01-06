@@ -29,7 +29,7 @@ class %{CN}
 @endif
 public:
 @if '%{Base}' === 'QNode' || '%{Base}' === 'QComponent' || '%{Base}' === 'QEntity'
-    explicit %{CN}(Qt3DCore::QNode *parent = 0);
+    explicit %{CN}(Qt3DCore::QNode *parent = nullptr);
 @else
     %{CN}();
 @endif
@@ -41,12 +41,11 @@ Q_SIGNALS:
 
 @if '%{Base}' === 'QNode' || '%{Base}' === 'QComponent' || '%{Base}' === 'QEntity'
 protected:
-    Q_DECLARE_PRIVATE(%{CN})
-    %{CN}(%{CN}Private &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    %{CN}(%{CN}Private &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
-    QT3D_CLONEABLE(%{CN})
+    Q_DECLARE_PRIVATE(%{CN})
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 @endif
 };
 %{JS: Cpp.closeNamespaces('%{Class}')}
