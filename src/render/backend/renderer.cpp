@@ -868,7 +868,7 @@ void Renderer::updateGLResources()
             // Forces creation if it doesn't exit
             if (!m_graphicsContext->hasGLBufferForBuffer(buffer))
                 m_graphicsContext->glBufferForRenderBuffer(buffer);
-            else // Otherwise update the glBuffer
+            else if (buffer->isDirty()) // Otherwise update the glBuffer
                 m_graphicsContext->updateBuffer(buffer);
             buffer->unsetDirty();
         }
