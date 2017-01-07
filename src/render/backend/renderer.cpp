@@ -386,7 +386,12 @@ void Renderer::releaseGraphicsResources()
         for (GLTexture *tex : activeTextures)
             tex->destroyGLTexture();
 
-        // TO DO: Do the same thing with buffers
+        // Do the same thing with buffers
+        const QVector<HGLBuffer> activeBuffers = m_nodesManager->glBufferManager()->activeHandles();
+        for (const HGLBuffer &bufferHandle : activeBuffers) {
+            GLBuffer *buffer = m_nodesManager->glBufferManager()->data(bufferHandle);
+            buffer->destroy(m_graphicsContext.data());
+        }
 
         context->doneCurrent();
     } else {
