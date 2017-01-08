@@ -287,7 +287,8 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                         m_currentPicker = HObjectPicker();
                     // Only send the release event if it was pressed
                     if (objectPicker->isPressed()) {
-                        objectPicker->onClicked(pickEvent);
+                        if (lastCurrentPicker == objectPicker)
+                            objectPicker->onClicked(pickEvent);
                         objectPicker->onReleased(pickEvent);
                     }
                     break;
