@@ -31,6 +31,7 @@ RESOURCES += \
 
 DISTFILES += \
     PlanetsMain.qml \
-    android/AndroidManifest.xml
+    android/AndroidManifest.xml \
+    images/license.txt
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
