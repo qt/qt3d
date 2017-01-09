@@ -401,6 +401,13 @@ void Renderer::releaseGraphicsResources()
             buffer->destroy(m_graphicsContext.data());
         }
 
+        // Do the same thing with VAOs
+        const QVector<HVao> activeVaos = m_nodesManager->vaoManager()->activeHandles();
+        for (const HVao &vaoHandle : activeVaos) {
+            OpenGLVertexArrayObject *vao = m_nodesManager->vaoManager()->data(vaoHandle);
+            vao->destroy();
+        }
+
         context->doneCurrent();
     } else {
         qWarning() << "Failed to make context current: OpenGL resources will not be destroyed";
