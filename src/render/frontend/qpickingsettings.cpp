@@ -189,8 +189,7 @@ void QPickingSettings::setPickResultMode(QPickingSettings::PickResultMode pickRe
 }
 
 /*!
- * Sets whether back facing faces are picked or not
- * \param faceOrientationPickingMode
+ * \a faceOrientationPickingMode determines whether back facing faces are picked or not.
  */
 void QPickingSettings::setFaceOrientationPickingMode(QPickingSettings::FaceOrientationPickingMode faceOrientationPickingMode)
 {
