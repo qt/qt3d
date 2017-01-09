@@ -97,6 +97,7 @@ void GLTexture::destroyGLTexture()
 {
     delete m_gl;
     m_gl = nullptr;
+    QMutexLocker locker(&m_dirtyFlagMutex);
     m_dirty = 0;
 
     destroyResources();
@@ -104,6 +105,7 @@ void GLTexture::destroyGLTexture()
 
 QOpenGLTexture* GLTexture::getOrCreateGLTexture()
 {
+    QMutexLocker locker(&m_dirtyFlagMutex);
     bool needUpload = false;
     bool texturedDataInvalid = false;
 
@@ -210,6 +212,7 @@ void GLTexture::setParameters(const TextureParameters &params)
 {
     if (m_parameters != params) {
         m_parameters = params;
+        QMutexLocker locker(&m_dirtyFlagMutex);
         m_dirty |= Parameters;
     }
 }
@@ -218,6 +221,7 @@ void GLTexture::setProperties(const TextureProperties &props)
 {
     if (m_properties != props) {
         m_properties = props;
+        QMutexLocker locker(&m_dirtyFlagMutex);
         m_dirty |= Properties;
     }
 }

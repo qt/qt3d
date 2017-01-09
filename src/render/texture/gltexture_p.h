@@ -142,7 +142,11 @@ public:
 
     // Called by TextureDataManager when it has new texture data from
     // a generator that needs to be uploaded.
-    void requestUpload() { m_dirty |= TextureData; }
+    void requestUpload()
+    {
+        QMutexLocker locker(&m_dirtyFlagMutex);
+        m_dirty |= TextureData;
+    }
 
 protected:
 
@@ -178,6 +182,7 @@ private:
 
     bool m_unique;
     DirtyFlags m_dirty;
+    QMutex m_dirtyFlagMutex;
     QOpenGLTexture *m_gl;
 
     TextureDataManager *m_textureDataManager;
