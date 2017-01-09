@@ -1401,7 +1401,10 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
             {
                 Profiling::GLTimeRecorder recorder(Profiling::ShaderUpdate);
                 //// We activate the shader here
-                m_graphicsContext->activateShader(command->m_shaderDna);
+                if (!m_graphicsContext->activateShader(command->m_shaderDna)) {
+                    allCommandsIssued = false;
+                    continue;
+                }
             }
 
             {

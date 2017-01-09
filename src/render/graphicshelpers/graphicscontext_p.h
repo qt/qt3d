@@ -130,7 +130,7 @@ public:
 
     QOpenGLShaderProgram *createShaderProgram(Shader *shaderNode);
     void loadShader(Shader* shader);
-    void activateShader(ProgramDNA shaderDNA);
+    bool activateShader(ProgramDNA shaderDNA);
     void removeShaderProgramReference(Shader *shaderNode);
 
     GLuint activeFBO() const { return m_activeFBO; }
