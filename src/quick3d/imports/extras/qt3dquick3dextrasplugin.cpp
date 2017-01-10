@@ -50,6 +50,8 @@
 #include <Qt3DExtras/qplanegeometry.h>
 #include <Qt3DExtras/qconegeometry.h>
 #include <Qt3DExtras/qcylindergeometry.h>
+#include <Qt3DExtras/qtext3dgeometry.h>
+#include <Qt3DExtras/qtext3dmesh.h>
 #include <QtQml/qqml.h>
 
 QT_BEGIN_NAMESPACE
@@ -98,6 +100,9 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DExtras::QSphereMesh>(uri, 2, 0, "SphereMesh");
     qmlRegisterType<Qt3DExtras::QSphereGeometry>(uri, 2, 0, "SphereGeometry");
 
+    // 3D Text
+    qmlRegisterType<Qt3DExtras::QText3DGeometry>(uri, 2, 2, "Text3DGeometry");
+    qmlRegisterType<Qt3DExtras::QText3DMesh>(uri, 2, 2, "Text3DMesh");
 
     // Register types provided as QML files compiled into the plugin
     for (int i = 0; i < int(sizeof(qmldir) / sizeof(qmldir[0])); i++) {
