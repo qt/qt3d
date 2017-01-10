@@ -592,11 +592,17 @@ QTextureImageDataPtr setDdsFile(const QString &source)
     layerSize = faces * tmpSize;
 
     // data
-    const QByteArray data = f.readAll();
-    if (data.size() != layers * layerSize) {
-        qWarning() << "Unexpected data size (got " << data.size() << ", expecting" << layers * layerSize << ")";
+    const int dataSize = layers * layerSize;
+
+    const QByteArray data = f.read(dataSize);
+    if (data.size() < dataSize) {
+        qWarning() << "Unexpected end of data in" << source;
         return imageData;
     }
+
+    if (!f.atEnd())
+        qWarning() << "Unrecognized data in" << source;
+
     imageData = QTextureImageDataPtr::create();
     imageData->setData(data,blockSize, isCompressed);
 
