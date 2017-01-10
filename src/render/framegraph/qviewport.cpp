@@ -69,7 +69,7 @@ QViewportPrivate::QViewportPrivate()
     \qmltype Viewport
     \inqmlmodule Qt3D.Render
     \since 5.7
-    \ingroup
+    \inherits FrameGraphNode
     \instantiates Qt3DRender::QViewport
     \brief A viewport on the Qt3D Scene
 

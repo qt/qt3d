@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,58 +37,51 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_CAMERA_P_H
-#define QT3DRENDER_CAMERA_P_H
+#include "updatetreeenabledjob_p.h"
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
+#include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/job_common_p.h>
 
-#include <Qt3DRender/qcameralens.h>
-#include <Qt3DCore/qtransform.h>
-#include <private/qentity_p.h>
+#include <QThread>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+namespace Render {
 
-class QCameraPrivate : public Qt3DCore::QEntityPrivate
+namespace {
+
+void updateTreeEnabled(Entity *node, bool parentEnabled)
 {
-public:
-    QCameraPrivate();
+    const bool treeEnabled = node->isEnabled() && parentEnabled;
+    node->setTreeEnabled(treeEnabled);
 
-    Q_DECLARE_PUBLIC(QCamera)
+    const QVector<Entity*> children = node->children();
+    for (Entity *child : children)
+        updateTreeEnabled(child, treeEnabled);
+}
 
-    void updateViewMatrix()
-    {
-        if (m_upVector.isNull() || QVector3D::crossProduct(m_cameraToCenter, m_upVector).normalized().isNull())
-            qWarning() << "Camera up vector must not be colinear with the view vector";
-        QMatrix4x4 m;
-        m.lookAt(m_position, m_viewCenter, m_upVector);
-        m_transform->setMatrix(m);
-    }
+}
 
-    QVector3D m_position;
-    QVector3D m_viewCenter;
-    QVector3D m_upVector;
+UpdateTreeEnabledJob::UpdateTreeEnabledJob()
+    : Qt3DCore::QAspectJob()
+    , m_node(nullptr)
+{
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateTreeEnabled, 0);
+}
 
-    QVector3D m_cameraToCenter; // The vector from the camera position to the view center
-    bool m_viewMatrixDirty;
+void UpdateTreeEnabledJob::setRoot(Entity *root)
+{
+    m_node = root;
+}
 
-    // Components
-    QCameraLens *m_lens;
-    Qt3DCore::QTransform *m_transform;
-};
+void UpdateTreeEnabledJob::run()
+{
+    if (m_node)
+        updateTreeEnabled(m_node, true);
+}
 
+} // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_CAMERA_P_H

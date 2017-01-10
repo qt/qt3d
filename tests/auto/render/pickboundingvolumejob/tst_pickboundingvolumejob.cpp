@@ -38,6 +38,8 @@
 
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QObjectPicker>
+#include <Qt3DRender/QPickEvent>
+#include <Qt3DRender/QPickTriangleEvent>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/entity_p.h>
@@ -485,6 +487,58 @@ private Q_SLOTS:
         QVERIFY(earlyReturn);
     }
 
+    void checkEarlyReturnWhenAllPickersDisabled_data()
+    {
+        generateAllPickingSettingsCombinations();
+    }
+
+    void checkEarlyReturnWhenAllPickersDisabled()
+    {
+        // GIVEN
+        QmlSceneReader sceneReader(QUrl("qrc:/testscene_pickersdisabled.qml"));
+        QScopedPointer<Qt3DCore::QNode> root(qobject_cast<Qt3DCore::QNode *>(sceneReader.root()));
+        QVERIFY(root);
+
+        QList<Qt3DRender::QRenderSettings *> renderSettings =
+                root->findChildren<Qt3DRender::QRenderSettings *>();
+        QCOMPARE(renderSettings.size(), 1);
+        Qt3DRender::QPickingSettings *settings = renderSettings.first()->pickingSettings();
+
+        QFETCH(Qt3DRender::QPickingSettings::PickMethod, pickMethod);
+        QFETCH(Qt3DRender::QPickingSettings::PickResultMode, pickResultMode);
+        QFETCH(Qt3DRender::QPickingSettings::FaceOrientationPickingMode, faceOrientationPickingMode);
+        settings->setPickMethod(pickMethod);
+        settings->setPickResultMode(pickResultMode);
+        settings->setFaceOrientationPickingMode(faceOrientationPickingMode);
+
+        QScopedPointer<Qt3DRender::TestAspect> test(new Qt3DRender::TestAspect(root.data()));
+
+        // Runs Required jobs
+        runRequiredJobs(test.data());
+
+        // THEN
+        QList<Qt3DRender::QObjectPicker *> pickers =
+                root->findChildren<Qt3DRender::QObjectPicker *>();
+        QCOMPARE(pickers.size(), 2);
+
+        QCOMPARE(test->renderSettings()->pickMethod(), pickMethod);
+        QCOMPARE(test->renderSettings()->pickResultMode(), pickResultMode);
+        QCOMPARE(test->renderSettings()->faceOrientationPickingMode(), faceOrientationPickingMode);
+
+        // WHEN
+        Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
+        initializePickBoundingVolumeJob(&pickBVJob, test.data());
+
+        QList<QMouseEvent> events;
+        events.push_back(QMouseEvent(QMouseEvent::MouseButtonPress, QPointF(207.0f, 303.0f),
+                                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier));
+        pickBVJob.setMouseEvents(events);
+        bool earlyReturn = !pickBVJob.runHelper();
+
+        // THEN
+        QVERIFY(earlyReturn);
+    }
+
     void checkEarlyReturnWhenMoveEventsAndDragDisabledPickers_data()
     {
         QSKIP("Disabled following removal of early return checks");
@@ -704,6 +758,11 @@ private Q_SLOTS:
         QCOMPARE(test->renderSettings()->pickResultMode(), pickResultMode);
         QCOMPARE(test->renderSettings()->faceOrientationPickingMode(), faceOrientationPickingMode);
 
+        const bool backAndFrontPicking =
+                (pickMethod == Qt3DRender::QPickingSettings::TrianglePicking) &&
+                (pickResultMode == Qt3DRender::QPickingSettings::AllPicks) &&
+                (faceOrientationPickingMode == Qt3DRender::QPickingSettings::FrontAndBackFace);
+
         // WHEN -> Pressed on object
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
@@ -716,9 +775,13 @@ private Q_SLOTS:
         // THEN -> Pressed
         QVERIFY(!earlyReturn);
         QVERIFY(backendPicker1->isPressed());
-        QCOMPARE(arbiter.events.count(), 1);
+        QCOMPARE(arbiter.events.count(), backAndFrontPicking ? 2 : 1);
         Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "pressed");
+        Qt3DRender::QPickEventPtr pickEvent = change->value().value<Qt3DRender::QPickEventPtr>();
+        QVERIFY(pickEvent);
+        if (pickMethod == Qt3DRender::QPickingSettings::TrianglePicking)
+            QVERIFY(pickEvent.dynamicCast<Qt3DRender::QPickTriangleEvent>());
 
         arbiter.events.clear();
 
@@ -731,9 +794,13 @@ private Q_SLOTS:
         // THEN -> Moved
         QVERIFY(!earlyReturn);
         QVERIFY(backendPicker1->isPressed());
-        QCOMPARE(arbiter.events.count(), 1);
+        QCOMPARE(arbiter.events.count(), backAndFrontPicking ? 2 : 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "moved");
+        pickEvent = change->value().value<Qt3DRender::QPickEventPtr>();
+        QVERIFY(pickEvent);
+        if (pickMethod == Qt3DRender::QPickingSettings::TrianglePicking)
+            QVERIFY(pickEvent.dynamicCast<Qt3DRender::QPickTriangleEvent>());
 
         arbiter.events.clear();
 
@@ -749,8 +816,16 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.count(), 2);
         change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "clicked");
+        pickEvent = change->value().value<Qt3DRender::QPickEventPtr>();
+        QVERIFY(pickEvent);
+        if (pickMethod == Qt3DRender::QPickingSettings::TrianglePicking)
+            QVERIFY(pickEvent.dynamicCast<Qt3DRender::QPickTriangleEvent>());
         change = arbiter.events.last().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "released");
+        pickEvent = change->value().value<Qt3DRender::QPickEventPtr>();
+        QVERIFY(pickEvent);
+        if (pickMethod == Qt3DRender::QPickingSettings::TrianglePicking)
+            QVERIFY(pickEvent.dynamicCast<Qt3DRender::QPickTriangleEvent>());
 
         arbiter.events.clear();
 
@@ -764,7 +839,7 @@ private Q_SLOTS:
         // THEN -> Released
         QVERIFY(!earlyReturn);
         QVERIFY(!backendPicker1->isPressed());
-        QCOMPARE(arbiter.events.count(), 2);
+        QCOMPARE(arbiter.events.count(), backAndFrontPicking ? 3 : 2);
         change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "pressed");
         change = arbiter.events.last().staticCast<Qt3DCore::QPropertyUpdatedChange>();
@@ -916,6 +991,11 @@ private Q_SLOTS:
         QCOMPARE(test->renderSettings()->pickResultMode(), pickResultMode);
         QCOMPARE(test->renderSettings()->faceOrientationPickingMode(), faceOrientationPickingMode);
 
+        const bool backAndFrontPicking =
+                (pickMethod == Qt3DRender::QPickingSettings::TrianglePicking) &&
+                (pickResultMode == Qt3DRender::QPickingSettings::AllPicks) &&
+                (faceOrientationPickingMode == Qt3DRender::QPickingSettings::FrontAndBackFace);
+
         // WHEN -> Pressed on object
         Qt3DRender::Render::PickBoundingVolumeJob pickBVJob;
         initializePickBoundingVolumeJob(&pickBVJob, test.data());
@@ -928,7 +1008,7 @@ private Q_SLOTS:
         // THEN -> Pressed
         QVERIFY(!earlyReturn);
         QVERIFY(backendPicker->isPressed());
-        QCOMPARE(arbiter.events.count(), 1);
+        QCOMPARE(arbiter.events.count(), backAndFrontPicking ? 2 : 1);
         Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "pressed");
 
@@ -943,7 +1023,7 @@ private Q_SLOTS:
         // THEN -> Moved
         QVERIFY(!earlyReturn);
         QVERIFY(backendPicker->isPressed());
-        QCOMPARE(arbiter.events.count(), 1);
+        QCOMPARE(arbiter.events.count(), backAndFrontPicking ? 2 : 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "moved");
 
@@ -976,7 +1056,7 @@ private Q_SLOTS:
         // THEN -> Released
         QVERIFY(!earlyReturn);
         QVERIFY(!backendPicker->isPressed());
-        QCOMPARE(arbiter.events.count(), 2);
+        QCOMPARE(arbiter.events.count(), backAndFrontPicking ? 3 : 2);
         change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "pressed");
         change = arbiter.events.last().staticCast<Qt3DCore::QPropertyUpdatedChange>();

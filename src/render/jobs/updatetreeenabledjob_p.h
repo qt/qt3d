@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_CAMERA_P_H
-#define QT3DRENDER_CAMERA_P_H
+#ifndef QT3DRENDER_RENDER_UPDATETREEENABLEDJOB_H
+#define QT3DRENDER_RENDER_UPDATETREEENABLEDJOB_H
 
 //
 //  W A R N I N G
@@ -51,44 +51,35 @@
 // We mean it.
 //
 
-#include <Qt3DRender/qcameralens.h>
-#include <Qt3DCore/qtransform.h>
-#include <private/qentity_p.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
+
+#include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+namespace Render {
 
-class QCameraPrivate : public Qt3DCore::QEntityPrivate
+class Entity;
+
+class QT3DRENDERSHARED_PRIVATE_EXPORT UpdateTreeEnabledJob : public Qt3DCore::QAspectJob
 {
 public:
-    QCameraPrivate();
+    UpdateTreeEnabledJob();
 
-    Q_DECLARE_PUBLIC(QCamera)
+    void setRoot(Entity *root);
+    void run() Q_DECL_OVERRIDE;
 
-    void updateViewMatrix()
-    {
-        if (m_upVector.isNull() || QVector3D::crossProduct(m_cameraToCenter, m_upVector).normalized().isNull())
-            qWarning() << "Camera up vector must not be colinear with the view vector";
-        QMatrix4x4 m;
-        m.lookAt(m_position, m_viewCenter, m_upVector);
-        m_transform->setMatrix(m);
-    }
-
-    QVector3D m_position;
-    QVector3D m_viewCenter;
-    QVector3D m_upVector;
-
-    QVector3D m_cameraToCenter; // The vector from the camera position to the view center
-    bool m_viewMatrixDirty;
-
-    // Components
-    QCameraLens *m_lens;
-    Qt3DCore::QTransform *m_transform;
+private:
+    Entity *m_node;
 };
 
+typedef QSharedPointer<UpdateTreeEnabledJob> UpdateTreeEnabledJobPtr;
+
+} // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_CAMERA_P_H
+#endif // QT3DRENDER_RENDER_UPDATETREEENABLEDJOB_H

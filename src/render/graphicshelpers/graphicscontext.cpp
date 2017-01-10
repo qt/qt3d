@@ -509,9 +509,12 @@ void GraphicsContext::loadShader(Shader *shader)
 }
 
 // Called only from RenderThread
-void GraphicsContext::activateShader(ProgramDNA shaderDNA)
+bool GraphicsContext::activateShader(ProgramDNA shaderDNA)
 {
     if (shaderDNA != m_activeShaderDNA) {
+        // Ensure material uniforms are re-applied
+        m_material = nullptr;
+
         m_activeShader = m_shaderCache.getShaderProgramForDNA(shaderDNA);
         if (Q_LIKELY(m_activeShader != nullptr)) {
             m_activeShader->bind();
@@ -520,10 +523,10 @@ void GraphicsContext::activateShader(ProgramDNA shaderDNA)
             m_glHelper->useProgram(0);
             qWarning() << "No shader program found for DNA";
             m_activeShaderDNA = 0;
+            return false;
         }
-        // Ensure material uniforms are re-applied
-        m_material = nullptr;
     }
+    return true;
 }
 
 void GraphicsContext::removeShaderProgramReference(Shader *shaderNode)

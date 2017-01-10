@@ -156,6 +156,7 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_renderer(nullptr)
     , m_initialized(false)
     , m_renderType(type)
+    , m_offscreenHelper(nullptr)
 {
     // Load the scene parsers
     loadSceneParsers();

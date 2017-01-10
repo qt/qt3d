@@ -40,6 +40,8 @@
 #include "qrendersettings.h"
 #include "qrendersettings_p.h"
 #include "qframegraphnode.h"
+#include "qrendersurfaceselector.h"
+#include "qrendersurfaceselector_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -209,6 +211,14 @@ void QRenderSettings::setActiveFrameGraph(QFrameGraphNode *activeFrameGraph)
     Q_D(QRenderSettings);
     if (d->m_activeFrameGraph == activeFrameGraph)
         return;
+
+    // if the old frame graph had a SurfaceSelector, use the given surface for the new framegraph, too.
+    if (d->m_activeFrameGraph && activeFrameGraph) {
+        Qt3DRender::QRenderSurfaceSelector *oldSurfaceSelector = Qt3DRender::QRenderSurfaceSelectorPrivate::find(d->m_activeFrameGraph);
+        Qt3DRender::QRenderSurfaceSelector *newSurfaceSelector = Qt3DRender::QRenderSurfaceSelectorPrivate::find(activeFrameGraph);
+        if (oldSurfaceSelector && newSurfaceSelector && oldSurfaceSelector->surface())
+            newSurfaceSelector->setSurface(oldSurfaceSelector->surface());
+    }
 
     if (d->m_activeFrameGraph)
         d->unregisterDestructionHelper(d->m_activeFrameGraph);

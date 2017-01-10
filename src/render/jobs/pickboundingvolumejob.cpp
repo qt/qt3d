@@ -150,6 +150,17 @@ bool PickBoundingVolumeJob::runHelper()
     if (mouseEvents.empty())
         return false;
 
+    // bail out early if no picker is enabled
+    bool oneEnabledAtLeast = false;
+    for (auto handle: m_manager->objectPickerManager()->activeHandles()) {
+        if (m_manager->objectPickerManager()->data(handle)->isEnabled()) {
+            oneEnabledAtLeast = true;
+            break;
+        }
+    }
+    if (!oneEnabledAtLeast)
+        return false;
+
     PickingUtils::ViewportCameraAreaGatherer vcaGatherer;
     // TO DO: We could cache this and only gather when we know the FrameGraph tree has changed
     const QVector<PickingUtils::ViewportCameraAreaTriplet> vcaTriplets = vcaGatherer.gather(m_frameGraphRoot);
@@ -172,6 +183,10 @@ bool PickBoundingVolumeJob::runHelper()
 
     const bool trianglePickingRequested = (m_renderSettings->pickMethod() == QPickingSettings::TrianglePicking);
     const bool allHitsRequested = (m_renderSettings->pickResultMode() == QPickingSettings::AllPicks);
+    const bool frontFaceRequested =
+            m_renderSettings->faceOrientationPickingMode() != QPickingSettings::BackFace;
+    const bool backFaceRequested =
+            m_renderSettings->faceOrientationPickingMode() != QPickingSettings::FrontFace;
 
     // Select the best reduction function based on the settings
     const ReducerFunction reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
@@ -193,6 +208,8 @@ bool PickBoundingVolumeJob::runHelper()
             QRay3D ray = rayForViewportAndCamera(vca.area, event.pos(), vca.viewport, vca.cameraId);
             if (trianglePickingRequested) {
                 PickingUtils::TriangleCollisionGathererFunctor gathererFunctor;
+                gathererFunctor.m_frontFaceRequested = frontFaceRequested;
+                gathererFunctor.m_backFaceRequested = backFaceRequested;
                 gathererFunctor.m_manager = m_manager;
                 gathererFunctor.m_ray = ray;
                 sphereHits = QtConcurrent::blockingMappedReduced<HitList>(entitiesGatherer.entities(), gathererFunctor, reducerOp);
@@ -204,7 +221,7 @@ bool PickBoundingVolumeJob::runHelper()
             }
 
             // Dispatch events based on hit results
-            dispatchPickEvents(event, sphereHits, eventButton, eventButtons, eventModifiers);
+            dispatchPickEvents(event, sphereHits, eventButton, eventButtons, eventModifiers, trianglePickingRequested);
         }
     }
 
@@ -231,13 +248,12 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                                                const PickingUtils::CollisionVisitor::HitList &sphereHits,
                                                QPickEvent::Buttons eventButton,
                                                int eventButtons,
-                                               int eventModifiers)
+                                               int eventModifiers,
+                                               bool trianglePickingRequested)
 {
     ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
     // If we have hits
     if (!sphereHits.isEmpty()) {
-
-        const bool trianglePickingRequested = (m_renderSettings->pickResultMode() == QPickingSettings::AllPicks);
         // Note: how can we control that we want the first/last/all elements along the ray to be picked
 
         // How do we differentiate betwnee an Entity with no GeometryRenderer and one with one, both having
@@ -257,9 +273,9 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                 if (entity != nullptr)
                     objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
             }
-            ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
 
-            if (objectPicker != nullptr) {
+            ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
+            if (objectPicker != nullptr && objectPicker->isEnabled()) {
                 // Send the corresponding event
                 QVector3D localIntersection = hit.m_intersection;
                 if (entity && entity->worldTransform())
@@ -288,7 +304,8 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                         m_currentPicker = HObjectPicker();
                     // Only send the release event if it was pressed
                     if (objectPicker->isPressed()) {
-                        objectPicker->onClicked(pickEvent);
+                        if (lastCurrentPicker == objectPicker)
+                            objectPicker->onClicked(pickEvent);
                         objectPicker->onReleased(pickEvent);
                     }
                     break;

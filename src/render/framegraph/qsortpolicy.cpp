@@ -74,6 +74,7 @@ QSortPolicyPrivate::QSortPolicyPrivate()
     \inqmlmodule Qt3D.Render
     \since 5.7
     \instantiates Qt3DRender::QSortPolicy
+    \inherits FrameGraphNode
     \brief Provides storage for the sort types to be used
 
     A SortPolicy class stores the sorting type used by the FrameGraph.

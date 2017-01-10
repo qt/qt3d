@@ -165,6 +165,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_expandBoundingVolumeJob(Render::ExpandBoundingVolumeJobPtr::create())
     , m_calculateBoundingVolumeJob(Render::CalculateBoundingVolumeJobPtr::create())
     , m_updateWorldBoundingVolumeJob(Render::UpdateWorldBoundingVolumeJobPtr::create())
+    , m_updateTreeEnabledJob(Render::UpdateTreeEnabledJobPtr::create())
     , m_sendRenderCaptureJob(Render::SendRenderCaptureJobPtr::create(this))
     , m_updateMeshTriangleListJob(Render::UpdateMeshTriangleListJobPtr::create())
     , m_filterCompatibleTechniqueJob(Render::FilterCompatibleTechniqueJobPtr::create())
@@ -186,6 +187,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 
     // Create jobs to update transforms and bounding volumes
     // We can only update bounding volumes once all world transforms are known
+    m_calculateBoundingVolumeJob->addDependency(m_updateTreeEnabledJob);
     m_updateWorldBoundingVolumeJob->addDependency(m_worldTransformJob);
     m_updateWorldBoundingVolumeJob->addDependency(m_calculateBoundingVolumeJob);
     m_expandBoundingVolumeJob->addDependency(m_updateWorldBoundingVolumeJob);
@@ -384,7 +386,12 @@ void Renderer::releaseGraphicsResources()
         for (GLTexture *tex : activeTextures)
             tex->destroyGLTexture();
 
-        // TO DO: Do the same thing with buffers
+        // Do the same thing with buffers
+        const QVector<HGLBuffer> activeBuffers = m_nodesManager->glBufferManager()->activeHandles();
+        for (const HGLBuffer &bufferHandle : activeBuffers) {
+            GLBuffer *buffer = m_nodesManager->glBufferManager()->data(bufferHandle);
+            buffer->destroy(m_graphicsContext.data());
+        }
 
         context->doneCurrent();
     } else {
@@ -436,6 +443,7 @@ void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
     m_calculateBoundingVolumeJob->setRoot(m_renderSceneRoot);
     m_cleanupJob->setRoot(m_renderSceneRoot);
     m_pickBoundingVolumeJob->setRoot(m_renderSceneRoot);
+    m_updateTreeEnabledJob->setRoot(m_renderSceneRoot);
 }
 
 void Renderer::registerEventFilter(QEventFilterService *service)
@@ -767,8 +775,8 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                         vao->bind();
                         // Update or set Attributes and Buffers for the given rGeometry and Command
                         // Note: this fills m_dirtyAttributes as well
-                        updateVAOWithAttributes(rGeometry, command, shader, requiresFullVAOUpdate);
-                        vao->setSpecified(true);
+                        if (updateVAOWithAttributes(rGeometry, command, shader, requiresFullVAOUpdate))
+                            vao->setSpecified(true);
                     }
                 }
 
@@ -865,7 +873,7 @@ void Renderer::updateGLResources()
             // Forces creation if it doesn't exit
             if (!m_graphicsContext->hasGLBufferForBuffer(buffer))
                 m_graphicsContext->glBufferForRenderBuffer(buffer);
-            else // Otherwise update the glBuffer
+            else if (buffer->isDirty()) // Otherwise update the glBuffer
                 m_graphicsContext->updateBuffer(buffer);
             buffer->unsetDirty();
         }
@@ -1228,6 +1236,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     // Add jobs
     renderBinJobs.push_back(m_updateShaderDataTransformJob);
     renderBinJobs.push_back(m_updateMeshTriangleListJob);
+    renderBinJobs.push_back(m_updateTreeEnabledJob);
     renderBinJobs.push_back(m_expandBoundingVolumeJob);
     renderBinJobs.push_back(m_updateWorldBoundingVolumeJob);
     renderBinJobs.push_back(m_calculateBoundingVolumeJob);
@@ -1388,10 +1397,19 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
 
             vao = m_nodesManager->vaoManager()->data(command->m_vao);
 
+            // something may have went wrong when initializing the VAO
+            if (!vao->isSpecified()) {
+                allCommandsIssued = false;
+                continue;
+            }
+
             {
                 Profiling::GLTimeRecorder recorder(Profiling::ShaderUpdate);
                 //// We activate the shader here
-                m_graphicsContext->activateShader(command->m_shaderDna);
+                if (!m_graphicsContext->activateShader(command->m_shaderDna)) {
+                    allCommandsIssued = false;
+                    continue;
+                }
             }
 
             {
@@ -1443,26 +1461,27 @@ bool Renderer::executeCommandsSubmission(const RenderView *rv)
     return allCommandsIssued;
 }
 
-void Renderer::updateVAOWithAttributes(Geometry *geometry,
+bool Renderer::updateVAOWithAttributes(Geometry *geometry,
                                        RenderCommand *command,
                                        Shader *shader,
                                        bool forceUpdate)
 {
     m_dirtyAttributes.reserve(m_dirtyAttributes.size() + geometry->attributes().size());
     const auto attributeIds = geometry->attributes();
+
     for (QNodeId attributeId : attributeIds) {
         // TO DO: Improvement we could store handles and use the non locking policy on the attributeManager
         Attribute *attribute = m_nodesManager->attributeManager()->lookupResource(attributeId);
 
         if (attribute == nullptr)
-            continue;
+            return false;
 
         Buffer *buffer = m_nodesManager->bufferManager()->lookupResource(attribute->bufferId());
 
         // Buffer update was already performed at this point
         // Just make sure the attribute reference a valid buffer
         if (buffer == nullptr)
-            continue;
+            return false;
 
         // Index Attribute
         bool attributeWasDirty = false;
@@ -1481,6 +1500,8 @@ void Renderer::updateVAOWithAttributes(Geometry *geometry,
                         break;
                     }
                 }
+                if (attributeLocation < 0)
+                    return false;
                 m_graphicsContext->specifyAttribute(attribute, buffer, attributeLocation);
             }
         }
@@ -1496,6 +1517,8 @@ void Renderer::updateVAOWithAttributes(Geometry *geometry,
         // should remain dirty so that VAO for these commands are properly
         // updated
     }
+
+    return true;
 }
 
 bool Renderer::requiresVAOAttributeUpdate(Geometry *geometry,
@@ -1521,7 +1544,7 @@ bool Renderer::requiresVAOAttributeUpdate(Geometry *geometry,
 void Renderer::cleanGraphicsResources()
 {
     // Clean buffers
-    const QVector<Qt3DCore::QNodeId> buffersToRelease = std::move(m_nodesManager->bufferManager()->buffersToRelease());
+    const QVector<Qt3DCore::QNodeId> buffersToRelease = m_nodesManager->bufferManager()->takeBuffersToRelease();
     for (Qt3DCore::QNodeId bufferId : buffersToRelease)
         m_graphicsContext->releaseBuffer(bufferId);
 

@@ -421,6 +421,7 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     m_syncRenderViewInitializationJob->addDependency(m_renderViewJob);
 
     m_filterEntityByLayerJob->addDependency(m_syncRenderViewInitializationJob);
+    m_filterEntityByLayerJob->addDependency(m_renderer->updateTreeEnabledJob());
 
     m_syncRenderCommandBuildingJob->addDependency(m_syncRenderViewInitializationJob);
     for (const auto materialGatherer : qAsConst(m_materialGathererJobs)) {

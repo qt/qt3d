@@ -77,6 +77,7 @@ Entity::Entity()
     : BackendNode()
     , m_nodeManagers(nullptr)
     , m_boundingDirty(false)
+    , m_treeEnabled(true)
 {
 }
 

@@ -58,10 +58,45 @@ namespace Qt3DRender {
     \inmodule Qt3DRender
     \since 5.7
     \brief Provides storage for vectors of Filter Keys and Parameters
+
+    A Qt3DRender::QRenderPassFilter FrameGraph node is used to select which
+    Qt3DRender::QRenderPass objects are selected for drawing. QRenderPassFilter
+    specifies a list of Qt3DRender::QFilterKey objects and Qt3DRender::QParameter objects.
+    When QRenderPassFilter is present in the FrameGraph, only the QRenderPass objects,
+    whose Qt3DRender::QFilterKey objects match the keys in QRenderPassFilter are
+    selected for rendering. If no QRenderPassFilter is present, then all QRenderPass
+    objects are selected for rendering. The parameters in the list can be used
+    to set values for shader parameters. The parameters in QRenderPassFilter are
+    overridden by parameters in QTechniqueFilter, QTechnique and QRenderPass.
 */
 
 /*!
-  The constructor creates an instance with the specified \a parent.
+    \qmltype RenderPassFilter
+    \inmodule Qt3D.Render
+    \since 5.7
+    \instantiates Qt3DRender::QRenderPassFilter
+    \inherits FrameGraphNode
+    \brief Provides storage for vectors of Filter Keys and Parameters
+
+    A RenderPassFilter FrameGraph node is used to select which RenderPass
+    objects are selected for drawing. When RenderPassFilter is present in the FrameGraph,
+    only the RenderPass objects, whose FilterKey objects match the keys
+    in RenderPassFilter are selected for rendering. If no RenderPassFilter is present,
+    then all RenderPass objects are selected for rendering.
+*/
+
+/*!
+    \qmlproperty list<FilterKey> RenderPassFilter::matchAny
+    Holds the list of filterkeys used by the RenderPassFilter
+*/
+/*!
+    \qmlproperty list<Parameter> RenderPassFilter::parameters
+    Holds the list of parameters used by the RenderPassFilter
+*/
+
+
+/*!
+    The constructor creates an instance with the specified \a parent.
  */
 QRenderPassFilter::QRenderPassFilter(QNode *parent)
     : QFrameGraphNode(*new QRenderPassFilterPrivate, parent)
@@ -79,7 +114,7 @@ QRenderPassFilter::QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent
 }
 
 /*!
-  Returns a vector of the current keys for the filter.
+    Returns a vector of the current keys for the filter.
  */
 QVector<QFilterKey *> QRenderPassFilter::matchAny() const
 {
@@ -88,7 +123,7 @@ QVector<QFilterKey *> QRenderPassFilter::matchAny() const
 }
 
 /*!
-  Add the filter key \a filterKey to the match vector.
+    Add the \a filterKey to the match vector.
  */
 void QRenderPassFilter::addMatch(QFilterKey *filterKey)
 {
@@ -116,7 +151,7 @@ void QRenderPassFilter::addMatch(QFilterKey *filterKey)
 }
 
 /*!
-  Remove the filter key \a filterKey from the match vector.
+    Remove the \a filterKey from the match vector.
  */
 void QRenderPassFilter::removeMatch(QFilterKey *filterKey)
 {
@@ -134,7 +169,7 @@ void QRenderPassFilter::removeMatch(QFilterKey *filterKey)
 }
 
 /*!
-  Add the parameter \a parameter to the parameter vector.
+    Add the given \a parameter to the parameter vector.
  */
 void QRenderPassFilter::addParameter(QParameter *parameter)
 {
@@ -162,7 +197,7 @@ void QRenderPassFilter::addParameter(QParameter *parameter)
 }
 
 /*!
-  Remove the parameter \a parameter from the parameter vector.
+    Remove the given \a parameter from the parameter vector.
  */
 void QRenderPassFilter::removeParameter(QParameter *parameter)
 {
@@ -180,7 +215,7 @@ void QRenderPassFilter::removeParameter(QParameter *parameter)
 }
 
 /*!
-  Returns the current vector of parameters.
+    Returns the current vector of parameters.
  */
 QVector<QParameter *> QRenderPassFilter::parameters() const
 {

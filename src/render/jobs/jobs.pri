@@ -26,7 +26,8 @@ HEADERS += \
     $$PWD/updateshaderdatatransformjob_p.h \
     $$PWD/updatemeshtrianglelistjob_p.h \
     $$PWD/pickboundingvolumeutils_p.h \
-    $$PWD/filtercompatibletechniquejob_p.h
+    $$PWD/filtercompatibletechniquejob_p.h \
+    $$PWD/updatetreeenabledjob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
@@ -51,4 +52,5 @@ SOURCES += \
     $$PWD/updateshaderdatatransformjob.cpp \
     $$PWD/updatemeshtrianglelistjob.cpp \
     $$PWD/pickboundingvolumeutils.cpp \
-    $$PWD/filtercompatibletechniquejob.cpp
+    $$PWD/filtercompatibletechniquejob.cpp \
+    $$PWD/updatetreeenabledjob.cpp

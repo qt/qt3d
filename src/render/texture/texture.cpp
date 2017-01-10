@@ -212,9 +212,10 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("samples")) {
             m_properties.samples = propertyChange->value().toInt();
             dirty = DirtyProperties;
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("generator")) {
+            m_dataFunctor = propertyChange->value().value<QTextureGeneratorPtr>();
+            dirty = DirtyGenerators;
         }
-
-        // TO DO: Handle the textureGenerator change
     }
         break;
 

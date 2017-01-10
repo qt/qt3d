@@ -226,7 +226,7 @@ UniformValue UniformValue::fromVariant(const QVariant &variant)
     }
 
     default:
-        Q_UNREACHABLE();
+        qWarning() << "Unknown uniform type or value:" << variant << "Please check your QParameters";
     }
     return v;
 }

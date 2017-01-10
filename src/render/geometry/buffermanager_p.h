@@ -78,11 +78,12 @@ public:
     // Aspect Thread
     void addBufferToRelease(Qt3DCore::QNodeId bufferId);
     // Render Thread (no concurrent access)
-    QVector<Qt3DCore::QNodeId> &buffersToRelease();
+    QVector<Qt3DCore::QNodeId> takeBuffersToRelease();
 
 private:
     QVector<Qt3DCore::QNodeId> m_dirtyBuffers;
     QVector<Qt3DCore::QNodeId> m_buffersToRelease;
+    QMutex m_mutex;
 };
 
 } // namespace Render

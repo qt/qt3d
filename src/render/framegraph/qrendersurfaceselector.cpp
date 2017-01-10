@@ -136,16 +136,20 @@ QRenderSurfaceSelectorPrivate::~QRenderSurfaceSelectorPrivate()
 
 QRenderSurfaceSelector *QRenderSurfaceSelectorPrivate::find(QObject *rootObject)
 {
-    auto rendererSettings = rootObject->findChild<Qt3DRender::QRenderSettings *>();
-    if (!rendererSettings) {
-        qWarning() << "No renderer settings component found";
-        return nullptr;
-    }
+    QFrameGraphNode *frameGraphRoot = qobject_cast<QFrameGraphNode *>(rootObject);
 
-    auto frameGraphRoot = rendererSettings->activeFrameGraph();
     if (!frameGraphRoot) {
-        qWarning() << "No active frame graph found";
-        return nullptr;
+        auto rendererSettings = rootObject->findChild<Qt3DRender::QRenderSettings *>();
+        if (!rendererSettings) {
+            qWarning() << "No renderer settings component found";
+            return nullptr;
+        }
+
+        frameGraphRoot = rendererSettings->activeFrameGraph();
+        if (!frameGraphRoot) {
+            qWarning() << "No active frame graph found";
+            return nullptr;
+        }
     }
 
     auto surfaceSelector = qobject_cast<Qt3DRender::QRenderSurfaceSelector *>(frameGraphRoot);
