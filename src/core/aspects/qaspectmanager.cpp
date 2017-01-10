@@ -76,6 +76,7 @@ QAspectManager::QAspectManager(QObject *parent)
     , m_changeArbiter(new QChangeArbiter(this))
     , m_serviceLocator(new QServiceLocator())
     , m_waitForEndOfSimulationLoop(0)
+    , m_waitForStartOfSimulationLoop(0)
     , m_waitForEndOfExecLoop(0)
     , m_waitForQuit(0)
 {
@@ -92,12 +93,19 @@ QAspectManager::~QAspectManager()
     delete m_scheduler;
 }
 
+// Main thread (called by QAspectEngine)
 void QAspectManager::enterSimulationLoop()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
     m_runSimulationLoop.fetchAndStoreOrdered(1);
+
+    // We wait for the setRootEntity on the aspectManager to have completed
+    // This ensures we cannot shutdown before the aspects have had a chance
+    // to be initialized
+    m_waitForStartOfSimulationLoop.acquire(1);
 }
 
+// Main thread (called by QAspectEngine)
 void QAspectManager::exitSimulationLoop()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
@@ -125,9 +133,12 @@ void QAspectManager::exitSimulationLoop()
     for (QAbstractAspect *aspect : qAsConst(m_aspects))
         aspect->d_func()->onEngineAboutToShutdown();
 
+
+    qCDebug(Aspects) << "exitSimulationLoop waiting for exec loop to terminate";
     // Wait until the simulation loop is fully exited and the aspects are done
     // processing any final changes and have had onEngineShutdown() called on them
     m_waitForEndOfSimulationLoop.acquire(1);
+    qCDebug(Aspects) << "exitSimulationLoop completed";
 }
 
 bool QAspectManager::isShuttingDown() const
@@ -165,6 +176,7 @@ void QAspectManager::shutdown()
     // Aspects must be deleted in the Thread they were created in
 }
 
+// QAspectThread:: queued invoked by QAspectEngine::setRootEntity
 void QAspectManager::setRootEntity(Qt3DCore::QEntity *root, const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> &changes)
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
@@ -238,7 +250,7 @@ void QAspectManager::exec()
     qCDebug(Aspects) << Q_FUNC_INFO << "***** Entering main loop *****";
     while (m_runMainLoop.load()) {
         // Process any pending events, waiting for more to arrive if queue is empty
-        eventLoop.processEvents(QEventLoop::WaitForMoreEvents, 16);
+        eventLoop.processEvents(QEventLoop::AllEvents, 16);
 
         // Retrieve the frame advance service. Defaults to timer based if there is no renderer.
         QAbstractFrameAdvanceService *frameAdvanceService =
@@ -258,6 +270,11 @@ void QAspectManager::exec()
                 aspect->onEngineStartup();
             }
             qCDebug(Aspects) << "Done calling onEngineStartup() for each aspect";
+            m_waitForStartOfSimulationLoop.release(1);
+        } else {
+            continue;
+            // Ensure we won't enter the simulation loop (in case the atomic was changed between
+            // the last time we read it) without having performed the initialization first
         }
 
         // Only enter main simulation loop once the renderer and other aspects are initialized
