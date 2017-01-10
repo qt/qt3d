@@ -1190,13 +1190,8 @@ void GLTFIO::processJSONTexture(const QString &id, const QJsonObject &jsonObject
         return;
     }
 
-    QTexture2D* tex = new QTexture2D;
-
-    // TODO: Choose suitable internal format - may vary on OpenGL context type
-    //int pixelFormat = jsonObj.value(KEY_FORMAT).toInt(GL_RGBA);
-    int internalFormat = jsonObject.value(KEY_INTERNAL_FORMAT).toInt(GL_RGBA);
-
-    tex->setFormat(static_cast<QAbstractTexture::TextureFormat>(internalFormat));
+    QTextureLoader* tex = new QTextureLoader;
+    tex->setMirrored(false);
 
     QString samplerId = jsonObject.value(KEY_SAMPLER).toString();
     QString source = jsonObject.value(KEY_SOURCE).toString();
@@ -1207,9 +1202,7 @@ void GLTFIO::processJSONTexture(const QString &id, const QJsonObject &jsonObject
         return;
     }
 
-    QTextureImage *texImage = new QTextureImage(tex);
-    texImage->setSource(QUrl::fromLocalFile(imagIt.value()));
-    tex->addTextureImage(texImage);
+    tex->setSource(QUrl::fromLocalFile(imagIt.value()));
 
     const auto samplersDictValue = m_json.object().value(KEY_SAMPLERS).toObject().value(samplerId);
     if (Q_UNLIKELY(samplersDictValue.isUndefined())) {
