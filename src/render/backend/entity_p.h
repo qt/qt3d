@@ -177,9 +177,6 @@ private:
     HEntity m_parentHandle;
     QVector<HEntity > m_childrenHandles;
 
-    // true only if this and all parent nodes are enabled
-    bool m_treeEnabled;
-
     HMatrix m_worldTransform;
     QSharedPointer<Sphere> m_localBoundingVolume;
     QSharedPointer<Sphere> m_worldBoundingVolume;
@@ -199,6 +196,8 @@ private:
 
     QString m_objectName;
     bool m_boundingDirty;
+    // true only if this and all parent nodes are enabled
+    bool m_treeEnabled;
 };
 
 // Handles
