@@ -38,27 +38,26 @@
 ****************************************************************************/
 
 #include "qaspectengine.h"
+#include "qaspectengine_p.h"
 
-#include "qabstractaspect.h"
-#include "qaspectthread_p.h"
-#include "qaspectmanager_p.h"
-#include "qchangearbiter_p.h"
-#include "qabstractaspect.h"
-#include "qnode.h"
+#include <Qt3DCore/qabstractaspect.h>
+#include <Qt3DCore/qcomponent.h>
+#include <Qt3DCore/qentity.h>
+#include <Qt3DCore/qnode.h>
+#include <QtCore/QMetaObject>
+
 #include <Qt3DCore/private/corelogging_p.h>
-#include <QMetaObject>
-#include <private/qpostman_p.h>
-#include <private/qscene_p.h>
-#include <private/qaspectengine_p.h>
-#include <private/qnode_p.h>
-#include <private/qnodevisitor_p.h>
-#include <private/qscene_p.h>
-#include "qentity.h"
-#include "qcomponent.h"
-#include <Qt3DCore/private/qeventfilterservice_p.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/private/qservicelocator_p.h>
+#include <Qt3DCore/private/qaspectthread_p.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/aspectcommanddebugger_p.h>
+#include <Qt3DCore/private/qchangearbiter_p.h>
+#include <Qt3DCore/private/qeventfilterservice_p.h>
+#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/private/qnodevisitor_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
+#include <Qt3DCore/private/qpostman_p.h>
+#include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qservicelocator_p.h>
 
 QT_BEGIN_NAMESPACE
 

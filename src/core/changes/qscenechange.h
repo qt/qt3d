@@ -40,9 +40,9 @@
 #ifndef QT3DCORE_QSCENECHANGE_H
 #define QT3DCORE_QSCENECHANGE_H
 
-#include <Qt3DCore/qt3dcore_global.h>
-#include <QSharedPointer>
 #include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/qt3dcore_global.h>
+#include <QtCore/QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 

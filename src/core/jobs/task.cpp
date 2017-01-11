@@ -38,12 +38,13 @@
 ****************************************************************************/
 
 #include "task_p.h"
-#include "dependencyhandler_p.h"
-#include "qthreadpooler_p.h"
 
-#include <QMutexLocker>
-#include <QElapsedTimer>
-#include <QDebug>
+#include <QtCore/QDebug>
+#include <QtCore/QElapsedTimer>
+#include <QtCore/QMutexLocker>
+
+#include <Qt3DCore/private/dependencyhandler_p.h>
+#include <Qt3DCore/private/qthreadpooler_p.h>
 
 QT_BEGIN_NAMESPACE
 

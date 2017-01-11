@@ -51,9 +51,10 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qt3dcore_global_p.h>
+#include <QtCore/QScopedPointer>
+
 #include <Qt3DCore/private/qobservableinterface_p.h>
-#include <QScopedPointer>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE
 

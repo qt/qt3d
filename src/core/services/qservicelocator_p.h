@@ -52,7 +52,7 @@
 //
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <QScopedPointer>
+#include <QtCore/QScopedPointer>
 
 QT_BEGIN_NAMESPACE
 

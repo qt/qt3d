@@ -51,9 +51,10 @@
 // We mean it.
 //
 
-#include <private/qstaticpropertyvalueremovedchangebase_p.h>
-#include <Qt3DCore/private/qt3dcore_global_p.h>
 #include <QtCore/qvariant.h>
+
+#include <Qt3DCore/private/qstaticpropertyvalueremovedchangebase_p.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE
 

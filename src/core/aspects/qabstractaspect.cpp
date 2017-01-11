@@ -38,15 +38,17 @@
 ****************************************************************************/
 
 #include "qabstractaspect.h"
-#include "qentity.h"
-#include <Qt3DCore/private/qaspectmanager_p.h>
-#include <private/qabstractaspect_p.h>
-#include <Qt3DCore/private/qaspectjobmanager_p.h>
-#include <private/qchangearbiter_p.h>
-#include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qnodevisitor_p.h>
+#include "qabstractaspect_p.h"
+
+#include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+
 #include <Qt3DCore/private/corelogging_p.h>
+#include <Qt3DCore/private/qaspectjobmanager_p.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DCore/private/qchangearbiter_p.h>
+#include <Qt3DCore/private/qnodevisitor_p.h>
+#include <Qt3DCore/private/qscene_p.h>
 
 QT_BEGIN_NAMESPACE
 

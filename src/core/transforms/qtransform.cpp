@@ -39,9 +39,10 @@
 
 #include "qtransform.h"
 #include "qtransform_p.h"
-#include "qmath3d_p.h"
 
 #include <Qt3DCore/qpropertyupdatedchange.h>
+
+#include <Qt3DCore/private/qmath3d_p.h>
 
 QT_BEGIN_NAMESPACE
 

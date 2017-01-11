@@ -38,14 +38,15 @@
 ****************************************************************************/
 
 #include "qthreadpooler_p.h"
-#include "dependencyhandler_p.h"
 
-#include <QDebug>
+#include <QtCore/QDebug>
+
+#include <Qt3DCore/private/dependencyhandler_p.h>
 
 #ifdef QT3D_JOBS_RUN_STATS
-#include <QFile>
-#include <QThreadStorage>
-#include <QDateTime>
+#include <QtCore/QFile>
+#include <QtCore/QThreadStorage>
+#include <QtCore/QDateTime>
 #endif
 
 QT_BEGIN_NAMESPACE

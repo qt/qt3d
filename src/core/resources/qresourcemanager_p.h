@@ -51,14 +51,15 @@
 // We mean it.
 //
 
-#include <QtGlobal>
-#include <QReadWriteLock>
-#include <QReadLocker>
-#include <QMutex>
-#include <QHash>
 #include <Qt3DCore/qt3dcore_global.h>
-#include "qhandle_p.h"
-#include "qhandlemanager_p.h"
+#include <QtCore/QHash>
+#include <QtCore/QMutex>
+#include <QtCore/QReadLocker>
+#include <QtCore/QReadWriteLock>
+#include <QtCore/QtGlobal>
+
+#include <Qt3DCore/private/qhandle_p.h>
+#include <Qt3DCore/private/qhandlemanager_p.h>
 
 // Silence complaints about unreferenced local variables in
 // ArrayAllocatingPolicy::deallocateBuckets() when the compiler

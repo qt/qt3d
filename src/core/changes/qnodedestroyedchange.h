@@ -37,8 +37,8 @@
 #ifndef QT3DCORE_QNODEDESTROYEDCHANGE_H
 #define QT3DCORE_QNODEDESTROYEDCHANGE_H
 
-#include <Qt3DCore/qscenechange.h>
 #include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qscenechange.h>
 #include <QtCore/qsharedpointer.h>
 
 QT_BEGIN_NAMESPACE

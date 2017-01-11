@@ -51,13 +51,15 @@
 // We mean it.
 //
 
-#include <private/qobject_p.h>
 #include <Qt3DCore/qnode.h>
-#include <Qt3DCore/private/qobservableinterface_p.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
-#include <Qt3DCore/private/qt3dcore_global_p.h>
-#include "propertychangehandler_p.h"
+
 #include <functional>
+
+#include <Qt3DCore/private/propertychangehandler_p.h>
+#include <Qt3DCore/private/qchangearbiter_p.h>
+#include <Qt3DCore/private/qobservableinterface_p.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
+#include <QtCore/private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
 

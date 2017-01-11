@@ -48,8 +48,9 @@
 // We mean it.
 //
 
-#include <private/qscenechange_p.h>
 #include <Qt3DCore/qnode.h>
+
+#include <Qt3DCore/private/qscenechange_p.h>
 
 QT_BEGIN_NAMESPACE
 
