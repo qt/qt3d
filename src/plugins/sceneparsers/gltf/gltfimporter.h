@@ -147,7 +147,7 @@ private:
 
     Qt3DCore::QEntity *defaultScene();
     QMaterial *material(const QString &id);
-    bool fillCameraLens(QCameraLens &lens, const QString &id) const;
+    bool fillCamera(QCameraLens &lens, QCamera *cameraEntity, const QString &id) const;
 
     void parse();
     void cleanup();

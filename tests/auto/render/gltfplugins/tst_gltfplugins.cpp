@@ -241,6 +241,7 @@ void tst_gltfPlugins::createTestScene()
         camera->lens()->setObjectName(QStringLiteral("Main camera lens"));
         camera->setFieldOfView(30.0f);
         camera->setAspectRatio(1.0f);
+        m_entityMap.insert(camera->objectName(), camera);
     }
     // Ortho camera
     {
@@ -263,6 +264,7 @@ void tst_gltfPlugins::createTestScene()
         lens->setObjectName(QStringLiteral("Ortho camera lens"));
         camera->addComponent(lens);
 
+        m_entityMap.insert(camera->objectName(), camera);
 #ifdef VISUAL_CHECK
         m_view1->defaultFrameGraph()->setCamera(camera);
 #endif
@@ -1208,6 +1210,16 @@ void tst_gltfPlugins::exportAndImport()
                               meshComponent(importedEntity));
             compareComponents(materialComponent(exportedEntity),
                               materialComponent(importedEntity));
+            Qt3DRender::QCamera *exportedCamera =
+                    qobject_cast<Qt3DRender::QCamera *>(exportedEntity);
+            if (exportedCamera) {
+                Qt3DRender::QCamera *importedCamera =
+                        qobject_cast<Qt3DRender::QCamera *>(importedEntity);
+                QVERIFY(importedCamera != nullptr);
+                QCOMPARE(exportedCamera->position(), importedCamera->position());
+                QCOMPARE(exportedCamera->upVector(), importedCamera->upVector());
+                QCOMPARE(exportedCamera->viewCenter(), importedCamera->viewCenter());
+            }
         }
     }
 
