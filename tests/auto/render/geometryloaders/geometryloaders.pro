@@ -10,3 +10,4 @@ SOURCES += tst_geometryloaders.cpp
 
 RESOURCES += \
     geometryloaders.qrc
+
