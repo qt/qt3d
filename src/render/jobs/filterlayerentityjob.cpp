@@ -56,6 +56,7 @@ int layerFilterJobCounter = 0;
 FilterLayerEntityJob::FilterLayerEntityJob()
     : Qt3DCore::QAspectJob()
     , m_manager(nullptr)
+    , m_hasLayerFilter(false)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::LayerFiltering, layerFilterJobCounter++);
 }
@@ -90,7 +91,7 @@ void FilterLayerEntityJob::filterLayerAndEntity()
     for (const HEntity handle : handles) {
         Entity *entity = entityManager->data(handle);
 
-        if (!entity->isEnabled())
+        if (!entity->isTreeEnabled())
             continue;
 
         const Qt3DCore::QNodeIdVector entityLayers = entity->componentsUuid<Layer>();
@@ -116,7 +117,7 @@ void FilterLayerEntityJob::selectAllEntities()
     m_filteredEntities.reserve(handles.size());
     for (const HEntity handle : handles) {
         Entity *e = entityManager->data(handle);
-        if (e->isEnabled())
+        if (e->isTreeEnabled())
             m_filteredEntities.push_back(e);
     }
 }

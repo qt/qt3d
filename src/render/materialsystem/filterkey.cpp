@@ -60,6 +60,9 @@ FilterKey::~FilterKey()
 
 void FilterKey::cleanup()
 {
+    QBackendNode::setEnabled(false);
+    m_name.clear();
+    m_value.clear();
 }
 
 void FilterKey::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -70,12 +73,12 @@ void FilterKey::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
     m_value = data.value;
 }
 
-QVariant FilterKey::criterionValue() const
+QVariant FilterKey::value() const
 {
     return m_value;
 }
 
-QString FilterKey::criterionName() const
+QString FilterKey::name() const
 {
     return m_name;
 }
@@ -103,8 +106,8 @@ bool FilterKey::operator ==(const FilterKey &other)
 {
     if (&other == this)
         return true;
-    return ((other.criterionName() == criterionName()) &&
-            (other.criterionValue() == criterionValue()));
+    return ((other.name() == name()) &&
+            (other.value() == value()));
 }
 
 bool FilterKey::operator !=(const FilterKey &other)

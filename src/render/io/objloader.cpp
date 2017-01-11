@@ -60,10 +60,18 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+struct Entry
+{
+    int start;
+    int size;
+};
+QT3D_DECLARE_TYPEINFO(Qt3DRender, Entry, Q_PRIMITIVE_TYPE)
+
 /*
  * A helper class to split a QByteArray and access its sections without
  * additional memory allocations.
  */
+
 class ByteArraySplitter
 {
 public:
@@ -118,17 +126,10 @@ public:
         return ByteArraySplitter(m_input + m_entries[index].start, m_input + m_entries[index].start + m_entries[index].size, delimiter, splitBehavior);
     }
 
-    struct Entry
-    {
-        int start;
-        int size;
-    };
-
 private:
     QVarLengthArray<Entry, 16> m_entries;
     const char *m_input;
 };
-QT3D_DECLARE_TYPEINFO(Qt3DRender, ByteArraySplitter::Entry, Q_PRIMITIVE_TYPE)
 
 inline uint qHash(const FaceIndices &faceIndices)
 {
@@ -217,6 +218,8 @@ bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
         if (lineSize > 0 && line[0] != '#') {
             if (line[lineSize - 1] == '\n')
                 --lineSize; // chop newline
+            while (lineSize > 0 && line[lineSize-1] == ' ')
+                --lineSize; // trim trailing whitespaces
 
             const ByteArraySplitter tokens(line, line + lineSize, ' ', QString::SkipEmptyParts);
 

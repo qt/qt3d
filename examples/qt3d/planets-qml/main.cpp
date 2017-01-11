@@ -50,7 +50,9 @@
 
 #include <QGuiApplication>
 #include <QQuickView>
+#include <QQmlContext>
 #include <QOpenGLContext>
+#include "networkcontroller.h"
 
 int main(int argc, char **argv)
 {
@@ -65,8 +67,11 @@ int main(int argc, char **argv)
     format.setStencilBufferSize(8);
     format.setSamples(4);
 
+    NetworkController networkController;
+
     QQuickView view;
     view.setFormat(format);
+    view.rootContext()->setContextProperty("networkController", &networkController);
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setSource(QUrl("qrc:/PlanetsMain.qml"));
     view.setColor("#000000");

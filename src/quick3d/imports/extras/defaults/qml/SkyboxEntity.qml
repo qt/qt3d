@@ -53,12 +53,12 @@ Entity {
             x: WrapMode.ClampToEdge
             y: WrapMode.ClampToEdge
         }
-        TextureImage { face: Texture.CubeMapPositiveX; source: baseName + "_posx" + extension }
-        TextureImage { face: Texture.CubeMapPositiveY; source: baseName + "_posy" + extension }
-        TextureImage { face: Texture.CubeMapPositiveZ; source: baseName + "_posz" + extension }
-        TextureImage { face: Texture.CubeMapNegativeX; source: baseName + "_negx" + extension }
-        TextureImage { face: Texture.CubeMapNegativeY; source: baseName + "_negy" + extension }
-        TextureImage { face: Texture.CubeMapNegativeZ; source: baseName + "_negz" + extension }
+        TextureImage { mirrored: false; face: Texture.CubeMapPositiveX; source: baseName + "_posx" + extension }
+        TextureImage { mirrored: false; face: Texture.CubeMapPositiveY; source: baseName + "_posy" + extension }
+        TextureImage { mirrored: false; face: Texture.CubeMapPositiveZ; source: baseName + "_posz" + extension }
+        TextureImage { mirrored: false; face: Texture.CubeMapNegativeX; source: baseName + "_negx" + extension }
+        TextureImage { mirrored: false; face: Texture.CubeMapNegativeY; source: baseName + "_negy" + extension }
+        TextureImage { mirrored: false; face: Texture.CubeMapNegativeZ; source: baseName + "_negz" + extension }
     }
 
     ShaderProgram {

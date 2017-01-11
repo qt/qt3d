@@ -47,6 +47,29 @@ public:
     }
 
 private Q_SLOTS:
+    void shouldHaveDefaultAttributeNames()
+    {
+        // GIVEN
+        Qt3DRender::QAttribute attribute;
+
+        // THEN
+        QCOMPARE(Qt3DRender::QAttribute::defaultPositionAttributeName(), QStringLiteral("vertexPosition"));
+        QCOMPARE(Qt3DRender::QAttribute::defaultNormalAttributeName(), QStringLiteral("vertexNormal"));
+        QCOMPARE(Qt3DRender::QAttribute::defaultColorAttributeName(), QStringLiteral("vertexColor"));
+        QCOMPARE(Qt3DRender::QAttribute::defaultTextureCoordinateAttributeName(), QStringLiteral("vertexTexCoord"));
+        QCOMPARE(Qt3DRender::QAttribute::defaultTangentAttributeName(), QStringLiteral("vertexTangent"));
+
+        QCOMPARE(attribute.property("defaultPositionAttributeName").toString(),
+                 Qt3DRender::QAttribute::defaultPositionAttributeName());
+        QCOMPARE(attribute.property("defaultNormalAttributeName").toString(),
+                 Qt3DRender::QAttribute::defaultNormalAttributeName());
+        QCOMPARE(attribute.property("defaultColorAttributeName").toString(),
+                 Qt3DRender::QAttribute::defaultColorAttributeName());
+        QCOMPARE(attribute.property("defaultTextureCoordinateAttributeName").toString(),
+                 Qt3DRender::QAttribute::defaultTextureCoordinateAttributeName());
+        QCOMPARE(attribute.property("defaultTangentAttributeName").toString(),
+                 Qt3DRender::QAttribute::defaultTangentAttributeName());
+    }
 
     void checkCloning_data()
     {

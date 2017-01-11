@@ -110,6 +110,18 @@ void OpenGLVertexArrayObject::create()
     }
 }
 
+void OpenGLVertexArrayObject::destroy()
+{
+    Q_ASSERT(m_ctx);
+    if (m_supportsVao) {
+        Q_ASSERT(!m_vao.isNull());
+        m_vao->destroy();
+    }
+    m_specified = false;
+    m_indexAttribute = GraphicsContext::VAOIndexAttribute();
+    m_vertexAttributes.clear();
+}
+
 bool OpenGLVertexArrayObject::isCreated() const
 {
     if (m_supportsVao) {

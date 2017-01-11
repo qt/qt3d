@@ -53,7 +53,8 @@
 
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qaspectjob.h>
-#include <Qt3DRender/qtextureimage.h>
+#include <Qt3DRender/qtexturegenerator.h>
+#include <Qt3DRender/qtextureimagedatagenerator.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -66,15 +67,19 @@ class NodeManagers;
 class LoadTextureDataJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit LoadTextureDataJob(Qt3DCore::QNodeId textureId);
+    LoadTextureDataJob(const QTextureGeneratorPtr &texGen);
+    LoadTextureDataJob(const QTextureImageDataGeneratorPtr &imgDataGen);
     ~LoadTextureDataJob();
+
     inline void setNodeManagers(NodeManagers *manager) { m_manager = manager; }
 
 protected:
     void run() Q_DECL_FINAL;
 
 private:
-    Qt3DCore::QNodeId m_textureId;
+    QTextureGeneratorPtr m_texGen;
+    QTextureImageDataGeneratorPtr  m_imgDataGen;
+
     NodeManagers *m_manager;
 };
 

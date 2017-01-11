@@ -76,6 +76,6 @@ public:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::Render::Quick::Quick3DShaderData*)
+Q_DECLARE_METATYPE(Qt3DRender::Render::Quick::Quick3DShaderData*) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_RENDER_QUICK_QUICK3DSHADERDATA_P_H

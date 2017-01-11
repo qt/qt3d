@@ -8,7 +8,6 @@ CONFIG -= precompile_header
 DEFINES += QT_NO_FOREACH
 
 gcov {
-    CONFIG += static
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
     QMAKE_LFLAGS += -fprofile-arcs -ftest-coverage
 }

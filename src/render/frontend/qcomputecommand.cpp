@@ -45,10 +45,61 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
- * \class Qt3DRender::QComputeCommand
- * \brief The QComputerCommand class
- * \since 5.7
- * \inmodule Qt3DRender
+    \class Qt3DRender::QComputeCommand
+    \since 5.7
+    \inmodule Qt3DRender
+    \brief QComponent to issue work for the compute shader on GPU
+
+    A Qt3DRender::QComputeCommand is used to issue work for the compute shader.
+    The compute shader is specified in the QMaterial component of the same entity the
+    QComputeCommand is added to. The workGroupX, workGroupY and workGroupZ properties
+    specify the work group sizes for the compute shader invocation. Qt3DRender::QDispatchCompute
+    node needs to be present in the FrameGraph to actually issue the commands.
+ */
+
+/*!
+    \qmltype ComputeCommand
+    \since 5.7
+    \inmodule Qt3DRender
+    \inherits Component3D
+    \instantiates Qt3DRender::QComputeCommand
+    \brief Component to issue work for the compute shader on GPU
+
+    A ComputeCommand is used to issue work for the compute shader.
+    The compute shader is specified in the Material component of the same entity the
+    ComputeCommand is added to. The workGroupX, workGroupY and workGroupZ properties
+    specify the work group sizes for the compute shader invocation. DispatchCompute
+    node needs to be present in the FrameGraph to actually issue the commands.
+ */
+
+/*!
+    \qmlproperty int ComputeCommand::workGroupX
+    Specifies X workgroup size.
+ */
+
+/*!
+    \qmlproperty int ComputeCommand::workGroupY
+    Specifies Y workgroup size.
+ */
+
+/*!
+    \qmlproperty int ComputeCommand::workGroupZ
+    Specifies Z workgroup size.
+ */
+
+/*!
+    \property QComputeCommand::workGroupX
+    Specifies X workgroup size.
+ */
+
+/*!
+    \property QComputeCommand::workGroupY
+    Specifies Y workgroup size.
+ */
+
+/*!
+    \property QComputeCommand::workGroupZ
+    Specifies Z workgroup size.
  */
 
 QComputeCommandPrivate::QComputeCommandPrivate()
@@ -60,9 +111,8 @@ QComputeCommandPrivate::QComputeCommandPrivate()
 }
 
 /*!
- * The constructor creates a new Qt3DRender::QComputeCommand instance with the
- * specified \a parent.
- * \param parent
+    The constructor creates a new Qt3DRender::QComputeCommand instance with the
+    specified \a parent.
  */
 QComputeCommand::QComputeCommand(Qt3DCore::QNode *parent)
     : Qt3DCore::QComponent(*new QComputeCommandPrivate, parent)
@@ -74,27 +124,18 @@ QComputeCommand::~QComputeCommand()
 {
 }
 
-/*!
- * \return the workgroup size for the first dimension.
- */
 int QComputeCommand::workGroupX() const
 {
     Q_D(const QComputeCommand);
     return d->m_workGroupX;
 }
 
-/*!
- * \return the workgroup size for the second dimension.
- */
 int QComputeCommand::workGroupY() const
 {
     Q_D(const QComputeCommand);
     return d->m_workGroupY;
 }
 
-/*!
- * \return the workgroup size for the third dimension.
- */
 int QComputeCommand::workGroupZ() const
 {
     Q_D(const QComputeCommand);
@@ -102,8 +143,7 @@ int QComputeCommand::workGroupZ() const
 }
 
 /*!
- * Sets the workgroup for the first dimension to \a workGroupX.
- * \param workGroupX
+    Sets the workgroup for the first dimension to \a workGroupX.
  */
 void QComputeCommand::setWorkGroupX(int workGroupX)
 {
@@ -115,8 +155,7 @@ void QComputeCommand::setWorkGroupX(int workGroupX)
 }
 
 /*!
- * Sets the workgroup for the second dimension to \a workGroupY.
- * \param workGroupY
+    Sets the workgroup for the second dimension to \a workGroupY.
  */
 void QComputeCommand::setWorkGroupY(int workGroupY)
 {
@@ -128,8 +167,7 @@ void QComputeCommand::setWorkGroupY(int workGroupY)
 }
 
 /*!
- * Sets the workgroup for the third dimension to \a workGroupZ.
- * \param workGroupZ
+    Sets the workgroup for the third dimension to \a workGroupZ.
  */
 void QComputeCommand::setWorkGroupZ(int workGroupZ)
 {

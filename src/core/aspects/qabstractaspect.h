@@ -107,6 +107,7 @@ QT_END_NAMESPACE
     QT_BEGIN_NAMESPACE \
     namespace Qt3DCore { \
         typedef QAbstractAspect *(*AspectCreateFunction)(QObject *); \
+        QT_DEPRECATED QT3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QString &, const QMetaObject *, AspectCreateFunction); \
         QT3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QLatin1String &, const QMetaObject *, AspectCreateFunction); \
     } \
     QT_END_NAMESPACE \

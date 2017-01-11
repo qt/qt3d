@@ -75,6 +75,7 @@ QAttributePrivate::QAttributePrivate()
 
 /*!
  * \class Qt3DRender::QAttribute
+ * \inheaderfile Qt3DRender/QAttribute
  * \inmodule Qt3DRender
  *
  * \inherits Qt3DCore::QNode
@@ -86,7 +87,7 @@ QAttributePrivate::QAttributePrivate()
  * will ensure your geometry will be compatible with picking and the various
  * materials provided in the Qt3DExtras module.
  *
- * \sa QBuffer.
+ * \sa QBuffer
  */
 
 /*!

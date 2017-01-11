@@ -65,14 +65,19 @@ QVector<Qt3DCore::QNodeId> BufferManager::dirtyBuffers()
     return vector;
 }
 
+// Called in QAspectThread::syncChanges
 void BufferManager::addBufferToRelease(Qt3DCore::QNodeId bufferId)
 {
+    QMutexLocker lock(&m_mutex);
     m_buffersToRelease.push_back(bufferId);
 }
 
-QVector<Qt3DCore::QNodeId> &BufferManager::buffersToRelease()
+// Called in Render thread
+QVector<Qt3DCore::QNodeId> BufferManager::takeBuffersToRelease()
 {
-    return m_buffersToRelease;
+    QMutexLocker lock(&m_mutex);
+    // Clears the m_buffersToRelease vector
+    return std::move(m_buffersToRelease);
 }
 
 } // namespace Render

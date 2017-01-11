@@ -45,6 +45,7 @@ namespace Qt3DCore {
 
 /*!
  * \class Qt3DCore::QNodeId
+ * \inheaderfile Qt3DCore/QNodeId
  * \inmodule Qt3DCore
  * \brief Uniquely identifies a QNode
  */

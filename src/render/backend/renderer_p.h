@@ -65,11 +65,15 @@
 #include <Qt3DRender/private/expandboundingvolumejob_p.h>
 #include <Qt3DRender/private/updateworldtransformjob_p.h>
 #include <Qt3DRender/private/calcboundingvolumejob_p.h>
-#include <Qt3DRender/private/framepreparationjob_p.h>
+#include <Qt3DRender/private/updateshaderdatatransformjob_p.h>
 #include <Qt3DRender/private/framecleanupjob_p.h>
 #include <Qt3DRender/private/updateworldboundingvolumejob_p.h>
+#include <Qt3DRender/private/updatetreeenabledjob_p.h>
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
 #include <Qt3DRender/private/sendrendercapturejob_p.h>
+#include <Qt3DRender/private/genericlambdajob_p.h>
+#include <Qt3DRender/private/updatemeshtrianglelistjob_p.h>
+#include <Qt3DRender/private/filtercompatibletechniquejob_p.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -83,6 +87,8 @@
 #include <QAtomicInt>
 #include <QScopedPointer>
 #include <QSemaphore>
+
+#include <functional>
 
 QT_BEGIN_NAMESPACE
 
@@ -104,7 +110,7 @@ class QMesh;
 class QRenderPass;
 class QAbstractShapeMesh;
 struct GraphicsApiFilterData;
-class QSceneIOHandler;
+class QSceneImporter;
 
 #ifdef QT3D_JOBS_RUN_STATS
 namespace Debug {
@@ -131,6 +137,8 @@ class RenderStateSet;
 class VSyncFrameAdvanceService;
 class PickEventFilter;
 class NodeManagers;
+
+using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT Renderer : public AbstractRenderer
 {
@@ -176,14 +184,20 @@ public:
 
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() Q_DECL_OVERRIDE;
     Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() Q_DECL_OVERRIDE;
+    Qt3DCore::QAspectJobPtr syncTextureLoadingJob() Q_DECL_OVERRIDE;
+
     QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs() const;
 
     inline FrameCleanupJobPtr frameCleanupJob() const { return m_cleanupJob; }
     inline ExpandBoundingVolumeJobPtr expandBoundingVolumeJob() const { return m_expandBoundingVolumeJob; }
-    inline FramePreparationJobPtr framePreparationJob() const { return m_framePreparationJob; }
+    inline UpdateShaderDataTransformJobPtr updateShaderDataTransformJob() const { return m_updateShaderDataTransformJob; }
     inline CalculateBoundingVolumeJobPtr calculateBoundingVolumeJob() const { return m_calculateBoundingVolumeJob; }
+    inline UpdateTreeEnabledJobPtr updateTreeEnabledJob() const { return m_updateTreeEnabledJob; }
     inline UpdateWorldTransformJobPtr updateWorldTransformJob() const { return m_worldTransformJob; }
     inline UpdateWorldBoundingVolumeJobPtr updateWorldBoundingVolumeJob() const { return m_updateWorldBoundingVolumeJob; }
+    inline UpdateMeshTriangleListJobPtr updateMeshTriangleListJob() const { return m_updateMeshTriangleListJob; }
+    inline FilterCompatibleTechniqueJobPtr filterCompatibleTechniqueJob() const { return m_filterCompatibleTechniqueJob; }
+    inline SynchronizerJobPtr textureLoadSyncJob() const { return m_syncTextureLoadingJob; }
 
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const Q_DECL_OVERRIDE;
 
@@ -193,9 +207,12 @@ public:
     virtual RenderSettings *settings() const Q_DECL_OVERRIDE;
 
     void updateGLResources();
+    void updateTexture(Texture *texture);
+    void cleanupTexture(const Texture *texture);
+
     void prepareCommandsSubmission(const QVector<RenderView *> &renderViews);
     bool executeCommandsSubmission(const RenderView *rv);
-    void updateVAOWithAttributes(Geometry *geometry,
+    bool updateVAOWithAttributes(Geometry *geometry,
                                  RenderCommand *command,
                                  Shader *shader,
                                  bool forceUpdate);
@@ -205,6 +222,7 @@ public:
 
     void setOpenGLContext(QOpenGLContext *context);
     const GraphicsApiFilterData *contextInfo() const;
+    GraphicsContext *graphicsContext() const;
 
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
@@ -218,6 +236,8 @@ public:
     bool isReadyToSubmit();
 
     QVariant executeCommand(const QStringList &args) Q_DECL_OVERRIDE;
+    void setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper) Q_DECL_OVERRIDE;
+    QSurfaceFormat format() Q_DECL_OVERRIDE;
 
     struct ViewSubmissionResultData
     {
@@ -256,6 +276,7 @@ private:
     ShaderParameterPack m_defaultUniformPack;
 
     QScopedPointer<GraphicsContext> m_graphicsContext;
+    QSurfaceFormat m_format;
 
     RenderQueue *m_renderQueue;
     QScopedPointer<RenderThread> m_renderThread;
@@ -281,13 +302,16 @@ private:
 
     RenderSettings *m_settings;
 
-    FramePreparationJobPtr m_framePreparationJob;
+    UpdateShaderDataTransformJobPtr m_updateShaderDataTransformJob;
     FrameCleanupJobPtr m_cleanupJob;
     UpdateWorldTransformJobPtr m_worldTransformJob;
     ExpandBoundingVolumeJobPtr m_expandBoundingVolumeJob;
     CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
     UpdateWorldBoundingVolumeJobPtr m_updateWorldBoundingVolumeJob;
+    UpdateTreeEnabledJobPtr m_updateTreeEnabledJob;
     SendRenderCaptureJobPtr m_sendRenderCaptureJob;
+    UpdateMeshTriangleListJobPtr m_updateMeshTriangleListJob;
+    FilterCompatibleTechniqueJobPtr m_filterCompatibleTechniqueJob;
 
     QVector<Qt3DCore::QNodeId> m_pendingRenderCaptureSendRequests;
 
@@ -297,10 +321,31 @@ private:
                            HVao *previousVAOHandle,
                            OpenGLVertexArrayObject **vao);
 
+    GenericLambdaJobPtr<std::function<void ()>> m_bufferGathererJob;
+    GenericLambdaJobPtr<std::function<void ()>> m_textureGathererJob;
+    GenericLambdaJobPtr<std::function<void ()>> m_shaderGathererJob;
+
+    SynchronizerJobPtr m_syncTextureLoadingJob;
+
+    void lookForDirtyBuffers();
+    void lookForDirtyTextures();
+    void lookForDirtyShaders();
+
+    QVector<HBuffer> m_dirtyBuffers;
+    QVector<HShader> m_dirtyShaders;
+    QVector<HTexture> m_dirtyTextures;
+
+    bool m_ownedContext;
+
+    OffscreenSurfaceHelper *m_offscreenHelper;
+    QMutex m_offscreenSurfaceMutex;
+
 #ifdef QT3D_JOBS_RUN_STATS
     QScopedPointer<Qt3DRender::Debug::CommandExecuter> m_commandExecuter;
     friend class Qt3DRender::Debug::CommandExecuter;
 #endif
+
+    QMetaObject::Connection m_contextConnection;
 };
 
 } // namespace Render

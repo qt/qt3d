@@ -51,12 +51,39 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 
 /*!
- * \class Qt3DRender::QRenderTarget
- * \brief The QRenderTarget class encapsulates a target (usually a frame buffer
- * object) which the renderer can render into.
- * \since 5.7
- * \inmodule Qt3DRender
+    \class Qt3DRender::QRenderTarget
+    \brief The QRenderTarget class encapsulates a target (usually a frame buffer
+    object) which the renderer can render into.
+    \since 5.7
+    \inmodule Qt3DRender
+
+    A Qt3DRender::QRenderTarget comprises of Qt3DRender::QRenderTargetOutput objects,
+    which specify the the buffers the render target is rendering to. The user can
+    specify MRT(Multiple Render Targets) by attaching multiple textures to different
+    attachment points. The results are undefined if the user tries to attach multiple
+    textures to the same attachment point. At render time, only the draw buffers specified
+    in the Qt3DRender::QRenderTargetSelector are used.
+
  */
+/*!
+    \qmltype RenderTarget
+    \brief The RenderTarget class encapsulates a target (usually a frame buffer
+    object) which the renderer can render into.
+    \since 5.7
+    \inmodule Qt3D.Render
+    \instantiates Qt3DRender::QRenderTarget
+
+    A RenderTarget comprises of RenderTargetOutput objects, which specify the the buffers
+    the render target is rendering to. The user can specify MRT(Multiple Render Targets)
+    by attaching multiple textures to different attachment points. The results are undefined
+    if the user tries to attach multiple textures to the same attachment point. At render
+    time, only the draw buffers specified in the RenderTargetSelector are used.
+ */
+
+/*!
+    \qmlproperty list<RenderTargetOutput> RenderTarget::attachments
+    Holds the attachments for the RenderTarget.
+*/
 
 /*! \internal */
 QRenderTargetPrivate::QRenderTargetPrivate()
@@ -65,8 +92,8 @@ QRenderTargetPrivate::QRenderTargetPrivate()
 }
 
 /*!
- * The constructor creates a new QRenderTarget::QRenderTarget instance with
- * the specified \a parent.
+    The constructor creates a new QRenderTarget::QRenderTarget instance with
+    the specified \a parent.
  */
 QRenderTarget::QRenderTarget(QNode *parent)
     : QComponent(*new QRenderTargetPrivate, parent)
@@ -85,8 +112,7 @@ QRenderTarget::QRenderTarget(QRenderTargetPrivate &dd, QNode *parent)
 }
 
 /*!
- * Adds a chosen output via \a output.
- * \param output
+    Adds a chosen output via \a output.
  */
 void QRenderTarget::addOutput(QRenderTargetOutput *output)
 {
@@ -109,8 +135,7 @@ void QRenderTarget::addOutput(QRenderTargetOutput *output)
 }
 
 /*!
- * Removes a chosen output via \a output.
- * \param output
+    Removes a chosen output via \a output.
  */
 void QRenderTarget::removeOutput(QRenderTargetOutput *output)
 {
@@ -127,7 +152,7 @@ void QRenderTarget::removeOutput(QRenderTargetOutput *output)
 }
 
 /*!
- * \return the chosen outputs.
+    \return the chosen outputs.
  */
 QVector<QRenderTargetOutput *> QRenderTarget::outputs() const
 {

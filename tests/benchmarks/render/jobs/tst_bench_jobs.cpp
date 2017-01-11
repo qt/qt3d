@@ -106,8 +106,8 @@ namespace Qt3DRender {
 
         QVector<Qt3DCore::QAspectJobPtr> framePreparationJob()
         {
-            static_cast<Render::Renderer *>(d_func()->m_renderer)->m_framePreparationJob->setRoot(d_func()->m_renderer->sceneRoot());
-            return QVector<Qt3DCore::QAspectJobPtr>() << static_cast<Render::Renderer *>(d_func()->m_renderer)->m_framePreparationJob;
+            static_cast<Render::Renderer *>(d_func()->m_renderer)->m_updateShaderDataTransformJob->setManagers(d_func()->m_renderer->nodeManagers());
+            return QVector<Qt3DCore::QAspectJobPtr>() << static_cast<Render::Renderer *>(d_func()->m_renderer)->m_updateShaderDataTransformJob;
         }
 
         QVector<Qt3DCore::QAspectJobPtr> frameCleanupJob()

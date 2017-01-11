@@ -59,6 +59,15 @@ Transform::Transform()
 {
 }
 
+void Transform::cleanup()
+{
+    m_rotation = QQuaternion();
+    m_scale = QVector3D();
+    m_translation = QVector3D();
+    m_transformMatrix = QMatrix4x4();
+    QBackendNode::setEnabled(false);
+}
+
 void Transform::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QTransformData>>(change);
@@ -72,6 +81,21 @@ void Transform::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
 QMatrix4x4 Transform::transformMatrix() const
 {
     return m_transformMatrix;
+}
+
+QVector3D Transform::scale() const
+{
+    return m_scale;
+}
+
+QQuaternion Transform::rotation() const
+{
+    return m_rotation;
+}
+
+QVector3D Transform::translation() const
+{
+    return m_translation;
 }
 
 void Transform::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

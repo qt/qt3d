@@ -104,7 +104,7 @@ public:
         AutomaticAspectRatio,
         UserAspectRatio
     };
-    Q_ENUM(CameraAspectRatioMode);
+    Q_ENUM(CameraAspectRatioMode); // LCOV_EXCL_LINE
 
     void setCameraAspectRatioMode(CameraAspectRatioMode mode);
     CameraAspectRatioMode cameraAspectRatioMode() const;

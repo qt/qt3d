@@ -121,7 +121,7 @@
     \skipto import QtQuick
     \printuntil Render 2.0
 
-    The code defines a \l RendererSettings entity that has a tree of entities as the
+    The code defines a \l RenderSettings entity that has a tree of entities as the
     active framegraph:
 
     \printuntil clearColor
@@ -202,7 +202,7 @@
     \printuntil ]
 
     It is possible to put such parameters all the way down, from a \l Material,
-    to its \l Effect, to one of the effect’s \l Techniques. This allows a
+    to its \l Effect, to one of the effect’s \l {Technique}{Techniques}. This allows a
     \l Material instance to override defaults in an \l Effect or \l Technique.
     The bindings array provides the same thing, except that it also allows us to
     rename some parameters. In this example, it renames the \c ambient,

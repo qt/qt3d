@@ -54,6 +54,7 @@
 #include <QChildEvent>
 #include <QMetaObject>
 #include <QMetaProperty>
+#include <QtCore/private/qmetaobject_p.h>
 #include <Qt3DCore/QComponent>
 #include <Qt3DCore/private/corelogging_p.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
@@ -96,10 +97,8 @@ void QNodePrivate::init(QNode *parent)
     m_scene = parentPrivate->m_scene;
     Q_Q(QNode);
     if (m_scene) {
-        m_scene->addObservable(q); // Sets the m_changeArbiter to that of the scene
-
-        // Scehdule the backend notification
-        QMetaObject::invokeMethod(q, "_q_notifyCreationAndChildChanges", Qt::QueuedConnection);
+        // schedule the backend notification and scene registering -> set observers through scene
+        QMetaObject::invokeMethod(q, "_q_postConstructorInit", Qt::QueuedConnection);
     }
 }
 
@@ -165,8 +164,10 @@ void QNodePrivate::notifyDestructionChangesAndRemoveFromScene()
  * parent backend node of its new child. This is called in a deferred manner
  * by the QNodePrivate::init() method to notify the backend of newly created
  * nodes with a parent that is already part of the scene.
+ *
+ * Also notify the scene of this node, so it may set it's change arbiter.
  */
-void QNodePrivate::_q_notifyCreationAndChildChanges()
+void QNodePrivate::_q_postConstructorInit()
 {
     Q_Q(QNode);
 
@@ -174,6 +175,9 @@ void QNodePrivate::_q_notifyCreationAndChildChanges()
     auto parentNode = q->parentNode();
     if (!parentNode)
         return;
+
+    if (m_scene)
+        m_scene->addObservable(q); // Sets the m_changeArbiter to that of the scene
 
     // Let the backend know we have been added to the scene
     notifyCreationChange();
@@ -186,7 +190,7 @@ void QNodePrivate::_q_notifyCreationAndChildChanges()
 /*!
  * \internal
  *
- * Called by _q_setParentHelper() or _q_notifyCreationAndChildChanges()
+ * Called by _q_setParentHelper() or _q_postConstructorInit()
  * on the main thread.
  */
 void QNodePrivate::_q_addChild(QNode *childNode)
@@ -791,6 +795,48 @@ QNodeCreatedChangeBasePtr QNode::createNodeCreationChange() const
     // const QMetaObject *mo = metaObject();
     // qDebug() << Q_FUNC_INFO << mo->className();
     return QNodeCreatedChangeBasePtr::create(this);
+}
+
+namespace {
+
+/*! \internal */
+inline const QMetaObjectPrivate *priv(const uint* data)
+{
+    return reinterpret_cast<const QMetaObjectPrivate*>(data);
+}
+
+/*! \internal */
+inline bool isDynamicMetaObject(const QMetaObject *mo)
+{
+    return (priv(mo->d.data)->flags & DynamicMetaObject);
+}
+
+} // anonymous
+
+/*!
+ * \internal
+ *
+ * Find the most derived metaobject that doesn't have a dynamic
+ * metaobject farther up the chain.
+ * TODO: Add support to QMetaObject to explicitly say if it's a dynamic
+ * or static metaobject so we don't need this logic
+ */
+const QMetaObject *QNodePrivate::findStaticMetaObject(const QMetaObject *metaObject)
+{
+    const QMetaObject *lastStaticMetaobject = nullptr;
+    auto mo = metaObject;
+    while (mo) {
+        const bool dynamicMetaObject = isDynamicMetaObject(mo);
+        if (dynamicMetaObject)
+            lastStaticMetaobject = nullptr;
+
+        if (!dynamicMetaObject && !lastStaticMetaobject)
+            lastStaticMetaobject = mo;
+
+        mo = mo->superClass();
+    }
+    Q_ASSERT(lastStaticMetaobject);
+    return lastStaticMetaobject;
 }
 
 } // namespace Qt3DCore

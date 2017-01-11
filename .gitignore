@@ -73,3 +73,9 @@ examples/*/*/*[.]exe
 
 # Assimp
 AssimpLog.txt
+
+# Generated wrapper scripts
+*_wrapper.sh
+*_wrapper.bat
+wrapper.sh
+wrapper.bat

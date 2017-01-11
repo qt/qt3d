@@ -63,7 +63,7 @@ public:
         Min = 0x8007,
         Max = 0x8008
     };
-    Q_ENUM(BlendFunction)
+    Q_ENUM(BlendFunction) // LCOV_EXCL_LINE
 
     explicit QBlendEquation(Qt3DCore::QNode *parent = nullptr);
     ~QBlendEquation();

@@ -92,6 +92,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::Render::Light*)
+Q_DECLARE_METATYPE(Qt3DRender::Render::Light*) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_RENDER_LIGHT_P_H

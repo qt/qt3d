@@ -63,12 +63,13 @@ namespace Render {
 
 class ParameterManager;
 class ShaderDataManager;
-class TextureManager;
 
-class Parameter : public BackendNode
+class Q_AUTOTEST_EXPORT Parameter : public BackendNode
 {
 public:
     Parameter();
+
+    void cleanup();
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 

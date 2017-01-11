@@ -65,7 +65,7 @@ public:
         Greater = 0x0204,
         NotEqual = 0x0205
     };
-    Q_ENUM(DepthFunction)
+    Q_ENUM(DepthFunction) // LCOV_EXCL_LINE
 
     explicit QDepthTest(Qt3DCore::QNode *parent = nullptr);
     ~QDepthTest();

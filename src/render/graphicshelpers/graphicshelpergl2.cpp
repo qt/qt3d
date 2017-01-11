@@ -316,8 +316,14 @@ void GraphicsHelperGL2::bindFrameBufferAttachment(QOpenGLTexture *texture, const
         else
             qCritical() << "DepthStencil Attachment not supported on OpenGL 2.0";
 
+        const QOpenGLTexture::Target target = texture->target();
+
+        if (target == QOpenGLTexture::TargetCubeMap && attachment.m_face == QAbstractTexture::AllFaces) {
+            qWarning() << "OpenGL 2.0 doesn't handle attaching all the faces of a cube map texture at once to an FBO";
+            return;
+        }
+
         texture->bind();
-        QOpenGLTexture::Target target = texture->target();
         if (target == QOpenGLTexture::Target3D)
             m_fboFuncs->glFramebufferTexture3D(GL_DRAW_FRAMEBUFFER, attr, target, texture->textureId(), attachment.m_mipLevel, attachment.m_layer);
         else if (target == QOpenGLTexture::TargetCubeMap)
@@ -729,6 +735,21 @@ UniformType GraphicsHelperGL2::uniformTypeFromGLType(GLenum type)
         Q_UNREACHABLE();
         return UniformType::Float;
     }
+}
+
+void GraphicsHelperGL2::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter)
+{
+    Q_UNUSED(srcX0);
+    Q_UNUSED(srcX1);
+    Q_UNUSED(srcY0);
+    Q_UNUSED(srcY1);
+    Q_UNUSED(dstX0);
+    Q_UNUSED(dstX1);
+    Q_UNUSED(dstY0);
+    Q_UNUSED(dstY1);
+    Q_UNUSED(mask);
+    Q_UNUSED(filter);
+    qWarning() << "Framebuffer blits are not supported by ES 2.0 (since ES 3.1)";
 }
 
 } // namespace Render

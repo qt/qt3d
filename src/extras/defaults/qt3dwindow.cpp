@@ -130,8 +130,13 @@ void Qt3DWindow::registerAspect(const QString &name)
 
 void Qt3DWindow::setRootEntity(Qt3DCore::QEntity *root)
 {
-    Q_ASSERT(!isVisible());
-    m_userRoot = root;
+    if (m_userRoot != root) {
+        if (m_userRoot != nullptr)
+            m_userRoot->setParent(static_cast<Qt3DCore::QNode*>(nullptr));
+        if (root != nullptr)
+            root->setParent(m_root);
+        m_userRoot = root;
+    }
 }
 
 void Qt3DWindow::setActiveFrameGraph(Qt3DRender::QFrameGraphNode *activeFrameGraph)
@@ -157,9 +162,6 @@ Qt3DRender::QCamera *Qt3DWindow::camera() const
 void Qt3DWindow::showEvent(QShowEvent *e)
 {
     if (!m_initialized) {
-        if (m_userRoot != nullptr)
-            m_userRoot->setParent(m_root);
-
         m_root->addComponent(m_renderSettings);
         m_root->addComponent(m_inputSettings);
         m_aspectEngine->setRootEntity(Qt3DCore::QEntityPtr(m_root));

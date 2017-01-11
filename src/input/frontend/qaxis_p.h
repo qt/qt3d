@@ -76,7 +76,7 @@ public:
     {
         if (value != m_value) {
             m_value = value;
-            q_func()->valueChanged(m_value);
+            Q_EMIT q_func()->valueChanged(m_value);
         }
     }
 };

@@ -82,7 +82,7 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::QShaderData*)
-Q_DECLARE_METATYPE(QVector<Qt3DRender::QShaderData*>)
+Q_DECLARE_METATYPE(Qt3DRender::QShaderData*) // LCOV_EXCL_LINE
+Q_DECLARE_METATYPE(QVector<Qt3DRender::QShaderData*>) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_QSHADERDATA_H

@@ -67,6 +67,7 @@ class QNodeId;
 namespace Qt3DInput {
 
 class QInputDeviceIntegration;
+class QAbstractPhysicalDevice;
 
 namespace Input {
 
@@ -78,6 +79,7 @@ class MouseDeviceManager;
 class MouseInputManager;
 class MouseEventFilter;
 class AxisManager;
+class AxisAccumulatorManager;
 class ActionManager;
 class AxisSettingManager;
 class ActionInputManager;
@@ -88,6 +90,7 @@ class InputSequenceManager;
 class LogicalDeviceManager;
 class GenericPhysicalDeviceManager;
 class GenericDeviceBackendNodeManager;
+class PhysicalDeviceProxyManager;
 class InputSettings;
 class EventSourceSetterHelper;
 
@@ -102,6 +105,7 @@ public:
     inline MouseDeviceManager *mouseDeviceManager() const { return m_mouseDeviceManager; }
     inline MouseInputManager *mouseInputManager() const { return m_mouseInputManager; }
     inline AxisManager *axisManager() const { return m_axisManager; }
+    inline AxisAccumulatorManager *axisAccumulatorManager() const { return m_axisAccumulatorManager; }
     inline ActionManager *actionManager() const { return m_actionManager; }
     inline AxisSettingManager *axisSettingManager() const { return m_axisSettingManager; }
     inline ActionInputManager *actionInputManager() const { return m_actionInputManager; }
@@ -111,6 +115,7 @@ public:
     inline InputSequenceManager *inputSequenceManager() const { return m_inputSequenceManager; }
     inline LogicalDeviceManager *logicalDeviceManager() const { return m_logicalDeviceManager; }
     inline GenericDeviceBackendNodeManager *genericDeviceBackendNodeManager() const { return m_genericPhysicalDeviceBackendNodeManager; }
+    inline PhysicalDeviceProxyManager *physicalDeviceProxyManager() const { return m_physicalDeviceProxyManager; }
     inline InputSettings *inputSettings() const { return m_settings; }
 
     void appendKeyEvent(const QT_PREPEND_NAMESPACE(QKeyEvent) &event);
@@ -144,6 +149,8 @@ public:
     void setEventSourceHelper(EventSourceSetterHelper *helper);
     EventSourceSetterHelper *eventSourceHelper() const;
 
+    QAbstractPhysicalDevice *createPhysicalDevice(const QString &name);
+
     void updateEventSource();
 
     AbstractActionInput *lookupActionInput(Qt3DCore::QNodeId id) const;
@@ -166,6 +173,7 @@ private:
     mutable QMutex m_mutex;
 
     AxisManager *m_axisManager;
+    AxisAccumulatorManager *m_axisAccumulatorManager;
     ActionManager *m_actionManager;
     AxisSettingManager *m_axisSettingManager;
     ActionInputManager *m_actionInputManager;
@@ -175,6 +183,7 @@ private:
     InputSequenceManager *m_inputSequenceManager;
     LogicalDeviceManager *m_logicalDeviceManager;
     GenericDeviceBackendNodeManager *m_genericPhysicalDeviceBackendNodeManager;
+    PhysicalDeviceProxyManager *m_physicalDeviceProxyManager;
     QVector<Qt3DInput::QInputDeviceIntegration *> m_inputDeviceIntegrations;
     InputSettings *m_settings;
     QScopedPointer<EventSourceSetterHelper> m_eventSourceSetter;

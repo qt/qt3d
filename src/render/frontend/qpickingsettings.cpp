@@ -77,6 +77,8 @@ QPickingSettingsPrivate::QPickingSettingsPrivate()
 QPickingSettings::QPickingSettings(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QPickingSettingsPrivate, parent)
 {
+    // Block all notifications for this class as it should have been a QObject
+    blockNotifications(true);
 }
 
 /*! \internal */
@@ -187,8 +189,7 @@ void QPickingSettings::setPickResultMode(QPickingSettings::PickResultMode pickRe
 }
 
 /*!
- * Sets whether back facing faces are picked or not
- * \param faceOrientationPickingMode
+ * \a faceOrientationPickingMode determines whether back facing faces are picked or not.
  */
 void QPickingSettings::setFaceOrientationPickingMode(QPickingSettings::FaceOrientationPickingMode faceOrientationPickingMode)
 {

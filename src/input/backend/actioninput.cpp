@@ -39,11 +39,10 @@
 
 #include "actioninput_p.h"
 #include <Qt3DInput/qactioninput.h>
-#include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/private/qactioninput_p.h>
-#include <Qt3DInput/private/qinputdeviceintegration_p.h>
 #include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DInput/private/utils_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -76,11 +75,10 @@ void ActionInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::PropertyUpdated) {
         Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("sourceDevice")) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("sourceDevice"))
             m_sourceDevice = propertyChange->value().value<Qt3DCore::QNodeId>();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("buttons")) {
+        else if (propertyChange->propertyName() == QByteArrayLiteral("buttons"))
             m_buttons = propertyChange->value().value<QVector<int>>();
-        }
     }
     AbstractActionInput::sceneChangeEvent(e);
 }
@@ -89,15 +87,10 @@ bool ActionInput::process(InputHandler *inputHandler, qint64 currentTime)
 {
     Q_UNUSED(currentTime);
 
-    QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = nullptr;
+    if (!isEnabled())
+        return false;
 
-    const auto integrations = inputHandler->inputDeviceIntegrations();
-    for (QInputDeviceIntegration *integration : integrations) {
-        physicalDeviceBackend = integration->physicalDevice(sourceDevice());
-        if (physicalDeviceBackend)
-            break;
-    }
-
+    QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = Utils::physicalDeviceForInput(this, inputHandler);
     if (!physicalDeviceBackend)
         return false;
 

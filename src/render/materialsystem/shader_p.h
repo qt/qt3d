@@ -147,6 +147,7 @@ private:
     ProgramDNA m_oldDna;
     mutable QMutex m_mutex;
     GraphicsContext *m_graphicsContext;
+    QMetaObject::Connection m_contextConnection;
 
     void updateDNA();
 

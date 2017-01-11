@@ -68,6 +68,7 @@ Entity {
     property alias hoverEnabled: objectPicker.hoverEnabled
     property alias diffuseColor: material.diffuse
     property alias ambientColor: material.ambient
+    property alias pickingEnabled: objectPicker.enabled
     readonly property bool containsMouse: objectPicker.containsMouse
     readonly property bool isPressed: objectPicker.pressed
 

@@ -54,6 +54,7 @@ class QT3DRENDERSHARED_EXPORT QTextureImage : public QAbstractTextureImage
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
+    Q_PROPERTY(bool mirrored READ isMirrored WRITE setMirrored NOTIFY mirroredChanged)
 
 public:
     explicit QTextureImage(Qt3DCore::QNode *parent = nullptr);
@@ -65,17 +66,20 @@ public:
         Ready,
         Error
     };
-    Q_ENUM(Status)
+    Q_ENUM(Status) // LCOV_EXCL_LINE
 
     QUrl source() const;
     Status status() const;
+    bool isMirrored() const;
 
 public Q_SLOTS:
     void setSource(const QUrl &source);
+    void setMirrored(bool mirrored);
 
 Q_SIGNALS:
     void sourceChanged(const QUrl &source);
     void statusChanged(Status status);
+    void mirroredChanged(bool mirrored);
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;

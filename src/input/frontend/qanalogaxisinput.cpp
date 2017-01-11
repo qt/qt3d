@@ -57,6 +57,7 @@ namespace Qt3DInput {
 
 /*!
  * \class Qt3DInput::QAnalogAxisInput
+ * \inheaderfile Qt3DInput/QAnalogAxisInput
  * \inmodule Qt3DInput
  * \brief An axis input controlled by an analog input
  * \since 5.7

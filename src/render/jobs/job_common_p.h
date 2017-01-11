@@ -64,7 +64,7 @@ namespace JobTypes {
     enum JobType {
         LoadBuffer = 1,
         FrameCleanup,
-        FramePreparation,
+        UpdateShaderDataTransform,
         CalcBoundingVolume,
         CalcTriangleVolume,
         LoadGeometry,
@@ -73,6 +73,7 @@ namespace JobTypes {
         PickBoundingVolume,
         RenderView,
         UpdateTransform,
+        UpdateTreeEnabled,
         ExpandBoundingVolume,
         FrameSubmissionPart1,
         LayerFiltering,
@@ -84,7 +85,18 @@ namespace JobTypes {
         LightGathering,
         UpdateWorldBoundingVolume,
         FrameSubmissionPart2,
+        DirtyBufferGathering,
+        DirtyTextureGathering,
+        DirtyShaderGathering,
         SendRenderCapture,
+        SyncRenderViewCommandBuilding,
+        SyncRenderViewInitialization,
+        SyncRenderViewCommandBuilder,
+        SyncFrustumCulling,
+        ClearBufferDrawIndex,
+        UpdateMeshTriangleList,
+        FilterCompatibleTechniques,
+        SyncTextureLoading
     };
 
 } // JobTypes

@@ -38,15 +38,6 @@
 **
 ****************************************************************************/
 
-/*!
- * \class QScissorTest
- * \brief The QScissorTest class discards fragments that fall outside of a
- * certain rectangular portion of the screen.
- * \since 5.7
- * \ingroup renderstates
- *
- */
-
 #include "qscissortest.h"
 #include "qscissortest_p.h"
 #include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
@@ -56,8 +47,76 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
- * The constructor creates a new QScissorTest::QScissorTest instance with the
- * specified \a parent
+    \class Qt3DRender::QScissorTest
+    \brief The QScissorTest class discards fragments that fall outside of a
+    certain rectangular portion of the screen.
+    \since 5.7
+    \ingroup renderstates
+    \inmodule Qt3DRender
+
+    A QScissorTest class enables scissor test, which discards fragments outside
+    the rectangular area of the screen specified by the left, bottom, width and
+    height properties.
+ */
+
+/*!
+    \qmltype ScissorTest
+    \brief The ScissorTest type discards fragments that fall outside of a
+    certain rectangular portion of the screen.
+    \since 5.7
+    \ingroup renderstates
+    \inqmlmodule Qt3D.Render
+    \instantiates Qt3DRender::QScissorTest
+    \inherits RenderState
+
+    A ScissorTest type enables scissor test, which discards fragments outside
+    the rectangular area of the screen specified by the left, bottom, width and
+    height properties.
+ */
+
+/*!
+    \qmlproperty int ScissorTest::left
+    Holds the left coordinate of the scissor box.
+*/
+
+/*!
+    \qmlproperty int ScissorTest::bottom
+    Holds the bottom coordinate of the scissor box.
+*/
+
+/*!
+    \qmlproperty int ScissorTest::width
+    Holds the width of the scissor box.
+*/
+
+/*!
+    \qmlproperty int ScissorTest::height
+    Holds the height of the scissor box.
+*/
+
+/*!
+    \property QScissorTest::left
+    Holds the left coordinate of the scissor box.
+*/
+
+/*!
+    \property QScissorTest::bottom
+    Holds the bottom coordinate of the scissor box.
+*/
+
+/*!
+    \property QScissorTest::width
+    Holds the width of the scissor box.
+*/
+
+/*!
+    \property QScissorTest::height
+    Holds the height of the scissor box.
+*/
+
+/*!
+    The constructor creates a new QScissorTest::QScissorTest instance with the
+    specified \a parent
  */
 QScissorTest::QScissorTest(QNode *parent)
     : QRenderState(*new QScissorTestPrivate, parent)
@@ -69,19 +128,12 @@ QScissorTest::~QScissorTest()
 {
 }
 
-/*!
- * \return the left of the scissor box
- */
 int QScissorTest::left() const
 {
     Q_D(const QScissorTest);
     return d->m_left;
 }
 
-/*!
- * Sets the left of the scissor box to \a setLeft
- * \param left
- */
 void QScissorTest::setLeft(int left)
 {
     Q_D(QScissorTest);
@@ -91,19 +143,12 @@ void QScissorTest::setLeft(int left)
     }
 }
 
-/*!
- * \return the bottom of the scrissor box
- */
 int QScissorTest::bottom() const
 {
     Q_D(const QScissorTest);
     return d->m_bottom;
 }
 
-/*!
- * Sets the bottom of the scissor box to \a bottom
- * \param bottom
- */
 void QScissorTest::setBottom(int bottom)
 {
     Q_D(QScissorTest);
@@ -113,19 +158,12 @@ void QScissorTest::setBottom(int bottom)
     }
 }
 
-/*!
- * \return the width of the scissor box
- */
 int QScissorTest::width() const
 {
     Q_D(const QScissorTest);
     return d->m_width;
 }
 
-/*!
- * Sets the width of the scissor box to \a width
- * \param width
- */
 void QScissorTest::setWidth(int width)
 {
     Q_D(QScissorTest);
@@ -135,19 +173,12 @@ void QScissorTest::setWidth(int width)
     }
 }
 
-/*!
- * \return the height of the scissor box
- */
 int QScissorTest::height() const
 {
     Q_D(const QScissorTest);
     return d->m_height;
 }
 
-/*!
- * Sets the height of the scissor box to \a height
- * \param height
- */
 void QScissorTest::setHeight(int height)
 {
     Q_D(QScissorTest);

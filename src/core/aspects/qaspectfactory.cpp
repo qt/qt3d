@@ -62,6 +62,15 @@ QT3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QLatin1St
     defaultAspectNames->insert(metaObject, name);
 }
 
+QT3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QString &name,
+                                                                 const QMetaObject *metaObject,
+                                                                 QAspectFactory::CreateFunction factory)
+{
+    return qt3d_QAspectFactory_addDefaultFactory(QLatin1String(name.toLatin1()),
+                                                 metaObject,
+                                                 factory);
+}
+
 QAspectFactory::QAspectFactory()
     : m_factories(*defaultFactories),
       m_aspectNames(*defaultAspectNames)

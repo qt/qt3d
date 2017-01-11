@@ -67,7 +67,7 @@ public:
         DirectionalLight,
         SpotLight
     };
-    Q_ENUM(Type)
+    Q_ENUM(Type) // LCOV_EXCL_LINE
 
     Type type() const;
     QColor color() const;

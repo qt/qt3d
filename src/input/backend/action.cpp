@@ -73,7 +73,7 @@ void Action::cleanup()
 
 void Action::setActionTriggered(bool actionTriggered)
 {
-    if (actionTriggered != m_actionTriggered) {
+    if (isEnabled() && (actionTriggered != m_actionTriggered)) {
         m_actionTriggered = actionTriggered;
 
         // Send change to the frontend

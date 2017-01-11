@@ -48,6 +48,7 @@ namespace Qt3DRender {
 /*!
     \class Qt3DRender::QPointSize
     \inmodule Qt3DRender
+    \since 5.7
     \brief Specifies the size of rasterized points. May either be set statically
     or by shader programs.
 
@@ -59,6 +60,8 @@ namespace Qt3DRender {
 
 /*!
     \qmltype PointSize
+    \since 5.7
+    \inherits RenderState
     \instantiates Qt3DRender::QPointSize
     \inqmlmodule Qt3D.Render
 
@@ -72,12 +75,29 @@ namespace Qt3DRender {
  */
 
 /*!
-    \qmlproperty float Qt3D.Render::QPointSize::value
+    \enum Qt3DRender::QPointSize::SizeMode
+
+    This enumeration specifies values for the size mode.
+    \value Fixed The point size is by the QPointSize::value.
+    \value Programmable The point size value must be set in shader
+*/
+/*!
+    \qmlproperty real PointSize::value
     Specifies the point size value to be used.
 */
 
 /*!
-    \qmlproperty QPointSize::SizeMode Qt3D.Render::QPointSize::sizeMode
+    \qmlproperty enumeration PointSize::sizeMode
+    Specifies the sizeMode to be used.
+*/
+
+/*!
+    \property  QPointSize::value
+    Specifies the point size value to be used.
+*/
+
+/*!
+    \property QPointSize::sizeMode
     Specifies the sizeMode to be used.
 */
 

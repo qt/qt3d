@@ -45,7 +45,9 @@ HEADERS += \
     $$PWD/qphysicaldevicecreatedchange.h \
     $$PWD/qphysicaldevicecreatedchange_p.h \
     $$PWD/qaxisaccumulator.h \
-    $$PWD/qaxisaccumulator_p.h
+    $$PWD/qaxisaccumulator_p.h \
+    $$PWD/qabstractphysicaldeviceproxy_p.h \
+    $$PWD/qabstractphysicaldeviceproxy_p_p.h
 
 
 SOURCES += \
@@ -74,7 +76,8 @@ SOURCES += \
     $$PWD/qinputsequence.cpp \
     $$PWD/qinputsettings.cpp \
     $$PWD/qphysicaldevicecreatedchange.cpp \
-    $$PWD/qaxisaccumulator.cpp
+    $$PWD/qaxisaccumulator.cpp \
+    $$PWD/qabstractphysicaldeviceproxy.cpp
 
 qtHaveModule(gamepad) {
     QT += gamepad

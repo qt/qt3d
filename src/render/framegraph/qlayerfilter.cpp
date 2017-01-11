@@ -43,6 +43,7 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -160,7 +161,7 @@ QVector<QLayer *> QLayerFilter::layers() const
 
 Qt3DCore::QNodeCreatedChangeBasePtr QLayerFilter::createNodeCreationChange() const
 {
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QLayerFilterData>::create(this);
+    auto creationChange = QFrameGraphNodeCreatedChangePtr<QLayerFilterData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QLayerFilter);
     data.layerIds = qIdsForNodes(d->m_layers);

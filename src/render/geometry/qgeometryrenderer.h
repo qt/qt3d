@@ -85,7 +85,7 @@ public:
         TriangleStripAdjacency = 0x000D,
         Patches = 0x000E
     };
-    Q_ENUM(PrimitiveType)
+    Q_ENUM(PrimitiveType) // LCOV_EXCL_LINE
 
     // how to figure out index count and all the fancy stuff that QMeshData provides for us?
     // also how to figure out which attribute(s?) hold the indices?

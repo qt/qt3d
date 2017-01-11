@@ -55,6 +55,7 @@ QPropertyValueAddedChangeBasePrivate::~QPropertyValueAddedChangeBasePrivate()
 
 /*!
  * \class Qt3DCore::QPropertyValueAddedChangeBase
+ * \inheaderfile Qt3DCore/QPropertyValueAddedChangeBase
  * \inmodule Qt3DCore
  * \brief The QPropertyValueAddedChangeBase class is the base class for all PropertyValueAdded QSceneChange events
  *

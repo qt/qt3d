@@ -37,65 +37,23 @@
 #include "qnodecreatedchange.h"
 #include "qnodecreatedchange_p.h"
 #include <Qt3DCore/qnode.h>
-#include <QtCore/qmetaobject.h>
-#include <QtCore/private/qmetaobject_p.h>
+#include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
-
-namespace {
-
-/*! \internal */
-inline const QMetaObjectPrivate *priv(const uint* data)
-{
-    return reinterpret_cast<const QMetaObjectPrivate*>(data);
-}
-
-/*! \internal */
-inline bool isDynamicMetaObject(const QMetaObject *mo)
-{
-    return (priv(mo->d.data)->flags & DynamicMetaObject);
-}
-
-/*!
- * \internal
- *
- * Find the most derived metaobject that doesn't have a dynamic
- * metaobject farther up the chain.
- * TODO: Add support to QMetaObject to explicitly say if it's a dynamic
- * or static metaobject so we don't need this logic
- */
-const QMetaObject *findStaticMetaObject(const QMetaObject *metaObject)
-{
-    const QMetaObject *lastStaticMetaobject = nullptr;
-    auto mo = metaObject;
-    while (mo) {
-        const bool dynamicMetaObject = isDynamicMetaObject(mo);
-        if (dynamicMetaObject)
-            lastStaticMetaobject = nullptr;
-
-        if (!dynamicMetaObject && !lastStaticMetaobject)
-            lastStaticMetaobject = mo;
-
-        mo = mo->superClass();
-    }
-    Q_ASSERT(lastStaticMetaobject);
-    return lastStaticMetaobject;
-}
-
-}
 
 namespace Qt3DCore {
 
 QNodeCreatedChangeBasePrivate::QNodeCreatedChangeBasePrivate(const QNode *node)
     : QSceneChangePrivate()
     , m_parentId(node->parentNode() ? node->parentNode()->id() : QNodeId())
-    , m_metaObject(findStaticMetaObject(node->metaObject()))
+    , m_metaObject(QNodePrivate::findStaticMetaObject(node->metaObject()))
     , m_nodeEnabled(node->isEnabled())
 {
 }
 
 /*!
  * \class Qt3DCore::QNodeCreatedChangeBase
+ * \inheaderfile Qt3DCore/QNodeCreatedChangeBase
  * \inherits Qt3DCore::QSceneChange
  * \inmodule Qt3DCore
  * \brief The QNodeCreatedChangeBase class is the base class for all NodeCreated QSceneChange events
@@ -163,6 +121,7 @@ bool QNodeCreatedChangeBase::isNodeEnabled() const Q_DECL_NOTHROW
 
 /*!
  * \class Qt3DCore::QNodeCreatedChange
+ * \inheaderfile Qt3DCore/QNodeCreatedChange
  * \inherits Qt3DCore::QNodeCreatedChangeBase
  * \since 5.7
  * \inmodule Qt3DCore

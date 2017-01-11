@@ -68,6 +68,8 @@ public:
 
     void updateViewMatrix()
     {
+        if (m_upVector.isNull() || QVector3D::crossProduct(m_cameraToCenter, m_upVector).normalized().isNull())
+            qWarning() << "Camera up vector must not be colinear with the view vector";
         QMatrix4x4 m;
         m.lookAt(m_position, m_viewCenter, m_upVector);
         m_transform->setMatrix(m);

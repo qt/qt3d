@@ -93,6 +93,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::Render::Quick::Quick3DShaderDataArray*)
+Q_DECLARE_METATYPE(Qt3DRender::Render::Quick::Quick3DShaderDataArray*) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_RENDER_QUICK_QUICK3DSHADERDATAARRAY_P_H

@@ -47,12 +47,140 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
- * \class Qt3DRender::QRenderTargetOutput
- * \brief The QRenderTargetOutput class allows the specification of an attachment
- * of a render target (whether it is a color texture, a depth texture, etc... ).
- * \since 5.7
- * \inmodule Qt3DRender
+    \class Qt3DRender::QRenderTargetOutput
+    \brief The QRenderTargetOutput class allows the specification of an attachment
+    of a render target (whether it is a color texture, a depth texture, etc... ).
+    \since 5.7
+    \inmodule Qt3DRender
+
+    A QRenderTargetOutput specifies the attachment point and parameters for texture
+    that is attached to render target. In addition to the attachment point, texture
+    miplevel, layer and cubemap face can be specified. The texture attached to the
+    QRenderTargetOutput must be compatible with the given parameters.
  */
+
+/*!
+    \qmltype RenderTargetOutput
+    \brief The RenderTargetOutput type allows the specification of an attachment
+    of a render target (whether it is a color texture, a depth texture, etc... ).
+    \since 5.7
+    \inmodule Qt3D.Render
+    \inherits Node
+    \instantiates Qt3DRender::QRenderTargetOutput
+
+    A RenderTargetOutput specifies the attachment point and parameters for texture
+    that is attached to render target. In addition to the attachment point, texture
+    miplevel, layer and cubemap face can be specified. The texture attached to the
+    RenderTargetOutput must be compatible with the given parameters.
+ */
+
+/*!
+    \enum QRenderTargetOutput::AttachmentPoint
+
+    This enumeration specifies the values for the attachment point.
+
+    \value Color0 Color attachment point at index 0
+    \value Color1 Color attachment point at index 1
+    \value Color2 Color attachment point at index 2
+    \value Color3 Color attachment point at index 3
+    \value Color4 Color attachment point at index 4
+    \value Color5 Color attachment point at index 5
+    \value Color6 Color attachment point at index 6
+    \value Color7 Color attachment point at index 7
+    \value Color8 Color attachment point at index 8
+    \value Color9 Color attachment point at index 9
+    \value Color10 Color attachment point at index 10
+    \value Color11 Color attachment point at index 11
+    \value Color12 Color attachment point at index 12
+    \value Color13 Color attachment point at index 13
+    \value Color14 Color attachment point at index 14
+    \value Color15 Color attachment point at index 15
+    \value Depth Depth attachment point
+    \value Stencil Stencil attachment point
+    \value DepthStencil DepthStencil attachment point
+*/
+
+/*!
+    \qmlproperty enumeration RenderTargetOutput::attachmentPoint
+    Holds the attachment point of the RenderTargetOutput.
+    \list
+    \li RenderTargetOutput.Color0
+    \li RenderTargetOutput.Color1
+    \li RenderTargetOutput.Color2
+    \li RenderTargetOutput.Color3
+    \li RenderTargetOutput.Color4
+    \li RenderTargetOutput.Color5
+    \li RenderTargetOutput.Color6
+    \li RenderTargetOutput.Color7
+    \li RenderTargetOutput.Color8
+    \li RenderTargetOutput.Color9
+    \li RenderTargetOutput.Color10
+    \li RenderTargetOutput.Color11
+    \li RenderTargetOutput.Color12
+    \li RenderTargetOutput.Color13
+    \li RenderTargetOutput.Color14
+    \li RenderTargetOutput.Color15
+    \li RenderTargetOutput.Depth
+    \li RenderTargetOutput.Stencil
+    \li RenderTargetOutput.DepthStencil
+    \endlist
+
+    \sa Qt3DRender::QRenderTargetOutput::AttachmentPoint
+*/
+
+/*!
+    \qmlproperty Texture RenderTargetOutput::texture
+    Holds the texture attached to the attachment point.
+*/
+
+/*!
+    \qmlproperty int RenderTargetOutput::mipLevel
+    Holds the miplevel of the attached texture the rendering is directed to.
+*/
+
+/*!
+    \qmlproperty int RenderTargetOutput::layer
+    Holds the layer of the attached texture the rendering is directed to.
+*/
+
+/*!
+    \qmlproperty enumeration RenderTargetOutput::face
+    Holds the face of the attached cubemap texture the rendering is directed to.
+    \list
+    \li Texture.CubeMapPositiveX
+    \li Texture.CubeMapNegativeX
+    \li Texture.CubeMapPositiveY
+    \li Texture.CubeMapNegativeY
+    \li Texture.CubeMapPositiveZ
+    \li Texture.CubeMapNegativeZ
+    \endlist
+    \sa Qt3DRender::QAbstractTexture::CubeMapFace
+*/
+
+/*!
+    \property QRenderTargetOutput::attachmentPoint
+    Holds the attachment point of the QRenderTargetOutput.
+*/
+
+/*!
+    \property QRenderTargetOutput::texture
+    Holds the texture attached to the attachment point.
+*/
+
+/*!
+    \property QRenderTargetOutput::mipLevel
+    Holds the miplevel of the attached texture the rendering is directed to.
+*/
+
+/*!
+    \property QRenderTargetOutput::layer
+    Holds the layer of the attached texture the rendering is directed to.
+*/
+
+/*!
+    \property QRenderTargetOutput::face
+    Holds the face of the attached cubemap texture the rendering is directed to.
+*/
 
 /*! \internal */
 QRenderTargetOutputPrivate::QRenderTargetOutputPrivate()
@@ -66,9 +194,8 @@ QRenderTargetOutputPrivate::QRenderTargetOutputPrivate()
 }
 
 /*!
- * The constructor creates a new QRenderTargetOutput::QRenderTargetOutput instance
- * with the specified \a parent.
- * \param parent
+    The constructor creates a new QRenderTargetOutput::QRenderTargetOutput instance
+    with the specified \a parent.
  */
 QRenderTargetOutput::QRenderTargetOutput(QNode *parent)
     : QNode(*new QRenderTargetOutputPrivate, parent)
@@ -86,10 +213,6 @@ QRenderTargetOutput::QRenderTargetOutput(QRenderTargetOutputPrivate &dd, QNode *
 {
 }
 
-/*!
- * Sets the attachment point to \a attachmentPoint.
- * \param attachmentPoint
- */
 void QRenderTargetOutput::setAttachmentPoint(QRenderTargetOutput::AttachmentPoint attachmentPoint)
 {
     Q_D(QRenderTargetOutput);
@@ -99,9 +222,6 @@ void QRenderTargetOutput::setAttachmentPoint(QRenderTargetOutput::AttachmentPoin
     }
 }
 
-/*!
- * \return the current attachment point.
- */
 QRenderTargetOutput::AttachmentPoint QRenderTargetOutput::attachmentPoint() const
 {
     Q_D(const QRenderTargetOutput);
@@ -130,19 +250,12 @@ void QRenderTargetOutput::setTexture(QAbstractTexture *texture)
     }
 }
 
-/*!
- * \return the current texture.
- */
 QAbstractTexture *QRenderTargetOutput::texture() const
 {
     Q_D(const QRenderTargetOutput);
     return d->m_texture;
 }
 
-/*!
- * Sets the required mip level to \a level.
- * \param level
- */
 void QRenderTargetOutput::setMipLevel(int level)
 {
     Q_D(QRenderTargetOutput);
@@ -152,19 +265,12 @@ void QRenderTargetOutput::setMipLevel(int level)
     }
 }
 
-/*!
- * \return the current mip level.
- */
 int QRenderTargetOutput::mipLevel() const
 {
     Q_D(const QRenderTargetOutput);
     return d->m_mipLevel;
 }
 
-/*!
- * Sets the required layer to \a layer.
- * \param layer
- */
 void QRenderTargetOutput::setLayer(int layer)
 {
     Q_D(QRenderTargetOutput);
@@ -174,19 +280,12 @@ void QRenderTargetOutput::setLayer(int layer)
     }
 }
 
-/*!
- * \return the current layer.
- */
 int QRenderTargetOutput::layer() const
 {
     Q_D(const QRenderTargetOutput);
     return d->m_layer;
 }
 
-/*!
- * Sets the required cubemap face to \a face.
- * \param face
- */
 void QRenderTargetOutput::setFace(QAbstractTexture::CubeMapFace face)
 {
     Q_D(QRenderTargetOutput);
@@ -196,9 +295,6 @@ void QRenderTargetOutput::setFace(QAbstractTexture::CubeMapFace face)
     }
 }
 
-/*!
- * \return the current cubemap face.
- */
 QAbstractTexture::CubeMapFace QRenderTargetOutput::face() const
 {
     Q_D(const QRenderTargetOutput);

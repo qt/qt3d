@@ -29,7 +29,7 @@
 #include <QtTest/QTest>
 #include <Qt3DRender/private/scene_p.h>
 #include <Qt3DRender/private/loadscenejob_p.h>
-#include <Qt3DRender/private/qsceneiohandler_p.h>
+#include <Qt3DRender/private/qsceneimporter_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/scenemanager_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
@@ -37,10 +37,10 @@
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include "testpostmanarbiter.h"
 
-class TestIOSceneHandler : public Qt3DRender::QSceneIOHandler
+class TestSceneImporter : public Qt3DRender::QSceneImporter
 {
 public:
-    explicit TestIOSceneHandler(bool supportsFormat, bool shouldFail)
+    explicit TestSceneImporter(bool supportsFormat, bool shouldFail)
         : m_supportsFormat(supportsFormat)
         , m_shouldFail(shouldFail)
     {}
@@ -93,7 +93,7 @@ private Q_SLOTS:
         QCOMPARE(backendLoadSceneJob.source(), url);
         QCOMPARE(backendLoadSceneJob.sceneComponentId(), nodeId);
         QVERIFY(backendLoadSceneJob.nodeManagers() == nullptr);
-        QCOMPARE(backendLoadSceneJob.sceneIOHandlers().size(), 0);
+        QCOMPARE(backendLoadSceneJob.sceneImporters().size(), 0);
     }
 
     void checkInitialize()
@@ -102,19 +102,20 @@ private Q_SLOTS:
         const QUrl url(QStringLiteral("URL"));
         const Qt3DCore::QNodeId sceneId = Qt3DCore::QNodeId::createId();
         Qt3DRender::Render::NodeManagers nodeManagers;
-        TestIOSceneHandler fakeHandler(true, true);
+        TestSceneImporter fakeImporter(true, true);
 
         // WHEN
         Qt3DRender::Render::LoadSceneJob backendLoadSceneJob(url, sceneId);
         backendLoadSceneJob.setNodeManagers(&nodeManagers);
-        backendLoadSceneJob.setSceneIOHandlers(QList<Qt3DRender::QSceneIOHandler *>() << &fakeHandler);
+        backendLoadSceneJob.setSceneImporters(
+                    QList<Qt3DRender::QSceneImporter *>() << &fakeImporter);
 
         // THEN
         QCOMPARE(backendLoadSceneJob.source(), url);
         QCOMPARE(backendLoadSceneJob.sceneComponentId(), sceneId);
         QVERIFY(backendLoadSceneJob.nodeManagers() == &nodeManagers);
-        QCOMPARE(backendLoadSceneJob.sceneIOHandlers().size(), 1);
-        QCOMPARE(backendLoadSceneJob.sceneIOHandlers().first(), &fakeHandler);
+        QCOMPARE(backendLoadSceneJob.sceneImporters().size(), 1);
+        QCOMPARE(backendLoadSceneJob.sceneImporters().first(), &fakeImporter);
     }
 
     void checkRunValidSourceSupportedFormat()
@@ -123,7 +124,7 @@ private Q_SLOTS:
         const QUrl url(QStringLiteral("URL"));
         TestArbiter arbiter;
         Qt3DRender::Render::NodeManagers nodeManagers;
-        TestIOSceneHandler fakeHandler(true, false);
+        TestSceneImporter fakeImporter(true, false);
         Qt3DCore::QNodeId sceneId = Qt3DCore::QNodeId::createId();
         Qt3DRender::Render::Scene *scene = nodeManagers.sceneManager()->getOrCreateResource(sceneId);
 
@@ -134,7 +135,7 @@ private Q_SLOTS:
         // WHEN
         Qt3DRender::Render::LoadSceneJob loadSceneJob(url, sceneId);
         loadSceneJob.setNodeManagers(&nodeManagers);
-        loadSceneJob.setSceneIOHandlers(QList<Qt3DRender::QSceneIOHandler *>() << &fakeHandler);
+        loadSceneJob.setSceneImporters(QList<Qt3DRender::QSceneImporter *>() << &fakeImporter);
         loadSceneJob.run();
 
         // THEN
@@ -167,7 +168,7 @@ private Q_SLOTS:
         QUrl url;
         TestArbiter arbiter;
         Qt3DRender::Render::NodeManagers nodeManagers;
-        TestIOSceneHandler fakeHandler(true, false);
+        TestSceneImporter fakeImporter(true, false);
         Qt3DCore::QNodeId sceneId = Qt3DCore::QNodeId::createId();
         Qt3DRender::Render::Scene *scene = nodeManagers.sceneManager()->getOrCreateResource(sceneId);
 
@@ -178,7 +179,7 @@ private Q_SLOTS:
         // WHEN
         Qt3DRender::Render::LoadSceneJob loadSceneJob(url, sceneId);
         loadSceneJob.setNodeManagers(&nodeManagers);
-        loadSceneJob.setSceneIOHandlers(QList<Qt3DRender::QSceneIOHandler *>() << &fakeHandler);
+        loadSceneJob.setSceneImporters(QList<Qt3DRender::QSceneImporter *>() << &fakeImporter);
         loadSceneJob.run();
 
         // THEN
@@ -205,7 +206,7 @@ private Q_SLOTS:
         const QUrl url(QStringLiteral("URL"));
         TestArbiter arbiter;
         Qt3DRender::Render::NodeManagers nodeManagers;
-        TestIOSceneHandler fakeHandler(false, false);
+        TestSceneImporter fakeImporter(false, false);
         Qt3DCore::QNodeId sceneId = Qt3DCore::QNodeId::createId();
         Qt3DRender::Render::Scene *scene = nodeManagers.sceneManager()->getOrCreateResource(sceneId);
 
@@ -216,7 +217,7 @@ private Q_SLOTS:
         // WHEN
         Qt3DRender::Render::LoadSceneJob loadSceneJob(url, sceneId);
         loadSceneJob.setNodeManagers(&nodeManagers);
-        loadSceneJob.setSceneIOHandlers(QList<Qt3DRender::QSceneIOHandler *>() << &fakeHandler);
+        loadSceneJob.setSceneImporters(QList<Qt3DRender::QSceneImporter *>() << &fakeImporter);
         loadSceneJob.run();
 
         // THEN
@@ -243,7 +244,7 @@ private Q_SLOTS:
         const QUrl url(QStringLiteral("URL"));
         TestArbiter arbiter;
         Qt3DRender::Render::NodeManagers nodeManagers;
-        TestIOSceneHandler fakeHandler(true, true);
+        TestSceneImporter fakeImporter(true, true);
         Qt3DCore::QNodeId sceneId = Qt3DCore::QNodeId::createId();
         Qt3DRender::Render::Scene *scene = nodeManagers.sceneManager()->getOrCreateResource(sceneId);
 
@@ -254,7 +255,7 @@ private Q_SLOTS:
         // WHEN
         Qt3DRender::Render::LoadSceneJob loadSceneJob(url, sceneId);
         loadSceneJob.setNodeManagers(&nodeManagers);
-        loadSceneJob.setSceneIOHandlers(QList<Qt3DRender::QSceneIOHandler *>() << &fakeHandler);
+        loadSceneJob.setSceneImporters(QList<Qt3DRender::QSceneImporter *>() << &fakeImporter);
         loadSceneJob.run();
 
         // THEN

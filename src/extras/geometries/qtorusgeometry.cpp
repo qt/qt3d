@@ -44,6 +44,7 @@
 #include <Qt3DRender/qattribute.h>
 #include <qmath.h>
 #include <QVector3D>
+#include <QVector4D>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,30 +54,47 @@ namespace  Qt3DExtras {
 
 namespace {
 
-QByteArray createTorusVertexData(double radius, double minorRadius,
-                                 int rings, int sides)
+int vertexCount(int requestedRings, int requestedSlices)
 {
-    const int nVerts  = sides * (rings + 1);
+    return (requestedRings + 1) * (requestedSlices + 1);
+}
+
+int triangleCount(int requestedRings, int requestedSlices)
+{
+    return 2 * requestedRings * requestedSlices;
+}
+
+QByteArray createTorusVertexData(double radius, double minorRadius,
+                                 int rings, int slices)
+{
+    // The additional side and ring compared to what the user asked
+    // for is because we also need to ensure proper texture coordinate
+    // wrapping at the seams. Without this the last ring and side would
+    // interpolate the texture coordinates from ~0.9x back down to 0
+    // (the starting value at the first ring). So we insert an extra
+    // ring and side with the same positions as the first ring and side
+    // but with texture coordinates of 1 (compared to 0).
+    const int nVerts  = vertexCount(rings, slices);
     QByteArray bufferBytes;
-    // vec3 pos, vec2 texCoord, vec3 normal
-    const quint32 elementSize = 3 + 2 + 3;
+    // vec3 pos, vec2 texCoord, vec3 normal, vec4 tangent
+    const quint32 elementSize = 3 + 2 + 3 + 4;
     const quint32 stride = elementSize * sizeof(float);
     bufferBytes.resize(stride * nVerts);
 
     float* fptr = reinterpret_cast<float*>(bufferBytes.data());
 
-    const float ringFactor = (M_PI * 2) / static_cast<float>( rings );
-    const float sideFactor = (M_PI * 2) / static_cast<float>( sides );
+    const float ringFactor = (M_PI * 2) / static_cast<float>(rings);
+    const float sliceFactor = (M_PI * 2) / static_cast<float>(slices);
 
     for (int ring = 0; ring <= rings; ++ring) {
         const float u = ring * ringFactor;
-        const float cu = qCos( u );
-        const float su = qSin( u );
+        const float cu = qCos(u);
+        const float su = qSin(u);
 
-        for (int side = 0; side < sides; ++side) {
-            const float v = side * sideFactor;
-            const float cv = qCos( v );
-            const float sv = qSin( v );
+        for (int slice = 0; slice <= slices; ++slice) {
+            const float v = slice * sliceFactor;
+            const float cv = qCos(v + M_PI);
+            const float sv = qSin(v);
             const float r = (radius + minorRadius * cv);
 
             *fptr++ = r * cu;
@@ -86,37 +104,45 @@ QByteArray createTorusVertexData(double radius, double minorRadius,
             *fptr++ = u / (M_PI * 2);
             *fptr++ = v / (M_PI * 2);
 
-            QVector3D n(cv * cu * r, cv * su * r, sv * r);
+            QVector3D n(cv * cu, cv * su, sv);
             n.normalize();
             *fptr++ = n.x();
             *fptr++ = n.y();
             *fptr++ = n.z();
+
+            QVector4D t(-su, cu, 0.0f, 1.0f);
+            t.normalize();
+            *fptr++ = t.x();
+            *fptr++ = t.y();
+            *fptr++ = t.z();
+            *fptr++ = t.w();
         }
     }
 
     return bufferBytes;
 }
 
-QByteArray createTorusIndexData(int rings, int sides)
+QByteArray createTorusIndexData(int requestedRings, int requestedSlices)
 {
-    QByteArray indexBytes;
-    int faces = (sides * 2) * rings; // two tris per side, for all rings
-    int indices = faces * 3;
+    const int slices = requestedSlices + 1;
+    int triangles = triangleCount(requestedRings, requestedSlices);
+    int indices = triangles * 3;
     Q_ASSERT(indices < 65536);
+    QByteArray indexBytes;
     indexBytes.resize(indices * sizeof(quint16));
     quint16* indexPtr = reinterpret_cast<quint16*>(indexBytes.data());
 
-    for (int ring = 0; ring < rings; ++ring) {
-        const int ringStart = ring * sides;
-        const int nextRingStart = (ring + 1) * sides;
-        for (int side = 0; side < sides; ++side) {
-            const int nextSide = (side + 1) % sides;
-            *indexPtr++ = (ringStart + side);
-            *indexPtr++ = (nextRingStart + side);
-            *indexPtr++ = (nextRingStart + nextSide);
-            *indexPtr++ = ringStart + side;
-            *indexPtr++ = nextRingStart + nextSide;
-            *indexPtr++ = (ringStart + nextSide);
+    for (int ring = 0; ring < requestedRings; ++ring) {
+        const int ringStart = ring * slices;
+        const int nextRingStart = (ring + 1) * slices;
+        for (int slice = 0; slice < requestedSlices; ++slice) {
+            const int nextSlice = (slice + 1) % slices;
+            *indexPtr++ = ringStart + slice;
+            *indexPtr++ = ringStart + nextSlice;
+            *indexPtr++ = nextRingStart + slice;
+            *indexPtr++ = ringStart + nextSlice;
+            *indexPtr++ = nextRingStart + nextSlice;
+            *indexPtr++ = nextRingStart + slice;
         }
     }
 
@@ -130,7 +156,7 @@ class TorusVertexDataFunctor : public QBufferDataGenerator
 public:
     TorusVertexDataFunctor(int rings, int slices, float radius, float minorRadius)
         : m_rings(rings)
-        , m_sides(slices)
+        , m_slices(slices)
         , m_radius(radius)
         , m_minorRadius(minorRadius)
     {
@@ -138,7 +164,7 @@ public:
 
     QByteArray operator ()() Q_DECL_OVERRIDE
     {
-        return createTorusVertexData(m_radius, m_minorRadius, m_rings, m_sides);
+        return createTorusVertexData(m_radius, m_minorRadius, m_rings, m_slices);
     }
 
     bool operator ==(const QBufferDataGenerator &other) const Q_DECL_OVERRIDE
@@ -146,7 +172,7 @@ public:
         const TorusVertexDataFunctor *otherFunctor = functor_cast<TorusVertexDataFunctor>(&other);
         if (otherFunctor != nullptr)
             return (otherFunctor->m_rings == m_rings &&
-                    otherFunctor->m_sides == m_sides &&
+                    otherFunctor->m_slices == m_slices &&
                     otherFunctor->m_radius == m_radius &&
                     otherFunctor->m_minorRadius == m_minorRadius);
         return false;
@@ -156,7 +182,7 @@ public:
 
 private:
     int m_rings;
-    int m_sides;
+    int m_slices;
     float m_radius;
     float m_minorRadius;
 };
@@ -166,13 +192,13 @@ class TorusIndexDataFunctor : public QBufferDataGenerator
 public:
     TorusIndexDataFunctor(int rings, int slices)
         : m_rings(rings)
-        , m_sides(slices)
+        , m_slices(slices)
     {
     }
 
     QByteArray operator ()() Q_DECL_OVERRIDE
     {
-        return createTorusIndexData(m_rings, m_sides);
+        return createTorusIndexData(m_rings, m_slices);
     }
 
     bool operator ==(const QBufferDataGenerator &other) const Q_DECL_OVERRIDE
@@ -180,7 +206,7 @@ public:
         const TorusIndexDataFunctor *otherFunctor = functor_cast<TorusIndexDataFunctor>(&other);
         if (otherFunctor != nullptr)
             return (otherFunctor->m_rings == m_rings &&
-                    otherFunctor->m_sides == m_sides);
+                    otherFunctor->m_slices == m_slices);
         return false;
     }
 
@@ -188,7 +214,7 @@ public:
 
 private:
     int m_rings;
-    int m_sides;
+    int m_slices;
 };
 
 QTorusGeometryPrivate::QTorusGeometryPrivate()
@@ -200,6 +226,7 @@ QTorusGeometryPrivate::QTorusGeometryPrivate()
     , m_positionAttribute(nullptr)
     , m_normalAttribute(nullptr)
     , m_texCoordAttribute(nullptr)
+    , m_tangentAttribute(nullptr)
     , m_indexAttribute(nullptr)
     , m_vertexBuffer(nullptr)
     , m_indexBuffer(nullptr)
@@ -212,14 +239,15 @@ void QTorusGeometryPrivate::init()
     m_positionAttribute = new QAttribute(q);
     m_normalAttribute = new QAttribute(q);
     m_texCoordAttribute = new QAttribute(q);
+    m_tangentAttribute = new QAttribute(q);
     m_indexAttribute = new QAttribute(q);
     m_vertexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, q);
     m_indexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer, q);
-    // vec3 pos, vec2 tex, vec3 normal
-    const quint32 elementSize = 3 + 2 + 3;
+    // vec3 pos, vec2 tex, vec3 normal, vec4 tangent
+    const quint32 elementSize = 3 + 2 + 3 + 4;
     const quint32 stride = elementSize * sizeof(float);
-    const int nVerts = (m_slices + 1) * (m_rings + 1);
-    const int faces = (m_slices * 2) * m_rings;
+    const int nVerts = vertexCount(m_rings, m_slices);
+    const int triangles = triangleCount(m_rings, m_slices);
 
     m_positionAttribute->setName(QAttribute::defaultPositionAttributeName());
     m_positionAttribute->setVertexBaseType(QAttribute::Float);
@@ -247,11 +275,20 @@ void QTorusGeometryPrivate::init()
     m_normalAttribute->setByteOffset(5 * sizeof(float));
     m_normalAttribute->setCount(nVerts);
 
+    m_tangentAttribute->setName(QAttribute::defaultTangentAttributeName());
+    m_tangentAttribute->setVertexBaseType(QAttribute::Float);
+    m_tangentAttribute->setVertexSize(4);
+    m_tangentAttribute->setAttributeType(QAttribute::VertexAttribute);
+    m_tangentAttribute->setBuffer(m_vertexBuffer);
+    m_tangentAttribute->setByteStride(stride);
+    m_tangentAttribute->setByteOffset(8 * sizeof(float));
+    m_tangentAttribute->setCount(nVerts);
+
     m_indexAttribute->setAttributeType(QAttribute::IndexAttribute);
     m_indexAttribute->setVertexBaseType(QAttribute::UnsignedShort);
     m_indexAttribute->setBuffer(m_indexBuffer);
 
-    m_indexAttribute->setCount(faces * 3);
+    m_indexAttribute->setCount(triangles * 3);
 
     m_vertexBuffer->setDataGenerator(QSharedPointer<TorusVertexDataFunctor>::create(m_rings, m_slices, m_radius, m_minorRadius));
     m_indexBuffer->setDataGenerator(QSharedPointer<TorusIndexDataFunctor>::create(m_rings, m_slices));
@@ -259,6 +296,7 @@ void QTorusGeometryPrivate::init()
     q->addAttribute(m_positionAttribute);
     q->addAttribute(m_texCoordAttribute);
     q->addAttribute(m_normalAttribute);
+    q->addAttribute(m_tangentAttribute);
     q->addAttribute(m_indexAttribute);
 }
 
@@ -322,6 +360,7 @@ void QTorusGeometryPrivate::init()
 
 /*!
  * \class Qt3DExtras::QTorusGeometry
+ * \inheaderfile Qt3DExtras/QTorusGeometry
  * \inmodule Qt3DExtras
  * \brief The QTorusGeometry class allows creation of a torus in 3D space.
  * \since 5.7
@@ -365,7 +404,7 @@ QTorusGeometry::~QTorusGeometry()
 void QTorusGeometry::updateVertices()
 {
     Q_D(QTorusGeometry);
-    const int nVerts = d->m_slices * (d->m_rings + 1);
+    const int nVerts = vertexCount(d->m_rings, d->m_slices);
     d->m_positionAttribute->setCount(nVerts);
     d->m_texCoordAttribute->setCount(nVerts);
     d->m_normalAttribute->setCount(nVerts);
@@ -378,10 +417,9 @@ void QTorusGeometry::updateVertices()
 void QTorusGeometry::updateIndices()
 {
     Q_D(QTorusGeometry);
-    const int faces = (d->m_slices * 2) * d->m_rings;
-    d->m_indexAttribute->setCount(faces * 3);
+    const int triangles = triangleCount(d->m_rings, d->m_slices);
+    d->m_indexAttribute->setCount(triangles * 3);
     d->m_indexBuffer->setDataGenerator(QSharedPointer<TorusIndexDataFunctor>::create(d->m_rings, d->m_slices));
-
 }
 
 void QTorusGeometry::setRings(int rings)

@@ -82,7 +82,7 @@ public:
         Ready,
         Error
     };
-    Q_ENUM(Status)
+    Q_ENUM(Status) // LCOV_EXCL_LINE
 
     enum Target {
         TargetAutomatic            = 0,         // Target will be determined by the Qt3D engine
@@ -98,7 +98,7 @@ public:
         TargetRectangle            = 0x84F5,    // GL_TEXTURE_RECTANGLE
         TargetBuffer               = 0x8C2A     // GL_TEXTURE_BUFFER
     };
-    Q_ENUM(Target)
+    Q_ENUM(Target) // LCOV_EXCL_LINE
 
     enum TextureFormat {
         NoFormat               = 0,         // GL_NONE
@@ -227,7 +227,7 @@ public:
         LuminanceFormat        = 0x1909,    // GL_LUMINANCE
         LuminanceAlphaFormat   = 0x190A
     };
-    Q_ENUM(TextureFormat)
+    Q_ENUM(TextureFormat) // LCOV_EXCL_LINE
 
     enum Filter {
         Nearest                 = 0x2600,   // GL_NEAREST
@@ -237,7 +237,7 @@ public:
         LinearMipMapNearest     = 0x2701,   // GL_LINEAR_MIPMAP_NEAREST
         LinearMipMapLinear      = 0x2703    // GL_LINEAR_MIPMAP_LINEAR
     };
-    Q_ENUM(Filter)
+    Q_ENUM(Filter) // LCOV_EXCL_LINE
 
     enum CubeMapFace {
         CubeMapPositiveX = 0x8515,  // GL_TEXTURE_CUBE_MAP_POSITIVE_X
@@ -248,7 +248,7 @@ public:
         CubeMapNegativeZ = 0x851A,  // GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
         AllFaces
     };
-    Q_ENUM(CubeMapFace)
+    Q_ENUM(CubeMapFace) // LCOV_EXCL_LINE
 
     enum ComparisonFunction {
         CompareLessEqual    = 0x0203,   // GL_LEQUAL
@@ -260,13 +260,13 @@ public:
         CompareAlways       = 0x0207,   // GL_ALWAYS
         CompareNever        = 0x0200    // GL_NEVER
     };
-    Q_ENUM(ComparisonFunction)
+    Q_ENUM(ComparisonFunction) // LCOV_EXCL_LINE
 
     enum ComparisonMode {
         CompareRefToTexture = 0x884E,   // GL_COMPARE_REF_TO_TEXTURE
         CompareNone         = 0x0000    // GL_NONE
     };
-    Q_ENUM(ComparisonMode)
+    Q_ENUM(ComparisonMode) // LCOV_EXCL_LINE
 
     ~QAbstractTexture();
 
@@ -344,6 +344,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::QAbstractTexture *)
+Q_DECLARE_METATYPE(Qt3DRender::QAbstractTexture *) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_QABSTRACTTEXTURE_H

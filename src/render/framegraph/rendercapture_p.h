@@ -57,18 +57,19 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class RenderCapture : public FrameGraphNode
+class Q_AUTOTEST_EXPORT RenderCapture : public FrameGraphNode
 {
 public:
     RenderCapture();
 
+    void requestCapture(int captureId);
     bool wasCaptureRequested() const;
     void acknowledgeCaptureRequest();
     void addRenderCapture(const QImage &image);
     void sendRenderCaptures();
 
 protected:
-    virtual void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e);
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
 
 private:
 

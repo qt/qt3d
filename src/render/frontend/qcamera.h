@@ -87,7 +87,7 @@ public:
         TranslateViewCenter,
         DontTranslateViewCenter
     };
-    Q_ENUM(CameraTranslationOption)
+    Q_ENUM(CameraTranslationOption) // LCOV_EXCL_LINE
 
     QCameraLens *lens() const;
     Qt3DCore::QTransform *transform() const;

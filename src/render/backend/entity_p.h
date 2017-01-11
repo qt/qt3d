@@ -117,6 +117,9 @@ public:
     bool isBoundingVolumeDirty() const;
     void unsetBoundingVolumeDirty();
 
+    void setTreeEnabled(bool enabled) { m_treeEnabled = enabled; }
+    bool isTreeEnabled() const { return m_treeEnabled; }
+
     template<class Backend, uint INDEXBITS>
     Qt3DCore::QHandle<Backend, INDEXBITS> componentHandle() const
     {
@@ -173,6 +176,9 @@ private:
     HEntity m_handle;
     HEntity m_parentHandle;
     QVector<HEntity > m_childrenHandles;
+
+    // true only if this and all parent nodes are enabled
+    bool m_treeEnabled;
 
     HMatrix m_worldTransform;
     QSharedPointer<Sphere> m_localBoundingVolume;

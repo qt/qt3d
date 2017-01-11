@@ -78,7 +78,7 @@ public:
     {
         if (active != m_active) {
             m_active = active;
-            q_func()->activeChanged(active);
+            Q_EMIT q_func()->activeChanged(active);
         }
     }
 };

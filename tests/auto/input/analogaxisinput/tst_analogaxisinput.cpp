@@ -28,13 +28,15 @@
 
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
+#include "testdevice.h"
+
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DInput/private/analogaxisinput_p.h>
+#include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DInput/QAnalogAxisInput>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include "testdevice.h"
 
 class tst_AnalogAxisInput: public Qt3DCore::QBackendNodeTester
 {
@@ -122,6 +124,74 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendAxisInput.sourceDevice(), device.id());
+    }
+
+    void shouldProcessAxisValue()
+    {
+        const qint64 s = 1000000000;
+
+        // GIVEN
+        TestDeviceIntegration deviceIntegration;
+        TestDevice *device = deviceIntegration.createPhysicalDevice("keyboard");
+        TestDeviceBackendNode *deviceBackend = deviceIntegration.physicalDevice(device->id());
+        Qt3DInput::Input::InputHandler handler;
+        handler.addInputDeviceIntegration(&deviceIntegration);
+
+        Qt3DInput::Input::AnalogAxisInput backendAxisInput;
+        Qt3DInput::QAnalogAxisInput axisInput;
+        axisInput.setEnabled(true);
+        axisInput.setAxis(2);
+        axisInput.setSourceDevice(device);
+        simulateInitialization(&axisInput, &backendAxisInput);
+        QCOMPARE(backendAxisInput.axis(), 2);
+
+        // WHEN
+        deviceBackend->setAxisValue(2, 0.1f);
+
+        // THEN
+        QCOMPARE(backendAxisInput.process(&handler, 30 * s), 0.1f);
+        QCOMPARE(backendAxisInput.process(&handler, 31 * s), 0.1f);
+
+        // WHEN
+        deviceBackend->setAxisValue(2, 0.2f);
+
+        // THEN
+        QCOMPARE(backendAxisInput.process(&handler, 32 * s), 0.2f);
+        QCOMPARE(backendAxisInput.process(&handler, 33 * s), 0.2f);
+    }
+
+    void shouldNotProcessAxisValueWhenDisabled()
+    {
+        const qint64 s = 1000000000;
+
+        // GIVEN
+        TestDeviceIntegration deviceIntegration;
+        TestDevice *device = deviceIntegration.createPhysicalDevice("keyboard");
+        TestDeviceBackendNode *deviceBackend = deviceIntegration.physicalDevice(device->id());
+        Qt3DInput::Input::InputHandler handler;
+        handler.addInputDeviceIntegration(&deviceIntegration);
+
+        Qt3DInput::Input::AnalogAxisInput backendAxisInput;
+        Qt3DInput::QAnalogAxisInput axisInput;
+        axisInput.setEnabled(false);
+        axisInput.setAxis(2);
+        axisInput.setSourceDevice(device);
+        simulateInitialization(&axisInput, &backendAxisInput);
+        QCOMPARE(backendAxisInput.axis(), 2);
+
+        // WHEN
+        deviceBackend->setAxisValue(2, 0.1f);
+
+        // THEN
+        QCOMPARE(backendAxisInput.process(&handler, 30 * s), 0.0f);
+        QCOMPARE(backendAxisInput.process(&handler, 31 * s), 0.0f);
+
+        // WHEN
+        deviceBackend->setAxisValue(2, 0.2f);
+
+        // THEN
+        QCOMPARE(backendAxisInput.process(&handler, 32 * s), 0.0f);
+        QCOMPARE(backendAxisInput.process(&handler, 33 * s), 0.0f);
     }
 };
 

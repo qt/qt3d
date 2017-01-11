@@ -69,8 +69,6 @@ private:
     Q_DECLARE_PRIVATE(QInputSettings)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
     void eventSourceDestroyed();
-
-    QMetaObject::Connection m_connection;
 };
 
 } // Qt3DInput

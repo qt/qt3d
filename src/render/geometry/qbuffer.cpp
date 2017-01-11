@@ -89,6 +89,7 @@ QBufferPrivate::QBufferPrivate()
 
 /*!
  * \class Qt3DRender::QBuffer
+ * \inheaderfile Qt3DRender/QBuffer
  * \inmodule Qt3DRender
  *
  * \inherits Qt3DCore::QNode
@@ -110,6 +111,91 @@ QBufferPrivate::QBufferPrivate()
  * This signal is emitted with \a bytes when data changes.
  */
 
+/*!
+    \class Qt3DRender::QBufferDataGenerator
+    \inmodule Qt3DRender
+
+    \inherits Qt3DRender::QAbstractFunctor
+
+    \brief Provides a mechanism to generate buffer data from a job.
+
+    The Qt3DRender::QBufferDataGenerator should be subclassed to provide a way
+    to fill the data of a Qt3DRender::QBuffer. Such functors are executed at
+    runtime in a Qt 3D job (likely in parallel with many other jobs). When
+    providing a functor you must implement the operator() which will be called
+    to generate the actual data. You must make sure that you have stored copies
+    of anything you might need for it to execute properly. You should also
+    implement the operator==. It will be used to compare with other functors
+    and based on that allow the renderer to decide if a new functor should be
+    executed or not.
+
+    \note functors are useful when you can build data from a few set of
+    attributes (e.g: building a sphere from a radius property). If you already
+    have access to the buffer data, using Qt3DRender::QBuffer::setData() is
+    likely more efficient.
+
+    \code
+
+    QByteArray createSphereMeshVertexData(float radius, int rings, int slices)
+    {
+        ...
+    }
+
+    class SphereVertexDataFunctor : public QBufferDataGenerator
+    {
+    public:
+        SphereVertexDataFunctor(int rings, int slices, float radius)
+            : m_rings(rings)
+            , m_slices(slices)
+            , m_radius(radius)
+        {}
+
+        QByteArray operator ()() Q_DECL_OVERRIDE
+        {
+            return createSphereMeshVertexData(m_radius, m_rings, m_slices);
+        }
+
+        bool operator ==(const QBufferDataGenerator &other) const Q_DECL_OVERRIDE
+        {
+            const SphereVertexDataFunctor *otherFunctor = functor_cast<SphereVertexDataFunctor>(&other);
+            if (otherFunctor != nullptr)
+                return (otherFunctor->m_rings == m_rings &&
+                        otherFunctor->m_slices == m_slices &&
+                        otherFunctor->m_radius == m_radius);
+            return false;
+        }
+
+        QT3D_FUNCTOR(SphereVertexDataFunctor)
+
+    private:
+        int m_rings;
+        int m_slices;
+        float m_radius;
+    };
+
+    \endcode
+
+    The QT3D_FUNCTOR macro should be added when subclassing. This allows you to
+    use functor_cast in your comparison operator to make sure that the other
+    functor is of the same type as the one your are trying to compare against.
+*/
+
+/*!
+    \fn Qt3DRender::QBufferDataGenerator::operator()()
+
+    Should be implemented to return the buffer data as a QByteArray when called.
+  */
+
+/*!
+    \fn Qt3DRender::QBufferDataGenerator::operator ==(const QBufferDataGenerator &other) const
+
+    Should be reimplemented to return true when two generators are identical,
+    false otherwise.
+
+    \note The renderer uses this comparison to decide whether data for a buffer
+    needs to be reuploaded or not when the functor on a Qt3DRender::QBuffer
+    changes.
+ */
 
 /*!
  * \enum QBuffer::BufferType
@@ -157,7 +243,7 @@ QBufferPrivate::QBufferPrivate()
 
 /*!
  * \typedef Qt3DRender::QBufferDataGeneratorPtr
- * \relates QBuffer
+ * \relates Qt3DRender::QBuffer
  */
 
 /*!
@@ -204,7 +290,7 @@ void QBuffer::setData(const QByteArray &bytes)
 }
 
 /*!
- * \Update the data.
+ * Updates the data by replacing it with \a bytes at \a offset.
  */
 void QBuffer::updateData(int offset, const QByteArray &bytes)
 {

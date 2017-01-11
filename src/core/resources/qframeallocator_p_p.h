@@ -96,6 +96,9 @@ public:
     inline uint blockSize() const { return m_blockSize; }
 
 private:
+    QFrameChunk &scan();
+
+private:
     uint m_blockSize;
     uchar m_nbrBlock;
     QVector<QFrameChunk> m_chunks;

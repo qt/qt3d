@@ -184,6 +184,7 @@ private Q_SLOTS:
 
         Qt3DInput::Input::InputSequence backendInputSequence;
         Qt3DInput::QInputSequence inputSequence;
+        inputSequence.setEnabled(true);
         inputSequence.setButtonInterval(150);
         inputSequence.setTimeout(450);
         inputSequence.addSequence(firstInput);
@@ -309,6 +310,7 @@ private Q_SLOTS:
 
         Qt3DInput::Input::InputSequence backendInputSequence;
         Qt3DInput::QInputSequence inputSequence;
+        inputSequence.setEnabled(true);
         inputSequence.setButtonInterval(250);
         inputSequence.setTimeout(450);
         inputSequence.addSequence(firstInput);
@@ -366,6 +368,7 @@ private Q_SLOTS:
 
         Qt3DInput::Input::InputSequence backendInputSequence;
         Qt3DInput::QInputSequence inputSequence;
+        inputSequence.setEnabled(true);
         inputSequence.setButtonInterval(100);
         inputSequence.setTimeout(450);
         inputSequence.addSequence(firstInput);
@@ -392,6 +395,50 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendInputSequence.process(&handler, 1300000000), false);
+    }
+
+    void shouldNotProcessWhenDisabled()
+    {
+        // GIVEN
+        TestDeviceIntegration deviceIntegration;
+        TestDevice *device = deviceIntegration.createPhysicalDevice("keyboard");
+        TestDeviceBackendNode *deviceBackend = deviceIntegration.physicalDevice(device->id());
+        Qt3DInput::Input::InputHandler handler;
+        handler.addInputDeviceIntegration(&deviceIntegration);
+
+        auto firstInput = new Qt3DInput::QActionInput;
+        firstInput->setButtons(QVector<int>() << Qt::Key_Q);
+        firstInput->setSourceDevice(device);
+        auto backendFirstInput = handler.actionInputManager()->getOrCreateResource(firstInput->id());
+        simulateInitialization(firstInput, backendFirstInput);
+
+        auto secondInput = new Qt3DInput::QActionInput;
+        secondInput->setButtons(QVector<int>() << Qt::Key_S);
+        secondInput->setSourceDevice(device);
+        auto backendSecondInput = handler.actionInputManager()->getOrCreateResource(secondInput->id());
+        simulateInitialization(secondInput, backendSecondInput);
+
+        Qt3DInput::Input::InputSequence backendInputSequence;
+        Qt3DInput::QInputSequence inputSequence;
+        inputSequence.setEnabled(false);
+        inputSequence.setButtonInterval(150);
+        inputSequence.setTimeout(450);
+        inputSequence.addSequence(firstInput);
+        inputSequence.addSequence(secondInput);
+        simulateInitialization(&inputSequence, &backendInputSequence);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Q, true);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1000000000), false);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Q, false);
+        deviceBackend->setButtonPressed(Qt::Key_S, true);
+
+        // THEN
+        QCOMPARE(backendInputSequence.process(&handler, 1100000000), false);
     }
 };
 

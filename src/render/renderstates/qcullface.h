@@ -64,7 +64,7 @@ public:
         Back = 0x0405,
         FrontAndBack = 0x0408
     };
-    Q_ENUM(CullingMode)
+    Q_ENUM(CullingMode) // LCOV_EXCL_LINE
 
     explicit QCullFace(Qt3DCore::QNode *parent = nullptr);
     ~QCullFace();

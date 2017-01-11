@@ -62,15 +62,15 @@ class QFilterKey;
 
 namespace Render {
 
-class FilterKey : public BackendNode
+class Q_AUTOTEST_EXPORT FilterKey : public BackendNode
 {
 public:
     FilterKey();
     ~FilterKey();
     void cleanup();
 
-    QVariant criterionValue() const;
-    QString criterionName() const;
+    QVariant value() const;
+    QString name() const;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     bool operator ==(const FilterKey &other);
     bool operator !=(const FilterKey &other);

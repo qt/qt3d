@@ -53,6 +53,7 @@ QPropertyNodeAddedChangePrivate::QPropertyNodeAddedChangePrivate()
 
 /*!
  * \class Qt3DCore::QPropertyNodeAddedChange
+ * \inheaderfile Qt3DCore/QPropertyNodeAddedChange
  * \inherits Qt3DCore::QStaticPropertyValueAddedChangeBase
  * \inmodule Qt3DCore
  * \brief Used to notify when a node is added to a property
@@ -73,7 +74,7 @@ QPropertyNodeAddedChange::QPropertyNodeAddedChange(QNodeId subjectId, QNode *nod
     : QStaticPropertyValueAddedChangeBase(*new QPropertyNodeAddedChangePrivate, subjectId)
 {
     Q_D(QPropertyNodeAddedChange);
-    d->m_addedNodeIdTypePair = QNodeIdTypePair(node->id(), node->metaObject());
+    d->m_addedNodeIdTypePair = QNodeIdTypePair(node->id(), QNodePrivate::findStaticMetaObject(node->metaObject()));
 }
 
 /*! \internal */

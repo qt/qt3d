@@ -40,8 +40,10 @@
 #include "analogaxisinput_p.h"
 #include <Qt3DInput/qanalogaxisinput.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
 #include <Qt3DInput/private/qanalogaxisinput_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DInput/private/utils_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -78,6 +80,23 @@ void AnalogAxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         }
     }
     AbstractAxisInput::sceneChangeEvent(e);
+}
+
+float AnalogAxisInput::process(InputHandler *inputHandler, qint64 currentTime)
+{
+    Q_UNUSED(currentTime);
+
+    if (!isEnabled())
+        return 0.0f;
+
+    if (m_axis == -1)
+        return 0.0f;
+
+    QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = Utils::physicalDeviceForInput(this, inputHandler);
+    if (!physicalDeviceBackend)
+        return 0.0f;
+
+    return physicalDeviceBackend->processedAxisValue(m_axis);
 }
 
 } // Input

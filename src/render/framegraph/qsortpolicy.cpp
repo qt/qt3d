@@ -40,6 +40,7 @@
 #include "qsortpolicy_p.h"
 #include <Qt3DCore/qpropertyvalueaddedchange.h>
 #include <Qt3DCore/qpropertyvalueremovedchange.h>
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -73,6 +74,7 @@ QSortPolicyPrivate::QSortPolicyPrivate()
     \inqmlmodule Qt3D.Render
     \since 5.7
     \instantiates Qt3DRender::QSortPolicy
+    \inherits FrameGraphNode
     \brief Provides storage for the sort types to be used
 
     A SortPolicy class stores the sorting type used by the FrameGraph.
@@ -123,7 +125,7 @@ QSortPolicy::QSortPolicy(QSortPolicyPrivate &dd, QNode *parent)
 
 QNodeCreatedChangeBasePtr QSortPolicy::createNodeCreationChange() const
 {
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QSortPolicyData>::create(this);
+    auto creationChange = QFrameGraphNodeCreatedChangePtr<QSortPolicyData>::create(this);
     QSortPolicyData &data = creationChange->data;
     Q_D(const QSortPolicy);
     data.sortTypes = d->m_sortTypes;

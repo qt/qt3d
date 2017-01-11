@@ -64,27 +64,33 @@ public:
     QTextureLoaderPrivate();
 
     QUrl m_source;
+    bool m_mirrored;
 };
 
-class QTextureFromSourceGenerator : public QTextureGenerator
+class Q_AUTOTEST_EXPORT QTextureFromSourceGenerator : public QTextureGenerator
 {
 public:
-    explicit QTextureFromSourceGenerator(const QUrl &url);
+    explicit QTextureFromSourceGenerator(const QUrl &url, bool mirrored);
     QTextureDataPtr operator ()() Q_DECL_OVERRIDE;
     bool operator ==(const QTextureGenerator &other) const Q_DECL_OVERRIDE;
     inline QAbstractTexture::Status status() const { return m_status; }
 
     QT3D_FUNCTOR(QTextureFromSourceGenerator)
 
+    QUrl url() const;
+    bool isMirrored() const;
+
 private:
     QUrl m_url;
     QAbstractTexture::Status m_status;
+    bool m_mirrored;
 };
+typedef QSharedPointer<QTextureFromSourceGenerator> QTextureFromSourceGeneratorPtr;
 
 class Q_AUTOTEST_EXPORT TextureLoadingHelper
 {
 public:
-    static QTextureImageDataPtr loadTextureData(const QUrl &source, bool allow3D);
+    static QTextureImageDataPtr loadTextureData(const QUrl &source, bool allow3D, bool mirrored);
 };
 
 } // namespace Qt3DRender

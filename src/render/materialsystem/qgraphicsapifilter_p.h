@@ -58,7 +58,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-struct GraphicsApiFilterData
+struct Q_AUTOTEST_EXPORT GraphicsApiFilterData
 {
     GraphicsApiFilterData();
 
@@ -74,7 +74,7 @@ struct GraphicsApiFilterData
     bool operator <(const GraphicsApiFilterData &other) const;
 };
 
-class QGraphicsApiFilterPrivate : public QObjectPrivate
+class Q_AUTOTEST_EXPORT QGraphicsApiFilterPrivate : public QObjectPrivate
 {
 public:
     QGraphicsApiFilterPrivate()
@@ -92,6 +92,6 @@ public:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::GraphicsApiFilterData);
+Q_DECLARE_METATYPE(Qt3DRender::GraphicsApiFilterData); // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_QGRAPHICSAPIFILTER_P_H

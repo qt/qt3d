@@ -65,12 +65,17 @@ namespace Render {
 class Renderer;
 class TransformManager;
 
-class Transform : public BackendNode
+class Q_AUTOTEST_EXPORT Transform : public BackendNode
 {
 public:
     Transform();
+    void cleanup();
 
     QMatrix4x4 transformMatrix() const;
+    QVector3D scale() const;
+    QQuaternion rotation() const;
+    QVector3D translation() const;
+
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     void updateMatrix();

@@ -54,7 +54,7 @@ class Quick3DEntityLoaderIncubator : public QQmlIncubator
 {
 public:
     Quick3DEntityLoaderIncubator(Quick3DEntityLoader *loader)
-        : QQmlIncubator(Asynchronous),
+        : QQmlIncubator(AsynchronousIfNested),
           m_loader(loader)
     {
     }
@@ -93,15 +93,29 @@ private:
 /*!
     \qmltype EntityLoader
     \inqmlmodule Qt3D.Core
+    \inherits Entity
     \since 5.5
+    \brief Provides the facility to load entities from qml source
+
+    An EntityLoader provides the facitily to load predefined set of entities
+    from qml source file. EntityLoader itself is an entity and the loaded entity
+    tree is set as a child of the loader. The loaded entity tree root can be
+    accessed with EntityLoader::entity property.
 */
 Quick3DEntityLoader::Quick3DEntityLoader(QNode *parent)
     : QEntity(*new Quick3DEntityLoaderPrivate, parent)
 {
 }
 
+Quick3DEntityLoader::~Quick3DEntityLoader()
+{
+    Q_D(Quick3DEntityLoader);
+    d->clear();
+}
+
 /*!
-    \qmlproperty QtQml::QtObject Qt3DCore::EntityLoader::entity
+    \qmlproperty QtQml::QtObject EntityLoader::entity
+    Holds the loaded entity tree root.
     \readonly
 */
 QObject *Quick3DEntityLoader::entity() const
@@ -112,6 +126,7 @@ QObject *Quick3DEntityLoader::entity() const
 
 /*!
     \qmlproperty url Qt3DCore::EntityLoader::source
+    Holds the source url.
 */
 QUrl Quick3DEntityLoader::source() const
 {

@@ -71,100 +71,127 @@ QGeometryRendererPrivate::~QGeometryRendererPrivate()
 }
 
 /*!
- * \qmltype GeometryRenderer
- * \instantiates Qt3DRender::QGeometryRenderer
- * \inqmlmodule Qt3D.Render
+    \qmltype GeometryRenderer
+    \instantiates Qt3DRender::QGeometryRenderer
+    \inqmlmodule Qt3D.Render
+    \inherits Component3D
+    \since 5.7
+    \brief Encapsulates geometry rendering
+
+    A GeometryRenderer holds all the information necessary to draw
+    a Geometry. A Geometry holds the coordinates of the geometry data -
+    GeometryRenderer specifies how to interpret that data.
  */
 
 /*!
- * \qmlproperty int GeometryRenderer::instanceCount
- *
- * Holds the instance count.
+    \class Qt3DRender::QGeometryRenderer
+    \inmodule Qt3DRender
+    \since 5.7
+    \brief Encapsulates geometry rendering
+
+    A Qt3DRender::QGeometryRenderer holds all the information necessary to draw
+    a Qt3DRender::QGeometry. A QGeometry holds the coordinates of the geometry data -
+    QGeometryRenderer specifies how to interpret that data.
+ */
+
+
+/*!
+    \enum QGeometryRenderer::PrimitiveType
+
+    The type of the primitive.
+
+    \value Points   List of points
+    \value Lines    List of lines
+    \value LineLoop Connected group of lines connected at ends forming a loop
+    \value LineStrip Connected group of lines
+    \value Triangles List of triangles
+    \value TriangleStrip List of connected triangles
+    \value TriangleFan List of connected triagles where all triangles share the first vertex
+    \value LinesAdjacency Allows geometry shader to access adjacent lines in a line list
+    \value TrianglesAdjacency Allows geometry shader to access adjacent triangles in a triangle list
+    \value LineStripAdjacency Allows geometry shader to access adjacent lines in a line strip
+    \value TriangleStripAdjacency Allows geometry shader to access adjacent triangles in a triangle strip
+    \value Patches Only primitive type accepted by tesselation shader where a patch consists of arbitrary number of vertices
  */
 
 /*!
- * \qmlproperty int GeometryRenderer::vertexCount
- *
- * Holds the vertex count.
+    \qmlproperty int GeometryRenderer::instanceCount
+
+    Holds the instance count.
  */
 
 /*!
- * \qmlproperty int GeometryRenderer::indexOffset
- *
- * Holds the base vertex.
+    \qmlproperty int GeometryRenderer::vertexCount
+
+    Holds the vertex count.
  */
 
 /*!
- * \qmlproperty int GeometryRenderer::firstInstance
- *
- * Holds the first vertex.
+    \qmlproperty int GeometryRenderer::indexOffset
+
+    Holds the base vertex.
  */
 
 /*!
- * \qmlproperty int GeometryRenderer::firstVertex
- *
- * Holds the base instance.
+    \qmlproperty int GeometryRenderer::firstInstance
+
+    Holds the first vertex.
  */
 
 /*!
- * \qmlproperty int GeometryRenderer::restartIndex
- *
- * Holds the restart index.
+    \qmlproperty int GeometryRenderer::firstVertex
+
+    Holds the base instance.
  */
 
 /*!
- * \qmlproperty int GeometryRenderer::verticesPerPatch
- *
- * Holds vertices per patch.
+    \qmlproperty int GeometryRenderer::restartIndex
+
+    Holds the restart index.
  */
 
 /*!
- * \qmlproperty bool GeometryRenderer::primitiveRestart
- *
- * Holds the primitive restart flag.
+    \qmlproperty int GeometryRenderer::verticesPerPatch
+
+    Holds vertices per patch.
  */
 
 /*!
- * \qmlproperty Geometry GeometryRenderer::geometry
- *
- * Holds the geometry.
+    \qmlproperty bool GeometryRenderer::primitiveRestart
+
+    Holds the primitive restart flag.
  */
 
 /*!
- * \qmlproperty QGeometryRenderer::PrimitiveType GeometryRenderer::primitiveType
- *
- * Holds the primitive type.
+    \qmlproperty Geometry GeometryRenderer::geometry
+
+    Holds the geometry.
  */
 
 /*!
- * \class Qt3DRender::QGeometryRenderer
- * \inmodule Qt3DRender
- *
- * \inherits Qt3DCore::QComponent
- *
+    \qmlproperty enumeration GeometryRenderer::primitiveType
+
+    Holds the primitive type.
+
+    \list
+    \li QGeometryRenderer.Points
+    \li QGeometryRenderer.LineLoop
+    \li QGeometryRenderer.LineStrip
+    \li QGeometryRenderer.Triangles
+    \li QGeometryRenderer.TriangleStrip
+    \li QGeometryRenderer.TriangleFan
+    \li QGeometryRenderer.LinesAdjacency
+    \li QGeometryRenderer.TrianglesAdjacency
+    \li QGeometryRenderer.LineStripAdjacency
+    \li QGeometryRenderer.TriangleStripAdjacency
+    \li QGeometryRenderer.Patches
+    \endlist
+    \sa Qt3DRender::QGeometryRenderer::PrimitiveType
  */
 
-/*!
- * \enum QGeometryRenderer::PrimitiveType
- *
- * The type of the primitive.
- *
- * \value Points
- * \value Lines
- * \value LineLoop
- * \value LineStrip
- * \value Triangles
- * \value TriangleStrip
- * \value TriangleFan
- * \value LinesAdjacency
- * \value TrianglesAdjacency
- * \value LineStripAdjacency
- * \value TriangleStripAdjacency
- * \value Patches
- */
 
 /*!
- * Constructs a new QGeometryRenderer with \a parent.
+    Constructs a new QGeometryRenderer with \a parent.
  */
 QGeometryRenderer::QGeometryRenderer(QNode *parent)
     : QComponent(*new QGeometryRendererPrivate(), parent)
@@ -172,14 +199,14 @@ QGeometryRenderer::QGeometryRenderer(QNode *parent)
 }
 
 /*!
- * \internal
+    \internal
  */
 QGeometryRenderer::~QGeometryRenderer()
 {
 }
 
 /*!
- * \internal
+    \internal
  */
 QGeometryRenderer::QGeometryRenderer(QGeometryRendererPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
@@ -187,9 +214,9 @@ QGeometryRenderer::QGeometryRenderer(QGeometryRendererPrivate &dd, QNode *parent
 }
 
 /*!
- * \property QGeometryRenderer::instanceCount
- *
- * Holds the instance count.
+    \property QGeometryRenderer::instanceCount
+
+    Holds the instance count.
  */
 int QGeometryRenderer::instanceCount() const
 {
@@ -198,9 +225,9 @@ int QGeometryRenderer::instanceCount() const
 }
 
 /*!
- * \property QGeometryRenderer::vertexCount
- *
- * Holds the primitive count.
+    \property QGeometryRenderer::vertexCount
+
+    Holds the primitive count.
  */
 int QGeometryRenderer::vertexCount() const
 {
@@ -209,9 +236,9 @@ int QGeometryRenderer::vertexCount() const
 }
 
 /*!
- * \property QGeometryRenderer::indexOffset
- *
- * Holds the base vertex.
+    \property QGeometryRenderer::indexOffset
+
+    Holds the base vertex.
  */
 int QGeometryRenderer::indexOffset() const
 {
@@ -220,9 +247,9 @@ int QGeometryRenderer::indexOffset() const
 }
 
 /*!
- * \property QGeometryRenderer::firstInstance
- *
- * Holds the base instance.
+    \property QGeometryRenderer::firstInstance
+
+    Holds the base instance.
  */
 int QGeometryRenderer::firstInstance() const
 {
@@ -231,9 +258,9 @@ int QGeometryRenderer::firstInstance() const
 }
 
 /*!
- * \property QGeometryRenderer::firstVertex
- *
- * Holds the base vertex.
+    \property QGeometryRenderer::firstVertex
+
+    Holds the base vertex.
  */
 int QGeometryRenderer::firstVertex() const
 {
@@ -242,9 +269,9 @@ int QGeometryRenderer::firstVertex() const
 }
 
 /*!
- * \property QGeometryRenderer::restartIndexValue
- *
- * Holds the restart index.
+    \property QGeometryRenderer::restartIndexValue
+
+    Holds the restart index.
  */
 int QGeometryRenderer::restartIndexValue() const
 {
@@ -253,9 +280,9 @@ int QGeometryRenderer::restartIndexValue() const
 }
 
 /*!
- * \property QGeometryRenderer::verticesPerPatch
- *
- * Holds vertices per patch.
+    \property QGeometryRenderer::verticesPerPatch
+
+    Holds vertices per patch.
  */
 int QGeometryRenderer::verticesPerPatch() const
 {
@@ -264,9 +291,9 @@ int QGeometryRenderer::verticesPerPatch() const
 }
 
 /*!
- * \property QGeometryRenderer::primitiveRestartEnabled
- *
- * Holds the primitive restart flag.
+    \property QGeometryRenderer::primitiveRestartEnabled
+
+    Holds the primitive restart flag.
  */
 bool QGeometryRenderer::primitiveRestartEnabled() const
 {
@@ -275,9 +302,9 @@ bool QGeometryRenderer::primitiveRestartEnabled() const
 }
 
 /*!
- * \property QGeometryRenderer::geometry
- *
- * Holds the geometry.
+    \property QGeometryRenderer::geometry
+
+    Holds the geometry.
  */
 QGeometry *QGeometryRenderer::geometry() const
 {
@@ -286,9 +313,9 @@ QGeometry *QGeometryRenderer::geometry() const
 }
 
 /*!
- * \property QGeometryRenderer::primitiveType
- *
- * Holds the primitive type.
+    \property QGeometryRenderer::primitiveType
+
+    Holds the primitive type.
  */
 QGeometryRenderer::PrimitiveType QGeometryRenderer::primitiveType() const
 {
@@ -297,7 +324,7 @@ QGeometryRenderer::PrimitiveType QGeometryRenderer::primitiveType() const
 }
 
 /*!
- * \return the geometry functor.
+    Returns the geometry functor.
  */
 QGeometryFactoryPtr QGeometryRenderer::geometryFactory() const
 {
@@ -416,7 +443,7 @@ void QGeometryRenderer::setPrimitiveType(QGeometryRenderer::PrimitiveType primit
 }
 
 /*!
- * Sets the geometry \a factory.
+    Sets the geometry \a factory.
  */
 void QGeometryRenderer::setGeometryFactory(const QGeometryFactoryPtr &factory)
 {
@@ -433,7 +460,7 @@ void QGeometryRenderer::setGeometryFactory(const QGeometryFactoryPtr &factory)
 }
 
 /*!
- * \internal
+    \internal
  */
 void QGeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {

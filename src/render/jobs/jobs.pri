@@ -5,7 +5,6 @@ HEADERS += \
     $$PWD/renderviewjobutils_p.h \
     $$PWD/loadscenejob_p.h \
     $$PWD/framecleanupjob_p.h \
-    $$PWD/framepreparationjob_p.h \
     $$PWD/loadtexturedatajob_p.h \
     $$PWD/loadbufferjob_p.h \
     $$PWD/loadgeometryjob_p.h \
@@ -23,14 +22,18 @@ HEADERS += \
     $$PWD/lightgatherer_p.h \
     $$PWD/expandboundingvolumejob_p.h \
     $$PWD/updateworldboundingvolumejob_p.h \
-    $$PWD/sendrendercapturejob_p.h
+    $$PWD/sendrendercapturejob_p.h \
+    $$PWD/updateshaderdatatransformjob_p.h \
+    $$PWD/updatemeshtrianglelistjob_p.h \
+    $$PWD/pickboundingvolumeutils_p.h \
+    $$PWD/filtercompatibletechniquejob_p.h \
+    $$PWD/updatetreeenabledjob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
     $$PWD/renderviewjobutils.cpp \
     $$PWD/loadscenejob.cpp \
     $$PWD/framecleanupjob.cpp \
-    $$PWD/framepreparationjob.cpp \
     $$PWD/loadtexturedatajob.cpp \
     $$PWD/loadbufferjob.cpp \
     $$PWD/loadgeometryjob.cpp \
@@ -45,4 +48,9 @@ SOURCES += \
     $$PWD/lightgatherer.cpp \
     $$PWD/expandboundingvolumejob.cpp \
     $$PWD/updateworldboundingvolumejob.cpp \
-    $$PWD/sendrendercapturejob.cpp
+    $$PWD/sendrendercapturejob.cpp \
+    $$PWD/updateshaderdatatransformjob.cpp \
+    $$PWD/updatemeshtrianglelistjob.cpp \
+    $$PWD/pickboundingvolumeutils.cpp \
+    $$PWD/filtercompatibletechniquejob.cpp \
+    $$PWD/updatetreeenabledjob.cpp

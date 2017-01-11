@@ -43,7 +43,7 @@
 #include <private/scenemanager_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DRender/private/job_common_p.h>
-#include <Qt3DRender/private/qsceneiohandler_p.h>
+#include <Qt3DRender/private/qsceneimporter_p.h>
 #include <Qt3DRender/qsceneloader.h>
 
 QT_BEGIN_NAMESPACE
@@ -65,9 +65,9 @@ NodeManagers *LoadSceneJob::nodeManagers() const
     return m_managers;
 }
 
-QList<QSceneIOHandler *> LoadSceneJob::sceneIOHandlers() const
+QList<QSceneImporter *> LoadSceneJob::sceneImporters() const
 {
-    return m_sceneIOHandlers;
+    return m_sceneImporters;
 }
 
 QUrl LoadSceneJob::source() const
@@ -95,16 +95,16 @@ void LoadSceneJob::run()
     // Perform the loading only if the source wasn't explicitly set to empty
     if (!m_source.isEmpty()) {
         finalStatus = QSceneLoader::Error;
-        for (QSceneIOHandler *sceneIOHandler : qAsConst(m_sceneIOHandlers)) {
-            if (!sceneIOHandler->isFileTypeSupported(m_source))
+        for (QSceneImporter *sceneImporter : qAsConst(m_sceneImporters)) {
+            if (!sceneImporter->isFileTypeSupported(m_source))
                 continue;
 
             // If the file type is supported -> enter Loading status
             scene->setStatus(QSceneLoader::Loading);
 
             // File type is supported, try to load it
-            sceneIOHandler->setSource(m_source);
-            sceneSubTree = sceneIOHandler->scene();
+            sceneImporter->setSource(m_source);
+            sceneSubTree = sceneImporter->scene();
             if (sceneSubTree != nullptr) {
                 // Successfully built a subtree
                 finalStatus = QSceneLoader::Ready;

@@ -68,6 +68,7 @@ public:
     void bind();
     void release();
     void create();
+    void destroy();
     bool isCreated() const;
 
     QOpenGLVertexArrayObject *vao() { return m_vao.data(); }

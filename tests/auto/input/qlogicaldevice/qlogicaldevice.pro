@@ -8,4 +8,4 @@ CONFIG += testcase
 
 SOURCES += tst_qlogicaldevice.cpp
 
-include(../../render/commons/commons.pri)
+include(../../core/common/common.pri)

@@ -66,6 +66,6 @@ typedef QSharedPointer<QTextureGenerator> QTextureGeneratorPtr;
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::QTextureGeneratorPtr)
+Q_DECLARE_METATYPE(Qt3DRender::QTextureGeneratorPtr) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_QTEXTUREGENERATOR_H
