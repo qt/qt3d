@@ -38,28 +38,16 @@
 ****************************************************************************/
 
 #include "pickboundingvolumejob_p.h"
-#include "qpickevent.h"
 #include "qpicktriangleevent.h"
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
-#include <Qt3DRender/private/framegraphnode_p.h>
-#include <Qt3DRender/private/cameralens_p.h>
-#include <Qt3DRender/private/cameraselectornode_p.h>
-#include <Qt3DRender/private/viewportnode_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/objectpicker_p.h>
 #include <Qt3DRender/private/managers_p.h>
-#include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/geometryrenderer_p.h>
-#include <Qt3DRender/private/trianglesvisitor_p.h>
-#include <Qt3DRender/private/qraycastingservice_p.h>
-#include <Qt3DRender/private/rendersurfaceselector_p.h>
+
 #include <Qt3DRender/private/rendersettings_p.h>
-#include <Qt3DRender/private/rendersurfaceselector_p.h>
-#include <Qt3DRender/private/qray3d_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DCore/private/qservicelocator_p.h>
-#include <QSurface>
 #include <Qt3DRender/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -68,328 +56,54 @@ namespace Qt3DRender {
 
 namespace Render {
 
-struct ViewportCameraAreaTriplet
-{
-    Qt3DCore::QNodeId cameraId;
-    QRectF viewport;
-    QSize area;
-};
-QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ViewportCameraAreaTriplet, Q_PRIMITIVE_TYPE)
-
 namespace {
 
-class ViewportCameraAreaGatherer
+void setEventButtonAndModifiers(const QMouseEvent &event, QPickEvent::Buttons &eventButton, int &eventButtons, int &eventModifiers)
 {
-private:
-    QVector<FrameGraphNode *> m_leaves;
-
-    void visit(FrameGraphNode *node)
-    {
-        const auto children = node->children();
-        for (Render::FrameGraphNode *n : children)
-            visit(n);
-        if (node->childrenIds().empty())
-            m_leaves.push_back(node);
+    switch (event.button()) {
+    case Qt::LeftButton:
+        eventButton = QPickEvent::LeftButton;
+        break;
+    case Qt::RightButton:
+        eventButton = QPickEvent::RightButton;
+        break;
+    case Qt::MiddleButton:
+        eventButton = QPickEvent::MiddleButton;
+        break;
+    case Qt::BackButton:
+        eventButton = QPickEvent::BackButton;
+        break;
+    default:
+        break;
     }
 
-    ViewportCameraAreaTriplet gatherUpViewportCameraAreas(Render::FrameGraphNode *node) const
-    {
-        ViewportCameraAreaTriplet vca;
-        vca.viewport = QRectF(0.0f, 0.0f, 1.0f, 1.0f);
-
-        while (node) {
-            if (node->isEnabled()) {
-                switch (node->nodeType()) {
-                case FrameGraphNode::CameraSelector:
-                    vca.cameraId = static_cast<const CameraSelector *>(node)->cameraUuid();
-                    break;
-                case FrameGraphNode::Viewport:
-                    vca.viewport = computeViewport(vca.viewport, static_cast<const ViewportNode *>(node));
-                    break;
-                case FrameGraphNode::Surface:
-                    vca.area = static_cast<const RenderSurfaceSelector *>(node)->renderTargetSize();
-                    break;
-                default:
-                    break;
-                }
-            }
-            node = node->parent();
-        }
-        return vca;
-    }
-
-    bool isUnique(const QVector<ViewportCameraAreaTriplet> &vcaTriplets, const ViewportCameraAreaTriplet &vca) const
-    {
-        for (const ViewportCameraAreaTriplet &triplet : vcaTriplets) {
-            if (vca.cameraId == triplet.cameraId && vca.viewport == triplet.viewport && vca.area == triplet.area)
-                return false;
-        }
-        return true;
-    }
-
-public:
-    QVector<ViewportCameraAreaTriplet> gather(FrameGraphNode *root)
-    {
-        // Retrieve all leaves
-        visit(root);
-        QVector<ViewportCameraAreaTriplet> vcaTriplets;
-        vcaTriplets.reserve(m_leaves.count());
-
-        // Find all viewport/camera pairs by traversing from leaf to root
-        for (Render::FrameGraphNode *leaf : qAsConst(m_leaves)) {
-            ViewportCameraAreaTriplet vcaTriplet = gatherUpViewportCameraAreas(leaf);
-            if (!vcaTriplet.cameraId.isNull() && isUnique(vcaTriplets, vcaTriplet))
-                vcaTriplets.push_back(vcaTriplet);
-        }
-        return vcaTriplets;
-    }
-
-};
-
-static QVector<Entity *> gatherEntities(Entity *entity, QVector<Entity *> entities)
-{
-    if (entity != nullptr) {
-        entities.push_back(entity);
-        // Traverse children
-        const auto children = entity->children();
-        for (Entity *child : children)
-            entities = gatherEntities(child, std::move(entities));
-    }
-    return entities;
-}
-
-class EntityGatherer
-{
-public:
-    explicit EntityGatherer(Entity *root)
-        : m_root(root)
-        , m_needsRefresh(true)
-    {
-    }
-
-    QVector<Entity *> entities() const
-    {
-        if (m_needsRefresh) {
-            m_entities.clear();
-            m_entities = gatherEntities(m_root, std::move(m_entities));
-            m_needsRefresh = false;
-        }
-        return m_entities;
-    }
-
-private:
-    Entity *m_root;
-    mutable QVector<Entity *> m_entities;
-    mutable bool m_needsRefresh;
-};
-
-class CollisionVisitor : public TrianglesVisitor
-{
-public:
-    typedef QVector<QCollisionQueryResult::Hit> HitList;
-    HitList hits;
-
-    CollisionVisitor(NodeManagers* manager, const Entity *root, const QRay3D& ray, QPickingSettings::FaceOrientationPickingMode faceOrientationPickingMode) : TrianglesVisitor(manager), m_root(root), m_ray(ray), m_faceOrientationPickingMode(faceOrientationPickingMode), m_triangleIndex(0) { }
-private:
-    const Entity *m_root;
-    QRay3D m_ray;
-    QPickingSettings::FaceOrientationPickingMode m_faceOrientationPickingMode;
-    uint m_triangleIndex;
-
-    void visit(uint andx, const QVector3D &a,
-               uint bndx, const QVector3D &b,
-               uint cndx, const QVector3D &c)
-    {
-        const QMatrix4x4* mat = m_root->worldTransform();
-        const QVector3D tA = *mat * a;
-        const QVector3D tB = *mat * b;
-        const QVector3D tC = *mat * c;
-
-        float t = 0.f;
-        QVector3D uvw;
-        bool intersects = intersectsSegmentTriangle(m_ray, tC, tB, tA, uvw, t);
-        if (intersects) {
-            QCollisionQueryResult::Hit queryResult;
-            queryResult.m_intersection = m_ray.point(t * m_ray.distance());
-            queryResult.m_distance = m_ray.projectedDistance(queryResult.m_intersection);
-            queryResult.m_entityId = m_root->peerId();
-            queryResult.m_vertexIndex[0] = andx;
-            queryResult.m_vertexIndex[1] = bndx;
-            queryResult.m_vertexIndex[2] = cndx;
-            hits.push_back(queryResult);
-        }
-
-        m_triangleIndex++;
-    }
-
-    // Note: a, b, c in clockwise order
-    // RealTime Collision Detection page 192
-    bool intersectsSegmentTriangle(const QRay3D &ray,
-                                   const QVector3D &a,
-                                   const QVector3D &b,
-                                   const QVector3D &c,
-                                   QVector3D &uvw,
-                                   float &t)
-    {
-        const QVector3D ab = b - a;
-        const QVector3D ac = c - a;
-        const QVector3D qp = (ray.origin() - ray.point(ray.distance()));
-
-        const QVector3D n = QVector3D::crossProduct(ab, ac);
-        const float d = QVector3D::dotProduct(qp, n);
-
-        if (d <= 0.0f && 0 == (m_faceOrientationPickingMode & QPickingSettings::BackFace))
-            return false;
-
-        const QVector3D ap = ray.origin() - a;
-        t = QVector3D::dotProduct(ap, n);
-
-        if (t < 0.0f || t > d)
-            return false;
-
-        const QVector3D e = QVector3D::crossProduct(qp, ap);
-        uvw.setY(QVector3D::dotProduct(ac, e));
-
-        if (uvw.y() < 0.0f || uvw.y() > d)
-            return false;
-
-        uvw.setZ(-QVector3D::dotProduct(ab, e));
-
-        if (uvw.z() < 0.0f || uvw.y() + uvw.z() > d)
-            return false;
-
-        const float ood = 1.0f / d;
-        t *= ood;
-        uvw.setY(uvw.y() * ood);
-        uvw.setZ(uvw.z() * ood);
-        uvw.setX(1.0f - uvw.y() - uvw.z());
-
-        return true;
-    }
-};
-
-struct AbstractCollisionGathererFunctor
-{
-    AbstractCollisionGathererFunctor() : m_renderer(0) { }
-    virtual ~AbstractCollisionGathererFunctor() { }
-
-    Renderer *m_renderer;
-    QRay3D m_ray;
-
-    typedef CollisionVisitor::HitList result_type;
-
-    result_type operator ()(const Entity *entity) const
-    {
-        result_type result;
-
-        HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
-
-        // If the Entity which actually received the hit doesn't have
-        // an object picker component, we need to check the parent if it has one ...
-        while (objectPickerHandle.isNull() && entity != nullptr) {
-            entity = entity->parent();
-            if (entity != nullptr)
-                objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
-        }
-
-        ObjectPicker *objectPicker = m_renderer->nodeManagers()->objectPickerManager()->data(objectPickerHandle);
-        if (objectPicker == nullptr)
-            return result_type();  // don't bother picking entities that don't have an object picker
-
-        Qt3DRender::QRayCastingService rayCasting;
-
-        return pick(&rayCasting, entity);
-    }
-
-    virtual result_type pick(QAbstractCollisionQueryService *rayCasting, const Entity *entity) const = 0;
-};
-
-struct EntityCollisionGathererFunctor : public AbstractCollisionGathererFunctor
-{
-    result_type pick(QAbstractCollisionQueryService *rayCasting, const Entity *entity) const Q_DECL_OVERRIDE
-    {
-        result_type result;
-
-        const QCollisionQueryResult::Hit queryResult = rayCasting->query(m_ray, entity->worldBoundingVolume());
-        if (queryResult.m_distance >= 0.f)
-            result.push_back(queryResult);
-
-        return result;
-    }
-};
-
-struct TriangleCollisionGathererFunctor : public AbstractCollisionGathererFunctor
-{
-    TriangleCollisionGathererFunctor() : AbstractCollisionGathererFunctor(), m_pickBackFacingTriangles(QPickingSettings::FrontFace) { }
-
-    QPickingSettings::FaceOrientationPickingMode m_pickBackFacingTriangles;
-
-    result_type pick(QAbstractCollisionQueryService *rayCasting, const Entity *entity) const Q_DECL_OVERRIDE
-    {
-        result_type result;
-
-        GeometryRenderer *gRenderer = entity->renderComponent<GeometryRenderer>();
-        if (!gRenderer)
-            return result;
-
-        if (rayHitsEntity(rayCasting, entity)) {
-            CollisionVisitor visitor(m_renderer->nodeManagers(), entity, m_ray, m_pickBackFacingTriangles);
-            visitor.apply(gRenderer, entity->peerId());
-            result = visitor.hits;
-
-            struct
-            {
-                bool operator()(const result_type::value_type &a, const result_type::value_type &b)
-                {
-                    return a.m_distance < b.m_distance;
-                }
-            } compareHitsDistance;
-            std::sort(result.begin(), result.end(), compareHitsDistance);
-        }
-
-        return result;
-    }
-
-    bool rayHitsEntity(QAbstractCollisionQueryService *rayCasting, const Entity *entity) const
-    {
-        const QCollisionQueryResult::Hit queryResult = rayCasting->query(m_ray, entity->worldBoundingVolume());
-        return queryResult.m_distance >= 0.f;
-    }
-};
-
-CollisionVisitor::HitList reduceToFirstHit(CollisionVisitor::HitList &result, const CollisionVisitor::HitList &intermediate)
-{
-    if (!intermediate.empty()) {
-        if (result.empty())
-            result.push_back(intermediate.front());
-        float closest = result.front().m_distance;
-        for (const auto &v : intermediate) {
-            if (v.m_distance < closest) {
-                result.push_front(v);
-                closest = v.m_distance;
-            }
-        }
-
-        while (result.size() > 1)
-            result.pop_back();
-    }
-    return result;
-}
-
-// Unordered
-CollisionVisitor::HitList reduceToAllHits(CollisionVisitor::HitList &results, const CollisionVisitor::HitList &intermediate)
-{
-    if (!intermediate.empty())
-        results << intermediate;
-    return results;
+    if (event.buttons() & Qt::LeftButton)
+        eventButtons |= QPickEvent::LeftButton;
+    if (event.buttons() & Qt::RightButton)
+        eventButtons |= QPickEvent::RightButton;
+    if (event.buttons() & Qt::MiddleButton)
+        eventButtons |= QPickEvent::MiddleButton;
+    if (event.buttons() & Qt::BackButton)
+        eventButtons |= QPickEvent::BackButton;
+    if (event.modifiers() & Qt::ShiftModifier)
+        eventModifiers |= QPickEvent::ShiftModifier;
+    if (event.modifiers() & Qt::ControlModifier)
+        eventModifiers |= QPickEvent::ControlModifier;
+    if (event.modifiers() & Qt::AltModifier)
+        eventModifiers |= QPickEvent::AltModifier;
+    if (event.modifiers() & Qt::MetaModifier)
+        eventModifiers |= QPickEvent::MetaModifier;
+    if (event.modifiers() & Qt::KeypadModifier)
+        eventModifiers |= QPickEvent::KeypadModifier;
 }
 
 } // anonymous
 
-PickBoundingVolumeJob::PickBoundingVolumeJob(Renderer *renderer)
-    : m_renderer(renderer)
-    , m_manager(nullptr)
+PickBoundingVolumeJob::PickBoundingVolumeJob()
+    : m_manager(nullptr)
     , m_node(nullptr)
+    , m_frameGraphRoot(nullptr)
+    , m_renderSettings(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::PickBoundingVolume, 0);
 }
@@ -397,6 +111,21 @@ PickBoundingVolumeJob::PickBoundingVolumeJob(Renderer *renderer)
 void PickBoundingVolumeJob::setRoot(Entity *root)
 {
     m_node = root;
+}
+
+void PickBoundingVolumeJob::setMouseEvents(const QList<QMouseEvent> &pendingEvents)
+{
+    m_pendingMouseEvents = pendingEvents;
+}
+
+void PickBoundingVolumeJob::setFrameGraphRoot(FrameGraphNode *frameGraphRoot)
+{
+    m_frameGraphRoot = frameGraphRoot;
+}
+
+void PickBoundingVolumeJob::setRenderSettings(RenderSettings *settings)
+{
+    m_renderSettings = settings;
 }
 
 QRay3D PickBoundingVolumeJob::intersectionRay(const QPoint &pos, const QMatrix4x4 &viewMatrix, const QMatrix4x4 &projectionMatrix, const QRect &viewport)
@@ -411,6 +140,99 @@ QRay3D PickBoundingVolumeJob::intersectionRay(const QPoint &pos, const QMatrix4x
                   (farPos - nearPos).length());
 }
 
+bool PickBoundingVolumeJob::runHelper()
+{
+    // Move to clear the events so that we don't process them several times
+    // if run is called several times
+    const auto mouseEvents = std::move(m_pendingMouseEvents);
+
+    // If we have no events return early
+    if (mouseEvents.empty())
+        return false;
+
+    // bail out early if no picker is enabled
+    bool oneEnabledAtLeast = false;
+    for (auto handle: m_manager->objectPickerManager()->activeHandles()) {
+        if (m_manager->objectPickerManager()->data(handle)->isEnabled()) {
+            oneEnabledAtLeast = true;
+            break;
+        }
+    }
+    if (!oneEnabledAtLeast)
+        return false;
+
+    PickingUtils::ViewportCameraAreaGatherer vcaGatherer;
+    // TO DO: We could cache this and only gather when we know the FrameGraph tree has changed
+    const QVector<PickingUtils::ViewportCameraAreaTriplet> vcaTriplets = vcaGatherer.gather(m_frameGraphRoot);
+
+    // If we have no viewport / camera or area, return early
+    if (vcaTriplets.empty())
+        return false;
+
+    // TO DO:
+    // If we have move or hover move events that someone cares about, we try to avoid expensive computations
+    // by compressing them into a single one
+
+    // Gather the entities for the frame
+    // TO DO: We could skip doing that every frame and only do it when we know for sure
+    // that the tree structure has changed
+    PickingUtils::EntityGatherer entitiesGatherer(m_node);
+
+    // Store the reducer function which varies depending on the picking settings set on the renderer
+    using ReducerFunction = PickingUtils::CollisionVisitor::HitList (*)(PickingUtils::CollisionVisitor::HitList &results, const PickingUtils::CollisionVisitor::HitList &intermediate);
+
+    const bool trianglePickingRequested = (m_renderSettings->pickMethod() == QPickingSettings::TrianglePicking);
+    const bool allHitsRequested = (m_renderSettings->pickResultMode() == QPickingSettings::AllPicks);
+    const bool frontFaceRequested =
+            m_renderSettings->faceOrientationPickingMode() != QPickingSettings::BackFace;
+    const bool backFaceRequested =
+            m_renderSettings->faceOrientationPickingMode() != QPickingSettings::FrontFace;
+
+    // Select the best reduction function based on the settings
+    const ReducerFunction reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
+
+    // For each mouse event
+    for (const QMouseEvent &event : mouseEvents) {
+        m_hoveredPickersToClear = m_hoveredPickers;
+
+        QPickEvent::Buttons eventButton = QPickEvent::NoButton;
+        int eventButtons = 0;
+        int eventModifiers = QPickEvent::NoModifier;
+
+        setEventButtonAndModifiers(event, eventButton, eventButtons, eventModifiers);
+
+        // For each triplet of Viewport / Camera and Area
+        for (const PickingUtils::ViewportCameraAreaTriplet &vca : vcaTriplets) {
+            typedef PickingUtils::AbstractCollisionGathererFunctor::result_type HitList;
+            HitList sphereHits;
+            QRay3D ray = rayForViewportAndCamera(vca.area, event.pos(), vca.viewport, vca.cameraId);
+            if (trianglePickingRequested) {
+                PickingUtils::TriangleCollisionGathererFunctor gathererFunctor;
+                gathererFunctor.m_frontFaceRequested = frontFaceRequested;
+                gathererFunctor.m_backFaceRequested = backFaceRequested;
+                gathererFunctor.m_manager = m_manager;
+                gathererFunctor.m_ray = ray;
+                sphereHits = QtConcurrent::blockingMappedReduced<HitList>(entitiesGatherer.entities(), gathererFunctor, reducerOp);
+            } else {
+                PickingUtils::EntityCollisionGathererFunctor gathererFunctor;
+                gathererFunctor.m_manager = m_manager;
+                gathererFunctor.m_ray = ray;
+                sphereHits = QtConcurrent::blockingMappedReduced<HitList>(entitiesGatherer.entities(), gathererFunctor, reducerOp);
+            }
+
+            // Dispatch events based on hit results
+            dispatchPickEvents(event, sphereHits, eventButton, eventButtons, eventModifiers, trianglePickingRequested);
+        }
+    }
+
+    // Clear Hovered elements that needs to be cleared
+    // Send exit event to object pickers on which we
+    // had set the hovered flag for a previous frame
+    // and that aren't being hovered any longer
+    clearPreviouslyHoveredPickers();
+    return true;
+}
+
 void PickBoundingVolumeJob::setManagers(NodeManagers *manager)
 {
     m_manager = manager;
@@ -418,214 +240,126 @@ void PickBoundingVolumeJob::setManagers(NodeManagers *manager)
 
 void PickBoundingVolumeJob::run()
 {
-    const auto mouseEvents = m_renderer->pendingPickingEvents();
-    if (mouseEvents.empty())
-        return;
+    Q_ASSERT(m_frameGraphRoot && m_renderSettings && m_node && m_manager);
+    runHelper();
+}
 
-    ViewportCameraAreaGatherer vcaGatherer;
-    const QVector<ViewportCameraAreaTriplet> vcaTriplets = vcaGatherer.gather(m_renderer->frameGraphRoot());
+void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
+                                               const PickingUtils::CollisionVisitor::HitList &sphereHits,
+                                               QPickEvent::Buttons eventButton,
+                                               int eventButtons,
+                                               int eventModifiers,
+                                               bool trianglePickingRequested)
+{
+    ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
+    // If we have hits
+    if (!sphereHits.isEmpty()) {
+        // Note: how can we control that we want the first/last/all elements along the ray to be picked
 
+        // How do we differentiate betwnee an Entity with no GeometryRenderer and one with one, both having
+        // an ObjectPicker component when it comes
 
-    if (!vcaTriplets.empty()) {
-        bool hasMoveEvent = false;
-        bool hasOtherEvent = false;
+        // We want to gather hits against triangles
+        // build a triangle based bounding volume
 
-        for (const QMouseEvent &event : mouseEvents) {
-            const bool isMove = (event.type() == QEvent::MouseMove);
-            hasMoveEvent |= isMove;
-            hasOtherEvent |= !isMove;
-        }
+        for (const QCollisionQueryResult::Hit &hit : qAsConst(sphereHits)) {
+            Entity *entity = m_manager->renderNodesManager()->lookupResource(hit.m_entityId);
+            HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
 
-        // We gather when we have a click/release event or a move
-        // event and a QObjectPicker enabled to receive it
-        ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
-
-        // In the case we have a move event, find if we actually have
-        // an object picker that cares about these
-        if (!hasOtherEvent) {
-            // The only way to set lastCurrentPicker is to click
-            // so we can return since if we're there it means we
-            // have only move events
-            if (lastCurrentPicker == nullptr)
-                return;
-
-            const bool caresAboutMove = (hasMoveEvent && lastCurrentPicker->isDragEnabled());
-            // Early return if the current object picker doesn't care about move events
-            if (!caresAboutMove)
-                return;
-        }
-
-        // Gather the entities for the frame
-        EntityGatherer entitiesGatherer(m_node);
-
-        for (const QMouseEvent &event : mouseEvents) {
-            QPickEvent::Buttons eventButton = QPickEvent::NoButton;
-            switch (event.button()) {
-            case Qt::LeftButton: eventButton = QPickEvent::LeftButton; break;
-            case Qt::RightButton: eventButton = QPickEvent::RightButton; break;
-            case Qt::MiddleButton: eventButton = QPickEvent::MiddleButton; break;
-            case Qt::BackButton: eventButton = QPickEvent::BackButton; break;
-            default: break;
+            // If the Entity which actually received the hit doesn't have
+            // an object picker component, we need to check the parent if it has one ...
+            while (objectPickerHandle.isNull() && entity != nullptr) {
+                entity = entity->parent();
+                if (entity != nullptr)
+                    objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
             }
-            int eventButtons = 0;
-            if (event.buttons() & Qt::LeftButton)
-                eventButtons |= QPickEvent::LeftButton;
-            if (event.buttons() & Qt::RightButton)
-                eventButtons |= QPickEvent::RightButton;
-            if (event.buttons() & Qt::MiddleButton)
-                eventButtons |= QPickEvent::MiddleButton;
-            if (event.buttons() & Qt::BackButton)
-                eventButtons |= QPickEvent::BackButton;
-            int eventModifiers = QPickEvent::NoModifier;
-            if (event.modifiers() & Qt::ShiftModifier)
-                eventModifiers |= QPickEvent::ShiftModifier;
-            if (event.modifiers() & Qt::ControlModifier)
-                eventModifiers |= QPickEvent::ControlModifier;
-            if (event.modifiers() & Qt::AltModifier)
-                eventModifiers |= QPickEvent::AltModifier;
-            if (event.modifiers() & Qt::MetaModifier)
-                eventModifiers |= QPickEvent::MetaModifier;
-            if (event.modifiers() & Qt::KeypadModifier)
-                eventModifiers |= QPickEvent::KeypadModifier;
 
-            m_hoveredPickersToClear = m_hoveredPickers;
+            ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
+            if (objectPicker != nullptr && objectPicker->isEnabled()) {
+                // Send the corresponding event
+                QVector3D localIntersection = hit.m_intersection;
+                if (entity && entity->worldTransform())
+                    localIntersection = hit.m_intersection * entity->worldTransform()->inverted();
+
+                QPickEventPtr pickEvent;
+                if (trianglePickingRequested)
+                    pickEvent.reset(new QPickTriangleEvent(event.localPos(), hit.m_intersection, localIntersection, hit.m_distance,
+                                                           hit.m_triangleIndex, hit.m_vertexIndex[0], hit.m_vertexIndex[1], hit.m_vertexIndex[2],
+                            eventButton, eventButtons, eventModifiers));
+                else
+                    pickEvent.reset(new QPickEvent(event.localPos(), hit.m_intersection, localIntersection, hit.m_distance,
+                                                   eventButton, eventButtons, eventModifiers));
+
+                switch (event.type()) {
+                case QEvent::MouseButtonPress: {
+                    // Store pressed object handle
+                    m_currentPicker = objectPickerHandle;
+                    // Send pressed event to m_currentPicker
+                    objectPicker->onPressed(pickEvent);
+                    break;
+                }
+
+                case QEvent::MouseButtonRelease: {
+                    if (lastCurrentPicker != nullptr && m_currentPicker == objectPickerHandle)
+                        m_currentPicker = HObjectPicker();
+                    // Only send the release event if it was pressed
+                    if (objectPicker->isPressed()) {
+                        if (lastCurrentPicker == objectPicker)
+                            objectPicker->onClicked(pickEvent);
+                        objectPicker->onReleased(pickEvent);
+                    }
+                    break;
+                }
+
+                case Qt::TapGesture: {
+                    objectPicker->onClicked(pickEvent);
+                    break;
+                }
+
+                case QEvent::MouseMove: {
+                    if (objectPicker->isPressed() && objectPicker->isDragEnabled()) {
+                        objectPicker->onMoved(pickEvent);
+                    }
+                    // fallthrough
+                }
+                case QEvent::HoverMove: {
+                    if (!m_hoveredPickers.contains(objectPickerHandle)) {
+                        if (objectPicker->isHoverEnabled()) {
+                            // Send entered event to objectPicker
+                            objectPicker->onEntered();
+                            // and save it in the hoveredPickers
+                            m_hoveredPickers.push_back(objectPickerHandle);
+                        }
+                    }
+                    break;
+                }
+
+                default:
+                    break;
+                }
+            }
+
+            // The ObjectPicker was hit -> it is still being hovered
+            m_hoveredPickersToClear.removeAll(objectPickerHandle);
+
             lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
-
-            for (const ViewportCameraAreaTriplet &vca : vcaTriplets) {
-                typedef AbstractCollisionGathererFunctor::result_type HitList;
-                HitList sphereHits;
-                QRay3D ray = rayForViewportAndCamera(vca.area, event.pos(), vca.viewport, vca.cameraId);
-                auto reducerOp = m_renderer->settings() && m_renderer->settings()->pickResultMode() == QPickingSettings::AllPicks ? reduceToAllHits : reduceToFirstHit;
-                if (m_renderer->settings() && m_renderer->settings()->pickMethod() == QPickingSettings::TrianglePicking) {
-                    TriangleCollisionGathererFunctor gathererFunctor;
-                    gathererFunctor.m_renderer = m_renderer;
-                    gathererFunctor.m_ray = ray;
-                    gathererFunctor.m_pickBackFacingTriangles = m_renderer->settings()->faceOrientationPickingMode();
-                    sphereHits = QtConcurrent::blockingMappedReduced<HitList>(entitiesGatherer.entities(), gathererFunctor, reducerOp);
-                } else {
-                    EntityCollisionGathererFunctor gathererFunctor;
-                    gathererFunctor.m_renderer = m_renderer;
-                    gathererFunctor.m_ray = ray;
-                    sphereHits = QtConcurrent::blockingMappedReduced<HitList>(entitiesGatherer.entities(), gathererFunctor, reducerOp);
-                }
-
-                // If we have hits
-                if (!sphereHits.isEmpty()) {
-                    // Note: how can we control that we want the first/last/all elements along the ray to be picked
-
-                    // How do we differentiate betwnee an Entity with no GeometryRenderer and one with one, both having
-                    // an ObjectPicker component when it comes
-
-                    // We want to gather hits against triangles
-                    // build a triangle based bounding volume
-
-                    for (const QCollisionQueryResult::Hit &hit : qAsConst(sphereHits)) {
-                        Entity *entity = m_manager->renderNodesManager()->lookupResource(hit.m_entityId);
-                        HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
-
-                        // If the Entity which actually received the hit doesn't have
-                        // an object picker component, we need to check the parent if it has one ...
-                        while (objectPickerHandle.isNull() && entity != nullptr) {
-                            entity = entity->parent();
-                            if (entity != nullptr)
-                                objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
-                        }
-
-                        ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
-
-                        if (objectPicker != nullptr) {
-                            // Send the corresponding event
-                            QVector3D localIntersection = hit.m_intersection;
-                            if (entity && entity->worldTransform())
-                                localIntersection = hit.m_intersection * entity->worldTransform()->inverted();
-                            QPickEventPtr pickEvent;
-                            if (m_renderer->settings() && m_renderer->settings()->pickMethod() == QPickingSettings::TrianglePicking) {
-                                pickEvent.reset(new QPickTriangleEvent(event.localPos(), hit.m_intersection, localIntersection, hit.m_distance,
-                                                                       hit.m_triangleIndex, hit.m_vertexIndex[0], hit.m_vertexIndex[1], hit.m_vertexIndex[2],
-                                                                       eventButton, eventButtons, eventModifiers));
-                            } else {
-                                pickEvent.reset(new QPickEvent(event.localPos(), hit.m_intersection, localIntersection, hit.m_distance,
-                                                               eventButton, eventButtons, eventModifiers));
-                            }
-
-                            switch (event.type()) {
-                            case QEvent::MouseButtonPress: {
-                                // Store pressed object handle
-                                m_currentPicker = objectPickerHandle;
-                                // Send pressed event to m_currentPicker
-                                objectPicker->onPressed(pickEvent);
-                                break;
-                            }
-
-                            case QEvent::MouseButtonRelease: {
-                                if (lastCurrentPicker != nullptr && m_currentPicker == objectPickerHandle)
-                                    m_currentPicker = HObjectPicker();
-                                // Only send the release event if it was pressed
-                                if (objectPicker->isPressed()) {
-                                    objectPicker->onClicked(pickEvent);
-                                    objectPicker->onReleased(pickEvent);
-                                }
-                                break;
-                            }
-
-                            case Qt::TapGesture: {
-                                objectPicker->onClicked(pickEvent);
-                                break;
-                            }
-
-                            case QEvent::MouseMove: {
-                                if (objectPicker->isPressed() && objectPicker->isDragEnabled()) {
-                                    objectPicker->onMoved(pickEvent);
-                                }
-                                // fallthrough
-                            }
-                            case QEvent::HoverMove: {
-                                if (!m_hoveredPickers.contains(objectPickerHandle)) {
-                                    if (objectPicker->isHoverEnabled()) {
-                                        // Send entered event to objectPicker
-                                        objectPicker->onEntered();
-                                        // and save it in the hoveredPickers
-                                        m_hoveredPickers.push_back(objectPickerHandle);
-                                    }
-                                }
-                                break;
-                            }
-
-                            default:
-                                break;
-                            }
-                        }
-
-                        // The ObjectPicker was hit -> it is still being hovered
-                        m_hoveredPickersToClear.removeAll(objectPickerHandle);
-
-                        lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
-                    }
-
-                    // Otherwise no hits
-                } else {
-                    switch (event.type()) {
-                    case QEvent::MouseButtonRelease: {
-                        // Send release event to m_currentPicker
-                        if (lastCurrentPicker != nullptr) {
-                            m_currentPicker = HObjectPicker();
-                            QPickEventPtr pickEvent(new QPickEvent);
-                            lastCurrentPicker->onReleased(pickEvent);
-                        }
-                        break;
-                    }
-                    default:
-                        break;
-                    }
-                }
-            }
         }
 
-        // Clear Hovered elements that needs to be cleared
-        // Send exit event to object pickers on which we
-        // had set the hovered flag for a previous frame
-        // and that aren't being hovered any longer
-        clearPreviouslyHoveredPickers();
+        // Otherwise no hits
+    } else {
+        switch (event.type()) {
+        case QEvent::MouseButtonRelease: {
+            // Send release event to m_currentPicker
+            if (lastCurrentPicker != nullptr) {
+                m_currentPicker = HObjectPicker();
+                QPickEventPtr pickEvent(new QPickEvent);
+                lastCurrentPicker->onReleased(pickEvent);
+            }
+            break;
+        }
+        default:
+            break;
+        }
     }
 }
 

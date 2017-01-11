@@ -67,10 +67,25 @@ public:
         Ready,
         Error
     };
-    Q_ENUM(Status)
+    Q_ENUM(Status) // LCOV_EXCL_LINE
+
+    enum ComponentType {
+        UnknownComponent = 0,
+        GeometryRendererComponent,
+        TransformComponent,
+        MaterialComponent,
+        LightComponent,
+        CameraLensComponent
+    };
+    Q_ENUM(ComponentType)
 
     QUrl source() const;
     Status status() const;
+
+    Q_INVOKABLE Qt3DCore::QEntity *entity(const QString &entityName) const;
+    Q_INVOKABLE QStringList entityNames() const;
+    Q_INVOKABLE Qt3DCore::QComponent *component(const QString &entityName,
+                                                ComponentType componentType) const;
 
 public Q_SLOTS:
     void setSource(const QUrl &arg);

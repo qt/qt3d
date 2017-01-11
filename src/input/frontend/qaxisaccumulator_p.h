@@ -51,14 +51,14 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DInput/qaxisaccumulator.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAxisAccumulatorPrivate : public Qt3DCore::QNodePrivate
+class QAxisAccumulatorPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QAxisAccumulatorPrivate();
@@ -66,11 +66,13 @@ public:
     Q_DECLARE_PUBLIC(QAxisAccumulator)
 
     void setValue(float value);
+    void setVelocity(float velocity);
 
     QAxis *m_sourceAxis;
     QAxisAccumulator::SourceAxisType m_sourceAxisType;
     float m_scale;
     float m_value;
+    float m_velocity;
 };
 
 struct QAxisAccumulatorData

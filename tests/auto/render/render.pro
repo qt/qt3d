@@ -60,5 +60,42 @@ qtConfig(private_tests) {
         qcomputecommand \
         loadscenejob \
         qrendercapture \
-        uniform
+        uniform \
+        graphicshelpergl3_3 \
+        graphicshelpergl3_2 \
+        graphicshelpergl2 \
+        gltfplugins \
+        pickboundingvolumejob \
+        sendrendercapturejob \
+        textures \
+        qparameter \
+        parameter \
+        qtextureloader \
+        qtextureimage \
+        qabstracttexture \
+        qabstracttextureimage \
+        qrendersettings \
+        updatemeshtrianglelistjob \
+        updateshaderdatatransformjob \
+        texturedatamanager \
+        rendertarget \
+        transform \
+        computecommand \
+        qrendertarget \
+        qdispatchcompute \
+        qtechnique \
+        qeffect \
+        qrenderpass \
+        qfilterkey \
+        effect \
+        filterkey \
+        qmesh \
+        technique \
+        materialparametergathererjob \
+        renderviewbuilder \
+        filtercompatibletechniquejob \
+        rendercapture \
+        trianglevisitor
+
+    !macos: SUBDIRS += graphicshelpergl4
 }

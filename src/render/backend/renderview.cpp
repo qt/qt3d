@@ -84,7 +84,8 @@ namespace Render {
 
 namespace  {
 
-const int qNodeIdTypeId = qMetaTypeId<Qt3DCore::QNodeId>();
+// register our QNodeId's as a metatype during program loading
+const int Q_DECL_UNUSED qNodeIdTypeId = qMetaTypeId<Qt3DCore::QNodeId>();
 
 const int MAX_LIGHTS = 8;
 
@@ -103,110 +104,34 @@ QString LIGHT_STRUCT_NAMES[MAX_LIGHTS];
 } // anonymous namespace
 
 bool wasInitialized = false;
-RenderView::StandardUniformsPFuncsHash RenderView::ms_standardUniformSetters;
+RenderView::StandardUniformsNameToTypeHash RenderView::ms_standardUniformSetters;
 
 
-RenderView::StandardUniformsPFuncsHash RenderView::initializeStandardUniformSetters()
+RenderView::StandardUniformsNameToTypeHash RenderView::initializeStandardUniformSetters()
 {
-    RenderView::StandardUniformsPFuncsHash setters;
+    RenderView::StandardUniformsNameToTypeHash setters;
 
-    setters.insert(StringToInt::lookupId(QLatin1String("modelMatrix")), &RenderView::modelMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("viewMatrix")), &RenderView::viewMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("projectionMatrix")), &RenderView::projectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("modelView")), &RenderView::modelViewMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("viewProjectionMatrix")), &RenderView::viewProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("modelViewProjection")), &RenderView::modelViewProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("mvp")), &RenderView::modelViewProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseModelMatrix")), &RenderView::inverseModelMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseViewMatrix")), &RenderView::inverseViewMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseProjectionMatrix")), &RenderView::inverseProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseModelView")), &RenderView::inverseModelViewMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseViewProjectionMatrix")), &RenderView::inverseViewProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseModelViewProjection")), &RenderView::inverseModelViewProjectionMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("modelNormalMatrix")), &RenderView::modelNormalMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("modelViewNormal")), &RenderView::modelViewNormalMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("viewportMatrix")), &RenderView::viewportMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("inverseViewportMatrix")), &RenderView::inverseViewportMatrix);
-    setters.insert(StringToInt::lookupId(QLatin1String("time")), &RenderView::time);
-    setters.insert(StringToInt::lookupId(QLatin1String("eyePosition")), &RenderView::eyePosition);
+    setters.insert(StringToInt::lookupId(QLatin1String("modelMatrix")), ModelMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("viewMatrix")), ViewMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("projectionMatrix")), ProjectionMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("modelView")), ModelViewMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("viewProjectionMatrix")), ViewProjectionMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("modelViewProjection")), ModelViewProjectionMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("mvp")), ModelViewProjectionMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("inverseModelMatrix")), InverseModelMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("inverseViewMatrix")), InverseViewMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("inverseProjectionMatrix")), InverseProjectionMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("inverseModelView")), InverseModelViewMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("inverseViewProjectionMatrix")), InverseViewProjectionMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("inverseModelViewProjection")), InverseModelViewProjectionMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("modelNormalMatrix")), ModelNormalMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("modelViewNormal")), ModelViewNormalMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("viewportMatrix")), ViewportMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("inverseViewportMatrix")), InverseViewportMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("time")), Time);
+    setters.insert(StringToInt::lookupId(QLatin1String("eyePosition")), EyePosition);
 
     return setters;
-}
-
-UniformValue RenderView::modelMatrix(const QMatrix4x4 &model) const
-{
-    return UniformValue(model);
-}
-
-UniformValue RenderView::viewMatrix(const QMatrix4x4 &) const
-{
-    return UniformValue(m_data.m_viewMatrix);
-}
-
-UniformValue RenderView::projectionMatrix(const QMatrix4x4 &) const
-{
-    return UniformValue(m_data.m_renderCameraLens->projection());
-}
-
-UniformValue RenderView::modelViewMatrix(const QMatrix4x4 &model) const
-{
-    return UniformValue(m_data.m_viewMatrix * model);
-}
-
-UniformValue RenderView::viewProjectionMatrix(const QMatrix4x4 &model) const
-{
-    Q_UNUSED(model);
-    return UniformValue(m_data.m_renderCameraLens->projection() * m_data.m_viewMatrix);
-}
-
-UniformValue RenderView::modelViewProjectionMatrix(const QMatrix4x4 &model) const
-{
-    return UniformValue(m_data.m_viewProjectionMatrix * model);
-}
-
-UniformValue RenderView::inverseModelMatrix(const QMatrix4x4 &model) const
-{
-    return UniformValue(model.inverted());
-}
-
-UniformValue RenderView::inverseViewMatrix(const QMatrix4x4 &) const
-{
-    return UniformValue(m_data.m_viewMatrix.inverted());
-}
-
-UniformValue RenderView::inverseProjectionMatrix(const QMatrix4x4 &) const
-{
-    QMatrix4x4 projection;
-    if (m_data.m_renderCameraLens)
-        projection = m_data.m_renderCameraLens->projection();
-    return UniformValue(projection.inverted());
-}
-
-UniformValue RenderView::inverseModelViewMatrix(const QMatrix4x4 &model) const
-{
-    return UniformValue((m_data.m_viewMatrix * model).inverted());
-}
-
-UniformValue RenderView::inverseViewProjectionMatrix(const QMatrix4x4 &model) const
-{
-    Q_UNUSED(model);
-    const auto viewProjectionMatrix = m_data.m_renderCameraLens->projection() * m_data.m_viewMatrix;
-    return UniformValue(viewProjectionMatrix.inverted());
-}
-
-UniformValue RenderView::inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const
-{
-    return UniformValue((m_data.m_viewProjectionMatrix * model).inverted(0));
-}
-
-UniformValue RenderView::modelNormalMatrix(const QMatrix4x4 &model) const
-{
-    return UniformValue(model.normalMatrix());
-}
-
-UniformValue RenderView::modelViewNormalMatrix(const QMatrix4x4 &model) const
-{
-    return UniformValue((m_data.m_viewMatrix * model).normalMatrix());
 }
 
 // TODO: Move this somewhere global where GraphicsContext::setViewport() can use it too
@@ -218,38 +143,61 @@ static QRectF resolveViewport(const QRectF &fractionalViewport, const QSize &sur
                   fractionalViewport.height() * surfaceSize.height());
 }
 
-UniformValue RenderView::viewportMatrix(const QMatrix4x4 &model) const
+UniformValue RenderView::standardUniformValue(RenderView::StandardUniform standardUniformType, const QMatrix4x4 &model) const
 {
-    // TODO: Can we avoid having to pass the model matrix in to these functions?
-    Q_UNUSED(model);
-    QMatrix4x4 viewportMatrix;
-    viewportMatrix.viewport(resolveViewport(m_viewport, m_surfaceSize));
-    return UniformValue(viewportMatrix);
-
-}
-
-UniformValue RenderView::inverseViewportMatrix(const QMatrix4x4 &model) const
-{
-    Q_UNUSED(model);
-    QMatrix4x4 viewportMatrix;
-    viewportMatrix.viewport(resolveViewport(m_viewport, m_surfaceSize));
-    QMatrix4x4 inverseViewportMatrix = viewportMatrix.inverted();
-    return UniformValue(inverseViewportMatrix);
-
-}
-
-UniformValue RenderView::time(const QMatrix4x4 &model) const
-{
-    Q_UNUSED(model);
-    qint64 time = m_renderer->time();
-    float t = time / 1000000000.0f;
-    return UniformValue(t);
-}
-
-UniformValue RenderView::eyePosition(const QMatrix4x4 &model) const
-{
-    Q_UNUSED(model);
-    return UniformValue(m_data.m_eyePos);
+    switch (standardUniformType) {
+    case ModelMatrix:
+        return UniformValue(model);
+    case ViewMatrix:
+        return UniformValue(m_data.m_viewMatrix);
+    case ProjectionMatrix:
+        return UniformValue(m_data.m_renderCameraLens->projection());
+    case ModelViewMatrix:
+        return UniformValue(m_data.m_viewMatrix * model);
+    case ViewProjectionMatrix:
+        return UniformValue(m_data.m_renderCameraLens->projection() * m_data.m_viewMatrix);
+    case ModelViewProjectionMatrix:
+        return UniformValue(m_data.m_viewProjectionMatrix * model);
+    case InverseModelMatrix:
+        return UniformValue(model.inverted());
+    case InverseViewMatrix:
+        return UniformValue(m_data.m_viewMatrix.inverted());
+    case InverseProjectionMatrix: {
+        QMatrix4x4 projection;
+        if (m_data.m_renderCameraLens)
+            projection = m_data.m_renderCameraLens->projection();
+        return UniformValue(projection.inverted());
+    }
+    case InverseModelViewMatrix:
+        return UniformValue((m_data.m_viewMatrix * model).inverted());
+    case InverseViewProjectionMatrix: {
+        const QMatrix4x4 viewProjectionMatrix = m_data.m_renderCameraLens->projection() * m_data.m_viewMatrix;
+        return UniformValue(viewProjectionMatrix.inverted());
+    }
+    case InverseModelViewProjectionMatrix:
+        return UniformValue((m_data.m_viewProjectionMatrix * model).inverted(0));
+    case ModelNormalMatrix:
+        return UniformValue(model.normalMatrix());
+    case ModelViewNormalMatrix:
+        return UniformValue((m_data.m_viewMatrix * model).normalMatrix());
+    case ViewportMatrix: {
+        QMatrix4x4 viewportMatrix;
+        viewportMatrix.viewport(resolveViewport(m_viewport, m_surfaceSize));
+        return UniformValue(viewportMatrix);
+    }
+    case InverseViewportMatrix: {
+        QMatrix4x4 viewportMatrix;
+        viewportMatrix.viewport(resolveViewport(m_viewport, m_surfaceSize));
+        return UniformValue(viewportMatrix.inverted());
+    }
+    case Time:
+        return UniformValue(float(m_renderer->time() / 1000000000.0f));
+    case EyePosition:
+        return UniformValue(m_data.m_eyePos);
+    default:
+        Q_UNREACHABLE();
+        return UniformValue();
+    }
 }
 
 RenderView::RenderView()
@@ -418,13 +366,15 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
 
             const Qt3DCore::QNodeId materialComponentId = node->componentUuid<Material>();
             const  QVector<RenderPassParameterData> renderPassData = m_parameters.value(materialComponentId);
+            HGeometry geometryHandle = m_manager->lookupHandle<Geometry, GeometryManager, HGeometry>(geometryRenderer->geometryId());
+            Geometry *geometry = m_manager->data<Geometry, GeometryManager>(geometryHandle);
 
             // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
             for (const RenderPassParameterData &passData : renderPassData) {
                 // Add the RenderPass Parameters
                 RenderCommand *command = new RenderCommand();
                 command->m_depth = m_data.m_eyePos.distanceToPoint(node->worldBoundingVolume()->center());
-                command->m_geometry = m_manager->lookupHandle<Geometry, GeometryManager, HGeometry>(geometryRenderer->geometryId());
+                command->m_geometry = geometryHandle;
                 command->m_geometryRenderer = geometryRendererHandle;
                 // For RenderPass based states we use the globally set RenderState
                 // if no renderstates are defined as part of the pass. That means:
@@ -454,6 +404,51 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
                 // setShaderAndUniforms can initialize a localData
                 // make sure this is cleared before we leave this function
                 setShaderAndUniforms(command, pass, globalParameters, *(node->worldTransform()), lightSources.mid(0, std::max(lightSources.size(), MAX_LIGHTS)));
+
+                // Store all necessary information for actual drawing if command is valid
+                command->m_isValid = !command->m_attributes.empty();
+                if (command->m_isValid) {
+                    // Update the draw command with what's going to be needed for the drawing
+                    uint primitiveCount = geometryRenderer->vertexCount();
+                    uint estimatedCount = 0;
+                    Attribute *indexAttribute = nullptr;
+
+                    const QVector<Qt3DCore::QNodeId> attributeIds = geometry->attributes();
+                    for (Qt3DCore::QNodeId attributeId : attributeIds) {
+                        Attribute *attribute = m_manager->attributeManager()->lookupResource(attributeId);
+                        if (attribute->attributeType() == QAttribute::IndexAttribute)
+                            indexAttribute = attribute;
+                        else if (command->m_attributes.contains(attribute->nameId()))
+                            estimatedCount = qMax(attribute->count(), estimatedCount);
+                    }
+
+                    // Update the draw command with all the information required for the drawing
+                    command->m_drawIndexed = (indexAttribute != nullptr);
+                    if (command->m_drawIndexed) {
+                        command->m_indexAttributeDataType = GraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->vertexBaseType());
+                        command->m_indexAttributeByteOffset = indexAttribute->byteOffset();
+                    }
+
+                    // Use the count specified by the GeometryRender
+                    // If not specified use the indexAttribute count if present
+                    // Otherwise tries to use the count from the attribute with the highest count
+                    if (primitiveCount == 0) {
+                        if (indexAttribute)
+                            primitiveCount = indexAttribute->count();
+                        else
+                            primitiveCount = estimatedCount;
+                    }
+
+                    command->m_primitiveCount = primitiveCount;
+                    command->m_primitiveType = geometryRenderer->primitiveType();
+                    command->m_primitiveRestartEnabled = geometryRenderer->primitiveRestartEnabled();
+                    command->m_restartIndexValue = geometryRenderer->restartIndexValue();
+                    command->m_firstInstance = geometryRenderer->firstInstance();
+                    command->m_instanceCount = geometryRenderer->instanceCount();
+                    command->m_firstVertex = geometryRenderer->firstVertex();
+                    command->m_indexOffset = geometryRenderer->indexOffset();
+                    command->m_verticesPerPatch = geometryRenderer->verticesPerPatch();
+                }
 
                 buildSortingKey(command);
                 commands.append(command);
@@ -539,11 +534,10 @@ void RenderView::setUniformValue(ShaderParameterPack &uniformPack, int nameId, c
     // ShaderData/Buffers would be handled as UBO/SSBO and would therefore
     // not be in the default uniform block
     if (value.valueType() == UniformValue::NodeId) {
-        Texture *tex = nullptr;
         const Qt3DCore::QNodeId texId = *value.constData<Qt3DCore::QNodeId>();
-        if ((tex = m_manager->textureManager()->lookupResource(texId))
-                != nullptr) {
-            uniformPack.setTexture(nameId, tex->peerId());
+        const Texture *tex =  m_manager->textureManager()->lookupResource(texId);
+        if (tex != nullptr) {
+            uniformPack.setTexture(nameId, texId);
             UniformValue::Texture textureValue;
             textureValue.nodeId = texId;
             uniformPack.setUniform(nameId, UniformValue(textureValue));
@@ -555,7 +549,7 @@ void RenderView::setUniformValue(ShaderParameterPack &uniformPack, int nameId, c
 
 void RenderView::setStandardUniformValue(ShaderParameterPack &uniformPack, int glslNameId, int nameId, const QMatrix4x4 &worldTransform) const
 {
-    uniformPack.setUniform(glslNameId, (this->*ms_standardUniformSetters[nameId])(worldTransform));
+    uniformPack.setUniform(glslNameId, standardUniformValue(ms_standardUniformSetters[nameId], worldTransform));
 }
 
 void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
@@ -786,6 +780,9 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                     Entity *lightEntity = lightSource.entity;
                     const QVector3D worldPos = lightEntity->worldBoundingVolume()->center();
                     for (Light *light : lightSource.lights) {
+                        if (!light->isEnabled())
+                            continue;
+
                         ShaderData *shaderData = m_manager->shaderDataManager()->lookupResource(light->shaderData());
                         if (!shaderData)
                             continue;

@@ -95,7 +95,7 @@ Rectangle {
         font.weight: Font.Light
         color: "white"
         opacity: {
-            if (text == "Solar System")
+            if (text == "Solar System" || (Qt.platform.os === "tvos" && planetButton.activeFocus))
                 opacity = 1
             else
                 opacity = 0

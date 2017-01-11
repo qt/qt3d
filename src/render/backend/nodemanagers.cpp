@@ -42,8 +42,10 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/scenemanager_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
+#include <Qt3DRender/private/gltexturemanager_p.h>
 #include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
+#include <Qt3DRender/private/techniquemanager_p.h>
 
 #include <QOpenGLVertexArrayObject>
 
@@ -64,7 +66,10 @@ NodeManagers::NodeManagers()
     , m_effectManager(new EffectManager())
     , m_renderPassManager(new RenderPassManager())
     , m_textureManager(new TextureManager())
+    , m_textureImageManager(new TextureImageManager())
     , m_textureDataManager(new TextureDataManager())
+    , m_textureImageDataManager(new TextureImageDataManager())
+    , m_glTextureManager(new GLTextureManager(m_textureImageManager, m_textureDataManager, m_textureImageDataManager))
     , m_layerManager(new LayerManager())
     , m_filterKeyManager(new FilterKeyManager())
     , m_frameGraphManager(new FrameGraphManager())
@@ -75,7 +80,6 @@ NodeManagers::NodeManagers()
     , m_parameterManager(new ParameterManager())
     , m_shaderDataManager(new ShaderDataManager())
     , m_glBufferManager(new GLBufferManager())
-    , m_textureImageManager(new TextureImageManager())
     , m_bufferManager(new BufferManager())
     , m_attributeManager(new AttributeManager())
     , m_geometryManager(new GeometryManager())
@@ -98,8 +102,10 @@ NodeManagers::~NodeManagers()
     delete m_techniqueManager;
     delete m_effectManager;
     delete m_renderPassManager;
+    delete m_glTextureManager;
     delete m_textureManager;
     delete m_textureDataManager;
+    delete m_textureImageDataManager;
     delete m_layerManager;
     delete m_filterKeyManager;
     delete m_frameGraphManager;

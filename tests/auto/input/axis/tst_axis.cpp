@@ -147,6 +147,7 @@ private Q_SLOTS:
         // GIVEN
         TestArbiter arbiter;
         Qt3DInput::Input::Axis backendAxis;
+        backendAxis.setEnabled(true);
         Qt3DCore::QBackendNodePrivate::get(&backendAxis)->setArbiter(&arbiter);
 
         // WHEN
@@ -170,6 +171,22 @@ private Q_SLOTS:
 
         arbiter.events.clear();
 
+    }
+
+    void shouldNotChangeValueWhenDisabled()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DInput::Input::Axis backendAxis;
+        Qt3DCore::QBackendNodePrivate::get(&backendAxis)->setArbiter(&arbiter);
+        backendAxis.setEnabled(false);
+
+        // WHEN
+        backendAxis.setAxisValue(454.0f);
+
+        // THEN
+        QCOMPARE(backendAxis.axisValue(), 0.0f);
+        QCOMPARE(arbiter.events.count(), 0);
     }
 };
 

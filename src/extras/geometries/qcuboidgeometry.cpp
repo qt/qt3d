@@ -645,6 +645,7 @@ void QCuboidGeometryPrivate::init()
 
 /*!
  * \class Qt3DExtras::QCuboidGeometry
+ * \inheaderfile Qt3DExtras/QCuboidGeometry
  * \inmodule Qt3DExtras
  * \brief The QCuboidGeometry class allows creation of a cuboid in 3D space.
  * \since 5.7

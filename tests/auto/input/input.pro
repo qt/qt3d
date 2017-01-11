@@ -19,5 +19,15 @@ qtConfig(private_tests) {
         keyboardhandler \
         qaxisaccumulator \
         inputsequence \
-        inputchord
+        inputchord \
+        qabstractphysicaldevicebackendnode \
+        logicaldevice \
+        qabstractphysicaldeviceproxy \
+        physicaldeviceproxy \
+        loadproxydevicejob \
+        qmousedevice \
+        mousedevice \
+        utils \
+        axisaccumulator \
+        axisaccumulatorjob
 }

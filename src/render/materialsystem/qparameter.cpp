@@ -53,6 +53,7 @@
 
 /*!
  * \class Qt3DRender::QParameter
+ * \inheaderfile Qt3DRender/QParameter
  * \inmodule Qt3DRender
  *
  * \brief Provides storage for a name and value pair.

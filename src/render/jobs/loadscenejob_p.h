@@ -60,7 +60,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QSceneIOHandler;
+class QSceneImporter;
 
 namespace Render {
 
@@ -71,10 +71,10 @@ class Q_AUTOTEST_EXPORT LoadSceneJob : public Qt3DCore::QAspectJob
 public:
     explicit LoadSceneJob(const QUrl &source, Qt3DCore::QNodeId sceneComponent);
     void setNodeManagers(NodeManagers *managers) { m_managers = managers; }
-    void setSceneIOHandlers(const QList<QSceneIOHandler *> sceneIOHandlers) { m_sceneIOHandlers = sceneIOHandlers; }
+    void setSceneImporters(const QList<QSceneImporter *> sceneImporters) { m_sceneImporters = sceneImporters; }
 
     NodeManagers *nodeManagers() const;
-    QList<QSceneIOHandler *> sceneIOHandlers() const;
+    QList<QSceneImporter *> sceneImporters() const;
     QUrl source() const;
     Qt3DCore::QNodeId sceneComponentId() const;
 
@@ -84,7 +84,7 @@ private:
     QUrl m_source;
     Qt3DCore::QNodeId m_sceneComponent;
     NodeManagers *m_managers;
-    QList<QSceneIOHandler *> m_sceneIOHandlers;
+    QList<QSceneImporter *> m_sceneImporters;
 };
 
 typedef QSharedPointer<LoadSceneJob> LoadSceneJobPtr;

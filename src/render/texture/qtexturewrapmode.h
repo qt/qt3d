@@ -63,7 +63,7 @@ public:
         ClampToEdge    = 0x812F, // GL_CLAMP_TO_EDGE
         ClampToBorder  = 0x812D  // GL_CLAMP_TO_BORDER
     };
-    Q_ENUM(WrapMode)
+    Q_ENUM(WrapMode) // LCOV_EXCL_LINE
 
     explicit QTextureWrapMode(WrapMode wrapMode = ClampToEdge, QObject *parent = nullptr);
     explicit QTextureWrapMode(WrapMode x, WrapMode y, WrapMode z, QObject *parent = nullptr);

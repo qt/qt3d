@@ -116,7 +116,7 @@ bool TriangleBoundingVolume::intersects(const QRay3D &ray, QVector3D *q) const
 {
     float t = 0.0f;
     QVector3D uvw;
-    const float intersected = intersectsSegmentTriangle(ray, m_c, m_b, m_a, uvw, t);
+    const bool intersected = intersectsSegmentTriangle(ray, m_c, m_b, m_a, uvw, t);
 
     if (intersected && q != nullptr)
         *q = ray.point(t * ray.distance());

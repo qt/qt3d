@@ -279,28 +279,33 @@ private:
 
     QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> m_parameters;
 
-    typedef QHash<int, UniformValue (RenderView::*)(const QMatrix4x4& model) const> StandardUniformsPFuncsHash;
-    static StandardUniformsPFuncsHash ms_standardUniformSetters;
-    static StandardUniformsPFuncsHash initializeStandardUniformSetters();
+    enum StandardUniform
+    {
+        ModelMatrix,
+        ViewMatrix,
+        ProjectionMatrix,
+        ModelViewMatrix,
+        ViewProjectionMatrix,
+        ModelViewProjectionMatrix,
+        InverseModelMatrix,
+        InverseViewMatrix,
+        InverseProjectionMatrix,
+        InverseModelViewMatrix,
+        InverseViewProjectionMatrix,
+        InverseModelViewProjectionMatrix,
+        ModelNormalMatrix,
+        ModelViewNormalMatrix,
+        ViewportMatrix,
+        InverseViewportMatrix,
+        Time,
+        EyePosition
+    };
 
-    UniformValue modelMatrix(const QMatrix4x4& model) const;
-    UniformValue viewMatrix(const QMatrix4x4&) const;
-    UniformValue projectionMatrix(const QMatrix4x4 &) const;
-    UniformValue modelViewMatrix(const QMatrix4x4 &model) const;
-    UniformValue viewProjectionMatrix(const QMatrix4x4 &model) const;
-    UniformValue modelViewProjectionMatrix(const QMatrix4x4 &model) const;
-    UniformValue inverseModelMatrix(const QMatrix4x4 &model) const;
-    UniformValue inverseViewMatrix(const QMatrix4x4 &) const;
-    UniformValue inverseProjectionMatrix(const QMatrix4x4 &) const;
-    UniformValue inverseModelViewMatrix(const QMatrix4x4 &model) const;
-    UniformValue inverseViewProjectionMatrix(const QMatrix4x4 &model) const;
-    UniformValue inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const;
-    UniformValue modelNormalMatrix(const QMatrix4x4 &model) const;
-    UniformValue modelViewNormalMatrix(const QMatrix4x4 &model) const;
-    UniformValue viewportMatrix(const QMatrix4x4 &model) const;
-    UniformValue inverseViewportMatrix(const QMatrix4x4 &model) const;
-    UniformValue time(const QMatrix4x4 &model) const;
-    UniformValue eyePosition(const QMatrix4x4 &model) const;
+    typedef QHash<int, StandardUniform> StandardUniformsNameToTypeHash;
+    static StandardUniformsNameToTypeHash ms_standardUniformSetters;
+    static StandardUniformsNameToTypeHash initializeStandardUniformSetters();
+
+    UniformValue standardUniformValue(StandardUniform standardUniformType, const QMatrix4x4 &model) const;
 
     void setUniformValue(ShaderParameterPack &uniformPack, int nameId, const UniformValue &value) const;
     void setStandardUniformValue(ShaderParameterPack &uniformPack, int glslNameId, int nameId, const QMatrix4x4 &worldTransform) const;

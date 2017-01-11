@@ -48,6 +48,8 @@
 
 #include <Qt3DCore/private/qservicelocator_p.h>
 
+#include <Qt3DCore/private/qaspectjob_p.h>
+#include <Qt3DCore/private/qthreadpooler_p.h>
 #include <Qt3DCore/private/qtickclockservice_p.h>
 #include <Qt3DCore/private/corelogging_p.h>
 #include <Qt3DCore/private/qscheduler_p.h>
@@ -270,7 +272,19 @@ void QAspectManager::exec()
             //
             // Doing this as the first call in the new frame ensures the lock free approach works
             // without any such data race.
+#ifdef QT3D_JOBS_RUN_STATS
+            const quint32 arbiterId = 4096;
+            JobRunStats changeArbiterStats;
+            changeArbiterStats.jobId.typeAndInstance[0] = arbiterId;
+            changeArbiterStats.jobId.typeAndInstance[1] = 0;
+            changeArbiterStats.threadId = reinterpret_cast<quint64>(QThread::currentThreadId());
+            changeArbiterStats.startTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
+#endif
             m_changeArbiter->syncChanges();
+#ifdef QT3D_JOBS_RUN_STATS
+            changeArbiterStats.endTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
+            QThreadPooler::addJobLogStatsEntry(changeArbiterStats);
+#endif
 
             // For each Aspect
             // Ask them to launch set of jobs for the current frame

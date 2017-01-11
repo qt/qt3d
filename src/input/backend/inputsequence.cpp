@@ -164,6 +164,9 @@ void InputSequence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
 bool InputSequence::process(InputHandler *inputHandler, qint64 currentTime)
 {
+    if (!isEnabled())
+        return false;
+
     if (m_startTime != 0) {
         // Check if we are still inside the time limit for the sequence
         if ((currentTime - m_startTime) > m_timeout) {

@@ -68,7 +68,7 @@ public:
         BackButton = Qt::BackButton,
         NoButton = Qt::NoButton
     };
-    Q_ENUM(Buttons)
+    Q_ENUM(Buttons) // LCOV_EXCL_LINE
 
     enum Modifiers {
         NoModifier = Qt::NoModifier,
@@ -78,7 +78,7 @@ public:
         MetaModifier = Qt::MetaModifier,
         KeypadModifier = Qt::KeypadModifier
     };
-    Q_ENUM(Modifiers)
+    Q_ENUM(Modifiers) // LCOV_EXCL_LINE
 
     explicit QMouseEvent(const QT_PREPEND_NAMESPACE(QMouseEvent) &e);
     ~QMouseEvent();
@@ -118,7 +118,7 @@ public:
         BackButton = Qt::BackButton,
         NoButton = Qt::NoButton
     };
-    Q_ENUM(Buttons)
+    Q_ENUM(Buttons) // LCOV_EXCL_LINE
 
     enum Modifiers {
         NoModifier = Qt::NoModifier,
@@ -128,7 +128,7 @@ public:
         MetaModifier = Qt::MetaModifier,
         KeypadModifier = Qt::KeypadModifier
     };
-    Q_ENUM(Modifiers)
+    Q_ENUM(Modifiers) // LCOV_EXCL_LINE
 
     explicit QWheelEvent(const QT_PREPEND_NAMESPACE(QWheelEvent) &e);
     ~QWheelEvent();
@@ -153,7 +153,7 @@ typedef QSharedPointer<QWheelEvent> QWheelEventPtr;
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DInput::QMouseEvent*)
-Q_DECLARE_METATYPE(Qt3DInput::QWheelEvent*)
+Q_DECLARE_METATYPE(Qt3DInput::QMouseEvent*) // LCOV_EXCL_LINE
+Q_DECLARE_METATYPE(Qt3DInput::QWheelEvent*) // LCOV_EXCL_LINE
 
 #endif // QT3DINPUT_QMOUSEEVENT_H

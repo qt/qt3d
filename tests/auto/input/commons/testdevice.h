@@ -26,6 +26,9 @@
 **
 ****************************************************************************/
 
+#ifndef TESTDEVICE_H
+#define TESTDEVICE_H
+
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DInput/QAbstractPhysicalDevice>
 #include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
@@ -151,3 +154,5 @@ private:
     QVector<TestDevice*> m_devices;
     QVector<TestDeviceBackendNode*> m_deviceBackendNodes;
 };
+
+#endif // TESTDEVICE_H

@@ -1,4 +1,4 @@
-TARGET = assimpsceneio
+TARGET = assimpsceneimport
 QT += core-private 3dcore 3dcore-private 3drender 3drender-private 3dextras
 
 include(../../../3rdparty/assimp/assimp_dependency.pri)
@@ -8,16 +8,16 @@ DEFINES += QT_NO_FOREACH
 
 HEADERS += \
     assimphelpers.h \
-    assimpio.h
+    assimpimporter.h
 
 SOURCES += \
     assimphelpers.cpp \
     main.cpp \
-    assimpio.cpp
+    assimpimporter.cpp
 
 DISTFILES += \
     assimp.json
 
 PLUGIN_TYPE = sceneparsers
-PLUGIN_CLASS_NAME = AssimpSceneIOPlugin
+PLUGIN_CLASS_NAME = AssimpSceneImportPlugin
 load(qt_plugin)

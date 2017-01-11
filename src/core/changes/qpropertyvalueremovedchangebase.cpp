@@ -55,6 +55,7 @@ QPropertyValueRemovedChangeBasePrivate::~QPropertyValueRemovedChangeBasePrivate(
 
 /*!
  * \class Qt3DCore::QPropertyValueRemovedChangeBase
+ * \inheaderfile Qt3DCore/QPropertyValueRemovedChangeBase
  * \inmodule Qt3DCore
  * \brief The QPropertyValueRemovedChangeBase class is the base class for all PropertyValueRemoved QSceneChange events
  *

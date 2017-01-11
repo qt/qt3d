@@ -82,7 +82,7 @@ public:
         Stencil,
         DepthStencil
     };
-    Q_ENUM(AttachmentPoint)
+    Q_ENUM(AttachmentPoint) // LCOV_EXCL_LINE
 
     explicit QRenderTargetOutput(Qt3DCore::QNode *parent = nullptr);
     ~QRenderTargetOutput();
@@ -119,6 +119,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::QRenderTargetOutput::AttachmentPoint)
+Q_DECLARE_METATYPE(Qt3DRender::QRenderTargetOutput::AttachmentPoint) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_QRENDERTARGETOUTPUT_H

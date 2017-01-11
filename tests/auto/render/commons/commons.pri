@@ -1,9 +1,7 @@
 SOURCES += \
-    $$PWD/testpostmanarbiter.cpp \
     $$PWD/testrenderer.cpp
 
 HEADERS += \
-    $$PWD/testpostmanarbiter.h \
     $$PWD/testrenderer.h
 
 INCLUDEPATH += $$PWD

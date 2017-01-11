@@ -46,6 +46,7 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qrendersettings.h>
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -135,16 +136,20 @@ QRenderSurfaceSelectorPrivate::~QRenderSurfaceSelectorPrivate()
 
 QRenderSurfaceSelector *QRenderSurfaceSelectorPrivate::find(QObject *rootObject)
 {
-    auto rendererSettings = rootObject->findChild<Qt3DRender::QRenderSettings *>();
-    if (!rendererSettings) {
-        qWarning() << "No renderer settings component found";
-        return nullptr;
-    }
+    QFrameGraphNode *frameGraphRoot = qobject_cast<QFrameGraphNode *>(rootObject);
 
-    auto frameGraphRoot = rendererSettings->activeFrameGraph();
     if (!frameGraphRoot) {
-        qWarning() << "No active frame graph found";
-        return nullptr;
+        auto rendererSettings = rootObject->findChild<Qt3DRender::QRenderSettings *>();
+        if (!rendererSettings) {
+            qWarning() << "No renderer settings component found";
+            return nullptr;
+        }
+
+        frameGraphRoot = rendererSettings->activeFrameGraph();
+        if (!frameGraphRoot) {
+            qWarning() << "No active frame graph found";
+            return nullptr;
+        }
     }
 
     auto surfaceSelector = qobject_cast<Qt3DRender::QRenderSurfaceSelector *>(frameGraphRoot);
@@ -216,7 +221,6 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
         QWindow *window = qobject_cast<QWindow *>(surfaceObject);
         if (window) {
             surface = static_cast<QSurface *>(window);
-            setSurfacePixelRatio(window->devicePixelRatio());
         } else {
             QOffscreenSurface *offscreen = qobject_cast<QOffscreenSurface *>(surfaceObject);
             if (offscreen)
@@ -272,6 +276,7 @@ void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
                     if (screen && surfacePixelRatio() != screen->devicePixelRatio())
                         setSurfacePixelRatio(screen->devicePixelRatio());
                 });
+                setSurfacePixelRatio(window->devicePixelRatio());
             }
 
             break;
@@ -301,6 +306,8 @@ QSize QRenderSurfaceSelector::externalRenderTargetSize() const
 void QRenderSurfaceSelector::setSurfacePixelRatio(float ratio)
 {
     Q_D(QRenderSurfaceSelector);
+    if (d->m_surfacePixelRatio == ratio)
+        return;
     d->m_surfacePixelRatio = ratio;
     emit surfacePixelRatioChanged(ratio);
 }
@@ -317,13 +324,15 @@ float QRenderSurfaceSelector::surfacePixelRatio() const
 void QRenderSurfaceSelector::setExternalRenderTargetSize(const QSize &size)
 {
     Q_D(QRenderSurfaceSelector);
-    d->setExternalRenderTargetSize(size);
-    emit externalRenderTargetSizeChanged(size);
+    if (size != d->m_externalRenderTargetSize) {
+        d->setExternalRenderTargetSize(size);
+        emit externalRenderTargetSizeChanged(size);
+    }
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QRenderSurfaceSelector::createNodeCreationChange() const
 {
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderSurfaceSelectorData>::create(this);
+    auto creationChange = QFrameGraphNodeCreatedChangePtr<QRenderSurfaceSelectorData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QRenderSurfaceSelector);
     data.surface = QPointer<QObject>(surface());

@@ -93,7 +93,7 @@ public:
         AutomaticAspectRatio,
         UserAspectRatio
     };
-    Q_ENUM(CameraAspectRatioMode);
+    Q_ENUM(CameraAspectRatioMode); // LCOV_EXCL_LINE
     CameraAspectRatioMode cameraAspectRatioMode() const;
 
 public Q_SLOTS:

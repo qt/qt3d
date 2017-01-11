@@ -95,6 +95,7 @@ namespace  Qt3DExtras {
 
 /*!
  * \class Qt3DExtras::QCuboidMesh
+ * \inheaderfile Qt3DExtras/QCuboidMesh
  * \inmodule Qt3DExtras
  *
  * \inherits Qt3DRender::QGeometryRenderer

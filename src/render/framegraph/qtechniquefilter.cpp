@@ -44,6 +44,7 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,11 +61,46 @@ QTechniqueFilterPrivate::QTechniqueFilterPrivate()
     \class Qt3DRender::QTechniqueFilter
     \inmodule Qt3DRender
     \since 5.7
-    \brief Provides storage for vectors of Filter Keys and Parameters
+    \brief A QFrameGraphNode used to select QTechniques to use
+
+    A Qt3DRender::QTechniqueFilter specifies which techniques are used
+    by the FrameGraph when rendering the entities. QTechniqueFilter specifies
+    a list of Qt3DRender::QFilterKey objects and Qt3DRender::QParameter objects.
+    When QTechniqueFilter is present in the FrameGraph, only the techiques matching
+    the keys in the list are used for rendering. The parameters in the list can be used
+    to set values for shader parameters. The parameters in QTechniqueFilter are
+    overridden by parameters in QTechnique and QRenderPass.
 */
 
 /*!
-  The constructor creates an instance with the specified \a parent.
+    \qmltype TechniqueFilter
+    \inmodule Qt3D.Render
+    \instantiates Qt3DRender::QTechniqueFilter
+    \inherits FrameGraphNode
+    \since 5.7
+    \brief A FrameGraphNode used to select used Techniques
+
+    A TechniqueFilter specifies which techniques are used by the FrameGraph
+    when rendering the entities. TechniqueFilter specifies
+    a list of FilterKey objects and Parameter objects.
+    When TechniqueFilter is present in the FrameGraph, only the techiques matching
+    the keys in list are used for rendering. The parameters in the list can be used
+    to set values for shader parameters. The parameters in TechniqueFilter are
+    overridden by parameters in Technique and RenderPass.
+*/
+
+/*!
+    \qmlproperty list<FilterKey> TechniqueFilter::matchAll
+    Holds the list of filterkeys used by the TechiqueFilter
+*/
+
+/*!
+    \qmlproperty list<Parameter> TechniqueFilter::parameters
+    Holds the list of parameters used by the TechiqueFilter
+*/
+
+/*!
+    The constructor creates an instance with the specified \a parent.
  */
 QTechniqueFilter::QTechniqueFilter(QNode *parent)
     : QFrameGraphNode(*new QTechniqueFilterPrivate, parent)
@@ -83,7 +119,7 @@ QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent)
 }
 
 /*!
-  Returns a vector of the current keys for the filter.
+    Returns a vector of the current keys for the filter.
  */
 QVector<QFilterKey *> QTechniqueFilter::matchAll() const
 {
@@ -92,7 +128,7 @@ QVector<QFilterKey *> QTechniqueFilter::matchAll() const
 }
 
 /*!
-  Add the filter key \a filterKey to the match vector.
+    Add the \a filterKey to the match vector.
  */
 void QTechniqueFilter::addMatch(QFilterKey *filterKey)
 {
@@ -120,7 +156,7 @@ void QTechniqueFilter::addMatch(QFilterKey *filterKey)
 }
 
 /*!
-  Remove the filter key \a filterKey from the match vector.
+    Remove the \a filterKey from the match vector.
  */
 void QTechniqueFilter::removeMatch(QFilterKey *filterKey)
 {
@@ -137,7 +173,7 @@ void QTechniqueFilter::removeMatch(QFilterKey *filterKey)
 }
 
 /*!
-  Add the parameter \a parameter to the parameter vector.
+    Add \a parameter to the vector of parameters that will be passed to the graphics pipeline.
  */
 void QTechniqueFilter::addParameter(QParameter *parameter)
 {
@@ -165,7 +201,7 @@ void QTechniqueFilter::addParameter(QParameter *parameter)
 }
 
 /*!
-  Remove the parameter \a parameter from the parameter vector.
+    Remove \a parameter from the vector of parameters passed to the graphics pipeline.
  */
 void QTechniqueFilter::removeParameter(QParameter *parameter)
 {
@@ -182,7 +218,7 @@ void QTechniqueFilter::removeParameter(QParameter *parameter)
 }
 
 /*!
-  Returns the current vector of parameters.
+    Returns the current vector of parameters.
  */
 QVector<QParameter *> QTechniqueFilter::parameters() const
 {
@@ -192,7 +228,7 @@ QVector<QParameter *> QTechniqueFilter::parameters() const
 
 Qt3DCore::QNodeCreatedChangeBasePtr QTechniqueFilter::createNodeCreationChange() const
 {
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QTechniqueFilterData>::create(this);
+    auto creationChange = QFrameGraphNodeCreatedChangePtr<QTechniqueFilterData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QTechniqueFilter);
     data.matchIds = qIdsForNodes(d->m_matchList);

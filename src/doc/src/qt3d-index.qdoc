@@ -78,7 +78,7 @@
     A Qt Quick application requires also additional dependencies:
 
     \badcode
-    QT += 3dcore 3drenderer 3dinput qml quick 3dquick
+    QT += 3dcore 3drender 3dinput 3dlogic 3dextras qml quick 3dquick
     \endcode
 
     \section1 Overview
@@ -108,4 +108,17 @@
         \li iOS - Supported since (Qt 5.7)
         \li WinRT - Not supported yet
     \endlist
+
+    \section1 Licenses and Attributions
+
+    Qt 3D is available under commercial licenses from \l{The Qt Company}.
+    In addition, it is available under the
+    \l{GNU Lesser General Public License, version 3}, or
+    the \l{GNU General Public License, version 2}.
+    See \l{Qt Licensing} for further details.
+
+    Furthermore Qt 3D contains third party
+    modules under following permissive licenses:
+
+    \generatelist{groupsbymodule attributions-qt3d}
 */

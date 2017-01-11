@@ -109,6 +109,7 @@ void QMouseHandlerPrivate::mouseEvent(const QMouseEventPtr &event)
 
 /*!
  * \class Qt3DInput::QMouseHandler
+ * \inheaderfile Qt3DInput/QMouseHandler
  * \inmodule Qt3DInput
  *
  * \brief Provides a means of being notified about mouse events when attached to

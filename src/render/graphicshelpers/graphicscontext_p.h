@@ -84,7 +84,7 @@ class Renderer;
 class GraphicsHelperInterface;
 class RenderStateSet;
 class Material;
-class Texture;
+class GLTexture;
 class RenderCommand;
 class RenderTarget;
 class AttachmentPack;
@@ -100,7 +100,7 @@ enum TextureScope
 
 typedef QPair<QString, int> NamedUniformLocation;
 
-class GraphicsContext
+class Q_AUTOTEST_EXPORT GraphicsContext
 {
 public:
     GraphicsContext();
@@ -126,10 +126,11 @@ public:
     void doneCurrent();
     void activateGLHelper();
     bool hasValidGLHelper() const;
+    bool isInitialized() const;
 
     QOpenGLShaderProgram *createShaderProgram(Shader *shaderNode);
     void loadShader(Shader* shader);
-    void activateShader(ProgramDNA shaderDNA);
+    bool activateShader(ProgramDNA shaderDNA);
     void removeShaderProgramReference(Shader *shaderNode);
 
     GLuint activeFBO() const { return m_activeFBO; }
@@ -174,9 +175,9 @@ public:
      * @param onUnit - option, specify the explicit unit to activate on
      * @return - the unit the texture was activated on
      */
-    int activateTexture(TextureScope scope, Texture* tex, int onUnit = -1);
+    int activateTexture(TextureScope scope, GLTexture* tex, int onUnit = -1);
 
-    void deactivateTexture(Texture *tex);
+    void deactivateTexture(GLTexture *tex);
 
     void setCurrentStateSet(RenderStateSet* ss);
     RenderStateSet *currentStateSet() const;
@@ -237,7 +238,7 @@ private:
 
     void decayTextureScores();
 
-    GLint assignUnitForTexture(Texture* tex);
+    GLint assignUnitForTexture(GLTexture* tex);
     void deactivateTexturesWithScope(TextureScope ts);
 
     GraphicsHelperInterface *resolveHighestOpenGLFunctions();
@@ -247,6 +248,7 @@ private:
     HGLBuffer createGLBufferFor(Buffer *buffer);
     void uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool releaseBuffer = false);
     bool bindGLBuffer(GLBuffer *buffer, GLBuffer::Type type);
+    void resolveRenderTargetFormat();
 
     bool m_initialized;
     const unsigned int m_id;
@@ -262,22 +264,23 @@ private:
     QHash<Qt3DCore::QNodeId, HGLBuffer> m_renderBufferHash;
     QHash<Qt3DCore::QNodeId, GLuint> m_renderTargets;
     QHash<GLuint, QSize> m_renderTargetsSize;
+    QAbstractTexture::TextureFormat m_renderTargetFormat;
 
     QHash<QSurface *, GraphicsHelperInterface*> m_glHelpers;
 
     // active textures, indexed by texture unit
-    QVector<uint> m_activeTextures;
-    QBitArray m_pinnedTextureUnits;
-    QVector<TextureScope> m_textureScopes;
+    struct ActiveTexture {
+        GLTexture *texture = nullptr;
+        int score = 0;
+        TextureScope scope = TextureScopeMaterial;
+        bool pinned = false;
+    };
+    QVector<ActiveTexture> m_activeTextures;
 
     // cache some current state, to make sure we don't issue unnecessary GL calls
     int m_currClearStencilValue;
     float m_currClearDepthValue;
     QColor m_currClearColorValue;
-
-    // recency score for all render-textures we've seen. Higher scores
-    // mean more recently used.
-    QHash<uint, int> m_textureScores;
 
     Material* m_material;
     QRectF m_viewport;
@@ -319,7 +322,7 @@ private:
     void applyUniform(const ShaderUniform &description, const UniformValue &v);
 
     template<UniformType>
-    void applyUniformHelper(int, const UniformValue &) const
+    void applyUniformHelper(int, int, const UniformValue &) const
     {
         Q_ASSERT_X(false, Q_FUNC_INFO, "Uniform: Didn't provide specialized apply() implementation");
     }
@@ -327,13 +330,13 @@ private:
 
 #define QT3D_UNIFORM_TYPE_PROTO(UniformTypeEnum, BaseType, Func) \
 template<> \
-void GraphicsContext::applyUniformHelper<UniformTypeEnum>(int location, const UniformValue &value) const;
+void GraphicsContext::applyUniformHelper<UniformTypeEnum>(int location, int count, const UniformValue &value) const;
 
 #define QT3D_UNIFORM_TYPE_IMPL(UniformTypeEnum, BaseType, Func) \
     template<> \
-    void GraphicsContext::applyUniformHelper<UniformTypeEnum>(int location, const UniformValue &value) const \
+    void GraphicsContext::applyUniformHelper<UniformTypeEnum>(int location, int count, const UniformValue &value) const \
 { \
-    m_glHelper->Func(location, 1, value.constData<BaseType>()); \
+    m_glHelper->Func(location, count, value.constData<BaseType>()); \
 }
 
 

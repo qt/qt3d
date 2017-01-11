@@ -41,6 +41,7 @@
 #include "qcomponentaddedchange_p.h"
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/qentity.h>
+#include <private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,12 +52,13 @@ QComponentAddedChangePrivate::QComponentAddedChangePrivate(const QEntity *entity
     : QSceneChangePrivate()
     , m_entityId(entity->id())
     , m_componentId(component->id())
-    , m_componentMetaObject(component->metaObject())
+    , m_componentMetaObject(QNodePrivate::findStaticMetaObject(component->metaObject()))
 {
 }
 
 /*!
  * \class Qt3DCore::QComponentAddedChange
+ * \inheaderfile Qt3DCore/QComponentAddedChange
  * \inherits Qt3DCore::QSceneChange
  * \inmodule Qt3DCore
  * \brief The QComponentAddedChange class is used to notify when a component is added to an entity

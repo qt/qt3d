@@ -113,7 +113,7 @@ void ShaderData::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
     const QHash<QString, QVariant>::iterator end = m_originalProperties.end();
 
     while (it != end) {
-        if (static_cast<QMetaType::Type>(it.value().type()) == QMetaType::QVector3D) {
+        if (it.value().type() == QVariant::Vector3D) {
             // if there is a matching QShaderData::TransformType propertyTransformed
             QVariant value = m_originalProperties.value(it.key() + QLatin1String("Transformed"));
             // if that's the case, we apply a space transformation to the property

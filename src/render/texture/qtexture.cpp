@@ -623,10 +623,14 @@ QTextureImageDataPtr setDdsFile(const QString &source)
 
 } // anonynous
 
-QTextureImageDataPtr TextureLoadingHelper::loadTextureData(const QUrl &url, bool allow3D)
+QTextureImageDataPtr TextureLoadingHelper::loadTextureData(const QUrl &url, bool allow3D, bool mirrored)
 {
     QTextureImageDataPtr textureData;
-    if (url.isLocalFile() || url.scheme() == QLatin1String("qrc")) {
+    if (url.isLocalFile() || url.scheme() == QLatin1String("qrc")
+#ifdef Q_OS_ANDROID
+            || url.scheme() == QLatin1String("assets")
+#endif
+            ) {
         const QString source = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(url);
         const CompressedFormatExtension formatExtension = texturedCompressedFormat(source);
         switch (formatExtension) {
@@ -640,7 +644,7 @@ QTextureImageDataPtr TextureLoadingHelper::loadTextureData(const QUrl &url, bool
             QImage img;
             if (img.load(source)) {
                 textureData = QTextureImageDataPtr::create();
-                textureData->setImage(img.mirrored());
+                textureData->setImage(mirrored ? img.mirrored() : img);
             }
             break;
         }
@@ -656,7 +660,7 @@ QTextureDataPtr QTextureFromSourceGenerator::operator ()()
     QTextureDataPtr generatedData = QTextureDataPtr::create();
     m_status = QAbstractTexture::Loading;
 
-    const QTextureImageDataPtr textureData = TextureLoadingHelper::loadTextureData(m_url, true);
+    const QTextureImageDataPtr textureData = TextureLoadingHelper::loadTextureData(m_url, true, m_mirrored);
 
     if (textureData && textureData->data().length() > 0) {
         generatedData->setTarget(static_cast<QAbstractTexture::Target>(textureData->target()));
@@ -676,6 +680,7 @@ QTextureDataPtr QTextureFromSourceGenerator::operator ()()
 
 QTextureLoaderPrivate::QTextureLoaderPrivate()
     : QAbstractTexturePrivate()
+    , m_mirrored(true)
 {
 }
 
@@ -922,6 +927,12 @@ QUrl QTextureLoader::source() const
     return d->m_source;
 }
 
+bool QTextureLoader::isMirrored() const
+{
+    Q_D(const QTextureLoader);
+    return d->m_mirrored;
+}
+
 /*!
  * Sets the texture loader source to \a source.
  * \param source
@@ -931,8 +942,58 @@ void QTextureLoader::setSource(const QUrl& source)
     Q_D(QTextureLoader);
     if (source != d->m_source) {
         d->m_source = source;
-        d->m_dataFunctor.reset(new QTextureFromSourceGenerator(source));
+        d->setDataFunctor(QTextureFromSourceGeneratorPtr::create(d->m_source, d->m_mirrored));
+        const bool blocked = blockNotifications(true);
         emit sourceChanged(source);
+        blockNotifications(blocked);
+    }
+}
+
+/*!
+  \property Qt3DRender::QTextureLoader::mirrored
+
+  This property specifies whether the texture should be mirrored when loaded. This
+  is a convenience to avoid having to manipulate images to match the origin of
+  the texture coordinates used by the rendering API. By default this property
+  is set to true. This has no effect when using compressed texture formats.
+
+  \note OpenGL specifies the origin of texture coordinates from the lower left
+  hand corner whereas DirectX uses the the upper left hand corner.
+
+  \note When using cube map texture you'll probably want mirroring disabled as
+  the cube map sampler takes a direction rather than regular texture
+  coordinates.
+*/
+
+/*!
+  \qmlproperty bool Qt3DRender::QTextureLoader::mirrored
+
+  This property specifies whether the texture should be mirrored when loaded. This
+  is a convenience to avoid having to manipulate images to match the origin of
+  the texture coordinates used by the rendering API. By default this property
+  is set to true. This has no effect when using compressed texture formats.
+
+  \note OpenGL specifies the origin of texture coordinates from the lower left
+  hand corner whereas DirectX uses the the upper left hand corner.
+
+  \note When using cube map texture you'll probably want mirroring disabled as
+  the cube map sampler takes a direction rather than regular texture
+  coordinates.
+*/
+
+/*!
+    Sets mirroring to \a mirrored.
+    \note This internally triggers a call to update the data generator.
+ */
+void QTextureLoader::setMirrored(bool mirrored)
+{
+    Q_D(QTextureLoader);
+    if (mirrored != d->m_mirrored) {
+        d->m_mirrored = mirrored;
+        d->setDataFunctor(QTextureFromSourceGeneratorPtr::create(d->m_source, d->m_mirrored));
+        const bool blocked = blockNotifications(true);
+        emit mirroredChanged(mirrored);
+        blockNotifications(blocked);
     }
 }
 
@@ -943,7 +1004,19 @@ void QTextureLoader::setSource(const QUrl& source)
 bool QTextureFromSourceGenerator::operator ==(const QTextureGenerator &other) const
 {
     const QTextureFromSourceGenerator *otherFunctor = functor_cast<QTextureFromSourceGenerator>(&other);
-    return (otherFunctor != Q_NULLPTR && otherFunctor->m_url == m_url);
+    return (otherFunctor != nullptr &&
+            otherFunctor->m_url == m_url &&
+            otherFunctor->m_mirrored == m_mirrored);
+}
+
+QUrl QTextureFromSourceGenerator::url() const
+{
+    return m_url;
+}
+
+bool QTextureFromSourceGenerator::isMirrored() const
+{
+    return m_mirrored;
 }
 
 /*!
@@ -951,10 +1024,11 @@ bool QTextureFromSourceGenerator::operator ==(const QTextureGenerator &other) co
  * instance with \a url.
  * \param url
  */
-QTextureFromSourceGenerator::QTextureFromSourceGenerator(const QUrl &url)
+QTextureFromSourceGenerator::QTextureFromSourceGenerator(const QUrl &url, bool mirrored)
     : QTextureGenerator()
     , m_url(url)
     , m_status(QAbstractTexture::None)
+    , m_mirrored(mirrored)
 {
 }
 

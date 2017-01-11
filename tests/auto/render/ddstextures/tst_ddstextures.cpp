@@ -78,7 +78,7 @@ void tst_DdsTextures::ddsImageData()
     for (unsigned i = 0; i < sizeof(textures)/sizeof(*textures); i++) {
         const TextureInfo *texture = &textures[i];
 
-        Qt3DRender::QTextureImageDataPtr data = Qt3DRender::TextureLoadingHelper::loadTextureData(QUrl::fromLocalFile(QFINDTESTDATA(texture->source)), true);
+        Qt3DRender::QTextureImageDataPtr data = Qt3DRender::TextureLoadingHelper::loadTextureData(QUrl::fromLocalFile(QFINDTESTDATA(texture->source)), true, false);
 
         QVERIFY(data);
         QCOMPARE(data->width(), texture->width);

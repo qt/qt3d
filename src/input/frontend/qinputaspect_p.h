@@ -73,6 +73,7 @@ public:
     Q_DECLARE_PUBLIC(QInputAspect)
     QScopedPointer<Input::InputHandler> m_inputHandler;
     QScopedPointer<Input::KeyboardMouseGenericDeviceIntegration> m_keyboardMouseIntegration;
+    qint64 m_time;
 };
 
 } // namespace Qt3DInput

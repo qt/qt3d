@@ -40,7 +40,9 @@
 #include "abstractaxisinput_p.h"
 #include <Qt3DInput/qabstractaxisinput.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DInput/private/inputhandler_p.h>
 #include <Qt3DInput/private/qabstractaxisinput_p.h>
+#include <Qt3DInput/private/qinputdeviceintegration_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE

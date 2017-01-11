@@ -7,4 +7,4 @@ CONFIG += testcase
 
 SOURCES += tst_qframegraphnode.cpp
 
-include(../commons/commons.pri)
+include(../../core/common/common.pri)

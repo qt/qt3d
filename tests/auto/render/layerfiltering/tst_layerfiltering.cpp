@@ -37,6 +37,7 @@
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DRender/private/filterlayerentityjob_p.h>
+#include <Qt3DRender/private/updatetreeenabledjob_p.h>
 #include <Qt3DRender/qlayer.h>
 
 QT_BEGIN_NAMESPACE
@@ -85,6 +86,17 @@ class tst_LayerFiltering : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
+
+    void checkInitialState()
+    {
+        // GIVEN
+        Qt3DRender::Render::FilterLayerEntityJob filterJob;
+
+        // THEN
+        QCOMPARE(filterJob.hasLayerFilter(), false);
+        QCOMPARE(filterJob.filteredEntities().size(), 0);
+        QCOMPARE(filterJob.layers().size(), 0);
+    }
 
     void filterEntities_data()
     {
@@ -238,6 +250,12 @@ private Q_SLOTS:
 
         // GIVEN
         QScopedPointer<Qt3DRender::TestAspect> aspect(new Qt3DRender::TestAspect(entitySubtree));
+
+        // WHEN
+        Qt3DRender::Render::Entity *backendRoot = aspect->nodeManagers()->renderNodesManager()->getOrCreateResource(entitySubtree->id());
+        Qt3DRender::Render::UpdateTreeEnabledJob updateTreeEnabledJob;
+        updateTreeEnabledJob.setRoot(backendRoot);
+        updateTreeEnabledJob.run();
 
         // WHEN
         Qt3DRender::Render::FilterLayerEntityJob filterJob;

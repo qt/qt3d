@@ -74,6 +74,7 @@ QSceneChangePrivate::~QSceneChangePrivate()
 
 /*!
  * \class Qt3DCore::QSceneChange
+ * \inheaderfile Qt3DCore/QSceneChange
  * \inmodule Qt3DCore
  * \brief The base class for changes that can be sent and received by Qt3D's change notification system
  */

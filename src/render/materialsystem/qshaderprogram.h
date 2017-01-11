@@ -71,7 +71,7 @@ public:
         Geometry,
         Compute
     };
-    Q_ENUM(ShaderType)
+    Q_ENUM(ShaderType) // LCOV_EXCL_LINE
 
     // Source code in-line
     QByteArray vertexShaderCode() const;

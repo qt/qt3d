@@ -64,6 +64,7 @@ public:
     QInputSettingsPrivate();
 
     QObject *m_eventSource;
+    QMetaObject::Connection m_connection;
 };
 
 struct QInputSettingsData

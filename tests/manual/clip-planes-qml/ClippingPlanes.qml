@@ -59,7 +59,7 @@ Entity {
     property Layer visualizationLayer
 
     property ShaderData sectionData: ShaderData {
-        property real sectionsCount: 3
+        property int sectionsCount: 3
         property ShaderDataArray sections: ShaderDataArray {
             ShaderData {
                 property vector4d equation: clipPlane0.equation

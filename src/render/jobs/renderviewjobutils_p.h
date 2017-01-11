@@ -116,7 +116,6 @@ struct ParameterInfo
     bool operator<(const int otherNameId) const Q_DECL_NOEXCEPT;
     bool operator<(const ParameterInfo &other) const Q_DECL_NOEXCEPT;
 };
-QT3D_DECLARE_TYPEINFO_2(Qt3DRender, Render, ParameterInfo, Q_MOVABLE_TYPE)
 typedef QVector<ParameterInfo> ParameterInfoList;
 
 struct RenderPassParameterData
@@ -141,8 +140,7 @@ void parametersFromParametersProvider(ParameterInfoList *infoList,
                                       ParameterManager *manager,
                                       T *provider)
 {
-    if (provider != nullptr)
-        addParametersForIds(infoList, manager, provider->parameters());
+    addParametersForIds(infoList, manager, provider->parameters());
 }
 
 Q_AUTOTEST_EXPORT ParameterInfoList::const_iterator findParamInfo(ParameterInfoList *infoList,

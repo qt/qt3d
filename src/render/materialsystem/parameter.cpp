@@ -62,6 +62,14 @@ Parameter::Parameter()
 {
 }
 
+void Parameter::cleanup()
+{
+    QBackendNode::setEnabled(false);
+    m_nameId = -1;
+    m_name.clear();
+    m_uniformValue = UniformValue();
+}
+
 void Parameter::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QParameterData>>(change);

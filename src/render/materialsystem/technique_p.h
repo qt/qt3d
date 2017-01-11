@@ -73,7 +73,7 @@ namespace Render {
 
 class TechniqueManager;
 
-class Technique : public BackendNode
+class QT3DRENDERSHARED_PRIVATE_EXPORT Technique : public BackendNode
 {
 public:
     Technique();
@@ -93,6 +93,14 @@ public:
     QVector<Qt3DCore::QNodeId> renderPasses() const;
     const GraphicsApiFilterData *graphicsApiFilter() const;
 
+    bool isCompatibleWithRenderer() const;
+    void setCompatibleWithRenderer(bool compatible);
+
+    bool isCompatibleWithFilters(const Qt3DCore::QNodeIdVector &filterKeyIds);
+
+    void setNodeManager(NodeManagers *nodeManager);
+    NodeManagers *nodeManager() const;
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
@@ -100,6 +108,20 @@ private:
     ParameterPack m_parameterPack;
     QVector<Qt3DCore::QNodeId> m_filterKeyList;
     QVector<Qt3DCore::QNodeId> m_renderPasses;
+    bool m_isCompatibleWithRenderer;
+    NodeManagers *m_nodeManager;
+};
+
+class TechniqueFunctor : public Qt3DCore::QBackendNodeMapper
+{
+public:
+    explicit TechniqueFunctor(AbstractRenderer *renderer, NodeManagers *manager);
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+private:
+    NodeManagers *m_manager;
+    AbstractRenderer *m_renderer;
 };
 
 } // namespace Render

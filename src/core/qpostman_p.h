@@ -94,6 +94,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DCore::QAbstractPostman*)
+Q_DECLARE_METATYPE(Qt3DCore::QAbstractPostman*) // LCOV_EXCL_LINE
 
 #endif // QT3DCORE_QPOSTMAN_P_H

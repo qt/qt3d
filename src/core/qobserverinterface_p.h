@@ -68,6 +68,6 @@ public:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DCore::QObserverInterface *)
+Q_DECLARE_METATYPE(Qt3DCore::QObserverInterface *) // LCOV_EXCL_LINE
 
 #endif // QT3DCORE_QOBSERVERINTERFACE_P_H

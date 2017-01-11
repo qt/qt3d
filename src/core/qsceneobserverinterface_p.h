@@ -76,6 +76,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DCore::QSceneObserverInterface *)
+Q_DECLARE_METATYPE(Qt3DCore::QSceneObserverInterface *) // LCOV_EXCL_LINE
 
 #endif // QT3DCORE_QSCENEOBSERVERINTERFACE_P_H

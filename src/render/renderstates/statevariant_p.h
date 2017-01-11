@@ -87,17 +87,17 @@ struct StateVariant
         u_Data()
         {
             // Assumes the above types don't need to have their ctor called
-            memset(this, 0, sizeof(u_Data));
+            memset(static_cast<void *>(this), 0, sizeof(u_Data));
         }
 
         u_Data(const u_Data &other)
         {
-            memcpy(this, &other, sizeof(u_Data));
+            memcpy(static_cast<void *>(this), static_cast<const void *>(&other), sizeof(u_Data));
         }
 
         u_Data& operator=(const u_Data &other)
         {
-            memcpy(this, &other, sizeof(u_Data));
+            memcpy(static_cast<void *>(this), static_cast<const void *>(&other), sizeof(u_Data));
             return *this;
         }
 
@@ -121,7 +121,7 @@ struct StateVariant
 #if !defined(_MSC_VER) || (_MSC_VER > 1800)
         // all union members start at the same memory address
         // so we can just write into whichever we want
-        memcpy(&(v.data), &state, sizeof(state));
+        memcpy(static_cast<void *>(&v.data), static_cast<const void *>(&state), sizeof(state));
 #else
         v.m_impl.reset(new GenericState(state));
 #endif

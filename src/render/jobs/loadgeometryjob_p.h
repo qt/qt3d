@@ -63,7 +63,7 @@ namespace Render {
 
 class NodeManagers;
 
-class LoadGeometryJob : public Qt3DCore::QAspectJob
+class Q_AUTOTEST_EXPORT LoadGeometryJob : public Qt3DCore::QAspectJob
 {
 public:
     explicit LoadGeometryJob(const HGeometryRenderer &handle);

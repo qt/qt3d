@@ -70,7 +70,7 @@ public:
         UniformBuffer       = 0x8A11, // GL_UNIFORM_BUFFER
         ShaderStorageBuffer = 0x90D2  // GL_SHADER_STORAGE_BUFFER
     };
-    Q_ENUM(BufferType)
+    Q_ENUM(BufferType) // LCOV_EXCL_LINE
 
     enum UsageType
     {
@@ -84,7 +84,7 @@ public:
         DynamicRead         = 0x88E9, // GL_DYNAMIC_READ
         DynamicCopy         = 0x88EA  // GL_DYNAMIC_COPY
     };
-    Q_ENUM(UsageType)
+    Q_ENUM(UsageType) // LCOV_EXCL_LINE
 
     explicit QBuffer(BufferType ty = QBuffer::VertexBuffer, Qt3DCore::QNode *parent = nullptr);
     ~QBuffer();

@@ -61,10 +61,14 @@ class QSurface;
 
 namespace Qt3DRender {
 
-class QSceneIOHandler;
+class QSceneImporter;
 namespace Render {
 class AbstractRenderer;
 class NodeManagers;
+}
+
+namespace Render {
+class OffscreenSurfaceHelper;
 }
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT QRenderAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
@@ -87,8 +91,9 @@ public:
     Render::AbstractRenderer *m_renderer;
 
     bool m_initialized;
-    QList<QSceneIOHandler *> m_sceneIOHandler;
+    QList<QSceneImporter *> m_sceneImporter;
     QRenderAspect::RenderType m_renderType;
+    Render::OffscreenSurfaceHelper *m_offscreenHelper;
 };
 
 }

@@ -62,7 +62,7 @@ typedef QSharedPointer<QBufferDataGenerator> QBufferDataGeneratorPtr;
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::QBufferDataGeneratorPtr)
+Q_DECLARE_METATYPE(Qt3DRender::QBufferDataGeneratorPtr) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_QBUFFERDATAGENERATOR
 

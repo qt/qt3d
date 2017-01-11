@@ -41,6 +41,7 @@
 #include "qcomponentremovedchange_p.h"
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/qentity.h>
+#include <private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,12 +52,13 @@ QComponentRemovedChangePrivate::QComponentRemovedChangePrivate(const QEntity *en
     : QSceneChangePrivate()
     , m_entityId(entity->id())
     , m_componentId(component->id())
-    , m_componentMetaObject(component->metaObject())
+    , m_componentMetaObject(QNodePrivate::findStaticMetaObject(component->metaObject()))
 {
 }
 
 /*!
  * \class Qt3DCore::QComponentRemovedChange
+ * \inheaderfile Qt3DCore/QComponentRemovedChange
  * \inherits Qt3DCore::QSceneChange
  * \inmodule Qt3DCore
  * \brief The QComponentRemovedChange class is used to notify when a component is removed from an entity

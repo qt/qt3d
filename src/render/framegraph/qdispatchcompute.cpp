@@ -39,17 +39,24 @@
 
 #include "qdispatchcompute.h"
 #include "qdispatchcompute_p.h"
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 /*!
-  \class Qt3DRender::QDispatchCompute
-  \inmodule Qt3DRender
-  \since 5.7
-  \ingroup framegraph
+    \class Qt3DRender::QDispatchCompute
+    \inmodule Qt3DRender
+    \since 5.7
+    \ingroup framegraph
+    \brief FrameGraph node to issue work for the compute shader on GPU
 
-  \brief Allows a glDispatchCompute call to be issued to do work in a compute shader on the GPU.
+    A Qt3DRender::QDispatchCompute allows work to be issued for the compute shader to
+    run on the GPU. The workGroupX, workGroupY and workGroupZ properties specify the work group
+    sizes for the compute shader invocation. QComputeCommand components need to be added
+    to entities to instruct Qt3D to select the materials and geometry from the entities
+    for the compute invocation. The work group sizes for the shader invocation will be
+    the maximum of the work group sizes specified in QDispatchCompute and QComputeCommand.
 
  */
 
@@ -59,11 +66,33 @@ namespace Qt3DRender {
     \instantiates Qt3DRender::QDispatchCompute
     \inherits FrameGraphNode
     \since 5.7
-    \qmlabstract Allows a glDispatchCompute call to be issued to do work in a compute shader on the GPU.
+    \brief FrameGraph node to issue work for the compute shader on GPU
+
+    A DispatchCompute allows work to be issued for the compute shader to run on the GPU.
+    The workGroupX, workGroupY and workGroupZ properties specify the work group sizes for
+    the compute shader invocation. ComputeCommand components need to be added
+    to entities to instruct Qt3D to select the materials and geometry from the entities
+    for the compute invocation. The work group sizes for the shader invocation will be
+    the maximum of the work group sizes specified in DispatchCompute and ComputeCommand.
 */
 
 /*!
-  The constructor creates an instance with the specified \a parent.
+    \qmlproperty int DispatchCompute::workGroupX
+    Specifies X workgroup size.
+ */
+
+/*!
+    \qmlproperty int DispatchCompute::workGroupY
+    Specifies Y workgroup size.
+ */
+
+/*!
+    \qmlproperty int DispatchCompute::workGroupZ
+    Specifies Z workgroup size.
+ */
+
+/*!
+    The constructor creates an instance with the specified \a parent.
  */
 QDispatchCompute::QDispatchCompute(Qt3DCore::QNode *parent)
     : QFrameGraphNode(*new QDispatchComputePrivate(), parent)
@@ -135,7 +164,7 @@ void QDispatchCompute::setWorkGroupZ(int workGroupZ)
 
 Qt3DCore::QNodeCreatedChangeBasePtr QDispatchCompute::createNodeCreationChange() const
 {
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QDispatchComputeData>::create(this);
+    auto creationChange = QFrameGraphNodeCreatedChangePtr<QDispatchComputeData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QDispatchCompute);
     data.workGroupX = d->m_workGroupX;

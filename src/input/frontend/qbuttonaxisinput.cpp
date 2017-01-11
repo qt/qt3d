@@ -57,6 +57,7 @@ namespace Qt3DInput {
 
 /*!
  * \class Qt3DInput::QButtonAxisInput
+ * \inheaderfile Qt3DInput/QButtonAxisInput
  * \inmodule Qt3DInput
  * \brief An axis input controlled by buttons
  * \since 5.7
@@ -65,6 +66,8 @@ namespace Qt3DInput {
  */
 /*!
     \qmlproperty real ButtonAxisInput::scale
+    Specifies how the axis output value is scaled. No scaling is applied by default
+    so it defaults to 1.
 */
 
 /*!
@@ -97,6 +100,8 @@ QButtonAxisInput::~QButtonAxisInput()
 
 /*!
     \property QButtonAxisInput::scale
+    Specifies how the axis output value is scaled. No scaling is applied by default
+    so it defaults to 1.
  */
 void QButtonAxisInput::setScale(float scale)
 {

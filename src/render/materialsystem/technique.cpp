@@ -51,6 +51,9 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/techniquemanager_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 
 #include <QDebug>
 
@@ -63,6 +66,8 @@ namespace Render {
 
 Technique::Technique()
     : BackendNode()
+    , m_isCompatibleWithRenderer(false)
+    , m_nodeManager(nullptr)
 {
 }
 
@@ -77,6 +82,7 @@ void Technique::cleanup()
     m_parameterPack.clear();
     m_renderPasses.clear();
     m_filterKeyList.clear();
+    m_isCompatibleWithRenderer = false;
 }
 
 void Technique::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -88,6 +94,7 @@ void Technique::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
     m_filterKeyList = data.filterKeyIds;
     m_parameterPack.setParameters(data.parameterIds);
     m_renderPasses = data.renderPassIds;
+    m_nodeManager->techniqueManager()->addDirtyTechnique(peerId());
 }
 
 void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -98,6 +105,10 @@ void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (change->propertyName() == QByteArrayLiteral("graphicsApiFilterData")) {
             GraphicsApiFilterData filterData = change->value().value<GraphicsApiFilterData>();
             m_graphicsApiFilterData = filterData;
+            // Notify the manager that our graphicsApiFilterData has changed
+            // and that we therefore need to be check for compatibility again
+            m_isCompatibleWithRenderer = false;
+            m_nodeManager->techniqueManager()->addDirtyTechnique(peerId());
         }
         break;
     }
@@ -162,6 +173,55 @@ const GraphicsApiFilterData *Technique::graphicsApiFilter() const
     return &m_graphicsApiFilterData;
 }
 
+bool Technique::isCompatibleWithRenderer() const
+{
+    return m_isCompatibleWithRenderer;
+}
+
+void Technique::setCompatibleWithRenderer(bool compatible)
+{
+    m_isCompatibleWithRenderer = compatible;
+}
+
+bool Technique::isCompatibleWithFilters(const QNodeIdVector &filterKeyIds)
+{
+    // There is a technique filter so we need to check for a technique with suitable criteria.
+    // Check for early bail out if the technique doesn't have sufficient number of criteria and
+    // can therefore never satisfy the filter
+    if (m_filterKeyList.size() < filterKeyIds.size())
+        return false;
+
+    // Iterate through the filter criteria and for each one search for a criteria on the
+    // technique that satisfies it
+    for (const QNodeId filterKeyId : filterKeyIds) {
+        FilterKey *filterKey = m_nodeManager->filterKeyManager()->lookupResource(filterKeyId);
+
+        bool foundMatch = false;
+
+        for (const QNodeId techniqueFilterKeyId : qAsConst(m_filterKeyList)) {
+            FilterKey *techniqueFilterKey = m_nodeManager->filterKeyManager()->lookupResource(techniqueFilterKeyId);
+            if ((foundMatch = (*techniqueFilterKey == *filterKey)))
+                break;
+        }
+
+        // No match for TechniqueFilter criterion in any of the technique's criteria.
+        // So no way this can match. Don't bother checking the rest of the criteria.
+        if (!foundMatch)
+            return false;
+    }
+    return true;
+}
+
+void Technique::setNodeManager(NodeManagers *nodeManager)
+{
+    m_nodeManager = nodeManager;
+}
+
+NodeManagers *Technique::nodeManager() const
+{
+    return m_nodeManager;
+}
+
 void Technique::appendFilterKey(Qt3DCore::QNodeId criterionId)
 {
     if (!m_filterKeyList.contains(criterionId))
@@ -171,6 +231,31 @@ void Technique::appendFilterKey(Qt3DCore::QNodeId criterionId)
 void Technique::removeFilterKey(Qt3DCore::QNodeId criterionId)
 {
     m_filterKeyList.removeOne(criterionId);
+}
+
+TechniqueFunctor::TechniqueFunctor(AbstractRenderer *renderer, NodeManagers *manager)
+    : m_manager(manager)
+    , m_renderer(renderer)
+{
+}
+
+QBackendNode *TechniqueFunctor::create(const QNodeCreatedChangeBasePtr &change) const
+{
+    Technique *technique = m_manager->techniqueManager()->getOrCreateResource(change->subjectId());
+    technique->setNodeManager(m_manager);
+    technique->setRenderer(m_renderer);
+    return technique;
+}
+
+QBackendNode *TechniqueFunctor::get(QNodeId id) const
+{
+    return m_manager->techniqueManager()->lookupResource(id);
+}
+
+void TechniqueFunctor::destroy(QNodeId id) const
+{
+    m_manager->techniqueManager()->releaseResource(id);
+
 }
 
 } // namespace Render

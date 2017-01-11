@@ -53,6 +53,7 @@
 
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,7 +64,7 @@ namespace Render {
 class Entity;
 class NodeManagers;
 
-class Q_AUTOTEST_EXPORT FilterLayerEntityJob : public Qt3DCore::QAspectJob
+class QT3DRENDERSHARED_PRIVATE_EXPORT FilterLayerEntityJob : public Qt3DCore::QAspectJob
 {
 public:
     FilterLayerEntityJob();
@@ -72,6 +73,9 @@ public:
     inline void setLayers(const Qt3DCore::QNodeIdVector &layerIds) Q_DECL_NOEXCEPT { m_layerIds = layerIds; }
     inline void setHasLayerFilter(bool hasLayerFilter) Q_DECL_NOEXCEPT { m_hasLayerFilter = hasLayerFilter; }
     inline QVector<Entity *> filteredEntities() const Q_DECL_NOEXCEPT { return m_filteredEntities; }
+
+    inline bool hasLayerFilter() const Q_DECL_NOTHROW { return m_hasLayerFilter; }
+    inline Qt3DCore::QNodeIdVector layers() const { return m_layerIds; }
 
     // QAspectJob interface
     void run() Q_DECL_FINAL;

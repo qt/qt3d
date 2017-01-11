@@ -105,6 +105,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::QAbstractCollisionQueryService::QueryMode)
+Q_DECLARE_METATYPE(Qt3DRender::QAbstractCollisionQueryService::QueryMode) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_QABSTRACTCOLLISIONQUERYSERVICE_P_H

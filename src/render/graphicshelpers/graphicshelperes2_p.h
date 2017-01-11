@@ -77,6 +77,7 @@ public:
     void blendEquation(GLenum mode) Q_DECL_OVERRIDE;
     void blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor) Q_DECL_OVERRIDE;
     void blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRGB, GLenum sAlpha, GLenum dAlpha) Q_DECL_OVERRIDE;
+    void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter) Q_DECL_OVERRIDE;
     GLuint boundFrameBufferObject() Q_DECL_OVERRIDE;
     void buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) Q_DECL_OVERRIDE;
     bool checkFrameBufferComplete() Q_DECL_OVERRIDE;

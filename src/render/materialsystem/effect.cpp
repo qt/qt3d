@@ -69,6 +69,8 @@ Effect::~Effect()
 void Effect::cleanup()
 {
     QBackendNode::setEnabled(false);
+    m_parameterPack.clear();
+    m_techniques.clear();
 }
 
 void Effect::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)

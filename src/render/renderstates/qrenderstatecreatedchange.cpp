@@ -43,8 +43,10 @@ namespace Qt3DRender {
 
 /*!
  * \class Qt3DRender::QRenderStateCreatedChange
+ * \inheaderfile Qt3DRender/QRenderStateCreatedChange
  * \brief The QRenderStateCreatedChange class
  * \since 5.7
+ * \inmodule Qt3DRender
  * \ingroup renderstates
  */
 

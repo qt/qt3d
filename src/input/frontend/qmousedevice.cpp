@@ -40,6 +40,7 @@
 #include "qmousedevice.h"
 #include "qmousedevice_p.h"
 #include <Qt3DInput/qphysicaldevicecreatedchange.h>
+#include <Qt3DInput/qmouseevent.h>
 #include <Qt3DCore/qentity.h>
 
 QT_BEGIN_NAMESPACE
@@ -104,12 +105,6 @@ QMouseDevicePrivate::QMouseDevicePrivate()
     Default is 0.1.
  */
 
-/*!
-    \property Qt3DInput::QMouseDevice::sensitivity
-
-    Holds the sensitivity of the mouse device.
-    Default is 0.1.
- */
 
 /*!
     Constructs a new QMouseDevice instance with parent \a parent.
@@ -187,6 +182,23 @@ int QMouseDevice::axisIdentifier(const QString &name) const
     return -1;
 }
 
+int QMouseDevice::buttonIdentifier(const QString &name) const
+{
+    if (name == QLatin1String("Left"))
+        return Qt3DInput::QMouseEvent::LeftButton;
+    if (name == QLatin1String("Right"))
+        return Qt3DInput::QMouseEvent::RightButton;
+    if (name == QLatin1String("Center"))
+        return Qt3DInput::QMouseEvent::MiddleButton;
+    return -1;
+}
+
+/*!
+  \property Qt3DInput::QMouseDevice::sensitivity
+
+  Holds the sensitivity of the mouse device.
+  The default is 0.1.
+*/
 float QMouseDevice::sensitivity() const
 {
     Q_D(const QMouseDevice);

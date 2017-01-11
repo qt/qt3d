@@ -39,6 +39,7 @@
 
 #include "qframegraphnode.h"
 #include "qframegraphnode_p.h"
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,8 +57,10 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
 
     \brief Base class of all FrameGraph configuration nodes.
 
-    This is an abstract class so it cannot be instanced directly
-    but rather through one of its subclasses.
+    This class is rarely instanced directly since it doesn't provide
+    any frame graph specific behavior, although it can be convenient
+    to use for grouping other nodes together in dynamic frame graphs.
+    The actual behavior comes from the subclasses.
 
     The subclasses are:
     \table
@@ -92,6 +95,9 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
         \li Qt3DRender::QRenderSurfaceSelector
         \li Select which surface to draw to
     \row
+        \li Qt3DRender::QRenderTargetSelector
+        \li Select which QRenderTarget to draw to
+    \row
         \li Qt3DRender::QSortPolicy
         \li Specify how entities are sorted to determine draw order
     \row
@@ -112,8 +118,10 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
     \since 5.5
     \brief Base class of all FrameGraph configuration nodes.
 
-    This is an abstract class so it cannot be instanced directly
-    but rather through one of its subclasses.
+    This class is rarely instanced directly since it doesn't provide
+    any frame graph specific behavior, although it can be convenient
+    to use for grouping other nodes together in dynamic frame graphs.
+    The actual behavior comes from the subclasses.
 
     The subclasses are:
     \table
@@ -128,7 +136,7 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
         \li Specify which buffers to clear and to what values
     \row
         \li DispatchCompute
-        \li Specify Compute operation kernels
+        \li Specify compute operation kernels
     \row
         \li FrustumCulling
         \li Enable frustum culling
@@ -147,6 +155,9 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
     \row
         \li RenderSurfaceSelector
         \li Select which surface to draw to
+    \row
+        \li RenderTargetSelector
+        \li Select which RenderTarget to draw to
     \row
         \li SortPolicy
         \li Specify how entities are sorted to determine draw order
@@ -192,6 +203,11 @@ QFrameGraphNode *QFrameGraphNode::parentFrameGraphNode() const
 QFrameGraphNode::QFrameGraphNode(QFrameGraphNodePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QFrameGraphNode::createNodeCreationChange() const
+{
+    return QFrameGraphNodeCreatedChangeBasePtr::create(this);
 }
 
 } // namespace Qt3DRender

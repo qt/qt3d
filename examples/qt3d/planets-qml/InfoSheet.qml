@@ -96,9 +96,9 @@ Rectangle {
         property string exampleDetails: ""
 
         font.family: "Helvetica"
-        font.pixelSize: 16
+        font.pixelSize: 18
         font.weight: Font.Light
-        lineHeight: 1.625 * 16
+        lineHeight: 1.625 * 18
         lineHeightMode: Text.FixedHeight
         color: "white"
 

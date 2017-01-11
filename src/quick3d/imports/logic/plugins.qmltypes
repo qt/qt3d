@@ -7,7 +7,7 @@ import QtQuick.tooling 1.2
 // 'qmlplugindump -nonrelocatable Qt3D.Logic 2.0'
 
 Module {
-    dependencies: ["QtQuick 2.0"]
+    dependencies: ["QtQuick 2.7"]
     Component {
         name: "Qt3DCore::QComponent"
         prototype: "Qt3DCore::QNode"
@@ -34,6 +34,7 @@ Module {
             name: "enabledChanged"
             Parameter { name: "enabled"; type: "bool" }
         }
+        Signal { name: "nodeDestroyed" }
         Method {
             name: "setParent"
             Parameter { name: "parent"; type: "QNode"; isPointer: true }

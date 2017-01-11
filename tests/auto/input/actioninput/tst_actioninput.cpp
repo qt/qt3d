@@ -132,6 +132,7 @@ private Q_SLOTS:
 
         Qt3DInput::Input::ActionInput backendActionInput;
         Qt3DInput::QActionInput actionInput;
+        actionInput.setEnabled(true);
         actionInput.setButtons(QVector<int>() << Qt::Key_Space << Qt::Key_Return);
         actionInput.setSourceDevice(device);
         simulateInitialization(&actionInput, &backendActionInput);
@@ -168,6 +169,29 @@ private Q_SLOTS:
 
         // WHEN
         deviceBackend->setButtonPressed(Qt::Key_Return, false);
+
+        // THEN
+        QCOMPARE(backendActionInput.process(&handler, 1000000000), false);
+    }
+
+    void shouldNotProcessWhenDisabled()
+    {
+        // GIVEN
+        TestDeviceIntegration deviceIntegration;
+        TestDevice *device = deviceIntegration.createPhysicalDevice("keyboard");
+        TestDeviceBackendNode *deviceBackend = deviceIntegration.physicalDevice(device->id());
+        Qt3DInput::Input::InputHandler handler;
+        handler.addInputDeviceIntegration(&deviceIntegration);
+
+        Qt3DInput::Input::ActionInput backendActionInput;
+        Qt3DInput::QActionInput actionInput;
+        actionInput.setEnabled(false);
+        actionInput.setButtons(QVector<int>() << Qt::Key_Space << Qt::Key_Return);
+        actionInput.setSourceDevice(device);
+        simulateInitialization(&actionInput, &backendActionInput);
+
+        // WHEN
+        deviceBackend->setButtonPressed(Qt::Key_Space, true);
 
         // THEN
         QCOMPARE(backendActionInput.process(&handler, 1000000000), false);

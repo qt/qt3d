@@ -66,6 +66,12 @@ QT_BEGIN_NAMESPACE
     namespace InnerNS { \
     /*end*/
 
+#define QT3D_DECLARE_TYPEINFO_3(OuterNS, InnerNS, InnerMostNS, Class, Flags) \
+    } /* InnerMostNS */ \
+    QT3D_DECLARE_TYPEINFO_2(OuterNS, InnerNS, InnerMostNS :: Class, Flags) \
+    namespace InnerMostNS { \
+    /*end*/
+
 #define QT3D_DECLARE_SHARED(NS, Class) \
     inline void swap(Class &lhs, Class &rhs) \
         Q_DECL_NOEXCEPT_EXPR(noexcept(lhs.swap(rhs))) \

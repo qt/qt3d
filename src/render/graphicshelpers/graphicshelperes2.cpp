@@ -334,8 +334,14 @@ void GraphicsHelperES2::bindFrameBufferAttachment(QOpenGLTexture *texture, const
     else
         qCritical() << "Unsupported FBO attachment OpenGL ES 2.0";
 
+    const QOpenGLTexture::Target target = texture->target();
+
+    if (target == QOpenGLTexture::TargetCubeMap && attachment.m_face == QAbstractTexture::AllFaces) {
+        qWarning() << "OpenGL ES 2.0 doesn't handle attaching all the faces of a cube map texture at once to an FBO";
+        return;
+    }
+
     texture->bind();
-    QOpenGLTexture::Target target = texture->target();
     if (target == QOpenGLTexture::Target2D)
         m_funcs->glFramebufferTexture2D(GL_FRAMEBUFFER, attr, target, texture->textureId(), attachment.m_mipLevel);
     else if (target == QOpenGLTexture::TargetCubeMap)
@@ -699,6 +705,21 @@ UniformType GraphicsHelperES2::uniformTypeFromGLType(GLenum type)
         Q_UNREACHABLE();
         return UniformType::Float;
     }
+}
+
+void GraphicsHelperES2::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter)
+{
+    Q_UNUSED(srcX0);
+    Q_UNUSED(srcX1);
+    Q_UNUSED(srcY0);
+    Q_UNUSED(srcY1);
+    Q_UNUSED(dstX0);
+    Q_UNUSED(dstX1);
+    Q_UNUSED(dstY0);
+    Q_UNUSED(dstY1);
+    Q_UNUSED(mask);
+    Q_UNUSED(filter);
+    qWarning() << "Framebuffer blits are not supported by ES 2.0 (since ES 3.1)";
 }
 
 } // namespace Render

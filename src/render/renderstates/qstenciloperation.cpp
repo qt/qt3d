@@ -37,14 +37,6 @@
 **
 ****************************************************************************/
 
-/*!
- * \class QStencilOperation
- * \brief The QStencilOperation class allows the selection of either the front
- * or back sides.
- * \since 5.7
- * \ingroup renderstates
- */
-
 #include "qstenciloperation.h"
 #include "qstenciloperation_p.h"
 #include "qstenciloperationarguments.h"
@@ -55,8 +47,58 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
- * The constructor creates a new QStencilOperation::QStencilOperation instance with
- * the specified \a parent.
+    \class Qt3DRender::QStencilOperation
+    \brief The QStencilOperation class specifies stencil operation
+    \since 5.7
+    \ingroup renderstates
+    \inmodule Qt3DRender
+
+    A Qt3DRender::QStencilOperation class specifies the stencil operations
+    for the front- and back-facing polygons. The stencil operation control
+    what is done to fragment when the stencil and depth test pass or fail.
+
+    \sa Qt3DRender::QStencilTest
+ */
+
+/*!
+    \qmltype StencilOperation
+    \brief The StencilOperation type specifies stencil operation
+    \since 5.7
+    \ingroup renderstates
+    \inqmlmodule Qt3D.Render
+    \inherits RenderState
+    \instantiates Qt3DRender::QStencilOperation
+
+    A StencilOperation type specifies the stencil operations
+    for the front- and back-facing polygons. The stencil operation control
+    what is done to fragment when the stencil and depth test pass or fail.
+
+    \sa StencilTest
+ */
+
+/*!
+    \qmlproperty StencilOperationArguments StencilOperation::front
+    Holds the stencil operation arguments for front-facing polygons.
+*/
+
+/*!
+    \qmlproperty StencilOperationArguments StencilOperation::back
+    Holds the stencil operation arguments for back-facing polygons.
+*/
+
+/*!
+    \property QStencilOperation::front
+    Holds the stencil operation arguments for front-facing polygons.
+*/
+
+/*!
+    \property QStencilOperation::back
+    Holds the stencil operation arguments for back-facing polygons.
+*/
+
+/*!
+    The constructor creates a new QStencilOperation::QStencilOperation instance with
+    the specified \a parent.
  */
 QStencilOperation::QStencilOperation(QNode *parent)
     : QRenderState(*new QStencilOperationPrivate(), parent)
@@ -68,18 +110,12 @@ QStencilOperation::~QStencilOperation()
 {
 }
 
-/*!
- * \return the front fragments.
- */
 QStencilOperationArguments *QStencilOperation::front() const
 {
     Q_D(const QStencilOperation);
     return d->m_front;
 }
 
-/*!
- * \return the back fragments.
- */
 QStencilOperationArguments *QStencilOperation::back() const
 {
     Q_D(const QStencilOperation);

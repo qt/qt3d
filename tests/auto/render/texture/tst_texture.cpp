@@ -185,12 +185,12 @@ void tst_RenderTexture::checkPropertyMirroring()
 
     // THEN
     QCOMPARE(backend.peerId(), frontend.id());
-    QCOMPARE(backend.target(), Target);
-    QCOMPARE(backend.width(), frontend.width());
-    QCOMPARE(backend.height(), frontend.height());
-    QCOMPARE(backend.depth(), frontend.depth());
-    QCOMPARE(backend.layers(), frontend.layers());
-    QCOMPARE(backend.samples(), frontend.samples());
+    QCOMPARE(backend.properties().target, Target);
+    QCOMPARE(backend.properties().width, frontend.width());
+    QCOMPARE(backend.properties().height, frontend.height());
+    QCOMPARE(backend.properties().depth, frontend.depth());
+    QCOMPARE(backend.properties().layers, frontend.layers());
+    QCOMPARE(backend.properties().samples, frontend.samples());
 }
 
 void tst_RenderTexture::checkPropertyMirroring()
@@ -222,7 +222,7 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.sceneChangeEvent(updateChange);
 
     // THEN
-    QCOMPARE(backend.width(), 256);
+    QCOMPARE(backend.properties().width, 256);
 
     // WHEN
     updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
@@ -231,7 +231,7 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.sceneChangeEvent(updateChange);
 
     // THEN
-    QCOMPARE(backend.height(), 128);
+    QCOMPARE(backend.properties().height, 128);
 
     // WHEN
     updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
@@ -240,7 +240,7 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.sceneChangeEvent(updateChange);
 
     // THEN
-    QCOMPARE(backend.depth(), 16);
+    QCOMPARE(backend.properties().depth, 16);
 
     // WHEN
     updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
@@ -249,7 +249,7 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.sceneChangeEvent(updateChange);
 
     // THEN
-    QCOMPARE(backend.layers(), 32);
+    QCOMPARE(backend.properties().layers, 32);
 
     // WHEN
     updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
@@ -258,7 +258,7 @@ void tst_RenderTexture::checkPropertyChanges()
     backend.sceneChangeEvent(updateChange);
 
     // THEN
-    QCOMPARE(backend.samples(), 64);
+    QCOMPARE(backend.properties().samples, 64);
 }
 
 QTEST_APPLESS_MAIN(tst_RenderTexture)

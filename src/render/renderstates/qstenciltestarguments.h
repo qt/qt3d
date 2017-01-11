@@ -65,7 +65,7 @@ public:
         Back = 0x0405,
         FrontAndBack = 0x0408
     };
-    Q_ENUM(StencilFaceMode)
+    Q_ENUM(StencilFaceMode) // LCOV_EXCL_LINE
 
     enum StencilFunction
     {
@@ -78,7 +78,7 @@ public:
         Greater = 0x0204,
         NotEqual = 0x0205
     };
-    Q_ENUM(StencilFunction)
+    Q_ENUM(StencilFunction) // LCOV_EXCL_LINE
 
     ~QStencilTestArguments();
 

@@ -42,6 +42,7 @@
 #include <Qt3DRender/qrendertarget.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/qrenderpass_p.h>
+#include <Qt3DRender/qframegraphnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,23 +50,38 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 /*!
- * \class Qt3DRender::QRenderTargetSelector
- * \inmodule Qt3DRender
- * \brief Provides a way of specifying a render target
- * \since 5.7
- *
- * \inherits Qt3DRender::QFrameGraphNode
- *
+    \class Qt3DRender::QRenderTargetSelector
+    \inmodule Qt3DRender
+    \since 5.7
+    \brief Provides a way of specifying a render target
+
+    A Qt3DRender::QRenderTargetSelector is used to select active Qt3DRender::QRenderTarget
+    for the FrameGraph. When QRenderTargetSelector is present in the FrameGraph,
+    the rendering is directed into QTexture objects or draw buffers instead of the surface
+    specified in the Qt3DRender::QRenderSurfaceSelector. A render buffer is automatically
+    generated for an attachment point if drawBuffers contain attachment point that any
+    output in the QRenderTarget do not specify. If the drawBuffers is empty,
+    the renderer will default to using all the outputs in QRenderTarget.
  */
 
 /*!
- * \qmltype RenderTargetSelector
- * \inqmlmodule Qt3D.Render
- * \since 5.7
- * \ingroup
- * \instantiates Qt3DRender::QRenderTargetSelector
- * \brief RenderTargetSelector
- *
+    \qmltype RenderTargetSelector
+    \inqmlmodule Qt3D.Render
+    \since 5.7
+    \instantiates Qt3DRender::QRenderTargetSelector
+    \inherits FrameGraphNode
+    \brief Provides a way of specifying a render target
+
+    A RenderTargetSelector is used to select active RenderTarget
+    for the FrameGraph. When RenderTargetSelector is present in the FrameGraph,
+    the rendering is directed into Texture objects or draw buffers instead of the surface
+    specified in the RenderSurfaceSelector.
+ */
+/*!
+    \qmlproperty list<variant> RenderTargetSelector::drawBuffers
+    Holds the list of draw buffers enabled for the RenderTarget.
+
+    \sa Qt3DRender::QRenderTargetOutput::AttachmentPoint
  */
 
 QRenderTargetSelectorPrivate::QRenderTargetSelectorPrivate()
@@ -75,7 +91,7 @@ QRenderTargetSelectorPrivate::QRenderTargetSelectorPrivate()
 }
 
 /*!
- * Constructs QRenderTargetSelector with given \a parent.
+    Constructs QRenderTargetSelector with given \a parent.
  */
 QRenderTargetSelector::QRenderTargetSelector(QNode *parent)
     : QFrameGraphNode(*new QRenderTargetSelectorPrivate, parent)
@@ -88,13 +104,13 @@ QRenderTargetSelector::~QRenderTargetSelector()
 }
 
 /*!
- *  \property QRenderTargetSelector::target
- *  Specifies the target to be rendered
+    \property QRenderTargetSelector::target
+    Holds the current render target
  */
 
-/*! \qmlproperty QWindow Qt3D.Render::RenderTargetSelector::target
- *
- * the target to be rendered
+/*! \qmlproperty RenderTarget Qt3D.Render::RenderTargetSelector::target
+
+    Holds the current render target
  */
 void QRenderTargetSelector::setTarget(QRenderTarget *target)
 {
@@ -124,15 +140,13 @@ QRenderTarget *QRenderTargetSelector::target() const
 }
 
 /*!
- * \internal
- * Sets the draw buffers \a buffers to be used. The draw buffers should be
- * matching the Qt3DRender::QRenderTargetOutput::RenderAttachmentType
- * defined in the attachments of the Qt3DRender::QRenderTarget associated to the
- * Qt3DRender::QRenderTargetSelector instance.
- *
- * \note At render time, if no draw buffer has been specified, the renderer will
- * default to using all the attachments' draw buffers.
- *
+    Sets the draw \a buffers to be used. The draw buffers should be
+    matching the Qt3DRender::QRenderTargetOutput::AttachmentPoint
+    defined in the attachments of the Qt3DRender::QRenderTarget associated to the
+    Qt3DRender::QRenderTargetSelector instance.
+
+    \note At render time, if no draw buffer has been specified, the renderer will
+    default to using all the attachments' draw buffers.
  */
 void QRenderTargetSelector::setOutputs(const QVector<QRenderTargetOutput::AttachmentPoint> &buffers)
 {
@@ -150,7 +164,7 @@ void QRenderTargetSelector::setOutputs(const QVector<QRenderTargetOutput::Attach
 }
 
 /*!
- * Returns the list of draw buffers for the current Qt3DRender::QRenderTargetSelector instance.
+    \return the list of draw buffers for the current Qt3DRender::QRenderTargetSelector instance.
  */
 QVector<QRenderTargetOutput::AttachmentPoint> QRenderTargetSelector::outputs() const
 {
@@ -166,7 +180,7 @@ QRenderTargetSelector::QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, Q
 
 Qt3DCore::QNodeCreatedChangeBasePtr QRenderTargetSelector::createNodeCreationChange() const
 {
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderTargetSelectorData>::create(this);
+    auto creationChange = QFrameGraphNodeCreatedChangePtr<QRenderTargetSelectorData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QRenderTargetSelector);
     data.targetId = qIdForNode(d->m_target);

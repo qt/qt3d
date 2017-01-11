@@ -59,7 +59,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QSceneIOHandler;
+class QSceneImporter;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT QSceneLoaderPrivate : public Qt3DCore::QComponentPrivate
 {
@@ -68,9 +68,12 @@ public:
 
     Q_DECLARE_PUBLIC(QSceneLoader)
 
+    void populateEntityMap(Qt3DCore::QEntity *parentEntity);
+
     QUrl m_source;
     QSceneLoader::Status m_status;
     Qt3DCore::QEntity *m_subTreeRoot;
+    QHash<QString, Qt3DCore::QEntity *> m_entityMap;
 };
 
 struct QSceneLoaderData

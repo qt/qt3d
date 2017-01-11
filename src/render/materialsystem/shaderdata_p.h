@@ -145,6 +145,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::Render::ShaderData*)
+Q_DECLARE_METATYPE(Qt3DRender::Render::ShaderData*) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_RENDER_SHADERDATA_P_H
