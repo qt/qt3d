@@ -42,7 +42,7 @@ src_quick3d_animation.depends = src_animation src_quick3d_core src_quick3d_rende
 
 src_quick3d_extras.subdir = $$PWD/quick3d/quick3dextras
 src_quick3d_extras.target = sub-quick3d-extras
-src_quick3d_extras.depends = src_render src_logic src_input src_quick3d_core
+src_quick3d_extras.depends = src_render src_logic src_input src_extras src_quick3d_core
 
 # Quick3D imports
 src_quick3d_core_imports.file = $$PWD/quick3d/imports/core/importscore.pro
