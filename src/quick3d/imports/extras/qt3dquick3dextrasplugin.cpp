@@ -67,9 +67,10 @@
 #include <Qt3DExtras/qcylindergeometry.h>
 #include <Qt3DExtras/qtext3dgeometry.h>
 #include <Qt3DExtras/qtext3dmesh.h>
-
+#include <Qt3DExtras/qtextureatlas.h>
+#include <Qt3DExtras/qdistancefieldglyphcache.h>
+#include <Qt3DExtras/qdistancefieldtext.h>
 #include <Qt3DQuickExtras/private/quick3dlevelofdetailloader_p.h>
-
 #include <QtQml/qqml.h>
 
 QT_BEGIN_NAMESPACE
@@ -117,6 +118,9 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
     // 3D Text
     qmlRegisterType<Qt3DExtras::QText3DGeometry>(uri, 2, 2, "Text3DGeometry");
     qmlRegisterType<Qt3DExtras::QText3DMesh>(uri, 2, 2, "Text3DMesh");
+
+    qmlRegisterType<Qt3DExtras::QDistanceFieldGlyphCache>(uri, 2, 2, "DistanceFieldGlyphCache");
+    qmlRegisterType<Qt3DExtras::QDistanceFieldText>(uri, 2, 2, "DistanceFieldText");
 }
 
 
