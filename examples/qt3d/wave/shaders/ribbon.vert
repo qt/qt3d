@@ -111,7 +111,7 @@ float snoise(vec3 v)
 float height( const in vec3 pos )
 {
     // Perturb the y position by a wave function in (x, t)
-    const float twoPi = 2.0 * 3.14159;
+    const float twoPi = 2.0 * 3.14159265358979323846;
     float k = twoPi / lambda;
     float omega = twoPi / period;
 

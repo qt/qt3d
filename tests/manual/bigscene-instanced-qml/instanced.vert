@@ -1,6 +1,6 @@
 #version 150 core
 
-#define M_PI 3.14159
+#define M_PI 3.14159265358979323846
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
