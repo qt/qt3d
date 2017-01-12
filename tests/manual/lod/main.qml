@@ -115,7 +115,7 @@ Entity {
                 },
                 Transform {
                     scale: 1.5
-                    translation: Qt.vector3d(-5, 0, 0)
+                    translation: Qt.vector3d(0, 0, 0)
                     rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 45)
                 },
                 PhongMaterial {
@@ -145,7 +145,7 @@ Entity {
         LevelOfDetailLoader {
             components: [ Transform {
                     scale: .5
-                    translation: Qt.vector3d(5, 0, 0)
+                    translation: Qt.vector3d(-8, 0, 0)
                 } ]
 
             camera: camera
@@ -153,6 +153,41 @@ Entity {
             thresholdType: LevelOfDetail.DistanceToCamera
             volumeOverride: null
             sources: ["qrc:/SphereEntity.qml", "qrc:/CylinderEntity.qml", "qrc:/ConeEntity.qml", "qrc:/CuboidEntity.qml"]
+        }
+    }
+
+    Entity {
+        components: [
+            Transform {
+                translation: transform.translation
+            }
+        ]
+
+        Entity {
+            components: [
+                Transform {
+                    scale: .5
+                    translation: Qt.vector3d(8, 0, 0)
+                },
+                LevelOfDetailSwitch {
+                    camera: camera
+                    thresholds: [20, 35, 50, 65]
+                    thresholdType: LevelOfDetail.DistanceToCamera
+                }
+            ]
+
+            SphereEntity {
+                enabled: false
+            }
+            CylinderEntity {
+                enabled: false
+            }
+            ConeEntity {
+                enabled: false
+            }
+            CuboidEntity {
+                enabled: false
+            }
         }
     }
 

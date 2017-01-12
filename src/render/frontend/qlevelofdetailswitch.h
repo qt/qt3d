@@ -37,74 +37,33 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QLEVELOFDETAIL_H
-#define QT3DRENDER_QLEVELOFDETAIL_H
+#ifndef QT3DRENDER_QLEVELOFDETAILSWITCH_H
+#define QT3DRENDER_QLEVELOFDETAILSWITCH_H
 
-#include <Qt3DCore/qcomponent.h>
-#include <Qt3DRender/qt3drender_global.h>
-
-#include <QVector3D>
+#include <Qt3DRender/qlevelofdetail.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QCamera;
-class QBoundingSphere;
-class QLevelOfDetailPrivate;
-
-class QT3DRENDERSHARED_EXPORT QLevelOfDetail : public Qt3DCore::QComponent
+class QT3DRENDERSHARED_EXPORT QLevelOfDetailSwitch : public QLevelOfDetail
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QCamera *camera READ camera WRITE setCamera NOTIFY cameraChanged)
-    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
-    Q_PROPERTY(ThresholdType thresholdType READ thresholdType WRITE setThresholdType NOTIFY thresholdTypeChanged)
-    Q_PROPERTY(QVector<qreal> thresholds READ thresholds WRITE setThresholds NOTIFY thresholdsChanged)
-    Q_PROPERTY(Qt3DRender::QBoundingSphere *volumeOverride READ volumeOverride WRITE setVolumeOverride NOTIFY volumeOverrideChanged)
 
 public:
-    enum ThresholdType {
-        DistanceToCamera,
-        ProjectedScreenPixelSize,
-    };
-    Q_ENUM(ThresholdType) // LCOV_EXCL_LINE
-
-    explicit QLevelOfDetail(Qt3DCore::QNode *parent = nullptr);
-    ~QLevelOfDetail();
-
-    QCamera *camera() const;
-    int currentIndex() const;
-    ThresholdType thresholdType() const;
-    QVector<qreal> thresholds() const;
-    QBoundingSphere *volumeOverride() const;
-
-public Q_SLOTS:
-    void setCamera(QCamera *camera);
-    void setCurrentIndex(int currentIndex);
-    void setThresholdType(ThresholdType thresholdType);
-    void setThresholds(QVector<qreal> thresholds);
-    void setVolumeOverride(QBoundingSphere *volumeOverride);
-
-Q_SIGNALS:
-    void cameraChanged(QCamera *camera);
-    void currentIndexChanged(int currentIndex);
-    void thresholdTypeChanged(ThresholdType thresholdType);
-    void thresholdsChanged(QVector<qreal> thresholds);
-    void volumeOverrideChanged(QBoundingSphere *volumeOverride);
+    explicit QLevelOfDetailSwitch(Qt3DCore::QNode *parent = nullptr);
+    ~QLevelOfDetailSwitch();
 
 protected:
-    explicit QLevelOfDetail(QLevelOfDetailPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+    explicit QLevelOfDetailSwitch(QLevelOfDetailPrivate &dd, Qt3DCore::QNode *parent = nullptr);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QLevelOfDetail)
-    Q_PRIVATE_SLOT(d_func(), void _q_radiusChanged(float))
-    Q_PRIVATE_SLOT(d_func(), void _q_centerChanged(const QVector3D&))
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QLEVELOFDETAIL_H
+#endif // QT3DRENDER_QLEVELOFDETAILSWITCH_H

@@ -11,6 +11,7 @@ HEADERS += \
     $$PWD/qlayer_p.h \
     $$PWD/qlevelofdetail.h \
     $$PWD/qlevelofdetail_p.h \
+    $$PWD/qlevelofdetailswitch.h \
     $$PWD/qrendertarget.h \
     $$PWD/qrendertarget_p.h \
     $$PWD/sphere_p.h \
@@ -35,6 +36,7 @@ SOURCES += \
     $$PWD/sphere.cpp \
     $$PWD/qlayer.cpp \
     $$PWD/qlevelofdetail.cpp \
+    $$PWD/qlevelofdetailswitch.cpp \
     $$PWD/qrendertarget.cpp \
     $$PWD/qcamera.cpp \
     $$PWD/qcameralens.cpp \

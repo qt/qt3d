@@ -52,6 +52,7 @@
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qlayerfilter.h>
 #include <Qt3DRender/qlevelofdetail.h>
+#include <Qt3DRender/qlevelofdetailswitch.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/qparameter.h>
@@ -192,6 +193,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<Qt3DRender::QCameraLens>(QSharedPointer<Render::NodeFunctor<Render::CameraLens, Render::CameraManager> >::create(m_renderer));
     q->registerBackendType<QLayer>(QSharedPointer<Render::NodeFunctor<Render::Layer, Render::LayerManager> >::create(m_renderer));
     q->registerBackendType<QLevelOfDetail>(QSharedPointer<Render::NodeFunctor<Render::LevelOfDetail, Render::LevelOfDetailManager> >::create(m_renderer));
+    q->registerBackendType<QLevelOfDetailSwitch>(QSharedPointer<Render::NodeFunctor<Render::LevelOfDetail, Render::LevelOfDetailManager> >::create(m_renderer));
     q->registerBackendType<QSceneLoader>(QSharedPointer<Render::RenderSceneFunctor>::create(m_renderer, m_nodeManagers->sceneManager()));
     q->registerBackendType<QRenderTarget>(QSharedPointer<Render::NodeFunctor<Render::RenderTarget, Render::RenderTargetManager> >::create(m_renderer));
     q->registerBackendType<QRenderTargetOutput>(QSharedPointer<Render::NodeFunctor<Render::RenderTargetOutput, Render::AttachmentManager> >::create(m_renderer));
