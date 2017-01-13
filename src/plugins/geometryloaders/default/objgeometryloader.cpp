@@ -109,9 +109,9 @@ bool ObjGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
                     qCWarning(ObjGeometryLoaderLog) << "Unsupported number of components in vertex";
                 } else {
                     if (!skipping) {
-                        float x = tokens.floatAt(1);
-                        float y = tokens.floatAt(2);
-                        float z = tokens.floatAt(3);
+                        const float x = tokens.floatAt(1);
+                        const float y = tokens.floatAt(2);
+                        const float z = tokens.floatAt(3);
                         positions.append(QVector3D(x, y, z));
                     } else {
                         positionsOffset++;
@@ -123,11 +123,11 @@ bool ObjGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
                 } else {
                     if (!skipping) {
                         // Process texture coordinate
-                        float s = tokens.floatAt(1);
-                        float t = tokens.floatAt(2);
+                        const float s = tokens.floatAt(1);
+                        const float t = tokens.floatAt(2);
                         texCoords.append(QVector2D(s, t));
                     } else {
-                        texCoordsOffset++;
+                        ++texCoordsOffset;
                     }
                 }
             } else if (qstrncmp(tokens.charPtrAt(0), "vn ", 3) == 0) {
@@ -135,12 +135,12 @@ bool ObjGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
                     qCWarning(ObjGeometryLoaderLog) << "Unsupported number of components in vertex normal";
                 } else {
                     if (!skipping) {
-                        float x = tokens.floatAt(1);
-                        float y = tokens.floatAt(2);
-                        float z = tokens.floatAt(3);
+                        const float x = tokens.floatAt(1);
+                        const float y = tokens.floatAt(2);
+                        const float z = tokens.floatAt(3);
                         normals.append(QVector3D(x, y, z));
                     } else {
-                        normalsOffset++;
+                        ++normalsOffset;
                     }
                 }
             } else if (!skipping && qstrncmp(tokens.charPtrAt(0), "f ", 2) == 0) {

@@ -168,9 +168,8 @@ void GLTFGeometryLoader::setBasePath(const QString &path)
 
 bool GLTFGeometryLoader::setJSON(const QJsonDocument &json )
 {
-    if (!json.isObject()) {
+    if (!json.isObject())
         return false;
-    }
 
     m_json = json;
 
@@ -264,7 +263,7 @@ void GLTFGeometryLoader::processJSONBufferView(const QString &id, const QJsonObj
         qCDebug(GLTFGeometryLoaderLog, "bv: %ls has offset: %lld", qUtf16PrintableImpl(id), offset);
     }
 
-    quint64 len = json.value(KEY_BYTE_LENGTH).toInt();
+    const quint64 len = json.value(KEY_BYTE_LENGTH).toInt();
 
     QByteArray bytes = bufferData.data->mid(offset, len);
     if (Q_UNLIKELY(bytes.count() != int(len))) {
@@ -394,19 +393,18 @@ QByteArray GLTFGeometryLoader::resolveLocalData(const QString &path) const
 
 QAttribute::VertexBaseType GLTFGeometryLoader::accessorTypeFromJSON(int componentType)
 {
-    if (componentType == GL_BYTE) {
+    if (componentType == GL_BYTE)
         return QAttribute::Byte;
-    } else if (componentType == GL_UNSIGNED_BYTE) {
+    else if (componentType == GL_UNSIGNED_BYTE)
         return QAttribute::UnsignedByte;
-    } else if (componentType == GL_SHORT) {
+    else if (componentType == GL_SHORT)
         return QAttribute::Short;
-    } else if (componentType == GL_UNSIGNED_SHORT) {
+    else if (componentType == GL_UNSIGNED_SHORT)
         return QAttribute::UnsignedShort;
-    } else if (componentType == GL_UNSIGNED_INT) {
+    else if (componentType == GL_UNSIGNED_INT)
         return QAttribute::UnsignedInt;
-    } else if (componentType == GL_FLOAT) {
+    else if (componentType == GL_FLOAT)
         return QAttribute::Float;
-    }
 
     //There shouldn't be an invalid case here
     qCWarning(GLTFGeometryLoaderLog, "unsupported accessor type %d", componentType);

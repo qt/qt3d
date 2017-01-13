@@ -103,9 +103,9 @@ void BaseGeometryLoader::generateAveragedNormals(const QVector<QVector3D>& point
         const QVector3D &p2 = points[ faces[i+1] ];
         const QVector3D &p3 = points[ faces[i+2] ];
 
-        QVector3D a = p2 - p1;
-        QVector3D b = p3 - p1;
-        QVector3D n = QVector3D::crossProduct(a, b).normalized();
+        const QVector3D a = p2 - p1;
+        const QVector3D b = p3 - p1;
+        const QVector3D n = QVector3D::crossProduct(a, b).normalized();
 
         normals[ faces[i]   ] += n;
         normals[ faces[i+1] ] += n;
@@ -228,17 +228,17 @@ void BaseGeometryLoader::generateTangents(const QVector<QVector3D>& points,
         const QVector2D &tc2 = texCoords[ faces[i+1] ];
         const QVector2D &tc3 = texCoords[ faces[i+2] ];
 
-        QVector3D q1 = p2 - p1;
-        QVector3D q2 = p3 - p1;
-        float s1 = tc2.x() - tc1.x(), s2 = tc3.x() - tc1.x();
-        float t1 = tc2.y() - tc1.y(), t2 = tc3.y() - tc1.y();
-        float r = 1.0f / (s1 * t2 - s2 * t1);
-        QVector3D tan1((t2 * q1.x() - t1 * q2.x()) * r,
-                        (t2 * q1.y() - t1 * q2.y()) * r,
-                        (t2 * q1.z() - t1 * q2.z()) * r);
-        QVector3D tan2((s1 * q2.x() - s2 * q1.x()) * r,
-                        (s1 * q2.y() - s2 * q1.y()) * r,
-                        (s1 * q2.z() - s2 * q1.z()) * r);
+        const QVector3D q1 = p2 - p1;
+        const QVector3D q2 = p3 - p1;
+        const float s1 = tc2.x() - tc1.x(), s2 = tc3.x() - tc1.x();
+        const float t1 = tc2.y() - tc1.y(), t2 = tc3.y() - tc1.y();
+        const float r = 1.0f / (s1 * t2 - s2 * t1);
+        const QVector3D tan1((t2 * q1.x() - t1 * q2.x()) * r,
+                             (t2 * q1.y() - t1 * q2.y()) * r,
+                             (t2 * q1.z() - t1 * q2.z()) * r);
+        const QVector3D tan2((s1 * q2.x() - s2 * q1.x()) * r,
+                             (s1 * q2.y() - s2 * q1.y()) * r,
+                             (s1 * q2.z() - s2 * q1.z()) * r);
         tan1Accum[ faces[i]   ] += tan1;
         tan1Accum[ faces[i+1] ] += tan1;
         tan1Accum[ faces[i+2] ] += tan1;
@@ -265,8 +265,8 @@ void BaseGeometryLoader::center(QVector<QVector3D>& points)
     if (points.isEmpty())
         return;
 
-    QAxisAlignedBoundingBox bb(points);
-    QVector3D center = bb.center();
+    const QAxisAlignedBoundingBox bb(points);
+    const QVector3D center = bb.center();
 
     // Translate center of the AABB to the origin
     for (int i = 0; i < points.size(); ++i) {
