@@ -266,7 +266,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QStencilMask>(uri, 2, 0, "StencilMask");
 
     // Scene2D
-    Qt3DRender::Quick::registerType<Qt3DRender::Quick::QScene2D>("QScene2D", "Qt3D.Render/Scene2D", uri, 2, 0, "Scene2D");
+    Qt3DRender::Quick::registerType<Qt3DRender::Quick::QScene2D>("QScene2D", "Qt3D.Render/Scene2D", uri, 2, 2, "Scene2D");
 }
 
 QT_END_NAMESPACE
