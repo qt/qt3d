@@ -56,6 +56,8 @@
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
 
+#include <algorithm>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -405,19 +407,17 @@ QGeometry *ObjLoader::geometry() const
 
     QByteArray indexBytes;
     QAttribute::VertexBaseType ty;
-    if (m_indices.size() < 65536) {
+    if (std::all_of(m_indices.cbegin(), m_indices.cend(), [](unsigned int index) { return index < 65536; })) {
         // we can use USHORT
         ty = QAttribute::UnsignedShort;
         indexBytes.resize(m_indices.size() * sizeof(quint16));
-        quint16* usptr = reinterpret_cast<quint16*>(indexBytes.data());
-        for (int i=0; i<m_indices.size(); ++i)
-            *usptr++ = static_cast<quint16>(m_indices.at(i));
+        quint16 *usptr = reinterpret_cast<quint16 *>(indexBytes.data());
+        std::copy(m_indices.cbegin(), m_indices.cend(), usptr);
     } else {
-        // use UINT - no conversion needed, but let's ensure int is 32-bit!
+        // use UINT
         ty = QAttribute::UnsignedInt;
-        Q_ASSERT(sizeof(int) == sizeof(quint32));
         indexBytes.resize(m_indices.size() * sizeof(quint32));
-        memcpy(indexBytes.data(), reinterpret_cast<const char*>(m_indices.data()), indexBytes.size());
+        memcpy(indexBytes.data(), reinterpret_cast<const char *>(m_indices.constData()), indexBytes.size());
     }
 
     QBuffer *indexBuffer(new QBuffer(QBuffer::IndexBuffer));
