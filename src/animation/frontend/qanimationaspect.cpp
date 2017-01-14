@@ -39,6 +39,10 @@
 
 #include "qanimationaspect.h"
 #include "qanimationaspect_p.h"
+#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/private/handler_p.h>
+#include <Qt3DAnimation/private/managers_p.h>
+#include <Qt3DAnimation/private/nodefunctor_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,6 +52,7 @@ namespace Qt3DAnimation {
 
 QAnimationAspectPrivate::QAnimationAspectPrivate()
     : QAbstractAspectPrivate()
+    , m_handler(new Animation::Handler)
 {
 }
 
@@ -74,6 +79,10 @@ QAnimationAspect::QAnimationAspect(QAnimationAspectPrivate &dd, QObject *parent)
     : QAbstractAspect(dd, parent)
 {
     setObjectName(QStringLiteral("Animation Aspect"));
+    Q_D(QAnimationAspect);
+    registerBackendType<QAnimationClip>(
+        QSharedPointer<Animation::NodeFunctor<Animation::AnimationClip, Animation::AnimationClipManager>>::create(d->m_handler.data(),
+                                                                                                                  d->m_handler->animationClipManager()));
 }
 
 /*! \internal */
@@ -86,9 +95,9 @@ QAnimationAspect::~QAnimationAspect()
  */
 QVector<QAspectJobPtr> QAnimationAspect::jobsToExecute(qint64 time)
 {
-    Q_UNUSED(time);
-    QVector<QAspectJobPtr> jobs;
-    return jobs;
+    Q_D(QAnimationAspect);
+    Q_ASSERT(d->m_handler);
+    return d->m_handler->jobsToExecute(time);
 }
 
 } // namespace Qt3DAnimation

@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QANIMATIONASPECT_P_H
-#define QT3DANIMATION_QANIMATIONASPECT_P_H
+#ifndef QT3DANIMATION_ANIMATION_NODEFUNCTOR_P_H
+#define QT3DANIMATION_ANIMATION_NODEFUNCTOR_P_H
 
 //
 //  W A R N I N G
@@ -51,30 +51,51 @@
 // We mean it.
 //
 
-#include <private/qabstractaspect_p.h>
+#include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
-
-class QAnimationAspect;
-
 namespace Animation {
-class Handler;
-}
 
-class QAnimationAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
+class Handler;
+
+template<class Backend, class Manager>
+class NodeFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
-    QAnimationAspectPrivate();
+    explicit NodeFunctor(Handler *handler, Manager *manager)
+        : m_handler(handler)
+        , m_manager(manager)
+    {
+    }
 
-    Q_DECLARE_PUBLIC(QAnimationAspect)
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_FINAL
+    {
+        Backend *backend = m_manager->getOrCreateResource(change->subjectId());
+        backend->setHandler(m_handler);
+        return backend;
+    }
 
-    QScopedPointer<Animation::Handler> m_handler;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL
+    {
+        return m_manager->lookupResource(id);
+    }
+
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL
+    {
+        m_manager->releaseResource(id);
+    }
+
+private:
+    Handler *m_handler;
+    Manager *m_manager;
 };
 
+} // namespace Animation
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_QANIMATIONASPECT_P_H
+#endif // QT3DANIMATION_ANIMATION_NODEFUNCTOR_P_H

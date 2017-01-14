@@ -46,6 +46,7 @@ namespace Animation {
 
 AnimationClip::AnimationClip()
     : Qt3DCore::QBackendNode(ReadOnly)
+    , m_handler(nullptr)
     , m_source()
 {
 }
@@ -60,6 +61,7 @@ void AnimationClip::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr
 void AnimationClip::cleanup()
 {
     setEnabled(false);
+    m_handler = nullptr;
     m_source.clear();
 }
 

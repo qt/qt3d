@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QANIMATIONASPECT_P_H
-#define QT3DANIMATION_QANIMATIONASPECT_P_H
+#ifndef QT3DANIMATION_ANIMATION_MANAGERS_P_H
+#define QT3DANIMATION_ANIMATION_MANAGERS_P_H
 
 //
 //  W A R N I N G
@@ -51,30 +51,32 @@
 // We mean it.
 //
 
-#include <private/qabstractaspect_p.h>
+#include <QtGlobal>
+#include <Qt3DAnimation/private/handle_types_p.h>
+#include <Qt3DAnimation/private/animationclip_p.h>
+
+#include <Qt3DCore/private/qresourcemanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
-
-class QAnimationAspect;
-
 namespace Animation {
-class Handler;
-}
 
-class QAnimationAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
+class AnimationClipManager : public Qt3DCore::QResourceManager<
+        AnimationClip,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy>
 {
 public:
-    QAnimationAspectPrivate();
-
-    Q_DECLARE_PUBLIC(QAnimationAspect)
-
-    QScopedPointer<Animation::Handler> m_handler;
+    AnimationClipManager() {}
 };
 
+} // namespace Animation
 } // namespace Qt3DAnimation
+
+Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::AnimationClip, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_QANIMATIONASPECT_P_H
+#endif // QT3DANIMATION_ANIMATION_MANAGERS_P_H

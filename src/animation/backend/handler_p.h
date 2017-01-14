@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_ANIMATION_ANIMATIONCLIP_P_H
-#define QT3DANIMATION_ANIMATION_ANIMATIONCLIP_P_H
+#ifndef QT3DANIMATION_ANIMATION_HANDLER_H
+#define QT3DANIMATION_ANIMATION_HANDLER_H
 
 //
 //  W A R N I N G
@@ -48,39 +48,45 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
-#include <QtCore/qurl.h>
+#include <QtGlobal>
+#include <Qt3DAnimation/private/handle_types_p.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DCore/qnodeid.h>
+#include <QtCore/qscopedpointer.h>
 
 QT_BEGIN_NAMESPACE
+
+#if defined(QT_BUILD_INTERNAL)
+class tst_Handler;
+#endif
 
 namespace Qt3DAnimation {
 namespace Animation {
 
-class Handler;
+class AnimationClip;
+class AnimationClipManager;
 
-class Q_AUTOTEST_EXPORT AnimationClip : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT Handler
 {
 public:
-    AnimationClip();
+    Handler();
+    ~Handler();
 
-    void cleanup();
-    void setSource(const QUrl &source) { m_source = source; }
-    QUrl source() const { return m_source; }
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    AnimationClipManager *animationClipManager() const Q_DECL_NOTHROW { return m_animationClipManager.data(); }
 
-    void setHandler(Handler *handler) { m_handler = handler; }
+    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time);
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    QScopedPointer<AnimationClipManager> m_animationClipManager;
 
-    Handler *m_handler;
-    QUrl m_source;
+#if defined(QT_BUILD_INTERNAL)
+    friend class QT_PREPEND_NAMESPACE(tst_Handler);
+#endif
 };
 
 } // namespace Animation
 } // namespace Qt3DAnimation
 
-
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_ANIMATION_ANIMATIONCLIP_P_H
+#endif // QT3DANIMATION_ANIMATION_HANDLER_H

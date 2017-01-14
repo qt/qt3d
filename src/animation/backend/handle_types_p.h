@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QANIMATIONASPECT_P_H
-#define QT3DANIMATION_QANIMATIONASPECT_P_H
+#ifndef QT3DANIMATION_ANIMATION_HANDLE_TYPES_P_H
+#define QT3DANIMATION_ANIMATION_HANDLE_TYPES_P_H
 
 //
 //  W A R N I N G
@@ -51,30 +51,20 @@
 // We mean it.
 //
 
-#include <private/qabstractaspect_p.h>
+#include <Qt3DCore/private/qhandle_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
-
-class QAnimationAspect;
-
 namespace Animation {
-class Handler;
-}
 
-class QAnimationAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
-{
-public:
-    QAnimationAspectPrivate();
+class AnimationClip;
 
-    Q_DECLARE_PUBLIC(QAnimationAspect)
+typedef Qt3DCore::QHandle<AnimationClip, 16> HAnimationClip;
 
-    QScopedPointer<Animation::Handler> m_handler;
-};
-
+} // namespace Animation
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_QANIMATIONASPECT_P_H
+#endif // QT3DANIMATION_ANIMATION_HANDLE_TYPES_P_H
