@@ -65,6 +65,10 @@ src_quick3d_imports_logic.file = $$PWD/quick3d/imports/logic/importslogic.pro
 src_quick3d_imports_logic.target = sub-quick3d-imports-logic
 src_quick3d_imports_logic.depends = src_logic
 
+src_quick3d_imports_animation.file = $$PWD/quick3d/imports/animation/importsanimation.pro
+src_quick3d_imports_animation.target = sub-quick3d-imports-animation
+src_quick3d_imports_animation.depends = src_animation src_quick3d_animation
+
 src_quick3d_imports_extras.file = $$PWD/quick3d/imports/extras/importsextras.pro
 src_quick3d_imports_extras.target = sub-quick3d-imports-extras
 src_quick3d_imports_extras.depends = src_extras src_quick3d_extras
@@ -96,6 +100,7 @@ SUBDIRS += \
     src_quick3d_imports_scene3d \
     src_quick3d_imports_input \
     src_quick3d_imports_logic \
+    src_quick3d_imports_animation \
     src_quick3d_imports_extras \
     src_plugins_sceneparsers \
     src_plugins_geometryloaders \
