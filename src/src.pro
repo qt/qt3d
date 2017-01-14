@@ -36,6 +36,10 @@ src_quick3d_input.subdir = $$PWD/quick3d/quick3dinput
 src_quick3d_input.target = sub-quick3d-input
 src_quick3d_input.depends = src_input src_quick3d_core
 
+src_quick3d_animation.subdir = $$PWD/quick3d/quick3danimation
+src_quick3d_animation.target = sub-quick3d-animation
+src_quick3d_animation.depends = src_animation src_quick3d_core src_quick3d_render
+
 src_quick3d_extras.subdir = $$PWD/quick3d/quick3dextras
 src_quick3d_extras.target = sub-quick3d-extras
 src_quick3d_extras.depends = src_render src_logic src_input src_quick3d_core
@@ -81,6 +85,7 @@ SUBDIRS += \
     src_quick3d_core_imports \
     src_quick3d_render \
     src_quick3d_input \
+    src_quick3d_animation \
     src_quick3d_extras \
     src_quick3d_imports_render \
     src_quick3d_imports_scene3d \
