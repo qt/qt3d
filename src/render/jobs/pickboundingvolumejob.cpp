@@ -260,7 +260,7 @@ bool PickBoundingVolumeJob::runHelper()
             }
 
             // Dispatch events based on hit results
-            dispatchPickEvents(event, sphereHits, eventButton, eventButtons, eventModifiers, trianglePickingRequested);
+            dispatchPickEvents(event, sphereHits, eventButton, eventButtons, eventModifiers, trianglePickingRequested, allHitsRequested);
         }
     }
 
@@ -293,7 +293,8 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                                                QPickEvent::Buttons eventButton,
                                                int eventButtons,
                                                int eventModifiers,
-                                               bool trianglePickingRequested)
+                                               bool trianglePickingRequested,
+                                               bool allHitsRequested)
 {
     ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
     // If we have hits
@@ -302,9 +303,6 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
 
         // How do we differentiate betwnee an Entity with no GeometryRenderer and one with one, both having
         // an ObjectPicker component when it comes
-
-        // We want to gather hits against triangles
-        // build a triangle based bounding volume
 
         for (const QCollisionQueryResult::Hit &hit : qAsConst(sphereHits)) {
             Entity *entity = m_manager->renderNodesManager()->lookupResource(hit.m_entityId);
@@ -320,6 +318,14 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
 
             ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
             if (objectPicker != nullptr && objectPicker->isEnabled()) {
+
+                if (lastCurrentPicker && !allHitsRequested) {
+                    // if there is a current picker, it will "grab" all events until released.
+                    // Clients should test that entity is what they expect (or only use
+                    // world coordinates)
+                    objectPicker = lastCurrentPicker;
+                }
+
                 // Send the corresponding event
                 QVector3D localIntersection = hit.m_intersection;
                 if (entity && entity->worldTransform())
