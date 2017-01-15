@@ -63,8 +63,18 @@ Q_DECLARE_TYPEINFO(FilterPriorityPair, Q_PRIMITIVE_TYPE);
 namespace Qt3DCore {
 
 namespace {
-    class InternalEventListener;
-}
+
+class InternalEventListener : public QObject
+{
+    Q_OBJECT
+public:
+    explicit InternalEventListener(QEventFilterServicePrivate *filterService, QObject *parent = nullptr);
+    bool eventFilter(QObject *obj, QEvent *e) Q_DECL_FINAL;
+    QEventFilterServicePrivate* m_filterService;
+};
+
+} // anonymous
+
 
 class QEventFilterServicePrivate : public QAbstractServiceProviderPrivate
 {
@@ -102,34 +112,6 @@ public:
     QScopedPointer<InternalEventListener> m_eventDispatcher;
     QVector<FilterPriorityPair> m_eventFilters;
 };
-
-namespace {
-
-class InternalEventListener : public QObject
-{
-    Q_OBJECT
-public:
-    explicit InternalEventListener(QEventFilterServicePrivate *filterService, QObject *parent = nullptr)
-        : QObject(parent)
-        , m_filterService(filterService)
-    {
-    }
-
-    bool eventFilter(QObject *obj, QEvent *e) Q_DECL_FINAL
-    {
-        for (int i = m_filterService->m_eventFilters.size() - 1; i >= 0; --i) {
-            const FilterPriorityPair &fPPair = m_filterService->m_eventFilters.at(i);
-            if (fPPair.filter->eventFilter(obj, e))
-                return true;
-        }
-        return false;
-    }
-
-    QEventFilterServicePrivate* m_filterService;
-};
-
-} // anonymous
-
 
 /* !\internal
     \class Qt3DCore::QEventFilterService
@@ -181,6 +163,25 @@ void QEventFilterService::unregisterEventFilter(QObject *eventFilter)
 {
     Q_D(QEventFilterService);
     d->unregisterEventFilter(eventFilter);
+}
+
+namespace{
+
+InternalEventListener::InternalEventListener(QEventFilterServicePrivate *filterService, QObject *parent)
+    : QObject(parent),
+      m_filterService(filterService)
+{
+}
+
+bool InternalEventListener::eventFilter(QObject *obj, QEvent *e)
+{
+    for (int i = m_filterService->m_eventFilters.size() - 1; i >= 0; --i) {
+        const FilterPriorityPair &fPPair = m_filterService->m_eventFilters.at(i);
+        if (fPPair.filter->eventFilter(obj, e))
+            return true;
+    }
+    return false;
+}
 }
 
 } // Qt3DCore
