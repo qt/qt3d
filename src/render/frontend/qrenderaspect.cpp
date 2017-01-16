@@ -152,7 +152,7 @@ namespace Qt3DRender {
 /*! \internal */
 QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     : QAbstractAspectPrivate()
-    , m_nodeManagers(new Render::NodeManagers())
+    , m_nodeManagers(nullptr)
     , m_renderer(nullptr)
     , m_initialized(false)
     , m_renderType(type)
@@ -443,6 +443,7 @@ void QRenderAspect::onRegistered()
     // using a threaded renderer, this blocks until the render thread has been created
     // and started.
     Q_D(QRenderAspect);
+    d->m_nodeManagers = new Render::NodeManagers();
     d->m_renderer = new Render::Renderer(d->m_renderType);
     d->m_renderer->setNodeManagers(d->m_nodeManagers);
 
@@ -485,6 +486,9 @@ void QRenderAspect::onUnregistered()
     }
 
     d->unregisterBackendTypes();
+
+    delete d->m_nodeManagers;
+    d->m_nodeManagers = nullptr;
 
     // Waits for the render thread to join (if using threaded renderer)
     delete d->m_renderer;
