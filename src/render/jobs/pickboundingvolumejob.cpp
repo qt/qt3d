@@ -104,6 +104,7 @@ PickBoundingVolumeJob::PickBoundingVolumeJob()
     , m_node(nullptr)
     , m_frameGraphRoot(nullptr)
     , m_renderSettings(nullptr)
+    , m_pickersDirty(true)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::PickBoundingVolume, 0);
 }
@@ -150,16 +151,54 @@ bool PickBoundingVolumeJob::runHelper()
     if (mouseEvents.empty())
         return false;
 
-    // bail out early if no picker is enabled
-    bool oneEnabledAtLeast = false;
-    for (auto handle: m_manager->objectPickerManager()->activeHandles()) {
-        if (m_manager->objectPickerManager()->data(handle)->isEnabled()) {
-            oneEnabledAtLeast = true;
-            break;
+    // Quickly look which picker settings we've got
+    if (m_pickersDirty) {
+        m_pickersDirty = false;
+        m_oneEnabledAtLeast = false;
+        m_oneHoverAtLeast = false;
+
+        for (auto handle : m_manager->objectPickerManager()->activeHandles()) {
+            auto picker = m_manager->objectPickerManager()->data(handle);
+            m_oneEnabledAtLeast |= picker->isEnabled();
+            m_oneHoverAtLeast |= picker->isHoverEnabled();
+            if (m_oneEnabledAtLeast && m_oneHoverAtLeast)
+                break;
         }
     }
-    if (!oneEnabledAtLeast)
+
+    // bail out early if no picker is enabled
+    if (!m_oneEnabledAtLeast)
         return false;
+
+    bool hasMoveEvent = false;
+    bool hasOtherEvent = false;
+    // Quickly look which types of events we've got
+    for (const QMouseEvent &event : mouseEvents) {
+        const bool isMove = (event.type() == QEvent::MouseMove);
+        hasMoveEvent |= isMove;
+        hasOtherEvent |= !isMove;
+    }
+
+    // In the case we have a move event, find if we actually have
+    // an object picker that cares about these
+    if (!hasOtherEvent) {
+        // Retrieve the last used object picker
+        ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
+
+        // The only way to set lastCurrentPicker is to click
+        // so we can return since if we're there it means we
+        // have only move events. But keep on if hover support
+        // is needed
+        if (lastCurrentPicker == nullptr && !m_oneHoverAtLeast)
+            return false;
+
+        const bool caresAboutMove = (hasMoveEvent &&
+                                      (m_oneHoverAtLeast ||
+                                        (lastCurrentPicker && lastCurrentPicker->isDragEnabled())));
+        // Early return if the current object picker doesn't care about move events
+        if (!caresAboutMove)
+            return false;
+    }
 
     PickingUtils::ViewportCameraAreaGatherer vcaGatherer;
     // TO DO: We could cache this and only gather when we know the FrameGraph tree has changed
@@ -236,6 +275,11 @@ bool PickBoundingVolumeJob::runHelper()
 void PickBoundingVolumeJob::setManagers(NodeManagers *manager)
 {
     m_manager = manager;
+}
+
+void PickBoundingVolumeJob::markPickersDirty()
+{
+    m_pickersDirty = true;
 }
 
 void PickBoundingVolumeJob::run()

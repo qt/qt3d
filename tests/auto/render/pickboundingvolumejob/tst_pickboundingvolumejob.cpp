@@ -438,8 +438,6 @@ private Q_SLOTS:
 
     void checkEarlyReturnWhenMoveEventsAndNoCurrentPickers()
     {
-        QSKIP("Disabled following removal of early return checks");
-
         // GIVEN
         QmlSceneReader sceneReader(QUrl("qrc:/testscene_dragenabled.qml"));
         QScopedPointer<Qt3DCore::QNode> root(qobject_cast<Qt3DCore::QNode *>(sceneReader.root()));
@@ -541,15 +539,11 @@ private Q_SLOTS:
 
     void checkEarlyReturnWhenMoveEventsAndDragDisabledPickers_data()
     {
-        QSKIP("Disabled following removal of early return checks");
-
         generateAllPickingSettingsCombinations();
     }
 
     void checkEarlyReturnWhenMoveEventsAndDragDisabledPickers()
     {
-        QSKIP("Disabled following removal of early return checks");
-
         // GIVEN
         QmlSceneReader sceneReader(QUrl("qrc:/testscene_dragdisabled.qml"));
         QScopedPointer<Qt3DCore::QNode> root(qobject_cast<Qt3DCore::QNode *>(sceneReader.root()));
