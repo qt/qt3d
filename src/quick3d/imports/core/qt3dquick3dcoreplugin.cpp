@@ -38,13 +38,15 @@
 ****************************************************************************/
 
 #include "qt3dquick3dcoreplugin.h"
+
 #include <Qt3DCore/qtransform.h>
-#include <private/quick3dentity_p.h>
-#include <private/quick3dentityloader_p.h>
-#include <private/quick3dnodeinstantiator_p.h>
-#include <private/qquaternionanimation_p.h>
-#include <private/qt3dquick_global_p.h>
 #include <QtCore/qvariantanimation.h>
+
+#include <Qt3DQuick/private/quick3dentity_p.h>
+#include <Qt3DQuick/private/quick3dentityloader_p.h>
+#include <Qt3DQuick/private/quick3dnodeinstantiator_p.h>
+#include <Qt3DQuick/private/qquaternionanimation_p.h>
+#include <Qt3DQuick/private/qt3dquick_global_p.h>
 
 QT_BEGIN_NAMESPACE
 

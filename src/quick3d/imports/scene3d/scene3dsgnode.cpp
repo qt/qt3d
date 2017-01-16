@@ -38,9 +38,10 @@
 ****************************************************************************/
 
 #include "scene3dsgnode_p.h"
-#include "scene3dlogging_p.h"
 
 #include <QtCore/qthread.h>
+
+#include <scene3dlogging_p.h>
 
 QT_BEGIN_NAMESPACE
 

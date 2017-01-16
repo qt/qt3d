@@ -38,18 +38,19 @@
 ****************************************************************************/
 
 #include "qt3dquick3dextrasplugin.h"
-#include <Qt3DExtras/qcuboidmesh.h>
-#include <Qt3DExtras/qconemesh.h>
-#include <Qt3DExtras/qcylindermesh.h>
-#include <Qt3DExtras/qplanemesh.h>
-#include <Qt3DExtras/qspheremesh.h>
-#include <Qt3DExtras/qtorusmesh.h>
-#include <Qt3DExtras/qtorusgeometry.h>
-#include <Qt3DExtras/qspheregeometry.h>
-#include <Qt3DExtras/qcuboidgeometry.h>
-#include <Qt3DExtras/qplanegeometry.h>
+
 #include <Qt3DExtras/qconegeometry.h>
+#include <Qt3DExtras/qconemesh.h>
+#include <Qt3DExtras/qcuboidgeometry.h>
+#include <Qt3DExtras/qcuboidmesh.h>
 #include <Qt3DExtras/qcylindergeometry.h>
+#include <Qt3DExtras/qcylindermesh.h>
+#include <Qt3DExtras/qplanegeometry.h>
+#include <Qt3DExtras/qplanemesh.h>
+#include <Qt3DExtras/qspheregeometry.h>
+#include <Qt3DExtras/qspheremesh.h>
+#include <Qt3DExtras/qtorusgeometry.h>
+#include <Qt3DExtras/qtorusmesh.h>
 #include <QtQml/qqml.h>
 
 QT_BEGIN_NAMESPACE

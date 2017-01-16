@@ -51,8 +51,8 @@
 // We mean it.
 //
 
-#include <QQuickItem>
 #include <QtCore/qpointer.h>
+#include <QtQuick/QQuickItem>
 
 QT_BEGIN_NAMESPACE
 
