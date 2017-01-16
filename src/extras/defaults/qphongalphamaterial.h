@@ -41,10 +41,10 @@
 #define QT3DEXTRAS_QPHONGALPHAMATERIAL_H
 
 #include <Qt3DExtras/qt3dextras_global.h>
-#include <Qt3DRender/qmaterial.h>
-#include <Qt3DRender/qblendequationarguments.h>
 #include <Qt3DRender/qblendequation.h>
-#include <QColor>
+#include <Qt3DRender/qblendequationarguments.h>
+#include <Qt3DRender/qmaterial.h>
+#include <QtGui/QColor>
 
 QT_BEGIN_NAMESPACE
 

@@ -38,7 +38,8 @@
 ****************************************************************************/
 
 #include "qplanemesh.h"
-#include "qplanegeometry.h"
+
+#include <Qt3DExtras/qplanegeometry.h>
 
 QT_BEGIN_NAMESPACE
 

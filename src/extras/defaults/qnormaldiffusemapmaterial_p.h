@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DRender/private/qmaterial_p.h>
+#include <private/qmaterial_p.h>
 
 QT_BEGIN_NAMESPACE
 

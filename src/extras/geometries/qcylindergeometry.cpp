@@ -43,11 +43,14 @@
 
 #include "qcylindergeometry.h"
 #include "qcylindergeometry_p.h"
+
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/qattribute.h>
+#include <QtGui/QVector3D>
+
 #include <qmath.h>
-#include <QVector3D>
+
 
 QT_BEGIN_NAMESPACE
 

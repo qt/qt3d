@@ -39,6 +39,7 @@
 
 #include "qphongalphamaterial.h"
 #include "qphongalphamaterial_p.h"
+
 #include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qeffect.h>
@@ -50,9 +51,9 @@
 #include <Qt3DRender/qblendequation.h>
 #include <Qt3DRender/qblendequationarguments.h>
 #include <Qt3DRender/qnodepthmask.h>
-#include <QUrl>
-#include <QVector3D>
-#include <QVector4D>
+#include <QtCore/QUrl>
+#include <QtGui/QVector3D>
+#include <QtGui/QVector4D>
 
 QT_BEGIN_NAMESPACE
 

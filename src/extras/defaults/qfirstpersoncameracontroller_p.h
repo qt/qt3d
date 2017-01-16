@@ -51,9 +51,11 @@
 #ifndef QT3DEXTRAS_QFIRSTPERSONCAMERACONTROLLER_P_H
 #define QT3DEXTRAS_QFIRSTPERSONCAMERACONTROLLER_P_H
 
+#include <Qt3DExtras/qfirstpersoncameracontroller.h>
+#include <QtGui/QVector3D>
+
 #include <Qt3DCore/private/qentity_p.h>
-#include <QVector3D>
-#include "qfirstpersoncameracontroller.h"
+
 
 //
 //  W A R N I N G

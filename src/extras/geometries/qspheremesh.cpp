@@ -39,7 +39,8 @@
 ****************************************************************************/
 
 #include "qspheremesh.h"
-#include "qspheregeometry.h"
+
+#include <Qt3DExtras/qspheregeometry.h>
 
 QT_BEGIN_NAMESPACE
 

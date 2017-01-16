@@ -51,8 +51,8 @@
 #ifndef QT3DWINDOW_H
 #define QT3DWINDOW_H
 
-#include <QWindow>
 #include <Qt3DExtras/qt3dextras_global.h>
+#include <QtGui/QWindow>
 
 QT_BEGIN_NAMESPACE
 
