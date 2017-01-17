@@ -72,8 +72,16 @@ namespace Quick {
     \ingroup
     \instantiates Qt3DRender::QScene2D
     \brief Scene2D
- *
  */
+
+/*!
+    \enum QScene2D::RenderPolicy
+
+    This enum type describes types of render policies available.
+    \value Continuous The Scene2D is rendering continuously. This is the default render policy.
+    \value SingleShot The Scene2D renders to the texture only once after which the resources
+                      allocated for rendering are released.
+*/
 
 /*!
     \qmlproperty RenderTargetOutput Qt3D.Render::Scene2D::output
@@ -86,10 +94,8 @@ namespace Quick {
  */
 
 /*!
-    \qmlproperty bool Qt3D.Render::Scene2D::renderOnce
-    Holds whether the first rendered image to the texture is also the last, after which the
-    renderer releases resources needed for the rendering and the rendering is no longer possible
-    with this Scene2D object.
+    \qmlproperty enumeration Qt3D.Render::Scene2D::renderPolicy
+    Holds the render policy of this Scene2D.
  */
 
 /*!
@@ -232,7 +238,7 @@ Scene2DManager::Scene2DManager(QScene2DPrivate *priv)
     , m_initialized(false)
     , m_renderSyncRequested(false)
     , m_sharedObject(new Scene2DSharedObject(this))
-    , m_renderOnce(false)
+    , m_renderPolicy(QScene2D::Continuous)
     , m_backendInitialized(false)
     , m_noSourceMode(false)
     , m_item(nullptr)
@@ -607,26 +613,22 @@ void QScene2D::setItem(QQuickItem *item)
 }
 
 /*!
-    \property QScene2D::renderOnce
-    \brief Property to specify if the texture will be rendered only once.
+    \property QScene2D::renderPolicy
 
-    This property specifies that the texture will be rendered only one time.
-    Once the rendering has been done, resources reserved for rendering will be
-    released and the QScene2D will become unusable.
-    If set to false, which is the default, the rendering is continuous.
+    Holds the render policy of this Scene2D.
  */
-bool QScene2D::renderOnce() const
+QScene2D::RenderPolicy QScene2D::renderPolicy() const
 {
     Q_D(const QScene2D);
-    return d->m_renderManager->m_renderOnce;
+    return d->m_renderManager->m_renderPolicy;
 }
 
-void QScene2D::setRenderOnce(bool once)
+void QScene2D::setRenderPolicy(QScene2D::RenderPolicy renderPolicy)
 {
     Q_D(const QScene2D);
-    if (d->m_renderManager->m_renderOnce != once) {
-        d->m_renderManager->m_renderOnce = once;
-        emit renderOnceChanged(once);
+    if (d->m_renderManager->m_renderPolicy != renderPolicy) {
+        d->m_renderManager->m_renderPolicy = renderPolicy;
+        emit renderPolicyChanged(renderPolicy);
     }
 }
 
@@ -659,7 +661,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QScene2D::createNodeCreationChange() const
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QScene2DData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QScene2D);
-    data.renderOnce = d->m_renderManager->m_renderOnce;
+    data.renderPolicy = d->m_renderManager->m_renderPolicy;
     data.sharedObject = d->m_renderManager->m_sharedObject;
     data.output = d->m_output ? d->m_output->id() : Qt3DCore::QNodeId();
     return creationChange;

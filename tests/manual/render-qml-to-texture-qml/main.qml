@@ -71,7 +71,6 @@ QQ2.Item {
 
             Scene2D {
                 id: qmlTexture
-                renderOnce: false
                 output: RenderTargetOutput {
                     attachmentPoint: RenderTargetOutput.Color0
                     texture: Texture2D {

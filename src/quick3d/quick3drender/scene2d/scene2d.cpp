@@ -109,7 +109,7 @@ Scene2D::Scene2D()
     , m_renderThread(nullptr)
     , m_initialized(false)
     , m_renderInitialized(false)
-    , m_renderOnce(false)
+    , m_renderPolicy(Qt3DRender::Quick::QScene2D::Continuous)
     , m_fbo(0)
     , m_rbo(0)
 {
@@ -160,7 +160,7 @@ void Scene2D::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chan
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QScene2DData>>(change);
     const auto &data = typedChange->data;
-    m_renderOnce = data.renderOnce;
+    m_renderPolicy = data.renderPolicy;
     setSharedObject(data.sharedObject);
     setOutput(data.output);
     m_shareContext = renderer()->shareContext();
@@ -171,9 +171,9 @@ void Scene2D::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     if (e->type() == Qt3DCore::PropertyUpdated) {
         Qt3DCore::QPropertyUpdatedChangePtr propertyChange
                 = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("renderOnce"))
-            m_renderOnce = propertyChange->value().toBool();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("output")) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("renderPolicy")) {
+            m_renderPolicy = propertyChange->value().value<QScene2D::RenderPolicy>();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("output")) {
             Qt3DCore::QNodeId outputId = propertyChange->value().value<Qt3DCore::QNodeId>();
             setOutput(outputId);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("sharedObject")) {
@@ -299,7 +299,7 @@ void Scene2D::render()
             m_sharedObject->m_quickWindow->setRenderTarget(m_fbo, m_textureSize);
 
         // Call disallow rendering while mutex is locked
-        if (m_renderOnce)
+        if (m_renderPolicy == QScene2D::SingleShot)
             m_sharedObject->disallowRender();
 
         // Sync
@@ -314,7 +314,7 @@ void Scene2D::render()
         m_sharedObject->m_renderControl->render();
 
         // Tell main thread we are done so it can begin cleanup if this is final frame
-        if (m_renderOnce)
+        if (m_renderPolicy == QScene2D::SingleShot)
             QCoreApplication::postEvent(m_sharedObject->m_renderManager, new QEvent(RENDERED));
 
         m_sharedObject->m_quickWindow->resetOpenGLState();

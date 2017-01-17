@@ -49,6 +49,7 @@
 //
 
 #include <Qt3DCore/qnodeid.h>
+#include <Qt3DQuickRender/qscene2d.h>
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QSemaphore>
@@ -114,7 +115,7 @@ public:
 
     bool m_initialized;
     bool m_renderInitialized;
-    bool m_renderOnce;
+    Qt3DRender::Quick::QScene2D::RenderPolicy m_renderPolicy;
 };
 
 } // Quick

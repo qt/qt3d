@@ -156,7 +156,7 @@ public:
 
 struct QScene2DData
 {
-    bool renderOnce;
+    QScene2D::RenderPolicy renderPolicy;
     Scene2DSharedObjectPtr sharedObject;
     Qt3DCore::QNodeId output;
 };
@@ -179,11 +179,11 @@ public:
     QUrl m_source;
     Qt3DCore::QNodeId m_id;
     QMetaObject::Connection m_connection;
+    QScene2D::RenderPolicy m_renderPolicy;
 
     bool m_requested;
     bool m_initialized;
     bool m_renderSyncRequested;
-    bool m_renderOnce;
     bool m_backendInitialized;
     bool m_noSourceMode;
     bool m_ownEngine;

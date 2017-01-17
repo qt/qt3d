@@ -103,7 +103,6 @@ int main(int argc, char *argv[])
 
     qmlTextureRenderer->setOutput(output);
     qmlTextureRenderer->setSource(QUrl(QStringLiteral("qrc:/OffscreenGui.qml")));
-//    qmlTextureRenderer->setRenderOnce(true);
 
     Qt3DCore::QEntity* planeEntity = new Qt3DCore::QEntity(sceneRoot);
     Qt3DExtras::QPlaneMesh* planeMesh = new Qt3DExtras::QPlaneMesh(planeEntity);
