@@ -7,5 +7,8 @@ SUBDIRS += \
 qtConfig(private_tests) {
     SUBDIRS += \
         animationclip \
-        qabstractclipblendnode
+        qabstractclipblendnode \
+        fcurve \
+        functionrangefinder \
+        bezierevaluator
 }
