@@ -50,7 +50,8 @@
 // We mean it.
 //
 
-#include <Qt3DInput/qabstractactioninput.h>
+#include "qabstractactioninput.h"
+
 #include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE

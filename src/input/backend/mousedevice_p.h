@@ -51,8 +51,9 @@
 // We mean it.
 //
 
+#include <Qt3DInput/QMouseEvent>
+
 #include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
-#include <QMouseEvent>
 
 QT_BEGIN_NAMESPACE
 

@@ -38,11 +38,13 @@
 ****************************************************************************/
 
 #include "physicaldeviceproxy_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
+
 #include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DInput/private/qabstractphysicaldeviceproxy_p_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <QtCore/QCoreApplication>
+
 #include <Qt3DInput/private/inputmanagers_p.h>
-#include <QCoreApplication>
+#include <Qt3DInput/private/qabstractphysicaldeviceproxy_p_p.h>
 
 QT_BEGIN_NAMESPACE
 

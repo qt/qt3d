@@ -38,11 +38,13 @@
 ****************************************************************************/
 
 #include "buttonaxisinput_p.h"
+
 #include <Qt3DInput/qbuttonaxisinput.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+
 #include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
 #include <Qt3DInput/private/qbuttonaxisinput_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DInput/private/utils_p.h>
 
 QT_BEGIN_NAMESPACE

@@ -39,6 +39,7 @@
 
 #include "qinputsettings.h"
 #include "qinputsettings_p.h"
+
 #include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE

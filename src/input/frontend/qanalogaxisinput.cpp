@@ -39,6 +39,7 @@
 
 #include "qanalogaxisinput.h"
 #include "qanalogaxisinput_p.h"
+
 #include <Qt3DInput/qabstractphysicaldevice.h>
 
 QT_BEGIN_NAMESPACE

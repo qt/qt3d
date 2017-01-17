@@ -40,9 +40,9 @@
 #ifndef QT3DINPUT_QACTIONINPUT_H
 #define QT3DINPUT_QACTIONINPUT_H
 
+#include <Qt3DInput/qabstractactioninput.h>
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DCore/qnode.h>
-#include <Qt3DInput/qabstractactioninput.h>
 
 QT_BEGIN_NAMESPACE
 

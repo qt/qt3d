@@ -51,13 +51,13 @@
 // We mean it.
 //
 
-#include <QtGlobal>
+#include <QtCore/QtGlobal>
+
 #include <Qt3DInput/private/handle_types_p.h>
 #include <Qt3DInput/private/keyboarddevice_p.h>
 #include <Qt3DInput/private/keyboardhandler_p.h>
 #include <Qt3DInput/private/mousehandler_p.h>
 #include <Qt3DInput/private/mousedevice_p.h>
-#include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DInput/private/actioninput_p.h>
 #include <Qt3DInput/private/inputsequence_p.h>
 #include <Qt3DInput/private/inputchord_p.h>
@@ -70,6 +70,7 @@
 #include <Qt3DInput/private/logicaldevice_p.h>
 #include <Qt3DInput/private/genericdevicebackendnode_p.h>
 #include <Qt3DInput/private/physicaldeviceproxy_p.h>
+#include <Qt3DCore/private/qresourcemanager_p.h>
 
 QT_BEGIN_NAMESPACE
 

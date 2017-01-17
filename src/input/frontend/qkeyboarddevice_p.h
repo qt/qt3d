@@ -51,10 +51,11 @@
 // We mean it.
 //
 
-#include <private/qabstractphysicaldevice_p.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/qhash.h>
 #include <QtCore/qstring.h>
+
+#include <Qt3DInput/private/qabstractphysicaldevice_p.h>
 
 QT_BEGIN_NAMESPACE
 

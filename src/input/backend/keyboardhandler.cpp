@@ -38,13 +38,15 @@
 ****************************************************************************/
 
 #include "keyboardhandler_p.h"
+
+#include <Qt3DInput/qkeyboarddevice.h>
 #include <Qt3DInput/qkeyboardhandler.h>
-#include <Qt3DInput/private/qkeyboardhandler_p.h>
-#include "qkeyboarddevice.h"
-#include "inputhandler_p.h"
-#include "inputmanagers_p.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <QVariant>
+#include <QtCore/QVariant>
+
+#include <Qt3DInput/private/inputhandler_p.h>
+#include <Qt3DInput/private/inputmanagers_p.h>
+#include <Qt3DInput/private/qkeyboardhandler_p.h>
 
 QT_BEGIN_NAMESPACE
 
