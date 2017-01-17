@@ -51,9 +51,10 @@
 // We mean it.
 //
 
+#include <QtCore/qsharedpointer.h>
+
 #include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DLogic/private/callbackjob_p.h>
-#include <QtCore/qsharedpointer.h>
 
 QT_BEGIN_NAMESPACE
 

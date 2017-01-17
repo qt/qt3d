@@ -38,10 +38,12 @@
 ****************************************************************************/
 
 #include "executor_p.h"
+
 #include <Qt3DLogic/qframeaction.h>
 #include <Qt3DCore/qnode.h>
-#include <Qt3DCore/private/qscene_p.h>
 #include <QtCore/qsemaphore.h>
+
+#include <Qt3DCore/private/qscene_p.h>
 
 QT_BEGIN_NAMESPACE
 
