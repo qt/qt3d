@@ -61,7 +61,7 @@ TrianglesExtractor::TrianglesExtractor(GeometryRenderer *renderer, NodeManagers 
 {
 }
 
-QVector<QBoundingVolume *> TrianglesExtractor::extract(const Qt3DCore::QNodeId id)
+QVector<RayCasting::QBoundingVolume *> TrianglesExtractor::extract(const Qt3DCore::QNodeId id)
 {
     qDeleteAll(m_volumes);
     apply(m_renderer, id);

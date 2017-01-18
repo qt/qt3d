@@ -39,6 +39,7 @@
 using namespace Qt3DCore;
 using namespace Qt3DRender;
 using namespace Qt3DRender::Render;
+using namespace Qt3DRender::RayCasting;
 
 class tst_RayCasting : public QObject
 {

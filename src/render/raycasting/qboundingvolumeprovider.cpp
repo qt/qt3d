@@ -43,13 +43,14 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+namespace RayCasting {
 
 QBoundingVolumeProvider::~QBoundingVolumeProvider()
 {
 
 }
 
-
+} // RayCasting
 } // Qt3DRender
 
 QT_END_NAMESPACE

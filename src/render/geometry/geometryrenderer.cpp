@@ -209,13 +209,13 @@ void GeometryRenderer::unsetDirty()
 }
 
 
-void GeometryRenderer::setTriangleVolumes(const QVector<QBoundingVolume *> &volumes)
+void GeometryRenderer::setTriangleVolumes(const QVector<RayCasting::QBoundingVolume *> &volumes)
 {
     qDeleteAll(m_triangleVolumes);
     m_triangleVolumes = volumes;
 }
 
-QVector<QBoundingVolume *> GeometryRenderer::triangleData() const
+QVector<RayCasting::QBoundingVolume *> GeometryRenderer::triangleData() const
 {
     return m_triangleVolumes;
 }

@@ -59,6 +59,7 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+namespace RayCasting {
 
 class QT3DRENDERSHARED_EXPORT QRay3D
 {
@@ -97,7 +98,7 @@ private:
     QVector3D m_direction;
     float m_distance;
 };
-QT3D_DECLARE_TYPEINFO(Qt3DRender, QRay3D, Q_MOVABLE_TYPE)
+QT3D_DECLARE_TYPEINFO_2(Qt3DRender, RayCasting, QRay3D, Q_MOVABLE_TYPE)
 
 
 #ifndef QT_NO_DEBUG_STREAM
@@ -109,15 +110,16 @@ QT3DRENDERSHARED_EXPORT QDataStream &operator<<(QDataStream &stream, const QRay3
 QT3DRENDERSHARED_EXPORT QDataStream &operator>>(QDataStream &stream, QRay3D &ray);
 #endif
 
+} // namespace RayCasting
 } // namespace Qt3DRender
 QT_END_NAMESPACE
 
-inline bool qFuzzyCompare(const Qt3DRender::QRay3D &ray1, const Qt3DRender::QRay3D &ray2)
+inline bool qFuzzyCompare(const Qt3DRender::RayCasting::QRay3D &ray1, const Qt3DRender::RayCasting::QRay3D &ray2)
 {
     return qFuzzyCompare(ray1.origin(), ray2.origin()) &&
            qFuzzyCompare(ray1.direction(), ray2.direction());
 }
 
-Q_DECLARE_METATYPE(Qt3DRender::QRay3D) // LCOV_EXCL_LINE
+Q_DECLARE_METATYPE(Qt3DRender::RayCasting::QRay3D) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_QRAY3D_H

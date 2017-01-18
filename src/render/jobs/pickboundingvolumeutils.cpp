@@ -51,6 +51,7 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+using namespace Qt3DRender::RayCasting;
 
 namespace Render {
 
@@ -204,12 +205,12 @@ AbstractCollisionGathererFunctor::result_type AbstractCollisionGathererFunctor::
         return result_type();   // don't bother picking entities that don't
                                 // have an object picker, or if it's disabled
 
-    Qt3DRender::QRayCastingService rayCasting;
+    RayCasting::QRayCastingService rayCasting;
 
     return pick(&rayCasting, entity);
 }
 
-AbstractCollisionGathererFunctor::result_type EntityCollisionGathererFunctor::pick(QAbstractCollisionQueryService *rayCasting, const Entity *entity) const
+AbstractCollisionGathererFunctor::result_type EntityCollisionGathererFunctor::pick(RayCasting::QAbstractCollisionQueryService *rayCasting, const Entity *entity) const
 {
     result_type result;
 
@@ -220,7 +221,7 @@ AbstractCollisionGathererFunctor::result_type EntityCollisionGathererFunctor::pi
     return result;
 }
 
-AbstractCollisionGathererFunctor::result_type TriangleCollisionGathererFunctor::pick(QAbstractCollisionQueryService *rayCasting, const Entity *entity) const
+AbstractCollisionGathererFunctor::result_type TriangleCollisionGathererFunctor::pick(RayCasting::QAbstractCollisionQueryService *rayCasting, const Entity *entity) const
 {
     result_type result;
 
@@ -246,7 +247,7 @@ AbstractCollisionGathererFunctor::result_type TriangleCollisionGathererFunctor::
     return result;
 }
 
-bool TriangleCollisionGathererFunctor::rayHitsEntity(QAbstractCollisionQueryService *rayCasting, const Entity *entity) const
+bool TriangleCollisionGathererFunctor::rayHitsEntity(RayCasting::QAbstractCollisionQueryService *rayCasting, const Entity *entity) const
 {
     const QCollisionQueryResult::Hit queryResult = rayCasting->query(m_ray, entity->worldBoundingVolume());
     return queryResult.m_distance >= 0.f;

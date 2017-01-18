@@ -68,9 +68,6 @@ class QNodeId;
 }
 
 namespace Qt3DRender {
-
-class QAbstractCollisionQueryService;
-
 namespace Render {
 
 class Entity;
@@ -89,10 +86,10 @@ public:
     void setRenderSettings(RenderSettings *settings);
     void setManagers(NodeManagers *manager);
 
-    static QRay3D intersectionRay(const QPoint &pos,
-                                  const QMatrix4x4 &viewMatrix,
-                                  const QMatrix4x4 &projectionMatrix,
-                                  const QRect &viewport);
+    static RayCasting::QRay3D intersectionRay(const QPoint &pos,
+                                              const QMatrix4x4 &viewMatrix,
+                                              const QMatrix4x4 &projectionMatrix,
+                                              const QRect &viewport);
 
     // For unit tests
     inline HObjectPicker currentPicker() const { return m_currentPicker; }
@@ -117,10 +114,10 @@ private:
                              QMatrix4x4 &viewMatrix,
                              QMatrix4x4 &projectionMatrix) const;
     QRect windowViewport(const QSize &area, const QRectF &relativeViewport) const;
-    QRay3D rayForViewportAndCamera(const QSize &area,
-                                   const QPoint &pos,
-                                   const QRectF &relativeViewport,
-                                   Qt3DCore::QNodeId cameraId) const;
+    RayCasting::QRay3D rayForViewportAndCamera(const QSize &area,
+                                               const QPoint &pos,
+                                               const QRectF &relativeViewport,
+                                               const Qt3DCore::QNodeId cameraId) const;
     void clearPreviouslyHoveredPickers();
     HObjectPicker m_currentPicker;
     QVector<HObjectPicker> m_hoveredPickers;

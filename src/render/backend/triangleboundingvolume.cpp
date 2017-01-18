@@ -48,7 +48,7 @@ namespace Render {
 
 // Note: a, b, c in clockwise order
 // RealTime Collision Detection page 192
-bool intersectsSegmentTriangle(const QRay3D &ray,
+bool intersectsSegmentTriangle(const RayCasting::QRay3D &ray,
                                const QVector3D &a,
                                const QVector3D &b,
                                const QVector3D &c,
@@ -112,7 +112,7 @@ Qt3DCore::QNodeId TriangleBoundingVolume::id() const
     return m_id;
 }
 
-bool TriangleBoundingVolume::intersects(const QRay3D &ray, QVector3D *q) const
+bool TriangleBoundingVolume::intersects(const RayCasting::QRay3D &ray, QVector3D *q) const
 {
     float t = 0.0f;
     QVector3D uvw;
@@ -124,9 +124,9 @@ bool TriangleBoundingVolume::intersects(const QRay3D &ray, QVector3D *q) const
     return intersected;
 }
 
-QBoundingVolume::Type TriangleBoundingVolume::type() const
+TriangleBoundingVolume::Type TriangleBoundingVolume::type() const
 {
-    return QBoundingVolume::Triangle;
+    return RayCasting::QBoundingVolume::Triangle;
 }
 
 QVector3D TriangleBoundingVolume::a() const

@@ -44,6 +44,7 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+namespace RayCasting {
 
 QAbstractCollisionQueryService::QAbstractCollisionQueryService(const QString &description)
     : QAbstractServiceProvider(*new QAbstractCollisionQueryServicePrivate(description))
@@ -65,6 +66,7 @@ void QAbstractCollisionQueryService::addEntityHit(QCollisionQueryResult &result,
     result.d_func()->addEntityHit(entity, intersection, distance);
 }
 
+} // RayCasting
 } // Qt3DRender
 
 QT_END_NAMESPACE

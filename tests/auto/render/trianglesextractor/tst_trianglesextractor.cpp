@@ -378,14 +378,14 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DRender::Render::TrianglesExtractor extractor(bGeomRenderer, manager);
-        QVector<Qt3DRender::QBoundingVolume *> volumes = extractor.extract(Qt3DCore::QNodeId());
+        QVector<Qt3DRender::RayCasting::QBoundingVolume *> volumes = extractor.extract(Qt3DCore::QNodeId());
 
         // THEN
         QVERIFY(!volumes.empty());
         QCOMPARE(volumes.size(), expectedVolumes.size());
         for (int i = 0, m = volumes.size(); i < m; ++i) {
-            const Qt3DRender::Render::TriangleBoundingVolume *expectedVolume = expectedVolumes.at(i);
-            const Qt3DRender::Render::TriangleBoundingVolume *actualVolume = static_cast<Qt3DRender::Render::TriangleBoundingVolume *>(volumes.at(i));
+            const auto *expectedVolume = expectedVolumes.at(i);
+            const auto *actualVolume = static_cast<Qt3DRender::Render::TriangleBoundingVolume *>(volumes.at(i));
 
             QCOMPARE(expectedVolume->id(), actualVolume->id());
             QCOMPARE(expectedVolume->a(), actualVolume->a());

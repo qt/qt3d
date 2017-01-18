@@ -53,6 +53,7 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+using namespace Qt3DRender::RayCasting;
 
 namespace Render {
 
@@ -128,16 +129,17 @@ void PickBoundingVolumeJob::setRenderSettings(RenderSettings *settings)
     m_renderSettings = settings;
 }
 
-QRay3D PickBoundingVolumeJob::intersectionRay(const QPoint &pos, const QMatrix4x4 &viewMatrix, const QMatrix4x4 &projectionMatrix, const QRect &viewport)
+RayCasting::QRay3D PickBoundingVolumeJob::intersectionRay(const QPoint &pos, const QMatrix4x4 &viewMatrix,
+                                                          const QMatrix4x4 &projectionMatrix, const QRect &viewport)
 {
     QVector3D nearPos = QVector3D(pos.x(), pos.y(), 0.0f);
     nearPos = nearPos.unproject(viewMatrix, projectionMatrix, viewport);
     QVector3D farPos = QVector3D(pos.x(), pos.y(), 1.0f);
     farPos = farPos.unproject(viewMatrix, projectionMatrix, viewport);
 
-    return QRay3D(nearPos,
-                  (farPos - nearPos).normalized(),
-                  (farPos - nearPos).length());
+    return RayCasting::QRay3D(nearPos,
+                              (farPos - nearPos).normalized(),
+                              (farPos - nearPos).length());
 }
 
 bool PickBoundingVolumeJob::runHelper()
@@ -390,10 +392,10 @@ QRect PickBoundingVolumeJob::windowViewport(const QSize &area, const QRectF &rel
     return relativeViewport.toRect();
 }
 
-QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QSize &area,
-                                                      const QPoint &pos,
-                                                      const QRectF &relativeViewport,
-                                                      Qt3DCore::QNodeId cameraId) const
+RayCasting::QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QSize &area,
+                                                                  const QPoint &pos,
+                                                                  const QRectF &relativeViewport,
+                                                                  const Qt3DCore::QNodeId cameraId) const
 {
     QMatrix4x4 viewMatrix;
     QMatrix4x4 projectionMatrix;
@@ -402,7 +404,7 @@ QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QSize &area,
 
     // In GL the y is inverted compared to Qt
     const QPoint glCorrectPos = QPoint(pos.x(), area.isValid() ? area.height() - pos.y() : pos.y());
-    const QRay3D ray = intersectionRay(glCorrectPos, viewMatrix, projectionMatrix, viewport);
+    const auto ray = intersectionRay(glCorrectPos, viewMatrix, projectionMatrix, viewport);
     return ray;
 }
 

@@ -60,6 +60,7 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+namespace RayCasting {
 
 typedef int QQueryHandle;
 class QCollisionQueryResultPrivate;
@@ -69,7 +70,7 @@ class QT3DRENDERSHARED_EXPORT QCollisionQueryResult
 public:
     struct Hit {
         Hit() : m_distance(-1.f), m_triangleIndex(0) { m_vertexIndex[0] = m_vertexIndex[1] = m_vertexIndex[2] = 0; }
-        Hit(Qt3DCore::QNodeId entity, const QVector3D &intersection, float distance) : m_entityId(entity), m_intersection(intersection), m_distance(distance) { }
+        Hit(const Qt3DCore::QNodeId &entity, const QVector3D &intersection, float distance) : m_entityId(entity), m_intersection(intersection), m_distance(distance) { }
         Qt3DCore::QNodeId m_entityId;
         QVector3D m_intersection;
         float m_distance;
@@ -112,8 +113,8 @@ private:
         return d_ptr.constData();
     }
 };
-QT3D_DECLARE_TYPEINFO(Qt3DRender, QCollisionQueryResult::Hit, Q_PRIMITIVE_TYPE)
-QT3D_DECLARE_SHARED(Qt3DRender, QCollisionQueryResult)
+QT3D_DECLARE_TYPEINFO_2(Qt3DRender, RayCasting, QCollisionQueryResult::Hit, Q_PRIMITIVE_TYPE)
+QT3D_DECLARE_SHARED_2(Qt3DRender, RayCasting, QCollisionQueryResult)
 
 class QCollisionQueryResultPrivate : public QSharedData
 {
@@ -133,6 +134,7 @@ inline bool operator==(const QCollisionQueryResult::Hit& left, const QCollisionQ
     return left.m_entityId == right.m_entityId;
 }
 
+} // RayCasting
 } // Qt3DRender
 
 QT_END_NAMESPACE

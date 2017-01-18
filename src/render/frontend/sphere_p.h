@@ -53,7 +53,7 @@
 
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DCore/qnodeid.h>
-#include <Qt3DRender/private/qboundingsphere_p.h>
+#include <Qt3DRender/private/boundingsphere_p.h>
 
 #include <QMatrix4x4>
 #include <QVector3D>
@@ -64,7 +64,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT Sphere : public QBoundingSphere
+class QT3DRENDERSHARED_PRIVATE_EXPORT Sphere : public RayCasting::BoundingSphere
 {
 public:
     inline Sphere(Qt3DCore::QNodeId i = Qt3DCore::QNodeId())
@@ -80,12 +80,12 @@ public:
     {}
 
     void setCenter(const QVector3D &c);
-    QVector3D center() const;
+    QVector3D center() const Q_DECL_OVERRIDE;
 
     inline bool isNull() { return m_center == QVector3D() && m_radius == 0.0f; }
 
     void setRadius(float r);
-    float radius() const;
+    float radius() const Q_DECL_OVERRIDE;
 
     void clear();
     void initializeFromPoints(const QVector<QVector3D> &points);
@@ -106,7 +106,7 @@ public:
     }
 
     Qt3DCore::QNodeId id() const Q_DECL_FINAL;
-    bool intersects(const QRay3D &ray, QVector3D *q) const Q_DECL_FINAL;
+    bool intersects(const RayCasting::QRay3D &ray, QVector3D *q) const Q_DECL_FINAL;
     Type type() const Q_DECL_FINAL;
 
     static Sphere fromPoints(const QVector<QVector3D> &points);

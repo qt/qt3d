@@ -44,6 +44,7 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+namespace RayCasting {
 
 /*!
     \class Qt3DRender::QRay3D
@@ -371,6 +372,7 @@ QDataStream &operator>>(QDataStream &stream, QRay3D &ray)
 
 #endif // QT_NO_DATASTREAM
 
+}  // namespace RayCasting
 }  // namespace Qt3DRender
 
 QT_END_NAMESPACE
