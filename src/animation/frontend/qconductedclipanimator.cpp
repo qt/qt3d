@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -36,41 +36,41 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-
-#ifndef QT3DANIMATION_ANIMATION_HANDLE_TYPES_P_H
-#define QT3DANIMATION_ANIMATION_HANDLE_TYPES_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/private/qhandle_p.h>
+#include "qconductedclipanimator.h"
+#include "qconductedclipanimator_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
-namespace Animation {
 
-class AnimationClip;
-class ClipAnimator;
-class BlendedClipAnimator;
-class ConductedClipAnimator;
+QConductedClipAnimatorPrivate::QConductedClipAnimatorPrivate()
+    : Qt3DCore::QComponentPrivate()
+{
+}
 
-typedef Qt3DCore::QHandle<AnimationClip, 16> HAnimationClip;
-typedef Qt3DCore::QHandle<ClipAnimator, 16> HClipAnimator;
-typedef Qt3DCore::QHandle<BlendedClipAnimator, 12> HBlendedClipAnimator;
-typedef Qt3DCore::QHandle<ConductedClipAnimator, 8> HConductedClipAnimator;
+QConductedClipAnimator::QConductedClipAnimator(Qt3DCore::QNode *parent)
+    : Qt3DCore::QComponent(*new QConductedClipAnimatorPrivate, parent)
+{
+}
 
-} // namespace Animation
+QConductedClipAnimator::QConductedClipAnimator(QConductedClipAnimatorPrivate &dd, Qt3DCore::QNode *parent)
+    : Qt3DCore::QComponent(dd, parent)
+{
+}
+
+QConductedClipAnimator::~QConductedClipAnimator()
+{
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QConductedClipAnimator::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QConductedClipAnimatorData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QConductedClipAnimator);
+    // TODO: Send data members in creation change
+    return creationChange;
+}
+
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
-
-#endif // QT3DANIMATION_ANIMATION_HANDLE_TYPES_P_H

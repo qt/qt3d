@@ -40,6 +40,9 @@
 #include "qanimationaspect.h"
 #include "qanimationaspect_p.h"
 #include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qblendedclipanimator.h>
+#include <Qt3DAnimation/qclipanimator.h>
+#include <Qt3DAnimation/qconductedclipanimator.h>
 #include <Qt3DAnimation/private/handler_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/nodefunctor_p.h>
@@ -80,9 +83,20 @@ QAnimationAspect::QAnimationAspect(QAnimationAspectPrivate &dd, QObject *parent)
 {
     setObjectName(QStringLiteral("Animation Aspect"));
     Q_D(QAnimationAspect);
+    qRegisterMetaType<Qt3DAnimation::QAnimationClip*>();
+
     registerBackendType<QAnimationClip>(
         QSharedPointer<Animation::NodeFunctor<Animation::AnimationClip, Animation::AnimationClipManager>>::create(d->m_handler.data(),
                                                                                                                   d->m_handler->animationClipManager()));
+    registerBackendType<QClipAnimator>(
+        QSharedPointer<Animation::NodeFunctor<Animation::ClipAnimator, Animation::ClipAnimatorManager>>::create(d->m_handler.data(),
+                                                                                                                d->m_handler->clipAnimatorManager()));
+    registerBackendType<QBlendedClipAnimator>(
+        QSharedPointer<Animation::NodeFunctor<Animation::BlendedClipAnimator, Animation::BlendedClipAnimatorManager>>::create(d->m_handler.data(),
+                                                                                                                              d->m_handler->blendedClipAnimatorManager()));
+    registerBackendType<QConductedClipAnimator>(
+        QSharedPointer<Animation::NodeFunctor<Animation::ConductedClipAnimator, Animation::ConductedClipAnimatorManager>>::create(d->m_handler.data(),
+                                                                                                                                  d->m_handler->conductedClipAnimatorManager()));
 }
 
 /*! \internal */

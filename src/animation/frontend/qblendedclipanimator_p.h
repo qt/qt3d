@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_ANIMATION_HANDLE_TYPES_P_H
-#define QT3DANIMATION_ANIMATION_HANDLE_TYPES_P_H
+#ifndef QT3DANIMATION_QBLENDEDCLIPANIMATOR_P_H
+#define QT3DANIMATION_QBLENDEDCLIPANIMATOR_P_H
 
 //
 //  W A R N I N G
@@ -51,26 +51,30 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qhandle_p.h>
+#include <Qt3DCore/private/qcomponent_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
-namespace Animation {
 
-class AnimationClip;
-class ClipAnimator;
-class BlendedClipAnimator;
-class ConductedClipAnimator;
+class QBlendedClipAnimatorPrivate : public Qt3DCore::QComponentPrivate
+{
+public:
+    QBlendedClipAnimatorPrivate();
 
-typedef Qt3DCore::QHandle<AnimationClip, 16> HAnimationClip;
-typedef Qt3DCore::QHandle<ClipAnimator, 16> HClipAnimator;
-typedef Qt3DCore::QHandle<BlendedClipAnimator, 12> HBlendedClipAnimator;
-typedef Qt3DCore::QHandle<ConductedClipAnimator, 8> HConductedClipAnimator;
+    Q_DECLARE_PUBLIC(QBlendedClipAnimator)
 
-} // namespace Animation
+    // TODO Add member variables
+};
+
+struct QBlendedClipAnimatorData
+{
+    // TODO: Add members that should be sent to the backend
+};
+
 } // namespace Qt3DAnimation
+
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_ANIMATION_HANDLE_TYPES_P_H
+#endif // QT3DANIMATION_QBLENDEDCLIPANIMATOR_P_H

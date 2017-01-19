@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_ANIMATION_HANDLER_H
-#define QT3DANIMATION_ANIMATION_HANDLER_H
+#ifndef QT3DANIMATION_ANIMATION_CONDUCTEDCLIPANIMATOR_P_H
+#define QT3DANIMATION_ANIMATION_CONDUCTEDCLIPANIMATOR_P_H
 
 //
 //  W A R N I N G
@@ -48,57 +48,36 @@
 // We mean it.
 //
 
-#include <QtGlobal>
-#include <Qt3DAnimation/private/handle_types_p.h>
-#include <Qt3DCore/qaspectjob.h>
-#include <Qt3DCore/qnodeid.h>
-#include <QtCore/qscopedpointer.h>
+#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
-
-#if defined(QT_BUILD_INTERNAL)
-class tst_Handler;
-#endif
 
 namespace Qt3DAnimation {
 namespace Animation {
 
-class AnimationClip;
-class AnimationClipManager;
-class ClipAnimator;
-class ClipAnimatorManager;
-class BlendedClipAnimator;
-class BlendedClipAnimatorManager;
-class ConductedClipAnimator;
-class ConductedClipAnimatorManager;
+class Handler;
 
-class Q_AUTOTEST_EXPORT Handler
+class Q_AUTOTEST_EXPORT ConductedClipAnimator : public Qt3DCore::QBackendNode
 {
 public:
-    Handler();
-    ~Handler();
+    ConductedClipAnimator();
 
-    AnimationClipManager *animationClipManager() const Q_DECL_NOTHROW { return m_animationClipManager.data(); }
-    ClipAnimatorManager *clipAnimatorManager() const Q_DECL_NOTHROW { return m_clipAnimatorManager.data(); }
-    BlendedClipAnimatorManager *blendedClipAnimatorManager() const Q_DECL_NOTHROW { return m_blendedClipAnimatorManager.data(); }
-    ConductedClipAnimatorManager *conductedClipAnimatorManager() const Q_DECL_NOTHROW { return m_conductedClipAnimatorManager.data(); }
+    void cleanup();
 
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time);
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+    void setHandler(Handler *handler) { m_handler = handler; }
 
 private:
-    QScopedPointer<AnimationClipManager> m_animationClipManager;
-    QScopedPointer<ClipAnimatorManager> m_clipAnimatorManager;
-    QScopedPointer<BlendedClipAnimatorManager> m_blendedClipAnimatorManager;
-    QScopedPointer<ConductedClipAnimatorManager> m_conductedClipAnimatorManager;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
-#if defined(QT_BUILD_INTERNAL)
-    friend class QT_PREPEND_NAMESPACE(tst_Handler);
-#endif
+    Handler *m_handler;
 };
 
 } // namespace Animation
 } // namespace Qt3DAnimation
 
+
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_ANIMATION_HANDLER_H
+#endif // QT3DANIMATION_ANIMATION_CONDUCTEDCLIPANIMATOR_P_H

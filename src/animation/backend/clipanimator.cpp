@@ -34,71 +34,54 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_ANIMATION_HANDLER_H
-#define QT3DANIMATION_ANIMATION_HANDLER_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <QtGlobal>
-#include <Qt3DAnimation/private/handle_types_p.h>
-#include <Qt3DCore/qaspectjob.h>
-#include <Qt3DCore/qnodeid.h>
-#include <QtCore/qscopedpointer.h>
+#include "clipanimator_p.h"
+#include <Qt3DAnimation/qclipanimator.h>
+#include <Qt3DAnimation/private/qclipanimator_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
-
-#if defined(QT_BUILD_INTERNAL)
-class tst_Handler;
-#endif
 
 namespace Qt3DAnimation {
 namespace Animation {
 
-class AnimationClip;
-class AnimationClipManager;
-class ClipAnimator;
-class ClipAnimatorManager;
-class BlendedClipAnimator;
-class BlendedClipAnimatorManager;
-class ConductedClipAnimator;
-class ConductedClipAnimatorManager;
-
-class Q_AUTOTEST_EXPORT Handler
+ClipAnimator::ClipAnimator()
+    : Qt3DCore::QBackendNode(ReadOnly)
+    , m_handler(nullptr)
+    , m_clipId()
 {
-public:
-    Handler();
-    ~Handler();
+}
 
-    AnimationClipManager *animationClipManager() const Q_DECL_NOTHROW { return m_animationClipManager.data(); }
-    ClipAnimatorManager *clipAnimatorManager() const Q_DECL_NOTHROW { return m_clipAnimatorManager.data(); }
-    BlendedClipAnimatorManager *blendedClipAnimatorManager() const Q_DECL_NOTHROW { return m_blendedClipAnimatorManager.data(); }
-    ConductedClipAnimatorManager *conductedClipAnimatorManager() const Q_DECL_NOTHROW { return m_conductedClipAnimatorManager.data(); }
+void ClipAnimator::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QClipAnimatorData>>(change);
+    const auto &data = typedChange->data;
+    m_clipId = data.clipId;
+}
 
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time);
+void ClipAnimator::cleanup()
+{
+    setEnabled(false);
+    m_handler = nullptr;
+    m_clipId = Qt3DCore::QNodeId();
+}
 
-private:
-    QScopedPointer<AnimationClipManager> m_animationClipManager;
-    QScopedPointer<ClipAnimatorManager> m_clipAnimatorManager;
-    QScopedPointer<BlendedClipAnimatorManager> m_blendedClipAnimatorManager;
-    QScopedPointer<ConductedClipAnimatorManager> m_conductedClipAnimatorManager;
+void ClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+{
+    switch (e->type()) {
+    case Qt3DCore::PropertyUpdated: {
+        const auto change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("clip"))
+            setClipId(change->value().value<Qt3DCore::QNodeId>());
+        break;
+    }
 
-#if defined(QT_BUILD_INTERNAL)
-    friend class QT_PREPEND_NAMESPACE(tst_Handler);
-#endif
-};
+    default:
+        break;
+    }
+    QBackendNode::sceneChangeEvent(e);
+}
 
 } // namespace Animation
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
-
-#endif // QT3DANIMATION_ANIMATION_HANDLER_H

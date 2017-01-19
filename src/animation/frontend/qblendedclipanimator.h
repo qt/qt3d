@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,40 +37,40 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_ANIMATION_HANDLE_TYPES_P_H
-#define QT3DANIMATION_ANIMATION_HANDLE_TYPES_P_H
+#ifndef QT3DANIMATION_QBLENDEDCLIPANIMATOR_H
+#define QT3DANIMATION_QBLENDEDCLIPANIMATOR_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/private/qhandle_p.h>
+#include <Qt3DAnimation/qt3danimation_global.h>
+#include <Qt3DCore/qcomponent.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
-namespace Animation {
 
-class AnimationClip;
-class ClipAnimator;
-class BlendedClipAnimator;
-class ConductedClipAnimator;
+class QBlendedClipAnimatorPrivate;
 
-typedef Qt3DCore::QHandle<AnimationClip, 16> HAnimationClip;
-typedef Qt3DCore::QHandle<ClipAnimator, 16> HClipAnimator;
-typedef Qt3DCore::QHandle<BlendedClipAnimator, 12> HBlendedClipAnimator;
-typedef Qt3DCore::QHandle<ConductedClipAnimator, 8> HConductedClipAnimator;
+class QT3DANIMATIONSHARED_EXPORT QBlendedClipAnimator : public Qt3DCore::QComponent
+{
+    Q_OBJECT
+    // TODO: Add property declarations
+public:
+    explicit QBlendedClipAnimator(Qt3DCore::QNode *parent = nullptr);
+    ~QBlendedClipAnimator();
 
-} // namespace Animation
+public Q_SLOTS:
+
+Q_SIGNALS:
+
+protected:
+    QBlendedClipAnimator(QBlendedClipAnimatorPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+
+private:
+    Q_DECLARE_PRIVATE(QBlendedClipAnimator)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+};
+
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_ANIMATION_HANDLE_TYPES_P_H
+#endif // QT3DANIMATION_QBLENDEDCLIPANIMATOR_H

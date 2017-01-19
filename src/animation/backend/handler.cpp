@@ -45,6 +45,9 @@ namespace Animation {
 
 Handler::Handler()
     : m_animationClipManager(new AnimationClipManager)
+    , m_clipAnimatorManager(new ClipAnimatorManager)
+    , m_blendedClipAnimatorManager(new BlendedClipAnimatorManager)
+    , m_conductedClipAnimatorManager(new ConductedClipAnimatorManager)
 {
 }
 
