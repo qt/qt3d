@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "qt3dquick3danimationplugin.h"
+#include <Qt3DAnimation/qanimationclip.h>
 #include <Qt3DQuickAnimation/private/qt3dquickanimation_global_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -47,6 +48,7 @@ void Qt3DQuick3DAnimationPlugin::registerTypes(const char *uri)
     Qt3DAnimation::Quick::Quick3DAnimation_initialize();
 
     // @uri Qt3D.Animation
+    qmlRegisterType<Qt3DAnimation::QAnimationClip>(uri, 2, 2, "AnimationClip");
 }
 
 QT_END_NAMESPACE
