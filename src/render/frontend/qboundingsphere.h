@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Paul Lemire
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,75 +37,46 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_JOB_COMMON_P_H
-#define QT3DRENDER_RENDER_JOB_COMMON_P_H
+#ifndef QT3DRENDER_QBOUNDINGSPHERE_H
+#define QT3DRENDER_QBOUNDINGSPHERE_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
+#include <Qt3DCore/qcomponent.h>
+#include <Qt3DRender/qt3drender_global.h>
 
-#include <Qt3DCore/private/qaspectjob_p.h>
+#include <QVector3D>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-namespace Render {
+class QBoundingSpherePrivate;
 
-namespace JobTypes {
+class QT3DRENDERSHARED_EXPORT QBoundingSphere : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QVector3D center READ center WRITE setCenter NOTIFY centerChanged)
+    Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
+public:
+    explicit QBoundingSphere(QObject *parent = nullptr);
+    QBoundingSphere(const QVector3D &center, float radius, QObject *parent = nullptr);
 
-    enum JobType {
-        LoadBuffer = 1,
-        FrameCleanup,
-        UpdateShaderDataTransform,
-        CalcBoundingVolume,
-        CalcTriangleVolume,
-        LoadGeometry,
-        LoadScene,
-        LoadTextureData,
-        PickBoundingVolume,
-        RenderView,
-        UpdateTransform,
-        UpdateTreeEnabled,
-        ExpandBoundingVolume,
-        FrameSubmissionPart1,
-        LayerFiltering,
-        EntityComponentTypeFiltering,
-        MaterialParameterGathering,
-        RenderViewBuilder,
-        GenericLambda,
-        FrustumCulling,
-        LightGathering,
-        UpdateWorldBoundingVolume,
-        FrameSubmissionPart2,
-        DirtyBufferGathering,
-        DirtyTextureGathering,
-        DirtyShaderGathering,
-        SendRenderCapture,
-        SyncRenderViewCommandBuilding,
-        SyncRenderViewInitialization,
-        SyncRenderViewCommandBuilder,
-        SyncFrustumCulling,
-        ClearBufferDrawIndex,
-        UpdateMeshTriangleList,
-        FilterCompatibleTechniques,
-        UpdateLevelOfDetail,
-        SyncTextureLoading
-    };
+    QVector3D center() const;
+    float radius() const;
 
-} // JobTypes
+public Q_SLOTS:
+    void setRadius(float radius);
+    void setCenter(const QVector3D &center);
 
-} // Render
+Q_SIGNALS:
+    void radiusChanged(float radius);
+    void centerChanged(const QVector3D &center);
 
-} // Qt3DRender
+private:
+    Q_DECLARE_PRIVATE(QBoundingSphere)
+};
+
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_JOB_COMMON_P_H
+#endif // QT3DRENDER_QBOUNDINGSPHERE_H

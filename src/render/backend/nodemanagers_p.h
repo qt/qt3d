@@ -94,6 +94,7 @@ class TextureManager;
 class TextureDataManager;
 class TextureImageDataManager;
 class LayerManager;
+class LevelOfDetailManager;
 class LightManager;
 class ComputeCommandManager;
 class RenderStateManager;
@@ -108,6 +109,7 @@ class Effect;
 class RenderPass;
 class Texture;
 class Layer;
+class LevelOfDetail;
 class FilterKey;
 class FrameGraphNode;
 class Transform;
@@ -183,6 +185,7 @@ public:
     inline TextureDataManager *textureDataManager() const Q_DECL_NOEXCEPT { return m_textureDataManager; }
     inline TextureImageDataManager *textureImageDataManager() const Q_DECL_NOEXCEPT { return m_textureImageDataManager; }
     inline LayerManager *layerManager() const Q_DECL_NOEXCEPT { return m_layerManager; }
+    inline LevelOfDetailManager *levelOfDetailManager() const Q_DECL_NOEXCEPT { return m_levelOfDetailManager; }
     inline FilterKeyManager *filterKeyManager() const Q_DECL_NOEXCEPT { return m_filterKeyManager; }
     inline FrameGraphManager *frameGraphManager() const Q_DECL_NOEXCEPT { return m_frameGraphManager; }
     inline TransformManager *transformManager() const Q_DECL_NOEXCEPT { return m_transformManager; }
@@ -219,6 +222,7 @@ private:
     TextureImageDataManager *m_textureImageDataManager;
     GLTextureManager *m_glTextureManager;
     LayerManager *m_layerManager;
+    LevelOfDetailManager *m_levelOfDetailManager;
     FilterKeyManager *m_filterKeyManager;
     FrameGraphManager *m_frameGraphManager;
     TransformManager *m_transformManager;
@@ -276,6 +280,9 @@ QT3DRENDERSHARED_PRIVATE_EXPORT TextureDataManager *NodeManagers::manager<QTextu
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT LayerManager *NodeManagers::manager<Layer>() const Q_DECL_NOEXCEPT;
+
+template<>
+QT3DRENDERSHARED_PRIVATE_EXPORT LevelOfDetailManager *NodeManagers::manager<LevelOfDetail>() const Q_DECL_NOEXCEPT;
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT FilterKeyManager *NodeManagers::manager<FilterKey>() const Q_DECL_NOEXCEPT;

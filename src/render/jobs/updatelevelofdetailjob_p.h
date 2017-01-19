@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Paul Lemire
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,21 +37,23 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_JOB_COMMON_P_H
-#define QT3DRENDER_RENDER_JOB_COMMON_P_H
+#ifndef QT3DRENDER_RENDER_UPDATELEVELOFDETAILJOB_H
+#define QT3DRENDER_RENDER_UPDATELEVELOFDETAILJOB_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <Qt3DCore/private/qaspectjob_p.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
+#include <Qt3DRender/private/pickboundingvolumeutils_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,48 +61,38 @@ namespace Qt3DRender {
 
 namespace Render {
 
-namespace JobTypes {
+class Entity;
+class NodeManagers;
+class LevelOfDetail;
 
-    enum JobType {
-        LoadBuffer = 1,
-        FrameCleanup,
-        UpdateShaderDataTransform,
-        CalcBoundingVolume,
-        CalcTriangleVolume,
-        LoadGeometry,
-        LoadScene,
-        LoadTextureData,
-        PickBoundingVolume,
-        RenderView,
-        UpdateTransform,
-        UpdateTreeEnabled,
-        ExpandBoundingVolume,
-        FrameSubmissionPart1,
-        LayerFiltering,
-        EntityComponentTypeFiltering,
-        MaterialParameterGathering,
-        RenderViewBuilder,
-        GenericLambda,
-        FrustumCulling,
-        LightGathering,
-        UpdateWorldBoundingVolume,
-        FrameSubmissionPart2,
-        DirtyBufferGathering,
-        DirtyTextureGathering,
-        DirtyShaderGathering,
-        SendRenderCapture,
-        SyncRenderViewCommandBuilding,
-        SyncRenderViewInitialization,
-        SyncRenderViewCommandBuilder,
-        SyncFrustumCulling,
-        ClearBufferDrawIndex,
-        UpdateMeshTriangleList,
-        FilterCompatibleTechniques,
-        UpdateLevelOfDetail,
-        SyncTextureLoading
-    };
+class QT3DRENDERSHARED_PRIVATE_EXPORT UpdateLevelOfDetailJob : public Qt3DCore::QAspectJob
+{
+public:
+    UpdateLevelOfDetailJob();
+    ~UpdateLevelOfDetailJob();
 
-} // JobTypes
+    void setManagers(NodeManagers *manager);
+    void setFrameGraphRoot(FrameGraphNode *frameGraphRoot);
+    void setRoot(Entity *root);
+    void run() Q_DECL_FINAL;
+
+    NodeManagers *managers() const { return m_manager; }
+    Entity *root() const { return m_root; }
+
+private:
+    void updateEntityLod(Entity *entity);
+    void updateEntityLodByDistance(Entity *entity, LevelOfDetail *lod);
+    void updateEntityLodByScreenArea(Entity *entity, LevelOfDetail *lod);
+    bool viewMatrixForCamera(const Qt3DCore::QNodeId &cameraId, QMatrix4x4 &viewMatrix, QMatrix4x4 &projectionMatrix) const;
+    QRect windowViewport(const QSize &area, const QRectF &relativeViewport) const;
+
+    NodeManagers *m_manager;
+    FrameGraphNode *m_frameGraphRoot;
+    Entity *m_root;
+    double m_filterValue;
+};
+
+typedef QSharedPointer<UpdateLevelOfDetailJob> UpdateLevelOfDetailJobPtr;
 
 } // Render
 
@@ -108,4 +100,4 @@ namespace JobTypes {
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_JOB_COMMON_P_H
+#endif // QT3DRENDER_RENDER_UPDATELEVELOFDETAILJOB_H

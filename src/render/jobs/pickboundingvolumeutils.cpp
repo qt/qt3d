@@ -102,6 +102,8 @@ QVector<ViewportCameraAreaTriplet> ViewportCameraAreaGatherer::gather(FrameGraph
     // Find all viewport/camera pairs by traversing from leaf to root
     for (Render::FrameGraphNode *leaf : qAsConst(m_leaves)) {
         ViewportCameraAreaTriplet vcaTriplet = gatherUpViewportCameraAreas(leaf);
+        if (!m_targetCamera.isNull() && vcaTriplet.cameraId != m_targetCamera)
+            continue;
         if (!vcaTriplet.cameraId.isNull() && isUnique(vcaTriplets, vcaTriplet))
             vcaTriplets.push_back(vcaTriplet);
     }

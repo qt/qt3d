@@ -71,6 +71,7 @@ NodeManagers::NodeManagers()
     , m_textureImageDataManager(new TextureImageDataManager())
     , m_glTextureManager(new GLTextureManager(m_textureImageManager, m_textureDataManager, m_textureImageDataManager))
     , m_layerManager(new LayerManager())
+    , m_levelOfDetailManager(new LevelOfDetailManager())
     , m_filterKeyManager(new FilterKeyManager())
     , m_frameGraphManager(new FrameGraphManager())
     , m_transformManager(new TransformManager())
@@ -107,6 +108,7 @@ NodeManagers::~NodeManagers()
     delete m_textureDataManager;
     delete m_textureImageDataManager;
     delete m_layerManager;
+    delete m_levelOfDetailManager;
     delete m_filterKeyManager;
     delete m_frameGraphManager;
     delete m_transformManager;
@@ -199,6 +201,12 @@ template<>
 LayerManager *NodeManagers::manager<Layer>() const Q_DECL_NOTHROW
 {
     return m_layerManager;
+}
+
+template<>
+LevelOfDetailManager *NodeManagers::manager<LevelOfDetail>() const Q_DECL_NOTHROW
+{
+    return m_levelOfDetailManager;
 }
 
 template<>

@@ -21,6 +21,7 @@ HEADERS += \
     $$PWD/cameralens_p.h \
     $$PWD/entity_p.h \
     $$PWD/layer_p.h \
+    $$PWD/levelofdetail_p.h \
     $$PWD/nodefunctor_p.h \
     $$PWD/transform_p.h \
     $$PWD/boundingvolumedebug_p.h \
@@ -56,6 +57,7 @@ SOURCES += \
     $$PWD/cameralens.cpp \
     $$PWD/entity.cpp \
     $$PWD/layer.cpp \
+    $$PWD/levelofdetail.cpp \
     $$PWD/transform.cpp \
     $$PWD/boundingvolumedebug.cpp \
     $$PWD/nodemanagers.cpp \

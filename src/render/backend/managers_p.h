@@ -58,6 +58,7 @@
 #include <Qt3DRender/private/effect_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/layer_p.h>
+#include <Qt3DRender/private/levelofdetail_p.h>
 #include <Qt3DRender/private/material_p.h>
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DRender/private/texture_p.h>
@@ -174,6 +175,17 @@ class LayerManager : public Qt3DCore::QResourceManager<
 {
 public:
     LayerManager() {}
+};
+
+class LevelOfDetailManager : public Qt3DCore::QResourceManager<
+        LevelOfDetail,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy,
+        Qt3DCore::NonLockingPolicy>
+{
+public:
+    LevelOfDetailManager() {}
 };
 
 class MaterialManager : public Qt3DCore::QResourceManager<

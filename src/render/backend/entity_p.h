@@ -190,6 +190,7 @@ private:
     Qt3DCore::QNodeId m_materialComponent;
     Qt3DCore::QNodeId m_cameraComponent;
     QVector<Qt3DCore::QNodeId> m_layerComponents;
+    QVector<Qt3DCore::QNodeId> m_levelOfDetailComponents;
     QVector<Qt3DCore::QNodeId> m_shaderDataComponents;
     QVector<Qt3DCore::QNodeId> m_lightComponents;
     Qt3DCore::QNodeId m_geometryRendererComponent;
@@ -219,6 +220,9 @@ Q_AUTOTEST_EXPORT HObjectPicker Entity::componentHandle<ObjectPicker>() const;
 
 template<>
 QVector<HLayer> Entity::componentsHandle<Layer>() const;
+
+template<>
+QVector<HLevelOfDetail> Entity::componentsHandle<LevelOfDetail>() const;
 
 template<>
 QVector<HShaderData> Entity::componentsHandle<ShaderData>() const;
@@ -252,6 +256,9 @@ template<>
 QVector<Layer *> Entity::renderComponents<Layer>() const;
 
 template<>
+QVector<LevelOfDetail *> Entity::renderComponents<LevelOfDetail>() const;
+
+template<>
 QVector<ShaderData *> Entity::renderComponents<ShaderData>() const;
 
 //template<>
@@ -275,6 +282,9 @@ Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<Material>() const;
 
 template<>
 Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<Layer>() const;
+
+template<>
+Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<LevelOfDetail>() const;
 
 template<>
 Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<ShaderData>() const;

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Paul Lemire
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,75 +37,21 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_JOB_COMMON_P_H
-#define QT3DRENDER_RENDER_JOB_COMMON_P_H
+/*!
+    \qmltype LevelOfDetailLoader
+    \inqmlmodule Qt3D.Render
+    \since 5.9
+    \brief An entity loader that changes depending on distance to camera or screen size
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
+    A LevelOfDetailLoader will load the entity matching the \l LevelOfDetail::currentIndex.
+    The source is selected from the \l sources property.
+    The range is specified using the \l {minimum} and the \l{maximum} values.
 
-#include <Qt3DCore/private/qaspectjob_p.h>
+    \sa LevelOfDetail
+*/
 
-QT_BEGIN_NAMESPACE
+/*!
+   \qmlproperty list<string> LevelOfDetailLoader::sources
 
-namespace Qt3DRender {
-
-namespace Render {
-
-namespace JobTypes {
-
-    enum JobType {
-        LoadBuffer = 1,
-        FrameCleanup,
-        UpdateShaderDataTransform,
-        CalcBoundingVolume,
-        CalcTriangleVolume,
-        LoadGeometry,
-        LoadScene,
-        LoadTextureData,
-        PickBoundingVolume,
-        RenderView,
-        UpdateTransform,
-        UpdateTreeEnabled,
-        ExpandBoundingVolume,
-        FrameSubmissionPart1,
-        LayerFiltering,
-        EntityComponentTypeFiltering,
-        MaterialParameterGathering,
-        RenderViewBuilder,
-        GenericLambda,
-        FrustumCulling,
-        LightGathering,
-        UpdateWorldBoundingVolume,
-        FrameSubmissionPart2,
-        DirtyBufferGathering,
-        DirtyTextureGathering,
-        DirtyShaderGathering,
-        SendRenderCapture,
-        SyncRenderViewCommandBuilding,
-        SyncRenderViewInitialization,
-        SyncRenderViewCommandBuilder,
-        SyncFrustumCulling,
-        ClearBufferDrawIndex,
-        UpdateMeshTriangleList,
-        FilterCompatibleTechniques,
-        UpdateLevelOfDetail,
-        SyncTextureLoading
-    };
-
-} // JobTypes
-
-} // Render
-
-} // Qt3DRender
-
-QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_JOB_COMMON_P_H
+   The list of sources (array of strings) to load from.
+*/

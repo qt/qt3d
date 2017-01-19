@@ -138,6 +138,9 @@ class VSyncFrameAdvanceService;
 class PickEventFilter;
 class NodeManagers;
 
+class UpdateLevelOfDetailJob;
+typedef QSharedPointer<UpdateLevelOfDetailJob> UpdateLevelOfDetailJobPtr;
+
 using SynchronizerJobPtr = GenericLambdaJobPtr<std::function<void()>>;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT Renderer : public AbstractRenderer
@@ -195,6 +198,7 @@ public:
     inline UpdateTreeEnabledJobPtr updateTreeEnabledJob() const { return m_updateTreeEnabledJob; }
     inline UpdateWorldTransformJobPtr updateWorldTransformJob() const { return m_worldTransformJob; }
     inline UpdateWorldBoundingVolumeJobPtr updateWorldBoundingVolumeJob() const { return m_updateWorldBoundingVolumeJob; }
+    inline UpdateLevelOfDetailJobPtr updateLevelOfDetailJob() const { return m_updateLevelOfDetailJob; }
     inline UpdateMeshTriangleListJobPtr updateMeshTriangleListJob() const { return m_updateMeshTriangleListJob; }
     inline FilterCompatibleTechniqueJobPtr filterCompatibleTechniqueJob() const { return m_filterCompatibleTechniqueJob; }
     inline SynchronizerJobPtr textureLoadSyncJob() const { return m_syncTextureLoadingJob; }
@@ -310,6 +314,7 @@ private:
     UpdateWorldBoundingVolumeJobPtr m_updateWorldBoundingVolumeJob;
     UpdateTreeEnabledJobPtr m_updateTreeEnabledJob;
     SendRenderCaptureJobPtr m_sendRenderCaptureJob;
+    UpdateLevelOfDetailJobPtr m_updateLevelOfDetailJob;
     UpdateMeshTriangleListJobPtr m_updateMeshTriangleListJob;
     FilterCompatibleTechniqueJobPtr m_filterCompatibleTechniqueJob;
 

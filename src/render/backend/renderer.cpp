@@ -83,6 +83,7 @@
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
 #include <Qt3DRender/private/loadbufferjob_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
+#include <Qt3DRender/private/updatelevelofdetailjob_p.h>
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
 
 #include <Qt3DRender/qcameralens.h>
@@ -167,6 +168,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_updateWorldBoundingVolumeJob(Render::UpdateWorldBoundingVolumeJobPtr::create())
     , m_updateTreeEnabledJob(Render::UpdateTreeEnabledJobPtr::create())
     , m_sendRenderCaptureJob(Render::SendRenderCaptureJobPtr::create(this))
+    , m_updateLevelOfDetailJob(Render::UpdateLevelOfDetailJobPtr::create())
     , m_updateMeshTriangleListJob(Render::UpdateMeshTriangleListJobPtr::create())
     , m_filterCompatibleTechniqueJob(Render::FilterCompatibleTechniqueJobPtr::create())
     , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
@@ -198,6 +200,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     m_textureGathererJob->addDependency(m_syncTextureLoadingJob);
 
     // All world stuff depends on the RenderEntity's localBoundingVolume
+    m_updateLevelOfDetailJob->addDependency(m_updateMeshTriangleListJob);
     m_pickBoundingVolumeJob->addDependency(m_updateMeshTriangleListJob);
 
     m_filterCompatibleTechniqueJob->setRenderer(this);
@@ -252,6 +255,7 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_pickBoundingVolumeJob->setManagers(m_nodesManager);
     m_updateWorldBoundingVolumeJob->setManager(m_nodesManager->renderNodesManager());
     m_sendRenderCaptureJob->setManagers(m_nodesManager);
+    m_updateLevelOfDetailJob->setManagers(m_nodesManager);
     m_updateMeshTriangleListJob->setManagers(m_nodesManager);
     m_filterCompatibleTechniqueJob->setManager(m_nodesManager->techniqueManager());
 }
@@ -443,6 +447,7 @@ void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
     m_calculateBoundingVolumeJob->setRoot(m_renderSceneRoot);
     m_cleanupJob->setRoot(m_renderSceneRoot);
     m_pickBoundingVolumeJob->setRoot(m_renderSceneRoot);
+    m_updateLevelOfDetailJob->setRoot(m_renderSceneRoot);
     m_updateTreeEnabledJob->setRoot(m_renderSceneRoot);
 }
 
@@ -1226,6 +1231,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     m_pickBoundingVolumeJob->setRenderSettings(settings());
     m_pickBoundingVolumeJob->setMouseEvents(pendingPickingEvents());
 
+    m_updateLevelOfDetailJob->setFrameGraphRoot(frameGraphRoot());
     // Set dependencies of resource gatherer
     for (const QAspectJobPtr &jobPtr : renderBinJobs) {
         jobPtr->addDependency(m_bufferGathererJob);
@@ -1237,6 +1243,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     renderBinJobs.push_back(m_updateShaderDataTransformJob);
     renderBinJobs.push_back(m_updateMeshTriangleListJob);
     renderBinJobs.push_back(m_updateTreeEnabledJob);
+    renderBinJobs.push_back(m_updateLevelOfDetailJob);
     renderBinJobs.push_back(m_expandBoundingVolumeJob);
     renderBinJobs.push_back(m_updateWorldBoundingVolumeJob);
     renderBinJobs.push_back(m_calculateBoundingVolumeJob);

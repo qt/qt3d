@@ -21,6 +21,7 @@ SUBDIRS += \
     gooch-qml \
     keyboardinput-qml \
     loader-qml \
+    lod \
     mouseinput-qml \
     multiplewindows-qml \
     picking-qml \

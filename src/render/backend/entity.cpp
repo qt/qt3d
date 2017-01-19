@@ -42,6 +42,7 @@
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/qabstractlight.h>
 #include <Qt3DRender/qlayer.h>
+#include <Qt3DRender/qlevelofdetail.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/private/renderlogging_p.h>
@@ -114,6 +115,7 @@ void Entity::cleanup()
     m_computeComponent = QNodeId();
     m_childrenHandles.clear();
     m_layerComponents.clear();
+    m_levelOfDetailComponents.clear();
     m_shaderDataComponents.clear();
     m_lightComponents.clear();
     m_localBoundingVolume.reset();
@@ -169,6 +171,7 @@ void Entity::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
     m_boundingVolumeDebugComponent = QNodeId();
     m_computeComponent = QNodeId();
     m_layerComponents.clear();
+    m_levelOfDetailComponents.clear();
     m_shaderDataComponents.clear();
     m_lightComponents.clear();
     m_localBoundingVolume.reset(new Sphere(peerId()));
@@ -284,6 +287,8 @@ void Entity::addComponent(Qt3DCore::QComponent *component)
         m_cameraComponent = component->id();
     } else if (qobject_cast<QLayer *>(component) != nullptr) {
         m_layerComponents.append(component->id());
+    } else if (qobject_cast<QLevelOfDetail *>(component) != nullptr) {
+        m_levelOfDetailComponents.append(component->id());
     } else if (qobject_cast<QMaterial *>(component) != nullptr) {
         m_materialComponent = component->id();
     } else if (qobject_cast<QAbstractLight *>(component) != nullptr) {
@@ -315,6 +320,8 @@ void Entity::addComponent(Qt3DCore::QNodeIdTypePair idAndType)
         m_cameraComponent = id;
     } else if (type->inherits(&QLayer::staticMetaObject)) {
         m_layerComponents.append(id);
+    } else if (type->inherits(&QLevelOfDetail::staticMetaObject)) {
+        m_levelOfDetailComponents.append(id);
     } else if (type->inherits(&QMaterial::staticMetaObject)) {
         m_materialComponent = id;
     } else if (type->inherits(&QAbstractLight::staticMetaObject)) { // QAbstractLight subclasses QShaderData
@@ -341,6 +348,8 @@ void Entity::removeComponent(Qt3DCore::QNodeId nodeId)
         m_cameraComponent = QNodeId();
     } else if (m_layerComponents.contains(nodeId)) {
         m_layerComponents.removeAll(nodeId);
+    } else if (m_levelOfDetailComponents.contains(nodeId)) {
+        m_levelOfDetailComponents.removeAll(nodeId);
     } else if (m_materialComponent == nodeId) {
         m_materialComponent = QNodeId();
     } else if (m_shaderDataComponents.contains(nodeId)) {
@@ -409,6 +418,16 @@ QVector<HLayer> Entity::componentsHandle<Layer>() const
     for (QNodeId id : m_layerComponents)
         layerHandles.append(m_nodeManagers->layerManager()->lookupHandle(id));
     return layerHandles;
+}
+
+template<>
+QVector<HLevelOfDetail> Entity::componentsHandle<LevelOfDetail>() const
+{
+    QVector<HLevelOfDetail> lodHandles;
+    lodHandles.reserve(m_levelOfDetailComponents.size());
+    for (QNodeId id : m_levelOfDetailComponents)
+        lodHandles.append(m_nodeManagers->levelOfDetailManager()->lookupHandle(id));
+    return lodHandles;
 }
 
 template<>
@@ -486,6 +505,16 @@ QVector<Layer *> Entity::renderComponents<Layer>() const
 }
 
 template<>
+QVector<LevelOfDetail *> Entity::renderComponents<LevelOfDetail>() const
+{
+    QVector<LevelOfDetail *> lods;
+    lods.reserve(m_levelOfDetailComponents.size());
+    for (QNodeId id : m_levelOfDetailComponents)
+        lods.append(m_nodeManagers->levelOfDetailManager()->lookupResource(id));
+    return lods;
+}
+
+template<>
 QVector<ShaderData *> Entity::renderComponents<ShaderData>() const
 {
     QVector<ShaderData *> shaderDatas;
@@ -530,6 +559,9 @@ Qt3DCore::QNodeId Entity::componentUuid<Material>() const { return m_materialCom
 
 template<>
 QVector<Qt3DCore::QNodeId> Entity::componentsUuid<Layer>() const { return m_layerComponents; }
+
+template<>
+QVector<Qt3DCore::QNodeId> Entity::componentsUuid<LevelOfDetail>() const { return m_levelOfDetailComponents; }
 
 template<>
 QVector<Qt3DCore::QNodeId> Entity::componentsUuid<ShaderData>() const { return m_shaderDataComponents; }

@@ -51,6 +51,7 @@
 // We mean it.
 //
 
+#include <Qt3DCore/QNodeId>
 #include <Qt3DRender/private/qray3d_p.h>
 #include <Qt3DRender/private/trianglesvisitor_p.h>
 #include <Qt3DRender/private/qraycastingservice_p.h>
@@ -82,9 +83,11 @@ QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, PickingUtils, ViewportCameraAreaTrip
 class Q_AUTOTEST_EXPORT ViewportCameraAreaGatherer
 {
 public:
+    ViewportCameraAreaGatherer(const Qt3DCore::QNodeId &nodeId = Qt3DCore::QNodeId()) : m_targetCamera(nodeId) { }
     QVector<ViewportCameraAreaTriplet> gather(FrameGraphNode *root);
 
 private:
+    Qt3DCore::QNodeId m_targetCamera;
     QVector<FrameGraphNode *> m_leaves;
 
     void visit(FrameGraphNode *node);

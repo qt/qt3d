@@ -18,6 +18,8 @@ qtConfig(private_tests) {
         qbuffer \
         qgeometry \
         qgeometryrenderer \
+        qlevelofdetail \
+        levelofdetail \
         buffer \
         attribute \
         geometry \
