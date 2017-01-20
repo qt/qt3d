@@ -44,6 +44,10 @@ src_quick3d_extras.subdir = $$PWD/quick3d/quick3dextras
 src_quick3d_extras.target = sub-quick3d-extras
 src_quick3d_extras.depends = src_render src_logic src_input src_extras src_quick3d_core
 
+src_quick3d_scene2d.subdir = $$PWD/quick3d/quick3dscene2d
+src_quick3d_scene2d.target = sub-quick3d-scene2d
+src_quick3d_scene2d.depends = src_render src_logic src_input src_quick3d_core
+
 # Quick3D imports
 src_quick3d_core_imports.file = $$PWD/quick3d/imports/core/importscore.pro
 src_quick3d_core_imports.target = sub-quick3d-imports-core
@@ -73,6 +77,10 @@ src_quick3d_imports_extras.file = $$PWD/quick3d/imports/extras/importsextras.pro
 src_quick3d_imports_extras.target = sub-quick3d-imports-extras
 src_quick3d_imports_extras.depends = src_extras src_quick3d_extras
 
+src_quick3d_imports_scene2d.file = $$PWD/quick3d/imports/scene2d/importsscene2d.pro
+src_quick3d_imports_scene2d.target = sub-quick3d-imports-scene2d
+src_quick3d_imports_scene2d.depends = src_quick3d_scene2d
+
 # Qt3D Scene Parser plugins
 src_plugins_sceneparsers.file = $$PWD/plugins/sceneparsers/sceneparsers.pro
 src_plugins_sceneparsers.target = sub-plugins-sceneparsers
@@ -86,7 +94,7 @@ src_plugins_geometryloaders.depends = src_render src_extras
 # Qt3D Render plugins
 src_plugins_render.file = $$PWD/plugins/renderplugins/renderplugins.pro
 src_plugins_render.target = sub-plugins-render
-src_plugins_render.depends = src_render src_extras src_quick3d_render
+src_plugins_render.depends = src_render src_extras src_quick3d_render src_quick3d_scene2d
 
 SUBDIRS += \
     src_core \
@@ -110,4 +118,6 @@ SUBDIRS += \
     src_plugins_sceneparsers \
     src_plugins_geometryloaders \
     src_plugins_render \
+    src_quick3d_scene2d \
+    src_quick3d_imports_scene2d \
     doc

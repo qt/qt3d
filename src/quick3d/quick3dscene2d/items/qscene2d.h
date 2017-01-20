@@ -34,10 +34,10 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QUICK3DRENDER_QSCENE2D_H
-#define QT3DRENDER_QUICK3DRENDER_QSCENE2D_H
+#ifndef QT3DRENDER_QUICK3DSCENE2D_QSCENE2D_H
+#define QT3DRENDER_QUICK3DSCENE2D_QSCENE2D_H
 
-#include <Qt3DQuickRender/qt3dquickrender_global.h>
+#include <Qt3DQuickScene2D/qt3dquickscene2d_global.h>
 #include <Qt3DRender/qrendertargetoutput.h>
 
 #include <QtCore/QUrl>
@@ -55,7 +55,7 @@ namespace Quick {
 
 class QScene2DPrivate;
 
-class QT3DQUICKRENDERSHARED_EXPORT QScene2D : public Qt3DCore::QNode
+class QT3DQUICKSCENE2DSHARED_EXPORT QScene2D : public Qt3DCore::QNode
 {
     Q_OBJECT
 
@@ -114,4 +114,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QUICK3DRENDER_QSCENE2D_H
+#endif // QT3DRENDER_QUICK3DSCENE2D_QSCENE2D_H

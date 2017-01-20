@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERASPECT_P_H
-#define QT3DRENDER_QRENDERASPECT_P_H
+#ifndef QUICKSCENENODEFACTORY_H
+#define QUICKSCENENODEFACTORY_H
 
 //
 //  W A R N I N G
@@ -51,66 +51,39 @@
 // We mean it.
 //
 
-#include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DCore/private/qabstractaspect_p.h>
-#include <Qt3DRender/private/qt3drender_global_p.h>
-
-#include <QtCore/qmutex.h>
+#include <Qt3DCore/private/qabstractnodefactory_p.h>
+#include <QtCore/qhash.h>
 
 QT_BEGIN_NAMESPACE
 
-class QSurface;
+class QQmlType;
 
 namespace Qt3DRender {
 
-class QSceneImporter;
-
-namespace Render {
-class AbstractRenderer;
-class NodeManagers;
-class QRenderPlugin;
-}
-
-namespace Render {
-class OffscreenSurfaceHelper;
-}
-
-class QT3DRENDERSHARED_PRIVATE_EXPORT QRenderAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
+class QuickScene2DNodeFactory : public Qt3DCore::QAbstractNodeFactory
 {
 public:
-    QRenderAspectPrivate(QRenderAspect::RenderType type);
-    ~QRenderAspectPrivate();
+    Qt3DCore::QNode *createNode(const char *type) Q_DECL_OVERRIDE;
 
-    Q_DECLARE_PUBLIC(QRenderAspect)
+    void registerType(const char *className, const char *quickName, int major, int minor);
 
-    void registerBackendTypes();
-    void unregisterBackendTypes();
-    void loadSceneParsers();
-    void loadRenderPlugin(const QString &pluginName);
-    void renderInitialize(QOpenGLContext *context);
-    void renderSynchronous();
-    void renderShutdown();
-    void registerBackendType(const QMetaObject &, const Qt3DCore::QBackendNodeMapperPtr &functor);
-    QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
+    static QuickScene2DNodeFactory *instance();
 
-    Render::NodeManagers *m_nodeManagers;
-    Render::AbstractRenderer *m_renderer;
-
-    bool m_initialized;
-    QList<QSceneImporter *> m_sceneImporter;
-    QVector<QString> m_loadedPlugins;
-    QVector<Render::QRenderPlugin *> m_renderPlugins;
-    QRenderAspect::RenderType m_renderType;
-    Render::OffscreenSurfaceHelper *m_offscreenHelper;
-
-    static QMutex m_pluginLock;
-    static QVector<QString> m_pluginConfig;
-    static QVector<QRenderAspectPrivate *> m_instances;
-    static void configurePlugin(const QString &plugin);
+private:
+    struct Type {
+        Type() : t(nullptr), resolved(false) { }
+        Type(const char *quickName, int major, int minor)
+            : quickName(quickName), version(major, minor), t(nullptr), resolved(false) { }
+        QByteArray quickName;
+        QPair<int, int> version;
+        QQmlType *t;
+        bool resolved;
+    };
+    QHash<QByteArray, Type> m_types;
 };
 
-}
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QRENDERASPECT_P_H
+#endif // QUICKRENDERERNODEFACTORY_H

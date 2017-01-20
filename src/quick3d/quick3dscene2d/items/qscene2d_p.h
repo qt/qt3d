@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QUICK3DRENDER_QSCENE2D_P_H
-#define QT3DRENDER_QUICK3DRENDER_QSCENE2D_P_H
+#ifndef QT3DRENDER_QUICK3DSCENE2D_QSCENE2D_P_H
+#define QT3DRENDER_QUICK3DSCENE2D_QSCENE2D_P_H
 
 //
 //  W A R N I N G
@@ -58,7 +58,7 @@
 #include <QtCore/QWaitCondition>
 #include <QtCore/QThread>
 
-#include <Qt3DQuickRender/qscene2d.h>
+#include <Qt3DQuickScene2D/qscene2d.h>
 #include <Qt3DRender/qabstracttexture.h>
 
 #include <private/qobject_p.h>
@@ -216,4 +216,4 @@ QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3DRender::Quick::Scene2DSharedObjectPtr)
 
-#endif // QT3DRENDER_QUICK3DRENDER_QSCENE2D_P_H
+#endif // QT3DRENDER_QUICK3DSCENE2D_QSCENE2D_P_H

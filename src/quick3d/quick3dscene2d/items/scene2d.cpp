@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DQuickRender/qscene2d.h>
+#include <Qt3DQuickScene2D/qscene2d.h>
 
 #include <QtCore/qthread.h>
 #include <QtCore/qatomic.h>
@@ -47,7 +47,7 @@
 #include <private/nodemanagers_p.h>
 #include <private/resourceaccessor_p.h>
 #include <private/attachmentpack_p.h>
-#include <private/qt3dquickrender_logging_p.h>
+#include <private/qt3dquickscene2d_logging_p.h>
 
 QT_BEGIN_NAMESPACE
 

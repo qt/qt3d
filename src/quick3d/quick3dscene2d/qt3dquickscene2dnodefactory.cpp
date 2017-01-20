@@ -37,75 +37,53 @@
 **
 ****************************************************************************/
 
-#include "scene2dplugin.h"
+#include "qt3dquickscene2dnodefactory_p.h"
+#include <QtQml/private/qqmlmetatype_p.h>
 
-#include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DQuickScene2D/qscene2d.h>
+#include <private/qrenderaspect_p.h>
+
+#include <QtCore/qcoreapplication.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-namespace Render {
 
-template <typename Backend>
-class Scene2DBackendNodeMapper : public Qt3DCore::QBackendNodeMapper
+Q_GLOBAL_STATIC(QuickScene2DNodeFactory, quick_scene2d_node_factory)
+
+static void initScene2dPlugin()
 {
-public:
-    explicit Scene2DBackendNodeMapper(Render::AbstractRenderer *renderer,
-                                      Render::Scene2DNodeManager *manager)
-        : m_manager(manager)
-        , m_renderer(renderer)
-    {
-    }
-
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_FINAL
-    {
-        Backend *backend = m_manager->getOrCreateResource(change->subjectId());
-        backend->setRenderer(m_renderer);
-        return backend;
-    }
-
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL
-    {
-        return m_manager->lookupResource(id);
-    }
-
-    void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL
-    {
-        m_manager->releaseResource(id);
-    }
-
-private:
-    Render::Scene2DNodeManager *m_manager;
-    Render::AbstractRenderer *m_renderer;
-};
-
-Scene2DPlugin::Scene2DPlugin()
-    : m_scene2dNodeManager(new Render::Scene2DNodeManager())
-{
-
+    Qt3DRender::QRenderAspectPrivate::configurePlugin("scene2d");
 }
 
-Scene2DPlugin::~Scene2DPlugin()
+Q_COREAPP_STARTUP_FUNCTION(initScene2dPlugin)
+
+QuickScene2DNodeFactory *QuickScene2DNodeFactory::instance()
 {
-    delete m_scene2dNodeManager;
+    return quick_scene2d_node_factory();
 }
 
-bool Scene2DPlugin::registerBackendTypes(QRenderAspect *aspect,
-                                         AbstractRenderer *renderer)
+void QuickScene2DNodeFactory::registerType(const char *className, const char *quickName,
+                                           int major, int minor)
 {
-    registerBackendType(aspect, Qt3DRender::Quick::QScene2D::staticMetaObject,
-                QSharedPointer<Scene2DBackendNodeMapper<Render::Quick::Scene2D> >
-                    ::create(renderer, m_scene2dNodeManager));
-    return true;
-}
-bool Scene2DPlugin::unregisterBackendTypes(QRenderAspect *aspect)
-{
-    unregisterBackendType(aspect, Qt3DRender::Quick::QScene2D::staticMetaObject);
-    return true;
+    m_types.insert(className, Type(quickName, major, minor));
 }
 
-} // namespace Render
+Qt3DCore::QNode *QuickScene2DNodeFactory::createNode(const char *type)
+{
+    if (!m_types.contains(type))
+        return nullptr;
+
+    Type &typeInfo(m_types[type]);
+
+    if (!typeInfo.resolved) {
+        typeInfo.resolved = true;
+        typeInfo.t = QQmlMetaType::qmlType(QString::fromLatin1(typeInfo.quickName),
+                                           typeInfo.version.first, typeInfo.version.second);
+    }
+
+    return typeInfo.t ? qobject_cast<Qt3DCore::QNode *>(typeInfo.t->create()) : nullptr;
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

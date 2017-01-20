@@ -34,32 +34,23 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DQUICKRENDER_LOGGING_P_H
-#define QT3DQUICKRENDER_LOGGING_P_H
+#ifndef QT3DQUICKSCENE2D_GLOBAL_H
+#define QT3DQUICKSCENE2D_GLOBAL_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <QLoggingCategory>
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
-namespace Quick {
-
-Q_DECLARE_LOGGING_CATEGORY(Scene2D)
-
-} // Quick
-} // Qt3DRender
+#if defined(QT_SHARED) || !defined(QT_STATIC)
+#  if defined(QT_BUILD_3DQUICKSCENE2D_LIB)
+#    define QT3DQUICKSCENE2DSHARED_EXPORT Q_DECL_EXPORT
+#  else
+#    define QT3DQUICKSCENE2DSHARED_EXPORT Q_DECL_IMPORT
+#  endif
+#else
+#  define QT3DQUICKSCENE2DSHARED_EXPORT
+#endif
 
 QT_END_NAMESPACE
 
-#endif // QT3DQUICKRENDER_LOGGING_P_H
+#endif // QT3DQUICKSCENE2D_GLOBAL_H

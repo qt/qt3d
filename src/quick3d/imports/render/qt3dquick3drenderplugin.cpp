@@ -109,7 +109,6 @@
 #include <Qt3DRender/qbuffercapture.h>
 #include <Qt3DRender/qmemorybarrier.h>
 
-#include <Qt3DQuickRender/qscene2d.h>
 #include <Qt3DQuickRender/private/quick3dlayerfilter_p.h>
 #include <Qt3DQuickRender/private/quick3dtechnique_p.h>
 #include <Qt3DQuickRender/private/quick3dmaterial_p.h>
@@ -285,9 +284,6 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QSeamlessCubemap>(uri, 2, 0, "SeamlessCubemap");
     qmlRegisterType<Qt3DRender::QStencilOperation>(uri, 2, 0, "StencilOperation");
     qmlRegisterType<Qt3DRender::QStencilMask>(uri, 2, 0, "StencilMask");
-
-    // Scene2D
-    Qt3DRender::Quick::registerType<Qt3DRender::Quick::QScene2D>("QScene2D", "Qt3D.Render/Scene2D", uri, 2, 9, "Scene2D");
 }
 
 QT_END_NAMESPACE

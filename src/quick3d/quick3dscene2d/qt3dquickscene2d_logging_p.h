@@ -34,94 +34,32 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QUICK_SCENE2D_P_H
-#define QT3DRENDER_RENDER_QUICK_SCENE2D_P_H
+#ifndef QT3DQUICKSCENE2D_LOGGING_P_H
+#define QT3DQUICKSCENE2D_LOGGING_P_H
 
 //
 //  W A R N I N G
 //  -------------
 //
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
 // version without notice, or even be removed.
 //
 // We mean it.
 //
 
-#include <Qt3DCore/qnodeid.h>
-#include <Qt3DQuickRender/qscene2d.h>
-
-#include <QtCore/QCoreApplication>
-#include <QtCore/QSemaphore>
-
-#include <private/qscene2d_p.h>
-#include <private/qrendertargetoutput_p.h>
-#include <private/backendnode_p.h>
-#include <private/attachmentpack_p.h>
+#include <QLoggingCategory>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-namespace Render {
-
-class GraphicsContext;
-
 namespace Quick {
 
-class Scene2D;
-
-class RenderQmlEventHandler : public QObject
-{
-    Q_OBJECT
-public:
-    RenderQmlEventHandler(Scene2D *node);
-    bool event(QEvent *e) Q_DECL_OVERRIDE;
-
-private:
-    Scene2D *m_node;
-};
-
-class QT3DQUICKRENDERSHARED_EXPORT Scene2D : public Qt3DRender::Render::BackendNode
-{
-public:
-    Scene2D();
-    ~Scene2D();
-
-    void render();
-    void initializeRender();
-    void setSharedObject(Qt3DRender::Quick::Scene2DSharedObjectPtr sharedObject);
-    void cleanup();
-    void setOutput(Qt3DCore::QNodeId outputId);
-    void initializeSharedObject();
-
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-
-    bool updateFbo(QOpenGLTexture *texture);
-    void syncRenderControl();
-
-    QOpenGLContext *m_context;
-    QOpenGLContext *m_shareContext;
-    QThread *m_renderThread;
-    Qt3DCore::QNodeId m_outputId;
-    QSharedPointer<Qt3DRender::Quick::Scene2DSharedObject> m_sharedObject;
-    Qt3DCore::QNodeId m_peerId;
-    Qt3DRender::Render::Attachment m_attachmentData;
-
-    GLuint m_fbo;
-    GLuint m_rbo;
-    QSize m_textureSize;
-
-    bool m_initialized;
-    bool m_renderInitialized;
-    Qt3DRender::Quick::QScene2D::RenderPolicy m_renderPolicy;
-};
+Q_DECLARE_LOGGING_CATEGORY(Scene2D)
 
 } // Quick
-} // Render
 } // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_QUICK_SCENE2D_P_H
+#endif // QT3DQUICKRENDER_LOGGING_P_H

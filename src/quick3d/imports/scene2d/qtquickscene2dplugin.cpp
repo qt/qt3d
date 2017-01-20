@@ -34,16 +34,23 @@
 **
 ****************************************************************************/
 
-#include "qt3dquickrender_logging_p.h"
+#include "qtquickscene2dplugin.h"
+
+#include <Qt3DQuickScene2D/qscene2d.h>
+#include <private/qrenderaspect_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
-namespace Quick {
+static void initScene2dPlugin()
+{
+    Qt3DRender::QRenderAspectPrivate::configurePlugin("scene2d");
+}
 
-Q_LOGGING_CATEGORY(Scene2D, "Qt3D.Scene2D")
+Q_COREAPP_STARTUP_FUNCTION(initScene2dPlugin)
 
-} // Quick
-} // Qt3DRender
+void QtQuickScene2DPlugin::registerTypes(const char *uri)
+{
+    qmlRegisterType<Qt3DRender::Quick::QScene2D>(uri, 2, 9, "Scene2D");
+}
 
 QT_END_NAMESPACE
