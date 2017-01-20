@@ -214,6 +214,8 @@ QBufferPrivate::QBufferPrivate()
  *        GL_UNIFORM_BUFFER
  * \value ShaderStorageBuffer
  *        GL_SHADER_STORAGE_BUFFER
+ * \value DrawIndirectBuffer
+ *        GL_DRAW_INDIRECT_BUFFER
  */
 
 /*!

@@ -140,6 +140,13 @@ void GraphicsHelperGL4::drawElements(GLenum primitiveType,
                                       baseVertex);
 }
 
+void GraphicsHelperGL4::drawElementsIndirect(GLenum mode,
+                                             GLenum type,
+                                             void *indirect)
+{
+    m_funcs->glDrawElementsIndirect(mode, type, indirect);
+}
+
 void GraphicsHelperGL4::drawArrays(GLenum primitiveType,
                                    GLint first,
                                    GLsizei count)
@@ -147,6 +154,11 @@ void GraphicsHelperGL4::drawArrays(GLenum primitiveType,
     m_funcs->glDrawArrays(primitiveType,
                           first,
                           count);
+}
+
+void GraphicsHelperGL4::drawArraysIndirect(GLenum mode, void *indirect)
+{
+    m_funcs->glDrawArraysIndirect(mode, indirect);
 }
 
 void GraphicsHelperGL4::setVerticesPerPatch(GLint verticesPerPatch)
@@ -587,6 +599,7 @@ bool GraphicsHelperGL4::supportsFeature(GraphicsHelperInterface::Feature feature
     case Compute:
     case DrawBuffersBlend:
     case BlitFramebuffer:
+    case IndirectDrawing:
         return true;
     default:
         return false;

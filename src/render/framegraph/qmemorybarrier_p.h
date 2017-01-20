@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,9 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DBUFFER_P_H
-#define QT3DRENDER_RENDER_QUICK_QUICK3DBUFFER_P_H
-
+#ifndef QT3DRENDER_QMEMORYBARRIER_P_H
+#define QT3DRENDER_QMEMORYBARRIER_P_H
 //
 //  W A R N I N G
 //  -------------
@@ -51,55 +50,28 @@
 // We mean it.
 //
 
-#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
-#include <Qt3DRender/QBuffer>
+#include <private/qframegraphnode_p.h>
+#include <Qt3DRender/qmemorybarrier.h>
 
 QT_BEGIN_NAMESPACE
 
-class QQmlEngine;
-class QJSValue;
-
-namespace QV4 {
-struct ExecutionEngine;
-}
-
 namespace Qt3DRender {
 
-namespace Render {
-
-namespace Quick {
-
-class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DBuffer : public Qt3DRender::QBuffer
+class QMemoryBarrierPrivate : public QFrameGraphNodePrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(QVariant data READ bufferData WRITE setBufferData NOTIFY bufferDataChanged)
 public:
-    explicit Quick3DBuffer(Qt3DCore::QNode *parent = nullptr);
+    QMemoryBarrierPrivate();
 
-    QVariant bufferData() const;
-    void setBufferData(const QVariant &bufferData);
-
-    Q_INVOKABLE QVariant readBinaryFile(const QUrl &fileUrl);
-
-public Q_SLOTS:
-    void updateData(int offset, const QVariant &bytes);
-
-Q_SIGNALS:
-    void bufferDataChanged();
-
-private:
-    QQmlEngine *m_engine;
-    QV4::ExecutionEngine *m_v4engine;
-    void initEngines();
-    QByteArray convertToRawData(const QJSValue &jsValue);
+    Q_DECLARE_PUBLIC(QMemoryBarrier)
+    QMemoryBarrier::BarrierTypes m_barrierTypes;
 };
 
-} // Quick
+struct QMemoryBarrierData
+{
+    QMemoryBarrier::BarrierTypes barrierTypes;
+};
 
-} // Render
-
-} // Qt3DRender
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_QUICK_QUICK3DBUFFER_P_H
+#endif // QT3DRENDER_QMEMORYBARRIER_P_H

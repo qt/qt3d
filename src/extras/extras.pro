@@ -10,6 +10,7 @@ DEFINES += QT_NO_FOREACH
 load(qt_module)
 
 include (geometries/geometries.pri)
+include (3dtext/3dtext.pri)
 include (defaults/defaults.pri)
 
 HEADERS += \

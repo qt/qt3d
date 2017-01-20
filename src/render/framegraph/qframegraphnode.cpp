@@ -106,6 +106,9 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
     \row
         \li Qt3DRender::QViewport
         \li Specify viewport
+    \row
+        \li Qt3DRender::QMemoryBarrier
+        \li Places a memory barrier
     \endtable
 
  */
@@ -167,6 +170,9 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
     \row
         \li Viewport
         \li Specify viewport
+    \row
+        \li MemoryBarrier
+        \li Places a memory barrier
     \endtable
 */
 

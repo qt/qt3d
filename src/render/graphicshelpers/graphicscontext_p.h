@@ -206,9 +206,11 @@ public:
     void    disablePrimitiveRestart();
     void    dispatchCompute(int x, int y, int z);
     void    drawArrays(GLenum primitiveType, GLint first, GLsizei count);
+    void    drawArraysIndirect(GLenum mode,void *indirect);
     void    drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances);
     void    drawArraysInstancedBaseInstance(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances, GLsizei baseinstance);
     void    drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLint baseVertex);
+    void    drawElementsIndirect(GLenum mode, GLenum type, void *indirect);
     void    drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances, GLint baseVertex, GLint baseInstance);
     void    enableClipPlane(int clipPlane);
     void    enablei(GLenum cap, GLuint index);

@@ -45,6 +45,8 @@
 #include <QtQml/private/qjsvalue_p.h>
 #include <QtQml/private/qv4typedarray_p.h>
 #include <QtQml/private/qv4arraybuffer_p.h>
+#include <Qt3DRender/private/qurlhelper_p.h>
+#include <QtCore/qfile.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -105,6 +107,25 @@ void Quick3DBuffer::updateData(int offset, const QVariant &bufferData)
         QJSValue jsValue = bufferData.value<QJSValue>();
         QBuffer::updateData(offset, convertToRawData(jsValue));
     }
+}
+
+/*!
+    \qmlmethod string Quick3DBuffer::readBinaryFile(url &fileUrl)
+
+    Reads the binary at \a fileUrl and return it as a QByteArray wrapped in a
+    QVariant
+
+    \note this is provided as convenience for QML where reading files and creating
+    QByteArray is not possible
+ */
+QVariant Quick3DBuffer::readBinaryFile(const QUrl &fileUrl)
+{
+    QFile f(Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(fileUrl));
+    QByteArray data;
+
+    if (f.open(QIODevice::ReadOnly))
+        data = f.readAll();
+    return QVariant(data);
 }
 
 void Quick3DBuffer::initEngines()

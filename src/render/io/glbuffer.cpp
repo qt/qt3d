@@ -58,6 +58,9 @@
 #if !defined(GL_PIXEL_UNPACK_BUFFER)
 #define GL_PIXEL_UNPACK_BUFFER 0x88EC
 #endif
+#if !defined(GL_DRAW_INDIRECT_BUFFER)
+#define GL_DRAW_INDIRECT_BUFFER 0x8F3F
+#endif
 
 QT_BEGIN_NAMESPACE
 
@@ -76,13 +79,14 @@ GLenum glBufferTypes[] = {
     GL_ELEMENT_ARRAY_BUFFER,
     GL_SHADER_STORAGE_BUFFER,
     GL_PIXEL_PACK_BUFFER,
-    GL_PIXEL_UNPACK_BUFFER
+    GL_PIXEL_UNPACK_BUFFER,
+    GL_DRAW_INDIRECT_BUFFER
 };
 
 } // anonymous
 
 GLBuffer::GLBuffer()
-    : m_bufferId(~0)
+    : m_bufferId(0)
     , m_isCreated(false)
     , m_bound(false)
     , m_lastTarget(GL_ARRAY_BUFFER)
