@@ -74,7 +74,8 @@ public:
         IndexBuffer,
         ShaderStorageBuffer,
         PixelPackBuffer,
-        PixelUnpackBuffer
+        PixelUnpackBuffer,
+        DrawIndirectBuffer
     };
 
     bool bind(GraphicsContext *ctx, Type t);

@@ -961,6 +961,7 @@ void GLTFExporter::parseCameras()
 {
     qCDebug(GLTFExporterLog, "Parsing cameras...");
     int cameraCount = 0;
+
     for (auto it = m_cameraMap.constBegin(); it != m_cameraMap.constEnd(); ++it) {
         QCameraLens *camera = it.value();
         CameraInfo c;
@@ -984,7 +985,12 @@ void GLTFExporter::parseCameras()
         c.zfar = camera->farPlane();
 
         // GLTF cameras point in -Z by default, the rest is in the
-        // node matrix, so no separate look-at params given here.
+        // node matrix, so no separate look-at params given here, unless it's actually QCamera.
+        QCamera *cameraEntity = nullptr;
+        const QVector<QEntity *> entities = camera->entities();
+        if (entities.size() == 1)
+            cameraEntity = qobject_cast<QCamera *>(entities.at(0));
+        c.cameraEntity = cameraEntity;
 
         m_cameraInfo.insert(camera, c);
         if (GLTFExporterLog().isDebugEnabled()) {
@@ -1258,6 +1264,11 @@ bool GLTFExporter::saveScene()
             proj["ymag"] = camInfo.ymag;
             camera["type"] = QStringLiteral("orthographic");
             camera["orthographic"] = proj;
+        }
+        if (camInfo.cameraEntity) {
+            camera["position"] = vec2jsvec(camInfo.cameraEntity->position());
+            camera["upVector"] = vec2jsvec(camInfo.cameraEntity->upVector());
+            camera["viewCenter"] = vec2jsvec(camInfo.cameraEntity->viewCenter());
         }
         camera["name"] = camInfo.originalName;
         cameras[camInfo.name] = camera;

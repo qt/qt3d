@@ -213,6 +213,9 @@
 #define KEY_EFFECT              QLatin1String("effect")
 #define KEY_EFFECTS             QLatin1String("effects")
 #define KEY_PROPERTIES          QLatin1String("properties")
+#define KEY_POSITION            QLatin1String("position")
+#define KEY_UPVECTOR            QLatin1String("upVector")
+#define KEY_VIEW_CENTER         QLatin1String("viewCenter")
 
 QT_BEGIN_NAMESPACE
 
@@ -380,7 +383,8 @@ Qt3DCore::QEntity* GLTFImporter::node(const QString &id)
     const auto translation = jsonObj.value(KEY_TRANSLATION);
     const auto scale = jsonObj.value(KEY_SCALE);
     Qt3DCore::QTransform *trans = nullptr;
-    QCameraLens* cameraLens = nullptr;
+    QCameraLens *cameraLens = nullptr;
+    QCamera *cameraEntity = nullptr;
 
     // If the node contains no meshes, results will still be null here.
     // If the node has camera and transform, promote it to QCamera, as that makes it more
@@ -389,10 +393,10 @@ Qt3DCore::QEntity* GLTFImporter::node(const QString &id)
         if (!cameraVal.isUndefined()
                 && (!matrix.isUndefined() || !rotation.isUndefined() || !translation.isUndefined()
                     || !scale.isUndefined())) {
-            auto camera = new QCamera;
-            trans = camera->transform();
-            cameraLens = camera->lens();
-            result = camera;
+            cameraEntity = new QCamera;
+            trans = cameraEntity->transform();
+            cameraLens = cameraEntity->lens();
+            result = cameraEntity;
         } else {
             result = new QEntity;
         }
@@ -460,7 +464,7 @@ Qt3DCore::QEntity* GLTFImporter::node(const QString &id)
         const bool newLens = cameraLens == nullptr;
         if (newLens)
             cameraLens = new QCameraLens;
-        if (!fillCameraLens(*cameraLens, cameraVal.toString())) {
+        if (!fillCamera(*cameraLens, cameraEntity, cameraVal.toString())) {
             qCWarning(GLTFImporterLog, "failed to build camera: %ls on node %ls",
                       qUtf16PrintableImpl(cameraVal.toString()), qUtf16PrintableImpl(id));
         } else if (newLens) {
@@ -925,7 +929,7 @@ QMaterial* GLTFImporter::material(const QString &id)
     return mat;
 }
 
-bool GLTFImporter::fillCameraLens(QCameraLens &lens, const QString &id) const
+bool GLTFImporter::fillCamera(QCameraLens &lens, QCamera *cameraEntity, const QString &id) const
 {
     const auto jsonVal = m_json.object().value(KEY_CAMERAS).toObject().value(id);
     if (Q_UNLIKELY(jsonVal.isUndefined())) {
@@ -972,6 +976,14 @@ bool GLTFImporter::fillCameraLens(QCameraLens &lens, const QString &id) const
         qCWarning(GLTFImporterLog, "camera: %ls has unsupported type: %ls",
                   qUtf16PrintableImpl(id), qUtf16PrintableImpl(camTy));
         return false;
+    }
+    if (cameraEntity) {
+        if (jsonObj.contains(KEY_POSITION))
+            cameraEntity->setPosition(jsonArrToVec3(jsonObj.value(KEY_POSITION).toArray()));
+        if (jsonObj.contains(KEY_UPVECTOR))
+            cameraEntity->setUpVector(jsonArrToVec3(jsonObj.value(KEY_UPVECTOR).toArray()));
+        if (jsonObj.contains(KEY_VIEW_CENTER))
+            cameraEntity->setViewCenter(jsonArrToVec3(jsonObj.value(KEY_VIEW_CENTER).toArray()));
     }
     renameFromJson(jsonObj, &lens);
     return true;

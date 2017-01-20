@@ -72,6 +72,7 @@ class QTransform;
 
 namespace Qt3DRender {
 
+class QCamera;
 class QCameraLens;
 class QMaterial;
 class QGeometryRenderer;
@@ -196,6 +197,8 @@ private:
         // Orthographic properties
         float xmag;
         float ymag;
+
+        QCamera *cameraEntity;
     };
 
     struct LightInfo {

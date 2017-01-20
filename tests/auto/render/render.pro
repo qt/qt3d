@@ -95,7 +95,8 @@ qtConfig(private_tests) {
         renderviewbuilder \
         filtercompatibletechniquejob \
         rendercapture \
-        trianglevisitor
+        trianglevisitor \
+        qmemorybarrier
 
     !macos: SUBDIRS += graphicshelpergl4
 }

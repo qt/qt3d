@@ -159,6 +159,16 @@ void GraphicsHelperGL3_2::drawArrays(GLenum primitiveType,
                           count);
 }
 
+void GraphicsHelperGL3_2::drawElementsIndirect(GLenum, GLenum, void *)
+{
+    qWarning() << "Indirect Drawing is not supported with OpenGL 3.2";
+}
+
+void GraphicsHelperGL3_2::drawArraysIndirect(GLenum , void *)
+{
+    qWarning() << "Indirect Drawing is not supported with OpenGL 3.2";
+}
+
 void GraphicsHelperGL3_2::setVerticesPerPatch(GLint verticesPerPatch)
 {
 #if defined(QT_OPENGL_4)

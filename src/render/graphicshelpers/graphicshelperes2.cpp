@@ -156,6 +156,16 @@ void GraphicsHelperES2::drawArrays(GLenum primitiveType,
                           count);
 }
 
+void GraphicsHelperES2::drawElementsIndirect(GLenum, GLenum, void *)
+{
+    qWarning() << "Indirect Drawing is not supported with OpenGL ES 2";
+}
+
+void GraphicsHelperES2::drawArraysIndirect(GLenum , void *)
+{
+    qWarning() << "Indirect Drawing is not supported with OpenGL ES 2";
+}
+
 void GraphicsHelperES2::setVerticesPerPatch(GLint verticesPerPatch)
 {
     Q_UNUSED(verticesPerPatch);
