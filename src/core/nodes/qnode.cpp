@@ -902,6 +902,51 @@ QNodeCreatedChangeBasePtr QNode::createNodeCreationChange() const
     return QNodeCreatedChangeBasePtr::create(this);
 }
 
+/*!
+ * \brief Sends a command messages to the backend node
+ *
+ * Creates a QNodeCommand message and dispatches it to the backend node. The
+ * command is given and a \a name and some \a data which can be used in the
+ * backend node to performe various operations.
+ * This returns a CommandId which can be used to identify the initial command
+ * when receiving a message in reply. If the command message is to be sent in
+ * reply to another command, \a replyTo contains the id of that command.
+ *
+ * \sa QNodeCommand, QNode::sendReply
+ */
+QNodeCommand::CommandId QNode::sendCommand(const QString &name,
+                                           const QVariant &data,
+                                           QNodeCommand::CommandId replyTo)
+{
+    Q_D(QNode);
+
+    // Bail out early if we can to avoid operator new
+    if (d->m_blockNotifications)
+        return QNodeCommand::CommandId(0);
+
+    auto e = QNodeCommandPtr::create(d->m_id);
+    e->setName(name);
+    e->setData(data);
+    e->setReplyToCommandId(replyTo);
+    d->notifyObservers(e);
+    return e->commandId();
+}
+
+/*!
+ * \brief Send a command back to the backend node
+ *
+ * Assumes the command is to be to sent back in reply to itself to the backend node
+ *
+ * \sa QNodeCommand, QNode::sendCommand
+ */
+void QNode::sendReply(const QNodeCommandPtr &command)
+{
+    Q_D(QNode);
+    command->setDeliveryFlags(QSceneChange::BackendNodes);
+    d->notifyObservers(command);
+}
+
+
 namespace {
 
 /*! \internal */

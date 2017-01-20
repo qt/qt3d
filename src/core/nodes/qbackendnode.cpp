@@ -42,6 +42,7 @@
 
 #include <Qt3DCore/qaspectengine.h>
 #include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qnodecommand.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <Qt3DCore/private/corelogging_p.h>
@@ -204,6 +205,25 @@ void QBackendNode::notifyObservers(const QSceneChangePtr &e)
 {
     Q_D(QBackendNode);
     d->notifyObservers(e);
+}
+
+QNodeCommand::CommandId QBackendNode::sendCommand(const QString &name,
+                                                  const QVariant &data,
+                                                  QNodeCommand::CommandId replyTo)
+{
+    auto e = QNodeCommandPtr::create(peerId());
+    e->setName(name);
+    e->setData(data);
+    e->setReplyToCommandId(replyTo);
+    e->setDeliveryFlags(QSceneChange::Nodes);
+    notifyObservers(e);
+    return e->commandId();
+}
+
+void QBackendNode::sendReply(const QNodeCommandPtr &command)
+{
+    command->setDeliveryFlags(QSceneChange::Nodes);
+    notifyObservers(command);
 }
 
 void QBackendNode::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
