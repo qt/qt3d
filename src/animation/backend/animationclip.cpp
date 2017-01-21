@@ -37,7 +37,15 @@
 #include "animationclip_p.h"
 #include <Qt3DAnimation/qanimationclip.h>
 #include <Qt3DAnimation/private/qanimationclip_p.h>
+#include <Qt3DAnimation/private/animationlogging_p.h>
+#include <Qt3DRender/private/qurlhelper_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+
+#include <QtCore/qbytearray.h>
+#include <QtCore/qfile.h>
+#include <QtCore/qjsonarray.h>
+#include <QtCore/qjsondocument.h>
+#include <QtCore/qjsonobject.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,9 +53,11 @@ namespace Qt3DAnimation {
 namespace Animation {
 
 AnimationClip::AnimationClip()
-    : Qt3DCore::QBackendNode(ReadOnly)
-    , m_handler(nullptr)
+    : BackendNode(ReadOnly)
     , m_source()
+    , m_name()
+    , m_objectName()
+    , m_channelGroups()
 {
 }
 
@@ -56,6 +66,8 @@ void AnimationClip::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAnimationClipData>>(change);
     const auto &data = typedChange->data;
     m_source = data.source;
+    if (!m_source.isEmpty())
+        setDirty(Handler::AnimationClipDirty);
 }
 
 void AnimationClip::cleanup()
@@ -63,6 +75,8 @@ void AnimationClip::cleanup()
     setEnabled(false);
     m_handler = nullptr;
     m_source.clear();
+
+    clearData();
 }
 
 void AnimationClip::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -70,8 +84,10 @@ void AnimationClip::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     switch (e->type()) {
     case Qt3DCore::PropertyUpdated: {
         const auto change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("source"))
+        if (change->propertyName() == QByteArrayLiteral("source")) {
             m_source = change->value().toUrl();
+            setDirty(Handler::AnimationClipDirty);
+        }
         break;
     }
 
@@ -79,6 +95,58 @@ void AnimationClip::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
     QBackendNode::sceneChangeEvent(e);
+}
+
+/*!
+    \internal
+    Called by LoadAnimationClipJob on the threadpool
+ */
+void AnimationClip::loadAnimation()
+{
+    qCDebug(Jobs) << Q_FUNC_INFO << m_source;
+    clearData();
+
+    // TODO: Handle remote files
+    QString filePath = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_source);
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly)) {
+        qWarning() << "Could not find animation clip:" << filePath;
+        return;
+    }
+
+    QByteArray animationData = file.readAll();
+    QJsonDocument document = QJsonDocument::fromJson(animationData);
+    QJsonObject rootObject = document.object();
+
+    // TODO: Allow loading of a named animation from a file containing many
+    QJsonArray animationsArray = rootObject[QLatin1String("animations")].toArray();
+    qCDebug(Jobs) << "Found" << animationsArray.size() << "animations:";
+    for (int i = 0; i < animationsArray.size(); ++i) {
+        QJsonObject animation = animationsArray.at(i).toObject();
+        qCDebug(Jobs) << "\tName:" << animation[QLatin1String("action")].toString()
+                      << "Object:" << animation[QLatin1String("object")].toString();
+    }
+
+    // For now just load the first animation
+    QJsonObject animation = animationsArray.at(0).toObject();
+    m_name = animation[QLatin1String("action")].toString();
+    m_objectName = animation[QLatin1String("object")].toString();
+    QJsonArray groupsArray = animation[QLatin1String("groups")].toArray();
+    const int groupCount = groupsArray.size();
+    m_channelGroups.resize(groupCount);
+    for (int i = 0; i < groupCount; ++i) {
+        const QJsonObject group = groupsArray.at(i).toObject();
+        m_channelGroups[i].read(group);
+    }
+
+    qCDebug(Jobs) << "Loaded animation data:" << *this;
+}
+
+void AnimationClip::clearData()
+{
+    m_name.clear();
+    m_objectName.clear();
+    m_channelGroups.clear();
 }
 
 } // namespace Animation

@@ -52,6 +52,10 @@
 #include "functionrangefinder_p.h"
 #include <QtCore/qvector.h>
 
+#ifndef QT_NO_DEBUG_STREAM
+#include <QtCore/qdebug.h>
+#endif
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
@@ -76,12 +80,71 @@ public:
 
     float evaluateAtTime(float localTime) const;
 
+    void read(const QJsonObject &json);
+
 private:
     QVector<float> m_localTimes;
     QVector<Keyframe> m_keyframes;
 
     FunctionRangeFinder m_rangeFinder;
 };
+
+#ifndef QT_NO_DEBUG_STREAM
+inline QDebug operator<<(QDebug dbg, const FCurve &fcurve)
+{
+    QDebugStateSaver saver(dbg);
+    dbg << "Keyframe Count =" << fcurve.keyframeCount() << endl;
+    for (int i = 0; i < fcurve.keyframeCount(); ++i) {
+        const Keyframe &kf = fcurve.keyframe(i);
+        dbg << "t =" << fcurve.localTime(i)
+            << "value =" << kf.value
+            << "leftHandle =" << kf.leftControlPoint
+            << "rightHandle =" << kf.rightControlPoint
+            << endl;
+    }
+    return dbg;
+}
+#endif
+
+struct Channel
+{
+    QString name;
+    FCurve fcurve;
+
+    void read(const QJsonObject &json);
+};
+
+#ifndef QT_NO_DEBUG_STREAM
+inline QDebug operator<<(QDebug dbg, const Channel &channel)
+{
+    QDebugStateSaver saver(dbg);
+    dbg << "Channel Name: " << channel.name << endl
+        << "Fcurve:" << channel.fcurve << endl;
+    return dbg;
+}
+#endif
+
+struct ChannelGroup
+{
+    QString name;
+    QVector<Channel> channels;
+
+    void read(const QJsonObject &json);
+};
+
+#ifndef QT_NO_DEBUG_STREAM
+inline QDebug operator<<(QDebug dbg, const ChannelGroup &channelGroup)
+{
+    QDebugStateSaver saver(dbg);
+    dbg << "Name: " << channelGroup.name << endl
+        << "Channels:" << channelGroup.channels.size() << endl;
+
+    for (const auto channel : qAsConst(channelGroup.channels)) {
+        dbg << channel;
+    }
+    return dbg;
+}
+#endif
 
 } // namespace Animation
 } // namespace Qt3DAnimation

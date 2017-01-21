@@ -34,46 +34,49 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_ANIMATION_BLENDEDCLIPANIMATOR_P_H
-#define QT3DANIMATION_ANIMATION_BLENDEDCLIPANIMATOR_P_H
+#include "loadanimationclipjob_p.h"
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DAnimation/private/backendnode_p.h>
+#include <Qt3DAnimation/private/animationclip_p.h>
+#include <Qt3DAnimation/private/handler_p.h>
+#include <Qt3DAnimation/private/managers_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 namespace Animation {
 
-class Handler;
-
-class Q_AUTOTEST_EXPORT BlendedClipAnimator : public BackendNode
+LoadAnimationClipJob::LoadAnimationClipJob()
+    : Qt3DCore::QAspectJob()
+    , m_animationClipHandles()
 {
-public:
-    BlendedClipAnimator();
+}
 
-    void cleanup();
+void LoadAnimationClipJob::addDirtyAnimationClips(const QVector<HAnimationClip> &animationClipHandles)
+{
+    for (const auto handle : animationClipHandles) {
+        if (!m_animationClipHandles.contains(handle))
+            m_animationClipHandles.push_back(handle);
+    }
+}
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+void LoadAnimationClipJob::clearDirtyAnimationClips()
+{
+    m_animationClipHandles.clear();
+}
 
-private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
-};
+void LoadAnimationClipJob::run()
+{
+    Q_ASSERT(m_handler);
+    AnimationClipManager *animationClipManager = m_handler->animationClipManager();
+    for (const auto animationClipHandle : qAsConst(m_animationClipHandles)) {
+        AnimationClip *animationClip = animationClipManager->data(animationClipHandle);
+        animationClip->loadAnimation();
+    }
+
+    clearDirtyAnimationClips();
+}
 
 } // namespace Animation
 } // namespace Qt3DAnimation
 
-
 QT_END_NAMESPACE
-
-#endif // QT3DANIMATION_ANIMATION_BLENDEDCLIPANIMATOR_P_H

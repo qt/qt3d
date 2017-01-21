@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_ANIMATION_BLENDEDCLIPANIMATOR_P_H
-#define QT3DANIMATION_ANIMATION_BLENDEDCLIPANIMATOR_P_H
+#ifndef QT3DANIMATION_ANIMATION_LOADANIMATIONCLIPJOB_H
+#define QT3DANIMATION_ANIMATION_LOADANIMATIONCLIPJOB_H
 
 //
 //  W A R N I N G
@@ -48,7 +48,9 @@
 // We mean it.
 //
 
-#include <Qt3DAnimation/private/backendnode_p.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DAnimation/private/handle_types_p.h>
+#include <QtCore/qvector.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,24 +58,30 @@ namespace Qt3DAnimation {
 namespace Animation {
 
 class Handler;
+class FindGraphJob;
 
-class Q_AUTOTEST_EXPORT BlendedClipAnimator : public BackendNode
+class LoadAnimationClipJob : public Qt3DCore::QAspectJob
 {
 public:
-    BlendedClipAnimator();
+    LoadAnimationClipJob();
 
-    void cleanup();
+    void setHandler(Handler *handler) { m_handler = handler; }
+    Handler *handler() const { return m_handler; }
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void addDirtyAnimationClips(const QVector<HAnimationClip> &animationClipHandles);
+    void clearDirtyAnimationClips();
+
+protected:
+    void run() Q_DECL_OVERRIDE;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    QVector<HAnimationClip> m_animationClipHandles;
+    Handler *m_handler;
 };
 
 } // namespace Animation
 } // namespace Qt3DAnimation
 
-
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_ANIMATION_BLENDEDCLIPANIMATOR_P_H
+#endif // QT3DANIMATION_ANIMATION_LOADANIMATIONCLIPJOB_H

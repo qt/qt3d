@@ -72,11 +72,19 @@ class BlendedClipAnimatorManager;
 class ConductedClipAnimator;
 class ConductedClipAnimatorManager;
 
+class LoadAnimationClipJob;
+
 class Q_AUTOTEST_EXPORT Handler
 {
 public:
     Handler();
     ~Handler();
+
+    enum DirtyFlag {
+        AnimationClipDirty
+    };
+
+    void setDirty(DirtyFlag flag, Qt3DCore::QNodeId nodeId);
 
     AnimationClipManager *animationClipManager() const Q_DECL_NOTHROW { return m_animationClipManager.data(); }
     ClipAnimatorManager *clipAnimatorManager() const Q_DECL_NOTHROW { return m_clipAnimatorManager.data(); }
@@ -90,6 +98,10 @@ private:
     QScopedPointer<ClipAnimatorManager> m_clipAnimatorManager;
     QScopedPointer<BlendedClipAnimatorManager> m_blendedClipAnimatorManager;
     QScopedPointer<ConductedClipAnimatorManager> m_conductedClipAnimatorManager;
+
+    QVector<HAnimationClip> m_dirtyAnimationClips;
+
+    QSharedPointer<LoadAnimationClipJob> m_loadAnimationClipJob;
 
 #if defined(QT_BUILD_INTERNAL)
     friend class QT_PREPEND_NAMESPACE(tst_Handler);

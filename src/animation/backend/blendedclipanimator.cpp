@@ -45,8 +45,7 @@ namespace Qt3DAnimation {
 namespace Animation {
 
 BlendedClipAnimator::BlendedClipAnimator()
-    : Qt3DCore::QBackendNode(ReadOnly)
-    , m_handler(nullptr)
+    : BackendNode(ReadOnly)
 {
 }
 

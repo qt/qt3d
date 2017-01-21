@@ -37,6 +37,10 @@
 #include "fcurve_p.h"
 #include <private/bezierevaluator_p.h>
 
+#include <QtCore/qjsonarray.h>
+#include <QtCore/qjsonobject.h>
+#include <QtCore/QLatin1String>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
@@ -75,6 +79,60 @@ void FCurve::appendKeyframe(float localTime, const Keyframe &keyframe)
 {
     m_localTimes.append(localTime);
     m_keyframes.append(keyframe);
+}
+
+void FCurve::read(const QJsonObject &json)
+{
+    clearKeyframes();
+
+    const QJsonArray keyframeArray = json[QLatin1String("keyframes")].toArray();
+    const int keyframeCount = keyframeArray.size();
+
+    for (int i = 0; i < keyframeCount; ++i) {
+        const QJsonObject keyframeData = keyframeArray.at(i).toObject();
+
+        // Extract the keyframe local time and value
+        const QJsonArray keyframeCoords = keyframeData[QLatin1String("co")].toArray();
+        float localTime = keyframeCoords.at(0).toDouble();
+
+        Keyframe keyframe;
+        keyframe.interpolation = Keyframe::Bezier;
+        keyframe.value = keyframeCoords.at(1).toDouble();
+
+        const QJsonArray leftHandle = keyframeData[QLatin1String("handle_left")].toArray();
+        keyframe.leftControlPoint[0] = leftHandle.at(0).toDouble();
+        keyframe.leftControlPoint[1] = leftHandle.at(1).toDouble();
+
+        const QJsonArray rightHandle = keyframeData[QLatin1String("handle_right")].toArray();
+        keyframe.rightControlPoint[0] = rightHandle.at(0).toDouble();
+        keyframe.rightControlPoint[1] = rightHandle.at(1).toDouble();
+
+        appendKeyframe(localTime, keyframe);
+    }
+
+    // TODO: Ensure beziers have no loops or cusps by scaling the control points
+    // back so they do not interset.
+}
+
+void Channel::read(const QJsonObject &json)
+{
+    fcurve.read(json);
+}
+
+void ChannelGroup::read(const QJsonObject &json)
+{
+    name = json[QLatin1String("group")].toString();
+    const QJsonArray channelsArray = json[QLatin1String("channels")].toArray();
+    const int channelCount = channelsArray.size();
+    channels.resize(channelCount);
+
+    // TODO: Add channel names to export format
+    const QStringList channelNameSuffixes = {QLatin1String("X"), QLatin1String("Y"), QLatin1String("Z")};
+    for (int i = 0; i < channelCount; ++i) {
+        const QJsonObject channel = channelsArray.at(i).toObject();
+        channels[i].read(channel);
+        channels[i].name = name + QLatin1String(".") + channelNameSuffixes.at(i);
+    }
 }
 
 } // namespace Animation

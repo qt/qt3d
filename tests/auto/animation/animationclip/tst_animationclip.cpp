@@ -45,6 +45,8 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DAnimation::Animation::AnimationClip backendClip;
+        Qt3DAnimation::Animation::Handler handler;
+        backendClip.setHandler(&handler);
         Qt3DAnimation::QAnimationClip clip;
 
         clip.setSource(QUrl::fromLocalFile("walk.qlip"));
@@ -62,6 +64,8 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DAnimation::Animation::AnimationClip backendClip;
+        Qt3DAnimation::Animation::Handler handler;
+        backendClip.setHandler(&handler);
 
         // THEN
         QVERIFY(backendClip.peerId().isNull());
@@ -86,6 +90,8 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DAnimation::Animation::AnimationClip backendClip;
+        Qt3DAnimation::Animation::Handler handler;
+        backendClip.setHandler(&handler);
         Qt3DCore::QPropertyUpdatedChangePtr updateChange;
 
         // WHEN

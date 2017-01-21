@@ -36,7 +36,8 @@
 
 #include "handler_p.h"
 #include <Qt3DAnimation/private/managers_p.h>
-
+#include <Qt3DAnimation/private/loadanimationclipjob_p.h>
+#include <Qt3DAnimation/private/animationlogging_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,17 +49,40 @@ Handler::Handler()
     , m_clipAnimatorManager(new ClipAnimatorManager)
     , m_blendedClipAnimatorManager(new BlendedClipAnimatorManager)
     , m_conductedClipAnimatorManager(new ConductedClipAnimatorManager)
+    , m_loadAnimationClipJob(new LoadAnimationClipJob)
 {
+    m_loadAnimationClipJob->setHandler(this);
 }
 
 Handler::~Handler()
 {
 }
 
+void Handler::setDirty(DirtyFlag flag, Qt3DCore::QNodeId nodeId)
+{
+    switch (flag) {
+    case AnimationClipDirty: {
+        const auto handle = m_animationClipManager->lookupHandle(nodeId);
+        m_dirtyAnimationClips.push_back(handle);
+        break;
+    }
+    }
+}
+
 QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
 {
     Q_UNUSED(time);
     QVector<Qt3DCore::QAspectJobPtr> jobs;
+
+    // If there are any dirty animation clips that need loading,
+    // queue up a job for them
+    if (!m_dirtyAnimationClips.isEmpty()) {
+        qCDebug(HandlerLogic) << "Added LoadAnimationClipJob";
+        m_loadAnimationClipJob->addDirtyAnimationClips(m_dirtyAnimationClips);
+        jobs.push_back(m_loadAnimationClipJob);
+        m_dirtyAnimationClips.clear();
+    }
+
     return jobs;
 }
 

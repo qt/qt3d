@@ -45,8 +45,7 @@ namespace Qt3DAnimation {
 namespace Animation {
 
 ConductedClipAnimator::ConductedClipAnimator()
-    : Qt3DCore::QBackendNode(ReadOnly)
-    , m_handler(nullptr)
+    : BackendNode(ReadOnly)
 {
 }
 

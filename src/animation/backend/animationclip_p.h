@@ -48,7 +48,8 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DAnimation/private/backendnode_p.h>
+#include <Qt3DAnimation/private/fcurve_p.h>
 #include <QtCore/qurl.h>
 
 QT_BEGIN_NAMESPACE
@@ -58,7 +59,7 @@ namespace Animation {
 
 class Handler;
 
-class Q_AUTOTEST_EXPORT AnimationClip : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT AnimationClip : public BackendNode
 {
 public:
     AnimationClip();
@@ -68,14 +69,41 @@ public:
     QUrl source() const { return m_source; }
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-    void setHandler(Handler *handler) { m_handler = handler; }
+    QString name() const { return m_name; }
+    QString objectName() const { return m_objectName; }
+    QVector<ChannelGroup> channelGroups() const { return m_channelGroups; }
+
+    // Called from jobs
+    void loadAnimation();
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void clearData();
 
-    Handler *m_handler;
     QUrl m_source;
+
+    QString m_name;
+    QString m_objectName;
+    QVector<ChannelGroup> m_channelGroups;
 };
+
+#ifndef QT_NO_DEBUG_STREAM
+inline QDebug operator<<(QDebug dbg, const AnimationClip &animationClip)
+{
+    QDebugStateSaver saver(dbg);
+    dbg << "QNodeId =" << animationClip.peerId() << endl
+        << "Name =" << animationClip.name() << endl
+        << "Object Name =" << animationClip.objectName() << endl
+        << "Channel Groups:" << endl;
+
+    const QVector<ChannelGroup> channelGroups = animationClip.channelGroups();
+    for (const auto channelGroup : channelGroups) {
+        dbg << channelGroup;
+    }
+
+    return dbg;
+}
+#endif
 
 } // namespace Animation
 } // namespace Qt3DAnimation

@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>DefaultSceneEntity.qml</file>
+        <file>cubeanimation.json</file>
+    </qresource>
+</RCC>

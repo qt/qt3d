@@ -45,8 +45,7 @@ namespace Qt3DAnimation {
 namespace Animation {
 
 ClipAnimator::ClipAnimator()
-    : Qt3DCore::QBackendNode(ReadOnly)
-    , m_handler(nullptr)
+    : BackendNode(ReadOnly)
     , m_clipId()
 {
 }

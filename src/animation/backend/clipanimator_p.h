@@ -48,7 +48,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DAnimation/private/backendnode_p.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -58,7 +58,7 @@ namespace Animation {
 
 class Handler;
 
-class Q_AUTOTEST_EXPORT ClipAnimator : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT ClipAnimator : public BackendNode
 {
 public:
     ClipAnimator();
@@ -73,7 +73,6 @@ public:
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
-    Handler *m_handler;
     Qt3DCore::QNodeId m_clipId;
 };
 
