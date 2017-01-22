@@ -14,6 +14,10 @@ include(backend/backend.pri)
 
 HEADERS += \
     qt3danimation_global.h \
-    qt3danimation_global_p.h
+    qt3danimation_global_p.h \
+    animationlogging_p.h
+
+SOURCES += \
+    animationlogging.cpp
 
 load(qt_module)
