@@ -86,6 +86,8 @@ public:
 
     void setDirty(DirtyFlag flag, Qt3DCore::QNodeId nodeId);
 
+    void setClipAnimatorRunning(Qt3DCore::QNodeId clipAnimatorId, bool running);
+
     AnimationClipManager *animationClipManager() const Q_DECL_NOTHROW { return m_animationClipManager.data(); }
     ClipAnimatorManager *clipAnimatorManager() const Q_DECL_NOTHROW { return m_clipAnimatorManager.data(); }
     BlendedClipAnimatorManager *blendedClipAnimatorManager() const Q_DECL_NOTHROW { return m_blendedClipAnimatorManager.data(); }
@@ -100,6 +102,7 @@ private:
     QScopedPointer<ConductedClipAnimatorManager> m_conductedClipAnimatorManager;
 
     QVector<HAnimationClip> m_dirtyAnimationClips;
+    QVector<HClipAnimator> m_runningClipAnimators;
 
     QSharedPointer<LoadAnimationClipJob> m_loadAnimationClipJob;
 

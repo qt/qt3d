@@ -66,11 +66,13 @@ public:
     Q_DECLARE_PUBLIC(QClipAnimator)
 
     QAnimationClip *m_clip;
+    bool m_running;
 };
 
 struct QClipAnimatorData
 {
     Qt3DCore::QNodeId clipId;
+    bool running;
 };
 
 } // namespace Qt3DAnimation

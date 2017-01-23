@@ -45,7 +45,9 @@ private Q_SLOTS:
     void checkPeerPropertyMirroring()
     {
         // GIVEN
+        Qt3DAnimation::Animation::Handler handler;
         Qt3DAnimation::Animation::ClipAnimator backendAnimator;
+        backendAnimator.setHandler(&handler);
         Qt3DAnimation::QClipAnimator animator;
         auto clip = new Qt3DAnimation::QAnimationClip();
 
@@ -58,22 +60,27 @@ private Q_SLOTS:
         QCOMPARE(backendAnimator.peerId(), animator.id());
         QCOMPARE(backendAnimator.isEnabled(), animator.isEnabled());
         QCOMPARE(backendAnimator.clipId(), clip->id());
+        QCOMPARE(backendAnimator.isRunning(), animator.isRunning());
     }
 
     void checkInitialAndCleanedUpState()
     {
         // GIVEN
+        Qt3DAnimation::Animation::Handler handler;
         Qt3DAnimation::Animation::ClipAnimator backendAnimator;
+        backendAnimator.setHandler(&handler);
 
         // THEN
         QVERIFY(backendAnimator.peerId().isNull());
         QCOMPARE(backendAnimator.isEnabled(), false);
         QCOMPARE(backendAnimator.clipId(), Qt3DCore::QNodeId());
+        QCOMPARE(backendAnimator.isRunning(), false);
 
         // GIVEN
         Qt3DAnimation::QClipAnimator animator;
         auto clip = new Qt3DAnimation::QAnimationClip();
         animator.setClip(clip);
+        animator.setRunning(true);
 
         // WHEN
         simulateInitialization(&animator, &backendAnimator);
@@ -83,12 +90,15 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendAnimator.clipId(), Qt3DCore::QNodeId());
         QCOMPARE(backendAnimator.isEnabled(), false);
+        QCOMPARE(backendAnimator.isRunning(), false);
     }
 
     void checkPropertyChanges()
     {
         // GIVEN
+        Qt3DAnimation::Animation::Handler handler;
         Qt3DAnimation::Animation::ClipAnimator backendAnimator;
+        backendAnimator.setHandler(&handler);
         Qt3DCore::QPropertyUpdatedChangePtr updateChange;
 
         // WHEN
@@ -109,6 +119,15 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendAnimator.clipId(), newClip->id());
+
+        // WHEN
+        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange->setPropertyName("running");
+        updateChange->setValue(true);
+        backendAnimator.sceneChangeEvent(updateChange);
+
+        // THEN
+        QCOMPARE(backendAnimator.isRunning(), true);
     }
 };
 

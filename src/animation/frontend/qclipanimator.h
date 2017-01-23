@@ -54,18 +54,22 @@ class QT3DANIMATIONSHARED_EXPORT QClipAnimator : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DAnimation::QAnimationClip *clip READ clip WRITE setClip NOTIFY clipChanged)
+    Q_PROPERTY(bool running READ isRunning WRITE setRunning NOTIFY runningChanged)
 
 public:
     explicit QClipAnimator(Qt3DCore::QNode *parent = nullptr);
     ~QClipAnimator();
 
     Qt3DAnimation::QAnimationClip *clip() const;
+    bool isRunning() const;
 
 public Q_SLOTS:
     void setClip(Qt3DAnimation::QAnimationClip *clip);
+    void setRunning(bool running);
 
 Q_SIGNALS:
     void clipChanged(Qt3DAnimation::QAnimationClip *clip);
+    void runningChanged(bool running);
 
 protected:
     QClipAnimator(QClipAnimatorPrivate &dd, Qt3DCore::QNode *parent = nullptr);

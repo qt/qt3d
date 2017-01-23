@@ -48,6 +48,7 @@ namespace Qt3DAnimation {
 QClipAnimatorPrivate::QClipAnimatorPrivate()
     : Qt3DCore::QComponentPrivate()
     , m_clip(nullptr)
+    , m_running(false)
 {
 }
 
@@ -71,6 +72,12 @@ QAnimationClip *QClipAnimator::clip() const
     return d->m_clip;
 }
 
+bool QClipAnimator::isRunning() const
+{
+    Q_D(const QClipAnimator);
+    return d->m_running;
+}
+
 void QClipAnimator::setClip(QAnimationClip *clip)
 {
     Q_D(QClipAnimator);
@@ -90,12 +97,23 @@ void QClipAnimator::setClip(QAnimationClip *clip)
     emit clipChanged(clip);
 }
 
+void QClipAnimator::setRunning(bool running)
+{
+    Q_D(QClipAnimator);
+    if (d->m_running == running)
+        return;
+
+    d->m_running = running;
+    emit runningChanged(running);
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QClipAnimator::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QClipAnimatorData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QClipAnimator);
     data.clipId = Qt3DCore::qIdForNode(d->m_clip);
+    data.running = d->m_running;
     return creationChange;
 }
 

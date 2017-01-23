@@ -68,6 +68,7 @@ public:
 struct QAnimationClipData
 {
     QUrl source;
+    bool running;
 };
 
 } // namespace Qt3DAnimation

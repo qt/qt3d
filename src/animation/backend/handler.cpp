@@ -69,6 +69,28 @@ void Handler::setDirty(DirtyFlag flag, Qt3DCore::QNodeId nodeId)
     }
 }
 
+void Handler::setClipAnimatorRunning(Qt3DCore::QNodeId clipAnimatorId, bool running)
+{
+    const auto handle = m_clipAnimatorManager->lookupHandle(clipAnimatorId);
+    if (handle.isNull())
+        return;
+
+    // Add clip to running set if not already present
+    if (running && !m_runningClipAnimators.contains(handle))
+        m_runningClipAnimators.push_back(handle);
+
+    // If being marked as not running, remove from set of running clips
+    if (!running) {
+        const auto it = std::find_if(m_runningClipAnimators.begin(),
+                                     m_runningClipAnimators.end(),
+                                     [handle](const HClipAnimator &h) { return h == handle; });
+        if (it != m_runningClipAnimators.end())
+            m_runningClipAnimators.erase(it);
+    }
+
+    qCDebug(HandlerLogic) << "Running clips:" << m_runningClipAnimators;
+}
+
 QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
 {
     Q_UNUSED(time);

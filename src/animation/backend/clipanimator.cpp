@@ -47,6 +47,7 @@ namespace Animation {
 ClipAnimator::ClipAnimator()
     : BackendNode(ReadOnly)
     , m_clipId()
+    , m_running(false)
 {
 }
 
@@ -55,6 +56,13 @@ void ClipAnimator::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QClipAnimatorData>>(change);
     const auto &data = typedChange->data;
     m_clipId = data.clipId;
+    setRunning(data.running);
+}
+
+void ClipAnimator::setRunning(bool running)
+{
+    m_running = running;
+    m_handler->setClipAnimatorRunning(peerId(), m_running);
 }
 
 void ClipAnimator::cleanup()
@@ -62,6 +70,7 @@ void ClipAnimator::cleanup()
     setEnabled(false);
     m_handler = nullptr;
     m_clipId = Qt3DCore::QNodeId();
+    m_running = false;
 }
 
 void ClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -71,6 +80,8 @@ void ClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         const auto change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("clip"))
             setClipId(change->value().value<Qt3DCore::QNodeId>());
+        else if (change->propertyName() == QByteArrayLiteral("running"))
+            setRunning(change->value().toBool());
         break;
     }
 

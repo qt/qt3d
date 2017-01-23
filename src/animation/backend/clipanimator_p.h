@@ -66,6 +66,10 @@ public:
     void cleanup();
     void setClipId(Qt3DCore::QNodeId clipId) { m_clipId = clipId; }
     Qt3DCore::QNodeId clipId() const { return m_clipId; }
+
+    void setRunning(bool running);
+    bool isRunning() const { return m_running; }
+
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     void setHandler(Handler *handler) { m_handler = handler; }
@@ -74,6 +78,8 @@ private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
     Qt3DCore::QNodeId m_clipId;
+
+    bool m_running;
 };
 
 } // namespace Animation
