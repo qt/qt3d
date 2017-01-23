@@ -43,6 +43,8 @@
 #include "qentity_p.h"
 #include "qscene_p.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qcomponentaddedchange.h>
+#include <Qt3DCore/qcomponentremovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,6 +62,7 @@ QComponentPrivate::~QComponentPrivate()
 
 void QComponentPrivate::addEntity(QEntity *entity)
 {
+    Q_Q(QComponent);
     m_entities.append(entity);
 
     if (m_scene != nullptr && !m_scene->hasEntityForComponent(m_id, entity->id())) {
@@ -68,17 +71,22 @@ void QComponentPrivate::addEntity(QEntity *entity)
         m_scene->addEntityForComponent(m_id, entity->id());
     }
 
-    // TODO: Add QAddedToEntityChange to be delivered to components on the backend
+    const auto componentAddedChange = QComponentAddedChangePtr::create(entity, q);
+    notifyObservers(componentAddedChange);
+    Q_EMIT q->addedToEntity(entity);
 }
 
 void QComponentPrivate::removeEntity(QEntity *entity)
 {
-    // TODO: Add QRemovedFromEntityChange to be delivered to components on the backend
-
+    Q_Q(QComponent);
     if (m_scene != nullptr)
         m_scene->removeEntityForComponent(m_id, entity->id());
 
     m_entities.removeAll(entity);
+
+    const auto componentRemovedChange = QComponentRemovedChangePtr::create(entity, q);
+    notifyObservers(componentRemovedChange);
+    Q_EMIT q->removedFromEntity(entity);
 }
 
 /*!

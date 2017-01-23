@@ -67,6 +67,8 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void shareableChanged(bool isShareable);
+    void addedToEntity(QEntity *entity);
+    void removedFromEntity(QEntity *entity);
 
 protected:
     explicit QComponent(QComponentPrivate &dd, QNode *parent = nullptr);
