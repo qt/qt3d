@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,29 +37,56 @@
 **
 ****************************************************************************/
 
-#include "qt3dquick3danimationplugin.h"
-#include <Qt3DAnimation/qanimationclip.h>
-#include <Qt3DAnimation/qblendedclipanimator.h>
-#include <Qt3DAnimation/qclipanimator.h>
-#include <Qt3DAnimation/qconductedclipanimator.h>
-#include <Qt3DAnimation/qchannelmapping.h>
-#include <Qt3DQuickAnimation/private/qt3dquickanimation_global_p.h>
-#include <Qt3DQuickAnimation/private/quick3dchannelmapper_p.h>
+#include "quick3dchannelmapper_p.h"
 
 QT_BEGIN_NAMESPACE
 
-void Qt3DQuick3DAnimationPlugin::registerTypes(const char *uri)
-{
-    Qt3DAnimation::Quick::Quick3DAnimation_initialize();
+namespace Qt3DAnimation {
+namespace Animation {
+namespace Quick {
 
-    // @uri Qt3D.Animation
-    qmlRegisterType<Qt3DAnimation::QAnimationClip>(uri, 2, 2, "AnimationClip");
-    qmlRegisterType<Qt3DAnimation::QClipAnimator>(uri, 2, 2, "ClipAnimator");
-    qmlRegisterType<Qt3DAnimation::QBlendedClipAnimator>(uri, 2, 2, "BlendedClipAnimator");
-    qmlRegisterType<Qt3DAnimation::QConductedClipAnimator>(uri, 2, 2, "ConductedClipAnimator");
-    qmlRegisterType<Qt3DAnimation::QChannelMapping>(uri, 2, 2, "ChannelMapping");
-    qmlRegisterExtendedType<Qt3DAnimation::QChannelMapper,
-                            Qt3DAnimation::Animation::Quick::Quick3DChannelMapper>(uri, 2, 2, "ChannelMapper");
+Quick3DChannelMapper::Quick3DChannelMapper(QObject *parent)
+    : QObject(parent)
+{
 }
+
+QQmlListProperty<QChannelMapping> Quick3DChannelMapper::qmlMappings()
+{
+    return QQmlListProperty<QChannelMapping>(this, 0,
+                                             &Quick3DChannelMapper::appendMapping,
+                                             &Quick3DChannelMapper::mappingCount,
+                                             &Quick3DChannelMapper::mappingAt,
+                                             &Quick3DChannelMapper::clearMappings);
+}
+
+void Quick3DChannelMapper::appendMapping(QQmlListProperty<QChannelMapping> *list, QChannelMapping *mapping)
+{
+    Quick3DChannelMapper *extension = qobject_cast<Quick3DChannelMapper *>(list->object);
+    extension->parentMapper()->addMapping(mapping);
+}
+
+QChannelMapping *Quick3DChannelMapper::mappingAt(QQmlListProperty<QChannelMapping> *list, int index)
+{
+    Quick3DChannelMapper *extension = qobject_cast<Quick3DChannelMapper *>(list->object);
+    return extension->parentMapper()->mappings().at(index);
+}
+
+int Quick3DChannelMapper::mappingCount(QQmlListProperty<QChannelMapping> *list)
+{
+    Quick3DChannelMapper *extension = qobject_cast<Quick3DChannelMapper *>(list->object);
+    return extension->parentMapper()->mappings().count();
+}
+
+void Quick3DChannelMapper::clearMappings(QQmlListProperty<QChannelMapping> *list)
+{
+    Quick3DChannelMapper *extension = qobject_cast<Quick3DChannelMapper *>(list->object);
+    const auto mappings = extension->parentMapper()->mappings();
+    for (QChannelMapping *mapping : mappings)
+        extension->parentMapper()->removeMapping(mapping);
+}
+
+} // namespace Quick
+} // namespace Animation
+} // namespace Qt3DAnimation
 
 QT_END_NAMESPACE

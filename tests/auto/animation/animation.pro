@@ -5,7 +5,9 @@ SUBDIRS += \
     qanimationclip \
     qclipanimator \
     qblendedclipanimator \
-    qconductedclipanimator
+    qconductedclipanimator \
+    qchannelmapping \
+    qchannelmapper
 
 qtConfig(private_tests) {
     SUBDIRS += \
@@ -16,5 +18,7 @@ qtConfig(private_tests) {
         bezierevaluator \
         clipanimator \
         blendedclipanimator \
-        conductedclipanimator
+        conductedclipanimator \
+        channelmapper \
+        channelmapping
 }

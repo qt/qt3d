@@ -71,6 +71,10 @@ class BlendedClipAnimator;
 class BlendedClipAnimatorManager;
 class ConductedClipAnimator;
 class ConductedClipAnimatorManager;
+class ChannelMapping;
+class ChannelMappingManager;
+class ChannelMapper;
+class ChannelMapperManager;
 
 class LoadAnimationClipJob;
 
@@ -81,7 +85,8 @@ public:
     ~Handler();
 
     enum DirtyFlag {
-        AnimationClipDirty
+        AnimationClipDirty,
+        ChannelMappingsDirty
     };
 
     void setDirty(DirtyFlag flag, Qt3DCore::QNodeId nodeId);
@@ -92,6 +97,8 @@ public:
     ClipAnimatorManager *clipAnimatorManager() const Q_DECL_NOTHROW { return m_clipAnimatorManager.data(); }
     BlendedClipAnimatorManager *blendedClipAnimatorManager() const Q_DECL_NOTHROW { return m_blendedClipAnimatorManager.data(); }
     ConductedClipAnimatorManager *conductedClipAnimatorManager() const Q_DECL_NOTHROW { return m_conductedClipAnimatorManager.data(); }
+    ChannelMappingManager *channelMappingManager() const Q_DECL_NOTHROW { return m_channelMappingManager.data(); }
+    ChannelMapperManager *channelMapperManager() const Q_DECL_NOTHROW { return m_channelMapperManager.data(); }
 
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time);
 
@@ -100,8 +107,11 @@ private:
     QScopedPointer<ClipAnimatorManager> m_clipAnimatorManager;
     QScopedPointer<BlendedClipAnimatorManager> m_blendedClipAnimatorManager;
     QScopedPointer<ConductedClipAnimatorManager> m_conductedClipAnimatorManager;
+    QScopedPointer<ChannelMappingManager> m_channelMappingManager;
+    QScopedPointer<ChannelMapperManager> m_channelMapperManager;
 
     QVector<HAnimationClip> m_dirtyAnimationClips;
+    QVector<HChannelMapper> m_dirtyChannelMappers;
     QVector<HClipAnimator> m_runningClipAnimators;
 
     QSharedPointer<LoadAnimationClipJob> m_loadAnimationClipJob;

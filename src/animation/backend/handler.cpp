@@ -49,6 +49,8 @@ Handler::Handler()
     , m_clipAnimatorManager(new ClipAnimatorManager)
     , m_blendedClipAnimatorManager(new BlendedClipAnimatorManager)
     , m_conductedClipAnimatorManager(new ConductedClipAnimatorManager)
+    , m_channelMappingManager(new ChannelMappingManager)
+    , m_channelMapperManager(new ChannelMapperManager)
     , m_loadAnimationClipJob(new LoadAnimationClipJob)
 {
     m_loadAnimationClipJob->setHandler(this);
@@ -64,6 +66,12 @@ void Handler::setDirty(DirtyFlag flag, Qt3DCore::QNodeId nodeId)
     case AnimationClipDirty: {
         const auto handle = m_animationClipManager->lookupHandle(nodeId);
         m_dirtyAnimationClips.push_back(handle);
+        break;
+    }
+
+    case ChannelMappingsDirty: {
+        const auto handle = m_channelMapperManager->lookupHandle(nodeId);
+        m_dirtyChannelMappers.push_back(handle);
         break;
     }
     }
@@ -104,6 +112,8 @@ QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
         jobs.push_back(m_loadAnimationClipJob);
         m_dirtyAnimationClips.clear();
     }
+
+    // TODO: Queue up a job to update the channel mapping table
 
     return jobs;
 }

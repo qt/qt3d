@@ -57,6 +57,8 @@
 #include <Qt3DAnimation/private/blendedclipanimator_p.h>
 #include <Qt3DAnimation/private/clipanimator_p.h>
 #include <Qt3DAnimation/private/conductedclipanimator_p.h>
+#include <Qt3DAnimation/private/channelmapping_p.h>
+#include <Qt3DAnimation/private/channelmapper_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -104,6 +106,26 @@ public:
     ConductedClipAnimatorManager() {}
 };
 
+class ChannelMappingManager : public Qt3DCore::QResourceManager<
+        ChannelMapping,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy>
+{
+public:
+    ChannelMappingManager() {}
+};
+
+class ChannelMapperManager : public Qt3DCore::QResourceManager<
+        ChannelMapper,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy>
+{
+public:
+    ChannelMapperManager() {}
+};
+
 } // namespace Animation
 } // namespace Qt3DAnimation
 
@@ -111,6 +133,8 @@ Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::AnimationClip, Q_REQUIRES_CLEA
 Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::ClipAnimator, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::BlendedClipAnimator, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::ConductedClipAnimator, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::ChannelMapping, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::ChannelMapper, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 

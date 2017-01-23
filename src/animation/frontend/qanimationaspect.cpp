@@ -43,6 +43,8 @@
 #include <Qt3DAnimation/qblendedclipanimator.h>
 #include <Qt3DAnimation/qclipanimator.h>
 #include <Qt3DAnimation/qconductedclipanimator.h>
+#include <Qt3DAnimation/qchannelmapping.h>
+#include <Qt3DAnimation/qchannelmapper.h>
 #include <Qt3DAnimation/private/handler_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/nodefunctor_p.h>
@@ -97,6 +99,12 @@ QAnimationAspect::QAnimationAspect(QAnimationAspectPrivate &dd, QObject *parent)
     registerBackendType<QConductedClipAnimator>(
         QSharedPointer<Animation::NodeFunctor<Animation::ConductedClipAnimator, Animation::ConductedClipAnimatorManager>>::create(d->m_handler.data(),
                                                                                                                                   d->m_handler->conductedClipAnimatorManager()));
+    registerBackendType<QChannelMapping>(
+        QSharedPointer<Animation::NodeFunctor<Animation::ChannelMapping, Animation::ChannelMappingManager>>::create(d->m_handler.data(),
+                                                                                                                    d->m_handler->channelMappingManager()));
+    registerBackendType<QChannelMapper>(
+        QSharedPointer<Animation::NodeFunctor<Animation::ChannelMapper, Animation::ChannelMapperManager>>::create(d->m_handler.data(),
+                                                                                                                  d->m_handler->channelMapperManager()));
 }
 
 /*! \internal */

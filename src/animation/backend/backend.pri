@@ -15,7 +15,9 @@ HEADERS += \
     $$PWD/blendedclipanimator_p.h \
     $$PWD/conductedclipanimator_p.h \
     $$PWD/backendnode_p.h \
-    $$PWD/loadanimationclipjob_p.h
+    $$PWD/loadanimationclipjob_p.h \
+    $$PWD/channelmapping_p.h \
+    $$PWD/channelmapper_p.h
 
 SOURCES += \
     $$PWD/animationclip.cpp \
@@ -27,4 +29,6 @@ SOURCES += \
     $$PWD/blendedclipanimator.cpp \
     $$PWD/conductedclipanimator.cpp \
     $$PWD/backendnode.cpp \
-    $$PWD/loadanimationclipjob.cpp
+    $$PWD/loadanimationclipjob.cpp \
+    $$PWD/channelmapping.cpp \
+    $$PWD/channelmapper.cpp

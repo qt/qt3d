@@ -23,6 +23,7 @@ DefaultSceneEntity {
             CuboidMesh {
             },
             PhongMaterial {
+                id: cubeMaterial
                 ambient: Qt.rgba(0.02, 0.02, 0.02, 1.0)
                 diffuse: "blue"
                 shininess: 50
@@ -34,6 +35,19 @@ DefaultSceneEntity {
                 running: true
                 clip: AnimationClip {
                     source: "cubeanimation.json"
+                }
+
+                // By default introspect parent Entity and try
+                // to map fcurve groups to properties of QTransform
+                // mapping: AutomaticAnimationMapping {}
+
+                // To do more, we can be explicit
+                mapping: ChannelMapper {
+                    mappings: [
+                        ChannelMapping { channelName: "Location"; target: cubeTransform; property: "translation" },
+                        ChannelMapping { channelName: "Rotation"; target: cubeTransform; property: "rotation" },
+                        ChannelMapping { channelName: "Diffuse Color"; target: cubeMaterial; property: "diffuse" }
+                    ]
                 }
             }
 
