@@ -189,7 +189,8 @@ QBufferPrivate::QBufferPrivate()
 /*!
     \fn Qt3DRender::QBufferDataGenerator::operator ==(const QBufferDataGenerator &other) const
 
-    Should be reimplemented to return true when two generators are identical,
+    Should be reimplemented to return true when two generators (the one you are
+    comparing against and the \a other generator) are identical,
     false otherwise.
 
     \note The renderer uses this comparison to decide whether data for a buffer
