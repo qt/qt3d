@@ -104,14 +104,9 @@ QPaintedTextureImage::~QPaintedTextureImage()
 /*!
     \property QPaintedTextureImage::width
 
-    Holds the width of the texture image
- */
-
-/*!
-    \property QPaintedTextureImage::width
-
-    \return the width of the texture image.
- */
+    This property holds the width of the texture image.
+    The width must be greater than or equal to 1.
+*/
 int QPaintedTextureImage::width() const
 {
     Q_D(const QPaintedTextureImage);
@@ -121,14 +116,9 @@ int QPaintedTextureImage::width() const
 /*!
     \property QPaintedTextureImage::height
 
-    Holds the height of the texture image
- */
-
-/*!
-    \property QPaintedTextureImage::height
-
-    \return the height of the texture image.
- */
+    This property holds the height of the texture image.
+    The height must be greater than or equal to 1.
+*/
 int QPaintedTextureImage::height() const
 {
     Q_D(const QPaintedTextureImage);
@@ -138,14 +128,11 @@ int QPaintedTextureImage::height() const
 /*!
     \property QPaintedTextureImage::size
 
-    Holds the width and height of the texture image
- */
+    This property holds the size of the texture image.
 
-/*!
-    \property QPaintedTextureImage::size
+    \sa height, width
 
-    \return the size of the texture image.
- */
+*/
 QSize QPaintedTextureImage::size() const
 {
     Q_D(const QPaintedTextureImage);
@@ -206,9 +193,10 @@ void QPaintedTextureImage::setSize(QSize size)
 }
 
 /*!
-    Will trigger an update of the texture image, meaning the paint() method will
-    be invoked.
- */
+   Schedules the painted texture's paint() function to be called,
+   which in turn uploads the new image to the GPU.
+   Parameter \a rect is currently unused.
+*/
 void QPaintedTextureImage::update(const QRect &rect)
 {
     Q_UNUSED(rect)
