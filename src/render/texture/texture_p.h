@@ -185,6 +185,15 @@ private:
     TextureImageManager *m_textureImageManager;
 };
 
+#ifndef QT_NO_DEBUG_STREAM
+inline QDebug operator<<(QDebug dbg, const Texture &texture)
+{
+    QDebugStateSaver saver(dbg);
+    dbg << "QNodeId =" << texture.peerId() << "imageCount =" << texture.textureImages().size() << endl;
+    return dbg;
+}
+#endif
+
 } // namespace Render
 } // namespace Qt3DRender
 

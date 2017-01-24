@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -50,119 +50,85 @@
 
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
-import Qt3D.Input 2.0
 import Qt3D.Extras 2.0
-import QtQuick 2.2 as QQ2
+import QtQuick.Window 2.0
 
 Entity {
     id: sceneRoot
+
+    Window {
+        id: win
+        width: 600
+        height: 600
+        visible: true
+    }
 
     Camera {
         id: camera
         projectionType: CameraLens.PerspectiveProjection
         fieldOfView: 45
-        aspectRatio: 800/600
         nearPlane : 0.1
         farPlane : 1000.0
-        position: Qt.vector3d( 0.0, 0.0, 40.0 )
+        position: Qt.vector3d( 0.0, 0.0, -40.0 )
         upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
         viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
     }
 
-    FirstPersonCameraController { camera: camera }
-
     components: [
         RenderSettings {
-            activeFrameGraph: ForwardRenderer{
-                camera: camera
-                clearColor: Qt.rgba(0.0, 0.5, 1, 1)
-                frustumCulling: false
+            Viewport {
+                normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
+
+                RenderSurfaceSelector {
+
+                    surface: win
+
+                    ClearBuffers {
+                        buffers : ClearBuffers.ColorDepthBuffer
+                        NoDraw {}
+                    }
+
+                    CameraSelector {
+                        camera: camera
+                    }
+                }
             }
-        },
-        InputSettings { }
+        }
     ]
 
+    CuboidMesh { id: cubeMesh }
+    PhongMaterial { id: material }
+
+    // Entity 1
     Entity {
-        id: lightEntity
+        property ObjectPicker picker: ObjectPicker {
+            id: picker1
+            objectName: "Picker1"
+            dragEnabled: true
+        }
+
         property Transform transform: Transform {
-            translation: Qt.vector3d(1.0, 1.0, 0.0)
+            translation: Qt.vector3d(-.5, 0, 0)
+            scale: 2.0
         }
 
-        property PointLight light: PointLight {
-            id: light
-            color: "white"
-            constantAttenuation: 1.0
-            linearAttenuation: 0.0
-            quadraticAttenuation: 0.0
+        components: [cubeMesh, material, picker1, transform]
+    }
+
+    // Entity 2
+    Entity {
+        property ObjectPicker picker: ObjectPicker {
+            id: picker2
+            objectName: "Picker2"
+            dragEnabled: true
+            hoverEnabled: true
         }
-        components: [transform, light]
-    }
 
-    SkyboxEntity {
-        baseName: "qrc:/assets/cubemaps/miramar/miramar"
-        extension: ".webp"
-    }
-
-    TorusMesh {
-        id: torusMesh
-        radius: 5
-        minorRadius: 1
-        rings: 100
-        slices: 20
-    }
-
-    SphereMesh {
-        id: sphereMesh
-        radius: 3
-    }
-
-    Transform {
-        id: sphereTransform
-        translation: Qt.vector3d(10, 0, 0)
-    }
-
-    Transform {
-        id: cylinderTransform
-        translation: Qt.vector3d(-10, 0, 0)
-    }
-
-    Entity {
-        id: torusEntity
-        components: [ torusMesh, phongMaterial ]
-    }
-
-    Entity {
-        id: sphereEntity
-        components: [ sphereMesh, alphaMaterial, sphereTransform ]
-    }
-
-    Entity {
-        id: cylinderEntity
-        components: [ sphereMesh, alphaMaterial, cylinderTransform ]
-    }
-
-    PhongAlphaMaterial {
-        id: alphaMaterial
-        shininess: 75.0
-        ambient: "black"
-        diffuse: "blue"
-        specular: "white"
-        alpha: 0.1
-        sourceAlphaArg: BlendEquationArguments.Zero
-        destinationAlphaArg: BlendEquationArguments.One
-
-        QQ2.NumberAnimation {
-            duration: 2000
-            loops: QQ2.Animation.Infinite
-            target: alphaMaterial
-            property: "alpha"
-            from: 0.0
-            to: 1.0
-            running: true
+        property Transform transform: Transform {
+            translation: Qt.vector3d(1.5, 0, 0)
+            scale: 2.5
         }
-    }
 
-    PhongMaterial {
-        id: phongMaterial
+        components: [cubeMesh, material, picker2, transform]
     }
 }

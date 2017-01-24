@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -48,52 +48,16 @@
 **
 ****************************************************************************/
 
-import Qt3D.Core 2.0
-import Qt3D.Render 2.0
-import Qt3D.Input 2.0
-import Qt3D.Extras 2.0
+#include <Qt3DQuickExtras/qt3dquickwindow.h>
+#include <QGuiApplication>
 
-Entity {
-    id: root
+int main(int argc, char* argv[])
+{
+    QGuiApplication app(argc, argv);
+    Qt3DExtras::Quick::Qt3DQuickWindow view;
 
-    components: [
-        RenderSettings {
-            ForwardRenderer {
-                camera: basicCamera
-                clearColor: "black"
-                // Note: FrustumCulling should be disabled for proper rendering of the Skybox
-                frustumCulling: false
-            }
-        },
-        // Event Source will be set by the Qt3DQuickWindow
-        InputSettings { }
-    ]
+    view.setSource(QUrl("qrc:/main.qml"));
+    view.show();
 
-    Camera {
-        id: basicCamera
-        projectionType: CameraLens.PerspectiveProjection
-        fieldOfView: 60
-        aspectRatio: 16/9
-        nearPlane:   0.01
-        farPlane:    1000.0
-        position: Qt.vector3d( 0.0, 0.0, 40.0 )
-        viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
-        upVector:   Qt.vector3d( 0.0, 1.0, 0.0 )
-    }
-
-    // So that the camera is rendered always at the same position as the camera
-    SkyboxEntity {
-        baseName: "qrc:/assets/cubemaps/miramar/miramar"
-        extension: ".webp"
-    }
-
-    FirstPersonCameraController { camera: basicCamera }
-
-    Entity {
-        components: [
-            SphereMesh { radius: 5 },
-            PhongMaterial { diffuse: "dodgerblue" }
-        ]
-    }
+    return app.exec();
 }
-

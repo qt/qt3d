@@ -31,8 +31,17 @@ class %{CN}Private : public Qt3DCore::%{Base}Private
 public:
     %{CN}Private();
 
+    Q_DECLARE_PUBLIC(%{CN})
 
+    // TODO Add member variables
 };
+@if '%{Base}' === 'QNode' || '%{Base}' === 'QComponent'
+
+struct %{CN}Data
+{
+    // TODO: Add members that should be sent to the backend
+};
+@endif
 %{JS: Cpp.closeNamespaces('%{Class}')}
 
 QT_END_NAMESPACE

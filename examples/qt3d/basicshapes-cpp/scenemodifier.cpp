@@ -197,31 +197,31 @@ SceneModifier::~SceneModifier()
 //! [4]
 void SceneModifier::enableTorus(bool enabled)
 {
-    m_torusEntity->setParent(enabled ? m_rootEntity : nullptr);
+    m_torusEntity->setEnabled(enabled);
 }
 //! [4]
 
 void SceneModifier::enableCone(bool enabled)
 {
-    m_coneEntity->setParent(enabled ? m_rootEntity : nullptr);
+    m_coneEntity->setEnabled(enabled);
 }
 
 void SceneModifier::enableCylinder(bool enabled)
 {
-    m_cylinderEntity->setParent(enabled ? m_rootEntity : nullptr);
+    m_cylinderEntity->setEnabled(enabled);
 }
 
 void SceneModifier::enableCuboid(bool enabled)
 {
-    m_cuboidEntity->setParent(enabled ? m_rootEntity : nullptr);
+    m_cuboidEntity->setEnabled(enabled);
 }
 
 void SceneModifier::enablePlane(bool enabled)
 {
-    m_planeEntity->setParent(enabled ? m_rootEntity : nullptr);
+    m_planeEntity->setEnabled(enabled);
 }
 
 void SceneModifier::enableSphere(bool enabled)
 {
-    m_sphereEntity->setParent(enabled ? m_rootEntity : nullptr);
+    m_sphereEntity->setEnabled(enabled);
 }

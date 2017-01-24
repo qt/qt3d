@@ -70,10 +70,7 @@ public:
 
     void cleanup();
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
-    bool isDirty() const;
     bool isPressed() const;
-    void unsetDirty();
-    void makeDirty();
     bool isHoverEnabled() const;
     bool isDragEnabled() const;
 
@@ -86,8 +83,8 @@ public:
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void notifyJob();
 
-    bool m_isDirty;
     bool m_isPressed;
     bool m_hoverEnabled;
     bool m_dragEnabled;

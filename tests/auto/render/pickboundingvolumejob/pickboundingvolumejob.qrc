@@ -6,5 +6,6 @@
         <file>testscene_improperframegraph.qml</file>
         <file>testscene_dragenabledhoverenabled.qml</file>
         <file>testscene_pickersdisabled.qml</file>
+        <file>testscene_dragenabledoverlapping.qml</file>
     </qresource>
 </RCC>

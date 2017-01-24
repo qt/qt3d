@@ -648,6 +648,8 @@ int GraphicsContext::activateTexture(TextureScope scope, GLTexture *tex, int onU
     // Note: tex->dna() could be 0 if the texture has not been created yet
     if (m_activeTextures[onUnit].texture != tex) {
         QOpenGLTexture *glTex = tex->getOrCreateGLTexture();
+        if (glTex == nullptr)
+            return -1;
         glTex->bind(onUnit);
         m_activeTextures[onUnit].texture = tex;
     }

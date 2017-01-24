@@ -201,7 +201,10 @@ void QSkyboxEntityPrivate::reloadTexture()
  *
  * By default the extension defaults to .png.
  *
- * \note Please note that you shouldn't try to render skybox with an
+ * Be sure to disable frustum culling in the FrameGraph through which the
+ * skybox rendering happens.
+ *
+ * \note Please note that you shouldn't try to render a skybox with an
  * orthographic projection.
  *
  * \since 5.5

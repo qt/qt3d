@@ -418,16 +418,6 @@ const struct DX10Format
 { DXGI_FORMAT_BC7_UNORM_SRGB,                       { QOpenGLTexture::NoSourceFormat,   QOpenGLTexture::SRGB_BP_UNorm,  QOpenGLTexture::NoPixelType,    16, true } },
 };
 
-int bitCount(quint32 n)
-{
-    int r = 0;
-
-    for (; n; n >>= 1)
-        r += (n & 1);
-
-    return r;
-}
-
 enum CompressedFormatExtension {
     None = 0,
     DDS,
@@ -506,17 +496,17 @@ QTextureImageDataPtr setDdsFile(const QString &source)
             layers = qFromLittleEndian(dx10Header.arraySize);
             DXGIFormat format = static_cast<DXGIFormat>(qFromLittleEndian(dx10Header.format));
 
-            for (auto i = 0U; i < sizeof(dx10Formats) / sizeof(*dx10Formats); ++i) {
-                if (dx10Formats[i].dxgiFormat == format) {
-                    formatInfo = &dx10Formats[i].formatInfo;
+            for (const auto &info : dx10Formats) {
+                if (info.dxgiFormat == format) {
+                    formatInfo = &info.formatInfo;
                     break;
                 }
             }
         } else {
             // compressed, FourCC texture
-            for (auto i = 0U; i < sizeof(fourCCFormats) / sizeof(*fourCCFormats); ++i) {
-                if (fourCCFormats[i].fourCC == fourCC) {
-                    formatInfo = &fourCCFormats[i].formatInfo;
+            for (const auto &info : fourCCFormats) {
+                if (info.fourCC == fourCC) {
+                    formatInfo = &info.formatInfo;
                     break;
                 }
             }
@@ -529,13 +519,11 @@ QTextureImageDataPtr setDdsFile(const QString &source)
         const quint32 blueMask      = qFromLittleEndian(header.pixelFormat.blueMask);
         const quint32 alphaMask     = qFromLittleEndian(header.pixelFormat.alphaMask);
 
-        for (unsigned i = 0; i < sizeof rgbaFormats/sizeof *rgbaFormats; i++) {
-            const RGBAFormat *info = &rgbaFormats[i];
-
-            if (info->formatInfo.components * 8u == rgbBitCount &&
-                    info->redMask == redMask && info->greenMask == greenMask &&
-                    info->blueMask == blueMask && info->alphaMask == alphaMask) {
-                formatInfo = &info->formatInfo;
+        for (const auto &info : rgbaFormats) {
+            if (info.formatInfo.components * 8u == rgbBitCount &&
+                    info.redMask == redMask && info.greenMask == greenMask &&
+                    info.blueMask == blueMask && info.alphaMask == alphaMask) {
+                formatInfo = &info.formatInfo;
                 break;
             }
         }
@@ -565,7 +553,7 @@ QTextureImageDataPtr setDdsFile(const QString &source)
     } else if ((caps2Flags & CubemapFlag) == CubemapFlag) {
         target = layers > 1 ? QOpenGLTexture::TargetCubeMapArray : QOpenGLTexture::TargetCubeMap;
         depth = 1;
-        faces = bitCount(caps2Flags & AllCubemapFaceFlags);
+        faces = qPopulationCount(caps2Flags & AllCubemapFaceFlags);
     } else {
         target = layers > 1 ? QOpenGLTexture::Target2DArray : QOpenGLTexture::Target2D;
         depth = 1;
@@ -592,11 +580,17 @@ QTextureImageDataPtr setDdsFile(const QString &source)
     layerSize = faces * tmpSize;
 
     // data
-    const QByteArray data = f.readAll();
-    if (data.size() != layers * layerSize) {
-        qWarning() << "Unexpected data size (got " << data.size() << ", expecting" << layers * layerSize << ")";
+    const int dataSize = layers * layerSize;
+
+    const QByteArray data = f.read(dataSize);
+    if (data.size() < dataSize) {
+        qWarning() << "Unexpected end of data in" << source;
         return imageData;
     }
+
+    if (!f.atEnd())
+        qWarning() << "Unrecognized data in" << source;
+
     imageData = QTextureImageDataPtr::create();
     imageData->setData(data,blockSize, isCompressed);
 

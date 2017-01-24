@@ -16,6 +16,7 @@ SUBDIRS += \
     cylinder-qml \
     deferred-renderer-cpp \
     deferred-renderer-qml \
+    dragging \
     dynamicscene-cpp \
     enabled-qml \
     gltf \

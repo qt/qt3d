@@ -85,6 +85,8 @@ public:
     void setFrameGraphRoot(FrameGraphNode *frameGraphRoot);
     void setRenderSettings(RenderSettings *settings);
     void setManagers(NodeManagers *manager);
+    void markPickersDirty();
+    bool pickersDirty() const { return m_pickersDirty; }
 
     static RayCasting::QRay3D intersectionRay(const QPoint &pos,
                                               const QMatrix4x4 &viewMatrix,
@@ -100,8 +102,8 @@ protected:
     void run() Q_DECL_FINAL;
     void dispatchPickEvents(const QMouseEvent &event, const PickingUtils::CollisionVisitor::HitList &sphereHits,
                             QPickEvent::Buttons eventButton,
-                            int eventButtons,
-                            int eventModifiers, bool trianglePickingRequested);
+                            int eventButtons, int eventModifiers,
+                            bool trianglePickingRequested, bool allHitsRequested);
 
 private:
     NodeManagers *m_manager;
@@ -109,6 +111,9 @@ private:
     FrameGraphNode *m_frameGraphRoot;
     RenderSettings *m_renderSettings;
     QList<QMouseEvent> m_pendingMouseEvents;
+    bool m_pickersDirty;
+    bool m_oneEnabledAtLeast;
+    bool m_oneHoverAtLeast;
 
     void viewMatrixForCamera(Qt3DCore::QNodeId cameraId,
                              QMatrix4x4 &viewMatrix,
