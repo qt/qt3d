@@ -45,6 +45,7 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) Q_DECL_FINAL;
     void setScene(Qt3DCore::QScene *) Q_DECL_FINAL;
     void notifyBackend(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
+    bool shouldNotifyFrontend(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
 
 private:
     TestArbiter *m_arbiter;

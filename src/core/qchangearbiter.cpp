@@ -132,9 +132,11 @@ void QChangeArbiter::distributeQueueChanges(QChangeQueue *changeQueue)
                         (change->deliveryFlags() & QSceneChange::BackendNodes))
                     observer.second->sceneChangeEvent(change);
             }
+            // Also send change to the postman
             if (change->deliveryFlags() & QSceneChange::Nodes) {
-                // Also send change to the postman
-                m_postman->sceneChangeEvent(change);
+                // Check if QNode actually cares about the change
+                if (m_postman->shouldNotifyFrontend(change))
+                    m_postman->sceneChangeEvent(change);
             }
         }
     }

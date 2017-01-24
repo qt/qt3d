@@ -63,8 +63,10 @@ public:
     QMultiHash<QNodeId, QNodeId> m_componentToEntities;
     QMultiHash<QNodeId, QObservableInterface *> m_observablesLookupTable;
     QHash<QObservableInterface *, QNodeId> m_observableToUuid;
+    QHash<QNodeId, QScene::NodePropertyTrackData> m_nodePropertyTrackModeLookupTable;
     QLockableObserverInterface *m_arbiter;
     mutable QReadWriteLock m_lock;
+    mutable QReadWriteLock m_nodePropertyTrackModeLock;
 };
 
 
@@ -211,6 +213,27 @@ bool QScene::hasEntityForComponent(QNodeId componentUuid, QNodeId entityUuid)
     Q_D(QScene);
     QReadLocker lock(&d->m_lock);
     return d->m_componentToEntities.values(componentUuid).contains(entityUuid);
+}
+
+QScene::NodePropertyTrackData QScene::lookupNodePropertyTrackData(QNodeId id) const
+{
+    Q_D(const QScene);
+    QReadLocker lock(&d->m_nodePropertyTrackModeLock);
+    return d->m_nodePropertyTrackModeLookupTable.value(id);
+}
+
+void QScene::setPropertyTrackDataForNode(QNodeId nodeId, const QScene::NodePropertyTrackData &data)
+{
+    Q_D(QScene);
+    QWriteLocker lock(&d->m_nodePropertyTrackModeLock);
+    d->m_nodePropertyTrackModeLookupTable.insert(nodeId, data);
+}
+
+void QScene::removePropertyTrackDataForNode(QNodeId nodeId)
+{
+    Q_D(QScene);
+    QWriteLocker lock(&d->m_nodePropertyTrackModeLock);
+    d->m_nodePropertyTrackModeLookupTable.remove(nodeId);
 }
 
 } // Qt3D

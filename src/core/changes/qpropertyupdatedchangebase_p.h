@@ -66,7 +66,10 @@ public:
     QPropertyUpdatedChangeBasePrivate();
     virtual ~QPropertyUpdatedChangeBasePrivate();
 
+    static QPropertyUpdatedChangeBasePrivate *get(QPropertyUpdatedChangeBase *q);
+
     Q_DECLARE_PUBLIC(QPropertyUpdatedChangeBase)
+    bool m_isFinal;
 };
 
 } // namespace Qt3DCore

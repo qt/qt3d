@@ -37,11 +37,14 @@
 #include <Qt3DCore/qnodedestroyedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <private/qpostman_p.h>
 
 #include <Qt3DCore/private/qlockableobserverinterface_p.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qcomponent_p.h>
+#include <QSignalSpy>
+#include "testpostmanarbiter.h"
 
 class tst_Nodes : public QObject
 {
@@ -54,6 +57,7 @@ public:
     ~tst_Nodes() {}
 
 private slots:
+    void initTestCase();
     void defaultNodeConstruction();
     void defaultComponentConstruction();
     void defaultEntityConstrution();
@@ -81,6 +85,13 @@ private slots:
 
     void changeCustomProperty();
     void checkDestruction();
+
+    void checkDefaultConstruction();
+    void checkPropertyChanges();
+    void checkCreationData();
+    void checkEnabledUpdate();
+    void checkPropertyTrackModeUpdate();
+    void checkTrackedPropertyNamesUpdate();
 };
 
 class ObserverSpy;
@@ -94,6 +105,7 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) Q_DECL_FINAL {};
     void setScene(Qt3DCore::QScene *) Q_DECL_FINAL {};
     void notifyBackend(const Qt3DCore::QSceneChangePtr &change) Q_DECL_FINAL;
+    bool shouldNotifyFrontend(const Qt3DCore::QSceneChangePtr &changee) Q_DECL_FINAL { return false; }
 
 private:
     ObserverSpy *m_spy;
@@ -235,6 +247,11 @@ public:
     }
 };
 
+
+void tst_Nodes::initTestCase()
+{
+    qRegisterMetaType<Qt3DCore::QNode::PropertyTrackMode>("PropertyTrackMode");
+}
 
 void tst_Nodes::defaultNodeConstruction()
 {
@@ -942,6 +959,243 @@ void tst_Nodes::checkDestruction()
 
     // THEN
     QVERIFY(root->children().isEmpty());
+}
+
+void tst_Nodes::checkDefaultConstruction()
+{
+    // GIVEN
+    Qt3DCore::QNode node;
+
+    // THEN
+    QCOMPARE(node.parentNode(), nullptr);
+    QCOMPARE(node.isEnabled(), true);
+    QCOMPARE(node.propertyTrackMode(), Qt3DCore::QNode::DefaultTrackMode);
+    QCOMPARE(node.trackedProperties(), QStringList());
+}
+
+void tst_Nodes::checkPropertyChanges()
+{
+    // GIVEN
+    Qt3DCore::QNode parentNode;
+    Qt3DCore::QNode node;
+
+    {
+        // WHEN
+        QSignalSpy spy(&node, SIGNAL(parentChanged(QObject *)));
+        Qt3DCore::QNode *newValue = &parentNode;
+        node.setParent(newValue);
+
+        // THEN
+        QVERIFY(spy.isValid());
+        QCOMPARE(node.parentNode(), newValue);
+        QCOMPARE(spy.count(), 1);
+
+        // WHEN
+        spy.clear();
+        node.setParent(newValue);
+
+        // THEN
+        QCOMPARE(node.parentNode(), newValue);
+        QCOMPARE(spy.count(), 0);
+    }
+    {
+        // WHEN
+        QSignalSpy spy(&node, SIGNAL(enabledChanged(bool)));
+        const bool newValue = false;
+        node.setEnabled(newValue);
+
+        // THEN
+        QVERIFY(spy.isValid());
+        QCOMPARE(node.isEnabled(), newValue);
+        QCOMPARE(spy.count(), 1);
+
+        // WHEN
+        spy.clear();
+        node.setEnabled(newValue);
+
+        // THEN
+        QCOMPARE(node.isEnabled(), newValue);
+        QCOMPARE(spy.count(), 0);
+    }
+    {
+        // WHEN
+        QSignalSpy spy(&node, SIGNAL(propertyUpdateModeChanged(PropertyTrackMode)));
+        const Qt3DCore::QNode::PropertyTrackMode newValue = Qt3DCore::QNode::TrackAllPropertiesMode;
+        node.setPropertyTrackMode(newValue);
+
+        // THEN
+        QVERIFY(spy.isValid());
+        QCOMPARE(node.propertyTrackMode(), newValue);
+        QCOMPARE(spy.count(), 1);
+
+        // WHEN
+        spy.clear();
+        node.setPropertyTrackMode(newValue);
+
+        // THEN
+        QCOMPARE(node.propertyTrackMode(), newValue);
+        QCOMPARE(spy.count(), 0);
+    }
+    {
+        // WHEN
+        QSignalSpy spy(&node, SIGNAL(trackedPropertiesChanged(const QStringList &)));
+        const QStringList newValue = QStringList() << QStringLiteral("C1") << QStringLiteral("C2") << QStringLiteral("C3");
+        node.setTrackedProperties(newValue);
+
+        // THEN
+        QVERIFY(spy.isValid());
+        QCOMPARE(node.trackedProperties(), newValue);
+        QCOMPARE(spy.count(), 1);
+
+        // WHEN
+        spy.clear();
+        node.setTrackedProperties(newValue);
+
+        // THEN
+        QCOMPARE(node.trackedProperties(), newValue);
+        QCOMPARE(spy.count(), 0);
+    }
+}
+
+void tst_Nodes::checkCreationData()
+{
+    // GIVEN
+    Qt3DCore::QNode root;
+    Qt3DCore::QNode node;
+
+    node.setParent(&root);
+    node.setEnabled(true);
+    node.setPropertyTrackMode(Qt3DCore::QNode::TrackNamedPropertiesMode);
+    const QStringList trackedPropertyNames = QStringList() << QStringLiteral("327");
+    node.setTrackedProperties(trackedPropertyNames);
+
+    // WHEN
+    QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
+
+    {
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&node);
+        creationChanges = creationChangeGenerator.creationChanges();
+    }
+
+    // THEN
+    {
+        QCOMPARE(creationChanges.size(), 1);
+
+        const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChangeBase>(creationChanges.first());
+
+        QCOMPARE(node.id(), creationChangeData->subjectId());
+        QCOMPARE(node.isEnabled(), true);
+        QCOMPARE(node.isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(node.metaObject(), creationChangeData->metaObject());
+    }
+
+    // WHEN
+    node.setEnabled(false);
+
+    {
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&node);
+        creationChanges = creationChangeGenerator.creationChanges();
+    }
+
+    // THEN
+    {
+        QCOMPARE(creationChanges.size(), 1);
+
+        const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChangeBase>(creationChanges.first());
+
+        QCOMPARE(node.id(), creationChangeData->subjectId());
+        QCOMPARE(node.isEnabled(), false);
+        QCOMPARE(node.isEnabled(), creationChangeData->isNodeEnabled());
+        QCOMPARE(node.metaObject(), creationChangeData->metaObject());
+    }
+}
+
+void tst_Nodes::checkEnabledUpdate()
+{
+    // GIVEN
+    TestArbiter arbiter;
+    Qt3DCore::QNode node;
+    arbiter.setArbiterOnNode(&node);
+
+    {
+        // WHEN
+        node.setEnabled(false);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "enabled");
+        QCOMPARE(change->value().value<bool>(), node.isEnabled());
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+        arbiter.events.clear();
+    }
+
+    {
+        // WHEN
+        node.setEnabled(false);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 0);
+    }
+
+}
+
+void tst_Nodes::checkPropertyTrackModeUpdate()
+{
+    // GIVEN
+    TestArbiter arbiter;
+    Qt3DCore::QNode node;
+    arbiter.setArbiterOnNode(&node);
+
+    {
+        // WHEN
+        node.setPropertyTrackMode(Qt3DCore::QNode::TrackAllPropertiesMode);
+        QCoreApplication::processEvents();
+
+        // THEN -> this properties is non notifying
+        QCOMPARE(arbiter.events.size(), 0);
+    }
+
+    {
+        // WHEN
+        node.setPropertyTrackMode(Qt3DCore::QNode::TrackAllPropertiesMode);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 0);
+    }
+
+}
+
+void tst_Nodes::checkTrackedPropertyNamesUpdate()
+{
+    // GIVEN
+    TestArbiter arbiter;
+    Qt3DCore::QNode node;
+    arbiter.setArbiterOnNode(&node);
+    const QStringList newValue = QStringList() << QStringLiteral("883") << QStringLiteral("454");
+
+    {
+        // WHEN
+        node.setTrackedProperties(newValue);
+        QCoreApplication::processEvents();
+
+        // THEN -> this properties is non notifying
+        QCOMPARE(arbiter.events.size(), 0);
+    }
+
+    {
+        // WHEN
+        node.setTrackedProperties(newValue);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 0);
+    }
+
 }
 
 QTEST_MAIN(tst_Nodes)

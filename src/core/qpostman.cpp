@@ -38,30 +38,22 @@
 ****************************************************************************/
 
 #include "qpostman_p.h"
-#include <private/qobject_p.h>
+#include "qpostman_p_p.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qlockableobserverinterface_p.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QPostmanPrivate : public QObjectPrivate
+QPostmanPrivate *QPostmanPrivate::get(QPostman *q)
 {
-public:
-    QPostmanPrivate()
-        : QObjectPrivate()
-        , m_scene(nullptr)
-    {
-    }
-
-    Q_DECLARE_PUBLIC(QPostman)
-    QScene *m_scene;
-    std::vector<QSceneChangePtr> m_batch;
-};
+    return q->d_func();
+}
 
 QPostman::QPostman(QObject *parent)
     : QObject(*new QPostmanPrivate, parent)
@@ -118,6 +110,32 @@ void QPostman::notifyBackend(const QSceneChangePtr &change)
     d->m_batch.push_back(change);
 }
 
+// AspectThread
+bool QPostman::shouldNotifyFrontend(const QSceneChangePtr &e)
+{
+    Q_D(QPostman);
+    const QPropertyUpdatedChangePtr propertyChange = qSharedPointerDynamicCast<QPropertyUpdatedChange>(e);
+    if (Q_LIKELY(d->m_scene != nullptr) && !propertyChange.isNull()) {
+        const bool isFinal = QPropertyUpdatedChangeBasePrivate::get(propertyChange.data())->m_isFinal;
+        if (isFinal)
+            return true;
+        const QScene::NodePropertyTrackData propertyTrackData = d->m_scene->lookupNodePropertyTrackData(e->subjectId());
+        switch (propertyTrackData.updateMode) {
+        case QNode::TrackAllPropertiesMode:
+            return true;
+        case QNode::TrackNamedPropertiesMode:
+            return propertyTrackData.namedProperties.contains(QLatin1String(propertyChange->propertyName()));
+        case QNode::DefaultTrackMode:
+            return false;
+        default:
+            Q_UNREACHABLE();
+            return false;
+        }
+    }
+    return true;
+}
+
+// Main Thread
 void QPostman::notifyFrontendNode(const QSceneChangePtr &e)
 {
     Q_D(QPostman);

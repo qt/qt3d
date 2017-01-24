@@ -69,7 +69,17 @@ class QT3DCORESHARED_EXPORT QNode : public QObject
     Q_OBJECT
     Q_PROPERTY(Qt3DCore::QNode *parent READ parentNode WRITE setParent NOTIFY parentChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+    Q_PROPERTY(PropertyTrackMode propertyTrackMode READ propertyTrackMode WRITE setPropertyTrackMode NOTIFY propertyUpdateModeChanged)
+    Q_PROPERTY(QStringList trackedProperties READ trackedProperties WRITE setTrackedProperties NOTIFY trackedPropertiesChanged)
 public:
+
+    enum PropertyTrackMode {
+        DefaultTrackMode,
+        TrackNamedPropertiesMode,
+        TrackAllPropertiesMode
+    };
+    Q_ENUM(PropertyTrackMode)
+
     explicit QNode(QNode *parent = nullptr);
     virtual ~QNode();
 
@@ -82,14 +92,20 @@ public:
     QNodeVector childNodes() const;
 
     bool isEnabled() const;
+    PropertyTrackMode propertyTrackMode() const;
+    QStringList trackedProperties() const;
 
 public Q_SLOTS:
     void setParent(QNode *parent);
     void setEnabled(bool isEnabled);
+    void setPropertyTrackMode(PropertyTrackMode mode);
+    void setTrackedProperties(const QStringList &trackedProperties);
 
 Q_SIGNALS:
     void parentChanged(QObject *parent);
     void enabledChanged(bool enabled);
+    void propertyUpdateModeChanged(PropertyTrackMode mode);
+    void trackedPropertiesChanged(const QStringList &trackedProperties);
     void nodeDestroyed();
 
 protected:

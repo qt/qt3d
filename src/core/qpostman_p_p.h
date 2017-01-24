@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QSCENE_P_H
-#define QT3DCORE_QSCENE_P_H
+#ifndef QT3DCORE_QPOSTMAN_P_P_H
+#define QT3DCORE_QPOSTMAN_P_P_H
 
 //
 //  W A R N I N G
@@ -51,66 +51,35 @@
 // We mean it.
 //
 
+#include <Qt3DCore/qscenechange.h>
+#include <private/qobject_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
-#include <Qt3DCore/private/qobservableinterface_p.h>
-#include <Qt3DCore/qnode.h>
-#include <QScopedPointer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QScenePrivate;
-class QAspectEngine;
+class QScene;
+class QPostman;
 
-typedef QList<QObservableInterface *> QObservableList;
-
-class QT3DCORE_PRIVATE_EXPORT QScene
+class QT3DCORE_PRIVATE_EXPORT QPostmanPrivate : public QObjectPrivate
 {
 public:
-    QScene(QAspectEngine *engine = nullptr);
-    ~QScene();
-
-    QAspectEngine *engine() const;
-
-    void addObservable(QObservableInterface *observable, QNodeId id);
-    void addObservable(QNode *observable);
-    void removeObservable(QObservableInterface *observable, QNodeId id);
-    void removeObservable(QNode *observable);
-    QObservableList lookupObservables(QNodeId id) const;
-
-    QNode *lookupNode(QNodeId id) const;
-    QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const;
-    QNodeId nodeIdFromObservable(QObservableInterface *observable) const;
-
-    void setArbiter(Qt3DCore::QLockableObserverInterface *arbiter);
-    Qt3DCore::QLockableObserverInterface *arbiter() const;
-
-    // Component -> Entities
-    QVector<QNodeId> entitiesForComponent(QNodeId id) const;
-    void addEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);
-    void removeEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);
-    bool hasEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);
-
-    // Node -> Property Update Data
-    struct NodePropertyTrackData
+    QPostmanPrivate()
+        : QObjectPrivate()
+        , m_scene(nullptr)
     {
-        QNode::PropertyTrackMode updateMode = QNode::DefaultTrackMode;
-        QStringList namedProperties;
-    };
-    NodePropertyTrackData lookupNodePropertyTrackData(QNodeId id) const;
-    void setPropertyTrackDataForNode(QNodeId id, const NodePropertyTrackData &data);
-    void removePropertyTrackDataForNode(QNodeId id);
+    }
 
-private:
-    Q_DECLARE_PRIVATE(QScene)
-    QScopedPointer<QScenePrivate> d_ptr;
+    static QPostmanPrivate *get(QPostman *q);
+
+    Q_DECLARE_PUBLIC(QPostman)
+    QScene *m_scene;
+    std::vector<QSceneChangePtr> m_batch;
 };
 
-} // Qt3D
+} // Qt3DCore
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DCore::QScene*) // LCOV_EXCL_LINE
-
-#endif // QT3DCORE_QSCENE_P_H
+#endif // QT3DCORE_QPOSTMAN_P_P_H
