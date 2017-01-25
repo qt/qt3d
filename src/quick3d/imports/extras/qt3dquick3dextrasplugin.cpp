@@ -52,6 +52,7 @@
 #include <Qt3DExtras/qphongalphamaterial.h>
 #include <Qt3DExtras/qphongmaterial.h>
 #include <Qt3DExtras/qplanemesh.h>
+#include <Qt3DExtras/qskyboxentity.h>
 #include <Qt3DExtras/qspheremesh.h>
 #include <Qt3DExtras/qtexturematerial.h>
 #include <Qt3DExtras/qtorusmesh.h>
@@ -73,8 +74,6 @@ static const struct {
 } qmldir [] = {
     // Scene Graph
     { "LevelOfDetailLoader", 2, 2 },
-    // Entities
-    { "SkyboxEntity", 2, 0 },
     // Camera Controllers
     { "OrbitCameraController", 2, 0 },
     { "FirstPersonCameraController", 2, 0 },
@@ -84,6 +83,9 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
 {
     // Framegraphs
     qmlRegisterType<Qt3DExtras::QForwardRenderer>(uri, 2, 0, "ForwardRenderer");
+
+    // Entities
+    qmlRegisterType<Qt3DExtras::QSkyboxEntity>(uri, 2, 0, "SkyboxEntity");
 
     // Materials
     qmlRegisterType<Qt3DExtras::QPhongMaterial>(uri, 2, 0, "PhongMaterial");
