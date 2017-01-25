@@ -34,9 +34,11 @@
 #include <Qt3DInput/private/inputmanagers_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
+#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 #include "qbackendnodetester.h"
 #include "testdeviceproxy.h"
 #include "testpostmanarbiter.h"
+
 
 class tst_PhysicalDeviceProxy : public Qt3DCore::QBackendNodeTester
 {
@@ -126,6 +128,7 @@ private Q_SLOTS:
         QCOMPARE(change->value().value<Qt3DInput::QAbstractPhysicalDevice *>(), &physicalDevice);
         QCOMPARE(change->subjectId(), backendPhysicalDeviceProxy.peerId());
         QCOMPARE(backendPhysicalDeviceProxy.physicalDeviceId(), physicalDevice.id());
+        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isFinal, true);
     }
 
     void checkCleanupState()

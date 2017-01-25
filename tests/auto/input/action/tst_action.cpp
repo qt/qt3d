@@ -37,6 +37,7 @@
 #include <Qt3DInput/QActionInput>
 #include <Qt3DInput/QAction>
 #include <Qt3DCore/private/qbackendnode_p.h>
+#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 #include "testpostmanarbiter.h"
 
 class DummyActionInput : public Qt3DInput::QActionInput
@@ -159,6 +160,8 @@ private Q_SLOTS:
         Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "active");
         QCOMPARE(change->value().toBool(), backendAction.actionTriggered());
+        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isFinal, true);
+
 
         arbiter.events.clear();
 

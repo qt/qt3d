@@ -46,6 +46,7 @@
 #include <Qt3DInput/private/qmousehandler_p.h>
 #include <Qt3DInput/qmousedevice.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -87,6 +88,7 @@ void MouseHandler::mouseEvent(const QMouseEventPtr &event)
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("mouse");
     e->setValue(QVariant::fromValue(event));
+    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
     notifyObservers(e);
 }
 
@@ -96,6 +98,7 @@ void MouseHandler::wheelEvent(const QWheelEventPtr &event)
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("wheel");
     e->setValue(QVariant::fromValue(event));
+    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
     notifyObservers(e);
 }
 
