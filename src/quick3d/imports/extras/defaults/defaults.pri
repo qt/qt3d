@@ -8,17 +8,8 @@
 QML_FILES = \
     $$PWD/qml/DefaultEffect.qml \
     $$PWD/qml/DefaultAlphaEffect.qml \
-    $$PWD/qml/PhongMaterial.qml \
-    $$PWD/qml/DiffuseMapMaterial.qml \
-    $$PWD/qml/DiffuseSpecularMapMaterial.qml \
-    $$PWD/qml/NormalDiffuseMapMaterial.qml \
-    $$PWD/qml/NormalDiffuseMapAlphaMaterial.qml \
-    $$PWD/qml/NormalDiffuseSpecularMapMaterial.qml \
     $$PWD/qml/ForwardRenderer.qml \
-    $$PWD/qml/PerVertexColorMaterial.qml \
     $$PWD/qml/SkyboxEntity.qml \
-    $$PWD/qml/GoochMaterial.qml \
-    $$PWD/qml/PhongAlphaMaterial.qml \
     $$PWD/qml/TextureMaterial.qml \
     $$PWD/qml/OrbitCameraController.qml \
     $$PWD/qml/FirstPersonCameraController.qml \

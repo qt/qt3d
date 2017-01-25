@@ -68,7 +68,7 @@ Entity {
 
         material: DiffuseMapMaterial {
             id: material
-            diffuse: "assets/chest/diffuse.webp"
+            diffuse: TextureLoader { source: "assets/chest/diffuse.webp" }
             specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
             shininess: 2.0
         }

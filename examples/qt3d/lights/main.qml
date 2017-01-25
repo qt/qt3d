@@ -183,8 +183,8 @@ Entity
 
         material: NormalDiffuseMapMaterial {
             ambient: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
-            diffuse: "assets/textures/pattern_09/diffuse.webp"
-            normal: "assets/textures/pattern_09/normal.webp"
+            diffuse: TextureLoader { source: "assets/textures/pattern_09/diffuse.webp" }
+            normal: TextureLoader { source: "assets/textures/pattern_09/normal.webp" }
             textureScale: 10
             shininess: 10
         }

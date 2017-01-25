@@ -41,6 +41,15 @@
 #include <Qt3DExtras/qcuboidmesh.h>
 #include <Qt3DExtras/qconemesh.h>
 #include <Qt3DExtras/qcylindermesh.h>
+#include <Qt3DExtras/qdiffusemapmaterial.h>
+#include <Qt3DExtras/qdiffusespecularmapmaterial.h>
+#include <Qt3DExtras/qgoochmaterial.h>
+#include <Qt3DExtras/qnormaldiffusemapalphamaterial.h>
+#include <Qt3DExtras/qnormaldiffusemapmaterial.h>
+#include <Qt3DExtras/qnormaldiffusespecularmapmaterial.h>
+#include <Qt3DExtras/qpervertexcolormaterial.h>
+#include <Qt3DExtras/qphongalphamaterial.h>
+#include <Qt3DExtras/qphongmaterial.h>
 #include <Qt3DExtras/qplanemesh.h>
 #include <Qt3DExtras/qspheremesh.h>
 #include <Qt3DExtras/qtorusmesh.h>
@@ -61,15 +70,6 @@ static const struct {
     int major, minor;
 } qmldir [] = {
     // Materials
-    { "PhongMaterial", 2, 0 },
-    { "PhongAlphaMaterial", 2, 0 },
-    { "DiffuseMapMaterial", 2, 0 },
-    { "DiffuseSpecularMapMaterial", 2, 0 },
-    { "NormalDiffuseMapAlphaMaterial", 2, 0 },
-    { "NormalDiffuseMapMaterial", 2, 0 },
-    { "NormalDiffuseSpecularMapMaterial", 2, 0 },
-    { "PerVertexColorMaterial", 2, 0 },
-    { "GoochMaterial", 2, 0 },
     { "TextureMaterial", 2, 0 },
     // Effects
     { "DefaultEffect", 2, 0 },
@@ -88,6 +88,17 @@ static const struct {
 
 void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
 {
+    // Materials
+    qmlRegisterType<Qt3DExtras::QPhongMaterial>(uri, 2, 0, "PhongMaterial");
+    qmlRegisterType<Qt3DExtras::QPhongAlphaMaterial>(uri, 2, 0, "PhongAlphaMaterial");
+    qmlRegisterType<Qt3DExtras::QDiffuseMapMaterial>(uri, 2, 0, "DiffuseMapMaterial");
+    qmlRegisterType<Qt3DExtras::QDiffuseSpecularMapMaterial>(uri, 2, 0, "DiffuseSpecularMapMaterial");
+    qmlRegisterType<Qt3DExtras::QNormalDiffuseMapAlphaMaterial>(uri, 2, 0, "NormalDiffuseMapAlphaMaterial");
+    qmlRegisterType<Qt3DExtras::QNormalDiffuseMapMaterial>(uri, 2, 0, "NormalDiffuseMapMaterial");
+    qmlRegisterType<Qt3DExtras::QNormalDiffuseSpecularMapMaterial>(uri, 2, 0, "NormalDiffuseSpecularMapMaterial");
+    qmlRegisterType<Qt3DExtras::QPerVertexColorMaterial>(uri, 2, 0, "PerVertexColorMaterial");
+    qmlRegisterType<Qt3DExtras::QGoochMaterial>(uri, 2, 0, "GoochMaterial");
+
     // Meshes
     qmlRegisterType<Qt3DExtras::QConeMesh>(uri, 2, 0, "ConeMesh");
     qmlRegisterType<Qt3DExtras::QConeGeometry>(uri, 2, 0, "ConeGeometry");
