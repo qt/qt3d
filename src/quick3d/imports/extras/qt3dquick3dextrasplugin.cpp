@@ -52,6 +52,7 @@
 #include <Qt3DExtras/qphongmaterial.h>
 #include <Qt3DExtras/qplanemesh.h>
 #include <Qt3DExtras/qspheremesh.h>
+#include <Qt3DExtras/qtexturematerial.h>
 #include <Qt3DExtras/qtorusmesh.h>
 #include <Qt3DExtras/qtorusgeometry.h>
 #include <Qt3DExtras/qspheregeometry.h>
@@ -69,8 +70,6 @@ static const struct {
     const char *type;
     int major, minor;
 } qmldir [] = {
-    // Materials
-    { "TextureMaterial", 2, 0 },
     // Effects
     { "DefaultEffect", 2, 0 },
     { "DefaultAlphaEffect", 2, 0 },
@@ -98,6 +97,7 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DExtras::QNormalDiffuseSpecularMapMaterial>(uri, 2, 0, "NormalDiffuseSpecularMapMaterial");
     qmlRegisterType<Qt3DExtras::QPerVertexColorMaterial>(uri, 2, 0, "PerVertexColorMaterial");
     qmlRegisterType<Qt3DExtras::QGoochMaterial>(uri, 2, 0, "GoochMaterial");
+    qmlRegisterType<Qt3DExtras::QTextureMaterial>(uri, 2, 0, "TextureMaterial");
 
     // Meshes
     qmlRegisterType<Qt3DExtras::QConeMesh>(uri, 2, 0, "ConeMesh");

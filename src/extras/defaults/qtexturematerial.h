@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,32 +37,51 @@
 **
 ****************************************************************************/
 
-import Qt3D.Core 2.0
-import Qt3D.Render 2.0
+#ifndef QT3DEXTRAS_QTEXTUREMATERIAL_H
+#define QT3DEXTRAS_QTEXTUREMATERIAL_H
 
-Material {
-    id: root
+#include <Qt3DExtras/qt3dextras_global.h>
+#include <Qt3DRender/qmaterial.h>
+#include <QVector2D>
 
-    property Texture2D texture: Texture2D {}
-    property alias textureOffset: texCoordOffset.offset
+QT_BEGIN_NAMESPACE
 
-    parameters: [
-        Parameter {
-            name: "diffuseTexture"
-            value: root.texture
-        },
-        Parameter {
-            id: texCoordOffset
-            property vector2d offset: Qt.vector2d(0, 0)
-            name: "texCoordOffset"
-            value: offset
-        }
-    ]
+namespace Qt3DRender {
 
-    effect: DefaultEffect {
-        vertexES: "qrc:/shaders/es2/unlittexture.vert"
-        fragmentES: "qrc:/shaders/es2/unlittexture.frag"
-        vertex: "qrc:/shaders/gl3/unlittexture.vert"
-        fragment: "qrc:/shaders/gl3/unlittexture.frag"
-    }
-}
+class QAbstractTexture;
+
+} // namespace Qt3DRender
+
+namespace Qt3DExtras {
+
+class QTextureMaterialPrivate;
+
+class QT3DEXTRASSHARED_EXPORT QTextureMaterial : public Qt3DRender::QMaterial
+{
+    Q_OBJECT
+    Q_PROPERTY(Qt3DRender::QAbstractTexture *texture READ texture WRITE setTexture NOTIFY textureChanged)
+    Q_PROPERTY(QVector2D textureOffset READ textureOffset WRITE setTextureOffset NOTIFY textureOffsetChanged)
+public:
+    explicit QTextureMaterial(Qt3DCore::QNode *parent = nullptr);
+    ~QTextureMaterial();
+
+    Qt3DRender::QAbstractTexture *texture() const;
+    QVector2D textureOffset() const;
+
+public Q_SLOTS:
+    void setTexture(Qt3DRender::QAbstractTexture *texture);
+    void setTextureOffset(const QVector2D &textureOffset);
+
+Q_SIGNALS:
+    void textureChanged(Qt3DRender::QAbstractTexture *texture);
+    void textureOffsetChanged(const QVector2D &textureOffset);
+
+private:
+    Q_DECLARE_PRIVATE(QTextureMaterial)
+};
+
+} // Qt3DExtras
+
+QT_END_NAMESPACE
+
+#endif // QT3DEXTRAS_QTEXTUREMATERIAL_H

@@ -10,7 +10,6 @@ QML_FILES = \
     $$PWD/qml/DefaultAlphaEffect.qml \
     $$PWD/qml/ForwardRenderer.qml \
     $$PWD/qml/SkyboxEntity.qml \
-    $$PWD/qml/TextureMaterial.qml \
     $$PWD/qml/OrbitCameraController.qml \
     $$PWD/qml/FirstPersonCameraController.qml \
     $$PWD/qml/NormalDiffuseMapAlphaEffect.qml \
