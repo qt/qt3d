@@ -33,6 +33,7 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
+#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 #include <qbackendnodetester.h>
 #include <testpostmanarbiter.h>
 
@@ -71,6 +72,7 @@ private Q_SLOTS:
         QVERIFY(backendClip.peerId().isNull());
         QCOMPARE(backendClip.isEnabled(), false);
         QCOMPARE(backendClip.source(), QUrl());
+        QCOMPARE(backendClip.duration(), 0.0f);
 
         // GIVEN
         Qt3DAnimation::QAnimationClip clip;
@@ -84,6 +86,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendClip.source(), QUrl());
         QCOMPARE(backendClip.isEnabled(), false);
+        QCOMPARE(backendClip.duration(), 0.0f);
     }
 
     void checkPropertyChanges()
@@ -112,6 +115,37 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendClip.source(), newSource);
+    }
+
+    void checkDurationPropertyBackendNotification()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DAnimation::Animation::AnimationClip backendClip;
+        backendClip.setEnabled(true);
+        Qt3DCore::QBackendNodePrivate::get(&backendClip)->setArbiter(&arbiter);
+
+        // WHEN
+        backendClip.setDuration(64.0f);
+
+        // THEN
+        QCOMPARE(backendClip.duration(), 64.0f);
+        QCOMPARE(arbiter.events.count(), 1);
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "duration");
+        QCOMPARE(change->value().toFloat(), backendClip.duration());
+        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isFinal, true);
+
+        arbiter.events.clear();
+
+        // WHEN
+        backendClip.setDuration(64.0f);
+
+        // THEN
+        QCOMPARE(backendClip.duration(), 64.0f);
+        QCOMPARE(arbiter.events.count(), 0);
+
+        arbiter.events.clear();
     }
 };
 

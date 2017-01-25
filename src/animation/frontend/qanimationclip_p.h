@@ -62,7 +62,12 @@ public:
 
     Q_DECLARE_PUBLIC(QAnimationClip)
 
+    void setDuration(float duration);
+
     QUrl m_source;
+
+    // Set from the backend
+    float m_duration;
 };
 
 struct QAnimationClipData

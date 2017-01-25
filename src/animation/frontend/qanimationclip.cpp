@@ -36,6 +36,7 @@
 
 #include "qanimationclip.h"
 #include "qanimationclip_p.h"
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -43,7 +44,20 @@ namespace Qt3DAnimation {
 
 QAnimationClipPrivate::QAnimationClipPrivate()
     : Qt3DCore::QNodePrivate()
+    , m_duration(0.0f)
 {
+}
+
+void QAnimationClipPrivate::setDuration(float duration)
+{
+    if (qFuzzyCompare(duration, m_duration))
+        return;
+
+    Q_Q(QAnimationClip);
+    bool wasBlocked = q->blockNotifications(true);
+    m_duration = duration;
+    emit q->durationChanged(duration);
+    q->blockNotifications(wasBlocked);
 }
 
 QAnimationClip::QAnimationClip(Qt3DCore::QNode *parent)
@@ -66,6 +80,12 @@ QUrl QAnimationClip::source() const
     return d->m_source;
 }
 
+float QAnimationClip::duration() const
+{
+    Q_D(const QAnimationClip);
+    return d->m_duration;
+}
+
 void QAnimationClip::setSource(QUrl source)
 {
     Q_D(QAnimationClip);
@@ -74,6 +94,16 @@ void QAnimationClip::setSource(QUrl source)
 
     d->m_source = source;
     emit sourceChanged(source);
+}
+
+void QAnimationClip::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
+{
+    Q_D(QAnimationClip);
+    if (change->type() == Qt3DCore::PropertyUpdated) {
+        Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
+        if (e->propertyName() == QByteArrayLiteral("duration"))
+            d->setDuration(e->value().toFloat());
+    }
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QAnimationClip::createNodeCreationChange() const

@@ -51,21 +51,25 @@ class QT3DANIMATIONSHARED_EXPORT QAnimationClip : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(float duration READ duration NOTIFY durationChanged)
 
 public:
     explicit QAnimationClip(Qt3DCore::QNode *parent = nullptr);
     ~QAnimationClip();
 
     QUrl source() const;
+    float duration() const;
 
 public Q_SLOTS:
     void setSource(QUrl source);
 
 Q_SIGNALS:
     void sourceChanged(QUrl source);
+    void durationChanged(float duration);
 
 protected:
     QAnimationClip(QAnimationClipPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QAnimationClip)

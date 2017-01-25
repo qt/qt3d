@@ -75,16 +75,20 @@ public:
 
     // Called from jobs
     void loadAnimation();
+    void setDuration(float duration);
+    float duration() const { return m_duration; }
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
     void clearData();
+    float findDuration();
 
     QUrl m_source;
 
     QString m_name;
     QString m_objectName;
     QVector<ChannelGroup> m_channelGroups;
+    float m_duration;
 };
 
 #ifndef QT_NO_DEBUG_STREAM

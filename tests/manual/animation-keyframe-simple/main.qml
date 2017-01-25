@@ -35,6 +35,8 @@ DefaultSceneEntity {
                 running: true
                 clip: AnimationClip {
                     source: "cubeanimation.json"
+
+                    onDurationChanged: console.log("duration = " + duration)
                 }
 
                 // By default introspect parent Entity and try

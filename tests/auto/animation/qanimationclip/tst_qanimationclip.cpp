@@ -49,6 +49,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(clip.source(), QUrl());
+        QCOMPARE(clip.duration(), 0.0f);
     }
 
     void checkPropertyChanges()

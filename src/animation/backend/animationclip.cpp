@@ -40,6 +40,7 @@
 #include <Qt3DAnimation/private/animationlogging_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 
 #include <QtCore/qbytearray.h>
 #include <QtCore/qfile.h>
@@ -53,11 +54,12 @@ namespace Qt3DAnimation {
 namespace Animation {
 
 AnimationClip::AnimationClip()
-    : BackendNode(ReadOnly)
+    : BackendNode(ReadWrite)
     , m_source()
     , m_name()
     , m_objectName()
     , m_channelGroups()
+    , m_duration(0.0f)
 {
 }
 
@@ -75,6 +77,8 @@ void AnimationClip::cleanup()
     setEnabled(false);
     m_handler = nullptr;
     m_source.clear();
+    m_channelGroups.clear();
+    m_duration = 0.0f;
 
     clearData();
 }
@@ -139,7 +143,26 @@ void AnimationClip::loadAnimation()
         m_channelGroups[i].read(group);
     }
 
+    const float t = findDuration();
+    setDuration(t);
+
     qCDebug(Jobs) << "Loaded animation data:" << *this;
+}
+
+void AnimationClip::setDuration(float duration)
+{
+    if (qFuzzyCompare(duration, m_duration))
+        return;
+
+    m_duration = duration;
+
+    // Send a change to the frontend
+    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
+    e->setPropertyName("duration");
+    e->setValue(m_duration);
+    notifyObservers(e);
 }
 
 void AnimationClip::clearData()
@@ -147,6 +170,20 @@ void AnimationClip::clearData()
     m_name.clear();
     m_objectName.clear();
     m_channelGroups.clear();
+}
+
+float AnimationClip::findDuration()
+{
+    // Iterate over the contained fcurves and find the longest one
+    double tMax = 0.0;
+    for (const auto channelGroup : qAsConst(m_channelGroups)) {
+        for (const auto channel : qAsConst(channelGroup.channels)) {
+            const float t = channel.fcurve.endTime();
+            if (t > tMax)
+                tMax = t;
+        }
+    }
+    return tMax;
 }
 
 } // namespace Animation
