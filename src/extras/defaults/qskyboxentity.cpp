@@ -151,11 +151,17 @@ void QSkyboxEntityPrivate::init()
     m_mesh->setYZMeshResolution(QSize(2, 2));
 
     m_posXImage->setFace(QTextureCubeMap::CubeMapPositiveX);
+    m_posXImage->setMirrored(false);
     m_posYImage->setFace(QTextureCubeMap::CubeMapPositiveY);
+    m_posYImage->setMirrored(false);
     m_posZImage->setFace(QTextureCubeMap::CubeMapPositiveZ);
+    m_posZImage->setMirrored(false);
     m_negXImage->setFace(QTextureCubeMap::CubeMapNegativeX);
+    m_negXImage->setMirrored(false);
     m_negYImage->setFace(QTextureCubeMap::CubeMapNegativeY);
+    m_negYImage->setMirrored(false);
     m_negZImage->setFace(QTextureCubeMap::CubeMapNegativeZ);
+    m_negZImage->setMirrored(false);
 
     m_skyboxTexture->setMagnificationFilter(QTextureCubeMap::Linear);
     m_skyboxTexture->setMinificationFilter(QTextureCubeMap::Linear);
