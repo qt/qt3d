@@ -58,18 +58,26 @@ void ClipAnimator::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
     const auto &data = typedChange->data;
     m_clipId = data.clipId;
     m_mapperId = data.mapperId;
-    setRunning(data.running);
+    m_running = data.running;
+    setDirty(Handler::ClipAnimatorDirty);
+}
+
+void ClipAnimator::setClipId(Qt3DCore::QNodeId clipId)
+{
+    m_clipId = clipId;
+    setDirty(Handler::ClipAnimatorDirty);
 }
 
 void ClipAnimator::setMapperId(Qt3DCore::QNodeId mapperId)
 {
     m_mapperId = mapperId;
+    setDirty(Handler::ClipAnimatorDirty);
 }
 
 void ClipAnimator::setRunning(bool running)
 {
     m_running = running;
-    m_handler->setClipAnimatorRunning(peerId(), m_running);
+    setDirty(Handler::ClipAnimatorDirty);
 }
 
 void ClipAnimator::cleanup()

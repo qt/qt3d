@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_ANIMATION_CLIPANIMATOR_P_H
-#define QT3DANIMATION_ANIMATION_CLIPANIMATOR_P_H
+#ifndef QT3DANIMATION_ANIMATION_FINDRUNNINGCLIPANIMATORSJOB_P_H
+#define QT3DANIMATION_ANIMATION_FINDRUNNINGCLIPANIMATORSJOB_P_H
 
 //
 //  W A R N I N G
@@ -48,8 +48,9 @@
 // We mean it.
 //
 
-#include <Qt3DAnimation/private/backendnode_p.h>
-#include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DAnimation/private/handle_types_p.h>
+#include <QtCore/qvector.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,39 +59,27 @@ namespace Animation {
 
 class Handler;
 
-class Q_AUTOTEST_EXPORT ClipAnimator : public BackendNode
+class FindRunningClipAnimatorsJob : public Qt3DCore::QAspectJob
 {
 public:
-    ClipAnimator();
-
-    void cleanup();
-    void setClipId(Qt3DCore::QNodeId clipId);
-    Qt3DCore::QNodeId clipId() const { return m_clipId; }
-    void setMapperId(Qt3DCore::QNodeId mapperId);
-    Qt3DCore::QNodeId mapperId() const { return m_mapperId; }
-
-    void setRunning(bool running);
-    bool isRunning() const { return m_running; }
-
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    FindRunningClipAnimatorsJob();
 
     void setHandler(Handler *handler) { m_handler = handler; }
+    Handler *handler() const { return m_handler; }
 
-    // Called by jobs
-    bool canRun() const { return !m_clipId.isNull() && !m_mapperId.isNull() && m_running; }
+    void setDirtyClipAnimators(const QVector<HClipAnimator> &animationClipHandles);
+
+protected:
+    void run() Q_DECL_OVERRIDE;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
-
-    Qt3DCore::QNodeId m_clipId;
-    Qt3DCore::QNodeId m_mapperId;
-    bool m_running;
+    QVector<HClipAnimator> m_clipAnimatorHandles;
+    Handler *m_handler;
 };
 
 } // namespace Animation
 } // namespace Qt3DAnimation
 
-
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_ANIMATION_CLIPANIMATOR_P_H
+#endif // QT3DANIMATION_ANIMATION_FINDRUNNINGCLIPANIMATORSJOB_P_H

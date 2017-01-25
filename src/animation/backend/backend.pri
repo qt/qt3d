@@ -17,7 +17,8 @@ HEADERS += \
     $$PWD/backendnode_p.h \
     $$PWD/loadanimationclipjob_p.h \
     $$PWD/channelmapping_p.h \
-    $$PWD/channelmapper_p.h
+    $$PWD/channelmapper_p.h \
+    $$PWD/findrunningclipanimatorsjob_p.h
 
 SOURCES += \
     $$PWD/animationclip.cpp \
@@ -31,4 +32,5 @@ SOURCES += \
     $$PWD/backendnode.cpp \
     $$PWD/loadanimationclipjob.cpp \
     $$PWD/channelmapping.cpp \
-    $$PWD/channelmapper.cpp
+    $$PWD/channelmapper.cpp \
+    $$PWD/findrunningclipanimatorsjob.cpp

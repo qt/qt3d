@@ -76,6 +76,7 @@ class ChannelMappingManager;
 class ChannelMapper;
 class ChannelMapperManager;
 
+class FindRunningClipAnimatorsJob;
 class LoadAnimationClipJob;
 
 class Q_AUTOTEST_EXPORT Handler
@@ -86,12 +87,14 @@ public:
 
     enum DirtyFlag {
         AnimationClipDirty,
-        ChannelMappingsDirty
+        ChannelMappingsDirty,
+        ClipAnimatorDirty
     };
 
     void setDirty(DirtyFlag flag, Qt3DCore::QNodeId nodeId);
 
-    void setClipAnimatorRunning(Qt3DCore::QNodeId clipAnimatorId, bool running);
+    void setClipAnimatorRunning(const HClipAnimator &handle, bool running);
+    QVector<HClipAnimator> runningClipAnimators() const { return m_runningClipAnimators; }
 
     AnimationClipManager *animationClipManager() const Q_DECL_NOTHROW { return m_animationClipManager.data(); }
     ClipAnimatorManager *clipAnimatorManager() const Q_DECL_NOTHROW { return m_clipAnimatorManager.data(); }
@@ -112,9 +115,12 @@ private:
 
     QVector<HAnimationClip> m_dirtyAnimationClips;
     QVector<HChannelMapper> m_dirtyChannelMappers;
+    QVector<HClipAnimator> m_dirtyClipAnimators;
+
     QVector<HClipAnimator> m_runningClipAnimators;
 
     QSharedPointer<LoadAnimationClipJob> m_loadAnimationClipJob;
+    QSharedPointer<FindRunningClipAnimatorsJob> m_findRunningClipAnimatorsJob;
 
 #if defined(QT_BUILD_INTERNAL)
     friend class QT_PREPEND_NAMESPACE(tst_Handler);

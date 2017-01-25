@@ -37,6 +37,7 @@
 #include "handler_p.h"
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/loadanimationclipjob_p.h>
+#include <Qt3DAnimation/private/findrunningclipanimatorsjob_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -52,8 +53,10 @@ Handler::Handler()
     , m_channelMappingManager(new ChannelMappingManager)
     , m_channelMapperManager(new ChannelMapperManager)
     , m_loadAnimationClipJob(new LoadAnimationClipJob)
+    , m_findRunningClipAnimatorsJob(new FindRunningClipAnimatorsJob)
 {
     m_loadAnimationClipJob->setHandler(this);
+    m_findRunningClipAnimatorsJob->setHandler(this);
 }
 
 Handler::~Handler()
@@ -74,15 +77,17 @@ void Handler::setDirty(DirtyFlag flag, Qt3DCore::QNodeId nodeId)
         m_dirtyChannelMappers.push_back(handle);
         break;
     }
+
+    case ClipAnimatorDirty: {
+        const auto handle = m_clipAnimatorManager->lookupHandle(nodeId);
+        m_dirtyClipAnimators.push_back(handle);
+        break;
+    }
     }
 }
 
-void Handler::setClipAnimatorRunning(Qt3DCore::QNodeId clipAnimatorId, bool running)
+void Handler::setClipAnimatorRunning(const HClipAnimator &handle, bool running)
 {
-    const auto handle = m_clipAnimatorManager->lookupHandle(clipAnimatorId);
-    if (handle.isNull())
-        return;
-
     // Add clip to running set if not already present
     if (running && !m_runningClipAnimators.contains(handle))
         m_runningClipAnimators.push_back(handle);
@@ -95,8 +100,6 @@ void Handler::setClipAnimatorRunning(Qt3DCore::QNodeId clipAnimatorId, bool runn
         if (it != m_runningClipAnimators.end())
             m_runningClipAnimators.erase(it);
     }
-
-    qCDebug(HandlerLogic) << "Running clips:" << m_runningClipAnimators;
 }
 
 QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
@@ -111,6 +114,16 @@ QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
         m_loadAnimationClipJob->addDirtyAnimationClips(m_dirtyAnimationClips);
         jobs.push_back(m_loadAnimationClipJob);
         m_dirtyAnimationClips.clear();
+    }
+
+    // If there are dirty clip animators, find the set that are able to
+    // run. I.e. are marked as running and have animation clips and
+    // channel mappings
+    if (!m_dirtyClipAnimators.isEmpty()) {
+        qCDebug(HandlerLogic) << "Added FindRunningClipAnimatorsJob";
+        m_findRunningClipAnimatorsJob->setDirtyClipAnimators(m_dirtyClipAnimators);
+        jobs.push_back(m_findRunningClipAnimatorsJob);
+        m_dirtyClipAnimators.clear();
     }
 
     // TODO: Queue up a job to update the channel mapping table

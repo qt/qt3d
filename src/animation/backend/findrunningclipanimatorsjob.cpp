@@ -34,63 +34,44 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_ANIMATION_CLIPANIMATOR_P_H
-#define QT3DANIMATION_ANIMATION_CLIPANIMATOR_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DAnimation/private/backendnode_p.h>
-#include <Qt3DCore/qnodeid.h>
+#include "findrunningclipanimatorsjob_p.h"
+#include <Qt3DAnimation/private/handler_p.h>
+#include <Qt3DAnimation/private/managers_p.h>
+#include <Qt3DAnimation/private/animationlogging_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 namespace Animation {
 
-class Handler;
-
-class Q_AUTOTEST_EXPORT ClipAnimator : public BackendNode
+FindRunningClipAnimatorsJob::FindRunningClipAnimatorsJob()
+    : Qt3DCore::QAspectJob()
 {
-public:
-    ClipAnimator();
+}
 
-    void cleanup();
-    void setClipId(Qt3DCore::QNodeId clipId);
-    Qt3DCore::QNodeId clipId() const { return m_clipId; }
-    void setMapperId(Qt3DCore::QNodeId mapperId);
-    Qt3DCore::QNodeId mapperId() const { return m_mapperId; }
+void FindRunningClipAnimatorsJob::setDirtyClipAnimators(const QVector<HClipAnimator> &clipAnimatorHandles)
+{
+    m_clipAnimatorHandles = clipAnimatorHandles;
+}
 
-    void setRunning(bool running);
-    bool isRunning() const { return m_running; }
+void FindRunningClipAnimatorsJob::run()
+{
+    Q_ASSERT(m_handler);
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    ClipAnimatorManager *clipAnimatorManager = m_handler->clipAnimatorManager();
+    for (const auto clipAnimatorHandle : qAsConst(m_clipAnimatorHandles)) {
+        ClipAnimator *clipAnimator = clipAnimatorManager->data(clipAnimatorHandle);
+        const bool canRun = clipAnimator->canRun();
+        m_handler->setClipAnimatorRunning(clipAnimatorHandle, canRun);
+    }
 
-    void setHandler(Handler *handler) { m_handler = handler; }
+    qCDebug(Jobs) << "Running clip animators =" << m_handler->runningClipAnimators();
 
-    // Called by jobs
-    bool canRun() const { return !m_clipId.isNull() && !m_mapperId.isNull() && m_running; }
-
-private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
-
-    Qt3DCore::QNodeId m_clipId;
-    Qt3DCore::QNodeId m_mapperId;
-    bool m_running;
-};
+    // Clear the handles to process ready for next frame
+    m_clipAnimatorHandles.clear();
+}
 
 } // namespace Animation
 } // namespace Qt3DAnimation
 
-
 QT_END_NAMESPACE
-
-#endif // QT3DANIMATION_ANIMATION_CLIPANIMATOR_P_H
