@@ -48,6 +48,7 @@
 #include <Qt3DExtras/qnormaldiffusemapalphamaterial.h>
 #include <Qt3DExtras/qnormaldiffusemapmaterial.h>
 #include <Qt3DExtras/qnormaldiffusespecularmapmaterial.h>
+#include <Qt3DExtras/qorbitcameracontroller.h>
 #include <Qt3DExtras/qpervertexcolormaterial.h>
 #include <Qt3DExtras/qphongalphamaterial.h>
 #include <Qt3DExtras/qphongmaterial.h>
@@ -75,7 +76,6 @@ static const struct {
     // Scene Graph
     { "LevelOfDetailLoader", 2, 2 },
     // Camera Controllers
-    { "OrbitCameraController", 2, 0 },
     { "FirstPersonCameraController", 2, 0 },
 };
 
@@ -86,6 +86,9 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
 
     // Entities
     qmlRegisterType<Qt3DExtras::QSkyboxEntity>(uri, 2, 0, "SkyboxEntity");
+
+    // Camera Controllers
+    qmlRegisterType<Qt3DExtras::QOrbitCameraController>(uri, 2, 0, "OrbitCameraController");
 
     // Materials
     qmlRegisterType<Qt3DExtras::QPhongMaterial>(uri, 2, 0, "PhongMaterial");
