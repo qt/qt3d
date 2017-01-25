@@ -232,7 +232,7 @@ void QSkyboxEntity::setBaseName(const QString &baseName)
     Q_D(QSkyboxEntity);
     if (baseName != d->m_baseName) {
         d->m_baseName = baseName;
-        emit sourceDirectoryChanged(baseName);
+        emit baseNameChanged(baseName);
         d->reloadTexture();
     }
 }
