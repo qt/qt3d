@@ -55,6 +55,7 @@ private Q_SLOTS:
         QCOMPARE(forwardRenderer.clearColor(), QColor(Qt::white));
         QVERIFY(forwardRenderer.camera() == nullptr);
         QCOMPARE(forwardRenderer.externalRenderTargetSize(), QSize());
+        QVERIFY(forwardRenderer.isFrustumCullingEnabled());
     }
 
     void checkPropertyChanges()
@@ -162,6 +163,31 @@ private Q_SLOTS:
             QCOMPARE(forwardRenderer.externalRenderTargetSize(), newValue);
             QCOMPARE(spy.count(), 0);
 
+        }
+        {
+            // WHEN
+            QSignalSpy spy(&forwardRenderer, SIGNAL(frustumCullingEnabledChanged(bool)));
+            forwardRenderer.setFrustumCullingEnabled(false);
+
+            // THEN
+            QVERIFY(!forwardRenderer.isFrustumCullingEnabled());
+            QCOMPARE(spy.count(), 1);
+            QVERIFY(!spy.takeFirst().takeFirst().toBool());
+
+            // WHEN
+            forwardRenderer.setFrustumCullingEnabled(false);
+
+            // THEN
+            QVERIFY(!forwardRenderer.isFrustumCullingEnabled());
+            QCOMPARE(spy.count(), 0);
+
+            // WHEN
+            forwardRenderer.setFrustumCullingEnabled(true);
+
+            // THEN
+            QVERIFY(forwardRenderer.isFrustumCullingEnabled());
+            QCOMPARE(spy.count(), 1);
+            QVERIFY(spy.takeFirst().takeFirst().toBool());
         }
     }
 
