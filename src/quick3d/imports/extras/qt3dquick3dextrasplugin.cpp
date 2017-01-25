@@ -70,10 +70,6 @@ static const struct {
     const char *type;
     int major, minor;
 } qmldir [] = {
-    // Effects
-    { "DefaultEffect", 2, 0 },
-    { "DefaultAlphaEffect", 2, 0 },
-    { "NormalDiffuseMapAlphaEffect", 2, 0 },
     // Scene Graph
     { "LevelOfDetailLoader", 2, 2 },
     // FrameGraphs
