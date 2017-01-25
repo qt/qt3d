@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QBOUNDINGSPHERE_P_H
-#define QT3DRENDER_QBOUNDINGSPHERE_P_H
+#ifndef STLGEOMETRYLOADER_H
+#define STLGEOMETRYLOADER_H
 
 //
 //  W A R N I N G
@@ -51,25 +51,26 @@
 // We mean it.
 //
 
-#include <Qt3DRender/qt3drender_global.h>
-#include <Qt3DRender/private/qboundingvolume_p.h>
+#include "basegeometryloader_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_EXPORT QBoundingSphere : public QBoundingVolume
-{
-public:
-    QBoundingSphere();
-    ~QBoundingSphere();
+#define STLGEOMETRYLOADER_EXT QLatin1String("stl")
 
-    virtual QVector3D center() const = 0;
-    virtual float radius() const = 0;
+class StlGeometryLoader : public BaseGeometryLoader
+{
+protected:
+    bool doLoad(QIODevice *ioDev, const QString &subMesh) Q_DECL_FINAL;
+
+private:
+    bool loadAscii(QIODevice *ioDev);
+    bool loadBinary(QIODevice *ioDev);
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QBOUNDINGSPHERE_P_H
+#endif // STLGEOMETRYLOADER_H

@@ -18,9 +18,12 @@ qtConfig(private_tests) {
         qbuffer \
         qgeometry \
         qgeometryrenderer \
+        qlevelofdetail \
+        levelofdetail \
         buffer \
         attribute \
         geometry \
+        geometryloaders \
         geometryrenderer \
         raycasting \
         qcameraselector \
@@ -96,7 +99,8 @@ qtConfig(private_tests) {
         filtercompatibletechniquejob \
         rendercapture \
         trianglevisitor \
-        qmemorybarrier
+        qmemorybarrier \
+        memorybarrier
 
     !macos: SUBDIRS += graphicshelpergl4
 }

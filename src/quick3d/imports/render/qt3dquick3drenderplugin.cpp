@@ -55,6 +55,9 @@
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qlayer.h>
+#include <Qt3DRender/qlevelofdetail.h>
+#include <Qt3DRender/qlevelofdetailswitch.h>
+#include <Qt3DRender/qboundingsphere.h>
 #include <Qt3DRender/qabstractlight.h>
 #include <Qt3DRender/qspotlight.h>
 #include <Qt3DRender/qdirectionallight.h>
@@ -101,6 +104,7 @@
 #include <Qt3DRender/qrendersettings.h>
 #include <Qt3DRender/qpickingsettings.h>
 #include <Qt3DRender/qrendercapture.h>
+#include <Qt3DRender/qmemorybarrier.h>
 #include <Qt3DQuickRender/private/quick3dlayerfilter_p.h>
 #include <Qt3DQuickRender/private/quick3dtechnique_p.h>
 #include <Qt3DQuickRender/private/quick3dmaterial_p.h>
@@ -119,6 +123,7 @@
 #include <Qt3DQuickRender/private/quick3drendertargetselector_p.h>
 #include <Qt3DQuickRender/private/quick3dgeometry_p.h>
 #include <Qt3DQuickRender/private/quick3dbuffer_p.h>
+#include <Qt3DQuickRender/private/quick3dmemorybarrier_p.h>
 #include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
 
 #include <QtGui/qwindow.h>
@@ -191,6 +196,9 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::Render::Quick::Quick3DBuffer>(uri, 2, 0, "Buffer");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QGeometry, Qt3DRender::Render::Quick::Quick3DGeometry>("QGeometry", "Qt3D.Render/Geometry", uri, 2, 0, "Geometry");
     qmlRegisterType<Qt3DRender::QGeometryRenderer>(uri, 2, 0, "GeometryRenderer");
+    qmlRegisterType<Qt3DRender::QLevelOfDetail>(uri, 2, 2, "LevelOfDetail");
+    qmlRegisterType<Qt3DRender::QLevelOfDetailSwitch>(uri, 2, 2, "LevelOfDetailSwitch");
+    qmlRegisterType<Qt3DRender::QBoundingSphere>(uri, 2, 2, "BoundingSphere");
 
     // Mesh
     qmlRegisterType<Qt3DRender::QMesh>(uri, 2, 0, "Mesh");
@@ -226,6 +234,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QDispatchCompute>(uri, 2, 0, "DispatchCompute");
     qmlRegisterType<Qt3DRender::QRenderCapture>(uri, 2, 1, "RenderCapture");
     qmlRegisterUncreatableType<Qt3DRender::QRenderCaptureReply>(uri, 2, 1, "RenderCaptureReply", QStringLiteral("RenderCaptureReply is only instantiated by RenderCapture"));
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QMemoryBarrier, Qt3DRender::Render::Quick::Quick3DMemoryBarrier>("QMemoryBarrier", "Qt3D.Render/MemoryBarrier", uri, 2, 0, "MemoryBarrier");
 
     // RenderTarget
     qmlRegisterType<Qt3DRender::QRenderTargetOutput>(uri, 2, 0, "RenderTargetOutput");

@@ -53,6 +53,7 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+using namespace Qt3DRender::RayCasting;
 
 namespace Render {
 
@@ -104,6 +105,7 @@ PickBoundingVolumeJob::PickBoundingVolumeJob()
     , m_node(nullptr)
     , m_frameGraphRoot(nullptr)
     , m_renderSettings(nullptr)
+    , m_pickersDirty(true)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::PickBoundingVolume, 0);
 }
@@ -128,16 +130,17 @@ void PickBoundingVolumeJob::setRenderSettings(RenderSettings *settings)
     m_renderSettings = settings;
 }
 
-QRay3D PickBoundingVolumeJob::intersectionRay(const QPoint &pos, const QMatrix4x4 &viewMatrix, const QMatrix4x4 &projectionMatrix, const QRect &viewport)
+RayCasting::QRay3D PickBoundingVolumeJob::intersectionRay(const QPoint &pos, const QMatrix4x4 &viewMatrix,
+                                                          const QMatrix4x4 &projectionMatrix, const QRect &viewport)
 {
     QVector3D nearPos = QVector3D(pos.x(), pos.y(), 0.0f);
     nearPos = nearPos.unproject(viewMatrix, projectionMatrix, viewport);
     QVector3D farPos = QVector3D(pos.x(), pos.y(), 1.0f);
     farPos = farPos.unproject(viewMatrix, projectionMatrix, viewport);
 
-    return QRay3D(nearPos,
-                  (farPos - nearPos).normalized(),
-                  (farPos - nearPos).length());
+    return RayCasting::QRay3D(nearPos,
+                              (farPos - nearPos).normalized(),
+                              (farPos - nearPos).length());
 }
 
 bool PickBoundingVolumeJob::runHelper()
@@ -150,16 +153,54 @@ bool PickBoundingVolumeJob::runHelper()
     if (mouseEvents.empty())
         return false;
 
-    // bail out early if no picker is enabled
-    bool oneEnabledAtLeast = false;
-    for (auto handle: m_manager->objectPickerManager()->activeHandles()) {
-        if (m_manager->objectPickerManager()->data(handle)->isEnabled()) {
-            oneEnabledAtLeast = true;
-            break;
+    // Quickly look which picker settings we've got
+    if (m_pickersDirty) {
+        m_pickersDirty = false;
+        m_oneEnabledAtLeast = false;
+        m_oneHoverAtLeast = false;
+
+        for (auto handle : m_manager->objectPickerManager()->activeHandles()) {
+            auto picker = m_manager->objectPickerManager()->data(handle);
+            m_oneEnabledAtLeast |= picker->isEnabled();
+            m_oneHoverAtLeast |= picker->isHoverEnabled();
+            if (m_oneEnabledAtLeast && m_oneHoverAtLeast)
+                break;
         }
     }
-    if (!oneEnabledAtLeast)
+
+    // bail out early if no picker is enabled
+    if (!m_oneEnabledAtLeast)
         return false;
+
+    bool hasMoveEvent = false;
+    bool hasOtherEvent = false;
+    // Quickly look which types of events we've got
+    for (const QMouseEvent &event : mouseEvents) {
+        const bool isMove = (event.type() == QEvent::MouseMove);
+        hasMoveEvent |= isMove;
+        hasOtherEvent |= !isMove;
+    }
+
+    // In the case we have a move event, find if we actually have
+    // an object picker that cares about these
+    if (!hasOtherEvent) {
+        // Retrieve the last used object picker
+        ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
+
+        // The only way to set lastCurrentPicker is to click
+        // so we can return since if we're there it means we
+        // have only move events. But keep on if hover support
+        // is needed
+        if (lastCurrentPicker == nullptr && !m_oneHoverAtLeast)
+            return false;
+
+        const bool caresAboutMove = (hasMoveEvent &&
+                                      (m_oneHoverAtLeast ||
+                                        (lastCurrentPicker && lastCurrentPicker->isDragEnabled())));
+        // Early return if the current object picker doesn't care about move events
+        if (!caresAboutMove)
+            return false;
+    }
 
     PickingUtils::ViewportCameraAreaGatherer vcaGatherer;
     // TO DO: We could cache this and only gather when we know the FrameGraph tree has changed
@@ -221,7 +262,7 @@ bool PickBoundingVolumeJob::runHelper()
             }
 
             // Dispatch events based on hit results
-            dispatchPickEvents(event, sphereHits, eventButton, eventButtons, eventModifiers, trianglePickingRequested);
+            dispatchPickEvents(event, sphereHits, eventButton, eventButtons, eventModifiers, trianglePickingRequested, allHitsRequested);
         }
     }
 
@@ -238,6 +279,11 @@ void PickBoundingVolumeJob::setManagers(NodeManagers *manager)
     m_manager = manager;
 }
 
+void PickBoundingVolumeJob::markPickersDirty()
+{
+    m_pickersDirty = true;
+}
+
 void PickBoundingVolumeJob::run()
 {
     Q_ASSERT(m_frameGraphRoot && m_renderSettings && m_node && m_manager);
@@ -249,7 +295,8 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                                                QPickEvent::Buttons eventButton,
                                                int eventButtons,
                                                int eventModifiers,
-                                               bool trianglePickingRequested)
+                                               bool trianglePickingRequested,
+                                               bool allHitsRequested)
 {
     ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
     // If we have hits
@@ -258,9 +305,6 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
 
         // How do we differentiate betwnee an Entity with no GeometryRenderer and one with one, both having
         // an ObjectPicker component when it comes
-
-        // We want to gather hits against triangles
-        // build a triangle based bounding volume
 
         for (const QCollisionQueryResult::Hit &hit : qAsConst(sphereHits)) {
             Entity *entity = m_manager->renderNodesManager()->lookupResource(hit.m_entityId);
@@ -276,6 +320,14 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
 
             ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
             if (objectPicker != nullptr && objectPicker->isEnabled()) {
+
+                if (lastCurrentPicker && !allHitsRequested) {
+                    // if there is a current picker, it will "grab" all events until released.
+                    // Clients should test that entity is what they expect (or only use
+                    // world coordinates)
+                    objectPicker = lastCurrentPicker;
+                }
+
                 // Send the corresponding event
                 QVector3D localIntersection = hit.m_intersection;
                 if (entity && entity->worldTransform())
@@ -390,10 +442,10 @@ QRect PickBoundingVolumeJob::windowViewport(const QSize &area, const QRectF &rel
     return relativeViewport.toRect();
 }
 
-QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QSize &area,
-                                                      const QPoint &pos,
-                                                      const QRectF &relativeViewport,
-                                                      Qt3DCore::QNodeId cameraId) const
+RayCasting::QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QSize &area,
+                                                                  const QPoint &pos,
+                                                                  const QRectF &relativeViewport,
+                                                                  const Qt3DCore::QNodeId cameraId) const
 {
     QMatrix4x4 viewMatrix;
     QMatrix4x4 projectionMatrix;
@@ -402,7 +454,7 @@ QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QSize &area,
 
     // In GL the y is inverted compared to Qt
     const QPoint glCorrectPos = QPoint(pos.x(), area.isValid() ? area.height() - pos.y() : pos.y());
-    const QRay3D ray = intersectionRay(glCorrectPos, viewMatrix, projectionMatrix, viewport);
+    const auto ray = intersectionRay(glCorrectPos, viewMatrix, projectionMatrix, viewport);
     return ray;
 }
 

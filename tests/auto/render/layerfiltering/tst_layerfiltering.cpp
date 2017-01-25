@@ -28,59 +28,13 @@
 
 #include <QtTest/QTest>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
-#include <Qt3DCore/private/qaspectjobmanager_p.h>
-
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/entity_p.h>
-#include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DRender/private/filterlayerentityjob_p.h>
 #include <Qt3DRender/private/updatetreeenabledjob_p.h>
 #include <Qt3DRender/qlayer.h>
-
-QT_BEGIN_NAMESPACE
-
-namespace Qt3DRender {
-
-class TestAspect : public Qt3DRender::QRenderAspect
-{
-public:
-    TestAspect(Qt3DCore::QNode *root)
-        : Qt3DRender::QRenderAspect(Qt3DRender::QRenderAspect::Synchronous)
-        , m_jobManager(new Qt3DCore::QAspectJobManager())
-    {
-        Qt3DCore::QAbstractAspectPrivate::get(this)->m_jobManager = m_jobManager.data();
-        QRenderAspect::onRegistered();
-
-        const Qt3DCore::QNodeCreatedChangeGenerator generator(root);
-        const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = generator.creationChanges();
-
-        for (const Qt3DCore::QNodeCreatedChangeBasePtr change : creationChanges)
-            d_func()->createBackendNode(change);
-    }
-
-    ~TestAspect()
-    {
-        QRenderAspect::onUnregistered();
-    }
-
-    Qt3DRender::Render::NodeManagers *nodeManagers() const
-    {
-        return d_func()->m_renderer->nodeManagers();
-    }
-
-    void onRegistered() { QRenderAspect::onRegistered(); }
-    void onUnregistered() { QRenderAspect::onUnregistered(); }
-
-private:
-    QScopedPointer<Qt3DCore::QAspectJobManager> m_jobManager;
-};
-
-} // namespace Qt3DRender
-
-QT_END_NAMESPACE
+#include "testaspect.h"
 
 class tst_LayerFiltering : public QObject
 {

@@ -51,6 +51,7 @@
 // We mean it.
 //
 
+#include <Qt3DCore/QNodeId>
 #include <Qt3DRender/private/qray3d_p.h>
 #include <Qt3DRender/private/trianglesvisitor_p.h>
 #include <Qt3DRender/private/qraycastingservice_p.h>
@@ -59,8 +60,9 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
+namespace RayCasting {
 class QAbstractCollisionQueryService;
+}
 
 namespace Render {
 
@@ -81,9 +83,11 @@ QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, PickingUtils, ViewportCameraAreaTrip
 class Q_AUTOTEST_EXPORT ViewportCameraAreaGatherer
 {
 public:
+    ViewportCameraAreaGatherer(const Qt3DCore::QNodeId &nodeId = Qt3DCore::QNodeId()) : m_targetCamera(nodeId) { }
     QVector<ViewportCameraAreaTriplet> gather(FrameGraphNode *root);
 
 private:
+    Qt3DCore::QNodeId m_targetCamera;
     QVector<FrameGraphNode *> m_leaves;
 
     void visit(FrameGraphNode *node);
@@ -107,10 +111,11 @@ private:
 class Q_AUTOTEST_EXPORT CollisionVisitor : public TrianglesVisitor
 {
 public:
-    typedef QVector<QCollisionQueryResult::Hit> HitList;
+    typedef QVector<RayCasting::QCollisionQueryResult::Hit> HitList;
     HitList hits;
 
-    CollisionVisitor(NodeManagers* manager, const Entity *root, const QRay3D& ray, bool frontFaceRequested, bool backFaceRequested)
+    CollisionVisitor(NodeManagers* manager, const Entity *root, const RayCasting::QRay3D& ray,
+                     bool frontFaceRequested, bool backFaceRequested)
         : TrianglesVisitor(manager), m_root(root), m_ray(ray), m_triangleIndex(0)
         , m_frontFaceRequested(frontFaceRequested), m_backFaceRequested(backFaceRequested)
     {
@@ -118,7 +123,7 @@ public:
 
 private:
     const Entity *m_root;
-    QRay3D m_ray;
+    RayCasting::QRay3D m_ray;
     uint m_triangleIndex;
     bool m_frontFaceRequested;
     bool m_backFaceRequested;
@@ -137,17 +142,17 @@ struct Q_AUTOTEST_EXPORT AbstractCollisionGathererFunctor
     virtual ~AbstractCollisionGathererFunctor();
 
     NodeManagers *m_manager;
-    QRay3D m_ray;
+    RayCasting::QRay3D m_ray;
 
     // This define is required to work with QtConcurrent
     typedef CollisionVisitor::HitList result_type;
     result_type operator ()(const Entity *entity) const;
-    virtual result_type pick(QAbstractCollisionQueryService *rayCasting, const Entity *entity) const = 0;
+    virtual result_type pick(RayCasting::QAbstractCollisionQueryService *rayCasting, const Entity *entity) const = 0;
 };
 
 struct Q_AUTOTEST_EXPORT EntityCollisionGathererFunctor : public AbstractCollisionGathererFunctor
 {
-    result_type pick(QAbstractCollisionQueryService *rayCasting, const Entity *entity) const Q_DECL_OVERRIDE;
+    result_type pick(RayCasting::QAbstractCollisionQueryService *rayCasting, const Entity *entity) const Q_DECL_OVERRIDE;
 };
 
 struct Q_AUTOTEST_EXPORT TriangleCollisionGathererFunctor : public AbstractCollisionGathererFunctor
@@ -155,9 +160,9 @@ struct Q_AUTOTEST_EXPORT TriangleCollisionGathererFunctor : public AbstractColli
     bool m_frontFaceRequested;
     bool m_backFaceRequested;
 
-    result_type pick(QAbstractCollisionQueryService *rayCasting, const Entity *entity) const Q_DECL_OVERRIDE;
+    result_type pick(RayCasting::QAbstractCollisionQueryService *rayCasting, const Entity *entity) const Q_DECL_OVERRIDE;
 
-    bool rayHitsEntity(QAbstractCollisionQueryService *rayCasting, const Entity *entity) const;
+    bool rayHitsEntity(RayCasting::QAbstractCollisionQueryService *rayCasting, const Entity *entity) const;
 };
 
 Q_AUTOTEST_EXPORT QVector<Entity *> gatherEntities(Entity *entity, QVector<Entity *> entities);

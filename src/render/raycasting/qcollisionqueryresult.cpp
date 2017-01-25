@@ -42,6 +42,7 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+namespace RayCasting {
 
 QCollisionQueryResultPrivate::QCollisionQueryResultPrivate()
     : QSharedData()
@@ -122,6 +123,7 @@ QQueryHandle QCollisionQueryResult::handle() const
     return d->m_handle;
 }
 
+} // RayCasting
 } // Qt3DRender
 
 QT_END_NAMESPACE

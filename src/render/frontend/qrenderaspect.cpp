@@ -51,6 +51,8 @@
 #include <Qt3DRender/qcameraselector.h>
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qlayerfilter.h>
+#include <Qt3DRender/qlevelofdetail.h>
+#include <Qt3DRender/qlevelofdetailswitch.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/qparameter.h>
@@ -78,6 +80,7 @@
 #include <Qt3DRender/qrendersurfaceselector.h>
 #include <Qt3DRender/qrendersettings.h>
 #include <Qt3DRender/qrendercapture.h>
+#include <Qt3DRender/qmemorybarrier.h>
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
 #include <Qt3DRender/private/filterkey_p.h>
@@ -123,6 +126,7 @@
 #include <Qt3DRender/private/rendercapture_p.h>
 #include <Qt3DRender/private/technique_p.h>
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
+#include <Qt3DRender/private/memorybarrier_p.h>
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
@@ -152,7 +156,7 @@ namespace Qt3DRender {
 /*! \internal */
 QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     : QAbstractAspectPrivate()
-    , m_nodeManagers(new Render::NodeManagers())
+    , m_nodeManagers(nullptr)
     , m_renderer(nullptr)
     , m_initialized(false)
     , m_renderType(type)
@@ -188,6 +192,8 @@ void QRenderAspectPrivate::registerBackendTypes()
 
     q->registerBackendType<Qt3DRender::QCameraLens>(QSharedPointer<Render::NodeFunctor<Render::CameraLens, Render::CameraManager> >::create(m_renderer));
     q->registerBackendType<QLayer>(QSharedPointer<Render::NodeFunctor<Render::Layer, Render::LayerManager> >::create(m_renderer));
+    q->registerBackendType<QLevelOfDetail>(QSharedPointer<Render::NodeFunctor<Render::LevelOfDetail, Render::LevelOfDetailManager> >::create(m_renderer));
+    q->registerBackendType<QLevelOfDetailSwitch>(QSharedPointer<Render::NodeFunctor<Render::LevelOfDetail, Render::LevelOfDetailManager> >::create(m_renderer));
     q->registerBackendType<QSceneLoader>(QSharedPointer<Render::RenderSceneFunctor>::create(m_renderer, m_nodeManagers->sceneManager()));
     q->registerBackendType<QRenderTarget>(QSharedPointer<Render::NodeFunctor<Render::RenderTarget, Render::RenderTargetManager> >::create(m_renderer));
     q->registerBackendType<QRenderTargetOutput>(QSharedPointer<Render::NodeFunctor<Render::RenderTargetOutput, Render::AttachmentManager> >::create(m_renderer));
@@ -232,6 +238,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QTechniqueFilter>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::TechniqueFilter, QTechniqueFilter> >::create(m_renderer));
     q->registerBackendType<QViewport>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::ViewportNode, QViewport> >::create(m_renderer));
     q->registerBackendType<QRenderCapture>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::RenderCapture, QRenderCapture> >::create(m_renderer));
+    q->registerBackendType<QMemoryBarrier>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::MemoryBarrier, QMemoryBarrier> >::create(m_renderer));
 
     // Picking
     q->registerBackendType<QObjectPicker>(QSharedPointer<Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager> >::create(m_renderer));
@@ -288,6 +295,7 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     unregisterBackendType<QTechniqueFilter>();
     unregisterBackendType<QViewport>();
     unregisterBackendType<QRenderCapture>();
+    unregisterBackendType<QMemoryBarrier>();
 
     // Picking
     unregisterBackendType<QObjectPicker>();
@@ -443,6 +451,7 @@ void QRenderAspect::onRegistered()
     // using a threaded renderer, this blocks until the render thread has been created
     // and started.
     Q_D(QRenderAspect);
+    d->m_nodeManagers = new Render::NodeManagers();
     d->m_renderer = new Render::Renderer(d->m_renderType);
     d->m_renderer->setNodeManagers(d->m_nodeManagers);
 
@@ -485,6 +494,9 @@ void QRenderAspect::onUnregistered()
     }
 
     d->unregisterBackendTypes();
+
+    delete d->m_nodeManagers;
+    d->m_nodeManagers = nullptr;
 
     // Waits for the render thread to join (if using threaded renderer)
     delete d->m_renderer;

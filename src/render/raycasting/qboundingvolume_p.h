@@ -56,6 +56,8 @@
 
 QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
+namespace RayCasting {
+
 class QRay3D;
 
 class QT3DRENDERSHARED_EXPORT QBoundingVolume
@@ -75,10 +77,11 @@ public:
     virtual Type type() const = 0;
 };
 
+} // namespace RayCasting
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::QBoundingVolume*) // LCOV_EXCL_LINE
+Q_DECLARE_METATYPE(Qt3DRender::RayCasting::QBoundingVolume*) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_QBOUNDINGVOLUME_P_H

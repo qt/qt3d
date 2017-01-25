@@ -40,17 +40,24 @@
 #include "qmesh.h"
 #include "qmesh_p.h"
 
+#include <QtCore/private/qfactoryloader_p.h>
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>
-#include <Qt3DRender/private/objloader_p.h>
+#include <QScopedPointer>
+#include <Qt3DRender/private/qgeometryloaderinterface_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
+#include <Qt3DRender/private/qgeometryloaderfactory_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+
+#ifndef QT_NO_LIBRARY
+Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, geometryLoader, (QGeometryLoaderFactory_iid, QLatin1String("/geometryloaders"), Qt::CaseInsensitive))
+#endif
 
 QMeshPrivate::QMeshPrivate()
     : QGeometryRendererPrivate()
@@ -173,20 +180,33 @@ QGeometry *MeshFunctor::operator()()
         return nullptr;
     }
 
-    // TO DO : Maybe use Assimp instead of ObjLoader to handle more sources
-    ObjLoader loader;
-    loader.setLoadTextureCoordinatesEnabled(true);
-    loader.setTangentGenerationEnabled(true);
-    qCDebug(Render::Jobs) << Q_FUNC_INFO << "Loading mesh from" << m_sourcePath << " part:" << m_meshName;
-
-
     // TO DO: Handle file download if remote url
     QString filePath = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_sourcePath);
 
-    if (loader.load(filePath, m_meshName))
-        return loader.geometry();
+    QFileInfo finfo(filePath);
+    auto ext = finfo.suffix();
 
-    qCWarning(Render::Jobs) << Q_FUNC_INFO << "OBJ load failure for:" << filePath;
+    QScopedPointer<QGeometryLoaderInterface> loader;
+
+    loader.reset(qLoadPlugin<QGeometryLoaderInterface, QGeometryLoaderFactory>(geometryLoader(), ext));
+    if (!loader) {
+        qCWarning(Render::Jobs, "unsupported format encountered (%s)", qPrintable(ext));
+        return nullptr;
+    }
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly)) {
+        qCDebug(Render::Jobs) << "Could not open file" << filePath << "for reading";
+        return nullptr;
+    }
+
+    qCDebug(Render::Jobs) << Q_FUNC_INFO << "Loading mesh from" << m_sourcePath << " part:" << m_meshName;
+
+    if (loader->load(&file, m_meshName))
+        return loader->geometry();
+
+    qCWarning(Render::Jobs) << Q_FUNC_INFO << "Mesh loading failure for:" << filePath;
+
     return nullptr;
 }
 

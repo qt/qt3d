@@ -103,6 +103,16 @@ private Q_SLOTS:
         customIndex->setVertexBaseType(Qt3DRender::QAttribute::Float);
         customIndex->setVertexSize(3);
         QTest::newRow("index") << customIndex;
+
+        Qt3DRender::QAttribute *customIndirect = new Qt3DRender::QAttribute();
+        Qt3DRender::QBuffer *indirectBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::DrawIndirectBuffer);
+        customIndirect->setBuffer(indirectBuffer);
+        customIndirect->setAttributeType(Qt3DRender::QAttribute::DrawIndirectAttribute);
+        customIndirect->setCount(1);
+        customIndirect->setByteStride(12);
+        customIndirect->setByteOffset(0);
+        customIndirect->setName("DrawIndirect");
+        QTest::newRow("index") << customIndirect;
     }
 
     void checkCloning()

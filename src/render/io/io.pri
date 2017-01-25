@@ -1,7 +1,6 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
-    $$PWD/objloader_p.h \
     $$PWD/qaxisalignedboundingbox_p.h \
     $$PWD/qsceneloader.h \
     $$PWD/qsceneloader_p.h \
@@ -14,10 +13,11 @@ HEADERS += \
     $$PWD/qsceneimportfactory_p.h \
     $$PWD/qsceneexportfactory_p.h \
     $$PWD/qsceneexporter_p.h \
-    $$PWD/qsceneexportplugin_p.h
+    $$PWD/qsceneexportplugin_p.h \
+    $$PWD/qgeometryloaderfactory_p.h \
+    $$PWD/qgeometryloaderinterface_p.h
 
 SOURCES += \
-    $$PWD/objloader.cpp \
     $$PWD/qaxisalignedboundingbox.cpp \
     $$PWD/qsceneloader.cpp \
     $$PWD/qurlhelper.cpp \
@@ -29,4 +29,5 @@ SOURCES += \
     $$PWD/qsceneimportfactory.cpp \
     $$PWD/qsceneexportfactory.cpp \
     $$PWD/qsceneexporter.cpp \
-    $$PWD/qsceneexportplugin.cpp
+    $$PWD/qsceneexportplugin.cpp \
+    $$PWD/qgeometryloaderfactory.cpp

@@ -22,4 +22,5 @@ QML_FILES = \
     $$PWD/qml/TextureMaterial.qml \
     $$PWD/qml/OrbitCameraController.qml \
     $$PWD/qml/FirstPersonCameraController.qml \
-    $$PWD/qml/NormalDiffuseMapAlphaEffect.qml
+    $$PWD/qml/NormalDiffuseMapAlphaEffect.qml \
+    $$PWD/qml/LevelOfDetailLoader.qml

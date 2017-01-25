@@ -56,6 +56,7 @@
 #include <QVector>
 #include <Qt3DRender/private/shadervariables_p.h>
 #include <Qt3DRender/private/uniform_p.h>
+#include <Qt3DRender/qmemorybarrier.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -121,6 +122,7 @@ public:
     virtual QSize   getTextureDimensions(GLuint textureId, GLenum target, uint level = 0) = 0;
     virtual void    initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) = 0;
     virtual GLint   maxClipPlaneCount() = 0;
+    virtual void    memoryBarrier(QMemoryBarrier::BarrierTypes barriers) = 0;
     virtual void    pointSize(bool programmable, GLfloat value) = 0;
     virtual QVector<ShaderAttribute> programAttributesAndLocations(GLuint programId) = 0;
     virtual QVector<ShaderUniform> programUniformsAndLocations(GLuint programId) = 0;

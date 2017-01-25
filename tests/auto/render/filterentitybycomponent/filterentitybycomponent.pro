@@ -8,4 +8,6 @@ CONFIG += testcase
 
 SOURCES += tst_filterentitybycomponent.cpp
 
+CONFIG += useCommonTestAspect
+
 include(../commons/commons.pri)

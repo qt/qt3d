@@ -56,8 +56,9 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
+namespace RayCasting {
 class QBoundingVolume;
+}
 
 namespace Render {
 
@@ -67,7 +68,7 @@ public:
     explicit TrianglesExtractor(GeometryRenderer *renderer,
                                 NodeManagers *manager);
 
-    QVector<QBoundingVolume *> extract(const Qt3DCore::QNodeId id);
+    QVector<RayCasting::QBoundingVolume *> extract(const Qt3DCore::QNodeId id);
 
 private:
     void visit(uint andx, const QVector3D &a,
@@ -75,7 +76,7 @@ private:
                uint cndx, const QVector3D &c) Q_DECL_OVERRIDE;
 
     GeometryRenderer *m_renderer;
-    QVector<QBoundingVolume *> m_volumes;
+    QVector<RayCasting::QBoundingVolume *> m_volumes;
 };
 
 } // namespace Render

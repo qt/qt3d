@@ -125,6 +125,8 @@ GLBuffer::Type bufferTypeToGLBufferType(QBuffer::BufferType type)
         return GLBuffer::UniformBuffer;
     case QBuffer::ShaderStorageBuffer:
         return GLBuffer::ShaderStorageBuffer;
+    case QBuffer::DrawIndirectBuffer:
+        return GLBuffer::DrawIndirectBuffer;
     default:
         Q_UNREACHABLE();
     }
@@ -646,6 +648,8 @@ int GraphicsContext::activateTexture(TextureScope scope, GLTexture *tex, int onU
     // Note: tex->dna() could be 0 if the texture has not been created yet
     if (m_activeTextures[onUnit].texture != tex) {
         QOpenGLTexture *glTex = tex->getOrCreateGLTexture();
+        if (glTex == nullptr)
+            return -1;
         glTex->bind(onUnit);
         m_activeTextures[onUnit].texture = tex;
     }
@@ -1415,6 +1419,11 @@ bool GraphicsContext::hasGLBufferForBuffer(Buffer *buffer)
 {
     const QHash<Qt3DCore::QNodeId, HGLBuffer>::iterator it = m_renderBufferHash.find(buffer->peerId());
     return (it != m_renderBufferHash.end());
+}
+
+void GraphicsContext::memoryBarrier(QMemoryBarrier::BarrierTypes barriers)
+{
+    m_glHelper->memoryBarrier(barriers);
 }
 
 GLBuffer *GraphicsContext::glBufferForRenderBuffer(Buffer *buf)

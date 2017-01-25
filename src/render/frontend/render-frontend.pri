@@ -2,11 +2,16 @@ INCLUDEPATH += $$PWD
 
 HEADERS += \
     $$PWD/qabstractfunctor.h \
+    $$PWD/qboundingsphere.h \
+    $$PWD/qboundingsphere_p.h \
     $$PWD/qrenderaspect.h \
     $$PWD/qrenderaspect_p.h \
     $$PWD/qitemmodelbuffer_p.h \
     $$PWD/qlayer.h \
     $$PWD/qlayer_p.h \
+    $$PWD/qlevelofdetail.h \
+    $$PWD/qlevelofdetail_p.h \
+    $$PWD/qlevelofdetailswitch.h \
     $$PWD/qrendertarget.h \
     $$PWD/qrendertarget_p.h \
     $$PWD/sphere_p.h \
@@ -25,10 +30,13 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/qabstractfunctor.cpp \
+    $$PWD/qboundingsphere.cpp \
     $$PWD/qrenderaspect.cpp \
     $$PWD/qitemmodelbuffer.cpp \
     $$PWD/sphere.cpp \
     $$PWD/qlayer.cpp \
+    $$PWD/qlevelofdetail.cpp \
+    $$PWD/qlevelofdetailswitch.cpp \
     $$PWD/qrendertarget.cpp \
     $$PWD/qcamera.cpp \
     $$PWD/qcameralens.cpp \

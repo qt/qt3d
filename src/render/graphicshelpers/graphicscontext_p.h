@@ -65,6 +65,7 @@
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DRender/private/glbuffer_p.h>
 #include <Qt3DRender/qattribute.h>
+#include <Qt3DRender/qmemorybarrier.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/qgraphicsapifilter_p.h>
 #include <Qt3DRender/private/shadercache_p.h>
@@ -158,6 +159,8 @@ public:
     void updateBuffer(Buffer *buffer);
     void releaseBuffer(Qt3DCore::QNodeId bufferId);
     bool hasGLBufferForBuffer(Buffer *buffer);
+
+    void memoryBarrier(QMemoryBarrier::BarrierTypes barriers);
 
     void setParameters(ShaderParameterPack &parameterPack);
 

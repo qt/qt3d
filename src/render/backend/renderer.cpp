@@ -83,6 +83,7 @@
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
 #include <Qt3DRender/private/loadbufferjob_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
+#include <Qt3DRender/private/updatelevelofdetailjob_p.h>
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
 
 #include <Qt3DRender/qcameralens.h>
@@ -167,6 +168,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_updateWorldBoundingVolumeJob(Render::UpdateWorldBoundingVolumeJobPtr::create())
     , m_updateTreeEnabledJob(Render::UpdateTreeEnabledJobPtr::create())
     , m_sendRenderCaptureJob(Render::SendRenderCaptureJobPtr::create(this))
+    , m_updateLevelOfDetailJob(Render::UpdateLevelOfDetailJobPtr::create())
     , m_updateMeshTriangleListJob(Render::UpdateMeshTriangleListJobPtr::create())
     , m_filterCompatibleTechniqueJob(Render::FilterCompatibleTechniqueJobPtr::create())
     , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
@@ -198,6 +200,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     m_textureGathererJob->addDependency(m_syncTextureLoadingJob);
 
     // All world stuff depends on the RenderEntity's localBoundingVolume
+    m_updateLevelOfDetailJob->addDependency(m_updateMeshTriangleListJob);
     m_pickBoundingVolumeJob->addDependency(m_updateMeshTriangleListJob);
 
     m_filterCompatibleTechniqueJob->setRenderer(this);
@@ -230,6 +233,14 @@ void Renderer::dumpInfo() const
     const ShaderManager *shaderManager = m_nodesManager->shaderManager();
     qDebug() << "=== Shader Manager ===";
     qDebug() << *shaderManager;
+
+    const TextureManager *textureManager = m_nodesManager->textureManager();
+    qDebug() << "=== Texture Manager ===";
+    qDebug() << *textureManager;
+
+    const TextureImageManager *textureImageManager = m_nodesManager->textureImageManager();
+    qDebug() << "=== Texture Image Manager ===";
+    qDebug() << *textureImageManager;
 }
 
 qint64 Renderer::time() const
@@ -252,6 +263,7 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_pickBoundingVolumeJob->setManagers(m_nodesManager);
     m_updateWorldBoundingVolumeJob->setManager(m_nodesManager->renderNodesManager());
     m_sendRenderCaptureJob->setManagers(m_nodesManager);
+    m_updateLevelOfDetailJob->setManagers(m_nodesManager);
     m_updateMeshTriangleListJob->setManagers(m_nodesManager);
     m_filterCompatibleTechniqueJob->setManager(m_nodesManager->techniqueManager());
 }
@@ -443,6 +455,7 @@ void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
     m_calculateBoundingVolumeJob->setRoot(m_renderSceneRoot);
     m_cleanupJob->setRoot(m_renderSceneRoot);
     m_pickBoundingVolumeJob->setRoot(m_renderSceneRoot);
+    m_updateLevelOfDetailJob->setRoot(m_renderSceneRoot);
     m_updateTreeEnabledJob->setRoot(m_renderSceneRoot);
 }
 
@@ -789,6 +802,75 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
                 // Prepare the ShaderParameterPack based on the active uniforms of the shader
                 shader->prepareUniforms(command->m_parameterPack);
 
+                // TO DO: The step below could be performed by the RenderCommand builder job
+                { // Scoped to show extent
+                    command->m_isValid = !command->m_attributes.empty();
+                    if (!command->m_isValid)
+                        continue;
+
+                    // Update the draw command with what's going to be needed for the drawing
+                    uint primitiveCount = rGeometryRenderer->vertexCount();
+                    uint estimatedCount = 0;
+                    Attribute *indexAttribute = nullptr;
+                    Attribute *indirectAttribute = nullptr;
+
+                    const QVector<Qt3DCore::QNodeId> attributeIds = rGeometry->attributes();
+                    for (Qt3DCore::QNodeId attributeId : attributeIds) {
+                        Attribute *attribute = m_nodesManager->attributeManager()->lookupResource(attributeId);
+                        switch (attribute->attributeType()) {
+                        case QAttribute::IndexAttribute:
+                            indexAttribute = attribute;
+                            break;
+                        case QAttribute::DrawIndirectAttribute:
+                            indirectAttribute = attribute;
+                            break;
+                        case QAttribute::VertexAttribute: {
+                            if (command->m_attributes.contains(attribute->nameId()))
+                                estimatedCount = qMax(attribute->count(), estimatedCount);
+                            break;
+                        }
+                        default:
+                            Q_UNREACHABLE();
+                            break;
+                        }
+                    }
+
+                    command->m_drawIndexed = (indexAttribute != nullptr);
+                    command->m_drawIndirect = (indirectAttribute != nullptr);
+
+                    // Update the draw command with all the information required for the drawing
+                    if (command->m_drawIndexed) {
+                        command->m_indexAttributeDataType = GraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->vertexBaseType());
+                        command->m_indexAttributeByteOffset = indexAttribute->byteOffset();
+                    }
+
+                    // Note: we only care about the primitiveCount when using direct draw calls
+                    // For indirect draw calls it is assumed the buffer was properly set already
+                    if (command->m_drawIndirect) {
+                        command->m_indirectAttributeByteOffset = indirectAttribute->byteOffset();
+                        command->m_indirectDrawBuffer = m_nodesManager->bufferManager()->lookupHandle(indirectAttribute->bufferId());
+                    } else {
+                        // Use the count specified by the GeometryRender
+                        // If not specify use the indexAttribute count if present
+                        // Otherwise tries to use the count from the attribute with the highest count
+                        if (primitiveCount == 0) {
+                            if (indexAttribute)
+                                primitiveCount = indexAttribute->count();
+                            else
+                                primitiveCount = estimatedCount;
+                        }
+                    }
+
+                    command->m_primitiveCount = primitiveCount;
+                    command->m_primitiveType = rGeometryRenderer->primitiveType();
+                    command->m_primitiveRestartEnabled = rGeometryRenderer->primitiveRestartEnabled();
+                    command->m_restartIndexValue = rGeometryRenderer->restartIndexValue();
+                    command->m_firstInstance = rGeometryRenderer->firstInstance();
+                    command->m_instanceCount = rGeometryRenderer->instanceCount();
+                    command->m_firstVertex = rGeometryRenderer->firstVertex();
+                    command->m_indexOffset = rGeometryRenderer->indexOffset();
+                    command->m_verticesPerPatch = rGeometryRenderer->verticesPerPatch();
+                } // scope
             } else if (command->m_type == RenderCommand::Compute) {
                 Shader *shader = m_nodesManager->data<Shader, ShaderManager>(command->m_shader);
                 Q_ASSERT(shader);
@@ -1071,6 +1153,10 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
             lastBoundFBOId = m_graphicsContext->boundFrameBufferObject();
         }
 
+        // Apply Memory Barrier if needed
+        if (renderView->memoryBarrier() != QMemoryBarrier::None)
+            m_graphicsContext->memoryBarrier(renderView->memoryBarrier());
+
         // Note: the RenderStateSet is allocated once per RV if needed
         // and it contains a list of StateVariant value types
         RenderStateSet *renderViewStateSet = renderView->stateSet();
@@ -1226,6 +1312,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     m_pickBoundingVolumeJob->setRenderSettings(settings());
     m_pickBoundingVolumeJob->setMouseEvents(pendingPickingEvents());
 
+    m_updateLevelOfDetailJob->setFrameGraphRoot(frameGraphRoot());
     // Set dependencies of resource gatherer
     for (const QAspectJobPtr &jobPtr : renderBinJobs) {
         jobPtr->addDependency(m_bufferGathererJob);
@@ -1237,6 +1324,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     renderBinJobs.push_back(m_updateShaderDataTransformJob);
     renderBinJobs.push_back(m_updateMeshTriangleListJob);
     renderBinJobs.push_back(m_updateTreeEnabledJob);
+    renderBinJobs.push_back(m_updateLevelOfDetailJob);
     renderBinJobs.push_back(m_expandBoundingVolumeJob);
     renderBinJobs.push_back(m_updateWorldBoundingVolumeJob);
     renderBinJobs.push_back(m_calculateBoundingVolumeJob);
@@ -1284,29 +1372,66 @@ QAbstractFrameAdvanceService *Renderer::frameAdvanceService() const
 // Called by executeCommands
 void Renderer::performDraw(RenderCommand *command)
 {
-    if (command->m_primitiveType == QGeometryRenderer::Patches)
-        m_graphicsContext->setVerticesPerPatch(command->m_verticesPerPatch);
+    // Indirect Draw Calls
+    if (command->m_drawIndirect) {
 
-    if (command->m_primitiveRestartEnabled)
-        m_graphicsContext->enablePrimitiveRestart(command->m_restartIndexValue);
+        // Bind the indirect draw buffer
+        Buffer *indirectDrawBuffer = m_nodesManager->bufferManager()->data(command->m_indirectDrawBuffer);
+        if (Q_UNLIKELY(indirectDrawBuffer == nullptr)) {
+            qWarning() << "Invalid Indirect Draw Buffer - failed to retrieve Buffer";
+            return;
+        }
 
-    // TO DO: Add glMulti Draw variants
-    if (command->m_drawIndexed) {
-        Profiling::GLTimeRecorder recorder(Profiling::DrawElement);
-        m_graphicsContext->drawElementsInstancedBaseVertexBaseInstance(command->m_primitiveType,
-                                                                       command->m_primitiveCount,
-                                                                       command->m_indexAttributeDataType,
-                                                                       reinterpret_cast<void*>(quintptr(command->m_indexAttributeByteOffset)),
-                                                                       command->m_instanceCount,
-                                                                       command->m_indexOffset,
-                                                                       command->m_firstVertex);
-    } else {
-        Profiling::GLTimeRecorder recorder(Profiling::DrawArray);
-        m_graphicsContext->drawArraysInstancedBaseInstance(command->m_primitiveType,
-                                                           command->m_firstInstance,
-                                                           command->m_primitiveCount,
-                                                           command->m_instanceCount,
-                                                           command->m_firstVertex);
+        // Get GLBuffer from Buffer;
+        GLBuffer *indirectDrawGLBuffer = m_graphicsContext->glBufferForRenderBuffer(indirectDrawBuffer);
+        if (Q_UNLIKELY(indirectDrawGLBuffer == nullptr)) {
+            qWarning() << "Invalid Indirect Draw Buffer - failed to retrieve GLBuffer";
+            return;
+        }
+
+        // Bind GLBuffer
+        const bool successfullyBound = indirectDrawGLBuffer->bind(m_graphicsContext.data(), GLBuffer::DrawIndirectBuffer);
+
+        if (Q_LIKELY(successfullyBound)) {
+            // TO DO: Handle multi draw variants if attribute count > 1
+            if (command->m_drawIndexed) {
+                m_graphicsContext->drawElementsIndirect(command->m_primitiveType,
+                                                        command->m_indexAttributeDataType,
+                                                        reinterpret_cast<void*>(quintptr(command->m_indirectAttributeByteOffset)));
+            } else {
+                m_graphicsContext->drawArraysIndirect(command->m_primitiveType,
+                                                      reinterpret_cast<void*>(quintptr(command->m_indirectAttributeByteOffset)));
+            }
+        } else {
+            qWarning() << "Failed to bind IndirectDrawBuffer";
+        }
+
+    } else { // Direct Draw Calls
+        // TO DO: Add glMulti Draw variants
+        if (command->m_primitiveType == QGeometryRenderer::Patches)
+            m_graphicsContext->setVerticesPerPatch(command->m_verticesPerPatch);
+
+        if (command->m_primitiveRestartEnabled)
+            m_graphicsContext->enablePrimitiveRestart(command->m_restartIndexValue);
+
+        // TO DO: Add glMulti Draw variants
+        if (command->m_drawIndexed) {
+            Profiling::GLTimeRecorder recorder(Profiling::DrawElement);
+            m_graphicsContext->drawElementsInstancedBaseVertexBaseInstance(command->m_primitiveType,
+                                                                           command->m_primitiveCount,
+                                                                           command->m_indexAttributeDataType,
+                                                                           reinterpret_cast<void*>(quintptr(command->m_indexAttributeByteOffset)),
+                                                                           command->m_instanceCount,
+                                                                           command->m_indexOffset,
+                                                                           command->m_firstVertex);
+        } else {
+            Profiling::GLTimeRecorder recorder(Profiling::DrawArray);
+            m_graphicsContext->drawArraysInstancedBaseInstance(command->m_primitiveType,
+                                                               command->m_firstInstance,
+                                                               command->m_primitiveCount,
+                                                               command->m_instanceCount,
+                                                               command->m_firstVertex);
+        }
     }
 
 #if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)

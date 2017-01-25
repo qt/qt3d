@@ -8,6 +8,7 @@ SUBDIRS += \
     clip-planes-qml \
     component-changes \
     custom-mesh-cpp \
+    custom-mesh-cpp-indirect \
     custom-mesh-qml \
     custom-mesh-update-data-cpp \
     custom-mesh-update-data-qml \
@@ -15,12 +16,14 @@ SUBDIRS += \
     cylinder-qml \
     deferred-renderer-cpp \
     deferred-renderer-qml \
+    dragging \
     dynamicscene-cpp \
     enabled-qml \
     gltf \
     gooch-qml \
     keyboardinput-qml \
     loader-qml \
+    lod \
     mouseinput-qml \
     multiplewindows-qml \
     picking-qml \

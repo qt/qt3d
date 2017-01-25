@@ -61,6 +61,8 @@ Entity {
             ForwardRenderer {
                 camera: basicCamera
                 clearColor: "black"
+                // Note: FrustumCulling should be disabled for proper rendering of the Skybox
+                frustumCulling: false
             }
         },
         // Event Source will be set by the Qt3DQuickWindow

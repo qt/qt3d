@@ -53,6 +53,7 @@ QT_BEGIN_NAMESPACE
 using namespace Qt3DCore;
 
 namespace Qt3DRender {
+namespace RayCasting {
 
 namespace {
 
@@ -144,7 +145,7 @@ QCollisionQueryResult QRayCastingServicePrivate::collides(const QRay3D &ray, QBo
     return result;
 }
 
-QCollisionQueryResult::Hit QRayCastingServicePrivate::collides(const QRay3D &ray, const Qt3DRender::QBoundingVolume *volume)
+QCollisionQueryResult::Hit QRayCastingServicePrivate::collides(const QRay3D &ray, const QBoundingVolume *volume)
 {
     QCollisionQueryResult::Hit result;
     Hit hit = volumeRayIntersection(volume, ray);
@@ -213,6 +214,7 @@ QVector<QCollisionQueryResult> QRayCastingService::fetchAllResults() const
     return results;
 }
 
+} // namespace RayCasting
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

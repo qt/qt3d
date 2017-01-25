@@ -76,6 +76,7 @@ qintptr functorTypeId()
 class QT3DRENDERSHARED_EXPORT QAbstractFunctor
 {
 public:
+    QAbstractFunctor() = default;
     virtual ~QAbstractFunctor();
     virtual qintptr id() const = 0;
 
@@ -86,6 +87,8 @@ public:
             return static_cast<const T *>(other);
         return nullptr;
     }
+private:
+    Q_DISABLE_COPY(QAbstractFunctor)
 };
 
 template<class T>

@@ -67,6 +67,18 @@ QAttributePrivate::QAttributePrivate()
  * \inqmlmodule Qt3D.Render
  * \brief Defines an attribute and how data should be read from a Buffer.
  *
+ * There are 3 types of attributes.
+ * \list
+ * \li VertexAttribute: used to define data to be read on a per vertex basis
+ * \li IndexAttribute: used to define vertex indices when indexed draw calls are
+ * to be used
+ *\li DrawIndirectAttribute: used to specify the DrawIndirect buffer to be used
+ * when indirect draw calls are to be used
+ * \endlist
+ *
+ * \note when an attribute is of type DrawIndirectAttribute, only count, stride
+ * and offset are relevant.
+ *
  * When providing your own attributes, it may make sense to name your attribute
  * using helpers such as QAttribute::defaultPositionAttributeName() as that
  * will ensure your geometry will be compatible with picking and the various
@@ -81,6 +93,18 @@ QAttributePrivate::QAttributePrivate()
  * \inherits Qt3DCore::QNode
  *
  * \brief Defines an attribute and how data should be read from a QBuffer.
+ *
+ * There are 3 types of attributes.
+ * \list
+ * \li VertexAttribute: used to define data to be read on a per vertex basis
+ * \li IndexAttribute: used to define vertex indices when indexed draw calls are
+ * to be used
+ *\li DrawIndirectAttribute: used to specify the DrawIndirect buffer to be used
+ * when indirect draw calls are to be used
+ * \endlist
+ *
+ * \note when an attribute is of type DrawIndirectAttribute, only count, stride
+ * and offset are relevant.
  *
  * When providing your own attributes, it may make sense to name your attribute
  * using helpers such as QAttribute::defaultPositionAttributeName() as that
@@ -102,6 +126,7 @@ QAttributePrivate::QAttributePrivate()
  *
  * \value VertexAttribute
  * \value IndexAttribute
+ * \value DrawIndirectAttribute
  */
 
 /*!

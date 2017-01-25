@@ -96,6 +96,7 @@ namespace JobTypes {
         ClearBufferDrawIndex,
         UpdateMeshTriangleList,
         FilterCompatibleTechniques,
+        UpdateLevelOfDetail,
         SyncTextureLoading
     };
 

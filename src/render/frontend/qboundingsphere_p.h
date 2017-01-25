@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,20 +37,40 @@
 **
 ****************************************************************************/
 
-#include "qboundingsphere_p.h"
+#ifndef QT3DRENDER_QBOUNDINGSPHERE_P_H
+#define QT3DRENDER_QBOUNDINGSPHERE_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <private/qobject_p.h>
+#include <qboundingsphere.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-QBoundingSphere::QBoundingSphere()
+class QT3DRENDERSHARED_EXPORT QBoundingSpherePrivate : public QObjectPrivate
 {
-}
+public:
+    QBoundingSpherePrivate();
 
-QBoundingSphere::~QBoundingSphere()
-{
-}
+    Q_DECLARE_PUBLIC(QBoundingSphere)
+
+    QVector3D m_center;
+    float m_radius;
+};
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_QBOUNDINGSPHERE_P_H

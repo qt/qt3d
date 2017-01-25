@@ -62,6 +62,7 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+namespace RayCasting {
 
 class QBoundingVolumeProvider;
 class QRayCastingServicePrivate;
@@ -112,6 +113,7 @@ public:
     QAtomicInt m_handlesCount;
 };
 
+} // namespace RayCasting
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

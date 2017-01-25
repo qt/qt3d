@@ -48,7 +48,8 @@ HEADERS += \
     $$PWD/qframegraphnodecreatedchange.h \
     $$PWD/qframegraphnodecreatedchange_p.h \
     $$PWD/qmemorybarrier.h \
-    $$PWD/qmemorybarrier_p.h
+    $$PWD/qmemorybarrier_p.h \
+    $$PWD/memorybarrier_p.h
 
 SOURCES += \
     $$PWD/cameraselectornode.cpp \
@@ -83,4 +84,5 @@ SOURCES += \
     $$PWD/qrendercapture.cpp \
     $$PWD/rendercapture.cpp \
     $$PWD/qframegraphnodecreatedchange.cpp \
-    $$PWD/qmemorybarrier.cpp
+    $$PWD/qmemorybarrier.cpp \
+    $$PWD/memorybarrier.cpp

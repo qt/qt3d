@@ -84,6 +84,8 @@ public:
     HGeometry m_geometry;
     HGeometryRenderer m_geometryRenderer;
 
+    HBuffer m_indirectDrawBuffer; // Reference to indirect draw buffer (valid only m_drawIndirect == true)
+
     // A QAttribute pack might be interesting
     // This is a temporary fix in the meantime, to remove the hacked methods in Technique
     QVector<int> m_attributes;
@@ -118,7 +120,9 @@ public:
     int m_indexOffset;
     uint m_indexAttributeByteOffset;
     GLint m_indexAttributeDataType;
+    uint m_indirectAttributeByteOffset;
     bool m_drawIndexed;
+    bool m_drawIndirect;
     bool m_primitiveRestartEnabled;
     bool m_isValid;
 };

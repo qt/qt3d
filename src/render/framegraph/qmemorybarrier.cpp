@@ -62,6 +62,10 @@ namespace Qt3DRender {
     barrier should be placed after command1 and setting the appropriate barrier
     type for vertex attribute buffer.
 
+    When a QMemoryBarrier node is found in a FrameGraph branch, the barrier
+    will be enforced prior to any draw or compute command even if these are
+    defined deeper in the branch.
+
     For OpenGL rendering, this page gives more info about the
     \l {https://www.opengl.org/wiki/Memory_Model}{Memory Model}
  */
@@ -83,6 +87,10 @@ namespace Qt3DRender {
     used as a vertex attribute buffer in a following command2, then the memory
     barrier should be placed after command1 and setting the appropriate barrier
     type for vertex attribute buffer.
+
+    When a QMemoryBarrier node is found in a FrameGraph branch, the barrier
+    will be enforced prior to any draw or compute command even if these are
+    defined deeper in the branch.
 
     For OpenGL rendering, this page gives more info about the
     \l {https://www.opengl.org/wiki/Memory_Model}{Memory Model}
@@ -131,6 +139,7 @@ void QMemoryBarrier::setBarrierTypes(QMemoryBarrier::BarrierTypes barrierTypes)
     if (barrierTypes != d->m_barrierTypes) {
         d->m_barrierTypes = barrierTypes;
         emit barrierTypesChanged(barrierTypes);
+        d->notifyPropertyChange("barrierTypes", QVariant::fromValue(barrierTypes));
     }
 }
 

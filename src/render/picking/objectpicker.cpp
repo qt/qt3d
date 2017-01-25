@@ -39,6 +39,7 @@
 
 #include "objectpicker_p.h"
 #include "qpickevent.h"
+#include "renderer_p.h"
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/private/qobjectpicker_p.h>
 #include <Qt3DRender/qattribute.h>
@@ -52,7 +53,6 @@ namespace Render {
 
 ObjectPicker::ObjectPicker()
     : BackendNode(QBackendNode::ReadWrite)
-    , m_isDirty(false)
     , m_isPressed(false)
     , m_hoverEnabled(false)
     , m_dragEnabled(false)
@@ -61,15 +61,16 @@ ObjectPicker::ObjectPicker()
 
 ObjectPicker::~ObjectPicker()
 {
+    notifyJob();
 }
 
 void ObjectPicker::cleanup()
 {
     BackendNode::setEnabled(false);
-    m_isDirty = false;
     m_isPressed = false;
     m_hoverEnabled = false;
     m_dragEnabled = false;
+    notifyJob();
 }
 
 void ObjectPicker::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -78,45 +79,42 @@ void ObjectPicker::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
     const auto &data = typedChange->data;
     m_hoverEnabled = data.hoverEnabled;
     m_dragEnabled = data.dragEnabled;
-    m_isDirty = true;
+    notifyJob();
+}
+
+void ObjectPicker::notifyJob()
+{
+    if (m_renderer && m_renderer->pickBoundingVolumeJob())
+        qSharedPointerCast<PickBoundingVolumeJob>(m_renderer->pickBoundingVolumeJob())->markPickersDirty();
 }
 
 void ObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::PropertyUpdated) {
         const Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
+        bool notifyPickJob = false;
 
         if (propertyChange->propertyName() == QByteArrayLiteral("hoverEnabled")) {
             m_hoverEnabled = propertyChange->value().toBool();
-            m_isDirty = true;
+            notifyPickJob = true;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("dragEnabled")) {
             m_dragEnabled = propertyChange->value().toBool();
-            m_isDirty = true;
+            notifyPickJob = true;
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
+            notifyPickJob = true;
+            // actual value change handled in BackendNode::sceneChangeEvent
         }
+
         markDirty(AbstractRenderer::AllDirty);
+        notifyJob();
     }
 
     BackendNode::sceneChangeEvent(e);
 }
 
-bool ObjectPicker::isDirty() const
-{
-    return m_isDirty;
-}
-
 bool ObjectPicker::isPressed() const
 {
     return m_isPressed;
-}
-
-void ObjectPicker::unsetDirty()
-{
-    m_isDirty = false;
-}
-
-void ObjectPicker::makeDirty()
-{
-    m_isDirty = true;
 }
 
 bool ObjectPicker::isHoverEnabled() const

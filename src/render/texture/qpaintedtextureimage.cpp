@@ -47,6 +47,26 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+    \class Qt3DRender::QPaintedTextureImage
+    \inmodule Qt3DRender
+    \since 5.8
+    \brief A QAbstractTextureImage that can be written through a QPainter
+
+    A QPaintedTextureImage provides a way to specify a texture image
+    (and thus an OpenGL texture) through a QPainter. The width and height of the
+    texture image can be specified through the width and height or size
+    properties.
+
+    A QPaintedTextureImage must be subclassed and the virtual paint() function
+    implemented. Each time update() is called on the QPaintedTextureImage,
+    the paint() function is invoked and the resulting image is uploaded.
+
+    The QPaintedTextureImage must be attached to some QAbstractTexture.
+ */
+
+
+
 QPaintedTextureImagePrivate::QPaintedTextureImagePrivate()
     : m_imageSize(256,256)
     , m_generation(0)
@@ -81,24 +101,60 @@ QPaintedTextureImage::~QPaintedTextureImage()
 {
 }
 
+/*!
+    \property QPaintedTextureImage::width
+
+    Holds the width of the texture image
+ */
+
+/*!
+    \property QPaintedTextureImage::width
+
+    \return the width of the texture image.
+ */
 int QPaintedTextureImage::width() const
 {
     Q_D(const QPaintedTextureImage);
     return d->m_imageSize.width();
 }
 
+/*!
+    \property QPaintedTextureImage::height
+
+    Holds the height of the texture image
+ */
+
+/*!
+    \property QPaintedTextureImage::height
+
+    \return the height of the texture image.
+ */
 int QPaintedTextureImage::height() const
 {
     Q_D(const QPaintedTextureImage);
     return d->m_imageSize.height();
 }
 
+/*!
+    \property QPaintedTextureImage::size
+
+    Holds the width and height of the texture image
+ */
+
+/*!
+    \property QPaintedTextureImage::size
+
+    \return the size of the texture image.
+ */
 QSize QPaintedTextureImage::size() const
 {
     Q_D(const QPaintedTextureImage);
     return d->m_imageSize;
 }
 
+/*!
+    Sets the width of the texture image. Triggers an update, if the size changes.
+ */
 void QPaintedTextureImage::setWidth(int w)
 {
     if (w < 1) {
@@ -108,6 +164,9 @@ void QPaintedTextureImage::setWidth(int w)
     setSize(QSize(w, height()));
 }
 
+/*!
+    Sets the height of the texture image. Triggers an update, if the size changes.
+ */
 void QPaintedTextureImage::setHeight(int h)
 {
     if (h < 1) {
@@ -117,6 +176,9 @@ void QPaintedTextureImage::setHeight(int h)
     setSize(QSize(width(), h));
 }
 
+/*!
+    Sets the width and height of the texture image. Triggers an update, if the size changes.
+ */
 void QPaintedTextureImage::setSize(QSize size)
 {
     Q_D(QPaintedTextureImage);
@@ -143,6 +205,10 @@ void QPaintedTextureImage::setSize(QSize size)
     }
 }
 
+/*!
+    Will trigger an update of the texture image, meaning the paint() method will
+    be invoked.
+ */
 void QPaintedTextureImage::update(const QRect &rect)
 {
     Q_UNUSED(rect)

@@ -58,8 +58,9 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
+namespace RayCasting {
 class QBoundingVolume;
+}
 
 namespace Render {
 
@@ -91,9 +92,9 @@ public:
     void unsetDirty();
 
     // Build triangle data Job thread
-    void setTriangleVolumes(const  QVector<QBoundingVolume *> &volumes);
+    void setTriangleVolumes(const  QVector<RayCasting::QBoundingVolume *> &volumes);
     // Pick volumes job
-    QVector<QBoundingVolume *> triangleData() const;
+    QVector<RayCasting::QBoundingVolume *> triangleData() const;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
@@ -111,7 +112,7 @@ private:
     bool m_dirty;
     QGeometryFactoryPtr m_geometryFactory;
     GeometryRendererManager *m_manager;
-    QVector<QBoundingVolume *> m_triangleVolumes;
+    QVector<RayCasting::QBoundingVolume *> m_triangleVolumes;
 };
 
 class GeometryRendererFunctor : public Qt3DCore::QBackendNodeMapper

@@ -210,6 +210,7 @@ RenderView::RenderView()
     , m_noDraw(false)
     , m_compute(false)
     , m_frustumCulling(false)
+    , m_memoryBarrier(QMemoryBarrier::None)
 {
     m_workGroups[0] = 1;
     m_workGroups[1] = 1;

@@ -2,7 +2,7 @@ INCLUDEPATH += $$PWD
 
 HEADERS += \
     $$PWD/qabstractcollisionqueryservice_p.h \
-    $$PWD/qboundingsphere_p.h \
+    $$PWD/boundingsphere_p.h \
     $$PWD/qboundingvolume_p.h \
     $$PWD/qboundingvolumeprovider_p.h \
     $$PWD/qcollisionqueryresult_p.h \
@@ -11,7 +11,7 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/qabstractcollisionqueryservice.cpp \
-    $$PWD/qboundingsphere.cpp \
+    $$PWD/boundingsphere.cpp \
     $$PWD/qboundingvolume.cpp \
     $$PWD/qboundingvolumeprovider.cpp \
     $$PWD/qcollisionqueryresult.cpp \

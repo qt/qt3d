@@ -56,6 +56,7 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+namespace RayCasting {
 
 class QBoundingVolume;
 
@@ -66,6 +67,7 @@ public:
     virtual QVector<QBoundingVolume *> boundingVolumes() const = 0;
 };
 
+} // namespace RayCasting
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

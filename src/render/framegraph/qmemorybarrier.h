@@ -51,7 +51,6 @@ class QMemoryBarrierPrivate;
 class QT3DRENDERSHARED_EXPORT QMemoryBarrier : public QFrameGraphNode
 {
     Q_OBJECT
-    Q_PROPERTY(QMemoryBarrier::BarrierTypes barrierTypes READ barrierTypes WRITE setBarrierTypes NOTIFY barrierTypesChanged)
 public:
     explicit QMemoryBarrier(Qt3DCore::QNode *parent = nullptr);
     ~QMemoryBarrier();
@@ -72,7 +71,7 @@ public:
         AtomicCounterBarrier = (1 << 11),
         ShaderStorageBarrier = (1 << 12),
         QueryBufferBarrier = (1 << 13),
-        AllBarrier = (1 << 14)
+        AllBarrier = 0xFFFFFFFF
     };
     Q_ENUM(BarrierType)
     Q_DECLARE_FLAGS(BarrierTypes, BarrierType)

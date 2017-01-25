@@ -54,7 +54,6 @@ private Q_SLOTS:
         // THEN
         QVERIFY(!objectPicker.peerId().isNull());
         QCOMPARE(objectPicker.isHoverEnabled(), true);
-        QCOMPARE(objectPicker.isDirty(), true);
     }
 
     void checkInitialAndCleanedUpState()
@@ -65,7 +64,6 @@ private Q_SLOTS:
         // THEN
         QVERIFY(objectPicker.peerId().isNull());
         QCOMPARE(objectPicker.isHoverEnabled(), false);
-        QCOMPARE(objectPicker.isDirty(), false);
 
         // GIVEN
         Qt3DRender::QObjectPicker picker;
@@ -77,31 +75,26 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(objectPicker.isHoverEnabled(), false);
-        QCOMPARE(objectPicker.isDirty(), false);
     }
 
     void checkPropertyChanges()
     {
         // GIVEN
-        Qt3DRender::Render::ObjectPicker objectPicker;
         TestRenderer renderer;
-        objectPicker.setRenderer(&renderer);
+        {
+            Qt3DRender::Render::ObjectPicker objectPicker;
+            objectPicker.setRenderer(&renderer);
 
-        QVERIFY(!objectPicker.isDirty());
+            // WHEN
+            Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+            updateChange->setValue(true);
+            updateChange->setPropertyName("hoverEnabled");
+            objectPicker.sceneChangeEvent(updateChange);
 
-        // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        updateChange->setValue(true);
-        updateChange->setPropertyName("hoverEnabled");
-        objectPicker.sceneChangeEvent(updateChange);
-
-        // THEN
-        QCOMPARE(objectPicker.isHoverEnabled(), true);
-        QVERIFY(objectPicker.isDirty());
-        QVERIFY(renderer.dirtyBits() != 0);
-
-        objectPicker.unsetDirty();
-        QVERIFY(!objectPicker.isDirty());
+            // THEN
+            QCOMPARE(objectPicker.isHoverEnabled(), true);
+            QVERIFY(renderer.dirtyBits() != 0);
+        }
     }
 
     void checkBackendPropertyNotifications()
@@ -111,7 +104,6 @@ private Q_SLOTS:
         Qt3DRender::Render::ObjectPicker objectPicker;
         Qt3DCore::QBackendNodePrivate::get(&objectPicker)->setArbiter(&arbiter);
         Qt3DRender::QPickEventPtr event(new Qt3DRender::QPickEvent);
-        QVERIFY(!objectPicker.isDirty());
 
         // WHEN
         objectPicker.onPressed(event);

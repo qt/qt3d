@@ -63,6 +63,7 @@ QT_BEGIN_NAMESPACE
 
 class QAbstractCollisionQueryServicePrivate;
 namespace Qt3DRender {
+namespace RayCasting {
 
 class QRay3D;
 class QBoundingVolume;
@@ -101,10 +102,11 @@ private:
     Q_DECLARE_PRIVATE(QAbstractCollisionQueryService)
 };
 
+} // RayCasting
 } // Qt3DRender
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::QAbstractCollisionQueryService::QueryMode) // LCOV_EXCL_LINE
+Q_DECLARE_METATYPE(Qt3DRender::RayCasting::QAbstractCollisionQueryService::QueryMode) // LCOV_EXCL_LINE
 
 #endif // QT3DRENDER_QABSTRACTCOLLISIONQUERYSERVICE_P_H

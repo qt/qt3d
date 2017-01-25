@@ -138,8 +138,8 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
             m_dirty |= Properties;
             needUpload = true;
         } else {
-            qWarning() << "[Qt3DRender::GLTexture] No QTextureData generated from Texture Generator";
-            texturedDataInvalid = true;
+            qWarning() << "[Qt3DRender::GLTexture] No QTextureData generated from Texture Generator yet. Texture will be invalid for this frame";
+            return nullptr;
         }
     }
 
@@ -171,12 +171,14 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
                     m_dirty |= Properties;
                 }
             } else {
-                qWarning() << "[Qt3DRender::GLTexture] No QTextureImageData generated from functor";
+                qWarning() << "[Qt3DRender::GLTexture] No QTextureImageData generated from functor yet, texture will be invalid for this frame";
                 texturedDataInvalid = true;
             }
         }
     }
 
+    if (texturedDataInvalid)
+        return nullptr;
 
     // if the properties changed, we need to re-allocate the texture
     if (m_dirty.testFlag(Properties)) {
