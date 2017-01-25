@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_CAMERALENS_H
-#define QT3DRENDER_RENDER_CAMERALENS_H
+#ifndef QT3DRENDER_RENDER_COMPUTEFILTEREDBOUNDINGVOLUMEJOB_H
+#define QT3DRENDER_RENDER_COMPUTEFILTEREDBOUNDINGVOLUMEJOB_H
 
 //
 //  W A R N I N G
@@ -51,67 +51,41 @@
 // We mean it.
 //
 
-#include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DCore/private/qnodecommand_p.h>
-#include <QMatrix4x4>
-#include <QRectF>
+#include <Qt3DCore/qaspectjob.h>
+#include <private/qt3drender_global_p.h>
+
+#include <QtCore/QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
 namespace Render {
 
-class CameraManager;
+class Entity;
 class Sphere;
 
-class CameraLensFunctor : public Qt3DCore::QBackendNodeMapper
+class QT3DRENDERSHARED_PRIVATE_EXPORT ComputeFilteredBoundingVolumeJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit CameraLensFunctor(AbstractRenderer *renderer, QRenderAspect *renderAspect);
-    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
-    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    ComputeFilteredBoundingVolumeJob();
+
+    void setRoot(Entity *root);
+    void ignoreSubTree(Entity *node);
+    void run() Q_DECL_OVERRIDE;
+
+protected:
+    virtual void finished(const Qt3DRender::Render::Sphere &sphere);
 
 private:
-    CameraManager *m_manager;
-    AbstractRenderer *m_renderer;
-    QRenderAspect *m_renderAspect;
+    Entity *m_root;
+    Entity *m_ignoreSubTree;
 };
 
-class CameraLens : public BackendNode
-{
-public:
-    CameraLens();
-    ~CameraLens();
-    void cleanup();
-
-    void setRenderAspect(QRenderAspect* renderAspect);
-
-    void setProjection(const QMatrix4x4 &projection);
-    inline QMatrix4x4 projection() const { return m_projection; }
-
-    void setExposure(float exposure);
-    inline float exposure() const { return m_exposure; }
-
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void notifySceneBoundingVolume(const Sphere &sphere, Qt3DCore::QNodeCommand::CommandId commandId);
-
-private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
-    void computeSceneBoundingVolume(Qt3DCore::QNodeId entityId,
-                                    Qt3DCore::QNodeId cameraId,
-                                    Qt3DCore::QNodeCommand::CommandId commandId);
-
-    QRenderAspect *m_renderAspect;
-    QMatrix4x4 m_projection;
-    Qt3DCore::QNodeCommand::CommandId m_pendingViewAllCommand;
-    float m_exposure;
-};
+typedef QSharedPointer<ComputeFilteredBoundingVolumeJob> ComputeFilteredBoundingVolumeJobPtr;
 
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_CAMERALENS_H
+#endif // QT3DRENDER_RENDER_COMPUTEFILTEREDBOUNDINGVOLUMEJOB_H

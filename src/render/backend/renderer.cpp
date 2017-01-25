@@ -1467,6 +1467,11 @@ QAspectJobPtr Renderer::syncTextureLoadingJob()
     return m_syncTextureLoadingJob;
 }
 
+QAspectJobPtr Renderer::expandBoundingVolumeJob()
+{
+    return m_expandBoundingVolumeJob;
+}
+
 QAbstractFrameAdvanceService *Renderer::frameAdvanceService() const
 {
     return static_cast<Qt3DCore::QAbstractFrameAdvanceService *>(m_vsyncFrameAdvanceService.data());

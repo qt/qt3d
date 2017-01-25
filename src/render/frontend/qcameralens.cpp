@@ -224,6 +224,43 @@ QCameraLensPrivate::QCameraLensPrivate()
 {
 }
 
+void QCameraLens::viewAll(Qt3DCore::QNodeId cameraId)
+{
+    Q_D(QCameraLens);
+    if (d->m_projectionType == PerspectiveProjection) {
+        QVariant v;
+        v.setValue(cameraId);
+        d->m_pendingViewAllCommand = sendCommand(QLatin1Literal("QueryRootBoundingVolume"), v);
+    }
+}
+
+void QCameraLens::viewEntity(Qt3DCore::QNodeId entityId, Qt3DCore::QNodeId cameraId)
+{
+    Q_D(QCameraLens);
+    if (d->m_projectionType == PerspectiveProjection) {
+        QVector<Qt3DCore::QNodeId> ids = {entityId, cameraId};
+        QVariant v;
+        v.setValue(ids);
+        d->m_pendingViewAllCommand = sendCommand(QLatin1Literal("QueryEntityBoundingVolume"), v);
+    }
+}
+
+void QCameraLensPrivate::processViewAllCommand(Qt3DCore::QNodeCommand::CommandId commandId,
+                                               const QVariant &data)
+{
+    Q_Q(QCameraLens);
+    if (m_pendingViewAllCommand != commandId)
+        return;
+
+    QVector<float> boundingVolumeData = data.value< QVector<float> >();
+    if (boundingVolumeData.size() != 4)
+        return;
+    QVector3D center(boundingVolumeData[0], boundingVolumeData[1], boundingVolumeData[2]);
+    float radius = boundingVolumeData[3];
+    Q_EMIT q->viewSphere(center, radius);
+    m_pendingViewAllCommand = Qt3DCore::QNodeCommand::CommandId();
+}
+
 /*!
  * Constructs a QCameraLens with given \a parent
  */
@@ -591,6 +628,22 @@ Qt3DCore::QNodeCreatedChangeBasePtr QCameraLens::createNodeCreationChange() cons
     data.projectionMatrix = d_func()->m_projectionMatrix;
     data.exposure = d_func()->m_exposure;
     return creationChange;
+}
+
+void QCameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
+{
+    Q_D(QCameraLens);
+    switch (change->type()) {
+    case Qt3DCore::CommandRequested: {
+        Qt3DCore::QNodeCommandPtr command = qSharedPointerCast<Qt3DCore::QNodeCommand>(change);
+
+        if (command->name() == QLatin1Literal("ViewAll"))
+            d->processViewAllCommand(command->inReplyTo(), command->data());
+    }
+        break;
+    default:
+        break;
+    }
 }
 
 } // Qt3DRender

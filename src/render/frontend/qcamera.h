@@ -150,6 +150,10 @@ public Q_SLOTS:
     void setUpVector(const QVector3D &upVector);
     void setViewCenter(const QVector3D &viewCenter);
 
+    void viewAll();
+    void viewSphere(const QVector3D &center, float radius);
+    void viewEntity(Qt3DCore::QEntity *entity);
+
 Q_SIGNALS:
     void projectionTypeChanged(QCameraLens::ProjectionType projectionType);
     void nearPlaneChanged(float nearPlane);
