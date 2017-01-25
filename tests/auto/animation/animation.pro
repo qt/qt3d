@@ -6,5 +6,6 @@ SUBDIRS += \
 
 qtConfig(private_tests) {
     SUBDIRS += \
-        animationclip
+        animationclip \
+        qabstractclipblendnode
 }
