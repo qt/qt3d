@@ -42,7 +42,7 @@ DefaultSceneEntity {
                 // mapping: AutomaticAnimationMapping {}
 
                 // To do more, we can be explicit
-                mapping: ChannelMapper {
+                channelMapper: ChannelMapper {
                     mappings: [
                         ChannelMapping { channelName: "Location"; target: cubeTransform; property: "translation" },
                         ChannelMapping { channelName: "Rotation"; target: cubeTransform; property: "rotation" },

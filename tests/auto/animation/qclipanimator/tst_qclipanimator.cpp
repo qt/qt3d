@@ -29,6 +29,7 @@
 
 #include <QtTest/QTest>
 #include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qchannelmapper.h>
 #include <Qt3DAnimation/qclipanimator.h>
 #include <Qt3DAnimation/private/qanimationclip_p.h>
 #include <Qt3DAnimation/private/qclipanimator_p.h>
@@ -47,6 +48,7 @@ private Q_SLOTS:
     void initTestCase()
     {
         qRegisterMetaType<Qt3DAnimation::QAnimationClip*>();
+        qRegisterMetaType<Qt3DAnimation::QChannelMapper*>();
     }
 
     void checkDefaultConstruction()
@@ -56,6 +58,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(animator.clip(), static_cast<Qt3DAnimation::QAnimationClip *>(nullptr));
+        QCOMPARE(animator.channelMapper(), static_cast<Qt3DAnimation::QChannelMapper *>(nullptr));
     }
 
     void checkPropertyChanges()
@@ -83,6 +86,27 @@ private Q_SLOTS:
             QCOMPARE(animator.clip(), newValue);
             QCOMPARE(spy.count(), 0);
         }
+
+        {
+            // WHEN
+            QSignalSpy spy(&animator, SIGNAL(channelMapperChanged(Qt3DAnimation::QChannelMapper *)));
+            auto newValue = new Qt3DAnimation::QChannelMapper();
+            animator.setChannelMapper(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(animator.channelMapper(), newValue);
+            QCOMPARE(newValue->parent(), &animator);
+            QCOMPARE(spy.count(), 1);
+
+            // WHEN
+            spy.clear();
+            animator.setChannelMapper(newValue);
+
+            // THEN
+            QCOMPARE(animator.channelMapper(), newValue);
+            QCOMPARE(spy.count(), 0);
+        }
     }
 
     void checkCreationData()
@@ -91,6 +115,8 @@ private Q_SLOTS:
         Qt3DAnimation::QClipAnimator animator;
         auto clip = new Qt3DAnimation::QAnimationClip();
         animator.setClip(clip);
+        auto mapper = new Qt3DAnimation::QChannelMapper();
+        animator.setChannelMapper(mapper);
 
         // WHEN
         QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
@@ -101,7 +127,7 @@ private Q_SLOTS:
 
         // THEN
         {
-            QCOMPARE(creationChanges.size(), 2);
+            QCOMPARE(creationChanges.size(), 3);
 
             const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DAnimation::QClipAnimatorData>>(creationChanges.first());
             const Qt3DAnimation::QClipAnimatorData data = creationChangeData->data;
@@ -111,6 +137,7 @@ private Q_SLOTS:
             QCOMPARE(animator.isEnabled(), creationChangeData->isNodeEnabled());
             QCOMPARE(animator.metaObject(), creationChangeData->metaObject());
             QCOMPARE(animator.clip()->id(), data.clipId);
+            QCOMPARE(animator.channelMapper()->id(), data.mapperId);
         }
 
         // WHEN
@@ -122,7 +149,7 @@ private Q_SLOTS:
 
         // THEN
         {
-            QCOMPARE(creationChanges.size(), 2);
+            QCOMPARE(creationChanges.size(), 3);
 
             const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DAnimation::QClipAnimatorData>>(creationChanges.first());
 
@@ -133,7 +160,7 @@ private Q_SLOTS:
         }
     }
 
-    void checkClipUpdate()
+    void checkPropertyUpdate()
     {
         // GIVEN
         TestArbiter arbiter;
@@ -159,6 +186,32 @@ private Q_SLOTS:
         {
             // WHEN
             animator.setClip(clip);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+        }
+
+        // GIVEN
+        auto mapper = new Qt3DAnimation::QChannelMapper;
+        {
+            // WHEN
+            animator.setChannelMapper(mapper);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 1);
+            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "channelMapper");
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), mapper->id());
+
+            arbiter.events.clear();
+        }
+
+        {
+            // WHEN
+            animator.setChannelMapper(mapper);
             QCoreApplication::processEvents();
 
             // THEN

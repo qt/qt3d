@@ -40,6 +40,7 @@
 #include "qclipanimator.h"
 #include "qclipanimator_p.h"
 #include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qchannelmapper.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,6 +49,7 @@ namespace Qt3DAnimation {
 QClipAnimatorPrivate::QClipAnimatorPrivate()
     : Qt3DCore::QComponentPrivate()
     , m_clip(nullptr)
+    , m_mapper(nullptr)
     , m_running(false)
 {
 }
@@ -76,6 +78,12 @@ bool QClipAnimator::isRunning() const
 {
     Q_D(const QClipAnimator);
     return d->m_running;
+}
+
+QChannelMapper *QClipAnimator::channelMapper() const
+{
+    Q_D(const QClipAnimator);
+    return d->m_mapper;
 }
 
 void QClipAnimator::setClip(QAnimationClip *clip)
@@ -107,12 +115,32 @@ void QClipAnimator::setRunning(bool running)
     emit runningChanged(running);
 }
 
+void QClipAnimator::setChannelMapper(QChannelMapper *mapping)
+{
+    Q_D(QClipAnimator);
+    if (d->m_mapper == mapping)
+        return;
+
+    if (d->m_mapper)
+        d->unregisterDestructionHelper(d->m_mapper);
+
+    if (mapping && !mapping->parent())
+        mapping->setParent(this);
+    d->m_mapper = mapping;
+
+    // Ensures proper bookkeeping
+    if (d->m_mapper)
+        d->registerDestructionHelper(d->m_mapper, &QClipAnimator::setChannelMapper, d->m_mapper);
+    emit channelMapperChanged(mapping);
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QClipAnimator::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QClipAnimatorData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QClipAnimator);
     data.clipId = Qt3DCore::qIdForNode(d->m_clip);
+    data.mapperId = Qt3DCore::qIdForNode(d->m_mapper);
     data.running = d->m_running;
     return creationChange;
 }

@@ -66,6 +66,8 @@ public:
     void cleanup();
     void setClipId(Qt3DCore::QNodeId clipId) { m_clipId = clipId; }
     Qt3DCore::QNodeId clipId() const { return m_clipId; }
+    void setMapperId(Qt3DCore::QNodeId mapperId);
+    Qt3DCore::QNodeId mapperId() const { return m_mapperId; }
 
     void setRunning(bool running);
     bool isRunning() const { return m_running; }
@@ -78,7 +80,7 @@ private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
     Qt3DCore::QNodeId m_clipId;
-
+    Qt3DCore::QNodeId m_mapperId;
     bool m_running;
 };
 
