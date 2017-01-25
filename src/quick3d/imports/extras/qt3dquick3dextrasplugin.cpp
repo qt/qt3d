@@ -73,12 +73,6 @@
 
 QT_BEGIN_NAMESPACE
 
-static const struct {
-    const char *type;
-    int major, minor;
-} qmldir [] = {
-};
-
 void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
 {
     // Framegraphs
@@ -121,15 +115,6 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
     // 3D Text
     qmlRegisterType<Qt3DExtras::QText3DGeometry>(uri, 2, 2, "Text3DGeometry");
     qmlRegisterType<Qt3DExtras::QText3DMesh>(uri, 2, 2, "Text3DMesh");
-
-    // Register types provided as QML files compiled into the plugin
-    for (int i = 0; i < int(sizeof(qmldir) / sizeof(qmldir[0])); i++) {
-        auto path = QLatin1String("qrc:/qt-project.org/imports/Qt3D/Extras/defaults/qml/");
-        qmlRegisterType(QUrl(path + qmldir[i].type + QLatin1String(".qml")),
-                        uri,
-                        qmldir[i].major, qmldir[i].minor,
-                        qmldir[i].type);
-    }
 }
 
 
