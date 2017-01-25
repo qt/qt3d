@@ -88,7 +88,7 @@ namespace Qt3DInput {
 */
 
 /*!
-    \qmlproperty int Qt3D.Inpit::Axis::value
+    \qmlproperty int Qt3D.Input::Axis::value
     \readonly
 
     Holds the value accumulated from the sourceAxis.
