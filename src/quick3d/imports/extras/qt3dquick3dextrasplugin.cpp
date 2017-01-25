@@ -43,6 +43,7 @@
 #include <Qt3DExtras/qcylindermesh.h>
 #include <Qt3DExtras/qdiffusemapmaterial.h>
 #include <Qt3DExtras/qdiffusespecularmapmaterial.h>
+#include <Qt3DExtras/qfirstpersoncameracontroller.h>
 #include <Qt3DExtras/qforwardrenderer.h>
 #include <Qt3DExtras/qgoochmaterial.h>
 #include <Qt3DExtras/qnormaldiffusemapalphamaterial.h>
@@ -75,8 +76,6 @@ static const struct {
 } qmldir [] = {
     // Scene Graph
     { "LevelOfDetailLoader", 2, 2 },
-    // Camera Controllers
-    { "FirstPersonCameraController", 2, 0 },
 };
 
 void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
@@ -88,6 +87,7 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DExtras::QSkyboxEntity>(uri, 2, 0, "SkyboxEntity");
 
     // Camera Controllers
+    qmlRegisterType<Qt3DExtras::QFirstPersonCameraController>(uri, 2, 0, "FirstPersonCameraController");
     qmlRegisterType<Qt3DExtras::QOrbitCameraController>(uri, 2, 0, "OrbitCameraController");
 
     // Materials
