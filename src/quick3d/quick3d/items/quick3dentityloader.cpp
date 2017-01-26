@@ -50,6 +50,32 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 namespace Quick {
 
+namespace {
+struct Quick3DQmlOwner
+{
+    Quick3DQmlOwner(QQmlEngine *e, QObject *o)
+        : engine(e)
+        , object(o)
+    {}
+
+    QQmlEngine *engine;
+    QObject *object;
+
+    QQmlContext *context() const
+    {
+        return engine->contextForObject(object);
+    }
+};
+
+Quick3DQmlOwner _q_findQmlOwner(QObject *object)
+{
+    auto o = object;
+    while (!qmlEngine(o) && o->parent())
+        o = o->parent();
+    return Quick3DQmlOwner(qmlEngine(o), o);
+}
+}
+
 class Quick3DEntityLoaderIncubator : public QQmlIncubator
 {
 public:
@@ -81,7 +107,7 @@ protected:
         }
 
         case Error: {
-            QQmlEnginePrivate::warning(qmlEngine(m_loader), errors());
+            QQmlEnginePrivate::warning(_q_findQmlOwner(m_loader).engine, errors());
             priv->clear();
             emit m_loader->entityChanged();
             priv->setStatus(Quick3DEntityLoader::Error);
@@ -238,7 +264,8 @@ void Quick3DEntityLoaderPrivate::loadComponent(const QUrl &source)
     Q_ASSERT(m_component == nullptr);
     Q_ASSERT(m_context == nullptr);
 
-    m_component = new QQmlComponent(qmlEngine(q), q);
+    auto owner = _q_findQmlOwner(q);
+    m_component = new QQmlComponent(owner.engine, owner.object);
     QObject::connect(m_component, SIGNAL(statusChanged(QQmlComponent::Status)),
                      q, SLOT(_q_componentStatusChanged(QQmlComponent::Status)));
     m_component->loadUrl(source, QQmlComponent::Asynchronous);
@@ -253,8 +280,10 @@ void Quick3DEntityLoaderPrivate::_q_componentStatusChanged(QQmlComponent::Status
     Q_ASSERT(m_context == nullptr);
     Q_ASSERT(m_incubator == nullptr);
 
+    auto owner = _q_findQmlOwner(q);
+
     if (!m_component->errors().isEmpty()) {
-        QQmlEnginePrivate::warning(qmlEngine(q), m_component->errors());
+        QQmlEnginePrivate::warning(owner.engine, m_component->errors());
         clear();
         emit q->entityChanged();
         return;
@@ -264,8 +293,8 @@ void Quick3DEntityLoaderPrivate::_q_componentStatusChanged(QQmlComponent::Status
     if (status != QQmlComponent::Ready)
         return;
 
-    m_context = new QQmlContext(qmlContext(q));
-    m_context->setContextObject(q);
+    m_context = new QQmlContext(owner.context());
+    m_context->setContextObject(owner.object);
 
     m_incubator = new Quick3DEntityLoaderIncubator(q);
     m_component->create(*m_incubator, m_context);
