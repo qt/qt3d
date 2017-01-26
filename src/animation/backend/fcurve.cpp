@@ -53,12 +53,19 @@ FCurve::FCurve()
 
 float FCurve::evaluateAtTime(float localTime) const
 {
-    // Find keyframes that sandwich the requested localTime
-    int keyframe0 = m_rangeFinder.findLowerBound(localTime);
+    // TODO: Implement extrapolation beyond first/last keyframes
+    if (localTime < m_localTimes.first()) {
+        return m_keyframes.first().value;
+    } else if (localTime > m_localTimes.last()) {
+        return m_keyframes.last().value;
+    } else {
+        // Find keyframes that sandwich the requested localTime
+        int keyframe0 = m_rangeFinder.findLowerBound(localTime);
 
-    BezierEvaluator evaluator(m_localTimes[keyframe0], m_keyframes[keyframe0],
-                              m_localTimes[keyframe0 + 1], m_keyframes[keyframe0 + 1]);
-    return evaluator.valueForTime(localTime);
+        BezierEvaluator evaluator(m_localTimes[keyframe0], m_keyframes[keyframe0],
+                                  m_localTimes[keyframe0 + 1], m_keyframes[keyframe0 + 1]);
+        return evaluator.valueForTime(localTime);
+    }
 }
 
 float FCurve::startTime() const
@@ -116,6 +123,7 @@ void FCurve::read(const QJsonObject &json)
 
 void Channel::read(const QJsonObject &json)
 {
+    name = json[QLatin1String("name")].toString();
     fcurve.read(json);
 }
 
@@ -126,12 +134,9 @@ void ChannelGroup::read(const QJsonObject &json)
     const int channelCount = channelsArray.size();
     channels.resize(channelCount);
 
-    // TODO: Add channel names to export format
-    const QStringList channelNameSuffixes = {QLatin1String("X"), QLatin1String("Y"), QLatin1String("Z")};
     for (int i = 0; i < channelCount; ++i) {
         const QJsonObject channel = channelsArray.at(i).toObject();
         channels[i].read(channel);
-        channels[i].name = name + QLatin1String(".") + channelNameSuffixes.at(i);
     }
 }
 

@@ -78,6 +78,7 @@ class ChannelMapperManager;
 
 class FindRunningClipAnimatorsJob;
 class LoadAnimationClipJob;
+class EvaluateClipAnimatorJob;
 
 class Q_AUTOTEST_EXPORT Handler
 {
@@ -90,6 +91,8 @@ public:
         ChannelMappingsDirty,
         ClipAnimatorDirty
     };
+
+    qint64 simulationTime() const { return m_simulationTime; }
 
     void setDirty(DirtyFlag flag, Qt3DCore::QNodeId nodeId);
 
@@ -121,6 +124,9 @@ private:
 
     QSharedPointer<LoadAnimationClipJob> m_loadAnimationClipJob;
     QSharedPointer<FindRunningClipAnimatorsJob> m_findRunningClipAnimatorsJob;
+    QVector<QSharedPointer<EvaluateClipAnimatorJob>> m_evaluateClipAnimatorJobs;
+
+    qint64 m_simulationTime;
 
 #if defined(QT_BUILD_INTERNAL)
     friend class QT_PREPEND_NAMESPACE(tst_Handler);

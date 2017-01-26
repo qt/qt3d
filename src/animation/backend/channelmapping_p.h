@@ -52,6 +52,7 @@
 #include <Qt3DAnimation/private/fcurve_p.h>
 
 #include <Qt3DCore/qnodeid.h>
+#include <QtCore/QMetaProperty>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,6 +73,8 @@ public:
     QString channelName() const { return m_channelName; }
     Qt3DCore::QNodeId targetId() const { return m_targetId; }
     QString property() const { return m_property; }
+    int type() const { return m_type; }
+    const char *propertyName() const { return m_propertyName; }
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
@@ -79,6 +82,8 @@ private:
     QString m_channelName;
     Qt3DCore::QNodeId m_targetId;
     QString m_property;
+    int m_type;
+    const char *m_propertyName;
 };
 
 } // namespace Animation

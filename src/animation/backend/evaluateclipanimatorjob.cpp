@@ -34,54 +34,39 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QCHANNELMAPPING_P_H
-#define QT3DANIMATION_QCHANNELMAPPING_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/private/qnode_p.h>
+#include "evaluateclipanimatorjob_p.h"
+#include <Qt3DAnimation/private/handler_p.h>
+#include <Qt3DAnimation/private/managers_p.h>
+#include <Qt3DAnimation/private/animationlogging_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
+namespace Animation {
 
-class QChannelMappingPrivate : public Qt3DCore::QNodePrivate
+EvaluateClipAnimatorJob::EvaluateClipAnimatorJob()
+    : Qt3DCore::QAspectJob()
 {
-public:
-    QChannelMappingPrivate();
+}
 
-    Q_DECLARE_PUBLIC(QChannelMapping)
-
-    void updatePropertyNameAndType();
-
-    QString m_channelName;
-    Qt3DCore::QNode *m_target;
-    QString m_property;
-    const char *m_propertyName;
-    int m_type;
-};
-
-struct QChannelMappingData
+void EvaluateClipAnimatorJob::run()
 {
-    QString channelName;
-    Qt3DCore::QNodeId targetId;
-    QString property;
-    int type;
-    const char *propertyName;
-};
+    Q_ASSERT(m_handler);
 
+    const qint64 globalTime = m_handler->simulationTime();
+    //qDebug() << Q_FUNC_INFO << "t_global =" << globalTime;
+
+    ClipAnimator *clipAnimator = m_handler->clipAnimatorManager()->data(m_clipAnimatorHandle);
+    Q_ASSERT(clipAnimator);
+
+    // Evaluate the fcurves
+    clipAnimator->evaluateAtGlobalTime(globalTime);
+
+    // Send the property changes
+    clipAnimator->sendPropertyChanges();
+}
+
+} // namespace Animation
 } // namespace Qt3DAnimation
 
-
 QT_END_NAMESPACE
-
-#endif // QT3DANIMATION_QCHANNELMAPPING_P_H

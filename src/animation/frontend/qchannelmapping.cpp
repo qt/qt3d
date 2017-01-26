@@ -37,6 +37,11 @@
 #include "qchannelmapping.h"
 #include "qchannelmapping_p.h"
 
+#include <Qt3DCore/qpropertyupdatedchange.h>
+
+#include <QtCore/qmetaobject.h>
+#include <QtCore/QMetaProperty>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
@@ -46,7 +51,52 @@ QChannelMappingPrivate::QChannelMappingPrivate()
     , m_channelName()
     , m_target(nullptr)
     , m_property()
+    , m_propertyName(nullptr)
+    , m_type(static_cast<int>(QVariant::Invalid))
 {
+}
+
+/*!
+    \internal
+
+    Find the type of the property specified on the target node
+ */
+void QChannelMappingPrivate::updatePropertyNameAndType()
+{
+    int type;
+    const char *propertyName = nullptr;
+
+    if (!m_target || m_property.isNull()) {
+         type = QVariant::Invalid;
+    } else {
+        const QMetaObject *mo = m_target->metaObject();
+        const int propertyIndex = mo->indexOfProperty(m_property.toLocal8Bit());
+        QMetaProperty mp = mo->property(propertyIndex);
+        propertyName = mp.name();
+        type = mp.userType();
+    }
+
+    if (m_type != type) {
+        m_type = type;
+
+        // Send update to the backend
+        Q_Q(QChannelMapping);
+        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(q->id());
+        e->setPropertyName("type");
+        e->setValue(QVariant(m_type));
+        notifyObservers(e);
+    }
+
+    if (qstrcmp(m_propertyName, propertyName) != 0) {
+        m_propertyName = propertyName;
+
+        // Send update to the backend
+        Q_Q(QChannelMapping);
+        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(q->id());
+        e->setPropertyName("propertyName");
+        e->setValue(QVariant::fromValue(const_cast<void *>(static_cast<const void *>(m_propertyName))));
+        notifyObservers(e);
+    }
 }
 
 QChannelMapping::QChannelMapping(Qt3DCore::QNode *parent)
@@ -109,6 +159,7 @@ void QChannelMapping::setTarget(Qt3DCore::QNode *target)
         d->registerDestructionHelper(d->m_target, &QChannelMapping::setTarget, d->m_target);
 
     emit targetChanged(target);
+    d->updatePropertyNameAndType();
 }
 
 void QChannelMapping::setProperty(const QString &property)
@@ -119,6 +170,7 @@ void QChannelMapping::setProperty(const QString &property)
 
     d->m_property = property;
     emit propertyChanged(property);
+    d->updatePropertyNameAndType();
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QChannelMapping::createNodeCreationChange() const
@@ -129,6 +181,8 @@ Qt3DCore::QNodeCreatedChangeBasePtr QChannelMapping::createNodeCreationChange() 
     data.channelName = d->m_channelName;
     data.targetId = Qt3DCore::qIdForNode(d->m_target);
     data.property = d->m_property;
+    data.type = d->m_type;
+    data.propertyName = d->m_propertyName;
     return creationChange;
 }
 

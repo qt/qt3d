@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QCHANNELMAPPING_P_H
-#define QT3DANIMATION_QCHANNELMAPPING_P_H
+#ifndef QT3DANIMATION_ANIMATION_EVALUATECLIPANIMATORJOB_P_H
+#define QT3DANIMATION_ANIMATION_EVALUATECLIPANIMATORJOB_P_H
 
 //
 //  W A R N I N G
@@ -48,40 +48,45 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DAnimation/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
+namespace Animation {
 
-class QChannelMappingPrivate : public Qt3DCore::QNodePrivate
+class Handler;
+
+class EvaluateClipAnimatorJob : public Qt3DCore::QAspectJob
 {
 public:
-    QChannelMappingPrivate();
+    EvaluateClipAnimatorJob();
 
-    Q_DECLARE_PUBLIC(QChannelMapping)
+    void setHandler(Handler *handler) { m_handler = handler; }
+    Handler *handler() const { return m_handler; }
 
-    void updatePropertyNameAndType();
+    void setClipAnimator(const HClipAnimator &clipAnimatorHandle)
+    {
+        m_clipAnimatorHandle = clipAnimatorHandle;
+    }
 
-    QString m_channelName;
-    Qt3DCore::QNode *m_target;
-    QString m_property;
-    const char *m_propertyName;
-    int m_type;
+    void clearClipAnimator()
+    {
+        m_clipAnimatorHandle = HClipAnimator();
+    }
+
+protected:
+    void run() Q_DECL_OVERRIDE;
+
+private:
+    HClipAnimator m_clipAnimatorHandle;
+    Handler *m_handler;
 };
 
-struct QChannelMappingData
-{
-    QString channelName;
-    Qt3DCore::QNodeId targetId;
-    QString property;
-    int type;
-    const char *propertyName;
-};
-
+} // namespace Animation
 } // namespace Qt3DAnimation
-
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_QCHANNELMAPPING_P_H
+#endif // QT3DANIMATION_ANIMATION_EVALUATECLIPANIMATORJOB_P_H

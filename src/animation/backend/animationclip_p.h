@@ -71,17 +71,20 @@ public:
 
     QString name() const { return m_name; }
     QString objectName() const { return m_objectName; }
-    QVector<ChannelGroup> channelGroups() const { return m_channelGroups; }
+    const QVector<ChannelGroup> &channelGroups() const { return m_channelGroups; }
 
     // Called from jobs
     void loadAnimation();
     void setDuration(float duration);
     float duration() const { return m_duration; }
+    int channelCount() const { return m_channelCount; }
+    int channelBaseIndex(int channelGroupIndex) const;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
     void clearData();
     float findDuration();
+    int findChannelCount();
 
     QUrl m_source;
 
@@ -89,6 +92,7 @@ private:
     QString m_objectName;
     QVector<ChannelGroup> m_channelGroups;
     float m_duration;
+    int m_channelCount;
 };
 
 #ifndef QT_NO_DEBUG_STREAM

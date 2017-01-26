@@ -38,6 +38,7 @@
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/loadanimationclipjob_p.h>
 #include <Qt3DAnimation/private/findrunningclipanimatorsjob_p.h>
+#include <Qt3DAnimation/private/evaluateclipanimatorjob_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -54,6 +55,7 @@ Handler::Handler()
     , m_channelMapperManager(new ChannelMapperManager)
     , m_loadAnimationClipJob(new LoadAnimationClipJob)
     , m_findRunningClipAnimatorsJob(new FindRunningClipAnimatorsJob)
+    , m_simulationTime(0)
 {
     m_loadAnimationClipJob->setHandler(this);
     m_findRunningClipAnimatorsJob->setHandler(this);
@@ -89,8 +91,12 @@ void Handler::setDirty(DirtyFlag flag, Qt3DCore::QNodeId nodeId)
 void Handler::setClipAnimatorRunning(const HClipAnimator &handle, bool running)
 {
     // Add clip to running set if not already present
-    if (running && !m_runningClipAnimators.contains(handle))
+    if (running && !m_runningClipAnimators.contains(handle)) {
         m_runningClipAnimators.push_back(handle);
+        ClipAnimator *clipAnimator = m_clipAnimatorManager->data(handle);
+        if (clipAnimator)
+            clipAnimator->setStartTime(m_simulationTime);
+    }
 
     // If being marked as not running, remove from set of running clips
     if (!running) {
@@ -104,7 +110,11 @@ void Handler::setClipAnimatorRunning(const HClipAnimator &handle, bool running)
 
 QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
 {
-    Q_UNUSED(time);
+    // Store the simulation time so we can mark the start time of
+    // animators which will allow us to calculate the local time of
+    // animation clips.
+    m_simulationTime = time;
+
     QVector<Qt3DCore::QAspectJobPtr> jobs;
 
     // If there are any dirty animation clips that need loading,
@@ -121,12 +131,43 @@ QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
     // channel mappings
     if (!m_dirtyClipAnimators.isEmpty()) {
         qCDebug(HandlerLogic) << "Added FindRunningClipAnimatorsJob";
+        m_findRunningClipAnimatorsJob->removeDependency(QWeakPointer<Qt3DCore::QAspectJob>());
         m_findRunningClipAnimatorsJob->setDirtyClipAnimators(m_dirtyClipAnimators);
         jobs.push_back(m_findRunningClipAnimatorsJob);
+        if (jobs.contains(m_loadAnimationClipJob))
+            m_findRunningClipAnimatorsJob->addDependency(m_loadAnimationClipJob);
         m_dirtyClipAnimators.clear();
     }
 
-    // TODO: Queue up a job to update the channel mapping table
+    // TODO: Parallelise the animator evaluation and property building at a finer level
+
+    // If there are any running ClipAnimators, evaluate them for the current
+    // time and send property changes
+    if (!m_runningClipAnimators.isEmpty()) {
+        qCDebug(HandlerLogic) << "Added EvaluateClipAnimatorJobs";
+
+        // Ensure we have a job per clip animator
+        const int oldSize = m_evaluateClipAnimatorJobs.size();
+        const int newSize = m_runningClipAnimators.size();
+        if (oldSize < newSize) {
+            m_evaluateClipAnimatorJobs.resize(newSize);
+            for (int i = oldSize; i < newSize; ++i) {
+                m_evaluateClipAnimatorJobs[i].reset(new EvaluateClipAnimatorJob());
+                m_evaluateClipAnimatorJobs[i]->setHandler(this);
+            }
+        }
+
+        // Set each job up with an animator to process and set dependencies
+        for (int i = 0; i < newSize; ++i) {
+            m_evaluateClipAnimatorJobs[i]->setClipAnimator(m_runningClipAnimators[i]);
+            m_evaluateClipAnimatorJobs[i]->removeDependency(QWeakPointer<Qt3DCore::QAspectJob>());
+            if (jobs.contains(m_loadAnimationClipJob))
+                m_evaluateClipAnimatorJobs[i]->addDependency(m_loadAnimationClipJob);
+            if (jobs.contains(m_findRunningClipAnimatorsJob))
+                m_evaluateClipAnimatorJobs[i]->addDependency(m_findRunningClipAnimatorsJob);
+            jobs.push_back(m_evaluateClipAnimatorJobs[i]);
+        }
+    }
 
     return jobs;
 }

@@ -146,6 +146,8 @@ void AnimationClip::loadAnimation()
     const float t = findDuration();
     setDuration(t);
 
+    m_channelCount = findChannelCount();
+
     qCDebug(Jobs) << "Loaded animation data:" << *this;
 }
 
@@ -165,6 +167,24 @@ void AnimationClip::setDuration(float duration)
     notifyObservers(e);
 }
 
+/*!
+    \internal
+
+    Given the index of a channel group, \a channelGroupIndex, calculates
+    the base index of the first channel in this group. For example, if
+    there are two channel groups each with 3 channels and you request
+    the channelBaseIndex(1), the return value will be 3. Indices 0-2 are
+    for the first group, so the first channel of the second group occurs
+    at index 3.
+ */
+int AnimationClip::channelBaseIndex(int channelGroupIndex) const
+{
+    int index = 0;
+    for (int i = 0; i < channelGroupIndex; ++i)
+        index += m_channelGroups[i].channels.size();
+    return index;
+}
+
 void AnimationClip::clearData()
 {
     m_name.clear();
@@ -176,14 +196,22 @@ float AnimationClip::findDuration()
 {
     // Iterate over the contained fcurves and find the longest one
     double tMax = 0.0;
-    for (const auto channelGroup : qAsConst(m_channelGroups)) {
-        for (const auto channel : qAsConst(channelGroup.channels)) {
+    for (const ChannelGroup &channelGroup : qAsConst(m_channelGroups)) {
+        for (const Channel &channel : qAsConst(channelGroup.channels)) {
             const float t = channel.fcurve.endTime();
             if (t > tMax)
                 tMax = t;
         }
     }
     return tMax;
+}
+
+int AnimationClip::findChannelCount()
+{
+    int channelCount = 0;
+    for (const ChannelGroup &channelGroup : qAsConst(m_channelGroups))
+        channelCount += channelGroup.channels.size();
+    return channelCount;
 }
 
 } // namespace Animation

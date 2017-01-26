@@ -20,6 +20,11 @@ DefaultSceneEntity {
         id: cube
 
         components: [
+            Transform {
+                id: cubeTransform
+
+                onTranslationChanged: console.log("t = " + translation)
+            },
             CuboidMesh {
             },
             PhongMaterial {
@@ -28,14 +33,16 @@ DefaultSceneEntity {
                 diffuse: "blue"
                 shininess: 50
             },
-            Transform {
-                id: cubeTransform
+            ObjectPicker {
+                onClicked: animator.running = true
             },
             ClipAnimator {
-                running: true
+                id: animator
+
+                onRunningChanged: console.log("running = " + running)
+
                 clip: AnimationClip {
                     source: "cubeanimation.json"
-
                     onDurationChanged: console.log("duration = " + duration)
                 }
 
@@ -52,13 +59,12 @@ DefaultSceneEntity {
                     ]
                 }
             }
-
         ]
     }
 
     camera: Camera {
-        position: Qt.vector3d(10, 10, 10)
-        viewCenter: Qt.vector3d(0, 0, 0)
+        position: Qt.vector3d(10, 3, 15)
+        viewCenter: Qt.vector3d(2.5, 1, 0)
     }
 
     OrbitCameraController {

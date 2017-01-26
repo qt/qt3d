@@ -56,6 +56,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 namespace Animation {
 
+class ChannelGroup;
 class Handler;
 
 class Q_AUTOTEST_EXPORT ClipAnimator : public BackendNode
@@ -79,12 +80,48 @@ public:
     // Called by jobs
     bool canRun() const { return !m_clipId.isNull() && !m_mapperId.isNull() && m_running; }
 
+    void buildPropertyMappings();
+
+    void setStartTime(qint64 globalTime) { m_startGlobalTime = globalTime; }
+    qint64 startTime() const { return m_startGlobalTime; }
+
+    void evaluateAtGlobalTime(qint64 globalTime);
+    void evaluateAtLocalTime(float localTime);
+
+    void sendPropertyChanges();
+
+    static double localTimeFromGlobalTime(double t_global, double t_start_global,
+                                          double playbackRate, double duration,
+                                          int loopCount);
+
+    static QVector<int> channelsToIndices(const ChannelGroup &channelGroup,
+                                          int dataType,
+                                          int offset = 0);
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
+    static QVector<int> channelsToIndicesHelper(const ChannelGroup &channelGroup,
+                                                int dataType,
+                                                int offset,
+                                                const QStringList &suffixes);
 
     Qt3DCore::QNodeId m_clipId;
     Qt3DCore::QNodeId m_mapperId;
     bool m_running;
+
+    qint64 m_startGlobalTime;
+    QVector<float> m_channelResults;
+
+    struct MappingData {
+        Qt3DCore::QNodeId targetId;
+        const char *propertyName;
+        int type;
+        QVector<int> channelIndices;
+    };
+    QVector<MappingData> m_mappingData;
+    int m_currentLoop;
+    bool m_finalFrame;
 };
 
 } // namespace Animation

@@ -487,7 +487,23 @@ void QNode::notifyObservers(const QSceneChangePtr &change)
 void QNode::sceneChangeEvent(const QSceneChangePtr &change)
 {
     Q_UNUSED(change);
-    qWarning() << Q_FUNC_INFO << "sceneChangeEvent should have been subclassed";
+    if (change->type() == Qt3DCore::PropertyUpdated) {
+        // TODO: Do this more efficiently. We could pass the metaobject and property
+        //       index to the animation aspect via the QChannelMapping. This would
+        //       allow us to avoid the propertyIndex lookup here by sending them in
+        //       a new subclass of QPropertyUpdateChange.
+        // Try to find property and call setter
+        auto e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
+        const QMetaObject *mo = metaObject();
+        const int propertyIndex = mo->indexOfProperty(e->propertyName());
+        QMetaProperty mp = mo->property(propertyIndex);
+        bool wasBlocked = blockNotifications(true);
+        mp.write(this, e->value());
+        blockNotifications(wasBlocked);
+    } else {
+        // Nothing is handling this change, warn the user.
+        qWarning() << Q_FUNC_INFO << "sceneChangeEvent should have been subclassed";
+    }
 }
 
 /*!

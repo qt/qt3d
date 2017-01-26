@@ -63,6 +63,14 @@ void FindRunningClipAnimatorsJob::run()
         ClipAnimator *clipAnimator = clipAnimatorManager->data(clipAnimatorHandle);
         const bool canRun = clipAnimator->canRun();
         m_handler->setClipAnimatorRunning(clipAnimatorHandle, canRun);
+
+        // The clip animator needs to know how to map fcurve values through to
+        // properties on QNodes. Now we know this animator can run, build the mapping
+        // table.
+        // TODO: Should be possible to parallelise this with the fcurve evaluation as
+        //       sending the property change events doesn't happen until after evaluation
+        if (canRun)
+            clipAnimator->buildPropertyMappings();
     }
 
     qCDebug(Jobs) << "Running clip animators =" << m_handler->runningClipAnimators();
