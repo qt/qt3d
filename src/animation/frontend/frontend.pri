@@ -14,7 +14,9 @@ HEADERS += \
     $$PWD/qchannelmapper.h \
     $$PWD/qchannelmapper_p.h \
     $$PWD/qchannelmapping.h \
-    $$PWD/qchannelmapping_p.h
+    $$PWD/qchannelmapping_p.h \
+    $$PWD/qlerpblend.h \
+    $$PWD/qlerpblend_p.h
 
 SOURCES += \
     $$PWD/qanimationaspect.cpp \
@@ -24,6 +26,7 @@ SOURCES += \
     $$PWD/qblendedclipanimator.cpp \
     $$PWD/qconductedclipanimator.cpp \
     $$PWD/qchannelmapper.cpp \
-    $$PWD/qchannelmapping.cpp
+    $$PWD/qchannelmapping.cpp \
+    $$PWD/qlerpblend.cpp
 
 INCLUDEPATH += $$PWD
