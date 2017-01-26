@@ -5,5 +5,4 @@
 #
 # To have the plugin register them as types, add an entries to the
 # qmldir array in qt3dquick3dextrasplugin.cpp
-QML_FILES = \
-    $$PWD/qml/LevelOfDetailLoader.qml
+QML_FILES =

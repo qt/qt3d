@@ -66,6 +66,9 @@
 #include <Qt3DExtras/qcylindergeometry.h>
 #include <Qt3DExtras/qtext3dgeometry.h>
 #include <Qt3DExtras/qtext3dmesh.h>
+
+#include <Qt3DQuickExtras/private/quick3dlevelofdetailloader_p.h>
+
 #include <QtQml/qqml.h>
 
 QT_BEGIN_NAMESPACE
@@ -74,8 +77,6 @@ static const struct {
     const char *type;
     int major, minor;
 } qmldir [] = {
-    // Scene Graph
-    { "LevelOfDetailLoader", 2, 2 },
 };
 
 void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
@@ -85,6 +86,7 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
 
     // Entities
     qmlRegisterType<Qt3DExtras::QSkyboxEntity>(uri, 2, 0, "SkyboxEntity");
+    qmlRegisterType<Qt3DExtras::Extras::Quick::Quick3DLevelOfDetailLoader>(uri, 2, 2, "LevelOfDetailLoader");
 
     // Camera Controllers
     qmlRegisterType<Qt3DExtras::QFirstPersonCameraController>(uri, 2, 0, "FirstPersonCameraController");
