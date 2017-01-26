@@ -37,6 +37,7 @@
 #include "qlerpblend.h"
 #include "qlerpblend_p.h"
 #include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qclipblendnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -107,10 +108,9 @@ QLerpBlend::~QLerpBlend()
 Qt3DCore::QNodeCreatedChangeBasePtr QLerpBlend::createNodeCreationChange() const
 {
     Q_D(const QLerpBlend);
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QLerpBlendData>::create(this);
+    auto creationChange = QClipBlendNodeCreatedChangePtr<QLerpBlendData>::create(this);
     QLerpBlendData &data = creationChange->data;
     data.blendFactor = d->m_blendFactor;
-    data.clips = Qt3DCore::qIdsForNodes(QAbstractClipBlendNode::clips());
     return creationChange;
 }
 

@@ -34,46 +34,44 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QLERPBLEND_P_H
-#define QT3DANIMATION_QLERPBLEND_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DAnimation/private/qabstractclipblendnode_p.h>
-#include <Qt3DCore/qnodeid.h>
-#include "qlerpblend.h"
+#include "qclipblendnodecreatedchange.h"
+#include "qclipblendnodecreatedchange_p.h"
+#include <Qt3DAnimation/qabstractclipblendnode.h>
+#include <Qt3DAnimation/qanimationclip.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QLerpBlend;
-
-class QLerpBlendPrivate : public QAbstractClipBlendNodePrivate
+QClipBlendNodeCreatedChangeBasePrivate::QClipBlendNodeCreatedChangeBasePrivate(const QAbstractClipBlendNode *node)
+    : Qt3DCore::QNodeCreatedChangeBasePrivate(node)
+    , m_parentClipBlendNodeId(Qt3DCore::qIdForNode(node->parentClipBlendNode()))
+    , m_clips(Qt3DCore::qIdsForNodes(node->clips()))
 {
-public:
-    QLerpBlendPrivate();
+}
 
-    Q_DECLARE_PUBLIC(QLerpBlend)
-    float m_blendFactor;
-};
-
-struct QLerpBlendData
+QClipBlendNodeCreatedChangeBase::QClipBlendNodeCreatedChangeBase(const QAbstractClipBlendNode *node)
+    : Qt3DCore::QNodeCreatedChangeBase(*new QClipBlendNodeCreatedChangeBasePrivate(node), node)
 {
-    float blendFactor;
-};
+}
+
+QClipBlendNodeCreatedChangeBase::~QClipBlendNodeCreatedChangeBase()
+{
+}
+
+Qt3DCore::QNodeId QClipBlendNodeCreatedChangeBase::parentClipBlendNodeId() const
+{
+    Q_D(const QClipBlendNodeCreatedChangeBase);
+    return d->m_parentClipBlendNodeId;
+}
+
+Qt3DCore::QNodeIdVector QClipBlendNodeCreatedChangeBase::clips() const
+{
+    Q_D(const QClipBlendNodeCreatedChangeBase);
+    return d->m_clips;
+}
+
 
 } // Qt3DAnimation
 
 QT_END_NAMESPACE
-
-#endif // QT3DANIMATION_QLERPBLEND_P_H

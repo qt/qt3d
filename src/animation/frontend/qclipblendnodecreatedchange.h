@@ -34,46 +34,53 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QLERPBLEND_P_H
-#define QT3DANIMATION_QLERPBLEND_P_H
+#ifndef QT3DANIMATION_QCLIPBLENDNODECREATEDCHANGE_H
+#define QT3DANIMATION_QCLIPBLENDNODECREATEDCHANGE_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DAnimation/private/qabstractclipblendnode_p.h>
-#include <Qt3DCore/qnodeid.h>
-#include "qlerpblend.h"
+#include <Qt3DCore/qnodecreatedchange.h>
+#include <Qt3DAnimation/qabstractclipblendnode.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QLerpBlend;
+class QAbstractClipBlendNode;
+class QClipBlendNodeCreatedChangeBasePrivate;
 
-class QLerpBlendPrivate : public QAbstractClipBlendNodePrivate
+class QT3DANIMATIONSHARED_EXPORT QClipBlendNodeCreatedChangeBase : public Qt3DCore::QNodeCreatedChangeBase
 {
 public:
-    QLerpBlendPrivate();
+    explicit QClipBlendNodeCreatedChangeBase(const QAbstractClipBlendNode *node);
+    ~QClipBlendNodeCreatedChangeBase();
 
-    Q_DECLARE_PUBLIC(QLerpBlend)
-    float m_blendFactor;
+    Qt3DCore::QNodeId parentClipBlendNodeId() const;
+    Qt3DCore::QNodeIdVector clips() const;
+
+private:
+    Q_DECLARE_PRIVATE(QClipBlendNodeCreatedChangeBase)
 };
 
-struct QLerpBlendData
+typedef QSharedPointer<QClipBlendNodeCreatedChangeBase> QClipBlendNodeCreatedChangeBasePtr;
+
+template<typename T>
+class QClipBlendNodeCreatedChange : public QClipBlendNodeCreatedChangeBase
 {
-    float blendFactor;
+public:
+    explicit QClipBlendNodeCreatedChange(const QAbstractClipBlendNode *node)
+        : QClipBlendNodeCreatedChangeBase(node)
+        , data()
+    {
+    }
+
+    T data;
 };
+
+template<typename T>
+using QClipBlendNodeCreatedChangePtr = QSharedPointer<QClipBlendNodeCreatedChange<T>>;
+
 
 } // Qt3DAnimation
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_QLERPBLEND_P_H
+#endif // QT3DANIMATION_QCLIPBLENDNODECREATEDCHANGE_H

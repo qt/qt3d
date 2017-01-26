@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QLERPBLEND_P_H
-#define QT3DANIMATION_QLERPBLEND_P_H
+#ifndef QT3DANIMATION_QCLIPBLENDNODECREATEDCHANGE_P_H
+#define QT3DANIMATION_QCLIPBLENDNODECREATEDCHANGE_P_H
 
 //
 //  W A R N I N G
@@ -48,32 +48,25 @@
 // We mean it.
 //
 
-#include <Qt3DAnimation/private/qabstractclipblendnode_p.h>
-#include <Qt3DCore/qnodeid.h>
-#include "qlerpblend.h"
+#include <Qt3DCore/private/qnodecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QLerpBlend;
+class QAbstractClipBlendNode;
 
-class QLerpBlendPrivate : public QAbstractClipBlendNodePrivate
+class QClipBlendNodeCreatedChangeBasePrivate : public Qt3DCore::QNodeCreatedChangeBasePrivate
 {
 public:
-    QLerpBlendPrivate();
+    QClipBlendNodeCreatedChangeBasePrivate(const QAbstractClipBlendNode *node);
 
-    Q_DECLARE_PUBLIC(QLerpBlend)
-    float m_blendFactor;
-};
-
-struct QLerpBlendData
-{
-    float blendFactor;
+    Qt3DCore::QNodeId m_parentClipBlendNodeId;
+    Qt3DCore::QNodeIdVector m_clips;
 };
 
 } // Qt3DAnimation
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_QLERPBLEND_P_H
+#endif // QT3DANIMATION_QCLIPBLENDNODECREATEDCHANGE_P_H
