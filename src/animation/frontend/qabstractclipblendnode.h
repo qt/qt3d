@@ -54,6 +54,7 @@ public:
     ~QAbstractClipBlendNode();
 
     QVector<QAnimationClip *> clips() const;
+    QAbstractClipBlendNode *parentClipBlendNode() const;
 
 protected:
     explicit QAbstractClipBlendNode(Qt3DCore::QNode *parent = nullptr);

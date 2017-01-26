@@ -152,6 +152,31 @@ private Q_SLOTS:
         }
 
     }
+
+    void checkParentClipBlendNode()
+    {
+        // GIVEN
+        TestClipBlendNode clipNodeLevel0;
+        TestClipBlendNode clipNodeLevel1_1(&clipNodeLevel0);
+        TestClipBlendNode clipNodeLevel1_2(&clipNodeLevel0);
+        TestClipBlendNode clipNodeLevel2_1(&clipNodeLevel1_1);
+        Qt3DCore::QNode   fakeNodeLevel2_2(&clipNodeLevel1_2);
+        TestClipBlendNode clipNodeLeve3_1(&fakeNodeLevel2_2);
+
+        // THEN
+        QVERIFY(clipNodeLevel0.parent() == nullptr);
+        QCOMPARE(clipNodeLevel1_1.parent(), &clipNodeLevel0);
+        QCOMPARE(clipNodeLevel1_2.parent(), &clipNodeLevel0);
+        QCOMPARE(clipNodeLevel2_1.parent(), &clipNodeLevel1_1);
+        QCOMPARE(fakeNodeLevel2_2.parent(), &clipNodeLevel1_2);
+        QCOMPARE(clipNodeLeve3_1.parent(), &fakeNodeLevel2_2);
+
+        QVERIFY(clipNodeLevel0.parentClipBlendNode() == nullptr);
+        QCOMPARE(clipNodeLevel1_1.parentClipBlendNode(), &clipNodeLevel0);
+        QCOMPARE(clipNodeLevel1_2.parentClipBlendNode(), &clipNodeLevel0);
+        QCOMPARE(clipNodeLevel2_1.parentClipBlendNode(), &clipNodeLevel1_1);
+        QCOMPARE(clipNodeLeve3_1.parentClipBlendNode(), &clipNodeLevel1_2);
+    }
 };
 
 QTEST_MAIN(tst_QAbstractClipBlendNode)

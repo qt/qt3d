@@ -106,6 +106,19 @@ QVector<QAnimationClip *> QAbstractClipBlendNode::clips() const
     return d->m_clips;
 }
 
+QAbstractClipBlendNode *QAbstractClipBlendNode::parentClipBlendNode() const
+{
+    QAbstractClipBlendNode *parentBlendClipNode = nullptr;
+    QNode *parentN = parentNode();
+    while (parentN != nullptr) {
+        parentBlendClipNode = qobject_cast<QAbstractClipBlendNode *>(parentN);
+        if (parentBlendClipNode != nullptr)
+            break;
+        parentN = parentN->parentNode();
+    }
+    return parentBlendClipNode;
+}
+
 } // Qt3DAnimation
 
 QT_END_NAMESPACE
