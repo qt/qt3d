@@ -46,32 +46,70 @@ namespace Animation {
 
 BlendedClipAnimator::BlendedClipAnimator()
     : BackendNode(ReadOnly)
+    , m_running(false)
 {
 }
 
 void BlendedClipAnimator::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QBlendedClipAnimatorData>>(change);
-    const auto &data = typedChange->data;
+    const QBlendedClipAnimatorData &data = typedChange->data;
+    m_blendTreeRootId = data.blendTreeRootId;
+    m_mapperId = data.mapperId;
+    m_running = data.running;
+    setDirty(Handler::ClipAnimatorDirty);
 }
 
 void BlendedClipAnimator::cleanup()
 {
     setEnabled(false);
     m_handler = nullptr;
+    m_blendTreeRootId = Qt3DCore::QNodeId();
+    m_mapperId = Qt3DCore::QNodeId();
+    m_running = false;
+}
+
+void BlendedClipAnimator::setBlendTreeRootId(Qt3DCore::QNodeId blendTreeId)
+{
+    m_blendTreeRootId = blendTreeId;
+    setDirty(Handler::ClipAnimatorDirty);
+}
+
+void BlendedClipAnimator::setMapperId(Qt3DCore::QNodeId mapperId)
+{
+    m_mapperId = mapperId;
+    setDirty(Handler::ClipAnimatorDirty);
+}
+
+void BlendedClipAnimator::setRunning(bool running)
+{
+    m_running = running;
+    setDirty(Handler::ClipAnimatorDirty);
+}
+
+Qt3DCore::QNodeId BlendedClipAnimator::blendTreeRootId() const
+{
+    return m_blendTreeRootId;
 }
 
 void BlendedClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
     case Qt3DCore::PropertyUpdated: {
+        const auto change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("blendTree"))
+            setBlendTreeRootId(change->value().value<Qt3DCore::QNodeId>());
+        else if (change->propertyName() == QByteArrayLiteral("channelMapper"))
+            setMapperId(change->value().value<Qt3DCore::QNodeId>());
+        else if (change->propertyName() == QByteArrayLiteral("running"))
+            setRunning(change->value().toBool());
         break;
     }
 
     default:
         break;
     }
-    QBackendNode::sceneChangeEvent(e);
+    BackendNode::sceneChangeEvent(e);
 }
 
 } // namespace Animation

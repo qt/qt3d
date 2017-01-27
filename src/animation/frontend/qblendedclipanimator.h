@@ -47,19 +47,34 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
+class QChannelMapper;
+class QAbstractClipBlendNode;
 class QBlendedClipAnimatorPrivate;
 
 class QT3DANIMATIONSHARED_EXPORT QBlendedClipAnimator : public Qt3DCore::QComponent
 {
     Q_OBJECT
-    // TODO: Add property declarations
+    Q_PROPERTY(Qt3DAnimation::QAbstractClipBlendNode *blendTree READ blendTree WRITE setBlendTree NOTIFY blendTreeChanged)
+    Q_PROPERTY(Qt3DAnimation::QChannelMapper *channelMapper READ channelMapper WRITE setChannelMapper NOTIFY channelMapperChanged)
+    Q_PROPERTY(bool running READ isRunning WRITE setRunning NOTIFY runningChanged)
+
 public:
     explicit QBlendedClipAnimator(Qt3DCore::QNode *parent = nullptr);
     ~QBlendedClipAnimator();
 
+    bool isRunning() const;
+    Qt3DAnimation::QChannelMapper *channelMapper() const;
+    QAbstractClipBlendNode *blendTree() const;
+
 public Q_SLOTS:
+    void setRunning(bool running);
+    void setChannelMapper(QChannelMapper *channelMapper);
+    void setBlendTree(QAbstractClipBlendNode * blendTree);
 
 Q_SIGNALS:
+    void blendTreeChanged(QAbstractClipBlendNode * blendTree);
+    void runningChanged(bool running);
+    void channelMapperChanged(QChannelMapper *channelMapper);
 
 protected:
     QBlendedClipAnimator(QBlendedClipAnimatorPrivate &dd, Qt3DCore::QNode *parent = nullptr);

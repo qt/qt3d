@@ -38,6 +38,8 @@
 ****************************************************************************/
 #include "qblendedclipanimator.h"
 #include "qblendedclipanimator_p.h"
+#include <Qt3DAnimation/qabstractclipblendnode.h>
+#include <Qt3DAnimation/qchannelmapper.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,6 +47,9 @@ namespace Qt3DAnimation {
 
 QBlendedClipAnimatorPrivate::QBlendedClipAnimatorPrivate()
     : Qt3DCore::QComponentPrivate()
+    , m_blendTreeRoot(nullptr)
+    , m_mapper(nullptr)
+    , m_running(false)
 {
 }
 
@@ -62,12 +67,80 @@ QBlendedClipAnimator::~QBlendedClipAnimator()
 {
 }
 
+QAbstractClipBlendNode *QBlendedClipAnimator::blendTree() const
+{
+    Q_D(const QBlendedClipAnimator);
+    return d->m_blendTreeRoot;
+}
+
+bool QBlendedClipAnimator::isRunning() const
+{
+    Q_D(const QBlendedClipAnimator);
+    return d->m_running;
+}
+
+QChannelMapper *QBlendedClipAnimator::channelMapper() const
+{
+    Q_D(const QBlendedClipAnimator);
+    return d->m_mapper;
+}
+
+void QBlendedClipAnimator::setBlendTree(QAbstractClipBlendNode *blendTree)
+{
+    Q_D(QBlendedClipAnimator);
+    if (d->m_blendTreeRoot == blendTree)
+        return;
+
+    if (d->m_blendTreeRoot)
+        d->unregisterDestructionHelper(d->m_blendTreeRoot);
+
+    if (blendTree != nullptr && blendTree->parent() == nullptr)
+        blendTree->setParent(this);
+
+    d->m_blendTreeRoot = blendTree;
+
+    if (d->m_blendTreeRoot)
+        d->registerDestructionHelper(d->m_blendTreeRoot, &QBlendedClipAnimator::setBlendTree, d->m_blendTreeRoot);
+
+    emit blendTreeChanged(blendTree);
+}
+
+void QBlendedClipAnimator::setRunning(bool running)
+{
+    Q_D(QBlendedClipAnimator);
+    if (d->m_running == running)
+        return;
+
+    d->m_running = running;
+    emit runningChanged(running);
+}
+
+void QBlendedClipAnimator::setChannelMapper(QChannelMapper *mapping)
+{
+    Q_D(QBlendedClipAnimator);
+    if (d->m_mapper == mapping)
+        return;
+
+    if (d->m_mapper)
+        d->unregisterDestructionHelper(d->m_mapper);
+
+    if (mapping && !mapping->parent())
+        mapping->setParent(this);
+    d->m_mapper = mapping;
+
+    if (d->m_mapper)
+        d->registerDestructionHelper(d->m_mapper, &QBlendedClipAnimator::setChannelMapper, d->m_mapper);
+    emit channelMapperChanged(mapping);
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QBlendedClipAnimator::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QBlendedClipAnimatorData>::create(this);
-    auto &data = creationChange->data;
+    QBlendedClipAnimatorData &data = creationChange->data;
     Q_D(const QBlendedClipAnimator);
-    // TODO: Send data members in creation change
+    data.blendTreeRootId = Qt3DCore::qIdForNode(d->m_blendTreeRoot);
+    data.mapperId = Qt3DCore::qIdForNode(d->m_mapper);
+    data.running = d->m_running;
     return creationChange;
 }
 

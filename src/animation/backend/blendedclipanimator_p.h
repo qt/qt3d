@@ -63,11 +63,21 @@ public:
     BlendedClipAnimator();
 
     void cleanup();
-
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+    Qt3DCore::QNodeId blendTreeRootId() const;
+    Qt3DCore::QNodeId mapperId() const { return m_mapperId; }
+    bool isRunning() const { return m_running; }
+
+    void setBlendTreeRootId(Qt3DCore::QNodeId blendTreeRootId);
+    void setMapperId(Qt3DCore::QNodeId mapperId);
+    void setRunning(bool running);
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    Qt3DCore::QNodeId m_blendTreeRootId;
+    Qt3DCore::QNodeId m_mapperId;
+    bool m_running;
 };
 
 } // namespace Animation

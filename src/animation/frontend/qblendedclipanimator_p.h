@@ -57,19 +57,25 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
+class QAbstractClipBlendNode;
+class QChannelMapper;
+
 class QBlendedClipAnimatorPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QBlendedClipAnimatorPrivate();
 
     Q_DECLARE_PUBLIC(QBlendedClipAnimator)
-
-    // TODO Add member variables
+    QAbstractClipBlendNode *m_blendTreeRoot;
+    QChannelMapper *m_mapper;
+    bool m_running;
 };
 
 struct QBlendedClipAnimatorData
 {
-    // TODO: Add members that should be sent to the backend
+    Qt3DCore::QNodeId blendTreeRootId;
+    Qt3DCore::QNodeId mapperId;
+    bool running;
 };
 
 } // namespace Qt3DAnimation
