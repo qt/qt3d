@@ -29,7 +29,10 @@ HEADERS += \
     $$PWD/qorbitcameracontroller.h \
     $$PWD/qorbitcameracontroller_p.h \
     $$PWD/qtexturematerial.h \
-    $$PWD/qtexturematerial_p.h
+    $$PWD/qtexturematerial_p.h \
+    $$PWD/qtexturedmetalroughmaterial.h \
+    $$PWD/qtexturedmetalroughmaterial_p.h
+
 
 SOURCES += \
     $$PWD/qphongmaterial.cpp \
@@ -46,5 +49,6 @@ SOURCES += \
     $$PWD/qt3dwindow.cpp \
     $$PWD/qfirstpersoncameracontroller.cpp \
     $$PWD/qorbitcameracontroller.cpp \
-    $$PWD/qtexturematerial.cpp
+    $$PWD/qtexturematerial.cpp \
+    $$PWD/qtexturedmetalroughmaterial.cpp
 

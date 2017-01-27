@@ -57,6 +57,7 @@
 #include <Qt3DExtras/qskyboxentity.h>
 #include <Qt3DExtras/qspheremesh.h>
 #include <Qt3DExtras/qtexturematerial.h>
+#include <Qt3DExtras/qtexturedmetalroughmaterial.h>
 #include <Qt3DExtras/qtorusmesh.h>
 #include <Qt3DExtras/qtorusgeometry.h>
 #include <Qt3DExtras/qspheregeometry.h>
@@ -97,6 +98,7 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DExtras::QPerVertexColorMaterial>(uri, 2, 0, "PerVertexColorMaterial");
     qmlRegisterType<Qt3DExtras::QGoochMaterial>(uri, 2, 0, "GoochMaterial");
     qmlRegisterType<Qt3DExtras::QTextureMaterial>(uri, 2, 0, "TextureMaterial");
+    qmlRegisterType<Qt3DExtras::QTexturedMetalRoughMaterial>(uri, 2, 2, "TexturedMetalRoughMaterial");
 
     // Meshes
     qmlRegisterType<Qt3DExtras::QConeMesh>(uri, 2, 0, "ConeMesh");
