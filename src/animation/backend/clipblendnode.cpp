@@ -37,7 +37,6 @@
 #include "clipblendnode_p.h"
 #include <Qt3DAnimation/qclipblendnodecreatedchange.h>
 #include <Qt3DAnimation/qanimationclip.h>
-#include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 
@@ -48,7 +47,8 @@ namespace Qt3DAnimation {
 namespace Animation {
 
 ClipBlendNode::ClipBlendNode(BlendType blendType)
-    : m_manager(nullptr)
+    : BackendNode(ReadOnly) // Makes sense for now at least
+    , m_manager(nullptr)
     , m_blendType(blendType)
 {
 }

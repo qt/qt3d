@@ -45,9 +45,11 @@
 #include <Qt3DAnimation/qconductedclipanimator.h>
 #include <Qt3DAnimation/qchannelmapping.h>
 #include <Qt3DAnimation/qchannelmapper.h>
+#include <Qt3DAnimation/qlerpblend.h>
 #include <Qt3DAnimation/private/handler_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/nodefunctor_p.h>
+#include <Qt3DAnimation/private/lerpblend_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -106,6 +108,9 @@ QAnimationAspect::QAnimationAspect(QAnimationAspectPrivate &dd, QObject *parent)
     registerBackendType<QChannelMapper>(
         QSharedPointer<Animation::NodeFunctor<Animation::ChannelMapper, Animation::ChannelMapperManager>>::create(d->m_handler.data(),
                                                                                                                   d->m_handler->channelMapperManager()));
+    registerBackendType<QLerpBlend>(
+                QSharedPointer<Animation::ClipBlendNodeFunctor<Animation::LerpBlend, Animation::ClipAnimatorManager>>::create(d->m_handler.data(),
+                                                                                                                     d->m_handler->clipBlendNodeManager()));
 }
 
 /*! \internal */

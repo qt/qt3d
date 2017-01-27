@@ -49,7 +49,8 @@
 //
 
 #include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DAnimation/private/backendnode_p.h>
+#include <Qt3DAnimation/private/managers_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,7 +60,7 @@ namespace Animation {
 
 class ClipBlendNodeManager;
 
-class Q_AUTOTEST_EXPORT ClipBlendNode : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT ClipBlendNode : public BackendNode
 {
 public:
     ~ClipBlendNode();
@@ -95,6 +96,42 @@ private:
     Qt3DCore::QNodeIdVector m_childrenIds;
     ClipBlendNodeManager *m_manager;
     BlendType m_blendType;
+};
+
+template<typename Backend, typename Frontend>
+class ClipBlendNodeFunctor : public Qt3DCore::QBackendNodeMapper
+{
+public:
+    explicit ClipBlendNodeFunctor(Handler *handler, ClipBlendNodeManager *manager)
+        : m_handler(handler)
+        , m_manager(manager)
+    {
+    }
+
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_FINAL
+    {
+        if (m_manager->containsNode(change->subjectId()))
+            return static_cast<Backend *>(m_manager->lookupNode(change->subjectId()));
+        Backend *backend = new Backend();
+        backend->setClipBlendNodeManager(m_manager);
+        backend->setHandler(m_handler);
+        m_manager->appendNode(change->subjectId(), backend);
+        return backend;
+    }
+
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL
+    {
+        return m_manager->lookupNode(id);
+    }
+
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL
+    {
+        m_manager->releaseNode(id);
+    }
+
+private:
+    Handler *m_handler;
+    ClipBlendNodeManager *m_manager;
 };
 
 } // Animation
