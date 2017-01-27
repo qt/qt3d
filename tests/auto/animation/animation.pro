@@ -24,5 +24,6 @@ qtConfig(private_tests) {
         qlerpblend \
         clipblendnodemanager \
         clipblendnode \
-        lerpblend
+        lerpblend \
+        clipblendnodevisitor
 }

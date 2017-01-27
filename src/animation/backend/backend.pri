@@ -21,7 +21,8 @@ HEADERS += \
     $$PWD/findrunningclipanimatorsjob_p.h \
     $$PWD/evaluateclipanimatorjob_p.h \
     $$PWD/clipblendnode_p.h \
-    $$PWD/lerpblend_p.h
+    $$PWD/lerpblend_p.h \
+    $$PWD/clipblendnodevisitor_p.h
 
 SOURCES += \
     $$PWD/animationclip.cpp \
@@ -40,4 +41,5 @@ SOURCES += \
     $$PWD/evaluateclipanimatorjob.cpp \
     $$PWD/clipblendnode.cpp \
     $$PWD/lerpblend.cpp \
-    $$PWD/managers.cpp
+    $$PWD/managers.cpp \
+    $$PWD/clipblendnodevisitor.cpp
