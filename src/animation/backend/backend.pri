@@ -19,7 +19,9 @@ HEADERS += \
     $$PWD/channelmapping_p.h \
     $$PWD/channelmapper_p.h \
     $$PWD/findrunningclipanimatorsjob_p.h \
-    $$PWD/evaluateclipanimatorjob_p.h
+    $$PWD/evaluateclipanimatorjob_p.h \
+    $$PWD/clipblendnode_p.h \
+    $$PWD/lerpblend_p.h
 
 SOURCES += \
     $$PWD/animationclip.cpp \
@@ -35,4 +37,7 @@ SOURCES += \
     $$PWD/channelmapping.cpp \
     $$PWD/channelmapper.cpp \
     $$PWD/findrunningclipanimatorsjob.cpp \
-    $$PWD/evaluateclipanimatorjob.cpp
+    $$PWD/evaluateclipanimatorjob.cpp \
+    $$PWD/clipblendnode.cpp \
+    $$PWD/lerpblend.cpp \
+    $$PWD/managers.cpp

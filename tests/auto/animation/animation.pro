@@ -21,5 +21,8 @@ qtConfig(private_tests) {
         conductedclipanimator \
         channelmapper \
         channelmapping \
-        qlerpblend
+        qlerpblend \
+        clipblendnodemanager \
+        clipblendnode \
+        lerpblend
 }

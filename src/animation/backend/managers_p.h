@@ -66,6 +66,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 namespace Animation {
 
+class ClipBlendNode;
+
 class AnimationClipManager : public Qt3DCore::QResourceManager<
         AnimationClip,
         Qt3DCore::QNodeId,
@@ -124,6 +126,21 @@ class ChannelMapperManager : public Qt3DCore::QResourceManager<
 {
 public:
     ChannelMapperManager() {}
+};
+
+class Q_AUTOTEST_EXPORT ClipBlendNodeManager
+{
+public:
+    ClipBlendNodeManager();
+    ~ClipBlendNodeManager();
+
+    bool containsNode(Qt3DCore::QNodeId id) const;
+    void appendNode(Qt3DCore::QNodeId id, ClipBlendNode *node);
+    ClipBlendNode *lookupNode(Qt3DCore::QNodeId id) const;
+    void releaseNode(Qt3DCore::QNodeId id);
+
+private:
+    QHash<Qt3DCore::QNodeId, ClipBlendNode *> m_nodes;
 };
 
 } // namespace Animation
