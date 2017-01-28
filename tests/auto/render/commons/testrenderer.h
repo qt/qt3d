@@ -74,6 +74,7 @@ public:
 
     void resetDirty();
     QVariant executeCommand(const QStringList &args) Q_DECL_OVERRIDE;
+    QOpenGLContext *shareContext() const Q_DECL_OVERRIDE;
 
     void setOffscreenSurfaceHelper(Qt3DRender::Render::OffscreenSurfaceHelper *helper) Q_DECL_OVERRIDE;
     QSurfaceFormat format() Q_DECL_OVERRIDE;

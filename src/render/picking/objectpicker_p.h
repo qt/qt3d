@@ -73,6 +73,8 @@ public:
     bool isPressed() const;
     bool isHoverEnabled() const;
     bool isDragEnabled() const;
+    bool isEventForwardingEnabled() const;
+    Qt3DCore::QNodeId eventForward() const;
 
     void onClicked(QPickEventPtr event);
     void onMoved(QPickEventPtr event);
@@ -88,6 +90,7 @@ private:
     bool m_isPressed;
     bool m_hoverEnabled;
     bool m_dragEnabled;
+    Qt3DCore::QNodeId m_eventForward;
 };
 
 } // Render

@@ -71,24 +71,6 @@ bool isTriangleBased(Qt3DRender::QGeometryRenderer::PrimitiveType type) Q_DECL_N
     }
 }
 
-struct BufferInfo
-{
-    BufferInfo()
-        : type(QAttribute::VertexBaseType::Float)
-        , dataSize(0)
-        , count(0)
-        , byteStride(0)
-        , byteOffset(0)
-    {}
-
-    QByteArray data;
-    QAttribute::VertexBaseType type;
-    uint dataSize;
-    uint count;
-    uint byteStride;
-    uint byteOffset;
-};
-
 // TO DO: Add methods for triangle strip adjacency
 // What about primitive restart ?
 
@@ -328,6 +310,17 @@ void traverseTriangleAdjacency(Vertex *vertices,
     }
 }
 
+template<typename Coordinate>
+QVector4D readCoordinate(const BufferInfo &info, Coordinate *coordinates, uint index)
+{
+    const uint stride = info.byteStride / sizeof(Coordinate);
+    QVector4D ret(0, 0, 0, 1.0f);
+    coordinates += stride * index;
+    for (uint e = 0; e < info.dataSize; ++e)
+        ret[e] = coordinates[e];
+    return ret;
+}
+
 
 template <QAttribute::VertexBaseType> struct EnumToType;
 template <> struct EnumToType<QAttribute::Byte> { typedef const char type; };
@@ -368,6 +361,31 @@ void processBuffer(const BufferInfo &info, Func &f)
     default:
         return;
     }
+}
+
+QVector4D readBuffer(const BufferInfo &info, uint index)
+{
+    switch (info.type) {
+    case QAttribute::Byte:
+        return readCoordinate(info, castToType<QAttribute::Byte>(info.data, info.byteOffset), index);
+    case QAttribute::UnsignedByte:
+        return readCoordinate(info, castToType<QAttribute::UnsignedByte>(info.data, info.byteOffset), index);
+    case QAttribute::Short:
+        return readCoordinate(info, castToType<QAttribute::Short>(info.data, info.byteOffset), index);
+    case QAttribute::UnsignedShort:
+        return readCoordinate(info, castToType<QAttribute::UnsignedShort>(info.data, info.byteOffset), index);
+    case QAttribute::Int:
+        return readCoordinate(info, castToType<QAttribute::Int>(info.data, info.byteOffset), index);
+    case QAttribute::UnsignedInt:
+        return readCoordinate(info, castToType<QAttribute::UnsignedInt>(info.data, info.byteOffset), index);
+    case QAttribute::Float:
+        return readCoordinate(info, castToType<QAttribute::Float>(info.data, info.byteOffset), index);
+    case QAttribute::Double:
+        return readCoordinate(info, castToType<QAttribute::Double>(info.data, info.byteOffset), index);
+    default:
+        break;
+    }
+    return QVector4D();
 }
 
 template<typename Index>
@@ -528,6 +546,53 @@ void TrianglesVisitor::apply(const GeometryRenderer *renderer, const Qt3DCore::Q
             }
         }
     }
+}
+
+bool CoordinateReader::setGeometry(const GeometryRenderer *renderer, const QString &attributeName)
+{
+    if (renderer == nullptr || renderer->instanceCount() != 1
+            || !isTriangleBased(renderer->primitiveType())) {
+        return false;
+    }
+
+    Geometry *geom = m_manager->lookupResource<Geometry, GeometryManager>(renderer->geometryId());
+
+    if (!geom)
+        return false;
+
+    Attribute *attribute = nullptr;
+
+    const auto attrIds = geom->attributes();
+    for (const Qt3DCore::QNodeId attrId : attrIds) {
+        attribute = m_manager->lookupResource<Attribute, AttributeManager>(attrId);
+        if (attribute){
+            if (attribute->name() == attributeName
+                    || (attributeName == QStringLiteral("default")
+                        && attribute->name() == QAttribute::defaultTextureCoordinateAttributeName())) {
+                break;
+            }
+        }
+        attribute = nullptr;
+    }
+
+    if (!attribute)
+        return false;
+
+    m_attribute = attribute;
+    m_buffer = m_manager->lookupResource<Buffer, BufferManager>(attribute->bufferId());
+
+    m_bufferInfo.data = m_buffer->data();
+    m_bufferInfo.type = m_attribute->vertexBaseType();
+    m_bufferInfo.byteOffset = m_attribute->byteOffset();
+    m_bufferInfo.byteStride = m_attribute->byteStride();
+    m_bufferInfo.dataSize = m_attribute->vertexSize();
+    m_bufferInfo.count = m_attribute->count();
+    return true;
+}
+
+QVector4D CoordinateReader::getCoordinate(uint vertexIndex)
+{
+    return readBuffer(m_bufferInfo, vertexIndex);
 }
 
 } // namespace Render

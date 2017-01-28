@@ -68,6 +68,7 @@ struct Hit
     float distance;
     Qt3DCore::QNodeId id;
     QVector3D intersection;
+    QVector3D uvw;
 };
 
 bool compareHitsDistance(const Hit &a, const Hit &b)
@@ -78,7 +79,7 @@ bool compareHitsDistance(const Hit &a, const Hit &b)
 Hit volumeRayIntersection(const QBoundingVolume *volume, const QRay3D &ray)
 {
     Hit hit;
-    if ((hit.intersects = volume->intersects(ray, &hit.intersection))) {
+    if ((hit.intersects = volume->intersects(ray, &hit.intersection, &hit.uvw))) {
         hit.distance = ray.projectedDistance(hit.intersection);
         hit.id = volume->id();
     }
@@ -134,12 +135,12 @@ QCollisionQueryResult QRayCastingServicePrivate::collides(const QRay3D &ray, QBo
     if (mode == QAbstractCollisionQueryService::FirstHit) {
         Hit firstHit = QtConcurrent::blockingMappedReduced<Hit>(volumes, gathererFunctor, reduceToFirstHit);
         if (firstHit.intersects)
-            q->addEntityHit(result, firstHit.id, firstHit.intersection, firstHit.distance);
+            q->addEntityHit(result, firstHit.id, firstHit.intersection, firstHit.distance, firstHit.uvw);
     } else {
         QVector<Hit> hits = QtConcurrent::blockingMappedReduced<QVector<Hit> >(volumes, gathererFunctor, reduceToAllHits);
         std::sort(hits.begin(), hits.end(), compareHitsDistance);
         for (const Hit &hit : qAsConst(hits))
-            q->addEntityHit(result, hit.id, hit.intersection, hit.distance);
+            q->addEntityHit(result, hit.id, hit.intersection, hit.distance, hit.uvw);
     }
 
     return result;
@@ -154,6 +155,7 @@ QCollisionQueryResult::Hit QRayCastingServicePrivate::collides(const QRay3D &ray
         result.m_distance = hit.distance;
         result.m_entityId = hit.id;
         result.m_intersection = hit.intersection;
+        result.m_uvw = hit.uvw;
     }
     return result;
 }

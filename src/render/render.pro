@@ -41,6 +41,7 @@ SOURCES += \
 
 MODULE_PLUGIN_TYPES = \
     sceneparsers \
-    geometryloaders
+    geometryloaders \
+    renderplugins
 
 load(qt_module)

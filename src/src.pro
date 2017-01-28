@@ -71,6 +71,11 @@ src_plugins_geometryloaders.file = $$PWD/plugins/geometryloaders/geometryloaders
 src_plugins_geometryloaders.target = sub-plugins-geometryloaders
 src_plugins_geometryloaders.depends = src_render src_extras
 
+# Qt3D Render plugins
+src_plugins_render.file = $$PWD/plugins/renderplugins/renderplugins.pro
+src_plugins_render.target = sub-plugins-render
+src_plugins_render.depends = src_render src_extras src_quick3d_render
+
 SUBDIRS += \
     src_core \
     src_render \
@@ -89,6 +94,5 @@ SUBDIRS += \
     src_quick3d_imports_extras \
     src_plugins_sceneparsers \
     src_plugins_geometryloaders \
+    src_plugins_render \
     doc
-
-

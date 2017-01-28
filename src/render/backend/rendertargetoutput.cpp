@@ -121,9 +121,14 @@ void RenderTargetOutput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     BackendNode::sceneChangeEvent(e);
 }
 
-Attachment RenderTargetOutput::attachment() const
+Qt3DRender::Render::Attachment *RenderTargetOutput::attachment()
 {
-    return m_attachmentData;
+    return &m_attachmentData;
+}
+
+const Attachment *RenderTargetOutput::attachment() const
+{
+    return &m_attachmentData;
 }
 
 } // namespace Render

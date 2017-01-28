@@ -70,6 +70,7 @@ void ObjectPicker::cleanup()
     m_isPressed = false;
     m_hoverEnabled = false;
     m_dragEnabled = false;
+    m_eventForward = Qt3DCore::QNodeId();
     notifyJob();
 }
 
@@ -79,6 +80,7 @@ void ObjectPicker::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
     const auto &data = typedChange->data;
     m_hoverEnabled = data.hoverEnabled;
     m_dragEnabled = data.dragEnabled;
+    m_eventForward = data.eventForward;
     notifyJob();
 }
 
@@ -92,17 +94,13 @@ void ObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::PropertyUpdated) {
         const Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        bool notifyPickJob = false;
 
         if (propertyChange->propertyName() == QByteArrayLiteral("hoverEnabled")) {
             m_hoverEnabled = propertyChange->value().toBool();
-            notifyPickJob = true;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("dragEnabled")) {
             m_dragEnabled = propertyChange->value().toBool();
-            notifyPickJob = true;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            notifyPickJob = true;
-            // actual value change handled in BackendNode::sceneChangeEvent
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("eventForward")) {
+            m_eventForward = propertyChange->value().value<Qt3DCore::QNodeId>();
         }
 
         markDirty(AbstractRenderer::AllDirty);
@@ -125,6 +123,16 @@ bool ObjectPicker::isHoverEnabled() const
 bool ObjectPicker::isDragEnabled() const
 {
     return m_dragEnabled;
+}
+
+bool ObjectPicker::isEventForwardingEnabled() const
+{
+    return Qt3DCore::QNodeId() != m_eventForward;
+}
+
+Qt3DCore::QNodeId ObjectPicker::eventForward() const
+{
+    return m_eventForward;
 }
 
 void ObjectPicker::onClicked(QPickEventPtr event)

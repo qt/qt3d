@@ -148,6 +148,16 @@ public:
         m_dirty |= TextureData;
     }
 
+    bool isDirty()
+    {
+        QMutexLocker locker(&m_dirtyFlagMutex);
+        return m_dirty == 0 ? false : true;
+    }
+
+    QMutex *textureLock()
+    {
+        return &m_dirtyFlagMutex;
+    }
 protected:
 
     template<class APITexture, class APITextureImage>

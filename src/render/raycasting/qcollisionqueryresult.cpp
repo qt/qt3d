@@ -56,9 +56,10 @@ QCollisionQueryResultPrivate::QCollisionQueryResultPrivate(const QCollisionQuery
 {
 }
 
-void QCollisionQueryResultPrivate::addEntityHit(Qt3DCore::QNodeId entity, const QVector3D& intersection, float distance)
+void QCollisionQueryResultPrivate::addEntityHit(Qt3DCore::QNodeId entity, const QVector3D& intersection,
+                                                float distance, const QVector3D& uvw)
 {
-    m_hits.append(QCollisionQueryResult::Hit(entity, intersection, distance));
+    m_hits.append(QCollisionQueryResult::Hit(entity, intersection, distance, uvw));
 }
 
 void QCollisionQueryResultPrivate::setHandle(const QQueryHandle &handle)

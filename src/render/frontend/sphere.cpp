@@ -223,8 +223,9 @@ Qt3DCore::QNodeId Sphere::id() const
     return m_id;
 }
 
-bool Sphere::intersects(const RayCasting::QRay3D &ray, QVector3D *q) const
+bool Sphere::intersects(const RayCasting::QRay3D &ray, QVector3D *q, QVector3D *uvw) const
 {
+    Q_UNUSED(uvw);
     return intersectRaySphere(ray, *this, q);
 }
 

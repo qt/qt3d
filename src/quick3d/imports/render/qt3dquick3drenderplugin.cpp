@@ -103,8 +103,11 @@
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qrendersettings.h>
 #include <Qt3DRender/qpickingsettings.h>
+#include <Qt3DRender/qeventforward.h>
 #include <Qt3DRender/qrendercapture.h>
 #include <Qt3DRender/qmemorybarrier.h>
+
+#include <Qt3DQuickRender/qscene2d.h>
 #include <Qt3DQuickRender/private/quick3dlayerfilter_p.h>
 #include <Qt3DQuickRender/private/quick3dtechnique_p.h>
 #include <Qt3DQuickRender/private/quick3dmaterial_p.h>
@@ -205,6 +208,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 
     // Picking
     qmlRegisterType<Qt3DRender::QObjectPicker>(uri, 2, 0, "ObjectPicker");
+    qmlRegisterType<Qt3DRender::QEventForward>(uri, 2, 2, "EventForward");
     qmlRegisterUncreatableType<Qt3DRender::QPickEvent>(uri, 2, 0, "PickEvent", QStringLiteral("Events cannot be created"));
 
         // Compute Job
@@ -269,6 +273,9 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QSeamlessCubemap>(uri, 2, 0, "SeamlessCubemap");
     qmlRegisterType<Qt3DRender::QStencilOperation>(uri, 2, 0, "StencilOperation");
     qmlRegisterType<Qt3DRender::QStencilMask>(uri, 2, 0, "StencilMask");
+
+    // Scene2D
+    Qt3DRender::Quick::registerType<Qt3DRender::Quick::QScene2D>("QScene2D", "Qt3D.Render/Scene2D", uri, 2, 2, "Scene2D");
 }
 
 QT_END_NAMESPACE

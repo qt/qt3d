@@ -157,6 +157,12 @@ void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackend
     d->m_backendCreatorFunctors.insert(&obj, functor);
 }
 
+void QAbstractAspect::unregisterBackendType(const QMetaObject &obj)
+{
+    Q_D(QAbstractAspect);
+    d->m_backendCreatorFunctors.remove(&obj);
+}
+
 void QAbstractAspectPrivate::sceneNodeAdded(QSceneChangePtr &change)
 {
     QNodeCreatedChangeBasePtr creationChange = qSharedPointerCast<QNodeCreatedChangeBase>(change);

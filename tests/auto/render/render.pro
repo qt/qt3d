@@ -101,7 +101,12 @@ qtConfig(private_tests) {
         trianglevisitor \
         qmemorybarrier \
         memorybarrier \
-        qshaderprogram
+        qshaderprogram \
+        qeventforward \
+        eventforward \
+        qscene2d \
+        #scene2d \
+        coordinatereader
 
     !macos: SUBDIRS += graphicshelpergl4
 }
