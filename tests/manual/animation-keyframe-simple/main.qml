@@ -38,7 +38,7 @@ DefaultSceneEntity {
             },
             ClipAnimator {
                 id: animator
-
+                loops: 3
                 onRunningChanged: console.log("running = " + running)
 
                 clip: AnimationClip {

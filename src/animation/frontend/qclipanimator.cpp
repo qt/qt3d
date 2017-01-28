@@ -51,6 +51,7 @@ QClipAnimatorPrivate::QClipAnimatorPrivate()
     , m_clip(nullptr)
     , m_mapper(nullptr)
     , m_running(false)
+    , m_loops(1)
 {
 }
 
@@ -84,6 +85,12 @@ QChannelMapper *QClipAnimator::channelMapper() const
 {
     Q_D(const QClipAnimator);
     return d->m_mapper;
+}
+
+int QClipAnimator::loops() const
+{
+    Q_D(const QClipAnimator);
+    return d->m_loops;
 }
 
 void QClipAnimator::setClip(QAnimationClip *clip)
@@ -134,6 +141,16 @@ void QClipAnimator::setChannelMapper(QChannelMapper *mapping)
     emit channelMapperChanged(mapping);
 }
 
+void QClipAnimator::setLoops(int loops)
+{
+    Q_D(QClipAnimator);
+    if (d->m_loops == loops)
+        return;
+
+    d->m_loops = loops;
+    emit loopsChanged(loops);
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QClipAnimator::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QClipAnimatorData>::create(this);
@@ -142,6 +159,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QClipAnimator::createNodeCreationChange() co
     data.clipId = Qt3DCore::qIdForNode(d->m_clip);
     data.mapperId = Qt3DCore::qIdForNode(d->m_mapper);
     data.running = d->m_running;
+    data.loops = d->m_loops;
     return creationChange;
 }
 

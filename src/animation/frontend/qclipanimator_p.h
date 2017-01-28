@@ -70,6 +70,7 @@ public:
     QAnimationClip *m_clip;
     Qt3DAnimation::QChannelMapper *m_mapper;
     bool m_running;
+    int m_loops;
 };
 
 struct QClipAnimatorData
@@ -77,6 +78,7 @@ struct QClipAnimatorData
     Qt3DCore::QNodeId clipId;
     Qt3DCore::QNodeId mapperId;
     bool running;
+    int loops;
 };
 
 } // namespace Qt3DAnimation

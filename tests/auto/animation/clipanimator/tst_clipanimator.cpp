@@ -52,6 +52,7 @@ private Q_SLOTS:
         auto clip = new Qt3DAnimation::QAnimationClip();
 
         animator.setClip(clip);
+        animator.setLoops(10);
 
         // WHEN
         simulateInitialization(&animator, &backendAnimator);
@@ -61,6 +62,7 @@ private Q_SLOTS:
         QCOMPARE(backendAnimator.isEnabled(), animator.isEnabled());
         QCOMPARE(backendAnimator.clipId(), clip->id());
         QCOMPARE(backendAnimator.isRunning(), animator.isRunning());
+        QCOMPARE(backendAnimator.loops(), animator.loops());
     }
 
     void checkInitialAndCleanedUpState()
@@ -75,12 +77,14 @@ private Q_SLOTS:
         QCOMPARE(backendAnimator.isEnabled(), false);
         QCOMPARE(backendAnimator.clipId(), Qt3DCore::QNodeId());
         QCOMPARE(backendAnimator.isRunning(), false);
+        QCOMPARE(backendAnimator.loops(), 1);
 
         // GIVEN
         Qt3DAnimation::QClipAnimator animator;
         auto clip = new Qt3DAnimation::QAnimationClip();
         animator.setClip(clip);
         animator.setRunning(true);
+        animator.setLoops(25);
 
         // WHEN
         simulateInitialization(&animator, &backendAnimator);
@@ -91,6 +95,7 @@ private Q_SLOTS:
         QCOMPARE(backendAnimator.clipId(), Qt3DCore::QNodeId());
         QCOMPARE(backendAnimator.isEnabled(), false);
         QCOMPARE(backendAnimator.isRunning(), false);
+        QCOMPARE(backendAnimator.loops(), 1);
     }
 
     void checkPropertyChanges()
@@ -128,6 +133,15 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendAnimator.isRunning(), true);
+
+        // WHEN
+        updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        updateChange->setPropertyName("loops");
+        updateChange->setValue(64);
+        backendAnimator.sceneChangeEvent(updateChange);
+
+        // THEN
+        QCOMPARE(backendAnimator.loops(), 64);
     }
 };
 

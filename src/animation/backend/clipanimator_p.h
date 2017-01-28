@@ -72,6 +72,7 @@ public:
 
     void setRunning(bool running);
     bool isRunning() const { return m_running; }
+    int loops() const { return m_loops; }
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
@@ -92,7 +93,7 @@ public:
 
     static double localTimeFromGlobalTime(double t_global, double t_start_global,
                                           double playbackRate, double duration,
-                                          int loopCount);
+                                          int loopCount, int *currentLoop = nullptr);
 
     static QVector<int> channelsToIndices(const ChannelGroup &channelGroup,
                                           int dataType,
@@ -106,10 +107,13 @@ private:
                                                 int offset,
                                                 const QStringList &suffixes);
 
+    // Mirror of frontend properties
     Qt3DCore::QNodeId m_clipId;
     Qt3DCore::QNodeId m_mapperId;
     bool m_running;
+    int m_loops;
 
+    // Working state
     qint64 m_startGlobalTime;
     QVector<float> m_channelResults;
 

@@ -59,6 +59,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(animator.clip(), static_cast<Qt3DAnimation::QAnimationClip *>(nullptr));
         QCOMPARE(animator.channelMapper(), static_cast<Qt3DAnimation::QChannelMapper *>(nullptr));
+        QCOMPARE(animator.loops(), 1);
     }
 
     void checkPropertyChanges()
@@ -107,6 +108,26 @@ private Q_SLOTS:
             QCOMPARE(animator.channelMapper(), newValue);
             QCOMPARE(spy.count(), 0);
         }
+
+        {
+            // WHEN
+            QSignalSpy spy(&animator, SIGNAL(loopsChanged(int)));
+            const int newValue = 5;
+            animator.setLoops(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(animator.loops(), newValue);
+            QCOMPARE(spy.count(), 1);
+
+            // WHEN
+            spy.clear();
+            animator.setLoops(newValue);
+
+            // THEN
+            QCOMPARE(animator.loops(), newValue);
+            QCOMPARE(spy.count(), 0);
+        }
     }
 
     void checkCreationData()
@@ -138,6 +159,7 @@ private Q_SLOTS:
             QCOMPARE(animator.metaObject(), creationChangeData->metaObject());
             QCOMPARE(animator.clip()->id(), data.clipId);
             QCOMPARE(animator.channelMapper()->id(), data.mapperId);
+            QCOMPARE(animator.loops(), data.loops);
         }
 
         // WHEN
@@ -212,6 +234,30 @@ private Q_SLOTS:
         {
             // WHEN
             animator.setChannelMapper(mapper);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+        }
+
+        {
+            // WHEN
+            animator.setLoops(10);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 1);
+            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "loops");
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+            QCOMPARE(change->value().toInt(), animator.loops());
+
+            arbiter.events.clear();
+        }
+
+        {
+            // WHEN
+            animator.setLoops(10);
             QCoreApplication::processEvents();
 
             // THEN

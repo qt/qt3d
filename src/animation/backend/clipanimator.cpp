@@ -39,6 +39,7 @@
 #include <Qt3DAnimation/private/qclipanimator_p.h>
 #include <Qt3DAnimation/private/animationclip_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
+#include <Qt3DAnimation/private/animationlogging_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 
@@ -48,6 +49,7 @@
 #include <QtGui/qquaternion.h>
 
 #include <QtCore/qvariant.h>
+#include <QtCore/qmath.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,6 +61,7 @@ ClipAnimator::ClipAnimator()
     , m_clipId()
     , m_mapperId()
     , m_running(false)
+    , m_loops(1)
     , m_startGlobalTime(0)
     , m_channelResults()
     , m_mappingData()
@@ -74,6 +77,7 @@ void ClipAnimator::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
     m_clipId = data.clipId;
     m_mapperId = data.mapperId;
     m_running = data.running;
+    m_loops = data.loops;
     setDirty(Handler::ClipAnimatorDirty);
 }
 
@@ -106,6 +110,7 @@ void ClipAnimator::cleanup()
     m_clipId = Qt3DCore::QNodeId();
     m_mapperId = Qt3DCore::QNodeId();
     m_running = false;
+    m_loops = 1;
 }
 
 void ClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -119,6 +124,8 @@ void ClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             setMapperId(change->value().value<Qt3DCore::QNodeId>());
         else if (change->propertyName() == QByteArrayLiteral("running"))
             setRunning(change->value().toBool());
+        else if (change->propertyName() == QByteArrayLiteral("loops"))
+            m_loops = change->value().toInt();
         break;
     }
 
@@ -192,11 +199,10 @@ void ClipAnimator::evaluateAtGlobalTime(qint64 globalTime)
     const double t_start_global = double(m_startGlobalTime) / 1.0e9;
     const double playbackRate = 1.0; // Assume standard playback rate for now
     const double duration = clip->duration();
-    const int loopCount = 1; // TODO: Make property on QClipAnimator
 
     const double localTime = localTimeFromGlobalTime(t_global, t_start_global,
                                                      playbackRate, duration,
-                                                     loopCount);
+                                                     m_loops, &m_currentLoop);
     evaluateAtLocalTime(localTime);
 }
 
@@ -206,8 +212,11 @@ void ClipAnimator::evaluateAtLocalTime(float localTime)
     Q_ASSERT(clip);
 
     // TODO: Uncomment when we add loopCount property
-    if (localTime >= clip->duration() && /*loopCount != 0 &&*/ m_currentLoop == 0 /*loopCount - 1*/)
+    if (localTime >= clip->duration()
+        && m_loops != 0
+        && m_currentLoop == m_loops - 1) {
         m_finalFrame = true;
+    }
 
     // Ensure we have enough storage to hold the evaluations
     m_channelResults.resize(clip->channelCount());
@@ -300,19 +309,37 @@ void ClipAnimator::sendPropertyChanges()
 
 double ClipAnimator::localTimeFromGlobalTime(double t_global, double t_start_global,
                                              double playbackRate, double duration,
-                                             int loopCount)
+                                             int loopCount, int *currentLoop)
 {
     double t_local = playbackRate * (t_global - t_start_global);
+    double loopNumber = 0;
     if (loopCount == 1) {
         t_local = qBound(0.0, t_local, duration);
     } else if (loopCount == 0) {
         // Loops forever
+        (void) std::modf(t_local / duration, &loopNumber);
         t_local = std::fmod(t_local, duration);
     } else {
         // N loops
         t_local = qBound(0.0, t_local, double(loopCount) * duration);
+        (void) std::modf(t_local / duration, &loopNumber);
         t_local = std::fmod(t_local, duration);
+
+        // Ensure we clamp to end of final loop
+        if (loopNumber == loopCount) {
+            loopNumber = loopCount - 1;
+            t_local = duration;
+        }
     }
+
+    qCDebug(Jobs) << "t_global - t_start =" << t_global - t_start_global
+                  << "current loop =" << loopNumber
+                  << "t =" << t_local
+                  << "duration =" << duration;
+
+    if (currentLoop != nullptr)
+        *currentLoop = loopNumber;
+
     return t_local;
 }
 
