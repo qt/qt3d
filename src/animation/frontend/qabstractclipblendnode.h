@@ -55,13 +55,13 @@ public:
 
     QVector<QAnimationClip *> clips() const;
     QAbstractClipBlendNode *parentClipBlendNode() const;
+    void addClip(QAnimationClip *clip);
+    void removeClip(QAnimationClip *clip);
 
 protected:
     explicit QAbstractClipBlendNode(Qt3DCore::QNode *parent = nullptr);
     explicit QAbstractClipBlendNode(QAbstractClipBlendNodePrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
-    void addClip(QAnimationClip *clip);
-    void removeClip(QAnimationClip *clip);
 
 private:
     Q_DECLARE_PRIVATE(QAbstractClipBlendNode)

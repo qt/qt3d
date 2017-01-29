@@ -37,34 +37,56 @@
 **
 ****************************************************************************/
 
-#include "qt3dquick3danimationplugin.h"
-#include <Qt3DAnimation/qanimationclip.h>
-#include <Qt3DAnimation/qblendedclipanimator.h>
-#include <Qt3DAnimation/qclipanimator.h>
-#include <Qt3DAnimation/qconductedclipanimator.h>
-#include <Qt3DAnimation/qchannelmapping.h>
-#include <Qt3DAnimation/qlerpblend.h>
-#include <Qt3DQuickAnimation/private/qt3dquickanimation_global_p.h>
-#include <Qt3DQuickAnimation/private/quick3dchannelmapper_p.h>
-#include <Qt3DQuickAnimation/private/quick3dabstractclipblendnode_p.h>
+#include "quick3dabstractclipblendnode_p.h"
 
 QT_BEGIN_NAMESPACE
 
-void Qt3DQuick3DAnimationPlugin::registerTypes(const char *uri)
-{
-    Qt3DAnimation::Quick::Quick3DAnimation_initialize();
+namespace Qt3DAnimation {
+namespace Animation {
+namespace Quick {
 
-    // @uri Qt3D.Animation
-    qmlRegisterType<Qt3DAnimation::QAnimationClip>(uri, 2, 2, "AnimationClip");
-    qmlRegisterType<Qt3DAnimation::QClipAnimator>(uri, 2, 2, "ClipAnimator");
-    qmlRegisterType<Qt3DAnimation::QBlendedClipAnimator>(uri, 2, 2, "BlendedClipAnimator");
-    qmlRegisterType<Qt3DAnimation::QConductedClipAnimator>(uri, 2, 2, "ConductedClipAnimator");
-    qmlRegisterType<Qt3DAnimation::QChannelMapping>(uri, 2, 2, "ChannelMapping");
-    qmlRegisterExtendedType<Qt3DAnimation::QChannelMapper,
-                            Qt3DAnimation::Animation::Quick::Quick3DChannelMapper>(uri, 2, 2, "ChannelMapper");
-    qmlRegisterExtendedUncreatableType<Qt3DAnimation::QAbstractClipBlendNode,
-                                       Qt3DAnimation::Animation::Quick::Quick3DAbstractClipBlendNode>(uri, 2, 2, "AbstractClipBlendNode", QStringLiteral("QAbstractClipBlendNode is abstract"));
-    qmlRegisterType<Qt3DAnimation::QLerpBlend>(uri, 2, 2, "LerpBlend");
+Quick3DAbstractClipBlendNode::Quick3DAbstractClipBlendNode(QObject *parent)
+    : QObject(parent)
+{
 }
+
+QQmlListProperty<QAnimationClip> Quick3DAbstractClipBlendNode::clipList()
+{
+    return QQmlListProperty<QAnimationClip>(this, 0,
+                                            &Quick3DAbstractClipBlendNode::appendClip,
+                                            &Quick3DAbstractClipBlendNode::clipCount,
+                                            &Quick3DAbstractClipBlendNode::clipAt,
+                                            &Quick3DAbstractClipBlendNode::clearClips);
+}
+
+void Quick3DAbstractClipBlendNode::appendClip(QQmlListProperty<QAnimationClip> *list, QAnimationClip *clip)
+{
+    Quick3DAbstractClipBlendNode *extension = qobject_cast<Quick3DAbstractClipBlendNode *>(list->object);
+    extension->parentAbstractClipBlendNode()->addClip(clip);
+}
+
+QAnimationClip *Quick3DAbstractClipBlendNode::clipAt(QQmlListProperty<QAnimationClip> *list, int index)
+{
+    Quick3DAbstractClipBlendNode *extension = qobject_cast<Quick3DAbstractClipBlendNode *>(list->object);
+    return extension->parentAbstractClipBlendNode()->clips().at(index);
+}
+
+int Quick3DAbstractClipBlendNode::clipCount(QQmlListProperty<QAnimationClip> *list)
+{
+    Quick3DAbstractClipBlendNode *extension = qobject_cast<Quick3DAbstractClipBlendNode *>(list->object);
+    return extension->parentAbstractClipBlendNode()->clips().count();
+}
+
+void Quick3DAbstractClipBlendNode::clearClips(QQmlListProperty<QAnimationClip> *list)
+{
+    Quick3DAbstractClipBlendNode *extension = qobject_cast<Quick3DAbstractClipBlendNode *>(list->object);
+    const QVector<QAnimationClip *> clips = extension->parentAbstractClipBlendNode()->clips();
+    for (QAnimationClip *clip : clips)
+        extension->parentAbstractClipBlendNode()->removeClip(clip);
+}
+
+} // Quick
+} // Animation
+} // Qt3DAnimation
 
 QT_END_NAMESPACE

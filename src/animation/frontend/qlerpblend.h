@@ -55,8 +55,6 @@ public:
     ~QLerpBlend();
 
     float blendFactor() const;
-    using QAbstractClipBlendNode::addClip;
-    using QAbstractClipBlendNode::removeClip;
 
 public Q_SLOTS:
     void setBlendFactor(float blendFactor);

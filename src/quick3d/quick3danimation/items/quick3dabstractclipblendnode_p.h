@@ -37,34 +37,53 @@
 **
 ****************************************************************************/
 
-#include "qt3dquick3danimationplugin.h"
-#include <Qt3DAnimation/qanimationclip.h>
-#include <Qt3DAnimation/qblendedclipanimator.h>
-#include <Qt3DAnimation/qclipanimator.h>
-#include <Qt3DAnimation/qconductedclipanimator.h>
-#include <Qt3DAnimation/qchannelmapping.h>
-#include <Qt3DAnimation/qlerpblend.h>
+#ifndef QT3DANIMATION_ANIMATION_QUICK3DABSTRACTCLIPBLENDNODE_P_H
+#define QT3DANIMATION_ANIMATION_QUICK3DABSTRACTCLIPBLENDNODE_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
 #include <Qt3DQuickAnimation/private/qt3dquickanimation_global_p.h>
-#include <Qt3DQuickAnimation/private/quick3dchannelmapper_p.h>
-#include <Qt3DQuickAnimation/private/quick3dabstractclipblendnode_p.h>
+#include <Qt3DAnimation/qabstractclipblendnode.h>
+#include <Qt3DAnimation/qanimationclip.h>
+#include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
 
-void Qt3DQuick3DAnimationPlugin::registerTypes(const char *uri)
-{
-    Qt3DAnimation::Quick::Quick3DAnimation_initialize();
+namespace Qt3DAnimation {
+namespace Animation {
+namespace Quick {
 
-    // @uri Qt3D.Animation
-    qmlRegisterType<Qt3DAnimation::QAnimationClip>(uri, 2, 2, "AnimationClip");
-    qmlRegisterType<Qt3DAnimation::QClipAnimator>(uri, 2, 2, "ClipAnimator");
-    qmlRegisterType<Qt3DAnimation::QBlendedClipAnimator>(uri, 2, 2, "BlendedClipAnimator");
-    qmlRegisterType<Qt3DAnimation::QConductedClipAnimator>(uri, 2, 2, "ConductedClipAnimator");
-    qmlRegisterType<Qt3DAnimation::QChannelMapping>(uri, 2, 2, "ChannelMapping");
-    qmlRegisterExtendedType<Qt3DAnimation::QChannelMapper,
-                            Qt3DAnimation::Animation::Quick::Quick3DChannelMapper>(uri, 2, 2, "ChannelMapper");
-    qmlRegisterExtendedUncreatableType<Qt3DAnimation::QAbstractClipBlendNode,
-                                       Qt3DAnimation::Animation::Quick::Quick3DAbstractClipBlendNode>(uri, 2, 2, "AbstractClipBlendNode", QStringLiteral("QAbstractClipBlendNode is abstract"));
-    qmlRegisterType<Qt3DAnimation::QLerpBlend>(uri, 2, 2, "LerpBlend");
-}
+class QT3DQUICKANIMATIONSHARED_PRIVATE_EXPORT Quick3DAbstractClipBlendNode : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QQmlListProperty<Qt3DAnimation::QAnimationClip> clips READ clipList CONSTANT)
+
+public:
+    explicit Quick3DAbstractClipBlendNode(QObject *parent = nullptr);
+
+    inline QAbstractClipBlendNode *parentAbstractClipBlendNode() const { return qobject_cast<QAbstractClipBlendNode *>(parent()); }
+    QQmlListProperty<QAnimationClip> clipList();
+
+private:
+    static void appendClip(QQmlListProperty<QAnimationClip> *list, QAnimationClip *clip);
+    static QAnimationClip *clipAt(QQmlListProperty<QAnimationClip> *list, int index);
+    static int clipCount(QQmlListProperty<QAnimationClip> *list);
+    static void clearClips(QQmlListProperty<QAnimationClip> *list);
+};
+
+} // Quick
+} // Animation
+} // Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#endif // QT3DANIMATION_ANIMATION_QUICK3DABSTRACTCLIPBLENDNODE_P_H
