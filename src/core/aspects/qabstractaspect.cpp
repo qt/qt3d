@@ -290,7 +290,15 @@ QAbstractAspectJobManager *QAbstractAspectPrivate::jobManager() const
 QVector<QAspectJobPtr> QAbstractAspectPrivate::jobsToExecute(qint64 time)
 {
     Q_Q(QAbstractAspect);
-    return q->jobsToExecute(time);
+    auto res = q->jobsToExecute(time);
+
+    {
+        QMutexLocker lock(&m_singleShotMutex);
+        res << m_singleShotJobs;
+        m_singleShotJobs.clear();
+    }
+
+    return res;
 }
 
 /*!
@@ -330,6 +338,13 @@ void QAbstractAspect::onEngineStartup()
  */
 void QAbstractAspect::onEngineShutdown()
 {
+}
+
+void QAbstractAspect::scheduleSingleShotJob(const Qt3DCore::QAspectJobPtr &job)
+{
+    Q_D(QAbstractAspect);
+    QMutexLocker lock(&d->m_singleShotMutex);
+    d->m_singleShotJobs.push_back(job);
 }
 
 namespace Debug {

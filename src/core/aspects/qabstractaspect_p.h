@@ -61,6 +61,9 @@
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 #include <QtCore/private/qobject_p.h>
 
+#include <QMutex>
+#include <QVector>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
@@ -137,6 +140,8 @@ public:
     QAbstractAspectJobManager *m_jobManager;
     QChangeArbiter *m_arbiter;
     QHash<const QMetaObject*, QBackendNodeMapperPtr> m_backendCreatorFunctors;
+    QMutex m_singleShotMutex;
+    QVector<QAspectJobPtr> m_singleShotJobs;
 
     static QAbstractAspectPrivate *get(QAbstractAspect *aspect);
 };
