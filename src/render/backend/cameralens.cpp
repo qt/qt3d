@@ -41,6 +41,8 @@
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DRender/private/qcameralens_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qtransform.h>
@@ -54,6 +56,7 @@ namespace Render {
 
 CameraLens::CameraLens()
     : BackendNode()
+    , m_renderAspect(nullptr)
     , m_exposure(0.0f)
 {
 }
@@ -66,6 +69,11 @@ CameraLens::~CameraLens()
 void CameraLens::cleanup()
 {
     QBackendNode::setEnabled(false);
+}
+
+void CameraLens::setRenderAspect(QRenderAspect *renderAspect)
+{
+    m_renderAspect = renderAspect;
 }
 
 void CameraLens::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -107,6 +115,31 @@ void CameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
     BackendNode::sceneChangeEvent(e);
+}
+
+CameraLensFunctor::CameraLensFunctor(AbstractRenderer *renderer, QRenderAspect *renderAspect)
+    : m_manager(renderer->nodeManagers()->manager<CameraLens, CameraManager>())
+    , m_renderer(renderer)
+    , m_renderAspect(renderAspect)
+{
+}
+
+QBackendNode *CameraLensFunctor::create(const QNodeCreatedChangeBasePtr &change) const
+{
+    CameraLens *backend = m_manager->getOrCreateResource(change->subjectId());
+    backend->setRenderer(m_renderer);
+    backend->setRenderAspect(m_renderAspect);
+    return backend;
+}
+
+QBackendNode *CameraLensFunctor::get(QNodeId id) const
+{
+    return m_manager->lookupResource(id);
+}
+
+void CameraLensFunctor::destroy(QNodeId id) const
+{
+    m_manager->releaseResource(id);
 }
 
 } // namespace Render

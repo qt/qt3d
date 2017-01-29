@@ -63,12 +63,28 @@ namespace Render {
 
 class CameraManager;
 
+class CameraLensFunctor : public Qt3DCore::QBackendNodeMapper
+{
+public:
+    explicit CameraLensFunctor(AbstractRenderer *renderer, QRenderAspect *renderAspect);
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+
+private:
+    CameraManager *m_manager;
+    AbstractRenderer *m_renderer;
+    QRenderAspect *m_renderAspect;
+};
+
 class CameraLens : public BackendNode
 {
 public:
     CameraLens();
     ~CameraLens();
     void cleanup();
+
+    void setRenderAspect(QRenderAspect* renderAspect);
 
     void setProjection(const QMatrix4x4 &projection);
     inline QMatrix4x4 projection() const { return m_projection; }
@@ -81,6 +97,7 @@ public:
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
+    QRenderAspect *m_renderAspect;
     QMatrix4x4 m_projection;
     float m_exposure;
 };
