@@ -64,7 +64,6 @@ public:
 
     inline float blendFactor() const { return m_blendFactor; }
 
-public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
 
 private:
