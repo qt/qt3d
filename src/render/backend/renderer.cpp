@@ -374,6 +374,7 @@ void Renderer::shutdown()
         // to be ready. The isReadyToSubmit() function checks for a shutdown
         // having been requested.
         m_submitRenderViewsSemaphore.release(1);
+        m_renderThread->wait();
     }
 }
 
