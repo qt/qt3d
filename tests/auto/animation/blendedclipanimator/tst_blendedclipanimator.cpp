@@ -63,6 +63,11 @@ private Q_SLOTS:
         QCOMPARE(backendBlendedClipAnimator.blendTreeRootId(), Qt3DCore::QNodeId());
         QCOMPARE(backendBlendedClipAnimator.mapperId(), Qt3DCore::QNodeId());
         QCOMPARE(backendBlendedClipAnimator.isRunning(), false);
+        QCOMPARE(backendBlendedClipAnimator.startTime(), 0);
+        QCOMPARE(backendBlendedClipAnimator.currentLoop(), 0);
+        QCOMPARE(backendBlendedClipAnimator.mappingData().size(), 0);
+        QCOMPARE(backendBlendedClipAnimator.loops(), 1);
+
     }
 
     void checkCleanupState()
@@ -77,7 +82,10 @@ private Q_SLOTS:
         backendBlendedClipAnimator.setBlendTreeRootId(Qt3DCore::QNodeId::createId());
         backendBlendedClipAnimator.setMapperId(Qt3DCore::QNodeId::createId());
         backendBlendedClipAnimator.setRunning(true);
-
+        backendBlendedClipAnimator.setStartTime(28);
+        QVector<Qt3DAnimation::Animation::AnimationUtils::BlendingMappingData> mappingData;
+        mappingData.resize(5);
+        backendBlendedClipAnimator.setMappingData(mappingData);
         backendBlendedClipAnimator.cleanup();
 
         // THEN
@@ -85,6 +93,10 @@ private Q_SLOTS:
         QCOMPARE(backendBlendedClipAnimator.blendTreeRootId(), Qt3DCore::QNodeId());
         QCOMPARE(backendBlendedClipAnimator.mapperId(), Qt3DCore::QNodeId());
         QCOMPARE(backendBlendedClipAnimator.isRunning(), false);
+        QCOMPARE(backendBlendedClipAnimator.startTime(), 0);
+        QCOMPARE(backendBlendedClipAnimator.currentLoop(), 0);
+        QCOMPARE(backendBlendedClipAnimator.mappingData().size(), 0);
+        QCOMPARE(backendBlendedClipAnimator.loops(), 1);
     }
 
     void checkInitializeFromPeer()
@@ -96,6 +108,7 @@ private Q_SLOTS:
         blendedClipAnimator.setRunning(true);
         blendedClipAnimator.setBlendTree(&blendTree);
         blendedClipAnimator.setChannelMapper(&mapper);
+        blendedClipAnimator.setLoops(10);
 
         {
             // WHEN
@@ -111,6 +124,7 @@ private Q_SLOTS:
             QCOMPARE(backendBlendedClipAnimator.blendTreeRootId(), blendTree.id());
             QCOMPARE(backendBlendedClipAnimator.mapperId(), mapper.id());
             QCOMPARE(backendBlendedClipAnimator.isRunning(), true);
+            QCOMPARE(backendBlendedClipAnimator.loops(), 10);
         }
         {
             // WHEN
@@ -177,6 +191,17 @@ private Q_SLOTS:
 
              // THEN
             QCOMPARE(backendBlendedClipAnimator.isRunning(), newValue);
+        }
+        {
+            // WHEN
+            const int newValue = 883;
+            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+            change->setPropertyName("loops");
+            change->setValue(QVariant::fromValue(newValue));
+            backendBlendedClipAnimator.sceneChangeEvent(change);
+
+            // THEN
+            QCOMPARE(backendBlendedClipAnimator.loops(), newValue);
         }
     }
 

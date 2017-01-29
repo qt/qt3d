@@ -50,6 +50,7 @@ QBlendedClipAnimatorPrivate::QBlendedClipAnimatorPrivate()
     , m_blendTreeRoot(nullptr)
     , m_mapper(nullptr)
     , m_running(false)
+    , m_loops(1)
 {
 }
 
@@ -85,6 +86,12 @@ QChannelMapper *QBlendedClipAnimator::channelMapper() const
     return d->m_mapper;
 }
 
+int QBlendedClipAnimator::loops() const
+{
+    Q_D(const QBlendedClipAnimator);
+    return d->m_loops;
+}
+
 void QBlendedClipAnimator::setBlendTree(QAbstractClipBlendNode *blendTree)
 {
     Q_D(QBlendedClipAnimator);
@@ -115,6 +122,17 @@ void QBlendedClipAnimator::setRunning(bool running)
     emit runningChanged(running);
 }
 
+void QBlendedClipAnimator::setLoops(int loops)
+{
+    Q_D(QBlendedClipAnimator);
+    if (d->m_loops == loops)
+        return;
+
+    d->m_loops = loops;
+    emit loopsChanged(loops);
+}
+
+
 void QBlendedClipAnimator::setChannelMapper(QChannelMapper *mapping)
 {
     Q_D(QBlendedClipAnimator);
@@ -141,6 +159,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QBlendedClipAnimator::createNodeCreationChan
     data.blendTreeRootId = Qt3DCore::qIdForNode(d->m_blendTreeRoot);
     data.mapperId = Qt3DCore::qIdForNode(d->m_mapper);
     data.running = d->m_running;
+    data.loops = d->m_loops;
     return creationChange;
 }
 

@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_ANIMATION_BLENDEDCLIPANIMATOR_P_H
-#define QT3DANIMATION_ANIMATION_BLENDEDCLIPANIMATOR_P_H
+#ifndef QT3DANIMATION_ANIMATION_EVALUATEBLENDCLIPANIMATORJOB_P_H
+#define QT3DANIMATION_ANIMATION_EVALUATEBLENDCLIPANIMATORJOB_P_H
 
 //
 //  W A R N I N G
@@ -48,8 +48,8 @@
 // We mean it.
 //
 
-#include <Qt3DAnimation/private/backendnode_p.h>
-#include <Qt3DAnimation/private/animationutils_p.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DAnimation/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,54 +58,30 @@ namespace Animation {
 
 class Handler;
 
-class Q_AUTOTEST_EXPORT BlendedClipAnimator : public BackendNode
+class EvaluateBlendClipAnimatorJob : public Qt3DCore::QAspectJob
 {
 public:
-    BlendedClipAnimator();
+    EvaluateBlendClipAnimatorJob();
 
-    void cleanup();
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void setHandler(Handler *handler) { m_handler = handler; }
+    Handler *handler() const { return m_handler; }
 
-    Qt3DCore::QNodeId blendTreeRootId() const;
-    Qt3DCore::QNodeId mapperId() const { return m_mapperId; }
-    bool isRunning() const { return m_running; }
+    void setBlendClipAnimator(const HBlendedClipAnimator &blendClipAnimatorHandle) { m_blendClipAnimatorHandle = blendClipAnimatorHandle; }
+    HBlendedClipAnimator blendClipAnimator() const { return m_blendClipAnimatorHandle; }
 
-    //  Called by BuildBlendTreeJob
-    bool canRun() const { return !m_mapperId.isNull() && !m_blendTreeRootId.isNull() && m_running; }
-
-    void setBlendTreeRootId(Qt3DCore::QNodeId blendTreeRootId);
-    void setMapperId(Qt3DCore::QNodeId mapperId);
-    void setRunning(bool running);
-
-    void setMappingData(const QVector<AnimationUtils::BlendingMappingData> mappingData);
-    QVector<AnimationUtils::BlendingMappingData> mappingData() const { return m_mappingData; }
-
-    void setStartTime(qint64 globalTime) { m_startGlobalTime = globalTime; }
-    qint64 startTime() const { return m_startGlobalTime; }
-
-    int loops() const { return m_loops; }
-
-    int currentLoop() const { return m_currentLoop; }
-    void setCurrentLoop(int currentLoop) { m_currentLoop = currentLoop; }
-
-    void sendPropertyChanges(const QVector<Qt3DCore::QSceneChangePtr> &changes);
+protected:
+    void run() Q_DECL_OVERRIDE;
 
 private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
-    Qt3DCore::QNodeId m_blendTreeRootId;
-    Qt3DCore::QNodeId m_mapperId;
-    bool m_running;
-
-    qint64 m_startGlobalTime;
-    QVector<AnimationUtils::BlendingMappingData> m_mappingData;
-    int m_currentLoop;
-    int m_loops;
+    HBlendedClipAnimator m_blendClipAnimatorHandle;
+    Handler *m_handler;
 };
 
-} // namespace Animation
-} // namespace Qt3DAnimation
+typedef QSharedPointer<EvaluateBlendClipAnimatorJob> EvaluateBlendClipAnimatorJobPtr;
 
+} // Animation
+} // Qt3DAnimation
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_ANIMATION_BLENDEDCLIPANIMATOR_P_H
+#endif // QT3DANIMATION_ANIMATION_EVALUATEBLENDCLIPANIMATORJOB_P_H

@@ -56,6 +56,7 @@ class QT3DANIMATIONSHARED_EXPORT QBlendedClipAnimator : public Qt3DCore::QCompon
     Q_OBJECT
     Q_PROPERTY(Qt3DAnimation::QAbstractClipBlendNode *blendTree READ blendTree WRITE setBlendTree NOTIFY blendTreeChanged)
     Q_PROPERTY(Qt3DAnimation::QChannelMapper *channelMapper READ channelMapper WRITE setChannelMapper NOTIFY channelMapperChanged)
+    Q_PROPERTY(int loops READ loops WRITE setLoops NOTIFY loopsChanged)
     Q_PROPERTY(bool running READ isRunning WRITE setRunning NOTIFY runningChanged)
 
 public:
@@ -65,16 +66,19 @@ public:
     bool isRunning() const;
     Qt3DAnimation::QChannelMapper *channelMapper() const;
     QAbstractClipBlendNode *blendTree() const;
+    int loops() const;
 
 public Q_SLOTS:
     void setRunning(bool running);
     void setChannelMapper(QChannelMapper *channelMapper);
     void setBlendTree(QAbstractClipBlendNode * blendTree);
+    void setLoops(int loops);
 
 Q_SIGNALS:
     void blendTreeChanged(QAbstractClipBlendNode * blendTree);
     void runningChanged(bool running);
     void channelMapperChanged(QChannelMapper *channelMapper);
+    void loopsChanged(int loops);
 
 protected:
     QBlendedClipAnimator(QBlendedClipAnimatorPrivate &dd, Qt3DCore::QNode *parent = nullptr);

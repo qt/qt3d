@@ -50,6 +50,8 @@
 
 #include <QtGlobal>
 #include <Qt3DAnimation/private/handle_types_p.h>
+#include <Qt3DAnimation/private/buildblendtreesjob_p.h>
+#include <Qt3DAnimation/private/evaluateblendclipanimatorjob_p.h>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/qscopedpointer.h>
@@ -90,7 +92,8 @@ public:
     enum DirtyFlag {
         AnimationClipDirty,
         ChannelMappingsDirty,
-        ClipAnimatorDirty
+        ClipAnimatorDirty,
+        BlendedClipAnimatorDirty
     };
 
     qint64 simulationTime() const { return m_simulationTime; }
@@ -99,6 +102,9 @@ public:
 
     void setClipAnimatorRunning(const HClipAnimator &handle, bool running);
     QVector<HClipAnimator> runningClipAnimators() const { return m_runningClipAnimators; }
+
+    void setBlendedClipAnimatorRunning(const HBlendedClipAnimator &handle, bool running);
+    QVector<HBlendedClipAnimator> runningBlenndedClipAnimators() const { return m_runningBlendedClipAnimators; }
 
     AnimationClipManager *animationClipManager() const Q_DECL_NOTHROW { return m_animationClipManager.data(); }
     ClipAnimatorManager *clipAnimatorManager() const Q_DECL_NOTHROW { return m_clipAnimatorManager.data(); }
@@ -122,12 +128,16 @@ private:
     QVector<HAnimationClip> m_dirtyAnimationClips;
     QVector<HChannelMapper> m_dirtyChannelMappers;
     QVector<HClipAnimator> m_dirtyClipAnimators;
+    QVector<HBlendedClipAnimator> m_dirtyBlendedAnimators;
 
     QVector<HClipAnimator> m_runningClipAnimators;
+    QVector<HBlendedClipAnimator> m_runningBlendedClipAnimators;
 
     QSharedPointer<LoadAnimationClipJob> m_loadAnimationClipJob;
     QSharedPointer<FindRunningClipAnimatorsJob> m_findRunningClipAnimatorsJob;
     QVector<QSharedPointer<EvaluateClipAnimatorJob>> m_evaluateClipAnimatorJobs;
+    QVector<EvaluateBlendClipAnimatorJobPtr> m_evaluateBlendClipAnimatorJobs;
+    BuildBlendTreesJobPtr m_buildBlendTreesJob;
 
     qint64 m_simulationTime;
 

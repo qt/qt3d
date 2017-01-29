@@ -84,6 +84,7 @@ DefaultSceneEntity {
             },
             BlendedClipAnimator {
                 id: blendedAnimator
+                loops: 2
 
                 onRunningChanged: console.log("running = " + running)
 

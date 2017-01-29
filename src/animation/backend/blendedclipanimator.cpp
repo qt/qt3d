@@ -45,8 +45,11 @@ namespace Qt3DAnimation {
 namespace Animation {
 
 BlendedClipAnimator::BlendedClipAnimator()
-    : BackendNode(ReadOnly)
+    : BackendNode(ReadWrite)
     , m_running(false)
+    , m_startGlobalTime(0)
+    , m_currentLoop(0)
+    , m_loops(1)
 {
 }
 
@@ -57,7 +60,8 @@ void BlendedClipAnimator::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeB
     m_blendTreeRootId = data.blendTreeRootId;
     m_mapperId = data.mapperId;
     m_running = data.running;
-    setDirty(Handler::ClipAnimatorDirty);
+    m_loops = data.loops;
+    setDirty(Handler::BlendedClipAnimatorDirty);
 }
 
 void BlendedClipAnimator::cleanup()
@@ -67,24 +71,39 @@ void BlendedClipAnimator::cleanup()
     m_blendTreeRootId = Qt3DCore::QNodeId();
     m_mapperId = Qt3DCore::QNodeId();
     m_running = false;
+    m_startGlobalTime = 0;
+    m_currentLoop = 0;
+    m_loops = 1;
+    m_mappingData.clear();
 }
 
 void BlendedClipAnimator::setBlendTreeRootId(Qt3DCore::QNodeId blendTreeId)
 {
     m_blendTreeRootId = blendTreeId;
-    setDirty(Handler::ClipAnimatorDirty);
+    setDirty(Handler::BlendedClipAnimatorDirty);
 }
 
 void BlendedClipAnimator::setMapperId(Qt3DCore::QNodeId mapperId)
 {
     m_mapperId = mapperId;
-    setDirty(Handler::ClipAnimatorDirty);
+    setDirty(Handler::BlendedClipAnimatorDirty);
 }
 
 void BlendedClipAnimator::setRunning(bool running)
 {
     m_running = running;
-    setDirty(Handler::ClipAnimatorDirty);
+    setDirty(Handler::BlendedClipAnimatorDirty);
+}
+
+void BlendedClipAnimator::setMappingData(const QVector<AnimationUtils::BlendingMappingData> mappingData)
+{
+    m_mappingData = mappingData;
+}
+
+void BlendedClipAnimator::sendPropertyChanges(const QVector<Qt3DCore::QSceneChangePtr> &changes)
+{
+    for (const Qt3DCore::QSceneChangePtr &change : changes)
+        notifyObservers(change);
 }
 
 Qt3DCore::QNodeId BlendedClipAnimator::blendTreeRootId() const
@@ -103,6 +122,8 @@ void BlendedClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             setMapperId(change->value().value<Qt3DCore::QNodeId>());
         else if (change->propertyName() == QByteArrayLiteral("running"))
             setRunning(change->value().toBool());
+        else if (change->propertyName() == QByteArrayLiteral("loops"))
+            m_loops = change->value().toInt();
         break;
     }
 

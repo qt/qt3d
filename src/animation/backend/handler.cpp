@@ -39,6 +39,8 @@
 #include <Qt3DAnimation/private/loadanimationclipjob_p.h>
 #include <Qt3DAnimation/private/findrunningclipanimatorsjob_p.h>
 #include <Qt3DAnimation/private/evaluateclipanimatorjob_p.h>
+#include <Qt3DAnimation/private/buildblendtreesjob_p.h>
+#include <Qt3DAnimation/private/evaluateblendclipanimatorjob_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -56,10 +58,12 @@ Handler::Handler()
     , m_clipBlendNodeManager(new ClipBlendNodeManager)
     , m_loadAnimationClipJob(new LoadAnimationClipJob)
     , m_findRunningClipAnimatorsJob(new FindRunningClipAnimatorsJob)
+    , m_buildBlendTreesJob(new BuildBlendTreesJob)
     , m_simulationTime(0)
 {
     m_loadAnimationClipJob->setHandler(this);
     m_findRunningClipAnimatorsJob->setHandler(this);
+    m_buildBlendTreesJob->setHandler(this);
 }
 
 Handler::~Handler()
@@ -86,6 +90,12 @@ void Handler::setDirty(DirtyFlag flag, Qt3DCore::QNodeId nodeId)
         m_dirtyClipAnimators.push_back(handle);
         break;
     }
+
+    case BlendedClipAnimatorDirty: {
+        const HBlendedClipAnimator handle = m_blendedClipAnimatorManager->lookupHandle(nodeId);
+        m_dirtyBlendedAnimators.push_back(handle);
+        break;
+    }
     }
 }
 
@@ -106,6 +116,26 @@ void Handler::setClipAnimatorRunning(const HClipAnimator &handle, bool running)
                                      [handle](const HClipAnimator &h) { return h == handle; });
         if (it != m_runningClipAnimators.end())
             m_runningClipAnimators.erase(it);
+    }
+}
+
+void Handler::setBlendedClipAnimatorRunning(const HBlendedClipAnimator &handle, bool running)
+{
+    // Add clip to running set if not already present
+    if (running && !m_runningBlendedClipAnimators.contains(handle)) {
+        m_runningBlendedClipAnimators.push_back(handle);
+        BlendedClipAnimator *blendedClipAnimator = m_blendedClipAnimatorManager->data(handle);
+        if (blendedClipAnimator)
+            blendedClipAnimator->setStartTime(m_simulationTime);
+    }
+
+    // If being marked as not running, remove from set of running clips
+    if (!running) {
+        const auto it = std::find_if(m_runningBlendedClipAnimators.begin(),
+                                     m_runningBlendedClipAnimators.end(),
+                                     [handle](const HBlendedClipAnimator &h) { return h == handle; });
+        if (it != m_runningBlendedClipAnimators.end())
+            m_runningBlendedClipAnimators.erase(it);
     }
 }
 
@@ -140,6 +170,13 @@ QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
         m_dirtyClipAnimators.clear();
     }
 
+    // Rebuild blending trees if a blend tree is dirty
+    if (!m_dirtyBlendedAnimators.isEmpty()) {
+        const QVector<HBlendedClipAnimator> dirtyBlendedAnimators = std::move(m_dirtyBlendedAnimators);
+        m_buildBlendTreesJob->setBlendedClipAnimators(dirtyBlendedAnimators);
+        jobs.push_back(m_buildBlendTreesJob);
+    }
+
     // TODO: Parallelise the animator evaluation and property building at a finer level
 
     // If there are any running ClipAnimators, evaluate them for the current
@@ -167,6 +204,31 @@ QVector<Qt3DCore::QAspectJobPtr> Handler::jobsToExecute(qint64 time)
             if (jobs.contains(m_findRunningClipAnimatorsJob))
                 m_evaluateClipAnimatorJobs[i]->addDependency(m_findRunningClipAnimatorsJob);
             jobs.push_back(m_evaluateClipAnimatorJobs[i]);
+        }
+    }
+
+    // BlendClipAnimator execution
+    if (!m_runningBlendedClipAnimators.isEmpty()) {
+        // Ensure we have a job per clip animator
+        const int oldSize = m_evaluateBlendClipAnimatorJobs.size();
+        const int newSize = m_runningBlendedClipAnimators.size();
+        if (oldSize < newSize) {
+            m_evaluateBlendClipAnimatorJobs.resize(newSize);
+            for (int i = oldSize; i < newSize; ++i) {
+                m_evaluateBlendClipAnimatorJobs[i].reset(new EvaluateBlendClipAnimatorJob());
+                m_evaluateBlendClipAnimatorJobs[i]->setHandler(this);
+            }
+        }
+
+        // Set each job up with an animator to process and set dependencies
+        for (int i = 0; i < newSize; ++i) {
+            m_evaluateBlendClipAnimatorJobs[i]->setBlendClipAnimator(m_runningBlendedClipAnimators[i]);
+            m_evaluateBlendClipAnimatorJobs[i]->removeDependency(QWeakPointer<Qt3DCore::QAspectJob>());
+            if (jobs.contains(m_loadAnimationClipJob))
+                m_evaluateBlendClipAnimatorJobs[i]->addDependency(m_loadAnimationClipJob);
+            if (jobs.contains(m_buildBlendTreesJob))
+                m_evaluateBlendClipAnimatorJobs[i]->addDependency(m_buildBlendTreesJob);
+            jobs.push_back(m_evaluateBlendClipAnimatorJobs[i]);
         }
     }
 

@@ -62,6 +62,7 @@ private Q_SLOTS:
         QVERIFY(blendedClipAnimator.blendTree() == nullptr);
         QVERIFY(blendedClipAnimator.channelMapper() == nullptr);
         QCOMPARE(blendedClipAnimator.isRunning(), false);
+        QCOMPARE(blendedClipAnimator.loops(), 1);
     }
 
     void checkPropertyChanges()
@@ -126,6 +127,26 @@ private Q_SLOTS:
             QCOMPARE(blendedClipAnimator.isRunning(), newValue);
             QCOMPARE(spy.count(), 0);
         }
+
+        {
+            // WHEN
+            QSignalSpy spy(&blendedClipAnimator, SIGNAL(loopsChanged(int)));
+            const int newValue = 5;
+            blendedClipAnimator.setLoops(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(blendedClipAnimator.loops(), newValue);
+            QCOMPARE(spy.count(), 1);
+
+            // WHEN
+            spy.clear();
+            blendedClipAnimator.setLoops(newValue);
+
+            // THEN
+            QCOMPARE(blendedClipAnimator.loops(), newValue);
+            QCOMPARE(spy.count(), 0);
+        }
     }
 
     void checkCreationData()
@@ -161,6 +182,7 @@ private Q_SLOTS:
             QCOMPARE(blendedClipAnimator.isEnabled(), true);
             QCOMPARE(blendedClipAnimator.isEnabled(), creationChangeData->isNodeEnabled());
             QCOMPARE(blendedClipAnimator.metaObject(), creationChangeData->metaObject());
+            QCOMPARE(blendedClipAnimator.loops(), cloneData.loops);
         }
 
         // WHEN
@@ -315,6 +337,39 @@ private Q_SLOTS:
         {
             // WHEN
             blendedClipAnimator.setRunning(true);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+        }
+
+    }
+
+    void checkLoopsUpdate()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DAnimation::QBlendedClipAnimator blendedClipAnimator;
+        arbiter.setArbiterOnNode(&blendedClipAnimator);
+
+        {
+            // WHEN
+            blendedClipAnimator.setLoops(1584);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 1);
+            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "loops");
+            QCOMPARE(change->value().value<int>(), blendedClipAnimator.loops());
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+            arbiter.events.clear();
+        }
+
+        {
+            // WHEN
+            blendedClipAnimator.setLoops(1584);
             QCoreApplication::processEvents();
 
             // THEN

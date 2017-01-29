@@ -69,6 +69,7 @@ public:
     QAbstractClipBlendNode *m_blendTreeRoot;
     QChannelMapper *m_mapper;
     bool m_running;
+    int m_loops;
 };
 
 struct QBlendedClipAnimatorData
@@ -76,6 +77,7 @@ struct QBlendedClipAnimatorData
     Qt3DCore::QNodeId blendTreeRootId;
     Qt3DCore::QNodeId mapperId;
     bool running;
+    int loops;
 };
 
 } // namespace Qt3DAnimation

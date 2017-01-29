@@ -69,7 +69,22 @@ public:
         Qt3DCore::QNodeId targetId;
         const char *propertyName;
         int type;
+        int channelBaseIndex;
         QVector<int> channelIndices;
+    };
+
+    struct BlendingMappingData {
+        Qt3DCore::QNodeId targetId;
+        const char *propertyName;
+        int type;
+        QVector<int> channelIndicesClip1;
+        QVector<int> channelIndicesClip2;
+
+        enum BlendAction {
+            NoBlending, // Use the channel from Clip1 only
+            ClipBlending, // Blending 2 clips sharing the same channel
+        };
+        BlendAction blendAction;
     };
 
     static double localTimeFromGlobalTime(double t_global, double t_start_global,
