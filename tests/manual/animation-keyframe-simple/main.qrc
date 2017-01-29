@@ -3,5 +3,6 @@
         <file>main.qml</file>
         <file>DefaultSceneEntity.qml</file>
         <file>cubeanimation.json</file>
+        <file>pulsing-moving-cube.json</file>
     </qresource>
 </RCC>

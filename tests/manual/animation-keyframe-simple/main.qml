@@ -62,6 +62,63 @@ DefaultSceneEntity {
         ]
     }
 
+    Entity {
+        id: sphere
+
+        components: [
+            Transform {
+                id: sphereTransform
+                translation: Qt.vector3d(5, 0, 0)
+                onTranslationChanged: console.log("t = " + translation)
+            },
+            SphereMesh {
+            },
+            PhongMaterial {
+                id: sphereMaterial
+                ambient: Qt.rgba(0.02, 0.02, 0.02, 1.0)
+                diffuse: "red"
+                shininess: 50
+            },
+            ObjectPicker {
+                onClicked: blendedAnimator.running = true
+            },
+            BlendedClipAnimator {
+                id: blendedAnimator
+
+                onRunningChanged: console.log("running = " + running)
+
+                blendTree: LerpBlend {
+                    blendFactor: 0.5
+                    clips: [
+                        AnimationClip {
+                            source: "cubeanimation.json"
+                            onDurationChanged: console.log("duration = " + duration)
+                        },
+                        AnimationClip {
+                            source: "pulsing-moving-cube.json"
+                            onDurationChanged: console.log("duration = " + duration)
+                        }]
+                }
+
+
+                // By default introspect parent Entity and try
+                // to map fcurve groups to properties of QTransform
+                // mapping: AutomaticAnimationMapping {}
+
+                // To do more, we can be explicit
+                channelMapper: ChannelMapper {
+                    mappings: [
+                        ChannelMapping { channelName: "Location"; target: sphereTransform; property: "translation" },
+                        ChannelMapping { channelName: "Rotation"; target: sphereTransform; property: "rotation" },
+                        ChannelMapping { channelName: "Scaling"; target: sphereTransform; property: "scale3D" },
+                        ChannelMapping { channelName: "Diffuse Color"; target: sphereMaterial; property: "diffuse" }
+                    ]
+                }
+            }
+        ]
+    }
+
+
     camera: Camera {
         position: Qt.vector3d(10, 3, 15)
         viewCenter: Qt.vector3d(2.5, 1, 0)
