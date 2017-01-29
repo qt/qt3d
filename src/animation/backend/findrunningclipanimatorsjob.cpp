@@ -38,6 +38,7 @@
 #include <Qt3DAnimation/private/handler_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
+#include <Qt3DAnimation/private/animationutils_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -69,8 +70,13 @@ void FindRunningClipAnimatorsJob::run()
         // table.
         // TODO: Should be possible to parallelise this with the fcurve evaluation as
         //       sending the property change events doesn't happen until after evaluation
-        if (canRun)
-            clipAnimator->buildPropertyMappings();
+        if (canRun) {
+            const AnimationClip *clip = m_handler->animationClipManager()->lookupResource(clipAnimator->clipId());
+            const ChannelMapper *mapper = m_handler->channelMapperManager()->lookupResource(clipAnimator->mapperId());
+            Q_ASSERT(clip && mapper);
+            const QVector<AnimationUtils::MappingData> mappingData = AnimationUtils::buildPropertyMappings(m_handler, clip, mapper);
+            clipAnimator->setMappingData(mappingData);
+        }
     }
 
     qCDebug(Jobs) << "Running clip animators =" << m_handler->runningClipAnimators();

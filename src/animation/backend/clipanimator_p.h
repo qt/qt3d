@@ -49,6 +49,7 @@
 //
 
 #include <Qt3DAnimation/private/backendnode_p.h>
+#include <Qt3DAnimation/private/animationutils_p.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -75,39 +76,24 @@ public:
     int loops() const { return m_loops; }
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-
     void setHandler(Handler *handler) { m_handler = handler; }
 
     // Called by jobs
     bool canRun() const { return !m_clipId.isNull() && !m_mapperId.isNull() && m_running; }
-
-    void buildPropertyMappings();
+    void setMappingData(const QVector<AnimationUtils::MappingData> mappingData);
+    QVector<AnimationUtils::MappingData> mappingData() const { return m_mappingData; }
 
     void setStartTime(qint64 globalTime) { m_startGlobalTime = globalTime; }
     qint64 startTime() const { return m_startGlobalTime; }
 
-    void evaluateAtGlobalTime(qint64 globalTime);
-    void evaluateAtLocalTime(float localTime);
+    int currentLoop() const { return m_currentLoop; }
+    void setCurrentLoop(int currentLoop) { m_currentLoop = currentLoop; }
 
-    void sendPropertyChanges();
-
-    static double localTimeFromGlobalTime(double t_global, double t_start_global,
-                                          double playbackRate, double duration,
-                                          int loopCount, int *currentLoop = nullptr);
-
-    static QVector<int> channelsToIndices(const ChannelGroup &channelGroup,
-                                          int dataType,
-                                          int offset = 0);
+    void sendPropertyChanges(const QVector<Qt3DCore::QSceneChangePtr> &changes);
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
-    static QVector<int> channelsToIndicesHelper(const ChannelGroup &channelGroup,
-                                                int dataType,
-                                                int offset,
-                                                const QStringList &suffixes);
-
-    // Mirror of frontend properties
     Qt3DCore::QNodeId m_clipId;
     Qt3DCore::QNodeId m_mapperId;
     bool m_running;
@@ -115,17 +101,9 @@ private:
 
     // Working state
     qint64 m_startGlobalTime;
-    QVector<float> m_channelResults;
+    QVector<AnimationUtils::MappingData> m_mappingData;
 
-    struct MappingData {
-        Qt3DCore::QNodeId targetId;
-        const char *propertyName;
-        int type;
-        QVector<int> channelIndices;
-    };
-    QVector<MappingData> m_mappingData;
     int m_currentLoop;
-    bool m_finalFrame;
 };
 
 } // namespace Animation

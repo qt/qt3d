@@ -38,6 +38,7 @@
 #include <Qt3DAnimation/private/handler_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
+#include <Qt3DAnimation/private/animationutils_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,10 +61,31 @@ void EvaluateClipAnimatorJob::run()
     Q_ASSERT(clipAnimator);
 
     // Evaluate the fcurves
-    clipAnimator->evaluateAtGlobalTime(globalTime);
+    AnimationClip *clip = m_handler->animationClipManager()->lookupResource(clipAnimator->clipId());
+    Q_ASSERT(clip);
+    bool finalFrame = false;
+    int currentLoop = 0;
+    const QVector<float> channelResults = AnimationUtils::evaluateAtGlobalTime(clip,
+                                                                               globalTime,
+                                                                               clipAnimator->startTime(),
+                                                                               clipAnimator->loops(),
+                                                                               currentLoop,
+                                                                               finalFrame);
+
+    if (finalFrame)
+        clipAnimator->setRunning(false);
+
+    clipAnimator->setCurrentLoop(currentLoop);
+
+    // Prepare property changes (if finalFrame it also prepares the change for the running property for the frontend)
+    const QVector<Qt3DCore::QSceneChangePtr> changes = AnimationUtils::preparePropertyChanges(clipAnimator->peerId(),
+                                                                                              clipAnimator->mappingData(),
+                                                                                              channelResults,
+                                                                                              finalFrame);
 
     // Send the property changes
-    clipAnimator->sendPropertyChanges();
+    clipAnimator->sendPropertyChanges(changes);
+
 }
 
 } // namespace Animation
