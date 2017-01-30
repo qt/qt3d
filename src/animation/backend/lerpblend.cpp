@@ -64,6 +64,11 @@ void LerpBlend::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 }
 
+float LerpBlend::blend(float value1, float value2) const
+{
+    return ((1.0f - m_blendFactor) * value1) + (m_blendFactor * value2);
+}
+
 void LerpBlend::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     ClipBlendNode::initializeFromPeer(change);

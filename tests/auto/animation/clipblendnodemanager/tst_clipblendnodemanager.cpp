@@ -48,6 +48,9 @@ public:
     {
         deadCount += 1;
     }
+
+    float blend(float , float ) const Q_DECL_FINAL { return 0.0f; }
+
 };
 
 } // anonymous

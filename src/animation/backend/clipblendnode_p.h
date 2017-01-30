@@ -79,6 +79,7 @@ public:
     Qt3DCore::QNodeIdVector clipIds() const;
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    virtual float blend(float value1, float value2) const = 0;
 
 protected:
     explicit ClipBlendNode(BlendType blendType);

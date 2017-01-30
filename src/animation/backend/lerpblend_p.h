@@ -63,8 +63,10 @@ public:
     ~LerpBlend();
 
     inline float blendFactor() const { return m_blendFactor; }
+    void setBlendFactor(float blendFactor) { m_blendFactor = blendFactor; } // For unit tests
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
+    float blend(float value1, float value2) const Q_DECL_FINAL;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;

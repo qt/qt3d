@@ -47,6 +47,8 @@ public:
     TestClipBlendNode()
         : Qt3DAnimation::Animation::ClipBlendNode(Qt3DAnimation::Animation::ClipBlendNode::LerpBlendType)
     {}
+
+    float blend(float , float ) const Q_DECL_FINAL { return 0.0f; }
 };
 
 } // anonymous
