@@ -67,7 +67,8 @@ public:
 
     enum BlendType {
         NoneBlendType,
-        LerpBlendType
+        LerpBlendType,
+        AddBlendType
     };
 
     void setClipBlendNodeManager(ClipBlendNodeManager *manager);

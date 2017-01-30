@@ -25,7 +25,8 @@ HEADERS += \
     $$PWD/clipblendnodevisitor_p.h \
     $$PWD/animationutils_p.h \
     $$PWD/buildblendtreesjob_p.h \
-    $$PWD/evaluateblendclipanimatorjob_p.h
+    $$PWD/evaluateblendclipanimatorjob_p.h \
+    $$PWD/addblend_p.h
 
 SOURCES += \
     $$PWD/animationclip.cpp \
@@ -48,4 +49,5 @@ SOURCES += \
     $$PWD/clipblendnodevisitor.cpp \
     $$PWD/animationutils.cpp \
     $$PWD/buildblendtreesjob.cpp \
-    $$PWD/evaluateblendclipanimatorjob.cpp
+    $$PWD/evaluateblendclipanimatorjob.cpp \
+    $$PWD/addblend.cpp
