@@ -84,6 +84,7 @@ public:
     void notifyObservers(const QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
     void insertTree(QNode *treeRoot, int depth = 0);
+    void updatePropertyTrackMode();
 
     Q_DECLARE_PUBLIC(QNode)
 
@@ -97,6 +98,8 @@ public:
     bool m_blockNotifications;
     bool m_hasBackendNode;
     bool m_enabled;
+    QNode::PropertyTrackMode m_propertyTrackMode;
+    QStringList m_trackedProperties;
 
     static QNodePrivate *get(QNode *q);
     static void nodePtrDeleter(QNode *q);

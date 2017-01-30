@@ -20,5 +20,6 @@ qtConfig(private_tests) {
     qframeallocator \
     qtransform \
     threadpooler \
-    aspectcommanddebugger
+    aspectcommanddebugger \
+    qpostman
 }

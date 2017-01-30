@@ -52,6 +52,11 @@ private slots:
     void addEntityForComponent();
     void removeEntityForComponent();
     void hasEntityForComponent();
+    void setPropertyTrackData();
+    void lookupNodePropertyTrackData();
+    void removePropertyTrackData();
+    void nodeSetAndUnsetPropertyTrackData();
+    void nodeUpdatePropertyTrackData();
 };
 
 class tst_LockableObserver : public Qt3DCore::QLockableObserverInterface
@@ -411,6 +416,156 @@ void tst_QScene::hasEntityForComponent()
     // THEN
     for (int i = 0; i < 10; i++)
         QVERIFY(scene->hasEntityForComponent(components.at(i)->id(), entities.at(i)->id()));
+}
+
+void tst_QScene::setPropertyTrackData()
+{
+    // GIVEN
+    Qt3DCore::QNodeId fakeNodeId = Qt3DCore::QNodeId::createId();
+    QScopedPointer<Qt3DCore::QScene> scene(new Qt3DCore::QScene);
+    const QStringList propertyNamesList = QStringList() << QStringLiteral("1340");
+
+    // WHEN
+    {
+        Qt3DCore::QScene::NodePropertyTrackData trackData;
+        trackData.namedProperties = propertyNamesList;
+        trackData.updateMode = Qt3DCore::QNode::TrackNamedPropertiesMode;
+        scene->setPropertyTrackDataForNode(fakeNodeId, trackData);
+    }
+
+    // THEN
+    {
+        Qt3DCore::QScene::NodePropertyTrackData trackData = scene->lookupNodePropertyTrackData(fakeNodeId);
+        QCOMPARE(trackData.namedProperties, propertyNamesList);
+        QCOMPARE(trackData.updateMode, Qt3DCore::QNode::TrackNamedPropertiesMode);
+    }
+
+    // WHEN
+    {
+        Qt3DCore::QScene::NodePropertyTrackData trackData;
+        trackData.namedProperties = propertyNamesList;
+        trackData.updateMode = Qt3DCore::QNode::DefaultTrackMode;
+        scene->setPropertyTrackDataForNode(fakeNodeId, trackData);
+    }
+
+    // THEN
+    {
+        Qt3DCore::QScene::NodePropertyTrackData trackData = scene->lookupNodePropertyTrackData(fakeNodeId);
+        QCOMPARE(trackData.namedProperties, propertyNamesList);
+        QCOMPARE(trackData.updateMode, Qt3DCore::QNode::DefaultTrackMode);
+    }
+}
+
+void tst_QScene::lookupNodePropertyTrackData()
+{
+    // GIVEN
+    QScopedPointer<Qt3DCore::QScene> scene(new Qt3DCore::QScene);
+    Qt3DCore::QNodeId fakeNodeId = Qt3DCore::QNodeId::createId();
+    const QStringList propertyNamesList = QStringList() << QStringLiteral("383");
+
+    // THEN -> default value for non existent id
+    Qt3DCore::QScene::NodePropertyTrackData trackData = scene->lookupNodePropertyTrackData(fakeNodeId);
+    QCOMPARE(trackData.namedProperties, QStringList());
+    QCOMPARE(trackData.updateMode, Qt3DCore::QNode::DefaultTrackMode);
+
+    // WHEN
+    trackData.namedProperties = propertyNamesList;
+    trackData.updateMode = Qt3DCore::QNode::TrackNamedPropertiesMode;
+    scene->setPropertyTrackDataForNode(fakeNodeId, trackData);
+
+    trackData = scene->lookupNodePropertyTrackData(fakeNodeId);
+    QCOMPARE(trackData.namedProperties, propertyNamesList);
+    QCOMPARE(trackData.updateMode, Qt3DCore::QNode::TrackNamedPropertiesMode);
+}
+
+void tst_QScene::removePropertyTrackData()
+{
+    // GIVEN
+    QScopedPointer<Qt3DCore::QScene> scene(new Qt3DCore::QScene);
+    Qt3DCore::QNodeId fakeNodeId = Qt3DCore::QNodeId::createId();
+
+    // WHEN
+    Qt3DCore::QScene::NodePropertyTrackData trackData;
+    trackData.namedProperties = QStringList() << QStringLiteral("1584");
+    trackData.updateMode = Qt3DCore::QNode::TrackNamedPropertiesMode;
+    scene->setPropertyTrackDataForNode(fakeNodeId, trackData);
+    scene->removePropertyTrackDataForNode(fakeNodeId);
+
+    // THEN -> default value for non existent id
+    trackData = scene->lookupNodePropertyTrackData(fakeNodeId);
+    QCOMPARE(trackData.namedProperties, QStringList());
+    QCOMPARE(trackData.updateMode, Qt3DCore::QNode::DefaultTrackMode);
+}
+
+void tst_QScene::nodeSetAndUnsetPropertyTrackData()
+{
+    // GIVEN
+    QScopedPointer<Qt3DCore::QScene> scene(new Qt3DCore::QScene);
+    Qt3DCore::QNode parentNode;
+    Qt3DCore::QNodePrivate::get(&parentNode)->setScene(scene.data());
+
+    Qt3DCore::QNode *childNode = new Qt3DCore::QNode();
+    const QStringList propertyNamesList = QStringList() << QStringLiteral("883");
+    childNode->setTrackedProperties(propertyNamesList);
+    childNode->setPropertyTrackMode(Qt3DCore::QNode::TrackNamedPropertiesMode);
+
+    // WHEN
+    childNode->setParent(&parentNode);
+    QCoreApplication::processEvents();
+
+    // THEN
+    QCOMPARE(Qt3DCore::QNodePrivate::get(childNode)->m_scene, scene.data());
+    Qt3DCore::QScene::NodePropertyTrackData trackData = scene->lookupNodePropertyTrackData(childNode->id());
+    QCOMPARE(trackData.updateMode, Qt3DCore::QNode::TrackNamedPropertiesMode);
+    QCOMPARE(trackData.namedProperties, propertyNamesList);
+
+    // WHEN
+    const Qt3DCore::QNodeId childNodeId = childNode->id();
+    delete childNode;
+    QCoreApplication::processEvents();
+
+    // THEN -> default value for non existent id
+    trackData = scene->lookupNodePropertyTrackData(childNodeId);
+    QCOMPARE(trackData.namedProperties, QStringList());
+    QCOMPARE(trackData.updateMode, Qt3DCore::QNode::DefaultTrackMode);
+}
+
+void tst_QScene::nodeUpdatePropertyTrackData()
+{
+    // GIVEN
+    QScopedPointer<Qt3DCore::QScene> scene(new Qt3DCore::QScene);
+    Qt3DCore::QNode parentNode;
+    Qt3DCore::QNodePrivate::get(&parentNode)->setScene(scene.data());
+
+    Qt3DCore::QNode *childNode = new Qt3DCore::QNode();
+    const QStringList propertyNamesList = QStringList() << QStringLiteral("883");
+    childNode->setTrackedProperties(propertyNamesList);
+    childNode->setPropertyTrackMode(Qt3DCore::QNode::TrackNamedPropertiesMode);
+
+    // WHEN
+    childNode->setParent(&parentNode);
+    QCoreApplication::processEvents();
+
+    // THEN
+    QCOMPARE(Qt3DCore::QNodePrivate::get(childNode)->m_scene, scene.data());
+    Qt3DCore::QScene::NodePropertyTrackData trackData = scene->lookupNodePropertyTrackData(childNode->id());
+    QCOMPARE(trackData.updateMode, Qt3DCore::QNode::TrackNamedPropertiesMode);
+    QCOMPARE(trackData.namedProperties, propertyNamesList);
+
+    // WHEN
+    childNode->setPropertyTrackMode(Qt3DCore::QNode::TrackAllPropertiesMode);
+
+    // THEN
+    trackData = scene->lookupNodePropertyTrackData(childNode->id());
+    QCOMPARE(trackData.updateMode, Qt3DCore::QNode::TrackAllPropertiesMode);
+
+    // WHEN
+    const QStringList propertyNamesList2 = QStringList() << QStringLiteral("Viper");
+    childNode->setTrackedProperties(propertyNamesList2);
+
+    // THEN
+    trackData = scene->lookupNodePropertyTrackData(childNode->id());
+    QCOMPARE(trackData.namedProperties, propertyNamesList2);
 }
 
 QTEST_MAIN(tst_QScene)

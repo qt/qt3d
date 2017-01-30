@@ -13,7 +13,8 @@ HEADERS += \
     $$PWD/qchangearbiter_p.h \
     $$PWD/qbackendnodefactory_p.h \
     $$PWD/qt3dcore_global_p.h \
-    $$PWD/qscene_p.h
+    $$PWD/qscene_p.h \
+    $$PWD/qpostman_p_p.h
 
 SOURCES += \
     $$PWD/qtickclock.cpp \

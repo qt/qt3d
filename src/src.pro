@@ -15,6 +15,10 @@ src_input.subdir = $$PWD/input
 src_input.target = sub-input
 src_input.depends = src_render
 
+src_animation.subdir = $$PWD/animation
+src_animation.target = sub-animation
+src_animation.depends = src_render
+
 src_extras.subdir = $$PWD/extras
 src_extras.target = src_extras
 src_extras.depends = src_render src_input src_logic
@@ -32,9 +36,13 @@ src_quick3d_input.subdir = $$PWD/quick3d/quick3dinput
 src_quick3d_input.target = sub-quick3d-input
 src_quick3d_input.depends = src_input src_quick3d_core
 
+src_quick3d_animation.subdir = $$PWD/quick3d/quick3danimation
+src_quick3d_animation.target = sub-quick3d-animation
+src_quick3d_animation.depends = src_animation src_quick3d_core src_quick3d_render
+
 src_quick3d_extras.subdir = $$PWD/quick3d/quick3dextras
 src_quick3d_extras.target = sub-quick3d-extras
-src_quick3d_extras.depends = src_render src_logic src_input src_quick3d_core
+src_quick3d_extras.depends = src_render src_logic src_input src_extras src_quick3d_core
 
 # Quick3D imports
 src_quick3d_core_imports.file = $$PWD/quick3d/imports/core/importscore.pro
@@ -56,6 +64,10 @@ src_quick3d_imports_input.depends = src_input src_quick3d_input
 src_quick3d_imports_logic.file = $$PWD/quick3d/imports/logic/importslogic.pro
 src_quick3d_imports_logic.target = sub-quick3d-imports-logic
 src_quick3d_imports_logic.depends = src_logic
+
+src_quick3d_imports_animation.file = $$PWD/quick3d/imports/animation/importsanimation.pro
+src_quick3d_imports_animation.target = sub-quick3d-imports-animation
+src_quick3d_imports_animation.depends = src_animation src_quick3d_animation
 
 src_quick3d_imports_extras.file = $$PWD/quick3d/imports/extras/importsextras.pro
 src_quick3d_imports_extras.target = sub-quick3d-imports-extras
@@ -81,16 +93,19 @@ SUBDIRS += \
     src_render \
     src_logic \
     src_input \
+    src_animation \
     src_extras \
     src_quick3d_core \
     src_quick3d_core_imports \
     src_quick3d_render \
     src_quick3d_input \
+    src_quick3d_animation \
     src_quick3d_extras \
     src_quick3d_imports_render \
     src_quick3d_imports_scene3d \
     src_quick3d_imports_input \
     src_quick3d_imports_logic \
+    src_quick3d_imports_animation \
     src_quick3d_imports_extras \
     src_plugins_sceneparsers \
     src_plugins_geometryloaders \

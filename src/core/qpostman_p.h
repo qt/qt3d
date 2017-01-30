@@ -66,9 +66,10 @@ class QT3DCORE_PRIVATE_EXPORT QAbstractPostman : public QObserverInterface
 public:
     virtual void setScene(QScene *sceneLookup) = 0;
     virtual void notifyBackend(const QSceneChangePtr &change) = 0;
+    virtual bool shouldNotifyFrontend(const QSceneChangePtr &change) = 0;
 };
 
-class QPostman Q_DECL_FINAL
+class Q_AUTOTEST_EXPORT QPostman Q_DECL_FINAL
         : public QObject
         , public QAbstractPostman
 {
@@ -80,6 +81,7 @@ public:
     void setScene(QScene *sceneLookup) Q_DECL_FINAL;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_FINAL;
     void notifyBackend(const QSceneChangePtr &change) Q_DECL_FINAL;
+    bool shouldNotifyFrontend(const QSceneChangePtr &e) Q_DECL_FINAL;
 
 public Q_SLOTS:
     void submitChangeBatch();

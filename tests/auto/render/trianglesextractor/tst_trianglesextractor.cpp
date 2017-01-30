@@ -312,6 +312,8 @@ Qt3DRender::QGeometryRenderer *customNonIndexedGeometryRenderer()
     return customMeshRenderer;
 }
 
+QT_BEGIN_NAMESPACE
+
 class TestAspect : public Qt3DRender::QRenderAspect
 {
 public:
@@ -330,6 +332,8 @@ public:
         return d_func()->m_renderer->nodeManagers();
     }
 };
+
+QT_END_NAMESPACE
 
 class tst_TrianglesExtractor : public QObject
 {
@@ -394,7 +398,6 @@ private Q_SLOTS:
         }
     }
 };
-
 
 QTEST_MAIN(tst_TrianglesExtractor)
 

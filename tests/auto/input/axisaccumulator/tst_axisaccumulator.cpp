@@ -41,6 +41,7 @@
 #include <Qt3DInput/QAxis>
 #include <Qt3DInput/QAxisAccumulator>
 #include <Qt3DCore/private/qbackendnode_p.h>
+#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 #include "testpostmanarbiter.h"
 
 class tst_AxisAccumulator: public Qt3DCore::QBackendNodeTester
@@ -169,6 +170,7 @@ private Q_SLOTS:
         Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "value");
         QCOMPARE(change->value().toFloat(), backendAxisAccumulator.value());
+        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isFinal, true);
 
         arbiter.events.clear();
 
@@ -191,6 +193,7 @@ private Q_SLOTS:
         Qt3DCore::QPropertyUpdatedChangePtr velocityChange = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(velocityChange->propertyName(), "velocity");
         QCOMPARE(velocityChange->value().toFloat(), backendAxisAccumulator.velocity());
+        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isFinal, true);
 
         arbiter.events.clear();
 

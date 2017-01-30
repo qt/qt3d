@@ -46,11 +46,17 @@ namespace Qt3DCore {
 
 QPropertyUpdatedChangeBasePrivate::QPropertyUpdatedChangeBasePrivate()
     : QSceneChangePrivate()
+    , m_isFinal(false)
 {
 }
 
 QPropertyUpdatedChangeBasePrivate::~QPropertyUpdatedChangeBasePrivate()
 {
+}
+
+QPropertyUpdatedChangeBasePrivate *QPropertyUpdatedChangeBasePrivate::get(QPropertyUpdatedChangeBase *q)
+{
+    return q->d_func();
 }
 
 /*!

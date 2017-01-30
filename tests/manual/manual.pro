@@ -40,7 +40,8 @@ SUBDIRS += \
     dynamic-model-loader-qml \
     render-qml-to-texture \
     render-qml-to-texture-qml \
-    video-texture-qml
+    video-texture-qml \
+    animation-keyframe-simple
 
 qtHaveModule(widgets): {
     SUBDIRS += \
