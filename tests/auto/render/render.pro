@@ -105,7 +105,7 @@ qtConfig(private_tests) {
         qeventforward \
         eventforward \
         qscene2d \
-        #scene2d \
+        scene2d \
         coordinatereader
 
     !macos: SUBDIRS += graphicshelpergl4

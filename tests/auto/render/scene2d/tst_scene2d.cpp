@@ -58,6 +58,7 @@ private Q_SLOTS:
         QCOMPARE(backendScene2d.m_initialized, false);
         QCOMPARE(backendScene2d.m_renderInitialized, false);
         QCOMPARE(backendScene2d.m_renderPolicy, QScene2D::Continuous);
+        backendScene2d.cleanup();
     }
 
     void checkInitializeFromPeer()

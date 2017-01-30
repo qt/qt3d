@@ -347,9 +347,11 @@ void Scene2D::cleanup()
         m_context = nullptr;
         m_initialized = false;
     }
-    // wake up the main thread
-    m_sharedObject->wake();
-    m_sharedObject = nullptr;
+    if (m_sharedObject) {
+        // wake up the main thread
+        m_sharedObject->wake();
+        m_sharedObject = nullptr;
+    }
 
     renderThreadClientCount->fetchAndSubAcquire(1);
     if (renderThreadClientCount->load() == 0)
