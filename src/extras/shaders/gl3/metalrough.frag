@@ -66,7 +66,7 @@ uniform samplerCube skyIrradiance;  // For diffuse contribution
 uniform samplerCube skySpecular;    // For specular contribution
 
 // PBR Material maps
-uniform sampler2D albedoMap;
+uniform sampler2D baseColorMap;
 uniform sampler2D metallicMap;
 uniform sampler2D roughnessMap;
 uniform sampler2D normalMap;
@@ -216,7 +216,7 @@ void main()
     vec3 tView = worldToTangentMatrix * wView;
 
     // Sample the inputs needed for the metal-roughness PBR BRDF
-    vec3 baseColor = texture(albedoMap, texCoord).rgb;
+    vec3 baseColor = texture(baseColorMap, texCoord).rgb;
     float metallic = texture(metallicMap, texCoord).r * metalFactor;
     float roughness = texture(roughnessMap, texCoord).r;
     float ambientOcclusion = texture(ambientOcclusionMap, texCoord).r;

@@ -52,7 +52,7 @@ class QTexturedMetalRoughMaterialPrivate;
 class QT3DEXTRASSHARED_EXPORT QTexturedMetalRoughMaterial : public Qt3DRender::QMaterial
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QAbstractTexture *albedo READ albedo WRITE setAlbedo NOTIFY albedoChanged)
+    Q_PROPERTY(Qt3DRender::QAbstractTexture *baseColor READ baseColor WRITE setBaseColor NOTIFY baseColorChanged)
     Q_PROPERTY(Qt3DRender::QAbstractTexture *metallic READ metallic WRITE setMetallic NOTIFY metallicChanged)
     Q_PROPERTY(Qt3DRender::QAbstractTexture *roughness READ roughness WRITE setRoughness NOTIFY roughnessChanged)
     Q_PROPERTY(Qt3DRender::QAbstractTexture *ambientOcclusion READ ambientOcclusion WRITE setAmbientOcclusion NOTIFY ambientOcclusionChanged)
@@ -65,7 +65,7 @@ public:
     explicit QTexturedMetalRoughMaterial(Qt3DCore::QNode *parent = nullptr);
     ~QTexturedMetalRoughMaterial();
 
-    Qt3DRender::QAbstractTexture *albedo() const;
+    Qt3DRender::QAbstractTexture *baseColor() const;
     Qt3DRender::QAbstractTexture *metallic() const;
     Qt3DRender::QAbstractTexture *roughness() const;
     Qt3DRender::QAbstractTexture *ambientOcclusion() const;
@@ -75,7 +75,7 @@ public:
     float exposure() const;
 
 public Q_SLOTS:
-    void setAlbedo(Qt3DRender::QAbstractTexture *albedo);
+    void setBaseColor(Qt3DRender::QAbstractTexture *baseColor);
     void setMetallic(Qt3DRender::QAbstractTexture *metallic);
     void setRoughness(Qt3DRender::QAbstractTexture *roughness);
     void setAmbientOcclusion(Qt3DRender::QAbstractTexture *ambientOcclusion);
@@ -85,7 +85,7 @@ public Q_SLOTS:
     void setExposure(float exposure);
 
 Q_SIGNALS:
-    void albedoChanged(Qt3DRender::QAbstractTexture *albedo);
+    void baseColorChanged(Qt3DRender::QAbstractTexture *baseColor);
     void metallicChanged(Qt3DRender::QAbstractTexture *metallic);
     void roughnessChanged(Qt3DRender::QAbstractTexture *roughness);
     void ambientOcclusionChanged(Qt3DRender::QAbstractTexture *ambientOcclusion);

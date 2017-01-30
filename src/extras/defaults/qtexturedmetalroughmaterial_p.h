@@ -78,7 +78,7 @@ public:
 
     void init();
 
-    void handleAlbedoChanged(const QVariant &var);
+    void handleBaseColorChanged(const QVariant &var);
     void handleMetallicChanged(const QVariant &var);
     void handleRoughnessChanged(const QVariant &var);
     void handleAmbientOcclusionChanged(const QVariant &var);
@@ -87,14 +87,14 @@ public:
     void handleEnvironmentSpecularChanged(const QVariant &var);
     void handleExposureChanged(const QVariant &var);
 
-    Qt3DRender::QAbstractTexture *m_albedoTexture;
+    Qt3DRender::QAbstractTexture *m_baseColorTexture;
     Qt3DRender::QAbstractTexture *m_metallicTexture;
     Qt3DRender::QAbstractTexture *m_roughnessTexture;
     Qt3DRender::QAbstractTexture *m_ambientOcclusionTexture;
     Qt3DRender::QAbstractTexture *m_normalTexture;
     Qt3DRender::QAbstractTexture *m_environmentIrradianceTexture;
     Qt3DRender::QAbstractTexture *m_environmentSpecularTexture;
-    Qt3DRender::QParameter *m_albedoParameter;
+    Qt3DRender::QParameter *m_baseColorParameter;
     Qt3DRender::QParameter *m_metallicParameter;
     Qt3DRender::QParameter *m_roughnessParameter;
     Qt3DRender::QParameter *m_ambientOcclusionParameter;

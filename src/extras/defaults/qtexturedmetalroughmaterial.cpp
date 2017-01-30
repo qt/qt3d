@@ -60,14 +60,14 @@ namespace Qt3DExtras {
 
 QTexturedMetalRoughMaterialPrivate::QTexturedMetalRoughMaterialPrivate()
     : QMaterialPrivate()
-    , m_albedoTexture(new QTexture2D())
+    , m_baseColorTexture(new QTexture2D())
     , m_metallicTexture(new QTexture2D())
     , m_roughnessTexture(new QTexture2D())
     , m_ambientOcclusionTexture(new QTexture2D())
     , m_normalTexture(new QTexture2D())
     , m_environmentIrradianceTexture(new QTexture2D())
     , m_environmentSpecularTexture(new QTexture2D())
-    , m_albedoParameter(new QParameter(QStringLiteral("albedoMap"), m_albedoTexture))
+    , m_baseColorParameter(new QParameter(QStringLiteral("baseColorMap"), m_baseColorTexture))
     , m_metallicParameter(new QParameter(QStringLiteral("metallicMap"), m_metallicTexture))
     , m_roughnessParameter(new QParameter(QStringLiteral("roughnessMap"), m_roughnessTexture))
     , m_ambientOcclusionParameter(new QParameter(QStringLiteral("ambientOcclusionMap"), m_ambientOcclusionTexture))
@@ -81,11 +81,11 @@ QTexturedMetalRoughMaterialPrivate::QTexturedMetalRoughMaterialPrivate()
     , m_metalRoughGL3Shader(new QShaderProgram())
     , m_filterKey(new QFilterKey)
 {
-    m_albedoTexture->setMagnificationFilter(QAbstractTexture::Linear);
-    m_albedoTexture->setMinificationFilter(QAbstractTexture::LinearMipMapLinear);
-    m_albedoTexture->setWrapMode(QTextureWrapMode(QTextureWrapMode::Repeat));
-    m_albedoTexture->setGenerateMipMaps(true);
-    m_albedoTexture->setMaximumAnisotropy(16.0f);
+    m_baseColorTexture->setMagnificationFilter(QAbstractTexture::Linear);
+    m_baseColorTexture->setMinificationFilter(QAbstractTexture::LinearMipMapLinear);
+    m_baseColorTexture->setWrapMode(QTextureWrapMode(QTextureWrapMode::Repeat));
+    m_baseColorTexture->setGenerateMipMaps(true);
+    m_baseColorTexture->setMaximumAnisotropy(16.0f);
 
     m_metallicTexture->setMagnificationFilter(QAbstractTexture::Linear);
     m_metallicTexture->setMinificationFilter(QAbstractTexture::LinearMipMapLinear);
@@ -126,8 +126,8 @@ QTexturedMetalRoughMaterialPrivate::QTexturedMetalRoughMaterialPrivate()
 
 void QTexturedMetalRoughMaterialPrivate::init()
 {
-    connect(m_albedoParameter, &Qt3DRender::QParameter::valueChanged,
-            this, &QTexturedMetalRoughMaterialPrivate::handleAlbedoChanged);
+    connect(m_baseColorParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QTexturedMetalRoughMaterialPrivate::handleBaseColorChanged);
     connect(m_metallicParameter, &Qt3DRender::QParameter::valueChanged,
             this, &QTexturedMetalRoughMaterialPrivate::handleMetallicChanged);
     connect(m_roughnessParameter, &Qt3DRender::QParameter::valueChanged,
@@ -161,7 +161,7 @@ void QTexturedMetalRoughMaterialPrivate::init()
     m_metalRoughGL3Technique->addRenderPass(m_metalRoughGL3RenderPass);
     m_metalRoughEffect->addTechnique(m_metalRoughGL3Technique);
 
-    m_metalRoughEffect->addParameter(m_albedoParameter);
+    m_metalRoughEffect->addParameter(m_baseColorParameter);
     m_metalRoughEffect->addParameter(m_metallicParameter);
     m_metalRoughEffect->addParameter(m_roughnessParameter);
     m_metalRoughEffect->addParameter(m_ambientOcclusionParameter);
@@ -173,10 +173,10 @@ void QTexturedMetalRoughMaterialPrivate::init()
     q->setEffect(m_metalRoughEffect);
 }
 
-void QTexturedMetalRoughMaterialPrivate::handleAlbedoChanged(const QVariant &var)
+void QTexturedMetalRoughMaterialPrivate::handleBaseColorChanged(const QVariant &var)
 {
     Q_Q(QTexturedMetalRoughMaterial);
-    emit q->albedoChanged(var.value<QAbstractTexture *>());
+    emit q->baseColorChanged(var.value<QAbstractTexture *>());
 }
 
 void QTexturedMetalRoughMaterialPrivate::handleMetallicChanged(const QVariant &var)
@@ -258,11 +258,11 @@ QTexturedMetalRoughMaterial::~QTexturedMetalRoughMaterial()
 }
 
 /*!
-    \property QTexturedMetalRoughMaterial::albedo
+    \property QTexturedMetalRoughMaterial::baseColor
 
-    Holds the current albedo map texture.
+    Holds the current base color map texture.
 
-    By default, the albedo texture has the following properties:
+    By default, the base color texture has the following properties:
 
     \list
         \li Linear minification and magnification filters
@@ -271,10 +271,10 @@ QTexturedMetalRoughMaterial::~QTexturedMetalRoughMaterial()
         \li Maximum anisotropy of 16.0
     \endlist
 */
-QAbstractTexture *QTexturedMetalRoughMaterial::albedo() const
+QAbstractTexture *QTexturedMetalRoughMaterial::baseColor() const
 {
     Q_D(const QTexturedMetalRoughMaterial);
-    return d->m_albedoParameter->value().value<QAbstractTexture *>();
+    return d->m_baseColorParameter->value().value<QAbstractTexture *>();
 }
 
 /*!
@@ -407,10 +407,10 @@ float QTexturedMetalRoughMaterial::exposure() const
     return d->m_exposureParameter->value().toFloat();
 }
 
-void QTexturedMetalRoughMaterial::setAlbedo(QAbstractTexture *albedo)
+void QTexturedMetalRoughMaterial::setBaseColor(QAbstractTexture *baseColor)
 {
     Q_D(QTexturedMetalRoughMaterial);
-    d->m_albedoParameter->setValue(QVariant::fromValue(albedo));
+    d->m_baseColorParameter->setValue(QVariant::fromValue(baseColor));
 }
 
 void QTexturedMetalRoughMaterial::setMetallic(QAbstractTexture *metallic)
