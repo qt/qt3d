@@ -731,6 +731,78 @@ Module {
         }
     }
     Component {
+        name: "Qt3DExtras::QMetalRoughMaterial"
+        prototype: "Qt3DRender::QMaterial"
+        exports: ["Qt3D.Extras/MetalRoughMaterial 2.2"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "baseColor"; type: "QColor" }
+        Property { name: "metallic"; type: "float" }
+        Property { name: "roughness"; type: "float" }
+        Property {
+            name: "environmentIrradiance"
+            type: "Qt3DRender::QAbstractTexture"
+            isPointer: true
+        }
+        Property { name: "environmentSpecular"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "exposure"; type: "float" }
+        Signal {
+            name: "baseColorChanged"
+            Parameter { name: "baseColor"; type: "QColor" }
+        }
+        Signal {
+            name: "metallicChanged"
+            Parameter { name: "metallic"; type: "float" }
+        }
+        Signal {
+            name: "roughnessChanged"
+            Parameter { name: "roughness"; type: "float" }
+        }
+        Signal {
+            name: "environmentIrradianceChanged"
+            Parameter {
+                name: "environmentIrradiance"
+                type: "Qt3DRender::QAbstractTexture"
+                isPointer: true
+            }
+        }
+        Signal {
+            name: "environmentSpecularChanged"
+            Parameter { name: "environmentSpecular"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "exposureChanged"
+            Parameter { name: "exposure"; type: "float" }
+        }
+        Method {
+            name: "setBaseColor"
+            Parameter { name: "baseColor"; type: "QColor" }
+        }
+        Method {
+            name: "setMetallic"
+            Parameter { name: "metallic"; type: "float" }
+        }
+        Method {
+            name: "setRoughness"
+            Parameter { name: "roughness"; type: "float" }
+        }
+        Method {
+            name: "setEnvironmentIrradiance"
+            Parameter {
+                name: "environmentIrradiance"
+                type: "Qt3DRender::QAbstractTexture"
+                isPointer: true
+            }
+        }
+        Method {
+            name: "setEnvironmentSpecular"
+            Parameter { name: "environmentSpecular"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setExposure"
+            Parameter { name: "exposure"; type: "float" }
+        }
+    }
+    Component {
         name: "Qt3DExtras::QNormalDiffuseMapAlphaMaterial"
         prototype: "Qt3DExtras::QNormalDiffuseMapMaterial"
         exports: ["Qt3D.Extras/NormalDiffuseMapAlphaMaterial 2.0"]
@@ -1369,6 +1441,96 @@ Module {
         Method {
             name: "setTextureOffset"
             Parameter { name: "textureOffset"; type: "QVector2D" }
+        }
+    }
+    Component {
+        name: "Qt3DExtras::QTexturedMetalRoughMaterial"
+        prototype: "Qt3DRender::QMaterial"
+        exports: ["Qt3D.Extras/TexturedMetalRoughMaterial 2.2"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "baseColor"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "metallic"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "roughness"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "ambientOcclusion"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "normal"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property {
+            name: "environmentIrradiance"
+            type: "Qt3DRender::QAbstractTexture"
+            isPointer: true
+        }
+        Property { name: "environmentSpecular"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "exposure"; type: "float" }
+        Signal {
+            name: "baseColorChanged"
+            Parameter { name: "baseColor"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "metallicChanged"
+            Parameter { name: "metallic"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "roughnessChanged"
+            Parameter { name: "roughness"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "ambientOcclusionChanged"
+            Parameter { name: "ambientOcclusion"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "normalChanged"
+            Parameter { name: "normal"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "environmentIrradianceChanged"
+            Parameter {
+                name: "environmentIrradiance"
+                type: "Qt3DRender::QAbstractTexture"
+                isPointer: true
+            }
+        }
+        Signal {
+            name: "environmentSpecularChanged"
+            Parameter { name: "environmentSpecular"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "exposureChanged"
+            Parameter { name: "exposure"; type: "float" }
+        }
+        Method {
+            name: "setBaseColor"
+            Parameter { name: "baseColor"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setMetallic"
+            Parameter { name: "metallic"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setRoughness"
+            Parameter { name: "roughness"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setAmbientOcclusion"
+            Parameter { name: "ambientOcclusion"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setNormal"
+            Parameter { name: "normal"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setEnvironmentIrradiance"
+            Parameter {
+                name: "environmentIrradiance"
+                type: "Qt3DRender::QAbstractTexture"
+                isPointer: true
+            }
+        }
+        Method {
+            name: "setEnvironmentSpecular"
+            Parameter { name: "environmentSpecular"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setExposure"
+            Parameter { name: "exposure"; type: "float" }
         }
     }
     Component {
