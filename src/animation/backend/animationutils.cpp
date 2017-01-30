@@ -51,6 +51,20 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 namespace Animation {
 
+AnimationUtils::ClipPreEvaluationData AnimationUtils::evaluationDataForClip(AnimationClip *clip,
+                                                                            const AnimationUtils::AnimatorEvaluationData &animatorData)
+{
+    // global time values expected in seconds
+    ClipPreEvaluationData result;
+    result.localTime = localTimeFromGlobalTime(animatorData.globalTime, animatorData.startTime,
+                                               animatorData.playbackRate, clip->duration(),
+                                               animatorData.loopCount, result.currentLoop);
+    result.isFinalFrame = (result.localTime >= clip->duration() &&
+                           animatorData.loopCount != 0 &&
+                           result.currentLoop >= animatorData.loopCount - 1);
+    return result;
+}
+
 double AnimationUtils::localTimeFromGlobalTime(double t_global,
                                                double t_start_global,
                                                double playbackRate,
@@ -151,39 +165,10 @@ QVector<int> AnimationUtils::channelsToIndicesHelper(const ChannelGroup &channel
     return indices;
 }
 
-QVector<float> AnimationUtils::evaluateAtGlobalTime(AnimationClip *clip,
-                                                    qint64 globalTime,
-                                                    qint64 startTime,
-                                                    int loopCount,
-                                                    int &currentLoop,
-                                                    bool &finalFrame)
-{
-    // Calculate local time from global time
-    const double t_global = double(globalTime) / 1.0e9;
-    const double t_start_global = double(startTime) / 1.0e9;
-    const double playbackRate = 1.0; // Assume standard playback rate for now
-    const double duration = clip->duration();
-
-    const double localTime = localTimeFromGlobalTime(t_global, t_start_global,
-                                                     playbackRate, duration,
-                                                     loopCount, currentLoop);
-    return AnimationUtils::evaluateAtLocalTime(clip, localTime,
-                                               currentLoop, loopCount,
-                                               finalFrame);
-}
-
-QVector<float> AnimationUtils::evaluateAtLocalTime(AnimationClip *clip, float localTime,
-                                                   int currentLoop, int loopCount,
-                                                   bool &finalFrame)
+QVector<float> AnimationUtils::evaluateClipAtLocalTime(AnimationClip *clip, float localTime)
 {
     QVector<float> channelResults;
     Q_ASSERT(clip);
-
-    // TODO: Uncomment when we add loopCount property
-    if (localTime >= clip->duration()
-            && loopCount != 0
-            && currentLoop == loopCount - 1)
-        finalFrame = true;
 
     // Ensure we have enough storage to hold the evaluations
     channelResults.resize(clip->channelCount());

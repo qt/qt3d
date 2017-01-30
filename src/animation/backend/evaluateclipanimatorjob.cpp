@@ -63,25 +63,21 @@ void EvaluateClipAnimatorJob::run()
     // Evaluate the fcurves
     AnimationClip *clip = m_handler->animationClipManager()->lookupResource(clipAnimator->clipId());
     Q_ASSERT(clip);
-    bool finalFrame = false;
-    int currentLoop = 0;
-    const QVector<float> channelResults = AnimationUtils::evaluateAtGlobalTime(clip,
-                                                                               globalTime,
-                                                                               clipAnimator->startTime(),
-                                                                               clipAnimator->loops(),
-                                                                               currentLoop,
-                                                                               finalFrame);
+    // Prepare for evaluation (convert global time to local time ....)
+    const AnimationUtils::AnimatorEvaluationData animatorEvaluationData = AnimationUtils::animatorEvaluationDataForAnimator(clipAnimator, globalTime);
+    const AnimationUtils::ClipPreEvaluationData preEvaluationDataForClip = AnimationUtils::evaluationDataForClip(clip, animatorEvaluationData);
+    const QVector<float> channelResults = AnimationUtils::evaluateClipAtLocalTime(clip, preEvaluationDataForClip.localTime);
 
-    if (finalFrame)
+    if (preEvaluationDataForClip.isFinalFrame)
         clipAnimator->setRunning(false);
 
-    clipAnimator->setCurrentLoop(currentLoop);
+    clipAnimator->setCurrentLoop(preEvaluationDataForClip.currentLoop);
 
     // Prepare property changes (if finalFrame it also prepares the change for the running property for the frontend)
     const QVector<Qt3DCore::QSceneChangePtr> changes = AnimationUtils::preparePropertyChanges(clipAnimator->peerId(),
                                                                                               clipAnimator->mappingData(),
                                                                                               channelResults,
-                                                                                              finalFrame);
+                                                                                              preEvaluationDataForClip.isFinalFrame);
 
     // Send the property changes
     clipAnimator->sendPropertyChanges(changes);
