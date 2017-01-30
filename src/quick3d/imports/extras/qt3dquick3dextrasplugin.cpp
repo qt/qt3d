@@ -46,6 +46,7 @@
 #include <Qt3DExtras/qfirstpersoncameracontroller.h>
 #include <Qt3DExtras/qforwardrenderer.h>
 #include <Qt3DExtras/qgoochmaterial.h>
+#include <Qt3DExtras/qmetalroughmaterial.h>
 #include <Qt3DExtras/qnormaldiffusemapalphamaterial.h>
 #include <Qt3DExtras/qnormaldiffusemapmaterial.h>
 #include <Qt3DExtras/qnormaldiffusespecularmapmaterial.h>
@@ -99,6 +100,7 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DExtras::QPerVertexColorMaterial>(uri, 2, 0, "PerVertexColorMaterial");
     qmlRegisterType<Qt3DExtras::QGoochMaterial>(uri, 2, 0, "GoochMaterial");
     qmlRegisterType<Qt3DExtras::QTextureMaterial>(uri, 2, 0, "TextureMaterial");
+    qmlRegisterType<Qt3DExtras::QMetalRoughMaterial>(uri, 2, 2, "MetalRoughMaterial");
     qmlRegisterType<Qt3DExtras::QTexturedMetalRoughMaterial>(uri, 2, 2, "TexturedMetalRoughMaterial");
 
     // Meshes
