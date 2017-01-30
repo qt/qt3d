@@ -163,7 +163,6 @@ void Scene2D::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chan
     m_renderPolicy = data.renderPolicy;
     setSharedObject(data.sharedObject);
     setOutput(data.output);
-    m_shareContext = renderer()->shareContext();
 }
 
 void Scene2D::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -195,13 +194,21 @@ void Scene2D::setSharedObject(Qt3DRender::Quick::Scene2DSharedObjectPtr sharedOb
 void Scene2D::initializeRender()
 {
     if (!m_renderInitialized && m_sharedObject.data() != nullptr) {
-
+       m_shareContext = renderer()->shareContext();
+        if (!m_shareContext){
+            qCWarning(Qt3DRender::Quick::Scene2D) << Q_FUNC_INFO << "Renderer not initialized.";
+            QCoreApplication::postEvent(m_sharedObject->m_renderObject, new QEvent(INITIALIZE));
+            return;
+        }
+        m_context = new QOpenGLContext();
+#ifdef Q_OS_MACOS
+        m_context->setFormat(m_shareContext->format());
+#else
         QSurfaceFormat format;
         format.setDepthBufferSize(24);
         format.setStencilBufferSize(8);
-
-        m_context = new QOpenGLContext();
         m_context->setFormat(format);
+#endif
         m_context->setShareContext(m_shareContext);
         m_context->create();
 
