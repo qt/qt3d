@@ -1087,9 +1087,13 @@ void Renderer::updateTexture(Texture *texture)
             !glTextureManager->setParameters(glTexture, texture->parameters()))
         qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setParameters failed, should be non-shared";
 
-    if (dirtyFlags.testFlag(Texture::DirtyGenerators) &&
+    if (dirtyFlags.testFlag(Texture::DirtyImageGenerators) &&
             !glTextureManager->setImages(glTexture, texture->textureImages()))
         qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setGenerators failed, should be non-shared";
+
+    if (dirtyFlags.testFlag(Texture::DirtyDataGenerator) &&
+            !glTextureManager->setGenerator(glTexture, texture->dataGenerator()))
+        qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setGenerator failed, should be non-shared";
 
     // Unset the dirty flag on the texture
     texture->unsetDirty();

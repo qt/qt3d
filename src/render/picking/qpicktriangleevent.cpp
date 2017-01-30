@@ -204,7 +204,7 @@ uint QPickTriangleEvent::vertex2Index() const
  */
 /*!
  * \brief QPickTriangleEvent::vertex3Index
- * \returns index of third point of picked triangle
+ * Returns index of third point of picked triangle
  */
 uint QPickTriangleEvent::vertex3Index() const
 {

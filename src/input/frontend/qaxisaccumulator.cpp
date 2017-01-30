@@ -88,7 +88,7 @@ namespace Qt3DInput {
 */
 
 /*!
-    \qmlproperty int Qt3D.Inpit::Axis::value
+    \qmlproperty int Qt3D.Input::Axis::value
     \readonly
 
     Holds the value accumulated from the sourceAxis.
@@ -183,11 +183,13 @@ QAxisAccumulator::SourceAxisType QAxisAccumulator::sourceAxisType() const
 /*!
     \qmlproperty real Qt3D.Input::AxisAccumulator::value
 
-    The accumulated (integrated) value.
+    The amount to scale the axis value by when accumulating. This can be
+    thought of as the maximum velocity or acceleration the axis can
+    control.
  */
 
 /*!
-   \return the accumulated (integrated) value.
+   Returns the accumulated (integrated) value.
  */
 float QAxisAccumulator::value() const
 {
@@ -206,14 +208,6 @@ float QAxisAccumulator::velocity() const
     Q_D(const QAxisAccumulator);
     return d->m_velocity;
 }
-
-/*!
-    \qmlproperty real Qt3D.Input::AxisAccumulator::value
-
-    The amount to scale the axis value by when accumulating. This can be
-    thought of as the maximum velocity or acceleration the axis can
-    control.
- */
 
 /*!
     The amount to scale the axis value by when accumulating. This can be
