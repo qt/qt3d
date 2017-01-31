@@ -55,6 +55,7 @@ ViewportNode::ViewportNode()
     , m_yMin(0.0f)
     , m_xMax(1.0f)
     , m_yMax(1.0f)
+    , m_gamma(2.2f)
 {
 }
 
@@ -67,6 +68,7 @@ void ViewportNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
     m_xMax = data.normalizedRect.width();
     m_yMin = data.normalizedRect.y();
     m_yMax = data.normalizedRect.height();
+    m_gamma = data.gamma;
 }
 
 float ViewportNode::xMin() const
@@ -106,6 +108,16 @@ void ViewportNode::setYMax(float yMax)
     m_yMax = yMax;
 }
 
+float ViewportNode::gamma() const
+{
+    return m_gamma;
+}
+
+void ViewportNode::setGamma(float gamma)
+{
+    m_gamma = gamma;
+}
+
 void ViewportNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == PropertyUpdated) {
@@ -116,6 +128,8 @@ void ViewportNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             setYMin(normalizedRect.y());
             setXMax(normalizedRect.width());
             setYMax(normalizedRect.height());
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("gamma")) {
+            setGamma(propertyChange->value().toFloat());
         }
         markDirty(AbstractRenderer::AllDirty);
     }

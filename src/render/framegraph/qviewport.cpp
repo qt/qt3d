@@ -50,6 +50,7 @@ namespace Qt3DRender {
 QViewportPrivate::QViewportPrivate()
     : QFrameGraphNodePrivate()
     , m_normalizedRect(QRectF(0.0f, 0.0f, 1.0f, 1.0f))
+    , m_gamma(2.2f)
 {
 }
 
@@ -62,7 +63,8 @@ QViewportPrivate::QViewportPrivate()
     \inherits Qt3DRender::QFrameGraphNode
 
     Qt3DRender::QViewport of the scene specifies at which portion of the render surface Qt3D
-    is rendering to. Area outside the viewport is left untouched.
+    is rendering to. Area outside the viewport is left untouched. It also controls global parameters
+    to the rendering in that viewport like gamma.
  */
 
 /*!
@@ -74,7 +76,8 @@ QViewportPrivate::QViewportPrivate()
     \brief A viewport on the Qt3D Scene
 
     Viewport of the scene specifies at which portion of the render surface Qt3D is
-    rendering to. Area outside the viewport is left untouched.
+    rendering to. Area outside the viewport is left untouched. It also controls global parameters
+    to the rendering in that viewport like gamma.
  */
 
 /*!
@@ -83,6 +86,12 @@ QViewportPrivate::QViewportPrivate()
     Specifies the normalised rectangle for the viewport, i.e. the viewport rectangle
     is specified relative to the render surface size. Whole surface sized viewport
     is specified as [0.0, 0.0, 1.0, 1.0], which is the default.
+ */
+
+/*!
+    \qmlproperty rect Viewport::gamma
+
+    Specifies the gamma factor for the viewport. The default is 2.2 which should give proper result on most screens.
  */
 
 /*!
@@ -111,6 +120,12 @@ QRectF QViewport::normalizedRect() const
     return d->m_normalizedRect;
 }
 
+float QViewport::gamma() const
+{
+    Q_D(const QViewport);
+    return d->m_gamma;
+}
+
 /*!
     \property QViewport::normalizedRect
 
@@ -127,12 +142,27 @@ void QViewport::setNormalizedRect(const QRectF &normalizedRect)
     }
 }
 
+/*!
+    \property QViewport::gamma
+
+    Specifies the gamma factor for the viewport. The default is 2.2 which should give proper result on most screens.
+ */
+void QViewport::setGamma(float gamma)
+{
+    Q_D(QViewport);
+    if (gamma != d->m_gamma) {
+        d->m_gamma = gamma;
+        emit gammaChanged(gamma);
+    }
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QViewport::createNodeCreationChange() const
 {
     auto creationChange = QFrameGraphNodeCreatedChangePtr<QViewportData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QViewport);
     data.normalizedRect = d->m_normalizedRect;
+    data.gamma = d->m_gamma;
     return creationChange;
 }
 
