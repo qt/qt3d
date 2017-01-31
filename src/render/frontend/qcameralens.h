@@ -66,6 +66,7 @@ class QT3DRENDERSHARED_EXPORT QCameraLens : public Qt3DCore::QComponent
     Q_PROPERTY(float bottom READ bottom WRITE setBottom NOTIFY bottomChanged)
     Q_PROPERTY(float top READ top WRITE setTop NOTIFY topChanged)
     Q_PROPERTY(QMatrix4x4 projectionMatrix READ projectionMatrix WRITE setProjectionMatrix NOTIFY projectionMatrixChanged)
+    Q_PROPERTY(float exposure READ exposure WRITE setExposure NOTIFY exposureChanged)
 
 public:
     explicit QCameraLens(QNode *parent = nullptr);
@@ -102,6 +103,8 @@ public:
     void setPerspectiveProjection(float fieldOfView, float aspect,
                                   float nearPlane, float farPlane);
 
+    float exposure() const;
+
 public Q_SLOTS:
     void setProjectionType(ProjectionType projectionType);
     void setNearPlane(float nearPlane);
@@ -113,6 +116,7 @@ public Q_SLOTS:
     void setBottom(float bottom);
     void setTop(float top);
     void setProjectionMatrix(const QMatrix4x4 &projectionMatrix);
+    void setExposure(float exposure);
 
 Q_SIGNALS:
     void projectionTypeChanged(QCameraLens::ProjectionType projectionType);
@@ -125,6 +129,7 @@ Q_SIGNALS:
     void bottomChanged(float bottom);
     void topChanged(float top);
     void projectionMatrixChanged(const QMatrix4x4 &projectionMatrix);
+    void exposureChanged(float exposure);
 
 protected:
     explicit QCameraLens(QCameraLensPrivate &dd, QNode *parent = nullptr);

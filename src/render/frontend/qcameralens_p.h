@@ -101,6 +101,8 @@ public:
 
     mutable QMatrix4x4 m_projectionMatrix;
 
+    float m_exposure;
+
 private:
     inline void updatePerpectiveProjection()
     {
@@ -130,6 +132,7 @@ private:
 struct QCameraLensData
 {
     QMatrix4x4 projectionMatrix;
+    float exposure;
 };
 
 } // namespace Qt3DRender

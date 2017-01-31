@@ -54,6 +54,7 @@ namespace Render {
 
 CameraLens::CameraLens()
     : BackendNode()
+    , m_exposure(0.0f)
 {
 }
 
@@ -79,6 +80,11 @@ void CameraLens::setProjection(const QMatrix4x4 &projection)
     m_projection = projection;
 }
 
+void CameraLens::setExposure(float exposure)
+{
+    m_exposure = exposure;
+}
+
 void CameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
@@ -88,6 +94,8 @@ void CameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (propertyChange->propertyName() == QByteArrayLiteral("projectionMatrix")) {
             QMatrix4x4 projectionMatrix = propertyChange->value().value<QMatrix4x4>();
             m_projection = projectionMatrix;
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("exposure")) {
+            setExposure(propertyChange->value().toFloat());
         }
 
         markDirty(AbstractRenderer::AllDirty);
