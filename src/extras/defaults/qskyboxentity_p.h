@@ -60,6 +60,7 @@ namespace Qt3DRender {
 
 class QFilterKey;
 class QTextureCubeMap;
+class QTextureLoader;
 class QShaderProgram;
 class QSkyboxEntity;
 class QTextureImage;
@@ -87,6 +88,7 @@ class QSkyboxEntityPrivate : public Qt3DCore::QEntityPrivate
     Qt3DRender::QEffect *m_effect;
     Qt3DRender::QMaterial *m_material;
     Qt3DRender::QTextureCubeMap *m_skyboxTexture;
+    Qt3DRender::QTextureLoader *m_loadedTexture;
     Qt3DRender::QShaderProgram *m_gl3Shader;
     Qt3DRender::QShaderProgram *m_gl2es2Shader;
     Qt3DRender::QTechnique *m_gl2Technique;

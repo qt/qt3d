@@ -65,6 +65,7 @@ QSkyboxEntityPrivate::QSkyboxEntityPrivate()
     , m_effect(new QEffect())
     , m_material(new QMaterial())
     , m_skyboxTexture(new QTextureCubeMap())
+    , m_loadedTexture(new QTextureLoader())
     , m_gl3Shader(new QShaderProgram())
     , m_gl2es2Shader(new QShaderProgram())
     , m_gl2Technique(new QTechnique())
@@ -184,12 +185,18 @@ void QSkyboxEntityPrivate::init()
  */
 void QSkyboxEntityPrivate::reloadTexture()
 {
-    m_posXImage->setSource(QUrl(m_baseName + QStringLiteral("_posx") + m_extension));
-    m_posYImage->setSource(QUrl(m_baseName + QStringLiteral("_posy") + m_extension));
-    m_posZImage->setSource(QUrl(m_baseName + QStringLiteral("_posz") + m_extension));
-    m_negXImage->setSource(QUrl(m_baseName + QStringLiteral("_negx") + m_extension));
-    m_negYImage->setSource(QUrl(m_baseName + QStringLiteral("_negy") + m_extension));
-    m_negZImage->setSource(QUrl(m_baseName + QStringLiteral("_negz") + m_extension));
+    if (m_extension == QStringLiteral(".dds")) {
+        m_loadedTexture->setSource(QUrl(m_baseName + m_extension));
+        m_textureParameter->setValue(QVariant::fromValue(m_loadedTexture));
+    } else {
+        m_posXImage->setSource(QUrl(m_baseName + QStringLiteral("_posx") + m_extension));
+        m_posYImage->setSource(QUrl(m_baseName + QStringLiteral("_posy") + m_extension));
+        m_posZImage->setSource(QUrl(m_baseName + QStringLiteral("_posz") + m_extension));
+        m_negXImage->setSource(QUrl(m_baseName + QStringLiteral("_negx") + m_extension));
+        m_negYImage->setSource(QUrl(m_baseName + QStringLiteral("_negy") + m_extension));
+        m_negZImage->setSource(QUrl(m_baseName + QStringLiteral("_negz") + m_extension));
+        m_textureParameter->setValue(QVariant::fromValue(m_skyboxTexture));
+    }
 }
 
 /*!
