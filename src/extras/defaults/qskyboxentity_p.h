@@ -99,6 +99,7 @@ class QSkyboxEntityPrivate : public Qt3DCore::QEntityPrivate
     Qt3DRender::QRenderPass *m_es2RenderPass;
     Qt3DRender::QRenderPass *m_gl3RenderPass;
     QCuboidMesh *m_mesh;
+    Qt3DRender::QParameter *m_gammaStrengthParameter;
     Qt3DRender::QParameter *m_textureParameter;
     Qt3DRender::QTextureImage *m_posXImage;
     Qt3DRender:: QTextureImage *m_posYImage;

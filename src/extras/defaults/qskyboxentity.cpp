@@ -76,6 +76,7 @@ QSkyboxEntityPrivate::QSkyboxEntityPrivate()
     , m_es2RenderPass(new QRenderPass())
     , m_gl3RenderPass(new QRenderPass())
     , m_mesh(new QCuboidMesh())
+    , m_gammaStrengthParameter(new QParameter(QStringLiteral("gammaStrength"), 0.0f))
     , m_textureParameter(new QParameter(QStringLiteral("skyboxTexture"), m_skyboxTexture))
     , m_posXImage(new QTextureImage())
     , m_posYImage(new QTextureImage())
@@ -145,6 +146,7 @@ void QSkyboxEntityPrivate::init()
     m_effect->addTechnique(m_es2Technique);
 
     m_material->setEffect(m_effect);
+    m_material->addParameter(m_gammaStrengthParameter);
     m_material->addParameter(m_textureParameter);
 
     m_mesh->setXYMeshResolution(QSize(2, 2));
@@ -278,6 +280,29 @@ QString QSkyboxEntity::extension() const
 {
     Q_D(const QSkyboxEntity);
     return d->m_extension;
+}
+
+/*!
+ * Sets the gamma correction enable state to \a enabled.
+ * \since 5.9
+ */
+void QSkyboxEntity::setGammaCorrectEnabled(bool enabled)
+{
+    Q_D(QSkyboxEntity);
+    if (enabled != isGammaCorrectEnabled()) {
+        d->m_gammaStrengthParameter->setValue(enabled ? 1.0f : 0.0f);
+        emit gammaCorrectEnabledChanged(enabled);
+    }
+}
+
+/*!
+ * Indicates if gamma correction is enabled for this skybox.
+ * \since 5.9
+ */
+bool QSkyboxEntity::isGammaCorrectEnabled() const
+{
+    Q_D(const QSkyboxEntity);
+    return !qFuzzyIsNull(d->m_gammaStrengthParameter->value().toFloat());
 }
 
 } // namespace Qt3DExtras
