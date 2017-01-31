@@ -51,9 +51,12 @@
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qtextureimagedatagenerator.h>
+#include <Qt3DExtras/qmorphphongmaterial.h>
 #include <Qt3DExtras/qdiffusemapmaterial.h>
 #include <Qt3DExtras/qdiffusespecularmapmaterial.h>
 #include <Qt3DExtras/qphongmaterial.h>
+#include <Qt3DExtras/qkeyframeanimation.h>
+#include <Qt3DExtras/qmorphinganimation.h>
 #include <QFileInfo>
 #include <QColor>
 #include <qmath.h>
@@ -413,7 +416,15 @@ Qt3DCore::QEntity *AssimpImporter::scene(const QString &id)
 
     // Builds the Qt3D scene using the Assimp aiScene
     // and the various dicts filled previously by parse
-    return node(rootNode);
+    Qt3DCore::QEntity *n = node(rootNode);
+    if (m_scene->m_animations.size() > 0) {
+        qWarning() << "No target found for " << m_scene->m_animations.size() << " animations!";
+
+        for (Qt3DExtras::QKeyframeAnimation *anim : m_scene->m_animations)
+            delete anim;
+        m_scene->m_animations.clear();
+    }
+    return n;
 }
 
 /*!
@@ -429,6 +440,17 @@ Qt3DCore::QEntity *AssimpImporter::node(const QString &id)
     return node(n);
 }
 
+template <typename T>
+void findAnimationsForNode(QVector<T *> &animations, QVector<T *> &result, const QString &name)
+{
+    for (T *anim : animations) {
+        if (anim->targetName() == name) {
+            result.push_back(anim);
+            animations.removeAll(anim);
+        }
+    }
+}
+
 /*!
  * Returns a Node from an Assimp aiNode \a node.
  */
@@ -442,13 +464,54 @@ Qt3DCore::QEntity *AssimpImporter::node(aiNode *node)
     // Add Meshes to the node
     for (uint i = 0; i < node->mNumMeshes; i++) {
         uint meshIdx = node->mMeshes[i];
+        QMaterial *material = nullptr;
         QGeometryRenderer *mesh = m_scene->m_meshes[meshIdx];
         // mesh material
         uint materialIndex = m_scene->m_aiScene->mMeshes[meshIdx]->mMaterialIndex;
+
         if (m_scene->m_materials.contains(materialIndex))
-            entityNode->addComponent(m_scene->m_materials[materialIndex]);
-        // mesh
-        entityNode->addComponent(mesh);
+            material = m_scene->m_materials[materialIndex];
+
+        QList<Qt3DExtras::QMorphingAnimation *> morphingAnimations
+                = mesh->findChildren<Qt3DExtras::QMorphingAnimation *>();
+        if (morphingAnimations.size() > 0) {
+            material = new Qt3DExtras::QMorphPhongMaterial(entityNode);
+
+            QVector<Qt3DExtras::QMorphingAnimation *> animations;
+            findAnimationsForNode<Qt3DExtras::QMorphingAnimation>(m_scene->m_morphAnimations,
+                                                                  animations,
+                                                                  aiStringToQString(node->mName));
+            const auto morphTargetList = morphingAnimations.at(0)->morphTargetList();
+            for (Qt3DExtras::QMorphingAnimation *anim : animations) {
+                anim->setParent(entityNode);
+                anim->setTarget(mesh);
+                anim->setMorphTargets(morphTargetList);
+            }
+
+            for (int j = 0; j < animations.size(); ++j) {
+                QObject::connect(animations[j], &Qt3DExtras::QMorphingAnimation::interpolatorChanged,
+                                (Qt3DExtras::QMorphPhongMaterial *)material,
+                                 &Qt3DExtras::QMorphPhongMaterial::setInterpolator);
+            }
+            morphingAnimations[0]->deleteLater();
+        }
+
+        if (node->mNumMeshes == 1) {
+            if (material)
+                entityNode->addComponent(material);
+            // mesh
+            entityNode->addComponent(mesh);
+        } else {
+            QEntity *childEntity = QAbstractNodeFactory::createNode<Qt3DCore::QEntity>("QEntity");
+            if (material)
+                childEntity->addComponent(material);
+            childEntity->addComponent(mesh);
+            childEntity->setParent(entityNode);
+
+            Qt3DCore::QTransform *transform
+                    = QAbstractNodeFactory::createNode<Qt3DCore::QTransform>("QTransform");
+            childEntity->addComponent(transform);
+        }
     }
 
     // Add Children to Node
@@ -466,6 +529,16 @@ Qt3DCore::QEntity *AssimpImporter::node(aiNode *node)
     Qt3DCore::QTransform *transform = QAbstractNodeFactory::createNode<Qt3DCore::QTransform>("QTransform");
     transform->setMatrix(qTransformMatrix);
     entityNode->addComponent(transform);
+
+    QVector<Qt3DExtras::QKeyframeAnimation *> animations;
+    findAnimationsForNode<Qt3DExtras::QKeyframeAnimation>(m_scene->m_animations,
+                                                          animations,
+                                                          aiStringToQString(node->mName));
+
+    for (Qt3DExtras::QKeyframeAnimation *anim : animations) {
+        anim->setTarget(transform);
+        anim->setParent(entityNode);
+    }
 
     // Add Camera
     if (m_scene->m_cameras.contains(node))
@@ -497,7 +570,6 @@ void AssimpImporter::readSceneFile(const QString &path)
     m_scene->m_aiScene = m_scene->m_importer->ReadFile(path.toUtf8().constData(),
                                                        aiProcess_SortByPType|
                                                        aiProcess_Triangulate|
-                                                       aiProcess_JoinIdenticalVertices|
                                                        aiProcess_GenSmoothNormals|
                                                        aiProcess_FlipUVs);
     if (m_scene->m_aiScene == nullptr) {
@@ -713,8 +785,136 @@ void AssimpImporter::loadMesh(uint meshIndex)
 
     m_scene->m_meshes[meshIndex] = geometryRenderer;
 
+    if (mesh->mNumAnimMeshes > 0) {
+
+        aiAnimMesh *animesh = mesh->mAnimMeshes[0];
+
+        if (animesh->mNumVertices != mesh->mNumVertices)
+            return;
+
+        Qt3DExtras::QMorphingAnimation *morphingAnimation
+                = new Qt3DExtras::QMorphingAnimation(geometryRenderer);
+        QVector<QString> names;
+        QVector<Qt3DExtras::QMorphTarget *> targets;
+        uint voff = 0;
+        uint noff = 0;
+        uint tanoff = 0;
+        uint texoff = 0;
+        uint coloff = 0;
+        uint offset = 0;
+        if (animesh->mVertices) {
+            names.push_back(VERTICES_ATTRIBUTE_NAME);
+            offset += 3;
+        }
+        if (animesh->mNormals) {
+            names.push_back(NORMAL_ATTRIBUTE_NAME);
+            noff = offset;
+            offset += 3;
+        }
+        if (animesh->mTangents) {
+            names.push_back(TANGENT_ATTRIBUTE_NAME);
+            tanoff = offset;
+            offset += 3;
+        }
+        if (animesh->mTextureCoords[0]) {
+            names.push_back(TEXTCOORD_ATTRIBUTE_NAME);
+            texoff = offset;
+            offset += 2;
+        }
+        if (animesh->mColors[0]) {
+            names.push_back(COLOR_ATTRIBUTE_NAME);
+            coloff = offset;
+        }
+
+        ushort clumpSize = (animesh->mVertices ? 3 : 0)
+                            + (animesh->mNormals ? 3 : 0)
+                            + (animesh->mTangents ? 3 : 0)
+                            + (animesh->mColors[0] ? 4 : 0)
+                            + (animesh->mTextureCoords[0] ? 2 : 0);
+
+
+        for (uint i = 0; i < mesh->mNumAnimMeshes; i++) {
+            aiAnimMesh *animesh = mesh->mAnimMeshes[i];
+            Qt3DExtras::QMorphTarget *target = new Qt3DExtras::QMorphTarget(geometryRenderer);
+            targets.push_back(target);
+            QVector<QAttribute *> attributes;
+            QByteArray targetBufferArray;
+            targetBufferArray.resize(clumpSize * mesh->mNumVertices * sizeof(float));
+            float *dst = reinterpret_cast<float *>(targetBufferArray.data());
+
+            for (uint j = 0; j < mesh->mNumVertices; j++) {
+                if (animesh->mVertices) {
+                    *dst++ = animesh->mVertices[j].x;
+                    *dst++ = animesh->mVertices[j].y;
+                    *dst++ = animesh->mVertices[j].z;
+                }
+                if (animesh->mNormals) {
+                    *dst++ = animesh->mNormals[j].x;
+                    *dst++ = animesh->mNormals[j].y;
+                    *dst++ = animesh->mNormals[j].z;
+                }
+                if (animesh->mTangents) {
+                    *dst++ = animesh->mTangents[j].x;
+                    *dst++ = animesh->mTangents[j].y;
+                    *dst++ = animesh->mTangents[j].z;
+                }
+                if (animesh->mTextureCoords[0]) {
+                    *dst++ = animesh->mTextureCoords[0][j].x;
+                    *dst++ = animesh->mTextureCoords[0][j].y;
+                }
+                if (animesh->mColors[0]) {
+                    *dst++ = animesh->mColors[0][j].r;
+                    *dst++ = animesh->mColors[0][j].g;
+                    *dst++ = animesh->mColors[0][j].b;
+                    *dst++ = animesh->mColors[0][j].a;
+                }
+            }
+
+            Qt3DRender::QBuffer *targetBuffer
+                    = QAbstractNodeFactory::createNode<Qt3DRender::QBuffer>("QBuffer");
+            targetBuffer->setData(targetBufferArray);
+            targetBuffer->setParent(meshGeometry);
+
+            if (animesh->mVertices) {
+                attributes.push_back(createAttribute(targetBuffer, VERTICES_ATTRIBUTE_NAME,
+                                                     QAttribute::Float, 3,
+                                                     animesh->mNumVertices, voff * sizeof(float),
+                                                     clumpSize * sizeof(float), meshGeometry));
+            }
+            if (animesh->mNormals) {
+                attributes.push_back(createAttribute(targetBuffer, NORMAL_ATTRIBUTE_NAME,
+                                                     QAttribute::Float, 3,
+                                                     animesh->mNumVertices, noff * sizeof(float),
+                                                     clumpSize * sizeof(float), meshGeometry));
+            }
+            if (animesh->mTangents) {
+                attributes.push_back(createAttribute(targetBuffer, TANGENT_ATTRIBUTE_NAME,
+                                                     QAttribute::Float, 3,
+                                                     animesh->mNumVertices, tanoff * sizeof(float),
+                                                     clumpSize * sizeof(float), meshGeometry));
+            }
+            if (animesh->mTextureCoords[0]) {
+                attributes.push_back(createAttribute(targetBuffer, TEXTCOORD_ATTRIBUTE_NAME,
+                                                     QAttribute::Float, 2,
+                                                     animesh->mNumVertices, texoff * sizeof(float),
+                                                     clumpSize * sizeof(float), meshGeometry));
+            }
+            if (animesh->mColors[0]) {
+                attributes.push_back(createAttribute(targetBuffer, COLOR_ATTRIBUTE_NAME,
+                                                     QAttribute::Float, 4,
+                                                     animesh->mNumVertices, coloff * sizeof(float),
+                                                     clumpSize * sizeof(float), meshGeometry));
+            }
+            target->setAttributes(attributes);
+        }
+        morphingAnimation->setMorphTargets(targets);
+        morphingAnimation->setTargetName(aiStringToQString(mesh->mName));
+        morphingAnimation->setTarget(geometryRenderer);
+    }
+
     qCDebug(AssimpImporterLog) << Q_FUNC_INFO << " Mesh " << aiStringToQString(mesh->mName)
-                             << " Vertices " << mesh->mNumVertices << " Faces " << mesh->mNumFaces << " Indices " << indices;
+                               << " Vertices " << mesh->mNumVertices << " Faces "
+                               << mesh->mNumFaces << " Indices " << indices;
 }
 
 /*!
@@ -790,10 +990,145 @@ void AssimpImporter::loadCamera(uint cameraIndex)
     m_scene->m_cameras[cameraNode] = camera;
 }
 
+int findTimeIndex(const QVector<float> &times, float time) {
+    for (int i = 0; i < times.size(); i++) {
+        if (qFuzzyCompare(times[i], time))
+            return i;
+    }
+    return -1;
+}
+
+void insertAtTime(QVector<float> &positions, QVector<Qt3DCore::QTransform *> &tranforms,
+                  Qt3DCore::QTransform *t, float time)
+{
+    if (positions.size() == 0) {
+        positions.push_back(time);
+        tranforms.push_back(t);
+    } else if (time < positions.first()) {
+        positions.push_front(time);
+        tranforms.push_front(t);
+    } else if (time > positions.last()) {
+        positions.push_back(time);
+        tranforms.push_back(t);
+    } else {
+        qWarning() << "Insert new key in the middle of the keyframe not implemented.";
+    }
+}
+
 // OPTIONAL
 void AssimpImporter::loadAnimation(uint animationIndex)
 {
-    Q_UNUSED(animationIndex);
+    aiAnimation *assimpAnim = m_scene->m_aiScene->mAnimations[animationIndex];
+    qCDebug(AssimpImporterLog) << "load Animation: "<< aiStringToQString(assimpAnim->mName);
+    double tickScale = 1.0;
+    if (!qFuzzyIsNull(assimpAnim->mTicksPerSecond))
+        tickScale = 1.0 / assimpAnim->mTicksPerSecond;
+
+    /* keyframe animations */
+    for (uint i = 0; i < assimpAnim->mNumChannels; ++i) {
+        aiNodeAnim *nodeAnim = assimpAnim->mChannels[i];
+        aiNode *targetNode = m_scene->m_aiScene->mRootNode->FindNode(nodeAnim->mNodeName);
+
+        Qt3DExtras::QKeyframeAnimation *kfa = new Qt3DExtras::QKeyframeAnimation();
+        QVector<float> positions;
+        QVector<Qt3DCore::QTransform*> transforms;
+        if ((nodeAnim->mNumPositionKeys > 1)
+                || !(nodeAnim->mNumPositionKeys == 1 && nodeAnim->mPositionKeys[0].mValue.x == 0
+                    && nodeAnim->mPositionKeys[0].mValue.y == 0
+                     && nodeAnim->mPositionKeys[0].mValue.z == 0)) {
+            for (uint j = 0; j < nodeAnim->mNumPositionKeys; j++) {
+                positions.push_back(nodeAnim->mPositionKeys[j].mTime);
+                Qt3DCore::QTransform *t = new Qt3DCore::QTransform();
+                t->setTranslation(QVector3D(nodeAnim->mPositionKeys[j].mValue.x,
+                                            nodeAnim->mPositionKeys[j].mValue.y,
+                                            nodeAnim->mPositionKeys[j].mValue.z));
+                transforms.push_back(t);
+            }
+        }
+        if ((nodeAnim->mNumRotationKeys > 1) ||
+                !(nodeAnim->mNumRotationKeys == 1 && nodeAnim->mRotationKeys[0].mValue.x == 0
+                  && nodeAnim->mRotationKeys[0].mValue.y == 0
+                  && nodeAnim->mRotationKeys[0].mValue.z == 0
+                  && nodeAnim->mRotationKeys[0].mValue.w == 1)) {
+            for (uint j = 0; j < nodeAnim->mNumRotationKeys; j++) {
+                int index = findTimeIndex(positions, nodeAnim->mRotationKeys[j].mTime);
+                if (index >= 0) {
+                    Qt3DCore::QTransform *t = transforms[index];
+                    t->setRotation(QQuaternion(nodeAnim->mRotationKeys[j].mValue.w,
+                                               nodeAnim->mRotationKeys[j].mValue.x,
+                                               nodeAnim->mRotationKeys[j].mValue.y,
+                                               nodeAnim->mRotationKeys[j].mValue.z));
+                } else {
+                    Qt3DCore::QTransform *t = new Qt3DCore::QTransform();
+                    t->setRotation(QQuaternion(nodeAnim->mRotationKeys[j].mValue.w,
+                                               nodeAnim->mRotationKeys[j].mValue.x,
+                                               nodeAnim->mRotationKeys[j].mValue.y,
+                                               nodeAnim->mRotationKeys[j].mValue.z));
+                    insertAtTime(positions, transforms, t, nodeAnim->mRotationKeys[j].mTime);
+                }
+            }
+        }
+        if ((nodeAnim->mNumScalingKeys > 1)
+                || !(nodeAnim->mNumScalingKeys == 1 && nodeAnim->mScalingKeys[0].mValue.x == 1
+                    && nodeAnim->mScalingKeys[0].mValue.y == 1
+                     && nodeAnim->mScalingKeys[0].mValue.z == 1)) {
+            for (uint j = 0; j < nodeAnim->mNumScalingKeys; j++) {
+                int index = findTimeIndex(positions, nodeAnim->mScalingKeys[j].mTime);
+                if (index >= 0) {
+                    Qt3DCore::QTransform *t = transforms[index];
+                    t->setScale3D(QVector3D(nodeAnim->mScalingKeys[j].mValue.x,
+                                            nodeAnim->mScalingKeys[j].mValue.y,
+                                            nodeAnim->mScalingKeys[j].mValue.z));
+                } else {
+                    Qt3DCore::QTransform *t = new Qt3DCore::QTransform();
+                    t->setScale3D(QVector3D(nodeAnim->mScalingKeys[j].mValue.x,
+                                            nodeAnim->mScalingKeys[j].mValue.y,
+                                            nodeAnim->mScalingKeys[j].mValue.z));
+                    insertAtTime(positions, transforms, t, nodeAnim->mScalingKeys[j].mTime);
+                }
+            }
+        }
+        for (int j = 0; j < positions.size(); ++j)
+            positions[j] = positions[j] * tickScale;
+        kfa->setFramePositions(positions);
+        kfa->setKeyframes(transforms);
+        kfa->setAnimationName(QString(assimpAnim->mName.C_Str()));
+        kfa->setTargetName(QString(targetNode->mName.C_Str()));
+        m_scene->m_animations.push_back(kfa);
+    }
+    /* mesh morph animations */
+    for (uint i = 0; i < assimpAnim->mNumMorphMeshChannels; ++i) {
+        aiMeshMorphAnim *morphAnim = assimpAnim->mMorphMeshChannels[i];
+        aiNode *targetNode = m_scene->m_aiScene->mRootNode->FindNode(morphAnim->mName);
+        aiMesh *mesh = m_scene->m_aiScene->mMeshes[targetNode->mMeshes[0]];
+
+        Qt3DExtras::QMorphingAnimation *morphingAnimation = new Qt3DExtras::QMorphingAnimation;
+        QVector<float> positions;
+        positions.resize(morphAnim->mNumKeys);
+        // set so that weights array is allocated to correct size in morphingAnimation
+        morphingAnimation->setTargetPositions(positions);
+        for (unsigned int j = 0; j < morphAnim->mNumKeys; ++j) {
+            aiMeshMorphKey &key = morphAnim->mKeys[j];
+            positions[j] = key.mTime * tickScale;
+
+            QVector<float> weights;
+            weights.resize(key.mNumValuesAndWeights);
+            for (int k = 0; k < weights.size(); k++) {
+                const unsigned int value = key.mValues[k];
+                if (value < key.mNumValuesAndWeights)
+                    weights[value] = key.mWeights[k];
+            }
+            morphingAnimation->setWeights(j, weights);
+        }
+
+        morphingAnimation->setTargetPositions(positions);
+        morphingAnimation->setAnimationName(QString(assimpAnim->mName.C_Str()));
+        morphingAnimation->setTargetName(QString(targetNode->mName.C_Str()));
+        morphingAnimation->setMethod((mesh->mMethod == aiMorphingMethod_MORPH_NORMALIZED)
+                                     ? Qt3DExtras::QMorphingAnimation::Normalized
+                                     : Qt3DExtras::QMorphingAnimation::Relative);
+        m_scene->m_morphAnimations.push_back(morphingAnimation);
+    }
 }
 
 /*!

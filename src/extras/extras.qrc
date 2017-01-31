@@ -46,5 +46,7 @@
         <file>shaders/gl3/distancefieldtext.frag</file>
         <file>shaders/es2/distancefieldtext.frag</file>
         <file>shaders/es2/distancefieldtext.vert</file>
+        <file>shaders/gl3/morphphong.vert</file>
+        <file>shaders/es2/morphphong.vert</file>
     </qresource>
 </RCC>
