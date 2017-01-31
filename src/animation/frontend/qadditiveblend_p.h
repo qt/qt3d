@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_ANIMATION_ADDBLEND_P_H
-#define QT3DANIMATION_ANIMATION_ADDBLEND_P_H
+#ifndef QT3DANIMATION_QADDITIVEBLEND_P_H
+#define QT3DANIMATION_QADDITIVEBLEND_P_H
 
 //
 //  W A R N I N G
@@ -48,36 +48,31 @@
 // We mean it.
 //
 
-#include <Qt3DAnimation/private/clipblendnode_p.h>
+#include <Qt3DAnimation/private/qabstractclipblendnode_p.h>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-namespace Animation {
+class QAdditiveBlend;
 
-class Q_AUTOTEST_EXPORT AddBlend : public ClipBlendNode
+class QAdditiveBlendPrivate : public QAbstractClipBlendNodePrivate
 {
 public:
-    AddBlend();
-    ~AddBlend();
+    QAdditiveBlendPrivate();
 
-    inline float blendFactor() const { return m_blendFactor; }
-    void setBlendFactor(float blendFactor) { m_blendFactor = blendFactor; } // For unit tests
-
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
-    float blend(float value1, float value2) const Q_DECL_FINAL;
-
-private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
-
+    Q_DECLARE_PUBLIC(QAdditiveBlend)
     float m_blendFactor;
 };
 
-} // Animation
+struct QAdditiveBlendData
+{
+    float blendFactor;
+};
 
 } // Qt3DAnimation
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_ANIMATION_ADDBLEND_P_H
+#endif // QT3DANIMATION_QADDITIVEBLEND_P_H

@@ -19,8 +19,8 @@ HEADERS += \
     $$PWD/qlerpblend_p.h \
     $$PWD/qclipblendnodecreatedchange.h \
     $$PWD/qclipblendnodecreatedchange_p.h \
-    $$PWD/qaddblend.h \
-    $$PWD/qaddblend_p.h
+    $$PWD/qadditiveblend.h \
+    $$PWD/qadditiveblend_p.h
 
 SOURCES += \
     $$PWD/qanimationaspect.cpp \
@@ -33,6 +33,6 @@ SOURCES += \
     $$PWD/qchannelmapping.cpp \
     $$PWD/qlerpblend.cpp \
     $$PWD/qclipblendnodecreatedchange.cpp \
-    $$PWD/qaddblend.cpp
+    $$PWD/qadditiveblend.cpp
 
 INCLUDEPATH += $$PWD

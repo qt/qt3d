@@ -145,7 +145,7 @@ DefaultSceneEntity {
 
                 onRunningChanged: console.log("running = " + running)
 
-                blendTree: AddBlend {
+                blendTree: AdditiveBlend {
                     blendFactor: 0.5
                     clips: [
                         AnimationClip {
@@ -203,7 +203,7 @@ DefaultSceneEntity {
 
                 blendTree: LerpBlend {
                     blendFactor: 0.5
-                    AddBlend {
+                    AdditiveBlend {
                         blendFactor: 0.5
                         clips: [
                             AnimationClip {

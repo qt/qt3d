@@ -26,6 +26,6 @@ qtConfig(private_tests) {
         clipblendnode \
         lerpblend \
         clipblendnodevisitor \
-        qaddblend \
-        addblend
+        qadditiveblend \
+        additiveblend
 }
