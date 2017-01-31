@@ -59,7 +59,6 @@ Entity {
     }
 
     Scene2D {
-        renderOnce: false
         output: RenderTargetOutput {
             attachmentPoint: RenderTargetOutput.Color0
             texture: Texture2D {
