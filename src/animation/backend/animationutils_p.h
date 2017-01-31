@@ -65,7 +65,8 @@ class ChannelMapper;
 class Q_AUTOTEST_EXPORT AnimationUtils
 {
 public:
-    struct MappingData {
+    struct MappingData
+    {
         Qt3DCore::QNodeId targetId;
         const char *propertyName;
         int type;
@@ -73,10 +74,8 @@ public:
         QVector<int> channelIndices;
     };
 
-    struct BlendingMappingData {
-        Qt3DCore::QNodeId targetId;
-        const char *propertyName;
-        int type;
+    struct BlendingMappingData : public MappingData
+    {
         QVector<int> channelIndicesClip1;
         QVector<int> channelIndicesClip2;
 

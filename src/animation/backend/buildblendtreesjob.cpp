@@ -57,15 +57,124 @@ void BuildBlendTreesJob::setBlendedClipAnimators(const QVector<HBlendedClipAnima
     m_blendedClipAnimatorHandles = blendedClipAnimatorHandles;
 }
 
+namespace {
+
+template<typename MappingDataType>
+QVector<AnimationUtils::BlendingMappingData> buildBlendMappingDataForNode(const QVector<MappingDataType> &mappingInNode1,
+                                                                          const QVector<MappingDataType> &mappingInNode2)
+{
+    // We can only blend channels that are in both clips
+    // If a channel is present in one clip and not the other, we use 100% of its value (no blending)
+    QVector<AnimationUtils::BlendingMappingData> blendingMappingData;
+    const int mappingInNode1Size = mappingInNode1.size();
+    blendingMappingData.reserve(mappingInNode1Size);
+
+    // Find mappings that are in both vectors and build mappingData out of that
+    for (const MappingDataType &mappingDataInNode1 : mappingInNode1) {
+        AnimationUtils::BlendingMappingData mappingData;
+        mappingData.channelIndicesClip1 = mappingDataInNode1.channelIndices;
+        mappingData.propertyName = mappingDataInNode1.propertyName;
+        mappingData.targetId = mappingDataInNode1.targetId;
+        mappingData.type = mappingDataInNode1.type;
+        mappingData.blendAction = AnimationUtils::BlendingMappingData::NoBlending;
+        blendingMappingData.push_back(mappingData);
+    }
+
+    for (const MappingDataType &mappingDataInNode2 : mappingInNode2) {
+        bool sharedChannel = false;
+        for (int i = 0; i < mappingInNode1Size; ++i) {
+            AnimationUtils::BlendingMappingData &mappingDataInNode1 = blendingMappingData[i];
+            if ((strcmp(mappingDataInNode1.propertyName, mappingDataInNode2.propertyName) == 0) &&
+                    mappingDataInNode1.targetId == mappingDataInNode2.targetId &&
+                    mappingDataInNode1.type == mappingDataInNode2.type) {
+                // We have a channel shared in both clips
+                mappingDataInNode1.channelIndicesClip2 = mappingDataInNode2.channelIndices;
+                mappingDataInNode1.blendAction = AnimationUtils::BlendingMappingData::ClipBlending;
+                sharedChannel = true;
+                break;
+            }
+        }
+        if (!sharedChannel) { // We have a channel defined in only one of the clips
+            AnimationUtils::BlendingMappingData mappingData;
+            mappingData.channelIndicesClip2 = mappingDataInNode2.channelIndices;
+            mappingData.propertyName = mappingDataInNode2.propertyName;
+            mappingData.targetId = mappingDataInNode2.targetId;
+            mappingData.type = mappingDataInNode2.type;
+            mappingData.blendAction = AnimationUtils::BlendingMappingData::NoBlending;
+            blendingMappingData.push_back(mappingData);
+        }
+    }
+
+    // Final indices (indices into the final blended result vector of floats for the node)
+    int idx = 0;
+    for (AnimationUtils::BlendingMappingData &mapping : blendingMappingData) {
+        switch (mapping.blendAction) {
+        case AnimationUtils::BlendingMappingData::ClipBlending: {
+            Q_ASSERT(mapping.channelIndicesClip1.size() == mapping.channelIndicesClip2.size());
+            for (int i = 0, m = mapping.channelIndicesClip1.size(); i < m; ++i)
+                mapping.channelIndices.push_back(idx++);
+            break;
+        }
+        case AnimationUtils::BlendingMappingData::NoBlending: {
+            const bool useClip1 = !mapping.channelIndicesClip1.empty();
+            const QVector<int> channelIndices = useClip1 ? mapping.channelIndicesClip1 : mapping.channelIndicesClip2;
+            for (int i = 0, m = channelIndices.size(); i < m; ++i) {
+                mapping.channelIndices.push_back(idx++);
+            }
+            break;
+        }
+        default:
+            Q_UNREACHABLE();
+            break;
+        }
+    }
+
+    return blendingMappingData;
+}
+
+void buildEntryForBlendClipNode(Handler *handler, const ChannelMapper *mapper, BlendedClipAnimator::BlendNodeData &nodeData)
+{
+    // Retrieve Animation clips
+    const AnimationClip *clip1 = handler->animationClipManager()->lookupResource(nodeData.left);
+    const AnimationClip *clip2 = handler->animationClipManager()->lookupResource(nodeData.right);
+
+    Q_ASSERT(clip1 && clip2);
+
+    // Build mappings for the 2 clips
+    const QVector<AnimationUtils::MappingData> mappingDataClip1 = AnimationUtils::buildPropertyMappings(handler, clip1, mapper);
+    const QVector<AnimationUtils::MappingData> mappingDataClip2 = AnimationUtils::buildPropertyMappings(handler, clip2, mapper);
+
+    // We can only blend channels that are in both clips
+    // If a channel is present in one clip and not the other, we use 100% of its value (no blending)
+    const QVector<AnimationUtils::BlendingMappingData> blendingMappingData = buildBlendMappingDataForNode(mappingDataClip1, mappingDataClip2);
+    nodeData.mappingData = blendingMappingData;
+}
+
+void buildEntryForBlendNodeNode(BlendedClipAnimator::BlendNodeData &nodeData, const QHash<Qt3DCore::QNodeId, BlendedClipAnimator::BlendNodeData> &blendingNodeTable)
+{
+    const BlendedClipAnimator::BlendNodeData &node1Data = blendingNodeTable.value(nodeData.left);
+    const BlendedClipAnimator::BlendNodeData &node2Data = blendingNodeTable.value(nodeData.right);
+
+    // Build mappings for the 2 nodes
+    const QVector<AnimationUtils::BlendingMappingData> mappingDataNode1 = node1Data.mappingData;
+    const QVector<AnimationUtils::BlendingMappingData> mappingDataNode2 = node2Data.mappingData;
+
+    // We can only blend channels that are in both clips
+    // If a channel is present in one clip and not the other, we use 100% of its value (no blending)
+    const QVector<AnimationUtils::BlendingMappingData> blendingMappingData = buildBlendMappingDataForNode(mappingDataNode1, mappingDataNode2);
+    nodeData.mappingData = blendingMappingData;
+}
+
+} // anonymous
+
+// Note this job is run once for all stopped blended animators that have been marked dirty
+// We assume that the structure of blend node tree does not change once a BlendClipAnimator has been set to running
 void BuildBlendTreesJob::run()
 {
     for (const HBlendedClipAnimator blendedClipAnimatorHandle : m_blendedClipAnimatorHandles) {
-        // Retrive BlendTree node
+        // Retrieve BlendTree node
         BlendedClipAnimator *blendClipAnimator = m_handler->blendedClipAnimatorManager()->data(blendedClipAnimatorHandle);
         Q_ASSERT(blendClipAnimator);
-
-        // TO DO: Add support for tree of blend nodes
-        // For now assumes only one
 
         const bool canRun = blendClipAnimator->canRun();
         m_handler->setBlendedClipAnimatorRunning(blendedClipAnimatorHandle, canRun);
@@ -74,66 +183,35 @@ void BuildBlendTreesJob::run()
         if (canRun) {
             const ChannelMapper *mapper = m_handler->channelMapperManager()->lookupResource(blendClipAnimator->mapperId());
             Q_ASSERT(mapper);
-            ClipBlendNode *node = m_handler->clipBlendNodeManager()->lookupNode(blendClipAnimator->blendTreeRootId());
 
-            const Qt3DCore::QNodeIdVector clipIds = node->clipIds();
-            // There must be 2 clips
-            if (clipIds.size() != 2) {
-                qWarning() << "A Blend Tree requires exactly 2 clips";
-                return;
-            }
+            ClipBlendNodeVisitor visitor(m_handler->clipBlendNodeManager());
+            QHash<Qt3DCore::QNodeId, BlendedClipAnimator::BlendNodeData> blendingNodeTable;
+            // Build a Binary Tree of BlendNodeData
+            Handler *handler = m_handler; // For lambda capture
+            visitor.traverse(blendClipAnimator->blendTreeRootId(), [&] (ClipBlendNode *node) {
+                BlendedClipAnimator::BlendNodeData nodeData;
+                nodeData.blendNodeId = node->peerId();
+                nodeData.type = (node->childrenIds().size() > 0) ? BlendedClipAnimator::BlendNodeData::BlendNodeType : BlendedClipAnimator::BlendNodeData::ClipType;
 
-            // Retrieve Animation clips
-            const AnimationClip *clip1 = m_handler->animationClipManager()->lookupResource(clipIds.first());
-            const AnimationClip *clip2 = m_handler->animationClipManager()->lookupResource(clipIds.last());
-
-            // Build mappings for the 2 clips
-            const QVector<AnimationUtils::MappingData> mappingDataClip1 = AnimationUtils::buildPropertyMappings(m_handler, clip1, mapper);
-            const QVector<AnimationUtils::MappingData> mappingDataClip2 = AnimationUtils::buildPropertyMappings(m_handler, clip2, mapper);
-
-            // We can only blend channels that are in both clips
-            // If a channel is present in one clip and not the other, we use 100% of its value (no blending)
-            QVector<AnimationUtils::BlendingMappingData> blendingMappingData;
-            const int mappingInClip1Size = mappingDataClip1.size();
-            blendingMappingData.reserve(mappingInClip1Size);
-
-            // Find mappings that are in both vectors and build mappingData out of that
-            for (const AnimationUtils::MappingData &mappingDataInClip1 : mappingDataClip1) {
-                AnimationUtils::BlendingMappingData mappingData;
-                mappingData.channelIndicesClip1 = mappingDataInClip1.channelIndices;
-                mappingData.propertyName = mappingDataInClip1.propertyName;
-                mappingData.targetId = mappingDataInClip1.targetId;
-                mappingData.type = mappingDataInClip1.type;
-                mappingData.blendAction = AnimationUtils::BlendingMappingData::NoBlending;
-                blendingMappingData.push_back(mappingData);
-            }
-
-            for (const AnimationUtils::MappingData &mappingDataInClip2 : mappingDataClip2) {
-                bool sharedChannel = false;
-                for (int i = 0; i < mappingInClip1Size; ++i) {
-                    AnimationUtils::BlendingMappingData &mappingDataInClip1 = blendingMappingData[i];
-                    if ((strcmp(mappingDataInClip1.propertyName, mappingDataInClip2.propertyName) == 0) &&
-                            mappingDataInClip1.targetId == mappingDataInClip2.targetId &&
-                            mappingDataInClip1.type == mappingDataInClip2.type) {
-                        // We have a channel shared in both clips
-                        mappingDataInClip1.channelIndicesClip2 = mappingDataInClip2.channelIndices;
-                        mappingDataInClip1.blendAction = AnimationUtils::BlendingMappingData::ClipBlending;
-                        sharedChannel = true;
-                        break;
-                    }
+                if (nodeData.type == BlendedClipAnimator::BlendNodeData::BlendNodeType) {
+                    Q_ASSERT(node->childrenIds().size() == 2);
+                    nodeData.left = node->childrenIds().first();
+                    nodeData.right = node->childrenIds().last();
+                    buildEntryForBlendNodeNode(nodeData, blendingNodeTable);
+                } else { // ClipType
+                    Q_ASSERT(node->clipIds().size() == 2);
+                    nodeData.left = node->clipIds().first();
+                    nodeData.right = node->clipIds().last();
+                    buildEntryForBlendClipNode(handler, mapper, nodeData);
                 }
-                if (!sharedChannel) { // We have a channel defined in only one of the clips
-                    AnimationUtils::BlendingMappingData mappingData;
-                    mappingData.channelIndicesClip2 = mappingDataInClip2.channelIndices;
-                    mappingData.propertyName = mappingDataInClip2.propertyName;
-                    mappingData.targetId = mappingDataInClip2.targetId;
-                    mappingData.type = mappingDataInClip2.type;
-                    mappingData.blendAction = AnimationUtils::BlendingMappingData::NoBlending;
-                    blendingMappingData.push_back(mappingData);
-                }
-            }
 
-            blendClipAnimator->setMappingData(blendingMappingData);
+                // Note: we assume that ClipType are always leave nodes
+                // We will therefore perform blending on all the ClipType nodes
+                // Then traverse the tree of BlendNodeType and merge the values
+                blendingNodeTable.insert(nodeData.blendNodeId, nodeData);
+            });
+
+            blendClipAnimator->setBlendTreeTable(blendingNodeTable);
         }
     }
 }

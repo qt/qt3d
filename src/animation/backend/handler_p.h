@@ -50,8 +50,6 @@
 
 #include <QtGlobal>
 #include <Qt3DAnimation/private/handle_types_p.h>
-#include <Qt3DAnimation/private/buildblendtreesjob_p.h>
-#include <Qt3DAnimation/private/evaluateblendclipanimatorjob_p.h>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/qscopedpointer.h>
@@ -82,6 +80,11 @@ class ClipBlendNodeManager;
 class FindRunningClipAnimatorsJob;
 class LoadAnimationClipJob;
 class EvaluateClipAnimatorJob;
+class BuildBlendTreesJob;
+class EvaluateBlendClipAnimatorJob;
+
+using BuildBlendTreesJobPtr = QSharedPointer<BuildBlendTreesJob>;
+using EvaluateBlendClipAnimatorJobPtr = QSharedPointer<EvaluateBlendClipAnimatorJob>;
 
 class Q_AUTOTEST_EXPORT Handler
 {

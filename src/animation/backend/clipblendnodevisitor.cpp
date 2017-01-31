@@ -56,15 +56,16 @@ void ClipBlendNodeVisitor::traverse(Qt3DCore::QNodeId rootId, const VisitFunctio
         visit(node, visitFunction);
 }
 
+// Leaf to root traversal (Post-order traversal)
 void ClipBlendNodeVisitor::visit(ClipBlendNode *node, const VisitFunction &visitFunction) const
 {
-    visitFunction(node);
     const Qt3DCore::QNodeIdVector childIds = node->childrenIds();
     for (const Qt3DCore::QNodeId childId: childIds) {
         ClipBlendNode *childNode = m_manager->lookupNode(childId);
         if (childNode != nullptr)
             visit(childNode, visitFunction);
     }
+    visitFunction(node);
 }
 
 } // Animation

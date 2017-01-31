@@ -77,9 +77,6 @@ public:
     void setMapperId(Qt3DCore::QNodeId mapperId);
     void setRunning(bool running);
 
-    void setMappingData(const QVector<AnimationUtils::BlendingMappingData> mappingData);
-    QVector<AnimationUtils::BlendingMappingData> mappingData() const { return m_mappingData; }
-
     void setStartTime(qint64 globalTime) { m_startGlobalTime = globalTime; }
     qint64 startTime() const { return m_startGlobalTime; }
 
@@ -90,6 +87,22 @@ public:
 
     void sendPropertyChanges(const QVector<Qt3DCore::QSceneChangePtr> &changes);
 
+    struct BlendNodeData
+    {
+        Qt3DCore::QNodeId blendNodeId;
+        enum ChildType {
+            ClipType,
+            BlendNodeType
+        };
+        ChildType type;
+        Qt3DCore::QNodeId left;
+        Qt3DCore::QNodeId right;
+        QVector<AnimationUtils::BlendingMappingData> mappingData;
+    };
+
+    void setBlendTreeTable(const QHash<Qt3DCore::QNodeId, BlendNodeData> &blendTreeTable) { m_blendTreeTable = blendTreeTable; }
+    QHash<Qt3DCore::QNodeId, BlendNodeData> blendTreeTable() const { return m_blendTreeTable; }
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
     Qt3DCore::QNodeId m_blendTreeRootId;
@@ -97,9 +110,9 @@ private:
     bool m_running;
 
     qint64 m_startGlobalTime;
-    QVector<AnimationUtils::BlendingMappingData> m_mappingData;
     int m_currentLoop;
     int m_loops;
+    QHash<Qt3DCore::QNodeId, BlendNodeData> m_blendTreeTable;
 };
 
 } // namespace Animation

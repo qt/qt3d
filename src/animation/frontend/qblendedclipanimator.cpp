@@ -54,6 +54,31 @@ QBlendedClipAnimatorPrivate::QBlendedClipAnimatorPrivate()
 {
 }
 
+/*!
+    \qmltype BlendedClipAnimator
+    \instantiates Qt3DAnimation::QBlendedClipAnimator
+    \inqmlmodule Qt3D.Animation
+
+    \brief Performs an animation based on a tree of blend nodes
+
+    \note The blend node tree should only be edited when the clip is not
+    running
+
+    \since 5.9
+*/
+
+/*!
+    \class Qt3DAnimation::QBlendedClipAnimator
+    \inmodule Qt3DAnimation
+    \inherits Qt3DCore::QComponent
+
+    \brief Performs an animation based on a tree of blend nodes
+
+    \note The blend node tree should only be edited when the clip is not
+    running
+
+    \since 5.9
+*/
 QBlendedClipAnimator::QBlendedClipAnimator(Qt3DCore::QNode *parent)
     : Qt3DCore::QComponent(*new QBlendedClipAnimatorPrivate, parent)
 {

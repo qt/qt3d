@@ -89,17 +89,18 @@ private Q_SLOTS:
 
         // WHEN
         int i = 0;
+        // Note: post-order traversal
         auto childCounter = [&] (Qt3DAnimation::Animation::ClipBlendNode *node) {
             if (i == 0)
-                QCOMPARE(node, backendRootBlendNode);
-            else if (i == 1)
-                QCOMPARE(node, backendChildBlendNode1);
-            else if (i == 2)
                 QCOMPARE(node, backendChildBlendNode11);
-            else if (i == 3)
+            else if (i == 1)
                 QCOMPARE(node, backendChildBlendNode12);
-            else if (i == 4)
+            else if (i == 2)
+                QCOMPARE(node, backendChildBlendNode1);
+            else if (i == 3)
                 QCOMPARE(node, backendChildBlendNode2);
+            else if (i == 4)
+                QCOMPARE(node, backendRootBlendNode);
             ++i;
         };
 

@@ -50,6 +50,8 @@
 
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DAnimation/private/handle_types_p.h>
+#include <Qt3DAnimation/private/animationutils_p.h>
+#include <Qt3DAnimation/private/blendedclipanimator_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,6 +59,7 @@ namespace Qt3DAnimation {
 namespace Animation {
 
 class Handler;
+class ClipBlendNode;
 
 class EvaluateBlendClipAnimatorJob : public Qt3DCore::QAspectJob
 {
@@ -75,6 +78,14 @@ protected:
 private:
     HBlendedClipAnimator m_blendClipAnimatorHandle;
     Handler *m_handler;
+
+    void blendClips(ClipBlendNode *node, const BlendedClipAnimator::BlendNodeData &nodeData,
+                    const AnimationUtils::AnimatorEvaluationData &animatorEvaluationData);
+    void blendNodes(ClipBlendNode *node, const BlendedClipAnimator::BlendNodeData &nodeData);
+
+    QHash<ClipBlendNode *, QVector<float>> m_clipBlendResultsTable;
+    int m_currentLoop;
+    bool m_isFinalFrame;
 };
 
 typedef QSharedPointer<EvaluateBlendClipAnimatorJob> EvaluateBlendClipAnimatorJobPtr;

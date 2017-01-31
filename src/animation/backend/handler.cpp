@@ -42,6 +42,8 @@
 #include <Qt3DAnimation/private/buildblendtreesjob_p.h>
 #include <Qt3DAnimation/private/evaluateblendclipanimatorjob_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
+#include <Qt3DAnimation/private/buildblendtreesjob_p.h>
+#include <Qt3DAnimation/private/evaluateblendclipanimatorjob_p.h>
 
 QT_BEGIN_NAMESPACE
 
