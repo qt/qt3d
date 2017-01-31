@@ -181,6 +181,9 @@ public:
     inline void setViewport(const QRectF &vp) Q_DECL_NOTHROW { m_viewport = vp; }
     inline QRectF viewport() const Q_DECL_NOTHROW { return m_viewport; }
 
+    inline float gamma() const Q_DECL_NOTHROW { return m_gamma; }
+    inline void setGamma(float gamma) Q_DECL_NOTHROW { m_gamma = gamma; }
+
     // depth and stencil ClearBuffers are cached locally
     // color ClearBuffers are collected, as there may be multiple
     // color buffers to be cleared. we need to apply all these at rendering
@@ -265,6 +268,7 @@ private:
     InnerData m_data;
 
     QRectF m_viewport;
+    float m_gamma;
     Qt3DCore::QNodeId m_renderTarget;
     QSurface *m_surface;
     AttachmentPack m_attachmentPack;
@@ -308,6 +312,7 @@ private:
         InverseViewportMatrix,
         Time,
         Exposure,
+        Gamma,
         EyePosition
     };
 

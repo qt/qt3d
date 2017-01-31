@@ -130,6 +130,7 @@ RenderView::StandardUniformsNameToTypeHash RenderView::initializeStandardUniform
     setters.insert(StringToInt::lookupId(QLatin1String("viewportMatrix")), ViewportMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("inverseViewportMatrix")), InverseViewportMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("exposure")), Exposure);
+    setters.insert(StringToInt::lookupId(QLatin1String("gamma")), Gamma);
     setters.insert(StringToInt::lookupId(QLatin1String("time")), Time);
     setters.insert(StringToInt::lookupId(QLatin1String("eyePosition")), EyePosition);
 
@@ -194,6 +195,8 @@ UniformValue RenderView::standardUniformValue(RenderView::StandardUniform standa
     }
     case Exposure:
         return UniformValue(m_data.m_renderCameraLens->exposure());
+    case Gamma:
+        return UniformValue(m_gamma);
     case Time:
         return UniformValue(float(m_renderer->time() / 1000000000.0f));
     case EyePosition:
@@ -208,6 +211,7 @@ RenderView::RenderView()
     : m_renderer(nullptr)
     , m_devicePixelRatio(1.)
     , m_viewport(QRectF(0.0f, 0.0f, 1.0f, 1.0f))
+    , m_gamma(2.2f)
     , m_surface(nullptr)
     , m_clearBuffer(QClearBuffers::None)
     , m_stateSet(nullptr)
