@@ -43,7 +43,9 @@ SUBDIRS += \
     render-qml-to-texture-qml \
     video-texture-qml \
     animation-keyframe-simple \
-    distancefieldtext
+    distancefieldtext \
+    mesh-morphing \
+    anim-viewer
 
 qtHaveModule(widgets): {
     SUBDIRS += \
