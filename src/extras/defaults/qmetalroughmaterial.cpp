@@ -67,7 +67,6 @@ QMetalRoughMaterialPrivate::QMetalRoughMaterialPrivate()
     , m_roughnessParameter(new QParameter(QStringLiteral("roughness"), 0.0f))
     , m_environmentIrradianceParameter(new QParameter(QStringLiteral("skyIrradiance"), m_environmentIrradianceTexture))
     , m_environmentSpecularParameter(new QParameter(QStringLiteral("skySpecular"), m_environmentSpecularTexture))
-    , m_exposureParameter(new QParameter(QStringLiteral("exposure"), 0.0f))
     , m_metalRoughEffect(new QEffect())
     , m_metalRoughGL3Technique(new QTechnique())
     , m_metalRoughGL3RenderPass(new QRenderPass())
@@ -99,8 +98,6 @@ void QMetalRoughMaterialPrivate::init()
             this, &QMetalRoughMaterialPrivate::handleEnvironmentIrradianceChanged);
     connect(m_environmentSpecularParameter, &Qt3DRender::QParameter::valueChanged,
             this, &QMetalRoughMaterialPrivate::handleEnvironmentSpecularChanged);
-    connect(m_exposureParameter, &Qt3DRender::QParameter::valueChanged,
-            this, &QMetalRoughMaterialPrivate::handleExposureChanged);
 
     m_metalRoughGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/metalrough.vert"))));
     m_metalRoughGL3Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/metalroughuniform.frag"))));
@@ -125,7 +122,6 @@ void QMetalRoughMaterialPrivate::init()
     m_metalRoughEffect->addParameter(m_roughnessParameter);
     m_metalRoughEffect->addParameter(m_environmentIrradianceParameter);
     m_metalRoughEffect->addParameter(m_environmentSpecularParameter);
-    m_metalRoughEffect->addParameter(m_exposureParameter);
 
     q->setEffect(m_metalRoughEffect);
 }
@@ -157,12 +153,6 @@ void QMetalRoughMaterialPrivate::handleEnvironmentSpecularChanged(const QVariant
 {
     Q_Q(QMetalRoughMaterial);
     emit q->environmentSpecularChanged(var.value<QAbstractTexture *>());
-}
-
-void QMetalRoughMaterialPrivate::handleExposureChanged(const QVariant &var)
-{
-    Q_Q(QMetalRoughMaterial);
-    emit q->exposureChanged(var.toFloat());
 }
 
 /*!
@@ -276,17 +266,6 @@ QAbstractTexture *QMetalRoughMaterial::environmentSpecular() const
     return d->m_environmentSpecularParameter->value().value<QAbstractTexture *>();
 }
 
-/*!
-    \property QMetalRoughMaterial::exposure
-
-    Holds the current exposure as a float value.
-*/
-float QMetalRoughMaterial::exposure() const
-{
-    Q_D(const QMetalRoughMaterial);
-    return d->m_exposureParameter->value().toFloat();
-}
-
 void QMetalRoughMaterial::setBaseColor(const QColor &baseColor)
 {
     Q_D(QMetalRoughMaterial);
@@ -315,12 +294,6 @@ void QMetalRoughMaterial::setEnvironmentSpecular(QAbstractTexture *environmentSp
 {
     Q_D(QMetalRoughMaterial);
     d->m_environmentSpecularParameter->setValue(QVariant::fromValue(environmentSpecular));
-}
-
-void QMetalRoughMaterial::setExposure(float exposure)
-{
-    Q_D(QMetalRoughMaterial);
-    d->m_exposureParameter->setValue(exposure);
 }
 
 } // namespace Qt3DExtras

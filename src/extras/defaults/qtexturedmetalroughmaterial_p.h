@@ -85,7 +85,6 @@ public:
     void handleNormalChanged(const QVariant &var);
     void handleEnvironmentIrradianceChanged(const QVariant &var);
     void handleEnvironmentSpecularChanged(const QVariant &var);
-    void handleExposureChanged(const QVariant &var);
 
     Qt3DRender::QAbstractTexture *m_baseColorTexture;
     Qt3DRender::QAbstractTexture *m_metallicTexture;
@@ -101,7 +100,6 @@ public:
     Qt3DRender::QParameter *m_normalParameter;
     Qt3DRender::QParameter *m_environmentIrradianceParameter;
     Qt3DRender::QParameter *m_environmentSpecularParameter;
-    Qt3DRender::QParameter *m_exposureParameter;
     Qt3DRender::QEffect *m_metalRoughEffect;
     Qt3DRender::QTechnique *m_metalRoughGL3Technique;
     Qt3DRender::QRenderPass *m_metalRoughGL3RenderPass;

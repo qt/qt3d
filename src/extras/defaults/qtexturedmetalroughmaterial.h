@@ -59,7 +59,6 @@ class QT3DEXTRASSHARED_EXPORT QTexturedMetalRoughMaterial : public Qt3DRender::Q
     Q_PROPERTY(Qt3DRender::QAbstractTexture *normal READ normal WRITE setNormal NOTIFY normalChanged)
     Q_PROPERTY(Qt3DRender::QAbstractTexture *environmentIrradiance READ environmentIrradiance WRITE setEnvironmentIrradiance NOTIFY environmentIrradianceChanged)
     Q_PROPERTY(Qt3DRender::QAbstractTexture *environmentSpecular READ environmentSpecular WRITE setEnvironmentSpecular NOTIFY environmentSpecularChanged)
-    Q_PROPERTY(float exposure READ exposure WRITE setExposure NOTIFY exposureChanged)
 
 public:
     explicit QTexturedMetalRoughMaterial(Qt3DCore::QNode *parent = nullptr);
@@ -72,7 +71,6 @@ public:
     Qt3DRender::QAbstractTexture *normal() const;
     Qt3DRender::QAbstractTexture *environmentIrradiance() const;
     Qt3DRender::QAbstractTexture *environmentSpecular() const;
-    float exposure() const;
 
 public Q_SLOTS:
     void setBaseColor(Qt3DRender::QAbstractTexture *baseColor);
@@ -82,7 +80,6 @@ public Q_SLOTS:
     void setNormal(Qt3DRender::QAbstractTexture *normal);
     void setEnvironmentIrradiance(Qt3DRender::QAbstractTexture *environmentIrradiance);
     void setEnvironmentSpecular(Qt3DRender::QAbstractTexture *environmentSpecular);
-    void setExposure(float exposure);
 
 Q_SIGNALS:
     void baseColorChanged(Qt3DRender::QAbstractTexture *baseColor);
@@ -92,7 +89,6 @@ Q_SIGNALS:
     void normalChanged(Qt3DRender::QAbstractTexture *normal);
     void environmentIrradianceChanged(Qt3DRender::QAbstractTexture *environmentIrradiance);
     void environmentSpecularChanged(Qt3DRender::QAbstractTexture *environmentSpecular);
-    void exposureChanged(float exposure);
 
 protected:
     QTexturedMetalRoughMaterial(QTexturedMetalRoughMaterialPrivate &dd, Qt3DCore::QNode *parent = nullptr);
