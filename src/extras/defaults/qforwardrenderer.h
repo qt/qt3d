@@ -63,6 +63,7 @@ class QT3DEXTRASSHARED_EXPORT QForwardRenderer : public Qt3DRender::QTechniqueFi
     Q_PROPERTY(Qt3DCore::QEntity *camera READ camera WRITE setCamera NOTIFY cameraChanged)
     Q_PROPERTY(QSize externalRenderTargetSize READ externalRenderTargetSize WRITE setExternalRenderTargetSize NOTIFY externalRenderTargetSizeChanged)
     Q_PROPERTY(bool frustumCulling READ isFrustumCullingEnabled WRITE setFrustumCullingEnabled NOTIFY frustumCullingEnabledChanged)
+    Q_PROPERTY(float gamma READ gamma WRITE setGamma NOTIFY gammaChanged)
 public:
     explicit QForwardRenderer(Qt3DCore::QNode *parent = nullptr);
     ~QForwardRenderer();
@@ -73,6 +74,7 @@ public:
     QObject *surface() const;
     QSize externalRenderTargetSize() const;
     bool isFrustumCullingEnabled() const;
+    float gamma() const;
 
 public Q_SLOTS:
     void setViewportRect(const QRectF &viewportRect);
@@ -81,6 +83,7 @@ public Q_SLOTS:
     void setSurface(QObject * surface);
     void setExternalRenderTargetSize(const QSize &size);
     void setFrustumCullingEnabled(bool enabled);
+    void setGamma(float gamma);
 
 Q_SIGNALS:
     void viewportRectChanged(const QRectF &viewportRect);
@@ -89,6 +92,7 @@ Q_SIGNALS:
     void surfaceChanged(QObject *surface);
     void externalRenderTargetSizeChanged(const QSize &size);
     void frustumCullingEnabledChanged(bool enabled);
+    void gammaChanged(float gamma);
 
 private:
     Q_DECLARE_PRIVATE(QForwardRenderer)

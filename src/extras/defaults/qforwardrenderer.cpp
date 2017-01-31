@@ -135,6 +135,7 @@ QForwardRenderer::QForwardRenderer(QNode *parent)
     QObject::connect(d->m_surfaceSelector, &QRenderSurfaceSelector::surfaceChanged, this, &QForwardRenderer::surfaceChanged);
     QObject::connect(d->m_surfaceSelector, &QRenderSurfaceSelector::externalRenderTargetSizeChanged, this, &QForwardRenderer::externalRenderTargetSizeChanged);
     QObject::connect(d->m_frustumCulling, &QFrustumCulling::enabledChanged, this, &QForwardRenderer::frustumCullingEnabledChanged);
+    QObject::connect(d->m_viewport, &QViewport::gammaChanged, this, &QForwardRenderer::gammaChanged);
     d->init();
 }
 
@@ -176,6 +177,12 @@ void QForwardRenderer::setFrustumCullingEnabled(bool enabled)
 {
     Q_D(QForwardRenderer);
     d->m_frustumCulling->setEnabled(enabled);
+}
+
+void QForwardRenderer::setGamma(float gamma)
+{
+    Q_D(QForwardRenderer);
+    d->m_viewport->setGamma(gamma);
 }
 
 /*!
@@ -283,6 +290,22 @@ bool QForwardRenderer::isFrustumCullingEnabled() const
 {
     Q_D(const QForwardRenderer);
     return d->m_frustumCulling->isEnabled();
+}
+
+/*!
+    \qmlproperty color ForwardRenderer::gamma
+
+    Holds the gamma value the renderer applies to the scene.
+*/
+/*!
+    \property QForwardRenderer::gamma
+
+    Holds the gamma value the renderer applies to the scene.
+*/
+float QForwardRenderer::gamma() const
+{
+    Q_D(const QForwardRenderer);
+    return d->m_viewport->gamma();
 }
 
 } // namespace Qt3DExtras

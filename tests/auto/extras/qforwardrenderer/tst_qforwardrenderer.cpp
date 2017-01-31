@@ -56,6 +56,7 @@ private Q_SLOTS:
         QVERIFY(forwardRenderer.camera() == nullptr);
         QCOMPARE(forwardRenderer.externalRenderTargetSize(), QSize());
         QVERIFY(forwardRenderer.isFrustumCullingEnabled());
+        QCOMPARE(forwardRenderer.gamma(), 2.2f);
     }
 
     void checkPropertyChanges()
@@ -188,6 +189,26 @@ private Q_SLOTS:
             QVERIFY(forwardRenderer.isFrustumCullingEnabled());
             QCOMPARE(spy.count(), 1);
             QVERIFY(spy.takeFirst().takeFirst().toBool());
+        }
+        {
+            // WHEN
+            QSignalSpy spy(&forwardRenderer, SIGNAL(gammaChanged(float)));
+            const float newValue = 1.8f;
+            forwardRenderer.setGamma(newValue);
+
+            // THEN
+            QCOMPARE(forwardRenderer.gamma(), newValue);
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.takeFirst().first().toFloat(), 1.8f);
+
+            // WHEN
+            spy.clear();
+            forwardRenderer.setClearColor(newValue);
+
+            // THEN
+            QCOMPARE(forwardRenderer.gamma(), newValue);
+            QCOMPARE(spy.count(), 0);
+
         }
     }
 
