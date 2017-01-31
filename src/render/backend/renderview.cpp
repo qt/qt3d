@@ -129,6 +129,7 @@ RenderView::StandardUniformsNameToTypeHash RenderView::initializeStandardUniform
     setters.insert(StringToInt::lookupId(QLatin1String("modelViewNormal")), ModelViewNormalMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("viewportMatrix")), ViewportMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("inverseViewportMatrix")), InverseViewportMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("exposure")), Exposure);
     setters.insert(StringToInt::lookupId(QLatin1String("time")), Time);
     setters.insert(StringToInt::lookupId(QLatin1String("eyePosition")), EyePosition);
 
@@ -191,6 +192,8 @@ UniformValue RenderView::standardUniformValue(RenderView::StandardUniform standa
         viewportMatrix.viewport(resolveViewport(m_viewport, m_surfaceSize));
         return UniformValue(viewportMatrix.inverted());
     }
+    case Exposure:
+        return UniformValue(m_data.m_renderCameraLens->exposure());
     case Time:
         return UniformValue(float(m_renderer->time() / 1000000000.0f));
     case EyePosition:

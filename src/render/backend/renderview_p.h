@@ -307,6 +307,7 @@ private:
         ViewportMatrix,
         InverseViewportMatrix,
         Time,
+        Exposure,
         EyePosition
     };
 
