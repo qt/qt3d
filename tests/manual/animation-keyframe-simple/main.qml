@@ -175,6 +175,77 @@ DefaultSceneEntity {
         ]
     }
 
+    Entity {
+        id: cube3
+
+        components: [
+            Transform {
+                id: cube3Transform
+                translation: Qt.vector3d(2.5, 0, 2)
+                onTranslationChanged: console.log("t = " + translation)
+            },
+            CuboidMesh {
+            },
+            PhongMaterial {
+                id: cube3Material
+                ambient: Qt.rgba(0.8, 0.8, 0.8, 1.0)
+                diffuse: "green"
+                shininess: 50
+            },
+            ObjectPicker {
+                onClicked: blendedAnimator3.running = true
+            },
+            BlendedClipAnimator {
+                id: blendedAnimator3
+                loops: 2
+
+                onRunningChanged: console.log("running = " + running)
+
+                blendTree: LerpBlend {
+                    blendFactor: 0.5
+                    AddBlend {
+                        blendFactor: 0.5
+                        clips: [
+                            AnimationClip {
+                                source: "pulsing-moving-cube.json"
+                                onDurationChanged: console.log("duration = " + duration)
+                            },
+                            AnimationClip {
+                                source: "pulsing-cube-additive.json"
+                                onDurationChanged: console.log("duration = " + duration)
+                            }]
+                    }
+                    LerpBlend {
+                        blendFactor: 0.5
+                        clips: [
+                            AnimationClip {
+                                source: "cubeanimation.json"
+                                onDurationChanged: console.log("duration = " + duration)
+                            },
+                            AnimationClip {
+                                source: "pulsing-moving-cube.json"
+                                onDurationChanged: console.log("duration = " + duration)
+                            }]
+                    }
+                }
+
+                // By default introspect parent Entity and try
+                // to map fcurve groups to properties of QTransform
+                // mapping: AutomaticAnimationMapping {}
+
+                // To do more, we can be explicit
+                channelMapper: ChannelMapper {
+                    mappings: [
+                        ChannelMapping { channelName: "Location"; target: cube3Transform; property: "translation" },
+                        ChannelMapping { channelName: "Rotation"; target: cube3Transform; property: "rotation" },
+                        ChannelMapping { channelName: "Scaling"; target: cube3Transform; property: "scale3D" },
+                        ChannelMapping { channelName: "Diffuse Color"; target: cube3Transform; property: "diffuse" }
+                    ]
+                }
+            }
+        ]
+    }
+
 
     camera: Camera {
         position: Qt.vector3d(10, 3, 15)
