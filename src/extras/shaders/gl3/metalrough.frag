@@ -82,6 +82,8 @@ uniform float mipOffset = 5.0;
 
 // Exposure correction
 uniform float exposure = 0.0;
+// Gamma correction
+uniform float gamma = 2.2;
 
 mat3 calcWorldSpaceToTangentSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent)
 {
@@ -204,8 +206,7 @@ vec3 toneMap(const in vec3 c)
 
 vec3 gammaCorrect(const in vec3 color)
 {
-    const float gamma = 1.0 / 2.2;
-    return pow(color, vec3(gamma));
+    return pow(color, vec3(1.0 / gamma));
 }
 
 void main()
