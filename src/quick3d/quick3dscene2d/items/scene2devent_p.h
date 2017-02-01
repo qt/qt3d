@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QUICK3DSCENE2D_QSCENE2D_P_H
-#define QT3DRENDER_QUICK3DSCENE2D_QSCENE2D_P_H
+#ifndef QT3DRENDER_QUICK3DRENDER_SCENE2DEVENT_P_H
+#define QT3DRENDER_QUICK3DRENDER_SCENE2DEVENT_P_H
 
 //
 //  W A R N I N G
@@ -48,10 +48,9 @@
 // We mean it.
 //
 
-#include <Qt3DQuickScene2D/qscene2d.h>
+#include <Qt3DQuickScene2D/qt3dquickscene2d_global.h>
 
-#include <private/qnode_p.h>
-#include <private/scene2dsharedobject_p.h>
+#include <QtCore/QEvent>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,27 +58,22 @@ namespace Qt3DRender {
 
 namespace Quick {
 
-class QScene2D;
-class Scene2DManager;
-
-class Q_AUTOTEST_EXPORT QScene2DPrivate : public Qt3DCore::QNodePrivate
+class Scene2DEvent : public QEvent
 {
 public:
-    Q_DECLARE_PUBLIC(QScene2D)
-
-    QScene2DPrivate();
-    ~QScene2DPrivate();
-
-    Scene2DManager *m_renderManager;
-    QMetaObject::Connection m_textureDestroyedConnection;
-    Qt3DRender::QRenderTargetOutput *m_output;
-};
-
-struct QScene2DData
-{
-    QScene2D::RenderPolicy renderPolicy;
-    Scene2DSharedObjectPtr sharedObject;
-    Qt3DCore::QNodeId output;
+    enum Type {
+        Initialize = QEvent::User + 1,
+        Render,
+        RenderSync,
+        Prepare,
+        Initialized,
+        Rendered,
+        Quit
+    };
+    Scene2DEvent(Type type)
+        : QEvent(static_cast<QEvent::Type>(type))
+    {
+    }
 };
 
 } // namespace Quick
@@ -87,4 +81,4 @@ struct QScene2DData
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QUICK3DSCENE2D_QSCENE2D_P_H
+#endif // QT3DRENDER_QUICK3DRENDER_SCENE2DEVENT_P_H

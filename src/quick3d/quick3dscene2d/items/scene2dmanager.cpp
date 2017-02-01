@@ -38,6 +38,7 @@
 #include "qscene2d_p.h"
 #include "scene2d_p.h"
 #include "scene2dmanager_p.h"
+#include "scene2devent_p.h"
 
 #include <Qt3DCore/QPropertyUpdatedChange>
 
@@ -114,7 +115,7 @@ void Scene2DManager::requestRender()
     if (m_sharedObject->canRender()) {
         if (!m_requested) {
             m_requested = true;
-            QCoreApplication::postEvent(this, new QEvent(RENDER));
+            QCoreApplication::postEvent(this, new Scene2DEvent(Scene2DEvent::Render));
         }
     }
 }
@@ -125,7 +126,7 @@ void Scene2DManager::requestRenderSync()
     if (m_sharedObject->canRender()) {
         if (!m_requested) {
             m_requested = true;
-            QCoreApplication::postEvent(this, new QEvent(RENDERSYNC));
+            QCoreApplication::postEvent(this, new Scene2DEvent(Scene2DEvent::RenderSync));
         }
     } else {
         m_renderSyncRequested = true;
@@ -252,7 +253,7 @@ bool Scene2DManager::event(QEvent *e)
 {
     switch (e->type()) {
 
-    case RENDER: {
+    case Scene2DEvent::Render: {
         // just render request, don't need to call sync in render thread
         QMutexLocker lock(&m_sharedObject->m_mutex);
         m_sharedObject->requestRender(false);
@@ -260,7 +261,7 @@ bool Scene2DManager::event(QEvent *e)
         return true;
     }
 
-    case RENDERSYNC: {
+    case Scene2DEvent::RenderSync: {
         // sync and render request, main and render threads must be synchronized
         if (!m_sharedObject->isQuit())
             doRenderSync();
@@ -268,28 +269,28 @@ bool Scene2DManager::event(QEvent *e)
         return true;
     }
 
-    case PREPARE: {
+    case Scene2DEvent::Prepare: {
         m_sharedObject->m_renderControl->prepareThread(m_sharedObject->m_renderThread);
         m_sharedObject->setPrepared();
 
         if (m_renderSyncRequested) {
             if (!m_requested) {
                 m_requested = true;
-                QCoreApplication::postEvent(this, new QEvent(RENDERSYNC));
+                QCoreApplication::postEvent(this, new Scene2DEvent(Scene2DEvent::RenderSync));
             }
             m_renderSyncRequested = false;
         }
         return true;
     }
 
-    case INITIALIZED: {
+    case Scene2DEvent::Initialized: {
         // backend is initialized, start the qml
         m_backendInitialized = true;
         startIfInitialized();
         return true;
     }
 
-    case RENDERED: {
+    case Scene2DEvent::Rendered: {
         // render is done, excellent, now clean anything not needed anymore.
         stopAndClean();
         return true;

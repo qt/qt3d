@@ -43,6 +43,7 @@
 #include <private/qscene2d_p.h>
 #include <private/scene2d_p.h>
 #include <private/scene2dmanager_p.h>
+#include <private/scene2devent_p.h>
 #include <private/graphicscontext_p.h>
 #include <private/texture_p.h>
 #include <private/nodemanagers_p.h>
@@ -82,17 +83,17 @@ bool RenderQmlEventHandler::event(QEvent *e)
 {
     switch (e->type()) {
 
-    case RENDER: {
+    case Scene2DEvent::Render: {
         m_node->render();
         return true;
     }
 
-    case INITIALIZE: {
+    case Scene2DEvent::Initialize: {
         m_node->initializeRender();
         return true;
     }
 
-    case QUIT: {
+    case Scene2DEvent::Quit: {
         m_node->cleanup();
         return true;
     }
@@ -147,11 +148,13 @@ void Scene2D::initializeSharedObject()
             m_sharedObject->m_renderThread->start();
 
         // Notify main thread we have been initialized
-        if (m_sharedObject->m_renderManager)
-            QCoreApplication::postEvent(m_sharedObject->m_renderManager, new QEvent(INITIALIZED));
-
+        if (m_sharedObject->m_renderManager) {
+            QCoreApplication::postEvent(m_sharedObject->m_renderManager,
+                                        new Scene2DEvent(Scene2DEvent::Initialized));
+        }
         // Initialize render thread
-        QCoreApplication::postEvent(m_sharedObject->m_renderObject, new QEvent(INITIALIZE));
+        QCoreApplication::postEvent(m_sharedObject->m_renderObject,
+                                    new Scene2DEvent(Scene2DEvent::Initialize));
 
         m_initialized = true;
     }
@@ -198,7 +201,8 @@ void Scene2D::initializeRender()
        m_shareContext = renderer()->shareContext();
         if (!m_shareContext){
             qCDebug(Qt3DRender::Quick::Scene2D) << Q_FUNC_INFO << "Renderer not initialized.";
-            QCoreApplication::postEvent(m_sharedObject->m_renderObject, new QEvent(INITIALIZE));
+            QCoreApplication::postEvent(m_sharedObject->m_renderObject,
+                                        new Scene2DEvent(Scene2DEvent::Initialize));
             return;
         }
         m_context = new QOpenGLContext();
@@ -217,7 +221,8 @@ void Scene2D::initializeRender()
         m_sharedObject->m_renderControl->initialize(m_context);
         m_context->doneCurrent();
 
-        QCoreApplication::postEvent(m_sharedObject->m_renderManager, new QEvent(PREPARE));
+        QCoreApplication::postEvent(m_sharedObject->m_renderManager,
+                                    new Scene2DEvent(Scene2DEvent::Prepare));
         m_renderInitialized = true;
     }
 }
@@ -279,7 +284,8 @@ void Scene2D::render()
                 syncRenderControl();
                 m_context->doneCurrent();
                 qCDebug(Qt3DRender::Quick::Scene2D) << Q_FUNC_INFO << "Texture not in use.";
-                QCoreApplication::postEvent(m_sharedObject->m_renderObject, new QEvent(RENDER));
+                QCoreApplication::postEvent(m_sharedObject->m_renderObject,
+                                            new Scene2DEvent(Scene2DEvent::Render));
                 return;
             }
             textureLock->lock();
@@ -323,7 +329,8 @@ void Scene2D::render()
 
         // Tell main thread we are done so it can begin cleanup if this is final frame
         if (m_renderPolicy == QScene2D::SingleShot)
-            QCoreApplication::postEvent(m_sharedObject->m_renderManager, new QEvent(RENDERED));
+            QCoreApplication::postEvent(m_sharedObject->m_renderManager,
+                                        new Scene2DEvent(Scene2DEvent::Rendered));
 
         m_sharedObject->m_quickWindow->resetOpenGLState();
         m_context->functions()->glFlush();

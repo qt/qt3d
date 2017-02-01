@@ -38,6 +38,7 @@
 #include "qscene2d_p.h"
 #include "scene2d_p.h"
 #include "scene2dmanager_p.h"
+#include "scene2devent_p.h"
 
 #include <Qt3DCore/QPropertyUpdatedChange>
 
@@ -101,7 +102,6 @@ namespace Quick {
     \qmlproperty bool Qt3D.Render::Scene2D::loaded
     Holds whether the source has been loaded.
  */
-
 
 QScene2DPrivate::QScene2DPrivate()
     : Qt3DCore::QNodePrivate()

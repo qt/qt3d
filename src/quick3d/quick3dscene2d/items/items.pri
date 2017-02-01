@@ -3,7 +3,8 @@ HEADERS += \
     $$PWD/qscene2d_p.h \
     $$PWD/qscene2d.h \
     $$PWD/scene2dmanager_p.h \
-    $$PWD/scene2dsharedobject_p.h
+    $$PWD/scene2dsharedobject_p.h \
+    $$PWD/scene2devent_p.h
 
 SOURCES += \
     $$PWD/qscene2d.cpp \

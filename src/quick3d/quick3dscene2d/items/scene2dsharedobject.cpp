@@ -38,6 +38,7 @@
 #include "qscene2d_p.h"
 #include "scene2d_p.h"
 #include "scene2dmanager_p.h"
+#include "scene2devent_p.h"
 #include "scene2dsharedobject_p.h"
 
 #include <Qt3DCore/QPropertyUpdatedChange>
@@ -126,7 +127,7 @@ void Scene2DSharedObject::requestQuit()
 {
     Q_ASSERT(QThread::currentThread() == QCoreApplication::instance()->thread());
     m_quit = true;
-    QCoreApplication::postEvent(m_renderObject, new QEvent(QUIT));
+    QCoreApplication::postEvent(m_renderObject, new Scene2DEvent(Scene2DEvent::Quit));
 }
 
 bool Scene2DSharedObject::isSyncRequested() const
@@ -137,7 +138,7 @@ bool Scene2DSharedObject::isSyncRequested() const
 void Scene2DSharedObject::requestRender(bool sync)
 {
     m_requestSync = sync;
-    QCoreApplication::postEvent(m_renderObject, new QEvent(RENDER));
+    QCoreApplication::postEvent(m_renderObject, new Scene2DEvent(Scene2DEvent::Render));
 }
 
 void Scene2DSharedObject::wait()
