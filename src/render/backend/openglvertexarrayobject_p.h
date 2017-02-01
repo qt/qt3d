@@ -59,6 +59,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
+class GeometryManager;
+class ShaderManager;
+
 typedef QPair<HGeometry, HShader> VAOIdentifier;
 
 class OpenGLVertexArrayObject
@@ -66,27 +69,29 @@ class OpenGLVertexArrayObject
 public:
     OpenGLVertexArrayObject();
 
-    void setGraphicsContext(GraphicsContext *ctx);
     void bind();
     void release();
-    void create();
+
+    void create(GraphicsContext *ctx, const VAOIdentifier &key);
     void destroy();
     void cleanup();
-    bool isCreated() const;
+
+    bool isAbandoned(GeometryManager *geomMgr, ShaderManager *shaderMgr);
 
     QOpenGLVertexArrayObject *vao() { return m_vao.data(); }
     const QOpenGLVertexArrayObject *vao() const { return m_vao.data(); }
-    void setVao(QOpenGLVertexArrayObject *vao) { m_vao.reset(vao); }
 
     void setSpecified(bool b) { m_specified = b; }
     bool isSpecified() const { return m_specified; }
 
+
 private:
+    QMutex m_mutex;
     GraphicsContext *m_ctx;
     QScopedPointer<QOpenGLVertexArrayObject> m_vao;
     bool m_specified;
     bool m_supportsVao;
-    bool m_createdEmulatedVAO;
+    VAOIdentifier m_owners;
 
     friend class GraphicsContext;
 

@@ -86,6 +86,7 @@ namespace JobTypes {
         UpdateWorldBoundingVolume,
         FrameSubmissionPart2,
         DirtyBufferGathering,
+        DirtyVaoGathering,
         DirtyTextureGathering,
         DirtyShaderGathering,
         SendRenderCapture,

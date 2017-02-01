@@ -322,14 +322,19 @@ private:
                            OpenGLVertexArrayObject **vao);
 
     GenericLambdaJobPtr<std::function<void ()>> m_bufferGathererJob;
+    GenericLambdaJobPtr<std::function<void ()>> m_vaoGathererJob;
     GenericLambdaJobPtr<std::function<void ()>> m_textureGathererJob;
     GenericLambdaJobPtr<std::function<void ()>> m_shaderGathererJob;
 
     SynchronizerJobPtr m_syncTextureLoadingJob;
 
+    void lookForAbandonedVaos();
     void lookForDirtyBuffers();
     void lookForDirtyTextures();
     void lookForDirtyShaders();
+
+    QMutex m_abandonedVaosMutex;
+    QVector<HVao> m_abandonedVaos;
 
     QVector<HBuffer> m_dirtyBuffers;
     QVector<HShader> m_dirtyShaders;
