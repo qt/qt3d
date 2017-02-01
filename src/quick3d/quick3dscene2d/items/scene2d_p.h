@@ -51,9 +51,6 @@
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DQuickScene2D/qscene2d.h>
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QSemaphore>
-
 #include <private/qscene2d_p.h>
 #include <private/qrendertargetoutput_p.h>
 #include <private/backendnode_p.h>

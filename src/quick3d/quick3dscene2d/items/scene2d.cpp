@@ -42,6 +42,7 @@
 
 #include <private/qscene2d_p.h>
 #include <private/scene2d_p.h>
+#include <private/scene2dmanager_p.h>
 #include <private/graphicscontext_p.h>
 #include <private/texture_p.h>
 #include <private/nodemanagers_p.h>

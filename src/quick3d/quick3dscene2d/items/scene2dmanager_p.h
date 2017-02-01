@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QUICK3DSCENE2D_QSCENE2D_P_H
-#define QT3DRENDER_QUICK3DSCENE2D_QSCENE2D_P_H
+#ifndef QT3DRENDER_QUICK3DRENDER_SCENE2DMANAGER_P_H
+#define QT3DRENDER_QUICK3DRENDER_SCENE2DMANAGER_P_H
 
 //
 //  W A R N I N G
@@ -48,10 +48,16 @@
 // We mean it.
 //
 
+#include <Qt3DQuickScene2D/qt3dquickscene2d_global.h>
 #include <Qt3DQuickScene2D/qscene2d.h>
 
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlComponent>
+#include <QtQuick/QQuickItem>
+
 #include <private/qnode_p.h>
-#include <private/scene2dsharedobject_p.h>
+
+#include <QtCore/qobject.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,45 +65,55 @@ namespace Qt3DRender {
 
 namespace Quick {
 
-class QScene2D;
-class Scene2DManager;
+class QScene2DPrivate;
+class Scene2DSharedObject;
 
-// render thread -> render thread
-static const QEvent::Type INITIALIZE = QEvent::Type(QEvent::User + 1);
-
-// main thread -> main thread, render thread
-static const QEvent::Type RENDER = QEvent::Type(QEvent::User + 2);
-
-// main thread -> main thread
-static const QEvent::Type RENDERSYNC = QEvent::Type(QEvent::User + 3);
-
-// render thread -> main thread
-static const QEvent::Type PREPARE = QEvent::Type(QEvent::User + 4);
-static const QEvent::Type INITIALIZED = QEvent::Type(QEvent::User + 5);
-static const QEvent::Type RENDERED = QEvent::Type(QEvent::User + 6);
-
-// main thread -> render thread
-static const QEvent::Type QUIT = QEvent::Type(QEvent::User + 7);
-
-
-class Q_AUTOTEST_EXPORT QScene2DPrivate : public Qt3DCore::QNodePrivate
+class Scene2DManager : public QObject
 {
+    Q_OBJECT
 public:
-    Q_DECLARE_PUBLIC(QScene2D)
+    Scene2DManager(QScene2DPrivate *priv);
+    ~Scene2DManager();
 
-    QScene2DPrivate();
-    ~QScene2DPrivate();
+    QQmlEngine *m_qmlEngine;
+    QQmlComponent *m_qmlComponent;
+    QQuickItem *m_rootItem;
+    QQuickItem *m_item;
 
-    Scene2DManager *m_renderManager;
-    QMetaObject::Connection m_textureDestroyedConnection;
-    Qt3DRender::QRenderTargetOutput *m_output;
-};
+    QScene2DPrivate *m_priv;
+    QSharedPointer<Scene2DSharedObject> m_sharedObject;
 
-struct QScene2DData
-{
-    QScene2D::RenderPolicy renderPolicy;
-    Scene2DSharedObjectPtr sharedObject;
-    Qt3DCore::QNodeId output;
+    QUrl m_source;
+    Qt3DCore::QNodeId m_id;
+    QMetaObject::Connection m_connection;
+    QScene2D::RenderPolicy m_renderPolicy;
+
+    bool m_requested;
+    bool m_initialized;
+    bool m_renderSyncRequested;
+    bool m_backendInitialized;
+    bool m_noSourceMode;
+    bool m_ownEngine;
+
+    void requestRender();
+    void requestRenderSync();
+    void doRenderSync();
+    void startIfInitialized();
+    void stopAndClean();
+    void run();
+    void updateSizes();
+
+    void setSource(const QUrl &url);
+    void setItem(QQuickItem *item);
+
+    bool event(QEvent *e) Q_DECL_OVERRIDE;
+    bool forwardEvent(QEvent *event);
+
+    Q_SIGNAL void onLoadedChanged();
+
+    void cleanup();
+    void setEngine(QQmlEngine *engine);
+    void engineDestroyed();
 };
 
 } // namespace Quick
@@ -105,4 +121,4 @@ struct QScene2DData
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QUICK3DSCENE2D_QSCENE2D_P_H
+#endif // QT3DRENDER_QUICK3DRENDER_SCENE2DMANAGER_P_H
