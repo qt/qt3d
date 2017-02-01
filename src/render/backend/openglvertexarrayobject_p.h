@@ -59,6 +59,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
+typedef QPair<HGeometry, HShader> VAOIdentifier;
+
 class OpenGLVertexArrayObject
 {
 public:
@@ -69,6 +71,7 @@ public:
     void release();
     void create();
     void destroy();
+    void cleanup();
     bool isCreated() const;
 
     QOpenGLVertexArrayObject *vao() { return m_vao.data(); }

@@ -113,14 +113,20 @@ void OpenGLVertexArrayObject::create()
 void OpenGLVertexArrayObject::destroy()
 {
     Q_ASSERT(m_ctx);
-    if (m_supportsVao) {
-        Q_ASSERT(!m_vao.isNull());
-        m_vao->destroy();
-    }
+    cleanup();
+}
+
+void OpenGLVertexArrayObject::cleanup()
+{
+    m_vao.reset();
+    m_ctx = nullptr;
     m_specified = false;
+    m_supportsVao = false;
+    m_createdEmulatedVAO = false;
     m_indexAttribute = GraphicsContext::VAOIndexAttribute();
     m_vertexAttributes.clear();
 }
+
 
 bool OpenGLVertexArrayObject::isCreated() const
 {
