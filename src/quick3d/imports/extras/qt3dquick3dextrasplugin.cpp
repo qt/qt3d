@@ -137,7 +137,7 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DExtras::QDistanceFieldGlyphCache>(uri, 2, 2, "DistanceFieldGlyphCache");
     qmlRegisterType<Qt3DExtras::QDistanceFieldText>(uri, 2, 2, "DistanceFieldText");
 
-    qmlRegisterUncreatableType<Qt3DExtras::QAbstractAnimation>(uri, 2, 0, "AbstractAnimation", QStringLiteral("AbstractAnimation is abstract"));
+    qmlRegisterUncreatableType<Qt3DExtras::QAbstractAnimation>(uri, 2, 2, "AbstractAnimation", QStringLiteral("AbstractAnimation is abstract"));
     qmlRegisterExtendedType<Qt3DExtras::QKeyframeAnimation, Qt3DExtras::Quick::QQuick3DKeyframeAnimation>(uri, 2, 2, "KeyframeAnimation");
     qmlRegisterExtendedType<Qt3DExtras::QAnimationGroup, Qt3DExtras::Quick::QQuick3DAnimationGroup>(uri, 2, 2, "AnimationGroup");
     qmlRegisterExtendedType<Qt3DExtras::QAnimationController, Qt3DExtras::Quick::QQuick3DAnimationController>(uri, 2, 2, "AnimationController");
