@@ -29,6 +29,7 @@ SUBDIRS += \
     multiplewindows-qml \
     picking-qml \
     plasma \
+    pointlinesize \
     scene3d-loader \
     simple-shaders-qml \
     skybox \
