@@ -840,7 +840,7 @@ void Renderer::lookForAbandonedVaos()
 
         // Make sure to only mark VAOs for deletion that were already created
         // (ignore those that might be currently under construction in the render thread)
-        if (vao->isAbandoned(m_nodesManager->geometryManager(), m_nodesManager->shaderManager())) {
+        if (vao && vao->isAbandoned(m_nodesManager->geometryManager(), m_nodesManager->shaderManager())) {
             m_abandonedVaosMutex.lock();
             m_abandonedVaos.push_back(handle);
             m_abandonedVaosMutex.unlock();
