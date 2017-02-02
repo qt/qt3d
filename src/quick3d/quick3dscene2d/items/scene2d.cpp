@@ -57,6 +57,7 @@
 #include <private/qbackendnode_p.h>
 #include <private/qpickevent_p.h>
 #include <private/entity_p.h>
+#include <private/platformsurfacefilter_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -326,6 +327,9 @@ void Scene2D::render()
         const Qt3DRender::Render::Attachment *attachmentData = nullptr;
         QMutex *textureLock = nullptr;
 
+#ifdef QT_OPENGL_ES_2_ANGLE
+        SurfaceLocker surfaceLocker(m_sharedObject->m_surface);
+#endif
         m_context->makeCurrent(m_sharedObject->m_surface);
 
         if (resourceAccessor()->accessResource(RenderBackendResourceAccessor::OutputAttachment,
