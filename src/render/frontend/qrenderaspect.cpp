@@ -371,6 +371,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         // don't spawn any jobs, if the renderer decides to skip this frame
         if (!d->m_renderer->shouldRender()) {
             d->m_renderer->skipNextFrame();
+            QThread::msleep(1);
             return jobs;
         }
 
