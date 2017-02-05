@@ -154,8 +154,8 @@ QObject *QEventForward::target() const
 
 void QEventForward::targetDestroyed(QObject *target)
 {
-    Q_D(QEventForward);
-    Q_ASSERT(target == d->m_target);
+    Q_ASSERT(target == d_func()->m_target);
+    Q_UNUSED(target);
     setTarget(nullptr);
 }
 
