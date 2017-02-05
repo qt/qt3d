@@ -159,6 +159,11 @@ Qt3DRender::QCamera *Qt3DWindow::camera() const
     return m_defaultCamera;
 }
 
+Qt3DRender::QRenderSettings *Qt3DWindow::renderSettings() const
+{
+    return m_renderSettings;
+}
+
 void Qt3DWindow::showEvent(QShowEvent *e)
 {
     if (!m_initialized) {
