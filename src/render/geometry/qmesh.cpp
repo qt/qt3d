@@ -68,7 +68,12 @@ QMeshPrivate::QMeshPrivate()
  * \qmltype Mesh
  * \instantiates Qt3DRender::QMesh
  * \inqmlmodule Qt3D.Render
- * \brief A custom mesh.
+ * \brief A custom mesh loader.
+ *
+ * Loads mesh data from external files in a variety of formats.
+ *
+ * In Qt3D 5.9, Mesh supports the following formats: Wavefront OBJ, Stanford Triangle Format PLY, STL (STereoLithography).
+ * QMesh will also support Autodesk FBX files if the SDK is installed and the fbx geometry loader plugin is built and found.
  */
 
 /*!
@@ -80,7 +85,17 @@ QMeshPrivate::QMeshPrivate()
 /*!
  * \qmlproperty string Mesh::meshName
  *
- * Holds the name of the mesh.
+ * Filter indicating which part of the mesh should be loaded.
+ *
+ * If meshName is empty (the default), then the entire mesh is loaded.
+ *
+ * If meshName is a plain string, then only the sub-mesh matching that name, if present, will be loaded.
+ *
+ * If meshName is a regular expression, than all sub-meshes matching the expression will be loaded.
+ *
+ * \note Only Wavefront OBJ files support sub-meshes.
+ *
+ * \sa QRegularExpression
  */
 
 /*!
@@ -90,7 +105,17 @@ QMeshPrivate::QMeshPrivate()
  *
  * \inherits Qt3DRender::QGeometryRenderer
  *
- * \brief A custom mesh.
+ * \brief A custom mesh loader.
+ *
+ * Loads mesh data from external files in a variety of formats.
+ * Qt3DRender::QMesh loads data into a single mesh.
+ *
+ * In Qt3D 5.9, QMesh supports the following formats: Wavefront OBJ, Stanford Triangle Format PLY, STL (STereoLithography).
+ * QMesh will also support Autodesk FBX files if the SDK is installed and the fbx geometry loader plugin is built and found.
+ *
+ * If you wish to load an entire scene made of several objects, you should rather use the Qt3DRender::QSceneLoader instead.
+ *
+ * \sa Qt3DRender::QSceneLoader
  */
 
 /*!

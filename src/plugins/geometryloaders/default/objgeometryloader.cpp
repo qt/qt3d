@@ -40,6 +40,7 @@
 #include "objgeometryloader.h"
 
 #include <QtCore/QLoggingCategory>
+#include <QtCore/QRegularExpression>
 
 QT_BEGIN_NAMESPACE
 
@@ -77,7 +78,7 @@ bool ObjGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
     int normalsOffset = 0;
     int texCoordsOffset = 0;
 
-    QRegExp subMeshMatch(subMesh);
+    QRegularExpression subMeshMatch(subMesh);
     if (!subMeshMatch.isValid())
         subMeshMatch.setPattern(QLatin1String("^(") + subMesh + QLatin1String(")$"));
     Q_ASSERT(subMeshMatch.isValid());
@@ -196,7 +197,8 @@ bool ObjGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
                 } else {
                     if (!subMesh.isEmpty() ) {
                         const QString objName = tokens.stringAt(1);
-                        skipping = subMeshMatch.indexIn(objName) < 0;
+                        QRegularExpressionMatch match = subMeshMatch.match(objName);
+                        skipping = !match.hasMatch();
                     }
                 }
             }
