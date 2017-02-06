@@ -393,19 +393,22 @@ void QNodePrivate::setSceneHelper(QNode *root)
     Recursively unsets and remove nodes in the subtree of base node \a root from
     the scene. Also takes care of removing Components and Entities connections.
  */
-void QNodePrivate::unsetSceneHelper(QNode *root)
+void QNodePrivate::unsetSceneHelper(QNode *node)
 {
+    QNodePrivate *nodePrivate = QNodePrivate::get(node);
+
     // We also need to handle QEntity <-> QComponent relationships removal
-    if (QComponent *c = qobject_cast<QComponent *>(root)) {
+    if (QComponent *c = qobject_cast<QComponent *>(node)) {
         const QVector<QEntity *> entities = c->entities();
         for (QEntity *entity : entities) {
-            if (m_scene)
-                m_scene->removeEntityForComponent(c->id(), entity->id());
+            if (nodePrivate->m_scene)
+                nodePrivate->m_scene->removeEntityForComponent(c->id(), entity->id());
         }
     }
-    if (m_scene != nullptr)
-        m_scene->removeObservable(root);
-    root->d_func()->setScene(nullptr);
+
+    if (nodePrivate->m_scene != nullptr)
+        nodePrivate->m_scene->removeObservable(node);
+    nodePrivate->setScene(nullptr);
 }
 
 /*!

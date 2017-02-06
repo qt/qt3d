@@ -261,7 +261,7 @@ public:
 
 class VAOManager : public Qt3DCore::QResourceManager<
         OpenGLVertexArrayObject,
-        QPair<HGeometry, HShader>,
+        VAOIdentifier,
         16,
         Qt3DCore::ArrayAllocatingPolicy,
         Qt3DCore::NonLockingPolicy>
@@ -432,6 +432,7 @@ Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::BoundingVolumeDebug, Q_REQUIRES_CLEA
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::ComputeCommand, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Parameter, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Transform, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::OpenGLVertexArrayObject, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 
