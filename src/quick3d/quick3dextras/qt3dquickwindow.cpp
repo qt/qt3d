@@ -48,22 +48,21 @@
 **
 ****************************************************************************/
 
-#include <Qt3DQuickExtras/qt3dquickwindow.h>
-#include <Qt3DQuick/QQmlAspectEngine>
-#include <Qt3DRender/qcamera.h>
-#include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DRender/qrendersurfaceselector.h>
-#include <Qt3DRender/private/qrendersurfaceselector_p.h>
 #include <Qt3DInput/qinputaspect.h>
 #include <Qt3DInput/qinputsettings.h>
 #include <Qt3DLogic/qlogicaspect.h>
-
-#include <QQmlContext>
-#include <qqmlincubator.h>
-#include <QGuiApplication>
-#include <QScreen>
-
+#include <Qt3DQuick/QQmlAspectEngine>
+#include <Qt3DQuickExtras/qt3dquickwindow.h>
+#include <Qt3DRender/qcamera.h>
+#include <Qt3DRender/qrenderaspect.h>
+#include <Qt3DRender/qrendersurfaceselector.h>
+#include <QtGui/QGuiApplication>
+#include <QtGui/QScreen>
 #include <QtGui/qopenglcontext.h>
+#include <QtQml/QQmlContext>
+#include <QtQml/qqmlincubator.h>
+
+#include <Qt3DRender/private/qrendersurfaceselector_p.h>
 
 QT_BEGIN_NAMESPACE
 

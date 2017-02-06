@@ -51,8 +51,9 @@
 // We mean it.
 //
 
-#include <QQmlListProperty>
 #include <Qt3DCore/qentity.h>
+#include <QtQml/QQmlListProperty>
+
 #include <Qt3DQuick/private/quick3dnode_p.h>
 #include <Qt3DQuick/private/qt3dquick_global_p.h>
 

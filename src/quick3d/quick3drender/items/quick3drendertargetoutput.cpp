@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "quick3drendertargetoutput_p.h"
+#include <Qt3DQuickRender/private/quick3drendertargetoutput_p.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qt3dquickinput_global_p.h"
-#include "qt3dquickinputnodefactory_p.h"
+#include <Qt3DQuickInput/private/qt3dquickinput_global_p.h>
+#include <Qt3DQuickInput/private/qt3dquickinputnodefactory_p.h>
 
 QT_BEGIN_NAMESPACE
 

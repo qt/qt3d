@@ -39,9 +39,9 @@
 
 #include "quick3dentityloader_p_p.h"
 
-#include <QQmlContext>
-#include <QQmlEngine>
-#include <QQmlIncubator>
+#include <QtQml/QQmlContext>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlIncubator>
 
 #include <QtQml/private/qqmlengine_p.h>
 

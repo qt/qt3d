@@ -37,8 +37,9 @@
 **
 ****************************************************************************/
 
-#include "quick3dtexture_p.h"
-#include <QDebug>
+#include <QtCore/QDebug>
+
+#include <Qt3DQuickRender/private/quick3dtexture_p.h>
 
 QT_BEGIN_NAMESPACE
 

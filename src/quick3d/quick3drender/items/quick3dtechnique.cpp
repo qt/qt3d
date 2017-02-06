@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "quick3dtechnique_p.h"
+#include <Qt3DQuickRender/private/quick3dtechnique_p.h>
 
 QT_BEGIN_NAMESPACE
 
