@@ -92,17 +92,11 @@ void ObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::PropertyUpdated) {
         const Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        bool notifyPickJob = false;
 
         if (propertyChange->propertyName() == QByteArrayLiteral("hoverEnabled")) {
             m_hoverEnabled = propertyChange->value().toBool();
-            notifyPickJob = true;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("dragEnabled")) {
             m_dragEnabled = propertyChange->value().toBool();
-            notifyPickJob = true;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            notifyPickJob = true;
-            // actual value change handled in BackendNode::sceneChangeEvent
         }
 
         markDirty(AbstractRenderer::AllDirty);
