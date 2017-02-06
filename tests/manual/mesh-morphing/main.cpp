@@ -43,8 +43,8 @@
 #include <Qt3DExtras/qcylindermesh.h>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QMorphPhongMaterial>
-#include <Qt3DExtras/QVertexBlendAnimation>
-#include <Qt3DExtras/QMorphTarget>
+#include <Qt3DAnimation/QVertexBlendAnimation>
+#include <Qt3DAnimation/QMorphTarget>
 #include <Qt3DExtras/QCylinderGeometry>
 
 #include <Qt3DCore/qentity.h>
@@ -111,13 +111,13 @@ int main(int argc, char **argv)
     attributes.push_back(Qt3DRender::QAttribute::defaultPositionAttributeName());
     attributes.push_back(Qt3DRender::QAttribute::defaultNormalAttributeName());
 
-    QVector<Qt3DExtras::QMorphTarget*> morphTargets;
-    morphTargets.push_back(Qt3DExtras::QMorphTarget::fromGeometry(cylinder1, attributes));
-    morphTargets.push_back(Qt3DExtras::QMorphTarget::fromGeometry(cylinder2, attributes));
-    morphTargets.push_back(Qt3DExtras::QMorphTarget::fromGeometry(cylinder3, attributes));
+    QVector<Qt3DAnimation::QMorphTarget*> morphTargets;
+    morphTargets.push_back(Qt3DAnimation::QMorphTarget::fromGeometry(cylinder1, attributes));
+    morphTargets.push_back(Qt3DAnimation::QMorphTarget::fromGeometry(cylinder2, attributes));
+    morphTargets.push_back(Qt3DAnimation::QMorphTarget::fromGeometry(cylinder3, attributes));
     morphTargets.push_back(morphTargets.first());
 
-    Qt3DExtras::QVertexBlendAnimation *animation = new Qt3DExtras::QVertexBlendAnimation;
+    Qt3DAnimation::QVertexBlendAnimation *animation = new Qt3DAnimation::QVertexBlendAnimation;
     QVector<float> times;
     times.push_back(0.0f);
     times.push_back(5.0f);
@@ -132,7 +132,7 @@ int main(int argc, char **argv)
     Qt3DExtras::QMorphPhongMaterial *material = new Qt3DExtras::QMorphPhongMaterial(rootEntity);
     material->setDiffuse(Qt::red);
 
-    QObject::connect(animation, &Qt3DExtras::QVertexBlendAnimation::interpolatorChanged,
+    QObject::connect(animation, &Qt3DAnimation::QVertexBlendAnimation::interpolatorChanged,
                      material, &Qt3DExtras::QMorphPhongMaterial::setInterpolator);
 
     // Cylinder

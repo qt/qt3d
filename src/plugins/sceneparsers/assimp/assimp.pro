@@ -1,5 +1,5 @@
 TARGET = assimpsceneimport
-QT += core-private 3dcore 3dcore-private 3drender 3drender-private 3dextras
+QT += core-private 3dcore 3dcore-private 3drender 3drender-private 3dextras 3danimation
 
 include(../../../3rdparty/assimp/assimp_dependency.pri)
 

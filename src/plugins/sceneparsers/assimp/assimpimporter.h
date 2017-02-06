@@ -72,7 +72,7 @@ namespace Qt3DCore {
 class QCamera;
 }
 
-namespace Qt3DExtras {
+namespace Qt3DAnimation {
 class QKeyframeAnimation;
 class QMorphingAnimation;
 }
@@ -144,8 +144,8 @@ private:
         QMap<QString, QAbstractTexture *> m_materialTextures;
         QMap<aiNode*, Qt3DCore::QEntity*> m_cameras;
         QHash<aiTextureType, QString> m_textureToParameterName;
-        QVector<Qt3DExtras::QKeyframeAnimation *> m_animations;
-        QVector<Qt3DExtras::QMorphingAnimation *> m_morphAnimations;
+        QVector<Qt3DAnimation::QKeyframeAnimation *> m_animations;
+        QVector<Qt3DAnimation::QMorphingAnimation *> m_morphAnimations;
 //    QMap<aiNode*, Light*> m_lights;
     };
 

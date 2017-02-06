@@ -45,9 +45,22 @@
 #include <Qt3DAnimation/qchannelmapping.h>
 #include <Qt3DAnimation/qlerpblend.h>
 #include <Qt3DAnimation/qadditiveblend.h>
+
+#include <Qt3DAnimation/qkeyframeanimation.h>
+#include <Qt3DAnimation/qanimationcontroller.h>
+#include <Qt3DAnimation/qabstractanimation.h>
+#include <Qt3DAnimation/qmorphinganimation.h>
+#include <Qt3DAnimation/qanimationgroup.h>
+#include <Qt3DAnimation/qmorphtarget.h>
+
 #include <Qt3DQuickAnimation/private/qt3dquickanimation_global_p.h>
 #include <Qt3DQuickAnimation/private/quick3dchannelmapper_p.h>
 #include <Qt3DQuickAnimation/private/quick3dabstractclipblendnode_p.h>
+#include <Qt3DQuickAnimation/private/quick3dkeyframeanimation_p.h>
+#include <Qt3DQuickAnimation/private/quick3danimationgroup_p.h>
+#include <Qt3DQuickAnimation/private/quick3danimationcontroller_p.h>
+#include <Qt3DQuickAnimation/private/quick3dmorphtarget_p.h>
+#include <Qt3DQuickAnimation/private/quick3dmorphinganimation_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,6 +80,13 @@ void Qt3DQuick3DAnimationPlugin::registerTypes(const char *uri)
                                        Qt3DAnimation::Animation::Quick::Quick3DAbstractClipBlendNode>(uri, 2, 2, "AbstractClipBlendNode", QStringLiteral("QAbstractClipBlendNode is abstract"));
     qmlRegisterType<Qt3DAnimation::QLerpBlend>(uri, 2, 2, "LerpBlend");
     qmlRegisterType<Qt3DAnimation::QAdditiveBlend>(uri, 2, 2, "AdditiveBlend");
+
+    qmlRegisterUncreatableType<Qt3DAnimation::QAbstractAnimation>(uri, 2, 2, "AbstractAnimation", QStringLiteral("AbstractAnimation is abstract"));
+    qmlRegisterExtendedType<Qt3DAnimation::QKeyframeAnimation, Qt3DAnimation::Quick::QQuick3DKeyframeAnimation>(uri, 2, 2, "KeyframeAnimation");
+    qmlRegisterExtendedType<Qt3DAnimation::QAnimationGroup, Qt3DAnimation::Quick::QQuick3DAnimationGroup>(uri, 2, 2, "AnimationGroup");
+    qmlRegisterExtendedType<Qt3DAnimation::QAnimationController, Qt3DAnimation::Quick::QQuick3DAnimationController>(uri, 2, 2, "AnimationController");
+    qmlRegisterExtendedType<Qt3DAnimation::QMorphingAnimation, Qt3DAnimation::Quick::QQuick3DMorphingAnimation>(uri, 2, 2, "MorphingAnimation");
+    qmlRegisterExtendedType<Qt3DAnimation::QMorphTarget, Qt3DAnimation::Quick::QQuick3DMorphTarget>(uri, 2, 2, "MorphTarget");
 }
 
 QT_END_NAMESPACE
