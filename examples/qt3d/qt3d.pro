@@ -17,7 +17,8 @@ SUBDIRS += \
     lights \
     compute-particles \
     3d-text \
-    qardboard
+    qardboard \
+    advancedcustommaterial
 
 qtHaveModule(multimedia): SUBDIRS += audio-visualizer-qml
 
