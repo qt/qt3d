@@ -174,6 +174,17 @@ QSceneLoaderPrivate::QSceneLoaderPrivate()
     m_shareable = false;
 }
 
+void QSceneLoaderPrivate::setStatus(QSceneLoader::Status status)
+{
+    if (m_status != status) {
+        Q_Q(QSceneLoader);
+        m_status = status;
+        const bool wasBlocked = q->blockNotifications(true);
+        emit q->statusChanged(status);
+        q->blockNotifications(wasBlocked);
+    }
+}
+
 /*!
     The constructor creates an instance with the specified \a parent.
  */
@@ -219,7 +230,7 @@ void QSceneLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
                 d->m_subTreeRoot = subTreeRoot;
             }
         } else if (e->propertyName() == QByteArrayLiteral("status")) {
-            setStatus(e->value().value<QSceneLoader::Status>());
+            d->setStatus(e->value().value<QSceneLoader::Status>());
         }
     }
 }
@@ -249,12 +260,7 @@ QSceneLoader::Status QSceneLoader::status() const
 void QSceneLoader::setStatus(QSceneLoader::Status status)
 {
     Q_D(QSceneLoader);
-    if (d->m_status != status) {
-        d->m_status = status;
-        const bool wasBlocked = blockNotifications(true);
-        emit statusChanged(status);
-        blockNotifications(wasBlocked);
-    }
+    d->setStatus(status);
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QSceneLoader::createNodeCreationChange() const
