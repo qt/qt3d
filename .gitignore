@@ -27,6 +27,7 @@ include/*
 *_resource.rc
 .qmake.cache
 .qmake.vars
+.qmake.stash
 *.prl
 moc_*.cpp
 qrc_*.cpp
