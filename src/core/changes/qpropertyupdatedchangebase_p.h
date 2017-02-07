@@ -69,7 +69,12 @@ public:
     static QPropertyUpdatedChangeBasePrivate *get(QPropertyUpdatedChangeBase *q);
 
     Q_DECLARE_PUBLIC(QPropertyUpdatedChangeBase)
-    bool m_isFinal;
+
+    // Frontend nodes should not receive intermediate animated property
+    // updated by default. Only if they subscribe. The animation aspect
+    // will set this to true for animating properties apart from the final
+    // frame's update.
+    bool m_isIntermediate;
 };
 
 } // namespace Qt3DCore

@@ -43,7 +43,6 @@
 #include <Qt3DRender/private/qlevelofdetail_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
@@ -119,7 +118,6 @@ void LevelOfDetail::setCurrentIndex(int currentIndex)
         e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
         e->setPropertyName("currentIndex");
         e->setValue(m_currentIndex);
-        Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
         notifyObservers(e);
     }
 }

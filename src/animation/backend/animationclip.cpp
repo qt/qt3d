@@ -40,7 +40,6 @@
 #include <Qt3DAnimation/private/animationlogging_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 
 #include <QtCore/qbytearray.h>
 #include <QtCore/qfile.h>
@@ -161,7 +160,6 @@ void AnimationClip::setDuration(float duration)
     // Send a change to the frontend
     auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
     e->setPropertyName("duration");
     e->setValue(m_duration);
     notifyObservers(e);

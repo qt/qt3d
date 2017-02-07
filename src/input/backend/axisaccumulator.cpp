@@ -41,7 +41,6 @@
 #include <Qt3DInput/private/qaxisaccumulator_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -88,7 +87,6 @@ void AxisAccumulator::setValue(float value)
         e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
         e->setPropertyName("value");
         e->setValue(m_value);
-        Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
         notifyObservers(e);
     }
 }
@@ -103,7 +101,6 @@ void AxisAccumulator::setVelocity(float velocity)
         e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
         e->setPropertyName("velocity");
         e->setValue(m_velocity);
-        Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
         notifyObservers(e);
     }
 }

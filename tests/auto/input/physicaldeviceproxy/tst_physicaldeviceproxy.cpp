@@ -128,7 +128,6 @@ private Q_SLOTS:
         QCOMPARE(change->value().value<Qt3DInput::QAbstractPhysicalDevice *>(), &physicalDevice);
         QCOMPARE(change->subjectId(), backendPhysicalDeviceProxy.peerId());
         QCOMPARE(backendPhysicalDeviceProxy.physicalDeviceId(), physicalDevice.id());
-        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isFinal, true);
     }
 
     void checkCleanupState()

@@ -33,7 +33,6 @@
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 #include "testpostmanarbiter.h"
 #include "testrenderer.h"
 
@@ -130,7 +129,6 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.count(), 1);
         Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "pressed");
-        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isFinal, true);
 
         arbiter.events.clear();
 
@@ -141,7 +139,6 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.count(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "released");
-        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isFinal, true);
 
         arbiter.events.clear();
 
@@ -152,7 +149,6 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.count(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "clicked");
-        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isFinal, true);
 
         arbiter.events.clear();
 
@@ -163,7 +159,6 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.count(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "entered");
-        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isFinal, true);
 
         arbiter.events.clear();
 
@@ -174,7 +169,6 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.count(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "exited");
-        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isFinal, true);
 
         arbiter.events.clear();
     }

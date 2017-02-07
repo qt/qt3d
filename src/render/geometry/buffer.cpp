@@ -41,7 +41,6 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/qbuffer_p.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -95,7 +94,6 @@ void Buffer::executeFunctor()
         e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
         e->setPropertyName("data");
         e->setValue(QVariant::fromValue(m_data));
-        Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
         notifyObservers(e);
     }
 }
@@ -109,7 +107,6 @@ void Buffer::updateDataFromGPUToCPU(QByteArray data)
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("downloadedData");
     e->setValue(QVariant::fromValue(m_data));
-    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
     notifyObservers(e);
 }
 
