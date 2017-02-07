@@ -11,6 +11,10 @@ src_logic.subdir = $$PWD/logic
 src_logic.target = sub-logic
 src_logic.depends = src_core
 
+src_physics.subdir = $$PWD/physics
+src_physics.target = sub-physics
+src_physics.depends = src_core
+
 src_input.subdir = $$PWD/input
 src_input.target = sub-input
 src_input.depends = src_render
@@ -75,6 +79,7 @@ SUBDIRS += \
     src_core \
     src_render \
     src_logic \
+    src_physics \
     src_input \
     src_extras \
     src_quick3d_core \
