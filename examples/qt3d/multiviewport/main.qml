@@ -73,53 +73,57 @@ Entity {
         id: cameraSet
         property var cameras: [camera1, camera2, camera3, camera4]
 
-        Timer {
-            running: true
-            interval: 10000
-            repeat: true
-            property int count: 0
-            onTriggered: {
-                quadViewportFrameGraph.topLeftCamera = cameraSet.cameras[count++ % 4];
-                quadViewportFrameGraph.topRightCamera = cameraSet.cameras[count % 4];
-                quadViewportFrameGraph.bottomLeftCamera = cameraSet.cameras[(count + 1) % 4];
-                quadViewportFrameGraph.bottomRightCamera = cameraSet.cameras[(count + 2) % 4];
-            }
-        }
-
         CameraLens {
-            id : cameraLens
+            id: cameraLens
             projectionType: CameraLens.PerspectiveProjection
             fieldOfView: 45
             aspectRatio: 16/9
-            nearPlane : 0.01
-            farPlane : 1000.0
+            nearPlane: 0.01
+            farPlane: 1000.0
+        }
+        CameraLens {
+            id: cameraLens2
+            projectionType: CameraLens.PerspectiveProjection
+            fieldOfView: 15
+            aspectRatio: 16/9
+            nearPlane: 0.01
+            farPlane: 1000.0
+        }
+        CameraLens {
+            id: cameraLens3
+            projectionType: CameraLens.PerspectiveProjection
+            fieldOfView: 5
+            aspectRatio: 16/9
+            nearPlane: 0.01
+            farPlane: 1000.0
         }
 
         SimpleCamera {
             id: camera1
-            lens: cameraLens
-            position: Qt.vector3d( 0.0, 0.0, -20.0 )
+            lens: cameraLens2
+            position: Qt.vector3d(10.0, 1.0, 10.0)
+            viewCenter: Qt.vector3d(0.0, 1.0, 0.0)
         }
 
         SimpleCamera {
             id: camera2
             lens: cameraLens
-            position: Qt.vector3d( 0.0, 0.0, 20.0 )
-            viewCenter: Qt.vector3d( -3.0, 0.0, 10.0 )
+            position: Qt.vector3d(0.0, 0.0, 5.0)
+            viewCenter: Qt.vector3d(0.0, 0.0, 0.0)
         }
 
         SimpleCamera {
             id: camera3
-            lens: cameraLens
-            position: Qt.vector3d( 0.0, 30.0, 30.0 )
-            viewCenter: Qt.vector3d( -5.0, -20.0, -10.0 )
+            lens: cameraLens2
+            position: Qt.vector3d(30.0, 30.0, 20.0)
+            viewCenter: Qt.vector3d(0.0, 0.0, -8.0)
         }
 
         SimpleCamera {
             id: camera4
-            lens: cameraLens
-            position: Qt.vector3d( 0.0, 15.0, 20.0 )
-            viewCenter: Qt.vector3d( 0.0, -15.0, -20.0 )
+            lens: cameraLens3
+            position: Qt.vector3d(100.0, 0.0, -6.0)
+            viewCenter: Qt.vector3d(0.0, 0.0, -6.0)
         }
     }
 
@@ -130,7 +134,7 @@ Entity {
         SequentialAnimation {
             running: true
             loops: Animation.Infinite
-            NumberAnimation { target: sceneRoot; property: "rotationAngle"; to: 360; duration: 2000; }
+            NumberAnimation { target: sceneRoot; property: "rotationAngle"; to: 360; duration: 4000; }
         }
 
         Entity {
@@ -139,7 +143,7 @@ Entity {
                     rotation: fromAxisAndAngle(Qt.vector3d(0, 0, 1), -sceneRoot.rotationAngle)
                 },
                 SceneLoader {
-                    source: "qrc:/assets/test_scene.dae"
+                    source: "qrc:/Gear_scene.dae"
                 }
             ]
         }
