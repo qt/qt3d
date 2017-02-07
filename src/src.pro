@@ -1,5 +1,8 @@
 TEMPLATE = subdirs
 
+include($$OUT_PWD/core/qt3dcore-config.pri)
+QT_FOR_CONFIG += 3dcore 3dcore-private
+
 src_core.subdir = $$PWD/core
 src_core.target = sub-core
 
@@ -11,9 +14,11 @@ src_logic.subdir = $$PWD/logic
 src_logic.target = sub-logic
 src_logic.depends = src_core
 
-src_physics.subdir = $$PWD/physics
-src_physics.target = sub-physics
-src_physics.depends = src_core
+qtConfig(bullet) {
+    src_physics.subdir = $$PWD/physics
+    src_physics.target = sub-physics
+    src_physics.depends = src_core
+}
 
 src_input.subdir = $$PWD/input
 src_input.target = sub-input
@@ -96,7 +101,6 @@ SUBDIRS += \
     src_core \
     src_render \
     src_logic \
-    src_physics \
     src_input \
     src_animation \
     src_extras \
@@ -116,3 +120,7 @@ SUBDIRS += \
     src_plugins_geometryloaders \
     src_plugins_render \
     doc
+
+qtConfig(bullet) {
+    SUBDIRS += src_physics
+}

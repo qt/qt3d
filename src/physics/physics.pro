@@ -9,6 +9,7 @@ DEFINES += QT_NO_FOREACH
 
 QT += core-private 3dcore-private
 
+include(../3rdparty/bullet/bullet_dependency.pri)
 include(frontend/frontend.pri)
 include(backend/backend.pri)
 
