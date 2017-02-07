@@ -1,0 +1,3 @@
+module Qt3D.Physics
+plugin quick3dphysicsplugin
+classname Qt3DQuick3DPhysicsPlugin

@@ -78,6 +78,12 @@ src_quick3d_imports_animation.file = $$PWD/quick3d/imports/animation/importsanim
 src_quick3d_imports_animation.target = sub-quick3d-imports-animation
 src_quick3d_imports_animation.depends = src_animation src_quick3d_animation
 
+qtConfig(bullet) {
+    src_quick3d_imports_physics.file = $$PWD/quick3d/imports/physics/importsphysics.pro
+    src_quick3d_imports_physics.target = sub-quick3d-imports-physics
+    src_quick3d_imports_physics.depends = src_physics
+}
+
 src_quick3d_imports_extras.file = $$PWD/quick3d/imports/extras/importsextras.pro
 src_quick3d_imports_extras.target = sub-quick3d-imports-extras
 src_quick3d_imports_extras.depends = src_extras src_quick3d_extras
@@ -122,5 +128,7 @@ SUBDIRS += \
     doc
 
 qtConfig(bullet) {
-    SUBDIRS += src_physics
+    SUBDIRS += \
+        src_physics \
+        src_quick3d_imports_physics
 }

@@ -37,58 +37,16 @@
 **
 ****************************************************************************/
 
-#include "qphysicsmaterial.h"
-#include "qphysicsmaterial_p.h"
+#include <QtQml>
+#include <Qt3DPhysics/QPhysicsMaterial>
+
+#include "qt3dquick3dphysicsplugin.h"
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DPhysics {
-
-QPhysicsMaterialPrivate::QPhysicsMaterialPrivate()
-    : Qt3DCore::QComponentPrivate()
+void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
 {
+    qmlRegisterType<Qt3DPhysics::QPhysicsMaterial>(uri, 2, 3, "PhysicsMaterial");
 }
-
-QPhysicsMaterial::QPhysicsMaterial(Qt3DCore::QNode *parent)
-    : Qt3DCore::QComponent(*new QPhysicsMaterialPrivate, parent)
-{
-}
-
-QPhysicsMaterial::QPhysicsMaterial(QPhysicsMaterialPrivate &dd, Qt3DCore::QNode *parent)
-    : Qt3DCore::QComponent(dd, parent)
-{
-}
-
-QPhysicsMaterial::~QPhysicsMaterial()
-{
-}
-
-float QPhysicsMaterial::mass() const
-{
-    Q_D(const QPhysicsMaterial);
-    return d->m_mass;
-}
-
-void QPhysicsMaterial::setMass(float mass)
-{
-    Q_D(QPhysicsMaterial);
-
-    if (d->m_mass == mass)
-        return;
-
-    d->m_mass = mass;
-    emit massChanged(mass);
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QPhysicsMaterial::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QPhysicsMaterialData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QPhysicsMaterial);
-    data.mass = d->m_mass;
-    return creationChange;
-}
-
-} // Qt3DPhysics
 
 QT_END_NAMESPACE

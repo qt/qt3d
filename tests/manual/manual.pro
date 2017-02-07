@@ -53,3 +53,9 @@ qtHaveModule(widgets): {
         paintedtexture-cpp \
         rendercapture-cpp
 }
+
+QT_FOR_CONFIG += 3dcore-private
+qtConfig(bullet) {
+    SUBDIRS += \
+        physics-simple
+}

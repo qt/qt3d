@@ -64,12 +64,12 @@ public:
 
     Q_DECLARE_PUBLIC(QPhysicsMaterial)
 
-    // TODO Add member variables
+    float m_mass;
 };
 
 struct QPhysicsMaterialData
 {
-    // TODO: Add members that should be sent to the backend
+    float mass;
 };
 
 } // Qt3DPhysics

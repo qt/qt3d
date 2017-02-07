@@ -52,14 +52,20 @@ class QPhysicsMaterialPrivate;
 class QT3DPHYSICSSHARED_EXPORT QPhysicsMaterial : public Qt3DCore::QComponent
 {
     Q_OBJECT
-    // TODO: Add property declarations
+    Q_PROPERTY(float mass READ mass WRITE setMass NOTIFY massChanged)
+
 public:
     explicit QPhysicsMaterial(Qt3DCore::QNode *parent = nullptr);
     ~QPhysicsMaterial();
 
+    float mass() const;
+
 public Q_SLOTS:
+    void setMass(float mass);
 
 Q_SIGNALS:
+
+    void massChanged(float mass);
 
 protected:
     QPhysicsMaterial(QPhysicsMaterialPrivate &dd, Qt3DCore::QNode *parent = nullptr);
