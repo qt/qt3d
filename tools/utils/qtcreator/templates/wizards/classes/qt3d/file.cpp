@@ -4,7 +4,6 @@
 
 QT_BEGIN_NAMESPACE
 %{JS: Cpp.openNamespaces('%{Class}')}
-@if '%{Base}' === 'QNode' || '%{Base}' === 'QComponent' || '%{Base}' === 'QEntity'
 %{CN}Private::%{CN}Private()
     : Qt3DCore::%{Base}Private()
 {
@@ -23,11 +22,7 @@ QT_BEGIN_NAMESPACE
 %{CN}::~%{CN}()
 {
 }
-@else
-// TODO: Implement QBackendNode template
-@endif
 
-@if '%{Base}' === 'QNode' || '%{Base}' === 'QComponent' || '%{Base}' === 'QEntity'
 Qt3DCore::QNodeCreatedChangeBasePtr %{CN}::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<%{CN}Data>::create(this);
@@ -36,7 +31,6 @@ Qt3DCore::QNodeCreatedChangeBasePtr %{CN}::createNodeCreationChange() const
     // TODO: Send data members in creation change
     return creationChange;
 }
-@endif
 %{JS: Cpp.closeNamespaces('%{Class}')}\
 
 QT_END_NAMESPACE
