@@ -4,7 +4,8 @@
 
     "commandline": {
         "options": {
-            "assimp": { "type": "enum", "values": [ "qt", "system" ] }
+            "assimp": { "type": "enum", "values": [ "qt", "system" ] },
+            "bullet": { "type": "enum", "values": [ "qt", "system", "no" ] }
         }
     },
 
@@ -15,6 +16,15 @@
             "sources": [
                 { "type": "pkgConfig", "args": "assimp" },
                 "-lassimp"
+            ]
+        },
+        "bullet": {
+            "label": "Bullet",
+            "test": "bullet",
+            "disable": "input.bullet == 'no'",
+            "sources": [
+                { "type": "pkgConfig", "args": "bullet" },
+                "-lbullet"
             ]
         }
     },
@@ -30,6 +40,17 @@
             "disable": "input.assimp == 'qt'",
             "condition": "features.assimp && libs.assimp",
             "output": [ "privateFeature" ]
+        },
+        "bullet": {
+            "label": "Bullet",
+            "output": [ "privateFeature", "feature" ]
+        },
+        "system-bullet": {
+            "label": "System Bullet",
+            "enable": "input.bullet == 'system'",
+            "disable": "input.bullet == 'qt'",
+            "condition": "features.bullet && libs.bullet",
+            "output": [ "privateFeature" ]
         }
     },
 
@@ -41,7 +62,9 @@
             "section": "Qt 3D",
             "entries": [
                 "assimp",
-                "system-assimp"
+                "system-assimp",
+                "bullet",
+                "system-bullet"
             ]
         }
     ]
