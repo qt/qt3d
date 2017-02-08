@@ -71,6 +71,7 @@
 #include <Qt3DExtras/qtextureatlas.h>
 #include <Qt3DExtras/qdistancefieldglyphcache.h>
 #include <Qt3DExtras/qdistancefieldtext.h>
+#include <Qt3DExtras/qmorphphongmaterial.h>
 #include <Qt3DQuickExtras/private/quick3dlevelofdetailloader_p.h>
 
 #include <QtQml/qqml.h>
@@ -103,6 +104,7 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DExtras::QTextureMaterial>(uri, 2, 0, "TextureMaterial");
     qmlRegisterType<Qt3DExtras::QMetalRoughMaterial>(uri, 2, 2, "MetalRoughMaterial");
     qmlRegisterType<Qt3DExtras::QTexturedMetalRoughMaterial>(uri, 2, 2, "TexturedMetalRoughMaterial");
+    qmlRegisterType<Qt3DExtras::QMorphPhongMaterial>(uri, 2, 2, "MorphPhongMaterial");
 
     // Meshes
     qmlRegisterType<Qt3DExtras::QConeMesh>(uri, 2, 0, "ConeMesh");
