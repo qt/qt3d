@@ -61,7 +61,7 @@
     \l qmake \c .pro file:
 
     \badcode
-    QT += 3dcore 3drender 3dinput 3dlogic 3dextras
+    QT += 3dcore 3drender 3dinput 3dlogic 3dextras 3danimation
     \endcode
 
     To include the definitions of the modules' classes, use the following
@@ -73,12 +73,13 @@
     #include <Qt3DInput>
     #include <Qt3DLogic>
     #include <Qt3DExtras>
+    #include <Qt3DAnimation>
     \endcode
 
     A Qt Quick application requires also additional dependencies:
 
     \badcode
-    QT += 3dcore 3drender 3dinput 3dlogic 3dextras qml quick 3dquick
+    QT += 3dcore 3drender 3dinput 3dlogic 3dextras qml quick 3dquick 3danimation
     \endcode
 
     \section1 Overview
