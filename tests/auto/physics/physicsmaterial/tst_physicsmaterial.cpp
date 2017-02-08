@@ -54,19 +54,91 @@ class tst_PhysicsMaterial: public Qt3DCore::QBackendNodeTester
     Q_OBJECT
 
 private Q_SLOTS:
-
-    void checkPeerPropertyMirroring()
+    void checkInitialState()
     {
         // GIVEN
         Qt3DPhysics::Physics::PhysicsMaterial backendPhysicsMaterial;
-        Qt3DPhysics::QPhysicsMaterial physicsMaterial;
-
-        // WHEN
-        simulateInitialization(&physicsMaterial, &backendPhysicsMaterial);
 
         // THEN
-        QCOMPARE(backendPhysicsMaterial.peerId(), physicsMaterial.id());
-        QCOMPARE(backendPhysicsMaterial.isEnabled(), physicsMaterial.isEnabled());
+        QCOMPARE(backendPhysicsMaterial.isEnabled(), false);
+        QVERIFY(backendPhysicsMaterial.peerId().isNull());
+        QCOMPARE(backendPhysicsMaterial.mass(), 0.0f);
+        QCOMPARE(backendPhysicsMaterial.friction(), 0.0f);
+    }
+
+    void checkInitializeFromPeer()
+    {
+        // GIVEN
+        const float initMass = 0.8f;
+        const float initFriction = 1.8f;
+        const QVector3D initInertia(1.f, 1.f, 1.f);
+
+        Qt3DPhysics::QPhysicsMaterial physicsMaterial;
+
+        physicsMaterial.setMass(initMass);
+        physicsMaterial.setFriction(initFriction);
+
+        {
+            // WHEN
+            Qt3DPhysics::Physics::PhysicsMaterial backendPhysicsMaterial;
+            simulateInitialization(&physicsMaterial, &backendPhysicsMaterial);
+
+            // THEN
+            QCOMPARE(backendPhysicsMaterial.isEnabled(), true);
+            QCOMPARE(backendPhysicsMaterial.peerId(), physicsMaterial.id());
+            QCOMPARE(backendPhysicsMaterial.mass(), initMass);
+            QCOMPARE(backendPhysicsMaterial.friction(), initFriction);
+        }
+        {
+            // WHEN
+            Qt3DPhysics::Physics::PhysicsMaterial backendPhysicsMaterial;
+            physicsMaterial.setEnabled(false);
+            simulateInitialization(&physicsMaterial, &backendPhysicsMaterial);
+
+            // THEN
+            QCOMPARE(backendPhysicsMaterial.peerId(), physicsMaterial.id());
+            QCOMPARE(backendPhysicsMaterial.isEnabled(), false);
+        }
+    }
+
+    void checkSceneChangeEvents()
+    {
+        // GIVEN
+        Qt3DPhysics::Physics::PhysicsMaterial backendPhysicsMaterial;
+
+        {
+            // WHEN
+            const bool newValue = false;
+            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+            change->setPropertyName("enabled");
+            change->setValue(newValue);
+            backendPhysicsMaterial.sceneChangeEvent(change);
+
+            // THEN
+            QCOMPARE(backendPhysicsMaterial.isEnabled(), newValue);
+        }
+        {
+            // WHEN
+            const float newValue = 99.0f;
+            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+            change->setPropertyName("mass");
+            change->setValue(QVariant::fromValue(newValue));
+            backendPhysicsMaterial.sceneChangeEvent(change);
+
+            // THEN
+            QCOMPARE(backendPhysicsMaterial.mass(), newValue);
+        }
+        {
+            // WHEN
+            const float newValue = 99.0f;
+            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+            change->setPropertyName("friction");
+            change->setValue(QVariant::fromValue(newValue));
+            backendPhysicsMaterial.sceneChangeEvent(change);
+
+            // THEN
+            QCOMPARE(backendPhysicsMaterial.friction(), newValue);
+        }
     }
 };
 

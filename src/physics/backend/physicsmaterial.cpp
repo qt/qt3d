@@ -38,6 +38,10 @@
 ****************************************************************************/
 
 #include "physicsmaterial_p.h"
+#include <Qt3DPhysics/qphysicsmaterial.h>
+#include <Qt3DPhysics/private/qphysicsmaterial_p.h>
+
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,15 +49,28 @@ namespace Qt3DPhysics {
 namespace Physics {
 
 PhysicsMaterial::PhysicsMaterial()
+    : m_mass(0.0f)
+    , m_friction(0.0f)
 {
 }
 
 void PhysicsMaterial::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
+    if (e->type() == Qt3DCore::PropertyUpdated) {
+        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
+        if (propertyChange->propertyName() == QByteArrayLiteral("mass"))
+            m_mass = propertyChange->value().toFloat();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("friction"))
+            m_friction = propertyChange->value().toFloat();
+    }
 }
 
 void PhysicsMaterial::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QPhysicsMaterialData>>(change);
+    const auto &data = typedChange->data;
+    m_mass = data.mass;
+    m_friction = data.friction;
 }
 
 PhysicsMaterialFunctor::PhysicsMaterialFunctor(QPhysicsAspect *aspect)

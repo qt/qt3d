@@ -65,11 +65,13 @@ public:
     Q_DECLARE_PUBLIC(QPhysicsMaterial)
 
     float m_mass;
+    float m_friction;
 };
 
 struct QPhysicsMaterialData
 {
     float mass;
+    float friction;
 };
 
 } // Qt3DPhysics

@@ -49,23 +49,26 @@ namespace Qt3DPhysics {
 
 class QPhysicsMaterialPrivate;
 
-class QT3DPHYSICSSHARED_EXPORT QPhysicsMaterial : public Qt3DCore::QComponent
+class QT3DPHYSICSSHARED_EXPORT QPhysicsMaterial : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(float mass READ mass WRITE setMass NOTIFY massChanged)
+    Q_PROPERTY(float friction READ friction WRITE setFriction NOTIFY frictionChanged)
 
 public:
     explicit QPhysicsMaterial(Qt3DCore::QNode *parent = nullptr);
     ~QPhysicsMaterial();
 
     float mass() const;
+    float friction() const;
 
 public Q_SLOTS:
     void setMass(float mass);
+    void setFriction(float friction);
 
 Q_SIGNALS:
-
     void massChanged(float mass);
+    void frictionChanged(float friction);
 
 protected:
     QPhysicsMaterial(QPhysicsMaterialPrivate &dd, Qt3DCore::QNode *parent = nullptr);

@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DCore/qbackendnode.h>
+#include <QVector3D>
 
 QT_BEGIN_NAMESPACE
 
@@ -66,10 +67,15 @@ class Q_AUTOTEST_EXPORT PhysicsMaterial : public Qt3DCore::QBackendNode
 public:
     PhysicsMaterial();
 
+    float mass() const { return m_mass; }
+    float friction() const { return m_friction; }
+
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    float m_mass;
+    float m_friction;
 };
 
 class PhysicsMaterialFunctor : public Qt3DCore::QBackendNodeMapper

@@ -38,21 +38,20 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+
+#include <QSignalSpy>
+#include <Qt3DPhysics/QPhysicsMaterial>
+#include <Qt3DPhysics/private/qphysicsmaterial_p.h>
+
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
-#include <Qt3DPhysics/QPhysicsMaterial>
-
 #include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DCore/QPropertyNodeAddedChange>
 #include <Qt3DCore/QPropertyNodeRemovedChange>
-
 #include "testpostmanarbiter.h"
 
-// We need to call QNode::clone which is protected
-// We need to call QAxis::sceneChangeEvent which is protected
-// So we sublcass QAxis instead of QObject
 class tst_QPhysicsMaterial: public Qt3DPhysics::QPhysicsMaterial
 {
     Q_OBJECT
@@ -62,6 +61,171 @@ public:
     }
 
 private Q_SLOTS:
+    void checkDefaultConstruction()
+    {
+        // GIVEN
+        Qt3DPhysics::QPhysicsMaterial physicsMaterial;
+
+        // THEN
+        QCOMPARE(physicsMaterial.mass(), 0.0f);
+        QCOMPARE(physicsMaterial.friction(), 0.0f);
+    }
+
+    void checkPropertyChanges()
+    {
+        // GIVEN
+        Qt3DPhysics::QPhysicsMaterial physicsMaterial;
+
+        {
+            // WHEN
+            QSignalSpy spy(&physicsMaterial, SIGNAL(massChanged(float)));
+            const float newValue = 0.5f;
+            physicsMaterial.setMass(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(physicsMaterial.mass(), newValue);
+            QCOMPARE(spy.count(), 1);
+
+            // WHEN
+            spy.clear();
+            physicsMaterial.setMass(newValue);
+
+            // THEN
+            QCOMPARE(physicsMaterial.mass(), newValue);
+            QCOMPARE(spy.count(), 0);
+        }
+        {
+            // WHEN
+            QSignalSpy spy(&physicsMaterial, SIGNAL(frictionChanged(float)));
+            const float newValue = 1.5f;
+            physicsMaterial.setFriction(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(physicsMaterial.friction(), newValue);
+            QCOMPARE(spy.count(), 1);
+
+            // WHEN
+            spy.clear();
+            physicsMaterial.setFriction(newValue);
+
+            // THEN
+            QCOMPARE(physicsMaterial.friction(), newValue);
+            QCOMPARE(spy.count(), 0);
+        }
+    }
+
+    void checkCreationData()
+    {
+        // GIVEN
+        Qt3DPhysics::QPhysicsMaterial physicsMaterial;
+
+        physicsMaterial.setMass(0.8f);
+        physicsMaterial.setFriction(1.8f);
+
+        // WHEN
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
+
+        {
+            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&physicsMaterial);
+            creationChanges = creationChangeGenerator.creationChanges();
+        }
+
+        // THEN
+        {
+            QCOMPARE(creationChanges.size(), 1);
+
+            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DPhysics::QPhysicsMaterialData>>(creationChanges.first());
+            const Qt3DPhysics::QPhysicsMaterialData cloneData = creationChangeData->data;
+
+            QCOMPARE(physicsMaterial.mass(), cloneData.mass);
+            QCOMPARE(physicsMaterial.friction(), cloneData.friction);
+            QCOMPARE(physicsMaterial.id(), creationChangeData->subjectId());
+            QCOMPARE(physicsMaterial.isEnabled(), true);
+            QCOMPARE(physicsMaterial.isEnabled(), creationChangeData->isNodeEnabled());
+            QCOMPARE(physicsMaterial.metaObject(), creationChangeData->metaObject());
+        }
+
+        // WHEN
+        physicsMaterial.setEnabled(false);
+
+        {
+            Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&physicsMaterial);
+            creationChanges = creationChangeGenerator.creationChanges();
+        }
+
+        // THEN
+        {
+            QCOMPARE(creationChanges.size(), 1);
+
+            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DPhysics::QPhysicsMaterialData>>(creationChanges.first());
+            const Qt3DPhysics::QPhysicsMaterialData cloneData = creationChangeData->data;
+
+            QCOMPARE(physicsMaterial.mass(), cloneData.mass);
+            QCOMPARE(physicsMaterial.friction(), cloneData.friction);
+            QCOMPARE(physicsMaterial.id(), creationChangeData->subjectId());
+            QCOMPARE(physicsMaterial.isEnabled(), false);
+            QCOMPARE(physicsMaterial.isEnabled(), creationChangeData->isNodeEnabled());
+            QCOMPARE(physicsMaterial.metaObject(), creationChangeData->metaObject());
+        }
+    }
+
+    void checkPropertyUpdates()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DPhysics::QPhysicsMaterial physicsMaterial;
+        arbiter.setArbiterOnNode(&physicsMaterial);
+
+        {
+            // WHEN
+            physicsMaterial.setMass(0.7f);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 1);
+            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "mass");
+            QCOMPARE(change->value().value<float>(), physicsMaterial.mass());
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+            arbiter.events.clear();
+        }
+
+        {
+            // WHEN
+            physicsMaterial.setMass(0.7f);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+        }
+
+        {
+            // WHEN
+            physicsMaterial.setFriction(1.7f);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 1);
+            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "friction");
+            QCOMPARE(change->value().value<float>(), physicsMaterial.friction());
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+            arbiter.events.clear();
+        }
+
+        {
+            // WHEN
+            physicsMaterial.setFriction(1.7f);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+        }
+    }
 
 };
 

@@ -46,16 +46,18 @@ namespace Qt3DPhysics {
 
 QPhysicsMaterialPrivate::QPhysicsMaterialPrivate()
     : Qt3DCore::QComponentPrivate()
+    , m_mass(0.0f)
+    , m_friction(0.0f)
 {
 }
 
 QPhysicsMaterial::QPhysicsMaterial(Qt3DCore::QNode *parent)
-    : Qt3DCore::QComponent(*new QPhysicsMaterialPrivate, parent)
+    : Qt3DCore::QNode(*new QPhysicsMaterialPrivate, parent)
 {
 }
 
 QPhysicsMaterial::QPhysicsMaterial(QPhysicsMaterialPrivate &dd, Qt3DCore::QNode *parent)
-    : Qt3DCore::QComponent(dd, parent)
+    : Qt3DCore::QNode(dd, parent)
 {
 }
 
@@ -69,15 +71,31 @@ float QPhysicsMaterial::mass() const
     return d->m_mass;
 }
 
+float QPhysicsMaterial::friction() const
+{
+    Q_D(const QPhysicsMaterial);
+    return d->m_friction;
+}
+
 void QPhysicsMaterial::setMass(float mass)
 {
     Q_D(QPhysicsMaterial);
 
-    if (d->m_mass == mass)
+    if (qFuzzyCompare(d->m_mass, mass))
         return;
 
     d->m_mass = mass;
     emit massChanged(mass);
+}
+
+void QPhysicsMaterial::setFriction(float friction)
+{
+    Q_D(QPhysicsMaterial);
+    if (qFuzzyCompare(d->m_friction, friction))
+        return;
+
+    d->m_friction = friction;
+    emit frictionChanged(friction);
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QPhysicsMaterial::createNodeCreationChange() const
@@ -86,6 +104,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QPhysicsMaterial::createNodeCreationChange()
     auto &data = creationChange->data;
     Q_D(const QPhysicsMaterial);
     data.mass = d->m_mass;
+    data.friction = d->m_friction;
     return creationChange;
 }
 
