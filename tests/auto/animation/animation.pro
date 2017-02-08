@@ -7,7 +7,14 @@ SUBDIRS += \
     qblendedclipanimator \
     qchannelmapping \
     qchannelmapper \
-    qclipblendvalue
+    qclipblendvalue \
+    qanimationcontroller \
+    qanimationgroup \
+    qkeyframeanimation \
+    qmorphinganimation \
+    qmorphtarget \
+    qvertexblendanimation \
+    qanimationcontroller
 
 qtConfig(private_tests) {
     SUBDIRS += \
@@ -27,5 +34,6 @@ qtConfig(private_tests) {
         qadditiveclipblend \
         additiveclipblend \
         clipblendvalue \
-        animationutils
+        animationutils \
+        qabstractanimation
 }
