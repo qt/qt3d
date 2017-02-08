@@ -37,18 +37,59 @@
 **
 ****************************************************************************/
 
-#include <QtQml>
-#include <Qt3DPhysics/qphysicsmaterial.h>
-#include <Qt3DPhysics/qrigidbody.h>
-
-#include "qt3dquick3dphysicsplugin.h"
+#include "qrigidbody.h"
+#include "qrigidbody_p.h"
 
 QT_BEGIN_NAMESPACE
 
-void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
+namespace Qt3DPhysics {
+
+QRigidBodyPrivate::QRigidBodyPrivate()
+    : Qt3DCore::QComponentPrivate()
+    , m_material(nullptr)
 {
-    qmlRegisterType<Qt3DPhysics::QPhysicsMaterial>(uri, 2, 3, "PhysicsMaterial");
-    qmlRegisterType<Qt3DPhysics::QRigidBody>(uri, 2, 3, "RigidBody");
 }
+
+QRigidBody::QRigidBody(Qt3DCore::QNode *parent)
+    : Qt3DCore::QComponent(*new QRigidBodyPrivate, parent)
+{
+}
+
+QRigidBody::QRigidBody(QRigidBodyPrivate &dd, Qt3DCore::QNode *parent)
+    : Qt3DCore::QComponent(dd, parent)
+{
+}
+
+QRigidBody::~QRigidBody()
+{
+}
+
+QPhysicsMaterial *QRigidBody::material() const
+{
+    Q_D(const QRigidBody);
+    return d->m_material;
+}
+
+void QRigidBody::setMaterial(QPhysicsMaterial *material)
+{
+    Q_D(QRigidBody);
+    if (d->m_material == material)
+        return;
+
+    d->m_material = material;
+    emit materialChanged(material);
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QRigidBody::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRigidBodyData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QRigidBody);
+
+    data.materialId = qIdForNode(d->m_material);
+    return creationChange;
+}
+
+} // namespace Qt3DPhysics
 
 QT_END_NAMESPACE

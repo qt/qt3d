@@ -10,7 +10,9 @@ HEADERS += \
     $$PWD/qabstractcollisionshape.h \
     $$PWD/qabstractcollisionshape_p.h \
     $$PWD/qcuboidcollisionshape.h \
-    $$PWD/qcuboidcollisionshape_p.h
+    $$PWD/qcuboidcollisionshape_p.h \
+    $$PWD/qrigidbody.h \
+    $$PWD/qrigidbody_p.h
 
 SOURCES += \
     $$PWD/qphysicsaspect.cpp \
@@ -18,7 +20,8 @@ SOURCES += \
     $$PWD/qcollider.cpp \
     $$PWD/qphysicsmaterial.cpp \
     $$PWD/qabstractcollisionshape.cpp \
-    $$PWD/qcuboidcollisionshape.cpp
+    $$PWD/qcuboidcollisionshape.cpp \
+    $$PWD/qrigidbody.cpp
 
 INCLUDEPATH += $$PWD
 

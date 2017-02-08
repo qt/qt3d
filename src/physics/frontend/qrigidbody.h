@@ -37,18 +37,45 @@
 **
 ****************************************************************************/
 
-#include <QtQml>
-#include <Qt3DPhysics/qphysicsmaterial.h>
-#include <Qt3DPhysics/qrigidbody.h>
+#ifndef QT3DPHYSICS_QRIGIDBODY_H
+#define QT3DPHYSICS_QRIGIDBODY_H
 
-#include "qt3dquick3dphysicsplugin.h"
+#include <Qt3DCore/qcomponent.h>
+#include <Qt3DPhysics/qphysicsmaterial.h>
 
 QT_BEGIN_NAMESPACE
 
-void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
+namespace Qt3DPhysics {
+
+class QRigidBodyPrivate;
+
+class QT3DPHYSICSSHARED_EXPORT QRigidBody : public Qt3DCore::QComponent
 {
-    qmlRegisterType<Qt3DPhysics::QPhysicsMaterial>(uri, 2, 3, "PhysicsMaterial");
-    qmlRegisterType<Qt3DPhysics::QRigidBody>(uri, 2, 3, "RigidBody");
-}
+    Q_OBJECT
+    Q_PROPERTY(QPhysicsMaterial* material READ material WRITE setMaterial NOTIFY materialChanged)
+
+public:
+    explicit QRigidBody(Qt3DCore::QNode *parent = nullptr);
+    ~QRigidBody();
+
+    QPhysicsMaterial *material() const;
+
+public Q_SLOTS:
+    void setMaterial(QPhysicsMaterial *material);
+
+Q_SIGNALS:
+    void materialChanged(QPhysicsMaterial *material);
+
+protected:
+    QRigidBody(QRigidBodyPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+
+private:
+    Q_DECLARE_PRIVATE(QRigidBody)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+};
+
+} // namespace Qt3DPhysics
 
 QT_END_NAMESPACE
+
+#endif // QT3DPHYSICS_QRIGIDBODY_H

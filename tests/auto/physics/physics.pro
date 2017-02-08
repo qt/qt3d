@@ -8,5 +8,7 @@ qtConfig(private_tests) {
         physicsworld \
         qphysicsmaterial \
         physicsmaterial \
-        qcuboidcollisionshape
+        qcuboidcollisionshape \
+        qrigidbody \
+        rigidbody
 }

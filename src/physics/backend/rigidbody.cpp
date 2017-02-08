@@ -37,18 +37,38 @@
 **
 ****************************************************************************/
 
-#include <QtQml>
-#include <Qt3DPhysics/qphysicsmaterial.h>
+#include "rigidbody_p.h"
 #include <Qt3DPhysics/qrigidbody.h>
+#include <Qt3DPhysics/private/qrigidbody_p.h>
 
-#include "qt3dquick3dphysicsplugin.h"
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
-void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
+namespace Qt3DPhysics {
+namespace Physics {
+
+RigidBody::RigidBody()
 {
-    qmlRegisterType<Qt3DPhysics::QPhysicsMaterial>(uri, 2, 3, "PhysicsMaterial");
-    qmlRegisterType<Qt3DPhysics::QRigidBody>(uri, 2, 3, "RigidBody");
 }
+
+void RigidBody::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+{
+    if (e->type() == Qt3DCore::PropertyUpdated) {
+        Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
+        if (propertyChange->propertyName() == QByteArrayLiteral("materialId"))
+            m_materialId = propertyChange->value().value<Qt3DCore::QNodeId>();
+    }
+}
+
+void RigidBody::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRigidBodyData>>(change);
+     const auto &data = typedChange->data;
+     m_materialId = data.materialId;
+}
+
+} // namespace Physics
+} // namespace Qt3DPhysics
 
 QT_END_NAMESPACE

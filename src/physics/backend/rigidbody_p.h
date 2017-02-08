@@ -37,18 +37,44 @@
 **
 ****************************************************************************/
 
-#include <QtQml>
-#include <Qt3DPhysics/qphysicsmaterial.h>
-#include <Qt3DPhysics/qrigidbody.h>
+#ifndef QT3DPHYSICS_PHYSICS_RIGIDBODY_H
+#define QT3DPHYSICS_PHYSICS_RIGIDBODY_H
 
-#include "qt3dquick3dphysicsplugin.h"
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
-void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
+namespace Qt3DPhysics {
+namespace Physics {
+
+class Q_AUTOTEST_EXPORT RigidBody : public Qt3DCore::QBackendNode
 {
-    qmlRegisterType<Qt3DPhysics::QPhysicsMaterial>(uri, 2, 3, "PhysicsMaterial");
-    qmlRegisterType<Qt3DPhysics::QRigidBody>(uri, 2, 3, "RigidBody");
-}
+public:
+    RigidBody();
+
+    Qt3DCore::QNodeId materialId(void) const { return m_materialId; }
+
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    Qt3DCore::QNodeId m_materialId;
+};
+
+} // namespace Physics
+} // namespace Qt3DPhysics
 
 QT_END_NAMESPACE
+
+#endif // QT3DPHYSICS_PHYSICS_RIGIDBODY_H
