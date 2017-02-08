@@ -64,12 +64,16 @@ public:
 
     Q_DECLARE_PUBLIC(QCuboidCollisionShape)
 
-    // TODO Add member variables
+    float m_xExtent;
+    float m_yExtent;
+    float m_zExtent;
 };
 
 struct QCuboidCollisionShapeData
 {
-    // TODO: Add members that should be sent to the backend
+    float xExtent;
+    float yExtent;
+    float zExtent;
 };
 
 } // namespace Qt3DPhysics

@@ -46,6 +46,9 @@ namespace Qt3DPhysics {
 
 QCuboidCollisionShapePrivate::QCuboidCollisionShapePrivate()
     : QAbstractCollisionShapePrivate()
+    , m_xExtent(1.0f)
+    , m_yExtent(1.0f)
+    , m_zExtent(1.0f)
 {
 }
 
@@ -63,12 +66,74 @@ QCuboidCollisionShape::~QCuboidCollisionShape()
 {
 }
 
+void QCuboidCollisionShape::setXExtent(float xExtent)
+{
+    Q_D(QCuboidCollisionShape);
+    if (d->m_xExtent != xExtent) {
+        d->m_xExtent = xExtent;
+        emit xExtentChanged(xExtent);
+    }
+}
+
+void QCuboidCollisionShape::setYExtent(float yExtent)
+{
+    Q_D(QCuboidCollisionShape);
+    if (d->m_yExtent != yExtent) {
+        d->m_yExtent = yExtent;
+        emit yExtentChanged(yExtent);
+    }
+}
+
+void QCuboidCollisionShape::setZExtent(float zExtent)
+{
+    Q_D(QCuboidCollisionShape);
+    if (d->m_zExtent != zExtent) {
+        d->m_zExtent = zExtent;
+        emit zExtentChanged(zExtent);
+    }
+}
+
+/*!
+ * \property QCuboidCollisionShape::xExtent
+ *
+ * Holds the x extent of the geometry.
+ */
+float QCuboidCollisionShape::xExtent() const
+{
+    Q_D(const QCuboidCollisionShape);
+    return d->m_xExtent;
+}
+
+/*!
+ * \property QCuboidCollisionShape::yExtent
+ *
+ * Holds the y extent of the geometry.
+ */
+float QCuboidCollisionShape::yExtent() const
+{
+    Q_D(const QCuboidCollisionShape);
+    return d->m_yExtent;
+}
+
+/*!
+ * \property QCuboidCollisionShape::zExtent
+ *
+ * Holds the z extent of the geometry.
+ */
+float QCuboidCollisionShape::zExtent() const
+{
+    Q_D(const QCuboidCollisionShape);
+    return d->m_zExtent;
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QCuboidCollisionShape::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QCuboidCollisionShapeData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QCuboidCollisionShape);
-    // TODO: Send data members in creation change
+    data.xExtent = d->m_xExtent;
+    data.yExtent = d->m_yExtent;
+    data.zExtent = d->m_zExtent;
     return creationChange;
 }
 

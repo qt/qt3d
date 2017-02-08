@@ -52,14 +52,27 @@ class QCuboidCollisionShapePrivate;
 class QT3DPHYSICSSHARED_EXPORT QCuboidCollisionShape : public QAbstractCollisionShape
 {
     Q_OBJECT
-    // TODO: Add property declarations
+    Q_PROPERTY(float xExtent READ xExtent WRITE setXExtent NOTIFY xExtentChanged)
+    Q_PROPERTY(float yExtent READ yExtent WRITE setYExtent NOTIFY yExtentChanged)
+    Q_PROPERTY(float zExtent READ zExtent WRITE setZExtent NOTIFY zExtentChanged)
+
 public:
     explicit QCuboidCollisionShape(Qt3DCore::QNode *parent = nullptr);
     ~QCuboidCollisionShape();
 
+    float xExtent() const;
+    float yExtent() const;
+    float zExtent() const;
+
 public Q_SLOTS:
+    void setXExtent(float xExtent);
+    void setYExtent(float yExtent);
+    void setZExtent(float zExtent);
 
 Q_SIGNALS:
+    void xExtentChanged(float xExtent);
+    void yExtentChanged(float yExtent);
+    void zExtentChanged(float zExtent);
 
 protected:
     QCuboidCollisionShape(QCuboidCollisionShapePrivate &dd, Qt3DCore::QNode *parent = nullptr);

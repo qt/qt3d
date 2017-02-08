@@ -38,22 +38,16 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <Qt3DPhysics/qcuboidcollisionshape.h>
+#include <Qt3DPhysics/private/qcuboidcollisionshape_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 
-#include <Qt3DPhysics/QCuboidCollisionShape>
-
-#include <Qt3DCore/QPropertyUpdatedChange>
-#include <Qt3DCore/QPropertyNodeAddedChange>
-#include <Qt3DCore/QPropertyNodeRemovedChange>
-
 #include "testpostmanarbiter.h"
 
-// We need to call QNode::clone which is protected
-// We need to call QAxis::sceneChangeEvent which is protected
-// So we sublcass QAxis instead of QObject
-class tst_QCuboidCollisionShape: public Qt3DPhysics::QCuboidCollisionShape
+class tst_QCuboidCollisionShape: public QObject
 {
     Q_OBJECT
 public:
@@ -62,7 +56,81 @@ public:
     }
 
 private Q_SLOTS:
+    void checkCreationData()
+    {
+        // GIVEN
+        Qt3DPhysics::QCuboidCollisionShape shape;
+        shape.setXExtent(0.5f);
+        shape.setYExtent(1.5f);
+        shape.setZExtent(2.5f);
 
+        // WHEN
+        Qt3DCore::QNodeCreatedChangeGenerator creationChangeGenerator(&shape);
+        QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges = creationChangeGenerator.creationChanges();
+
+        // THEN
+        QCOMPARE(creationChanges.size(), 1);
+
+        const Qt3DCore::QNodeCreatedChangePtr<Qt3DPhysics::QCuboidCollisionShapeData> creationChangeData =
+               qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DPhysics::QCuboidCollisionShapeData>>(creationChanges.first());
+        const Qt3DPhysics::QCuboidCollisionShapeData &creationData = creationChangeData->data;
+
+        // THEN
+        QCOMPARE(creationChangeData->subjectId(), shape.id());
+        QCOMPARE(creationChangeData->isNodeEnabled(), shape.isEnabled());
+        QCOMPARE(creationChangeData->metaObject(), shape.metaObject());
+        QCOMPARE(creationChangeData->parentId(), shape.parentNode() ? shape.parentNode()->id() : Qt3DCore::QNodeId());
+        QCOMPARE(creationData.xExtent, shape.xExtent());
+        QCOMPARE(creationData.yExtent, shape.yExtent());
+        QCOMPARE(creationData.zExtent, shape.zExtent());
+    }
+
+    void checkPropertyUpdates()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        QScopedPointer<Qt3DPhysics::QCuboidCollisionShape> shape(new Qt3DPhysics::QCuboidCollisionShape());
+        arbiter.setArbiterOnNode(shape.data());
+
+        // WHEN
+        shape->setXExtent(1.5f);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "xExtent");
+        QCOMPARE(change->value().toFloat(), 1.5f);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+        arbiter.events.clear();
+
+        // WHEN
+        shape->setYExtent(2.0f);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "yExtent");
+        QCOMPARE(change->value().toFloat(), 2.0f);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+        arbiter.events.clear();
+
+        // WHEN
+        shape->setZExtent(3.0f);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "zExtent");
+        QCOMPARE(change->value().toFloat(), 3.0f);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+        arbiter.events.clear();
+    }
 };
 
 QTEST_MAIN(tst_QCuboidCollisionShape)
