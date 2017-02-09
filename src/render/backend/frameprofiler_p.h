@@ -227,6 +227,8 @@ public:
     {
 #ifdef QT3D_JOBS_RUN_STATS
         frameProfiler.recordEvent(m_type);
+#else
+        Q_UNUSED(m_type);
 #endif
     }
 

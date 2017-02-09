@@ -139,8 +139,10 @@ private:
     Qt3DRender::QEffect *createOnTopEffect();
 
     QTemporaryDir *m_exportDir;
+#ifdef VISUAL_CHECK
     Qt3DExtras::Qt3DWindow *m_view1;
     Qt3DExtras::Qt3DWindow *m_view2;
+#endif
     Qt3DCore::QEntity *m_sceneRoot1;
     Qt3DCore::QEntity *m_sceneRoot2;
     QHash<QString, Qt3DCore::QEntity *> m_entityMap;

@@ -105,7 +105,7 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) Q_DECL_FINAL {};
     void setScene(Qt3DCore::QScene *) Q_DECL_FINAL {};
     void notifyBackend(const Qt3DCore::QSceneChangePtr &change) Q_DECL_FINAL;
-    bool shouldNotifyFrontend(const Qt3DCore::QSceneChangePtr &changee) Q_DECL_FINAL { return false; }
+    bool shouldNotifyFrontend(const Qt3DCore::QSceneChangePtr &changee) Q_DECL_FINAL { Q_UNUSED(changee); return false; }
 
 private:
     ObserverSpy *m_spy;
