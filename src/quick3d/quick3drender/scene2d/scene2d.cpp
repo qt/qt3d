@@ -105,13 +105,13 @@ bool RenderQmlEventHandler::event(QEvent *e)
 Scene2D::Scene2D()
     : m_context(nullptr)
     , m_shareContext(nullptr)
-    , m_sharedObject(nullptr)
     , m_renderThread(nullptr)
+    , m_sharedObject(nullptr)
+    , m_fbo(0)
+    , m_rbo(0)
     , m_initialized(false)
     , m_renderInitialized(false)
     , m_renderPolicy(Qt3DRender::Quick::QScene2D::Continuous)
-    , m_fbo(0)
-    , m_rbo(0)
 {
     renderThreadClientCount->fetchAndAddAcquire(1);
 }

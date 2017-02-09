@@ -55,9 +55,9 @@ namespace Qt3DRender {
 namespace Render {
 
 ResourceAccessor::ResourceAccessor(NodeManagers *mgr)
-    : m_textureManager(mgr->textureManager())
+    : m_glTextureManager(mgr->glTextureManager())
+    , m_textureManager(mgr->textureManager())
     , m_attachmentManager(mgr->attachmentManager())
-    , m_glTextureManager(mgr->glTextureManager())
 {
 
 }

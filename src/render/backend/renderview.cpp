@@ -208,7 +208,8 @@ UniformValue RenderView::standardUniformValue(RenderView::StandardUniform standa
 }
 
 RenderView::RenderView()
-    : m_renderer(nullptr)
+    : m_isDownloadBuffersEnable(false)
+    , m_renderer(nullptr)
     , m_devicePixelRatio(1.)
     , m_viewport(QRectF(0.0f, 0.0f, 1.0f, 1.0f))
     , m_gamma(2.2f)
@@ -217,7 +218,6 @@ RenderView::RenderView()
     , m_stateSet(nullptr)
     , m_noDraw(false)
     , m_compute(false)
-    , m_isDownloadBuffersEnable(false)
     , m_frustumCulling(false)
     , m_memoryBarrier(QMemoryBarrier::None)
 {

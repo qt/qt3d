@@ -45,10 +45,10 @@ namespace Qt3DAnimation {
 
 QKeyframeAnimationPrivate::QKeyframeAnimationPrivate()
     : QAbstractAnimationPrivate(QAbstractAnimation::KeyframeAnimation)
-    , m_minposition(0.0f)
-    , m_maxposition(0.0f)
     , m_prevPosition(-1.0f)
     , m_target(nullptr)
+    , m_minposition(0.0f)
+    , m_maxposition(0.0f)
     , m_startMode(QKeyframeAnimation::Constant)
     , m_endMode(QKeyframeAnimation::Constant)
 {
