@@ -71,7 +71,7 @@ class Buffer;
 class QT3DRENDERSHARED_PRIVATE_EXPORT SendBufferCaptureJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit SendBufferCaptureJob(Renderer *renderer);
+    explicit SendBufferCaptureJob();
     ~SendBufferCaptureJob();
 
     void setManagers(NodeManagers *managers);
@@ -81,7 +81,6 @@ public:
     void run() Q_DECL_FINAL;
 
 private:
-    Renderer *m_renderer;
     NodeManagers *m_managers;
     QMutex m_mutex;
 

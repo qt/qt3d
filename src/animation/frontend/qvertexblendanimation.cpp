@@ -74,16 +74,6 @@ void QVertexBlendAnimationPrivate::getAttributesInPosition(float position, int *
     }
 }
 
-static Qt3DRender::QAttribute *findAttribute(QVector<Qt3DRender::QAttribute *> &attributes,
-                                             QString name)
-{
-    for (Qt3DRender::QAttribute *gattr : attributes) {
-        if (gattr->name() == name)
-            return gattr;
-    }
-    return nullptr;
-}
-
 void QVertexBlendAnimationPrivate::updateAnimation(float position)
 {
     Q_Q(QVertexBlendAnimation);

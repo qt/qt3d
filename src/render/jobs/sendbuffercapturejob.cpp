@@ -51,9 +51,8 @@ namespace Qt3DRender {
 
 namespace Render {
 
-SendBufferCaptureJob::SendBufferCaptureJob(Renderer *renderer)
+SendBufferCaptureJob::SendBufferCaptureJob()
     : Qt3DCore::QAspectJob()
-    , m_renderer(renderer)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::SendBufferCapture, 0);
 }
