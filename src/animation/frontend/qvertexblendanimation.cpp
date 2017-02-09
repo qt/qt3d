@@ -121,7 +121,7 @@ void QVertexBlendAnimationPrivate::updateAnimation(float position)
         for (int i = 0; i < baseAttributes.size(); ++i) {
             const QString baseName = attributeNames.at(i);
             QString targetName = baseName;
-            targetName.append("Target");
+            targetName.append(QLatin1String("Target"));
 
             baseAttributes[i]->setName(baseName);
             geometry->addAttribute(baseAttributes.at(i));

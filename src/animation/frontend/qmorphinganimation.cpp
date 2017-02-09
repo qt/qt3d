@@ -124,7 +124,7 @@ void QMorphingAnimationPrivate::setTargetInterpolated(int morphTarget)
     if (target != m_currentTarget) {
         for (int i = 0; i < m_attributeNames.size(); ++i) {
             QString targetName = m_attributeNames.at(i);
-            targetName.append("Target");
+            targetName.append(QLatin1String("Target"));
             targetAttributes[i]->setName(targetName);
             geometry->addAttribute(targetAttributes.at(i));
         }
