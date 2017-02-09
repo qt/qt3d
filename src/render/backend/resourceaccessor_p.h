@@ -71,6 +71,7 @@ class NodeManagers;
 class RenderBackendResourceAccessor
 {
 public:
+    virtual ~RenderBackendResourceAccessor();
     virtual bool accessResource(Qt3DCore::QNodeId nodeId, void **handle, QMutex **lock) = 0;
 };
 
