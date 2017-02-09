@@ -38,34 +38,27 @@
 **
 ****************************************************************************/
 
-#include "gltfio.h"
-
-#include <QtCore/QDir>
-#include <QtCore/QFileInfo>
-#include <QtCore/QJsonArray>
-#include <QtCore/QJsonObject>
-
-#include <QtGui/QVector2D>
-
-#include <Qt3DRender/QCameraLens>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
-
-#include <Qt3DRender/private/qurlhelper_p.h>
-
+#include <Qt3DExtras/QDiffuseMapMaterial>
+#include <Qt3DExtras/QDiffuseSpecularMapMaterial>
+#include <Qt3DExtras/QNormalDiffuseMapMaterial>
+#include <Qt3DExtras/QNormalDiffuseSpecularMapMaterial>
+#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QAlphaCoverage>
 #include <Qt3DRender/QBlendEquation>
 #include <Qt3DRender/QBlendEquationArguments>
+#include <Qt3DRender/QCameraLens>
 #include <Qt3DRender/QColorMask>
 #include <Qt3DRender/QCullFace>
-#include <Qt3DRender/QNoDepthMask>
 #include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QFrontFace>
 #include <Qt3DRender/QGeometry>
 #include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QNoDepthMask>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QPolygonOffset>
 #include <Qt3DRender/QRenderState>
@@ -73,12 +66,15 @@
 #include <Qt3DRender/QShaderProgram>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QTexture>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
+#include <QtCore/QJsonArray>
+#include <QtCore/QJsonObject>
+#include <QtGui/QVector2D>
 
-#include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DExtras/QDiffuseMapMaterial>
-#include <Qt3DExtras/QDiffuseSpecularMapMaterial>
-#include <Qt3DExtras/QNormalDiffuseMapMaterial>
-#include <Qt3DExtras/QNormalDiffuseSpecularMapMaterial>
+#include "gltfio.h"
+
+#include <Qt3DRender/private/qurlhelper_p.h>
 
 #ifndef qUtf16PrintableImpl // -Impl is a Qt 5.8 feature
 #  define qUtf16PrintableImpl(string) \

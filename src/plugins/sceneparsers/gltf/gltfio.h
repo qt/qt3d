@@ -52,11 +52,11 @@
 // We mean it.
 //
 
+#include <Qt3DRender/qattribute.h>
+#include <Qt3DRender/qbuffer.h>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QMultiHash>
 
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/private/qsceneiohandler_p.h>
 
 QT_BEGIN_NAMESPACE

@@ -56,12 +56,13 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/DefaultLogger.hpp>
-#include <Qt3DRender/private/qsceneiohandler_p.h>
+#include <QtCore/QMap>
+#include <QtCore/QDir>
+#include <QtCore/QLoggingCategory>
+
 #include "assimphelpers.h"
 
-#include <QMap>
-#include <QDir>
-#include <QLoggingCategory>
+#include <Qt3DRender/private/qsceneiohandler_p.h>
 
 QT_BEGIN_NAMESPACE
 

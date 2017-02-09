@@ -54,9 +54,8 @@
 // ASSIMP INCLUDES
 #include <assimp/IOStream.hpp>
 #include <assimp/IOSystem.hpp>
-
-#include <QIODevice>
-#include <QMap>
+#include <QtCore/QIODevice>
+#include <QtCore/QMap>
 
 QT_BEGIN_NAMESPACE
 
