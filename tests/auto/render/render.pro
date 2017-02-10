@@ -45,6 +45,7 @@ qtConfig(private_tests) {
         picking \
 #        qboundingvolumedebug \
 #        boundingvolumedebug \
+        boundingsphere \
         qdefaultmeshes \
         trianglesextractor \
         triangleboundingvolume \
