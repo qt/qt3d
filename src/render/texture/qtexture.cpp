@@ -900,10 +900,25 @@ QTextureBuffer::~QTextureBuffer()
 
 /*!
  * Constructs a new Qt3DRender::QTextureLoader instance with \a parent as parent.
+ *
+ * Note that by default, if not contradicted by the file metadata, the loaded texture
+ * will have the following properties set:
+ *  - wrapMode set to Repeat
+ *  - minificationFilter set to LinearMipMapLinear
+ *  - magnificationFilter set to Linear
+ *  - generateMipMaps set to true
+ *  - maximumAnisotropy set to 16.0f
+ *  - target set to TargetAutomatic
  */
 QTextureLoader::QTextureLoader(QNode *parent)
     : QAbstractTexture(*new QTextureLoaderPrivate, parent)
 {
+    d_func()->m_wrapMode.setX(QTextureWrapMode::Repeat);
+    d_func()->m_wrapMode.setY(QTextureWrapMode::Repeat);
+    d_func()->m_minFilter = LinearMipMapLinear;
+    d_func()->m_magFilter = Linear;
+    d_func()->m_autoMipMap = true;
+    d_func()->m_maximumAnisotropy = 16.0f;
     d_func()->m_target = TargetAutomatic;
 }
 

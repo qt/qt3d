@@ -43,6 +43,7 @@
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qpickevent.h>
+#include <Qt3DRender/qeventforward.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -199,6 +200,37 @@ void QObjectPicker::setDragEnabled(bool dragEnabled)
     if (dragEnabled != d->m_dragEnabled) {
         d->m_dragEnabled = dragEnabled;
         emit dragEnabledChanged(dragEnabled);
+    }
+}
+
+/*!
+    \qmlproperty EventForward Qt3D.Render::ObjectPicker::eventForward
+    Holds the EventForward type.
+*/
+/*!
+    \property Qt3DRender::QObjectPicker::eventForward
+    Holds the EventForward type.
+ */
+QEventForward *QObjectPicker::eventForward() const
+{
+    Q_D(const QObjectPicker);
+    return d->m_eventForward;
+}
+
+void QObjectPicker::setEventForward(QEventForward *eventForward)
+{
+    Q_D(QObjectPicker);
+    if (d->m_eventForward != eventForward) {
+        if (d->m_eventForward)
+            d->unregisterDestructionHelper(d->m_eventForward);
+        d->m_eventForward = eventForward;
+        if (eventForward) {
+            if (eventForward->parent() == nullptr)
+                eventForward->setParent(this);
+            d->registerDestructionHelper(eventForward, &QObjectPicker::setEventForward,
+                                         d->m_eventForward);
+        }
+        emit eventForwardChanged(eventForward);
     }
 }
 
@@ -402,6 +434,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QObjectPicker::createNodeCreationChange() co
     Q_D(const QObjectPicker);
     data.hoverEnabled = d->m_hoverEnabled;
     data.dragEnabled = d->m_dragEnabled;
+    data.eventForward = Qt3DCore::qIdForNode(d->m_eventForward);
     return creationChange;
 }
 

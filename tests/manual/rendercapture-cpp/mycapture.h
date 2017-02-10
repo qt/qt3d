@@ -60,10 +60,10 @@ class MyCapture : public QObject
 public:
     MyCapture(Qt3DRender::QRenderCapture* capture, QLabel *imageLabel)
         : m_capture(capture)
-        , m_cid(1)
-        , m_imageLabel(imageLabel)
         , m_reply(nullptr)
+        , m_imageLabel(imageLabel)
         , m_continuous(false)
+        , m_cid(1)
     {
     }
 

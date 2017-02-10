@@ -120,7 +120,7 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
             if (m_properties.target != QAbstractTexture::TargetAutomatic)
                 qWarning() << "[Qt3DRender::GLTexture] When a texture provides a generator, it's target is expected to be TargetAutomatic";
 
-            m_properties.target = m_textureData->target();
+            m_actualTarget = m_textureData->target();
             m_properties.width = m_textureData->width();
             m_properties.height = m_textureData->height();
             m_properties.depth = m_textureData->depth();
@@ -224,6 +224,7 @@ void GLTexture::setProperties(const TextureProperties &props)
     if (m_properties != props) {
         m_properties = props;
         QMutexLocker locker(&m_dirtyFlagMutex);
+        m_actualTarget = props.target;
         m_dirty |= Properties;
     }
 }
@@ -278,6 +279,22 @@ void GLTexture::setImages(const QVector<Image> &images)
     }
 }
 
+void GLTexture::setGenerator(const QTextureGeneratorPtr &generator)
+{
+    if (m_dataFunctor != generator) {
+        if (m_dataFunctor)
+            m_textureDataManager->releaseData(m_dataFunctor, this);
+
+        m_textureData.reset();
+        m_dataFunctor = generator;
+
+        if (m_dataFunctor) {
+            m_textureDataManager->requestData(m_dataFunctor, this);
+            requestUpload();
+        }
+    }
+}
+
 QOpenGLTexture *GLTexture::buildGLTexture()
 {
     QOpenGLContext *ctx = QOpenGLContext::currentContext();
@@ -286,12 +303,12 @@ QOpenGLTexture *GLTexture::buildGLTexture()
         return nullptr;
     }
 
-    if (m_properties.target == QAbstractTexture::TargetAutomatic) {
+    if (m_actualTarget == QAbstractTexture::TargetAutomatic) {
         qWarning() << Q_FUNC_INFO << "something went wrong, target shouldn't be automatic at this point";
         return nullptr;
     }
 
-    QOpenGLTexture* glTex = new QOpenGLTexture(static_cast<QOpenGLTexture::Target>(m_properties.target));
+    QOpenGLTexture* glTex = new QOpenGLTexture(static_cast<QOpenGLTexture::Target>(m_actualTarget));
 
     // m_format may not be ES2 compatible. Now it's time to convert it, if necessary.
     QAbstractTexture::TextureFormat format = m_properties.format;
@@ -329,16 +346,16 @@ QOpenGLTexture *GLTexture::buildGLTexture()
                          static_cast<QOpenGLTexture::TextureFormat>(format));
     glTex->setSize(m_properties.width, m_properties.height, m_properties.depth);
     // Set layers count if texture array
-    if (m_properties.target == QAbstractTexture::Target1DArray ||
-            m_properties.target == QAbstractTexture::Target2DArray ||
-            m_properties.target == QAbstractTexture::Target3D ||
-            m_properties.target == QAbstractTexture::Target2DMultisampleArray ||
-            m_properties.target == QAbstractTexture::TargetCubeMapArray) {
+    if (m_actualTarget == QAbstractTexture::Target1DArray ||
+            m_actualTarget == QAbstractTexture::Target2DArray ||
+            m_actualTarget == QAbstractTexture::Target3D ||
+            m_actualTarget == QAbstractTexture::Target2DMultisampleArray ||
+            m_actualTarget == QAbstractTexture::TargetCubeMapArray) {
         glTex->setLayers(m_properties.layers);
     }
 
-    if (m_properties.target == QAbstractTexture::Target2DMultisample ||
-            m_properties.target == QAbstractTexture::Target2DMultisampleArray) {
+    if (m_actualTarget == QAbstractTexture::Target2DMultisample ||
+            m_actualTarget == QAbstractTexture::Target2DMultisampleArray) {
         // Set samples count if multisampled texture
         // (multisampled textures don't have mipmaps)
         glTex->setSamples(m_properties.samples);
@@ -410,11 +427,11 @@ void GLTexture::uploadGLTextureData()
 void GLTexture::updateGLTextureParameters()
 {
     m_gl->setWrapMode(QOpenGLTexture::DirectionS, static_cast<QOpenGLTexture::WrapMode>(m_parameters.wrapModeX));
-    if (m_properties.target != QAbstractTexture::Target1D &&
-            m_properties.target != QAbstractTexture::Target1DArray &&
-            m_properties.target != QAbstractTexture::TargetBuffer)
+    if (m_actualTarget != QAbstractTexture::Target1D &&
+            m_actualTarget != QAbstractTexture::Target1DArray &&
+            m_actualTarget != QAbstractTexture::TargetBuffer)
         m_gl->setWrapMode(QOpenGLTexture::DirectionT, static_cast<QOpenGLTexture::WrapMode>(m_parameters.wrapModeY));
-    if (m_properties.target == QAbstractTexture::Target3D)
+    if (m_actualTarget == QAbstractTexture::Target3D)
         m_gl->setWrapMode(QOpenGLTexture::DirectionR, static_cast<QOpenGLTexture::WrapMode>(m_parameters.wrapModeZ));
     m_gl->setMinMagFilters(static_cast<QOpenGLTexture::Filter>(m_parameters.minificationFilter),
                            static_cast<QOpenGLTexture::Filter>(m_parameters.magnificationFilter));

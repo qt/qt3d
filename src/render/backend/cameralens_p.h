@@ -73,12 +73,16 @@ public:
     void setProjection(const QMatrix4x4 &projection);
     inline QMatrix4x4 projection() const { return m_projection; }
 
+    void setExposure(float exposure);
+    inline float exposure() const { return m_exposure; }
+
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
     QMatrix4x4 m_projection;
+    float m_exposure;
 };
 
 } // namespace Render

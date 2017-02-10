@@ -92,6 +92,8 @@ QFirstPersonCameraControllerPrivate::QFirstPersonCameraControllerPrivate()
     , m_frameAction(new Qt3DLogic::QFrameAction())
     , m_linearSpeed(10.0f)
     , m_lookSpeed(180.0f)
+    , m_acceleration(-1.0f)
+    , m_deceleration(-1.0f)
     , m_firstPersonUp(QVector3D(0.0f, 1.0f, 0.0f))
 {}
 
@@ -167,6 +169,8 @@ void QFirstPersonCameraControllerPrivate::init()
     m_logicalDevice->addAxis(m_tyAxis);
     m_logicalDevice->addAxis(m_tzAxis);
 
+    applyAccelerations();
+
     Q_Q(QFirstPersonCameraController);
     //// FrameAction
 
@@ -179,6 +183,23 @@ void QFirstPersonCameraControllerPrivate::init()
 
     q->addComponent(m_frameAction);
     q->addComponent(m_logicalDevice);
+}
+
+void QFirstPersonCameraControllerPrivate::applyAccelerations()
+{
+    const auto inputs = {
+        m_keyboardTxPosInput,
+        m_keyboardTyPosInput,
+        m_keyboardTzPosInput,
+        m_keyboardTxNegInput,
+        m_keyboardTyNegInput,
+        m_keyboardTzNegInput
+    };
+
+    for (auto input : inputs) {
+        input->setAcceleration(m_acceleration);
+        input->setDeceleration(m_deceleration);
+    }
 }
 
 void QFirstPersonCameraControllerPrivate::_q_onTriggered(float dt)
@@ -273,6 +294,28 @@ float QFirstPersonCameraController::lookSpeed() const
     return d->m_lookSpeed;
 }
 
+/*!
+    \property QFirstPersonCameraController::acceleration
+
+    Holds the current acceleration of the camera controller.
+*/
+float QFirstPersonCameraController::acceleration() const
+{
+    Q_D(const QFirstPersonCameraController);
+    return d->m_acceleration;
+}
+
+/*!
+    \property QFirstPersonCameraController::deceleration
+
+    Holds the current deceleration of the camera controller.
+*/
+float QFirstPersonCameraController::deceleration() const
+{
+    Q_D(const QFirstPersonCameraController);
+    return d->m_deceleration;
+}
+
 void QFirstPersonCameraController::setCamera(Qt3DRender::QCamera *camera)
 {
     Q_D(QFirstPersonCameraController);
@@ -309,6 +352,26 @@ void QFirstPersonCameraController::setLookSpeed(float lookSpeed)
     if (d->m_lookSpeed != lookSpeed) {
         d->m_lookSpeed = lookSpeed;
         emit lookSpeedChanged();
+    }
+}
+
+void QFirstPersonCameraController::setAcceleration(float acceleration)
+{
+    Q_D(QFirstPersonCameraController);
+    if (d->m_acceleration != acceleration) {
+        d->m_acceleration = acceleration;
+        d->applyAccelerations();
+        emit accelerationChanged();
+    }
+}
+
+void QFirstPersonCameraController::setDeceleration(float deceleration)
+{
+    Q_D(QFirstPersonCameraController);
+    if (d->m_deceleration != deceleration) {
+        d->m_deceleration = deceleration;
+        d->applyAccelerations();
+        emit decelerationChanged();
     }
 }
 

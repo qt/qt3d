@@ -140,6 +140,18 @@ void GLBuffer::update(GraphicsContext *ctx, const void *data, uint size, int off
     ctx->openGLContext()->functions()->glBufferSubData(m_lastTarget, offset, size, data);
 }
 
+QByteArray GLBuffer::download(GraphicsContext *ctx, uint size)
+{
+    char *gpu_ptr = ctx->mapBuffer(m_lastTarget);
+    QByteArray data;
+    if (gpu_ptr != nullptr) {
+        data.resize(size);
+        std::copy(gpu_ptr, gpu_ptr+size, data.data());
+    }
+    ctx->unmapBuffer(m_lastTarget);
+    return data;
+}
+
 void GLBuffer::bindBufferBase(GraphicsContext *ctx, int bindingPoint, GLBuffer::Type t)
 {
     ctx->bindBufferBase(glBufferTypes[t], bindingPoint, m_bufferId);

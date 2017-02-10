@@ -136,14 +136,8 @@ private:
     QMutex m_mutex;
     QAbstractAspectJobManager *m_jobManager;
 
-    // The lists of observers indexed by observable. We maintain two
-    // distinct hashes:
-    //
-    // m_aspectObservations is for observables owned by aspects
+    // The lists of observers indexed by observable (QNodeId).
     // m_nodeObservations is for observables in the main thread's object tree
-    //
-    // We keep these distinct because we do not manage the main thread which means
-    // the mechanisms for working with objects there is different.
     QHash<QNodeId, QObserverList> m_nodeObservations;
     QList<QSceneObserverInterface *> m_sceneObservers;
 

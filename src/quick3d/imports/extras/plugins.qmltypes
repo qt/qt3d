@@ -7,7 +7,66 @@ import QtQuick.tooling 1.2
 // 'qmlplugindump -nonrelocatable Qt3D.Extras 2.0'
 
 Module {
-    dependencies: ["Qt3D.Logic 2.0"]
+    dependencies: []
+    Component {
+        name: "Qt3DCore::QComponent"
+        prototype: "Qt3DCore::QNode"
+        Property { name: "isShareable"; type: "bool" }
+        Signal {
+            name: "shareableChanged"
+            Parameter { name: "isShareable"; type: "bool" }
+        }
+        Signal {
+            name: "addedToEntity"
+            Parameter { name: "entity"; type: "QEntity"; isPointer: true }
+        }
+        Signal {
+            name: "removedFromEntity"
+            Parameter { name: "entity"; type: "QEntity"; isPointer: true }
+        }
+        Method {
+            name: "setShareable"
+            Parameter { name: "isShareable"; type: "bool" }
+        }
+    }
+    Component { name: "Qt3DCore::QEntity"; prototype: "Qt3DCore::QNode" }
+    Component {
+        name: "Qt3DCore::QNode"
+        prototype: "QObject"
+        Property { name: "parent"; type: "Qt3DCore::QNode"; isPointer: true }
+        Property { name: "enabled"; type: "bool" }
+        Signal {
+            name: "parentChanged"
+            Parameter { name: "parent"; type: "QObject"; isPointer: true }
+        }
+        Signal {
+            name: "enabledChanged"
+            Parameter { name: "enabled"; type: "bool" }
+        }
+        Signal { name: "nodeDestroyed" }
+        Method {
+            name: "setParent"
+            Parameter { name: "parent"; type: "QNode"; isPointer: true }
+        }
+        Method {
+            name: "setEnabled"
+            Parameter { name: "isEnabled"; type: "bool" }
+        }
+    }
+    Component {
+        name: "Qt3DExtras::Extras::Quick::Quick3DLevelOfDetailLoader"
+        prototype: "Qt3DCore::QEntity"
+        exports: ["Qt3D.Extras/LevelOfDetailLoader 2.2"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "sources"; type: "QVariantList" }
+        Property { name: "camera"; type: "Qt3DRender::QCamera"; isPointer: true }
+        Property { name: "currentIndex"; type: "int" }
+        Property { name: "thresholdType"; type: "Qt3DRender::QLevelOfDetail::ThresholdType" }
+        Property { name: "thresholds"; type: "QVector<qreal>" }
+        Property { name: "volumeOverride"; type: "Qt3DRender::QBoundingSphere"; isPointer: true }
+        Property { name: "entity"; type: "QObject"; isReadonly: true; isPointer: true }
+        Property { name: "source"; type: "QUrl"; isReadonly: true }
+    }
     Component {
         name: "Qt3DExtras::QConeGeometry"
         prototype: "Qt3DRender::QGeometry"
@@ -429,6 +488,610 @@ Module {
         }
     }
     Component {
+        name: "Qt3DExtras::QDiffuseMapMaterial"
+        prototype: "Qt3DRender::QMaterial"
+        exports: ["Qt3D.Extras/DiffuseMapMaterial 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "ambient"; type: "QColor" }
+        Property { name: "specular"; type: "QColor" }
+        Property { name: "shininess"; type: "float" }
+        Property { name: "diffuse"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "textureScale"; type: "float" }
+        Signal {
+            name: "ambientChanged"
+            Parameter { name: "ambient"; type: "QColor" }
+        }
+        Signal {
+            name: "diffuseChanged"
+            Parameter { name: "diffuse"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "specularChanged"
+            Parameter { name: "specular"; type: "QColor" }
+        }
+        Signal {
+            name: "shininessChanged"
+            Parameter { name: "shininess"; type: "float" }
+        }
+        Signal {
+            name: "textureScaleChanged"
+            Parameter { name: "textureScale"; type: "float" }
+        }
+        Method {
+            name: "setAmbient"
+            Parameter { name: "color"; type: "QColor" }
+        }
+        Method {
+            name: "setSpecular"
+            Parameter { name: "specular"; type: "QColor" }
+        }
+        Method {
+            name: "setShininess"
+            Parameter { name: "shininess"; type: "float" }
+        }
+        Method {
+            name: "setDiffuse"
+            Parameter { name: "diffuse"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setTextureScale"
+            Parameter { name: "textureScale"; type: "float" }
+        }
+    }
+    Component {
+        name: "Qt3DExtras::QDiffuseSpecularMapMaterial"
+        prototype: "Qt3DRender::QMaterial"
+        exports: ["Qt3D.Extras/DiffuseSpecularMapMaterial 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "ambient"; type: "QColor" }
+        Property { name: "shininess"; type: "float" }
+        Property { name: "specular"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "diffuse"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "textureScale"; type: "float" }
+        Signal {
+            name: "ambientChanged"
+            Parameter { name: "ambient"; type: "QColor" }
+        }
+        Signal {
+            name: "diffuseChanged"
+            Parameter { name: "diffuse"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "specularChanged"
+            Parameter { name: "specular"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "shininessChanged"
+            Parameter { name: "shininess"; type: "float" }
+        }
+        Signal {
+            name: "textureScaleChanged"
+            Parameter { name: "textureScale"; type: "float" }
+        }
+        Method {
+            name: "setAmbient"
+            Parameter { name: "ambient"; type: "QColor" }
+        }
+        Method {
+            name: "setDiffuse"
+            Parameter { name: "diffuse"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setSpecular"
+            Parameter { name: "specular"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setShininess"
+            Parameter { name: "shininess"; type: "float" }
+        }
+        Method {
+            name: "setTextureScale"
+            Parameter { name: "textureScale"; type: "float" }
+        }
+    }
+    Component {
+        name: "Qt3DExtras::QFirstPersonCameraController"
+        prototype: "Qt3DCore::QEntity"
+        exports: ["Qt3D.Extras/FirstPersonCameraController 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "camera"; type: "Qt3DRender::QCamera"; isPointer: true }
+        Property { name: "linearSpeed"; type: "float" }
+        Property { name: "lookSpeed"; type: "float" }
+        Property { name: "acceleration"; type: "float" }
+        Property { name: "deceleration"; type: "float" }
+    }
+    Component {
+        name: "Qt3DExtras::QForwardRenderer"
+        prototype: "Qt3DRender::QTechniqueFilter"
+        exports: ["Qt3D.Extras/ForwardRenderer 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "surface"; type: "QObject"; isPointer: true }
+        Property { name: "window"; type: "QObject"; isPointer: true }
+        Property { name: "viewportRect"; type: "QRectF" }
+        Property { name: "clearColor"; type: "QColor" }
+        Property { name: "camera"; type: "Qt3DCore::QEntity"; isPointer: true }
+        Property { name: "externalRenderTargetSize"; type: "QSize" }
+        Property { name: "frustumCulling"; type: "bool" }
+        Signal {
+            name: "viewportRectChanged"
+            Parameter { name: "viewportRect"; type: "QRectF" }
+        }
+        Signal {
+            name: "clearColorChanged"
+            Parameter { name: "clearColor"; type: "QColor" }
+        }
+        Signal {
+            name: "cameraChanged"
+            Parameter { name: "camera"; type: "Qt3DCore::QEntity"; isPointer: true }
+        }
+        Signal {
+            name: "surfaceChanged"
+            Parameter { name: "surface"; type: "QObject"; isPointer: true }
+        }
+        Signal {
+            name: "externalRenderTargetSizeChanged"
+            Parameter { name: "size"; type: "QSize" }
+        }
+        Signal {
+            name: "frustumCullingEnabledChanged"
+            Parameter { name: "enabled"; type: "bool" }
+        }
+        Method {
+            name: "setViewportRect"
+            Parameter { name: "viewportRect"; type: "QRectF" }
+        }
+        Method {
+            name: "setClearColor"
+            Parameter { name: "clearColor"; type: "QColor" }
+        }
+        Method {
+            name: "setCamera"
+            Parameter { name: "camera"; type: "Qt3DCore::QEntity"; isPointer: true }
+        }
+        Method {
+            name: "setSurface"
+            Parameter { name: "surface"; type: "QObject"; isPointer: true }
+        }
+        Method {
+            name: "setExternalRenderTargetSize"
+            Parameter { name: "size"; type: "QSize" }
+        }
+        Method {
+            name: "setFrustumCullingEnabled"
+            Parameter { name: "enabled"; type: "bool" }
+        }
+    }
+    Component {
+        name: "Qt3DExtras::QGoochMaterial"
+        prototype: "Qt3DRender::QMaterial"
+        exports: ["Qt3D.Extras/GoochMaterial 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "diffuse"; type: "QColor" }
+        Property { name: "specular"; type: "QColor" }
+        Property { name: "cool"; type: "QColor" }
+        Property { name: "warm"; type: "QColor" }
+        Property { name: "alpha"; type: "float" }
+        Property { name: "beta"; type: "float" }
+        Property { name: "shininess"; type: "float" }
+        Signal {
+            name: "diffuseChanged"
+            Parameter { name: "diffuse"; type: "QColor" }
+        }
+        Signal {
+            name: "specularChanged"
+            Parameter { name: "specular"; type: "QColor" }
+        }
+        Signal {
+            name: "coolChanged"
+            Parameter { name: "cool"; type: "QColor" }
+        }
+        Signal {
+            name: "warmChanged"
+            Parameter { name: "warm"; type: "QColor" }
+        }
+        Signal {
+            name: "alphaChanged"
+            Parameter { name: "alpha"; type: "float" }
+        }
+        Signal {
+            name: "betaChanged"
+            Parameter { name: "beta"; type: "float" }
+        }
+        Signal {
+            name: "shininessChanged"
+            Parameter { name: "shininess"; type: "float" }
+        }
+        Method {
+            name: "setDiffuse"
+            Parameter { name: "diffuse"; type: "QColor" }
+        }
+        Method {
+            name: "setSpecular"
+            Parameter { name: "specular"; type: "QColor" }
+        }
+        Method {
+            name: "setCool"
+            Parameter { name: "cool"; type: "QColor" }
+        }
+        Method {
+            name: "setWarm"
+            Parameter { name: "warm"; type: "QColor" }
+        }
+        Method {
+            name: "setAlpha"
+            Parameter { name: "alpha"; type: "float" }
+        }
+        Method {
+            name: "setBeta"
+            Parameter { name: "beta"; type: "float" }
+        }
+        Method {
+            name: "setShininess"
+            Parameter { name: "shininess"; type: "float" }
+        }
+    }
+    Component {
+        name: "Qt3DExtras::QMetalRoughMaterial"
+        prototype: "Qt3DRender::QMaterial"
+        exports: ["Qt3D.Extras/MetalRoughMaterial 2.2"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "baseColor"; type: "QColor" }
+        Property { name: "metallic"; type: "float" }
+        Property { name: "roughness"; type: "float" }
+        Property {
+            name: "environmentIrradiance"
+            type: "Qt3DRender::QAbstractTexture"
+            isPointer: true
+        }
+        Property { name: "environmentSpecular"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "exposure"; type: "float" }
+        Signal {
+            name: "baseColorChanged"
+            Parameter { name: "baseColor"; type: "QColor" }
+        }
+        Signal {
+            name: "metallicChanged"
+            Parameter { name: "metallic"; type: "float" }
+        }
+        Signal {
+            name: "roughnessChanged"
+            Parameter { name: "roughness"; type: "float" }
+        }
+        Signal {
+            name: "environmentIrradianceChanged"
+            Parameter {
+                name: "environmentIrradiance"
+                type: "Qt3DRender::QAbstractTexture"
+                isPointer: true
+            }
+        }
+        Signal {
+            name: "environmentSpecularChanged"
+            Parameter { name: "environmentSpecular"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "exposureChanged"
+            Parameter { name: "exposure"; type: "float" }
+        }
+        Method {
+            name: "setBaseColor"
+            Parameter { name: "baseColor"; type: "QColor" }
+        }
+        Method {
+            name: "setMetallic"
+            Parameter { name: "metallic"; type: "float" }
+        }
+        Method {
+            name: "setRoughness"
+            Parameter { name: "roughness"; type: "float" }
+        }
+        Method {
+            name: "setEnvironmentIrradiance"
+            Parameter {
+                name: "environmentIrradiance"
+                type: "Qt3DRender::QAbstractTexture"
+                isPointer: true
+            }
+        }
+        Method {
+            name: "setEnvironmentSpecular"
+            Parameter { name: "environmentSpecular"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setExposure"
+            Parameter { name: "exposure"; type: "float" }
+        }
+    }
+    Component {
+        name: "Qt3DExtras::QNormalDiffuseMapAlphaMaterial"
+        prototype: "Qt3DExtras::QNormalDiffuseMapMaterial"
+        exports: ["Qt3D.Extras/NormalDiffuseMapAlphaMaterial 2.0"]
+        exportMetaObjectRevisions: [0]
+    }
+    Component {
+        name: "Qt3DExtras::QNormalDiffuseMapMaterial"
+        prototype: "Qt3DRender::QMaterial"
+        exports: ["Qt3D.Extras/NormalDiffuseMapMaterial 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "ambient"; type: "QColor" }
+        Property { name: "specular"; type: "QColor" }
+        Property { name: "diffuse"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "normal"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "shininess"; type: "float" }
+        Property { name: "textureScale"; type: "float" }
+        Signal {
+            name: "ambientChanged"
+            Parameter { name: "ambient"; type: "QColor" }
+        }
+        Signal {
+            name: "diffuseChanged"
+            Parameter { name: "diffuse"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "normalChanged"
+            Parameter { name: "normal"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "specularChanged"
+            Parameter { name: "specular"; type: "QColor" }
+        }
+        Signal {
+            name: "shininessChanged"
+            Parameter { name: "shininess"; type: "float" }
+        }
+        Signal {
+            name: "textureScaleChanged"
+            Parameter { name: "textureScale"; type: "float" }
+        }
+        Method {
+            name: "setAmbient"
+            Parameter { name: "ambient"; type: "QColor" }
+        }
+        Method {
+            name: "setSpecular"
+            Parameter { name: "specular"; type: "QColor" }
+        }
+        Method {
+            name: "setDiffuse"
+            Parameter { name: "diffuse"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setNormal"
+            Parameter { name: "normal"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setShininess"
+            Parameter { name: "shininess"; type: "float" }
+        }
+        Method {
+            name: "setTextureScale"
+            Parameter { name: "textureScale"; type: "float" }
+        }
+    }
+    Component {
+        name: "Qt3DExtras::QNormalDiffuseSpecularMapMaterial"
+        prototype: "Qt3DRender::QMaterial"
+        exports: ["Qt3D.Extras/NormalDiffuseSpecularMapMaterial 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "ambient"; type: "QColor" }
+        Property { name: "diffuse"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "normal"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "specular"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "shininess"; type: "float" }
+        Property { name: "textureScale"; type: "float" }
+        Signal {
+            name: "ambientChanged"
+            Parameter { name: "ambient"; type: "QColor" }
+        }
+        Signal {
+            name: "diffuseChanged"
+            Parameter { name: "diffuse"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "normalChanged"
+            Parameter { name: "normal"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "specularChanged"
+            Parameter { name: "specular"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "shininessChanged"
+            Parameter { name: "shininess"; type: "float" }
+        }
+        Signal {
+            name: "textureScaleChanged"
+            Parameter { name: "textureScale"; type: "float" }
+        }
+        Method {
+            name: "setAmbient"
+            Parameter { name: "ambient"; type: "QColor" }
+        }
+        Method {
+            name: "setDiffuse"
+            Parameter { name: "diffuse"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setNormal"
+            Parameter { name: "normal"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setSpecular"
+            Parameter { name: "specular"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setShininess"
+            Parameter { name: "shininess"; type: "float" }
+        }
+        Method {
+            name: "setTextureScale"
+            Parameter { name: "textureScale"; type: "float" }
+        }
+    }
+    Component {
+        name: "Qt3DExtras::QOrbitCameraController"
+        prototype: "Qt3DCore::QEntity"
+        exports: ["Qt3D.Extras/OrbitCameraController 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "camera"; type: "Qt3DRender::QCamera"; isPointer: true }
+        Property { name: "linearSpeed"; type: "float" }
+        Property { name: "lookSpeed"; type: "float" }
+        Property { name: "zoomInLimit"; type: "float" }
+    }
+    Component {
+        name: "Qt3DExtras::QPerVertexColorMaterial"
+        prototype: "Qt3DRender::QMaterial"
+        exports: ["Qt3D.Extras/PerVertexColorMaterial 2.0"]
+        exportMetaObjectRevisions: [0]
+    }
+    Component {
+        name: "Qt3DExtras::QPhongAlphaMaterial"
+        prototype: "Qt3DRender::QMaterial"
+        exports: ["Qt3D.Extras/PhongAlphaMaterial 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "ambient"; type: "QColor" }
+        Property { name: "diffuse"; type: "QColor" }
+        Property { name: "specular"; type: "QColor" }
+        Property { name: "shininess"; type: "float" }
+        Property { name: "alpha"; type: "float" }
+        Property { name: "sourceRgbArg"; type: "Qt3DRender::QBlendEquationArguments::Blending" }
+        Property { name: "destinationRgbArg"; type: "Qt3DRender::QBlendEquationArguments::Blending" }
+        Property { name: "sourceAlphaArg"; type: "Qt3DRender::QBlendEquationArguments::Blending" }
+        Property {
+            name: "destinationAlphaArg"
+            type: "Qt3DRender::QBlendEquationArguments::Blending"
+        }
+        Property { name: "blendFunctionArg"; type: "Qt3DRender::QBlendEquation::BlendFunction" }
+        Signal {
+            name: "ambientChanged"
+            Parameter { name: "ambient"; type: "QColor" }
+        }
+        Signal {
+            name: "diffuseChanged"
+            Parameter { name: "diffuse"; type: "QColor" }
+        }
+        Signal {
+            name: "specularChanged"
+            Parameter { name: "specular"; type: "QColor" }
+        }
+        Signal {
+            name: "shininessChanged"
+            Parameter { name: "shininess"; type: "float" }
+        }
+        Signal {
+            name: "alphaChanged"
+            Parameter { name: "alpha"; type: "float" }
+        }
+        Signal {
+            name: "sourceRgbArgChanged"
+            Parameter { name: "sourceRgbArg"; type: "Qt3DRender::QBlendEquationArguments::Blending" }
+        }
+        Signal {
+            name: "destinationRgbArgChanged"
+            Parameter { name: "destinationRgbArg"; type: "Qt3DRender::QBlendEquationArguments::Blending" }
+        }
+        Signal {
+            name: "sourceAlphaArgChanged"
+            Parameter { name: "sourceAlphaArg"; type: "Qt3DRender::QBlendEquationArguments::Blending" }
+        }
+        Signal {
+            name: "destinationAlphaArgChanged"
+            Parameter {
+                name: "destinationAlphaArg"
+                type: "Qt3DRender::QBlendEquationArguments::Blending"
+            }
+        }
+        Signal {
+            name: "blendFunctionArgChanged"
+            Parameter { name: "blendFunctionArg"; type: "Qt3DRender::QBlendEquation::BlendFunction" }
+        }
+        Method {
+            name: "setAmbient"
+            Parameter { name: "ambient"; type: "QColor" }
+        }
+        Method {
+            name: "setDiffuse"
+            Parameter { name: "diffuse"; type: "QColor" }
+        }
+        Method {
+            name: "setSpecular"
+            Parameter { name: "specular"; type: "QColor" }
+        }
+        Method {
+            name: "setShininess"
+            Parameter { name: "shininess"; type: "float" }
+        }
+        Method {
+            name: "setAlpha"
+            Parameter { name: "alpha"; type: "float" }
+        }
+        Method {
+            name: "setSourceRgbArg"
+            Parameter { name: "sourceRgbArg"; type: "Qt3DRender::QBlendEquationArguments::Blending" }
+        }
+        Method {
+            name: "setDestinationRgbArg"
+            Parameter { name: "destinationRgbArg"; type: "Qt3DRender::QBlendEquationArguments::Blending" }
+        }
+        Method {
+            name: "setSourceAlphaArg"
+            Parameter { name: "sourceAlphaArg"; type: "Qt3DRender::QBlendEquationArguments::Blending" }
+        }
+        Method {
+            name: "setDestinationAlphaArg"
+            Parameter {
+                name: "destinationAlphaArg"
+                type: "Qt3DRender::QBlendEquationArguments::Blending"
+            }
+        }
+        Method {
+            name: "setBlendFunctionArg"
+            Parameter { name: "blendFunctionArg"; type: "Qt3DRender::QBlendEquation::BlendFunction" }
+        }
+    }
+    Component {
+        name: "Qt3DExtras::QPhongMaterial"
+        prototype: "Qt3DRender::QMaterial"
+        exports: ["Qt3D.Extras/PhongMaterial 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "ambient"; type: "QColor" }
+        Property { name: "diffuse"; type: "QColor" }
+        Property { name: "specular"; type: "QColor" }
+        Property { name: "shininess"; type: "float" }
+        Signal {
+            name: "ambientChanged"
+            Parameter { name: "ambient"; type: "QColor" }
+        }
+        Signal {
+            name: "diffuseChanged"
+            Parameter { name: "diffuse"; type: "QColor" }
+        }
+        Signal {
+            name: "specularChanged"
+            Parameter { name: "specular"; type: "QColor" }
+        }
+        Signal {
+            name: "shininessChanged"
+            Parameter { name: "shininess"; type: "float" }
+        }
+        Method {
+            name: "setAmbient"
+            Parameter { name: "ambient"; type: "QColor" }
+        }
+        Method {
+            name: "setDiffuse"
+            Parameter { name: "diffuse"; type: "QColor" }
+        }
+        Method {
+            name: "setSpecular"
+            Parameter { name: "specular"; type: "QColor" }
+        }
+        Method {
+            name: "setShininess"
+            Parameter { name: "shininess"; type: "float" }
+        }
+    }
+    Component {
         name: "Qt3DExtras::QPlaneGeometry"
         prototype: "Qt3DRender::QGeometry"
         exports: ["Qt3D.Extras/PlaneGeometry 2.0"]
@@ -522,6 +1185,22 @@ Module {
         Method {
             name: "setMeshResolution"
             Parameter { name: "resolution"; type: "QSize" }
+        }
+    }
+    Component {
+        name: "Qt3DExtras::QSkyboxEntity"
+        prototype: "Qt3DCore::QEntity"
+        exports: ["Qt3D.Extras/SkyboxEntity 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "baseName"; type: "string" }
+        Property { name: "extension"; type: "string" }
+        Signal {
+            name: "baseNameChanged"
+            Parameter { name: "path"; type: "string" }
+        }
+        Signal {
+            name: "extensionChanged"
+            Parameter { name: "extension"; type: "string" }
         }
     }
     Component {
@@ -639,6 +1318,222 @@ Module {
         }
     }
     Component {
+        name: "Qt3DExtras::QText3DGeometry"
+        prototype: "Qt3DRender::QGeometry"
+        exports: ["Qt3D.Extras/Text3DGeometry 2.2"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "text"; type: "string" }
+        Property { name: "font"; type: "QFont" }
+        Property { name: "depth"; type: "float" }
+        Property { name: "edgeSplitAngle"; type: "float" }
+        Property {
+            name: "positionAttribute"
+            type: "Qt3DRender::QAttribute"
+            isReadonly: true
+            isPointer: true
+        }
+        Property {
+            name: "normalAttribute"
+            type: "Qt3DRender::QAttribute"
+            isReadonly: true
+            isPointer: true
+        }
+        Property {
+            name: "indexAttribute"
+            type: "Qt3DRender::QAttribute"
+            isReadonly: true
+            isPointer: true
+        }
+        Signal {
+            name: "textChanged"
+            Parameter { name: "text"; type: "string" }
+        }
+        Signal {
+            name: "fontChanged"
+            Parameter { name: "font"; type: "QFont" }
+        }
+        Signal {
+            name: "depthChanged"
+            Parameter { name: "depth"; type: "float" }
+        }
+        Signal {
+            name: "edgeSplitAngleChanged"
+            Parameter { name: "edgeSplitAngle"; type: "float" }
+        }
+        Method {
+            name: "setText"
+            Parameter { name: "text"; type: "string" }
+        }
+        Method {
+            name: "setFont"
+            Parameter { name: "font"; type: "QFont" }
+        }
+        Method {
+            name: "setDepth"
+            Parameter { name: "depth"; type: "float" }
+        }
+        Method {
+            name: "setEdgeSplitAngle"
+            Parameter { name: "edgeSplitAngle"; type: "float" }
+        }
+    }
+    Component {
+        name: "Qt3DExtras::QText3DMesh"
+        prototype: "Qt3DRender::QGeometryRenderer"
+        exports: ["Qt3D.Extras/Text3DMesh 2.2"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "text"; type: "string" }
+        Property { name: "font"; type: "QFont" }
+        Property { name: "depth"; type: "float" }
+        Property { name: "edgeSplitAngle"; type: "float" }
+        Signal {
+            name: "textChanged"
+            Parameter { name: "text"; type: "string" }
+        }
+        Signal {
+            name: "fontChanged"
+            Parameter { name: "font"; type: "QFont" }
+        }
+        Signal {
+            name: "depthChanged"
+            Parameter { name: "depth"; type: "float" }
+        }
+        Signal {
+            name: "edgeSplitAngleChanged"
+            Parameter { name: "edgeSplitAngle"; type: "float" }
+        }
+        Method {
+            name: "setText"
+            Parameter { name: "text"; type: "string" }
+        }
+        Method {
+            name: "setFont"
+            Parameter { name: "font"; type: "QFont" }
+        }
+        Method {
+            name: "setDepth"
+            Parameter { name: "depth"; type: "float" }
+        }
+        Method {
+            name: "setEdgeSplitAngle"
+            Parameter { name: "edgeSplitAngle"; type: "float" }
+        }
+    }
+    Component {
+        name: "Qt3DExtras::QTextureMaterial"
+        prototype: "Qt3DRender::QMaterial"
+        exports: ["Qt3D.Extras/TextureMaterial 2.0"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "texture"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "textureOffset"; type: "QVector2D" }
+        Signal {
+            name: "textureChanged"
+            Parameter { name: "texture"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "textureOffsetChanged"
+            Parameter { name: "textureOffset"; type: "QVector2D" }
+        }
+        Method {
+            name: "setTexture"
+            Parameter { name: "texture"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setTextureOffset"
+            Parameter { name: "textureOffset"; type: "QVector2D" }
+        }
+    }
+    Component {
+        name: "Qt3DExtras::QTexturedMetalRoughMaterial"
+        prototype: "Qt3DRender::QMaterial"
+        exports: ["Qt3D.Extras/TexturedMetalRoughMaterial 2.2"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "baseColor"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "metallic"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "roughness"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "ambientOcclusion"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "normal"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property {
+            name: "environmentIrradiance"
+            type: "Qt3DRender::QAbstractTexture"
+            isPointer: true
+        }
+        Property { name: "environmentSpecular"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "exposure"; type: "float" }
+        Signal {
+            name: "baseColorChanged"
+            Parameter { name: "baseColor"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "metallicChanged"
+            Parameter { name: "metallic"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "roughnessChanged"
+            Parameter { name: "roughness"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "ambientOcclusionChanged"
+            Parameter { name: "ambientOcclusion"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "normalChanged"
+            Parameter { name: "normal"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "environmentIrradianceChanged"
+            Parameter {
+                name: "environmentIrradiance"
+                type: "Qt3DRender::QAbstractTexture"
+                isPointer: true
+            }
+        }
+        Signal {
+            name: "environmentSpecularChanged"
+            Parameter { name: "environmentSpecular"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Signal {
+            name: "exposureChanged"
+            Parameter { name: "exposure"; type: "float" }
+        }
+        Method {
+            name: "setBaseColor"
+            Parameter { name: "baseColor"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setMetallic"
+            Parameter { name: "metallic"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setRoughness"
+            Parameter { name: "roughness"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setAmbientOcclusion"
+            Parameter { name: "ambientOcclusion"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setNormal"
+            Parameter { name: "normal"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setEnvironmentIrradiance"
+            Parameter {
+                name: "environmentIrradiance"
+                type: "Qt3DRender::QAbstractTexture"
+                isPointer: true
+            }
+        }
+        Method {
+            name: "setEnvironmentSpecular"
+            Parameter { name: "environmentSpecular"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        }
+        Method {
+            name: "setExposure"
+            Parameter { name: "exposure"; type: "float" }
+        }
+    }
+    Component {
         name: "Qt3DExtras::QTorusGeometry"
         prototype: "Qt3DRender::QGeometry"
         exports: ["Qt3D.Extras/TorusGeometry 2.0"]
@@ -746,6 +1641,7 @@ Module {
             Parameter { name: "minorRadius"; type: "float" }
         }
     }
+    Component { name: "Qt3DRender::QFrameGraphNode"; prototype: "Qt3DCore::QNode" }
     Component {
         name: "Qt3DRender::QGeometry"
         prototype: "Qt3DCore::QNode"
@@ -883,46 +1779,8 @@ Module {
         }
     }
     Component {
-        prototype: "Qt3DCore::QNode"
-        name: "Qt3D.Extras/DefaultAlphaEffect 2.0"
-        exports: ["Qt3D.Extras/DefaultAlphaEffect 2.0"]
-        exportMetaObjectRevisions: [0]
-        isComposite: true
-        defaultProperty: "data"
-        Property { name: "vertexES"; type: "string" }
-        Property { name: "fragmentES"; type: "string" }
-        Property { name: "vertex"; type: "string" }
-        Property { name: "fragment"; type: "string" }
-        Property { name: "sourceRgbArg"; type: "int" }
-        Property { name: "destinationRgbArg"; type: "int" }
-        Property { name: "sourceAlphaArg"; type: "int" }
-        Property { name: "destinationAlphaArg"; type: "int" }
-        Property { name: "blendFunctionArg"; type: "int" }
-    }
-    Component {
-        prototype: "Qt3DCore::QNode"
-        name: "Qt3D.Extras/DefaultEffect 2.0"
-        exports: ["Qt3D.Extras/DefaultEffect 2.0"]
-        exportMetaObjectRevisions: [0]
-        isComposite: true
-        defaultProperty: "data"
-        Property { name: "vertexES"; type: "string" }
-        Property { name: "fragmentES"; type: "string" }
-        Property { name: "vertex"; type: "string" }
-        Property { name: "fragment"; type: "string" }
-    }
-    Component {
+        name: "Qt3DRender::QMaterial"
         prototype: "Qt3DCore::QComponent"
-        name: "Qt3D.Extras/DiffuseMapMaterial 2.0"
-        exports: ["Qt3D.Extras/DiffuseMapMaterial 2.0"]
-        exportMetaObjectRevisions: [0]
-        isComposite: true
-        defaultProperty: "data"
-        Property { name: "ambient"; type: "QColor" }
-        Property { name: "specular"; type: "QColor" }
-        Property { name: "shininess"; type: "double" }
-        Property { name: "textureScale"; type: "double" }
-        Property { name: "diffuse"; type: "QUrl" }
         Property { name: "effect"; type: "Qt3DRender::QEffect"; isPointer: true }
         Signal {
             name: "effectChanged"
@@ -933,264 +1791,5 @@ Module {
             Parameter { name: "effect"; type: "QEffect"; isPointer: true }
         }
     }
-    Component {
-        prototype: "Qt3DCore::QComponent"
-        name: "Qt3D.Extras/DiffuseSpecularMapMaterial 2.0"
-        exports: ["Qt3D.Extras/DiffuseSpecularMapMaterial 2.0"]
-        exportMetaObjectRevisions: [0]
-        isComposite: true
-        defaultProperty: "data"
-        Property { name: "ambient"; type: "QColor" }
-        Property { name: "shininess"; type: "double" }
-        Property { name: "textureScale"; type: "double" }
-        Property { name: "diffuse"; type: "QUrl" }
-        Property { name: "specular"; type: "QUrl" }
-        Property { name: "effect"; type: "Qt3DRender::QEffect"; isPointer: true }
-        Signal {
-            name: "effectChanged"
-            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
-        }
-        Method {
-            name: "setEffect"
-            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
-        }
-    }
-    Component {
-        prototype: "Qt3DCore::QNode"
-        name: "Qt3D.Extras/FirstPersonCameraController 2.0"
-        exports: ["Qt3D.Extras/FirstPersonCameraController 2.0"]
-        exportMetaObjectRevisions: [0]
-        isComposite: true
-        defaultProperty: "data"
-        Property { name: "camera"; type: "Qt3DRender::QCamera"; isPointer: true }
-        Property { name: "linearSpeed"; type: "double" }
-        Property { name: "lookSpeed"; type: "double" }
-        Property { name: "acceleration"; type: "double" }
-        Property { name: "deceleration"; type: "double" }
-    }
-    Component {
-        prototype: "Qt3DCore::QNode"
-        name: "Qt3D.Extras/ForwardRenderer 2.0"
-        exports: ["Qt3D.Extras/ForwardRenderer 2.0"]
-        exportMetaObjectRevisions: [0]
-        isComposite: true
-        defaultProperty: "data"
-        Property { name: "camera"; type: "Qt3DCore::QEntity"; isPointer: true }
-        Property { name: "clearColor"; type: "QColor" }
-        Property { name: "viewportRect"; type: "QRectF" }
-        Property { name: "window"; type: "QObject"; isPointer: true }
-    }
-    Component {
-        prototype: "Qt3DCore::QComponent"
-        name: "Qt3D.Extras/GoochMaterial 2.0"
-        exports: ["Qt3D.Extras/GoochMaterial 2.0"]
-        exportMetaObjectRevisions: [0]
-        isComposite: true
-        defaultProperty: "data"
-        Property { name: "diffuse"; type: "QColor" }
-        Property { name: "specular"; type: "QColor" }
-        Property { name: "coolColor"; type: "QColor" }
-        Property { name: "warmColor"; type: "QColor" }
-        Property { name: "alpha"; type: "double" }
-        Property { name: "beta"; type: "double" }
-        Property { name: "shininess"; type: "double" }
-        Property { name: "effect"; type: "Qt3DRender::QEffect"; isPointer: true }
-        Signal {
-            name: "effectChanged"
-            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
-        }
-        Method {
-            name: "setEffect"
-            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
-        }
-    }
-    Component {
-        prototype: "Qt3DCore::QNode"
-        name: "Qt3D.Extras/NormalDiffuseMapAlphaEffect 2.0"
-        exports: ["Qt3D.Extras/NormalDiffuseMapAlphaEffect 2.0"]
-        exportMetaObjectRevisions: [0]
-        isComposite: true
-        defaultProperty: "data"
-        Property { name: "vertexES"; type: "string" }
-        Property { name: "fragmentES"; type: "string" }
-        Property { name: "vertex"; type: "string" }
-        Property { name: "fragment"; type: "string" }
-    }
-    Component {
-        prototype: "Qt3DCore::QComponent"
-        name: "Qt3D.Extras/NormalDiffuseMapAlphaMaterial 2.0"
-        exports: ["Qt3D.Extras/NormalDiffuseMapAlphaMaterial 2.0"]
-        exportMetaObjectRevisions: [0]
-        isComposite: true
-        defaultProperty: "data"
-        Property { name: "ambient"; type: "QColor" }
-        Property { name: "specular"; type: "QColor" }
-        Property { name: "shininess"; type: "double" }
-        Property { name: "textureScale"; type: "double" }
-        Property { name: "diffuse"; type: "QUrl" }
-        Property { name: "normal"; type: "QUrl" }
-        Property { name: "effect"; type: "Qt3DRender::QEffect"; isPointer: true }
-        Signal {
-            name: "effectChanged"
-            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
-        }
-        Method {
-            name: "setEffect"
-            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
-        }
-    }
-    Component {
-        prototype: "Qt3DCore::QComponent"
-        name: "Qt3D.Extras/NormalDiffuseMapMaterial 2.0"
-        exports: ["Qt3D.Extras/NormalDiffuseMapMaterial 2.0"]
-        exportMetaObjectRevisions: [0]
-        isComposite: true
-        defaultProperty: "data"
-        Property { name: "ambient"; type: "QColor" }
-        Property { name: "specular"; type: "QColor" }
-        Property { name: "shininess"; type: "double" }
-        Property { name: "textureScale"; type: "double" }
-        Property { name: "diffuse"; type: "QUrl" }
-        Property { name: "normal"; type: "QUrl" }
-        Property { name: "effect"; type: "Qt3DRender::QEffect"; isPointer: true }
-        Signal {
-            name: "effectChanged"
-            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
-        }
-        Method {
-            name: "setEffect"
-            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
-        }
-    }
-    Component {
-        prototype: "Qt3DCore::QComponent"
-        name: "Qt3D.Extras/NormalDiffuseSpecularMapMaterial 2.0"
-        exports: ["Qt3D.Extras/NormalDiffuseSpecularMapMaterial 2.0"]
-        exportMetaObjectRevisions: [0]
-        isComposite: true
-        defaultProperty: "data"
-        Property { name: "ambient"; type: "QColor" }
-        Property { name: "shininess"; type: "double" }
-        Property { name: "textureScale"; type: "double" }
-        Property { name: "diffuse"; type: "QUrl" }
-        Property { name: "specular"; type: "QUrl" }
-        Property { name: "normal"; type: "QUrl" }
-        Property { name: "effect"; type: "Qt3DRender::QEffect"; isPointer: true }
-        Signal {
-            name: "effectChanged"
-            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
-        }
-        Method {
-            name: "setEffect"
-            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
-        }
-    }
-    Component {
-        prototype: "Qt3DCore::QNode"
-        name: "Qt3D.Extras/OrbitCameraController 2.0"
-        exports: ["Qt3D.Extras/OrbitCameraController 2.0"]
-        exportMetaObjectRevisions: [0]
-        isComposite: true
-        defaultProperty: "data"
-        Property { name: "camera"; type: "Qt3DRender::QCamera"; isPointer: true }
-        Property { name: "linearSpeed"; type: "double" }
-        Property { name: "lookSpeed"; type: "double" }
-        Property { name: "zoomLimit"; type: "double" }
-        Method {
-            name: "clampInputs"
-            type: "QVariant"
-            Parameter { name: "input1"; type: "QVariant" }
-            Parameter { name: "input2"; type: "QVariant" }
-        }
-        Method {
-            name: "zoomDistance"
-            type: "QVariant"
-            Parameter { name: "firstPoint"; type: "QVariant" }
-            Parameter { name: "secondPoint"; type: "QVariant" }
-        }
-    }
-    Component {
-        prototype: "Qt3DCore::QComponent"
-        name: "Qt3D.Extras/PerVertexColorMaterial 2.0"
-        exports: ["Qt3D.Extras/PerVertexColorMaterial 2.0"]
-        exportMetaObjectRevisions: [0]
-        isComposite: true
-        defaultProperty: "data"
-        Property { name: "effect"; type: "Qt3DRender::QEffect"; isPointer: true }
-        Signal {
-            name: "effectChanged"
-            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
-        }
-        Method {
-            name: "setEffect"
-            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
-        }
-    }
-    Component {
-        prototype: "Qt3DCore::QComponent"
-        name: "Qt3D.Extras/PhongAlphaMaterial 2.0"
-        exports: ["Qt3D.Extras/PhongAlphaMaterial 2.0"]
-        exportMetaObjectRevisions: [0]
-        isComposite: true
-        defaultProperty: "data"
-        Property { name: "ambient"; type: "QColor" }
-        Property { name: "diffuse"; type: "QColor" }
-        Property { name: "specular"; type: "QColor" }
-        Property { name: "shininess"; type: "double" }
-        Property { name: "alpha"; type: "double" }
-        Property { name: "sourceRgbArg"; type: "int" }
-        Property { name: "destinationRgbArg"; type: "int" }
-        Property { name: "sourceAlphaArg"; type: "int" }
-        Property { name: "destinationAlphaArg"; type: "int" }
-        Property { name: "blendFunctionArg"; type: "int" }
-        Property { name: "effect"; type: "Qt3DRender::QEffect"; isPointer: true }
-        Signal {
-            name: "effectChanged"
-            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
-        }
-        Method {
-            name: "setEffect"
-            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
-        }
-    }
-    Component {
-        prototype: "Qt3DCore::QComponent"
-        name: "Qt3D.Extras/PhongMaterial 2.0"
-        exports: ["Qt3D.Extras/PhongMaterial 2.0"]
-        exportMetaObjectRevisions: [0]
-        isComposite: true
-        defaultProperty: "data"
-        Property { name: "ambient"; type: "QColor" }
-        Property { name: "diffuse"; type: "QColor" }
-        Property { name: "specular"; type: "QColor" }
-        Property { name: "shininess"; type: "double" }
-        Property { name: "effect"; type: "Qt3DRender::QEffect"; isPointer: true }
-        Signal {
-            name: "effectChanged"
-            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
-        }
-        Method {
-            name: "setEffect"
-            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
-        }
-    }
-    Component {
-        prototype: "Qt3DCore::QComponent"
-        name: "Qt3D.Extras/TextureMaterial 2.0"
-        exports: ["Qt3D.Extras/TextureMaterial 2.0"]
-        exportMetaObjectRevisions: [0]
-        isComposite: true
-        defaultProperty: "data"
-        Property { name: "texture"; type: "Qt3DRender::QTexture2D"; isPointer: true }
-        Property { name: "textureOffset"; type: "QVector2D" }
-        Property { name: "effect"; type: "Qt3DRender::QEffect"; isPointer: true }
-        Signal {
-            name: "effectChanged"
-            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
-        }
-        Method {
-            name: "setEffect"
-            Parameter { name: "effect"; type: "QEffect"; isPointer: true }
-        }
-    }
+    Component { name: "Qt3DRender::QTechniqueFilter"; prototype: "Qt3DRender::QFrameGraphNode" }
 }

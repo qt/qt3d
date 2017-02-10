@@ -66,6 +66,7 @@
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
+#include <Qt3DRender/private/buffercapture_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <Qt3DCore/qentity.h>
 #include <QtGui/qsurface.h>
@@ -128,6 +129,8 @@ RenderView::StandardUniformsNameToTypeHash RenderView::initializeStandardUniform
     setters.insert(StringToInt::lookupId(QLatin1String("modelViewNormal")), ModelViewNormalMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("viewportMatrix")), ViewportMatrix);
     setters.insert(StringToInt::lookupId(QLatin1String("inverseViewportMatrix")), InverseViewportMatrix);
+    setters.insert(StringToInt::lookupId(QLatin1String("exposure")), Exposure);
+    setters.insert(StringToInt::lookupId(QLatin1String("gamma")), Gamma);
     setters.insert(StringToInt::lookupId(QLatin1String("time")), Time);
     setters.insert(StringToInt::lookupId(QLatin1String("eyePosition")), EyePosition);
 
@@ -190,6 +193,10 @@ UniformValue RenderView::standardUniformValue(RenderView::StandardUniform standa
         viewportMatrix.viewport(resolveViewport(m_viewport, m_surfaceSize));
         return UniformValue(viewportMatrix.inverted());
     }
+    case Exposure:
+        return UniformValue(m_data.m_renderCameraLens->exposure());
+    case Gamma:
+        return UniformValue(m_gamma);
     case Time:
         return UniformValue(float(m_renderer->time() / 1000000000.0f));
     case EyePosition:
@@ -204,11 +211,13 @@ RenderView::RenderView()
     : m_renderer(nullptr)
     , m_devicePixelRatio(1.)
     , m_viewport(QRectF(0.0f, 0.0f, 1.0f, 1.0f))
+    , m_gamma(2.2f)
     , m_surface(nullptr)
     , m_clearBuffer(QClearBuffers::None)
     , m_stateSet(nullptr)
     , m_noDraw(false)
     , m_compute(false)
+    , m_isDownloadBuffersEnable(false)
     , m_frustumCulling(false)
     , m_memoryBarrier(QMemoryBarrier::None)
 {
@@ -828,6 +837,16 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
     else {
         qCWarning(Render::Backend) << Q_FUNC_INFO << "Using default effect as none was provided";
     }
+}
+
+bool RenderView::isDownloadBuffersEnable() const
+{
+    return m_isDownloadBuffersEnable;
+}
+
+void RenderView::setIsDownloadBuffersEnable(bool isDownloadBuffersEnable)
+{
+    m_isDownloadBuffersEnable = isDownloadBuffersEnable;
 }
 
 } // namespace Render

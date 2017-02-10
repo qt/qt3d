@@ -175,6 +175,7 @@ bool CollisionVisitor::intersectsSegmentTriangle(uint andx, const QVector3D &a, 
         queryResult.m_vertexIndex[0] = andx;
         queryResult.m_vertexIndex[1] = bndx;
         queryResult.m_vertexIndex[2] = cndx;
+        queryResult.m_uvw = uvw;
         queryResult.m_intersection = m_ray.point(t * m_ray.distance());
         queryResult.m_distance = m_ray.projectedDistance(queryResult.m_intersection);
         hits.push_back(queryResult);

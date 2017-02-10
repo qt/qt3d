@@ -65,6 +65,7 @@ QSkyboxEntityPrivate::QSkyboxEntityPrivate()
     , m_effect(new QEffect())
     , m_material(new QMaterial())
     , m_skyboxTexture(new QTextureCubeMap())
+    , m_loadedTexture(new QTextureLoader())
     , m_gl3Shader(new QShaderProgram())
     , m_gl2es2Shader(new QShaderProgram())
     , m_gl2Technique(new QTechnique())
@@ -75,6 +76,7 @@ QSkyboxEntityPrivate::QSkyboxEntityPrivate()
     , m_es2RenderPass(new QRenderPass())
     , m_gl3RenderPass(new QRenderPass())
     , m_mesh(new QCuboidMesh())
+    , m_gammaStrengthParameter(new QParameter(QStringLiteral("gammaStrength"), 0.0f))
     , m_textureParameter(new QParameter(QStringLiteral("skyboxTexture"), m_skyboxTexture))
     , m_posXImage(new QTextureImage())
     , m_posYImage(new QTextureImage())
@@ -144,6 +146,7 @@ void QSkyboxEntityPrivate::init()
     m_effect->addTechnique(m_es2Technique);
 
     m_material->setEffect(m_effect);
+    m_material->addParameter(m_gammaStrengthParameter);
     m_material->addParameter(m_textureParameter);
 
     m_mesh->setXYMeshResolution(QSize(2, 2));
@@ -151,11 +154,17 @@ void QSkyboxEntityPrivate::init()
     m_mesh->setYZMeshResolution(QSize(2, 2));
 
     m_posXImage->setFace(QTextureCubeMap::CubeMapPositiveX);
+    m_posXImage->setMirrored(false);
     m_posYImage->setFace(QTextureCubeMap::CubeMapPositiveY);
+    m_posYImage->setMirrored(false);
     m_posZImage->setFace(QTextureCubeMap::CubeMapPositiveZ);
+    m_posZImage->setMirrored(false);
     m_negXImage->setFace(QTextureCubeMap::CubeMapNegativeX);
+    m_negXImage->setMirrored(false);
     m_negYImage->setFace(QTextureCubeMap::CubeMapNegativeY);
+    m_negYImage->setMirrored(false);
     m_negZImage->setFace(QTextureCubeMap::CubeMapNegativeZ);
+    m_negZImage->setMirrored(false);
 
     m_skyboxTexture->setMagnificationFilter(QTextureCubeMap::Linear);
     m_skyboxTexture->setMinificationFilter(QTextureCubeMap::Linear);
@@ -178,12 +187,18 @@ void QSkyboxEntityPrivate::init()
  */
 void QSkyboxEntityPrivate::reloadTexture()
 {
-    m_posXImage->setSource(QUrl(m_baseName + QStringLiteral("_posx") + m_extension));
-    m_posYImage->setSource(QUrl(m_baseName + QStringLiteral("_posy") + m_extension));
-    m_posZImage->setSource(QUrl(m_baseName + QStringLiteral("_posz") + m_extension));
-    m_negXImage->setSource(QUrl(m_baseName + QStringLiteral("_negx") + m_extension));
-    m_negYImage->setSource(QUrl(m_baseName + QStringLiteral("_negy") + m_extension));
-    m_negZImage->setSource(QUrl(m_baseName + QStringLiteral("_negz") + m_extension));
+    if (m_extension == QStringLiteral(".dds")) {
+        m_loadedTexture->setSource(QUrl(m_baseName + m_extension));
+        m_textureParameter->setValue(QVariant::fromValue(m_loadedTexture));
+    } else {
+        m_posXImage->setSource(QUrl(m_baseName + QStringLiteral("_posx") + m_extension));
+        m_posYImage->setSource(QUrl(m_baseName + QStringLiteral("_posy") + m_extension));
+        m_posZImage->setSource(QUrl(m_baseName + QStringLiteral("_posz") + m_extension));
+        m_negXImage->setSource(QUrl(m_baseName + QStringLiteral("_negx") + m_extension));
+        m_negYImage->setSource(QUrl(m_baseName + QStringLiteral("_negy") + m_extension));
+        m_negZImage->setSource(QUrl(m_baseName + QStringLiteral("_negz") + m_extension));
+        m_textureParameter->setValue(QVariant::fromValue(m_skyboxTexture));
+    }
 }
 
 /*!
@@ -232,7 +247,7 @@ void QSkyboxEntity::setBaseName(const QString &baseName)
     Q_D(QSkyboxEntity);
     if (baseName != d->m_baseName) {
         d->m_baseName = baseName;
-        emit sourceDirectoryChanged(baseName);
+        emit baseNameChanged(baseName);
         d->reloadTexture();
     }
 }
@@ -265,6 +280,29 @@ QString QSkyboxEntity::extension() const
 {
     Q_D(const QSkyboxEntity);
     return d->m_extension;
+}
+
+/*!
+ * Sets the gamma correction enable state to \a enabled.
+ * \since 5.9
+ */
+void QSkyboxEntity::setGammaCorrectEnabled(bool enabled)
+{
+    Q_D(QSkyboxEntity);
+    if (enabled != isGammaCorrectEnabled()) {
+        d->m_gammaStrengthParameter->setValue(enabled ? 1.0f : 0.0f);
+        emit gammaCorrectEnabledChanged(enabled);
+    }
+}
+
+/*!
+ * Indicates if gamma correction is enabled for this skybox.
+ * \since 5.9
+ */
+bool QSkyboxEntity::isGammaCorrectEnabled() const
+{
+    Q_D(const QSkyboxEntity);
+    return !qFuzzyIsNull(d->m_gammaStrengthParameter->value().toFloat());
 }
 
 } // namespace Qt3DExtras

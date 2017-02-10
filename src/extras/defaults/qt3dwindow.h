@@ -101,6 +101,7 @@ public:
     Qt3DExtras::QForwardRenderer *defaultFrameGraph() const;
 
     Qt3DRender::QCamera *camera() const;
+    Qt3DRender::QRenderSettings *renderSettings() const;
 
 public Q_SLOTS:
 

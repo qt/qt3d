@@ -541,15 +541,11 @@ void GraphicsHelperGL2::clearBufferf(GLint drawbuffer, const QVector4D &values)
 
 void GraphicsHelperGL2::pointSize(bool programmable, GLfloat value)
 {
-    // Print a warning once for trying to set GL_PROGRAM_POINT_SIZE
-    if (programmable) {
-        static bool warned = false;
-        if (!warned) {
-            qWarning() << "GL_PROGRAM_POINT_SIZE is not supported by OpenGL 2.0 (since 3.2)";
-            warned = true;
-        }
-    }
-    m_funcs->glPointSize(value);
+    m_funcs->glEnable(GL_POINT_SPRITE);
+    if (programmable)
+        m_funcs->glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+    else
+        m_funcs->glPointSize(value);
 }
 
 void GraphicsHelperGL2::enablei(GLenum cap, GLuint index)
@@ -598,6 +594,16 @@ void GraphicsHelperGL2::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
     Q_UNUSED(wy);
     Q_UNUSED(wz);
     qWarning() << "Compute Shaders are not supported by OpenGL 2.0 (since OpenGL 4.3)";
+}
+
+char *GraphicsHelperGL2::mapBuffer(GLenum target)
+{
+    return static_cast<char*>(m_funcs->glMapBuffer(target, GL_READ_WRITE));
+}
+
+GLboolean GraphicsHelperGL2::unmapBuffer(GLenum target)
+{
+    return m_funcs->glUnmapBuffer(target);
 }
 
 void GraphicsHelperGL2::glUniform1fv(GLint location, GLsizei count, const GLfloat *values)

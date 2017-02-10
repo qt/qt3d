@@ -51,6 +51,13 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(textureLoader.source(), QUrl());
         QCOMPARE(textureLoader.isMirrored(), true);
+        QCOMPARE(textureLoader.target(), Qt3DRender::QTextureLoader::TargetAutomatic);
+        QCOMPARE(textureLoader.wrapMode()->x(), Qt3DRender::QTextureWrapMode::Repeat);
+        QCOMPARE(textureLoader.wrapMode()->y(), Qt3DRender::QTextureWrapMode::Repeat);
+        QCOMPARE(textureLoader.magnificationFilter(), Qt3DRender::QTextureLoader::Linear);
+        QCOMPARE(textureLoader.minificationFilter(),  Qt3DRender::QTextureLoader::LinearMipMapLinear);
+        QCOMPARE(textureLoader.generateMipMaps(), true);
+        QCOMPARE(textureLoader.maximumAnisotropy(), 16.0f);
     }
 
     void checkPropertyChanges()

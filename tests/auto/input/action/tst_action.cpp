@@ -160,6 +160,7 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "active");
         QCOMPARE(change->value().toBool(), backendAction.actionTriggered());
 
+
         arbiter.events.clear();
 
         // WHEN

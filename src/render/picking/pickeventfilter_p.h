@@ -53,6 +53,7 @@
 
 #include <QObject>
 #include <QMouseEvent>
+#include <QKeyEvent>
 #include <QtCore/qmutex.h>
 
 QT_BEGIN_NAMESPACE
@@ -68,13 +69,15 @@ public:
     explicit PickEventFilter(QObject *parent = nullptr);
     ~PickEventFilter();
 
-    QList<QMouseEvent> pendingEvents();
+    QList<QMouseEvent> pendingMouseEvents();
+    QList<QKeyEvent> pendingKeyEvents();
 
 protected:
     bool eventFilter(QObject *obj, QEvent *e) Q_DECL_FINAL;
 
 private:
-    QList<QMouseEvent> m_pendingEvents;
+    QList<QMouseEvent> m_pendingMouseEvents;
+    QList<QKeyEvent> m_pendingKeyEvents;
     QMutex m_mutex;
 };
 

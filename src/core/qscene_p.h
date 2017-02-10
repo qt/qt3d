@@ -53,13 +53,13 @@
 
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 #include <Qt3DCore/private/qobservableinterface_p.h>
+#include <Qt3DCore/qnode.h>
 #include <QScopedPointer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QNode;
 class QScenePrivate;
 class QAspectEngine;
 
@@ -91,6 +91,16 @@ public:
     void addEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);
     void removeEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);
     bool hasEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);
+
+    // Node -> Property Update Data
+    struct NodePropertyTrackData
+    {
+        QNode::PropertyTrackMode updateMode = QNode::DefaultTrackMode;
+        QStringList namedProperties;
+    };
+    NodePropertyTrackData lookupNodePropertyTrackData(QNodeId id) const;
+    void setPropertyTrackDataForNode(QNodeId id, const NodePropertyTrackData &data);
+    void removePropertyTrackDataForNode(QNodeId id);
 
 private:
     Q_DECLARE_PRIVATE(QScene)

@@ -84,6 +84,7 @@
 #include <Qt3DRender/private/loadbufferjob_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
 #include <Qt3DRender/private/updatelevelofdetailjob_p.h>
+#include <Qt3DRender/private/buffercapture_p.h>
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
 
 #include <Qt3DRender/qcameralens.h>
@@ -154,6 +155,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_waitForInitializationToBeCompleted(0)
     , m_pickEventFilter(new PickEventFilter())
     , m_exposed(0)
+    , m_shareContext(nullptr)
     , m_changeSet(0)
     , m_lastFrameCorrect(0)
     , m_glContext(nullptr)
@@ -169,9 +171,11 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_updateTreeEnabledJob(Render::UpdateTreeEnabledJobPtr::create())
     , m_sendRenderCaptureJob(Render::SendRenderCaptureJobPtr::create(this))
     , m_updateLevelOfDetailJob(Render::UpdateLevelOfDetailJobPtr::create())
+    , m_sendBufferCaptureJob(Render::SendBufferCaptureJobPtr::create(this))
     , m_updateMeshTriangleListJob(Render::UpdateMeshTriangleListJobPtr::create())
     , m_filterCompatibleTechniqueJob(Render::FilterCompatibleTechniqueJobPtr::create())
     , m_bufferGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyBuffers(); }, JobTypes::DirtyBufferGathering))
+    , m_vaoGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForAbandonedVaos(); }, JobTypes::DirtyVaoGathering))
     , m_textureGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyTextures(); }, JobTypes::DirtyTextureGathering))
     , m_shaderGathererJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([this] { lookForDirtyShaders(); }, JobTypes::DirtyShaderGathering))
     , m_syncTextureLoadingJob(Render::GenericLambdaJobPtr<std::function<void ()>>::create([] {}, JobTypes::SyncTextureLoading))
@@ -263,6 +267,7 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_pickBoundingVolumeJob->setManagers(m_nodesManager);
     m_updateWorldBoundingVolumeJob->setManager(m_nodesManager->renderNodesManager());
     m_sendRenderCaptureJob->setManagers(m_nodesManager);
+    m_sendBufferCaptureJob->setManagers(m_nodesManager);
     m_updateLevelOfDetailJob->setManagers(m_nodesManager);
     m_updateMeshTriangleListJob->setManagers(m_nodesManager);
     m_filterCompatibleTechniqueJob->setManager(m_nodesManager->techniqueManager());
@@ -271,6 +276,17 @@ void Renderer::setNodeManagers(NodeManagers *managers)
 NodeManagers *Renderer::nodeManagers() const
 {
     return m_nodesManager;
+}
+
+/*!
+    \internal
+
+    Return context which can be used to share resources safely
+    with qt3d main render context.
+*/
+QOpenGLContext *Renderer::shareContext() const
+{
+    return m_shareContext ? m_shareContext : m_graphicsContext->openGLContext();
 }
 
 void Renderer::setOpenGLContext(QOpenGLContext *context)
@@ -314,6 +330,10 @@ void Renderer::initialize()
         // Context is not owned by us, so we need to know if it gets destroyed
         m_contextConnection = QObject::connect(m_glContext, &QOpenGLContext::aboutToBeDestroyed,
                                                [this] { releaseGraphicsResources(); });
+        m_shareContext = new QOpenGLContext;
+        m_shareContext->setFormat(m_glContext->format());
+        m_shareContext->setShareContext(m_glContext);
+        m_shareContext->create();
     }
 
     // Note: we don't have a surface at this point
@@ -358,6 +378,7 @@ void Renderer::shutdown()
         // to be ready. The isReadyToSubmit() function checks for a shutdown
         // having been requested.
         m_submitRenderViewsSemaphore.release(1);
+        m_renderThread->wait();
     }
 }
 
@@ -405,6 +426,13 @@ void Renderer::releaseGraphicsResources()
             buffer->destroy(m_graphicsContext.data());
         }
 
+        // Do the same thing with VAOs
+        const QVector<HVao> activeVaos = m_nodesManager->vaoManager()->activeHandles();
+        for (const HVao &vaoHandle : activeVaos) {
+            OpenGLVertexArrayObject *vao = m_nodesManager->vaoManager()->data(vaoHandle);
+            vao->destroy();
+        }
+
         context->doneCurrent();
     } else {
         qWarning() << "Failed to make context current: OpenGL resources will not be destroyed";
@@ -412,6 +440,8 @@ void Renderer::releaseGraphicsResources()
 
     if (m_ownedContext)
         delete context;
+    if (m_shareContext)
+        delete m_shareContext;
 
     m_graphicsContext.reset(nullptr);
     qCDebug(Backend) << Q_FUNC_INFO << "Renderer properly shutdown";
@@ -898,6 +928,23 @@ void Renderer::prepareCommandsSubmission(const QVector<RenderView *> &renderView
 }
 
 // Executed in a job
+void Renderer::lookForAbandonedVaos()
+{
+    const QVector<HVao> activeVaos = m_nodesManager->vaoManager()->activeHandles();
+    for (HVao handle : activeVaos) {
+        OpenGLVertexArrayObject *vao = m_nodesManager->vaoManager()->data(handle);
+
+        // Make sure to only mark VAOs for deletion that were already created
+        // (ignore those that might be currently under construction in the render thread)
+        if (vao && vao->isAbandoned(m_nodesManager->geometryManager(), m_nodesManager->shaderManager())) {
+            m_abandonedVaosMutex.lock();
+            m_abandonedVaos.push_back(handle);
+            m_abandonedVaosMutex.unlock();
+        }
+    }
+}
+
+// Executed in a job
 void Renderer::lookForDirtyBuffers()
 {
     const QVector<HBuffer> activeBufferHandles = m_nodesManager->bufferManager()->activeHandles();
@@ -905,6 +952,17 @@ void Renderer::lookForDirtyBuffers()
         Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
         if (buffer->isDirty())
             m_dirtyBuffers.push_back(handle);
+    }
+}
+
+void Renderer::lookForDownloadableBuffers()
+{
+    m_downloadableBuffers.clear();
+    const QVector<HBuffer> activeBufferHandles = m_nodesManager->bufferManager()->activeHandles();
+    for (HBuffer handle : activeBufferHandles) {
+        Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
+        if (buffer->access() & QBuffer::Read)
+            m_downloadableBuffers.push_back(handle);
     }
 }
 
@@ -993,8 +1051,6 @@ void Renderer::updateGLResources()
         // We can really release the texture at this point
         m_nodesManager->textureManager()->releaseResource(textureCleanedUpId);
     }
-
-
 }
 
 // Render Thread
@@ -1068,9 +1124,13 @@ void Renderer::updateTexture(Texture *texture)
             !glTextureManager->setParameters(glTexture, texture->parameters()))
         qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setParameters failed, should be non-shared";
 
-    if (dirtyFlags.testFlag(Texture::DirtyGenerators) &&
+    if (dirtyFlags.testFlag(Texture::DirtyImageGenerators) &&
             !glTextureManager->setImages(glTexture, texture->textureImages()))
         qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setGenerators failed, should be non-shared";
+
+    if (dirtyFlags.testFlag(Texture::DirtyDataGenerator) &&
+            !glTextureManager->setGenerator(glTexture, texture->dataGenerator()))
+        qWarning() << "[Qt3DRender::TextureNode] updateTexture: TextureImpl.setGenerator failed, should be non-shared";
 
     // Unset the dirty flag on the texture
     texture->unsetDirty();
@@ -1084,6 +1144,17 @@ void Renderer::cleanupTexture(const Texture *texture)
 
     if (glTexture != nullptr)
         glTextureManager->abandon(glTexture, texture);
+}
+
+void Renderer::downloadGLBuffers()
+{
+    lookForDownloadableBuffers();
+    const QVector<HBuffer> downloadableHandles = std::move(m_downloadableBuffers);
+    for (HBuffer handle : downloadableHandles) {
+        Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
+        QByteArray content = m_graphicsContext->downloadBufferContent(buffer);
+        m_sendBufferCaptureJob->addRequest(QPair<Buffer*, QByteArray>(buffer, content));
+    }
 }
 
 
@@ -1224,6 +1295,9 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
             addRenderCaptureSendRequest(renderView->renderCaptureNodeId());
         }
 
+        if (renderView->isDownloadBuffersEnable())
+            downloadGLBuffers();
+
         frameElapsed = timer.elapsed() - frameElapsed;
         qCDebug(Rendering) << Q_FUNC_INFO << "Submitted Renderview " << i + 1 << "/" << renderViewsCount  << "in " << frameElapsed << "ms";
         frameElapsed = timer.elapsed();
@@ -1314,6 +1388,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     m_pickBoundingVolumeJob->setFrameGraphRoot(frameGraphRoot());
     m_pickBoundingVolumeJob->setRenderSettings(settings());
     m_pickBoundingVolumeJob->setMouseEvents(pendingPickingEvents());
+    m_pickBoundingVolumeJob->setKeyEvents(pendingKeyEvents());
 
     m_updateLevelOfDetailJob->setFrameGraphRoot(frameGraphRoot());
     // Set dependencies of resource gatherer
@@ -1334,11 +1409,13 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     renderBinJobs.push_back(m_worldTransformJob);
     renderBinJobs.push_back(m_cleanupJob);
     renderBinJobs.push_back(m_sendRenderCaptureJob);
+    renderBinJobs.push_back(m_sendBufferCaptureJob);
     renderBinJobs.push_back(m_filterCompatibleTechniqueJob);
     renderBinJobs.append(bufferJobs);
 
     // Jobs to prepare GL Resource upload
     renderBinJobs.push_back(m_syncTextureLoadingJob);
+    renderBinJobs.push_back(m_vaoGathererJob);
     renderBinJobs.push_back(m_bufferGathererJob);
     renderBinJobs.push_back(m_textureGathererJob);
     renderBinJobs.push_back(m_shaderGathererJob);
@@ -1477,16 +1554,15 @@ void Renderer::createOrUpdateVAO(RenderCommand *command,
                                  HVao *previousVaoHandle,
                                  OpenGLVertexArrayObject **vao)
 {
+    const VAOIdentifier vaoKey(command->m_geometry, command->m_shader);
+
     VAOManager *vaoManager = m_nodesManager->vaoManager();
-    command->m_vao = vaoManager->lookupHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
+    command->m_vao = vaoManager->lookupHandle(vaoKey);
 
     if (command->m_vao.isNull()) {
         qCDebug(Rendering) << Q_FUNC_INFO << "Allocating new VAO";
-        command->m_vao = vaoManager->getOrAcquireHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
-        vaoManager->data(command->m_vao)->setGraphicsContext(m_graphicsContext.data());
-        if (m_graphicsContext->supportsVAO())
-            vaoManager->data(command->m_vao)->setVao(new QOpenGLVertexArrayObject());
-        vaoManager->data(command->m_vao)->create();
+        command->m_vao = vaoManager->getOrAcquireHandle(vaoKey);
+        vaoManager->data(command->m_vao)->create(m_graphicsContext.data(), vaoKey);
     }
 
     if (*previousVaoHandle != command->m_vao) {
@@ -1682,11 +1758,30 @@ void Renderer::cleanGraphicsResources()
         tex->destroyGLTexture();
         delete tex;
     }
+
+    // Delete abandoned VAOs
+    m_abandonedVaosMutex.lock();
+    const QVector<HVao> abandonedVaos = std::move(m_abandonedVaos);
+    m_abandonedVaosMutex.unlock();
+    for (HVao vaoHandle : abandonedVaos) {
+        // might have already been destroyed last frame, but added by the cleanup job before, so
+        // check if the VAO is really still existent
+        OpenGLVertexArrayObject *vao = m_nodesManager->vaoManager()->data(vaoHandle);
+        if (vao) {
+            vao->destroy();
+            m_nodesManager->vaoManager()->release(vaoHandle);
+        }
+    }
 }
 
 QList<QMouseEvent> Renderer::pendingPickingEvents() const
 {
-    return m_pickEventFilter->pendingEvents();
+    return m_pickEventFilter->pendingMouseEvents();
+}
+
+QList<QKeyEvent> Renderer::pendingKeyEvents() const
+{
+    return m_pickEventFilter->pendingKeyEvents();
 }
 
 const GraphicsApiFilterData *Renderer::contextInfo() const

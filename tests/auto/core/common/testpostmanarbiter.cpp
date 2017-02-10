@@ -46,6 +46,11 @@ void TestPostman::notifyBackend(const Qt3DCore::QSceneChangePtr &e)
     m_arbiter->sceneChangeEventWithLock(e);
 }
 
+bool TestPostman::shouldNotifyFrontend(const Qt3DCore::QSceneChangePtr &)
+{
+    return false;
+}
+
 TestArbiter::TestArbiter()
     : m_postman(new TestPostman(this))
 {

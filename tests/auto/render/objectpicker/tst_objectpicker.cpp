@@ -46,7 +46,9 @@ private Q_SLOTS:
         // GIVEN
         Qt3DRender::Render::ObjectPicker objectPicker;
         Qt3DRender::QObjectPicker picker;
+        Qt3DRender::QEventForward eventForward;
         picker.setHoverEnabled(true);
+        picker.setEventForward(&eventForward);
 
         // WHEN
         simulateInitialization(&picker, &objectPicker);
@@ -54,6 +56,7 @@ private Q_SLOTS:
         // THEN
         QVERIFY(!objectPicker.peerId().isNull());
         QCOMPARE(objectPicker.isHoverEnabled(), true);
+        QCOMPARE(objectPicker.eventForward(), eventForward.id());
     }
 
     void checkInitialAndCleanedUpState()
@@ -64,6 +67,8 @@ private Q_SLOTS:
         // THEN
         QVERIFY(objectPicker.peerId().isNull());
         QCOMPARE(objectPicker.isHoverEnabled(), false);
+        QCOMPARE(objectPicker.isEventForwardingEnabled(), false);
+        QCOMPARE(objectPicker.eventForward(), Qt3DCore::QNodeId());
 
         // GIVEN
         Qt3DRender::QObjectPicker picker;
@@ -75,6 +80,8 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(objectPicker.isHoverEnabled(), false);
+        QCOMPARE(objectPicker.isEventForwardingEnabled(), false);
+        QCOMPARE(objectPicker.eventForward(), Qt3DCore::QNodeId());
     }
 
     void checkPropertyChanges()
@@ -83,6 +90,7 @@ private Q_SLOTS:
         TestRenderer renderer;
         {
             Qt3DRender::Render::ObjectPicker objectPicker;
+            Qt3DRender::QEventForward eventForward;
             objectPicker.setRenderer(&renderer);
 
             // WHEN
@@ -94,6 +102,15 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(objectPicker.isHoverEnabled(), true);
             QVERIFY(renderer.dirtyBits() != 0);
+
+            // WHEN
+            updateChange->setValue(QVariant::fromValue(eventForward.id()));
+            updateChange->setPropertyName("eventForward");
+            objectPicker.sceneChangeEvent(updateChange);
+
+            // THEN
+            QCOMPARE(objectPicker.isEventForwardingEnabled(), true);
+            QCOMPARE(objectPicker.eventForward(), eventForward.id());
         }
     }
 

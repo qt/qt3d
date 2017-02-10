@@ -78,6 +78,7 @@
 #include <Qt3DRender/private/openglvertexarrayobject_p.h>
 #include <Qt3DRender/private/light_p.h>
 #include <Qt3DRender/private/computecommand_p.h>
+#include <Qt3DRender/private/eventforward_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -260,7 +261,7 @@ public:
 
 class VAOManager : public Qt3DCore::QResourceManager<
         OpenGLVertexArrayObject,
-        QPair<HGeometry, HShader>,
+        VAOIdentifier,
         16,
         Qt3DCore::ArrayAllocatingPolicy,
         Qt3DCore::NonLockingPolicy>
@@ -359,6 +360,15 @@ class ObjectPickerManager : public Qt3DCore::QResourceManager<
 {
 };
 
+class EventForwardManager : public Qt3DCore::QResourceManager<
+        EventForward,
+        Qt3DCore::QNodeId,
+        8,
+        Qt3DCore::ArrayAllocatingPolicy,
+        Qt3DCore::NonLockingPolicy>
+{
+};
+
 #if 0
 class BoundingVolumeDebugManager : public Qt3DCore::QResourceManager<
         BoundingVolumeDebug,
@@ -422,6 +432,7 @@ Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::BoundingVolumeDebug, Q_REQUIRES_CLEA
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::ComputeCommand, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Parameter, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Transform, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::OpenGLVertexArrayObject, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 

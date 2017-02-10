@@ -73,6 +73,7 @@ QNodePrivate::QNodePrivate()
     , m_blockNotifications(false)
     , m_hasBackendNode(false)
     , m_enabled(true)
+    , m_propertyTrackMode(QNode::DefaultTrackMode)
     , m_propertyChangesSetup(false)
     , m_signals(this)
 {
@@ -392,20 +393,22 @@ void QNodePrivate::setSceneHelper(QNode *root)
     Recursively unsets and remove nodes in the subtree of base node \a root from
     the scene. Also takes care of removing Components and Entities connections.
  */
-void QNodePrivate::unsetSceneHelper(QNode *root)
+void QNodePrivate::unsetSceneHelper(QNode *node)
 {
+    QNodePrivate *nodePrivate = QNodePrivate::get(node);
+
     // We also need to handle QEntity <-> QComponent relationships removal
-    if (QComponent *c = qobject_cast<QComponent *>(root)) {
+    if (QComponent *c = qobject_cast<QComponent *>(node)) {
         const QVector<QEntity *> entities = c->entities();
         for (QEntity *entity : entities) {
-            if (m_scene)
-                m_scene->removeEntityForComponent(c->id(), entity->id());
+            if (nodePrivate->m_scene)
+                nodePrivate->m_scene->removeEntityForComponent(c->id(), entity->id());
         }
     }
 
-    if (m_scene != nullptr)
-        m_scene->removeObservable(root);
-    root->d_func()->setScene(nullptr);
+    if (nodePrivate->m_scene != nullptr)
+        nodePrivate->m_scene->removeObservable(node);
+    nodePrivate->setScene(nullptr);
 }
 
 /*!
@@ -487,7 +490,23 @@ void QNode::notifyObservers(const QSceneChangePtr &change)
 void QNode::sceneChangeEvent(const QSceneChangePtr &change)
 {
     Q_UNUSED(change);
-    qWarning() << Q_FUNC_INFO << "sceneChangeEvent should have been subclassed";
+    if (change->type() == Qt3DCore::PropertyUpdated) {
+        // TODO: Do this more efficiently. We could pass the metaobject and property
+        //       index to the animation aspect via the QChannelMapping. This would
+        //       allow us to avoid the propertyIndex lookup here by sending them in
+        //       a new subclass of QPropertyUpdateChange.
+        // Try to find property and call setter
+        auto e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
+        const QMetaObject *mo = metaObject();
+        const int propertyIndex = mo->indexOfProperty(e->propertyName());
+        QMetaProperty mp = mo->property(propertyIndex);
+        bool wasBlocked = blockNotifications(true);
+        mp.write(this, e->value());
+        blockNotifications(wasBlocked);
+    } else {
+        // Nothing is handling this change, warn the user.
+        qWarning() << Q_FUNC_INFO << "sceneChangeEvent should have been subclassed";
+    }
 }
 
 /*!
@@ -495,8 +514,13 @@ void QNode::sceneChangeEvent(const QSceneChangePtr &change)
  */
 void QNodePrivate::setScene(QScene *scene)
 {
-    if (m_scene != scene)
+    if (m_scene != scene) {
+        if (m_scene != nullptr)
+            m_scene->removePropertyTrackDataForNode(m_id);
         m_scene = scene;
+        // set PropertyTrackData in the scene
+        updatePropertyTrackMode();
+    }
 }
 
 /*!
@@ -578,6 +602,16 @@ void QNodePrivate::insertTree(QNode *treeRoot, int depth)
 
     if (depth == 0)
         treeRoot->setParent(q_func());
+}
+
+void QNodePrivate::updatePropertyTrackMode()
+{
+    if (m_scene != nullptr) {
+        QScene::NodePropertyTrackData trackData;
+        trackData.updateMode = m_propertyTrackMode;
+        trackData.namedProperties = m_trackedProperties;
+        m_scene->setPropertyTrackDataForNode(m_id,trackData);
+    }
 }
 
 /*!
@@ -769,6 +803,34 @@ void QNode::setEnabled(bool isEnabled)
     emit enabledChanged(isEnabled);
 }
 
+void QNode::setPropertyTrackMode(QNode::PropertyTrackMode mode)
+{
+    Q_D(QNode);
+    if (d->m_propertyTrackMode == mode)
+        return;
+
+    d->m_propertyTrackMode = mode;
+    // The backend doesn't care about such notification
+    const bool blocked = blockNotifications(true);
+    emit propertyUpdateModeChanged(mode);
+    blockNotifications(blocked);
+    d->updatePropertyTrackMode();
+}
+
+void QNode::setTrackedProperties(const QStringList &trackedProperties)
+{
+    Q_D(QNode);
+    if (d->m_trackedProperties == trackedProperties)
+        return;
+
+    d->m_trackedProperties = trackedProperties;
+    // The backend doesn't care about such notification
+    const bool blocked = blockNotifications(true);
+    emit trackedPropertiesChanged(trackedProperties);
+    blockNotifications(blocked);
+    d->updatePropertyTrackMode();
+}
+
 /*!
     \property Qt3DCore::QNode::enabled
 
@@ -783,6 +845,32 @@ bool QNode::isEnabled() const
 {
     Q_D(const QNode);
     return d->m_enabled;
+}
+
+/*!
+    \property Qt3DCore::QNode::propertyTrackMode
+
+    Holds the property track mode which determines whether a QNode should
+    be listening for property updates
+
+    By default it is set to QNode::DontTrackProperties
+*/
+QNode::PropertyTrackMode QNode::propertyTrackMode() const
+{
+    Q_D(const QNode);
+    return d->m_propertyTrackMode;
+}
+
+/*!
+    \property Qt3DCore::QNode::trackedProperties
+
+    Holds the names of the properties to be tracked when propertyTrackMode is
+    set to TrackNamedProperties.
+*/
+QStringList QNode::trackedProperties() const
+{
+    Q_D(const QNode);
+    return d->m_trackedProperties;
 }
 
 QNodeCreatedChangeBasePtr QNode::createNodeCreationChange() const

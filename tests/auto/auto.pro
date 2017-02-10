@@ -6,7 +6,7 @@ SUBDIRS = \
     quick3d \
     cmake \
     input \
-    physics \
+    animation \
     extras
 
 installed_cmake.depends = cmake

@@ -57,6 +57,8 @@
 
 QT_BEGIN_NAMESPACE
 
+class QOpenGLExtensions;
+
 namespace Qt3DRender {
 namespace Render {
 
@@ -89,6 +91,8 @@ public:
     void disablei(GLenum cap, GLuint index) Q_DECL_OVERRIDE;
     void disablePrimitiveRestart() Q_DECL_OVERRIDE;
     void dispatchCompute(GLuint wx, GLuint wy, GLuint wz) Q_DECL_OVERRIDE;
+    char *mapBuffer(GLenum target) Q_DECL_OVERRIDE;
+    GLboolean unmapBuffer(GLenum target) Q_DECL_OVERRIDE;
     void drawArrays(GLenum primitiveType, GLint first, GLsizei count) Q_DECL_OVERRIDE;
     void drawArraysIndirect(GLenum mode,void *indirect) Q_DECL_OVERRIDE;
     void drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances) Q_DECL_OVERRIDE;
@@ -151,6 +155,8 @@ public:
 
 protected:
     QOpenGLFunctions *m_funcs;
+    bool m_supportFramebufferBlit;
+    QScopedPointer<QOpenGLExtensions> m_ext;
 };
 
 } // namespace Render

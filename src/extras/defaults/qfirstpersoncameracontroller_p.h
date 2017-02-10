@@ -98,6 +98,7 @@ public:
     QFirstPersonCameraControllerPrivate();
 
     void init();
+    void applyAccelerations();
 
     Qt3DRender::QCamera *m_camera;
 
@@ -131,6 +132,8 @@ public:
 
     float m_linearSpeed;
     float m_lookSpeed;
+    float m_acceleration;
+    float m_deceleration;
     QVector3D m_firstPersonUp;
 
     void _q_onTriggered(float);

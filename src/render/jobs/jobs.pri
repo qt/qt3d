@@ -28,7 +28,8 @@ HEADERS += \
     $$PWD/updatemeshtrianglelistjob_p.h \
     $$PWD/pickboundingvolumeutils_p.h \
     $$PWD/filtercompatibletechniquejob_p.h \
-    $$PWD/updatetreeenabledjob_p.h
+    $$PWD/updatetreeenabledjob_p.h \
+    $$PWD/sendbuffercapturejob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
@@ -55,4 +56,6 @@ SOURCES += \
     $$PWD/updatelevelofdetailjob.cpp \
     $$PWD/pickboundingvolumeutils.cpp \
     $$PWD/filtercompatibletechniquejob.cpp \
-    $$PWD/updatetreeenabledjob.cpp
+    $$PWD/updatetreeenabledjob.cpp \
+    $$PWD/sendbuffercapturejob.cpp
+

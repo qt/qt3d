@@ -74,13 +74,11 @@ Entity {
         material: NormalDiffuseSpecularMapMaterial {
             id: material
             ambient: "black"
-            diffuse: "assets/metalbarrel/diffus_" + root.diffuseColor + ".webp"
-            normal: "assets/metalbarrel/normal_" + root.bump + ".webp"
-            specular: {
-                if (root.specular !== "" )
-                    return "assets/metalbarrel/specular_" + root.specular + ".webp"
-                else
-                    return "assets/metalbarrel/specular.webp"
+            diffuse: TextureLoader { source: "assets/metalbarrel/diffus_" + root.diffuseColor + ".webp" } //TextureLoader { source: ("assets/metalbarrel/diffus_" + root.diffuseColor + ".webp") }
+            normal: TextureLoader { source: "assets/metalbarrel/normal_" + root.bump + ".webp" }
+            specular: TextureLoader {
+                source: root.specular !== "" ? "assets/metalbarrel/specular_" + root.specular + ".webp"
+                                             : "assets/metalbarrel/specular.webp"
             }
 
             shininess: 5.0

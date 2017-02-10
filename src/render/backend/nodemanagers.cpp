@@ -46,6 +46,7 @@
 #include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/techniquemanager_p.h>
+#include <private/resourceaccessor_p.h>
 
 #include <QOpenGLVertexArrayObject>
 
@@ -90,6 +91,8 @@ NodeManagers::NodeManagers()
     , m_lightManager(new LightManager())
     , m_computeJobManager(new ComputeCommandManager())
     , m_renderStateManager(new RenderStateManager())
+    , m_eventForwardManager(new EventForwardManager())
+    , m_resourceAccessor(new ResourceAccessor(this))
 {
 }
 
@@ -129,6 +132,12 @@ NodeManagers::~NodeManagers()
     delete m_computeJobManager;
     delete m_renderStateManager;
     delete m_renderNodesManager;
+    delete m_eventForwardManager;
+}
+
+QSharedPointer<ResourceAccessor> NodeManagers::resourceAccessor()
+{
+    return m_resourceAccessor;
 }
 
 template<>
@@ -321,6 +330,12 @@ template<>
 RenderStateManager *NodeManagers::manager<RenderStateNode>() const Q_DECL_NOTHROW
 {
     return m_renderStateManager;
+}
+
+template<>
+EventForwardManager *NodeManagers::manager<EventForward>() const Q_DECL_NOTHROW
+{
+    return m_eventForwardManager;
 }
 
 } // Render

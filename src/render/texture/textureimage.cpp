@@ -106,7 +106,7 @@ void TextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         // Notify the Texture that we were updated and request it to schedule an update job
         Texture *txt = m_textureManager->data(m_textureProvider);
         if (txt != nullptr)
-            txt->addDirtyFlag(Texture::DirtyGenerators);
+            txt->addDirtyFlag(Texture::DirtyImageGenerators);
     }
 
     markDirty(AbstractRenderer::AllDirty);

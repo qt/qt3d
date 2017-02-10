@@ -346,6 +346,11 @@ QCameraPrivate::QCameraPrivate()
  */
 
 /*!
+ * \property QCamera::exposure
+ * Holds the current exposure of the camera.
+ */
+
+/*!
  * \property QCamera::position
  * Holds the camera's position.
  */
@@ -387,6 +392,7 @@ QCamera::QCamera(Qt3DCore::QNode *parent)
     QObject::connect(d_func()->m_lens, SIGNAL(bottomChanged(float)), this, SIGNAL(bottomChanged(float)));
     QObject::connect(d_func()->m_lens, SIGNAL(topChanged(float)), this, SIGNAL(topChanged(float)));
     QObject::connect(d_func()->m_lens, SIGNAL(projectionMatrixChanged(const QMatrix4x4 &)), this, SIGNAL(projectionMatrixChanged(const QMatrix4x4 &)));
+    QObject::connect(d_func()->m_lens, SIGNAL(exposureChanged(float)), this, SIGNAL(exposureChanged(float)));
     QObject::connect(d_func()->m_transform, SIGNAL(matrixChanged()), this, SIGNAL(viewMatrixChanged()));
     addComponent(d_func()->m_lens);
     addComponent(d_func()->m_transform);
@@ -773,10 +779,25 @@ void QCamera::setProjectionMatrix(const QMatrix4x4 &projectionMatrix)
     d->m_lens->setProjectionMatrix(projectionMatrix);
 }
 
+/*!
+ * Sets the camera's exposure to \a exposure.
+ */
+void QCamera::setExposure(float exposure)
+{
+    Q_D(QCamera);
+    d->m_lens->setExposure(exposure);
+}
+
 QMatrix4x4 QCamera::projectionMatrix() const
 {
     Q_D(const QCamera);
     return d->m_lens->projectionMatrix();
+}
+
+float QCamera::exposure() const
+{
+    Q_D(const QCamera);
+    return d->m_lens->exposure();
 }
 
 /*!

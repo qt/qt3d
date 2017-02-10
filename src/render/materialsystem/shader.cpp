@@ -72,8 +72,6 @@ Shader::~Shader()
 {
     // TO DO: ShaderProgram is leaked as of now
     // Fix that taking care that they may be shared given a same dna
-
-    QObject::disconnect(m_contextConnection);
 }
 
 void Shader::cleanup()
@@ -85,6 +83,7 @@ void Shader::cleanup()
         if (m_graphicsContext)
             m_graphicsContext->removeShaderProgramReference(this);
         m_graphicsContext = nullptr;
+        QObject::disconnect(m_contextConnection);
     }
 
     QBackendNode::setEnabled(false);

@@ -67,11 +67,13 @@ public :
     Q_DECLARE_PUBLIC(QViewport)
     QRectF m_normalizedRect;
     QColor m_clearColor;
+    float m_gamma;
 };
 
 struct QViewportData
 {
     QRectF normalizedRect;
+    float gamma;
 };
 
 } // namespace Qt3DRender

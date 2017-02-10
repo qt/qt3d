@@ -81,6 +81,14 @@
 
 QT_BEGIN_NAMESPACE
 
+#ifndef GL_READ_FRAMEBUFFER
+#define GL_READ_FRAMEBUFFER 0x8CA8
+#endif
+
+#ifndef GL_DRAW_FRAMEBUFFER
+#define GL_DRAW_FRAMEBUFFER 0x8CA9
+#endif
+
 namespace {
 
 QOpenGLShader::ShaderType shaderType(Qt3DRender::QShaderProgram::ShaderType type)
@@ -1073,6 +1081,16 @@ void GraphicsContext::dispatchCompute(int x, int y, int z)
         m_glHelper->dispatchCompute(x, y, z);
 }
 
+GLboolean GraphicsContext::unmapBuffer(GLenum target)
+{
+    return m_glHelper->unmapBuffer(target);
+}
+
+char *GraphicsContext::mapBuffer(GLenum target)
+{
+    return m_glHelper->mapBuffer(target);
+}
+
 void GraphicsContext::enablei(GLenum cap, GLuint index)
 {
     m_glHelper->enablei(cap, index);
@@ -1426,6 +1444,16 @@ void GraphicsContext::updateBuffer(Buffer *buffer)
         uploadDataToGLBuffer(buffer, m_renderer->nodeManagers()->glBufferManager()->data(it.value()));
 }
 
+QByteArray GraphicsContext::downloadBufferContent(Buffer *buffer)
+{
+    const QHash<Qt3DCore::QNodeId, HGLBuffer>::iterator it = m_renderBufferHash.find(buffer->peerId());
+    if (it != m_renderBufferHash.end())
+        return downloadDataFromGLBuffer(buffer, m_renderer->nodeManagers()->glBufferManager()->data(it.value()));
+    return QByteArray();
+}
+
+
+
 void GraphicsContext::releaseBuffer(Qt3DCore::QNodeId bufferId)
 {
     auto it = m_renderBufferHash.find(bufferId);
@@ -1520,6 +1548,15 @@ void GraphicsContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool rel
             m_boundArrayBuffer = nullptr;
     }
     qCDebug(Render::Io) << "uploaded buffer size=" << buffer->data().size();
+}
+
+QByteArray GraphicsContext::downloadDataFromGLBuffer(Buffer *buffer, GLBuffer *b)
+{
+    if (!bindGLBuffer(b, bufferTypeToGLBufferType(buffer->type())))
+        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer bind failed";
+
+    QByteArray data = b->download(this, buffer->data().size());
+    return data;
 }
 
 GLint GraphicsContext::elementType(GLint type)
@@ -1677,10 +1714,8 @@ QImage GraphicsContext::readFramebuffer(QSize size)
     QImage::Format imageFormat;
     uint stride;
 
-#ifndef QT_OPENGL_ES_2
     /* format value should match GL internalFormat */
     GLenum internalFormat = m_renderTargetFormat;
-#endif
 
     switch (m_renderTargetFormat) {
     case QAbstractTexture::RGBAFormat:
@@ -1756,18 +1791,15 @@ QImage GraphicsContext::readFramebuffer(QSize size)
         return img;
     }
 
-#ifndef QT_OPENGL_ES_2
     GLint samples = 0;
     m_gl->functions()->glGetIntegerv(GL_SAMPLES, &samples);
     if (samples > 0 && !m_glHelper->supportsFeature(GraphicsHelperInterface::BlitFramebuffer))
         return img;
-#endif
 
     img = QImage(size.width(), size.height(), imageFormat);
 
     QScopedArrayPointer<uchar> data(new uchar [bytes]);
 
-#ifndef QT_OPENGL_ES_2
     if (samples > 0) {
         // resolve multisample-framebuffer to renderbuffer and read pixels from it
         GLuint fbo, rb;
@@ -1799,14 +1831,10 @@ QImage GraphicsContext::readFramebuffer(QSize size)
         gl->glBindFramebuffer(GL_FRAMEBUFFER, m_activeFBO);
         gl->glDeleteFramebuffers(1, &fbo);
     } else {
-#endif
         // read pixels directly from framebuffer
         m_gl->functions()->glReadPixels(0,0,size.width(), size.height(), format, type, data.data());
         copyGLFramebufferDataToImage(img, data.data(), stride, size.width(), size.height(), m_renderTargetFormat);
-
-#ifndef QT_OPENGL_ES_2
     }
-#endif
 
     return img;
 }

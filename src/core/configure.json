@@ -2,6 +2,12 @@
     "module": "3dcore",
     "testDir": "../../config.tests",
 
+    "commandline": {
+        "options": {
+            "assimp": { "type": "enum", "values": [ "qt", "system" ] }
+        }
+    },
+
     "libraries": {
         "assimp": {
             "label": "Assimp",
@@ -14,9 +20,15 @@
     },
 
     "features": {
+        "assimp": {
+            "label": "Assimp",
+            "output": [ "privateFeature", "feature" ]
+        },
         "system-assimp": {
             "label": "System Assimp",
-            "condition": "libs.assimp",
+            "enable": "input.assimp == 'system'",
+            "disable": "input.assimp == 'qt'",
+            "condition": "features.assimp && libs.assimp",
             "output": [ "privateFeature" ]
         }
     },
@@ -28,6 +40,7 @@
         {
             "section": "Qt 3D",
             "entries": [
+                "assimp",
                 "system-assimp"
             ]
         }

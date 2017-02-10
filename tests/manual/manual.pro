@@ -37,7 +37,15 @@ SUBDIRS += \
     transparency-qml-scene3d \
     rendercapture-qml \
     additional-attributes-qml \
-    dynamic-model-loader-qml
+    dynamic-model-loader-qml \
+    buffercapture-qml \
+    render-qml-to-texture \
+    render-qml-to-texture-qml \
+    video-texture-qml \
+    animation-keyframe-simple \
+    distancefieldtext \
+    mesh-morphing \
+    anim-viewer
 
 qtHaveModule(widgets): {
     SUBDIRS += \

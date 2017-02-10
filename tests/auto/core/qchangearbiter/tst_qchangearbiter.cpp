@@ -200,6 +200,11 @@ public:
         return m_lastChanges;
     }
 
+    void clear()
+    {
+        m_lastChanges.clear();
+    }
+
 private:
     QList<Qt3DCore::QSceneChangePtr> m_lastChanges;
 };
@@ -217,17 +222,17 @@ public:
     {
         QVERIFY(!e.isNull());
         m_lastChanges << e;
-        // Save reply to be sent to the frontend
-        m_reply.reset(new Qt3DCore::QPropertyUpdatedChange(e->subjectId()));
-        m_reply->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
-        m_reply->setPropertyName("Reply");
+        m_targetId = e->subjectId();
     }
 
     // should be called in thread
     void sendReply()
     {
-        QVERIFY(!m_reply.isNull());
-        notifyObservers(m_reply);
+        Qt3DCore::QPropertyUpdatedChangePtr reply;
+        reply.reset(new Qt3DCore::QPropertyUpdatedChange(m_targetId));
+        reply->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+        reply->setPropertyName("Reply");
+        notifyObservers(reply);
         qDebug() << Q_FUNC_INFO;
     }
 
@@ -243,13 +248,16 @@ public:
         return m_lastChanges;
     }
 
+    void clear()
+    {
+        m_lastChanges.clear();
+    }
+
 private:
     QList<Qt3DCore::QSceneChangePtr> m_lastChanges;
-    Qt3DCore::QPropertyUpdatedChangePtr m_reply;
+    Qt3DCore::QNodeId m_targetId;
 
 };
-
-QWaitCondition waitingForBackendReplyCondition;
 
 class ThreadedAnswer : public QThread
 {
@@ -261,6 +269,8 @@ public:
         , m_backendObs(backend)
     {}
 
+    ~ThreadedAnswer() { qDebug() << this; }
+
     void run() Q_DECL_OVERRIDE
     {
         // create backend change queue on QChangeArbiter
@@ -269,9 +279,12 @@ public:
         // gives time for other threads to start waiting
         QThread::currentThread()->sleep(1);
         // wake waiting condition
-        waitingForBackendReplyCondition.wakeOne();
+        m_waitingForReplyToBeSent.wakeOne();
         exec();
+        Qt3DCore::QChangeArbiter::destroyThreadLocalChangeQueue(m_arbiter);
     }
+
+    QWaitCondition *waitingCondition() { return &m_waitingForReplyToBeSent; }
 
 private:
     Qt3DCore::QChangeArbiter *m_arbiter;
@@ -283,12 +296,19 @@ class tst_PostManObserver : public Qt3DCore::QAbstractPostman
 {
 public:
 
-    tst_PostManObserver() : m_sceneInterface(nullptr)
+    tst_PostManObserver()
+        : m_sceneInterface(nullptr)
+        , m_allowFrontendNotifications(false)
     {}
 
     void setScene(Qt3DCore::QScene *scene) Q_DECL_FINAL
     {
         m_sceneInterface = scene;
+    }
+
+    void setAllowFrontendNotifications(bool allow)
+    {
+        m_allowFrontendNotifications = allow;
     }
 
     // QObserverInterface interface
@@ -319,9 +339,15 @@ public:
         m_sceneInterface->arbiter()->sceneChangeEventWithLock(e);
     }
 
+    bool shouldNotifyFrontend(const Qt3DCore::QSceneChangePtr &)
+    {
+        return m_allowFrontendNotifications;
+    }
+
 private:
     Qt3DCore::QScene *m_sceneInterface;
     QList<Qt3DCore::QSceneChangePtr> m_lastChanges;
+    bool m_allowFrontendNotifications;
 };
 
 class tst_SceneObserver : public Qt3DCore::QSceneObserverInterface
@@ -888,39 +914,71 @@ void tst_QChangeArbiter::distributeBackendChanges()
     QCOMPARE(postman->lastChanges().count(), 0);
     QCOMPARE(backenObserverObservable->lastChanges().count(), 1);
 
-    // WHEN
-    // simulate a worker thread
-    QScopedPointer<ThreadedAnswer> answer(new ThreadedAnswer(arbiter.data(), backenObserverObservable));
+    backenObserverObservable->clear();
 
-    QMutex mutex;
-    // sends reply from another thread (simulates job thread)
-    answer->start();
-    mutex.lock();
-    waitingForBackendReplyCondition.wait(&mutex);
-    mutex.unlock();
+    {
+        // WHEN
+        // simulate a worker thread
+        QScopedPointer<ThreadedAnswer> answer(new ThreadedAnswer(arbiter.data(), backenObserverObservable));
+        postman->setAllowFrontendNotifications(false);
+        QWaitCondition *waitingForBackendReplyCondition = answer->waitingCondition();
 
-    // To verify that backendObserver sent a reply
-    arbiter->syncChanges();
+        QMutex mutex;
+        // sends reply from another thread (simulates job thread)
+        answer->start();
+        mutex.lock();
+        waitingForBackendReplyCondition->wait(&mutex);
+        mutex.unlock();
 
-    // THEN
-    // the repliers should receive it's reply
-    QCOMPARE(backenObserverObservable->lastChanges().count(), 2);
-    // verify that postMan has received the change
-    QCOMPARE(postman->lastChanges().count(), 1);
+        // To verify that backendObserver sent a reply
+        arbiter->syncChanges();
 
-    // verify correctness of the reply
-    Qt3DCore::QPropertyUpdatedChangePtr c = qSharedPointerDynamicCast<Qt3DCore::QPropertyUpdatedChange>(postman->lastChange());
-    QVERIFY(!c.isNull());
-    QVERIFY(c->subjectId() == root->id());
-    qDebug() << c->propertyName();
-    QVERIFY(strcmp(c->propertyName(), "Reply") == 0);
-    QVERIFY(c->type() == Qt3DCore::PropertyUpdated);
+        // THEN
+        // the repliers should receive it's reply
+        QCOMPARE(backenObserverObservable->lastChanges().count(), 1);
+        // verify that postMan has received the change
+        QCOMPARE(postman->lastChanges().count(), 0);
+        answer->exit();
+        answer->wait();
+        backenObserverObservable->clear();
+    }
 
-    answer->exit();
-    answer->wait();
+    {
+        // WHEN
+        // simulate a worker thread
+        QScopedPointer<ThreadedAnswer> answer(new ThreadedAnswer(arbiter.data(), backenObserverObservable));
+        postman->setAllowFrontendNotifications(true);
+        QWaitCondition *waitingForBackendReplyCondition = answer->waitingCondition();
+        QMutex mutex;
+        // sends reply from another thread (simulates job thread)
+        answer->start();
+        mutex.lock();
+        waitingForBackendReplyCondition->wait(&mutex);
+        mutex.unlock();
+
+        // To verify that backendObserver sent a reply
+        arbiter->syncChanges();
+
+        // THEN
+        // the repliers should receive it's reply
+        QCOMPARE(backenObserverObservable->lastChanges().count(), 1);
+        // verify that postMan has received the change
+        QCOMPARE(postman->lastChanges().count(), 1);
+
+        // verify correctness of the reply
+        Qt3DCore::QPropertyUpdatedChangePtr c = qSharedPointerDynamicCast<Qt3DCore::QPropertyUpdatedChange>(postman->lastChange());
+        QVERIFY(!c.isNull());
+        QVERIFY(c->subjectId() == root->id());
+        qDebug() << c->propertyName();
+        QVERIFY(strcmp(c->propertyName(), "Reply") == 0);
+        QVERIFY(c->type() == Qt3DCore::PropertyUpdated);
+        answer->exit();
+        answer->wait();
+    }
+
     Qt3DCore::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter.data());
 }
 
-QTEST_GUILESS_MAIN(tst_QChangeArbiter)
+QTEST_MAIN(tst_QChangeArbiter)
 
 #include "tst_qchangearbiter.moc"
