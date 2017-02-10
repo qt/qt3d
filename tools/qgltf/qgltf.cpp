@@ -1016,7 +1016,7 @@ void AssimpImporter::parseCameras()
         c.aspectRatio = qFuzzyIsNull(cam->mAspect) ? 1.5f : cam->mAspect;
         c.yfov = cam->mHorizontalFOV;
         if (c.yfov < (M_PI / 10.0)) // this can't be right (probably orthographic source camera)
-            c.yfov = M_PI / 4.0;
+            c.yfov = float(M_PI / 4.0);
         c.znear = cam->mClipPlaneNear;
         c.zfar = cam->mClipPlaneFar;
 

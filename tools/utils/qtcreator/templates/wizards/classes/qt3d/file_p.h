@@ -20,8 +20,6 @@
 #include <Qt3DCore/private/qcomponent_p.h>
 @elsif '%{Base}' === 'QEntity'
 #include <Qt3DCore/private/qentity_p.h>
-@elsif '%{Base}' === 'QBackendNode'
-#include <Qt3DCore/private/qbackendnode_p.h>
 @endif
 
 QT_BEGIN_NAMESPACE

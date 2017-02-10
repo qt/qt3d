@@ -39,6 +39,7 @@
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 #include <Qt3DAnimation/private/animationutils_p.h>
+#include <Qt3DAnimation/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,6 +49,7 @@ namespace Animation {
 FindRunningClipAnimatorsJob::FindRunningClipAnimatorsJob()
     : Qt3DCore::QAspectJob()
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FindRunningClipAnimator, 0);
 }
 
 void FindRunningClipAnimatorsJob::setDirtyClipAnimators(const QVector<HClipAnimator> &clipAnimatorHandles)

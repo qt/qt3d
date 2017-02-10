@@ -197,7 +197,7 @@ QVector<Qt3DCore::QSceneChangePtr> AnimationUtils::preparePropertyChanges(Qt3DCo
         e->setPropertyName(mappingData.propertyName);
 
         // Handle intermediate updates vs final flag properly
-        Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = finalFrame;
+        Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isIntermediate = !finalFrame;
 
         // Build the new value from the channel/fcurve evaluation results
         QVariant v;
@@ -258,7 +258,6 @@ QVector<Qt3DCore::QSceneChangePtr> AnimationUtils::preparePropertyChanges(Qt3DCo
         e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
         e->setPropertyName("running");
         e->setValue(false);
-        Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
         changes.push_back(e);
     }
     return changes;

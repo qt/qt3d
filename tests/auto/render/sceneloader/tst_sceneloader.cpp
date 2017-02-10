@@ -147,7 +147,6 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.count(), 1);
         QCOMPARE(change->propertyName(), "scene");
         QCOMPARE(change->value().value<Qt3DCore::QEntity *>(), &subtree);
-        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isFinal, true);
 
         arbiter.events.clear();
     }
@@ -170,7 +169,6 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.count(), 1);
         QCOMPARE(change->propertyName(), "status");
         QCOMPARE(change->value().value<Qt3DRender::QSceneLoader::Status>(), Qt3DRender::QSceneLoader::Ready);
-        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isFinal, true);
 
         arbiter.events.clear();
     }

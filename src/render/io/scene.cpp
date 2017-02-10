@@ -46,7 +46,6 @@
 #include <Qt3DRender/private/qsceneloader_p.h>
 #include <Qt3DRender/private/scenemanager_p.h>
 #include <QtCore/qcoreapplication.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -73,7 +72,6 @@ void Scene::setStatus(QSceneLoader::Status status)
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("status");
     e->setValue(QVariant::fromValue(status));
-    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
     notifyObservers(e);
 }
 
@@ -116,7 +114,6 @@ void Scene::setSceneSubtree(Qt3DCore::QEntity *subTree)
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("scene");
     e->setValue(QVariant::fromValue(subTree));
-    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
     notifyObservers(e);
 }
 

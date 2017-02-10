@@ -46,7 +46,7 @@ namespace Qt3DCore {
 
 QPropertyUpdatedChangeBasePrivate::QPropertyUpdatedChangeBasePrivate()
     : QSceneChangePrivate()
-    , m_isFinal(false)
+    , m_isIntermediate(false)
 {
 }
 

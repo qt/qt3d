@@ -33,7 +33,6 @@
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 #include "testpostmanarbiter.h"
 #include "testrenderer.h"
 
@@ -234,7 +233,6 @@ private Q_SLOTS:
         Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "data");
         QCOMPARE(change->value().toByteArray(), QByteArrayLiteral("454"));
-        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isFinal, true);
 
         arbiter.events.clear();
 

@@ -41,6 +41,7 @@
 #include <Qt3DAnimation/private/animationutils_p.h>
 #include <Qt3DAnimation/private/lerpblend_p.h>
 #include <Qt3DAnimation/private/clipblendnodevisitor_p.h>
+#include <Qt3DAnimation/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,7 +53,7 @@ EvaluateBlendClipAnimatorJob::EvaluateBlendClipAnimatorJob()
     , m_currentLoop(std::numeric_limits<int>::max())
     , m_isFinalFrame(true)
 {
-    // TO DO: Add Profiler ID
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::EvaluateBlendClipAnimator, 0);
 }
 
 namespace {

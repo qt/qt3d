@@ -55,8 +55,8 @@
 #include <Qt3DExtras/qdiffusemapmaterial.h>
 #include <Qt3DExtras/qdiffusespecularmapmaterial.h>
 #include <Qt3DExtras/qphongmaterial.h>
-#include <Qt3DExtras/qkeyframeanimation.h>
-#include <Qt3DExtras/qmorphinganimation.h>
+#include <Qt3DAnimation/qkeyframeanimation.h>
+#include <Qt3DAnimation/qmorphinganimation.h>
 #include <QFileInfo>
 #include <QColor>
 #include <qmath.h>
@@ -420,7 +420,7 @@ Qt3DCore::QEntity *AssimpImporter::scene(const QString &id)
     if (m_scene->m_animations.size() > 0) {
         qWarning() << "No target found for " << m_scene->m_animations.size() << " animations!";
 
-        for (Qt3DExtras::QKeyframeAnimation *anim : m_scene->m_animations)
+        for (Qt3DAnimation::QKeyframeAnimation *anim : m_scene->m_animations)
             delete anim;
         m_scene->m_animations.clear();
     }
@@ -472,24 +472,24 @@ Qt3DCore::QEntity *AssimpImporter::node(aiNode *node)
         if (m_scene->m_materials.contains(materialIndex))
             material = m_scene->m_materials[materialIndex];
 
-        QList<Qt3DExtras::QMorphingAnimation *> morphingAnimations
-                = mesh->findChildren<Qt3DExtras::QMorphingAnimation *>();
+        QList<Qt3DAnimation::QMorphingAnimation *> morphingAnimations
+                = mesh->findChildren<Qt3DAnimation::QMorphingAnimation *>();
         if (morphingAnimations.size() > 0) {
             material = new Qt3DExtras::QMorphPhongMaterial(entityNode);
 
-            QVector<Qt3DExtras::QMorphingAnimation *> animations;
-            findAnimationsForNode<Qt3DExtras::QMorphingAnimation>(m_scene->m_morphAnimations,
+            QVector<Qt3DAnimation::QMorphingAnimation *> animations;
+            findAnimationsForNode<Qt3DAnimation::QMorphingAnimation>(m_scene->m_morphAnimations,
                                                                   animations,
                                                                   aiStringToQString(node->mName));
             const auto morphTargetList = morphingAnimations.at(0)->morphTargetList();
-            for (Qt3DExtras::QMorphingAnimation *anim : animations) {
+            for (Qt3DAnimation::QMorphingAnimation *anim : animations) {
                 anim->setParent(entityNode);
                 anim->setTarget(mesh);
                 anim->setMorphTargets(morphTargetList);
             }
 
             for (int j = 0; j < animations.size(); ++j) {
-                QObject::connect(animations[j], &Qt3DExtras::QMorphingAnimation::interpolatorChanged,
+                QObject::connect(animations[j], &Qt3DAnimation::QMorphingAnimation::interpolatorChanged,
                                 (Qt3DExtras::QMorphPhongMaterial *)material,
                                  &Qt3DExtras::QMorphPhongMaterial::setInterpolator);
             }
@@ -530,12 +530,12 @@ Qt3DCore::QEntity *AssimpImporter::node(aiNode *node)
     transform->setMatrix(qTransformMatrix);
     entityNode->addComponent(transform);
 
-    QVector<Qt3DExtras::QKeyframeAnimation *> animations;
-    findAnimationsForNode<Qt3DExtras::QKeyframeAnimation>(m_scene->m_animations,
+    QVector<Qt3DAnimation::QKeyframeAnimation *> animations;
+    findAnimationsForNode<Qt3DAnimation::QKeyframeAnimation>(m_scene->m_animations,
                                                           animations,
                                                           aiStringToQString(node->mName));
 
-    for (Qt3DExtras::QKeyframeAnimation *anim : animations) {
+    for (Qt3DAnimation::QKeyframeAnimation *anim : animations) {
         anim->setTarget(transform);
         anim->setParent(entityNode);
     }
@@ -792,10 +792,10 @@ void AssimpImporter::loadMesh(uint meshIndex)
         if (animesh->mNumVertices != mesh->mNumVertices)
             return;
 
-        Qt3DExtras::QMorphingAnimation *morphingAnimation
-                = new Qt3DExtras::QMorphingAnimation(geometryRenderer);
+        Qt3DAnimation::QMorphingAnimation *morphingAnimation
+                = new Qt3DAnimation::QMorphingAnimation(geometryRenderer);
         QVector<QString> names;
-        QVector<Qt3DExtras::QMorphTarget *> targets;
+        QVector<Qt3DAnimation::QMorphTarget *> targets;
         uint voff = 0;
         uint noff = 0;
         uint tanoff = 0;
@@ -835,7 +835,7 @@ void AssimpImporter::loadMesh(uint meshIndex)
 
         for (uint i = 0; i < mesh->mNumAnimMeshes; i++) {
             aiAnimMesh *animesh = mesh->mAnimMeshes[i];
-            Qt3DExtras::QMorphTarget *target = new Qt3DExtras::QMorphTarget(geometryRenderer);
+            Qt3DAnimation::QMorphTarget *target = new Qt3DAnimation::QMorphTarget(geometryRenderer);
             targets.push_back(target);
             QVector<QAttribute *> attributes;
             QByteArray targetBufferArray;
@@ -1029,7 +1029,7 @@ void AssimpImporter::loadAnimation(uint animationIndex)
         aiNodeAnim *nodeAnim = assimpAnim->mChannels[i];
         aiNode *targetNode = m_scene->m_aiScene->mRootNode->FindNode(nodeAnim->mNodeName);
 
-        Qt3DExtras::QKeyframeAnimation *kfa = new Qt3DExtras::QKeyframeAnimation();
+        Qt3DAnimation::QKeyframeAnimation *kfa = new Qt3DAnimation::QKeyframeAnimation();
         QVector<float> positions;
         QVector<Qt3DCore::QTransform*> transforms;
         if ((nodeAnim->mNumPositionKeys > 1)
@@ -1102,7 +1102,7 @@ void AssimpImporter::loadAnimation(uint animationIndex)
         aiNode *targetNode = m_scene->m_aiScene->mRootNode->FindNode(morphAnim->mName);
         aiMesh *mesh = m_scene->m_aiScene->mMeshes[targetNode->mMeshes[0]];
 
-        Qt3DExtras::QMorphingAnimation *morphingAnimation = new Qt3DExtras::QMorphingAnimation;
+        Qt3DAnimation::QMorphingAnimation *morphingAnimation = new Qt3DAnimation::QMorphingAnimation;
         QVector<float> positions;
         positions.resize(morphAnim->mNumKeys);
         // set so that weights array is allocated to correct size in morphingAnimation
@@ -1125,8 +1125,8 @@ void AssimpImporter::loadAnimation(uint animationIndex)
         morphingAnimation->setAnimationName(QString(assimpAnim->mName.C_Str()));
         morphingAnimation->setTargetName(QString(targetNode->mName.C_Str()));
         morphingAnimation->setMethod((mesh->mMethod == aiMorphingMethod_MORPH_NORMALIZED)
-                                     ? Qt3DExtras::QMorphingAnimation::Normalized
-                                     : Qt3DExtras::QMorphingAnimation::Relative);
+                                     ? Qt3DAnimation::QMorphingAnimation::Normalized
+                                     : Qt3DAnimation::QMorphingAnimation::Relative);
         m_scene->m_morphAnimations.push_back(morphingAnimation);
     }
 }

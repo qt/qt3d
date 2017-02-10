@@ -38,21 +38,22 @@
 #include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 #include "testpostmanarbiter.h"
 
+using namespace Qt3DCore;
 
 namespace {
 
-class NodeChangeReceiver: public Qt3DCore::QNode
+class NodeChangeReceiver: public QNode
 {
 public:
-    NodeChangeReceiver(Qt3DCore::QNode *parent = nullptr)
-        : Qt3DCore::QNode(parent)
+    NodeChangeReceiver(QNode *parent = nullptr)
+        : QNode(parent)
         , m_hasReceivedChange(false)
     {}
 
     inline bool hasReceivedChange() const { return m_hasReceivedChange; }
 
 protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) Q_DECL_OVERRIDE
+    void sceneChangeEvent(const QSceneChangePtr &) Q_DECL_OVERRIDE
     {
         m_hasReceivedChange = true;
     }
@@ -72,42 +73,42 @@ private Q_SLOTS:
     void checkSetScene()
     {
         // GIVEN
-        Qt3DCore::QPostman postman;
+        QPostman postman;
 
         // THEN
-        QVERIFY(Qt3DCore::QPostmanPrivate::get(&postman)->m_scene == nullptr);
+        QVERIFY(QPostmanPrivate::get(&postman)->m_scene == nullptr);
 
         // WHEN
-        Qt3DCore::QScene scene;
+        QScene scene;
         postman.setScene(&scene);
 
         // THEN
-        QCOMPARE(Qt3DCore::QPostmanPrivate::get(&postman)->m_scene, &scene);
+        QCOMPARE(QPostmanPrivate::get(&postman)->m_scene, &scene);
     }
 
     void checkSceneChangeEvent()
     {
         // GIVEN
-        QScopedPointer<Qt3DCore::QScene> scene(new Qt3DCore::QScene);
-        Qt3DCore::QPostman postman;
+        QScopedPointer<QScene> scene(new QScene);
+        QPostman postman;
         TestArbiter arbiter;
-        Qt3DCore::QNode rootNode;
+        QNode rootNode;
         NodeChangeReceiver *receiverNode = new NodeChangeReceiver();
 
-        Qt3DCore::QNodePrivate::get(&rootNode)->m_scene = scene.data();
+        QNodePrivate::get(&rootNode)->m_scene = scene.data();
         scene->setArbiter(&arbiter);
         postman.setScene(scene.data());
         // Setting the parent (which has a scene) adds the node into the observable lookup
         // table of the scene which is needed by the postman to distribute changes
-        static_cast<Qt3DCore::QNode *>(receiverNode)->setParent(&rootNode);
+        static_cast<QNode *>(receiverNode)->setParent(&rootNode);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(receiverNode->hasReceivedChange(), false);
-        QCOMPARE(Qt3DCore::QNodePrivate::get(receiverNode)->m_scene, scene.data());
+        QCOMPARE(QNodePrivate::get(receiverNode)->m_scene, scene.data());
 
         // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(receiverNode->id()));
+        QPropertyUpdatedChangePtr updateChange(new QPropertyUpdatedChange(receiverNode->id()));
         updateChange->setValue(1584);
         updateChange->setPropertyName("someName");
         postman.sceneChangeEvent(updateChange);
@@ -120,8 +121,8 @@ private Q_SLOTS:
     void checkNotifyBackend()
     {
         // GIVEN
-        QScopedPointer<Qt3DCore::QScene> scene(new Qt3DCore::QScene);
-        Qt3DCore::QPostman postman;
+        QScopedPointer<QScene> scene(new QScene);
+        QPostman postman;
         TestArbiter arbiter;
 
         scene->setArbiter(&arbiter);
@@ -131,7 +132,7 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.size(), 0);
 
         // WHEN
-        Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        QPropertyUpdatedChangePtr updateChange(new QPropertyUpdatedChange(QNodeId()));
         updateChange->setValue(1584);
         updateChange->setPropertyName("someName");
         postman.notifyBackend(updateChange);
@@ -145,62 +146,72 @@ private Q_SLOTS:
     void checkShouldNotifyFrontend()
     {
         // GIVEN
-        QScopedPointer<Qt3DCore::QScene> scene(new Qt3DCore::QScene);
-        Qt3DCore::QPostman postman;
+        QScopedPointer<QScene> scene(new QScene);
+        QPostman postman;
         TestArbiter arbiter;
-        Qt3DCore::QNode rootNode;
+        QNode rootNode;
         NodeChangeReceiver *receiverNode = new NodeChangeReceiver();
 
-        Qt3DCore::QNodePrivate::get(&rootNode)->m_scene = scene.data();
+        QNodePrivate::get(&rootNode)->m_scene = scene.data();
         scene->setArbiter(&arbiter);
         postman.setScene(scene.data());
         // Setting the parent (which has a scene) adds the node into the observable lookup
         // table of the scene which is needed by the postman to distribute changes
-        static_cast<Qt3DCore::QNode *>(receiverNode)->setParent(&rootNode);
+        static_cast<QNode *>(receiverNode)->setParent(&rootNode);
         QCoreApplication::processEvents();
 
         {
             // WHEN
-            Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(receiverNode->id()));
+            auto updateChange = QPropertyUpdatedChangePtr::create(receiverNode->id());
             updateChange->setValue(1584);
             updateChange->setPropertyName("someName");
 
-            // THEN -> we don't track properties by default Qt3DCore::QNode::DontTrackProperties
-            QCOMPARE(postman.shouldNotifyFrontend(updateChange), false);
+
+            // THEN -> we do track properties by default QNode::DefaultTrackMode
+            // (unless marked as an intermediate change)
+            QCOMPARE(postman.shouldNotifyFrontend(updateChange), true);
         }
 
         {
             // WHEN
-            receiverNode->setPropertyTrackMode(Qt3DCore::QNode::TrackAllPropertiesMode);
+            receiverNode->setPropertyTrackMode(QNode::TrackAllPropertiesMode);
 
-            Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(receiverNode->id()));
+            auto updateChange = QPropertyUpdatedChangePtr::create(receiverNode->id());
             updateChange->setValue(1584);
             updateChange->setPropertyName("someName");
+            QPropertyUpdatedChangeBasePrivate::get(updateChange.data())->m_isIntermediate
+                = true;
 
-            // THEN -> we don't track properties by default
+            // THEN -> we do track properties marked as intermediate when
+            // using TrackAllPropertiesMode
             QCOMPARE(postman.shouldNotifyFrontend(updateChange), true);
         }
 
         {
             // GIVEN
-            receiverNode->setPropertyTrackMode(Qt3DCore::QNode::TrackNamedPropertiesMode);
+            receiverNode->setPropertyTrackMode(QNode::TrackNamedPropertiesMode);
             receiverNode->setTrackedProperties(QStringList() << QStringLiteral("vette"));
 
             {
                 // WHEN
-                Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(receiverNode->id()));
+                auto updateChange = QPropertyUpdatedChangePtr::create(receiverNode->id());
                 updateChange->setValue(1584);
                 updateChange->setPropertyName("someName");
+                QPropertyUpdatedChangeBasePrivate::get(updateChange.data())->m_isIntermediate
+                    = true;
 
-                // THEN -> we don't track properties by default
+                // THEN -> we don't track properties by default, unless named when
+                // using TrackNamedPropertiesMode
                 QCOMPARE(postman.shouldNotifyFrontend(updateChange), false);
             }
 
             {
                 // WHEN
-                Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(receiverNode->id()));
+                auto updateChange = QPropertyUpdatedChangePtr::create(receiverNode->id());
                 updateChange->setValue(1584);
                 updateChange->setPropertyName("vette");
+                QPropertyUpdatedChangeBasePrivate::get(updateChange.data())->m_isIntermediate
+                    = true;
 
                 // THEN
                 QCOMPARE(postman.shouldNotifyFrontend(updateChange), true);
@@ -210,11 +221,11 @@ private Q_SLOTS:
         {
             // GIVEN
             receiverNode->setTrackedProperties(QStringList() << QStringLiteral("vette"));
-            receiverNode->setPropertyTrackMode(Qt3DCore::QNode::TrackAllPropertiesMode);
+            receiverNode->setPropertyTrackMode(QNode::TrackAllPropertiesMode);
 
             {
                 // WHEN
-                Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(receiverNode->id()));
+                auto updateChange = QPropertyUpdatedChangePtr::create(receiverNode->id());
                 updateChange->setValue(1584);
                 updateChange->setPropertyName("someName");
 
@@ -224,7 +235,7 @@ private Q_SLOTS:
 
             {
                 // WHEN
-                Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(receiverNode->id()));
+                auto updateChange = QPropertyUpdatedChangePtr::create(receiverNode->id());
                 updateChange->setValue(1584);
                 updateChange->setPropertyName("vette");
 
@@ -236,28 +247,30 @@ private Q_SLOTS:
         {
             // GIVEN
             receiverNode->setTrackedProperties(QStringList());
-            receiverNode->setPropertyTrackMode(Qt3DCore::QNode::DefaultTrackMode);
+            receiverNode->setPropertyTrackMode(QNode::DefaultTrackMode);
 
             {
                 // WHEN
-                Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(receiverNode->id()));
+                auto updateChange = QPropertyUpdatedChangePtr::create(receiverNode->id());
                 updateChange->setValue(1584);
                 updateChange->setPropertyName("someName");
 
-                // THEN -> we don't track properties by default
-                QCOMPARE(postman.shouldNotifyFrontend(updateChange), false);
+                // THEN -> we do track properties by default, unless marked as intermediate
+                QCOMPARE(postman.shouldNotifyFrontend(updateChange), true);
             }
 
             {
                 // WHEN
-                Qt3DCore::QPropertyNodeAddedChangePtr addedChange(new Qt3DCore::QPropertyNodeAddedChange(receiverNode->id(), receiverNode));
+                auto addedChange
+                    = QPropertyNodeAddedChangePtr::create(receiverNode->id(), receiverNode);
 
                 // THEN -> only QPropertyUpdatedChangePtr are filtered
                 QCOMPARE(postman.shouldNotifyFrontend(addedChange), true);
             }
             {
                 // WHEN
-                Qt3DCore::QPropertyNodeRemovedChangePtr removedChange(new Qt3DCore::QPropertyNodeRemovedChange(receiverNode->id(), receiverNode));
+                auto removedChange
+                    = QPropertyNodeRemovedChangePtr::create(receiverNode->id(), receiverNode);
 
                 // THEN -> only QPropertyUpdatedChangePtr are filtered
                 QCOMPARE(postman.shouldNotifyFrontend(removedChange), true);
@@ -267,24 +280,25 @@ private Q_SLOTS:
         {
             // GIVEN
             receiverNode->setTrackedProperties(QStringList());
-            receiverNode->setPropertyTrackMode(Qt3DCore::QNode::DefaultTrackMode);
+            receiverNode->setPropertyTrackMode(QNode::DefaultTrackMode);
 
             {
                 // WHEN
-                Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(receiverNode->id()));
+                auto updateChange = QPropertyUpdatedChangePtr::create(receiverNode->id());
                 updateChange->setValue(1584);
                 updateChange->setPropertyName("someName");
+                QPropertyUpdatedChangeBasePrivate::get(updateChange.data())->m_isIntermediate
+                    = true;
 
-                // THEN -> we don't track properties by default
+                // THEN -> we don't track intermediate properties by default
                 QCOMPARE(postman.shouldNotifyFrontend(updateChange), false);
             }
 
             {
                 // WHEN
-                Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(receiverNode->id()));
+                auto updateChange = QPropertyUpdatedChangePtr::create(receiverNode->id());
                 updateChange->setValue(1584);
                 updateChange->setPropertyName("someName");
-                Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(updateChange.data())->m_isFinal = true;
 
                 // THEN
                 QCOMPARE(postman.shouldNotifyFrontend(updateChange), true);

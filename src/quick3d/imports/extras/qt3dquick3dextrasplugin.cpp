@@ -72,18 +72,6 @@
 #include <Qt3DExtras/qdistancefieldglyphcache.h>
 #include <Qt3DExtras/qdistancefieldtext.h>
 #include <Qt3DQuickExtras/private/quick3dlevelofdetailloader_p.h>
-#include <Qt3DExtras/qkeyframeanimation.h>
-#include <Qt3DExtras/qanimationcontroller.h>
-#include <Qt3DExtras/qabstractanimation.h>
-#include <Qt3DExtras/qmorphinganimation.h>
-#include <Qt3DExtras/qanimationgroup.h>
-#include <Qt3DExtras/qmorphtarget.h>
-
-#include <Qt3DQuickExtras/private/quick3dkeyframeanimation_p.h>
-#include <Qt3DQuickExtras/private/quick3danimationgroup_p.h>
-#include <Qt3DQuickExtras/private/quick3danimationcontroller_p.h>
-#include <Qt3DQuickExtras/private/quick3dmorphtarget_p.h>
-#include <Qt3DQuickExtras/private/quick3dmorphinganimation_p.h>
 
 #include <QtQml/qqml.h>
 
@@ -136,13 +124,6 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
 
     qmlRegisterType<Qt3DExtras::QDistanceFieldGlyphCache>(uri, 2, 2, "DistanceFieldGlyphCache");
     qmlRegisterType<Qt3DExtras::QDistanceFieldText>(uri, 2, 2, "DistanceFieldText");
-
-    qmlRegisterUncreatableType<Qt3DExtras::QAbstractAnimation>(uri, 2, 0, "AbstractAnimation", QStringLiteral("AbstractAnimation is abstract"));
-    qmlRegisterExtendedType<Qt3DExtras::QKeyframeAnimation, Qt3DExtras::Quick::QQuick3DKeyframeAnimation>(uri, 2, 2, "KeyframeAnimation");
-    qmlRegisterExtendedType<Qt3DExtras::QAnimationGroup, Qt3DExtras::Quick::QQuick3DAnimationGroup>(uri, 2, 2, "AnimationGroup");
-    qmlRegisterExtendedType<Qt3DExtras::QAnimationController, Qt3DExtras::Quick::QQuick3DAnimationController>(uri, 2, 2, "AnimationController");
-    qmlRegisterExtendedType<Qt3DExtras::QMorphingAnimation, Qt3DExtras::Quick::QQuick3DMorphingAnimation>(uri, 2, 2, "MorphingAnimation");
-    qmlRegisterExtendedType<Qt3DExtras::QMorphTarget, Qt3DExtras::Quick::QQuick3DMorphTarget>(uri, 2, 2, "MorphTarget");
 }
 
 

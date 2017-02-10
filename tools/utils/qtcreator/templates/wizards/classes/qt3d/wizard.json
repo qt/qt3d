@@ -73,7 +73,8 @@
                     "name": "HdrFileName",
                     "type": "LineEdit",
                     "trDisplayName": "Header file:",
-                    "mandatory": true,
+                    "mandatory": false,
+                    "enabled": "%{JS: '%{BaseCB}' !== 'QBackendNode'}",
                     "data": { "trText": "%{JS: Cpp.classToFileName('%{Class}', '%{JS: Util.preferredSuffix('text/x-c++hdr')}')}" }
                 },
                 {
@@ -120,16 +121,31 @@
                 {
                     "source": "file.h",
                     "target": "%{HdrPath}",
+                    "condition": "%{JS: '%{Base}' !== 'QBackendNode'}",
                     "openInEditor": true
                 },
                 {
                     "source": "file_p.h",
                     "target": "%{PrivateHdrPath}",
+                    "condition": "%{JS: '%{Base}' !== 'QBackendNode'}",
                     "openInEditor": true
                 },
                 {
                     "source": "file.cpp",
                     "target": "%{SrcPath}",
+                    "condition": "%{JS: '%{Base}' !== 'QBackendNode'}",
+                    "openInEditor": true
+                },
+                {
+                    "source": "backendnode.cpp",
+                    "target": "%{SrcPath}",
+                    "condition": "%{JS: '%{Base}' === 'QBackendNode'}",
+                    "openInEditor": true
+                },
+                {
+                    "source": "backendnode_p.h",
+                    "target": "%{PrivateHdrPath}",
+                    "condition": "%{JS: '%{Base}' === 'QBackendNode'}",
                     "openInEditor": true
                 }
             ]

@@ -38,7 +38,6 @@
 #include <Qt3DInput/QAnalogAxisInput>
 #include <Qt3DInput/QAxis>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 #include "testpostmanarbiter.h"
 
 class DummyAxisInput : public Qt3DInput::QAbstractAxisInput
@@ -160,7 +159,6 @@ private Q_SLOTS:
         Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "value");
         QCOMPARE(change->value().toFloat(), backendAxis.axisValue());
-        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isFinal, true);
 
         arbiter.events.clear();
 

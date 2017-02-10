@@ -68,7 +68,7 @@ EventForward::~EventForward()
 void EventForward::cleanup()
 {
     setEnabled(false);
-    m_coordinateAttribute = "";
+    m_coordinateAttribute.clear();
     m_coordinateTransform.setToIdentity();
     m_forwardMouseEvents = false;
     m_forwardKeyboardEvents = false;

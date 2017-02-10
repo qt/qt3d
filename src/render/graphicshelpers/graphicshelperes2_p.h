@@ -57,6 +57,8 @@
 
 QT_BEGIN_NAMESPACE
 
+class QOpenGLExtensions;
+
 namespace Qt3DRender {
 namespace Render {
 
@@ -153,6 +155,8 @@ public:
 
 protected:
     QOpenGLFunctions *m_funcs;
+    bool m_supportFramebufferBlit;
+    QScopedPointer<QOpenGLExtensions> m_ext;
 };
 
 } // namespace Render

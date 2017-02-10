@@ -42,7 +42,6 @@
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/private/qabstractphysicaldeviceproxy_p_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 #include <QCoreApplication>
 
 QT_BEGIN_NAMESPACE
@@ -93,7 +92,6 @@ void PhysicalDeviceProxy::setDevice(QAbstractPhysicalDevice *device)
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("device");
     e->setValue(QVariant::fromValue(device));
-    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
     notifyObservers(e);
 }
 

@@ -40,6 +40,7 @@
 #include <Qt3DAnimation/private/clipblendnodevisitor_p.h>
 #include <Qt3DAnimation/private/clipblendnode_p.h>
 #include <Qt3DAnimation/private/lerpblend_p.h>
+#include <Qt3DAnimation/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,7 +50,7 @@ namespace Animation {
 BuildBlendTreesJob::BuildBlendTreesJob()
     : Qt3DCore::QAspectJob()
 {
-    // TO DO: Add Profiler ID
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::BuildBlendTree, 0);
 }
 
 void BuildBlendTreesJob::setBlendedClipAnimators(const QVector<HBlendedClipAnimator> &blendedClipAnimatorHandles)
