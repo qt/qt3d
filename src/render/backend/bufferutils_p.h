@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_TRIANGLESVISITOR_P_H
-#define QT3DRENDER_RENDER_TRIANGLESVISITOR_P_H
+#ifndef QT3DRENDER_RENDER_BUFFERUTILS_P_H
+#define QT3DRENDER_RENDER_BUFFERUTILS_P_H
 
 //
 //  W A R N I N G
@@ -51,15 +51,11 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qnodeid.h>
 #include <Qt3DRender/QAttribute>
-#include <Qt3DRender/private/bufferutils_p.h>
+#include <QByteArray>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-class QEntity;
-}
 
 namespace Qt3DRender {
 
@@ -70,44 +66,44 @@ class NodeManagers;
 class Attribute;
 class Buffer;
 
-class Q_AUTOTEST_EXPORT TrianglesVisitor
+struct BufferInfo
 {
-public:
-    explicit TrianglesVisitor(NodeManagers *manager) : m_manager(manager) { }
-    virtual ~TrianglesVisitor();
+    BufferInfo()
+        : type(QAttribute::VertexBaseType::Float)
+        , dataSize(0)
+        , count(0)
+        , byteStride(0)
+        , byteOffset(0)
+    {}
 
-    void apply(const Qt3DCore::QEntity *entity);
-    void apply(const GeometryRenderer *renderer, const Qt3DCore::QNodeId id);
-
-    virtual void visit(uint andx, const QVector3D &a,
-                       uint bndx, const QVector3D &b,
-                       uint cndx, const QVector3D &c) = 0;
-
-protected:
-    NodeManagers *m_manager;
-    Qt3DCore::QNodeId m_nodeId;
+    QByteArray data;
+    QAttribute::VertexBaseType type;
+    uint dataSize;
+    uint count;
+    uint byteStride;
+    uint byteOffset;
 };
 
-class Q_AUTOTEST_EXPORT CoordinateReader
-{
-public:
-    explicit CoordinateReader(NodeManagers *manager)
-        : m_manager(manager)
-        , m_attribute(nullptr)
-        , m_buffer(nullptr)
+
+namespace BufferTypeInfo {
+
+    template <QAttribute::VertexBaseType> struct EnumToType;
+    template <> struct EnumToType<QAttribute::Byte> { typedef const char type; };
+    template <> struct EnumToType<QAttribute::UnsignedByte> { typedef const uchar type; };
+    template <> struct EnumToType<QAttribute::Short> { typedef const short type; };
+    template <> struct EnumToType<QAttribute::UnsignedShort> { typedef const ushort type; };
+    template <> struct EnumToType<QAttribute::Int> { typedef const int type; };
+    template <> struct EnumToType<QAttribute::UnsignedInt> { typedef const uint type; };
+    template <> struct EnumToType<QAttribute::Float> { typedef const float type; };
+    template <> struct EnumToType<QAttribute::Double> { typedef const double type; };
+
+    template<QAttribute::VertexBaseType v>
+    typename EnumToType<v>::type *castToType(const QByteArray &u, uint byteOffset)
     {
+        return reinterpret_cast< typename EnumToType<v>::type *>(u.constData() + byteOffset);
     }
 
-    bool setGeometry(const GeometryRenderer *renderer, const QString &attributeName);
-
-    QVector4D getCoordinate(uint vertexIndex);
-
-protected:
-    NodeManagers *m_manager;
-    Attribute *m_attribute;
-    Buffer *m_buffer;
-    BufferInfo m_bufferInfo;
-};
+} // namespace BufferTypeInfo
 
 } // namespace Render
 
@@ -116,4 +112,4 @@ protected:
 QT_END_NAMESPACE
 
 
-#endif // QT3DRENDER_RENDER_TRIANGLESVISITOR_P_H
+#endif // QT3DRENDER_RENDER_BUFFERUTILS_P_H

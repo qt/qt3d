@@ -48,6 +48,7 @@
 #include <Qt3DRender/private/geometry_p.h>
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/private/buffer_p.h>
+#include <Qt3DRender/private/bufferutils_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -321,42 +322,25 @@ QVector4D readCoordinate(const BufferInfo &info, Coordinate *coordinates, uint i
     return ret;
 }
 
-
-template <QAttribute::VertexBaseType> struct EnumToType;
-template <> struct EnumToType<QAttribute::Byte> { typedef const char type; };
-template <> struct EnumToType<QAttribute::UnsignedByte> { typedef const uchar type; };
-template <> struct EnumToType<QAttribute::Short> { typedef const short type; };
-template <> struct EnumToType<QAttribute::UnsignedShort> { typedef const ushort type; };
-template <> struct EnumToType<QAttribute::Int> { typedef const int type; };
-template <> struct EnumToType<QAttribute::UnsignedInt> { typedef const uint type; };
-template <> struct EnumToType<QAttribute::Float> { typedef const float type; };
-template <> struct EnumToType<QAttribute::Double> { typedef const double type; };
-
-template<QAttribute::VertexBaseType v>
-typename EnumToType<v>::type *castToType(const QByteArray &u, uint byteOffset)
-{
-    return reinterpret_cast< typename EnumToType<v>::type *>(u.constData() + byteOffset);
-}
-
 template<typename Func>
 void processBuffer(const BufferInfo &info, Func &f)
 {
     switch (info.type) {
-    case QAttribute::Byte: f(info, castToType<QAttribute::Byte>(info.data, info.byteOffset));
+    case QAttribute::Byte: f(info, BufferTypeInfo::castToType<QAttribute::Byte>(info.data, info.byteOffset));
         return;
-    case QAttribute::UnsignedByte: f(info, castToType<QAttribute::UnsignedByte>(info.data, info.byteOffset));
+    case QAttribute::UnsignedByte: f(info, BufferTypeInfo::castToType<QAttribute::UnsignedByte>(info.data, info.byteOffset));
         return;
-    case QAttribute::Short: f(info, castToType<QAttribute::Short>(info.data, info.byteOffset));
+    case QAttribute::Short: f(info, BufferTypeInfo::castToType<QAttribute::Short>(info.data, info.byteOffset));
         return;
-    case QAttribute::UnsignedShort: f(info, castToType<QAttribute::UnsignedShort>(info.data, info.byteOffset));
+    case QAttribute::UnsignedShort: f(info, BufferTypeInfo::castToType<QAttribute::UnsignedShort>(info.data, info.byteOffset));
         return;
-    case QAttribute::Int: f(info, castToType<QAttribute::Int>(info.data, info.byteOffset));
+    case QAttribute::Int: f(info, BufferTypeInfo::castToType<QAttribute::Int>(info.data, info.byteOffset));
         return;
-    case QAttribute::UnsignedInt: f(info, castToType<QAttribute::UnsignedInt>(info.data, info.byteOffset));
+    case QAttribute::UnsignedInt: f(info, BufferTypeInfo::castToType<QAttribute::UnsignedInt>(info.data, info.byteOffset));
         return;
-    case QAttribute::Float: f(info, castToType<QAttribute::Float>(info.data, info.byteOffset));
+    case QAttribute::Float: f(info, BufferTypeInfo::castToType<QAttribute::Float>(info.data, info.byteOffset));
         return;
-    case QAttribute::Double: f(info, castToType<QAttribute::Double>(info.data, info.byteOffset));
+    case QAttribute::Double: f(info, BufferTypeInfo::castToType<QAttribute::Double>(info.data, info.byteOffset));
         return;
     default:
         return;
@@ -367,21 +351,21 @@ QVector4D readBuffer(const BufferInfo &info, uint index)
 {
     switch (info.type) {
     case QAttribute::Byte:
-        return readCoordinate(info, castToType<QAttribute::Byte>(info.data, info.byteOffset), index);
+        return readCoordinate(info, BufferTypeInfo::castToType<QAttribute::Byte>(info.data, info.byteOffset), index);
     case QAttribute::UnsignedByte:
-        return readCoordinate(info, castToType<QAttribute::UnsignedByte>(info.data, info.byteOffset), index);
+        return readCoordinate(info, BufferTypeInfo::castToType<QAttribute::UnsignedByte>(info.data, info.byteOffset), index);
     case QAttribute::Short:
-        return readCoordinate(info, castToType<QAttribute::Short>(info.data, info.byteOffset), index);
+        return readCoordinate(info, BufferTypeInfo::castToType<QAttribute::Short>(info.data, info.byteOffset), index);
     case QAttribute::UnsignedShort:
-        return readCoordinate(info, castToType<QAttribute::UnsignedShort>(info.data, info.byteOffset), index);
+        return readCoordinate(info, BufferTypeInfo::castToType<QAttribute::UnsignedShort>(info.data, info.byteOffset), index);
     case QAttribute::Int:
-        return readCoordinate(info, castToType<QAttribute::Int>(info.data, info.byteOffset), index);
+        return readCoordinate(info, BufferTypeInfo::castToType<QAttribute::Int>(info.data, info.byteOffset), index);
     case QAttribute::UnsignedInt:
-        return readCoordinate(info, castToType<QAttribute::UnsignedInt>(info.data, info.byteOffset), index);
+        return readCoordinate(info, BufferTypeInfo::castToType<QAttribute::UnsignedInt>(info.data, info.byteOffset), index);
     case QAttribute::Float:
-        return readCoordinate(info, castToType<QAttribute::Float>(info.data, info.byteOffset), index);
+        return readCoordinate(info, BufferTypeInfo::castToType<QAttribute::Float>(info.data, info.byteOffset), index);
     case QAttribute::Double:
-        return readCoordinate(info, castToType<QAttribute::Double>(info.data, info.byteOffset), index);
+        return readCoordinate(info, BufferTypeInfo::castToType<QAttribute::Double>(info.data, info.byteOffset), index);
     default:
         break;
     }
