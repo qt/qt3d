@@ -51,6 +51,7 @@ namespace Qt3DRender {
 
 QBufferPrivate::QBufferPrivate()
     : QNodePrivate()
+    , m_type(QBuffer::VertexBuffer)
     , m_usage(QBuffer::StaticDraw)
     , m_syncData(false)
     , m_access(QBuffer::Write)
