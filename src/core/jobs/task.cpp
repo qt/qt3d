@@ -56,8 +56,9 @@ RunnableInterface::~RunnableInterface()
 // Aspect task
 
 AspectTaskRunnable::AspectTaskRunnable()
-    : m_dependencyHandler(0),
-      m_reserved(false)
+    : m_dependencyHandler(nullptr)
+    , m_pooler(nullptr)
+    , m_reserved(false)
 {
 }
 
