@@ -57,10 +57,11 @@ QElapsedTimer QThreadPooler::m_jobsStatTimer;
 #endif
 
 QThreadPooler::QThreadPooler(QObject *parent)
-    : QObject(parent),
-      m_futureInterface(nullptr),
-      m_mutex(),
-      m_taskCount(0)
+    : QObject(parent)
+    , m_futureInterface(nullptr)
+    , m_mutex()
+    , m_dependencyHandler(nullptr)
+    , m_taskCount(0)
 {
     // Ensures that threads will never be recycled
     m_threadPool.setExpiryTimeout(-1);
