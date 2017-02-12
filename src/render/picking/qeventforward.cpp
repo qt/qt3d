@@ -273,8 +273,8 @@ void QEventForward::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
             = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
     if (e->type() == Qt3DCore::PropertyUpdated && d->m_target != nullptr) {
         if (e->propertyName() == QByteArrayLiteral("events")) {
-            PostEventsToFrontendPtr postedEvents = e->value().value<PostEventsToFrontendPtr>();
-            for (QEvent *event : postedEvents->events())
+            const QVector<QEvent *> postedEvents = e->value().value<PostEventsToFrontendPtr>()->events();
+            for (QEvent *event : postedEvents)
                 QCoreApplication::sendEvent(d->m_target, event);
         }
     }

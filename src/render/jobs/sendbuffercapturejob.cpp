@@ -75,7 +75,7 @@ void SendBufferCaptureJob::addRequest(QPair<Buffer *, QByteArray> request)
 void SendBufferCaptureJob::run()
 {
     QMutexLocker locker(&m_mutex);
-    for (QPair<Buffer*, QByteArray> pendingCapture : m_pendingSendBufferCaptures) {
+    for (const QPair<Buffer*, QByteArray> &pendingCapture : qAsConst(m_pendingSendBufferCaptures)) {
         pendingCapture.first->updateDataFromGPUToCPU(pendingCapture.second);
     }
 

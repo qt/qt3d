@@ -254,7 +254,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QEventForward>(QSharedPointer<Render::NodeFunctor<Render::EventForward, Render::EventForwardManager> >::create(m_renderer));
 
     // Plugins
-    for (Render::QRenderPlugin *plugin : m_renderPlugins)
+    for (Render::QRenderPlugin *plugin : qAsConst(m_renderPlugins))
         plugin->registerBackendTypes(q, m_renderer);
 }
 
@@ -318,7 +318,7 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     unregisterBackendType<QEventForward>();
 
     // Plugins
-    for (Render::QRenderPlugin *plugin : m_renderPlugins)
+    for (Render::QRenderPlugin *plugin : qAsConst(m_renderPlugins))
         plugin->unregisterBackendTypes(q);
 }
 

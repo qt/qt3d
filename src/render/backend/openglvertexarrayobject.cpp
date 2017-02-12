@@ -68,7 +68,7 @@ void OpenGLVertexArrayObject::bind()
 
         m_ctx->m_currentVAO = this;
         // We need to specify array and vertex attributes
-        for (const GraphicsContext::VAOVertexAttribute &attr : m_vertexAttributes)
+        for (const GraphicsContext::VAOVertexAttribute &attr : qAsConst(m_vertexAttributes))
             m_ctx->enableAttribute(attr);
         if (!m_indexAttribute.isNull())
             m_ctx->bindGLBuffer(m_ctx->m_renderer->nodeManagers()->glBufferManager()->data(m_indexAttribute),
@@ -85,7 +85,7 @@ void OpenGLVertexArrayObject::release()
         m_vao->release();
     } else {
         if (m_ctx->m_currentVAO == this) {
-            for (const GraphicsContext::VAOVertexAttribute &attr : m_vertexAttributes)
+            for (const GraphicsContext::VAOVertexAttribute &attr : qAsConst(m_vertexAttributes))
                 m_ctx->disableAttribute(attr);
             m_ctx->m_currentVAO = nullptr;
         }
