@@ -38,7 +38,9 @@ intel_icc: {
     #   4189: 'identifier' : local variable is initialized but not referenced
     #   4267: coversion from 'size_t' to 'int', possible loss of data
     #   4996: Function call with parameters that may be unsafe
-    QMAKE_CFLAGS_WARN_ON += -wd"4100" -wd"4189" -wd"4267" -wd"4996"
+    #   4828: The file contains a character starting at offset 0x167b that
+    #         is illegal in the current source character set (codepage 65001)
+    QMAKE_CFLAGS_WARN_ON += -wd"4100" -wd"4189" -wd"4267" -wd"4996" -wd"4828"
     QMAKE_CXXFLAGS_WARN_ON = $$QMAKE_CFLAGS_WARN_ON
 }
 
