@@ -147,6 +147,7 @@ namespace Render {
 Renderer::Renderer(QRenderAspect::RenderType type)
     : m_services(nullptr)
     , m_nodesManager(nullptr)
+    , m_renderSceneRoot(nullptr)
     , m_defaultRenderStateSet(nullptr)
     , m_graphicsContext(nullptr)
     , m_renderQueue(new RenderQueue())
