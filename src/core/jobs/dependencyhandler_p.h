@@ -62,7 +62,10 @@ namespace Qt3DCore {
 
 struct Dependency
 {
-    Dependency() {}
+    Dependency()
+        : depender(nullptr)
+        , dependee(nullptr)
+    {}
     Dependency(RunnableInterface *depender, RunnableInterface *dependee)
         : depender(qMove(depender)),
           dependee(qMove(dependee)) {}
