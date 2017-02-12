@@ -414,7 +414,8 @@ const int qNodeIdTypeId = qMetaTypeId<QNodeId>();
 }
 
 UniformBlockValueBuilder::UniformBlockValueBuilder()
-    : shaderDataManager(nullptr)
+    : updatedPropertiesOnly(false)
+    , shaderDataManager(nullptr)
 {
 }
 
