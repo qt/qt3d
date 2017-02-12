@@ -120,6 +120,8 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     , m_multisampledFBO(nullptr)
     , m_finalFBO(nullptr)
     , m_texture(nullptr)
+    , m_node(nullptr)
+    , m_cleaner(nullptr)
     , m_multisample(false) // this value is not used, will be synced from the Scene3DItem instead
     , m_lastMultisample(false)
 {
