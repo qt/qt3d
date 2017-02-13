@@ -65,7 +65,7 @@ namespace Qt3DExtras {
 
 namespace {
 
-using IndexType = unsigned short;
+using IndexType = unsigned int;
 
 struct TriangulationData {
     struct Outline {
@@ -190,7 +190,7 @@ void QText3DGeometryPrivate::init()
     m_normalAttribute->setCount(0);
 
     m_indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
-    m_indexAttribute->setVertexBaseType(Qt3DRender::QAttribute::UnsignedShort);
+    m_indexAttribute->setVertexBaseType(Qt3DRender::QAttribute::UnsignedInt);
     m_indexAttribute->setBuffer(m_indexBuffer);
     m_indexAttribute->setCount(0);
 
@@ -327,6 +327,9 @@ void QText3DGeometryPrivate::update()
         const int begin = data.outlines[i].begin;
         const int end = data.outlines[i].end;
         const int verticesIndexBegin = verticesIndex;
+
+        if (begin == end)
+            continue;
 
         QVector3D prevNormal = QVector3D::crossProduct(
                     vertices[data.outlineIndices[end - 1] + numVertices].position - vertices[data.outlineIndices[end - 1]].position,
