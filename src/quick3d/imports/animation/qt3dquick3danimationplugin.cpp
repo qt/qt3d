@@ -55,6 +55,7 @@
 #include <Qt3DAnimation/qmorphinganimation.h>
 #include <Qt3DAnimation/qanimationgroup.h>
 #include <Qt3DAnimation/qmorphtarget.h>
+#include <Qt3DAnimation/qvertexblendanimation.h>
 
 #include <Qt3DQuickAnimation/private/qt3dquickanimation_global_p.h>
 #include <Qt3DQuickAnimation/private/quick3dchannelmapper_p.h>
@@ -63,6 +64,7 @@
 #include <Qt3DQuickAnimation/private/quick3danimationcontroller_p.h>
 #include <Qt3DQuickAnimation/private/quick3dmorphtarget_p.h>
 #include <Qt3DQuickAnimation/private/quick3dmorphinganimation_p.h>
+#include <Qt3DQuickAnimation/private/quick3dvertexblendanimation_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -92,6 +94,7 @@ void Qt3DQuick3DAnimationPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3DAnimation::QAnimationController, Qt3DAnimation::Quick::QQuick3DAnimationController>(uri, 2, 9, "AnimationController");
     qmlRegisterExtendedType<Qt3DAnimation::QMorphingAnimation, Qt3DAnimation::Quick::QQuick3DMorphingAnimation>(uri, 2, 9, "MorphingAnimation");
     qmlRegisterExtendedType<Qt3DAnimation::QMorphTarget, Qt3DAnimation::Quick::QQuick3DMorphTarget>(uri, 2, 9, "MorphTarget");
+    qmlRegisterExtendedType<Qt3DAnimation::QVertexBlendAnimation, Qt3DAnimation::Quick::QQuick3DVertexBlendAnimation>(uri, 2, 9, "VertexBlendAnimation");
 }
 
 QT_END_NAMESPACE
