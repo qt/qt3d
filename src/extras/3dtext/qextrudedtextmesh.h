@@ -48,59 +48,46 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DEXTRAS_QTEXT3DGEOMETRY_P_H
-#define QT3DEXTRAS_QTEXT3DGEOMETRY_P_H
+#ifndef QT3DEXTRAS_QEXTRUDEDTEXTMESH_H
+#define QT3DEXTRAS_QEXTRUDEDTEXTMESH_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists purely as an
-// implementation detail.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DRender/private/qgeometry_p.h>
+#include <Qt3DExtras/qt3dextras_global.h>
+#include <Qt3DRender/qgeometryrenderer.h>
+#include <QString>
 #include <QFont>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
-
-class QAttribute;
-class QBuffer;
-
-} // namespace Qt3DRender
-
 namespace Qt3DExtras {
 
-class QText3DGeometry;
-
-class QText3DGeometryPrivate : public Qt3DRender::QGeometryPrivate
+class QT3DEXTRASSHARED_EXPORT QExtrudedTextMesh : public Qt3DRender::QGeometryRenderer
 {
+    Q_OBJECT
+    Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
+    Q_PROPERTY(QFont font READ font WRITE setFont NOTIFY fontChanged)
+    Q_PROPERTY(float depth READ depth WRITE setDepth NOTIFY depthChanged)
+
 public:
-    QText3DGeometryPrivate();
-    void init();
-    void update();
+    QExtrudedTextMesh(Qt3DCore::QNode *parent = nullptr);
+    ~QExtrudedTextMesh();
 
-    QString m_text;
-    QFont m_font;
-    float m_depth;
-    float m_edgeSplitAngle;
+    QString text();
+    QFont font();
+    float depth();
 
-    Qt3DRender::QAttribute *m_positionAttribute;
-    Qt3DRender::QAttribute *m_normalAttribute;
-    Qt3DRender::QAttribute *m_indexAttribute;
-    Qt3DRender::QBuffer *m_vertexBuffer;
-    Qt3DRender::QBuffer *m_indexBuffer;
+public Q_SLOTS:
+    void setText(QString text);
+    void setFont(QFont font);
+    void setDepth(float depth);
 
-    Q_DECLARE_PUBLIC(QText3DGeometry)
+Q_SIGNALS:
+    void textChanged(QString text);
+    void fontChanged(QFont font);
+    void depthChanged(float depth);
 };
 
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
 
-#endif // QT3DEXTRAS_QTEXT3DGEOMETRY_P_H
+#endif // QT3DEXTRAS_QEXTRUDEDTEXTMESH_H

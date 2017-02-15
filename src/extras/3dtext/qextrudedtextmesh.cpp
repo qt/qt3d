@@ -48,130 +48,108 @@
 **
 ****************************************************************************/
 
-#include "qtext3dmesh.h"
-#include "qtext3dgeometry.h"
+#include "qextrudedtextmesh.h"
+#include "qextrudedtextgeometry.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
 
 /*!
- * \qmltype Text3DMesh
- * \instantiates Qt3DExtras::QText3DMesh
+ * \qmltype ExtrudedTextMesh
+ * \instantiates Qt3DExtras::QExtrudedTextMesh
  * \inqmlmodule Qt3D.Extras
- * \brief A 3D Text mesh.
+ * \brief A 3D extruded Text mesh.
  */
 
 /*!
- * \qmlproperty QString Text3DMesh::text
+ * \qmlproperty QString ExtrudedTextMesh::text
  *
  * Holds the text used for the mesh.
  */
 
 /*!
- * \qmlproperty QFont Text3DMesh::font
+ * \qmlproperty QFont ExtrudedTextMesh::font
  *
  * Holds the font of the text.
  */
 
 /*!
- * \qmlproperty float Text3DMesh::depth
+ * \qmlproperty float ExtrudedTextMesh::depth
  *
  * Holds the extrusion depth of the text.
  */
 
 /*!
- * \qmlproperty float Text3DMesh::edgeSplitAngle
- *
- * Holds the threshold angle for smooth normals.
- */
-
-/*!
- * \class Qt3DExtras::QText3DMesh
- * \inheaderfile Qt3DExtras/QText3DMesh
+ * \class Qt3DExtras::QExtrudedTextMesh
+ * \inheaderfile Qt3DExtras/QExtrudedTextMesh
  * \inmodule Qt3DExtras
  *
  * \inherits Qt3DRender::QGeometryRenderer
  *
- * \brief A 3D Text mesh.
+ * \brief A 3D extruded Text mesh.
  */
 
 /*!
  * Constructs a new QText3DMesh with \a parent.
  */
-QText3DMesh::QText3DMesh(Qt3DCore::QNode *parent)
+QExtrudedTextMesh::QExtrudedTextMesh(Qt3DCore::QNode *parent)
     : QGeometryRenderer(parent)
 {
-    QText3DGeometry *geometry = new QText3DGeometry();
-    QObject::connect(geometry, &QText3DGeometry::depthChanged, this, &QText3DMesh::depthChanged);
-    QObject::connect(geometry, &QText3DGeometry::textChanged,  this, &QText3DMesh::textChanged);
-    QObject::connect(geometry, &QText3DGeometry::fontChanged,  this, &QText3DMesh::fontChanged);
-    QObject::connect(geometry, &QText3DGeometry::edgeSplitAngleChanged,  this, &QText3DMesh::edgeSplitAngleChanged);
+    QExtrudedTextGeometry *geometry = new QExtrudedTextGeometry();
+    QObject::connect(geometry, &QExtrudedTextGeometry::depthChanged, this, &QExtrudedTextMesh::depthChanged);
+    QObject::connect(geometry, &QExtrudedTextGeometry::textChanged,  this, &QExtrudedTextMesh::textChanged);
+    QObject::connect(geometry, &QExtrudedTextGeometry::fontChanged,  this, &QExtrudedTextMesh::fontChanged);
     QGeometryRenderer::setGeometry(geometry);
 }
 
 /*! \internal */
-QText3DMesh::~QText3DMesh()
+QExtrudedTextMesh::~QExtrudedTextMesh()
 {}
 
-void QText3DMesh::setText(QString text)
+void QExtrudedTextMesh::setText(QString text)
 {
-    static_cast<QText3DGeometry*>(geometry())->setText(text);
+    static_cast<QExtrudedTextGeometry*>(geometry())->setText(text);
 }
 
-void QText3DMesh::setFont(QFont font)
+void QExtrudedTextMesh::setFont(QFont font)
 {
-    static_cast<QText3DGeometry*>(geometry())->setFont(font);
+    static_cast<QExtrudedTextGeometry*>(geometry())->setFont(font);
 }
 
-void QText3DMesh::setDepth(float depth)
+void QExtrudedTextMesh::setDepth(float depth)
 {
-    static_cast<QText3DGeometry*>(geometry())->setDepth(depth);
-}
-
-void QText3DMesh::setEdgeSplitAngle(float smoothAngle)
-{
-    static_cast<QText3DGeometry*>(geometry())->setEdgeSplitAngle(smoothAngle);
+    static_cast<QExtrudedTextGeometry*>(geometry())->setDepth(depth);
 }
 
 /*!
- * \property QString QText3DMesh::text
+ * \property QString QExtrudedTextMesh::text
  *
  * Holds the text used for the mesh.
  */
-QString QText3DMesh::text()
+QString QExtrudedTextMesh::text()
 {
-    return static_cast<QText3DGeometry*>(geometry())->text();
+    return static_cast<QExtrudedTextGeometry*>(geometry())->text();
 }
 
 /*!
- * \property QFont QText3DMesh::font
+ * \property QFont QExtrudedTextMesh::font
  *
  * Holds the font of the text.
  */
-QFont QText3DMesh::font()
+QFont QExtrudedTextMesh::font()
 {
-    return static_cast<QText3DGeometry*>(geometry())->font();
+    return static_cast<QExtrudedTextGeometry*>(geometry())->font();
 }
 
 /*!
- * \property float QText3DMesh::depth
+ * \property float QExtrudedTextMesh::depth
  *
  * Holds the extrusion depth of the text.
  */
-float QText3DMesh::depth()
+float QExtrudedTextMesh::depth()
 {
-    return static_cast<QText3DGeometry*>(geometry())->depth();
-}
-
-/*!
- * \property float QText3DMesh::edgeSplitAngle
- *
- * Holds the threshold angle for smooth normals.
- */
-float QText3DMesh::edgeSplitAngle()
-{
-    return static_cast<QText3DGeometry*>(geometry())->edgeSplitAngle();
+    return static_cast<QExtrudedTextGeometry*>(geometry())->extrusionLength();
 }
 
 } // namespace Qt3DExtras

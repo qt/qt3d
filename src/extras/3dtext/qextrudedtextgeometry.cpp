@@ -48,8 +48,8 @@
 **
 ****************************************************************************/
 
-#include "qtext3dgeometry.h"
-#include "qtext3dgeometry_p.h"
+#include "qextrudedtextgeometry.h"
+#include "qextrudedtextgeometry_p.h"
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/qattribute.h>
@@ -64,6 +64,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DExtras {
 
 namespace {
+
+static float edgeSplitAngle = 90.f * 0.1f;
 
 using IndexType = unsigned int;
 
@@ -145,11 +147,10 @@ inline QVector3D mix(const QVector3D &a, const QVector3D &b, float ratio)
 
 } // anonymous namespace
 
-QText3DGeometryPrivate::QText3DGeometryPrivate()
+QExtrudedTextGeometryPrivate::QExtrudedTextGeometryPrivate()
     : QGeometryPrivate()
     , m_font(QFont(QStringLiteral("Arial")))
     , m_depth(1.f)
-    , m_edgeSplitAngle(90.f * 0.1f)
     , m_positionAttribute(nullptr)
     , m_normalAttribute(nullptr)
     , m_indexAttribute(nullptr)
@@ -159,9 +160,9 @@ QText3DGeometryPrivate::QText3DGeometryPrivate()
     m_font.setPointSize(4);
 }
 
-void QText3DGeometryPrivate::init()
+void QExtrudedTextGeometryPrivate::init()
 {
-    Q_Q(QText3DGeometry);
+    Q_Q(QExtrudedTextGeometry);
     m_positionAttribute = new Qt3DRender::QAttribute(q);
     m_normalAttribute = new Qt3DRender::QAttribute(q);
     m_indexAttribute = new Qt3DRender::QAttribute(q);
@@ -202,101 +203,96 @@ void QText3DGeometryPrivate::init()
 }
 
 /*!
- * \qmltype Text3DGeometry
- * \instantiates Qt3DExtras::QText3DGeometry
+ * \qmltype ExtrudedTextGeometry
+ * \instantiates Qt3DExtras::QExtrudedTextGeometry
  * \inqmlmodule Qt3D.Extras
- * \brief Text3DGeometry allows creation of a 3D text in 3D space.
+ * \brief ExtrudedTextGeometry allows creation of a 3D text in 3D space.
  *
- * The Text3DGeometry type is most commonly used internally by the Text3DMesh type
- * but can also be used in custom GeometryRenderer types.
+ * The ExtrudedTextGeometry type is most commonly used internally by the
+ * ExtrudedTextMesh type but can also be used in custom GeometryRenderer types.
  */
 
 /*!
- * \qmlproperty QString Text3DGeometry::text
+ * \qmlproperty QString ExtrudedTextGeometry::text
  *
  * Holds the text used for the mesh.
  */
 
 /*!
- * \qmlproperty QFont Text3DGeometry::font
+ * \qmlproperty QFont ExtrudedTextGeometry::font
  *
  * Holds the font of the text.
  */
 
 /*!
- * \qmlproperty float Text3DGeometry::depth
+ * \qmlproperty float ExtrudedTextGeometry::depth
  *
  * Holds the extrusion depth of the text.
  */
 
 /*!
- * \qmlproperty float Text3DGeometry::edgeSplitAngle
- *
- * Holds the threshold angle for smooth normals.
- */
-
-/*!
- * \qmlproperty Attribute Text3DGeometry::positionAttribute
+ * \qmlproperty Attribute ExtrudedTextGeometry::positionAttribute
  *
  * Holds the geometry position attribute.
  */
 
 /*!
- * \qmlproperty Attribute Text3DGeometry::normalAttribute
+ * \qmlproperty Attribute ExtrudedTextGeometry::normalAttribute
  *
  * Holds the geometry normal attribute.
  */
 
 /*!
- * \qmlproperty Attribute Text3DGeometry::indexAttribute
+ * \qmlproperty Attribute ExtrudedTextGeometry::indexAttribute
  *
  * Holds the geometry index attribute.
  */
 
 /*!
- * \class Qt3DExtras::QText3DGeometry
- * \inheaderfile Qt3DExtras/QText3DGeometry
+ * \class Qt3DExtras::QExtrudedTextGeometry
+ * \inheaderfile Qt3DExtras/QExtrudedTextGeometry
  * \inmodule Qt3DExtras
- * \brief The QText3DGeometry class allows creation of a 3D text in 3D space.
- * \since 5.8
+ * \brief The QExtrudedTextGeometry class allows creation of a 3D extruded text
+ * in 3D space.
+ * \since 5.9
  * \ingroup geometries
  * \inherits Qt3DRender::QGeometry
  *
- * The QText3DGeometry class is most commonly used internally by the QText3DMesh
+ * The QExtrudedTextGeometry class is most commonly used internally by the QText3DMesh
  * but can also be used in custom Qt3DRender::QGeometryRenderer subclasses.
  */
 
 /*!
- * Constructs a new QText3DGeometry with \a parent.
+ * Constructs a new QExtrudedTextGeometry with \a parent.
  */
-QText3DGeometry::QText3DGeometry(Qt3DCore::QNode *parent)
-    : QGeometry(*new QText3DGeometryPrivate(), parent)
+QExtrudedTextGeometry::QExtrudedTextGeometry(Qt3DCore::QNode *parent)
+    : QGeometry(*new QExtrudedTextGeometryPrivate(), parent)
 {
-    Q_D(QText3DGeometry);
+    Q_D(QExtrudedTextGeometry);
     d->init();
 }
 
 /*!
  * \internal
  */
-QText3DGeometry::QText3DGeometry(QText3DGeometryPrivate &dd, Qt3DCore::QNode *parent)
+QExtrudedTextGeometry::QExtrudedTextGeometry(QExtrudedTextGeometryPrivate &dd, Qt3DCore::QNode *parent)
     : QGeometry(dd, parent)
 {
-    Q_D(QText3DGeometry);
+    Q_D(QExtrudedTextGeometry);
     d->init();
 }
 
 /*!
  * \internal
  */
-QText3DGeometry::~QText3DGeometry()
+QExtrudedTextGeometry::~QExtrudedTextGeometry()
 {}
 
 /*!
  * \internal
- * Updates vertices based on text, font, depth and smoothAngle properties.
+ * Updates vertices based on text, font, extrusionLength and smoothAngle properties.
  */
-void QText3DGeometryPrivate::update()
+void QExtrudedTextGeometryPrivate::update()
 {
     if (m_text.trimmed().isEmpty()) // save enough?
         return;
@@ -342,7 +338,7 @@ void QText3DGeometryPrivate::update()
             const QVector3D normal = QVector3D::crossProduct(vertices[cur + numVertices].position - vertices[cur].position, vertices[next].position - vertices[cur].position).normalized();
 
             // use smooth normals in case of a short angle
-            const bool smooth = QVector3D::dotProduct(prevNormal, normal) > (90.0f - m_edgeSplitAngle) / 90.0f;
+            const bool smooth = QVector3D::dotProduct(prevNormal, normal) > (90.0f - edgeSplitAngle) / 90.0f;
             const QVector3D resultNormal = smooth ? mix(prevNormal, normal, 0.5f) : normal;
             if (!smooth)             {
                 vertices.push_back({vertices[cur].position,               prevNormal});
@@ -406,9 +402,9 @@ void QText3DGeometryPrivate::update()
     }
 }
 
-void QText3DGeometry::setText(QString text)
+void QExtrudedTextGeometry::setText(QString text)
 {
-    Q_D(QText3DGeometry);
+    Q_D(QExtrudedTextGeometry);
     if (d->m_text != text) {
         d->m_text = text;
         d->update();
@@ -416,9 +412,9 @@ void QText3DGeometry::setText(QString text)
     }
 }
 
-void QText3DGeometry::setFont(QFont font)
+void QExtrudedTextGeometry::setFont(QFont font)
 {
-    Q_D(QText3DGeometry);
+    Q_D(QExtrudedTextGeometry);
     if (d->m_font != font) {
         d->m_font = font;
         d->update();
@@ -426,9 +422,9 @@ void QText3DGeometry::setFont(QFont font)
     }
 }
 
-void QText3DGeometry::setDepth(float depth)
+void QExtrudedTextGeometry::setDepth(float depth)
 {
-    Q_D(QText3DGeometry);
+    Q_D(QExtrudedTextGeometry);
     if (d->m_depth != depth) {
         d->m_depth = depth;
         d->update();
@@ -436,90 +432,69 @@ void QText3DGeometry::setDepth(float depth)
     }
 }
 
-void QText3DGeometry::setEdgeSplitAngle(float smoothAngle)
-{
-    Q_D(QText3DGeometry);
-    if (d->m_edgeSplitAngle != smoothAngle) {
-        d->m_edgeSplitAngle = smoothAngle;
-        d->update();
-        emit edgeSplitAngleChanged(smoothAngle);
-    }
-}
-
 /*!
- * \property QString Text3DGeometry::text
+ * \property QString QExtrudedTextGeometry::text
  *
  * Holds the text used for the mesh.
  */
-QString QText3DGeometry::text() const
+QString QExtrudedTextGeometry::text() const
 {
-    Q_D(const QText3DGeometry);
+    Q_D(const QExtrudedTextGeometry);
     return d->m_text;
 }
 
 /*!
- * \property QFont Text3DGeometry::font
+ * \property QFont QExtrudedTextGeometry::font
  *
  * Holds the font of the text.
  */
-QFont QText3DGeometry::font() const
+QFont QExtrudedTextGeometry::font() const
 {
-    Q_D(const QText3DGeometry);
+    Q_D(const QExtrudedTextGeometry);
     return d->m_font;
 }
 
 /*!
- * \property float Text3DGeometry::depth
+ * \property float QExtrudedTextGeometry::extrusionLength
  *
- * Holds the extrusion depth of the text.
+ * Holds the extrusion length of the text.
  */
-float QText3DGeometry::depth() const
+float QExtrudedTextGeometry::extrusionLength() const
 {
-    Q_D(const QText3DGeometry);
+    Q_D(const QExtrudedTextGeometry);
     return d->m_depth;
 }
 
 /*!
- * \property float Text3DGeometry::edgeSplitAngle
- *
- * Holds the threshold angle for smooth normals.
- */
-float QText3DGeometry::edgeSplitAngle() const
-{
-    Q_D(const QText3DGeometry);
-    return d->m_edgeSplitAngle;
-}
-
-/*!
- * \property Text3DGeometry::positionAttribute
+ * \property QExtrudedTextGeometry::positionAttribute
  *
  * Holds the geometry position attribute.
  */
-Qt3DRender::QAttribute *QText3DGeometry::positionAttribute() const
+Qt3DRender::QAttribute *QExtrudedTextGeometry::positionAttribute() const
 {
-    Q_D(const QText3DGeometry);
+    Q_D(const QExtrudedTextGeometry);
     return d->m_positionAttribute;
 }
 
 /*!
- * \property Text3DGeometry::normalAttribute
+ * \property QExtrudedTextMesh::normalAttribute
  *
  * Holds the geometry normal attribute.
  */
-Qt3DRender::QAttribute *QText3DGeometry::normalAttribute() const
+Qt3DRender::QAttribute *QExtrudedTextGeometry::normalAttribute() const
 {
-    Q_D(const QText3DGeometry);
+    Q_D(const QExtrudedTextGeometry);
     return d->m_normalAttribute;
 }
 
 /*!
- * \property Text3DGeometry::indexAttribute
+ * \property QExtrudedTextMesh::indexAttribute
  *
  * Holds the geometry index attribute.
  */
-Qt3DRender::QAttribute *QText3DGeometry::indexAttribute() const
+Qt3DRender::QAttribute *QExtrudedTextGeometry::indexAttribute() const
 {
-    Q_D(const QText3DGeometry);
+    Q_D(const QExtrudedTextGeometry);
     return d->m_indexAttribute;
 }
 

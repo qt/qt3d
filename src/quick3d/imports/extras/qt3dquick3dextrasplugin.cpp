@@ -66,8 +66,8 @@
 #include <Qt3DExtras/qplanegeometry.h>
 #include <Qt3DExtras/qconegeometry.h>
 #include <Qt3DExtras/qcylindergeometry.h>
-#include <Qt3DExtras/qtext3dgeometry.h>
-#include <Qt3DExtras/qtext3dmesh.h>
+#include <Qt3DExtras/qextrudedtextgeometry.h>
+#include <Qt3DExtras/qextrudedtextmesh.h>
 #include <Qt3DExtras/qtextureatlas.h>
 #include <Qt3DExtras/qdistancefieldglyphcache.h>
 #include <Qt3DExtras/qdistancefieldtext.h>
@@ -121,8 +121,8 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DExtras::QSphereGeometry>(uri, 2, 0, "SphereGeometry");
 
     // 3D Text
-    qmlRegisterType<Qt3DExtras::QText3DGeometry>(uri, 2, 2, "Text3DGeometry");
-    qmlRegisterType<Qt3DExtras::QText3DMesh>(uri, 2, 2, "Text3DMesh");
+    qmlRegisterType<Qt3DExtras::QExtrudedTextGeometry>(uri, 2, 2, "ExtrudedTextGeometry");
+    qmlRegisterType<Qt3DExtras::QExtrudedTextMesh>(uri, 2, 2, "ExtrudedTextMesh");
 
     qmlRegisterType<Qt3DExtras::QDistanceFieldGlyphCache>(uri, 2, 2, "DistanceFieldGlyphCache");
     qmlRegisterType<Qt3DExtras::QDistanceFieldText>(uri, 2, 2, "DistanceFieldText");

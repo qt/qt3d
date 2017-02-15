@@ -48,50 +48,66 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DEXTRAS_QTEXT3DMESH_H
-#define QT3DEXTRAS_QTEXT3DMESH_H
+#ifndef QT3DEXTRAS_QEXTRUDEDTEXTGEOMETRY_H
+#define QT3DEXTRAS_QEXTRUDEDTEXTGEOMETRY_H
 
 #include <Qt3DExtras/qt3dextras_global.h>
-#include <Qt3DRender/qgeometryrenderer.h>
+#include <Qt3DRender/qgeometry.h>
 #include <QString>
 #include <QFont>
 
 QT_BEGIN_NAMESPACE
 
+namespace Qt3DRender {
+
+class QAttribute;
+
+} // namespace Qt3DRender
+
 namespace Qt3DExtras {
 
-class QT3DEXTRASSHARED_EXPORT QText3DMesh : public Qt3DRender::QGeometryRenderer
+class QExtrudedTextGeometryPrivate;
+
+class QT3DEXTRASSHARED_EXPORT QExtrudedTextGeometry : public Qt3DRender::QGeometry
 {
     Q_OBJECT
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
     Q_PROPERTY(QFont font READ font WRITE setFont NOTIFY fontChanged)
-    Q_PROPERTY(float depth READ depth WRITE setDepth NOTIFY depthChanged)
-    Q_PROPERTY(float edgeSplitAngle READ edgeSplitAngle WRITE setEdgeSplitAngle NOTIFY edgeSplitAngleChanged)
+    Q_PROPERTY(float extrusionLength READ extrusionLength WRITE setDepth NOTIFY depthChanged)
+    Q_PROPERTY(Qt3DRender::QAttribute *positionAttribute READ positionAttribute CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAttribute *normalAttribute READ normalAttribute CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAttribute *indexAttribute READ indexAttribute CONSTANT)
 
 public:
-    QText3DMesh(Qt3DCore::QNode *parent = nullptr);
-    ~QText3DMesh();
+    explicit QExtrudedTextGeometry(Qt3DCore::QNode *parent = nullptr);
+    ~QExtrudedTextGeometry();
 
-    QString text();
-    QFont font();
-    float depth();
-    float edgeSplitAngle();
+    Qt3DRender::QAttribute *positionAttribute() const;
+    Qt3DRender::QAttribute *normalAttribute() const;
+    Qt3DRender::QAttribute *indexAttribute() const;
+    QString text() const;
+    QFont font() const;
+    float extrusionLength() const;
 
 public Q_SLOTS:
     void setText(QString text);
     void setFont(QFont font);
-    void setDepth(float depth);
-    void setEdgeSplitAngle(float edgeSplitAngle);
+    void setDepth(float extrusionLength);
 
 Q_SIGNALS:
     void textChanged(QString text);
     void fontChanged(QFont font);
-    void depthChanged(float depth);
-    void edgeSplitAngleChanged(float edgeSplitAngle);
+    void depthChanged(float extrusionLength);
+
+protected:
+    QExtrudedTextGeometry(QExtrudedTextGeometryPrivate &dd, QNode *parent = nullptr);
+
+private:
+    Q_DECLARE_PRIVATE(QExtrudedTextGeometry)
 };
 
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
 
-#endif // QT3DEXTRAS_QTEXT3DMESH_H
+#endif // QT3DEXTRAS_QEXTRUDEDTEXTGEOMETRY_H
