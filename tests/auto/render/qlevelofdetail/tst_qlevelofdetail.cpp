@@ -103,7 +103,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            QVector<qreal> thresholds = {10., 20., 30.};
+            QVector<float> thresholds = {10.0f, 20.0f, 30.0f};
             lod->setThresholds(thresholds);
             QCoreApplication::processEvents();
 

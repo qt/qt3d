@@ -112,7 +112,7 @@ private Q_SLOTS:
         }
 
         {
-            QVector<qreal> thresholds = {20.f, 30.f, 40.f};
+            QVector<float> thresholds = {20.0f, 30.0f, 40.0f};
             QVariant v;
             v.setValue<decltype(thresholds)>(thresholds);
 
@@ -129,12 +129,12 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-            updateChange->setValue(QVector3D(1., 2., 3.));
+            updateChange->setValue(QVector3D(1.0f, 2.0f, 3.0f));
             updateChange->setPropertyName("center");
             renderLod.sceneChangeEvent(updateChange);
 
             // THEN
-            QCOMPARE(renderLod.center(), QVector3D(1., 2., 3.));
+            QCOMPARE(renderLod.center(), QVector3D(1.0f, 2.0f, 3.0f));
         }
     }
 };

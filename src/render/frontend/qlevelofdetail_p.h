@@ -73,7 +73,7 @@ public:
     QCamera *m_camera;
     int m_currentIndex;
     QLevelOfDetail::ThresholdType m_thresholdType;
-    QVector<qreal> m_thresholds;
+    QVector<float> m_thresholds;
     QPointer<QBoundingSphere> m_volumeOverride;
 };
 
@@ -82,7 +82,7 @@ struct QLevelOfDetailData
     Qt3DCore::QNodeId camera;
     int currentIndex;
     QLevelOfDetail::ThresholdType thresholdType;
-    QVector<qreal> thresholds;
+    QVector<float> thresholds;
     float radius;
     QVector3D center;
 };
