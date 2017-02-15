@@ -69,8 +69,6 @@ class ClipAnimator;
 class ClipAnimatorManager;
 class BlendedClipAnimator;
 class BlendedClipAnimatorManager;
-class ConductedClipAnimator;
-class ConductedClipAnimatorManager;
 class ChannelMapping;
 class ChannelMappingManager;
 class ChannelMapper;
@@ -112,7 +110,6 @@ public:
     AnimationClipManager *animationClipManager() const Q_DECL_NOTHROW { return m_animationClipManager.data(); }
     ClipAnimatorManager *clipAnimatorManager() const Q_DECL_NOTHROW { return m_clipAnimatorManager.data(); }
     BlendedClipAnimatorManager *blendedClipAnimatorManager() const Q_DECL_NOTHROW { return m_blendedClipAnimatorManager.data(); }
-    ConductedClipAnimatorManager *conductedClipAnimatorManager() const Q_DECL_NOTHROW { return m_conductedClipAnimatorManager.data(); }
     ChannelMappingManager *channelMappingManager() const Q_DECL_NOTHROW { return m_channelMappingManager.data(); }
     ChannelMapperManager *channelMapperManager() const Q_DECL_NOTHROW { return m_channelMapperManager.data(); }
     ClipBlendNodeManager *clipBlendNodeManager() const Q_DECL_NOTHROW { return m_clipBlendNodeManager.data(); }
@@ -123,7 +120,6 @@ private:
     QScopedPointer<AnimationClipManager> m_animationClipManager;
     QScopedPointer<ClipAnimatorManager> m_clipAnimatorManager;
     QScopedPointer<BlendedClipAnimatorManager> m_blendedClipAnimatorManager;
-    QScopedPointer<ConductedClipAnimatorManager> m_conductedClipAnimatorManager;
     QScopedPointer<ChannelMappingManager> m_channelMappingManager;
     QScopedPointer<ChannelMapperManager> m_channelMapperManager;
     QScopedPointer<ClipBlendNodeManager> m_clipBlendNodeManager;

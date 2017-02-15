@@ -9,8 +9,6 @@ HEADERS += \
     $$PWD/qclipanimator_p.h \
     $$PWD/qblendedclipanimator.h \
     $$PWD/qblendedclipanimator_p.h \
-    $$PWD/qconductedclipanimator.h \
-    $$PWD/qconductedclipanimator_p.h \
     $$PWD/qchannelmapper.h \
     $$PWD/qchannelmapper_p.h \
     $$PWD/qchannelmapping.h \
@@ -42,7 +40,6 @@ SOURCES += \
     $$PWD/qabstractclipblendnode.cpp \
     $$PWD/qclipanimator.cpp \
     $$PWD/qblendedclipanimator.cpp \
-    $$PWD/qconductedclipanimator.cpp \
     $$PWD/qchannelmapper.cpp \
     $$PWD/qchannelmapping.cpp \
     $$PWD/qlerpblend.cpp \

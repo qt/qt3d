@@ -13,7 +13,6 @@ HEADERS += \
     $$PWD/functionrangefinder_p.h \
     $$PWD/clipanimator_p.h \
     $$PWD/blendedclipanimator_p.h \
-    $$PWD/conductedclipanimator_p.h \
     $$PWD/backendnode_p.h \
     $$PWD/loadanimationclipjob_p.h \
     $$PWD/channelmapping_p.h \
@@ -36,7 +35,6 @@ SOURCES += \
     $$PWD/functionrangefinder.cpp \
     $$PWD/clipanimator.cpp \
     $$PWD/blendedclipanimator.cpp \
-    $$PWD/conductedclipanimator.cpp \
     $$PWD/backendnode.cpp \
     $$PWD/loadanimationclipjob.cpp \
     $$PWD/channelmapping.cpp \
