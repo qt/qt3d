@@ -117,15 +117,19 @@ bool QPostman::shouldNotifyFrontend(const QSceneChangePtr &e)
     const QPropertyUpdatedChangePtr propertyChange = qSharedPointerDynamicCast<QPropertyUpdatedChange>(e);
     if (Q_LIKELY(d->m_scene != nullptr) && !propertyChange.isNull()) {
         const QScene::NodePropertyTrackData propertyTrackData
-            = d->m_scene->lookupNodePropertyTrackData(e->subjectId());
-        switch (propertyTrackData.updateMode) {
-        case QNode::TrackAllPropertiesMode:
+                = d->m_scene->lookupNodePropertyTrackData(e->subjectId());
+
+        const QNode::PropertyTrackingMode trackMode = propertyTrackData.trackedPropertiesOverrides.value(QLatin1String(propertyChange->propertyName()),
+                                                                                                      propertyTrackData.defaultTrackMode);
+
+        switch (trackMode) {
+        case QNode::TrackAllValues:
             return true;
 
-        case QNode::TrackNamedPropertiesMode:
-            return propertyTrackData.namedProperties.contains(QLatin1String(propertyChange->propertyName()));
+        case QNode::DontTrackValues:
+            return false;
 
-        case QNode::DefaultTrackMode: {
+        case QNode::TrackFinalValues: {
             const bool isIntermediate
                 = QPropertyUpdatedChangeBasePrivate::get(propertyChange.data())->m_isIntermediate;
             return !isIntermediate;

@@ -165,7 +165,7 @@ private Q_SLOTS:
         Qt3DRender::Render::ShaderData *backendShaderData = collection.backendShaderData.first();
 
         // THEN
-        QCOMPARE(backendShaderData->properties().size(), 2);
+        QCOMPARE(backendShaderData->properties().size(), 3);
         QVERIFY(backendShaderData->properties().contains(QLatin1String("eyePosition")));
         QVERIFY(backendShaderData->properties().contains(QLatin1String("eyePositionTransformed")));
 
@@ -205,7 +205,7 @@ private Q_SLOTS:
         Qt3DRender::Render::ShaderData *backendShaderData = collection.backendShaderData.first();
 
         // THEN
-        QCOMPARE(backendShaderData->properties().size(), 2);
+        QCOMPARE(backendShaderData->properties().size(), 3);
         QVERIFY(backendShaderData->properties().contains(QLatin1String("position")));
         QVERIFY(backendShaderData->properties().contains(QLatin1String("positionTransformed")));
 

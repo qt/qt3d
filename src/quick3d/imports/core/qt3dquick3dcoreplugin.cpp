@@ -42,6 +42,7 @@
 #include <private/quick3dentity_p.h>
 #include <private/quick3dentityloader_p.h>
 #include <private/quick3dnodeinstantiator_p.h>
+#include <Qt3DQuick/private/quick3dnodev9_p.h>
 #include <private/qquaternionanimation_p.h>
 #include <private/qt3dquick_global_p.h>
 #include <QtCore/qvariantanimation.h>
@@ -65,7 +66,7 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
     // Ideally we want to make Node an uncreatable type
     // We would need qmlRegisterUncreatableExtendedType for that
     qmlRegisterExtendedUncreatableType<Qt3DCore::QNode, Qt3DCore::Quick::Quick3DNode>(uri, 2, 0, "Node", QStringLiteral("Node is a base class"));
-    qmlRegisterExtendedUncreatableType<Qt3DCore::QNode, Qt3DCore::Quick::Quick3DNode, 9>(uri, 2, 9, "Node", QStringLiteral("Node is a base class"));
+    qmlRegisterExtendedUncreatableType<Qt3DCore::QNode, Qt3DCore::Quick::Quick3DNodeV9, 9>(uri, 2, 9, "Node", QStringLiteral("Node is a base class"));
 }
 
 QT_END_NAMESPACE

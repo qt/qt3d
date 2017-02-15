@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QSCENE_P_H
-#define QT3DCORE_QSCENE_P_H
+#ifndef QT3D_QUICK_QUICK3DNODEV9_P_H
+#define QT3D_QUICK_QUICK3DNODEV9_P_H
 
 //
 //  W A R N I N G
@@ -51,71 +51,59 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qt3dcore_global_p.h>
-#include <Qt3DCore/private/qobservableinterface_p.h>
+#include <QtQml/QJSValue>
+#include <QQmlListProperty>
 #include <Qt3DCore/qnode.h>
-#include <QScopedPointer>
+#include <Qt3DQuick/private/qt3dquick_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
+namespace Quick {
 
-class QScenePrivate;
-class QAspectEngine;
-
-typedef QList<QObservableInterface *> QObservableList;
-
-class QT3DCORE_PRIVATE_EXPORT QScene
+class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DNodeV9 : public QObject
 {
+    Q_OBJECT
+    Q_PROPERTY(QJSValue propertyTrackingOverrides READ propertyTrackingOverrides WRITE setPropertyTrackingOverrides NOTIFY propertyTrackingOverridesChanged)
+    Q_PROPERTY(QQmlListProperty<QObject> data READ data)
+    Q_PROPERTY(QQmlListProperty<Qt3DCore::QNode> childNodes READ childNodes)
+    Q_CLASSINFO("DefaultProperty", "data")
+
 public:
-    QScene(QAspectEngine *engine = nullptr);
-    ~QScene();
+    explicit Quick3DNodeV9(QObject *parent = nullptr);
 
-    QAspectEngine *engine() const;
+    QJSValue propertyTrackingOverrides() const;
+    QQmlListProperty<QObject> data();
+    QQmlListProperty<Qt3DCore::QNode> childNodes();
 
-    void addObservable(QObservableInterface *observable, QNodeId id);
-    void addObservable(QNode *observable);
-    void removeObservable(QObservableInterface *observable, QNodeId id);
-    void removeObservable(QNode *observable);
-    QObservableList lookupObservables(QNodeId id) const;
+    inline QNode *parentNode() const { return qobject_cast<QNode*>(parent()); }
 
-    QNode *lookupNode(QNodeId id) const;
-    QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const;
-    QNodeId nodeIdFromObservable(QObservableInterface *observable) const;
+Q_SIGNALS:
+    void propertyTrackingOverridesChanged(const QJSValue &value);
 
-    QNode *rootNode() const;
-
-    void setArbiter(Qt3DCore::QLockableObserverInterface *arbiter);
-    Qt3DCore::QLockableObserverInterface *arbiter() const;
-
-    // Component -> Entities
-    QVector<QNodeId> entitiesForComponent(QNodeId id) const;
-    void addEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);
-    void removeEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);
-    bool hasEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);
-
-    // Node -> Property Update Data
-    struct NodePropertyTrackData
-    {
-        QNode::PropertyTrackingMode defaultTrackMode = QNode::TrackFinalValues;
-        QHash<QString, QNode::PropertyTrackingMode> trackedPropertiesOverrides;
-    };
-    NodePropertyTrackData lookupNodePropertyTrackData(QNodeId id) const;
-    void setPropertyTrackDataForNode(QNodeId id, const NodePropertyTrackData &data);
-    void removePropertyTrackDataForNode(QNodeId id);
+private Q_SLOTS:
+    void setPropertyTrackingOverrides(const QJSValue &value);
+    void childAppended(int idx, QObject *child);
+    void childRemoved(int idx, QObject *child);
 
 private:
-    Q_DECLARE_PRIVATE(QScene)
-    QScopedPointer<QScenePrivate> d_ptr;
+    static void appendData(QQmlListProperty<QObject> *list, QObject *obj);
+    static QObject *dataAt(QQmlListProperty<QObject> *list, int index);
+    static int dataCount(QQmlListProperty<QObject> *list);
+    static void clearData(QQmlListProperty<QObject> *list);
 
-    void setRootNode(QNode *root);
-    friend class QAspectEnginePrivate;
+    static void appendChild(QQmlListProperty<Qt3DCore::QNode> *list, Qt3DCore::QNode *obj);
+    static QNode *childAt(QQmlListProperty<Qt3DCore::QNode> *list, int index);
+    static int childCount(QQmlListProperty<Qt3DCore::QNode> *list);
+    static void clearChildren(QQmlListProperty<Qt3DCore::QNode> *list);
+
+    QJSValue m_propertyTrackingOverrides;
 };
 
-} // Qt3D
+} // namespace Quick
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DCore::QScene*) // LCOV_EXCL_LINE
 
-#endif // QT3DCORE_QSCENE_P_H
+#endif // QT3D_QUICK_QUICK3DNODEV9_P_H
