@@ -196,7 +196,7 @@ void Scene2D::initializeRender()
     if (!m_renderInitialized && m_sharedObject.data() != nullptr) {
        m_shareContext = renderer()->shareContext();
         if (!m_shareContext){
-            qCWarning(Qt3DRender::Quick::Scene2D) << Q_FUNC_INFO << "Renderer not initialized.";
+            qCDebug(Qt3DRender::Quick::Scene2D) << Q_FUNC_INFO << "Renderer not initialized.";
             QCoreApplication::postEvent(m_sharedObject->m_renderObject, new QEvent(INITIALIZE));
             return;
         }
@@ -277,7 +277,7 @@ void Scene2D::render()
                 // Need to call sync even if the texture is not in use
                 syncRenderControl();
                 m_context->doneCurrent();
-                qCWarning(Qt3DRender::Quick::Scene2D) << Q_FUNC_INFO << "Texture not in use.";
+                qCDebug(Qt3DRender::Quick::Scene2D) << Q_FUNC_INFO << "Texture not in use.";
                 QCoreApplication::postEvent(m_sharedObject->m_renderObject, new QEvent(RENDER));
                 return;
             }
