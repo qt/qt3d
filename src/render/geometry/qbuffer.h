@@ -89,9 +89,9 @@ public:
     Q_ENUM(UsageType) // LCOV_EXCL_LINE
 
     enum AccessType {
-        Write = 0x0,
-        Read = 0x1,
-        ReadWrite = 0x2
+        Write = 0x1,
+        Read = 0x2,
+        ReadWrite = Write|Read
     };
     Q_ENUM(AccessType) // LCOV_EXCL_LINE
 
