@@ -54,6 +54,8 @@ import Qt3D.Render 2.0
 import QtQuick.Scene3D 2.0
 
 Item {
+    width: 128
+    height: width
     Scene3D {
         anchors.fill: parent
         BufferSetterScene {

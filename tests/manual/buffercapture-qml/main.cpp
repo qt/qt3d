@@ -66,7 +66,6 @@ int main(int argc, char* argv[])
 
     view.setSource(QUrl("qrc:/main.qml"));
 
-
     QObject *rootObject = view.rootObject();
     Qt3DRender::QBuffer *buffer = rootObject->findChild<Qt3DRender::QBuffer*>("buffer");
 
@@ -74,9 +73,9 @@ int main(int argc, char* argv[])
                      [=](const QByteArray &bytes) {
         //I know I'm receiving int data
         const uint *data = reinterpret_cast<const uint*>(bytes.data());
-        std::cout << "Data received" << std::endl;
+        qDebug() << "Data received";
         for (uint i = 0; i < 1024; ++i)
-            std::cout << data[i] << std::endl;
+            qDebug() << data[i];
     }
     );
 

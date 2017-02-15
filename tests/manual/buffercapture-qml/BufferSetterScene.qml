@@ -60,8 +60,9 @@ Entity {
     Camera {
         id: sceneCamera
         projectionType: CameraLens.PerspectiveProjection
-        viewCenter: Qt.vector3d(0, 0, 0)
+        upVector: Qt.vector3d(0, 1, 0)
         position: Qt.vector3d(0, 0, -800)
+        viewCenter: Qt.vector3d(0, 0, 0)
         nearPlane: 0.1
         farPlane: 1000
         fieldOfView: 25
@@ -93,8 +94,7 @@ Entity {
         objectName: "buffer"
         type: Buffer.VertexBuffer
         data: initGraphBuffer()
-        access: Buffer.Read
-        onDataAvailable: access = Buffer.Write
+        access: Buffer.ReadWrite
     }
 
     ComputeMaterial {
