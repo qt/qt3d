@@ -240,7 +240,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
             case FrameGraphNode::MemoryBarrier: {
                 const Render::MemoryBarrier *barrier = static_cast<const Render::MemoryBarrier *>(node);
-                rv->setMemoryBarrier(barrier->barrierTypes()|rv->memoryBarrier());
+                rv->setMemoryBarrier(barrier->waitOperations()|rv->memoryBarrier());
                 break;
             }
 

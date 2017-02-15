@@ -1477,7 +1477,7 @@ bool GraphicsContext::hasGLBufferForBuffer(Buffer *buffer)
     return (it != m_renderBufferHash.end());
 }
 
-void GraphicsContext::memoryBarrier(QMemoryBarrier::BarrierTypes barriers)
+void GraphicsContext::memoryBarrier(QMemoryBarrier::Operations barriers)
 {
     m_glHelper->memoryBarrier(barriers);
 }
