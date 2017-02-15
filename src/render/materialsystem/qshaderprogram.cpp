@@ -111,7 +111,7 @@ void QShaderProgramPrivate::setLog(const QString &log)
     }
 }
 
-void QShaderProgramPrivate::setStatus(QShaderProgram::ShaderStatus status)
+void QShaderProgramPrivate::setStatus(QShaderProgram::Status status)
 {
     Q_Q(QShaderProgram);
     if (status != m_status) {
@@ -145,7 +145,7 @@ void QShaderProgram::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
         if (e->propertyName() == QByteArrayLiteral("log"))
             d->setLog(e->value().toString());
         else if (e->propertyName() == QByteArrayLiteral("status"))
-            d->setStatus(static_cast<QShaderProgram::ShaderStatus>(e->value().toInt()));
+            d->setStatus(static_cast<QShaderProgram::Status>(e->value().toInt()));
     }
 }
 
@@ -381,7 +381,7 @@ QString QShaderProgram::log() const
 
     Holds the status of the current shader program.
 */
-QShaderProgram::ShaderStatus QShaderProgram::status() const
+QShaderProgram::Status QShaderProgram::status() const
 {
     Q_D(const QShaderProgram);
     return d->m_status;

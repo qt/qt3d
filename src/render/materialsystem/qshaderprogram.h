@@ -59,7 +59,7 @@ class QT3DRENDERSHARED_EXPORT QShaderProgram : public Qt3DCore::QNode
     Q_PROPERTY(QByteArray fragmentShaderCode READ fragmentShaderCode WRITE setFragmentShaderCode NOTIFY fragmentShaderCodeChanged)
     Q_PROPERTY(QByteArray computeShaderCode READ computeShaderCode WRITE setComputeShaderCode NOTIFY computeShaderCodeChanged)
     Q_PROPERTY(QString log READ log NOTIFY logChanged)
-    Q_PROPERTY(ShaderStatus status READ status NOTIFY statusChanged)
+    Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 
 public:
     explicit QShaderProgram(Qt3DCore::QNode *parent = nullptr);
@@ -75,12 +75,12 @@ public:
     };
     Q_ENUM(ShaderType) // LCOV_EXCL_LINE
 
-    enum ShaderStatus {
+    enum Status {
         NotReady = 0,
         Ready,
         Error
     };
-    Q_ENUM(ShaderStatus) // LCOV_EXCL_LINE
+    Q_ENUM(Status) // LCOV_EXCL_LINE
 
     // Source code in-line
     QByteArray vertexShaderCode() const;
@@ -94,7 +94,7 @@ public:
     QByteArray shaderCode(ShaderType type) const;
 
     QString log() const;
-    ShaderStatus status() const;
+    Status status() const;
 
     Q_INVOKABLE static QByteArray loadSource(const QUrl &sourceUrl);
 
@@ -114,7 +114,7 @@ Q_SIGNALS:
     void fragmentShaderCodeChanged(const QByteArray &fragmentShaderCode);
     void computeShaderCodeChanged(const QByteArray &computeShaderCode);
     void logChanged(const QString &log);
-    void statusChanged(ShaderStatus status);
+    void statusChanged(Status status);
 
 protected:
     explicit QShaderProgram(QShaderProgramPrivate &dd, Qt3DCore::QNode *parent = nullptr);

@@ -77,10 +77,10 @@ public:
     QByteArray m_fragmentShaderCode;
     QByteArray m_computeShaderCode;
     QString m_log;
-    QShaderProgram::ShaderStatus m_status;
+    QShaderProgram::Status m_status;
 
     void setLog(const QString &log);
-    void setStatus(QShaderProgram::ShaderStatus status);
+    void setStatus(QShaderProgram::Status status);
 };
 
 struct QShaderProgramData

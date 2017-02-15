@@ -447,7 +447,7 @@ void Shader::setLog(const QString &log)
     }
 }
 
-void Shader::setStatus(QShaderProgram::ShaderStatus status)
+void Shader::setStatus(QShaderProgram::Status status)
 {
     if (status != m_status) {
         m_status = status;
