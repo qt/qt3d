@@ -65,6 +65,7 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
     // Ideally we want to make Node an uncreatable type
     // We would need qmlRegisterUncreatableExtendedType for that
     qmlRegisterExtendedUncreatableType<Qt3DCore::QNode, Qt3DCore::Quick::Quick3DNode>(uri, 2, 0, "Node", QStringLiteral("Node is a base class"));
+    qmlRegisterExtendedUncreatableType<Qt3DCore::QNode, Qt3DCore::Quick::Quick3DNode, 9>(uri, 2, 9, "Node", QStringLiteral("Node is a base class"));
 }
 
 QT_END_NAMESPACE

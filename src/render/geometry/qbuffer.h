@@ -59,7 +59,7 @@ class QT3DRENDERSHARED_EXPORT QBuffer : public Qt3DCore::QNode
     Q_PROPERTY(BufferType type READ type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(UsageType usage READ usage WRITE setUsage NOTIFY usageChanged)
     Q_PROPERTY(bool syncData READ isSyncData WRITE setSyncData NOTIFY syncDataChanged)
-    Q_PROPERTY(AccessType access READ access WRITE setAccess NOTIFY accessChanged)
+    Q_PROPERTY(AccessType access READ access WRITE setAccess NOTIFY accessChanged REVISION 9)
 
 public:
     enum BufferType

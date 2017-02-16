@@ -69,8 +69,8 @@ class QT3DCORESHARED_EXPORT QNode : public QObject
     Q_OBJECT
     Q_PROPERTY(Qt3DCore::QNode *parent READ parentNode WRITE setParent NOTIFY parentChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
-    Q_PROPERTY(PropertyTrackMode propertyTrackMode READ propertyTrackMode WRITE setPropertyTrackMode NOTIFY propertyUpdateModeChanged)
-    Q_PROPERTY(QStringList trackedProperties READ trackedProperties WRITE setTrackedProperties NOTIFY trackedPropertiesChanged)
+    Q_PROPERTY(PropertyTrackMode propertyTrackMode READ propertyTrackMode WRITE setPropertyTrackMode NOTIFY propertyUpdateModeChanged REVISION 9)
+    Q_PROPERTY(QStringList trackedProperties READ trackedProperties WRITE setTrackedProperties NOTIFY trackedPropertiesChanged REVISION 9)
 public:
 
     enum PropertyTrackMode {

@@ -82,9 +82,11 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
 {
     // Framegraphs
     qmlRegisterType<Qt3DExtras::QForwardRenderer>(uri, 2, 0, "ForwardRenderer");
+    qmlRegisterRevision<Qt3DExtras::QForwardRenderer, 9>(uri, 2, 9);
 
     // Entities
     qmlRegisterType<Qt3DExtras::QSkyboxEntity>(uri, 2, 0, "SkyboxEntity");
+    qmlRegisterRevision<Qt3DExtras::QSkyboxEntity, 9>(uri, 2, 9);
     qmlRegisterType<Qt3DExtras::Extras::Quick::Quick3DLevelOfDetailLoader>(uri, 2, 9, "LevelOfDetailLoader");
 
     // Camera Controllers
