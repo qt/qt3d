@@ -63,7 +63,7 @@ QMetalRoughMaterialPrivate::QMetalRoughMaterialPrivate()
     , m_environmentIrradianceTexture(new QTexture2D())
     , m_environmentSpecularTexture(new QTexture2D())
     , m_baseColorParameter(new QParameter(QStringLiteral("baseColor"), QColor("grey")))
-    , m_metallicParameter(new QParameter(QStringLiteral("metallic"), 0.0f))
+    , m_metalnessParameter(new QParameter(QStringLiteral("metalness"), 0.0f))
     , m_roughnessParameter(new QParameter(QStringLiteral("roughness"), 0.0f))
     , m_environmentIrradianceParameter(new QParameter(QStringLiteral("skyIrradiance"), m_environmentIrradianceTexture))
     , m_environmentSpecularParameter(new QParameter(QStringLiteral("skySpecular"), m_environmentSpecularTexture))
@@ -90,7 +90,7 @@ void QMetalRoughMaterialPrivate::init()
 {
     connect(m_baseColorParameter, &Qt3DRender::QParameter::valueChanged,
             this, &QMetalRoughMaterialPrivate::handleBaseColorChanged);
-    connect(m_metallicParameter, &Qt3DRender::QParameter::valueChanged,
+    connect(m_metalnessParameter, &Qt3DRender::QParameter::valueChanged,
             this, &QMetalRoughMaterialPrivate::handleMetallicChanged);
     connect(m_roughnessParameter, &Qt3DRender::QParameter::valueChanged,
             this, &QMetalRoughMaterialPrivate::handleRoughnessChanged);
@@ -118,7 +118,7 @@ void QMetalRoughMaterialPrivate::init()
     m_metalRoughEffect->addTechnique(m_metalRoughGL3Technique);
 
     m_metalRoughEffect->addParameter(m_baseColorParameter);
-    m_metalRoughEffect->addParameter(m_metallicParameter);
+    m_metalRoughEffect->addParameter(m_metalnessParameter);
     m_metalRoughEffect->addParameter(m_roughnessParameter);
     m_metalRoughEffect->addParameter(m_environmentIrradianceParameter);
     m_metalRoughEffect->addParameter(m_environmentSpecularParameter);
@@ -135,7 +135,7 @@ void QMetalRoughMaterialPrivate::handleBaseColorChanged(const QVariant &var)
 void QMetalRoughMaterialPrivate::handleMetallicChanged(const QVariant &var)
 {
     Q_Q(QMetalRoughMaterial);
-    emit q->metallicChanged(var.toFloat());
+    emit q->metalnessChanged(var.toFloat());
 }
 void QMetalRoughMaterialPrivate::handleRoughnessChanged(const QVariant &var)
 {
@@ -204,15 +204,15 @@ QColor QMetalRoughMaterial::baseColor() const
 }
 
 /*!
-    \property QMetalRoughMaterial::metallic
+    \property QMetalRoughMaterial::metalness
 
-    Holds the current metallic level of the material, since is a value between 0 (purely dielectric, the default)
+    Holds the current metalness level of the material, since is a value between 0 (purely dielectric, the default)
     and 1 (purely metallic).
 */
-float QMetalRoughMaterial::metallic() const
+float QMetalRoughMaterial::metalness() const
 {
     Q_D(const QMetalRoughMaterial);
-    return d->m_metallicParameter->value().toFloat();
+    return d->m_metalnessParameter->value().toFloat();
 }
 
 /*!
@@ -272,10 +272,10 @@ void QMetalRoughMaterial::setBaseColor(const QColor &baseColor)
     d->m_baseColorParameter->setValue(QVariant::fromValue(baseColor));
 }
 
-void QMetalRoughMaterial::setMetallic(float metallic)
+void QMetalRoughMaterial::setMetalness(float metalness)
 {
     Q_D(QMetalRoughMaterial);
-    d->m_metallicParameter->setValue(QVariant::fromValue(metallic));
+    d->m_metalnessParameter->setValue(QVariant::fromValue(metalness));
 }
 
 void QMetalRoughMaterial::setRoughness(float roughness)

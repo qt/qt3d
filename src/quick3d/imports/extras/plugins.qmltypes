@@ -736,7 +736,7 @@ Module {
         exports: ["Qt3D.Extras/MetalRoughMaterial 2.2"]
         exportMetaObjectRevisions: [0]
         Property { name: "baseColor"; type: "QColor" }
-        Property { name: "metallic"; type: "float" }
+        Property { name: "metalness"; type: "float" }
         Property { name: "roughness"; type: "float" }
         Property {
             name: "environmentIrradiance"
@@ -750,8 +750,8 @@ Module {
             Parameter { name: "baseColor"; type: "QColor" }
         }
         Signal {
-            name: "metallicChanged"
-            Parameter { name: "metallic"; type: "float" }
+            name: "metalnessChanged"
+            Parameter { name: "metalness"; type: "float" }
         }
         Signal {
             name: "roughnessChanged"
@@ -778,8 +778,8 @@ Module {
             Parameter { name: "baseColor"; type: "QColor" }
         }
         Method {
-            name: "setMetallic"
-            Parameter { name: "metallic"; type: "float" }
+            name: "setMetalness"
+            Parameter { name: "metalness"; type: "float" }
         }
         Method {
             name: "setRoughness"
@@ -1449,7 +1449,7 @@ Module {
         exports: ["Qt3D.Extras/TexturedMetalRoughMaterial 2.2"]
         exportMetaObjectRevisions: [0]
         Property { name: "baseColor"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
-        Property { name: "metallic"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+        Property { name: "metalness"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
         Property { name: "roughness"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
         Property { name: "ambientOcclusion"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
         Property { name: "normal"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
@@ -1465,8 +1465,8 @@ Module {
             Parameter { name: "baseColor"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
         }
         Signal {
-            name: "metallicChanged"
-            Parameter { name: "metallic"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+            name: "metalnessChanged"
+            Parameter { name: "metalness"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
         }
         Signal {
             name: "roughnessChanged"
@@ -1501,8 +1501,8 @@ Module {
             Parameter { name: "baseColor"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
         }
         Method {
-            name: "setMetallic"
-            Parameter { name: "metallic"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
+            name: "setMetalness"
+            Parameter { name: "metalness"; type: "Qt3DRender::QAbstractTexture"; isPointer: true }
         }
         Method {
             name: "setRoughness"

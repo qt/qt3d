@@ -87,7 +87,7 @@ public:
     Qt3DRender::QAbstractTexture *m_environmentIrradianceTexture;
     Qt3DRender::QAbstractTexture *m_environmentSpecularTexture;
     Qt3DRender::QParameter *m_baseColorParameter;
-    Qt3DRender::QParameter *m_metallicParameter;
+    Qt3DRender::QParameter *m_metalnessParameter;
     Qt3DRender::QParameter *m_roughnessParameter;
     Qt3DRender::QParameter *m_environmentIrradianceParameter;
     Qt3DRender::QParameter *m_environmentSpecularParameter;

@@ -67,7 +67,7 @@ uniform samplerCube skySpecular;    // For specular contribution
 
 // PBR Material maps
 uniform vec4 baseColor;
-uniform float metallic;
+uniform float metalness;
 uniform float roughness;
 
 // Roughness -> mip level mapping
@@ -152,7 +152,7 @@ vec3 specularModel(const in vec3 F0,
 vec3 pbrIblModel(const in vec3 wNormal,
                  const in vec3 wView,
                  const in vec3 baseColor,
-                 const in float metallic,
+                 const in float metalness,
                  const in float roughness)
 {
     // Calculate reflection direction of view vector about surface normal
@@ -169,12 +169,12 @@ vec3 pbrIblModel(const in vec3 wNormal,
     float lDotH = dot(l, h);
 
     // Calculate diffuse component
-    vec3 diffuseColor = (1.0 - metallic) * baseColor;
+    vec3 diffuseColor = (1.0 - metalness) * baseColor;
     vec3 diffuse = diffuseColor * texture(skyIrradiance, l).rgb;
 
     // Calculate specular component
     vec3 dielectricColor = vec3(0.04);
-    vec3 F0 = mix(dielectricColor, baseColor, metallic);
+    vec3 F0 = mix(dielectricColor, baseColor, metalness);
     vec3 specularFactor = specularModel(F0, lDotH, lDotN, vDotN, n, h);
 
     float lod = roughnessToMipLevel(roughness);
@@ -206,7 +206,7 @@ void main()
     vec3 cLinear = pbrIblModel(worldNormal,
                                worldView,
                                baseColor.rgb,
-                               metallic,
+                               metalness,
                                roughness);
 
     // Apply simple (Reinhard) tonemap transform to get into LDR range [0, 1]

@@ -67,7 +67,7 @@ uniform samplerCube skySpecular;    // For specular contribution
 
 // PBR Material maps
 uniform sampler2D baseColorMap;
-uniform sampler2D metallicMap;
+uniform sampler2D metalnessMap;
 uniform sampler2D roughnessMap;
 uniform sampler2D normalMap;
 uniform sampler2D ambientOcclusionMap;
@@ -157,7 +157,7 @@ vec3 specularModel(const in vec3 F0,
 vec3 pbrIblModel(const in vec3 wNormal,
                  const in vec3 wView,
                  const in vec3 baseColor,
-                 const in float metallic,
+                 const in float metalness,
                  const in float roughness,
                  const in float ambientOcclusion)
 {
@@ -175,12 +175,12 @@ vec3 pbrIblModel(const in vec3 wNormal,
     float lDotH = dot(l, h);
 
     // Calculate diffuse component
-    vec3 diffuseColor = (1.0 - metallic) * baseColor;
+    vec3 diffuseColor = (1.0 - metalness) * baseColor;
     vec3 diffuse = diffuseColor * texture(skyIrradiance, l).rgb;
 
     // Calculate specular component
     vec3 dielectricColor = vec3(0.04);
-    vec3 F0 = mix(dielectricColor, baseColor, metallic);
+    vec3 F0 = mix(dielectricColor, baseColor, metalness);
     vec3 specularFactor = specularModel(F0, lDotH, lDotN, vDotN, n, h);
 
     float lod = roughnessToMipLevel(roughness);
@@ -218,7 +218,7 @@ void main()
 
     // Sample the inputs needed for the metal-roughness PBR BRDF
     vec3 baseColor = texture(baseColorMap, texCoord).rgb;
-    float metallic = texture(metallicMap, texCoord).r * metalFactor;
+    float metalness = texture(metalnessMap, texCoord).r * metalFactor;
     float roughness = texture(roughnessMap, texCoord).r;
     float ambientOcclusion = texture(ambientOcclusionMap, texCoord).r;
     vec3 tNormal = 2.0 * texture(normalMap, texCoord).rgb - vec3(1.0);
@@ -227,7 +227,7 @@ void main()
     vec3 cLinear = pbrIblModel(wNormal,
                                wView,
                                baseColor,
-                               metallic,
+                               metalness,
                                roughness,
                                ambientOcclusion);
 

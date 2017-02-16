@@ -61,14 +61,14 @@ namespace Qt3DExtras {
 QTexturedMetalRoughMaterialPrivate::QTexturedMetalRoughMaterialPrivate()
     : QMaterialPrivate()
     , m_baseColorTexture(new QTexture2D())
-    , m_metallicTexture(new QTexture2D())
+    , m_metalnessTexture(new QTexture2D())
     , m_roughnessTexture(new QTexture2D())
     , m_ambientOcclusionTexture(new QTexture2D())
     , m_normalTexture(new QTexture2D())
     , m_environmentIrradianceTexture(new QTexture2D())
     , m_environmentSpecularTexture(new QTexture2D())
     , m_baseColorParameter(new QParameter(QStringLiteral("baseColorMap"), m_baseColorTexture))
-    , m_metallicParameter(new QParameter(QStringLiteral("metallicMap"), m_metallicTexture))
+    , m_metalnessParameter(new QParameter(QStringLiteral("metalnessMap"), m_metalnessTexture))
     , m_roughnessParameter(new QParameter(QStringLiteral("roughnessMap"), m_roughnessTexture))
     , m_ambientOcclusionParameter(new QParameter(QStringLiteral("ambientOcclusionMap"), m_ambientOcclusionTexture))
     , m_normalParameter(new QParameter(QStringLiteral("normalMap"), m_normalTexture))
@@ -86,11 +86,11 @@ QTexturedMetalRoughMaterialPrivate::QTexturedMetalRoughMaterialPrivate()
     m_baseColorTexture->setGenerateMipMaps(true);
     m_baseColorTexture->setMaximumAnisotropy(16.0f);
 
-    m_metallicTexture->setMagnificationFilter(QAbstractTexture::Linear);
-    m_metallicTexture->setMinificationFilter(QAbstractTexture::LinearMipMapLinear);
-    m_metallicTexture->setWrapMode(QTextureWrapMode(QTextureWrapMode::Repeat));
-    m_metallicTexture->setGenerateMipMaps(true);
-    m_metallicTexture->setMaximumAnisotropy(16.0f);
+    m_metalnessTexture->setMagnificationFilter(QAbstractTexture::Linear);
+    m_metalnessTexture->setMinificationFilter(QAbstractTexture::LinearMipMapLinear);
+    m_metalnessTexture->setWrapMode(QTextureWrapMode(QTextureWrapMode::Repeat));
+    m_metalnessTexture->setGenerateMipMaps(true);
+    m_metalnessTexture->setMaximumAnisotropy(16.0f);
 
     m_roughnessTexture->setMagnificationFilter(QAbstractTexture::Linear);
     m_roughnessTexture->setMinificationFilter(QAbstractTexture::LinearMipMapLinear);
@@ -127,7 +127,7 @@ void QTexturedMetalRoughMaterialPrivate::init()
 {
     connect(m_baseColorParameter, &Qt3DRender::QParameter::valueChanged,
             this, &QTexturedMetalRoughMaterialPrivate::handleBaseColorChanged);
-    connect(m_metallicParameter, &Qt3DRender::QParameter::valueChanged,
+    connect(m_metalnessParameter, &Qt3DRender::QParameter::valueChanged,
             this, &QTexturedMetalRoughMaterialPrivate::handleMetallicChanged);
     connect(m_roughnessParameter, &Qt3DRender::QParameter::valueChanged,
             this, &QTexturedMetalRoughMaterialPrivate::handleRoughnessChanged);
@@ -159,7 +159,7 @@ void QTexturedMetalRoughMaterialPrivate::init()
     m_metalRoughEffect->addTechnique(m_metalRoughGL3Technique);
 
     m_metalRoughEffect->addParameter(m_baseColorParameter);
-    m_metalRoughEffect->addParameter(m_metallicParameter);
+    m_metalRoughEffect->addParameter(m_metalnessParameter);
     m_metalRoughEffect->addParameter(m_roughnessParameter);
     m_metalRoughEffect->addParameter(m_ambientOcclusionParameter);
     m_metalRoughEffect->addParameter(m_normalParameter);
@@ -178,7 +178,7 @@ void QTexturedMetalRoughMaterialPrivate::handleBaseColorChanged(const QVariant &
 void QTexturedMetalRoughMaterialPrivate::handleMetallicChanged(const QVariant &var)
 {
     Q_Q(QTexturedMetalRoughMaterial);
-    emit q->metallicChanged(var.value<QAbstractTexture *>());
+    emit q->metalnessChanged(var.value<QAbstractTexture *>());
 }
 void QTexturedMetalRoughMaterialPrivate::handleRoughnessChanged(const QVariant &var)
 {
@@ -268,11 +268,11 @@ QAbstractTexture *QTexturedMetalRoughMaterial::baseColor() const
 }
 
 /*!
-    \property QTexturedMetalRoughMaterial::metallic
+    \property QTexturedMetalRoughMaterial::metalness
 
-    Holds the current metallic map texture.
+    Holds the current metalness map texture.
 
-    By default, the metallic texture has the following properties:
+    By default, the metalness texture has the following properties:
 
     \list
         \li Linear minification and magnification filters
@@ -281,10 +281,10 @@ QAbstractTexture *QTexturedMetalRoughMaterial::baseColor() const
         \li Maximum anisotropy of 16.0
     \endlist
 */
-QAbstractTexture *QTexturedMetalRoughMaterial::metallic() const
+QAbstractTexture *QTexturedMetalRoughMaterial::metalness() const
 {
     Q_D(const QTexturedMetalRoughMaterial);
-    return d->m_metallicParameter->value().value<QAbstractTexture *>();
+    return d->m_metalnessParameter->value().value<QAbstractTexture *>();
 }
 
 /*!
@@ -392,10 +392,10 @@ void QTexturedMetalRoughMaterial::setBaseColor(QAbstractTexture *baseColor)
     d->m_baseColorParameter->setValue(QVariant::fromValue(baseColor));
 }
 
-void QTexturedMetalRoughMaterial::setMetallic(QAbstractTexture *metallic)
+void QTexturedMetalRoughMaterial::setMetalness(QAbstractTexture *metalness)
 {
     Q_D(QTexturedMetalRoughMaterial);
-    d->m_metallicParameter->setValue(QVariant::fromValue(metallic));
+    d->m_metalnessParameter->setValue(QVariant::fromValue(metalness));
 }
 
 void QTexturedMetalRoughMaterial::setRoughness(QAbstractTexture *roughness)
