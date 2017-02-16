@@ -85,7 +85,7 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
 
     // Entities
     qmlRegisterType<Qt3DExtras::QSkyboxEntity>(uri, 2, 0, "SkyboxEntity");
-    qmlRegisterType<Qt3DExtras::Extras::Quick::Quick3DLevelOfDetailLoader>(uri, 2, 2, "LevelOfDetailLoader");
+    qmlRegisterType<Qt3DExtras::Extras::Quick::Quick3DLevelOfDetailLoader>(uri, 2, 9, "LevelOfDetailLoader");
 
     // Camera Controllers
     qmlRegisterType<Qt3DExtras::QFirstPersonCameraController>(uri, 2, 0, "FirstPersonCameraController");
@@ -102,9 +102,9 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DExtras::QPerVertexColorMaterial>(uri, 2, 0, "PerVertexColorMaterial");
     qmlRegisterType<Qt3DExtras::QGoochMaterial>(uri, 2, 0, "GoochMaterial");
     qmlRegisterType<Qt3DExtras::QTextureMaterial>(uri, 2, 0, "TextureMaterial");
-    qmlRegisterType<Qt3DExtras::QMetalRoughMaterial>(uri, 2, 2, "MetalRoughMaterial");
-    qmlRegisterType<Qt3DExtras::QTexturedMetalRoughMaterial>(uri, 2, 2, "TexturedMetalRoughMaterial");
-    qmlRegisterType<Qt3DExtras::QMorphPhongMaterial>(uri, 2, 2, "MorphPhongMaterial");
+    qmlRegisterType<Qt3DExtras::QMetalRoughMaterial>(uri, 2, 9, "MetalRoughMaterial");
+    qmlRegisterType<Qt3DExtras::QTexturedMetalRoughMaterial>(uri, 2, 9, "TexturedMetalRoughMaterial");
+    qmlRegisterType<Qt3DExtras::QMorphPhongMaterial>(uri, 2, 9, "MorphPhongMaterial");
 
     // Meshes
     qmlRegisterType<Qt3DExtras::QConeMesh>(uri, 2, 0, "ConeMesh");
@@ -121,11 +121,11 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DExtras::QSphereGeometry>(uri, 2, 0, "SphereGeometry");
 
     // 3D Text
-    qmlRegisterType<Qt3DExtras::QExtrudedTextGeometry>(uri, 2, 2, "ExtrudedTextGeometry");
-    qmlRegisterType<Qt3DExtras::QExtrudedTextMesh>(uri, 2, 2, "ExtrudedTextMesh");
+    qmlRegisterType<Qt3DExtras::QExtrudedTextGeometry>(uri, 2, 9, "ExtrudedTextGeometry");
+    qmlRegisterType<Qt3DExtras::QExtrudedTextMesh>(uri, 2, 9, "ExtrudedTextMesh");
 
-    qmlRegisterType<Qt3DExtras::QDistanceFieldGlyphCache>(uri, 2, 2, "DistanceFieldGlyphCache");
-    qmlRegisterType<Qt3DExtras::QDistanceFieldText>(uri, 2, 2, "DistanceFieldText");
+    qmlRegisterType<Qt3DExtras::QDistanceFieldGlyphCache>(uri, 2, 9, "DistanceFieldGlyphCache");
+    qmlRegisterType<Qt3DExtras::QDistanceFieldText>(uri, 2, 9, "DistanceFieldText");
 }
 
 

@@ -200,16 +200,16 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::Render::Quick::Quick3DBuffer>(uri, 2, 0, "Buffer");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QGeometry, Qt3DRender::Render::Quick::Quick3DGeometry>("QGeometry", "Qt3D.Render/Geometry", uri, 2, 0, "Geometry");
     qmlRegisterType<Qt3DRender::QGeometryRenderer>(uri, 2, 0, "GeometryRenderer");
-    qmlRegisterType<Qt3DRender::QLevelOfDetail>(uri, 2, 2, "LevelOfDetail");
-    qmlRegisterType<Qt3DRender::QLevelOfDetailSwitch>(uri, 2, 2, "LevelOfDetailSwitch");
-    qmlRegisterType<Qt3DRender::QBoundingSphere>(uri, 2, 2, "BoundingSphere");
+    qmlRegisterType<Qt3DRender::QLevelOfDetail>(uri, 2, 9, "LevelOfDetail");
+    qmlRegisterType<Qt3DRender::QLevelOfDetailSwitch>(uri, 2, 9, "LevelOfDetailSwitch");
+    qmlRegisterType<Qt3DRender::QBoundingSphere>(uri, 2, 9, "BoundingSphere");
 
     // Mesh
     qmlRegisterType<Qt3DRender::QMesh>(uri, 2, 0, "Mesh");
 
     // Picking
     qmlRegisterType<Qt3DRender::QObjectPicker>(uri, 2, 0, "ObjectPicker");
-    qmlRegisterType<Qt3DRender::QEventForward>(uri, 2, 2, "EventForward");
+    qmlRegisterType<Qt3DRender::QEventForward>(uri, 2, 9, "EventForward");
     qmlRegisterUncreatableType<Qt3DRender::QPickEvent>(uri, 2, 0, "PickEvent", QStringLiteral("Events cannot be created"));
 
         // Compute Job
@@ -239,8 +239,8 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QDispatchCompute>(uri, 2, 0, "DispatchCompute");
     qmlRegisterType<Qt3DRender::QRenderCapture>(uri, 2, 1, "RenderCapture");
     qmlRegisterUncreatableType<Qt3DRender::QRenderCaptureReply>(uri, 2, 1, "RenderCaptureReply", QStringLiteral("RenderCaptureReply is only instantiated by RenderCapture"));
-    qmlRegisterType<Qt3DRender::QBufferCapture>(uri, 2, 0, "BufferCapture");
-    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QMemoryBarrier, Qt3DRender::Render::Quick::Quick3DMemoryBarrier>("QMemoryBarrier", "Qt3D.Render/MemoryBarrier", uri, 2, 0, "MemoryBarrier");
+    qmlRegisterType<Qt3DRender::QBufferCapture>(uri, 2, 9, "BufferCapture");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QMemoryBarrier, Qt3DRender::Render::Quick::Quick3DMemoryBarrier>("QMemoryBarrier", "Qt3D.Render/MemoryBarrier", uri, 2, 9, "MemoryBarrier");
 
     // RenderTarget
     qmlRegisterType<Qt3DRender::QRenderTargetOutput>(uri, 2, 0, "RenderTargetOutput");
@@ -277,7 +277,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QStencilMask>(uri, 2, 0, "StencilMask");
 
     // Scene2D
-    Qt3DRender::Quick::registerType<Qt3DRender::Quick::QScene2D>("QScene2D", "Qt3D.Render/Scene2D", uri, 2, 2, "Scene2D");
+    Qt3DRender::Quick::registerType<Qt3DRender::Quick::QScene2D>("QScene2D", "Qt3D.Render/Scene2D", uri, 2, 9, "Scene2D");
 }
 
 QT_END_NAMESPACE
