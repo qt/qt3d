@@ -55,6 +55,7 @@ namespace Animation {
 AnimationClipLoader::AnimationClipLoader()
     : BackendNode(ReadWrite)
     , m_source()
+    , m_status(QAnimationClipLoader::NotReady)
     , m_name()
     , m_objectName()
     , m_channelGroups()
@@ -76,10 +77,23 @@ void AnimationClipLoader::cleanup()
     setEnabled(false);
     m_handler = nullptr;
     m_source.clear();
+    m_status = QAnimationClipLoader::NotReady;
     m_channelGroups.clear();
     m_duration = 0.0f;
 
     clearData();
+}
+
+void AnimationClipLoader::setStatus(QAnimationClipLoader::Status status)
+{
+    if (status != m_status) {
+        m_status = status;
+        Qt3DCore::QPropertyUpdatedChangePtr e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+        e->setPropertyName("status");
+        e->setValue(QVariant::fromValue(m_status));
+        notifyObservers(e);
+    }
 }
 
 void AnimationClipLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -114,6 +128,7 @@ void AnimationClipLoader::loadAnimation()
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly)) {
         qWarning() << "Could not find animation clip:" << filePath;
+        setStatus(QAnimationClipLoader::Error);
         return;
     }
 
@@ -146,6 +161,11 @@ void AnimationClipLoader::loadAnimation()
     setDuration(t);
 
     m_channelCount = findChannelCount();
+
+    if (qFuzzyIsNull(t) || m_channelCount == 0)
+        setStatus(QAnimationClipLoader::Error);
+    else
+        setStatus(QAnimationClipLoader::Ready);
 
     qCDebug(Jobs) << "Loaded animation data:" << *this;
 }

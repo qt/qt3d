@@ -49,6 +49,7 @@
 //
 
 #include <Qt3DAnimation/private/backendnode_p.h>
+#include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/private/fcurve_p.h>
 #include <QtCore/qurl.h>
 
@@ -67,6 +68,8 @@ public:
     void cleanup();
     void setSource(const QUrl &source) { m_source = source; }
     QUrl source() const { return m_source; }
+    void setStatus(QAnimationClipLoader::Status status);
+    QAnimationClipLoader::Status status() const { return m_status; }
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     QString name() const { return m_name; }
@@ -87,6 +90,7 @@ private:
     int findChannelCount();
 
     QUrl m_source;
+    QAnimationClipLoader::Status m_status;
 
     QString m_name;
     QString m_objectName;

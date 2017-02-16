@@ -45,8 +45,30 @@ namespace Qt3DAnimation {
 QAnimationClipLoaderPrivate::QAnimationClipLoaderPrivate()
     : QAbstractAnimationClipPrivate()
     , m_source()
+    , m_status(QAnimationClipLoader::NotReady)
 {
 }
+
+void QAnimationClipLoaderPrivate::setStatus(QAnimationClipLoader::Status status)
+{
+    Q_Q(QAnimationClipLoader);
+    if (status != m_status) {
+        m_status = status;
+        const bool blocked = q->blockNotifications(true);
+        emit q->statusChanged(m_status);
+        q->blockNotifications(blocked);
+    }
+}
+
+/*!
+    \enum QAnimationClipLoader::Status
+
+    This enum identifies the status of animation clip.
+
+    \value NotReady              The clip has not been loaded yet
+    \value Ready                 The clip was successfully loaded
+    \value Error                 An error occurred while loading the clip
+*/
 
 QAnimationClipLoader::QAnimationClipLoader(Qt3DCore::QNode *parent)
     : QAbstractAnimationClip(*new QAnimationClipLoaderPrivate, parent)
@@ -68,6 +90,12 @@ QUrl QAnimationClipLoader::source() const
     return d->m_source;
 }
 
+QAnimationClipLoader::Status QAnimationClipLoader::status() const
+{
+    Q_D(const QAnimationClipLoader);
+    return d->m_status;
+}
+
 void QAnimationClipLoader::setSource(QUrl source)
 {
     Q_D(QAnimationClipLoader);
@@ -76,6 +104,16 @@ void QAnimationClipLoader::setSource(QUrl source)
 
     d->m_source = source;
     emit sourceChanged(source);
+}
+
+void QAnimationClipLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
+{
+    Q_D(QAnimationClipLoader);
+    if (change->type() == Qt3DCore::PropertyUpdated) {
+        const Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
+        if (e->propertyName() == QByteArrayLiteral("status"))
+            d->setStatus(static_cast<QAnimationClipLoader::Status>(e->value().toInt()));
+    }
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QAnimationClipLoader::createNodeCreationChange() const

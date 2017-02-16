@@ -51,21 +51,32 @@ class QT3DANIMATIONSHARED_EXPORT QAnimationClipLoader : public QAbstractAnimatio
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 
 public:
     explicit QAnimationClipLoader(Qt3DCore::QNode *parent = nullptr);
     ~QAnimationClipLoader();
 
+    enum Status {
+        NotReady = 0,
+        Ready,
+        Error
+    };
+    Q_ENUM(Status) // LCOV_EXCL_LINE
+
     QUrl source() const;
+    Status status() const;
 
 public Q_SLOTS:
     void setSource(QUrl source);
 
 Q_SIGNALS:
     void sourceChanged(QUrl source);
+    void statusChanged(Status status);
 
 protected:
     QAnimationClipLoader(QAnimationClipLoaderPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QAnimationClipLoader)

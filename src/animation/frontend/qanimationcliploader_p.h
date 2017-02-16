@@ -60,9 +60,12 @@ class QAnimationClipLoaderPrivate : public QAbstractAnimationClipPrivate
 public:
     QAnimationClipLoaderPrivate();
 
+    void setStatus(QAnimationClipLoader::Status status);
+
     Q_DECLARE_PUBLIC(QAnimationClipLoader)
 
     QUrl m_source;
+    QAnimationClipLoader::Status m_status;
 };
 
 struct QAnimationClipLoaderData

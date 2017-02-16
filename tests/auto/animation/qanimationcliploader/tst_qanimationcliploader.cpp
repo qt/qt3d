@@ -37,7 +37,7 @@
 #include <QSignalSpy>
 #include <testpostmanarbiter.h>
 
-class tst_QAnimationClipLoader : public QObject
+class tst_QAnimationClipLoader : public Qt3DAnimation::QAnimationClipLoader
 {
     Q_OBJECT
 
@@ -50,6 +50,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(clip.source(), QUrl());
         QCOMPARE(clip.duration(), 0.0f);
+        QCOMPARE(clip.status(), Qt3DAnimation::QAnimationClipLoader::NotReady);
     }
 
     void checkPropertyChanges()
@@ -158,6 +159,39 @@ private Q_SLOTS:
             QCOMPARE(arbiter.events.size(), 0);
         }
 
+    }
+
+    void checkStatusPropertyUpdate()
+    {
+        // GIVEN
+        qRegisterMetaType<Qt3DAnimation::QAnimationClipLoader::Status>("Status");
+        TestArbiter arbiter;
+        arbiter.setArbiterOnNode(this);
+        QSignalSpy spy(this, SIGNAL(statusChanged(Status)));
+        const Qt3DAnimation::QAnimationClipLoader::Status newStatus = Qt3DAnimation::QAnimationClipLoader::Error;
+
+        // THEN
+        QVERIFY(spy.isValid());
+
+        // WHEN
+        Qt3DCore::QPropertyUpdatedChangePtr valueChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
+        valueChange->setPropertyName("status");
+        valueChange->setValue(QVariant::fromValue(newStatus));
+        sceneChangeEvent(valueChange);
+
+        // THEN
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(status(), newStatus);
+
+        // WHEN
+        spy.clear();
+        sceneChangeEvent(valueChange);
+
+        // THEN
+        QCOMPARE(spy.count(), 0);
+        QCOMPARE(arbiter.events.size(), 0);
+        QCOMPARE(status(), newStatus);
     }
 };
 

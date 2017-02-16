@@ -73,6 +73,7 @@ private Q_SLOTS:
         QCOMPARE(backendClip.isEnabled(), false);
         QCOMPARE(backendClip.source(), QUrl());
         QCOMPARE(backendClip.duration(), 0.0f);
+        QCOMPARE(backendClip.status(), Qt3DAnimation::QAnimationClipLoader::NotReady);
 
         // GIVEN
         Qt3DAnimation::QAnimationClipLoader clip;
@@ -87,6 +88,7 @@ private Q_SLOTS:
         QCOMPARE(backendClip.source(), QUrl());
         QCOMPARE(backendClip.isEnabled(), false);
         QCOMPARE(backendClip.duration(), 0.0f);
+        QCOMPARE(backendClip.status(), Qt3DAnimation::QAnimationClipLoader::NotReady);
     }
 
     void checkPropertyChanges()
@@ -144,6 +146,38 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendClip.duration(), 64.0f);
+        QCOMPARE(arbiter.events.count(), 0);
+
+        arbiter.events.clear();
+    }
+
+    void checkStatusPropertyBackendNotification()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DAnimation::Animation::AnimationClipLoader backendClip;
+        backendClip.setEnabled(true);
+        Qt3DCore::QBackendNodePrivate::get(&backendClip)->setArbiter(&arbiter);
+
+        // WHEN
+        backendClip.setStatus(Qt3DAnimation::QAnimationClipLoader::Error);
+
+        // THEN
+        QCOMPARE(backendClip.status(), Qt3DAnimation::QAnimationClipLoader::Error);
+        QCOMPARE(arbiter.events.count(), 1);
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "status");
+        QCOMPARE(change->value().value<Qt3DAnimation::QAnimationClipLoader::Status>(), backendClip.status());
+        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isIntermediate,
+                 false);
+
+        arbiter.events.clear();
+
+        // WHEN
+        backendClip.setStatus(Qt3DAnimation::QAnimationClipLoader::Error);
+
+        // THEN
+        QCOMPARE(backendClip.status(), Qt3DAnimation::QAnimationClipLoader::Error);
         QCOMPARE(arbiter.events.count(), 0);
 
         arbiter.events.clear();
