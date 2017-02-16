@@ -162,7 +162,7 @@ void UpdateLevelOfDetailJob::updateEntityLodByDistance(Entity *entity, LevelOfDe
 
     const QVector<qreal> thresholds = lod->thresholds();
     QVector3D center = lod->center();
-    if (lod->radius() > 0.f || entity->worldBoundingVolume() == nullptr) {
+    if (lod->hasBoundingVolumeOverride() || entity->worldBoundingVolume() == nullptr) {
         center = *entity->worldTransform() * center;
     } else {
         center = entity->worldBoundingVolume()->center();
@@ -198,7 +198,7 @@ void UpdateLevelOfDetailJob::updateEntityLodByScreenArea(Entity *entity, LevelOf
 
     const QVector<qreal> thresholds = lod->thresholds();
     Sphere bv(lod->center(), lod->radius());
-    if (lod->radius() <= 0.f && entity->worldBoundingVolume() != nullptr) {
+    if (!lod->hasBoundingVolumeOverride() && entity->worldBoundingVolume() != nullptr) {
         bv = *(entity->worldBoundingVolume());
     } else {
         bv.transform(*entity->worldTransform());

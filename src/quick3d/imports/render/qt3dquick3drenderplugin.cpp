@@ -57,7 +57,7 @@
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qlevelofdetail.h>
 #include <Qt3DRender/qlevelofdetailswitch.h>
-#include <Qt3DRender/qboundingsphere.h>
+#include <Qt3DRender/qlevelofdetailboundingsphere.h>
 #include <Qt3DRender/qabstractlight.h>
 #include <Qt3DRender/qspotlight.h>
 #include <Qt3DRender/qdirectionallight.h>
@@ -207,7 +207,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QGeometryRenderer>(uri, 2, 0, "GeometryRenderer");
     qmlRegisterType<Qt3DRender::QLevelOfDetail>(uri, 2, 9, "LevelOfDetail");
     qmlRegisterType<Qt3DRender::QLevelOfDetailSwitch>(uri, 2, 9, "LevelOfDetailSwitch");
-    qmlRegisterType<Qt3DRender::QBoundingSphere>(uri, 2, 9, "BoundingSphere");
+    qRegisterMetaType<Qt3DRender::QLevelOfDetailBoundingSphere>("LevelOfDetailBoundingSphere");
 
     // Mesh
     qmlRegisterType<Qt3DRender::QMesh>(uri, 2, 0, "Mesh");

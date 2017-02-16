@@ -37,40 +37,45 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QBOUNDINGSPHERE_P_H
-#define QT3DRENDER_QBOUNDINGSPHERE_P_H
+#ifndef QT3DRENDER_QLEVELOFDETAILBOUNDINGSPHERE_H
+#define QT3DRENDER_QLEVELOFDETAILBOUNDINGSPHERE_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
+#include <Qt3DCore/qcomponent.h>
+#include <Qt3DRender/qt3drender_global.h>
 
-#include <private/qobject_p.h>
-#include <qboundingsphere.h>
+#include <QVector3D>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_EXPORT QBoundingSpherePrivate : public QObjectPrivate
+class QLevelOfDetailBoundingSpherePrivate;
+
+class QT3DRENDERSHARED_EXPORT QLevelOfDetailBoundingSphere
 {
+    Q_GADGET
+    Q_PROPERTY(QVector3D center READ center CONSTANT)
+    Q_PROPERTY(float radius READ radius CONSTANT)
 public:
-    QBoundingSpherePrivate();
+    explicit QLevelOfDetailBoundingSphere(const QVector3D &center = QVector3D(), float radius = 1.0f);
+    QLevelOfDetailBoundingSphere(const QLevelOfDetailBoundingSphere &other);
+    ~QLevelOfDetailBoundingSphere();
 
-    Q_DECLARE_PUBLIC(QBoundingSphere)
+    QLevelOfDetailBoundingSphere &operator =(const QLevelOfDetailBoundingSphere &other);
 
-    QVector3D m_center;
-    float m_radius;
+    QVector3D center() const;
+    float radius() const;
+
+    bool isEmpty() const;
+    bool operator ==(const QLevelOfDetailBoundingSphere &other) const;
+    bool operator !=(const QLevelOfDetailBoundingSphere &other) const;
+
+private:
+    QSharedDataPointer<QLevelOfDetailBoundingSpherePrivate> d_ptr;
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QBOUNDINGSPHERE_P_H
+#endif // QT3DRENDER_QLEVELOFDETAILBOUNDINGSPHERE_H

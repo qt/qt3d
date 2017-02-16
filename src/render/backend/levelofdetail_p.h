@@ -79,8 +79,9 @@ public:
     int currentIndex() const { return m_currentIndex; }
     QLevelOfDetail::ThresholdType thresholdType() const { return m_thresholdType; }
     QVector<qreal> thresholds() const { return m_thresholds; }
-    float radius() const { return m_radius; }
-    QVector3D center() const { return m_center; }
+    float radius() const { return m_volumeOverride.radius(); }
+    QVector3D center() const { return m_volumeOverride.center(); }
+    bool hasBoundingVolumeOverride() const { return !m_volumeOverride.isEmpty(); }
 
     void setCurrentIndex(int currentIndex);
 
@@ -90,8 +91,7 @@ private:
     int m_currentIndex;
     QLevelOfDetail::ThresholdType m_thresholdType;
     QVector<qreal> m_thresholds;
-    float m_radius;
-    QVector3D m_center;
+    QLevelOfDetailBoundingSphere m_volumeOverride;
 };
 
 } // namespace Render

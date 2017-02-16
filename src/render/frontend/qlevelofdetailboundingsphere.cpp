@@ -37,110 +37,121 @@
 **
 ****************************************************************************/
 
-#include "qboundingsphere.h"
-#include "qboundingsphere_p.h"
+#include "qlevelofdetailboundingsphere.h"
+#include <QSharedData>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-QBoundingSpherePrivate::QBoundingSpherePrivate()
-    : QObjectPrivate()
-    , m_radius(1.f)
+class QLevelOfDetailBoundingSpherePrivate: public QSharedData
 {
+public:
+    QLevelOfDetailBoundingSpherePrivate()
+        : QSharedData()
+        , m_radius(0.0f)
+    {}
 
-}
+    QLevelOfDetailBoundingSpherePrivate(const QVector3D &center, float radius)
+        : QSharedData()
+        , m_center(center)
+        , m_radius(radius)
+    {}
+
+    ~QLevelOfDetailBoundingSpherePrivate()
+    {}
+
+    QVector3D m_center;
+    float m_radius;
+};
 
 /*!
-    \class Qt3DRender::QBoundingSphere
+    \class Qt3DRender::QLevelOfDetailBoundingSphere
     \inmodule Qt3DRender
     \since 5.9
-    \brief The QBoundingSphere class provides a simple spherical volume, defined by it's center and radius.
+    \brief The QLevelOfDetailBoundingSphere class provides a simple spherical volume, defined by it's center and radius.
 */
 
 /*!
     \qmltype LevelOfDetail
-    \instantiates Qt3DRender::QLevelOfDetail
+    \instantiates Qt3DRender::QLevelOfDetailBoundingSphere
     \inherits Component3D
     \inqmlmodule Qt3D.Render
-    \brief The BoundingSphere class provides a simple spherical volume, defined by it's center and radius.
+    \brief The LevelOfDetailBoundingSphere class provides a simple spherical volume, defined by it's center and radius.
 */
 
 /*!
- * \qmlproperty QVector3D BoundingSphere::center
+ * \qmlproperty QVector3D LevelOfDetailBoundingSphere::center
  *
  * Specifies the center of the bounding sphere
  */
 
 /*!
- * \property QBoundingSphere::center
+ * \property QLevelOfDetailBoundingSphere::center
  *
  * Specifies the center of the bounding sphere
  */
 
 /*!
- * \qmlproperty qreal BoundingSphere::radius
+ * \qmlproperty qreal LevelOfDetailBoundingSphere::radius
  *
  * Specifies the radius of the bounding sphere
  */
 
 /*!
- * \property QBoundingSphere::radius
+ * \property QLevelOfDetailBoundingSphere::radius
  *
  * Specifies the radius of the bounding sphere
  */
 
-/*! \fn Qt3DRender::QBoundingSphere::QBoundingSphere(QObject *parent)
-  Constructs a new QBoundingSphere with the specified \a parent.
+/*! \fn Qt3DRender::QLevelOfDetailBoundingSphere::QLevelOfDetailBoundingSphere(const QVector3D &center = QVector3D(), float radius = -1.0f)
+  Constructs a new QLevelOfDetailBoundingSphere with the specified \a center and \a radius.
  */
-QBoundingSphere::QBoundingSphere(QObject *parent)
-    : QObject(*new QBoundingSpherePrivate, parent)
-{
 
+
+QLevelOfDetailBoundingSphere::QLevelOfDetailBoundingSphere(const QVector3D &center, float radius)
+    : d_ptr(new QLevelOfDetailBoundingSpherePrivate(center, radius))
+{
 }
 
-QBoundingSphere::QBoundingSphere(const QVector3D &center, float radius, QObject *parent)
-    : QBoundingSphere(parent)
+QLevelOfDetailBoundingSphere::QLevelOfDetailBoundingSphere(const QLevelOfDetailBoundingSphere &other)
+    : d_ptr(other.d_ptr)
 {
-    Q_D(QBoundingSphere);
-    d->m_center = center;
-    d->m_radius = radius;
 }
 
-QVector3D QBoundingSphere::center() const
+QLevelOfDetailBoundingSphere::~QLevelOfDetailBoundingSphere()
 {
-    Q_D(const QBoundingSphere);
-    return d->m_center;
 }
 
-float QBoundingSphere::radius() const
+QLevelOfDetailBoundingSphere &QLevelOfDetailBoundingSphere::operator =(const QLevelOfDetailBoundingSphere &other)
 {
-    Q_D(const QBoundingSphere);
-    return d->m_radius;
+    d_ptr = other.d_ptr;
+    return *this;
 }
 
-/*!
- * Sets the radius of the bounding sphere.
- */
-void QBoundingSphere::setRadius(float radius)
+QVector3D QLevelOfDetailBoundingSphere::center() const
 {
-    Q_D(QBoundingSphere);
-    if (d->m_radius != radius) {
-        d->m_radius = radius;
-        emit radiusChanged(radius);
-    }
+    return d_ptr->m_center;
 }
 
-/*!
- * Sets the center of the bounding sphere.
- */
-void QBoundingSphere::setCenter(const QVector3D &center)
+float QLevelOfDetailBoundingSphere::radius() const
 {
-    Q_D(QBoundingSphere);
-    if (d->m_center != center) {
-        d->m_center = center;
-        emit centerChanged(center);
-    }
+    return d_ptr->m_radius;
+}
+
+bool QLevelOfDetailBoundingSphere::isEmpty() const
+{
+    return d_ptr->m_radius <= 0.0f;
+}
+
+bool QLevelOfDetailBoundingSphere::operator ==(const QLevelOfDetailBoundingSphere &other) const
+{
+    return d_ptr->m_center == other.center() && other.d_ptr->m_radius == other.radius();
+}
+
+bool QLevelOfDetailBoundingSphere::operator !=(const QLevelOfDetailBoundingSphere &other) const
+{
+    return !(*this == other);
 }
 
 } // namespace Qt3DRender

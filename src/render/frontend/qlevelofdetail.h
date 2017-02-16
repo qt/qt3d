@@ -42,6 +42,7 @@
 
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/qlevelofdetailboundingsphere.h>
 
 #include <QVector3D>
 
@@ -50,7 +51,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QCamera;
-class QBoundingSphere;
 class QLevelOfDetailPrivate;
 
 class QT3DRENDERSHARED_EXPORT QLevelOfDetail : public Qt3DCore::QComponent
@@ -60,7 +60,7 @@ class QT3DRENDERSHARED_EXPORT QLevelOfDetail : public Qt3DCore::QComponent
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
     Q_PROPERTY(ThresholdType thresholdType READ thresholdType WRITE setThresholdType NOTIFY thresholdTypeChanged)
     Q_PROPERTY(QVector<qreal> thresholds READ thresholds WRITE setThresholds NOTIFY thresholdsChanged)
-    Q_PROPERTY(Qt3DRender::QBoundingSphere *volumeOverride READ volumeOverride WRITE setVolumeOverride NOTIFY volumeOverrideChanged)
+    Q_PROPERTY(Qt3DRender::QLevelOfDetailBoundingSphere volumeOverride READ volumeOverride WRITE setVolumeOverride NOTIFY volumeOverrideChanged)
 
 public:
     enum ThresholdType {
@@ -76,21 +76,23 @@ public:
     int currentIndex() const;
     ThresholdType thresholdType() const;
     QVector<qreal> thresholds() const;
-    QBoundingSphere *volumeOverride() const;
+    QLevelOfDetailBoundingSphere volumeOverride() const;
+
+    Q_INVOKABLE QLevelOfDetailBoundingSphere createBoundingSphere(const QVector3D &center, float radius);
 
 public Q_SLOTS:
     void setCamera(QCamera *camera);
     void setCurrentIndex(int currentIndex);
     void setThresholdType(ThresholdType thresholdType);
     void setThresholds(QVector<qreal> thresholds);
-    void setVolumeOverride(QBoundingSphere *volumeOverride);
+    void setVolumeOverride(const QLevelOfDetailBoundingSphere &volumeOverride);
 
 Q_SIGNALS:
     void cameraChanged(QCamera *camera);
     void currentIndexChanged(int currentIndex);
     void thresholdTypeChanged(ThresholdType thresholdType);
     void thresholdsChanged(QVector<qreal> thresholds);
-    void volumeOverrideChanged(QBoundingSphere *volumeOverride);
+    void volumeOverrideChanged(const QLevelOfDetailBoundingSphere &volumeOverride);
 
 protected:
     explicit QLevelOfDetail(QLevelOfDetailPrivate &dd, Qt3DCore::QNode *parent = nullptr);
@@ -99,12 +101,12 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QLevelOfDetail)
-    Q_PRIVATE_SLOT(d_func(), void _q_radiusChanged(float))
-    Q_PRIVATE_SLOT(d_func(), void _q_centerChanged(const QVector3D&))
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3DRender::QLevelOfDetailBoundingSphere)
 
 #endif // QT3DRENDER_QLEVELOFDETAIL_H

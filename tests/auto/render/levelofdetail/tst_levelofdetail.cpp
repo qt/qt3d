@@ -29,7 +29,7 @@
 #include <QtTest/QTest>
 #include <qbackendnodetester.h>
 #include <Qt3DRender/QLevelOfDetail>
-#include <Qt3DRender/QBoundingSphere>
+#include <Qt3DRender/QLevelOfDetailBoundingSphere>
 #include <Qt3DRender/private/levelofdetail_p.h>
 #include <Qt3DRender/private/qlevelofdetail_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
@@ -57,8 +57,8 @@ private Q_SLOTS:
         QCOMPARE(renderLod.currentIndex(), lod.currentIndex());
         QCOMPARE(renderLod.thresholdType(), lod.thresholdType());
         QCOMPARE(renderLod.thresholds(), lod.thresholds());
-        QCOMPARE(renderLod.center(), lod.volumeOverride()->center());
-        QCOMPARE(renderLod.radius(), lod.volumeOverride()->radius());
+        QCOMPARE(renderLod.center(), lod.volumeOverride().center());
+        QCOMPARE(renderLod.radius(), lod.volumeOverride().radius());
     }
 
     void checkInitialAndCleanedUpState()
@@ -129,8 +129,9 @@ private Q_SLOTS:
         {
             // WHEN
             Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-            updateChange->setValue(QVector3D(1., 2., 3.));
-            updateChange->setPropertyName("center");
+            Qt3DRender::QLevelOfDetailBoundingSphere sphere(QVector3D(1.0f, 2.0f, 3.0f), 1.0f);
+            updateChange->setValue(QVariant::fromValue(sphere));
+            updateChange->setPropertyName("volumeOverride");
             renderLod.sceneChangeEvent(updateChange);
 
             // THEN
