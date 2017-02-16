@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DEXTRAS_QTEXTUREATLAS_P_H
-#define QT3DEXTRAS_QTEXTUREATLAS_P_H
+#ifndef QT3DEXTRAS_QTEXTUREATLAS_P_P_H
+#define QT3DEXTRAS_QTEXTUREATLAS_P_P_H
 
 //
 //  W A R N I N G
@@ -51,45 +51,89 @@
 // We mean it.
 //
 
-#include <Qt3DExtras/qt3dextras_global.h>
-#include <Qt3DRender/qabstracttexture.h>
+#include <QtCore/qscopedpointer.h>
+#include <Qt3DRender/private/qabstracttexture_p.h>
+#include <Qt3DRender/qtexturegenerator.h>
+#include <Qt3DExtras/private/areaallocator_p.h>
+#include <Qt3DExtras/private/qtextureatlas_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
 
-class QTextureAtlasPrivate;
-
-class QTextureAtlas : public Qt3DRender::QAbstractTexture
+// Used to store texture info within atlas
+struct AtlasTexture
 {
-    Q_OBJECT
+    QRect position;
+    int padding = 0;
+};
 
+// data shared between QTextureAtlasPrivate and the QTextureGenerators
+// we use this extra indirection so we can lazily copy the sub-images
+// into the actual texture image in the backend texture loader thread.
+class QTextureAtlasData
+{
 public:
-    typedef int TextureId;
-    static Q_CONSTEXPR TextureId InvalidTexture = -1;
+    QTextureAtlasData(int w, int h, QImage::Format fmt);
+    ~QTextureAtlasData();
 
-    QTextureAtlas(Qt3DCore::QNode *parent = nullptr);
-    ~QTextureAtlas();
+    int width() const { return m_image.width(); }
+    int height() const { return m_image.height(); }
 
-    QOpenGLTexture::PixelFormat pixelFormat() const;
-    void setPixelFormat(QOpenGLTexture::PixelFormat fmt);
-
-    TextureId addImage(const QImage &image, int padding);
-    void removeImage(TextureId id);
-
-    int imageCount() const;
-
-    bool hasImage(TextureId id) const;
-    QRect imagePosition(TextureId id) const;
-    QRectF imageTexCoords(TextureId id) const;
-    int imagePadding(TextureId id) const;
+    void addImage(const AtlasTexture &texture, const QImage &image);
+    QByteArray createUpdatedImageData();
 
 private:
-    Q_DECLARE_PRIVATE(QTextureAtlas)
+    struct Update {
+        AtlasTexture textureInfo;
+        QImage image;
+    };
+
+    QMutex m_mutex;
+    QImage m_image;
+    QVector<Update> m_updates;
 };
+
+typedef QSharedPointer<QTextureAtlasData> QTextureAtlasDataPtr;
+
+class QTextureAtlasPrivate : public Qt3DRender::QAbstractTexturePrivate
+{
+public:
+    QTextureAtlasPrivate();
+    ~QTextureAtlasPrivate();
+
+    Q_DECLARE_PUBLIC(QTextureAtlas)
+
+    QTextureAtlas::TextureId m_currId = 1;  // IDs for new sub-textures
+    int m_currGen = 0;
+
+    QTextureAtlasDataPtr m_data;
+    QScopedPointer<AreaAllocator> m_allocator;
+    QOpenGLTexture::PixelFormat m_pixelFormat;
+    QHash<QTextureAtlas::TextureId, AtlasTexture> m_textures;
+};
+
+class QTextureAtlasGenerator : public Qt3DRender::QTextureGenerator
+{
+public:
+    QTextureAtlasGenerator(const QTextureAtlasPrivate *texAtlas);
+    ~QTextureAtlasGenerator();
+    Qt3DRender::QTextureDataPtr operator()() Q_DECL_OVERRIDE;
+    bool operator==(const QTextureGenerator &other) const Q_DECL_OVERRIDE;
+
+    QT3D_FUNCTOR(QTextureAtlasGenerator)
+
+private:
+    QTextureAtlasDataPtr m_data;
+    Qt3DRender::QAbstractTexture::TextureFormat m_format;
+    QOpenGLTexture::PixelFormat m_pixelFormat;
+    int m_generation;
+    Qt3DCore::QNodeId m_atlasId;
+};
+typedef QSharedPointer<QTextureAtlasGenerator> QTextureAtlasGeneratorPtr;
 
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
 
-#endif // QT3DEXTRAS_QTEXTUREATLAS_P_H
+#endif // QT3DEXTRAS_QTEXTUREATLAS_P_P_H

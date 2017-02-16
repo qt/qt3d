@@ -52,7 +52,6 @@
 //
 
 #include <Qt3DCore/private/qentity_p.h>
-#include <Qt3DExtras/qdistancefieldglyphcache.h>
 #include <Qt3DExtras/private/distancefieldtextrenderer_p.h>
 
 QT_BEGIN_NAMESPACE

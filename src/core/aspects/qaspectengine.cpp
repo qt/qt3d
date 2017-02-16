@@ -218,6 +218,8 @@ QAspectEngine::~QAspectEngine()
 
 void QAspectEnginePrivate::initNodeTree(QNode *node)
 {
+    // Set the root entity on the scene
+    m_scene->setRootNode(node);
     QNodeVisitor visitor;
     visitor.traverse(node, this, &QAspectEnginePrivate::initNode, &QAspectEnginePrivate::initEntity);
 }

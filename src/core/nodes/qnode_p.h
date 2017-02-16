@@ -74,7 +74,7 @@ public:
 
     void init(QNode *parent);
 
-    void setScene(QScene *scene);
+    virtual void setScene(QScene *scene);
     QScene *scene() const;
 
     void setArbiter(QLockableObserverInterface *arbiter) Q_DECL_OVERRIDE;

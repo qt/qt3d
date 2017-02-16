@@ -91,10 +91,6 @@ Entity {
         }
     ]
 
-    DistanceFieldGlyphCache {
-        id: glyphCache
-    }
-
     function getChars(n) {
         var s = "";
         for (var i = 0; i < n; i++) {
@@ -148,7 +144,6 @@ Entity {
 
             font.pointSize: 10
             text: getChars(strLen)
-            glyphCache: glyphCache
             position: Qt.rect(-10, -5, 20, 10)
             fontScale: 0.1
         }

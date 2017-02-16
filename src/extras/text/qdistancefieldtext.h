@@ -61,7 +61,6 @@ class QT3DEXTRASSHARED_EXPORT QDistanceFieldText : public Qt3DCore::QEntity
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QRectF position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(float fontScale READ fontScale WRITE setFontScale NOTIFY fontScaleChanged)
-    Q_PROPERTY(Qt3DExtras::QDistanceFieldGlyphCache* glyphCache READ glyphCache WRITE setGlyphCache NOTIFY glyphCacheChanged)
 
 public:
     explicit QDistanceFieldText(Qt3DCore::QNode *parent = nullptr);
@@ -82,16 +81,12 @@ public:
     float fontScale() const;
     void setFontScale(float scale);
 
-    QDistanceFieldGlyphCache *glyphCache() const;
-    void setGlyphCache(QDistanceFieldGlyphCache *glyphCache);
-
 Q_SIGNALS:
     void fontChanged(const QFont &font);
     void colorChanged(const QColor &color);
     void textChanged(const QString &text);
     void positionChanged(const QRectF &position);
     void fontScaleChanged(float scale);
-    void glyphCacheChanged(QDistanceFieldGlyphCache *glyphCache);
 
 private:
     Q_DECLARE_PRIVATE(QDistanceFieldText)

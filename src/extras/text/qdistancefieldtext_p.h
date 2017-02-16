@@ -52,11 +52,15 @@
 //
 
 #include <Qt3DCore/private/qentity_p.h>
-#include <Qt3DExtras/qdistancefieldglyphcache.h>
 #include <Qt3DExtras/private/distancefieldtextrenderer_p.h>
+#include <Qt3DExtras/private/qdistancefieldglyphcache_p.h>
 #include <QFont>
 
 QT_BEGIN_NAMESPACE
+
+namespace Qt3DCore {
+class QScene;
+}
 
 namespace Qt3DRender {
 class QGeometryRenderer;
@@ -79,12 +83,13 @@ public:
 
     Q_DECLARE_PUBLIC(QDistanceFieldText)
 
-    QDistanceFieldGlyphCache *m_glyphCache = nullptr;
-
     // keep track of the glyphs currently being displayed,
     // to guarantee proper glyph ref-counting in the
     // QDistanceFieldGlyphCache
     QVector<QGlyphRun> m_currentGlyphRuns;
+    QDistanceFieldGlyphCache *m_glyphCache;
+
+    void setScene(Qt3DCore::QScene *scene) Q_DECL_OVERRIDE;
 
     QFont m_font;
     QFont m_scaledFont; // ignore point or pixel size, set to default value
@@ -100,6 +105,14 @@ public:
 
     void setCurrentGlyphRuns(const QVector<QGlyphRun> &runs);
     void update();
+
+    struct CacheEntry
+    {
+        QDistanceFieldGlyphCache *glyphCache = nullptr;
+        int count = 0;
+    };
+
+    static QHash<Qt3DCore::QScene *, CacheEntry> m_glyphCacheInstances;
 };
 
 } // namespace Qt3DExtras

@@ -83,6 +83,8 @@ public:
     QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const;
     QNodeId nodeIdFromObservable(QObservableInterface *observable) const;
 
+    QNode *rootNode() const;
+
     void setArbiter(Qt3DCore::QLockableObserverInterface *arbiter);
     Qt3DCore::QLockableObserverInterface *arbiter() const;
 
@@ -105,6 +107,9 @@ public:
 private:
     Q_DECLARE_PRIVATE(QScene)
     QScopedPointer<QScenePrivate> d_ptr;
+
+    void setRootNode(QNode *root);
+    friend class QAspectEnginePrivate;
 };
 
 } // Qt3D
