@@ -28,7 +28,7 @@
 
 #include <QtTest/QTest>
 #include <Qt3DAnimation/private/blendedclipanimator_p.h>
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/qblendedclipanimator.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>

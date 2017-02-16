@@ -50,38 +50,38 @@ Quick3DAbstractClipBlendNode::Quick3DAbstractClipBlendNode(QObject *parent)
 {
 }
 
-QQmlListProperty<QAnimationClip> Quick3DAbstractClipBlendNode::clipList()
+QQmlListProperty<QAbstractAnimationClip> Quick3DAbstractClipBlendNode::clipList()
 {
-    return QQmlListProperty<QAnimationClip>(this, 0,
-                                            &Quick3DAbstractClipBlendNode::appendClip,
-                                            &Quick3DAbstractClipBlendNode::clipCount,
-                                            &Quick3DAbstractClipBlendNode::clipAt,
-                                            &Quick3DAbstractClipBlendNode::clearClips);
+    return QQmlListProperty<QAbstractAnimationClip>(this, 0,
+                                                    &Quick3DAbstractClipBlendNode::appendClip,
+                                                    &Quick3DAbstractClipBlendNode::clipCount,
+                                                    &Quick3DAbstractClipBlendNode::clipAt,
+                                                    &Quick3DAbstractClipBlendNode::clearClips);
 }
 
-void Quick3DAbstractClipBlendNode::appendClip(QQmlListProperty<QAnimationClip> *list, QAnimationClip *clip)
+void Quick3DAbstractClipBlendNode::appendClip(QQmlListProperty<QAbstractAnimationClip> *list, QAbstractAnimationClip *clip)
 {
     Quick3DAbstractClipBlendNode *extension = qobject_cast<Quick3DAbstractClipBlendNode *>(list->object);
     extension->parentAbstractClipBlendNode()->addClip(clip);
 }
 
-QAnimationClip *Quick3DAbstractClipBlendNode::clipAt(QQmlListProperty<QAnimationClip> *list, int index)
+QAbstractAnimationClip *Quick3DAbstractClipBlendNode::clipAt(QQmlListProperty<QAbstractAnimationClip> *list, int index)
 {
     Quick3DAbstractClipBlendNode *extension = qobject_cast<Quick3DAbstractClipBlendNode *>(list->object);
     return extension->parentAbstractClipBlendNode()->clips().at(index);
 }
 
-int Quick3DAbstractClipBlendNode::clipCount(QQmlListProperty<QAnimationClip> *list)
+int Quick3DAbstractClipBlendNode::clipCount(QQmlListProperty<QAbstractAnimationClip> *list)
 {
     Quick3DAbstractClipBlendNode *extension = qobject_cast<Quick3DAbstractClipBlendNode *>(list->object);
     return extension->parentAbstractClipBlendNode()->clips().count();
 }
 
-void Quick3DAbstractClipBlendNode::clearClips(QQmlListProperty<QAnimationClip> *list)
+void Quick3DAbstractClipBlendNode::clearClips(QQmlListProperty<QAbstractAnimationClip> *list)
 {
     Quick3DAbstractClipBlendNode *extension = qobject_cast<Quick3DAbstractClipBlendNode *>(list->object);
-    const QVector<QAnimationClip *> clips = extension->parentAbstractClipBlendNode()->clips();
-    for (QAnimationClip *clip : clips)
+    const QVector<QAbstractAnimationClip *> clips = extension->parentAbstractClipBlendNode()->clips();
+    for (QAbstractAnimationClip *clip : clips)
         extension->parentAbstractClipBlendNode()->removeClip(clip);
 }
 

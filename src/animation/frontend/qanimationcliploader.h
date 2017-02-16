@@ -34,51 +34,46 @@
 **
 ****************************************************************************/
 
-#include "loadanimationclipjob_p.h"
+#ifndef QT3DANIMATION_QANIMATIONCLIP_H
+#define QT3DANIMATION_QANIMATIONCLIP_H
 
-#include <Qt3DAnimation/private/animationcliploader_p.h>
-#include <Qt3DAnimation/private/handler_p.h>
-#include <Qt3DAnimation/private/managers_p.h>
-#include <Qt3DAnimation/private/job_common_p.h>
+#include <Qt3DAnimation/qt3danimation_global.h>
+#include <Qt3DAnimation/qabstractanimationclip.h>
+#include <QtCore/qurl.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
-namespace Animation {
 
-LoadAnimationClipJob::LoadAnimationClipJob()
-    : Qt3DCore::QAspectJob()
-    , m_animationClipHandles()
+class QAnimationClipLoaderPrivate;
+
+class QT3DANIMATIONSHARED_EXPORT QAnimationClipLoader : public QAbstractAnimationClip
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadAnimationClip, 0);
-}
+    Q_OBJECT
+    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
 
-void LoadAnimationClipJob::addDirtyAnimationClips(const QVector<HAnimationClip> &animationClipHandles)
-{
-    for (const auto handle : animationClipHandles) {
-        if (!m_animationClipHandles.contains(handle))
-            m_animationClipHandles.push_back(handle);
-    }
-}
+public:
+    explicit QAnimationClipLoader(Qt3DCore::QNode *parent = nullptr);
+    ~QAnimationClipLoader();
 
-void LoadAnimationClipJob::clearDirtyAnimationClips()
-{
-    m_animationClipHandles.clear();
-}
+    QUrl source() const;
 
-void LoadAnimationClipJob::run()
-{
-    Q_ASSERT(m_handler);
-    AnimationClipLoaderManager *animationClipManager = m_handler->animationClipLoaderManager();
-    for (const auto animationClipHandle : qAsConst(m_animationClipHandles)) {
-        AnimationClipLoader *animationClip = animationClipManager->data(animationClipHandle);
-        animationClip->loadAnimation();
-    }
+public Q_SLOTS:
+    void setSource(QUrl source);
 
-    clearDirtyAnimationClips();
-}
+Q_SIGNALS:
+    void sourceChanged(QUrl source);
 
-} // namespace Animation
+protected:
+    QAnimationClipLoader(QAnimationClipLoaderPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+
+private:
+    Q_DECLARE_PRIVATE(QAnimationClipLoader)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+};
+
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
+
+#endif // QT3DANIMATION_QANIMATIONCLIP_H

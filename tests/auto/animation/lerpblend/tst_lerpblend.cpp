@@ -29,7 +29,7 @@
 
 #include <QtTest/QTest>
 #include <Qt3DAnimation/qlerpblend.h>
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/private/qlerpblend_p.h>
 #include <Qt3DAnimation/private/lerpblend_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
@@ -57,7 +57,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DAnimation::QLerpBlend lerpBlend;
-        Qt3DAnimation::QAnimationClip clip;
+        Qt3DAnimation::QAnimationClipLoader clip;
         lerpBlend.setBlendFactor(0.8f);
         lerpBlend.addClip(&clip);
 

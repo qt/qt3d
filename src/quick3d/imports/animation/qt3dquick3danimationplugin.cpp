@@ -39,7 +39,8 @@
 
 #include "qt3dquick3danimationplugin.h"
 #include <Qt3DAnimation/qabstractclipanimator.h>
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qabstractanimationclip.h>
+#include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/qblendedclipanimator.h>
 #include <Qt3DAnimation/qclipanimator.h>
 #include <Qt3DAnimation/qchannelmapping.h>
@@ -69,12 +70,13 @@ void Qt3DQuick3DAnimationPlugin::registerTypes(const char *uri)
     Qt3DAnimation::Quick::Quick3DAnimation_initialize();
 
     // @uri Qt3D.Animation
-    qmlRegisterType<Qt3DAnimation::QAnimationClip>(uri, 2, 9, "AnimationClip");
     qmlRegisterUncreatableType<Qt3DAnimation::QAbstractClipAnimator>(uri, 2, 9, "AbstractClipAnimator", QStringLiteral("QAbstractClipAnimator is abstract"));
     qmlRegisterType<Qt3DAnimation::QClipAnimator>(uri, 2, 9, "ClipAnimator");
     qmlRegisterType<Qt3DAnimation::QBlendedClipAnimator>(uri, 2, 9, "BlendedClipAnimator");
     qmlRegisterType<Qt3DAnimation::QChannelMapping>(uri, 2, 9, "ChannelMapping");
     qmlRegisterType<Qt3DAnimation::QChannelMapping>(uri, 2, 9, "ChannelMapping");
+    qmlRegisterUncreatableType<Qt3DAnimation::QAbstractAnimationClip>(uri, 2, 9, "AbstractAnimationClip", QStringLiteral("QAbstractAnimationClip is abstract"));
+    qmlRegisterType<Qt3DAnimation::QAnimationClipLoader>(uri, 2, 9, "AnimationClip");
     qmlRegisterExtendedType<Qt3DAnimation::QChannelMapper,
                             Qt3DAnimation::Animation::Quick::Quick3DChannelMapper>(uri, 2, 9, "ChannelMapper");
     qmlRegisterExtendedUncreatableType<Qt3DAnimation::QAbstractClipBlendNode,

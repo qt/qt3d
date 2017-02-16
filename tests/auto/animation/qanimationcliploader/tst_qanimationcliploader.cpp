@@ -28,8 +28,8 @@
 
 
 #include <QtTest/QTest>
-#include <Qt3DAnimation/qanimationclip.h>
-#include <Qt3DAnimation/private/qanimationclip_p.h>
+#include <Qt3DAnimation/qanimationcliploader.h>
+#include <Qt3DAnimation/private/qanimationcliploader_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
@@ -37,7 +37,7 @@
 #include <QSignalSpy>
 #include <testpostmanarbiter.h>
 
-class tst_QAnimationClip : public QObject
+class tst_QAnimationClipLoader : public QObject
 {
     Q_OBJECT
 
@@ -45,7 +45,7 @@ private Q_SLOTS:
     void checkDefaultConstruction()
     {
         // GIVEN
-        Qt3DAnimation::QAnimationClip clip;
+        Qt3DAnimation::QAnimationClipLoader clip;
 
         // THEN
         QCOMPARE(clip.source(), QUrl());
@@ -55,7 +55,7 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
-        Qt3DAnimation::QAnimationClip clip;
+        Qt3DAnimation::QAnimationClipLoader clip;
 
         {
             // WHEN
@@ -81,7 +81,7 @@ private Q_SLOTS:
     void checkCreationData()
     {
         // GIVEN
-        Qt3DAnimation::QAnimationClip clip;
+        Qt3DAnimation::QAnimationClipLoader clip;
 
         clip.setSource(QUrl(QStringLiteral("http://someRemoteURL.com")));
 
@@ -97,8 +97,8 @@ private Q_SLOTS:
         {
             QCOMPARE(creationChanges.size(), 1);
 
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DAnimation::QAnimationClipData>>(creationChanges.first());
-            const Qt3DAnimation::QAnimationClipData data = creationChangeData->data;
+            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DAnimation::QAnimationClipLoaderData>>(creationChanges.first());
+            const Qt3DAnimation::QAnimationClipLoaderData data = creationChangeData->data;
 
             QCOMPARE(clip.id(), creationChangeData->subjectId());
             QCOMPARE(clip.isEnabled(), true);
@@ -119,7 +119,7 @@ private Q_SLOTS:
         {
             QCOMPARE(creationChanges.size(), 1);
 
-            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DAnimation::QAnimationClipData>>(creationChanges.first());
+            const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DAnimation::QAnimationClipLoaderData>>(creationChanges.first());
 
             QCOMPARE(clip.id(), creationChangeData->subjectId());
             QCOMPARE(clip.isEnabled(), false);
@@ -132,7 +132,7 @@ private Q_SLOTS:
     {
         // GIVEN
         TestArbiter arbiter;
-        Qt3DAnimation::QAnimationClip clip;
+        Qt3DAnimation::QAnimationClipLoader clip;
         arbiter.setArbiterOnNode(&clip);
 
         {
@@ -161,6 +161,6 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(tst_QAnimationClip)
+QTEST_MAIN(tst_QAnimationClipLoader)
 
-#include "tst_qanimationclip.moc"
+#include "tst_qanimationcliploader.moc"

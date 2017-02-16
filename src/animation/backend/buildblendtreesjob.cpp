@@ -136,8 +136,8 @@ QVector<AnimationUtils::BlendingMappingData> buildBlendMappingDataForNode(const 
 void buildEntryForBlendClipNode(Handler *handler, const ChannelMapper *mapper, BlendedClipAnimator::BlendNodeData &nodeData)
 {
     // Retrieve Animation clips
-    const AnimationClip *clip1 = handler->animationClipManager()->lookupResource(nodeData.left);
-    const AnimationClip *clip2 = handler->animationClipManager()->lookupResource(nodeData.right);
+    const AnimationClipLoader *clip1 = handler->animationClipLoaderManager()->lookupResource(nodeData.left);
+    const AnimationClipLoader *clip2 = handler->animationClipLoaderManager()->lookupResource(nodeData.right);
 
     Q_ASSERT(clip1 && clip2);
 

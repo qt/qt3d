@@ -2,7 +2,7 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     qanimationaspect \
-    qanimationclip \
+    qanimationcliploader \
     qclipanimator \
     qblendedclipanimator \
     qchannelmapping \
@@ -10,7 +10,7 @@ SUBDIRS += \
 
 qtConfig(private_tests) {
     SUBDIRS += \
-        animationclip \
+        animationcliploader \
         qabstractclipblendnode \
         fcurve \
         functionrangefinder \

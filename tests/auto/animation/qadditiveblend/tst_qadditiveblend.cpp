@@ -29,7 +29,7 @@
 
 #include <QtTest/QTest>
 #include <Qt3DAnimation/qadditiveblend.h>
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/private/qadditiveblend_p.h>
 #include <QObject>
 #include <QSignalSpy>
@@ -84,8 +84,8 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DAnimation::QAdditiveBlend addBlend;
-        Qt3DAnimation::QAnimationClip clip1;
-        Qt3DAnimation::QAnimationClip clip2;
+        Qt3DAnimation::QAnimationClipLoader clip1;
+        Qt3DAnimation::QAnimationClipLoader clip2;
 
         addBlend.addClip(&clip1);
         addBlend.addClip(&clip2);

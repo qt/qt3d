@@ -29,7 +29,7 @@
 
 #include <QtTest/QTest>
 #include <Qt3DAnimation/qlerpblend.h>
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/private/qabstractclipblendnode_p.h>
 #include <Qt3DAnimation/private/clipblendnode_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
@@ -78,7 +78,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DAnimation::QLerpBlend clipBlendNode;
-        Qt3DAnimation::QAnimationClip clip;
+        Qt3DAnimation::QAnimationClipLoader clip;
         clipBlendNode.addClip(&clip);
 
         QCoreApplication::processEvents();
@@ -133,7 +133,7 @@ private Q_SLOTS:
         }
         {
             // WHEN
-            Qt3DAnimation::QAnimationClip clip;
+            Qt3DAnimation::QAnimationClipLoader clip;
             // To geneate the type_info in the QNodePrivate of clip
             Qt3DCore::QNodeCreatedChangeGenerator generator(&clip);
 

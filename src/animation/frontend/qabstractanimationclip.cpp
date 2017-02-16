@@ -34,51 +34,58 @@
 **
 ****************************************************************************/
 
-#include "loadanimationclipjob_p.h"
-
-#include <Qt3DAnimation/private/animationcliploader_p.h>
-#include <Qt3DAnimation/private/handler_p.h>
-#include <Qt3DAnimation/private/managers_p.h>
-#include <Qt3DAnimation/private/job_common_p.h>
+#include "qabstractanimationclip.h"
+#include "qabstractanimationclip_p.h"
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
-namespace Animation {
 
-LoadAnimationClipJob::LoadAnimationClipJob()
-    : Qt3DCore::QAspectJob()
-    , m_animationClipHandles()
+QAbstractAnimationClipPrivate::QAbstractAnimationClipPrivate()
+    : Qt3DCore::QNodePrivate()
+    , m_duration(0.0f)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadAnimationClip, 0);
 }
 
-void LoadAnimationClipJob::addDirtyAnimationClips(const QVector<HAnimationClip> &animationClipHandles)
+void QAbstractAnimationClipPrivate::setDuration(float duration)
 {
-    for (const auto handle : animationClipHandles) {
-        if (!m_animationClipHandles.contains(handle))
-            m_animationClipHandles.push_back(handle);
+    if (qFuzzyCompare(duration, m_duration))
+        return;
+
+    Q_Q(QAbstractAnimationClip);
+    bool wasBlocked = q->blockNotifications(true);
+    m_duration = duration;
+    emit q->durationChanged(duration);
+    q->blockNotifications(wasBlocked);
+}
+
+QAbstractAnimationClip::QAbstractAnimationClip(QAbstractAnimationClipPrivate &dd,
+                                               Qt3DCore::QNode *parent)
+    : Qt3DCore::QNode(dd, parent)
+{
+}
+
+QAbstractAnimationClip::~QAbstractAnimationClip()
+{
+}
+
+float QAbstractAnimationClip::duration() const
+{
+    Q_D(const QAbstractAnimationClip);
+    return d->m_duration;
+}
+
+void QAbstractAnimationClip::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
+{
+    Q_D(QAbstractAnimationClip);
+    if (change->type() == Qt3DCore::PropertyUpdated) {
+        Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
+        if (e->propertyName() == QByteArrayLiteral("duration"))
+            d->setDuration(e->value().toFloat());
     }
 }
 
-void LoadAnimationClipJob::clearDirtyAnimationClips()
-{
-    m_animationClipHandles.clear();
-}
-
-void LoadAnimationClipJob::run()
-{
-    Q_ASSERT(m_handler);
-    AnimationClipLoaderManager *animationClipManager = m_handler->animationClipLoaderManager();
-    for (const auto animationClipHandle : qAsConst(m_animationClipHandles)) {
-        AnimationClipLoader *animationClip = animationClipManager->data(animationClipHandle);
-        animationClip->loadAnimation();
-    }
-
-    clearDirtyAnimationClips();
-}
-
-} // namespace Animation
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE

@@ -1,10 +1,10 @@
 HEADERS += \
     $$PWD/qanimationaspect.h \
     $$PWD/qanimationaspect_p.h \
-    $$PWD/qanimationclip.h \
-    $$PWD/qanimationclip_p.h \
     $$PWD/qabstractclipanimator.h \
     $$PWD/qabstractclipanimator_p.h \
+    $$PWD/qabstractanimationclip.h \
+    $$PWD/qabstractanimationclip_p.h \
     $$PWD/qabstractclipblendnode.h \
     $$PWD/qabstractclipblendnode_p.h \
     $$PWD/qclipanimator.h \
@@ -34,12 +34,14 @@ HEADERS += \
     $$PWD/qmorphtarget.h \
     $$PWD/qmorphtarget_p.h \
     $$PWD/qvertexblendanimation.h \
-    $$PWD/qvertexblendanimation_p.h
+    $$PWD/qvertexblendanimation_p.h \
+    $$PWD/qanimationcliploader.h \
+    $$PWD/qanimationcliploader_p.h
 
 SOURCES += \
     $$PWD/qanimationaspect.cpp \
-    $$PWD/qanimationclip.cpp \
     $$PWD/qabstractclipanimator.cpp \
+    $$PWD/qabstractanimationclip.cpp \
     $$PWD/qabstractclipblendnode.cpp \
     $$PWD/qclipanimator.cpp \
     $$PWD/qblendedclipanimator.cpp \
@@ -54,6 +56,7 @@ SOURCES += \
     $$PWD/qmorphinganimation.cpp \
     $$PWD/qabstractanimation.cpp \
     $$PWD/qmorphtarget.cpp \
-    $$PWD/qvertexblendanimation.cpp
+    $$PWD/qvertexblendanimation.cpp \
+    $$PWD/qanimationcliploader.cpp
 
 INCLUDEPATH += $$PWD

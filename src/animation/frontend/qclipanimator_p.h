@@ -52,11 +52,12 @@
 //
 
 #include <Qt3DAnimation/private/qabstractclipanimator_p.h>
-#include <Qt3DAnimation/qanimationclip.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
+
+class QAbstractAnimationClip;
 
 class QClipAnimatorPrivate : public Qt3DAnimation::QAbstractClipAnimatorPrivate
 {
@@ -65,7 +66,7 @@ public:
 
     Q_DECLARE_PUBLIC(QClipAnimator)
 
-    QAnimationClip *m_clip;
+    QAbstractAnimationClip *m_clip;
 };
 
 struct QClipAnimatorData : public QAbstractClipAnimatorData

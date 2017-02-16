@@ -34,9 +34,9 @@
 **
 ****************************************************************************/
 
-#include "animationclip_p.h"
-#include <Qt3DAnimation/qanimationclip.h>
-#include <Qt3DAnimation/private/qanimationclip_p.h>
+#include "animationcliploader_p.h"
+#include <Qt3DAnimation/qanimationcliploader.h>
+#include <Qt3DAnimation/private/qanimationcliploader_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
@@ -52,7 +52,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 namespace Animation {
 
-AnimationClip::AnimationClip()
+AnimationClipLoader::AnimationClipLoader()
     : BackendNode(ReadWrite)
     , m_source()
     , m_name()
@@ -62,16 +62,16 @@ AnimationClip::AnimationClip()
 {
 }
 
-void AnimationClip::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void AnimationClipLoader::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAnimationClipData>>(change);
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAnimationClipLoaderData>>(change);
     const auto &data = typedChange->data;
     m_source = data.source;
     if (!m_source.isEmpty())
         setDirty(Handler::AnimationClipDirty);
 }
 
-void AnimationClip::cleanup()
+void AnimationClipLoader::cleanup()
 {
     setEnabled(false);
     m_handler = nullptr;
@@ -82,7 +82,7 @@ void AnimationClip::cleanup()
     clearData();
 }
 
-void AnimationClip::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void AnimationClipLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
     case Qt3DCore::PropertyUpdated: {
@@ -104,7 +104,7 @@ void AnimationClip::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     \internal
     Called by LoadAnimationClipJob on the threadpool
  */
-void AnimationClip::loadAnimation()
+void AnimationClipLoader::loadAnimation()
 {
     qCDebug(Jobs) << Q_FUNC_INFO << m_source;
     clearData();
@@ -150,7 +150,7 @@ void AnimationClip::loadAnimation()
     qCDebug(Jobs) << "Loaded animation data:" << *this;
 }
 
-void AnimationClip::setDuration(float duration)
+void AnimationClipLoader::setDuration(float duration)
 {
     if (qFuzzyCompare(duration, m_duration))
         return;
@@ -175,7 +175,7 @@ void AnimationClip::setDuration(float duration)
     for the first group, so the first channel of the second group occurs
     at index 3.
  */
-int AnimationClip::channelBaseIndex(int channelGroupIndex) const
+int AnimationClipLoader::channelBaseIndex(int channelGroupIndex) const
 {
     int index = 0;
     for (int i = 0; i < channelGroupIndex; ++i)
@@ -183,14 +183,14 @@ int AnimationClip::channelBaseIndex(int channelGroupIndex) const
     return index;
 }
 
-void AnimationClip::clearData()
+void AnimationClipLoader::clearData()
 {
     m_name.clear();
     m_objectName.clear();
     m_channelGroups.clear();
 }
 
-float AnimationClip::findDuration()
+float AnimationClipLoader::findDuration()
 {
     // Iterate over the contained fcurves and find the longest one
     double tMax = 0.0;
@@ -204,7 +204,7 @@ float AnimationClip::findDuration()
     return tMax;
 }
 
-int AnimationClip::findChannelCount()
+int AnimationClipLoader::findChannelCount()
 {
     int channelCount = 0;
     for (const ChannelGroup &channelGroup : qAsConst(m_channelGroups))

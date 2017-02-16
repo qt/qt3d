@@ -37,7 +37,7 @@
 #include "qclipblendnodecreatedchange.h"
 #include "qclipblendnodecreatedchange_p.h"
 #include <Qt3DAnimation/qabstractclipblendnode.h>
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qabstractanimationclip.h>
 
 QT_BEGIN_NAMESPACE
 

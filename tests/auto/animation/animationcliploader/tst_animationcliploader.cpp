@@ -27,8 +27,8 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DAnimation/private/animationclip_p.h>
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/private/animationcliploader_p.h>
+#include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
@@ -37,7 +37,7 @@
 #include <qbackendnodetester.h>
 #include <testpostmanarbiter.h>
 
-class tst_AnimationClip: public Qt3DCore::QBackendNodeTester
+class tst_AnimationClipLoader: public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 
@@ -45,10 +45,10 @@ private Q_SLOTS:
     void checkPeerPropertyMirroring()
     {
         // GIVEN
-        Qt3DAnimation::Animation::AnimationClip backendClip;
+        Qt3DAnimation::Animation::AnimationClipLoader backendClip;
         Qt3DAnimation::Animation::Handler handler;
         backendClip.setHandler(&handler);
-        Qt3DAnimation::QAnimationClip clip;
+        Qt3DAnimation::QAnimationClipLoader clip;
 
         clip.setSource(QUrl::fromLocalFile("walk.qlip"));
 
@@ -64,7 +64,7 @@ private Q_SLOTS:
     void checkInitialAndCleanedUpState()
     {
         // GIVEN
-        Qt3DAnimation::Animation::AnimationClip backendClip;
+        Qt3DAnimation::Animation::AnimationClipLoader backendClip;
         Qt3DAnimation::Animation::Handler handler;
         backendClip.setHandler(&handler);
 
@@ -75,7 +75,7 @@ private Q_SLOTS:
         QCOMPARE(backendClip.duration(), 0.0f);
 
         // GIVEN
-        Qt3DAnimation::QAnimationClip clip;
+        Qt3DAnimation::QAnimationClipLoader clip;
         clip.setSource(QUrl::fromLocalFile("walk.qlip"));
 
         // WHEN
@@ -92,7 +92,7 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
-        Qt3DAnimation::Animation::AnimationClip backendClip;
+        Qt3DAnimation::Animation::AnimationClipLoader backendClip;
         Qt3DAnimation::Animation::Handler handler;
         backendClip.setHandler(&handler);
         Qt3DCore::QPropertyUpdatedChangePtr updateChange;
@@ -121,7 +121,7 @@ private Q_SLOTS:
     {
         // GIVEN
         TestArbiter arbiter;
-        Qt3DAnimation::Animation::AnimationClip backendClip;
+        Qt3DAnimation::Animation::AnimationClipLoader backendClip;
         backendClip.setEnabled(true);
         Qt3DCore::QBackendNodePrivate::get(&backendClip)->setArbiter(&arbiter);
 
@@ -150,6 +150,6 @@ private Q_SLOTS:
     }
 };
 
-QTEST_APPLESS_MAIN(tst_AnimationClip)
+QTEST_APPLESS_MAIN(tst_AnimationClipLoader)
 
-#include "tst_animationclip.moc"
+#include "tst_animationcliploader.moc"

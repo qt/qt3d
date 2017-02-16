@@ -51,7 +51,7 @@ namespace Qt3DAnimation {
 namespace Animation {
 
 Handler::Handler()
-    : m_animationClipManager(new AnimationClipManager)
+    : m_animationClipLoaderManager(new AnimationClipLoaderManager)
     , m_clipAnimatorManager(new ClipAnimatorManager)
     , m_blendedClipAnimatorManager(new BlendedClipAnimatorManager)
     , m_channelMappingManager(new ChannelMappingManager)
@@ -75,7 +75,7 @@ void Handler::setDirty(DirtyFlag flag, Qt3DCore::QNodeId nodeId)
 {
     switch (flag) {
     case AnimationClipDirty: {
-        const auto handle = m_animationClipManager->lookupHandle(nodeId);
+        const auto handle = m_animationClipLoaderManager->lookupHandle(nodeId);
         m_dirtyAnimationClips.push_back(handle);
         break;
     }

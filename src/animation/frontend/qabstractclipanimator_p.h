@@ -52,7 +52,6 @@
 //
 
 #include <Qt3DCore/private/qcomponent_p.h>
-#include <Qt3DAnimation/qanimationclip.h>
 
 QT_BEGIN_NAMESPACE
 

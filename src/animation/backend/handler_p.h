@@ -63,8 +63,8 @@ class tst_Handler;
 namespace Qt3DAnimation {
 namespace Animation {
 
-class AnimationClip;
-class AnimationClipManager;
+class AnimationClipLoader;
+class AnimationClipLoaderManager;
 class ClipAnimator;
 class ClipAnimatorManager;
 class BlendedClipAnimator;
@@ -107,7 +107,7 @@ public:
     void setBlendedClipAnimatorRunning(const HBlendedClipAnimator &handle, bool running);
     QVector<HBlendedClipAnimator> runningBlenndedClipAnimators() const { return m_runningBlendedClipAnimators; }
 
-    AnimationClipManager *animationClipManager() const Q_DECL_NOTHROW { return m_animationClipManager.data(); }
+    AnimationClipLoaderManager *animationClipLoaderManager() const Q_DECL_NOTHROW { return m_animationClipLoaderManager.data(); }
     ClipAnimatorManager *clipAnimatorManager() const Q_DECL_NOTHROW { return m_clipAnimatorManager.data(); }
     BlendedClipAnimatorManager *blendedClipAnimatorManager() const Q_DECL_NOTHROW { return m_blendedClipAnimatorManager.data(); }
     ChannelMappingManager *channelMappingManager() const Q_DECL_NOTHROW { return m_channelMappingManager.data(); }
@@ -117,7 +117,7 @@ public:
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time);
 
 private:
-    QScopedPointer<AnimationClipManager> m_animationClipManager;
+    QScopedPointer<AnimationClipLoaderManager> m_animationClipLoaderManager;
     QScopedPointer<ClipAnimatorManager> m_clipAnimatorManager;
     QScopedPointer<BlendedClipAnimatorManager> m_blendedClipAnimatorManager;
     QScopedPointer<ChannelMappingManager> m_channelMappingManager;

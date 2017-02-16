@@ -36,7 +36,6 @@
 
 #include "qadditiveblend.h"
 #include "qadditiveblend_p.h"
-#include <Qt3DAnimation/qanimationclip.h>
 #include <Qt3DAnimation/qclipblendnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE

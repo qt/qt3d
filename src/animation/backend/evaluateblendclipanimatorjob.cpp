@@ -113,8 +113,8 @@ QVector<AnimationUtils::MappingData> fromBlendingMappingData(const QVector<Anima
 void EvaluateBlendClipAnimatorJob::blendClips(ClipBlendNode *node, const BlendedClipAnimator::BlendNodeData &nodeData,
                                               const AnimationUtils::AnimatorEvaluationData &animatorEvaluationData)
 {
-    AnimationClip *clip1 = m_handler->animationClipManager()->lookupResource(nodeData.left);
-    AnimationClip *clip2 = m_handler->animationClipManager()->lookupResource(nodeData.right);
+    AnimationClipLoader *clip1 = m_handler->animationClipLoaderManager()->lookupResource(nodeData.left);
+    AnimationClipLoader *clip2 = m_handler->animationClipLoaderManager()->lookupResource(nodeData.right);
     Q_ASSERT(clip1 && clip2);
 
     // Prepare for evaluation (convert global time to local time ....)

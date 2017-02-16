@@ -59,7 +59,7 @@ namespace Animation {
 
 struct ChannelGroup;
 class Handler;
-class AnimationClip;
+class AnimationClipLoader;
 class ChannelMapper;
 
 class Q_AUTOTEST_EXPORT AnimationUtils
@@ -113,7 +113,7 @@ public:
         return data;
     }
 
-    static ClipPreEvaluationData evaluationDataForClip(AnimationClip *clip, const AnimatorEvaluationData &animatorData);
+    static ClipPreEvaluationData evaluationDataForClip(AnimationClipLoader *clip, const AnimatorEvaluationData &animatorData);
 
     static QVector<int> channelsToIndices(const ChannelGroup &channelGroup,
                                           int dataType,
@@ -122,14 +122,14 @@ public:
                                                 int dataType,
                                                 int offset,
                                                 const QStringList &suffixes);
-    static QVector<float> evaluateClipAtLocalTime(AnimationClip *clip,
+    static QVector<float> evaluateClipAtLocalTime(AnimationClipLoader *clip,
                                               float localTime);
     static QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId peerId,
                                                                      const QVector<MappingData> &mappingData,
                                                                      const QVector<float> &channelResults,
                                                                      bool finalFrame);
     static QVector<MappingData> buildPropertyMappings(Handler *handler,
-                                                      const AnimationClip *clip,
+                                                      const AnimationClipLoader *clip,
                                                       const ChannelMapper *mapper);
 
 private:

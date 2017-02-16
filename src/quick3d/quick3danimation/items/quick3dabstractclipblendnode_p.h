@@ -53,7 +53,7 @@
 
 #include <Qt3DQuickAnimation/private/qt3dquickanimation_global_p.h>
 #include <Qt3DAnimation/qabstractclipblendnode.h>
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qabstractanimationclip.h>
 #include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
@@ -65,19 +65,19 @@ namespace Quick {
 class QT3DQUICKANIMATIONSHARED_PRIVATE_EXPORT Quick3DAbstractClipBlendNode : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DAnimation::QAnimationClip> clips READ clipList CONSTANT)
+    Q_PROPERTY(QQmlListProperty<Qt3DAnimation::QAbstractAnimationClip> clips READ clipList CONSTANT)
 
 public:
     explicit Quick3DAbstractClipBlendNode(QObject *parent = nullptr);
 
     inline QAbstractClipBlendNode *parentAbstractClipBlendNode() const { return qobject_cast<QAbstractClipBlendNode *>(parent()); }
-    QQmlListProperty<QAnimationClip> clipList();
+    QQmlListProperty<QAbstractAnimationClip> clipList();
 
 private:
-    static void appendClip(QQmlListProperty<QAnimationClip> *list, QAnimationClip *clip);
-    static QAnimationClip *clipAt(QQmlListProperty<QAnimationClip> *list, int index);
-    static int clipCount(QQmlListProperty<QAnimationClip> *list);
-    static void clearClips(QQmlListProperty<QAnimationClip> *list);
+    static void appendClip(QQmlListProperty<QAbstractAnimationClip> *list, QAbstractAnimationClip *clip);
+    static QAbstractAnimationClip *clipAt(QQmlListProperty<QAbstractAnimationClip> *list, int index);
+    static int clipCount(QQmlListProperty<QAbstractAnimationClip> *list);
+    static void clearClips(QQmlListProperty<QAbstractAnimationClip> *list);
 };
 
 } // Quick

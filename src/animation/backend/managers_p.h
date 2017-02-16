@@ -53,7 +53,7 @@
 
 #include <QtGlobal>
 #include <Qt3DAnimation/private/handle_types_p.h>
-#include <Qt3DAnimation/private/animationclip_p.h>
+#include <Qt3DAnimation/private/animationcliploader_p.h>
 #include <Qt3DAnimation/private/blendedclipanimator_p.h>
 #include <Qt3DAnimation/private/clipanimator_p.h>
 #include <Qt3DAnimation/private/channelmapping_p.h>
@@ -67,14 +67,14 @@ namespace Animation {
 
 class ClipBlendNode;
 
-class AnimationClipManager : public Qt3DCore::QResourceManager<
-        AnimationClip,
+class AnimationClipLoaderManager : public Qt3DCore::QResourceManager<
+        AnimationClipLoader,
         Qt3DCore::QNodeId,
         16,
         Qt3DCore::ArrayAllocatingPolicy>
 {
 public:
-    AnimationClipManager() {}
+    AnimationClipLoaderManager() {}
 };
 
 class ClipAnimatorManager : public Qt3DCore::QResourceManager<
@@ -135,7 +135,7 @@ private:
 } // namespace Animation
 } // namespace Qt3DAnimation
 
-Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::AnimationClip, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::AnimationClipLoader, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::ClipAnimator, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::BlendedClipAnimator, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DAnimation::Animation::ChannelMapping, Q_REQUIRES_CLEANUP)

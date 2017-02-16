@@ -39,7 +39,7 @@
 
 #include "qclipanimator.h"
 #include "qclipanimator_p.h"
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qabstractanimationclip.h>
 #include <Qt3DAnimation/qchannelmapper.h>
 
 QT_BEGIN_NAMESPACE
@@ -66,13 +66,13 @@ QClipAnimator::~QClipAnimator()
 {
 }
 
-QAnimationClip *QClipAnimator::clip() const
+QAbstractAnimationClip *QClipAnimator::clip() const
 {
     Q_D(const QClipAnimator);
     return d->m_clip;
 }
 
-void QClipAnimator::setClip(QAnimationClip *clip)
+void QClipAnimator::setClip(QAbstractAnimationClip *clip)
 {
     Q_D(QClipAnimator);
     if (d->m_clip == clip)

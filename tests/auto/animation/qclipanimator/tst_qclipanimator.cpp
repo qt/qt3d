@@ -28,10 +28,10 @@
 
 
 #include <QtTest/QTest>
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/qchannelmapper.h>
 #include <Qt3DAnimation/qclipanimator.h>
-#include <Qt3DAnimation/private/qanimationclip_p.h>
+#include <Qt3DAnimation/private/qanimationcliploader_p.h>
 #include <Qt3DAnimation/private/qclipanimator_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
@@ -47,7 +47,7 @@ class tst_QClipAnimator : public QObject
 private Q_SLOTS:
     void initTestCase()
     {
-        qRegisterMetaType<Qt3DAnimation::QAnimationClip*>();
+        qRegisterMetaType<Qt3DAnimation::QAbstractAnimationClip*>();
         qRegisterMetaType<Qt3DAnimation::QChannelMapper*>();
     }
 
@@ -57,7 +57,7 @@ private Q_SLOTS:
         Qt3DAnimation::QClipAnimator animator;
 
         // THEN
-        QCOMPARE(animator.clip(), static_cast<Qt3DAnimation::QAnimationClip *>(nullptr));
+        QCOMPARE(animator.clip(), static_cast<Qt3DAnimation::QAbstractAnimationClip *>(nullptr));
         QCOMPARE(animator.channelMapper(), static_cast<Qt3DAnimation::QChannelMapper *>(nullptr));
         QCOMPARE(animator.loops(), 1);
     }
@@ -69,8 +69,8 @@ private Q_SLOTS:
 
         {
             // WHEN
-            QSignalSpy spy(&animator, SIGNAL(clipChanged(Qt3DAnimation::QAnimationClip *)));
-            auto newValue = new Qt3DAnimation::QAnimationClip();
+            QSignalSpy spy(&animator, SIGNAL(clipChanged(Qt3DAnimation::QAbstractAnimationClip *)));
+            auto newValue = new Qt3DAnimation::QAnimationClipLoader();
             animator.setClip(newValue);
 
             // THEN
@@ -134,7 +134,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DAnimation::QClipAnimator animator;
-        auto clip = new Qt3DAnimation::QAnimationClip();
+        auto clip = new Qt3DAnimation::QAnimationClipLoader();
         animator.setClip(clip);
         auto mapper = new Qt3DAnimation::QChannelMapper();
         animator.setChannelMapper(mapper);
@@ -187,7 +187,7 @@ private Q_SLOTS:
         // GIVEN
         TestArbiter arbiter;
         Qt3DAnimation::QClipAnimator animator;
-        auto clip = new Qt3DAnimation::QAnimationClip();
+        auto clip = new Qt3DAnimation::QAnimationClipLoader();
         arbiter.setArbiterOnNode(&animator);
 
         {

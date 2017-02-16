@@ -47,25 +47,26 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QAnimationClip;
+class QAbstractAnimationClip;
+class QChannelMapper;
 class QClipAnimatorPrivate;
 
 class QT3DANIMATIONSHARED_EXPORT QClipAnimator : public Qt3DAnimation::QAbstractClipAnimator
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DAnimation::QAnimationClip *clip READ clip WRITE setClip NOTIFY clipChanged)
+    Q_PROPERTY(Qt3DAnimation::QAbstractAnimationClip *clip READ clip WRITE setClip NOTIFY clipChanged)
 
 public:
     explicit QClipAnimator(Qt3DCore::QNode *parent = nullptr);
     ~QClipAnimator();
 
-    Qt3DAnimation::QAnimationClip *clip() const;
+    Qt3DAnimation::QAbstractAnimationClip *clip() const;
 
 public Q_SLOTS:
-    void setClip(Qt3DAnimation::QAnimationClip *clip);
+    void setClip(Qt3DAnimation::QAbstractAnimationClip *clip);
 
 Q_SIGNALS:
-    void clipChanged(Qt3DAnimation::QAnimationClip *clip);
+    void clipChanged(Qt3DAnimation::QAbstractAnimationClip *clip);
 
 protected:
     QClipAnimator(QClipAnimatorPrivate &dd, Qt3DCore::QNode *parent = nullptr);

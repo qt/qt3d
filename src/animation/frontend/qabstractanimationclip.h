@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QANIMATIONCLIP_H
-#define QT3DANIMATION_QANIMATIONCLIP_H
+#ifndef QT3DANIMATION_QABSTRACTANIMATIONCLIP_H
+#define QT3DANIMATION_QABSTRACTANIMATIONCLIP_H
 
 #include <Qt3DAnimation/qt3danimation_global.h>
 #include <Qt3DCore/qnode.h>
@@ -45,39 +45,31 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QAnimationClipPrivate;
+class QAbstractAnimationClipPrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QAnimationClip : public Qt3DCore::QNode
+class QT3DANIMATIONSHARED_EXPORT QAbstractAnimationClip : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(float duration READ duration NOTIFY durationChanged)
 
 public:
-    explicit QAnimationClip(Qt3DCore::QNode *parent = nullptr);
-    ~QAnimationClip();
+    ~QAbstractAnimationClip();
 
-    QUrl source() const;
     float duration() const;
 
-public Q_SLOTS:
-    void setSource(QUrl source);
-
 Q_SIGNALS:
-    void sourceChanged(QUrl source);
     void durationChanged(float duration);
 
 protected:
-    QAnimationClip(QAnimationClipPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    QAbstractAnimationClip(QAbstractAnimationClipPrivate &dd, Qt3DCore::QNode *parent = nullptr);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
-    Q_DECLARE_PRIVATE(QAnimationClip)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+    Q_DECLARE_PRIVATE(QAbstractAnimationClip)
 };
 
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_QANIMATIONCLIP_H
+#endif // QT3DANIMATION_QABSTRACTANIMATIONCLIP_H

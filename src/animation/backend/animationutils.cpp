@@ -51,7 +51,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 namespace Animation {
 
-AnimationUtils::ClipPreEvaluationData AnimationUtils::evaluationDataForClip(AnimationClip *clip,
+AnimationUtils::ClipPreEvaluationData AnimationUtils::evaluationDataForClip(AnimationClipLoader *clip,
                                                                             const AnimationUtils::AnimatorEvaluationData &animatorData)
 {
     // global time values expected in seconds
@@ -165,7 +165,7 @@ QVector<int> AnimationUtils::channelsToIndicesHelper(const ChannelGroup &channel
     return indices;
 }
 
-QVector<float> AnimationUtils::evaluateClipAtLocalTime(AnimationClip *clip, float localTime)
+QVector<float> AnimationUtils::evaluateClipAtLocalTime(AnimationClipLoader *clip, float localTime)
 {
     QVector<float> channelResults;
     Q_ASSERT(clip);
@@ -263,7 +263,7 @@ QVector<Qt3DCore::QSceneChangePtr> AnimationUtils::preparePropertyChanges(Qt3DCo
     return changes;
 }
 
-QVector<AnimationUtils::MappingData> AnimationUtils::buildPropertyMappings(Handler *handler, const AnimationClip *clip, const ChannelMapper *mapper)
+QVector<AnimationUtils::MappingData> AnimationUtils::buildPropertyMappings(Handler *handler, const AnimationClipLoader *clip, const ChannelMapper *mapper)
 {
     QVector<MappingData> mappingDataVec;
     ChannelMappingManager *mappingManager = handler->channelMappingManager();

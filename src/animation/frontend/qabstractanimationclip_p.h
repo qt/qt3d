@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_ANIMATION_ANIMATIONCLIP_P_H
-#define QT3DANIMATION_ANIMATION_ANIMATIONCLIP_P_H
+#ifndef QT3DANIMATION_QABSTRACTANIMATIONCLIP_P_H
+#define QT3DANIMATION_QABSTRACTANIMATIONCLIP_P_H
 
 //
 //  W A R N I N G
@@ -48,75 +48,29 @@
 // We mean it.
 //
 
-#include <Qt3DAnimation/private/backendnode_p.h>
-#include <Qt3DAnimation/private/fcurve_p.h>
-#include <QtCore/qurl.h>
+#include <Qt3DCore/private/qnode_p.h>
+#include "qabstractanimationclip.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
-namespace Animation {
 
-class Handler;
-
-class Q_AUTOTEST_EXPORT AnimationClip : public BackendNode
+class QAbstractAnimationClipPrivate : public Qt3DCore::QNodePrivate
 {
 public:
-    AnimationClip();
+    QAbstractAnimationClipPrivate();
 
-    void cleanup();
-    void setSource(const QUrl &source) { m_source = source; }
-    QUrl source() const { return m_source; }
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    Q_DECLARE_PUBLIC(QAbstractAnimationClip)
 
-    QString name() const { return m_name; }
-    QString objectName() const { return m_objectName; }
-    const QVector<ChannelGroup> &channelGroups() const { return m_channelGroups; }
-
-    // Called from jobs
-    void loadAnimation();
     void setDuration(float duration);
-    float duration() const { return m_duration; }
-    int channelCount() const { return m_channelCount; }
-    int channelBaseIndex(int channelGroupIndex) const;
 
-private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
-    void clearData();
-    float findDuration();
-    int findChannelCount();
-
-    QUrl m_source;
-
-    QString m_name;
-    QString m_objectName;
-    QVector<ChannelGroup> m_channelGroups;
+    // Set from the backend
     float m_duration;
-    int m_channelCount;
 };
 
-#ifndef QT_NO_DEBUG_STREAM
-inline QDebug operator<<(QDebug dbg, const AnimationClip &animationClip)
-{
-    QDebugStateSaver saver(dbg);
-    dbg << "QNodeId =" << animationClip.peerId() << endl
-        << "Name =" << animationClip.name() << endl
-        << "Object Name =" << animationClip.objectName() << endl
-        << "Channel Groups:" << endl;
-
-    const QVector<ChannelGroup> channelGroups = animationClip.channelGroups();
-    for (const auto channelGroup : channelGroups) {
-        dbg << channelGroup;
-    }
-
-    return dbg;
-}
-#endif
-
-} // namespace Animation
 } // namespace Qt3DAnimation
 
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_ANIMATION_ANIMATIONCLIP_P_H
+#endif // QT3DANIMATION_QABSTRACTANIMATIONCLIP_P_H

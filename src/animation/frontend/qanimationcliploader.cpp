@@ -34,61 +34,43 @@
 **
 ****************************************************************************/
 
-#include "qanimationclip.h"
-#include "qanimationclip_p.h"
+#include "qanimationcliploader.h"
+#include "qanimationcliploader_p.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-QAnimationClipPrivate::QAnimationClipPrivate()
-    : Qt3DCore::QNodePrivate()
-    , m_duration(0.0f)
+QAnimationClipLoaderPrivate::QAnimationClipLoaderPrivate()
+    : QAbstractAnimationClipPrivate()
+    , m_source()
 {
 }
 
-void QAnimationClipPrivate::setDuration(float duration)
-{
-    if (qFuzzyCompare(duration, m_duration))
-        return;
-
-    Q_Q(QAnimationClip);
-    bool wasBlocked = q->blockNotifications(true);
-    m_duration = duration;
-    emit q->durationChanged(duration);
-    q->blockNotifications(wasBlocked);
-}
-
-QAnimationClip::QAnimationClip(Qt3DCore::QNode *parent)
-    : Qt3DCore::QNode(*new QAnimationClipPrivate, parent)
+QAnimationClipLoader::QAnimationClipLoader(Qt3DCore::QNode *parent)
+    : QAbstractAnimationClip(*new QAnimationClipLoaderPrivate, parent)
 {
 }
 
-QAnimationClip::QAnimationClip(QAnimationClipPrivate &dd, Qt3DCore::QNode *parent)
-    : Qt3DCore::QNode(dd, parent)
+QAnimationClipLoader::QAnimationClipLoader(QAnimationClipLoaderPrivate &dd, Qt3DCore::QNode *parent)
+    : QAbstractAnimationClip(dd, parent)
 {
 }
 
-QAnimationClip::~QAnimationClip()
+QAnimationClipLoader::~QAnimationClipLoader()
 {
 }
 
-QUrl QAnimationClip::source() const
+QUrl QAnimationClipLoader::source() const
 {
-    Q_D(const QAnimationClip);
+    Q_D(const QAnimationClipLoader);
     return d->m_source;
 }
 
-float QAnimationClip::duration() const
+void QAnimationClipLoader::setSource(QUrl source)
 {
-    Q_D(const QAnimationClip);
-    return d->m_duration;
-}
-
-void QAnimationClip::setSource(QUrl source)
-{
-    Q_D(QAnimationClip);
+    Q_D(QAnimationClipLoader);
     if (d->m_source == source)
         return;
 
@@ -96,21 +78,11 @@ void QAnimationClip::setSource(QUrl source)
     emit sourceChanged(source);
 }
 
-void QAnimationClip::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
+Qt3DCore::QNodeCreatedChangeBasePtr QAnimationClipLoader::createNodeCreationChange() const
 {
-    Q_D(QAnimationClip);
-    if (change->type() == Qt3DCore::PropertyUpdated) {
-        Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
-        if (e->propertyName() == QByteArrayLiteral("duration"))
-            d->setDuration(e->value().toFloat());
-    }
-}
-
-Qt3DCore::QNodeCreatedChangeBasePtr QAnimationClip::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAnimationClipData>::create(this);
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAnimationClipLoaderData>::create(this);
     auto &data = creationChange->data;
-    Q_D(const QAnimationClip);
+    Q_D(const QAnimationClipLoader);
     data.source = d->m_source;
     return creationChange;
 }

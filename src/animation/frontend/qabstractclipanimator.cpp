@@ -39,7 +39,6 @@
 
 #include "qabstractclipanimator.h"
 #include "qabstractclipanimator_p.h"
-#include <Qt3DAnimation/qanimationclip.h>
 #include <Qt3DAnimation/qchannelmapper.h>
 
 QT_BEGIN_NAMESPACE

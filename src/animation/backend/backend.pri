@@ -2,7 +2,6 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
-    $$PWD/animationclip_p.h \
     $$PWD/handle_types_p.h \
     $$PWD/handler_p.h \
     $$PWD/nodefunctor_p.h \
@@ -25,10 +24,10 @@ HEADERS += \
     $$PWD/animationutils_p.h \
     $$PWD/buildblendtreesjob_p.h \
     $$PWD/evaluateblendclipanimatorjob_p.h \
-    $$PWD/additiveblend_p.h
+    $$PWD/additiveblend_p.h \
+    $$PWD/animationcliploader_p.h
 
 SOURCES += \
-    $$PWD/animationclip.cpp \
     $$PWD/handler.cpp \
     $$PWD/fcurve.cpp \
     $$PWD/bezierevaluator.cpp \
@@ -48,4 +47,5 @@ SOURCES += \
     $$PWD/animationutils.cpp \
     $$PWD/buildblendtreesjob.cpp \
     $$PWD/evaluateblendclipanimatorjob.cpp \
-    $$PWD/additiveblend.cpp
+    $$PWD/additiveblend.cpp \
+    $$PWD/animationcliploader.cpp
