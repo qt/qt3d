@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DEXTRAS_QDISTANCEFIELDTEXT_P_H
-#define QT3DEXTRAS_QDISTANCEFIELDTEXT_P_H
+#ifndef QT3DEXTRAS_QTEXT2DMATERIAL_P_P_H
+#define QT3DEXTRAS_QTEXT2DMATERIAL_P_P_H
 
 //
 //  W A R N I N G
@@ -51,72 +51,56 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qentity_p.h>
-#include <Qt3DExtras/private/distancefieldtextrenderer_p.h>
-#include <Qt3DExtras/private/qdistancefieldglyphcache_p.h>
-#include <QFont>
+#include <Qt3DRender/private/qmaterial_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-class QScene;
-}
-
 namespace Qt3DRender {
-class QGeometryRenderer;
-class QGeometry;
-class QMaterial;
-class QAttribute;
-class QBuffer;
-}
+class QAbstractTexture;
+class QEffect;
+class QTechnique;
+class QParameter;
+class QRenderPass;
+class QShaderProgram;
+class QBlendEquation;
+class QBlendEquationArguments;
+class QDepthTest;
+
+} // namespace Qt3DRender
 
 namespace Qt3DExtras {
 
-class QDistanceFieldMaterial;
-class QDistanceFieldText;
+class QText2DMaterial;
 
-class QDistanceFieldTextPrivate : public Qt3DCore::QEntityPrivate
+class QText2DMaterialPrivate : public Qt3DRender::QMaterialPrivate
 {
 public:
-    QDistanceFieldTextPrivate();
-    ~QDistanceFieldTextPrivate();
+    QText2DMaterialPrivate();
 
-    Q_DECLARE_PUBLIC(QDistanceFieldText)
+    Qt3DRender::QEffect *m_effect;
+    Qt3DRender::QAbstractTexture *m_distanceFieldTexture;
+    Qt3DRender::QParameter *m_textureParameter;
+    Qt3DRender::QParameter *m_textureSizeParameter;
+    Qt3DRender::QParameter *m_colorParameter;
+    Qt3DRender::QTechnique *m_gl3Technique;
+    Qt3DRender::QTechnique *m_gl2Technique;
+    Qt3DRender::QTechnique *m_es2Technique;
+    Qt3DRender::QRenderPass *m_gl3RenderPass;
+    Qt3DRender::QRenderPass *m_gl2RenderPass;
+    Qt3DRender::QRenderPass *m_es2RenderPass;
+    Qt3DRender::QShaderProgram *m_gl3ShaderProgram;
+    Qt3DRender::QShaderProgram *m_gl2es2ShaderProgram;
+    Qt3DRender::QBlendEquation *m_blend;
+    Qt3DRender::QBlendEquationArguments *m_blendArgs;
+    Qt3DRender::QDepthTest *m_depthTest;
 
-    // keep track of the glyphs currently being displayed,
-    // to guarantee proper glyph ref-counting in the
-    // QDistanceFieldGlyphCache
-    QVector<QGlyphRun> m_currentGlyphRuns;
-    QDistanceFieldGlyphCache *m_glyphCache;
+    void init();
 
-    void setScene(Qt3DCore::QScene *scene) Q_DECL_OVERRIDE;
-
-    QFont m_font;
-    QFont m_scaledFont; // ignore point or pixel size, set to default value
-
-    QColor m_color;
-    QRectF m_position;
-    QString m_text;
-    float m_fontScale = 1.0f;
-
-    QVector<DistanceFieldTextRenderer*> m_renderers;
-
-    float computeActualScale() const;
-
-    void setCurrentGlyphRuns(const QVector<QGlyphRun> &runs);
-    void update();
-
-    struct CacheEntry
-    {
-        QDistanceFieldGlyphCache *glyphCache = nullptr;
-        int count = 0;
-    };
-
-    static QHash<Qt3DCore::QScene *, CacheEntry> m_glyphCacheInstances;
+    Q_DECLARE_PUBLIC(QText2DMaterial)
 };
 
-} // namespace Qt3DExtras
+} // Qt3DExtras
 
 QT_END_NAMESPACE
 
-#endif // QT3DEXTRAS_QDISTANCEFIELDTEXT_P_H
+#endif // QT3DEXTRAS_QTEXT2DMATERIAL_P_P_H

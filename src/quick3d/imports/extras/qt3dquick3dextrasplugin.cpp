@@ -68,7 +68,7 @@
 #include <Qt3DExtras/qcylindergeometry.h>
 #include <Qt3DExtras/qextrudedtextgeometry.h>
 #include <Qt3DExtras/qextrudedtextmesh.h>
-#include <Qt3DExtras/qdistancefieldtext.h>
+#include <Qt3DExtras/qtext2dentity.h>
 #include <Qt3DExtras/qmorphphongmaterial.h>
 #include <Qt3DQuickExtras/private/quick3dlevelofdetailloader_p.h>
 
@@ -124,7 +124,7 @@ void Qt3DQuick3DExtrasPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DExtras::QExtrudedTextGeometry>(uri, 2, 9, "ExtrudedTextGeometry");
     qmlRegisterType<Qt3DExtras::QExtrudedTextMesh>(uri, 2, 9, "ExtrudedTextMesh");
 
-    qmlRegisterType<Qt3DExtras::QDistanceFieldText>(uri, 2, 9, "DistanceFieldText");
+    qmlRegisterType<Qt3DExtras::QText2DEntity>(uri, 2, 9, "Text2DEntity");
 }
 
 

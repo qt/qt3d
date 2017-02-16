@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,70 +37,62 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DEXTRAS_QDISTANCEFIELDMATERIAL_P_H
-#define QT3DEXTRAS_QDISTANCEFIELDMATERIAL_P_H
+#ifndef QT3DEXTRAS_QTEXT2DENTITY_H
+#define QT3DEXTRAS_QTEXT2DENTITY_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DRender/private/qmaterial_p.h>
+#include <QtCore/qrect.h>
+#include <QtGui/qcolor.h>
+#include <QtGui/qfont.h>
+#include <Qt3DCore/qentity.h>
+#include <Qt3DExtras/qt3dextras_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
-class QAbstractTexture;
-class QEffect;
-class QTechnique;
-class QParameter;
-class QRenderPass;
-class QShaderProgram;
-class QBlendEquation;
-class QBlendEquationArguments;
-class QDepthTest;
-
-} // namespace Qt3DRender
-
 namespace Qt3DExtras {
 
-class QDistanceFieldMaterial;
+class QText2DEntityPrivate;
 
-class QDistanceFieldMaterialPrivate : public Qt3DRender::QMaterialPrivate
+class QT3DEXTRASSHARED_EXPORT QText2DEntity : public Qt3DCore::QEntity
 {
+    Q_OBJECT
+    Q_PROPERTY(QFont font READ font WRITE setFont NOTIFY fontChanged)
+    Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
+    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
+    Q_PROPERTY(float width READ width WRITE setWidth NOTIFY widthChanged)
+    Q_PROPERTY(float height READ height WRITE setHeight NOTIFY heightChanged)
+
 public:
-    QDistanceFieldMaterialPrivate();
+    explicit QText2DEntity(Qt3DCore::QNode *parent = nullptr);
+    ~QText2DEntity();
 
-    Qt3DRender::QEffect *m_effect;
-    Qt3DRender::QAbstractTexture *m_distanceFieldTexture;
-    Qt3DRender::QParameter *m_textureParameter;
-    Qt3DRender::QParameter *m_textureSizeParameter;
-    Qt3DRender::QParameter *m_colorParameter;
-    Qt3DRender::QTechnique *m_gl3Technique;
-    Qt3DRender::QTechnique *m_gl2Technique;
-    Qt3DRender::QTechnique *m_es2Technique;
-    Qt3DRender::QRenderPass *m_gl3RenderPass;
-    Qt3DRender::QRenderPass *m_gl2RenderPass;
-    Qt3DRender::QRenderPass *m_es2RenderPass;
-    Qt3DRender::QShaderProgram *m_gl3ShaderProgram;
-    Qt3DRender::QShaderProgram *m_gl2es2ShaderProgram;
-    Qt3DRender::QBlendEquation *m_blend;
-    Qt3DRender::QBlendEquationArguments *m_blendArgs;
-    Qt3DRender::QDepthTest *m_depthTest;
+    QFont font() const;
+    void setFont(const QFont &font);
 
-    void init();
+    QColor color() const;
+    void setColor(const QColor &color);
 
-    Q_DECLARE_PUBLIC(QDistanceFieldMaterial)
+    QString text() const;
+    void setText(const QString &text);
+
+    float width() const;
+    float height() const;
+
+    void setWidth(float width);
+    void setHeight(float height);
+
+Q_SIGNALS:
+    void fontChanged(const QFont &font);
+    void colorChanged(const QColor &color);
+    void textChanged(const QString &text);
+    void widthChanged(float width);
+    void heightChanged(float height);
+
+private:
+    Q_DECLARE_PRIVATE(QText2DEntity)
 };
 
-} // Qt3DExtras
+} // namespace Qt3DExtras
 
 QT_END_NAMESPACE
 
-#endif // QT3DEXTRAS_QDISTANCEFIELDMATERIAL_P_H
+#endif // QT3DEXTRAS_QTEXT2DENTITY_H

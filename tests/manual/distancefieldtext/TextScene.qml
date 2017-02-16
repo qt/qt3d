@@ -113,6 +113,7 @@ Entity {
         components: [
             Transform {
                 id: rot
+                translation: Qt.vector3d(-5, -5, 0)
             }
         ]
 
@@ -139,13 +140,12 @@ Entity {
             }
         }
 
-        DistanceFieldText {
+        Text2DEntity {
             id: text
-
-            font.pointSize: 10
+            font.pointSize: 1
             text: getChars(strLen)
-            position: Qt.rect(-10, -5, 20, 10)
-            fontScale: 0.1
+            width: 20
+            height: 10
         }
     }
 }

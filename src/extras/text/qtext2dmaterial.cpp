@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qdistancefieldmaterial.h"
-#include "qdistancefieldmaterial_p.h"
+#include "qtext2dmaterial_p.h"
+#include "qtext2dmaterial_p_p.h"
 #include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qeffect.h>
@@ -59,7 +59,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
 
-QDistanceFieldMaterialPrivate::QDistanceFieldMaterialPrivate()
+QText2DMaterialPrivate::QText2DMaterialPrivate()
     : QMaterialPrivate()
     , m_effect(new Qt3DRender::QEffect())
     , m_distanceFieldTexture(nullptr)
@@ -80,7 +80,7 @@ QDistanceFieldMaterialPrivate::QDistanceFieldMaterialPrivate()
 {
 }
 
-void QDistanceFieldMaterialPrivate::init()
+void QText2DMaterialPrivate::init()
 {
     m_gl3ShaderProgram->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/distancefieldtext.vert"))));
     m_gl3ShaderProgram->setFragmentShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/distancefieldtext.frag"))));
@@ -143,26 +143,26 @@ void QDistanceFieldMaterialPrivate::init()
     q_func()->setEffect(m_effect);
 }
 
-QDistanceFieldMaterial::QDistanceFieldMaterial(Qt3DCore::QNode *parent)
-    : QMaterial(*new QDistanceFieldMaterialPrivate(), parent)
+QText2DMaterial::QText2DMaterial(Qt3DCore::QNode *parent)
+    : QMaterial(*new QText2DMaterialPrivate(), parent)
 {
-    Q_D(QDistanceFieldMaterial);
+    Q_D(QText2DMaterial);
     d->init();
 }
 
-QDistanceFieldMaterial::~QDistanceFieldMaterial()
+QText2DMaterial::~QText2DMaterial()
 {
 }
 
-void QDistanceFieldMaterial::setColor(const QColor &color)
+void QText2DMaterial::setColor(const QColor &color)
 {
-    Q_D(QDistanceFieldMaterial);
+    Q_D(QText2DMaterial);
     d->m_colorParameter->setValue(QVariant::fromValue(color));
 }
 
-void QDistanceFieldMaterial::setDistanceFieldTexture(Qt3DRender::QAbstractTexture *tex)
+void QText2DMaterial::setDistanceFieldTexture(Qt3DRender::QAbstractTexture *tex)
 {
-    Q_D(QDistanceFieldMaterial);
+    Q_D(QText2DMaterial);
     d->m_distanceFieldTexture = tex;
 
     if (tex) {

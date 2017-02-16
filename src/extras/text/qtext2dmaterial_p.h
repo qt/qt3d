@@ -37,8 +37,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DEXTRAS_QDISTANCEFIELDMATERIAL_H
-#define QT3DEXTRAS_QDISTANCEFIELDMATERIAL_H
+#ifndef QT3DEXTRAS_QTEXT2DMATERIAL_P_H
+#define QT3DEXTRAS_QTEXT2DMATERIAL_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <Qt3DExtras/qt3dextras_global.h>
 #include <Qt3DRender/qmaterial.h>
@@ -48,25 +59,25 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
 
-class QDistanceFieldMaterialPrivate;
+class QText2DMaterialPrivate;
 
-class QDistanceFieldMaterial : public Qt3DRender::QMaterial
+class QText2DMaterial : public Qt3DRender::QMaterial
 {
     Q_OBJECT
 
 public:
-    explicit QDistanceFieldMaterial(Qt3DCore::QNode *parent = nullptr);
-    ~QDistanceFieldMaterial();
+    explicit QText2DMaterial(Qt3DCore::QNode *parent = nullptr);
+    ~QText2DMaterial();
 
     void setColor(const QColor &color);
     void setDistanceFieldTexture(Qt3DRender::QAbstractTexture *tex);
 
 private:
-    Q_DECLARE_PRIVATE(QDistanceFieldMaterial)
+    Q_DECLARE_PRIVATE(QText2DMaterial)
 };
 
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
 
-#endif // QT3DEXTRAS_QDISTANCEFIELDMATERIAL_H
+#endif // QT3DEXTRAS_QTEXT2DMATERIAL_P_H

@@ -37,63 +37,86 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DEXTRAS_QDISTANCEFIELDTEXT_H
-#define QT3DEXTRAS_QDISTANCEFIELDTEXT_H
+#ifndef QT3DEXTRAS_QTEXT2DENTITY_P_H
+#define QT3DEXTRAS_QTEXT2DENTITY_P_H
 
-#include <QtCore/qrect.h>
-#include <QtGui/qcolor.h>
-#include <QtGui/qfont.h>
-#include <Qt3DCore/qentity.h>
-#include <Qt3DExtras/qt3dextras_global.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/private/qentity_p.h>
+#include <Qt3DExtras/private/distancefieldtextrenderer_p.h>
+#include <Qt3DExtras/private/qdistancefieldglyphcache_p.h>
+#include <QFont>
 
 QT_BEGIN_NAMESPACE
 
+namespace Qt3DCore {
+class QScene;
+}
+
+namespace Qt3DRender {
+class QGeometryRenderer;
+class QGeometry;
+class QMaterial;
+class QAttribute;
+class QBuffer;
+}
+
 namespace Qt3DExtras {
 
-class QDistanceFieldGlyphCache;
-class QDistanceFieldTextPrivate;
+class QText2DMaterial;
+class QText2DEntity;
 
-class QT3DEXTRASSHARED_EXPORT QDistanceFieldText : public Qt3DCore::QEntity
+class QText2DEntityPrivate : public Qt3DCore::QEntityPrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(QFont font READ font WRITE setFont NOTIFY fontChanged)
-    Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
-    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
-    Q_PROPERTY(QRectF position READ position WRITE setPosition NOTIFY positionChanged)
-    Q_PROPERTY(float fontScale READ fontScale WRITE setFontScale NOTIFY fontScaleChanged)
-
 public:
-    explicit QDistanceFieldText(Qt3DCore::QNode *parent = nullptr);
-    ~QDistanceFieldText();
+    QText2DEntityPrivate();
+    ~QText2DEntityPrivate();
 
-    QFont font() const;
-    void setFont(const QFont &font);
+    Q_DECLARE_PUBLIC(QText2DEntity)
 
-    QColor color() const;
-    void setColor(const QColor &color);
+    // keep track of the glyphs currently being displayed,
+    // to guarantee proper glyph ref-counting in the
+    // QDistanceFieldGlyphCache
+    QVector<QGlyphRun> m_currentGlyphRuns;
+    QDistanceFieldGlyphCache *m_glyphCache;
 
-    QString text() const;
-    void setText(const QString &text);
+    void setScene(Qt3DCore::QScene *scene) Q_DECL_OVERRIDE;
 
-    QRectF position() const;
-    void setPosition(const QRectF &position);
+    QFont m_font;
+    QFont m_scaledFont; // ignore point or pixel size, set to default value
 
-    float fontScale() const;
-    void setFontScale(float scale);
+    QColor m_color;
+    QString m_text;
+    float m_width;
+    float m_height;
 
-Q_SIGNALS:
-    void fontChanged(const QFont &font);
-    void colorChanged(const QColor &color);
-    void textChanged(const QString &text);
-    void positionChanged(const QRectF &position);
-    void fontScaleChanged(float scale);
+    QVector<DistanceFieldTextRenderer*> m_renderers;
 
-private:
-    Q_DECLARE_PRIVATE(QDistanceFieldText)
+    float computeActualScale() const;
+
+    void setCurrentGlyphRuns(const QVector<QGlyphRun> &runs);
+    void update();
+
+    struct CacheEntry
+    {
+        QDistanceFieldGlyphCache *glyphCache = nullptr;
+        int count = 0;
+    };
+
+    static QHash<Qt3DCore::QScene *, CacheEntry> m_glyphCacheInstances;
 };
 
 } // namespace Qt3DExtras
 
 QT_END_NAMESPACE
 
-#endif // QT3DEXTRAS_QDISTANCEFIELDTEXT_H
+#endif // QT3DEXTRAS_QTEXT2DENTITY_P_H

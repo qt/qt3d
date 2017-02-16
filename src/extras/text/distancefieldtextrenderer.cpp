@@ -43,7 +43,7 @@
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 
-#include <Qt3DExtras/qdistancefieldmaterial.h>
+#include <Qt3DExtras/private/qtext2dmaterial_p.h>
 
 #include "distancefieldtextrenderer_p.h"
 #include "distancefieldtextrenderer_p_p.h"
@@ -111,7 +111,7 @@ void DistanceFieldTextRendererPrivate::init()
     m_geometry->addAttribute(m_texCoordAttr);
     m_geometry->addAttribute(m_indexAttr);
 
-    m_material = new QDistanceFieldMaterial(q);
+    m_material = new QText2DMaterial(q);
 
     q->addComponent(m_renderer);
     q->addComponent(m_material);

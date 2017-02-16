@@ -37,9 +37,9 @@
 **
 ****************************************************************************/
 
-#include "qdistancefieldtext.h"
-#include "qdistancefieldtext_p.h"
-#include "qdistancefieldmaterial.h"
+#include "qtext2dentity.h"
+#include "qtext2dentity_p.h"
+#include "qtext2dmaterial_p.h"
 
 #include <QtGui/qtextlayout.h>
 #include <QtGui/qglyphrun.h>
@@ -69,21 +69,23 @@ inline Q_DECL_CONSTEXPR QRectF scaleRectF(const QRectF &rect, float scale)
 
 namespace Qt3DExtras {
 
-QHash<Qt3DCore::QScene *, QDistanceFieldTextPrivate::CacheEntry> QDistanceFieldTextPrivate::m_glyphCacheInstances;
+QHash<Qt3DCore::QScene *, QText2DEntityPrivate::CacheEntry> QText2DEntityPrivate::m_glyphCacheInstances;
 
-QDistanceFieldTextPrivate::QDistanceFieldTextPrivate()
+QText2DEntityPrivate::QText2DEntityPrivate()
     : m_glyphCache(nullptr)
     , m_font(QLatin1String("Times"), 10)
     , m_scaledFont(QLatin1String("Times"), 10)
     , m_color(QColor(255, 255, 255, 255))
+    , m_width(0.0f)
+    , m_height(0.0f)
 {
 }
 
-QDistanceFieldTextPrivate::~QDistanceFieldTextPrivate()
+QText2DEntityPrivate::~QText2DEntityPrivate()
 {
 }
 
-void QDistanceFieldTextPrivate::setScene(Qt3DCore::QScene *scene)
+void QText2DEntityPrivate::setScene(Qt3DCore::QScene *scene)
 {
     if (scene == m_scene)
         return;
@@ -91,7 +93,7 @@ void QDistanceFieldTextPrivate::setScene(Qt3DCore::QScene *scene)
     // Unref old glyph cache if it exists
     if (m_scene != nullptr) {
         m_glyphCache = nullptr;
-        QDistanceFieldTextPrivate::CacheEntry &entry = QDistanceFieldTextPrivate::m_glyphCacheInstances[m_scene];
+        QText2DEntityPrivate::CacheEntry &entry = QText2DEntityPrivate::m_glyphCacheInstances[m_scene];
         --entry.count;
         if (entry.count == 0 && entry.glyphCache != nullptr) {
             delete entry.glyphCache;
@@ -103,7 +105,7 @@ void QDistanceFieldTextPrivate::setScene(Qt3DCore::QScene *scene)
 
     // Ref new glyph cache is scene is valid
     if (scene != nullptr) {
-        QDistanceFieldTextPrivate::CacheEntry &entry = QDistanceFieldTextPrivate::m_glyphCacheInstances[scene];
+        QText2DEntityPrivate::CacheEntry &entry = QText2DEntityPrivate::m_glyphCacheInstances[scene];
         if (entry.glyphCache == nullptr) {
             entry.glyphCache = new QDistanceFieldGlyphCache();
             entry.glyphCache->setRootNode(scene->rootNode());
@@ -115,19 +117,19 @@ void QDistanceFieldTextPrivate::setScene(Qt3DCore::QScene *scene)
     }
 }
 
-QDistanceFieldText::QDistanceFieldText(QNode *parent)
-    : Qt3DCore::QEntity(*new QDistanceFieldTextPrivate(), parent)
+QText2DEntity::QText2DEntity(QNode *parent)
+    : Qt3DCore::QEntity(*new QText2DEntityPrivate(), parent)
 {
 }
 
-QDistanceFieldText::~QDistanceFieldText()
+QText2DEntity::~QText2DEntity()
 {
 }
 
-float QDistanceFieldTextPrivate::computeActualScale() const
+float QText2DEntityPrivate::computeActualScale() const
 {
     // scale font based on fontScale property and given QFont
-    float scale = m_fontScale;
+    float scale = 1.0f;
     if (m_font.pointSizeF() > 0)
         scale *= m_font.pointSizeF() / m_scaledFont.pointSizeF();
     return scale;
@@ -139,7 +141,7 @@ struct RenderData {
     QVector<quint16> index;
 };
 
-void QDistanceFieldTextPrivate::setCurrentGlyphRuns(const QVector<QGlyphRun> &runs)
+void QText2DEntityPrivate::setCurrentGlyphRuns(const QVector<QGlyphRun> &runs)
 {
     if (runs.isEmpty())
         return;
@@ -176,29 +178,34 @@ void QDistanceFieldTextPrivate::setCurrentGlyphRuns(const QVector<QGlyphRun> &ru
             QRectF metrics = scaleRectF(dfield.glyphPathBoundingRect, fontScale);
             metrics.adjust(-margin, margin, margin, 3*margin);
 
-            float x1 = m_position.left() + scale * (pos[i].x() + metrics.left());
-            float y2 = m_position.bottom() - scale * (pos[i].y() - metrics.top());
+            const float top = 0.0f;
+            const float left = 0.0f;
+            const float right = m_width;
+            const float bottom = m_height;
+
+            float x1 = left + scale * (pos[i].x() + metrics.left());
+            float y2 = bottom - scale * (pos[i].y() - metrics.top());
             float x2 = x1 + scale * metrics.width();
             float y1 = y2 - scale * metrics.height();
 
             // only draw glyphs that are at least partly visible
-            if (y2 < m_position.top() || x1 > m_position.right())
+            if (y2 < top || x1 > right)
                 continue;
 
             QRectF texCoords = dfield.texCoords;
 
             // if a glyph is only partly visible within the given rectangle,
             // cut it in half and adjust tex coords
-            if (y1 < m_position.top()) {
-                const float insideRatio = (m_position.top() - y2) / (y1 - y2);
-                y1 = m_position.top();
+            if (y1 < top) {
+                const float insideRatio = (top - y2) / (y1 - y2);
+                y1 = top;
                 texCoords.setHeight(texCoords.height() * insideRatio);
             }
 
             // do the same thing horizontally
-            if (x2 > m_position.right()) {
-                const float insideRatio = (m_position.right() - x1) / (x2 - x1);
-                x2 = m_position.right();
+            if (x2 > right) {
+                const float insideRatio = (right - x1) / (x2 - x1);
+                x2 = right;
                 texCoords.setWidth(texCoords.width() * insideRatio);
             }
 
@@ -241,7 +248,7 @@ void QDistanceFieldTextPrivate::setCurrentGlyphRuns(const QVector<QGlyphRun> &ru
     m_currentGlyphRuns = runs;
 }
 
-void QDistanceFieldTextPrivate::update()
+void QText2DEntityPrivate::update()
 {
     if (m_glyphCache == nullptr)
         return;
@@ -249,9 +256,9 @@ void QDistanceFieldTextPrivate::update()
     QVector<QGlyphRun> glyphRuns;
 
     // collect all GlyphRuns generated by the QTextLayout
-    if (!m_position.isEmpty() && !m_text.isEmpty() && m_fontScale > 0.f) {
+    if ((m_width > 0.0f || m_height > 0.0f) && !m_text.isEmpty()) {
         QTextLayout layout(m_text, m_scaledFont);
-        const float lineWidth = m_position.width() / computeActualScale();
+        const float lineWidth = m_width / computeActualScale();
         float height = 0;
         layout.beginLayout();
 
@@ -277,15 +284,15 @@ void QDistanceFieldTextPrivate::update()
     setCurrentGlyphRuns(glyphRuns);
 }
 
-QFont QDistanceFieldText::font() const
+QFont QText2DEntity::font() const
 {
-    Q_D(const QDistanceFieldText);
+    Q_D(const QText2DEntity);
     return d->m_font;
 }
 
-void QDistanceFieldText::setFont(const QFont &font)
+void QText2DEntity::setFont(const QFont &font)
 {
-    Q_D(QDistanceFieldText);
+    Q_D(QText2DEntity);
     if (d->m_font != font) {
         // ignore the point size of the font, just make it a default value.
         // still we want to make sure that font() returns the same value
@@ -301,15 +308,15 @@ void QDistanceFieldText::setFont(const QFont &font)
     }
 }
 
-QColor QDistanceFieldText::color() const
+QColor QText2DEntity::color() const
 {
-    Q_D(const QDistanceFieldText);
+    Q_D(const QText2DEntity);
     return d->m_color;
 }
 
-void QDistanceFieldText::setColor(const QColor &color)
+void QText2DEntity::setColor(const QColor &color)
 {
-    Q_D(QDistanceFieldText);
+    Q_D(QText2DEntity);
     if (d->m_color != color) {
         d->m_color = color;
 
@@ -320,15 +327,15 @@ void QDistanceFieldText::setColor(const QColor &color)
     }
 }
 
-QString QDistanceFieldText::text() const
+QString QText2DEntity::text() const
 {
-    Q_D(const QDistanceFieldText);
+    Q_D(const QText2DEntity);
     return d->m_text;
 }
 
-void QDistanceFieldText::setText(const QString &text)
+void QText2DEntity::setText(const QString &text)
 {
-    Q_D(QDistanceFieldText);
+    Q_D(QText2DEntity);
     if (d->m_text != text) {
         d->m_text = text;
         emit textChanged(text);
@@ -337,39 +344,35 @@ void QDistanceFieldText::setText(const QString &text)
     }
 }
 
-QRectF QDistanceFieldText::position() const
+float QText2DEntity::width() const
 {
-    Q_D(const QDistanceFieldText);
-    return d->m_position;
+    Q_D(const QText2DEntity);
+    return d->m_width;
 }
 
-void QDistanceFieldText::setPosition(const QRectF &pos)
+float QText2DEntity::height() const
 {
-    Q_D(QDistanceFieldText);
-    if (d->m_position != pos) {
-        d->m_position = pos;
-        emit positionChanged(pos);
+    Q_D(const QText2DEntity);
+    return d->m_height;
+}
 
-        if (!d->m_text.isEmpty())
-            d->update();
+void QText2DEntity::setWidth(float width)
+{
+    Q_D(QText2DEntity);
+    if (width != d->m_width) {
+        d->m_width = width;
+        emit widthChanged(width);
+        d->update();
     }
 }
 
-float QDistanceFieldText::fontScale() const
+void QText2DEntity::setHeight(float height)
 {
-    Q_D(const QDistanceFieldText);
-    return d->m_fontScale;
-}
-
-void QDistanceFieldText::setFontScale(float scale)
-{
-    Q_D(QDistanceFieldText);
-    if (d->m_fontScale != scale) {
-        d->m_fontScale = scale;
-        emit fontScaleChanged(scale);
-
-        if (!d->m_text.isEmpty())
-            d->update();
+    Q_D(QText2DEntity);
+    if (height != d->m_height) {
+        d->m_height = height;
+        emit heightChanged(height);
+        d->update();
     }
 }
 
