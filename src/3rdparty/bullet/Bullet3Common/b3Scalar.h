@@ -71,10 +71,11 @@ inline int	b3GetVersion()
 		#else
 
 #if (defined (_WIN32) && (_MSC_VER) && _MSC_VER >= 1400) && (!defined (B3_USE_DOUBLE_PRECISION))
+	#if (defined (_M_IX86) || defined (_M_X64))
 			#define B3_USE_SSE
 			#ifdef B3_USE_SSE
-			//B3_USE_SSE_IN_API is disabled under Windows by default, because 
-			//it makes it harder to integrate Bullet into your application under Windows 
+			//B3_USE_SSE_IN_API is disabled under Windows by default, because
+			//it makes it harder to integrate Bullet into your application under Windows
 			//(structured embedding Bullet structs/classes need to be 16-byte aligned)
 			//with relatively little performance gain
 			//If you are not embedded Bullet data in your classes, or make sure that you align those classes on 16-byte boundaries
@@ -82,6 +83,11 @@ inline int	b3GetVersion()
 			//#define B3_USE_SSE_IN_API
 			#endif //B3_USE_SSE
 			#include <emmintrin.h>
+	#elif (defined _M_ARM)
+// TODO:
+//			#define B3_USE_NEON
+//			#include <arm_neon.h>
+	#endif
 #endif
 
 		#endif//_XBOX
