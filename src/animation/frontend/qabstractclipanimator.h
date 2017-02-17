@@ -59,6 +59,9 @@ class QT3DANIMATIONSHARED_EXPORT QAbstractClipAnimator : public Qt3DCore::QCompo
     Q_PROPERTY(Qt3DAnimation::QChannelMapper *channelMapper READ channelMapper WRITE setChannelMapper NOTIFY channelMapperChanged)
 
 public:
+    enum Loops { Infinite = -1 };
+    Q_ENUM(Loops)
+
     ~QAbstractClipAnimator();
 
     bool isRunning() const;
