@@ -110,7 +110,6 @@ protected:
                             QPickEvent::Buttons eventButton,
                             int eventButtons,
                             int eventModifiers,
-                            bool trianglePickingRequested,
                             bool allHitsRequested);
 
 private:

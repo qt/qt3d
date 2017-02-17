@@ -47,6 +47,8 @@
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/trianglesvisitor_p.h>
+#include <Qt3DRender/private/segmentsvisitor_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -199,8 +201,9 @@ bool TriangleCollisionVisitor::intersectsSegmentTriangle(uint andx, const QVecto
     bool intersected = Render::intersectsSegmentTriangle(m_ray, a, b, c, uvw, t);
     if (intersected) {
         QCollisionQueryResult::Hit queryResult;
+        queryResult.m_type = QCollisionQueryResult::Hit::Triangle;
         queryResult.m_entityId = m_root->peerId();
-        queryResult.m_triangleIndex = m_triangleIndex;
+        queryResult.m_primitiveIndex = m_triangleIndex;
         queryResult.m_vertexIndex[0] = andx;
         queryResult.m_vertexIndex[1] = bndx;
         queryResult.m_vertexIndex[2] = cndx;
@@ -210,6 +213,127 @@ bool TriangleCollisionVisitor::intersectsSegmentTriangle(uint andx, const QVecto
         hits.push_back(queryResult);
     }
     return intersected;
+}
+
+class LineCollisionVisitor : public SegmentsVisitor
+{
+public:
+    HitList hits;
+
+    LineCollisionVisitor(NodeManagers* manager, const Entity *root, const RayCasting::QRay3D& ray,
+                         float pickWorldSpaceTolerance)
+        : SegmentsVisitor(manager), m_root(root), m_ray(ray)
+        , m_segmentIndex(0), m_pickWorldSpaceTolerance(pickWorldSpaceTolerance)
+    {
+    }
+
+private:
+    const Entity *m_root;
+    RayCasting::QRay3D m_ray;
+    uint m_segmentIndex;
+    float m_pickWorldSpaceTolerance;
+
+    void visit(uint andx, const QVector3D &a,
+               uint bndx, const QVector3D &b) Q_DECL_OVERRIDE;
+    bool intersectsSegmentSegment(uint andx, const QVector3D &a,
+                                  uint bndx, const QVector3D &b);
+    bool rayToLineSegment(const QVector3D& lineStart,const QVector3D& lineEnd,
+                          float &distance, QVector3D &intersection) const;
+};
+
+void LineCollisionVisitor::visit(uint andx, const QVector3D &a, uint bndx, const QVector3D &b)
+{
+    const QMatrix4x4 &mat = *m_root->worldTransform();
+    const QVector3D tA = mat * a;
+    const QVector3D tB = mat * b;
+
+    intersectsSegmentSegment(andx, tA, bndx, tB);
+
+    m_segmentIndex++;
+}
+
+bool LineCollisionVisitor::intersectsSegmentSegment(uint andx, const QVector3D &a,
+                                                    uint bndx, const QVector3D &b)
+{
+    float distance = 0.f;
+    QVector3D intersection;
+    bool res = rayToLineSegment(a, b, distance, intersection);
+    if (res) {
+        QCollisionQueryResult::Hit queryResult;
+        queryResult.m_type = QCollisionQueryResult::Hit::Edge;
+        queryResult.m_entityId = m_root->peerId();
+        queryResult.m_primitiveIndex = m_segmentIndex;
+        queryResult.m_vertexIndex[0] = andx;
+        queryResult.m_vertexIndex[1] = bndx;
+        queryResult.m_intersection = intersection;
+        queryResult.m_distance = m_ray.projectedDistance(queryResult.m_intersection);
+        hits.push_back(queryResult);
+        return true;
+    }
+    return false;
+}
+
+bool LineCollisionVisitor::rayToLineSegment(const QVector3D& lineStart,const QVector3D& lineEnd,
+                                            float &distance, QVector3D &intersection) const
+{
+    const float epsilon = 0.00000001f;
+
+    const QVector3D u = m_ray.direction() * m_ray.distance();
+    const QVector3D v = lineEnd - lineStart;
+    const QVector3D w = m_ray.origin() - lineStart;
+    const float a = QVector3D::dotProduct(u, u);
+    const float b = QVector3D::dotProduct(u, v);
+    const float c = QVector3D::dotProduct(v, v);
+    const float d = QVector3D::dotProduct(u, w);
+    const float e = QVector3D::dotProduct(v, w);
+    const float D = a * c - b * b;
+    float sc, sN, sD = D;
+    float tc, tN, tD = D;
+
+    if (D < epsilon) {
+        sN = 0.0;
+        sD = 1.0;
+        tN = e;
+        tD = c;
+    } else {
+        sN = (b * e - c * d);
+        tN = (a * e - b * d);
+        if (sN < 0.0) {
+            sN = 0.0;
+            tN = e;
+            tD = c;
+        }
+    }
+
+    if (tN < 0.0) {
+        tN = 0.0;
+        if (-d < 0.0)
+            sN = 0.0;
+        else {
+            sN = -d;
+            sD = a;
+        }
+    } else if (tN > tD) {
+        tN = tD;
+        if ((-d + b) < 0.0)
+            sN = 0;
+        else {
+            sN = (-d + b);
+            sD = a;
+        }
+    }
+
+    sc = (qAbs(sN) < epsilon ? 0.0f : sN / sD);
+    tc = (qAbs(tN) < epsilon ? 0.0f : tN / tD);
+
+    const QVector3D dP = w + (sc * u) - (tc * v);
+    const float f = dP.length();
+    if (f < m_pickWorldSpaceTolerance) {
+        distance = sc * u.length();
+        intersection = lineStart + v * tc;
+        return true;
+    }
+    return false;
 }
 
 HitList reduceToFirstHit(HitList &result, const HitList &intermediate)
@@ -319,6 +443,30 @@ HitList TriangleCollisionGathererFunctor::pick(const Entity *entity) const
         visitor.apply(gRenderer, entity->peerId());
         result = visitor.hits;
 
+        sortHits(result);
+    }
+
+    return result;
+}
+
+HitList LineCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities, bool allHitsRequested)
+{
+    const auto reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
+    return QtConcurrent::blockingMappedReduced<HitList>(entities, *this, reducerOp);
+}
+
+HitList LineCollisionGathererFunctor::pick(const Entity *entity) const
+{
+    HitList result;
+
+    GeometryRenderer *gRenderer = entity->renderComponent<GeometryRenderer>();
+    if (!gRenderer)
+        return result;
+
+    if (rayHitsEntity(entity)) {
+        LineCollisionVisitor visitor(m_manager, entity, m_ray, m_pickWorldSpaceTolerance);
+        visitor.apply(gRenderer, entity->peerId());
+        result = visitor.hits;
         sortHits(result);
     }
 

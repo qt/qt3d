@@ -39,6 +39,7 @@
 
 #include "pickboundingvolumejob_p.h"
 #include "qpicktriangleevent.h"
+#include "qpicklineevent.h"
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
@@ -47,6 +48,7 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/geometryrenderer_p.h>
 #include <Qt3DRender/private/rendersettings_p.h>
+#include <Qt3DRender/private/trianglesvisitor_p.h>
 #include <Qt3DRender/private/job_common_p.h>
 #include <Qt3DRender/private/qpickevent_p.h>
 #include <Qt3DRender/private/pickboundingvolumeutils_p.h>
@@ -222,11 +224,15 @@ bool PickBoundingVolumeJob::runHelper()
     // by compressing them into a single one
 
     const bool trianglePickingRequested = (m_renderSettings->pickMethod() == QPickingSettings::TrianglePicking);
+    const bool edgePickingRequested = (m_renderSettings->pickMethod() == QPickingSettings::LinePicking);
+    const bool pointPickingRequested = (m_renderSettings->pickMethod() == QPickingSettings::PointPicking);
+    const bool primitivePickingRequested = pointPickingRequested | edgePickingRequested | trianglePickingRequested;
     const bool allHitsRequested = (m_renderSettings->pickResultMode() == QPickingSettings::AllPicks);
     const bool frontFaceRequested =
             m_renderSettings->faceOrientationPickingMode() != QPickingSettings::BackFace;
     const bool backFaceRequested =
             m_renderSettings->faceOrientationPickingMode() != QPickingSettings::FrontFace;
+    const float pickWorldSpaceTolerance = m_renderSettings->pickWorldSpaceTolerance();
 
     // For each mouse event
     for (const QMouseEvent &event : mouseEvents) {
@@ -251,9 +257,18 @@ bool PickBoundingVolumeJob::runHelper()
                     gathererFunctor.m_backFaceRequested = backFaceRequested;
                     gathererFunctor.m_manager = m_manager;
                     gathererFunctor.m_ray = ray;
-                    sphereHits = gathererFunctor.computeHits(entityPicker.entities(), allHitsRequested);
-                } else {
-                    sphereHits = entityPicker.hits();
+                    sphereHits << gathererFunctor.computeHits(entityPicker.entities(), allHitsRequested);
+                }
+                if (edgePickingRequested) {
+                    PickingUtils::LineCollisionGathererFunctor gathererFunctor;
+                    gathererFunctor.m_manager = m_manager;
+                    gathererFunctor.m_ray = ray;
+                    gathererFunctor.m_pickWorldSpaceTolerance = pickWorldSpaceTolerance;
+                    sphereHits << gathererFunctor.computeHits(entityPicker.entities(), allHitsRequested);
+                    PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
+                }
+                if (!primitivePickingRequested) {
+                    sphereHits << entityPicker.hits();
                     PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
                     if (!allHitsRequested)
                         sphereHits = { sphereHits.front() };
@@ -261,8 +276,7 @@ bool PickBoundingVolumeJob::runHelper()
             }
 
             // Dispatch events based on hit results
-            dispatchPickEvents(event, sphereHits, eventButton, eventButtons, eventModifiers,
-                               trianglePickingRequested, allHitsRequested);
+            dispatchPickEvents(event, sphereHits, eventButton, eventButtons, eventModifiers, allHitsRequested);
         }
     }
 
@@ -295,7 +309,6 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                                                QPickEvent::Buttons eventButton,
                                                int eventButtons,
                                                int eventModifiers,
-                                               bool trianglePickingRequested,
                                                bool allHitsRequested)
 {
     ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
@@ -334,14 +347,31 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                     localIntersection = entity->worldTransform()->inverted() * hit.m_intersection;
 
                 QPickEventPtr pickEvent;
-                if (trianglePickingRequested) {
-                    pickEvent.reset(new QPickTriangleEvent(event.localPos(), hit.m_intersection, localIntersection, hit.m_distance,
-                                                           hit.m_triangleIndex, hit.m_vertexIndex[0], hit.m_vertexIndex[1], hit.m_vertexIndex[2],
-                            eventButton, eventButtons, eventModifiers, hit.m_uvw));
-                    QPickEventPrivate::get(pickEvent.data())->m_entity = hit.m_entityId;
-                } else {
-                    pickEvent.reset(new QPickEvent(event.localPos(), hit.m_intersection, localIntersection, hit.m_distance,
+                switch (hit.m_type) {
+                case QCollisionQueryResult::Hit::Triangle:
+                    pickEvent.reset(new QPickTriangleEvent(event.localPos(), hit.m_intersection,
+                                                           localIntersection, hit.m_distance,
+                                                           hit.m_primitiveIndex,
+                                                           hit.m_vertexIndex[0],
+                                                           hit.m_vertexIndex[1],
+                                                           hit.m_vertexIndex[2],
+                                                           eventButton, eventButtons,
+                                                           eventModifiers, hit.m_uvw));
+                    break;
+                case QCollisionQueryResult::Hit::Edge:
+                    pickEvent.reset(new QPickLineEvent(event.localPos(), hit.m_intersection,
+                                                       localIntersection, hit.m_distance,
+                                                       hit.m_primitiveIndex,
+                                                       hit.m_vertexIndex[0], hit.m_vertexIndex[1],
+                                                       eventButton, eventButtons, eventModifiers));
+                    break;
+                case QCollisionQueryResult::Hit::Entity:
+                    pickEvent.reset(new QPickEvent(event.localPos(), hit.m_intersection,
+                                                   localIntersection, hit.m_distance,
                                                    eventButton, eventButtons, eventModifiers));
+                    break;
+                default:
+                    Q_UNREACHABLE();
                 }
                 switch (event.type()) {
                 case QEvent::MouseButtonPress: {

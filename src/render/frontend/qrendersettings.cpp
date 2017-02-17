@@ -92,6 +92,8 @@ void QRenderSettingsPrivate::init()
                      q, SLOT(_q_onPickResultModeChanged(QPickingSettings::PickResultMode)));
     QObject::connect(&m_pickingSettings, SIGNAL(faceOrientationPickingModeChanged(QPickingSettings::FaceOrientationPickingMode)),
                      q, SLOT(_q_onFaceOrientationPickingModeChanged(QPickingSettings::FaceOrientationPickingMode)));
+    QObject::connect(&m_pickingSettings, SIGNAL(worldSpaceToleranceChanged(float)),
+                     q, SLOT(_q_onWorldSpaceToleranceChanged(float)));
 }
 
 /*! \internal */
@@ -110,6 +112,12 @@ void QRenderSettingsPrivate::_q_onPickResultModeChanged(QPickingSettings::PickRe
 void QRenderSettingsPrivate::_q_onFaceOrientationPickingModeChanged(QPickingSettings::FaceOrientationPickingMode faceOrientationPickingMode)
 {
     notifyPropertyChange("faceOrientationPickingMode", faceOrientationPickingMode);
+}
+
+/*! \internal */
+void QRenderSettingsPrivate::_q_onWorldSpaceToleranceChanged(float worldSpaceTolerance)
+{
+    notifyPropertyChange("pickWorldSpaceTolerance", worldSpaceTolerance);
 }
 
 QRenderSettings::QRenderSettings(Qt3DCore::QNode *parent)
@@ -248,6 +256,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QRenderSettings::createNodeCreationChange() 
     data.pickMethod = d->m_pickingSettings.pickMethod();
     data.pickResultMode = d->m_pickingSettings.pickResultMode();
     data.faceOrientationPickingMode = d->m_pickingSettings.faceOrientationPickingMode();
+    data.pickWorldSpaceTolerance = d->m_pickingSettings.worldSpaceTolerance();
     return creationChange;
 }
 

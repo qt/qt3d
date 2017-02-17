@@ -57,6 +57,7 @@ RenderSettings::RenderSettings()
     , m_pickMethod(QPickingSettings::BoundingVolumePicking)
     , m_pickResultMode(QPickingSettings::NearestPick)
     , m_faceOrientationPickingMode(QPickingSettings::FrontFace)
+    , m_pickWorldSpaceTolerance(.1f)
     , m_activeFrameGraph()
 {
 }
@@ -69,6 +70,7 @@ void RenderSettings::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePt
     m_renderPolicy = data.renderPolicy;
     m_pickMethod = data.pickMethod;
     m_pickResultMode = data.pickResultMode;
+    m_pickWorldSpaceTolerance = data.pickWorldSpaceTolerance;
     m_faceOrientationPickingMode = data.faceOrientationPickingMode;
 }
 
@@ -82,6 +84,8 @@ void RenderSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_pickResultMode = propertyChange->value().value<QPickingSettings::PickResultMode>();
         else if (propertyChange->propertyName() == QByteArrayLiteral("faceOrientationPickingMode"))
             m_faceOrientationPickingMode = propertyChange->value().value<QPickingSettings::FaceOrientationPickingMode>();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("pickWorldSpaceTolerance"))
+            m_pickWorldSpaceTolerance = propertyChange->value().toFloat();
         else if (propertyChange->propertyName() == QByteArrayLiteral("activeFrameGraph"))
             m_activeFrameGraph = propertyChange->value().value<QNodeId>();
         else if (propertyChange->propertyName() == QByteArrayLiteral("renderPolicy"))

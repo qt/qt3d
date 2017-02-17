@@ -81,6 +81,7 @@ QPickingSettingsPrivate::QPickingSettingsPrivate()
     , m_pickMethod(QPickingSettings::BoundingVolumePicking)
     , m_pickResultMode(QPickingSettings::NearestPick)
     , m_faceOrientationPickingMode(QPickingSettings::FrontFace)
+    , m_worldSpaceTolerance(.1f)
 {
 }
 
@@ -118,6 +119,15 @@ QPickingSettings::FaceOrientationPickingMode QPickingSettings::faceOrientationPi
 {
     Q_D(const QPickingSettings);
     return d->m_faceOrientationPickingMode;
+}
+
+/*!
+ * \return the line and point precision worldSpaceTolerance
+ */
+float QPickingSettings::worldSpaceTolerance() const
+{
+    Q_D(const QPickingSettings);
+    return d->m_worldSpaceTolerance;
 }
 
 /*!
@@ -245,6 +255,29 @@ void QPickingSettings::setFaceOrientationPickingMode(QPickingSettings::FaceOrien
 
     d->m_faceOrientationPickingMode = faceOrientationPickingMode;
     emit faceOrientationPickingModeChanged(faceOrientationPickingMode);
+}
+
+/*!
+    \qmlproperty qreal worldSpaceTolerance
+
+    Holds the threshold, in model space coordinates, used to evaluate line and point picking.
+*/
+/*!
+    \property QPickingSettings::worldSpaceTolerance
+
+    Holds the threshold, in model space coordinates, used to evaluate line and point picking.
+*/
+/*!
+ * Set the threshold used for line and point picking
+ */
+void QPickingSettings::setWorldSpaceTolerance(float worldSpaceTolerance)
+{
+    Q_D(QPickingSettings);
+    if (qFuzzyCompare(worldSpaceTolerance, d->m_worldSpaceTolerance))
+        return;
+
+    d->m_worldSpaceTolerance = worldSpaceTolerance;
+    emit worldSpaceToleranceChanged(worldSpaceTolerance);
 }
 
 } // namespace Qt3Drender

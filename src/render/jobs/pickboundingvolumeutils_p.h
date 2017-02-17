@@ -53,7 +53,6 @@
 
 #include <Qt3DCore/QNodeId>
 #include <Qt3DRender/private/qray3d_p.h>
-#include <Qt3DRender/private/trianglesvisitor_p.h>
 #include <Qt3DRender/private/qraycastingservice_p.h>
 
 
@@ -69,6 +68,7 @@ namespace Render {
 class Entity;
 class Renderer;
 class FrameGraphNode;
+class NodeManagers;
 
 namespace PickingUtils {
 
@@ -154,6 +154,14 @@ struct Q_AUTOTEST_EXPORT TriangleCollisionGathererFunctor : public AbstractColli
 {
     bool m_frontFaceRequested;
     bool m_backFaceRequested;
+
+    HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) Q_DECL_OVERRIDE;
+    HitList pick(const Entity *entity) const Q_DECL_OVERRIDE;
+};
+
+struct Q_AUTOTEST_EXPORT LineCollisionGathererFunctor : public AbstractCollisionGathererFunctor
+{
+    float m_pickWorldSpaceTolerance;
 
     HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) Q_DECL_OVERRIDE;
     HitList pick(const Entity *entity) const Q_DECL_OVERRIDE;

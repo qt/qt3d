@@ -69,9 +69,17 @@ class QT3DRENDERSHARED_EXPORT QCollisionQueryResult
 {
 public:
     struct Hit {
+        enum HitType {
+            Entity,
+            Point,
+            Edge,
+            Triangle
+        };
+
         Hit()
-            : m_distance(-1.f)
-            , m_triangleIndex(0)
+            : m_type(Entity)
+            , m_distance(-1.f)
+            , m_primitiveIndex(0)
         {
             m_vertexIndex[0] = m_vertexIndex[1] = m_vertexIndex[2] = 0;
         }
@@ -85,9 +93,10 @@ public:
         }
 
         Qt3DCore::QNodeId m_entityId;
+        HitType m_type;
         QVector3D m_intersection;
         float m_distance;
-        uint m_triangleIndex;
+        uint m_primitiveIndex;
         uint m_vertexIndex[3];
         QVector3D m_uvw;
     };

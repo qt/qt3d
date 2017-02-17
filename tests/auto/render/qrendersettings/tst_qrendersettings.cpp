@@ -184,6 +184,7 @@ private Q_SLOTS:
         pickingSettings->setPickMethod(Qt3DRender::QPickingSettings::TrianglePicking);
         pickingSettings->setPickResultMode(Qt3DRender::QPickingSettings::AllPicks);
         pickingSettings->setFaceOrientationPickingMode(Qt3DRender::QPickingSettings::FrontAndBackFace);
+        pickingSettings->setWorldSpaceTolerance(5.f);
 
         // WHEN
         QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
@@ -203,6 +204,7 @@ private Q_SLOTS:
             QCOMPARE(renderSettings.pickingSettings()->pickMethod(), cloneData.pickMethod);
             QCOMPARE(renderSettings.pickingSettings()->pickResultMode(), cloneData.pickResultMode);
             QCOMPARE(renderSettings.pickingSettings()->faceOrientationPickingMode(), cloneData.faceOrientationPickingMode);
+            QCOMPARE(renderSettings.pickingSettings()->worldSpaceTolerance(), cloneData.pickWorldSpaceTolerance);
             QCOMPARE(renderSettings.renderPolicy(), cloneData.renderPolicy);
             QCOMPARE(renderSettings.activeFrameGraph()->id(), cloneData.activeFrameGraphId);
             QCOMPARE(renderSettings.id(), creationChangeData->subjectId());
@@ -402,6 +404,41 @@ private Q_SLOTS:
         {
             // WHEN
             pickingSettings->setFaceOrientationPickingMode(Qt3DRender::QPickingSettings::FrontAndBackFace);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+        }
+
+    }
+
+    void checkWorldSpaceToleranceUpdate()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DRender::QRenderSettings renderSettings;
+        Qt3DRender::QPickingSettings *pickingSettings = renderSettings.pickingSettings();
+
+        arbiter.setArbiterOnNode(&renderSettings);
+
+        {
+            // WHEN
+            pickingSettings->setWorldSpaceTolerance(5.f);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 1);
+            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "pickWorldSpaceTolerance");
+            QCOMPARE(change->value().toFloat(), pickingSettings->worldSpaceTolerance());
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+            arbiter.events.clear();
+        }
+
+        {
+            // WHEN
+            pickingSettings->setWorldSpaceTolerance(5.f);
             QCoreApplication::processEvents();
 
             // THEN

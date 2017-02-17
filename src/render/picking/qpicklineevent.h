@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,59 +37,39 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERSETTINGS_P_H
-#define QT3DRENDER_QRENDERSETTINGS_P_H
+#ifndef QT3DRENDER_QPICKLINEEVENT_H
+#define QT3DRENDER_QPICKLINEEVENT_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/private/qcomponent_p.h>
-#include <Qt3DRender/qrendersettings.h>
-#include <Qt3DRender/qpickingsettings.h>
+#include <Qt3DRender/qpickevent.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+class QPickLineEventPrivate;
 
-class QRenderSettingsPrivate : public Qt3DCore::QComponentPrivate
+class QT3DRENDERSHARED_EXPORT QPickLineEvent : public QPickEvent
 {
+    Q_OBJECT
+    Q_PROPERTY(uint edgeIndex READ edgeIndex CONSTANT)
+    Q_PROPERTY(uint vertex1Index READ vertex1Index CONSTANT)
+    Q_PROPERTY(uint vertex2Index READ vertex2Index CONSTANT)
 public:
-    QRenderSettingsPrivate();
+    QPickLineEvent();
+    QPickLineEvent(const QPointF &position, const QVector3D& worldIntersection, const QVector3D& localIntersection, float distance,
+                   uint edgeIndex, uint vertex1Index, uint vertex2Index, Buttons button, int buttons, int modifiers);
+    ~QPickLineEvent();
 
-    void init();
+public:
+    uint edgeIndex() const;
+    uint vertex1Index() const;
+    uint vertex2Index() const;
 
-    QPickingSettings m_pickingSettings;
-    QFrameGraphNode *m_activeFrameGraph;
-    QRenderSettings::RenderPolicy m_renderPolicy;
-
-    void _q_onPickingMethodChanged(QPickingSettings::PickMethod pickMethod);
-    void _q_onPickResultModeChanged(QPickingSettings::PickResultMode pickResultMode);
-    void _q_onFaceOrientationPickingModeChanged(QPickingSettings::FaceOrientationPickingMode faceOrientationPickingMode);
-    void _q_onWorldSpaceToleranceChanged(float worldSpaceTolerance);
-
-    Q_DECLARE_PUBLIC(QRenderSettings)
+private:
+    Q_DECLARE_PRIVATE(QPickLineEvent)
 };
 
-struct QRenderSettingsData
-{
-    Qt3DCore::QNodeId activeFrameGraphId;
-    QRenderSettings::RenderPolicy renderPolicy;
-    QPickingSettings::PickMethod pickMethod;
-    QPickingSettings::PickResultMode pickResultMode;
-    QPickingSettings::FaceOrientationPickingMode faceOrientationPickingMode;
-    float pickWorldSpaceTolerance;
-};
-
-} // namespace Qt3Drender
+} // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QRENDERSETTINGS_P_H
+#endif // QT3DRENDER_QPICKLINEEVENT_H
