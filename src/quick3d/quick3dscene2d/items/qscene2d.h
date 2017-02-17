@@ -64,6 +64,7 @@ class QT3DQUICKSCENE2DSHARED_EXPORT QScene2D : public Qt3DCore::QNode
     Q_PROPERTY(QScene2D::RenderPolicy renderPolicy READ renderPolicy WRITE setRenderPolicy NOTIFY renderPolicyChanged)
     Q_PROPERTY(bool loaded READ loaded NOTIFY loadedChanged)
     Q_PROPERTY(QQuickItem *item READ item WRITE setItem NOTIFY itemChanged)
+    Q_PROPERTY(bool grabMouse READ isGrabMouseEnabled WRITE setGrabMouseEnabled NOTIFY grabMouseChanged)
 
     Q_CLASSINFO("DefaultProperty", "item")
 
@@ -85,13 +86,20 @@ public:
     QScene2D::RenderPolicy renderPolicy() const;
     QQuickItem *item() const;
     QQmlEngine *engine() const;
+    bool isGrabMouseEnabled() const;
+
     bool event(QEvent *event) Q_DECL_OVERRIDE;
+
+    QVector<Qt3DCore::QEntity *> entities();
+    void addEntity(Qt3DCore::QEntity *entity);
+    void removeEntity(Qt3DCore::QEntity *entity);
 
 public Q_SLOTS:
     void setOutput(Qt3DRender::QRenderTargetOutput *output);
     void setSource(const QUrl &url);
     void setRenderPolicy(QScene2D::RenderPolicy policy);
     void setItem(QQuickItem *item);
+    void setGrabMouseEnabled(bool grab);
 
 Q_SIGNALS:
     void outputChanged(Qt3DRender::QRenderTargetOutput *output);
@@ -99,6 +107,7 @@ Q_SIGNALS:
     void loadedChanged(bool loaded);
     void renderPolicyChanged(QScene2D::RenderPolicy policy);
     void itemChanged(QQuickItem *item);
+    void grabMouseChanged(bool grab);
 
 protected:
     Q_DECLARE_PRIVATE(QScene2D)

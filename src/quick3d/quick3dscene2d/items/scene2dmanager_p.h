@@ -94,6 +94,7 @@ public:
     bool m_backendInitialized;
     bool m_noSourceMode;
     bool m_ownEngine;
+    bool m_grabMouse;
 
     void requestRender();
     void requestRenderSync();

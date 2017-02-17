@@ -61,6 +61,7 @@ public:
     uint m_vertex1Index;
     uint m_vertex2Index;
     uint m_vertex3Index;
+    QVector3D m_uvw;
 };
 
 /*!
@@ -121,7 +122,8 @@ QPickTriangleEvent::QPickTriangleEvent()
  */
 // NOTE: remove in Qt6
 QPickTriangleEvent::QPickTriangleEvent(const QPointF &position, const QVector3D &worldIntersection, const QVector3D &localIntersection, float distance,
-                                       uint triangleIndex, uint vertex1Index, uint vertex2Index, uint vertex3Index)
+                                       uint triangleIndex, uint vertex1Index, uint vertex2Index,
+                                       uint vertex3Index)
     : QPickEvent(*new QPickTriangleEventPrivate())
 {
     Q_D(QPickTriangleEvent);
@@ -135,7 +137,11 @@ QPickTriangleEvent::QPickTriangleEvent(const QPointF &position, const QVector3D 
     d->m_vertex3Index = vertex3Index;
 }
 
-QPickTriangleEvent::QPickTriangleEvent(const QPointF &position, const QVector3D &worldIntersection, const QVector3D &localIntersection, float distance, uint triangleIndex, uint vertex1Index, uint vertex2Index, uint vertex3Index, QPickEvent::Buttons button, int buttons, int modifiers)
+QPickTriangleEvent::QPickTriangleEvent(const QPointF &position, const QVector3D &worldIntersection,
+                                       const QVector3D &localIntersection, float distance,
+                                       uint triangleIndex, uint vertex1Index, uint vertex2Index,
+                                       uint vertex3Index, QPickEvent::Buttons button, int buttons,
+                                       int modifiers, const QVector3D &uvw)
     : QPickEvent(*new QPickTriangleEventPrivate())
 {
     Q_D(QPickTriangleEvent);
@@ -150,6 +156,7 @@ QPickTriangleEvent::QPickTriangleEvent(const QPointF &position, const QVector3D 
     d->m_button = button;
     d->m_buttons = buttons;
     d->m_modifiers = modifiers;
+    d->m_uvw = uvw;
 }
 
 /*! \internal */
@@ -227,6 +234,12 @@ uint QPickTriangleEvent::vertex3Index() const
 {
     Q_D(const QPickTriangleEvent);
     return d->m_vertex3Index;
+}
+
+QVector3D QPickTriangleEvent::uvw() const
+{
+    Q_D(const QPickTriangleEvent);
+    return d->m_uvw;
 }
 
 } // Qt3DRender

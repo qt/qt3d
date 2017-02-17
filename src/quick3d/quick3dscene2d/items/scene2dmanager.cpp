@@ -86,6 +86,7 @@ Scene2DManager::Scene2DManager(QScene2DPrivate *priv)
     , m_noSourceMode(false)
     , m_item(nullptr)
     , m_ownEngine(false)
+    , m_grabMouse(false)
 {
     m_sharedObject->m_surface = new QOffscreenSurface;
     m_sharedObject->m_surface->setFormat(QSurfaceFormat::defaultFormat());

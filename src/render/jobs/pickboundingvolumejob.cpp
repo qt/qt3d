@@ -49,6 +49,7 @@
 #include <Qt3DRender/private/rendersettings_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/private/job_common_p.h>
+#include <Qt3DRender/private/qpickevent_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -362,14 +363,15 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                     localIntersection = hit.m_intersection * entity->worldTransform()->inverted();
 
                 QPickEventPtr pickEvent;
-                if (trianglePickingRequested)
+                if (trianglePickingRequested) {
                     pickEvent.reset(new QPickTriangleEvent(event.localPos(), hit.m_intersection, localIntersection, hit.m_distance,
                                                            hit.m_triangleIndex, hit.m_vertexIndex[0], hit.m_vertexIndex[1], hit.m_vertexIndex[2],
-                            eventButton, eventButtons, eventModifiers));
-                else
+                            eventButton, eventButtons, eventModifiers, hit.m_uvw));
+                    QPickEventPrivate::get(pickEvent.data())->m_entity = hit.m_entityId;
+                } else {
                     pickEvent.reset(new QPickEvent(event.localPos(), hit.m_intersection, localIntersection, hit.m_distance,
                                                    eventButton, eventButtons, eventModifiers));
-
+                }
                 switch (event.type()) {
                 case QEvent::MouseButtonPress: {
                     // Store pressed object handle

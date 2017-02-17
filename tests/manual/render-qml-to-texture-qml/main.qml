@@ -89,6 +89,10 @@ QQ2.Item {
                     }
 
                 }
+
+                entities: [plane1]
+                grabMouse: plane1.picker.pressed
+
                 InteractiveGui {
 
                 }
@@ -97,6 +101,7 @@ QQ2.Item {
             FirstPersonCameraController {
                 id: controller
                 camera: camera
+                enabled: !plane1.picker.pressed
             }
 
             components: [
@@ -132,17 +137,6 @@ QQ2.Item {
                 property ObjectPicker picker: ObjectPicker {
                     hoverEnabled: true
                     dragEnabled: true
-                    eventForward: EventForward {
-                        id: eventForward
-                        target: qmlTexture
-                        focus: true
-                    }
-                    onPressed: {
-                        controller.enabled = false
-                    }
-                    onReleased: {
-                        controller.enabled = true
-                    }
                 }
 
                 components: [planeMesh, material, transform, picker]

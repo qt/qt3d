@@ -250,10 +250,10 @@ template<>
 Transform *Entity::renderComponent<Transform>() const;
 
 template<>
-Q_AUTOTEST_EXPORT GeometryRenderer *Entity::renderComponent<GeometryRenderer>() const;
+QT3DRENDERSHARED_PRIVATE_EXPORT GeometryRenderer *Entity::renderComponent<GeometryRenderer>() const;
 
 template<>
-Q_AUTOTEST_EXPORT ObjectPicker *Entity::renderComponent<ObjectPicker>() const;
+QT3DRENDERSHARED_PRIVATE_EXPORT ObjectPicker *Entity::renderComponent<ObjectPicker>() const;
 
 template<>
 QVector<Layer *> Entity::renderComponents<Layer>() const;
@@ -296,10 +296,10 @@ template<>
 Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<ShaderData>() const;
 
 template<>
-Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<GeometryRenderer>() const;
+QT3DRENDERSHARED_PRIVATE_EXPORT Qt3DCore::QNodeId Entity::componentUuid<GeometryRenderer>() const;
 
 template<>
-Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ObjectPicker>() const;
+QT3DRENDERSHARED_PRIVATE_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ObjectPicker>() const;
 
 //template<>
 //Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<BoundingVolumeDebug>() const;

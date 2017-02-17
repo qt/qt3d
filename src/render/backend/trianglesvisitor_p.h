@@ -55,6 +55,8 @@
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/private/bufferutils_p.h>
 
+#include <private/qt3drender_global_p.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
@@ -88,7 +90,7 @@ protected:
     Qt3DCore::QNodeId m_nodeId;
 };
 
-class Q_AUTOTEST_EXPORT CoordinateReader
+class QT3DRENDERSHARED_PRIVATE_EXPORT CoordinateReader
 {
 public:
     explicit CoordinateReader(NodeManagers *manager)

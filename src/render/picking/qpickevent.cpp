@@ -78,6 +78,11 @@ QPickEvent::QPickEvent()
 {
 }
 
+QPickEventPrivate *QPickEventPrivate::get(QPickEvent *object)
+{
+    return object->d_func();
+}
+
 /*!
   \fn Qt3DRender::QPickEvent::QPickEvent(const QPointF &position, const QVector3D &intersection, const QVector3D &localIntersection, float distance)
   Constructs a new QPickEvent with the given parameters: \a position, \a intersection, \a localIntersection and \a distance

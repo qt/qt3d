@@ -63,34 +63,58 @@ ResourceAccessor::ResourceAccessor(NodeManagers *mgr)
     : m_glTextureManager(mgr->glTextureManager())
     , m_textureManager(mgr->textureManager())
     , m_attachmentManager(mgr->attachmentManager())
+    , m_entityManager(mgr->renderNodesManager())
 {
 
 }
 
 // called by render plugins from arbitrary thread
-bool ResourceAccessor::accessResource(Qt3DCore::QNodeId nodeId, void **handle, QMutex **lock)
+bool ResourceAccessor::accessResource(ResourceType type, Qt3DCore::QNodeId nodeId, void **handle, QMutex **lock)
 {
-    Texture *tex = m_textureManager->lookupResource(nodeId);
-    if (!tex) {
-        RenderTargetOutput *output = m_attachmentManager->lookupResource(nodeId);
-        if (!output)
+    switch (type) {
+
+    case RenderBackendResourceAccessor::OGLTexture: {
+        Texture *tex = m_textureManager->lookupResource(nodeId);
+        if (!tex)
             return false;
 
-        Attachment **attachmentData = reinterpret_cast<Attachment **>(handle);
-        *attachmentData = output->attachment();
+        GLTexture *glTex = m_glTextureManager->lookupResource(tex->peerId());
+        if (!glTex)
+            return false;
+
+        if (glTex->isDirty())
+            return false;
+
+        QOpenGLTexture **glTextureHandle = reinterpret_cast<QOpenGLTexture **>(handle);
+        *glTextureHandle = glTex->getOrCreateGLTexture();
+        *lock = glTex->textureLock();
         return true;
     }
-    GLTexture *glTex = m_glTextureManager->lookupResource(tex->peerId());
-    if (!glTex)
-        return false;
 
-    if (glTex->isDirty())
-        return false;
+    case RenderBackendResourceAccessor::OutputAttachment: {
+        RenderTargetOutput *output = m_attachmentManager->lookupResource(nodeId);
+        if (output) {
+            Attachment **attachmentData = reinterpret_cast<Attachment **>(handle);
+            *attachmentData = output->attachment();
+            return true;
+        }
+        break;
+    }
 
-    QOpenGLTexture** glTextureHandle = reinterpret_cast<QOpenGLTexture **>(handle);
-    *glTextureHandle = glTex->getOrCreateGLTexture();
-    *lock = glTex->textureLock();
-    return true;
+    case RenderBackendResourceAccessor::EntityHandle: {
+        Entity *entity = m_entityManager->lookupResource(nodeId);
+        if (entity) {
+            Entity **pEntity = reinterpret_cast<Entity **>(handle);
+            *pEntity = entity;
+            return true;
+        }
+        break;
+    }
+
+    default:
+        break;
+    }
+    return false;
 }
 
 } // namespace Render

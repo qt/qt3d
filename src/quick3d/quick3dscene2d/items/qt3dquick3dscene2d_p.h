@@ -34,24 +34,60 @@
 **
 ****************************************************************************/
 
-#include "qtquickscene2dplugin.h"
+#ifndef QT3DSCENE2D_QUICK_QUICK3DSCENE2D_P_H
+#define QT3DSCENE2D_QUICK_QUICK3DSCENE2D_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <QtQml/qqmllist.h>
 
 #include <Qt3DQuickScene2D/qscene2d.h>
-#include <private/qrenderaspect_p.h>
-#include <Qt3DQuickScene2D/private/qt3dquick3dscene2d_p.h>
+
+#include <private/qt3dquickscene2d_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
-static void initScene2dPlugin()
-{
-    Qt3DRender::QRenderAspectPrivate::configurePlugin("scene2d");
-}
+namespace Qt3DRender {
+namespace Render {
+namespace Quick {
 
-Q_COREAPP_STARTUP_FUNCTION(initScene2dPlugin)
-
-void QtQuickScene2DPlugin::registerTypes(const char *uri)
+class QT3DQUICKSCENE2DSHARED_EXPORT QQuick3DScene2D : public QObject
 {
-    qmlRegisterExtendedType<Qt3DRender::Quick::QScene2D, Qt3DRender::Render::Quick::QQuick3DScene2D>(uri, 2, 9, "Scene2D");
-}
+    Q_OBJECT
+    Q_PROPERTY(QQmlListProperty<Qt3DCore::QEntity> entities READ entities)
+
+public:
+    QQuick3DScene2D(QObject *parent = nullptr);
+
+    inline Qt3DRender::Quick::QScene2D *parentScene2D() const
+    {
+        return qobject_cast<Qt3DRender::Quick::QScene2D *>(parent());
+    }
+
+    QQmlListProperty<Qt3DCore::QEntity> entities();
+
+private:
+
+    static void appendEntity(QQmlListProperty<Qt3DCore::QEntity> *list, Qt3DCore::QEntity *entity);
+    static Qt3DCore::QEntity *entityAt(QQmlListProperty<Qt3DCore::QEntity> *list, int index);
+    static int entityCount(QQmlListProperty<Qt3DCore::QEntity> *list);
+    static void clearEntities(QQmlListProperty<Qt3DCore::QEntity> *list);
+};
+
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DANIMATION_QUICK_QUICK3DMORPHINGANIMATION_P_H
+
