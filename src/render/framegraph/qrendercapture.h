@@ -52,18 +52,19 @@ class QT3DRENDERSHARED_EXPORT QRenderCaptureReply : public QObject
     Q_OBJECT
     Q_PROPERTY(QImage image READ image CONSTANT)
     Q_PROPERTY(int captureId READ captureId CONSTANT)
-    Q_PROPERTY(bool complete READ isComplete NOTIFY completeChanged)
+    Q_PROPERTY(bool complete READ isComplete NOTIFY completed)
 
 public:
 
     QImage image() const;
-    int captureId() const;
+    Q_DECL_DEPRECATED int captureId() const;
     bool isComplete() const;
 
     Q_INVOKABLE void saveToFile(const QString &fileName) const;
 
 Q_SIGNALS:
-    void completeChanged(bool isComplete);
+    Q_DECL_DEPRECATED_X("Use completed instead") void completeChanged(bool isComplete);
+    void completed();
 
 private:
     Q_DECLARE_PRIVATE(QRenderCaptureReply)
@@ -79,7 +80,9 @@ class QT3DRENDERSHARED_EXPORT QRenderCapture : public QFrameGraphNode
 public:
     explicit QRenderCapture(Qt3DCore::QNode *parent = nullptr);
 
-    Q_INVOKABLE Qt3DRender::QRenderCaptureReply *requestCapture(int captureId);
+    Q_INVOKABLE Q_DECL_DEPRECATED_X("Use the overload with no parameter")
+    Qt3DRender::QRenderCaptureReply *requestCapture(int captureId);
+    Q_REVISION(9) Q_INVOKABLE Qt3DRender::QRenderCaptureReply *requestCapture();
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;

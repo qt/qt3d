@@ -245,6 +245,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QFrustumCulling>(uri, 2, 0, "FrustumCulling");
     qmlRegisterType<Qt3DRender::QDispatchCompute>(uri, 2, 0, "DispatchCompute");
     qmlRegisterType<Qt3DRender::QRenderCapture>(uri, 2, 1, "RenderCapture");
+    qmlRegisterRevision<Qt3DRender::QRenderCapture, 9>(uri, 2, 9);
     qmlRegisterUncreatableType<Qt3DRender::QRenderCaptureReply>(uri, 2, 1, "RenderCaptureReply", QStringLiteral("RenderCaptureReply is only instantiated by RenderCapture"));
     qmlRegisterType<Qt3DRender::QBufferCapture>(uri, 2, 9, "BufferCapture");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QMemoryBarrier, Qt3DRender::Render::Quick::Quick3DMemoryBarrier>("QMemoryBarrier", "Qt3D.Render/MemoryBarrier", uri, 2, 9, "MemoryBarrier");

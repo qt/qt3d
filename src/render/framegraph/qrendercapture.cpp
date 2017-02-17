@@ -115,12 +115,22 @@ namespace Qt3DRender {
 
 /*!
  * \qmlmethod RenderCaptureReply Qt3D.Render::RenderCapture::requestCapture(int captureId)
+ * \deprecated
  *
  * Used to request render capture. User can specify a \a captureId to identify
  * the request. The requestId does not have to be unique. Only one render capture result
  * is produced per requestCapture call even if the frame graph has multiple leaf nodes.
  * The function returns a QRenderCaptureReply object, which receives the captured image
  * when it is done. The user is reponsible for deallocating the returned object.
+ */
+
+/*!
+ * \qmlmethod RenderCaptureReply Qt3D.Render::RenderCapture::requestCapture()
+ *
+ * Used to request render capture. Only one render capture result is produced per
+ * requestCapture call even if the frame graph has multiple leaf nodes.
+ * The function returns a QRenderCaptureReply object, which receives the captured image
+ * when it is done. The user is responsible for deallocating the returned object.
  */
 
 /*!
@@ -212,7 +222,7 @@ QRenderCaptureReply *QRenderCapturePrivate::takeReply(int captureId)
 {
     QRenderCaptureReply *reply = nullptr;
     for (int i = 0; i < m_waitingReplies.size(); ++i) {
-        if (m_waitingReplies[i]->captureId() == captureId) {
+        if (m_waitingReplies[i]->d_func()->m_captureId == captureId) {
             reply = m_waitingReplies[i];
             m_waitingReplies.remove(i);
             break;
@@ -239,6 +249,7 @@ QRenderCapture::QRenderCapture(Qt3DCore::QNode *parent)
 }
 
 /*!
+ * \deprecated
  * Used to request render capture. User can specify a \a captureId to identify
  * the request. The requestId does not have to be unique. Only one render capture result
  * is produced per requestCapture call even if the frame graph has multiple leaf nodes.
@@ -259,6 +270,28 @@ QRenderCaptureReply *QRenderCapture::requestCapture(int captureId)
 }
 
 /*!
+ * Used to request render capture. Only one render capture result is produced per
+ * requestCapture call even if the frame graph has multiple leaf nodes.
+ * The function returns a QRenderCaptureReply object, which receives the captured image
+ * when it is done. The user is responsible for deallocating the returned object.
+ */
+QRenderCaptureReply *QRenderCapture::requestCapture()
+{
+    Q_D(QRenderCapture);
+    static int captureId = 1;
+    QRenderCaptureReply *reply = d->createReply(captureId);
+
+    Qt3DCore::QPropertyUpdatedChangePtr change(new Qt3DCore::QPropertyUpdatedChange(id()));
+    change->setPropertyName(QByteArrayLiteral("renderCaptureRequest"));
+    change->setValue(QVariant::fromValue(captureId));
+    d->notifyObservers(change);
+
+    captureId++;
+
+    return reply;
+}
+
+/*!
  * \internal
  */
 void QRenderCapture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
@@ -271,6 +304,7 @@ void QRenderCapture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
             QRenderCaptureReply *reply = d->takeReply(data.data()->captureId);
             if (reply) {
                 d->setImage(reply, data.data()->image);
+                emit reply->completed();
                 emit reply->completeChanged(true);
             }
         }

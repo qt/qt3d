@@ -57,9 +57,9 @@ import Qt3D.Extras 2.0
 Entity {
     id: sceneRoot
 
-    function requestRenderCapture(cid)
+    function requestRenderCapture()
     {
-        return renderCapture.requestCapture(cid)
+        return renderCapture.requestCapture()
     }
 
     Camera {
