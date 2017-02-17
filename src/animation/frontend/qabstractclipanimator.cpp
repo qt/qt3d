@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qclipanimator.h"
-#include "qclipanimator_p.h"
+#include "qabstractclipanimator.h"
+#include "qabstractclipanimator_p.h"
 #include <Qt3DAnimation/qanimationclip.h>
 #include <Qt3DAnimation/qchannelmapper.h>
 
@@ -46,61 +46,83 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-QClipAnimatorPrivate::QClipAnimatorPrivate()
-    : Qt3DAnimation::QAbstractClipAnimatorPrivate()
-    , m_clip(nullptr)
+QAbstractClipAnimatorPrivate::QAbstractClipAnimatorPrivate()
+    : Qt3DCore::QComponentPrivate()
+    , m_mapper(nullptr)
+    , m_running(false)
+    , m_loops(1)
 {
 }
 
-QClipAnimator::QClipAnimator(Qt3DCore::QNode *parent)
-    : Qt3DAnimation::QAbstractClipAnimator(*new QClipAnimatorPrivate, parent)
+QAbstractClipAnimator::QAbstractClipAnimator(Qt3DCore::QNode *parent)
+    : Qt3DCore::QComponent(*new QAbstractClipAnimatorPrivate, parent)
 {
 }
 
-QClipAnimator::QClipAnimator(QClipAnimatorPrivate &dd, Qt3DCore::QNode *parent)
-    : Qt3DAnimation::QAbstractClipAnimator(dd, parent)
+QAbstractClipAnimator::QAbstractClipAnimator(QAbstractClipAnimatorPrivate &dd, Qt3DCore::QNode *parent)
+    : Qt3DCore::QComponent(dd, parent)
 {
 }
 
-QClipAnimator::~QClipAnimator()
+QAbstractClipAnimator::~QAbstractClipAnimator()
 {
 }
 
-QAnimationClip *QClipAnimator::clip() const
+bool QAbstractClipAnimator::isRunning() const
 {
-    Q_D(const QClipAnimator);
-    return d->m_clip;
+    Q_D(const QAbstractClipAnimator);
+    return d->m_running;
 }
 
-void QClipAnimator::setClip(QAnimationClip *clip)
+QChannelMapper *QAbstractClipAnimator::channelMapper() const
 {
-    Q_D(QClipAnimator);
-    if (d->m_clip == clip)
+    Q_D(const QAbstractClipAnimator);
+    return d->m_mapper;
+}
+
+int QAbstractClipAnimator::loops() const
+{
+    Q_D(const QAbstractClipAnimator);
+    return d->m_loops;
+}
+
+void QAbstractClipAnimator::setRunning(bool running)
+{
+    Q_D(QAbstractClipAnimator);
+    if (d->m_running == running)
         return;
 
-    if (d->m_clip)
-        d->unregisterDestructionHelper(d->m_clip);
-
-    if (clip && !clip->parent())
-        clip->setParent(this);
-    d->m_clip = clip;
-
-    // Ensures proper bookkeeping
-    if (d->m_clip)
-        d->registerDestructionHelper(d->m_clip, &QClipAnimator::setClip, d->m_clip);
-    emit clipChanged(clip);
+    d->m_running = running;
+    emit runningChanged(running);
 }
 
-Qt3DCore::QNodeCreatedChangeBasePtr QClipAnimator::createNodeCreationChange() const
+void QAbstractClipAnimator::setChannelMapper(QChannelMapper *mapping)
 {
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QClipAnimatorData>::create(this);
-    auto &data = creationChange->data;
-    Q_D(const QClipAnimator);
-    data.clipId = Qt3DCore::qIdForNode(d->m_clip);
-    data.mapperId = Qt3DCore::qIdForNode(d->m_mapper);
-    data.running = d->m_running;
-    data.loops = d->m_loops;
-    return creationChange;
+    Q_D(QAbstractClipAnimator);
+    if (d->m_mapper == mapping)
+        return;
+
+    if (d->m_mapper)
+        d->unregisterDestructionHelper(d->m_mapper);
+
+    if (mapping && !mapping->parent())
+        mapping->setParent(this);
+    d->m_mapper = mapping;
+
+    // Ensures proper bookkeeping
+    if (d->m_mapper)
+        d->registerDestructionHelper(d->m_mapper, &QAbstractClipAnimator::setChannelMapper, d->m_mapper);
+    emit channelMapperChanged(mapping);
+}
+
+void QAbstractClipAnimator::setLoops(int loops)
+{
+    Q_D(QAbstractClipAnimator);
+    if (d->m_loops == loops)
+        return;
+
+    d->m_loops = loops;
+    emit loopsChanged(loops);
 }
 
 } // namespace Qt3DAnimation

@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "qt3dquick3danimationplugin.h"
+#include <Qt3DAnimation/qabstractclipanimator.h>
 #include <Qt3DAnimation/qanimationclip.h>
 #include <Qt3DAnimation/qblendedclipanimator.h>
 #include <Qt3DAnimation/qclipanimator.h>
@@ -69,6 +70,7 @@ void Qt3DQuick3DAnimationPlugin::registerTypes(const char *uri)
 
     // @uri Qt3D.Animation
     qmlRegisterType<Qt3DAnimation::QAnimationClip>(uri, 2, 9, "AnimationClip");
+    qmlRegisterUncreatableType<Qt3DAnimation::QAbstractClipAnimator>(uri, 2, 9, "AbstractClipAnimator", QStringLiteral("QAbstractClipAnimator is abstract"));
     qmlRegisterType<Qt3DAnimation::QClipAnimator>(uri, 2, 9, "ClipAnimator");
     qmlRegisterType<Qt3DAnimation::QBlendedClipAnimator>(uri, 2, 9, "BlendedClipAnimator");
     qmlRegisterType<Qt3DAnimation::QChannelMapping>(uri, 2, 9, "ChannelMapping");

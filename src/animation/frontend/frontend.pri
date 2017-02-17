@@ -3,6 +3,8 @@ HEADERS += \
     $$PWD/qanimationaspect_p.h \
     $$PWD/qanimationclip.h \
     $$PWD/qanimationclip_p.h \
+    $$PWD/qabstractclipanimator.h \
+    $$PWD/qabstractclipanimator_p.h \
     $$PWD/qabstractclipblendnode.h \
     $$PWD/qabstractclipblendnode_p.h \
     $$PWD/qclipanimator.h \
@@ -37,6 +39,7 @@ HEADERS += \
 SOURCES += \
     $$PWD/qanimationaspect.cpp \
     $$PWD/qanimationclip.cpp \
+    $$PWD/qabstractclipanimator.cpp \
     $$PWD/qabstractclipblendnode.cpp \
     $$PWD/qclipanimator.cpp \
     $$PWD/qblendedclipanimator.cpp \
