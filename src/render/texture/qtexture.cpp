@@ -46,6 +46,7 @@
 #include <QFileInfo>
 #include <QMimeDatabase>
 #include <QMimeType>
+#include <QtCore/QBuffer>
 #include <qendian.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qaspectengine.h>

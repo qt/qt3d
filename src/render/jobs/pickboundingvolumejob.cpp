@@ -39,17 +39,17 @@
 
 #include "pickboundingvolumejob_p.h"
 #include "qpicktriangleevent.h"
+#include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/objectpicker_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/geometryrenderer_p.h>
-
 #include <Qt3DRender/private/rendersettings_p.h>
-#include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/private/job_common_p.h>
 #include <Qt3DRender/private/qpickevent_p.h>
+#include <Qt3DRender/private/pickboundingvolumeutils_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,8 +59,6 @@ using namespace Qt3DRender::RayCasting;
 namespace Render {
 
 namespace {
-
-typedef PickingUtils::AbstractCollisionGathererFunctor::result_type HitList;
 
 void setEventButtonAndModifiers(const QMouseEvent &event, QPickEvent::Buttons &eventButton, int &eventButtons, int &eventModifiers)
 {
@@ -223,18 +221,12 @@ bool PickBoundingVolumeJob::runHelper()
     // If we have move or hover move events that someone cares about, we try to avoid expensive computations
     // by compressing them into a single one
 
-    // Store the reducer function which varies depending on the picking settings set on the renderer
-    using ReducerFunction = PickingUtils::CollisionVisitor::HitList (*)(PickingUtils::CollisionVisitor::HitList &results, const PickingUtils::CollisionVisitor::HitList &intermediate);
-
     const bool trianglePickingRequested = (m_renderSettings->pickMethod() == QPickingSettings::TrianglePicking);
     const bool allHitsRequested = (m_renderSettings->pickResultMode() == QPickingSettings::AllPicks);
     const bool frontFaceRequested =
             m_renderSettings->faceOrientationPickingMode() != QPickingSettings::BackFace;
     const bool backFaceRequested =
             m_renderSettings->faceOrientationPickingMode() != QPickingSettings::FrontFace;
-
-    // Select the best reduction function based on the settings
-    const ReducerFunction reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
 
     // For each mouse event
     for (const QMouseEvent &event : mouseEvents) {
@@ -248,7 +240,7 @@ bool PickBoundingVolumeJob::runHelper()
 
         // For each triplet of Viewport / Camera and Area
         for (const PickingUtils::ViewportCameraAreaTriplet &vca : vcaTriplets) {
-            HitList sphereHits;
+            PickingUtils::HitList sphereHits;
             QRay3D ray = rayForViewportAndCamera(vca.area, event.pos(), vca.viewport, vca.cameraId);
 
             PickingUtils::HierarchicalEntityPicker entityPicker(ray);
@@ -259,8 +251,7 @@ bool PickBoundingVolumeJob::runHelper()
                     gathererFunctor.m_backFaceRequested = backFaceRequested;
                     gathererFunctor.m_manager = m_manager;
                     gathererFunctor.m_ray = ray;
-                    sphereHits = QtConcurrent::blockingMappedReduced<HitList>(entityPicker.entities(),
-                                                                              gathererFunctor, reducerOp);
+                    sphereHits = gathererFunctor.computeHits(entityPicker.entities(), allHitsRequested);
                 } else {
                     sphereHits = entityPicker.hits();
                     PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
@@ -300,7 +291,7 @@ void PickBoundingVolumeJob::run()
 }
 
 void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
-                                               const PickingUtils::CollisionVisitor::HitList &sphereHits,
+                                               const PickingUtils::HitList &sphereHits,
                                                QPickEvent::Buttons eventButton,
                                                int eventButtons,
                                                int eventModifiers,

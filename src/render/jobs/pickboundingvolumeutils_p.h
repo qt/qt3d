@@ -108,33 +108,7 @@ private:
     mutable bool m_needsRefresh;
 };
 
-class Q_AUTOTEST_EXPORT CollisionVisitor : public TrianglesVisitor
-{
-public:
-    typedef QVector<RayCasting::QCollisionQueryResult::Hit> HitList;
-    HitList hits;
-
-    CollisionVisitor(NodeManagers* manager, const Entity *root, const RayCasting::QRay3D& ray,
-                     bool frontFaceRequested, bool backFaceRequested)
-        : TrianglesVisitor(manager), m_root(root), m_ray(ray), m_triangleIndex(0)
-        , m_frontFaceRequested(frontFaceRequested), m_backFaceRequested(backFaceRequested)
-    {
-    }
-
-private:
-    const Entity *m_root;
-    RayCasting::QRay3D m_ray;
-    uint m_triangleIndex;
-    bool m_frontFaceRequested;
-    bool m_backFaceRequested;
-
-    void visit(uint andx, const QVector3D &a,
-               uint bndx, const QVector3D &b,
-               uint cndx, const QVector3D &c) Q_DECL_OVERRIDE;
-    bool intersectsSegmentTriangle(uint andx, const QVector3D &a,
-                                   uint bndx, const QVector3D &b,
-                                   uint cndx, const QVector3D &c);
-};
+typedef QVector<RayCasting::QCollisionQueryResult::Hit> HitList;
 
 class Q_AUTOTEST_EXPORT HierarchicalEntityPicker
 {
@@ -142,12 +116,12 @@ public:
     explicit HierarchicalEntityPicker(const RayCasting::QRay3D &ray);
 
     bool collectHits(Entity *root);
-    inline CollisionVisitor::HitList hits() const { return m_hits; }
+    inline HitList hits() const { return m_hits; }
     inline QVector<Entity *> entities() const { return m_entities; }
 
 private:
     RayCasting::QRay3D m_ray;
-    CollisionVisitor::HitList m_hits;
+    HitList m_hits;
     QVector<Entity *> m_entities;
 };
 
@@ -159,17 +133,21 @@ struct Q_AUTOTEST_EXPORT AbstractCollisionGathererFunctor
     NodeManagers *m_manager;
     RayCasting::QRay3D m_ray;
 
-    // This define is required to work with QtConcurrent
-    typedef CollisionVisitor::HitList result_type;
-    result_type operator ()(const Entity *entity) const;
-    virtual result_type pick(RayCasting::QAbstractCollisionQueryService *rayCasting, const Entity *entity) const = 0;
+    virtual HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) = 0;
 
-    static void sortHits(CollisionVisitor::HitList &results);
+    // This define is required to work with QtConcurrent
+    typedef HitList result_type;
+    HitList operator ()(const Entity *entity) const;
+    virtual HitList pick(const Entity *entity) const = 0;
+
+    bool rayHitsEntity(const Entity *entity) const;
+    static void sortHits(HitList &results);
 };
 
 struct Q_AUTOTEST_EXPORT EntityCollisionGathererFunctor : public AbstractCollisionGathererFunctor
 {
-    result_type pick(RayCasting::QAbstractCollisionQueryService *rayCasting, const Entity *entity) const Q_DECL_OVERRIDE;
+    HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) Q_DECL_OVERRIDE;
+    HitList pick(const Entity *entity) const Q_DECL_OVERRIDE;
 };
 
 struct Q_AUTOTEST_EXPORT TriangleCollisionGathererFunctor : public AbstractCollisionGathererFunctor
@@ -177,17 +155,9 @@ struct Q_AUTOTEST_EXPORT TriangleCollisionGathererFunctor : public AbstractColli
     bool m_frontFaceRequested;
     bool m_backFaceRequested;
 
-    result_type pick(RayCasting::QAbstractCollisionQueryService *rayCasting, const Entity *entity) const Q_DECL_OVERRIDE;
-
-    bool rayHitsEntity(RayCasting::QAbstractCollisionQueryService *rayCasting, const Entity *entity) const;
+    HitList computeHits(const QVector<Entity *> &entities, bool allHitsRequested) Q_DECL_OVERRIDE;
+    HitList pick(const Entity *entity) const Q_DECL_OVERRIDE;
 };
-
-Q_AUTOTEST_EXPORT QVector<Entity *> gatherEntities(Entity *entity, QVector<Entity *> entities);
-
-Q_AUTOTEST_EXPORT CollisionVisitor::HitList reduceToFirstHit(CollisionVisitor::HitList &result, const CollisionVisitor::HitList &intermediate);
-
-// Unordered
-Q_AUTOTEST_EXPORT CollisionVisitor::HitList reduceToAllHits(CollisionVisitor::HitList &results, const CollisionVisitor::HitList &intermediate);
 
 } // PickingUtils
 

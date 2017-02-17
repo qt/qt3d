@@ -39,6 +39,8 @@
 
 #include "renderviewbuilder_p.h"
 
+#include <QThread>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {

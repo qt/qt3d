@@ -58,6 +58,8 @@
 #include <private/qpickevent_p.h>
 #include <private/entity_p.h>
 #include <private/platformsurfacefilter_p.h>
+#include <private/trianglesvisitor_p.h>
+
 
 QT_BEGIN_NAMESPACE
 

@@ -110,7 +110,8 @@ QVector<ViewportCameraAreaTriplet> ViewportCameraAreaGatherer::gather(FrameGraph
     return vcaTriplets;
 }
 
-bool PickingUtils::ViewportCameraAreaGatherer::isUnique(const QVector<ViewportCameraAreaTriplet> &vcaTriplets, const ViewportCameraAreaTriplet &vca) const
+bool ViewportCameraAreaGatherer::isUnique(const QVector<ViewportCameraAreaTriplet> &vcaTriplets,
+                                          const ViewportCameraAreaTriplet &vca) const
 {
     for (const ViewportCameraAreaTriplet &triplet : vcaTriplets) {
         if (vca.cameraId == triplet.cameraId && vca.viewport == triplet.viewport && vca.area == triplet.area)
@@ -147,7 +148,35 @@ QVector<Entity *> EntityGatherer::entities() const
     return m_entities;
 }
 
-void CollisionVisitor::visit(uint andx, const QVector3D &a, uint bndx, const QVector3D &b, uint cndx, const QVector3D &c)
+
+class TriangleCollisionVisitor : public TrianglesVisitor
+{
+public:
+    HitList hits;
+
+    TriangleCollisionVisitor(NodeManagers* manager, const Entity *root, const RayCasting::QRay3D& ray,
+                     bool frontFaceRequested, bool backFaceRequested)
+        : TrianglesVisitor(manager), m_root(root), m_ray(ray), m_triangleIndex(0)
+        , m_frontFaceRequested(frontFaceRequested), m_backFaceRequested(backFaceRequested)
+    {
+    }
+
+private:
+    const Entity *m_root;
+    RayCasting::QRay3D m_ray;
+    uint m_triangleIndex;
+    bool m_frontFaceRequested;
+    bool m_backFaceRequested;
+
+    void visit(uint andx, const QVector3D &a,
+               uint bndx, const QVector3D &b,
+               uint cndx, const QVector3D &c) Q_DECL_OVERRIDE;
+    bool intersectsSegmentTriangle(uint andx, const QVector3D &a,
+                                   uint bndx, const QVector3D &b,
+                                   uint cndx, const QVector3D &c);
+};
+
+void TriangleCollisionVisitor::visit(uint andx, const QVector3D &a, uint bndx, const QVector3D &b, uint cndx, const QVector3D &c)
 {
     const QMatrix4x4 &mat = *m_root->worldTransform();
     const QVector3D tA = mat * a;
@@ -163,7 +192,7 @@ void CollisionVisitor::visit(uint andx, const QVector3D &a, uint bndx, const QVe
     m_triangleIndex++;
 }
 
-bool CollisionVisitor::intersectsSegmentTriangle(uint andx, const QVector3D &a, uint bndx, const QVector3D &b, uint cndx, const QVector3D &c)
+bool TriangleCollisionVisitor::intersectsSegmentTriangle(uint andx, const QVector3D &a, uint bndx, const QVector3D &b, uint cndx, const QVector3D &c)
 {
     float t = 0.0f;
     QVector3D uvw;
@@ -183,82 +212,7 @@ bool CollisionVisitor::intersectsSegmentTriangle(uint andx, const QVector3D &a, 
     return intersected;
 }
 
-AbstractCollisionGathererFunctor::AbstractCollisionGathererFunctor()
-    : m_manager(nullptr)
-{ }
-
-AbstractCollisionGathererFunctor::~AbstractCollisionGathererFunctor()
-{ }
-
-AbstractCollisionGathererFunctor::result_type AbstractCollisionGathererFunctor::operator ()(const Entity *entity) const
-{
-    HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
-
-    // If the Entity which actually received the hit doesn't have
-    // an object picker component, we need to check the parent if it has one ...
-    auto parentEntity = entity;
-    while (objectPickerHandle.isNull() && parentEntity != nullptr) {
-        parentEntity = parentEntity->parent();
-        if (parentEntity != nullptr)
-            objectPickerHandle = parentEntity->componentHandle<ObjectPicker, 16>();
-    }
-
-    ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
-    if (objectPicker == nullptr || !objectPicker->isEnabled())
-        return result_type();   // don't bother picking entities that don't
-                                // have an object picker, or if it's disabled
-
-    RayCasting::QRayCastingService rayCasting;
-
-    return pick(&rayCasting, entity);
-}
-
-void AbstractCollisionGathererFunctor::sortHits(CollisionVisitor::HitList &results)
-{
-    auto compareHitsDistance = [](const CollisionVisitor::HitList::value_type &a,
-                                  const CollisionVisitor::HitList::value_type &b) {
-        return a.m_distance < b.m_distance;
-    };
-    std::sort(results.begin(), results.end(), compareHitsDistance);
-}
-
-AbstractCollisionGathererFunctor::result_type EntityCollisionGathererFunctor::pick(RayCasting::QAbstractCollisionQueryService *rayCasting, const Entity *entity) const
-{
-    result_type result;
-
-    const QCollisionQueryResult::Hit queryResult = rayCasting->query(m_ray, entity->worldBoundingVolume());
-    if (queryResult.m_distance >= 0.f)
-        result.push_back(queryResult);
-
-    return result;
-}
-
-AbstractCollisionGathererFunctor::result_type TriangleCollisionGathererFunctor::pick(RayCasting::QAbstractCollisionQueryService *rayCasting, const Entity *entity) const
-{
-    result_type result;
-
-    GeometryRenderer *gRenderer = entity->renderComponent<GeometryRenderer>();
-    if (!gRenderer)
-        return result;
-
-    if (rayHitsEntity(rayCasting, entity)) {
-        CollisionVisitor visitor(m_manager, entity, m_ray, m_frontFaceRequested, m_backFaceRequested);
-        visitor.apply(gRenderer, entity->peerId());
-        result = visitor.hits;
-
-        sortHits(result);
-    }
-
-    return result;
-}
-
-bool TriangleCollisionGathererFunctor::rayHitsEntity(RayCasting::QAbstractCollisionQueryService *rayCasting, const Entity *entity) const
-{
-    const QCollisionQueryResult::Hit queryResult = rayCasting->query(m_ray, entity->worldBoundingVolume());
-    return queryResult.m_distance >= 0.f;
-}
-
-CollisionVisitor::HitList reduceToFirstHit(CollisionVisitor::HitList &result, const CollisionVisitor::HitList &intermediate)
+HitList reduceToFirstHit(HitList &result, const HitList &intermediate)
 {
     if (!intermediate.empty()) {
         if (result.empty())
@@ -277,11 +231,98 @@ CollisionVisitor::HitList reduceToFirstHit(CollisionVisitor::HitList &result, co
     return result;
 }
 
-CollisionVisitor::HitList reduceToAllHits(CollisionVisitor::HitList &results, const CollisionVisitor::HitList &intermediate)
+HitList reduceToAllHits(HitList &results, const HitList &intermediate)
 {
     if (!intermediate.empty())
         results << intermediate;
     return results;
+}
+
+AbstractCollisionGathererFunctor::AbstractCollisionGathererFunctor()
+    : m_manager(nullptr)
+{ }
+
+AbstractCollisionGathererFunctor::~AbstractCollisionGathererFunctor()
+{ }
+
+HitList AbstractCollisionGathererFunctor::operator ()(const Entity *entity) const
+{
+    HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
+
+    // If the Entity which actually received the hit doesn't have
+    // an object picker component, we need to check the parent if it has one ...
+    auto parentEntity = entity;
+    while (objectPickerHandle.isNull() && parentEntity != nullptr) {
+        parentEntity = parentEntity->parent();
+        if (parentEntity != nullptr)
+            objectPickerHandle = parentEntity->componentHandle<ObjectPicker, 16>();
+    }
+
+    ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
+    if (objectPicker == nullptr || !objectPicker->isEnabled())
+        return {};   // don't bother picking entities that don't
+                     // have an object picker, or if it's disabled
+
+    return pick(entity);
+}
+
+bool AbstractCollisionGathererFunctor::rayHitsEntity(const Entity *entity) const
+{
+    QRayCastingService rayCasting;
+    const QCollisionQueryResult::Hit queryResult = rayCasting.query(m_ray, entity->worldBoundingVolume());
+    return queryResult.m_distance >= 0.f;
+}
+
+void AbstractCollisionGathererFunctor::sortHits(HitList &results)
+{
+    auto compareHitsDistance = [](const HitList::value_type &a,
+                                  const HitList::value_type &b) {
+        return a.m_distance < b.m_distance;
+    };
+    std::sort(results.begin(), results.end(), compareHitsDistance);
+}
+
+HitList EntityCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities, bool allHitsRequested)
+{
+    const auto reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
+    return QtConcurrent::blockingMappedReduced<HitList>(entities, *this, reducerOp);
+}
+
+HitList EntityCollisionGathererFunctor::pick(const Entity *entity) const
+{
+    HitList result;
+
+    QRayCastingService rayCasting;
+    const QCollisionQueryResult::Hit queryResult = rayCasting.query(m_ray, entity->worldBoundingVolume());
+    if (queryResult.m_distance >= 0.f)
+        result.push_back(queryResult);
+
+    return result;
+}
+
+HitList TriangleCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities, bool allHitsRequested)
+{
+    const auto reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
+    return QtConcurrent::blockingMappedReduced<HitList>(entities, *this, reducerOp);
+}
+
+HitList TriangleCollisionGathererFunctor::pick(const Entity *entity) const
+{
+    HitList result;
+
+    GeometryRenderer *gRenderer = entity->renderComponent<GeometryRenderer>();
+    if (!gRenderer)
+        return result;
+
+    if (rayHitsEntity(entity)) {
+        TriangleCollisionVisitor visitor(m_manager, entity, m_ray, m_frontFaceRequested, m_backFaceRequested);
+        visitor.apply(gRenderer, entity->peerId());
+        result = visitor.hits;
+
+        sortHits(result);
+    }
+
+    return result;
 }
 
 HierarchicalEntityPicker::HierarchicalEntityPicker(const QRay3D &ray)
