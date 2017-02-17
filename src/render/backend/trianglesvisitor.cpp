@@ -48,6 +48,7 @@
 #include <Qt3DRender/private/geometry_p.h>
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/private/buffer_p.h>
+#include <Qt3DRender/private/visitorutils_p.h>
 #include <Qt3DRender/private/bufferutils_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -322,29 +323,21 @@ QVector4D readCoordinate(const BufferInfo &info, Coordinate *coordinates, uint i
     return ret;
 }
 
-template<typename Func>
-void processBuffer(const BufferInfo &info, Func &f)
+
+template <QAttribute::VertexBaseType> struct EnumToType;
+template <> struct EnumToType<QAttribute::Byte> { typedef const char type; };
+template <> struct EnumToType<QAttribute::UnsignedByte> { typedef const uchar type; };
+template <> struct EnumToType<QAttribute::Short> { typedef const short type; };
+template <> struct EnumToType<QAttribute::UnsignedShort> { typedef const ushort type; };
+template <> struct EnumToType<QAttribute::Int> { typedef const int type; };
+template <> struct EnumToType<QAttribute::UnsignedInt> { typedef const uint type; };
+template <> struct EnumToType<QAttribute::Float> { typedef const float type; };
+template <> struct EnumToType<QAttribute::Double> { typedef const double type; };
+
+template<QAttribute::VertexBaseType v>
+typename EnumToType<v>::type *castToType(const QByteArray &u, uint byteOffset)
 {
-    switch (info.type) {
-    case QAttribute::Byte: f(info, BufferTypeInfo::castToType<QAttribute::Byte>(info.data, info.byteOffset));
-        return;
-    case QAttribute::UnsignedByte: f(info, BufferTypeInfo::castToType<QAttribute::UnsignedByte>(info.data, info.byteOffset));
-        return;
-    case QAttribute::Short: f(info, BufferTypeInfo::castToType<QAttribute::Short>(info.data, info.byteOffset));
-        return;
-    case QAttribute::UnsignedShort: f(info, BufferTypeInfo::castToType<QAttribute::UnsignedShort>(info.data, info.byteOffset));
-        return;
-    case QAttribute::Int: f(info, BufferTypeInfo::castToType<QAttribute::Int>(info.data, info.byteOffset));
-        return;
-    case QAttribute::UnsignedInt: f(info, BufferTypeInfo::castToType<QAttribute::UnsignedInt>(info.data, info.byteOffset));
-        return;
-    case QAttribute::Float: f(info, BufferTypeInfo::castToType<QAttribute::Float>(info.data, info.byteOffset));
-        return;
-    case QAttribute::Double: f(info, BufferTypeInfo::castToType<QAttribute::Double>(info.data, info.byteOffset));
-        return;
-    default:
-        return;
-    }
+    return reinterpret_cast< typename EnumToType<v>::type *>(u.constData() + byteOffset);
 }
 
 QVector4D readBuffer(const BufferInfo &info, uint index)
@@ -372,24 +365,24 @@ QVector4D readBuffer(const BufferInfo &info, uint index)
     return QVector4D();
 }
 
-template<typename Index>
+template<typename Index, typename Visitor>
 struct IndexedVertexExecutor
 {
     template<typename Vertex>
     void operator ()(const BufferInfo &vertexInfo, Vertex * vertices)
     {
-        switch (primitiveType) {
+        switch (m_primitiveType) {
         case Qt3DRender::QGeometryRenderer::Triangles:
-            traverseTrianglesIndexed(indices, vertices, indexBufferInfo, vertexInfo, visitor);
+            traverseTrianglesIndexed(m_indices, vertices, m_indexBufferInfo, vertexInfo, m_visitor);
             return;
         case Qt3DRender::QGeometryRenderer::TriangleStrip:
-            traverseTriangleStripIndexed(indices, vertices, indexBufferInfo, vertexInfo, visitor);
+            traverseTriangleStripIndexed(m_indices, vertices, m_indexBufferInfo, vertexInfo, m_visitor);
             return;
         case Qt3DRender::QGeometryRenderer::TriangleFan:
-            traverseTriangleFanIndexed(indices, vertices, indexBufferInfo, vertexInfo, visitor);
+            traverseTriangleFanIndexed(m_indices, vertices, m_indexBufferInfo, vertexInfo, m_visitor);
             return;
         case Qt3DRender::QGeometryRenderer::TrianglesAdjacency:
-            traverseTriangleAdjacencyIndexed(indices, vertices, indexBufferInfo, vertexInfo, visitor);
+            traverseTriangleAdjacencyIndexed(m_indices, vertices, m_indexBufferInfo, vertexInfo, m_visitor);
             return;
         case Qt3DRender::QGeometryRenderer::TriangleStripAdjacency: // fall through
         default:
@@ -397,48 +390,49 @@ struct IndexedVertexExecutor
         }
     }
 
-    BufferInfo indexBufferInfo;
-    Index *indices;
-    Qt3DRender::QGeometryRenderer::PrimitiveType primitiveType;
-    TrianglesVisitor* visitor;
+    BufferInfo m_indexBufferInfo;
+    Index *m_indices;
+    Qt3DRender::QGeometryRenderer::PrimitiveType m_primitiveType;
+    Visitor* m_visitor;
 };
 
+template<typename Visitor>
 struct IndexExecutor
 {
-    BufferInfo vertexBufferInfo;
-
     template<typename Index>
     void operator ()( const BufferInfo &indexInfo, Index *indices)
     {
-        IndexedVertexExecutor<Index> exec;
-        exec.primitiveType = primitiveType;
-        exec.indices = indices;
-        exec.indexBufferInfo = indexInfo;
-        exec.visitor = visitor;
-        processBuffer(vertexBufferInfo, exec);
+        IndexedVertexExecutor<Index, Visitor> exec;
+        exec.m_primitiveType = m_primitiveType;
+        exec.m_indices = indices;
+        exec.m_indexBufferInfo = indexInfo;
+        exec.m_visitor = m_visitor;
+        Qt3DRender::Render::Visitor::processBuffer(m_vertexBufferInfo, exec);
     }
 
-    Qt3DRender::QGeometryRenderer::PrimitiveType primitiveType;
-    TrianglesVisitor* visitor;
+    BufferInfo m_vertexBufferInfo;
+    Qt3DRender::QGeometryRenderer::PrimitiveType m_primitiveType;
+    Visitor* m_visitor;
 };
 
+template<typename Visitor>
 struct VertexExecutor
 {
     template<typename Vertex>
     void operator ()(const BufferInfo &vertexInfo, Vertex *vertices)
     {
-        switch (primitiveType) {
+        switch (m_primitiveType) {
         case Qt3DRender::QGeometryRenderer::Triangles:
-            traverseTriangles(vertices, vertexInfo, visitor);
+            traverseTriangles(vertices, vertexInfo, m_visitor);
             return;
         case Qt3DRender::QGeometryRenderer::TriangleStrip:
-            traverseTriangleStrip(vertices, vertexInfo, visitor);
+            traverseTriangleStrip(vertices, vertexInfo, m_visitor);
             return;
         case Qt3DRender::QGeometryRenderer::TriangleFan:
-            traverseTriangleFan(vertices, vertexInfo, visitor);
+            traverseTriangleFan(vertices, vertexInfo, m_visitor);
             return;
         case Qt3DRender::QGeometryRenderer::TrianglesAdjacency:
-            traverseTriangleAdjacency(vertices, vertexInfo, visitor);
+            traverseTriangleAdjacency(vertices, vertexInfo, m_visitor);
             return;
         case Qt3DRender::QGeometryRenderer::TriangleStripAdjacency:     // fall through
         default:
@@ -446,8 +440,8 @@ struct VertexExecutor
         }
     }
 
-    Qt3DRender::QGeometryRenderer::PrimitiveType primitiveType;
-    TrianglesVisitor* visitor;
+    Qt3DRender::QGeometryRenderer::PrimitiveType m_primitiveType;
+    Visitor* m_visitor;
 };
 
 } // anonymous
@@ -468,67 +462,8 @@ void TrianglesVisitor::apply(const GeometryRenderer *renderer, const Qt3DCore::Q
 {
     m_nodeId = id;
     if (renderer && renderer->instanceCount() == 1 && isTriangleBased(renderer->primitiveType())) {
-        Attribute *positionAttribute = nullptr;
-        Attribute *indexAttribute = nullptr;
-        Buffer *positionBuffer = nullptr;
-        Buffer *indexBuffer = nullptr;
-        Geometry *geom = m_manager->lookupResource<Geometry, GeometryManager>(renderer->geometryId());
-
-        if (geom) {
-            Qt3DRender::Render::Attribute *attribute = nullptr;
-            const auto attrIds = geom->attributes();
-            for (const Qt3DCore::QNodeId attrId : attrIds) {
-                attribute = m_manager->lookupResource<Attribute, AttributeManager>(attrId);
-                if (attribute){
-                    if (attribute->name() == QAttribute::defaultPositionAttributeName())
-                        positionAttribute = attribute;
-                    else if (attribute->attributeType() == QAttribute::IndexAttribute)
-                        indexAttribute = attribute;
-                }
-            }
-
-            if (positionAttribute)
-                positionBuffer = m_manager->lookupResource<Buffer, BufferManager>(positionAttribute->bufferId());
-            if (indexAttribute)
-                indexBuffer = m_manager->lookupResource<Buffer, BufferManager>(indexAttribute->bufferId());
-
-            if (positionBuffer) {
-
-                BufferInfo vertexBufferInfo;
-                vertexBufferInfo.data = positionBuffer->data();
-                vertexBufferInfo.type = positionAttribute->vertexBaseType();
-                vertexBufferInfo.byteOffset = positionAttribute->byteOffset();
-                vertexBufferInfo.byteStride = positionAttribute->byteStride();
-                vertexBufferInfo.dataSize = positionAttribute->vertexSize();
-                vertexBufferInfo.count = positionAttribute->count();
-
-                if (indexBuffer) { // Indexed
-
-                    BufferInfo indexBufferInfo;
-                    indexBufferInfo.data = indexBuffer->data();
-                    indexBufferInfo.type = indexAttribute->vertexBaseType();
-                    indexBufferInfo.byteOffset = indexAttribute->byteOffset();
-                    indexBufferInfo.byteStride = indexAttribute->byteStride();
-                    indexBufferInfo.count = indexAttribute->count();
-
-                    IndexExecutor executor;
-                    executor.vertexBufferInfo = vertexBufferInfo;
-                    executor.primitiveType = renderer->primitiveType();
-                    executor.visitor = this;
-
-                    return processBuffer(indexBufferInfo, executor);
-
-                } else { // Non Indexed
-
-                    // Check into which type the buffer needs to be casted
-                    VertexExecutor executor;
-                    executor.primitiveType = renderer->primitiveType();
-                    executor.visitor = this;
-
-                    return processBuffer(vertexBufferInfo, executor);
-                }
-            }
-        }
+        Visitor::visitPrimitives<VertexExecutor<TrianglesVisitor>,
+                IndexExecutor<TrianglesVisitor>, TrianglesVisitor>(m_manager, renderer, this);
     }
 }
 

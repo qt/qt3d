@@ -191,8 +191,8 @@ private Q_SLOTS:
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-        positionAttribute->setDataType(Qt3DRender::QAttribute::Float);
-        positionAttribute->setDataSize(3);
+        positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        positionAttribute->setVertexSize(3);
         positionAttribute->setCount(6);
         positionAttribute->setByteStride(3*4);
         positionAttribute->setByteOffset(0);
@@ -291,15 +291,15 @@ private Q_SLOTS:
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-        positionAttribute->setDataType(Qt3DRender::QAttribute::Float);
-        positionAttribute->setDataSize(3);
+        positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        positionAttribute->setVertexSize(3);
         positionAttribute->setCount(6);
         positionAttribute->setByteStride(3*sizeof(float));
         positionAttribute->setByteOffset(0);
         positionAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
 
         indexAttribute->setBuffer(indexDataBuffer.data());
-        indexAttribute->setDataType(Qt3DRender::QAttribute::UnsignedInt);
+        indexAttribute->setVertexBaseType(Qt3DRender::QAttribute::UnsignedInt);
         indexAttribute->setCount(3*5);
         indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
 
@@ -378,8 +378,8 @@ private Q_SLOTS:
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-        positionAttribute->setDataType(Qt3DRender::QAttribute::Float);
-        positionAttribute->setDataSize(3);
+        positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        positionAttribute->setVertexSize(3);
         positionAttribute->setCount(6);
         positionAttribute->setByteStride(3*4);
         positionAttribute->setByteOffset(0);
@@ -477,15 +477,15 @@ private Q_SLOTS:
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-        positionAttribute->setDataType(Qt3DRender::QAttribute::Float);
-        positionAttribute->setDataSize(3);
+        positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        positionAttribute->setVertexSize(3);
         positionAttribute->setCount(6);
         positionAttribute->setByteStride(3*sizeof(float));
         positionAttribute->setByteOffset(0);
         positionAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
 
         indexAttribute->setBuffer(indexDataBuffer.data());
-        indexAttribute->setDataType(Qt3DRender::QAttribute::UnsignedInt);
+        indexAttribute->setVertexBaseType(Qt3DRender::QAttribute::UnsignedInt);
         indexAttribute->setCount(3*4);
         indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
 
@@ -567,8 +567,8 @@ private Q_SLOTS:
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-        positionAttribute->setDataType(Qt3DRender::QAttribute::Float);
-        positionAttribute->setDataSize(3);
+        positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        positionAttribute->setVertexSize(3);
         positionAttribute->setCount(6);
         positionAttribute->setByteStride(3*4);
         positionAttribute->setByteOffset(0);
@@ -660,15 +660,15 @@ private Q_SLOTS:
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-        positionAttribute->setDataType(Qt3DRender::QAttribute::Float);
-        positionAttribute->setDataSize(3);
+        positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        positionAttribute->setVertexSize(3);
         positionAttribute->setCount(6);
         positionAttribute->setByteStride(3*sizeof(float));
         positionAttribute->setByteOffset(0);
         positionAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
 
         indexAttribute->setBuffer(indexDataBuffer.data());
-        indexAttribute->setDataType(Qt3DRender::QAttribute::UnsignedInt);
+        indexAttribute->setVertexBaseType(Qt3DRender::QAttribute::UnsignedInt);
         indexAttribute->setCount(3*2);
         indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
 
@@ -746,8 +746,8 @@ private Q_SLOTS:
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-        positionAttribute->setDataType(Qt3DRender::QAttribute::Float);
-        positionAttribute->setDataSize(3);
+        positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        positionAttribute->setVertexSize(3);
         positionAttribute->setCount(6);
         positionAttribute->setByteStride(3*4);
         positionAttribute->setByteOffset(0);
@@ -843,15 +843,15 @@ private Q_SLOTS:
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-        positionAttribute->setDataType(Qt3DRender::QAttribute::Float);
-        positionAttribute->setDataSize(3);
+        positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        positionAttribute->setVertexSize(3);
         positionAttribute->setCount(6);
         positionAttribute->setByteStride(3*sizeof(float));
         positionAttribute->setByteOffset(0);
         positionAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
 
         indexAttribute->setBuffer(indexDataBuffer.data());
-        indexAttribute->setDataType(Qt3DRender::QAttribute::UnsignedInt);
+        indexAttribute->setVertexBaseType(Qt3DRender::QAttribute::UnsignedInt);
         indexAttribute->setCount(3*4);
         indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
 
@@ -940,8 +940,8 @@ private Q_SLOTS:
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-        positionAttribute->setDataType(Qt3DRender::QAttribute::Float);
-        positionAttribute->setDataSize(3);
+        positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        positionAttribute->setVertexSize(3);
         positionAttribute->setCount(8);
         positionAttribute->setByteStride(3*4);
         positionAttribute->setByteOffset(0);
@@ -1034,15 +1034,15 @@ private Q_SLOTS:
 
         positionAttribute->setBuffer(dataBuffer.data());
         positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-        positionAttribute->setDataType(Qt3DRender::QAttribute::Float);
-        positionAttribute->setDataSize(3);
+        positionAttribute->setVertexBaseType(Qt3DRender::QAttribute::Float);
+        positionAttribute->setVertexSize(3);
         positionAttribute->setCount(6);
         positionAttribute->setByteStride(3*sizeof(float));
         positionAttribute->setByteOffset(0);
         positionAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
 
         indexAttribute->setBuffer(indexDataBuffer.data());
-        indexAttribute->setDataType(Qt3DRender::QAttribute::UnsignedInt);
+        indexAttribute->setVertexBaseType(Qt3DRender::QAttribute::UnsignedInt);
         indexAttribute->setCount(8);
         indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
 
