@@ -100,6 +100,7 @@ qtConfig(private_tests) {
         renderviewbuilder \
         filtercompatibletechniquejob \
         rendercapture \
+        segmentvisitor \
         trianglevisitor \
         qmemorybarrier \
         memorybarrier \

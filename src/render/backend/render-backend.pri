@@ -42,7 +42,8 @@ HEADERS += \
     $$PWD/offscreensurfacehelper_p.h \
     $$PWD/resourceaccessor_p.h \
     $$PWD/commandthread_p.h \
-    $$PWD/visitorutils_p.h
+    $$PWD/visitorutils_p.h \
+    $$PWD/segmentsvisitor_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
@@ -77,6 +78,7 @@ SOURCES += \
     $$PWD/renderviewbuilder.cpp \
     $$PWD/offscreensurfacehelper.cpp \
     $$PWD/resourceaccessor.cpp \
+    $$PWD/segmentsvisitor.cpp \
     $$PWD/commandthread.cpp
 
 include($$OUT_PWD/../core/qt3dcore-config.pri)
