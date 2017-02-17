@@ -106,7 +106,7 @@ void QLevelOfDetailPrivate::_q_centerChanged(const QVector3D &center)
     Qt3DRender::QGeometryRenderer *geometryRenderer = new Qt3DCore::QGeometryRenderer(renderableEntity);
     renderableEntity->addComponent(geometryRenderer);
     Qt3DRender::QLevelOfDetail* lod = new Qt3Render::QLevelOfDetail(renderableEntity);
-    QVector<float> thresholds = {20, 35, 50, 65};
+    QVector<qreal> thresholds = {20, 35, 50, 65};
     lod->setThresholds(thresholds);
     lod->setCamera(mainCamera);
     renderableEntity->addComponent(lod);
@@ -267,7 +267,7 @@ void QLevelOfDetailPrivate::_q_centerChanged(const QVector3D &center)
  */
 
 /*!
- * \qmlproperty QVector<float> LevelOfDetail::thresholds
+ * \qmlproperty QVector<qreal> LevelOfDetail::thresholds
  *
  * Array of range values as float point numbers. The value for the most detailed representation
  * should be specified first.
@@ -435,7 +435,7 @@ void QLevelOfDetail::setThresholdType(QLevelOfDetail::ThresholdType thresholdTyp
     }
 }
 
-QVector<float> QLevelOfDetail::thresholds() const
+QVector<qreal> QLevelOfDetail::thresholds() const
 {
     Q_D(const QLevelOfDetail);
     return d->m_thresholds;
@@ -445,7 +445,7 @@ QVector<float> QLevelOfDetail::thresholds() const
  * Sets the range values.
  * \sa Qt3DRender::QLevelOfDetail::thresholdType
  */
-void QLevelOfDetail::setThresholds(QVector<float> thresholds)
+void QLevelOfDetail::setThresholds(QVector<qreal> thresholds)
 {
     Q_D(QLevelOfDetail);
     if (d->m_thresholds != thresholds) {

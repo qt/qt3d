@@ -78,7 +78,7 @@ public:
     Qt3DCore::QNodeId camera() const { return m_camera; }
     int currentIndex() const { return m_currentIndex; }
     QLevelOfDetail::ThresholdType thresholdType() const { return m_thresholdType; }
-    QVector<float> thresholds() const { return m_thresholds; }
+    QVector<qreal> thresholds() const { return m_thresholds; }
     float radius() const { return m_radius; }
     QVector3D center() const { return m_center; }
 
@@ -89,7 +89,7 @@ private:
     Qt3DCore::QNodeId m_camera;
     int m_currentIndex;
     QLevelOfDetail::ThresholdType m_thresholdType;
-    QVector<float> m_thresholds;
+    QVector<qreal> m_thresholds;
     float m_radius;
     QVector3D m_center;
 };

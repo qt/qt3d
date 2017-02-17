@@ -160,7 +160,7 @@ void UpdateLevelOfDetailJob::updateEntityLodByDistance(Entity *entity, LevelOfDe
     if (!viewMatrixForCamera(lod->camera(), viewMatrix, projectionMatrix))
         return;
 
-    const QVector<float> thresholds = lod->thresholds();
+    const QVector<qreal> thresholds = lod->thresholds();
     QVector3D center = lod->center();
     if (lod->radius() > 0.f || entity->worldBoundingVolume() == nullptr) {
         center = *entity->worldTransform() * center;
@@ -196,7 +196,7 @@ void UpdateLevelOfDetailJob::updateEntityLodByScreenArea(Entity *entity, LevelOf
 
     const PickingUtils::ViewportCameraAreaTriplet &vca = vcaTriplets.front();
 
-    const QVector<float> thresholds = lod->thresholds();
+    const QVector<qreal> thresholds = lod->thresholds();
     Sphere bv(lod->center(), lod->radius());
     if (lod->radius() <= 0.f && entity->worldBoundingVolume() != nullptr) {
         bv = *(entity->worldBoundingVolume());

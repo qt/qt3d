@@ -93,7 +93,7 @@ void LevelOfDetail::sceneChangeEvent(const QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("thresholdType")) {
             m_thresholdType = propertyChange->value().value<QLevelOfDetail::ThresholdType>();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("thresholds")) {
-            m_thresholds = propertyChange->value().value<QVector<float>>();
+            m_thresholds = propertyChange->value().value<QVector<qreal>>();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("center")) {
             m_center = propertyChange->value().value<QVector3D>();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("radius")) {
