@@ -51,9 +51,9 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DCore/QAspectJob>
+#include <Qt3DCore/QNodeId>
 #include <Qt3DRender/private/qt3drender_global_p.h>
-#include <Qt3DRender/private/pickboundingvolumeutils_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,6 +64,7 @@ namespace Render {
 class Entity;
 class NodeManagers;
 class LevelOfDetail;
+class FrameGraphNode;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT UpdateLevelOfDetailJob : public Qt3DCore::QAspectJob
 {

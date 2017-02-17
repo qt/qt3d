@@ -43,6 +43,7 @@
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/sphere_p.h>
+#include <Qt3DRender/private/pickboundingvolumeutils_p.h>
 
 QT_BEGIN_NAMESPACE
 
