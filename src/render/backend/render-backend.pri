@@ -29,7 +29,7 @@ HEADERS += \
     $$PWD/triangleboundingvolume_p.h \
     $$PWD/openglvertexarrayobject_p.h \
     $$PWD/trianglesextractor_p.h \
-    $$PWD/coordinatevisitor_p.h \
+    $$PWD/buffervisitor_p.h \
     $$PWD/bufferutils_p.h \
     $$PWD/trianglesvisitor_p.h \
     $$PWD/abstractrenderer_p.h \

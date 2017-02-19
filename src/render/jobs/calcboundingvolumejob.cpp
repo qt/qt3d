@@ -50,7 +50,7 @@
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DRender/private/sphere_p.h>
-#include <Qt3DRender/private/coordinatevisitor_p.h>
+#include <Qt3DRender/private/buffervisitor_p.h>
 
 #include <QtCore/qmath.h>
 #include <QtConcurrent/QtConcurrent>
@@ -119,11 +119,11 @@ private:
     Sphere m_volume;
     NodeManagers *m_manager;
 
-    class FindExtremePoints : public Coordinate3fVisitor
+    class FindExtremePoints : public Buffer3fVisitor
     {
     public:
         FindExtremePoints(NodeManagers *manager)
-            : Coordinate3fVisitor(manager)
+            : Buffer3fVisitor(manager)
             , xMin(0.0f), xMax(0.0f), yMin(0.0f), yMax(0.0f), zMin(0.0f), zMax(0.0f)
         { }
 
@@ -166,11 +166,11 @@ private:
         }
     };
 
-    class ExpandSphere : public Coordinate3fVisitor
+    class ExpandSphere : public Buffer3fVisitor
     {
     public:
         ExpandSphere(NodeManagers *manager, Sphere& volume)
-            : Coordinate3fVisitor(manager), m_volume(volume)
+            : Buffer3fVisitor(manager), m_volume(volume)
         { }
 
         Sphere& m_volume;

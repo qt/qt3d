@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_COORDINATEVISITOR_P_H
-#define QT3DRENDER_RENDER_COORDINATEVISITOR_P_H
+#ifndef QT3DRENDER_RENDER_BUFFERVISITOR_P_H
+#define QT3DRENDER_RENDER_BUFFERVISITOR_P_H
 
 //
 //  W A R N I N G
@@ -73,14 +73,14 @@ namespace Render {
 
 
 template <typename ValueType, QAttribute::VertexBaseType VertexBaseType, uint dataSize>
-class Q_AUTOTEST_EXPORT CoordinateVisitor
+class Q_AUTOTEST_EXPORT BufferVisitor
 {
 public:
-    explicit CoordinateVisitor(NodeManagers *manager)
+    explicit BufferVisitor(NodeManagers *manager)
         : m_manager(manager)
     {
     }
-    virtual ~CoordinateVisitor() { }
+    virtual ~BufferVisitor() { }
 
     virtual void visit(uint ndx, ValueType x) {
         Q_UNUSED(ndx); Q_UNUSED(x);
@@ -200,7 +200,7 @@ protected:
     NodeManagers *m_manager;
 };
 
-typedef CoordinateVisitor<float, QAttribute::Float, 3> Coordinate3fVisitor;
+typedef BufferVisitor<float, QAttribute::Float, 3> Buffer3fVisitor;
 
 } // namespace Render
 
@@ -209,4 +209,4 @@ typedef CoordinateVisitor<float, QAttribute::Float, 3> Coordinate3fVisitor;
 QT_END_NAMESPACE
 
 
-#endif // QT3DRENDER_RENDER_COORDINATEVISITOR_P_H
+#endif // QT3DRENDER_RENDER_BUFFERVISITOR_P_H
