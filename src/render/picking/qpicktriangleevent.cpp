@@ -69,7 +69,15 @@ public:
 
     \brief The QPickTriangleEvent class holds information when a triangle is picked
 
-    \sa QPickEvent
+    When QPickingSettings::pickMode() is set to QPickingSettings::TrianglePicking, the signals
+    on QObjectPicker will carry an instance of QPickTriangleEvent.
+
+    This contains the details of the triangle that was picked.
+
+    \note In the case of indexed rendering, the point indices are relative to the
+    array of coordinates, not the array of indices.
+
+    \sa QPickingSettings, QPickEvent, QObjectPicker, QAttribute
     \since 5.7
 */
 
@@ -78,7 +86,16 @@ public:
  * \instantiates Qt3DRender::QPickTriangleEvent
  * \inqmlmodule Qt3D.Render
  * \brief PickTriangleEvent holds information when a triangle is picked.
- * \sa ObjectPicker
+ *
+ * When QPickingSettings::pickMode() is set to QPickingSettings::TrianglePicking, the signals
+ * on QObjectPicker will carry an instance of QPickTriangleEvent.
+ *
+ * This contains the details of the triangle that was picked.
+ *
+ * \note In case of indexed rendering, the point indices are relative to the
+ * array of indices, not the array of coordinates.
+ *
+ * \sa PickingSettings, PickEvent, ObjectPicker, Attribute
  */
 
 
@@ -160,11 +177,11 @@ uint QPickTriangleEvent::triangleIndex() const
 
 /*!
     \qmlproperty uint Qt3D.Render::PickTriangleEvent::vertex1Index
-    Specifies the vertex 1 index of the event
+    Specifies the index of the first vertex in the triangle
 */
 /*!
   \property Qt3DRender::QPickTriangleEvent::vertex1Index
-    Specifies the vertex 1 index of the event
+    Specifies the index of the first vertex in the triangle
  */
 /*!
  * \brief QPickTriangleEvent::vertex1Index
@@ -178,11 +195,11 @@ uint QPickTriangleEvent::vertex1Index() const
 
 /*!
     \qmlproperty uint Qt3D.Render::PickTriangleEvent::vertex2Index
-    Specifies the vertex 2 index of the event
+    Specifies the index of the second vertex in the triangle
 */
 /*!
   \property Qt3DRender::QPickTriangleEvent::vertex2Index
-    Specifies the vertex 2 index of the event
+    Specifies the index of the second vertex in the triangle
  */
 /*!
  * \brief QPickTriangleEvent::vertex2Index
@@ -196,11 +213,11 @@ uint QPickTriangleEvent::vertex2Index() const
 
 /*!
     \qmlproperty uint Qt3D.Render::PickTriangleEvent::vertex3Index
-    Specifies the vertex 3 index of the event
+    Specifies the index of the third vertex in the triangle
 */
 /*!
   \property Qt3DRender::QPickTriangleEvent::vertex3Index
-    Specifies the vertex 3 index of the event
+    Specifies the index of the third vertex in the triangle
  */
 /*!
  * \brief QPickTriangleEvent::vertex3Index
