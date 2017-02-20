@@ -68,10 +68,6 @@ namespace Quick {
 Q_GLOBAL_STATIC(QThread, renderThread)
 Q_GLOBAL_STATIC(QAtomicInt, renderThreadClientCount)
 
-#ifndef GL_DEPTH24_STENCIL8
-#define GL_DEPTH24_STENCIL8 0x88F0
-#endif
-
 RenderQmlEventHandler::RenderQmlEventHandler(Scene2D *node)
     : QObject()
     , m_node(node)
