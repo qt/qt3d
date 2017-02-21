@@ -180,12 +180,7 @@ vec3 pbrIblModel(const in vec3 wNormal,
     vec3 specular = specularSkyColor * specularFactor;
 
     // Blend between diffuse and specular to conserve energy
-    vec3 iblColor = specular + diffuse * (vec3(1.0) - specularFactor);
-
-    // Apply exposure correction
-    iblColor *= pow(2.0, exposure);
-
-    return iblColor;
+    return specular + diffuse * (vec3(1.0) - specularFactor);
 }
 
 vec3 toneMap(const in vec3 c)
@@ -206,6 +201,9 @@ void main()
                                baseColor.rgb,
                                metalness,
                                roughness);
+
+    // Apply exposure correction
+    cLinear *= pow(2.0, exposure);
 
     // Apply simple (Reinhard) tonemap transform to get into LDR range [0, 1]
     vec3 cToneMapped = toneMap(cLinear);

@@ -191,9 +191,6 @@ vec3 pbrIblModel(const in vec3 wNormal,
     // Reduce by ambient occlusion amount
     iblColor *= ambientOcclusion;
 
-    // Apply exposure correction
-    iblColor *= pow(2.0, exposure);
-
     return iblColor;
 }
 
@@ -228,6 +225,9 @@ void main()
                                metalness,
                                roughness,
                                ambientOcclusion);
+
+    // Apply exposure correction
+    cLinear *= pow(2.0, exposure);
 
     // Apply simple (Reinhard) tonemap transform to get into LDR range [0, 1]
     vec3 cToneMapped = toneMap(cLinear);
