@@ -61,10 +61,6 @@ out vec4 fragColor;
 uniform vec3 eyePosition; // World space eye position
 uniform float time; // Time in seconds
 
-// Pre-convolved environment maps
-uniform samplerCube skyIrradiance;  // For diffuse contribution
-uniform samplerCube skySpecular;    // For specular contribution
-
 // PBR Material maps
 uniform sampler2D baseColorMap;
 uniform sampler2D metalnessMap;
@@ -84,6 +80,8 @@ uniform float mipOffset = 5.0;
 uniform float exposure = 0.0;
 // Gamma correction
 uniform float gamma = 2.2;
+
+#pragma include light.inc.frag
 
 mat3 calcWorldSpaceToTangentSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent)
 {
@@ -176,7 +174,7 @@ vec3 pbrIblModel(const in vec3 wNormal,
 
     // Calculate diffuse component
     vec3 diffuseColor = (1.0 - metalness) * baseColor;
-    vec3 diffuse = diffuseColor * texture(skyIrradiance, l).rgb;
+    vec3 diffuse = diffuseColor * texture(envLight.irradiance, l).rgb;
 
     // Calculate specular component
     vec3 dielectricColor = vec3(0.04);
@@ -184,7 +182,7 @@ vec3 pbrIblModel(const in vec3 wNormal,
     vec3 specularFactor = specularModel(F0, lDotH, lDotN, vDotN, n, h);
 
     float lod = roughnessToMipLevel(roughness);
-    vec3 specularSkyColor = textureLod(skySpecular, l, lod).rgb;
+    vec3 specularSkyColor = textureLod(envLight.specular, l, lod).rgb;
     vec3 specular = specularSkyColor * specularFactor;
 
     // Blend between diffuse and specular to conserve energy
