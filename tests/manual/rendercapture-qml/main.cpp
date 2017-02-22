@@ -65,6 +65,12 @@ int main(int argc, char* argv[])
     RenderCaptureProvider *provider = new RenderCaptureProvider;
     qmlRegisterType<RenderCaptureProvider>("Extras", 1, 0, "RenderCaptureProvider");
 
+    QSurfaceFormat format;
+    format.setVersion(3, 2);
+    format.setProfile(QSurfaceFormat::CoreProfile);
+    format.setDepthBufferSize(24);
+    view.setFormat(format);
+
     view.engine()->rootContext()->setContextProperty("_renderCaptureProvider", provider);
     view.engine()->addImageProvider("rendercapture", provider);
 
