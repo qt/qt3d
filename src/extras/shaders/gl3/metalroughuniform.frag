@@ -106,6 +106,26 @@ float roughnessToMipLevel(float roughness)
     return (mipLevels - 1.0 - mipOffset) * (1.0 - (1.0 - roughness) / maxT);
 }
 
+// Helper function to map from linear roughness value to non-linear alpha (shininess)
+float roughnessToAlpha(const in float roughness)
+{
+    // Constants to control how to convert from roughness [0,1] to
+    // shininess (alpha) [minAlpha, maxAlpha] using a power law with
+    // a power of 1 / rho.
+    const float minAlpha = 1.0;
+    const float maxAlpha = 1024.0;
+    const float rho = 3.0;
+
+    return minAlpha + (maxAlpha - minAlpha) * (1.0 - pow(roughness, 1.0 / rho));
+}
+
+float normalDistribution(const in vec3 n, const in vec3 h, const in float roughness)
+{
+    // Blinn-Phong approximation
+    float alpha = roughnessToAlpha(roughness);
+    return (alpha + 2.0) / (2.0 * 3.14159) * pow(max(dot(n, h), 0.0), alpha);
+}
+
 vec3 fresnelFactor(const in vec3 color, const in float cosineFactor)
 {
     // Calculate the Fresnel effect value
@@ -125,26 +145,96 @@ float geometricModel(const in float lDotN,
 }
 
 vec3 specularModel(const in vec3 F0,
-                   const in float lDotH,
-                   const in float lDotN,
+                   const in float sDotH,
+                   const in float sDotN,
                    const in float vDotN,
                    const in vec3 n,
                    const in vec3 h)
 {
-    // Clamp lDotN and vDotN to small positive value to prevent the
+    // Clamp sDotN and vDotN to small positive value to prevent the
     // denominator in the reflection equation going to infinity. Balance this
     // by using the clamped values in the geometric factor function to
     // avoid ugly seams in the specular lighting.
-    float sDotNPrime = max(lDotN, 0.001);
+    float sDotNPrime = max(sDotN, 0.001);
     float vDotNPrime = max(vDotN, 0.001);
 
-    vec3 F = fresnelFactor(F0, lDotH);
+    vec3 F = fresnelFactor(F0, sDotH);
     float G = geometricModel(sDotNPrime, vDotNPrime, h);
 
-    // TODO: Verify which parts of the BRDF Lys is preconvolving and multiply
-    // by the remaining factors here.
     vec3 cSpec = F * G / (4.0 * sDotNPrime * vDotNPrime);
     return clamp(cSpec, vec3(0.0), vec3(1.0));
+}
+
+vec3 pbrModel(const in int lightIndex,
+              const in vec3 wPosition,
+              const in vec3 wNormal,
+              const in vec3 wView,
+              const in vec3 baseColor,
+              const in float metalness,
+              const in float roughness)
+{
+    // Calculate some useful quantities
+    vec3 n = wNormal;
+    vec3 s = vec3(0.0);
+    vec3 v = wView;
+    vec3 h = vec3(0.0);
+
+    float vDotN = dot(v, n);
+    float sDotN = 0.0;
+    float sDotH = 0.0;
+    float att = 1.0;
+
+    if (lights[lightIndex].type != TYPE_DIRECTIONAL) {
+        // Point and Spot lights
+        vec3 sUnnormalized = vec3(lights[lightIndex].position) - wPosition;
+        s = normalize(sUnnormalized);
+
+        // Calculate the attenuation factor
+        sDotN = dot(s, n);
+        if (sDotN > 0.0) {
+            if (lights[lightIndex].constantAttenuation != 0.0
+             || lights[lightIndex].linearAttenuation != 0.0
+             || lights[lightIndex].quadraticAttenuation != 0.0) {
+                float dist = length(sUnnormalized);
+                att = 1.0 / (lights[lightIndex].constantAttenuation +
+                             lights[lightIndex].linearAttenuation * dist +
+                             lights[lightIndex].quadraticAttenuation * dist * dist);
+            }
+
+            // The light direction is in world space already
+            if (lights[lightIndex].type == TYPE_SPOT) {
+                // Check if fragment is inside or outside of the spot light cone
+                if (degrees(acos(dot(-s, lights[lightIndex].direction))) > lights[lightIndex].cutOffAngle)
+                    sDotN = 0.0;
+            }
+        }
+    } else {
+        // Directional lights
+        // The light direction is in world space already
+        s = normalize(-lights[lightIndex].direction);
+        sDotN = dot(s, n);
+    }
+
+    h = normalize(s + v);
+    sDotH = dot(s, h);
+
+    // Calculate diffuse component
+    vec3 diffuseColor = (1.0 - metalness) * baseColor * lights[lightIndex].color;
+    vec3 diffuse = diffuseColor * max(sDotN, 0.0) / 3.14159;
+
+    // Calculate specular component
+    vec3 dielectricColor = vec3(0.04);
+    vec3 F0 = mix(dielectricColor, baseColor, metalness);
+    vec3 specularFactor = vec3(0.0);
+    if (sDotN > 0.0) {
+        specularFactor = specularModel(F0, sDotH, sDotN, vDotN, n, h);
+        specularFactor *= normalDistribution(n, h, roughness);
+    }
+    vec3 specularColor = lights[lightIndex].color;
+    vec3 specular = specularColor * specularFactor;
+
+    // Blend between diffuse and specular to conserver energy
+    return att * lights[lightIndex].intensity * (specular + diffuse * (vec3(1.0) - specular));
 }
 
 vec3 pbrIblModel(const in vec3 wNormal,
@@ -195,12 +285,24 @@ vec3 gammaCorrect(const in vec3 color)
 
 void main()
 {
+    vec3 cLinear = vec3(0.0);
+
     vec3 worldView = normalize(eyePosition - worldPosition);
-    vec3 cLinear = pbrIblModel(worldNormal,
-                               worldView,
-                               baseColor.rgb,
-                               metalness,
-                               roughness);
+    cLinear += pbrIblModel(worldNormal,
+                           worldView,
+                           baseColor.rgb,
+                           metalness,
+                           roughness);
+
+    for (int i = 0; i < lightCount; ++i) {
+        cLinear += pbrModel(i,
+                            worldPosition,
+                            worldNormal,
+                            worldView,
+                            baseColor.rgb,
+                            metalness,
+                            roughness);
+    }
 
     // Apply exposure correction
     cLinear *= pow(2.0, exposure);
