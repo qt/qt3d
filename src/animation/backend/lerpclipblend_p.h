@@ -65,12 +65,20 @@ public:
     inline float blendFactor() const { return m_blendFactor; }
     void setBlendFactor(float blendFactor) { m_blendFactor = blendFactor; } // For unit tests
 
+    inline Qt3DCore::QNodeId startClipId() const { return m_startClipId; }
+    void setStartClipId(Qt3DCore::QNodeId startClipId) { m_startClipId = startClipId; }  // For unit tests
+
+    inline Qt3DCore::QNodeId endClipId() const { return m_endClipId; }
+    void setEndClipId(Qt3DCore::QNodeId endClipId) { m_endClipId = endClipId; }  // For unit tests
+
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
     float blend(float value1, float value2) const Q_DECL_FINAL;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
+    Qt3DCore::QNodeId m_startClipId;
+    Qt3DCore::QNodeId m_endClipId;
     float m_blendFactor;
 };
 

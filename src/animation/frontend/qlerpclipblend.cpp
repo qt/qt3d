@@ -86,6 +86,8 @@ namespace Qt3DAnimation {
 
 QLerpClipBlendPrivate::QLerpClipBlendPrivate()
     : QAbstractClipBlendNodePrivate()
+    , m_startClip(nullptr)
+    , m_endClip(nullptr)
     , m_blendFactor(0.0f)
 {
 }
@@ -109,6 +111,8 @@ Qt3DCore::QNodeCreatedChangeBasePtr QLerpClipBlend::createNodeCreationChange() c
     Q_D(const QLerpClipBlend);
     auto creationChange = QClipBlendNodeCreatedChangePtr<QLerpClipBlendData>::create(this);
     QLerpClipBlendData &data = creationChange->data;
+    data.startClipId = Qt3DCore::qIdForNode(d->m_startClip);
+    data.endClipId = Qt3DCore::qIdForNode(d->m_endClip);
     data.blendFactor = d->m_blendFactor;
     return creationChange;
 }
@@ -131,14 +135,93 @@ float QLerpClipBlend::blendFactor() const
     return d->m_blendFactor;
 }
 
+/*!
+    \qmlproperty AbstractClipBlendNode LerpClipBlend::startClip
+
+    Holds the sub-tree that should be used as the start clip for this
+    lerp blend node. That is, the clip returned by this blend node when
+    the blendFactor is set to a value of 0.
+*/
+/*!
+    \property QLerpClipBlend::startClip
+
+    Holds the sub-tree that should be used as the start clip for this
+    lerp blend node. That is, the clip returned by this blend node when
+    the blendFactor is set to a value of 0.
+*/
+Qt3DAnimation::QAbstractClipBlendNode *QLerpClipBlend::startClip() const
+{
+    Q_D(const QLerpClipBlend);
+    return d->m_startClip;
+}
+
+/*!
+    \qmlproperty AbstractClipBlendNode LerpClipBlend::endClip
+
+    Holds the sub-tree that should be used as the end clip for this
+    lerp blend node. That is, the clip returned by this blend node when
+    the blendFactor is set to a value of 1.
+*/
+/*!
+    \property QLerpClipBlend::endClip
+
+    Holds the sub-tree that should be used as the start clip for this
+    lerp blend node. That is, the clip returned by this blend node when
+    the blendFactor is set to a value of 1.
+*/
+Qt3DAnimation::QAbstractClipBlendNode *QLerpClipBlend::endClip() const
+{
+    Q_D(const QLerpClipBlend);
+    return d->m_endClip;
+}
+
 void QLerpClipBlend::setBlendFactor(float blendFactor)
 {
     Q_D(QLerpClipBlend);
+
     if (d->m_blendFactor == blendFactor)
         return;
 
     d->m_blendFactor = blendFactor;
     emit blendFactorChanged(blendFactor);
+}
+
+void QLerpClipBlend::setStartClip(Qt3DAnimation::QAbstractClipBlendNode *startClip)
+{
+    Q_D(QLerpClipBlend);
+    if (d->m_startClip == startClip)
+        return;
+
+    if (d->m_startClip)
+        d->unregisterDestructionHelper(d->m_startClip);
+
+    if (startClip && !startClip->parent())
+        startClip->setParent(this);
+    d->m_startClip = startClip;
+
+    // Ensures proper bookkeeping
+    if (d->m_startClip)
+        d->registerDestructionHelper(d->m_startClip, &QLerpClipBlend::setStartClip, d->m_startClip);
+    emit startClipChanged(startClip);
+}
+
+void QLerpClipBlend::setEndClip(Qt3DAnimation::QAbstractClipBlendNode *endClip)
+{
+    Q_D(QLerpClipBlend);
+    if (d->m_endClip == endClip)
+        return;
+
+    if (d->m_endClip)
+        d->unregisterDestructionHelper(d->m_endClip);
+
+    if (endClip && !endClip->parent())
+        endClip->setParent(this);
+    d->m_endClip = endClip;
+
+    // Ensures proper bookkeeping
+    if (d->m_endClip)
+        d->registerDestructionHelper(d->m_endClip, &QLerpClipBlend::setEndClip, d->m_endClip);
+    emit endClipChanged(endClip);
 }
 
 /*!

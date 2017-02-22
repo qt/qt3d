@@ -64,11 +64,15 @@ public:
     QLerpClipBlendPrivate();
 
     Q_DECLARE_PUBLIC(QLerpClipBlend)
+    QAbstractClipBlendNode *m_startClip;
+    QAbstractClipBlendNode *m_endClip;
     float m_blendFactor;
 };
 
 struct QLerpClipBlendData
 {
+    Qt3DCore::QNodeId startClipId;
+    Qt3DCore::QNodeId endClipId;
     float blendFactor;
 };
 

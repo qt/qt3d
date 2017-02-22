@@ -47,6 +47,8 @@ namespace Animation {
 
 LerpClipBlend::LerpClipBlend()
     : ClipBlendNode(ClipBlendNode::LerpBlendType)
+    , m_startClipId()
+    , m_endClipId()
     , m_blendFactor(0.0f)
 {
 }
@@ -61,6 +63,10 @@ void LerpClipBlend::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         Qt3DCore::QPropertyUpdatedChangePtr change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("blendFactor"))
             m_blendFactor = change->value().toFloat();
+        else if (change->propertyName() == QByteArrayLiteral("startClip"))
+            m_startClipId = change->value().value<Qt3DCore::QNodeId>();
+        else if (change->propertyName() == QByteArrayLiteral("endClip"))
+            m_endClipId = change->value().value<Qt3DCore::QNodeId>();
     }
 }
 
@@ -74,6 +80,8 @@ void LerpClipBlend::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr
     ClipBlendNode::initializeFromPeer(change);
     const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QClipBlendNodeCreatedChange<Qt3DAnimation::QLerpClipBlendData>>(change);
     const Qt3DAnimation::QLerpClipBlendData cloneData = creationChangeData->data;
+    m_startClipId = cloneData.startClipId;
+    m_endClipId = cloneData.endClipId;
     m_blendFactor = cloneData.blendFactor;
 }
 

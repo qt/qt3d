@@ -48,6 +48,8 @@ class QLerpClipBlendPrivate;
 class QT3DANIMATIONSHARED_EXPORT QLerpClipBlend : public QAbstractClipBlendNode
 {
     Q_OBJECT
+    Q_PROPERTY(Qt3DAnimation::QAbstractClipBlendNode *startClip READ startClip WRITE setStartClip NOTIFY startClipChanged)
+    Q_PROPERTY(Qt3DAnimation::QAbstractClipBlendNode *endClip READ endClip WRITE setEndClip NOTIFY endClipChanged)
     Q_PROPERTY(float blendFactor READ blendFactor WRITE setBlendFactor NOTIFY blendFactorChanged)
 
 public:
@@ -55,12 +57,18 @@ public:
     ~QLerpClipBlend();
 
     float blendFactor() const;
+    Qt3DAnimation::QAbstractClipBlendNode *startClip() const;
+    Qt3DAnimation::QAbstractClipBlendNode *endClip() const;
 
 public Q_SLOTS:
     void setBlendFactor(float blendFactor);
+    void setStartClip(Qt3DAnimation::QAbstractClipBlendNode * startClip);
+    void setEndClip(Qt3DAnimation::QAbstractClipBlendNode * endClip);
 
 Q_SIGNALS:
     void blendFactorChanged(float blendFactor);
+    void startClipChanged(Qt3DAnimation::QAbstractClipBlendNode * startClip);
+    void endClipChanged(Qt3DAnimation::QAbstractClipBlendNode * endClip);
 
 protected:
     explicit QLerpClipBlend(QLerpClipBlendPrivate &dd, Qt3DCore::QNode *parent = nullptr);

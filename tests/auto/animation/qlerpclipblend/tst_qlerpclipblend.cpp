@@ -44,6 +44,10 @@ class tst_QLerpClipBlend : public QObject
     Q_OBJECT
 
 private Q_SLOTS:
+    void initTestCase()
+    {
+        qRegisterMetaType<Qt3DAnimation::QAbstractClipBlendNode*>();
+    }
 
     void checkDefaultConstruction()
     {
@@ -52,6 +56,8 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(lerpBlend.blendFactor(), 0.0f);
+        QCOMPARE(lerpBlend.startClip(), static_cast<Qt3DAnimation::QAbstractClipBlendNode *>(nullptr));
+        QCOMPARE(lerpBlend.endClip(), static_cast<Qt3DAnimation::QAbstractClipBlendNode *>(nullptr));
     }
 
     void checkPropertyChanges()
@@ -78,17 +84,57 @@ private Q_SLOTS:
             QCOMPARE(lerpBlend.blendFactor(), newValue);
             QCOMPARE(spy.count(), 0);
         }
+
+        {
+            // WHEN
+            QSignalSpy spy(&lerpBlend, SIGNAL(startClipChanged(Qt3DAnimation::QAbstractClipBlendNode*)));
+            auto newValue = new Qt3DAnimation::QLerpClipBlend();
+            lerpBlend.setStartClip(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(lerpBlend.startClip(), newValue);
+            QCOMPARE(spy.count(), 1);
+
+            // WHEN
+            spy.clear();
+            lerpBlend.setStartClip(newValue);
+
+            // THEN
+            QCOMPARE(lerpBlend.startClip(), newValue);
+            QCOMPARE(spy.count(), 0);
+        }
+
+        {
+            // WHEN
+            QSignalSpy spy(&lerpBlend, SIGNAL(endClipChanged(Qt3DAnimation::QAbstractClipBlendNode*)));
+            auto newValue = new Qt3DAnimation::QLerpClipBlend();
+            lerpBlend.setEndClip(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(lerpBlend.endClip(), newValue);
+            QCOMPARE(spy.count(), 1);
+
+            // WHEN
+            spy.clear();
+            lerpBlend.setEndClip(newValue);
+
+            // THEN
+            QCOMPARE(lerpBlend.endClip(), newValue);
+            QCOMPARE(spy.count(), 0);
+        }
     }
 
     void checkCreationData()
     {
         // GIVEN
         Qt3DAnimation::QLerpClipBlend lerpBlend;
-        Qt3DAnimation::QAnimationClipLoader clip1;
-        Qt3DAnimation::QAnimationClipLoader clip2;
+        Qt3DAnimation::QLerpClipBlend startClip;
+        Qt3DAnimation::QLerpClipBlend endClip;
 
-        lerpBlend.addClip(&clip1);
-        lerpBlend.addClip(&clip2);
+        lerpBlend.setStartClip(&startClip);
+        lerpBlend.setEndClip(&endClip);
         lerpBlend.setBlendFactor(0.8f);
 
 
@@ -112,9 +158,8 @@ private Q_SLOTS:
             QCOMPARE(lerpBlend.isEnabled(), true);
             QCOMPARE(lerpBlend.isEnabled(), creationChangeData->isNodeEnabled());
             QCOMPARE(lerpBlend.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(creationChangeData->clips().size(), 2);
-            QCOMPARE(creationChangeData->clips().first(), clip1.id());
-            QCOMPARE(creationChangeData->clips().last(), clip2.id());
+            QCOMPARE(cloneData.startClipId, startClip.id());
+            QCOMPARE(cloneData.endClipId, endClip.id());
             QCOMPARE(creationChangeData->parentClipBlendNodeId(), Qt3DCore::QNodeId());
         }
 
@@ -138,9 +183,8 @@ private Q_SLOTS:
             QCOMPARE(lerpBlend.isEnabled(), false);
             QCOMPARE(lerpBlend.isEnabled(), creationChangeData->isNodeEnabled());
             QCOMPARE(lerpBlend.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(creationChangeData->clips().size(), 2);
-            QCOMPARE(creationChangeData->clips().first(), clip1.id());
-            QCOMPARE(creationChangeData->clips().last(), clip2.id());
+            QCOMPARE(cloneData.startClipId, startClip.id());
+            QCOMPARE(cloneData.endClipId, endClip.id());
             QCOMPARE(creationChangeData->parentClipBlendNodeId(), Qt3DCore::QNodeId());
         }
     }
@@ -178,6 +222,139 @@ private Q_SLOTS:
 
     }
 
+    void checkStartClipUpdate()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DAnimation::QLerpClipBlend lerpBlend;
+        arbiter.setArbiterOnNode(&lerpBlend);
+        auto startClip = new Qt3DAnimation::QLerpClipBlend();
+
+        {
+            // WHEN
+            lerpBlend.setStartClip(startClip);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 1);
+            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "startClip");
+            QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), lerpBlend.startClip()->id());
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+            arbiter.events.clear();
+        }
+
+        {
+            // WHEN
+            lerpBlend.setStartClip(startClip);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+        }
+    }
+
+    void checkEndClipUpdate()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DAnimation::QLerpClipBlend lerpBlend;
+        arbiter.setArbiterOnNode(&lerpBlend);
+        auto endClip = new Qt3DAnimation::QLerpClipBlend();
+
+        {
+            // WHEN
+            lerpBlend.setEndClip(endClip);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 1);
+            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "endClip");
+            QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), lerpBlend.endClip()->id());
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+            arbiter.events.clear();
+        }
+
+        {
+            // WHEN
+            lerpBlend.setEndClip(endClip);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+        }
+    }
+
+    void checkStartClipBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DAnimation::QLerpClipBlend> lerpBlend(new Qt3DAnimation::QLerpClipBlend);
+        {
+            // WHEN
+            Qt3DAnimation::QLerpClipBlend clip;
+            lerpBlend->setStartClip(&clip);
+
+            // THEN
+            QCOMPARE(clip.parent(), lerpBlend.data());
+            QCOMPARE(lerpBlend->startClip(), &clip);
+        }
+        // THEN (Should not crash and clip be unset)
+        QVERIFY(lerpBlend->startClip() == nullptr);
+
+        {
+            // WHEN
+            Qt3DAnimation::QLerpClipBlend someOtherLerpBlend;
+            QScopedPointer<Qt3DAnimation::QLerpClipBlend> clip(new Qt3DAnimation::QLerpClipBlend(&someOtherLerpBlend));
+            lerpBlend->setStartClip(clip.data());
+
+            // THEN
+            QCOMPARE(clip->parent(), &someOtherLerpBlend);
+            QCOMPARE(lerpBlend->startClip(), clip.data());
+
+            // WHEN
+            lerpBlend.reset();
+            clip.reset();
+
+            // THEN Should not crash when the effect is destroyed (tests for failed removal of destruction helper)
+        }
+    }
+
+    void checkEndClipBookkeeping()
+    {
+        // GIVEN
+        QScopedPointer<Qt3DAnimation::QLerpClipBlend> lerpBlend(new Qt3DAnimation::QLerpClipBlend);
+        {
+            // WHEN
+            Qt3DAnimation::QLerpClipBlend clip;
+            lerpBlend->setEndClip(&clip);
+
+            // THEN
+            QCOMPARE(clip.parent(), lerpBlend.data());
+            QCOMPARE(lerpBlend->endClip(), &clip);
+        }
+        // THEN (Should not crash and clip be unset)
+        QVERIFY(lerpBlend->endClip() == nullptr);
+
+        {
+            // WHEN
+            Qt3DAnimation::QLerpClipBlend someOtherLerpBlend;
+            QScopedPointer<Qt3DAnimation::QLerpClipBlend> clip(new Qt3DAnimation::QLerpClipBlend(&someOtherLerpBlend));
+            lerpBlend->setEndClip(clip.data());
+
+            // THEN
+            QCOMPARE(clip->parent(), &someOtherLerpBlend);
+            QCOMPARE(lerpBlend->endClip(), clip.data());
+
+            // WHEN
+            lerpBlend.reset();
+            clip.reset();
+
+            // THEN Should not crash when the effect is destroyed (tests for failed removal of destruction helper)
+        }
+    }
 };
 
 QTEST_MAIN(tst_QLerpClipBlend)
