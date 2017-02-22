@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#include "qlerpblend.h"
-#include "qlerpblend_p.h"
+#include "qlerpclipblend.h"
+#include "qlerpclipblend_p.h"
 #include <Qt3DAnimation/qclipblendnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
@@ -44,7 +44,7 @@ namespace Qt3DAnimation {
 
 /*!
     \qmltype LerpBlend
-    \instantiates Qt3DAnimation::QLerpBlend
+    \instantiates Qt3DAnimation::QLerpClipBlend
     \inqmlmodule Qt3D.Animation
 
     \brief Performs a linear interpolation of two animation clips based on a
@@ -64,7 +64,7 @@ namespace Qt3DAnimation {
 */
 
 /*!
-    \class Qt3DAnimation::QLerpBlend
+    \class Qt3DAnimation::QLerpClipBlend
     \inmodule Qt3DAnimation
     \inherits Qt3DAnimation::QAbstractClipBlendNode
 
@@ -73,7 +73,7 @@ namespace Qt3DAnimation {
 
     \since 5.9
 
-    QLerpBlend can be useful to create advanced animation effects based on
+    QLerpClipBlend can be useful to create advanced animation effects based on
     individual animation clips. For instance, given a player character,, lerp
     blending could be used to combine a walking animation clip with an injured
     animation clip based on a blend factor that increases the more the player
@@ -84,31 +84,31 @@ namespace Qt3DAnimation {
     \sa QBlendedClipAnimator
 */
 
-QLerpBlendPrivate::QLerpBlendPrivate()
+QLerpClipBlendPrivate::QLerpClipBlendPrivate()
     : QAbstractClipBlendNodePrivate()
     , m_blendFactor(0.0f)
 {
 }
 
-QLerpBlend::QLerpBlend(Qt3DCore::QNode *parent)
-    : QAbstractClipBlendNode(*new QLerpBlendPrivate(), parent)
+QLerpClipBlend::QLerpClipBlend(Qt3DCore::QNode *parent)
+    : QAbstractClipBlendNode(*new QLerpClipBlendPrivate(), parent)
 {
 }
 
-QLerpBlend::QLerpBlend(QLerpBlendPrivate &dd, Qt3DCore::QNode *parent)
+QLerpClipBlend::QLerpClipBlend(QLerpClipBlendPrivate &dd, Qt3DCore::QNode *parent)
     : QAbstractClipBlendNode(dd, parent)
 {
 }
 
-QLerpBlend::~QLerpBlend()
+QLerpClipBlend::~QLerpClipBlend()
 {
 }
 
-Qt3DCore::QNodeCreatedChangeBasePtr QLerpBlend::createNodeCreationChange() const
+Qt3DCore::QNodeCreatedChangeBasePtr QLerpClipBlend::createNodeCreationChange() const
 {
-    Q_D(const QLerpBlend);
-    auto creationChange = QClipBlendNodeCreatedChangePtr<QLerpBlendData>::create(this);
-    QLerpBlendData &data = creationChange->data;
+    Q_D(const QLerpClipBlend);
+    auto creationChange = QClipBlendNodeCreatedChangePtr<QLerpClipBlendData>::create(this);
+    QLerpClipBlendData &data = creationChange->data;
     data.blendFactor = d->m_blendFactor;
     return creationChange;
 }
@@ -120,20 +120,20 @@ Qt3DCore::QNodeCreatedChangeBasePtr QLerpBlend::createNodeCreationChange() const
     two animation clips.
 */
 /*!
-    \property QLerpBlend::blendFactor
+    \property QLerpClipBlend::blendFactor
 
     Specifies the blending factor between 0 and 1 to control the blending of
     two animation clips.
  */
-float QLerpBlend::blendFactor() const
+float QLerpClipBlend::blendFactor() const
 {
-    Q_D(const QLerpBlend);
+    Q_D(const QLerpClipBlend);
     return d->m_blendFactor;
 }
 
-void QLerpBlend::setBlendFactor(float blendFactor)
+void QLerpClipBlend::setBlendFactor(float blendFactor)
 {
-    Q_D(QLerpBlend);
+    Q_D(QLerpClipBlend);
     if (d->m_blendFactor == blendFactor)
         return;
 
@@ -151,19 +151,19 @@ void QLerpBlend::setBlendFactor(float blendFactor)
 
 
 /*!
-    \fn void QLerpBlend::addClip(QAnimationClip *clip);
+    \fn void QLerpClipBlend::addClip(QAbstractAnimationClip *clip);
     Adds a \a clip to the blending node's clips list.
 
     \note Only the two first AnimationClip are used, subsequent ones are ignored
  */
 
 /*!
-    \fn void QLerpBlend::removeClip(QAnimationClip *clip);
+    \fn void QLerpClipBlend::removeClip(QAbstractAnimationClip *clip);
     Removes a \a clip from the blending node's clips list.
  */
 
 /*!
-    \fn QVector<QAnimationClip *> QLerpBlend::clips() const;
+    \fn QVector<QAbstractAnimationClip *> QLerpClipBlend::clips() const;
     Returns the list of QAnimationClip against which the blending is performed.
  */
 

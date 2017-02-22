@@ -19,10 +19,10 @@ qtConfig(private_tests) {
         blendedclipanimator \
         channelmapper \
         channelmapping \
-        qlerpblend \
+        qlerpclipblend \
         clipblendnodemanager \
         clipblendnode \
-        lerpblend \
+        lerpclipblend \
         clipblendnodevisitor \
         qadditiveblend \
         additiveblend

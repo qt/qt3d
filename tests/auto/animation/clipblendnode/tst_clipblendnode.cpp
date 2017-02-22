@@ -28,7 +28,7 @@
 
 
 #include <QtTest/QTest>
-#include <Qt3DAnimation/qlerpblend.h>
+#include <Qt3DAnimation/qlerpclipblend.h>
 #include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/private/qabstractclipblendnode_p.h>
 #include <Qt3DAnimation/private/clipblendnode_p.h>
@@ -77,7 +77,7 @@ private Q_SLOTS:
     void checkInitializeFromPeer()
     {
         // GIVEN
-        Qt3DAnimation::QLerpBlend clipBlendNode;
+        Qt3DAnimation::QLerpClipBlend clipBlendNode;
         Qt3DAnimation::QAnimationClipLoader clip;
         clipBlendNode.addClip(&clip);
 
@@ -153,7 +153,7 @@ private Q_SLOTS:
         }
         {
             // WHEN
-            Qt3DAnimation::QLerpBlend clipBlendChild;
+            Qt3DAnimation::QLerpClipBlend clipBlendChild;
             // Will be destroyed when manager is destroyed
             TestClipBlendNode *backenChildClipBlendNode = new TestClipBlendNode();
             backendClipBlendNode.setClipBlendNodeManager(&manager);
@@ -182,8 +182,8 @@ private Q_SLOTS:
         // GIVEN
         TestClipBlendNode *backendClipBlendNode = new TestClipBlendNode();
         TestClipBlendNode *backendChildClipBlendNode = new TestClipBlendNode();
-        Qt3DAnimation::QLerpBlend clipBlendParent;
-        Qt3DAnimation::QLerpBlend childClipBlend(&clipBlendParent);
+        Qt3DAnimation::QLerpClipBlend clipBlendParent;
+        Qt3DAnimation::QLerpClipBlend childClipBlend(&clipBlendParent);
         Qt3DAnimation::Animation::ClipBlendNodeManager manager;
         backendClipBlendNode->setClipBlendNodeManager(&manager);
         backendChildClipBlendNode->setClipBlendNodeManager(&manager);

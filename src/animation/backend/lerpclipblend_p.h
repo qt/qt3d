@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_ANIMATION_LERPBLEND_P_H
-#define QT3DANIMATION_ANIMATION_LERPBLEND_P_H
+#ifndef QT3DANIMATION_ANIMATION_LERPCLIPBLEND_P_H
+#define QT3DANIMATION_ANIMATION_LERPCLIPBLEND_P_H
 
 //
 //  W A R N I N G
@@ -56,11 +56,11 @@ namespace Qt3DAnimation {
 
 namespace Animation {
 
-class Q_AUTOTEST_EXPORT LerpBlend : public ClipBlendNode
+class Q_AUTOTEST_EXPORT LerpClipBlend : public ClipBlendNode
 {
 public:
-    LerpBlend();
-    ~LerpBlend();
+    LerpClipBlend();
+    ~LerpClipBlend();
 
     inline float blendFactor() const { return m_blendFactor; }
     void setBlendFactor(float blendFactor) { m_blendFactor = blendFactor; } // For unit tests
@@ -80,4 +80,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_ANIMATION_LERPBLEND_P_H
+#endif // QT3DANIMATION_ANIMATION_LERPCLIPBLEND_P_H

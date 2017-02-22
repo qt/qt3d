@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QLERPBLEND_H
-#define QT3DANIMATION_QLERPBLEND_H
+#ifndef QT3DANIMATION_QLERPCLIPBLEND_H
+#define QT3DANIMATION_QLERPCLIPBLEND_H
 
 #include <Qt3DAnimation/qabstractclipblendnode.h>
 
@@ -43,16 +43,16 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QLerpBlendPrivate;
+class QLerpClipBlendPrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QLerpBlend : public QAbstractClipBlendNode
+class QT3DANIMATIONSHARED_EXPORT QLerpClipBlend : public QAbstractClipBlendNode
 {
     Q_OBJECT
     Q_PROPERTY(float blendFactor READ blendFactor WRITE setBlendFactor NOTIFY blendFactorChanged)
 
 public:
-    explicit QLerpBlend(Qt3DCore::QNode *parent = nullptr);
-    ~QLerpBlend();
+    explicit QLerpClipBlend(Qt3DCore::QNode *parent = nullptr);
+    ~QLerpClipBlend();
 
     float blendFactor() const;
 
@@ -63,10 +63,10 @@ Q_SIGNALS:
     void blendFactorChanged(float blendFactor);
 
 protected:
-    explicit QLerpBlend(QLerpBlendPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QLerpClipBlend(QLerpClipBlendPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
-    Q_DECLARE_PRIVATE(QLerpBlend)
+    Q_DECLARE_PRIVATE(QLerpClipBlend)
     Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
@@ -75,4 +75,4 @@ private:
 QT_END_NAMESPACE
 
 
-#endif // QT3DANIMATION_QLERPBLEND_H
+#endif // QT3DANIMATION_QLERPCLIPBLEND_H

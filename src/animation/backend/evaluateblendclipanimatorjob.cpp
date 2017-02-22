@@ -39,7 +39,7 @@
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 #include <Qt3DAnimation/private/animationutils_p.h>
-#include <Qt3DAnimation/private/lerpblend_p.h>
+#include <Qt3DAnimation/private/lerpclipblend_p.h>
 #include <Qt3DAnimation/private/clipblendnodevisitor_p.h>
 #include <Qt3DAnimation/private/job_common_p.h>
 

@@ -28,14 +28,14 @@
 
 
 #include <QtTest/QTest>
-#include <Qt3DAnimation/qlerpblend.h>
+#include <Qt3DAnimation/qlerpclipblend.h>
 #include <Qt3DAnimation/qanimationcliploader.h>
-#include <Qt3DAnimation/private/qlerpblend_p.h>
-#include <Qt3DAnimation/private/lerpblend_p.h>
+#include <Qt3DAnimation/private/qlerpclipblend_p.h>
+#include <Qt3DAnimation/private/lerpclipblend_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 
-class tst_LerpBlend : public Qt3DCore::QBackendNodeTester
+class tst_LerpClipBlend : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 
@@ -44,7 +44,7 @@ private Q_SLOTS:
     void checkInitialState()
     {
         // GIVEN
-        Qt3DAnimation::Animation::LerpBlend backendLerpBlend;
+        Qt3DAnimation::Animation::LerpClipBlend backendLerpBlend;
 
         // THEN
         QCOMPARE(backendLerpBlend.isEnabled(), false);
@@ -56,14 +56,14 @@ private Q_SLOTS:
     void checkInitializeFromPeer()
     {
         // GIVEN
-        Qt3DAnimation::QLerpBlend lerpBlend;
+        Qt3DAnimation::QLerpClipBlend lerpBlend;
         Qt3DAnimation::QAnimationClipLoader clip;
         lerpBlend.setBlendFactor(0.8f);
         lerpBlend.addClip(&clip);
 
         {
             // WHEN
-            Qt3DAnimation::Animation::LerpBlend backendLerpBlend;
+            Qt3DAnimation::Animation::LerpClipBlend backendLerpBlend;
             simulateInitialization(&lerpBlend, &backendLerpBlend);
 
             // THEN
@@ -75,7 +75,7 @@ private Q_SLOTS:
         }
         {
             // WHEN
-            Qt3DAnimation::Animation::LerpBlend backendLerpBlend;
+            Qt3DAnimation::Animation::LerpClipBlend backendLerpBlend;
             lerpBlend.setEnabled(false);
             simulateInitialization(&lerpBlend, &backendLerpBlend);
 
@@ -88,7 +88,7 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
-        Qt3DAnimation::Animation::LerpBlend backendLerpBlend;
+        Qt3DAnimation::Animation::LerpClipBlend backendLerpBlend;
         {
              // WHEN
              const bool newValue = false;
@@ -132,7 +132,7 @@ private Q_SLOTS:
         QFETCH(float, value2);
         QFETCH(float, blendFactor);
         QFETCH(float, result);
-        Qt3DAnimation::Animation::LerpBlend lerpBlend;
+        Qt3DAnimation::Animation::LerpClipBlend lerpBlend;
 
         // WHEN
         lerpBlend.setBlendFactor(blendFactor);
@@ -144,6 +144,6 @@ private Q_SLOTS:
 
 };
 
-QTEST_MAIN(tst_LerpBlend)
+QTEST_MAIN(tst_LerpClipBlend)
 
-#include "tst_lerpblend.moc"
+#include "tst_lerpclipblend.moc"

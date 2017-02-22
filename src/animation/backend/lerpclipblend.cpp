@@ -34,46 +34,51 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QLERPBLEND_P_H
-#define QT3DANIMATION_QLERPBLEND_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DAnimation/private/qabstractclipblendnode_p.h>
-#include <Qt3DCore/qnodeid.h>
-#include "qlerpblend.h"
+#include "lerpclipblend_p.h"
+#include <Qt3DAnimation/qclipblendnodecreatedchange.h>
+#include <Qt3DAnimation/private/qlerpclipblend_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QLerpBlend;
+namespace Animation {
 
-class QLerpBlendPrivate : public QAbstractClipBlendNodePrivate
+LerpClipBlend::LerpClipBlend()
+    : ClipBlendNode(ClipBlendNode::LerpBlendType)
+    , m_blendFactor(0.0f)
 {
-public:
-    QLerpBlendPrivate();
+}
 
-    Q_DECLARE_PUBLIC(QLerpBlend)
-    float m_blendFactor;
-};
-
-struct QLerpBlendData
+LerpClipBlend::~LerpClipBlend()
 {
-    float blendFactor;
-};
+}
+
+void LerpClipBlend::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+{
+    if (e->type() == Qt3DCore::PropertyUpdated) {
+        Qt3DCore::QPropertyUpdatedChangePtr change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("blendFactor"))
+            m_blendFactor = change->value().toFloat();
+    }
+}
+
+float LerpClipBlend::blend(float value1, float value2) const
+{
+    return ((1.0f - m_blendFactor) * value1) + (m_blendFactor * value2);
+}
+
+void LerpClipBlend::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    ClipBlendNode::initializeFromPeer(change);
+    const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QClipBlendNodeCreatedChange<Qt3DAnimation::QLerpClipBlendData>>(change);
+    const Qt3DAnimation::QLerpClipBlendData cloneData = creationChangeData->data;
+    m_blendFactor = cloneData.blendFactor;
+}
+
+} // Animation
 
 } // Qt3DAnimation
 
 QT_END_NAMESPACE
-
-#endif // QT3DANIMATION_QLERPBLEND_P_H

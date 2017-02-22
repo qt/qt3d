@@ -31,8 +31,8 @@
 #include <QSignalSpy>
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/clipblendnodevisitor_p.h>
-#include <Qt3DAnimation/private/lerpblend_p.h>
-#include <Qt3DAnimation/qlerpblend.h>
+#include <Qt3DAnimation/private/lerpclipblend_p.h>
+#include <Qt3DAnimation/qlerpclipblend.h>
 #include "qbackendnodetester.h"
 
 class tst_ClipBlendNodeVisitor : public Qt3DCore::QBackendNodeTester
@@ -43,17 +43,17 @@ private Q_SLOTS:
     void checkVisitAllNodes()
     {
         // GIVEN
-        Qt3DAnimation::QLerpBlend rootBlendNode;
-        Qt3DAnimation::QLerpBlend childBlendNode1(&rootBlendNode);
-        Qt3DAnimation::QLerpBlend childBlendNode2(&rootBlendNode);
-        Qt3DAnimation::QLerpBlend childBlendNode11(&childBlendNode1);
-        Qt3DAnimation::QLerpBlend childBlendNode12(&childBlendNode1);
+        Qt3DAnimation::QLerpClipBlend rootBlendNode;
+        Qt3DAnimation::QLerpClipBlend childBlendNode1(&rootBlendNode);
+        Qt3DAnimation::QLerpClipBlend childBlendNode2(&rootBlendNode);
+        Qt3DAnimation::QLerpClipBlend childBlendNode11(&childBlendNode1);
+        Qt3DAnimation::QLerpClipBlend childBlendNode12(&childBlendNode1);
 
-        Qt3DAnimation::Animation::LerpBlend *backendRootBlendNode = new Qt3DAnimation::Animation::LerpBlend();
-        Qt3DAnimation::Animation::LerpBlend *backendChildBlendNode1 = new Qt3DAnimation::Animation::LerpBlend();
-        Qt3DAnimation::Animation::LerpBlend *backendChildBlendNode2 = new Qt3DAnimation::Animation::LerpBlend();
-        Qt3DAnimation::Animation::LerpBlend *backendChildBlendNode11 = new Qt3DAnimation::Animation::LerpBlend();
-        Qt3DAnimation::Animation::LerpBlend *backendChildBlendNode12 = new Qt3DAnimation::Animation::LerpBlend();
+        Qt3DAnimation::Animation::LerpClipBlend *backendRootBlendNode = new Qt3DAnimation::Animation::LerpClipBlend();
+        Qt3DAnimation::Animation::LerpClipBlend *backendChildBlendNode1 = new Qt3DAnimation::Animation::LerpClipBlend();
+        Qt3DAnimation::Animation::LerpClipBlend *backendChildBlendNode2 = new Qt3DAnimation::Animation::LerpClipBlend();
+        Qt3DAnimation::Animation::LerpClipBlend *backendChildBlendNode11 = new Qt3DAnimation::Animation::LerpClipBlend();
+        Qt3DAnimation::Animation::LerpClipBlend *backendChildBlendNode12 = new Qt3DAnimation::Animation::LerpClipBlend();
 
         Qt3DAnimation::Animation::ClipBlendNodeManager manager;
         backendRootBlendNode->setClipBlendNodeManager(&manager);
@@ -112,9 +112,9 @@ private Q_SLOTS:
     void checkDoesntCrashIfRootNodeIsNotFound()
     {
         // GIVEN
-        Qt3DAnimation::QLerpBlend rootBlendNode;
+        Qt3DAnimation::QLerpClipBlend rootBlendNode;
 
-        Qt3DAnimation::Animation::LerpBlend *backendRootBlendNode = new Qt3DAnimation::Animation::LerpBlend();
+        Qt3DAnimation::Animation::LerpClipBlend *backendRootBlendNode = new Qt3DAnimation::Animation::LerpClipBlend();
 
         Qt3DAnimation::Animation::ClipBlendNodeManager manager;
         backendRootBlendNode->setClipBlendNodeManager(&manager);
@@ -139,13 +139,13 @@ private Q_SLOTS:
     void checkDoesntCrashIfChildNodeIsNotFound()
     {
         // GIVEN
-        Qt3DAnimation::QLerpBlend rootBlendNode;
-        Qt3DAnimation::QLerpBlend childBlendNode1(&rootBlendNode);
-        Qt3DAnimation::QLerpBlend childBlendNode2(&rootBlendNode);
+        Qt3DAnimation::QLerpClipBlend rootBlendNode;
+        Qt3DAnimation::QLerpClipBlend childBlendNode1(&rootBlendNode);
+        Qt3DAnimation::QLerpClipBlend childBlendNode2(&rootBlendNode);
 
-        Qt3DAnimation::Animation::LerpBlend *backendRootBlendNode = new Qt3DAnimation::Animation::LerpBlend();
-        Qt3DAnimation::Animation::LerpBlend *backendChildBlendNode1 = new Qt3DAnimation::Animation::LerpBlend();
-        Qt3DAnimation::Animation::LerpBlend *backendChildBlendNode2 = new Qt3DAnimation::Animation::LerpBlend();
+        Qt3DAnimation::Animation::LerpClipBlend *backendRootBlendNode = new Qt3DAnimation::Animation::LerpClipBlend();
+        Qt3DAnimation::Animation::LerpClipBlend *backendChildBlendNode1 = new Qt3DAnimation::Animation::LerpClipBlend();
+        Qt3DAnimation::Animation::LerpClipBlend *backendChildBlendNode2 = new Qt3DAnimation::Animation::LerpClipBlend();
 
         Qt3DAnimation::Animation::ClipBlendNodeManager manager;
         backendRootBlendNode->setClipBlendNodeManager(&manager);

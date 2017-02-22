@@ -39,7 +39,7 @@
 
 #include <QtTest/QTest>
 #include <Qt3DAnimation/qblendedclipanimator.h>
-#include <Qt3DAnimation/qlerpblend.h>
+#include <Qt3DAnimation/qlerpclipblend.h>
 #include <Qt3DAnimation/qchannelmapper.h>
 #include <Qt3DAnimation/private/qblendedclipanimator_p.h>
 #include <Qt3DAnimation/private/blendedclipanimator_p.h>
@@ -99,7 +99,7 @@ private Q_SLOTS:
         // GIVEN
         Qt3DAnimation::QBlendedClipAnimator blendedClipAnimator;
         Qt3DAnimation::QChannelMapper mapper;
-        Qt3DAnimation::QLerpBlend blendTree;
+        Qt3DAnimation::QLerpClipBlend blendTree;
         blendedClipAnimator.setRunning(true);
         blendedClipAnimator.setBlendTree(&blendTree);
         blendedClipAnimator.setChannelMapper(&mapper);
