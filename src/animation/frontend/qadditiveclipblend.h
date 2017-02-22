@@ -34,45 +34,43 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QADDITIVEBLEND_P_H
-#define QT3DANIMATION_QADDITIVEBLEND_P_H
+#ifndef QT3DANIMATION_QADDITIVECLIPBLEND_H
+#define QT3DANIMATION_QADDITIVECLIPBLEND_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DAnimation/private/qabstractclipblendnode_p.h>
-#include <Qt3DCore/qnodeid.h>
+#include <Qt3DAnimation/qabstractclipblendnode.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QAdditiveBlend;
+class QAdditiveClipBlendPrivate;
 
-class QAdditiveBlendPrivate : public QAbstractClipBlendNodePrivate
+class QT3DANIMATIONSHARED_EXPORT QAdditiveClipBlend : public QAbstractClipBlendNode
 {
+    Q_OBJECT
+    Q_PROPERTY(float blendFactor READ blendFactor WRITE setBlendFactor NOTIFY blendFactorChanged)
 public:
-    QAdditiveBlendPrivate();
+    explicit QAdditiveClipBlend(Qt3DCore::QNode *parent = nullptr);
+    ~QAdditiveClipBlend();
 
-    Q_DECLARE_PUBLIC(QAdditiveBlend)
-    float m_blendFactor;
-};
+    float blendFactor() const;
 
-struct QAdditiveBlendData
-{
-    float blendFactor;
+public Q_SLOTS:
+    void setBlendFactor(float blendFactor);
+
+Q_SIGNALS:
+    void blendFactorChanged(float blendFactor);
+
+protected:
+    explicit QAdditiveClipBlend(QAdditiveClipBlendPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+
+private:
+    Q_DECLARE_PRIVATE(QAdditiveClipBlend)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3DAnimation
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_QADDITIVEBLEND_P_H
+#endif // QT3DANIMATION_QADDITIVECLIPBLEND_H

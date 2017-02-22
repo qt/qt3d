@@ -17,8 +17,6 @@ HEADERS += \
     $$PWD/qchannelmapping_p.h \
     $$PWD/qclipblendnodecreatedchange.h \
     $$PWD/qclipblendnodecreatedchange_p.h \
-    $$PWD/qadditiveblend.h \
-    $$PWD/qadditiveblend_p.h \
     $$PWD/qanimationcontroller.h \
     $$PWD/qanimationcontroller_p.h \
     $$PWD/qanimationgroup.h \
@@ -36,7 +34,9 @@ HEADERS += \
     $$PWD/qanimationcliploader.h \
     $$PWD/qanimationcliploader_p.h \
     $$PWD/qlerpclipblend.h \
-    $$PWD/qlerpclipblend_p.h
+    $$PWD/qlerpclipblend_p.h \
+    $$PWD/qadditiveclipblend.h \
+    $$PWD/qadditiveclipblend_p.h
 
 SOURCES += \
     $$PWD/qanimationaspect.cpp \
@@ -48,7 +48,6 @@ SOURCES += \
     $$PWD/qchannelmapper.cpp \
     $$PWD/qchannelmapping.cpp \
     $$PWD/qclipblendnodecreatedchange.cpp \
-    $$PWD/qadditiveblend.cpp \
     $$PWD/qanimationcontroller.cpp \
     $$PWD/qanimationgroup.cpp \
     $$PWD/qkeyframeanimation.cpp \
@@ -57,6 +56,7 @@ SOURCES += \
     $$PWD/qmorphtarget.cpp \
     $$PWD/qvertexblendanimation.cpp \
     $$PWD/qanimationcliploader.cpp \
-    $$PWD/qlerpclipblend.cpp
+    $$PWD/qlerpclipblend.cpp \
+    $$PWD/qadditiveclipblend.cpp
 
 INCLUDEPATH += $$PWD

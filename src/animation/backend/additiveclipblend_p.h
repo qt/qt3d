@@ -34,43 +34,50 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QADDITIVEBLEND_H
-#define QT3DANIMATION_QADDITIVEBLEND_H
+#ifndef QT3DANIMATION_ANIMATION_ADDITIVECLIPBLEND_P_H
+#define QT3DANIMATION_ANIMATION_ADDITIVECLIPBLEND_P_H
 
-#include <Qt3DAnimation/qabstractclipblendnode.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DAnimation/private/clipblendnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QAdditiveBlendPrivate;
+namespace Animation {
 
-class QT3DANIMATIONSHARED_EXPORT QAdditiveBlend : public QAbstractClipBlendNode
+class Q_AUTOTEST_EXPORT AdditiveClipBlend : public ClipBlendNode
 {
-    Q_OBJECT
-    Q_PROPERTY(float blendFactor READ blendFactor WRITE setBlendFactor NOTIFY blendFactorChanged)
 public:
-    explicit QAdditiveBlend(Qt3DCore::QNode *parent = nullptr);
-    ~QAdditiveBlend();
+    AdditiveClipBlend();
+    ~AdditiveClipBlend();
 
-    float blendFactor() const;
+    inline float blendFactor() const { return m_blendFactor; }
+    void setBlendFactor(float blendFactor) { m_blendFactor = blendFactor; } // For unit tests
 
-public Q_SLOTS:
-    void setBlendFactor(float blendFactor);
-
-Q_SIGNALS:
-    void blendFactorChanged(float blendFactor);
-
-protected:
-    explicit QAdditiveBlend(QAdditiveBlendPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
+    float blend(float value1, float value2) const Q_DECL_FINAL;
 
 private:
-    Q_DECLARE_PRIVATE(QAdditiveBlend)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
+    float m_blendFactor;
 };
+
+} // Animation
 
 } // Qt3DAnimation
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_QADDITIVEBLEND_H
+#endif // QT3DANIMATION_ANIMATION_ADDITIVECLIPBLEND_P_H

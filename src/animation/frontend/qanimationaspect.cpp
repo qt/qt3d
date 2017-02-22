@@ -45,12 +45,12 @@
 #include <Qt3DAnimation/qchannelmapping.h>
 #include <Qt3DAnimation/qchannelmapper.h>
 #include <Qt3DAnimation/qlerpclipblend.h>
-#include <Qt3DAnimation/qadditiveblend.h>
+#include <Qt3DAnimation/qadditiveclipblend.h>
 #include <Qt3DAnimation/private/handler_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/nodefunctor_p.h>
 #include <Qt3DAnimation/private/lerpclipblend_p.h>
-#include <Qt3DAnimation/private/additiveblend_p.h>
+#include <Qt3DAnimation/private/additiveclipblend_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -109,9 +109,9 @@ QAnimationAspect::QAnimationAspect(QAnimationAspectPrivate &dd, QObject *parent)
     registerBackendType<QLerpClipBlend>(
                 QSharedPointer<Animation::ClipBlendNodeFunctor<Animation::LerpClipBlend, Animation::ClipAnimatorManager>>::create(d->m_handler.data(),
                                                                                                                                   d->m_handler->clipBlendNodeManager()));
-    registerBackendType<QAdditiveBlend>(
-                QSharedPointer<Animation::ClipBlendNodeFunctor<Animation::AdditiveBlend, Animation::ClipAnimatorManager>>::create(d->m_handler.data(),
-                                                                                                                             d->m_handler->clipBlendNodeManager()));
+    registerBackendType<QAdditiveClipBlend>(
+                QSharedPointer<Animation::ClipBlendNodeFunctor<Animation::AdditiveClipBlend, Animation::ClipAnimatorManager>>::create(d->m_handler.data(),
+                                                                                                                                      d->m_handler->clipBlendNodeManager()));
 }
 
 /*! \internal */

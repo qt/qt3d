@@ -23,9 +23,9 @@ HEADERS += \
     $$PWD/animationutils_p.h \
     $$PWD/buildblendtreesjob_p.h \
     $$PWD/evaluateblendclipanimatorjob_p.h \
-    $$PWD/additiveblend_p.h \
     $$PWD/animationcliploader_p.h \
-    $$PWD/lerpclipblend_p.h
+    $$PWD/lerpclipblend_p.h \
+    $$PWD/additiveclipblend_p.h
 
 SOURCES += \
     $$PWD/handler.cpp \
@@ -46,6 +46,6 @@ SOURCES += \
     $$PWD/animationutils.cpp \
     $$PWD/buildblendtreesjob.cpp \
     $$PWD/evaluateblendclipanimatorjob.cpp \
-    $$PWD/additiveblend.cpp \
     $$PWD/animationcliploader.cpp \
-    $$PWD/lerpclipblend.cpp
+    $$PWD/lerpclipblend.cpp \
+    $$PWD/additiveclipblend.cpp

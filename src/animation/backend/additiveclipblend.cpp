@@ -34,21 +34,11 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_ANIMATION_ADDITIVEBLEND_P_H
-#define QT3DANIMATION_ANIMATION_ADDITIVEBLEND_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DAnimation/private/clipblendnode_p.h>
+#include "additiveclipblend_p.h"
+#include <Qt3DAnimation/qclipblendnodecreatedchange.h>
+#include <Qt3DAnimation/qadditiveclipblend.h>
+#include <Qt3DAnimation/private/qadditiveclipblend_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,28 +46,40 @@ namespace Qt3DAnimation {
 
 namespace Animation {
 
-class Q_AUTOTEST_EXPORT AdditiveBlend : public ClipBlendNode
+AdditiveClipBlend::AdditiveClipBlend()
+    : ClipBlendNode(ClipBlendNode::AdditiveBlendType)
+    , m_blendFactor(0.0f)
 {
-public:
-    AdditiveBlend();
-    ~AdditiveBlend();
+}
 
-    inline float blendFactor() const { return m_blendFactor; }
-    void setBlendFactor(float blendFactor) { m_blendFactor = blendFactor; } // For unit tests
+AdditiveClipBlend::~AdditiveClipBlend()
+{
+}
 
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
-    float blend(float value1, float value2) const Q_DECL_FINAL;
+void AdditiveClipBlend::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+{
+    if (e->type() == Qt3DCore::PropertyUpdated) {
+        Qt3DCore::QPropertyUpdatedChangePtr change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("blendFactor"))
+            m_blendFactor = change->value().toFloat();
+    }
+}
 
-private:
-    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+float AdditiveClipBlend::blend(float value1, float value2) const
+{
+    return value1 + (m_blendFactor * value2);
+}
 
-    float m_blendFactor;
-};
+void AdditiveClipBlend::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    ClipBlendNode::initializeFromPeer(change);
+    const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QClipBlendNodeCreatedChange<Qt3DAnimation::QAdditiveClipBlendData>>(change);
+    const Qt3DAnimation::QAdditiveClipBlendData cloneData = creationChangeData->data;
+    m_blendFactor = cloneData.blendFactor;
+}
 
 } // Animation
 
 } // Qt3DAnimation
 
 QT_END_NAMESPACE
-
-#endif // QT3DANIMATION_ANIMATION_ADDITIVEBLEND_P_H
