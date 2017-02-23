@@ -36,7 +36,9 @@ HEADERS += \
     $$PWD/qlerpclipblend.h \
     $$PWD/qlerpclipblend_p.h \
     $$PWD/qadditiveclipblend.h \
-    $$PWD/qadditiveclipblend_p.h
+    $$PWD/qadditiveclipblend_p.h \
+    $$PWD/qclipblendvalue.h \
+    $$PWD/qclipblendvalue_p.h
 
 SOURCES += \
     $$PWD/qanimationaspect.cpp \
@@ -57,6 +59,7 @@ SOURCES += \
     $$PWD/qvertexblendanimation.cpp \
     $$PWD/qanimationcliploader.cpp \
     $$PWD/qlerpclipblend.cpp \
-    $$PWD/qadditiveclipblend.cpp
+    $$PWD/qadditiveclipblend.cpp \
+    $$PWD/qclipblendvalue.cpp
 
 INCLUDEPATH += $$PWD

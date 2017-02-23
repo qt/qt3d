@@ -6,7 +6,8 @@ SUBDIRS += \
     qclipanimator \
     qblendedclipanimator \
     qchannelmapping \
-    qchannelmapper
+    qchannelmapper \
+    qclipblendvalue
 
 qtConfig(private_tests) {
     SUBDIRS += \
