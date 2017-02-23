@@ -87,6 +87,8 @@ namespace Qt3DAnimation {
 
 QAdditiveClipBlendPrivate::QAdditiveClipBlendPrivate()
     : QAbstractClipBlendNodePrivate()
+    , m_baseClip(nullptr)
+    , m_additiveClip(nullptr)
     , m_additiveFactor(0.0f)
 {
 }
@@ -110,6 +112,8 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAdditiveClipBlend::createNodeCreationChange
     Q_D(const QAdditiveClipBlend);
     auto creationChange = QClipBlendNodeCreatedChangePtr<QAdditiveClipBlendData>::create(this);
     QAdditiveClipBlendData &data = creationChange->data;
+    data.baseClipId = Qt3DCore::qIdForNode(d->m_baseClip);
+    data.additiveClipId = Qt3DCore::qIdForNode(d->m_additiveClip);
     data.additiveFactor = d->m_additiveFactor;
     return creationChange;
 }
@@ -132,6 +136,18 @@ float QAdditiveClipBlend::additiveFactor() const
     return d->m_additiveFactor;
 }
 
+QAbstractClipBlendNode *QAdditiveClipBlend::baseClip() const
+{
+    Q_D(const QAdditiveClipBlend);
+    return d->m_baseClip;
+}
+
+QAbstractClipBlendNode *QAdditiveClipBlend::additiveClip() const
+{
+    Q_D(const QAdditiveClipBlend);
+    return d->m_additiveClip;
+}
+
 void QAdditiveClipBlend::setAdditiveFactor(float additiveFactor)
 {
     Q_D(QAdditiveClipBlend);
@@ -140,6 +156,45 @@ void QAdditiveClipBlend::setAdditiveFactor(float additiveFactor)
 
     d->m_additiveFactor = additiveFactor;
     emit additiveFactorChanged(additiveFactor);
+}
+
+void QAdditiveClipBlend::setBaseClip(QAbstractClipBlendNode *baseClip)
+{
+    Q_D(QAdditiveClipBlend);
+    if (d->m_baseClip == baseClip)
+        return;
+
+    if (d->m_baseClip)
+        d->unregisterDestructionHelper(d->m_baseClip);
+
+    if (baseClip && !baseClip->parent())
+        baseClip->setParent(this);
+    d->m_baseClip = baseClip;
+
+    // Ensures proper bookkeeping
+    if (d->m_baseClip)
+        d->registerDestructionHelper(d->m_baseClip, &QAdditiveClipBlend::setBaseClip, d->m_baseClip);
+
+    emit baseClipChanged(baseClip);
+}
+
+void QAdditiveClipBlend::setAdditiveClip(QAbstractClipBlendNode *additiveClip)
+{
+    Q_D(QAdditiveClipBlend);
+    if (d->m_additiveClip == additiveClip)
+        return;
+
+    if (d->m_additiveClip)
+        d->unregisterDestructionHelper(d->m_additiveClip);
+
+    if (additiveClip && !additiveClip->parent())
+        additiveClip->setParent(this);
+    d->m_additiveClip = additiveClip;
+
+    // Ensures proper bookkeeping
+    if (d->m_additiveClip)
+        d->registerDestructionHelper(d->m_additiveClip, &QAdditiveClipBlend::setAdditiveClip, d->m_additiveClip);
+    emit additiveClipChanged(additiveClip);
 }
 
 /*!

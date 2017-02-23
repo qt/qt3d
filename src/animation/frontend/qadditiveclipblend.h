@@ -48,18 +48,26 @@ class QAdditiveClipBlendPrivate;
 class QT3DANIMATIONSHARED_EXPORT QAdditiveClipBlend : public QAbstractClipBlendNode
 {
     Q_OBJECT
+    Q_PROPERTY(Qt3DAnimation::QAbstractClipBlendNode *baseClip READ baseClip WRITE setBaseClip NOTIFY baseClipChanged)
+    Q_PROPERTY(Qt3DAnimation::QAbstractClipBlendNode *additiveClip READ additiveClip WRITE setAdditiveClip NOTIFY additiveClipChanged)
     Q_PROPERTY(float additiveFactor READ additiveFactor WRITE setAdditiveFactor NOTIFY additiveFactorChanged)
 public:
     explicit QAdditiveClipBlend(Qt3DCore::QNode *parent = nullptr);
     ~QAdditiveClipBlend();
 
     float additiveFactor() const;
+    Qt3DAnimation::QAbstractClipBlendNode *baseClip() const;
+    Qt3DAnimation::QAbstractClipBlendNode *additiveClip() const;
 
 public Q_SLOTS:
     void setAdditiveFactor(float additiveFactor);
+    void setBaseClip(Qt3DAnimation::QAbstractClipBlendNode *baseClip);
+    void setAdditiveClip(Qt3DAnimation::QAbstractClipBlendNode *additiveClip);
 
 Q_SIGNALS:
     void additiveFactorChanged(float additiveFactor);
+    void baseClipChanged(Qt3DAnimation::QAbstractClipBlendNode *baseClip);
+    void additiveClipChanged(Qt3DAnimation::QAbstractClipBlendNode *additiveClip);
 
 protected:
     explicit QAdditiveClipBlend(QAdditiveClipBlendPrivate &dd, Qt3DCore::QNode *parent = nullptr);

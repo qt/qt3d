@@ -62,6 +62,12 @@ public:
     AdditiveClipBlend();
     ~AdditiveClipBlend();
 
+    inline Qt3DCore::QNodeId baseClipId() const { return m_baseClipId; }
+    void setBaseClipId(Qt3DCore::QNodeId baseClipId) { m_baseClipId = baseClipId; } // For unit tests
+
+    inline Qt3DCore::QNodeId additiveClipId() const { return m_additiveClipId; }
+    void setAdditiveClipId(Qt3DCore::QNodeId additiveClipId) { m_additiveClipId = additiveClipId; } // For unit tests
+
     inline float additiveFactor() const { return m_additiveFactor; }
     void setAdditiveFactor(float additiveFactor) { m_additiveFactor = additiveFactor; } // For unit tests
 
@@ -71,6 +77,8 @@ public:
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
+    Qt3DCore::QNodeId m_baseClipId;
+    Qt3DCore::QNodeId m_additiveClipId;
     float m_additiveFactor;
 };
 

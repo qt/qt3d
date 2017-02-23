@@ -49,6 +49,8 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendAdditiveBlend.isEnabled(), false);
         QVERIFY(backendAdditiveBlend.peerId().isNull());
+        QCOMPARE(backendAdditiveBlend.baseClipId(), Qt3DCore::QNodeId());
+        QCOMPARE(backendAdditiveBlend.additiveClipId(), Qt3DCore::QNodeId());
         QCOMPARE(backendAdditiveBlend.additiveFactor(), 0.0f);
         QCOMPARE(backendAdditiveBlend.blendType(), Qt3DAnimation::Animation::ClipBlendNode::AdditiveBlendType);
     }
@@ -57,7 +59,11 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DAnimation::QAdditiveClipBlend additiveBlend;
+        Qt3DAnimation::QAdditiveClipBlend baseClip;
+        Qt3DAnimation::QAdditiveClipBlend additiveClip;
         Qt3DAnimation::QAnimationClipLoader clip;
+        additiveBlend.setBaseClip(&baseClip);
+        additiveBlend.setAdditiveClip(&additiveClip);
         additiveBlend.setAdditiveFactor(0.8f);
         additiveBlend.addClip(&clip);
 
@@ -69,6 +75,8 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(backendAdditiveBlend.isEnabled(), true);
             QCOMPARE(backendAdditiveBlend.peerId(), additiveBlend.id());
+            QCOMPARE(backendAdditiveBlend.baseClipId(), baseClip.id());
+            QCOMPARE(backendAdditiveBlend.additiveClipId(), additiveClip.id());
             QCOMPARE(backendAdditiveBlend.additiveFactor(), 0.8f);
             QCOMPARE(backendAdditiveBlend.clipIds().size(), 1);
             QCOMPARE(backendAdditiveBlend.clipIds().first(), clip.id());
@@ -110,6 +118,28 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(backendAdditiveBlend.additiveFactor(), newValue);
+        }
+        {
+            // WHEN
+            const Qt3DAnimation::QAdditiveClipBlend newValue;
+            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+            change->setPropertyName("baseClip");
+            change->setValue(QVariant::fromValue(newValue.id()));
+            backendAdditiveBlend.sceneChangeEvent(change);
+
+            // THEN
+            QCOMPARE(backendAdditiveBlend.baseClipId(), newValue.id());
+        }
+        {
+            // WHEN
+            const Qt3DAnimation::QAdditiveClipBlend newValue;
+            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+            change->setPropertyName("additiveClip");
+            change->setValue(QVariant::fromValue(newValue.id()));
+            backendAdditiveBlend.sceneChangeEvent(change);
+
+            // THEN
+            QCOMPARE(backendAdditiveBlend.additiveClipId(), newValue.id());
         }
     }
 

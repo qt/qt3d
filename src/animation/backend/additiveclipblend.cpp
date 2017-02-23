@@ -48,6 +48,8 @@ namespace Animation {
 
 AdditiveClipBlend::AdditiveClipBlend()
     : ClipBlendNode(ClipBlendNode::AdditiveBlendType)
+    , m_baseClipId()
+    , m_additiveClipId()
     , m_additiveFactor(0.0f)
 {
 }
@@ -62,6 +64,10 @@ void AdditiveClipBlend::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         Qt3DCore::QPropertyUpdatedChangePtr change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("additiveFactor"))
             m_additiveFactor = change->value().toFloat();
+        else if (change->propertyName() == QByteArrayLiteral("baseClip"))
+            m_baseClipId = change->value().value<Qt3DCore::QNodeId>();
+        else if (change->propertyName() == QByteArrayLiteral("additiveClip"))
+            m_additiveClipId = change->value().value<Qt3DCore::QNodeId>();
     }
 }
 
@@ -75,6 +81,8 @@ void AdditiveClipBlend::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBas
     ClipBlendNode::initializeFromPeer(change);
     const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QClipBlendNodeCreatedChange<Qt3DAnimation::QAdditiveClipBlendData>>(change);
     const Qt3DAnimation::QAdditiveClipBlendData cloneData = creationChangeData->data;
+    m_baseClipId = cloneData.baseClipId;
+    m_additiveClipId = cloneData.additiveClipId;
     m_additiveFactor = cloneData.additiveFactor;
 }
 
