@@ -22,6 +22,7 @@ struct EnvironmentLight {
     samplerCube specular; // For specular contribution
 };
 uniform EnvironmentLight envLight;
+uniform int envLightCount = 0;
 
 void adsModelNormalMapped(const in vec3 worldPos,
                           const in vec3 tsNormal,

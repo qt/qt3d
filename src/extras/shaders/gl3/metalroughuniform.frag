@@ -288,11 +288,13 @@ void main()
     vec3 cLinear = vec3(0.0);
 
     vec3 worldView = normalize(eyePosition - worldPosition);
-    cLinear += pbrIblModel(worldNormal,
-                           worldView,
-                           baseColor.rgb,
-                           metalness,
-                           roughness);
+    for (int i = 0; i < envLightCount; ++i) {
+        cLinear += pbrIblModel(worldNormal,
+                               worldView,
+                               baseColor.rgb,
+                               metalness,
+                               roughness);
+    }
 
     for (int i = 0; i < lightCount; ++i) {
         cLinear += pbrModel(i,

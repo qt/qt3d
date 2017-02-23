@@ -317,12 +317,14 @@ void main()
     vec3 tNormal = 2.0 * texture(normalMap, texCoord).rgb - vec3(1.0);
     vec3 wNormal = normalize(transpose(worldToTangentMatrix) * tNormal);
 
-    cLinear += pbrIblModel(wNormal,
-                           wView,
-                           baseColor,
-                           metalness,
-                           roughness,
-                           ambientOcclusion);
+    for (int i = 0; i < envLightCount; ++i) {
+        cLinear += pbrIblModel(wNormal,
+                               wView,
+                               baseColor,
+                               metalness,
+                               roughness,
+                               ambientOcclusion);
+    }
 
     for (int i = 0; i < lightCount; ++i) {
         cLinear += pbrModel(i,
