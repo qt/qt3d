@@ -75,6 +75,7 @@
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qfrustumculling.h>
 #include <Qt3DRender/qabstractlight.h>
+#include <Qt3DRender/qenvironmentlight.h>
 #include <Qt3DRender/qdispatchcompute.h>
 #include <Qt3DRender/qcomputecommand.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
@@ -121,6 +122,7 @@
 #include <Qt3DRender/private/qsceneimportfactory_p.h>
 #include <Qt3DRender/private/frustumculling_p.h>
 #include <Qt3DRender/private/light_p.h>
+#include <Qt3DRender/private/environmentlight_p.h>
 #include <Qt3DRender/private/dispatchcompute_p.h>
 #include <Qt3DRender/private/computecommand_p.h>
 #include <Qt3DRender/private/rendersurfaceselector_p.h>
@@ -223,6 +225,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QEffect>(QSharedPointer<Render::NodeFunctor<Render::Effect, Render::EffectManager> >::create(m_renderer));
     q->registerBackendType<QFilterKey>(QSharedPointer<Render::NodeFunctor<Render::FilterKey, Render::FilterKeyManager> >::create(m_renderer));
     q->registerBackendType<QAbstractLight>(QSharedPointer<Render::RenderLightFunctor>::create(m_renderer, m_nodeManagers));
+    q->registerBackendType<QEnvironmentLight>(QSharedPointer<Render::NodeFunctor<Render::EnvironmentLight, Render::EnvironmentLightManager> >::create(m_renderer));
     q->registerBackendType<QMaterial>(QSharedPointer<Render::NodeFunctor<Render::Material, Render::MaterialManager> >::create(m_renderer));
     q->registerBackendType<QParameter>(QSharedPointer<Render::NodeFunctor<Render::Parameter, Render::ParameterManager> >::create(m_renderer));
     q->registerBackendType<QRenderPass>(QSharedPointer<Render::NodeFunctor<Render::RenderPass, Render::RenderPassManager> >::create(m_renderer));
@@ -288,6 +291,7 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     unregisterBackendType<QEffect>();
     unregisterBackendType<QFilterKey>();
     unregisterBackendType<QAbstractLight>();
+    unregisterBackendType<QEnvironmentLight>();
     unregisterBackendType<QMaterial>();
     unregisterBackendType<QParameter>();
     unregisterBackendType<QRenderPass>();
