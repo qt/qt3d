@@ -31,6 +31,7 @@ qtConfig(private_tests) {
         qframegraphnode \
         qlayerfilter \
         qabstractlight \
+        qenvironmentlight \
         qray3d \
         qrenderpassfilter \
         qrendertargetselector \
