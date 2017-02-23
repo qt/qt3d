@@ -215,6 +215,7 @@ public:
     QSurface *surface() const { return m_surface; }
 
     void setLightSources(const QVector<LightSource> &lightSources) Q_DECL_NOTHROW { m_lightSources = lightSources; }
+    void setEnvironmentLight(EnvironmentLight *environmentLight) Q_DECL_NOTHROW { m_environmentLight = environmentLight; }
 
     void updateMatrices();
 
@@ -253,7 +254,7 @@ public:
 
 private:
     void setShaderAndUniforms(RenderCommand *command, RenderPass *pass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform,
-                              const QVector<LightSource> &activeLightSources) const;
+                              const QVector<LightSource> &activeLightSources, EnvironmentLight *environmentLight) const;
 
     mutable QThreadStorage<UniformBlockValueBuilder*> m_localData;
 
@@ -289,6 +290,7 @@ private:
     // the render thread is submitting these commands.
     QVector<RenderCommand *> m_commands;
     mutable QVector<LightSource> m_lightSources;
+    EnvironmentLight *m_environmentLight;
 
     QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> m_parameters;
 
