@@ -361,6 +361,7 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
     // is only accessed from the same thread
     UniformBlockValueBuilder *builder = new UniformBlockValueBuilder();
     builder->shaderDataManager = m_manager->shaderDataManager();
+    builder->textureManager = m_manager->textureManager();
     m_localData.setLocalData(builder);
 
     QVector<RenderCommand *> commands;
@@ -479,6 +480,7 @@ QVector<RenderCommand *> RenderView::buildComputeRenderCommands(const QVector<En
     // is only accessed from the same thread
     UniformBlockValueBuilder *builder = new UniformBlockValueBuilder();
     builder->shaderDataManager = m_manager->shaderDataManager();
+    builder->textureManager = m_manager->textureManager();
     m_localData.setLocalData(builder);
 
     // If the RenderView contains only a ComputeDispatch then it cares about

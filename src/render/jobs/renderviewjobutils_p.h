@@ -83,6 +83,7 @@ class NodeManagers;
 class ShaderDataManager;
 struct ShaderUniform;
 class ShaderData;
+class TextureManager;
 class RenderStateManager;
 class RenderStateCollection;
 
@@ -169,6 +170,7 @@ struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
     QHash<QString, ShaderUniform> uniforms;
     UniformBlockValueBuilderHash activeUniformNamesToValue;
     ShaderDataManager *shaderDataManager;
+    TextureManager *textureManager;
     QMatrix4x4 viewMatrix;
 };
 
