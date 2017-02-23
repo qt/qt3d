@@ -94,10 +94,6 @@ void QMetalRoughMaterialPrivate::init()
             this, &QMetalRoughMaterialPrivate::handleMetallicChanged);
     connect(m_roughnessParameter, &Qt3DRender::QParameter::valueChanged,
             this, &QMetalRoughMaterialPrivate::handleRoughnessChanged);
-    connect(m_environmentIrradianceParameter, &Qt3DRender::QParameter::valueChanged,
-            this, &QMetalRoughMaterialPrivate::handleEnvironmentIrradianceChanged);
-    connect(m_environmentSpecularParameter, &Qt3DRender::QParameter::valueChanged,
-            this, &QMetalRoughMaterialPrivate::handleEnvironmentSpecularChanged);
 
     m_metalRoughGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/metalrough.vert"))));
     m_metalRoughGL3Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/metalroughuniform.frag"))));
@@ -120,6 +116,13 @@ void QMetalRoughMaterialPrivate::init()
     m_metalRoughEffect->addParameter(m_baseColorParameter);
     m_metalRoughEffect->addParameter(m_metalnessParameter);
     m_metalRoughEffect->addParameter(m_roughnessParameter);
+
+    // Note that even though those parameters are not exposed in the API,
+    // they need to be kept around for now due to a bug in some drivers/GPUs
+    // (at least Intel) which cause issues with unbound textures even if you
+    // don't try to sample from them.
+    // Can probably go away once we generate the shaders and deal in this
+    // case in a better way.
     m_metalRoughEffect->addParameter(m_environmentIrradianceParameter);
     m_metalRoughEffect->addParameter(m_environmentSpecularParameter);
 
@@ -141,18 +144,6 @@ void QMetalRoughMaterialPrivate::handleRoughnessChanged(const QVariant &var)
 {
     Q_Q(QMetalRoughMaterial);
     emit q->roughnessChanged(var.toFloat());
-}
-
-void QMetalRoughMaterialPrivate::handleEnvironmentIrradianceChanged(const QVariant &var)
-{
-    Q_Q(QMetalRoughMaterial);
-    emit q->environmentIrradianceChanged(var.value<QAbstractTexture *>());
-}
-
-void QMetalRoughMaterialPrivate::handleEnvironmentSpecularChanged(const QVariant &var)
-{
-    Q_Q(QMetalRoughMaterial);
-    emit q->environmentSpecularChanged(var.value<QAbstractTexture *>());
 }
 
 /*!
@@ -226,46 +217,6 @@ float QMetalRoughMaterial::roughness() const
     return d->m_roughnessParameter->value().toFloat();
 }
 
-/*!
-    \property QMetalRoughMaterial::environmentIrradiance
-
-    Holds the current environment irradiance map texture.
-
-    By default, the environment irradiance texture has the following properties:
-
-    \list
-        \li Linear minification and magnification filters
-        \li Linear mipmap with mipmapping enabled
-        \li Repeat wrap mode
-        \li Maximum anisotropy of 16.0
-    \endlist
-*/
-QAbstractTexture *QMetalRoughMaterial::environmentIrradiance() const
-{
-    Q_D(const QMetalRoughMaterial);
-    return d->m_environmentIrradianceParameter->value().value<QAbstractTexture *>();
-}
-
-/*!
-    \property QMetalRoughMaterial::environmentSpecular
-
-    Holds the current environment specular map texture.
-
-    By default, the environment specular texture has the following properties:
-
-    \list
-        \li Linear minification and magnification filters
-        \li Linear mipmap with mipmapping enabled
-        \li Repeat wrap mode
-        \li Maximum anisotropy of 16.0
-    \endlist
-*/
-QAbstractTexture *QMetalRoughMaterial::environmentSpecular() const
-{
-    Q_D(const QMetalRoughMaterial);
-    return d->m_environmentSpecularParameter->value().value<QAbstractTexture *>();
-}
-
 void QMetalRoughMaterial::setBaseColor(const QColor &baseColor)
 {
     Q_D(QMetalRoughMaterial);
@@ -282,18 +233,6 @@ void QMetalRoughMaterial::setRoughness(float roughness)
 {
     Q_D(QMetalRoughMaterial);
     d->m_roughnessParameter->setValue(QVariant::fromValue(roughness));
-}
-
-void QMetalRoughMaterial::setEnvironmentIrradiance(QAbstractTexture *environmentIrradiance)
-{
-    Q_D(QMetalRoughMaterial);
-    d->m_environmentIrradianceParameter->setValue(QVariant::fromValue(environmentIrradiance));
-}
-
-void QMetalRoughMaterial::setEnvironmentSpecular(QAbstractTexture *environmentSpecular)
-{
-    Q_D(QMetalRoughMaterial);
-    d->m_environmentSpecularParameter->setValue(QVariant::fromValue(environmentSpecular));
 }
 
 } // namespace Qt3DExtras

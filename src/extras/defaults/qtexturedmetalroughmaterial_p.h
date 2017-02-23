@@ -83,8 +83,6 @@ public:
     void handleRoughnessChanged(const QVariant &var);
     void handleAmbientOcclusionChanged(const QVariant &var);
     void handleNormalChanged(const QVariant &var);
-    void handleEnvironmentIrradianceChanged(const QVariant &var);
-    void handleEnvironmentSpecularChanged(const QVariant &var);
 
     Qt3DRender::QAbstractTexture *m_baseColorTexture;
     Qt3DRender::QAbstractTexture *m_metalnessTexture;

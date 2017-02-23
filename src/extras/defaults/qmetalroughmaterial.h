@@ -60,8 +60,6 @@ class QT3DEXTRASSHARED_EXPORT QMetalRoughMaterial : public Qt3DRender::QMaterial
     Q_PROPERTY(QColor baseColor READ baseColor WRITE setBaseColor NOTIFY baseColorChanged)
     Q_PROPERTY(float metalness READ metalness WRITE setMetalness NOTIFY metalnessChanged)
     Q_PROPERTY(float roughness READ roughness WRITE setRoughness NOTIFY roughnessChanged)
-    Q_PROPERTY(Qt3DRender::QAbstractTexture *environmentIrradiance READ environmentIrradiance WRITE setEnvironmentIrradiance NOTIFY environmentIrradianceChanged)
-    Q_PROPERTY(Qt3DRender::QAbstractTexture *environmentSpecular READ environmentSpecular WRITE setEnvironmentSpecular NOTIFY environmentSpecularChanged)
 
 public:
     explicit QMetalRoughMaterial(Qt3DCore::QNode *parent = nullptr);
@@ -70,22 +68,16 @@ public:
     QColor baseColor() const;
     float metalness() const;
     float roughness() const;
-    Qt3DRender::QAbstractTexture *environmentIrradiance() const;
-    Qt3DRender::QAbstractTexture *environmentSpecular() const;
 
 public Q_SLOTS:
     void setBaseColor(const QColor &baseColor);
     void setMetalness(float metalness);
     void setRoughness(float roughness);
-    void setEnvironmentIrradiance(Qt3DRender::QAbstractTexture *environmentIrradiance);
-    void setEnvironmentSpecular(Qt3DRender::QAbstractTexture *environmentSpecular);
 
 Q_SIGNALS:
     void baseColorChanged(const QColor &baseColor);
     void metalnessChanged(float metalness);
     void roughnessChanged(float roughness);
-    void environmentIrradianceChanged(Qt3DRender::QAbstractTexture *environmentIrradiance);
-    void environmentSpecularChanged(Qt3DRender::QAbstractTexture *environmentSpecular);
 
 protected:
     QMetalRoughMaterial(QMetalRoughMaterialPrivate &dd, Qt3DCore::QNode *parent = nullptr);
