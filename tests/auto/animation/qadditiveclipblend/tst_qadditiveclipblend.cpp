@@ -51,7 +51,7 @@ private Q_SLOTS:
         Qt3DAnimation::QAdditiveClipBlend addBlend;
 
         // THEN
-        QCOMPARE(addBlend.blendFactor(), 0.0f);
+        QCOMPARE(addBlend.additiveFactor(), 0.0f);
     }
 
     void checkPropertyChanges()
@@ -61,21 +61,21 @@ private Q_SLOTS:
 
         {
             // WHEN
-            QSignalSpy spy(&addBlend, SIGNAL(blendFactorChanged(float)));
+            QSignalSpy spy(&addBlend, SIGNAL(additiveFactorChanged(float)));
             const float newValue = 0.5f;
-            addBlend.setBlendFactor(newValue);
+            addBlend.setAdditiveFactor(newValue);
 
             // THEN
             QVERIFY(spy.isValid());
-            QCOMPARE(addBlend.blendFactor(), newValue);
+            QCOMPARE(addBlend.additiveFactor(), newValue);
             QCOMPARE(spy.count(), 1);
 
             // WHEN
             spy.clear();
-            addBlend.setBlendFactor(newValue);
+            addBlend.setAdditiveFactor(newValue);
 
             // THEN
-            QCOMPARE(addBlend.blendFactor(), newValue);
+            QCOMPARE(addBlend.additiveFactor(), newValue);
             QCOMPARE(spy.count(), 0);
         }
     }
@@ -89,7 +89,7 @@ private Q_SLOTS:
 
         addBlend.addClip(&clip1);
         addBlend.addClip(&clip2);
-        addBlend.setBlendFactor(0.8f);
+        addBlend.setAdditiveFactor(0.8f);
 
 
         // WHEN
@@ -107,7 +107,7 @@ private Q_SLOTS:
             const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QClipBlendNodeCreatedChange<Qt3DAnimation::QAdditiveClipBlendData>>(creationChanges.first());
             const Qt3DAnimation::QAdditiveClipBlendData cloneData = creationChangeData->data;
 
-            QCOMPARE(addBlend.blendFactor(), cloneData.blendFactor);
+            QCOMPARE(addBlend.additiveFactor(), cloneData.additiveFactor);
             QCOMPARE(addBlend.id(), creationChangeData->subjectId());
             QCOMPARE(addBlend.isEnabled(), true);
             QCOMPARE(addBlend.isEnabled(), creationChangeData->isNodeEnabled());
@@ -133,7 +133,7 @@ private Q_SLOTS:
             const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QClipBlendNodeCreatedChange<Qt3DAnimation::QAdditiveClipBlendData>>(creationChanges.first());
             const Qt3DAnimation::QAdditiveClipBlendData cloneData = creationChangeData->data;
 
-            QCOMPARE(addBlend.blendFactor(), cloneData.blendFactor);
+            QCOMPARE(addBlend.additiveFactor(), cloneData.additiveFactor);
             QCOMPARE(addBlend.id(), creationChangeData->subjectId());
             QCOMPARE(addBlend.isEnabled(), false);
             QCOMPARE(addBlend.isEnabled(), creationChangeData->isNodeEnabled());
@@ -154,14 +154,14 @@ private Q_SLOTS:
 
         {
             // WHEN
-            addBlend.setBlendFactor(0.4f);
+            addBlend.setAdditiveFactor(0.4f);
             QCoreApplication::processEvents();
 
             // THEN
             QCOMPARE(arbiter.events.size(), 1);
             auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "blendFactor");
-            QCOMPARE(change->value().value<float>(), addBlend.blendFactor());
+            QCOMPARE(change->propertyName(), "additiveFactor");
+            QCOMPARE(change->value().value<float>(), addBlend.additiveFactor());
             QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
             arbiter.events.clear();
@@ -169,7 +169,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            addBlend.setBlendFactor(0.4f);
+            addBlend.setAdditiveFactor(0.4f);
             QCoreApplication::processEvents();
 
             // THEN

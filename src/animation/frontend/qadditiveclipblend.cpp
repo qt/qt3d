@@ -87,7 +87,7 @@ namespace Qt3DAnimation {
 
 QAdditiveClipBlendPrivate::QAdditiveClipBlendPrivate()
     : QAbstractClipBlendNodePrivate()
-    , m_blendFactor(0.0f)
+    , m_additiveFactor(0.0f)
 {
 }
 
@@ -110,36 +110,36 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAdditiveClipBlend::createNodeCreationChange
     Q_D(const QAdditiveClipBlend);
     auto creationChange = QClipBlendNodeCreatedChangePtr<QAdditiveClipBlendData>::create(this);
     QAdditiveClipBlendData &data = creationChange->data;
-    data.blendFactor = d->m_blendFactor;
+    data.additiveFactor = d->m_additiveFactor;
     return creationChange;
 }
 
 /*!
-    \qmlproperty real AdditiveClipBlend::blendFactor
+    \qmlproperty real AdditiveClipBlend::additiveFactor
 
     Specifies the blending factor between 0 and 1 to control the blending of
     two animation clips.
 */
 /*!
-    \property QAdditiveClipBlend::blendFactor
+    \property QAdditiveClipBlend::additiveFactor
 
     Specifies the blending factor between 0 and 1 to control the blending of
     two animation clips.
  */
-float QAdditiveClipBlend::blendFactor() const
+float QAdditiveClipBlend::additiveFactor() const
 {
     Q_D(const QAdditiveClipBlend);
-    return d->m_blendFactor;
+    return d->m_additiveFactor;
 }
 
-void QAdditiveClipBlend::setBlendFactor(float blendFactor)
+void QAdditiveClipBlend::setAdditiveFactor(float additiveFactor)
 {
     Q_D(QAdditiveClipBlend);
-    if (d->m_blendFactor == blendFactor)
+    if (d->m_additiveFactor == additiveFactor)
         return;
 
-    d->m_blendFactor = blendFactor;
-    emit blendFactorChanged(blendFactor);
+    d->m_additiveFactor = additiveFactor;
+    emit additiveFactorChanged(additiveFactor);
 }
 
 /*!

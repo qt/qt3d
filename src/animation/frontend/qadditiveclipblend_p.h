@@ -63,12 +63,12 @@ public:
     QAdditiveClipBlendPrivate();
 
     Q_DECLARE_PUBLIC(QAdditiveClipBlend)
-    float m_blendFactor;
+    float m_additiveFactor;
 };
 
 struct QAdditiveClipBlendData
 {
-    float blendFactor;
+    float additiveFactor;
 };
 
 } // Qt3DAnimation

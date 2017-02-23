@@ -62,8 +62,8 @@ public:
     AdditiveClipBlend();
     ~AdditiveClipBlend();
 
-    inline float blendFactor() const { return m_blendFactor; }
-    void setBlendFactor(float blendFactor) { m_blendFactor = blendFactor; } // For unit tests
+    inline float additiveFactor() const { return m_additiveFactor; }
+    void setAdditiveFactor(float additiveFactor) { m_additiveFactor = additiveFactor; } // For unit tests
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
     float blend(float value1, float value2) const Q_DECL_FINAL;
@@ -71,7 +71,7 @@ public:
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
-    float m_blendFactor;
+    float m_additiveFactor;
 };
 
 } // Animation

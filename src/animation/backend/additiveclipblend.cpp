@@ -48,7 +48,7 @@ namespace Animation {
 
 AdditiveClipBlend::AdditiveClipBlend()
     : ClipBlendNode(ClipBlendNode::AdditiveBlendType)
-    , m_blendFactor(0.0f)
+    , m_additiveFactor(0.0f)
 {
 }
 
@@ -60,14 +60,14 @@ void AdditiveClipBlend::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::PropertyUpdated) {
         Qt3DCore::QPropertyUpdatedChangePtr change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("blendFactor"))
-            m_blendFactor = change->value().toFloat();
+        if (change->propertyName() == QByteArrayLiteral("additiveFactor"))
+            m_additiveFactor = change->value().toFloat();
     }
 }
 
 float AdditiveClipBlend::blend(float value1, float value2) const
 {
-    return value1 + (m_blendFactor * value2);
+    return value1 + (m_additiveFactor * value2);
 }
 
 void AdditiveClipBlend::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -75,7 +75,7 @@ void AdditiveClipBlend::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBas
     ClipBlendNode::initializeFromPeer(change);
     const auto creationChangeData = qSharedPointerCast<Qt3DAnimation::QClipBlendNodeCreatedChange<Qt3DAnimation::QAdditiveClipBlendData>>(change);
     const Qt3DAnimation::QAdditiveClipBlendData cloneData = creationChangeData->data;
-    m_blendFactor = cloneData.blendFactor;
+    m_additiveFactor = cloneData.additiveFactor;
 }
 
 } // Animation

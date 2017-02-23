@@ -48,18 +48,18 @@ class QAdditiveClipBlendPrivate;
 class QT3DANIMATIONSHARED_EXPORT QAdditiveClipBlend : public QAbstractClipBlendNode
 {
     Q_OBJECT
-    Q_PROPERTY(float blendFactor READ blendFactor WRITE setBlendFactor NOTIFY blendFactorChanged)
+    Q_PROPERTY(float additiveFactor READ additiveFactor WRITE setAdditiveFactor NOTIFY additiveFactorChanged)
 public:
     explicit QAdditiveClipBlend(Qt3DCore::QNode *parent = nullptr);
     ~QAdditiveClipBlend();
 
-    float blendFactor() const;
+    float additiveFactor() const;
 
 public Q_SLOTS:
-    void setBlendFactor(float blendFactor);
+    void setAdditiveFactor(float additiveFactor);
 
 Q_SIGNALS:
-    void blendFactorChanged(float blendFactor);
+    void additiveFactorChanged(float additiveFactor);
 
 protected:
     explicit QAdditiveClipBlend(QAdditiveClipBlendPrivate &dd, Qt3DCore::QNode *parent = nullptr);

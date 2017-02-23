@@ -49,7 +49,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendAdditiveBlend.isEnabled(), false);
         QVERIFY(backendAdditiveBlend.peerId().isNull());
-        QCOMPARE(backendAdditiveBlend.blendFactor(), 0.0f);
+        QCOMPARE(backendAdditiveBlend.additiveFactor(), 0.0f);
         QCOMPARE(backendAdditiveBlend.blendType(), Qt3DAnimation::Animation::ClipBlendNode::AdditiveBlendType);
     }
 
@@ -58,7 +58,7 @@ private Q_SLOTS:
         // GIVEN
         Qt3DAnimation::QAdditiveClipBlend additiveBlend;
         Qt3DAnimation::QAnimationClipLoader clip;
-        additiveBlend.setBlendFactor(0.8f);
+        additiveBlend.setAdditiveFactor(0.8f);
         additiveBlend.addClip(&clip);
 
         {
@@ -69,7 +69,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(backendAdditiveBlend.isEnabled(), true);
             QCOMPARE(backendAdditiveBlend.peerId(), additiveBlend.id());
-            QCOMPARE(backendAdditiveBlend.blendFactor(), 0.8f);
+            QCOMPARE(backendAdditiveBlend.additiveFactor(), 0.8f);
             QCOMPARE(backendAdditiveBlend.clipIds().size(), 1);
             QCOMPARE(backendAdditiveBlend.clipIds().first(), clip.id());
         }
@@ -104,12 +104,12 @@ private Q_SLOTS:
             // WHEN
             const float newValue = 0.883f;
             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("blendFactor");
+            change->setPropertyName("additiveFactor");
             change->setValue(QVariant::fromValue(newValue));
             backendAdditiveBlend.sceneChangeEvent(change);
 
             // THEN
-            QCOMPARE(backendAdditiveBlend.blendFactor(), newValue);
+            QCOMPARE(backendAdditiveBlend.additiveFactor(), newValue);
         }
     }
 
@@ -135,7 +135,7 @@ private Q_SLOTS:
         Qt3DAnimation::Animation::AdditiveClipBlend addBlend;
 
         // WHEN
-        addBlend.setBlendFactor(blendFactor);
+        addBlend.setAdditiveFactor(blendFactor);
         const float computed = addBlend.blend(value1, value2);
 
         // THEN
