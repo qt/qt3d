@@ -61,6 +61,7 @@
 #include <Qt3DRender/qabstractlight.h>
 #include <Qt3DRender/qspotlight.h>
 #include <Qt3DRender/qdirectionallight.h>
+#include <Qt3DRender/qenvironmentlight.h>
 #include <Qt3DRender/qpointlight.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qrenderstate.h>
@@ -229,6 +230,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Qt3DRender::QAbstractLight>(uri, 2, 0, "Light", QStringLiteral("Light is an abstract base class"));
     qmlRegisterType<Qt3DRender::QPointLight>(uri, 2, 0, "PointLight");
     qmlRegisterType<Qt3DRender::QDirectionalLight>(uri, 2, 0, "DirectionalLight");
+    qmlRegisterType<Qt3DRender::QEnvironmentLight>(uri, 2, 9, "EnvironmentLight");
     qmlRegisterType<Qt3DRender::QSpotLight>(uri, 2, 0, "SpotLight");
 
     // FrameGraph
