@@ -46,6 +46,7 @@
 #include <Qt3DAnimation/qchannelmapping.h>
 #include <Qt3DAnimation/qlerpclipblend.h>
 #include <Qt3DAnimation/qadditiveclipblend.h>
+#include <Qt3DAnimation/qclipblendvalue.h>
 
 #include <Qt3DAnimation/qkeyframeanimation.h>
 #include <Qt3DAnimation/qanimationcontroller.h>
@@ -83,6 +84,7 @@ void Qt3DQuick3DAnimationPlugin::registerTypes(const char *uri)
                                        Qt3DAnimation::Animation::Quick::Quick3DAbstractClipBlendNode>(uri, 2, 9, "AbstractClipBlendNode", QStringLiteral("QAbstractClipBlendNode is abstract"));
     qmlRegisterType<Qt3DAnimation::QLerpClipBlend>(uri, 2, 9, "LerpClipBlend");
     qmlRegisterType<Qt3DAnimation::QAdditiveClipBlend>(uri, 2, 9, "AdditiveClipBlend");
+    qmlRegisterType<Qt3DAnimation::QClipBlendValue>(uri, 2, 9, "ClipBlendValue");
 
     qmlRegisterUncreatableType<Qt3DAnimation::QAbstractAnimation>(uri, 2, 9, "AbstractAnimation", QStringLiteral("AbstractAnimation is abstract"));
     qmlRegisterExtendedType<Qt3DAnimation::QKeyframeAnimation, Qt3DAnimation::Quick::QQuick3DKeyframeAnimation>(uri, 2, 9, "KeyframeAnimation");
