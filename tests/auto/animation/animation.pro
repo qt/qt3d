@@ -27,5 +27,6 @@ qtConfig(private_tests) {
         clipblendnodevisitor \
         qadditiveclipblend \
         additiveclipblend \
-        clipblendvalue
+        clipblendvalue \
+        animationutils
 }
