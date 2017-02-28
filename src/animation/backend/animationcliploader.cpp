@@ -58,7 +58,7 @@ AnimationClipLoader::AnimationClipLoader()
     , m_status(QAnimationClipLoader::NotReady)
     , m_name()
     , m_objectName()
-    , m_channelGroups()
+    , m_channels()
     , m_duration(0.0f)
 {
 }
@@ -78,7 +78,7 @@ void AnimationClipLoader::cleanup()
     m_handler = nullptr;
     m_source.clear();
     m_status = QAnimationClipLoader::NotReady;
-    m_channelGroups.clear();
+    m_channels.clear();
     m_duration = 0.0f;
 
     clearData();
@@ -141,26 +141,25 @@ void AnimationClipLoader::loadAnimation()
     qCDebug(Jobs) << "Found" << animationsArray.size() << "animations:";
     for (int i = 0; i < animationsArray.size(); ++i) {
         QJsonObject animation = animationsArray.at(i).toObject();
-        qCDebug(Jobs) << "\tName:" << animation[QLatin1String("action")].toString()
-                      << "Object:" << animation[QLatin1String("object")].toString();
+        qCDebug(Jobs) << "Animation Name:" << animation[QLatin1String("animationName")].toString();
     }
 
     // For now just load the first animation
+    // TODO: Allow loading a named animation from within the file analogous to QMesh
     QJsonObject animation = animationsArray.at(0).toObject();
-    m_name = animation[QLatin1String("action")].toString();
-    m_objectName = animation[QLatin1String("object")].toString();
-    QJsonArray groupsArray = animation[QLatin1String("groups")].toArray();
-    const int groupCount = groupsArray.size();
-    m_channelGroups.resize(groupCount);
-    for (int i = 0; i < groupCount; ++i) {
-        const QJsonObject group = groupsArray.at(i).toObject();
-        m_channelGroups[i].read(group);
+    m_name = animation[QLatin1String("animationName")].toString();
+    QJsonArray channelsArray = animation[QLatin1String("channels")].toArray();
+    const int channelCount = channelsArray.size();
+    m_channels.resize(channelCount);
+    for (int i = 0; i < channelCount; ++i) {
+        const QJsonObject group = channelsArray.at(i).toObject();
+        m_channels[i].read(group);
     }
 
     const float t = findDuration();
     setDuration(t);
 
-    m_channelCount = findChannelCount();
+    m_channelCount = findChannelComponentCount();
 
     if (qFuzzyIsNull(t) || m_channelCount == 0)
         setStatus(QAnimationClipLoader::Error);
@@ -188,18 +187,18 @@ void AnimationClipLoader::setDuration(float duration)
 /*!
     \internal
 
-    Given the index of a channel group, \a channelGroupIndex, calculates
-    the base index of the first channel in this group. For example, if
+    Given the index of a channel, \a channelIndex, calculates
+    the base index of the first channelComponent in this group. For example, if
     there are two channel groups each with 3 channels and you request
     the channelBaseIndex(1), the return value will be 3. Indices 0-2 are
     for the first group, so the first channel of the second group occurs
     at index 3.
  */
-int AnimationClipLoader::channelBaseIndex(int channelGroupIndex) const
+int AnimationClipLoader::channelComponentBaseIndex(int channelIndex) const
 {
     int index = 0;
-    for (int i = 0; i < channelGroupIndex; ++i)
-        index += m_channelGroups[i].channels.size();
+    for (int i = 0; i < channelIndex; ++i)
+        index += m_channels[i].channelComponents.size();
     return index;
 }
 
@@ -207,16 +206,16 @@ void AnimationClipLoader::clearData()
 {
     m_name.clear();
     m_objectName.clear();
-    m_channelGroups.clear();
+    m_channels.clear();
 }
 
 float AnimationClipLoader::findDuration()
 {
     // Iterate over the contained fcurves and find the longest one
     double tMax = 0.0;
-    for (const ChannelGroup &channelGroup : qAsConst(m_channelGroups)) {
-        for (const Channel &channel : qAsConst(channelGroup.channels)) {
-            const float t = channel.fcurve.endTime();
+    for (const Channel &channel : qAsConst(m_channels)) {
+        for (const ChannelComponent &channelComponent : qAsConst(channel.channelComponents)) {
+            const float t = channelComponent.fcurve.endTime();
             if (t > tMax)
                 tMax = t;
         }
@@ -224,11 +223,11 @@ float AnimationClipLoader::findDuration()
     return tMax;
 }
 
-int AnimationClipLoader::findChannelCount()
+int AnimationClipLoader::findChannelComponentCount()
 {
     int channelCount = 0;
-    for (const ChannelGroup &channelGroup : qAsConst(m_channelGroups))
-        channelCount += channelGroup.channels.size();
+    for (const Channel &channel : qAsConst(m_channels))
+        channelCount += channel.channelComponents.size();
     return channelCount;
 }
 

@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 namespace Animation {
 
-struct ChannelGroup;
+struct Channel;
 class Handler;
 class AnimationClipLoader;
 class ChannelMapper;
@@ -114,13 +114,13 @@ public:
 
     static ClipPreEvaluationData evaluationDataForClip(AnimationClipLoader *clip, const AnimatorEvaluationData &animatorData);
 
-    static QVector<int> channelsToIndices(const ChannelGroup &channelGroup,
-                                          int dataType,
-                                          int offset = 0);
-    static QVector<int> channelsToIndicesHelper(const ChannelGroup &channelGroup,
-                                                int dataType,
-                                                int offset,
-                                                const QStringList &suffixes);
+    static QVector<int> channelComponentsToIndices(const Channel &channelGroup,
+                                                   int dataType,
+                                                   int offset = 0);
+    static QVector<int> channelComponentsToIndicesHelper(const Channel &channelGroup,
+                                                         int dataType,
+                                                         int offset,
+                                                         const QStringList &suffixes);
     static QVector<float> evaluateClipAtLocalTime(AnimationClipLoader *clip,
                                               float localTime);
     static QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId peerId,

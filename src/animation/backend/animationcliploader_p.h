@@ -74,27 +74,27 @@ public:
 
     QString name() const { return m_name; }
     QString objectName() const { return m_objectName; }
-    const QVector<ChannelGroup> &channelGroups() const { return m_channelGroups; }
+    const QVector<Channel> &channels() const { return m_channels; }
 
     // Called from jobs
     void loadAnimation();
     void setDuration(float duration);
     float duration() const { return m_duration; }
     int channelCount() const { return m_channelCount; }
-    int channelBaseIndex(int channelGroupIndex) const;
+    int channelComponentBaseIndex(int channelGroupIndex) const;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
     void clearData();
     float findDuration();
-    int findChannelCount();
+    int findChannelComponentCount();
 
     QUrl m_source;
     QAnimationClipLoader::Status m_status;
 
     QString m_name;
     QString m_objectName;
-    QVector<ChannelGroup> m_channelGroups;
+    QVector<Channel> m_channels;
     float m_duration;
     int m_channelCount;
 };
@@ -107,11 +107,11 @@ inline QDebug operator<<(QDebug dbg, const AnimationClipLoader &animationClip)
         << "Name =" << animationClip.name() << endl
         << "Object Name =" << animationClip.objectName() << endl
         << "Duration: " << animationClip.duration() << endl
-        << "Channel Groups:" << endl;
+        << "Channels:" << endl;
 
-    const QVector<ChannelGroup> channelGroups = animationClip.channelGroups();
-    for (const auto channelGroup : channelGroups) {
-        dbg << channelGroup;
+    const QVector<Channel> channels = animationClip.channels();
+    for (const auto channel : channels) {
+        dbg << channel;
     }
 
     return dbg;

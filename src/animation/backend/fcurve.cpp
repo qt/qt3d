@@ -92,25 +92,25 @@ void FCurve::read(const QJsonObject &json)
 {
     clearKeyframes();
 
-    const QJsonArray keyframeArray = json[QLatin1String("keyframes")].toArray();
+    const QJsonArray keyframeArray = json[QLatin1String("keyFrames")].toArray();
     const int keyframeCount = keyframeArray.size();
 
     for (int i = 0; i < keyframeCount; ++i) {
         const QJsonObject keyframeData = keyframeArray.at(i).toObject();
 
         // Extract the keyframe local time and value
-        const QJsonArray keyframeCoords = keyframeData[QLatin1String("co")].toArray();
+        const QJsonArray keyframeCoords = keyframeData[QLatin1String("coords")].toArray();
         float localTime = keyframeCoords.at(0).toDouble();
 
         Keyframe keyframe;
         keyframe.interpolation = Keyframe::Bezier;
         keyframe.value = keyframeCoords.at(1).toDouble();
 
-        const QJsonArray leftHandle = keyframeData[QLatin1String("handle_left")].toArray();
+        const QJsonArray leftHandle = keyframeData[QLatin1String("leftHandle")].toArray();
         keyframe.leftControlPoint[0] = leftHandle.at(0).toDouble();
         keyframe.leftControlPoint[1] = leftHandle.at(1).toDouble();
 
-        const QJsonArray rightHandle = keyframeData[QLatin1String("handle_right")].toArray();
+        const QJsonArray rightHandle = keyframeData[QLatin1String("rightHandle")].toArray();
         keyframe.rightControlPoint[0] = rightHandle.at(0).toDouble();
         keyframe.rightControlPoint[1] = rightHandle.at(1).toDouble();
 
@@ -121,22 +121,22 @@ void FCurve::read(const QJsonObject &json)
     // back so they do not interset.
 }
 
-void Channel::read(const QJsonObject &json)
+void ChannelComponent::read(const QJsonObject &json)
 {
-    name = json[QLatin1String("name")].toString();
+    name = json[QLatin1String("channelComponentName")].toString();
     fcurve.read(json);
 }
 
-void ChannelGroup::read(const QJsonObject &json)
+void Channel::read(const QJsonObject &json)
 {
-    name = json[QLatin1String("group")].toString();
-    const QJsonArray channelsArray = json[QLatin1String("channels")].toArray();
-    const int channelCount = channelsArray.size();
-    channels.resize(channelCount);
+    name = json[QLatin1String("channelName")].toString();
+    const QJsonArray channelComponentsArray = json[QLatin1String("channelComponents")].toArray();
+    const int channelCount = channelComponentsArray.size();
+    channelComponents.resize(channelCount);
 
     for (int i = 0; i < channelCount; ++i) {
-        const QJsonObject channel = channelsArray.at(i).toObject();
-        channels[i].read(channel);
+        const QJsonObject channel = channelComponentsArray.at(i).toObject();
+        channelComponents[i].read(channel);
     }
 }
 

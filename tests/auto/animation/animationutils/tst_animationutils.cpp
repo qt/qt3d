@@ -55,8 +55,8 @@ private Q_SLOTS:
 
         auto targetId = Qt3DCore::QNodeId::createId();
         channelMapping->setTargetId(targetId);
-        channelMapping->setProperty("foo");
-        channelMapping->setChannelName("channelFoo");
+        channelMapping->setProperty("translation");
+        channelMapping->setChannelName("Location");
         channelMapping->setType(static_cast<int>(QVariant::Vector3D));
 
         // Create a channel mapper and add mapping to it

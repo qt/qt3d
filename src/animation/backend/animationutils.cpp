@@ -103,27 +103,27 @@ double AnimationUtils::localTimeFromGlobalTime(double t_global,
     return t_local;
 }
 
-QVector<int> AnimationUtils::channelsToIndices(const ChannelGroup &channelGroup, int dataType, int offset)
+QVector<int> AnimationUtils::channelComponentsToIndices(const Channel &channelGroup, int dataType, int offset)
 {
     static const QStringList standardSuffixes = (QStringList()
-                                                 << QLatin1String("x")
-                                                 << QLatin1String("y")
-                                                 << QLatin1String("z")
-                                                 << QLatin1String("w"));
+                                                 << QLatin1String("X")
+                                                 << QLatin1String("Y")
+                                                 << QLatin1String("Z")
+                                                 << QLatin1String("W"));
     static const QStringList quaternionSuffixes = (QStringList()
-                                                   << QLatin1String("w")
-                                                   << QLatin1String("x")
-                                                   << QLatin1String("y")
-                                                   << QLatin1String("z"));
+                                                   << QLatin1String("W")
+                                                   << QLatin1String("X")
+                                                   << QLatin1String("Y")
+                                                   << QLatin1String("Z"));
 
     if (dataType != QVariant::Quaternion)
-        return channelsToIndicesHelper(channelGroup, dataType, offset, standardSuffixes);
+        return channelComponentsToIndicesHelper(channelGroup, dataType, offset, standardSuffixes);
     else
-        return channelsToIndicesHelper(channelGroup, dataType, offset, quaternionSuffixes);
+        return channelComponentsToIndicesHelper(channelGroup, dataType, offset, quaternionSuffixes);
 
 }
 
-QVector<int> AnimationUtils::channelsToIndicesHelper(const ChannelGroup &channelGroup, int dataType, int offset, const QStringList &suffixes)
+QVector<int> AnimationUtils::channelComponentsToIndicesHelper(const Channel &channel, int dataType, int offset, const QStringList &suffixes)
 {
     int expectedChannelCount = 1;
     switch (dataType) {
@@ -148,7 +148,7 @@ QVector<int> AnimationUtils::channelsToIndicesHelper(const ChannelGroup &channel
         qWarning() << "Unhandled animation type";
     }
 
-    const int foundChannelCount = channelGroup.channels.size();
+    const int foundChannelCount = channel.channelComponents.size();
     if (foundChannelCount != expectedChannelCount) {
         qWarning() << "Data type expects" << expectedChannelCount
                    << "but found" << foundChannelCount << "channels in the animation clip";
@@ -156,7 +156,8 @@ QVector<int> AnimationUtils::channelsToIndicesHelper(const ChannelGroup &channel
 
     QVector<int> indices(expectedChannelCount);
     for (int i = 0; i < expectedChannelCount; ++i) {
-        int index = suffixes.indexOf(channelGroup.channels[i].name);
+        const QString channelComponentSuffix = channel.channelComponents[i].name.right(1);
+        int index = suffixes.indexOf(channelComponentSuffix);
         if (index != -1)
             indices[i] = index + offset;
         else
@@ -174,11 +175,11 @@ QVector<float> AnimationUtils::evaluateClipAtLocalTime(AnimationClipLoader *clip
     channelResults.resize(clip->channelCount());
 
     // Iterate over channels and evaluate the fcurves
-    const QVector<ChannelGroup> &channelGroups = clip->channelGroups();
+    const QVector<Channel> &channels = clip->channels();
     int i = 0;
-    for (const ChannelGroup &channelGroup : channelGroups) {
-        for (const auto channel : qAsConst(channelGroup.channels))
-            channelResults[i++] = channel.fcurve.evaluateAtTime(localTime);
+    for (const Channel &channel : channels) {
+        for (const auto channelComponent : qAsConst(channel.channelComponents))
+            channelResults[i++] = channelComponent.fcurve.evaluateAtTime(localTime);
     }
     return channelResults;
 }
@@ -269,7 +270,7 @@ QVector<AnimationUtils::MappingData> AnimationUtils::buildPropertyMappings(Handl
 {
     QVector<MappingData> mappingDataVec;
     ChannelMappingManager *mappingManager = handler->channelMappingManager();
-    const QVector<ChannelGroup> &channelGroups = clip->channelGroups();
+    const QVector<Channel> &channels = clip->channels();
 
     // Iterate over the mappings in the mapper object
     for (const Qt3DCore::QNodeId mappingId : mapper->mappingIds()) {
@@ -294,13 +295,13 @@ QVector<AnimationUtils::MappingData> AnimationUtils::buildPropertyMappings(Handl
         const QString channelName = mapping->channelName();
         int channelGroupIndex = 0;
         bool foundMatch = false;
-        for (const ChannelGroup &channelGroup : channelGroups) {
-            if (channelGroup.name == channelName) {
+        for (const Channel &channel : channels) {
+            if (channel.name == channelName) {
                 foundMatch = true;
-                const int channelBaseIndex = clip->channelBaseIndex(channelGroupIndex);
+                const int channelBaseIndex = clip->channelComponentBaseIndex(channelGroupIndex);
 
                 // Within this group, match channel names with index ordering
-                mappingData.channelIndices = channelsToIndices(channelGroup, mappingData.type, channelBaseIndex);
+                mappingData.channelIndices = channelComponentsToIndices(channel, mappingData.type, channelBaseIndex);
 
                 // Store the mapping data
                 mappingDataVec.push_back(mappingData);

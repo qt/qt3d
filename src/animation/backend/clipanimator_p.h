@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 namespace Animation {
 
-struct ChannelGroup;
+struct Channel;
 class Handler;
 
 class Q_AUTOTEST_EXPORT ClipAnimator : public BackendNode
