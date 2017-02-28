@@ -73,7 +73,6 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     QString name() const { return m_name; }
-    QString objectName() const { return m_objectName; }
     const QVector<Channel> &channels() const { return m_channels; }
 
     // Called from jobs
@@ -93,7 +92,6 @@ private:
     QAnimationClipLoader::Status m_status;
 
     QString m_name;
-    QString m_objectName;
     QVector<Channel> m_channels;
     float m_duration;
     int m_channelCount;
@@ -105,7 +103,6 @@ inline QDebug operator<<(QDebug dbg, const AnimationClipLoader &animationClip)
     QDebugStateSaver saver(dbg);
     dbg << "QNodeId =" << animationClip.peerId() << endl
         << "Name =" << animationClip.name() << endl
-        << "Object Name =" << animationClip.objectName() << endl
         << "Duration: " << animationClip.duration() << endl
         << "Channels:" << endl;
 

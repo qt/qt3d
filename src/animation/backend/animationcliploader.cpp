@@ -57,7 +57,6 @@ AnimationClipLoader::AnimationClipLoader()
     , m_source()
     , m_status(QAnimationClipLoader::NotReady)
     , m_name()
-    , m_objectName()
     , m_channels()
     , m_duration(0.0f)
 {
@@ -205,7 +204,6 @@ int AnimationClipLoader::channelComponentBaseIndex(int channelIndex) const
 void AnimationClipLoader::clearData()
 {
     m_name.clear();
-    m_objectName.clear();
     m_channels.clear();
 }
 
