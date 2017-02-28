@@ -44,10 +44,10 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 namespace Animation {
 
-Q_LOGGING_CATEGORY(Backend, "Qt3D.Animation.Backend")
-Q_LOGGING_CATEGORY(Frontend, "Qt3D.Animation.Frontend")
-Q_LOGGING_CATEGORY(Jobs, "Qt3D.Animation.Jobs")
-Q_LOGGING_CATEGORY(HandlerLogic, "Qt3D.Animation.Handler")
+Q_LOGGING_CATEGORY(Backend, "Qt3D.Animation.Backend", QtWarningMsg)
+Q_LOGGING_CATEGORY(Frontend, "Qt3D.Animation.Frontend", QtWarningMsg)
+Q_LOGGING_CATEGORY(Jobs, "Qt3D.Animation.Jobs", QtWarningMsg)
+Q_LOGGING_CATEGORY(HandlerLogic, "Qt3D.Animation.Handler", QtWarningMsg)
 
 } // namespace Animation
 } // namespace Qt3DAnimation
