@@ -71,6 +71,7 @@ public:
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
+    void setMappingIds(const QVector<Qt3DCore::QNodeId> &mappingIds) { m_mappingIds = mappingIds; }
     QVector<Qt3DCore::QNodeId> mappingIds() const { return m_mappingIds; }
 
 private:
