@@ -55,6 +55,7 @@ public:
     explicit QBackendNodeTester(QObject *parent = 0);
 
     // Proxies to allow test classes to call private methods on QBackendNode
+    void setPeerId(QBackendNode *backend, QNodeId id);
     void simulateInitialization(QNode *frontend, QBackendNode *backend);
     void sceneChangeEvent(QBackendNode *backend, const Qt3DCore::QSceneChangePtr &e);
 };
