@@ -7,18 +7,11 @@ HEADERS += \
     $$PWD/qpicktriangleevent.h \
     $$PWD/objectpicker_p.h \
     $$PWD/pickeventfilter_p.h \
-    $$PWD/qobjectpicker_p.h \
-    $$PWD/qeventforward.h \
-    $$PWD/qeventforward_p.h \
-    $$PWD/eventforward_p.h \
-    $$PWD/posteventstofrontend_p.h
+    $$PWD/qobjectpicker_p.h
 
 SOURCES += \
     $$PWD/qobjectpicker.cpp \
     $$PWD/qpickevent.cpp \
     $$PWD/qpicktriangleevent.cpp \
     $$PWD/objectpicker.cpp \
-    $$PWD/pickeventfilter.cpp \
-    $$PWD/qeventforward.cpp \
-    $$PWD/eventforward.cpp \
-    $$PWD/posteventstofrontend.cpp
+    $$PWD/pickeventfilter.cpp

@@ -104,8 +104,6 @@ qtConfig(private_tests) {
         qmemorybarrier \
         memorybarrier \
         qshaderprogram \
-        qeventforward \
-        eventforward \
         qscene2d \
         scene2d \
         coordinatereader

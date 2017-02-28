@@ -107,8 +107,7 @@ protected:
                             int eventButtons,
                             int eventModifiers,
                             bool trianglePickingRequested,
-                            bool allHitsRequested,
-                            const RayCasting::QRay3D &ray);
+                            bool allHitsRequested);
 
 private:
     NodeManagers *m_manager;

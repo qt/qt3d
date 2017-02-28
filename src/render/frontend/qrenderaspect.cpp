@@ -83,7 +83,6 @@
 #include <Qt3DRender/qrendercapture.h>
 #include <Qt3DRender/qbuffercapture.h>
 #include <Qt3DRender/qmemorybarrier.h>
-#include <Qt3DRender/qeventforward.h>
 
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
@@ -133,7 +132,6 @@
 #include <Qt3DRender/private/technique_p.h>
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
 #include <Qt3DRender/private/memorybarrier_p.h>
-#include <Qt3DRender/private/eventforward_p.h>
 
 #include <private/qrenderpluginfactory_p.h>
 #include <private/qrenderplugin_p.h>
@@ -255,7 +253,6 @@ void QRenderAspectPrivate::registerBackendTypes()
 
     // Picking
     q->registerBackendType<QObjectPicker>(QSharedPointer<Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager> >::create(m_renderer));
-    q->registerBackendType<QEventForward>(QSharedPointer<Render::NodeFunctor<Render::EventForward, Render::EventForwardManager> >::create(m_renderer));
 
     // Plugins
     for (QString plugin : m_pluginConfig)
@@ -320,7 +317,6 @@ void QRenderAspectPrivate::unregisterBackendTypes()
 
     // Picking
     unregisterBackendType<QObjectPicker>();
-    unregisterBackendType<QEventForward>();
 
     // Plugins
     for (Render::QRenderPlugin *plugin : qAsConst(m_renderPlugins))

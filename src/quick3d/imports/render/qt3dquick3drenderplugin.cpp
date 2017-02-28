@@ -104,7 +104,6 @@
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qrendersettings.h>
 #include <Qt3DRender/qpickingsettings.h>
-#include <Qt3DRender/qeventforward.h>
 #include <Qt3DRender/qrendercapture.h>
 #include <Qt3DRender/qbuffercapture.h>
 #include <Qt3DRender/qmemorybarrier.h>
@@ -215,7 +214,6 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     // Picking
     qmlRegisterType<Qt3DRender::QObjectPicker>(uri, 2, 0, "ObjectPicker");
     qmlRegisterRevision<Qt3DRender::QObjectPicker, 9>(uri, 2, 9);
-    qmlRegisterType<Qt3DRender::QEventForward>(uri, 2, 9, "EventForward");
     qmlRegisterUncreatableType<Qt3DRender::QPickEvent>(uri, 2, 0, "PickEvent", QStringLiteral("Events cannot be created"));
 
         // Compute Job
