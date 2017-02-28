@@ -70,7 +70,6 @@ public:
         Qt3DCore::QNodeId targetId;
         const char *propertyName;
         int type;
-        int channelBaseIndex;
         QVector<int> channelIndices;
     };
 
