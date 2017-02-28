@@ -263,7 +263,9 @@ QVector<Qt3DCore::QSceneChangePtr> AnimationUtils::preparePropertyChanges(Qt3DCo
     return changes;
 }
 
-QVector<AnimationUtils::MappingData> AnimationUtils::buildPropertyMappings(Handler *handler, const AnimationClipLoader *clip, const ChannelMapper *mapper)
+QVector<AnimationUtils::MappingData> AnimationUtils::buildPropertyMappings(Handler *handler,
+                                                                           const AnimationClipLoader *clip,
+                                                                           const ChannelMapper *mapper)
 {
     QVector<MappingData> mappingDataVec;
     ChannelMappingManager *mappingManager = handler->channelMappingManager();

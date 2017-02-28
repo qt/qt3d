@@ -192,7 +192,9 @@ void BuildBlendTreesJob::run()
             visitor.traverse(blendClipAnimator->blendTreeRootId(), [&] (ClipBlendNode *node) {
                 BlendedClipAnimator::BlendNodeData nodeData;
                 nodeData.blendNodeId = node->peerId();
-                nodeData.type = (node->childrenIds().size() > 0) ? BlendedClipAnimator::BlendNodeData::BlendNodeType : BlendedClipAnimator::BlendNodeData::ClipType;
+                nodeData.type = (node->childrenIds().size() > 0)
+                        ? BlendedClipAnimator::BlendNodeData::BlendNodeType
+                        : BlendedClipAnimator::BlendNodeData::ClipType;
 
                 if (nodeData.type == BlendedClipAnimator::BlendNodeData::BlendNodeType) {
                     Q_ASSERT(node->childrenIds().size() == 2);
