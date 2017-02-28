@@ -106,6 +106,7 @@ inline QDebug operator<<(QDebug dbg, const AnimationClipLoader &animationClip)
     dbg << "QNodeId =" << animationClip.peerId() << endl
         << "Name =" << animationClip.name() << endl
         << "Object Name =" << animationClip.objectName() << endl
+        << "Duration: " << animationClip.duration() << endl
         << "Channel Groups:" << endl;
 
     const QVector<ChannelGroup> channelGroups = animationClip.channelGroups();
