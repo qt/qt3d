@@ -83,6 +83,8 @@ public:
         : QAbstractServiceProviderPrivate(QServiceLocator::EventFilterService, QStringLiteral("Default event filter service implementation"))
     {}
 
+    Q_DECLARE_PUBLIC(QEventFilterService)
+
     void registerEventFilter(QObject *eventFilter, int priority)
     {
         for (int i = 0, m = m_eventFilters.size(); i < m; ++i)

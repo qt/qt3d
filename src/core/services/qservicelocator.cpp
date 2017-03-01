@@ -53,17 +53,15 @@ namespace Qt3DCore {
     \inmodule Qt3DCore
 */
 
-QAbstractServiceProvider::QAbstractServiceProvider(int type, const QString &description)
-    : d_ptr(new QAbstractServiceProviderPrivate(type, description))
+QAbstractServiceProvider::QAbstractServiceProvider(int type, const QString &description, QObject *parent)
+    : QObject(*new QAbstractServiceProviderPrivate(type, description), parent)
 {
-    d_ptr->q_ptr = this;
 }
 
 /* \internal */
-QAbstractServiceProvider::QAbstractServiceProvider(QAbstractServiceProviderPrivate &dd)
-    : d_ptr(&dd)
+QAbstractServiceProvider::QAbstractServiceProvider(QAbstractServiceProviderPrivate &dd, QObject *parent)
+    : QObject(dd, parent)
 {
-    d_ptr->q_ptr = this;
 }
 
 QAbstractServiceProvider::~QAbstractServiceProvider()
