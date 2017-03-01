@@ -42,35 +42,62 @@ class tst_AnimationUtils : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 
+public:
+    ChannelMapping *createChannelMapping(Handler &handler,
+                                         const QString &channelName,
+                                         const Qt3DCore::QNodeId targetId,
+                                         const QString &propertyName,
+                                         int type)
+    {
+        auto channelMappingId = Qt3DCore::QNodeId::createId();
+        ChannelMapping *channelMapping = handler.channelMappingManager()->getOrCreateResource(channelMappingId);
+        setPeerId(channelMapping, channelMappingId);
+        channelMapping->setTargetId(targetId);
+        channelMapping->setProperty(propertyName);
+        channelMapping->setChannelName(channelName);
+        channelMapping->setType(type);
+        return channelMapping;
+    }
+
+    ChannelMapper *createChannelMapper(Handler &handler,
+                                       const QVector<Qt3DCore::QNodeId> &mappingIds)
+    {
+        auto channelMapperId = Qt3DCore::QNodeId::createId();
+        ChannelMapper *channelMapper = handler.channelMapperManager()->getOrCreateResource(channelMapperId);
+        setPeerId(channelMapper, channelMapperId);
+        channelMapper->setMappingIds(mappingIds);
+        return channelMapper;
+    }
+
+    AnimationClipLoader *createAnimationClipLoader(Handler &handler,
+                                                   const QUrl &source)
+    {
+        auto clipId = Qt3DCore::QNodeId::createId();
+        AnimationClipLoader *clip = handler.animationClipLoaderManager()->getOrCreateResource(clipId);
+        setPeerId(clip, clipId);
+        clip->setSource(source);
+        clip->loadAnimation();
+        return clip;
+    }
+
 private Q_SLOTS:
     void checkBuildPropertyMappings()
     {
         // GIVEN
         Handler handler;
 
-        // Create a channel mapping, set properties, and add it to manager
-        auto channelMappingId = Qt3DCore::QNodeId::createId();
-        ChannelMapping *channelMapping = handler.channelMappingManager()->getOrCreateResource(channelMappingId);
-        setPeerId(channelMapping, channelMappingId);
+        // Create a channel mapping...
+        auto channelMapping = createChannelMapping(handler,
+                                                   QLatin1String("Location"),
+                                                   Qt3DCore::QNodeId::createId(),
+                                                   QLatin1String("translation"),
+                                                   static_cast<int>(QVariant::Vector3D));
 
-        auto targetId = Qt3DCore::QNodeId::createId();
-        channelMapping->setTargetId(targetId);
-        channelMapping->setProperty("translation");
-        channelMapping->setChannelName("Location");
-        channelMapping->setType(static_cast<int>(QVariant::Vector3D));
+        // ... a channel mapper...
+        auto channelMapper = createChannelMapper(handler, QVector<Qt3DCore::QNodeId>() << channelMapping->peerId());
 
-        // Create a channel mapper and add mapping to it
-        auto channelMapperId = Qt3DCore::QNodeId::createId();
-        ChannelMapper *channelMapper = handler.channelMapperManager()->getOrCreateResource(channelMapperId);
-        setPeerId(channelMapper, channelMapperId);
-        channelMapper->setMappingIds(QVector<Qt3DCore::QNodeId>() << channelMappingId);
-
-        // Create an animation clip
-        auto clipId = Qt3DCore::QNodeId::createId();
-        AnimationClipLoader *clip = handler.animationClipLoaderManager()->getOrCreateResource(clipId);
-        setPeerId(clip, clipId);
-        clip->setSource(QUrl("qrc:/clip1.json"));
-        clip->loadAnimation();
+        // ...and an animation clip
+        auto clip = createAnimationClipLoader(handler, QUrl("qrc:/clip1.json"));
 
         // WHEN
         // Build the mapping data for the above configuration
@@ -80,7 +107,7 @@ private Q_SLOTS:
         QCOMPARE(mappingData.size(), channelMapper->mappingIds().size());
         for (int i = 0; i < mappingData.size(); ++i) {
             const auto mapping = mappingData[i];
-            QCOMPARE(mapping.targetId, targetId);
+            QCOMPARE(mapping.targetId, channelMapping->targetId());
             QCOMPARE(mapping.propertyName, channelMapping->propertyName());
             QCOMPARE(mapping.type, channelMapping->type());
             QCOMPARE(mapping.channelIndices.size(), 3);
