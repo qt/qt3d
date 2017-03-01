@@ -20,6 +20,7 @@ include/*
 *.o
 *.obj
 *.orig
+*.qmlc
 *.rej
 *.so
 *.so.*

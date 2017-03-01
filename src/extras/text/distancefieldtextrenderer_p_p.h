@@ -52,7 +52,6 @@
 //
 
 #include <Qt3DCore/private/qentity_p.h>
-#include <Qt3DExtras/qdistancefieldglyphcache.h>
 #include <Qt3DExtras/private/distancefieldtextrenderer_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -67,7 +66,7 @@ class QBuffer;
 
 namespace Qt3DExtras {
 
-class QDistanceFieldMaterial;
+class QText2DMaterial;
 
 class DistanceFieldTextRendererPrivate : public Qt3DCore::QEntityPrivate
 {
@@ -86,7 +85,7 @@ public:
     Qt3DRender::QAttribute *m_indexAttr;
     Qt3DRender::QBuffer *m_vertexBuffer;
     Qt3DRender::QBuffer *m_indexBuffer;
-    QDistanceFieldMaterial *m_material;
+    QText2DMaterial *m_material;
 };
 
 } // namespace Qt3DExtras

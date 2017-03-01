@@ -167,7 +167,8 @@ bool PickBoundingVolumeJob::runHelper()
         m_oneEnabledAtLeast = false;
         m_oneHoverAtLeast = false;
 
-        for (auto handle : m_manager->objectPickerManager()->activeHandles()) {
+        const auto activeHandles = m_manager->objectPickerManager()->activeHandles();
+        for (auto handle : activeHandles) {
             auto picker = m_manager->objectPickerManager()->data(handle);
             m_oneEnabledAtLeast |= picker->isEnabled();
             m_oneHoverAtLeast |= picker->isHoverEnabled();
@@ -229,7 +230,8 @@ bool PickBoundingVolumeJob::runHelper()
 
     // Forward keyboard events
     if (keyEvents.size() > 0) {
-        for (Entity *e : entitiesGatherer.entities()) {
+        const QVector<Entity *> entities = entitiesGatherer.entities();
+        for (Entity *e : entities) {
             ObjectPicker *picker = e->renderComponent<ObjectPicker>();
             if (picker != nullptr) {
                 if (picker->isEventForwardingEnabled()) {

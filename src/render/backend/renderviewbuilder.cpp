@@ -190,6 +190,7 @@ public:
         if (!rv->noDraw()) {
             // Set the light sources
             rv->setLightSources(std::move(m_lightGathererJob->lights()));
+            rv->setEnvironmentLight(m_lightGathererJob->takeEnvironmentLight());
 
             // We sort the vector so that the removal can then be performed linearly
 

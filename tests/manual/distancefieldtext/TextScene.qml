@@ -51,7 +51,7 @@
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 import Qt3D.Input 2.0
-import Qt3D.Extras 2.2
+import Qt3D.Extras 2.9
 import QtQuick 2.0 as QQ2;
 
 Entity {
@@ -91,10 +91,6 @@ Entity {
         }
     ]
 
-    DistanceFieldGlyphCache {
-        id: glyphCache
-    }
-
     function getChars(n) {
         var s = "";
         for (var i = 0; i < n; i++) {
@@ -117,6 +113,7 @@ Entity {
         components: [
             Transform {
                 id: rot
+                translation: Qt.vector3d(-5, -5, 0)
             }
         ]
 
@@ -143,14 +140,12 @@ Entity {
             }
         }
 
-        DistanceFieldText {
+        Text2DEntity {
             id: text
-
-            font.pointSize: 10
+            font.pointSize: 1
             text: getChars(strLen)
-            glyphCache: glyphCache
-            position: Qt.rect(-10, -5, 20, 10)
-            fontScale: 0.1
+            width: 20
+            height: 10
         }
     }
 }

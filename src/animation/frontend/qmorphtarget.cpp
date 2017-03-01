@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -41,6 +41,55 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
+/*!
+    \class Qt3DAnimation::QMorphTarget
+    \brief A class providing morph targets to blend-shape animation
+    \inmodule Qt3DAnimation
+    \since 5.9
+    \inherits QObject
+
+    A Qt3DAnimation::QMorphTarget class is a convenience class, which provides a list
+    of \l {Qt3DRender::QAttribute} {QAttributes}, which the QMorphingAnimation uses
+    to animate geometry. A QMorphTarget can also be created based on existing
+    \l Qt3DRender::QGeometry.
+
+*/
+/*!
+    \qmltype MorphTarget
+    \brief A type providing morph targets to blend-shape animation
+    \inqmlmodule Qt3D.Animation
+    \since 5.9
+    \inherits QtObject
+    \instantiates Qt3DAnimation::QMorphTarget
+
+    A MorphTarget type is a convenience type, which provides a list
+    of \l {Qt3D.Render::Attribute} {Attributes}, which the MorphingAnimation uses
+    to animate geometry. A MorphTarget can also be created based on existing
+    \l {Qt3D.Render::Geometry}{Geometry}.
+
+*/
+
+/*!
+    \property Qt3DAnimation::QMorphTarget::attributeNames
+    Holds a list of attribute names contained in the morph target.
+    \readonly
+*/
+
+/*!
+    \qmlproperty list<string> MorphTarget::attributeNames
+    Holds a list of attribute names contained in the morph target.
+    \readonly
+*/
+/*!
+    \qmlproperty list<Attribute> MorphTarget::attributes
+    Holds the list of attributes in the morph target.
+*/
+/*!
+    \qmlmethod MorphTarget Qt3D.Animation::MorphTarget::fromGeometry(geometry, stringList)
+    Returns a morph target based on the attributes defined by the given stringList from
+    the given geometry.
+*/
+
 QMorphTargetPrivate::QMorphTargetPrivate()
     : QObjectPrivate()
 {
@@ -54,12 +103,18 @@ void QMorphTargetPrivate::updateAttributeNames()
         m_attributeNames.push_back(attr->name());
 }
 
+/*!
+    Constructs a QMorphTarget with given \a parent.
+*/
 QMorphTarget::QMorphTarget(QObject *parent)
     : QObject(*new QMorphTargetPrivate, parent)
 {
 
 }
 
+/*!
+    Returns a list of attributes contained in the morph target.
+*/
 QVector<Qt3DRender::QAttribute *> QMorphTarget::attributeList() const
 {
     Q_D(const QMorphTarget);
@@ -72,6 +127,9 @@ QStringList QMorphTarget::attributeNames() const
     return d->m_attributeNames;
 }
 
+/*!
+    Sets \a attributes to the morph target. Old attributes are cleared.
+*/
 void QMorphTarget::setAttributes(const QVector<Qt3DRender::QAttribute *> &attributes)
 {
     Q_D(QMorphTarget);
@@ -83,6 +141,10 @@ void QMorphTarget::setAttributes(const QVector<Qt3DRender::QAttribute *> &attrib
     emit attributeNamesChanged(d->m_attributeNames);
 }
 
+/*!
+    Adds an \a attribute the morph target. An attribute with the same
+    name must not have been added previously to the morph target.
+*/
 void QMorphTarget::addAttribute(Qt3DRender::QAttribute *attribute)
 {
     Q_D(QMorphTarget);
@@ -95,6 +157,9 @@ void QMorphTarget::addAttribute(Qt3DRender::QAttribute *attribute)
     emit attributeNamesChanged(d->m_attributeNames);
 }
 
+/*!
+    Removes an \a attribute from the morph target.
+*/
 void QMorphTarget::removeAttribute(Qt3DRender::QAttribute *attribute)
 {
     Q_D(QMorphTarget);
@@ -105,6 +170,9 @@ void QMorphTarget::removeAttribute(Qt3DRender::QAttribute *attribute)
     }
 }
 
+/*!
+    Returns a morph target based on the \a attributes in the given \a geometry.
+*/
 QMorphTarget *QMorphTarget::fromGeometry(Qt3DRender::QGeometry *geometry, const QStringList &attributes)
 {
     QMorphTarget *target = new QMorphTarget();

@@ -89,6 +89,7 @@ NodeManagers::NodeManagers()
     , m_objectPickerManager(new ObjectPickerManager())
 //    , m_boundingVolumeDebugManager(new BoundingVolumeDebugManager())
     , m_lightManager(new LightManager())
+    , m_environmentLightManager(new EnvironmentLightManager())
     , m_computeJobManager(new ComputeCommandManager())
     , m_renderStateManager(new RenderStateManager())
     , m_eventForwardManager(new EventForwardManager())
@@ -129,6 +130,7 @@ NodeManagers::~NodeManagers()
     delete m_objectPickerManager;
 //    delete m_boundingVolumeDebugManager;
     delete m_lightManager;
+    delete m_environmentLightManager;
     delete m_computeJobManager;
     delete m_renderStateManager;
     delete m_renderNodesManager;
@@ -318,6 +320,12 @@ template<>
 LightManager *NodeManagers::manager<Light>() const Q_DECL_NOTHROW
 {
     return m_lightManager;
+}
+
+template<>
+EnvironmentLightManager *NodeManagers::manager<EnvironmentLight>() const Q_DECL_NOTHROW
+{
+    return m_environmentLightManager;
 }
 
 template<>

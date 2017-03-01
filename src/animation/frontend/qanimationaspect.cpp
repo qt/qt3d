@@ -39,19 +39,18 @@
 
 #include "qanimationaspect.h"
 #include "qanimationaspect_p.h"
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/qblendedclipanimator.h>
 #include <Qt3DAnimation/qclipanimator.h>
-#include <Qt3DAnimation/qconductedclipanimator.h>
 #include <Qt3DAnimation/qchannelmapping.h>
 #include <Qt3DAnimation/qchannelmapper.h>
-#include <Qt3DAnimation/qlerpblend.h>
-#include <Qt3DAnimation/qadditiveblend.h>
+#include <Qt3DAnimation/qlerpclipblend.h>
+#include <Qt3DAnimation/qadditiveclipblend.h>
 #include <Qt3DAnimation/private/handler_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/nodefunctor_p.h>
-#include <Qt3DAnimation/private/lerpblend_p.h>
-#include <Qt3DAnimation/private/additiveblend_p.h>
+#include <Qt3DAnimation/private/lerpclipblend_p.h>
+#include <Qt3DAnimation/private/additiveclipblend_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -89,33 +88,30 @@ QAnimationAspect::QAnimationAspect(QAnimationAspectPrivate &dd, QObject *parent)
 {
     setObjectName(QStringLiteral("Animation Aspect"));
     Q_D(QAnimationAspect);
-    qRegisterMetaType<Qt3DAnimation::QAnimationClip*>();
+    qRegisterMetaType<Qt3DAnimation::QAnimationClipLoader*>();
     qRegisterMetaType<Qt3DAnimation::QChannelMapper*>();
 
-    registerBackendType<QAnimationClip>(
-        QSharedPointer<Animation::NodeFunctor<Animation::AnimationClip, Animation::AnimationClipManager>>::create(d->m_handler.data(),
-                                                                                                                  d->m_handler->animationClipManager()));
+    registerBackendType<QAnimationClipLoader>(
+        QSharedPointer<Animation::NodeFunctor<Animation::AnimationClipLoader, Animation::AnimationClipLoaderManager>>::create(d->m_handler.data(),
+                                                                                                                  d->m_handler->animationClipLoaderManager()));
     registerBackendType<QClipAnimator>(
         QSharedPointer<Animation::NodeFunctor<Animation::ClipAnimator, Animation::ClipAnimatorManager>>::create(d->m_handler.data(),
                                                                                                                 d->m_handler->clipAnimatorManager()));
     registerBackendType<QBlendedClipAnimator>(
         QSharedPointer<Animation::NodeFunctor<Animation::BlendedClipAnimator, Animation::BlendedClipAnimatorManager>>::create(d->m_handler.data(),
                                                                                                                               d->m_handler->blendedClipAnimatorManager()));
-    registerBackendType<QConductedClipAnimator>(
-        QSharedPointer<Animation::NodeFunctor<Animation::ConductedClipAnimator, Animation::ConductedClipAnimatorManager>>::create(d->m_handler.data(),
-                                                                                                                                  d->m_handler->conductedClipAnimatorManager()));
     registerBackendType<QChannelMapping>(
         QSharedPointer<Animation::NodeFunctor<Animation::ChannelMapping, Animation::ChannelMappingManager>>::create(d->m_handler.data(),
                                                                                                                     d->m_handler->channelMappingManager()));
     registerBackendType<QChannelMapper>(
         QSharedPointer<Animation::NodeFunctor<Animation::ChannelMapper, Animation::ChannelMapperManager>>::create(d->m_handler.data(),
                                                                                                                   d->m_handler->channelMapperManager()));
-    registerBackendType<QLerpBlend>(
-                QSharedPointer<Animation::ClipBlendNodeFunctor<Animation::LerpBlend, Animation::ClipAnimatorManager>>::create(d->m_handler.data(),
-                                                                                                                     d->m_handler->clipBlendNodeManager()));
-    registerBackendType<QAdditiveBlend>(
-                QSharedPointer<Animation::ClipBlendNodeFunctor<Animation::AdditiveBlend, Animation::ClipAnimatorManager>>::create(d->m_handler.data(),
-                                                                                                                             d->m_handler->clipBlendNodeManager()));
+    registerBackendType<QLerpClipBlend>(
+                QSharedPointer<Animation::ClipBlendNodeFunctor<Animation::LerpClipBlend, Animation::ClipAnimatorManager>>::create(d->m_handler.data(),
+                                                                                                                                  d->m_handler->clipBlendNodeManager()));
+    registerBackendType<QAdditiveClipBlend>(
+                QSharedPointer<Animation::ClipBlendNodeFunctor<Animation::AdditiveClipBlend, Animation::ClipAnimatorManager>>::create(d->m_handler.data(),
+                                                                                                                                      d->m_handler->clipBlendNodeManager()));
 }
 
 /*! \internal */

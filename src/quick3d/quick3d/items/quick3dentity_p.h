@@ -82,6 +82,8 @@ private:
     static QComponent *qmlComponentAt(QQmlListProperty<Qt3DCore::QComponent> *list, int index);
     static int qmlComponentsCount(QQmlListProperty<Qt3DCore::QComponent> *list);
     static void qmlClearComponents(QQmlListProperty<Qt3DCore::QComponent> *list);
+
+    QVector<Qt3DCore::QComponent *> m_managedComponents;
 };
 
 } // namespace Quick

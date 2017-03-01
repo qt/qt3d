@@ -49,7 +49,7 @@
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QMaterial>
 #include <Qt3DExtras/QForwardRenderer>
-#include <Qt3DQuickRender/QScene2D>
+#include <Qt3DQuickScene2D/QScene2D>
 #include <Qt3DExtras/QPlaneMesh>
 #include <Qt3DRender/QTextureWrapMode>
 #include <Qt3DRender/QClearBuffers>

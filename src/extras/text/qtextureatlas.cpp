@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qtextureatlas.h"
 #include "qtextureatlas_p.h"
+#include "qtextureatlas_p_p.h"
 #include <Qt3DRender/qtexturedata.h>
 #include <Qt3DRender/qabstracttextureimage.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>

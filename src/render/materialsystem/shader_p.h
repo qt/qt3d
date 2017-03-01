@@ -119,7 +119,7 @@ public:
     ShaderStorageBlock storageBlockForBlockName(const QString &blockName);
 
     inline QString log() const { return m_log; }
-    inline QShaderProgram::ShaderStatus status() const { return m_status; }
+    inline QShaderProgram::Status status() const { return m_status; }
 
     void submitPendingNotifications();
     inline bool hasPendingNotifications() const { return !m_pendingNotifications.empty(); }
@@ -155,7 +155,7 @@ private:
     GraphicsContext *m_graphicsContext;
     QMetaObject::Connection m_contextConnection;
     QString m_log;
-    QShaderProgram::ShaderStatus m_status;
+    QShaderProgram::Status m_status;
 
     QVector<Qt3DCore::QPropertyUpdatedChangePtr> m_pendingNotifications;
 
@@ -169,7 +169,7 @@ private:
 
     void initializeFromReference(const Shader &other);
     void setLog(const QString &log);
-    void setStatus(QShaderProgram::ShaderStatus status);
+    void setStatus(QShaderProgram::Status status);
 
     friend class GraphicsContext;
 };

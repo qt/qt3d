@@ -56,8 +56,9 @@ RunnableInterface::~RunnableInterface()
 // Aspect task
 
 AspectTaskRunnable::AspectTaskRunnable()
-    : m_dependencyHandler(0),
-      m_reserved(false)
+    : m_dependencyHandler(nullptr)
+    , m_pooler(nullptr)
+    , m_reserved(false)
 {
 }
 
@@ -106,11 +107,12 @@ DependencyHandler *AspectTaskRunnable::dependencyHandler()
 
 SyncTaskRunnable::SyncTaskRunnable(QAbstractAspectJobManager::JobFunction func,
                                    void *arg, QAtomicInt *atomicCount)
-    : m_func(func),
-      m_arg(arg),
-      m_atomicCount(atomicCount),
-      m_pooler(nullptr),
-      m_reserved(false)
+    : m_func(func)
+    , m_arg(arg)
+    , m_atomicCount(atomicCount)
+    , m_pooler(nullptr)
+    , m_reserved(false)
+    , m_id(0)
 {
 }
 

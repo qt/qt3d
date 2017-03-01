@@ -71,6 +71,13 @@ namespace Qt3DRender {
 
 QSGMaterialType Scene3DSGMaterialShader::type;
 
+Scene3DSGMaterialShader::Scene3DSGMaterialShader()
+    : QSGMaterialShader()
+    , m_matrixId(-1)
+    , m_opacityId(-1)
+{
+}
+
 const char * const *Scene3DSGMaterialShader::attributeNames() const
 {
     static char const *const attr[] = { "qt_VertexPosition", "qt_VertexTexCoord", 0 };

@@ -16,7 +16,10 @@ SUBDIRS += \
     instanced-arrays-qml \
     lights \
     compute-particles \
-    3d-text
+    3d-text \
+    qardboard \
+    advancedcustommaterial \
+    simplecustommaterial
 
 qtHaveModule(multimedia): SUBDIRS += audio-visualizer-qml
 

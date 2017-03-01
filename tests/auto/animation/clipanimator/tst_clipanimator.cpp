@@ -28,7 +28,7 @@
 
 #include <QtTest/QTest>
 #include <Qt3DAnimation/private/clipanimator_p.h>
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/qclipanimator.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
@@ -49,7 +49,7 @@ private Q_SLOTS:
         Qt3DAnimation::Animation::ClipAnimator backendAnimator;
         backendAnimator.setHandler(&handler);
         Qt3DAnimation::QClipAnimator animator;
-        auto clip = new Qt3DAnimation::QAnimationClip();
+        auto clip = new Qt3DAnimation::QAnimationClipLoader();
 
         animator.setClip(clip);
         animator.setLoops(10);
@@ -81,7 +81,7 @@ private Q_SLOTS:
 
         // GIVEN
         Qt3DAnimation::QClipAnimator animator;
-        auto clip = new Qt3DAnimation::QAnimationClip();
+        auto clip = new Qt3DAnimation::QAnimationClipLoader();
         animator.setClip(clip);
         animator.setRunning(true);
         animator.setLoops(25);
@@ -116,7 +116,7 @@ private Q_SLOTS:
         QCOMPARE(backendAnimator.isEnabled(), true);
 
         // WHEN
-        auto newClip = new Qt3DAnimation::QAnimationClip();
+        auto newClip = new Qt3DAnimation::QAnimationClipLoader();
         updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
         updateChange->setPropertyName("clip");
         updateChange->setValue(QVariant::fromValue(newClip->id()));

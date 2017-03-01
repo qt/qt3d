@@ -65,15 +65,15 @@ namespace Quick {
 class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DMemoryBarrier : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(int barrierTypes READ barrierTypesInt WRITE setBarrierTypesInt)
+    Q_PROPERTY(int waitFor READ waitFor WRITE setWaitFor)
 public:
     explicit Quick3DMemoryBarrier(QObject *parent = nullptr);
     ~Quick3DMemoryBarrier();
 
     inline QMemoryBarrier *parentBarrier() const { return qobject_cast<QMemoryBarrier*>(parent()); }
 
-    void setBarrierTypesInt(int barrierTypes);
-    int barrierTypesInt() const;
+    void setWaitFor(int waitOperations);
+    int waitFor() const;
 };
 
 } // namespace Quick

@@ -70,10 +70,10 @@ class QShaderDataPropertyReader: public PropertyReaderInterface
 {
     QVariant readProperty(const QVariant &v) Q_DECL_OVERRIDE
     {
-        QShaderData *shaderData = nullptr;
+        const auto node = v.value<Qt3DCore::QNode *>();
 
-        if (v.userType() == qShaderDataTypeId && (shaderData = v.value<QShaderData *>()) != nullptr) {
-            return QVariant::fromValue(shaderData->id());
+        if (node) {
+            return QVariant::fromValue(node->id());
         } else if (v.userType() == qVectorShaderDataTypeId) {
             QVariantList vlist;
             const auto data_ = v.value<QVector<QShaderData *> >();

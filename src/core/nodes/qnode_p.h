@@ -74,7 +74,7 @@ public:
 
     void init(QNode *parent);
 
-    void setScene(QScene *scene);
+    virtual void setScene(QScene *scene);
     QScene *scene() const;
 
     void setArbiter(QLockableObserverInterface *arbiter) Q_DECL_OVERRIDE;
@@ -98,8 +98,8 @@ public:
     bool m_blockNotifications;
     bool m_hasBackendNode;
     bool m_enabled;
-    QNode::PropertyTrackMode m_propertyTrackMode;
-    QStringList m_trackedProperties;
+    QNode::PropertyTrackingMode m_defaultPropertyTrackMode;
+    QHash<QString, QNode::PropertyTrackingMode> m_trackedPropertiesOverrides;
 
     static QNodePrivate *get(QNode *q);
     static void nodePtrDeleter(QNode *q);

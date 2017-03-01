@@ -57,10 +57,11 @@
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qlevelofdetail.h>
 #include <Qt3DRender/qlevelofdetailswitch.h>
-#include <Qt3DRender/qboundingsphere.h>
+#include <Qt3DRender/qlevelofdetailboundingsphere.h>
 #include <Qt3DRender/qabstractlight.h>
 #include <Qt3DRender/qspotlight.h>
 #include <Qt3DRender/qdirectionallight.h>
+#include <Qt3DRender/qenvironmentlight.h>
 #include <Qt3DRender/qpointlight.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qrenderstate.h>
@@ -108,7 +109,6 @@
 #include <Qt3DRender/qbuffercapture.h>
 #include <Qt3DRender/qmemorybarrier.h>
 
-#include <Qt3DQuickRender/qscene2d.h>
 #include <Qt3DQuickRender/private/quick3dlayerfilter_p.h>
 #include <Qt3DQuickRender/private/quick3dtechnique_p.h>
 #include <Qt3DQuickRender/private/quick3dmaterial_p.h>
@@ -159,6 +159,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 
     // @uri Qt3D.Render
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QSceneLoader, Qt3DRender::Render::Quick::Quick3DScene>("QSceneLoader", "Qt3D.Render/SceneLoader", uri, 2, 0, "SceneLoader");
+    qmlRegisterRevision<Qt3DRender::QSceneLoader, 9>(uri, 2, 9);
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QEffect, Qt3DRender::Render::Quick::Quick3DEffect>("QEffect", "Qt3D.Render/Effect", uri, 2, 0, "Effect");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTechnique, Qt3DRender::Render::Quick::Quick3DTechnique>("QTechnique", "Qt3D.Render/Technique", uri, 2, 0, "Technique");
     qmlRegisterType<Qt3DRender::QFilterKey>(uri, 2, 0, "FilterKey");
@@ -168,13 +169,16 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QMaterial, Qt3DRender::Render::Quick::Quick3DMaterial>("QMaterial", "Qt3D.Render/Material", uri, 2, 0, "Material");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QRenderPass, Qt3DRender::Render::Quick::Quick3DRenderPass>("QRenderPass", "Qt3D.Render/RenderPass", uri, 2, 0, "RenderPass");
     qmlRegisterType<Qt3DRender::QShaderProgram>(uri, 2, 0, "ShaderProgram");
+    qmlRegisterRevision<Qt3DRender::QShaderProgram, 9>(uri, 2, 9);
     qmlRegisterUncreatableType<Qt3DRender::QShaderData>(uri, 2, 0, "QShaderData", "Quick3D should instantiate Quick3DShaderData only");
     qmlRegisterType<Qt3DRender::Render::Quick::Quick3DShaderDataArray>(uri, 2, 0, "ShaderDataArray");
     qmlRegisterType<Qt3DRender::Render::Quick::Quick3DShaderData>(uri, 2, 0, "ShaderData");
 
     // Camera
     qmlRegisterType<Qt3DRender::QCamera>(uri, 2, 0, "Camera");
+    qmlRegisterRevision<Qt3DRender::QCamera, 9>(uri, 2, 9);
     qmlRegisterType<Qt3DRender::QCameraLens>(uri, 2, 0, "CameraLens");
+    qmlRegisterRevision<Qt3DRender::QCameraLens, 9>(uri, 2, 9);
 
     // Textures
     qmlRegisterType<Qt3DRender::QTextureWrapMode>(uri, 2, 0, "WrapMode");//, QStringLiteral("QTextureWrapMode cannot be created from QML"));
@@ -197,19 +201,21 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     // Geometry
     qmlRegisterType<Qt3DRender::QAttribute>(uri, 2, 0, "Attribute");
     qmlRegisterUncreatableType<Qt3DRender::QBuffer>(uri, 2, 0, "BufferBase", QStringLiteral("Use Quick3DBuffer in QML"));
+    qmlRegisterUncreatableType<Qt3DRender::QBuffer, 9>(uri, 2, 9, "BufferBase", QStringLiteral("Use Quick3DBuffer in QML"));
     qmlRegisterType<Qt3DRender::Render::Quick::Quick3DBuffer>(uri, 2, 0, "Buffer");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QGeometry, Qt3DRender::Render::Quick::Quick3DGeometry>("QGeometry", "Qt3D.Render/Geometry", uri, 2, 0, "Geometry");
     qmlRegisterType<Qt3DRender::QGeometryRenderer>(uri, 2, 0, "GeometryRenderer");
-    qmlRegisterType<Qt3DRender::QLevelOfDetail>(uri, 2, 2, "LevelOfDetail");
-    qmlRegisterType<Qt3DRender::QLevelOfDetailSwitch>(uri, 2, 2, "LevelOfDetailSwitch");
-    qmlRegisterType<Qt3DRender::QBoundingSphere>(uri, 2, 2, "BoundingSphere");
+    qmlRegisterType<Qt3DRender::QLevelOfDetail>(uri, 2, 9, "LevelOfDetail");
+    qmlRegisterType<Qt3DRender::QLevelOfDetailSwitch>(uri, 2, 9, "LevelOfDetailSwitch");
+    qRegisterMetaType<Qt3DRender::QLevelOfDetailBoundingSphere>("LevelOfDetailBoundingSphere");
 
     // Mesh
     qmlRegisterType<Qt3DRender::QMesh>(uri, 2, 0, "Mesh");
 
     // Picking
     qmlRegisterType<Qt3DRender::QObjectPicker>(uri, 2, 0, "ObjectPicker");
-    qmlRegisterType<Qt3DRender::QEventForward>(uri, 2, 2, "EventForward");
+    qmlRegisterRevision<Qt3DRender::QObjectPicker, 9>(uri, 2, 9);
+    qmlRegisterType<Qt3DRender::QEventForward>(uri, 2, 9, "EventForward");
     qmlRegisterUncreatableType<Qt3DRender::QPickEvent>(uri, 2, 0, "PickEvent", QStringLiteral("Events cannot be created"));
 
         // Compute Job
@@ -223,6 +229,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Qt3DRender::QAbstractLight>(uri, 2, 0, "Light", QStringLiteral("Light is an abstract base class"));
     qmlRegisterType<Qt3DRender::QPointLight>(uri, 2, 0, "PointLight");
     qmlRegisterType<Qt3DRender::QDirectionalLight>(uri, 2, 0, "DirectionalLight");
+    qmlRegisterType<Qt3DRender::QEnvironmentLight>(uri, 2, 9, "EnvironmentLight");
     qmlRegisterType<Qt3DRender::QSpotLight>(uri, 2, 0, "SpotLight");
 
     // FrameGraph
@@ -230,6 +237,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QRenderPassFilter, Qt3DRender::Render::Quick::Quick3DRenderPassFilter>("QRenderPassFilter", "Qt3D.Render/RenderPassFilter", uri, 2, 0, "RenderPassFilter");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTechniqueFilter, Qt3DRender::Render::Quick::Quick3DTechniqueFilter>("QTechniqueFilter", "Qt3D.Render/TechniqueFilter", uri, 2, 0, "TechniqueFilter");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QViewport, Qt3DRender::Render::Quick::Quick3DViewport>("QViewport", "Qt3D.Render/Viewport", uri, 2, 0, "Viewport");
+    qmlRegisterRevision<Qt3DRender::QViewport, 9>(uri, 2, 9);
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QRenderTargetSelector, Qt3DRender::Render::Quick::Quick3DRenderTargetSelector>("QRenderTargetSelector", "Qt3D.Render/RenderTargetSelector", uri, 2, 0, "RenderTargetSelector");
     qmlRegisterType<Qt3DRender::QClearBuffers>(uri, 2, 0, "ClearBuffers");
     qmlRegisterType<Qt3DRender::QFrameGraphNode>(uri, 2, 0, "FrameGraphNode");
@@ -238,9 +246,10 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QFrustumCulling>(uri, 2, 0, "FrustumCulling");
     qmlRegisterType<Qt3DRender::QDispatchCompute>(uri, 2, 0, "DispatchCompute");
     qmlRegisterType<Qt3DRender::QRenderCapture>(uri, 2, 1, "RenderCapture");
+    qmlRegisterRevision<Qt3DRender::QRenderCapture, 9>(uri, 2, 9);
     qmlRegisterUncreatableType<Qt3DRender::QRenderCaptureReply>(uri, 2, 1, "RenderCaptureReply", QStringLiteral("RenderCaptureReply is only instantiated by RenderCapture"));
-    qmlRegisterType<Qt3DRender::QBufferCapture>(uri, 2, 0, "BufferCapture");
-    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QMemoryBarrier, Qt3DRender::Render::Quick::Quick3DMemoryBarrier>("QMemoryBarrier", "Qt3D.Render/MemoryBarrier", uri, 2, 0, "MemoryBarrier");
+    qmlRegisterType<Qt3DRender::QBufferCapture>(uri, 2, 9, "BufferCapture");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QMemoryBarrier, Qt3DRender::Render::Quick::Quick3DMemoryBarrier>("QMemoryBarrier", "Qt3D.Render/MemoryBarrier", uri, 2, 9, "MemoryBarrier");
 
     // RenderTarget
     qmlRegisterType<Qt3DRender::QRenderTargetOutput>(uri, 2, 0, "RenderTargetOutput");
@@ -275,9 +284,6 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QSeamlessCubemap>(uri, 2, 0, "SeamlessCubemap");
     qmlRegisterType<Qt3DRender::QStencilOperation>(uri, 2, 0, "StencilOperation");
     qmlRegisterType<Qt3DRender::QStencilMask>(uri, 2, 0, "StencilMask");
-
-    // Scene2D
-    Qt3DRender::Quick::registerType<Qt3DRender::Quick::QScene2D>("QScene2D", "Qt3D.Render/Scene2D", uri, 2, 2, "Scene2D");
 }
 
 QT_END_NAMESPACE

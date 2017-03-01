@@ -51,7 +51,7 @@
 import QtQuick 2.2
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 1.4
-import Qt3D.Render 2.1
+import Qt3D.Render 2.9
 import QtQuick.Scene3D 2.0
 
 Item {
@@ -96,7 +96,7 @@ Item {
 
                 function doRenderCapture()
                 {
-                    reply = scene.requestRenderCapture(cid)
+                    reply = scene.requestRenderCapture()
                     reply.completeChanged.connect(onRenderCaptureComplete)
                 }
 

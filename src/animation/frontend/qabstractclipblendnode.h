@@ -44,7 +44,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QAnimationClip;
+class QAbstractAnimationClip;
 class QAbstractClipBlendNodePrivate;
 
 class QT3DANIMATIONSHARED_EXPORT QAbstractClipBlendNode : public Qt3DCore::QNode
@@ -53,10 +53,10 @@ class QT3DANIMATIONSHARED_EXPORT QAbstractClipBlendNode : public Qt3DCore::QNode
 public:
     ~QAbstractClipBlendNode();
 
-    QVector<QAnimationClip *> clips() const;
+    QVector<QAbstractAnimationClip *> clips() const;
     QAbstractClipBlendNode *parentClipBlendNode() const;
-    void addClip(QAnimationClip *clip);
-    void removeClip(QAnimationClip *clip);
+    void addClip(QAbstractAnimationClip *clip);
+    void removeClip(QAbstractAnimationClip *clip);
 
 protected:
     explicit QAbstractClipBlendNode(Qt3DCore::QNode *parent = nullptr);

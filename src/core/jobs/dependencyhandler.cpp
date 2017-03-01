@@ -104,6 +104,7 @@ namespace {
 }
 
 DependencyHandler::DependencyHandler()
+    : m_mutex()
 {
 }
 

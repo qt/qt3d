@@ -65,7 +65,7 @@ public:
     QEventForwardPrivate()
         : QNodePrivate()
         , m_target(nullptr)
-        , m_attribute("default")
+        , m_attribute(QLatin1String("default"))
         , m_forwardMouseEvents(true)
         , m_forwardKeyboardEvents(false)
         , m_focus(false)

@@ -75,6 +75,7 @@
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qfrustumculling.h>
 #include <Qt3DRender/qabstractlight.h>
+#include <Qt3DRender/qenvironmentlight.h>
 #include <Qt3DRender/qdispatchcompute.h>
 #include <Qt3DRender/qcomputecommand.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
@@ -121,6 +122,7 @@
 #include <Qt3DRender/private/qsceneimportfactory_p.h>
 #include <Qt3DRender/private/frustumculling_p.h>
 #include <Qt3DRender/private/light_p.h>
+#include <Qt3DRender/private/environmentlight_p.h>
 #include <Qt3DRender/private/dispatchcompute_p.h>
 #include <Qt3DRender/private/computecommand_p.h>
 #include <Qt3DRender/private/rendersurfaceselector_p.h>
@@ -170,8 +172,8 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_renderType(type)
     , m_offscreenHelper(nullptr)
 {
+    m_instances.append(this);
     loadSceneParsers();
-    loadRenderPlugins();
 }
 
 /*! \internal */
@@ -183,6 +185,7 @@ QRenderAspectPrivate::~QRenderAspectPrivate()
     if (m_renderer != nullptr)
         qWarning() << Q_FUNC_INFO << "The renderer should have been deleted when reaching this point (this warning may be normal when running tests)";
     delete m_nodeManagers;
+    m_instances.removeAll(this);
 }
 
 /*! \internal */
@@ -223,6 +226,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QEffect>(QSharedPointer<Render::NodeFunctor<Render::Effect, Render::EffectManager> >::create(m_renderer));
     q->registerBackendType<QFilterKey>(QSharedPointer<Render::NodeFunctor<Render::FilterKey, Render::FilterKeyManager> >::create(m_renderer));
     q->registerBackendType<QAbstractLight>(QSharedPointer<Render::RenderLightFunctor>::create(m_renderer, m_nodeManagers));
+    q->registerBackendType<QEnvironmentLight>(QSharedPointer<Render::NodeFunctor<Render::EnvironmentLight, Render::EnvironmentLightManager> >::create(m_renderer));
     q->registerBackendType<QMaterial>(QSharedPointer<Render::NodeFunctor<Render::Material, Render::MaterialManager> >::create(m_renderer));
     q->registerBackendType<QParameter>(QSharedPointer<Render::NodeFunctor<Render::Parameter, Render::ParameterManager> >::create(m_renderer));
     q->registerBackendType<QRenderPass>(QSharedPointer<Render::NodeFunctor<Render::RenderPass, Render::RenderPassManager> >::create(m_renderer));
@@ -254,8 +258,8 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QEventForward>(QSharedPointer<Render::NodeFunctor<Render::EventForward, Render::EventForwardManager> >::create(m_renderer));
 
     // Plugins
-    for (Render::QRenderPlugin *plugin : m_renderPlugins)
-        plugin->registerBackendTypes(q, m_renderer);
+    for (QString plugin : m_pluginConfig)
+        loadRenderPlugin(plugin);
 }
 
 /*! \internal */
@@ -288,6 +292,7 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     unregisterBackendType<QEffect>();
     unregisterBackendType<QFilterKey>();
     unregisterBackendType<QAbstractLight>();
+    unregisterBackendType<QEnvironmentLight>();
     unregisterBackendType<QMaterial>();
     unregisterBackendType<QParameter>();
     unregisterBackendType<QRenderPass>();
@@ -318,7 +323,7 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     unregisterBackendType<QEventForward>();
 
     // Plugins
-    for (Render::QRenderPlugin *plugin : m_renderPlugins)
+    for (Render::QRenderPlugin *plugin : qAsConst(m_renderPlugins))
         plugin->unregisterBackendTypes(q);
 }
 
@@ -566,13 +571,36 @@ void QRenderAspectPrivate::loadSceneParsers()
     }
 }
 
-void QRenderAspectPrivate::loadRenderPlugins()
+void QRenderAspectPrivate::loadRenderPlugin(const QString &pluginName)
 {
+    Q_Q(QRenderAspect);
     const QStringList keys = Render::QRenderPluginFactory::keys();
-    for (const QString &key : keys) {
-        Render::QRenderPlugin *plugin = Render::QRenderPluginFactory::create(key, QStringList());
-        if (plugin != nullptr)
+    if (!keys.contains(pluginName))
+        return;
+
+    if (m_pluginConfig.contains(pluginName) && !m_loadedPlugins.contains(pluginName)) {
+        Render::QRenderPlugin *plugin
+                = Render::QRenderPluginFactory::create(pluginName, QStringList());
+        if (plugin != nullptr) {
+            m_loadedPlugins.append(pluginName);
             m_renderPlugins.append(plugin);
+            plugin->registerBackendTypes(q, m_renderer);
+        }
+    }
+}
+
+QVector<QString> QRenderAspectPrivate::m_pluginConfig;
+QMutex QRenderAspectPrivate::m_pluginLock;
+QVector<QRenderAspectPrivate *> QRenderAspectPrivate::m_instances;
+
+void QRenderAspectPrivate::configurePlugin(const QString &plugin)
+{
+    QMutexLocker lock(&m_pluginLock);
+    if (!m_pluginConfig.contains(plugin)) {
+        m_pluginConfig.append(plugin);
+
+        for (QRenderAspectPrivate *instance : m_instances)
+            instance->loadRenderPlugin(plugin);
     }
 }
 

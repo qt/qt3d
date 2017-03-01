@@ -37,7 +37,6 @@
 **
 ****************************************************************************/
 
-#include "qboundingsphere.h"
 #include "qlevelofdetail.h"
 #include "qlevelofdetail_p.h"
 #include "qcamera.h"
@@ -52,22 +51,9 @@ QLevelOfDetailPrivate::QLevelOfDetailPrivate()
     , m_camera(nullptr)
     , m_currentIndex(0)
     , m_thresholdType(QLevelOfDetail::DistanceToCamera)
-    , m_volumeOverride(nullptr)
+    , m_volumeOverride()
 {
     Q_Q(QLevelOfDetail);
-    m_volumeOverride = new QBoundingSphere(q);
-    QObject::connect(m_volumeOverride, SIGNAL(radiusChanged(float)), q, SLOT(_q_radiusChanged(float)));
-    QObject::connect(m_volumeOverride, SIGNAL(centerChanged(const QVector3D &)), q, SLOT(_q_centerChanged(const QVector3D&)));
-}
-
-void QLevelOfDetailPrivate::_q_radiusChanged(float radius)
-{
-    notifyPropertyChange("radius", radius);
-}
-
-void QLevelOfDetailPrivate::_q_centerChanged(const QVector3D &center)
-{
-    notifyPropertyChange("center", center);
 }
 
 /*!
@@ -207,9 +193,9 @@ void QLevelOfDetailPrivate::_q_centerChanged(const QVector3D &center)
  * Specifies what is used as a proxy for the entity when computing distance
  * or size.
  *
- * \value BoundingSphere use the bounding sphere specified by the center
+ * \value LevelOfDetailBoundingSphere use the bounding sphere specified by the center
  *          and radius properties.
- * \value ChildrenBoundingSphere use the bounding sphere of the entity the
+ * \value Children LevelOfDetailBoundingSphere use the bounding sphere of the entity the
  *          component is attached to.
  */
 
@@ -220,9 +206,9 @@ void QLevelOfDetailPrivate::_q_centerChanged(const QVector3D &center)
  * or size.
  *
  * \list
- * \li BoundingSphere use the bounding sphere specified by the center
+ * \li LevelOfDetailBoundingSphere use the bounding sphere specified by the center
  *          and radius properties.
- * \li ChildrenBoundingSphere use the bounding sphere of the entity the
+ * \li Children LevelOfDetailBoundingSphere use the bounding sphere of the entity the
  *          component is attached to.
  * \endlist
  * \sa Qt3DRender::QLevelOfDetail::SizeProxyMode
@@ -306,7 +292,7 @@ void QLevelOfDetailPrivate::_q_centerChanged(const QVector3D &center)
  * If this value to null, the bounding volume of the entity is used. Care must be
  * taken that this bounding volume never becomes invalid.
  *
- * \sa BoundingSphere
+ * \sa LevelOfDetailBoundingSphere
  */
 
 /*!
@@ -319,7 +305,7 @@ void QLevelOfDetailPrivate::_q_centerChanged(const QVector3D &center)
  * If this value to nullptr, the bounding volume of the entity is used. Care must be
  * taken that this bounding volume never becomes invalid.
  *
- * \sa QBoundingSphere
+ * \sa LevelOfDetailBoundingSphere
  */
 
 
@@ -354,8 +340,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QLevelOfDetail::createNodeCreationChange() c
     data.currentIndex = d->m_currentIndex;
     data.thresholdType = d->m_thresholdType;
     data.thresholds = d->m_thresholds;
-    data.radius = d->m_volumeOverride ? d->m_volumeOverride->radius() : -1.f;
-    data.center = d->m_volumeOverride ? d->m_volumeOverride->center() : QVector3D();
+    data.volumeOverride = d->m_volumeOverride;
 
     return creationChange;
 }
@@ -441,6 +426,11 @@ QVector<qreal> QLevelOfDetail::thresholds() const
     return d->m_thresholds;
 }
 
+QLevelOfDetailBoundingSphere QLevelOfDetail::createBoundingSphere(const QVector3D &center, float radius)
+{
+    return QLevelOfDetailBoundingSphere(center, radius);
+}
+
 /*!
  * Sets the range values.
  * \sa Qt3DRender::QLevelOfDetail::thresholdType
@@ -454,23 +444,17 @@ void QLevelOfDetail::setThresholds(QVector<qreal> thresholds)
     }
 }
 
-QBoundingSphere *QLevelOfDetail::volumeOverride() const
+QLevelOfDetailBoundingSphere QLevelOfDetail::volumeOverride() const
 {
     Q_D(const QLevelOfDetail);
     return d->m_volumeOverride;
 }
 
-void QLevelOfDetail::setVolumeOverride(QBoundingSphere *volumeOverride)
+void QLevelOfDetail::setVolumeOverride(const QLevelOfDetailBoundingSphere &volumeOverride)
 {
     Q_D(QLevelOfDetail);
     if (d->m_volumeOverride != volumeOverride) {
-        if (d->m_volumeOverride)
-            disconnect(d->m_volumeOverride);
         d->m_volumeOverride = volumeOverride;
-        if (d->m_volumeOverride) {
-            connect(d->m_volumeOverride, SIGNAL(radiusChanged(float)), this, SLOT(_q_radiusChanged(float)));
-            connect(d->m_volumeOverride, SIGNAL(centerChanged(const QVector3D &)), this, SLOT(_q_centerChanged(const QVector3D&)));
-        }
         emit volumeOverrideChanged(volumeOverride);
     }
 }

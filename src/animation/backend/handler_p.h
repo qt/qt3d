@@ -63,14 +63,12 @@ class tst_Handler;
 namespace Qt3DAnimation {
 namespace Animation {
 
-class AnimationClip;
-class AnimationClipManager;
+class AnimationClipLoader;
+class AnimationClipLoaderManager;
 class ClipAnimator;
 class ClipAnimatorManager;
 class BlendedClipAnimator;
 class BlendedClipAnimatorManager;
-class ConductedClipAnimator;
-class ConductedClipAnimatorManager;
 class ChannelMapping;
 class ChannelMappingManager;
 class ChannelMapper;
@@ -109,10 +107,9 @@ public:
     void setBlendedClipAnimatorRunning(const HBlendedClipAnimator &handle, bool running);
     QVector<HBlendedClipAnimator> runningBlenndedClipAnimators() const { return m_runningBlendedClipAnimators; }
 
-    AnimationClipManager *animationClipManager() const Q_DECL_NOTHROW { return m_animationClipManager.data(); }
+    AnimationClipLoaderManager *animationClipLoaderManager() const Q_DECL_NOTHROW { return m_animationClipLoaderManager.data(); }
     ClipAnimatorManager *clipAnimatorManager() const Q_DECL_NOTHROW { return m_clipAnimatorManager.data(); }
     BlendedClipAnimatorManager *blendedClipAnimatorManager() const Q_DECL_NOTHROW { return m_blendedClipAnimatorManager.data(); }
-    ConductedClipAnimatorManager *conductedClipAnimatorManager() const Q_DECL_NOTHROW { return m_conductedClipAnimatorManager.data(); }
     ChannelMappingManager *channelMappingManager() const Q_DECL_NOTHROW { return m_channelMappingManager.data(); }
     ChannelMapperManager *channelMapperManager() const Q_DECL_NOTHROW { return m_channelMapperManager.data(); }
     ClipBlendNodeManager *clipBlendNodeManager() const Q_DECL_NOTHROW { return m_clipBlendNodeManager.data(); }
@@ -120,10 +117,9 @@ public:
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time);
 
 private:
-    QScopedPointer<AnimationClipManager> m_animationClipManager;
+    QScopedPointer<AnimationClipLoaderManager> m_animationClipLoaderManager;
     QScopedPointer<ClipAnimatorManager> m_clipAnimatorManager;
     QScopedPointer<BlendedClipAnimatorManager> m_blendedClipAnimatorManager;
-    QScopedPointer<ConductedClipAnimatorManager> m_conductedClipAnimatorManager;
     QScopedPointer<ChannelMappingManager> m_channelMappingManager;
     QScopedPointer<ChannelMapperManager> m_channelMapperManager;
     QScopedPointer<ClipBlendNodeManager> m_clipBlendNodeManager;

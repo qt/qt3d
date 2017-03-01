@@ -77,6 +77,7 @@
 #include <Qt3DRender/private/boundingvolumedebug_p.h>
 #include <Qt3DRender/private/openglvertexarrayobject_p.h>
 #include <Qt3DRender/private/light_p.h>
+#include <Qt3DRender/private/environmentlight_p.h>
 #include <Qt3DRender/private/computecommand_p.h>
 #include <Qt3DRender/private/eventforward_p.h>
 
@@ -389,6 +390,17 @@ class LightManager : public Qt3DCore::QResourceManager<
 {
 public:
     LightManager() {}
+};
+
+class EnvironmentLightManager : public Qt3DCore::QResourceManager<
+        EnvironmentLight,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy,
+        Qt3DCore::NonLockingPolicy>
+{
+public:
+    EnvironmentLightManager() {}
 };
 
 class ComputeCommandManager : public Qt3DCore::QResourceManager<

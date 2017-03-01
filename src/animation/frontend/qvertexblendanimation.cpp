@@ -42,8 +42,104 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
+/*!
+    \class Qt3DAnimation::QVertexBlendAnimation
+    \brief A class implementing vertex-blend morphing animation
+    \inmodule Qt3DAnimation
+    \since 5.9
+    \inherits Qt3DAnimation::QAbstractAnimation
+
+    A Qt3DAnimation::QVertexBlendAnimation class implements vertex-blend morphing animation
+    to a target \l {Qt3DRender::QGeometryRenderer}{QGeometryRenderer}. The QVertexBlendAnimation
+    sets the correct \l {Qt3DRender::QAttribute}{QAttributes} from the
+    \l {Qt3DAnimation::QMorphTarget}{morph targets} to the target
+    \l {Qt3DRender::QGeometryRenderer::geometry} {QGeometryRenderer::geometry} and calculates
+    interpolator for the current position. Unlike with QMorphingAnimation, where the blending is
+    controller with blend weights, the blending occurs between sequential morph targets.
+    The actual blending between the attributes must be implemented in the material.
+    Qt3DAnimation::QMorphPhongMaterial implements material with morphing support for phong
+    lighting model. The blending happens between 2 attributes - 'base' and 'target'.
+    The names for the base and target attributes are taken from the morph target names,
+    where the base attribute retains the name it already has and the target attribute name
+    gets 'Target' appended to the name. The interpolator can be set as
+    a \l {Qt3DRender::QParameter}{QParameter} to the used material.
+    All morph targets in the animation should contain the attributes with same names as those
+    in the base geometry.
+
+*/
+/*!
+    \qmltype VertexBlendAnimation
+    \brief A type implementing vertex-blend morphing animation
+    \inqmlmodule Qt3D.Animation
+    \since 5.9
+    \inherits AbstractAnimation
+    \instantiates Qt3DAnimation::QVertexBlendAnimation
+
+    A VertexBlendAnimation type implements vertex-blend morphing animation
+    to a target \l GeometryRenderer. The VertexBlendAnimation sets the correct
+    \l {Attribute}{Attributes} from the morph targets to the target
+    \l {Qt3D.Render::GeometryRenderer::geometry}{GeometryRenderer::geometry} and calculates
+    interpolator for the current position. Unlike with MorphingAnimation, where the blending is
+    controller with blend weights, the blending occurs between sequential morph targets.
+    The actual blending between the attributes must be implemented in the material.
+    MorphPhongMaterial implements material with morphing support for phong lighting model.
+    The blending happens between 2 attributes - 'base' and 'target'. The names for the base
+    and target attributes are taken from the morph target names, where the base attribute
+    retains the name it already has and the target attribute name gets 'Target' appended to
+    the name. All morph targets in the animation should contain the attributes with same names
+    as those in the base geometry.
+
+*/
+/*!
+    \property Qt3DAnimation::QVertexBlendAnimation::targetPositions
+    Holds the position values of the morph target. Each position in the list specifies the position
+    of the corresponding morph target with the same index. The values must be in an ascending order.
+    Values can be positive or negative and do not have any predefined unit.
+*/
+/*!
+    \property Qt3DAnimation::QVertexBlendAnimation::interpolator
+    Holds the interpolator between base and target attributes.
+    \readonly
+*/
+/*!
+    \property Qt3DAnimation::QVertexBlendAnimation::target
+    Holds the target QGeometryRenderer the morphing animation is applied to.
+*/
+/*!
+    \property Qt3DAnimation::QVertexBlendAnimation::targetName
+    Holds the name of the target geometry. This is a convenience property making it
+    easier to match the target geometry to the morphing animation. The name
+    is usually same as the name of the parent entity of the target QGeometryRenderer, but
+    does not have to be.
+*/
+
+/*!
+    \qmlproperty list<real> VertexBlendAnimation::targetPositions
+    Holds the position values of the morph target. Each position in the list specifies the position
+    of the corresponding morph target with the same index. The values must be in an ascending order.
+    Values can be positive or negative and do not have any predefined unit.
+*/
+/*!
+    \qmlproperty real VertexBlendAnimation::interpolator
+    Holds the interpolator between base and target attributes.
+    \readonly
+*/
+/*!
+    \qmlproperty VertexBlendAnimation::target
+    Holds the target GeometryRenderer the morphing animation is applied to.
+*/
+/*!
+    \qmlproperty string VertexBlendAnimation::targetName
+    Holds the name of the target geometry. This is a convenience property making it
+    easier to match the target geometry to the morphing animation. The name
+    is usually same as the name of the parent entity of the target GeometryRenderer, but
+    does not have to be.
+*/
+
 QVertexBlendAnimationPrivate::QVertexBlendAnimationPrivate()
     : QAbstractAnimationPrivate(QAbstractAnimation::VertexBlendAnimation)
+    , m_interpolator(0.0f)
+    , m_target(nullptr)
     , m_currentBase(nullptr)
     , m_currentTarget(nullptr)
 {
@@ -72,16 +168,6 @@ void QVertexBlendAnimationPrivate::getAttributesInPosition(float position, int *
             }
         }
     }
-}
-
-static Qt3DRender::QAttribute *findAttribute(QVector<Qt3DRender::QAttribute *> &attributes,
-                                             QString name)
-{
-    for (Qt3DRender::QAttribute *gattr : attributes) {
-        if (gattr->name() == name)
-            return gattr;
-    }
-    return nullptr;
 }
 
 void QVertexBlendAnimationPrivate::updateAnimation(float position)
@@ -121,7 +207,7 @@ void QVertexBlendAnimationPrivate::updateAnimation(float position)
         for (int i = 0; i < baseAttributes.size(); ++i) {
             const QString baseName = attributeNames.at(i);
             QString targetName = baseName;
-            targetName.append("Target");
+            targetName.append(QLatin1String("Target"));
 
             baseAttributes[i]->setName(baseName);
             geometry->addAttribute(baseAttributes.at(i));
@@ -138,6 +224,9 @@ void QVertexBlendAnimationPrivate::updateAnimation(float position)
     }
 }
 
+/*!
+    Construct a new QVertexBlendAnimation with \a parent.
+ */
 QVertexBlendAnimation::QVertexBlendAnimation(QObject *parent)
     : QAbstractAnimation(*new QVertexBlendAnimationPrivate, parent)
 {
@@ -170,12 +259,18 @@ QString QVertexBlendAnimation::targetName() const
     return d->m_targetName;
 }
 
+/*!
+    Set morph \a targets to animation. Old targets are cleared.
+*/
 void QVertexBlendAnimation::setMorphTargets(const QVector<Qt3DAnimation::QMorphTarget *> &targets)
 {
     Q_D(QVertexBlendAnimation);
     d->m_morphTargets = targets;
 }
 
+/*!
+    Add new morph \a target at the end of the animation.
+*/
 void QVertexBlendAnimation::addMorphTarget(Qt3DAnimation::QMorphTarget *target)
 {
     Q_D(QVertexBlendAnimation);
@@ -183,6 +278,9 @@ void QVertexBlendAnimation::addMorphTarget(Qt3DAnimation::QMorphTarget *target)
         d->m_morphTargets.push_back(target);
 }
 
+/*!
+    Remove morph \a target from the animation.
+*/
 void QVertexBlendAnimation::removeMorphTarget(Qt3DAnimation::QMorphTarget *target)
 {
     Q_D(QVertexBlendAnimation);
@@ -208,6 +306,9 @@ void QVertexBlendAnimation::setTarget(Qt3DRender::QGeometryRenderer *target)
     }
 }
 
+/*!
+    Return morph target list.
+*/
 QVector<Qt3DAnimation::QMorphTarget *> QVertexBlendAnimation::morphTargetList()
 {
     Q_D(QVertexBlendAnimation);

@@ -31,6 +31,7 @@ qtConfig(private_tests) {
         qframegraphnode \
         qlayerfilter \
         qabstractlight \
+        qenvironmentlight \
         qray3d \
         qrenderpassfilter \
         qrendertargetselector \
@@ -45,6 +46,7 @@ qtConfig(private_tests) {
         picking \
 #        qboundingvolumedebug \
 #        boundingvolumedebug \
+        boundingsphere \
         qdefaultmeshes \
         trianglesextractor \
         triangleboundingvolume \

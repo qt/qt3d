@@ -81,13 +81,11 @@ public:
     void handleBaseColorChanged(const QVariant &var);
     void handleMetallicChanged(const QVariant &var);
     void handleRoughnessChanged(const QVariant &var);
-    void handleEnvironmentIrradianceChanged(const QVariant &var);
-    void handleEnvironmentSpecularChanged(const QVariant &var);
 
     Qt3DRender::QAbstractTexture *m_environmentIrradianceTexture;
     Qt3DRender::QAbstractTexture *m_environmentSpecularTexture;
     Qt3DRender::QParameter *m_baseColorParameter;
-    Qt3DRender::QParameter *m_metallicParameter;
+    Qt3DRender::QParameter *m_metalnessParameter;
     Qt3DRender::QParameter *m_roughnessParameter;
     Qt3DRender::QParameter *m_environmentIrradianceParameter;
     Qt3DRender::QParameter *m_environmentSpecularParameter;

@@ -96,6 +96,7 @@ class TextureImageDataManager;
 class LayerManager;
 class LevelOfDetailManager;
 class LightManager;
+class EnvironmentLightManager;
 class ComputeCommandManager;
 class RenderStateManager;
 class EventForwardManager;
@@ -129,6 +130,7 @@ class ObjectPicker;
 class EventForward;
 //class BoundingVolumeDebug;
 class Light;
+class EnvironmentLight;
 class ComputeCommand;
 class RenderStateNode;
 class OpenGLVertexArrayObject;
@@ -207,6 +209,7 @@ public:
     inline ObjectPickerManager *objectPickerManager() const Q_DECL_NOEXCEPT { return m_objectPickerManager; }
     //    inline BoundingVolumeDebugManager *boundingVolumeDebugManager() const Q_DECL_NOEXCEPT { return m_boundingVolumeDebugManager; }
     inline LightManager *lightManager() const Q_DECL_NOEXCEPT { return m_lightManager; }
+    inline EnvironmentLightManager *environmentLightManager() const Q_DECL_NOEXCEPT { return m_environmentLightManager; }
     inline ComputeCommandManager *computeJobManager() const Q_DECL_NOEXCEPT { return m_computeJobManager; }
     inline RenderStateManager *renderStateManager() const Q_DECL_NOEXCEPT { return m_renderStateManager; }
     inline EventForwardManager *eventForwardManager() const Q_DECL_NOEXCEPT { return m_eventForwardManager; }
@@ -246,6 +249,7 @@ private:
     ObjectPickerManager *m_objectPickerManager;
     //    BoundingVolumeDebugManager *m_boundingVolumeDebugManager;
     LightManager *m_lightManager;
+    EnvironmentLightManager *m_environmentLightManager;
     ComputeCommandManager *m_computeJobManager;
     RenderStateManager *m_renderStateManager;
     EventForwardManager *m_eventForwardManager;
@@ -347,6 +351,9 @@ QT3DRENDERSHARED_PRIVATE_EXPORT EventForwardManager *NodeManagers::manager<Event
 
 template<>
 LightManager *NodeManagers::manager<Light>() const Q_DECL_NOEXCEPT;
+
+template<>
+EnvironmentLightManager *NodeManagers::manager<EnvironmentLight>() const Q_DECL_NOEXCEPT;
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT ComputeCommandManager *NodeManagers::manager<ComputeCommand>() const Q_DECL_NOEXCEPT;

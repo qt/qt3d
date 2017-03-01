@@ -36,7 +36,7 @@
 
 #include "clipblendnode_p.h"
 #include <Qt3DAnimation/qclipblendnodecreatedchange.h>
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qabstractanimationclip.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 
@@ -80,7 +80,7 @@ void ClipBlendNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
        Qt3DCore::QPropertyNodeAddedChangePtr change = qSharedPointerCast<Qt3DCore::QPropertyNodeAddedChange>(e);
         if (change->metaObject()->inherits(&QAbstractClipBlendNode::staticMetaObject))
             addChildId(change->addedNodeId());
-        else if (change->metaObject()->inherits(&QAnimationClip::staticMetaObject))
+        else if (change->metaObject()->inherits(&QAbstractAnimationClip::staticMetaObject))
             m_clipIds.push_back(change->addedNodeId());
         break;
     }
@@ -89,7 +89,7 @@ void ClipBlendNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         Qt3DCore::QPropertyNodeRemovedChangePtr change = qSharedPointerCast<Qt3DCore::QPropertyNodeRemovedChange>(e);
         if (change->metaObject()->inherits(&QAbstractClipBlendNode::staticMetaObject))
             removeChildId(change->removedNodeId());
-        else if (change->metaObject()->inherits(&QAnimationClip::staticMetaObject))
+        else if (change->metaObject()->inherits(&QAbstractAnimationClip::staticMetaObject))
             m_clipIds.removeOne(change->removedNodeId());
         break;
     }

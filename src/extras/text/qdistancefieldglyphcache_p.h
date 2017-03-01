@@ -51,82 +51,57 @@
 // We mean it.
 //
 
-#include <QtCore/qscopedpointer.h>
-#include <QtGui/qglyphrun.h>
-#include <QtGui/qfont.h>
-#include <QtGui/private/qdistancefield_p.h>
-#include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DExtras/qdistancefieldglyphcache.h>
-#include <Qt3DExtras/qtextureatlas.h>
+#include <QtCore/QRectF>
+#include <Qt3DCore/qnode.h>
+#include <Qt3DExtras/qt3dextras_global.h>
 
 QT_BEGIN_NAMESPACE
 
+class QRawFont;
+class QGlyphRun;
+
+namespace Qt3DCore {
+class QNode;
+}
+
+namespace Qt3DRender {
+class QAbstractTexture;
+}
+
 namespace Qt3DExtras {
 
-// ref-count glyphs and keep track of where they are stored
-class StoredGlyph {
-public:
-    StoredGlyph() = default;
-    StoredGlyph(const StoredGlyph &other) = default;
-    StoredGlyph(const QRawFont &font, quint32 glyph, bool doubleResolution);
+class DistanceFieldFont;
+class QDistanceFieldGlyphCachePrivate;
 
-    int refCount() const { return m_ref; }
-    void ref() { ++m_ref; }
-    int deref() { return m_ref = std::max(m_ref - 1, (quint32) 0); }
-
-    bool addToTextureAtlas(QTextureAtlas *atlas);
-    void removeFromTextureAtlas();
-
-    QTextureAtlas *atlas() const { return m_atlas; }
-    QRectF glyphPathBoundingRect() const { return m_glyphPathBoundingRect; }
-    QRectF texCoords() const;
-
-private:
-    quint32 m_glyph = (quint32) -1;
-    quint32 m_ref = 0;
-    QTextureAtlas *m_atlas = nullptr;
-    QTextureAtlas::TextureId m_atlasEntry = QTextureAtlas::InvalidTexture;
-    QRectF m_glyphPathBoundingRect;
-    QImage m_distanceFieldImage;    // only used until added to texture atlas
-};
-
-// A DistanceFieldFont stores all glyphs for a given QRawFont.
-// it will use multiple QTextureAtlasess to store the distance
-// fields and uses ref-counting for each glyph to ensure that
-// unused glyphs are removed from the texture atlasses.
-class DistanceFieldFont
+class QDistanceFieldGlyphCache
 {
 public:
-    DistanceFieldFont(const QRawFont &font, bool doubleRes, Qt3DCore::QNode *parent);
-    ~DistanceFieldFont();
+    QDistanceFieldGlyphCache();
+    ~QDistanceFieldGlyphCache();
 
-    StoredGlyph findGlyph(quint32 glyph) const;
-    StoredGlyph refGlyph(quint32 glyph);
-    void derefGlyph(quint32 glyph);
+    void setRootNode(Qt3DCore::QNode *rootNode);
+    Qt3DCore::QNode *rootNode() const;
 
-    bool doubleGlyphResolution() const { return m_doubleGlyphResolution; }
+    struct Glyph {
+        Qt3DRender::QAbstractTexture *texture = nullptr;
+        QRectF glyphPathBoundingRect;   // bounding rect of the QPainterPath used to draw the glyph
+        QRectF texCoords;               // texture coordinates within texture
+    };
+
+    bool doubleGlyphResolution(const QRawFont &font);
+
+    QVector<Glyph> refGlyphs(const QGlyphRun &run);
+    Glyph refGlyph(const QRawFont &font, quint32 glyph);
+
+    void derefGlyphs(const QGlyphRun &run);
+    void derefGlyph(const QRawFont &font, quint32 glyph);
 
 private:
-    QRawFont m_font;
-    bool m_doubleGlyphResolution;
-    Qt3DCore::QNode *m_parentNode; // parent node for the QTextureAtlasses
-
-    QHash<quint32, StoredGlyph> m_glyphs;
-
-    QVector<QTextureAtlas*> m_atlasses;
-};
-
-class QDistanceFieldGlyphCachePrivate : public Qt3DCore::QNodePrivate
-{
-public:
-    Q_DECLARE_PUBLIC(QDistanceFieldGlyphCache)
-
     DistanceFieldFont* getOrCreateDistanceFieldFont(const QRawFont &font);
-
-private:
     static QString fontKey(const QRawFont &font);
 
     QHash<QString, DistanceFieldFont*> m_fonts;
+    Qt3DCore::QNode *m_rootNode;
 };
 
 } // namespace Qt3DExtras

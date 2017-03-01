@@ -60,8 +60,7 @@ PostEventsToFrontend::PostEventsToFrontend(const QVector<QEvent *> &events)
 
 PostEventsToFrontend::~PostEventsToFrontend()
 {
-    for (QEvent *e : m_events)
-        delete e;
+    qDeleteAll(m_events);
 }
 
 QVector<QEvent *> &PostEventsToFrontend::events()

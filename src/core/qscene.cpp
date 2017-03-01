@@ -55,6 +55,7 @@ public:
     QScenePrivate(QAspectEngine *engine)
         : m_engine(engine)
         , m_arbiter(nullptr)
+        , m_rootNode(nullptr)
     {
     }
 
@@ -67,6 +68,7 @@ public:
     QLockableObserverInterface *m_arbiter;
     mutable QReadWriteLock m_lock;
     mutable QReadWriteLock m_nodePropertyTrackModeLock;
+    QNode *m_rootNode;
 };
 
 
@@ -171,6 +173,12 @@ QNodeId QScene::nodeIdFromObservable(QObservableInterface *observable) const
     return d->m_observableToUuid.value(observable);
 }
 
+QNode *QScene::rootNode() const
+{
+    Q_D(const QScene);
+    return d->m_rootNode;
+}
+
 void QScene::setArbiter(QLockableObserverInterface *arbiter)
 {
     Q_D(QScene);
@@ -234,6 +242,12 @@ void QScene::removePropertyTrackDataForNode(QNodeId nodeId)
     Q_D(QScene);
     QWriteLocker lock(&d->m_nodePropertyTrackModeLock);
     d->m_nodePropertyTrackModeLookupTable.remove(nodeId);
+}
+
+void QScene::setRootNode(QNode *root)
+{
+    Q_D(QScene);
+    d->m_rootNode = root;
 }
 
 } // Qt3D

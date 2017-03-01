@@ -2,30 +2,28 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     qanimationaspect \
-    qanimationclip \
+    qanimationcliploader \
     qclipanimator \
     qblendedclipanimator \
-    qconductedclipanimator \
     qchannelmapping \
     qchannelmapper
 
 qtConfig(private_tests) {
     SUBDIRS += \
-        animationclip \
+        animationcliploader \
         qabstractclipblendnode \
         fcurve \
         functionrangefinder \
         bezierevaluator \
         clipanimator \
         blendedclipanimator \
-        conductedclipanimator \
         channelmapper \
         channelmapping \
-        qlerpblend \
+        qlerpclipblend \
         clipblendnodemanager \
         clipblendnode \
-        lerpblend \
+        lerpclipblend \
         clipblendnodevisitor \
-        qadditiveblend \
-        additiveblend
+        qadditiveclipblend \
+        additiveclipblend
 }

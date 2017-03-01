@@ -29,7 +29,7 @@
 
 #include <QtTest/QTest>
 #include <Qt3DAnimation/qabstractclipblendnode.h>
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qanimationcliploader.h>
 #include <QObject>
 #include <QSignalSpy>
 #include <Qt3DCore/qpropertyupdatedchange.h>
@@ -76,7 +76,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            Qt3DAnimation::QAnimationClip newValue;
+            Qt3DAnimation::QAnimationClipLoader newValue;
             abstractClipBlendNode.addClip(&newValue);
 
             // THEN
@@ -103,7 +103,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            Qt3DAnimation::QAnimationClip clip;
+            Qt3DAnimation::QAnimationClipLoader clip;
             abstractClipBlendNode.addClip(&clip);
 
             QCOMPARE(abstractClipBlendNode.clips().size(), 1);
@@ -118,7 +118,7 @@ private Q_SLOTS:
         // GIVEN
         TestArbiter arbiter;
         TestClipBlendNode abstractClipBlendNode;
-        Qt3DAnimation::QAnimationClip clip;
+        Qt3DAnimation::QAnimationClipLoader clip;
         arbiter.setArbiterOnNode(&abstractClipBlendNode);
 
         {

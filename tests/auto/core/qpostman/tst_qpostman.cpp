@@ -174,7 +174,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            receiverNode->setPropertyTrackMode(QNode::TrackAllPropertiesMode);
+            receiverNode->setDefaultPropertyTrackingMode(QNode::TrackAllValues);
 
             auto updateChange = QPropertyUpdatedChangePtr::create(receiverNode->id());
             updateChange->setValue(1584);
@@ -189,8 +189,8 @@ private Q_SLOTS:
 
         {
             // GIVEN
-            receiverNode->setPropertyTrackMode(QNode::TrackNamedPropertiesMode);
-            receiverNode->setTrackedProperties(QStringList() << QStringLiteral("vette"));
+            receiverNode->setDefaultPropertyTrackingMode(QNode::DontTrackValues);
+            receiverNode->setPropertyTracking(QStringLiteral("vette"), Qt3DCore::QNode::TrackAllValues);
 
             {
                 // WHEN
@@ -220,8 +220,8 @@ private Q_SLOTS:
 
         {
             // GIVEN
-            receiverNode->setTrackedProperties(QStringList() << QStringLiteral("vette"));
-            receiverNode->setPropertyTrackMode(QNode::TrackAllPropertiesMode);
+            receiverNode->setPropertyTracking(QStringLiteral("vette"), Qt3DCore::QNode::TrackAllValues);
+            receiverNode->setDefaultPropertyTrackingMode(QNode::TrackAllValues);
 
             {
                 // WHEN
@@ -246,8 +246,8 @@ private Q_SLOTS:
 
         {
             // GIVEN
-            receiverNode->setTrackedProperties(QStringList());
-            receiverNode->setPropertyTrackMode(QNode::DefaultTrackMode);
+            receiverNode->clearPropertyTrackings();
+            receiverNode->setDefaultPropertyTrackingMode(QNode::TrackFinalValues);
 
             {
                 // WHEN
@@ -279,8 +279,8 @@ private Q_SLOTS:
 
         {
             // GIVEN
-            receiverNode->setTrackedProperties(QStringList());
-            receiverNode->setPropertyTrackMode(QNode::DefaultTrackMode);
+            receiverNode->clearPropertyTrackings();
+            receiverNode->setDefaultPropertyTrackingMode(QNode::TrackFinalValues);
 
             {
                 // WHEN

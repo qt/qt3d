@@ -38,7 +38,7 @@
 #include "qabstractclipblendnode_p.h"
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qabstractanimationclip.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,7 +63,7 @@ QAbstractClipBlendNode::~QAbstractClipBlendNode()
 {
 }
 
-void QAbstractClipBlendNode::addClip(QAnimationClip *clip)
+void QAbstractClipBlendNode::addClip(QAbstractAnimationClip *clip)
 {
     Q_D(QAbstractClipBlendNode);
     if (!d->m_clips.contains(clip)) {
@@ -87,7 +87,7 @@ void QAbstractClipBlendNode::addClip(QAnimationClip *clip)
     }
 }
 
-void QAbstractClipBlendNode::removeClip(QAnimationClip *clip)
+void QAbstractClipBlendNode::removeClip(QAbstractAnimationClip *clip)
 {
     Q_D(QAbstractClipBlendNode);
     if (d->m_changeArbiter != nullptr) {
@@ -100,7 +100,7 @@ void QAbstractClipBlendNode::removeClip(QAnimationClip *clip)
     d->unregisterDestructionHelper(clip);
 }
 
-QVector<QAnimationClip *> QAbstractClipBlendNode::clips() const
+QVector<QAbstractAnimationClip *> QAbstractClipBlendNode::clips() const
 {
     Q_D(const QAbstractClipBlendNode);
     return d->m_clips;

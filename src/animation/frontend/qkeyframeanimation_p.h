@@ -63,7 +63,6 @@ public:
 
     void calculateFrame(float position);
 
-    float m_prevPosition;
     QVector<float> m_framePositions;
     QVector<Qt3DCore::QTransform *> m_keyframes;
     Qt3DCore::QTransform *m_target;

@@ -1,11 +1,11 @@
 
 SOURCES += \
-        $$PWD/qtext3dgeometry.cpp \
-        $$PWD/qtext3dmesh.cpp
+        $$PWD/qextrudedtextgeometry.cpp \
+        $$PWD/qextrudedtextmesh.cpp
 
 HEADERS += \
-       $$PWD/qtext3dgeometry.h \
-       $$PWD/qtext3dgeometry_p.h \
-       $$PWD/qtext3dmesh.h
+        $$PWD/qextrudedtextgeometry.h \
+        $$PWD/qextrudedtextgeometry_p.h \
+        $$PWD/qextrudedtextmesh.h
 
 INCLUDEPATH += $$PWD

@@ -59,7 +59,7 @@ class QT3DRENDERSHARED_EXPORT QObjectPicker : public Qt3DCore::QComponent
     Q_PROPERTY(bool dragEnabled READ isDragEnabled WRITE setDragEnabled NOTIFY dragEnabledChanged)
     Q_PROPERTY(bool pressed READ isPressed NOTIFY pressedChanged)
     Q_PROPERTY(bool containsMouse READ containsMouse NOTIFY containsMouseChanged)
-    Q_PROPERTY(Qt3DRender::QEventForward *eventForward READ eventForward WRITE setEventForward NOTIFY eventForwardChanged)
+    Q_PROPERTY(Qt3DRender::QEventForward *eventForward READ eventForward WRITE setEventForward NOTIFY eventForwardChanged REVISION 9)
 
 public:
     explicit QObjectPicker(QNode *parent = nullptr);

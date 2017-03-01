@@ -27,7 +27,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DQuickRender/qscene2d.h>
+#include <Qt3DQuickScene2D/qscene2d.h>
 #include <Qt3DRender/qrendertargetoutput.h>
 #include <private/qscene2d_p.h>
 #include <QObject>

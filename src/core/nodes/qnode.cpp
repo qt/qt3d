@@ -73,7 +73,7 @@ QNodePrivate::QNodePrivate()
     , m_blockNotifications(false)
     , m_hasBackendNode(false)
     , m_enabled(true)
-    , m_propertyTrackMode(QNode::DefaultTrackMode)
+    , m_defaultPropertyTrackMode(QNode::TrackFinalValues)
     , m_propertyChangesSetup(false)
     , m_signals(this)
 {
@@ -608,9 +608,9 @@ void QNodePrivate::updatePropertyTrackMode()
 {
     if (m_scene != nullptr) {
         QScene::NodePropertyTrackData trackData;
-        trackData.updateMode = m_propertyTrackMode;
-        trackData.namedProperties = m_trackedProperties;
-        m_scene->setPropertyTrackDataForNode(m_id,trackData);
+        trackData.defaultTrackMode = m_defaultPropertyTrackMode;
+        trackData.trackedPropertiesOverrides = m_trackedPropertiesOverrides;
+        m_scene->setPropertyTrackDataForNode(m_id, trackData);
     }
 }
 
@@ -803,30 +803,16 @@ void QNode::setEnabled(bool isEnabled)
     emit enabledChanged(isEnabled);
 }
 
-void QNode::setPropertyTrackMode(QNode::PropertyTrackMode mode)
+void QNode::setDefaultPropertyTrackingMode(QNode::PropertyTrackingMode mode)
 {
     Q_D(QNode);
-    if (d->m_propertyTrackMode == mode)
+    if (d->m_defaultPropertyTrackMode == mode)
         return;
 
-    d->m_propertyTrackMode = mode;
+    d->m_defaultPropertyTrackMode = mode;
     // The backend doesn't care about such notification
     const bool blocked = blockNotifications(true);
-    emit propertyUpdateModeChanged(mode);
-    blockNotifications(blocked);
-    d->updatePropertyTrackMode();
-}
-
-void QNode::setTrackedProperties(const QStringList &trackedProperties)
-{
-    Q_D(QNode);
-    if (d->m_trackedProperties == trackedProperties)
-        return;
-
-    d->m_trackedProperties = trackedProperties;
-    // The backend doesn't care about such notification
-    const bool blocked = blockNotifications(true);
-    emit trackedPropertiesChanged(trackedProperties);
+    emit defaultPropertyTrackingModeChanged(mode);
     blockNotifications(blocked);
     d->updatePropertyTrackMode();
 }
@@ -848,29 +834,45 @@ bool QNode::isEnabled() const
 }
 
 /*!
-    \property Qt3DCore::QNode::propertyTrackMode
+    \property Qt3DCore::QNode::defaultPropertyTrackingMode
 
-    Holds the property track mode which determines whether a QNode should
-    be listening for property updates
+    Holds the default property tracking mode which determines whether a QNode should
+    be listening for property updates. This only applies to properties which
+    haven't been overridden by a call to setPropertyTracking.
 
-    By default it is set to QNode::DontTrackProperties
+    By default it is set to QNode::TrackFinalValues
 */
-QNode::PropertyTrackMode QNode::propertyTrackMode() const
+QNode::PropertyTrackingMode QNode::defaultPropertyTrackingMode() const
 {
     Q_D(const QNode);
-    return d->m_propertyTrackMode;
+    return d->m_defaultPropertyTrackMode;
 }
 
-/*!
-    \property Qt3DCore::QNode::trackedProperties
+void QNode::setPropertyTracking(const QString &propertyName, QNode::PropertyTrackingMode trackMode)
+{
+    Q_D(QNode);
+    d->m_trackedPropertiesOverrides.insert(propertyName, trackMode);
+    d->updatePropertyTrackMode();
+}
 
-    Holds the names of the properties to be tracked when propertyTrackMode is
-    set to TrackNamedProperties.
-*/
-QStringList QNode::trackedProperties() const
+QNode::PropertyTrackingMode QNode::propertyTracking(const QString &propertyName) const
 {
     Q_D(const QNode);
-    return d->m_trackedProperties;
+    return d->m_trackedPropertiesOverrides.value(propertyName, d->m_defaultPropertyTrackMode);
+}
+
+void QNode::clearPropertyTracking(const QString &propertyName)
+{
+    Q_D(QNode);
+    d->m_trackedPropertiesOverrides.remove(propertyName);
+    d->updatePropertyTrackMode();
+}
+
+void QNode::clearPropertyTrackings()
+{
+    Q_D(QNode);
+    d->m_trackedPropertiesOverrides.clear();
+    d->updatePropertyTrackMode();
 }
 
 QNodeCreatedChangeBasePtr QNode::createNodeCreationChange() const

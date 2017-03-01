@@ -70,10 +70,6 @@ public :
     QNodeId parentEntityId() const;
 
     QComponentVector m_components;
-    bool m_visible;
-
-    // TODO: Is a bool enough here or do we need additional states for entities?
-    // Perhaps aboutToBeDeleted would be useful?
     mutable QNodeId m_parentEntityId;
 };
 

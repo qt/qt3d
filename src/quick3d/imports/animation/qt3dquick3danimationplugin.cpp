@@ -38,13 +38,14 @@
 ****************************************************************************/
 
 #include "qt3dquick3danimationplugin.h"
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qabstractclipanimator.h>
+#include <Qt3DAnimation/qabstractanimationclip.h>
+#include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/qblendedclipanimator.h>
 #include <Qt3DAnimation/qclipanimator.h>
-#include <Qt3DAnimation/qconductedclipanimator.h>
 #include <Qt3DAnimation/qchannelmapping.h>
-#include <Qt3DAnimation/qlerpblend.h>
-#include <Qt3DAnimation/qadditiveblend.h>
+#include <Qt3DAnimation/qlerpclipblend.h>
+#include <Qt3DAnimation/qadditiveclipblend.h>
 
 #include <Qt3DAnimation/qkeyframeanimation.h>
 #include <Qt3DAnimation/qanimationcontroller.h>
@@ -69,24 +70,26 @@ void Qt3DQuick3DAnimationPlugin::registerTypes(const char *uri)
     Qt3DAnimation::Quick::Quick3DAnimation_initialize();
 
     // @uri Qt3D.Animation
-    qmlRegisterType<Qt3DAnimation::QAnimationClip>(uri, 2, 2, "AnimationClip");
-    qmlRegisterType<Qt3DAnimation::QClipAnimator>(uri, 2, 2, "ClipAnimator");
-    qmlRegisterType<Qt3DAnimation::QBlendedClipAnimator>(uri, 2, 2, "BlendedClipAnimator");
-    qmlRegisterType<Qt3DAnimation::QConductedClipAnimator>(uri, 2, 2, "ConductedClipAnimator");
-    qmlRegisterType<Qt3DAnimation::QChannelMapping>(uri, 2, 2, "ChannelMapping");
+    qmlRegisterUncreatableType<Qt3DAnimation::QAbstractClipAnimator>(uri, 2, 9, "AbstractClipAnimator", QStringLiteral("QAbstractClipAnimator is abstract"));
+    qmlRegisterType<Qt3DAnimation::QClipAnimator>(uri, 2, 9, "ClipAnimator");
+    qmlRegisterType<Qt3DAnimation::QBlendedClipAnimator>(uri, 2, 9, "BlendedClipAnimator");
+    qmlRegisterType<Qt3DAnimation::QChannelMapping>(uri, 2, 9, "ChannelMapping");
+    qmlRegisterType<Qt3DAnimation::QChannelMapping>(uri, 2, 9, "ChannelMapping");
+    qmlRegisterUncreatableType<Qt3DAnimation::QAbstractAnimationClip>(uri, 2, 9, "AbstractAnimationClip", QStringLiteral("QAbstractAnimationClip is abstract"));
+    qmlRegisterType<Qt3DAnimation::QAnimationClipLoader>(uri, 2, 9, "AnimationClip");
     qmlRegisterExtendedType<Qt3DAnimation::QChannelMapper,
-                            Qt3DAnimation::Animation::Quick::Quick3DChannelMapper>(uri, 2, 2, "ChannelMapper");
+                            Qt3DAnimation::Animation::Quick::Quick3DChannelMapper>(uri, 2, 9, "ChannelMapper");
     qmlRegisterExtendedUncreatableType<Qt3DAnimation::QAbstractClipBlendNode,
-                                       Qt3DAnimation::Animation::Quick::Quick3DAbstractClipBlendNode>(uri, 2, 2, "AbstractClipBlendNode", QStringLiteral("QAbstractClipBlendNode is abstract"));
-    qmlRegisterType<Qt3DAnimation::QLerpBlend>(uri, 2, 2, "LerpBlend");
-    qmlRegisterType<Qt3DAnimation::QAdditiveBlend>(uri, 2, 2, "AdditiveBlend");
+                                       Qt3DAnimation::Animation::Quick::Quick3DAbstractClipBlendNode>(uri, 2, 9, "AbstractClipBlendNode", QStringLiteral("QAbstractClipBlendNode is abstract"));
+    qmlRegisterType<Qt3DAnimation::QLerpClipBlend>(uri, 2, 9, "LerpClipBlend");
+    qmlRegisterType<Qt3DAnimation::QAdditiveClipBlend>(uri, 2, 9, "AdditiveClipBlend");
 
-    qmlRegisterUncreatableType<Qt3DAnimation::QAbstractAnimation>(uri, 2, 2, "AbstractAnimation", QStringLiteral("AbstractAnimation is abstract"));
-    qmlRegisterExtendedType<Qt3DAnimation::QKeyframeAnimation, Qt3DAnimation::Quick::QQuick3DKeyframeAnimation>(uri, 2, 2, "KeyframeAnimation");
-    qmlRegisterExtendedType<Qt3DAnimation::QAnimationGroup, Qt3DAnimation::Quick::QQuick3DAnimationGroup>(uri, 2, 2, "AnimationGroup");
-    qmlRegisterExtendedType<Qt3DAnimation::QAnimationController, Qt3DAnimation::Quick::QQuick3DAnimationController>(uri, 2, 2, "AnimationController");
-    qmlRegisterExtendedType<Qt3DAnimation::QMorphingAnimation, Qt3DAnimation::Quick::QQuick3DMorphingAnimation>(uri, 2, 2, "MorphingAnimation");
-    qmlRegisterExtendedType<Qt3DAnimation::QMorphTarget, Qt3DAnimation::Quick::QQuick3DMorphTarget>(uri, 2, 2, "MorphTarget");
+    qmlRegisterUncreatableType<Qt3DAnimation::QAbstractAnimation>(uri, 2, 9, "AbstractAnimation", QStringLiteral("AbstractAnimation is abstract"));
+    qmlRegisterExtendedType<Qt3DAnimation::QKeyframeAnimation, Qt3DAnimation::Quick::QQuick3DKeyframeAnimation>(uri, 2, 9, "KeyframeAnimation");
+    qmlRegisterExtendedType<Qt3DAnimation::QAnimationGroup, Qt3DAnimation::Quick::QQuick3DAnimationGroup>(uri, 2, 9, "AnimationGroup");
+    qmlRegisterExtendedType<Qt3DAnimation::QAnimationController, Qt3DAnimation::Quick::QQuick3DAnimationController>(uri, 2, 9, "AnimationController");
+    qmlRegisterExtendedType<Qt3DAnimation::QMorphingAnimation, Qt3DAnimation::Quick::QQuick3DMorphingAnimation>(uri, 2, 9, "MorphingAnimation");
+    qmlRegisterExtendedType<Qt3DAnimation::QMorphTarget, Qt3DAnimation::Quick::QQuick3DMorphTarget>(uri, 2, 9, "MorphTarget");
 }
 
 QT_END_NAMESPACE

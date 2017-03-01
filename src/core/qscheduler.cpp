@@ -50,6 +50,7 @@ namespace Qt3DCore {
 
 QScheduler::QScheduler(QObject *parent)
     : QObject(parent)
+    , m_aspectManager(nullptr)
 {
 }
 

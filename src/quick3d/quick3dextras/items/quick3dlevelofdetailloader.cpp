@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "quick3dlevelofdetailloader_p_p.h"
-#include <Qt3DRender/qboundingsphere.h>
+#include <Qt3DRender/qlevelofdetailboundingsphere.h>
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DQuick/private/quick3dentityloader_p.h>
 
@@ -156,13 +156,18 @@ void Quick3DLevelOfDetailLoader::setThresholds(const QVector<qreal> &thresholds)
     d->m_lod->setThresholds(thresholds);
 }
 
-Qt3DRender::QBoundingSphere *Quick3DLevelOfDetailLoader::volumeOverride() const
+Qt3DRender::QLevelOfDetailBoundingSphere Quick3DLevelOfDetailLoader::createBoundingSphere(const QVector3D &center, float radius)
+{
+    return Qt3DRender::QLevelOfDetailBoundingSphere(center, radius);
+}
+
+Qt3DRender::QLevelOfDetailBoundingSphere Quick3DLevelOfDetailLoader::volumeOverride() const
 {
     Q_D(const Quick3DLevelOfDetailLoader);
     return d->m_lod->volumeOverride();
 }
 
-void Quick3DLevelOfDetailLoader::setVolumeOverride(Qt3DRender::QBoundingSphere *volumeOverride)
+void Quick3DLevelOfDetailLoader::setVolumeOverride(const Qt3DRender::QLevelOfDetailBoundingSphere &volumeOverride)
 {
     Q_D(Quick3DLevelOfDetailLoader);
     d->m_lod->setVolumeOverride(volumeOverride);

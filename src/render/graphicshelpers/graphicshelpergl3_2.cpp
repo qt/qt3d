@@ -797,7 +797,7 @@ GLint GraphicsHelperGL3_2::maxClipPlaneCount()
     return max;
 }
 
-void GraphicsHelperGL3_2::memoryBarrier(QMemoryBarrier::BarrierTypes barriers)
+void GraphicsHelperGL3_2::memoryBarrier(QMemoryBarrier::Operations barriers)
 {
     Q_UNUSED(barriers);
     qWarning() << "memory barrier is not supported by OpenGL 3.0 (since 4.3)";

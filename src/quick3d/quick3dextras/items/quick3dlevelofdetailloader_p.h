@@ -72,7 +72,7 @@ class QT3DQUICKEXTRASSHARED_PRIVATE_EXPORT Quick3DLevelOfDetailLoader : public Q
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
     Q_PROPERTY(Qt3DRender::QLevelOfDetail::ThresholdType thresholdType READ thresholdType WRITE setThresholdType NOTIFY thresholdTypeChanged)
     Q_PROPERTY(QVector<qreal> thresholds READ thresholds WRITE setThresholds NOTIFY thresholdsChanged)
-    Q_PROPERTY(Qt3DRender::QBoundingSphere *volumeOverride READ volumeOverride WRITE setVolumeOverride NOTIFY volumeOverrideChanged)
+    Q_PROPERTY(Qt3DRender::QLevelOfDetailBoundingSphere volumeOverride READ volumeOverride WRITE setVolumeOverride NOTIFY volumeOverrideChanged)
 
     Q_PROPERTY(QObject *entity READ entity NOTIFY entityChanged)
     Q_PROPERTY(QUrl source READ source NOTIFY sourceChanged)
@@ -90,13 +90,15 @@ public:
     void setThresholdType(Qt3DRender::QLevelOfDetail::ThresholdType thresholdType);
     QVector<qreal> thresholds() const;
     void setThresholds(const QVector<qreal> &thresholds);
-    Qt3DRender::QBoundingSphere *volumeOverride() const;
-    void setVolumeOverride(Qt3DRender::QBoundingSphere *volumeOverride);
+    Qt3DRender::QLevelOfDetailBoundingSphere volumeOverride() const;
+    void setVolumeOverride(const Qt3DRender::QLevelOfDetailBoundingSphere &volumeOverride);
+
+    Q_INVOKABLE Qt3DRender::QLevelOfDetailBoundingSphere createBoundingSphere(const QVector3D &center, float radius);
 
     QObject *entity() const;
     QUrl source() const;
 
-signals:
+Q_SIGNALS:
     void sourcesChanged();
     void cameraChanged();
     void currentIndexChanged();

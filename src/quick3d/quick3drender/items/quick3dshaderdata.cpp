@@ -84,11 +84,9 @@ public:
                 }
             }
             return innerValues;
-        } else if (v.userType() == quick3DShaderDataTypeId) {
-            Qt3DCore::QNodeId id;
-            QShaderData *shaderData = v.value<Quick3DShaderData *>();
-            if (shaderData)
-                id = shaderData->id();
+        } else if (v.canConvert<Qt3DCore::QNode*>()) {
+            const auto node = v.value<Qt3DCore::QNode *>();
+            const auto id = Qt3DCore::qIdForNode(node);
             return QVariant::fromValue(id);
         }
         return v;

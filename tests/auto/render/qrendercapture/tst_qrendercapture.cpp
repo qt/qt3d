@@ -67,7 +67,7 @@ private Q_SLOTS:
         arbiter.setArbiterOnNode(renderCapture.data());
 
         // WHEN
-        QScopedPointer<Qt3DRender::QRenderCaptureReply> reply(renderCapture->requestCapture(12));
+        QScopedPointer<Qt3DRender::QRenderCaptureReply> reply(renderCapture->requestCapture());
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
@@ -75,7 +75,7 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "renderCaptureRequest");
         QCOMPARE(change->subjectId(),renderCapture->id());
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-        QCOMPARE(change->value().toInt(), 12);
+        QCOMPARE(change->value().toInt(), 1);
 
         arbiter.events.clear();
     }
@@ -84,12 +84,12 @@ private Q_SLOTS:
     {
         // GIVEN
         QScopedPointer<MyRenderCapture> renderCapture(new MyRenderCapture());
-        QScopedPointer<Qt3DRender::QRenderCaptureReply> reply(renderCapture->requestCapture(52));
+        QScopedPointer<Qt3DRender::QRenderCaptureReply> reply(renderCapture->requestCapture());
         QImage img = QImage(20, 20, QImage::Format_ARGB32);
 
         // WHEN
         Qt3DRender::RenderCaptureDataPtr data = Qt3DRender::RenderCaptureDataPtr::create();
-        data.data()->captureId = 52;
+        data.data()->captureId = 2;
         data.data()->image = img;
 
         auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(renderCapture->id());
@@ -101,7 +101,6 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(reply->isComplete(), true);
-        QCOMPARE(reply->captureId(), 52);
         QCOMPARE(reply->image().width(), 20);
         QCOMPARE(reply->image().height(), 20);
         QCOMPARE(reply->image().format(), QImage::Format_ARGB32);

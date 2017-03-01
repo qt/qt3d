@@ -50,6 +50,7 @@
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DRender/private/sphere_p.h>
+#include <Qt3DRender/private/buffervisitor_p.h>
 
 #include <QtCore/qmath.h>
 #include <QtConcurrent/QtConcurrent>
@@ -73,6 +74,114 @@ struct UpdateBoundFunctor {
     }
 };
 
+class BoundingVolumeCalculator
+{
+public:
+    BoundingVolumeCalculator(NodeManagers *manager) : m_manager(manager) { }
+
+    const Sphere& result() { return m_volume; }
+
+    bool apply(Qt3DRender::Render::Attribute *positionAttribute)
+    {
+        FindExtremePoints findExtremePoints(m_manager);
+        if (!findExtremePoints.apply(positionAttribute))
+            return false;
+
+        // Calculate squared distance for the pairs of points
+        const float xDist2 = (findExtremePoints.xMaxPt - findExtremePoints.xMinPt).lengthSquared();
+        const float yDist2 = (findExtremePoints.yMaxPt - findExtremePoints.yMinPt).lengthSquared();
+        const float zDist2 = (findExtremePoints.zMaxPt - findExtremePoints.zMinPt).lengthSquared();
+
+        // Select most distant pair
+        QVector3D p = findExtremePoints.xMinPt;
+        QVector3D q = findExtremePoints.xMaxPt;
+        if (yDist2 > xDist2 && yDist2 > zDist2) {
+            p = findExtremePoints.yMinPt;
+            q = findExtremePoints.yMaxPt;
+        }
+        if (zDist2 > xDist2 && zDist2 > yDist2) {
+            p = findExtremePoints.zMinPt;
+            q = findExtremePoints.zMaxPt;
+        }
+
+        const QVector3D c = 0.5f * (p + q);
+        m_volume.setCenter(c);
+        m_volume.setRadius((q - c).length());
+
+        ExpandSphere expandSphere(m_manager, m_volume);
+        if (!expandSphere.apply(positionAttribute))
+            return false;
+
+        return true;
+    }
+
+private:
+    Sphere m_volume;
+    NodeManagers *m_manager;
+
+    class FindExtremePoints : public Buffer3fVisitor
+    {
+    public:
+        FindExtremePoints(NodeManagers *manager)
+            : Buffer3fVisitor(manager)
+            , xMin(0.0f), xMax(0.0f), yMin(0.0f), yMax(0.0f), zMin(0.0f), zMax(0.0f)
+        { }
+
+        float xMin, xMax, yMin, yMax, zMin, zMax;
+        QVector3D xMinPt, xMaxPt, yMinPt, yMaxPt, zMinPt, zMaxPt;
+
+        void visit(uint ndx, float x, float y, float z) override
+        {
+            if (ndx) {
+                if (x < xMin) {
+                    xMin = x;
+                    xMinPt = QVector3D(x, y, z);
+                }
+                if (x > xMax) {
+                    xMax = x;
+                    xMaxPt = QVector3D(x, y, z);
+                }
+                if (y < yMin) {
+                    yMin = y;
+                    yMinPt = QVector3D(x, y, z);
+                }
+                if (y > yMax) {
+                    yMax = y;
+                    yMaxPt = QVector3D(x, y, z);
+                }
+                if (z < zMin) {
+                    zMin = z;
+                    zMinPt = QVector3D(x, y, z);
+                }
+                if (z > zMax) {
+                    zMax = z;
+                    zMaxPt = QVector3D(x, y, z);
+                }
+            } else {
+                xMin = xMax = x;
+                yMin = yMax = y;
+                zMin = zMax = z;
+                xMinPt = xMaxPt = yMinPt = yMaxPt = zMinPt = zMaxPt = QVector3D(x, y, z);
+            }
+        }
+    };
+
+    class ExpandSphere : public Buffer3fVisitor
+    {
+    public:
+        ExpandSphere(NodeManagers *manager, Sphere& volume)
+            : Buffer3fVisitor(manager), m_volume(volume)
+        { }
+
+        Sphere& m_volume;
+        void visit(uint ndx, float x, float y, float z) override
+        {
+            Q_UNUSED(ndx);
+            m_volume.expandToContain(QVector3D(x, y, z));
+        }
+    };
+};
+
 void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
 {
     // The Bounding volume will only be computed if the position Buffer
@@ -86,32 +195,32 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
         Geometry *geom = manager->lookupResource<Geometry, GeometryManager>(gRenderer->geometryId());
 
         if (geom) {
-            Qt3DRender::Render::Attribute *pickVolumeAttribute = manager->lookupResource<Attribute, AttributeManager>(geom->boundingPositionAttribute());
+            Qt3DRender::Render::Attribute *positionAttribute = manager->lookupResource<Attribute, AttributeManager>(geom->boundingPositionAttribute());
 
             // Use the default position attribute if attribute is null
-            if (!pickVolumeAttribute) {
+            if (!positionAttribute) {
                 const auto attrIds = geom->attributes();
                 for (const Qt3DCore::QNodeId attrId : attrIds) {
-                    pickVolumeAttribute = manager->lookupResource<Attribute, AttributeManager>(attrId);
-                    if (pickVolumeAttribute &&
-                            pickVolumeAttribute->name() == QAttribute::defaultPositionAttributeName())
+                    positionAttribute = manager->lookupResource<Attribute, AttributeManager>(attrId);
+                    if (positionAttribute &&
+                            positionAttribute->name() == QAttribute::defaultPositionAttributeName())
                         break;
                 }
             }
 
-            if (pickVolumeAttribute) {
-                if (!pickVolumeAttribute
-                        || pickVolumeAttribute->attributeType() != QAttribute::VertexAttribute
-                        || pickVolumeAttribute->vertexBaseType() != QAttribute::Float
-                        || pickVolumeAttribute->vertexSize() < 3) {
-                    qWarning() << "QGeometry::boundingVolumePositionAttribute pickVolume Attribute not suited for bounding volume computation";
-                    return;
-                }
+            if (!positionAttribute
+                    || positionAttribute->attributeType() != QAttribute::VertexAttribute
+                    || positionAttribute->vertexBaseType() != QAttribute::Float
+                    || positionAttribute->vertexSize() < 3) {
+                qWarning() << "QGeometry::boundingVolumePositionAttribute position Attribute not suited for bounding volume computation";
+                return;
+            }
 
-                Buffer *buf = manager->lookupResource<Buffer, BufferManager>(pickVolumeAttribute->bufferId());
+            if (positionAttribute) {
+                Buffer *buf = manager->lookupResource<Buffer, BufferManager>(positionAttribute->bufferId());
                 // No point in continuing if the positionAttribute doesn't have a suitable buffer
                 if (!buf) {
-                    qWarning() << "ObjectPicker pickVolume Attribute not referencing a valid buffer";
+                    qWarning() << "ObjectPicker position Attribute not referencing a valid buffer";
                     return;
                 }
 
@@ -121,29 +230,16 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
                 // If anything in the GeometryRenderer has changed
                 if (buf->isDirty() ||
                         node->isBoundingVolumeDirty() ||
-                        pickVolumeAttribute->isDirty() ||
+                        positionAttribute->isDirty() ||
                         geom->isDirty() ||
                         gRenderer->isDirty()) {
 
-                    const QByteArray buffer = buf->data();
-                    const char *rawBuffer = buffer.constData();
-                    rawBuffer += pickVolumeAttribute->byteOffset();
-                    const int stride = pickVolumeAttribute->byteStride() ? pickVolumeAttribute->byteStride() : sizeof(float) * pickVolumeAttribute->vertexSize();
-                    QVector<QVector3D> vertices(pickVolumeAttribute->count());
-
-                    // TODO avoid copying the vertices
-                    for (int c = 0, vC = vertices.size(); c < vC; ++c) {
-                        QVector3D v;
-                        const float *fptr = reinterpret_cast<const float*>(rawBuffer);
-                        // TODO unwrap loop (switch?)
-                        for (uint i = 0, m = qMin(pickVolumeAttribute->vertexSize(), 3U); i < m; ++i)
-                            v[i] = fptr[i];
-                        vertices[c] = v;
-                        rawBuffer += stride;
+                    BoundingVolumeCalculator reader(manager);
+                    if (reader.apply(positionAttribute)) {
+                        node->localBoundingVolume()->setCenter(reader.result().center());
+                        node->localBoundingVolume()->setRadius(reader.result().radius());
+                        node->unsetBoundingVolumeDirty();
                     }
-
-                    node->localBoundingVolume()->initializeFromPoints(vertices);
-                    node->unsetBoundingVolumeDirty();
                 }
             }
         }

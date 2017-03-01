@@ -110,7 +110,7 @@ public:
     void initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) Q_DECL_OVERRIDE;
     void pointSize(bool programmable, GLfloat value) Q_DECL_OVERRIDE;
     GLint maxClipPlaneCount() Q_DECL_OVERRIDE;
-    void memoryBarrier(QMemoryBarrier::BarrierTypes barriers) Q_DECL_OVERRIDE;
+    void memoryBarrier(QMemoryBarrier::Operations barriers) Q_DECL_OVERRIDE;
     QVector<ShaderUniformBlock> programUniformBlocks(GLuint programId) Q_DECL_OVERRIDE;
     QVector<ShaderAttribute> programAttributesAndLocations(GLuint programId) Q_DECL_OVERRIDE;
     QVector<ShaderUniform> programUniformsAndLocations(GLuint programId) Q_DECL_OVERRIDE;

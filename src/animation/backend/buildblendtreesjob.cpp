@@ -39,7 +39,7 @@
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/clipblendnodevisitor_p.h>
 #include <Qt3DAnimation/private/clipblendnode_p.h>
-#include <Qt3DAnimation/private/lerpblend_p.h>
+#include <Qt3DAnimation/private/lerpclipblend_p.h>
 #include <Qt3DAnimation/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -136,8 +136,8 @@ QVector<AnimationUtils::BlendingMappingData> buildBlendMappingDataForNode(const 
 void buildEntryForBlendClipNode(Handler *handler, const ChannelMapper *mapper, BlendedClipAnimator::BlendNodeData &nodeData)
 {
     // Retrieve Animation clips
-    const AnimationClip *clip1 = handler->animationClipManager()->lookupResource(nodeData.left);
-    const AnimationClip *clip2 = handler->animationClipManager()->lookupResource(nodeData.right);
+    const AnimationClipLoader *clip1 = handler->animationClipLoaderManager()->lookupResource(nodeData.left);
+    const AnimationClipLoader *clip2 = handler->animationClipLoaderManager()->lookupResource(nodeData.right);
 
     Q_ASSERT(clip1 && clip2);
 

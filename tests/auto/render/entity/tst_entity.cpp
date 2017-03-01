@@ -38,6 +38,7 @@
 #include <Qt3DCore/QComponentRemovedChange>
 #include <Qt3DCore/QTransform>
 
+#include <Qt3DRender/QEnvironmentLight>
 #include <Qt3DRender/QMesh>
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QLayer>
@@ -64,6 +65,7 @@ QNodeId computeJobUuid(Entity *entity) { return entity->componentUuid<ComputeCom
 
 QVector<QNodeId> layersUuid(Entity *entity) { return entity->componentsUuid<Layer>(); }
 QVector<QNodeId> shadersUuid(Entity *entity) { return entity->componentsUuid<ShaderData>(); }
+QVector<QNodeId> environmentLightsUuid(Entity *entity) { return entity->componentsUuid<EnvironmentLight>(); }
 
 class tst_RenderEntity : public QObject
 {
@@ -86,7 +88,8 @@ private slots:
                 << new QObjectPicker
                 << new QLayer
                 << new QShaderData
-                << new QComputeCommand;
+                << new QComputeCommand
+                << new QEnvironmentLight;
 
         QTest::newRow("all components") << components;
     }
@@ -112,6 +115,7 @@ private slots:
         QVERIFY(entity.componentUuid<ComputeCommand>().isNull());
         QVERIFY(entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(entity.componentsUuid<ShaderData>().isEmpty());
+        QVERIFY(entity.componentsUuid<EnvironmentLight>().isEmpty());
         QVERIFY(!entity.isBoundingVolumeDirty());
         QVERIFY(entity.childrenHandles().isEmpty());
 
@@ -139,6 +143,7 @@ private slots:
         QVERIFY(!entity.componentUuid<ComputeCommand>().isNull());
         QVERIFY(!entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(!entity.componentsUuid<ShaderData>().isEmpty());
+        QVERIFY(!entity.componentsUuid<EnvironmentLight>().isEmpty());
         QVERIFY(entity.isBoundingVolumeDirty());
         QVERIFY(!entity.childrenHandles().isEmpty());
         QVERIFY(renderer.dirtyBits() != 0);
@@ -157,6 +162,7 @@ private slots:
         QVERIFY(entity.componentUuid<QComputeCommand>().isNull());
         QVERIFY(entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(entity.componentsUuid<ShaderData>().isEmpty());
+        QVERIFY(entity.componentsUuid<EnvironmentLight>().isEmpty());
         QVERIFY(!entity.isBoundingVolumeDirty());
         QVERIFY(entity.childrenHandles().isEmpty());
         containsAll = entity.containsComponentsOfType<Transform, CameraLens, Material, GeometryRenderer, ObjectPicker, ComputeCommand>();
@@ -236,6 +242,10 @@ private slots:
         components.clear();
         components << new QShaderData << new QShaderData << new QShaderData;
         QTest::newRow("shader data") << components << reinterpret_cast<void*>(shadersUuid);
+
+        components.clear();
+        components << new QEnvironmentLight << new QEnvironmentLight << new QEnvironmentLight;
+        QTest::newRow("environmentLights") << components << reinterpret_cast<void*>(environmentLightsUuid);
     }
 
     void shouldHandleComponentsEvents()

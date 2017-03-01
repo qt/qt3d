@@ -97,30 +97,30 @@ namespace Qt3DRender {
 */
 
 /*!
-    \enum QMemoryBarrier::BarrierType
+    \enum QMemoryBarrier::Operation
 
     This enum type describes types of buffer to be cleared.
     \value None
-    \value ElementArrayBarrier
-    \value UniformBarrier
-    \value TextureFetchBarrier
-    \value ShaderImageAccessBarrier
-    \value CommandBarrier
-    \value PixelBufferBarrier
-    \value TextureUpdateBarrier
-    \value BufferUpdateBarrier
-    \value FrameBufferBarrier
-    \value TransformFeedbackBarrier
-    \value AtomicCounterBarrier
-    \value ShaderStorageBarrier
-    \value QueryBufferBarrier
-    \value AllBarrier
+    \value ElementArray
+    \value Uniform
+    \value TextureFetch
+    \value ShaderImageAccess
+    \value Command
+    \value PixelBuffer
+    \value TextureUpdate
+    \value BufferUpdate
+    \value FrameBuffer
+    \value TransformFeedback
+    \value AtomicCounter
+    \value ShaderStorage
+    \value QueryBuffer
+    \value All
 */
 
 
 QMemoryBarrierPrivate::QMemoryBarrierPrivate()
     : QFrameGraphNodePrivate()
-    , m_barrierTypes(QMemoryBarrier::None)
+    , m_waitOperations(QMemoryBarrier::None)
 {
 }
 
@@ -133,20 +133,20 @@ QMemoryBarrier::~QMemoryBarrier()
 {
 }
 
-void QMemoryBarrier::setBarrierTypes(QMemoryBarrier::BarrierTypes barrierTypes)
+void QMemoryBarrier::setWaitOperations(QMemoryBarrier::Operations waitOperations)
 {
     Q_D(QMemoryBarrier);
-    if (barrierTypes != d->m_barrierTypes) {
-        d->m_barrierTypes = barrierTypes;
-        emit barrierTypesChanged(barrierTypes);
-        d->notifyPropertyChange("barrierTypes", QVariant::fromValue(barrierTypes));
+    if (waitOperations != d->m_waitOperations) {
+        d->m_waitOperations = waitOperations;
+        emit waitOperationsChanged(waitOperations);
+        d->notifyPropertyChange("waitOperations", QVariant::fromValue(waitOperations));
     }
 }
 
-QMemoryBarrier::BarrierTypes QMemoryBarrier::barrierTypes() const
+QMemoryBarrier::Operations QMemoryBarrier::waitOperations() const
 {
     Q_D(const QMemoryBarrier);
-    return d->m_barrierTypes;
+    return d->m_waitOperations;
 }
 
 QMemoryBarrier::QMemoryBarrier(QMemoryBarrierPrivate &dd, Qt3DCore::QNode *parent)
@@ -159,7 +159,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QMemoryBarrier::createNodeCreationChange() c
     auto creationChange = QFrameGraphNodeCreatedChangePtr<QMemoryBarrierData>::create(this);
     QMemoryBarrierData &data = creationChange->data;
     Q_D(const QMemoryBarrier);
-    data.barrierTypes = d->m_barrierTypes;
+    data.waitOperations = d->m_waitOperations;
     return creationChange;
 }
 

@@ -88,42 +88,42 @@ namespace Render {
 
 namespace {
 
-GLbitfield memoryBarrierGLBitfield(QMemoryBarrier::BarrierTypes barriers)
+GLbitfield memoryBarrierGLBitfield(QMemoryBarrier::Operations barriers)
 {
     GLbitfield bits = 0;
 
-    if (barriers.testFlag(QMemoryBarrier::AllBarrier)) {
+    if (barriers.testFlag(QMemoryBarrier::All)) {
         bits |= GL_ALL_BARRIER_BITS;
         return bits;
     }
 
-    if (barriers.testFlag(QMemoryBarrier::VertexAttributeArrayBarrier))
+    if (barriers.testFlag(QMemoryBarrier::VertexAttributeArray))
         bits |= GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT;
-    if (barriers.testFlag(QMemoryBarrier::ElementArrayBarrier))
+    if (barriers.testFlag(QMemoryBarrier::ElementArray))
         bits |= GL_ELEMENT_ARRAY_BARRIER_BIT;
-    if (barriers.testFlag(QMemoryBarrier::UniformBarrier))
+    if (barriers.testFlag(QMemoryBarrier::Uniform))
         bits |= GL_UNIFORM_BARRIER_BIT;
-    if (barriers.testFlag(QMemoryBarrier::TextureFetchBarrier))
+    if (barriers.testFlag(QMemoryBarrier::TextureFetch))
         bits |= GL_TEXTURE_FETCH_BARRIER_BIT;
-    if (barriers.testFlag(QMemoryBarrier::ShaderImageAccessBarrier))
+    if (barriers.testFlag(QMemoryBarrier::ShaderImageAccess))
         bits |= GL_SHADER_IMAGE_ACCESS_BARRIER_BIT;
-    if (barriers.testFlag(QMemoryBarrier::CommandBarrier))
+    if (barriers.testFlag(QMemoryBarrier::Command))
         bits |= GL_COMMAND_BARRIER_BIT;
-    if (barriers.testFlag(QMemoryBarrier::PixelBufferBarrier))
+    if (barriers.testFlag(QMemoryBarrier::PixelBuffer))
         bits |= GL_PIXEL_BUFFER_BARRIER_BIT;
-    if (barriers.testFlag(QMemoryBarrier::TextureUpdateBarrier))
+    if (barriers.testFlag(QMemoryBarrier::TextureUpdate))
         bits |= GL_TEXTURE_UPDATE_BARRIER_BIT;
-    if (barriers.testFlag(QMemoryBarrier::BufferUpdateBarrier))
+    if (barriers.testFlag(QMemoryBarrier::BufferUpdate))
         bits |= GL_BUFFER_UPDATE_BARRIER_BIT;
-    if (barriers.testFlag(QMemoryBarrier::FrameBufferBarrier))
+    if (barriers.testFlag(QMemoryBarrier::FrameBuffer))
         bits |= GL_FRAMEBUFFER_BARRIER_BIT;
-    if (barriers.testFlag(QMemoryBarrier::TransformFeedbackBarrier))
+    if (barriers.testFlag(QMemoryBarrier::TransformFeedback))
         bits |= GL_TRANSFORM_FEEDBACK_BARRIER_BIT;
-    if (barriers.testFlag(QMemoryBarrier::AtomicCounterBarrier))
+    if (barriers.testFlag(QMemoryBarrier::AtomicCounter))
         bits |= GL_ATOMIC_COUNTER_BARRIER_BIT;
-    if (barriers.testFlag(QMemoryBarrier::ShaderStorageBarrier))
+    if (barriers.testFlag(QMemoryBarrier::ShaderStorage))
         bits |= GL_SHADER_STORAGE_BARRIER_BIT;
-    if (barriers.testFlag(QMemoryBarrier::QueryBufferBarrier))
+    if (barriers.testFlag(QMemoryBarrier::QueryBuffer))
         bits |= GL_QUERY_BUFFER_BARRIER_BIT;
 
     return bits;
@@ -1047,7 +1047,7 @@ GLint GraphicsHelperGL4::maxClipPlaneCount()
     return max;
 }
 
-void GraphicsHelperGL4::memoryBarrier(QMemoryBarrier::BarrierTypes barriers)
+void GraphicsHelperGL4::memoryBarrier(QMemoryBarrier::Operations barriers)
 {
     m_funcs->glMemoryBarrier(memoryBarrierGLBitfield(barriers));
 }

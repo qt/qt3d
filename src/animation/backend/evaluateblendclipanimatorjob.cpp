@@ -39,7 +39,7 @@
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 #include <Qt3DAnimation/private/animationutils_p.h>
-#include <Qt3DAnimation/private/lerpblend_p.h>
+#include <Qt3DAnimation/private/lerpclipblend_p.h>
 #include <Qt3DAnimation/private/clipblendnodevisitor_p.h>
 #include <Qt3DAnimation/private/job_common_p.h>
 
@@ -113,8 +113,8 @@ QVector<AnimationUtils::MappingData> fromBlendingMappingData(const QVector<Anima
 void EvaluateBlendClipAnimatorJob::blendClips(ClipBlendNode *node, const BlendedClipAnimator::BlendNodeData &nodeData,
                                               const AnimationUtils::AnimatorEvaluationData &animatorEvaluationData)
 {
-    AnimationClip *clip1 = m_handler->animationClipManager()->lookupResource(nodeData.left);
-    AnimationClip *clip2 = m_handler->animationClipManager()->lookupResource(nodeData.right);
+    AnimationClipLoader *clip1 = m_handler->animationClipLoaderManager()->lookupResource(nodeData.left);
+    AnimationClipLoader *clip2 = m_handler->animationClipLoaderManager()->lookupResource(nodeData.right);
     Q_ASSERT(clip1 && clip2);
 
     // Prepare for evaluation (convert global time to local time ....)

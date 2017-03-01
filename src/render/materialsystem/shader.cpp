@@ -272,7 +272,7 @@ void Shader::prepareUniforms(ShaderParameterPack &pack)
     const auto end = values.cend();
     while (it != end) {
         // Find if there's a uniform with the same name id
-        for (const ShaderUniform &uniform : m_uniforms) {
+        for (const ShaderUniform &uniform : qAsConst(m_uniforms)) {
             if (uniform.m_nameId == it.key()) {
                 pack.setSubmissionUniform(uniform);
                 break;
@@ -447,7 +447,7 @@ void Shader::setLog(const QString &log)
     }
 }
 
-void Shader::setStatus(QShaderProgram::ShaderStatus status)
+void Shader::setStatus(QShaderProgram::Status status)
 {
     if (status != m_status) {
         m_status = status;

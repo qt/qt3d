@@ -93,7 +93,7 @@ private Q_SLOTS:
         QCOMPARE(renderView.memoryBarrier(), QMemoryBarrier::None);
 
         // WHEN
-        const QMemoryBarrier::BarrierTypes barriers(QMemoryBarrier::BufferUpdateBarrier|QMemoryBarrier::ShaderImageAccessBarrier);
+        const QMemoryBarrier::Operations barriers(QMemoryBarrier::BufferUpdate|QMemoryBarrier::ShaderImageAccess);
         renderView.setMemoryBarrier(barriers);
 
         // THEN
@@ -104,7 +104,7 @@ private Q_SLOTS:
     {
         {
             // GIVEN
-            const QMemoryBarrier::BarrierTypes barriers(QMemoryBarrier::AtomicCounterBarrier|QMemoryBarrier::ShaderStorageBarrier);
+            const QMemoryBarrier::Operations barriers(QMemoryBarrier::AtomicCounter|QMemoryBarrier::ShaderStorage);
             Qt3DRender::QMemoryBarrier frontendBarrier;
             FrameGraphManager frameGraphManager;
             MemoryBarrier backendBarrier;
@@ -113,18 +113,18 @@ private Q_SLOTS:
             backendBarrier.setFrameGraphManager(&frameGraphManager);
 
             // WHEN
-            frontendBarrier.setBarrierTypes(barriers);
+            frontendBarrier.setWaitOperations(barriers);
             simulateInitialization(&frontendBarrier, &backendBarrier);
 
             // THEN
             QCOMPARE(renderView.memoryBarrier(), QMemoryBarrier::None);
-            QCOMPARE(backendBarrier.barrierTypes(), barriers);
+            QCOMPARE(backendBarrier.waitOperations(), barriers);
 
             // WHEN
             Qt3DRender::Render::setRenderViewConfigFromFrameGraphLeafNode(&renderView, &backendBarrier);
 
             // THEN
-            QCOMPARE(backendBarrier.barrierTypes(), renderView.memoryBarrier());
+            QCOMPARE(backendBarrier.waitOperations(), renderView.memoryBarrier());
         }
         // TO DO: Complete tests for other framegraph node types
     }

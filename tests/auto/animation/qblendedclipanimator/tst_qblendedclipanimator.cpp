@@ -28,11 +28,9 @@
 
 
 #include <QtTest/QTest>
-#include <Qt3DAnimation/qanimationclip.h>
 #include <Qt3DAnimation/qblendedclipanimator.h>
-#include <Qt3DAnimation/private/qanimationclip_p.h>
 #include <Qt3DAnimation/private/qblendedclipanimator_p.h>
-#include <Qt3DAnimation/qlerpblend.h>
+#include <Qt3DAnimation/qlerpclipblend.h>
 #include <Qt3DAnimation/qchannelmapper.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
@@ -73,7 +71,7 @@ private Q_SLOTS:
         {
             // WHEN
             QSignalSpy spy(&blendedClipAnimator, SIGNAL(blendTreeChanged(QAbstractClipBlendNode *)));
-            Qt3DAnimation::QLerpBlend newValue;
+            Qt3DAnimation::QLerpClipBlend newValue;
             blendedClipAnimator.setBlendTree(&newValue);
 
             // THEN
@@ -154,7 +152,7 @@ private Q_SLOTS:
         // GIVEN
         Qt3DAnimation::QBlendedClipAnimator blendedClipAnimator;
         Qt3DAnimation::QChannelMapper channelMapper;
-        Qt3DAnimation::QLerpBlend blendRoot;
+        Qt3DAnimation::QLerpClipBlend blendRoot;
 
         blendedClipAnimator.setBlendTree(&blendRoot);
         blendedClipAnimator.setChannelMapper(&channelMapper);
@@ -216,7 +214,7 @@ private Q_SLOTS:
         TestArbiter arbiter;
         Qt3DAnimation::QBlendedClipAnimator blendedClipAnimator;
         arbiter.setArbiterOnNode(&blendedClipAnimator);
-        Qt3DAnimation::QLerpBlend blendRoot;
+        Qt3DAnimation::QLerpClipBlend blendRoot;
 
         {
             // WHEN
@@ -251,7 +249,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            Qt3DAnimation::QLerpBlend blendRoot;
+            Qt3DAnimation::QLerpClipBlend blendRoot;
             blendedClipAnimator.setBlendTree(&blendRoot);
 
             QCOMPARE(blendedClipAnimator.blendTree(), &blendRoot);

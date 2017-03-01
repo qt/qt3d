@@ -40,7 +40,7 @@
 #include "scene2dplugin.h"
 
 #include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DQuickRender/qscene2d.h>
+#include <Qt3DQuickScene2D/qscene2d.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -16,6 +16,14 @@ struct Light {
 uniform Light lights[MAX_LIGHTS];
 uniform int lightCount;
 
+// Pre-convolved environment maps
+struct EnvironmentLight {
+    samplerCube irradiance; // For diffuse contribution
+    samplerCube specular; // For specular contribution
+};
+uniform EnvironmentLight envLight;
+uniform int envLightCount = 0;
+
 void adsModelNormalMapped(const in vec3 worldPos,
                           const in vec3 tsNormal,
                           const in vec3 worldEye,

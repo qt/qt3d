@@ -59,7 +59,7 @@ class QT3DANIMATIONSHARED_EXPORT QMorphingAnimation : public QAbstractAnimation
     Q_PROPERTY(Qt3DRender::QGeometryRenderer *target READ target WRITE setTarget NOTIFY targetChanged)
     Q_PROPERTY(QString targetName READ targetName WRITE setTargetName NOTIFY targetNameChanged)
     Q_PROPERTY(QMorphingAnimation::Method method READ method WRITE setMethod NOTIFY methodChanged)
-    Q_PROPERTY(QEasingCurve::Type easing READ easing WRITE setEasing NOTIFY easingChanged)
+    Q_PROPERTY(QEasingCurve easing READ easing WRITE setEasing NOTIFY easingChanged)
 
 public:
     enum Method
@@ -76,7 +76,7 @@ public:
     Qt3DRender::QGeometryRenderer *target() const;
     QString targetName() const;
     QMorphingAnimation::Method method() const;
-    QEasingCurve::Type easing() const;
+    QEasingCurve easing() const;
 
     void setMorphTargets(const QVector<Qt3DAnimation::QMorphTarget *> &targets);
     void addMorphTarget(Qt3DAnimation::QMorphTarget *target);
@@ -92,7 +92,7 @@ public Q_SLOTS:
     void setTarget(Qt3DRender::QGeometryRenderer *target);
     void setTargetName(const QString name);
     void setMethod(QMorphingAnimation::Method method);
-    void setEasing(QEasingCurve::Type easing);
+    void setEasing(const QEasingCurve &easing);
 
 Q_SIGNALS:
     void targetPositionsChanged(const QVector<float> &targetPositions);
@@ -100,7 +100,7 @@ Q_SIGNALS:
     void targetChanged(Qt3DRender::QGeometryRenderer *target);
     void targetNameChanged(const QString &name);
     void methodChanged(QMorphingAnimation::Method method);
-    void easingChanged(QEasingCurve::Type easing);
+    void easingChanged(const QEasingCurve &easing);
 
 private:
 
