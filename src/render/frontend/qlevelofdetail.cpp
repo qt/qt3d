@@ -53,7 +53,6 @@ QLevelOfDetailPrivate::QLevelOfDetailPrivate()
     , m_thresholdType(QLevelOfDetail::DistanceToCamera)
     , m_volumeOverride()
 {
-    Q_Q(QLevelOfDetail);
 }
 
 /*!
