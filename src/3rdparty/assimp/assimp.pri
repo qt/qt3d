@@ -30,8 +30,8 @@ intel_icc: {
     QMAKE_CXXFLAGS_WARN_ON += $$QMAKE_CFLAGS_WARN_ON
 } else:gcc|clang: {
     # Stop compiler complaining about ignored qualifiers on return types
-    QMAKE_CFLAGS_WARN_ON += -Wno-ignored-qualifiers -Wno-unused-parameter -Wno-unused-variable -Wno-deprecated-declarations -Wno-unused-function -Wno-reorder
-    QMAKE_CXXFLAGS_WARN_ON = $$QMAKE_CFLAGS_WARN_ON
+    QMAKE_CFLAGS_WARN_ON += -Wno-ignored-qualifiers -Wno-unused-parameter -Wno-unused-variable -Wno-deprecated-declarations -Wno-unused-function
+    QMAKE_CXXFLAGS_WARN_ON = $$QMAKE_CFLAGS_WARN_ON -Wno-reorder
 } else:msvc {
     # Disabled Warnings:
     #   4100: 'identifier' : unreferenced formal parameter
