@@ -82,6 +82,7 @@ public:
     void setType(int type) { m_type = type; }
     int type() const { return m_type; }
 
+    void setPropertyName(const char *propertyName) { m_propertyName = propertyName; }
     const char *propertyName() const { return m_propertyName; }
 
 private:
