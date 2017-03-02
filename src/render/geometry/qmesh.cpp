@@ -55,9 +55,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-#ifndef QT_NO_LIBRARY
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, geometryLoader, (QGeometryLoaderFactory_iid, QLatin1String("/geometryloaders"), Qt::CaseInsensitive))
-#endif
 
 QMeshPrivate::QMeshPrivate()
     : QGeometryRendererPrivate()
