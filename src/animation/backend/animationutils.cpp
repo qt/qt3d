@@ -103,7 +103,7 @@ double localTimeFromGlobalTime(double t_global,
     return t_local;
 }
 
-QVector<int> channelComponentsToIndices(const Channel &channelGroup, int dataType, int offset)
+QVector<int> channelComponentsToIndices(const Channel &channel, int dataType, int offset)
 {
 #if defined Q_COMPILER_UNIFORM_INIT
     static const QVector<char> standardSuffixes = { 'X', 'Y', 'Z', 'W' };
@@ -114,10 +114,9 @@ QVector<int> channelComponentsToIndices(const Channel &channelGroup, int dataTyp
 #endif
 
     if (dataType != QVariant::Quaternion)
-        return channelComponentsToIndicesHelper(channelGroup, dataType, offset, standardSuffixes);
+        return channelComponentsToIndicesHelper(channel, dataType, offset, standardSuffixes);
     else
-        return channelComponentsToIndicesHelper(channelGroup, dataType, offset, quaternionSuffixes);
-
+        return channelComponentsToIndicesHelper(channel, dataType, offset, quaternionSuffixes);
 }
 
 QVector<int> channelComponentsToIndicesHelper(const Channel &channel,

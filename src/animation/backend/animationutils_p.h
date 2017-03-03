@@ -114,7 +114,7 @@ ClipEvaluationData evaluationDataForClip(AnimationClipLoader *clip,
                                          const AnimatorEvaluationData &animatorData);
 
 Q_AUTOTEST_EXPORT
-QVector<int> channelComponentsToIndices(const Channel &channelGroup,
+QVector<int> channelComponentsToIndices(const Channel &channel,
                                         int dataType,
                                         int offset = 0);
 
