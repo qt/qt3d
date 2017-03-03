@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>clip1.json</file>
+        <file>clip2.json</file>
     </qresource>
 </RCC>

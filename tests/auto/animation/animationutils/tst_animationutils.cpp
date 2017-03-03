@@ -51,6 +51,18 @@ Q_DECLARE_METATYPE(AnimationClipLoader *)
 Q_DECLARE_METATYPE(QVector<MappingData>)
 Q_DECLARE_METATYPE(QVector<Qt3DCore::QPropertyUpdatedChangePtr>)
 
+bool fuzzyCompare(float x1, float x2)
+{
+    if (qFuzzyIsNull(x1) && qFuzzyIsNull(x2)) {
+        return true;
+    } else if (qFuzzyIsNull(x1) && !qFuzzyIsNull(x2) ||
+               !qFuzzyIsNull(x1) && qFuzzyIsNull(x2)) {
+        return false;
+    } else {
+        return qFuzzyCompare(x1, x2);
+    }
+}
+
 class tst_AnimationUtils : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
@@ -571,6 +583,113 @@ private Q_SLOTS:
             QCOMPARE(actualChange->propertyName(), expectedChange->propertyName());
             QCOMPARE(actualChange->value(), expectedChange->value());
         }
+    }
+
+    void checkEvaluateClipAtLocalTime_data()
+    {
+        QTest::addColumn<Handler *>("handler");
+        QTest::addColumn<AnimationClipLoader *>("clip");
+        QTest::addColumn<float>("localTime");
+        QTest::addColumn<QVector<float>>("expectedResults");
+
+        Handler *handler;
+        AnimationClipLoader *clip;
+        float localTime;
+        QVector<float> expectedResults;
+
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip1.json"));
+            localTime = 0.0f;
+            expectedResults = QVector<float>() << 0.0f << 0.0f << 0.0f;
+
+            QTest::newRow("clip1.json, t = 0.0")
+                    << handler << clip << localTime << expectedResults;
+            expectedResults.clear();
+        }
+
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip1.json"));
+            localTime = clip->duration();
+            expectedResults = QVector<float>() << 5.0f << 0.0f << 0.0f;
+
+            QTest::newRow("clip1.json, t = duration")
+                    << handler << clip << localTime << expectedResults;
+            expectedResults.clear();
+        }
+
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip1.json"));
+            localTime = clip->duration() / 2.0f;
+            expectedResults = QVector<float>() << 2.5f << 0.0f << 0.0f;
+
+            QTest::newRow("clip1.json, t = duration/2")
+                    << handler << clip << localTime << expectedResults;
+            expectedResults.clear();
+        }
+
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip2.json"));
+            localTime = 0.0f;
+            expectedResults = QVector<float>()
+                    << 0.0f << 0.0f << 0.0f             // Translation
+                    << 1.0f << 0.0f << 0.0f << 0.0f;    // Rotation
+
+            QTest::newRow("clip2.json, t = 0.0")
+                    << handler << clip << localTime << expectedResults;
+            expectedResults.clear();
+        }
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip2.json"));
+            localTime = clip->duration();
+            expectedResults = QVector<float>()
+                    << 5.0f << 0.0f << 0.0f             // Translation
+                    << 0.0f << 0.0f << -1.0f << 0.0f;   // Rotation
+
+            QTest::newRow("clip2.json, t = duration")
+                    << handler << clip << localTime << expectedResults;
+            expectedResults.clear();
+        }
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip2.json"));
+            localTime = clip->duration() / 2.0f;
+            expectedResults = QVector<float>()
+                    << 2.5f << 0.0f << 0.0f             // Translation
+                    << 0.5f << 0.0f << -0.5f << 0.0f;   // Rotation
+
+            QTest::newRow("clip2.json, t = duration/2")
+                    << handler << clip << localTime << expectedResults;
+            expectedResults.clear();
+        }
+    }
+
+    void checkEvaluateClipAtLocalTime()
+    {
+        // GIVEN
+        QFETCH(Handler *, handler);
+        QFETCH(AnimationClipLoader *, clip);
+        QFETCH(float, localTime);
+        QFETCH(QVector<float>, expectedResults);
+
+        // WHEN
+        QVector<float> actualResults = evaluateClipAtLocalTime(clip, localTime);
+
+        // THEN
+        QCOMPARE(actualResults.size(), expectedResults.size());
+        for (int i = 0; i < actualResults.size(); ++i) {
+            auto actual = actualResults[i];
+            auto expected = expectedResults[i];
+
+            QVERIFY(fuzzyCompare(actual, expected) == true);
+        }
+
+        // Cleanup
+        delete handler;
     }
 };
 
