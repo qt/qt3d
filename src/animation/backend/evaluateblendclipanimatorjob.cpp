@@ -119,8 +119,8 @@ void EvaluateBlendClipAnimatorJob::blendClips(ClipBlendNode *node,
     Q_ASSERT(clip1 && clip2);
 
     // Prepare for evaluation (convert global time to local time ....)
-    const ClipPreEvaluationData preEvaluationDataForClip1 = evaluationDataForClip(clip1, animatorEvaluationData);
-    const ClipPreEvaluationData preEvaluationDataForClip2 = evaluationDataForClip(clip2, animatorEvaluationData);
+    const ClipEvaluationData preEvaluationDataForClip1 = evaluationDataForClip(clip1, animatorEvaluationData);
+    const ClipEvaluationData preEvaluationDataForClip2 = evaluationDataForClip(clip2, animatorEvaluationData);
 
     // Evaluate the fcurves for both clip
     const QVector<float> channelResultsClip1 = evaluateClipAtLocalTime(clip1, preEvaluationDataForClip1.localTime);

@@ -51,11 +51,11 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 namespace Animation {
 
-ClipPreEvaluationData evaluationDataForClip(AnimationClipLoader *clip,
-                                            const AnimatorEvaluationData &animatorData)
+ClipEvaluationData evaluationDataForClip(AnimationClipLoader *clip,
+                                         const AnimatorEvaluationData &animatorData)
 {
     // global time values expected in seconds
-    ClipPreEvaluationData result;
+    ClipEvaluationData result;
     result.localTime = localTimeFromGlobalTime(animatorData.globalTime, animatorData.startTime,
                                                animatorData.playbackRate, clip->duration(),
                                                animatorData.loopCount, result.currentLoop);

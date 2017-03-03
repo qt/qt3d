@@ -90,7 +90,7 @@ struct AnimatorEvaluationData
     double playbackRate;
 };
 
-struct ClipPreEvaluationData
+struct ClipEvaluationData
 {
     int currentLoop;
     double localTime;
@@ -110,8 +110,8 @@ AnimatorEvaluationData evaluationDataForAnimator(Animator animator, qint64 globa
 }
 
 Q_AUTOTEST_EXPORT
-ClipPreEvaluationData evaluationDataForClip(AnimationClipLoader *clip,
-                                            const AnimatorEvaluationData &animatorData);
+ClipEvaluationData evaluationDataForClip(AnimationClipLoader *clip,
+                                         const AnimatorEvaluationData &animatorData);
 
 Q_AUTOTEST_EXPORT
 QVector<int> channelComponentsToIndices(const Channel &channelGroup,
