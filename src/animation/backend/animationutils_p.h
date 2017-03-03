@@ -129,7 +129,7 @@ QVector<float> evaluateClipAtLocalTime(AnimationClipLoader *clip,
                                        float localTime);
 
 Q_AUTOTEST_EXPORT
-QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId peerId,
+QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId animatorId,
                                                           const QVector<MappingData> &mappingData,
                                                           const QVector<float> &channelResults,
                                                           bool finalFrame);

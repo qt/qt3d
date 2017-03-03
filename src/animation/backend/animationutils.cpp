@@ -187,7 +187,7 @@ QVector<float> evaluateClipAtLocalTime(AnimationClipLoader *clip, float localTim
     return channelResults;
 }
 
-QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId peerId,
+QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId animatorId,
                                                           const QVector<MappingData> &mappingDataVec,
                                                           const QVector<float> &channelResults,
                                                           bool finalFrame)
@@ -258,7 +258,7 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId peer
 
     // If it's the final frame, notify the frontend that we've stopped
     if (finalFrame) {
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId);
+        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(animatorId);
         e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
         e->setPropertyName("running");
         e->setValue(false);
