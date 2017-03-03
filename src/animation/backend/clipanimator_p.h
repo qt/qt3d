@@ -73,6 +73,7 @@ public:
 
     void setRunning(bool running);
     bool isRunning() const { return m_running; }
+    void setLoops(int loops) { m_loops = loops; }
     int loops() const { return m_loops; }
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
