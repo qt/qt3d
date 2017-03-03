@@ -50,6 +50,7 @@ Q_DECLARE_METATYPE(ChannelMapper *)
 Q_DECLARE_METATYPE(AnimationClipLoader *)
 Q_DECLARE_METATYPE(QVector<MappingData>)
 Q_DECLARE_METATYPE(QVector<Qt3DCore::QPropertyUpdatedChangePtr>)
+Q_DECLARE_METATYPE(Channel)
 
 bool fuzzyCompare(float x1, float x2)
 {
@@ -690,6 +691,209 @@ private Q_SLOTS:
 
         // Cleanup
         delete handler;
+    }
+
+    void checkChannelComponentsToIndicesHelper_data()
+    {
+        QTest::addColumn<Channel>("channel");
+        QTest::addColumn<int>("dataType");
+        QTest::addColumn<int>("offset");
+        QTest::addColumn<QVector<char>>("suffixes");
+        QTest::addColumn<QVector<int>>("expectedResults");
+
+        Channel channel;
+        int dataType;
+        int offset;
+        QVector<char> suffixes;
+        QVector<int> expectedResults;
+
+        // vec3 with and without offset
+        {
+            channel = Channel();
+            channel.name = QLatin1String("Location");
+            channel.channelComponents.resize(3);
+            channel.channelComponents[0].name = QLatin1String("Location X");
+            channel.channelComponents[1].name = QLatin1String("Location Y");
+            channel.channelComponents[2].name = QLatin1String("Location Z");
+
+            dataType = static_cast<int>(QVariant::Vector3D);
+            offset = 0;
+            suffixes = (QVector<char>() << 'X' << 'Y' << 'Z' << 'W');
+            expectedResults = (QVector<int>() << 0 << 1 << 2);
+
+            QTest::newRow("vec3 location, offset = 0")
+                    << channel << dataType << offset << suffixes << expectedResults;
+
+            expectedResults.clear();
+
+            offset = 4;
+            expectedResults = (QVector<int>() << 4 << 5 << 6);
+            QTest::newRow("vec3 location, offset = 4")
+                    << channel << dataType << offset << suffixes << expectedResults;
+
+            suffixes.clear();
+            expectedResults.clear();
+        }
+
+        // vec2 with and without offset
+        {
+            channel = Channel();
+            channel.name = QLatin1String("pos");
+            channel.channelComponents.resize(2);
+            channel.channelComponents[0].name = QLatin1String("pos X");
+            channel.channelComponents[1].name = QLatin1String("pos Y");
+
+            dataType = static_cast<int>(QVariant::Vector2D);
+            offset = 0;
+            suffixes = (QVector<char>() << 'X' << 'Y' << 'Z' << 'W');
+            expectedResults = (QVector<int>() << 0 << 1);
+
+            QTest::newRow("vec2 pos, offset = 0")
+                    << channel << dataType << offset << suffixes << expectedResults;
+
+            expectedResults.clear();
+
+            offset = 2;
+            expectedResults = (QVector<int>() << 2 << 3);
+            QTest::newRow("vec2 pos, offset = 2")
+                    << channel << dataType << offset << suffixes << expectedResults;
+
+            suffixes.clear();
+            expectedResults.clear();
+        }
+
+        // vec4 with and without offset
+        {
+            channel = Channel();
+            channel.name = QLatin1String("foo");
+            channel.channelComponents.resize(4);
+            channel.channelComponents[0].name = QLatin1String("foo X");
+            channel.channelComponents[1].name = QLatin1String("foo Y");
+            channel.channelComponents[2].name = QLatin1String("foo Z");
+            channel.channelComponents[3].name = QLatin1String("foo W");
+
+            dataType = static_cast<int>(QVariant::Vector4D);
+            offset = 0;
+            suffixes = (QVector<char>() << 'X' << 'Y' << 'Z' << 'W');
+            expectedResults = (QVector<int>() << 0 << 1 << 2 << 3);
+
+            QTest::newRow("vec4 foo, offset = 0")
+                    << channel << dataType << offset << suffixes << expectedResults;
+
+            expectedResults.clear();
+
+            offset = 10;
+            expectedResults = (QVector<int>() << 10 << 11 << 12 << 13);
+            QTest::newRow("vec4 foo, offset = 10")
+                    << channel << dataType << offset << suffixes << expectedResults;
+
+            suffixes.clear();
+            expectedResults.clear();
+        }
+
+        // double with and without offset
+        {
+            channel = Channel();
+            channel.name = QLatin1String("foo");
+            channel.channelComponents.resize(1);
+            channel.channelComponents[0].name = QLatin1String("Mass X");
+
+            dataType = static_cast<int>(QVariant::Double);
+            offset = 0;
+            suffixes = (QVector<char>() << 'X' << 'Y' << 'Z' << 'W');
+            expectedResults = (QVector<int>() << 0);
+
+            QTest::newRow("double Mass, offset = 0")
+                    << channel << dataType << offset << suffixes << expectedResults;
+
+            expectedResults.clear();
+
+            offset = 5;
+            expectedResults = (QVector<int>() << 5);
+            QTest::newRow("double Mass, offset = 5")
+                    << channel << dataType << offset << suffixes << expectedResults;
+
+            suffixes.clear();
+            expectedResults.clear();
+        }
+
+        // quaternion with and without offset
+        {
+            channel = Channel();
+            channel.name = QLatin1String("Rotation");
+            channel.channelComponents.resize(4);
+            channel.channelComponents[0].name = QLatin1String("Rotation W");
+            channel.channelComponents[1].name = QLatin1String("Rotation X");
+            channel.channelComponents[2].name = QLatin1String("Rotation Y");
+            channel.channelComponents[3].name = QLatin1String("Rotation Z");
+
+            dataType = static_cast<int>(QVariant::Quaternion);
+            offset = 0;
+            suffixes = (QVector<char>() << 'W' << 'X' << 'Y' << 'Z');
+            expectedResults = (QVector<int>() << 0 << 1 << 2 << 3);
+
+            QTest::newRow("quaternion Rotation, offset = 0")
+                    << channel << dataType << offset << suffixes << expectedResults;
+
+            expectedResults.clear();
+
+            offset = 10;
+            expectedResults = (QVector<int>() << 10 << 11 << 12 << 13);
+            QTest::newRow("quaternion Rotation, offset = 10")
+                    << channel << dataType << offset << suffixes << expectedResults;
+
+            suffixes.clear();
+            expectedResults.clear();
+        }
+
+        // quaternion with and without offset, randomized
+        {
+            channel = Channel();
+            channel.name = QLatin1String("Rotation");
+            channel.channelComponents.resize(4);
+            channel.channelComponents[0].name = QLatin1String("Rotation X");
+            channel.channelComponents[1].name = QLatin1String("Rotation W");
+            channel.channelComponents[2].name = QLatin1String("Rotation Z");
+            channel.channelComponents[3].name = QLatin1String("Rotation Y");
+
+            dataType = static_cast<int>(QVariant::Quaternion);
+            offset = 0;
+            suffixes = (QVector<char>() << 'W' << 'X' << 'Y' << 'Z');
+            expectedResults = (QVector<int>() << 1 << 0 << 3 << 2);
+
+            QTest::newRow("quaternion Rotation, offset = 0, randomized")
+                    << channel << dataType << offset << suffixes << expectedResults;
+
+            expectedResults.clear();
+
+            offset = 10;
+            expectedResults = (QVector<int>() << 11 << 10 << 13 << 12);
+            QTest::newRow("quaternion Rotation, offset = 10, randomized")
+                    << channel << dataType << offset << suffixes << expectedResults;
+
+            suffixes.clear();
+            expectedResults.clear();
+        }
+    }
+
+    void checkChannelComponentsToIndicesHelper()
+    {
+        // GIVEN
+        QFETCH(Channel, channel);
+        QFETCH(int, dataType);
+        QFETCH(int, offset);
+        QFETCH(QVector<char>, suffixes);
+        QFETCH(QVector<int>, expectedResults);
+
+        // WHEN
+        QVector<int> actualResults
+                = channelComponentsToIndicesHelper(channel, dataType, offset, suffixes);
+
+        // THEN
+        QCOMPARE(actualResults.size(), expectedResults.size());
+        for (int i = 0; i < actualResults.size(); ++i) {
+            QCOMPARE(actualResults[i], expectedResults[i]);
+        }
     }
 };
 
