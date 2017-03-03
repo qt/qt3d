@@ -128,37 +128,37 @@ QVector<int> channelComponentsToIndicesHelper(const Channel &channel,
                                               int offset,
                                               const QStringList &suffixes)
 {
-    int expectedChannelCount = 1;
+    int expectedComponentCount = 1;
     switch (dataType) {
     case QVariant::Double:
-        expectedChannelCount = 1;
+        expectedComponentCount = 1;
         break;
 
     case QVariant::Vector2D:
-        expectedChannelCount = 2;
+        expectedComponentCount = 2;
         break;
 
     case QVariant::Vector3D:
-        expectedChannelCount = 3;
+        expectedComponentCount = 3;
         break;
 
     case QVariant::Vector4D:
     case QVariant::Quaternion:
-        expectedChannelCount = 4;
+        expectedComponentCount = 4;
         break;
 
     default:
         qWarning() << "Unhandled animation type";
     }
 
-    const int foundChannelCount = channel.channelComponents.size();
-    if (foundChannelCount != expectedChannelCount) {
-        qWarning() << "Data type expects" << expectedChannelCount
-                   << "but found" << foundChannelCount << "channels in the animation clip";
+    const int actualComponentCount = channel.channelComponents.size();
+    if (actualComponentCount != expectedComponentCount) {
+        qWarning() << "Data type expects" << expectedComponentCount
+                   << "but found" << actualComponentCount << "components in the animation clip";
     }
 
-    QVector<int> indices(expectedChannelCount);
-    for (int i = 0; i < expectedChannelCount; ++i) {
+    QVector<int> indices(expectedComponentCount);
+    for (int i = 0; i < expectedComponentCount; ++i) {
         const QString channelComponentSuffix = channel.channelComponents[i].name.right(1);
         int index = suffixes.indexOf(channelComponentSuffix);
         if (index != -1)
