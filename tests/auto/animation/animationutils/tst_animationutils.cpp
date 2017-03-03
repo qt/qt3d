@@ -51,6 +51,8 @@ Q_DECLARE_METATYPE(AnimationClipLoader *)
 Q_DECLARE_METATYPE(QVector<MappingData>)
 Q_DECLARE_METATYPE(QVector<Qt3DCore::QPropertyUpdatedChangePtr>)
 Q_DECLARE_METATYPE(Channel)
+Q_DECLARE_METATYPE(AnimatorEvaluationData)
+Q_DECLARE_METATYPE(ClipEvaluationData)
 
 bool fuzzyCompare(float x1, float x2)
 {
@@ -106,6 +108,18 @@ public:
         clip->setSource(source);
         clip->loadAnimation();
         return clip;
+    }
+
+    ClipAnimator *createClipAnimator(Handler *handler,
+                                     qint64 globalStartTimeNS,
+                                     int loops)
+    {
+        auto animatorId = Qt3DCore::QNodeId::createId();
+        ClipAnimator *animator = handler->clipAnimatorManager()->getOrCreateResource(animatorId);
+        setPeerId(animator, animatorId);
+        animator->setStartTime(globalStartTimeNS);
+        animator->setLoops(loops);
+        return animator;
     }
 
 private Q_SLOTS:
@@ -978,6 +992,123 @@ private Q_SLOTS:
         for (int i = 0; i < actualResults.size(); ++i) {
             QCOMPARE(actualResults[i], expectedResults[i]);
         }
+    }
+
+    void checkEvaluationDataForClip_data()
+    {
+        QTest::addColumn<Handler *>("handler");
+        QTest::addColumn<AnimationClipLoader *>("clip");
+        QTest::addColumn<AnimatorEvaluationData>("animatorData");
+        QTest::addColumn<ClipEvaluationData>("expectedClipData");
+
+        Handler *handler;
+        AnimationClipLoader *clip;
+        AnimatorEvaluationData animatorData;
+        ClipEvaluationData clipData;
+
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip1.json"));
+            const qint64 globalStartTimeNS = 0;
+            const int loops = 1;
+            auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
+            const qint64 globalTimeNS = 0;
+            animatorData = evaluationDataForAnimator(animator, globalTimeNS); // Tested elsewhere
+
+            clipData.localTime = localTimeFromGlobalTime(animatorData.globalTime,
+                                                         animatorData.startTime,
+                                                         animatorData.playbackRate,
+                                                         clip->duration(),
+                                                         animatorData.loopCount,
+                                                         clipData.currentLoop); // Tested elsewhere
+            clipData.isFinalFrame = false;
+
+            QTest::newRow("clip1.json, globalTime = 0")
+                    << handler << clip << animatorData << clipData;
+        }
+
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip1.json"));
+            const qint64 globalStartTimeNS = 0;
+            const int loops = 1;
+            auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
+            const qint64 globalTimeNS = (clip->duration() + 1.0) * 1.0e9; // +1 to ensure beyond end of clip
+            animatorData = evaluationDataForAnimator(animator, globalTimeNS); // Tested elsewhere
+
+            clipData.localTime = localTimeFromGlobalTime(animatorData.globalTime,
+                                                         animatorData.startTime,
+                                                         animatorData.playbackRate,
+                                                         clip->duration(),
+                                                         animatorData.loopCount,
+                                                         clipData.currentLoop); // Tested elsewhere
+            clipData.isFinalFrame = true;
+
+            QTest::newRow("clip1.json, globalTime = duration")
+                    << handler << clip << animatorData << clipData;
+        }
+
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip1.json"));
+            const qint64 globalStartTimeNS = 0;
+            const int loops = 0; // Infinite loops
+            auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
+            const qint64 globalTimeNS = 2.0 * clip->duration() * 1.0e9;
+            animatorData = evaluationDataForAnimator(animator, globalTimeNS); // Tested elsewhere
+
+            clipData.localTime = localTimeFromGlobalTime(animatorData.globalTime,
+                                                         animatorData.startTime,
+                                                         animatorData.playbackRate,
+                                                         clip->duration(),
+                                                         animatorData.loopCount,
+                                                         clipData.currentLoop); // Tested elsewhere
+            clipData.isFinalFrame = false;
+
+            QTest::newRow("clip1.json, globalTime = 2 * duration, loops = infinite")
+                    << handler << clip << animatorData << clipData;
+        }
+
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip1.json"));
+            const qint64 globalStartTimeNS = 0;
+            const int loops = 2;
+            auto animator = createClipAnimator(handler, globalStartTimeNS, loops);
+            const qint64 globalTimeNS = (2.0 * clip->duration() + 1.0) * 1.0e9; // +1 to ensure beyond end of clip
+            animatorData = evaluationDataForAnimator(animator, globalTimeNS); // Tested elsewhere
+
+            clipData.localTime = localTimeFromGlobalTime(animatorData.globalTime,
+                                                         animatorData.startTime,
+                                                         animatorData.playbackRate,
+                                                         clip->duration(),
+                                                         animatorData.loopCount,
+                                                         clipData.currentLoop); // Tested elsewhere
+            clipData.isFinalFrame = true;
+
+            QTest::newRow("clip1.json, globalTime = 2 * duration + 1, loops = 2")
+                    << handler << clip << animatorData << clipData;
+        }
+    }
+
+    void checkEvaluationDataForClip()
+    {
+        // GIVEN
+        QFETCH(Handler *, handler);
+        QFETCH(AnimationClipLoader *, clip);
+        QFETCH(AnimatorEvaluationData, animatorData);
+        QFETCH(ClipEvaluationData, expectedClipData);
+
+        // WHEN
+        ClipEvaluationData actualClipData = evaluationDataForClip(clip, animatorData);
+
+        // THEN
+        QCOMPARE(actualClipData.currentLoop, expectedClipData.currentLoop);
+        QVERIFY(fuzzyCompare(actualClipData.localTime, expectedClipData.localTime) == true);
+        QCOMPARE(actualClipData.isFinalFrame, expectedClipData.isFinalFrame);
+
+        // Cleanup
+        delete handler;
     }
 };
 
