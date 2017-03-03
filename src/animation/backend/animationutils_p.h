@@ -62,80 +62,87 @@ class Handler;
 class AnimationClipLoader;
 class ChannelMapper;
 
-class Q_AUTOTEST_EXPORT AnimationUtils
+struct MappingData
 {
-public:
-    struct MappingData
-    {
-        Qt3DCore::QNodeId targetId;
-        const char *propertyName;
-        int type;
-        QVector<int> channelIndices;
-    };
-
-    struct BlendingMappingData : public MappingData
-    {
-        QVector<int> channelIndicesClip1;
-        QVector<int> channelIndicesClip2;
-
-        enum BlendAction {
-            NoBlending, // Use the channel from Clip1 only
-            ClipBlending, // Blending 2 clips sharing the same channel
-        };
-        BlendAction blendAction;
-    };
-
-    struct AnimatorEvaluationData
-    {
-        double globalTime;
-        double startTime;
-        int loopCount;
-        double playbackRate;
-    };
-
-    struct ClipPreEvaluationData
-    {
-        int currentLoop;
-        double localTime;
-        bool isFinalFrame;
-    };
-
-    template<typename Animator>
-    static AnimatorEvaluationData animatorEvaluationDataForAnimator(Animator animator, qint64 globalTime)
-    {
-        AnimationUtils::AnimatorEvaluationData data;
-        data.loopCount = animator->loops();
-        data.playbackRate = 1.0; // should be a property on the animator
-        // Convert global time from nsec to sec
-        data.startTime = double(animator->startTime()) / 1.0e9;
-        data.globalTime = double(globalTime) / 1.0e9;
-        return data;
-    }
-
-    static ClipPreEvaluationData evaluationDataForClip(AnimationClipLoader *clip, const AnimatorEvaluationData &animatorData);
-
-    static QVector<int> channelComponentsToIndices(const Channel &channelGroup,
-                                                   int dataType,
-                                                   int offset = 0);
-    static QVector<int> channelComponentsToIndicesHelper(const Channel &channelGroup,
-                                                         int dataType,
-                                                         int offset,
-                                                         const QStringList &suffixes);
-    static QVector<float> evaluateClipAtLocalTime(AnimationClipLoader *clip,
-                                              float localTime);
-    static QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId peerId,
-                                                                     const QVector<MappingData> &mappingData,
-                                                                     const QVector<float> &channelResults,
-                                                                     bool finalFrame);
-    static QVector<MappingData> buildPropertyMappings(Handler *handler,
-                                                      const AnimationClipLoader *clip,
-                                                      const ChannelMapper *mapper);
-
-private:
-    static double localTimeFromGlobalTime(double t_global, double t_start_global,
-                                          double playbackRate, double duration,
-                                          int loopCount, int &currentLoop);
+    Qt3DCore::QNodeId targetId;
+    const char *propertyName;
+    int type;
+    QVector<int> channelIndices;
 };
+
+struct BlendingMappingData : public MappingData
+{
+    QVector<int> channelIndicesClip1;
+    QVector<int> channelIndicesClip2;
+
+    enum BlendAction {
+        NoBlending, // Use the channel from Clip1 only
+        ClipBlending, // Blending 2 clips sharing the same channel
+    };
+    BlendAction blendAction;
+};
+
+struct AnimatorEvaluationData
+{
+    double globalTime;
+    double startTime;
+    int loopCount;
+    double playbackRate;
+};
+
+struct ClipPreEvaluationData
+{
+    int currentLoop;
+    double localTime;
+    bool isFinalFrame;
+};
+
+template<typename Animator>
+AnimatorEvaluationData animatorEvaluationDataForAnimator(Animator animator, qint64 globalTime)
+{
+    AnimatorEvaluationData data;
+    data.loopCount = animator->loops();
+    data.playbackRate = 1.0; // should be a property on the animator
+    // Convert global time from nsec to sec
+    data.startTime = double(animator->startTime()) / 1.0e9;
+    data.globalTime = double(globalTime) / 1.0e9;
+    return data;
+}
+
+Q_AUTOTEST_EXPORT
+ClipPreEvaluationData evaluationDataForClip(AnimationClipLoader *clip,
+                                            const AnimatorEvaluationData &animatorData);
+
+Q_AUTOTEST_EXPORT
+QVector<int> channelComponentsToIndices(const Channel &channelGroup,
+                                        int dataType,
+                                        int offset = 0);
+
+Q_AUTOTEST_EXPORT
+QVector<int> channelComponentsToIndicesHelper(const Channel &channelGroup,
+                                              int dataType,
+                                              int offset,
+                                              const QStringList &suffixes);
+
+Q_AUTOTEST_EXPORT
+QVector<float> evaluateClipAtLocalTime(AnimationClipLoader *clip,
+                                       float localTime);
+
+Q_AUTOTEST_EXPORT
+QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId peerId,
+                                                          const QVector<MappingData> &mappingData,
+                                                          const QVector<float> &channelResults,
+                                                          bool finalFrame);
+
+Q_AUTOTEST_EXPORT
+QVector<MappingData> buildPropertyMappings(Handler *handler,
+                                           const AnimationClipLoader *clip,
+                                           const ChannelMapper *mapper);
+
+Q_AUTOTEST_EXPORT
+double localTimeFromGlobalTime(double t_global, double t_start_global,
+                               double playbackRate, double duration,
+                               int loopCount, int &currentLoop);
 
 } // Animation
 } // Qt3DAnimation

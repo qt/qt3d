@@ -61,16 +61,16 @@ namespace {
 QVector<float> blendValuesBasedOnMappings(ClipBlendNode *node,
                                           const QVector<float> &channelResults1,
                                           const QVector<float> &channelResults2,
-                                          const QVector<AnimationUtils::BlendingMappingData> &blendingMappingData)
+                                          const QVector<BlendingMappingData> &blendingMappingData)
 {
     QVector<float> blendedValues;
     blendedValues.reserve(blendingMappingData.size());
 
     // Build a combined vector of blended value
-    for (const AnimationUtils::BlendingMappingData &mapping : blendingMappingData) {
+    for (const BlendingMappingData &mapping : blendingMappingData) {
 
         switch (mapping.blendAction) {
-        case AnimationUtils::BlendingMappingData::ClipBlending: {
+        case BlendingMappingData::ClipBlending: {
             Q_ASSERT(mapping.channelIndicesClip1.size() == mapping.channelIndicesClip2.size());
             for (int i = 0, m = mapping.channelIndicesClip1.size(); i < m; ++i) {
                 const float value1 = channelResults1.at(mapping.channelIndicesClip1[i]);
@@ -80,7 +80,7 @@ QVector<float> blendValuesBasedOnMappings(ClipBlendNode *node,
             }
             break;
         }
-        case AnimationUtils::BlendingMappingData::NoBlending: {
+        case BlendingMappingData::NoBlending: {
             const bool useClip1 = !mapping.channelIndicesClip1.empty();
             const QVector<int> channelIndices = useClip1 ? mapping.channelIndicesClip1 : mapping.channelIndicesClip2;
             const QVector<float> values = useClip1 ? channelResults1 : channelResults2;
@@ -98,10 +98,10 @@ QVector<float> blendValuesBasedOnMappings(ClipBlendNode *node,
     return blendedValues;
 }
 
-QVector<AnimationUtils::MappingData> fromBlendingMappingData(const QVector<AnimationUtils::BlendingMappingData> &blendingMappingData)
+QVector<MappingData> fromBlendingMappingData(const QVector<BlendingMappingData> &blendingMappingData)
 {
     const int blendingMappingDataSize = blendingMappingData.size();
-    QVector<AnimationUtils::MappingData> mappingData(blendingMappingDataSize);
+    QVector<MappingData> mappingData(blendingMappingDataSize);
     for (int i = 0; i < blendingMappingDataSize; ++i) {
         mappingData[i] = blendingMappingData[i];
     }
@@ -110,27 +110,28 @@ QVector<AnimationUtils::MappingData> fromBlendingMappingData(const QVector<Anima
 
 } // anonymous
 
-void EvaluateBlendClipAnimatorJob::blendClips(ClipBlendNode *node, const BlendedClipAnimator::BlendNodeData &nodeData,
-                                              const AnimationUtils::AnimatorEvaluationData &animatorEvaluationData)
+void EvaluateBlendClipAnimatorJob::blendClips(ClipBlendNode *node,
+                                              const BlendedClipAnimator::BlendNodeData &nodeData,
+                                              const AnimatorEvaluationData &animatorEvaluationData)
 {
     AnimationClipLoader *clip1 = m_handler->animationClipLoaderManager()->lookupResource(nodeData.left);
     AnimationClipLoader *clip2 = m_handler->animationClipLoaderManager()->lookupResource(nodeData.right);
     Q_ASSERT(clip1 && clip2);
 
     // Prepare for evaluation (convert global time to local time ....)
-    const AnimationUtils::ClipPreEvaluationData preEvaluationDataForClip1 = AnimationUtils::evaluationDataForClip(clip1, animatorEvaluationData);
-    const AnimationUtils::ClipPreEvaluationData preEvaluationDataForClip2 = AnimationUtils::evaluationDataForClip(clip2, animatorEvaluationData);
+    const ClipPreEvaluationData preEvaluationDataForClip1 = evaluationDataForClip(clip1, animatorEvaluationData);
+    const ClipPreEvaluationData preEvaluationDataForClip2 = evaluationDataForClip(clip2, animatorEvaluationData);
 
     // Evaluate the fcurves for both clip
-    const QVector<float> channelResultsClip1 = AnimationUtils::evaluateClipAtLocalTime(clip1, preEvaluationDataForClip1.localTime);
-    const QVector<float> channelResultsClip2 = AnimationUtils::evaluateClipAtLocalTime(clip2, preEvaluationDataForClip2.localTime);
+    const QVector<float> channelResultsClip1 = evaluateClipAtLocalTime(clip1, preEvaluationDataForClip1.localTime);
+    const QVector<float> channelResultsClip2 = evaluateClipAtLocalTime(clip2, preEvaluationDataForClip2.localTime);
 
     // Update loops and running of the animator
     m_currentLoop = std::min(m_currentLoop, std::min(preEvaluationDataForClip1.currentLoop, preEvaluationDataForClip2.currentLoop));
     // isFinalFrame remains true only if all the clips have reached their final frame
     m_isFinalFrame &= (preEvaluationDataForClip1.isFinalFrame && preEvaluationDataForClip2.isFinalFrame);
 
-    const QVector<AnimationUtils::BlendingMappingData> blendingMappingData = nodeData.mappingData;
+    const QVector<BlendingMappingData> blendingMappingData = nodeData.mappingData;
     // Perform blending between the two clips
     const QVector<float> blendedValues = blendValuesBasedOnMappings(node, channelResultsClip1,
                                                                     channelResultsClip2, blendingMappingData);
@@ -149,7 +150,7 @@ void EvaluateBlendClipAnimatorJob::blendNodes(ClipBlendNode *node, const Blended
     const QVector<float> channelResultsNode2 = m_clipBlendResultsTable.take(node2);
 
     // Build a combined vector of blended value
-    const QVector<AnimationUtils::BlendingMappingData> blendingMappingData = nodeData.mappingData;
+    const QVector<BlendingMappingData> blendingMappingData = nodeData.mappingData;
     // Perform blending between the two nodes
     const QVector<float> blendedValues = blendValuesBasedOnMappings(node, channelResultsNode1,
                                                                     channelResultsNode2, blendingMappingData);
@@ -164,7 +165,7 @@ void EvaluateBlendClipAnimatorJob::run()
     BlendedClipAnimator *blendedClipAnimator = m_handler->blendedClipAnimatorManager()->data(m_blendClipAnimatorHandle);
     Q_ASSERT(blendedClipAnimator);
 
-    const AnimationUtils::AnimatorEvaluationData animatorEvaluationData = AnimationUtils::animatorEvaluationDataForAnimator(blendedClipAnimator, globalTime);
+    const AnimatorEvaluationData animatorEvaluationData = animatorEvaluationDataForAnimator(blendedClipAnimator, globalTime);
     const QHash<Qt3DCore::QNodeId, BlendedClipAnimator::BlendNodeData> blendindNodeTable = blendedClipAnimator->blendTreeTable();
 
     // Reset globals
@@ -204,10 +205,10 @@ void EvaluateBlendClipAnimatorJob::run()
 
     const QVector<float> blendedValues = m_clipBlendResultsTable.take(rootBlendNode);
     const BlendedClipAnimator::BlendNodeData &rootNodeData = blendindNodeTable.value(rootBlendNode->peerId());
-    const QVector<AnimationUtils::MappingData> mappingData = fromBlendingMappingData(rootNodeData.mappingData);
+    const QVector<MappingData> mappingData = fromBlendingMappingData(rootNodeData.mappingData);
 
     // Prepare property changes (if finalFrame it also prepares the change for the running property for the frontend)
-    const QVector<Qt3DCore::QSceneChangePtr> changes = AnimationUtils::preparePropertyChanges(blendedClipAnimator->peerId(),
+    const QVector<Qt3DCore::QSceneChangePtr> changes = preparePropertyChanges(blendedClipAnimator->peerId(),
                                                                                               mappingData,
                                                                                               blendedValues,
                                                                                               m_isFinalFrame);

@@ -51,8 +51,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 namespace Animation {
 
-AnimationUtils::ClipPreEvaluationData AnimationUtils::evaluationDataForClip(AnimationClipLoader *clip,
-                                                                            const AnimationUtils::AnimatorEvaluationData &animatorData)
+ClipPreEvaluationData evaluationDataForClip(AnimationClipLoader *clip,
+                                            const AnimatorEvaluationData &animatorData)
 {
     // global time values expected in seconds
     ClipPreEvaluationData result;
@@ -65,12 +65,12 @@ AnimationUtils::ClipPreEvaluationData AnimationUtils::evaluationDataForClip(Anim
     return result;
 }
 
-double AnimationUtils::localTimeFromGlobalTime(double t_global,
-                                               double t_start_global,
-                                               double playbackRate,
-                                               double duration,
-                                               int loopCount,
-                                               int &currentLoop)
+double localTimeFromGlobalTime(double t_global,
+                               double t_start_global,
+                               double playbackRate,
+                               double duration,
+                               int loopCount,
+                               int &currentLoop)
 {
     double t_local = playbackRate * (t_global - t_start_global);
     double loopNumber = 0;
@@ -103,7 +103,7 @@ double AnimationUtils::localTimeFromGlobalTime(double t_global,
     return t_local;
 }
 
-QVector<int> AnimationUtils::channelComponentsToIndices(const Channel &channelGroup, int dataType, int offset)
+QVector<int> channelComponentsToIndices(const Channel &channelGroup, int dataType, int offset)
 {
     static const QStringList standardSuffixes = (QStringList()
                                                  << QLatin1String("X")
@@ -123,7 +123,10 @@ QVector<int> AnimationUtils::channelComponentsToIndices(const Channel &channelGr
 
 }
 
-QVector<int> AnimationUtils::channelComponentsToIndicesHelper(const Channel &channel, int dataType, int offset, const QStringList &suffixes)
+QVector<int> channelComponentsToIndicesHelper(const Channel &channel,
+                                              int dataType,
+                                              int offset,
+                                              const QStringList &suffixes)
 {
     int expectedChannelCount = 1;
     switch (dataType) {
@@ -166,7 +169,7 @@ QVector<int> AnimationUtils::channelComponentsToIndicesHelper(const Channel &cha
     return indices;
 }
 
-QVector<float> AnimationUtils::evaluateClipAtLocalTime(AnimationClipLoader *clip, float localTime)
+QVector<float> evaluateClipAtLocalTime(AnimationClipLoader *clip, float localTime)
 {
     QVector<float> channelResults;
     Q_ASSERT(clip);
@@ -184,10 +187,10 @@ QVector<float> AnimationUtils::evaluateClipAtLocalTime(AnimationClipLoader *clip
     return channelResults;
 }
 
-QVector<Qt3DCore::QSceneChangePtr> AnimationUtils::preparePropertyChanges(Qt3DCore::QNodeId peerId,
-                                                                          const QVector<MappingData> &mappingDataVec,
-                                                                          const QVector<float> &channelResults,
-                                                                          bool finalFrame)
+QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId peerId,
+                                                          const QVector<MappingData> &mappingDataVec,
+                                                          const QVector<float> &channelResults,
+                                                          bool finalFrame)
 {
     QVector<Qt3DCore::QSceneChangePtr> changes;
     // Iterate over the mappings
@@ -264,9 +267,9 @@ QVector<Qt3DCore::QSceneChangePtr> AnimationUtils::preparePropertyChanges(Qt3DCo
     return changes;
 }
 
-QVector<AnimationUtils::MappingData> AnimationUtils::buildPropertyMappings(Handler *handler,
-                                                                           const AnimationClipLoader *clip,
-                                                                           const ChannelMapper *mapper)
+QVector<MappingData> buildPropertyMappings(Handler *handler,
+                                           const AnimationClipLoader *clip,
+                                           const ChannelMapper *mapper)
 {
     QVector<MappingData> mappingDataVec;
     ChannelMappingManager *mappingManager = handler->channelMappingManager();

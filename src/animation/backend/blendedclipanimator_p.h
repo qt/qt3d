@@ -97,7 +97,7 @@ public:
         ChildType type;
         Qt3DCore::QNodeId left;
         Qt3DCore::QNodeId right;
-        QVector<AnimationUtils::BlendingMappingData> mappingData;
+        QVector<BlendingMappingData> mappingData;
     };
 
     void setBlendTreeTable(const QHash<Qt3DCore::QNodeId, BlendNodeData> &blendTreeTable) { m_blendTreeTable = blendTreeTable; }

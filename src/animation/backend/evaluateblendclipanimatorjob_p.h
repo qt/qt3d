@@ -80,7 +80,7 @@ private:
     Handler *m_handler;
 
     void blendClips(ClipBlendNode *node, const BlendedClipAnimator::BlendNodeData &nodeData,
-                    const AnimationUtils::AnimatorEvaluationData &animatorEvaluationData);
+                    const AnimatorEvaluationData &animatorEvaluationData);
     void blendNodes(ClipBlendNode *node, const BlendedClipAnimator::BlendNodeData &nodeData);
 
     QHash<ClipBlendNode *, QVector<float>> m_clipBlendResultsTable;

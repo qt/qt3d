@@ -61,62 +61,62 @@ void BuildBlendTreesJob::setBlendedClipAnimators(const QVector<HBlendedClipAnima
 namespace {
 
 template<typename MappingDataType>
-QVector<AnimationUtils::BlendingMappingData> buildBlendMappingDataForNode(const QVector<MappingDataType> &mappingInNode1,
-                                                                          const QVector<MappingDataType> &mappingInNode2)
+QVector<BlendingMappingData> buildBlendMappingDataForNode(const QVector<MappingDataType> &mappingInNode1,
+                                                          const QVector<MappingDataType> &mappingInNode2)
 {
     // We can only blend channels that are in both clips
     // If a channel is present in one clip and not the other, we use 100% of its value (no blending)
-    QVector<AnimationUtils::BlendingMappingData> blendingMappingData;
+    QVector<BlendingMappingData> blendingMappingData;
     const int mappingInNode1Size = mappingInNode1.size();
     blendingMappingData.reserve(mappingInNode1Size);
 
     // Find mappings that are in both vectors and build mappingData out of that
     for (const MappingDataType &mappingDataInNode1 : mappingInNode1) {
-        AnimationUtils::BlendingMappingData mappingData;
+        BlendingMappingData mappingData;
         mappingData.channelIndicesClip1 = mappingDataInNode1.channelIndices;
         mappingData.propertyName = mappingDataInNode1.propertyName;
         mappingData.targetId = mappingDataInNode1.targetId;
         mappingData.type = mappingDataInNode1.type;
-        mappingData.blendAction = AnimationUtils::BlendingMappingData::NoBlending;
+        mappingData.blendAction = BlendingMappingData::NoBlending;
         blendingMappingData.push_back(mappingData);
     }
 
     for (const MappingDataType &mappingDataInNode2 : mappingInNode2) {
         bool sharedChannel = false;
         for (int i = 0; i < mappingInNode1Size; ++i) {
-            AnimationUtils::BlendingMappingData &mappingDataInNode1 = blendingMappingData[i];
+            BlendingMappingData &mappingDataInNode1 = blendingMappingData[i];
             if ((strcmp(mappingDataInNode1.propertyName, mappingDataInNode2.propertyName) == 0) &&
                     mappingDataInNode1.targetId == mappingDataInNode2.targetId &&
                     mappingDataInNode1.type == mappingDataInNode2.type) {
                 // We have a channel shared in both clips
                 mappingDataInNode1.channelIndicesClip2 = mappingDataInNode2.channelIndices;
-                mappingDataInNode1.blendAction = AnimationUtils::BlendingMappingData::ClipBlending;
+                mappingDataInNode1.blendAction = BlendingMappingData::ClipBlending;
                 sharedChannel = true;
                 break;
             }
         }
         if (!sharedChannel) { // We have a channel defined in only one of the clips
-            AnimationUtils::BlendingMappingData mappingData;
+            BlendingMappingData mappingData;
             mappingData.channelIndicesClip2 = mappingDataInNode2.channelIndices;
             mappingData.propertyName = mappingDataInNode2.propertyName;
             mappingData.targetId = mappingDataInNode2.targetId;
             mappingData.type = mappingDataInNode2.type;
-            mappingData.blendAction = AnimationUtils::BlendingMappingData::NoBlending;
+            mappingData.blendAction = BlendingMappingData::NoBlending;
             blendingMappingData.push_back(mappingData);
         }
     }
 
     // Final indices (indices into the final blended result vector of floats for the node)
     int idx = 0;
-    for (AnimationUtils::BlendingMappingData &mapping : blendingMappingData) {
+    for (BlendingMappingData &mapping : blendingMappingData) {
         switch (mapping.blendAction) {
-        case AnimationUtils::BlendingMappingData::ClipBlending: {
+        case BlendingMappingData::ClipBlending: {
             Q_ASSERT(mapping.channelIndicesClip1.size() == mapping.channelIndicesClip2.size());
             for (int i = 0, m = mapping.channelIndicesClip1.size(); i < m; ++i)
                 mapping.channelIndices.push_back(idx++);
             break;
         }
-        case AnimationUtils::BlendingMappingData::NoBlending: {
+        case BlendingMappingData::NoBlending: {
             const bool useClip1 = !mapping.channelIndicesClip1.empty();
             const QVector<int> channelIndices = useClip1 ? mapping.channelIndicesClip1 : mapping.channelIndicesClip2;
             for (int i = 0, m = channelIndices.size(); i < m; ++i) {
@@ -142,12 +142,12 @@ void buildEntryForBlendClipNode(Handler *handler, const ChannelMapper *mapper, B
     Q_ASSERT(clip1 && clip2);
 
     // Build mappings for the 2 clips
-    const QVector<AnimationUtils::MappingData> mappingDataClip1 = AnimationUtils::buildPropertyMappings(handler, clip1, mapper);
-    const QVector<AnimationUtils::MappingData> mappingDataClip2 = AnimationUtils::buildPropertyMappings(handler, clip2, mapper);
+    const QVector<MappingData> mappingDataClip1 = buildPropertyMappings(handler, clip1, mapper);
+    const QVector<MappingData> mappingDataClip2 = buildPropertyMappings(handler, clip2, mapper);
 
     // We can only blend channels that are in both clips
     // If a channel is present in one clip and not the other, we use 100% of its value (no blending)
-    const QVector<AnimationUtils::BlendingMappingData> blendingMappingData = buildBlendMappingDataForNode(mappingDataClip1, mappingDataClip2);
+    const QVector<BlendingMappingData> blendingMappingData = buildBlendMappingDataForNode(mappingDataClip1, mappingDataClip2);
     nodeData.mappingData = blendingMappingData;
 }
 
@@ -157,12 +157,12 @@ void buildEntryForBlendNodeNode(BlendedClipAnimator::BlendNodeData &nodeData, co
     const BlendedClipAnimator::BlendNodeData &node2Data = blendingNodeTable.value(nodeData.right);
 
     // Build mappings for the 2 nodes
-    const QVector<AnimationUtils::BlendingMappingData> mappingDataNode1 = node1Data.mappingData;
-    const QVector<AnimationUtils::BlendingMappingData> mappingDataNode2 = node2Data.mappingData;
+    const QVector<BlendingMappingData> mappingDataNode1 = node1Data.mappingData;
+    const QVector<BlendingMappingData> mappingDataNode2 = node2Data.mappingData;
 
     // We can only blend channels that are in both clips
     // If a channel is present in one clip and not the other, we use 100% of its value (no blending)
-    const QVector<AnimationUtils::BlendingMappingData> blendingMappingData = buildBlendMappingDataForNode(mappingDataNode1, mappingDataNode2);
+    const QVector<BlendingMappingData> blendingMappingData = buildBlendMappingDataForNode(mappingDataNode1, mappingDataNode2);
     nodeData.mappingData = blendingMappingData;
 }
 

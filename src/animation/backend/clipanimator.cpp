@@ -123,7 +123,7 @@ void ClipAnimator::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     QBackendNode::sceneChangeEvent(e);
 }
 
-void ClipAnimator::setMappingData(const QVector<AnimationUtils::MappingData> mappingData)
+void ClipAnimator::setMappingData(const QVector<MappingData> mappingData)
 {
     m_mappingData = mappingData;
 }

@@ -42,7 +42,7 @@ Q_DECLARE_METATYPE(Qt3DAnimation::Animation::Handler*)
 Q_DECLARE_METATYPE(QVector<ChannelMapping *>)
 Q_DECLARE_METATYPE(ChannelMapper *)
 Q_DECLARE_METATYPE(AnimationClipLoader *)
-Q_DECLARE_METATYPE(QVector<AnimationUtils::MappingData>)
+Q_DECLARE_METATYPE(QVector<MappingData>)
 
 class tst_AnimationUtils : public Qt3DCore::QBackendNodeTester
 {
@@ -95,7 +95,7 @@ private Q_SLOTS:
         QTest::addColumn<QVector<ChannelMapping *>>("channelMappings");
         QTest::addColumn<ChannelMapper *>("channelMapper");
         QTest::addColumn<AnimationClipLoader *>("clip");
-        QTest::addColumn<QVector<AnimationUtils::MappingData>>("expectedMappingData");
+        QTest::addColumn<QVector<MappingData>>("expectedMappingData");
 
         auto handler = new Handler;
         auto channelMapping = createChannelMapping(handler,
@@ -113,8 +113,8 @@ private Q_SLOTS:
         // ...and an animation clip
         auto clip = createAnimationClipLoader(handler, QUrl("qrc:/clip1.json"));
 
-        QVector<AnimationUtils::MappingData> mappingData;
-        AnimationUtils::MappingData mapping;
+        QVector<MappingData> mappingData;
+        MappingData mapping;
         mapping.targetId = channelMapping->targetId();
         mapping.propertyName = channelMapping->propertyName(); // Location
         mapping.type = channelMapping->type();
@@ -135,11 +135,11 @@ private Q_SLOTS:
         QFETCH(QVector<ChannelMapping *>, channelMappings);
         QFETCH(ChannelMapper *, channelMapper);
         QFETCH(AnimationClipLoader *, clip);
-        QFETCH(QVector<AnimationUtils::MappingData>, expectedMappingData);
+        QFETCH(QVector<MappingData>, expectedMappingData);
 
         // WHEN
         // Build the mapping data for the above configuration
-        QVector<AnimationUtils::MappingData> mappingData = AnimationUtils::buildPropertyMappings(handler, clip, channelMapper);
+        QVector<MappingData> mappingData = buildPropertyMappings(handler, clip, channelMapper);
 
         // THEN
         QCOMPARE(mappingData.size(), expectedMappingData.size());

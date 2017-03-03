@@ -80,8 +80,8 @@ public:
 
     // Called by jobs
     bool canRun() const { return !m_clipId.isNull() && !m_mapperId.isNull() && m_running; }
-    void setMappingData(const QVector<AnimationUtils::MappingData> mappingData);
-    QVector<AnimationUtils::MappingData> mappingData() const { return m_mappingData; }
+    void setMappingData(const QVector<MappingData> mappingData);
+    QVector<MappingData> mappingData() const { return m_mappingData; }
 
     void setStartTime(qint64 globalTime) { m_startGlobalTime = globalTime; }
     qint64 startTime() const { return m_startGlobalTime; }
@@ -101,7 +101,7 @@ private:
 
     // Working state
     qint64 m_startGlobalTime;
-    QVector<AnimationUtils::MappingData> m_mappingData;
+    QVector<MappingData> m_mappingData;
 
     int m_currentLoop;
 };
