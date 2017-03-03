@@ -122,7 +122,7 @@ Q_AUTOTEST_EXPORT
 QVector<int> channelComponentsToIndicesHelper(const Channel &channelGroup,
                                               int dataType,
                                               int offset,
-                                              const QStringList &suffixes);
+                                              const QVector<char> &suffixes);
 
 Q_AUTOTEST_EXPORT
 QVector<float> evaluateClipAtLocalTime(AnimationClipLoader *clip,

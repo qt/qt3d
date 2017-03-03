@@ -105,16 +105,13 @@ double localTimeFromGlobalTime(double t_global,
 
 QVector<int> channelComponentsToIndices(const Channel &channelGroup, int dataType, int offset)
 {
-    static const QStringList standardSuffixes = (QStringList()
-                                                 << QLatin1String("X")
-                                                 << QLatin1String("Y")
-                                                 << QLatin1String("Z")
-                                                 << QLatin1String("W"));
-    static const QStringList quaternionSuffixes = (QStringList()
-                                                   << QLatin1String("W")
-                                                   << QLatin1String("X")
-                                                   << QLatin1String("Y")
-                                                   << QLatin1String("Z"));
+#if defined Q_COMPILER_UNIFORM_INIT
+    static const QVector<char> standardSuffixes = { 'X', 'Y', 'Z', 'W' };
+    static const QVector<char> quaternionSuffixes = { 'W', 'X', 'Y', 'Z' };
+#else
+    static const QVector<char> standardSuffixes = (QVector<char>() << 'X' << 'Y' << 'Z' << 'W');
+    static const QVector<char> quaternionSuffixes = (QVector<char>() << 'W' << 'X' << 'Y' << 'Z');
+#endif
 
     if (dataType != QVariant::Quaternion)
         return channelComponentsToIndicesHelper(channelGroup, dataType, offset, standardSuffixes);
@@ -126,7 +123,7 @@ QVector<int> channelComponentsToIndices(const Channel &channelGroup, int dataTyp
 QVector<int> channelComponentsToIndicesHelper(const Channel &channel,
                                               int dataType,
                                               int offset,
-                                              const QStringList &suffixes)
+                                              const QVector<char> &suffixes)
 {
     int expectedComponentCount = 1;
     switch (dataType) {
@@ -159,8 +156,9 @@ QVector<int> channelComponentsToIndicesHelper(const Channel &channel,
 
     QVector<int> indices(expectedComponentCount);
     for (int i = 0; i < expectedComponentCount; ++i) {
-        const QString channelComponentSuffix = channel.channelComponents[i].name.right(1);
-        int index = suffixes.indexOf(channelComponentSuffix);
+        const QString &componentName = channel.channelComponents[i].name;
+        char suffix = componentName.at(componentName.length() - 1).toLatin1();
+        int index = suffixes.indexOf(suffix);
         if (index != -1)
             indices[i] = index + offset;
         else
