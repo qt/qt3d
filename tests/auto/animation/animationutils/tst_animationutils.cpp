@@ -895,6 +895,90 @@ private Q_SLOTS:
             QCOMPARE(actualResults[i], expectedResults[i]);
         }
     }
+
+    void checkChannelComponentsToIndices_data()
+    {
+        QTest::addColumn<Channel>("channel");
+        QTest::addColumn<int>("dataType");
+        QTest::addColumn<int>("offset");
+        QTest::addColumn<QVector<int>>("expectedResults");
+
+        Channel channel;
+        int dataType;
+        int offset;
+        QVector<int> expectedResults;
+
+        // Quaternion
+        {
+            channel = Channel();
+            channel.name = QLatin1String("Rotation");
+            channel.channelComponents.resize(4);
+            channel.channelComponents[0].name = QLatin1String("Rotation W");
+            channel.channelComponents[1].name = QLatin1String("Rotation X");
+            channel.channelComponents[2].name = QLatin1String("Rotation Y");
+            channel.channelComponents[3].name = QLatin1String("Rotation Z");
+
+            dataType = static_cast<int>(QVariant::Quaternion);
+            offset = 0;
+            expectedResults = (QVector<int>() << 0 << 1 << 2 << 3);
+
+            QTest::newRow("quaternion Rotation, offset = 0")
+                    << channel << dataType << offset << expectedResults;
+
+            expectedResults.clear();
+
+            offset = 10;
+            expectedResults = (QVector<int>() << 10 << 11 << 12 << 13);
+            QTest::newRow("quaternion Rotation, offset = 10")
+                    << channel << dataType << offset << expectedResults;
+
+            expectedResults.clear();
+        }
+
+        // vec3 with and without offset
+        {
+            channel = Channel();
+            channel.name = QLatin1String("Location");
+            channel.channelComponents.resize(3);
+            channel.channelComponents[0].name = QLatin1String("Location X");
+            channel.channelComponents[1].name = QLatin1String("Location Y");
+            channel.channelComponents[2].name = QLatin1String("Location Z");
+
+            dataType = static_cast<int>(QVariant::Vector3D);
+            offset = 0;
+            expectedResults = (QVector<int>() << 0 << 1 << 2);
+
+            QTest::newRow("vec3 location, offset = 0")
+                    << channel << dataType << offset << expectedResults;
+
+            expectedResults.clear();
+
+            offset = 4;
+            expectedResults = (QVector<int>() << 4 << 5 << 6);
+            QTest::newRow("vec3 location, offset = 4")
+                    << channel << dataType << offset << expectedResults;
+
+            expectedResults.clear();
+        }
+    }
+
+    void checkChannelComponentsToIndices()
+    {
+        QFETCH(Channel, channel);
+        QFETCH(int, dataType);
+        QFETCH(int, offset);
+        QFETCH(QVector<int>, expectedResults);
+
+        // WHEN
+        QVector<int> actualResults
+                = channelComponentsToIndices(channel, dataType, offset);
+
+        // THEN
+        QCOMPARE(actualResults.size(), expectedResults.size());
+        for (int i = 0; i < actualResults.size(); ++i) {
+            QCOMPARE(actualResults[i], expectedResults[i]);
+        }
+    }
 };
 
 QTEST_MAIN(tst_AnimationUtils)
