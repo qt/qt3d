@@ -216,30 +216,28 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
                 return;
             }
 
-            if (positionAttribute) {
-                Buffer *buf = manager->lookupResource<Buffer, BufferManager>(positionAttribute->bufferId());
-                // No point in continuing if the positionAttribute doesn't have a suitable buffer
-                if (!buf) {
-                    qWarning() << "ObjectPicker position Attribute not referencing a valid buffer";
-                    return;
-                }
+            Buffer *buf = manager->lookupResource<Buffer, BufferManager>(positionAttribute->bufferId());
+            // No point in continuing if the positionAttribute doesn't have a suitable buffer
+            if (!buf) {
+                qWarning() << "ObjectPicker position Attribute not referencing a valid buffer";
+                return;
+            }
 
-                // Buf will be set to not dirty once it's loaded
-                // in a job executed after this one
-                // We need to recompute the bounding volume
-                // If anything in the GeometryRenderer has changed
-                if (buf->isDirty() ||
-                        node->isBoundingVolumeDirty() ||
-                        positionAttribute->isDirty() ||
-                        geom->isDirty() ||
-                        gRenderer->isDirty()) {
+            // Buf will be set to not dirty once it's loaded
+            // in a job executed after this one
+            // We need to recompute the bounding volume
+            // If anything in the GeometryRenderer has changed
+            if (buf->isDirty() ||
+                    node->isBoundingVolumeDirty() ||
+                    positionAttribute->isDirty() ||
+                    geom->isDirty() ||
+                    gRenderer->isDirty()) {
 
-                    BoundingVolumeCalculator reader(manager);
-                    if (reader.apply(positionAttribute)) {
-                        node->localBoundingVolume()->setCenter(reader.result().center());
-                        node->localBoundingVolume()->setRadius(reader.result().radius());
-                        node->unsetBoundingVolumeDirty();
-                    }
+                BoundingVolumeCalculator reader(manager);
+                if (reader.apply(positionAttribute)) {
+                    node->localBoundingVolume()->setCenter(reader.result().center());
+                    node->localBoundingVolume()->setRadius(reader.result().radius());
+                    node->unsetBoundingVolumeDirty();
                 }
             }
         }
