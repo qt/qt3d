@@ -98,7 +98,7 @@ struct ClipPreEvaluationData
 };
 
 template<typename Animator>
-AnimatorEvaluationData animatorEvaluationDataForAnimator(Animator animator, qint64 globalTime)
+AnimatorEvaluationData evaluationDataForAnimator(Animator animator, qint64 globalTime)
 {
     AnimatorEvaluationData data;
     data.loopCount = animator->loops();

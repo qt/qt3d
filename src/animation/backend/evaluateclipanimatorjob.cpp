@@ -66,7 +66,7 @@ void EvaluateClipAnimatorJob::run()
     AnimationClipLoader *clip = m_handler->animationClipLoaderManager()->lookupResource(clipAnimator->clipId());
     Q_ASSERT(clip);
     // Prepare for evaluation (convert global time to local time ....)
-    const AnimatorEvaluationData animatorEvaluationData = animatorEvaluationDataForAnimator(clipAnimator, globalTime);
+    const AnimatorEvaluationData animatorEvaluationData = evaluationDataForAnimator(clipAnimator, globalTime);
     const ClipPreEvaluationData preEvaluationDataForClip = evaluationDataForClip(clip, animatorEvaluationData);
     const QVector<float> channelResults = evaluateClipAtLocalTime(clip, preEvaluationDataForClip.localTime);
 

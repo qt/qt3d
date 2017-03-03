@@ -165,7 +165,7 @@ void EvaluateBlendClipAnimatorJob::run()
     BlendedClipAnimator *blendedClipAnimator = m_handler->blendedClipAnimatorManager()->data(m_blendClipAnimatorHandle);
     Q_ASSERT(blendedClipAnimator);
 
-    const AnimatorEvaluationData animatorEvaluationData = animatorEvaluationDataForAnimator(blendedClipAnimator, globalTime);
+    const AnimatorEvaluationData animatorEvaluationData = evaluationDataForAnimator(blendedClipAnimator, globalTime);
     const QHash<Qt3DCore::QNodeId, BlendedClipAnimator::BlendNodeData> blendindNodeTable = blendedClipAnimator->blendTreeTable();
 
     // Reset globals
