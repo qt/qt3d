@@ -53,6 +53,7 @@ Q_DECLARE_METATYPE(QVector<Qt3DCore::QPropertyUpdatedChangePtr>)
 Q_DECLARE_METATYPE(Channel)
 Q_DECLARE_METATYPE(AnimatorEvaluationData)
 Q_DECLARE_METATYPE(ClipEvaluationData)
+Q_DECLARE_METATYPE(ClipAnimator *)
 
 bool fuzzyCompare(float x1, float x2)
 {
@@ -1106,6 +1107,104 @@ private Q_SLOTS:
         QCOMPARE(actualClipData.currentLoop, expectedClipData.currentLoop);
         QVERIFY(fuzzyCompare(actualClipData.localTime, expectedClipData.localTime) == true);
         QCOMPARE(actualClipData.isFinalFrame, expectedClipData.isFinalFrame);
+
+        // Cleanup
+        delete handler;
+    }
+
+    void checkEvaluationDataForAnimator_data()
+    {
+        QTest::addColumn<Handler *>("handler");
+        QTest::addColumn<ClipAnimator *>("animator");
+        QTest::addColumn<qint64>("globalTimeNS");
+        QTest::addColumn<AnimatorEvaluationData>("expectedAnimatorData");
+
+        Handler *handler;
+        ClipAnimator *animator;
+        qint64 globalTimeNS;
+        AnimatorEvaluationData expectedAnimatorData;
+
+        {
+            handler = new Handler();
+            const qint64 globalStartTimeNS = 0;
+            const int loops = 1;
+            animator = createClipAnimator(handler, globalStartTimeNS, loops);
+            globalTimeNS = 0;
+
+            expectedAnimatorData.loopCount = loops;
+            expectedAnimatorData.playbackRate = 1.0; // hard-wired for now
+            expectedAnimatorData.startTime = 0.0;
+            expectedAnimatorData.globalTime = 0.0;
+
+            QTest::newRow("globalStartTime = 0, globalTime = 0, loops = 1")
+                    << handler << animator << globalTimeNS << expectedAnimatorData;
+        }
+
+        {
+            handler = new Handler();
+            const qint64 globalStartTimeNS = 0;
+            const int loops = 5;
+            animator = createClipAnimator(handler, globalStartTimeNS, loops);
+            globalTimeNS = 0;
+
+            expectedAnimatorData.loopCount = loops;
+            expectedAnimatorData.playbackRate = 1.0; // hard-wired for now
+            expectedAnimatorData.startTime = 0.0;
+            expectedAnimatorData.globalTime = 0.0;
+
+            QTest::newRow("globalStartTime = 0, globalTime = 0, loops = 5")
+                    << handler << animator << globalTimeNS << expectedAnimatorData;
+        }
+
+        {
+            handler = new Handler();
+            const qint64 globalStartTimeNS = 0;
+            const int loops = 1;
+            animator = createClipAnimator(handler, globalStartTimeNS, loops);
+            globalTimeNS = 5000000000;
+
+            expectedAnimatorData.loopCount = loops;
+            expectedAnimatorData.playbackRate = 1.0; // hard-wired for now
+            expectedAnimatorData.startTime = 0.0;
+            expectedAnimatorData.globalTime = 5.0;
+
+            QTest::newRow("globalStartTime = 0, globalTime = 5, loops = 1")
+                    << handler << animator << globalTimeNS << expectedAnimatorData;
+        }
+
+        {
+            handler = new Handler();
+            const qint64 globalStartTimeNS = 3000000000;
+            const int loops = 1;
+            animator = createClipAnimator(handler, globalStartTimeNS, loops);
+            globalTimeNS = 5000000000;
+
+            expectedAnimatorData.loopCount = loops;
+            expectedAnimatorData.playbackRate = 1.0; // hard-wired for now
+            expectedAnimatorData.startTime = 3.0;
+            expectedAnimatorData.globalTime = 5.0;
+
+            QTest::newRow("globalStartTime = 3, globalTime = 5, loops = 1")
+                    << handler << animator << globalTimeNS << expectedAnimatorData;
+        }
+    }
+
+    void checkEvaluationDataForAnimator()
+    {
+        // GIVEN
+        QFETCH(Handler *, handler);
+        QFETCH(ClipAnimator *, animator);
+        QFETCH(qint64, globalTimeNS);
+        QFETCH(AnimatorEvaluationData, expectedAnimatorData);
+
+        // WHEN
+        AnimatorEvaluationData actualAnimatorData = evaluationDataForAnimator(animator, globalTimeNS);
+
+        // THEN
+        QCOMPARE(actualAnimatorData.loopCount, expectedAnimatorData.loopCount);
+        QVERIFY(fuzzyCompare(actualAnimatorData.playbackRate, expectedAnimatorData.playbackRate) == true);
+        QVERIFY(fuzzyCompare(actualAnimatorData.startTime, expectedAnimatorData.startTime) == true);
+        QVERIFY(fuzzyCompare(actualAnimatorData.globalTime, expectedAnimatorData.globalTime) == true);
 
         // Cleanup
         delete handler;
