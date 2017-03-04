@@ -58,12 +58,12 @@ EvaluateBlendClipAnimatorJob::EvaluateBlendClipAnimatorJob()
 
 namespace {
 
-QVector<float> blendValuesBasedOnMappings(ClipBlendNode *node,
-                                          const QVector<float> &channelResults1,
-                                          const QVector<float> &channelResults2,
-                                          const QVector<BlendingMappingData> &blendingMappingData)
+ClipResults blendValuesBasedOnMappings(ClipBlendNode *node,
+                                       const ClipResults &channelResults1,
+                                       const ClipResults &channelResults2,
+                                       const QVector<BlendingMappingData> &blendingMappingData)
 {
-    QVector<float> blendedValues;
+    ClipResults blendedValues;
     blendedValues.reserve(blendingMappingData.size());
 
     // Build a combined vector of blended value
@@ -123,8 +123,8 @@ void EvaluateBlendClipAnimatorJob::blendClips(ClipBlendNode *node,
     const ClipEvaluationData preEvaluationDataForClip2 = evaluationDataForClip(clip2, animatorEvaluationData);
 
     // Evaluate the fcurves for both clip
-    const QVector<float> channelResultsClip1 = evaluateClipAtLocalTime(clip1, preEvaluationDataForClip1.localTime);
-    const QVector<float> channelResultsClip2 = evaluateClipAtLocalTime(clip2, preEvaluationDataForClip2.localTime);
+    const ClipResults channelResultsClip1 = evaluateClipAtLocalTime(clip1, preEvaluationDataForClip1.localTime);
+    const ClipResults channelResultsClip2 = evaluateClipAtLocalTime(clip2, preEvaluationDataForClip2.localTime);
 
     // Update loops and running of the animator
     m_currentLoop = std::min(m_currentLoop, std::min(preEvaluationDataForClip1.currentLoop, preEvaluationDataForClip2.currentLoop));
@@ -146,8 +146,8 @@ void EvaluateBlendClipAnimatorJob::blendNodes(ClipBlendNode *node, const Blended
     Q_ASSERT(node1 && node2);
 
     // Retrieve results for the childNodes
-    const QVector<float> channelResultsNode1 = m_clipBlendResultsTable.take(node1);
-    const QVector<float> channelResultsNode2 = m_clipBlendResultsTable.take(node2);
+    const ClipResults channelResultsNode1 = m_clipBlendResultsTable.take(node1);
+    const ClipResults channelResultsNode2 = m_clipBlendResultsTable.take(node2);
 
     // Build a combined vector of blended value
     const QVector<BlendingMappingData> blendingMappingData = nodeData.mappingData;
@@ -203,7 +203,7 @@ void EvaluateBlendClipAnimatorJob::run()
     ClipBlendNode *rootBlendNode = m_handler->clipBlendNodeManager()->lookupNode(blendedClipAnimator->blendTreeRootId());
     Q_ASSERT(m_clipBlendResultsTable.size() == 1 && m_clipBlendResultsTable.contains(rootBlendNode));
 
-    const QVector<float> blendedValues = m_clipBlendResultsTable.take(rootBlendNode);
+    const ClipResults blendedValues = m_clipBlendResultsTable.take(rootBlendNode);
     const BlendedClipAnimator::BlendNodeData &rootNodeData = blendindNodeTable.value(rootBlendNode->peerId());
     const QVector<MappingData> mappingData = fromBlendingMappingData(rootNodeData.mappingData);
 

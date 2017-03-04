@@ -68,7 +68,7 @@ void EvaluateClipAnimatorJob::run()
     // Prepare for evaluation (convert global time to local time ....)
     const AnimatorEvaluationData animatorEvaluationData = evaluationDataForAnimator(clipAnimator, globalTime);
     const ClipEvaluationData preEvaluationDataForClip = evaluationDataForClip(clip, animatorEvaluationData);
-    const QVector<float> channelResults = evaluateClipAtLocalTime(clip, preEvaluationDataForClip.localTime);
+    const ClipResults channelResults = evaluateClipAtLocalTime(clip, preEvaluationDataForClip.localTime);
 
     if (preEvaluationDataForClip.isFinalFrame)
         clipAnimator->setRunning(false);

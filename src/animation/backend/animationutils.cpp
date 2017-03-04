@@ -166,7 +166,7 @@ QVector<int> channelComponentsToIndicesHelper(const Channel &channel,
     return indices;
 }
 
-QVector<float> evaluateClipAtLocalTime(AnimationClipLoader *clip, float localTime)
+ClipResults evaluateClipAtLocalTime(AnimationClipLoader *clip, float localTime)
 {
     QVector<float> channelResults;
     Q_ASSERT(clip);

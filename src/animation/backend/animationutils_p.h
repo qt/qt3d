@@ -97,6 +97,8 @@ struct ClipEvaluationData
     bool isFinalFrame;
 };
 
+typedef QVector<float> ClipResults;
+
 template<typename Animator>
 AnimatorEvaluationData evaluationDataForAnimator(Animator animator, qint64 globalTime)
 {
@@ -125,7 +127,7 @@ QVector<int> channelComponentsToIndicesHelper(const Channel &channelGroup,
                                               const QVector<char> &suffixes);
 
 Q_AUTOTEST_EXPORT
-QVector<float> evaluateClipAtLocalTime(AnimationClipLoader *clip,
+ClipResults evaluateClipAtLocalTime(AnimationClipLoader *clip,
                                        float localTime);
 
 Q_AUTOTEST_EXPORT

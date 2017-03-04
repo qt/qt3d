@@ -606,12 +606,12 @@ private Q_SLOTS:
         QTest::addColumn<Handler *>("handler");
         QTest::addColumn<AnimationClipLoader *>("clip");
         QTest::addColumn<float>("localTime");
-        QTest::addColumn<QVector<float>>("expectedResults");
+        QTest::addColumn<ClipResults>("expectedResults");
 
         Handler *handler;
         AnimationClipLoader *clip;
         float localTime;
-        QVector<float> expectedResults;
+        ClipResults expectedResults;
 
         {
             handler = new Handler();
@@ -690,10 +690,10 @@ private Q_SLOTS:
         QFETCH(Handler *, handler);
         QFETCH(AnimationClipLoader *, clip);
         QFETCH(float, localTime);
-        QFETCH(QVector<float>, expectedResults);
+        QFETCH(ClipResults, expectedResults);
 
         // WHEN
-        QVector<float> actualResults = evaluateClipAtLocalTime(clip, localTime);
+        ClipResults actualResults = evaluateClipAtLocalTime(clip, localTime);
 
         // THEN
         QCOMPARE(actualResults.size(), expectedResults.size());
