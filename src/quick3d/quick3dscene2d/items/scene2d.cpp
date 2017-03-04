@@ -85,7 +85,7 @@ RenderQmlEventHandler::RenderQmlEventHandler(Scene2D *node)
 // Event handler for the RenderQmlToTexture::renderThread
 bool RenderQmlEventHandler::event(QEvent *e)
 {
-    switch (e->type()) {
+    switch (static_cast<Scene2DEvent::Type>(e->type())) {
 
     case Scene2DEvent::Render: {
         m_node->render();

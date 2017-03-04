@@ -72,19 +72,18 @@ QWindow *RenderControl::renderWindow(QPoint *offset)
      Constructs qml render manager.
  */
 Scene2DManager::Scene2DManager(QScene2DPrivate *priv)
-    : m_priv(priv)
-    , m_qmlEngine(nullptr)
+    : m_qmlEngine(nullptr)
     , m_qmlComponent(nullptr)
     , m_rootItem(nullptr)
-    , m_source(nullptr)
+    , m_item(nullptr)
+    , m_priv(priv)
+    , m_sharedObject(new Scene2DSharedObject(this))
+    , m_renderPolicy(QScene2D::Continuous)
     , m_requested(false)
     , m_initialized(false)
     , m_renderSyncRequested(false)
-    , m_sharedObject(new Scene2DSharedObject(this))
-    , m_renderPolicy(QScene2D::Continuous)
     , m_backendInitialized(false)
     , m_noSourceMode(false)
-    , m_item(nullptr)
     , m_ownEngine(false)
     , m_grabMouse(false)
 {
@@ -252,7 +251,7 @@ void Scene2DManager::setItem(QQuickItem *item)
 
 bool Scene2DManager::event(QEvent *e)
 {
-    switch (e->type()) {
+    switch (static_cast<Scene2DEvent::Type>(e->type())) {
 
     case Scene2DEvent::Render: {
         // just render request, don't need to call sync in render thread

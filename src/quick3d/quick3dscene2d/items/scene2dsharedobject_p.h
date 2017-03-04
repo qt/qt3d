@@ -114,7 +114,6 @@ private:
     bool m_disallowed;
     bool m_quit;
     bool m_requestSync;
-    bool m_requestRender;
     bool m_prepared;
     bool m_initialized;
 };
