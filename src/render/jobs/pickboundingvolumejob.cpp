@@ -223,11 +223,6 @@ bool PickBoundingVolumeJob::runHelper()
     // If we have move or hover move events that someone cares about, we try to avoid expensive computations
     // by compressing them into a single one
 
-    // Gather the entities for the frame
-    // TO DO: We could skip doing that every frame and only do it when we know for sure
-    // that the tree structure has changed
-    PickingUtils::EntityGatherer entitiesGatherer(m_node);
-
     // Store the reducer function which varies depending on the picking settings set on the renderer
     using ReducerFunction = PickingUtils::CollisionVisitor::HitList (*)(PickingUtils::CollisionVisitor::HitList &results, const PickingUtils::CollisionVisitor::HitList &intermediate);
 
@@ -255,18 +250,23 @@ bool PickBoundingVolumeJob::runHelper()
         for (const PickingUtils::ViewportCameraAreaTriplet &vca : vcaTriplets) {
             HitList sphereHits;
             QRay3D ray = rayForViewportAndCamera(vca.area, event.pos(), vca.viewport, vca.cameraId);
-            if (trianglePickingRequested) {
-                PickingUtils::TriangleCollisionGathererFunctor gathererFunctor;
-                gathererFunctor.m_frontFaceRequested = frontFaceRequested;
-                gathererFunctor.m_backFaceRequested = backFaceRequested;
-                gathererFunctor.m_manager = m_manager;
-                gathererFunctor.m_ray = ray;
-                sphereHits = QtConcurrent::blockingMappedReduced<HitList>(entitiesGatherer.entities(), gathererFunctor, reducerOp);
-            } else {
-                PickingUtils::EntityCollisionGathererFunctor gathererFunctor;
-                gathererFunctor.m_manager = m_manager;
-                gathererFunctor.m_ray = ray;
-                sphereHits = QtConcurrent::blockingMappedReduced<HitList>(entitiesGatherer.entities(), gathererFunctor, reducerOp);
+
+            PickingUtils::HierarchicalEntityPicker entityPicker(ray);
+            if (entityPicker.collectHits(m_node)) {
+                if (trianglePickingRequested) {
+                    PickingUtils::TriangleCollisionGathererFunctor gathererFunctor;
+                    gathererFunctor.m_frontFaceRequested = frontFaceRequested;
+                    gathererFunctor.m_backFaceRequested = backFaceRequested;
+                    gathererFunctor.m_manager = m_manager;
+                    gathererFunctor.m_ray = ray;
+                    sphereHits = QtConcurrent::blockingMappedReduced<HitList>(entityPicker.entities(),
+                                                                              gathererFunctor, reducerOp);
+                } else {
+                    sphereHits = entityPicker.hits();
+                    PickingUtils::AbstractCollisionGathererFunctor::sortHits(sphereHits);
+                    if (!allHitsRequested)
+                        sphereHits = { sphereHits.front() };
+                }
             }
 
             // Dispatch events based on hit results
