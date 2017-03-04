@@ -42,18 +42,20 @@
 #include <random>
 #include <algorithm>
 
+using namespace Qt3DAnimation::Animation;
+
 namespace {
 
-class TestClipBlendNode : public Qt3DAnimation::Animation::ClipBlendNode
+class TestClipBlendNode : public ClipBlendNode
 {
 public:
     TestClipBlendNode()
-        : Qt3DAnimation::Animation::ClipBlendNode(Qt3DAnimation::Animation::ClipBlendNode::LerpBlendType)
+        : ClipBlendNode(ClipBlendNode::LerpBlendType)
     {}
 
     float blend(float , float ) const Q_DECL_FINAL { return 0.0f; }
 
-    using Qt3DAnimation::Animation::ClipBlendNode::setClipResults;
+    using ClipBlendNode::setClipResults;
 };
 
 } // anonymous
@@ -78,8 +80,8 @@ private Q_SLOTS:
         QCOMPARE(backendClipBlendNode.parentId(), Qt3DCore::QNodeId());
         QCOMPARE(backendClipBlendNode.childrenIds(), Qt3DCore::QNodeIdVector());
         QVERIFY(backendClipBlendNode.clipBlendNodeManager() == nullptr);
-        QCOMPARE(backendClipBlendNode.blendType(), Qt3DAnimation::Animation::ClipBlendNode::LerpBlendType);
-        QCOMPARE(backendClipBlendNode.clipResults(Qt3DCore::QNodeId()), Qt3DAnimation::Animation::ClipResults());
+        QCOMPARE(backendClipBlendNode.blendType(), ClipBlendNode::LerpBlendType);
+        QCOMPARE(backendClipBlendNode.clipResults(Qt3DCore::QNodeId()), ClipResults());
     }
 
     void checkInitializeFromPeer()
@@ -93,7 +95,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            Qt3DAnimation::Animation::ClipBlendNodeManager manager;
+            ClipBlendNodeManager manager;
             TestClipBlendNode backendClipBlendNode;
             backendClipBlendNode.setClipBlendNodeManager(&manager);
             simulateInitialization(&clipBlendNode, &backendClipBlendNode);
@@ -106,12 +108,12 @@ private Q_SLOTS:
             QCOMPARE(backendClipBlendNode.parentId(), Qt3DCore::QNodeId());
             QCOMPARE(backendClipBlendNode.childrenIds().size(), 0);
             QCOMPARE(backendClipBlendNode.clipBlendNodeManager(), &manager);
-            QCOMPARE(backendClipBlendNode.blendType(), Qt3DAnimation::Animation::ClipBlendNode::LerpBlendType);
-            QCOMPARE(backendClipBlendNode.clipResults(Qt3DCore::QNodeId()), Qt3DAnimation::Animation::ClipResults());
+            QCOMPARE(backendClipBlendNode.blendType(), ClipBlendNode::LerpBlendType);
+            QCOMPARE(backendClipBlendNode.clipResults(Qt3DCore::QNodeId()), ClipResults());
         }
         {
             // WHEN
-            Qt3DAnimation::Animation::ClipBlendNodeManager manager;
+            ClipBlendNodeManager manager;
             TestClipBlendNode backendClipBlendNode;
             clipBlendNode.setEnabled(false);
             backendClipBlendNode.setClipBlendNodeManager(&manager);
@@ -127,7 +129,7 @@ private Q_SLOTS:
     {
         // GIVEN
         TestClipBlendNode backendClipBlendNode;
-        Qt3DAnimation::Animation::ClipBlendNodeManager manager;
+        ClipBlendNodeManager manager;
         backendClipBlendNode.setClipBlendNodeManager(&manager);
         {
             // WHEN
@@ -193,7 +195,7 @@ private Q_SLOTS:
         TestClipBlendNode *backendChildClipBlendNode = new TestClipBlendNode();
         Qt3DAnimation::QLerpClipBlend clipBlendParent;
         Qt3DAnimation::QLerpClipBlend childClipBlend(&clipBlendParent);
-        Qt3DAnimation::Animation::ClipBlendNodeManager manager;
+        ClipBlendNodeManager manager;
         backendClipBlendNode->setClipBlendNodeManager(&manager);
         backendChildClipBlendNode->setClipBlendNodeManager(&manager);
 
@@ -234,18 +236,20 @@ private Q_SLOTS:
         QTest::addColumn<TestClipBlendNode *>("blendNode");
         QTest::addColumn<QVector<int>>("indexes");
         QTest::addColumn<QVector<Qt3DCore::QNodeId>>("animatorIds");
-        QTest::addColumn<QVector<Qt3DAnimation::Animation::ClipResults>>("expectedClipResults");
+        QTest::addColumn<QVector<ClipResults>>("expectedClipResults");
 
         // Single entry
         {
             auto blendNode = new TestClipBlendNode;
             QVector<Qt3DCore::QNodeId> animatorIds;
-            QVector<Qt3DAnimation::Animation::ClipResults> expectedClipResults;
+            QVector<ClipResults> expectedClipResults;
 
             const auto animatorId = Qt3DCore::QNodeId::createId();
             animatorIds.push_back(animatorId);
 
-            Qt3DAnimation::Animation::ClipResults clipResults = { 0.0f, 1.0f, 2.0f };
+            ClipResults clipResults = { 0.0f, 1.0f, 2.0f };
+            for (int i = 0; i < 3; ++i)
+                clipResults.push_back(float(i));
             expectedClipResults.push_back(clipResults);
 
             // Set data and indexes
@@ -260,12 +264,12 @@ private Q_SLOTS:
         {
             auto blendNode = new TestClipBlendNode;
             QVector<Qt3DCore::QNodeId> animatorIds;
-            QVector<Qt3DAnimation::Animation::ClipResults> expectedClipResults;
+            QVector<ClipResults> expectedClipResults;
 
             auto animatorId = Qt3DCore::QNodeId::createId();
             animatorIds.push_back(animatorId);
 
-            Qt3DAnimation::Animation::ClipResults clipResults;
+            ClipResults clipResults;
             expectedClipResults.push_back(clipResults);
 
             // Don't set any data
@@ -279,14 +283,14 @@ private Q_SLOTS:
         {
             auto blendNode = new TestClipBlendNode;
             QVector<Qt3DCore::QNodeId> animatorIds;
-            QVector<Qt3DAnimation::Animation::ClipResults> expectedClipResults;
+            QVector<ClipResults> expectedClipResults;
 
             const int animatorCount = 10;
             for (int j = 0; j < animatorCount; ++j) {
                 auto animatorId = Qt3DCore::QNodeId::createId();
                 animatorIds.push_back(animatorId);
 
-                Qt3DAnimation::Animation::ClipResults clipResults;
+                ClipResults clipResults;
                 for (int i = 0; i < j + 5; ++i)
                     clipResults.push_back(float(i + j));
                 expectedClipResults.push_back(clipResults);
@@ -305,14 +309,14 @@ private Q_SLOTS:
         {
             auto blendNode = new TestClipBlendNode;
             QVector<Qt3DCore::QNodeId> animatorIds;
-            QVector<Qt3DAnimation::Animation::ClipResults> expectedClipResults;
+            QVector<ClipResults> expectedClipResults;
 
             const int animatorCount = 10;
             for (int j = 0; j < animatorCount; ++j) {
                 auto animatorId = Qt3DCore::QNodeId::createId();
                 animatorIds.push_back(animatorId);
 
-                Qt3DAnimation::Animation::ClipResults clipResults;
+                ClipResults clipResults;
                 for (int i = 0; i < j + 5; ++i)
                     clipResults.push_back(float(i + j));
                 expectedClipResults.push_back(clipResults);
@@ -338,12 +342,12 @@ private Q_SLOTS:
         QFETCH(TestClipBlendNode *, blendNode);
         QFETCH(QVector<int>, indexes);
         QFETCH(QVector<Qt3DCore::QNodeId>, animatorIds);
-        QFETCH(QVector<Qt3DAnimation::Animation::ClipResults>, expectedClipResults);
+        QFETCH(QVector<ClipResults>, expectedClipResults);
 
         for (int i = 0; i < indexes.size(); ++i) {
             // WHEN
             const int index = indexes[i];
-            const Qt3DAnimation::Animation::ClipResults actualClipResults = blendNode->clipResults(animatorIds[index]);
+            const ClipResults actualClipResults = blendNode->clipResults(animatorIds[index]);
 
             // THEN
             QCOMPARE(actualClipResults.size(), expectedClipResults[index].size());
