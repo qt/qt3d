@@ -142,6 +142,33 @@ private Q_SLOTS:
         QCOMPARE(computed, result);
     }
 
+    void checkDependencyIds()
+    {
+        // GIVEN
+        Qt3DAnimation::Animation::LerpClipBlend lerpBlend;
+        auto startClipId = Qt3DCore::QNodeId::createId();
+        auto endClipId = Qt3DCore::QNodeId::createId();
+
+        // WHEN
+        lerpBlend.setStartClipId(startClipId);
+        lerpBlend.setEndClipId(endClipId);
+        QVector<Qt3DCore::QNodeId> actualIds = lerpBlend.dependencyIds();
+
+        // THEN
+        QCOMPARE(actualIds.size(), 2);
+        QCOMPARE(actualIds[0], startClipId);
+        QCOMPARE(actualIds[1], endClipId);
+
+        // WHEN
+        auto anotherEndClipId = Qt3DCore::QNodeId::createId();
+        lerpBlend.setEndClipId(anotherEndClipId);
+        actualIds = lerpBlend.dependencyIds();
+
+        // THEN
+        QCOMPARE(actualIds.size(), 2);
+        QCOMPARE(actualIds[0], startClipId);
+        QCOMPARE(actualIds[1], anotherEndClipId);
+    }
 };
 
 QTEST_MAIN(tst_LerpClipBlend)

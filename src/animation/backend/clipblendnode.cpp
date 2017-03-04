@@ -181,6 +181,28 @@ ClipResults ClipBlendNode::clipResults(Qt3DCore::QNodeId animatorId) const
     return ClipResults();
 }
 
+/*!
+    \fn QVector<Qt3DCore::QNodeId> ClipBlendNode::dependencyIds() const
+    \internal
+
+    Each subclass of ClipBlendNode must implement this function such that it
+    returns a vector of the ids of ClipBlendNodes upon which is it dependent
+    in order to be able to evaluate given its current internal state.
+
+    For example, a subclass implementing a simple lerp blend between two
+    other nodes, would always return the ids of the nodes between which it
+    is lerping.
+
+    A more generalised lerp node that is capable of lerping between a
+    series of nodes would return the ids of the two nodes that correspond
+    to the blend values which sandwich the currently set blend value.
+
+    The animation handler will submit a job that uses this function to
+    build a list of clips that must be evaluated in order to later
+    evaluate the entire blend tree. In this way, the clips can all be
+    evaluated in one pass, and the tree in a subsequent pass.
+*/
+
 } // Animation
 
 } // Qt3DAnimation

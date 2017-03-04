@@ -108,6 +108,30 @@ private Q_SLOTS:
             QCOMPARE(backendClipBlendValue.clipId(), newValue.id());
         }
     }
+
+    void checkDependencyIds()
+    {
+        // GIVEN
+        Qt3DAnimation::Animation::ClipBlendValue clipNode;
+        auto clipId = Qt3DCore::QNodeId::createId();
+
+        // WHEN
+        clipNode.setClipId(clipId);
+        QVector<Qt3DCore::QNodeId> actualIds = clipNode.dependencyIds();
+
+        // THEN
+        QCOMPARE(actualIds.size(), 1);
+        QCOMPARE(actualIds[0], clipId);
+
+        // WHEN
+        auto anotherClipId = Qt3DCore::QNodeId::createId();
+        clipNode.setClipId(anotherClipId);
+        actualIds = clipNode.dependencyIds();
+
+        // THEN
+        QCOMPARE(actualIds.size(), 1);
+        QCOMPARE(actualIds[0], anotherClipId);
+    }
 };
 
 QTEST_MAIN(tst_ClipBlendValue)
