@@ -160,6 +160,27 @@ ClipBlendNode::BlendType Animation::ClipBlendNode::blendType() const
     return m_blendType;
 }
 
+void ClipBlendNode::setClipResults(Qt3DCore::QNodeId animatorId, const ClipResults &clipResults)
+{
+    // Do we already have an entry for this animator?
+    const int animatorIndex = m_animatorIds.indexOf(animatorId);
+    if (animatorIndex == -1) {
+        // Nope, add it
+        m_animatorIds.push_back(animatorId);
+        m_clipResults.push_back(clipResults);
+    } else {
+        m_clipResults[animatorIndex] = clipResults;
+    }
+}
+
+ClipResults ClipBlendNode::clipResults(Qt3DCore::QNodeId animatorId) const
+{
+    const int animatorIndex = m_animatorIds.indexOf(animatorId);
+    if (animatorIndex != -1)
+        return m_clipResults[animatorIndex];
+    return ClipResults();
+}
+
 } // Animation
 
 } // Qt3DAnimation

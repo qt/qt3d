@@ -39,6 +39,9 @@
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include "qbackendnodetester.h"
 
+#include <random>
+#include <algorithm>
+
 namespace {
 
 class TestClipBlendNode : public Qt3DAnimation::Animation::ClipBlendNode
@@ -49,9 +52,13 @@ public:
     {}
 
     float blend(float , float ) const Q_DECL_FINAL { return 0.0f; }
+
+    using Qt3DAnimation::Animation::ClipBlendNode::setClipResults;
 };
 
 } // anonymous
+
+Q_DECLARE_METATYPE(TestClipBlendNode *)
 
 class tst_ClipBlendNode : public Qt3DCore::QBackendNodeTester
 {
@@ -72,6 +79,7 @@ private Q_SLOTS:
         QCOMPARE(backendClipBlendNode.childrenIds(), Qt3DCore::QNodeIdVector());
         QVERIFY(backendClipBlendNode.clipBlendNodeManager() == nullptr);
         QCOMPARE(backendClipBlendNode.blendType(), Qt3DAnimation::Animation::ClipBlendNode::LerpBlendType);
+        QCOMPARE(backendClipBlendNode.clipResults(Qt3DCore::QNodeId()), Qt3DAnimation::Animation::ClipResults());
     }
 
     void checkInitializeFromPeer()
@@ -99,6 +107,7 @@ private Q_SLOTS:
             QCOMPARE(backendClipBlendNode.childrenIds().size(), 0);
             QCOMPARE(backendClipBlendNode.clipBlendNodeManager(), &manager);
             QCOMPARE(backendClipBlendNode.blendType(), Qt3DAnimation::Animation::ClipBlendNode::LerpBlendType);
+            QCOMPARE(backendClipBlendNode.clipResults(Qt3DCore::QNodeId()), Qt3DAnimation::Animation::ClipResults());
         }
         {
             // WHEN
@@ -220,6 +229,130 @@ private Q_SLOTS:
         QCOMPARE(backendChildClipBlendNode->childrenIds().size(), 0);
     }
 
+    void checkClipResults_data()
+    {
+        QTest::addColumn<TestClipBlendNode *>("blendNode");
+        QTest::addColumn<QVector<int>>("indexes");
+        QTest::addColumn<QVector<Qt3DCore::QNodeId>>("animatorIds");
+        QTest::addColumn<QVector<Qt3DAnimation::Animation::ClipResults>>("expectedClipResults");
+
+        // Single entry
+        {
+            auto blendNode = new TestClipBlendNode;
+            QVector<Qt3DCore::QNodeId> animatorIds;
+            QVector<Qt3DAnimation::Animation::ClipResults> expectedClipResults;
+
+            const auto animatorId = Qt3DCore::QNodeId::createId();
+            animatorIds.push_back(animatorId);
+
+            Qt3DAnimation::Animation::ClipResults clipResults = { 0.0f, 1.0f, 2.0f };
+            expectedClipResults.push_back(clipResults);
+
+            // Set data and indexes
+            blendNode->setClipResults(animatorId, clipResults);
+            QVector<int> indexes = QVector<int>() << 0;
+
+            QTest::newRow("single entry")
+                    << blendNode << indexes << animatorIds << expectedClipResults;
+        }
+
+        // No data
+        {
+            auto blendNode = new TestClipBlendNode;
+            QVector<Qt3DCore::QNodeId> animatorIds;
+            QVector<Qt3DAnimation::Animation::ClipResults> expectedClipResults;
+
+            auto animatorId = Qt3DCore::QNodeId::createId();
+            animatorIds.push_back(animatorId);
+
+            Qt3DAnimation::Animation::ClipResults clipResults;
+            expectedClipResults.push_back(clipResults);
+
+            // Don't set any data
+            QVector<int> indexes = QVector<int>() << 0;
+
+            QTest::newRow("no entries")
+                    << blendNode << indexes << animatorIds << expectedClipResults;
+        }
+
+        // Multiple entries, ordered
+        {
+            auto blendNode = new TestClipBlendNode;
+            QVector<Qt3DCore::QNodeId> animatorIds;
+            QVector<Qt3DAnimation::Animation::ClipResults> expectedClipResults;
+
+            const int animatorCount = 10;
+            for (int j = 0; j < animatorCount; ++j) {
+                auto animatorId = Qt3DCore::QNodeId::createId();
+                animatorIds.push_back(animatorId);
+
+                Qt3DAnimation::Animation::ClipResults clipResults;
+                for (int i = 0; i < j + 5; ++i)
+                    clipResults.push_back(float(i + j));
+                expectedClipResults.push_back(clipResults);
+
+                blendNode->setClipResults(animatorId, clipResults);
+            }
+
+            QVector<int> indexes(animatorCount);
+            std::iota(indexes.begin(), indexes.end(), 0);
+
+            QTest::newRow("multiple entries, ordered")
+                    << blendNode << indexes << animatorIds << expectedClipResults;
+        }
+
+        // Multiple entries, unordered
+        {
+            auto blendNode = new TestClipBlendNode;
+            QVector<Qt3DCore::QNodeId> animatorIds;
+            QVector<Qt3DAnimation::Animation::ClipResults> expectedClipResults;
+
+            const int animatorCount = 10;
+            for (int j = 0; j < animatorCount; ++j) {
+                auto animatorId = Qt3DCore::QNodeId::createId();
+                animatorIds.push_back(animatorId);
+
+                Qt3DAnimation::Animation::ClipResults clipResults;
+                for (int i = 0; i < j + 5; ++i)
+                    clipResults.push_back(float(i + j));
+                expectedClipResults.push_back(clipResults);
+
+                blendNode->setClipResults(animatorId, clipResults);
+            }
+
+            // Shuffle the animatorIds to randomise the lookups
+            QVector<int> indexes(animatorCount);
+            std::iota(indexes.begin(), indexes.end(), 0);
+            std::random_device rd;
+            std::mt19937 generator(rd());
+            std::shuffle(indexes.begin(), indexes.end(), generator);
+
+            QTest::newRow("multiple entries, unordered")
+                    << blendNode << indexes << animatorIds << expectedClipResults;
+        }
+    }
+
+    void checkClipResults()
+    {
+        // GIVEN
+        QFETCH(TestClipBlendNode *, blendNode);
+        QFETCH(QVector<int>, indexes);
+        QFETCH(QVector<Qt3DCore::QNodeId>, animatorIds);
+        QFETCH(QVector<Qt3DAnimation::Animation::ClipResults>, expectedClipResults);
+
+        for (int i = 0; i < indexes.size(); ++i) {
+            // WHEN
+            const int index = indexes[i];
+            const Qt3DAnimation::Animation::ClipResults actualClipResults = blendNode->clipResults(animatorIds[index]);
+
+            // THEN
+            QCOMPARE(actualClipResults.size(), expectedClipResults[index].size());
+            for (int j = 0; j < actualClipResults.size(); ++j)
+                QCOMPARE(actualClipResults[j], expectedClipResults[index][j]);
+        }
+
+        delete blendNode;
+    }
 };
 
 QTEST_MAIN(tst_ClipBlendNode)

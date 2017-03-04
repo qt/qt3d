@@ -83,9 +83,13 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     virtual float blend(float value1, float value2) const = 0;
 
+    ClipResults clipResults(Qt3DCore::QNodeId animatorId) const;
+
 protected:
     explicit ClipBlendNode(BlendType blendType);
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
+
+    void setClipResults(Qt3DCore::QNodeId animatorId, const ClipResults &clipResults);
 
 private:
     void setParentId(Qt3DCore::QNodeId parentId);
@@ -99,6 +103,10 @@ private:
     Qt3DCore::QNodeIdVector m_childrenIds;
     ClipBlendNodeManager *m_manager;
     BlendType m_blendType;
+
+    // Store the results of evaluations indexed by animator id
+    QVector<Qt3DCore::QNodeId> m_animatorIds;
+    QVector<ClipResults> m_clipResults;
 };
 
 template<typename Backend, typename Frontend>
