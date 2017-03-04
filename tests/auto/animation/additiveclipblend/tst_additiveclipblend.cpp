@@ -35,6 +35,8 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 
+using namespace Qt3DAnimation::Animation;
+
 class tst_AdditiveClipBlend : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
@@ -44,7 +46,7 @@ private Q_SLOTS:
     void checkInitialState()
     {
         // GIVEN
-        Qt3DAnimation::Animation::AdditiveClipBlend backendAdditiveBlend;
+        AdditiveClipBlend backendAdditiveBlend;
 
         // THEN
         QCOMPARE(backendAdditiveBlend.isEnabled(), false);
@@ -52,7 +54,7 @@ private Q_SLOTS:
         QCOMPARE(backendAdditiveBlend.baseClipId(), Qt3DCore::QNodeId());
         QCOMPARE(backendAdditiveBlend.additiveClipId(), Qt3DCore::QNodeId());
         QCOMPARE(backendAdditiveBlend.additiveFactor(), 0.0f);
-        QCOMPARE(backendAdditiveBlend.blendType(), Qt3DAnimation::Animation::ClipBlendNode::AdditiveBlendType);
+        QCOMPARE(backendAdditiveBlend.blendType(), ClipBlendNode::AdditiveBlendType);
     }
 
     void checkInitializeFromPeer()
@@ -69,7 +71,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            Qt3DAnimation::Animation::AdditiveClipBlend backendAdditiveBlend;
+            AdditiveClipBlend backendAdditiveBlend;
             simulateInitialization(&additiveBlend, &backendAdditiveBlend);
 
             // THEN
@@ -83,7 +85,7 @@ private Q_SLOTS:
         }
         {
             // WHEN
-            Qt3DAnimation::Animation::AdditiveClipBlend backendAdditiveBlend;
+            AdditiveClipBlend backendAdditiveBlend;
             additiveBlend.setEnabled(false);
             simulateInitialization(&additiveBlend, &backendAdditiveBlend);
 
@@ -96,7 +98,7 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
-        Qt3DAnimation::Animation::AdditiveClipBlend backendAdditiveBlend;
+        AdditiveClipBlend backendAdditiveBlend;
         {
             // WHEN
             const bool newValue = false;
@@ -162,7 +164,7 @@ private Q_SLOTS:
         QFETCH(float, value2);
         QFETCH(float, blendFactor);
         QFETCH(float, result);
-        Qt3DAnimation::Animation::AdditiveClipBlend addBlend;
+        AdditiveClipBlend addBlend;
 
         // WHEN
         addBlend.setAdditiveFactor(blendFactor);
@@ -175,7 +177,7 @@ private Q_SLOTS:
     void checkDependencyIds()
     {
         // GIVEN
-        Qt3DAnimation::Animation::AdditiveClipBlend addBlend;
+        AdditiveClipBlend addBlend;
         auto baseClipId = Qt3DCore::QNodeId::createId();
         auto additiveClipId = Qt3DCore::QNodeId::createId();
 

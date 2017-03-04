@@ -35,6 +35,8 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 
+using namespace Qt3DAnimation::Animation;
+
 class tst_LerpClipBlend : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
@@ -44,13 +46,13 @@ private Q_SLOTS:
     void checkInitialState()
     {
         // GIVEN
-        Qt3DAnimation::Animation::LerpClipBlend backendLerpBlend;
+        LerpClipBlend backendLerpBlend;
 
         // THEN
         QCOMPARE(backendLerpBlend.isEnabled(), false);
         QVERIFY(backendLerpBlend.peerId().isNull());
         QCOMPARE(backendLerpBlend.blendFactor(), 0.0f);
-        QCOMPARE(backendLerpBlend.blendType(), Qt3DAnimation::Animation::ClipBlendNode::LerpBlendType);
+        QCOMPARE(backendLerpBlend.blendType(), ClipBlendNode::LerpBlendType);
     }
 
     void checkInitializeFromPeer()
@@ -63,7 +65,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            Qt3DAnimation::Animation::LerpClipBlend backendLerpBlend;
+            LerpClipBlend backendLerpBlend;
             simulateInitialization(&lerpBlend, &backendLerpBlend);
 
             // THEN
@@ -75,7 +77,7 @@ private Q_SLOTS:
         }
         {
             // WHEN
-            Qt3DAnimation::Animation::LerpClipBlend backendLerpBlend;
+            LerpClipBlend backendLerpBlend;
             lerpBlend.setEnabled(false);
             simulateInitialization(&lerpBlend, &backendLerpBlend);
 
@@ -88,7 +90,7 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
-        Qt3DAnimation::Animation::LerpClipBlend backendLerpBlend;
+        LerpClipBlend backendLerpBlend;
         {
              // WHEN
              const bool newValue = false;
@@ -132,7 +134,7 @@ private Q_SLOTS:
         QFETCH(float, value2);
         QFETCH(float, blendFactor);
         QFETCH(float, result);
-        Qt3DAnimation::Animation::LerpClipBlend lerpBlend;
+        LerpClipBlend lerpBlend;
 
         // WHEN
         lerpBlend.setBlendFactor(blendFactor);
@@ -145,7 +147,7 @@ private Q_SLOTS:
     void checkDependencyIds()
     {
         // GIVEN
-        Qt3DAnimation::Animation::LerpClipBlend lerpBlend;
+        LerpClipBlend lerpBlend;
         auto startClipId = Qt3DCore::QNodeId::createId();
         auto endClipId = Qt3DCore::QNodeId::createId();
 

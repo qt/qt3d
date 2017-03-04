@@ -35,6 +35,8 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 
+using namespace Qt3DAnimation::Animation;
+
 class tst_ClipBlendValue : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
@@ -43,13 +45,13 @@ private Q_SLOTS:
     void checkInitialState()
     {
         // GIVEN
-        Qt3DAnimation::Animation::ClipBlendValue backendClipBlendValue;
+        ClipBlendValue backendClipBlendValue;
 
         // THEN
         QCOMPARE(backendClipBlendValue.isEnabled(), false);
         QVERIFY(backendClipBlendValue.peerId().isNull());
         QCOMPARE(backendClipBlendValue.clipId(), Qt3DCore::QNodeId());
-        QCOMPARE(backendClipBlendValue.blendType(), Qt3DAnimation::Animation::ClipBlendNode::ValueType);
+        QCOMPARE(backendClipBlendValue.blendType(), ClipBlendNode::ValueType);
     }
 
     void checkInitializeFromPeer()
@@ -61,7 +63,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            Qt3DAnimation::Animation::ClipBlendValue backendClipBlendValue;
+            ClipBlendValue backendClipBlendValue;
             simulateInitialization(&clipBlendValue, &backendClipBlendValue);
 
             // THEN
@@ -71,7 +73,7 @@ private Q_SLOTS:
         }
         {
             // WHEN
-            Qt3DAnimation::Animation::ClipBlendValue backendClipBlendValue;
+            ClipBlendValue backendClipBlendValue;
             clipBlendValue.setEnabled(false);
             simulateInitialization(&clipBlendValue, &backendClipBlendValue);
 
@@ -84,7 +86,7 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
-        Qt3DAnimation::Animation::ClipBlendValue backendClipBlendValue;
+        ClipBlendValue backendClipBlendValue;
         {
             // WHEN
             const bool newValue = false;
@@ -112,7 +114,7 @@ private Q_SLOTS:
     void checkDependencyIds()
     {
         // GIVEN
-        Qt3DAnimation::Animation::ClipBlendValue clipNode;
+        ClipBlendValue clipNode;
         auto clipId = Qt3DCore::QNodeId::createId();
 
         // WHEN
