@@ -58,9 +58,6 @@
 #include <Qt3DInput/qmousehandler.h>
 #include <QtCore/QDir>
 
-#if QT_CONFIG(library)
-#include <QtCore/QLibrary>
-#endif
 #include <QtCore/QLibraryInfo>
 #include <QtCore/QPluginLoader>
 

@@ -49,16 +49,16 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-#ifndef QT_NO_LIBRARY
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader, (QSceneImportFactoryInterface_iid, QLatin1String("/sceneparsers"), Qt::CaseInsensitive))
+#ifndef QT_NO_LIBRARY
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, directLoader, (QSceneImportFactoryInterface_iid, QLatin1String(""), Qt::CaseInsensitive))
 #endif
 
 QStringList QSceneImportFactory::keys(const QString &pluginPath)
 {
-#ifndef QT_NO_LIBRARY
     QStringList list;
     if (!pluginPath.isEmpty()) {
+#if QT_CONFIG(library)
         QCoreApplication::addLibraryPath(pluginPath);
         list = directLoader()->keyMap().values();
         if (!list.isEmpty()) {
@@ -69,26 +69,28 @@ QStringList QSceneImportFactory::keys(const QString &pluginPath)
             for (QStringList::iterator it = list.begin(); it != end; ++it)
                 (*it).append(postFix);
         }
+#else
+        qWarning() << QSceneImporter::tr("Cannot query QSceneImporter plugins at %1. "
+                                         "Library loading is disabled.").arg(pluginPath);
+#endif
     }
     list.append(loader()->keyMap().values());
     return list;
-#else
-    return QStringList();
-#endif
 }
 
 QSceneImporter *QSceneImportFactory::create(const QString &name, const QStringList &args, const QString &pluginPath)
 {
-#ifndef QT_NO_LIBRARY
     if (!pluginPath.isEmpty()) {
+#if QT_CONFIG(library)
         QCoreApplication::addLibraryPath(pluginPath);
         if (QSceneImporter *ret = qLoadPlugin<QSceneImporter, QSceneImportPlugin>(directLoader(), name, args))
             return ret;
-    }
-    if (QSceneImporter *ret = qLoadPlugin<QSceneImporter, QSceneImportPlugin>(loader(), name, args))
-        return ret;
+#else
+        qWarning() << QSceneImporter::tr("Cannot load QSceneImporter plugin from %1. "
+                                         "Library loading is disabled.").arg(pluginPath);
 #endif
-    return nullptr;
+    }
+    return qLoadPlugin<QSceneImporter, QSceneImportPlugin>(loader(), name, args);
 }
 
 } // namespace Qt3DRender

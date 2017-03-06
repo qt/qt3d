@@ -50,16 +50,16 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-#ifndef QT_NO_LIBRARY
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader, (QInputDevicePlugin_iid, QLatin1String("/3dinputdevices"), Qt::CaseInsensitive))
+#if QT_CONFIG(library)
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, directLoader, (QInputDevicePlugin_iid, QLatin1String(""), Qt::CaseInsensitive))
 #endif
 
 QStringList QInputDeviceIntegrationFactory::keys(const QString &pluginPath)
 {
-#ifndef QT_NO_LIBRARY
     QStringList list;
     if (!pluginPath.isEmpty()) {
+#if QT_CONFIG(library)
         QCoreApplication::addLibraryPath(pluginPath);
         list = directLoader()->keyMap().values();
         if (!list.isEmpty()) {
@@ -70,31 +70,29 @@ QStringList QInputDeviceIntegrationFactory::keys(const QString &pluginPath)
             for (QStringList::iterator it = list.begin(); it != end; ++it)
                 (*it).append(postFix);
         }
+#else
+    qWarning() << QInputDeviceIntegration::tr("Cannot query QInputDeviceIntegration plugins at %1. "
+                                              "Library loading is disabled.").arg(pluginPath);
+#endif
     }
     list.append(loader()->keyMap().values());
     return list;
-#else
-    Q_UNUSED(pluginPath);
-    return QStringList();
-#endif
 }
 
 QInputDeviceIntegration *QInputDeviceIntegrationFactory::create(const QString &name, const QStringList &args, const QString &pluginPath)
 {
-#ifndef QT_NO_LIBRARY
     if (!pluginPath.isEmpty()) {
+#if QT_CONFIG(library)
         QCoreApplication::addLibraryPath(pluginPath);
         if (QInputDeviceIntegration *ret = qLoadPlugin<QInputDeviceIntegration, QInputDevicePlugin>(directLoader(), name, args))
             return ret;
-    }
-    if (QInputDeviceIntegration *ret = qLoadPlugin<QInputDeviceIntegration, QInputDevicePlugin>(loader(), name, args))
-        return ret;
 #else
-    Q_UNUSED(name);
-    Q_UNUSED(args);
-    Q_UNUSED(pluginPath);
+        qWarning() << QInputDeviceIntegration::tr("Cannot load QInputDeviceIntegration plugin from "
+                                                  "%1. Library loading is disabled.")
+                      .arg(pluginPath);
 #endif
-    return nullptr;
+    }
+    return qLoadPlugin<QInputDeviceIntegration, QInputDevicePlugin>(loader(), name, args);
 }
 
 } // Qt3DInput
