@@ -51,13 +51,9 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include "testpostmanarbiter.h"
 
-class tst_QRigidBody: public Qt3DPhysics::QRigidBody
+class tst_QRigidBody: public QObject
 {
     Q_OBJECT
-public:
-    tst_QRigidBody()
-    {
-    }
 
 private Q_SLOTS:
     void checkDefaultConstruction()
@@ -66,7 +62,7 @@ private Q_SLOTS:
         Qt3DPhysics::QRigidBody rigidBody;
 
         // THEN
-        QVERIFY(rigidBody.material() == nullptr);
+        QCOMPARE(rigidBody.material(), nullptr);
     }
 
     void checkPropertyChanges()

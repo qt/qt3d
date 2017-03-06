@@ -63,6 +63,7 @@ class QRigidBodyPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QRigidBodyPrivate();
+    ~QRigidBodyPrivate();
 
     Q_DECLARE_PUBLIC(QRigidBody)
 

@@ -50,6 +50,10 @@ QRigidBodyPrivate::QRigidBodyPrivate()
 {
 }
 
+QRigidBodyPrivate::~QRigidBodyPrivate()
+{
+}
+
 QRigidBody::QRigidBody(Qt3DCore::QNode *parent)
     : Qt3DCore::QComponent(*new QRigidBodyPrivate, parent)
 {

@@ -52,6 +52,10 @@ RigidBody::RigidBody()
 {
 }
 
+RigidBody::~RigidBody()
+{
+}
+
 void RigidBody::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::PropertyUpdated) {
