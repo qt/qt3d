@@ -395,7 +395,7 @@ Entity {
             var v = Math.atan2(yv, xv)
 
             // Calculate the distance (radius)
-            var r = Math.sqrt(xv * xv + yv * yv)
+            var r = Math.hypot(xv, yv)
 
             // From http://www.davidcolarusso.com/astro/
             // Modified to compensate for the right handed coordinate system of OpenGL
