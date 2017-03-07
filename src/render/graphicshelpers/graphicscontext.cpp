@@ -476,7 +476,7 @@ QOpenGLShaderProgram *GraphicsContext::createShaderProgram(Shader *shaderNode)
         if (!shaderCode.at(i).isEmpty()) {
             // Note: logs only return the error but not all the shader code
             // we could append it
-            if (!shaderProgram->addShaderFromSourceCode(shaderType(type), shaderCode.at(i)))
+            if (!shaderProgram->addCacheableShaderFromSourceCode(shaderType(type), shaderCode.at(i)))
                 logs += shaderProgram->log();
         }
     }
