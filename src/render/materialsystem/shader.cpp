@@ -375,7 +375,7 @@ void Shader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformB
         const QVector<ShaderUniform>::const_iterator uniformsEnd = m_uniforms.end();
 
         QVector<QString>::const_iterator uniformNamesIt = m_uniformsNames.begin();
-        const QVector<QString>::const_iterator uniformNamesEnd = m_attributesNames.end();
+        const QVector<QString>::const_iterator uniformNamesEnd = m_uniformsNames.end();
 
         QHash<QString, ShaderUniform> activeUniformsInBlock;
 
