@@ -11,7 +11,8 @@
             "qt3d-input": "boolean",
             "qt3d-logic": "boolean",
             "qt3d-extras": "boolean",
-            "qt3d-animation": "boolean"
+            "qt3d-animation": "boolean",
+            "qt3d-simd": { "type": "optionalString", "values": [ "no", "sse2", "avx2" ] }
         }
     },
 
@@ -79,6 +80,22 @@
             "section": "Aspects",
             "condition": "features.qt3d-render",
             "output": [ "publicFeature" ]
+        },
+        "qt3d-simd-sse2": {
+            "label": "Use SSE2 instructions",
+            "purpose": "Use SSE2 SIMD instructions to accelerate matrix operations",
+            "autoDetect": "features.sse2",
+            "enable": "input.qt3d-simd == 'sse2' || input.qt3d-simd == 'avx2'",
+            "disable": "input.qt3d-simd == 'no'",
+            "output": [ "privateFeature" ]
+        },
+        "qt3d-simd-avx2": {
+            "label": "Use AVX2 instructions",
+            "purpose": "Use AVX2 SIMD instructions to accelerate matrix operations",
+            "autoDetect": false,
+            "enable": "input.qt3d-simd == 'avx2'",
+            "disable": "input.qt3d-simd == 'sse2' || input.qt3d-simd == 'no'",
+            "output": [ "privateFeature" ]
         }
     },
 
@@ -93,6 +110,8 @@
                 "system-assimp",
                 "qt3d-profile-jobs",
                 "qt3d-profile-gl",
+                "qt3d-simd-sse2",
+                "qt3d-simd-avx2",
                 {
                     "section": "Aspects",
                     "entries": [
