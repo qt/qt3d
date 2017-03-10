@@ -38,15 +38,16 @@
 ****************************************************************************/
 
 #include "manager_p.h"
-#include "qlogicaspect.h"
+
+#include <Qt3DLogic/qlogicaspect.h>
+#include <QtCore/QDebug>
+#include <QtCore/QThread>
+#include <QtCore/qcoreapplication.h>
+
 #include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DLogic/private/executor_p.h>
 #include <Qt3DLogic/private/managers_p.h>
-#include <QtCore/qcoreapplication.h>
-
-#include <QDebug>
-#include <QThread>
 
 QT_BEGIN_NAMESPACE
 

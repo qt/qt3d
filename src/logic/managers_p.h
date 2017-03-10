@@ -51,10 +51,11 @@
 // We mean it.
 //
 
-#include <QtGlobal>
+#include <QtCore/QtGlobal>
+
+#include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DLogic/private/handle_types_p.h>
 #include <Qt3DLogic/private/handler_p.h>
-#include <Qt3DCore/private/qresourcemanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
