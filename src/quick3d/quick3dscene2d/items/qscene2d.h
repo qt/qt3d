@@ -62,7 +62,7 @@ class QT3DQUICKSCENE2DSHARED_EXPORT QScene2D : public Qt3DCore::QNode
     Q_PROPERTY(Qt3DRender::QRenderTargetOutput *output READ output WRITE setOutput NOTIFY outputChanged)
     Q_PROPERTY(QScene2D::RenderPolicy renderPolicy READ renderPolicy WRITE setRenderPolicy NOTIFY renderPolicyChanged)
     Q_PROPERTY(QQuickItem *item READ item WRITE setItem NOTIFY itemChanged)
-    Q_PROPERTY(bool grabMouse READ isGrabMouseEnabled WRITE setGrabMouseEnabled NOTIFY grabMouseChanged)
+    Q_PROPERTY(bool mouseEnabled READ isMouseEnabled WRITE setMouseEnabled NOTIFY mouseEnabledChanged)
 
     Q_CLASSINFO("DefaultProperty", "item")
 
@@ -79,9 +79,7 @@ public:
     Qt3DRender::QRenderTargetOutput *output() const;
     QScene2D::RenderPolicy renderPolicy() const;
     QQuickItem *item() const;
-    bool isGrabMouseEnabled() const;
-
-    bool event(QEvent *event) Q_DECL_OVERRIDE;
+    bool isMouseEnabled() const;
 
     QVector<Qt3DCore::QEntity *> entities();
     void addEntity(Qt3DCore::QEntity *entity);
@@ -91,13 +89,13 @@ public Q_SLOTS:
     void setOutput(Qt3DRender::QRenderTargetOutput *output);
     void setRenderPolicy(QScene2D::RenderPolicy policy);
     void setItem(QQuickItem *item);
-    void setGrabMouseEnabled(bool grab);
+    void setMouseEnabled(bool enabled);
 
 Q_SIGNALS:
     void outputChanged(Qt3DRender::QRenderTargetOutput *output);
     void renderPolicyChanged(QScene2D::RenderPolicy policy);
     void itemChanged(QQuickItem *item);
-    void grabMouseChanged(bool grab);
+    void mouseEnabledChanged(bool enabled);
 
 protected:
     Q_DECLARE_PRIVATE(QScene2D)

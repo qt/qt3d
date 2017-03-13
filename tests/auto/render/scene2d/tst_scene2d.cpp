@@ -114,6 +114,7 @@ private Q_SLOTS:
         QCOMPARE(backendScene2d.m_initialized, false);
         QCOMPARE(backendScene2d.m_renderInitialized, false);
         QCOMPARE(backendScene2d.m_renderPolicy, QScene2D::Continuous);
+        QCOMPARE(backendScene2d.m_mouseEnabled, true);
         backendScene2d.cleanup();
     }
 
@@ -135,6 +136,7 @@ private Q_SLOTS:
             QCOMPARE(backendScene2d->m_outputId, Qt3DCore::QNodeId());
             QVERIFY(backendScene2d->m_sharedObject.data() != nullptr);
             QCOMPARE(backendScene2d->m_renderPolicy, QScene2D::Continuous);
+            QCOMPARE(backendScene2d->m_mouseEnabled, true);
             backendScene2d->cleanup();
         }
         {
@@ -183,20 +185,6 @@ private Q_SLOTS:
         }
         {
              // WHEN
-             const QSharedPointer<Qt3DRender::Quick::Scene2DSharedObject> newValue
-                     = QSharedPointer<Qt3DRender::Quick::Scene2DSharedObject>(
-                         new Qt3DRender::Quick::Scene2DSharedObject(nullptr));
-             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("sharedObject");
-             change->setValue(QVariant::fromValue(newValue));
-             backendScene2d->sceneChangeEvent(change);
-
-             // THEN
-             QCOMPARE(backendScene2d->m_sharedObject, newValue);
-             QCOMPARE(backendScene2d->m_sharedObject.data(), newValue.data());
-        }
-        {
-             // WHEN
              const QScene2D::RenderPolicy newValue = QScene2D::SingleShot;
              const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
              change->setPropertyName("renderPolicy");
@@ -205,6 +193,17 @@ private Q_SLOTS:
 
              // THEN
             QCOMPARE(backendScene2d->m_renderPolicy, newValue);
+        }
+        {
+             // WHEN
+             const bool newValue = false;
+             const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+             change->setPropertyName("mouseEnabled");
+             change->setValue(newValue);
+             backendScene2d->sceneChangeEvent(change);
+
+             // THEN
+            QCOMPARE(backendScene2d->isEnabled(), newValue);
         }
 
         backendScene2d->cleanup();
@@ -228,6 +227,7 @@ private Q_SLOTS:
         TestRenderer renderer;
         renderer.setNodeManagers(nodeManagers.data());
         scene2d->setRenderer(&renderer);
+        scene2d->setEnabled(true);
         sharedObject->m_quickWindow = testWindow.data();
         scene2d->setSharedObject(sharedObject);
         testWindow->setGeometry(0,0,1024,1024);

@@ -95,6 +95,15 @@ namespace Quick {
     Holds the render policy of this Scene2D.
  */
 
+/*!
+    \qmlproperty bool Qt3D.Render::Scene2D::mouseEnabled
+    Holds whether mouse events are enabled for the rendered item. The mouse events are
+    generated from object picking events of the entities added to the QScene2D.
+    Mouse is enabled by default.
+
+    \note Events are delayed by one frame due to object picking happening in the backend.
+ */
+
 QScene2DPrivate::QScene2DPrivate()
     : Qt3DCore::QNodePrivate()
     , m_renderManager(new Scene2DManager(this))
@@ -106,6 +115,15 @@ QScene2DPrivate::~QScene2DPrivate()
 {
     m_renderManager->cleanup();
     delete m_renderManager;
+}
+
+void QScene2DPrivate::setScene(Qt3DCore::QScene *scene)
+{
+    Q_Q(QScene2D);
+    QNodePrivate::setScene(scene);
+    const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(q->id());
+    change->setPropertyName("sceneInitialized");
+    notifyObservers(change);
 }
 
 
@@ -190,20 +208,14 @@ Qt3DCore::QNodeCreatedChangeBasePtr QScene2D::createNodeCreationChange() const
     data.output = d->m_output ? d->m_output->id() : Qt3DCore::QNodeId();
     for (Qt3DCore::QEntity *e : d->m_entities)
         data.entityIds.append(e->id());
+    data.mouseEnabled = d->m_renderManager->m_mouseEnabled;
     return creationChange;
 }
 
-bool QScene2D::event(QEvent *event)
-{
-    Q_D(QScene2D);
-    d->m_renderManager->forwardEvent(event);
-    return true;
-}
-
-bool QScene2D::isGrabMouseEnabled() const
+bool QScene2D::isMouseEnabled() const
 {
     Q_D(const QScene2D);
-    return d->m_renderManager->m_grabMouse;
+    return d->m_renderManager->m_mouseEnabled;
 }
 
 QVector<Qt3DCore::QEntity*> QScene2D::entities()
@@ -244,12 +256,20 @@ void QScene2D::removeEntity(Qt3DCore::QEntity *entity)
     }
 }
 
-void QScene2D::setGrabMouseEnabled(bool grab)
+/*!
+    \property QScene2D::mouseEnabled
+    Holds whether mouse events are enabled for the rendered item. The mouse events are
+    generated from object picking events of the entities added to the QScene2D.
+    Mouse is enabled by default.
+
+    \note Events are delayed by one frame due to object picking happening in the backend.
+ */
+void QScene2D::setMouseEnabled(bool enabled)
 {
     Q_D(QScene2D);
-    if (d->m_renderManager->m_grabMouse != grab) {
-        d->m_renderManager->m_grabMouse = grab;
-        emit grabMouseChanged(grab);
+    if (d->m_renderManager->m_mouseEnabled != enabled) {
+        d->m_renderManager->m_mouseEnabled = enabled;
+        emit mouseEnabledChanged(enabled);
     }
 }
 

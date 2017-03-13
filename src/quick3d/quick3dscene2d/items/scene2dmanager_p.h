@@ -88,7 +88,7 @@ public:
     bool m_initialized;
     bool m_renderSyncRequested;
     bool m_backendInitialized;
-    bool m_grabMouse;
+    bool m_mouseEnabled;
 
     void requestRender();
     void requestRenderSync();
@@ -100,7 +100,6 @@ public:
     void setItem(QQuickItem *item);
 
     bool event(QEvent *e) Q_DECL_OVERRIDE;
-    bool forwardEvent(QEvent *event);
 
     void cleanup();
 };

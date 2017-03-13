@@ -81,7 +81,7 @@ Scene2DManager::Scene2DManager(QScene2DPrivate *priv)
     , m_initialized(false)
     , m_renderSyncRequested(false)
     , m_backendInitialized(false)
-    , m_grabMouse(false)
+    , m_mouseEnabled(true)
 {
     m_sharedObject->m_surface = new QOffscreenSurface;
     m_sharedObject->m_surface->setFormat(QSurfaceFormat::defaultFormat());
@@ -223,33 +223,6 @@ bool Scene2DManager::event(QEvent *e)
         break;
     }
     return QObject::event(e);
-}
-
-bool Scene2DManager::forwardEvent(QEvent *event)
-{
-    switch (event->type()) {
-
-    case QEvent::MouseMove:
-    case QEvent::MouseButtonDblClick:
-    case QEvent::MouseButtonPress:
-    case QEvent::MouseButtonRelease: {
-        QMouseEvent* me = static_cast<QMouseEvent *>(event);
-        QPointF pos = me->localPos();
-        pos = QPointF(pos.x() * m_rootItem->width(), pos.y() * m_rootItem->height());
-        QMouseEvent nme = QMouseEvent(me->type(), pos, pos, pos, me->button(), me->buttons(),
-                                      me->modifiers(), Qt::MouseEventSynthesizedByApplication);
-        QCoreApplication::sendEvent(m_sharedObject->m_quickWindow, &nme);
-    } break;
-
-    case QEvent::KeyPress:
-    case QEvent::KeyRelease: {
-        QCoreApplication::sendEvent(m_sharedObject->m_quickWindow, event);
-    } break;
-
-    default:
-        break;
-    }
-    return false;
 }
 
 void Scene2DManager::doRenderSync()
