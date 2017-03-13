@@ -346,11 +346,11 @@ public:
     friend class Matrix4x4_SSE;
     friend class Vector3D_SSE;
 
-    friend Vector4D_SSE operator*(Vector4D_SSE vector, Matrix4x4_SSE matrix);
-    friend Vector4D_SSE operator*(Matrix4x4_SSE matrix, Vector4D_SSE vector);
+    friend Vector4D_SSE operator*(const Vector4D_SSE &vector, const Matrix4x4_SSE &matrix);
+    friend Vector4D_SSE operator*(const Matrix4x4_SSE  &matrix, const Vector4D_SSE &vector);
 
-    friend Vector4D_SSE operator*(Vector4D_SSE vector, Matrix4x4_AVX2 matrix);
-    friend Vector4D_SSE operator*(Matrix4x4_AVX2 matrix, Vector4D_SSE vector);
+    friend Vector4D_SSE operator*(const Vector4D_SSE &vector, const Matrix4x4_AVX2 &matrix);
+    friend Vector4D_SSE operator*(const Matrix4x4_AVX2 &matrix, const Vector4D_SSE &vector);
 
     friend Q_ALWAYS_INLINE const Vector4D_SSE operator+(Vector4D_SSE v1, Vector4D_SSE v2) { return v1 += v2; }
     friend Q_ALWAYS_INLINE const Vector4D_SSE operator-(Vector4D_SSE v1, Vector4D_SSE v2) { return v1 -= v2; }

@@ -178,6 +178,14 @@ public:
         return ((_mm_movemask_ps(_mm_cmpeq_ps(m_xyzw, _mm_set_ps1(0.0f))) & 0x7) == 0x7);
     }
 
+#ifdef __AVX2__
+    QT3DCORE_PRIVATE_EXPORT Vector3D_SSE unproject(const Matrix4x4_AVX2 &modelView, const Matrix4x4_AVX2 &projection, const QRect &viewport) const;
+    QT3DCORE_PRIVATE_EXPORT Vector3D_SSE project(const Matrix4x4_AVX2 &modelView, const Matrix4x4_AVX2 &projection, const QRect &viewport) const;
+#else
+    QT3DCORE_PRIVATE_EXPORT Vector3D_SSE unproject(const Matrix4x4_SSE &modelView, const Matrix4x4_SSE &projection, const QRect &viewport) const;
+    QT3DCORE_PRIVATE_EXPORT Vector3D_SSE project(const Matrix4x4_SSE &modelView, const Matrix4x4_SSE &projection, const QRect &viewport) const;
+#endif
+
     Q_ALWAYS_INLINE float x() const { return _mm_cvtss_f32(m_xyzw); }
 
     Q_ALWAYS_INLINE float y() const
@@ -342,11 +350,11 @@ public:
     friend class Matrix4x4_SSE;
     friend class Vector4D_SSE;
 
-    friend QT3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(Vector3D_SSE vector, Matrix4x4_SSE matrix);
-    friend QT3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(Matrix4x4_SSE matrix, Vector3D_SSE vector);
+    friend QT3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(const Vector3D_SSE &vector, const Matrix4x4_SSE &matrix);
+    friend QT3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(const Matrix4x4_SSE &matrix, const Vector3D_SSE &vector);
 
-    friend QT3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(Vector3D_SSE vector, Matrix4x4_AVX2 matrix);
-    friend QT3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(Matrix4x4_AVX2 matrix, Vector3D_SSE vector);
+    friend QT3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(const Vector3D_SSE &vector, const Matrix4x4_AVX2 &matrix);
+    friend QT3DCORE_PRIVATE_EXPORT Vector3D_SSE operator*(const Matrix4x4_AVX2 &matrix, const Vector3D_SSE &vector);
 
     friend Q_ALWAYS_INLINE const Vector3D_SSE operator+(Vector3D_SSE v1, Vector3D_SSE v2) { return v1 += v2; }
     friend Q_ALWAYS_INLINE const Vector3D_SSE operator-(Vector3D_SSE v1, Vector3D_SSE v2) { return v1 -= v2; }
