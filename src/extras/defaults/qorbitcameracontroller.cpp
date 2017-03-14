@@ -79,6 +79,9 @@ namespace Qt3DExtras {
         \li While both the left and the right mouse button are pressed, mouse movement along y-axis
         zooms the camera in and out without changing the view center.
     \row
+        \li Mouse scroll wheel
+        \li Zooms the camera in and out without changing the view center.
+    \row
         \li Arrow keys
         \li Move the camera vertically and horizontally relative to camera viewport.
     \row
@@ -113,6 +116,8 @@ QOrbitCameraControllerPrivate::QOrbitCameraControllerPrivate()
     , m_shiftButtonInput(new Qt3DInput::QActionInput())
     , m_mouseRxInput(new Qt3DInput::QAnalogAxisInput())
     , m_mouseRyInput(new Qt3DInput::QAnalogAxisInput())
+    , m_mouseTzXInput(new Qt3DInput::QAnalogAxisInput())
+    , m_mouseTzYInput(new Qt3DInput::QAnalogAxisInput())
     , m_keyboardTxPosInput(new Qt3DInput::QButtonAxisInput())
     , m_keyboardTyPosInput(new Qt3DInput::QButtonAxisInput())
     , m_keyboardTzPosInput(new Qt3DInput::QButtonAxisInput())
@@ -164,6 +169,16 @@ void QOrbitCameraControllerPrivate::init()
     m_mouseRyInput->setAxis(Qt3DInput::QMouseDevice::Y);
     m_mouseRyInput->setSourceDevice(m_mouseDevice);
     m_ryAxis->addInput(m_mouseRyInput);
+
+    // Mouse Wheel X
+    m_mouseTzXInput->setAxis(Qt3DInput::QMouseDevice::WheelX);
+    m_mouseTzXInput->setSourceDevice(m_mouseDevice);
+    m_tzAxis->addInput(m_mouseTzXInput);
+
+    // Mouse Wheel Y
+    m_mouseTzYInput->setAxis(Qt3DInput::QMouseDevice::WheelY);
+    m_mouseTzYInput->setSourceDevice(m_mouseDevice);
+    m_tzAxis->addInput(m_mouseTzYInput);
 
     // Keyboard Pos Tx
     m_keyboardTxPosInput->setButtons(QVector<int>() << Qt::Key_Right);

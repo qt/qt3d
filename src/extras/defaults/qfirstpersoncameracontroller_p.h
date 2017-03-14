@@ -116,6 +116,8 @@ public:
 
     Qt3DInput::QAnalogAxisInput *m_mouseRxInput;
     Qt3DInput::QAnalogAxisInput *m_mouseRyInput;
+    Qt3DInput::QAnalogAxisInput *m_mouseTzXInput;
+    Qt3DInput::QAnalogAxisInput *m_mouseTzYInput;
     Qt3DInput::QButtonAxisInput *m_keyboardTxPosInput;
     Qt3DInput::QButtonAxisInput *m_keyboardTyPosInput;
     Qt3DInput::QButtonAxisInput *m_keyboardTzPosInput;

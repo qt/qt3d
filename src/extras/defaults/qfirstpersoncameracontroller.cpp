@@ -80,6 +80,8 @@ QFirstPersonCameraControllerPrivate::QFirstPersonCameraControllerPrivate()
     , m_fineMotionKeyInput(new Qt3DInput::QActionInput())
     , m_mouseRxInput(new Qt3DInput::QAnalogAxisInput())
     , m_mouseRyInput(new Qt3DInput::QAnalogAxisInput())
+    , m_mouseTzXInput(new Qt3DInput::QAnalogAxisInput())
+    , m_mouseTzYInput(new Qt3DInput::QAnalogAxisInput())
     , m_keyboardTxPosInput(new Qt3DInput::QButtonAxisInput())
     , m_keyboardTyPosInput(new Qt3DInput::QButtonAxisInput())
     , m_keyboardTzPosInput(new Qt3DInput::QButtonAxisInput())
@@ -122,6 +124,16 @@ void QFirstPersonCameraControllerPrivate::init()
     m_mouseRyInput->setAxis(Qt3DInput::QMouseDevice::Y);
     m_mouseRyInput->setSourceDevice(m_mouseDevice);
     m_ryAxis->addInput(m_mouseRyInput);
+
+    // Mouse Wheel X
+    m_mouseTzXInput->setAxis(Qt3DInput::QMouseDevice::WheelX);
+    m_mouseTzXInput->setSourceDevice(m_mouseDevice);
+    m_tzAxis->addInput(m_mouseTzXInput);
+
+    // Mouse Wheel Y
+    m_mouseTzYInput->setAxis(Qt3DInput::QMouseDevice::WheelY);
+    m_mouseTzYInput->setSourceDevice(m_mouseDevice);
+    m_tzAxis->addInput(m_mouseTzYInput);
 
     // Keyboard Pos Tx
     m_keyboardTxPosInput->setButtons(QVector<int>() << Qt::Key_Right);
@@ -235,6 +247,9 @@ void QFirstPersonCameraControllerPrivate::_q_onTriggered(float dt)
         \li Left mouse button
         \li While the left mouse button is pressed, mouse movement along x-axis pans the camera and
         movement along y-axis tilts it.
+    \row
+        \li Mouse scroll wheel
+        \li Zooms the camera in and out without changing the view center.
     \row
         \li Shift key
         \li Turns the fine motion control active while pressed. Makes mouse pan and tilt less
