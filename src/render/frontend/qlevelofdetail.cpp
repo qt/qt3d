@@ -365,7 +365,7 @@ QCamera *QLevelOfDetail::camera() const
 }
 
 /*!
- * Sets the camera relative to which distance and size are computed.
+ * Sets the \a camera relative to which distance and size are computed.
  */
 void QLevelOfDetail::setCamera(QCamera *camera)
 {
@@ -383,7 +383,7 @@ int QLevelOfDetail::currentIndex() const
 }
 
 /*!
- * Sets the current index.
+ * Sets the \a currentIndex.
  *
  * \note This should not normally be set by the user.
  *
@@ -408,6 +408,7 @@ QLevelOfDetail::ThresholdType QLevelOfDetail::thresholdType() const
 
 /*!
  * Sets the way thresholds values are interpreted
+ * with parameter \a thresholdType
  * \sa Qt3DRender::QLevelOfDetail::ThresholdType
  */
 void QLevelOfDetail::setThresholdType(QLevelOfDetail::ThresholdType thresholdType)
@@ -431,7 +432,7 @@ QLevelOfDetailBoundingSphere QLevelOfDetail::createBoundingSphere(const QVector3
 }
 
 /*!
- * Sets the range values.
+ * Sets the range values in \a thresholds.
  * \sa Qt3DRender::QLevelOfDetail::thresholdType
  */
 void QLevelOfDetail::setThresholds(QVector<qreal> thresholds)

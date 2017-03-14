@@ -340,7 +340,7 @@ QStringList QSceneLoader::entityNames() const
     \sa Qt3DRender::QSceneLoader::ComponentType
 */
 /*!
-    Returns a component matching \a componentType of a loaded entity with an \a objectName matching
+    Returns a component matching \a componentType of a loaded entity with an objectName matching
     the \a entityName.
     If the entity has multiple matching components, the first match in the component list of
     the entity is returned.
