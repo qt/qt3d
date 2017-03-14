@@ -142,6 +142,12 @@ void Scene2D::initializeSharedObject()
 {
     if (!m_initialized) {
 
+        // bail out if we're running autotests
+        if (!m_sharedObject->m_renderManager
+                || m_sharedObject->m_renderManager->thread() == QThread::currentThread()) {
+            return;
+        }
+
         renderThread->setObjectName(QStringLiteral("Scene2D::renderThread"));
         m_renderThread = renderThread;
         m_sharedObject->m_renderThread = m_renderThread;
@@ -153,10 +159,8 @@ void Scene2D::initializeSharedObject()
             m_sharedObject->m_renderThread->start();
 
         // Notify main thread we have been initialized
-        if (m_sharedObject->m_renderManager) {
-            QCoreApplication::postEvent(m_sharedObject->m_renderManager,
-                                        new Scene2DEvent(Scene2DEvent::Initialized));
-        }
+        QCoreApplication::postEvent(m_sharedObject->m_renderManager,
+                                    new Scene2DEvent(Scene2DEvent::Initialized));
         // Initialize render thread
         QCoreApplication::postEvent(m_sharedObject->m_renderObject,
                                     new Scene2DEvent(Scene2DEvent::Initialize));
