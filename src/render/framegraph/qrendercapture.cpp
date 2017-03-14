@@ -40,6 +40,8 @@
 #include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DRender/qframegraphnodecreatedchange.h>
 
+#include <QPointer>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -301,14 +303,14 @@ void QRenderCapture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
     if (propertyChange->type() == Qt3DCore::PropertyUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("renderCaptureData")) {
             RenderCaptureDataPtr data = propertyChange->value().value<RenderCaptureDataPtr>();
-            QRenderCaptureReply *reply = d->takeReply(data.data()->captureId);
+            QPointer<QRenderCaptureReply> reply = d->takeReply(data.data()->captureId);
             if (reply) {
                 d->setImage(reply, data.data()->image);
                 emit reply->completed();
-
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
-                emit reply->completeChanged(true);
+                if (reply)
+                    emit reply->completeChanged(true);
 QT_WARNING_POP
             }
         }
