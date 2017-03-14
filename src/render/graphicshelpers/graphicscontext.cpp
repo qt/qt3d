@@ -162,6 +162,7 @@ GraphicsContext::GraphicsContext()
     , m_ownCurrent(true)
     , m_activeShader(nullptr)
     , m_activeShaderDNA(0)
+    , m_renderTargetFormat(QAbstractTexture::NoFormat)
     , m_currClearStencilValue(0)
     , m_currClearDepthValue(1.f)
     , m_currClearColorValue(0,0,0,0)
@@ -215,7 +216,7 @@ void GraphicsContext::initialize()
 void GraphicsContext::resolveRenderTargetFormat()
 {
     const QSurfaceFormat format = m_gl->format();
-    const uint a = format.alphaBufferSize();
+    const uint a = (format.alphaBufferSize() == -1) ? 0 : format.alphaBufferSize();
     const uint r = format.redBufferSize();
     const uint g = format.greenBufferSize();
     const uint b = format.blueBufferSize();
