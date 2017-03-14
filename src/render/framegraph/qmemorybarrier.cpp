@@ -114,6 +114,7 @@ namespace Qt3DRender {
     \value AtomicCounter
     \value ShaderStorage
     \value QueryBuffer
+    \value VertexAttributeArray
     \value All
 */
 
