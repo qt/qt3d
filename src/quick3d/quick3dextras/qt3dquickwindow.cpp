@@ -123,7 +123,6 @@ Qt3DQuickWindow::Qt3DQuickWindow(QWindow *parent)
     format.setStencilBufferSize(8);
     setFormat(format);
     QSurfaceFormat::setDefaultFormat(format);
-    create();
 
     m_engine.reset(new Qt3DCore::Quick::QQmlAspectEngine);
     m_renderAspect = new Qt3DRender::QRenderAspect;
