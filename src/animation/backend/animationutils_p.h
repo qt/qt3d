@@ -111,6 +111,16 @@ AnimatorEvaluationData evaluationDataForAnimator(Animator animator, qint64 globa
     return data;
 }
 
+inline bool isFinalFrame(double localTime,
+                         double duration,
+                         int currentLoop,
+                         int loopCount)
+{
+    return (localTime >= duration &&
+            loopCount != 0 &&
+            currentLoop >= loopCount - 1);
+}
+
 Q_AUTOTEST_EXPORT
 ClipEvaluationData evaluationDataForClip(AnimationClipLoader *clip,
                                          const AnimatorEvaluationData &animatorData);
@@ -154,6 +164,10 @@ Q_AUTOTEST_EXPORT
 double phaseFromGlobalTime(double t_global, double t_start_global,
                            double playbackRate, double duration,
                            int loopCount, int &currentLoop);
+
+Q_AUTOTEST_EXPORT
+QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
+                                                      Qt3DCore::QNodeId blendTreeRootId);
 
 } // Animation
 } // Qt3DAnimation

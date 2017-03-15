@@ -37,6 +37,9 @@
 #include "animationutils_p.h"
 #include <Qt3DAnimation/private/handler_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
+#include <Qt3DAnimation/private/clipblendnode_p.h>
+#include <Qt3DAnimation/private/clipblendnodevisitor_p.h>
+#include <Qt3DAnimation/private/clipblendvalue_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 #include <QtGui/qvector2d.h>
@@ -59,9 +62,8 @@ ClipEvaluationData evaluationDataForClip(AnimationClipLoader *clip,
     result.localTime = localTimeFromGlobalTime(animatorData.globalTime, animatorData.startTime,
                                                animatorData.playbackRate, clip->duration(),
                                                animatorData.loopCount, result.currentLoop);
-    result.isFinalFrame = (result.localTime >= clip->duration() &&
-                           animatorData.loopCount != 0 &&
-                           result.currentLoop >= animatorData.loopCount - 1);
+    result.isFinalFrame = isFinalFrame(result.localTime, clip->duration(),
+                                       result.currentLoop, animatorData.loopCount);
     return result;
 }
 
@@ -333,6 +335,39 @@ QVector<MappingData> buildPropertyMappings(Handler *handler,
     return mappingDataVec;
 }
 
+QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
+                                                      Qt3DCore::QNodeId blendTreeRootId)
+{
+    Q_ASSERT(handler);
+    Q_ASSERT(blendTreeRootId.isNull() == false);
+
+    // We need the ClipBlendNodeManager to be able to lookup nodes from their Ids
+    ClipBlendNodeManager *nodeManager = handler->clipBlendNodeManager();
+
+    // Visit the tree in a pre-order manner and collect the dependencies
+    QVector<Qt3DCore::QNodeId> clipIds;
+    ClipBlendNodeVisitor visitor(nodeManager,
+                                 ClipBlendNodeVisitor::PreOrder,
+                                 ClipBlendNodeVisitor::VisitOnlyDependencies);
+
+    auto func = [&clipIds, nodeManager] (ClipBlendNode *blendNode) {
+        const auto dependencyIds = blendNode->dependencyIds();
+        for (const auto dependencyId : dependencyIds) {
+            // Look up the blend node and if it's a value type (clip),
+            // add it to the set of value node ids that need to be evaluated
+            ClipBlendNode *node = nodeManager->lookupNode(dependencyId);
+            if (node && node->blendType() == ClipBlendNode::ValueType)
+                clipIds.append(dependencyId);
+        }
+    };
+    visitor.traverse(blendTreeRootId, func);
+
+    // Sort and remove duplicates
+    std::sort(clipIds.begin(), clipIds.end());
+    auto last = std::unique(clipIds.begin(), clipIds.end());
+    clipIds.erase(last, clipIds.end());
+    return clipIds;
+}
 
 } // Animation
 } // Qt3DAnimation

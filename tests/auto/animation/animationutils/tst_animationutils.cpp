@@ -31,7 +31,9 @@
 #include <Qt3DAnimation/private/animationutils_p.h>
 #include <Qt3DAnimation/private/channelmapper_p.h>
 #include <Qt3DAnimation/private/channelmapping_p.h>
+#include <Qt3DAnimation/private/clipblendvalue_p.h>
 #include <Qt3DAnimation/private/handler_p.h>
+#include <Qt3DAnimation/private/lerpclipblend_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <QtGui/qvector2d.h>
@@ -121,6 +123,28 @@ public:
         animator->setStartTime(globalStartTimeNS);
         animator->setLoops(loops);
         return animator;
+    }
+
+    LerpClipBlend *createLerpClipBlend(Handler *handler)
+    {
+        auto lerpId = Qt3DCore::QNodeId::createId();
+        LerpClipBlend *lerp = new LerpClipBlend();
+        setPeerId(lerp, lerpId);
+        lerp->setClipBlendNodeManager(handler->clipBlendNodeManager());
+        lerp->setHandler(handler);
+        handler->clipBlendNodeManager()->appendNode(lerpId, lerp);
+        return lerp;
+    }
+
+    ClipBlendValue *createClipBlendValue(Handler *handler)
+    {
+        auto valueId = Qt3DCore::QNodeId::createId();
+        ClipBlendValue *value = new ClipBlendValue();
+        setPeerId(value, valueId);
+        value->setClipBlendNodeManager(handler->clipBlendNodeManager());
+        value->setHandler(handler);
+        handler->clipBlendNodeManager()->appendNode(valueId, value);
+        return value;
     }
 
 private Q_SLOTS:
@@ -1477,6 +1501,51 @@ private Q_SLOTS:
         QVERIFY(fuzzyCompare(actualAnimatorData.playbackRate, expectedAnimatorData.playbackRate) == true);
         QVERIFY(fuzzyCompare(actualAnimatorData.startTime, expectedAnimatorData.startTime) == true);
         QVERIFY(fuzzyCompare(actualAnimatorData.globalTime, expectedAnimatorData.globalTime) == true);
+
+        // Cleanup
+        delete handler;
+    }
+
+    void checkGatherValueNodesToEvaluate_data()
+    {
+        QTest::addColumn<Handler *>("handler");
+        QTest::addColumn<Qt3DCore::QNodeId>("blendTreeRootId");
+        QTest::addColumn<QVector<Qt3DCore::QNodeId>>("expectedIds");
+
+        {
+            Handler *handler = new Handler;
+
+            const auto lerp = createLerpClipBlend(handler);
+            const auto value1 = createClipBlendValue(handler);
+            const auto clip1Id = Qt3DCore::QNodeId::createId();
+            value1->setClipId(clip1Id);
+            lerp->setStartClipId(value1->peerId());
+
+            const auto value2 = createClipBlendValue(handler);
+            const auto clip2Id = Qt3DCore::QNodeId::createId();
+            value2->setClipId(clip2Id);
+            lerp->setEndClipId(value2->peerId());
+
+            QVector<Qt3DCore::QNodeId> expectedIds = { value1->peerId(), value2->peerId() };
+
+            QTest::newRow("simple lerp") << handler << lerp->peerId() << expectedIds;
+        }
+    }
+
+    void checkGatherValueNodesToEvaluate()
+    {
+        // GIVEN
+        QFETCH(Handler *, handler);
+        QFETCH(Qt3DCore::QNodeId, blendTreeRootId);
+        QFETCH(QVector<Qt3DCore::QNodeId>, expectedIds);
+
+        // WHEN
+        QVector<Qt3DCore::QNodeId> actualIds = gatherValueNodesToEvaluate(handler, blendTreeRootId);
+
+        // THEN
+        QCOMPARE(actualIds.size(), expectedIds.size());
+        for (int i = 0; i < actualIds.size(); ++i)
+            QCOMPARE(actualIds[i], expectedIds[i]);
 
         // Cleanup
         delete handler;
