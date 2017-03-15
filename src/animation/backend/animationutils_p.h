@@ -131,6 +131,10 @@ ClipResults evaluateClipAtLocalTime(AnimationClipLoader *clip,
                                     float localTime);
 
 Q_AUTOTEST_EXPORT
+ClipResults evaluateClipAtPhase(AnimationClipLoader *clip,
+                                float phase);
+
+Q_AUTOTEST_EXPORT
 QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId animatorId,
                                                           const QVector<MappingData> &mappingData,
                                                           const QVector<float> &channelResults,

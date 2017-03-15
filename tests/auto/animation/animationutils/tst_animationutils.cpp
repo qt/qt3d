@@ -873,6 +873,113 @@ private Q_SLOTS:
         delete handler;
     }
 
+    void checkEvaluateClipAtPhase_data()
+    {
+        QTest::addColumn<Handler *>("handler");
+        QTest::addColumn<AnimationClipLoader *>("clip");
+        QTest::addColumn<float>("phase");
+        QTest::addColumn<ClipResults>("expectedResults");
+
+        Handler *handler;
+        AnimationClipLoader *clip;
+        float phase;
+        ClipResults expectedResults;
+
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip1.json"));
+            phase = 0.0f;
+            expectedResults = QVector<float>() << 0.0f << 0.0f << 0.0f;
+
+            QTest::newRow("clip1.json, phi = 0.0")
+                    << handler << clip << phase << expectedResults;
+            expectedResults.clear();
+        }
+
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip1.json"));
+            phase = 1.0f;
+            expectedResults = QVector<float>() << 5.0f << 0.0f << 0.0f;
+
+            QTest::newRow("clip1.json, phi = 1.0")
+                    << handler << clip << phase << expectedResults;
+            expectedResults.clear();
+        }
+
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip1.json"));
+            phase = 0.5f;
+            expectedResults = QVector<float>() << 2.5f << 0.0f << 0.0f;
+
+            QTest::newRow("clip1.json, phi = 0.5")
+                    << handler << clip << phase << expectedResults;
+            expectedResults.clear();
+        }
+
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip2.json"));
+            phase = 0.0f;
+            expectedResults = QVector<float>()
+                    << 0.0f << 0.0f << 0.0f             // Translation
+                    << 1.0f << 0.0f << 0.0f << 0.0f;    // Rotation
+
+            QTest::newRow("clip2.json, phi = 0.0")
+                    << handler << clip << phase << expectedResults;
+            expectedResults.clear();
+        }
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip2.json"));
+            phase = 1.0f;
+            expectedResults = QVector<float>()
+                    << 5.0f << 0.0f << 0.0f             // Translation
+                    << 0.0f << 0.0f << -1.0f << 0.0f;   // Rotation
+
+            QTest::newRow("clip2.json, t = 1.0")
+                    << handler << clip << phase << expectedResults;
+            expectedResults.clear();
+        }
+        {
+            handler = new Handler();
+            clip = createAnimationClipLoader(handler, QUrl("qrc:/clip2.json"));
+            phase = 0.5f;
+            expectedResults = QVector<float>()
+                    << 2.5f << 0.0f << 0.0f             // Translation
+                    << 0.5f << 0.0f << -0.5f << 0.0f;   // Rotation
+
+            QTest::newRow("clip2.json, phi = 0.5")
+                    << handler << clip << phase << expectedResults;
+            expectedResults.clear();
+        }
+    }
+
+    void checkEvaluateClipAtPhase()
+    {
+        // GIVEN
+        QFETCH(Handler *, handler);
+        QFETCH(AnimationClipLoader *, clip);
+        QFETCH(float, phase);
+        QFETCH(ClipResults, expectedResults);
+
+        // WHEN
+        ClipResults actualResults = evaluateClipAtPhase(clip, phase);
+
+        // THEN
+        QCOMPARE(actualResults.size(), expectedResults.size());
+        for (int i = 0; i < actualResults.size(); ++i) {
+            auto actual = actualResults[i];
+            auto expected = expectedResults[i];
+
+            QVERIFY(fuzzyCompare(actual, expected) == true);
+        }
+
+        // Cleanup
+        delete handler;
+    }
+
     void checkChannelComponentsToIndicesHelper_data()
     {
         QTest::addColumn<Channel>("channel");

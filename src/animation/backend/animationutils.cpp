@@ -193,6 +193,13 @@ ClipResults evaluateClipAtLocalTime(AnimationClipLoader *clip, float localTime)
     return channelResults;
 }
 
+ClipResults evaluateClipAtPhase(AnimationClipLoader *clip, float phase)
+{
+    // Calculate the clip local time from the phase and clip duration
+    const double localTime = phase * clip->duration();
+    return evaluateClipAtLocalTime(clip, localTime);
+}
+
 QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId animatorId,
                                                           const QVector<MappingData> &mappingDataVec,
                                                           const QVector<float> &channelResults,
