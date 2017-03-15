@@ -128,7 +128,7 @@ QVector<int> channelComponentsToIndicesHelper(const Channel &channelGroup,
 
 Q_AUTOTEST_EXPORT
 ClipResults evaluateClipAtLocalTime(AnimationClipLoader *clip,
-                                       float localTime);
+                                    float localTime);
 
 Q_AUTOTEST_EXPORT
 QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId animatorId,
