@@ -103,6 +103,15 @@ double localTimeFromGlobalTime(double t_global,
     return t_local;
 }
 
+double phaseFromGlobalTime(double t_global, double t_start_global,
+                           double playbackRate, double duration,
+                           int loopCount, int &currentLoop)
+{
+    const double t_local = localTimeFromGlobalTime(t_global, t_start_global, playbackRate,
+                                                   duration, loopCount, currentLoop);
+    return t_local / duration;
+}
+
 QVector<int> channelComponentsToIndices(const Channel &channel, int dataType, int offset)
 {
 #if defined Q_COMPILER_UNIFORM_INIT

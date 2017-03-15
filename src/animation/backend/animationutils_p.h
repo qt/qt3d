@@ -146,6 +146,11 @@ double localTimeFromGlobalTime(double t_global, double t_start_global,
                                double playbackRate, double duration,
                                int loopCount, int &currentLoop);
 
+Q_AUTOTEST_EXPORT
+double phaseFromGlobalTime(double t_global, double t_start_global,
+                           double playbackRate, double duration,
+                           int loopCount, int &currentLoop);
+
 } // Animation
 } // Qt3DAnimation
 

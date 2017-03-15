@@ -360,6 +360,171 @@ private Q_SLOTS:
         QCOMPARE(actualLocalTime, expectedLocalTime);
     }
 
+    void checkPhaseFromGlobalTime_data()
+    {
+        QTest::addColumn<double>("globalTime");
+        QTest::addColumn<double>("globalStartTime");
+        QTest::addColumn<double>("playbackRate");
+        QTest::addColumn<double>("duration");
+        QTest::addColumn<int>("loopCount");
+        QTest::addColumn<double>("expectedPhase");
+        QTest::addColumn<int>("expectedCurrentLoop");
+
+        double globalTime;
+        double globalStartTime;
+        double playbackRate;
+        double duration;
+        int loopCount;
+        double expectedPhase;
+        int expectedCurrentLoop;
+
+        globalTime = 0.0;
+        globalStartTime = 0.0;
+        playbackRate = 1.0;
+        duration = 1.0;
+        loopCount = 1;
+        expectedPhase = 0.0;
+        expectedCurrentLoop = 0;
+        QTest::newRow("simple, t_global = 0")
+                << globalTime << globalStartTime << playbackRate << duration << loopCount
+                << expectedPhase << expectedCurrentLoop;
+
+        globalTime = 0.5;
+        globalStartTime = 0.0;
+        playbackRate = 1.0;
+        duration = 1.0;
+        loopCount = 1;
+        expectedPhase = 0.5;
+        expectedCurrentLoop = 0;
+        QTest::newRow("simple, t_global = 0.5")
+                << globalTime << globalStartTime << playbackRate << duration << loopCount
+                << expectedPhase << expectedCurrentLoop;
+
+        globalTime = 1.0;
+        globalStartTime = 0.0;
+        playbackRate = 1.0;
+        duration = 1.0;
+        loopCount = 1;
+        expectedPhase = 1.0;
+        expectedCurrentLoop = 0;
+        QTest::newRow("simple, t_global = 1.0")
+                << globalTime << globalStartTime << playbackRate << duration << loopCount
+                << expectedPhase << expectedCurrentLoop;
+
+        globalTime = -0.5;
+        globalStartTime = 0.0;
+        playbackRate = 1.0;
+        duration = 1.0;
+        loopCount = 1;
+        expectedPhase = 0.0;
+        expectedCurrentLoop = 0;
+        QTest::newRow("simple, t_global = -0.5")
+                << globalTime << globalStartTime << playbackRate << duration << loopCount
+                << expectedPhase << expectedCurrentLoop;
+
+        globalTime = 1.5;
+        globalStartTime = 0.0;
+        playbackRate = 1.0;
+        duration = 1.0;
+        loopCount = 1;
+        expectedPhase = 1.0;
+        expectedCurrentLoop = 0;
+        QTest::newRow("simple, t_global = 1.5")
+                << globalTime << globalStartTime << playbackRate << duration << loopCount
+                << expectedPhase << expectedCurrentLoop;
+
+        globalTime = 0.5;
+        globalStartTime = 0.0;
+        playbackRate = 1.0;
+        duration = 1.0;
+        loopCount = 2;
+        expectedPhase = 0.5;
+        expectedCurrentLoop = 0;
+        QTest::newRow("simple, loopCount = 2, t_global = 0.5")
+                << globalTime << globalStartTime << playbackRate << duration << loopCount
+                << expectedPhase << expectedCurrentLoop;
+
+        globalTime = 1.5;
+        globalStartTime = 0.0;
+        playbackRate = 1.0;
+        duration = 1.0;
+        loopCount = 2;
+        expectedPhase = 0.5;
+        expectedCurrentLoop = 1;
+        QTest::newRow("simple, loopCount = 2, t_global = 1.5")
+                << globalTime << globalStartTime << playbackRate << duration << loopCount
+                << expectedPhase << expectedCurrentLoop;
+
+        globalTime = 3.5;
+        globalStartTime = 0.0;
+        playbackRate = 1.0;
+        duration = 2.0;
+        loopCount = 2;
+        expectedPhase = 0.75;
+        expectedCurrentLoop = 1;
+        QTest::newRow("duration = 2, loopCount = 2, t_global = 3.5")
+                << globalTime << globalStartTime << playbackRate << duration << loopCount
+                << expectedPhase << expectedCurrentLoop;
+
+        globalTime = 4.5;
+        globalStartTime = 0.0;
+        playbackRate = 1.0;
+        duration = 2.0;
+        loopCount = 2;
+        expectedPhase = 1.0;
+        expectedCurrentLoop = 1;
+        QTest::newRow("duration = 2, loopCount = 2, t_global = 4.5")
+                << globalTime << globalStartTime << playbackRate << duration << loopCount
+                << expectedPhase << expectedCurrentLoop;
+
+        globalTime = 1.5;
+        globalStartTime = 0.0;
+        playbackRate = 1.0;
+        duration = 1.0;
+        loopCount = 0;
+        expectedPhase = 0.5;
+        expectedCurrentLoop = 1;
+        QTest::newRow("simple, loopCount = inf, t_global = 1.5")
+                << globalTime << globalStartTime << playbackRate << duration << loopCount
+                << expectedPhase << expectedCurrentLoop;
+
+        globalTime = 10.2;
+        globalStartTime = 0.0;
+        playbackRate = 1.0;
+        duration = 1.0;
+        loopCount = 0;
+        expectedPhase = 0.2;
+        expectedCurrentLoop = 10;
+        QTest::newRow("simple, loopCount = inf, t_global = 10.2")
+                << globalTime << globalStartTime << playbackRate << duration << loopCount
+                << expectedPhase << expectedCurrentLoop;
+    }
+
+    void checkPhaseFromGlobalTime()
+    {
+        // GIVEN
+        QFETCH(double, globalTime);
+        QFETCH(double, globalStartTime);
+        QFETCH(double, playbackRate);
+        QFETCH(double, duration);
+        QFETCH(int, loopCount);
+        QFETCH(double, expectedPhase);
+        QFETCH(int, expectedCurrentLoop);
+
+        // WHEN
+        int actualCurrentLoop = 0;
+        double actualPhase = phaseFromGlobalTime(globalTime,
+                                                 globalStartTime,
+                                                 playbackRate,
+                                                 duration,
+                                                 loopCount,
+                                                 actualCurrentLoop);
+
+        // THEN
+        QCOMPARE(actualCurrentLoop, expectedCurrentLoop);
+        QCOMPARE(actualPhase, expectedPhase);
+    }
+
     void checkPreparePropertyChanges_data()
     {
         QTest::addColumn<Qt3DCore::QNodeId>("animatorId");
