@@ -105,23 +105,25 @@ void CameraLens::setRenderAspect(QRenderAspect *renderAspect)
     m_renderAspect = renderAspect;
 }
 
-QMatrix4x4 CameraLens::viewMatrix(const QMatrix4x4 &worldTransform)
+Matrix4x4 CameraLens::viewMatrix(const Matrix4x4 &worldTransform)
 {
-    const QVector4D position = worldTransform * QVector4D(0.0f, 0.0f, 0.0f, 1.0f);
+    const Vector4D position = worldTransform * Vector4D(0.0f, 0.0f, 0.0f, 1.0f);
     // OpenGL convention is looking down -Z
-    const QVector4D viewDirection = worldTransform * QVector4D(0.0f, 0.0f, -1.0f, 0.0f);
-    const QVector4D upVector = worldTransform * QVector4D(0.0f, 1.0f, 0.0f, 0.0f);
+    const Vector4D viewDirection = worldTransform * Vector4D(0.0f, 0.0f, -1.0f, 0.0f);
+    const Vector4D upVector = worldTransform * Vector4D(0.0f, 1.0f, 0.0f, 0.0f);
 
     QMatrix4x4 m;
-    m.lookAt(position.toVector3D(), (position + viewDirection).toVector3D(), upVector.toVector3D());
-    return m;
+    m.lookAt(convertToQVector3D(Vector3D(position)),
+             convertToQVector3D(Vector3D(position + viewDirection)),
+             convertToQVector3D(Vector3D(upVector)));
+    return Matrix4x4(m);
 }
 
 void CameraLens::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QCameraLensData>>(change);
     const auto &data = typedChange->data;
-    m_projection = data.projectionMatrix;
+    m_projection = Matrix4x4(data.projectionMatrix);
     m_exposure = data.exposure;
 }
 
@@ -160,7 +162,7 @@ void CameraLens::notifySceneBoundingVolume(const Sphere &sphere, QNodeCommand::C
     }
 }
 
-void CameraLens::setProjection(const QMatrix4x4 &projection)
+void CameraLens::setProjection(const Matrix4x4 &projection)
 {
     m_projection = projection;
 }
@@ -178,7 +180,7 @@ void CameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
         if (propertyChange->propertyName() == QByteArrayLiteral("projectionMatrix")) {
             QMatrix4x4 projectionMatrix = propertyChange->value().value<QMatrix4x4>();
-            m_projection = projectionMatrix;
+            m_projection = Matrix4x4(projectionMatrix);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("exposure")) {
             setExposure(propertyChange->value().toFloat());
         }
@@ -212,7 +214,7 @@ void CameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 }
 
 bool CameraLens::viewMatrixForCamera(EntityManager* manager, Qt3DCore::QNodeId cameraId,
-                                     QMatrix4x4 &viewMatrix, QMatrix4x4 &projectionMatrix)
+                                     Matrix4x4 &viewMatrix, Matrix4x4 &projectionMatrix)
 {
     Entity *camNode = manager->lookupResource(cameraId);
     if (!camNode)

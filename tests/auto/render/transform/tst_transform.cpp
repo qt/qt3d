@@ -49,7 +49,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendTransform.isEnabled(), false);
         QVERIFY(backendTransform.peerId().isNull());
-        QCOMPARE(backendTransform.transformMatrix(), QMatrix4x4());
+        QCOMPARE(convertToQMatrix4x4(backendTransform.transformMatrix()), QMatrix4x4());
     }
 
     void checkCleanupState()
@@ -71,7 +71,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendTransform.isEnabled(), false);
-        QCOMPARE(backendTransform.transformMatrix(), QMatrix4x4());
+        QCOMPARE(convertToQMatrix4x4(backendTransform.transformMatrix()), QMatrix4x4());
         QCOMPARE(backendTransform.rotation(), QQuaternion());
         QCOMPARE(backendTransform.scale(), QVector3D());
         QCOMPARE(backendTransform.translation(), QVector3D());
@@ -93,7 +93,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(backendTransform.isEnabled(), true);
             QCOMPARE(backendTransform.peerId(), transform.id());
-            QCOMPARE(backendTransform.transformMatrix(), transform.matrix());
+            QCOMPARE(convertToQMatrix4x4(backendTransform.transformMatrix()), transform.matrix());
             QCOMPARE(backendTransform.rotation(), transform.rotation());
             QCOMPARE(backendTransform.scale(), transform.scale3D());
             QCOMPARE(backendTransform.translation(), transform.translation());

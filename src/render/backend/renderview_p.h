@@ -67,6 +67,7 @@
 #include <Qt3DRender/private/qblitframebuffer_p.h>
 
 #include <Qt3DCore/private/qframeallocator_p.h>
+#include <Qt3DRender/private/aligned_malloc_p.h>
 
 // TODO: Move out once this is all refactored
 #include <Qt3DRender/private/renderviewjobutils_p.h>
@@ -98,14 +99,14 @@ typedef QPair<QString, ActivePropertyContent > ActiveProperty;
 
 struct Q_AUTOTEST_EXPORT Plane
 {
-    explicit Plane(const QVector4D &planeEquation)
+    explicit Plane(const Vector4D &planeEquation)
         : planeEquation(planeEquation)
-        , normal(planeEquation.toVector3D().normalized())
-        , d(planeEquation.w() / planeEquation.toVector3D().length())
+        , normal(Vector3D(planeEquation).normalized())
+        , d(planeEquation.w() / Vector3D(planeEquation).length())
     {}
 
-    const QVector4D planeEquation;
-    const QVector3D normal;
+    const Vector4D planeEquation;
+    const Vector3D normal;
     const float d;
 };
 
@@ -136,6 +137,8 @@ public:
     RenderView();
     ~RenderView();
 
+    QT3D_ALIGNED_MALLOC_AND_FREE()
+
     // TODO: Add a way to specify a sort predicate for the RenderCommands
     void sort();
 
@@ -153,17 +156,17 @@ public:
     inline void setRenderCameraEntity(Entity *renderCameraNode) Q_DECL_NOTHROW { m_data.m_renderCameraNode = renderCameraNode; }
     inline Entity *renderCameraEntity() const Q_DECL_NOTHROW { return m_data.m_renderCameraNode; }
 
-    inline void setViewMatrix(const QMatrix4x4 &viewMatrix) Q_DECL_NOTHROW { m_data.m_viewMatrix = viewMatrix; }
-    inline QMatrix4x4 viewMatrix() const Q_DECL_NOTHROW { return m_data.m_viewMatrix; }
+    inline void setViewMatrix(const Matrix4x4 &viewMatrix) Q_DECL_NOTHROW { m_data.m_viewMatrix = viewMatrix; }
+    inline Matrix4x4 viewMatrix() const Q_DECL_NOTHROW { return m_data.m_viewMatrix; }
 
-    inline void setViewProjectionMatrix(const QMatrix4x4 &viewProjectionMatrix) Q_DECL_NOTHROW { m_data.m_viewProjectionMatrix = viewProjectionMatrix; }
-    inline QMatrix4x4 viewProjectionMatrix() const Q_DECL_NOTHROW { return m_data.m_viewProjectionMatrix; }
+    inline void setViewProjectionMatrix(const Matrix4x4 &viewProjectionMatrix) Q_DECL_NOTHROW { m_data.m_viewProjectionMatrix = viewProjectionMatrix; }
+    inline Matrix4x4 viewProjectionMatrix() const Q_DECL_NOTHROW { return m_data.m_viewProjectionMatrix; }
 
-    inline void setEyePosition(const QVector3D &eyePos) Q_DECL_NOTHROW { m_data.m_eyePos = eyePos; }
-    inline QVector3D eyePosition() const Q_DECL_NOTHROW { return m_data.m_eyePos; }
+    inline void setEyePosition(const Vector3D &eyePos) Q_DECL_NOTHROW { m_data.m_eyePos = eyePos; }
+    inline Vector3D eyePosition() const Q_DECL_NOTHROW { return m_data.m_eyePos; }
 
-    inline void setEyeViewDirection(const QVector3D &dir) Q_DECL_NOTHROW { m_data.m_eyeViewDir = dir; }
-    inline QVector3D eyeViewDirection() const Q_DECL_NOTHROW { return m_data.m_eyeViewDir; }
+    inline void setEyeViewDirection(const Vector3D &dir) Q_DECL_NOTHROW { m_data.m_eyeViewDir = dir; }
+    inline Vector3D eyeViewDirection() const Q_DECL_NOTHROW { return m_data.m_eyeViewDir; }
 
     inline void appendLayerFilter(const Qt3DCore::QNodeId layerFilterId) Q_DECL_NOTHROW { m_data.m_layerFilterIds.push_back(layerFilterId); }
     inline Qt3DCore::QNodeIdVector layerFilters() const Q_DECL_NOTHROW { return m_data.m_layerFilterIds; }
@@ -260,12 +263,12 @@ public:
         Entity *m_renderCameraNode;
         const TechniqueFilter *m_techniqueFilter;
         const RenderPassFilter *m_passFilter;
-        QMatrix4x4 m_viewMatrix;
-        QMatrix4x4 m_viewProjectionMatrix;
+        Matrix4x4 m_viewMatrix;
+        Matrix4x4 m_viewProjectionMatrix;
         Qt3DCore::QNodeIdVector m_layerFilterIds;
         QVector<Qt3DRender::QSortPolicy::SortType> m_sortingTypes;
-        QVector3D m_eyePos;
-        QVector3D m_eyeViewDir;
+        Vector3D m_eyePos;
+        Vector3D m_eyeViewDir;
         Qt3DCore::QNodeIdVector m_proximityFilterIds;
     };
 
@@ -285,7 +288,6 @@ private:
                               Entity *entity,
                               const QVector<LightSource> &activeLightSources,
                               EnvironmentLight *environmentLight) const;
-
     mutable QThreadStorage<UniformBlockValueBuilder*> m_localData;
 
     Qt3DCore::QNodeId m_renderCaptureNodeId;
@@ -360,14 +362,14 @@ private:
 
     UniformValue standardUniformValue(StandardUniform standardUniformType,
                                       Entity *entity,
-                                      const QMatrix4x4 &model) const;
+                                      const Matrix4x4 &model) const;
 
     void setUniformValue(ShaderParameterPack &uniformPack, int nameId, const UniformValue &value) const;
     void setStandardUniformValue(ShaderParameterPack &uniformPack,
                                  int glslNameId,
                                  int nameId,
                                  Entity *entity,
-                                 const QMatrix4x4 &worldTransform) const;
+                                 const Matrix4x4 &worldTransform) const;
     void setUniformBlockValue(ShaderParameterPack &uniformPack,
                               Shader *shader,
                               const ShaderUniformBlock &block,

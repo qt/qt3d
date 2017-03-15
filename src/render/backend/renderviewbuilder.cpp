@@ -334,7 +334,7 @@ RenderViewBuilder::RenderViewBuilder(Render::FrameGraphNode *leafNode, int rende
     , m_lightGathererJob(Render::LightGathererPtr::create())
     , m_renderableEntityFilterJob(RenderableEntityFilterPtr::create())
     , m_computableEntityFilterJob(ComputableEntityFilterPtr::create())
-    , m_frustumCullingJob(Render::FrustumCullingJobPtr::create())
+    , m_frustumCullingJob(new Render::FrustumCullingJob())
     , m_syncFrustumCullingJob(SynchronizerJobPtr::create(SyncFrustumCulling(m_renderViewJob, m_frustumCullingJob), JobTypes::SyncFrustumCulling))
     , m_setClearDrawBufferIndexJob(SynchronizerJobPtr::create(SetClearDrawBufferIndex(m_renderViewJob), JobTypes::ClearBufferDrawIndex))
     , m_syncFilterEntityByLayerJob()

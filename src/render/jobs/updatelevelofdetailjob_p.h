@@ -84,6 +84,7 @@ private:
     void updateEntityLod(Entity *entity);
     void updateEntityLodByDistance(Entity *entity, LevelOfDetail *lod);
     void updateEntityLodByScreenArea(Entity *entity, LevelOfDetail *lod);
+
     QRect windowViewport(const QSize &area, const QRectF &relativeViewport) const;
 
     NodeManagers *m_manager;

@@ -93,8 +93,8 @@ public:
         const float zDist2 = (findExtremePoints.zMaxPt - findExtremePoints.zMinPt).lengthSquared();
 
         // Select most distant pair
-        QVector3D p = findExtremePoints.xMinPt;
-        QVector3D q = findExtremePoints.xMaxPt;
+        Vector3D p = findExtremePoints.xMinPt;
+        Vector3D q = findExtremePoints.xMaxPt;
         if (yDist2 > xDist2 && yDist2 > zDist2) {
             p = findExtremePoints.yMinPt;
             q = findExtremePoints.yMaxPt;
@@ -104,7 +104,7 @@ public:
             q = findExtremePoints.zMaxPt;
         }
 
-        const QVector3D c = 0.5f * (p + q);
+        const Vector3D c = 0.5f * (p + q);
         m_volume.setCenter(c);
         m_volume.setRadius((q - c).length());
 
@@ -128,40 +128,40 @@ private:
         { }
 
         float xMin, xMax, yMin, yMax, zMin, zMax;
-        QVector3D xMinPt, xMaxPt, yMinPt, yMaxPt, zMinPt, zMaxPt;
+        Vector3D xMinPt, xMaxPt, yMinPt, yMaxPt, zMinPt, zMaxPt;
 
         void visit(uint ndx, float x, float y, float z) override
         {
             if (ndx) {
                 if (x < xMin) {
                     xMin = x;
-                    xMinPt = QVector3D(x, y, z);
+                    xMinPt = Vector3D(x, y, z);
                 }
                 if (x > xMax) {
                     xMax = x;
-                    xMaxPt = QVector3D(x, y, z);
+                    xMaxPt = Vector3D(x, y, z);
                 }
                 if (y < yMin) {
                     yMin = y;
-                    yMinPt = QVector3D(x, y, z);
+                    yMinPt = Vector3D(x, y, z);
                 }
                 if (y > yMax) {
                     yMax = y;
-                    yMaxPt = QVector3D(x, y, z);
+                    yMaxPt = Vector3D(x, y, z);
                 }
                 if (z < zMin) {
                     zMin = z;
-                    zMinPt = QVector3D(x, y, z);
+                    zMinPt = Vector3D(x, y, z);
                 }
                 if (z > zMax) {
                     zMax = z;
-                    zMaxPt = QVector3D(x, y, z);
+                    zMaxPt = Vector3D(x, y, z);
                 }
             } else {
                 xMin = xMax = x;
                 yMin = yMax = y;
                 zMin = zMax = z;
-                xMinPt = xMaxPt = yMinPt = yMaxPt = zMinPt = zMaxPt = QVector3D(x, y, z);
+                xMinPt = xMaxPt = yMinPt = yMaxPt = zMinPt = zMaxPt = Vector3D(x, y, z);
             }
         }
     };
@@ -177,7 +177,7 @@ private:
         void visit(uint ndx, float x, float y, float z) override
         {
             Q_UNUSED(ndx);
-            m_volume.expandToContain(QVector3D(x, y, z));
+            m_volume.expandToContain(Vector3D(x, y, z));
         }
     };
 };

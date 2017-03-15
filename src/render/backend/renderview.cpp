@@ -148,16 +148,16 @@ static QRectF resolveViewport(const QRectF &fractionalViewport, const QSize &sur
                   fractionalViewport.height() * surfaceSize.height());
 }
 
-static QMatrix4x4 getProjectionMatrix(const CameraLens *lens)
+static Matrix4x4 getProjectionMatrix(const CameraLens *lens)
 {
     if (!lens)
         qWarning() << "[Qt3D Renderer] No Camera Lens found. Add a CameraSelector to your Frame Graph or make sure that no entities will be rendered.";
-    return lens ? lens->projection() : QMatrix4x4();
+    return lens ? lens->projection() : Matrix4x4();
 }
 
 UniformValue RenderView::standardUniformValue(RenderView::StandardUniform standardUniformType,
                                               Entity *entity,
-                                              const QMatrix4x4 &model) const
+                                              const Matrix4x4 &model) const
 {
     switch (standardUniformType) {
     case ModelMatrix:
@@ -182,24 +182,26 @@ UniformValue RenderView::standardUniformValue(RenderView::StandardUniform standa
     case InverseModelViewMatrix:
         return UniformValue((m_data.m_viewMatrix * model).inverted());
     case InverseViewProjectionMatrix: {
-        const QMatrix4x4 viewProjectionMatrix = getProjectionMatrix(m_data.m_renderCameraLens) * m_data.m_viewMatrix;
+        const Matrix4x4 viewProjectionMatrix = getProjectionMatrix(m_data.m_renderCameraLens) * m_data.m_viewMatrix;
         return UniformValue(viewProjectionMatrix.inverted());
     }
     case InverseModelViewProjectionMatrix:
-        return UniformValue((m_data.m_viewProjectionMatrix * model).inverted(0));
+        return UniformValue((m_data.m_viewProjectionMatrix * model).inverted());
     case ModelNormalMatrix:
-        return UniformValue(model.normalMatrix());
+        return UniformValue(convertToQMatrix4x4(model).normalMatrix());
     case ModelViewNormalMatrix:
-        return UniformValue((m_data.m_viewMatrix * model).normalMatrix());
+        return UniformValue(convertToQMatrix4x4(m_data.m_viewMatrix * model).normalMatrix());
     case ViewportMatrix: {
         QMatrix4x4 viewportMatrix;
+        // TO DO: Implement on Matrix4x4
         viewportMatrix.viewport(resolveViewport(m_viewport, m_surfaceSize));
-        return UniformValue(viewportMatrix);
+        return UniformValue(Matrix4x4(viewportMatrix));
     }
     case InverseViewportMatrix: {
         QMatrix4x4 viewportMatrix;
+        // TO DO: Implement on Matrix4x4
         viewportMatrix.viewport(resolveViewport(m_viewport, m_surfaceSize));
-        return UniformValue(viewportMatrix.inverted());
+        return UniformValue(Matrix4x4(viewportMatrix.inverted()));
     }
     case AspectRatio:
         return float(m_surfaceSize.width()) / float(m_surfaceSize.height());
@@ -494,20 +496,6 @@ void RenderView::setRenderer(Renderer *renderer)
     m_manager = renderer->nodeManagers();
 }
 
-class LightSourceCompare
-{
-public:
-    LightSourceCompare(Entity *node) { p = node->worldBoundingVolume()->center(); }
-    bool operator()(const LightSource &a, const LightSource &b) const {
-        const float distA = p.distanceToPoint(a.entity->worldBoundingVolume()->center());
-        const float distB = p.distanceToPoint(b.entity->worldBoundingVolume()->center());
-        return distA < distB;
-    }
-
-private:
-    QVector3D p;
-};
-
 void RenderView::addClearBuffers(const ClearBuffers *cb) {
     QClearBuffers::BufferTypeFlags type = cb->type();
 
@@ -579,7 +567,7 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
                 // Project the camera-to-object-center vector onto the camera
                 // view vector. This gives a depth value suitable as the key
                 // for BackToFront sorting.
-                command->m_depth = QVector3D::dotProduct(entity->worldBoundingVolume()->center() - m_data.m_eyePos, m_data.m_eyeViewDir);
+                command->m_depth = Vector3D::dotProduct(entity->worldBoundingVolume()->center() - m_data.m_eyePos, m_data.m_eyeViewDir);
 
                 command->m_geometry = geometryHandle;
                 command->m_geometryRenderer = geometryRendererHandle;
@@ -605,8 +593,15 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
                 // Replace with more sophisticated mechanisms later.
                 // Copy vector so that we can sort it concurrently and we only want to sort the one for the current command
                 QVector<LightSource> lightSources = m_lightSources;
-                if (lightSources.size() > 1)
-                    std::sort(lightSources.begin(), lightSources.end(), LightSourceCompare(entity));
+                if (lightSources.size() > 1) {
+                    const Vector3D entityCenter = entity->worldBoundingVolume()->center();
+                    std::sort(lightSources.begin(), lightSources.end(),
+                              [&] (const LightSource &a, const LightSource &b) {
+                        const float distA = entityCenter.distanceToPoint(a.entity->worldBoundingVolume()->center());
+                        const float distB = entityCenter.distanceToPoint(b.entity->worldBoundingVolume()->center());
+                        return distA < distB;
+                    });
+                }
 
                 ParameterInfoList globalParameters = passData.parameterInfo;
                 // setShaderAndUniforms can initialize a localData
@@ -733,21 +728,21 @@ QVector<RenderCommand *> RenderView::buildComputeRenderCommands(const QVector<En
 void RenderView::updateMatrices()
 {
     if (m_data.m_renderCameraNode && m_data.m_renderCameraLens && m_data.m_renderCameraLens->isEnabled()) {
-        const QMatrix4x4 cameraWorld = *(m_data.m_renderCameraNode->worldTransform());
+        const Matrix4x4 cameraWorld = *(m_data.m_renderCameraNode->worldTransform());
         setViewMatrix(m_data.m_renderCameraLens->viewMatrix(cameraWorld));
 
         setViewProjectionMatrix(m_data.m_renderCameraLens->projection() * viewMatrix());
         //To get the eyePosition of the camera, we need to use the inverse of the
         //camera's worldTransform matrix.
-        const QMatrix4x4 inverseWorldTransform = viewMatrix().inverted();
-        const QVector3D eyePosition(inverseWorldTransform.column(3));
+        const Matrix4x4 inverseWorldTransform = viewMatrix().inverted();
+        const Vector3D eyePosition(inverseWorldTransform.column(3));
         setEyePosition(eyePosition);
 
         // Get the viewing direction of the camera. Use the normal matrix to
         // ensure non-uniform scale works too.
-        QMatrix3x3 normalMat = m_data.m_viewMatrix.normalMatrix();
+        const QMatrix3x3 normalMat = convertToQMatrix4x4(m_data.m_viewMatrix).normalMatrix();
         // dir = normalize(QVector3D(0, 0, -1) * normalMat)
-        setEyeViewDirection(QVector3D(-normalMat(2, 0), -normalMat(2, 1), -normalMat(2, 2)).normalized());
+        setEyeViewDirection(Vector3D(-normalMat(2, 0), -normalMat(2, 1), -normalMat(2, 2)).normalized());
     }
 }
 
@@ -775,7 +770,7 @@ void RenderView::setStandardUniformValue(ShaderParameterPack &uniformPack,
                                          int glslNameId,
                                          int nameId,
                                          Entity *entity,
-                                         const QMatrix4x4 &worldTransform) const
+                                         const Matrix4x4 &worldTransform) const
 {
     uniformPack.setUniform(glslNameId, standardUniformValue(ms_standardUniformSetters[nameId], entity, worldTransform));
 }
@@ -960,7 +955,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                     !shaderStorageBlockNamesIds.isEmpty() || !attributeNamesIds.isEmpty()) {
 
                 // Set default standard uniforms without bindings
-                QMatrix4x4 worldTransform = *(entity->worldTransform());
+                const Matrix4x4 worldTransform = *(entity->worldTransform());
                 for (const int uniformNameId : uniformNamesIds) {
                     if (ms_standardUniformSetters.contains(uniformNameId))
                         setStandardUniformValue(command->m_parameterPack, uniformNameId, uniformNameId, entity, worldTransform);
@@ -1006,7 +1001,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                     if (lightIdx == MAX_LIGHTS)
                         break;
                     Entity *lightEntity = lightSource.entity;
-                    const QVector3D worldPos = lightEntity->worldBoundingVolume()->center();
+                    const Vector3D worldPos = lightEntity->worldBoundingVolume()->center();
                     for (Light *light : lightSource.lights) {
                         if (!light->isEnabled())
                             continue;
@@ -1021,13 +1016,13 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                         // Note: implicit conversion of values to UniformValue
                         setUniformValue(command->m_parameterPack, LIGHT_POSITION_NAMES[lightIdx], worldPos);
                         setUniformValue(command->m_parameterPack, LIGHT_TYPE_NAMES[lightIdx], int(QAbstractLight::PointLight));
-                        setUniformValue(command->m_parameterPack, LIGHT_COLOR_NAMES[lightIdx], QVector3D(1.0f, 1.0f, 1.0f));
+                        setUniformValue(command->m_parameterPack, LIGHT_COLOR_NAMES[lightIdx], Vector3D(1.0f, 1.0f, 1.0f));
                         setUniformValue(command->m_parameterPack, LIGHT_INTENSITY_NAMES[lightIdx], 0.5f);
 
                         // There is no risk in doing that even if multithreaded
                         // since we are sure that a shaderData is unique for a given light
                         // and won't ever be referenced as a Component either
-                        QMatrix4x4 *worldTransform = lightEntity->worldTransform();
+                        Matrix4x4 *worldTransform = lightEntity->worldTransform();
                         if (worldTransform)
                             shaderData->updateWorldTransform(*worldTransform);
 
@@ -1042,9 +1037,9 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
                 // If no active light sources and no environment light, add a default light
                 if (activeLightSources.isEmpty() && !environmentLight) {
                     // Note: implicit conversion of values to UniformValue
-                    setUniformValue(command->m_parameterPack, LIGHT_POSITION_NAMES[0], QVector3D(10.0f, 10.0f, 0.0f));
+                    setUniformValue(command->m_parameterPack, LIGHT_POSITION_NAMES[0], Vector3D(10.0f, 10.0f, 0.0f));
                     setUniformValue(command->m_parameterPack, LIGHT_TYPE_NAMES[0], int(QAbstractLight::PointLight));
-                    setUniformValue(command->m_parameterPack, LIGHT_COLOR_NAMES[0], QVector3D(1.0f, 1.0f, 1.0f));
+                    setUniformValue(command->m_parameterPack, LIGHT_COLOR_NAMES[0], Vector3D(1.0f, 1.0f, 1.0f));
                     setUniformValue(command->m_parameterPack, LIGHT_INTENSITY_NAMES[0], 0.5f);
                 }
 

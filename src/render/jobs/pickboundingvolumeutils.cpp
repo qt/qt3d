@@ -154,7 +154,6 @@ QVector<Entity *> EntityGatherer::entities() const
     return m_entities;
 }
 
-
 class TriangleCollisionVisitor : public TrianglesVisitor
 {
 public:
@@ -174,20 +173,20 @@ private:
     bool m_frontFaceRequested;
     bool m_backFaceRequested;
 
-    void visit(uint andx, const QVector3D &a,
-               uint bndx, const QVector3D &b,
-               uint cndx, const QVector3D &c) Q_DECL_OVERRIDE;
-    bool intersectsSegmentTriangle(uint andx, const QVector3D &a,
-                                   uint bndx, const QVector3D &b,
-                                   uint cndx, const QVector3D &c);
+    void visit(uint andx, const Vector3D &a,
+               uint bndx, const Vector3D &b,
+               uint cndx, const Vector3D &c) Q_DECL_OVERRIDE;
+    bool intersectsSegmentTriangle(uint andx, const Vector3D &a,
+                                   uint bndx, const Vector3D &b,
+                                   uint cndx, const Vector3D &c);
 };
 
-void TriangleCollisionVisitor::visit(uint andx, const QVector3D &a, uint bndx, const QVector3D &b, uint cndx, const QVector3D &c)
+void TriangleCollisionVisitor::visit(uint andx, const Vector3D &a, uint bndx, const Vector3D &b, uint cndx, const Vector3D &c)
 {
-    const QMatrix4x4 &mat = *m_root->worldTransform();
-    const QVector3D tA = mat * a;
-    const QVector3D tB = mat * b;
-    const QVector3D tC = mat * c;
+    const Matrix4x4 &mat = *m_root->worldTransform();
+    const Vector3D tA = mat * a;
+    const Vector3D tB = mat * b;
+    const Vector3D tC = mat * c;
 
     bool intersected = m_frontFaceRequested &&
             intersectsSegmentTriangle(cndx, tC, bndx, tB, andx, tA);    // front facing
@@ -198,10 +197,11 @@ void TriangleCollisionVisitor::visit(uint andx, const QVector3D &a, uint bndx, c
     m_triangleIndex++;
 }
 
-bool TriangleCollisionVisitor::intersectsSegmentTriangle(uint andx, const QVector3D &a, uint bndx, const QVector3D &b, uint cndx, const QVector3D &c)
+
+bool TriangleCollisionVisitor::intersectsSegmentTriangle(uint andx, const Vector3D &a, uint bndx, const Vector3D &b, uint cndx, const Vector3D &c)
 {
     float t = 0.0f;
-    QVector3D uvw;
+    Vector3D uvw;
     bool intersected = Render::intersectsSegmentTriangle(m_ray, a, b, c, uvw, t);
     if (intersected) {
         QCollisionQueryResult::Hit queryResult;
@@ -237,30 +237,30 @@ private:
     uint m_segmentIndex;
     float m_pickWorldSpaceTolerance;
 
-    void visit(uint andx, const QVector3D &a,
-               uint bndx, const QVector3D &b) Q_DECL_OVERRIDE;
-    bool intersectsSegmentSegment(uint andx, const QVector3D &a,
-                                  uint bndx, const QVector3D &b);
-    bool rayToLineSegment(const QVector3D& lineStart,const QVector3D& lineEnd,
-                          float &distance, QVector3D &intersection) const;
+    void visit(uint andx, const Vector3D &a,
+               uint bndx, const Vector3D &b) Q_DECL_OVERRIDE;
+    bool intersectsSegmentSegment(uint andx, const Vector3D &a,
+                                  uint bndx, const Vector3D &b);
+    bool rayToLineSegment(const Vector3D& lineStart,const Vector3D& lineEnd,
+                          float &distance, Vector3D &intersection) const;
 };
 
-void LineCollisionVisitor::visit(uint andx, const QVector3D &a, uint bndx, const QVector3D &b)
+void LineCollisionVisitor::visit(uint andx, const Vector3D &a, uint bndx, const Vector3D &b)
 {
-    const QMatrix4x4 &mat = *m_root->worldTransform();
-    const QVector3D tA = mat * a;
-    const QVector3D tB = mat * b;
+    const Matrix4x4 &mat = *m_root->worldTransform();
+    const Vector3D tA = mat * a;
+    const Vector3D tB = mat * b;
 
     intersectsSegmentSegment(andx, tA, bndx, tB);
 
     m_segmentIndex++;
 }
 
-bool LineCollisionVisitor::intersectsSegmentSegment(uint andx, const QVector3D &a,
-                                                    uint bndx, const QVector3D &b)
+bool LineCollisionVisitor::intersectsSegmentSegment(uint andx, const Vector3D &a,
+                                                    uint bndx, const Vector3D &b)
 {
     float distance = 0.f;
-    QVector3D intersection;
+    Vector3D intersection;
     bool res = rayToLineSegment(a, b, distance, intersection);
     if (res) {
         QCollisionQueryResult::Hit queryResult;
@@ -277,19 +277,19 @@ bool LineCollisionVisitor::intersectsSegmentSegment(uint andx, const QVector3D &
     return false;
 }
 
-bool LineCollisionVisitor::rayToLineSegment(const QVector3D& lineStart,const QVector3D& lineEnd,
-                                            float &distance, QVector3D &intersection) const
+bool LineCollisionVisitor::rayToLineSegment(const Vector3D& lineStart,const Vector3D& lineEnd,
+                                            float &distance, Vector3D &intersection) const
 {
     const float epsilon = 0.00000001f;
 
-    const QVector3D u = m_ray.direction() * m_ray.distance();
-    const QVector3D v = lineEnd - lineStart;
-    const QVector3D w = m_ray.origin() - lineStart;
-    const float a = QVector3D::dotProduct(u, u);
-    const float b = QVector3D::dotProduct(u, v);
-    const float c = QVector3D::dotProduct(v, v);
-    const float d = QVector3D::dotProduct(u, w);
-    const float e = QVector3D::dotProduct(v, w);
+    const Vector3D u = m_ray.direction() * m_ray.distance();
+    const Vector3D v = lineEnd - lineStart;
+    const Vector3D w = m_ray.origin() - lineStart;
+    const float a = Vector3D::dotProduct(u, u);
+    const float b = Vector3D::dotProduct(u, v);
+    const float c = Vector3D::dotProduct(v, v);
+    const float d = Vector3D::dotProduct(u, w);
+    const float e = Vector3D::dotProduct(v, w);
     const float D = a * c - b * b;
     float sc, sN, sD = D;
     float tc, tN, tD = D;
@@ -330,7 +330,7 @@ bool LineCollisionVisitor::rayToLineSegment(const QVector3D& lineStart,const QVe
     sc = (qAbs(sN) < epsilon ? 0.0f : sN / sD);
     tc = (qAbs(tN) < epsilon ? 0.0f : tN / tD);
 
-    const QVector3D dP = w + (sc * u) - (tc * v);
+    const Vector3D dP = w + (sc * u) - (tc * v);
     const float f = dP.length();
     if (f < m_pickWorldSpaceTolerance) {
         distance = sc * u.length();
@@ -358,23 +358,23 @@ private:
     uint m_pointIndex;
     float m_pickWorldSpaceTolerance;
 
-    void visit(uint ndx, const QVector3D &p) Q_DECL_OVERRIDE;
+    void visit(uint ndx, const Vector3D &p) Q_DECL_OVERRIDE;
 
-    double pointToRayDistance(const QVector3D &a, QVector3D &p)
+    double pointToRayDistance(const Vector3D &a, Vector3D &p)
     {
-        const QVector3D v = a - m_ray.origin();
-        const double t = QVector3D::dotProduct(v, m_ray.direction());
+        const Vector3D v = a - m_ray.origin();
+        const double t = Vector3D::dotProduct(v, m_ray.direction());
         p = m_ray.origin() + t * m_ray.direction();
         return (p - a).length();
     }
 };
 
 
-void PointCollisionVisitor::visit(uint ndx, const QVector3D &p)
+void PointCollisionVisitor::visit(uint ndx, const Vector3D &p)
 {
-    const QMatrix4x4 &mat = *m_root->worldTransform();
-    const QVector3D tP = mat * p;
-    QVector3D intersection;
+    const Matrix4x4 &mat = *m_root->worldTransform();
+    const Vector3D tP = mat * p;
+    Vector3D intersection;
 
     float d = pointToRayDistance(tP, intersection);
     if (d < m_pickWorldSpaceTolerance) {
@@ -461,10 +461,32 @@ void AbstractCollisionGathererFunctor::sortHits(HitList &results)
     std::sort(results.begin(), results.end(), compareHitsDistance);
 }
 
+namespace {
+
+// Workaround to avoid passing *this into the blockMappedReduce calls for the
+// mapFunctor which would cause an SSE alignment error on Windows Also note
+// that a lambda doesn't work since we need the typedef result_type defined to
+// work with QtConcurrent
+struct MapFunctorHolder
+{
+    MapFunctorHolder(const AbstractCollisionGathererFunctor *gatherer)
+        : m_gatherer(gatherer)
+    {}
+
+    // This define is required to work with QtConcurrent
+    typedef HitList result_type;
+    HitList operator ()(const Entity *e) const { return m_gatherer->operator ()(e); }
+
+    const AbstractCollisionGathererFunctor *m_gatherer;
+};
+
+} // anonymous
+
 HitList EntityCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities, bool allHitsRequested)
 {
     const auto reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
-    return QtConcurrent::blockingMappedReduced<HitList>(entities, *this, reducerOp);
+    const MapFunctorHolder holder(this);
+    return QtConcurrent::blockingMappedReduced<HitList>(entities, holder, reducerOp);
 }
 
 HitList EntityCollisionGathererFunctor::pick(const Entity *entity) const
@@ -482,7 +504,8 @@ HitList EntityCollisionGathererFunctor::pick(const Entity *entity) const
 HitList TriangleCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities, bool allHitsRequested)
 {
     const auto reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
-    return QtConcurrent::blockingMappedReduced<HitList>(entities, *this, reducerOp);
+    const MapFunctorHolder holder(this);
+    return QtConcurrent::blockingMappedReduced<HitList>(entities, holder, reducerOp);
 }
 
 HitList TriangleCollisionGathererFunctor::pick(const Entity *entity) const
@@ -507,7 +530,8 @@ HitList TriangleCollisionGathererFunctor::pick(const Entity *entity) const
 HitList LineCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities, bool allHitsRequested)
 {
     const auto reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
-    return QtConcurrent::blockingMappedReduced<HitList>(entities, *this, reducerOp);
+    const MapFunctorHolder holder(this);
+    return QtConcurrent::blockingMappedReduced<HitList>(entities, holder, reducerOp);
 }
 
 HitList LineCollisionGathererFunctor::pick(const Entity *entity) const
@@ -531,7 +555,8 @@ HitList LineCollisionGathererFunctor::pick(const Entity *entity) const
 HitList PointCollisionGathererFunctor::computeHits(const QVector<Entity *> &entities, bool allHitsRequested)
 {
     const auto reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
-    return QtConcurrent::blockingMappedReduced<HitList>(entities, *this, reducerOp);
+    const MapFunctorHolder holder(this);
+    return QtConcurrent::blockingMappedReduced<HitList>(entities, holder, reducerOp);
 }
 
 HitList PointCollisionGathererFunctor::pick(const Entity *entity) const

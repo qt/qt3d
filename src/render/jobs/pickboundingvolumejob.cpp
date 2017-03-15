@@ -139,12 +139,12 @@ void PickBoundingVolumeJob::setRenderSettings(RenderSettings *settings)
     m_renderSettings = settings;
 }
 
-RayCasting::QRay3D PickBoundingVolumeJob::intersectionRay(const QPoint &pos, const QMatrix4x4 &viewMatrix,
-                                                          const QMatrix4x4 &projectionMatrix, const QRect &viewport)
+RayCasting::QRay3D PickBoundingVolumeJob::intersectionRay(const QPoint &pos, const Matrix4x4 &viewMatrix,
+                                                          const Matrix4x4 &projectionMatrix, const QRect &viewport)
 {
-    QVector3D nearPos = QVector3D(pos.x(), pos.y(), 0.0f);
+    Vector3D nearPos = Vector3D(pos.x(), pos.y(), 0.0f);
     nearPos = nearPos.unproject(viewMatrix, projectionMatrix, viewport);
-    QVector3D farPos = QVector3D(pos.x(), pos.y(), 1.0f);
+    Vector3D farPos = Vector3D(pos.x(), pos.y(), 1.0f);
     farPos = farPos.unproject(viewMatrix, projectionMatrix, viewport);
 
     return RayCasting::QRay3D(nearPos,
@@ -351,39 +351,48 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                 }
 
                 // Send the corresponding event
-                QVector3D localIntersection = hit.m_intersection;
+                Vector3D localIntersection = hit.m_intersection;
                 if (entity && entity->worldTransform())
                     localIntersection = entity->worldTransform()->inverted() * hit.m_intersection;
 
                 QPickEventPtr pickEvent;
                 switch (hit.m_type) {
                 case QCollisionQueryResult::Hit::Triangle:
-                    pickEvent = QPickTriangleEventPtr::create(event.localPos(), hit.m_intersection,
-                                                              localIntersection, hit.m_distance,
-                                                              hit.m_primitiveIndex,
-                                                              hit.m_vertexIndex[0],
-                                                              hit.m_vertexIndex[1],
-                                                              hit.m_vertexIndex[2],
-                                                              eventButton, eventButtons,
-                                                              eventModifiers, hit.m_uvw);
+                    pickEvent.reset(new QPickTriangleEvent(event.localPos(),
+                                                           convertToQVector3D(hit.m_intersection),
+                                                           convertToQVector3D(localIntersection),
+                                                           hit.m_distance,
+                                                           hit.m_primitiveIndex,
+                                                           hit.m_vertexIndex[0],
+                                                           hit.m_vertexIndex[1],
+                                                           hit.m_vertexIndex[2],
+                                                           eventButton, eventButtons,
+                                                           eventModifiers,
+                                                           convertToQVector3D(hit.m_uvw)));
                     break;
                 case QCollisionQueryResult::Hit::Edge:
-                    pickEvent = QPickLineEventPtr::create(event.localPos(), hit.m_intersection,
-                                                          localIntersection, hit.m_distance,
-                                                          hit.m_primitiveIndex,
-                                                          hit.m_vertexIndex[0], hit.m_vertexIndex[1],
-                                                          eventButton, eventButtons, eventModifiers);
+                    pickEvent.reset(new QPickLineEvent(event.localPos(),
+                                                       convertToQVector3D(hit.m_intersection),
+                                                       convertToQVector3D(localIntersection),
+                                                       hit.m_distance,
+                                                       hit.m_primitiveIndex,
+                                                       hit.m_vertexIndex[0], hit.m_vertexIndex[1],
+                                                       eventButton, eventButtons, eventModifiers));
                     break;
                 case QCollisionQueryResult::Hit::Point:
-                    pickEvent = QPickPointEventPtr::create(event.localPos(), hit.m_intersection,
-                                                           localIntersection, hit.m_distance,
-                                                           hit.m_vertexIndex[0],
-                                                           eventButton, eventButtons, eventModifiers);
+                    pickEvent.reset(new QPickPointEvent(event.localPos(),
+                                                        convertToQVector3D(hit.m_intersection),
+                                                        convertToQVector3D(localIntersection),
+                                                        hit.m_distance,
+                                                        hit.m_vertexIndex[0],
+                                                        eventButton, eventButtons, eventModifiers));
                     break;
                 case QCollisionQueryResult::Hit::Entity:
-                    pickEvent = QPickEventPtr::create(event.localPos(), hit.m_intersection,
-                                                      localIntersection, hit.m_distance,
-                                                      eventButton, eventButtons, eventModifiers);
+                    pickEvent.reset(new QPickEvent(event.localPos(),
+                                                   convertToQVector3D(hit.m_intersection),
+                                                   convertToQVector3D(localIntersection),
+                                                   hit.m_distance,
+                                                   eventButton, eventButtons, eventModifiers));
                     break;
                 default:
                     Q_UNREACHABLE();
@@ -461,6 +470,20 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
     }
 }
 
+void PickBoundingVolumeJob::viewMatrixForCamera(Qt3DCore::QNodeId cameraId,
+                                                Matrix4x4 &viewMatrix,
+                                                Matrix4x4 &projectionMatrix) const
+{
+    Render::CameraLens *lens = nullptr;
+    Entity *camNode = m_manager->renderNodesManager()->lookupResource(cameraId);
+    if (camNode != nullptr &&
+            (lens = camNode->renderComponent<CameraLens>()) != nullptr &&
+            lens->isEnabled()) {
+        viewMatrix = *camNode->worldTransform();
+        projectionMatrix = lens->projection();
+    }
+}
+
 QRect PickBoundingVolumeJob::windowViewport(const QSize &area, const QRectF &relativeViewport) const
 {
     if (area.isValid()) {
@@ -479,9 +502,9 @@ RayCasting::QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QSize &a
                                                                   const QRectF &relativeViewport,
                                                                   const Qt3DCore::QNodeId cameraId) const
 {
-    QMatrix4x4 viewMatrix;
-    QMatrix4x4 projectionMatrix;
-    Render::CameraLens::viewMatrixForCamera(m_manager->renderNodesManager(), cameraId, viewMatrix, projectionMatrix);
+    Matrix4x4 viewMatrix;
+    Matrix4x4 projectionMatrix;
+    viewMatrixForCamera(cameraId, viewMatrix, projectionMatrix);
     const QRect viewport = windowViewport(area, relativeViewport);
 
     // In GL the y is inverted compared to Qt

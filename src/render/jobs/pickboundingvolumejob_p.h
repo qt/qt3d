@@ -94,8 +94,8 @@ public:
     bool pickersDirty() const { return m_pickersDirty; }
 
     static RayCasting::QRay3D intersectionRay(const QPoint &pos,
-                                              const QMatrix4x4 &viewMatrix,
-                                              const QMatrix4x4 &projectionMatrix,
+                                              const Matrix4x4 &viewMatrix,
+                                              const Matrix4x4 &projectionMatrix,
                                               const QRect &viewport);
 
     // For unit tests
@@ -124,6 +124,9 @@ private:
 
     QList<QKeyEvent> m_pendingKeyEvents;
 
+    void viewMatrixForCamera(Qt3DCore::QNodeId cameraId,
+                             Matrix4x4 &viewMatrix,
+                             Matrix4x4 &projectionMatrix) const;
     QRect windowViewport(const QSize &area, const QRectF &relativeViewport) const;
     RayCasting::QRay3D rayForViewportAndCamera(const QSize &area,
                                                const QPoint &pos,

@@ -555,14 +555,14 @@ private Q_SLOTS:
         renderViewBuilder.buildJobHierachy();
 
         // THEN
-        QCOMPARE(renderViewBuilder.frustumCullingJob()->viewProjection(), QMatrix4x4());
+        QCOMPARE(renderViewBuilder.frustumCullingJob()->viewProjection(), Matrix4x4());
 
         // WHEN
         renderViewBuilder.renderViewJob()->run();
         renderViewBuilder.syncFrustumCullingJob()->run();
 
         // THEN
-        QCOMPARE(renderViewBuilder.frustumCullingJob()->viewProjection(), camera->projectionMatrix() * camera->viewMatrix());
+        QCOMPARE(convertToQMatrix4x4(renderViewBuilder.frustumCullingJob()->viewProjection()), camera->projectionMatrix() * camera->viewMatrix());
     }
 
     void checkRemoveEntitiesNotInSubset()

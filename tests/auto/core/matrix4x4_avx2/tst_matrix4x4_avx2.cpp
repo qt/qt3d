@@ -28,12 +28,15 @@
 
 #include <QtTest/QtTest>
 #include <Qt3DCore/private/matrix4x4_avx2_p.h>
+#include <Qt3DRender/private/aligned_malloc_p.h>
 
 using namespace Qt3DCore;
 
 class tst_Matrix4x4_AVX2: public QObject
 {
     Q_OBJECT
+public:
+    QT3D_ALIGNED_MALLOC_AND_FREE()
 
 private Q_SLOTS:
 

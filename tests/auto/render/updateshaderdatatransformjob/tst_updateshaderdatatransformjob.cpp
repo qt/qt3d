@@ -179,7 +179,8 @@ private Q_SLOTS:
 
         // THEN
         // See scene file to find translation
-        QCOMPARE(backendShaderData->getTransformedProperty(QLatin1String("eyePosition"), camera->viewMatrix()).value<QVector3D>(), camera->viewMatrix() * (QVector3D(1.0f, 1.0f, 1.0f) + QVector3D(0.0f, 5.0f, 0.0f)));
+        QCOMPARE(backendShaderData->getTransformedProperty(QLatin1String("eyePosition"), Matrix4x4(camera->viewMatrix())).value<Vector3D>(),
+                 Matrix4x4(camera->viewMatrix()) * (Vector3D(1.0f, 1.0f, 1.0f) + Vector3D(0.0f, 5.0f, 0.0f)));
     }
 
     void checkRunModelToWorld()
@@ -219,7 +220,8 @@ private Q_SLOTS:
 
         // THEN
         // See scene file to find translation
-        QCOMPARE(backendShaderData->getTransformedProperty(QLatin1String("position"), camera->viewMatrix()).value<QVector3D>(), QVector3D(1.0f, 1.0f, 1.0f) + QVector3D(5.0f, 5.0f, 5.0f));
+        QCOMPARE(backendShaderData->getTransformedProperty(QLatin1String("position"), Matrix4x4(camera->viewMatrix())).value<Vector3D>(),
+                 Vector3D(1.0f, 1.0f, 1.0f) + Vector3D(5.0f, 5.0f, 5.0f));
     }
 };
 

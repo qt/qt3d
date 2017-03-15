@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_COORDINATESVISITOR_P_H
-#define QT3DRENDER_RENDER_COORDINATESVISITOR_P_H
+#ifndef QT3DRENDER_RENDER_ALIGNED_MALLOC_P_H
+#define QT3DRENDER_RENDER_ALIGNED_MALLOC_P_H
 
 //
 //  W A R N I N G
@@ -51,43 +51,31 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/private/vector3d_p.h>
+#include <QtCore/private/qsimd_p.h>
+#include <Qt3DCore/private/qt3dcore-config_p.h>
 
-QT_BEGIN_NAMESPACE
+#if QT_CONFIG(qt3d_simd_avx2) && defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)
+# define QT3D_ALIGNED_MALLOC(s) _mm_malloc(s, 32)
+#elif QT_CONFIG(qt3d_simd_sse2) && defined(__SSE2__) && defined(QT_COMPILER_SUPPORTS_SSE2)
+# define QT3D_ALIGNED_MALLOC(s) _mm_malloc(s, 16)
+#else
+    #define QT3D_ALIGNED_MALLOC(s) malloc(s)
+#endif
 
-namespace Qt3DCore {
-class QEntity;
-}
+#if (QT_CONFIG(qt3d_simd_avx2) && defined(__AVX2__) && defined(QT_COMPILER_SUPPORTS_AVX2)) || (QT_CONFIG(qt3d_simd_sse2) && defined(__SSE2__) && defined(QT_COMPILER_SUPPORTS_SSE2))
+# define QT3D_ALIGNED_FREE(ptr) _mm_free(ptr)
+#else
+# define QT3D_ALIGNED_FREE(ptr) free(ptr)
+#endif
 
-namespace Qt3DRender {
+#define QT3D_ALIGNED_MALLOC_AND_FREE() \
+    static void *operator new(size_t s) \
+    { \
+        return QT3D_ALIGNED_MALLOC(s); \
+    } \
+    static void operator delete(void *ptr) \
+    { \
+        QT3D_ALIGNED_FREE(ptr); \
+    }
 
-namespace Render {
-
-class GeometryRenderer;
-class NodeManagers;
-
-class Q_AUTOTEST_EXPORT PointsVisitor
-{
-public:
-    explicit PointsVisitor(NodeManagers *manager) : m_manager(manager) { }
-    virtual ~PointsVisitor();
-
-    void apply(const Qt3DCore::QEntity *entity);
-    void apply(const GeometryRenderer *renderer, const Qt3DCore::QNodeId id);
-
-    virtual void visit(uint ndx, const Vector3D &c) = 0;
-
-protected:
-    NodeManagers *m_manager;
-    Qt3DCore::QNodeId m_nodeId;
-};
-
-} // namespace Render
-
-} // namespace Qt3DRender
-
-QT_END_NAMESPACE
-
-
-#endif // QT3DRENDER_RENDER_COORDINATESVISITOR_P_H
+#endif // QT3DRENDER_RENDER_ALIGNED_MALLOC_P_H

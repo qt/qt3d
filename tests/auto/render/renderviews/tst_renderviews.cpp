@@ -59,23 +59,6 @@ private Q_SLOTS:
 
     }
 
-    void checkRenderViewDoesNotLeak()
-    {
-        QSKIP("Allocated Disabled");
-        // GIVEN
-        Qt3DCore::QFrameAllocator allocator(192, 16, 128);
-        RenderView *rv = allocator.allocate<RenderView>();
-
-        // THEN
-        QVERIFY(!allocator.isEmpty());
-
-        // WHEN
-        delete rv;
-
-        // THEN
-        QVERIFY(allocator.isEmpty());
-    }
-
     void checkRenderViewInitialState()
     {
         // GIVEN

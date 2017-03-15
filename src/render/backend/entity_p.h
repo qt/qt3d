@@ -104,8 +104,8 @@ public:
     QVector<Entity *> children() const;
     bool hasChildren() const { return !m_childrenHandles.empty(); }
 
-    QMatrix4x4 *worldTransform();
-    const QMatrix4x4 *worldTransform() const;
+    Matrix4x4 *worldTransform();
+    const Matrix4x4 *worldTransform() const;
     Sphere *localBoundingVolume() const { return m_localBoundingVolume.data(); }
     Sphere *worldBoundingVolume() const { return m_worldBoundingVolume.data(); }
     Sphere *worldBoundingVolumeWithChildren() const { return m_worldBoundingVolumeWithChildren.data(); }

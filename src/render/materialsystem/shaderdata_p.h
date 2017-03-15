@@ -55,7 +55,7 @@
 #include <Qt3DRender/private/shadervariables_p.h>
 #include <Qt3DRender/qshaderdata.h>
 #include <QMutex>
-#include <QMatrix4x4>
+#include <Qt3DCore/private/matrix4x4_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -83,13 +83,13 @@ public:
     QHash<QString, QVariant> properties() const { return m_originalProperties; }
 
     // Called by FramePreparationJob
-    void updateWorldTransform(const QMatrix4x4 &worldMatrix);
+    void updateWorldTransform(const Matrix4x4 &worldMatrix);
 
     // Call by RenderViewJob
     void markDirty();
 
     TransformType propertyTransformType(const QString &name) const;
-    QVariant getTransformedProperty(const QString &name, const QMatrix4x4 &viewMatrix);
+    QVariant getTransformedProperty(const QString &name, const Matrix4x4 &viewMatrix);
 
     // Called by FrameCleanupJob
     static void cleanup(NodeManagers *managers);
@@ -114,8 +114,8 @@ protected:
 
     QMutex m_mutex;
     static QVector<Qt3DCore::QNodeId> m_updatedShaderData;
-    QMatrix4x4 m_worldMatrix;
-    QMatrix4x4 m_viewMatrix;
+    Matrix4x4 m_worldMatrix;
+    Matrix4x4 m_viewMatrix;
     NodeManagers *m_managers;
 
     void clearUpdatedProperties();

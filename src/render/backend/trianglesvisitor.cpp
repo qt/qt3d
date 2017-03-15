@@ -89,7 +89,7 @@ void traverseTrianglesIndexed(index *indices,
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
 
     uint ndx[3];
-    QVector3D abc[3];
+    Vector3D abc[3];
     while (i < indexInfo.count) {
         for (uint u = 0; u < 3; ++u) {
             ndx[u] = indices[i + u];
@@ -115,7 +115,7 @@ void traverseTriangles(vertex *vertices,
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
 
     uint ndx[3];
-    QVector3D abc[3];
+    Vector3D abc[3];
     while (i < vertexInfo.count) {
         for (uint u = 0; u < 3; ++u) {
             ndx[u] = (i + u);
@@ -151,7 +151,7 @@ void traverseTriangleStripIndexed(index *indices,
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
 
     uint ndx[3];
-    QVector3D abc[3];
+    Vector3D abc[3];
     while (i < indexInfo.count - 2) {
         bool degenerate = false;
         for (uint u = 0; u < 3; ++u) {
@@ -182,7 +182,7 @@ void traverseTriangleStrip(vertex *vertices,
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
 
     uint ndx[3];
-    QVector3D abc[3];
+    Vector3D abc[3];
     while (i < vertexInfo.count - 2) {
         for (uint u = 0; u < 3; ++u) {
             ndx[u] = (i + u);
@@ -208,7 +208,7 @@ void traverseTriangleFanIndexed(index *indices,
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
 
     uint ndx[3];
-    QVector3D abc[3];
+    Vector3D abc[3];
 
     for (uint j = 0; j < maxVerticesDataSize; ++j) {
         abc[0][j] = vertices[static_cast<int>(indices[0]) * verticesStride + j];
@@ -238,7 +238,7 @@ void traverseTriangleFan(vertex *vertices,
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
 
     uint ndx[3];
-    QVector3D abc[3];
+    Vector3D abc[3];
 
     for (uint j = 0; j < maxVerticesDataSize; ++j) {
         abc[0][j] = vertices[j];
@@ -272,7 +272,7 @@ void traverseTriangleAdjacencyIndexed(index *indices,
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
 
     uint ndx[3];
-    QVector3D abc[3];
+    Vector3D abc[3];
     while (i < indexInfo.count) {
         for (uint u = 0; u < 6; u += 2) {
             ndx[u / 2] = indices[i + u];
@@ -298,7 +298,7 @@ void traverseTriangleAdjacency(Vertex *vertices,
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
 
     uint ndx[3];
-    QVector3D abc[3];
+    Vector3D abc[3];
     while (i < vertexInfo.count) {
         for (uint u = 0; u < 6; u += 2) {
             ndx[u / 2] = (i + u);
@@ -313,10 +313,10 @@ void traverseTriangleAdjacency(Vertex *vertices,
 }
 
 template<typename Coordinate>
-QVector4D readCoordinate(const BufferInfo &info, Coordinate *coordinates, uint index)
+Vector4D readCoordinate(const BufferInfo &info, Coordinate *coordinates, uint index)
 {
     const uint stride = info.byteStride / sizeof(Coordinate);
-    QVector4D ret(0, 0, 0, 1.0f);
+    Vector4D ret(0, 0, 0, 1.0f);
     coordinates += stride * index;
     for (uint e = 0; e < info.dataSize; ++e)
         ret[e] = coordinates[e];
@@ -340,7 +340,7 @@ typename EnumToType<v>::type *castToType(const QByteArray &u, uint byteOffset)
     return reinterpret_cast< typename EnumToType<v>::type *>(u.constData() + byteOffset);
 }
 
-QVector4D readBuffer(const BufferInfo &info, uint index)
+Vector4D readBuffer(const BufferInfo &info, uint index)
 {
     switch (info.type) {
     case QAttribute::Byte:
@@ -362,7 +362,7 @@ QVector4D readBuffer(const BufferInfo &info, uint index)
     default:
         break;
     }
-    return QVector4D();
+    return Vector4D();
 }
 
 template<typename Index, typename Visitor>
@@ -509,7 +509,7 @@ bool CoordinateReader::setGeometry(const GeometryRenderer *renderer, const QStri
     return true;
 }
 
-QVector4D CoordinateReader::getCoordinate(uint vertexIndex)
+Vector4D CoordinateReader::getCoordinate(uint vertexIndex)
 {
     return readBuffer(m_bufferInfo, vertexIndex);
 }

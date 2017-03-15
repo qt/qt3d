@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/private/vector3d_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -75,8 +76,8 @@ public:
     void apply(const Qt3DCore::QEntity *entity);
     void apply(const GeometryRenderer *renderer, const Qt3DCore::QNodeId id);
 
-    virtual void visit(uint andx, const QVector3D &a,
-                       uint bndx, const QVector3D &b) = 0;
+    virtual void visit(uint andx, const Vector3D &a,
+                       uint bndx, const Vector3D &b) = 0;
 
 protected:
     NodeManagers *m_manager;

@@ -53,8 +53,8 @@
 //
 
 #include <Qt3DRender/qt3drender_global.h>
-#include <QtGui/qvector3d.h>
-#include <QtGui/qmatrix4x4.h>
+#include <Qt3DCore/private/matrix4x4_p.h>
+#include <Qt3DCore/private/vector3d_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,37 +65,37 @@ class QT3DRENDERSHARED_EXPORT QRay3D
 {
 public:
     QRay3D();
-    explicit QRay3D(const QVector3D &origin, const QVector3D &direction = QVector3D(0.0f, 0.0f, 1.0f), float distance = 1.0f);
+    explicit QRay3D(const Vector3D &origin, const Vector3D &direction = Vector3D(0.0f, 0.0f, 1.0f), float distance = 1.0f);
     ~QRay3D();
 
-    QVector3D origin() const;
-    void setOrigin(const QVector3D &value);
+    Vector3D origin() const;
+    void setOrigin(const Vector3D &value);
 
-    QVector3D direction() const;
-    void setDirection(const QVector3D &value);
+    Vector3D direction() const;
+    void setDirection(const Vector3D &value);
 
     float distance() const;
     void setDistance(float distance);
 
-    bool contains(const QVector3D &point) const;
+    bool contains(const Vector3D &point) const;
     bool contains(const QRay3D &ray) const;
 
-    QVector3D point(float t) const;
-    float projectedDistance(const QVector3D &point) const;
+    Vector3D point(float t) const;
+    float projectedDistance(const Vector3D &point) const;
 
-    QVector3D project(const QVector3D &vector) const;
+    Vector3D project(const Vector3D &vector) const;
 
-    float distance(const QVector3D &point) const;
+    float distance(const Vector3D &point) const;
 
-    QRay3D &transform(const QMatrix4x4 &matrix);
-    QRay3D transformed(const QMatrix4x4 &matrix) const;
+    QRay3D &transform(const Matrix4x4 &matrix);
+    QRay3D transformed(const Matrix4x4 &matrix) const;
 
     bool operator==(const QRay3D &other) const;
     bool operator!=(const QRay3D &other) const;
 
 private:
-    QVector3D m_origin;
-    QVector3D m_direction;
+    Vector3D m_origin;
+    Vector3D m_direction;
     float m_distance;
 };
 QT3D_DECLARE_TYPEINFO_2(Qt3DRender, RayCasting, QRay3D, Q_MOVABLE_TYPE)
