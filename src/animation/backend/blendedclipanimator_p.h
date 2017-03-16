@@ -80,6 +80,7 @@ public:
     void setStartTime(qint64 globalTime) { m_startGlobalTime = globalTime; }
     qint64 startTime() const { return m_startGlobalTime; }
 
+    void setLoops(int loops) { m_loops = loops; }
     int loops() const { return m_loops; }
 
     int currentLoop() const { return m_currentLoop; }

@@ -29,10 +29,12 @@
 #include <QtTest/QTest>
 #include <Qt3DAnimation/private/animationcliploader_p.h>
 #include <Qt3DAnimation/private/animationutils_p.h>
+#include <Qt3DAnimation/private/blendedclipanimator_p.h>
 #include <Qt3DAnimation/private/channelmapper_p.h>
 #include <Qt3DAnimation/private/channelmapping_p.h>
 #include <Qt3DAnimation/private/clipblendvalue_p.h>
 #include <Qt3DAnimation/private/handler_p.h>
+#include <Qt3DAnimation/private/additiveclipblend_p.h>
 #include <Qt3DAnimation/private/lerpclipblend_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
@@ -56,6 +58,53 @@ Q_DECLARE_METATYPE(Channel)
 Q_DECLARE_METATYPE(AnimatorEvaluationData)
 Q_DECLARE_METATYPE(ClipEvaluationData)
 Q_DECLARE_METATYPE(ClipAnimator *)
+Q_DECLARE_METATYPE(BlendedClipAnimator *)
+
+namespace {
+
+class MeanBlendNode : public ClipBlendNode
+{
+public:
+    MeanBlendNode()
+        : ClipBlendNode(ClipBlendNode::LerpBlendType)
+    {}
+
+    float blend(float, float ) const Q_DECL_FINAL { return 0.0f; }
+
+
+    void setValueNodeIds(Qt3DCore::QNodeId value1Id,
+                         Qt3DCore::QNodeId value2Id)
+    {
+        m_value1Id = value1Id;
+        m_value2Id = value2Id;
+    }
+
+    QVector<Qt3DCore::QNodeId> dependencyIds() const Q_DECL_FINAL
+    {
+        return QVector<Qt3DCore::QNodeId>() << m_value1Id << m_value2Id;
+    }
+
+    using ClipBlendNode::setClipResults;
+
+    double duration() const Q_DECL_FINAL { return 0.0f; }
+
+protected:
+    ClipResults doBlend(const QVector<ClipResults> &blendData) const Q_DECL_FINAL
+    {
+        Q_ASSERT(blendData.size() == 2);
+        const int elementCount = blendData.first().size();
+        ClipResults blendResults(elementCount);
+
+        for (int i = 0; i < elementCount; ++i)
+            blendResults[i] = 0.5f * (blendData[0][i] + blendData[1][i]);
+
+        return blendResults;
+    }
+
+private:
+    Qt3DCore::QNodeId m_value1Id;
+    Qt3DCore::QNodeId m_value2Id;
+};
 
 bool fuzzyCompare(float x1, float x2)
 {
@@ -68,6 +117,9 @@ bool fuzzyCompare(float x1, float x2)
         return qFuzzyCompare(x1, x2);
     }
 }
+
+} // anonymous
+
 
 class tst_AnimationUtils : public Qt3DCore::QBackendNodeTester
 {
@@ -125,6 +177,18 @@ public:
         return animator;
     }
 
+    BlendedClipAnimator *createBlendedClipAnimator(Handler *handler,
+                                                   qint64 globalStartTimeNS,
+                                                   int loops)
+    {
+        auto animatorId = Qt3DCore::QNodeId::createId();
+        BlendedClipAnimator *animator = handler->blendedClipAnimatorManager()->getOrCreateResource(animatorId);
+        setPeerId(animator, animatorId);
+        animator->setStartTime(globalStartTimeNS);
+        animator->setLoops(loops);
+        return animator;
+    }
+
     LerpClipBlend *createLerpClipBlend(Handler *handler)
     {
         auto lerpId = Qt3DCore::QNodeId::createId();
@@ -136,6 +200,17 @@ public:
         return lerp;
     }
 
+    AdditiveClipBlend *createAdditiveClipBlend(Handler *handler)
+    {
+        auto additiveId = Qt3DCore::QNodeId::createId();
+        AdditiveClipBlend *additive = new AdditiveClipBlend();
+        setPeerId(additive, additiveId);
+        additive->setClipBlendNodeManager(handler->clipBlendNodeManager());
+        additive->setHandler(handler);
+        handler->clipBlendNodeManager()->appendNode(additiveId, additive);
+        return additive;
+    }
+
     ClipBlendValue *createClipBlendValue(Handler *handler)
     {
         auto valueId = Qt3DCore::QNodeId::createId();
@@ -145,6 +220,17 @@ public:
         value->setHandler(handler);
         handler->clipBlendNodeManager()->appendNode(valueId, value);
         return value;
+    }
+
+    MeanBlendNode *createMeanBlendNode(Handler *handler)
+    {
+        auto id = Qt3DCore::QNodeId::createId();
+        MeanBlendNode *node = new MeanBlendNode();
+        setPeerId(node, id);
+        node->setClipBlendNodeManager(handler->clipBlendNodeManager());
+        node->setHandler(handler);
+        handler->clipBlendNodeManager()->appendNode(id, node);
+        return node;
     }
 
 private Q_SLOTS:
@@ -1546,6 +1632,255 @@ private Q_SLOTS:
         QCOMPARE(actualIds.size(), expectedIds.size());
         for (int i = 0; i < actualIds.size(); ++i)
             QCOMPARE(actualIds[i], expectedIds[i]);
+
+        // Cleanup
+        delete handler;
+    }
+
+    void checkEvaluateBlendTree_data()
+    {
+        QTest::addColumn<Handler *>("handler");
+        QTest::addColumn<BlendedClipAnimator *>("animator");
+        QTest::addColumn<Qt3DCore::QNodeId>("blendNodeId");
+        QTest::addColumn<ClipResults>("expectedResults");
+
+        {
+            /*
+                ValueNode1----
+                             |
+                             MeanBlendNode
+                             |
+                ValueNode2----
+            */
+
+            auto handler = new Handler();
+            const qint64 globalStartTimeNS = 0;
+            const int loopCount = 1;
+            auto animator = createBlendedClipAnimator(handler, globalStartTimeNS, loopCount);
+
+            // Set up the blend node and dependencies (evaluated clip results of the
+            // dependent nodes in the animator indexed by their ids).
+            MeanBlendNode *blendNode = createMeanBlendNode(handler);
+
+            // First clip to use in the mean
+            auto valueNode1 = createClipBlendValue(handler);
+            ClipResults valueNode1Results = { 0.0f, 0.0f, 0.0f };
+            valueNode1->setClipResults(animator->peerId(), valueNode1Results);
+
+            // Second clip to use in the mean
+            auto valueNode2 = createClipBlendValue(handler);
+            ClipResults valueNode2Results = { 1.0f, 1.0f, 1.0f };
+            valueNode2->setClipResults(animator->peerId(), valueNode2Results);
+
+            blendNode->setValueNodeIds(valueNode1->peerId(), valueNode2->peerId());
+
+            ClipResults expectedResults = { 0.5f, 0.5f, 0.5f };
+
+            QTest::newRow("mean node, 1 channel")
+                    << handler << animator << blendNode->peerId() << expectedResults;
+        }
+
+        {
+            /*
+                ValueNode1----
+                             |
+                             MeanBlendNode
+                             |
+                ValueNode2----
+            */
+
+            auto handler = new Handler();
+            const qint64 globalStartTimeNS = 0;
+            const int loopCount = 1;
+            auto animator = createBlendedClipAnimator(handler, globalStartTimeNS, loopCount);
+
+            // Set up the blend node and dependencies (evaluated clip results of the
+            // dependent nodes in the animator indexed by their ids).
+            MeanBlendNode *blendNode = createMeanBlendNode(handler);
+
+            // First clip to use in the mean
+            auto valueNode1 = createClipBlendValue(handler);
+            ClipResults valueNode1Results = { 0.0f, 0.0f, 0.0f, 1.0f, 2.0f, 3.0f };
+            valueNode1->setClipResults(animator->peerId(), valueNode1Results);
+
+            // Second clip to use in the mean
+            auto valueNode2 = createClipBlendValue(handler);
+            ClipResults valueNode2Results = { 1.0f, 1.0f, 1.0f, 2.0f, 4.0f, 6.0f };
+            valueNode2->setClipResults(animator->peerId(), valueNode2Results);
+
+            blendNode->setValueNodeIds(valueNode1->peerId(), valueNode2->peerId());
+
+            ClipResults expectedResults = { 0.5f, 0.5f, 0.5f, 1.5f, 3.0f, 4.5f };
+
+            QTest::newRow("mean node, 2 channels")
+                    << handler << animator << blendNode->peerId() << expectedResults;
+        }
+
+        {
+            /*
+                ValueNode1----
+                             |
+                             MeanBlendNode1------
+                             |                  |
+                ValueNode2----                  |
+                                                MeanBlendNode3
+                ValueNode3----                  |
+                             |                  |
+                             MeanBlendNode2------
+                             |
+                ValueNode4----
+            */
+
+            auto handler = new Handler();
+            const qint64 globalStartTimeNS = 0;
+            const int loopCount = 1;
+            auto animator = createBlendedClipAnimator(handler, globalStartTimeNS, loopCount);
+
+            // Set up the blend node and dependencies (evaluated clip results of the
+            // dependent nodes in the animator indexed by their ids).
+
+            // MeanBlendNode1
+            MeanBlendNode *meanNode1 = createMeanBlendNode(handler);
+
+            // First clip to use in mean1
+            auto valueNode1 = createClipBlendValue(handler);
+            ClipResults valueNode1Results = { 0.0f, 0.0f, 0.0f };
+            valueNode1->setClipResults(animator->peerId(), valueNode1Results);
+
+            // Second clip to use in mean1
+            auto valueNode2 = createClipBlendValue(handler);
+            ClipResults valueNode2Results = { 2.0f, 2.0f, 2.0f };
+            valueNode2->setClipResults(animator->peerId(), valueNode2Results);
+
+            meanNode1->setValueNodeIds(valueNode1->peerId(), valueNode2->peerId());
+
+
+            // MeanBlendNode2
+            MeanBlendNode *meanNode2 = createMeanBlendNode(handler);
+
+            // First clip to use in mean1
+            auto valueNode3 = createClipBlendValue(handler);
+            ClipResults valueNode3Results = { 10.0f, 10.0f, 10.0f };
+            valueNode3->setClipResults(animator->peerId(), valueNode3Results);
+
+            // Second clip to use in mean1
+            auto valueNode4 = createClipBlendValue(handler);
+            ClipResults valueNode4Results = { 20.0f, 20.0f, 20.0f };
+            valueNode4->setClipResults(animator->peerId(), valueNode4Results);
+
+            meanNode2->setValueNodeIds(valueNode3->peerId(), valueNode4->peerId());
+
+
+            // MeanBlendNode3
+            MeanBlendNode *meanNode3 = createMeanBlendNode(handler);
+            meanNode3->setValueNodeIds(meanNode1->peerId(), meanNode2->peerId());
+
+            // Mean1 = 1
+            // Mean2 = 15
+            // Mean3 = (1 + 15 ) / 2 = 8
+            ClipResults expectedResults = { 8.0f, 8.0f, 8.0f };
+
+            QTest::newRow("3 mean nodes, 1 channel")
+                    << handler << animator << meanNode3->peerId() << expectedResults;
+        }
+
+        {
+            /*
+                ValueNode1----
+                             |
+                             MeanBlendNode1------
+                             |                  |
+                ValueNode2----                  |
+                                                MeanBlendNode3---
+                ValueNode3----                  |               |
+                             |                  |               |
+                             MeanBlendNode2------               AdditiveBlendNode1
+                             |                                  |
+                ValueNode4----                                  |
+                                                ValueNode5-------
+            */
+
+            auto handler = new Handler();
+            const qint64 globalStartTimeNS = 0;
+            const int loopCount = 1;
+            auto animator = createBlendedClipAnimator(handler, globalStartTimeNS, loopCount);
+
+            // Set up the blend node and dependencies (evaluated clip results of the
+            // dependent nodes in the animator indexed by their ids).
+
+            // MeanBlendNode1
+            MeanBlendNode *meanNode1 = createMeanBlendNode(handler);
+
+            // First clip to use in mean1
+            auto valueNode1 = createClipBlendValue(handler);
+            ClipResults valueNode1Results = { 0.0f, 0.0f, 0.0f };
+            valueNode1->setClipResults(animator->peerId(), valueNode1Results);
+
+            // Second clip to use in mean1
+            auto valueNode2 = createClipBlendValue(handler);
+            ClipResults valueNode2Results = { 2.0f, 2.0f, 2.0f };
+            valueNode2->setClipResults(animator->peerId(), valueNode2Results);
+
+            meanNode1->setValueNodeIds(valueNode1->peerId(), valueNode2->peerId());
+
+
+            // MeanBlendNode2
+            MeanBlendNode *meanNode2 = createMeanBlendNode(handler);
+
+            // First clip to use in mean2
+            auto valueNode3 = createClipBlendValue(handler);
+            ClipResults valueNode3Results = { 10.0f, 10.0f, 10.0f };
+            valueNode3->setClipResults(animator->peerId(), valueNode3Results);
+
+            // Second clip to use in mean2
+            auto valueNode4 = createClipBlendValue(handler);
+            ClipResults valueNode4Results = { 20.0f, 20.0f, 20.0f };
+            valueNode4->setClipResults(animator->peerId(), valueNode4Results);
+
+            meanNode2->setValueNodeIds(valueNode3->peerId(), valueNode4->peerId());
+
+
+            // MeanBlendNode3
+            MeanBlendNode *meanNode3 = createMeanBlendNode(handler);
+            meanNode3->setValueNodeIds(meanNode1->peerId(), meanNode2->peerId());
+
+
+            // AdditiveBlendNode1
+            AdditiveClipBlend *additiveBlendNode1 = createAdditiveClipBlend(handler);
+            auto valueNode5 = createClipBlendValue(handler);
+            ClipResults valueNode5Results = { 1.0f, 2.0f, 3.0f };
+            valueNode5->setClipResults(animator->peerId(), valueNode5Results);
+
+            additiveBlendNode1->setBaseClipId(meanNode3->peerId());
+            additiveBlendNode1->setAdditiveClipId(valueNode5->peerId());
+            additiveBlendNode1->setAdditiveFactor(0.5);
+
+            // Mean1 = 1
+            // Mean2 = 15
+            // Mean3 = (1 + 15 ) / 2 = 8
+            // Additive1 = 8 + 0.5 * (1, 2, 3) = (8.5, 9, 9.5)
+            ClipResults expectedResults = { 8.5f, 9.0f, 9.5f };
+
+            QTest::newRow("3 mean nodes + additive, 1 channel")
+                    << handler << animator << additiveBlendNode1->peerId() << expectedResults;
+        }
+    }
+
+    void checkEvaluateBlendTree()
+    {
+        // GIVEN
+        QFETCH(Handler *, handler);
+        QFETCH(BlendedClipAnimator *, animator);
+        QFETCH(Qt3DCore::QNodeId, blendNodeId);
+        QFETCH(ClipResults, expectedResults);
+
+        // WHEN
+        const ClipResults actualResults = evaluateBlendTree(handler, animator, blendNodeId);
+
+        // THEN
+        QCOMPARE(actualResults.size(), expectedResults.size());
+        for (int i = 0; i < actualResults.size(); ++i)
+            QCOMPARE(actualResults[i], expectedResults[i]);
 
         // Cleanup
         delete handler;

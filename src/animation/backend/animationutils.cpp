@@ -369,6 +369,42 @@ QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
     return clipIds;
 }
 
+ClipResults evaluateBlendTree(Handler *handler,
+                              BlendedClipAnimator *animator,
+                              Qt3DCore::QNodeId blendTreeRootId)
+{
+    Q_ASSERT(handler);
+    Q_ASSERT(blendTreeRootId.isNull() == false);
+    const Qt3DCore::QNodeId animatorId = animator->peerId();
+
+    // We need the ClipBlendNodeManager to be able to lookup nodes from their Ids
+    ClipBlendNodeManager *nodeManager = handler->clipBlendNodeManager();
+
+    // Visit the tree in a post-order manner and for each interior node call
+    // blending function. We only need to visit the nodes that affect the blend
+    // tree at this time.
+    ClipBlendNodeVisitor visitor(nodeManager,
+                                 ClipBlendNodeVisitor::PostOrder,
+                                 ClipBlendNodeVisitor::VisitOnlyDependencies);
+
+    // TODO: When jobs can spawn other jobs we could evaluate subtrees of
+    // the blend tree in parallel. Since it's just a dependency tree, it maps
+    // simply onto the dependencies between jobs.
+    auto func = [animatorId] (ClipBlendNode *blendNode) {
+        // Look up the blend node and if it's an interior node, perform
+        // the blend operation
+        if (blendNode->blendType() != ClipBlendNode::ValueType)
+            blendNode->performBlend(animatorId);
+    };
+    visitor.traverse(blendTreeRootId, func);
+
+    // The clip results stored in the root node for this animator
+    // now represent the result of the blend tree evaluation
+    ClipBlendNode *blendTreeRootNode = nodeManager->lookupNode(blendTreeRootId);
+    Q_ASSERT(blendTreeRootNode);
+    return blendTreeRootNode->clipResults(animatorId);
+}
+
 } // Animation
 } // Qt3DAnimation
 

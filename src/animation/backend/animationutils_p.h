@@ -58,6 +58,7 @@ namespace Qt3DAnimation {
 namespace Animation {
 
 struct Channel;
+class BlendedClipAnimator;
 class Handler;
 class AnimationClipLoader;
 class ChannelMapper;
@@ -170,6 +171,11 @@ double phaseFromGlobalTime(double t_global, double t_start_global,
 Q_AUTOTEST_EXPORT
 QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
                                                       Qt3DCore::QNodeId blendTreeRootId);
+
+Q_AUTOTEST_EXPORT
+ClipResults evaluateBlendTree(Handler *handler,
+                              BlendedClipAnimator *animator,
+                              Qt3DCore::QNodeId blendNodeId);
 
 } // Animation
 } // Qt3DAnimation
