@@ -85,6 +85,17 @@ void LerpClipBlend::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr
     m_blendFactor = cloneData.blendFactor;
 }
 
+double LerpClipBlend::duration() const
+{
+    ClipBlendNode *startNode = clipBlendNodeManager()->lookupNode(m_startClipId);
+    const double startNodeDuration = startNode ? startNode->duration() : 0.0;
+
+    ClipBlendNode *endNode = clipBlendNodeManager()->lookupNode(m_endClipId);
+    const double endNodeDuration = endNode ? endNode->duration() : 0.0;
+
+    return blend(startNodeDuration, endNodeDuration);
+}
+
 } // Animation
 
 } // Qt3DAnimation

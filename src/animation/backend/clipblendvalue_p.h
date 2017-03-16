@@ -72,6 +72,8 @@ public:
         return { m_clipId };
     }
 
+    double duration() const Q_DECL_OVERRIDE;
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 

@@ -37,9 +37,45 @@
 
 using namespace Qt3DAnimation::Animation;
 
+namespace {
+
+class TestClipBlendNode : public ClipBlendNode
+{
+public:
+    TestClipBlendNode(double duration)
+        : ClipBlendNode(ClipBlendNode::LerpBlendType)
+        , m_duration(duration)
+    {}
+
+    float blend(float, float) const Q_DECL_FINAL { return 0.0f; }
+
+    QVector<Qt3DCore::QNodeId> dependencyIds() const Q_DECL_FINAL
+    {
+        return QVector<Qt3DCore::QNodeId>();
+    }
+
+    using ClipBlendNode::setClipResults;
+
+    double duration() const Q_DECL_FINAL { return m_duration; }
+
+    double m_duration;
+};
+
+} // anonymous
+
 class tst_AdditiveClipBlend : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
+public:
+    TestClipBlendNode *createTestBlendNode(Handler *handler,
+                                           double duration)
+    {
+        auto id = Qt3DCore::QNodeId::createId();
+        TestClipBlendNode *node = new TestClipBlendNode(duration);
+        setPeerId(node, id);
+        handler->clipBlendNodeManager()->appendNode(id, node);
+        return node;
+    }
 
 private Q_SLOTS:
 
@@ -200,6 +236,30 @@ private Q_SLOTS:
         QCOMPARE(actualIds.size(), 2);
         QCOMPARE(actualIds[0], baseClipId);
         QCOMPARE(actualIds[1], anotherAdditiveClipId);
+    }
+
+    void checkDuration()
+    {
+        // GIVEN
+        auto handler = new Handler();
+        const double expectedDuration = 123.5;
+        const double baseNodeDuration = expectedDuration;
+        const double additiveNodeDuration = 5.0;
+
+        auto baseNode = createTestBlendNode(handler, baseNodeDuration);
+        auto additiveNode = createTestBlendNode(handler, additiveNodeDuration);
+
+        AdditiveClipBlend blendNode;
+        blendNode.setHandler(handler);
+        blendNode.setClipBlendNodeManager(handler->clipBlendNodeManager());
+        blendNode.setBaseClipId(baseNode->peerId());
+        blendNode.setAdditiveClipId(additiveNode->peerId());
+
+        // WHEN
+        double actualDuration = blendNode.duration();
+
+        // THEN
+        QCOMPARE(actualDuration, expectedDuration);
     }
 };
 

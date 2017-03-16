@@ -81,6 +81,15 @@ float ClipBlendValue::blend(float value1, float value2) const
     return 0.0f;
 }
 
+double ClipBlendValue::duration() const
+{
+    if (m_clipId.isNull())
+        return 0.0;
+    AnimationClipLoader *clip = m_handler->animationClipLoaderManager()->lookupResource(m_clipId);
+    Q_ASSERT(clip);
+    return clip->duration();
+}
+
 } // namespace Animation
 } // namespace Qt3DAnimation
 

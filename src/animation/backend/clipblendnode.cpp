@@ -106,10 +106,7 @@ void ClipBlendNode::setClipBlendNodeManager(ClipBlendNodeManager *manager)
     m_manager = manager;
 }
 
-ClipBlendNodeManager *ClipBlendNode::clipBlendNodeManager() const
-{
-    return m_manager;
-}
+
 
 void ClipBlendNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {

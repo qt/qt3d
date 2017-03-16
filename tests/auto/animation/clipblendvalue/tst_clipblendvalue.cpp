@@ -40,6 +40,16 @@ using namespace Qt3DAnimation::Animation;
 class tst_ClipBlendValue : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
+public:
+    AnimationClipLoader *createAnimationClipLoader(Handler *handler,
+                                                   double duration)
+    {
+        auto clipId = Qt3DCore::QNodeId::createId();
+        AnimationClipLoader *clip = handler->animationClipLoaderManager()->getOrCreateResource(clipId);
+        setPeerId(clip, clipId);
+        clip->setDuration(duration);
+        return clip;
+    }
 
 private Q_SLOTS:
     void checkInitialState()
@@ -133,6 +143,24 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(actualIds.size(), 1);
         QCOMPARE(actualIds[0], anotherClipId);
+    }
+
+    void checkDuration()
+    {
+        // GIVEN
+        auto handler = new Handler();
+        const double expectedDuration = 123.5;
+        auto clip = createAnimationClipLoader(handler, expectedDuration);
+        ClipBlendValue clipNode;
+        clipNode.setHandler(handler);
+        clipNode.setClipBlendNodeManager(handler->clipBlendNodeManager());
+        clipNode.setClipId(clip->peerId());
+
+        // WHEN
+        double actualDuration = clipNode.duration();
+
+        // THEN
+        QCOMPARE(actualDuration, expectedDuration);
     }
 };
 

@@ -79,6 +79,13 @@ public:
         return { m_baseClipId, m_additiveClipId };
     }
 
+    inline double duration() const Q_DECL_OVERRIDE
+    {
+        ClipBlendNode *node = clipBlendNodeManager()->lookupNode(m_baseClipId);
+        Q_ASSERT(node);
+        return node->duration();
+    }
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 

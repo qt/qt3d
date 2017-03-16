@@ -55,6 +55,8 @@ public:
     {
         return QVector<Qt3DCore::QNodeId>();
     }
+
+    double duration() const Q_DECL_FINAL { return 0.0f; }
 };
 
 } // anonymous
