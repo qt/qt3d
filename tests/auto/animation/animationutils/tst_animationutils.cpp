@@ -61,8 +61,8 @@ bool fuzzyCompare(float x1, float x2)
 {
     if (qFuzzyIsNull(x1) && qFuzzyIsNull(x2)) {
         return true;
-    } else if (qFuzzyIsNull(x1) && !qFuzzyIsNull(x2) ||
-               !qFuzzyIsNull(x1) && qFuzzyIsNull(x2)) {
+    } else if ((qFuzzyIsNull(x1) && !qFuzzyIsNull(x2)) ||
+               (!qFuzzyIsNull(x1) && qFuzzyIsNull(x2))) {
         return false;
     } else {
         return qFuzzyCompare(x1, x2);
