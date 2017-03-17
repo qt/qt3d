@@ -81,6 +81,9 @@ public:
 
     double duration() const Q_DECL_OVERRIDE;
 
+protected:
+    ClipResults doBlend(const QVector<ClipResults> &blendData) const Q_DECL_FINAL;
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 

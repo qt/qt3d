@@ -76,6 +76,19 @@ float AdditiveClipBlend::blend(float value1, float value2) const
     return value1 + (m_additiveFactor * value2);
 }
 
+ClipResults AdditiveClipBlend::doBlend(const QVector<ClipResults> &blendData) const
+{
+    Q_ASSERT(blendData.size() == 2);
+    Q_ASSERT(blendData[0].size() == blendData[1].size());
+    const int elementCount = blendData.first().size();
+    ClipResults blendResults(elementCount);
+
+    for (int i = 0; i < elementCount; ++i)
+        blendResults[i] = blendData[0][i] + m_additiveFactor * blendData[1][i];
+
+    return blendResults;
+}
+
 void AdditiveClipBlend::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     ClipBlendNode::initializeFromPeer(change);

@@ -81,6 +81,14 @@ float ClipBlendValue::blend(float value1, float value2) const
     return 0.0f;
 }
 
+ClipResults ClipBlendValue::doBlend(const QVector<ClipResults> &blendData) const
+{
+    // Should never be called for the value node
+    Q_UNUSED(blendData);
+    Q_UNREACHABLE();
+    return ClipResults();
+}
+
 double ClipBlendValue::duration() const
 {
     if (m_clipId.isNull())

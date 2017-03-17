@@ -86,6 +86,9 @@ public:
         return node->duration();
     }
 
+protected:
+    ClipResults doBlend(const QVector<ClipResults> &blendData) const Q_DECL_FINAL;
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 

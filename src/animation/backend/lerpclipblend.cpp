@@ -75,6 +75,19 @@ float LerpClipBlend::blend(float value1, float value2) const
     return ((1.0f - m_blendFactor) * value1) + (m_blendFactor * value2);
 }
 
+ClipResults LerpClipBlend::doBlend(const QVector<ClipResults> &blendData) const
+{
+    Q_ASSERT(blendData.size() == 2);
+    Q_ASSERT(blendData[0].size() == blendData[1].size());
+    const int elementCount = blendData.first().size();
+    ClipResults blendResults(elementCount);
+
+    for (int i = 0; i < elementCount; ++i)
+        blendResults[i] = (1.0f - m_blendFactor) * blendData[0][i] + (m_blendFactor * blendData[1][i]);
+
+    return blendResults;
+}
+
 void LerpClipBlend::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     ClipBlendNode::initializeFromPeer(change);

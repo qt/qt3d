@@ -49,8 +49,9 @@ namespace {
 class TestClipBlendNode : public ClipBlendNode
 {
 public:
-    TestClipBlendNode()
+    TestClipBlendNode(const ClipResults &clipResults = ClipResults())
         : ClipBlendNode(ClipBlendNode::LerpBlendType)
+        , m_clipResults(clipResults)
     {}
 
     float blend(float , float ) const Q_DECL_FINAL { return 0.0f; }
@@ -63,6 +64,15 @@ public:
     using ClipBlendNode::setClipResults;
 
     double duration() const Q_DECL_FINAL { return 0.0f; }
+
+protected:
+    ClipResults doBlend(const QVector<ClipResults> &) const Q_DECL_FINAL
+    {
+        return m_clipResults;
+    }
+
+private:
+    ClipResults m_clipResults;
 };
 
 } // anonymous
@@ -72,6 +82,27 @@ Q_DECLARE_METATYPE(TestClipBlendNode *)
 class tst_ClipBlendNode : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
+public:
+    TestClipBlendNode *createTestClipBlendNode(Handler *handler, const ClipResults &clipResults)
+    {
+        auto id = Qt3DCore::QNodeId::createId();
+        TestClipBlendNode *node = new TestClipBlendNode(clipResults);
+        setPeerId(node, id);
+        handler->clipBlendNodeManager()->appendNode(id, node);
+        return node;
+    }
+
+    BlendedClipAnimator *createBlendedClipAnimator(Handler *handler,
+                                                   qint64 globalStartTimeNS,
+                                                   int loops)
+    {
+        auto animatorId = Qt3DCore::QNodeId::createId();
+        BlendedClipAnimator *animator = handler->blendedClipAnimatorManager()->getOrCreateResource(animatorId);
+        setPeerId(animator, animatorId);
+        animator->setStartTime(globalStartTimeNS);
+        animator->setLoops(loops);
+        return animator;
+    }
 
 private Q_SLOTS:
 
@@ -363,6 +394,26 @@ private Q_SLOTS:
         }
 
         delete blendNode;
+    }
+
+    void checkPerformBlend()
+    {
+        // GIVEN
+        auto handler = new Handler();
+        ClipResults expectedResults = { 1.0f, 2.0f, 3.0f };
+        auto blendNode = createTestClipBlendNode(handler, expectedResults);
+        const qint64 globalStartTimeNS = 0;
+        const int loopCount = 1;
+        auto animator = createBlendedClipAnimator(handler, globalStartTimeNS, loopCount);
+
+        // WHEN
+        blendNode->performBlend(animator->peerId());
+
+        // THEN
+        const ClipResults actualResults = blendNode->clipResults(animator->peerId());
+        QCOMPARE(actualResults.size(), expectedResults.size());
+        for (int i = 0; i < actualResults.size(); ++i)
+            QCOMPARE(actualResults[i], expectedResults[i]);
     }
 };
 

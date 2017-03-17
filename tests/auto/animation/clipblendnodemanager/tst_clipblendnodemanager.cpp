@@ -57,6 +57,12 @@ public:
     }
 
     double duration() const Q_DECL_FINAL { return 0.0f; }
+
+protected:
+    Qt3DAnimation::Animation::ClipResults doBlend(const QVector<Qt3DAnimation::Animation::ClipResults> &) const Q_DECL_FINAL
+    {
+        return Qt3DAnimation::Animation::ClipResults();
+    }
 };
 
 } // anonymous

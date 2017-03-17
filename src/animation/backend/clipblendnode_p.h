@@ -81,7 +81,11 @@ public:
     Qt3DCore::QNodeIdVector clipIds() const;
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+    // TODO: Remove this old blend() virtual and rename performBlend() to blend()
     virtual float blend(float value1, float value2) const = 0;
+
+    void performBlend(Qt3DCore::QNodeId animatorId);
 
     ClipResults clipResults(Qt3DCore::QNodeId animatorId) const;
 
@@ -93,6 +97,8 @@ protected:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
 
     void setClipResults(Qt3DCore::QNodeId animatorId, const ClipResults &clipResults);
+
+    virtual ClipResults doBlend(const QVector<ClipResults> &blendData) const = 0;
 
 private:
     void setParentId(Qt3DCore::QNodeId parentId);

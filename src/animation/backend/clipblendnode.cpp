@@ -200,6 +200,34 @@ ClipResults ClipBlendNode::clipResults(Qt3DCore::QNodeId animatorId) const
     evaluated in one pass, and the tree in a subsequent pass.
 */
 
+/*!
+    \internal
+
+    Fetches the ClipResults from the nodes listed in the dependencyIds
+    and passes them to the doBlend() virtual function which should be
+    implemented in subclasses to perform the actual blend operation.
+    The results are then inserted into the clip results for this blend
+    node indexed by the \a animatorId.
+*/
+void ClipBlendNode::performBlend(Qt3DCore::QNodeId animatorId)
+{
+    // Obtain the clip results from each of the dependencies
+    const QVector<Qt3DCore::QNodeId> dependencyNodeIds = dependencyIds();
+    const int dependencyCount = dependencyNodeIds.size();
+    QVector<ClipResults> blendData;
+    blendData.reserve(dependencyCount);
+    for (const auto dependencyId : dependencyNodeIds) {
+        ClipBlendNode *dependencyNode = clipBlendNodeManager()->lookupNode(dependencyId);
+        ClipResults blendDataElement = dependencyNode->clipResults(animatorId);
+        blendData.push_back(blendDataElement);
+    }
+
+    // Ask the blend node to perform the actual blend operation on the data
+    // from the dependencies
+    ClipResults blendedResults = doBlend(blendData);
+    setClipResults(animatorId, blendedResults);
+}
+
 } // Animation
 
 } // Qt3DAnimation
