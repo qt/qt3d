@@ -1885,6 +1885,74 @@ private Q_SLOTS:
         // Cleanup
         delete handler;
     }
+
+    void checkFormatClipResults_data()
+    {
+        QTest::addColumn<ClipResults>("rawClipResults");
+        QTest::addColumn<ComponentIndices>("format");
+        QTest::addColumn<ClipResults>("expectedResults");
+
+        {
+            ClipResults rawClipResults = { 1.0f, 2.0f, 3.0f };
+            ComponentIndices format = { 0, 1, 2 };
+            ClipResults expectedResults = { 1.0f, 2.0f, 3.0f };
+
+            QTest::newRow("identity")
+                    << rawClipResults << format << expectedResults;
+        }
+
+        {
+            ClipResults rawClipResults = { 1.0f, 2.0f };
+            ComponentIndices format = { 1, 0 };
+            ClipResults expectedResults = { 2.0f, 1.0f };
+
+            QTest::newRow("swap")
+                    << rawClipResults << format << expectedResults;
+        }
+
+        {
+            ClipResults rawClipResults = { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f };
+            ComponentIndices format = { 0, 2, 1, 3, 4 };
+            ClipResults expectedResults = { 1.0f, 3.0f, 2.0f, 4.0f, 5.0f };
+
+            QTest::newRow("swap subset")
+                    << rawClipResults << format << expectedResults;
+        }
+
+        {
+            ClipResults rawClipResults = { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f };
+            ComponentIndices format = { 4, 3, 2, 1, 0 };
+            ClipResults expectedResults = { 5.0f, 4.0f, 3.0f, 2.0f, 1.0f };
+
+            QTest::newRow("reverse")
+                    << rawClipResults << format << expectedResults;
+        }
+
+        {
+            ClipResults rawClipResults = { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f };
+            ComponentIndices format = { 0, 1, -1, 3, 4 };
+            ClipResults expectedResults = { 1.0f, 2.0f, 0.0f, 4.0f, 5.0f };
+
+            QTest::newRow("include missing")
+                    << rawClipResults << format << expectedResults;
+        }
+    }
+
+    void checkFormatClipResults()
+    {
+        // GIVEN
+        QFETCH(ClipResults, rawClipResults);
+        QFETCH(ComponentIndices, format);
+        QFETCH(ClipResults, expectedResults);
+
+        // WHEN
+        const ClipResults actualResults = formatClipResults(rawClipResults, format);
+
+        // THEN
+        QCOMPARE(actualResults.size(), expectedResults.size());
+        for (int i = 0; i < actualResults.size(); ++i)
+            QCOMPARE(actualResults[i], expectedResults[i]);
+    }
 };
 
 QTEST_MAIN(tst_AnimationUtils)

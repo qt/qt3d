@@ -369,6 +369,24 @@ QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
     return clipIds;
 }
 
+ClipResults formatClipResults(const ClipResults &rawClipResults,
+                              const ComponentIndices &format)
+{
+    // Resize the output to match the number of indices
+    const int elementCount = format.size();
+    ClipResults formattedClipResults(elementCount);
+
+    // Perform a gather operation to format the data
+    // TODO: For large numbers of components do this in parallel with
+    // for e.g. a parallel_for() like construct
+    for (int i = 0; i < elementCount; ++i) {
+        const float value = format[i] != -1 ? rawClipResults[format[i]] : 0.0f;
+        formattedClipResults[i] = value;
+    }
+
+    return formattedClipResults;
+}
+
 ClipResults evaluateBlendTree(Handler *handler,
                               BlendedClipAnimator *animator,
                               Qt3DCore::QNodeId blendTreeRootId)
