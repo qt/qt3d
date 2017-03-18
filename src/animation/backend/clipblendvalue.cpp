@@ -98,6 +98,27 @@ double ClipBlendValue::duration() const
     return clip->duration();
 }
 
+void ClipBlendValue::setFormatIndices(Qt3DCore::QNodeId animatorId, const ComponentIndices &formatIndices)
+{
+    // Do we already have an entry for this animator?
+    const int animatorIndex = m_animatorIds.indexOf(animatorId);
+    if (animatorIndex == -1) {
+        // Nope, add it
+        m_animatorIds.push_back(animatorId);
+        m_formatIndicies.push_back(formatIndices);
+    } else {
+        m_formatIndicies[animatorIndex] = formatIndices;
+    }
+}
+
+ComponentIndices ClipBlendValue::formatIndices(Qt3DCore::QNodeId animatorId)
+{
+    const int animatorIndex = m_animatorIds.indexOf(animatorId);
+    if (animatorIndex != -1)
+        return m_formatIndicies[animatorIndex];
+    return ComponentIndices();
+}
+
 } // namespace Animation
 } // namespace Qt3DAnimation
 

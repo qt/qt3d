@@ -35,7 +35,12 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 
+#include <random>
+#include <algorithm>
+
 using namespace Qt3DAnimation::Animation;
+
+Q_DECLARE_METATYPE(ClipBlendValue *)
 
 class tst_ClipBlendValue : public Qt3DCore::QBackendNodeTester
 {
@@ -161,6 +166,131 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(actualDuration, expectedDuration);
+    }
+
+    void checkFormatIndices_data()
+    {
+        QTest::addColumn<ClipBlendValue *>("blendNode");
+        QTest::addColumn<QVector<int>>("indexes");
+        QTest::addColumn<QVector<Qt3DCore::QNodeId>>("animatorIds");
+        QTest::addColumn<QVector<ComponentIndices>>("expectedFormatIndices");
+
+        // Single entry
+        {
+            auto blendNode = new ClipBlendValue;
+            QVector<Qt3DCore::QNodeId> animatorIds;
+            QVector<ComponentIndices> expectedFormatIndices;
+
+            const auto animatorId = Qt3DCore::QNodeId::createId();
+            animatorIds.push_back(animatorId);
+
+            ComponentIndices formatIndices = { 0, 1, 2 };
+            expectedFormatIndices.push_back(formatIndices);
+
+            // Set data and indexes
+            blendNode->setFormatIndices(animatorId, formatIndices);
+            QVector<int> indexes = QVector<int>() << 0;
+
+            QTest::newRow("single entry")
+                    << blendNode << indexes << animatorIds << expectedFormatIndices;
+        }
+
+        // No data
+        {
+            auto blendNode = new ClipBlendValue;
+            QVector<Qt3DCore::QNodeId> animatorIds;
+            QVector<ComponentIndices> expectedFormatIndices;
+
+            auto animatorId = Qt3DCore::QNodeId::createId();
+            animatorIds.push_back(animatorId);
+
+            ComponentIndices formatIndices;
+            expectedFormatIndices.push_back(formatIndices);
+
+            // Don't set any data
+            QVector<int> indexes = QVector<int>() << 0;
+
+            QTest::newRow("no entries")
+                    << blendNode << indexes << animatorIds << expectedFormatIndices;
+        }
+
+        // Multiple entries, ordered
+        {
+            auto blendNode = new ClipBlendValue;
+            QVector<Qt3DCore::QNodeId> animatorIds;
+            QVector<ComponentIndices> expectedFormatIndices;
+
+            const int animatorCount = 10;
+            for (int j = 0; j < animatorCount; ++j) {
+                auto animatorId = Qt3DCore::QNodeId::createId();
+                animatorIds.push_back(animatorId);
+
+                ComponentIndices formatIndices;
+                for (int i = 0; i < j + 5; ++i)
+                    formatIndices.push_back(i + j);
+                expectedFormatIndices.push_back(formatIndices);
+
+                blendNode->setFormatIndices(animatorId, formatIndices);
+            }
+
+            QVector<int> indexes(animatorCount);
+            std::iota(indexes.begin(), indexes.end(), 0);
+
+            QTest::newRow("multiple entries, ordered")
+                    << blendNode << indexes << animatorIds << expectedFormatIndices;
+        }
+
+        // Multiple entries, unordered
+        {
+            auto blendNode = new ClipBlendValue;
+            QVector<Qt3DCore::QNodeId> animatorIds;
+            QVector<ComponentIndices> expectedFormatIndices;
+
+            const int animatorCount = 10;
+            for (int j = 0; j < animatorCount; ++j) {
+                auto animatorId = Qt3DCore::QNodeId::createId();
+                animatorIds.push_back(animatorId);
+
+                ComponentIndices formatIndices;
+                for (int i = 0; i < j + 5; ++i)
+                    formatIndices.push_back(i + j);
+                expectedFormatIndices.push_back(formatIndices);
+
+                blendNode->setFormatIndices(animatorId, formatIndices);
+            }
+
+            // Shuffle the animatorIds to randomise the lookups
+            QVector<int> indexes(animatorCount);
+            std::iota(indexes.begin(), indexes.end(), 0);
+            std::random_device rd;
+            std::mt19937 generator(rd());
+            std::shuffle(indexes.begin(), indexes.end(), generator);
+
+            QTest::newRow("multiple entries, unordered")
+                    << blendNode << indexes << animatorIds << expectedFormatIndices;
+        }
+    }
+
+    void checkFormatIndices()
+    {
+        // GIVEN
+        QFETCH(ClipBlendValue *, blendNode);
+        QFETCH(QVector<int>, indexes);
+        QFETCH(QVector<Qt3DCore::QNodeId>, animatorIds);
+        QFETCH(QVector<ComponentIndices>, expectedFormatIndices);
+
+        for (int i = 0; i < indexes.size(); ++i) {
+            // WHEN
+            const int index = indexes[i];
+            const ComponentIndices actualFormatIndices = blendNode->formatIndices(animatorIds[index]);
+
+            // THEN
+            QCOMPARE(actualFormatIndices.size(), expectedFormatIndices[index].size());
+            for (int j = 0; j < actualFormatIndices.size(); ++j)
+                QCOMPARE(actualFormatIndices[j], expectedFormatIndices[index][j]);
+        }
+
+        delete blendNode;
     }
 };
 
