@@ -114,7 +114,7 @@ double phaseFromGlobalTime(double t_global, double t_start_global,
     return t_local / duration;
 }
 
-QVector<int> channelComponentsToIndices(const Channel &channel, int dataType, int offset)
+ComponentIndices channelComponentsToIndices(const Channel &channel, int dataType, int offset)
 {
 #if defined Q_COMPILER_UNIFORM_INIT
     static const QVector<char> standardSuffixes = { 'X', 'Y', 'Z', 'W' };
@@ -130,7 +130,7 @@ QVector<int> channelComponentsToIndices(const Channel &channel, int dataType, in
         return channelComponentsToIndicesHelper(channel, dataType, offset, quaternionSuffixes);
 }
 
-QVector<int> channelComponentsToIndicesHelper(const Channel &channel,
+ComponentIndices channelComponentsToIndicesHelper(const Channel &channel,
                                               int dataType,
                                               int offset,
                                               const QVector<char> &suffixes)
@@ -164,7 +164,7 @@ QVector<int> channelComponentsToIndicesHelper(const Channel &channel,
                    << "but found" << actualComponentCount << "components in the animation clip";
     }
 
-    QVector<int> indices(expectedComponentCount);
+    ComponentIndices indices(expectedComponentCount);
     for (int i = 0; i < expectedComponentCount; ++i) {
         const QString &componentName = channel.channelComponents[i].name;
         char suffix = componentName.at(componentName.length() - 1).toLatin1();

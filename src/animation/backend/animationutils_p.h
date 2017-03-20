@@ -62,12 +62,14 @@ class Handler;
 class AnimationClipLoader;
 class ChannelMapper;
 
+typedef QVector<int> ComponentIndices;
+
 struct MappingData
 {
     Qt3DCore::QNodeId targetId;
     const char *propertyName;
     int type;
-    QVector<int> channelIndices;
+    ComponentIndices channelIndices;
 };
 
 struct BlendingMappingData : public MappingData
@@ -126,15 +128,15 @@ ClipEvaluationData evaluationDataForClip(AnimationClipLoader *clip,
                                          const AnimatorEvaluationData &animatorData);
 
 Q_AUTOTEST_EXPORT
-QVector<int> channelComponentsToIndices(const Channel &channel,
-                                        int dataType,
-                                        int offset = 0);
+ComponentIndices channelComponentsToIndices(const Channel &channel,
+                                            int dataType,
+                                            int offset = 0);
 
 Q_AUTOTEST_EXPORT
-QVector<int> channelComponentsToIndicesHelper(const Channel &channelGroup,
-                                              int dataType,
-                                              int offset,
-                                              const QVector<char> &suffixes);
+ComponentIndices channelComponentsToIndicesHelper(const Channel &channelGroup,
+                                                  int dataType,
+                                                  int offset,
+                                                  const QVector<char> &suffixes);
 
 Q_AUTOTEST_EXPORT
 ClipResults evaluateClipAtLocalTime(AnimationClipLoader *clip,
