@@ -49,10 +49,40 @@
 #include <QtCore/qvariant.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 
+#include <numeric>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 namespace Animation {
+
+int componentsForType(int type)
+{
+    int componentCount = 1;
+    switch (type) {
+    case QVariant::Double:
+        componentCount = 1;
+        break;
+
+    case QVariant::Vector2D:
+        componentCount = 2;
+        break;
+
+    case QVariant::Vector3D:
+        componentCount = 3;
+        break;
+
+    case QVariant::Vector4D:
+    case QVariant::Quaternion:
+        componentCount = 4;
+        break;
+
+    default:
+        qWarning() << "Unhandled animation type";
+    }
+
+    return componentCount;
+}
 
 ClipEvaluationData evaluationDataForClip(AnimationClipLoader *clip,
                                          const AnimatorEvaluationData &animatorData)
@@ -135,29 +165,7 @@ ComponentIndices channelComponentsToIndicesHelper(const Channel &channel,
                                               int offset,
                                               const QVector<char> &suffixes)
 {
-    int expectedComponentCount = 1;
-    switch (dataType) {
-    case QVariant::Double:
-        expectedComponentCount = 1;
-        break;
-
-    case QVariant::Vector2D:
-        expectedComponentCount = 2;
-        break;
-
-    case QVariant::Vector3D:
-        expectedComponentCount = 3;
-        break;
-
-    case QVariant::Vector4D:
-    case QVariant::Quaternion:
-        expectedComponentCount = 4;
-        break;
-
-    default:
-        qWarning() << "Unhandled animation type";
-    }
-
+    const int expectedComponentCount = componentsForType(dataType);
     const int actualComponentCount = channel.channelComponents.size();
     if (actualComponentCount != expectedComponentCount) {
         qWarning() << "Data type expects" << expectedComponentCount
@@ -364,6 +372,28 @@ QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
     }
 
     return namesAndTypes;
+}
+
+QVector<ComponentIndices> assignChannelComponentIndices(const QVector<ChannelNameAndType> &namesAndTypes)
+{
+    QVector<ComponentIndices> channelComponentIndices;
+    channelComponentIndices.reserve(namesAndTypes.size());
+
+    int baseIndex = 0;
+    for (const auto &entry : namesAndTypes) {
+        // Populate indices in order
+        const int componentCount = componentsForType(entry.type);
+        ComponentIndices indices(componentCount);
+        std::iota(indices.begin(), indices.end(), baseIndex);
+
+        // Append to the results
+        channelComponentIndices.push_back(indices);
+
+        // Increment baseIndex
+        baseIndex += componentCount;
+    }
+
+    return channelComponentIndices;
 }
 
 QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,

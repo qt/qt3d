@@ -2079,6 +2079,72 @@ private Q_SLOTS:
         // Cleanup
         delete handler;
     }
+
+    void checkAssignChannelComponentIndices_data()
+    {
+        QTest::addColumn<QVector<ChannelNameAndType>>("allChannels");
+        QTest::addColumn<QVector<ComponentIndices>>("expectedResults");
+
+        {
+            QVector<ChannelNameAndType> allChannels;
+            allChannels.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) });
+
+            QVector<ComponentIndices> expectedResults;
+            expectedResults.push_back({ 0, 1, 2 });
+
+            QTest::newRow("vec3 location") << allChannels << expectedResults;
+        }
+
+        {
+            QVector<ChannelNameAndType> allChannels;
+            allChannels.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) });
+            allChannels.push_back({ QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion) });
+
+            QVector<ComponentIndices> expectedResults;
+            expectedResults.push_back({ 0, 1, 2 });
+            expectedResults.push_back({ 3, 4, 5, 6 });
+
+            QTest::newRow("vec3 location, quaterion rotation") << allChannels << expectedResults;
+        }
+
+        {
+            QVector<ChannelNameAndType> allChannels;
+            allChannels.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) });
+            allChannels.push_back({ QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion) });
+            allChannels.push_back({ QLatin1String("BaseColor"), static_cast<int>(QVariant::Vector3D) });
+            allChannels.push_back({ QLatin1String("Metalness"), static_cast<int>(QVariant::Double) });
+            allChannels.push_back({ QLatin1String("Roughness"), static_cast<int>(QVariant::Double) });
+
+            QVector<ComponentIndices> expectedResults;
+            expectedResults.push_back({ 0, 1, 2 });
+            expectedResults.push_back({ 3, 4, 5, 6 });
+            expectedResults.push_back({ 7, 8, 9 });
+            expectedResults.push_back({ 10 });
+            expectedResults.push_back({ 11 });
+
+            QTest::newRow("vec3 location, quaterion rotation, pbr metal-rough") << allChannels << expectedResults;
+        }
+    }
+
+    void checkAssignChannelComponentIndices()
+    {
+        // GIVEN
+        QFETCH(QVector<ChannelNameAndType>, allChannels);
+        QFETCH(QVector<ComponentIndices>, expectedResults);
+
+        // WHEN
+        const QVector<ComponentIndices> actualResults = assignChannelComponentIndices(allChannels);
+
+        // THEN
+        QCOMPARE(actualResults.size(), expectedResults.size());
+        for (int i = 0; i < actualResults.size(); ++i) {
+            const ComponentIndices &actualResult = actualResults[i];
+            const ComponentIndices &expectedResult = expectedResults[i];
+
+            for (int j = 0; j < actualResult.size(); ++j)
+                QCOMPARE(actualResult[j], expectedResult[j]);
+        }
+    }
 };
 
 QTEST_MAIN(tst_AnimationUtils)

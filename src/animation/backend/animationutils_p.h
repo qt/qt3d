@@ -136,6 +136,9 @@ inline bool isFinalFrame(double localTime,
 }
 
 Q_AUTOTEST_EXPORT
+int componentsForType(int type);
+
+Q_AUTOTEST_EXPORT
 ClipEvaluationData evaluationDataForClip(AnimationClipLoader *clip,
                                          const AnimatorEvaluationData &animatorData);
 
@@ -172,6 +175,9 @@ QVector<MappingData> buildPropertyMappings(Handler *handler,
 Q_AUTOTEST_EXPORT
 QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
                                                           const ChannelMapper *mapper);
+
+Q_AUTOTEST_EXPORT
+QVector<ComponentIndices> assignChannelComponentIndices(const QVector<ChannelNameAndType> &namesAndTypes);
 
 Q_AUTOTEST_EXPORT
 double localTimeFromGlobalTime(double t_global, double t_start_global,
