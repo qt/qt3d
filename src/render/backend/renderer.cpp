@@ -88,10 +88,14 @@
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
 
 #include <Qt3DRender/qcameralens.h>
+#include <Qt3DCore/qt3dcore-config.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
+
+#if defined(QT3D_JOBS_RUN_STATS)
 #include <Qt3DCore/private/aspectcommanddebugger_p.h>
+#endif
 
 #include <QStack>
 #include <QOffscreenSurface>

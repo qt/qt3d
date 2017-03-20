@@ -37,8 +37,6 @@
 **
 ****************************************************************************/
 
-#ifdef QT3D_JOBS_RUN_STATS
-
 #include "aspectcommanddebugger_p.h"
 
 #include <Qt3DCore/qaspectengine.h>
@@ -218,5 +216,3 @@ void AspectCommandDebugger::executeCommand(const QString &command,
 } // Qt3DCore
 
 QT_END_NAMESPACE
-
-#endif
