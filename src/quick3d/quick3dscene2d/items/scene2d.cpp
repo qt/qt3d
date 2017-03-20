@@ -204,7 +204,7 @@ void Scene2D::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("moved")) {
             QPickEventPtr ev = propertyChange->value().value<QPickEventPtr>();
             handlePickEvent(QEvent::MouseMove, ev);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("grabMouseEvents")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("grabMouse")) {
             if (propertyChange->value().toBool()) {
                 startGrabbing();
             } else {
