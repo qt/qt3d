@@ -39,6 +39,7 @@
 #include <Qt3DQuickScene2D/qscene2d.h>
 #include <private/qrenderaspect_p.h>
 #include <Qt3DQuickScene2D/private/qt3dquick3dscene2d_p.h>
+#include <QtCore/qcoreapplication.h>
 
 QT_BEGIN_NAMESPACE
 
