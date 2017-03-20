@@ -59,6 +59,7 @@ Q_DECLARE_METATYPE(AnimatorEvaluationData)
 Q_DECLARE_METATYPE(ClipEvaluationData)
 Q_DECLARE_METATYPE(ClipAnimator *)
 Q_DECLARE_METATYPE(BlendedClipAnimator *)
+Q_DECLARE_METATYPE(QVector<ChannelNameAndType>)
 
 namespace {
 
@@ -1952,6 +1953,131 @@ private Q_SLOTS:
         QCOMPARE(actualResults.size(), expectedResults.size());
         for (int i = 0; i < actualResults.size(); ++i)
             QCOMPARE(actualResults[i], expectedResults[i]);
+    }
+
+    void checkBuildRequiredChannelsAndTypes_data()
+    {
+        QTest::addColumn<Handler *>("handler");
+        QTest::addColumn<ChannelMapper *>("mapper");
+        QTest::addColumn<QVector<ChannelNameAndType>>("expectedResults");
+
+        {
+            auto handler = new Handler();
+            auto channelMapping = createChannelMapping(handler,
+                                                       QLatin1String("Location"),
+                                                       Qt3DCore::QNodeId::createId(),
+                                                       QLatin1String("translation"),
+                                                       "translation",
+                                                       static_cast<int>(QVariant::Vector3D));
+            QVector<ChannelMapping *> channelMappings;
+            channelMappings.push_back(channelMapping);
+
+            auto channelMapper = createChannelMapper(handler,
+                                                     QVector<Qt3DCore::QNodeId>() << channelMapping->peerId());
+
+            QVector<ChannelNameAndType> expectedResults;
+            expectedResults.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) });
+
+            QTest::addRow("Location, vec3") << handler << channelMapper << expectedResults;
+        }
+
+        {
+            auto handler = new Handler();
+            auto channelMapping1 = createChannelMapping(handler,
+                                                        QLatin1String("Location"),
+                                                        Qt3DCore::QNodeId::createId(),
+                                                        QLatin1String("translation"),
+                                                        "translation",
+                                                        static_cast<int>(QVariant::Vector3D));
+            auto channelMapping2 = createChannelMapping(handler,
+                                                        QLatin1String("Rotation"),
+                                                        Qt3DCore::QNodeId::createId(),
+                                                        QLatin1String("rotatrion"),
+                                                        "rotation",
+                                                        static_cast<int>(QVariant::Quaternion));
+            QVector<ChannelMapping *> channelMappings;
+            channelMappings.push_back(channelMapping1);
+            channelMappings.push_back(channelMapping2);
+
+            QVector<Qt3DCore::QNodeId> channelMappingIds
+                    = (QVector<Qt3DCore::QNodeId>()
+                       << channelMapping1->peerId()
+                       << channelMapping2->peerId());
+            auto channelMapper = createChannelMapper(handler, channelMappingIds);
+
+            QVector<ChannelNameAndType> expectedResults;
+            expectedResults.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) });
+            expectedResults.push_back({ QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion) });
+
+            QTest::addRow("Multiple unique channels") << handler << channelMapper << expectedResults;
+        }
+
+        {
+            auto handler = new Handler();
+            auto channelMapping1 = createChannelMapping(handler,
+                                                        QLatin1String("Location"),
+                                                        Qt3DCore::QNodeId::createId(),
+                                                        QLatin1String("translation"),
+                                                        "translation",
+                                                        static_cast<int>(QVariant::Vector3D));
+            auto channelMapping2 = createChannelMapping(handler,
+                                                        QLatin1String("Rotation"),
+                                                        Qt3DCore::QNodeId::createId(),
+                                                        QLatin1String("rotation"),
+                                                        "rotation",
+                                                        static_cast<int>(QVariant::Quaternion));
+            auto channelMapping3 = createChannelMapping(handler,
+                                                        QLatin1String("Location"),
+                                                        Qt3DCore::QNodeId::createId(),
+                                                        QLatin1String("translation"),
+                                                        "translation",
+                                                        static_cast<int>(QVariant::Vector3D));
+            auto channelMapping4 = createChannelMapping(handler,
+                                                        QLatin1String("Location"),
+                                                        Qt3DCore::QNodeId::createId(),
+                                                        QLatin1String("translation"),
+                                                        "translation",
+                                                        static_cast<int>(QVariant::Vector3D));
+
+            QVector<ChannelMapping *> channelMappings;
+            channelMappings.push_back(channelMapping1);
+            channelMappings.push_back(channelMapping2);
+            channelMappings.push_back(channelMapping3);
+            channelMappings.push_back(channelMapping4);
+
+            QVector<Qt3DCore::QNodeId> channelMappingIds
+                    = (QVector<Qt3DCore::QNodeId>()
+                       << channelMapping1->peerId()
+                       << channelMapping2->peerId()
+                       << channelMapping3->peerId()
+                       << channelMapping4->peerId());
+            auto channelMapper = createChannelMapper(handler, channelMappingIds);
+
+            QVector<ChannelNameAndType> expectedResults;
+            expectedResults.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) });
+            expectedResults.push_back({ QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion) });
+
+            QTest::addRow("Multiple channels with repeats") << handler << channelMapper << expectedResults;
+        }
+    }
+
+    void checkBuildRequiredChannelsAndTypes()
+    {
+        // GIVEN
+        QFETCH(Handler *, handler);
+        QFETCH(ChannelMapper *, mapper);
+        QFETCH(QVector<ChannelNameAndType>, expectedResults);
+
+        // WHEN
+        const QVector<ChannelNameAndType> actualResults = buildRequiredChannelsAndTypes(handler, mapper);
+
+        // THEN
+        QCOMPARE(actualResults.size(), expectedResults.size());
+        for (int i = 0; i < actualResults.size(); ++i)
+            QCOMPARE(actualResults[i], expectedResults[i]);
+
+        // Cleanup
+        delete handler;
     }
 };
 

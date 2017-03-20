@@ -335,6 +335,37 @@ QVector<MappingData> buildPropertyMappings(Handler *handler,
     return mappingDataVec;
 }
 
+QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
+                                                          const ChannelMapper *mapper)
+{
+    ChannelMappingManager *mappingManager = handler->channelMappingManager();
+    const QVector<Qt3DCore::QNodeId> mappingIds = mapper->mappingIds();
+
+    // Reserve enough storage assuming each mapping is for a different channel.
+    // May be overkill but avoids potential for multiple allocations
+    QVector<ChannelNameAndType> namesAndTypes;
+    namesAndTypes.reserve(mappingIds.size());
+
+    // Iterate through the mappings and add ones not already used by an earlier mapping.
+    // We could add them all then sort and remove duplicates. However, our approach has the
+    // advantage of keeping the blend tree format more consistent with the mapping
+    // orderings which will have better cache locality when generating events.
+    for (const Qt3DCore::QNodeId mappingId : mappingIds) {
+        // Get the mapping object
+        ChannelMapping *mapping = mappingManager->lookupResource(mappingId);
+        Q_ASSERT(mapping);
+
+        // Get the name and type
+        const ChannelNameAndType nameAndType{ mapping->channelName(), mapping->type() };
+
+        // Add if not already contained
+        if (!namesAndTypes.contains(nameAndType))
+            namesAndTypes.push_back(nameAndType);
+    }
+
+    return namesAndTypes;
+}
+
 QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
                                                       Qt3DCore::QNodeId blendTreeRootId)
 {

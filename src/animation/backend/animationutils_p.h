@@ -102,6 +102,17 @@ struct ClipEvaluationData
 
 typedef QVector<float> ClipResults;
 
+struct ChannelNameAndType
+{
+    QString name;
+    int type;
+
+    bool operator==(const ChannelNameAndType &rhs) const
+    {
+        return name == rhs.name && type == rhs.type;
+    }
+};
+
 template<typename Animator>
 AnimatorEvaluationData evaluationDataForAnimator(Animator animator, qint64 globalTime)
 {
@@ -157,6 +168,10 @@ Q_AUTOTEST_EXPORT
 QVector<MappingData> buildPropertyMappings(Handler *handler,
                                            const AnimationClipLoader *clip,
                                            const ChannelMapper *mapper);
+
+Q_AUTOTEST_EXPORT
+QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
+                                                          const ChannelMapper *mapper);
 
 Q_AUTOTEST_EXPORT
 double localTimeFromGlobalTime(double t_global, double t_start_global,
