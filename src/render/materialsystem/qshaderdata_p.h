@@ -62,7 +62,6 @@ namespace Qt3DRender {
 namespace {
 
 const int qVectorShaderDataTypeId = qMetaTypeId<QVector<QShaderData*> >();
-const int qShaderDataTypeId = qMetaTypeId<QShaderData*>();
 
 }
 
