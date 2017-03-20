@@ -248,7 +248,7 @@ void QAxisAccumulator::setSourceAxis(QAxis *sourceAxis)
 }
 
 /*!
-    Sets how the accumulator treats the values originating from the source axis.
+    Sets how the accumulator treats the values originating from the \a sourceAxisType.
  */
 void QAxisAccumulator::setSourceAxisType(QAxisAccumulator::SourceAxisType sourceAxisType)
 {

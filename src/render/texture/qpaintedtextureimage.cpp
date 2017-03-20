@@ -140,7 +140,7 @@ QSize QPaintedTextureImage::size() const
 }
 
 /*!
-    Sets the width of the texture image. Triggers an update, if the size changes.
+    Sets the width (\a w) of the texture image. Triggers an update, if the size changes.
  */
 void QPaintedTextureImage::setWidth(int w)
 {
@@ -152,7 +152,7 @@ void QPaintedTextureImage::setWidth(int w)
 }
 
 /*!
-    Sets the height of the texture image. Triggers an update, if the size changes.
+    Sets the height (\a h) of the texture image. Triggers an update, if the size changes.
  */
 void QPaintedTextureImage::setHeight(int h)
 {
@@ -164,7 +164,7 @@ void QPaintedTextureImage::setHeight(int h)
 }
 
 /*!
-    Sets the width and height of the texture image. Triggers an update, if the size changes.
+    Sets the width and height of the texture image. Triggers an update, if the \a size changes.
  */
 void QPaintedTextureImage::setSize(QSize size)
 {
