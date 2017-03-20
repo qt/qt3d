@@ -32,6 +32,7 @@ QT_BEGIN_NAMESPACE
 
 TestRenderer::TestRenderer()
     : m_changes(0)
+    , m_managers(nullptr)
 {
 }
 

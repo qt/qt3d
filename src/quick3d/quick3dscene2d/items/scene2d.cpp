@@ -481,11 +481,12 @@ void Scene2D::handlePickEvent(int type, const Qt3DRender::QPickEventPtr &ev)
         QVector4D c0 = reader.getCoordinate(pickTriangle->vertex1Index());
         QVector4D c1 = reader.getCoordinate(pickTriangle->vertex2Index());
         QVector4D c2 = reader.getCoordinate(pickTriangle->vertex3Index());
-        QVector4D ci = c2 * pickTriangle->uvw().x()
-                       + c1 * pickTriangle->uvw().y() + c0 * pickTriangle->uvw().z();
+        QVector4D ci = c0 * pickTriangle->uvw().x()
+                       + c1 * pickTriangle->uvw().y() + c2 * pickTriangle->uvw().z();
         ci.setW(1.0f);
 
-        QPointF pos = QPointF(ci.x(), ci.y());
+        const QSize size = m_sharedObject->m_quickWindow->size();
+        QPointF pos = QPointF(ci.x() * size.width(), ci.y() * size.height());
         QMouseEvent *mouseEvent
                 = new QMouseEvent(static_cast<QEvent::Type>(type),
                                   pos, pos, pos,
