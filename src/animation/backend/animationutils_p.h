@@ -194,6 +194,11 @@ QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
                                                       Qt3DCore::QNodeId blendTreeRootId);
 
 Q_AUTOTEST_EXPORT
+ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &targetChannels,
+                                           const QVector<ComponentIndices> &targetIndices,
+                                           const AnimationClipLoader *clip);
+
+Q_AUTOTEST_EXPORT
 ClipResults formatClipResults(const ClipResults &rawClipResults,
                               const ComponentIndices &format);
 

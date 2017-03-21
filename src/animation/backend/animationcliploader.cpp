@@ -158,9 +158,9 @@ void AnimationClipLoader::loadAnimation()
     const float t = findDuration();
     setDuration(t);
 
-    m_channelCount = findChannelComponentCount();
+    m_channelComponentCount = findChannelComponentCount();
 
-    if (qFuzzyIsNull(t) || m_channelCount == 0)
+    if (qFuzzyIsNull(t) || m_channelComponentCount == 0)
         setStatus(QAnimationClipLoader::Error);
     else
         setStatus(QAnimationClipLoader::Ready);
@@ -181,6 +181,16 @@ void AnimationClipLoader::setDuration(float duration)
     e->setPropertyName("duration");
     e->setValue(m_duration);
     notifyObservers(e);
+}
+
+int AnimationClipLoader::channelIndex(const QString &channelName) const
+{
+    const int channelCount = m_channels.size();
+    for (int i = 0; i < channelCount; ++i) {
+        if (m_channels[i].name == channelName)
+            return i;
+    }
+    return -1;
 }
 
 /*!

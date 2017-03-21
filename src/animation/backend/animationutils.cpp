@@ -430,6 +430,52 @@ QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
     return clipIds;
 }
 
+ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &targetChannels,
+                                           const QVector<ComponentIndices> &targetIndices,
+                                           const AnimationClipLoader *clip)
+{
+    Q_ASSERT(targetChannels.size() == targetIndices.size());
+
+    // Reserve enough storage for all the format indices
+    int indexCount = 0;
+    for (const auto targetIndexVec : targetIndices)
+        indexCount += targetIndexVec.size();
+    ComponentIndices format;
+    format.resize(indexCount);
+
+
+    // Iterate through the target channels
+    const int channelCount = targetChannels.size();
+    auto formatIt = format.begin();
+    for (int i = 0; i < channelCount; ++i) {
+        // Find the index of the channel from the clip
+        const ChannelNameAndType &targetChannel = targetChannels[i];
+        const int clipChannelIndex = clip->channelIndex(targetChannel.name);
+
+        // TODO: Ensure channel in the clip has enough components to map to the type.
+        //       Requires some improvements to the clip data structure first.
+        // TODO: I don't think we need the targetIndices, only the number of components
+        //       for each target channel. Check once blend tree is complete.
+        const int componentCount = targetIndices[i].size();
+
+        if (clipChannelIndex != -1) {
+            // Found a matching channel in the clip. Get the base channel
+            // component index and populate the format indices for this channel.
+            const int baseIndex = clip->channelComponentBaseIndex(clipChannelIndex);
+            std::iota(formatIt, formatIt + componentCount, baseIndex);
+
+        } else {
+            // No such channel in this clip. We'll use default values when
+            // mapping from the clip to the formatted clip results.
+            std::fill(formatIt, formatIt + componentCount, -1);
+        }
+
+        formatIt += componentCount;
+    }
+
+    return format;
+}
+
 ClipResults formatClipResults(const ClipResults &rawClipResults,
                               const ComponentIndices &format)
 {

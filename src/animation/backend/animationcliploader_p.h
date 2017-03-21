@@ -79,7 +79,8 @@ public:
     void loadAnimation();
     void setDuration(float duration);
     float duration() const { return m_duration; }
-    int channelCount() const { return m_channelCount; }
+    int channelIndex(const QString &channelName) const;
+    int channelCount() const { return m_channelComponentCount; }
     int channelComponentBaseIndex(int channelGroupIndex) const;
 
 private:
@@ -94,7 +95,7 @@ private:
     QString m_name;
     QVector<Channel> m_channels;
     float m_duration;
-    int m_channelCount;
+    int m_channelComponentCount;
 };
 
 #ifndef QT_NO_DEBUG_STREAM

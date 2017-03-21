@@ -2145,6 +2145,152 @@ private Q_SLOTS:
                 QCOMPARE(actualResult[j], expectedResult[j]);
         }
     }
+
+    void checkGenerateClipFormatIndices_data()
+    {
+        QTest::addColumn<QVector<ChannelNameAndType>>("targetChannels");
+        QTest::addColumn<QVector<ComponentIndices>>("targetIndices");
+        QTest::addColumn<AnimationClipLoader *>("clip");
+        QTest::addColumn<ComponentIndices>("expectedResults");
+
+        {
+            QVector<ChannelNameAndType> targetChannels;
+            targetChannels.push_back({ QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion) });
+            targetChannels.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) });
+            targetChannels.push_back({ QLatin1String("Base Color"), static_cast<int>(QVariant::Vector3D) });
+            targetChannels.push_back({ QLatin1String("Metalness"), static_cast<int>(QVariant::Double) });
+            targetChannels.push_back({ QLatin1String("Roughness"), static_cast<int>(QVariant::Double) });
+
+            QVector<ComponentIndices> targetIndices;
+            targetIndices.push_back({ 0, 1, 2, 3 });
+            targetIndices.push_back({ 4, 5, 6 });
+            targetIndices.push_back({ 7, 8, 9 });
+            targetIndices.push_back({ 10 });
+            targetIndices.push_back({ 11 });
+
+            auto *clip = new AnimationClipLoader();
+            clip->setSource(QUrl("qrc:/clip3.json"));
+            clip->loadAnimation();
+
+            ComponentIndices expectedResults = { 0, 1, 2, 3,    // Rotation
+                                                 4, 5, 6,       // Location
+                                                 7, 8, 9,       // Base Color
+                                                 10,            // Metalness
+                                                 11 };          // Roughness
+
+            QTest::newRow("rotation, location, pbr metal-rough")
+                    << targetChannels << targetIndices << clip << expectedResults;
+        }
+
+        {
+            QVector<ChannelNameAndType> targetChannels;
+            targetChannels.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) });
+            targetChannels.push_back({ QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion) });
+            targetChannels.push_back({ QLatin1String("Base Color"), static_cast<int>(QVariant::Vector3D) });
+            targetChannels.push_back({ QLatin1String("Metalness"), static_cast<int>(QVariant::Double) });
+            targetChannels.push_back({ QLatin1String("Roughness"), static_cast<int>(QVariant::Double) });
+
+            QVector<ComponentIndices> targetIndices;
+            targetIndices.push_back({ 0, 1, 2 });
+            targetIndices.push_back({ 3, 4, 5, 6 });
+            targetIndices.push_back({ 7, 8, 9 });
+            targetIndices.push_back({ 10 });
+            targetIndices.push_back({ 11 });
+
+            auto *clip = new AnimationClipLoader();
+            clip->setSource(QUrl("qrc:/clip3.json"));
+            clip->loadAnimation();
+
+            ComponentIndices expectedResults = { 4, 5, 6,       // Location
+                                                 0, 1, 2, 3,    // Rotation
+                                                 7, 8, 9,       // Base Color
+                                                 10,            // Metalness
+                                                 11 };          // Roughness
+
+            QTest::newRow("location, rotation, pbr metal-rough")
+                    << targetChannels << targetIndices << clip << expectedResults;
+        }
+
+        {
+            QVector<ChannelNameAndType> targetChannels;
+            targetChannels.push_back({ QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion) });
+            targetChannels.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) });
+            targetChannels.push_back({ QLatin1String("Albedo"), static_cast<int>(QVariant::Vector3D) });
+            targetChannels.push_back({ QLatin1String("Metalness"), static_cast<int>(QVariant::Double) });
+            targetChannels.push_back({ QLatin1String("Roughness"), static_cast<int>(QVariant::Double) });
+
+            QVector<ComponentIndices> targetIndices;
+            targetIndices.push_back({ 0, 1, 2, 3 });
+            targetIndices.push_back({ 4, 5, 6 });
+            targetIndices.push_back({ 7, 8, 9 });
+            targetIndices.push_back({ 10 });
+            targetIndices.push_back({ 11 });
+
+            auto *clip = new AnimationClipLoader();
+            clip->setSource(QUrl("qrc:/clip3.json"));
+            clip->loadAnimation();
+
+            ComponentIndices expectedResults = { 0, 1, 2, 3,    // Rotation
+                                                 4, 5, 6,       // Location
+                                                 -1, -1, -1,    // Albedo (missing from clip)
+                                                 10,            // Metalness
+                                                 11 };          // Roughness
+
+            QTest::newRow("rotation, location, albedo (missing), metal-rough")
+                    << targetChannels << targetIndices << clip << expectedResults;
+        }
+
+        {
+            QVector<ChannelNameAndType> targetChannels;
+            targetChannels.push_back({ QLatin1String("Location"), static_cast<int>(QVariant::Vector3D) });
+            targetChannels.push_back({ QLatin1String("Rotation"), static_cast<int>(QVariant::Quaternion) });
+            targetChannels.push_back({ QLatin1String("Albedo"), static_cast<int>(QVariant::Vector3D) });
+            targetChannels.push_back({ QLatin1String("Metalness"), static_cast<int>(QVariant::Double) });
+            targetChannels.push_back({ QLatin1String("Roughness"), static_cast<int>(QVariant::Double) });
+
+            QVector<ComponentIndices> targetIndices;
+            targetIndices.push_back({ 0, 1, 2 });
+            targetIndices.push_back({ 3, 4, 5, 6 });
+            targetIndices.push_back({ 7, 8, 9 });
+            targetIndices.push_back({ 10 });
+            targetIndices.push_back({ 11 });
+
+            auto *clip = new AnimationClipLoader();
+            clip->setSource(QUrl("qrc:/clip3.json"));
+            clip->loadAnimation();
+
+            ComponentIndices expectedResults = { 4, 5, 6,       // Location
+                                                 0, 1, 2, 3,    // Rotation
+                                                 -1, -1, -1,    // Albedo (missing from clip)
+                                                 10,            // Metalness
+                                                 11 };          // Roughness
+
+            QTest::newRow("location, rotation, albedo (missing), metal-rough")
+                    << targetChannels << targetIndices << clip << expectedResults;
+        }
+    }
+
+    void checkGenerateClipFormatIndices()
+    {
+        // GIVEN
+        QFETCH(QVector<ChannelNameAndType>, targetChannels);
+        QFETCH(QVector<ComponentIndices>, targetIndices);
+        QFETCH(AnimationClipLoader *, clip);
+        QFETCH(ComponentIndices, expectedResults);
+
+        // WHEN
+        const ComponentIndices actualResults = generateClipFormatIndices(targetChannels,
+                                                                         targetIndices,
+                                                                         clip);
+
+        // THEN
+        QCOMPARE(actualResults.size(), expectedResults.size());
+        for (int i = 0; i < actualResults.size(); ++i)
+            QCOMPARE(actualResults[i], expectedResults[i]);
+
+        // Cleanup
+        delete clip;
+    }
 };
 
 QTEST_MAIN(tst_AnimationUtils)
