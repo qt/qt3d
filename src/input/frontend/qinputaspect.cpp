@@ -56,7 +56,9 @@
 #include <Qt3DCore/private/qservicelocator_p.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <QDir>
+#if QT_CONFIG(library)
 #include <QLibrary>
+#endif
 #include <QLibraryInfo>
 #include <QPluginLoader>
 
