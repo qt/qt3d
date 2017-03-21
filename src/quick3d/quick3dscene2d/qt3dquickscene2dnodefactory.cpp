@@ -52,7 +52,7 @@ Q_GLOBAL_STATIC(QuickScene2DNodeFactory, quick_scene2d_node_factory)
 
 static void initScene2dPlugin()
 {
-    Qt3DRender::QRenderAspectPrivate::configurePlugin("scene2d");
+    Qt3DRender::QRenderAspectPrivate::configurePlugin(QLatin1String("scene2d"));
 }
 
 Q_COREAPP_STARTUP_FUNCTION(initScene2dPlugin)
