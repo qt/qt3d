@@ -137,6 +137,7 @@ class RenderView;
 class Effect;
 class RenderPass;
 class RenderThread;
+class CommandThread;
 class RenderStateSet;
 class VSyncFrameAdvanceService;
 class PickEventFilter;
@@ -221,6 +222,11 @@ public:
     RenderSettings *settings() const override;
     QOpenGLContext *shareContext() const override;
 
+
+    // Executed in secondary GL thread
+    void loadShader(Shader *shader) const override;
+
+
     void updateGLResources();
     void updateTexture(Texture *texture);
     void cleanupTexture(const Texture *texture);
@@ -301,6 +307,7 @@ private:
 
     RenderQueue *m_renderQueue;
     QScopedPointer<RenderThread> m_renderThread;
+    QScopedPointer<CommandThread> m_commandThread;
     QScopedPointer<VSyncFrameAdvanceService> m_vsyncFrameAdvanceService;
 
     QSemaphore m_submitRenderViewsSemaphore;

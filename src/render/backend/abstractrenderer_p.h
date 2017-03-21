@@ -83,6 +83,7 @@ class FrameGraphNode;
 class RenderSettings;
 class BackendNode;
 class OffscreenSurfaceHelper;
+class Shader;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT AbstractRenderer
 {
@@ -170,6 +171,11 @@ public:
     virtual void setOffscreenSurfaceHelper(OffscreenSurfaceHelper *helper) = 0;
     virtual QSurfaceFormat format() = 0;
     virtual QOpenGLContext *shareContext() const = 0;
+
+
+    // These commands are executed in a dedicated command thread
+    // More will be added later
+    virtual void loadShader(Shader *shader) const = 0;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractRenderer::BackendNodeDirtySet)

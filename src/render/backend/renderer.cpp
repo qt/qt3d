@@ -89,6 +89,7 @@
 #include <Qt3DRender/private/buffercapture_p.h>
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
 #include <Qt3DRender/private/renderviewbuilder_p.h>
+#include <Qt3DRender/private/commandthread_p.h>
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
@@ -158,6 +159,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_graphicsContext(nullptr)
     , m_renderQueue(new RenderQueue())
     , m_renderThread(type == QRenderAspect::Threaded ? new RenderThread(this) : nullptr)
+    , m_commandThread(new CommandThread(this))
     , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService(m_renderThread != nullptr))
     , m_waitForInitializationToBeCompleted(0)
     , m_pickEventFilter(new PickEventFilter())
@@ -317,6 +319,11 @@ QOpenGLContext *Renderer::shareContext() const
                              : nullptr);
 }
 
+void Renderer::loadShader(Shader *shader) const
+{
+    Q_UNUSED(shader);
+}
+
 void Renderer::setOpenGLContext(QOpenGLContext *context)
 {
     m_glContext = context;
@@ -372,6 +379,9 @@ void Renderer::initialize()
         // Note: we don't have a surface at this point
         // The context will be made current later on (at render time)
         m_graphicsContext->setOpenGLContext(ctx);
+
+        // Initialize command thread
+        m_commandThread->initialize(ctx);
     }
 
     // Store the format used by the context and queue up creating an
@@ -404,6 +414,8 @@ void Renderer::shutdown()
     // before the surface was destroyed
     qDeleteAll(m_renderQueue->nextFrameQueue());
     m_renderQueue->reset();
+
+    m_commandThread->shutdown();
 
     if (!m_renderThread) {
         releaseGraphicsResources();

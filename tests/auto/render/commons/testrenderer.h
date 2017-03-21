@@ -81,6 +81,9 @@ public:
     void setOffscreenSurfaceHelper(Qt3DRender::Render::OffscreenSurfaceHelper *helper) override;
     QSurfaceFormat format() override;
 
+
+    void loadShader(Qt3DRender::Render::Shader *) const override {}
+
 protected:
     Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet m_changes;
     Qt3DRender::Render::NodeManagers *m_managers;
