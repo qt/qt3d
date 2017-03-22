@@ -432,17 +432,16 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(ShaderData *
         QVariantList list = value.value<QVariantList>();
         if (list.at(0).userType() == qNodeIdTypeId) { // Array of struct qmlPropertyName[i].structMember
             for (int i = 0; i < list.size(); ++i) {
+                const QVariant variantElement = list.at(i);
                 if (list.at(i).userType() == qNodeIdTypeId) {
-                    const auto nodeId = value.value<QNodeId>();
+                    const auto nodeId = variantElement.value<QNodeId>();
                     ShaderData *subShaderData = shaderDataManager->lookupResource(nodeId);
                     if (subShaderData) {
                         buildActiveUniformNameValueMapStructHelper(subShaderData,
                                                                    blockName + QLatin1Char('.') + qmlPropertyName + blockArray.arg(i),
                                                                    QLatin1String(""));
-                    } else if (textureManager->contains(nodeId)) {
-                        const auto varId = StringToInt::lookupId(blockName + QLatin1Char('.') + qmlPropertyName + blockArray.arg(i));
-                        activeUniformNamesToValue.insert(varId, value);
                     }
+                    // Note: we only handle ShaderData as nested container nodes here
                 }
             }
         } else { // Array of scalar/vec  qmlPropertyName[0]
