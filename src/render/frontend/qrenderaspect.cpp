@@ -389,7 +389,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     d->m_renderer->dumpInfo();
 #endif
 
-    // Create jobs that will get exectued by the threadpool
+    // Create jobs that will get executed by the threadpool
     QVector<QAspectJobPtr> jobs;
 
     // 1 LoadBufferJobs, GeometryJobs, SceneLoaderJobs, LoadTextureJobs
@@ -486,7 +486,7 @@ void QRenderAspect::onRegistered()
     d->m_renderer->setNodeManagers(d->m_nodeManagers);
 
     // Create a helper for deferring creation of an offscreen surface used during cleanup
-    // to the main thread, after we knwo what the surface format in use is.
+    // to the main thread, after we know what the surface format in use is.
     d->m_offscreenHelper = new Render::OffscreenSurfaceHelper(d->m_renderer);
     d->m_offscreenHelper->moveToThread(QCoreApplication::instance()->thread());
     d->m_renderer->setOffscreenSurfaceHelper(d->m_offscreenHelper);

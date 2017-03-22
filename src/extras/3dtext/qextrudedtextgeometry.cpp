@@ -105,7 +105,7 @@ TriangulationData triangulate(const QString &text, const QFont &font)
     for (QPolygonF &p : polygons)
         path.addPolygon(p);
 
-    // Extract polylines out of the path, this allows us to retrive indicies for each glyph outline
+    // Extract polylines out of the path, this allows us to retrieve indices for each glyph outline
     QPolylineSet polylines = qPolyline(path);
     QVector<IndexType> tmpIndices;
     tmpIndices.resize(polylines.indices.size());

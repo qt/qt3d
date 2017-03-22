@@ -597,7 +597,7 @@ void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
         // If two shaders define the same block with the exact same layout, in that case the UBO could be shared
         // but how do we know that ? We'll need to compare ShaderUniformBlocks
 
-        // Note: we assume that if a buffer is shared accross multiple shaders
+        // Note: we assume that if a buffer is shared across multiple shaders
         // then it implies that they share the same layout
 
         // Temporarly disabled

@@ -76,7 +76,7 @@ QInputSequencePrivate::QInputSequencePrivate()
 
     Represents a set of QAbstractActionInput's that must be triggerd one after the other.
 
-    The following example shows a chord that will be triggered by pressing the A and S keys together with a tolerence of 10 miliseconds between presses.
+    The following example shows a chord that will be triggered by pressing the A and S keys together with a tolerance of 10 miliseconds between presses.
     \qml
     InputChord {
       tolerance: 10

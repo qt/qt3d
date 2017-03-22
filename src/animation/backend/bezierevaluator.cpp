@@ -83,7 +83,7 @@ float BezierEvaluator::valueForTime(float time) const
 {
     const float u = parameterForTime(time);
 
-    // Calulate powers of u and (1-u) that we need
+    // Calculate powers of u and (1-u) that we need
     const float u2 = u * u;
     const float u3 = u2 * u;
     const float mu = 1.0f - u;

@@ -122,7 +122,7 @@ QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)
     d->m_manager->setDeltaTime(dt);
     d->m_time = time;
 
-    // Create jobs that will get exectued by the threadpool
+    // Create jobs that will get executed by the threadpool
     QVector<QAspectJobPtr> jobs;
     jobs.append(d->m_callbackJob);
     return jobs;

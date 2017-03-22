@@ -204,7 +204,7 @@ void QNodePrivate::_q_addChild(QNode *childNode)
     // removed from the scene as part of the destruction of the parent, when the
     // parent's children are deleted in the QObject dtor, we still have access to
     // the parentId. If we didn't store this, we wouldn't have access at that time
-    // because the parent woudl then only be a QObject, the QNode part would have
+    // because the parent would then only be a QObject, the QNode part would have
     // been destroyed already.
     QNodePrivate::get(childNode)->m_parentId = m_id;
 

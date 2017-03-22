@@ -123,7 +123,7 @@ namespace Qt3DRender {
  * the request. The requestId does not have to be unique. Only one render capture result
  * is produced per requestCapture call even if the frame graph has multiple leaf nodes.
  * The function returns a QRenderCaptureReply object, which receives the captured image
- * when it is done. The user is reponsible for deallocating the returned object.
+ * when it is done. The user is responsible for deallocating the returned object.
  */
 
 /*!
@@ -256,7 +256,7 @@ QRenderCapture::QRenderCapture(Qt3DCore::QNode *parent)
  * the request. The requestId does not have to be unique. Only one render capture result
  * is produced per requestCapture call even if the frame graph has multiple leaf nodes.
  * The function returns a QRenderCaptureReply object, which receives the captured image
- * when it is done. The user is reponsible for deallocating the returned object.
+ * when it is done. The user is responsible for deallocating the returned object.
  */
 QRenderCaptureReply *QRenderCapture::requestCapture(int captureId)
 {

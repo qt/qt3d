@@ -401,7 +401,7 @@ void GLTexture::uploadGLTextureData()
             for (int layer = 0; layer < data->layers(); layer++) {
                 for (int face = 0; face < data->faces(); face++) {
                     for (int level = 0; level < mipLevels; level++) {
-                        // ensure we don't accidently cause a detach / copy of the raw bytes
+                        // ensure we don't accidentally cause a detach / copy of the raw bytes
                         const QByteArray bytes(data->data(layer, face, level));
                         uploadGLData(m_gl, level, layer,
                                      static_cast<QOpenGLTexture::CubeMapFace>(QOpenGLTexture::CubeMapPositiveX + face),
@@ -416,7 +416,7 @@ void GLTexture::uploadGLTextureData()
     for (int i = 0; i < m_images.size(); i++) {
         const QTextureImageDataPtr &imgData = m_imageData.at(i);
 
-        // ensure we don't accidently cause a detach / copy of the raw bytes
+        // ensure we don't accidentally cause a detach / copy of the raw bytes
         const QByteArray bytes(imgData->data());
         uploadGLData(m_gl, m_images[i].mipLevel, m_images[i].layer,
                      static_cast<QOpenGLTexture::CubeMapFace>(m_images[i].face),
