@@ -86,6 +86,9 @@ public:
     int currentLoop() const { return m_currentLoop; }
     void setCurrentLoop(int currentLoop) { m_currentLoop = currentLoop; }
 
+    void setMappingData(const QVector<MappingData> &mappingData) { m_mappingData = mappingData; }
+    QVector<MappingData> mappingData() const { return m_mappingData; }
+
     void sendPropertyChanges(const QVector<Qt3DCore::QSceneChangePtr> &changes);
 
     struct BlendNodeData
@@ -114,6 +117,7 @@ private:
     int m_currentLoop;
     int m_loops;
     QHash<Qt3DCore::QNodeId, BlendNodeData> m_blendTreeTable;
+    QVector<MappingData> m_mappingData;
 };
 
 } // namespace Animation
