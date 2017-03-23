@@ -81,7 +81,7 @@ public:
 
     // Called by jobs
     bool canRun() const { return !m_clipId.isNull() && !m_mapperId.isNull() && m_running; }
-    void setMappingData(const QVector<MappingData> mappingData);
+    void setMappingData(const QVector<MappingData> &mappingData) { m_mappingData = mappingData; }
     QVector<MappingData> mappingData() const { return m_mappingData; }
 
     void setStartTime(qint64 globalTime) { m_startGlobalTime = globalTime; }
