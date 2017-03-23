@@ -143,4 +143,7 @@ qtConfig(private_tests) {
     }
 
     !macos: SUBDIRS += graphicshelpergl4
+
+    qtConfig(qt3d-simd-avx2): SUBDIRS += alignedresourcesmanagers-avx
+    qtConfig(qt3d-simd-sse2): SUBDIRS += alignedresourcesmanagers-sse
 }
