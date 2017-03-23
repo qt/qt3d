@@ -306,6 +306,202 @@ private Q_SLOTS:
         delete handler;
     }
 
+    void checkBuildPropertyMappings2_data()
+    {
+        QTest::addColumn<QVector<ChannelMapping *>>("channelMappings");
+        QTest::addColumn<QVector<ChannelNameAndType>>("channelNamesAndTypes");
+        QTest::addColumn<QVector<ComponentIndices>>("channelComponentIndices");
+        QTest::addColumn<QVector<MappingData>>("expectedResults");
+
+        // Single ChannelMapping
+        {
+            auto channelMapping = new ChannelMapping();
+            channelMapping->setChannelName("Location");
+            channelMapping->setTargetId(Qt3DCore::QNodeId::createId());
+            channelMapping->setProperty(QLatin1String("translation"));
+            channelMapping->setPropertyName("translation");
+            channelMapping->setType(static_cast<int>(QVariant::Vector3D));
+
+            QVector<ChannelMapping *> channelMappings = { channelMapping };
+
+            // Create a few channels in the format description
+            ChannelNameAndType rotation = { QLatin1String("Rotation"),
+                                            static_cast<int>(QVariant::Quaternion) };
+            ChannelNameAndType location = { QLatin1String("Location"),
+                                            static_cast<int>(QVariant::Vector3D) };
+            ChannelNameAndType baseColor = { QLatin1String("BaseColor"),
+                                             static_cast<int>(QVariant::Vector3D) };
+            ChannelNameAndType metalness = { QLatin1String("Metalness"),
+                                             static_cast<int>(QVariant::Double) };
+            ChannelNameAndType roughness = { QLatin1String("Roughness"),
+                                             static_cast<int>(QVariant::Double) };
+            QVector<ChannelNameAndType> channelNamesAndTypes
+                    = { rotation, location, baseColor, metalness, roughness };
+
+            // And the matching indices
+            ComponentIndices rotationIndices = { 0, 1, 2, 3 };
+            ComponentIndices locationIndices = { 4, 5, 6 };
+            ComponentIndices baseColorIndices = { 7, 8, 9 };
+            ComponentIndices metalnessIndices = { 10 };
+            ComponentIndices roughnessIndices = { 11 };
+            QVector<ComponentIndices> channelComponentIndices
+                    = { rotationIndices, locationIndices, baseColorIndices,
+                        metalnessIndices, roughnessIndices };
+
+            MappingData expectedMapping;
+            expectedMapping.targetId = channelMapping->targetId();
+            expectedMapping.propertyName = channelMapping->propertyName();
+            expectedMapping.type = channelMapping->type();
+            expectedMapping.channelIndices = locationIndices;
+            QVector<MappingData> expectedResults = { expectedMapping };
+
+            QTest::newRow("single mapping")
+                    << channelMappings
+                    << channelNamesAndTypes
+                    << channelComponentIndices
+                    << expectedResults;
+        }
+
+        // Multiple ChannelMappings
+        {
+            auto locationMapping = new ChannelMapping();
+            locationMapping->setChannelName("Location");
+            locationMapping->setTargetId(Qt3DCore::QNodeId::createId());
+            locationMapping->setProperty(QLatin1String("translation"));
+            locationMapping->setPropertyName("translation");
+            locationMapping->setType(static_cast<int>(QVariant::Vector3D));
+
+            auto metalnessMapping = new ChannelMapping();
+            metalnessMapping->setChannelName("Metalness");
+            metalnessMapping->setTargetId(Qt3DCore::QNodeId::createId());
+            metalnessMapping->setProperty(QLatin1String("metalness"));
+            metalnessMapping->setPropertyName("metalness");
+            metalnessMapping->setType(static_cast<int>(QVariant::Double));
+
+            auto baseColorMapping = new ChannelMapping();
+            baseColorMapping->setChannelName("BaseColor");
+            baseColorMapping->setTargetId(Qt3DCore::QNodeId::createId());
+            baseColorMapping->setProperty(QLatin1String("baseColor"));
+            baseColorMapping->setPropertyName("baseColor");
+            baseColorMapping->setType(static_cast<int>(QVariant::Vector3D));
+
+            auto roughnessMapping = new ChannelMapping();
+            roughnessMapping->setChannelName("Roughness");
+            roughnessMapping->setTargetId(Qt3DCore::QNodeId::createId());
+            roughnessMapping->setProperty(QLatin1String("roughness"));
+            roughnessMapping->setPropertyName("roughness");
+            roughnessMapping->setType(static_cast<int>(QVariant::Double));
+
+            auto rotationMapping = new ChannelMapping();
+            rotationMapping->setChannelName("Rotation");
+            rotationMapping->setTargetId(Qt3DCore::QNodeId::createId());
+            rotationMapping->setProperty(QLatin1String("rotation"));
+            rotationMapping->setPropertyName("rotation");
+            rotationMapping->setType(static_cast<int>(QVariant::Quaternion));
+
+            QVector<ChannelMapping *> channelMappings
+                    = { locationMapping, metalnessMapping,
+                        baseColorMapping, roughnessMapping,
+                        rotationMapping };
+
+            // Create a few channels in the format description
+            ChannelNameAndType rotation = { QLatin1String("Rotation"),
+                                            static_cast<int>(QVariant::Quaternion) };
+            ChannelNameAndType location = { QLatin1String("Location"),
+                                            static_cast<int>(QVariant::Vector3D) };
+            ChannelNameAndType baseColor = { QLatin1String("BaseColor"),
+                                             static_cast<int>(QVariant::Vector3D) };
+            ChannelNameAndType metalness = { QLatin1String("Metalness"),
+                                             static_cast<int>(QVariant::Double) };
+            ChannelNameAndType roughness = { QLatin1String("Roughness"),
+                                             static_cast<int>(QVariant::Double) };
+            QVector<ChannelNameAndType> channelNamesAndTypes
+                    = { rotation, location, baseColor, metalness, roughness };
+
+            // And the matching indices
+            ComponentIndices rotationIndices = { 0, 1, 2, 3 };
+            ComponentIndices locationIndices = { 4, 5, 6 };
+            ComponentIndices baseColorIndices = { 7, 8, 9 };
+            ComponentIndices metalnessIndices = { 10 };
+            ComponentIndices roughnessIndices = { 11 };
+            QVector<ComponentIndices> channelComponentIndices
+                    = { rotationIndices, locationIndices, baseColorIndices,
+                        metalnessIndices, roughnessIndices };
+
+            MappingData expectedLocationMapping;
+            expectedLocationMapping.targetId = locationMapping->targetId();
+            expectedLocationMapping.propertyName = locationMapping->propertyName();
+            expectedLocationMapping.type = locationMapping->type();
+            expectedLocationMapping.channelIndices = locationIndices;
+
+            MappingData expectedMetalnessMapping;
+            expectedMetalnessMapping.targetId = metalnessMapping->targetId();
+            expectedMetalnessMapping.propertyName = metalnessMapping->propertyName();
+            expectedMetalnessMapping.type = metalnessMapping->type();
+            expectedMetalnessMapping.channelIndices = metalnessIndices;
+
+            MappingData expectedBaseColorMapping;
+            expectedBaseColorMapping.targetId = baseColorMapping->targetId();
+            expectedBaseColorMapping.propertyName = baseColorMapping->propertyName();
+            expectedBaseColorMapping.type = baseColorMapping->type();
+            expectedBaseColorMapping.channelIndices = baseColorIndices;
+
+            MappingData expectedRoughnessMapping;
+            expectedRoughnessMapping.targetId = roughnessMapping->targetId();
+            expectedRoughnessMapping.propertyName = roughnessMapping->propertyName();
+            expectedRoughnessMapping.type = roughnessMapping->type();
+            expectedRoughnessMapping.channelIndices = roughnessIndices;
+
+            MappingData expectedRotationMapping;
+            expectedRotationMapping.targetId = rotationMapping->targetId();
+            expectedRotationMapping.propertyName = rotationMapping->propertyName();
+            expectedRotationMapping.type = rotationMapping->type();
+            expectedRotationMapping.channelIndices = rotationIndices;
+
+            QVector<MappingData> expectedResults
+                    = { expectedLocationMapping,
+                        expectedMetalnessMapping,
+                        expectedBaseColorMapping,
+                        expectedRoughnessMapping,
+                        expectedRotationMapping };
+
+            QTest::newRow("multiple mappings")
+                    << channelMappings
+                    << channelNamesAndTypes
+                    << channelComponentIndices
+                    << expectedResults;
+        }
+    }
+
+    void checkBuildPropertyMappings2()
+    {
+        // GIVEN
+        QFETCH(QVector<ChannelMapping *>, channelMappings);
+        QFETCH(QVector<ChannelNameAndType>, channelNamesAndTypes);
+        QFETCH(QVector<ComponentIndices>, channelComponentIndices);
+        QFETCH(QVector<MappingData>, expectedResults);
+
+        // WHEN
+        const QVector<MappingData> actualResults = buildPropertyMappings(channelMappings,
+                                                                         channelNamesAndTypes,
+                                                                         channelComponentIndices);
+
+        // THEN
+        QCOMPARE(actualResults.size(), expectedResults.size());
+        for (int i = 0; i < actualResults.size(); ++i) {
+            const auto actualMapping = actualResults[i];
+            const auto expectedMapping = expectedResults[i];
+
+            QCOMPARE(actualMapping.targetId, expectedMapping.targetId);
+            QCOMPARE(actualMapping.propertyName, expectedMapping.propertyName);
+            QCOMPARE(actualMapping.type, expectedMapping.type);
+            QCOMPARE(actualMapping.channelIndices.size(), expectedMapping.channelIndices.size());
+            for (int j = 0; j < actualMapping.channelIndices.size(); ++j) {
+                QCOMPARE(actualMapping.channelIndices[j], expectedMapping.channelIndices[j]);
+            }
+        }
+    }
+
     void checkLocalTimeFromGlobalTime_data()
     {
         QTest::addColumn<double>("globalTime");

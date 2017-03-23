@@ -62,6 +62,7 @@ class BlendedClipAnimator;
 class Handler;
 class AnimationClipLoader;
 class ChannelMapper;
+class ChannelMapping;
 
 typedef QVector<int> ComponentIndices;
 
@@ -171,6 +172,11 @@ Q_AUTOTEST_EXPORT
 QVector<MappingData> buildPropertyMappings(Handler *handler,
                                            const AnimationClipLoader *clip,
                                            const ChannelMapper *mapper);
+
+Q_AUTOTEST_EXPORT
+QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping *> &channelMappings,
+                                           const QVector<ChannelNameAndType> &channelNamesAndTypes,
+                                           const QVector<ComponentIndices> &channelComponentIndices);
 
 Q_AUTOTEST_EXPORT
 QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,

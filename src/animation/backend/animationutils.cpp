@@ -290,6 +290,8 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
     return changes;
 }
 
+//TODO: Remove this and use new implementation below for both the unblended
+//      and blended animation cases.
 QVector<MappingData> buildPropertyMappings(Handler *handler,
                                            const AnimationClipLoader *clip,
                                            const ChannelMapper *mapper)
@@ -337,6 +339,40 @@ QVector<MappingData> buildPropertyMappings(Handler *handler,
             }
 
             ++channelGroupIndex;
+        }
+    }
+
+    return mappingDataVec;
+}
+
+QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &channelMappings,
+                                           const QVector<ChannelNameAndType> &channelNamesAndTypes,
+                                           const QVector<ComponentIndices> &channelComponentIndices)
+{
+    QVector<MappingData> mappingDataVec;
+    mappingDataVec.reserve(channelMappings.size());
+
+    // Iterate over the mappings
+    for (const auto mapping : channelMappings) {
+        // Populate the data we need, easy stuff first
+        MappingData mappingData;
+        mappingData.targetId = mapping->targetId();
+        mappingData.propertyName = mapping->propertyName();
+        mappingData.type = mapping->type();
+
+        if (mappingData.type == static_cast<int>(QVariant::Invalid)) {
+            qWarning() << "Unknown type for node id =" << mappingData.targetId
+                       << "and property =" << mapping->property();
+            continue;
+        }
+
+        // Try to find matching channel name and type
+        const ChannelNameAndType nameAndType = { mapping->channelName(), mapping->type() };
+        const int index = channelNamesAndTypes.indexOf(nameAndType);
+        if (index != -1) {
+            // We got one!
+            mappingData.channelIndices = channelComponentIndices[index];
+            mappingDataVec.push_back(mappingData);
         }
     }
 
