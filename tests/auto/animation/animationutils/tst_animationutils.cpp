@@ -70,9 +70,6 @@ public:
         : ClipBlendNode(ClipBlendNode::LerpBlendType)
     {}
 
-    float blend(float, float ) const Q_DECL_FINAL { return 0.0f; }
-
-
     void setValueNodeIds(Qt3DCore::QNodeId value1Id,
                          Qt3DCore::QNodeId value2Id)
     {

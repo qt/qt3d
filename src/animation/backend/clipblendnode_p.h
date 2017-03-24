@@ -78,8 +78,6 @@ public:
     BlendType blendType() const;
     Qt3DCore::QNodeIdVector childrenIds() const;
 
-    // TODO: Remove this old blend() virtual and rename performBlend() to blend()
-    virtual float blend(float value1, float value2) const = 0;
     void performBlend(Qt3DCore::QNodeId animatorId);
 
     void setClipResults(Qt3DCore::QNodeId animatorId, const ClipResults &clipResults);

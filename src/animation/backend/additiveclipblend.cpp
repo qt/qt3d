@@ -71,11 +71,6 @@ void AdditiveClipBlend::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 }
 
-float AdditiveClipBlend::blend(float value1, float value2) const
-{
-    return value1 + (m_additiveFactor * value2);
-}
-
 ClipResults AdditiveClipBlend::doBlend(const QVector<ClipResults> &blendData) const
 {
     Q_ASSERT(blendData.size() == 2);

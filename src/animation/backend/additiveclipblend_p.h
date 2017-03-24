@@ -72,7 +72,6 @@ public:
     void setAdditiveFactor(float additiveFactor) { m_additiveFactor = additiveFactor; } // For unit tests
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
-    float blend(float value1, float value2) const Q_DECL_FINAL;
 
     inline QVector<Qt3DCore::QNodeId> dependencyIds() const Q_DECL_OVERRIDE
     {

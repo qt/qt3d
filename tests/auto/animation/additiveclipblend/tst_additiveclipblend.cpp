@@ -50,8 +50,6 @@ public:
         , m_duration(duration)
     {}
 
-    float blend(float, float) const Q_DECL_FINAL { return 0.0f; }
-
     QVector<Qt3DCore::QNodeId> dependencyIds() const Q_DECL_FINAL
     {
         return QVector<Qt3DCore::QNodeId>();
@@ -209,35 +207,6 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(backendAdditiveBlend.additiveClipId(), newValue.id());
         }
-    }
-
-    void checkBlend_data()
-    {
-        QTest::addColumn<float>("value1");
-        QTest::addColumn<float>("value2");
-        QTest::addColumn<float>("blendFactor");
-        QTest::addColumn<float>("result");
-
-        QTest::newRow("0_blending") << 8.0f << 5.0f << 0.0f << 8.0f;
-        QTest::newRow("0.5_blending") << 8.0f << 5.0f << 0.5f << 10.5f;
-        QTest::newRow("1_blending") << 8.0f << 5.0f << 1.0f << 13.0f;
-    }
-
-    void checkBlend()
-    {
-        // GIVEN
-        QFETCH(float, value1);
-        QFETCH(float, value2);
-        QFETCH(float, blendFactor);
-        QFETCH(float, result);
-        AdditiveClipBlend addBlend;
-
-        // WHEN
-        addBlend.setAdditiveFactor(blendFactor);
-        const float computed = addBlend.blend(value1, value2);
-
-        // THEN
-        QCOMPARE(computed, result);
     }
 
     void checkDependencyIds()

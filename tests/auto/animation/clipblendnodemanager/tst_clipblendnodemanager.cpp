@@ -49,8 +49,6 @@ public:
         deadCount += 1;
     }
 
-    float blend(float , float ) const Q_DECL_FINAL { return 0.0f; }
-
     QVector<Qt3DCore::QNodeId> dependencyIds() const Q_DECL_FINAL
     {
         return QVector<Qt3DCore::QNodeId>();

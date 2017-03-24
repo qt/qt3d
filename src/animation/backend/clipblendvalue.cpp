@@ -72,15 +72,6 @@ void ClipBlendValue::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 }
 
-float ClipBlendValue::blend(float value1, float value2) const
-{
-    // Should never be called for the value node
-    Q_UNUSED(value1);
-    Q_UNUSED(value2);
-    Q_UNREACHABLE();
-    return 0.0f;
-}
-
 ClipResults ClipBlendValue::doBlend(const QVector<ClipResults> &blendData) const
 {
     // Should never be called for the value node

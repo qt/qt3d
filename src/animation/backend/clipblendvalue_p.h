@@ -65,7 +65,6 @@ public:
     void setClipId(Qt3DCore::QNodeId clipId) { m_clipId = clipId; } // For unit tests
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    float blend(float value1, float value2) const Q_DECL_OVERRIDE;
 
     inline QVector<Qt3DCore::QNodeId> dependencyIds() const Q_DECL_OVERRIDE
     {

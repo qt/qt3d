@@ -70,11 +70,6 @@ void LerpClipBlend::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 }
 
-float LerpClipBlend::blend(float value1, float value2) const
-{
-    return ((1.0f - m_blendFactor) * value1) + (m_blendFactor * value2);
-}
-
 ClipResults LerpClipBlend::doBlend(const QVector<ClipResults> &blendData) const
 {
     Q_ASSERT(blendData.size() == 2);
@@ -106,7 +101,7 @@ double LerpClipBlend::duration() const
     ClipBlendNode *endNode = clipBlendNodeManager()->lookupNode(m_endClipId);
     const double endNodeDuration = endNode ? endNode->duration() : 0.0;
 
-    return blend(startNodeDuration, endNodeDuration);
+    return (1.0f - m_blendFactor) * startNodeDuration + m_blendFactor * endNodeDuration;
 }
 
 } // Animation
