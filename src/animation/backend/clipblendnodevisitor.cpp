@@ -105,7 +105,7 @@ void ClipBlendNodeVisitor::visitPreOrderAllNodes(ClipBlendNode *node,
                                                  const VisitFunction &visitFunction) const
 {
     visitFunction(node);
-    const Qt3DCore::QNodeIdVector childIds = node->childrenIds();
+    const Qt3DCore::QNodeIdVector childIds = node->allDependencyIds();
     for (const Qt3DCore::QNodeId childId: childIds) {
         ClipBlendNode *childNode = m_manager->lookupNode(childId);
         if (childNode != nullptr)
@@ -121,7 +121,7 @@ void ClipBlendNodeVisitor::visitPreOrderAllNodes(ClipBlendNode *node,
 void ClipBlendNodeVisitor::visitPostOrderAllNodes(ClipBlendNode *node,
                                                   const VisitFunction &visitFunction) const
 {
-    const Qt3DCore::QNodeIdVector childIds = node->childrenIds();
+    const Qt3DCore::QNodeIdVector childIds = node->allDependencyIds();
     for (const Qt3DCore::QNodeId childId: childIds) {
         ClipBlendNode *childNode = m_manager->lookupNode(childId);
         if (childNode != nullptr)
