@@ -76,7 +76,6 @@ public:
     inline ClipBlendNodeManager *clipBlendNodeManager() const { return m_manager; }
 
     BlendType blendType() const;
-    Qt3DCore::QNodeIdVector childrenIds() const;
 
     void blend(Qt3DCore::QNodeId animatorId);
 
@@ -93,8 +92,6 @@ protected:
     virtual ClipResults doBlend(const QVector<ClipResults> &blendData) const = 0;
 
 private:
-    Qt3DCore::QNodeId m_parentId;
-    Qt3DCore::QNodeIdVector m_childrenIds;
     ClipBlendNodeManager *m_manager;
     BlendType m_blendType;
 

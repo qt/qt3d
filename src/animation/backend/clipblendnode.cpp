@@ -57,11 +57,6 @@ ClipBlendNode::~ClipBlendNode()
 {
 }
 
-Qt3DCore::QNodeIdVector ClipBlendNode::childrenIds() const
-{
-    return m_childrenIds;
-}
-
 void ClipBlendNode::setClipBlendNodeManager(ClipBlendNodeManager *manager)
 {
     m_manager = manager;
