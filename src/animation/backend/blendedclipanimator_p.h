@@ -91,22 +91,6 @@ public:
 
     void sendPropertyChanges(const QVector<Qt3DCore::QSceneChangePtr> &changes);
 
-    struct BlendNodeData
-    {
-        Qt3DCore::QNodeId blendNodeId;
-        enum ChildType {
-            ClipType,
-            BlendNodeType
-        };
-        ChildType type;
-        Qt3DCore::QNodeId left;
-        Qt3DCore::QNodeId right;
-        QVector<BlendingMappingData> mappingData;
-    };
-
-    void setBlendTreeTable(const QHash<Qt3DCore::QNodeId, BlendNodeData> &blendTreeTable) { m_blendTreeTable = blendTreeTable; }
-    QHash<Qt3DCore::QNodeId, BlendNodeData> blendTreeTable() const { return m_blendTreeTable; }
-
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
     Qt3DCore::QNodeId m_blendTreeRootId;
@@ -116,7 +100,7 @@ private:
     qint64 m_startGlobalTime;
     int m_currentLoop;
     int m_loops;
-    QHash<Qt3DCore::QNodeId, BlendNodeData> m_blendTreeTable;
+
     QVector<MappingData> m_mappingData;
 };
 

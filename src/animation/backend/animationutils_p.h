@@ -74,18 +74,6 @@ struct MappingData
     ComponentIndices channelIndices;
 };
 
-struct BlendingMappingData : public MappingData
-{
-    QVector<int> channelIndicesClip1;
-    QVector<int> channelIndicesClip2;
-
-    enum BlendAction {
-        NoBlending, // Use the channel from Clip1 only
-        ClipBlending, // Blending 2 clips sharing the same channel
-    };
-    BlendAction blendAction;
-};
-
 struct AnimatorEvaluationData
 {
     double globalTime;
