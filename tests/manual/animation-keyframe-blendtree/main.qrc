@@ -2,8 +2,7 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>DefaultSceneEntity.qml</file>
-        <file>cubeanimation.json</file>
-        <file>pulsing-moving-cube.json</file>
-        <file>pulsing-cube-additive.json</file>
+        <file>sliding-cube.json</file>
+        <file>sliding-pulsing-cube.json</file>
     </qresource>
 </RCC>
