@@ -76,7 +76,6 @@ public:
     inline ClipBlendNodeManager *clipBlendNodeManager() const { return m_manager; }
 
     BlendType blendType() const;
-    Qt3DCore::QNodeId parentId() const;
     Qt3DCore::QNodeIdVector childrenIds() const;
 
     // TODO: Remove this old blend() virtual and rename performBlend() to blend()

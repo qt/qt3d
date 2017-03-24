@@ -114,7 +114,6 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendClipBlendNode.isEnabled(), false);
         QVERIFY(backendClipBlendNode.peerId().isNull());
-        QCOMPARE(backendClipBlendNode.parentId(), Qt3DCore::QNodeId());
         QCOMPARE(backendClipBlendNode.childrenIds(), Qt3DCore::QNodeIdVector());
         QVERIFY(backendClipBlendNode.clipBlendNodeManager() == nullptr);
         QCOMPARE(backendClipBlendNode.blendType(), ClipBlendNode::LerpBlendType);
@@ -139,7 +138,6 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(backendClipBlendNode.isEnabled(), true);
             QCOMPARE(backendClipBlendNode.peerId(), clipBlendNode.id());
-            QCOMPARE(backendClipBlendNode.parentId(), Qt3DCore::QNodeId());
             QCOMPARE(backendClipBlendNode.childrenIds().size(), 0);
             QCOMPARE(backendClipBlendNode.clipBlendNodeManager(), &manager);
             QCOMPARE(backendClipBlendNode.blendType(), ClipBlendNode::LerpBlendType);

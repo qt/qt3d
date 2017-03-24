@@ -76,15 +76,10 @@ private Q_SLOTS:
         simulateInitialization(&childBlendNode12, backendChildBlendNode12);
 
         // THEN
-        QVERIFY(backendRootBlendNode->parentId().isNull());
         QCOMPARE(backendRootBlendNode->childrenIds().size(), 2);
-        QCOMPARE(backendChildBlendNode1->parentId(), rootBlendNode.id());
         QCOMPARE(backendChildBlendNode1->childrenIds().size(), 2);
-        QCOMPARE(backendChildBlendNode2->parentId(), rootBlendNode.id());
         QCOMPARE(backendChildBlendNode2->childrenIds().size(), 0);
-        QCOMPARE(backendChildBlendNode11->parentId(), childBlendNode1.id());
         QCOMPARE(backendChildBlendNode11->childrenIds().size(), 0);
-        QCOMPARE(backendChildBlendNode12->parentId(), childBlendNode1.id());
         QCOMPARE(backendChildBlendNode12->childrenIds().size(), 0);
 
         // WHEN
@@ -125,7 +120,6 @@ private Q_SLOTS:
         simulateInitialization(&rootBlendNode, backendRootBlendNode);
 
         // THEN
-        QVERIFY(backendRootBlendNode->parentId().isNull());
         QCOMPARE(backendRootBlendNode->childrenIds().size(), 0);
 
         // WHEN
@@ -164,11 +158,8 @@ private Q_SLOTS:
         simulateInitialization(&childBlendNode2, backendChildBlendNode2);
 
         // THEN
-        QVERIFY(backendRootBlendNode->parentId().isNull());
         QCOMPARE(backendRootBlendNode->childrenIds().size(), 2);
-        QCOMPARE(backendChildBlendNode1->parentId(), rootBlendNode.id());
         QCOMPARE(backendChildBlendNode1->childrenIds().size(), 0);
-        QCOMPARE(backendChildBlendNode2->parentId(), rootBlendNode.id());
         QCOMPARE(backendChildBlendNode2->childrenIds().size(), 0);
 
         // WHEN

@@ -57,11 +57,6 @@ ClipBlendNode::~ClipBlendNode()
 {
 }
 
-Qt3DCore::QNodeId ClipBlendNode::parentId() const
-{
-    return m_parentId;
-}
-
 Qt3DCore::QNodeIdVector ClipBlendNode::childrenIds() const
 {
     return m_childrenIds;
