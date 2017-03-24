@@ -121,6 +121,17 @@ ClipResults ClipBlendNode::clipResults(Qt3DCore::QNodeId animatorId) const
 */
 
 /*!
+    \fn QVector<Qt3DCore::QNodeId> ClipBlendNode::allDependencyIds() const
+    \internal
+
+    Similar to currentDependencyIds() but returns the ids of all potential
+    dependency nodes, not just those that are dependencies given the current
+    internal state. For example a generalised lerp node would return the ids
+    of all nodes that can participate in the lerp for any value of the blend
+    parameter. Not just those bounding the current blend value.
+*/
+
+/*!
     \internal
 
     Fetches the ClipResults from the nodes listed in the dependencyIds

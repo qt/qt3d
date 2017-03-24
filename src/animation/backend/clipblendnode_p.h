@@ -83,6 +83,7 @@ public:
     void setClipResults(Qt3DCore::QNodeId animatorId, const ClipResults &clipResults);
     ClipResults clipResults(Qt3DCore::QNodeId animatorId) const;
 
+    virtual QVector<Qt3DCore::QNodeId> allDependencyIds() const = 0;
     virtual QVector<Qt3DCore::QNodeId> currentDependencyIds() const = 0;
     virtual double duration() const = 0;
 

@@ -54,6 +54,11 @@ public:
         , m_clipResults(clipResults)
     {}
 
+    inline QVector<Qt3DCore::QNodeId> allDependencyIds() const Q_DECL_OVERRIDE
+    {
+        return currentDependencyIds();
+    }
+
     QVector<Qt3DCore::QNodeId> currentDependencyIds() const Q_DECL_FINAL
     {
         return QVector<Qt3DCore::QNodeId>();
