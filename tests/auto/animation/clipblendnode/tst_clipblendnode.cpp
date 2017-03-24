@@ -293,7 +293,7 @@ private Q_SLOTS:
         auto animator = createBlendedClipAnimator(handler, globalStartTimeNS, loopCount);
 
         // WHEN
-        blendNode->performBlend(animator->peerId());
+        blendNode->blend(animator->peerId());
 
         // THEN
         const ClipResults actualResults = blendNode->clipResults(animator->peerId());

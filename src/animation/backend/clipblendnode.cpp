@@ -129,7 +129,7 @@ ClipResults ClipBlendNode::clipResults(Qt3DCore::QNodeId animatorId) const
     The results are then inserted into the clip results for this blend
     node indexed by the \a animatorId.
 */
-void ClipBlendNode::performBlend(Qt3DCore::QNodeId animatorId)
+void ClipBlendNode::blend(Qt3DCore::QNodeId animatorId)
 {
     // Obtain the clip results from each of the dependencies
     const QVector<Qt3DCore::QNodeId> dependencyNodeIds = dependencyIds();

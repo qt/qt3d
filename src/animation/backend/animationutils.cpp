@@ -555,7 +555,7 @@ ClipResults evaluateBlendTree(Handler *handler,
         // Look up the blend node and if it's an interior node, perform
         // the blend operation
         if (blendNode->blendType() != ClipBlendNode::ValueType)
-            blendNode->performBlend(animatorId);
+            blendNode->blend(animatorId);
     };
     visitor.traverse(blendTreeRootId, func);
 

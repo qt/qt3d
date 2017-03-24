@@ -78,7 +78,7 @@ public:
     BlendType blendType() const;
     Qt3DCore::QNodeIdVector childrenIds() const;
 
-    void performBlend(Qt3DCore::QNodeId animatorId);
+    void blend(Qt3DCore::QNodeId animatorId);
 
     void setClipResults(Qt3DCore::QNodeId animatorId, const ClipResults &clipResults);
     ClipResults clipResults(Qt3DCore::QNodeId animatorId) const;

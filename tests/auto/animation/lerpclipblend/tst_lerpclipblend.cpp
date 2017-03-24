@@ -382,7 +382,7 @@ private Q_SLOTS:
         QFETCH(ClipResults, expectedResults);
 
         // WHEN
-        blendNode->performBlend(animatorId);
+        blendNode->blend(animatorId);
 
         // THEN
         const ClipResults actualResults = blendNode->clipResults(animatorId);
