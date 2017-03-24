@@ -50,7 +50,7 @@ public:
         , m_duration(duration)
     {}
 
-    QVector<Qt3DCore::QNodeId> dependencyIds() const Q_DECL_FINAL
+    QVector<Qt3DCore::QNodeId> currentDependencyIds() const Q_DECL_FINAL
     {
         return QVector<Qt3DCore::QNodeId>();
     }
@@ -219,7 +219,7 @@ private Q_SLOTS:
         // WHEN
         addBlend.setBaseClipId(baseClipId);
         addBlend.setAdditiveClipId(additiveClipId);
-        QVector<Qt3DCore::QNodeId> actualIds = addBlend.dependencyIds();
+        QVector<Qt3DCore::QNodeId> actualIds = addBlend.currentDependencyIds();
 
         // THEN
         QCOMPARE(actualIds.size(), 2);
@@ -229,7 +229,7 @@ private Q_SLOTS:
         // WHEN
         auto anotherAdditiveClipId = Qt3DCore::QNodeId::createId();
         addBlend.setAdditiveClipId(anotherAdditiveClipId);
-        actualIds = addBlend.dependencyIds();
+        actualIds = addBlend.currentDependencyIds();
 
         // THEN
         QCOMPARE(actualIds.size(), 2);

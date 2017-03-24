@@ -49,7 +49,7 @@ public:
         deadCount += 1;
     }
 
-    QVector<Qt3DCore::QNodeId> dependencyIds() const Q_DECL_FINAL
+    QVector<Qt3DCore::QNodeId> currentDependencyIds() const Q_DECL_FINAL
     {
         return QVector<Qt3DCore::QNodeId>();
     }

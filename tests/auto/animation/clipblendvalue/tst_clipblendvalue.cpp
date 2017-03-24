@@ -134,7 +134,7 @@ private Q_SLOTS:
 
         // WHEN
         clipNode.setClipId(clipId);
-        QVector<Qt3DCore::QNodeId> actualIds = clipNode.dependencyIds();
+        QVector<Qt3DCore::QNodeId> actualIds = clipNode.currentDependencyIds();
 
         // THEN
         QCOMPARE(actualIds.size(), 1);
@@ -143,7 +143,7 @@ private Q_SLOTS:
         // WHEN
         auto anotherClipId = Qt3DCore::QNodeId::createId();
         clipNode.setClipId(anotherClipId);
-        actualIds = clipNode.dependencyIds();
+        actualIds = clipNode.currentDependencyIds();
 
         // THEN
         QCOMPARE(actualIds.size(), 1);

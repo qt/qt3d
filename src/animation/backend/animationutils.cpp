@@ -448,7 +448,7 @@ QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
                                  ClipBlendNodeVisitor::VisitOnlyDependencies);
 
     auto func = [&clipIds, nodeManager] (ClipBlendNode *blendNode) {
-        const auto dependencyIds = blendNode->dependencyIds();
+        const auto dependencyIds = blendNode->currentDependencyIds();
         for (const auto dependencyId : dependencyIds) {
             // Look up the blend node and if it's a value type (clip),
             // add it to the set of value node ids that need to be evaluated

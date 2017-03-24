@@ -77,7 +77,7 @@ public:
         m_value2Id = value2Id;
     }
 
-    QVector<Qt3DCore::QNodeId> dependencyIds() const Q_DECL_FINAL
+    QVector<Qt3DCore::QNodeId> currentDependencyIds() const Q_DECL_FINAL
     {
         return QVector<Qt3DCore::QNodeId>() << m_value1Id << m_value2Id;
     }

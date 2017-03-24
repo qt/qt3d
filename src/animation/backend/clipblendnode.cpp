@@ -99,7 +99,7 @@ ClipResults ClipBlendNode::clipResults(Qt3DCore::QNodeId animatorId) const
 }
 
 /*!
-    \fn QVector<Qt3DCore::QNodeId> ClipBlendNode::dependencyIds() const
+    \fn QVector<Qt3DCore::QNodeId> ClipBlendNode::currentDependencyIds() const
     \internal
 
     Each subclass of ClipBlendNode must implement this function such that it
@@ -132,7 +132,7 @@ ClipResults ClipBlendNode::clipResults(Qt3DCore::QNodeId animatorId) const
 void ClipBlendNode::blend(Qt3DCore::QNodeId animatorId)
 {
     // Obtain the clip results from each of the dependencies
-    const QVector<Qt3DCore::QNodeId> dependencyNodeIds = dependencyIds();
+    const QVector<Qt3DCore::QNodeId> dependencyNodeIds = currentDependencyIds();
     const int dependencyCount = dependencyNodeIds.size();
     QVector<ClipResults> blendData;
     blendData.reserve(dependencyCount);
