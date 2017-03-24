@@ -160,7 +160,6 @@ private Q_SLOTS:
             QCOMPARE(lerpBlend.metaObject(), creationChangeData->metaObject());
             QCOMPARE(cloneData.startClipId, startClip.id());
             QCOMPARE(cloneData.endClipId, endClip.id());
-            QCOMPARE(creationChangeData->parentClipBlendNodeId(), Qt3DCore::QNodeId());
         }
 
         // WHEN
@@ -185,7 +184,6 @@ private Q_SLOTS:
             QCOMPARE(lerpBlend.metaObject(), creationChangeData->metaObject());
             QCOMPARE(cloneData.startClipId, startClip.id());
             QCOMPARE(cloneData.endClipId, endClip.id());
-            QCOMPARE(creationChangeData->parentClipBlendNodeId(), Qt3DCore::QNodeId());
         }
     }
 

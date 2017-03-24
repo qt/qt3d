@@ -78,9 +78,6 @@ public:
     BlendType blendType() const;
     Qt3DCore::QNodeId parentId() const;
     Qt3DCore::QNodeIdVector childrenIds() const;
-    Qt3DCore::QNodeIdVector clipIds() const;
-
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     // TODO: Remove this old blend() virtual and rename performBlend() to blend()
     virtual float blend(float value1, float value2) const = 0;
@@ -98,13 +95,6 @@ protected:
     virtual ClipResults doBlend(const QVector<ClipResults> &blendData) const = 0;
 
 private:
-    void setParentId(Qt3DCore::QNodeId parentId);
-    void addChildId(Qt3DCore::QNodeId childId);
-    void removeChildId(Qt3DCore::QNodeId childId);
-
-    // Can either contain clips or nothing (tree of other blend nodes)
-    Qt3DCore::QNodeIdVector m_clipIds;
-
     Qt3DCore::QNodeId m_parentId;
     Qt3DCore::QNodeIdVector m_childrenIds;
     ClipBlendNodeManager *m_manager;

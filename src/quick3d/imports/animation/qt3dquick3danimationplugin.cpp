@@ -57,7 +57,6 @@
 
 #include <Qt3DQuickAnimation/private/qt3dquickanimation_global_p.h>
 #include <Qt3DQuickAnimation/private/quick3dchannelmapper_p.h>
-#include <Qt3DQuickAnimation/private/quick3dabstractclipblendnode_p.h>
 #include <Qt3DQuickAnimation/private/quick3dkeyframeanimation_p.h>
 #include <Qt3DQuickAnimation/private/quick3danimationgroup_p.h>
 #include <Qt3DQuickAnimation/private/quick3danimationcontroller_p.h>
@@ -80,8 +79,7 @@ void Qt3DQuick3DAnimationPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DAnimation::QAnimationClipLoader>(uri, 2, 9, "AnimationClip");
     qmlRegisterExtendedType<Qt3DAnimation::QChannelMapper,
                             Qt3DAnimation::Animation::Quick::Quick3DChannelMapper>(uri, 2, 9, "ChannelMapper");
-    qmlRegisterExtendedUncreatableType<Qt3DAnimation::QAbstractClipBlendNode,
-                                       Qt3DAnimation::Animation::Quick::Quick3DAbstractClipBlendNode>(uri, 2, 9, "AbstractClipBlendNode", QStringLiteral("QAbstractClipBlendNode is abstract"));
+    qmlRegisterUncreatableType<Qt3DAnimation::QAbstractClipBlendNode>(uri, 2, 9, "AbstractClipBlendNode", QStringLiteral("QAbstractClipBlendNode is abstract"));
     qmlRegisterType<Qt3DAnimation::QLerpClipBlend>(uri, 2, 9, "LerpClipBlend");
     qmlRegisterType<Qt3DAnimation::QAdditiveClipBlend>(uri, 2, 9, "AdditiveClipBlend");
     qmlRegisterType<Qt3DAnimation::QClipBlendValue>(uri, 2, 9, "ClipBlendValue");

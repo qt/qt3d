@@ -67,89 +67,14 @@ Qt3DCore::QNodeIdVector ClipBlendNode::childrenIds() const
     return m_childrenIds;
 }
 
-Qt3DCore::QNodeIdVector ClipBlendNode::clipIds() const
-{
-    return m_clipIds;
-}
-
-void ClipBlendNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    switch (e->type()) {
-
-    case Qt3DCore::PropertyValueAdded: {
-       Qt3DCore::QPropertyNodeAddedChangePtr change = qSharedPointerCast<Qt3DCore::QPropertyNodeAddedChange>(e);
-        if (change->metaObject()->inherits(&QAbstractClipBlendNode::staticMetaObject))
-            addChildId(change->addedNodeId());
-        else if (change->metaObject()->inherits(&QAbstractAnimationClip::staticMetaObject))
-            m_clipIds.push_back(change->addedNodeId());
-        break;
-    }
-
-    case Qt3DCore::PropertyValueRemoved: {
-        Qt3DCore::QPropertyNodeRemovedChangePtr change = qSharedPointerCast<Qt3DCore::QPropertyNodeRemovedChange>(e);
-        if (change->metaObject()->inherits(&QAbstractClipBlendNode::staticMetaObject))
-            removeChildId(change->removedNodeId());
-        else if (change->metaObject()->inherits(&QAbstractAnimationClip::staticMetaObject))
-            m_clipIds.removeOne(change->removedNodeId());
-        break;
-    }
-
-    default:
-        break;
-    }
-
-    Qt3DCore::QBackendNode::sceneChangeEvent(e);
-}
-
 void ClipBlendNode::setClipBlendNodeManager(ClipBlendNodeManager *manager)
 {
     m_manager = manager;
 }
 
-
-
 void ClipBlendNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    const auto creationChange = qSharedPointerCast<QClipBlendNodeCreatedChangeBase>(change);
-    setParentId(creationChange->parentClipBlendNodeId());
-    m_clipIds = creationChange->clips();
-}
-
-void ClipBlendNode::setParentId(Qt3DCore::QNodeId parentId)
-{
-    if (parentId != m_parentId) {
-        // We already had a parent, tell it to abandon us
-        if (!m_parentId.isNull()) {
-            ClipBlendNode *parent = m_manager->lookupNode(m_parentId);
-            if (parent != nullptr)
-                parent->m_childrenIds.removeAll(peerId());
-        }
-        m_parentId = parentId;
-        ClipBlendNode *parent = m_manager->lookupNode(m_parentId);
-        if (parent != nullptr && !parent->m_childrenIds.contains(peerId()))
-            parent->m_childrenIds.append(peerId());
-    }
-}
-
-void ClipBlendNode::addChildId(Qt3DCore::QNodeId childId)
-{
-    if (!m_childrenIds.contains(childId)) {
-        ClipBlendNode *child = m_manager->lookupNode(childId);
-        if (child != nullptr) {
-            m_childrenIds.push_back(childId);
-            child->m_parentId = peerId();
-        }
-    }
-}
-
-void ClipBlendNode::removeChildId(Qt3DCore::QNodeId childId)
-{
-    if (m_childrenIds.contains(childId)) {
-        ClipBlendNode *child = m_manager->lookupNode(childId);
-        if (child != nullptr)
-            child->m_parentId = Qt3DCore::QNodeId();
-        m_childrenIds.removeAll(childId);
-    }
+    Q_UNUSED(change);
 }
 
 ClipBlendNode::BlendType Animation::ClipBlendNode::blendType() const

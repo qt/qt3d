@@ -36,9 +36,6 @@
 
 #include "qabstractclipblendnode.h"
 #include "qabstractclipblendnode_p.h"
-#include <Qt3DCore/qpropertynodeaddedchange.h>
-#include <Qt3DCore/qpropertynoderemovedchange.h>
-#include <Qt3DAnimation/qabstractanimationclip.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,62 +58,6 @@ QAbstractClipBlendNode::QAbstractClipBlendNode(QAbstractClipBlendNodePrivate &dd
 
 QAbstractClipBlendNode::~QAbstractClipBlendNode()
 {
-}
-
-void QAbstractClipBlendNode::addClip(QAbstractAnimationClip *clip)
-{
-    Q_D(QAbstractClipBlendNode);
-    if (!d->m_clips.contains(clip)) {
-        d->m_clips.push_back(clip);
-
-        // Ensures proper bookkeeping
-        d->registerDestructionHelper(clip, &QAbstractClipBlendNode::removeClip, d->m_clips);
-
-        // We need to add it as a child of the current node if it has been declared inline
-        // Or not previously added as a child of the current node so that
-        // 1) The backend gets notified about it's creation
-        // 2) When the current node is destroyed, it gets destroyed as well
-        if (!clip->parent())
-            clip->setParent(this);
-
-        if (d->m_changeArbiter != nullptr) {
-            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), clip);
-            change->setPropertyName("clip");
-            d->notifyObservers(change);
-        }
-    }
-}
-
-void QAbstractClipBlendNode::removeClip(QAbstractAnimationClip *clip)
-{
-    Q_D(QAbstractClipBlendNode);
-    if (d->m_changeArbiter != nullptr) {
-        const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), clip);
-        change->setPropertyName("clip");
-        d->notifyObservers(change);
-    }
-    d->m_clips.removeOne(clip);
-    // Remove bookkeeping connection
-    d->unregisterDestructionHelper(clip);
-}
-
-QVector<QAbstractAnimationClip *> QAbstractClipBlendNode::clips() const
-{
-    Q_D(const QAbstractClipBlendNode);
-    return d->m_clips;
-}
-
-QAbstractClipBlendNode *QAbstractClipBlendNode::parentClipBlendNode() const
-{
-    QAbstractClipBlendNode *parentBlendClipNode = nullptr;
-    QNode *parentN = parentNode();
-    while (parentN != nullptr) {
-        parentBlendClipNode = qobject_cast<QAbstractClipBlendNode *>(parentN);
-        if (parentBlendClipNode != nullptr)
-            break;
-        parentN = parentN->parentNode();
-    }
-    return parentBlendClipNode;
 }
 
 } // Qt3DAnimation

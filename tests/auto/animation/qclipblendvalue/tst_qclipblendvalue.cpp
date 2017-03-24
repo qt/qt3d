@@ -112,7 +112,6 @@ private Q_SLOTS:
             QCOMPARE(clipBlendNode.isEnabled(), creationChangeData->isNodeEnabled());
             QCOMPARE(clipBlendNode.metaObject(), creationChangeData->metaObject());
             QCOMPARE(cloneData.clipId, clip.id());
-            QCOMPARE(creationChangeData->parentClipBlendNodeId(), Qt3DCore::QNodeId());
         }
 
         // WHEN
@@ -135,7 +134,6 @@ private Q_SLOTS:
             QCOMPARE(clipBlendNode.isEnabled(), creationChangeData->isNodeEnabled());
             QCOMPARE(clipBlendNode.metaObject(), creationChangeData->metaObject());
             QCOMPARE(cloneData.clipId, clip.id());
-            QCOMPARE(creationChangeData->parentClipBlendNodeId(), Qt3DCore::QNodeId());
         }
     }
 

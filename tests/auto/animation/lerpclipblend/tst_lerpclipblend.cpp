@@ -130,7 +130,6 @@ private Q_SLOTS:
         Qt3DAnimation::QLerpClipBlend lerpBlend;
         Qt3DAnimation::QAnimationClipLoader clip;
         lerpBlend.setBlendFactor(0.8f);
-        lerpBlend.addClip(&clip);
 
         {
             // WHEN
@@ -141,8 +140,6 @@ private Q_SLOTS:
             QCOMPARE(backendLerpBlend.isEnabled(), true);
             QCOMPARE(backendLerpBlend.peerId(), lerpBlend.id());
             QCOMPARE(backendLerpBlend.blendFactor(), 0.8f);
-            QCOMPARE(backendLerpBlend.clipIds().size(), 1);
-            QCOMPARE(backendLerpBlend.clipIds().first(), clip.id());
         }
         {
             // WHEN

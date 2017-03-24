@@ -114,7 +114,6 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendClipBlendNode.isEnabled(), false);
         QVERIFY(backendClipBlendNode.peerId().isNull());
-        QCOMPARE(backendClipBlendNode.clipIds(), Qt3DCore::QNodeIdVector());
         QCOMPARE(backendClipBlendNode.parentId(), Qt3DCore::QNodeId());
         QCOMPARE(backendClipBlendNode.childrenIds(), Qt3DCore::QNodeIdVector());
         QVERIFY(backendClipBlendNode.clipBlendNodeManager() == nullptr);
@@ -127,7 +126,6 @@ private Q_SLOTS:
         // GIVEN
         Qt3DAnimation::QLerpClipBlend clipBlendNode;
         Qt3DAnimation::QAnimationClipLoader clip;
-        clipBlendNode.addClip(&clip);
 
         QCoreApplication::processEvents();
 
@@ -141,8 +139,6 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(backendClipBlendNode.isEnabled(), true);
             QCOMPARE(backendClipBlendNode.peerId(), clipBlendNode.id());
-            QCOMPARE(backendClipBlendNode.clipIds().size(), 1);
-            QCOMPARE(backendClipBlendNode.clipIds().first(), clip.id());
             QCOMPARE(backendClipBlendNode.parentId(), Qt3DCore::QNodeId());
             QCOMPARE(backendClipBlendNode.childrenIds().size(), 0);
             QCOMPARE(backendClipBlendNode.clipBlendNodeManager(), &manager);
@@ -161,112 +157,6 @@ private Q_SLOTS:
             QCOMPARE(backendClipBlendNode.peerId(), clipBlendNode.id());
             QCOMPARE(backendClipBlendNode.isEnabled(), false);
         }
-    }
-
-    void checkSceneChangeEvents()
-    {
-        // GIVEN
-        TestClipBlendNode backendClipBlendNode;
-        ClipBlendNodeManager manager;
-        backendClipBlendNode.setClipBlendNodeManager(&manager);
-        {
-            // WHEN
-            const bool newValue = false;
-            const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-            change->setPropertyName("enabled");
-            change->setValue(newValue);
-            backendClipBlendNode.sceneChangeEvent(change);
-
-            // THEN
-            QCOMPARE(backendClipBlendNode.isEnabled(), newValue);
-        }
-        {
-            // WHEN
-            Qt3DAnimation::QAnimationClipLoader clip;
-            // To geneate the type_info in the QNodePrivate of clip
-            Qt3DCore::QNodeCreatedChangeGenerator generator(&clip);
-
-            const auto addedChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &clip);
-            backendClipBlendNode.sceneChangeEvent(addedChange);
-
-            // THEN
-            QCOMPARE(backendClipBlendNode.clipIds().size(), 1);
-            QCOMPARE(backendClipBlendNode.clipIds().first(), clip.id());
-
-            // WHEN
-            const auto removedChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &clip);
-            backendClipBlendNode.sceneChangeEvent(removedChange);
-
-            // THEN
-            QCOMPARE(backendClipBlendNode.clipIds().size(), 0);
-        }
-        {
-            // WHEN
-            Qt3DAnimation::QLerpClipBlend clipBlendChild;
-            // Will be destroyed when manager is destroyed
-            TestClipBlendNode *backenChildClipBlendNode = new TestClipBlendNode();
-            backendClipBlendNode.setClipBlendNodeManager(&manager);
-            manager.appendNode(clipBlendChild.id(), backenChildClipBlendNode);
-
-            // To geneate the type_info in the QNodePrivate of clipBlendChild
-            Qt3DCore::QNodeCreatedChangeGenerator generator(&clipBlendChild);
-            const auto addChange = Qt3DCore::QPropertyNodeAddedChangePtr::create(Qt3DCore::QNodeId(), &clipBlendChild);
-            backendClipBlendNode.sceneChangeEvent(addChange);
-
-            // THEN
-            QCOMPARE(backendClipBlendNode.childrenIds().size(), 1);
-            QCOMPARE(backendClipBlendNode.childrenIds().first(), clipBlendChild.id());
-
-            // WHEN
-            const auto removedChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &clipBlendChild);
-            backendClipBlendNode.sceneChangeEvent(removedChange);
-
-            // THEN
-            QCOMPARE(backendClipBlendNode.childrenIds().size(), 0);
-        }
-    }
-
-    void checkParentInitialization()
-    {
-        // GIVEN
-        TestClipBlendNode *backendClipBlendNode = new TestClipBlendNode();
-        TestClipBlendNode *backendChildClipBlendNode = new TestClipBlendNode();
-        Qt3DAnimation::QLerpClipBlend clipBlendParent;
-        Qt3DAnimation::QLerpClipBlend childClipBlend(&clipBlendParent);
-        ClipBlendNodeManager manager;
-        backendClipBlendNode->setClipBlendNodeManager(&manager);
-        backendChildClipBlendNode->setClipBlendNodeManager(&manager);
-
-        // THEN
-        QCOMPARE(backendClipBlendNode->parentId(), Qt3DCore::QNodeId());
-        QCOMPARE(backendClipBlendNode->childrenIds().size(), 0);
-        QCOMPARE(backendChildClipBlendNode->parentId(), Qt3DCore::QNodeId());
-        QCOMPARE(backendChildClipBlendNode->childrenIds().size(), 0);
-
-        // WHEN
-        manager.appendNode(clipBlendParent.id(), backendClipBlendNode);
-        manager.appendNode(childClipBlend.id(), backendChildClipBlendNode);
-        simulateInitialization(&clipBlendParent, backendClipBlendNode);
-        simulateInitialization(&childClipBlend, backendChildClipBlendNode);
-
-        // THEN
-        QCOMPARE(backendClipBlendNode->parentId(), Qt3DCore::QNodeId());
-        QCOMPARE(backendClipBlendNode->childrenIds().size(), 1);
-        QCOMPARE(backendClipBlendNode->childrenIds().first(), childClipBlend.id());
-        QCOMPARE(backendChildClipBlendNode->parentId(), clipBlendParent.id());
-        QCOMPARE(backendChildClipBlendNode->childrenIds().size(), 0);
-
-        // WHEN
-        // To geneate the type_info in the QNodePrivate of clipBlendChild
-        Qt3DCore::QNodeCreatedChangeGenerator generator(&childClipBlend);
-        const auto removedChange = Qt3DCore::QPropertyNodeRemovedChangePtr::create(Qt3DCore::QNodeId(), &childClipBlend);
-        backendClipBlendNode->sceneChangeEvent(removedChange);
-
-        // THEN
-        QCOMPARE(backendClipBlendNode->parentId(), Qt3DCore::QNodeId());
-        QCOMPARE(backendClipBlendNode->childrenIds().size(), 0);
-        QCOMPARE(backendChildClipBlendNode->parentId(), Qt3DCore::QNodeId());
-        QCOMPARE(backendChildClipBlendNode->childrenIds().size(), 0);
     }
 
     void checkClipResults_data()

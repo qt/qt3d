@@ -136,7 +136,6 @@ private Q_SLOTS:
         additiveBlend.setBaseClip(&baseClip);
         additiveBlend.setAdditiveClip(&additiveClip);
         additiveBlend.setAdditiveFactor(0.8f);
-        additiveBlend.addClip(&clip);
 
         {
             // WHEN
@@ -149,8 +148,6 @@ private Q_SLOTS:
             QCOMPARE(backendAdditiveBlend.baseClipId(), baseClip.id());
             QCOMPARE(backendAdditiveBlend.additiveClipId(), additiveClip.id());
             QCOMPARE(backendAdditiveBlend.additiveFactor(), 0.8f);
-            QCOMPARE(backendAdditiveBlend.clipIds().size(), 1);
-            QCOMPARE(backendAdditiveBlend.clipIds().first(), clip.id());
         }
         {
             // WHEN
