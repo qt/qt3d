@@ -80,7 +80,7 @@ Q_SIGNALS:
     void roughnessChanged(float roughness);
 
 protected:
-    QMetalRoughMaterial(QMetalRoughMaterialPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QMetalRoughMaterial(QMetalRoughMaterialPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QMetalRoughMaterial)
