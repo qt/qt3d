@@ -52,7 +52,7 @@ private Q_SLOTS:
         auto clip = new Qt3DAnimation::QAnimationClipLoader();
 
         animator.setClip(clip);
-        animator.setLoops(10);
+        animator.setLoopCount(10);
 
         // WHEN
         simulateInitialization(&animator, &backendAnimator);
@@ -62,7 +62,7 @@ private Q_SLOTS:
         QCOMPARE(backendAnimator.isEnabled(), animator.isEnabled());
         QCOMPARE(backendAnimator.clipId(), clip->id());
         QCOMPARE(backendAnimator.isRunning(), animator.isRunning());
-        QCOMPARE(backendAnimator.loops(), animator.loops());
+        QCOMPARE(backendAnimator.loops(), animator.loopCount());
     }
 
     void checkInitialAndCleanedUpState()
@@ -84,7 +84,7 @@ private Q_SLOTS:
         auto clip = new Qt3DAnimation::QAnimationClipLoader();
         animator.setClip(clip);
         animator.setRunning(true);
-        animator.setLoops(25);
+        animator.setLoopCount(25);
 
         // WHEN
         simulateInitialization(&animator, &backendAnimator);

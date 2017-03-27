@@ -103,7 +103,7 @@ private Q_SLOTS:
         blendedClipAnimator.setRunning(true);
         blendedClipAnimator.setBlendTree(&blendTree);
         blendedClipAnimator.setChannelMapper(&mapper);
-        blendedClipAnimator.setLoops(10);
+        blendedClipAnimator.setLoopCount(10);
 
         {
             // WHEN

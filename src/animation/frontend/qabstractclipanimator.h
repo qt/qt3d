@@ -55,7 +55,7 @@ class QT3DANIMATIONSHARED_EXPORT QAbstractClipAnimator : public Qt3DCore::QCompo
 {
     Q_OBJECT
     Q_PROPERTY(bool running READ isRunning WRITE setRunning NOTIFY runningChanged)
-    Q_PROPERTY(int loops READ loops WRITE setLoops NOTIFY loopsChanged)
+    Q_PROPERTY(int loops READ loopCount WRITE setLoopCount NOTIFY loopCountChanged)
     Q_PROPERTY(Qt3DAnimation::QChannelMapper *channelMapper READ channelMapper WRITE setChannelMapper NOTIFY channelMapperChanged)
 
 public:
@@ -66,17 +66,17 @@ public:
 
     bool isRunning() const;
     Qt3DAnimation::QChannelMapper *channelMapper() const;
-    int loops() const;
+    int loopCount() const;
 
 public Q_SLOTS:
     void setRunning(bool running);
     void setChannelMapper(Qt3DAnimation::QChannelMapper *channelMapper);
-    void setLoops(int loops);
+    void setLoopCount(int loops);
 
 Q_SIGNALS:
     void runningChanged(bool running);
     void channelMapperChanged(Qt3DAnimation::QChannelMapper *channelMapper);
-    void loopsChanged(int loops);
+    void loopCountChanged(int loops);
 
 protected:
     explicit QAbstractClipAnimator(Qt3DCore::QNode *parent = nullptr);

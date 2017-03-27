@@ -79,7 +79,7 @@ QChannelMapper *QAbstractClipAnimator::channelMapper() const
     return d->m_mapper;
 }
 
-int QAbstractClipAnimator::loops() const
+int QAbstractClipAnimator::loopCount() const
 {
     Q_D(const QAbstractClipAnimator);
     return d->m_loops;
@@ -114,14 +114,14 @@ void QAbstractClipAnimator::setChannelMapper(QChannelMapper *mapping)
     emit channelMapperChanged(mapping);
 }
 
-void QAbstractClipAnimator::setLoops(int loops)
+void QAbstractClipAnimator::setLoopCount(int loops)
 {
     Q_D(QAbstractClipAnimator);
     if (d->m_loops == loops)
         return;
 
     d->m_loops = loops;
-    emit loopsChanged(loops);
+    emit loopCountChanged(loops);
 }
 
 } // namespace Qt3DAnimation
