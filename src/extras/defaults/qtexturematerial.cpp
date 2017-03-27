@@ -198,7 +198,7 @@ void QTextureMaterial::setTexture(QAbstractTexture *texture)
     d->m_textureParameter->setValue(QVariant::fromValue(texture));
 }
 
-void QTextureMaterial::setTextureOffset(const QVector2D &textureOffset)
+void QTextureMaterial::setTextureOffset(QVector2D textureOffset)
 {
     Q_D(QTextureMaterial);
     d->m_textureOffsetParameter->setValue(QVariant::fromValue(textureOffset));

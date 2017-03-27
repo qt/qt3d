@@ -70,11 +70,11 @@ public:
 
 public Q_SLOTS:
     void setTexture(Qt3DRender::QAbstractTexture *texture);
-    void setTextureOffset(const QVector2D &textureOffset);
+    void setTextureOffset(QVector2D textureOffset);
 
 Q_SIGNALS:
     void textureChanged(Qt3DRender::QAbstractTexture *texture);
-    void textureOffsetChanged(const QVector2D &textureOffset);
+    void textureOffsetChanged(QVector2D textureOffset);
 
 private:
     Q_DECLARE_PRIVATE(QTextureMaterial)
