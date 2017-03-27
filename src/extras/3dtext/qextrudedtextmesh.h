@@ -68,7 +68,7 @@ class QT3DEXTRASSHARED_EXPORT QExtrudedTextMesh : public Qt3DRender::QGeometryRe
     Q_PROPERTY(float depth READ depth WRITE setDepth NOTIFY depthChanged)
 
 public:
-    QExtrudedTextMesh(Qt3DCore::QNode *parent = nullptr);
+    explicit QExtrudedTextMesh(Qt3DCore::QNode *parent = nullptr);
     ~QExtrudedTextMesh();
 
     QString text();
