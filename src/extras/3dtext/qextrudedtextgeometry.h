@@ -100,7 +100,7 @@ Q_SIGNALS:
     void depthChanged(float extrusionLength);
 
 protected:
-    QExtrudedTextGeometry(QExtrudedTextGeometryPrivate &dd, QNode *parent = nullptr);
+    explicit QExtrudedTextGeometry(QExtrudedTextGeometryPrivate &dd, QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QExtrudedTextGeometry)
