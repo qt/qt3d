@@ -362,7 +362,7 @@ void QFirstPersonCameraController::setAcceleration(float acceleration)
     if (d->m_acceleration != acceleration) {
         d->m_acceleration = acceleration;
         d->applyAccelerations();
-        emit accelerationChanged();
+        emit accelerationChanged(acceleration);
     }
 }
 
@@ -372,7 +372,7 @@ void QFirstPersonCameraController::setDeceleration(float deceleration)
     if (d->m_deceleration != deceleration) {
         d->m_deceleration = deceleration;
         d->applyAccelerations();
-        emit decelerationChanged();
+        emit decelerationChanged(deceleration);
     }
 }
 

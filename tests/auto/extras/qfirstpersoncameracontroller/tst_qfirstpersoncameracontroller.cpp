@@ -124,7 +124,7 @@ private Q_SLOTS:
         }
         {
             // WHEN
-            QSignalSpy spy(&firstPersonCameraController, SIGNAL(accelerationChanged()));
+            QSignalSpy spy(&firstPersonCameraController, SIGNAL(accelerationChanged(float)));
             const float newValue = 0.001f;
             firstPersonCameraController.setAcceleration(newValue);
 
@@ -143,7 +143,7 @@ private Q_SLOTS:
         }
         {
             // WHEN
-            QSignalSpy spy(&firstPersonCameraController, SIGNAL(decelerationChanged()));
+            QSignalSpy spy(&firstPersonCameraController, SIGNAL(decelerationChanged(float)));
             const float newValue = 0.001f;
             firstPersonCameraController.setDeceleration(newValue);
 

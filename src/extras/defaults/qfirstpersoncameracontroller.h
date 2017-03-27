@@ -78,8 +78,8 @@ Q_SIGNALS:
     void cameraChanged();
     void linearSpeedChanged();
     void lookSpeedChanged();
-    void accelerationChanged();
-    void decelerationChanged();
+    void accelerationChanged(float acceleration);
+    void decelerationChanged(float deceleration);
 
 private:
     Q_DECLARE_PRIVATE(QFirstPersonCameraController)
