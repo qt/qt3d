@@ -46,7 +46,7 @@ public:
 
     bool operator ==(const Qt3DRender::QGeometryFactory &other) const Q_DECL_OVERRIDE
     {
-        return functor_cast<MeshFunctorA>(&other);
+        return Qt3DRender::functor_cast<MeshFunctorA>(&other);
     }
 
     QT3D_FUNCTOR(MeshFunctorA)
@@ -68,7 +68,7 @@ public:
 
     bool operator ==(const Qt3DRender::QGeometryFactory &other) const Q_DECL_OVERRIDE
     {
-        return functor_cast<MeshFunctorB>(&other);
+        return Qt3DRender::functor_cast<MeshFunctorB>(&other);
     }
 
     QT3D_FUNCTOR(MeshFunctorB)
@@ -85,7 +85,7 @@ public:
 
     bool operator ==(const Qt3DRender::QGeometryFactory &other) const Q_DECL_OVERRIDE
     {
-        return functor_cast<MeshFunctorASub>(&other);
+        return Qt3DRender::functor_cast<MeshFunctorASub>(&other);
     }
 
     QT3D_FUNCTOR(MeshFunctorASub)
