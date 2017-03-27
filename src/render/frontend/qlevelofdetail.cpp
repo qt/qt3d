@@ -435,7 +435,7 @@ QLevelOfDetailBoundingSphere QLevelOfDetail::createBoundingSphere(const QVector3
  * Sets the range values in \a thresholds.
  * \sa Qt3DRender::QLevelOfDetail::thresholdType
  */
-void QLevelOfDetail::setThresholds(QVector<qreal> thresholds)
+void QLevelOfDetail::setThresholds(const QVector<qreal> &thresholds)
 {
     Q_D(QLevelOfDetail);
     if (d->m_thresholds != thresholds) {

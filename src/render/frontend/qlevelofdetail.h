@@ -84,14 +84,14 @@ public Q_SLOTS:
     void setCamera(QCamera *camera);
     void setCurrentIndex(int currentIndex);
     void setThresholdType(ThresholdType thresholdType);
-    void setThresholds(QVector<qreal> thresholds);
+    void setThresholds(const QVector<qreal> &thresholds);
     void setVolumeOverride(const QLevelOfDetailBoundingSphere &volumeOverride);
 
 Q_SIGNALS:
     void cameraChanged(QCamera *camera);
     void currentIndexChanged(int currentIndex);
     void thresholdTypeChanged(ThresholdType thresholdType);
-    void thresholdsChanged(QVector<qreal> thresholds);
+    void thresholdsChanged(const QVector<qreal> &thresholds);
     void volumeOverrideChanged(const QLevelOfDetailBoundingSphere &volumeOverride);
 
 protected:
