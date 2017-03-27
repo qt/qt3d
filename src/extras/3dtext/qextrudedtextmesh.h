@@ -71,9 +71,9 @@ public:
     explicit QExtrudedTextMesh(Qt3DCore::QNode *parent = nullptr);
     ~QExtrudedTextMesh();
 
-    QString text();
-    QFont font();
-    float depth();
+    QString text() const;
+    QFont font() const;
+    float depth() const;
 
 public Q_SLOTS:
     void setText(const QString &text);
