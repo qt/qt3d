@@ -64,6 +64,10 @@ QBufferCapture::QBufferCapture(Qt3DCore::QNode *parent)
 
 }
 
+QBufferCapture::~QBufferCapture()
+{
+}
+
 } //Qt3DRender
 
 QT_END_NAMESPACE

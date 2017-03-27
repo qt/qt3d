@@ -56,6 +56,7 @@ class QT3DRENDERSHARED_EXPORT QBufferCapture : public QFrameGraphNode
     Q_OBJECT
 public:
     explicit QBufferCapture(Qt3DCore::QNode *parent = nullptr);
+    ~QBufferCapture();
 
 private:
     Q_DECLARE_PRIVATE(QBufferCapture)
