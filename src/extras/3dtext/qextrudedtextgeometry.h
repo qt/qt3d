@@ -90,13 +90,13 @@ public:
     float extrusionLength() const;
 
 public Q_SLOTS:
-    void setText(QString text);
-    void setFont(QFont font);
+    void setText(const QString &text);
+    void setFont(const QFont &font);
     void setDepth(float extrusionLength);
 
 Q_SIGNALS:
-    void textChanged(QString text);
-    void fontChanged(QFont font);
+    void textChanged(const QString &text);
+    void fontChanged(const QFont &font);
     void depthChanged(float extrusionLength);
 
 protected:

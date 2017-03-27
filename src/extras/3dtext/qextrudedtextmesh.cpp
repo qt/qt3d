@@ -107,12 +107,12 @@ QExtrudedTextMesh::QExtrudedTextMesh(Qt3DCore::QNode *parent)
 QExtrudedTextMesh::~QExtrudedTextMesh()
 {}
 
-void QExtrudedTextMesh::setText(QString text)
+void QExtrudedTextMesh::setText(const QString &text)
 {
     static_cast<QExtrudedTextGeometry*>(geometry())->setText(text);
 }
 
-void QExtrudedTextMesh::setFont(QFont font)
+void QExtrudedTextMesh::setFont(const QFont &font)
 {
     static_cast<QExtrudedTextGeometry*>(geometry())->setFont(font);
 }
