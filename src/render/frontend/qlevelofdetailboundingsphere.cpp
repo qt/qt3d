@@ -52,7 +52,7 @@ public:
         , m_radius(0.0f)
     {}
 
-    QLevelOfDetailBoundingSpherePrivate(const QVector3D &center, float radius)
+    QLevelOfDetailBoundingSpherePrivate(QVector3D center, float radius)
         : QSharedData()
         , m_center(center)
         , m_radius(radius)
@@ -109,7 +109,7 @@ public:
  */
 
 
-QLevelOfDetailBoundingSphere::QLevelOfDetailBoundingSphere(const QVector3D &center, float radius)
+QLevelOfDetailBoundingSphere::QLevelOfDetailBoundingSphere(QVector3D center, float radius)
     : d_ptr(new QLevelOfDetailBoundingSpherePrivate(center, radius))
 {
 }

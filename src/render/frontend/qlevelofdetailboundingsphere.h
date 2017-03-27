@@ -57,7 +57,7 @@ class QT3DRENDERSHARED_EXPORT QLevelOfDetailBoundingSphere
     Q_PROPERTY(QVector3D center READ center CONSTANT)
     Q_PROPERTY(float radius READ radius CONSTANT)
 public:
-    explicit QLevelOfDetailBoundingSphere(const QVector3D &center = QVector3D(), float radius = 1.0f);
+    explicit QLevelOfDetailBoundingSphere(QVector3D center = QVector3D(), float radius = 1.0f);
     QLevelOfDetailBoundingSphere(const QLevelOfDetailBoundingSphere &other);
     ~QLevelOfDetailBoundingSphere();
 
