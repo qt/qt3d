@@ -72,7 +72,7 @@ class QT3DCORESHARED_EXPORT QNode : public QObject
     Q_PROPERTY(PropertyTrackingMode defaultPropertyTrackingMode READ defaultPropertyTrackingMode WRITE setDefaultPropertyTrackingMode NOTIFY defaultPropertyTrackingModeChanged REVISION 9)
 public:
 
-    enum PropertyTrackingMode {
+    enum PropertyTrackingMode : quint16 {
         TrackFinalValues,
         DontTrackValues,
         TrackAllValues
