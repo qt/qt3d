@@ -59,14 +59,14 @@ public:
     explicit QSkyboxEntity(Qt3DCore::QNode *parent = nullptr);
     ~QSkyboxEntity();
 
-    void setBaseName(const QString &path);
     QString baseName() const;
-
-    void setExtension(const QString &extension);
     QString extension() const;
-
-    void setGammaCorrectEnabled(bool enabled);
     bool isGammaCorrectEnabled() const;
+
+public Q_SLOTS:
+    void setBaseName(const QString &path);
+    void setExtension(const QString &extension);
+    void setGammaCorrectEnabled(bool enabled);
 
 Q_SIGNALS:
     void baseNameChanged(const QString &path);
