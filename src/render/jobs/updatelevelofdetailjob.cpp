@@ -135,10 +135,10 @@ void UpdateLevelOfDetailJob::updateEntityLod(Entity *entity)
 
         if (lod->isEnabled() && !lod->thresholds().isEmpty()) {
             switch (lod->thresholdType()) {
-            case QLevelOfDetail::DistanceToCamera:
+            case QLevelOfDetail::DistanceToCameraThreshold:
                 updateEntityLodByDistance(entity, lod);
                 break;
-            case QLevelOfDetail::ProjectedScreenPixelSize:
+            case QLevelOfDetail::ProjectedScreenPixelSizeThreshold:
                 updateEntityLodByScreenArea(entity, lod);
                 break;
             default:

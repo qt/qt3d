@@ -70,7 +70,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderLod.camera(), Qt3DCore::QNodeId{});
         QCOMPARE(renderLod.currentIndex(), 0);
-        QCOMPARE(renderLod.thresholdType(), Qt3DRender::QLevelOfDetail::DistanceToCamera);
+        QCOMPARE(renderLod.thresholdType(), Qt3DRender::QLevelOfDetail::DistanceToCameraThreshold);
         QVERIFY(renderLod.thresholds().empty());
         QCOMPARE(renderLod.radius(), 1.f);
         QCOMPARE(renderLod.center(), QVector3D{});
@@ -78,7 +78,7 @@ private Q_SLOTS:
 
         // GIVEN
         Qt3DRender::QLevelOfDetail lod;
-        lod.setThresholdType(Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSize);
+        lod.setThresholdType(Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSizeThreshold);
 
         // WHEN
         renderLod.setRenderer(&renderer);
@@ -96,18 +96,18 @@ private Q_SLOTS:
         renderLod.setRenderer(&renderer);
 
         // THEN
-        QVERIFY(renderLod.thresholdType() != Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSize);
+        QVERIFY(renderLod.thresholdType() != Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSizeThreshold);
         QVERIFY(renderLod.camera().isNull());
 
         {
             // WHEN
             Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-            updateChange->setValue(static_cast<int>(Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSize));
+            updateChange->setValue(static_cast<int>(Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSizeThreshold));
             updateChange->setPropertyName("thresholdType");
             renderLod.sceneChangeEvent(updateChange);
 
             // THEN
-            QCOMPARE(renderLod.thresholdType(), Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSize);
+            QCOMPARE(renderLod.thresholdType(), Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSizeThreshold);
             QVERIFY(renderer.dirtyBits() != 0);
         }
 

@@ -64,8 +64,8 @@ class QT3DRENDERSHARED_EXPORT QLevelOfDetail : public Qt3DCore::QComponent
 
 public:
     enum ThresholdType {
-        DistanceToCamera,
-        ProjectedScreenPixelSize,
+        DistanceToCameraThreshold,
+        ProjectedScreenPixelSizeThreshold,
     };
     Q_ENUM(ThresholdType) // LCOV_EXCL_LINE
 
