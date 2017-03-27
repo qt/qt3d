@@ -76,9 +76,10 @@ public:
     Q_ENUM(Operation)
     Q_DECLARE_FLAGS(Operations, Operation)
 
+    Operations waitOperations() const;
+
 public Q_SLOTS:
     void setWaitOperations(QMemoryBarrier::Operations operations);
-    Operations waitOperations() const;
 
 Q_SIGNALS:
     void waitOperationsChanged(QMemoryBarrier::Operations barrierTypes);
