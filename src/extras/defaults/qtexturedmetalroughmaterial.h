@@ -83,7 +83,7 @@ Q_SIGNALS:
     void normalChanged(Qt3DRender::QAbstractTexture *normal);
 
 protected:
-    QTexturedMetalRoughMaterial(QTexturedMetalRoughMaterialPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QTexturedMetalRoughMaterial(QTexturedMetalRoughMaterialPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QTexturedMetalRoughMaterial)
