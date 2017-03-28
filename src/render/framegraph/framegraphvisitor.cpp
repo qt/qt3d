@@ -43,7 +43,6 @@
 #include "framegraphnode_p.h"
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/managers_p.h>
-#include <Qt3DRender/private/renderviewbuilder_p.h>
 #include <QThreadPool>
 
 QT_BEGIN_NAMESPACE
@@ -53,24 +52,16 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 namespace Render {
 
-FrameGraphVisitor::FrameGraphVisitor(Renderer *renderer,
-                                     const FrameGraphManager *manager)
-    : m_renderer(renderer)
-    , m_manager(manager)
-    , m_jobs(nullptr)
-    , m_renderviewIndex(0)
-
+FrameGraphVisitor::FrameGraphVisitor(const FrameGraphManager *manager)
+    : m_manager(manager)
 {
+    m_leaves.reserve(8);
 }
 
-void FrameGraphVisitor::traverse(FrameGraphNode *root,
-                                 QVector<Qt3DCore::QAspectJobPtr> *jobs)
+QVector<FrameGraphNode *> FrameGraphVisitor::traverse(FrameGraphNode *root)
 {
-    m_jobs = jobs;
-    m_renderviewIndex = 0;
+    m_leaves.clear();
 
-    Q_ASSERT(m_renderer);
-    Q_ASSERT(m_jobs);
     Q_ASSERT_X(root, Q_FUNC_INFO, "The FrameGraphRoot is null");
 
     // Kick off the traversal
@@ -78,6 +69,7 @@ void FrameGraphVisitor::traverse(FrameGraphNode *root,
     if (node == nullptr)
         qCritical() << Q_FUNC_INFO << "FrameGraph is null";
     visit(node);
+    return m_leaves;
 }
 
 void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
@@ -97,10 +89,8 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
     // Leaf node - create a RenderView ready to be populated
     // TODO: Pass in only framegraph config that has changed from previous
     // index RenderViewJob.
-    if (fgChildIds.empty()) {
-        RenderViewBuilder builder(node, m_renderviewIndex++, m_renderer);
-        m_jobs->append(builder.buildJobHierachy());
-    }
+    if (fgChildIds.empty())
+        m_leaves.push_back(node);
 }
 
 } // namespace Render

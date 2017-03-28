@@ -86,6 +86,7 @@
 #include <Qt3DRender/private/updatelevelofdetailjob_p.h>
 #include <Qt3DRender/private/buffercapture_p.h>
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
+#include <Qt3DRender/private/renderviewbuilder_p.h>
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/qt3dcore-config.h>
@@ -1435,11 +1436,17 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     // populate the RenderView with a set of RenderCommands that get
     // their details from the RenderNodes that are visible to the
     // Camera selected by the framegraph configuration
-    FrameGraphVisitor visitor(this, m_nodesManager->frameGraphManager());
-    visitor.traverse(frameGraphRoot(), &renderBinJobs);
+    FrameGraphVisitor visitor(m_nodesManager->frameGraphManager());
+    const QVector<FrameGraphNode *> fgLeaves = visitor.traverse(frameGraphRoot());
+
+    const int fgBranchCount = fgLeaves.size();
+    for (int i = 0; i < fgBranchCount; ++i) {
+        RenderViewBuilder builder(fgLeaves.at(i), i, this);
+        renderBinJobs.append(builder.buildJobHierachy());
+    }
 
     // Set target number of RenderViews
-    m_renderQueue->setTargetRenderViewCount(visitor.leafNodeCount());
+    m_renderQueue->setTargetRenderViewCount(fgBranchCount);
 
     return renderBinJobs;
 }
