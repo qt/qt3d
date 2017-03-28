@@ -501,6 +501,9 @@ void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
     m_pickBoundingVolumeJob->setRoot(m_renderSceneRoot);
     m_updateLevelOfDetailJob->setRoot(m_renderSceneRoot);
     m_updateTreeEnabledJob->setRoot(m_renderSceneRoot);
+
+    // Set all flags to dirty
+    m_changeSet |= AbstractRenderer::AllDirty;
 }
 
 void Renderer::registerEventFilter(QEventFilterService *service)
@@ -578,14 +581,8 @@ void Renderer::doRender()
         submissionStatsPart2.jobId.typeAndInstance[1] = 0;
         submissionStatsPart2.threadId = reinterpret_cast<quint64>(QThread::currentThreadId());
 #endif
-        if (canRender()) {
-            // Clear all dirty flags but Compute so that
-            // we still render every frame when a compute shader is used in a scene
-            BackendNodeDirtySet changesToUnset = m_changeSet;
-            if (changesToUnset.testFlag(Renderer::ComputeDirty))
-                changesToUnset.setFlag(Renderer::ComputeDirty, false);
-            clearDirtyBits(changesToUnset);
 
+        if (canRender()) {
             { // Scoped to destroy surfaceLock
                 QSurface *surface = nullptr;
                 for (const Render::RenderView *rv: renderViews) {
@@ -1405,22 +1402,28 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     m_pickBoundingVolumeJob->setKeyEvents(pendingKeyEvents());
 
     m_updateLevelOfDetailJob->setFrameGraphRoot(frameGraphRoot());
-    // Set dependencies of resource gatherer
-    for (const QAspectJobPtr &jobPtr : renderBinJobs) {
-        jobPtr->addDependency(m_bufferGathererJob);
-        jobPtr->addDependency(m_textureGathererJob);
-        jobPtr->addDependency(m_shaderGathererJob);
-    }
 
     // Add jobs
-    renderBinJobs.push_back(m_updateShaderDataTransformJob);
-    renderBinJobs.push_back(m_updateMeshTriangleListJob);
-    renderBinJobs.push_back(m_updateTreeEnabledJob);
+    if (dirtyBits() & AbstractRenderer::EntityEnabledDirty)
+        renderBinJobs.push_back(m_updateTreeEnabledJob);
+
+    if (dirtyBits() & AbstractRenderer::TransformDirty) {
+        renderBinJobs.push_back(m_worldTransformJob);
+        renderBinJobs.push_back(m_updateWorldBoundingVolumeJob);
+        renderBinJobs.push_back(m_updateShaderDataTransformJob);
+    }
+
+    if (dirtyBits() & AbstractRenderer::GeometryDirty) {
+        renderBinJobs.push_back(m_calculateBoundingVolumeJob);
+        renderBinJobs.push_back(m_updateMeshTriangleListJob);
+    }
+
+    if (dirtyBits() & AbstractRenderer::GeometryDirty ||
+            dirtyBits() & AbstractRenderer::TransformDirty) {
+        renderBinJobs.push_back(m_expandBoundingVolumeJob);
+    }
+
     renderBinJobs.push_back(m_updateLevelOfDetailJob);
-    renderBinJobs.push_back(m_expandBoundingVolumeJob);
-    renderBinJobs.push_back(m_updateWorldBoundingVolumeJob);
-    renderBinJobs.push_back(m_calculateBoundingVolumeJob);
-    renderBinJobs.push_back(m_worldTransformJob);
     renderBinJobs.push_back(m_cleanupJob);
     renderBinJobs.push_back(m_sendRenderCaptureJob);
     renderBinJobs.push_back(m_sendBufferCaptureJob);
@@ -1428,11 +1431,18 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     renderBinJobs.append(bufferJobs);
 
     // Jobs to prepare GL Resource upload
-    renderBinJobs.push_back(m_syncTextureLoadingJob);
     renderBinJobs.push_back(m_vaoGathererJob);
-    renderBinJobs.push_back(m_bufferGathererJob);
-    renderBinJobs.push_back(m_textureGathererJob);
-    renderBinJobs.push_back(m_shaderGathererJob);
+
+    if (dirtyBits() & AbstractRenderer::BuffersDirty)
+        renderBinJobs.push_back(m_bufferGathererJob);
+
+    if (dirtyBits() & AbstractRenderer::ShadersDirty)
+        renderBinJobs.push_back(m_shaderGathererJob);
+
+    if (dirtyBits() & AbstractRenderer::TexturesDirty) {
+        renderBinJobs.push_back(m_syncTextureLoadingJob);
+        renderBinJobs.push_back(m_textureGathererJob);
+    }
 
     QMutexLocker lock(&m_renderQueueMutex);
     if (m_renderQueue->wasReset()) { // Have we rendered yet? (Scene3D case)
@@ -1453,6 +1463,17 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         // Set target number of RenderViews
         m_renderQueue->setTargetRenderViewCount(fgBranchCount);
     }
+
+    // Clear dirty bits
+    BackendNodeDirtySet changesToUnset = dirtyBits();
+    // TO DO: When secondary GL thread is integrated, the following line can be removed
+    changesToUnset.setFlag(AbstractRenderer::ShadersDirty, false);
+
+    // Clear all dirty flags but Compute so that
+    // we still render every frame when a compute shader is used in a scene
+    if (changesToUnset.testFlag(Renderer::ComputeDirty))
+        changesToUnset.setFlag(Renderer::ComputeDirty, false);
+    clearDirtyBits(changesToUnset);
 
     return renderBinJobs;
 }

@@ -131,6 +131,8 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderGeometry.attributes().count(), 1);
         QVERIFY(renderGeometry.isDirty());
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
         renderGeometry.unsetDirty();
         QVERIFY(!renderGeometry.isDirty());
@@ -143,6 +145,8 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderGeometry.attributes().count(), 0);
         QVERIFY(renderGeometry.isDirty());
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
         renderGeometry.unsetDirty();
         QVERIFY(!renderGeometry.isDirty());
@@ -157,6 +161,8 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderGeometry.boundingPositionAttribute(), boundingAttrId);
         QVERIFY(!renderGeometry.isDirty());
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
     }
 };
 

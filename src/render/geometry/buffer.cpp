@@ -178,7 +178,7 @@ void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyName == QByteArrayLiteral("syncData")) {
             m_syncData = propertyChange->value().toBool();
         }
-        markDirty(AbstractRenderer::AllDirty);
+        markDirty(AbstractRenderer::BuffersDirty);
     }
     BackendNode::sceneChangeEvent(e);
 }

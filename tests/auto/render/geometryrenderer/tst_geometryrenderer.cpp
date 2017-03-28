@@ -191,7 +191,8 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderGeometryRenderer.instanceCount(), 2);
         QVERIFY(renderGeometryRenderer.isDirty());
-        QVERIFY(renderer.dirtyBits() != 0);
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
         renderGeometryRenderer.unsetDirty();
         QVERIFY(!renderGeometryRenderer.isDirty());
@@ -206,6 +207,9 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.vertexCount(), 56);
         QVERIFY(renderGeometryRenderer.isDirty());
 
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+
         renderGeometryRenderer.unsetDirty();
         QVERIFY(!renderGeometryRenderer.isDirty());
 
@@ -218,6 +222,9 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderGeometryRenderer.indexOffset(), 65);
         QVERIFY(renderGeometryRenderer.isDirty());
+
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
         renderGeometryRenderer.unsetDirty();
         QVERIFY(!renderGeometryRenderer.isDirty());
@@ -232,6 +239,9 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.firstInstance(), 82);
         QVERIFY(renderGeometryRenderer.isDirty());
 
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+
         renderGeometryRenderer.unsetDirty();
         QVERIFY(!renderGeometryRenderer.isDirty());
 
@@ -244,6 +254,9 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderGeometryRenderer.restartIndexValue(), 46);
         QVERIFY(renderGeometryRenderer.isDirty());
+
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
         renderGeometryRenderer.unsetDirty();
         QVERIFY(!renderGeometryRenderer.isDirty());
@@ -258,6 +271,9 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.primitiveRestartEnabled(), true);
         QVERIFY(renderGeometryRenderer.isDirty());
 
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+
         renderGeometryRenderer.unsetDirty();
         QVERIFY(!renderGeometryRenderer.isDirty());
 
@@ -270,6 +286,9 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderGeometryRenderer.primitiveType(), Qt3DRender::QGeometryRenderer::LineLoop);
         QVERIFY(renderGeometryRenderer.isDirty());
+
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
         renderGeometryRenderer.unsetDirty();
         QVERIFY(!renderGeometryRenderer.isDirty());
@@ -284,6 +303,9 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderGeometryRenderer.geometryFactory(), factory);
         QVERIFY(renderGeometryRenderer.isDirty());
+
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
         renderGeometryRenderer.unsetDirty();
         QVERIFY(!renderGeometryRenderer.isDirty());
@@ -300,6 +322,9 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.geometryId(), geometryId);
         QVERIFY(renderGeometryRenderer.isDirty());
 
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+
         renderGeometryRenderer.unsetDirty();
         QVERIFY(!renderGeometryRenderer.isDirty());
 
@@ -312,6 +337,9 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderGeometryRenderer.geometryId(), Qt3DCore::QNodeId());
         QVERIFY(renderGeometryRenderer.isDirty());
+
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::GeometryDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
         renderGeometryRenderer.unsetDirty();
         QVERIFY(!renderGeometryRenderer.isDirty());

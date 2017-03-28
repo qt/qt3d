@@ -175,7 +175,7 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
 
-    markDirty(AbstractRenderer::AllDirty);
+    markDirty(AbstractRenderer::GeometryDirty);
 
     BackendNode::sceneChangeEvent(e);
 

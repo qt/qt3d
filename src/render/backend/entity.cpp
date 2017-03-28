@@ -199,6 +199,7 @@ void Entity::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         const auto componentIdAndType = QNodeIdTypePair(change->componentId(), change->componentMetaObject());
         addComponent(componentIdAndType);
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Added. Id =" << change->componentId();
+        markDirty(AbstractRenderer::AllDirty);
         break;
     }
 
@@ -206,28 +207,42 @@ void Entity::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QComponentRemovedChangePtr change = qSharedPointerCast<QComponentRemovedChange>(e);
         removeComponent(change->componentId());
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Removed. Id =" << change->componentId();
+        markDirty(AbstractRenderer::AllDirty);
         break;
     }
 
     case PropertyValueAdded: {
         QPropertyNodeAddedChangePtr change = qSharedPointerCast<QPropertyNodeAddedChange>(e);
-        if (change->metaObject()->inherits(&QEntity::staticMetaObject))
+        if (change->metaObject()->inherits(&QEntity::staticMetaObject)) {
             appendChildHandle(m_nodeManagers->renderNodesManager()->lookupHandle(change->addedNodeId()));
+            markDirty(AbstractRenderer::AllDirty);
+        }
         break;
     }
 
     case PropertyValueRemoved: {
         QPropertyNodeRemovedChangePtr change = qSharedPointerCast<QPropertyNodeRemovedChange>(e);
-        if (change->metaObject()->inherits(&QEntity::staticMetaObject))
+        if (change->metaObject()->inherits(&QEntity::staticMetaObject)) {
             removeChildHandle(m_nodeManagers->renderNodesManager()->lookupHandle(change->removedNodeId()));
+            markDirty(AbstractRenderer::AllDirty);
+        }
         break;
     }
 
+    case PropertyUpdated: {
+        QPropertyUpdatedChangePtr change = qSharedPointerCast<QPropertyUpdatedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("enabled")) {
+            // We only mark as dirty the renderer
+            markDirty(AbstractRenderer::EntityEnabledDirty);
+            // We let QBackendNode::sceneChangeEvent change the enabled property
+        }
+
+        break;
+    }
 
     default:
         break;
     }
-    markDirty(AbstractRenderer::AllDirty);
     BackendNode::sceneChangeEvent(e);
 }
 

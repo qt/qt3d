@@ -95,11 +95,17 @@ public:
 
     // Changes made to backend nodes are reported to the Renderer
     enum BackendNodeDirtyFlag {
-        TransformDirty   = 1 << 0,
-        MaterialDirty    = 1 << 1,
-        GeometryDirty    = 1 << 2,
-        ComputeDirty     = 1 << 3,
-        AllDirty         = 1 << 15
+        TransformDirty      = 1 << 0,
+        MaterialDirty       = 1 << 1,
+        GeometryDirty       = 1 << 2,
+        ComputeDirty        = 1 << 3,
+        ParameterDirty      = 1 << 4,
+        FrameGraphDirty     = 1 << 5,
+        EntityEnabledDirty  = 1 << 6,
+        BuffersDirty        = 1 << 7,
+        TexturesDirty       = 1 << 8,
+        ShadersDirty        = 1 << 9,
+        AllDirty            = 0xffffff
     };
     Q_DECLARE_FLAGS(BackendNodeDirtySet, BackendNodeDirtyFlag)
 

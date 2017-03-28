@@ -160,6 +160,8 @@ private Q_SLOTS:
         QVERIFY(renderBuffer.data().isEmpty());
         QVERIFY(renderBuffer.usage() != Qt3DRender::QBuffer::DynamicRead);
         QVERIFY(!renderBuffer.isDirty());
+        QVERIFY(!(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty));
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
         // WHEN
         Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
@@ -167,10 +169,14 @@ private Q_SLOTS:
         updateChange->setPropertyName("type");
         renderBuffer.sceneChangeEvent(updateChange);
 
+
         // THEN
         QCOMPARE(renderBuffer.type(), Qt3DRender::QBuffer::IndexBuffer);
         QVERIFY(renderer.dirtyBits() != 0);
         QVERIFY(renderBuffer.isDirty());
+
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
         renderBuffer.unsetDirty();
         QVERIFY(!renderBuffer.isDirty());
@@ -184,6 +190,9 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderBuffer.usage(), Qt3DRender::QBuffer::DynamicRead);
         QVERIFY(renderBuffer.isDirty());
+
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
         renderBuffer.unsetDirty();
         QVERIFY(!renderBuffer.isDirty());
@@ -201,6 +210,10 @@ private Q_SLOTS:
         QCOMPARE(renderBuffer.pendingBufferUpdates().first().offset, -1);
 
         renderBuffer.pendingBufferUpdates().clear();
+
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+
         renderBuffer.unsetDirty();
         QVERIFY(!renderBuffer.isDirty());
 
@@ -215,6 +228,9 @@ private Q_SLOTS:
         QCOMPARE(renderBuffer.dataGenerator(), functor);
         QVERIFY(renderBuffer.isDirty());
 
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
+
         renderBuffer.unsetDirty();
         QVERIFY(!renderBuffer.isDirty());
 
@@ -227,6 +243,9 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderBuffer.isSyncData(), true);
         QVERIFY(!renderBuffer.isDirty());
+
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
         // WHEN
         TestArbiter arbiter;
@@ -257,6 +276,9 @@ private Q_SLOTS:
         QVERIFY(!renderBuffer.pendingBufferUpdates().empty());
         QCOMPARE(renderBuffer.pendingBufferUpdates().first().offset, 2);
         QVERIFY(renderBuffer.isDirty());
+
+        QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::BuffersDirty);
+        renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
         renderBuffer.unsetDirty();
         QVERIFY(!renderBuffer.isDirty());

@@ -223,6 +223,8 @@ void tst_RenderTexture::checkPropertyChanges()
 
     // THEN
     QCOMPARE(backend.properties().width, 256);
+    QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TexturesDirty);
+    renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
     // WHEN
     updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
@@ -232,6 +234,8 @@ void tst_RenderTexture::checkPropertyChanges()
 
     // THEN
     QCOMPARE(backend.properties().height, 128);
+    QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TexturesDirty);
+    renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
     // WHEN
     updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
@@ -241,6 +245,8 @@ void tst_RenderTexture::checkPropertyChanges()
 
     // THEN
     QCOMPARE(backend.properties().depth, 16);
+    QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TexturesDirty);
+    renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
     // WHEN
     updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
@@ -250,6 +256,8 @@ void tst_RenderTexture::checkPropertyChanges()
 
     // THEN
     QCOMPARE(backend.properties().layers, 32);
+    QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TexturesDirty);
+    renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 
     // WHEN
     updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
@@ -259,6 +267,8 @@ void tst_RenderTexture::checkPropertyChanges()
 
     // THEN
     QCOMPARE(backend.properties().samples, 64);
+    QVERIFY(renderer.dirtyBits() & Qt3DRender::Render::AbstractRenderer::TexturesDirty);
+    renderer.clearDirtyBits(Qt3DRender::Render::AbstractRenderer::AllDirty);
 }
 
 QTEST_APPLESS_MAIN(tst_RenderTexture)

@@ -190,7 +190,7 @@ void Shader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             setStatus(QShaderProgram::NotReady);
             updateDNA();
         }
-        markDirty(AbstractRenderer::AllDirty);
+        markDirty(AbstractRenderer::ShadersDirty);
     }
 
     BackendNode::sceneChangeEvent(e);

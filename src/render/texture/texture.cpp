@@ -250,7 +250,7 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
     addDirtyFlag(dirty);
 
-    markDirty(AbstractRenderer::AllDirty);
+    markDirty(AbstractRenderer::TexturesDirty);
     BackendNode::sceneChangeEvent(e);
 }
 
