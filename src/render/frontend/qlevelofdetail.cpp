@@ -141,7 +141,7 @@ QLevelOfDetailPrivate::QLevelOfDetailPrivate()
             id: lod
             camera: mainCamera
             thresholds: [20, 35, 50, 65]
-            thresholdType: LevelOfDetail.DistanceToCamera
+            thresholdType: LevelOfDetail.DistanceToCameraThreshold
         }
 
         CylinderMesh {
@@ -165,8 +165,8 @@ QLevelOfDetailPrivate::QLevelOfDetailPrivate()
  *
  * Specifies how the values in the thresholds are interpreted
  *
- * \value DistanceToCamera Distance from the entity to the selected camera
- * \value ProjectedScreenPixelSize Size of the entity when projected on the
+ * \value DistanceToCameraThreshold Distance from the entity to the selected camera
+ * \value ProjectedScreenPixelSizeThreshold Size of the entity when projected on the
  *          screen as seen from the selected camera, expressed in number of
  *          pixels on the side of the bounding square in screen space.
  */
@@ -177,8 +177,8 @@ QLevelOfDetailPrivate::QLevelOfDetailPrivate()
  * Specifies how the values in the thresholds are interpreted
  *
  * \list
- * \li DistanceToCamera Distance from the entity to the selected camera
- * \li ProjectedScreenPixelSize Size of the entity when projected on the
+ * \li DistanceToCameraThreshold Distance from the entity to the selected camera
+ * \li ProjectedScreenPixelSizeThreshold Size of the entity when projected on the
  *     screen as seen from the selected camera, expressed in number of
  *     pixels on the side of the bounding square in screen space.
  * \endlist
@@ -257,11 +257,11 @@ QLevelOfDetailPrivate::QLevelOfDetailPrivate()
  * Array of range values as float point numbers. The value for the most detailed representation
  * should be specified first.
  *
- * If LevelOfDetail::thresholdType is set to LevelOfDetail.Distance, values should be specified in
- * ascending order, in camera space coordinates
+ * If LevelOfDetail::thresholdType is set to LevelOfDetail.DistanceToCameraThreshold, values should
+ * be specified in ascending order, in camera space coordinates
  *
- * If LevelOfDetail::thresholdType is set to LevelOfDetail.ProjectedScreenPixelSize, values should
- * be specified in descending order, in screen space pixels.
+ * If LevelOfDetail::thresholdType is set to LevelOfDetail.ProjectedScreenPixelSizeThreshold, values
+ * should be specified in descending order, in screen space pixels.
  */
 
 /*!
@@ -270,10 +270,12 @@ QLevelOfDetailPrivate::QLevelOfDetailPrivate()
  * Array of range values as float point numbers. The value for the most detailed representation
  * should be specified first.
  *
- * If Qt3DRender::QLevelOfDetail::thresholdType is set to Qt3DRender::QLevelOfDetail::Distance, values should be specified in
+ * If Qt3DRender::QLevelOfDetail::thresholdType is set to
+ * Qt3DRender::QLevelOfDetail::DistanceToCameraThreshold, values should be specified in
  * ascending order, in camera space coordinates
  *
- * If Qt3DRender::QLevelOfDetail::thresholdType is set to Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSize, values should
+ * If Qt3DRender::QLevelOfDetail::thresholdType is set to
+ * Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSizeThreshold, values should
  * be specified in descending order, in screen space pixels.
  *
  * \sa Qt3DRender::QLevelOfDetail::ThresholdType
