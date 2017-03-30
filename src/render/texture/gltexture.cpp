@@ -188,9 +188,13 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
 
     if (!m_gl) {
         m_gl = buildGLTexture();
-        m_gl->allocateStorage();
-        if (!m_gl->isStorageAllocated()) {
-            qWarning() << Q_FUNC_INFO << "texture storage allocation failed";
+        if (m_gl) {
+            m_gl->allocateStorage();
+            if (!m_gl->isStorageAllocated()) {
+                qWarning() << Q_FUNC_INFO << "texture storage allocation failed";
+                return nullptr;
+            }
+        } else {
             return nullptr;
         }
     }
@@ -281,20 +285,24 @@ void GLTexture::setImages(const QVector<Image> &images)
 
 void GLTexture::setGenerator(const QTextureGeneratorPtr &generator)
 {
-    if (m_dataFunctor != generator) {
-        if (m_dataFunctor)
-            m_textureDataManager->releaseData(m_dataFunctor, this);
+    // Note: we do not compare if the generator is different
+    // as in some cases we may want to reset the same generator to force a reload
+    // e.g when using remote urls for textures
+    if (m_dataFunctor)
+        m_textureDataManager->releaseData(m_dataFunctor, this);
 
-        m_textureData.reset();
-        m_dataFunctor = generator;
+    m_textureData.reset();
+    m_dataFunctor = generator;
 
-        if (m_dataFunctor) {
-            m_textureDataManager->requestData(m_dataFunctor, this);
-            requestUpload();
-        }
+    if (m_dataFunctor) {
+        m_textureDataManager->requestData(m_dataFunctor, this);
+        requestUpload();
     }
 }
 
+// Return nullptr if
+// - context cannot be obtained
+// - texture hasn't yet been loaded
 QOpenGLTexture *GLTexture::buildGLTexture()
 {
     QOpenGLContext *ctx = QOpenGLContext::currentContext();
@@ -304,7 +312,9 @@ QOpenGLTexture *GLTexture::buildGLTexture()
     }
 
     if (m_actualTarget == QAbstractTexture::TargetAutomatic) {
-        qWarning() << Q_FUNC_INFO << "something went wrong, target shouldn't be automatic at this point";
+        // If the target is automatic at this point, it means that the texture
+        // hasn't been loaded yet (case of remote urls) and that loading failed
+        // and that target format couldn't be deduced
         return nullptr;
     }
 

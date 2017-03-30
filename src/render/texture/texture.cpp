@@ -81,11 +81,19 @@ void Texture::setTextureImageManager(TextureImageManager *manager)
 
 void Texture::addDirtyFlag(DirtyFlags flags)
 {
+    QMutexLocker lock(&m_flagsMutex);
     m_dirty |= flags;
+}
+
+Texture::DirtyFlags Texture::dirtyFlags()
+{
+    QMutexLocker lock(&m_flagsMutex);
+    return m_dirty;
 }
 
 void Texture::unsetDirty()
 {
+    QMutexLocker lock(&m_flagsMutex);
     m_dirty = Texture::NotDirty;
 }
 
