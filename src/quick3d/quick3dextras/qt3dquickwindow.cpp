@@ -49,6 +49,7 @@
 ****************************************************************************/
 
 #include <Qt3DQuickExtras/qt3dquickwindow.h>
+#include <Qt3DQuickExtras/private/qt3dquickwindowlogging_p.h>
 #include <Qt3DQuick/QQmlAspectEngine>
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qrenderaspect.h>
@@ -211,7 +212,7 @@ void Qt3DQuickWindow::onSceneCreated(QObject *rootObject)
         QList<Qt3DRender::QCamera *> cameras
                 = rootObject->findChildren<Qt3DRender::QCamera *>();
         if (cameras.isEmpty()) {
-            qWarning() << "No camera found";
+            qCDebug(QuickWindow) << "No camera found";
         } else {
             m_camera = cameras.first();
             setCameraAspectModeHelper();
@@ -223,7 +224,7 @@ void Qt3DQuickWindow::onSceneCreated(QObject *rootObject)
     if (inputSettings) {
         inputSettings->setEventSource(this);
     } else {
-        qWarning() << "No Input Settings found, keyboard and mouse events won't be handled";
+        qCDebug(QuickWindow) << "No Input Settings found, keyboard and mouse events won't be handled";
     }
 }
 

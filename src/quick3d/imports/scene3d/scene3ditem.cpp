@@ -179,7 +179,7 @@ void Scene3DItem::applyRootEntityChange()
             QList<Qt3DRender::QCamera *> cameras
                 = m_entity->findChildren<Qt3DRender::QCamera *>();
             if (cameras.isEmpty()) {
-                qWarning() << "No camera found and automatic aspect ratio requested";
+                qCDebug(Scene3D) << "No camera found and automatic aspect ratio requested";
             } else {
                 m_camera = cameras.first();
                 setCameraAspectModeHelper();
@@ -191,7 +191,7 @@ void Scene3DItem::applyRootEntityChange()
         if (inputSettings) {
             inputSettings->setEventSource(this);
         } else {
-            qWarning() << "No Input Settings found, keyboard and mouse events won't be handled";
+            qCDebug(Scene3D) << "No Input Settings found, keyboard and mouse events won't be handled";
         }
     }
 }
