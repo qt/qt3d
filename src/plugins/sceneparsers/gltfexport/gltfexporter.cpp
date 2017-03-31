@@ -225,7 +225,7 @@ using namespace Qt3DExtras;
 
 namespace Qt3DRender {
 
-Q_LOGGING_CATEGORY(GLTFExporterLog, "Qt3D.GLTFExport")
+Q_LOGGING_CATEGORY(GLTFExporterLog, "Qt3D.GLTFExport", QtWarningMsg)
 
 const QString MATERIAL_DIFFUSE_COLOR = QStringLiteral("kd");
 const QString MATERIAL_SPECULAR_COLOR = QStringLiteral("ks");

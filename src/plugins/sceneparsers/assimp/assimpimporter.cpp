@@ -83,7 +83,7 @@ namespace Qt3DRender {
     It should be noted that Assimp aiString is explicitly defined to be UTF-8.
 */
 
-Q_LOGGING_CATEGORY(AssimpImporterLog, "Qt3D.AssimpImporter")
+Q_LOGGING_CATEGORY(AssimpImporterLog, "Qt3D.AssimpImporter", QtWarningMsg)
 
 namespace {
 

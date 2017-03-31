@@ -46,7 +46,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-Q_LOGGING_CATEGORY(PlyGeometryLoaderLog, "Qt3D.PlyGeometryLoader")
+Q_LOGGING_CATEGORY(PlyGeometryLoaderLog, "Qt3D.PlyGeometryLoader", QtWarningMsg)
 
 namespace {
 

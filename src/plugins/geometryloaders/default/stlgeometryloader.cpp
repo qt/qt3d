@@ -46,7 +46,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-Q_LOGGING_CATEGORY(StlGeometryLoaderLog, "Qt3D.StlGeometryLoader")
+Q_LOGGING_CATEGORY(StlGeometryLoaderLog, "Qt3D.StlGeometryLoader", QtWarningMsg)
 
 bool StlGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
 {

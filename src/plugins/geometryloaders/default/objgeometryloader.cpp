@@ -46,7 +46,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-Q_LOGGING_CATEGORY(ObjGeometryLoaderLog, "Qt3D.ObjGeometryLoader")
+Q_LOGGING_CATEGORY(ObjGeometryLoaderLog, "Qt3D.ObjGeometryLoader", QtWarningMsg)
 
 static void addFaceVertex(const FaceIndices &faceIndices,
                           QVector<FaceIndices>& faceIndexVector,

@@ -52,7 +52,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-Q_LOGGING_CATEGORY(FbxGeometryLoaderLog, "Qt3D.FbxGeometryLoader")
+Q_LOGGING_CATEGORY(FbxGeometryLoaderLog, "Qt3D.FbxGeometryLoader", QtWarningMsg)
 
 class FbxStreamWrapper : public FbxStream
 {
