@@ -168,6 +168,7 @@ inline QJsonArray vec2jsvec(const QVector4D &v)
     return arr;
 }
 
+#if 0   // unused for now
 inline QJsonArray matrix2jsvec(const QMatrix2x2 &matrix)
 {
     QJsonArray jm;
@@ -185,6 +186,7 @@ inline QJsonArray matrix2jsvec(const QMatrix3x3 &matrix)
         jm.append(*mtxp++);
     return jm;
 }
+#endif
 
 inline QJsonArray matrix2jsvec(const QMatrix4x4 &matrix)
 {
