@@ -51,8 +51,9 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qcomponent_p.h>
 #include <QtCore/qpointer.h>
+
+#include <Qt3DCore/private/qcomponent_p.h>
 
 QT_BEGIN_NAMESPACE
 

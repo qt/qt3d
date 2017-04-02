@@ -52,8 +52,7 @@
 //
 
 #include <Qt3DCore/qt3dcore_global.h>
-
-#include <QElapsedTimer>
+#include <QtCore/QElapsedTimer>
 
 QT_BEGIN_NAMESPACE
 

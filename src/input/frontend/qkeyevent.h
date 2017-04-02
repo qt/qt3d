@@ -40,9 +40,9 @@
 #ifndef QT3DINPUT_QKEYEVENT_H
 #define QT3DINPUT_QKEYEVENT_H
 
-#include <QObject>
-#include <QtGui/QKeyEvent>
 #include <Qt3DInput/qt3dinput_global.h>
+#include <QtCore/QObject>
+#include <QtGui/QKeyEvent>
 
 QT_BEGIN_NAMESPACE
 

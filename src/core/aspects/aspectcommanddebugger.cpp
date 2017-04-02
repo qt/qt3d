@@ -40,11 +40,13 @@
 #ifdef QT3D_JOBS_RUN_STATS
 
 #include "aspectcommanddebugger_p.h"
+
 #include <Qt3DCore/qaspectengine.h>
+#include <QtNetwork/QTcpSocket>
+#include <QtCore/QJsonDocument>
+#include <QtCore/QJsonObject>
+
 #include <Qt3DCore/private/qabstractaspect_p.h>
-#include <QTcpSocket>
-#include <QJsonDocument>
-#include <QJsonObject>
 
 QT_BEGIN_NAMESPACE
 

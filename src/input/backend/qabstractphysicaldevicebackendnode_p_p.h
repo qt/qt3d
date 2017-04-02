@@ -51,11 +51,12 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qbackendnode_p.h>
-#include <Qt3DCore/qnodeid.h>
 #include <QtCore/qvector.h>
-#include <Qt3DInput/private/qt3dinput_global_p.h>
+#include <Qt3DCore/qnodeid.h>
+
 #include <Qt3DInput/private/movingaverage_p.h>
+#include <Qt3DInput/private/qt3dinput_global_p.h>
+#include <Qt3DCore/private/qbackendnode_p.h>
 
 QT_BEGIN_NAMESPACE
 

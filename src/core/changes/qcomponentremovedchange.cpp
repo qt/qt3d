@@ -39,9 +39,11 @@
 
 #include "qcomponentremovedchange.h"
 #include "qcomponentremovedchange_p.h"
+
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/qentity.h>
-#include <private/qnode_p.h>
+
+#include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 

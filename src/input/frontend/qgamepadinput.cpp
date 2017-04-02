@@ -35,10 +35,11 @@
 ****************************************************************************/
 
 #include "qgamepadinput_p.h"
-#include "qabstractphysicaldevice_p.h"
 
-#include <QGamepadManager>
-#include <QMetaEnum>
+#include <QtCore/QMetaEnum>
+#include <QtGamepad/QGamepadManager>
+
+#include <Qt3DInput/private/qabstractphysicaldevice_p.h>
 
 QT_BEGIN_NAMESPACE
 namespace Qt3DInput {

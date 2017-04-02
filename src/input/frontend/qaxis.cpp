@@ -38,6 +38,7 @@
 
 #include "qaxis.h"
 #include "qaxis_p.h"
+
 #include <Qt3DInput/qabstractaxisinput.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>

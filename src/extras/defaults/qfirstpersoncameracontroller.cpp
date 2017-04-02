@@ -34,19 +34,20 @@
 **
 ****************************************************************************/
 
-#include "qfirstpersoncameracontroller_p.h"
 #include "qfirstpersoncameracontroller.h"
-#include <Qt3DRender/QCamera>
-#include <Qt3DInput/QAxis>
-#include <Qt3DInput/QAnalogAxisInput>
-#include <Qt3DInput/QButtonAxisInput>
+#include "qfirstpersoncameracontroller_p.h"
+
 #include <Qt3DInput/QAction>
 #include <Qt3DInput/QActionInput>
-#include <Qt3DInput/QLogicalDevice>
+#include <Qt3DInput/QAnalogAxisInput>
+#include <Qt3DInput/QAxis>
+#include <Qt3DInput/QButtonAxisInput>
+#include <Qt3DLogic/QFrameAction>
 #include <Qt3DInput/QKeyboardDevice>
+#include <Qt3DInput/QLogicalDevice>
 #include <Qt3DInput/QMouseDevice>
 #include <Qt3DInput/QMouseEvent>
-#include <Qt3DLogic/QFrameAction>
+#include <Qt3DRender/QCamera>
 
 QT_BEGIN_NAMESPACE
 

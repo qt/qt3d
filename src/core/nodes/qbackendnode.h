@@ -40,10 +40,10 @@
 #ifndef QT3DCORE_QBACKENDNODE_H
 #define QT3DCORE_QBACKENDNODE_H
 
-#include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qscenechange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/qscenechange.h>
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 

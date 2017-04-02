@@ -51,9 +51,10 @@
 // We mean it.
 //
 
+#include <Qt3DRender/qviewport.h>
+
 #include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
 #include <Qt3DQuick/private/quick3dnode_p.h>
-#include <Qt3DRender/qviewport.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -52,15 +52,15 @@
 // We mean it.
 //
 
-#include <private/qt3dquick_global_p.h>
-#include <private/qqmlvaluetype_p.h>
-
 #include <QtGui/QColor>
+#include <QtGui/QMatrix4x4>
+#include <QtGui/QQuaternion>
 #include <QtGui/QVector2D>
 #include <QtGui/QVector3D>
 #include <QtGui/QVector4D>
-#include <QtGui/QQuaternion>
-#include <QtGui/QMatrix4x4>
+
+#include <Qt3DQuick/private/qt3dquick_global_p.h>
+#include <QtQml/private/qqmlvaluetype_p.h>
 
 QT_BEGIN_NAMESPACE
 

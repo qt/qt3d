@@ -39,6 +39,7 @@
 
 #include "qaxissetting.h"
 #include "qaxissetting_p.h"
+
 #include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE

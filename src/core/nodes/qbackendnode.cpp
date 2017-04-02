@@ -39,9 +39,11 @@
 
 #include "qbackendnode.h"
 #include "qbackendnode_p.h"
-#include "qaspectengine.h"
-#include "qnode.h"
-#include "qpropertyupdatedchange.h"
+
+#include <Qt3DCore/qaspectengine.h>
+#include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+
 #include <Qt3DCore/private/corelogging_p.h>
 
 QT_BEGIN_NAMESPACE

@@ -51,8 +51,9 @@
 // We mean it.
 //
 
-#include <Qt3DInput/private/qabstractactioninput_p.h>
 #include <Qt3DCore/qnodeid.h>
+
+#include <Qt3DInput/private/qabstractactioninput_p.h>
 
 QT_BEGIN_NAMESPACE
 

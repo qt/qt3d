@@ -42,8 +42,7 @@
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qt3dcore_global.h>
-
-#include <QMetaType>
+#include <QtCore/QMetaType>
 
 QT_BEGIN_NAMESPACE
 

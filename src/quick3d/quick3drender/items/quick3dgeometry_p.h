@@ -51,9 +51,10 @@
 // We mean it.
 //
 
-#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
-#include <QQmlListProperty>
 #include <Qt3DRender/QGeometry>
+#include <QtQml/QQmlListProperty>
+
+#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 

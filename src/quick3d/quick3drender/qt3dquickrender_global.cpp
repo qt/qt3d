@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-#include "qt3dquickrender_global_p.h"
-#include "qt3dquickrendernodefactory_p.h"
+#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
+#include <Qt3DQuickRender/private/qt3dquickrendernodefactory_p.h>
 
 QT_BEGIN_NAMESPACE
 

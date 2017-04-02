@@ -51,10 +51,11 @@
 // We mean it.
 //
 
-#include <Qt3DQuickInput/private/qt3dquickinput_global_p.h>
-#include <Qt3DInput/QAxis>
 #include <Qt3DInput/QAbstractAxisInput>
-#include <QQmlListProperty>
+#include <Qt3DInput/QAxis>
+#include <QtQml/QQmlListProperty>
+
+#include <Qt3DQuickInput/private/qt3dquickinput_global_p.h>
 
 QT_BEGIN_NAMESPACE
 

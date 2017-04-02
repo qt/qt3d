@@ -39,12 +39,14 @@
 
 #include "qaction.h"
 #include "qaction_p.h"
-#include <Qt3DCore/private/qnode_p.h>
+
+#include <Qt3DInput/qabstractactioninput.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
-#include <Qt3DInput/qabstractactioninput.h>
+
+#include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 

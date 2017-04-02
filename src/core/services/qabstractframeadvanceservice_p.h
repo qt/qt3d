@@ -52,8 +52,9 @@
 //
 
 #include <Qt3DCore/qt3dcore_global.h>
+#include <QtCore/QString>
+
 #include <Qt3DCore/private/qservicelocator_p.h>
-#include <QString>
 
 QT_BEGIN_NAMESPACE
 

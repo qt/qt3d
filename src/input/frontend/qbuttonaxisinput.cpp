@@ -39,6 +39,7 @@
 
 #include "qbuttonaxisinput.h"
 #include "qbuttonaxisinput_p.h"
+
 #include <Qt3DInput/qabstractphysicaldevice.h>
 
 QT_BEGIN_NAMESPACE

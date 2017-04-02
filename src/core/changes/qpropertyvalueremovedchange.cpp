@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "qpropertyvalueremovedchange.h"
+
 #include "qpropertyvalueremovedchange_p.h"
 
 QT_BEGIN_NAMESPACE

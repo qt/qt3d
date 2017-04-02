@@ -51,9 +51,10 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/qvariant.h>
+
+#include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 

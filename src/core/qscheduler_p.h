@@ -40,8 +40,8 @@
 #ifndef QT3DCORE_QSCHEDULER_P_H
 #define QT3DCORE_QSCHEDULER_P_H
 
-#include <QObject>
 #include <Qt3DCore/qt3dcore_global.h>
+#include <QtCore/QObject>
 
 //
 //  W A R N I N G

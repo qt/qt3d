@@ -38,23 +38,22 @@
 ****************************************************************************/
 
 #include "scene3ditem_p.h"
-#include "scene3dcleaner_p.h"
-#include "scene3dlogging_p.h"
-#include "scene3drenderer_p.h"
-#include "scene3dsgnode_p.h"
 
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DRender/qcamera.h>
-#include <Qt3DRender/QRenderAspect>
-#include <Qt3DRender/qrendersurfaceselector.h>
-#include <Qt3DRender/private/qrendersurfaceselector_p.h>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DInput/qinputsettings.h>
 #include <Qt3DLogic/qlogicaspect.h>
-
-
+#include <Qt3DRender/QRenderAspect>
+#include <Qt3DRender/qcamera.h>
+#include <Qt3DRender/qrendersurfaceselector.h>
 #include <QtQuick/qquickwindow.h>
+
+#include <Qt3DRender/private/qrendersurfaceselector_p.h>
+#include <scene3dcleaner_p.h>
+#include <scene3dlogging_p.h>
+#include <scene3drenderer_p.h>
+#include <scene3dsgnode_p.h>
 
 QT_BEGIN_NAMESPACE
 

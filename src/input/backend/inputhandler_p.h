@@ -51,11 +51,12 @@
 // We mean it.
 //
 
+#include <Qt3DInput/QKeyEvent>
 #include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DInput/private/handle_types_p.h>
 #include <Qt3DCore/qaspectjob.h>
-#include <QKeyEvent>
-#include <QMutex>
+#include <QtCore/QMutex>
+
+#include <Qt3DInput/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 

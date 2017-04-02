@@ -52,9 +52,9 @@
 //
 
 #include <QtQuick/QSGMaterial>
-#include "scene3dsgmaterialshader_p.h"
-
 #include <QtQuick/qsgtexture.h>
+
+#include <scene3dsgmaterialshader_p.h>
 
 QT_BEGIN_NAMESPACE
 

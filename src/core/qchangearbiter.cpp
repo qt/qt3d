@@ -38,17 +38,18 @@
 ****************************************************************************/
 
 #include "qchangearbiter_p.h"
-#include "qcomponent.h"
-#include "qabstractaspectjobmanager_p.h"
 
-#include "qsceneobserverinterface_p.h"
-#include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/qcomponent.h>
+#include <QtCore/QMutexLocker>
+#include <QtCore/QReadLocker>
+#include <QtCore/QThread>
+#include <QtCore/QWriteLocker>
+
 #include <Qt3DCore/private/corelogging_p.h>
-#include <QMutexLocker>
-#include <QReadLocker>
-#include <QThread>
-#include <QWriteLocker>
-#include <private/qpostman_p.h>
+#include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
+#include <Qt3DCore/private/qpostman_p.h>
+#include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qsceneobserverinterface_p.h>
 
 QT_BEGIN_NAMESPACE
 

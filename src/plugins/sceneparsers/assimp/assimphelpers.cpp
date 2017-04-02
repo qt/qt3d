@@ -39,11 +39,11 @@
 
 #include "assimphelpers.h"
 
-#include <QFileDevice>
-#include <QFileInfo>
-#include <QUrl>
-#include <QDir>
-#include <QDebug>
+#include <QtCore/QFileDevice>
+#include <QtCore/QFileInfo>
+#include <QtCore/QUrl>
+#include <QtCore/QDir>
+#include <QtCore/QDebug>
 
 QT_BEGIN_NAMESPACE
 

@@ -39,10 +39,11 @@
 
 #include "qmousehandler.h"
 #include "qmousehandler_p.h"
-#include "qmousedevice.h"
-#include "qmouseevent.h"
+
+#include <Qt3DInput/qmousedevice.h>
+#include <Qt3DInput/qmouseevent.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <QTimer>
+#include <QtCore/QTimer>
 
 QT_BEGIN_NAMESPACE
 

@@ -38,10 +38,12 @@
 ****************************************************************************/
 
 #include "qeventfilterservice_p.h"
-#include "qabstractserviceprovider_p.h"
-#include <QMap>
-#include <QObject>
-#include <QVector>
+
+#include <QtCore/QMap>
+#include <QtCore/QObject>
+#include <QtCore/QVector>
+
+#include <Qt3DCore/private/qabstractserviceprovider_p.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -48,9 +48,10 @@
 // We mean it.
 //
 
+#include <Qt3DExtras/qorbitcameracontroller.h>
+#include <QtGui/QVector3D>
+
 #include <Qt3DCore/private/qentity_p.h>
-#include <QVector3D>
-#include "qorbitcameracontroller.h"
 
 QT_BEGIN_NAMESPACE
 

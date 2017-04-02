@@ -40,9 +40,8 @@
 #ifndef QT3DINPUT_QAXISSETTING_H
 #define QT3DINPUT_QAXISSETTING_H
 
-#include <Qt3DCore/qnode.h>
 #include <Qt3DInput/qt3dinput_global.h>
-
+#include <Qt3DCore/qnode.h>
 #include <QtCore/qvector.h>
 
 QT_BEGIN_NAMESPACE

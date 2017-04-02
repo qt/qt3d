@@ -57,10 +57,12 @@
 
 #include "qconegeometry.h"
 #include "qconegeometry_p.h"
+
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/qattribute.h>
-#include <QVector3D>
+#include <QtGui/QVector3D>
+
 #include <cmath>
 
 QT_BEGIN_NAMESPACE

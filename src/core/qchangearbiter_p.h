@@ -51,16 +51,17 @@
 // We mean it.
 //
 
-#include <QObject>
-#include <QFlags>
-#include <QReadWriteLock>
-#include <QVariant>
-#include <QVector>
-#include <QPair>
-#include <QThreadStorage>
-#include <QMutex>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qscenechange.h>
+#include <QtCore/QFlags>
+#include <QtCore/QMutex>
+#include <QtCore/QObject>
+#include <QtCore/QPair>
+#include <QtCore/QReadWriteLock>
+#include <QtCore/QThreadStorage>
+#include <QtCore/QVariant>
+#include <QtCore/QVector>
+
 #include <Qt3DCore/private/qlockableobserverinterface_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 

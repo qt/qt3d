@@ -38,8 +38,9 @@
 
 #include "qinputchord.h"
 #include "qinputchord_p.h"
-#include <Qt3DCore/qnodecreatedchange.h>
+
 #include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>

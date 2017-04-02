@@ -51,8 +51,9 @@
 // We mean it.
 //
 
-#include <private/qstaticpropertyvalueremovedchangebase_p.h>
 #include <Qt3DCore/qnode.h>
+
+#include <Qt3DCore/private/qstaticpropertyvalueremovedchangebase_p.h>
 
 QT_BEGIN_NAMESPACE
 

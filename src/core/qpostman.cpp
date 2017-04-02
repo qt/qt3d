@@ -39,12 +39,15 @@
 
 #include "qpostman_p.h"
 #include "qpostman_p_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qlockableobserverinterface_p.h>
+
 #include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+
+#include <Qt3DCore/private/qlockableobserverinterface_p.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
+#include <Qt3DCore/private/qscene_p.h>
+#include <QtCore/private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
 

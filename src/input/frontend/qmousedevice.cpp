@@ -39,8 +39,9 @@
 
 #include "qmousedevice.h"
 #include "qmousedevice_p.h"
-#include <Qt3DInput/qphysicaldevicecreatedchange.h>
+
 #include <Qt3DInput/qmouseevent.h>
+#include <Qt3DInput/qphysicaldevicecreatedchange.h>
 #include <Qt3DCore/qentity.h>
 
 QT_BEGIN_NAMESPACE

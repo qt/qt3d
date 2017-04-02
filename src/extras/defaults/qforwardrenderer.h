@@ -42,8 +42,9 @@
 
 #include <Qt3DExtras/qt3dextras_global.h>
 #include <Qt3DRender/qtechniquefilter.h>
-#include <QRectF>
-#include <QColor>
+#include <QtCore/QRectF>
+#include <QtGui/QColor>
+
 
 QT_BEGIN_NAMESPACE
 

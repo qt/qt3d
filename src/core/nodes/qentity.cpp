@@ -39,17 +39,18 @@
 
 #include "qentity.h"
 #include "qentity_p.h"
-#include "qcomponent.h"
-#include "qcomponent_p.h"
 
-#include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/qcomponentaddedchange.h>
 #include <Qt3DCore/qcomponentremovedchange.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <QtCore/QMetaObject>
+#include <QtCore/QMetaProperty>
+
 #include <Qt3DCore/private/corelogging_p.h>
-#include <QMetaObject>
-#include <QMetaProperty>
+#include <Qt3DCore/private/qcomponent_p.h>
+#include <Qt3DCore/private/qscene_p.h>
 
 QT_BEGIN_NAMESPACE
 
