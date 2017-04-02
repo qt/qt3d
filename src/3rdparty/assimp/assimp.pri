@@ -251,7 +251,7 @@ HEADERS += revision.h \
            code/SplitLargeMeshes.h \
            code/StandardShapes.h \
            code/StdOStreamLogStream.h \
-           code/STEPExporter.h \
+           code/StepExporter.h \
            code/STEPFile.h \
            code/STEPFileEncoding.h \
            code/STEPFileReader.h \
