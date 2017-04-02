@@ -191,7 +191,7 @@ void QMorphingAnimationPrivate::updateAnimation(float position)
 
     QVector<int> relevantValues;
     float sum = 0.0f;
-    float interpolator;
+    float interpolator = 0.0f;
     m_morphKey.resize(m_morphTargets.size());
 
     // calculate morph key
