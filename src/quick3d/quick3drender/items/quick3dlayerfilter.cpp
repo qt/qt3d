@@ -37,8 +37,9 @@
 **
 ****************************************************************************/
 
-#include "quick3dlayerfilter_p.h"
 #include <Qt3DRender/qtexture.h>
+
+#include <Qt3DQuickRender/private/quick3dlayerfilter_p.h>
 
 QT_BEGIN_NAMESPACE
 

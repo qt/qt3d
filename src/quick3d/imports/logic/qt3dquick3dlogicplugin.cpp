@@ -37,9 +37,10 @@
 **
 ****************************************************************************/
 
-#include <QtQml>
-#include <Qt3DLogic/qframeaction.h>
 #include "qt3dquick3dlogicplugin.h"
+
+#include <Qt3DLogic/qframeaction.h>
+#include <QtQml>
 
 QT_BEGIN_NAMESPACE
 

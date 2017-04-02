@@ -34,9 +34,9 @@
 **
 ****************************************************************************/
 
-#include "qorbitcameracontroller_p.h"
 #include "qorbitcameracontroller.h"
-#include <QtGlobal>
+#include "qorbitcameracontroller_p.h"
+
 #include <Qt3DRender/QCamera>
 #include <Qt3DInput/QAxis>
 #include <Qt3DInput/QAnalogAxisInput>
@@ -48,6 +48,7 @@
 #include <Qt3DInput/QMouseDevice>
 #include <Qt3DInput/QMouseEvent>
 #include <Qt3DLogic/QFrameAction>
+#include <QtCore/QtGlobal>
 
 QT_BEGIN_NAMESPACE
 

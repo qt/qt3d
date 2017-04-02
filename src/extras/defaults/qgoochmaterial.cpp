@@ -39,13 +39,13 @@
 
 #include "qgoochmaterial.h"
 #include "qgoochmaterial_p.h"
+
 #include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qtechnique.h>
-
 #include <QtCore/qurl.h>
 
 QT_BEGIN_NAMESPACE

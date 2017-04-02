@@ -38,8 +38,9 @@
 
 #include "qactioninput.h"
 #include "qactioninput_p.h"
+
 #include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DInput/QAbstractActionInput>
+#include <Qt3DInput/qabstractactioninput.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE

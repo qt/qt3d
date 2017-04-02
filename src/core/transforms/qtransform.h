@@ -41,7 +41,6 @@
 #define QT3DCORE_QTRANSFORM_H
 
 #include <Qt3DCore/qcomponent.h>
-
 #include <QtGui/qmatrix4x4.h>
 #include <QtGui/qquaternion.h>
 #include <QtGui/qvector3d.h>

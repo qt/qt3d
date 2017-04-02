@@ -52,10 +52,11 @@
 // We mean it.
 //
 
-#include <Qt3DQuick/private/qt3dquick_global_p.h>
 #include <Qt3DCore/qnode.h>
 #include <QtQml/qqmlcomponent.h>
 #include <QtQml/qqmlparserstatus.h>
+
+#include <Qt3DQuick/private/qt3dquick_global_p.h>
 
 QT_BEGIN_NAMESPACE
 

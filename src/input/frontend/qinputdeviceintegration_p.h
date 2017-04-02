@@ -51,12 +51,12 @@
 // We mean it.
 //
 
-#include <QObject>
 #include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
-
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
+#include <QtCore/QObject>
+
+#include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
 
 QT_BEGIN_NAMESPACE
 

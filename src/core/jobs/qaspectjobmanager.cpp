@@ -38,15 +38,16 @@
 ****************************************************************************/
 
 #include "qaspectjobmanager_p.h"
-#include "task_p.h"
-#include "qthreadpooler_p.h"
-#include "dependencyhandler_p.h"
 
-#include <QAtomicInt>
-#include <QDebug>
-#include <QThread>
-#include <QCoreApplication>
+#include <QtCore/QAtomicInt>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDebug>
+#include <QtCore/QThread>
 #include <QtCore/QFuture>
+
+#include <Qt3DCore/private/dependencyhandler_p.h>
+#include <Qt3DCore/private/qthreadpooler_p.h>
+#include <Qt3DCore/private/task_p.h>
 
 QT_BEGIN_NAMESPACE
 

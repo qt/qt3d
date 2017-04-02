@@ -36,7 +36,9 @@
 
 #include "qnodecreatedchange.h"
 #include "qnodecreatedchange_p.h"
+
 #include <Qt3DCore/qnode.h>
+
 #include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE

@@ -51,9 +51,10 @@
 // We mean it.
 //
 
+#include <Qt3DCore/qentity.h>
+
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
-#include "qentity.h"
 
 QT_BEGIN_NAMESPACE
 

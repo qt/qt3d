@@ -52,13 +52,13 @@
 // We mean it.
 //
 
+#include <Qt3DRender/qattribute.h>
+#include <Qt3DRender/qbuffer.h>
 #include <QtCore/qjsondocument.h>
 #include <QtCore/qjsonobject.h>
 #include <QtCore/qhash.h>
 
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qbuffer.h>
-#include <private/qsceneimporter_p.h>
+#include <Qt3DRender/private/qsceneimporter_p.h>
 
 QT_BEGIN_NAMESPACE
 

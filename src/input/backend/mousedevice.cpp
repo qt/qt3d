@@ -38,14 +38,15 @@
 ****************************************************************************/
 
 #include "mousedevice_p.h"
-#include "inputmanagers_p.h"
-#include "inputhandler_p.h"
-#include "qmousedevice.h"
-#include <Qt3DInput/private/qmousedevice_p.h>
 
-#include <Qt3DCore/qnode.h>
+#include <Qt3DInput/qmousedevice.h>
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+
+#include <Qt3DInput/private/inputmanagers_p.h>
+#include <Qt3DInput/private/inputhandler_p.h>
+#include <Qt3DInput/private/qmousedevice_p.h>
 
 QT_BEGIN_NAMESPACE
 

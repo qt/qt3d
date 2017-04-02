@@ -39,6 +39,7 @@
 
 #include "qaxisaccumulator.h"
 #include "qaxisaccumulator_p.h"
+
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>

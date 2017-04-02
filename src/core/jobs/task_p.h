@@ -51,13 +51,12 @@
 // We mean it.
 //
 
-#include "qaspectjobmanager_p.h"
-
-#include <QtCore/QtGlobal>
-#include <QtCore/QThread>
-#include <QtCore/QSharedPointer>
-
 #include <QtCore/QRunnable>
+#include <QtCore/QSharedPointer>
+#include <QtCore/QThread>
+#include <QtCore/QtGlobal>
+
+#include <Qt3DCore/private/qaspectjobmanager_p.h>
 
 QT_BEGIN_NAMESPACE
 

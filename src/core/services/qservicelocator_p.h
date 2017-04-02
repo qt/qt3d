@@ -52,8 +52,8 @@
 //
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <QScopedPointer>
-#include <QObject>
+#include <QtCore/qobject.h>
+#include <QtCore/qscopedpointer.h>
 
 QT_BEGIN_NAMESPACE
 

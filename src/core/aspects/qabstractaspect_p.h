@@ -51,14 +51,15 @@
 // We mean it.
 //
 
-#include <private/qobject_p.h>
-#include <private/qaspectjobproviderinterface_p.h>
-#include <private/qbackendnode_p.h>
-#include <private/qbackendnodefactory_p.h>
-#include <private/qsceneobserverinterface_p.h>
-#include <private/qt3dcore_global_p.h>
-#include <Qt3DCore/qnodedestroyedchange.h>
 #include <Qt3DCore/qabstractaspect.h>
+#include <Qt3DCore/qnodedestroyedchange.h>
+
+#include <Qt3DCore/private/qaspectjobproviderinterface_p.h>
+#include <Qt3DCore/private/qbackendnode_p.h>
+#include <Qt3DCore/private/qbackendnodefactory_p.h>
+#include <Qt3DCore/private/qsceneobserverinterface_p.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
+#include <QtCore/private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
 

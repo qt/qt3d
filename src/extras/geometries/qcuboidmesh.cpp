@@ -38,7 +38,8 @@
 ****************************************************************************/
 
 #include "qcuboidmesh.h"
-#include "qcuboidgeometry.h"
+
+#include <Qt3DExtras/qcuboidgeometry.h>
 
 QT_BEGIN_NAMESPACE
 

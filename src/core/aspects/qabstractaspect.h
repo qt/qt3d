@@ -40,10 +40,10 @@
 #ifndef QT3DCORE_QABSTRACTASPECT_H
 #define QT3DCORE_QABSTRACTASPECT_H
 
-#include <QObject>
-#include <QSharedPointer>
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qnodeid.h>
+#include <QtCore/QObject>
+#include <QtCore/QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 

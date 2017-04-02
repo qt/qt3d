@@ -52,9 +52,9 @@
 #define QT3DEXTRAS_QUICK_QT3DQUICKWINDOW_H
 
 #include <Qt3DQuickExtras/qt3dquickextras_global.h>
-#include <QQuickWindow>
+#include <QtCore/QUrl>
 #include <QtCore/qpointer.h>
-#include <QUrl>
+#include <QtQuick/QQuickWindow>
 
 QT_BEGIN_NAMESPACE
 

@@ -39,8 +39,9 @@
 
 #include "qtickclock_p.h"
 
+#include <QtCore/QThread>
+
 #include <Qt3DCore/private/corelogging_p.h>
-#include <QThread>
 
 QT_BEGIN_NAMESPACE
 

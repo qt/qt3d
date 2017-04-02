@@ -40,25 +40,26 @@
 #include "qnode.h"
 #include "qnode_p.h"
 
-#include <Qt3DCore/qentity.h>
+#include <Qt3DCore/QComponent>
+#include <Qt3DCore/qaspectengine.h>
 #include <Qt3DCore/qdynamicpropertyupdatedchange.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qentity.h>
+#include <Qt3DCore/qnodedestroyedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
-#include <Qt3DCore/qnodedestroyedchange.h>
-#include <Qt3DCore/qaspectengine.h>
-#include <Qt3DCore/private/qdestructionidandtypecollector_p.h>
-#include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qpostman_p.h>
-#include <QEvent>
-#include <QChildEvent>
-#include <QMetaObject>
-#include <QMetaProperty>
-#include <QtCore/private/qmetaobject_p.h>
-#include <Qt3DCore/QComponent>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <QtCore/QChildEvent>
+#include <QtCore/QEvent>
+#include <QtCore/QMetaObject>
+#include <QtCore/QMetaProperty>
+
 #include <Qt3DCore/private/corelogging_p.h>
+#include <Qt3DCore/private/qdestructionidandtypecollector_p.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
+#include <Qt3DCore/private/qpostman_p.h>
+#include <Qt3DCore/private/qscene_p.h>
+#include <QtCore/private/qmetaobject_p.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -39,12 +39,14 @@
 
 #include "qtorusgeometry.h"
 #include "qtorusgeometry_p.h"
+
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/qattribute.h>
+#include <QtGui/QVector3D>
+#include <QtGui/QVector4D>
+
 #include <qmath.h>
-#include <QVector3D>
-#include <QVector4D>
 
 QT_BEGIN_NAMESPACE
 

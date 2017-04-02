@@ -38,16 +38,17 @@
 ****************************************************************************/
 
 #include "inputhandler_p.h"
-#include "inputmanagers_p.h"
-#include "keyboardeventfilter_p.h"
-#include "mouseeventfilter_p.h"
-#include "assignkeyboardfocusjob_p.h"
-#include "keyeventdispatcherjob_p.h"
-#include "mouseeventdispatcherjob_p.h"
-#include <Qt3DCore/private/qeventfilterservice_p.h>
-#include "inputsettings_p.h"
-#include "eventsourcesetterhelper_p.h"
+
+#include <Qt3DInput/private/assignkeyboardfocusjob_p.h>
+#include <Qt3DInput/private/eventsourcesetterhelper_p.h>
+#include <Qt3DInput/private/inputmanagers_p.h>
+#include <Qt3DInput/private/inputsettings_p.h>
+#include <Qt3DInput/private/keyboardeventfilter_p.h>
+#include <Qt3DInput/private/keyeventdispatcherjob_p.h>
+#include <Qt3DInput/private/mouseeventdispatcherjob_p.h>
+#include <Qt3DInput/private/mouseeventfilter_p.h>
 #include <Qt3DInput/private/qinputdeviceintegration_p.h>
+#include <Qt3DCore/private/qeventfilterservice_p.h>
 
 QT_BEGIN_NAMESPACE
 

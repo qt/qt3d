@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "quick3daction_p.h"
+#include <Qt3DQuickInput/private/quick3daction_p.h>
 
 QT_BEGIN_NAMESPACE
 

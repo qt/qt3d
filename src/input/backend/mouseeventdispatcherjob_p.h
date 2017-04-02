@@ -51,9 +51,9 @@
 // We mean it.
 //
 
+#include <Qt3DInput/QMouseEvent>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
-#include <QMouseEvent>
 
 QT_BEGIN_NAMESPACE
 

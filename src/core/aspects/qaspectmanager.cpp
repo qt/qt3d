@@ -38,27 +38,27 @@
 ****************************************************************************/
 
 #include "qaspectmanager_p.h"
-#include "qabstractaspect.h"
-#include "qabstractaspect_p.h"
-#include "qchangearbiter_p.h"
-// TODO Make the kind of job manager configurable (e.g. ThreadWeaver vs Intel TBB)
-#include "qaspectjobmanager_p.h"
-#include "qabstractaspectjobmanager_p.h"
-#include "qentity.h"
 
-#include <Qt3DCore/private/qservicelocator_p.h>
+#include <Qt3DCore/qabstractaspect.h>
+#include <Qt3DCore/qentity.h>
+#include <QtCore/QEventLoop>
+#include <QtCore/QThread>
+#include <QtCore/QWaitCondition>
+#include <QtGui/QSurface>
 
-#include <Qt3DCore/private/qaspectjob_p.h>
-#include <Qt3DCore/private/qthreadpooler_p.h>
-#include <Qt3DCore/private/qtickclockservice_p.h>
 #include <Qt3DCore/private/corelogging_p.h>
-#include <Qt3DCore/private/qscheduler_p.h>
-#include <Qt3DCore/private/qtickclock_p.h>
+#include <Qt3DCore/private/qabstractaspect_p.h>
+#include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
 #include <Qt3DCore/private/qabstractframeadvanceservice_p.h>
-#include <QEventLoop>
-#include <QThread>
-#include <QWaitCondition>
-#include <QSurface>
+// TODO Make the kind of job manager configurable (e.g. ThreadWeaver vs Intel TBB)
+#include <Qt3DCore/private/qaspectjobmanager_p.h>
+#include <Qt3DCore/private/qaspectjob_p.h>
+#include <Qt3DCore/private/qchangearbiter_p.h>
+#include <Qt3DCore/private/qscheduler_p.h>
+#include <Qt3DCore/private/qservicelocator_p.h>
+#include <Qt3DCore/private/qthreadpooler_p.h>
+#include <Qt3DCore/private/qtickclock_p.h>
+#include <Qt3DCore/private/qtickclockservice_p.h>
 
 #if defined(QT3D_CORE_JOB_TIMING)
 #include <QElapsedTimer>

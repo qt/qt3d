@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "qt3dquicknodefactory_p.h"
+
 #include <QtQml/private/qqmlmetatype_p.h>
 
 QT_BEGIN_NAMESPACE
