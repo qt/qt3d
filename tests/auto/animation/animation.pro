@@ -6,12 +6,12 @@ SUBDIRS += \
     qclipanimator \
     qblendedclipanimator \
     qchannelmapping \
-    qchannelmapper
+    qchannelmapper \
+    qclipblendvalue
 
 qtConfig(private_tests) {
     SUBDIRS += \
         animationcliploader \
-        qabstractclipblendnode \
         fcurve \
         functionrangefinder \
         bezierevaluator \
@@ -25,5 +25,7 @@ qtConfig(private_tests) {
         lerpclipblend \
         clipblendnodevisitor \
         qadditiveclipblend \
-        additiveclipblend
+        additiveclipblend \
+        clipblendvalue \
+        animationutils
 }

@@ -38,10 +38,11 @@
 ****************************************************************************/
 
 #include "keyeventdispatcherjob_p.h"
-#include "inputhandler_p.h"
-#include "keyboardhandler_p.h"
-#include "inputmanagers_p.h"
-#include "job_common_p.h"
+
+#include <Qt3DInput/private/inputhandler_p.h>
+#include <Qt3DInput/private/inputmanagers_p.h>
+#include <Qt3DInput/private/job_common_p.h>
+#include <Qt3DInput/private/keyboardhandler_p.h>
 
 QT_BEGIN_NAMESPACE
 

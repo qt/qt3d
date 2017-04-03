@@ -402,7 +402,7 @@ void QExtrudedTextGeometryPrivate::update()
     }
 }
 
-void QExtrudedTextGeometry::setText(QString text)
+void QExtrudedTextGeometry::setText(const QString &text)
 {
     Q_D(QExtrudedTextGeometry);
     if (d->m_text != text) {
@@ -412,7 +412,7 @@ void QExtrudedTextGeometry::setText(QString text)
     }
 }
 
-void QExtrudedTextGeometry::setFont(QFont font)
+void QExtrudedTextGeometry::setFont(const QFont &font)
 {
     Q_D(QExtrudedTextGeometry);
     if (d->m_font != font) {

@@ -1,6 +1,5 @@
 SOURCES += \
     $$PWD/quick3dchannelmapper.cpp \
-    $$PWD/quick3dabstractclipblendnode.cpp \
     $$PWD/quick3danimationcontroller.cpp \
     $$PWD/quick3danimationgroup.cpp \
     $$PWD/quick3dkeyframeanimation.cpp \
@@ -9,7 +8,6 @@ SOURCES += \
 
 HEADERS += \
     $$PWD/quick3dchannelmapper_p.h \
-    $$PWD/quick3dabstractclipblendnode_p.h \
     $$PWD/quick3danimationcontroller_p.h \
     $$PWD/quick3danimationgroup_p.h \
     $$PWD/quick3dkeyframeanimation_p.h \

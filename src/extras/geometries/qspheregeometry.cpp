@@ -39,15 +39,17 @@
 
 #include "qspheregeometry.h"
 #include "qspheregeometry_p.h"
+
 #include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qattribute.h>
+
+#include <qmath.h>
 
 #ifndef _USE_MATH_DEFINES
 # define _USE_MATH_DEFINES // For MSVC
 #endif
 
-#include <qmath.h>
 
 QT_BEGIN_NAMESPACE
 

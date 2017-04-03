@@ -68,7 +68,7 @@ Q_SIGNALS:
     void blendTreeChanged(QAbstractClipBlendNode * blendTree);
 
 protected:
-    QBlendedClipAnimator(QBlendedClipAnimatorPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QBlendedClipAnimator(QBlendedClipAnimatorPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QBlendedClipAnimator)

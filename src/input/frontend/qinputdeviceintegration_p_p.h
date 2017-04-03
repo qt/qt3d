@@ -51,8 +51,8 @@
 // We mean it.
 //
 
-#include <private/qobject_p.h>
-#include <private/qt3dinput_global_p.h>
+#include <Qt3DInput/private/qt3dinput_global_p.h>
+#include <QtCore/private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
 

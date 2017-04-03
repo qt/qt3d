@@ -412,12 +412,12 @@ void QBuffer::setSyncData(bool syncData)
     }
 }
 
-void QBuffer::setAccess(QBuffer::AccessType access)
+void QBuffer::setAccessType(QBuffer::AccessType access)
 {
     Q_D(QBuffer);
     if (d->m_access != access) {
         d->m_access = access;
-        Q_EMIT accessChanged(access);
+        Q_EMIT accessTypeChanged(access);
     }
 }
 
@@ -427,7 +427,7 @@ bool QBuffer::isSyncData() const
     return d->m_syncData;
 }
 
-QBuffer::AccessType QBuffer::access() const
+QBuffer::AccessType QBuffer::accessType() const
 {
     Q_D(const QBuffer);
     return d->m_access;

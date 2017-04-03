@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef RENDERTHREAD_H
-#define RENDERTHREAD_H
+#ifndef QT3DRENDER_RENDER_RENDERTHREAD_H
+#define QT3DRENDER_RENDER_RENDERTHREAD_H
 
 //
 //  W A R N I N G
@@ -75,7 +75,7 @@ public:
     Render::Renderer* renderer() const { return m_renderer; }
 
 protected:
-    void run();
+    void run() Q_DECL_OVERRIDE;
 
 private:
     Renderer* m_renderer;
@@ -88,4 +88,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // RENDERTHREAD_H
+#endif // QT3DRENDER_RENDER_RENDERTHREAD_H

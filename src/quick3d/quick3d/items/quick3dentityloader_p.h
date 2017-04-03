@@ -51,10 +51,9 @@
 // We mean it.
 //
 
-#include <QObject>
-#include <QUrl>
-
 #include <Qt3DCore/QEntity>
+#include <QtCore/QObject>
+#include <QtCore/QUrl>
 
 #include <Qt3DQuick/private/qt3dquick_global_p.h>
 

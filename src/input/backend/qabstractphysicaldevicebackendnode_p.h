@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DCore/qbackendnode.h>
+
 #include <Qt3DInput/private/qt3dinput_global_p.h>
 
 QT_BEGIN_NAMESPACE

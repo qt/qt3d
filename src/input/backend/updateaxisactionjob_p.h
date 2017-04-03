@@ -53,6 +53,7 @@
 
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
+
 #include <Qt3DInput/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE

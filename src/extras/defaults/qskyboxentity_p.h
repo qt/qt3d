@@ -51,8 +51,9 @@
 // We mean it.
 //
 
+#include <QtGui/QVector3D>
+
 #include <Qt3DCore/private/qentity_p.h>
-#include <QVector3D>
 
 QT_BEGIN_NAMESPACE
 

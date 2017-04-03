@@ -38,6 +38,8 @@
 
 #include <Qt3DQuickScene2D/qscene2d.h>
 #include <private/qrenderaspect_p.h>
+#include <Qt3DQuickScene2D/private/qt3dquick3dscene2d_p.h>
+#include <QtCore/qcoreapplication.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,7 +52,7 @@ Q_COREAPP_STARTUP_FUNCTION(initScene2dPlugin)
 
 void QtQuickScene2DPlugin::registerTypes(const char *uri)
 {
-    qmlRegisterType<Qt3DRender::Quick::QScene2D>(uri, 2, 9, "Scene2D");
+    qmlRegisterExtendedType<Qt3DRender::Quick::QScene2D, Qt3DRender::Render::Quick::QQuick3DScene2D>(uri, 2, 9, "Scene2D");
 }
 
 QT_END_NAMESPACE

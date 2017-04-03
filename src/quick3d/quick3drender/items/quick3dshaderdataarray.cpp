@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "quick3dshaderdataarray_p.h"
-#include <private/qshaderdata_p.h>
+#include <Qt3DQuickRender/private/quick3dshaderdataarray_p.h>
+#include <Qt3DRender/private/qshaderdata_p.h>
 
 QT_BEGIN_NAMESPACE
 

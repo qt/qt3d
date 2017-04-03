@@ -60,9 +60,6 @@ class QClipBlendNodeCreatedChangeBasePrivate : public Qt3DCore::QNodeCreatedChan
 {
 public:
     QClipBlendNodeCreatedChangeBasePrivate(const QAbstractClipBlendNode *node);
-
-    Qt3DCore::QNodeId m_parentClipBlendNodeId;
-    Qt3DCore::QNodeIdVector m_clips;
 };
 
 } // Qt3DAnimation

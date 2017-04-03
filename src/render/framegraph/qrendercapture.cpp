@@ -305,7 +305,11 @@ void QRenderCapture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
             if (reply) {
                 d->setImage(reply, data.data()->image);
                 emit reply->completed();
+
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_DEPRECATED
                 emit reply->completeChanged(true);
+QT_WARNING_POP
             }
         }
     }

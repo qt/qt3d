@@ -53,15 +53,9 @@ class QT3DANIMATIONSHARED_EXPORT QAbstractClipBlendNode : public Qt3DCore::QNode
 public:
     ~QAbstractClipBlendNode();
 
-    QVector<QAbstractAnimationClip *> clips() const;
-    QAbstractClipBlendNode *parentClipBlendNode() const;
-    void addClip(QAbstractAnimationClip *clip);
-    void removeClip(QAbstractAnimationClip *clip);
-
 protected:
     explicit QAbstractClipBlendNode(Qt3DCore::QNode *parent = nullptr);
     explicit QAbstractClipBlendNode(QAbstractClipBlendNodePrivate &dd, Qt3DCore::QNode *parent = nullptr);
-
 
 private:
     Q_DECLARE_PRIVATE(QAbstractClipBlendNode)

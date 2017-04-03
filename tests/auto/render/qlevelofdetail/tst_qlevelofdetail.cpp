@@ -89,14 +89,14 @@ private Q_SLOTS:
 
         {
             // WHEN
-            lod->setThresholdType(Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSize);
+            lod->setThresholdType(Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSizeThreshold);
             QCoreApplication::processEvents();
 
             // THEN
             QCOMPARE(arbiter.events.size(), 1);
             Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
             QCOMPARE(change->propertyName(), "thresholdType");
-            QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSize));
+            QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSizeThreshold));
 
             arbiter.events.clear();
         }

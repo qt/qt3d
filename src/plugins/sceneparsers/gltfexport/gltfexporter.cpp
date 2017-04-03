@@ -168,6 +168,7 @@ inline QJsonArray vec2jsvec(const QVector4D &v)
     return arr;
 }
 
+#if 0   // unused for now
 inline QJsonArray matrix2jsvec(const QMatrix2x2 &matrix)
 {
     QJsonArray jm;
@@ -185,6 +186,7 @@ inline QJsonArray matrix2jsvec(const QMatrix3x3 &matrix)
         jm.append(*mtxp++);
     return jm;
 }
+#endif
 
 inline QJsonArray matrix2jsvec(const QMatrix4x4 &matrix)
 {
@@ -225,7 +227,7 @@ using namespace Qt3DExtras;
 
 namespace Qt3DRender {
 
-Q_LOGGING_CATEGORY(GLTFExporterLog, "Qt3D.GLTFExport")
+Q_LOGGING_CATEGORY(GLTFExporterLog, "Qt3D.GLTFExport", QtWarningMsg)
 
 const QString MATERIAL_DIFFUSE_COLOR = QStringLiteral("kd");
 const QString MATERIAL_SPECULAR_COLOR = QStringLiteral("ks");

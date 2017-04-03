@@ -68,21 +68,21 @@ class QT3DEXTRASSHARED_EXPORT QExtrudedTextMesh : public Qt3DRender::QGeometryRe
     Q_PROPERTY(float depth READ depth WRITE setDepth NOTIFY depthChanged)
 
 public:
-    QExtrudedTextMesh(Qt3DCore::QNode *parent = nullptr);
+    explicit QExtrudedTextMesh(Qt3DCore::QNode *parent = nullptr);
     ~QExtrudedTextMesh();
 
-    QString text();
-    QFont font();
-    float depth();
+    QString text() const;
+    QFont font() const;
+    float depth() const;
 
 public Q_SLOTS:
-    void setText(QString text);
-    void setFont(QFont font);
+    void setText(const QString &text);
+    void setFont(const QFont &font);
     void setDepth(float depth);
 
 Q_SIGNALS:
-    void textChanged(QString text);
-    void fontChanged(QFont font);
+    void textChanged(const QString &text);
+    void fontChanged(const QFont &font);
     void depthChanged(float depth);
 };
 

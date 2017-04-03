@@ -50,17 +50,15 @@
 
 #include "qt3dwindow.h"
 
+#include <Qt3DCore/qaspectengine.h>
+#include <Qt3DCore/qentity.h>
 #include <Qt3DExtras/qforwardrenderer.h>
 #include <Qt3DRender/qrendersettings.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DInput/qinputaspect.h>
 #include <Qt3DInput/qinputsettings.h>
 #include <Qt3DLogic/qlogicaspect.h>
-
-#include <Qt3DCore/qaspectengine.h>
 #include <Qt3DRender/qcamera.h>
-#include <Qt3DCore/qentity.h>
-
 #include <QtGui/qopenglcontext.h>
 
 QT_BEGIN_NAMESPACE
@@ -99,7 +97,6 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
     format.setStencilBufferSize(8);
     setFormat(format);
     QSurfaceFormat::setDefaultFormat(format);
-    create();
 
     m_aspectEngine->registerAspect(m_renderAspect);
     m_aspectEngine->registerAspect(m_inputAspect);

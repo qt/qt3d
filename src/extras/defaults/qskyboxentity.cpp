@@ -296,7 +296,7 @@ void QSkyboxEntity::setGammaCorrectEnabled(bool enabled)
 }
 
 /*!
- * Indicates if gamma correction is enabled for this skybox.
+ * Returns true if gamma correction is enabled for this skybox.
  * \since 5.9
  */
 bool QSkyboxEntity::isGammaCorrectEnabled() const

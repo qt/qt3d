@@ -72,7 +72,26 @@ public:
     void setAdditiveFactor(float additiveFactor) { m_additiveFactor = additiveFactor; } // For unit tests
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
-    float blend(float value1, float value2) const Q_DECL_FINAL;
+
+    inline QVector<Qt3DCore::QNodeId> allDependencyIds() const Q_DECL_OVERRIDE
+    {
+        return currentDependencyIds();
+    }
+
+    inline QVector<Qt3DCore::QNodeId> currentDependencyIds() const Q_DECL_OVERRIDE
+    {
+        return { m_baseClipId, m_additiveClipId };
+    }
+
+    inline double duration() const Q_DECL_OVERRIDE
+    {
+        ClipBlendNode *node = clipBlendNodeManager()->lookupNode(m_baseClipId);
+        Q_ASSERT(node);
+        return node->duration();
+    }
+
+protected:
+    ClipResults doBlend(const QVector<ClipResults> &blendData) const Q_DECL_FINAL;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;

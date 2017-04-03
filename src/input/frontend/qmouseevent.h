@@ -41,9 +41,9 @@
 #define QT3DINPUT_QMOUSEEVENT_H
 
 #include <Qt3DInput/qt3dinput_global.h>
-#include <QObject>
+#include <QtCore/QtGlobal>
+#include <QtCore/QObject>
 #include <QtGui/QMouseEvent>
-#include <QtGlobal>
 
 QT_BEGIN_NAMESPACE
 

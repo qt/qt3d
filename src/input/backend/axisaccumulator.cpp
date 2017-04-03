@@ -38,9 +38,11 @@
 ****************************************************************************/
 
 #include "axisaccumulator_p.h"
-#include <Qt3DInput/private/qaxisaccumulator_p.h>
-#include <Qt3DInput/private/inputmanagers_p.h>
+
 #include <Qt3DCore/qpropertyupdatedchange.h>
+
+#include <Qt3DInput/private/inputmanagers_p.h>
+#include <Qt3DInput/private/qaxisaccumulator_p.h>
 
 QT_BEGIN_NAMESPACE
 

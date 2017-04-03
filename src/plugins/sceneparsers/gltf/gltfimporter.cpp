@@ -255,7 +255,7 @@ Qt3DRender::QFilterKey *buildFilterKey(const QString &key, const QJsonValue &val
 
 namespace Qt3DRender {
 
-Q_LOGGING_CATEGORY(GLTFImporterLog, "Qt3D.GLTFImport")
+Q_LOGGING_CATEGORY(GLTFImporterLog, "Qt3D.GLTFImport", QtWarningMsg)
 
 
 GLTFImporter::GLTFImporter() : QSceneImporter(),

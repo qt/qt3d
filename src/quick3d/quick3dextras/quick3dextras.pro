@@ -14,13 +14,14 @@ gcov {
 }
 
 SOURCES += \
-    qt3dquickwindow.cpp
-
+    qt3dquickwindow.cpp \
+    qt3dquickwindowlogging.cpp
 
 HEADERS += \
     qt3dquickextras_global.h \
     qt3dquickextras_global_p.h \
-    qt3dquickwindow.h
+    qt3dquickwindow.h \
+    qt3dquickwindowlogging_p.h
 
 # otherwise mingw headers do not declare common functions like ::strcasecmp
 win32-g++*:QMAKE_CXXFLAGS_CXX11 = -std=gnu++0x

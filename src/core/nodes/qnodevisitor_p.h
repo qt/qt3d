@@ -51,9 +51,9 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 

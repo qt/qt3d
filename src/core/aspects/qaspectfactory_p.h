@@ -51,8 +51,8 @@
 // We mean it.
 //
 
-#include <QHash>
-#include <QStringList>
+#include <QtCore/QHash>
+#include <QtCore/QStringList>
 
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 

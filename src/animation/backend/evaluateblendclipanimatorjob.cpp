@@ -39,6 +39,7 @@
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 #include <Qt3DAnimation/private/animationutils_p.h>
+#include <Qt3DAnimation/private/clipblendvalue_p.h>
 #include <Qt3DAnimation/private/lerpclipblend_p.h>
 #include <Qt3DAnimation/private/clipblendnodevisitor_p.h>
 #include <Qt3DAnimation/private/job_common_p.h>
@@ -50,167 +51,69 @@ namespace Animation {
 
 EvaluateBlendClipAnimatorJob::EvaluateBlendClipAnimatorJob()
     : Qt3DCore::QAspectJob()
-    , m_currentLoop(std::numeric_limits<int>::max())
-    , m_isFinalFrame(true)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::EvaluateBlendClipAnimator, 0);
 }
 
-namespace {
-
-QVector<float> blendValuesBasedOnMappings(ClipBlendNode *node,
-                                          const QVector<float> &channelResults1,
-                                          const QVector<float> &channelResults2,
-                                          const QVector<AnimationUtils::BlendingMappingData> &blendingMappingData)
-{
-    QVector<float> blendedValues;
-    blendedValues.reserve(blendingMappingData.size());
-
-    // Build a combined vector of blended value
-    for (const AnimationUtils::BlendingMappingData &mapping : blendingMappingData) {
-
-        switch (mapping.blendAction) {
-        case AnimationUtils::BlendingMappingData::ClipBlending: {
-            Q_ASSERT(mapping.channelIndicesClip1.size() == mapping.channelIndicesClip2.size());
-            for (int i = 0, m = mapping.channelIndicesClip1.size(); i < m; ++i) {
-                const float value1 = channelResults1.at(mapping.channelIndicesClip1[i]);
-                const float value2 = channelResults2.at(mapping.channelIndicesClip2[i]);
-                const float blendedValue = node->blend(value1, value2);
-                blendedValues.push_back(blendedValue);
-            }
-            break;
-        }
-        case AnimationUtils::BlendingMappingData::NoBlending: {
-            const bool useClip1 = !mapping.channelIndicesClip1.empty();
-            const QVector<int> channelIndices = useClip1 ? mapping.channelIndicesClip1 : mapping.channelIndicesClip2;
-            const QVector<float> values = useClip1 ? channelResults1 : channelResults2;
-            for (int i = 0, m = channelIndices.size(); i < m; ++i) {
-                const float value = values.at(channelIndices[i]);
-                blendedValues.push_back(value);
-            }
-            break;
-        }
-        default:
-            Q_UNREACHABLE();
-            break;
-        }
-    }
-    return blendedValues;
-}
-
-QVector<AnimationUtils::MappingData> fromBlendingMappingData(const QVector<AnimationUtils::BlendingMappingData> &blendingMappingData)
-{
-    const int blendingMappingDataSize = blendingMappingData.size();
-    QVector<AnimationUtils::MappingData> mappingData(blendingMappingDataSize);
-    for (int i = 0; i < blendingMappingDataSize; ++i) {
-        mappingData[i] = blendingMappingData[i];
-    }
-    return mappingData;
-}
-
-} // anonymous
-
-void EvaluateBlendClipAnimatorJob::blendClips(ClipBlendNode *node, const BlendedClipAnimator::BlendNodeData &nodeData,
-                                              const AnimationUtils::AnimatorEvaluationData &animatorEvaluationData)
-{
-    AnimationClipLoader *clip1 = m_handler->animationClipLoaderManager()->lookupResource(nodeData.left);
-    AnimationClipLoader *clip2 = m_handler->animationClipLoaderManager()->lookupResource(nodeData.right);
-    Q_ASSERT(clip1 && clip2);
-
-    // Prepare for evaluation (convert global time to local time ....)
-    const AnimationUtils::ClipPreEvaluationData preEvaluationDataForClip1 = AnimationUtils::evaluationDataForClip(clip1, animatorEvaluationData);
-    const AnimationUtils::ClipPreEvaluationData preEvaluationDataForClip2 = AnimationUtils::evaluationDataForClip(clip2, animatorEvaluationData);
-
-    // Evaluate the fcurves for both clip
-    const QVector<float> channelResultsClip1 = AnimationUtils::evaluateClipAtLocalTime(clip1, preEvaluationDataForClip1.localTime);
-    const QVector<float> channelResultsClip2 = AnimationUtils::evaluateClipAtLocalTime(clip2, preEvaluationDataForClip2.localTime);
-
-    // Update loops and running of the animator
-    m_currentLoop = std::min(m_currentLoop, std::min(preEvaluationDataForClip1.currentLoop, preEvaluationDataForClip2.currentLoop));
-    // isFinalFrame remains true only if all the clips have reached their final frame
-    m_isFinalFrame &= (preEvaluationDataForClip1.isFinalFrame && preEvaluationDataForClip2.isFinalFrame);
-
-    const QVector<AnimationUtils::BlendingMappingData> blendingMappingData = nodeData.mappingData;
-    // Perform blending between the two clips
-    const QVector<float> blendedValues = blendValuesBasedOnMappings(node, channelResultsClip1,
-                                                                    channelResultsClip2, blendingMappingData);
-
-    m_clipBlendResultsTable.insert(node, blendedValues);
-}
-
-void EvaluateBlendClipAnimatorJob::blendNodes(ClipBlendNode *node, const BlendedClipAnimator::BlendNodeData &nodeData)
-{
-    ClipBlendNode *node1 = m_handler->clipBlendNodeManager()->lookupNode(nodeData.left);
-    ClipBlendNode *node2 = m_handler->clipBlendNodeManager()->lookupNode(nodeData.right);
-    Q_ASSERT(node1 && node2);
-
-    // Retrieve results for the childNodes
-    const QVector<float> channelResultsNode1 = m_clipBlendResultsTable.take(node1);
-    const QVector<float> channelResultsNode2 = m_clipBlendResultsTable.take(node2);
-
-    // Build a combined vector of blended value
-    const QVector<AnimationUtils::BlendingMappingData> blendingMappingData = nodeData.mappingData;
-    // Perform blending between the two nodes
-    const QVector<float> blendedValues = blendValuesBasedOnMappings(node, channelResultsNode1,
-                                                                    channelResultsNode2, blendingMappingData);
-
-    m_clipBlendResultsTable.insert(node, blendedValues);
-}
-
 void EvaluateBlendClipAnimatorJob::run()
 {
-    const qint64 globalTime = m_handler->simulationTime();
-
+    // Find the set of clips that need to be evaluated by querying each node
+    // in the blend tree.
+    // TODO: We should be able to cache this for each blend animator and only
+    // update when a node indicates its dependencies have changed as a result
+    // of blend factors changing
     BlendedClipAnimator *blendedClipAnimator = m_handler->blendedClipAnimatorManager()->data(m_blendClipAnimatorHandle);
-    Q_ASSERT(blendedClipAnimator);
+    Qt3DCore::QNodeId blendTreeRootId = blendedClipAnimator->blendTreeRootId();
+    const QVector<Qt3DCore::QNodeId> valueNodeIdsToEvaluate = gatherValueNodesToEvaluate(m_handler, blendTreeRootId);
 
-    const AnimationUtils::AnimatorEvaluationData animatorEvaluationData = AnimationUtils::animatorEvaluationDataForAnimator(blendedClipAnimator, globalTime);
-    const QHash<Qt3DCore::QNodeId, BlendedClipAnimator::BlendNodeData> blendindNodeTable = blendedClipAnimator->blendTreeTable();
+    // Calculate the resulting duration of the blend tree based upon its current state
+    ClipBlendNodeManager *blendNodeManager = m_handler->clipBlendNodeManager();
+    ClipBlendNode *blendTreeRootNode = blendNodeManager->lookupNode(blendTreeRootId);
+    Q_ASSERT(blendTreeRootNode);
+    const double duration = blendTreeRootNode->duration();
 
-    // Reset globals
-    m_currentLoop = std::numeric_limits<int>::max();
-    m_isFinalFrame = true;
+    // Calculate the phase given the blend tree duration and global time
+    const qint64 globalTime = m_handler->simulationTime();
+    const AnimatorEvaluationData animatorData = evaluationDataForAnimator(blendedClipAnimator, globalTime);
+    int currentLoop = 0;
+    const double phase = phaseFromGlobalTime(animatorData.globalTime,
+                                             animatorData.startTime,
+                                             animatorData.playbackRate,
+                                             duration,
+                                             animatorData.loopCount,
+                                             currentLoop);
 
-    // Perform blending of the tree (Post-order traversal)
-    ClipBlendNodeVisitor visitor(m_handler->clipBlendNodeManager());
-    visitor.traverse(blendedClipAnimator->blendTreeRootId(), [&, this] (ClipBlendNode *blendNode) {
-        // Retrieve BlendingData for the not
-        const BlendedClipAnimator::BlendNodeData &nodeData = blendindNodeTable.value(blendNode->peerId());
+    // Iterate over the value nodes of the blend tree, evaluate the
+    // contained animation clips at the current phase and store the results
+    // in the animator indexed by node.
+    // TODO: Handle clips not loaded from file
+    AnimationClipLoaderManager *clipLoaderManager = m_handler->animationClipLoaderManager();
+    for (const auto valueNodeId : valueNodeIdsToEvaluate) {
+        ClipBlendValue *valueNode = static_cast<ClipBlendValue *>(blendNodeManager->lookupNode(valueNodeId));
+        Q_ASSERT(valueNode);
+        AnimationClipLoader *clip = clipLoaderManager->lookupResource(valueNode->clipId());
+        Q_ASSERT(clip);
 
-        switch (nodeData.type) {
-        case BlendedClipAnimator::BlendNodeData::BlendNodeType:
-            // Blend two ClipBlendNode
-            blendNodes(blendNode, nodeData);
-            break;
-        case BlendedClipAnimator::BlendNodeData::ClipType: // Leaf
-            // Blend two clips
-            blendClips(blendNode, nodeData, animatorEvaluationData);
-            break;
-        default:
-            Q_UNREACHABLE();
-            break;
-        }
-    });
+        ClipResults rawClipResults = evaluateClipAtPhase(clip, phase);
 
+        // Reformat the clip results into the layout used by this animator/blend tree
+        ComponentIndices format = valueNode->formatIndices(blendedClipAnimator->peerId());
+        ClipResults formattedClipResults = formatClipResults(rawClipResults, format);
+        valueNode->setClipResults(blendedClipAnimator->peerId(), formattedClipResults);
+    }
 
-    // Set current loop and running if need
-    if (m_isFinalFrame)
-        blendedClipAnimator->setRunning(false);
-    blendedClipAnimator->setCurrentLoop(m_currentLoop);
+    // Evaluate the blend tree
+    ClipResults blendedResults = evaluateBlendTree(m_handler, blendedClipAnimator, blendTreeRootId);
 
-    // Prepare property changes using the root node which should now be filled with correct values
-    ClipBlendNode *rootBlendNode = m_handler->clipBlendNodeManager()->lookupNode(blendedClipAnimator->blendTreeRootId());
-    Q_ASSERT(m_clipBlendResultsTable.size() == 1 && m_clipBlendResultsTable.contains(rootBlendNode));
+    const double localTime = phase * duration;
+    const bool finalFrame = isFinalFrame(localTime, duration, currentLoop, animatorData.loopCount);
 
-    const QVector<float> blendedValues = m_clipBlendResultsTable.take(rootBlendNode);
-    const BlendedClipAnimator::BlendNodeData &rootNodeData = blendindNodeTable.value(rootBlendNode->peerId());
-    const QVector<AnimationUtils::MappingData> mappingData = fromBlendingMappingData(rootNodeData.mappingData);
-
-    // Prepare property changes (if finalFrame it also prepares the change for the running property for the frontend)
-    const QVector<Qt3DCore::QSceneChangePtr> changes = AnimationUtils::preparePropertyChanges(blendedClipAnimator->peerId(),
-                                                                                              mappingData,
-                                                                                              blendedValues,
-                                                                                              m_isFinalFrame);
+    // Prepare the property change events
+    const QVector<MappingData> mappingData = blendedClipAnimator->mappingData();
+    const QVector<Qt3DCore::QSceneChangePtr> changes = preparePropertyChanges(blendedClipAnimator->peerId(),
+                                                                              mappingData,
+                                                                              blendedResults,
+                                                                              finalFrame);
     // Send the property changes
     blendedClipAnimator->sendPropertyChanges(changes);
 }

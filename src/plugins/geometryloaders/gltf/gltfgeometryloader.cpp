@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-Q_LOGGING_CATEGORY(GLTFGeometryLoaderLog, "Qt3D.GLTFGeometryLoader")
+Q_LOGGING_CATEGORY(GLTFGeometryLoaderLog, "Qt3D.GLTFGeometryLoader", QtWarningMsg)
 
 #define KEY_ACCESSORS    QLatin1String("accessors")
 #define KEY_ATTRIBUTES   QLatin1String("attributes")

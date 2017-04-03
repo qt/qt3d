@@ -52,7 +52,8 @@
 //
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <QScopedPointer>
+#include <QtCore/qobject.h>
+#include <QtCore/qscopedpointer.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,8 +61,9 @@ namespace Qt3DCore {
 
 class QAbstractServiceProviderPrivate;
 
-class QT3DCORESHARED_EXPORT QAbstractServiceProvider
+class QT3DCORESHARED_EXPORT QAbstractServiceProvider : public QObject
 {
+    Q_OBJECT
 public:
     virtual ~QAbstractServiceProvider();
 
@@ -69,9 +71,8 @@ public:
     QString description() const;
 
 protected:
-    QAbstractServiceProvider(int type, const QString &description);
-    QAbstractServiceProvider(QAbstractServiceProviderPrivate &dd);
-    QScopedPointer<QAbstractServiceProviderPrivate> d_ptr;
+    explicit QAbstractServiceProvider(int type, const QString &description, QObject* parent = nullptr);
+    explicit QAbstractServiceProvider(QAbstractServiceProviderPrivate &dd, QObject* parent = nullptr);
 
 private:
     Q_DISABLE_COPY(QAbstractServiceProvider)

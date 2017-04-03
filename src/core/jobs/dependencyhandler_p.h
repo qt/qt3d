@@ -51,10 +51,10 @@
 // We mean it.
 //
 
-#include "task_p.h"
-
 #include <QtCore/QMutex>
 #include <QtCore/QVector>
+
+#include <Qt3DCore/private/task_p.h>
 
 QT_BEGIN_NAMESPACE
 

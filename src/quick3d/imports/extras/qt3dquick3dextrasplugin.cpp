@@ -38,15 +38,22 @@
 ****************************************************************************/
 
 #include "qt3dquick3dextrasplugin.h"
-#include <Qt3DExtras/qcuboidmesh.h>
+
+#include <Qt3DExtras/qconegeometry.h>
 #include <Qt3DExtras/qconemesh.h>
+#include <Qt3DExtras/qcuboidgeometry.h>
+#include <Qt3DExtras/qcuboidmesh.h>
+#include <Qt3DExtras/qcylindergeometry.h>
 #include <Qt3DExtras/qcylindermesh.h>
 #include <Qt3DExtras/qdiffusemapmaterial.h>
 #include <Qt3DExtras/qdiffusespecularmapmaterial.h>
+#include <Qt3DExtras/qextrudedtextgeometry.h>
+#include <Qt3DExtras/qextrudedtextmesh.h>
 #include <Qt3DExtras/qfirstpersoncameracontroller.h>
 #include <Qt3DExtras/qforwardrenderer.h>
 #include <Qt3DExtras/qgoochmaterial.h>
 #include <Qt3DExtras/qmetalroughmaterial.h>
+#include <Qt3DExtras/qmorphphongmaterial.h>
 #include <Qt3DExtras/qnormaldiffusemapalphamaterial.h>
 #include <Qt3DExtras/qnormaldiffusemapmaterial.h>
 #include <Qt3DExtras/qnormaldiffusespecularmapmaterial.h>
@@ -54,22 +61,17 @@
 #include <Qt3DExtras/qpervertexcolormaterial.h>
 #include <Qt3DExtras/qphongalphamaterial.h>
 #include <Qt3DExtras/qphongmaterial.h>
+#include <Qt3DExtras/qplanegeometry.h>
 #include <Qt3DExtras/qplanemesh.h>
 #include <Qt3DExtras/qskyboxentity.h>
-#include <Qt3DExtras/qspheremesh.h>
-#include <Qt3DExtras/qtexturematerial.h>
-#include <Qt3DExtras/qtexturedmetalroughmaterial.h>
-#include <Qt3DExtras/qtorusmesh.h>
-#include <Qt3DExtras/qtorusgeometry.h>
 #include <Qt3DExtras/qspheregeometry.h>
-#include <Qt3DExtras/qcuboidgeometry.h>
-#include <Qt3DExtras/qplanegeometry.h>
-#include <Qt3DExtras/qconegeometry.h>
-#include <Qt3DExtras/qcylindergeometry.h>
-#include <Qt3DExtras/qextrudedtextgeometry.h>
-#include <Qt3DExtras/qextrudedtextmesh.h>
+#include <Qt3DExtras/qspheremesh.h>
 #include <Qt3DExtras/qtext2dentity.h>
-#include <Qt3DExtras/qmorphphongmaterial.h>
+#include <Qt3DExtras/qtexturedmetalroughmaterial.h>
+#include <Qt3DExtras/qtexturematerial.h>
+#include <Qt3DExtras/qtorusgeometry.h>
+#include <Qt3DExtras/qtorusmesh.h>
+
 #include <Qt3DQuickExtras/private/quick3dlevelofdetailloader_p.h>
 
 #include <QtQml/qqml.h>

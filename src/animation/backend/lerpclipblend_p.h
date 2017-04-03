@@ -72,7 +72,21 @@ public:
     void setEndClipId(Qt3DCore::QNodeId endClipId) { m_endClipId = endClipId; }  // For unit tests
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
-    float blend(float value1, float value2) const Q_DECL_FINAL;
+
+    inline QVector<Qt3DCore::QNodeId> allDependencyIds() const Q_DECL_OVERRIDE
+    {
+        return currentDependencyIds();
+    }
+
+    inline QVector<Qt3DCore::QNodeId> currentDependencyIds() const Q_DECL_OVERRIDE
+    {
+        return { m_startClipId, m_endClipId };
+    }
+
+    double duration() const Q_DECL_OVERRIDE;
+
+protected:
+    ClipResults doBlend(const QVector<ClipResults> &blendData) const Q_DECL_FINAL;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;

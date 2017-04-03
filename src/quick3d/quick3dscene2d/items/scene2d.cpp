@@ -35,10 +35,14 @@
 ****************************************************************************/
 
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 #include <Qt3DQuickScene2D/qscene2d.h>
+#include <Qt3DRender/qpicktriangleevent.h>
 
 #include <QtCore/qthread.h>
 #include <QtCore/qatomic.h>
+#include <QtGui/qevent.h>
 
 #include <private/qscene2d_p.h>
 #include <private/scene2d_p.h>
@@ -50,6 +54,10 @@
 #include <private/resourceaccessor_p.h>
 #include <private/attachmentpack_p.h>
 #include <private/qt3dquickscene2d_logging_p.h>
+#include <private/qbackendnode_p.h>
+#include <private/qpickevent_p.h>
+#include <private/entity_p.h>
+#include <private/platformsurfacefilter_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -77,7 +85,7 @@ RenderQmlEventHandler::RenderQmlEventHandler(Scene2D *node)
 // Event handler for the RenderQmlToTexture::renderThread
 bool RenderQmlEventHandler::event(QEvent *e)
 {
-    switch (e->type()) {
+    switch (static_cast<Scene2DEvent::Type>(e->type())) {
 
     case Scene2DEvent::Render: {
         m_node->render();
@@ -101,7 +109,8 @@ bool RenderQmlEventHandler::event(QEvent *e)
 }
 
 Scene2D::Scene2D()
-    : m_context(nullptr)
+    : Qt3DRender::Render::BackendNode(Qt3DCore::QBackendNode::ReadWrite)
+    , m_context(nullptr)
     , m_shareContext(nullptr)
     , m_renderThread(nullptr)
     , m_sharedObject(nullptr)
@@ -133,6 +142,12 @@ void Scene2D::initializeSharedObject()
 {
     if (!m_initialized) {
 
+        // bail out if we're running autotests
+        if (!m_sharedObject->m_renderManager
+                || m_sharedObject->m_renderManager->thread() == QThread::currentThread()) {
+            return;
+        }
+
         renderThread->setObjectName(QStringLiteral("Scene2D::renderThread"));
         m_renderThread = renderThread;
         m_sharedObject->m_renderThread = m_renderThread;
@@ -144,10 +159,8 @@ void Scene2D::initializeSharedObject()
             m_sharedObject->m_renderThread->start();
 
         // Notify main thread we have been initialized
-        if (m_sharedObject->m_renderManager) {
-            QCoreApplication::postEvent(m_sharedObject->m_renderManager,
-                                        new Scene2DEvent(Scene2DEvent::Initialized));
-        }
+        QCoreApplication::postEvent(m_sharedObject->m_renderManager,
+                                    new Scene2DEvent(Scene2DEvent::Initialized));
         // Initialize render thread
         QCoreApplication::postEvent(m_sharedObject->m_renderObject,
                                     new Scene2DEvent(Scene2DEvent::Initialize));
@@ -163,11 +176,15 @@ void Scene2D::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chan
     m_renderPolicy = data.renderPolicy;
     setSharedObject(data.sharedObject);
     setOutput(data.output);
+    m_entities = data.entityIds;
 }
 
 void Scene2D::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    if (e->type() == Qt3DCore::PropertyUpdated) {
+    switch (e->type()) {
+
+    case Qt3DCore::PropertyUpdated: {
+
         Qt3DCore::QPropertyUpdatedChangePtr propertyChange
                 = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("renderPolicy")) {
@@ -179,7 +196,50 @@ void Scene2D::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             const Scene2DSharedObjectPtr sharedObject
                     = propertyChange->value().value<Scene2DSharedObjectPtr>();
             setSharedObject(sharedObject);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("pressed")) {
+            QPickEventPtr ev = propertyChange->value().value<QPickEventPtr>();
+            handlePickEvent(QEvent::MouseButtonPress, ev);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("released")) {
+            QPickEventPtr ev = propertyChange->value().value<QPickEventPtr>();
+            handlePickEvent(QEvent::MouseButtonRelease, ev);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("clicked")) {
+            QPickEventPtr ev = propertyChange->value().value<QPickEventPtr>();
+            handlePickEvent(QEvent::MouseButtonDblClick, ev);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("moved")) {
+            QPickEventPtr ev = propertyChange->value().value<QPickEventPtr>();
+            handlePickEvent(QEvent::MouseMove, ev);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("grabMouse")) {
+            if (propertyChange->value().toBool()) {
+                startGrabbing();
+            } else {
+                stopGrabbing();
+            }
         }
+        /* TODO: handle these?
+          else if (propertyChange->propertyName() == QByteArrayLiteral("entered")) {
+
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("exited")) {
+
+        }*/
+        break;
+    }
+
+    case Qt3DCore::PropertyValueAdded: {
+        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeAddedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("entities"))
+            m_entities.push_back(change->addedNodeId());
+        break;
+    }
+
+    case Qt3DCore::PropertyValueRemoved: {
+        const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeRemovedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("entities"))
+            m_entities.removeOne(change->removedNodeId());
+        break;
+    }
+
+    default:
+        break;
     }
     BackendNode::sceneChangeEvent(e);
 }
@@ -271,10 +331,15 @@ void Scene2D::render()
         const Qt3DRender::Render::Attachment *attachmentData = nullptr;
         QMutex *textureLock = nullptr;
 
+#ifdef QT_OPENGL_ES_2_ANGLE
+        SurfaceLocker surfaceLocker(m_sharedObject->m_surface);
+#endif
         m_context->makeCurrent(m_sharedObject->m_surface);
 
-        if (resourceAccessor()->accessResource(m_outputId, (void**)&attachmentData, nullptr)) {
-            if (!resourceAccessor()->accessResource(attachmentData->m_textureUuid,
+        if (resourceAccessor()->accessResource(RenderBackendResourceAccessor::OutputAttachment,
+                                               m_outputId, (void**)&attachmentData, nullptr)) {
+            if (!resourceAccessor()->accessResource(RenderBackendResourceAccessor::OGLTexture,
+                                                    attachmentData->m_textureUuid,
                                                        (void**)&texture, &textureLock)) {
                 // Need to call sync even if the texture is not in use
                 syncRenderControl();
@@ -367,6 +432,83 @@ void Scene2D::cleanup()
     renderThreadClientCount->fetchAndSubAcquire(1);
     if (renderThreadClientCount->load() == 0)
         renderThread->quit();
+}
+
+
+bool Scene2D::registerObjectPickerEvents(Qt3DCore::QNodeId entityId)
+{
+    Entity *entity = nullptr;
+    if (!resourceAccessor()->accessResource(RenderBackendResourceAccessor::EntityHandle,
+                                            entityId, (void**)&entity, nullptr)) {
+        return false;
+    }
+    if (!entity->containsComponentsOfType<ObjectPicker>() ||
+        !entity->containsComponentsOfType<GeometryRenderer>()) {
+        qCWarning(Qt3DRender::Quick::Scene2D) << Q_FUNC_INFO
+            << "Entity does not contain required components: ObjectPicker and GeometryRenderer";
+        return false;
+    }
+    Qt3DCore::QBackendNodePrivate *priv = Qt3DCore::QBackendNodePrivate::get(this);
+    Qt3DCore::QChangeArbiter *arbiter = static_cast<Qt3DCore::QChangeArbiter*>(priv->m_arbiter);
+    arbiter->registerObserver(d_ptr, entity->componentUuid<ObjectPicker>());
+    return true;
+}
+
+void Scene2D::unregisterObjectPickerEvents(Qt3DCore::QNodeId entityId)
+{
+    Entity *entity = nullptr;
+    if (!resourceAccessor()->accessResource(RenderBackendResourceAccessor::EntityHandle,
+                                            entityId, (void**)&entity, nullptr)) {
+        return;
+    }
+    Qt3DCore::QBackendNodePrivate *priv = Qt3DCore::QBackendNodePrivate::get(this);
+    Qt3DCore::QChangeArbiter *arbiter = static_cast<Qt3DCore::QChangeArbiter*>(priv->m_arbiter);
+    arbiter->unregisterObserver(d_ptr, entity->componentUuid<ObjectPicker>());
+}
+
+void Scene2D::handlePickEvent(int type, const Qt3DRender::QPickEventPtr &ev)
+{
+    QPickTriangleEvent *pickTriangle = static_cast<QPickTriangleEvent *>(ev.data());
+    Entity *entity = nullptr;
+    if (!resourceAccessor()->accessResource(RenderBackendResourceAccessor::EntityHandle,
+                                            QPickEventPrivate::get(pickTriangle)->m_entity,
+                                            (void**)&entity, nullptr)) {
+        return;
+    }
+    CoordinateReader reader(renderer()->nodeManagers());
+    if (reader.setGeometry(entity->renderComponent<GeometryRenderer>(),
+                           QAttribute::defaultTextureCoordinateAttributeName())) {
+        QVector4D c0 = reader.getCoordinate(pickTriangle->vertex1Index());
+        QVector4D c1 = reader.getCoordinate(pickTriangle->vertex2Index());
+        QVector4D c2 = reader.getCoordinate(pickTriangle->vertex3Index());
+        QVector4D ci = c0 * pickTriangle->uvw().x()
+                       + c1 * pickTriangle->uvw().y() + c2 * pickTriangle->uvw().z();
+        ci.setW(1.0f);
+
+        const QSize size = m_sharedObject->m_quickWindow->size();
+        QPointF pos = QPointF(ci.x() * size.width(), ci.y() * size.height());
+        QMouseEvent *mouseEvent
+                = new QMouseEvent(static_cast<QEvent::Type>(type),
+                                  pos, pos, pos,
+                                  static_cast<Qt::MouseButton>(pickTriangle->button()),
+                                  static_cast<Qt::MouseButtons>(pickTriangle->buttons()),
+                                  static_cast<Qt::KeyboardModifiers>(pickTriangle->modifiers()),
+                                  Qt::MouseEventSynthesizedByApplication);
+
+        QCoreApplication::postEvent(m_sharedObject->m_quickWindow, mouseEvent);
+    }
+}
+
+void Scene2D::startGrabbing()
+{
+    for (Qt3DCore::QNodeId e : m_entities)
+        registerObjectPickerEvents(e);
+}
+
+void Scene2D::stopGrabbing()
+{
+    for (Qt3DCore::QNodeId e : m_entities)
+        unregisterObjectPickerEvents(e);
 }
 
 } // namespace Quick

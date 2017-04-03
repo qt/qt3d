@@ -78,14 +78,6 @@ protected:
 private:
     HBlendedClipAnimator m_blendClipAnimatorHandle;
     Handler *m_handler;
-
-    void blendClips(ClipBlendNode *node, const BlendedClipAnimator::BlendNodeData &nodeData,
-                    const AnimationUtils::AnimatorEvaluationData &animatorEvaluationData);
-    void blendNodes(ClipBlendNode *node, const BlendedClipAnimator::BlendNodeData &nodeData);
-
-    QHash<ClipBlendNode *, QVector<float>> m_clipBlendResultsTable;
-    int m_currentLoop;
-    bool m_isFinalFrame;
 };
 
 typedef QSharedPointer<EvaluateBlendClipAnimatorJob> EvaluateBlendClipAnimatorJobPtr;

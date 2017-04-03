@@ -46,6 +46,7 @@ private Q_SLOTS:
     void topLevelTextureValueNoUniforms();
     void topLevelTextureValue();
     void topLevelArrayValue();
+    void nestedShaderDataValue();
     void topLevelStructValue_data();
     void topLevelStructValue();
     void topLevelDynamicProperties();
@@ -85,8 +86,8 @@ class ScalarShaderData : public Qt3DRender::QShaderData
     Q_PROPERTY(float scalar READ scalar WRITE setScalar NOTIFY scalarChanged)
 
 public:
-    ScalarShaderData()
-        : Qt3DRender::QShaderData()
+    ScalarShaderData(Qt3DCore::QNode *parent = nullptr)
+        : Qt3DRender::QShaderData(parent)
         , m_scalar(0.0f)
     {
     }
@@ -517,6 +518,73 @@ void tst_RenderViewUtils::topLevelArrayValue()
         // THEN
         QVERIFY(blockBuilder.uniforms.contains(Qt3DRender::Render::StringToInt::lookupString(it.key())));
         QCOMPARE(it.value(), QVariant(arrayValues));
+        ++it;
+    }
+}
+
+void tst_RenderViewUtils::nestedShaderDataValue()
+{
+    // GIVEN
+    QScopedPointer<ArrayShaderData> arrayShaderData(new ArrayShaderData());
+    QScopedPointer<Qt3DRender::Render::ShaderDataManager> manager(new Qt3DRender::Render::ShaderDataManager());
+    QScopedPointer<Qt3DRender::Render::TextureManager> textureManager(new Qt3DRender::Render::TextureManager());
+
+    QScopedPointer<ScalarShaderData> shaderData1(new ScalarShaderData(arrayShaderData.data()));
+    QScopedPointer<ScalarShaderData> shaderData2(new ScalarShaderData(arrayShaderData.data()));
+    QScopedPointer<ScalarShaderData> shaderData3(new ScalarShaderData(arrayShaderData.data()));
+
+    shaderData1->setScalar(883.0f);
+    shaderData2->setScalar(1200.0f);
+    shaderData3->setScalar(1340.0f);
+    QHash<QString, QVariant> scalarValues;
+    scalarValues[QStringLiteral("MyBlock.array[0].scalar")] = shaderData1->scalar();
+    scalarValues[QStringLiteral("MyBlock.array[1].scalar")] = shaderData2->scalar();
+    scalarValues[QStringLiteral("MyBlock.array[2].scalar")] = shaderData3->scalar();
+
+
+    const Qt3DCore::QNodeId id1 = shaderData1->id();
+    const Qt3DCore::QNodeId id2 = shaderData2->id();
+    const Qt3DCore::QNodeId id3 = shaderData3->id();
+
+    // WHEN
+    const QVariantList arrayValues = QVariantList() << QVariant::fromValue(id1) << QVariant::fromValue(id2) << QVariant::fromValue(id3);
+    arrayShaderData->setArray(arrayValues);
+    initBackendShaderData(arrayShaderData.data(), manager.data());
+
+    // THEN
+    Qt3DRender::Render::ShaderData *backendArrayShaderData = manager->lookupResource(arrayShaderData->id());
+    Qt3DRender::Render::ShaderData *backendShaderData1 = manager->lookupResource(id1);
+    Qt3DRender::Render::ShaderData *backendShaderData2 = manager->lookupResource(id2);
+    Qt3DRender::Render::ShaderData *backendShaderData3 = manager->lookupResource(id3);
+    QVERIFY(backendArrayShaderData != nullptr);
+    QVERIFY(backendShaderData1 != nullptr);
+    QVERIFY(backendShaderData2 != nullptr);
+    QVERIFY(backendShaderData3 != nullptr);
+
+    // WHEN
+    Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
+    blockBuilder.shaderDataManager = manager.data();
+    blockBuilder.textureManager = textureManager.data();
+    blockBuilder.updatedPropertiesOnly = false;
+    blockBuilder.uniforms.insert(QStringLiteral("MyBlock.array[0].scalar"), Qt3DRender::Render::ShaderUniform());
+    blockBuilder.uniforms.insert(QStringLiteral("MyBlock.array[1].scalar"), Qt3DRender::Render::ShaderUniform());
+    blockBuilder.uniforms.insert(QStringLiteral("MyBlock.array[2].scalar"), Qt3DRender::Render::ShaderUniform());
+    // build name-value map
+    blockBuilder.buildActiveUniformNameValueMapStructHelper(backendArrayShaderData, QStringLiteral("MyBlock"));
+
+    // THEN
+    QVERIFY(blockBuilder.uniforms.count() == 3);
+    QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), 3);
+
+    // WHEN
+    auto it = blockBuilder.uniforms.cbegin();
+    const auto end = blockBuilder.uniforms.cend();
+
+    while (it != end) {
+        // THEN
+        const int nameId = Qt3DRender::Render::StringToInt::lookupId(it.key());
+        QVERIFY(blockBuilder.activeUniformNamesToValue.contains(nameId));
+        QCOMPARE(blockBuilder.activeUniformNamesToValue[nameId], scalarValues.value(it.key()));
         ++it;
     }
 }

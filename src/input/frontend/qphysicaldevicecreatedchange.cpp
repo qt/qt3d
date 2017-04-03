@@ -36,9 +36,11 @@
 
 #include "qphysicaldevicecreatedchange.h"
 #include "qphysicaldevicecreatedchange_p.h"
+
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/qaxissetting.h>
 #include <Qt3DCore/qnodeid.h>
+
 
 QT_BEGIN_NAMESPACE
 

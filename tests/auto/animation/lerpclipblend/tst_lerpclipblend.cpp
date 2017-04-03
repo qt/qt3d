@@ -35,22 +35,96 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 
+using namespace Qt3DAnimation::Animation;
+
+Q_DECLARE_METATYPE(Handler *)
+Q_DECLARE_METATYPE(LerpClipBlend *)
+
+namespace {
+
+class TestClipBlendNode : public ClipBlendNode
+{
+public:
+    TestClipBlendNode(double duration)
+        : ClipBlendNode(ClipBlendNode::LerpBlendType)
+        , m_duration(duration)
+    {}
+
+    inline QVector<Qt3DCore::QNodeId> allDependencyIds() const Q_DECL_OVERRIDE
+    {
+        return currentDependencyIds();
+    }
+
+    QVector<Qt3DCore::QNodeId> currentDependencyIds() const Q_DECL_FINAL
+    {
+        return QVector<Qt3DCore::QNodeId>();
+    }
+
+    using ClipBlendNode::setClipResults;
+
+    double duration() const Q_DECL_FINAL { return m_duration; }
+
+protected:
+    ClipResults doBlend(const QVector<ClipResults> &) const Q_DECL_FINAL { return ClipResults(); }
+
+private:
+    double m_duration;
+};
+
+} // anonymous
+
 class tst_LerpClipBlend : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
+public:
+    TestClipBlendNode *createTestBlendNode(Handler *handler,
+                                           double duration)
+    {
+        auto id = Qt3DCore::QNodeId::createId();
+        TestClipBlendNode *node = new TestClipBlendNode(duration);
+        setPeerId(node, id);
+        node->setHandler(handler);
+        node->setClipBlendNodeManager(handler->clipBlendNodeManager());
+        handler->clipBlendNodeManager()->appendNode(id, node);
+        return node;
+    }
+
+    LerpClipBlend *createLerpClipBlendNode(Handler *handler, const float &blendFactor)
+    {
+        auto id = Qt3DCore::QNodeId::createId();
+        LerpClipBlend *node = new LerpClipBlend();
+        node->setBlendFactor(blendFactor);
+        setPeerId(node, id);
+        node->setHandler(handler);
+        node->setClipBlendNodeManager(handler->clipBlendNodeManager());
+        handler->clipBlendNodeManager()->appendNode(id, node);
+        return node;
+    }
+
+    BlendedClipAnimator *createBlendedClipAnimator(Handler *handler,
+                                                   qint64 globalStartTimeNS,
+                                                   int loops)
+    {
+        auto animatorId = Qt3DCore::QNodeId::createId();
+        BlendedClipAnimator *animator = handler->blendedClipAnimatorManager()->getOrCreateResource(animatorId);
+        setPeerId(animator, animatorId);
+        animator->setStartTime(globalStartTimeNS);
+        animator->setLoops(loops);
+        return animator;
+    }
 
 private Q_SLOTS:
 
     void checkInitialState()
     {
         // GIVEN
-        Qt3DAnimation::Animation::LerpClipBlend backendLerpBlend;
+        LerpClipBlend backendLerpBlend;
 
         // THEN
         QCOMPARE(backendLerpBlend.isEnabled(), false);
         QVERIFY(backendLerpBlend.peerId().isNull());
         QCOMPARE(backendLerpBlend.blendFactor(), 0.0f);
-        QCOMPARE(backendLerpBlend.blendType(), Qt3DAnimation::Animation::ClipBlendNode::LerpBlendType);
+        QCOMPARE(backendLerpBlend.blendType(), ClipBlendNode::LerpBlendType);
     }
 
     void checkInitializeFromPeer()
@@ -59,23 +133,20 @@ private Q_SLOTS:
         Qt3DAnimation::QLerpClipBlend lerpBlend;
         Qt3DAnimation::QAnimationClipLoader clip;
         lerpBlend.setBlendFactor(0.8f);
-        lerpBlend.addClip(&clip);
 
         {
             // WHEN
-            Qt3DAnimation::Animation::LerpClipBlend backendLerpBlend;
+            LerpClipBlend backendLerpBlend;
             simulateInitialization(&lerpBlend, &backendLerpBlend);
 
             // THEN
             QCOMPARE(backendLerpBlend.isEnabled(), true);
             QCOMPARE(backendLerpBlend.peerId(), lerpBlend.id());
             QCOMPARE(backendLerpBlend.blendFactor(), 0.8f);
-            QCOMPARE(backendLerpBlend.clipIds().size(), 1);
-            QCOMPARE(backendLerpBlend.clipIds().first(), clip.id());
         }
         {
             // WHEN
-            Qt3DAnimation::Animation::LerpClipBlend backendLerpBlend;
+            LerpClipBlend backendLerpBlend;
             lerpBlend.setEnabled(false);
             simulateInitialization(&lerpBlend, &backendLerpBlend);
 
@@ -88,7 +159,7 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
-        Qt3DAnimation::Animation::LerpClipBlend backendLerpBlend;
+        LerpClipBlend backendLerpBlend;
         {
              // WHEN
              const bool newValue = false;
@@ -113,35 +184,220 @@ private Q_SLOTS:
         }
     }
 
-    void checkBlend_data()
-    {
-        QTest::addColumn<float>("value1");
-        QTest::addColumn<float>("value2");
-        QTest::addColumn<float>("blendFactor");
-        QTest::addColumn<float>("result");
-
-        QTest::newRow("0_blending") << 8.0f << 5.0f << 0.0f << 8.0f;
-        QTest::newRow("0.5_blending") << 8.0f << 5.0f << 0.5f << 6.5f;
-        QTest::newRow("1_blending") << 8.0f << 5.0f << 1.0f << 5.0f;
-    }
-
-    void checkBlend()
+    void checkDependencyIds()
     {
         // GIVEN
-        QFETCH(float, value1);
-        QFETCH(float, value2);
-        QFETCH(float, blendFactor);
-        QFETCH(float, result);
-        Qt3DAnimation::Animation::LerpClipBlend lerpBlend;
+        LerpClipBlend lerpBlend;
+        auto startClipId = Qt3DCore::QNodeId::createId();
+        auto endClipId = Qt3DCore::QNodeId::createId();
 
         // WHEN
-        lerpBlend.setBlendFactor(blendFactor);
-        const float computed = lerpBlend.blend(value1, value2);
+        lerpBlend.setStartClipId(startClipId);
+        lerpBlend.setEndClipId(endClipId);
+        QVector<Qt3DCore::QNodeId> actualIds = lerpBlend.currentDependencyIds();
 
         // THEN
-        QCOMPARE(computed, result);
+        QCOMPARE(actualIds.size(), 2);
+        QCOMPARE(actualIds[0], startClipId);
+        QCOMPARE(actualIds[1], endClipId);
+
+        // WHEN
+        auto anotherEndClipId = Qt3DCore::QNodeId::createId();
+        lerpBlend.setEndClipId(anotherEndClipId);
+        actualIds = lerpBlend.currentDependencyIds();
+
+        // THEN
+        QCOMPARE(actualIds.size(), 2);
+        QCOMPARE(actualIds[0], startClipId);
+        QCOMPARE(actualIds[1], anotherEndClipId);
     }
 
+    void checkDuration()
+    {
+        // GIVEN
+        auto handler = new Handler();
+        const double startNodeDuration = 10.0;
+        const double endNodeDuration = 20.0;
+        const float blendFactor = 0.25f;
+        const double expectedDuration = 12.5;
+
+        auto startNode = createTestBlendNode(handler, startNodeDuration);
+        auto endNode = createTestBlendNode(handler, endNodeDuration);
+
+        LerpClipBlend blendNode;
+        blendNode.setHandler(handler);
+        blendNode.setClipBlendNodeManager(handler->clipBlendNodeManager());
+        blendNode.setStartClipId(startNode->peerId());
+        blendNode.setEndClipId(endNode->peerId());
+        blendNode.setBlendFactor(blendFactor);
+
+        // WHEN
+        double actualDuration = blendNode.duration();
+
+        // THEN
+        QCOMPARE(actualDuration, expectedDuration);
+    }
+
+    void checkDoBlend_data()
+    {
+        QTest::addColumn<Handler *>("handler");
+        QTest::addColumn<LerpClipBlend *>("blendNode");
+        QTest::addColumn<Qt3DCore::QNodeId>("animatorId");
+        QTest::addColumn<ClipResults>("expectedResults");
+
+        {
+            auto handler = new Handler();
+
+            const qint64 globalStartTimeNS = 0;
+            const int loopCount = 1;
+            auto animator = createBlendedClipAnimator(handler, globalStartTimeNS, loopCount);
+
+            const double duration = 1.0;
+            auto startNode = createTestBlendNode(handler, duration);
+            startNode->setClipResults(animator->peerId(), { 0.0f, 0.0f, 0.0f });
+            auto endNode = createTestBlendNode(handler, duration);
+            endNode->setClipResults(animator->peerId(), { 1.0f, 1.0f, 1.0f });
+
+            const float blendFactor = 0.0f;
+            auto blendNode = createLerpClipBlendNode(handler, blendFactor);
+            blendNode->setStartClipId(startNode->peerId());
+            blendNode->setEndClipId(endNode->peerId());
+            blendNode->setBlendFactor(blendFactor);
+
+            ClipResults expectedResults = { 0.0f, 0.0f, 0.0f };
+
+            QTest::addRow("unit lerp, beta = 0.0")
+                    << handler << blendNode << animator->peerId() << expectedResults;
+        }
+
+        {
+            auto handler = new Handler();
+
+            const qint64 globalStartTimeNS = 0;
+            const int loopCount = 1;
+            auto animator = createBlendedClipAnimator(handler, globalStartTimeNS, loopCount);
+
+            const double duration = 1.0;
+            auto startNode = createTestBlendNode(handler, duration);
+            startNode->setClipResults(animator->peerId(), { 0.0f, 0.0f, 0.0f });
+            auto endNode = createTestBlendNode(handler, duration);
+            endNode->setClipResults(animator->peerId(), { 1.0f, 1.0f, 1.0f });
+
+            const float blendFactor = 0.5f;
+            auto blendNode = createLerpClipBlendNode(handler, blendFactor);
+            blendNode->setStartClipId(startNode->peerId());
+            blendNode->setEndClipId(endNode->peerId());
+            blendNode->setBlendFactor(blendFactor);
+
+            ClipResults expectedResults = { 0.5f, 0.5f, 0.5f };
+
+            QTest::addRow("unit lerp, beta = 0.5")
+                    << handler << blendNode << animator->peerId() << expectedResults;
+        }
+
+        {
+            auto handler = new Handler();
+
+            const qint64 globalStartTimeNS = 0;
+            const int loopCount = 1;
+            auto animator = createBlendedClipAnimator(handler, globalStartTimeNS, loopCount);
+
+            const double duration = 1.0;
+            auto startNode = createTestBlendNode(handler, duration);
+            startNode->setClipResults(animator->peerId(), { 0.0f, 0.0f, 0.0f });
+            auto endNode = createTestBlendNode(handler, duration);
+            endNode->setClipResults(animator->peerId(), { 1.0f, 1.0f, 1.0f });
+
+            const float blendFactor = 1.0f;
+            auto blendNode = createLerpClipBlendNode(handler, blendFactor);
+            blendNode->setStartClipId(startNode->peerId());
+            blendNode->setEndClipId(endNode->peerId());
+            blendNode->setBlendFactor(blendFactor);
+
+            ClipResults expectedResults = { 1.0f, 1.0f, 1.0f };
+
+            QTest::addRow("unit lerp, beta = 1.0")
+                    << handler << blendNode << animator->peerId() << expectedResults;
+        }
+
+        {
+            auto handler = new Handler();
+
+            const qint64 globalStartTimeNS = 0;
+            const int loopCount = 1;
+            auto animator = createBlendedClipAnimator(handler, globalStartTimeNS, loopCount);
+
+            const double duration = 1.0;
+            auto startNode = createTestBlendNode(handler, duration);
+            startNode->setClipResults(animator->peerId(), { 0.0f, 1.0f, 2.0f });
+            auto endNode = createTestBlendNode(handler, duration);
+            endNode->setClipResults(animator->peerId(), { 1.0f, 2.0f, 3.0f });
+
+            const float blendFactor = 0.5f;
+            auto blendNode = createLerpClipBlendNode(handler, blendFactor);
+            blendNode->setStartClipId(startNode->peerId());
+            blendNode->setEndClipId(endNode->peerId());
+            blendNode->setBlendFactor(blendFactor);
+
+            ClipResults expectedResults = { 0.5f, 1.5f, 2.5f };
+
+            QTest::addRow("lerp varying data, beta = 0.5")
+                    << handler << blendNode << animator->peerId() << expectedResults;
+        }
+
+        {
+            auto handler = new Handler();
+
+            const qint64 globalStartTimeNS = 0;
+            const int loopCount = 1;
+            auto animator = createBlendedClipAnimator(handler, globalStartTimeNS, loopCount);
+
+            const double duration = 1.0;
+            const int dataCount = 1000;
+            ClipResults startData(dataCount);
+            ClipResults endData(dataCount);
+            ClipResults expectedResults(dataCount);
+            for (int i = 0; i < dataCount; ++i) {
+                startData[i] = float(i);
+                endData[i] = 2.0f * float(i);
+                expectedResults[i] = 1.5f * float(i);
+            }
+            auto startNode = createTestBlendNode(handler, duration);
+            startNode->setClipResults(animator->peerId(), startData);
+            auto endNode = createTestBlendNode(handler, duration);
+            endNode->setClipResults(animator->peerId(), endData);
+
+            const float blendFactor = 0.5f;
+            auto blendNode = createLerpClipBlendNode(handler, blendFactor);
+            blendNode->setStartClipId(startNode->peerId());
+            blendNode->setEndClipId(endNode->peerId());
+            blendNode->setBlendFactor(blendFactor);
+
+            QTest::addRow("lerp lots of data, beta = 0.5")
+                    << handler << blendNode << animator->peerId() << expectedResults;
+        }
+    }
+
+    void checkDoBlend()
+    {
+        // GIVEN
+        QFETCH(Handler *, handler);
+        QFETCH(LerpClipBlend *, blendNode);
+        QFETCH(Qt3DCore::QNodeId, animatorId);
+        QFETCH(ClipResults, expectedResults);
+
+        // WHEN
+        blendNode->blend(animatorId);
+
+        // THEN
+        const ClipResults actualResults = blendNode->clipResults(animatorId);
+        QCOMPARE(actualResults.size(), expectedResults.size());
+        for (int i = 0; i < actualResults.size(); ++i)
+            QCOMPARE(actualResults[i], expectedResults[i]);
+
+        // Cleanup
+        delete handler;
+    }
 };
 
 QTEST_MAIN(tst_LerpClipBlend)

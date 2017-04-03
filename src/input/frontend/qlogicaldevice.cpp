@@ -39,12 +39,13 @@
 
 #include "qlogicaldevice.h"
 #include "qlogicaldevice_p.h"
-#include <Qt3DInput/qaction.h>
-#include <Qt3DInput/qaxis.h>
+
 #include <Qt3DCore/qnodecreatedchange.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DInput/qaction.h>
+#include <Qt3DInput/qaxis.h>
 
 QT_BEGIN_NAMESPACE
 

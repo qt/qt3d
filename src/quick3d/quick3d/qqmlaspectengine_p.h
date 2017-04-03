@@ -53,8 +53,9 @@
 
 #include <Qt3DQuick/qt3dquick_global.h>
 #include <Qt3DQuick/qqmlaspectengine.h>
-#include <private/qobject_p.h>
-#include <QScopedPointer>
+#include <QtCore/QScopedPointer>
+
+#include <QtCore/private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
 

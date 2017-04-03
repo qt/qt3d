@@ -39,16 +39,20 @@
 
 #include "assimpimporter.h"
 
-#include <Qt3DCore/private/qabstractnodefactory_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DRender/qcameralens.h>
-#include <Qt3DRender/qparameter.h>
-#include <Qt3DRender/qeffect.h>
-#include <Qt3DRender/qmesh.h>
-#include <Qt3DRender/qmaterial.h>
-#include <Qt3DRender/qbuffer.h>
+#include <Qt3DExtras/qdiffusemapmaterial.h>
+#include <Qt3DExtras/qdiffusespecularmapmaterial.h>
+#include <Qt3DExtras/qphongmaterial.h>
 #include <Qt3DRender/qattribute.h>
+#include <Qt3DRender/qbuffer.h>
+#include <Qt3DRender/qcameralens.h>
+#include <Qt3DRender/qeffect.h>
+#include <Qt3DRender/qgeometry.h>
+#include <Qt3DRender/qgeometryrenderer.h>
+#include <Qt3DRender/qmaterial.h>
+#include <Qt3DRender/qmesh.h>
+#include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qtextureimagedatagenerator.h>
 #include <Qt3DExtras/qmorphphongmaterial.h>
@@ -57,13 +61,14 @@
 #include <Qt3DExtras/qphongmaterial.h>
 #include <Qt3DAnimation/qkeyframeanimation.h>
 #include <Qt3DAnimation/qmorphinganimation.h>
-#include <QFileInfo>
-#include <QColor>
+#include <QtCore/QFileInfo>
+#include <QtGui/QColor>
+
 #include <qmath.h>
+
+#include <Qt3DCore/private/qabstractnodefactory_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
-#include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/qgeometry.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -83,7 +88,7 @@ namespace Qt3DRender {
     It should be noted that Assimp aiString is explicitly defined to be UTF-8.
 */
 
-Q_LOGGING_CATEGORY(AssimpImporterLog, "Qt3D.AssimpImporter")
+Q_LOGGING_CATEGORY(AssimpImporterLog, "Qt3D.AssimpImporter", QtWarningMsg)
 
 namespace {
 
@@ -260,6 +265,7 @@ QStringList AssimpImporter::assimpSupportedFormats()
     formats.append(QStringLiteral("acc"));
     formats.append(QStringLiteral("ase"));
     formats.append(QStringLiteral("ask"));
+    formats.append(QStringLiteral("assbin"));
     formats.append(QStringLiteral("b3d"));
     formats.append(QStringLiteral("blend"));
     formats.append(QStringLiteral("bvh"));
@@ -268,6 +274,7 @@ QStringList AssimpImporter::assimpSupportedFormats()
     formats.append(QStringLiteral("dae"));
     formats.append(QStringLiteral("dxf"));
     formats.append(QStringLiteral("enff"));
+    formats.append(QStringLiteral("fbx"));
     formats.append(QStringLiteral("hmp"));
     formats.append(QStringLiteral("irr"));
     formats.append(QStringLiteral("irrmesh"));
@@ -288,6 +295,7 @@ QStringList AssimpImporter::assimpSupportedFormats()
     formats.append(QStringLiteral("nff"));
     formats.append(QStringLiteral("obj"));
     formats.append(QStringLiteral("off"));
+    formats.append(QStringLiteral("ogex"));
     formats.append(QStringLiteral("pk3"));
     formats.append(QStringLiteral("ply"));
     formats.append(QStringLiteral("prj"));
@@ -295,6 +303,7 @@ QStringList AssimpImporter::assimpSupportedFormats()
     formats.append(QStringLiteral("q3s"));
     formats.append(QStringLiteral("raw"));
     formats.append(QStringLiteral("scn"));
+    formats.append(QStringLiteral("sib"));
     formats.append(QStringLiteral("smd"));
     formats.append(QStringLiteral("stl"));
     formats.append(QStringLiteral("ter"));
@@ -302,7 +311,6 @@ QStringList AssimpImporter::assimpSupportedFormats()
     formats.append(QStringLiteral("vta"));
     formats.append(QStringLiteral("x"));
     formats.append(QStringLiteral("xml"));
-    formats.append(QStringLiteral("fbx"));
 
     return formats;
 }

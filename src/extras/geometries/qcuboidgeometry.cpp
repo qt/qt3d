@@ -39,11 +39,14 @@
 
 #include "qcuboidgeometry.h"
 #include "qcuboidgeometry_p.h"
+
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/private/renderlogging_p.h>
+
 #include <limits>
+
 
 QT_BEGIN_NAMESPACE
 

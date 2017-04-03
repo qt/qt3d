@@ -106,10 +106,28 @@ inline QDebug operator<<(QDebug dbg, const FCurve &fcurve)
 }
 #endif
 
-struct Channel
+struct ChannelComponent
 {
     QString name;
     FCurve fcurve;
+
+    void read(const QJsonObject &json);
+};
+
+#ifndef QT_NO_DEBUG_STREAM
+inline QDebug operator<<(QDebug dbg, const ChannelComponent &channelComponent)
+{
+    QDebugStateSaver saver(dbg);
+    dbg << "Channel Component Name: " << channelComponent.name << endl
+        << "FCurve:" << channelComponent.fcurve << endl;
+    return dbg;
+}
+#endif
+
+struct Channel
+{
+    QString name;
+    QVector<ChannelComponent> channelComponents;
 
     void read(const QJsonObject &json);
 };
@@ -119,28 +137,10 @@ inline QDebug operator<<(QDebug dbg, const Channel &channel)
 {
     QDebugStateSaver saver(dbg);
     dbg << "Channel Name: " << channel.name << endl
-        << "Fcurve:" << channel.fcurve << endl;
-    return dbg;
-}
-#endif
+        << "Channels:" << channel.channelComponents.size() << endl;
 
-struct ChannelGroup
-{
-    QString name;
-    QVector<Channel> channels;
-
-    void read(const QJsonObject &json);
-};
-
-#ifndef QT_NO_DEBUG_STREAM
-inline QDebug operator<<(QDebug dbg, const ChannelGroup &channelGroup)
-{
-    QDebugStateSaver saver(dbg);
-    dbg << "Name: " << channelGroup.name << endl
-        << "Channels:" << channelGroup.channels.size() << endl;
-
-    for (const auto channel : qAsConst(channelGroup.channels)) {
-        dbg << channel;
+    for (const auto channelComponent : qAsConst(channel.channelComponents)) {
+        dbg << channelComponent;
     }
     return dbg;
 }

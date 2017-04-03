@@ -50,10 +50,9 @@ QLevelOfDetailPrivate::QLevelOfDetailPrivate()
     : QComponentPrivate()
     , m_camera(nullptr)
     , m_currentIndex(0)
-    , m_thresholdType(QLevelOfDetail::DistanceToCamera)
+    , m_thresholdType(QLevelOfDetail::DistanceToCameraThreshold)
     , m_volumeOverride()
 {
-    Q_Q(QLevelOfDetail);
 }
 
 /*!
@@ -142,7 +141,7 @@ QLevelOfDetailPrivate::QLevelOfDetailPrivate()
             id: lod
             camera: mainCamera
             thresholds: [20, 35, 50, 65]
-            thresholdType: LevelOfDetail.DistanceToCamera
+            thresholdType: LevelOfDetail.DistanceToCameraThreshold
         }
 
         CylinderMesh {
@@ -166,8 +165,8 @@ QLevelOfDetailPrivate::QLevelOfDetailPrivate()
  *
  * Specifies how the values in the thresholds are interpreted
  *
- * \value DistanceToCamera Distance from the entity to the selected camera
- * \value ProjectedScreenPixelSize Size of the entity when projected on the
+ * \value DistanceToCameraThreshold Distance from the entity to the selected camera
+ * \value ProjectedScreenPixelSizeThreshold Size of the entity when projected on the
  *          screen as seen from the selected camera, expressed in number of
  *          pixels on the side of the bounding square in screen space.
  */
@@ -178,8 +177,8 @@ QLevelOfDetailPrivate::QLevelOfDetailPrivate()
  * Specifies how the values in the thresholds are interpreted
  *
  * \list
- * \li DistanceToCamera Distance from the entity to the selected camera
- * \li ProjectedScreenPixelSize Size of the entity when projected on the
+ * \li DistanceToCameraThreshold Distance from the entity to the selected camera
+ * \li ProjectedScreenPixelSizeThreshold Size of the entity when projected on the
  *     screen as seen from the selected camera, expressed in number of
  *     pixels on the side of the bounding square in screen space.
  * \endlist
@@ -258,11 +257,11 @@ QLevelOfDetailPrivate::QLevelOfDetailPrivate()
  * Array of range values as float point numbers. The value for the most detailed representation
  * should be specified first.
  *
- * If LevelOfDetail::thresholdType is set to LevelOfDetail.Distance, values should be specified in
- * ascending order, in camera space coordinates
+ * If LevelOfDetail::thresholdType is set to LevelOfDetail.DistanceToCameraThreshold, values should
+ * be specified in ascending order, in camera space coordinates
  *
- * If LevelOfDetail::thresholdType is set to LevelOfDetail.ProjectedScreenPixelSize, values should
- * be specified in descending order, in screen space pixels.
+ * If LevelOfDetail::thresholdType is set to LevelOfDetail.ProjectedScreenPixelSizeThreshold, values
+ * should be specified in descending order, in screen space pixels.
  */
 
 /*!
@@ -271,10 +270,12 @@ QLevelOfDetailPrivate::QLevelOfDetailPrivate()
  * Array of range values as float point numbers. The value for the most detailed representation
  * should be specified first.
  *
- * If Qt3DRender::QLevelOfDetail::thresholdType is set to Qt3DRender::QLevelOfDetail::Distance, values should be specified in
+ * If Qt3DRender::QLevelOfDetail::thresholdType is set to
+ * Qt3DRender::QLevelOfDetail::DistanceToCameraThreshold, values should be specified in
  * ascending order, in camera space coordinates
  *
- * If Qt3DRender::QLevelOfDetail::thresholdType is set to Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSize, values should
+ * If Qt3DRender::QLevelOfDetail::thresholdType is set to
+ * Qt3DRender::QLevelOfDetail::ProjectedScreenPixelSizeThreshold, values should
  * be specified in descending order, in screen space pixels.
  *
  * \sa Qt3DRender::QLevelOfDetail::ThresholdType
@@ -292,7 +293,7 @@ QLevelOfDetailPrivate::QLevelOfDetailPrivate()
  * If this value to null, the bounding volume of the entity is used. Care must be
  * taken that this bounding volume never becomes invalid.
  *
- * \sa LevelOfDetailBoundingSphere
+ * \sa Qt3DRender::QLevelOfDetailBoundingSphere
  */
 
 /*!
@@ -305,7 +306,7 @@ QLevelOfDetailPrivate::QLevelOfDetailPrivate()
  * If this value to nullptr, the bounding volume of the entity is used. Care must be
  * taken that this bounding volume never becomes invalid.
  *
- * \sa LevelOfDetailBoundingSphere
+ * \sa Qt3dRender::QLevelOfDetailBoundingSphere
  */
 
 
@@ -366,7 +367,7 @@ QCamera *QLevelOfDetail::camera() const
 }
 
 /*!
- * Sets the camera relative to which distance and size are computed.
+ * Sets the \a camera relative to which distance and size are computed.
  */
 void QLevelOfDetail::setCamera(QCamera *camera)
 {
@@ -384,7 +385,7 @@ int QLevelOfDetail::currentIndex() const
 }
 
 /*!
- * Sets the current index.
+ * Sets the \a currentIndex.
  *
  * \note This should not normally be set by the user.
  *
@@ -409,6 +410,7 @@ QLevelOfDetail::ThresholdType QLevelOfDetail::thresholdType() const
 
 /*!
  * Sets the way thresholds values are interpreted
+ * with parameter \a thresholdType
  * \sa Qt3DRender::QLevelOfDetail::ThresholdType
  */
 void QLevelOfDetail::setThresholdType(QLevelOfDetail::ThresholdType thresholdType)
@@ -432,10 +434,10 @@ QLevelOfDetailBoundingSphere QLevelOfDetail::createBoundingSphere(const QVector3
 }
 
 /*!
- * Sets the range values.
+ * Sets the range values in \a thresholds.
  * \sa Qt3DRender::QLevelOfDetail::thresholdType
  */
-void QLevelOfDetail::setThresholds(QVector<qreal> thresholds)
+void QLevelOfDetail::setThresholds(const QVector<qreal> &thresholds)
 {
     Q_D(QLevelOfDetail);
     if (d->m_thresholds != thresholds) {

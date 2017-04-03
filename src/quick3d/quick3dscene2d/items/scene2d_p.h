@@ -49,6 +49,8 @@
 //
 
 #include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DRender/qpickevent.h>
 #include <Qt3DQuickScene2D/qscene2d.h>
 
 #include <private/qscene2d_p.h>
@@ -97,6 +99,11 @@ public:
 
     bool updateFbo(QOpenGLTexture *texture);
     void syncRenderControl();
+    void startGrabbing();
+    void stopGrabbing();
+    bool registerObjectPickerEvents(Qt3DCore::QNodeId entityId);
+    void unregisterObjectPickerEvents(Qt3DCore::QNodeId entityId);
+    void handlePickEvent(int type, const Qt3DRender::QPickEventPtr &ev);
 
     QOpenGLContext *m_context;
     QOpenGLContext *m_shareContext;
@@ -113,6 +120,7 @@ public:
     bool m_initialized;
     bool m_renderInitialized;
     Qt3DRender::Quick::QScene2D::RenderPolicy m_renderPolicy;
+    QVector<Qt3DCore::QNodeId> m_entities;
 };
 
 } // Quick

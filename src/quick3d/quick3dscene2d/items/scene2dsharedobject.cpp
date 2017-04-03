@@ -57,16 +57,16 @@ namespace Quick {
      Constructs object shared by the front-end and back-end to synchronize the rendering.
  */
 Scene2DSharedObject::Scene2DSharedObject(Scene2DManager *manager)
-    : m_quit(false)
-    , m_requestSync(false)
-    , m_prepared(false)
-    , m_initialized(false)
-    , m_renderControl(nullptr)
+    : m_renderControl(nullptr)
     , m_quickWindow(nullptr)
     , m_renderManager(manager)
     , m_surface(nullptr)
     , m_renderObject(nullptr)
     , m_disallowed(false)
+    , m_quit(false)
+    , m_requestSync(false)
+    , m_prepared(false)
+    , m_initialized(false)
 {
 }
 

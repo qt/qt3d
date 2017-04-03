@@ -94,7 +94,7 @@ Entity {
         objectName: "buffer"
         type: Buffer.VertexBuffer
         data: initGraphBuffer()
-        access: Buffer.ReadWrite
+        accessType: Buffer.ReadWrite
     }
 
     ComputeMaterial {

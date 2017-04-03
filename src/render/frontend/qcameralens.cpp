@@ -566,7 +566,7 @@ QMatrix4x4 QCameraLens::projectionMatrix() const
 }
 
 /*!
- * Sets the camera lens' exposure
+ * Sets the camera lens' \a exposure
  */
 void QCameraLens::setExposure(float exposure)
 {

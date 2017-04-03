@@ -38,11 +38,13 @@
 ****************************************************************************/
 
 #include "qinputdeviceintegrationfactory_p.h"
+
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDir>
+
 #include <Qt3DInput/private/qinputdeviceintegration_p.h>
 #include <Qt3DInput/private/qinputdeviceplugin_p.h>
 #include <QtCore/private/qfactoryloader_p.h>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDir>
 
 QT_BEGIN_NAMESPACE
 

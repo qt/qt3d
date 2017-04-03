@@ -51,21 +51,23 @@
 // We mean it.
 //
 
+#include <Qt3DCore/qt3dcore_global.h>
+#include <QtCore/QtGlobal>
 #include <QtCore/qlist.h>
 #include <QtCore/qpair.h>
 #include <QtCore/qshareddata.h>
 #include <QtCore/qvector.h>
 
 #include <algorithm>
-#ifdef Q_COMPILER_INITIALIZER_LISTS
-# include <initializer_list>
-#endif
 #include <iterator>
 #include <limits>
 #include <memory>
 #include <new>
-#include <QtGlobal>
-#include <Qt3DCore/qt3dcore_global.h>
+
+
+#ifdef Q_COMPILER_INITIALIZER_LISTS
+# include <initializer_list>
+#endif
 
 QT_BEGIN_NAMESPACE
 

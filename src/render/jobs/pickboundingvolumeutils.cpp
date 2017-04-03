@@ -213,6 +213,15 @@ AbstractCollisionGathererFunctor::result_type AbstractCollisionGathererFunctor::
     return pick(&rayCasting, entity);
 }
 
+void AbstractCollisionGathererFunctor::sortHits(CollisionVisitor::HitList &results)
+{
+    auto compareHitsDistance = [](const CollisionVisitor::HitList::value_type &a,
+                                  const CollisionVisitor::HitList::value_type &b) {
+        return a.m_distance < b.m_distance;
+    };
+    std::sort(results.begin(), results.end(), compareHitsDistance);
+}
+
 AbstractCollisionGathererFunctor::result_type EntityCollisionGathererFunctor::pick(RayCasting::QAbstractCollisionQueryService *rayCasting, const Entity *entity) const
 {
     result_type result;
@@ -237,14 +246,7 @@ AbstractCollisionGathererFunctor::result_type TriangleCollisionGathererFunctor::
         visitor.apply(gRenderer, entity->peerId());
         result = visitor.hits;
 
-        struct
-        {
-            bool operator()(const result_type::value_type &a, const result_type::value_type &b)
-            {
-                return a.m_distance < b.m_distance;
-            }
-        } compareHitsDistance;
-        std::sort(result.begin(), result.end(), compareHitsDistance);
+        sortHits(result);
     }
 
     return result;
@@ -280,6 +282,44 @@ CollisionVisitor::HitList reduceToAllHits(CollisionVisitor::HitList &results, co
     if (!intermediate.empty())
         results << intermediate;
     return results;
+}
+
+HierarchicalEntityPicker::HierarchicalEntityPicker(const QRay3D &ray)
+    : m_ray(ray)
+{
+
+}
+
+bool HierarchicalEntityPicker::collectHits(Entity *root)
+{
+    m_hits.clear();
+    m_entities.clear();
+
+    QRayCastingService rayCasting;
+    QVector<Entity *> worklist;
+    worklist << root;
+
+    while (!worklist.empty()) {
+        Entity *current = worklist.takeLast();
+
+        // first pick entry sub-scene-graph
+        QCollisionQueryResult::Hit queryResult =
+                rayCasting.query(m_ray, current->worldBoundingVolumeWithChildren());
+        if (queryResult.m_distance < 0.f)
+            continue;
+
+        // if we get a hit, we check again for this specific entity
+        queryResult = rayCasting.query(m_ray, current->worldBoundingVolume());
+        if (queryResult.m_distance >= 0.f) {
+            m_entities.push_back(current);
+            m_hits.push_back(queryResult);
+        }
+
+        // and pick children
+        worklist << current->children();
+    }
+
+    return !m_hits.empty();
 }
 
 } // PickingUtils

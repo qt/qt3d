@@ -40,11 +40,11 @@
 #ifndef QT3DCORE_QNODE_H
 #define QT3DCORE_QNODE_H
 
-#include <QObject>
-#include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qscenechange.h>
-#include <Qt3DCore/qnodecreatedchange.h>
+#include <Qt3DCore/qt3dcore_global.h>
+#include <QtCore/QObject>
 
 #define Q_NODE_NULLPTR static_cast<Qt3DCore::QNode *>(nullptr)
 
@@ -72,7 +72,7 @@ class QT3DCORESHARED_EXPORT QNode : public QObject
     Q_PROPERTY(PropertyTrackingMode defaultPropertyTrackingMode READ defaultPropertyTrackingMode WRITE setDefaultPropertyTrackingMode NOTIFY defaultPropertyTrackingModeChanged REVISION 9)
 public:
 
-    enum PropertyTrackingMode {
+    enum PropertyTrackingMode : quint16 {
         TrackFinalValues,
         DontTrackValues,
         TrackAllValues

@@ -51,8 +51,9 @@
 // We mean it.
 //
 
+#include <QtCore/QSize>
+
 #include <Qt3DRender/private/qgeometry_p.h>
-#include <QSize>
 
 QT_BEGIN_NAMESPACE
 

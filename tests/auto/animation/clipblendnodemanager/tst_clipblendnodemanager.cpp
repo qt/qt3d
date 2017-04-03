@@ -49,8 +49,23 @@ public:
         deadCount += 1;
     }
 
-    float blend(float , float ) const Q_DECL_FINAL { return 0.0f; }
+    inline QVector<Qt3DCore::QNodeId> allDependencyIds() const Q_DECL_OVERRIDE
+    {
+        return currentDependencyIds();
+    }
 
+    QVector<Qt3DCore::QNodeId> currentDependencyIds() const Q_DECL_FINAL
+    {
+        return QVector<Qt3DCore::QNodeId>();
+    }
+
+    double duration() const Q_DECL_FINAL { return 0.0f; }
+
+protected:
+    Qt3DAnimation::Animation::ClipResults doBlend(const QVector<Qt3DAnimation::Animation::ClipResults> &) const Q_DECL_FINAL
+    {
+        return Qt3DAnimation::Animation::ClipResults();
+    }
 };
 
 } // anonymous

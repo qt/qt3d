@@ -73,30 +73,29 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     QString name() const { return m_name; }
-    QString objectName() const { return m_objectName; }
-    const QVector<ChannelGroup> &channelGroups() const { return m_channelGroups; }
+    const QVector<Channel> &channels() const { return m_channels; }
 
     // Called from jobs
     void loadAnimation();
     void setDuration(float duration);
     float duration() const { return m_duration; }
-    int channelCount() const { return m_channelCount; }
-    int channelBaseIndex(int channelGroupIndex) const;
+    int channelIndex(const QString &channelName) const;
+    int channelCount() const { return m_channelComponentCount; }
+    int channelComponentBaseIndex(int channelGroupIndex) const;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
     void clearData();
     float findDuration();
-    int findChannelCount();
+    int findChannelComponentCount();
 
     QUrl m_source;
     QAnimationClipLoader::Status m_status;
 
     QString m_name;
-    QString m_objectName;
-    QVector<ChannelGroup> m_channelGroups;
+    QVector<Channel> m_channels;
     float m_duration;
-    int m_channelCount;
+    int m_channelComponentCount;
 };
 
 #ifndef QT_NO_DEBUG_STREAM
@@ -105,12 +104,12 @@ inline QDebug operator<<(QDebug dbg, const AnimationClipLoader &animationClip)
     QDebugStateSaver saver(dbg);
     dbg << "QNodeId =" << animationClip.peerId() << endl
         << "Name =" << animationClip.name() << endl
-        << "Object Name =" << animationClip.objectName() << endl
-        << "Channel Groups:" << endl;
+        << "Duration: " << animationClip.duration() << endl
+        << "Channels:" << endl;
 
-    const QVector<ChannelGroup> channelGroups = animationClip.channelGroups();
-    for (const auto channelGroup : channelGroups) {
-        dbg << channelGroup;
+    const QVector<Channel> channels = animationClip.channels();
+    for (const auto channel : channels) {
+        dbg << channel;
     }
 
     return dbg;

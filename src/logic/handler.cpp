@@ -38,9 +38,11 @@
 ****************************************************************************/
 
 #include "handler_p.h"
-#include "manager_p.h"
-#include "managers_p.h"
+
 #include <Qt3DCore/qnode.h>
+
+#include <Qt3DLogic/private/manager_p.h>
+#include <Qt3DLogic/private/managers_p.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -107,12 +107,12 @@ QExtrudedTextMesh::QExtrudedTextMesh(Qt3DCore::QNode *parent)
 QExtrudedTextMesh::~QExtrudedTextMesh()
 {}
 
-void QExtrudedTextMesh::setText(QString text)
+void QExtrudedTextMesh::setText(const QString &text)
 {
     static_cast<QExtrudedTextGeometry*>(geometry())->setText(text);
 }
 
-void QExtrudedTextMesh::setFont(QFont font)
+void QExtrudedTextMesh::setFont(const QFont &font)
 {
     static_cast<QExtrudedTextGeometry*>(geometry())->setFont(font);
 }
@@ -127,7 +127,7 @@ void QExtrudedTextMesh::setDepth(float depth)
  *
  * Holds the text used for the mesh.
  */
-QString QExtrudedTextMesh::text()
+QString QExtrudedTextMesh::text() const
 {
     return static_cast<QExtrudedTextGeometry*>(geometry())->text();
 }
@@ -137,7 +137,7 @@ QString QExtrudedTextMesh::text()
  *
  * Holds the font of the text.
  */
-QFont QExtrudedTextMesh::font()
+QFont QExtrudedTextMesh::font() const
 {
     return static_cast<QExtrudedTextGeometry*>(geometry())->font();
 }
@@ -147,7 +147,7 @@ QFont QExtrudedTextMesh::font()
  *
  * Holds the extrusion depth of the text.
  */
-float QExtrudedTextMesh::depth()
+float QExtrudedTextMesh::depth() const
 {
     return static_cast<QExtrudedTextGeometry*>(geometry())->extrusionLength();
 }

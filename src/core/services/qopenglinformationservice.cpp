@@ -62,7 +62,7 @@ namespace Qt3DCore {
     instantiate a QOpenGLInformationService object.
 */
 QOpenGLInformationService::QOpenGLInformationService(const QString &description)
-    : QAbstractServiceProvider(QServiceLocator::OpenGLInformation, description)
+    : QAbstractServiceProvider(*new QOpenGLInformationServicePrivate(description))
 {
 }
 

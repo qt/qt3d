@@ -41,13 +41,15 @@
 # define _USE_MATH_DEFINES // For MSVC
 #endif
 
-#include "qconemesh.h"
 #include "qconegeometry.h"
+
+#include <Qt3DExtras/qconemesh.h>
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/qattribute.h>
+#include <QtGui/QVector3D>
+
 #include <qmath.h>
-#include <QVector3D>
 
 QT_BEGIN_NAMESPACE
 

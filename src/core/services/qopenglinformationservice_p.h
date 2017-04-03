@@ -52,9 +52,10 @@
 //
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/private/qservicelocator_p.h>
-#include <QtGui/qsurfaceformat.h>
 #include <QtCore/qstring.h>
+#include <QtGui/qsurfaceformat.h>
+
+#include <Qt3DCore/private/qservicelocator_p.h>
 
 QT_BEGIN_NAMESPACE
 

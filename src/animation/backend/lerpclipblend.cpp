@@ -70,9 +70,17 @@ void LerpClipBlend::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 }
 
-float LerpClipBlend::blend(float value1, float value2) const
+ClipResults LerpClipBlend::doBlend(const QVector<ClipResults> &blendData) const
 {
-    return ((1.0f - m_blendFactor) * value1) + (m_blendFactor * value2);
+    Q_ASSERT(blendData.size() == 2);
+    Q_ASSERT(blendData[0].size() == blendData[1].size());
+    const int elementCount = blendData.first().size();
+    ClipResults blendResults(elementCount);
+
+    for (int i = 0; i < elementCount; ++i)
+        blendResults[i] = (1.0f - m_blendFactor) * blendData[0][i] + (m_blendFactor * blendData[1][i]);
+
+    return blendResults;
 }
 
 void LerpClipBlend::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -83,6 +91,17 @@ void LerpClipBlend::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr
     m_startClipId = cloneData.startClipId;
     m_endClipId = cloneData.endClipId;
     m_blendFactor = cloneData.blendFactor;
+}
+
+double LerpClipBlend::duration() const
+{
+    ClipBlendNode *startNode = clipBlendNodeManager()->lookupNode(m_startClipId);
+    const double startNodeDuration = startNode ? startNode->duration() : 0.0;
+
+    ClipBlendNode *endNode = clipBlendNodeManager()->lookupNode(m_endClipId);
+    const double endNodeDuration = endNode ? endNode->duration() : 0.0;
+
+    return (1.0f - m_blendFactor) * startNodeDuration + m_blendFactor * endNodeDuration;
 }
 
 } // Animation

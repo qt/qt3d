@@ -39,21 +39,21 @@
 
 #include "qabstractphysicaldevicebackendnode_p.h"
 #include "qabstractphysicaldevicebackendnode_p_p.h"
-#include "qabstractphysicaldevice.h"
-#include "qaxissetting.h"
-#include "inputhandler_p.h"
-#include "inputmanagers_p.h"
 
+#include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DInput/qaxissetting.h>
 #include <Qt3DInput/qinputaspect.h>
 #include <Qt3DInput/qphysicaldevicecreatedchange.h>
-#include <Qt3DInput/private/qinputaspect_p.h>
-
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
-#include <Qt3DCore/private/qabstractaspect_p.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
 
 #include <cmath>
+
+#include <Qt3DInput/private/inputhandler_p.h>
+#include <Qt3DInput/private/inputmanagers_p.h>
+#include <Qt3DInput/private/qinputaspect_p.h>
+#include <Qt3DCore/private/qabstractaspect_p.h>
 
 QT_BEGIN_NAMESPACE
 

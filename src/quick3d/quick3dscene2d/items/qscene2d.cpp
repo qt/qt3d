@@ -40,7 +40,9 @@
 #include "scene2dmanager_p.h"
 #include "scene2devent_p.h"
 
-#include <Qt3DCore/QPropertyUpdatedChange>
+#include <Qt3DCore/qentity.h>
+#include <Qt3DCore/qpropertynodeaddedchange.h>
+#include <Qt3DCore/qpropertynoderemovedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -246,6 +248,8 @@ Qt3DCore::QNodeCreatedChangeBasePtr QScene2D::createNodeCreationChange() const
     data.renderPolicy = d->m_renderManager->m_renderPolicy;
     data.sharedObject = d->m_renderManager->m_sharedObject;
     data.output = d->m_output ? d->m_output->id() : Qt3DCore::QNodeId();
+    for (Qt3DCore::QEntity *e : d->m_entities)
+        data.entityIds.append(e->id());
     return creationChange;
 }
 
@@ -265,6 +269,12 @@ QQmlEngine *QScene2D::engine() const
     return d->m_renderManager->m_qmlEngine;
 }
 
+bool QScene2D::isGrabMouseEnabled() const
+{
+    Q_D(const QScene2D);
+    return d->m_renderManager->m_grabMouse;
+}
+
 /*!
     \internal
  */
@@ -272,6 +282,55 @@ void QScene2D::sourceLoaded()
 {
     emit loadedChanged(true);
 }
+
+
+QVector<Qt3DCore::QEntity*> QScene2D::entities()
+{
+    Q_D(const QScene2D);
+    return d->m_entities;
+}
+
+void QScene2D::addEntity(Qt3DCore::QEntity *entity)
+{
+    Q_D(QScene2D);
+    if (!d->m_entities.contains(entity)) {
+        d->m_entities.append(entity);
+
+        d->registerDestructionHelper(entity, &QScene2D::removeEntity, d->m_entities);
+
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = Qt3DCore::QPropertyNodeAddedChangePtr::create(id(), entity);
+            change->setPropertyName("entities");
+            d->notifyObservers(change);
+        }
+    }
+}
+
+void QScene2D::removeEntity(Qt3DCore::QEntity *entity)
+{
+    Q_D(QScene2D);
+    if (d->m_entities.contains(entity)) {
+        d->m_entities.removeAll(entity);
+
+        d->unregisterDestructionHelper(entity);
+
+        if (d->m_changeArbiter != nullptr) {
+            const auto change = Qt3DCore::QPropertyNodeRemovedChangePtr::create(id(), entity);
+            change->setPropertyName("entities");
+            d->notifyObservers(change);
+        }
+    }
+}
+
+void QScene2D::setGrabMouseEnabled(bool grab)
+{
+    Q_D(QScene2D);
+    if (d->m_renderManager->m_grabMouse != grab) {
+        d->m_renderManager->m_grabMouse = grab;
+        emit grabMouseChanged(grab);
+    }
+}
+
 
 } // namespace Quick
 } // namespace Qt3DRender

@@ -66,24 +66,32 @@ namespace Render {
 class TextureManager;
 class AttachmentManager;
 class GLTextureManager;
+class EntityManager;
 class NodeManagers;
 
 class RenderBackendResourceAccessor
 {
 public:
+    enum ResourceType {
+        OGLTexture,
+        OutputAttachment,
+        EntityHandle,
+    };
+
     virtual ~RenderBackendResourceAccessor();
-    virtual bool accessResource(Qt3DCore::QNodeId nodeId, void **handle, QMutex **lock) = 0;
+    virtual bool accessResource(ResourceType type, Qt3DCore::QNodeId nodeId, void **handle, QMutex **lock) = 0;
 };
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT ResourceAccessor : public RenderBackendResourceAccessor
 {
 public:
     ResourceAccessor(NodeManagers *mgr);
-    bool accessResource(Qt3DCore::QNodeId nodeId, void **handle, QMutex **lock) Q_DECL_FINAL;
+    bool accessResource(ResourceType type, Qt3DCore::QNodeId nodeId, void **handle, QMutex **lock) Q_DECL_FINAL;
 private:
     GLTextureManager *m_glTextureManager;
     TextureManager *m_textureManager;
     AttachmentManager *m_attachmentManager;
+    EntityManager *m_entityManager;
 };
 
 } // namespace Render

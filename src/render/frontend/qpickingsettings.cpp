@@ -53,6 +53,11 @@ namespace Qt3DRender {
 
     The picking settings determine how the entity picking is handled. For more details about
     entity picking, see QObjectPicker component documentation.
+
+    Picking is triggered by mouse events. It will cast a ray through the scene and look for
+    geometry intersecting the ray.
+
+    \sa QObjectPicker, QPickEvent, QPickTriangleEvent
  */
 
 /*!
@@ -64,6 +69,11 @@ namespace Qt3DRender {
 
     The picking settings determine how the entity picking is handled. For more details about
     entity picking, see Qt3DRender::QObjectPicker component documentation.
+
+    Picking is triggered by mouse events. It will cast a ray through the scene and look for
+    geometry intersecting the ray.
+
+    \sa ObjectPicker
  */
 
 QPickingSettingsPrivate::QPickingSettingsPrivate()
@@ -104,9 +114,6 @@ QPickingSettings::PickResultMode QPickingSettings::pickResultMode() const
     return d->m_pickResultMode;
 }
 
-/*!
- * \return the back facing picking flag
- */
 QPickingSettings::FaceOrientationPickingMode QPickingSettings::faceOrientationPickingMode() const
 {
     Q_D(const QPickingSettings);
@@ -119,7 +126,7 @@ QPickingSettings::FaceOrientationPickingMode QPickingSettings::faceOrientationPi
  * Specifies the picking method.
  *
  * \value BoundingVolumePicking An entity is considered picked if the picking ray intersects
- * the bounding volume of the entity.
+ * the bounding volume of the entity (default).
  * \value TrianglePicking An entity is considered picked if the picking ray intersects with
  * any triangle of the entity's mesh component.
  */
@@ -140,6 +147,12 @@ QPickingSettings::FaceOrientationPickingMode QPickingSettings::faceOrientationPi
     \property QPickingSettings::pickMethod
 
     Holds the current pick method.
+
+    By default, for performance reasons, ray casting will use bounding volume picking.
+    This may however lead to unexpected results if a small object is englobed
+    in the bounding sphere of a large object behind it.
+
+    Triangle picking will produce exact results but is computationally more expensive.
 */
 void QPickingSettings::setPickMethod(QPickingSettings::PickMethod pickMethod)
 {
@@ -157,8 +170,10 @@ void QPickingSettings::setPickMethod(QPickingSettings::PickMethod pickMethod)
  * Specifies what is included into the picking results.
  *
  * \value NearestPick Only the nearest entity to picking ray origin intersected by the picking ray
- * is picked.
+ * is picked (default).
  * \value AllPicks All entities that intersect the picking ray are picked.
+ *
+ * \sa Qt3DRender::QPickEvent
  */
 
 /*!
@@ -177,6 +192,14 @@ void QPickingSettings::setPickMethod(QPickingSettings::PickMethod pickMethod)
     \property QPickingSettings::pickResultMode
 
     Holds the current pick results mode.
+
+    By default, pick results will only be produced for the entity closest to the camera.
+
+    When setting the pick method to AllPicks, events will be triggered for all the
+    entities with a QObjectPicker along the ray.
+
+    If a QObjectPicker is assigned to an entity with multiple children, an event will
+    be triggered for each child entity that intersects the ray.
 */
 void QPickingSettings::setPickResultMode(QPickingSettings::PickResultMode pickResultMode)
 {
@@ -189,8 +212,31 @@ void QPickingSettings::setPickResultMode(QPickingSettings::PickResultMode pickRe
 }
 
 /*!
- * \a faceOrientationPickingMode determines whether back facing faces are picked or not.
- */
+    \enum Qt3DRender::QPickingSettings::FaceOrientationPickingMode
+
+    Specifies how face orientation affects triangle picking
+
+    \value FrontFace Only front-facing triangles will be picked (default).
+    \value BackFace Only back-facing triangles will be picked.
+    \value FrontAndBackFace Both front- and back-facing triangles will be picked.
+*/
+
+/*!
+    \qmlproperty enumeration PickingSettings::faceOrientationPickingMode
+
+    Specifies how face orientation affects triangle picking
+
+    \list
+        \li PickingSettings.FrontFace Only front-facing triangles will be picked (default).
+        \li PickingSettings.BackFace Only back-facing triangles will be picked.
+        \li PickingSettings.FrontAndBackFace Both front- and back-facing triangles will be picked.
+    \endlist
+*/
+/*!
+    \property QPickingSettings::faceOrientationPickingMode
+
+    Specifies how face orientation affects triangle picking
+*/
 void QPickingSettings::setFaceOrientationPickingMode(QPickingSettings::FaceOrientationPickingMode faceOrientationPickingMode)
 {
     Q_D(QPickingSettings);

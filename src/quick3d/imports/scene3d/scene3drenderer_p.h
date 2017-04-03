@@ -51,8 +51,7 @@
 // We mean it.
 //
 
-#include <QObject>
-
+#include <QtCore/QObject>
 #include <QtCore/qsize.h>
 
 QT_BEGIN_NAMESPACE

@@ -79,7 +79,6 @@
 #include <Qt3DRender/private/light_p.h>
 #include <Qt3DRender/private/environmentlight_p.h>
 #include <Qt3DRender/private/computecommand_p.h>
-#include <Qt3DRender/private/eventforward_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -356,15 +355,6 @@ class ObjectPickerManager : public Qt3DCore::QResourceManager<
         ObjectPicker,
         Qt3DCore::QNodeId,
         16,
-        Qt3DCore::ArrayAllocatingPolicy,
-        Qt3DCore::NonLockingPolicy>
-{
-};
-
-class EventForwardManager : public Qt3DCore::QResourceManager<
-        EventForward,
-        Qt3DCore::QNodeId,
-        8,
         Qt3DCore::ArrayAllocatingPolicy,
         Qt3DCore::NonLockingPolicy>
 {

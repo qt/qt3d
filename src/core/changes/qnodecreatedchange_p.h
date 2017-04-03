@@ -48,9 +48,10 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qt3dcore_global_p.h>
-#include <private/qscenechange_p.h>
 #include <Qt3DCore/qnodeid.h>
+
+#include <Qt3DCore/private/qscenechange_p.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 
 struct QMetaObject;
 

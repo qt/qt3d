@@ -126,7 +126,7 @@ Entity {
                     id: lod
                     camera: camera
                     thresholds: [1000, 600, 300, 180]
-                    thresholdType: LevelOfDetail.ProjectedScreenPixelSize
+                    thresholdType: LevelOfDetail.ProjectedScreenPixelSizeThreshold
                     volumeOverride: lod.createBoundingSphere(Qt.vector3d(0, 0, 0), 2.0)
                 }
             ]
@@ -149,7 +149,7 @@ Entity {
 
             camera: camera
             thresholds: [20, 35, 50, 65]
-            thresholdType: LevelOfDetail.DistanceToCamera
+            thresholdType: LevelOfDetail.DistanceToCameraThreshold
             volumeOverride: lodLoader.createBoundingSphere(Qt.vector3d(0, 0, 0), -1)
             sources: ["qrc:/SphereEntity.qml", "qrc:/CylinderEntity.qml", "qrc:/ConeEntity.qml", "qrc:/CuboidEntity.qml"]
         }
@@ -171,7 +171,7 @@ Entity {
                 LevelOfDetailSwitch {
                     camera: camera
                     thresholds: [20, 35, 50, 65]
-                    thresholdType: LevelOfDetail.DistanceToCamera
+                    thresholdType: LevelOfDetail.DistanceToCameraThreshold
                 }
             ]
 

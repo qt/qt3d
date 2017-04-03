@@ -53,9 +53,6 @@ public:
     explicit QClipBlendNodeCreatedChangeBase(const QAbstractClipBlendNode *node);
     ~QClipBlendNodeCreatedChangeBase();
 
-    Qt3DCore::QNodeId parentClipBlendNodeId() const;
-    Qt3DCore::QNodeIdVector clips() const;
-
 private:
     Q_DECLARE_PRIVATE(QClipBlendNodeCreatedChangeBase)
 };

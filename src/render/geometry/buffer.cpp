@@ -146,7 +146,7 @@ void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyName == QByteArrayLiteral("usage")) {
             m_usage = static_cast<QBuffer::UsageType>(propertyChange->value().value<int>());
             m_bufferDirty = true;
-        } else if (propertyName == QByteArrayLiteral("access")) {
+        } else if (propertyName == QByteArrayLiteral("accessType")) {
             m_access = static_cast<QBuffer::AccessType>(propertyChange->value().value<int>());
         } else if (propertyName == QByteArrayLiteral("dataGenerator")) {
             QBufferDataGeneratorPtr newGenerator = propertyChange->value().value<QBufferDataGeneratorPtr>();

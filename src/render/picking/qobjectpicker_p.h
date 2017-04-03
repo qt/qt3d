@@ -68,7 +68,6 @@ public:
         , m_pressed(false)
         , m_containsMouse(false)
         , m_acceptedLastPressedEvent(true)
-        , m_eventForward(nullptr)
     {
         m_shareable = false;
     }
@@ -79,7 +78,6 @@ public:
     bool m_pressed;
     bool m_containsMouse;
     bool m_acceptedLastPressedEvent;
-    QEventForward *m_eventForward;
 
     enum EventType {
         Pressed,
@@ -103,7 +101,6 @@ struct QObjectPickerData
 {
     bool hoverEnabled;
     bool dragEnabled;
-    Qt3DCore::QNodeId eventForward;
 };
 
 } // namespace Qt3DRender

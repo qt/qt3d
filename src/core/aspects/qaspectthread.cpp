@@ -38,10 +38,11 @@
 ****************************************************************************/
 
 #include "qaspectthread_p.h"
-#include "qaspectmanager_p.h"
 
+#include <QtCore/QMutexLocker>
+
+#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/corelogging_p.h>
-#include <QMutexLocker>
 
 QT_BEGIN_NAMESPACE
 

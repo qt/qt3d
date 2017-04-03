@@ -51,10 +51,10 @@
 // We mean it.
 //
 
-#include <QThread>
 #include <Qt3DCore/qt3dcore_global.h>
-
 #include <QtCore/QSemaphore>
+#include <QtCore/QThread>
+
 
 QT_BEGIN_NAMESPACE
 

@@ -43,7 +43,6 @@
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/qpickevent.h>
-#include <Qt3DRender/qeventforward.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,14 +55,25 @@ namespace Qt3DRender {
     \brief The QObjectPicker class instantiates a component that can
     be used to interact with a QEntity by a process known as picking.
 
+    For every combination of viewport and camera, picking casts a ray through the scene to
+    find entities who's bounding volume intersects the ray. The bounding volume is computed using
+    the values in the attribute buffer specified by the boundingVolumePositionAttribute of the
+    geometry.
+
     The signals pressed(), released(), clicked(), moved(), entered(), and exited() are
     emitted when the bounding volume defined by the pickAttribute property intersects
     with a ray.
 
+    Most signals carry a QPickEvent instance. If QPickingSettings::pickMode() is set to
+    QPickingSettings::TrianglePicking, the actual type of the pick parameter will be
+    QPickTriangleEvent.
+
     Pick queries are performed on mouse press and mouse release.
     If drag is enabled, queries also happen on each mouse move while any button is pressed.
     If hover is enabled, queries happen on every mouse move even if no button is pressed.
-    \sa QPickingSettings
+
+    \sa Qt3DRender::QPickingSettings, Qt3DRender::QGeometry, Qt3DRender::QAttribute,
+        Qt3DRender::QPickEvent, Qt3DRender::QPickTriangleEvent
 
     \note Instances of this component shouldn't be shared, not respecting that
     condition will most likely result in undefined behavior.
@@ -77,28 +87,51 @@ namespace Qt3DRender {
  * \inqmlmodule Qt3D.Render
  * \brief The ObjectPicker class instantiates a component that can
     be used to interact with an Entity by a process known as picking.
+
+    For every combination of viewport and camera, picking casts a ray through the scene to
+    find entities who's bounding volume intersects the ray. The bounding volume is computed using
+    the values in the attribute buffer specified by the boundingVolumePositionAttribute of the
+    geometry.
+
+    The signals pressed(), released(), clicked(), moved(), entered(), and exited() are
+    emitted when the bounding volume defined by the pickAttribute property intersects
+    with a ray.
+
+    Most signals carry a PickEvent instance. If PickingSettings.pickMode is set to
+    PickingSettings.TrianglePicking, the actual type of the pick parameter will be
+    PickTriangleEvent.
+
+    Pick queries are performed on mouse press and mouse release.
+    If drag is enabled, queries also happen on each mouse move while any button is pressed.
+    If hover is enabled, queries happen on every mouse move even if no button is pressed.
+
+    \sa PickingSettings, Geometry, Attribute, PickEvent, PickTriangleEvent
+
+    \note Instances of this component shouldn't be shared, not respecting that
+    condition will most likely result in undefined behavior.
+
  */
 
 /*!
-    \qmlsignal Qt3D.Render::ObjectPicker::pressed()
+    \qmlsignal Qt3D.Render::ObjectPicker::pressed(PickEvent pick)
   This signal is emitted when the bounding volume defined by the pickAttribute property intersects
     with a ray on a mouse press.
 */
 
 /*!
-    \qmlsignal Qt3D.Render::ObjectPicker::released()
+    \qmlsignal Qt3D.Render::ObjectPicker::released(PickEvent pick)
   This signal is emitted when the bounding volume defined by the pickAttribute property intersects
     with a ray on a mouse release.
 */
 
 /*!
-    \qmlsignal Qt3D.Render::ObjectPicker::clicked()
+    \qmlsignal Qt3D.Render::ObjectPicker::clicked(PickEvent pick)
   This signal is emitted when the bounding volume defined by the pickAttribute property intersects
     with a ray on a mouse click.
 */
 
 /*!
-    \qmlsignal Qt3D.Render::ObjectPicker::moved()
+    \qmlsignal Qt3D.Render::ObjectPicker::moved(PickEvent pick)
   This signal is emitted when the bounding volume defined by the pickAttribute property intersects
     with a ray on a mouse move with a button pressed.
 */
@@ -200,37 +233,6 @@ void QObjectPicker::setDragEnabled(bool dragEnabled)
     if (dragEnabled != d->m_dragEnabled) {
         d->m_dragEnabled = dragEnabled;
         emit dragEnabledChanged(dragEnabled);
-    }
-}
-
-/*!
-    \qmlproperty EventForward Qt3D.Render::ObjectPicker::eventForward
-    Holds the EventForward type.
-*/
-/*!
-    \property Qt3DRender::QObjectPicker::eventForward
-    Holds the EventForward type.
- */
-QEventForward *QObjectPicker::eventForward() const
-{
-    Q_D(const QObjectPicker);
-    return d->m_eventForward;
-}
-
-void QObjectPicker::setEventForward(QEventForward *eventForward)
-{
-    Q_D(QObjectPicker);
-    if (d->m_eventForward != eventForward) {
-        if (d->m_eventForward)
-            d->unregisterDestructionHelper(d->m_eventForward);
-        d->m_eventForward = eventForward;
-        if (eventForward) {
-            if (eventForward->parent() == nullptr)
-                eventForward->setParent(this);
-            d->registerDestructionHelper(eventForward, &QObjectPicker::setEventForward,
-                                         d->m_eventForward);
-        }
-        emit eventForwardChanged(eventForward);
     }
 }
 
@@ -434,7 +436,6 @@ Qt3DCore::QNodeCreatedChangeBasePtr QObjectPicker::createNodeCreationChange() co
     Q_D(const QObjectPicker);
     data.hoverEnabled = d->m_hoverEnabled;
     data.dragEnabled = d->m_dragEnabled;
-    data.eventForward = Qt3DCore::qIdForNode(d->m_eventForward);
     return creationChange;
 }
 

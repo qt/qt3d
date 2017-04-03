@@ -99,7 +99,6 @@ class LightManager;
 class EnvironmentLightManager;
 class ComputeCommandManager;
 class RenderStateManager;
-class EventForwardManager;
 
 class FrameGraphNode;
 class Entity;
@@ -127,7 +126,6 @@ class Attribute;
 class Geometry;
 class GeometryRenderer;
 class ObjectPicker;
-class EventForward;
 //class BoundingVolumeDebug;
 class Light;
 class EnvironmentLight;
@@ -212,7 +210,6 @@ public:
     inline EnvironmentLightManager *environmentLightManager() const Q_DECL_NOEXCEPT { return m_environmentLightManager; }
     inline ComputeCommandManager *computeJobManager() const Q_DECL_NOEXCEPT { return m_computeJobManager; }
     inline RenderStateManager *renderStateManager() const Q_DECL_NOEXCEPT { return m_renderStateManager; }
-    inline EventForwardManager *eventForwardManager() const Q_DECL_NOEXCEPT { return m_eventForwardManager; }
 
     QSharedPointer<ResourceAccessor> resourceAccessor();
 
@@ -252,7 +249,6 @@ private:
     EnvironmentLightManager *m_environmentLightManager;
     ComputeCommandManager *m_computeJobManager;
     RenderStateManager *m_renderStateManager;
-    EventForwardManager *m_eventForwardManager;
 
     QSharedPointer<ResourceAccessor> m_resourceAccessor;
 };
@@ -343,9 +339,6 @@ QT3DRENDERSHARED_PRIVATE_EXPORT GeometryRendererManager *NodeManagers::manager<G
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT ObjectPickerManager *NodeManagers::manager<ObjectPicker>() const Q_DECL_NOEXCEPT;
 
-template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT EventForwardManager *NodeManagers::manager<EventForward>() const Q_DECL_NOEXCEPT;
-
 //template<>
 //QT3DRENDERSHARED_PRIVATE_EXPORT BoundingVolumeDebugManager *NodeManagers::manager<BoundingVolumeDebug>() const Q_DECL_NOEXCEPT;
 
@@ -360,9 +353,6 @@ QT3DRENDERSHARED_PRIVATE_EXPORT ComputeCommandManager *NodeManagers::manager<Com
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT RenderStateManager *NodeManagers::manager<RenderStateNode>() const Q_DECL_NOEXCEPT;
-
-template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT EventForwardManager *NodeManagers::manager<EventForward>() const Q_DECL_NOEXCEPT;
 
 } // Render
 

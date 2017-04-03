@@ -44,7 +44,8 @@ HEADERS += \
     $$PWD/renderviewbuilder_p.h \
     $$PWD/frameprofiler_p.h \
     $$PWD/offscreensurfacehelper_p.h \
-    $$PWD/resourceaccessor_p.h
+    $$PWD/resourceaccessor_p.h \
+    $$PWD/commandthread_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
@@ -79,5 +80,6 @@ SOURCES += \
     $$PWD/shaderparameterpack.cpp \
     $$PWD/renderviewbuilder.cpp \
     $$PWD/offscreensurfacehelper.cpp \
-    $$PWD/resourceaccessor.cpp
+    $$PWD/resourceaccessor.cpp \
+    $$PWD/commandthread.cpp
 

@@ -35,16 +35,90 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include "qbackendnodetester.h"
 
+using namespace Qt3DAnimation::Animation;
+
+Q_DECLARE_METATYPE(Handler *)
+Q_DECLARE_METATYPE(AdditiveClipBlend *)
+
+namespace {
+
+class TestClipBlendNode : public ClipBlendNode
+{
+public:
+    TestClipBlendNode(double duration)
+        : ClipBlendNode(ClipBlendNode::LerpBlendType)
+        , m_duration(duration)
+    {}
+
+    inline QVector<Qt3DCore::QNodeId> allDependencyIds() const Q_DECL_OVERRIDE
+    {
+        return currentDependencyIds();
+    }
+
+    QVector<Qt3DCore::QNodeId> currentDependencyIds() const Q_DECL_FINAL
+    {
+        return QVector<Qt3DCore::QNodeId>();
+    }
+
+    using ClipBlendNode::setClipResults;
+
+    double duration() const Q_DECL_FINAL { return m_duration; }
+
+protected:
+    ClipResults doBlend(const QVector<ClipResults> &) const Q_DECL_FINAL { return ClipResults(); }
+
+private:
+    double m_duration;
+};
+
+} // anonymous
+
 class tst_AdditiveClipBlend : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
+public:
+    TestClipBlendNode *createTestBlendNode(Handler *handler,
+                                           double duration)
+    {
+        auto id = Qt3DCore::QNodeId::createId();
+        TestClipBlendNode *node = new TestClipBlendNode(duration);
+        setPeerId(node, id);
+        node->setHandler(handler);
+        node->setClipBlendNodeManager(handler->clipBlendNodeManager());
+        handler->clipBlendNodeManager()->appendNode(id, node);
+        return node;
+    }
+
+    AdditiveClipBlend *createAdditiveClipBlendNode(Handler *handler, const float &blendFactor)
+    {
+        auto id = Qt3DCore::QNodeId::createId();
+        AdditiveClipBlend *node = new AdditiveClipBlend();
+        node->setAdditiveFactor(blendFactor);
+        setPeerId(node, id);
+        node->setHandler(handler);
+        node->setClipBlendNodeManager(handler->clipBlendNodeManager());
+        handler->clipBlendNodeManager()->appendNode(id, node);
+        return node;
+    }
+
+    BlendedClipAnimator *createBlendedClipAnimator(Handler *handler,
+                                                   qint64 globalStartTimeNS,
+                                                   int loops)
+    {
+        auto animatorId = Qt3DCore::QNodeId::createId();
+        BlendedClipAnimator *animator = handler->blendedClipAnimatorManager()->getOrCreateResource(animatorId);
+        setPeerId(animator, animatorId);
+        animator->setStartTime(globalStartTimeNS);
+        animator->setLoops(loops);
+        return animator;
+    }
 
 private Q_SLOTS:
 
     void checkInitialState()
     {
         // GIVEN
-        Qt3DAnimation::Animation::AdditiveClipBlend backendAdditiveBlend;
+        AdditiveClipBlend backendAdditiveBlend;
 
         // THEN
         QCOMPARE(backendAdditiveBlend.isEnabled(), false);
@@ -52,7 +126,7 @@ private Q_SLOTS:
         QCOMPARE(backendAdditiveBlend.baseClipId(), Qt3DCore::QNodeId());
         QCOMPARE(backendAdditiveBlend.additiveClipId(), Qt3DCore::QNodeId());
         QCOMPARE(backendAdditiveBlend.additiveFactor(), 0.0f);
-        QCOMPARE(backendAdditiveBlend.blendType(), Qt3DAnimation::Animation::ClipBlendNode::AdditiveBlendType);
+        QCOMPARE(backendAdditiveBlend.blendType(), ClipBlendNode::AdditiveBlendType);
     }
 
     void checkInitializeFromPeer()
@@ -65,11 +139,10 @@ private Q_SLOTS:
         additiveBlend.setBaseClip(&baseClip);
         additiveBlend.setAdditiveClip(&additiveClip);
         additiveBlend.setAdditiveFactor(0.8f);
-        additiveBlend.addClip(&clip);
 
         {
             // WHEN
-            Qt3DAnimation::Animation::AdditiveClipBlend backendAdditiveBlend;
+            AdditiveClipBlend backendAdditiveBlend;
             simulateInitialization(&additiveBlend, &backendAdditiveBlend);
 
             // THEN
@@ -78,12 +151,10 @@ private Q_SLOTS:
             QCOMPARE(backendAdditiveBlend.baseClipId(), baseClip.id());
             QCOMPARE(backendAdditiveBlend.additiveClipId(), additiveClip.id());
             QCOMPARE(backendAdditiveBlend.additiveFactor(), 0.8f);
-            QCOMPARE(backendAdditiveBlend.clipIds().size(), 1);
-            QCOMPARE(backendAdditiveBlend.clipIds().first(), clip.id());
         }
         {
             // WHEN
-            Qt3DAnimation::Animation::AdditiveClipBlend backendAdditiveBlend;
+            AdditiveClipBlend backendAdditiveBlend;
             additiveBlend.setEnabled(false);
             simulateInitialization(&additiveBlend, &backendAdditiveBlend);
 
@@ -96,7 +167,7 @@ private Q_SLOTS:
     void checkSceneChangeEvents()
     {
         // GIVEN
-        Qt3DAnimation::Animation::AdditiveClipBlend backendAdditiveBlend;
+        AdditiveClipBlend backendAdditiveBlend;
         {
             // WHEN
             const bool newValue = false;
@@ -143,33 +214,217 @@ private Q_SLOTS:
         }
     }
 
-    void checkBlend_data()
-    {
-        QTest::addColumn<float>("value1");
-        QTest::addColumn<float>("value2");
-        QTest::addColumn<float>("blendFactor");
-        QTest::addColumn<float>("result");
-
-        QTest::newRow("0_blending") << 8.0f << 5.0f << 0.0f << 8.0f;
-        QTest::newRow("0.5_blending") << 8.0f << 5.0f << 0.5f << 10.5f;
-        QTest::newRow("1_blending") << 8.0f << 5.0f << 1.0f << 13.0f;
-    }
-
-    void checkBlend()
+    void checkDependencyIds()
     {
         // GIVEN
-        QFETCH(float, value1);
-        QFETCH(float, value2);
-        QFETCH(float, blendFactor);
-        QFETCH(float, result);
-        Qt3DAnimation::Animation::AdditiveClipBlend addBlend;
+        AdditiveClipBlend addBlend;
+        auto baseClipId = Qt3DCore::QNodeId::createId();
+        auto additiveClipId = Qt3DCore::QNodeId::createId();
 
         // WHEN
-        addBlend.setAdditiveFactor(blendFactor);
-        const float computed = addBlend.blend(value1, value2);
+        addBlend.setBaseClipId(baseClipId);
+        addBlend.setAdditiveClipId(additiveClipId);
+        QVector<Qt3DCore::QNodeId> actualIds = addBlend.currentDependencyIds();
 
         // THEN
-        QCOMPARE(computed, result);
+        QCOMPARE(actualIds.size(), 2);
+        QCOMPARE(actualIds[0], baseClipId);
+        QCOMPARE(actualIds[1], additiveClipId);
+
+        // WHEN
+        auto anotherAdditiveClipId = Qt3DCore::QNodeId::createId();
+        addBlend.setAdditiveClipId(anotherAdditiveClipId);
+        actualIds = addBlend.currentDependencyIds();
+
+        // THEN
+        QCOMPARE(actualIds.size(), 2);
+        QCOMPARE(actualIds[0], baseClipId);
+        QCOMPARE(actualIds[1], anotherAdditiveClipId);
+    }
+
+    void checkDuration()
+    {
+        // GIVEN
+        auto handler = new Handler();
+        const double expectedDuration = 123.5;
+        const double baseNodeDuration = expectedDuration;
+        const double additiveNodeDuration = 5.0;
+
+        auto baseNode = createTestBlendNode(handler, baseNodeDuration);
+        auto additiveNode = createTestBlendNode(handler, additiveNodeDuration);
+
+        AdditiveClipBlend blendNode;
+        blendNode.setHandler(handler);
+        blendNode.setClipBlendNodeManager(handler->clipBlendNodeManager());
+        blendNode.setBaseClipId(baseNode->peerId());
+        blendNode.setAdditiveClipId(additiveNode->peerId());
+
+        // WHEN
+        double actualDuration = blendNode.duration();
+
+        // THEN
+        QCOMPARE(actualDuration, expectedDuration);
+    }
+
+    void checkDoBlend_data()
+    {
+        QTest::addColumn<Handler *>("handler");
+        QTest::addColumn<AdditiveClipBlend *>("blendNode");
+        QTest::addColumn<Qt3DCore::QNodeId>("animatorId");
+        QTest::addColumn<ClipResults>("expectedResults");
+
+        {
+            auto handler = new Handler();
+
+            const qint64 globalStartTimeNS = 0;
+            const int loopCount = 1;
+            auto animator = createBlendedClipAnimator(handler, globalStartTimeNS, loopCount);
+
+            const double duration = 1.0;
+            auto baseNode = createTestBlendNode(handler, duration);
+            baseNode->setClipResults(animator->peerId(), { 0.0f, 0.0f, 0.0f });
+            auto additiveNode = createTestBlendNode(handler, duration);
+            additiveNode->setClipResults(animator->peerId(), { 1.0f, 1.0f, 1.0f });
+
+            const float additiveFactor = 0.0f;
+            auto blendNode = createAdditiveClipBlendNode(handler, additiveFactor);
+            blendNode->setBaseClipId(baseNode->peerId());
+            blendNode->setAdditiveClipId(additiveNode->peerId());
+            blendNode->setAdditiveFactor(additiveFactor);
+
+            ClipResults expectedResults = { 0.0f, 0.0f, 0.0f };
+
+            QTest::addRow("unit additive, beta = 0.0")
+                    << handler << blendNode << animator->peerId() << expectedResults;
+        }
+
+        {
+            auto handler = new Handler();
+
+            const qint64 globalStartTimeNS = 0;
+            const int loopCount = 1;
+            auto animator = createBlendedClipAnimator(handler, globalStartTimeNS, loopCount);
+
+            const double duration = 1.0;
+            auto baseNode = createTestBlendNode(handler, duration);
+            baseNode->setClipResults(animator->peerId(), { 0.0f, 0.0f, 0.0f });
+            auto additiveNode = createTestBlendNode(handler, duration);
+            additiveNode->setClipResults(animator->peerId(), { 1.0f, 1.0f, 1.0f });
+
+            const float additiveFactor = 0.5f;
+            auto blendNode = createAdditiveClipBlendNode(handler, additiveFactor);
+            blendNode->setBaseClipId(baseNode->peerId());
+            blendNode->setAdditiveClipId(additiveNode->peerId());
+            blendNode->setAdditiveFactor(additiveFactor);
+
+            ClipResults expectedResults = { 0.5f, 0.5f, 0.5f };
+
+            QTest::addRow("unit additive, beta = 0.5")
+                    << handler << blendNode << animator->peerId() << expectedResults;
+        }
+
+        {
+            auto handler = new Handler();
+
+            const qint64 globalStartTimeNS = 0;
+            const int loopCount = 1;
+            auto animator = createBlendedClipAnimator(handler, globalStartTimeNS, loopCount);
+
+            const double duration = 1.0;
+            auto baseNode = createTestBlendNode(handler, duration);
+            baseNode->setClipResults(animator->peerId(), { 0.0f, 0.0f, 0.0f });
+            auto additiveNode = createTestBlendNode(handler, duration);
+            additiveNode->setClipResults(animator->peerId(), { 1.0f, 1.0f, 1.0f });
+
+            const float additiveFactor = 1.0f;
+            auto blendNode = createAdditiveClipBlendNode(handler, additiveFactor);
+            blendNode->setBaseClipId(baseNode->peerId());
+            blendNode->setAdditiveClipId(additiveNode->peerId());
+            blendNode->setAdditiveFactor(additiveFactor);
+
+            ClipResults expectedResults = { 1.0f, 1.0f, 1.0f };
+
+            QTest::addRow("unit additive, beta = 1.0")
+                    << handler << blendNode << animator->peerId() << expectedResults;
+        }
+
+        {
+            auto handler = new Handler();
+
+            const qint64 globalStartTimeNS = 0;
+            const int loopCount = 1;
+            auto animator = createBlendedClipAnimator(handler, globalStartTimeNS, loopCount);
+
+            const double duration = 1.0;
+            auto baseNode = createTestBlendNode(handler, duration);
+            baseNode->setClipResults(animator->peerId(), { 0.0f, 1.0f, 2.0f });
+            auto additiveNode = createTestBlendNode(handler, duration);
+            additiveNode->setClipResults(animator->peerId(), { 1.0f, 2.0f, 3.0f });
+
+            const float blendFactor = 0.5f;
+            auto blendNode = createAdditiveClipBlendNode(handler, blendFactor);
+            blendNode->setBaseClipId(baseNode->peerId());
+            blendNode->setAdditiveClipId(additiveNode->peerId());
+            blendNode->setAdditiveFactor(blendFactor);
+
+            ClipResults expectedResults = { 0.5f, 2.0f, 3.5f };
+
+            QTest::addRow("lerp varying data, beta = 0.5")
+                    << handler << blendNode << animator->peerId() << expectedResults;
+        }
+
+        {
+            auto handler = new Handler();
+
+            const qint64 globalStartTimeNS = 0;
+            const int loopCount = 1;
+            auto animator = createBlendedClipAnimator(handler, globalStartTimeNS, loopCount);
+
+            const double duration = 1.0;
+            const int dataCount = 1000;
+            ClipResults baseData(dataCount);
+            ClipResults additiveData(dataCount);
+            ClipResults expectedResults(dataCount);
+            for (int i = 0; i < dataCount; ++i) {
+                baseData[i] = float(i);
+                additiveData[i] = 2.0f * float(i);
+                expectedResults[i] = 2.0f * float(i);
+            }
+            auto baseNode = createTestBlendNode(handler, duration);
+            baseNode->setClipResults(animator->peerId(), baseData);
+            auto additiveNode = createTestBlendNode(handler, duration);
+            additiveNode->setClipResults(animator->peerId(), additiveData);
+
+            const float blendFactor = 0.5f;
+            auto blendNode = createAdditiveClipBlendNode(handler, blendFactor);
+            blendNode->setBaseClipId(baseNode->peerId());
+            blendNode->setAdditiveClipId(additiveNode->peerId());
+            blendNode->setAdditiveFactor(blendFactor);
+
+            QTest::addRow("lerp lots of data, beta = 0.5")
+                    << handler << blendNode << animator->peerId() << expectedResults;
+        }
+    }
+
+    void checkDoBlend()
+    {
+        // GIVEN
+        QFETCH(Handler *, handler);
+        QFETCH(AdditiveClipBlend *, blendNode);
+        QFETCH(Qt3DCore::QNodeId, animatorId);
+        QFETCH(ClipResults, expectedResults);
+
+        // WHEN
+        blendNode->blend(animatorId);
+
+        // THEN
+        const ClipResults actualResults = blendNode->clipResults(animatorId);
+        QCOMPARE(actualResults.size(), expectedResults.size());
+        for (int i = 0; i < actualResults.size(); ++i)
+            QCOMPARE(actualResults[i], expectedResults[i]);
+
+        // Cleanup
+        delete handler;
     }
 };
 

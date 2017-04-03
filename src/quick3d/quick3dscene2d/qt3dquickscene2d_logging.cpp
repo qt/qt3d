@@ -41,7 +41,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Quick {
 
-Q_LOGGING_CATEGORY(Scene2D, "Qt3D.Scene2D")
+Q_LOGGING_CATEGORY(Scene2D, "Qt3D.Scene2D", QtWarningMsg)
 
 } // Quick
 } // Qt3DRender

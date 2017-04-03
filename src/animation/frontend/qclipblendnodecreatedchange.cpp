@@ -45,8 +45,6 @@ namespace Qt3DAnimation {
 
 QClipBlendNodeCreatedChangeBasePrivate::QClipBlendNodeCreatedChangeBasePrivate(const QAbstractClipBlendNode *node)
     : Qt3DCore::QNodeCreatedChangeBasePrivate(node)
-    , m_parentClipBlendNodeId(Qt3DCore::qIdForNode(node->parentClipBlendNode()))
-    , m_clips(Qt3DCore::qIdsForNodes(node->clips()))
 {
 }
 
@@ -58,19 +56,6 @@ QClipBlendNodeCreatedChangeBase::QClipBlendNodeCreatedChangeBase(const QAbstract
 QClipBlendNodeCreatedChangeBase::~QClipBlendNodeCreatedChangeBase()
 {
 }
-
-Qt3DCore::QNodeId QClipBlendNodeCreatedChangeBase::parentClipBlendNodeId() const
-{
-    Q_D(const QClipBlendNodeCreatedChangeBase);
-    return d->m_parentClipBlendNodeId;
-}
-
-Qt3DCore::QNodeIdVector QClipBlendNodeCreatedChangeBase::clips() const
-{
-    Q_D(const QClipBlendNodeCreatedChangeBase);
-    return d->m_clips;
-}
-
 
 } // Qt3DAnimation
 

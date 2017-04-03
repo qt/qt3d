@@ -76,7 +76,7 @@ void FindRunningClipAnimatorsJob::run()
             const AnimationClipLoader *clip = m_handler->animationClipLoaderManager()->lookupResource(clipAnimator->clipId());
             const ChannelMapper *mapper = m_handler->channelMapperManager()->lookupResource(clipAnimator->mapperId());
             Q_ASSERT(clip && mapper);
-            const QVector<AnimationUtils::MappingData> mappingData = AnimationUtils::buildPropertyMappings(m_handler, clip, mapper);
+            const QVector<MappingData> mappingData = buildPropertyMappings(m_handler, clip, mapper);
             clipAnimator->setMappingData(mappingData);
         }
     }

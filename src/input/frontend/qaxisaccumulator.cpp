@@ -39,6 +39,7 @@
 
 #include "qaxisaccumulator.h"
 #include "qaxisaccumulator_p.h"
+
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
@@ -248,7 +249,7 @@ void QAxisAccumulator::setSourceAxis(QAxis *sourceAxis)
 }
 
 /*!
-    Sets how the accumulator treats the values originating from the source axis.
+    Sets how the accumulator treats the values originating from the \a sourceAxisType.
  */
 void QAxisAccumulator::setSourceAxisType(QAxisAccumulator::SourceAxisType sourceAxisType)
 {

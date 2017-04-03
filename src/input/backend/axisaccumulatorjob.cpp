@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "axisaccumulatorjob_p.h"
+
 #include <Qt3DInput/private/axisaccumulator_p.h>
 #include <Qt3DInput/private/job_common_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>

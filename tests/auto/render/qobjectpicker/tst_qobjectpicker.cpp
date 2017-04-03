@@ -105,7 +105,6 @@ private Q_SLOTS:
         // GIVEN
         TestArbiter arbiter;
         QScopedPointer<Qt3DRender::QObjectPicker> objectPicker(new Qt3DRender::QObjectPicker());
-        QScopedPointer<Qt3DRender::QEventForward> eventForward(new Qt3DRender::QEventForward());
         arbiter.setArbiterOnNode(objectPicker.data());
 
         // WHEN
@@ -117,19 +116,6 @@ private Q_SLOTS:
         Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.last().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "hoverEnabled");
         QCOMPARE(change->value().toBool(), true);
-        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-
-        arbiter.events.clear();
-
-        // WHEN
-        objectPicker->setEventForward(eventForward.data());
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.last().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "eventForward");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), eventForward->id());
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();

@@ -51,8 +51,8 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
 #include <Qt3DInput/qmouseevent.h>
+#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
