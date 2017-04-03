@@ -45,10 +45,10 @@ DefaultSceneEntity {
                 blendTree: LerpClipBlend {
                     blendFactor: 0.2
                     startClip: ClipBlendValue {
-                        clip: AnimationClip { source: "sliding-cube.json" }
+                        clip: AnimationClipLoader { source: "sliding-cube.json" }
                     }
                     endClip: ClipBlendValue {
-                        clip: AnimationClip { source: "sliding-pulsing-cube.json" }
+                        clip: AnimationClipLoader { source: "sliding-pulsing-cube.json" }
                     }
                 }
 
