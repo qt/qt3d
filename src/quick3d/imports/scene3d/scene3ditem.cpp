@@ -47,7 +47,11 @@
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
+
+#include <QtGui/qguiapplication.h>
+#include <QtGui/qoffscreensurface.h>
 #include <QtQuick/qquickwindow.h>
+#include <QtQuick/qquickrendercontrol.h>
 
 #include <Qt3DRender/private/qrendersurfaceselector_p.h>
 #include <scene3dcleaner_p.h>
@@ -201,8 +205,22 @@ void Scene3DItem::setWindowSurface(QObject *rootObject)
 
     // Set the item's window surface if it appears
     // the surface wasn't set on the surfaceSelector
-    if (surfaceSelector && !surfaceSelector->surface())
-        surfaceSelector->setSurface(this->window());
+    if (surfaceSelector && !surfaceSelector->surface()) {
+        // We may not have a real, exposed QQuickWindow when the Quick rendering
+        // is redirected via QQuickRenderControl (f.ex. QQuickWidget).
+        if (QWindow *rw = QQuickRenderControl::renderWindowFor(this->window())) {
+            // rw is the top-level window that is backed by a native window. Do
+            // not use that though since we must not clash with e.g. the widget
+            // backingstore compositor in the gui thread.
+            m_dummySurface = new QOffscreenSurface;
+            m_dummySurface->setParent(qGuiApp); // parent to something suitably long-living
+            m_dummySurface->setFormat(rw->format());
+            m_dummySurface->create();
+            surfaceSelector->setSurface(m_dummySurface);
+        } else {
+            surfaceSelector->setSurface(this->window());
+        }
+    }
 }
 
 void Scene3DItem::setItemArea(const QSize &area)

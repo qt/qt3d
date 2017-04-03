@@ -56,6 +56,8 @@
 
 QT_BEGIN_NAMESPACE
 
+class QOffscreenSurface;
+
 namespace Qt3DCore {
 class QAspectEngine;
 class QEntity;
@@ -131,6 +133,7 @@ private:
 
     QPointer<Qt3DRender::QCamera> m_camera;
     CameraAspectRatioMode m_cameraAspectRatioMode;
+    QOffscreenSurface *m_dummySurface;
 };
 
 } // Qt3DRender
