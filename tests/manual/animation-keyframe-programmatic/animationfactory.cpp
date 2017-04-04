@@ -48,69 +48,38 @@
 **
 ****************************************************************************/
 
-import Qt3D.Core 2.0
-import Qt3D.Render 2.0
-import Qt3D.Input 2.0
-import Qt3D.Animation 2.9
-import Qt3D.Extras 2.0
+#include "animationfactory.h"
 
-DefaultSceneEntity {
-    id: scene
+using namespace Qt3DAnimation;
 
-    Entity {
-        id: cube
+AnimationFactory::AnimationFactory(QObject *parent)
+    : QObject(parent)
+{
+    updateClipData();
+}
 
-        components: [
-            Transform {
-                id: cubeTransform
+void AnimationFactory::updateClipData()
+{
+    m_clipData.clearChannels();
 
-                onTranslationChanged: console.log("t = " + translation)
-            },
-            CuboidMesh {
-            },
-            PhongMaterial {
-                id: cubeMaterial
-                ambient: Qt.rgba(0.02, 0.02, 0.02, 1.0)
-                diffuse: "blue"
-                shininess: 50
-            },
-            ObjectPicker {
-                onClicked: animator.running = true
-            },
-            ClipAnimator {
-                id: animator
-                loops: 3
-                onRunningChanged: console.log("running = " + running)
+    // Add a channel for a Location animation
+    QChannel location(QLatin1String("Location"));
 
-                clip: AnimationClip {
-                    clipData: _animationFactory.clipData
-                    onDurationChanged: console.log("duration = " + duration)
-                }
+    QChannelComponent locationX(QLatin1String("Location X"));
+    locationX.appendKeyFrame(QKeyFrame({0.0f, 0.0f}, {-1.0f, 0.0f}, {1.0f, 0.0f}));
+    locationX.appendKeyFrame(QKeyFrame({2.45f, 5.0f}, {1.45f, 5.0f}, {3.45f, 5.0f}));
 
-                // By default introspect parent Entity and try
-                // to map fcurve groups to properties of QTransform
-                // mapping: AutomaticAnimationMapping {}
+    QChannelComponent locationY(QLatin1String("Location Y"));
+    locationY.appendKeyFrame(QKeyFrame({0.0f, 0.0f}, {-1.0f, 0.0f}, {1.0f, 0.0f}));
+    locationY.appendKeyFrame(QKeyFrame({2.45f, 0.0f}, {1.45f, 0.0f}, {3.45f, 0.0f}));
 
-                // To do more, we can be explicit
-                channelMapper: ChannelMapper {
-                    mappings: [
-                        ChannelMapping { channelName: "Location"; target: cubeTransform; property: "translation" },
-                        ChannelMapping { channelName: "Rotation"; target: cubeTransform; property: "rotation" },
-                        ChannelMapping { channelName: "Diffuse Color"; target: cubeMaterial; property: "diffuse" }
-                    ]
-                }
-            }
-        ]
-    }
+    QChannelComponent locationZ(QLatin1String("Location Z"));
+    locationZ.appendKeyFrame(QKeyFrame({0.0f, 0.0f}, {-1.0f, 0.0f}, {1.0f, 0.0f}));
+    locationZ.appendKeyFrame(QKeyFrame({2.45f, 0.0f}, {1.45f, 0.0f}, {3.45f, 0.0f}));
 
-    camera: Camera {
-        position: Qt.vector3d(10, 3, 15)
-        viewCenter: Qt.vector3d(2.5, 1, 0)
-    }
+    location.appendChannelComponent(locationX);
+    location.appendChannelComponent(locationY);
+    location.appendChannelComponent(locationZ);
 
-    OrbitCameraController {
-        camera: scene.camera
-        linearSpeed: 8
-        lookSpeed: 180
-    }
+    m_clipData.appendChannel(location);
 }
