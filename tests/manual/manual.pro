@@ -46,7 +46,8 @@ SUBDIRS += \
     animation-keyframe-blendtree \
     distancefieldtext \
     mesh-morphing \
-    anim-viewer
+    anim-viewer \
+    animation-keyframe-programmatic
 
 qtHaveModule(widgets): {
     SUBDIRS += \
