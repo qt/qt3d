@@ -90,7 +90,8 @@ public:
 public Q_SLOTS:
     void render();
     void shutdown();
-    void onWindowChangedQueued(QQuickWindow *w);
+    void onSceneGraphInvalidated();
+    void onWindowChanged(QQuickWindow *w);
 
 private:
     Scene3DItem *m_item; // Will be released by the QQuickWindow/QML Engine
@@ -104,6 +105,7 @@ private:
     QSize m_lastSize;
     bool m_multisample;
     bool m_lastMultisample;
+    bool m_needsShutdown;
 
     friend class Scene3DCleaner;
 };
