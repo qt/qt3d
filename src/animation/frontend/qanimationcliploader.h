@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QANIMATIONCLIP_H
-#define QT3DANIMATION_QANIMATIONCLIP_H
+#ifndef QT3DANIMATION_QANIMATIONCLIPLOADER_H
+#define QT3DANIMATION_QANIMATIONCLIPLOADER_H
 
 #include <Qt3DAnimation/qt3danimation_global.h>
 #include <Qt3DAnimation/qabstractanimationclip.h>
@@ -87,4 +87,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_QANIMATIONCLIP_H
+#endif // QT3DANIMATION_QANIMATIONCLIPLOADER_H
