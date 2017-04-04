@@ -42,7 +42,9 @@ HEADERS += \
     $$PWD/qanimationclipdata.h \
     $$PWD/qchannel.h \
     $$PWD/qchannelcomponent.h \
-    $$PWD/qkeyframe.h
+    $$PWD/qkeyframe.h \
+    $$PWD/qanimationclip.h \
+    $$PWD/qanimationclip_p.h
 
 SOURCES += \
     $$PWD/qanimationaspect.cpp \
@@ -68,6 +70,7 @@ SOURCES += \
     $$PWD/qanimationclipdata.cpp \
     $$PWD/qchannel.cpp \
     $$PWD/qchannelcomponent.cpp \
-    $$PWD/qkeyframe.cpp
+    $$PWD/qkeyframe.cpp \
+    $$PWD/qanimationclip.cpp
 
 INCLUDEPATH += $$PWD
