@@ -42,7 +42,7 @@
 #include <QMainWindow>
 #include <QQuickWidget>
 #include <QMdiArea>
-#include <QLcdNumber>
+#include <QLCDNumber>
 #include <QMenuBar>
 
 int main(int argc, char **argv)
