@@ -68,6 +68,8 @@ public:
     void removeChannel(int index);
     void clearChannels();
 
+    bool isValid() const Q_DECL_NOTHROW;
+
     // Iterator API
     typedef const QChannel *const_iterator;
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;

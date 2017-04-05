@@ -70,7 +70,7 @@ public:
 
 struct QAnimationClipChangeData
 {
-    // TODO: Add members that should be sent to the backend
+    QAnimationClipData clipData;
 };
 
 } // namespace Qt3DAnimation

@@ -85,7 +85,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAnimationClip::createNodeCreationChange() c
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAnimationClipChangeData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QAnimationClip);
-    // TODO: Send data members in creation change
+    data.clipData = d->m_clipData;
     return creationChange;
 }
 

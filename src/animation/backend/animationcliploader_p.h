@@ -49,6 +49,7 @@
 //
 
 #include <Qt3DAnimation/private/backendnode_p.h>
+#include <Qt3DAnimation/qanimationclipdata.h>
 #include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/private/fcurve_p.h>
 #include <QtCore/qurl.h>
@@ -91,6 +92,8 @@ private:
 
     QUrl m_source;
     QAnimationClipLoader::Status m_status;
+
+    QAnimationClipData m_clipData;
 
     QString m_name;
     QVector<Channel> m_channels;

@@ -109,6 +109,12 @@ void QAnimationClipData::clearChannels()
     d->m_channels.clear();
 }
 
+bool QAnimationClipData::isValid() const Q_DECL_NOTHROW
+{
+    // TODO: Perform more thorough checks
+    return !d->m_channels.isEmpty();
+}
+
 QAnimationClipData::const_iterator QAnimationClipData::begin() const Q_DECL_NOTHROW
 {
     return d->m_channels.begin();
@@ -118,6 +124,7 @@ QAnimationClipData::const_iterator QAnimationClipData::end() const Q_DECL_NOTHRO
 {
     return d->m_channels.end();
 }
+
 
 bool operator==(const QAnimationClipData &lhs, const QAnimationClipData &rhs) Q_DECL_NOTHROW
 {

@@ -35,7 +35,9 @@
 ****************************************************************************/
 
 #include "animationcliploader_p.h"
+#include <Qt3DAnimation/qanimationclip.h>
 #include <Qt3DAnimation/qanimationcliploader.h>
+#include <Qt3DAnimation/private/qanimationclip_p.h>
 #include <Qt3DAnimation/private/qanimationcliploader_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
@@ -56,6 +58,7 @@ AnimationClipLoader::AnimationClipLoader()
     : BackendNode(ReadWrite)
     , m_source()
     , m_status(QAnimationClipLoader::NotReady)
+    , m_clipData()
     , m_name()
     , m_channels()
     , m_duration(0.0f)
@@ -64,11 +67,23 @@ AnimationClipLoader::AnimationClipLoader()
 
 void AnimationClipLoader::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAnimationClipLoaderData>>(change);
-    const auto &data = typedChange->data;
-    m_source = data.source;
-    if (!m_source.isEmpty())
-        setDirty(Handler::AnimationClipDirty);
+    const auto loaderTypedChange = qSharedPointerDynamicCast<Qt3DCore::QNodeCreatedChange<QAnimationClipLoaderData>>(change);
+    if (loaderTypedChange) {
+        const auto &data = loaderTypedChange->data;
+        m_source = data.source;
+        if (!m_source.isEmpty())
+            setDirty(Handler::AnimationClipDirty);
+        return;
+    }
+
+    const auto clipTypedChange = qSharedPointerDynamicCast<Qt3DCore::QNodeCreatedChange<QAnimationClipChangeData>>(change);
+    if (clipTypedChange) {
+        const auto &data = clipTypedChange->data;
+        m_clipData = data.clipData;
+        if (m_clipData.isValid())
+            setDirty(Handler::AnimationClipDirty);
+        return;
+    }
 }
 
 void AnimationClipLoader::cleanup()
@@ -76,6 +91,7 @@ void AnimationClipLoader::cleanup()
     setEnabled(false);
     m_handler = nullptr;
     m_source.clear();
+    m_clipData.clearChannels();
     m_status = QAnimationClipLoader::NotReady;
     m_channels.clear();
     m_duration = 0.0f;
@@ -103,6 +119,10 @@ void AnimationClipLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (change->propertyName() == QByteArrayLiteral("source")) {
             m_source = change->value().toUrl();
             setDirty(Handler::AnimationClipDirty);
+        } else if (change->propertyName() == QByteArrayLiteral("clipData")) {
+            m_clipData = change->value().value<Qt3DAnimation::QAnimationClipData>();
+            if (m_clipData.isValid())
+                setDirty(Handler::AnimationClipDirty);
         }
         break;
     }
