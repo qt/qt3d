@@ -142,6 +142,31 @@ void AnimationClipLoader::loadAnimation()
     qCDebug(Jobs) << Q_FUNC_INFO << m_source;
     clearData();
 
+    // Load the data
+    if (!m_source.isEmpty())
+        loadAnimationFromUrl();
+    else
+        loadAnimationFromData();
+
+    // Update the duration
+    const float t = findDuration();
+    setDuration(t);
+
+    m_channelComponentCount = findChannelComponentCount();
+
+    // If using a loader inform the frontend of the status change
+    if (m_source.isEmpty()) {
+        if (qFuzzyIsNull(t) || m_channelComponentCount == 0)
+            setStatus(QAnimationClipLoader::Error);
+        else
+            setStatus(QAnimationClipLoader::Ready);
+    }
+
+    qCDebug(Jobs) << "Loaded animation data:" << *this;
+}
+
+void AnimationClipLoader::loadAnimationFromUrl()
+{
     // TODO: Handle remote files
     QString filePath = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_source);
     QFile file(filePath);
@@ -174,18 +199,15 @@ void AnimationClipLoader::loadAnimation()
         const QJsonObject group = channelsArray.at(i).toObject();
         m_channels[i].read(group);
     }
+}
 
-    const float t = findDuration();
-    setDuration(t);
-
-    m_channelComponentCount = findChannelComponentCount();
-
-    if (qFuzzyIsNull(t) || m_channelComponentCount == 0)
-        setStatus(QAnimationClipLoader::Error);
-    else
-        setStatus(QAnimationClipLoader::Ready);
-
-    qCDebug(Jobs) << "Loaded animation data:" << *this;
+void AnimationClipLoader::loadAnimationFromData()
+{
+    // Reformat data from QAnimationClipData to backend format
+    m_channels.resize(m_clipData.channelCount());
+    int i = 0;
+    for (const auto &frontendChannel : qAsConst(m_clipData))
+        m_channels[i++].setFromQChannel(frontendChannel);
 }
 
 void AnimationClipLoader::setDuration(float duration)

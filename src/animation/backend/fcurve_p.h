@@ -50,6 +50,10 @@
 
 #include "keyframe_p.h"
 #include "functionrangefinder_p.h"
+
+#include <Qt3DAnimation/qchannel.h>
+#include <Qt3DAnimation/qchannelcomponent.h>
+#include <Qt3DAnimation/qkeyframe.h>
 #include <QtCore/qvector.h>
 
 #ifndef QT_NO_DEBUG_STREAM
@@ -81,6 +85,7 @@ public:
     float evaluateAtTime(float localTime) const;
 
     void read(const QJsonObject &json);
+    void setFromQChannelComponent(const QChannelComponent &qcc);
 
 private:
     QVector<float> m_localTimes;
@@ -112,6 +117,7 @@ struct ChannelComponent
     FCurve fcurve;
 
     void read(const QJsonObject &json);
+    void setFromQChannelComponent(const QChannelComponent &qcc);
 };
 
 #ifndef QT_NO_DEBUG_STREAM
@@ -130,6 +136,7 @@ struct Channel
     QVector<ChannelComponent> channelComponents;
 
     void read(const QJsonObject &json);
+    void setFromQChannel(const QChannel &qch);
 };
 
 #ifndef QT_NO_DEBUG_STREAM
