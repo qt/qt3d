@@ -89,9 +89,11 @@ public slots:
 
     void capture()
     {
-        m_reply = m_capture->requestCapture();
-        connection = QObject::connect(m_reply, &Qt3DRender::QRenderCaptureReply::completed,
-                         this, &MyCapture::onCompleted);
+        if (!m_reply) {
+            m_reply = m_capture->requestCapture();
+            connection = QObject::connect(m_reply, &Qt3DRender::QRenderCaptureReply::completed,
+                                          this, &MyCapture::onCompleted);
+        }
     }
 
 private:
