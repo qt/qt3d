@@ -86,7 +86,6 @@ void EvaluateBlendClipAnimatorJob::run()
     // Iterate over the value nodes of the blend tree, evaluate the
     // contained animation clips at the current phase and store the results
     // in the animator indexed by node.
-    // TODO: Handle clips not loaded from file
     AnimationClipLoaderManager *clipLoaderManager = m_handler->animationClipLoaderManager();
     for (const auto valueNodeId : valueNodeIdsToEvaluate) {
         ClipBlendValue *valueNode = static_cast<ClipBlendValue *>(blendNodeManager->lookupNode(valueNodeId));
