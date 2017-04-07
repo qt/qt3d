@@ -97,6 +97,7 @@ private Q_SLOTS:
         Qt3DAnimation::Animation::AnimationClipLoader backendClip;
         Qt3DAnimation::Animation::Handler handler;
         backendClip.setHandler(&handler);
+        backendClip.setDataType(Qt3DAnimation::Animation::AnimationClipLoader::File);
         Qt3DCore::QPropertyUpdatedChangePtr updateChange;
 
         // WHEN

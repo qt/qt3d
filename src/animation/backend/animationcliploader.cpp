@@ -59,6 +59,7 @@ AnimationClipLoader::AnimationClipLoader()
     , m_source()
     , m_status(QAnimationClipLoader::NotReady)
     , m_clipData()
+    , m_dataType(Unknown)
     , m_name()
     , m_channels()
     , m_duration(0.0f)
@@ -70,6 +71,7 @@ void AnimationClipLoader::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeB
     const auto loaderTypedChange = qSharedPointerDynamicCast<Qt3DCore::QNodeCreatedChange<QAnimationClipLoaderData>>(change);
     if (loaderTypedChange) {
         const auto &data = loaderTypedChange->data;
+        m_dataType = File;
         m_source = data.source;
         if (!m_source.isEmpty())
             setDirty(Handler::AnimationClipDirty);
@@ -79,6 +81,7 @@ void AnimationClipLoader::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeB
     const auto clipTypedChange = qSharedPointerDynamicCast<Qt3DCore::QNodeCreatedChange<QAnimationClipChangeData>>(change);
     if (clipTypedChange) {
         const auto &data = clipTypedChange->data;
+        m_dataType = Data;
         m_clipData = data.clipData;
         if (m_clipData.isValid())
             setDirty(Handler::AnimationClipDirty);
@@ -93,6 +96,7 @@ void AnimationClipLoader::cleanup()
     m_source.clear();
     m_clipData.clearChannels();
     m_status = QAnimationClipLoader::NotReady;
+    m_dataType = Unknown;
     m_channels.clear();
     m_duration = 0.0f;
 
@@ -117,9 +121,11 @@ void AnimationClipLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     case Qt3DCore::PropertyUpdated: {
         const auto change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("source")) {
+            Q_ASSERT(m_dataType == File);
             m_source = change->value().toUrl();
             setDirty(Handler::AnimationClipDirty);
         } else if (change->propertyName() == QByteArrayLiteral("clipData")) {
+            Q_ASSERT(m_dataType == Data);
             m_clipData = change->value().value<Qt3DAnimation::QAnimationClipData>();
             if (m_clipData.isValid())
                 setDirty(Handler::AnimationClipDirty);
@@ -143,10 +149,18 @@ void AnimationClipLoader::loadAnimation()
     clearData();
 
     // Load the data
-    if (!m_source.isEmpty())
+    switch (m_dataType) {
+    case File:
         loadAnimationFromUrl();
-    else
+        break;
+
+    case Data:
         loadAnimationFromData();
+        break;
+
+    default:
+        Q_UNREACHABLE();
+    }
 
     // Update the duration
     const float t = findDuration();

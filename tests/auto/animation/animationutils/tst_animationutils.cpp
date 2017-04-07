@@ -163,6 +163,7 @@ public:
         auto clipId = Qt3DCore::QNodeId::createId();
         AnimationClipLoader *clip = handler->animationClipLoaderManager()->getOrCreateResource(clipId);
         setPeerId(clip, clipId);
+        clip->setDataType(AnimationClipLoader::File);
         clip->setSource(source);
         clip->loadAnimation();
         return clip;
@@ -2367,6 +2368,7 @@ private Q_SLOTS:
             targetIndices.push_back({ 11 });
 
             auto *clip = new AnimationClipLoader();
+            clip->setDataType(AnimationClipLoader::File);
             clip->setSource(QUrl("qrc:/clip3.json"));
             clip->loadAnimation();
 
@@ -2396,6 +2398,7 @@ private Q_SLOTS:
             targetIndices.push_back({ 11 });
 
             auto *clip = new AnimationClipLoader();
+            clip->setDataType(AnimationClipLoader::File);
             clip->setSource(QUrl("qrc:/clip3.json"));
             clip->loadAnimation();
 
@@ -2425,6 +2428,7 @@ private Q_SLOTS:
             targetIndices.push_back({ 11 });
 
             auto *clip = new AnimationClipLoader();
+            clip->setDataType(AnimationClipLoader::File);
             clip->setSource(QUrl("qrc:/clip3.json"));
             clip->loadAnimation();
 
@@ -2454,6 +2458,7 @@ private Q_SLOTS:
             targetIndices.push_back({ 11 });
 
             auto *clip = new AnimationClipLoader();
+            clip->setDataType(AnimationClipLoader::File);
             clip->setSource(QUrl("qrc:/clip3.json"));
             clip->loadAnimation();
 
