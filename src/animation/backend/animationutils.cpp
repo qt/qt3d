@@ -84,7 +84,7 @@ int componentsForType(int type)
     return componentCount;
 }
 
-ClipEvaluationData evaluationDataForClip(AnimationClipLoader *clip,
+ClipEvaluationData evaluationDataForClip(AnimationClip *clip,
                                          const AnimatorEvaluationData &animatorData)
 {
     // global time values expected in seconds
@@ -185,7 +185,7 @@ ComponentIndices channelComponentsToIndicesHelper(const Channel &channel,
     return indices;
 }
 
-ClipResults evaluateClipAtLocalTime(AnimationClipLoader *clip, float localTime)
+ClipResults evaluateClipAtLocalTime(AnimationClip *clip, float localTime)
 {
     QVector<float> channelResults;
     Q_ASSERT(clip);
@@ -203,7 +203,7 @@ ClipResults evaluateClipAtLocalTime(AnimationClipLoader *clip, float localTime)
     return channelResults;
 }
 
-ClipResults evaluateClipAtPhase(AnimationClipLoader *clip, float phase)
+ClipResults evaluateClipAtPhase(AnimationClip *clip, float phase)
 {
     // Calculate the clip local time from the phase and clip duration
     const double localTime = phase * clip->duration();
@@ -293,7 +293,7 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
 //TODO: Remove this and use new implementation below for both the unblended
 //      and blended animation cases.
 QVector<MappingData> buildPropertyMappings(Handler *handler,
-                                           const AnimationClipLoader *clip,
+                                           const AnimationClip *clip,
                                            const ChannelMapper *mapper)
 {
     QVector<MappingData> mappingDataVec;
@@ -468,7 +468,7 @@ QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
 
 ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &targetChannels,
                                            const QVector<ComponentIndices> &targetIndices,
-                                           const AnimationClipLoader *clip)
+                                           const AnimationClip *clip)
 {
     Q_ASSERT(targetChannels.size() == targetIndices.size());
 

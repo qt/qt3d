@@ -27,7 +27,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DAnimation/private/animationcliploader_p.h>
+#include <Qt3DAnimation/private/animationclip_p.h>
 #include <Qt3DAnimation/private/animationutils_p.h>
 #include <Qt3DAnimation/private/blendedclipanimator_p.h>
 #include <Qt3DAnimation/private/channelmapper_p.h>
@@ -51,7 +51,7 @@ using namespace Qt3DAnimation::Animation;
 Q_DECLARE_METATYPE(Qt3DAnimation::Animation::Handler*)
 Q_DECLARE_METATYPE(QVector<ChannelMapping *>)
 Q_DECLARE_METATYPE(ChannelMapper *)
-Q_DECLARE_METATYPE(AnimationClipLoader *)
+Q_DECLARE_METATYPE(AnimationClip *)
 Q_DECLARE_METATYPE(QVector<MappingData>)
 Q_DECLARE_METATYPE(QVector<Qt3DCore::QPropertyUpdatedChangePtr>)
 Q_DECLARE_METATYPE(Channel)
@@ -157,13 +157,13 @@ public:
         return channelMapper;
     }
 
-    AnimationClipLoader *createAnimationClipLoader(Handler *handler,
+    AnimationClip *createAnimationClipLoader(Handler *handler,
                                                    const QUrl &source)
     {
         auto clipId = Qt3DCore::QNodeId::createId();
-        AnimationClipLoader *clip = handler->animationClipLoaderManager()->getOrCreateResource(clipId);
+        AnimationClip *clip = handler->animationClipLoaderManager()->getOrCreateResource(clipId);
         setPeerId(clip, clipId);
-        clip->setDataType(AnimationClipLoader::File);
+        clip->setDataType(AnimationClip::File);
         clip->setSource(source);
         clip->loadAnimation();
         return clip;
@@ -243,7 +243,7 @@ private Q_SLOTS:
         QTest::addColumn<Handler *>("handler");
         QTest::addColumn<QVector<ChannelMapping *>>("channelMappings");
         QTest::addColumn<ChannelMapper *>("channelMapper");
-        QTest::addColumn<AnimationClipLoader *>("clip");
+        QTest::addColumn<AnimationClip *>("clip");
         QTest::addColumn<QVector<MappingData>>("expectedMappingData");
 
         auto handler = new Handler;
@@ -283,7 +283,7 @@ private Q_SLOTS:
         QFETCH(Handler *, handler);
         QFETCH(QVector<ChannelMapping *>, channelMappings);
         QFETCH(ChannelMapper *, channelMapper);
-        QFETCH(AnimationClipLoader *, clip);
+        QFETCH(AnimationClip *, clip);
         QFETCH(QVector<MappingData>, expectedMappingData);
 
         // WHEN
@@ -1079,12 +1079,12 @@ private Q_SLOTS:
     void checkEvaluateClipAtLocalTime_data()
     {
         QTest::addColumn<Handler *>("handler");
-        QTest::addColumn<AnimationClipLoader *>("clip");
+        QTest::addColumn<AnimationClip *>("clip");
         QTest::addColumn<float>("localTime");
         QTest::addColumn<ClipResults>("expectedResults");
 
         Handler *handler;
-        AnimationClipLoader *clip;
+        AnimationClip *clip;
         float localTime;
         ClipResults expectedResults;
 
@@ -1163,7 +1163,7 @@ private Q_SLOTS:
     {
         // GIVEN
         QFETCH(Handler *, handler);
-        QFETCH(AnimationClipLoader *, clip);
+        QFETCH(AnimationClip *, clip);
         QFETCH(float, localTime);
         QFETCH(ClipResults, expectedResults);
 
@@ -1186,12 +1186,12 @@ private Q_SLOTS:
     void checkEvaluateClipAtPhase_data()
     {
         QTest::addColumn<Handler *>("handler");
-        QTest::addColumn<AnimationClipLoader *>("clip");
+        QTest::addColumn<AnimationClip *>("clip");
         QTest::addColumn<float>("phase");
         QTest::addColumn<ClipResults>("expectedResults");
 
         Handler *handler;
-        AnimationClipLoader *clip;
+        AnimationClip *clip;
         float phase;
         ClipResults expectedResults;
 
@@ -1270,7 +1270,7 @@ private Q_SLOTS:
     {
         // GIVEN
         QFETCH(Handler *, handler);
-        QFETCH(AnimationClipLoader *, clip);
+        QFETCH(AnimationClip *, clip);
         QFETCH(float, phase);
         QFETCH(ClipResults, expectedResults);
 
@@ -1580,12 +1580,12 @@ private Q_SLOTS:
     void checkEvaluationDataForClip_data()
     {
         QTest::addColumn<Handler *>("handler");
-        QTest::addColumn<AnimationClipLoader *>("clip");
+        QTest::addColumn<AnimationClip *>("clip");
         QTest::addColumn<AnimatorEvaluationData>("animatorData");
         QTest::addColumn<ClipEvaluationData>("expectedClipData");
 
         Handler *handler;
-        AnimationClipLoader *clip;
+        AnimationClip *clip;
         AnimatorEvaluationData animatorData;
         ClipEvaluationData clipData;
 
@@ -1678,7 +1678,7 @@ private Q_SLOTS:
     {
         // GIVEN
         QFETCH(Handler *, handler);
-        QFETCH(AnimationClipLoader *, clip);
+        QFETCH(AnimationClip *, clip);
         QFETCH(AnimatorEvaluationData, animatorData);
         QFETCH(ClipEvaluationData, expectedClipData);
 
@@ -2349,7 +2349,7 @@ private Q_SLOTS:
     {
         QTest::addColumn<QVector<ChannelNameAndType>>("targetChannels");
         QTest::addColumn<QVector<ComponentIndices>>("targetIndices");
-        QTest::addColumn<AnimationClipLoader *>("clip");
+        QTest::addColumn<AnimationClip *>("clip");
         QTest::addColumn<ComponentIndices>("expectedResults");
 
         {
@@ -2367,8 +2367,8 @@ private Q_SLOTS:
             targetIndices.push_back({ 10 });
             targetIndices.push_back({ 11 });
 
-            auto *clip = new AnimationClipLoader();
-            clip->setDataType(AnimationClipLoader::File);
+            auto *clip = new AnimationClip();
+            clip->setDataType(AnimationClip::File);
             clip->setSource(QUrl("qrc:/clip3.json"));
             clip->loadAnimation();
 
@@ -2397,8 +2397,8 @@ private Q_SLOTS:
             targetIndices.push_back({ 10 });
             targetIndices.push_back({ 11 });
 
-            auto *clip = new AnimationClipLoader();
-            clip->setDataType(AnimationClipLoader::File);
+            auto *clip = new AnimationClip();
+            clip->setDataType(AnimationClip::File);
             clip->setSource(QUrl("qrc:/clip3.json"));
             clip->loadAnimation();
 
@@ -2427,8 +2427,8 @@ private Q_SLOTS:
             targetIndices.push_back({ 10 });
             targetIndices.push_back({ 11 });
 
-            auto *clip = new AnimationClipLoader();
-            clip->setDataType(AnimationClipLoader::File);
+            auto *clip = new AnimationClip();
+            clip->setDataType(AnimationClip::File);
             clip->setSource(QUrl("qrc:/clip3.json"));
             clip->loadAnimation();
 
@@ -2457,8 +2457,8 @@ private Q_SLOTS:
             targetIndices.push_back({ 10 });
             targetIndices.push_back({ 11 });
 
-            auto *clip = new AnimationClipLoader();
-            clip->setDataType(AnimationClipLoader::File);
+            auto *clip = new AnimationClip();
+            clip->setDataType(AnimationClip::File);
             clip->setSource(QUrl("qrc:/clip3.json"));
             clip->loadAnimation();
 
@@ -2478,7 +2478,7 @@ private Q_SLOTS:
         // GIVEN
         QFETCH(QVector<ChannelNameAndType>, targetChannels);
         QFETCH(QVector<ComponentIndices>, targetIndices);
-        QFETCH(AnimationClipLoader *, clip);
+        QFETCH(AnimationClip *, clip);
         QFETCH(ComponentIndices, expectedResults);
 
         // WHEN

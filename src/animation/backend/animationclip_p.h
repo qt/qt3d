@@ -61,10 +61,10 @@ namespace Animation {
 
 class Handler;
 
-class Q_AUTOTEST_EXPORT AnimationClipLoader : public BackendNode
+class Q_AUTOTEST_EXPORT AnimationClip : public BackendNode
 {
 public:
-    AnimationClipLoader();
+    AnimationClip();
 
     void cleanup();
     void setSource(const QUrl &source) { m_source = source; }
@@ -118,7 +118,7 @@ private:
 };
 
 #ifndef QT_NO_DEBUG_STREAM
-inline QDebug operator<<(QDebug dbg, const AnimationClipLoader &animationClip)
+inline QDebug operator<<(QDebug dbg, const AnimationClip &animationClip)
 {
     QDebugStateSaver saver(dbg);
     dbg << "QNodeId =" << animationClip.peerId() << endl

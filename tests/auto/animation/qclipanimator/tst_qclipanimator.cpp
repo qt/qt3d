@@ -31,7 +31,7 @@
 #include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/qchannelmapper.h>
 #include <Qt3DAnimation/qclipanimator.h>
-#include <Qt3DAnimation/private/qanimationcliploader_p.h>
+#include <Qt3DAnimation/private/qanimationclip_p.h>
 #include <Qt3DAnimation/private/qclipanimator_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodecreatedchange.h>

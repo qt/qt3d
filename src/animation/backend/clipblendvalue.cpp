@@ -84,7 +84,7 @@ double ClipBlendValue::duration() const
 {
     if (m_clipId.isNull())
         return 0.0;
-    AnimationClipLoader *clip = m_handler->animationClipLoaderManager()->lookupResource(m_clipId);
+    AnimationClip *clip = m_handler->animationClipLoaderManager()->lookupResource(m_clipId);
     Q_ASSERT(clip);
     return clip->duration();
 }

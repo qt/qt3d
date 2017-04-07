@@ -94,7 +94,7 @@ QAnimationAspect::QAnimationAspect(QAnimationAspectPrivate &dd, QObject *parent)
     qRegisterMetaType<Qt3DAnimation::QChannelMapper*>();
 
     registerBackendType<QAbstractAnimationClip>(
-        QSharedPointer<Animation::NodeFunctor<Animation::AnimationClipLoader, Animation::AnimationClipLoaderManager>>::create(d->m_handler.data(),
+        QSharedPointer<Animation::NodeFunctor<Animation::AnimationClip, Animation::AnimationClipLoaderManager>>::create(d->m_handler.data(),
                                                                                                                               d->m_handler->animationClipLoaderManager()));
     registerBackendType<QClipAnimator>(
         QSharedPointer<Animation::NodeFunctor<Animation::ClipAnimator, Animation::ClipAnimatorManager>>::create(d->m_handler.data(),

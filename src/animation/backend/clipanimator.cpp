@@ -37,7 +37,7 @@
 #include "clipanimator_p.h"
 #include <Qt3DAnimation/qclipanimator.h>
 #include <Qt3DAnimation/private/qclipanimator_p.h>
-#include <Qt3DAnimation/private/animationcliploader_p.h>
+#include <Qt3DAnimation/private/animationclip_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>

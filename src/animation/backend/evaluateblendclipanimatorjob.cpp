@@ -91,7 +91,7 @@ void EvaluateBlendClipAnimatorJob::run()
     for (const auto valueNodeId : valueNodeIdsToEvaluate) {
         ClipBlendValue *valueNode = static_cast<ClipBlendValue *>(blendNodeManager->lookupNode(valueNodeId));
         Q_ASSERT(valueNode);
-        AnimationClipLoader *clip = clipLoaderManager->lookupResource(valueNode->clipId());
+        AnimationClip *clip = clipLoaderManager->lookupResource(valueNode->clipId());
         Q_ASSERT(clip);
 
         ClipResults rawClipResults = evaluateClipAtPhase(clip, phase);

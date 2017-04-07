@@ -95,7 +95,7 @@ void BuildBlendTreesJob::run()
             Q_ASSERT(valueNode);
 
             const Qt3DCore::QNodeId clipId = valueNode->clipId();
-            const AnimationClipLoader *clip = m_handler->animationClipLoaderManager()->lookupResource(clipId);
+            const AnimationClip *clip = m_handler->animationClipLoaderManager()->lookupResource(clipId);
             Q_ASSERT(clip);
 
             const ComponentIndices formatIndices

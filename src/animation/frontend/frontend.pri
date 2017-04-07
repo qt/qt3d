@@ -32,7 +32,7 @@ HEADERS += \
     $$PWD/qvertexblendanimation.h \
     $$PWD/qvertexblendanimation_p.h \
     $$PWD/qanimationcliploader.h \
-    $$PWD/qanimationcliploader_p.h \
+    $$PWD/qanimationclip_p.h \
     $$PWD/qlerpclipblend.h \
     $$PWD/qlerpclipblend_p.h \
     $$PWD/qadditiveclipblend.h \

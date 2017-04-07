@@ -36,7 +36,7 @@
 
 #include "loadanimationclipjob_p.h"
 
-#include <Qt3DAnimation/private/animationcliploader_p.h>
+#include <Qt3DAnimation/private/animationclip_p.h>
 #include <Qt3DAnimation/private/handler_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/job_common_p.h>
@@ -71,7 +71,7 @@ void LoadAnimationClipJob::run()
     Q_ASSERT(m_handler);
     AnimationClipLoaderManager *animationClipManager = m_handler->animationClipLoaderManager();
     for (const auto animationClipHandle : qAsConst(m_animationClipHandles)) {
-        AnimationClipLoader *animationClip = animationClipManager->data(animationClipHandle);
+        AnimationClip *animationClip = animationClipManager->data(animationClipHandle);
         animationClip->loadAnimation();
     }
 

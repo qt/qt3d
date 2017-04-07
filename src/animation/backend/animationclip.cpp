@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "animationcliploader_p.h"
+#include "animationclip_p.h"
 #include <Qt3DAnimation/qanimationclip.h>
 #include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/private/qanimationclip_p.h>
@@ -54,7 +54,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 namespace Animation {
 
-AnimationClipLoader::AnimationClipLoader()
+AnimationClip::AnimationClip()
     : BackendNode(ReadWrite)
     , m_source()
     , m_status(QAnimationClipLoader::NotReady)
@@ -66,7 +66,7 @@ AnimationClipLoader::AnimationClipLoader()
 {
 }
 
-void AnimationClipLoader::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void AnimationClip::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto loaderTypedChange = qSharedPointerDynamicCast<Qt3DCore::QNodeCreatedChange<QAnimationClipLoaderData>>(change);
     if (loaderTypedChange) {
@@ -89,7 +89,7 @@ void AnimationClipLoader::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeB
     }
 }
 
-void AnimationClipLoader::cleanup()
+void AnimationClip::cleanup()
 {
     setEnabled(false);
     m_handler = nullptr;
@@ -103,7 +103,7 @@ void AnimationClipLoader::cleanup()
     clearData();
 }
 
-void AnimationClipLoader::setStatus(QAnimationClipLoader::Status status)
+void AnimationClip::setStatus(QAnimationClipLoader::Status status)
 {
     if (status != m_status) {
         m_status = status;
@@ -115,7 +115,7 @@ void AnimationClipLoader::setStatus(QAnimationClipLoader::Status status)
     }
 }
 
-void AnimationClipLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void AnimationClip::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
     case Qt3DCore::PropertyUpdated: {
@@ -143,7 +143,7 @@ void AnimationClipLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     \internal
     Called by LoadAnimationClipJob on the threadpool
  */
-void AnimationClipLoader::loadAnimation()
+void AnimationClip::loadAnimation()
 {
     qCDebug(Jobs) << Q_FUNC_INFO << m_source;
     clearData();
@@ -179,7 +179,7 @@ void AnimationClipLoader::loadAnimation()
     qCDebug(Jobs) << "Loaded animation data:" << *this;
 }
 
-void AnimationClipLoader::loadAnimationFromUrl()
+void AnimationClip::loadAnimationFromUrl()
 {
     // TODO: Handle remote files
     QString filePath = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_source);
@@ -215,7 +215,7 @@ void AnimationClipLoader::loadAnimationFromUrl()
     }
 }
 
-void AnimationClipLoader::loadAnimationFromData()
+void AnimationClip::loadAnimationFromData()
 {
     // Reformat data from QAnimationClipData to backend format
     m_channels.resize(m_clipData.channelCount());
@@ -224,7 +224,7 @@ void AnimationClipLoader::loadAnimationFromData()
         m_channels[i++].setFromQChannel(frontendChannel);
 }
 
-void AnimationClipLoader::setDuration(float duration)
+void AnimationClip::setDuration(float duration)
 {
     if (qFuzzyCompare(duration, m_duration))
         return;
@@ -239,7 +239,7 @@ void AnimationClipLoader::setDuration(float duration)
     notifyObservers(e);
 }
 
-int AnimationClipLoader::channelIndex(const QString &channelName) const
+int AnimationClip::channelIndex(const QString &channelName) const
 {
     const int channelCount = m_channels.size();
     for (int i = 0; i < channelCount; ++i) {
@@ -259,7 +259,7 @@ int AnimationClipLoader::channelIndex(const QString &channelName) const
     for the first group, so the first channel of the second group occurs
     at index 3.
  */
-int AnimationClipLoader::channelComponentBaseIndex(int channelIndex) const
+int AnimationClip::channelComponentBaseIndex(int channelIndex) const
 {
     int index = 0;
     for (int i = 0; i < channelIndex; ++i)
@@ -267,13 +267,13 @@ int AnimationClipLoader::channelComponentBaseIndex(int channelIndex) const
     return index;
 }
 
-void AnimationClipLoader::clearData()
+void AnimationClip::clearData()
 {
     m_name.clear();
     m_channels.clear();
 }
 
-float AnimationClipLoader::findDuration()
+float AnimationClip::findDuration()
 {
     // Iterate over the contained fcurves and find the longest one
     double tMax = 0.0;
@@ -287,7 +287,7 @@ float AnimationClipLoader::findDuration()
     return tMax;
 }
 
-int AnimationClipLoader::findChannelComponentCount()
+int AnimationClip::findChannelComponentCount()
 {
     int channelCount = 0;
     for (const Channel &channel : qAsConst(m_channels))

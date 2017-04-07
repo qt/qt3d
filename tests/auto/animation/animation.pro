@@ -11,7 +11,7 @@ SUBDIRS += \
 
 qtConfig(private_tests) {
     SUBDIRS += \
-        animationcliploader \
+        animationclip \
         fcurve \
         functionrangefinder \
         bezierevaluator \

@@ -63,7 +63,7 @@ class tst_Handler;
 namespace Qt3DAnimation {
 namespace Animation {
 
-class AnimationClipLoader;
+class AnimationClip;
 class AnimationClipLoaderManager;
 class ClipAnimator;
 class ClipAnimatorManager;
