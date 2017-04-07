@@ -37,6 +37,8 @@
 #include <qbackendnodetester.h>
 #include <testpostmanarbiter.h>
 
+using namespace Qt3DAnimation::Animation;
+
 class tst_AnimationClip : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
@@ -45,8 +47,8 @@ private Q_SLOTS:
     void checkPeerPropertyMirroring()
     {
         // GIVEN
-        Qt3DAnimation::Animation::AnimationClip backendClip;
-        Qt3DAnimation::Animation::Handler handler;
+        AnimationClip backendClip;
+        Handler handler;
         backendClip.setHandler(&handler);
         Qt3DAnimation::QAnimationClipLoader clip;
 
@@ -64,8 +66,8 @@ private Q_SLOTS:
     void checkInitialAndCleanedUpState()
     {
         // GIVEN
-        Qt3DAnimation::Animation::AnimationClip backendClip;
-        Qt3DAnimation::Animation::Handler handler;
+        AnimationClip backendClip;
+        Handler handler;
         backendClip.setHandler(&handler);
 
         // THEN
@@ -94,8 +96,8 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
-        Qt3DAnimation::Animation::AnimationClip backendClip;
-        Qt3DAnimation::Animation::Handler handler;
+        AnimationClip backendClip;
+        Handler handler;
         backendClip.setHandler(&handler);
         backendClip.setDataType(Qt3DAnimation::Animation::AnimationClip::File);
         Qt3DCore::QPropertyUpdatedChangePtr updateChange;
@@ -124,7 +126,7 @@ private Q_SLOTS:
     {
         // GIVEN
         TestArbiter arbiter;
-        Qt3DAnimation::Animation::AnimationClip backendClip;
+        AnimationClip backendClip;
         backendClip.setEnabled(true);
         Qt3DCore::QBackendNodePrivate::get(&backendClip)->setArbiter(&arbiter);
 
@@ -156,7 +158,7 @@ private Q_SLOTS:
     {
         // GIVEN
         TestArbiter arbiter;
-        Qt3DAnimation::Animation::AnimationClip backendClip;
+        AnimationClip backendClip;
         backendClip.setEnabled(true);
         Qt3DCore::QBackendNodePrivate::get(&backendClip)->setArbiter(&arbiter);
 
