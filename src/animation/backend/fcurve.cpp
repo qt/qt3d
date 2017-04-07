@@ -103,7 +103,7 @@ void FCurve::read(const QJsonObject &json)
         float localTime = keyframeCoords.at(0).toDouble();
 
         Keyframe keyframe;
-        keyframe.interpolation = Keyframe::Bezier;
+        keyframe.interpolation = QKeyFrame::BezierInterpolation;
         keyframe.value = keyframeCoords.at(1).toDouble();
 
         const QJsonArray leftHandle = keyframeData[QLatin1String("leftHandle")].toArray();
