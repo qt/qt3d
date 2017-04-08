@@ -62,10 +62,10 @@ PickEventFilter::~PickEventFilter()
     Called from a worker thread in the thread pool so be sure to
     mutex protect the data.
 */
-QList<QMouseEvent> PickEventFilter::pendingMouseEvents()
+QList<QPair<QObject *, QMouseEvent> > PickEventFilter::pendingMouseEvents()
 {
     QMutexLocker locker(&m_mutex);
-    QList<QMouseEvent> pendingEvents(m_pendingMouseEvents);
+    QList<QPair<QObject*, QMouseEvent>> pendingEvents(m_pendingMouseEvents);
     m_pendingMouseEvents.clear();
     return pendingEvents;
 }
@@ -90,14 +90,14 @@ bool PickEventFilter::eventFilter(QObject *obj, QEvent *e)
     case QEvent::MouseButtonRelease:
     case QEvent::MouseMove: {
         QMutexLocker locker(&m_mutex);
-        m_pendingMouseEvents.push_back(QMouseEvent(*static_cast<QMouseEvent *>(e)));
+        m_pendingMouseEvents.push_back({obj, QMouseEvent(*static_cast<QMouseEvent *>(e))});
     } break;
     case QEvent::HoverMove: {
         QMutexLocker locker(&m_mutex);
         QHoverEvent *he = static_cast<QHoverEvent *>(e);
-        m_pendingMouseEvents.push_back(QMouseEvent(QEvent::MouseMove,
+        m_pendingMouseEvents.push_back({obj, QMouseEvent(QEvent::MouseMove,
                                                    he->pos(), Qt::NoButton, Qt::NoButton,
-                                                   he->modifiers()));
+                                                   he->modifiers())});
     } break;
     case QEvent::KeyPress:
     case QEvent::KeyRelease: {

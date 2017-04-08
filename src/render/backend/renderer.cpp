@@ -1821,7 +1821,7 @@ void Renderer::cleanGraphicsResources()
     }
 }
 
-QList<QMouseEvent> Renderer::pendingPickingEvents() const
+QList<QPair<QObject *, QMouseEvent>> Renderer::pendingPickingEvents() const
 {
     return m_pickEventFilter->pendingMouseEvents();
 }

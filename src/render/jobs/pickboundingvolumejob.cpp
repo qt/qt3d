@@ -51,6 +51,10 @@
 #include <Qt3DRender/private/job_common_p.h>
 #include <Qt3DRender/private/qpickevent_p.h>
 
+#include <QSurface>
+#include <QWindow>
+#include <QOffscreenSurface>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -118,7 +122,7 @@ void PickBoundingVolumeJob::setRoot(Entity *root)
     m_node = root;
 }
 
-void PickBoundingVolumeJob::setMouseEvents(const QList<QMouseEvent> &pendingEvents)
+void PickBoundingVolumeJob::setMouseEvents(const QList<QPair<QObject*, QMouseEvent>> &pendingEvents)
 {
     m_pendingMouseEvents = pendingEvents;
 }
@@ -184,8 +188,8 @@ bool PickBoundingVolumeJob::runHelper()
     bool hasMoveEvent = false;
     bool hasOtherEvent = false;
     // Quickly look which types of events we've got
-    for (const QMouseEvent &event : mouseEvents) {
-        const bool isMove = (event.type() == QEvent::MouseMove);
+    for (const auto &event : mouseEvents) {
+        const bool isMove = (event.second.type() == QEvent::MouseMove);
         hasMoveEvent |= isMove;
         hasOtherEvent |= !isMove;
     }
@@ -213,10 +217,10 @@ bool PickBoundingVolumeJob::runHelper()
 
     PickingUtils::ViewportCameraAreaGatherer vcaGatherer;
     // TO DO: We could cache this and only gather when we know the FrameGraph tree has changed
-    const QVector<PickingUtils::ViewportCameraAreaTriplet> vcaTriplets = vcaGatherer.gather(m_frameGraphRoot);
+    const QVector<PickingUtils::ViewportCameraAreaDetails> vcaDetails = vcaGatherer.gather(m_frameGraphRoot);
 
     // If we have no viewport / camera or area, return early
-    if (vcaTriplets.empty())
+    if (vcaDetails.empty())
         return false;
 
     // TO DO:
@@ -237,19 +241,21 @@ bool PickBoundingVolumeJob::runHelper()
     const ReducerFunction reducerOp = allHitsRequested ? PickingUtils::reduceToAllHits : PickingUtils::reduceToFirstHit;
 
     // For each mouse event
-    for (const QMouseEvent &event : mouseEvents) {
+    for (const auto &event : mouseEvents) {
         m_hoveredPickersToClear = m_hoveredPickers;
 
         QPickEvent::Buttons eventButton = QPickEvent::NoButton;
         int eventButtons = 0;
         int eventModifiers = QPickEvent::NoModifier;
 
-        setEventButtonAndModifiers(event, eventButton, eventButtons, eventModifiers);
+        setEventButtonAndModifiers(event.second, eventButton, eventButtons, eventModifiers);
 
-        // For each triplet of Viewport / Camera and Area
-        for (const PickingUtils::ViewportCameraAreaTriplet &vca : vcaTriplets) {
+        // For each Viewport / Camera and Area entry
+        for (const PickingUtils::ViewportCameraAreaDetails &vca : vcaDetails) {
             HitList sphereHits;
-            QRay3D ray = rayForViewportAndCamera(vca.area, event.pos(), vca.viewport, vca.cameraId);
+            QRay3D ray = rayForViewportAndCamera(vca, event.first, event.second);
+            if (!ray.isValid())
+                continue;
 
             PickingUtils::HierarchicalEntityPicker entityPicker(ray);
             if (entityPicker.collectHits(m_node)) {
@@ -270,7 +276,7 @@ bool PickBoundingVolumeJob::runHelper()
             }
 
             // Dispatch events based on hit results
-            dispatchPickEvents(event, sphereHits, eventButton, eventButtons, eventModifiers,
+            dispatchPickEvents(event.second, sphereHits, eventButton, eventButtons, eventModifiers,
                                trianglePickingRequested, allHitsRequested);
         }
     }
@@ -451,18 +457,38 @@ QRect PickBoundingVolumeJob::windowViewport(const QSize &area, const QRectF &rel
     return relativeViewport.toRect();
 }
 
-RayCasting::QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QSize &area,
-                                                                  const QPoint &pos,
-                                                                  const QRectF &relativeViewport,
-                                                                  const Qt3DCore::QNodeId cameraId) const
+RayCasting::QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const PickingUtils::ViewportCameraAreaDetails &vca,
+                                                                  QObject *eventSource,
+                                                                  const QMouseEvent &event) const
 {
+    static RayCasting::QRay3D invalidRay({}, {}, 0.f);
+
     QMatrix4x4 viewMatrix;
     QMatrix4x4 projectionMatrix;
-    viewMatrixForCamera(cameraId, viewMatrix, projectionMatrix);
-    const QRect viewport = windowViewport(area, relativeViewport);
+    viewMatrixForCamera(vca.cameraId, viewMatrix, projectionMatrix);
+    const QRect viewport = windowViewport(vca.area, vca.viewport);
+    const QPoint pos = event.pos();
+
+    if (vca.area.isValid() && !viewport.contains(pos))
+        return invalidRay;
+    if (vca.surface) {
+        QSurface *surface = nullptr;
+        if (eventSource) {
+            QWindow *window = qobject_cast<QWindow *>(eventSource);
+            if (window) {
+                surface = static_cast<QSurface *>(window);
+            } else {
+                QOffscreenSurface *offscreen = qobject_cast<QOffscreenSurface *>(eventSource);
+                if (offscreen)
+                    surface = static_cast<QSurface *>(offscreen);
+            }
+        }
+        if (surface && vca.surface != surface)
+            return invalidRay;
+    }
 
     // In GL the y is inverted compared to Qt
-    const QPoint glCorrectPos = QPoint(pos.x(), area.isValid() ? area.height() - pos.y() : pos.y());
+    const QPoint glCorrectPos = QPoint(pos.x(), vca.area.isValid() ? vca.area.height() - pos.y() : pos.y());
     const auto ray = intersectionRay(glCorrectPos, viewMatrix, projectionMatrix, viewport);
     return ray;
 }

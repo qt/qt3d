@@ -234,7 +234,7 @@ public:
 
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
-    QList<QMouseEvent> pendingPickingEvents() const;
+    QList<QPair<QObject*, QMouseEvent>> pendingPickingEvents() const;
     QList<QKeyEvent> pendingKeyEvents() const;
 
     void addRenderCaptureSendRequest(Qt3DCore::QNodeId nodeId);

@@ -190,11 +190,11 @@ void UpdateLevelOfDetailJob::updateEntityLodByScreenArea(Entity *entity, LevelOf
         return;
 
     PickingUtils::ViewportCameraAreaGatherer vcaGatherer(lod->camera());
-    const QVector<PickingUtils::ViewportCameraAreaTriplet> vcaTriplets = vcaGatherer.gather(m_frameGraphRoot);
+    const QVector<PickingUtils::ViewportCameraAreaDetails> vcaTriplets = vcaGatherer.gather(m_frameGraphRoot);
     if (vcaTriplets.isEmpty())
         return;
 
-    const PickingUtils::ViewportCameraAreaTriplet &vca = vcaTriplets.front();
+    const PickingUtils::ViewportCameraAreaDetails &vca = vcaTriplets.front();
 
     const QVector<qreal> thresholds = lod->thresholds();
     Sphere bv(lod->center(), lod->radius());

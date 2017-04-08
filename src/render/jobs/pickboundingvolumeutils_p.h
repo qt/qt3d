@@ -59,6 +59,8 @@
 
 QT_BEGIN_NAMESPACE
 
+class QSurface;
+
 namespace Qt3DRender {
 namespace RayCasting {
 class QAbstractCollisionQueryService;
@@ -72,27 +74,28 @@ class FrameGraphNode;
 
 namespace PickingUtils {
 
-struct Q_AUTOTEST_EXPORT ViewportCameraAreaTriplet
+struct Q_AUTOTEST_EXPORT ViewportCameraAreaDetails
 {
     Qt3DCore::QNodeId cameraId;
     QRectF viewport;
     QSize area;
+    QSurface *surface = nullptr;
 };
-QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, PickingUtils, ViewportCameraAreaTriplet, Q_PRIMITIVE_TYPE)
+QT3D_DECLARE_TYPEINFO_3(Qt3DRender, Render, PickingUtils, ViewportCameraAreaDetails, Q_PRIMITIVE_TYPE)
 
 class Q_AUTOTEST_EXPORT ViewportCameraAreaGatherer
 {
 public:
     ViewportCameraAreaGatherer(const Qt3DCore::QNodeId &nodeId = Qt3DCore::QNodeId()) : m_targetCamera(nodeId) { }
-    QVector<ViewportCameraAreaTriplet> gather(FrameGraphNode *root);
+    QVector<ViewportCameraAreaDetails> gather(FrameGraphNode *root);
 
 private:
     Qt3DCore::QNodeId m_targetCamera;
     QVector<FrameGraphNode *> m_leaves;
 
     void visit(FrameGraphNode *node);
-    ViewportCameraAreaTriplet gatherUpViewportCameraAreas(Render::FrameGraphNode *node) const;
-    bool isUnique(const QVector<ViewportCameraAreaTriplet> &vcaTriplets, const ViewportCameraAreaTriplet &vca) const;
+    ViewportCameraAreaDetails gatherUpViewportCameraAreas(Render::FrameGraphNode *node) const;
+    bool isUnique(const QVector<ViewportCameraAreaDetails> &vcaList, const ViewportCameraAreaDetails &vca) const;
 };
 
 class Q_AUTOTEST_EXPORT EntityGatherer

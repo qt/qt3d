@@ -8,5 +8,6 @@
         <file>testscene_pickersdisabled.qml</file>
         <file>testscene_dragenabledoverlapping.qml</file>
         <file>testscene_parententity.qml</file>
+        <file>testscene_viewports.qml</file>
     </qresource>
 </RCC>
