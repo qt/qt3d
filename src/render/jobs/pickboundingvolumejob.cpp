@@ -340,7 +340,7 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                 // Send the corresponding event
                 QVector3D localIntersection = hit.m_intersection;
                 if (entity && entity->worldTransform())
-                    localIntersection = hit.m_intersection * entity->worldTransform()->inverted();
+                    localIntersection = entity->worldTransform()->inverted() * hit.m_intersection;
 
                 QPickEventPtr pickEvent;
                 if (trianglePickingRequested) {
