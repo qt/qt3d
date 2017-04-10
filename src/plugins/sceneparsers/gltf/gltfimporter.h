@@ -98,7 +98,8 @@ public:
 
     // SceneParserInterface interface
     void setSource(const QUrl &source) Q_DECL_FINAL;
-    bool isFileTypeSupported(const QUrl &source) const Q_DECL_FINAL;
+    void setData(const QByteArray& data, const QString &basePath) Q_DECL_FINAL;
+    bool areFileTypesSupported(const QStringList &extensions) const Q_DECL_FINAL;
     Qt3DCore::QEntity *node(const QString &id) Q_DECL_FINAL;
     Qt3DCore::QEntity *scene(const QString &id = QString()) Q_DECL_FINAL;
 
@@ -139,7 +140,7 @@ private:
         int stride;
     };
 
-    static bool isGLTFPath(const QString &path);
+    static bool isGLTFSupported(const QStringList &extensions);
     static void renameFromJson(const QJsonObject& json, QObject * const object );
     static bool hasStandardUniformNameFromSemantic(const QString &semantic);
     static QString standardAttributeNameFromSemantic(const QString &semantic);

@@ -314,13 +314,30 @@ void GLTFImporter::setSource(const QUrl &source)
 }
 
 /*!
- * Returns true if the extension of \a path is supported by the
+ * Sets the \a path used by the parser to load the scene file.
+ * If the file is valid, parsing is automatically triggered.
+ */
+void GLTFImporter::setData(const QByteArray& data, const QString &basePath)
+{
+    QJsonDocument sceneDocument = QJsonDocument::fromBinaryData(data);
+    if (sceneDocument.isNull())
+        sceneDocument = QJsonDocument::fromJson(data);
+
+    if (Q_UNLIKELY(!setJSON(sceneDocument))) {
+        qCWarning(GLTFImporterLog, "not a JSON document");
+        return;
+    }
+
+    setBasePath(basePath);
+}
+
+/*!
+ * Returns true if the extensions are supported by the
  * GLTF parser.
  */
-bool GLTFImporter::isFileTypeSupported(const QUrl &source) const
+bool GLTFImporter::areFileTypesSupported(const QStringList &extensions) const
 {
-    const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
-    return GLTFImporter::isGLTFPath(path);
+    return GLTFImporter::isGLTFSupported(extensions);
 }
 
 Qt3DCore::QEntity* GLTFImporter::node(const QString &id)
@@ -570,16 +587,14 @@ GLTFImporter::AccessorData::AccessorData(const QJsonObject &json)
         stride = byteStride.toInt();
 }
 
-bool GLTFImporter::isGLTFPath(const QString& path)
+bool GLTFImporter::isGLTFSupported(const QStringList &extensions)
 {
-    QFileInfo finfo(path);
-    if (!finfo.exists())
-        return false;
-
-    // might need to detect other things in the future, but would
-    // prefer to avoid doing a full parse.
-    QString suffix = finfo.suffix().toLower();
-    return suffix == QLatin1String("json") || suffix == QLatin1String("gltf") || suffix == QLatin1String("qgltf");
+    for (auto suffix: qAsConst(extensions)) {
+        suffix = suffix.toLower();
+        if (suffix == QLatin1String("json") || suffix == QLatin1String("gltf") || suffix == QLatin1String("qgltf"))
+            return true;
+    }
+    return false;
 }
 
 void GLTFImporter::renameFromJson(const QJsonObject &json, QObject * const object)

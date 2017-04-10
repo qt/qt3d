@@ -86,7 +86,8 @@ public:
     virtual ~QSceneImporter();
 
     virtual void setSource(const QUrl &source) = 0;
-    virtual bool isFileTypeSupported(const QUrl &source) const = 0;
+    virtual void setData(const QByteArray& data, const QString &basePath) = 0;
+    virtual bool areFileTypesSupported(const QStringList &extensions) const = 0;
     virtual Qt3DCore::QEntity *scene(const QString &id = QString()) = 0;
     virtual Qt3DCore::QEntity *node(const QString &id) = 0;
 
