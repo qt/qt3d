@@ -104,7 +104,7 @@ Item {
                 {
                     _renderCaptureProvider.updateImage(reply)
                     image.source = "image://rendercapture/" + cid
-                    reply.saveToFile("capture" + cid + ".png")
+                    reply.saveImage("capture" + cid + ".png")
                     cid++
                     if (continuous === true)
                         doRenderCapture()

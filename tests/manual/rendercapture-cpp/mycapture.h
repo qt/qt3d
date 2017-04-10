@@ -73,7 +73,7 @@ public slots:
 
         m_imageLabel->setPixmap(QPixmap::fromImage(m_reply->image()));
 
-        m_reply->saveToFile("capture.bmp");
+        m_reply->saveImage("capture.bmp");
 
         delete m_reply;
         m_reply = nullptr;

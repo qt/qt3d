@@ -110,9 +110,21 @@ namespace Qt3DRender {
  */
 
 /*!
- * \qmlmethod void Qt3D.Render::RenderCaptureReply::saveToFile(fileName)
+ * \qmlmethod bool Qt3D.Render::RenderCaptureReply::saveImage(fileName)
  *
  * Saves the render capture result as an image to \a fileName.
+ * Returns true if the image was successfully saved; otherwise returns false.
+ *
+ * \since 5.9
+ */
+
+/*!
+ * \qmlmethod void Qt3D.Render::RenderCaptureReply::saveToFile(fileName)
+ * \deprecated
+ *
+ * Saves the render capture result as an image to \a fileName.
+ *
+ * Deprecated in 5.9. Use saveImage().
  */
 
 /*!
@@ -190,6 +202,25 @@ bool QRenderCaptureReply::isComplete() const
 
 /*!
  * Saves the render capture result as an image to \a fileName.
+ *
+ * Returns true if the image was successfully saved; otherwise returns false.
+ * \since 5.9
+ */
+bool QRenderCaptureReply::saveImage(const QString &fileName) const
+{
+    Q_D(const QRenderCaptureReply);
+    if (d->m_complete)
+    {
+        return d->m_image.save(fileName);
+    }
+    return false;
+}
+
+/*!
+ * \deprecated
+ * Saves the render capture result as an image to \a fileName.
+ *
+ * Deprecated in 5.9. Use saveImage().
  */
 void QRenderCaptureReply::saveToFile(const QString &fileName) const
 {
