@@ -68,6 +68,7 @@
 #include <Qt3DRender/private/technique_p.h>
 #include <Qt3DRender/private/renderthread_p.h>
 #include <Qt3DRender/private/renderview_p.h>
+#include <Qt3DRender/private/scenemanager_p.h>
 #include <Qt3DRender/private/techniquefilternode_p.h>
 #include <Qt3DRender/private/viewportnode_p.h>
 #include <Qt3DRender/private/vsyncframeadvanceservice_p.h>
@@ -277,6 +278,13 @@ void Renderer::setNodeManagers(NodeManagers *managers)
     m_updateLevelOfDetailJob->setManagers(m_nodesManager);
     m_updateMeshTriangleListJob->setManagers(m_nodesManager);
     m_filterCompatibleTechniqueJob->setManager(m_nodesManager->techniqueManager());
+}
+
+void Renderer::setServices(QServiceLocator *services)
+{
+    m_services = services;
+
+    m_nodesManager->sceneManager()->setDownloadService(m_services->downloadHelperService());
 }
 
 NodeManagers *Renderer::nodeManagers() const

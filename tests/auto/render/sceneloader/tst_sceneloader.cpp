@@ -79,7 +79,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::QSceneLoader frontendSceneLoader;
-        frontendSceneLoader.setSource(QUrl(QStringLiteral("CorvetteMuseum")));
+        frontendSceneLoader.setSource(QUrl(QStringLiteral("file:///CorvetteMuseum")));
 
         Qt3DRender::Render::Scene sceneLoader;
         Qt3DRender::Render::SceneManager sceneManager;
@@ -109,7 +109,7 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DCore::QPropertyUpdatedChangePtr updateChange(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
-        const QUrl newUrl(QStringLiteral("Bownling_Green_KY"));
+        const QUrl newUrl(QStringLiteral("file:///Bownling_Green_KY"));
         updateChange->setValue(newUrl);
         updateChange->setPropertyName("source");
         sceneLoader.sceneChangeEvent(updateChange);

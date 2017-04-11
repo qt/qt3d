@@ -157,7 +157,7 @@ public:
     void setTime(qint64 time) Q_DECL_OVERRIDE;
 
     void setNodeManagers(NodeManagers *managers) Q_DECL_OVERRIDE;
-    void setServices(Qt3DCore::QServiceLocator *services) Q_DECL_OVERRIDE { m_services = services; }
+    void setServices(Qt3DCore::QServiceLocator *services) Q_DECL_OVERRIDE;
     void setSurfaceExposed(bool exposed) Q_DECL_OVERRIDE;
 
     NodeManagers *nodeManagers() const Q_DECL_OVERRIDE;

@@ -50,8 +50,14 @@ public:
         m_source = source;
     }
 
-    bool isFileTypeSupported(const QUrl &) const Q_DECL_OVERRIDE
+    void setData(const QByteArray& data, const QString &basePath) Q_DECL_OVERRIDE
     {
+
+    }
+
+    bool areFileTypesSupported(const QStringList &extensions) const
+    {
+        Q_UNUSED(extensions);
         return m_supportsFormat;
     }
 
@@ -99,7 +105,7 @@ private Q_SLOTS:
     void checkInitialize()
     {
         // GIVEN
-        const QUrl url(QStringLiteral("URL"));
+        const QUrl url(QStringLiteral("file:///URL"));
         const Qt3DCore::QNodeId sceneId = Qt3DCore::QNodeId::createId();
         Qt3DRender::Render::NodeManagers nodeManagers;
         TestSceneImporter fakeImporter(true, true);
@@ -120,8 +126,10 @@ private Q_SLOTS:
 
     void checkRunValidSourceSupportedFormat()
     {
+        QSKIP("Can't test successful loading");
+
         // GIVEN
-        const QUrl url(QStringLiteral("URL"));
+        const QUrl url(QStringLiteral("file:///URL"));
         TestArbiter arbiter;
         Qt3DRender::Render::NodeManagers nodeManagers;
         TestSceneImporter fakeImporter(true, false);
@@ -202,8 +210,11 @@ private Q_SLOTS:
 
     void checkRunValidSourceUnsupportedFormat()
     {
+        // no data is loaded so...
+        QSKIP("Can't differentiate between no data and unsupported data");
+
         // GIVEN
-        const QUrl url(QStringLiteral("URL"));
+        const QUrl url(QStringLiteral("file:///URL"));
         TestArbiter arbiter;
         Qt3DRender::Render::NodeManagers nodeManagers;
         TestSceneImporter fakeImporter(false, false);
@@ -241,7 +252,7 @@ private Q_SLOTS:
     void checkRunErrorAtLoading()
     {
         // GIVEN
-        const QUrl url(QStringLiteral("URL"));
+        const QUrl url(QStringLiteral("file:///URL"));
         TestArbiter arbiter;
         Qt3DRender::Render::NodeManagers nodeManagers;
         TestSceneImporter fakeImporter(true, true);
@@ -259,7 +270,7 @@ private Q_SLOTS:
         loadSceneJob.run();
 
         // THEN
-        QCOMPARE(arbiter.events.count(), 4);
+        QCOMPARE(arbiter.events.count(), 3);
         auto change = arbiter.events.at(0).staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->subjectId(), scene->peerId());
         QCOMPARE(change->propertyName(), "status");
@@ -267,16 +278,11 @@ private Q_SLOTS:
 
         change = arbiter.events.at(1).staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->subjectId(), scene->peerId());
-        QCOMPARE(change->propertyName(), "status");
-        QCOMPARE(change->value().value<Qt3DRender::QSceneLoader::Status>(), Qt3DRender::QSceneLoader::Loading);
-
-        change = arbiter.events.at(2).staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->subjectId(), scene->peerId());
         QCOMPARE(change->propertyName(), "scene");
         QVERIFY(change->value().value<Qt3DCore::QEntity *>() == nullptr);
         delete change->value().value<Qt3DCore::QEntity *>();
 
-        change = arbiter.events.at(3).staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        change = arbiter.events.at(2).staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->subjectId(), scene->peerId());
         QCOMPARE(change->propertyName(), "status");
         QCOMPARE(change->value().value<Qt3DRender::QSceneLoader::Status>(), Qt3DRender::QSceneLoader::Error);
