@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERASPECT_P_H
-#define QT3DRENDER_QRENDERASPECT_P_H
+#ifndef QT3DCORE_QDOWNLOADNETWORKWORKER_P_H
+#define QT3DCORE_QDOWNLOADNETWORKWORKER_P_H
 
 //
 //  W A R N I N G
@@ -51,68 +51,51 @@
 // We mean it.
 //
 
-#include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DCore/private/qabstractaspect_p.h>
-#include <Qt3DRender/private/qt3drender_global_p.h>
-
-#include <QtCore/qmutex.h>
+#include <QSharedPointer>
+#include <QObject>
+#include <QUrl>
+#include <Qt3DCore/private/qdownloadhelperservice_p.h>
+#include <QMutex>
 
 QT_BEGIN_NAMESPACE
 
-class QSurface;
+class QThread;
+class QNetworkAccessManager;
+class QNetworkReply;
 
-namespace Qt3DRender {
+namespace Qt3DCore {
 
-class QSceneImporter;
+class QDownloadRequest;
+typedef QSharedPointer<QDownloadRequest> QDownloadRequestPtr;
 
-namespace Render {
-class AbstractRenderer;
-class NodeManagers;
-class QRenderPlugin;
-}
-
-namespace Render {
-class OffscreenSurfaceHelper;
-}
-
-class QT3DRENDERSHARED_PRIVATE_EXPORT QRenderAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
+class QDownloadNetworkWorker : public QObject
 {
+    Q_OBJECT
 public:
-    QRenderAspectPrivate(QRenderAspect::RenderType type);
-    ~QRenderAspectPrivate();
+    QDownloadNetworkWorker(QObject *parent = nullptr);
 
-    Q_DECLARE_PUBLIC(QRenderAspect)
+signals:
+    void submitRequest(const Qt3DCore::QDownloadRequestPtr &request);
+    void cancelRequest(const Qt3DCore::QDownloadRequestPtr &request);
+    void cancelAllRequests();
 
-    static QRenderAspectPrivate* findPrivate(Qt3DCore::QAspectEngine *engine);
+    void requestDownloaded(const Qt3DCore::QDownloadRequestPtr &request);
 
-    void registerBackendTypes();
-    void unregisterBackendTypes();
-    void loadSceneParsers();
-    void loadRenderPlugin(const QString &pluginName);
-    void renderInitialize(QOpenGLContext *context);
-    void renderSynchronous();
-    void renderShutdown();
-    void registerBackendType(const QMetaObject &, const Qt3DCore::QBackendNodeMapperPtr &functor);
-    QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
+private Q_SLOTS:
+    void onRequestSubmited(const Qt3DCore::QDownloadRequestPtr &request);
+    void onRequestCancelled(const Qt3DCore::QDownloadRequestPtr &request);
+    void onAllRequestsCancelled();
+    void onRequestFinished(QNetworkReply *reply);
+    void onDownloadProgressed(qint64 bytesReceived, qint64 bytesTotal);
 
-    Render::NodeManagers *m_nodeManagers;
-    Render::AbstractRenderer *m_renderer;
-
-    bool m_initialized;
-    QList<QSceneImporter *> m_sceneImporter;
-    QVector<QString> m_loadedPlugins;
-    QVector<Render::QRenderPlugin *> m_renderPlugins;
-    QRenderAspect::RenderType m_renderType;
-    Render::OffscreenSurfaceHelper *m_offscreenHelper;
-
-    static QMutex m_pluginLock;
-    static QVector<QString> m_pluginConfig;
-    static QVector<QRenderAspectPrivate *> m_instances;
-    static void configurePlugin(const QString &plugin);
+private:
+    QNetworkAccessManager *m_networkManager;
+    QVector< QPair<QDownloadRequestPtr, QNetworkReply *> > m_requests;
+    QMutex m_mutex;
 };
 
-}
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QRENDERASPECT_P_H
+#endif // QT3DCORE_QDOWNLOADNETWORKWORKER_P_H

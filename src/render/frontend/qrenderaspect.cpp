@@ -140,6 +140,7 @@
 #include <Qt3DCore/qtransform.h>
 
 #include <Qt3DCore/qnode.h>
+#include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/private/qservicelocator_p.h>
 
 #include <QDebug>
@@ -184,6 +185,17 @@ QRenderAspectPrivate::~QRenderAspectPrivate()
         qWarning() << Q_FUNC_INFO << "The renderer should have been deleted when reaching this point (this warning may be normal when running tests)";
     delete m_nodeManagers;
     m_instances.removeAll(this);
+}
+
+QRenderAspectPrivate *QRenderAspectPrivate::findPrivate(Qt3DCore::QAspectEngine *engine)
+{
+    const QVector<QAbstractAspect*> aspects = engine->aspects();
+    for (QAbstractAspect* aspect : aspects) {
+        QRenderAspect *renderAspect = qobject_cast<QRenderAspect *>(aspect);
+        if (renderAspect)
+            return static_cast<QRenderAspectPrivate *>(renderAspect->d_ptr.data());
+    }
+    return nullptr;
 }
 
 /*! \internal */
@@ -505,7 +517,8 @@ void QRenderAspect::onRegistered()
                                                        advanceService);
         }
 
-        d->m_renderer->setServices(d->services());
+        if (d->services())
+            d->m_renderer->setServices(d->services());
         d->m_initialized = true;
     }
 

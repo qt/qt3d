@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2017 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QSERVICELOCATOR_H
-#define QT3DCORE_QSERVICELOCATOR_H
+#ifndef QT3DCORE_QDOWNLOADHELPERSERVICE_P_H
+#define QT3DCORE_QDOWNLOADHELPERSERVICE_P_H
 
 //
 //  W A R N I N G
@@ -51,89 +51,80 @@
 // We mean it.
 //
 
+#include <QSharedPointer>
+#include <QObject>
+#include <QUrl>
+
+#include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qt3dcore_global.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qscopedpointer.h>
+#include <Qt3DCore/private/qservicelocator_p.h>
 
 QT_BEGIN_NAMESPACE
 
+class QThread;
+class QNetworkAccessManager;
+class QNetworkReply;
+
 namespace Qt3DCore {
 
-class QAbstractServiceProviderPrivate;
+class QAspectEngine;
+class QDownloadNetworkWorker;
+class QDownloadHelperService;
+class QDownloadHelperServicePrivate;
 
-class QT3DCORESHARED_EXPORT QAbstractServiceProvider : public QObject
+class QT3DCORESHARED_EXPORT QDownloadRequest
+{
+public:
+    QDownloadRequest(const QUrl &url);
+    virtual ~QDownloadRequest();
+
+    QUrl url() const { return m_url; }
+    bool succeeded() const { return m_succeeded; }
+    bool cancelled() const { return m_cancelled; }
+
+    virtual void onDownloaded();         // this is called in dl thread
+    virtual void onCompleted() = 0;      // this is called in job thread
+
+protected:
+    QUrl m_url;
+    QByteArray m_data;
+
+private:
+    friend class QDownloadNetworkWorker;
+    friend class QDownloadHelperService;
+    bool m_succeeded;
+    bool m_cancelled;
+};
+
+typedef QSharedPointer<QDownloadRequest> QDownloadRequestPtr;
+
+
+class QT3DCORESHARED_EXPORT QDownloadHelperService : public QAbstractServiceProvider
 {
     Q_OBJECT
 public:
-    virtual ~QAbstractServiceProvider();
+    explicit QDownloadHelperService(const QString &description = QString());
+    ~QDownloadHelperService();
 
-    int type() const;
-    QString description() const;
+    void submitRequest(const QDownloadRequestPtr &request);
+    void cancelRequest(const QDownloadRequestPtr &request);
+    void cancelAllRequests();
 
-protected:
-    explicit QAbstractServiceProvider(int type, const QString &description, QObject* parent = nullptr);
-    explicit QAbstractServiceProvider(QAbstractServiceProviderPrivate &dd, QObject* parent = nullptr);
-
-private:
-    Q_DISABLE_COPY(QAbstractServiceProvider)
-    Q_DECLARE_PRIVATE(QAbstractServiceProvider)
-};
-
-class QAbstractFrameAdvanceService;
-class QOpenGLInformationService;
-class QSystemInformationService;
-class QServiceLocatorPrivate;
-class QEventFilterService;
-class QDownloadHelperService;
-
-class QT3DCORESHARED_EXPORT QServiceLocator
-{
-public:
-    QServiceLocator();
-    ~QServiceLocator();
-
-    enum ServiceType {
-        SystemInformation,
-        OpenGLInformation,
-        CollisionService,
-        FrameAdvanceService,
-        EventFilterService,
-        DownloadHelperService,
-#if !defined(Q_QDOC)
-        DefaultServiceCount, // Add additional default services before here
-#endif
-        UserService = 256
-    };
-
-    void registerServiceProvider(int serviceType, QAbstractServiceProvider *provider);
-    void unregisterServiceProvider(int serviceType);
-
-    int serviceCount() const;
-
-    template<class T>
-    T *service(int serviceType)
-    {
-        QAbstractServiceProvider *service_ = _q_getServiceHelper(serviceType);
-        return static_cast<T *>(service_);
-    }
-
-    // Convenience accessors for Qt3D provided services
-    QSystemInformationService *systemInformation();
-    QOpenGLInformationService *openGLInformation();
-    QAbstractFrameAdvanceService *frameAdvanceService();
-    QEventFilterService *eventFilterService();
-    QDownloadHelperService *downloadHelperService();
+    static QString urlToLocalFileOrQrc(const QUrl &url);
+    static bool isLocal(const QUrl &url);
+    static QDownloadHelperService *getService(QAspectEngine *engine);
 
 private:
-    Q_DISABLE_COPY(QServiceLocator)
-    Q_DECLARE_PRIVATE(QServiceLocator)
-    QScopedPointer<QServiceLocatorPrivate> d_ptr;
-
-    QAbstractServiceProvider *_q_getServiceHelper(int type);
+    Q_DECLARE_PRIVATE(QDownloadHelperService)
+    Q_PRIVATE_SLOT(d_func(), void _q_onRequestCompleted(const Qt3DCore::QDownloadRequestPtr &))
 };
 
-}
+typedef QSharedPointer<QDownloadHelperService> QDownloadHelperServicePtr;
+
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QSERVICELOCATOR_H
+Q_DECLARE_METATYPE(Qt3DCore::QDownloadRequestPtr) // LCOV_EXCL_LINE
+
+#endif // QT3DCORE_QDOWNLOADHELPERSERVICE_P_H

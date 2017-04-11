@@ -51,6 +51,7 @@
 // We mean it.
 //
 
+#include <Qt3DCore/private/qdownloadhelperservice_p.h>
 #include <Qt3DRender/private/qgeometryrenderer_p.h>
 #include <QUrl>
 
@@ -66,23 +67,40 @@ public:
     QMeshPrivate();
 
     Q_DECLARE_PUBLIC(QMesh)
+    static QMeshPrivate *get(QMesh *q);
+
+    void setScene(Qt3DCore::QScene *scene) override;
+    void updateFunctor();
 
     QUrl m_source;
     QString m_meshName;
 };
 
-
-class Q_AUTOTEST_EXPORT MeshFunctor : public QGeometryFactory
+class Q_AUTOTEST_EXPORT MeshDownloadRequest : public Qt3DCore::QDownloadRequest
 {
-public :
-    MeshFunctor(const QUrl &sourcePath, const QString &meshName = QString());
-    QGeometry *operator()() Q_DECL_OVERRIDE;
-    bool operator ==(const QGeometryFactory &other) const Q_DECL_OVERRIDE;
-    QT3D_FUNCTOR(MeshFunctor)
+public:
+    MeshDownloadRequest(Qt3DCore::QNodeId mesh, QUrl source, Qt3DCore::QAspectEngine *engine);
+
+    void onCompleted() Q_DECL_OVERRIDE;
 
 private:
+    Qt3DCore::QNodeId m_mesh;
+    Qt3DCore::QAspectEngine *m_engine;
+};
+
+class Q_AUTOTEST_EXPORT MeshLoaderFunctor : public QGeometryFactory
+{
+public :
+    MeshLoaderFunctor(QMesh *mesh, Qt3DCore::QAspectEngine *engine, const QByteArray &sourceData = QByteArray());
+    QGeometry *operator()() Q_DECL_OVERRIDE;
+    bool operator ==(const QGeometryFactory &other) const Q_DECL_OVERRIDE;
+    QT3D_FUNCTOR(MeshLoaderFunctor)
+
+    Qt3DCore::QNodeId m_mesh;
     QUrl m_sourcePath;
     QString m_meshName;
+    Qt3DCore::QAspectEngine *m_engine;
+    QByteArray m_sourceData;
 };
 
 

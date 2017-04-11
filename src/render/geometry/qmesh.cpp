@@ -45,11 +45,23 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QScopedPointer>
-#include <Qt3DRender/private/qgeometryloaderinterface_p.h>
+#include <QMimeDatabase>
+#include <QMimeType>
+#include <QtCore/QBuffer>
+#include <Qt3DRender/QRenderAspect>
+#include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qdownloadhelperservice_p.h>
+#include <Qt3DRender/private/qrenderaspect_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
+#include <Qt3DRender/private/qgeometryloaderinterface_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 #include <Qt3DRender/private/qgeometryloaderfactory_p.h>
+#include <Qt3DRender/private/geometryrenderermanager_p.h>
+
+#include <algorithm>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,6 +72,24 @@ Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, geometryLoader, (QGeometryLoaderFactor
 QMeshPrivate::QMeshPrivate()
     : QGeometryRendererPrivate()
 {
+}
+
+QMeshPrivate *QMeshPrivate::get(QMesh *q)
+{
+    return q->d_func();
+}
+
+void QMeshPrivate::setScene(Qt3DCore::QScene *scene)
+{
+    QGeometryRendererPrivate::setScene(scene);
+    updateFunctor();
+}
+
+void QMeshPrivate::updateFunctor()
+{
+    Q_Q(QMesh);
+    Qt3DCore::QAspectEngine *engine = m_scene ? m_scene->engine() : nullptr;
+    q->setGeometryFactory(QGeometryFactoryPtr(new MeshLoaderFunctor(q, engine)));
 }
 
 /*!
@@ -141,8 +171,7 @@ void QMesh::setSource(const QUrl& source)
     if (d->m_source == source)
         return;
     d->m_source = source;
-    // update the functor
-    QGeometryRenderer::setGeometryFactory(QGeometryFactoryPtr(new MeshFunctor(d->m_source, d->m_meshName)));
+    d->updateFunctor();
     const bool blocked = blockNotifications(true);
     emit sourceChanged(source);
     blockNotifications(blocked);
@@ -165,8 +194,7 @@ void QMesh::setMeshName(const QString &meshName)
     if (d->m_meshName == meshName)
         return;
     d->m_meshName = meshName;
-    // update the functor
-    QGeometryRenderer::setGeometryFactory(QGeometryFactoryPtr(new MeshFunctor(d->m_source, d->m_meshName)));
+    d->updateFunctor();
     const bool blocked = blockNotifications(true);
     emit meshNameChanged(meshName);
     blockNotifications(blocked);
@@ -186,51 +214,89 @@ QString QMesh::meshName() const
 /*!
  * \internal
  */
-MeshFunctor::MeshFunctor(const QUrl &sourcePath, const QString& meshName)
+MeshLoaderFunctor::MeshLoaderFunctor(QMesh *mesh, Qt3DCore::QAspectEngine *engine, const QByteArray &sourceData)
     : QGeometryFactory()
-    , m_sourcePath(sourcePath)
-    , m_meshName(meshName)
+    , m_mesh(mesh->id())
+    , m_sourcePath(mesh->source())
+    , m_meshName(mesh->meshName())
+    , m_engine(engine)
+    , m_sourceData(sourceData)
 {
 }
 
 /*!
  * \internal
  */
-QGeometry *MeshFunctor::operator()()
+QGeometry *MeshLoaderFunctor::operator()()
 {
     if (m_sourcePath.isEmpty()) {
         qCWarning(Render::Jobs) << Q_FUNC_INFO << "Mesh is empty, nothing to load";
         return nullptr;
     }
 
-    // TO DO: Handle file download if remote url
-    QString filePath = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_sourcePath);
+    QStringList ext;
+    if (!Qt3DCore::QDownloadHelperService::isLocal(m_sourcePath)) {
+        if (m_sourceData.isEmpty()) {
+            if (m_mesh) {
+                auto downloadService = Qt3DCore::QDownloadHelperService::getService(m_engine);
+                Qt3DCore::QDownloadRequestPtr request(new MeshDownloadRequest(m_mesh, m_sourcePath, m_engine));
+                downloadService->submitRequest(request);
+            }
+            return nullptr;
+        }
 
-    QFileInfo finfo(filePath);
-    auto ext = finfo.suffix();
-    if (ext.isEmpty())
-        ext = QLatin1String("obj");
+        QMimeDatabase db;
+        QMimeType mtype = db.mimeTypeForData(m_sourceData);
+        if (mtype.isValid()) {
+            ext = mtype.suffixes();
+        }
+        QFileInfo finfo(m_sourcePath.path());
+        ext << finfo.suffix();
+        ext.removeAll(QLatin1String(""));
+        if (!ext.contains(QLatin1String("obj")))
+            ext << QLatin1String("obj");
+    } else {
+        QString filePath = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_sourcePath);
+        QFileInfo finfo(filePath);
+        if (finfo.suffix().isEmpty())
+            ext << QLatin1String("obj");
+        else
+            ext << finfo.suffix();
+    }
 
     QScopedPointer<QGeometryLoaderInterface> loader;
-
-    loader.reset(qLoadPlugin<QGeometryLoaderInterface, QGeometryLoaderFactory>(geometryLoader(), ext));
+    for (QString e: qAsConst(ext)) {
+        loader.reset(qLoadPlugin<QGeometryLoaderInterface, QGeometryLoaderFactory>(geometryLoader(), e));
+        if (loader)
+            break;
+    }
     if (!loader) {
-        qCWarning(Render::Jobs, "unsupported format encountered (%s)", qPrintable(ext));
+        qCWarning(Render::Jobs, "unsupported format encountered (%s)", qPrintable(ext.join(QLatin1String(", "))));
         return nullptr;
     }
 
-    QFile file(filePath);
-    if (!file.open(QIODevice::ReadOnly)) {
-        qCDebug(Render::Jobs) << "Could not open file" << filePath << "for reading";
-        return nullptr;
+    if (m_sourceData.isEmpty()) {
+        QString filePath = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_sourcePath);
+        QFile file(filePath);
+        if (!file.open(QIODevice::ReadOnly)) {
+            qCDebug(Render::Jobs) << "Could not open file" << filePath << "for reading";
+            return nullptr;
+        }
+
+        if (loader->load(&file, m_meshName))
+            return loader->geometry();
+        qCWarning(Render::Jobs) << Q_FUNC_INFO << "Mesh loading failure for:" << filePath;
+    } else {
+        QT_PREPEND_NAMESPACE(QBuffer) buffer(&m_sourceData);
+        if (!buffer.open(QIODevice::ReadOnly)) {
+            return nullptr;
+        }
+
+        if (loader->load(&buffer, m_meshName))
+            return loader->geometry();
+
+        qCWarning(Render::Jobs) << Q_FUNC_INFO << "Mesh loading failure for:" << m_sourcePath;
     }
-
-    qCDebug(Render::Jobs) << Q_FUNC_INFO << "Loading mesh from" << m_sourcePath << " part:" << m_meshName;
-
-    if (loader->load(&file, m_meshName))
-        return loader->geometry();
-
-    qCWarning(Render::Jobs) << Q_FUNC_INFO << "Mesh loading failure for:" << filePath;
 
     return nullptr;
 }
@@ -238,12 +304,45 @@ QGeometry *MeshFunctor::operator()()
 /*!
  * \internal
  */
-bool MeshFunctor::operator ==(const QGeometryFactory &other) const
+bool MeshLoaderFunctor::operator ==(const QGeometryFactory &other) const
 {
-    const MeshFunctor *otherFunctor = functor_cast<MeshFunctor>(&other);
+    const MeshLoaderFunctor *otherFunctor = functor_cast<MeshLoaderFunctor>(&other);
     if (otherFunctor != nullptr)
-        return (otherFunctor->m_sourcePath == m_sourcePath);
+        return (otherFunctor->m_sourcePath == m_sourcePath &&
+                otherFunctor->m_sourceData.isEmpty() == m_sourceData.isEmpty() &&
+                otherFunctor->m_engine == m_engine);
     return false;
+}
+
+/*!
+ * \internal
+ */
+MeshDownloadRequest::MeshDownloadRequest(Qt3DCore::QNodeId mesh, QUrl source, Qt3DCore::QAspectEngine *engine)
+    : Qt3DCore::QDownloadRequest(source)
+    , m_mesh(mesh)
+    , m_engine(engine)
+{
+
+}
+
+void MeshDownloadRequest::onCompleted()
+{
+    if (cancelled() || !succeeded())
+        return;
+
+    QRenderAspectPrivate* d_aspect = QRenderAspectPrivate::findPrivate(m_engine);
+    if (!d_aspect)
+        return;
+
+    Render::GeometryRenderer *renderer = d_aspect->m_nodeManagers->geometryRendererManager()->lookupResource(m_mesh);
+    if (!renderer)
+        return;
+
+    QSharedPointer<MeshLoaderFunctor> functor = qSharedPointerCast<MeshLoaderFunctor>(renderer->geometryFactory());
+    functor->m_sourceData = m_data;
+
+    // mark the component as dirty so that the functor runs again in the correct job
+    d_aspect->m_nodeManagers->geometryRendererManager()->addDirtyGeometryRenderer(m_mesh);
 }
 
 } // namespace Qt3DRender

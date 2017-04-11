@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Paul Lemire
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERASPECT_P_H
-#define QT3DRENDER_QRENDERASPECT_P_H
+#ifndef QT3DCORE_QDOWNLOADHELPERSERVICE_P_P_H
+#define QT3DCORE_QDOWNLOADHELPERSERVICE_P_P_H
 
 //
 //  W A R N I N G
@@ -51,68 +51,26 @@
 // We mean it.
 //
 
-#include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DCore/private/qabstractaspect_p.h>
-#include <Qt3DRender/private/qt3drender_global_p.h>
+#include <QSharedPointer>
+#include <QObject>
+#include <QUrl>
 
-#include <QtCore/qmutex.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DCore/private/qservicelocator_p.h>
+#include <Qt3DCore/private/qdownloadhelperservice_p.h>
+#include <Qt3DCore/private/qabstractserviceprovider_p.h>
 
 QT_BEGIN_NAMESPACE
 
-class QSurface;
+class QThread;
+class QNetworkAccessManager;
+class QNetworkReply;
 
-namespace Qt3DRender {
+namespace Qt3DCore {
 
-class QSceneImporter;
 
-namespace Render {
-class AbstractRenderer;
-class NodeManagers;
-class QRenderPlugin;
-}
-
-namespace Render {
-class OffscreenSurfaceHelper;
-}
-
-class QT3DRENDERSHARED_PRIVATE_EXPORT QRenderAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
-{
-public:
-    QRenderAspectPrivate(QRenderAspect::RenderType type);
-    ~QRenderAspectPrivate();
-
-    Q_DECLARE_PUBLIC(QRenderAspect)
-
-    static QRenderAspectPrivate* findPrivate(Qt3DCore::QAspectEngine *engine);
-
-    void registerBackendTypes();
-    void unregisterBackendTypes();
-    void loadSceneParsers();
-    void loadRenderPlugin(const QString &pluginName);
-    void renderInitialize(QOpenGLContext *context);
-    void renderSynchronous();
-    void renderShutdown();
-    void registerBackendType(const QMetaObject &, const Qt3DCore::QBackendNodeMapperPtr &functor);
-    QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
-
-    Render::NodeManagers *m_nodeManagers;
-    Render::AbstractRenderer *m_renderer;
-
-    bool m_initialized;
-    QList<QSceneImporter *> m_sceneImporter;
-    QVector<QString> m_loadedPlugins;
-    QVector<Render::QRenderPlugin *> m_renderPlugins;
-    QRenderAspect::RenderType m_renderType;
-    Render::OffscreenSurfaceHelper *m_offscreenHelper;
-
-    static QMutex m_pluginLock;
-    static QVector<QString> m_pluginConfig;
-    static QVector<QRenderAspectPrivate *> m_instances;
-    static void configurePlugin(const QString &plugin);
-};
-
-}
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QRENDERASPECT_P_H
+#endif // QT3DCORE_QDOWNLOADHELPERSERVICE_P_P_H
