@@ -96,7 +96,7 @@ QAnimationClipLoader::Status QAnimationClipLoader::status() const
     return d->m_status;
 }
 
-void QAnimationClipLoader::setSource(QUrl source)
+void QAnimationClipLoader::setSource(const QUrl &source)
 {
     Q_D(QAnimationClipLoader);
     if (d->m_source == source)

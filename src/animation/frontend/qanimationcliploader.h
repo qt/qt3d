@@ -68,10 +68,10 @@ public:
     Status status() const;
 
 public Q_SLOTS:
-    void setSource(QUrl source);
+    void setSource(const QUrl &source);
 
 Q_SIGNALS:
-    void sourceChanged(QUrl source);
+    void sourceChanged(const QUrl &source);
     void statusChanged(Status status);
 
 protected:
