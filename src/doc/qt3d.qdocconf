@@ -48,7 +48,8 @@ headerdirs += . \
               ../quick3d/quick3d \
               ../input \
               ../extras \
-              ../animation
+              ../animation \
+              ../quick3d/quick3dscene2d
 
 # Exclude private header files from the documentation build
 excludefiles += "*_p.h"
@@ -61,7 +62,8 @@ sourcedirs += . \
               ../quick3d/quick3d \
               ../input \
               ../extras \
-              ../animation
+              ../animation \
+              ../quick3d/quick3dscene2d
 
 exampledirs += ../../examples/qt3d \
                snippets
@@ -69,7 +71,9 @@ exampledirs += ../../examples/qt3d \
 examples.fileextensions       += "*.fraq *.geom *.vert"
 examples.imageextensions      += "*.png"
 
-#excludedirs +=
+excludedirs += \
+              ../plugins/renderplugins
+
 macro.TODO = " "
 imagedirs   += images \
                ../../examples/qt3d/shadow-map-qml/doc/images \
@@ -86,7 +90,8 @@ Cpp.ignoretokens     += QT3DINPUTSHARED_EXPORT \
                         QT3DRENDERSHARED_PRIVATE_EXPORT \
                         QT3DQUICKSHARED_PRIVATE_EXPORT \
                         QT3DEXTRASSHARED_EXPORT \
-                        QT3DANIMATIONSHARED_EXPORT
+                        QT3DANIMATIONSHARED_EXPORT \
+                        QT3DQUICKSCENE2DSHARED_EXPORT
 
 Cpp.ignoredirectives += Q_DECLARE_LOGGING_CATEGORY
 

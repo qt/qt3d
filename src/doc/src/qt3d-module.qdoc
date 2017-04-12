@@ -80,6 +80,9 @@
 
     \section2 Qt 3D Animation Module
     \generatelist {classesbymodule Qt3DAnimation}
+
+    \section2 Qt 3D Scene2D Module
+    \generatelist {classesbymodule Qt3DScene2D}
 */
 
 /*!
@@ -138,5 +141,9 @@
 
    \section2 Qt 3D Animation Module
    \generatelist {qmltypesbymodule Qt3D.Animation}
+   \noautolist
+
+   \section2 Qt 3D Scene2D Module
+   \generatelist {qmltypesbymodule Qt3D.Scene2D}
    \noautolist
 */
