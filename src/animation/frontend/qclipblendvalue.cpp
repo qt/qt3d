@@ -57,6 +57,13 @@ QClipBlendValue::QClipBlendValue(Qt3DCore::QNode *parent)
 {
 }
 
+QClipBlendValue::QClipBlendValue(Qt3DAnimation::QAbstractAnimationClip *clip,
+                                 Qt3DCore::QNode *parent)
+    : QAbstractClipBlendNode(*new QClipBlendValuePrivate(), parent)
+{
+    setClip(clip);
+}
+
 QClipBlendValue::QClipBlendValue(QClipBlendValuePrivate &dd, Qt3DCore::QNode *parent)
     : QAbstractClipBlendNode(dd, parent)
 {

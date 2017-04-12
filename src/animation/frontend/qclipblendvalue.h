@@ -55,7 +55,9 @@ class QT3DANIMATIONSHARED_EXPORT QClipBlendValue : public Qt3DAnimation::QAbstra
     Q_PROPERTY(Qt3DAnimation::QAbstractAnimationClip *clip READ clip WRITE setClip NOTIFY clipChanged)
 
 public:
-    QClipBlendValue(Qt3DCore::QNode *parent = nullptr);
+    explicit QClipBlendValue(Qt3DCore::QNode *parent = nullptr);
+    explicit QClipBlendValue(Qt3DAnimation::QAbstractAnimationClip *clip,
+                             Qt3DCore::QNode *parent = nullptr);
     ~QClipBlendValue();
 
     Qt3DAnimation::QAbstractAnimationClip *clip() const;
