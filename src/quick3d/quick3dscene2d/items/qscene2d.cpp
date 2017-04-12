@@ -91,18 +91,8 @@ namespace Quick {
  */
 
 /*!
-    \qmlproperty QUrl Qt3D.Render::Scene2D::source
-    Holds the qml source url.
- */
-
-/*!
     \qmlproperty enumeration Qt3D.Render::Scene2D::renderPolicy
     Holds the render policy of this Scene2D.
- */
-
-/*!
-    \qmlproperty bool Qt3D.Render::Scene2D::loaded
-    Holds whether the source has been loaded.
  */
 
 QScene2DPrivate::QScene2DPrivate()
@@ -125,56 +115,6 @@ QScene2DPrivate::~QScene2DPrivate()
 QScene2D::QScene2D(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QScene2DPrivate, parent)
 {
-    Q_D(QScene2D);
-    connect(d->m_renderManager, &Scene2DManager::onLoadedChanged,
-            this, &QScene2D::sourceLoaded);
-}
-
-QScene2D::QScene2D(QQmlEngine *engine, Qt3DCore::QNode *parent)
-    : Qt3DCore::QNode(*new QScene2DPrivate, parent)
-{
-    Q_D(QScene2D);
-    connect(d->m_renderManager, &Scene2DManager::onLoadedChanged,
-            this, &QScene2D::sourceLoaded);
-    d->m_renderManager->setEngine(engine);
-}
-
-QScene2D::~QScene2D()
-{
-}
-
-bool QScene2D::loaded() const
-{
-    Q_D(const QScene2D);
-    return d->m_renderManager->m_initialized;
-}
-
-/*!
-    \property QScene2D::source
-    \brief Specifies the url for the qml.
-
-    This property specifies the url to the qml being rendered to the texture.
-    The source must specify QQuickItem as a root. The item must specify width
-    and height. The rendered qml is scaled to the texture size.
-    The property can not be changed after the rendering has been initialized.
- */
-QUrl QScene2D::source() const
-{
-    Q_D(const QScene2D);
-    return d->m_renderManager->m_source;
-}
-
-void QScene2D::setSource(const QUrl &url)
-{
-    Q_D(QScene2D);
-    if (d->m_renderManager->m_initialized) {
-        qWarning() << "Unable to set source after initialization.";
-        return;
-    }
-    if (d->m_renderManager->m_source != url) {
-        d->m_renderManager->setSource(url);
-        emit sourceChanged(url);
-    }
 }
 
 QQuickItem* QScene2D::item() const
@@ -260,29 +200,11 @@ bool QScene2D::event(QEvent *event)
     return true;
 }
 
-/*!
-    Returns the qml engine used by the QScene2D.
- */
-QQmlEngine *QScene2D::engine() const
-{
-    Q_D(const QScene2D);
-    return d->m_renderManager->m_qmlEngine;
-}
-
 bool QScene2D::isGrabMouseEnabled() const
 {
     Q_D(const QScene2D);
     return d->m_renderManager->m_grabMouse;
 }
-
-/*!
-    \internal
- */
-void QScene2D::sourceLoaded()
-{
-    emit loadedChanged(true);
-}
-
 
 QVector<Qt3DCore::QEntity*> QScene2D::entities()
 {

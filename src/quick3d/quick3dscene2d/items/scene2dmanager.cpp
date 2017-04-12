@@ -72,9 +72,7 @@ QWindow *RenderControl::renderWindow(QPoint *offset)
      Constructs qml render manager.
  */
 Scene2DManager::Scene2DManager(QScene2DPrivate *priv)
-    : m_qmlEngine(nullptr)
-    , m_qmlComponent(nullptr)
-    , m_rootItem(nullptr)
+    : m_rootItem(nullptr)
     , m_item(nullptr)
     , m_priv(priv)
     , m_sharedObject(new Scene2DSharedObject(this))
@@ -83,8 +81,6 @@ Scene2DManager::Scene2DManager(QScene2DPrivate *priv)
     , m_initialized(false)
     , m_renderSyncRequested(false)
     , m_backendInitialized(false)
-    , m_noSourceMode(false)
-    , m_ownEngine(false)
     , m_grabMouse(false)
 {
     m_sharedObject->m_surface = new QOffscreenSurface;
@@ -135,38 +131,17 @@ void Scene2DManager::requestRenderSync()
 
 void Scene2DManager::startIfInitialized()
 {
-    if (!m_initialized && m_backendInitialized) {
-        if (m_source.isValid() && !m_noSourceMode) {
-            // Create a QML engine.
-            if (!m_qmlEngine) {
-                m_qmlEngine = new QQmlEngine;
-                if (!m_qmlEngine->incubationController()) {
-                    m_qmlEngine->setIncubationController(m_sharedObject->m_quickWindow
-                                                         ->incubationController());
-                }
-            }
+    if (!m_initialized && m_backendInitialized && m_item != nullptr) {
+        m_rootItem = m_item;
 
-            // create component
-            m_ownEngine = true;
-            m_qmlComponent = new QQmlComponent(m_qmlEngine, m_source);
-            if (m_qmlComponent->isLoading()) {
-                connect(m_qmlComponent, &QQmlComponent::statusChanged,
-                        this, &Scene2DManager::run);
-            } else {
-                run();
-            }
-        } else if (m_item != nullptr) {
-            m_rootItem = m_item;
+        // Associate root item with the window.
+        m_rootItem->setParentItem(m_sharedObject->m_quickWindow->contentItem());
 
-            // Associate root item with the window.
-            m_rootItem->setParentItem(m_sharedObject->m_quickWindow->contentItem());
+        // Update window size.
+        updateSizes();
 
-            // Update window size.
-            updateSizes();
-
-            m_initialized = true;
-            m_sharedObject->setInitialized();
-        }
+        m_initialized = true;
+        m_sharedObject->setInitialized();
     }
 }
 
@@ -177,52 +152,7 @@ void Scene2DManager::stopAndClean()
         m_sharedObject->requestQuit();
         m_sharedObject->wait();
         m_sharedObject->cleanup();
-        if (m_ownEngine) {
-            QObject::disconnect(m_connection);
-            delete m_qmlEngine;
-        }
-        delete m_qmlComponent;
-        m_qmlEngine = nullptr;
-        m_qmlComponent = nullptr;
     }
-}
-
-void Scene2DManager::run()
-{
-    disconnect(m_qmlComponent, &QQmlComponent::statusChanged, this, &Scene2DManager::run);
-
-    if (m_qmlComponent->isError()) {
-        QList<QQmlError> errorList = m_qmlComponent->errors();
-        for (const QQmlError &error: errorList)
-            qWarning() << error.url() << error.line() << error;
-        return;
-    }
-
-    QObject *rootObject = m_qmlComponent->create();
-    if (m_qmlComponent->isError()) {
-        QList<QQmlError> errorList = m_qmlComponent->errors();
-        for (const QQmlError &error: errorList)
-            qWarning() << error.url() << error.line() << error;
-        return;
-    }
-
-    m_rootItem = qobject_cast<QQuickItem *>(rootObject);
-    if (!m_rootItem) {
-        qWarning("QScene2D: Root item is not a QQuickItem.");
-        delete rootObject;
-        return;
-    }
-
-    // The root item is ready. Associate it with the window.
-    m_rootItem->setParentItem(m_sharedObject->m_quickWindow->contentItem());
-
-    // Update window size.
-    updateSizes();
-
-    m_initialized = true;
-    m_sharedObject->setInitialized();
-
-    emit onLoadedChanged();
 }
 
 void Scene2DManager::updateSizes()
@@ -236,15 +166,8 @@ void Scene2DManager::updateSizes()
     m_sharedObject->m_quickWindow->setGeometry(0, 0, width, height);
 }
 
-void Scene2DManager::setSource(const QUrl &url)
-{
-    m_source = url;
-    startIfInitialized();
-}
-
 void Scene2DManager::setItem(QQuickItem *item)
 {
-    m_noSourceMode = true;
     m_item = item;
     startIfInitialized();
 }
@@ -344,23 +267,6 @@ void Scene2DManager::doRenderSync()
 void Scene2DManager::cleanup()
 {
     stopAndClean();
-}
-
-void Scene2DManager::setEngine(QQmlEngine *engine)
-{
-    m_qmlEngine = engine;
-    m_ownEngine = false;
-    if (engine) {
-        m_connection = QObject::connect(engine, &QObject::destroyed,
-                                        this, &Scene2DManager::engineDestroyed);
-    }
-}
-
-void Scene2DManager::engineDestroyed()
-{
-    QObject::disconnect(m_connection);
-    m_qmlEngine = nullptr;
-    m_ownEngine = false;
 }
 
 } // namespace Quick
