@@ -75,6 +75,13 @@ QAnimationClipLoader::QAnimationClipLoader(Qt3DCore::QNode *parent)
 {
 }
 
+QAnimationClipLoader::QAnimationClipLoader(const QUrl &source,
+                                           Qt3DCore::QNode *parent)
+    : QAbstractAnimationClip(*new QAnimationClipLoaderPrivate, parent)
+{
+    setSource(source);
+}
+
 QAnimationClipLoader::QAnimationClipLoader(QAnimationClipLoaderPrivate &dd, Qt3DCore::QNode *parent)
     : QAbstractAnimationClip(dd, parent)
 {

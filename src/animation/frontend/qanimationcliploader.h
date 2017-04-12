@@ -55,6 +55,8 @@ class QT3DANIMATIONSHARED_EXPORT QAnimationClipLoader : public QAbstractAnimatio
 
 public:
     explicit QAnimationClipLoader(Qt3DCore::QNode *parent = nullptr);
+    explicit QAnimationClipLoader(const QUrl &source,
+                                  Qt3DCore::QNode *parent = nullptr);
     ~QAnimationClipLoader();
 
     enum Status {
