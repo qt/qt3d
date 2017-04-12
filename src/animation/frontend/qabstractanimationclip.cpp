@@ -103,17 +103,11 @@ void QAbstractAnimationClipPrivate::setDuration(float duration)
     Animation clips are also used as the leaf node values in animation blend trees:
 
     \code
-    // Create first leaf node of blend tree
-    auto slideClip = new QAnimationClipLoader();
-    slideClip->setSource(QUrl::fromLocalFile("slide.json"));
-    auto slideClipValue = new QClipBlendValue();
-    slideClipValue->setClip(slideClip);
-
-    // Create second leaf node of blend tree
-    auto bounceClip = new QAnimationClipLoader();
-    bounceClip->setSource(QUrl::fromLocalFile("bounce.json"));
-    auto bounceClipValue = new QClipBlendValue();
-    bounceClipValue->setClip(bounceClip);
+    // Create leaf nodes of blend tree
+    auto slideClipValue = new QClipBlendValue(
+        new QAnimationClipLoader(QUrl::fromLocalFile("slide.json")));
+    auto bounceClipValue = new QClipBlendValue(
+        new QAnimationClipLoader(QUrl::fromLocalFile("bounce.json")));
 
     // Create blend tree inner node
     auto additiveNode = new QAdditiveClipBlend();
