@@ -362,13 +362,12 @@ void PickBoundingVolumeJob::dispatchPickEvents(const QMouseEvent &event,
                 }
 
                 case QEvent::MouseButtonRelease: {
-                    if (lastCurrentPicker != nullptr && m_currentPicker == objectPickerHandle)
-                        m_currentPicker = HObjectPicker();
                     // Only send the release event if it was pressed
-                    if (objectPicker->isPressed()) {
-                        if (lastCurrentPicker == objectPicker)
-                            objectPicker->onClicked(pickEvent);
+                    if (objectPicker->isPressed())
                         objectPicker->onReleased(pickEvent);
+                    if (lastCurrentPicker != nullptr && m_currentPicker == objectPickerHandle) {
+                        objectPicker->onClicked(pickEvent);
+                        m_currentPicker = HObjectPicker();
                     }
                     break;
                 }
