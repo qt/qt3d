@@ -141,7 +141,7 @@ float geometricModel(const in float lDotN,
     // Implicit geometric model (equal to denominator in specular model).
     // This currently assumes that there is no attenuation by geometric shadowing or
     // masking according to the microfacet theory.
-    return 1.0;
+    return lDotN * vDotN;
 }
 
 vec3 specularModel(const in vec3 F0,
