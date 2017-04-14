@@ -86,6 +86,7 @@ QSkyboxEntityPrivate::QSkyboxEntityPrivate()
     , m_negZImage(new QTextureImage())
     , m_extension(QStringLiteral(".png"))
 {
+    m_loadedTexture->setGenerateMipMaps(false);
 }
 
 /*!
