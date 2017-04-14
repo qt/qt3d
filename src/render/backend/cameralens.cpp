@@ -73,6 +73,7 @@ void CameraLens::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &c
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QCameraLensData>>(change);
     const auto &data = typedChange->data;
     m_projection = data.projectionMatrix;
+    m_exposure = data.exposure;
 }
 
 void CameraLens::setProjection(const QMatrix4x4 &projection)
