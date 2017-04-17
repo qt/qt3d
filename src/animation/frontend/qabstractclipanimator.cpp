@@ -220,6 +220,22 @@ void QAbstractClipAnimator::setLoopCount(int loops)
     emit loopCountChanged(loops);
 }
 
+/*!
+    Starts the animation.
+*/
+void QAbstractClipAnimator::start()
+{
+    setRunning(true);
+}
+
+/*!
+    Stops the animation.
+*/
+void QAbstractClipAnimator::stop()
+{
+    setRunning(false);
+}
+
 } // namespace Qt3DAnimation
 
 QT_END_NAMESPACE
