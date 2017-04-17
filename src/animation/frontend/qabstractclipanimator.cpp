@@ -53,6 +53,57 @@ QAbstractClipAnimatorPrivate::QAbstractClipAnimatorPrivate()
 {
 }
 
+/*!
+    \qmltype AbsractClipAnimator
+    \instantiates Qt3DAnimation::QAbstractClipAnimator
+    \inqmlmodule Qt3D.Animation
+    \since 5.9
+
+    \brief AbstractClipAnimator is the base class for types providing animation playback
+    capabilities.
+
+    Subclasses of AbstractClipAnimator can be aggregated by an Entity to
+    provide animation capabilities. The animator components provide an
+    interface for controlling the animation (e.g. start, stop). Each animator
+    type requires some form of animation data such as an AbstractAnimationClip
+    as well as a ChannelMapper which describes how the channels in the
+    animation clip should be mapped onto the properties of the objects you wish
+    to animate.
+
+    The following subclasses are available:
+
+    \list
+    \li Qt3D.Animation.ClipAnimator
+    \li Qt3D.Animation.BlendedClipAnimator
+    \endlist
+*/
+
+/*!
+    \class Qt3DAnimation::QAbstractClipAnimator
+    \inherits Qt3DCore::QComponent
+
+    \inmodule Qt3DAnimation
+    \since 5.9
+
+    \brief QAbstractClipAnimator is the base class for types providing animation playback
+    capabilities.
+
+    Subclasses of QAbstractClipAnimator can be aggregated by a QEntity to
+    provide animation capabilities. The animator components provide an
+    interface for controlling the animation (e.g. start, stop). Each animator
+    type requires some form of animation data such as a QAbstractAnimationClip
+    as well as a QChannelMapper which describes how the channels in the
+    animation clip should be mapped onto the properties of the objects you wish
+    to animate.
+
+    The following subclasses are available:
+
+    \list
+    \li Qt3DAnimation::QClipAnimator
+    \li Qt3DAnimation::QBlendedClipAnimator
+    \endlist
+*/
+
 QAbstractClipAnimator::QAbstractClipAnimator(Qt3DCore::QNode *parent)
     : Qt3DCore::QComponent(*new QAbstractClipAnimatorPrivate, parent)
 {
@@ -67,18 +118,63 @@ QAbstractClipAnimator::~QAbstractClipAnimator()
 {
 }
 
+/*!
+    \qmlproperty bool running
+
+    This property holds whether the animation is currently running.
+*/
+
+/*!
+    \property running
+
+    This property holds whether the animation is currently running.
+*/
 bool QAbstractClipAnimator::isRunning() const
 {
     Q_D(const QAbstractClipAnimator);
     return d->m_running;
 }
 
+/*!
+    \property ChannelMapper channelMapper
+
+    This property holds the ChannelMapper that controls how the channels in
+    the animation clip map onto the properties of the target objects.
+*/
+
+/*!
+    \property channelMapper
+
+    This property holds the QChannelMapper that controls how the channels in
+    the animation clip map onto the properties of the target objects.
+*/
 QChannelMapper *QAbstractClipAnimator::channelMapper() const
 {
     Q_D(const QAbstractClipAnimator);
     return d->m_mapper;
 }
 
+/*!
+    \qmlproperty int loops
+
+    This property holds the number of times the animation should play.
+
+    By default, loops is 1: the animation will play through once and then stop.
+
+    If set to QAbstractClipAnimator::Infinite, the animation will continuously
+    repeat until it is explicitly stopped.
+*/
+
+/*!
+    \property loops
+
+    This property holds the number of times the animation should play.
+
+    By default, loops is 1: the animation will play through once and then stop.
+
+    If set to QAbstractClipAnimator::Infinite, the animation will continuously
+    repeat until it is explicitly stopped.
+*/
 int QAbstractClipAnimator::loopCount() const
 {
     Q_D(const QAbstractClipAnimator);
