@@ -53,8 +53,8 @@ namespace Qt3DRender {
 namespace Quick {
 
 /*!
-    \class Qt3DRender::QScene2D
-    \inmodule Qt3DRender
+    \class Qt3DRender::Quick::QScene2D
+    \inmodule Qt3DScene2D
 
     \brief This class enables rendering qml into a texture, which then can be
     used as a part of 3D scene.
@@ -69,10 +69,10 @@ namespace Quick {
 
 /*!
     \qmltype Scene2D
-    \inqmlmodule Qt3D.Render
+    \inqmlmodule Qt3D.Scene2D
     \since
     \ingroup
-    \instantiates Qt3DRender::QScene2D
+    \instantiates Qt3DRender::Quick::QScene2D
     \brief Scene2D
  */
 

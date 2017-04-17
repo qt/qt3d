@@ -65,7 +65,7 @@ QSortPolicyPrivate::QSortPolicyPrivate()
     The sort types determine how drawable entities are sorted before drawing to
     determine the drawing order. When QSortPolicy is present in the FrameGraph,
     the sorting mechanism is determined by the SortTypes list. Multiple sort types
-    can be used simultanously. If QSortPolicy is not present in the FrameGraph,
+    can be used simultaneously. If QSortPolicy is not present in the FrameGraph,
     entities are drawn in the order they appear in the entity hierarchy.
  */
 
@@ -81,7 +81,7 @@ QSortPolicyPrivate::QSortPolicyPrivate()
     The sort types determine how drawable entities are sorted before drawing to
     determine the drawing order. When SortPolicy is present in the FrameGraph,
     the sorting mechanism is determined by the SortTypes list. Multiple sort
-    types can be used simultanously. If SortPolicy is not present in the FrameGraph,
+    types can be used simultaneously. If SortPolicy is not present in the FrameGraph,
     entities are drawn in the order they appear in the entity hierarchy.
  */
 

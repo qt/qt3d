@@ -53,7 +53,7 @@ namespace {
 
 const int qjsValueTypeId = qMetaTypeId<QJSValue>();
 const int quick3DShaderDataArrayTypeId = qMetaTypeId<Quick3DShaderDataArray*>();
-const int quick3DShaderDataTypeId = qMetaTypeId<Quick3DShaderData*>();
+Q_DECL_UNUSED const int quick3DShaderDataTypeId = qMetaTypeId<Quick3DShaderData*>();
 
 }
 

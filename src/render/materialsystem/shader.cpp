@@ -72,6 +72,8 @@ Shader::~Shader()
 {
     // TO DO: ShaderProgram is leaked as of now
     // Fix that taking care that they may be shared given a same dna
+    if (m_graphicsContext)
+        QObject::disconnect(m_contextConnection);
 }
 
 void Shader::cleanup()

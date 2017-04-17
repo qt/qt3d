@@ -597,7 +597,7 @@ void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
         // If two shaders define the same block with the exact same layout, in that case the UBO could be shared
         // but how do we know that ? We'll need to compare ShaderUniformBlocks
 
-        // Note: we assume that if a buffer is shared accross multiple shaders
+        // Note: we assume that if a buffer is shared across multiple shaders
         // then it implies that they share the same layout
 
         // Temporarly disabled
@@ -830,7 +830,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                 if (uniformNamesIds.contains(LIGHT_COUNT_NAME_ID))
                     setUniformValue(command->m_parameterPack, LIGHT_COUNT_NAME_ID, UniformValue(qMax(1, lightIdx)));
 
-                if (activeLightSources.isEmpty()) {
+                // If no active light sources and no environment light, add a default light
+                if (activeLightSources.isEmpty() && !environmentLight) {
                     // Note: implicit conversion of values to UniformValue
                     setUniformValue(command->m_parameterPack, LIGHT_POSITION_NAMES[0], QVector3D(10.0f, 10.0f, 0.0f));
                     setUniformValue(command->m_parameterPack, LIGHT_TYPE_NAMES[0], int(QAbstractLight::PointLight));

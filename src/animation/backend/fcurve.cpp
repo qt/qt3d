@@ -103,7 +103,7 @@ void FCurve::read(const QJsonObject &json)
         float localTime = keyframeCoords.at(0).toDouble();
 
         Keyframe keyframe;
-        keyframe.interpolation = Keyframe::Bezier;
+        keyframe.interpolation = QKeyFrame::BezierInterpolation;
         keyframe.value = keyframeCoords.at(1).toDouble();
 
         const QJsonArray leftHandle = keyframeData[QLatin1String("leftHandle")].toArray();
@@ -121,10 +121,36 @@ void FCurve::read(const QJsonObject &json)
     // back so they do not interset.
 }
 
+void FCurve::setFromQChannelComponent(const QChannelComponent &qcc)
+{
+    clearKeyframes();
+
+    for (const auto &frontendKeyFrame : qcc) {
+        // Extract the keyframe local time and value
+        const float localTime = frontendKeyFrame.coordinates()[0];
+
+        Keyframe keyFrame;
+        keyFrame.interpolation = frontendKeyFrame.interpolationType();
+        keyFrame.value = frontendKeyFrame.coordinates()[1];
+        keyFrame.leftControlPoint = frontendKeyFrame.leftControlPoint();
+        keyFrame.rightControlPoint = frontendKeyFrame.rightControlPoint();
+        appendKeyframe(localTime, keyFrame);
+    }
+
+    // TODO: Ensure beziers have no loops or cusps by scaling the control points
+    // back so they do not interset.
+}
+
 void ChannelComponent::read(const QJsonObject &json)
 {
     name = json[QLatin1String("channelComponentName")].toString();
     fcurve.read(json);
+}
+
+void ChannelComponent::setFromQChannelComponent(const QChannelComponent &qcc)
+{
+    name = qcc.name();
+    fcurve.setFromQChannelComponent(qcc);
 }
 
 void Channel::read(const QJsonObject &json)
@@ -138,6 +164,15 @@ void Channel::read(const QJsonObject &json)
         const QJsonObject channel = channelComponentsArray.at(i).toObject();
         channelComponents[i].read(channel);
     }
+}
+
+void Channel::setFromQChannel(const QChannel &qch)
+{
+    name = qch.name();
+    channelComponents.resize(qch.channelComponentCount());
+    int i = 0;
+    for (const auto &frontendChannelComponent : qch)
+        channelComponents[i++].setFromQChannelComponent(frontendChannelComponent);
 }
 
 } // namespace Animation

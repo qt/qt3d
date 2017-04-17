@@ -49,7 +49,6 @@
 #include <Qt3DCore/private/corelogging_p.h>
 #include <Qt3DCore/private/qaspectthread_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
-#include <Qt3DCore/private/aspectcommanddebugger_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qnode_p.h>
@@ -58,6 +57,11 @@
 #include <Qt3DCore/private/qpostman_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
+#include <Qt3DCore/qt3dcore-config.h>
+
+#if defined(QT3D_JOBS_RUN_STATS)
+#include <Qt3DCore/private/aspectcommanddebugger_p.h>
+#endif
 
 QT_BEGIN_NAMESPACE
 

@@ -40,6 +40,8 @@
 #include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DRender/qframegraphnodecreatedchange.h>
 
+#include <QPointer>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -108,9 +110,21 @@ namespace Qt3DRender {
  */
 
 /*!
- * \qmlmethod void Qt3D.Render::RenderCaptureReply::saveToFile(fileName)
+ * \qmlmethod bool Qt3D.Render::RenderCaptureReply::saveImage(fileName)
  *
  * Saves the render capture result as an image to \a fileName.
+ * Returns true if the image was successfully saved; otherwise returns false.
+ *
+ * \since 5.9
+ */
+
+/*!
+ * \qmlmethod void Qt3D.Render::RenderCaptureReply::saveToFile(fileName)
+ * \deprecated
+ *
+ * Saves the render capture result as an image to \a fileName.
+ *
+ * Deprecated in 5.9. Use saveImage().
  */
 
 /*!
@@ -121,7 +135,7 @@ namespace Qt3DRender {
  * the request. The requestId does not have to be unique. Only one render capture result
  * is produced per requestCapture call even if the frame graph has multiple leaf nodes.
  * The function returns a QRenderCaptureReply object, which receives the captured image
- * when it is done. The user is reponsible for deallocating the returned object.
+ * when it is done. The user is responsible for deallocating the returned object.
  */
 
 /*!
@@ -188,6 +202,25 @@ bool QRenderCaptureReply::isComplete() const
 
 /*!
  * Saves the render capture result as an image to \a fileName.
+ *
+ * Returns true if the image was successfully saved; otherwise returns false.
+ * \since 5.9
+ */
+bool QRenderCaptureReply::saveImage(const QString &fileName) const
+{
+    Q_D(const QRenderCaptureReply);
+    if (d->m_complete)
+    {
+        return d->m_image.save(fileName);
+    }
+    return false;
+}
+
+/*!
+ * \deprecated
+ * Saves the render capture result as an image to \a fileName.
+ *
+ * Deprecated in 5.9. Use saveImage().
  */
 void QRenderCaptureReply::saveToFile(const QString &fileName) const
 {
@@ -254,7 +287,7 @@ QRenderCapture::QRenderCapture(Qt3DCore::QNode *parent)
  * the request. The requestId does not have to be unique. Only one render capture result
  * is produced per requestCapture call even if the frame graph has multiple leaf nodes.
  * The function returns a QRenderCaptureReply object, which receives the captured image
- * when it is done. The user is reponsible for deallocating the returned object.
+ * when it is done. The user is responsible for deallocating the returned object.
  */
 QRenderCaptureReply *QRenderCapture::requestCapture(int captureId)
 {
@@ -301,14 +334,14 @@ void QRenderCapture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
     if (propertyChange->type() == Qt3DCore::PropertyUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("renderCaptureData")) {
             RenderCaptureDataPtr data = propertyChange->value().value<RenderCaptureDataPtr>();
-            QRenderCaptureReply *reply = d->takeReply(data.data()->captureId);
+            QPointer<QRenderCaptureReply> reply = d->takeReply(data.data()->captureId);
             if (reply) {
                 d->setImage(reply, data.data()->image);
                 emit reply->completed();
-
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
-                emit reply->completeChanged(true);
+                if (reply)
+                    emit reply->completeChanged(true);
 QT_WARNING_POP
             }
         }

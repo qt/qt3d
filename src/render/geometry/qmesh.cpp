@@ -208,6 +208,8 @@ QGeometry *MeshFunctor::operator()()
 
     QFileInfo finfo(filePath);
     auto ext = finfo.suffix();
+    if (ext.isEmpty())
+        ext = QLatin1String("obj");
 
     QScopedPointer<QGeometryLoaderInterface> loader;
 

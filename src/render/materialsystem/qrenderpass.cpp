@@ -236,7 +236,7 @@ QVector<QFilterKey *> QRenderPass::filterKeys() const
 /*!
     Adds a render \a state to the rendering pass. That implies that
     when the pass is executed at render time, the globally set render state will
-    be modifed by the states defined locally by the Qt3DRender::QRenderPass.
+    be modified by the states defined locally by the Qt3DRender::QRenderPass.
 
     \note not defining any Qt3DRender::QRenderState in a pass will result in the pass using
     the globally set render state for a given FrameGraph branch execution path.

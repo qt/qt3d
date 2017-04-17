@@ -46,11 +46,11 @@ class tst_ClipBlendValue : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 public:
-    AnimationClipLoader *createAnimationClipLoader(Handler *handler,
+    AnimationClip *createAnimationClipLoader(Handler *handler,
                                                    double duration)
     {
         auto clipId = Qt3DCore::QNodeId::createId();
-        AnimationClipLoader *clip = handler->animationClipLoaderManager()->getOrCreateResource(clipId);
+        AnimationClip *clip = handler->animationClipLoaderManager()->getOrCreateResource(clipId);
         setPeerId(clip, clipId);
         clip->setDuration(duration);
         return clip;

@@ -32,13 +32,19 @@ HEADERS += \
     $$PWD/qvertexblendanimation.h \
     $$PWD/qvertexblendanimation_p.h \
     $$PWD/qanimationcliploader.h \
-    $$PWD/qanimationcliploader_p.h \
+    $$PWD/qanimationclip_p.h \
     $$PWD/qlerpclipblend.h \
     $$PWD/qlerpclipblend_p.h \
     $$PWD/qadditiveclipblend.h \
     $$PWD/qadditiveclipblend_p.h \
     $$PWD/qclipblendvalue.h \
-    $$PWD/qclipblendvalue_p.h
+    $$PWD/qclipblendvalue_p.h \
+    $$PWD/qanimationclipdata.h \
+    $$PWD/qchannel.h \
+    $$PWD/qchannelcomponent.h \
+    $$PWD/qkeyframe.h \
+    $$PWD/qanimationclip.h \
+    $$PWD/qanimationclip_p.h
 
 SOURCES += \
     $$PWD/qanimationaspect.cpp \
@@ -60,6 +66,11 @@ SOURCES += \
     $$PWD/qanimationcliploader.cpp \
     $$PWD/qlerpclipblend.cpp \
     $$PWD/qadditiveclipblend.cpp \
-    $$PWD/qclipblendvalue.cpp
+    $$PWD/qclipblendvalue.cpp \
+    $$PWD/qanimationclipdata.cpp \
+    $$PWD/qchannel.cpp \
+    $$PWD/qchannelcomponent.cpp \
+    $$PWD/qkeyframe.cpp \
+    $$PWD/qanimationclip.cpp
 
 INCLUDEPATH += $$PWD

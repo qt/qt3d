@@ -75,6 +75,13 @@ QAnimationClipLoader::QAnimationClipLoader(Qt3DCore::QNode *parent)
 {
 }
 
+QAnimationClipLoader::QAnimationClipLoader(const QUrl &source,
+                                           Qt3DCore::QNode *parent)
+    : QAbstractAnimationClip(*new QAnimationClipLoaderPrivate, parent)
+{
+    setSource(source);
+}
+
 QAnimationClipLoader::QAnimationClipLoader(QAnimationClipLoaderPrivate &dd, Qt3DCore::QNode *parent)
     : QAbstractAnimationClip(dd, parent)
 {
@@ -96,7 +103,7 @@ QAnimationClipLoader::Status QAnimationClipLoader::status() const
     return d->m_status;
 }
 
-void QAnimationClipLoader::setSource(QUrl source)
+void QAnimationClipLoader::setSource(const QUrl &source)
 {
     Q_D(QAnimationClipLoader);
     if (d->m_source == source)

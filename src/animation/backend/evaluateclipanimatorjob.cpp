@@ -63,7 +63,7 @@ void EvaluateClipAnimatorJob::run()
     Q_ASSERT(clipAnimator);
 
     // Evaluate the fcurves
-    AnimationClipLoader *clip = m_handler->animationClipLoaderManager()->lookupResource(clipAnimator->clipId());
+    AnimationClip *clip = m_handler->animationClipLoaderManager()->lookupResource(clipAnimator->clipId());
     Q_ASSERT(clip);
     // Prepare for evaluation (convert global time to local time ....)
     const AnimatorEvaluationData animatorEvaluationData = evaluationDataForAnimator(clipAnimator, globalTime);

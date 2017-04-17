@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QANIMATIONCLIP_P_H
-#define QT3DANIMATION_QANIMATIONCLIP_P_H
+#ifndef QT3DANIMATION_QANIMATIONCLIPLOADER_P_H
+#define QT3DANIMATION_QANIMATIONCLIPLOADER_P_H
 
 //
 //  W A R N I N G
@@ -78,4 +78,4 @@ struct QAnimationClipLoaderData
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_QANIMATIONCLIP_P_H
+#endif // QT3DANIMATION_QANIMATIONCLIPLOADER_P_H

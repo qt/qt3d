@@ -29,6 +29,7 @@
 #include <QtTest/QTest>
 #include <private/fcurve_p.h>
 
+using namespace Qt3DAnimation;
 using namespace Qt3DAnimation::Animation;
 
 class tst_FCurve : public QObject
@@ -53,7 +54,7 @@ private Q_SLOTS:
         FCurve fcurve;
 
         // WHEN
-        const Keyframe kf0{0.0f, {-5.0f, 0.0f}, {5.0f, 0.0f}, Keyframe::Bezier};
+        const Keyframe kf0{0.0f, {-5.0f, 0.0f}, {5.0f, 0.0f}, QKeyFrame::BezierInterpolation};
         fcurve.appendKeyframe(0.0f, kf0);
 
         // THEN
@@ -62,7 +63,7 @@ private Q_SLOTS:
         QCOMPARE(fcurve.endTime(), 0.0f);
 
         // WHEN
-        const Keyframe kf1{5.0f, {45.0f, 5.0f}, {55.0f, 5.0f}, Keyframe::Bezier};
+        const Keyframe kf1{5.0f, {45.0f, 5.0f}, {55.0f, 5.0f}, QKeyFrame::BezierInterpolation};
         fcurve.appendKeyframe(50.0f, kf1);
 
         // THEN
@@ -77,8 +78,8 @@ private Q_SLOTS:
     {
         // GIVEN
         FCurve fcurve;
-        fcurve.appendKeyframe(0.0f, Keyframe{0.0f, {-5.0f, 0.0f}, {5.0f, 0.0f}, Keyframe::Bezier});
-        fcurve.appendKeyframe(50.0f, Keyframe{5.0f, {45.0f, 5.0f}, {55.0f, 5.0f}, Keyframe::Bezier});
+        fcurve.appendKeyframe(0.0f, Keyframe{0.0f, {-5.0f, 0.0f}, {5.0f, 0.0f}, QKeyFrame::BezierInterpolation});
+        fcurve.appendKeyframe(50.0f, Keyframe{5.0f, {45.0f, 5.0f}, {55.0f, 5.0f}, QKeyFrame::BezierInterpolation});
 
         // WHEN
         fcurve.clearKeyframes();

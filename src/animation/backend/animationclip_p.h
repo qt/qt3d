@@ -49,6 +49,7 @@
 //
 
 #include <Qt3DAnimation/private/backendnode_p.h>
+#include <Qt3DAnimation/qanimationclipdata.h>
 #include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/private/fcurve_p.h>
 #include <QtCore/qurl.h>
@@ -60,10 +61,10 @@ namespace Animation {
 
 class Handler;
 
-class Q_AUTOTEST_EXPORT AnimationClipLoader : public BackendNode
+class Q_AUTOTEST_EXPORT AnimationClip : public BackendNode
 {
 public:
-    AnimationClipLoader();
+    AnimationClip();
 
     void cleanup();
     void setSource(const QUrl &source) { m_source = source; }
@@ -83,14 +84,32 @@ public:
     int channelCount() const { return m_channelComponentCount; }
     int channelComponentBaseIndex(int channelGroupIndex) const;
 
+    // Allow unit tests to set the data type
+#if !defined(QT_BUILD_INTERNAL)
+private:
+#endif
+    enum ClipDataType {
+        Unknown,
+        File,
+        Data
+    };
+#if defined(QT_BUILD_INTERNAL)
+public:
+    void setDataType(ClipDataType dataType) { m_dataType = dataType; }
+#endif
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void loadAnimationFromUrl();
+    void loadAnimationFromData();
     void clearData();
     float findDuration();
     int findChannelComponentCount();
 
     QUrl m_source;
     QAnimationClipLoader::Status m_status;
+    QAnimationClipData m_clipData;
+    ClipDataType m_dataType;
 
     QString m_name;
     QVector<Channel> m_channels;
@@ -99,7 +118,7 @@ private:
 };
 
 #ifndef QT_NO_DEBUG_STREAM
-inline QDebug operator<<(QDebug dbg, const AnimationClipLoader &animationClip)
+inline QDebug operator<<(QDebug dbg, const AnimationClip &animationClip)
 {
     QDebugStateSaver saver(dbg);
     dbg << "QNodeId =" << animationClip.peerId() << endl

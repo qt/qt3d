@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DANIMATION_QANIMATIONCLIP_H
-#define QT3DANIMATION_QANIMATIONCLIP_H
+#ifndef QT3DANIMATION_QANIMATIONCLIPLOADER_H
+#define QT3DANIMATION_QANIMATIONCLIPLOADER_H
 
 #include <Qt3DAnimation/qt3danimation_global.h>
 #include <Qt3DAnimation/qabstractanimationclip.h>
@@ -55,6 +55,8 @@ class QT3DANIMATIONSHARED_EXPORT QAnimationClipLoader : public QAbstractAnimatio
 
 public:
     explicit QAnimationClipLoader(Qt3DCore::QNode *parent = nullptr);
+    explicit QAnimationClipLoader(const QUrl &source,
+                                  Qt3DCore::QNode *parent = nullptr);
     ~QAnimationClipLoader();
 
     enum Status {
@@ -68,10 +70,10 @@ public:
     Status status() const;
 
 public Q_SLOTS:
-    void setSource(QUrl source);
+    void setSource(const QUrl &source);
 
 Q_SIGNALS:
-    void sourceChanged(QUrl source);
+    void sourceChanged(const QUrl &source);
     void statusChanged(Status status);
 
 protected:
@@ -87,4 +89,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DANIMATION_QANIMATIONCLIP_H
+#endif // QT3DANIMATION_QANIMATIONCLIPLOADER_H

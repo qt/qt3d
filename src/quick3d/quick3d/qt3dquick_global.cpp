@@ -580,6 +580,7 @@ public:
         case QMetaType::QColor:
             {
             Q_ASSERT(dstSize >= sizeof(QColor));
+            Q_UNUSED(dstSize);
             const QRgb *rgb = reinterpret_cast<const QRgb *>(src);
             QColor *color = reinterpret_cast<QColor *>(dst);
             new (color) QColor(QColor::fromRgba(*rgb));

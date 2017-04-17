@@ -60,7 +60,7 @@ namespace Animation {
 struct Channel;
 class BlendedClipAnimator;
 class Handler;
-class AnimationClipLoader;
+class AnimationClip;
 class ChannelMapper;
 class ChannelMapping;
 
@@ -128,7 +128,7 @@ Q_AUTOTEST_EXPORT
 int componentsForType(int type);
 
 Q_AUTOTEST_EXPORT
-ClipEvaluationData evaluationDataForClip(AnimationClipLoader *clip,
+ClipEvaluationData evaluationDataForClip(AnimationClip *clip,
                                          const AnimatorEvaluationData &animatorData);
 
 Q_AUTOTEST_EXPORT
@@ -143,11 +143,11 @@ ComponentIndices channelComponentsToIndicesHelper(const Channel &channelGroup,
                                                   const QVector<char> &suffixes);
 
 Q_AUTOTEST_EXPORT
-ClipResults evaluateClipAtLocalTime(AnimationClipLoader *clip,
+ClipResults evaluateClipAtLocalTime(AnimationClip *clip,
                                     float localTime);
 
 Q_AUTOTEST_EXPORT
-ClipResults evaluateClipAtPhase(AnimationClipLoader *clip,
+ClipResults evaluateClipAtPhase(AnimationClip *clip,
                                 float phase);
 
 Q_AUTOTEST_EXPORT
@@ -158,7 +158,7 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
 
 Q_AUTOTEST_EXPORT
 QVector<MappingData> buildPropertyMappings(Handler *handler,
-                                           const AnimationClipLoader *clip,
+                                           const AnimationClip *clip,
                                            const ChannelMapper *mapper);
 
 Q_AUTOTEST_EXPORT
@@ -190,7 +190,7 @@ QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
 Q_AUTOTEST_EXPORT
 ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &targetChannels,
                                            const QVector<ComponentIndices> &targetIndices,
-                                           const AnimationClipLoader *clip);
+                                           const AnimationClip *clip);
 
 Q_AUTOTEST_EXPORT
 ClipResults formatClipResults(const ClipResults &rawClipResults,

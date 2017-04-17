@@ -29,7 +29,10 @@ qtHaveModule(multimedia): SUBDIRS += audio-visualizer-qml
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
 
-qtHaveModule(widgets): SUBDIRS += basicshapes-cpp
+qtHaveModule(widgets) {
+    SUBDIRS += basicshapes-cpp
+    qtHaveModule(quickwidgets): SUBDIRS += widgets-scene3d
+}
 
 EXAMPLE_FILES += \
     exampleresources

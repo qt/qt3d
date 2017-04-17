@@ -60,7 +60,11 @@ public:
     Q_DECL_DEPRECATED int captureId() const;
     bool isComplete() const;
 
-    Q_INVOKABLE void saveToFile(const QString &fileName) const;
+    Q_INVOKABLE bool saveImage(const QString &fileName) const;
+#if QT_DEPRECATED_SINCE(5, 9)
+    // ### Qt 6: remove this
+    Q_DECL_DEPRECATED_X("Use saveImage instead") Q_INVOKABLE void saveToFile(const QString &fileName) const;
+#endif
 
 Q_SIGNALS:
     Q_DECL_DEPRECATED_X("Use completed instead") void completeChanged(bool isComplete);

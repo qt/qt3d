@@ -31,6 +31,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/Importer.hpp>
 #include <assimp/DefaultLogger.hpp>
+#include <assimp/anim.h>
 
 int main(int , char **)
 {
@@ -39,6 +40,10 @@ int main(int , char **)
 
   // SET THIS TO REMOVE POINTS AND LINES -> HAVE ONLY TRIANGLES
   importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE|aiPrimitiveType_POINT);
+
+  // Check for new version by setting animation morph channels.
+  aiAnimation anim;
+  anim.mNumMorphMeshChannels = 0;
 
   return 0;
 }

@@ -1,6 +1,3 @@
-#DEFINES += QT3D_RENDER_VIEW_JOB_TIMING
-#DEFINES += QT3D_RENDER_DUMP_BACKEND_NODES
-
 INCLUDEPATH += $$PWD
 
 HEADERS += \
@@ -38,7 +35,6 @@ HEADERS += \
     $$PWD/stringtoint_p.h \
     $$PWD/backendnode_p.h \
     $$PWD/rendertargetoutput_p.h \
-    $$PWD/commandexecuter_p.h \
     $$PWD/uniform_p.h \
     $$PWD/shaderparameterpack_p.h \
     $$PWD/renderviewbuilder_p.h \
@@ -74,7 +70,6 @@ SOURCES += \
     $$PWD/backendnode.cpp \
     $$PWD/rendertargetoutput.cpp \
     $$PWD/attachmentpack.cpp \
-    $$PWD/commandexecuter.cpp \
     $$PWD/openglvertexarrayobject.cpp \
     $$PWD/uniform.cpp \
     $$PWD/shaderparameterpack.cpp \
@@ -82,4 +77,11 @@ SOURCES += \
     $$PWD/offscreensurfacehelper.cpp \
     $$PWD/resourceaccessor.cpp \
     $$PWD/commandthread.cpp
+
+include($$OUT_PWD/../core/qt3dcore-config.pri)
+QT_FOR_CONFIG += 3dcore-private
+qtConfig(qt3d-profile-jobs): {
+  HEADERS += $$PWD/commandexecuter_p.h
+  SOURCES += $$PWD/commandexecuter.cpp
+}
 

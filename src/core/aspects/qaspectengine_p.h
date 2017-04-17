@@ -51,6 +51,7 @@
 // We mean it.
 //
 
+#include <Qt3DCore/qt3dcore-config.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 #include <QtCore/qsharedpointer.h>
 
