@@ -1991,13 +1991,13 @@ private Q_SLOTS:
         m_func->glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, fboTextures[1], 0);
 
         GLenum status = m_func->glCheckFramebufferStatus(GL_FRAMEBUFFER);
-        QVERIFY(status == GL_FRAMEBUFFER_COMPLETE);
+        QCOMPARE(status, GLenum(GL_FRAMEBUFFER_COMPLETE));
 
         m_func->glBindFramebuffer(GL_FRAMEBUFFER, fbos[0]);
         m_func->glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, fboTextures[0], 0);
 
         status = m_func->glCheckFramebufferStatus(GL_FRAMEBUFFER);
-        QVERIFY(status == GL_FRAMEBUFFER_COMPLETE);
+        QCOMPARE(status, GLenum(GL_FRAMEBUFFER_COMPLETE));
 
         m_func->glEnable(GL_MULTISAMPLE);
         m_func->glClearColor(0.2f, 0.2f, 0.2f, 0.2f);
