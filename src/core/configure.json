@@ -4,7 +4,7 @@
 
     "commandline": {
         "options": {
-            "assimp": { "type": "enum", "values": [ "qt", "system" ] },
+            "assimp": { "type": "enum", "values": [ "qt", "system", "no" ] },
             "qt3d-profile-jobs": "boolean",
             "qt3d-profile-gl": "boolean"
         }

@@ -1,2 +1,4 @@
 TEMPLATE = subdirs
-qtConfig(commandlineparser):!android:SUBDIRS += qgltf
+QT_FOR_CONFIG += 3dcore-private
+!android:qtConfig(assimp):qtConfig(commandlineparser): \
+    SUBDIRS += qgltf
