@@ -1867,6 +1867,11 @@ private Q_SLOTS:
         if (!m_initializationSuccessful)
             QSKIP("Initialization failed, OpenGL 3.2 Core functions not supported");
 
+        GLint maxSamples;
+        m_func->glGetIntegerv(GL_MAX_SAMPLES, &maxSamples);
+        if (maxSamples < 1)
+            QSKIP("This test requires an implementation that supports multisampled textures");
+
         // GIVEN
         GLuint fbos[2];
         GLuint fboTextures[2];
@@ -1875,7 +1880,7 @@ private Q_SLOTS:
         m_func->glGenTextures(2, fboTextures);
 
         m_func->glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, fboTextures[0]);
-        m_func->glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA8, 10, 10, true);
+        m_func->glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, maxSamples, GL_RGBA8, 10, 10, true);
         m_func->glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
         m_func->glBindTexture(GL_TEXTURE_2D, fboTextures[1]);
