@@ -135,6 +135,7 @@ float MouseDevice::sensitivity() const
     return m_sensitivity;
 }
 
+#if QT_CONFIG(wheelevent)
 void MouseDevice::updateWheelEvents(const QList<QT_PREPEND_NAMESPACE (QWheelEvent)> &events)
 {
     // Reset axis values before we accumulate new values for this frame
@@ -147,6 +148,7 @@ void MouseDevice::updateWheelEvents(const QList<QT_PREPEND_NAMESPACE (QWheelEven
         }
     }
 }
+#endif
 
 void MouseDevice::updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events)
 {

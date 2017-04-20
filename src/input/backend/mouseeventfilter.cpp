@@ -80,10 +80,12 @@ bool MouseEventFilter::eventFilter(QObject *obj, QEvent *e)
         // Creates copy and store event to be processed later on in an InputAspect job
         m_inputHandler->appendMouseEvent(QMouseEvent(*static_cast<QMouseEvent *>(e)));
         break;
+#if QT_CONFIG(wheelevent)
     case QEvent::Wheel:
         // Creates copy and store event to be processed later on in an InputAspect job
         m_inputHandler->appendWheelEvent(QWheelEvent(*static_cast<QWheelEvent *>(e)));
         break;
+#endif
     default:
         break;
     }

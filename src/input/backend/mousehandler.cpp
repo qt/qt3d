@@ -91,6 +91,7 @@ void MouseHandler::mouseEvent(const QMouseEventPtr &event)
     notifyObservers(e);
 }
 
+#if QT_CONFIG(wheelevent)
 void MouseHandler::wheelEvent(const QWheelEventPtr &event)
 {
     auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
@@ -99,6 +100,7 @@ void MouseHandler::wheelEvent(const QWheelEventPtr &event)
     e->setValue(QVariant::fromValue(event));
     notifyObservers(e);
 }
+#endif
 
 void MouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {

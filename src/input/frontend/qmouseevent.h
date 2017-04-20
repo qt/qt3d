@@ -106,6 +106,7 @@ private:
 
 typedef QSharedPointer<QMouseEvent> QMouseEventPtr;
 
+#if QT_CONFIG(wheelevent)
 class QT3DINPUTSHARED_EXPORT QWheelEvent : public QObject
 {
     Q_OBJECT
@@ -154,12 +155,16 @@ private:
 };
 
 typedef QSharedPointer<QWheelEvent> QWheelEventPtr;
+#endif
 
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3DInput::QMouseEvent*) // LCOV_EXCL_LINE
+
+#if QT_CONFIG(wheelevent)
 Q_DECLARE_METATYPE(Qt3DInput::QWheelEvent*) // LCOV_EXCL_LINE
+#endif
 
 #endif // QT3DINPUT_QMOUSEEVENT_H
