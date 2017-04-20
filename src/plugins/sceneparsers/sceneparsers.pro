@@ -5,6 +5,6 @@ config_assimp|!cross_compile: SUBDIRS += assimp
 
 SUBDIRS += gltf
 
-qtConfig(temporaryfile) {
+qtConfig(temporaryfile):qtConfig(regularexpression) {
     SUBDIRS += gltfexport
 }
