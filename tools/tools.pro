@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-!android:SUBDIRS += qgltf
+qtConfig(commandlineparser):!android:SUBDIRS += qgltf
