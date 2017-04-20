@@ -83,9 +83,11 @@ void QMouseHandlerPrivate::mouseEvent(const QMouseEventPtr &event)
         m_pressAndHoldTimer->stop();
         emit q->released(event.data());
         break;
+#if QT_CONFIG(gestures)
     case Qt::TapGesture:
         emit q->clicked(event.data());
         break;
+#endif
     case QEvent::MouseButtonDblClick:
         emit q->doubleClicked(event.data());
         break;

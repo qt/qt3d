@@ -85,7 +85,13 @@ public:
 
     inline int x() const { return m_event.x(); }
     inline int y() const { return m_event.y(); }
-    inline bool wasHeld() const { return static_cast<Qt::GestureType>(m_event.type()) == Qt::TapAndHoldGesture; }
+    inline bool wasHeld() const {
+#if QT_CONFIG(gestures)
+      return static_cast<Qt::GestureType>(m_event.type()) == Qt::TapAndHoldGesture;
+#else
+      return false;
+#endif
+    }
     Buttons button() const;
     int buttons() const;
     Modifiers modifiers() const;
