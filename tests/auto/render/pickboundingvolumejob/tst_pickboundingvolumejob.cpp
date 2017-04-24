@@ -1145,7 +1145,10 @@ private Q_SLOTS:
             change = arbiter1.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
             QCOMPARE(change->propertyName(), "moved");
         } else {
+            QVERIFY(arbiter2.events.size() > 1);
             change = arbiter2.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "moved");
+            change = arbiter2.events.at(1).staticCast<Qt3DCore::QPropertyUpdatedChange>();
             QCOMPARE(change->propertyName(), "entered");
         }
 
