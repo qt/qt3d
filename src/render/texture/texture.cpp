@@ -246,6 +246,16 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     BackendNode::sceneChangeEvent(e);
 }
 
+bool Texture::isValid() const
+{
+    for (const auto handle : m_textureImages) {
+        TextureImage *img = m_textureImageManager->data(handle);
+        if (img == nullptr)
+            return false;
+    }
+    return true;
+}
+
 void Texture::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAbstractTextureData>>(change);

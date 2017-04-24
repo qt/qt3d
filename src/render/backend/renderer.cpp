@@ -1061,6 +1061,11 @@ void Renderer::updateGLResources()
 // Render Thread
 void Renderer::updateTexture(Texture *texture)
 {
+    // Check that the current texture images are still in place, if not, do not update
+    const bool isValid = texture->isValid();
+    if (!isValid)
+        return;
+
     // For implementing unique, non-shared, non-cached textures.
     // for now, every texture is shared by default
 

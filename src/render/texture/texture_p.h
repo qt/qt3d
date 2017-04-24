@@ -157,6 +157,7 @@ public:
     inline const QVector<HTextureImage>& textureImages() const { return m_textureImages; }
     inline const QTextureGeneratorPtr& dataGenerator() const { return m_dataFunctor; }
 
+    bool isValid() const;
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
