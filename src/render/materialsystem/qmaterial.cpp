@@ -60,7 +60,58 @@
     sound should reflect off an element, the temperature of a surface,
     and so on.
 
-    \sa Effect
+    In itself, a Material doesn't do anything. It's only when it references an
+    Effect node that a Material becomes useful.
+
+    In practice, it often happens that a single Effect is being referenced by
+    several Material components. This allows to only create the effect,
+    techniques, passes and shaders once while allowing to specify the material
+    by adding Parameter instances.
+
+    A Parameter defined on a Material is overridden by a Parameter (of the same
+    name) defined in a TechniqueFilter or a RenderPassFilter.
+
+    \code
+    Effect {
+        id: effect
+
+        technique: [
+            Technique {
+                id: gl3Technique
+                graphicsApiFilter {
+                    api: GraphicsApiFilter.OpenGL
+                    profile: GraphicsApiFilter.CoreProfile
+                    majorVersion: 3
+                    minorVersion: 1
+                }
+                renderPasses: [
+                    RenderPass {
+                        id: gl3Pass
+                        shaderProgram: ShaderProgram {
+                            ...
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+
+    Material {
+        id: material1
+        parameters: [
+            Parameter { name: "color"; value: "green" }
+        ]
+    }
+
+    Material {
+        id: material2
+        parameters: [
+            Parameter { name: "color"; value: "white" }
+        ]
+    }
+    \endcode
+
+    \sa Effect, Technique, Parameter
 */
 
 /*!
@@ -77,7 +128,54 @@
     sound should reflect off an element, the temperature of a surface,
     and so on.
 
-    \sa QEffect
+    In itself, a QMaterial doesn't do anything. It's only when it references a
+    QEffect node that a QMaterial becomes useful.
+
+    In practice, it often happens that a single QEffect is being referenced by
+    several QMaterial components. This allows to only create the effect,
+    techniques, passes and shaders once while allowing to specify the material
+    by adding QParameter instances.
+
+    A QParameter defined on a QMaterial is overridden by a QParameter (of the same
+    name) defined in a QTechniqueFilter or a QRenderPassFilter.
+
+    \code
+    QMaterial *material1 = new QMaterial();
+    QMaterial *material2 = new QMaterial();
+
+    // Create effect, technique, render pass and shader
+    QEffect *effect = new QEffect();
+    QTechnique *gl3Technique = new QTechnique();
+    QRenderPass *gl3Pass = new QRenderPass();
+    QShaderProgram *glShader = new QShaderProgram();
+
+    // Set the shader on the render pass
+    gl3Pass->setShaderProgram(glShader);
+
+    // Add the pass to the technique
+    gl3Technique->addRenderPass(gl3Pass);
+
+    // Set the targeted GL version for the technique
+    gl3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+    gl3Technique->graphicsApiFilter()->setMajorVersion(3);
+    gl3Technique->graphicsApiFilter()->setMinorVersion(1);
+    gl3Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::CoreProfile);
+
+    // Add the technique to the effect
+    effect->addTechnique(gl3Technique);
+
+    // Set the effect on the materials
+    material1->setEffect(effect);
+    material2->setEffect(effect);
+
+    // Set different parameters on the materials
+    const QString parameterName = QStringLiteral("color");
+    material1->addParameter(new QParameter(parameterName, QColor::fromRgbF(0.0f, 1.0f, 0.0f, 1.0f);
+    material2->addParameter(new QParameter(parameterName, QColor::fromRgbF(1.0f, 1.0f, 1.0f, 1.0f);
+
+    \endcode
+
+    \sa QEffect, QTechnique, QParameter
 */
 
 QT_BEGIN_NAMESPACE
