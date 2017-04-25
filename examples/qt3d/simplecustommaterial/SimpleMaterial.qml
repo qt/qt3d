@@ -99,6 +99,19 @@ Material {
                     shaderProgram: gl3Shader
                 }
             },
+            // OpenGL 2.0
+            Technique {
+                filterKeys: [forward]
+                graphicsApiFilter {
+                    api: GraphicsApiFilter.OpenGL
+                    profile: GraphicsApiFilter.NoProfile
+                    majorVersion: 2
+                    minorVersion: 0
+                }
+                renderPasses: RenderPass {
+                    shaderProgram: es2Shader
+                }
+            },
             // ES 2.0
             Technique {
                 filterKeys: [forward]
