@@ -228,7 +228,7 @@ Material {
                 }
             },
 
-            // OpenGL 2.1
+            // OpenGL 2.0
             Technique {
                 filterKeys: [ forward ]
                 graphicsApiFilter {
@@ -238,7 +238,7 @@ Material {
                     minorVersion: 0
                 }
                 renderPasses: RenderPass {
-                    shaderProgram: gl3Shader
+                    shaderProgram: esShader
                     renderStates: [ alphaCoverage ]
                 }
             },
