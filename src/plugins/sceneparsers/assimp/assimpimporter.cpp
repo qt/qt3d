@@ -1297,8 +1297,9 @@ AssimpRawTextureImage::AssimpRawTextureImageFunctor::AssimpRawTextureImageFuncto
 
 QTextureImageDataPtr AssimpRawTextureImage::AssimpRawTextureImageFunctor::operator()()
 {
-    QTextureImageDataPtr dataPtr;
-    dataPtr->setData(m_data, QOpenGLTexture::RGBA, QOpenGLTexture::UInt8);
+    QTextureImageDataPtr dataPtr = QTextureImageDataPtr::create();
+    // Note: we assume 4 components per pixel and not compressed for now
+    dataPtr->setData(m_data, 4, false);
     return dataPtr;
 }
 
