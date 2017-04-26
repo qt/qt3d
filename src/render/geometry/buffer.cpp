@@ -134,7 +134,14 @@ void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QByteArray propertyName = propertyChange->propertyName();
         if (propertyName == QByteArrayLiteral("data")) {
             QByteArray newData = propertyChange->value().value<QByteArray>();
-            m_bufferDirty |= m_data != newData;
+            bool dirty = m_data != newData;
+            m_bufferDirty |= dirty;
+            if (dirty) {
+                QBufferUpdate updateNewData;
+                updateNewData.offset = -1;
+                m_bufferUpdates.clear(); //previous updates are pointless
+                m_bufferUpdates.push_back(updateNewData);
+            }
             m_data = newData;
         } else if (propertyName == QByteArrayLiteral("updateData")) {
             Qt3DRender::QBufferUpdate updateData = propertyChange->value().value<Qt3DRender::QBufferUpdate>();
