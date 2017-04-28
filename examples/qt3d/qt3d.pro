@@ -19,7 +19,8 @@ SUBDIRS += \
     3d-text \
     qardboard \
     advancedcustommaterial \
-    simplecustommaterial
+    simplecustommaterial \
+    scene2d
 
 qtHaveModule(multimedia): SUBDIRS += audio-visualizer-qml
 
