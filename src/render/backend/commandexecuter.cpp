@@ -303,8 +303,9 @@ CommandExecuter::CommandExecuter(Render::Renderer *renderer)
 // Render thread
 void CommandExecuter::performAsynchronousCommandExecution(const QVector<Render::RenderView *> &views)
 {
-    // The renderer's mutex is already locked
+    QMutexLocker lock(&m_pendingCommandsMutex);
     const QVector<Qt3DCore::Debug::AsynchronousCommandReply *> shellCommands = std::move(m_pendingCommands);
+    lock.unlock();
 
     for (auto *reply : shellCommands) {
         if (reply->commandName() == QLatin1String("glinfo")) {
@@ -375,7 +376,7 @@ QVariant CommandExecuter::executeCommand(const QStringList &args)
             (args.first() == QLatin1String("glinfo") ||
              args.first() == QLatin1String("rendercommands"))) {
         auto reply = new Qt3DCore::Debug::AsynchronousCommandReply(args.first());
-        QMutexLocker lock(m_renderer->mutex());
+        QMutexLocker lock(&m_pendingCommandsMutex);
         m_pendingCommands.push_back(reply);
         return QVariant::fromValue(reply);
     }

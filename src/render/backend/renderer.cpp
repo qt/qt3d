@@ -564,7 +564,7 @@ void Renderer::doRender()
     const bool canSubmit = isReadyToSubmit();
 
     // Lock the mutex to protect access to the renderQueue while we look for its state
-    QMutexLocker locker(&m_renderQueueMutex);
+    QMutexLocker locker(m_renderQueue->mutex());
     const bool queueIsComplete = m_renderQueue->isFrameQueueComplete();
     const bool queueIsEmpty = m_renderQueue->targetRenderViewCount() == 0;
 
@@ -704,7 +704,7 @@ void Renderer::doRender()
 // we allow the render thread to proceed
 void Renderer::enqueueRenderView(Render::RenderView *renderView, int submitOrder)
 {
-    QMutexLocker locker(&m_renderQueueMutex); // Prevent out of order execution
+    QMutexLocker locker(m_renderQueue->mutex()); // Prevent out of order execution
     // We cannot use a lock free primitive here because:
     // - QVector is not thread safe
     // - Even if the insert is made correctly, the isFrameComplete call
@@ -722,8 +722,7 @@ void Renderer::enqueueRenderView(Render::RenderView *renderView, int submitOrder
 
 bool Renderer::canRender() const
 {
-    // Make sure that we've not been told to terminate whilst waiting on
-    // the above wait condition
+    // Make sure that we've not been told to terminate
     if (m_renderThread && !m_running.load()) {
         qCDebug(Rendering) << "RenderThread termination requested whilst waiting";
         return false;
@@ -1513,7 +1512,7 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
         renderBinJobs.push_back(m_textureGathererJob);
     }
 
-    QMutexLocker lock(&m_renderQueueMutex);
+    QMutexLocker lock(m_renderQueue->mutex());
     if (m_renderQueue->wasReset()) { // Have we rendered yet? (Scene3D case)
         // Traverse the current framegraph. For each leaf node create a
         // RenderView and set its configuration then create a job to

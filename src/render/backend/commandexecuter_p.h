@@ -50,6 +50,7 @@
 
 #include <QVector>
 #include <QVariant>
+#include <QMutex>
 
 QT_BEGIN_NAMESPACE
 
@@ -82,6 +83,7 @@ public:
 private:
     Render::Renderer *m_renderer;
     QVector<Qt3DCore::Debug::AsynchronousCommandReply *> m_pendingCommands;
+    QMutex m_pendingCommandsMutex;
 };
 
 } // Debug

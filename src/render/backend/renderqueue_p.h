@@ -53,6 +53,7 @@
 
 #include <QVector>
 #include <QtGlobal>
+#include <QMutex>
 
 QT_BEGIN_NAMESPACE
 
@@ -81,12 +82,15 @@ public:
 
     inline bool wasReset() const { return m_wasReset; }
 
+    inline QMutex *mutex() { return &m_mutex; }
+
 private:
     bool m_noRender;
     bool m_wasReset;
     int m_targetRenderViewCount;
     int m_currentRenderViewCount;
     QVector<RenderView *> m_currentWorkQueue;
+    QMutex m_mutex;
 };
 
 } // namespace Render
