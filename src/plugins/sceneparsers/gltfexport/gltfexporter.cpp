@@ -2064,7 +2064,7 @@ void GLTFExporter::setVarToJSonObject(QJsonObject &jsObj, const QString &key, co
         jsObj[key] = var.value<float>();
         break;
     case QMetaType::QSize:
-        jsObj[key] = size2jsvec(var.value<QSize>());
+        jsObj[key] = size2jsvec(var.toSize());
         break;
     case QMetaType::QVector2D:
         jsObj[key] = vec2jsvec(var.value<QVector2D>());
