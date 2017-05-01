@@ -1320,16 +1320,16 @@ void GraphicsContext::applyUniform(const ShaderUniform &description, const Unifo
         break;
 
     case UniformType::UInt:
-        applyUniformHelper<UniformType::Int>(description.m_location, description.m_size, v);
+        applyUniformHelper<UniformType::UInt>(description.m_location, description.m_size, v);
         break;
     case UniformType::UIVec2:
-        applyUniformHelper<UniformType::IVec2>(description.m_location, description.m_size, v);
+        applyUniformHelper<UniformType::UIVec2>(description.m_location, description.m_size, v);
         break;
     case UniformType::UIVec3:
-        applyUniformHelper<UniformType::IVec3>(description.m_location, description.m_size, v);
+        applyUniformHelper<UniformType::UIVec3>(description.m_location, description.m_size, v);
         break;
     case UniformType::UIVec4:
-        applyUniformHelper<UniformType::IVec4>(description.m_location, description.m_size, v);
+        applyUniformHelper<UniformType::UIVec4>(description.m_location, description.m_size, v);
         break;
 
     case UniformType::Bool:
