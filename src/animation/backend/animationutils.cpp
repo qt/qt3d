@@ -197,7 +197,7 @@ ClipResults evaluateClipAtLocalTime(AnimationClip *clip, float localTime)
     const QVector<Channel> &channels = clip->channels();
     int i = 0;
     for (const Channel &channel : channels) {
-        for (const auto channelComponent : qAsConst(channel.channelComponents))
+        for (const auto &channelComponent : qAsConst(channel.channelComponents))
             channelResults[i++] = channelComponent.fcurve.evaluateAtTime(localTime);
     }
     return channelResults;

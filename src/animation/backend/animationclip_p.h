@@ -127,7 +127,7 @@ inline QDebug operator<<(QDebug dbg, const AnimationClip &animationClip)
         << "Channels:" << endl;
 
     const QVector<Channel> channels = animationClip.channels();
-    for (const auto channel : channels) {
+    for (const auto &channel : channels) {
         dbg << channel;
     }
 

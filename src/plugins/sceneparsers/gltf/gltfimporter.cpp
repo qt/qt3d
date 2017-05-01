@@ -1072,7 +1072,7 @@ void GLTFImporter::cleanup()
     m_shaderPaths.clear();
     delete_if_without_parent(m_programs);
     m_programs.clear();
-    for (auto params : m_techniqueParameters.values())
+    for (const auto &params : m_techniqueParameters.values())
         delete_if_without_parent(params);
     m_techniqueParameters.clear();
     delete_if_without_parent(m_techniques);
@@ -1546,7 +1546,7 @@ void GLTFImporter::processJSONExtensions(const QString &id, const QJsonObject &j
     // level GLTF item.
     if (id == KEY_COMMON_MAT) {
         const auto lights = jsonObject.value(KEY_LIGHTS).toObject();
-        for (auto lightKey : lights.keys()) {
+        for (const auto &lightKey : lights.keys()) {
             const auto light = lights.value(lightKey).toObject();
             auto lightType = light.value(KEY_TYPE).toString();
             const auto lightValues = light.value(lightType).toObject();
