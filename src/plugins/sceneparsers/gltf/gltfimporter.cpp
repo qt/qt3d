@@ -1072,8 +1072,8 @@ void GLTFImporter::cleanup()
     m_shaderPaths.clear();
     delete_if_without_parent(m_programs);
     m_programs.clear();
-    for (const auto &params : m_techniqueParameters.values())
-        delete_if_without_parent(params);
+    for (auto it = m_techniqueParameters.begin(); it != m_techniqueParameters.end(); ++it)
+        delete_if_without_parent(it.value());
     m_techniqueParameters.clear();
     delete_if_without_parent(m_techniques);
     m_techniques.clear();

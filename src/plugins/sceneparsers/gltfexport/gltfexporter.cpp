@@ -1153,7 +1153,8 @@ bool GLTFExporter::saveScene()
 
     QVector<MeshInfo::BufferView> bvList;
     QVector<MeshInfo::Accessor> accList;
-    for (auto &mi : m_meshInfo.values()) {
+    for (auto it = m_meshInfo.begin(); it != m_meshInfo.end(); ++it) {
+        auto &mi = it.value();
         for (auto &v : mi.views)
             bvList << v;
         for (auto &acc : mi.accessors)
@@ -1220,7 +1221,8 @@ bool GLTFExporter::saveScene()
         m_obj["accessors"] = accessors;
 
     QJsonObject meshes;
-    for (const auto &meshInfo : m_meshInfo.values()) {
+    for (auto it = m_meshInfo.begin(); it != m_meshInfo.end(); ++it) {
+        auto &meshInfo = it.value();
         QJsonObject mesh;
         mesh["name"] = meshInfo.originalName;
         if (meshInfo.meshType != TypeNone) {
@@ -1251,7 +1253,8 @@ bool GLTFExporter::saveScene()
         m_obj["meshes"] = meshes;
 
     QJsonObject cameras;
-    for (const auto &camInfo : m_cameraInfo.values()) {
+    for (auto it = m_cameraInfo.begin(); it != m_cameraInfo.end(); ++it) {
+        const auto &camInfo = it.value();
         QJsonObject camera;
         QJsonObject proj;
         proj["znear"] = camInfo.znear;
@@ -1305,7 +1308,8 @@ bool GLTFExporter::saveScene()
 
     // Lights must be declared as extensions to the top-level glTF object
     QJsonObject lights;
-    for (const auto &lightInfo : m_lightInfo.values()) {
+    for (auto it = m_lightInfo.begin(); it != m_lightInfo.end(); ++it) {
+        const auto &lightInfo = it.value();
         QJsonObject light;
         QJsonObject lightDetails;
         QString type;
