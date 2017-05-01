@@ -595,7 +595,7 @@ void QRenderAspectPrivate::configurePlugin(const QString &plugin)
     if (!m_pluginConfig.contains(plugin)) {
         m_pluginConfig.append(plugin);
 
-        for (QRenderAspectPrivate *instance : m_instances)
+        for (QRenderAspectPrivate *instance : qAsConst(m_instances))
             instance->loadRenderPlugin(plugin);
     }
 }

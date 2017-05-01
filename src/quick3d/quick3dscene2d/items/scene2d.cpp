@@ -501,13 +501,13 @@ void Scene2D::handlePickEvent(int type, const Qt3DRender::QPickEventPtr &ev)
 
 void Scene2D::startGrabbing()
 {
-    for (Qt3DCore::QNodeId e : m_entities)
+    for (Qt3DCore::QNodeId e : qAsConst(m_entities))
         registerObjectPickerEvents(e);
 }
 
 void Scene2D::stopGrabbing()
 {
-    for (Qt3DCore::QNodeId e : m_entities)
+    for (Qt3DCore::QNodeId e : qAsConst(m_entities))
         unregisterObjectPickerEvents(e);
 }
 

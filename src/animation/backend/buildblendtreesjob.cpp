@@ -63,7 +63,7 @@ void BuildBlendTreesJob::setBlendedClipAnimators(const QVector<HBlendedClipAnima
 // We assume that the structure of blend node tree does not change once a BlendClipAnimator has been set to running
 void BuildBlendTreesJob::run()
 {
-    for (const HBlendedClipAnimator blendedClipAnimatorHandle : m_blendedClipAnimatorHandles) {
+    for (const HBlendedClipAnimator blendedClipAnimatorHandle : qAsConst(m_blendedClipAnimatorHandles)) {
         // Retrieve BlendTree node
         BlendedClipAnimator *blendClipAnimator = m_handler->blendedClipAnimatorManager()->data(blendedClipAnimatorHandle);
         Q_ASSERT(blendClipAnimator);

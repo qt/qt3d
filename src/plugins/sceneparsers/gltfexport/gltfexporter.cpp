@@ -1283,7 +1283,7 @@ bool GLTFExporter::saveScene()
     if (m_rootNodeEmpty) {
         // Don't export the root node if it is there just to group the scene, so we don't get
         // an extra empty node when we import the scene back.
-        for (auto c : m_rootNode->children)
+        for (auto c : qAsConst(m_rootNode->children))
             sceneNodes << exportNodes(c, nodes);
     } else {
         sceneNodes << exportNodes(m_rootNode, nodes);
@@ -1572,7 +1572,7 @@ bool GLTFExporter::saveScene()
         QByteArray pre = "<RCC><qresource prefix=\"/gltf_res\">\n";
         QByteArray post = "</qresource></RCC>\n";
         f.write(pre);
-        for (const auto &file : m_exportedFiles) {
+        for (const auto &file : qAsConst(m_exportedFiles)) {
             QString line = QString(QStringLiteral("  <file>%1</file>\n")).arg(file);
             f.write(line.toUtf8());
         }
@@ -1594,7 +1594,7 @@ void GLTFExporter::delNode(GLTFExporter::Node *n)
 {
     if (!n)
         return;
-    for (auto *c : n->children)
+    for (auto *c : qAsConst(n->children))
         delNode(c);
     delete n;
 }
@@ -1604,7 +1604,7 @@ QString GLTFExporter::exportNodes(GLTFExporter::Node *n, QJsonObject &nodes)
     QJsonObject node;
     node["name"] = n->name;
     QJsonArray children;
-    for (auto c : n->children)
+    for (auto c : qAsConst(n->children))
         children << exportNodes(c, nodes);
     node["children"] = children;
     if (auto transform = m_transformMap.value(n))

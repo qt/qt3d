@@ -109,7 +109,7 @@ QAnimationGroupPrivate::QAnimationGroupPrivate()
 void QAnimationGroupPrivate::updatePosition(float position)
 {
     m_position = position;
-    for (QAbstractAnimation *aa : m_animations)
+    for (QAbstractAnimation *aa : qAsConst(m_animations))
         aa->setPosition(position);
 }
 
