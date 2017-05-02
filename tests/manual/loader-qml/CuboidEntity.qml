@@ -76,7 +76,7 @@ Entity {
 
     QQ2.ColorAnimation {
         target: phongMaterial
-        property: "warmColor"
+        property: "warm"
         from: "red"
         to: "blue"
         duration: 2500
