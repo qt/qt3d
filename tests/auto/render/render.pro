@@ -105,6 +105,7 @@ qtConfig(private_tests) {
         qmemorybarrier \
         memorybarrier \
         qshaderprogram \
+        qshaderprogrambuilder \
         qscene2d \
         scene2d \
         coordinatereader \

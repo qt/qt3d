@@ -19,6 +19,8 @@ HEADERS += \
     $$PWD/qshaderdata_p.h \
     $$PWD/qshaderprogram.h \
     $$PWD/qshaderprogram_p.h \
+    $$PWD/qshaderprogrambuilder.h \
+    $$PWD/qshaderprogrambuilder_p.h \
     $$PWD/qtechnique.h \
     $$PWD/qtechnique_p.h \
     $$PWD/renderpass_p.h \
@@ -42,6 +44,7 @@ SOURCES += \
     $$PWD/qrenderpass.cpp \
     $$PWD/qshaderdata.cpp \
     $$PWD/qshaderprogram.cpp \
+    $$PWD/qshaderprogrambuilder.cpp \
     $$PWD/qtechnique.cpp \
     $$PWD/renderpass.cpp \
     $$PWD/shader.cpp \
