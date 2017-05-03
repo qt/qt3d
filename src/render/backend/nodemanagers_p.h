@@ -76,6 +76,7 @@ class MaterialManager;
 class MatrixManager;
 class VAOManager;
 class ShaderManager;
+class ShaderBuilderManager;
 class TechniqueManager;
 class EffectManager;
 class RenderPassManager;
@@ -105,6 +106,7 @@ class Entity;
 class CameraLens;
 class Material;
 class Shader;
+class ShaderBuilder;
 class Technique;
 class Effect;
 class RenderPass;
@@ -181,6 +183,7 @@ public:
     inline MatrixManager *worldMatrixManager() const Q_DECL_NOEXCEPT { return m_worldMatrixManager; }
     inline VAOManager *vaoManager() const Q_DECL_NOEXCEPT { return m_vaoManager; }
     inline ShaderManager *shaderManager() const Q_DECL_NOEXCEPT { return m_shaderManager; }
+    inline ShaderBuilderManager *shaderBuilderManager() const Q_DECL_NOEXCEPT { return m_shaderBuilderManager; }
     inline TechniqueManager *techniqueManager() const Q_DECL_NOEXCEPT { return m_techniqueManager; }
     inline EffectManager *effectManager() const Q_DECL_NOEXCEPT { return m_effectManager; }
     inline RenderPassManager *renderPassManager() const Q_DECL_NOEXCEPT { return m_renderPassManager; }
@@ -220,6 +223,7 @@ private:
     MatrixManager *m_worldMatrixManager;
     VAOManager *m_vaoManager;
     ShaderManager *m_shaderManager;
+    ShaderBuilderManager *m_shaderBuilderManager;
     TechniqueManager *m_techniqueManager;
     EffectManager *m_effectManager;
     RenderPassManager *m_renderPassManager;
@@ -272,6 +276,9 @@ QT3DRENDERSHARED_PRIVATE_EXPORT VAOManager *NodeManagers::manager<OpenGLVertexAr
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT ShaderManager *NodeManagers::manager<Shader>() const Q_DECL_NOEXCEPT;
+
+template<>
+QT3DRENDERSHARED_PRIVATE_EXPORT ShaderBuilderManager *NodeManagers::manager<ShaderBuilder>() const Q_DECL_NOEXCEPT;
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT TechniqueManager *NodeManagers::manager<Technique>() const Q_DECL_NOEXCEPT;

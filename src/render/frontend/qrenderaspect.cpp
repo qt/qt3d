@@ -83,6 +83,7 @@
 #include <Qt3DRender/qrendercapture.h>
 #include <Qt3DRender/qbuffercapture.h>
 #include <Qt3DRender/qmemorybarrier.h>
+#include <Qt3DRender/qshaderprogrambuilder.h>
 
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
@@ -134,6 +135,7 @@
 #include <Qt3DRender/private/technique_p.h>
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
 #include <Qt3DRender/private/memorybarrier_p.h>
+#include <Qt3DRender/private/shaderbuilder_p.h>
 
 #include <private/qrenderpluginfactory_p.h>
 #include <private/qrenderplugin_p.h>
@@ -246,6 +248,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QRenderPass>(QSharedPointer<Render::NodeFunctor<Render::RenderPass, Render::RenderPassManager> >::create(m_renderer));
     q->registerBackendType<QShaderData>(QSharedPointer<Render::RenderShaderDataFunctor>::create(m_renderer, m_nodeManagers));
     q->registerBackendType<QShaderProgram>(QSharedPointer<Render::NodeFunctor<Render::Shader, Render::ShaderManager> >::create(m_renderer));
+    q->registerBackendType<QShaderProgramBuilder>(QSharedPointer<Render::NodeFunctor<Render::ShaderBuilder, Render::ShaderBuilderManager> >::create(m_renderer));
     q->registerBackendType<QTechnique>(QSharedPointer<Render::TechniqueFunctor>::create(m_renderer, m_nodeManagers));
 
     // Framegraph
@@ -311,6 +314,7 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     unregisterBackendType<QRenderPass>();
     unregisterBackendType<QShaderData>();
     unregisterBackendType<QShaderProgram>();
+    unregisterBackendType<QShaderProgramBuilder>();
     unregisterBackendType<QTechnique>();
 
     // Framegraph

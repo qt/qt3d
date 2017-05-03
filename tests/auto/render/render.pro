@@ -7,6 +7,7 @@ qtConfig(private_tests) {
         renderpass \
         qgraphicsutils \
         shader \
+        shaderbuilder \
         texture \
         renderviewutils \
         renderviews \

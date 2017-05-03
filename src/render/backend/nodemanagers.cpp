@@ -63,6 +63,7 @@ NodeManagers::NodeManagers()
     , m_worldMatrixManager(new MatrixManager())
     , m_vaoManager(new VAOManager())
     , m_shaderManager(new ShaderManager())
+    , m_shaderBuilderManager(new ShaderBuilderManager())
     , m_techniqueManager(new TechniqueManager())
     , m_effectManager(new EffectManager())
     , m_renderPassManager(new RenderPassManager())
@@ -103,6 +104,7 @@ NodeManagers::~NodeManagers()
     delete m_worldMatrixManager;
     delete m_vaoManager;
     delete m_shaderManager;
+    delete m_shaderBuilderManager;
     delete m_techniqueManager;
     delete m_effectManager;
     delete m_renderPassManager;
@@ -177,6 +179,12 @@ template<>
 ShaderManager *NodeManagers::manager<Shader>() const Q_DECL_NOTHROW
 {
     return m_shaderManager;
+}
+
+template<>
+ShaderBuilderManager *NodeManagers::manager<ShaderBuilder>() const Q_DECL_NOTHROW
+{
+    return m_shaderBuilderManager;
 }
 
 template<>

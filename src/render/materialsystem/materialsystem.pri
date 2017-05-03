@@ -25,6 +25,7 @@ HEADERS += \
     $$PWD/qtechnique_p.h \
     $$PWD/renderpass_p.h \
     $$PWD/shader_p.h \
+    $$PWD/shaderbuilder_p.h \
     $$PWD/shaderdata_p.h \
     $$PWD/technique_p.h \
     $$PWD/qgraphicsapifilter.h \
@@ -48,6 +49,7 @@ SOURCES += \
     $$PWD/qtechnique.cpp \
     $$PWD/renderpass.cpp \
     $$PWD/shader.cpp \
+    $$PWD/shaderbuilder.cpp \
     $$PWD/shaderdata.cpp \
     $$PWD/technique.cpp \
     $$PWD/qgraphicsapifilter.cpp \

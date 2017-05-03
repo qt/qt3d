@@ -61,6 +61,7 @@
 #include <Qt3DRender/private/levelofdetail_p.h>
 #include <Qt3DRender/private/material_p.h>
 #include <Qt3DRender/private/shader_p.h>
+#include <Qt3DRender/private/shaderbuilder_p.h>
 #include <Qt3DRender/private/texture_p.h>
 #include <Qt3DRender/private/transform_p.h>
 #include <Qt3DRender/private/rendertarget_p.h>
@@ -220,6 +221,17 @@ class ShaderManager : public Qt3DCore::QResourceManager<
 {
 public:
     ShaderManager() {}
+};
+
+class ShaderBuilderManager : public Qt3DCore::QResourceManager<
+        ShaderBuilder,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy,
+        Qt3DCore::NonLockingPolicy>
+{
+public:
+    ShaderBuilderManager() {}
 };
 
 class TextureManager : public Qt3DCore::QResourceManager<
