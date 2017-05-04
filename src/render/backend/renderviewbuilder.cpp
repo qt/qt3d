@@ -188,8 +188,6 @@ public:
         RenderView *rv = m_renderViewJob->renderView();
 
         if (!rv->noDraw()) {
-            // Set the light sources
-            rv->setLightSources(std::move(m_lightGathererJob->lights()));
             rv->setEnvironmentLight(m_lightGathererJob->takeEnvironmentLight());
 
             // We sort the vector so that the removal can then be performed linearly
@@ -207,6 +205,14 @@ public:
             // Remove all entities from the compute and renderable vectors that aren't in the filtered layer vector
             QVector<Entity *> filteredEntities = m_filterEntityByLayerJob->filteredEntities();
             RenderViewBuilder::removeEntitiesNotInSubset(renderableEntities, filteredEntities);
+
+            // Set the light sources, with layer filters applied.
+            QVector<LightSource> lightSources = m_lightGathererJob->lights();
+            for (int i = 0; i < lightSources.count(); ++i) {
+                if (!filteredEntities.contains(lightSources[i].entity))
+                    lightSources.removeAt(i--);
+            }
+            rv->setLightSources(lightSources);
 
             // Filter out frustum culled entity for drawable entities
             if (isDraw && rv->frustumCulling())
