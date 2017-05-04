@@ -52,11 +52,59 @@ QClipAnimatorPrivate::QClipAnimatorPrivate()
 {
 }
 
+/*!
+    \qmltype ClipAnimator
+    \instantiates Qt3DAnimation::QClipAnimator
+    \inqmlmodule Qt3D.Animation
+    \since 5.9
+
+    \brief ClipAnimator is a component providing simple animation playback capabilities.
+
+    An instance of ClipAnimator can be aggregated by an Entity to add the ability to play back
+    animation clips and to apply the calculated animation values to properties of QObjects.
+
+    The animation key frame data is provided via the clip property. This can be created
+    programmatically with AnimationClip or loaded from file with AnimationClipLoader.
+
+    In order to apply the values played back from the channels of data in the animation clip, the
+    clip animator needs to have a ChannelMapper object assigned to the channelMapper property.
+
+    The properties for controlling the animator are provided by the AbstractClipAnimator base
+    class.
+
+    \sa AbstractClipAnimator, AbstractAnimationClip, ChannelMapper, BlendedClipAnimator
+*/
+
+/*!
+    \class Qt3DAnimation::QClipAnimator
+    \inherits Qt3DAnimation::QAbstractClipAnimator
+
+    \inmodule Qt3DAnimation
+    \since 5.9
+
+    \brief QClipAnimator is a component providing simple animation playback capabilities.
+
+    An instance of QClipAnimator can be aggregated by a QEntity to add the ability to play back
+    animation clips and to apply the calculated animation values to properties of QObjects.
+
+    The animation key frame data is provided via the clip property. This can be created
+    programmatically with QAnimationClip or loaded from file with QAnimationClipLoader.
+
+    In order to apply the values played back from the channels of data in the animation clip, the
+    clip animator needs to have a QChannelMapper object assigned to the channelMapper property.
+
+    The properties for controlling the animator are provided by the QAbstractClipAnimator base
+    class.
+
+    \sa QAbstractClipAnimator, QAbstractAnimationClip, QChannelMapper, QBlendedClipAnimator
+*/
+
 QClipAnimator::QClipAnimator(Qt3DCore::QNode *parent)
     : Qt3DAnimation::QAbstractClipAnimator(*new QClipAnimatorPrivate, parent)
 {
 }
 
+/*! \internal */
 QClipAnimator::QClipAnimator(QClipAnimatorPrivate &dd, Qt3DCore::QNode *parent)
     : Qt3DAnimation::QAbstractClipAnimator(dd, parent)
 {
@@ -66,6 +114,19 @@ QClipAnimator::~QClipAnimator()
 {
 }
 
+/*!
+    \qmlproperty AbstractAnimationClip clip
+
+    This property holds the animation clip which contains the key frame data to be played back.
+    The key frame data can be specified in either an AnimationClip or AnimationClipLoader.
+*/
+
+/*!
+    \property clip
+
+    This property holds the animation clip which contains the key frame data to be played back.
+    The key frame data can be specified in either a QAnimationClip or QAnimationClipLoader.
+*/
 QAbstractAnimationClip *QClipAnimator::clip() const
 {
     Q_D(const QClipAnimator);
@@ -91,6 +152,7 @@ void QClipAnimator::setClip(QAbstractAnimationClip *clip)
     emit clipChanged(clip);
 }
 
+/*! \internal */
 Qt3DCore::QNodeCreatedChangeBasePtr QClipAnimator::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QClipAnimatorData>::create(this);

@@ -55,10 +55,14 @@ void tst_RenderQueue::setRenderViewCount()
     // GIVEN
     Qt3DRender::Render::RenderQueue renderQueue;
 
+    // THEN
+    QCOMPARE(renderQueue.wasReset(), true);
+
     // WHEN
     renderQueue.setTargetRenderViewCount(7);
 
     // THEN
+    QCOMPARE(renderQueue.wasReset(), false);
     QVERIFY(renderQueue.targetRenderViewCount() == 7);
     QVERIFY(renderQueue.currentRenderViewCount()== 0);
 }
@@ -214,6 +218,7 @@ void tst_RenderQueue::resetQueue()
         // WHEN
         renderQueue.setTargetRenderViewCount(5);
         // THEN
+        QCOMPARE(renderQueue.wasReset(), false);
         QVERIFY(renderQueue.currentRenderViewCount() == 0);
 
         // WHEN
@@ -227,6 +232,7 @@ void tst_RenderQueue::resetQueue()
 
         // WHEN
         renderQueue.reset();
+        QCOMPARE(renderQueue.wasReset(), true);
         // THEN
         QVERIFY(renderQueue.currentRenderViewCount() == 0);
     }

@@ -82,7 +82,9 @@ Q_SIGNALS:
     void pressAndHold(Qt3DInput::QMouseEvent *mouse);
     void positionChanged(Qt3DInput::QMouseEvent *mouse);
 
+#if QT_CONFIG(wheelevent)
     void wheel(Qt3DInput::QWheelEvent *wheel);
+#endif
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;

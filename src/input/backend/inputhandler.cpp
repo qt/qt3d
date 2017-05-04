@@ -163,6 +163,7 @@ void InputHandler::clearPendingMouseEvents()
     m_pendingMouseEvents.clear();
 }
 
+#if QT_CONFIG(wheelevent)
 void InputHandler::appendWheelEvent(const QT_PREPEND_NAMESPACE(QWheelEvent) &event)
 {
     QMutexLocker lock(&m_mutex);
@@ -180,7 +181,7 @@ void InputHandler::clearPendingWheelEvents()
     QMutexLocker lock(&m_mutex);
     m_pendingWheelEvents.clear();
 }
-
+#endif
 
 void InputHandler::appendKeyboardDevice(HKeyboardDevice device)
 {
@@ -249,15 +250,23 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::mouseJobs()
 {
     QVector<QAspectJobPtr> jobs;
     const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> mouseEvents = pendingMouseEvents();
+#if QT_CONFIG(wheelevent)
     const QList<QT_PREPEND_NAMESPACE(QWheelEvent)> wheelEvents = pendingWheelEvents();
+#endif
 
     for (const HMouseDevice cHandle : qAsConst(m_activeMouseDevices)) {
         MouseDevice *controller = m_mouseDeviceManager->data(cHandle);
 
         controller->updateMouseEvents(mouseEvents);
+#if QT_CONFIG(wheelevent)
         controller->updateWheelEvents(wheelEvents);
+#endif
         // Event dispacthing job
-        if (!mouseEvents.isEmpty() || !wheelEvents.empty()) {
+        if (!mouseEvents.isEmpty()
+#if QT_CONFIG(wheelevent)
+            || !wheelEvents.empty()
+#endif
+                                    ) {
             // Send the events to the mouse handlers that have for sourceDevice controller
             const QVector<HMouseHandler> activeMouseHandlers = m_mouseInputManager->activeHandles();
             for (HMouseHandler mouseHandlerHandle : activeMouseHandlers) {
@@ -267,8 +276,11 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::mouseJobs()
 
                 if (mouseHandler->mouseDevice() == controller->peerId()) {
                     MouseEventDispatcherJob *job = new MouseEventDispatcherJob(mouseHandler->peerId(),
-                                                                               mouseEvents,
-                                                                               wheelEvents);
+                                                                               mouseEvents
+#if QT_CONFIG(wheelevent)
+                                                                             , wheelEvents
+#endif
+                                                                                           );
                     job->setInputHandler(this);
                     jobs.append(QAspectJobPtr(job));
                 }

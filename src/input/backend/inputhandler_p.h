@@ -127,9 +127,11 @@ public:
     QList<QT_PREPEND_NAMESPACE(QMouseEvent)> pendingMouseEvents();
     void clearPendingMouseEvents();
 
+#if QT_CONFIG(wheelevent)
     void appendWheelEvent(const QT_PREPEND_NAMESPACE(QWheelEvent) &event);
     QList<QT_PREPEND_NAMESPACE(QWheelEvent)> pendingWheelEvents();
     void clearPendingWheelEvents();
+#endif
 
     void appendKeyboardDevice(HKeyboardDevice device);
     void removeKeyboardDevice(HKeyboardDevice device);
@@ -170,7 +172,9 @@ private:
 
     QList<QT_PREPEND_NAMESPACE(QKeyEvent)> m_pendingKeyEvents;
     QList<QT_PREPEND_NAMESPACE(QMouseEvent)> m_pendingMouseEvents;
+#if QT_CONFIG(wheelevent)
     QList<QT_PREPEND_NAMESPACE(QWheelEvent)> m_pendingWheelEvents;
+#endif
     mutable QMutex m_mutex;
 
     AxisManager *m_axisManager;

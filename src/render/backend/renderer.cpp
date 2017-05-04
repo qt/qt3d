@@ -536,17 +536,26 @@ void Renderer::render()
 
 void Renderer::doRender()
 {
-    bool submissionSucceeded = false;
-    bool hasCleanedQueueAndProceeded = false;
     Renderer::ViewSubmissionResultData submissionData;
+    bool hasCleanedQueueAndProceeded = false;
     bool preprocessingComplete = false;
+    bool beganDrawing = false;
+    const bool canSubmit = isReadyToSubmit();
 
-    if (isReadyToSubmit()) {
+    // Lock the mutex to protect access to the renderQueue while we look for its state
+    QMutexLocker locker(&m_renderQueueMutex);
+    const bool queueIsComplete = m_renderQueue->isFrameQueueComplete();
+    const bool queueIsEmpty = m_renderQueue->targetRenderViewCount() == 0;
 
-        // Lock the mutex to protect access to m_surface and check if we are still set
-        // to the running state and that we have a valid surface on which to draw
-        // TO DO: Is that still needed given the surface changes
-        QMutexLocker locker(&m_mutex);
+    // When using synchronous rendering (QtQuick)
+    // We are not sure that the frame queue is actually complete
+    // Since a call to render may not be synched with the completions
+    // of the RenderViewJobs
+    // In such a case we return early, waiting for a next call with
+    // the frame queue complete at this point
+
+    // RenderQueue is complete (but that means it may be of size 0)
+    if (canSubmit && (queueIsComplete && !queueIsEmpty)) {
         const QVector<Render::RenderView *> renderViews = m_renderQueue->nextFrameQueue();
 
 #ifdef QT3D_JOBS_RUN_STATS
@@ -561,8 +570,7 @@ void Renderer::doRender()
         submissionStatsPart2.jobId.typeAndInstance[1] = 0;
         submissionStatsPart2.threadId = reinterpret_cast<quint64>(QThread::currentThreadId());
 #endif
-
-        if (canRender() && (submissionSucceeded = renderViews.size() > 0) == true) {
+        if (canRender()) {
             // Clear all dirty flags but Compute so that
             // we still render every frame when a compute shader is used in a scene
             BackendNodeDirtySet changesToUnset = m_changeSet;
@@ -584,7 +592,8 @@ void Renderer::doRender()
                     // Reset state for each draw if we don't have complete control of the context
                     if (!m_ownedContext)
                         m_graphicsContext->setCurrentStateSet(nullptr);
-                    if (m_graphicsContext->beginDrawing(surface)) {
+                    beganDrawing = m_graphicsContext->beginDrawing(surface);
+                    if (beganDrawing) {
                         // 1) Execute commands for buffer uploads, texture updates, shader loading first
                         updateGLResources();
                         // 2) Update VAO and copy data into commands to allow concurrent submission
@@ -595,6 +604,7 @@ void Renderer::doRender()
             }
             // 2) Proceed to next frame and start preparing frame n + 1
             m_renderQueue->reset();
+            locker.unlock(); // Done protecting RenderQueue
             m_vsyncFrameAdvanceService->proceedToNextFrame();
             hasCleanedQueueAndProceeded = true;
 
@@ -638,61 +648,57 @@ void Renderer::doRender()
 #endif
     }
 
-    // Note: submissionSucceeded is false when
-    // * we cannot render because a shutdown has been scheduled
-    // * the renderqueue is incomplete (only when rendering with a Scene3D)
-    // Otherwise returns true even for cases like
-    // * No render view
-    // * No surface set
-    // * OpenGLContext failed to be set current
-    // This behavior is important as we need to
-    // call proceedToNextFrame despite rendering errors that aren't fatal
-
     // Only reset renderQueue and proceed to next frame if the submission
-    // succeeded or it we are using a render thread and that is wasn't performed
+    // succeeded or if we are using a render thread and that is wasn't performed
     // already
 
-    // If submissionSucceeded isn't true this implies that something went wrong
+    // If hasCleanedQueueAndProceeded isn't true this implies that something went wrong
     // with the rendering and/or the renderqueue is incomplete from some reason
     // (in the case of scene3d the render jobs may be taking too long ....)
-    if (m_renderThread || submissionSucceeded) {
+    // or alternatively it could be complete but empty (RenderQueue of size 0)
+    if (!hasCleanedQueueAndProceeded &&
+        (m_renderThread || queueIsComplete || queueIsEmpty)) {
+        // RenderQueue was full but something bad happened when
+        // trying to render it and therefore proceedToNextFrame was not called
+        // Note: in this case the renderQueue mutex is still locked
 
-        if (!hasCleanedQueueAndProceeded) {
-            // Reset the m_renderQueue so that we won't try to render
-            // with a queue used by a previous frame with corrupted content
-            // if the current queue was correctly submitted
-            m_renderQueue->reset();
+        // Reset the m_renderQueue so that we won't try to render
+        // with a queue used by a previous frame with corrupted content
+        // if the current queue was correctly submitted
+        m_renderQueue->reset();
 
-            // We allow the RenderTickClock service to proceed to the next frame
-            // In turn this will allow the aspect manager to request a new set of jobs
-            // to be performed for each aspect
-            m_vsyncFrameAdvanceService->proceedToNextFrame();
-        }
+        // We allow the RenderTickClock service to proceed to the next frame
+        // In turn this will allow the aspect manager to request a new set of jobs
+        // to be performed for each aspect
+        m_vsyncFrameAdvanceService->proceedToNextFrame();
+    }
 
-        // Perform the last swapBuffers calls after the proceedToNextFrame
-        // as this allows us to gain a bit of time for the preparation of the
-        // next frame
+    // Perform the last swapBuffers calls after the proceedToNextFrame
+    // as this allows us to gain a bit of time for the preparation of the
+    // next frame
+    // Finish up with last surface used in the list of RenderViews
+    if (beganDrawing) {
+        SurfaceLocker surfaceLock(submissionData.surface);
         // Finish up with last surface used in the list of RenderViews
-        if (submissionSucceeded) {
-            SurfaceLocker surfaceLock(submissionData.surface);
-            // Finish up with last surface used in the list of RenderViews
-            m_graphicsContext->endDrawing(submissionData.lastBoundFBOId == m_graphicsContext->defaultFBO() && surfaceLock.isSurfaceValid());
-        }
+        m_graphicsContext->endDrawing(submissionData.lastBoundFBOId == m_graphicsContext->defaultFBO() && surfaceLock.isSurfaceValid());
     }
 }
 
 // Called by RenderViewJobs
+// When the frameQueue is complete and we are using a renderThread
+// we allow the render thread to proceed
 void Renderer::enqueueRenderView(Render::RenderView *renderView, int submitOrder)
 {
-    QMutexLocker locker(&m_mutex); // Prevent out of order execution
+    QMutexLocker locker(&m_renderQueueMutex); // Prevent out of order execution
     // We cannot use a lock free primitive here because:
     // - QVector is not thread safe
     // - Even if the insert is made correctly, the isFrameComplete call
     //   could be invalid since depending on the order of execution
     //   the counter could be complete but the renderview not yet added to the
     //   buffer depending on whichever order the cpu decides to process this
-
-    if (m_renderQueue->queueRenderView(renderView, submitOrder)) {
+    const bool isQueueComplete = m_renderQueue->queueRenderView(renderView, submitOrder);
+    locker.unlock(); // We're done protecting the queue at this point
+    if (isQueueComplete) {
         if (m_renderThread && m_running.load())
             Q_ASSERT(m_submitRenderViewsSemaphore.available() == 0);
         m_submitRenderViewsSemaphore.release(1);
@@ -731,16 +737,6 @@ bool Renderer::isReadyToSubmit()
         // something to render
         // The case of shutdown should have been handled just before
         Q_ASSERT(m_renderQueue->isFrameQueueComplete());
-    } else {
-        // When using synchronous rendering (QtQuick)
-        // We are not sure that the frame queue is actually complete
-        // Since a call to render may not be synched with the completions
-        // of the RenderViewJobs
-        // In such a case we return early, waiting for a next call with
-        // the frame queue complete at this point
-        QMutexLocker locker(&m_mutex);
-        if (!m_renderQueue->isFrameQueueComplete())
-            return false;
     }
     return true;
 }
@@ -1431,22 +1427,25 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
     renderBinJobs.push_back(m_textureGathererJob);
     renderBinJobs.push_back(m_shaderGathererJob);
 
-    // Traverse the current framegraph. For each leaf node create a
-    // RenderView and set its configuration then create a job to
-    // populate the RenderView with a set of RenderCommands that get
-    // their details from the RenderNodes that are visible to the
-    // Camera selected by the framegraph configuration
-    FrameGraphVisitor visitor(m_nodesManager->frameGraphManager());
-    const QVector<FrameGraphNode *> fgLeaves = visitor.traverse(frameGraphRoot());
+    QMutexLocker lock(&m_renderQueueMutex);
+    if (m_renderQueue->wasReset()) { // Have we rendered yet? (Scene3D case)
+        // Traverse the current framegraph. For each leaf node create a
+        // RenderView and set its configuration then create a job to
+        // populate the RenderView with a set of RenderCommands that get
+        // their details from the RenderNodes that are visible to the
+        // Camera selected by the framegraph configuration
+        FrameGraphVisitor visitor(m_nodesManager->frameGraphManager());
+        const QVector<FrameGraphNode *> fgLeaves = visitor.traverse(frameGraphRoot());
 
-    const int fgBranchCount = fgLeaves.size();
-    for (int i = 0; i < fgBranchCount; ++i) {
-        RenderViewBuilder builder(fgLeaves.at(i), i, this);
-        renderBinJobs.append(builder.buildJobHierachy());
+        const int fgBranchCount = fgLeaves.size();
+        for (int i = 0; i < fgBranchCount; ++i) {
+            RenderViewBuilder builder(fgLeaves.at(i), i, this);
+            renderBinJobs.append(builder.buildJobHierachy());
+        }
+
+        // Set target number of RenderViews
+        m_renderQueue->setTargetRenderViewCount(fgBranchCount);
     }
-
-    // Set target number of RenderViews
-    m_renderQueue->setTargetRenderViewCount(fgBranchCount);
 
     return renderBinJobs;
 }

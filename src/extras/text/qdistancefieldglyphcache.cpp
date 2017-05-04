@@ -61,7 +61,7 @@ namespace Qt3DExtras {
 class StoredGlyph {
 public:
     StoredGlyph() = default;
-    StoredGlyph(const StoredGlyph &other) = default;
+    StoredGlyph(const StoredGlyph &) = default;
     StoredGlyph(const QRawFont &font, quint32 glyph, bool doubleResolution);
 
     int refCount() const { return m_ref; }
