@@ -75,6 +75,7 @@ public:
     float m_width;
     float m_height;
     QSize m_meshResolution;
+    bool m_mirrored;
     Qt3DRender::QAttribute *m_positionAttribute;
     Qt3DRender::QAttribute *m_normalAttribute;
     Qt3DRender::QAttribute *m_texCoordAttribute;
