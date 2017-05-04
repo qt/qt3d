@@ -486,7 +486,7 @@ void Scene2D::handlePickEvent(int type, const Qt3DRender::QPickEventPtr &ev)
         ci.setW(1.0f);
 
         const QSize size = m_sharedObject->m_quickWindow->size();
-        QPointF pos = QPointF(ci.x() * size.width(), ci.y() * size.height());
+        QPointF pos = QPointF(ci.x() * size.width(), (1.0f - ci.y()) * size.height());
         QMouseEvent *mouseEvent
                 = new QMouseEvent(static_cast<QEvent::Type>(type),
                                   pos, pos, pos,
