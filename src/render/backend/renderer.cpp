@@ -1013,12 +1013,11 @@ void Renderer::updateGLResources()
         const QVector<HBuffer> dirtyBufferHandles = std::move(m_dirtyBuffers);
         for (HBuffer handle: dirtyBufferHandles) {
             Buffer *buffer = m_nodesManager->bufferManager()->data(handle);
-            // Perform data upload
             // Forces creation if it doesn't exit
             if (!m_graphicsContext->hasGLBufferForBuffer(buffer))
                 m_graphicsContext->glBufferForRenderBuffer(buffer);
-            else if (buffer->isDirty()) // Otherwise update the glBuffer
-                m_graphicsContext->updateBuffer(buffer);
+            // Update the glBuffer data
+            m_graphicsContext->updateBuffer(buffer);
             buffer->unsetDirty();
         }
     }

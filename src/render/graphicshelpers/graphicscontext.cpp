@@ -1501,8 +1501,6 @@ HGLBuffer GraphicsContext::createGLBufferFor(Buffer *buffer)
     if (!bindGLBuffer(b, bufferTypeToGLBufferType(buffer->type())))
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer binding failed";
 
-    // TO DO: Handle usage pattern
-    b->allocate(this, buffer->data().constData(), buffer->data().size(), false);
     return m_renderer->nodeManagers()->glBufferManager()->lookupHandle(buffer->peerId());
 }
 
@@ -1532,6 +1530,7 @@ void GraphicsContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool rel
     QVector<Qt3DRender::QBufferUpdate> updates = std::move(buffer->pendingBufferUpdates());
     for (auto it = updates.begin(); it != updates.end(); ++it) {
         auto update = it;
+        // We have a partial update
         if (update->offset >= 0) {
             //accumulate sequential updates as single one
             int bufferSize = update->data.size();
@@ -1551,6 +1550,9 @@ void GraphicsContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool rel
             // sometime use glMapBuffer rather than glBufferSubData
             b->update(this, update->data.constData(), update->data.size(), update->offset);
         } else {
+            // We have an update that was done by calling QBuffer::setData
+            // which is used to resize or entirely clear the buffer
+            // Note: we use the buffer data directly in that case
             const int bufferSize = buffer->data().size();
             b->allocate(this, bufferSize, false); // orphan the buffer
             b->allocate(this, buffer->data().constData(), bufferSize, false);
