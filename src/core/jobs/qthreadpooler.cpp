@@ -45,6 +45,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QThreadStorage>
 #include <QtCore/QDateTime>
+#include <QtCore/QCoreApplication>
 #endif
 
 #include <Qt3DCore/private/dependencyhandler_p.h>
