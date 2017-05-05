@@ -80,7 +80,8 @@ imagedirs   += images \
                ../../examples/qt3d/basicshapes-cpp/doc/images \
                ../../examples/qt3d/planets-qml/doc/images \
                ../../examples/qt3d/wireframe/doc/images \
-               ../../examples/qt3d/audio-visualizer-qml/doc/images
+               ../../examples/qt3d/audio-visualizer-qml/doc/images \
+               ../../examples/qt3d/simplecustommaterial/doc/images
 
 Cpp.ignoretokens     += QT3DINPUTSHARED_EXPORT \
                         QT3DCORESHARED_EXPORT \
