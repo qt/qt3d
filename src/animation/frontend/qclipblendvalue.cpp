@@ -52,6 +52,12 @@ QClipBlendValuePrivate::QClipBlendValuePrivate()
 {
 }
 
+/*!
+   \class QClipBlendValue
+   \inherits Qt3DAnimation::QAbstractClipBlendNode
+   \inmodule Qt3DAnimation
+   \brief Class used for including a clip in a blend tree.
+*/
 QClipBlendValue::QClipBlendValue(Qt3DCore::QNode *parent)
     : QAbstractClipBlendNode(*new QClipBlendValuePrivate(), parent)
 {

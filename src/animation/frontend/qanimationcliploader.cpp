@@ -69,6 +69,12 @@ void QAnimationClipLoaderPrivate::setStatus(QAnimationClipLoader::Status status)
     \value Ready                 The clip was successfully loaded
     \value Error                 An error occurred while loading the clip
 */
+/*!
+    \class QAnimationClipLoader
+    \inherits QAbstractAnimationClip
+    \inmodule Qt3DAnimation
+    \brief Enables loading key frame animation data from a file
+*/
 
 QAnimationClipLoader::QAnimationClipLoader(Qt3DCore::QNode *parent)
     : QAbstractAnimationClip(*new QAnimationClipLoaderPrivate, parent)

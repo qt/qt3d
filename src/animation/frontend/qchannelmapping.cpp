@@ -98,6 +98,14 @@ void QChannelMappingPrivate::updatePropertyNameAndType()
         notifyObservers(e);
     }
 }
+/*!
+    \class QChannelMapping
+    \inherits Qt3DCore::QNode
+    \inmodule Qt3DAnimation
+    \brief Allows to map the channels within the clip onto properties of
+           objects in the application
+
+*/
 
 QChannelMapping::QChannelMapping(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QChannelMappingPrivate, parent)
