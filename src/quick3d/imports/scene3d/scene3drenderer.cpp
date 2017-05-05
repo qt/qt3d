@@ -57,6 +57,17 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+namespace {
+
+inline QMetaMethod setItemAreaMethod()
+{
+    const int idx = Scene3DItem::staticMetaObject.indexOfMethod("setItemArea(QSize)");
+    Q_ASSERT(idx != -1);
+    return Scene3DItem::staticMetaObject.method(idx);
+}
+
+} // anonymous
+
 class ContextSaver
 {
 public:
@@ -250,8 +261,11 @@ void Scene3DRenderer::render()
     const bool multisampleHasChanged = m_multisample != m_lastMultisample;
     const bool forceRecreate = sizeHasChanged || multisampleHasChanged;
 
-    if (sizeHasChanged)
-        m_item->setItemArea(boundingRectSize);
+    if (sizeHasChanged) {
+        // We are in the QSGRenderThread (doing a direct call would result in a race)
+        static const QMetaMethod setItemArea = setItemAreaMethod();
+        setItemArea.invoke(m_item, Qt::QueuedConnection, Q_ARG(QSize, boundingRectSize));
+    }
 
     // Rebuild FBO and textures if never created or a resize has occurred
     if ((m_multisampledFBO.isNull() || forceRecreate) && m_multisample) {
