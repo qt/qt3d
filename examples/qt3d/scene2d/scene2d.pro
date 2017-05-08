@@ -11,4 +11,5 @@ RESOURCES += scene2d.qrc
 OTHER_FILES += \
     main.qml \
     Logo.qml \
-    LogoControls.qml
+    LogoControls.qml \
+    doc/src/*
