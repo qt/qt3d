@@ -96,7 +96,7 @@ void Executor::processLogicFrameUpdates(float dt)
     const QVector<QNode *> nodes = m_scene->lookupNodes(m_nodeIds);
     for (QNode *node : nodes) {
         QFrameAction *frameAction = qobject_cast<QFrameAction *>(node);
-        if (frameAction)
+        if (frameAction && frameAction->isEnabled())
             frameAction->onTriggered(dt);
     }
 
