@@ -108,25 +108,41 @@ Entity {
     }
 
     Entity {
-        id: plane
+        id: cube
 
-        components: [planeTransform, planeMaterial, planeMesh, planePicker]
+        components: [cubeTransform, cubeMaterial, cubeMesh, cubePicker]
 
-        Transform {
-            id: planeTransform
-            translation: Qt.vector3d(2, 0, 10)
-            rotation: fromAxisAndAngle(Qt.vector3d(1,0,0), 90)
+        property real rotationAngle: 0
+
+        Behavior on rotationAngle {
+            enabled: logoControls.enabled
+            RotationAnimation {
+                direction: RotationAnimation.Shortest
+                duration: 450
+            }
         }
 
-        PlaneMesh {
-            id: planeMesh
-            width: 1
-            height: 4
-            mirrored: true // Align OpenGL and Qt window coordinates by flipping texture coordinates
+        RotationAnimation on rotationAngle {
+            running: !logoControls.enabled
+            loops: Animation.Infinite
+            from: 0; to: 360
+            duration: 4000
+            onStopped: cube.rotationAngle = 0
+        }
+
+        Transform {
+            id: cubeTransform
+            translation: Qt.vector3d(2, 0, 10)
+            scale3D: Qt.vector3d(1, 4, 1)
+            rotation: fromAxisAndAngle(Qt.vector3d(0,1,0), cube.rotationAngle)
+        }
+
+        CuboidMesh {
+            id: cubeMesh
         }
 
         ObjectPicker {
-            id: planePicker
+            id: cubePicker
             hoverEnabled: true
             dragEnabled: true
 
@@ -141,7 +157,7 @@ Entity {
         }
 
         TextureMaterial {
-            id: planeMaterial
+            id: cubeMaterial
             texture: offscreenTexture
         }
 
@@ -164,7 +180,7 @@ Entity {
                 }
             }
 
-            entities: [ plane ]
+            entities: [ cube ]
             mouseEnabled: false
 
             LogoControls {
