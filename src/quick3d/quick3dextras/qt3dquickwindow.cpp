@@ -49,6 +49,7 @@
 ****************************************************************************/
 
 #include <Qt3DQuickExtras/qt3dquickwindow.h>
+#include "qt3dquickwindow_p.h"
 #include <Qt3DQuick/QQmlAspectEngine>
 #include <Qt3DQuickExtras/qt3dquickwindow.h>
 #include <Qt3DInput/qinputaspect.h>
@@ -96,16 +97,21 @@ private:
 
 } // anonymous
 
-Qt3DQuickWindow::Qt3DQuickWindow(QWindow *parent)
-    : QWindow(parent)
-    , m_engine(nullptr)
+Qt3DQuickWindowPrivate::Qt3DQuickWindowPrivate()
+    : m_engine(nullptr)
     , m_renderAspect(nullptr)
     , m_inputAspect(nullptr)
     , m_logicAspect(nullptr)
     , m_initialized(false)
-    , m_cameraAspectRatioMode(AutomaticAspectRatio)
+    , m_cameraAspectRatioMode(Qt3DQuickWindow::AutomaticAspectRatio)
     , m_incubationController(nullptr)
 {
+}
+
+Qt3DQuickWindow::Qt3DQuickWindow(QWindow *parent)
+    : QWindow(*new Qt3DQuickWindowPrivate(), parent)
+{
+    Q_D(Qt3DQuickWindow);
     setSurfaceType(QSurface::OpenGLSurface);
 
     resize(1024, 768);
@@ -125,78 +131,87 @@ Qt3DQuickWindow::Qt3DQuickWindow(QWindow *parent)
     setFormat(format);
     QSurfaceFormat::setDefaultFormat(format);
 
-    m_engine.reset(new Qt3DCore::Quick::QQmlAspectEngine);
-    m_renderAspect = new Qt3DRender::QRenderAspect;
-    m_inputAspect = new Qt3DInput::QInputAspect;
-    m_logicAspect = new Qt3DLogic::QLogicAspect;
+    d->m_engine = new Qt3DCore::Quick::QQmlAspectEngine;
+    d->m_renderAspect = new Qt3DRender::QRenderAspect;
+    d->m_inputAspect = new Qt3DInput::QInputAspect;
+    d->m_logicAspect = new Qt3DLogic::QLogicAspect;
 
-    m_engine->aspectEngine()->registerAspect(m_renderAspect);
-    m_engine->aspectEngine()->registerAspect(m_inputAspect);
-    m_engine->aspectEngine()->registerAspect(m_logicAspect);
+    d->m_engine->aspectEngine()->registerAspect(d->m_renderAspect);
+    d->m_engine->aspectEngine()->registerAspect(d->m_inputAspect);
+    d->m_engine->aspectEngine()->registerAspect(d->m_logicAspect);
 }
 
 Qt3DQuickWindow::~Qt3DQuickWindow()
 {
+    Q_D(Qt3DQuickWindow);
+    delete d->m_engine;
 }
 
 void Qt3DQuickWindow::registerAspect(Qt3DCore::QAbstractAspect *aspect)
 {
     Q_ASSERT(!isVisible());
-    m_engine->aspectEngine()->registerAspect(aspect);
+    Q_D(Qt3DQuickWindow);
+    d->m_engine->aspectEngine()->registerAspect(aspect);
 }
 
 void Qt3DQuickWindow::registerAspect(const QString &name)
 {
     Q_ASSERT(!isVisible());
-    m_engine->aspectEngine()->registerAspect(name);
+    Q_D(Qt3DQuickWindow);
+    d->m_engine->aspectEngine()->registerAspect(name);
 }
 
 void Qt3DQuickWindow::setSource(const QUrl &source)
 {
-    m_source = source;
+    Q_D(Qt3DQuickWindow);
+    d->m_source = source;
 }
 
 Qt3DCore::Quick::QQmlAspectEngine *Qt3DQuickWindow::engine() const
 {
-    return m_engine.data();
+    Q_D(const Qt3DQuickWindow);
+    return d->m_engine;
 }
 
 void Qt3DQuickWindow::setCameraAspectRatioMode(CameraAspectRatioMode mode)
 {
-    if (m_cameraAspectRatioMode == mode)
+    Q_D(Qt3DQuickWindow);
+    if (d->m_cameraAspectRatioMode == mode)
         return;
 
-    m_cameraAspectRatioMode = mode;
+    d->m_cameraAspectRatioMode = mode;
     setCameraAspectModeHelper();
     emit cameraAspectRatioModeChanged(mode);
 }
 
 Qt3DQuickWindow::CameraAspectRatioMode Qt3DQuickWindow::cameraAspectRatioMode() const
 {
-    return m_cameraAspectRatioMode;
+    Q_D(const Qt3DQuickWindow);
+    return d->m_cameraAspectRatioMode;
 }
 
 void Qt3DQuickWindow::showEvent(QShowEvent *e)
 {
-    if (!m_initialized) {
+    Q_D(Qt3DQuickWindow);
+    if (!d->m_initialized) {
 
         // Connect to the QQmlAspectEngine's statusChanged signal so that when the QML is loaded
         // and th eobjects hav ebeen instantiated, but before we set them on the QAspectEngine we
         // can swoop in and set the window surface and camera on the framegraph and ensure the camera
         // respects the window's aspect ratio
-        connect(m_engine.data(), &Qt3DCore::Quick::QQmlAspectEngine::sceneCreated,
+        connect(d->m_engine, &Qt3DCore::Quick::QQmlAspectEngine::sceneCreated,
                 this, &Qt3DQuickWindow::onSceneCreated);
 
-        m_engine->setSource(m_source);
+        d->m_engine->setSource(d->m_source);
 
         // Set the QQmlIncubationController on the window
         // to benefit from asynchronous incubation
-        if (!m_incubationController)
-            m_incubationController = new Qt3DQuickWindowIncubationController(this);
+        if (!d->m_incubationController)
+            d->m_incubationController = new Qt3DQuickWindowIncubationController(this);
 
-        m_engine->qmlEngine()->setIncubationController(m_incubationController);
+        d->m_engine->qmlEngine()->setIncubationController(d->m_incubationController);
 
-        m_initialized = true;
+        d->m_initialized = true;
     }
     QWindow::showEvent(e);
 }
@@ -204,17 +219,18 @@ void Qt3DQuickWindow::showEvent(QShowEvent *e)
 void Qt3DQuickWindow::onSceneCreated(QObject *rootObject)
 {
     Q_ASSERT(rootObject);
+    Q_D(Qt3DQuickWindow);
 
     setWindowSurface(rootObject);
 
-    if (m_cameraAspectRatioMode == AutomaticAspectRatio) {
+    if (d->m_cameraAspectRatioMode == AutomaticAspectRatio) {
         // Set aspect ratio of first camera to match the window
         QList<Qt3DRender::QCamera *> cameras
                 = rootObject->findChildren<Qt3DRender::QCamera *>();
         if (cameras.isEmpty()) {
             qCDebug(QuickWindow) << "No camera found";
         } else {
-            m_camera = cameras.first();
+            d->m_camera = cameras.first();
             setCameraAspectModeHelper();
         }
     }
@@ -237,7 +253,8 @@ void Qt3DQuickWindow::setWindowSurface(QObject *rootObject)
 
 void Qt3DQuickWindow::setCameraAspectModeHelper()
 {
-    switch (m_cameraAspectRatioMode) {
+    Q_D(Qt3DQuickWindow);
+    switch (d->m_cameraAspectRatioMode) {
     case AutomaticAspectRatio:
         connect(this, &QWindow::widthChanged, this, &Qt3DQuickWindow::updateCameraAspectRatio);
         connect(this, &QWindow::heightChanged, this, &Qt3DQuickWindow::updateCameraAspectRatio);
@@ -253,9 +270,10 @@ void Qt3DQuickWindow::setCameraAspectModeHelper()
 
 void Qt3DQuickWindow::updateCameraAspectRatio()
 {
-    if (m_camera) {
-        m_camera->setAspectRatio(static_cast<float>(width()) /
-                                 static_cast<float>(height()));
+    Q_D(Qt3DQuickWindow);
+    if (d->m_camera) {
+        d->m_camera->setAspectRatio(static_cast<float>(width()) /
+                                    static_cast<float>(height()));
     }
 }
 
