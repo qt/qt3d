@@ -176,7 +176,7 @@ class tst_GraphicsHelperGL3_3 : public QObject
     Q_OBJECT
 private Q_SLOTS:
 
-    void initTestCase()
+    void init()
     {
         m_window.reset(new QWindow);
         m_window->setSurfaceType(QWindow::OpenGLSurface);
@@ -209,7 +209,7 @@ private Q_SLOTS:
         }
     }
 
-    void cleanupTestCase()
+    void cleanup()
     {
         m_glContext.doneCurrent();
     }

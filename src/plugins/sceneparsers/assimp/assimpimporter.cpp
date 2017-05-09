@@ -142,7 +142,7 @@ QMatrix4x4 aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix) Q_DECL_NOTHROW
 /*!
  * Returns a QString from \a str;
  */
-static inline QString aiStringToQString(const aiString &str)
+inline QString aiStringToQString(const aiString &str)
 {
     return QString::fromUtf8(str.data, int(str.length));
 }
@@ -244,6 +244,21 @@ QAttribute *createAttribute(QBuffer *buffer,
     attribute->setByteStride(byteStride);
     attribute->setParent(parent);
     return attribute;
+}
+
+QTextureWrapMode::WrapMode wrapModeFromaiTextureMapMode(int mode)
+{
+    switch (mode) {
+    case aiTextureMapMode_Wrap:
+        return QTextureWrapMode::Repeat;
+    case aiTextureMapMode_Mirror:
+        return QTextureWrapMode::MirroredRepeat;
+    case aiTextureMapMode_Decal:
+        return QTextureWrapMode::ClampToBorder;
+    case aiTextureMapMode_Clamp:
+    default:
+        return QTextureWrapMode::ClampToEdge;
+    }
 }
 
 } // anonymous
@@ -1237,18 +1252,28 @@ void AssimpImporter::copyMaterialTextures(QMaterial *material, aiMaterial *assim
     for (unsigned int i = 0; i < sizeof(textureType)/sizeof(textureType[0]); i++) {
         aiString path;
         if (assimpMaterial->GetTexture(textureType[i], 0, &path) == AI_SUCCESS) {
-            QString fullPath = m_sceneDir.absoluteFilePath(texturePath(path));
+            const QString fullPath = m_sceneDir.absoluteFilePath(texturePath(path));
             // Load texture if not already loaded
-            if (!m_scene->m_materialTextures.contains(fullPath)) {
-                QAbstractTexture *tex = QAbstractNodeFactory::createNode<QTexture2D>("QTexture2D");
-                QTextureImage *texImage = QAbstractNodeFactory::createNode<QTextureImage>("QTextureImage");
-                texImage->setSource(QUrl::fromLocalFile(fullPath));
-                tex->addTextureImage(texImage);
-                m_scene->m_materialTextures.insert(fullPath, tex);
-                qCDebug(AssimpImporterLog) << Q_FUNC_INFO << " Loaded Texture " << fullPath;
-            }
+            QAbstractTexture *tex = QAbstractNodeFactory::createNode<QTexture2D>("QTexture2D");
+            QTextureImage *texImage = QAbstractNodeFactory::createNode<QTextureImage>("QTextureImage");
+            texImage->setSource(QUrl::fromLocalFile(fullPath));
+            tex->addTextureImage(texImage);
+
+            // Set proper wrapping mode
+            QTextureWrapMode wrapMode(QTextureWrapMode::Repeat);
+            int xMode = 0;
+            int yMode = 0;
+
+            if (assimpMaterial->Get(AI_MATKEY_MAPPINGMODE_U(textureType[i], 0), xMode) == aiReturn_SUCCESS)
+                wrapMode.setX(wrapModeFromaiTextureMapMode(xMode));
+            if (assimpMaterial->Get(AI_MATKEY_MAPPINGMODE_V(textureType[i], 0), yMode) == aiReturn_SUCCESS)
+                wrapMode.setY(wrapModeFromaiTextureMapMode(yMode));
+
+            tex->setWrapMode(wrapMode);
+
+            qCDebug(AssimpImporterLog) << Q_FUNC_INFO << " Loaded Texture " << fullPath;
             setParameterValue(m_scene->m_textureToParameterName[textureType[i]],
-                    material, QVariant::fromValue(m_scene->m_materialTextures[fullPath]));
+                    material, QVariant::fromValue(tex));
         }
     }
 }

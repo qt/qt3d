@@ -88,6 +88,9 @@ void Buffer::executeFunctor()
 {
     Q_ASSERT(m_functor);
     m_data = (*m_functor)();
+    // Request data to be loaded
+    forceDataUpload();
+
     if (m_syncData) {
         // Send data back to the frontend
         auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
@@ -101,6 +104,8 @@ void Buffer::executeFunctor()
 //Called from th sendBufferJob
 void Buffer::updateDataFromGPUToCPU(QByteArray data)
 {
+    // Note: when this is called, data is what's currently in GPU memory
+    // so m_data shouldn't be reuploaded
     m_data = data;
     // Send data back to the frontend
     auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
@@ -121,10 +126,23 @@ void Buffer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chang
     m_access = data.access;
     m_bufferDirty = true;
 
+    if (!m_data.isEmpty())
+        forceDataUpload();
+
     m_functor = data.functor;
     Q_ASSERT(m_manager);
     if (m_functor)
         m_manager->addDirtyBuffer(peerId());
+}
+
+void Buffer::forceDataUpload()
+{
+    // We push back an update with offset = -1
+    // As this is the way to force data to be loaded
+    QBufferUpdate updateNewData;
+    updateNewData.offset = -1;
+    m_bufferUpdates.clear(); //previous updates are pointless
+    m_bufferUpdates.push_back(updateNewData);
 }
 
 void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -134,8 +152,11 @@ void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QByteArray propertyName = propertyChange->propertyName();
         if (propertyName == QByteArrayLiteral("data")) {
             QByteArray newData = propertyChange->value().toByteArray();
-            m_bufferDirty |= m_data != newData;
+            bool dirty = m_data != newData;
+            m_bufferDirty |= dirty;
             m_data = newData;
+            if (dirty)
+                forceDataUpload();
         } else if (propertyName == QByteArrayLiteral("updateData")) {
             Qt3DRender::QBufferUpdate updateData = propertyChange->value().value<Qt3DRender::QBufferUpdate>();
             m_bufferUpdates.push_back(updateData);
