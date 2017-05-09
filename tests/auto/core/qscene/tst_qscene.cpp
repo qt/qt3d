@@ -297,6 +297,8 @@ void tst_QScene::deleteChildNode()
     Qt3DCore::QNode *root2 = new tst_Node();
     Qt3DCore::QNodePrivate::get(root1)->setScene(scene);
     Qt3DCore::QNodePrivate::get(root2)->setScene(scene);
+    Qt3DCore::QNodePrivate::get(root1)->m_hasBackendNode = true;
+    Qt3DCore::QNodePrivate::get(root2)->m_hasBackendNode = true;
 
     // WHEN
     scene->addObservable(root1);
@@ -358,6 +360,7 @@ void tst_QScene::removeChildNode()
 
     Qt3DCore::QNode *root = new tst_Node;
     Qt3DCore::QNodePrivate::get(root)->setScene(scene);
+    Qt3DCore::QNodePrivate::get(root)->m_hasBackendNode = true;
     scene->addObservable(root);
 
     // WHEN
