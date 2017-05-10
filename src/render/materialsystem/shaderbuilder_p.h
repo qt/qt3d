@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DRender/private/backendnode_p.h>
+#include <Qt3DRender/private/qgraphicsapifilter_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 
 QT_BEGIN_NAMESPACE
@@ -72,11 +73,18 @@ public:
         Compute
     };
 
+    static QString getPrototypesFile();
+    static void setPrototypesFile(const QString &file);
+    static QStringList getPrototypeNames();
+
     ShaderBuilder();
     ~ShaderBuilder();
     void cleanup();
 
     Qt3DCore::QNodeId shaderProgramId() const;
+
+    GraphicsApiFilterData graphicsApi() const;
+    void setGraphicsApi(const GraphicsApiFilterData &graphicsApi);
 
     QUrl shaderGraph(ShaderType type) const;
     void setShaderGraph(ShaderType type, const QUrl &url);
@@ -91,8 +99,10 @@ public:
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
+    GraphicsApiFilterData m_graphicsApi;
     Qt3DCore::QNodeId m_shaderProgramId;
     QHash<ShaderType, QUrl> m_graphs;
+    QHash<ShaderType, QByteArray> m_codes;
     QSet<ShaderType> m_dirtyTypes;
 };
 

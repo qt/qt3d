@@ -1,0 +1,36 @@
+#version 100 es
+
+varying highp vec3 worldPosition;
+uniform sampler2D texture;
+varying highp vec2 texCoord;
+uniform highp float lightIntensity;
+uniform highp float exposure;
+highp vec4 lightModel(const in highp vec3 baseColor,
+                      const in highp vec3 pos,
+                      const in highp float intensity)
+{
+    ...
+}
+
+#line 9
+highp vec4 lightModel(const in highp vec3 baseColor,
+                      const in highp vec3 pos,
+                      const in highp float intensity)
+{
+    ...
+}
+
+#line 11
+
+void main()
+{
+    highp vec2 v2 = texCoord;
+    sampler2D v1 = texture;
+    highp float v3 = lightIntensity;
+    highp vec4 v5 = texture2D(v1, v2);
+    highp vec3 v0 = worldPosition;
+    highp float v4 = exposure;
+    highp vec4 v6 = lightModel(v5, v0, v3);
+    highp vec4 v7 = v6 * pow(2.0, v4);
+    gl_fragColor = v7;
+}

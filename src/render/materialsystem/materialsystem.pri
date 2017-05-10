@@ -55,3 +55,6 @@ SOURCES += \
     $$PWD/qgraphicsapifilter.cpp \
     $$PWD/shadercache.cpp \
     $$PWD/techniquemanager.cpp
+
+RESOURCES += \
+    $$PWD/materialsystem.qrc

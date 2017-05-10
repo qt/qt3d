@@ -1,0 +1,27 @@
+{
+    "worldPosition": {
+        "outputs": [
+            "worldPosition"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec3 $worldPosition = worldPosition;",
+                "headerSnippets": [ "varying highp vec3 worldPosition;" ]
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 2
+                },
+                "substitution": "vec3 $worldPosition = worldPosition;",
+                "headerSnippets": [ "in vec3 worldPosition;" ]
+            }
+        ]
+    }
+}

@@ -39,6 +39,33 @@ class tst_ShaderBuilder : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 private slots:
+    void shouldHaveGlobalDefaultPrototypes()
+    {
+        // GIVEN
+
+        // THEN
+        QCOMPARE(Qt3DRender::Render::ShaderBuilder::getPrototypesFile(), QStringLiteral(":/prototypes/default.json"));
+        QVERIFY(!Qt3DRender::Render::ShaderBuilder::getPrototypeNames().isEmpty());
+
+        // WHEN
+        Qt3DRender::Render::ShaderBuilder::setPrototypesFile(":/prototypes.json");
+
+        // THEN
+        QCOMPARE(Qt3DRender::Render::ShaderBuilder::getPrototypesFile(), QStringLiteral(":/prototypes.json"));
+        auto prototypeNames = Qt3DRender::Render::ShaderBuilder::getPrototypeNames();
+        prototypeNames.sort();
+        const auto expectedPrototypeNames = QStringList() << "exposure"
+                                                          << "exposureFunction"
+                                                          << "fragColor"
+                                                          << "lightIntensity"
+                                                          << "lightModel"
+                                                          << "sampleTexture"
+                                                          << "texCoord"
+                                                          << "texture"
+                                                          << "worldPosition";
+        QCOMPARE(prototypeNames, expectedPrototypeNames);
+    }
+
     void shouldHaveInitialState()
     {
         // GIVEN
@@ -338,6 +365,91 @@ private slots:
         QVERIFY(backend.shaderCode(type).isEmpty());
         QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
         renderer.resetDirty();
+    }
+
+    void shouldHandleShaderCodeGeneration_data()
+    {
+        QTest::addColumn<Qt3DRender::Render::ShaderBuilder::ShaderType>("type");
+
+        QTest::newRow("vertex") << Qt3DRender::Render::ShaderBuilder::Vertex;
+        QTest::newRow("tessControl") << Qt3DRender::Render::ShaderBuilder::TessellationControl;
+        QTest::newRow("tessEval") << Qt3DRender::Render::ShaderBuilder::TessellationEvaluation;
+        QTest::newRow("geometry") << Qt3DRender::Render::ShaderBuilder::Geometry;
+        QTest::newRow("fragment") << Qt3DRender::Render::ShaderBuilder::Fragment;
+        QTest::newRow("compute") << Qt3DRender::Render::ShaderBuilder::Compute;
+    }
+
+    void shouldHandleShaderCodeGeneration()
+    {
+        // GIVEN
+        Qt3DRender::Render::ShaderBuilder::setPrototypesFile(":/prototypes.json");
+        QVERIFY(!Qt3DRender::Render::ShaderBuilder::getPrototypeNames().isEmpty());
+
+        QFETCH(Qt3DRender::Render::ShaderBuilder::ShaderType, type);
+
+        const auto gl3Api = []{
+            auto api = Qt3DRender::GraphicsApiFilterData();
+            api.m_api = Qt3DRender::QGraphicsApiFilter::OpenGL;
+            api.m_profile = Qt3DRender::QGraphicsApiFilter::CoreProfile;
+            api.m_major = 3;
+            api.m_minor = 2;
+            return api;
+        }();
+
+        const auto es2Api = []{
+            auto api = Qt3DRender::GraphicsApiFilterData();
+            api.m_api = Qt3DRender::QGraphicsApiFilter::OpenGLES;
+            api.m_major = 2;
+            api.m_minor = 0;
+            return api;
+        }();
+
+        const auto readCode = [](const QString &suffix) -> QString {
+            const auto filePath = QStringLiteral(":/output.") + suffix;
+            QFile file(filePath);
+            if (!file.open(QFile::ReadOnly | QFile::Text))
+                qFatal("File open failed: %s", qPrintable(filePath));
+            return file.readAll();
+        };
+
+        const auto gl3Code = readCode("gl3");
+        const auto es2Code = readCode("es2");
+
+        Qt3DRender::Render::ShaderBuilder backend;
+
+        // WHEN
+        const auto graphUrl = QUrl::fromEncoded("qrc:/input.json");
+        backend.setShaderGraph(type, graphUrl);
+
+        // THEN
+        QCOMPARE(backend.shaderGraph(type), graphUrl);
+        QVERIFY(backend.isShaderCodeDirty(type));
+        QVERIFY(backend.shaderCode(type).isEmpty());
+
+        // WHEN
+        backend.setGraphicsApi(gl3Api);
+        backend.generateCode(type);
+
+        // THEN
+        QCOMPARE(backend.shaderGraph(type), graphUrl);
+        QVERIFY(!backend.isShaderCodeDirty(type));
+        QCOMPARE(backend.shaderCode(type), gl3Code);
+
+        // WHEN
+        backend.setGraphicsApi(es2Api);
+
+        // THEN
+        QCOMPARE(backend.shaderGraph(type), graphUrl);
+        QVERIFY(backend.isShaderCodeDirty(type));
+        QCOMPARE(backend.shaderCode(type), gl3Code);
+
+        // WHEN
+        backend.generateCode(type);
+
+        // THEN
+        QCOMPARE(backend.shaderGraph(type), graphUrl);
+        QVERIFY(!backend.isShaderCodeDirty(type));
+        QCOMPARE(backend.shaderCode(type), es2Code);
     }
 };
 

@@ -40,15 +40,83 @@
 #include "shaderbuilder_p.h"
 
 #include <Qt3DRender/private/qshaderprogrambuilder_p.h>
+#include <Qt3DRender/private/qurlhelper_p.h>
 
+#include <QtGui/private/qshaderformat_p.h>
+#include <QtGui/private/qshadergraphloader_p.h>
+#include <QtGui/private/qshadergenerator_p.h>
+#include <QtGui/private/qshadernodesloader_p.h>
+
+#include <QFile>
+#include <QFileInfo>
 #include <QUrl>
 
 QT_BEGIN_NAMESPACE
+
+class GlobalShaderPrototypes
+{
+public:
+    GlobalShaderPrototypes()
+    {
+        setPrototypesFile(QStringLiteral(":/prototypes/default.json"));
+    }
+
+    QString prototypesFile() const
+    {
+        return m_fileName;
+    }
+
+    void setPrototypesFile(const QString &fileName)
+    {
+        m_fileName = fileName;
+        load();
+    }
+
+    QHash<QString, QShaderNode> prototypes() const
+    {
+        return m_prototypes;
+    }
+
+private:
+    void load()
+    {
+        QFile file(m_fileName);
+        if (!file.open(QFile::ReadOnly)) {
+            qWarning() << "Couldn't open file:" << m_fileName;
+            return;
+        }
+
+        QShaderNodesLoader loader;
+        loader.setDevice(&file);
+        loader.load();
+        m_prototypes = loader.nodes();
+    }
+
+    QString m_fileName;
+    QHash<QString, QShaderNode> m_prototypes;
+};
+
+Q_GLOBAL_STATIC(GlobalShaderPrototypes, qt3dGlobalShaderPrototypes)
 
 using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
+
+QString ShaderBuilder::getPrototypesFile()
+{
+    return qt3dGlobalShaderPrototypes->prototypesFile();
+}
+
+void ShaderBuilder::setPrototypesFile(const QString &file)
+{
+    qt3dGlobalShaderPrototypes->setPrototypesFile(file);
+}
+
+QStringList ShaderBuilder::getPrototypeNames()
+{
+    return qt3dGlobalShaderPrototypes->prototypes().keys();
+}
 
 ShaderBuilder::ShaderBuilder()
     : BackendNode(ReadWrite)
@@ -72,6 +140,23 @@ Qt3DCore::QNodeId ShaderBuilder::shaderProgramId() const
     return m_shaderProgramId;
 }
 
+GraphicsApiFilterData ShaderBuilder::graphicsApi() const
+{
+    return m_graphicsApi;
+}
+
+void ShaderBuilder::setGraphicsApi(const GraphicsApiFilterData &graphicsApi)
+{
+    if (m_graphicsApi == graphicsApi)
+        return;
+
+    m_graphicsApi = graphicsApi;
+    for (const auto type : m_graphs.keys()) {
+        if (!m_graphs.value(type).isEmpty())
+            m_dirtyTypes.insert(type);
+    }
+}
+
 QUrl ShaderBuilder::shaderGraph(ShaderBuilder::ShaderType type) const
 {
     return m_graphs.value(type);
@@ -87,7 +172,7 @@ void ShaderBuilder::setShaderGraph(ShaderBuilder::ShaderType type, const QUrl &u
 
 QByteArray ShaderBuilder::shaderCode(ShaderBuilder::ShaderType type) const
 {
-    return QByteArray();
+    return m_codes.value(type);
 }
 
 bool ShaderBuilder::isShaderCodeDirty(ShaderBuilder::ShaderType type) const
@@ -95,8 +180,82 @@ bool ShaderBuilder::isShaderCodeDirty(ShaderBuilder::ShaderType type) const
     return m_dirtyTypes.contains(type);
 }
 
+static QByteArray deincludify(const QByteArray &contents, const QString &filePath);
+
+static QByteArray deincludify(const QString &filePath)
+{
+    QFile f(filePath);
+    if (!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning() << "Could not read shader source file:" << f.fileName();
+        return QByteArray();
+    }
+
+    QByteArray contents = f.readAll();
+    return deincludify(contents, filePath);
+}
+
+static QByteArray deincludify(const QByteArray &contents, const QString &filePath)
+{
+    QByteArrayList lines = contents.split('\n');
+    const QByteArray includeDirective = QByteArrayLiteral("#pragma include");
+    for (int i = 0; i < lines.count(); ++i) {
+        const auto line = lines[i].simplified();
+        if (line.startsWith(includeDirective)) {
+            const QString includePartialPath = QString::fromUtf8(line.mid(includeDirective.count() + 1));
+
+            QString includePath = QFileInfo(includePartialPath).isAbsolute() ? includePartialPath
+                                : QFileInfo(filePath).absolutePath() + QLatin1Char('/') + includePartialPath;
+            if (qEnvironmentVariableIsSet("QT3D_GLSL100_WORKAROUND")) {
+                QString candidate = includePath + QLatin1String("100");
+                if (QFile::exists(candidate))
+                    includePath = candidate;
+            }
+            lines.removeAt(i);
+            QByteArray includedContents = deincludify(includePath);
+            lines.insert(i, includedContents);
+            QString lineDirective = QString(QStringLiteral("#line %1")).arg(i + 2);
+            lines.insert(i + 1, lineDirective.toUtf8());
+        }
+    }
+
+    return lines.join('\n');
+}
+
 void ShaderBuilder::generateCode(ShaderBuilder::ShaderType type)
 {
+    const auto graphPath = QUrlHelper::urlToLocalFileOrQrc(shaderGraph(type));
+    QFile file(graphPath);
+    if (!file.open(QFile::ReadOnly)) {
+        qWarning() << "Couldn't open file:" << graphPath;
+        return;
+    }
+
+    auto graphLoader = QShaderGraphLoader();
+    graphLoader.setPrototypes(qt3dGlobalShaderPrototypes->prototypes());
+    graphLoader.setDevice(&file);
+    graphLoader.load();
+
+    if (graphLoader.status() == QShaderGraphLoader::Error)
+        return;
+
+    const auto graph = graphLoader.graph();
+
+    auto format = QShaderFormat();
+    format.setApi(m_graphicsApi.m_api == QGraphicsApiFilter::OpenGLES ? QShaderFormat::OpenGLES
+                : m_graphicsApi.m_profile == QGraphicsApiFilter::CoreProfile ? QShaderFormat::OpenGLCoreProfile
+                : m_graphicsApi.m_profile == QGraphicsApiFilter::CompatibilityProfile ? QShaderFormat::OpenGLCompatibilityProfile
+                : QShaderFormat::OpenGLNoProfile);
+    format.setVersion(QVersionNumber(m_graphicsApi.m_major, m_graphicsApi.m_minor));
+    format.setExtensions(m_graphicsApi.m_extensions);
+    format.setVendor(m_graphicsApi.m_vendor);
+
+    auto generator = QShaderGenerator();
+    generator.format = format;
+    generator.graph = graph;
+
+    const auto code = generator.createShaderCode();
+    m_codes.insert(type, deincludify(code, graphPath + QStringLiteral(".glsl")));
+    m_dirtyTypes.remove(type);
 }
 
 void ShaderBuilder::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
