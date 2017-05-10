@@ -70,13 +70,14 @@ namespace Render {
 
 class RenderStateSet;
 
-class RenderCommand
+class Q_AUTOTEST_EXPORT RenderCommand
 {
 public:
     RenderCommand();
 
     HVao m_vao; // VAO used during the submission step to store all states and VBOs
     HShader m_shader; // Shader for given pass and mesh
+    HMaterial m_material; // Purely used to ease sorting (minimize stage changes, binding changes ....)
     ShaderParameterPack m_parameterPack; // Might need to be reworked so as to be able to destroy the
                             // Texture while submission is happening.
     RenderStateSet *m_stateSet;
@@ -101,11 +102,6 @@ public:
 
     CommandType m_type;
 
-    union sortingType {
-        char sorts[4];
-        int  global;
-    } m_sortingType;
-
     bool m_sortBackToFront;
     int m_workGroups[3];
 
@@ -126,8 +122,6 @@ public:
     bool m_primitiveRestartEnabled;
     bool m_isValid;
 };
-
-bool compareCommands(RenderCommand *r1, RenderCommand *r2);
 
 } // namespace Render
 

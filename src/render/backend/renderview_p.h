@@ -338,7 +338,7 @@ private:
                                                Shader *shader,
                                                ShaderData *shaderData,
                                                const QString &structName) const;
-    void buildSortingKey(RenderCommand *command) const;
+    void prepareForSorting(RenderCommand *command) const;
 };
 
 } // namespace Render
