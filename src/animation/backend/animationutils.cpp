@@ -61,6 +61,7 @@ int componentsForType(int type)
 {
     int componentCount = 1;
     switch (type) {
+    case QMetaType::Float:
     case QVariant::Double:
         componentCount = 1;
         break;
@@ -237,6 +238,7 @@ QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId anim
         // Build the new value from the channel/fcurve evaluation results
         QVariant v;
         switch (mappingData.type) {
+        case QMetaType::Float:
         case QVariant::Double: {
             v = QVariant::fromValue(channelResults[mappingData.channelIndices[0]]);
             break;
