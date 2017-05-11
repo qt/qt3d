@@ -338,9 +338,11 @@ void main()
     // Remap roughness for a perceptually more linear correspondence
     float alpha = remapRoughness(roughness);
 
+
+    vec3 wNormal = normalize(worldNormal);
     vec3 worldView = normalize(eyePosition - worldPosition);
     for (int i = 0; i < envLightCount; ++i) {
-        cLinear += pbrIblModel(worldNormal,
+        cLinear += pbrIblModel(wNormal,
                                worldView,
                                baseColor.rgb,
                                metalness,
@@ -350,7 +352,7 @@ void main()
     for (int i = 0; i < lightCount; ++i) {
         cLinear += pbrModel(i,
                             worldPosition,
-                            worldNormal,
+                            wNormal,
                             worldView,
                             baseColor.rgb,
                             metalness,
