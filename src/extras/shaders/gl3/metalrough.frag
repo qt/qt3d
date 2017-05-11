@@ -71,17 +71,19 @@ uniform sampler2D ambientOcclusionMap;
 // User control parameters
 uniform float metalFactor = 1.0;
 
-// Roughness -> mip level mapping
-uniform float maxT = 0.939824;
-uniform float mipLevels = 11.0;
-uniform float mipOffset = 5.0;
-
 // Exposure correction
 uniform float exposure = 0.0;
 // Gamma correction
 uniform float gamma = 2.2;
 
 #pragma include light.inc.frag
+
+int mipLevelCount(const in samplerCube cube)
+{
+   int baseSize = textureSize(cube, 0).x;
+   int nMips = int(log2(float(baseSize>0 ? baseSize : 1))) + 1;
+   return nMips;
+}
 
 mat3 calcWorldSpaceToTangentSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent)
 {
@@ -105,10 +107,35 @@ mat3 calcWorldSpaceToTangentSpaceMatrix(const in vec3 wNormal, const in vec4 wTa
 
 float roughnessToMipLevel(float roughness)
 {
-    // HACK: Improve the roughness -> mip level mapping for roughness map from substace painter
-    // TODO: Use mathematica or similar to improve this mapping more generally
-    roughness = 0.75 + (1.7 * (roughness - 0.5));
-    return (mipLevels - 1.0 - mipOffset) * (1.0 - (1.0 - roughness) / maxT);
+    const float maxSpecPower = 999999.0;
+    const float minRoughness = sqrt(2.0 / (maxSpecPower + 2));
+    float r = max(roughness, minRoughness);
+    float specPower = 2.0 / (r * r) - 2.0;
+
+    // We use the mip level calculation from Lys' default power drop, which in
+    // turn is a slight modification of that used in Marmoset Toolbag. See
+    // https://docs.knaldtech.com/doku.php?id=specular_lys for details.
+    // For now we assume a max specular power of 999999 which gives
+    // maxGlossiness = 1.
+    const float k0 = 0.00098;
+    const float k1 = 0.9921;
+    float glossiness = (pow(2.0, -10.0 / sqrt(specPower)) - k0) / k1;
+
+    // TODO: Optimize by doing this on CPU and set as
+    // uniform int envLight.specularMipLevels say (if present in shader).
+    // Lookup the number of mips in the specular envmap
+    int mipLevels = mipLevelCount(envLight.specular);
+
+    // Offset of smallest miplevel we should use (corresponds to specular
+    // power of 1). I.e. in the 32x32 sized mip.
+    const float mipOffset = 5.0;
+
+    // The final factor is really 1 - g / g_max but as mentioned above g_max
+    // is 1 by definition here so we can avoid the division. If we make the
+    // max specular power for the spec map configurable, this will need to
+    // be handled properly.
+    float mipLevel = (mipLevels - 1.0 - mipOffset) * (1.0 - glossiness);
+    return mipLevel;
 }
 
 // Helper function to map from linear roughness value to non-linear alpha (shininess)
@@ -277,7 +304,31 @@ vec3 pbrIblModel(const in vec3 wNormal,
     vec3 F0 = mix(dielectricColor, baseColor, metalness);
     vec3 specularFactor = specularModel(F0, lDotH, lDotN, vDotN, n, h);
 
-    float lod = roughnessToMipLevel(roughness);
+    // As per page 14 of
+    // http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr.pdf
+    // we remap the roughness to give a more perceptually linear response
+    // of "bluriness" as a function of the roughness specified by the user.
+    // r = roughness^2
+    float lod = roughnessToMipLevel(roughness * roughness);
+//#define DEBUG_SPECULAR_LODS
+#ifdef DEBUG_SPECULAR_LODS
+    if (lod > 7.0)
+        return vec3(1.0, 0.0, 0.0);
+    else if (lod > 6.0)
+        return vec3(1.0, 0.333, 0.0);
+    else if (lod > 5.0)
+        return vec3(1.0, 1.0, 0.0);
+    else if (lod > 4.0)
+        return vec3(0.666, 1.0, 0.0);
+    else if (lod > 3.0)
+        return vec3(0.0, 1.0, 0.666);
+    else if (lod > 2.0)
+        return vec3(0.0, 0.666, 1.0);
+    else if (lod > 1.0)
+        return vec3(0.0, 0.0, 1.0);
+    else if (lod > 0.0)
+        return vec3(1.0, 0.0, 1.0);
+#endif
     vec3 specularSkyColor = textureLod(envLight.specular, l, lod).rgb;
     vec3 specular = specularSkyColor * specularFactor;
 
