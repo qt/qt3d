@@ -30,6 +30,7 @@
 #include <qbackendnodetester.h>
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DRender/qshaderprogram.h>
+#include "testrenderer.h"
 
 class tst_RenderShader : public Qt3DCore::QBackendNodeTester
 {
@@ -39,6 +40,8 @@ private slots:
     void hasCoherentInitialState();
     void matchesFrontendPeer();
     void cleanupLeavesACoherentState();
+    void dealWithPropertyChanges_data();
+    void dealWithPropertyChanges();
 };
 
 
@@ -116,6 +119,81 @@ void tst_RenderShader::cleanupLeavesACoherentState()
     QVERIFY(shader->attributes().isEmpty());
     QVERIFY(shader->uniformBlocks().isEmpty());
     QCOMPARE(shader->status(), Qt3DRender::QShaderProgram::NotReady);
+}
+
+void tst_RenderShader::dealWithPropertyChanges_data()
+{
+    QTest::addColumn<QByteArray>("property");
+    QTest::addColumn<Qt3DRender::QShaderProgram::ShaderType>("type");
+
+    QTest::newRow("vertex") << QByteArrayLiteral("vertexShaderCode")
+                            << Qt3DRender::QShaderProgram::Vertex;
+
+    QTest::newRow("tessControl") << QByteArrayLiteral("tessellationControlShaderCode")
+                                 << Qt3DRender::QShaderProgram::TessellationControl;
+
+    QTest::newRow("tessEval") << QByteArrayLiteral("tessellationEvaluationShaderCode")
+                              << Qt3DRender::QShaderProgram::TessellationEvaluation;
+
+    QTest::newRow("geometry") << QByteArrayLiteral("geometryShaderCode")
+                              << Qt3DRender::QShaderProgram::Geometry;
+
+    QTest::newRow("fragment") << QByteArrayLiteral("fragmentShaderCode")
+                              << Qt3DRender::QShaderProgram::Fragment;
+
+    QTest::newRow("compute") << QByteArrayLiteral("computeShaderCode")
+                             << Qt3DRender::QShaderProgram::Compute;
+}
+
+void tst_RenderShader::dealWithPropertyChanges()
+{
+    // GIVEN
+    QFETCH(QByteArray, property);
+    QFETCH(Qt3DRender::QShaderProgram::ShaderType, type);
+
+    Qt3DRender::Render::Shader backend;
+    backend.setLoaded(true);
+    TestRenderer renderer;
+    backend.setRenderer(&renderer);
+
+    // WHEN
+    auto updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+    updateChange->setValue(QStringLiteral("foo"));
+    updateChange->setPropertyName(property);
+    backend.sceneChangeEvent(updateChange);
+
+    // THEN
+    QCOMPARE(backend.shaderCode().at(type), QStringLiteral("foo"));
+    QVERIFY(!backend.isLoaded());
+    QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::AllDirty);
+    renderer.resetDirty();
+    backend.setLoaded(true);
+
+    // WHEN
+    updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+    updateChange->setValue(QStringLiteral("foo"));
+    updateChange->setPropertyName(property);
+    backend.sceneChangeEvent(updateChange);
+
+    // THEN
+    QCOMPARE(backend.shaderCode().at(type), QStringLiteral("foo"));
+    QVERIFY(!backend.isLoaded()); // Really should be true
+    QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::AllDirty); // Really should be 0
+    renderer.resetDirty();
+    backend.setLoaded(true);
+
+    // WHEN
+    updateChange = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
+    updateChange->setValue(QStringLiteral("bar"));
+    updateChange->setPropertyName(property);
+    backend.sceneChangeEvent(updateChange);
+
+    // THEN
+    QCOMPARE(backend.shaderCode().at(type), QStringLiteral("bar"));
+    QVERIFY(!backend.isLoaded());
+    QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::AllDirty);
+    renderer.resetDirty();
+    backend.setLoaded(true);
 }
 
 QTEST_APPLESS_MAIN(tst_RenderShader)

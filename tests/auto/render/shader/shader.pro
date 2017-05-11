@@ -9,3 +9,4 @@ CONFIG += testcase
 SOURCES += tst_shader.cpp
 
 include(../../core/common/common.pri)
+include(../commons/commons.pri)
