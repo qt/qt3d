@@ -85,6 +85,18 @@ int mipLevelCount(const in samplerCube cube)
    return nMips;
 }
 
+float remapRoughness(const in float roughness)
+{
+    // As per page 14 of
+    // http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr.pdf
+    // we remap the roughness to give a more perceptually linear response
+    // of "bluriness" as a function of the roughness specified by the user.
+    // r = roughness^2
+    const float maxSpecPower = 999999.0;
+    const float minRoughness = sqrt(2.0 / (maxSpecPower + 2));
+    return max(roughness * roughness, minRoughness);
+}
+
 mat3 calcWorldSpaceToTangentSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent)
 {
     // Make the tangent truly orthogonal to the normal by using Gram-Schmidt.
@@ -105,12 +117,9 @@ mat3 calcWorldSpaceToTangentSpaceMatrix(const in vec3 wNormal, const in vec4 wTa
     return worldToTangentMatrix;
 }
 
-float roughnessToMipLevel(float roughness)
+float alphaToMipLevel(float alpha)
 {
-    const float maxSpecPower = 999999.0;
-    const float minRoughness = sqrt(2.0 / (maxSpecPower + 2));
-    float r = max(roughness, minRoughness);
-    float specPower = 2.0 / (r * r) - 2.0;
+    float specPower = 2.0 / (alpha * alpha) - 2.0;
 
     // We use the mip level calculation from Lys' default power drop, which in
     // turn is a slight modification of that used in Marmoset Toolbag. See
@@ -138,24 +147,12 @@ float roughnessToMipLevel(float roughness)
     return mipLevel;
 }
 
-// Helper function to map from linear roughness value to non-linear alpha (shininess)
-float roughnessToAlpha(const in float roughness)
+float normalDistribution(const in vec3 n, const in vec3 h, const in float alpha)
 {
-    // Constants to control how to convert from roughness [0,1] to
-    // shininess (alpha) [minAlpha, maxAlpha] using a power law with
-    // a power of 1 / rho.
-    const float minAlpha = 1.0;
-    const float maxAlpha = 1024.0;
-    const float rho = 3.0;
-
-    return minAlpha + (maxAlpha - minAlpha) * (1.0 - pow(roughness, 1.0 / rho));
-}
-
-float normalDistribution(const in vec3 n, const in vec3 h, const in float roughness)
-{
-    // Blinn-Phong approximation
-    float alpha = roughnessToAlpha(roughness);
-    return (alpha + 2.0) / (2.0 * 3.14159) * pow(max(dot(n, h), 0.0), alpha);
+    // Blinn-Phong approximation - see
+    // http://graphicrants.blogspot.co.uk/2013/08/specular-brdf-reference.html
+    float specPower = 2.0 / (alpha * alpha) - 2.0;
+    return (specPower + 2.0) / (2.0 * 3.14159) * pow(max(dot(n, h), 0.0), specPower);
 }
 
 vec3 fresnelFactor(const in vec3 color, const in float cosineFactor)
@@ -203,7 +200,7 @@ vec3 pbrModel(const in int lightIndex,
               const in vec3 wView,
               const in vec3 baseColor,
               const in float metalness,
-              const in float roughness,
+              const in float alpha,
               const in float ambientOcclusion)
 {
     // Calculate some useful quantities
@@ -261,7 +258,7 @@ vec3 pbrModel(const in int lightIndex,
     vec3 specularFactor = vec3(0.0);
     if (sDotN > 0.0) {
         specularFactor = specularModel(F0, sDotH, sDotN, vDotN, n, h);
-        specularFactor *= normalDistribution(n, h, roughness);
+        specularFactor *= normalDistribution(n, h, alpha);
     }
     vec3 specularColor = lights[lightIndex].color;
     vec3 specular = specularColor * specularFactor;
@@ -279,7 +276,7 @@ vec3 pbrIblModel(const in vec3 wNormal,
                  const in vec3 wView,
                  const in vec3 baseColor,
                  const in float metalness,
-                 const in float roughness,
+                 const in float alpha,
                  const in float ambientOcclusion)
 {
     // Calculate reflection direction of view vector about surface normal
@@ -304,12 +301,7 @@ vec3 pbrIblModel(const in vec3 wNormal,
     vec3 F0 = mix(dielectricColor, baseColor, metalness);
     vec3 specularFactor = specularModel(F0, lDotH, lDotN, vDotN, n, h);
 
-    // As per page 14 of
-    // http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr.pdf
-    // we remap the roughness to give a more perceptually linear response
-    // of "bluriness" as a function of the roughness specified by the user.
-    // r = roughness^2
-    float lod = roughnessToMipLevel(roughness * roughness);
+    float lod = alphaToMipLevel(alpha);
 //#define DEBUG_SPECULAR_LODS
 #ifdef DEBUG_SPECULAR_LODS
     if (lod > 7.0)
@@ -368,12 +360,15 @@ void main()
     vec3 tNormal = 2.0 * texture(normalMap, texCoord).rgb - vec3(1.0);
     vec3 wNormal = normalize(transpose(worldToTangentMatrix) * tNormal);
 
+    // Remap roughness for a perceptually more linear correspondence
+    float alpha = remapRoughness(roughness);
+
     for (int i = 0; i < envLightCount; ++i) {
         cLinear += pbrIblModel(wNormal,
                                wView,
                                baseColor,
                                metalness,
-                               roughness,
+                               alpha,
                                ambientOcclusion);
     }
 
@@ -384,7 +379,7 @@ void main()
                             wView,
                             baseColor.rgb,
                             metalness,
-                            roughness,
+                            alpha,
                             ambientOcclusion);
     }
 
