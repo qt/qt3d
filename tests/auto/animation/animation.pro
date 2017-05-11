@@ -13,8 +13,7 @@ SUBDIRS += \
     qkeyframeanimation \
     qmorphinganimation \
     qmorphtarget \
-    qvertexblendanimation \
-    qanimationcontroller
+    qvertexblendanimation
 
 qtConfig(private_tests) {
     SUBDIRS += \
