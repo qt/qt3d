@@ -996,6 +996,7 @@ void Renderer::lookForDirtyShaders()
 {
     if (isRunning()) {
         const QVector<HTechnique> activeTechniques = m_nodesManager->techniqueManager()->activeHandles();
+        const QVector<HShaderBuilder> activeBuilders = m_nodesManager->shaderBuilderManager()->activeHandles();
         for (HTechnique techniqueHandle : activeTechniques) {
             Technique *technique = m_nodesManager->techniqueManager()->data(techniqueHandle);
             // If api of the renderer matches the one from the technique
@@ -1005,6 +1006,55 @@ void Renderer::lookForDirtyShaders()
                     RenderPass *renderPass = m_nodesManager->renderPassManager()->lookupResource(passId);
                     HShader shaderHandle = m_nodesManager->shaderManager()->lookupHandle(renderPass->shaderProgram());
                     Shader *shader = m_nodesManager->shaderManager()->data(shaderHandle);
+
+                    ShaderBuilder *shaderBuilder = nullptr;
+                    for (HShaderBuilder builderHandle : activeBuilders) {
+                        ShaderBuilder *builder = m_nodesManager->shaderBuilderManager()->data(builderHandle);
+                        if (builder->shaderProgramId() == shader->peerId()) {
+                            shaderBuilder = builder;
+                            break;
+                        }
+                    }
+
+                    if (shaderBuilder) {
+                        shaderBuilder->setGraphicsApi(*technique->graphicsApiFilter());
+
+                        for (int i = 0; i <= ShaderBuilder::Compute; i++) {
+                            const auto builderType = static_cast<ShaderBuilder::ShaderType>(i);
+                            if (!shaderBuilder->shaderGraph(builderType).isValid())
+                                continue;
+
+                            if (shaderBuilder->isShaderCodeDirty(builderType)) {
+                                shaderBuilder->generateCode(builderType);
+                            }
+
+                            QShaderProgram::ShaderType shaderType = QShaderProgram::Vertex;
+                            switch (builderType) {
+                            case ShaderBuilder::Vertex:
+                                shaderType = QShaderProgram::Vertex;
+                                break;
+                            case ShaderBuilder::TessellationControl:
+                                shaderType = QShaderProgram::TessellationControl;
+                                break;
+                            case ShaderBuilder::TessellationEvaluation:
+                                shaderType = QShaderProgram::TessellationEvaluation;
+                                break;
+                            case ShaderBuilder::Geometry:
+                                shaderType = QShaderProgram::Geometry;
+                                break;
+                            case ShaderBuilder::Fragment:
+                                shaderType = QShaderProgram::Fragment;
+                                break;
+                            case ShaderBuilder::Compute:
+                                shaderType = QShaderProgram::Compute;
+                                break;
+                            }
+
+                            const auto code = shaderBuilder->shaderCode(builderType);
+                            shader->setShaderCode(shaderType, code);
+                        }
+                    }
+
                     if (Q_UNLIKELY(shader->hasPendingNotifications()))
                         shader->submitPendingNotifications();
                     if (shader != nullptr && !shader->isLoaded())
