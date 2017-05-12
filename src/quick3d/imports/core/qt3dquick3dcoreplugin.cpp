@@ -71,4 +71,9 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
     qmlRegisterExtendedUncreatableType<Qt3DCore::QNode, Qt3DCore::Quick::Quick3DNodeV9, 9>(uri, 2, 9, "Node", QStringLiteral("Node is a base class"));
 }
 
+Qt3DQuick3DCorePlugin::~Qt3DQuick3DCorePlugin()
+{
+    Qt3DCore::Quick::Quick3D_uninitialize();
+}
+
 QT_END_NAMESPACE
