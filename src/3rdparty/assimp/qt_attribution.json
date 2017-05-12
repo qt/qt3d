@@ -6,6 +6,7 @@
     "QtUsage": "Used in Qt 3D.",
 
     "Homepage": "http://www.assimp.org/",
+    "Version": "3.3.1",
     "License": "BSD 3-clause \"New\" or \"Revised\" Licensee",
     "LicenseId": "BSD-3-Clause",
     "LicenseFile": "LICENSE",
