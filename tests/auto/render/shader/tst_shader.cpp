@@ -165,7 +165,7 @@ void tst_RenderShader::dealWithPropertyChanges()
     // THEN
     QCOMPARE(backend.shaderCode().at(type), QStringLiteral("foo"));
     QVERIFY(!backend.isLoaded());
-    QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::AllDirty);
+    QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
     renderer.resetDirty();
     backend.setLoaded(true);
 
@@ -177,8 +177,8 @@ void tst_RenderShader::dealWithPropertyChanges()
 
     // THEN
     QCOMPARE(backend.shaderCode().at(type), QStringLiteral("foo"));
-    QVERIFY(!backend.isLoaded()); // Really should be true
-    QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::AllDirty); // Really should be 0
+    QVERIFY(backend.isLoaded());
+    QCOMPARE(renderer.dirtyBits(), 0);
     renderer.resetDirty();
     backend.setLoaded(true);
 
@@ -191,7 +191,7 @@ void tst_RenderShader::dealWithPropertyChanges()
     // THEN
     QCOMPARE(backend.shaderCode().at(type), QStringLiteral("bar"));
     QVERIFY(!backend.isLoaded());
-    QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::AllDirty);
+    QCOMPARE(renderer.dirtyBits(), Qt3DRender::Render::AbstractRenderer::ShadersDirty);
     renderer.resetDirty();
     backend.setLoaded(true);
 }
