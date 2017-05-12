@@ -161,46 +161,36 @@ QVector<QByteArray> Shader::shaderCode() const
     return m_shaderCode;
 }
 
+void Shader::setShaderCode(QShaderProgram::ShaderType type, const QByteArray &code)
+{
+    if (code == m_shaderCode[type])
+        return;
+
+    m_shaderCode[type] = code;
+    m_isLoaded = false;
+    setStatus(QShaderProgram::NotReady);
+    updateDNA();
+    markDirty(AbstractRenderer::ShadersDirty);
+}
+
 void Shader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == PropertyUpdated) {
         QPropertyUpdatedChangePtr propertyChange = e.staticCast<QPropertyUpdatedChange>();
+        QVariant propertyValue = propertyChange->value();
 
-        QShaderProgram::ShaderType type = QShaderProgram::Vertex;
-        bool knownProperty = false;
-
-        if (propertyChange->propertyName() == QByteArrayLiteral("vertexShaderCode")) {
-            type = QShaderProgram::Vertex;
-            knownProperty = true;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("fragmentShaderCode")) {
-            type = QShaderProgram::Fragment;
-            knownProperty = true;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationControlShaderCode")) {
-            type = QShaderProgram::TessellationControl;
-            knownProperty = true;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationEvaluationShaderCode")) {
-            type = QShaderProgram::TessellationEvaluation;
-            knownProperty = true;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("geometryShaderCode")) {
-            type = QShaderProgram::Geometry;
-            knownProperty = true;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("computeShaderCode")) {
-            type = QShaderProgram::Compute;
-            knownProperty = true;
-        }
-
-        if (knownProperty) {
-            const QVariant propertyValue = propertyChange->value();
-            const QByteArray code = propertyValue.toByteArray();
-
-            if (code != m_shaderCode[type]) {
-                m_shaderCode[type] = code;
-                m_isLoaded = false;
-                setStatus(QShaderProgram::NotReady);
-                updateDNA();
-                markDirty(AbstractRenderer::ShadersDirty);
-            }
-        }
+        if (propertyChange->propertyName() == QByteArrayLiteral("vertexShaderCode"))
+            setShaderCode(QShaderProgram::Vertex, propertyValue.toByteArray());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("fragmentShaderCode"))
+            setShaderCode(QShaderProgram::Fragment, propertyValue.toByteArray());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationControlShaderCode"))
+            setShaderCode(QShaderProgram::TessellationControl, propertyValue.toByteArray());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("tessellationEvaluationShaderCode"))
+            setShaderCode(QShaderProgram::TessellationEvaluation, propertyValue.toByteArray());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("geometryShaderCode"))
+            setShaderCode(QShaderProgram::Geometry, propertyValue.toByteArray());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("computeShaderCode"))
+            setShaderCode(QShaderProgram::Compute, propertyValue.toByteArray());
     }
 
     BackendNode::sceneChangeEvent(e);

@@ -97,6 +97,7 @@ public:
     QVector<QString> uniformBlockNames() const;
     QVector<QString> storageBlockNames() const;
     QVector<QByteArray> shaderCode() const;
+    void setShaderCode(QShaderProgram::ShaderType type, const QByteArray &code);
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     bool isLoaded() const { QMutexLocker lock(&m_mutex); return m_isLoaded; }
