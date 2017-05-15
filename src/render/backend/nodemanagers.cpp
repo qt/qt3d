@@ -113,7 +113,6 @@ NodeManagers::~NodeManagers()
     delete m_layerManager;
     delete m_levelOfDetailManager;
     delete m_filterKeyManager;
-    delete m_frameGraphManager;
     delete m_transformManager;
     delete m_renderTargetManager;
     delete m_sceneManager;
@@ -127,6 +126,10 @@ NodeManagers::~NodeManagers()
     delete m_geometryManager;
     delete m_geometryRendererManager;
     delete m_objectPickerManager;
+
+    // Delete after m_objectPickerManager as that manager's shutdown needs to access
+    // the frame graph manager still.
+    delete m_frameGraphManager;
 //    delete m_boundingVolumeDebugManager;
     delete m_lightManager;
     delete m_environmentLightManager;

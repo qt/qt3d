@@ -405,12 +405,6 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     // asked for jobs to execute (this function). If that is the case, the RenderSettings will
     // be null and we should not generate any jobs.
     if (d->m_renderer->isRunning() && d->m_renderer->settings()) {
-        // don't spawn any jobs, if the renderer decides to skip this frame
-        if (!d->m_renderer->shouldRender()) {
-            d->m_renderer->skipNextFrame();
-            QThread::msleep(1);
-            return jobs;
-        }
 
         Render::NodeManagers *manager = d->m_renderer->nodeManagers();
         QAspectJobPtr textureLoadingSync = d->m_renderer->syncTextureLoadingJob();
@@ -448,7 +442,18 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 
         // Add all jobs to queue
         const Qt3DCore::QAspectJobPtr pickBoundingVolumeJob = d->m_renderer->pickBoundingVolumeJob();
+        // Note: the getter is also responsible for returning a job ready to run
         jobs.append(pickBoundingVolumeJob);
+
+
+        // Don't spawn any rendering jobs, if the renderer decides to skip this frame
+        // Note: this only affects rendering jobs (jobs that load buffers,
+        // perform picking,... must still be run)
+        if (!d->m_renderer->shouldRender()) {
+            d->m_renderer->skipNextFrame();
+            QThread::msleep(1);
+            return jobs;
+        }
 
         // Traverse the current framegraph and create jobs to populate
         // RenderBins with RenderCommands
