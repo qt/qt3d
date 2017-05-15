@@ -108,7 +108,7 @@ double localTimeFromGlobalTime(double t_global,
     double loopNumber = 0;
     if (loopCount == 1) {
         t_local = qBound(0.0, t_local, duration);
-    } else if (loopCount == 0) {
+    } else if (loopCount < 0) {
         // Loops forever
         (void) std::modf(t_local / duration, &loopNumber);
         t_local = std::fmod(t_local, duration);

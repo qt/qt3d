@@ -626,7 +626,7 @@ private Q_SLOTS:
         globalStartTime = 0.0;
         playbackRate = 1.0;
         duration = 1.0;
-        loopCount = 0;
+        loopCount = -1;
         expectedLocalTime = 0.5;
         expectedCurrentLoop = 1;
         QTest::newRow("simple, loopCount = inf, t_global = 1.5")
@@ -637,7 +637,7 @@ private Q_SLOTS:
         globalStartTime = 0.0;
         playbackRate = 1.0;
         duration = 1.0;
-        loopCount = 0;
+        loopCount = -1;
         expectedLocalTime = 0.2;
         expectedCurrentLoop = 10;
         QTest::newRow("simple, loopCount = inf, t_global = 10.2")
@@ -791,7 +791,7 @@ private Q_SLOTS:
         globalStartTime = 0.0;
         playbackRate = 1.0;
         duration = 1.0;
-        loopCount = 0;
+        loopCount = -1;
         expectedPhase = 0.5;
         expectedCurrentLoop = 1;
         QTest::newRow("simple, loopCount = inf, t_global = 1.5")
@@ -802,7 +802,7 @@ private Q_SLOTS:
         globalStartTime = 0.0;
         playbackRate = 1.0;
         duration = 1.0;
-        loopCount = 0;
+        loopCount = -1;
         expectedPhase = 0.2;
         expectedCurrentLoop = 10;
         QTest::newRow("simple, loopCount = inf, t_global = 10.2")
