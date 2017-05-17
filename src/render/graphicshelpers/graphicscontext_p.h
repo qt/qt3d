@@ -71,6 +71,7 @@
 #include <Qt3DRender/private/shadercache_p.h>
 #include <Qt3DRender/private/uniform_p.h>
 #include <Qt3DRender/private/graphicshelperinterface_p.h>
+#include <Qt3DRender/private/qblitframebuffer_p.h>
 #include <qmath.h>
 
 QT_BEGIN_NAMESPACE
@@ -167,9 +168,19 @@ public:
     void releaseBuffer(Qt3DCore::QNodeId bufferId);
     bool hasGLBufferForBuffer(Buffer *buffer);
 
+    void blitFramebuffer(Qt3DCore::QNodeId outputRenderTarget, Qt3DCore::QNodeId inputRenderTarget,
+                         QRect inputRect,
+                         QRect outputRect, uint defaultFboId,
+                         QRenderTargetOutput::AttachmentPoint inputAttachmentPoint,
+                         QRenderTargetOutput::AttachmentPoint outputAttachmentPoint,
+                         QBlitFramebuffer::InterpolationMethod interpolationMethod);
+
     void memoryBarrier(QMemoryBarrier::Operations barriers);
 
     void setParameters(ShaderParameterPack &parameterPack);
+
+    void readBuffer(GLenum mode);
+    void drawBuffer(GLenum mode);
 
     /**
      * @brief glBufferFor - given a client-side (CPU) buffer, provide the

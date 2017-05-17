@@ -73,6 +73,8 @@ public:
     void buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) Q_DECL_OVERRIDE;
     void drawBuffers(GLsizei n, const int *bufs) Q_DECL_OVERRIDE;
     void drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances, GLint baseVertex = 0,  GLint baseInstance = 0) Q_DECL_OVERRIDE;
+    virtual void readBuffer(GLenum mode) Q_DECL_OVERRIDE;
+    virtual void drawBuffer(GLenum mode) Q_DECL_OVERRIDE;
     void initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) Q_DECL_OVERRIDE;
     char *mapBuffer(GLenum target, GLsizeiptr size) Q_DECL_OVERRIDE;
     QVector<ShaderUniform> programUniformsAndLocations(GLuint programId) Q_DECL_OVERRIDE;

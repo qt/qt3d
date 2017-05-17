@@ -100,7 +100,8 @@ public:
         RenderCapture,
         BufferCapture,
         MemoryBarrier,
-        ProximityFilter
+        ProximityFilter,
+        BlitFramebuffer
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 

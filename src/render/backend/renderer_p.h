@@ -218,6 +218,11 @@ public:
     void updateTexture(Texture *texture);
     void cleanupTexture(const Texture *texture);
     void downloadGLBuffers();
+    void blitFramebuffer(Qt3DCore::QNodeId inputRenderTargetId,
+                         Qt3DCore::QNodeId outputRenderTargetId,
+                         QRect inputRect,
+                         QRect outputRect,
+                         GLuint defaultFramebuffer);
 
     void prepareCommandsSubmission(const QVector<RenderView *> &renderViews);
     bool executeCommandsSubmission(const RenderView *rv);

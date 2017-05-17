@@ -1227,7 +1227,6 @@ void Renderer::downloadGLBuffers()
     }
 }
 
-
 // Happens in RenderThread context when all RenderViewJobs are done
 // Returns the id of the last bound FBO
 Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Render::RenderView *> &renderViews)
@@ -1378,6 +1377,22 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
 
         if (renderView->isDownloadBuffersEnable())
             downloadGLBuffers();
+
+        // Perform BlitFramebuffer operations
+        if (renderView->hasBlitFramebufferInfo()) {
+            const auto &blitFramebufferInfo = renderView->blitFrameBufferInfo();
+            const QNodeId inputTargetId = blitFramebufferInfo.sourceRenderTargetId;
+            const QNodeId outputTargetId = blitFramebufferInfo.destinationRenderTargetId;
+            const QRect inputRect = blitFramebufferInfo.sourceRect;
+            const QRect outputRect = blitFramebufferInfo.destinationRect;
+            const QRenderTargetOutput::AttachmentPoint inputAttachmentPoint = blitFramebufferInfo.sourceAttachmentPoint;
+            const QRenderTargetOutput::AttachmentPoint outputAttachmentPoint = blitFramebufferInfo.destinationAttachmentPoint;
+            const QBlitFramebuffer::InterpolationMethod interpolationMethod = blitFramebufferInfo.interpolationMethod;
+            m_graphicsContext->blitFramebuffer(inputTargetId, outputTargetId, inputRect, outputRect, lastBoundFBOId,
+                                               inputAttachmentPoint, outputAttachmentPoint,
+                                               interpolationMethod);
+        }
+
 
         frameElapsed = timer.elapsed() - frameElapsed;
         qCDebug(Rendering) << Q_FUNC_INFO << "Submitted Renderview " << i + 1 << "/" << renderViewsCount  << "in " << frameElapsed << "ms";

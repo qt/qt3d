@@ -387,6 +387,16 @@ void GraphicsHelperGL4::vertexAttributePointer(GLenum shaderDataType,
     }
 }
 
+void GraphicsHelperGL4::readBuffer(GLenum mode)
+{
+    m_funcs->glReadBuffer(mode);
+}
+
+void GraphicsHelperGL4::drawBuffer(GLenum mode)
+{
+    m_funcs->glDrawBuffer(mode);
+}
+
 void GraphicsHelperGL4::glUniform1fv(GLint location, GLsizei count, const GLfloat *values)
 {
     m_funcs->glUniform1fv(location, count, values);

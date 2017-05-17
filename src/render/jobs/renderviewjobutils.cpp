@@ -67,6 +67,7 @@
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <Qt3DRender/private/techniquemanager_p.h>
 #include <Qt3DRender/private/memorybarrier_p.h>
+#include <Qt3DRender/private/blitframebuffer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -252,6 +253,22 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                                             static_cast<const Render::BufferCapture *>(node));
                 if (bufferCapture != nullptr)
                      rv->setIsDownloadBuffersEnable(bufferCapture->isEnabled());
+                break;
+            }
+
+            case FrameGraphNode::BlitFramebuffer: {
+                const Render::BlitFramebuffer *blitFramebufferNode =
+                        static_cast<const Render::BlitFramebuffer *>(node);
+                rv->setHasBlitFramebufferInfo(true);
+                BlitFramebufferInfo bfbInfo;
+                bfbInfo.sourceRenderTargetId = blitFramebufferNode->sourceRenderTargetId();
+                bfbInfo.destinationRenderTargetId = blitFramebufferNode->destinationRenderTargetId();
+                bfbInfo.sourceRect = blitFramebufferNode->sourceRect();
+                bfbInfo.destinationRect = blitFramebufferNode->destinationRect();
+                bfbInfo.sourceAttachmentPoint = blitFramebufferNode->sourceAttachmentPoint();
+                bfbInfo.destinationAttachmentPoint = blitFramebufferNode->destinationAttachmentPoint();
+                bfbInfo.interpolationMethod = blitFramebufferNode->interpolationMethod();
+                rv->setBlitFrameBufferInfo(bfbInfo);
                 break;
             }
 

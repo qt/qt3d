@@ -224,6 +224,7 @@ UniformValue RenderView::standardUniformValue(RenderView::StandardUniform standa
 
 RenderView::RenderView()
     : m_isDownloadBuffersEnable(false)
+    , m_hasBlitFramebufferInfo(false)
     , m_renderer(nullptr)
     , m_devicePixelRatio(1.)
     , m_viewport(QRectF(0.0f, 0.0f, 1.0f, 1.0f))
@@ -1046,6 +1047,26 @@ void RenderView::setShaderAndUniforms(RenderCommand *command,
     else {
         qCWarning(Render::Backend) << Q_FUNC_INFO << "Using default effect as none was provided";
     }
+}
+
+bool RenderView::hasBlitFramebufferInfo() const
+{
+    return m_hasBlitFramebufferInfo;
+}
+
+void RenderView::setHasBlitFramebufferInfo(bool hasBlitFramebufferInfo)
+{
+    m_hasBlitFramebufferInfo = hasBlitFramebufferInfo;
+}
+
+BlitFramebufferInfo RenderView::blitFrameBufferInfo() const
+{
+    return m_blitFrameBufferInfo;
+}
+
+void RenderView::setBlitFrameBufferInfo(const BlitFramebufferInfo &blitFrameBufferInfo)
+{
+    m_blitFrameBufferInfo = blitFrameBufferInfo;
 }
 
 bool RenderView::isDownloadBuffersEnable() const

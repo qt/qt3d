@@ -1506,6 +1506,18 @@ private Q_SLOTS:
         QCOMPARE(computed, expected);
     }
 
+    void drawBuffer()
+    {
+        QSKIP("Initialization failed, OpenGL 2.0 functions not supported");
+        // Not supported by GL2
+    }
+
+    void readBuffer()
+    {
+        QSKIP("Initialization failed, OpenGL 2.0 functions not supported");
+        // Not supported by GL2
+    }
+
 private:
     QScopedPointer<QWindow> m_window;
     QOpenGLContext m_glContext;

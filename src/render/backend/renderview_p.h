@@ -64,6 +64,7 @@
 #include <Qt3DRender/private/lightsource_p.h>
 #include <Qt3DRender/private/qmemorybarrier_p.h>
 #include <Qt3DRender/private/qrendercapture_p.h>
+#include <Qt3DRender/private/qblitframebuffer_p.h>
 
 #include <Qt3DCore/private/qframeallocator_p.h>
 
@@ -113,6 +114,17 @@ struct Q_AUTOTEST_EXPORT ClearBufferInfo
     int drawBufferIndex = 0;
     QRenderTargetOutput::AttachmentPoint attchmentPoint = QRenderTargetOutput::Color0;
     QVector4D clearColor;
+};
+
+struct Q_AUTOTEST_EXPORT BlitFramebufferInfo
+{
+    Qt3DCore::QNodeId sourceRenderTargetId;
+    Qt3DCore::QNodeId destinationRenderTargetId;
+    QRect sourceRect;
+    QRect destinationRect;
+    Qt3DRender::QRenderTargetOutput::AttachmentPoint sourceAttachmentPoint;
+    Qt3DRender::QRenderTargetOutput::AttachmentPoint destinationAttachmentPoint;
+    QBlitFramebuffer::InterpolationMethod interpolationMethod;
 };
 
 // This class is kind of analogous to RenderBin but I want to avoid trampling
@@ -256,6 +268,12 @@ public:
     bool isDownloadBuffersEnable() const;
     void setIsDownloadBuffersEnable(bool isDownloadBuffersEnable);
 
+    BlitFramebufferInfo blitFrameBufferInfo() const;
+    void setBlitFrameBufferInfo(const BlitFramebufferInfo &blitFrameBufferInfo);
+
+    bool hasBlitFramebufferInfo() const;
+    void setHasBlitFramebufferInfo(bool hasBlitFramebufferInfo);
+
 private:
     void setShaderAndUniforms(RenderCommand *command,
                               RenderPass *pass,
@@ -269,6 +287,9 @@ private:
     Qt3DCore::QNodeId m_renderCaptureNodeId;
     QRenderCaptureRequest m_renderCaptureRequest;
     bool m_isDownloadBuffersEnable;
+
+    bool m_hasBlitFramebufferInfo;
+    BlitFramebufferInfo m_blitFrameBufferInfo;
 
     Renderer *m_renderer;
     NodeManagers *m_manager;

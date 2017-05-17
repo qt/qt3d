@@ -226,6 +226,17 @@ void GraphicsHelperES3::vertexAttributePointer(GLenum shaderDataType,
     }
 }
 
+void GraphicsHelperES3::readBuffer(GLenum mode)
+{
+    m_extraFuncs->glReadBuffer(mode);
+}
+
+void GraphicsHelperES3::drawBuffer(GLenum mode)
+{
+    Q_UNUSED(mode);
+    qWarning() << "glDrawBuffer is not supported with OpenGL ES 3";
+}
+
 void GraphicsHelperES3::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
 {
     GLenum attr = GL_COLOR_ATTACHMENT0;

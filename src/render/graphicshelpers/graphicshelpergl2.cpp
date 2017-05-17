@@ -258,6 +258,16 @@ void GraphicsHelperGL2::vertexAttributePointer(GLenum shaderDataType,
     }
 }
 
+void GraphicsHelperGL2::readBuffer(GLenum mode)
+{
+    m_funcs->glReadBuffer(mode);
+}
+
+void GraphicsHelperGL2::drawBuffer(GLenum mode)
+{
+    m_funcs->glDrawBuffer(mode);
+}
+
 void GraphicsHelperGL2::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);

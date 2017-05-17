@@ -2294,6 +2294,42 @@ private Q_SLOTS:
         QCOMPARE(computed, expected);
     }
 
+    void drawBuffer()
+    {
+        if (!m_initializationSuccessful)
+            QSKIP("Initialization failed, OpenGL 4.3 Core functions not supported");
+
+        m_func->glGetError();
+
+        // WHEN
+        m_glHelper.drawBuffer(GL_FRONT);
+        const GLint error = m_func->glGetError();
+        QVERIFY(error == 0);
+
+        // THEN
+        GLint p;
+        m_func->glGetIntegerv(GL_DRAW_BUFFER, &p);
+        QCOMPARE(p, GL_FRONT);
+    }
+
+    void readBuffer()
+    {
+        if (!m_initializationSuccessful)
+            QSKIP("Initialization failed, OpenGL 4.3 Core functions not supported");
+
+        m_func->glGetError();
+
+        // WHEN
+        m_glHelper.readBuffer(GL_FRONT);
+
+        // THEN
+        const GLint error = m_func->glGetError();
+        QVERIFY(error == 0);
+        GLint p;
+        m_func->glGetIntegerv(GL_READ_BUFFER, &p);
+        QCOMPARE(p, GL_FRONT);
+    }
+
 private:
     QScopedPointer<QWindow> m_window;
     QOpenGLContext m_glContext;

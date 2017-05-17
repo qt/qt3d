@@ -129,6 +129,8 @@ public:
     void useProgram(GLuint programId) Q_DECL_OVERRIDE;
     void vertexAttribDivisor(GLuint index, GLuint divisor) Q_DECL_OVERRIDE;
     void vertexAttributePointer(GLenum shaderDataType, GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer) Q_DECL_OVERRIDE;
+    void readBuffer(GLenum mode) Q_DECL_OVERRIDE;
+    void drawBuffer(GLenum mode) Q_DECL_OVERRIDE;
 
     void glUniform1fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;
     void glUniform2fv(GLint location, GLsizei count, const GLfloat *value) Q_DECL_OVERRIDE;

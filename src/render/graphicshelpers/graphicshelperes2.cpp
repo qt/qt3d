@@ -283,6 +283,18 @@ void GraphicsHelperES2::vertexAttributePointer(GLenum shaderDataType,
     }
 }
 
+void GraphicsHelperES2::readBuffer(GLenum mode)
+{
+    Q_UNUSED(mode)
+    qWarning() << "glReadBuffer not supported by OpenGL ES 2.0 (since OpenGL ES 3.0)";
+}
+
+void GraphicsHelperES2::drawBuffer(GLenum mode)
+{
+    Q_UNUSED(mode);
+    qWarning() << "glDrawBuffer is not supported with OpenGL ES 2";
+}
+
 void GraphicsHelperES2::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);

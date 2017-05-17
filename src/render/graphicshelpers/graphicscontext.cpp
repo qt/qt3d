@@ -1265,6 +1265,16 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
     }
 }
 
+void GraphicsContext::readBuffer(GLenum mode)
+{
+    m_glHelper->readBuffer(mode);
+}
+
+void GraphicsContext::drawBuffer(GLenum mode)
+{
+    m_glHelper->drawBuffer(mode);
+}
+
 void GraphicsContext::enableAttribute(const VAOVertexAttribute &attr)
 {
     // Bind buffer within the current VAO
@@ -1509,6 +1519,58 @@ bool GraphicsContext::hasGLBufferForBuffer(Buffer *buffer)
 {
     const QHash<Qt3DCore::QNodeId, HGLBuffer>::iterator it = m_renderBufferHash.find(buffer->peerId());
     return (it != m_renderBufferHash.end());
+}
+
+void GraphicsContext::blitFramebuffer(Qt3DCore::QNodeId inputRenderTarget,
+                                      Qt3DCore::QNodeId outputRenderTarget,
+                                      QRect inputRect, QRect outputRect,
+                                      uint defaultFboId,
+                                      QRenderTargetOutput::AttachmentPoint inputAttachmentPoint,
+                                      QRenderTargetOutput::AttachmentPoint outputAttachmentPoint,
+                                      QBlitFramebuffer::InterpolationMethod interpolationMethod)
+{
+    //Find the context side name for the render targets
+    const GLuint inputFboId = m_renderTargets[inputRenderTarget];
+    GLuint outputFboId = defaultFboId;
+    bool outputBufferIsDefault = true;
+    if (!outputRenderTarget.isNull() && m_renderTargets.contains(outputRenderTarget)) {
+        outputFboId = m_renderTargets[outputRenderTarget];
+        outputBufferIsDefault = false;
+    }
+
+    const GLint srcX0 = inputRect.left();
+    const GLint srcY0 = inputRect.top();
+    const GLint srcX1 = srcX0 + inputRect.width();
+    const GLint srcY1 = srcY0 + inputRect.height();
+
+    const GLint dstX0 = outputRect.left();
+    const GLint dstY0 = outputRect.top();
+    const GLint dstX1 = dstX0 + outputRect.width();
+    const GLint dstY1 = dstY0 + outputRect.height();
+
+    //Get the last bounded framebuffers
+    const GLuint lastDrawFboId = boundFrameBufferObject();
+
+    // Activate input framebuffer for reading
+    bindFramebuffer(inputFboId, GraphicsHelperInterface::FBORead);
+
+    // Activate output framebuffer for writing
+    bindFramebuffer(outputFboId, GraphicsHelperInterface::FBODraw);
+
+    //Bind texture
+    readBuffer(GL_COLOR_ATTACHMENT0 + inputAttachmentPoint);
+
+    if (!outputBufferIsDefault)
+        drawBuffer(GL_COLOR_ATTACHMENT0 + outputAttachmentPoint);
+
+    // Blit framebuffer
+    const GLenum mode = interpolationMethod ? GL_NEAREST : GL_LINEAR;
+    m_glHelper->blitFramebuffer(srcX0, srcY0, srcX1, srcY1,
+                                dstX0, dstY0, dstX1, dstY1,
+                                GL_COLOR_BUFFER_BIT, mode);
+
+    // Reset draw buffer
+    bindFramebuffer(lastDrawFboId, GraphicsHelperInterface::FBOReadAndDraw);
 }
 
 void GraphicsContext::memoryBarrier(QMemoryBarrier::Operations barriers)

@@ -321,6 +321,16 @@ void GraphicsHelperGL3_2::vertexAttributePointer(GLenum shaderDataType,
     }
 }
 
+void GraphicsHelperGL3_2::readBuffer(GLenum mode)
+{
+    m_funcs->glReadBuffer(mode);
+}
+
+void GraphicsHelperGL3_2::drawBuffer(GLenum mode)
+{
+    m_funcs->glDrawBuffer(mode);
+}
+
 void GraphicsHelperGL3_2::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);
