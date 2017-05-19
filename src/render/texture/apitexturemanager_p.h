@@ -273,7 +273,7 @@ public:
         if (impl->isUnique())
             return false;
 
-        auto it = m_sharedTextures.find(impl);
+        auto it = m_sharedTextures.constFind(impl);
         if (it == m_sharedTextures.cend())
             return false;
 

@@ -272,7 +272,7 @@ DistanceFieldFont* QDistanceFieldGlyphCache::getOrCreateDistanceFieldFont(const 
     // return, if font already exists (make sure to only create one DistanceFieldFont for
     // each unique QRawFont, by building a hash on the QRawFont that ignores the font size)
     const QString key = fontKey(font);
-    const auto it = m_fonts.find(key);
+    const auto it = m_fonts.constFind(key);
     if (it != m_fonts.cend())
         return it.value();
 
