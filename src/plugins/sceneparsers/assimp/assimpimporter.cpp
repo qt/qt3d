@@ -443,7 +443,7 @@ Qt3DCore::QEntity *AssimpImporter::scene(const QString &id)
     if (m_scene->m_animations.size() > 0) {
         qWarning() << "No target found for " << m_scene->m_animations.size() << " animations!";
 
-        for (Qt3DAnimation::QKeyframeAnimation *anim : m_scene->m_animations)
+        for (Qt3DAnimation::QKeyframeAnimation *anim : qAsConst(m_scene->m_animations))
             delete anim;
         m_scene->m_animations.clear();
     }
@@ -505,7 +505,7 @@ Qt3DCore::QEntity *AssimpImporter::node(aiNode *node)
                                                                   animations,
                                                                   aiStringToQString(node->mName));
             const auto morphTargetList = morphingAnimations.at(0)->morphTargetList();
-            for (Qt3DAnimation::QMorphingAnimation *anim : animations) {
+            for (Qt3DAnimation::QMorphingAnimation *anim : qAsConst(animations)) {
                 anim->setParent(entityNode);
                 anim->setTarget(mesh);
                 anim->setMorphTargets(morphTargetList);
@@ -558,7 +558,7 @@ Qt3DCore::QEntity *AssimpImporter::node(aiNode *node)
                                                           animations,
                                                           aiStringToQString(node->mName));
 
-    for (Qt3DAnimation::QKeyframeAnimation *anim : animations) {
+    for (Qt3DAnimation::QKeyframeAnimation *anim : qAsConst(animations)) {
         anim->setTarget(transform);
         anim->setParent(entityNode);
     }

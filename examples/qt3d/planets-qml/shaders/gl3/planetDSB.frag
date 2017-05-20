@@ -70,13 +70,13 @@ in vec2 texCoord;
 
 out vec4 fragColor;
 
-void dsbModel(const in vec3 norm, const in vec2 flipYTexCoord, out vec3 ambientAndDiff, out vec3 spec)
+void dsbModel(const in vec3 norm, const in vec2 flipXTexCoord, out vec3 ambientAndDiff, out vec3 spec)
 {
     // Reflection of light direction about normal
     vec3 r = reflect(-lightDir, norm);
 
-    vec3 diffuseColor = texture(diffuseTexture, flipYTexCoord).rgb;
-    vec3 specularColor = texture(specularTexture, flipYTexCoord).rgb;
+    vec3 diffuseColor = texture(diffuseTexture, flipXTexCoord).rgb;
+    vec3 specularColor = texture(specularTexture, flipXTexCoord).rgb;
 
     // Calculate the ambient contribution
     vec3 ambient = lightIntensity * ka * diffuseColor;
@@ -98,15 +98,15 @@ void dsbModel(const in vec3 norm, const in vec2 flipYTexCoord, out vec3 ambientA
 
 void main()
 {
-    vec2 flipYTexCoord = texCoord;
-    flipYTexCoord.y = 1.0 - texCoord.y;
+    vec2 flipXTexCoord = texCoord;
+    flipXTexCoord.x = 1.0 - texCoord.x;
 
     // Sample the textures at the interpolated texCoords
-    vec4 normal = 2.0 * texture(normalTexture, flipYTexCoord) - vec4(1.0);
+    vec4 normal = 2.0 * texture(normalTexture, flipXTexCoord) - vec4(1.0);
 
     // Calculate the lighting model, keeping the specular component separate
     vec3 ambientAndDiff, spec;
-    dsbModel(normalize(normal.xyz), flipYTexCoord, ambientAndDiff, spec);
+    dsbModel(normalize(normal.xyz), flipXTexCoord, ambientAndDiff, spec);
     vec3 result = ambientAndDiff + spec;
 
     // Combine spec with ambient+diffuse for final fragment color

@@ -55,6 +55,10 @@
 
 QT_BEGIN_NAMESPACE
 
+namespace Qt3DCore {
+class QScene;
+}
+
 namespace Qt3DRender {
 
 namespace Quick {
@@ -70,6 +74,8 @@ public:
     QScene2DPrivate();
     ~QScene2DPrivate();
 
+    void setScene(Qt3DCore::QScene *scene) Q_DECL_OVERRIDE;
+
     Scene2DManager *m_renderManager;
     QMetaObject::Connection m_textureDestroyedConnection;
     Qt3DRender::QRenderTargetOutput *m_output;
@@ -82,6 +88,7 @@ struct QScene2DData
     Scene2DSharedObjectPtr sharedObject;
     Qt3DCore::QNodeId output;
     QVector<Qt3DCore::QNodeId> entityIds;
+    bool mouseEnabled;
 };
 
 } // namespace Quick

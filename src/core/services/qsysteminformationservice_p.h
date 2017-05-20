@@ -64,6 +64,7 @@ class QSystemInformationServicePrivate;
 
 class QT3DCORESHARED_EXPORT QSystemInformationService : public QAbstractServiceProvider
 {
+    Q_OBJECT
 public:
     virtual QStringList aspectNames() const = 0;
     virtual int threadPoolThreadCount() const = 0;

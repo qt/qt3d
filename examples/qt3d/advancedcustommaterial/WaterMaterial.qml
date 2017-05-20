@@ -228,12 +228,11 @@ Material {
                 }
             },
 
-            // OpenGL 2.0
+            // OpenGLES 2.0
             Technique {
                 filterKeys: [ forward ]
                 graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGL
-                    profile: GraphicsApiFilter.NoProfile
+                    api: GraphicsApiFilter.OpenGLES
                     majorVersion: 2
                     minorVersion: 0
                 }

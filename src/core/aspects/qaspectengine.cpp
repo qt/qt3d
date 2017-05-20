@@ -103,8 +103,8 @@ QAspectEnginePrivate::~QAspectEnginePrivate()
  */
 void QAspectEnginePrivate::initNode(QNode *node)
 {
-    QNodePrivate::get(node)->setScene(m_scene);
     m_scene->addObservable(node);
+    QNodePrivate::get(node)->setScene(m_scene);
 }
 
 void QAspectEnginePrivate::initEntity(QEntity *entity)

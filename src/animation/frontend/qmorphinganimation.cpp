@@ -179,7 +179,7 @@ QMorphingAnimationPrivate::QMorphingAnimationPrivate()
 
 QMorphingAnimationPrivate::~QMorphingAnimationPrivate()
 {
-    for (QVector<float> *weights : m_weights)
+    for (QVector<float> *weights : qAsConst(m_weights))
         delete weights;
 }
 

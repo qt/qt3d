@@ -59,10 +59,14 @@ namespace Quick {
     \brief This class enables rendering qml into a texture, which then can be
     used as a part of 3D scene.
 
-    The component uses QQuickRenderControl to render the given QML source into an
+    This class uses QQuickRenderControl to render the given QQuickItem into an
     offscreen surface, which is attached to a texture provided by the user. This allows the
     component to directly render into the texture without intermediate copy and the user to
     freely specify how the texture is used in the 3D scene.
+
+    The entities using the QScene2D can be associated with the class to enable interaction
+    with the item; if an entity has a QObjectPicker component, the pick events from that picker
+    are sent to the QScene2D and converted to mouse events and finally sent to the item.
 
     \since 5.9
 */
@@ -70,10 +74,60 @@ namespace Quick {
 /*!
     \qmltype Scene2D
     \inqmlmodule Qt3D.Scene2D
-    \since
-    \ingroup
+    \since 5.9
     \instantiates Qt3DRender::Quick::QScene2D
-    \brief Scene2D
+
+    \brief This type enables rendering qml into a texture, which then can be
+    used as a part of 3D scene.
+
+    This object uses RenderControl to render the given Item into an
+    offscreen surface, which is attached to a texture provided by the user. This allows the
+    component to directly render into the texture without intermediate copy and the user to
+    freely specify how the texture is used in the 3D scene.
+
+    The entities using the Scene2D can be associated with the type to enable interaction
+    with the item; if an entity has an ObjectPicker component, the pick events from that picker
+    are sent to the Scene2D and converted to mouse events and finally sent to the item.
+
+    Usage:
+    \qml
+        Entity {
+            id: sceneRoot
+
+            // specify Scene2D inside the entity hierarchy
+            Scene2D {
+                // specify output
+                output: RenderTargetOutput {
+                    attachmentPoint: RenderTargetOutput.Color0
+                    texture: Texture2D {
+                        id: textureId
+                        width: 1024
+                        height: 1024
+                        format: Texture.RGBA8_UNorm
+                    }
+                }
+                // specify entities
+                entities: [entityId]
+
+                // specify rendered content
+                Rectangle {
+                    color: "red"
+                }
+            }
+
+            Entity {
+                id: entityId
+
+                property Material material: TextureMaterial {
+                    texture: textureId
+                }
+                property ObjectPicker picker: ObjectPicker {
+                    hoverEnabled: true
+                    dragEnabled: true
+                }
+                ...
+
+    \endqml
  */
 
 /*!
@@ -91,18 +145,34 @@ namespace Quick {
  */
 
 /*!
-    \qmlproperty QUrl Qt3D.Render::Scene2D::source
-    Holds the qml source url.
- */
-
-/*!
     \qmlproperty enumeration Qt3D.Render::Scene2D::renderPolicy
     Holds the render policy of this Scene2D.
+
+    \list
+    \li Continuous The Scene2D is rendering continuously. This is the default render policy.
+    \li SingleShot The Scene2D renders to the texture only once after which the resources
+                      allocated for rendering are released.
+    \endlist
+ */
+/*!
+    \qmlproperty Item Qt3D.Render::Scene2D::item
+    Holds the Item, which is rendered by Scene2D to the texture.
  */
 
 /*!
-    \qmlproperty bool Qt3D.Render::Scene2D::loaded
-    Holds whether the source has been loaded.
+    \qmlproperty bool Qt3D.Render::Scene2D::mouseEnabled
+    Holds whether mouse events are enabled for the rendered item. The mouse events are
+    generated from object picking events of the entities added to the Scene2D.
+    Mouse is enabled by default.
+
+    \note Events sent to items are delayed by one frame due to object picking
+          happening in the backend.
+ */
+/*!
+    \qmlproperty list<Entity> Qt3D.Render::Scene2D::entities
+    Holds the list of entities which are associated with the Scene2D object. If the
+    entities have ObjectPicker, the pick events from that entity are sent to Scene2D
+    and converted to mouse events.
  */
 
 QScene2DPrivate::QScene2DPrivate()
@@ -118,6 +188,15 @@ QScene2DPrivate::~QScene2DPrivate()
     delete m_renderManager;
 }
 
+void QScene2DPrivate::setScene(Qt3DCore::QScene *scene)
+{
+    Q_Q(QScene2D);
+    QNodePrivate::setScene(scene);
+    const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(q->id());
+    change->setPropertyName("sceneInitialized");
+    notifyObservers(change);
+}
+
 
 /*!
     The constructor creates a new QScene2D instance with the specified \a parent.
@@ -125,58 +204,12 @@ QScene2DPrivate::~QScene2DPrivate()
 QScene2D::QScene2D(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QScene2DPrivate, parent)
 {
-    Q_D(QScene2D);
-    connect(d->m_renderManager, &Scene2DManager::onLoadedChanged,
-            this, &QScene2D::sourceLoaded);
-}
-
-QScene2D::QScene2D(QQmlEngine *engine, Qt3DCore::QNode *parent)
-    : Qt3DCore::QNode(*new QScene2DPrivate, parent)
-{
-    Q_D(QScene2D);
-    connect(d->m_renderManager, &Scene2DManager::onLoadedChanged,
-            this, &QScene2D::sourceLoaded);
-    d->m_renderManager->setEngine(engine);
-}
-
-QScene2D::~QScene2D()
-{
-}
-
-bool QScene2D::loaded() const
-{
-    Q_D(const QScene2D);
-    return d->m_renderManager->m_initialized;
 }
 
 /*!
-    \property QScene2D::source
-    \brief Specifies the url for the qml.
-
-    This property specifies the url to the qml being rendered to the texture.
-    The source must specify QQuickItem as a root. The item must specify width
-    and height. The rendered qml is scaled to the texture size.
-    The property can not be changed after the rendering has been initialized.
+    \property QScene2D::item
+    Holds the QQuickItem, which is rendered by QScene2D to the texture.
  */
-QUrl QScene2D::source() const
-{
-    Q_D(const QScene2D);
-    return d->m_renderManager->m_source;
-}
-
-void QScene2D::setSource(const QUrl &url)
-{
-    Q_D(QScene2D);
-    if (d->m_renderManager->m_initialized) {
-        qWarning() << "Unable to set source after initialization.";
-        return;
-    }
-    if (d->m_renderManager->m_source != url) {
-        d->m_renderManager->setSource(url);
-        emit sourceChanged(url);
-    }
-}
-
 QQuickItem* QScene2D::item() const
 {
     Q_D(const QScene2D);
@@ -250,46 +283,29 @@ Qt3DCore::QNodeCreatedChangeBasePtr QScene2D::createNodeCreationChange() const
     data.output = d->m_output ? d->m_output->id() : Qt3DCore::QNodeId();
     for (Qt3DCore::QEntity *e : d->m_entities)
         data.entityIds.append(e->id());
+    data.mouseEnabled = d->m_renderManager->m_mouseEnabled;
     return creationChange;
 }
 
-bool QScene2D::event(QEvent *event)
+bool QScene2D::isMouseEnabled() const
 {
-    Q_D(QScene2D);
-    d->m_renderManager->forwardEvent(event);
-    return true;
+    Q_D(const QScene2D);
+    return d->m_renderManager->m_mouseEnabled;
 }
 
 /*!
-    Returns the qml engine used by the QScene2D.
+    Retrieve entities associated with the QScene2D.
  */
-QQmlEngine *QScene2D::engine() const
-{
-    Q_D(const QScene2D);
-    return d->m_renderManager->m_qmlEngine;
-}
-
-bool QScene2D::isGrabMouseEnabled() const
-{
-    Q_D(const QScene2D);
-    return d->m_renderManager->m_grabMouse;
-}
-
-/*!
-    \internal
- */
-void QScene2D::sourceLoaded()
-{
-    emit loadedChanged(true);
-}
-
-
 QVector<Qt3DCore::QEntity*> QScene2D::entities()
 {
     Q_D(const QScene2D);
     return d->m_entities;
 }
 
+/*!
+    Adds an \a entity to the the QScene2D object. If the entities have QObjectPicker,
+    the pick events from that entity are sent to QScene2D and converted to mouse events.
+*/
 void QScene2D::addEntity(Qt3DCore::QEntity *entity)
 {
     Q_D(QScene2D);
@@ -306,6 +322,9 @@ void QScene2D::addEntity(Qt3DCore::QEntity *entity)
     }
 }
 
+/*!
+    Removes an \a entity from the the QScene2D object.
+*/
 void QScene2D::removeEntity(Qt3DCore::QEntity *entity)
 {
     Q_D(QScene2D);
@@ -322,12 +341,20 @@ void QScene2D::removeEntity(Qt3DCore::QEntity *entity)
     }
 }
 
-void QScene2D::setGrabMouseEnabled(bool grab)
+/*!
+    \property QScene2D::mouseEnabled
+    Holds whether mouse events are enabled for the rendered item. The mouse events are
+    generated from object picking events of the entities added to the QScene2D.
+    Mouse is enabled by default.
+
+    \note Events are delayed by one frame due to object picking happening in the backend.
+ */
+void QScene2D::setMouseEnabled(bool enabled)
 {
     Q_D(QScene2D);
-    if (d->m_renderManager->m_grabMouse != grab) {
-        d->m_renderManager->m_grabMouse = grab;
-        emit grabMouseChanged(grab);
+    if (d->m_renderManager->m_mouseEnabled != enabled) {
+        d->m_renderManager->m_mouseEnabled = enabled;
+        emit mouseEnabledChanged(enabled);
     }
 }
 

@@ -99,7 +99,7 @@ QMorphTargetPrivate::QMorphTargetPrivate()
 void QMorphTargetPrivate::updateAttributeNames()
 {
     m_attributeNames.clear();
-    for (const Qt3DRender::QAttribute *attr : m_targetAttributes)
+    for (const Qt3DRender::QAttribute *attr : qAsConst(m_targetAttributes))
         m_attributeNames.push_back(attr->name());
 }
 
@@ -148,7 +148,7 @@ void QMorphTarget::setAttributes(const QVector<Qt3DRender::QAttribute *> &attrib
 void QMorphTarget::addAttribute(Qt3DRender::QAttribute *attribute)
 {
     Q_D(QMorphTarget);
-    for (const Qt3DRender::QAttribute *attr : d->m_targetAttributes) {
+    for (const Qt3DRender::QAttribute *attr : qAsConst(d->m_targetAttributes)) {
         if (attr->name() == attribute->name())
             return;
     }

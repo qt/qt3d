@@ -125,7 +125,7 @@ namespace Qt3DAnimation {
     \readonly
 */
 /*!
-    \qmlproperty VertexBlendAnimation::target
+    \qmlproperty GeometryRenderer VertexBlendAnimation::target
     Holds the target GeometryRenderer the morphing animation is applied to.
 */
 /*!
@@ -134,6 +134,10 @@ namespace Qt3DAnimation {
     easier to match the target geometry to the morphing animation. The name
     is usually same as the name of the parent entity of the target GeometryRenderer, but
     does not have to be.
+*/
+/*!
+    \qmlproperty list<MorphTarget> VertexBlendAnimation::morphTargets
+    Holds the list of \l {MorphTarget}{morph targets} added to the animation.
 */
 
 QVertexBlendAnimationPrivate::QVertexBlendAnimationPrivate()

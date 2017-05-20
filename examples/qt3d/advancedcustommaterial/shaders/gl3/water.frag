@@ -39,7 +39,7 @@ void main()
     vec2 waveMovCoord = waveTexCoord;
     waveMovCoord.x += offsetx;
     waveMovCoord.y -= offsety;
-    vec4 wave = texture2D(waveTexture, waveMovCoord);
+    vec4 wave = texture(waveTexture, waveMovCoord);
 
     //Wiggle the newCoord by r and b colors of waveTexture
     vec2 newCoord = texCoord;

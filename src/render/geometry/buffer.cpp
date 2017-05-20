@@ -151,7 +151,7 @@ void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         QByteArray propertyName = propertyChange->propertyName();
         if (propertyName == QByteArrayLiteral("data")) {
-            QByteArray newData = propertyChange->value().value<QByteArray>();
+            QByteArray newData = propertyChange->value().toByteArray();
             bool dirty = m_data != newData;
             m_bufferDirty |= dirty;
             m_data = newData;

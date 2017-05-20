@@ -413,7 +413,7 @@ void QLevelOfDetail::setThresholds(const QVector<qreal> &thresholds)
     Q_D(QLevelOfDetail);
     if (d->m_thresholds != thresholds) {
         d->m_thresholds = thresholds;
-        thresholdsChanged(d->m_thresholds);
+        emit thresholdsChanged(d->m_thresholds);
     }
 }
 

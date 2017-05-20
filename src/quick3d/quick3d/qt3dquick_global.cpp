@@ -659,9 +659,9 @@ public:
 #undef ASSERT_VALID_SIZE
 };
 
+static Quick3DValueTypeProvider valueTypeProvider;
 static Quick3DValueTypeProvider *getValueTypeProvider()
 {
-    static Quick3DValueTypeProvider valueTypeProvider;
     return &valueTypeProvider;
 }
 
@@ -704,6 +704,11 @@ void Quick3D_initialize()
     // allow removal of this hook here and in QtQuick.
     QQmlPrivate::RegisterAutoParent autoparent = { 0, &qquick3ditem_autoParent };
     QQmlPrivate::qmlregister(QQmlPrivate::AutoParentRegistration, &autoparent);
+}
+
+void Quick3D_uninitialize()
+{
+    QQml_removeValueTypeProvider(&valueTypeProvider);
 }
 
 void Quick3D_registerType(const char *className, const char *quickName, int major, int minor)

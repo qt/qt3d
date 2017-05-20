@@ -222,7 +222,13 @@ bool QScene::hasEntityForComponent(QNodeId componentUuid, QNodeId entityUuid)
 {
     Q_D(QScene);
     QReadLocker lock(&d->m_lock);
-    return d->m_componentToEntities.values(componentUuid).contains(entityUuid);
+    auto it = d->m_componentToEntities.find(componentUuid);
+    while (it != d->m_componentToEntities.end() && it.key() == componentUuid) {
+        if (it.value() == entityUuid)
+            return true;
+        ++it;
+    }
+    return false;
 }
 
 QScene::NodePropertyTrackData QScene::lookupNodePropertyTrackData(QNodeId id) const

@@ -255,7 +255,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QObjectPicker>(QSharedPointer<Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager> >::create(m_renderer));
 
     // Plugins
-    for (QString plugin : m_pluginConfig)
+    for (const QString &plugin : m_pluginConfig)
         loadRenderPlugin(plugin);
 }
 
@@ -595,7 +595,7 @@ void QRenderAspectPrivate::configurePlugin(const QString &plugin)
     if (!m_pluginConfig.contains(plugin)) {
         m_pluginConfig.append(plugin);
 
-        for (QRenderAspectPrivate *instance : m_instances)
+        for (QRenderAspectPrivate *instance : qAsConst(m_instances))
             instance->loadRenderPlugin(plugin);
     }
 }

@@ -182,7 +182,7 @@ float QAnimationControllerPrivate::scaledPosition(float position) const
 
 QAnimationGroup *QAnimationControllerPrivate::findGroup(const QString &name)
 {
-    for (QAnimationGroup *g : m_animationGroups) {
+    for (QAnimationGroup *g : qAsConst(m_animationGroups)) {
         if (g->name() == name)
             return g;
     }
@@ -211,7 +211,7 @@ void QAnimationControllerPrivate::extractAnimations()
 }
 void QAnimationControllerPrivate::clearAnimations()
 {
-    for (Qt3DAnimation::QAnimationGroup *a : m_animationGroups)
+    for (Qt3DAnimation::QAnimationGroup *a : qAsConst(m_animationGroups))
         a->deleteLater();
     m_animationGroups.clear();
     m_activeAnimationGroup = 0;

@@ -71,8 +71,8 @@ void setSurfaceFormat()
 
 int main(int argc, char **argv)
 {
-    setSurfaceFormat();
     QGuiApplication app(argc, argv);
+    setSurfaceFormat();
 
     QQuickView view;
 

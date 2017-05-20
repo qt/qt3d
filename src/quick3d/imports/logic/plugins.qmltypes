@@ -7,7 +7,7 @@ import QtQuick.tooling 1.2
 // 'qmlplugindump -nonrelocatable Qt3D.Logic 2.0'
 
 Module {
-    dependencies: ["QtQuick 2.7"]
+    dependencies: ["QtQuick 2.8"]
     Component {
         name: "Qt3DCore::QComponent"
         prototype: "Qt3DCore::QNode"
@@ -15,6 +15,14 @@ Module {
         Signal {
             name: "shareableChanged"
             Parameter { name: "isShareable"; type: "bool" }
+        }
+        Signal {
+            name: "addedToEntity"
+            Parameter { name: "entity"; type: "QEntity"; isPointer: true }
+        }
+        Signal {
+            name: "removedFromEntity"
+            Parameter { name: "entity"; type: "QEntity"; isPointer: true }
         }
         Method {
             name: "setShareable"
@@ -24,8 +32,17 @@ Module {
     Component {
         name: "Qt3DCore::QNode"
         prototype: "QObject"
+        Enum {
+            name: "PropertyTrackingMode"
+            values: {
+                "TrackFinalValues": 0,
+                "DontTrackValues": 1,
+                "TrackAllValues": 2
+            }
+        }
         Property { name: "parent"; type: "Qt3DCore::QNode"; isPointer: true }
         Property { name: "enabled"; type: "bool" }
+        Property { name: "defaultPropertyTrackingMode"; revision: 9; type: "PropertyTrackingMode" }
         Signal {
             name: "parentChanged"
             Parameter { name: "parent"; type: "QObject"; isPointer: true }
@@ -33,6 +50,10 @@ Module {
         Signal {
             name: "enabledChanged"
             Parameter { name: "enabled"; type: "bool" }
+        }
+        Signal {
+            name: "defaultPropertyTrackingModeChanged"
+            Parameter { name: "mode"; type: "PropertyTrackingMode" }
         }
         Signal { name: "nodeDestroyed" }
         Method {
@@ -42,6 +63,10 @@ Module {
         Method {
             name: "setEnabled"
             Parameter { name: "isEnabled"; type: "bool" }
+        }
+        Method {
+            name: "setDefaultPropertyTrackingMode"
+            Parameter { name: "mode"; type: "PropertyTrackingMode" }
         }
     }
     Component {

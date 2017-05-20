@@ -54,6 +54,7 @@ import Qt3D.Render 2.0
 Material {
     id: root
 
+    //! [0]
     property color maincolor: Qt.rgba(0.0, 0.0, 0.0, 1.0)
 
     parameters: [
@@ -63,18 +64,24 @@ Material {
         }
     ]
 
+    //! [0]
+
     effect: Effect {
 
+        //! [1]
         property string vertex: "qrc:/shaders/gl3/simpleColor.vert"
         property string fragment: "qrc:/shaders/gl3/simpleColor.frag"
         property string vertexES: "qrc:/shaders/es2/simpleColor.vert"
         property string fragmentES: "qrc:/shaders/es2/simpleColor.frag"
+        //! [1]
 
         FilterKey {
             id: forward
             name: "renderingStyle"
             value: "forward"
         }
+
+        //! [2]
         ShaderProgram {
             id: gl3Shader
             vertexShaderCode: loadSource(parent.vertex)
@@ -85,7 +92,10 @@ Material {
             vertexShaderCode: loadSource(parent.vertexES)
             fragmentShaderCode: loadSource(parent.fragmentES)
         }
+        //! [2]
+
         techniques: [
+            //! [3]
             // OpenGL 3.1
             Technique {
                 filterKeys: [forward]
@@ -99,6 +109,7 @@ Material {
                     shaderProgram: gl3Shader
                 }
             },
+            //! [3]
             // OpenGL 2.0
             Technique {
                 filterKeys: [forward]

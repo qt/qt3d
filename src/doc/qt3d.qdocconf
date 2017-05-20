@@ -80,7 +80,10 @@ imagedirs   += images \
                ../../examples/qt3d/basicshapes-cpp/doc/images \
                ../../examples/qt3d/planets-qml/doc/images \
                ../../examples/qt3d/wireframe/doc/images \
-               ../../examples/qt3d/audio-visualizer-qml/doc/images
+               ../../examples/qt3d/audio-visualizer-qml/doc/images \
+               ../../examples/qt3d/simplecustommaterial/doc/images \
+               ../../examples/qt3d/scene2d/doc/images \
+               ../../examples/qt3d/advancedcustommaterial/doc/images
 
 Cpp.ignoretokens     += QT3DINPUTSHARED_EXPORT \
                         QT3DCORESHARED_EXPORT \
@@ -95,8 +98,10 @@ Cpp.ignoretokens     += QT3DINPUTSHARED_EXPORT \
 
 Cpp.ignoredirectives += Q_DECLARE_LOGGING_CATEGORY
 
-manifestmeta.highlighted.names = "Qt3D/Qt 3D: Audio Visualizer Example" \
-                                 "Qt3D/Qt 3D: Planets QML Example"
+manifestmeta.highlighted.names = \
+                "Qt3D/Qt 3D: Advanced custom material QML Example" \
+                "Qt3D/Qt 3D: Audio Visualizer Example" \
+                "Qt3D/Qt 3D: Planets QML Example"
 
 manifestmeta.thumbnail.names += "Qt3D/Qt 3D: Deferred Renderer C++ Example"
 
