@@ -68,7 +68,7 @@ namespace Qt3DAnimation {
 
     A KeyframeAnimation type implements simple keyframe animation
     that can be used to animate \l Transform. The keyframes consists of multiple
-    timed \l {Qt3D.Render::Transform}{Transforms}, which are interpolated and applied
+    timed \l {Qt3D.Core::Transform}s, which are interpolated and applied
     to the target Transform. EasingCurve is used between keyframes to control
     the interpolator. RepeatMode can be set for when the position set to the
     KeyframeAnimation is less or or greater than the values defined in the keyframe positions.
@@ -190,7 +190,7 @@ void QKeyframeAnimation::setFramePositions(const QVector<float> &positions)
     d->m_minposition = d->m_framePositions.first();
     d->m_maxposition = d->m_framePositions.last();
     float lastPos = d->m_minposition;
-    for (float p : d->m_framePositions) {
+    for (float p : qAsConst(d->m_framePositions)) {
         if (p < lastPos || p > d->m_maxposition)
             qWarning() << "positions not ordered correctly";
         lastPos = p;

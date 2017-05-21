@@ -311,8 +311,8 @@ void Shader::updateDNA()
 
     QMutexLocker locker(&m_mutex);
     uint attachmentHash = 0;
-    QHash<QString, int>::const_iterator it = m_fragOutputs.begin();
-    QHash<QString, int>::const_iterator end = m_fragOutputs.end();
+    QHash<QString, int>::const_iterator it = m_fragOutputs.cbegin();
+    QHash<QString, int>::const_iterator end = m_fragOutputs.cend();
     while (it != end) {
         attachmentHash += ::qHash(it.value()) + ::qHash(it.key());
         ++it;
@@ -373,11 +373,11 @@ void Shader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformB
         qCDebug(Shaders) << "Initializing Uniform Block {" << m_uniformBlockNames[i] << "}";
 
         // Find all active uniforms for the shader block
-        QVector<ShaderUniform>::const_iterator uniformsIt = m_uniforms.begin();
-        const QVector<ShaderUniform>::const_iterator uniformsEnd = m_uniforms.end();
+        QVector<ShaderUniform>::const_iterator uniformsIt = m_uniforms.cbegin();
+        const QVector<ShaderUniform>::const_iterator uniformsEnd = m_uniforms.cend();
 
-        QVector<QString>::const_iterator uniformNamesIt = m_uniformsNames.begin();
-        const QVector<QString>::const_iterator uniformNamesEnd = m_attributesNames.end();
+        QVector<QString>::const_iterator uniformNamesIt = m_uniformsNames.cbegin();
+        const QVector<QString>::const_iterator uniformNamesEnd = m_attributesNames.cend();
 
         QHash<QString, ShaderUniform> activeUniformsInBlock;
 

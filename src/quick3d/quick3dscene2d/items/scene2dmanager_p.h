@@ -75,46 +75,33 @@ public:
     Scene2DManager(QScene2DPrivate *priv);
     ~Scene2DManager();
 
-    QQmlEngine *m_qmlEngine;
-    QQmlComponent *m_qmlComponent;
     QQuickItem *m_rootItem;
     QQuickItem *m_item;
 
     QScene2DPrivate *m_priv;
     QSharedPointer<Scene2DSharedObject> m_sharedObject;
 
-    QUrl m_source;
     Qt3DCore::QNodeId m_id;
-    QMetaObject::Connection m_connection;
     QScene2D::RenderPolicy m_renderPolicy;
 
     bool m_requested;
     bool m_initialized;
     bool m_renderSyncRequested;
     bool m_backendInitialized;
-    bool m_noSourceMode;
-    bool m_ownEngine;
-    bool m_grabMouse;
+    bool m_mouseEnabled;
 
     void requestRender();
     void requestRenderSync();
     void doRenderSync();
     void startIfInitialized();
     void stopAndClean();
-    void run();
     void updateSizes();
 
-    void setSource(const QUrl &url);
     void setItem(QQuickItem *item);
 
     bool event(QEvent *e) Q_DECL_OVERRIDE;
-    bool forwardEvent(QEvent *event);
-
-    Q_SIGNAL void onLoadedChanged();
 
     void cleanup();
-    void setEngine(QQmlEngine *engine);
-    void engineDestroyed();
 };
 
 } // namespace Quick

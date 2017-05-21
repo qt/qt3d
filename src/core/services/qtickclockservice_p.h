@@ -61,6 +61,7 @@ class QTickClockServicePrivate;
 
 class QTickClockService : public QAbstractFrameAdvanceService
 {
+    Q_OBJECT
 public:
     QTickClockService();
     ~QTickClockService();

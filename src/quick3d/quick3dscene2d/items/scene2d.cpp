@@ -118,6 +118,7 @@ Scene2D::Scene2D()
     , m_rbo(0)
     , m_initialized(false)
     , m_renderInitialized(false)
+    , m_mouseEnabled(true)
     , m_renderPolicy(Qt3DRender::Quick::QScene2D::Continuous)
 {
     renderThreadClientCount->fetchAndAddAcquire(1);
@@ -125,12 +126,7 @@ Scene2D::Scene2D()
 
 Scene2D::~Scene2D()
 {
-    // this gets called from aspect thread. Wait for the render thread then delete it.
-    // TODO: render thread deletion
-//     if (m_renderThread) {
-//        m_renderThread->wait(1000);
-//        delete m_renderThread;
-//    }
+    stopGrabbing();
 }
 
 void Scene2D::setOutput(Qt3DCore::QNodeId outputId)
@@ -177,6 +173,7 @@ void Scene2D::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chan
     setSharedObject(data.sharedObject);
     setOutput(data.output);
     m_entities = data.entityIds;
+    m_mouseEnabled = data.mouseEnabled;
 }
 
 void Scene2D::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -192,49 +189,42 @@ void Scene2D::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("output")) {
             Qt3DCore::QNodeId outputId = propertyChange->value().value<Qt3DCore::QNodeId>();
             setOutput(outputId);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("sharedObject")) {
-            const Scene2DSharedObjectPtr sharedObject
-                    = propertyChange->value().value<Scene2DSharedObjectPtr>();
-            setSharedObject(sharedObject);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("pressed")) {
             QPickEventPtr ev = propertyChange->value().value<QPickEventPtr>();
             handlePickEvent(QEvent::MouseButtonPress, ev);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("released")) {
             QPickEventPtr ev = propertyChange->value().value<QPickEventPtr>();
             handlePickEvent(QEvent::MouseButtonRelease, ev);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("clicked")) {
-            QPickEventPtr ev = propertyChange->value().value<QPickEventPtr>();
-            handlePickEvent(QEvent::MouseButtonDblClick, ev);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("moved")) {
             QPickEventPtr ev = propertyChange->value().value<QPickEventPtr>();
             handlePickEvent(QEvent::MouseMove, ev);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("grabMouse")) {
-            if (propertyChange->value().toBool()) {
-                startGrabbing();
-            } else {
-                stopGrabbing();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("mouseEnabled")) {
+            m_mouseEnabled = propertyChange->value().toBool();
+            if (m_mouseEnabled && !m_cachedPickEvent.isNull()) {
+                handlePickEvent(QEvent::MouseButtonPress, m_cachedPickEvent);
+                m_cachedPickEvent.clear();
             }
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("sceneInitialized")) {
+            startGrabbing();
         }
-        /* TODO: handle these?
-          else if (propertyChange->propertyName() == QByteArrayLiteral("entered")) {
-
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("exited")) {
-
-        }*/
         break;
     }
 
     case Qt3DCore::PropertyValueAdded: {
         const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeAddedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("entities"))
+        if (change->propertyName() == QByteArrayLiteral("entities")) {
             m_entities.push_back(change->addedNodeId());
+            registerObjectPickerEvents(change->addedNodeId());
+        }
         break;
     }
 
     case Qt3DCore::PropertyValueRemoved: {
         const auto change = qSharedPointerCast<Qt3DCore::QPropertyNodeRemovedChange>(e);
-        if (change->propertyName() == QByteArrayLiteral("entities"))
+        if (change->propertyName() == QByteArrayLiteral("entities")) {
             m_entities.removeOne(change->removedNodeId());
+            unregisterObjectPickerEvents(change->removedNodeId());
+        }
         break;
     }
 
@@ -468,46 +458,54 @@ void Scene2D::unregisterObjectPickerEvents(Qt3DCore::QNodeId entityId)
 
 void Scene2D::handlePickEvent(int type, const Qt3DRender::QPickEventPtr &ev)
 {
-    QPickTriangleEvent *pickTriangle = static_cast<QPickTriangleEvent *>(ev.data());
-    Entity *entity = nullptr;
-    if (!resourceAccessor()->accessResource(RenderBackendResourceAccessor::EntityHandle,
-                                            QPickEventPrivate::get(pickTriangle)->m_entity,
-                                            (void**)&entity, nullptr)) {
+    if (!isEnabled())
         return;
-    }
-    CoordinateReader reader(renderer()->nodeManagers());
-    if (reader.setGeometry(entity->renderComponent<GeometryRenderer>(),
-                           QAttribute::defaultTextureCoordinateAttributeName())) {
-        QVector4D c0 = reader.getCoordinate(pickTriangle->vertex1Index());
-        QVector4D c1 = reader.getCoordinate(pickTriangle->vertex2Index());
-        QVector4D c2 = reader.getCoordinate(pickTriangle->vertex3Index());
-        QVector4D ci = c0 * pickTriangle->uvw().x()
-                       + c1 * pickTriangle->uvw().y() + c2 * pickTriangle->uvw().z();
-        ci.setW(1.0f);
+    if (m_mouseEnabled) {
+        QPickTriangleEvent *pickTriangle = static_cast<QPickTriangleEvent *>(ev.data());
+        Entity *entity = nullptr;
+        if (!resourceAccessor()->accessResource(RenderBackendResourceAccessor::EntityHandle,
+                                                QPickEventPrivate::get(pickTriangle)->m_entity,
+                                                (void**)&entity, nullptr)) {
+            return;
+        }
+        CoordinateReader reader(renderer()->nodeManagers());
+        if (reader.setGeometry(entity->renderComponent<GeometryRenderer>(),
+                               QAttribute::defaultTextureCoordinateAttributeName())) {
+            QVector4D c0 = reader.getCoordinate(pickTriangle->vertex1Index());
+            QVector4D c1 = reader.getCoordinate(pickTriangle->vertex2Index());
+            QVector4D c2 = reader.getCoordinate(pickTriangle->vertex3Index());
+            QVector4D ci = c0 * pickTriangle->uvw().x()
+                           + c1 * pickTriangle->uvw().y() + c2 * pickTriangle->uvw().z();
+            ci.setW(1.0f);
 
-        const QSize size = m_sharedObject->m_quickWindow->size();
-        QPointF pos = QPointF(ci.x() * size.width(), ci.y() * size.height());
-        QMouseEvent *mouseEvent
-                = new QMouseEvent(static_cast<QEvent::Type>(type),
-                                  pos, pos, pos,
-                                  static_cast<Qt::MouseButton>(pickTriangle->button()),
-                                  static_cast<Qt::MouseButtons>(pickTriangle->buttons()),
-                                  static_cast<Qt::KeyboardModifiers>(pickTriangle->modifiers()),
-                                  Qt::MouseEventSynthesizedByApplication);
+            const QSize size = m_sharedObject->m_quickWindow->size();
+            QPointF pos = QPointF(ci.x() * size.width(), (1.0f - ci.y()) * size.height());
+            QMouseEvent *mouseEvent
+                    = new QMouseEvent(static_cast<QEvent::Type>(type),
+                                      pos, pos, pos,
+                                      static_cast<Qt::MouseButton>(pickTriangle->button()),
+                                      static_cast<Qt::MouseButtons>(pickTriangle->buttons()),
+                                      static_cast<Qt::KeyboardModifiers>(pickTriangle->modifiers()),
+                                      Qt::MouseEventSynthesizedByApplication);
 
-        QCoreApplication::postEvent(m_sharedObject->m_quickWindow, mouseEvent);
+            QCoreApplication::postEvent(m_sharedObject->m_quickWindow, mouseEvent);
+        }
+    } else if (type == QEvent::MouseButtonPress) {
+        m_cachedPickEvent = ev;
+    } else {
+        m_cachedPickEvent.clear();
     }
 }
 
 void Scene2D::startGrabbing()
 {
-    for (Qt3DCore::QNodeId e : m_entities)
+    for (Qt3DCore::QNodeId e : qAsConst(m_entities))
         registerObjectPickerEvents(e);
 }
 
 void Scene2D::stopGrabbing()
 {
-    for (Qt3DCore::QNodeId e : m_entities)
+    for (Qt3DCore::QNodeId e : qAsConst(m_entities))
         unregisterObjectPickerEvents(e);
 }
 

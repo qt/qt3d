@@ -24,6 +24,7 @@ HEADERS += \
     $$PWD/qphongalphamaterial.h \
     $$PWD/qphongalphamaterial_p.h \
     $$PWD/qt3dwindow.h \
+    $$PWD/qt3dwindow_p.h \
     $$PWD/qfirstpersoncameracontroller.h \
     $$PWD/qfirstpersoncameracontroller_p.h \
     $$PWD/qorbitcameracontroller.h \

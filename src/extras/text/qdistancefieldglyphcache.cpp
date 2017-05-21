@@ -61,7 +61,7 @@ namespace Qt3DExtras {
 class StoredGlyph {
 public:
     StoredGlyph() = default;
-    StoredGlyph(const StoredGlyph &other) = default;
+    StoredGlyph(const StoredGlyph &) = default;
     StoredGlyph(const QRawFont &font, quint32 glyph, bool doubleResolution);
 
     int refCount() const { return m_ref; }
@@ -272,7 +272,7 @@ DistanceFieldFont* QDistanceFieldGlyphCache::getOrCreateDistanceFieldFont(const 
     // return, if font already exists (make sure to only create one DistanceFieldFont for
     // each unique QRawFont, by building a hash on the QRawFont that ignores the font size)
     const QString key = fontKey(font);
-    const auto it = m_fonts.find(key);
+    const auto it = m_fonts.constFind(key);
     if (it != m_fonts.cend())
         return it.value();
 

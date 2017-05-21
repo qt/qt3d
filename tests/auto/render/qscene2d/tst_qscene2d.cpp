@@ -58,10 +58,9 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(scene2d.output(), nullptr);
-        QCOMPARE(scene2d.source(), QUrl(QStringLiteral("")));
         QCOMPARE(scene2d.renderPolicy(), QScene2D::Continuous);
-        QCOMPARE(scene2d.loaded(), false);
         QCOMPARE(scene2d.item(), nullptr);
+        QCOMPARE(scene2d.isMouseEnabled(), true);
     }
 
     void checkPropertyChanges()
@@ -88,25 +87,6 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(scene2d.output(), newValue);
-            QCOMPARE(spy.count(), 0);
-        }
-        {
-            // WHEN
-            QSignalSpy spy(&scene2d, SIGNAL(sourceChanged(QUrl)));
-            const QUrl newValue = QUrl(QStringLiteral("qrc://source.qml"));
-            scene2d.setSource(newValue);
-
-            // THEN
-            QVERIFY(spy.isValid());
-            QCOMPARE(scene2d.source(), newValue);
-            QCOMPARE(spy.count(), 1);
-
-            // WHEN
-            spy.clear();
-            scene2d.setSource(newValue);
-
-            // THEN
-            QCOMPARE(scene2d.source(), newValue);
             QCOMPARE(spy.count(), 0);
         }
         {
@@ -147,6 +127,26 @@ private Q_SLOTS:
             QCOMPARE(scene2d.item(), newValue);
             QCOMPARE(spy.count(), 0);
         }
+
+        {
+            // WHEN
+            QSignalSpy spy(&scene2d, SIGNAL(mouseEnabledChanged(bool)));
+            bool newValue = false;
+            scene2d.setMouseEnabled(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(scene2d.isMouseEnabled(), newValue);
+            QCOMPARE(spy.count(), 1);
+
+            // WHEN
+            spy.clear();
+            scene2d.setMouseEnabled(newValue);
+
+            // THEN
+            QCOMPARE(scene2d.isMouseEnabled(), newValue);
+            QCOMPARE(spy.count(), 0);
+        }
     }
 
     void checkCreationData()
@@ -156,7 +156,6 @@ private Q_SLOTS:
         QScopedPointer<Qt3DRender::QRenderTargetOutput> output(new Qt3DRender::QRenderTargetOutput());
 
         scene2d.setOutput(output.data());
-        scene2d.setSource(QUrl(QStringLiteral("qrc://source.qml")));
         scene2d.setRenderPolicy(QScene2D::SingleShot);
 
         // WHEN
@@ -181,6 +180,7 @@ private Q_SLOTS:
             QCOMPARE(scene2d.isEnabled(), true);
             QCOMPARE(scene2d.isEnabled(), creationChangeData->isNodeEnabled());
             QCOMPARE(scene2d.metaObject(), creationChangeData->metaObject());
+            QCOMPARE(scene2d.isMouseEnabled(), cloneData.mouseEnabled);
         }
 
         // WHEN
@@ -242,39 +242,6 @@ private Q_SLOTS:
 
     }
 
-    void checkSourceUpdate()
-    {
-        // GIVEN
-        TestArbiter arbiter;
-        Qt3DRender::Quick::QScene2D scene2d;
-        arbiter.setArbiterOnNode(&scene2d);
-
-        {
-            // WHEN
-            scene2d.setSource(QUrl(QStringLiteral("qrc://source.qml")));
-            QCoreApplication::processEvents();
-
-            // THEN
-            QCOMPARE(arbiter.events.size(), 1);
-            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "source");
-            QCOMPARE(change->value().value<QUrl>(), scene2d.source());
-            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-
-            arbiter.events.clear();
-        }
-
-        {
-            // WHEN
-            scene2d.setSource(QUrl(QStringLiteral("qrc://source.qml")));
-            QCoreApplication::processEvents();
-
-            // THEN
-            QCOMPARE(arbiter.events.size(), 0);
-        }
-
-    }
-
     void checkRenderPolicyUpdate()
     {
         // GIVEN
@@ -301,6 +268,39 @@ private Q_SLOTS:
         {
             // WHEN
             scene2d.setRenderPolicy(QScene2D::SingleShot);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+        }
+
+    }
+
+    void checkMouseEnabledUpdate()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DRender::Quick::QScene2D scene2d;
+        arbiter.setArbiterOnNode(&scene2d);
+
+        {
+            // WHEN
+            scene2d.setMouseEnabled(false);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 1);
+            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "mouseEnabled");
+            QCOMPARE(change->value().toBool(), scene2d.isMouseEnabled());
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+            arbiter.events.clear();
+        }
+
+        {
+            // WHEN
+            scene2d.setMouseEnabled(false);
             QCoreApplication::processEvents();
 
             // THEN

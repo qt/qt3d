@@ -143,7 +143,6 @@ private:
         QMap<uint, QMaterial*> m_materials;
         QMap<uint, QEffect *> m_effects;
         QMap<uint, QAbstractTexture *> m_embeddedTextures;
-        QMap<QString, QAbstractTexture *> m_materialTextures;
         QMap<aiNode*, Qt3DCore::QEntity*> m_cameras;
         QHash<aiTextureType, QString> m_textureToParameterName;
         QVector<Qt3DAnimation::QKeyframeAnimation *> m_animations;

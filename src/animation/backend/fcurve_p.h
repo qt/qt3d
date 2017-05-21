@@ -146,7 +146,7 @@ inline QDebug operator<<(QDebug dbg, const Channel &channel)
     dbg << "Channel Name: " << channel.name << endl
         << "Channels:" << channel.channelComponents.size() << endl;
 
-    for (const auto channelComponent : qAsConst(channel.channelComponents)) {
+    for (const auto &channelComponent : qAsConst(channel.channelComponents)) {
         dbg << channelComponent;
     }
     return dbg;

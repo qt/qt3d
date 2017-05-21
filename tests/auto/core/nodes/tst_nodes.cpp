@@ -79,6 +79,8 @@ private slots:
     void appendingChildEntitiesToNode();
     void removingChildEntitiesFromNode();
 
+    void checkConstructionSetParentMix(); // QTBUG-60612
+
     void appendingComponentToEntity();
     void appendingParentlessComponentToEntity();
     void removingComponentFromEntity();
@@ -204,6 +206,11 @@ public:
         Qt3DCore::QNodePrivate::get(this)->setArbiter(arbiter);
     }
 
+    void setSimulateBackendCreated(bool created)
+    {
+        Qt3DCore::QNodePrivate::get(this)->m_hasBackendNode = created;
+    }
+
 signals:
     void customPropertyChanged();
 
@@ -231,6 +238,11 @@ public:
             scene->setArbiter(arbiter);
         Qt3DCore::QNodePrivate::get(this)->setScene(scene);
         Qt3DCore::QNodePrivate::get(this)->setArbiter(arbiter);
+    }
+
+    void setSimulateBackendCreated(bool created)
+    {
+        Qt3DCore::QNodePrivate::get(this)->m_hasBackendNode = created;
     }
 };
 
@@ -389,6 +401,8 @@ void tst_Nodes::appendSingleChildNodeToNodeSceneExplicitParenting()
     QScopedPointer<MyQNode> node(new MyQNode());
     // WHEN
     node->setArbiterAndScene(&spy, &scene);
+    node->setSimulateBackendCreated(true);
+
     // THEN
     QVERIFY(Qt3DCore::QNodePrivate::get(node.data())->scene() != nullptr);
 
@@ -405,7 +419,7 @@ void tst_Nodes::appendSingleChildNodeToNodeSceneExplicitParenting()
     // THEN
     QVERIFY(child->parent() == node.data());
     QVERIFY(child->parentNode() == node.data());
-    QCOMPARE(spy.events.size(), 2);
+    QCOMPARE(spy.events.size(), 2); // Created + Child Added
     QCOMPARE(node->children().count(), 1);
     QVERIFY(Qt3DCore::QNodePrivate::get(child.data())->scene() != nullptr);
 
@@ -482,6 +496,7 @@ void tst_Nodes::appendMultipleChildNodesToNodeScene()
 
     // WHEN
     node->setArbiterAndScene(&spy, &scene);
+    node->setSimulateBackendCreated(true);
     // THEN
     QVERIFY(Qt3DCore::QNodePrivate::get(node.data())->scene() != nullptr);
 
@@ -664,6 +679,7 @@ void tst_Nodes::removingSingleChildNodeFromNode()
 
     // WHEN
     root->setArbiterAndScene(&spy, &scene);
+    root->setSimulateBackendCreated(true);
     child->setParent(root.data());
 
     // Clear any creation event
@@ -790,6 +806,47 @@ void tst_Nodes::removingChildEntitiesFromNode()
     QVERIFY(childEntity->parent() == nullptr);
 }
 
+void tst_Nodes::checkConstructionSetParentMix()
+{
+    // GIVEN
+    ObserverSpy spy;
+    Qt3DCore::QScene scene;
+    QScopedPointer<MyQNode> root(new MyQNode());
+
+    // WHEN
+    root->setArbiterAndScene(&spy, &scene);
+    root->setSimulateBackendCreated(true);
+
+    // THEN
+    QVERIFY(Qt3DCore::QNodePrivate::get(root.data())->scene() != nullptr);
+
+    // WHEN
+    Qt3DCore::QEntity *subTreeRoot = new Qt3DCore::QEntity(root.data());
+
+    for (int i = 0; i < 100; ++i) {
+        Qt3DCore::QEntity *child = new Qt3DCore::QEntity();
+        child->setParent(subTreeRoot);
+    }
+
+    // THEN
+    QCoreApplication::processEvents();
+    QCOMPARE(root->children().count(), 1);
+    QCOMPARE(subTreeRoot->children().count(), 100);
+    QCOMPARE(spy.events.size(), 102); // 1 subTreeRoot creation change, 100 child creation, 1 child added (subTree to root)
+
+    // Ensure first event is subTreeRoot
+    const Qt3DCore::QNodeCreatedChangeBasePtr firstEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeCreatedChangeBase>();
+    QVERIFY(!firstEvent.isNull());
+    QCOMPARE(firstEvent->subjectId(), subTreeRoot->id());
+    QCOMPARE(firstEvent->parentId(), root->id());
+
+    const Qt3DCore::QPropertyNodeAddedChangePtr lastEvent = spy.events.takeLast().change().dynamicCast<Qt3DCore::QPropertyNodeAddedChange>();
+    QVERIFY(!lastEvent.isNull());
+    QCOMPARE(lastEvent->subjectId(), root->id());
+    QCOMPARE(lastEvent->propertyName(), "children");
+    QCOMPARE(lastEvent->addedNodeId(), subTreeRoot->id());
+}
+
 void tst_Nodes::appendingParentlessComponentToEntity()
 {
     // GIVEN
@@ -798,6 +855,8 @@ void tst_Nodes::appendingParentlessComponentToEntity()
     {
         QScopedPointer<MyQEntity> entity(new MyQEntity());
         entity->setArbiterAndScene(&entitySpy);
+        entity->setSimulateBackendCreated(true);
+
         MyQComponent *comp = new MyQComponent();
         comp->setArbiter(&componentSpy);
 
@@ -816,7 +875,7 @@ void tst_Nodes::appendingParentlessComponentToEntity()
         QVERIFY(comp->parentNode() == entity.data());
         QCOMPARE(entitySpy.events.size(), 1);
         QVERIFY(entitySpy.events.first().wasLocked());
-        QCOMPARE(componentSpy.events.size(), 2);        // first event is parent being set
+        QCOMPARE(componentSpy.events.size(), 1);
 
         // Note: since QEntity has no scene in this test case, we only have the
         // ComponentAdded event In theory we should also get the NodeCreated event

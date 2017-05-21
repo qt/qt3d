@@ -66,14 +66,14 @@ public:
         RenderView *rv = m_renderViewJob->renderView();
 
         int totalCommandCount = 0;
-        for (const auto renderViewCommandBuilder : qAsConst(m_renderViewBuilderJobs))
+        for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewBuilderJobs))
             totalCommandCount += renderViewCommandBuilder->commands().size();
 
         QVector<RenderCommand *> commands;
         commands.reserve(totalCommandCount);
 
         // Reduction
-        for (const auto renderViewCommandBuilder : qAsConst(m_renderViewBuilderJobs))
+        for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewBuilderJobs))
             commands += std::move(renderViewCommandBuilder->commands());
         rv->setCommands(commands);
 
@@ -139,13 +139,13 @@ public:
         m_filterEntityByLayerJob->setLayers(rv->layerFilter());
 
         // Material Parameter building
-        for (const auto materialGatherer : qAsConst(m_materialGathererJobs)) {
+        for (const auto &materialGatherer : qAsConst(m_materialGathererJobs)) {
             materialGatherer->setRenderPassFilter(const_cast<RenderPassFilter *>(rv->renderPassFilter()));
             materialGatherer->setTechniqueFilter(const_cast<TechniqueFilter *>(rv->techniqueFilter()));
         }
 
         // Command builders
-        for (const auto renderViewCommandBuilder : qAsConst(m_renderViewBuilderJobs))
+        for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewBuilderJobs))
             renderViewCommandBuilder->setRenderView(rv);
 
         // Set whether frustum culling is enabled or not
@@ -188,8 +188,6 @@ public:
         RenderView *rv = m_renderViewJob->renderView();
 
         if (!rv->noDraw()) {
-            // Set the light sources
-            rv->setLightSources(std::move(m_lightGathererJob->lights()));
             rv->setEnvironmentLight(m_lightGathererJob->takeEnvironmentLight());
 
             // We sort the vector so that the removal can then be performed linearly
@@ -208,6 +206,14 @@ public:
             QVector<Entity *> filteredEntities = m_filterEntityByLayerJob->filteredEntities();
             RenderViewBuilder::removeEntitiesNotInSubset(renderableEntities, filteredEntities);
 
+            // Set the light sources, with layer filters applied.
+            QVector<LightSource> lightSources = m_lightGathererJob->lights();
+            for (int i = 0; i < lightSources.count(); ++i) {
+                if (!filteredEntities.contains(lightSources[i].entity))
+                    lightSources.removeAt(i--);
+            }
+            rv->setLightSources(lightSources);
+
             // Filter out frustum culled entity for drawable entities
             if (isDraw && rv->frustumCulling())
                 RenderViewBuilder::removeEntitiesNotInSubset(renderableEntities, m_frustumCullingJob->visibleEntities());
@@ -225,7 +231,7 @@ public:
 
             // Reduction
             QHash<Qt3DCore::QNodeId, QVector<RenderPassParameterData>> params;
-            for (const auto materialGatherer : qAsConst(m_materialGathererJobs))
+            for (const auto &materialGatherer : qAsConst(m_materialGathererJobs))
                 params.unite(materialGatherer->materialToPassAndParameter());
             // Set all required data on the RenderView for final processing
             rv->setMaterialParameterTable(std::move(params));
@@ -425,7 +431,7 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     m_filterEntityByLayerJob->addDependency(m_renderer->updateTreeEnabledJob());
 
     m_syncRenderCommandBuildingJob->addDependency(m_syncRenderViewInitializationJob);
-    for (const auto materialGatherer : qAsConst(m_materialGathererJobs)) {
+    for (const auto &materialGatherer : qAsConst(m_materialGathererJobs)) {
         materialGatherer->addDependency(m_syncRenderViewInitializationJob);
         materialGatherer->addDependency(m_renderer->filterCompatibleTechniqueJob());
         m_syncRenderCommandBuildingJob->addDependency(materialGatherer);
@@ -436,7 +442,7 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     m_syncRenderCommandBuildingJob->addDependency(m_lightGathererJob);
     m_syncRenderCommandBuildingJob->addDependency(m_frustumCullingJob);
 
-    for (const auto renderViewCommandBuilder : qAsConst(m_renderViewBuilderJobs)) {
+    for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewBuilderJobs)) {
         renderViewCommandBuilder->addDependency(m_syncRenderCommandBuildingJob);
         m_syncRenderViewCommandBuildersJob->addDependency(renderViewCommandBuilder);
     }
@@ -458,13 +464,13 @@ QVector<Qt3DCore::QAspectJobPtr> RenderViewBuilder::buildJobHierachy() const
     jobs.push_back(m_filterEntityByLayerJob); // Step 3
     jobs.push_back(m_setClearDrawBufferIndexJob); // Step 3
 
-    for (const auto materialGatherer : qAsConst(m_materialGathererJobs)) // Step3
+    for (const auto &materialGatherer : qAsConst(m_materialGathererJobs)) // Step3
         jobs.push_back(materialGatherer);
 
     jobs.push_back(m_frustumCullingJob); // Step 4
     jobs.push_back(m_syncRenderCommandBuildingJob); // Step 4
 
-    for (const auto renderViewCommandBuilder : qAsConst(m_renderViewBuilderJobs)) // Step 5
+    for (const auto &renderViewCommandBuilder : qAsConst(m_renderViewBuilderJobs)) // Step 5
         jobs.push_back(renderViewCommandBuilder);
 
     jobs.push_back(m_syncRenderViewCommandBuildersJob); // Step 6

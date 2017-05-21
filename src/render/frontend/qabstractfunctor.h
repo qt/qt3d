@@ -80,6 +80,14 @@ public:
     virtual ~QAbstractFunctor();
     virtual qintptr id() const = 0;
 
+    // TODO: Remove when moving a copy of this to Qt3DCore
+    template<class T>
+    const T *functor_cast(const QAbstractFunctor *other) const
+    {
+        if (other->id() == functorTypeId<T>())
+            return static_cast<const T *>(other);
+        return nullptr;
+    }
 private:
     Q_DISABLE_COPY(QAbstractFunctor)
 };

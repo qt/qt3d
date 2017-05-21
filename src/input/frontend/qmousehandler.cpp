@@ -83,9 +83,11 @@ void QMouseHandlerPrivate::mouseEvent(const QMouseEventPtr &event)
         m_pressAndHoldTimer->stop();
         emit q->released(event.data());
         break;
+#if QT_CONFIG(gestures)
     case Qt::TapGesture:
         emit q->clicked(event.data());
         break;
+#endif
     case QEvent::MouseButtonDblClick:
         emit q->doubleClicked(event.data());
         break;
@@ -311,9 +313,11 @@ void QMouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
         if (e->propertyName() == QByteArrayLiteral("mouse")) {
             QMouseEventPtr ev = e->value().value<QMouseEventPtr>();
             d->mouseEvent(ev);
+#if QT_CONFIG(wheelevent)
         } else if (e->propertyName() == QByteArrayLiteral("wheel")) {
             QWheelEventPtr ev = e->value().value<QWheelEventPtr>();
             emit wheel(ev.data());
+#endif
         }
     }
 }

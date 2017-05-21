@@ -73,6 +73,9 @@ public Q_SLOTS:
     void setChannelMapper(Qt3DAnimation::QChannelMapper *channelMapper);
     void setLoopCount(int loops);
 
+    void start();
+    void stop();
+
 Q_SIGNALS:
     void runningChanged(bool running);
     void channelMapperChanged(Qt3DAnimation::QChannelMapper *channelMapper);

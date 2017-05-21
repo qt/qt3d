@@ -77,7 +77,7 @@ QLevelOfDetailPrivate::QLevelOfDetailPrivate()
     The currentIndex property can then be used, for example, to enable or
     disable entities, change material, etc.
 
-    The LevelOfDetail component is not shareable between multiple Entity's.
+    The LevelOfDetail component is not shareable between multiple \l [QML]{Entity}{entities}.
 
     \code
      #include <Qt3DCore/QEntity>
@@ -184,35 +184,6 @@ QLevelOfDetailPrivate::QLevelOfDetailPrivate()
  * \endlist
  * \sa Qt3DRender::QLevelOfDetail::ThresholdType
  */
-
-
-/*!
- * \enum Qt3DRender::QLevelOfDetail::SizeProxyMode
- *
- * Specifies what is used as a proxy for the entity when computing distance
- * or size.
- *
- * \value LevelOfDetailBoundingSphere use the bounding sphere specified by the center
- *          and radius properties.
- * \value Children LevelOfDetailBoundingSphere use the bounding sphere of the entity the
- *          component is attached to.
- */
-
-/*!
- * \qmlproperty enumeration LevelOfDetail::SizeProxyMode
- *
- * Specifies what is used as a proxy for the entity when computing distance
- * or size.
- *
- * \list
- * \li LevelOfDetailBoundingSphere use the bounding sphere specified by the center
- *          and radius properties.
- * \li Children LevelOfDetailBoundingSphere use the bounding sphere of the entity the
- *          component is attached to.
- * \endlist
- * \sa Qt3DRender::QLevelOfDetail::SizeProxyMode
- */
-
 
 /*!
  * \qmlproperty Camera LevelOfDetail::camera
@@ -442,7 +413,7 @@ void QLevelOfDetail::setThresholds(const QVector<qreal> &thresholds)
     Q_D(QLevelOfDetail);
     if (d->m_thresholds != thresholds) {
         d->m_thresholds = thresholds;
-        thresholdsChanged(d->m_thresholds);
+        emit thresholdsChanged(d->m_thresholds);
     }
 }
 

@@ -91,7 +91,8 @@ QQ2.Item {
                 }
 
                 entities: [plane1]
-                grabMouse: plane1.picker.pressed
+
+                mouseEnabled: plane1.picker.pressed
 
                 InteractiveGui {
 

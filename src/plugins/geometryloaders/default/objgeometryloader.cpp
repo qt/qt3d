@@ -219,7 +219,7 @@ bool ObjGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
     if (hasNormals)
         m_normals.resize(vertexCount);
 
-    for (QHash<FaceIndices, unsigned int>::const_iterator it = faceIndexMap.begin(), endIt = faceIndexMap.end(); it != endIt; ++it) {
+    for (auto it = faceIndexMap.cbegin(), endIt = faceIndexMap.cend(); it != endIt; ++it) {
         m_points[it.value()] = positions[it.key().positionIndex];
         if (hasTexCoords)
             m_texCoords[it.value()] = std::numeric_limits<unsigned int>::max() != it.key().texCoordIndex ? texCoords[it.key().texCoordIndex] : QVector2D();
@@ -231,7 +231,7 @@ bool ObjGeometryLoader::doLoad(QIODevice *ioDev, const QString &subMesh)
     const int indexCount = faceIndexVector.size();
     m_indices.clear();
     m_indices.reserve(indexCount);
-    for (const FaceIndices faceIndices : faceIndexVector) {
+    for (const FaceIndices faceIndices : qAsConst(faceIndexVector)) {
         const unsigned int i = faceIndexMap.value(faceIndices);
         m_indices.append(i);
     }

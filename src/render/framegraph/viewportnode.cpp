@@ -123,7 +123,7 @@ void ViewportNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     if (e->type() == PropertyUpdated) {
         QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("normalizedRect")) {
-            QRectF normalizedRect = propertyChange->value().value<QRectF>();
+            QRectF normalizedRect = propertyChange->value().toRectF();
             setXMin(normalizedRect.x());
             setYMin(normalizedRect.y());
             setXMax(normalizedRect.width());

@@ -106,7 +106,8 @@ qtConfig(private_tests) {
         qshaderprogram \
         qscene2d \
         scene2d \
-        coordinatereader
+        coordinatereader \
+        framegraphvisitor
 
     !macos: SUBDIRS += graphicshelpergl4
 }

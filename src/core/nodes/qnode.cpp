@@ -114,7 +114,7 @@ void QNodePrivate::notifyCreationChange()
     Q_Q(QNode);
     // Do nothing if we already have already sent a node creation change
     // and not a subsequent node destroyed change.
-    if (m_hasBackendNode)
+    if (m_hasBackendNode || !m_scene)
         return;
     QNodeCreatedChangeGenerator generator(q);
     const auto creationChanges = generator.creationChanges();
@@ -305,7 +305,21 @@ void QNodePrivate::_q_setParentHelper(QNode *parent)
                 visitor.traverse(q, newParentNode->d_func(), &QNodePrivate::setSceneHelper);
             }
 
-            notifyCreationChange();
+            // We want to make sure that subTreeRoot is always created before
+            // child.
+            // Given a case such as below
+            // QEntity *subTreeRoot = new QEntity(someGlobalExisitingRoot)
+            // QEntity *child = new QEntity();
+            // child->setParent(subTreeRoot)
+            // We need to take into account that subTreeRoot needs to be
+            // created in the backend before the child.
+            // Therefore we only call notifyCreationChanges if the parent
+            // hasn't been created yet as we know that when the parent will be
+            // fully created, it will also send the changes for all of its
+            // children
+
+            if (QNodePrivate::get(newParentNode)->m_hasBackendNode)
+                notifyCreationChange();
         }
 
         // If we have a valid new parent, we let him know that we are its child

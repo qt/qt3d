@@ -138,10 +138,8 @@ void QSkyboxEntityPrivate::init()
     m_gl3RenderPass->addRenderState(seamlessCubemap);
     m_gl2RenderPass->addRenderState(cullFront);
     m_gl2RenderPass->addRenderState(depthTest);
-    m_gl2RenderPass->addRenderState(seamlessCubemap);
     m_es2RenderPass->addRenderState(cullFront);
     m_es2RenderPass->addRenderState(depthTest);
-    m_es2RenderPass->addRenderState(seamlessCubemap);
 
     m_gl3Technique->addRenderPass(m_gl3RenderPass);
     m_gl2Technique->addRenderPass(m_gl2RenderPass);

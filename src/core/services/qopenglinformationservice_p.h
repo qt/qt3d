@@ -65,6 +65,7 @@ class QOpenGLInformationServicePrivate;
 
 class QT3DCORESHARED_EXPORT QOpenGLInformationService : public QAbstractServiceProvider
 {
+    Q_OBJECT
 public:
     virtual QSurfaceFormat format() const = 0;
 

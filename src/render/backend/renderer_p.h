@@ -259,7 +259,7 @@ public:
 
     ViewSubmissionResultData submitRenderViews(const QVector<Render::RenderView *> &renderViews);
 
-    QMutex* mutex() { return &m_mutex; }
+    QMutex* mutex() { return &m_renderQueueMutex; }
 
 
 #ifdef QT3D_RENDER_UNIT_TESTS
@@ -290,7 +290,7 @@ private:
     QScopedPointer<RenderThread> m_renderThread;
     QScopedPointer<VSyncFrameAdvanceService> m_vsyncFrameAdvanceService;
 
-    QMutex m_mutex;
+    QMutex m_renderQueueMutex;
     QSemaphore m_submitRenderViewsSemaphore;
     QSemaphore m_waitForInitializationToBeCompleted;
 

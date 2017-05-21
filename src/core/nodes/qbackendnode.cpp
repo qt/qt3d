@@ -233,7 +233,7 @@ void QBackendNode::sceneChangeEvent(const QSceneChangePtr &e)
     switch (e->type()) {
         case PropertyUpdated: {
             if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-                d->m_enabled = propertyChange->value().value<bool>();
+                d->m_enabled = propertyChange->value().toBool();
             break;
         }
         default:

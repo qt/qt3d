@@ -188,13 +188,11 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
 
     if (!m_gl) {
         m_gl = buildGLTexture();
-        if (m_gl) {
-            m_gl->allocateStorage();
-            if (!m_gl->isStorageAllocated()) {
-                qWarning() << Q_FUNC_INFO << "texture storage allocation failed";
-                return nullptr;
-            }
-        } else {
+        if (!m_gl)
+            return nullptr;
+        m_gl->allocateStorage();
+        if (!m_gl->isStorageAllocated()) {
+            qWarning() << Q_FUNC_INFO << "texture storage allocation failed";
             return nullptr;
         }
     }

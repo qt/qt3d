@@ -108,7 +108,7 @@ void Attribute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QByteArray propertyName = propertyChange->propertyName();
 
         if (propertyName == QByteArrayLiteral("name")) {
-            m_name = propertyChange->value().value<QString>();
+            m_name = propertyChange->value().toString();
             m_nameId = StringToInt::lookupId(m_name);
             m_attributeDirty = true;
         } else if (propertyName == QByteArrayLiteral("vertexBaseType")) {

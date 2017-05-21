@@ -81,7 +81,9 @@ void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DInput::QInputSettings>(uri, 2, 0, "InputSettings");
 
     qmlRegisterUncreatableType<Qt3DInput::QMouseEvent>(uri, 2, 0, "MouseEvent", QStringLiteral("Events cannot be created"));
+#if QT_CONFIG(wheelevent)
     qmlRegisterUncreatableType<Qt3DInput::QWheelEvent>(uri, 2, 0, "WheelEvent", QStringLiteral("Events cannot be created"));
+#endif
     qmlRegisterType<Qt3DInput::QMouseHandler>(uri, 2, 0, "MouseHandler");
     qmlRegisterType<Qt3DInput::QMouseDevice>(uri, 2, 0, "MouseDevice");
 

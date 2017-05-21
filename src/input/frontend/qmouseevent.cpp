@@ -455,6 +455,7 @@ QMouseEvent::Modifiers QMouseEvent::modifiers() const
  *  Returns the QEvent::Type of the event.
  */
 
+#if QT_CONFIG(wheelevent)
 /*!
  * Constructs a new QWheelEvent instance from the QWheelEvent \a e.
  */
@@ -497,6 +498,7 @@ QWheelEvent::Modifiers QWheelEvent::modifiers() const
         return QWheelEvent::NoModifier;
     }
 }
+#endif // QT_CONFIG(wheelevent)
 
 } // namespace Qt3DInput
 

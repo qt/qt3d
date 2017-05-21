@@ -223,7 +223,7 @@ void Scene3DItem::setWindowSurface(QObject *rootObject)
     }
 }
 
-void Scene3DItem::setItemArea(const QSize &area)
+void Scene3DItem::setItemArea(QSize area)
 {
     Qt3DRender::QRenderSurfaceSelector *surfaceSelector = Qt3DRender::QRenderSurfaceSelectorPrivate::find(m_entity);
     if (surfaceSelector)

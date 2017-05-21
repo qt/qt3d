@@ -503,7 +503,7 @@ Entity {
             effect: effectD
             ambientLight: ambientStrengthStarfield
             specularColor: Qt.rgba(0.0, 0.0, 0.0, 1.0)
-            diffuseMap: "qrc:/images/galaxy_starfield.png"
+            diffuseMap: "qrc:/images/solarsystemscope/galaxy_starfield.jpg"
             shininess: 1000000.0
         }
 
@@ -531,7 +531,7 @@ Entity {
             id: materialSun
             effect: sunEffect
             ambientLight: ambientStrengthSun
-            diffuseMap: "qrc:/images/sunmap.jpg"
+            diffuseMap: "qrc:/images/solarsystemscope/sunmap.jpg"
         }
 
         property Transform transformSun: Transform {
@@ -567,8 +567,8 @@ Entity {
             effect: effectDB
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-            diffuseMap: "qrc:/images/mercurymap.jpg"
-            normalMap: "qrc:/images/mercurynormal.jpg"
+            diffuseMap: "qrc:/images/solarsystemscope/mercurymap.jpg"
+            normalMap: "qrc:/images/solarsystemscope/mercurynormal.jpg"
             shininess: shininessSpecularMap
         }
 
@@ -601,8 +601,8 @@ Entity {
             effect: effectDB
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-            diffuseMap: "qrc:/images/venusmap.jpg"
-            normalMap: "qrc:/images/venusnormal.jpg"
+            diffuseMap: "qrc:/images/solarsystemscope/venusmap.jpg"
+            normalMap: "qrc:/images/solarsystemscope/venusnormal.jpg"
             shininess: shininessSpecularMap
         }
 
@@ -635,9 +635,9 @@ Entity {
             id: materialEarth
             effect: effectDSB
             ambientLight: ambientStrengthPlanet
-            diffuseMap: "qrc:/images/earthmap1k.jpg"
-            specularMap: "qrc:/images/earthspec1k.jpg"
-            normalMap: "qrc:/images/earthnormal1k.jpg"
+            diffuseMap: "qrc:/images/solarsystemscope/earthmap2k.jpg"
+            specularMap: "qrc:/images/solarsystemscope/earthspec2k.jpg"
+            normalMap: "qrc:/images/solarsystemscope/earthnormal2k.jpg"
             shininess: shininessSpecularMap
         }
 
@@ -670,8 +670,8 @@ Entity {
             id: materialEarthClouds
             effect: cloudEffect
             ambientLight: ambientStrengthClouds
-            diffuseMap: "qrc:/images/earthcloudmapcolortrans.png"
-            specularMap: "qrc:/images/earthcloudmapspec.jpg"
+            diffuseMap: "qrc:/images/solarsystemscope/earthcloudmapcolortrans.png"
+            specularMap: "qrc:/images/solarsystemscope/earthcloudmapspec.jpg"
             shininess: shininessClouds
             opacity: 0.2
         }
@@ -705,8 +705,8 @@ Entity {
             effect: effectDB
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-            diffuseMap: "qrc:/images/moonmap1k.jpg"
-            normalMap: "qrc:/images/moonnormal1k.jpg"
+            diffuseMap: "qrc:/images/solarsystemscope/moonmap2k.jpg"
+            normalMap: "qrc:/images/solarsystemscope/moonnormal2k.jpg"
             shininess: shininessSpecularMap
         }
 
@@ -739,8 +739,8 @@ Entity {
             effect: effectDB
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-            diffuseMap: "qrc:/images/marsmap1k.jpg"
-            normalMap: "qrc:/images/marsnormal1k.jpg"
+            diffuseMap: "qrc:/images/solarsystemscope/marsmap2k.jpg"
+            normalMap: "qrc:/images/solarsystemscope/marsnormal2k.jpg"
             shininess: shininessSpecularMap
         }
 
@@ -773,7 +773,7 @@ Entity {
             effect: effectD
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-            diffuseMap: "qrc:/images/jupitermap.jpg"
+            diffuseMap: "qrc:/images/solarsystemscope/jupitermap.jpg"
             shininess: shininessBasic
         }
 
@@ -806,7 +806,7 @@ Entity {
             effect: shadowMapEffect
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-            diffuseMap: "qrc:/images/saturnmap.jpg"
+            diffuseMap: "qrc:/images/solarsystemscope/saturnmap.jpg"
             shininess: shininessBasic
         }
 
@@ -840,7 +840,7 @@ Entity {
             effect: shadowMapEffect
             ambientLight: ambientStrengthRing
             specularColor: Qt.rgba(0.01, 0.01, 0.01, 1.0)
-            diffuseMap: "qrc:/images/saturnringcolortrans.png"
+            diffuseMap: "qrc:/images/solarsystemscope/saturnringcolortrans.png"
             shininess: shininessBasic
             opacity: 0.4
         }
@@ -874,7 +874,7 @@ Entity {
             effect: shadowMapEffect
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-            diffuseMap: "qrc:/images/uranusmap.jpg"
+            diffuseMap: "qrc:/images/solarsystemscope/uranusmap.jpg"
             shininess: shininessBasic
         }
 
@@ -908,7 +908,7 @@ Entity {
             effect: shadowMapEffect
             ambientLight: ambientStrengthRing
             specularColor: Qt.rgba(0.01, 0.01, 0.01, 1.0)
-            diffuseMap: "qrc:/images/uranusringcolortrans.png"
+            diffuseMap: "qrc:/images/nasa/uranusringcolortrans.png"
             shininess: shininessBasic
             opacity: 0.4
         }
@@ -942,7 +942,7 @@ Entity {
             effect: effectD
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
-            diffuseMap: "qrc:/images/neptunemap.jpg"
+            diffuseMap: "qrc:/images/solarsystemscope/neptunemap.jpg"
             shininess: shininessBasic
         }
 

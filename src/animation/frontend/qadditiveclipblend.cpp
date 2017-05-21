@@ -48,39 +48,67 @@ namespace Qt3DAnimation {
     \instantiates Qt3DAnimation::QAdditiveClipBlend
     \inqmlmodule Qt3D.Animation
 
-    \brief Performs an addition of two animation clips based on a
-    normalized factor
-
     \since 5.9
 
-    AdditiveClipBlend can be useful to create advanced animation effects based on
-    individual animation clips. For instance, given a player character, additive
-    blending could be used to combine a walking animation clip with an injured
-    animation clip based on a blend factor that increases the more the player
-    gets injured. This would then allow with blend factor == 0 to have a non
-    injured walking player, with blend factor == 1 a fully injured player, with
-    blend factor == 0.5 a partially walking and injured player.
+    \brief Performs an additive blend of two animation clips based on an additive factor.
+
+    QAdditiveClipBlend can be useful to create advanced animation effects based on
+    individual animation clips. For example, if you:
+
+    \list
+    \li set the baseClip property to a normal walk cycle animation clip and
+    \li set the additiveClip property to a shaking head difference clip,
+    \endlist
+
+    then adjusting the additiveFactor property will control how much of the additiveClip gets added
+    on to the baseClip. This has he effect that with an additiveFactor of zero, this blend node will
+    yield the original walk cycle clip. With an additiveFactor of 1, it will yield the walk cycle
+    including a shaking head animation.
+
+    The blending operation implemented by this class is:
+
+    \badcode
+        resultClip = baseClip + additiveFactor * additiveClip
+    \endcode
+
+    There is nothing stopping you from using values for the additiveFacor property outside the 0 to
+    1 range, but please be aware that the input animation clips may not be authored in such a way
+    for this to make sense.
 
     \sa BlendedClipAnimator
 */
 
 /*!
     \class Qt3DAnimation::QAdditiveClipBlend
-    \inmodule Qt3DAnimation
     \inherits Qt3DAnimation::QAbstractClipBlendNode
 
-    \brief Performs an addition of two animation clips based on a
-    normalized factor
-
+    \inmodule Qt3DAnimation
     \since 5.9
 
+    \brief Performs an additive blend of two animation clips based on an additive factor.
+
     QAdditiveClipBlend can be useful to create advanced animation effects based on
-    individual animation clips. For instance, given a player character, additive
-    blending could be used to combine a walking animation clip with an injured
-    animation clip based on a blend factor that increases the more the player
-    gets injured. This would then allow with blend factor == 0 to have a non
-    injured walking player, with blend factor == 1 a fully injured player, with
-    blend factor == 0.5 a partially walking and injured player.
+    individual animation clips. For example, if you:
+
+    \list
+    \li set the baseClip property to a normal walk cycle animation clip and
+    \li set the additiveClip property to a shaking head difference clip,
+    \endlist
+
+    then adjusting the additiveFactor property will control how much of the additiveClip gets added
+    on to the baseClip. This has he effect that with an additiveFactor of zero, this blend node will
+    yield the original walk cycle clip. With an additiveFactor of 1, it will yield the walk cycle
+    including a shaking head animation.
+
+    The blending operation implemented by this class is:
+
+    \badcode
+        resultClip = baseClip + additiveFactor * additiveClip
+    \endcode
+
+    There is nothing stopping you from using values for the additiveFacor property outside the 0 to
+    1 range, but please be aware that the input animation clips may not be authored in such a way
+    for this to make sense.
 
     \sa QBlendedClipAnimator
 */
@@ -121,13 +149,13 @@ Qt3DCore::QNodeCreatedChangeBasePtr QAdditiveClipBlend::createNodeCreationChange
 /*!
     \qmlproperty real AdditiveClipBlend::additiveFactor
 
-    Specifies the blending factor between 0 and 1 to control the blending of
+    Specifies the blending factor, typically between 0 and 1, to control the blending of
     two animation clips.
 */
 /*!
     \property QAdditiveClipBlend::additiveFactor
 
-    Specifies the blending factor between 0 and 1 to control the blending of
+    Specifies the blending factor, typically between 0 and 1, to control the blending of
     two animation clips.
  */
 float QAdditiveClipBlend::additiveFactor() const
@@ -136,12 +164,36 @@ float QAdditiveClipBlend::additiveFactor() const
     return d->m_additiveFactor;
 }
 
+/*!
+    \qmlproperty AbstractClipBlendNode baseClip
+
+    This property holds the base animation clip. When the additiveFacgtor is zero the baseClip will
+    also be the resulting clip of this blend node.
+*/
+/*!
+    \property baseClip
+
+    This property holds the base animation clip. When the additiveFacgtor is zero the baseClip will
+    also be the resulting clip of this blend node.
+*/
 QAbstractClipBlendNode *QAdditiveClipBlend::baseClip() const
 {
     Q_D(const QAdditiveClipBlend);
     return d->m_baseClip;
 }
 
+/*!
+    \qmlproperty AbstractClipBlendNode additiveClip
+
+    This property holds the additive clip to be blended with the baseClip. The amount of blending
+    is controlled by the additiveFactor property.
+*/
+/*!
+    \property additiveClip
+
+    This property holds the additive clip to be blended with the baseClip. The amount of blending
+    is controlled by the additiveFactor property.
+*/
 QAbstractClipBlendNode *QAdditiveClipBlend::additiveClip() const
 {
     Q_D(const QAdditiveClipBlend);
@@ -196,33 +248,6 @@ void QAdditiveClipBlend::setAdditiveClip(QAbstractClipBlendNode *additiveClip)
         d->registerDestructionHelper(d->m_additiveClip, &QAdditiveClipBlend::setAdditiveClip, d->m_additiveClip);
     emit additiveClipChanged(additiveClip);
 }
-
-/*!
-    \qmlproperty list<AnimationClip> AdditiveClipBlend::clips
-
-    Holds the list of AnimationClip nodes against which the blending is performed.
-
-    \note Only the two first AnimationClip are used, subsequent ones are ignored
-*/
-
-
-/*!
-    \fn void QAdditiveClipBlend::addClip(QAnimationClip *clip);
-    Adds a \a clip to the blending node's clips list.
-
-    \note Only the two first AnimationClip are used, subsequent ones are ignored
- */
-
-/*!
-    \fn void QAdditiveClipBlend::removeClip(QAnimationClip *clip);
-    Removes a \a clip from the blending node's clips list.
- */
-
-/*!
-    \fn QVector<QAnimationClip *> QAdditiveClipBlend::clips() const;
-    Returns the list of QAnimationClip against which the blending is performed.
- */
-
 
 } // Qt3DAnimation
 

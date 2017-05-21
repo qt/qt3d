@@ -119,8 +119,10 @@ public:
 
     bool m_initialized;
     bool m_renderInitialized;
+    bool m_mouseEnabled;
     Qt3DRender::Quick::QScene2D::RenderPolicy m_renderPolicy;
     QVector<Qt3DCore::QNodeId> m_entities;
+    Qt3DRender::QPickEventPtr m_cachedPickEvent;
 };
 
 } // Quick

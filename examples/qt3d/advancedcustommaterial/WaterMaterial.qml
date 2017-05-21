@@ -228,17 +228,16 @@ Material {
                 }
             },
 
-            // OpenGL 2.1
+            // OpenGLES 2.0
             Technique {
                 filterKeys: [ forward ]
                 graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGL
-                    profile: GraphicsApiFilter.NoProfile
+                    api: GraphicsApiFilter.OpenGLES
                     majorVersion: 2
                     minorVersion: 0
                 }
                 renderPasses: RenderPass {
-                    shaderProgram: gl3Shader
+                    shaderProgram: esShader
                     renderStates: [ alphaCoverage ]
                 }
             },

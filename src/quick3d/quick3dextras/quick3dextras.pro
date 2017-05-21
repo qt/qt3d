@@ -21,6 +21,7 @@ HEADERS += \
     qt3dquickextras_global.h \
     qt3dquickextras_global_p.h \
     qt3dquickwindow.h \
+    qt3dquickwindow_p.h \
     qt3dquickwindowlogging_p.h
 
 # otherwise mingw headers do not declare common functions like ::strcasecmp

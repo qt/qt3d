@@ -66,17 +66,31 @@ uniform vec4 baseColor;
 uniform float metalness;
 uniform float roughness;
 
-// Roughness -> mip level mapping
-uniform float maxT = 0.939824;
-uniform float mipLevels = 11.0;
-uniform float mipOffset = 5.0;
-
 // Exposure correction
 uniform float exposure = 0.0;
 // Gamma correction
 uniform float gamma = 2.2;
 
 #pragma include light.inc.frag
+
+int mipLevelCount(const in samplerCube cube)
+{
+   int baseSize = textureSize(cube, 0).x;
+   int nMips = int(log2(float(baseSize>0 ? baseSize : 1))) + 1;
+   return nMips;
+}
+
+float remapRoughness(const in float roughness)
+{
+    // As per page 14 of
+    // http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr.pdf
+    // we remap the roughness to give a more perceptually linear response
+    // of "bluriness" as a function of the roughness specified by the user.
+    // r = roughness^2
+    const float maxSpecPower = 999999.0;
+    const float minRoughness = sqrt(2.0 / (maxSpecPower + 2));
+    return max(roughness * roughness, minRoughness);
+}
 
 mat3 calcWorldSpaceToTangentSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent)
 {
@@ -98,32 +112,42 @@ mat3 calcWorldSpaceToTangentSpaceMatrix(const in vec3 wNormal, const in vec4 wTa
     return worldToTangentMatrix;
 }
 
-float roughnessToMipLevel(float roughness)
+float alphaToMipLevel(float alpha)
 {
-    // HACK: Improve the roughness -> mip level mapping for roughness map from substace painter
-    // TODO: Use mathematica or similar to improve this mapping more generally
-    roughness = 0.75 + (1.7 * (roughness - 0.5));
-    return (mipLevels - 1.0 - mipOffset) * (1.0 - (1.0 - roughness) / maxT);
+    float specPower = 2.0 / (alpha * alpha) - 2.0;
+
+    // We use the mip level calculation from Lys' default power drop, which in
+    // turn is a slight modification of that used in Marmoset Toolbag. See
+    // https://docs.knaldtech.com/doku.php?id=specular_lys for details.
+    // For now we assume a max specular power of 999999 which gives
+    // maxGlossiness = 1.
+    const float k0 = 0.00098;
+    const float k1 = 0.9921;
+    float glossiness = (pow(2.0, -10.0 / sqrt(specPower)) - k0) / k1;
+
+    // TODO: Optimize by doing this on CPU and set as
+    // uniform int envLight.specularMipLevels say (if present in shader).
+    // Lookup the number of mips in the specular envmap
+    int mipLevels = mipLevelCount(envLight.specular);
+
+    // Offset of smallest miplevel we should use (corresponds to specular
+    // power of 1). I.e. in the 32x32 sized mip.
+    const float mipOffset = 5.0;
+
+    // The final factor is really 1 - g / g_max but as mentioned above g_max
+    // is 1 by definition here so we can avoid the division. If we make the
+    // max specular power for the spec map configurable, this will need to
+    // be handled properly.
+    float mipLevel = (mipLevels - 1.0 - mipOffset) * (1.0 - glossiness);
+    return mipLevel;
 }
 
-// Helper function to map from linear roughness value to non-linear alpha (shininess)
-float roughnessToAlpha(const in float roughness)
+float normalDistribution(const in vec3 n, const in vec3 h, const in float alpha)
 {
-    // Constants to control how to convert from roughness [0,1] to
-    // shininess (alpha) [minAlpha, maxAlpha] using a power law with
-    // a power of 1 / rho.
-    const float minAlpha = 1.0;
-    const float maxAlpha = 1024.0;
-    const float rho = 3.0;
-
-    return minAlpha + (maxAlpha - minAlpha) * (1.0 - pow(roughness, 1.0 / rho));
-}
-
-float normalDistribution(const in vec3 n, const in vec3 h, const in float roughness)
-{
-    // Blinn-Phong approximation
-    float alpha = roughnessToAlpha(roughness);
-    return (alpha + 2.0) / (2.0 * 3.14159) * pow(max(dot(n, h), 0.0), alpha);
+    // Blinn-Phong approximation - see
+    // http://graphicrants.blogspot.co.uk/2013/08/specular-brdf-reference.html
+    float specPower = 2.0 / (alpha * alpha) - 2.0;
+    return (specPower + 2.0) / (2.0 * 3.14159) * pow(max(dot(n, h), 0.0), specPower);
 }
 
 vec3 fresnelFactor(const in vec3 color, const in float cosineFactor)
@@ -171,7 +195,7 @@ vec3 pbrModel(const in int lightIndex,
               const in vec3 wView,
               const in vec3 baseColor,
               const in float metalness,
-              const in float roughness)
+              const in float alpha)
 {
     // Calculate some useful quantities
     vec3 n = wNormal;
@@ -228,7 +252,7 @@ vec3 pbrModel(const in int lightIndex,
     vec3 specularFactor = vec3(0.0);
     if (sDotN > 0.0) {
         specularFactor = specularModel(F0, sDotH, sDotN, vDotN, n, h);
-        specularFactor *= normalDistribution(n, h, roughness);
+        specularFactor *= normalDistribution(n, h, alpha);
     }
     vec3 specularColor = lights[lightIndex].color;
     vec3 specular = specularColor * specularFactor;
@@ -241,7 +265,7 @@ vec3 pbrIblModel(const in vec3 wNormal,
                  const in vec3 wView,
                  const in vec3 baseColor,
                  const in float metalness,
-                 const in float roughness)
+                 const in float alpha)
 {
     // Calculate reflection direction of view vector about surface normal
     // vector in world space. This is used in the fragment shader to sample
@@ -265,7 +289,31 @@ vec3 pbrIblModel(const in vec3 wNormal,
     vec3 F0 = mix(dielectricColor, baseColor, metalness);
     vec3 specularFactor = specularModel(F0, lDotH, lDotN, vDotN, n, h);
 
-    float lod = roughnessToMipLevel(roughness);
+    // As per page 14 of
+    // http://www.frostbite.com/wp-content/uploads/2014/11/course_notes_moving_frostbite_to_pbr.pdf
+    // we remap the roughness to give a more perceptually linear response
+    // of "bluriness" as a function of the roughness specified by the user.
+    // r = roughness^2
+    float lod = alphaToMipLevel(alpha);
+//#define DEBUG_SPECULAR_LODS
+#ifdef DEBUG_SPECULAR_LODS
+    if (lod > 7.0)
+        return vec3(1.0, 0.0, 0.0);
+    else if (lod > 6.0)
+        return vec3(1.0, 0.333, 0.0);
+    else if (lod > 5.0)
+        return vec3(1.0, 1.0, 0.0);
+    else if (lod > 4.0)
+        return vec3(0.666, 1.0, 0.0);
+    else if (lod > 3.0)
+        return vec3(0.0, 1.0, 0.666);
+    else if (lod > 2.0)
+        return vec3(0.0, 0.666, 1.0);
+    else if (lod > 1.0)
+        return vec3(0.0, 0.0, 1.0);
+    else if (lod > 0.0)
+        return vec3(1.0, 0.0, 1.0);
+#endif
     vec3 specularSkyColor = textureLod(envLight.specular, l, lod).rgb;
     vec3 specular = specularSkyColor * specularFactor;
 
@@ -287,23 +335,28 @@ void main()
 {
     vec3 cLinear = vec3(0.0);
 
+    // Remap roughness for a perceptually more linear correspondence
+    float alpha = remapRoughness(roughness);
+
+
+    vec3 wNormal = normalize(worldNormal);
     vec3 worldView = normalize(eyePosition - worldPosition);
     for (int i = 0; i < envLightCount; ++i) {
-        cLinear += pbrIblModel(worldNormal,
+        cLinear += pbrIblModel(wNormal,
                                worldView,
                                baseColor.rgb,
                                metalness,
-                               roughness);
+                               alpha);
     }
 
     for (int i = 0; i < lightCount; ++i) {
         cLinear += pbrModel(i,
                             worldPosition,
-                            worldNormal,
+                            wNormal,
                             worldView,
                             baseColor.rgb,
                             metalness,
-                            roughness);
+                            alpha);
     }
 
     // Apply exposure correction

@@ -79,6 +79,7 @@ public:
 
 class QT3DRENDERSHARED_EXPORT QAbstractCollisionQueryService : public Qt3DCore::QAbstractServiceProvider
 {
+    Q_OBJECT
 public:
     enum QueryMode {
         FirstHit,
