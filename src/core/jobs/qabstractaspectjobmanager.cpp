@@ -43,6 +43,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+/*!
+    \class QAbstractAspectJobManager
+    \inmodule Qt3DCore
+    \brief A job manager for QAbstractAspect subclasses
+*/
 QAbstractAspectJobManager::QAbstractAspectJobManager(QObject *parent)
     : QObject(parent)
 {

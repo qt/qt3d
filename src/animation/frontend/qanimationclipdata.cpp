@@ -52,6 +52,11 @@ public:
     QString m_name;
 };
 
+/*!
+    \class QAnimationClipData
+    \inmodule Qt3DAnimation
+    \brief Class containing the animation data
+*/
 QAnimationClipData::QAnimationClipData()
     : d(new QAnimationClipDataPrivate)
 {
