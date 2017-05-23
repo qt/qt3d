@@ -53,13 +53,28 @@ class QLayerFilterPrivate;
 class QT3DRENDERSHARED_EXPORT QLayerFilter : public QFrameGraphNode
 {
     Q_OBJECT
+    Q_PROPERTY(FilterMode filterMode READ filterMode WRITE setFilterMode NOTIFY filterModeChanged)
 public:
+    enum FilterMode
+    {
+        AcceptMatchingLayers = 0,
+        DiscardMatchingLayers
+    };
+    Q_ENUM(FilterMode) // LOVC_EXLC_LINE
+
     explicit QLayerFilter(Qt3DCore::QNode *parent = nullptr);
     ~QLayerFilter();
 
     void addLayer(QLayer *layer);
     void removeLayer(QLayer *layer);
     QVector<QLayer *> layers() const;
+
+    FilterMode filterMode() const;
+    void setFilterMode(FilterMode filterMode);
+
+Q_SIGNALS:
+    void filterModeChanged(FilterMode filterMode);
+
 
 protected:
     explicit QLayerFilter(QLayerFilterPrivate &dd, Qt3DCore::QNode *parent = nullptr);

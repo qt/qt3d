@@ -34,6 +34,7 @@
 #include <Qt3DRender/private/filterlayerentityjob_p.h>
 #include <Qt3DRender/private/updatetreeenabledjob_p.h>
 #include <Qt3DRender/qlayer.h>
+#include <Qt3DRender/qlayerfilter.h>
 #include "testaspect.h"
 
 class tst_LayerFiltering : public QObject
@@ -45,11 +46,14 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::FilterLayerEntityJob filterJob;
+        Qt3DRender::QLayer frontendLayer;
 
         // THEN
         QCOMPARE(filterJob.hasLayerFilter(), false);
         QCOMPARE(filterJob.filteredEntities().size(), 0);
         QCOMPARE(filterJob.layers().size(), 0);
+        QCOMPARE(filterJob.filterMode(), Qt3DRender::QLayerFilter::AcceptMatchingLayers);
+        QCOMPARE(frontendLayer.recursive(), false);
     }
 
     void filterEntities_data()
@@ -57,6 +61,8 @@ private Q_SLOTS:
         QTest::addColumn<Qt3DCore::QEntity *>("entitySubtree");
         QTest::addColumn<Qt3DCore::QNodeIdVector>("layerIds");
         QTest::addColumn<bool>("hasLayerFilter");
+        QTest::addColumn<Qt3DRender::QLayerFilter::FilterMode>("filterMode");
+        QTest::addColumn<bool>("recursive");
         QTest::addColumn<Qt3DCore::QNodeIdVector>("expectedSelectedEntities");
 
 
@@ -70,8 +76,10 @@ private Q_SLOTS:
             Q_UNUSED(childEntity2);
             Q_UNUSED(childEntity3);
 
-            QTest::newRow("EntitiesNoLayerNoLayerFilter-ShouldSelectAll") << rootEntity
+            QTest::newRow("EntitiesNoLayerNoLayerFilterNoDiscardNoRecursive-ShouldSelectAll") << rootEntity
                                                                           << Qt3DCore::QNodeIdVector()
+                                                                          << false
+                                                                          << Qt3DRender::QLayerFilter::AcceptMatchingLayers
                                                                           << false
                                                                           << (Qt3DCore::QNodeIdVector()
                                                                               << rootEntity->id()
@@ -87,6 +95,51 @@ private Q_SLOTS:
             Qt3DCore::QEntity *childEntity2 = new Qt3DCore::QEntity(rootEntity);
             Qt3DCore::QEntity *childEntity3 = new Qt3DCore::QEntity(rootEntity);
 
+            Q_UNUSED(childEntity1);
+            Q_UNUSED(childEntity2);
+            Q_UNUSED(childEntity3);
+
+            QTest::newRow("EntitiesNoLayerNoLayerFilterNoDiscardNoRecursive-ShouldSelectAll") << rootEntity
+                                                                          << Qt3DCore::QNodeIdVector()
+                                                                          << false
+                                                                          << Qt3DRender::QLayerFilter::AcceptMatchingLayers
+                                                                          << false
+                                                                          << (Qt3DCore::QNodeIdVector()
+                                                                              << rootEntity->id()
+                                                                              << childEntity1->id()
+                                                                              << childEntity2->id()
+                                                                              << childEntity3->id()
+                                                                              );
+        }
+
+        {
+            Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
+            Qt3DCore::QEntity *childEntity1 = new Qt3DCore::QEntity(rootEntity);
+            Qt3DCore::QEntity *childEntity2 = new Qt3DCore::QEntity(rootEntity);
+            Qt3DCore::QEntity *childEntity3 = new Qt3DCore::QEntity(rootEntity);
+
+            Q_UNUSED(childEntity1);
+            Q_UNUSED(childEntity2);
+            Q_UNUSED(childEntity3);
+
+            QTest::newRow("EntitiesNoLayerNoLayerFilterNoDiscardNoRecursive-ShouldSelectAll") << rootEntity
+                                                                          << Qt3DCore::QNodeIdVector()
+                                                                          << false
+                                                                          << Qt3DRender::QLayerFilter::AcceptMatchingLayers
+                                                                          << false
+                                                                          << (Qt3DCore::QNodeIdVector()
+                                                                              << rootEntity->id()
+                                                                              << childEntity1->id()
+                                                                              << childEntity2->id()
+                                                                              << childEntity3->id()
+                                                                              );
+        }
+        {
+            Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
+            Qt3DCore::QEntity *childEntity1 = new Qt3DCore::QEntity(rootEntity);
+            Qt3DCore::QEntity *childEntity2 = new Qt3DCore::QEntity(rootEntity);
+            Qt3DCore::QEntity *childEntity3 = new Qt3DCore::QEntity(rootEntity);
+
 
             Q_UNUSED(childEntity1);
             Q_UNUSED(childEntity2);
@@ -95,6 +148,8 @@ private Q_SLOTS:
             QTest::newRow("EntityNoLayerWithLayerFilterWithNoFilter-ShouldSelectNone") << rootEntity
                                                                                        << Qt3DCore::QNodeIdVector()
                                                                                        << true
+                                                                                       << Qt3DRender::QLayerFilter::AcceptMatchingLayers
+                                                                                       << false
                                                                                        << Qt3DCore::QNodeIdVector();
         }
 
@@ -114,6 +169,8 @@ private Q_SLOTS:
             QTest::newRow("NoLayerWithLayerFilterWithFilter-ShouldSelectNone") << rootEntity
                                                                                << (Qt3DCore::QNodeIdVector() << layer->id())
                                                                                << true
+                                                                               << Qt3DRender::QLayerFilter::AcceptMatchingLayers
+                                                                               << false
                                                                                << Qt3DCore::QNodeIdVector();
         }
 
@@ -132,6 +189,8 @@ private Q_SLOTS:
             QTest::newRow("LayerWithLayerFilterWithFilter-ShouldSelectAllButRoot") << rootEntity
                                                                                    << (Qt3DCore::QNodeIdVector() << layer->id())
                                                                                    << true
+                                                                                   << Qt3DRender::QLayerFilter::AcceptMatchingLayers
+                                                                                   << false
                                                                                    << (Qt3DCore::QNodeIdVector() << childEntity1->id() << childEntity2->id() << childEntity3->id());
         }
 
@@ -151,6 +210,8 @@ private Q_SLOTS:
             QTest::newRow("LayerWithLayerFilterWithFilter-ShouldSelectChild2And3") << rootEntity
                                                                                    << (Qt3DCore::QNodeIdVector() << layer->id() << layer2->id())
                                                                                    << true
+                                                                                   << Qt3DRender::QLayerFilter::AcceptMatchingLayers
+                                                                                   << false
                                                                                    << (Qt3DCore::QNodeIdVector() << childEntity2->id() << childEntity3->id());
         }
 
@@ -170,6 +231,8 @@ private Q_SLOTS:
             QTest::newRow("LayerWithLayerFilterWithFilter-ShouldSelectNone") << rootEntity
                                                                              << (Qt3DCore::QNodeIdVector() << layer2->id())
                                                                              << true
+                                                                             << Qt3DRender::QLayerFilter::AcceptMatchingLayers
+                                                                             << false
                                                                              << Qt3DCore::QNodeIdVector();
         }
 
@@ -189,9 +252,74 @@ private Q_SLOTS:
             QTest::newRow("LayerWithEntityDisabled-ShouldSelectOnlyEntityEnabled") << rootEntity
                                                                                    << (Qt3DCore::QNodeIdVector() << layer->id())
                                                                                    << true
+                                                                                   << Qt3DRender::QLayerFilter::AcceptMatchingLayers
+                                                                                   << false
                                                                                    << (Qt3DCore::QNodeIdVector() << childEntity2->id() << childEntity3->id());
         }
 
+        {
+            Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
+            Qt3DCore::QEntity *childEntity1 = new Qt3DCore::QEntity(rootEntity);
+            Qt3DCore::QEntity *childEntity2 = new Qt3DCore::QEntity(rootEntity);
+            Qt3DCore::QEntity *childEntity3 = new Qt3DCore::QEntity(rootEntity);
+
+            Qt3DRender::QLayer *layer = new Qt3DRender::QLayer(rootEntity);
+            layer->setRecursive(true);
+            rootEntity->addComponent(layer);
+
+            QTest::newRow("RecursiveLayerOnRoot-ShouldSelectAll") << rootEntity
+                                                                                   << (Qt3DCore::QNodeIdVector() << layer->id())
+                                                                                   << true
+                                                                                   << Qt3DRender::QLayerFilter::AcceptMatchingLayers
+                                                                                   << true
+                                                                                   << (Qt3DCore::QNodeIdVector()
+                                                                                       << rootEntity->id()
+                                                                                       << childEntity1->id()
+                                                                                       << childEntity2->id()
+                                                                                       << childEntity3->id());
+        }
+
+        {
+            Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
+            Qt3DCore::QEntity *childEntity1 = new Qt3DCore::QEntity(rootEntity);
+            Qt3DCore::QEntity *childEntity2 = new Qt3DCore::QEntity(rootEntity);
+            Qt3DCore::QEntity *childEntity3 = new Qt3DCore::QEntity(rootEntity);
+
+            Q_UNUSED(childEntity1);
+            Q_UNUSED(childEntity2);
+            Q_UNUSED(childEntity3);
+
+            Qt3DRender::QLayer *layer = new Qt3DRender::QLayer(rootEntity);
+            layer->setRecursive(true);
+            rootEntity->addComponent(layer);
+
+            QTest::newRow("RecursiveLayerLayerFilterDiscardOnRoot-ShouldSelectNone") << rootEntity
+                                                                                   << (Qt3DCore::QNodeIdVector() << layer->id())
+                                                                                   << true
+                                                                                   << Qt3DRender::QLayerFilter::DiscardMatchingLayers
+                                                                                   << true
+                                                                                   << (Qt3DCore::QNodeIdVector());
+        }
+
+        {
+            Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
+            Qt3DCore::QEntity *childEntity1 = new Qt3DCore::QEntity(rootEntity);
+            Qt3DCore::QEntity *childEntity2 = new Qt3DCore::QEntity(rootEntity);
+            Qt3DCore::QEntity *childEntity3 = new Qt3DCore::QEntity(rootEntity);
+
+            Qt3DRender::QLayer *layer = new Qt3DRender::QLayer(rootEntity);
+            rootEntity->addComponent(layer);
+
+            QTest::newRow("LayerLayerFilterDiscardOnRoot-ShouldSelectAllButRoot") << rootEntity
+                                                                                   << (Qt3DCore::QNodeIdVector() << layer->id())
+                                                                                   << true
+                                                                                   << Qt3DRender::QLayerFilter::DiscardMatchingLayers
+                                                                                   << false
+                                                                                   << (Qt3DCore::QNodeIdVector()
+                                                                                       << childEntity1->id()
+                                                                                       << childEntity2->id()
+                                                                                       << childEntity3->id());
+        }
     }
 
     void filterEntities()
@@ -200,7 +328,11 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity *, entitySubtree);
         QFETCH(Qt3DCore::QNodeIdVector, layerIds);
         QFETCH(bool, hasLayerFilter);
+        QFETCH(Qt3DRender::QLayerFilter::FilterMode, filterMode);
+        QFETCH(bool, recursive);
         QFETCH(Qt3DCore::QNodeIdVector, expectedSelectedEntities);
+
+        Q_UNUSED(recursive);
 
         // GIVEN
         QScopedPointer<Qt3DRender::TestAspect> aspect(new Qt3DRender::TestAspect(entitySubtree));
@@ -215,6 +347,7 @@ private Q_SLOTS:
         Qt3DRender::Render::FilterLayerEntityJob filterJob;
         filterJob.setHasLayerFilter(hasLayerFilter);
         filterJob.setLayers(layerIds);
+        filterJob.setFilterMode(filterMode);
         filterJob.setManager(aspect->nodeManagers());
         filterJob.run();
 

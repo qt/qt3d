@@ -53,6 +53,7 @@ namespace Render {
 
 Layer::Layer()
     : BackendNode()
+    , m_recursive(false)
 {
 }
 
@@ -64,6 +65,36 @@ Layer::~Layer()
 void Layer::cleanup()
 {
     QBackendNode::setEnabled(false);
+}
+
+void Layer::sceneChangeEvent(const QSceneChangePtr &e)
+{
+    if (e->type() == PropertyUpdated) {
+        QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
+        QByteArray propertyName = propertyChange->propertyName();
+        if (propertyName == QByteArrayLiteral("recursive")) {
+            m_recursive = propertyChange->value().toBool();
+        }
+        markDirty(AbstractRenderer::AllDirty);
+    }
+    BackendNode::sceneChangeEvent(e);
+}
+
+void Layer::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QLayerData>>(change);
+    const auto &data = typedChange->data;
+    m_recursive = data.m_recursive;
+}
+
+bool Layer::recursive() const
+{
+    return m_recursive;
+}
+
+void Layer::setRecursive(bool recursive)
+{
+    m_recursive = recursive;
 }
 
 } // namespace Render

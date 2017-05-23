@@ -139,6 +139,7 @@ public:
         // Layer filtering
         m_filterEntityByLayerJob->setHasLayerFilter(rv->hasLayerFilter());
         m_filterEntityByLayerJob->setLayers(rv->layerFilter());
+        m_filterEntityByLayerJob->setFilterMode(rv->layerFilterFilterMode());
 
         // Material Parameter building
         for (const auto &materialGatherer : qAsConst(m_materialGathererJobs)) {

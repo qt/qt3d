@@ -53,6 +53,7 @@ namespace Render {
 
 LayerFilterNode::LayerFilterNode()
     : FrameGraphNode(FrameGraphNode::LayerFilter)
+    , m_filterMode(QLayerFilter::AcceptMatchingLayers)
 {
 }
 
@@ -62,6 +63,7 @@ void LayerFilterNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBaseP
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QLayerFilterData>>(change);
     const auto &data = typedChange->data;
     setLayerIds(data.layerIds);
+    m_filterMode = data.filterMode;
 }
 
 void LayerFilterNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -81,6 +83,14 @@ void LayerFilterNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
 
+    case PropertyUpdated: {
+        const auto change = qSharedPointerCast<QPropertyUpdatedChange>(e);
+        if (change->propertyName() == QByteArrayLiteral("filterMode")) {
+            m_filterMode = static_cast<QLayerFilter::FilterMode>(change->value().value<int>());
+            break;
+        }
+    }
+
     default:
         break;
     }
@@ -97,6 +107,11 @@ QNodeIdVector LayerFilterNode::layerIds() const
 void LayerFilterNode::setLayerIds(const QNodeIdVector &list)
 {
     m_layerIds = list;
+}
+
+QLayerFilter::FilterMode LayerFilterNode::filterMode() const
+{
+    return m_filterMode;
 }
 
 } // namespace Render

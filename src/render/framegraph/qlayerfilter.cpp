@@ -51,6 +51,7 @@ namespace Qt3DRender {
 
 QLayerFilterPrivate::QLayerFilterPrivate()
     : QFrameGraphNodePrivate()
+    , m_filterMode(QLayerFilter::AcceptMatchingLayers)
 {
 }
 
@@ -64,6 +65,17 @@ QLayerFilterPrivate::QLayerFilterPrivate()
     to draw in that branch of the frame graph. The Qt3DRender::QLayerFilter selects which
     entities to draw based on the Qt3DRender::QLayer instances added to the QLayerFilter
     and as components to the \l Qt3DCore::QEntity.
+
+    The Qt3DRender::QLayerFilter can be configured to select entities with a specific
+    Qt3DRender::QLayer or to discard entities with a specific Qt3DRender::QLayer
+    depending on the property discard. By default, entities referencing a Qt3DRender::QLayer
+    component also added to the QLayerFilter are selected.
+*/
+
+/*!
+    \property bool Qt3DRender::QLayerFilter::discards
+    Specifies if the entities should be selected or discarded.
+    By default, entities are selected.
 */
 
 /*!
@@ -78,6 +90,11 @@ QLayerFilterPrivate::QLayerFilterPrivate()
     to draw in that branch of the frame graph. The LayerFilter selects which
     entities to draw based on the \l Layer instances added to the LayerFilter
     and as components to the \l Entity.
+
+    The LayerFilter can be configured to select entities with a specific
+    \l Layer or to discard entities with a specific \l Layer
+    depending on the property discard. By default, entities referencing a \Layer
+    component also added to the LayerFilter are selected.
 */
 
 /*!
@@ -85,6 +102,12 @@ QLayerFilterPrivate::QLayerFilterPrivate()
     Holds a list of layers specifying the layers to select for drawing.
     \readonly
  */
+
+/*!
+    \qmlproperty bool Qt3DRender::LayerFilter::discard
+    Specifies if entities should be selected or discarded.
+    By default, entities are selected.
+*/
 
 /*!
     The constructor creates an instance with the specified \a parent.
@@ -159,12 +182,28 @@ QVector<QLayer *> QLayerFilter::layers() const
     return d->m_layers;
 }
 
+QLayerFilter::FilterMode QLayerFilter::filterMode() const
+{
+    Q_D(const QLayerFilter);
+    return d->m_filterMode;
+}
+
+void QLayerFilter::setFilterMode(QLayerFilter::FilterMode filterMode)
+{
+    Q_D(QLayerFilter);
+    if (d->m_filterMode != filterMode) {
+        d->m_filterMode = filterMode;
+        emit filterModeChanged(filterMode);
+    }
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QLayerFilter::createNodeCreationChange() const
 {
     auto creationChange = QFrameGraphNodeCreatedChangePtr<QLayerFilterData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QLayerFilter);
     data.layerIds = qIdsForNodes(d->m_layers);
+    data.filterMode = d->m_filterMode;
     return creationChange;
 }
 

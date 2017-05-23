@@ -57,6 +57,7 @@ FilterLayerEntityJob::FilterLayerEntityJob()
     : Qt3DCore::QAspectJob()
     , m_manager(nullptr)
     , m_hasLayerFilter(false)
+    , m_filterMode(QLayerFilter::AcceptMatchingLayers)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::LayerFiltering, layerFilterJobCounter++);
 }
@@ -81,11 +82,17 @@ void FilterLayerEntityJob::run()
     }
 }
 
+void FilterLayerEntityJob::setFilterMode(QLayerFilter::FilterMode filterMode)
+{
+   m_filterMode = filterMode;
+}
+
 // Note: we assume that m_layerIds contains only enabled layers
 // -> meaning that if an Entity references such a layer, it's enabled
 void FilterLayerEntityJob::filterLayerAndEntity()
 {
     EntityManager *entityManager = m_manager->renderNodesManager();
+    LayerManager *layerManager = m_manager->layerManager();
     const QVector<HEntity> handles = entityManager->activeHandles();
 
     for (const HEntity handle : handles) {
@@ -99,11 +106,87 @@ void FilterLayerEntityJob::filterLayerAndEntity()
         // An Entity is positively filtered if it contains at least one Layer component with the same id as the
         // layers selected by the LayerFilter
 
-        for (const Qt3DCore::QNodeId id : entityLayers) {
-            if (m_layerIds.contains(id)) {
-                m_filteredEntities.push_back(entity);
-                break;
+        // If !discard, as soon as one entity layer is managed by the FilterLayer, accept the entity
+        switch (m_filterMode) {
+        case QLayerFilter::AcceptMatchingLayers: {
+            // Be aware that the same entity may appear in the filteredEntities vector, is this a problem?
+            for (const Qt3DCore::QNodeId id : entityLayers) {
+                bool entityIsAlreadyAccepted = false;
+                if (m_layerIds.contains(id)) {
+                    // When we found a layer in the entity that matches a layer in the LayerFilter
+
+                    // If the entity hasn't been already accepted, accept it
+                    if (!entityIsAlreadyAccepted) {
+                        m_filteredEntities.push_back(entity);
+                        entityIsAlreadyAccepted = true;
+                    }
+
+                    Layer *layer = layerManager->lookupResource(id);
+
+                    // If the found layer is recursive, accept children and break
+                    if (layer->recursive()) {
+                        QVector<Entity*> childEntities = entity->children();
+                        for (int i = 0; i < childEntities.size(); ++i) {
+                            Entity *childEntity = childEntities[i];
+                            if (childEntity->isTreeEnabled()) {
+                                m_filteredEntities.push_back(childEntity);
+
+                                // Add children of the child entity (so that is recursive in the tree)
+                                const QVector<Entity*> childChildEntities = childEntity->children();
+                                for (Entity *childChildEntity : childChildEntities)
+                                    childEntities.push_back(childChildEntity);
+                            }
+                        }
+                        break;
+                    }
+
+                    // If the layer is not recursive, maybe another one in the same entity it is, so continue searching
+                }
             }
+            break;
+        }
+        case QLayerFilter::DiscardMatchingLayers: {
+            // If discard, the entity must not contain any of the layers managed by the FilterLayer
+
+            // Bootstrap accepting the entity and the children
+            bool acceptEntity = true;
+            bool acceptRecursively = true;
+            bool entityHasLayer = entityLayers.size() != 0;
+
+            // Check if the entity must be dropped and if it must drop also its children
+            for (const Qt3DCore::QNodeId id : entityLayers) {
+                if (m_layerIds.contains(id)) {
+                    acceptEntity = false;
+
+                    Layer *layer = layerManager->lookupResource(id);
+                    if (layer->recursive()) {
+                        acceptRecursively = false;
+                        break;
+                    }
+                }
+            }
+
+            if (entityHasLayer && acceptEntity)
+                m_filteredEntities.push_back(entity);
+
+            if (acceptRecursively) {
+                QVector<Entity*> childEntities = entity->children();
+                for (int i = 0; i < childEntities.size(); ++i) {
+                    Entity *childEntity = childEntities[i];
+                    if (childEntity->isTreeEnabled()) {
+                        m_filteredEntities.push_back(childEntity);
+
+                        // Add children of the child entity (so that is recursive in the tree)
+                        const QVector<Entity*> childChildEntities = childEntity->children();
+                        for (Entity *childChildEntity : childChildEntities)
+                            childEntities.push_back(childChildEntity);
+                    }
+                }
+            }
+            break;
+        }
+        default:
+            break;
         }
     }
 }

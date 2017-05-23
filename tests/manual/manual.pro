@@ -50,7 +50,8 @@ SUBDIRS += \
     distancefieldtext \
     mesh-morphing \
     anim-viewer \
-    animation-keyframe-programmatic
+    animation-keyframe-programmatic \
+    layerfilter-qml
 
 qtHaveModule(widgets): {
     SUBDIRS += \

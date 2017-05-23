@@ -64,7 +64,13 @@ class QT3DRENDERSHARED_PRIVATE_EXPORT QLayerPrivate : public Qt3DCore::QComponen
 public:
     QLayerPrivate();
 
+    bool m_recursive;
+
     Q_DECLARE_PUBLIC(QLayer)
+};
+
+struct QLayerData {
+    bool m_recursive;
 };
 
 } // namespace Qt3DRender

@@ -52,13 +52,13 @@
 //
 
 #include <private/qframegraphnode_p.h>
+#include <Qt3DRender/qlayerfilter.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
 class QLayer;
-class QLayerFilter;
 
 class QLayerFilterPrivate : public QFrameGraphNodePrivate
 {
@@ -67,11 +67,13 @@ public:
 
     Q_DECLARE_PUBLIC(QLayerFilter)
     QVector<QLayer*> m_layers;
+    QLayerFilter::FilterMode m_filterMode;
 };
 
 struct QLayerFilterData
 {
     Qt3DCore::QNodeIdVector layerIds;
+    QLayerFilter::FilterMode filterMode;
 };
 
 } // namespace Qt3DRender

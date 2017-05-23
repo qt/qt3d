@@ -54,6 +54,7 @@
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
+#include <Qt3DRender/qlayerfilter.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -80,6 +81,9 @@ public:
     // QAspectJob interface
     void run() Q_DECL_FINAL;
 
+    void setFilterMode(QLayerFilter::FilterMode filterMode);
+    bool filterMode() const {return m_filterMode;}
+
 private:
     void filterLayerAndEntity();
     void selectAllEntities();
@@ -88,6 +92,7 @@ private:
     Qt3DCore::QNodeIdVector m_layerIds;
     QVector<Entity *> m_filteredEntities;
     bool m_hasLayerFilter;
+    QLayerFilter::FilterMode m_filterMode;
 };
 
 typedef QSharedPointer<FilterLayerEntityJob> FilterLayerEntityJobPtr;

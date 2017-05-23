@@ -52,13 +52,12 @@
 //
 
 #include <Qt3DRender/private/framegraphnode_p.h>
+#include <Qt3DRender/QLayerFilter>
 #include <QStringList>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QLayerFilter;
 
 namespace Render {
 
@@ -73,10 +72,13 @@ public:
     Qt3DCore::QNodeIdVector layerIds() const;
     void setLayerIds(const Qt3DCore::QNodeIdVector &list);
 
+    QLayerFilter::FilterMode filterMode() const;
+
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
     Qt3DCore::QNodeIdVector m_layerIds;
+    QLayerFilter::FilterMode m_filterMode;
 };
 
 } // namespace Render

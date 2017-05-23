@@ -54,6 +54,7 @@
 
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qclearbuffers.h>
+#include <Qt3DRender/qlayerfilter.h>
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/clearbuffers_p.h>
 #include <Qt3DRender/private/cameralens_p.h>
@@ -153,6 +154,8 @@ public:
     inline bool hasLayerFilter() const Q_DECL_NOTHROW { return m_data.m_hasLayerFilter; }
     inline void appendLayerFilter(const Qt3DCore::QNodeIdVector &layerIds) Q_DECL_NOTHROW { m_data.m_layerIds << layerIds; }
     inline Qt3DCore::QNodeIdVector layerFilter() const Q_DECL_NOTHROW { return m_data.m_layerIds; }
+    inline QLayerFilter::FilterMode layerFilterFilterMode() const Q_DECL_NOTHROW { return m_data.m_layerFilterFilterMode; }
+    inline void setLayerFilterFilterMode(QLayerFilter::FilterMode filterMode) Q_DECL_NOTHROW { m_data.m_layerFilterFilterMode = filterMode; }
 
     inline void setRenderPassFilter(const RenderPassFilter *rpFilter) Q_DECL_NOTHROW { m_data.m_passFilter = rpFilter; }
     inline const RenderPassFilter *renderPassFilter() const Q_DECL_NOTHROW { return m_data.m_passFilter; }
@@ -238,6 +241,7 @@ public:
             , m_techniqueFilter(nullptr)
             , m_passFilter(nullptr)
             , m_hasLayerFilter(false)
+            , m_layerFilterFilterMode(QLayerFilter::AcceptMatchingLayers)
         {
         }
         CameraLens *m_renderCameraLens;
@@ -247,6 +251,7 @@ public:
         QMatrix4x4 m_viewMatrix;
         QMatrix4x4 m_viewProjectionMatrix;
         bool m_hasLayerFilter;
+        QLayerFilter::FilterMode m_layerFilterFilterMode;
         Qt3DCore::QNodeIdVector m_layerIds;
         QVector<Qt3DRender::QSortPolicy::SortType> m_sortingTypes;
         QVector3D m_eyePos;

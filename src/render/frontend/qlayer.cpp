@@ -46,6 +46,7 @@ namespace Qt3DRender {
 
 QLayerPrivate::QLayerPrivate()
     : QComponentPrivate()
+    , m_recursive(false)
 {
 }
 
@@ -58,7 +59,7 @@ QLayerPrivate::QLayerPrivate()
     Qt3DRender::QLayer works in conjunction with the Qt3DRender::QLayerFilter in the FrameGraph.
     \sa Qt3DRender::QLayerFilter
 
-    Qt3DRender::QLayer doesn't define any new properties but is supposed to only be referenced.
+    A QLayer can be applied to a subtree of entities by setting the recursive property to true.
 
     \code
      #include <Qt3DCore/QEntity>
@@ -73,6 +74,7 @@ QLayerPrivate::QLayerPrivate()
     Qt3DCore::QEntity *renderableEntity = new Qt3DCore::Qt3DCore::QEntity(rootEntity);
     Qt3DRender::QGeometryRenderer *geometryRenderer = new Qt3DCore::QGeometryRenderer(renderableEntity);
     Qt3DRender::QLayer *layer1 = new Qt3DCore::QLayer(renderableEntity);
+    layer1->setRecursive(true);
     renderableEntity->addComponent(geometryRenderer);
     renderableEntity->addComponent(layer1);
 
@@ -86,6 +88,10 @@ QLayerPrivate::QLayerPrivate()
     ...
     \endcode
 */
+/*!
+    \property QLayer::recursive
+    Specifies if the layer is also applied to the entity subtree.
+*/
 
 /*!
     \qmltype Layer
@@ -98,7 +104,7 @@ QLayerPrivate::QLayerPrivate()
 
     Layer works in conjunction with the LayerFilter in the FrameGraph.
 
-    Layer doesn't define any new properties but is supposed to only be referenced.
+    A Layer can be applied to a subtree of entities by setting the recursive property to true.
 
     \code
     import Qt3D.Core 2.0
@@ -125,7 +131,10 @@ QLayerPrivate::QLayerPrivate()
         // Scene
         Camera { id: mainCamera }
 
-        Layer { id: layer1 }
+        Layer {
+            id: layer1
+            recursive: true
+        }
 
         GeometryRenderer { id: mesh }
 
@@ -135,6 +144,12 @@ QLayerPrivate::QLayerPrivate()
         }
     }
     \endcode
+*/
+
+/*!
+    \qmlproperty bool Layer::recursive
+
+    Specifies if the layer is also applied to the entity subtree.
 */
 
 /*! \fn Qt3DRender::QLayer::QLayer(Qt3DCore::QNode *parent)
@@ -151,10 +166,34 @@ QLayer::~QLayer()
 {
 }
 
+bool QLayer::recursive() const
+{
+    Q_D(const QLayer);
+    return d->m_recursive;
+}
+
+void QLayer::setRecursive(bool recursive)
+{
+    Q_D(QLayer);
+    if (d->m_recursive != recursive) {
+        d->m_recursive = recursive;
+        emit recursiveChanged();
+    }
+}
+
 /*! \internal */
 QLayer::QLayer(QLayerPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QLayer::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QLayerData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QLayer);
+    data.m_recursive = d->m_recursive;
+    return creationChange;
 }
 
 } // namespace Qt3DRender
