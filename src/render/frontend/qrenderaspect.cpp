@@ -75,14 +75,18 @@
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qfrustumculling.h>
 #include <Qt3DRender/qabstractlight.h>
+#include <Qt3DRender/qenvironmentlight.h>
 #include <Qt3DRender/qdispatchcompute.h>
 #include <Qt3DRender/qcomputecommand.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
 #include <Qt3DRender/qrendersettings.h>
 #include <Qt3DRender/qrendercapture.h>
+#include <Qt3DRender/qbuffercapture.h>
 #include <Qt3DRender/qmemorybarrier.h>
+
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
+#include <Qt3DRender/private/cameralens_p.h>
 #include <Qt3DRender/private/filterkey_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/renderer_p.h>
@@ -118,20 +122,26 @@
 #include <Qt3DRender/private/qsceneimportfactory_p.h>
 #include <Qt3DRender/private/frustumculling_p.h>
 #include <Qt3DRender/private/light_p.h>
+#include <Qt3DRender/private/environmentlight_p.h>
 #include <Qt3DRender/private/dispatchcompute_p.h>
 #include <Qt3DRender/private/computecommand_p.h>
 #include <Qt3DRender/private/rendersurfaceselector_p.h>
 #include <Qt3DRender/private/rendersettings_p.h>
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
+#include <Qt3DRender/private/buffercapture_p.h>
 #include <Qt3DRender/private/technique_p.h>
 #include <Qt3DRender/private/offscreensurfacehelper_p.h>
 #include <Qt3DRender/private/memorybarrier_p.h>
+
+#include <private/qrenderpluginfactory_p.h>
+#include <private/qrenderplugin_p.h>
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 
 #include <Qt3DCore/qnode.h>
+#include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/private/qservicelocator_p.h>
 
 #include <QDebug>
@@ -162,7 +172,7 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_renderType(type)
     , m_offscreenHelper(nullptr)
 {
-    // Load the scene parsers
+    m_instances.append(this);
     loadSceneParsers();
 }
 
@@ -175,6 +185,18 @@ QRenderAspectPrivate::~QRenderAspectPrivate()
     if (m_renderer != nullptr)
         qWarning() << Q_FUNC_INFO << "The renderer should have been deleted when reaching this point (this warning may be normal when running tests)";
     delete m_nodeManagers;
+    m_instances.removeAll(this);
+}
+
+QRenderAspectPrivate *QRenderAspectPrivate::findPrivate(Qt3DCore::QAspectEngine *engine)
+{
+    const QVector<QAbstractAspect*> aspects = engine->aspects();
+    for (QAbstractAspect* aspect : aspects) {
+        QRenderAspect *renderAspect = qobject_cast<QRenderAspect *>(aspect);
+        if (renderAspect)
+            return static_cast<QRenderAspectPrivate *>(renderAspect->d_ptr.data());
+    }
+    return nullptr;
 }
 
 /*! \internal */
@@ -190,7 +212,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<Qt3DCore::QEntity>(QSharedPointer<Render::RenderEntityFunctor>::create(m_renderer, m_nodeManagers));
     q->registerBackendType<Qt3DCore::QTransform>(QSharedPointer<Render::NodeFunctor<Render::Transform, Render::TransformManager> >::create(m_renderer));
 
-    q->registerBackendType<Qt3DRender::QCameraLens>(QSharedPointer<Render::NodeFunctor<Render::CameraLens, Render::CameraManager> >::create(m_renderer));
+    q->registerBackendType<Qt3DRender::QCameraLens>(QSharedPointer<Render::CameraLensFunctor>::create(m_renderer, q));
     q->registerBackendType<QLayer>(QSharedPointer<Render::NodeFunctor<Render::Layer, Render::LayerManager> >::create(m_renderer));
     q->registerBackendType<QLevelOfDetail>(QSharedPointer<Render::NodeFunctor<Render::LevelOfDetail, Render::LevelOfDetailManager> >::create(m_renderer));
     q->registerBackendType<QLevelOfDetailSwitch>(QSharedPointer<Render::NodeFunctor<Render::LevelOfDetail, Render::LevelOfDetailManager> >::create(m_renderer));
@@ -215,6 +237,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QEffect>(QSharedPointer<Render::NodeFunctor<Render::Effect, Render::EffectManager> >::create(m_renderer));
     q->registerBackendType<QFilterKey>(QSharedPointer<Render::NodeFunctor<Render::FilterKey, Render::FilterKeyManager> >::create(m_renderer));
     q->registerBackendType<QAbstractLight>(QSharedPointer<Render::RenderLightFunctor>::create(m_renderer, m_nodeManagers));
+    q->registerBackendType<QEnvironmentLight>(QSharedPointer<Render::NodeFunctor<Render::EnvironmentLight, Render::EnvironmentLightManager> >::create(m_renderer));
     q->registerBackendType<QMaterial>(QSharedPointer<Render::NodeFunctor<Render::Material, Render::MaterialManager> >::create(m_renderer));
     q->registerBackendType<QParameter>(QSharedPointer<Render::NodeFunctor<Render::Parameter, Render::ParameterManager> >::create(m_renderer));
     q->registerBackendType<QRenderPass>(QSharedPointer<Render::NodeFunctor<Render::RenderPass, Render::RenderPassManager> >::create(m_renderer));
@@ -238,15 +261,21 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QTechniqueFilter>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::TechniqueFilter, QTechniqueFilter> >::create(m_renderer));
     q->registerBackendType<QViewport>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::ViewportNode, QViewport> >::create(m_renderer));
     q->registerBackendType<QRenderCapture>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::RenderCapture, QRenderCapture> >::create(m_renderer));
+    q->registerBackendType<QBufferCapture>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::BufferCapture, QBufferCapture> >::create(m_renderer));
     q->registerBackendType<QMemoryBarrier>(QSharedPointer<Render::FrameGraphNodeFunctor<Render::MemoryBarrier, QMemoryBarrier> >::create(m_renderer));
 
     // Picking
     q->registerBackendType<QObjectPicker>(QSharedPointer<Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager> >::create(m_renderer));
+
+    // Plugins
+    for (const QString &plugin : m_pluginConfig)
+        loadRenderPlugin(plugin);
 }
 
 /*! \internal */
 void QRenderAspectPrivate::unregisterBackendTypes()
 {
+    Q_Q(QRenderAspect);
     unregisterBackendType<Qt3DCore::QEntity>();
     unregisterBackendType<Qt3DCore::QTransform>();
 
@@ -273,6 +302,7 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     unregisterBackendType<QEffect>();
     unregisterBackendType<QFilterKey>();
     unregisterBackendType<QAbstractLight>();
+    unregisterBackendType<QEnvironmentLight>();
     unregisterBackendType<QMaterial>();
     unregisterBackendType<QParameter>();
     unregisterBackendType<QRenderPass>();
@@ -295,10 +325,22 @@ void QRenderAspectPrivate::unregisterBackendTypes()
     unregisterBackendType<QTechniqueFilter>();
     unregisterBackendType<QViewport>();
     unregisterBackendType<QRenderCapture>();
+    unregisterBackendType<QBufferCapture>();
     unregisterBackendType<QMemoryBarrier>();
 
     // Picking
     unregisterBackendType<QObjectPicker>();
+
+    // Plugins
+    for (Render::QRenderPlugin *plugin : qAsConst(m_renderPlugins))
+        plugin->unregisterBackendTypes(q);
+}
+
+void QRenderAspectPrivate::registerBackendType(const QMetaObject &obj,
+                                               const QBackendNodeMapperPtr &functor)
+{
+    Q_Q(QRenderAspect);
+    q->registerBackendType(obj, functor);
 }
 
 /*!
@@ -360,7 +402,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     d->m_renderer->dumpInfo();
 #endif
 
-    // Create jobs that will get exectued by the threadpool
+    // Create jobs that will get executed by the threadpool
     QVector<QAspectJobPtr> jobs;
 
     // 1 LoadBufferJobs, GeometryJobs, SceneLoaderJobs, LoadTextureJobs
@@ -379,6 +421,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         // don't spawn any jobs, if the renderer decides to skip this frame
         if (!d->m_renderer->shouldRender()) {
             d->m_renderer->skipNextFrame();
+            QThread::msleep(1);
             return jobs;
         }
 
@@ -456,7 +499,7 @@ void QRenderAspect::onRegistered()
     d->m_renderer->setNodeManagers(d->m_nodeManagers);
 
     // Create a helper for deferring creation of an offscreen surface used during cleanup
-    // to the main thread, after we knwo what the surface format in use is.
+    // to the main thread, after we know what the surface format in use is.
     d->m_offscreenHelper = new Render::OffscreenSurfaceHelper(d->m_renderer);
     d->m_offscreenHelper->moveToThread(QCoreApplication::instance()->thread());
     d->m_renderer->setOffscreenSurfaceHelper(d->m_offscreenHelper);
@@ -475,7 +518,8 @@ void QRenderAspect::onRegistered()
                                                        advanceService);
         }
 
-        d->m_renderer->setServices(d->services());
+        if (d->services())
+            d->m_renderer->setServices(d->services());
         d->m_initialized = true;
     }
 
@@ -534,6 +578,39 @@ void QRenderAspectPrivate::loadSceneParsers()
         QSceneImporter *sceneIOHandler = QSceneImportFactory::create(key, QStringList());
         if (sceneIOHandler != nullptr)
             m_sceneImporter.append(sceneIOHandler);
+    }
+}
+
+void QRenderAspectPrivate::loadRenderPlugin(const QString &pluginName)
+{
+    Q_Q(QRenderAspect);
+    const QStringList keys = Render::QRenderPluginFactory::keys();
+    if (!keys.contains(pluginName))
+        return;
+
+    if (m_pluginConfig.contains(pluginName) && !m_loadedPlugins.contains(pluginName)) {
+        Render::QRenderPlugin *plugin
+                = Render::QRenderPluginFactory::create(pluginName, QStringList());
+        if (plugin != nullptr) {
+            m_loadedPlugins.append(pluginName);
+            m_renderPlugins.append(plugin);
+            plugin->registerBackendTypes(q, m_renderer);
+        }
+    }
+}
+
+QVector<QString> QRenderAspectPrivate::m_pluginConfig;
+QMutex QRenderAspectPrivate::m_pluginLock;
+QVector<QRenderAspectPrivate *> QRenderAspectPrivate::m_instances;
+
+void QRenderAspectPrivate::configurePlugin(const QString &plugin)
+{
+    QMutexLocker lock(&m_pluginLock);
+    if (!m_pluginConfig.contains(plugin)) {
+        m_pluginConfig.append(plugin);
+
+        for (QRenderAspectPrivate *instance : qAsConst(m_instances))
+            instance->loadRenderPlugin(plugin);
     }
 }
 

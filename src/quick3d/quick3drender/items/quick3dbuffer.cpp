@@ -37,10 +37,10 @@
 **
 ****************************************************************************/
 
-#include <QJSValue>
-#include <QQmlEngine>
+#include <QtQml/QJSValue>
+#include <QtQml/QQmlEngine>
 
-#include "quick3dbuffer_p.h"
+#include <Qt3DQuickRender/private/quick3dbuffer_p.h>
 #include <QtQml/private/qqmlengine_p.h>
 #include <QtQml/private/qjsvalue_p.h>
 #include <QtQml/private/qv4typedarray_p.h>

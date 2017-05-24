@@ -43,10 +43,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-Q_LOGGING_CATEGORY(Nodes, "Qt3D.Core.Nodes")
-Q_LOGGING_CATEGORY(Aspects, "Qt3D.Core.Aspects")
-Q_LOGGING_CATEGORY(Resources, "Qt3D.Core.Resources")
-Q_LOGGING_CATEGORY(ChangeArbiter, "Qt3D.Core.ChangeArbiter")
+Q_LOGGING_CATEGORY(Nodes, "Qt3D.Core.Nodes", QtWarningMsg);
+Q_LOGGING_CATEGORY(Aspects, "Qt3D.Core.Aspects", QtWarningMsg);
+Q_LOGGING_CATEGORY(Resources, "Qt3D.Core.Resources", QtWarningMsg);
+Q_LOGGING_CATEGORY(ChangeArbiter, "Qt3D.Core.ChangeArbiter", QtWarningMsg);
 
 } // Qt3D
 

@@ -51,9 +51,9 @@
 // We mean it.
 //
 
+#include <Qt3DInput/QMouseEvent>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
-#include <QMouseEvent>
 
 QT_BEGIN_NAMESPACE
 
@@ -66,8 +66,11 @@ class MouseEventDispatcherJob : public Qt3DCore::QAspectJob
 {
 public:
     explicit MouseEventDispatcherJob(Qt3DCore::QNodeId input,
-                                     const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &mouseEvents,
-                                     const QList<QT_PREPEND_NAMESPACE(QWheelEvent)> &wheelEvents);
+                                     const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &mouseEvents
+#if QT_CONFIG(wheelevent)
+                                   , const QList<QT_PREPEND_NAMESPACE(QWheelEvent)> &wheelEvents
+#endif
+                                                                                                );
     void setInputHandler(InputHandler *handler);
     void run() Q_DECL_FINAL;
 
@@ -75,7 +78,9 @@ private:
     InputHandler *m_inputHandler;
     const Qt3DCore::QNodeId m_mouseInput;
     const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> m_mouseEvents;
+#if QT_CONFIG(wheelevent)
     const QList<QT_PREPEND_NAMESPACE(QWheelEvent)> m_wheelEvents;
+#endif
 };
 
 } // namespace Input

@@ -39,6 +39,13 @@
         <file>shaders/gl3/unlittexture.frag</file>
         <file>shaders/es2/unlittexture.frag</file>
         <file>shaders/es2/unlittexture.vert</file>
+        <file>shaders/gl3/metalrough.vert</file>
+        <file>shaders/gl3/metalrough.frag</file>
+        <file>shaders/gl3/metalroughuniform.frag</file>
+        <file>shaders/gl3/distancefieldtext.vert</file>
+        <file>shaders/gl3/distancefieldtext.frag</file>
+        <file>shaders/es2/distancefieldtext.frag</file>
+        <file>shaders/es2/distancefieldtext.vert</file>
         <file>shaders/gl3/morphphong.vert</file>
         <file>shaders/es2/morphphong.vert</file>
     </qresource>

@@ -96,9 +96,9 @@ Entity {
 
         material: NormalDiffuseSpecularMapMaterial {
             ambient: Qt.rgba( 0.05, 0.05, 0.05, 1.0 )
-            diffuse:  "assets/textures/pattern_09/diffuse.webp"
-            specular: "assets/textures/pattern_09/specular.webp"
-            normal:   "assets/textures/pattern_09/normal.webp"
+            diffuse:  TextureLoader { source: "assets/textures/pattern_09/diffuse.webp" }
+            specular: TextureLoader { source: "assets/textures/pattern_09/specular.webp" }
+            normal:   TextureLoader { source: "assets/textures/pattern_09/normal.webp" }
             textureScale: 10.0
             shininess: 10.0
         }

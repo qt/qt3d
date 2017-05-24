@@ -39,31 +39,36 @@
 
 #include "assimpimporter.h"
 
-#include <Qt3DCore/private/qabstractnodefactory_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DRender/qcameralens.h>
-#include <Qt3DRender/qparameter.h>
-#include <Qt3DRender/qeffect.h>
-#include <Qt3DRender/qmesh.h>
-#include <Qt3DRender/qmaterial.h>
-#include <Qt3DRender/qbuffer.h>
+#include <Qt3DExtras/qdiffusemapmaterial.h>
+#include <Qt3DExtras/qdiffusespecularmapmaterial.h>
+#include <Qt3DExtras/qphongmaterial.h>
 #include <Qt3DRender/qattribute.h>
+#include <Qt3DRender/qbuffer.h>
+#include <Qt3DRender/qcameralens.h>
+#include <Qt3DRender/qeffect.h>
+#include <Qt3DRender/qgeometry.h>
+#include <Qt3DRender/qgeometryrenderer.h>
+#include <Qt3DRender/qmaterial.h>
+#include <Qt3DRender/qmesh.h>
+#include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qtextureimagedatagenerator.h>
 #include <Qt3DExtras/qmorphphongmaterial.h>
 #include <Qt3DExtras/qdiffusemapmaterial.h>
 #include <Qt3DExtras/qdiffusespecularmapmaterial.h>
 #include <Qt3DExtras/qphongmaterial.h>
-#include <Qt3DExtras/qkeyframeanimation.h>
-#include <Qt3DExtras/qmorphinganimation.h>
-#include <QFileInfo>
-#include <QColor>
+#include <Qt3DAnimation/qkeyframeanimation.h>
+#include <Qt3DAnimation/qmorphinganimation.h>
+#include <QtCore/QFileInfo>
+#include <QtGui/QColor>
+
 #include <qmath.h>
+
+#include <Qt3DCore/private/qabstractnodefactory_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
-#include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/qgeometry.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -83,7 +88,7 @@ namespace Qt3DRender {
     It should be noted that Assimp aiString is explicitly defined to be UTF-8.
 */
 
-Q_LOGGING_CATEGORY(AssimpImporterLog, "Qt3D.AssimpImporter")
+Q_LOGGING_CATEGORY(AssimpImporterLog, "Qt3D.AssimpImporter", QtWarningMsg)
 
 namespace {
 
@@ -137,7 +142,7 @@ QMatrix4x4 aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix) Q_DECL_NOTHROW
 /*!
  * Returns a QString from \a str;
  */
-static inline QString aiStringToQString(const aiString &str)
+inline QString aiStringToQString(const aiString &str)
 {
     return QString::fromUtf8(str.data, int(str.length));
 }
@@ -241,6 +246,21 @@ QAttribute *createAttribute(QBuffer *buffer,
     return attribute;
 }
 
+QTextureWrapMode::WrapMode wrapModeFromaiTextureMapMode(int mode)
+{
+    switch (mode) {
+    case aiTextureMapMode_Wrap:
+        return QTextureWrapMode::Repeat;
+    case aiTextureMapMode_Mirror:
+        return QTextureWrapMode::MirroredRepeat;
+    case aiTextureMapMode_Decal:
+        return QTextureWrapMode::ClampToBorder;
+    case aiTextureMapMode_Clamp:
+    default:
+        return QTextureWrapMode::ClampToEdge;
+    }
+}
+
 } // anonymous
 
 QStringList AssimpImporter::assimpSupportedFormatsList = AssimpImporter::assimpSupportedFormats();
@@ -260,6 +280,7 @@ QStringList AssimpImporter::assimpSupportedFormats()
     formats.append(QStringLiteral("acc"));
     formats.append(QStringLiteral("ase"));
     formats.append(QStringLiteral("ask"));
+    formats.append(QStringLiteral("assbin"));
     formats.append(QStringLiteral("b3d"));
     formats.append(QStringLiteral("blend"));
     formats.append(QStringLiteral("bvh"));
@@ -268,6 +289,7 @@ QStringList AssimpImporter::assimpSupportedFormats()
     formats.append(QStringLiteral("dae"));
     formats.append(QStringLiteral("dxf"));
     formats.append(QStringLiteral("enff"));
+    formats.append(QStringLiteral("fbx"));
     formats.append(QStringLiteral("hmp"));
     formats.append(QStringLiteral("irr"));
     formats.append(QStringLiteral("irrmesh"));
@@ -288,6 +310,7 @@ QStringList AssimpImporter::assimpSupportedFormats()
     formats.append(QStringLiteral("nff"));
     formats.append(QStringLiteral("obj"));
     formats.append(QStringLiteral("off"));
+    formats.append(QStringLiteral("ogex"));
     formats.append(QStringLiteral("pk3"));
     formats.append(QStringLiteral("ply"));
     formats.append(QStringLiteral("prj"));
@@ -295,6 +318,7 @@ QStringList AssimpImporter::assimpSupportedFormats()
     formats.append(QStringLiteral("q3s"));
     formats.append(QStringLiteral("raw"));
     formats.append(QStringLiteral("scn"));
+    formats.append(QStringLiteral("sib"));
     formats.append(QStringLiteral("smd"));
     formats.append(QStringLiteral("stl"));
     formats.append(QStringLiteral("ter"));
@@ -302,7 +326,6 @@ QStringList AssimpImporter::assimpSupportedFormats()
     formats.append(QStringLiteral("vta"));
     formats.append(QStringLiteral("x"));
     formats.append(QStringLiteral("xml"));
-    formats.append(QStringLiteral("fbx"));
 
     return formats;
 }
@@ -352,17 +375,15 @@ AssimpImporter::~AssimpImporter()
 }
 
 /*!
- *  Returns \c true if the provided \a path has a suffix supported
+ *  Returns \c true if the extensions are supported
  *  by the Assimp Assets importer.
  */
-bool AssimpImporter::isAssimpPath(const QString &path)
+bool AssimpImporter::areAssimpExtensions(const QStringList &extensions)
 {
-    QFileInfo fileInfo(path);
-
-    if (!fileInfo.exists() ||
-            !AssimpImporter::assimpSupportedFormatsList.contains(fileInfo.suffix().toLower()))
-        return false;
-    return true;
+    for (const auto ext : qAsConst(extensions))
+        if (AssimpImporter::assimpSupportedFormatsList.contains(ext.toLower()))
+            return true;
+    return false;
 }
 
 /*!
@@ -382,13 +403,21 @@ void AssimpImporter::setSource(const QUrl &source)
 }
 
 /*!
+ * Sets the \a source used by the parser to load the asset file.
+ * If the file is valid, this will trigger parsing of the file.
+ */
+void AssimpImporter::setData(const QByteArray &data, const QString &basePath)
+{
+    readSceneData(data, basePath);
+}
+
+/*!
  * Returns \c true if the extension of \a source is supported by
  * the assimp parser.
  */
-bool AssimpImporter::isFileTypeSupported(const QUrl &source) const
+bool AssimpImporter::areFileTypesSupported(const QStringList &extensions) const
 {
-    const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
-    return AssimpImporter::isAssimpPath(path);
+    return AssimpImporter::areAssimpExtensions(extensions);
 }
 
 /*!
@@ -420,7 +449,7 @@ Qt3DCore::QEntity *AssimpImporter::scene(const QString &id)
     if (m_scene->m_animations.size() > 0) {
         qWarning() << "No target found for " << m_scene->m_animations.size() << " animations!";
 
-        for (Qt3DExtras::QKeyframeAnimation *anim : m_scene->m_animations)
+        for (Qt3DAnimation::QKeyframeAnimation *anim : qAsConst(m_scene->m_animations))
             delete anim;
         m_scene->m_animations.clear();
     }
@@ -472,24 +501,24 @@ Qt3DCore::QEntity *AssimpImporter::node(aiNode *node)
         if (m_scene->m_materials.contains(materialIndex))
             material = m_scene->m_materials[materialIndex];
 
-        QList<Qt3DExtras::QMorphingAnimation *> morphingAnimations
-                = mesh->findChildren<Qt3DExtras::QMorphingAnimation *>();
+        QList<Qt3DAnimation::QMorphingAnimation *> morphingAnimations
+                = mesh->findChildren<Qt3DAnimation::QMorphingAnimation *>();
         if (morphingAnimations.size() > 0) {
             material = new Qt3DExtras::QMorphPhongMaterial(entityNode);
 
-            QVector<Qt3DExtras::QMorphingAnimation *> animations;
-            findAnimationsForNode<Qt3DExtras::QMorphingAnimation>(m_scene->m_morphAnimations,
+            QVector<Qt3DAnimation::QMorphingAnimation *> animations;
+            findAnimationsForNode<Qt3DAnimation::QMorphingAnimation>(m_scene->m_morphAnimations,
                                                                   animations,
                                                                   aiStringToQString(node->mName));
             const auto morphTargetList = morphingAnimations.at(0)->morphTargetList();
-            for (Qt3DExtras::QMorphingAnimation *anim : animations) {
+            for (Qt3DAnimation::QMorphingAnimation *anim : qAsConst(animations)) {
                 anim->setParent(entityNode);
                 anim->setTarget(mesh);
                 anim->setMorphTargets(morphTargetList);
             }
 
             for (int j = 0; j < animations.size(); ++j) {
-                QObject::connect(animations[j], &Qt3DExtras::QMorphingAnimation::interpolatorChanged,
+                QObject::connect(animations[j], &Qt3DAnimation::QMorphingAnimation::interpolatorChanged,
                                 (Qt3DExtras::QMorphPhongMaterial *)material,
                                  &Qt3DExtras::QMorphPhongMaterial::setInterpolator);
             }
@@ -530,12 +559,12 @@ Qt3DCore::QEntity *AssimpImporter::node(aiNode *node)
     transform->setMatrix(qTransformMatrix);
     entityNode->addComponent(transform);
 
-    QVector<Qt3DExtras::QKeyframeAnimation *> animations;
-    findAnimationsForNode<Qt3DExtras::QKeyframeAnimation>(m_scene->m_animations,
+    QVector<Qt3DAnimation::QKeyframeAnimation *> animations;
+    findAnimationsForNode<Qt3DAnimation::QKeyframeAnimation>(m_scene->m_animations,
                                                           animations,
                                                           aiStringToQString(node->mName));
 
-    for (Qt3DExtras::QKeyframeAnimation *anim : animations) {
+    for (Qt3DAnimation::QKeyframeAnimation *anim : qAsConst(animations)) {
         anim->setTarget(transform);
         anim->setParent(entityNode);
     }
@@ -572,6 +601,36 @@ void AssimpImporter::readSceneFile(const QString &path)
                                                        aiProcess_Triangulate|
                                                        aiProcess_GenSmoothNormals|
                                                        aiProcess_FlipUVs);
+    if (m_scene->m_aiScene == nullptr) {
+        qCWarning(AssimpImporterLog) << "Assimp scene import failed";
+        return ;
+    }
+    parse();
+}
+
+/*!
+ * Reads the scene file pointed by \a path and launches the parsing of
+ * the scene using Assimp, after having cleaned up previously saved values
+ * from eventual previous parsings.
+ */
+void AssimpImporter::readSceneData(const QByteArray& data, const QString &basePath)
+{
+    cleanup();
+
+    m_scene = new SceneImporter();
+
+    // SET THIS TO REMOVE POINTS AND LINES -> HAVE ONLY TRIANGLES
+    m_scene->m_importer->SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE|aiPrimitiveType_POINT);
+    // SET CUSTOM FILE HANDLER TO HANDLE FILE READING THROUGH QT (RESOURCES, SOCKET ...)
+    m_scene->m_importer->SetIOHandler(new AssimpHelper::AssimpIOSystem());
+
+    // type and aiProcess_Triangulate discompose polygons with more than 3 points in triangles
+    // aiProcess_SortByPType makes sure that meshes data are triangles
+    m_scene->m_aiScene = m_scene->m_importer->ReadFileFromMemory(data.data(), data.size(),
+                                                                 aiProcess_SortByPType|
+                                                                 aiProcess_Triangulate|
+                                                                 aiProcess_GenSmoothNormals|
+                                                                 aiProcess_FlipUVs);
     if (m_scene->m_aiScene == nullptr) {
         qCWarning(AssimpImporterLog) << "Assimp scene import failed";
         return ;
@@ -792,10 +851,10 @@ void AssimpImporter::loadMesh(uint meshIndex)
         if (animesh->mNumVertices != mesh->mNumVertices)
             return;
 
-        Qt3DExtras::QMorphingAnimation *morphingAnimation
-                = new Qt3DExtras::QMorphingAnimation(geometryRenderer);
+        Qt3DAnimation::QMorphingAnimation *morphingAnimation
+                = new Qt3DAnimation::QMorphingAnimation(geometryRenderer);
         QVector<QString> names;
-        QVector<Qt3DExtras::QMorphTarget *> targets;
+        QVector<Qt3DAnimation::QMorphTarget *> targets;
         uint voff = 0;
         uint noff = 0;
         uint tanoff = 0;
@@ -835,7 +894,7 @@ void AssimpImporter::loadMesh(uint meshIndex)
 
         for (uint i = 0; i < mesh->mNumAnimMeshes; i++) {
             aiAnimMesh *animesh = mesh->mAnimMeshes[i];
-            Qt3DExtras::QMorphTarget *target = new Qt3DExtras::QMorphTarget(geometryRenderer);
+            Qt3DAnimation::QMorphTarget *target = new Qt3DAnimation::QMorphTarget(geometryRenderer);
             targets.push_back(target);
             QVector<QAttribute *> attributes;
             QByteArray targetBufferArray;
@@ -1029,7 +1088,7 @@ void AssimpImporter::loadAnimation(uint animationIndex)
         aiNodeAnim *nodeAnim = assimpAnim->mChannels[i];
         aiNode *targetNode = m_scene->m_aiScene->mRootNode->FindNode(nodeAnim->mNodeName);
 
-        Qt3DExtras::QKeyframeAnimation *kfa = new Qt3DExtras::QKeyframeAnimation();
+        Qt3DAnimation::QKeyframeAnimation *kfa = new Qt3DAnimation::QKeyframeAnimation();
         QVector<float> positions;
         QVector<Qt3DCore::QTransform*> transforms;
         if ((nodeAnim->mNumPositionKeys > 1)
@@ -1102,7 +1161,7 @@ void AssimpImporter::loadAnimation(uint animationIndex)
         aiNode *targetNode = m_scene->m_aiScene->mRootNode->FindNode(morphAnim->mName);
         aiMesh *mesh = m_scene->m_aiScene->mMeshes[targetNode->mMeshes[0]];
 
-        Qt3DExtras::QMorphingAnimation *morphingAnimation = new Qt3DExtras::QMorphingAnimation;
+        Qt3DAnimation::QMorphingAnimation *morphingAnimation = new Qt3DAnimation::QMorphingAnimation;
         QVector<float> positions;
         positions.resize(morphAnim->mNumKeys);
         // set so that weights array is allocated to correct size in morphingAnimation
@@ -1125,8 +1184,8 @@ void AssimpImporter::loadAnimation(uint animationIndex)
         morphingAnimation->setAnimationName(QString(assimpAnim->mName.C_Str()));
         morphingAnimation->setTargetName(QString(targetNode->mName.C_Str()));
         morphingAnimation->setMethod((mesh->mMethod == aiMorphingMethod_MORPH_NORMALIZED)
-                                     ? Qt3DExtras::QMorphingAnimation::Normalized
-                                     : Qt3DExtras::QMorphingAnimation::Relative);
+                                     ? Qt3DAnimation::QMorphingAnimation::Normalized
+                                     : Qt3DAnimation::QMorphingAnimation::Relative);
         m_scene->m_morphAnimations.push_back(morphingAnimation);
     }
 }
@@ -1229,18 +1288,28 @@ void AssimpImporter::copyMaterialTextures(QMaterial *material, aiMaterial *assim
     for (unsigned int i = 0; i < sizeof(textureType)/sizeof(textureType[0]); i++) {
         aiString path;
         if (assimpMaterial->GetTexture(textureType[i], 0, &path) == AI_SUCCESS) {
-            QString fullPath = m_sceneDir.absoluteFilePath(texturePath(path));
+            const QString fullPath = m_sceneDir.absoluteFilePath(texturePath(path));
             // Load texture if not already loaded
-            if (!m_scene->m_materialTextures.contains(fullPath)) {
-                QAbstractTexture *tex = QAbstractNodeFactory::createNode<QTexture2D>("QTexture2D");
-                QTextureImage *texImage = QAbstractNodeFactory::createNode<QTextureImage>("QTextureImage");
-                texImage->setSource(QUrl::fromLocalFile(fullPath));
-                tex->addTextureImage(texImage);
-                m_scene->m_materialTextures.insert(fullPath, tex);
-                qCDebug(AssimpImporterLog) << Q_FUNC_INFO << " Loaded Texture " << fullPath;
-            }
+            QAbstractTexture *tex = QAbstractNodeFactory::createNode<QTexture2D>("QTexture2D");
+            QTextureImage *texImage = QAbstractNodeFactory::createNode<QTextureImage>("QTextureImage");
+            texImage->setSource(QUrl::fromLocalFile(fullPath));
+            tex->addTextureImage(texImage);
+
+            // Set proper wrapping mode
+            QTextureWrapMode wrapMode(QTextureWrapMode::Repeat);
+            int xMode = 0;
+            int yMode = 0;
+
+            if (assimpMaterial->Get(AI_MATKEY_MAPPINGMODE_U(textureType[i], 0), xMode) == aiReturn_SUCCESS)
+                wrapMode.setX(wrapModeFromaiTextureMapMode(xMode));
+            if (assimpMaterial->Get(AI_MATKEY_MAPPINGMODE_V(textureType[i], 0), yMode) == aiReturn_SUCCESS)
+                wrapMode.setY(wrapModeFromaiTextureMapMode(yMode));
+
+            tex->setWrapMode(wrapMode);
+
+            qCDebug(AssimpImporterLog) << Q_FUNC_INFO << " Loaded Texture " << fullPath;
             setParameterValue(m_scene->m_textureToParameterName[textureType[i]],
-                    material, QVariant::fromValue(m_scene->m_materialTextures[fullPath]));
+                    material, QVariant::fromValue(tex));
         }
     }
 }
@@ -1289,8 +1358,9 @@ AssimpRawTextureImage::AssimpRawTextureImageFunctor::AssimpRawTextureImageFuncto
 
 QTextureImageDataPtr AssimpRawTextureImage::AssimpRawTextureImageFunctor::operator()()
 {
-    QTextureImageDataPtr dataPtr;
-    dataPtr->setData(m_data, QOpenGLTexture::RGBA, QOpenGLTexture::UInt8);
+    QTextureImageDataPtr dataPtr = QTextureImageDataPtr::create();
+    // Note: we assume 4 components per pixel and not compressed for now
+    dataPtr->setData(m_data, 4, false);
     return dataPtr;
 }
 

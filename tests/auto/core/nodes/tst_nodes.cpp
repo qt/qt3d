@@ -79,6 +79,8 @@ private slots:
     void appendingChildEntitiesToNode();
     void removingChildEntitiesFromNode();
 
+    void checkConstructionSetParentMix(); // QTBUG-60612
+
     void appendingComponentToEntity();
     void appendingParentlessComponentToEntity();
     void removingComponentFromEntity();
@@ -105,7 +107,7 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) Q_DECL_FINAL {};
     void setScene(Qt3DCore::QScene *) Q_DECL_FINAL {};
     void notifyBackend(const Qt3DCore::QSceneChangePtr &change) Q_DECL_FINAL;
-    bool shouldNotifyFrontend(const Qt3DCore::QSceneChangePtr &changee) Q_DECL_FINAL { return false; }
+    bool shouldNotifyFrontend(const Qt3DCore::QSceneChangePtr &changee) Q_DECL_FINAL { Q_UNUSED(changee); return false; }
 
 private:
     ObserverSpy *m_spy;
@@ -204,6 +206,11 @@ public:
         Qt3DCore::QNodePrivate::get(this)->setArbiter(arbiter);
     }
 
+    void setSimulateBackendCreated(bool created)
+    {
+        Qt3DCore::QNodePrivate::get(this)->m_hasBackendNode = created;
+    }
+
 signals:
     void customPropertyChanged();
 
@@ -232,6 +239,11 @@ public:
         Qt3DCore::QNodePrivate::get(this)->setScene(scene);
         Qt3DCore::QNodePrivate::get(this)->setArbiter(arbiter);
     }
+
+    void setSimulateBackendCreated(bool created)
+    {
+        Qt3DCore::QNodePrivate::get(this)->m_hasBackendNode = created;
+    }
 };
 
 class MyQComponent : public Qt3DCore::QComponent
@@ -250,7 +262,7 @@ public:
 
 void tst_Nodes::initTestCase()
 {
-    qRegisterMetaType<Qt3DCore::QNode::PropertyTrackMode>("PropertyTrackMode");
+    qRegisterMetaType<Qt3DCore::QNode::PropertyTrackingMode>("PropertyTrackingMode");
 }
 
 void tst_Nodes::defaultNodeConstruction()
@@ -389,6 +401,8 @@ void tst_Nodes::appendSingleChildNodeToNodeSceneExplicitParenting()
     QScopedPointer<MyQNode> node(new MyQNode());
     // WHEN
     node->setArbiterAndScene(&spy, &scene);
+    node->setSimulateBackendCreated(true);
+
     // THEN
     QVERIFY(Qt3DCore::QNodePrivate::get(node.data())->scene() != nullptr);
 
@@ -405,7 +419,7 @@ void tst_Nodes::appendSingleChildNodeToNodeSceneExplicitParenting()
     // THEN
     QVERIFY(child->parent() == node.data());
     QVERIFY(child->parentNode() == node.data());
-    QCOMPARE(spy.events.size(), 2);
+    QCOMPARE(spy.events.size(), 2); // Created + Child Added
     QCOMPARE(node->children().count(), 1);
     QVERIFY(Qt3DCore::QNodePrivate::get(child.data())->scene() != nullptr);
 
@@ -482,6 +496,7 @@ void tst_Nodes::appendMultipleChildNodesToNodeScene()
 
     // WHEN
     node->setArbiterAndScene(&spy, &scene);
+    node->setSimulateBackendCreated(true);
     // THEN
     QVERIFY(Qt3DCore::QNodePrivate::get(node.data())->scene() != nullptr);
 
@@ -664,6 +679,7 @@ void tst_Nodes::removingSingleChildNodeFromNode()
 
     // WHEN
     root->setArbiterAndScene(&spy, &scene);
+    root->setSimulateBackendCreated(true);
     child->setParent(root.data());
 
     // Clear any creation event
@@ -790,6 +806,47 @@ void tst_Nodes::removingChildEntitiesFromNode()
     QVERIFY(childEntity->parent() == nullptr);
 }
 
+void tst_Nodes::checkConstructionSetParentMix()
+{
+    // GIVEN
+    ObserverSpy spy;
+    Qt3DCore::QScene scene;
+    QScopedPointer<MyQNode> root(new MyQNode());
+
+    // WHEN
+    root->setArbiterAndScene(&spy, &scene);
+    root->setSimulateBackendCreated(true);
+
+    // THEN
+    QVERIFY(Qt3DCore::QNodePrivate::get(root.data())->scene() != nullptr);
+
+    // WHEN
+    Qt3DCore::QEntity *subTreeRoot = new Qt3DCore::QEntity(root.data());
+
+    for (int i = 0; i < 100; ++i) {
+        Qt3DCore::QEntity *child = new Qt3DCore::QEntity();
+        child->setParent(subTreeRoot);
+    }
+
+    // THEN
+    QCoreApplication::processEvents();
+    QCOMPARE(root->children().count(), 1);
+    QCOMPARE(subTreeRoot->children().count(), 100);
+    QCOMPARE(spy.events.size(), 102); // 1 subTreeRoot creation change, 100 child creation, 1 child added (subTree to root)
+
+    // Ensure first event is subTreeRoot
+    const Qt3DCore::QNodeCreatedChangeBasePtr firstEvent = spy.events.takeFirst().change().dynamicCast<Qt3DCore::QNodeCreatedChangeBase>();
+    QVERIFY(!firstEvent.isNull());
+    QCOMPARE(firstEvent->subjectId(), subTreeRoot->id());
+    QCOMPARE(firstEvent->parentId(), root->id());
+
+    const Qt3DCore::QPropertyNodeAddedChangePtr lastEvent = spy.events.takeLast().change().dynamicCast<Qt3DCore::QPropertyNodeAddedChange>();
+    QVERIFY(!lastEvent.isNull());
+    QCOMPARE(lastEvent->subjectId(), root->id());
+    QCOMPARE(lastEvent->propertyName(), "children");
+    QCOMPARE(lastEvent->addedNodeId(), subTreeRoot->id());
+}
+
 void tst_Nodes::appendingParentlessComponentToEntity()
 {
     // GIVEN
@@ -798,6 +855,8 @@ void tst_Nodes::appendingParentlessComponentToEntity()
     {
         QScopedPointer<MyQEntity> entity(new MyQEntity());
         entity->setArbiterAndScene(&entitySpy);
+        entity->setSimulateBackendCreated(true);
+
         MyQComponent *comp = new MyQComponent();
         comp->setArbiter(&componentSpy);
 
@@ -816,7 +875,7 @@ void tst_Nodes::appendingParentlessComponentToEntity()
         QVERIFY(comp->parentNode() == entity.data());
         QCOMPARE(entitySpy.events.size(), 1);
         QVERIFY(entitySpy.events.first().wasLocked());
-        QCOMPARE(componentSpy.events.size(), 2);        // first event is parent being set
+        QCOMPARE(componentSpy.events.size(), 1);
 
         // Note: since QEntity has no scene in this test case, we only have the
         // ComponentAdded event In theory we should also get the NodeCreated event
@@ -969,8 +1028,7 @@ void tst_Nodes::checkDefaultConstruction()
     // THEN
     QCOMPARE(node.parentNode(), nullptr);
     QCOMPARE(node.isEnabled(), true);
-    QCOMPARE(node.propertyTrackMode(), Qt3DCore::QNode::DefaultTrackMode);
-    QCOMPARE(node.trackedProperties(), QStringList());
+    QCOMPARE(node.defaultPropertyTrackingMode(), Qt3DCore::QNode::TrackFinalValues);
 }
 
 void tst_Nodes::checkPropertyChanges()
@@ -1019,41 +1077,37 @@ void tst_Nodes::checkPropertyChanges()
     }
     {
         // WHEN
-        QSignalSpy spy(&node, SIGNAL(propertyUpdateModeChanged(PropertyTrackMode)));
-        const Qt3DCore::QNode::PropertyTrackMode newValue = Qt3DCore::QNode::TrackAllPropertiesMode;
-        node.setPropertyTrackMode(newValue);
+        QSignalSpy spy(&node, SIGNAL(defaultPropertyTrackingModeChanged(PropertyTrackingMode)));
+        const Qt3DCore::QNode::PropertyTrackingMode newValue = Qt3DCore::QNode::TrackAllValues;
+        node.setDefaultPropertyTrackingMode(newValue);
 
         // THEN
         QVERIFY(spy.isValid());
-        QCOMPARE(node.propertyTrackMode(), newValue);
+        QCOMPARE(node.defaultPropertyTrackingMode(), newValue);
         QCOMPARE(spy.count(), 1);
 
         // WHEN
         spy.clear();
-        node.setPropertyTrackMode(newValue);
+        node.setDefaultPropertyTrackingMode(newValue);
 
         // THEN
-        QCOMPARE(node.propertyTrackMode(), newValue);
+        QCOMPARE(node.defaultPropertyTrackingMode(), newValue);
         QCOMPARE(spy.count(), 0);
     }
     {
         // WHEN
-        QSignalSpy spy(&node, SIGNAL(trackedPropertiesChanged(const QStringList &)));
-        const QStringList newValue = QStringList() << QStringLiteral("C1") << QStringLiteral("C2") << QStringLiteral("C3");
-        node.setTrackedProperties(newValue);
+        const QString enabledPropertyName = QStringLiteral("enabled");
+        node.setDefaultPropertyTrackingMode(Qt3DCore::QNode::DontTrackValues);
+        node.setPropertyTracking(enabledPropertyName, Qt3DCore::QNode::TrackAllValues);
 
         // THEN
-        QVERIFY(spy.isValid());
-        QCOMPARE(node.trackedProperties(), newValue);
-        QCOMPARE(spy.count(), 1);
+        QCOMPARE(node.propertyTracking(enabledPropertyName), Qt3DCore::QNode::TrackAllValues);
 
         // WHEN
-        spy.clear();
-        node.setTrackedProperties(newValue);
+        node.clearPropertyTracking(enabledPropertyName);
 
         // THEN
-        QCOMPARE(node.trackedProperties(), newValue);
-        QCOMPARE(spy.count(), 0);
+        QCOMPARE(node.propertyTracking(enabledPropertyName), Qt3DCore::QNode::DontTrackValues);
     }
 }
 
@@ -1065,9 +1119,9 @@ void tst_Nodes::checkCreationData()
 
     node.setParent(&root);
     node.setEnabled(true);
-    node.setPropertyTrackMode(Qt3DCore::QNode::TrackNamedPropertiesMode);
-    const QStringList trackedPropertyNames = QStringList() << QStringLiteral("327");
-    node.setTrackedProperties(trackedPropertyNames);
+    const QString enabledPropertyName = QStringLiteral("enabled");
+    node.setDefaultPropertyTrackingMode(Qt3DCore::QNode::DontTrackValues);
+    node.setPropertyTracking(enabledPropertyName, Qt3DCore::QNode::TrackAllValues);
 
     // WHEN
     QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
@@ -1152,7 +1206,7 @@ void tst_Nodes::checkPropertyTrackModeUpdate()
 
     {
         // WHEN
-        node.setPropertyTrackMode(Qt3DCore::QNode::TrackAllPropertiesMode);
+        node.setDefaultPropertyTrackingMode(Qt3DCore::QNode::TrackAllValues);
         QCoreApplication::processEvents();
 
         // THEN -> this properties is non notifying
@@ -1161,7 +1215,7 @@ void tst_Nodes::checkPropertyTrackModeUpdate()
 
     {
         // WHEN
-        node.setPropertyTrackMode(Qt3DCore::QNode::TrackAllPropertiesMode);
+        node.setDefaultPropertyTrackingMode(Qt3DCore::QNode::TrackAllValues);
         QCoreApplication::processEvents();
 
         // THEN
@@ -1176,11 +1230,10 @@ void tst_Nodes::checkTrackedPropertyNamesUpdate()
     TestArbiter arbiter;
     Qt3DCore::QNode node;
     arbiter.setArbiterOnNode(&node);
-    const QStringList newValue = QStringList() << QStringLiteral("883") << QStringLiteral("454");
 
     {
         // WHEN
-        node.setTrackedProperties(newValue);
+        node.setPropertyTracking(QStringLiteral("883"), Qt3DCore::QNode::TrackAllValues);
         QCoreApplication::processEvents();
 
         // THEN -> this properties is non notifying
@@ -1189,7 +1242,7 @@ void tst_Nodes::checkTrackedPropertyNamesUpdate()
 
     {
         // WHEN
-        node.setTrackedProperties(newValue);
+        node.setPropertyTracking(QStringLiteral("883"), Qt3DCore::QNode::DontTrackValues);
         QCoreApplication::processEvents();
 
         // THEN

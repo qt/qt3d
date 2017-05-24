@@ -41,6 +41,7 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/qabstractlight.h>
+#include <Qt3DRender/qenvironmentlight.h>
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qlevelofdetail.h>
 #include <Qt3DRender/qmaterial.h>
@@ -118,6 +119,7 @@ void Entity::cleanup()
     m_levelOfDetailComponents.clear();
     m_shaderDataComponents.clear();
     m_lightComponents.clear();
+    m_environmentLightComponents.clear();
     m_localBoundingVolume.reset();
     m_worldBoundingVolume.reset();
     m_worldBoundingVolumeWithChildren.reset();
@@ -174,6 +176,7 @@ void Entity::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
     m_levelOfDetailComponents.clear();
     m_shaderDataComponents.clear();
     m_lightComponents.clear();
+    m_environmentLightComponents.clear();
     m_localBoundingVolume.reset(new Sphere(peerId()));
     m_worldBoundingVolume.reset(new Sphere(peerId()));
     m_worldBoundingVolumeWithChildren.reset(new Sphere(peerId()));
@@ -293,6 +296,8 @@ void Entity::addComponent(Qt3DCore::QComponent *component)
         m_materialComponent = component->id();
     } else if (qobject_cast<QAbstractLight *>(component) != nullptr) {
         m_lightComponents.append(component->id());
+    } else if (qobject_cast<QEnvironmentLight *>(component) != nullptr) {
+        m_environmentLightComponents.append(component->id());
     } else if (qobject_cast<QShaderData *>(component) != nullptr) {
         m_shaderDataComponents.append(component->id());
     } else if (qobject_cast<QGeometryRenderer *>(component) != nullptr) {
@@ -326,6 +331,8 @@ void Entity::addComponent(Qt3DCore::QNodeIdTypePair idAndType)
         m_materialComponent = id;
     } else if (type->inherits(&QAbstractLight::staticMetaObject)) { // QAbstractLight subclasses QShaderData
         m_lightComponents.append(id);
+    } else if (type->inherits(&QEnvironmentLight::staticMetaObject)) {
+        m_environmentLightComponents.append(id);
     } else if (type->inherits(&QShaderData::staticMetaObject)) {
         m_shaderDataComponents.append(id);
     } else if (type->inherits(&QGeometryRenderer::staticMetaObject)) {
@@ -363,6 +370,8 @@ void Entity::removeComponent(Qt3DCore::QNodeId nodeId)
 //        m_boundingVolumeDebugComponent = QNodeId();
     } else if (m_lightComponents.contains(nodeId)) {
         m_lightComponents.removeAll(nodeId);
+    } else if (m_environmentLightComponents.contains(nodeId)) {
+        m_environmentLightComponents.removeAll(nodeId);
     } else if (m_computeComponent == nodeId) {
         m_computeComponent = QNodeId();
     }
@@ -457,6 +466,16 @@ QVector<HLight> Entity::componentsHandle<Light>() const
 }
 
 template<>
+QVector<HEnvironmentLight> Entity::componentsHandle<EnvironmentLight>() const
+{
+    QVector<HEnvironmentLight> lightHandles;
+    lightHandles.reserve(m_environmentLightComponents.size());
+    for (QNodeId id : m_environmentLightComponents)
+        lightHandles.append(m_nodeManagers->environmentLightManager()->lookupHandle(id));
+    return lightHandles;
+}
+
+template<>
 HComputeCommand Entity::componentHandle<ComputeCommand>() const
 {
     return m_nodeManagers->computeJobManager()->lookupHandle(m_computeComponent);
@@ -534,6 +553,16 @@ QVector<Light *> Entity::renderComponents<Light>() const
     return lights;
 }
 
+template<>
+QVector<EnvironmentLight *> Entity::renderComponents<EnvironmentLight>() const
+{
+    QVector<EnvironmentLight *> lights;
+    lights.reserve(m_environmentLightComponents.size());
+    for (QNodeId id : m_environmentLightComponents)
+        lights.append(m_nodeManagers->environmentLightManager()->lookupResource(id));
+    return lights;
+}
+
 //template<>
 //BoundingVolumeDebug *Entity::renderComponent<BoundingVolumeDebug>() const
 //{
@@ -580,6 +609,9 @@ QNodeId Entity::componentUuid<ComputeCommand>() const { return m_computeComponen
 
 template<>
 QVector<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const { return m_lightComponents; }
+
+template<>
+QVector<Qt3DCore::QNodeId> Entity::componentsUuid<EnvironmentLight>() const { return m_environmentLightComponents; }
 
 RenderEntityFunctor::RenderEntityFunctor(AbstractRenderer *renderer, NodeManagers *manager)
     : m_nodeManagers(manager)

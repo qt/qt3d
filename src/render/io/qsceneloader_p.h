@@ -66,6 +66,8 @@ class QT3DRENDERSHARED_PRIVATE_EXPORT QSceneLoaderPrivate : public Qt3DCore::QCo
 public:
     QSceneLoaderPrivate();
 
+    void setStatus(QSceneLoader::Status status);
+
     Q_DECLARE_PUBLIC(QSceneLoader)
 
     void populateEntityMap(Qt3DCore::QEntity *parentEntity);

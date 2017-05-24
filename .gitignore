@@ -20,6 +20,7 @@ include/*
 *.o
 *.obj
 *.orig
+*.qmlc
 *.rej
 *.so
 *.so.*
@@ -27,6 +28,7 @@ include/*
 *_resource.rc
 .qmake.cache
 .qmake.vars
+.qmake.stash
 *.prl
 moc_*.cpp
 qrc_*.cpp

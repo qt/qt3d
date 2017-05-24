@@ -51,11 +51,11 @@
 // We mean it.
 //
 
-#include <QtGlobal>
 #include <Qt3DCore/qt3dcore_global.h>
-#include "qhandle_p.h"
-
+#include <QtCore/QtGlobal>
 #include <QtCore/QVector>
+
+#include <Qt3DCore/private/qhandle_p.h>
 
 QT_BEGIN_NAMESPACE
 

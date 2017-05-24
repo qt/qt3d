@@ -74,7 +74,7 @@
 
     \printuntil }
 
-    This light entity is used by our custom framegraph, ShadowMapFrameGraph,
+    This light entity is used by our custom frame graph, ShadowMapFrameGraph,
     and our rendering effect, AdsEffect, whose instances are created just after
     the light:
 
@@ -111,8 +111,8 @@
 
     \section1 Configuring the Framegraph
 
-    In Qt 3D, the framegraph is the data-driven configuration for the rendering.
-    We implement the framegraph in the \e ShadowMapFrameGraph.qml file.
+    In Qt 3D, the frame graph is the data-driven configuration for the rendering.
+    We implement the frame graph in the \e ShadowMapFrameGraph.qml file.
 
     In addition to the Qt 3D and Qt 3D Render modules, we also import the
     Qt Quick module:
@@ -121,12 +121,16 @@
     \skipto import QtQuick
     \printuntil Render 2.0
 
-    The code defines a \l RenderSettings entity that has a tree of entities as the
-    active framegraph:
+    The code defines a \l RenderSettings node that has a tree of nodes as the
+    active frame graph:
 
-    \printuntil clearColor
+    \badcode
+    RenderSettings {
+        activeFrameGraph: Viewport {...}
+    }
+    \endcode
 
-    Any path from the leaves of this tree to the root is a viable framegraph
+    Any path from the leaves of this tree to the root is a viable frame graph
     configuration. Filter entities can enable or disable such paths, and
     selector entities can alter the configuration.
 
@@ -134,25 +138,28 @@
 
     \badcode
     Viewport
-        RenderPassFilter
-            RenderTargetSelector
+        RenderSurfaceSelector
+            RenderPassFilter
+                RenderTargetSelector
+                    ClearBuffers
+                        CameraSelector
+            RenderPassFilter
                 ClearBuffers
                     CameraSelector
-        RenderPassFilter
-            ClearBuffers
-                CameraSelector
     \endcode
 
     So we have two paths from the topmost \l Viewport entity. Each path
-    corresponds to a pass of the shadow map technique. The paths are enabled and
-    disabled using a RenderPassFilter, an entity that can filter depending on
-    arbitrary values defined in a given render pass. In this example, it is a
-    string:
+    corresponds to a pass, or phase, of the shadow map technique. The paths are
+    enabled and disabled using a RenderPassFilter, a node that can filter
+    depending on arbitrary values defined in a given render pass. In this
+    example, it is a string:
 
+    \skipto RenderPassFilter
     \printuntil ]
 
-    The actual passes are not defined here. The framegraph simply modifies its
-    configuration when a given pass is rendered.
+    The actual passes are not defined within the frame graph. Instead the
+    available passes are declared in the Materials used in the scene graph. The
+    frame graph is only used to select which passes are used when rendering.
 
     \section1 Generating the Shadow Map
 
@@ -176,14 +183,19 @@
     \printuntil }
 
     The second pass is more straightforward, because we simply render to the
-    screen using the main camera.
+    screen using the main camera:
+
+    \skipto RenderPassFilter
+    \printuntil }
+    \printuntil }
+    \printuntil }
+    \printuntil }
 
     \section1 Using Effects
 
     The bulk of the magic happens in the \e AdsEffect.qml file, where our main
-    \l Effect entity is defined. It implements the Ambient, Diffuse and Specular
-    (ADS) Lightning Model Phong shading with the addition of shadow mapped
-    generated shadows.
+    \l Effect is defined. It implements the Ambient, Diffuse and Specular
+    (ADS) Lighting Model using Phong shading with the addition of shadow mapping.
 
     An effect contains the implementation of a particular rendering strategy. In
     this example, shadow mapping using two passes:
@@ -193,24 +205,18 @@
     \printuntil Light
 
     The \c parameters list defines some default values for the effect. The
-    values will get mapped to OpenGL shader program uniforms, so that in the
-    shaders we can access them. In this example, we expose some information from
+    values will get mapped to shader program uniform variables, so that in the
+    shaders we can access their values. In this example, we expose some information from
     the Light entity (position, intensity, view or projection matrix defined by
-    the internal camera) and the shadow map texture exposed by the framegraph:
+    the internal camera) and the shadow map texture exposed by the frame graph:
 
     \skipto parameters:
     \printuntil ]
 
     It is possible to put such parameters all the way down, from a \l Material,
-    to its \l Effect, to one of the effect’s \l {Technique}{Techniques}. This allows a
-    \l Material instance to override defaults in an \l Effect or \l Technique.
-    The bindings array provides the same thing, except that it also allows us to
-    rename some parameters. In this example, it renames the \c ambient,
-    \c diffuse, and \c specular values defined in the material to the actual
-    uniform names used by the shader programs:
-
-    \skipto bindings:
-    \printuntil ]
+    to its \l Effect, to one of the effect’s \l {Technique}{Techniques} and a
+    \l RenderPass within a \l Technique. This allows a \l Material instance to
+    override defaults in an \l Effect, \l Technique or \l RenderPass.
 
     To adapt the implementation to different hardware or OpenGL versions, we
     could use one or more \l Technique elements. In this example, only one
@@ -221,8 +227,8 @@
     \printuntil }
 
     Inside the technique, we finally have the definition of our two rendering
-    passes. We \e tag each pass with an \l FilterKey entity, matching the ones
-    we specified in the framegraph configuration, so that each pass will have
+    passes. We \e tag each pass with a \l FilterKey object, matching the ones
+    we specified in the frame graph configuration, so that each pass will have
     different rendering settings:
 
     \printuntil ]

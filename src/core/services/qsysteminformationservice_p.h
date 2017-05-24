@@ -52,8 +52,9 @@
 //
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/private/qservicelocator_p.h>
 #include <QtCore/qstringlist.h>
+
+#include <Qt3DCore/private/qservicelocator_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,6 +64,7 @@ class QSystemInformationServicePrivate;
 
 class QT3DCORESHARED_EXPORT QSystemInformationService : public QAbstractServiceProvider
 {
+    Q_OBJECT
 public:
     virtual QStringList aspectNames() const = 0;
     virtual int threadPoolThreadCount() const = 0;

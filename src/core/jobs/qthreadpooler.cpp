@@ -38,15 +38,16 @@
 ****************************************************************************/
 
 #include "qthreadpooler_p.h"
-#include "dependencyhandler_p.h"
-
-#include <QDebug>
+#include <Qt3DCore/qt3dcore-config.h>
+#include <QtCore/QDebug>
 
 #ifdef QT3D_JOBS_RUN_STATS
-#include <QFile>
-#include <QThreadStorage>
-#include <QDateTime>
+#include <QtCore/QFile>
+#include <QtCore/QThreadStorage>
+#include <QtCore/QDateTime>
 #endif
+
+#include <Qt3DCore/private/dependencyhandler_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,10 +58,11 @@ QElapsedTimer QThreadPooler::m_jobsStatTimer;
 #endif
 
 QThreadPooler::QThreadPooler(QObject *parent)
-    : QObject(parent),
-      m_futureInterface(nullptr),
-      m_mutex(),
-      m_taskCount(0)
+    : QObject(parent)
+    , m_futureInterface(nullptr)
+    , m_mutex()
+    , m_dependencyHandler(nullptr)
+    , m_taskCount(0)
 {
     // Ensures that threads will never be recycled
     m_threadPool.setExpiryTimeout(-1);
@@ -196,7 +198,12 @@ void QThreadPooler::writeFrameJobLogStats()
     static QScopedPointer<QFile> traceFile;
     static quint32 frameId = 0;
     if (!traceFile) {
-        traceFile.reset(new QFile(QStringLiteral("trace_") + QDateTime::currentDateTime().toString() + QStringLiteral(".qt3d")));
+        const QString fileName = QStringLiteral("trace_") + QCoreApplication::applicationName() + QDateTime::currentDateTime().toString(QStringLiteral("_ddd_dd_MM_yy-hh_mm_ss_"))+ QSysInfo::productType() + QStringLiteral("_") + QSysInfo::buildAbi() + QStringLiteral(".qt3d");
+#ifdef Q_OS_ANDROID
+        traceFile.reset(new QFile(QStandardPaths::writableLocation(QStandardPaths::DownloadLocation) + QStringLiteral("/") + fileName));
+#else
+        traceFile.reset(new QFile(fileName));
+#endif
         if (!traceFile->open(QFile::WriteOnly|QFile::Truncate))
             qCritical("Failed to open trace file");
     }

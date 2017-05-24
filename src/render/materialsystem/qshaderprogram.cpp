@@ -80,13 +80,46 @@
     \value Compute                 Compute shader
 */
 
+/*!
+    \enum QShaderProgram::ShaderStatus
+
+    This enum identifies the status of shader used.
+
+    \value NotReady              The shader hasn't been compiled and linked yet
+    \value Ready                 The shader was successfully compiled
+    \value Error                 An error occurred while compiling the shader
+*/
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
 QShaderProgramPrivate::QShaderProgramPrivate()
     : QNodePrivate()
+    , m_status(QShaderProgram::NotReady)
 {
+}
+
+void QShaderProgramPrivate::setLog(const QString &log)
+{
+    Q_Q(QShaderProgram);
+    if (log != m_log) {
+        m_log = log;
+        const bool blocked = q->blockNotifications(true);
+        emit q->logChanged(m_log);
+        q->blockNotifications(blocked);
+    }
+}
+
+void QShaderProgramPrivate::setStatus(QShaderProgram::Status status)
+{
+    Q_Q(QShaderProgram);
+    if (status != m_status) {
+        m_status = status;
+        const bool blocked = q->blockNotifications(true);
+        emit q->statusChanged(m_status);
+        q->blockNotifications(blocked);
+    }
 }
 
 QShaderProgram::QShaderProgram(QNode *parent)
@@ -102,6 +135,18 @@ QShaderProgram::~QShaderProgram()
 QShaderProgram::QShaderProgram(QShaderProgramPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
+}
+
+void QShaderProgram::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
+{
+    Q_D(QShaderProgram);
+    if (change->type() == Qt3DCore::PropertyUpdated) {
+        const Qt3DCore::QPropertyUpdatedChangePtr e = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(change);
+        if (e->propertyName() == QByteArrayLiteral("log"))
+            d->setLog(e->value().toString());
+        else if (e->propertyName() == QByteArrayLiteral("status"))
+            d->setStatus(static_cast<QShaderProgram::Status>(e->value().toInt()));
+    }
 }
 
 /*!
@@ -306,6 +351,40 @@ QByteArray QShaderProgram::shaderCode(ShaderType type) const
     default:
         Q_UNREACHABLE();
     }
+}
+
+/*!
+    \qmlproperty string ShaderProgram::log
+
+    Holds the log of the current shader program. This is useful to diagnose a
+    compilation failure of the shader program.
+*/
+/*!
+    \property QShaderProgram::log
+
+    Holds the log of the current shader program. This is useful to diagnose a
+    compilation failure of the shader program.
+*/
+QString QShaderProgram::log() const
+{
+    Q_D(const QShaderProgram);
+    return d->m_log;
+}
+
+/*!
+    \qmlproperty string ShaderProgram::status
+
+    Holds the status of the current shader program.
+*/
+/*!
+    \property QShaderProgram::status
+
+    Holds the status of the current shader program.
+*/
+QShaderProgram::Status QShaderProgram::status() const
+{
+    Q_D(const QShaderProgram);
+    return d->m_status;
 }
 
 static QByteArray deincludify(const QString &filePath)

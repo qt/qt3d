@@ -28,7 +28,7 @@
 
 
 #include <QtTest/QTest>
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/qchannelmapper.h>
 #include <Qt3DAnimation/qclipanimator.h>
 #include <Qt3DAnimation/private/qanimationclip_p.h>
@@ -47,7 +47,7 @@ class tst_QClipAnimator : public QObject
 private Q_SLOTS:
     void initTestCase()
     {
-        qRegisterMetaType<Qt3DAnimation::QAnimationClip*>();
+        qRegisterMetaType<Qt3DAnimation::QAbstractAnimationClip*>();
         qRegisterMetaType<Qt3DAnimation::QChannelMapper*>();
     }
 
@@ -57,9 +57,9 @@ private Q_SLOTS:
         Qt3DAnimation::QClipAnimator animator;
 
         // THEN
-        QCOMPARE(animator.clip(), static_cast<Qt3DAnimation::QAnimationClip *>(nullptr));
+        QCOMPARE(animator.clip(), static_cast<Qt3DAnimation::QAbstractAnimationClip *>(nullptr));
         QCOMPARE(animator.channelMapper(), static_cast<Qt3DAnimation::QChannelMapper *>(nullptr));
-        QCOMPARE(animator.loops(), 1);
+        QCOMPARE(animator.loopCount(), 1);
     }
 
     void checkPropertyChanges()
@@ -69,8 +69,8 @@ private Q_SLOTS:
 
         {
             // WHEN
-            QSignalSpy spy(&animator, SIGNAL(clipChanged(Qt3DAnimation::QAnimationClip *)));
-            auto newValue = new Qt3DAnimation::QAnimationClip();
+            QSignalSpy spy(&animator, SIGNAL(clipChanged(Qt3DAnimation::QAbstractAnimationClip *)));
+            auto newValue = new Qt3DAnimation::QAnimationClipLoader();
             animator.setClip(newValue);
 
             // THEN
@@ -111,21 +111,21 @@ private Q_SLOTS:
 
         {
             // WHEN
-            QSignalSpy spy(&animator, SIGNAL(loopsChanged(int)));
+            QSignalSpy spy(&animator, SIGNAL(loopCountChanged(int)));
             const int newValue = 5;
-            animator.setLoops(newValue);
+            animator.setLoopCount(newValue);
 
             // THEN
             QVERIFY(spy.isValid());
-            QCOMPARE(animator.loops(), newValue);
+            QCOMPARE(animator.loopCount(), newValue);
             QCOMPARE(spy.count(), 1);
 
             // WHEN
             spy.clear();
-            animator.setLoops(newValue);
+            animator.setLoopCount(newValue);
 
             // THEN
-            QCOMPARE(animator.loops(), newValue);
+            QCOMPARE(animator.loopCount(), newValue);
             QCOMPARE(spy.count(), 0);
         }
     }
@@ -134,7 +134,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DAnimation::QClipAnimator animator;
-        auto clip = new Qt3DAnimation::QAnimationClip();
+        auto clip = new Qt3DAnimation::QAnimationClipLoader();
         animator.setClip(clip);
         auto mapper = new Qt3DAnimation::QChannelMapper();
         animator.setChannelMapper(mapper);
@@ -159,7 +159,7 @@ private Q_SLOTS:
             QCOMPARE(animator.metaObject(), creationChangeData->metaObject());
             QCOMPARE(animator.clip()->id(), data.clipId);
             QCOMPARE(animator.channelMapper()->id(), data.mapperId);
-            QCOMPARE(animator.loops(), data.loops);
+            QCOMPARE(animator.loopCount(), data.loops);
         }
 
         // WHEN
@@ -187,7 +187,7 @@ private Q_SLOTS:
         // GIVEN
         TestArbiter arbiter;
         Qt3DAnimation::QClipAnimator animator;
-        auto clip = new Qt3DAnimation::QAnimationClip();
+        auto clip = new Qt3DAnimation::QAnimationClipLoader();
         arbiter.setArbiterOnNode(&animator);
 
         {
@@ -242,7 +242,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            animator.setLoops(10);
+            animator.setLoopCount(10);
             QCoreApplication::processEvents();
 
             // THEN
@@ -250,14 +250,14 @@ private Q_SLOTS:
             auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
             QCOMPARE(change->propertyName(), "loops");
             QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
-            QCOMPARE(change->value().toInt(), animator.loops());
+            QCOMPARE(change->value().toInt(), animator.loopCount());
 
             arbiter.events.clear();
         }
 
         {
             // WHEN
-            animator.setLoops(10);
+            animator.setLoopCount(10);
             QCoreApplication::processEvents();
 
             // THEN

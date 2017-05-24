@@ -51,9 +51,8 @@
 // We mean it.
 //
 
-#include <QObject>
-
 #include <Qt3DCore/qaspectjob.h>
+#include <QtCore/QObject>
 
 QT_BEGIN_NAMESPACE
 

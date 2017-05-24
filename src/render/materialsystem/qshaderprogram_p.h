@@ -52,12 +52,11 @@
 //
 
 #include <private/qnode_p.h>
+#include <Qt3DRender/qshaderprogram.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QShaderProgram;
 
 class QShaderProgramPrivate : public Qt3DCore::QNodePrivate
 {
@@ -77,6 +76,11 @@ public:
     QByteArray m_geometryShaderCode;
     QByteArray m_fragmentShaderCode;
     QByteArray m_computeShaderCode;
+    QString m_log;
+    QShaderProgram::Status m_status;
+
+    void setLog(const QString &log);
+    void setStatus(QShaderProgram::Status status);
 };
 
 struct QShaderProgramData

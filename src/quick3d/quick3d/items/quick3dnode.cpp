@@ -38,7 +38,8 @@
 ****************************************************************************/
 
 #include "quick3dnode_p.h"
-#include <QDebug>
+
+#include <QtCore/QDebug>
 
 QT_BEGIN_NAMESPACE
 

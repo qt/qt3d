@@ -51,23 +51,26 @@
 // We mean it.
 //
 
+#include <QtCore/private/qobject_p.h>
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QtCore/qstring.h>
+
+#include <Qt3DCore/private/qservicelocator_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QAbstractServiceProviderPrivate
+class QAbstractServiceProviderPrivate : public QObjectPrivate
 {
 public:
-    QAbstractServiceProviderPrivate(int type, const QString &description = QString())
-        : m_type(type)
+    explicit QAbstractServiceProviderPrivate(int type, const QString &description = QString())
+        : QObjectPrivate()
+        , m_type(type)
         , m_description(description)
     {}
 
     Q_DECLARE_PUBLIC(QAbstractServiceProvider)
-    QAbstractServiceProvider *q_ptr;
 
     int m_type;
     QString m_description;

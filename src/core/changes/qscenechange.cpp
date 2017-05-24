@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "qscenechange.h"
+
 #include "qscenechange_p.h"
 
 QT_BEGIN_NAMESPACE

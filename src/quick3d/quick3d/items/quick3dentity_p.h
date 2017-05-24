@@ -51,8 +51,9 @@
 // We mean it.
 //
 
-#include <QQmlListProperty>
 #include <Qt3DCore/qentity.h>
+#include <QtQml/QQmlListProperty>
+
 #include <Qt3DQuick/private/quick3dnode_p.h>
 #include <Qt3DQuick/private/qt3dquick_global_p.h>
 
@@ -82,6 +83,8 @@ private:
     static QComponent *qmlComponentAt(QQmlListProperty<Qt3DCore::QComponent> *list, int index);
     static int qmlComponentsCount(QQmlListProperty<Qt3DCore::QComponent> *list);
     static void qmlClearComponents(QQmlListProperty<Qt3DCore::QComponent> *list);
+
+    QVector<Qt3DCore::QComponent *> m_managedComponents;
 };
 
 } // namespace Quick

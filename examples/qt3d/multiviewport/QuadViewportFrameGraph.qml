@@ -69,6 +69,7 @@ RenderSettings {
 
             ClearBuffers {
                 buffers: ClearBuffers.ColorDepthBuffer
+                clearColor: Qt.rgba(0.6, 0.6, 0.6, 1.0)
             }
 
             Viewport {

@@ -15,7 +15,13 @@ qtConfig(system-zlib):!if(cross_compile:host_build): \
 else: \
     QT_PRIVATE += zlib-private
 
-DEFINES += ASSIMP_BUILD_NO_OWN_ZLIB ASSIMP_BUILD_NO_COMPRESSED_IFC ASSIMP_BUILD_NO_Q3BSP_IMPORTER
+DEFINES += \
+   ASSIMP_BUILD_NO_OWN_ZLIB \
+   ASSIMP_BUILD_NO_COMPRESSED_IFC \
+   ASSIMP_BUILD_NO_Q3BSP_IMPORTER \
+   ASSIMP_BUILD_NO_C4D_IMPORTER \
+   ASSIMP_BUILD_NO_3MF_IMPORTER \
+   OPENDDL_STATIC_LIBARY
 
 intel_icc: {
     # warning #310: old-style parameter list (anachronism)
@@ -30,15 +36,17 @@ intel_icc: {
     QMAKE_CXXFLAGS_WARN_ON += $$QMAKE_CFLAGS_WARN_ON
 } else:gcc|clang: {
     # Stop compiler complaining about ignored qualifiers on return types
-    QMAKE_CFLAGS_WARN_ON += -Wno-ignored-qualifiers -Wno-unused-parameter -Wno-unused-variable -Wno-deprecated-declarations -Wno-unused-function -Wno-reorder
-    QMAKE_CXXFLAGS_WARN_ON = $$QMAKE_CFLAGS_WARN_ON
+    QMAKE_CFLAGS_WARN_ON += -Wno-ignored-qualifiers -Wno-unused-parameter -Wno-unused-variable -Wno-deprecated-declarations -Wno-unused-function
+    QMAKE_CXXFLAGS_WARN_ON = $$QMAKE_CFLAGS_WARN_ON -Wno-reorder
 } else:msvc {
     # Disabled Warnings:
     #   4100: 'identifier' : unreferenced formal parameter
     #   4189: 'identifier' : local variable is initialized but not referenced
     #   4267: coversion from 'size_t' to 'int', possible loss of data
     #   4996: Function call with parameters that may be unsafe
-    QMAKE_CFLAGS_WARN_ON += -wd"4100" -wd"4189" -wd"4267" -wd"4996"
+    #   4828: The file contains a character starting at offset 0x167b that
+    #         is illegal in the current source character set (codepage 65001)
+    QMAKE_CFLAGS_WARN_ON += -wd"4100" -wd"4189" -wd"4267" -wd"4996" -wd"4828"
     QMAKE_CXXFLAGS_WARN_ON = $$QMAKE_CFLAGS_WARN_ON
 }
 
@@ -56,35 +64,40 @@ VPATH += \
         $$PWD/contrib/clipper \
         $$PWD/contrib/ConvertUTF \
         $$PWD/contrib/irrXML \
-        $$PWD/contrib/unzip \
+        $$PWD/contrib/unzip
 
 INCLUDEPATH += \
         $$PWD \
         $$PWD/code \
-        $$PWD/code/BoostWorkaround \
         $$PWD/include \
         $$PWD/include/assimp/Compiler \
+        $$PWD/contrib/clipper \
         $$PWD/contrib/ConvertUTF \
         $$PWD/contrib/irrXML \
+        $$PWD/contrib/openddlparser/include \
         $$PWD/contrib/poly2tri/poly2tri \
-        $$PWD/contrib/clipper \
+        $$PWD/contrib/rapidjson/include \
         $$PWD/contrib/unzip
 
 # Input
 HEADERS += revision.h \
+           code/3DSExporter.h \
            code/3DSHelper.h \
            code/3DSLoader.h \
            code/ACLoader.h \
            code/ASELoader.h \
            code/ASEParser.h \
            code/assbin_chunks.h \
-           code/AssimpPCH.h \
+           code/AssbinExporter.h \
+           code/AssbinLoader.h \
+           code/AssxmlExporter.h \
            code/B3DImporter.h \
            code/BaseImporter.h \
+           code/BaseProcess.h \
            code/Bitmap.h \
            code/BlenderBMesh.h \
-           code/BaseProcess.h \
            code/BlenderDNA.h \
+           code/BlenderDNA.inl \
            code/BlenderIntermediate.h \
            code/BlenderLoader.h \
            code/BlenderModifier.h \
@@ -93,7 +106,8 @@ HEADERS += revision.h \
            code/BlenderTessellator.h \
            code/BlobIOSystem.h \
            code/BVHLoader.h \
-           code/ByteSwap.h \
+           code/ByteSwapper.h \
+           code/C4DImporter.h \
            code/CalcTangentsProcess.h \
            code/CInterfaceIOWrapper.h \
            code/COBLoader.h \
@@ -104,15 +118,30 @@ HEADERS += revision.h \
            code/ColladaParser.h \
            code/ComputeUVMappingProcess.h \
            code/ConvertToLHProcess.h \
+           code/CreateAnimMesh.h \
            code/CSMLoader.h \
+           code/D3MFImporter.h \
+           code/D3MFOpcPackage.h \
            code/DeboneProcess.h \
            code/DefaultIOStream.h \
            code/DefaultIOSystem.h \
            code/DefaultProgressHandler.h \
+           code/Defines.h \
            code/DXFHelper.h \
            code/DXFLoader.h \
            code/Exceptional.h \
            code/fast_atof.h \
+           code/FBXCompileConfig.h \
+           code/FBXConverter.h \
+           code/FBXDocument.h \
+           code/FBXDocumentUtil.h \
+           code/FBXImporter.h \
+           code/FBXImportSettings.h \
+           code/FBXMeshGeometry.h \
+           code/FBXParser.h \
+           code/FBXProperties.h \
+           code/FBXTokenizer.h \
+           code/FBXUtil.h \
            code/FileLogStream.h \
            code/FileSystemFilter.h \
            code/FindDegenerates.h \
@@ -122,6 +151,12 @@ HEADERS += revision.h \
            code/GenericProperty.h \
            code/GenFaceNormalsProcess.h \
            code/GenVertexNormalsProcess.h \
+           code/glTFAsset.h \
+           code/glTFAsset.inl \
+           code/glTFAssetWriter.h \
+           code/glTFAssetWriter.inl \
+           code/glTFExporter.h \
+           code/glTFImporter.h \
            code/HalfLifeFileData.h \
            code/Hash.h \
            code/HMPFileData.h \
@@ -144,8 +179,10 @@ HEADERS += revision.h \
            code/LWOFileData.h \
            code/LWOLoader.h \
            code/LWSLoader.h \
+           code/Macros.h \
            code/MakeVerboseFormat.h \
            code/MaterialSystem.h \
+           code/MathFunctions.h \
            code/MD2FileData.h \
            code/MD2Loader.h \
            code/MD2NormalTable.h \
@@ -171,6 +208,14 @@ HEADERS += revision.h \
            code/ObjFileParser.h \
            code/ObjTools.h \
            code/OFFLoader.h \
+           code/OgreBinarySerializer.h \
+           code/OgreImporter.h \
+           code/OgreParsingUtils.h \
+           code/OgreStructs.h \
+           code/OgreXmlSerializer.h \
+           code/OpenGEXExporter.h \
+           code/OpenGEXImporter.h \
+           code/OpenGEXStructs.h \
            code/OptimizeGraph.h \
            code/OptimizeMeshes.h \
            code/ParsingUtils.h \
@@ -195,21 +240,27 @@ HEADERS += revision.h \
            code/ScenePreprocessor.h \
            code/ScenePrivate.h \
            code/SGSpatialSort.h \
+           code/SIBImporter.h \
            code/SkeletonMeshBuilder.h \
            code/SMDLoader.h \
            code/SmoothingGroups.h \
+           code/SmoothingGroups.inl \
            code/SortByPTypeProcess.h \
            code/SpatialSort.h \
            code/SplitByBoneCountProcess.h \
            code/SplitLargeMeshes.h \
            code/StandardShapes.h \
            code/StdOStreamLogStream.h \
+           code/StepExporter.h \
            code/STEPFile.h \
+           code/STEPFileEncoding.h \
            code/STEPFileReader.h \
            code/STLExporter.h \
            code/STLLoader.h \
            code/StreamReader.h \
+           code/StreamWriter.h \
            code/StringComparison.h \
+           code/StringUtils.h \
            code/Subdivision.h \
            code/TargetAnimation.h \
            code/TerragenLoader.h \
@@ -221,10 +272,12 @@ HEADERS += revision.h \
            code/Vertex.h \
            code/VertexTriangleAdjacency.h \
            code/Win32DebugLogStream.h \
+           code/XFileExporter.h \
            code/XFileHelper.h \
            code/XFileImporter.h \
            code/XFileParser.h \
            code/XGLLoader.h \
+           code/XMLTools.h \
            code/res/resource.h \
            contrib/clipper/clipper.hpp \
            contrib/ConvertUTF/ConvertUTF.h \
@@ -234,6 +287,48 @@ HEADERS += revision.h \
            contrib/irrXML/irrString.h \
            contrib/irrXML/irrTypes.h \
            contrib/irrXML/irrXML.h \
+           contrib/openddlparser/include/openddlparser/DDLNode.h \
+           contrib/openddlparser/include/openddlparser/OpenDDLCommon.h \
+           contrib/openddlparser/include/openddlparser/OpenDDLExport.h \
+           contrib/openddlparser/include/openddlparser/OpenDDLParser.h \
+           contrib/openddlparser/include/openddlparser/OpenDDLParserUtils.h \
+           contrib/openddlparser/include/openddlparser/Value.h \
+           contrib/poly2tri/poly2tri/poly2tri.h \
+           contrib/poly2tri/poly2tri/common/shapes.h \
+           contrib/poly2tri/poly2tri/common/utils.h \
+           contrib/poly2tri/poly2tri/sweep/advancing_front.h \
+           contrib/poly2tri/poly2tri/sweep/cdt.h \
+           contrib/poly2tri/poly2tri/sweep/sweep.h \
+           contrib/poly2tri/poly2tri/sweep/sweep_context.h \
+           contrib/rapidjson/include/rapidjson/allocators.h \
+           contrib/rapidjson/include/rapidjson/document.h \
+           contrib/rapidjson/include/rapidjson/encodedstream.h \
+           contrib/rapidjson/include/rapidjson/encodings.h \
+           contrib/rapidjson/include/rapidjson/error/en.h \
+           contrib/rapidjson/include/rapidjson/error/error.h \
+           contrib/rapidjson/include/rapidjson/filereadstream.h \
+           contrib/rapidjson/include/rapidjson/filewritestream.h \
+           contrib/rapidjson/include/rapidjson/internal/biginteger.h \
+           contrib/rapidjson/include/rapidjson/internal/diyfp.h \
+           contrib/rapidjson/include/rapidjson/internal/dtoa.h \
+           contrib/rapidjson/include/rapidjson/internal/ieee754.h \
+           contrib/rapidjson/include/rapidjson/internal/itoa.h \
+           contrib/rapidjson/include/rapidjson/internal/meta.h \
+           contrib/rapidjson/include/rapidjson/internal/pow10.h \
+           contrib/rapidjson/include/rapidjson/internal/stack.h \
+           contrib/rapidjson/include/rapidjson/internal/strfunc.h \
+           contrib/rapidjson/include/rapidjson/internal/strtod.h \
+           contrib/rapidjson/include/rapidjson/internal/swap.h \
+           contrib/rapidjson/include/rapidjson/memorybuffer.h \
+           contrib/rapidjson/include/rapidjson/memorystream.h \
+           contrib/rapidjson/include/rapidjson/msinttypes/inttypes.h \
+           contrib/rapidjson/include/rapidjson/msinttypes/stdint.h \
+           contrib/rapidjson/include/rapidjson/pointer.h \
+           contrib/rapidjson/include/rapidjson/prettywriter.h \
+           contrib/rapidjson/include/rapidjson/rapidjson.h \
+           contrib/rapidjson/include/rapidjson/reader.h \
+           contrib/rapidjson/include/rapidjson/stringbuffer.h \
+           contrib/rapidjson/include/rapidjson/writer.h \
            contrib/unzip/crypt.h \
            contrib/unzip/ioapi.h \
            contrib/unzip/unzip.h \
@@ -244,6 +339,7 @@ HEADERS += revision.h \
            include/assimp/cfileio.h \
            include/assimp/cimport.h \
            include/assimp/color4.h \
+           include/assimp/color4.inl \
            include/assimp/config.h \
            include/assimp/DefaultLogger.hpp \
            include/assimp/defs.h \
@@ -256,90 +352,53 @@ HEADERS += revision.h \
            include/assimp/Logger.hpp \
            include/assimp/LogStream.hpp \
            include/assimp/material.h \
+           include/assimp/material.inl \
            include/assimp/matrix3x3.h \
+           include/assimp/matrix3x3.inl \
            include/assimp/matrix4x4.h \
+           include/assimp/matrix4x4.inl \
            include/assimp/mesh.h \
+           include/assimp/metadata.h \
            include/assimp/NullLogger.hpp \
            include/assimp/postprocess.h \
            include/assimp/ProgressHandler.hpp \
            include/assimp/quaternion.h \
+           include/assimp/quaternion.inl \
            include/assimp/scene.h \
            include/assimp/texture.h \
            include/assimp/types.h \
            include/assimp/vector2.h \
-           include/assimp/vector3.h \
-           include/assimp/version.h \
            include/assimp/vector2.inl \
+           include/assimp/vector3.h \
            include/assimp/vector3.inl \
-           include/assimp/color4.inl \
-           include/assimp/quaternion.inl \
-           include/assimp/matrix3x3.inl \
-           include/assimp/matrix4x4.inl \
-           include/assimp/material.inl \
-           include/assimp/metadata.h \
+           include/assimp/version.h \
            include/assimp/Compiler/poppack1.h \
            include/assimp/Compiler/pushpack1.h \
-           include/assimp/Compiler/pstdint.h \
-           code/BoostWorkaround/boost/foreach.hpp \
-           code/BoostWorkaround/boost/format.hpp \
-           code/BoostWorkaround/boost/lexical_cast.hpp \
-           code/BoostWorkaround/boost/make_shared.hpp \
-           code/BoostWorkaround/boost/noncopyable.hpp \
-           code/BoostWorkaround/boost/pointer_cast.hpp \
-           code/BoostWorkaround/boost/scoped_array.hpp \
-           code/BoostWorkaround/boost/scoped_ptr.hpp \
-           code/BoostWorkaround/boost/shared_array.hpp \
-           code/BoostWorkaround/boost/shared_ptr.hpp \
-           code/BoostWorkaround/boost/static_assert.hpp \
-           code/BoostWorkaround/boost/timer.hpp \
-           contrib/poly2tri/poly2tri/poly2tri.h \
-           code/BoostWorkaround/boost/math/common_factor_rt.hpp \
-           code/BoostWorkaround/boost/tuple/tuple.hpp \
-           contrib/poly2tri/poly2tri/common/shapes.h \
-           contrib/poly2tri/poly2tri/common/utils.h \
-           contrib/poly2tri/poly2tri/sweep/advancing_front.h \
-           contrib/poly2tri/poly2tri/sweep/cdt.h \
-           contrib/poly2tri/poly2tri/sweep/sweep.h \
-           contrib/poly2tri/poly2tri/sweep/sweep_context.h \
-           code/SmoothingGroups.inl \
-           code/BlenderDNA.inl \
-           code/FBXConverter.h \
-           code/FBXDocument.h \
-           code/FBXDocumentUtil.h \
-           code/FBXImporter.h \
-           code/FBXImportSettings.h \
-           code/FBXParser.h \
-           code/FBXProperties.h \
-           code/FBXTokenizer.h \
-           code/FBXUtil.h \
-           code/OgreImporter.h \
-           code/OgreParsingUtils.h \
-           code/FBXCompileConfig.h \
-           code/STEPFileEncoding.h \
-           code/OgreBinarySerializer.h \
-           code/OgreStructs.h \
-           code/OgreXmlSerializer.h \
-           code/CreateAnimMesh.h
+           include/assimp/Compiler/pstdint.h
 
 SOURCES += code/3DSConverter.cpp \
+           code/3DSExporter.cpp \
            code/3DSLoader.cpp \
            code/ACLoader.cpp \
            code/ASELoader.cpp \
            code/ASEParser.cpp \
+           code/AssbinExporter.cpp \
+           code/AssbinLoader.cpp \
            code/Assimp.cpp \
            code/AssimpCExport.cpp \
-           code/AssimpPCH.cpp \
+           code/AssxmlExporter.cpp \
            code/B3DImporter.cpp \
            code/BaseImporter.cpp \
+           code/BaseProcess.cpp \
            code/Bitmap.cpp \
            code/BlenderBMesh.cpp \
-           code/BaseProcess.cpp \
            code/BlenderDNA.cpp \
            code/BlenderLoader.cpp \
            code/BlenderModifier.cpp \
            code/BlenderScene.cpp \
            code/BlenderTessellator.cpp \
            code/BVHLoader.cpp \
+           code/C4DImporter.cpp \
            code/CalcTangentsProcess.cpp \
            code/COBLoader.cpp \
            code/ColladaExporter.cpp \
@@ -347,24 +406,46 @@ SOURCES += code/3DSConverter.cpp \
            code/ColladaParser.cpp \
            code/ComputeUVMappingProcess.cpp \
            code/ConvertToLHProcess.cpp \
+           code/CreateAnimMesh.cpp \
            code/CSMLoader.cpp \
+           code/D3MFImporter.cpp \
+           code/D3MFOpcPackage.cpp \
            code/DeboneProcess.cpp \
            code/DefaultIOStream.cpp \
            code/DefaultIOSystem.cpp \
            code/DefaultLogger.cpp \
            code/DXFLoader.cpp \
            code/Exporter.cpp \
+           code/FBXAnimation.cpp \
+           code/FBXBinaryTokenizer.cpp \
+           code/FBXConverter.cpp \
+           code/FBXDeformer.cpp \
+           code/FBXDocument.cpp \
+           code/FBXDocumentUtil.cpp \
+           code/FBXImporter.cpp \
+           code/FBXMaterial.cpp \
+           code/FBXMeshGeometry.cpp \
+           code/FBXModel.cpp \
+           code/FBXNodeAttribute.cpp \
+           code/FBXParser.cpp \
+           code/FBXProperties.cpp \
+           code/FBXTokenizer.cpp \
+           code/FBXUtil.cpp \
            code/FindDegenerates.cpp \
            code/FindInstancesProcess.cpp \
            code/FindInvalidDataProcess.cpp \
            code/FixNormalsStep.cpp \
            code/GenFaceNormalsProcess.cpp \
            code/GenVertexNormalsProcess.cpp \
+           code/glTFExporter.cpp \
+           code/glTFImporter.cpp \
            code/HMPLoader.cpp \
+           code/IFCBoolean.cpp \
            code/IFCCurve.cpp \
            code/IFCGeometry.cpp \
            code/IFCLoader.cpp \
            code/IFCMaterial.cpp \
+           code/IFCOpenings.cpp \
            code/IFCProfile.cpp \
            code/IFCReaderGen1.cpp \
            code/IFCReaderGen2.cpp \
@@ -399,8 +480,13 @@ SOURCES += code/3DSConverter.cpp \
            code/ObjFileMtlImporter.cpp \
            code/ObjFileParser.cpp \
            code/OFFLoader.cpp \
+           code/OgreBinarySerializer.cpp \
            code/OgreImporter.cpp \
            code/OgreMaterial.cpp \
+           code/OgreStructs.cpp \
+           code/OgreXmlSerializer.cpp \
+           code/OpenGEXExporter.cpp \
+           code/OpenGEXImporter.cpp \
            code/OptimizeGraph.cpp \
            code/OptimizeMeshes.cpp \
            code/PlyExporter.cpp \
@@ -420,6 +506,7 @@ SOURCES += code/3DSConverter.cpp \
            code/SceneCombiner.cpp \
            code/ScenePreprocessor.cpp \
            code/SGSpatialSort.cpp \
+           code/SIBImporter.cpp \
            code/SkeletonMeshBuilder.cpp \
            code/SMDLoader.cpp \
            code/SortByPTypeProcess.cpp \
@@ -427,6 +514,8 @@ SOURCES += code/3DSConverter.cpp \
            code/SplitByBoneCountProcess.cpp \
            code/SplitLargeMeshes.cpp \
            code/StandardShapes.cpp \
+           code/StepExporter.cpp \
+           code/STEPFileEncoding.cpp \
            code/STEPFileReader.cpp \
            code/STLExporter.cpp \
            code/STLLoader.cpp \
@@ -437,42 +526,24 @@ SOURCES += code/3DSConverter.cpp \
            code/TriangulateProcess.cpp \
            code/UnrealLoader.cpp \
            code/ValidateDataStructure.cpp \
+           code/Version.cpp \
            code/VertexTriangleAdjacency.cpp \
+           code/XFileExporter.cpp \
            code/XFileImporter.cpp \
            code/XFileParser.cpp \
            code/XGLLoader.cpp \
            contrib/clipper/clipper.cpp \
            contrib/ConvertUTF/ConvertUTF.c \
            contrib/irrXML/irrXML.cpp \
-           contrib/unzip/ioapi.c \
-           contrib/unzip/unzip.c \
+           contrib/openddlparser/code/DDLNode.cpp \
+           contrib/openddlparser/code/OpenDDLCommon.cpp \
+           contrib/openddlparser/code/OpenDDLExport.cpp \
+           contrib/openddlparser/code/OpenDDLParser.cpp \
+           contrib/openddlparser/code/Value.cpp \
            contrib/poly2tri/poly2tri/common/shapes.cc \
            contrib/poly2tri/poly2tri/sweep/advancing_front.cc \
            contrib/poly2tri/poly2tri/sweep/cdt.cc \
            contrib/poly2tri/poly2tri/sweep/sweep.cc \
            contrib/poly2tri/poly2tri/sweep/sweep_context.cc \
-           code/FBXAnimation.cpp \
-           code/FBXBinaryTokenizer.cpp \
-           code/FBXDeformer.cpp \
-           code/FBXDocument.cpp \
-           code/FBXDocumentUtil.cpp \
-           code/FBXImporter.cpp \
-           code/FBXMaterial.cpp \
-           code/FBXMeshGeometry.cpp \
-           code/FBXModel.cpp \
-           code/FBXNodeAttribute.cpp \
-           code/FBXParser.cpp \
-           code/FBXProperties.cpp \
-           code/FBXTokenizer.cpp \
-           code/FBXUtil.cpp \
-           code/IFCBoolean.cpp \
-           code/IFCOpenings.cpp \
-           code/FBXConverter.cpp \
-           code/STEPFileEncoding.cpp \
-           code/OgreBinarySerializer.cpp \
-           code/OgreStructs.cpp \
-           code/OgreXmlSerializer.cpp \
-           code/CreateAnimMesh.cpp
-
-
-
+           contrib/unzip/ioapi.c \
+           contrib/unzip/unzip.c

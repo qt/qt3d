@@ -77,6 +77,7 @@
 #include <Qt3DRender/private/boundingvolumedebug_p.h>
 #include <Qt3DRender/private/openglvertexarrayobject_p.h>
 #include <Qt3DRender/private/light_p.h>
+#include <Qt3DRender/private/environmentlight_p.h>
 #include <Qt3DRender/private/computecommand_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -260,7 +261,7 @@ public:
 
 class VAOManager : public Qt3DCore::QResourceManager<
         OpenGLVertexArrayObject,
-        QPair<HGeometry, HShader>,
+        VAOIdentifier,
         16,
         Qt3DCore::ArrayAllocatingPolicy,
         Qt3DCore::NonLockingPolicy>
@@ -381,6 +382,17 @@ public:
     LightManager() {}
 };
 
+class EnvironmentLightManager : public Qt3DCore::QResourceManager<
+        EnvironmentLight,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy,
+        Qt3DCore::NonLockingPolicy>
+{
+public:
+    EnvironmentLightManager() {}
+};
+
 class ComputeCommandManager : public Qt3DCore::QResourceManager<
         ComputeCommand,
         Qt3DCore::QNodeId,
@@ -422,6 +434,7 @@ Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::BoundingVolumeDebug, Q_REQUIRES_CLEA
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::ComputeCommand, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Parameter, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Transform, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::OpenGLVertexArrayObject, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 

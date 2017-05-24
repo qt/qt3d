@@ -54,6 +54,7 @@
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DRender/private/abstractrenderer_p.h>
+#include <private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,13 +62,18 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT BackendNode : public Qt3DCore::QBackendNode
+class RenderBackendResourceAccessor;
+
+class QT3DRENDERSHARED_PRIVATE_EXPORT BackendNode : public Qt3DCore::QBackendNode
 {
 public:
     BackendNode(Qt3DCore::QBackendNode::Mode mode = ReadOnly);
     ~BackendNode();
 
     void setRenderer(AbstractRenderer *renderer);
+    AbstractRenderer *renderer() const;
+
+    QSharedPointer<RenderBackendResourceAccessor> resourceAccessor();
 
 protected:
     void markDirty(AbstractRenderer::BackendNodeDirtySet changes);

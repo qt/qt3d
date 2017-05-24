@@ -38,11 +38,15 @@
 ****************************************************************************/
 
 #include "qservicelocator_p.h"
-#include "qabstractserviceprovider_p.h"
-#include "nullservices_p.h"
-#include "qtickclockservice_p.h"
-#include "qeventfilterservice_p.h"
-#include <QHash>
+
+#include <QtCore/QHash>
+
+#include <Qt3DCore/private/nullservices_p.h>
+#include <Qt3DCore/private/qabstractserviceprovider_p.h>
+#include <Qt3DCore/private/qdownloadhelperservice_p.h>
+#include <Qt3DCore/private/qeventfilterservice_p.h>
+#include <Qt3DCore/private/qtickclockservice_p.h>
+
 
 QT_BEGIN_NAMESPACE
 
@@ -53,17 +57,15 @@ namespace Qt3DCore {
     \inmodule Qt3DCore
 */
 
-QAbstractServiceProvider::QAbstractServiceProvider(int type, const QString &description)
-    : d_ptr(new QAbstractServiceProviderPrivate(type, description))
+QAbstractServiceProvider::QAbstractServiceProvider(int type, const QString &description, QObject *parent)
+    : QObject(*new QAbstractServiceProviderPrivate(type, description), parent)
 {
-    d_ptr->q_ptr = this;
 }
 
 /* \internal */
-QAbstractServiceProvider::QAbstractServiceProvider(QAbstractServiceProviderPrivate &dd)
-    : d_ptr(&dd)
+QAbstractServiceProvider::QAbstractServiceProvider(QAbstractServiceProviderPrivate &dd, QObject *parent)
+    : QObject(dd, parent)
 {
-    d_ptr->q_ptr = this;
 }
 
 QAbstractServiceProvider::~QAbstractServiceProvider()
@@ -96,6 +98,7 @@ public:
     NullOpenGLInformationService m_nullOpenGLInfo;
     QTickClockService m_defaultFrameAdvanceService;
     QEventFilterService m_eventFilterService;
+    QDownloadHelperService m_downloadHelperService;
     int m_nonNullDefaultServices;
 };
 
@@ -229,6 +232,12 @@ QEventFilterService *QServiceLocator::eventFilterService()
     return static_cast<QEventFilterService *>(d->m_services.value(EventFilterService, &d->m_eventFilterService));
 }
 
+QDownloadHelperService *QServiceLocator::downloadHelperService()
+{
+    Q_D(QServiceLocator);
+    return static_cast<QDownloadHelperService *>(d->m_services.value(DownloadHelperService, &d->m_downloadHelperService));
+}
+
 /*
     \internal
 */
@@ -244,6 +253,8 @@ QAbstractServiceProvider *QServiceLocator::_q_getServiceHelper(int type)
         return frameAdvanceService();
     case EventFilterService:
         return eventFilterService();
+    case DownloadHelperService:
+        return downloadHelperService();
     default:
         return d->m_services.value(type, nullptr);
     }

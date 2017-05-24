@@ -75,7 +75,6 @@ public:
 
 private:
     Qt3DRender::QAbstractTexture *m_textures[AttachmentsCount];
-    Qt3DRender::QRenderTargetOutput *m_attachments[AttachmentsCount];
 };
 
 #endif // GBUFFER_H

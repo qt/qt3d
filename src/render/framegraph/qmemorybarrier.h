@@ -55,33 +55,34 @@ public:
     explicit QMemoryBarrier(Qt3DCore::QNode *parent = nullptr);
     ~QMemoryBarrier();
 
-    enum BarrierType {
+    enum Operation {
         None = 0,
-        VertexAttributeArrayBarrier = (1 << 0),
-        ElementArrayBarrier = (1 << 1),
-        UniformBarrier = (1 << 2),
-        TextureFetchBarrier = (1 << 3),
-        ShaderImageAccessBarrier = (1 << 4),
-        CommandBarrier = (1 << 5),
-        PixelBufferBarrier = (1 << 6),
-        TextureUpdateBarrier = (1 << 7),
-        BufferUpdateBarrier = (1 << 8),
-        FrameBufferBarrier = (1 << 9),
-        TransformFeedbackBarrier = (1 << 10),
-        AtomicCounterBarrier = (1 << 11),
-        ShaderStorageBarrier = (1 << 12),
-        QueryBufferBarrier = (1 << 13),
-        AllBarrier = 0xFFFFFFFF
+        VertexAttributeArray = (1 << 0),
+        ElementArray = (1 << 1),
+        Uniform = (1 << 2),
+        TextureFetch = (1 << 3),
+        ShaderImageAccess = (1 << 4),
+        Command = (1 << 5),
+        PixelBuffer = (1 << 6),
+        TextureUpdate = (1 << 7),
+        BufferUpdate = (1 << 8),
+        FrameBuffer = (1 << 9),
+        TransformFeedback = (1 << 10),
+        AtomicCounter = (1 << 11),
+        ShaderStorage = (1 << 12),
+        QueryBuffer = (1 << 13),
+        All = 0xFFFFFFFF
     };
-    Q_ENUM(BarrierType)
-    Q_DECLARE_FLAGS(BarrierTypes, BarrierType)
+    Q_ENUM(Operation)
+    Q_DECLARE_FLAGS(Operations, Operation)
+
+    Operations waitOperations() const;
 
 public Q_SLOTS:
-    void setBarrierTypes(QMemoryBarrier::BarrierTypes barrierTypes);
-    BarrierTypes barrierTypes() const;
+    void setWaitOperations(QMemoryBarrier::Operations operations);
 
 Q_SIGNALS:
-    void barrierTypesChanged(QMemoryBarrier::BarrierTypes barrierTypes);
+    void waitOperationsChanged(QMemoryBarrier::Operations barrierTypes);
 
 protected:
     explicit QMemoryBarrier(QMemoryBarrierPrivate &dd, Qt3DCore::QNode *parent = nullptr);
@@ -95,6 +96,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::QMemoryBarrier::BarrierTypes)
+Q_DECLARE_METATYPE(Qt3DRender::QMemoryBarrier::Operations)
 
 #endif // QT3DRENDER_QMEMORYBARRIER_H

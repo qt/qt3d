@@ -42,11 +42,11 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qdownloadhelperservice_p.h>
 #include <Qt3DRender/qsceneloader.h>
 #include <Qt3DRender/private/qsceneloader_p.h>
 #include <Qt3DRender/private/scenemanager_p.h>
 #include <QtCore/qcoreapplication.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -73,7 +73,6 @@ void Scene::setStatus(QSceneLoader::Status status)
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("status");
     e->setValue(QVariant::fromValue(status));
-    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
     notifyObservers(e);
 }
 
@@ -83,7 +82,10 @@ void Scene::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change
     const auto &data = typedChange->data;
     m_source = data.source;
     Q_ASSERT(m_sceneManager);
-    m_sceneManager->addSceneData(m_source, peerId());
+    if (Qt3DCore::QDownloadHelperService::isLocal(m_source))
+        m_sceneManager->addSceneData(m_source, peerId());
+    else
+        m_sceneManager->startSceneDownload(m_source, peerId());
 }
 
 void Scene::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -92,7 +94,10 @@ void Scene::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("source")) {
             m_source = propertyChange->value().toUrl();
-            m_sceneManager->addSceneData(m_source, peerId());
+            if (Qt3DCore::QDownloadHelperService::isLocal(m_source))
+                m_sceneManager->addSceneData(m_source, peerId());
+            else
+                m_sceneManager->startSceneDownload(m_source, peerId());
         }
     }
     markDirty(AbstractRenderer::AllDirty);
@@ -116,7 +121,6 @@ void Scene::setSceneSubtree(Qt3DCore::QEntity *subTree)
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("scene");
     e->setValue(QVariant::fromValue(subTree));
-    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
     notifyObservers(e);
 }
 

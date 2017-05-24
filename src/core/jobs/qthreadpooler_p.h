@@ -51,17 +51,18 @@
 // We mean it.
 //
 
-#include "task_p.h"
-#include "dependencyhandler_p.h"
-#include "qaspectjob_p.h"
+#include <QtCore/QFuture>
+#include <QtCore/QFutureInterface>
 #include <QtCore/QObject>
 #include <QtCore/QSharedPointer>
-#include <QtCore/QFutureInterface>
-#include <QtCore/QFuture>
-#include <QThreadPool>
+#include <QtCore/QThreadPool>
+
+#include <Qt3DCore/private/dependencyhandler_p.h>
+#include <Qt3DCore/private/qaspectjob_p.h>
+#include <Qt3DCore/private/task_p.h>
 
 #ifdef QT3D_JOBS_RUN_STATS
-#include <QElapsedTimer>
+#include <QtCore/QElapsedTimer>
 #endif
 
 QT_BEGIN_NAMESPACE

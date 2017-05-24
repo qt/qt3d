@@ -38,9 +38,11 @@
 ****************************************************************************/
 
 #include "keyboardeventfilter_p.h"
-#include "inputhandler_p.h"
-#include <QEvent>
-#include <QKeyEvent>
+
+#include <Qt3DInput/QKeyEvent>
+#include <QtCore/QEvent>
+
+#include <Qt3DInput/private/inputhandler_p.h>
 
 QT_BEGIN_NAMESPACE
 

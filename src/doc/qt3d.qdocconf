@@ -47,7 +47,9 @@ headerdirs += . \
               ../plugins \
               ../quick3d/quick3d \
               ../input \
-              ../extras
+              ../extras \
+              ../animation \
+              ../quick3d/quick3dscene2d
 
 # Exclude private header files from the documentation build
 excludefiles += "*_p.h"
@@ -59,7 +61,9 @@ sourcedirs += . \
               ../plugins \
               ../quick3d/quick3d \
               ../input \
-              ../extras
+              ../extras \
+              ../animation \
+              ../quick3d/quick3dscene2d
 
 exampledirs += ../../examples/qt3d \
                snippets
@@ -67,14 +71,19 @@ exampledirs += ../../examples/qt3d \
 examples.fileextensions       += "*.fraq *.geom *.vert"
 examples.imageextensions      += "*.png"
 
-#excludedirs +=
+excludedirs += \
+              ../plugins/renderplugins
+
 macro.TODO = " "
 imagedirs   += images \
                ../../examples/qt3d/shadow-map-qml/doc/images \
                ../../examples/qt3d/basicshapes-cpp/doc/images \
                ../../examples/qt3d/planets-qml/doc/images \
                ../../examples/qt3d/wireframe/doc/images \
-               ../../examples/qt3d/audio-visualizer-qml/doc/images
+               ../../examples/qt3d/audio-visualizer-qml/doc/images \
+               ../../examples/qt3d/simplecustommaterial/doc/images \
+               ../../examples/qt3d/scene2d/doc/images \
+               ../../examples/qt3d/advancedcustommaterial/doc/images
 
 Cpp.ignoretokens     += QT3DINPUTSHARED_EXPORT \
                         QT3DCORESHARED_EXPORT \
@@ -83,12 +92,16 @@ Cpp.ignoretokens     += QT3DINPUTSHARED_EXPORT \
                         QT3DRENDERSHARED_EXPORT \
                         QT3DRENDERSHARED_PRIVATE_EXPORT \
                         QT3DQUICKSHARED_PRIVATE_EXPORT \
-                        QT3DEXTRASSHARED_EXPORT
+                        QT3DEXTRASSHARED_EXPORT \
+                        QT3DANIMATIONSHARED_EXPORT \
+                        QT3DQUICKSCENE2DSHARED_EXPORT
 
 Cpp.ignoredirectives += Q_DECLARE_LOGGING_CATEGORY
 
-manifestmeta.highlighted.names = "Qt3D/Qt 3D: Audio Visualizer Example" \
-                                 "Qt3D/Qt 3D: Planets QML Example"
+manifestmeta.highlighted.names = \
+                "Qt3D/Qt 3D: Advanced custom material QML Example" \
+                "Qt3D/Qt 3D: Audio Visualizer Example" \
+                "Qt3D/Qt 3D: Planets QML Example"
 
 manifestmeta.thumbnail.names += "Qt3D/Qt 3D: Deferred Renderer C++ Example"
 

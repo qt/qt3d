@@ -66,24 +66,18 @@ class FrameGraphNode;
 class Renderer;
 class FrameGraphManager;
 
-class FrameGraphVisitor
+class Q_AUTOTEST_EXPORT FrameGraphVisitor
 {
 public:
-    explicit FrameGraphVisitor(Renderer *renderer,
-                               const FrameGraphManager *nodeManager);
+    explicit FrameGraphVisitor(const FrameGraphManager *nodeManager);
 
-    void traverse(FrameGraphNode *root,
-                  QVector<Qt3DCore::QAspectJobPtr> *jobs);
-
-    inline int leafNodeCount() Q_DECL_NOTHROW { return m_renderviewIndex; }
+    QVector<FrameGraphNode *> traverse(FrameGraphNode *root);
 
 private:
     void visit(Render::FrameGraphNode *node);
 
-    Renderer *m_renderer;
     const FrameGraphManager *m_manager;
-    QVector<Qt3DCore::QAspectJobPtr> *m_jobs;
-    int m_renderviewIndex;
+    QVector<FrameGraphNode *> m_leaves;
 };
 
 } // namespace Render

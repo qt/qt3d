@@ -176,7 +176,7 @@ class tst_GraphicsHelperGL3_3 : public QObject
     Q_OBJECT
 private Q_SLOTS:
 
-    void initTestCase()
+    void init()
     {
         m_window.reset(new QWindow);
         m_window->setSurfaceType(QWindow::OpenGLSurface);
@@ -209,7 +209,7 @@ private Q_SLOTS:
         }
     }
 
-    void cleanupTestCase()
+    void cleanup()
     {
         m_glContext.doneCurrent();
     }
@@ -1967,6 +1967,11 @@ private Q_SLOTS:
         if (!m_initializationSuccessful)
             QSKIP("Initialization failed, OpenGL 3.3 Core functions not supported");
 
+        GLint maxSamples;
+        m_func->glGetIntegerv(GL_MAX_SAMPLES, &maxSamples);
+        if (maxSamples < 1)
+            QSKIP("This test requires an implementation that supports multisampled textures");
+
         // GIVEN
         GLuint fbos[2];
         GLuint fboTextures[2];
@@ -1975,7 +1980,7 @@ private Q_SLOTS:
         m_func->glGenTextures(2, fboTextures);
 
         m_func->glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, fboTextures[0]);
-        m_func->glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGBA8, 10, 10, true);
+        m_func->glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, maxSamples, GL_RGBA8, 10, 10, true);
         m_func->glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
         m_func->glBindTexture(GL_TEXTURE_2D, fboTextures[1]);
@@ -1986,13 +1991,13 @@ private Q_SLOTS:
         m_func->glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, fboTextures[1], 0);
 
         GLenum status = m_func->glCheckFramebufferStatus(GL_FRAMEBUFFER);
-        QVERIFY(status == GL_FRAMEBUFFER_COMPLETE);
+        QCOMPARE(status, GLenum(GL_FRAMEBUFFER_COMPLETE));
 
         m_func->glBindFramebuffer(GL_FRAMEBUFFER, fbos[0]);
         m_func->glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, fboTextures[0], 0);
 
         status = m_func->glCheckFramebufferStatus(GL_FRAMEBUFFER);
-        QVERIFY(status == GL_FRAMEBUFFER_COMPLETE);
+        QCOMPARE(status, GLenum(GL_FRAMEBUFFER_COMPLETE));
 
         m_func->glEnable(GL_MULTISAMPLE);
         m_func->glClearColor(0.2f, 0.2f, 0.2f, 0.2f);

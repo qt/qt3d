@@ -39,7 +39,7 @@
 
 #include "qclipanimator.h"
 #include "qclipanimator_p.h"
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qabstractanimationclip.h>
 #include <Qt3DAnimation/qchannelmapper.h>
 
 QT_BEGIN_NAMESPACE
@@ -47,21 +47,66 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 
 QClipAnimatorPrivate::QClipAnimatorPrivate()
-    : Qt3DCore::QComponentPrivate()
+    : Qt3DAnimation::QAbstractClipAnimatorPrivate()
     , m_clip(nullptr)
-    , m_mapper(nullptr)
-    , m_running(false)
-    , m_loops(1)
 {
 }
+
+/*!
+    \qmltype ClipAnimator
+    \instantiates Qt3DAnimation::QClipAnimator
+    \inqmlmodule Qt3D.Animation
+    \since 5.9
+
+    \brief ClipAnimator is a component providing simple animation playback capabilities.
+
+    An instance of ClipAnimator can be aggregated by an Entity to add the ability to play back
+    animation clips and to apply the calculated animation values to properties of QObjects.
+
+    The animation key frame data is provided via the clip property. This can be created
+    programmatically with AnimationClip or loaded from file with AnimationClipLoader.
+
+    In order to apply the values played back from the channels of data in the animation clip, the
+    clip animator needs to have a ChannelMapper object assigned to the channelMapper property.
+
+    The properties for controlling the animator are provided by the AbstractClipAnimator base
+    class.
+
+    \sa AbstractClipAnimator, AbstractAnimationClip, ChannelMapper, BlendedClipAnimator
+*/
+
+/*!
+    \class Qt3DAnimation::QClipAnimator
+    \inherits Qt3DAnimation::QAbstractClipAnimator
+
+    \inmodule Qt3DAnimation
+    \since 5.9
+
+    \brief QClipAnimator is a component providing simple animation playback capabilities.
+
+    An instance of QClipAnimator can be aggregated by a QEntity to add the ability to play back
+    animation clips and to apply the calculated animation values to properties of QObjects.
+
+    The animation key frame data is provided via the clip property. This can be created
+    programmatically with QAnimationClip or loaded from file with QAnimationClipLoader.
+
+    In order to apply the values played back from the channels of data in the animation clip, the
+    clip animator needs to have a QChannelMapper object assigned to the channelMapper property.
+
+    The properties for controlling the animator are provided by the QAbstractClipAnimator base
+    class.
+
+    \sa QAbstractClipAnimator, QAbstractAnimationClip, QChannelMapper, QBlendedClipAnimator
+*/
 
 QClipAnimator::QClipAnimator(Qt3DCore::QNode *parent)
-    : Qt3DCore::QComponent(*new QClipAnimatorPrivate, parent)
+    : Qt3DAnimation::QAbstractClipAnimator(*new QClipAnimatorPrivate, parent)
 {
 }
 
+/*! \internal */
 QClipAnimator::QClipAnimator(QClipAnimatorPrivate &dd, Qt3DCore::QNode *parent)
-    : Qt3DCore::QComponent(dd, parent)
+    : Qt3DAnimation::QAbstractClipAnimator(dd, parent)
 {
 }
 
@@ -69,31 +114,26 @@ QClipAnimator::~QClipAnimator()
 {
 }
 
-QAnimationClip *QClipAnimator::clip() const
+/*!
+    \qmlproperty AbstractAnimationClip clip
+
+    This property holds the animation clip which contains the key frame data to be played back.
+    The key frame data can be specified in either an AnimationClip or AnimationClipLoader.
+*/
+
+/*!
+    \property clip
+
+    This property holds the animation clip which contains the key frame data to be played back.
+    The key frame data can be specified in either a QAnimationClip or QAnimationClipLoader.
+*/
+QAbstractAnimationClip *QClipAnimator::clip() const
 {
     Q_D(const QClipAnimator);
     return d->m_clip;
 }
 
-bool QClipAnimator::isRunning() const
-{
-    Q_D(const QClipAnimator);
-    return d->m_running;
-}
-
-QChannelMapper *QClipAnimator::channelMapper() const
-{
-    Q_D(const QClipAnimator);
-    return d->m_mapper;
-}
-
-int QClipAnimator::loops() const
-{
-    Q_D(const QClipAnimator);
-    return d->m_loops;
-}
-
-void QClipAnimator::setClip(QAnimationClip *clip)
+void QClipAnimator::setClip(QAbstractAnimationClip *clip)
 {
     Q_D(QClipAnimator);
     if (d->m_clip == clip)
@@ -112,45 +152,7 @@ void QClipAnimator::setClip(QAnimationClip *clip)
     emit clipChanged(clip);
 }
 
-void QClipAnimator::setRunning(bool running)
-{
-    Q_D(QClipAnimator);
-    if (d->m_running == running)
-        return;
-
-    d->m_running = running;
-    emit runningChanged(running);
-}
-
-void QClipAnimator::setChannelMapper(QChannelMapper *mapping)
-{
-    Q_D(QClipAnimator);
-    if (d->m_mapper == mapping)
-        return;
-
-    if (d->m_mapper)
-        d->unregisterDestructionHelper(d->m_mapper);
-
-    if (mapping && !mapping->parent())
-        mapping->setParent(this);
-    d->m_mapper = mapping;
-
-    // Ensures proper bookkeeping
-    if (d->m_mapper)
-        d->registerDestructionHelper(d->m_mapper, &QClipAnimator::setChannelMapper, d->m_mapper);
-    emit channelMapperChanged(mapping);
-}
-
-void QClipAnimator::setLoops(int loops)
-{
-    Q_D(QClipAnimator);
-    if (d->m_loops == loops)
-        return;
-
-    d->m_loops = loops;
-    emit loopsChanged(loops);
-}
-
+/*! \internal */
 Qt3DCore::QNodeCreatedChangeBasePtr QClipAnimator::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QClipAnimatorData>::create(this);

@@ -61,7 +61,7 @@ namespace Render {
 Texture::Texture()
     // We need backend -> frontend notifications to update the status of the texture
     : BackendNode(ReadWrite)
-    , m_dirty(DirtyGenerators|DirtyProperties|DirtyParameters)
+    , m_dirty(DirtyImageGenerators|DirtyProperties|DirtyParameters|DirtyDataGenerator)
     , m_textureImageManager(nullptr)
 {
 }
@@ -81,11 +81,19 @@ void Texture::setTextureImageManager(TextureImageManager *manager)
 
 void Texture::addDirtyFlag(DirtyFlags flags)
 {
+    QMutexLocker lock(&m_flagsMutex);
     m_dirty |= flags;
+}
+
+Texture::DirtyFlags Texture::dirtyFlags()
+{
+    QMutexLocker lock(&m_flagsMutex);
+    return m_dirty;
 }
 
 void Texture::unsetDirty()
 {
+    QMutexLocker lock(&m_flagsMutex);
     m_dirty = Texture::NotDirty;
 }
 
@@ -101,7 +109,7 @@ void Texture::addTextureImage(Qt3DCore::QNodeId id)
         qWarning() << "[Qt3DRender::TextureNode] addTextureImage: image handle is NULL";
     } else if (!m_textureImages.contains(handle)) {
         m_textureImages << handle;
-        addDirtyFlag(DirtyGenerators);
+        addDirtyFlag(DirtyImageGenerators);
     }
 }
 
@@ -117,7 +125,7 @@ void Texture::removeTextureImage(Qt3DCore::QNodeId id)
         qWarning() << "[Qt3DRender::TextureNode] removeTextureImage: image handle is NULL";
     } else {
         m_textureImages.removeAll(handle);
-        addDirtyFlag(DirtyGenerators);
+        addDirtyFlag(DirtyImageGenerators);
     }
 }
 
@@ -214,7 +222,7 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             dirty = DirtyProperties;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("generator")) {
             m_dataFunctor = propertyChange->value().value<QTextureGeneratorPtr>();
-            dirty = DirtyGenerators;
+            dirty = DirtyDataGenerator;
         }
     }
         break;
@@ -246,6 +254,16 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     BackendNode::sceneChangeEvent(e);
 }
 
+bool Texture::isValid() const
+{
+    for (const auto handle : m_textureImages) {
+        TextureImage *img = m_textureImageManager->data(handle);
+        if (img == nullptr)
+            return false;
+    }
+    return true;
+}
+
 void Texture::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAbstractTextureData>>(change);
@@ -269,7 +287,7 @@ void Texture::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chan
     m_parameters.comparisonMode = data.comparisonMode;
     m_dataFunctor = data.dataFunctor;
 
-    addDirtyFlag(DirtyFlags(DirtyGenerators|DirtyProperties|DirtyParameters));
+    addDirtyFlag(DirtyFlags(DirtyImageGenerators|DirtyProperties|DirtyParameters));
 }
 
 

@@ -51,9 +51,11 @@
 #ifndef QT3DEXTRAS_QFIRSTPERSONCAMERACONTROLLER_P_H
 #define QT3DEXTRAS_QFIRSTPERSONCAMERACONTROLLER_P_H
 
+#include <Qt3DExtras/qfirstpersoncameracontroller.h>
+#include <QtGui/QVector3D>
+
 #include <Qt3DCore/private/qentity_p.h>
-#include <QVector3D>
-#include "qfirstpersoncameracontroller.h"
+
 
 //
 //  W A R N I N G
@@ -98,6 +100,7 @@ public:
     QFirstPersonCameraControllerPrivate();
 
     void init();
+    void applyAccelerations();
 
     Qt3DRender::QCamera *m_camera;
 
@@ -115,6 +118,8 @@ public:
 
     Qt3DInput::QAnalogAxisInput *m_mouseRxInput;
     Qt3DInput::QAnalogAxisInput *m_mouseRyInput;
+    Qt3DInput::QAnalogAxisInput *m_mouseTzXInput;
+    Qt3DInput::QAnalogAxisInput *m_mouseTzYInput;
     Qt3DInput::QButtonAxisInput *m_keyboardTxPosInput;
     Qt3DInput::QButtonAxisInput *m_keyboardTyPosInput;
     Qt3DInput::QButtonAxisInput *m_keyboardTzPosInput;
@@ -131,6 +136,8 @@ public:
 
     float m_linearSpeed;
     float m_lookSpeed;
+    float m_acceleration;
+    float m_deceleration;
     QVector3D m_firstPersonUp;
 
     void _q_onTriggered(float);

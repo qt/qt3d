@@ -60,7 +60,7 @@ public:
     QVector<QChannelMapping *> mappings() const;
 
 protected:
-    QChannelMapper(QChannelMapperPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QChannelMapper(QChannelMapperPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QChannelMapper)

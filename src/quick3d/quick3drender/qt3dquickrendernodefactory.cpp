@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "qt3dquickrendernodefactory_p.h"
+#include <Qt3DQuickRender/private/qt3dquickrendernodefactory_p.h>
 #include <QtQml/private/qqmlmetatype_p.h>
 
 QT_BEGIN_NAMESPACE

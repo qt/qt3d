@@ -52,11 +52,12 @@
 //
 
 #include <Qt3DLogic/qt3dlogic_global.h>
-#include <Qt3DLogic/private/handle_types_p.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/qmutex.h>
 #include <QtCore/qscopedpointer.h>
 #include <QtCore/qsemaphore.h>
+
+#include <Qt3DLogic/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 

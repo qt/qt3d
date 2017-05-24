@@ -40,9 +40,9 @@
 #ifndef QT3D_QUICK_QQMLASPECTENGINE_H
 #define QT3D_QUICK_QQMLASPECTENGINE_H
 
-#include <QQmlEngine>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DQuick/qt3dquick_global.h>
+#include <QtQml/QQmlEngine>
 
 QT_BEGIN_NAMESPACE
 

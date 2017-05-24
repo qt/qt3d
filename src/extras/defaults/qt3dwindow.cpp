@@ -49,27 +49,25 @@
 ****************************************************************************/
 
 #include "qt3dwindow.h"
+#include "qt3dwindow_p.h"
 
+#include <Qt3DCore/qaspectengine.h>
+#include <Qt3DCore/qentity.h>
 #include <Qt3DExtras/qforwardrenderer.h>
 #include <Qt3DRender/qrendersettings.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DInput/qinputaspect.h>
 #include <Qt3DInput/qinputsettings.h>
 #include <Qt3DLogic/qlogicaspect.h>
-
-#include <Qt3DCore/qaspectengine.h>
 #include <Qt3DRender/qcamera.h>
-#include <Qt3DCore/qentity.h>
-
 #include <QtGui/qopenglcontext.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DExtras {
 
-Qt3DWindow::Qt3DWindow(QScreen *screen)
-    : QWindow(screen)
-    , m_aspectEngine(new Qt3DCore::QAspectEngine)
+Qt3DWindowPrivate::Qt3DWindowPrivate()
+    : m_aspectEngine(new Qt3DCore::QAspectEngine)
     , m_renderAspect(new Qt3DRender::QRenderAspect)
     , m_inputAspect(new Qt3DInput::QInputAspect)
     , m_logicAspect(new Qt3DLogic::QLogicAspect)
@@ -81,6 +79,16 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
     , m_userRoot(nullptr)
     , m_initialized(false)
 {
+}
+
+Qt3DWindow::Qt3DWindow(QScreen *screen)
+    : QWindow(*new Qt3DWindowPrivate(), nullptr)
+{
+    Q_D(Qt3DWindow);
+
+    if (!d->parentWindow)
+        d->connectToScreen(screen ? screen : d->topLevelScreen.data());
+
     setSurfaceType(QSurface::OpenGLSurface);
 
     resize(1024, 768);
@@ -99,74 +107,89 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
     format.setStencilBufferSize(8);
     setFormat(format);
     QSurfaceFormat::setDefaultFormat(format);
-    create();
 
-    m_aspectEngine->registerAspect(m_renderAspect);
-    m_aspectEngine->registerAspect(m_inputAspect);
-    m_aspectEngine->registerAspect(m_logicAspect);
+    d->m_aspectEngine->registerAspect(d->m_renderAspect);
+    d->m_aspectEngine->registerAspect(d->m_inputAspect);
+    d->m_aspectEngine->registerAspect(d->m_logicAspect);
 
-    m_defaultCamera->setParent(m_root);
-    m_forwardRenderer->setCamera(m_defaultCamera);
-    m_forwardRenderer->setSurface(this);
-    m_renderSettings->setActiveFrameGraph(m_forwardRenderer);
-    m_inputSettings->setEventSource(this);
+    d->m_defaultCamera->setParent(d->m_root);
+    d->m_forwardRenderer->setCamera(d->m_defaultCamera);
+    d->m_forwardRenderer->setSurface(this);
+    d->m_renderSettings->setActiveFrameGraph(d->m_forwardRenderer);
+    d->m_inputSettings->setEventSource(this);
 }
 
 Qt3DWindow::~Qt3DWindow()
 {
+    Q_D(Qt3DWindow);
+    delete d->m_aspectEngine;
 }
 
 void Qt3DWindow::registerAspect(Qt3DCore::QAbstractAspect *aspect)
 {
     Q_ASSERT(!isVisible());
-    m_aspectEngine->registerAspect(aspect);
+    Q_D(Qt3DWindow);
+    d->m_aspectEngine->registerAspect(aspect);
 }
 
 void Qt3DWindow::registerAspect(const QString &name)
 {
     Q_ASSERT(!isVisible());
-    m_aspectEngine->registerAspect(name);
+    Q_D(Qt3DWindow);
+    d->m_aspectEngine->registerAspect(name);
 }
 
 void Qt3DWindow::setRootEntity(Qt3DCore::QEntity *root)
 {
-    if (m_userRoot != root) {
-        if (m_userRoot != nullptr)
-            m_userRoot->setParent(static_cast<Qt3DCore::QNode*>(nullptr));
+    Q_D(Qt3DWindow);
+    if (d->m_userRoot != root) {
+        if (d->m_userRoot != nullptr)
+            d->m_userRoot->setParent(static_cast<Qt3DCore::QNode*>(nullptr));
         if (root != nullptr)
-            root->setParent(m_root);
-        m_userRoot = root;
+            root->setParent(d->m_root);
+        d->m_userRoot = root;
     }
 }
 
 void Qt3DWindow::setActiveFrameGraph(Qt3DRender::QFrameGraphNode *activeFrameGraph)
 {
-    m_renderSettings->setActiveFrameGraph(activeFrameGraph);
+    Q_D(Qt3DWindow);
+    d->m_renderSettings->setActiveFrameGraph(activeFrameGraph);
 }
 
 Qt3DRender::QFrameGraphNode *Qt3DWindow::activeFrameGraph() const
 {
-    return m_renderSettings->activeFrameGraph();
+    Q_D(const Qt3DWindow);
+    return d->m_renderSettings->activeFrameGraph();
 }
 
 Qt3DExtras::QForwardRenderer *Qt3DWindow::defaultFrameGraph() const
 {
-    return m_forwardRenderer;
+    Q_D(const Qt3DWindow);
+    return d->m_forwardRenderer;
 }
 
 Qt3DRender::QCamera *Qt3DWindow::camera() const
 {
-    return m_defaultCamera;
+    Q_D(const Qt3DWindow);
+    return d->m_defaultCamera;
+}
+
+Qt3DRender::QRenderSettings *Qt3DWindow::renderSettings() const
+{
+    Q_D(const Qt3DWindow);
+    return d->m_renderSettings;
 }
 
 void Qt3DWindow::showEvent(QShowEvent *e)
 {
-    if (!m_initialized) {
-        m_root->addComponent(m_renderSettings);
-        m_root->addComponent(m_inputSettings);
-        m_aspectEngine->setRootEntity(Qt3DCore::QEntityPtr(m_root));
+    Q_D(Qt3DWindow);
+    if (!d->m_initialized) {
+        d->m_root->addComponent(d->m_renderSettings);
+        d->m_root->addComponent(d->m_inputSettings);
+        d->m_aspectEngine->setRootEntity(Qt3DCore::QEntityPtr(d->m_root));
 
-        m_initialized = true;
+        d->m_initialized = true;
     }
 
     QWindow::showEvent(e);
@@ -174,7 +197,8 @@ void Qt3DWindow::showEvent(QShowEvent *e)
 
 void Qt3DWindow::resizeEvent(QResizeEvent *)
 {
-    m_defaultCamera->setAspectRatio(float(width()) / float(height()));
+    Q_D(Qt3DWindow);
+    d->m_defaultCamera->setAspectRatio(float(width()) / float(height()));
 }
 
 } // Qt3DExtras

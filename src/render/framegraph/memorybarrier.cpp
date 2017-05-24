@@ -49,7 +49,7 @@ namespace Render {
 
 MemoryBarrier::MemoryBarrier()
     : FrameGraphNode(FrameGraphNode::MemoryBarrier)
-    , m_barrierTypes(QMemoryBarrier::None)
+    , m_waitOperations(QMemoryBarrier::None)
 {
 }
 
@@ -57,17 +57,17 @@ MemoryBarrier::~MemoryBarrier()
 {
 }
 
-QMemoryBarrier::BarrierTypes MemoryBarrier::barrierTypes() const
+QMemoryBarrier::Operations MemoryBarrier::waitOperations() const
 {
-    return m_barrierTypes;
+    return m_waitOperations;
 }
 
 void MemoryBarrier::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::PropertyUpdated) {
         Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("barrierTypes")) {
-            m_barrierTypes = propertyChange->value().value<QMemoryBarrier::BarrierTypes>();
+        if (propertyChange->propertyName() == QByteArrayLiteral("waitOperations")) {
+            m_waitOperations = propertyChange->value().value<QMemoryBarrier::Operations>();
             markDirty(AbstractRenderer::AllDirty);
         }
     }
@@ -79,7 +79,7 @@ void MemoryBarrier::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr
     FrameGraphNode::initializeFromPeer(change);
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QMemoryBarrierData>>(change);
     const QMemoryBarrierData &data = typedChange->data;
-    m_barrierTypes = data.barrierTypes;
+    m_waitOperations = data.waitOperations;
 }
 
 } // Render

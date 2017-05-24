@@ -77,16 +77,17 @@ public:
     void setMapperId(Qt3DCore::QNodeId mapperId);
     void setRunning(bool running);
 
-    void setMappingData(const QVector<AnimationUtils::BlendingMappingData> mappingData);
-    QVector<AnimationUtils::BlendingMappingData> mappingData() const { return m_mappingData; }
-
     void setStartTime(qint64 globalTime) { m_startGlobalTime = globalTime; }
     qint64 startTime() const { return m_startGlobalTime; }
 
+    void setLoops(int loops) { m_loops = loops; }
     int loops() const { return m_loops; }
 
     int currentLoop() const { return m_currentLoop; }
     void setCurrentLoop(int currentLoop) { m_currentLoop = currentLoop; }
+
+    void setMappingData(const QVector<MappingData> &mappingData) { m_mappingData = mappingData; }
+    QVector<MappingData> mappingData() const { return m_mappingData; }
 
     void sendPropertyChanges(const QVector<Qt3DCore::QSceneChangePtr> &changes);
 
@@ -97,9 +98,10 @@ private:
     bool m_running;
 
     qint64 m_startGlobalTime;
-    QVector<AnimationUtils::BlendingMappingData> m_mappingData;
     int m_currentLoop;
     int m_loops;
+
+    QVector<MappingData> m_mappingData;
 };
 
 } // namespace Animation

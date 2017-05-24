@@ -51,10 +51,9 @@
 // We mean it.
 //
 
-#include <QObject>
-#include <QUrl>
-
 #include <Qt3DCore/QEntity>
+#include <QtCore/QObject>
+#include <QtCore/QUrl>
 
 #include <Qt3DQuick/private/qt3dquick_global_p.h>
 
@@ -74,7 +73,16 @@ class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DEntityLoader : public QEntity
     Q_OBJECT
     Q_PROPERTY(QObject *entity READ entity NOTIFY entityChanged)
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 public:
+    enum Status {
+        Null = 0,
+        Loading,
+        Ready,
+        Error
+    };
+    Q_ENUM(Status)
+
     explicit Quick3DEntityLoader(QNode *parent = 0);
     ~Quick3DEntityLoader();
 
@@ -83,9 +91,12 @@ public:
     QUrl source() const;
     void setSource(const QUrl &url);
 
+    Status status() const;
+
 Q_SIGNALS:
     void entityChanged();
     void sourceChanged();
+    void statusChanged(Status status);
 
 private:
     Q_DECLARE_PRIVATE(Quick3DEntityLoader)

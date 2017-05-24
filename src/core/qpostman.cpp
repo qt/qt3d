@@ -39,12 +39,15 @@
 
 #include "qpostman_p.h"
 #include "qpostman_p_p.h"
-#include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qlockableobserverinterface_p.h>
+
 #include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+
+#include <Qt3DCore/private/qlockableobserverinterface_p.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
+#include <Qt3DCore/private/qscene_p.h>
+#include <QtCore/private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -116,17 +119,25 @@ bool QPostman::shouldNotifyFrontend(const QSceneChangePtr &e)
     Q_D(QPostman);
     const QPropertyUpdatedChangePtr propertyChange = qSharedPointerDynamicCast<QPropertyUpdatedChange>(e);
     if (Q_LIKELY(d->m_scene != nullptr) && !propertyChange.isNull()) {
-        const bool isFinal = QPropertyUpdatedChangeBasePrivate::get(propertyChange.data())->m_isFinal;
-        if (isFinal)
+        const QScene::NodePropertyTrackData propertyTrackData
+                = d->m_scene->lookupNodePropertyTrackData(e->subjectId());
+
+        const QNode::PropertyTrackingMode trackMode = propertyTrackData.trackedPropertiesOverrides.value(QLatin1String(propertyChange->propertyName()),
+                                                                                                      propertyTrackData.defaultTrackMode);
+
+        switch (trackMode) {
+        case QNode::TrackAllValues:
             return true;
-        const QScene::NodePropertyTrackData propertyTrackData = d->m_scene->lookupNodePropertyTrackData(e->subjectId());
-        switch (propertyTrackData.updateMode) {
-        case QNode::TrackAllPropertiesMode:
-            return true;
-        case QNode::TrackNamedPropertiesMode:
-            return propertyTrackData.namedProperties.contains(QLatin1String(propertyChange->propertyName()));
-        case QNode::DefaultTrackMode:
+
+        case QNode::DontTrackValues:
             return false;
+
+        case QNode::TrackFinalValues: {
+            const bool isIntermediate
+                = QPropertyUpdatedChangeBasePrivate::get(propertyChange.data())->m_isIntermediate;
+            return !isIntermediate;
+        }
+
         default:
             Q_UNREACHABLE();
             return false;

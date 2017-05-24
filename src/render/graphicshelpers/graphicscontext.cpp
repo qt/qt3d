@@ -81,6 +81,14 @@
 
 QT_BEGIN_NAMESPACE
 
+#ifndef GL_READ_FRAMEBUFFER
+#define GL_READ_FRAMEBUFFER 0x8CA8
+#endif
+
+#ifndef GL_DRAW_FRAMEBUFFER
+#define GL_DRAW_FRAMEBUFFER 0x8CA9
+#endif
+
 namespace {
 
 QOpenGLShader::ShaderType shaderType(Qt3DRender::QShaderProgram::ShaderType type)
@@ -154,6 +162,7 @@ GraphicsContext::GraphicsContext()
     , m_ownCurrent(true)
     , m_activeShader(nullptr)
     , m_activeShaderDNA(0)
+    , m_renderTargetFormat(QAbstractTexture::NoFormat)
     , m_currClearStencilValue(0)
     , m_currClearDepthValue(1.f)
     , m_currClearColorValue(0,0,0,0)
@@ -207,7 +216,7 @@ void GraphicsContext::initialize()
 void GraphicsContext::resolveRenderTargetFormat()
 {
     const QSurfaceFormat format = m_gl->format();
-    const uint a = format.alphaBufferSize();
+    const uint a = (format.alphaBufferSize() == -1) ? 0 : format.alphaBufferSize();
     const uint r = format.redBufferSize();
     const uint g = format.greenBufferSize();
     const uint b = format.blueBufferSize();
@@ -459,11 +468,14 @@ QOpenGLShaderProgram *GraphicsContext::createShaderProgram(Shader *shaderNode)
 
     // Compile shaders
     const auto shaderCode = shaderNode->shaderCode();
+    QString logs;
     for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
         QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
-        if (!shaderCode.at(i).isEmpty() &&
-                !shaderProgram->addShaderFromSourceCode(shaderType(type), shaderCode.at(i))) {
-            qWarning().noquote() << "Failed to compile shader:" << shaderProgram->log();
+        if (!shaderCode.at(i).isEmpty()) {
+            // Note: logs only return the error but not all the shader code
+            // we could append it
+            if (!shaderProgram->addShaderFromSourceCode(shaderType(type), shaderCode.at(i)))
+                logs += shaderProgram->log();
         }
     }
 
@@ -471,17 +483,31 @@ QOpenGLShaderProgram *GraphicsContext::createShaderProgram(Shader *shaderNode)
     // Since we are sharing shaders in the backend, we assume that if using custom
     // fragOutputs, they should all be the same for a given shader
     bindFragOutputs(shaderProgram->programId(), shaderNode->fragOutputs());
-    if (!shaderProgram->link()) {
-        qWarning().noquote() << "Failed to link shader program:" << shaderProgram->log();
+
+    const bool linkSucceeded = shaderProgram->link();
+    logs += shaderProgram->log();
+    shaderNode->setLog(logs);
+    shaderNode->setStatus(linkSucceeded ? QShaderProgram::Ready : QShaderProgram::Error);
+
+    if (!linkSucceeded)
         return nullptr;
-    }
 
     // take from scoped-pointer so it doesn't get deleted
     return shaderProgram.take();
 }
 
 // That assumes that the shaderProgram in Shader stays the same
-void GraphicsContext::loadShader(Shader *shader)
+void GraphicsContext::introspectShaderInterface(Shader *shader, QOpenGLShaderProgram *shaderProgram)
+{
+    shader->initializeUniforms(m_glHelper->programUniformsAndLocations(shaderProgram->programId()));
+    shader->initializeAttributes(m_glHelper->programAttributesAndLocations(shaderProgram->programId()));
+    if (m_glHelper->supportsFeature(GraphicsHelperInterface::UniformBufferObject))
+        shader->initializeUniformBlocks(m_glHelper->programUniformBlocks(shaderProgram->programId()));
+    if (m_glHelper->supportsFeature(GraphicsHelperInterface::ShaderStorageObject))
+        shader->initializeShaderStorageBlocks(m_glHelper->programShaderStorageBlocks(shaderProgram->programId()));
+}
+
+void GraphicsContext::loadShader(Shader *shader, ShaderManager *manager)
 {
     QOpenGLShaderProgram *shaderProgram = m_shaderCache.getShaderProgramAndAddRef(shader->dna(), shader->peerId());
     if (!shaderProgram) {
@@ -493,20 +519,31 @@ void GraphicsContext::loadShader(Shader *shader)
     }
 
     // Ensure the Shader node knows about the program interface
-    // TODO: Improve this so we only introspect once per actual OpenGL shader program
-    //       rather than once per ShaderNode. Could cache the interface description along
-    //       with the QOpenGLShaderProgram in the ShaderCache.
     if (Q_LIKELY(shaderProgram != nullptr) && !shader->isLoaded()) {
-        // Introspect and set up interface description on Shader backend node
-        shader->initializeUniforms(m_glHelper->programUniformsAndLocations(shaderProgram->programId()));
-        shader->initializeAttributes(m_glHelper->programAttributesAndLocations(shaderProgram->programId()));
-        if (m_glHelper->supportsFeature(GraphicsHelperInterface::UniformBufferObject))
-            shader->initializeUniformBlocks(m_glHelper->programUniformBlocks(shaderProgram->programId()));
-        if (m_glHelper->supportsFeature(GraphicsHelperInterface::ShaderStorageObject))
-            shader->initializeShaderStorageBlocks(m_glHelper->programShaderStorageBlocks(shaderProgram->programId()));
+
+        // Find an already loaded shader that shares the same QOpenGLShaderProgram
+        Shader *refShader = nullptr;
+        const QVector<Qt3DCore::QNodeId> sharedShaderIds = m_shaderCache.shaderIdsForProgram(shader->dna());
+        for (const Qt3DCore::QNodeId sharedShaderId : sharedShaderIds) {
+            Shader *sharedShader = manager->lookupResource(sharedShaderId);
+            // Note: no need to check if shader->peerId != sharedShader->peerId
+            // as we are sure that this code path is executed only if !shared->isLoaded
+            if (sharedShader->isLoaded()) {
+                refShader = sharedShader;
+                break;
+            }
+        }
+
+        // We only introspect once per actual OpenGL shader program
+        // rather than once per ShaderNode.
+        if (refShader != nullptr)
+            shader->initializeFromReference(*refShader);
+        else // Introspect and set up interface description on Shader backend node
+            introspectShaderInterface(shader, shaderProgram);
 
         shader->setGraphicsContext(this);
         shader->setLoaded(true);
+        shader->markDirty(AbstractRenderer::AllDirty);
     }
 }
 
@@ -1045,6 +1082,16 @@ void GraphicsContext::dispatchCompute(int x, int y, int z)
         m_glHelper->dispatchCompute(x, y, z);
 }
 
+GLboolean GraphicsContext::unmapBuffer(GLenum target)
+{
+    return m_glHelper->unmapBuffer(target);
+}
+
+char *GraphicsContext::mapBuffer(GLenum target)
+{
+    return m_glHelper->mapBuffer(target);
+}
+
 void GraphicsContext::enablei(GLenum cap, GLuint index)
 {
     m_glHelper->enablei(cap, index);
@@ -1273,16 +1320,16 @@ void GraphicsContext::applyUniform(const ShaderUniform &description, const Unifo
         break;
 
     case UniformType::UInt:
-        applyUniformHelper<UniformType::Int>(description.m_location, description.m_size, v);
+        applyUniformHelper<UniformType::UInt>(description.m_location, description.m_size, v);
         break;
     case UniformType::UIVec2:
-        applyUniformHelper<UniformType::IVec2>(description.m_location, description.m_size, v);
+        applyUniformHelper<UniformType::UIVec2>(description.m_location, description.m_size, v);
         break;
     case UniformType::UIVec3:
-        applyUniformHelper<UniformType::IVec3>(description.m_location, description.m_size, v);
+        applyUniformHelper<UniformType::UIVec3>(description.m_location, description.m_size, v);
         break;
     case UniformType::UIVec4:
-        applyUniformHelper<UniformType::IVec4>(description.m_location, description.m_size, v);
+        applyUniformHelper<UniformType::UIVec4>(description.m_location, description.m_size, v);
         break;
 
     case UniformType::Bool:
@@ -1398,6 +1445,16 @@ void GraphicsContext::updateBuffer(Buffer *buffer)
         uploadDataToGLBuffer(buffer, m_renderer->nodeManagers()->glBufferManager()->data(it.value()));
 }
 
+QByteArray GraphicsContext::downloadBufferContent(Buffer *buffer)
+{
+    const QHash<Qt3DCore::QNodeId, HGLBuffer>::iterator it = m_renderBufferHash.find(buffer->peerId());
+    if (it != m_renderBufferHash.end())
+        return downloadDataFromGLBuffer(buffer, m_renderer->nodeManagers()->glBufferManager()->data(it.value()));
+    return QByteArray();
+}
+
+
+
 void GraphicsContext::releaseBuffer(Qt3DCore::QNodeId bufferId)
 {
     auto it = m_renderBufferHash.find(bufferId);
@@ -1421,7 +1478,7 @@ bool GraphicsContext::hasGLBufferForBuffer(Buffer *buffer)
     return (it != m_renderBufferHash.end());
 }
 
-void GraphicsContext::memoryBarrier(QMemoryBarrier::BarrierTypes barriers)
+void GraphicsContext::memoryBarrier(QMemoryBarrier::Operations barriers)
 {
     m_glHelper->memoryBarrier(barriers);
 }
@@ -1444,8 +1501,6 @@ HGLBuffer GraphicsContext::createGLBufferFor(Buffer *buffer)
     if (!bindGLBuffer(b, bufferTypeToGLBufferType(buffer->type())))
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer binding failed";
 
-    // TO DO: Handle usage pattern
-    b->allocate(this, buffer->data().constData(), buffer->data().size(), false);
     return m_renderer->nodeManagers()->glBufferManager()->lookupHandle(buffer->peerId());
 }
 
@@ -1471,27 +1526,54 @@ void GraphicsContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool rel
     // * setData was called changing the whole data or functor (or the usage pattern)
     // * partial buffer updates where received
 
-    // Note: we assume the case where both setData/functor and updates are called to be a misuse
-    // with unexpected behavior
-    const QVector<Qt3DRender::QBufferUpdate> updates = std::move(buffer->pendingBufferUpdates());
-    if (!updates.empty()) {
-        for (const Qt3DRender::QBufferUpdate &update : updates) {
+    // TO DO: Handle usage pattern
+    QVector<Qt3DRender::QBufferUpdate> updates = std::move(buffer->pendingBufferUpdates());
+    for (auto it = updates.begin(); it != updates.end(); ++it) {
+        auto update = it;
+        // We have a partial update
+        if (update->offset >= 0) {
+            //accumulate sequential updates as single one
+            int bufferSize = update->data.size();
+            auto it2 = it + 1;
+            while ((it2 != updates.end())
+                   && (it2->offset - update->offset == bufferSize)) {
+                bufferSize += it2->data.size();
+                ++it2;
+            }
+            update->data.resize(bufferSize);
+            while (it + 1 != it2) {
+                ++it;
+                update->data.replace(it->offset - update->offset, it->data.size(), it->data);
+                it->data.clear();
+            }
             // TO DO: based on the number of updates .., it might make sense to
             // sometime use glMapBuffer rather than glBufferSubData
-            b->update(this, update.data.constData(), update.data.size(), update.offset);
+            b->update(this, update->data.constData(), update->data.size(), update->offset);
+        } else {
+            // We have an update that was done by calling QBuffer::setData
+            // which is used to resize or entirely clear the buffer
+            // Note: we use the buffer data directly in that case
+            const int bufferSize = buffer->data().size();
+            b->allocate(this, bufferSize, false); // orphan the buffer
+            b->allocate(this, buffer->data().constData(), bufferSize, false);
         }
-    } else {
-        const int bufferSize = buffer->data().size();
-        // TO DO: Handle usage pattern
-        b->allocate(this, bufferSize, false); // orphan the buffer
-        b->allocate(this, buffer->data().constData(), bufferSize, false);
     }
+
     if (releaseBuffer) {
         b->release(this);
         if (bufferTypeToGLBufferType(buffer->type()) == GLBuffer::ArrayBuffer)
             m_boundArrayBuffer = nullptr;
     }
     qCDebug(Render::Io) << "uploaded buffer size=" << buffer->data().size();
+}
+
+QByteArray GraphicsContext::downloadDataFromGLBuffer(Buffer *buffer, GLBuffer *b)
+{
+    if (!bindGLBuffer(b, bufferTypeToGLBufferType(buffer->type())))
+        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer bind failed";
+
+    QByteArray data = b->download(this, buffer->data().size());
+    return data;
 }
 
 GLint GraphicsContext::elementType(GLint type)
@@ -1649,10 +1731,8 @@ QImage GraphicsContext::readFramebuffer(QSize size)
     QImage::Format imageFormat;
     uint stride;
 
-#ifndef QT_OPENGL_ES_2
     /* format value should match GL internalFormat */
     GLenum internalFormat = m_renderTargetFormat;
-#endif
 
     switch (m_renderTargetFormat) {
     case QAbstractTexture::RGBAFormat:
@@ -1728,18 +1808,15 @@ QImage GraphicsContext::readFramebuffer(QSize size)
         return img;
     }
 
-#ifndef QT_OPENGL_ES_2
     GLint samples = 0;
     m_gl->functions()->glGetIntegerv(GL_SAMPLES, &samples);
     if (samples > 0 && !m_glHelper->supportsFeature(GraphicsHelperInterface::BlitFramebuffer))
         return img;
-#endif
 
     img = QImage(size.width(), size.height(), imageFormat);
 
     QScopedArrayPointer<uchar> data(new uchar [bytes]);
 
-#ifndef QT_OPENGL_ES_2
     if (samples > 0) {
         // resolve multisample-framebuffer to renderbuffer and read pixels from it
         GLuint fbo, rb;
@@ -1771,14 +1848,10 @@ QImage GraphicsContext::readFramebuffer(QSize size)
         gl->glBindFramebuffer(GL_FRAMEBUFFER, m_activeFBO);
         gl->glDeleteFramebuffers(1, &fbo);
     } else {
-#endif
         // read pixels directly from framebuffer
         m_gl->functions()->glReadPixels(0,0,size.width(), size.height(), format, type, data.data());
         copyGLFramebufferDataToImage(img, data.data(), stride, size.width(), size.height(), m_renderTargetFormat);
-
-#ifndef QT_OPENGL_ES_2
     }
-#endif
 
     return img;
 }

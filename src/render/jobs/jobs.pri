@@ -11,6 +11,7 @@ HEADERS += \
     $$PWD/calcboundingvolumejob_p.h \
     $$PWD/pickboundingvolumejob_p.h \
     $$PWD/calcgeometrytrianglevolumes_p.h \
+    $$PWD/computefilteredboundingvolumejob_p.h \
     $$PWD/job_common_p.h \
     $$PWD/filterlayerentityjob_p.h \
     $$PWD/filterentitybycomponentjob_p.h \
@@ -28,7 +29,8 @@ HEADERS += \
     $$PWD/updatemeshtrianglelistjob_p.h \
     $$PWD/pickboundingvolumeutils_p.h \
     $$PWD/filtercompatibletechniquejob_p.h \
-    $$PWD/updatetreeenabledjob_p.h
+    $$PWD/updatetreeenabledjob_p.h \
+    $$PWD/sendbuffercapturejob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
@@ -41,6 +43,7 @@ SOURCES += \
     $$PWD/calcboundingvolumejob.cpp \
     $$PWD/pickboundingvolumejob.cpp \
     $$PWD/calcgeometrytrianglevolumes.cpp \
+    $$PWD/computefilteredboundingvolumejob.cpp \
     $$PWD/filterlayerentityjob.cpp \
     $$PWD/materialparametergathererjob.cpp \
     $$PWD/renderviewbuilderjob.cpp \
@@ -55,4 +58,6 @@ SOURCES += \
     $$PWD/updatelevelofdetailjob.cpp \
     $$PWD/pickboundingvolumeutils.cpp \
     $$PWD/filtercompatibletechniquejob.cpp \
-    $$PWD/updatetreeenabledjob.cpp
+    $$PWD/updatetreeenabledjob.cpp \
+    $$PWD/sendbuffercapturejob.cpp
+

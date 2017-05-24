@@ -70,8 +70,8 @@ Entity {
         position: Qt.vector3d(root.x, root.y, root.z)
 
         material: NormalDiffuseMapMaterial {
-            diffuse: "assets/houseplants/pot.webp"
-            normal: "assets/houseplants/pot_normal.webp"
+            diffuse: TextureLoader { source: "assets/houseplants/pot.webp" }
+            normal: TextureLoader { source: "assets/houseplants/pot_normal.webp" }
             specular: Qt.rgba( 0.75, 0.75, 0.75, 1.0 )
             shininess: 5.0
         }
@@ -79,8 +79,8 @@ Entity {
         RenderableEntity {
             source: "assets/houseplants/" + root.potShape + "-" + root.plantType + ".obj"
             material: NormalDiffuseMapAlphaMaterial {
-                diffuse: "assets/houseplants/"  + root.plantType + ".webp"
-                normal: "assets/houseplants/" + root.plantType + "_normal.webp"
+                diffuse: TextureLoader { source: "assets/houseplants/"  + root.plantType + ".webp" }
+                normal: TextureLoader { source: "assets/houseplants/" + root.plantType + "_normal.webp" }
                 shininess: 10.0
             }
         }
@@ -88,8 +88,8 @@ Entity {
         RenderableEntity {
             source: "assets/houseplants/" + root.potShape + "-pot-cover.obj"
             material: NormalDiffuseMapMaterial {
-                diffuse: "assets/houseplants/cover.webp"
-                normal: "assets/houseplants/cover_normal.webp"
+                diffuse: TextureLoader { source: "assets/houseplants/cover.webp" }
+                normal: TextureLoader { source: "assets/houseplants/cover_normal.webp" }
                 specular: Qt.rgba( 0.05, 0.05, 0.05, 1.0 )
                 shininess: 5.0
             }

@@ -277,7 +277,7 @@ int main(int argc, char* argv[])
 
 void TimerObject::timeout()
 {
-    angle += M_PI / 360.0f;
+    angle += qDegreesToRadians(0.5f);
 
     QByteArray updateData;
     updateData.resize(3*sizeof(float));

@@ -58,7 +58,9 @@ class FakeData
 public:
     explicit FakeData(int value)
         : m_value(value)
-    {}
+    {
+        Q_UNUSED(m_value);
+    }
 
 private:
     int m_value;

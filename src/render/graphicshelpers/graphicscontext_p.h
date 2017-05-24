@@ -91,6 +91,7 @@ class RenderTarget;
 class AttachmentPack;
 class Attribute;
 class Buffer;
+class ShaderManager;
 
 enum TextureScope
 {
@@ -130,9 +131,10 @@ public:
     bool isInitialized() const;
 
     QOpenGLShaderProgram *createShaderProgram(Shader *shaderNode);
-    void loadShader(Shader* shader);
+    void loadShader(Shader* shader, ShaderManager *manager);
     bool activateShader(ProgramDNA shaderDNA);
     void removeShaderProgramReference(Shader *shaderNode);
+    void introspectShaderInterface(Shader *shader, QOpenGLShaderProgram *shaderProgram);
 
     GLuint activeFBO() const { return m_activeFBO; }
     GLuint defaultFBO() const { return m_defaultFBO; }
@@ -157,10 +159,11 @@ public:
     void specifyAttribute(const Attribute *attribute, Buffer *buffer, int attributeLocation);
     void specifyIndices(Buffer *buffer);
     void updateBuffer(Buffer *buffer);
+    QByteArray downloadBufferContent(Buffer *buffer);
     void releaseBuffer(Qt3DCore::QNodeId bufferId);
     bool hasGLBufferForBuffer(Buffer *buffer);
 
-    void memoryBarrier(QMemoryBarrier::BarrierTypes barriers);
+    void memoryBarrier(QMemoryBarrier::Operations barriers);
 
     void setParameters(ShaderParameterPack &parameterPack);
 
@@ -208,6 +211,8 @@ public:
     void    disablei(GLenum cap, GLuint index);
     void    disablePrimitiveRestart();
     void    dispatchCompute(int x, int y, int z);
+    char *  mapBuffer(GLenum target);
+    GLboolean unmapBuffer(GLenum target);
     void    drawArrays(GLenum primitiveType, GLint first, GLsizei count);
     void    drawArraysIndirect(GLenum mode,void *indirect);
     void    drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances);
@@ -252,6 +257,7 @@ private:
     void activateDrawBuffers(const AttachmentPack &attachments);
     HGLBuffer createGLBufferFor(Buffer *buffer);
     void uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool releaseBuffer = false);
+    QByteArray downloadDataFromGLBuffer(Buffer *buffer, GLBuffer *b);
     bool bindGLBuffer(GLBuffer *buffer, GLBuffer::Type type);
     void resolveRenderTargetFormat();
 

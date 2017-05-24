@@ -48,6 +48,7 @@
 #include <Qt3DRender/private/geometry_p.h>
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/private/buffer_p.h>
+#include <Qt3DRender/private/bufferutils_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -70,24 +71,6 @@ bool isTriangleBased(Qt3DRender::QGeometryRenderer::PrimitiveType type) Q_DECL_N
         return false;
     }
 }
-
-struct BufferInfo
-{
-    BufferInfo()
-        : type(QAttribute::VertexBaseType::Float)
-        , dataSize(0)
-        , count(0)
-        , byteStride(0)
-        , byteOffset(0)
-    {}
-
-    QByteArray data;
-    QAttribute::VertexBaseType type;
-    uint dataSize;
-    uint count;
-    uint byteStride;
-    uint byteOffset;
-};
 
 // TO DO: Add methods for triangle strip adjacency
 // What about primitive restart ?
@@ -328,46 +311,65 @@ void traverseTriangleAdjacency(Vertex *vertices,
     }
 }
 
-
-template <QAttribute::VertexBaseType> struct EnumToType;
-template <> struct EnumToType<QAttribute::Byte> { typedef const char type; };
-template <> struct EnumToType<QAttribute::UnsignedByte> { typedef const uchar type; };
-template <> struct EnumToType<QAttribute::Short> { typedef const short type; };
-template <> struct EnumToType<QAttribute::UnsignedShort> { typedef const ushort type; };
-template <> struct EnumToType<QAttribute::Int> { typedef const int type; };
-template <> struct EnumToType<QAttribute::UnsignedInt> { typedef const uint type; };
-template <> struct EnumToType<QAttribute::Float> { typedef const float type; };
-template <> struct EnumToType<QAttribute::Double> { typedef const double type; };
-
-template<QAttribute::VertexBaseType v>
-typename EnumToType<v>::type *castToType(const QByteArray &u, uint byteOffset)
+template<typename Coordinate>
+QVector4D readCoordinate(const BufferInfo &info, Coordinate *coordinates, uint index)
 {
-    return reinterpret_cast< typename EnumToType<v>::type *>(u.constData() + byteOffset);
+    const uint stride = info.byteStride / sizeof(Coordinate);
+    QVector4D ret(0, 0, 0, 1.0f);
+    coordinates += stride * index;
+    for (uint e = 0; e < info.dataSize; ++e)
+        ret[e] = coordinates[e];
+    return ret;
 }
 
 template<typename Func>
 void processBuffer(const BufferInfo &info, Func &f)
 {
     switch (info.type) {
-    case QAttribute::Byte: f(info, castToType<QAttribute::Byte>(info.data, info.byteOffset));
+    case QAttribute::Byte: f(info, BufferTypeInfo::castToType<QAttribute::Byte>(info.data, info.byteOffset));
         return;
-    case QAttribute::UnsignedByte: f(info, castToType<QAttribute::UnsignedByte>(info.data, info.byteOffset));
+    case QAttribute::UnsignedByte: f(info, BufferTypeInfo::castToType<QAttribute::UnsignedByte>(info.data, info.byteOffset));
         return;
-    case QAttribute::Short: f(info, castToType<QAttribute::Short>(info.data, info.byteOffset));
+    case QAttribute::Short: f(info, BufferTypeInfo::castToType<QAttribute::Short>(info.data, info.byteOffset));
         return;
-    case QAttribute::UnsignedShort: f(info, castToType<QAttribute::UnsignedShort>(info.data, info.byteOffset));
+    case QAttribute::UnsignedShort: f(info, BufferTypeInfo::castToType<QAttribute::UnsignedShort>(info.data, info.byteOffset));
         return;
-    case QAttribute::Int: f(info, castToType<QAttribute::Int>(info.data, info.byteOffset));
+    case QAttribute::Int: f(info, BufferTypeInfo::castToType<QAttribute::Int>(info.data, info.byteOffset));
         return;
-    case QAttribute::UnsignedInt: f(info, castToType<QAttribute::UnsignedInt>(info.data, info.byteOffset));
+    case QAttribute::UnsignedInt: f(info, BufferTypeInfo::castToType<QAttribute::UnsignedInt>(info.data, info.byteOffset));
         return;
-    case QAttribute::Float: f(info, castToType<QAttribute::Float>(info.data, info.byteOffset));
+    case QAttribute::Float: f(info, BufferTypeInfo::castToType<QAttribute::Float>(info.data, info.byteOffset));
         return;
-    case QAttribute::Double: f(info, castToType<QAttribute::Double>(info.data, info.byteOffset));
+    case QAttribute::Double: f(info, BufferTypeInfo::castToType<QAttribute::Double>(info.data, info.byteOffset));
         return;
     default:
         return;
     }
+}
+
+QVector4D readBuffer(const BufferInfo &info, uint index)
+{
+    switch (info.type) {
+    case QAttribute::Byte:
+        return readCoordinate(info, BufferTypeInfo::castToType<QAttribute::Byte>(info.data, info.byteOffset), index);
+    case QAttribute::UnsignedByte:
+        return readCoordinate(info, BufferTypeInfo::castToType<QAttribute::UnsignedByte>(info.data, info.byteOffset), index);
+    case QAttribute::Short:
+        return readCoordinate(info, BufferTypeInfo::castToType<QAttribute::Short>(info.data, info.byteOffset), index);
+    case QAttribute::UnsignedShort:
+        return readCoordinate(info, BufferTypeInfo::castToType<QAttribute::UnsignedShort>(info.data, info.byteOffset), index);
+    case QAttribute::Int:
+        return readCoordinate(info, BufferTypeInfo::castToType<QAttribute::Int>(info.data, info.byteOffset), index);
+    case QAttribute::UnsignedInt:
+        return readCoordinate(info, BufferTypeInfo::castToType<QAttribute::UnsignedInt>(info.data, info.byteOffset), index);
+    case QAttribute::Float:
+        return readCoordinate(info, BufferTypeInfo::castToType<QAttribute::Float>(info.data, info.byteOffset), index);
+    case QAttribute::Double:
+        return readCoordinate(info, BufferTypeInfo::castToType<QAttribute::Double>(info.data, info.byteOffset), index);
+    default:
+        break;
+    }
+    return QVector4D();
 }
 
 template<typename Index>
@@ -528,6 +530,53 @@ void TrianglesVisitor::apply(const GeometryRenderer *renderer, const Qt3DCore::Q
             }
         }
     }
+}
+
+bool CoordinateReader::setGeometry(const GeometryRenderer *renderer, const QString &attributeName)
+{
+    if (renderer == nullptr || renderer->instanceCount() != 1
+            || !isTriangleBased(renderer->primitiveType())) {
+        return false;
+    }
+
+    Geometry *geom = m_manager->lookupResource<Geometry, GeometryManager>(renderer->geometryId());
+
+    if (!geom)
+        return false;
+
+    Attribute *attribute = nullptr;
+
+    const auto attrIds = geom->attributes();
+    for (const Qt3DCore::QNodeId attrId : attrIds) {
+        attribute = m_manager->lookupResource<Attribute, AttributeManager>(attrId);
+        if (attribute){
+            if (attribute->name() == attributeName
+                    || (attributeName == QStringLiteral("default")
+                        && attribute->name() == QAttribute::defaultTextureCoordinateAttributeName())) {
+                break;
+            }
+        }
+        attribute = nullptr;
+    }
+
+    if (!attribute)
+        return false;
+
+    m_attribute = attribute;
+    m_buffer = m_manager->lookupResource<Buffer, BufferManager>(attribute->bufferId());
+
+    m_bufferInfo.data = m_buffer->data();
+    m_bufferInfo.type = m_attribute->vertexBaseType();
+    m_bufferInfo.byteOffset = m_attribute->byteOffset();
+    m_bufferInfo.byteStride = m_attribute->byteStride();
+    m_bufferInfo.dataSize = m_attribute->vertexSize();
+    m_bufferInfo.count = m_attribute->count();
+    return true;
+}
+
+QVector4D CoordinateReader::getCoordinate(uint vertexIndex)
+{
+    return readBuffer(m_bufferInfo, vertexIndex);
 }
 
 } // namespace Render

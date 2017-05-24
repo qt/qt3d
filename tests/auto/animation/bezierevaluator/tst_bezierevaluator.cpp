@@ -35,6 +35,7 @@
 
 Q_DECLARE_METATYPE(Qt3DAnimation::Animation::Keyframe)
 
+using namespace Qt3DAnimation;
 using namespace Qt3DAnimation::Animation;
 
 class tst_BezierEvaluator : public QObject
@@ -131,9 +132,9 @@ private Q_SLOTS:
         QTest::addColumn<QVector<float>>("bezierParamters");
 
         float t0 = 0.0f;
-        Keyframe kf0{0.0f, {-5.0f, 0.0f}, {5.0f, 0.0f}, Keyframe::Bezier};
+        Keyframe kf0{0.0f, {-5.0f, 0.0f}, {5.0f, 0.0f}, QKeyFrame::BezierInterpolation};
         float t1 = 50.0f;
-        Keyframe kf1{5.0f, {45.0f, 5.0f}, {55.0f, 5.0f}, Keyframe::Bezier};
+        Keyframe kf1{5.0f, {45.0f, 5.0f}, {55.0f, 5.0f}, QKeyFrame::BezierInterpolation};
         const int count = 21;
         QVector<float> times = (QVector<float>()
             << 0.0f
@@ -199,9 +200,9 @@ private Q_SLOTS:
         QTest::addColumn<QVector<float>>("values");
 
         float t0 = 0.0f;
-        Keyframe kf0{0.0f, {-5.0f, 0.0f}, {5.0f, 0.0f}, Keyframe::Bezier};
+        Keyframe kf0{0.0f, {-5.0f, 0.0f}, {5.0f, 0.0f}, QKeyFrame::BezierInterpolation};
         float t1 = 50.0f;
-        Keyframe kf1{5.0f, {45.0f, 5.0f}, {55.0f, 5.0f}, Keyframe::Bezier};
+        Keyframe kf1{5.0f, {45.0f, 5.0f}, {55.0f, 5.0f}, QKeyFrame::BezierInterpolation};
         QVector<float> times = (QVector<float>()
             << 0.0f
             << 1.00375f

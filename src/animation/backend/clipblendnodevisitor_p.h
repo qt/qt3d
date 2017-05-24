@@ -55,7 +55,6 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
-
 namespace Animation {
 
 class ClipBlendNodeManager;
@@ -66,18 +65,35 @@ using VisitFunction = std::function<void (ClipBlendNode *)>;
 class Q_AUTOTEST_EXPORT ClipBlendNodeVisitor
 {
 public:
-    explicit ClipBlendNodeVisitor(ClipBlendNodeManager *manager);
+    enum TraversalOrder {
+        PreOrder,
+        PostOrder
+    };
+
+    enum NodeFilter {
+        VisitAllNodes,
+        VisitOnlyDependencies
+    };
+
+    explicit ClipBlendNodeVisitor(ClipBlendNodeManager *manager,
+                                  TraversalOrder order = PostOrder,
+                                  NodeFilter filter = VisitAllNodes);
 
     void traverse(Qt3DCore::QNodeId rootId, const VisitFunction &visitFunction) const;
 
 private:
-    void visit(ClipBlendNode *node, const VisitFunction &visitFunction) const;
+    void visitPreOrderAllNodes(ClipBlendNode *node, const VisitFunction &visitFunction) const;
+    void visitPostOrderAllNodes(ClipBlendNode *node, const VisitFunction &visitFunction) const;
+
+    void visitPreOrderDependencyNodes(ClipBlendNode *node, const VisitFunction &visitFunction) const;
+    void visitPostOrderDependencyNodes(ClipBlendNode *node, const VisitFunction &visitFunction) const;
 
     ClipBlendNodeManager *m_manager;
+    TraversalOrder m_order;
+    NodeFilter m_filter;
 };
 
 } // Animation
-
 } // Qt3DAnimation
 
 QT_END_NAMESPACE

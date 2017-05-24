@@ -66,12 +66,12 @@ public:
     MemoryBarrier();
     ~MemoryBarrier();
 
-    QMemoryBarrier::BarrierTypes barrierTypes() const;
+    QMemoryBarrier::Operations waitOperations() const;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
-    QMemoryBarrier::BarrierTypes m_barrierTypes;
+    QMemoryBarrier::Operations m_waitOperations;
 };
 
 } // Render

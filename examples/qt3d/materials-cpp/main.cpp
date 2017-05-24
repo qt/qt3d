@@ -81,7 +81,6 @@ int main(int argc, char* argv[])
     // Scene Camera
     Qt3DRender::QCamera *basicCamera = view.camera();
     basicCamera->setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
-    basicCamera->setAspectRatio(view.width() / view.height());
     basicCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
     basicCamera->setViewCenter(QVector3D(0.0f, 3.5f, 0.0f));
     basicCamera->setPosition(QVector3D(0.0f, 3.5f, 25.0f));

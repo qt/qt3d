@@ -68,6 +68,7 @@ class QGeometryLoaderInterface;
 class QT3DRENDERSHARED_PRIVATE_EXPORT QGeometryLoaderFactory : public QObject, public QFactoryInterface
 {
     Q_OBJECT
+    Q_INTERFACES(QFactoryInterface)
 public:
     explicit QGeometryLoaderFactory(QObject *parent = nullptr);
     virtual ~QGeometryLoaderFactory();

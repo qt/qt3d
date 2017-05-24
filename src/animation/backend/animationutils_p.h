@@ -57,68 +57,149 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 namespace Animation {
 
-class ChannelGroup;
+struct Channel;
+class BlendedClipAnimator;
 class Handler;
 class AnimationClip;
 class ChannelMapper;
+class ChannelMapping;
 
-class Q_AUTOTEST_EXPORT AnimationUtils
+typedef QVector<int> ComponentIndices;
+
+struct MappingData
 {
-public:
-    struct MappingData {
-        Qt3DCore::QNodeId targetId;
-        const char *propertyName;
-        int type;
-        int channelBaseIndex;
-        QVector<int> channelIndices;
-    };
-
-    struct BlendingMappingData {
-        Qt3DCore::QNodeId targetId;
-        const char *propertyName;
-        int type;
-        QVector<int> channelIndicesClip1;
-        QVector<int> channelIndicesClip2;
-
-        enum BlendAction {
-            NoBlending, // Use the channel from Clip1 only
-            ClipBlending, // Blending 2 clips sharing the same channel
-        };
-        BlendAction blendAction;
-    };
-
-    static double localTimeFromGlobalTime(double t_global, double t_start_global,
-                                          double playbackRate, double duration,
-                                          int loopCount, int &currentLoop);
-    static QVector<int> channelsToIndices(const ChannelGroup &channelGroup,
-                                          int dataType,
-                                          int offset = 0);
-    static QVector<int> channelsToIndicesHelper(const ChannelGroup &channelGroup,
-                                                int dataType,
-                                                int offset,
-                                                const QStringList &suffixes);
-    static QVector<float> evaluateAtGlobalTime(AnimationClip *clip,
-                                               qint64 globalTime,
-                                               qint64 startTime,
-                                               int loopCount,
-                                               int &currentLoop,
-                                               bool &finalFrame);
-    static QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId peerId,
-                                                                     const QVector<MappingData> &mappingData,
-                                                                     const QVector<float> &channelResults,
-                                                                     bool finalFrame);
-    static QVector<MappingData> buildPropertyMappings(Handler *handler,
-                                                      const AnimationClip *clip,
-                                                      const ChannelMapper *mapper);
-
-
-private:
-    static QVector<float> evaluateAtLocalTime(AnimationClip *clip,
-                                              float localTime,
-                                              int currentLoop,
-                                              int loopCount,
-                                              bool &finalFrame);
+    Qt3DCore::QNodeId targetId;
+    const char *propertyName;
+    int type;
+    ComponentIndices channelIndices;
 };
+
+struct AnimatorEvaluationData
+{
+    double globalTime;
+    double startTime;
+    int loopCount;
+    double playbackRate;
+};
+
+struct ClipEvaluationData
+{
+    int currentLoop;
+    double localTime;
+    bool isFinalFrame;
+};
+
+typedef QVector<float> ClipResults;
+
+struct ChannelNameAndType
+{
+    QString name;
+    int type;
+
+    bool operator==(const ChannelNameAndType &rhs) const
+    {
+        return name == rhs.name && type == rhs.type;
+    }
+};
+
+template<typename Animator>
+AnimatorEvaluationData evaluationDataForAnimator(Animator animator, qint64 globalTime)
+{
+    AnimatorEvaluationData data;
+    data.loopCount = animator->loops();
+    data.playbackRate = 1.0; // should be a property on the animator
+    // Convert global time from nsec to sec
+    data.startTime = double(animator->startTime()) / 1.0e9;
+    data.globalTime = double(globalTime) / 1.0e9;
+    return data;
+}
+
+inline bool isFinalFrame(double localTime,
+                         double duration,
+                         int currentLoop,
+                         int loopCount)
+{
+    return (localTime >= duration &&
+            loopCount != 0 &&
+            currentLoop >= loopCount - 1);
+}
+
+Q_AUTOTEST_EXPORT
+int componentsForType(int type);
+
+Q_AUTOTEST_EXPORT
+ClipEvaluationData evaluationDataForClip(AnimationClip *clip,
+                                         const AnimatorEvaluationData &animatorData);
+
+Q_AUTOTEST_EXPORT
+ComponentIndices channelComponentsToIndices(const Channel &channel,
+                                            int dataType,
+                                            int offset = 0);
+
+Q_AUTOTEST_EXPORT
+ComponentIndices channelComponentsToIndicesHelper(const Channel &channelGroup,
+                                                  int dataType,
+                                                  int offset,
+                                                  const QVector<char> &suffixes);
+
+Q_AUTOTEST_EXPORT
+ClipResults evaluateClipAtLocalTime(AnimationClip *clip,
+                                    float localTime);
+
+Q_AUTOTEST_EXPORT
+ClipResults evaluateClipAtPhase(AnimationClip *clip,
+                                float phase);
+
+Q_AUTOTEST_EXPORT
+QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId animatorId,
+                                                          const QVector<MappingData> &mappingData,
+                                                          const QVector<float> &channelResults,
+                                                          bool finalFrame);
+
+Q_AUTOTEST_EXPORT
+QVector<MappingData> buildPropertyMappings(Handler *handler,
+                                           const AnimationClip *clip,
+                                           const ChannelMapper *mapper);
+
+Q_AUTOTEST_EXPORT
+QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping *> &channelMappings,
+                                           const QVector<ChannelNameAndType> &channelNamesAndTypes,
+                                           const QVector<ComponentIndices> &channelComponentIndices);
+
+Q_AUTOTEST_EXPORT
+QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
+                                                          const ChannelMapper *mapper);
+
+Q_AUTOTEST_EXPORT
+QVector<ComponentIndices> assignChannelComponentIndices(const QVector<ChannelNameAndType> &namesAndTypes);
+
+Q_AUTOTEST_EXPORT
+double localTimeFromGlobalTime(double t_global, double t_start_global,
+                               double playbackRate, double duration,
+                               int loopCount, int &currentLoop);
+
+Q_AUTOTEST_EXPORT
+double phaseFromGlobalTime(double t_global, double t_start_global,
+                           double playbackRate, double duration,
+                           int loopCount, int &currentLoop);
+
+Q_AUTOTEST_EXPORT
+QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
+                                                      Qt3DCore::QNodeId blendTreeRootId);
+
+Q_AUTOTEST_EXPORT
+ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &targetChannels,
+                                           const QVector<ComponentIndices> &targetIndices,
+                                           const AnimationClip *clip);
+
+Q_AUTOTEST_EXPORT
+ClipResults formatClipResults(const ClipResults &rawClipResults,
+                              const ComponentIndices &format);
+
+Q_AUTOTEST_EXPORT
+ClipResults evaluateBlendTree(Handler *handler,
+                              BlendedClipAnimator *animator,
+                              Qt3DCore::QNodeId blendNodeId);
 
 } // Animation
 } // Qt3DAnimation

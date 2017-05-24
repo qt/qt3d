@@ -60,7 +60,7 @@ AttachmentPack::AttachmentPack(const RenderTargetSelector *selector, const Rende
     for (Qt3DCore::QNodeId outputId : outputIds) {
         const RenderTargetOutput *output = attachmentManager->lookupResource(outputId);
         if (output)
-            m_attachments.append(output->attachment());
+            m_attachments.append(*output->attachment());
     }
 
     // Create actual DrawBuffers list that is used for glDrawBuffers

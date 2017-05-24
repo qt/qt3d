@@ -62,6 +62,7 @@ namespace Qt3DCore {
 namespace Quick {
 
 QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3D_initialize();
+QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3D_uninitialize();
 QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3D_registerType(const char *className, const char *quickName, int major, int minor);
 
 template<class T, class E> void registerExtendedType(const char *className, const char *quickName,

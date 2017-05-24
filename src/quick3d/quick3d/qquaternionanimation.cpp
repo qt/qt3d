@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "qquaternionanimation_p.h"
+
 #include <QtQuick/private/qquickanimation_p_p.h>
 
 QT_BEGIN_NAMESPACE

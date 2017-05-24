@@ -45,6 +45,9 @@ HEADERS += \
     $$PWD/qrendercapture.h \
     $$PWD/qrendercapture_p.h \
     $$PWD/rendercapture_p.h \
+    $$PWD/qbuffercapture.h \
+    $$PWD/qbuffercapture_p.h \
+    $$PWD/buffercapture_p.h \
     $$PWD/qframegraphnodecreatedchange.h \
     $$PWD/qframegraphnodecreatedchange_p.h \
     $$PWD/qmemorybarrier.h \
@@ -83,6 +86,8 @@ SOURCES += \
     $$PWD/rendersurfaceselector.cpp \
     $$PWD/qrendercapture.cpp \
     $$PWD/rendercapture.cpp \
+    $$PWD/qbuffercapture.cpp \
+    $$PWD/buffercapture.cpp \
     $$PWD/qframegraphnodecreatedchange.cpp \
     $$PWD/qmemorybarrier.cpp \
     $$PWD/memorybarrier.cpp

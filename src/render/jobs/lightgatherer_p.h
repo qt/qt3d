@@ -61,6 +61,7 @@ namespace Qt3DRender {
 namespace Render {
 
 class EntityManager;
+class EnvironmentLight;
 
 class Q_AUTOTEST_EXPORT LightGatherer : public Qt3DCore::QAspectJob
 {
@@ -69,12 +70,19 @@ public:
 
     inline void setManager(EntityManager *manager) Q_DECL_NOTHROW { m_manager = manager; }
     inline QVector<LightSource> &lights() { return m_lights; }
+    inline EnvironmentLight *takeEnvironmentLight()
+    {
+        auto envLight = m_environmentLight;
+        m_environmentLight = nullptr;
+        return envLight;
+    }
 
     void run() Q_DECL_FINAL;
 
 private:
     EntityManager *m_manager;
     QVector<LightSource> m_lights;
+    EnvironmentLight *m_environmentLight;
 };
 
 typedef QSharedPointer<LightGatherer> LightGathererPtr;

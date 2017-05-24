@@ -41,44 +41,32 @@
 #define QT3DANIMATION_QCLIPANIMATOR_H
 
 #include <Qt3DAnimation/qt3danimation_global.h>
-#include <Qt3DCore/qcomponent.h>
+#include <Qt3DAnimation/qabstractclipanimator.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QAnimationClip;
+class QAbstractAnimationClip;
 class QChannelMapper;
 class QClipAnimatorPrivate;
 
-class QT3DANIMATIONSHARED_EXPORT QClipAnimator : public Qt3DCore::QComponent
+class QT3DANIMATIONSHARED_EXPORT QClipAnimator : public Qt3DAnimation::QAbstractClipAnimator
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DAnimation::QAnimationClip *clip READ clip WRITE setClip NOTIFY clipChanged)
-    Q_PROPERTY(bool running READ isRunning WRITE setRunning NOTIFY runningChanged)
-    Q_PROPERTY(int loops READ loops WRITE setLoops NOTIFY loopsChanged)
-    Q_PROPERTY(Qt3DAnimation::QChannelMapper *channelMapper READ channelMapper WRITE setChannelMapper NOTIFY channelMapperChanged)
+    Q_PROPERTY(Qt3DAnimation::QAbstractAnimationClip *clip READ clip WRITE setClip NOTIFY clipChanged)
 
 public:
     explicit QClipAnimator(Qt3DCore::QNode *parent = nullptr);
     ~QClipAnimator();
 
-    Qt3DAnimation::QAnimationClip *clip() const;
-    bool isRunning() const;
-    Qt3DAnimation::QChannelMapper *channelMapper() const;
-    int loops() const;
+    Qt3DAnimation::QAbstractAnimationClip *clip() const;
 
 public Q_SLOTS:
-    void setClip(Qt3DAnimation::QAnimationClip *clip);
-    void setRunning(bool running);
-    void setChannelMapper(Qt3DAnimation::QChannelMapper *channelMapper);
-    void setLoops(int loops);
+    void setClip(Qt3DAnimation::QAbstractAnimationClip *clip);
 
 Q_SIGNALS:
-    void clipChanged(Qt3DAnimation::QAnimationClip *clip);
-    void runningChanged(bool running);
-    void channelMapperChanged(Qt3DAnimation::QChannelMapper *channelMapper);
-    void loopsChanged(int loops);
+    void clipChanged(Qt3DAnimation::QAbstractAnimationClip *clip);
 
 protected:
     QClipAnimator(QClipAnimatorPrivate &dd, Qt3DCore::QNode *parent = nullptr);

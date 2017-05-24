@@ -32,6 +32,7 @@ QT_BEGIN_NAMESPACE
 
 TestRenderer::TestRenderer()
     : m_changes(0)
+    , m_managers(nullptr)
 {
 }
 
@@ -74,6 +75,11 @@ void TestRenderer::setOffscreenSurfaceHelper(Qt3DRender::Render::OffscreenSurfac
 QSurfaceFormat TestRenderer::format()
 {
     return QSurfaceFormat();
+}
+
+QOpenGLContext *TestRenderer::shareContext() const
+{
+    return nullptr;
 }
 
 QT_END_NAMESPACE

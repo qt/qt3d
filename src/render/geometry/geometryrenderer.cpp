@@ -153,7 +153,7 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_verticesPerPatch = propertyChange->value().value<int>();
             m_dirty = true;
         } else if (propertyName == QByteArrayLiteral("primitiveRestartEnabled")) {
-            m_primitiveRestartEnabled = propertyChange->value().value<bool>();
+            m_primitiveRestartEnabled = propertyChange->value().toBool();
             m_dirty = true;
         } else if (propertyName == QByteArrayLiteral("primitiveType")) {
             m_primitiveType = static_cast<QGeometryRenderer::PrimitiveType>(propertyChange->value().value<int>());

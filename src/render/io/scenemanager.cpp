@@ -44,17 +44,33 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-SceneManager::SceneManager() : Qt3DCore::QResourceManager<Scene,
-                                                Qt3DCore::QNodeId,
-                                                8,
-                                                Qt3DCore::ArrayAllocatingPolicy,
-                                                Qt3DCore::ObjectLevelLockingPolicy>()
+SceneManager::SceneManager()
+    : Qt3DCore::QResourceManager<Scene,
+                                 Qt3DCore::QNodeId,
+                                 8,
+                                 Qt3DCore::ArrayAllocatingPolicy,
+                                 Qt3DCore::ObjectLevelLockingPolicy>()
+    , m_service(nullptr)
 {
 }
 
-void SceneManager::addSceneData(const QUrl &source, Qt3DCore::QNodeId sceneUuid)
+SceneManager::~SceneManager()
+{
+}
+
+void SceneManager::setDownloadService(Qt3DCore::QDownloadHelperService *service)
+{
+    m_service = service;
+}
+
+void SceneManager::addSceneData(const QUrl &source,
+                                Qt3DCore::QNodeId sceneUuid,
+                                const QByteArray &data)
 {
     LoadSceneJobPtr newJob(new LoadSceneJob(source, sceneUuid));
+
+    if (!data.isEmpty())
+        newJob->setData(data);
 
     // We cannot run two jobs that use the same scene loader plugin
     // in two different threads at the same time
@@ -68,6 +84,43 @@ QVector<LoadSceneJobPtr> SceneManager::pendingSceneLoaderJobs()
 {
     // Explicitly use std::move to clear the m_pendingJobs vector
     return std::move(m_pendingJobs);
+}
+
+void SceneManager::startSceneDownload(const QUrl &source, Qt3DCore::QNodeId sceneUuid)
+{
+    if (!m_service)
+        return;
+    SceneDownloaderPtr request = SceneDownloaderPtr::create(source, sceneUuid, this);
+    m_pendingDownloads << request;
+    m_service->submitRequest(request);
+}
+
+void SceneManager::clearSceneDownload(SceneDownloader *downloader)
+{
+    for (auto it = m_pendingDownloads.begin(); it != m_pendingDownloads.end(); ++it) {
+        if ((*it).data() == downloader) {
+            m_pendingDownloads.erase(it);
+            return;
+        }
+    }
+}
+
+
+SceneDownloader::SceneDownloader(const QUrl &source, Qt3DCore::QNodeId sceneComponent, SceneManager *manager)
+    : Qt3DCore::QDownloadRequest(source)
+    , m_sceneComponent(sceneComponent)
+    , m_manager(manager)
+{
+
+}
+
+void SceneDownloader::onCompleted()
+{
+    if (!m_manager)
+        return;
+    if (succeeded())
+        m_manager->addSceneData(url(), m_sceneComponent, m_data);
+    m_manager->clearSceneDownload(this);
 }
 
 } // namespace Render

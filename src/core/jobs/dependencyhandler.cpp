@@ -37,9 +37,9 @@
 **
 ****************************************************************************/
 
-#include <iterator>
-
 #include "dependencyhandler_p.h"
+
+#include <iterator>
 
 QT_BEGIN_NAMESPACE
 
@@ -104,6 +104,7 @@ namespace {
 }
 
 DependencyHandler::DependencyHandler()
+    : m_mutex()
 {
 }
 

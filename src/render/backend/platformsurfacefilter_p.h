@@ -51,6 +51,8 @@
 // We mean it.
 //
 
+#include <private/qt3drender_global_p.h>
+
 #include <QtCore/qobject.h>
 #include <QtGui/qsurface.h>
 #include <QSemaphore>
@@ -106,7 +108,7 @@ private:
     void markSurfaceAsValid();
 };
 
-class SurfaceLocker
+class QT3DRENDERSHARED_PRIVATE_EXPORT SurfaceLocker
 {
 public:
     explicit SurfaceLocker(QSurface *surface);

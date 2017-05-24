@@ -72,9 +72,40 @@ QRenderPassPrivate::QRenderPassPrivate()
     a list of FilterKey objects, a list of RenderState objects and a list
     of \l Parameter objects.
 
-    RenderPass executes the ShaderProgram using the given render states and parameters
-    when its filter keys match the filter keys in RenderPassFilter or when no filter
-    keys are specified and no RenderPassFilter is present in the FrameGraph.
+    RenderPass executes the ShaderProgram using the given RenderState and
+    Parameter nodes when at least one of FilterKey nodes being referenced
+    matches any of the FilterKey nodes in RenderPassFilter or when no FilterKey
+    nodes are specified and no RenderPassFilter is present in the FrameGraph.
+
+    If the RenderPass defines a Parameter, it will be overridden by a Parameter
+    with the same name if it exists in any of the Technique, Effect, Material,
+    TechniqueFilter, RenderPassFilter associated with the pass at runtime. This
+    still can be useful to define sane default values.
+
+    At render time, for each leaf node of the FrameGraph a base render state is
+    recorded by accumulating states defined by all RenderStateSet nodes in the
+    FrameGraph branch. Each RenderPass can overload this base render state by
+    specifying its own RenderState nodes.
+
+    \code
+    RenderPass {
+        id: pass
+        shaderProgram: ShaderProgram {
+            ...
+        }
+        parameters: [
+            Parameters { name: "color"; value: "red" }
+        ]
+        filterKeys: [
+            FilterKey { name: "name"; value: "zFillPass" }
+        ]
+        renderStates: [
+            DepthTest { }
+        ]
+    }
+    \endcode
+
+    \sa RenderPassFilter, FilterKey, Parameter, RenderState, Effect, Technique
  */
 
 /*!
@@ -88,10 +119,54 @@ QRenderPassPrivate::QRenderPassPrivate()
     of a Qt3DRender::QShaderProgram and a list of Qt3DRender::QFilterKey objects,
     a list of Qt3DRender::QRenderState objects and a list of Qt3DRender::QParameter objects.
 
-    QRenderPass executes the QShaderProgram using the given render states and parameters
-    when its filter keys match the filter keys in Qt3DRender::QRenderPassFilter or
-    when no filter keys are specified and no QRenderPassFilter is present
-    in the FrameGraph.
+    QRenderPass executes the QShaderProgram using the given QRenderState and
+    QParameter nodes when at least one of QFilterKey nodes being referenced
+    matches any of the QFilterKey nodes in QRenderPassFilter or when no
+    QFilterKey nodes are specified and no QRenderPassFilter is present in the
+    FrameGraph.
+
+    If the QRenderPass defines a QParameter, it will be overridden by a
+    QParameter with the same name if it exists in any of the QTechnique,
+    QEffect, QMaterial, QTechniqueFilter, QRenderPassFilter associated with the
+    pass at runtime. This still can be useful to define sane default values.
+
+    At render time, for each leaf node of the FrameGraph a base render state is
+    recorded by accumulating states defined by all QRenderStateSet nodes in the
+    FrameGraph branch. Each QRenderPass can overload this base render state by
+    specifying its own QRenderState nodes.
+
+    \code
+    // Create the render passes
+    QRenderPass *pass = new QRenderPass();
+
+    // Create shader program
+    QShaderProgram *glShader = new QShaderProgram();
+
+    // Set the shader on the render pass
+    pass->setShaderProgram(glShader);
+
+    // Create a FilterKey
+    QFilterKey *filterKey = new QFilterKey();
+    filterKey->setName(QStringLiteral("name"));
+    fitlerKey->setValue(QStringLiteral("zFillPass"));
+
+    // Add the FilterKey to the pass
+    pass->addFilterKey(filterKey);
+
+    // Create a QParameter
+    QParameter *colorParameter = new QParameter(QStringLiteral("color"), QColor::fromRgbF(0.0f, 0.0f, 1.0f, 1.0f));
+
+    // Add parameter to pass
+    pass->addParameter(colorParameter);
+
+    // Create a QRenderState
+    QDepthTest *depthTest = new QDepthTest();
+
+    // Add the render state to the pass
+    pass->addRenderState(depthTest);
+    \endcode
+
+    \sa QRenderPassFilter, QFilterKey, QParameter, QRenderState, QEffect, QTechnique
  */
 /*!
     \typedef ParameterList
@@ -236,7 +311,7 @@ QVector<QFilterKey *> QRenderPass::filterKeys() const
 /*!
     Adds a render \a state to the rendering pass. That implies that
     when the pass is executed at render time, the globally set render state will
-    be modifed by the states defined locally by the Qt3DRender::QRenderPass.
+    be modified by the states defined locally by the Qt3DRender::QRenderPass.
 
     \note not defining any Qt3DRender::QRenderState in a pass will result in the pass using
     the globally set render state for a given FrameGraph branch execution path.

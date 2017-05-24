@@ -2,8 +2,6 @@ INCLUDEPATH += $$PWD
 
 HEADERS += \
     $$PWD/qabstractfunctor.h \
-    $$PWD/qboundingsphere.h \
-    $$PWD/qboundingsphere_p.h \
     $$PWD/qrenderaspect.h \
     $$PWD/qrenderaspect_p.h \
     $$PWD/qitemmodelbuffer_p.h \
@@ -26,11 +24,14 @@ HEADERS += \
     $$PWD/qpickingsettings.h \
     $$PWD/qpickingsettings_p.h \
     $$PWD/qcomputecommand_p.h \
-    $$PWD/qcomputecommand.h
+    $$PWD/qcomputecommand.h \
+    $$PWD/qrenderplugin_p.h \
+    $$PWD/qrenderpluginfactory_p.h \
+    $$PWD/qrenderpluginfactoryif_p.h \
+    $$PWD/qlevelofdetailboundingsphere.h
 
 SOURCES += \
     $$PWD/qabstractfunctor.cpp \
-    $$PWD/qboundingsphere.cpp \
     $$PWD/qrenderaspect.cpp \
     $$PWD/qitemmodelbuffer.cpp \
     $$PWD/sphere.cpp \
@@ -43,5 +44,8 @@ SOURCES += \
     $$PWD/qrendersettings.cpp \
     $$PWD/qpickingsettings.cpp \
     $$PWD/qrendertargetoutput.cpp \
-    $$PWD/qcomputecommand.cpp
+    $$PWD/qcomputecommand.cpp \
+    $$PWD/qrenderpluginfactory.cpp \
+    $$PWD/qrenderpluginfactoryif.cpp \
+    $$PWD/qlevelofdetailboundingsphere.cpp
 

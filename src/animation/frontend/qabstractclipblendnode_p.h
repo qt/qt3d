@@ -54,7 +54,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QAnimationClip;
+class QAbstractAnimationClip;
 class QAbstractClipBlendNode;
 
 class QAbstractClipBlendNodePrivate : public Qt3DCore::QNodePrivate
@@ -63,7 +63,7 @@ public:
     QAbstractClipBlendNodePrivate();
 
     Q_DECLARE_PUBLIC(QAbstractClipBlendNode)
-    QVector<QAnimationClip *> m_clips;
+    QVector<QAbstractAnimationClip *> m_clips;
 };
 
 } // namespace Qt3DAnimation

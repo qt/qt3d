@@ -38,7 +38,8 @@
 ****************************************************************************/
 
 #include "qplanemesh.h"
-#include "qplanegeometry.h"
+
+#include <Qt3DExtras/qplanegeometry.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,6 +73,13 @@ namespace  Qt3DExtras {
  */
 
 /*!
+ * \qmlproperty bool PlaneMesh::mirrored
+ * \since 5.9
+ *
+ * Controls if the UV coordinates of the plane should be flipped vertically.
+ */
+
+/*!
  * \class Qt3DExtras::QPlaneMesh
  * \inheaderfile Qt3DExtras/QPlaneMesh
  * \inmodule Qt3DExtras
@@ -91,6 +99,7 @@ QPlaneMesh::QPlaneMesh(QNode *parent)
     QObject::connect(geometry, &QPlaneGeometry::widthChanged, this, &QPlaneMesh::widthChanged);
     QObject::connect(geometry, &QPlaneGeometry::heightChanged, this, &QPlaneMesh::heightChanged);
     QObject::connect(geometry, &QPlaneGeometry::resolutionChanged, this, &QPlaneMesh::meshResolutionChanged);
+    QObject::connect(geometry, &QPlaneGeometry::mirroredChanged, this, &QPlaneMesh::mirroredChanged);
     QGeometryRenderer::setGeometry(geometry);
 }
 
@@ -144,6 +153,22 @@ void QPlaneMesh::setMeshResolution(const QSize &resolution)
 QSize QPlaneMesh::meshResolution() const
 {
     return static_cast<QPlaneGeometry *>(geometry())->resolution();
+}
+
+void QPlaneMesh::setMirrored(bool mirrored)
+{
+    static_cast<QPlaneGeometry *>(geometry())->setMirrored(mirrored);
+}
+
+/*!
+ * \property QPlaneMesh::mirrored
+ * \since 5.9
+ *
+ * Controls if the UV coordinates of the plane should be flipped vertically.
+ */
+bool QPlaneMesh::mirrored() const
+{
+    return static_cast<QPlaneGeometry *>(geometry())->mirrored();
 }
 
 } // namespace  Qt3DExtras

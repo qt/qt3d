@@ -154,6 +154,13 @@ struct FaceIndices
 };
 QT3D_DECLARE_TYPEINFO(Qt3DRender, FaceIndices, Q_PRIMITIVE_TYPE)
 
+struct ByteArraySplitterEntry
+{
+    int start;
+    int size;
+};
+QT3D_DECLARE_TYPEINFO(Qt3DRender, ByteArraySplitterEntry, Q_PRIMITIVE_TYPE)
+
 /*
  * A helper class to split a QByteArray and access its sections without
  * additional memory allocations.
@@ -169,7 +176,7 @@ public:
         for (auto it = begin; it != end; ++it) {
             if (*it == delimiter) {
                 if (position > lastPosition || splitBehavior == QString::KeepEmptyParts) { // skip multiple consecutive delimiters
-                    const Entry entry = { lastPosition, position - lastPosition };
+                    const ByteArraySplitterEntry entry = { lastPosition, position - lastPosition };
                     m_entries.append(entry);
                 }
                 lastPosition = position + 1;
@@ -178,7 +185,7 @@ public:
             ++position;
         }
 
-        const Entry entry = { lastPosition, position - lastPosition };
+        const ByteArraySplitterEntry entry = { lastPosition, position - lastPosition };
         m_entries.append(entry);
     }
 
@@ -212,17 +219,10 @@ public:
         return ByteArraySplitter(m_input + m_entries[index].start, m_input + m_entries[index].start + m_entries[index].size, delimiter, splitBehavior);
     }
 
-    struct Entry
-    {
-        int start;
-        int size;
-    };
-
 private:
-    QVarLengthArray<Entry, 16> m_entries;
+    QVarLengthArray<ByteArraySplitterEntry, 16> m_entries;
     const char *m_input;
 };
-QT3D_DECLARE_TYPEINFO(Qt3DRender, ByteArraySplitter::Entry, Q_PRIMITIVE_TYPE)
 
 } // namespace Qt3DRender
 

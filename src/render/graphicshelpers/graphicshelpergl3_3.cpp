@@ -794,7 +794,7 @@ GLint GraphicsHelperGL3_3::maxClipPlaneCount()
     return max;
 }
 
-void GraphicsHelperGL3_3::memoryBarrier(QMemoryBarrier::BarrierTypes barriers)
+void GraphicsHelperGL3_3::memoryBarrier(QMemoryBarrier::Operations barriers)
 {
     Q_UNUSED(barriers);
     qWarning() << "memory barrier is not supported by OpenGL 3.3 (since 4.3)";
@@ -877,6 +877,16 @@ void GraphicsHelperGL3_3::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
     Q_UNUSED(wy);
     Q_UNUSED(wz);
     qWarning() << "Compute Shaders are not supported by OpenGL 3.3 (since OpenGL 4.3)";
+}
+
+char *GraphicsHelperGL3_3::mapBuffer(GLenum target)
+{
+    return static_cast<char*>(m_funcs->glMapBuffer(target, GL_READ_WRITE));
+}
+
+GLboolean GraphicsHelperGL3_3::unmapBuffer(GLenum target)
+{
+    return m_funcs->glUnmapBuffer(target);
 }
 
 void GraphicsHelperGL3_3::glUniform1fv(GLint location, GLsizei count, const GLfloat *values)

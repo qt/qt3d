@@ -53,7 +53,7 @@
 
 #include <QtQuick/QSGGeometryNode>
 
-#include "scene3dsgmaterial_p.h"
+#include <scene3dsgmaterial_p.h>
 
 QT_BEGIN_NAMESPACE
 

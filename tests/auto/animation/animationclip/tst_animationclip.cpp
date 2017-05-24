@@ -28,7 +28,7 @@
 
 #include <QtTest/QTest>
 #include <Qt3DAnimation/private/animationclip_p.h>
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
@@ -37,7 +37,9 @@
 #include <qbackendnodetester.h>
 #include <testpostmanarbiter.h>
 
-class tst_AnimationClip: public Qt3DCore::QBackendNodeTester
+using namespace Qt3DAnimation::Animation;
+
+class tst_AnimationClip : public Qt3DCore::QBackendNodeTester
 {
     Q_OBJECT
 
@@ -45,10 +47,10 @@ private Q_SLOTS:
     void checkPeerPropertyMirroring()
     {
         // GIVEN
-        Qt3DAnimation::Animation::AnimationClip backendClip;
-        Qt3DAnimation::Animation::Handler handler;
+        AnimationClip backendClip;
+        Handler handler;
         backendClip.setHandler(&handler);
-        Qt3DAnimation::QAnimationClip clip;
+        Qt3DAnimation::QAnimationClipLoader clip;
 
         clip.setSource(QUrl::fromLocalFile("walk.qlip"));
 
@@ -64,8 +66,8 @@ private Q_SLOTS:
     void checkInitialAndCleanedUpState()
     {
         // GIVEN
-        Qt3DAnimation::Animation::AnimationClip backendClip;
-        Qt3DAnimation::Animation::Handler handler;
+        AnimationClip backendClip;
+        Handler handler;
         backendClip.setHandler(&handler);
 
         // THEN
@@ -73,9 +75,10 @@ private Q_SLOTS:
         QCOMPARE(backendClip.isEnabled(), false);
         QCOMPARE(backendClip.source(), QUrl());
         QCOMPARE(backendClip.duration(), 0.0f);
+        QCOMPARE(backendClip.status(), Qt3DAnimation::QAnimationClipLoader::NotReady);
 
         // GIVEN
-        Qt3DAnimation::QAnimationClip clip;
+        Qt3DAnimation::QAnimationClipLoader clip;
         clip.setSource(QUrl::fromLocalFile("walk.qlip"));
 
         // WHEN
@@ -87,14 +90,16 @@ private Q_SLOTS:
         QCOMPARE(backendClip.source(), QUrl());
         QCOMPARE(backendClip.isEnabled(), false);
         QCOMPARE(backendClip.duration(), 0.0f);
+        QCOMPARE(backendClip.status(), Qt3DAnimation::QAnimationClipLoader::NotReady);
     }
 
     void checkPropertyChanges()
     {
         // GIVEN
-        Qt3DAnimation::Animation::AnimationClip backendClip;
-        Qt3DAnimation::Animation::Handler handler;
+        AnimationClip backendClip;
+        Handler handler;
         backendClip.setHandler(&handler);
+        backendClip.setDataType(Qt3DAnimation::Animation::AnimationClip::File);
         Qt3DCore::QPropertyUpdatedChangePtr updateChange;
 
         // WHEN
@@ -121,7 +126,7 @@ private Q_SLOTS:
     {
         // GIVEN
         TestArbiter arbiter;
-        Qt3DAnimation::Animation::AnimationClip backendClip;
+        AnimationClip backendClip;
         backendClip.setEnabled(true);
         Qt3DCore::QBackendNodePrivate::get(&backendClip)->setArbiter(&arbiter);
 
@@ -134,7 +139,8 @@ private Q_SLOTS:
         Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "duration");
         QCOMPARE(change->value().toFloat(), backendClip.duration());
-        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isFinal, true);
+        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isIntermediate,
+                 false);
 
         arbiter.events.clear();
 
@@ -143,6 +149,38 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendClip.duration(), 64.0f);
+        QCOMPARE(arbiter.events.count(), 0);
+
+        arbiter.events.clear();
+    }
+
+    void checkStatusPropertyBackendNotification()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        AnimationClip backendClip;
+        backendClip.setEnabled(true);
+        Qt3DCore::QBackendNodePrivate::get(&backendClip)->setArbiter(&arbiter);
+
+        // WHEN
+        backendClip.setStatus(Qt3DAnimation::QAnimationClipLoader::Error);
+
+        // THEN
+        QCOMPARE(backendClip.status(), Qt3DAnimation::QAnimationClipLoader::Error);
+        QCOMPARE(arbiter.events.count(), 1);
+        Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "status");
+        QCOMPARE(change->value().value<Qt3DAnimation::QAnimationClipLoader::Status>(), backendClip.status());
+        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isIntermediate,
+                 false);
+
+        arbiter.events.clear();
+
+        // WHEN
+        backendClip.setStatus(Qt3DAnimation::QAnimationClipLoader::Error);
+
+        // THEN
+        QCOMPARE(backendClip.status(), Qt3DAnimation::QAnimationClipLoader::Error);
         QCOMPARE(arbiter.events.count(), 0);
 
         arbiter.events.clear();

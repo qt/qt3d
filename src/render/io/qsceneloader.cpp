@@ -198,12 +198,24 @@ void QSceneLoaderPrivate::populateEntityMap(QEntity *parentEntity)
 {
     // Topmost parent entity is not considered part of the scene as that is typically
     // an unnamed entity inserted by importer.
-    for (auto childNode : parentEntity->childNodes()) {
+    const QNodeVector childNodes = parentEntity->childNodes();
+    for (auto childNode : childNodes) {
         auto childEntity = qobject_cast<QEntity *>(childNode);
         if (childEntity) {
             m_entityMap.insert(childEntity->objectName(), childEntity);
             populateEntityMap(childEntity);
         }
+    }
+}
+
+void QSceneLoaderPrivate::setStatus(QSceneLoader::Status status)
+{
+    if (m_status != status) {
+        Q_Q(QSceneLoader);
+        m_status = status;
+        const bool wasBlocked = q->blockNotifications(true);
+        emit q->statusChanged(status);
+        q->blockNotifications(wasBlocked);
     }
 }
 
@@ -253,7 +265,7 @@ void QSceneLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
                 d->populateEntityMap(d->m_subTreeRoot);
             }
         } else if (e->propertyName() == QByteArrayLiteral("status")) {
-            setStatus(e->value().value<QSceneLoader::Status>());
+            d->setStatus(e->value().value<QSceneLoader::Status>());
         }
     }
 }
@@ -328,7 +340,7 @@ QStringList QSceneLoader::entityNames() const
     \sa Qt3DRender::QSceneLoader::ComponentType
 */
 /*!
-    Returns a component matching \a componentType of a loaded entity with an \a objectName matching
+    Returns a component matching \a componentType of a loaded entity with an objectName matching
     the \a entityName.
     If the entity has multiple matching components, the first match in the component list of
     the entity is returned.
@@ -338,7 +350,8 @@ QComponent *QSceneLoader::component(const QString &entityName,
                                     QSceneLoader::ComponentType componentType) const
 {
     QEntity *e = entity(entityName);
-    for (auto component : e->components()) {
+    const QComponentVector components = e->components();
+    for (auto component : components) {
         switch (componentType) {
         case GeometryRendererComponent:
             if (qobject_cast<Qt3DRender::QGeometryRenderer *>(component))
@@ -371,12 +384,7 @@ QComponent *QSceneLoader::component(const QString &entityName,
 void QSceneLoader::setStatus(QSceneLoader::Status status)
 {
     Q_D(QSceneLoader);
-    if (d->m_status != status) {
-        d->m_status = status;
-        const bool wasBlocked = blockNotifications(true);
-        emit statusChanged(status);
-        blockNotifications(wasBlocked);
-    }
+    d->setStatus(status);
 }
 
 Qt3DCore::QNodeCreatedChangeBasePtr QSceneLoader::createNodeCreationChange() const

@@ -51,10 +51,9 @@
 // We mean it.
 //
 
+#include <Qt3DInput/qaxisaccumulator.h>
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnodeid.h>
-
-#include <Qt3DInput/qaxisaccumulator.h>
 
 QT_BEGIN_NAMESPACE
 

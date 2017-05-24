@@ -69,9 +69,15 @@ namespace Qt3DRender {
 
     This component is assigned to an entity. When the entity changes distance relative
     to the camera, the LevelOfDetailSwitch will disable all the child entities except
-    the one matching index \l LevelOfDetailSwitch::currentIndex.
+    the one matching index \l currentIndex.
 
     \sa LevelOfDetail
+*/
+
+/*!
+    \qmlproperty int LevelOfDetailSwitch::currentIndex
+
+    The index of the presently selected child entity.
 */
 
 /*! \fn Qt3DRender::QLevelOfDetailSwitch::QLevelOfDetailSwitch(Qt3DCore::QNode *parent)
@@ -107,8 +113,10 @@ void QLevelOfDetailSwitch::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &cha
             emit currentIndexChanged(ndx);
 
             int entityIndex = 0;
-            for (Qt3DCore::QEntity *entity : entities()) {
-                for (Qt3DCore::QNode *childNode : entity->childNodes()) {
+            const auto entities = this->entities();
+            for (Qt3DCore::QEntity *entity : entities) {
+                const auto childNodes = entity->childNodes();
+                for (Qt3DCore::QNode *childNode : childNodes) {
                     Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(childNode);
                     if (childEntity) {
                         childEntity->setEnabled(entityIndex == ndx);

@@ -37,8 +37,9 @@
 **
 ****************************************************************************/
 
-#include "qabstractaxisinput.h"
 #include "qabstractaxisinput_p.h"
+
+#include <Qt3DInput/qabstractaxisinput.h>
 #include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE

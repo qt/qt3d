@@ -48,13 +48,19 @@
 // We mean it.
 //
 
+#include <Qt3DCore/qnodeid.h>
+
 #include <private/qobject_p.h>
+#include <private/qt3drender_global_p.h>
+
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QPickEventPrivate : public QObjectPrivate
+class QPickEvent;
+
+class QT3DRENDERSHARED_PRIVATE_EXPORT QPickEventPrivate : public QObjectPrivate
 {
 public:
     QPickEventPrivate()
@@ -75,6 +81,9 @@ public:
     QPickEvent::Buttons m_button;
     int m_buttons;
     int m_modifiers;
+    Qt3DCore::QNodeId m_entity;
+
+    static QPickEventPrivate *get(QPickEvent *object);
 };
 
 } // Qt3DRender

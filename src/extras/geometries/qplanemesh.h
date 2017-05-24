@@ -42,7 +42,7 @@
 
 #include <Qt3DExtras/qt3dextras_global.h>
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <QSize>
+#include <QtCore/QSize>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,6 +54,7 @@ class QT3DEXTRASSHARED_EXPORT QPlaneMesh : public Qt3DRender::QGeometryRenderer
     Q_PROPERTY(float width READ width WRITE setWidth NOTIFY widthChanged)
     Q_PROPERTY(float height READ height WRITE setHeight NOTIFY heightChanged)
     Q_PROPERTY(QSize meshResolution READ meshResolution WRITE setMeshResolution NOTIFY meshResolutionChanged)
+    Q_PROPERTY(bool mirrored READ mirrored WRITE setMirrored NOTIFY mirroredChanged REVISION 9)
 
 public:
     explicit QPlaneMesh(Qt3DCore::QNode *parent = nullptr);
@@ -62,16 +63,19 @@ public:
     float width() const;
     float height() const;
     QSize meshResolution() const;
+    bool mirrored() const;
 
 public Q_SLOTS:
     void setWidth(float width);
     void setHeight(float height);
     void setMeshResolution(const QSize &resolution);
+    void setMirrored(bool mirrored);
 
 Q_SIGNALS:
     void meshResolutionChanged(const QSize &meshResolution);
     void widthChanged(float width);
     void heightChanged(float height);
+    void mirroredChanged(bool mirrored);
 
 private:
     // As this is a default provided geometry renderer, no one should be able

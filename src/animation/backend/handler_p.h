@@ -50,8 +50,6 @@
 
 #include <QtGlobal>
 #include <Qt3DAnimation/private/handle_types_p.h>
-#include <Qt3DAnimation/private/buildblendtreesjob_p.h>
-#include <Qt3DAnimation/private/evaluateblendclipanimatorjob_p.h>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/qscopedpointer.h>
@@ -66,13 +64,11 @@ namespace Qt3DAnimation {
 namespace Animation {
 
 class AnimationClip;
-class AnimationClipManager;
+class AnimationClipLoaderManager;
 class ClipAnimator;
 class ClipAnimatorManager;
 class BlendedClipAnimator;
 class BlendedClipAnimatorManager;
-class ConductedClipAnimator;
-class ConductedClipAnimatorManager;
 class ChannelMapping;
 class ChannelMappingManager;
 class ChannelMapper;
@@ -82,6 +78,11 @@ class ClipBlendNodeManager;
 class FindRunningClipAnimatorsJob;
 class LoadAnimationClipJob;
 class EvaluateClipAnimatorJob;
+class BuildBlendTreesJob;
+class EvaluateBlendClipAnimatorJob;
+
+using BuildBlendTreesJobPtr = QSharedPointer<BuildBlendTreesJob>;
+using EvaluateBlendClipAnimatorJobPtr = QSharedPointer<EvaluateBlendClipAnimatorJob>;
 
 class Q_AUTOTEST_EXPORT Handler
 {
@@ -106,10 +107,9 @@ public:
     void setBlendedClipAnimatorRunning(const HBlendedClipAnimator &handle, bool running);
     QVector<HBlendedClipAnimator> runningBlenndedClipAnimators() const { return m_runningBlendedClipAnimators; }
 
-    AnimationClipManager *animationClipManager() const Q_DECL_NOTHROW { return m_animationClipManager.data(); }
+    AnimationClipLoaderManager *animationClipLoaderManager() const Q_DECL_NOTHROW { return m_animationClipLoaderManager.data(); }
     ClipAnimatorManager *clipAnimatorManager() const Q_DECL_NOTHROW { return m_clipAnimatorManager.data(); }
     BlendedClipAnimatorManager *blendedClipAnimatorManager() const Q_DECL_NOTHROW { return m_blendedClipAnimatorManager.data(); }
-    ConductedClipAnimatorManager *conductedClipAnimatorManager() const Q_DECL_NOTHROW { return m_conductedClipAnimatorManager.data(); }
     ChannelMappingManager *channelMappingManager() const Q_DECL_NOTHROW { return m_channelMappingManager.data(); }
     ChannelMapperManager *channelMapperManager() const Q_DECL_NOTHROW { return m_channelMapperManager.data(); }
     ClipBlendNodeManager *clipBlendNodeManager() const Q_DECL_NOTHROW { return m_clipBlendNodeManager.data(); }
@@ -117,10 +117,9 @@ public:
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time);
 
 private:
-    QScopedPointer<AnimationClipManager> m_animationClipManager;
+    QScopedPointer<AnimationClipLoaderManager> m_animationClipLoaderManager;
     QScopedPointer<ClipAnimatorManager> m_clipAnimatorManager;
     QScopedPointer<BlendedClipAnimatorManager> m_blendedClipAnimatorManager;
-    QScopedPointer<ConductedClipAnimatorManager> m_conductedClipAnimatorManager;
     QScopedPointer<ChannelMappingManager> m_channelMappingManager;
     QScopedPointer<ChannelMapperManager> m_channelMapperManager;
     QScopedPointer<ClipBlendNodeManager> m_clipBlendNodeManager;

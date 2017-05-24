@@ -5,7 +5,9 @@ SOURCES += \
     $$PWD/qopenglinformationservice.cpp \
     $$PWD/qtickclockservice.cpp \
     $$PWD/qabstractframeadvanceservice.cpp \
-    $$PWD/qeventfilterservice.cpp
+    $$PWD/qeventfilterservice.cpp \
+    $$PWD/qdownloadhelperservice.cpp \
+    $$PWD/qdownloadnetworkworker.cpp
 
 HEADERS += \
     $$PWD/qservicelocator_p.h \
@@ -18,6 +20,8 @@ HEADERS += \
     $$PWD/qtickclockservice_p.h \
     $$PWD/qabstractframeadvanceservice_p.h \
     $$PWD/qabstractframeadvanceservice_p_p.h \
-    $$PWD/qeventfilterservice_p.h
+    $$PWD/qeventfilterservice_p.h \
+    $$PWD/qdownloadhelperservice_p.h \
+    $$PWD/qdownloadnetworkworker_p.h
 
 INCLUDEPATH += $$PWD

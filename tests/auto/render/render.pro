@@ -31,6 +31,7 @@ qtConfig(private_tests) {
         qframegraphnode \
         qlayerfilter \
         qabstractlight \
+        qenvironmentlight \
         qray3d \
         qrenderpassfilter \
         qrendertargetselector \
@@ -45,6 +46,7 @@ qtConfig(private_tests) {
         picking \
 #        qboundingvolumedebug \
 #        boundingvolumedebug \
+        boundingsphere \
         qdefaultmeshes \
         trianglesextractor \
         triangleboundingvolume \
@@ -100,7 +102,12 @@ qtConfig(private_tests) {
         rendercapture \
         trianglevisitor \
         qmemorybarrier \
-        memorybarrier
+        memorybarrier \
+        qshaderprogram \
+        qscene2d \
+        scene2d \
+        coordinatereader \
+        framegraphvisitor
 
     !macos: SUBDIRS += graphicshelpergl4
 }

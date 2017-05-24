@@ -139,8 +139,10 @@ private:
     Qt3DRender::QEffect *createOnTopEffect();
 
     QTemporaryDir *m_exportDir;
+#ifdef VISUAL_CHECK
     Qt3DExtras::Qt3DWindow *m_view1;
     Qt3DExtras::Qt3DWindow *m_view2;
+#endif
     Qt3DCore::QEntity *m_sceneRoot1;
     Qt3DCore::QEntity *m_sceneRoot2;
     QHash<QString, Qt3DCore::QEntity *> m_entityMap;
@@ -781,7 +783,7 @@ void tst_gltfPlugins::compareComponents(Qt3DCore::QComponent *c1, Qt3DCore::QCom
                 auto property = c1->metaObject()->property(i);
                 auto v1 = c1->property(property.name());
                 auto v2 = c2->property(property.name());
-                if (v1.type() == QMetaType::Bool) {
+                if (v1.type() == QVariant::Bool) {
                     QCOMPARE(v1.toBool(), v2.toBool());
                 } else if (v1.type() == QVariant::Color) {
                     QCOMPARE(v1.value<QColor>(), v2.value<QColor>());

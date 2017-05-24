@@ -39,11 +39,9 @@
 
 #include "levelofdetail_p.h"
 #include <Qt3DRender/QLevelOfDetail>
-#include <Qt3DRender/QBoundingSphere>
 #include <Qt3DRender/private/qlevelofdetail_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
@@ -56,8 +54,8 @@ namespace Render {
 LevelOfDetail::LevelOfDetail()
     : BackendNode(BackendNode::ReadWrite)
     , m_currentIndex(0)
-    , m_thresholdType(QLevelOfDetail::DistanceToCamera)
-    , m_radius(1.f)
+    , m_thresholdType(QLevelOfDetail::DistanceToCameraThreshold)
+    , m_volumeOverride()
 {
 }
 
@@ -74,8 +72,7 @@ void LevelOfDetail::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
     m_currentIndex = data.currentIndex;
     m_thresholdType = data.thresholdType;
     m_thresholds = data.thresholds;
-    m_radius = data.radius;
-    m_center = data.center;
+    m_volumeOverride = data.volumeOverride;
 }
 
 void LevelOfDetail::cleanup()
@@ -87,23 +84,16 @@ void LevelOfDetail::sceneChangeEvent(const QSceneChangePtr &e)
 {
     if (e->type() == PropertyUpdated) {
         const QPropertyUpdatedChangePtr &propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("currentIndex")) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("currentIndex"))
             m_currentIndex = propertyChange->value().value<int>();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("camera")) {
+        else if (propertyChange->propertyName() == QByteArrayLiteral("camera"))
             m_camera = propertyChange->value().value<Qt3DCore::QNodeId>();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("thresholdType")) {
+        else if (propertyChange->propertyName() == QByteArrayLiteral("thresholdType"))
             m_thresholdType = propertyChange->value().value<QLevelOfDetail::ThresholdType>();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("thresholds")) {
+        else if (propertyChange->propertyName() == QByteArrayLiteral("thresholds"))
             m_thresholds = propertyChange->value().value<QVector<qreal>>();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("center")) {
-            m_center = propertyChange->value().value<QVector3D>();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("radius")) {
-            m_radius = propertyChange->value().value<float>();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("volumeOverride")) {
-            auto volumeOverride = propertyChange->value().value<Qt3DRender::QBoundingSphere*>();
-            m_center = volumeOverride ? volumeOverride->center() : QVector3D();
-            m_radius = volumeOverride ? volumeOverride->radius() : -1.f;
-        }
+        else if (propertyChange->propertyName() == QByteArrayLiteral("volumeOverride"))
+            m_volumeOverride = propertyChange->value().value<Qt3DRender::QLevelOfDetailBoundingSphere>();
     }
 
     markDirty(AbstractRenderer::GeometryDirty);
@@ -119,7 +109,6 @@ void LevelOfDetail::setCurrentIndex(int currentIndex)
         e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
         e->setPropertyName("currentIndex");
         e->setValue(m_currentIndex);
-        Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
         notifyObservers(e);
     }
 }

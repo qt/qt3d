@@ -56,6 +56,18 @@ import Qt3D.Extras 2.0
 Entity {
     id: sceneRoot
 
+    readonly property double cameraZ: camera.position.z
+
+    function viewAll() {
+        camera.viewAll()
+    }
+    function viewLogo() {
+        camera.viewEntity(logoEntity)
+    }
+    function setPositionZ(z) {
+        camera.position = Qt.vector3d( 0.0, 0.0, z )
+    }
+
     Camera {
         id: camera
         projectionType: CameraLens.PerspectiveProjection
@@ -63,7 +75,7 @@ Entity {
         aspectRatio: 4/3
         nearPlane : 0.1
         farPlane : 1000.0
-        position: Qt.vector3d( 0.0, 0.0, viewCenter_z.value )
+        position: Qt.vector3d( 0.0, 0.0, 7.5 )
         upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
         viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
     }

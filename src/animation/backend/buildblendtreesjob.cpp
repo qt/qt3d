@@ -39,7 +39,9 @@
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/clipblendnodevisitor_p.h>
 #include <Qt3DAnimation/private/clipblendnode_p.h>
-#include <Qt3DAnimation/private/lerpblend_p.h>
+#include <Qt3DAnimation/private/clipblendvalue_p.h>
+#include <Qt3DAnimation/private/lerpclipblend_p.h>
+#include <Qt3DAnimation/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,7 +51,7 @@ namespace Animation {
 BuildBlendTreesJob::BuildBlendTreesJob()
     : Qt3DCore::QAspectJob()
 {
-    // TO DO: Add Profiler ID
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::BuildBlendTree, 0);
 }
 
 void BuildBlendTreesJob::setBlendedClipAnimators(const QVector<HBlendedClipAnimator> &blendedClipAnimatorHandles)
@@ -57,84 +59,68 @@ void BuildBlendTreesJob::setBlendedClipAnimators(const QVector<HBlendedClipAnima
     m_blendedClipAnimatorHandles = blendedClipAnimatorHandles;
 }
 
+// Note this job is run once for all stopped blended animators that have been marked dirty
+// We assume that the structure of blend node tree does not change once a BlendClipAnimator has been set to running
 void BuildBlendTreesJob::run()
 {
-    for (const HBlendedClipAnimator blendedClipAnimatorHandle : m_blendedClipAnimatorHandles) {
-        // Retrive BlendTree node
+    for (const HBlendedClipAnimator blendedClipAnimatorHandle : qAsConst(m_blendedClipAnimatorHandles)) {
+        // Retrieve BlendTree node
         BlendedClipAnimator *blendClipAnimator = m_handler->blendedClipAnimatorManager()->data(blendedClipAnimatorHandle);
         Q_ASSERT(blendClipAnimator);
-
-        // TO DO: Add support for tree of blend nodes
-        // For now assumes only one
 
         const bool canRun = blendClipAnimator->canRun();
         m_handler->setBlendedClipAnimatorRunning(blendedClipAnimatorHandle, canRun);
 
-        // Check if blend clip can run and if so build blend tree
-        if (canRun) {
-            const ChannelMapper *mapper = m_handler->channelMapperManager()->lookupResource(blendClipAnimator->mapperId());
-            Q_ASSERT(mapper);
-            ClipBlendNode *node = m_handler->clipBlendNodeManager()->lookupNode(blendClipAnimator->blendTreeRootId());
+        if (!canRun)
+            continue;
 
-            const Qt3DCore::QNodeIdVector clipIds = node->clipIds();
-            // There must be 2 clips
-            if (clipIds.size() != 2) {
-                qWarning() << "A Blend Tree requires exactly 2 clips";
-                return;
-            }
+        // Build the format for clip results that should be used by nodes in the blend
+        // tree when used with this animator
+        const ChannelMapper *mapper = m_handler->channelMapperManager()->lookupResource(blendClipAnimator->mapperId());
+        Q_ASSERT(mapper);
+        QVector<ChannelNameAndType> channelNamesAndTypes
+                = buildRequiredChannelsAndTypes(m_handler, mapper);
+        QVector<ComponentIndices> channelComponentIndices
+                = assignChannelComponentIndices(channelNamesAndTypes);
 
-            // Retrieve Animation clips
-            const AnimationClip *clip1 = m_handler->animationClipManager()->lookupResource(clipIds.first());
-            const AnimationClip *clip2 = m_handler->animationClipManager()->lookupResource(clipIds.last());
+        // Find the leaf value nodes of the blend tree and for each of them
+        // create a set of format indices that can later be used to map the
+        // raw ClipResults resulting from evaluating an animation clip to the
+        // layout used by the blend tree for this animator
+        const QVector<Qt3DCore::QNodeId> valueNodeIds
+                = gatherValueNodesToEvaluate(m_handler, blendClipAnimator->blendTreeRootId());
+        for (const auto valueNodeId : valueNodeIds) {
+            ClipBlendValue *valueNode
+                    = static_cast<ClipBlendValue *>(m_handler->clipBlendNodeManager()->lookupNode(valueNodeId));
+            Q_ASSERT(valueNode);
 
-            // Build mappings for the 2 clips
-            const QVector<AnimationUtils::MappingData> mappingDataClip1 = AnimationUtils::buildPropertyMappings(m_handler, clip1, mapper);
-            const QVector<AnimationUtils::MappingData> mappingDataClip2 = AnimationUtils::buildPropertyMappings(m_handler, clip2, mapper);
+            const Qt3DCore::QNodeId clipId = valueNode->clipId();
+            const AnimationClip *clip = m_handler->animationClipLoaderManager()->lookupResource(clipId);
+            Q_ASSERT(clip);
 
-            // We can only blend channels that are in both clips
-            // If a channel is present in one clip and not the other, we use 100% of its value (no blending)
-            QVector<AnimationUtils::BlendingMappingData> blendingMappingData;
-            const int mappingInClip1Size = mappingDataClip1.size();
-            blendingMappingData.reserve(mappingInClip1Size);
-
-            // Find mappings that are in both vectors and build mappingData out of that
-            for (const AnimationUtils::MappingData &mappingDataInClip1 : mappingDataClip1) {
-                AnimationUtils::BlendingMappingData mappingData;
-                mappingData.channelIndicesClip1 = mappingDataInClip1.channelIndices;
-                mappingData.propertyName = mappingDataInClip1.propertyName;
-                mappingData.targetId = mappingDataInClip1.targetId;
-                mappingData.type = mappingDataInClip1.type;
-                mappingData.blendAction = AnimationUtils::BlendingMappingData::NoBlending;
-                blendingMappingData.push_back(mappingData);
-            }
-
-            for (const AnimationUtils::MappingData &mappingDataInClip2 : mappingDataClip2) {
-                bool sharedChannel = false;
-                for (int i = 0; i < mappingInClip1Size; ++i) {
-                    AnimationUtils::BlendingMappingData &mappingDataInClip1 = blendingMappingData[i];
-                    if ((strcmp(mappingDataInClip1.propertyName, mappingDataInClip2.propertyName) == 0) &&
-                            mappingDataInClip1.targetId == mappingDataInClip2.targetId &&
-                            mappingDataInClip1.type == mappingDataInClip2.type) {
-                        // We have a channel shared in both clips
-                        mappingDataInClip1.channelIndicesClip2 = mappingDataInClip2.channelIndices;
-                        mappingDataInClip1.blendAction = AnimationUtils::BlendingMappingData::ClipBlending;
-                        sharedChannel = true;
-                        break;
-                    }
-                }
-                if (!sharedChannel) { // We have a channel defined in only one of the clips
-                    AnimationUtils::BlendingMappingData mappingData;
-                    mappingData.channelIndicesClip2 = mappingDataInClip2.channelIndices;
-                    mappingData.propertyName = mappingDataInClip2.propertyName;
-                    mappingData.targetId = mappingDataInClip2.targetId;
-                    mappingData.type = mappingDataInClip2.type;
-                    mappingData.blendAction = AnimationUtils::BlendingMappingData::NoBlending;
-                    blendingMappingData.push_back(mappingData);
-                }
-            }
-
-            blendClipAnimator->setMappingData(blendingMappingData);
+            const ComponentIndices formatIndices
+                    = generateClipFormatIndices(channelNamesAndTypes,
+                                                channelComponentIndices,
+                                                clip);
+            valueNode->setFormatIndices(blendClipAnimator->peerId(), formatIndices);
         }
+
+        // Finally, build the mapping data vector for this blended clip animator. This
+        // gets used during the final stage of evaluation when sending the property changes
+        // out to the targets of the animation. We do the costly work once up front.
+        const QVector<Qt3DCore::QNodeId> channelMappingIds = mapper->mappingIds();
+        QVector<ChannelMapping *> channelMappings;
+        channelMappings.reserve(channelMappingIds.size());
+        for (const auto mappingId : channelMappingIds) {
+            ChannelMapping *mapping = m_handler->channelMappingManager()->lookupResource(mappingId);
+            Q_ASSERT(mapping);
+            channelMappings.push_back(mapping);
+        }
+        const QVector<MappingData> mappingDataVec
+                = buildPropertyMappings(channelMappings,
+                                        channelNamesAndTypes,
+                                        channelComponentIndices);
+        blendClipAnimator->setMappingData(mappingDataVec);
     }
 }
 

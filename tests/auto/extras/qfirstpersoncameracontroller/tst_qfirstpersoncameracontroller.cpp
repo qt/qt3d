@@ -48,6 +48,8 @@ private Q_SLOTS:
         QVERIFY(firstPersonCameraController.camera() == nullptr);
         QCOMPARE(firstPersonCameraController.linearSpeed(), 10.0f);
         QCOMPARE(firstPersonCameraController.lookSpeed(), 180.0f);
+        QCOMPARE(firstPersonCameraController.acceleration(), -1.0f);
+        QCOMPARE(firstPersonCameraController.deceleration(), -1.0f);
     }
 
     void checkPropertyChanges()
@@ -117,6 +119,44 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(firstPersonCameraController.lookSpeed(), newValue);
+            QCOMPARE(spy.count(), 0);
+
+        }
+        {
+            // WHEN
+            QSignalSpy spy(&firstPersonCameraController, SIGNAL(accelerationChanged(float)));
+            const float newValue = 0.001f;
+            firstPersonCameraController.setAcceleration(newValue);
+
+            // THEN
+            QCOMPARE(firstPersonCameraController.acceleration(), newValue);
+            QCOMPARE(spy.count(), 1);
+
+            // WHEN
+            spy.clear();
+            firstPersonCameraController.setAcceleration(newValue);
+
+            // THEN
+            QCOMPARE(firstPersonCameraController.acceleration(), newValue);
+            QCOMPARE(spy.count(), 0);
+
+        }
+        {
+            // WHEN
+            QSignalSpy spy(&firstPersonCameraController, SIGNAL(decelerationChanged(float)));
+            const float newValue = 0.001f;
+            firstPersonCameraController.setDeceleration(newValue);
+
+            // THEN
+            QCOMPARE(firstPersonCameraController.deceleration(), newValue);
+            QCOMPARE(spy.count(), 1);
+
+            // WHEN
+            spy.clear();
+            firstPersonCameraController.setDeceleration(newValue);
+
+            // THEN
+            QCOMPARE(firstPersonCameraController.deceleration(), newValue);
             QCOMPARE(spy.count(), 0);
 
         }

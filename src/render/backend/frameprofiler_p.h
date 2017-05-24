@@ -69,7 +69,7 @@ enum RecordingType
     RenderTargetUpdate
 };
 
-#ifdef QT3D_JOBS_RUN_STATS
+#ifdef QT3D_OPENGL_RUN_STATS
 
 class FrameTimeRecorder
 {
@@ -218,33 +218,35 @@ public:
     explicit GLTimeRecorder(RecordingType type)
         : m_type(type)
     {
-#ifdef QT3D_JOBS_RUN_STATS
+#ifdef QT3D_OPENGL_RUN_STATS
         frameProfiler.startRecordEvent();
 #endif
     }
 
     ~GLTimeRecorder()
     {
-#ifdef QT3D_JOBS_RUN_STATS
+#ifdef QT3D_OPENGL_RUN_STATS
         frameProfiler.recordEvent(m_type);
+#else
+        Q_UNUSED(m_type);
 #endif
     }
 
     static void writeResults()
     {
-#ifdef QT3D_JOBS_RUN_STATS
+#ifdef QT3D_OPENGL_RUN_STATS
         frameProfiler.writeResults();
 #endif
     }
 
 private:
-#ifdef QT3D_JOBS_RUN_STATS
+#ifdef QT3D_OPENGL_RUN_STATS
     static FrameProfiler frameProfiler;
 #endif
     RecordingType m_type;
 };
 
-#ifdef QT3D_JOBS_RUN_STATS
+#ifdef QT3D_OPENGL_RUN_STATS
 FrameProfiler GLTimeRecorder::frameProfiler;
 #endif
 

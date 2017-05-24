@@ -51,10 +51,10 @@
 // We mean it.
 //
 
-#include "task_p.h"
-
 #include <QtCore/QMutex>
 #include <QtCore/QVector>
+
+#include <Qt3DCore/private/task_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,7 +62,10 @@ namespace Qt3DCore {
 
 struct Dependency
 {
-    Dependency() {}
+    Dependency()
+        : depender(nullptr)
+        , dependee(nullptr)
+    {}
     Dependency(RunnableInterface *depender, RunnableInterface *dependee)
         : depender(qMove(depender)),
           dependee(qMove(dependee)) {}

@@ -53,6 +53,7 @@
 
 #include <QOpenGLContext>
 #include <Qt3DCore/qnodeid.h>
+#include <qbytearray.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -85,6 +86,7 @@ public:
     void allocate(GraphicsContext *ctx, uint size, bool dynamic = true);
     void allocate(GraphicsContext *ctx, const void *data, uint size, bool dynamic = true);
     void update(GraphicsContext *ctx, const void *data, uint size, int offset = 0);
+    QByteArray download(GraphicsContext *ctx, uint size);
     void bindBufferBase(GraphicsContext *ctx, int bindingPoint, Type t);
     void bindBufferBase(GraphicsContext *ctx, int bindingPoint);
 

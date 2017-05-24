@@ -16,6 +16,7 @@ SUBDIRS += \
     cylinder-qml \
     deferred-renderer-cpp \
     deferred-renderer-qml \
+    downloading \
     dragging \
     dynamicscene-cpp \
     enabled-qml \
@@ -38,9 +39,16 @@ SUBDIRS += \
     rendercapture-qml \
     additional-attributes-qml \
     dynamic-model-loader-qml \
+    buffercapture-qml \
+    render-qml-to-texture \
+    render-qml-to-texture-qml \
+    video-texture-qml \
     animation-keyframe-simple \
+    animation-keyframe-blendtree \
+    distancefieldtext \
     mesh-morphing \
-    anim-viewer
+    anim-viewer \
+    animation-keyframe-programmatic
 
 qtHaveModule(widgets): {
     SUBDIRS += \

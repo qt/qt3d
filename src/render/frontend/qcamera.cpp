@@ -40,6 +40,8 @@
 #include "qcamera.h"
 #include "qcamera_p.h"
 
+#include <QtMath>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -199,6 +201,36 @@ QCameraPrivate::QCameraPrivate()
  */
 
 /*!
+ * \qmlmethod void Qt3D.Render::Camera::viewAll()
+ *
+ * Rotates and moves the camera so that it's viewCenter is the center of the scene's bounding volume
+ * and the entire scene fits in the view port.
+ *
+ * \note Only works if the lens is in perspective projection mode.
+ * \sa Qt3D.Render::Camera::projectionType
+ */
+
+/*!
+ * \qmlmethod void Qt3D.Render::Camera::viewEntity(Entity entity)
+ *
+ * Rotates and moves the camera so that it's viewCenter is the center of the entity's bounding volume
+ * and the entire entity fits in the view port.
+ *
+ * \note Only works if the lens is in perspective projection mode.
+ * \sa Qt3D.Render::Camera::projectionType
+ */
+
+/*!
+ * \qmlmethod void Qt3D.Render::Camera::viewSphere(vector3d center, real radius)
+ *
+ * Rotates and moves the camera so that it's viewCenter is \a center
+ * and a sphere of \a radius fits in the view port.
+ *
+ * \note Only works if the lens is in perspective projection mode.
+ * \sa Qt3D.Render::Camera::projectionType
+ */
+
+/*!
  * \qmlproperty enumeration Qt3D.Render::Camera::projectionType
  *
  * Holds the type of the camera projection.
@@ -346,6 +378,11 @@ QCameraPrivate::QCameraPrivate()
  */
 
 /*!
+ * \property QCamera::exposure
+ * Holds the current exposure of the camera.
+ */
+
+/*!
  * \property QCamera::position
  * Holds the camera's position.
  */
@@ -387,6 +424,8 @@ QCamera::QCamera(Qt3DCore::QNode *parent)
     QObject::connect(d_func()->m_lens, SIGNAL(bottomChanged(float)), this, SIGNAL(bottomChanged(float)));
     QObject::connect(d_func()->m_lens, SIGNAL(topChanged(float)), this, SIGNAL(topChanged(float)));
     QObject::connect(d_func()->m_lens, SIGNAL(projectionMatrixChanged(const QMatrix4x4 &)), this, SIGNAL(projectionMatrixChanged(const QMatrix4x4 &)));
+    QObject::connect(d_func()->m_lens, SIGNAL(exposureChanged(float)), this, SIGNAL(exposureChanged(float)));
+    QObject::connect(d_func()->m_lens, &QCameraLens::viewSphere, this, &QCamera::viewSphere);
     QObject::connect(d_func()->m_transform, SIGNAL(matrixChanged()), this, SIGNAL(viewMatrixChanged()));
     addComponent(d_func()->m_lens);
     addComponent(d_func()->m_transform);
@@ -415,6 +454,7 @@ QCamera::QCamera(QCameraPrivate &dd, Qt3DCore::QNode *parent)
     QObject::connect(d_func()->m_lens, SIGNAL(bottomChanged(float)), this, SIGNAL(bottomChanged(float)));
     QObject::connect(d_func()->m_lens, SIGNAL(topChanged(float)), this, SIGNAL(topChanged(float)));
     QObject::connect(d_func()->m_lens, SIGNAL(projectionMatrixChanged(const QMatrix4x4 &)), this, SIGNAL(projectionMatrixChanged(const QMatrix4x4 &)));
+    QObject::connect(d_func()->m_lens, &QCameraLens::viewSphere, this, &QCamera::viewSphere);
     QObject::connect(d_func()->m_transform, SIGNAL(matrixChanged()), this, SIGNAL(viewMatrixChanged()));
     addComponent(d_func()->m_lens);
     addComponent(d_func()->m_transform);
@@ -630,6 +670,54 @@ void QCamera::rotateAboutViewCenter(const QQuaternion& q)
 }
 
 /*!
+ * Rotates and moves the camera so that it's viewCenter is the center of the scene's bounding volume
+ * and the entire scene fits in the view port.
+ *
+ * \note Only works if the lens is in perspective projection mode.
+ * \sa Qt3D.Render::Camera::projectionType
+ */
+void QCamera::viewAll()
+{
+    Q_D(QCamera);
+    d->m_lens->viewAll(id());
+}
+
+/*!
+ * Rotates and moves the camera so that it's viewCenter is \a center
+ * and a sphere of \a radius fits in the view port.
+ *
+ * \note Only works if the lens is in perspective projection mode.
+ * \sa Qt3D.Render::Camera::projectionType
+ */
+void QCamera::viewSphere(const QVector3D &center, float radius)
+{
+    Q_D(QCamera);
+    if (d->m_lens->projectionType() != QCameraLens::PerspectiveProjection || radius <= 0.f)
+        return;
+    double dist = radius / std::tan(qDegreesToRadians(d->m_lens->fieldOfView()) / 2.0f);
+    QVector3D dir = (d->m_viewCenter - d->m_position).normalized();
+    QVector3D newPos = center - (dir * dist);
+    setViewCenter(center);
+    setPosition(newPos);
+}
+
+/*!
+ * Rotates and moves the camera so that it's viewCenter is the center of the entity's bounding volume
+ * and the entire entity fits in the view port.
+ *
+ * \note Only works if the lens is in perspective projection mode.
+ * \sa Qt3D.Render::Camera::projectionType
+ */
+void QCamera::viewEntity(Qt3DCore::QEntity *entity)
+{
+    if (!entity)
+        return;
+
+    Q_D(QCamera);
+    d->m_lens->viewEntity(entity->id(), id());
+}
+
+/*!
  * Sets the camera's projection type to \a type.
  */
 void QCamera::setProjectionType(QCameraLens::ProjectionType type)
@@ -773,10 +861,25 @@ void QCamera::setProjectionMatrix(const QMatrix4x4 &projectionMatrix)
     d->m_lens->setProjectionMatrix(projectionMatrix);
 }
 
+/*!
+ * Sets the camera's exposure to \a exposure.
+ */
+void QCamera::setExposure(float exposure)
+{
+    Q_D(QCamera);
+    d->m_lens->setExposure(exposure);
+}
+
 QMatrix4x4 QCamera::projectionMatrix() const
 {
     Q_D(const QCamera);
     return d->m_lens->projectionMatrix();
+}
+
+float QCamera::exposure() const
+{
+    Q_D(const QCamera);
+    return d->m_lens->exposure();
 }
 
 /*!

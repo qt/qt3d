@@ -96,6 +96,7 @@ class TextureImageDataManager;
 class LayerManager;
 class LevelOfDetailManager;
 class LightManager;
+class EnvironmentLightManager;
 class ComputeCommandManager;
 class RenderStateManager;
 
@@ -127,9 +128,12 @@ class GeometryRenderer;
 class ObjectPicker;
 //class BoundingVolumeDebug;
 class Light;
+class EnvironmentLight;
 class ComputeCommand;
 class RenderStateNode;
 class OpenGLVertexArrayObject;
+
+class ResourceAccessor;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT NodeManagers
 {
@@ -203,8 +207,11 @@ public:
     inline ObjectPickerManager *objectPickerManager() const Q_DECL_NOEXCEPT { return m_objectPickerManager; }
     //    inline BoundingVolumeDebugManager *boundingVolumeDebugManager() const Q_DECL_NOEXCEPT { return m_boundingVolumeDebugManager; }
     inline LightManager *lightManager() const Q_DECL_NOEXCEPT { return m_lightManager; }
+    inline EnvironmentLightManager *environmentLightManager() const Q_DECL_NOEXCEPT { return m_environmentLightManager; }
     inline ComputeCommandManager *computeJobManager() const Q_DECL_NOEXCEPT { return m_computeJobManager; }
     inline RenderStateManager *renderStateManager() const Q_DECL_NOEXCEPT { return m_renderStateManager; }
+
+    QSharedPointer<ResourceAccessor> resourceAccessor();
 
 private:
     CameraManager *m_cameraManager;
@@ -239,8 +246,11 @@ private:
     ObjectPickerManager *m_objectPickerManager;
     //    BoundingVolumeDebugManager *m_boundingVolumeDebugManager;
     LightManager *m_lightManager;
+    EnvironmentLightManager *m_environmentLightManager;
     ComputeCommandManager *m_computeJobManager;
     RenderStateManager *m_renderStateManager;
+
+    QSharedPointer<ResourceAccessor> m_resourceAccessor;
 };
 
 // Specializations
@@ -334,6 +344,9 @@ QT3DRENDERSHARED_PRIVATE_EXPORT ObjectPickerManager *NodeManagers::manager<Objec
 
 template<>
 LightManager *NodeManagers::manager<Light>() const Q_DECL_NOEXCEPT;
+
+template<>
+EnvironmentLightManager *NodeManagers::manager<EnvironmentLight>() const Q_DECL_NOEXCEPT;
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT ComputeCommandManager *NodeManagers::manager<ComputeCommand>() const Q_DECL_NOEXCEPT;

@@ -41,7 +41,6 @@
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/qbuffer_p.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,6 +55,7 @@ Buffer::Buffer()
     , m_usage(QBuffer::StaticDraw)
     , m_bufferDirty(false)
     , m_syncData(false)
+    , m_access(QBuffer::Write)
     , m_manager(nullptr)
 {
     // Maybe it could become read write if we want to inform
@@ -75,6 +75,7 @@ void Buffer::cleanup()
     m_functor.reset();
     m_bufferDirty = false;
     m_syncData = false;
+    m_access = QBuffer::Write;
 }
 
 
@@ -87,15 +88,31 @@ void Buffer::executeFunctor()
 {
     Q_ASSERT(m_functor);
     m_data = (*m_functor)();
+    // Request data to be loaded
+    forceDataUpload();
+
     if (m_syncData) {
         // Send data back to the frontend
         auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
         e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
         e->setPropertyName("data");
         e->setValue(QVariant::fromValue(m_data));
-        Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
         notifyObservers(e);
     }
+}
+
+//Called from th sendBufferJob
+void Buffer::updateDataFromGPUToCPU(QByteArray data)
+{
+    // Note: when this is called, data is what's currently in GPU memory
+    // so m_data shouldn't be reuploaded
+    m_data = data;
+    // Send data back to the frontend
+    auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+    e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+    e->setPropertyName("downloadedData");
+    e->setValue(QVariant::fromValue(m_data));
+    notifyObservers(e);
 }
 
 void Buffer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -106,12 +123,26 @@ void Buffer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &chang
     m_type = data.type;
     m_usage = data.usage;
     m_syncData = data.syncData;
+    m_access = data.access;
     m_bufferDirty = true;
+
+    if (!m_data.isEmpty())
+        forceDataUpload();
 
     m_functor = data.functor;
     Q_ASSERT(m_manager);
     if (m_functor)
         m_manager->addDirtyBuffer(peerId());
+}
+
+void Buffer::forceDataUpload()
+{
+    // We push back an update with offset = -1
+    // As this is the way to force data to be loaded
+    QBufferUpdate updateNewData;
+    updateNewData.offset = -1;
+    m_bufferUpdates.clear(); //previous updates are pointless
+    m_bufferUpdates.push_back(updateNewData);
 }
 
 void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -120,9 +151,12 @@ void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<QPropertyUpdatedChange>(e);
         QByteArray propertyName = propertyChange->propertyName();
         if (propertyName == QByteArrayLiteral("data")) {
-            QByteArray newData = propertyChange->value().value<QByteArray>();
-            m_bufferDirty |= m_data != newData;
+            QByteArray newData = propertyChange->value().toByteArray();
+            bool dirty = m_data != newData;
+            m_bufferDirty |= dirty;
             m_data = newData;
+            if (dirty)
+                forceDataUpload();
         } else if (propertyName == QByteArrayLiteral("updateData")) {
             Qt3DRender::QBufferUpdate updateData = propertyChange->value().value<Qt3DRender::QBufferUpdate>();
             m_bufferUpdates.push_back(updateData);
@@ -133,6 +167,8 @@ void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyName == QByteArrayLiteral("usage")) {
             m_usage = static_cast<QBuffer::UsageType>(propertyChange->value().value<int>());
             m_bufferDirty = true;
+        } else if (propertyName == QByteArrayLiteral("accessType")) {
+            m_access = static_cast<QBuffer::AccessType>(propertyChange->value().value<int>());
         } else if (propertyName == QByteArrayLiteral("dataGenerator")) {
             QBufferDataGeneratorPtr newGenerator = propertyChange->value().value<QBufferDataGeneratorPtr>();
             m_bufferDirty |= !(newGenerator && m_functor && *newGenerator == *m_functor);

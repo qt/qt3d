@@ -39,6 +39,7 @@
 #include <Qt3DAnimation/private/animationclip_p.h>
 #include <Qt3DAnimation/private/handler_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
+#include <Qt3DAnimation/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,6 +50,7 @@ LoadAnimationClipJob::LoadAnimationClipJob()
     : Qt3DCore::QAspectJob()
     , m_animationClipHandles()
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadAnimationClip, 0);
 }
 
 void LoadAnimationClipJob::addDirtyAnimationClips(const QVector<HAnimationClip> &animationClipHandles)
@@ -67,7 +69,7 @@ void LoadAnimationClipJob::clearDirtyAnimationClips()
 void LoadAnimationClipJob::run()
 {
     Q_ASSERT(m_handler);
-    AnimationClipManager *animationClipManager = m_handler->animationClipManager();
+    AnimationClipLoaderManager *animationClipManager = m_handler->animationClipLoaderManager();
     for (const auto animationClipHandle : qAsConst(m_animationClipHandles)) {
         AnimationClip *animationClip = animationClipManager->data(animationClipHandle);
         animationClip->loadAnimation();

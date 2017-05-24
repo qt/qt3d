@@ -39,8 +39,10 @@
 
 #include "qabstractphysicaldeviceproxy_p.h"
 #include "qabstractphysicaldeviceproxy_p_p.h"
+
 #include <Qt3DInput/qphysicaldevicecreatedchange.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+
 
 QT_BEGIN_NAMESPACE
 

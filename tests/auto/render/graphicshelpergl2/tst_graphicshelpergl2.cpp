@@ -124,7 +124,7 @@ class tst_GraphicsHelperGL2 : public QObject
     Q_OBJECT
 private Q_SLOTS:
 
-    void initTestCase()
+    void init()
     {
         m_window.reset(new QWindow);
         m_window->setSurfaceType(QWindow::OpenGLSurface);
@@ -160,7 +160,7 @@ private Q_SLOTS:
         }
     }
 
-    void cleanupTestCase()
+    void cleanup()
     {
         m_glContext.doneCurrent();
     }
@@ -1302,7 +1302,7 @@ private Q_SLOTS:
 
         // WHEN
         m_func->glUseProgram(shaderProgram.programId());
-        GLfloat values[16] = { 454.0f, 350.0f, 883.0f, 355.0f, 1340.0f, 1584.0f, 1200.0f, 427.0f, 396.0f, 1603.0f, 55.0f, 5.7, 383.0f, 6.2f, 5.3f, 327.0f };
+        GLfloat values[16] = { 454.0f, 350.0f, 883.0f, 355.0f, 1340.0f, 1584.0f, 1200.0f, 427.0f, 396.0f, 1603.0f, 55.0f, 5.7f, 383.0f, 6.2f, 5.3f, 327.0f };
         const GLint location = shaderProgram.uniformLocation("m4");
         m_glHelper.glUniformMatrix4fv(location, 1, values);
 

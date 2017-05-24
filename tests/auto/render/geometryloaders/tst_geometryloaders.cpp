@@ -102,6 +102,9 @@ void tst_geometryloaders::testOBJLoader()
         case QAttribute::VertexAttribute:
             QCOMPARE(attr->count(), 24u);
             break;
+        default:
+            Q_UNREACHABLE();
+            break;
         }
     }
 
@@ -140,6 +143,9 @@ void tst_geometryloaders::testPLYLoader()
             break;
         case QAttribute::VertexAttribute:
             QCOMPARE(attr->count(), 24u);
+            break;
+        default:
+            Q_UNREACHABLE();
             break;
         }
     }
@@ -211,6 +217,9 @@ void tst_geometryloaders::testGLTFLoader()
             break;
         case QAttribute::VertexAttribute:
             QCOMPARE(attr->count(), 24u);
+            break;
+        default:
+            Q_UNREACHABLE();
             break;
         }
     }

@@ -34,9 +34,8 @@
 **
 ****************************************************************************/
 
-#ifdef QT3D_JOBS_RUN_STATS
-
 #include "commandexecuter_p.h"
+
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DCore/qbackendnode.h>
@@ -388,5 +387,3 @@ QVariant CommandExecuter::executeCommand(const QStringList &args)
 } // Qt3DRenderer
 
 QT_END_NAMESPACE
-
-#endif

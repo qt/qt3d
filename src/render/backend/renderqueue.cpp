@@ -49,6 +49,7 @@ namespace Render {
 
 RenderQueue::RenderQueue()
     : m_noRender(false)
+    , m_wasReset(true)
     , m_targetRenderViewCount(0)
     , m_currentRenderViewCount(0)
     , m_currentWorkQueue(1)
@@ -70,6 +71,7 @@ void RenderQueue::reset()
     m_targetRenderViewCount = 0;
     m_currentWorkQueue.clear();
     m_noRender = false;
+    m_wasReset = true;
 }
 
 void RenderQueue::setNoRender()
@@ -88,6 +90,7 @@ bool RenderQueue::queueRenderView(RenderView *renderView, uint submissionOrderIn
     Q_ASSERT(!m_noRender);
     m_currentWorkQueue[submissionOrderIndex] = renderView;
     ++m_currentRenderViewCount;
+    Q_ASSERT(m_currentRenderViewCount <= m_targetRenderViewCount);
     return isFrameQueueComplete();
 }
 
@@ -109,6 +112,7 @@ void RenderQueue::setTargetRenderViewCount(int targetRenderViewCount)
     Q_ASSERT(!m_noRender);
     m_targetRenderViewCount = targetRenderViewCount;
     m_currentWorkQueue.resize(targetRenderViewCount);
+    m_wasReset = false;
 }
 
 /*!
@@ -119,7 +123,7 @@ void RenderQueue::setTargetRenderViewCount(int targetRenderViewCount)
 bool RenderQueue::isFrameQueueComplete() const
 {
     return (m_noRender
-            || (m_targetRenderViewCount && m_targetRenderViewCount == currentRenderViewCount()));
+            || (m_targetRenderViewCount > 0 && m_targetRenderViewCount == m_currentRenderViewCount));
 }
 
 } // namespace Render

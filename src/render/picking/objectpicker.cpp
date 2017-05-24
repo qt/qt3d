@@ -44,7 +44,6 @@
 #include <Qt3DRender/private/qobjectpicker_p.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -93,17 +92,11 @@ void ObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::PropertyUpdated) {
         const Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
-        bool notifyPickJob = false;
 
         if (propertyChange->propertyName() == QByteArrayLiteral("hoverEnabled")) {
             m_hoverEnabled = propertyChange->value().toBool();
-            notifyPickJob = true;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("dragEnabled")) {
             m_dragEnabled = propertyChange->value().toBool();
-            notifyPickJob = true;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            notifyPickJob = true;
-            // actual value change handled in BackendNode::sceneChangeEvent
         }
 
         markDirty(AbstractRenderer::AllDirty);
@@ -134,7 +127,6 @@ void ObjectPicker::onClicked(QPickEventPtr event)
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("clicked");
     e->setValue(QVariant::fromValue(event));
-    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
     notifyObservers(e);
 }
 
@@ -144,7 +136,6 @@ void ObjectPicker::onMoved(QPickEventPtr event)
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("moved");
     e->setValue(QVariant::fromValue(event));
-    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
     notifyObservers(e);
 }
 
@@ -155,7 +146,6 @@ void ObjectPicker::onPressed(QPickEventPtr event)
     e->setPropertyName("pressed");
     e->setValue(QVariant::fromValue(event));
     m_isPressed = true;
-    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
     notifyObservers(e);
 }
 
@@ -166,7 +156,6 @@ void ObjectPicker::onReleased(QPickEventPtr event)
     e->setPropertyName("released");
     e->setValue(QVariant::fromValue(event));
     m_isPressed = false;
-    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
     notifyObservers(e);
 }
 
@@ -175,7 +164,6 @@ void ObjectPicker::onEntered()
     auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("entered");
-    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
     notifyObservers(e);
 }
 
@@ -184,7 +172,6 @@ void ObjectPicker::onExited()
     auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("exited");
-    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
     notifyObservers(e);
 }
 

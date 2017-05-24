@@ -38,14 +38,15 @@
 ****************************************************************************/
 
 #include "keyboardhandler_p.h"
+
+#include <Qt3DInput/qkeyboarddevice.h>
 #include <Qt3DInput/qkeyboardhandler.h>
-#include <Qt3DInput/private/qkeyboardhandler_p.h>
-#include "qkeyboarddevice.h"
-#include "inputhandler_p.h"
-#include "inputmanagers_p.h"
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
-#include <QVariant>
+#include <QtCore/QVariant>
+
+#include <Qt3DInput/private/inputhandler_p.h>
+#include <Qt3DInput/private/inputmanagers_p.h>
+#include <Qt3DInput/private/qkeyboardhandler_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -91,7 +92,6 @@ void KeyboardHandler::setFocus(bool focus)
         e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
         e->setPropertyName("focus");
         e->setValue(m_focus);
-        Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
         notifyObservers(e);
     }
 }
@@ -102,7 +102,6 @@ void KeyboardHandler::keyEvent(const QKeyEventPtr &event)
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("event");
     e->setValue(QVariant::fromValue(event));
-    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
     notifyObservers(e);
 }
 

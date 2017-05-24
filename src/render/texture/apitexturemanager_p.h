@@ -237,6 +237,21 @@ public:
         return true;
     }
 
+    // Change the texture data generator for given texture, if it is a non-shared texture
+    // Return true, if it was changed successfully, false otherwise
+    bool setGenerator(APITexture *tex, const QTextureGeneratorPtr &generator)
+    {
+        Q_ASSERT(tex);
+
+        if (isShared(tex))
+            return false;
+
+        tex->setGenerator(generator);
+        m_updatedTextures.push_back(tex);
+
+        return true;
+    }
+
     // Retrieves abandoned textures. This should be regularly called from the OpenGL thread
     // to make sure needed GL resources are de-allocated.
     QVector<APITexture*> takeAbandonedTextures()
@@ -258,7 +273,7 @@ public:
         if (impl->isUnique())
             return false;
 
-        auto it = m_sharedTextures.find(impl);
+        auto it = m_sharedTextures.constFind(impl);
         if (it == m_sharedTextures.cend())
             return false;
 

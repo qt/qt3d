@@ -37,11 +37,11 @@
 **
 ****************************************************************************/
 
-#include <Qt3DQuickRender/private/quick3dshaderdataarray_p.h>
-#include <QMetaProperty>
+#include <QtCore/QMetaProperty>
 
-#include "quick3dshaderdata_p.h"
-#include <private/qshaderdata_p.h>
+#include <Qt3DQuickRender/private/quick3dshaderdataarray_p.h>
+#include <Qt3DQuickRender/private/quick3dshaderdata_p.h>
+#include <Qt3DRender/private/qshaderdata_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,7 +53,7 @@ namespace {
 
 const int qjsValueTypeId = qMetaTypeId<QJSValue>();
 const int quick3DShaderDataArrayTypeId = qMetaTypeId<Quick3DShaderDataArray*>();
-const int quick3DShaderDataTypeId = qMetaTypeId<Quick3DShaderData*>();
+Q_DECL_UNUSED const int quick3DShaderDataTypeId = qMetaTypeId<Quick3DShaderData*>();
 
 }
 
@@ -84,11 +84,9 @@ public:
                 }
             }
             return innerValues;
-        } else if (v.userType() == quick3DShaderDataTypeId) {
-            Qt3DCore::QNodeId id;
-            QShaderData *shaderData = v.value<Quick3DShaderData *>();
-            if (shaderData)
-                id = shaderData->id();
+        } else if (v.canConvert<Qt3DCore::QNode*>()) {
+            const auto node = v.value<Qt3DCore::QNode *>();
+            const auto id = Qt3DCore::qIdForNode(node);
             return QVariant::fromValue(id);
         }
         return v;

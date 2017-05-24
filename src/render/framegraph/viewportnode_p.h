@@ -81,6 +81,9 @@ public:
     float yMax() const;
     void setYMax(float yMax);
 
+    float gamma() const;
+    void setGamma(float gamma);
+
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
@@ -90,6 +93,7 @@ private:
     float m_yMin;
     float m_xMax;
     float m_yMax;
+    float m_gamma;
 };
 
 QRectF computeViewport(const QRectF &childViewport, const ViewportNode *parentViewport);

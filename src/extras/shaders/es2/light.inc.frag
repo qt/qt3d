@@ -26,27 +26,45 @@ void adsModelNormalMapped(const in FP vec3 vpos, const in FP vec3 vnormal, const
     FP vec3 n = normalize( vnormal );
 
     FP vec3 s, ts;
+    Light light;
     for (int i = 0; i < lightCount; ++i) {
+        if (i == 0)
+            light = lights[0];
+        else if (i == 1)
+            light = lights[1];
+        else if (i == 2)
+            light = lights[2];
+        else if (i == 3)
+            light = lights[3];
+        else if (i == 4)
+            light = lights[4];
+        else if (i == 5)
+            light = lights[5];
+        else if (i == 6)
+            light = lights[6];
+        else if (i == 7)
+            light = lights[7];
+
         FP float att = 1.0;
-        if ( lights[i].type != TYPE_DIRECTIONAL ) {
-            s = lights[i].position - vpos;
+        if ( light.type != TYPE_DIRECTIONAL ) {
+            s = light.position - vpos;
             if ( dot(snormal, s) < 0.0 )
                 att = 0.0;
             else {
                 ts = normalize( tangentMatrix * s );
-                if (length( lights[i].attenuation ) != 0.0) {
+                if (length( light.attenuation ) != 0.0) {
                     FP float dist = length(s);
-                    att = 1.0 / (lights[i].attenuation.x + lights[i].attenuation.y * dist + lights[i].attenuation.z * dist * dist);
+                    att = 1.0 / (light.attenuation.x + light.attenuation.y * dist + light.attenuation.z * dist * dist);
                 }
                 s = normalize( s );
-                if ( lights[i].type == TYPE_SPOT ) {
-                    if ( degrees(acos(dot(-s, normalize(lights[i].direction))) ) > lights[i].cutOffAngle)
+                if ( light.type == TYPE_SPOT ) {
+                    if ( degrees(acos(dot(-s, normalize(light.direction))) ) > light.cutOffAngle)
                         att = 0.0;
                 }
             }
         } else {
-            if ( dot(snormal, -lights[i].direction) > 0.0 )
-                s = normalize( tangentMatrix * -lights[i].direction );
+            if ( dot(snormal, -light.direction) > 0.0 )
+                s = normalize( tangentMatrix * -light.direction );
             else
                 att = 0.0;
         }
@@ -61,8 +79,8 @@ void adsModelNormalMapped(const in FP vec3 vpos, const in FP vec3 vnormal, const
             specular = normFactor * pow( max( dot( r, v ), 0.0 ), shininess );
         }
 
-        diffuseColor += att * lights[i].intensity * diffuse * lights[i].color;
-        specularColor += att * lights[i].intensity * specular * lights[i].color;
+        diffuseColor += att * light.intensity * diffuse * light.color;
+        specularColor += att * light.intensity * specular * light.color;
     }
 }
 
@@ -75,21 +93,39 @@ void adsModel(const in FP vec3 vpos, const in FP vec3 vnormal, const in FP vec3 
     FP vec3 n = normalize( vnormal );
 
     FP vec3 s;
+    Light light;
     for (int i = 0; i < lightCount; ++i) {
+        if (i == 0)
+            light = lights[0];
+        else if (i == 1)
+            light = lights[1];
+        else if (i == 2)
+            light = lights[2];
+        else if (i == 3)
+            light = lights[3];
+        else if (i == 4)
+            light = lights[4];
+        else if (i == 5)
+            light = lights[5];
+        else if (i == 6)
+            light = lights[6];
+        else if (i == 7)
+            light = lights[7];
+
         FP float att = 1.0;
-        if ( lights[i].type != TYPE_DIRECTIONAL ) {
-            s = lights[i].position - vpos;
-            if (length( lights[i].attenuation ) != 0.0) {
+        if ( light.type != TYPE_DIRECTIONAL ) {
+            s = light.position - vpos;
+            if (length( light.attenuation ) != 0.0) {
                 FP float dist = length(s);
-                att = 1.0 / (lights[i].attenuation.x + lights[i].attenuation.y * dist + lights[i].attenuation.z * dist * dist);
+                att = 1.0 / (light.attenuation.x + light.attenuation.y * dist + light.attenuation.z * dist * dist);
             }
             s = normalize( s );
-            if ( lights[i].type == TYPE_SPOT ) {
-                if ( degrees(acos(dot(-s, normalize(lights[i].direction))) ) > lights[i].cutOffAngle)
+            if ( light.type == TYPE_SPOT ) {
+                if ( degrees(acos(dot(-s, normalize(light.direction))) ) > light.cutOffAngle)
                     att = 0.0;
             }
         } else {
-            s = normalize( -lights[i].direction );
+            s = normalize( -light.direction );
         }
 
         FP float diffuse = max( dot( s, n ), 0.0 );
@@ -102,8 +138,8 @@ void adsModel(const in FP vec3 vpos, const in FP vec3 vnormal, const in FP vec3 
             specular = normFactor * pow( max( dot( r, v ), 0.0 ), shininess );
         }
 
-        diffuseColor += att * lights[i].intensity * diffuse * lights[i].color;
-        specularColor += att * lights[i].intensity * specular * lights[i].color;
+        diffuseColor += att * light.intensity * diffuse * light.color;
+        specularColor += att * light.intensity * specular * light.color;
     }
 }
 
@@ -114,25 +150,43 @@ void adModel(const in FP vec3 vpos, const in FP vec3 vnormal, out FP vec3 diffus
     FP vec3 n = normalize( vnormal );
 
     FP vec3 s;
+    Light light;
     for (int i = 0; i < lightCount; ++i) {
+        if (i == 0)
+            light = lights[0];
+        else if (i == 1)
+            light = lights[1];
+        else if (i == 2)
+            light = lights[2];
+        else if (i == 3)
+            light = lights[3];
+        else if (i == 4)
+            light = lights[4];
+        else if (i == 5)
+            light = lights[5];
+        else if (i == 6)
+            light = lights[6];
+        else if (i == 7)
+            light = lights[7];
+
         FP float att = 1.0;
-        if ( lights[i].type != TYPE_DIRECTIONAL ) {
-            s = lights[i].position - vpos;
-            if (length( lights[i].attenuation ) != 0.0) {
+        if ( light.type != TYPE_DIRECTIONAL ) {
+            s = light.position - vpos;
+            if (length( light.attenuation ) != 0.0) {
                 FP float dist = length(s);
-                att = 1.0 / (lights[i].attenuation.x + lights[i].attenuation.y * dist + lights[i].attenuation.z * dist * dist);
+                att = 1.0 / (light.attenuation.x + light.attenuation.y * dist + light.attenuation.z * dist * dist);
             }
             s = normalize( s );
-            if ( lights[i].type == TYPE_SPOT ) {
-                if ( degrees(acos(dot(-s, normalize(lights[i].direction))) ) > lights[i].cutOffAngle)
+            if ( light.type == TYPE_SPOT ) {
+                if ( degrees(acos(dot(-s, normalize(light.direction))) ) > light.cutOffAngle)
                     att = 0.0;
             }
         } else {
-            s = normalize( -lights[i].direction );
+            s = normalize( -light.direction );
         }
 
         FP float diffuse = max( dot( s, n ), 0.0 );
 
-        diffuseColor += att * lights[i].intensity * diffuse * lights[i].color;
+        diffuseColor += att * light.intensity * diffuse * light.color;
     }
 }

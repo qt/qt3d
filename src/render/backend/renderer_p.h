@@ -71,6 +71,7 @@
 #include <Qt3DRender/private/updatetreeenabledjob_p.h>
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
 #include <Qt3DRender/private/sendrendercapturejob_p.h>
+#include <Qt3DRender/private/sendbuffercapturejob_p.h>
 #include <Qt3DRender/private/genericlambdajob_p.h>
 #include <Qt3DRender/private/updatemeshtrianglelistjob_p.h>
 #include <Qt3DRender/private/filtercompatibletechniquejob_p.h>
@@ -156,7 +157,7 @@ public:
     void setTime(qint64 time) Q_DECL_OVERRIDE;
 
     void setNodeManagers(NodeManagers *managers) Q_DECL_OVERRIDE;
-    void setServices(Qt3DCore::QServiceLocator *services) Q_DECL_OVERRIDE { m_services = services; }
+    void setServices(Qt3DCore::QServiceLocator *services) Q_DECL_OVERRIDE;
     void setSurfaceExposed(bool exposed) Q_DECL_OVERRIDE;
 
     NodeManagers *nodeManagers() const Q_DECL_OVERRIDE;
@@ -188,11 +189,11 @@ public:
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() Q_DECL_OVERRIDE;
     Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() Q_DECL_OVERRIDE;
     Qt3DCore::QAspectJobPtr syncTextureLoadingJob() Q_DECL_OVERRIDE;
+    Qt3DCore::QAspectJobPtr expandBoundingVolumeJob() Q_DECL_OVERRIDE;
 
     QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs() const;
 
     inline FrameCleanupJobPtr frameCleanupJob() const { return m_cleanupJob; }
-    inline ExpandBoundingVolumeJobPtr expandBoundingVolumeJob() const { return m_expandBoundingVolumeJob; }
     inline UpdateShaderDataTransformJobPtr updateShaderDataTransformJob() const { return m_updateShaderDataTransformJob; }
     inline CalculateBoundingVolumeJobPtr calculateBoundingVolumeJob() const { return m_calculateBoundingVolumeJob; }
     inline UpdateTreeEnabledJobPtr updateTreeEnabledJob() const { return m_updateTreeEnabledJob; }
@@ -209,10 +210,12 @@ public:
 
     virtual void setSettings(RenderSettings *settings) Q_DECL_OVERRIDE;
     virtual RenderSettings *settings() const Q_DECL_OVERRIDE;
+    QOpenGLContext *shareContext() const Q_DECL_OVERRIDE;
 
     void updateGLResources();
     void updateTexture(Texture *texture);
     void cleanupTexture(const Texture *texture);
+    void downloadGLBuffers();
 
     void prepareCommandsSubmission(const QVector<RenderView *> &renderViews);
     bool executeCommandsSubmission(const RenderView *rv);
@@ -230,8 +233,8 @@ public:
 
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
-
     QList<QMouseEvent> pendingPickingEvents() const;
+    QList<QKeyEvent> pendingKeyEvents() const;
 
     void addRenderCaptureSendRequest(Qt3DCore::QNodeId nodeId);
     const QVector<Qt3DCore::QNodeId> takePendingRenderCaptureSendRequests();
@@ -256,12 +259,13 @@ public:
 
     ViewSubmissionResultData submitRenderViews(const QVector<Render::RenderView *> &renderViews);
 
-    QMutex* mutex() { return &m_mutex; }
+    QMutex* mutex() { return &m_renderQueueMutex; }
 
 
 #ifdef QT3D_RENDER_UNIT_TESTS
 public:
 #else
+
 private:
 #endif
     bool canRender() const;
@@ -286,7 +290,7 @@ private:
     QScopedPointer<RenderThread> m_renderThread;
     QScopedPointer<VSyncFrameAdvanceService> m_vsyncFrameAdvanceService;
 
-    QMutex m_mutex;
+    QMutex m_renderQueueMutex;
     QSemaphore m_submitRenderViewsSemaphore;
     QSemaphore m_waitForInitializationToBeCompleted;
 
@@ -300,6 +304,7 @@ private:
     BackendNodeDirtySet m_changeSet;
     QAtomicInt m_lastFrameCorrect;
     QOpenGLContext *m_glContext;
+    QOpenGLContext *m_shareContext;
     PickBoundingVolumeJobPtr m_pickBoundingVolumeJob;
 
     qint64 m_time;
@@ -314,6 +319,7 @@ private:
     UpdateWorldBoundingVolumeJobPtr m_updateWorldBoundingVolumeJob;
     UpdateTreeEnabledJobPtr m_updateTreeEnabledJob;
     SendRenderCaptureJobPtr m_sendRenderCaptureJob;
+    SendBufferCaptureJobPtr m_sendBufferCaptureJob;
     UpdateLevelOfDetailJobPtr m_updateLevelOfDetailJob;
     UpdateMeshTriangleListJobPtr m_updateMeshTriangleListJob;
     FilterCompatibleTechniqueJobPtr m_filterCompatibleTechniqueJob;
@@ -327,16 +333,23 @@ private:
                            OpenGLVertexArrayObject **vao);
 
     GenericLambdaJobPtr<std::function<void ()>> m_bufferGathererJob;
+    GenericLambdaJobPtr<std::function<void ()>> m_vaoGathererJob;
     GenericLambdaJobPtr<std::function<void ()>> m_textureGathererJob;
     GenericLambdaJobPtr<std::function<void ()>> m_shaderGathererJob;
 
     SynchronizerJobPtr m_syncTextureLoadingJob;
 
+    void lookForAbandonedVaos();
     void lookForDirtyBuffers();
+    void lookForDownloadableBuffers();
     void lookForDirtyTextures();
     void lookForDirtyShaders();
 
+    QMutex m_abandonedVaosMutex;
+    QVector<HVao> m_abandonedVaos;
+
     QVector<HBuffer> m_dirtyBuffers;
+    QVector<HBuffer> m_downloadableBuffers;
     QVector<HShader> m_dirtyShaders;
     QVector<HTexture> m_dirtyTextures;
 

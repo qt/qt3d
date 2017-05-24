@@ -51,8 +51,9 @@
 // We mean it.
 //
 
-#include <QQmlListProperty>
 #include <Qt3DCore/qnode.h>
+#include <QtQml/QQmlListProperty>
+
 #include <Qt3DQuick/private/qt3dquick_global_p.h>
 
 QT_BEGIN_NAMESPACE

@@ -63,6 +63,7 @@
 #include <Qt3DRender/private/dispatchcompute_p.h>
 #include <Qt3DRender/private/rendersurfaceselector_p.h>
 #include <Qt3DRender/private/rendercapture_p.h>
+#include <Qt3DRender/private/buffercapture_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 #include <Qt3DRender/private/techniquemanager_p.h>
 #include <Qt3DRender/private/memorybarrier_p.h>
@@ -164,6 +165,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 // a subregion relative to that of the parent viewport
                 const ViewportNode *vpNode = static_cast<const ViewportNode *>(node);
                 rv->setViewport(computeViewport(rv->viewport(), vpNode));
+                rv->setGamma(vpNode->gamma());
                 break;
             }
 
@@ -238,7 +240,15 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
             case FrameGraphNode::MemoryBarrier: {
                 const Render::MemoryBarrier *barrier = static_cast<const Render::MemoryBarrier *>(node);
-                rv->setMemoryBarrier(barrier->barrierTypes()|rv->memoryBarrier());
+                rv->setMemoryBarrier(barrier->waitOperations()|rv->memoryBarrier());
+                break;
+            }
+
+            case FrameGraphNode::BufferCapture: {
+                auto *bufferCapture = const_cast<Render::BufferCapture *>(
+                                            static_cast<const Render::BufferCapture *>(node));
+                if (bufferCapture != nullptr)
+                     rv->setIsDownloadBuffersEnable(bufferCapture->isEnabled());
                 break;
             }
 
@@ -404,7 +414,9 @@ const int qNodeIdTypeId = qMetaTypeId<QNodeId>();
 }
 
 UniformBlockValueBuilder::UniformBlockValueBuilder()
-    : shaderDataManager(nullptr)
+    : updatedPropertiesOnly(false)
+    , shaderDataManager(nullptr)
+    , textureManager(nullptr)
 {
 }
 
@@ -420,12 +432,16 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(ShaderData *
         QVariantList list = value.value<QVariantList>();
         if (list.at(0).userType() == qNodeIdTypeId) { // Array of struct qmlPropertyName[i].structMember
             for (int i = 0; i < list.size(); ++i) {
+                const QVariant variantElement = list.at(i);
                 if (list.at(i).userType() == qNodeIdTypeId) {
-                    ShaderData *subShaderData = shaderDataManager->lookupResource(list.at(i).value<QNodeId>());
-                    if (subShaderData)
+                    const auto nodeId = variantElement.value<QNodeId>();
+                    ShaderData *subShaderData = shaderDataManager->lookupResource(nodeId);
+                    if (subShaderData) {
                         buildActiveUniformNameValueMapStructHelper(subShaderData,
                                                                    blockName + QLatin1Char('.') + qmlPropertyName + blockArray.arg(i),
                                                                    QLatin1String(""));
+                    }
+                    // Note: we only handle ShaderData as nested container nodes here
                 }
             }
         } else { // Array of scalar/vec  qmlPropertyName[0]
@@ -436,11 +452,16 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(ShaderData *
             }
         }
     } else if (value.userType() == qNodeIdTypeId) { // Struct qmlPropertyName.structMember
-        ShaderData *rSubShaderData = shaderDataManager->lookupResource(value.value<QNodeId>());
-        if (rSubShaderData)
+        const auto nodeId = value.value<QNodeId>();
+        ShaderData *rSubShaderData = shaderDataManager->lookupResource(nodeId);
+        if (rSubShaderData) {
             buildActiveUniformNameValueMapStructHelper(rSubShaderData,
                                                        blockName,
                                                        qmlPropertyName);
+        } else if (textureManager->contains(nodeId)) {
+            const auto varId = StringToInt::lookupId(blockName + QLatin1Char('.') + qmlPropertyName);
+            activeUniformNamesToValue.insert(varId, value);
+        }
     } else { // Scalar / Vec
         QString varName = blockName + QLatin1Char('.') + qmlPropertyName;
         if (uniforms.contains(varName)) {

@@ -51,8 +51,8 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
 #include <Qt3DInput/qmouseevent.h>
+#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -70,7 +70,9 @@ public:
     Qt3DCore::QNodeId mouseDevice() const;
     void setInputHandler(InputHandler *handler);
     void mouseEvent(const QMouseEventPtr &event);
+#if QT_CONFIG(wheelevent)
     void wheelEvent(const QWheelEventPtr &event);
+#endif
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;

@@ -1016,7 +1016,7 @@ void AssimpImporter::parseCameras()
         c.aspectRatio = qFuzzyIsNull(cam->mAspect) ? 1.5f : cam->mAspect;
         c.yfov = cam->mHorizontalFOV;
         if (c.yfov < (M_PI / 10.0)) // this can't be right (probably orthographic source camera)
-            c.yfov = M_PI / 4.0;
+            c.yfov = float(M_PI / 4.0);
         c.znear = cam->mClipPlaneNear;
         c.zfar = cam->mClipPlaneFar;
 
@@ -1964,13 +1964,13 @@ void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
             if (newName.isEmpty())
                 newName = newShaderName();
             QString key = basename + QStringLiteral("_") + newName + QStringLiteral("_v");
-            QString fn = QString(QStringLiteral("%1.%2")).arg(key).arg("vert");
+            QString fn = QString(QStringLiteral("%1.vert")).arg(key);
             vertexShader["uri"] = fn;
             writeShader(prog->vertShader, fn, m_subst_es2);
             if (opts.genCore) {
                 QJsonObject coreVertexShader;
                 QString coreKey = QString(QStringLiteral("%1_core").arg(key));
-                fn = QString(QStringLiteral("%1.%2")).arg(coreKey).arg("vert");
+                fn = QString(QStringLiteral("%1.vert")).arg(coreKey);
                 coreVertexShader["type"] = 35633;
                 coreVertexShader["uri"] = fn;
                 writeShader(prog->vertShader, fn, m_subst_core);
@@ -1986,13 +1986,13 @@ void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
             if (newName.isEmpty())
                 newName = newShaderName();
             QString key = basename + QStringLiteral("_") + newName + QStringLiteral("_f");
-            QString fn = QString(QStringLiteral("%1.%2")).arg(key).arg("frag");
+            QString fn = QString(QStringLiteral("%1.frag")).arg(key);
             fragmentShader["uri"] = fn;
             writeShader(prog->fragShader, fn, m_subst_es2);
             if (opts.genCore) {
                 QJsonObject coreFragmentShader;
                 QString coreKey = QString(QStringLiteral("%1_core").arg(key));
-                fn = QString(QStringLiteral("%1.%2")).arg(coreKey).arg("frag");
+                fn = QString(QStringLiteral("%1.frag")).arg(coreKey);
                 coreFragmentShader["type"] = 35632;
                 coreFragmentShader["uri"] = fn;
                 writeShader(prog->fragShader, fn, m_subst_core);

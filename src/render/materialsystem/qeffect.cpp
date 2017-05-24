@@ -67,6 +67,35 @@ QEffectPrivate::QEffectPrivate()
     The QEffect class combines a set of techniques and parameters used by those techniques to
     produce a rendering effect for a material.
 
+    An QEffect instance should be shared among several QMaterial instances when possible.
+
+    \code
+    QEffect *effect = new QEffect();
+
+    // Create technique, render pass and shader
+    QTechnique *gl3Technique = new QTechnique();
+    QRenderPass *gl3Pass = new QRenderPass();
+    QShaderProgram *glShader = new QShaderProgram();
+
+    // Set the shader on the render pass
+    gl3Pass->setShaderProgram(glShader);
+
+    // Add the pass to the technique
+    gl3Technique->addRenderPass(gl3Pass);
+
+    // Set the targeted GL version for the technique
+    gl3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+    gl3Technique->graphicsApiFilter()->setMajorVersion(3);
+    gl3Technique->graphicsApiFilter()->setMinorVersion(1);
+    gl3Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::CoreProfile);
+
+    // Add the technique to the effect
+    effect->addTechnique(gl3Technique);
+    \endcode
+
+    A QParameter defined on an Effect is overridden by a QParameter (of the same
+    name) defined in a QMaterial, QTechniqueFilter, QRenderPassFilter.
+
     \sa QMaterial, QTechnique, QParameter
 */
 
@@ -80,6 +109,37 @@ QEffectPrivate::QEffectPrivate()
 
     The Effect type combines a set of techniques and parameters used by those techniques to
     produce a rendering effect for a material.
+
+    An Effect instance should be shared among several Material instances when possible.
+
+    A Parameter defined on an Effect is overridden by a QParameter (of the same
+    name) defined in a Material, TechniqueFilter, RenderPassFilter.
+
+    \code
+    Effect {
+        id: effect
+
+        technique: [
+            Technique {
+                id: gl3Technique
+                graphicsApiFilter {
+                    api: GraphicsApiFilter.OpenGL
+                    profile: GraphicsApiFilter.CoreProfile
+                    majorVersion: 3
+                    minorVersion: 1
+                }
+                renderPasses: [
+                    RenderPass {
+                        id: gl3Pass
+                        shaderProgram: ShaderProgram {
+                            ...
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+    \endcode
 
     \sa Material, Technique, Parameter
 */

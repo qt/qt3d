@@ -38,10 +38,12 @@
 ****************************************************************************/
 
 #include "executor_p.h"
+
 #include <Qt3DLogic/qframeaction.h>
 #include <Qt3DCore/qnode.h>
-#include <Qt3DCore/private/qscene_p.h>
 #include <QtCore/qsemaphore.h>
+
+#include <Qt3DCore/private/qscene_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -94,7 +96,7 @@ void Executor::processLogicFrameUpdates(float dt)
     const QVector<QNode *> nodes = m_scene->lookupNodes(m_nodeIds);
     for (QNode *node : nodes) {
         QFrameAction *frameAction = qobject_cast<QFrameAction *>(node);
-        if (frameAction)
+        if (frameAction && frameAction->isEnabled())
             frameAction->onTriggered(dt);
     }
 

@@ -38,10 +38,12 @@
 ****************************************************************************/
 
 #include "actioninput_p.h"
+
 #include <Qt3DInput/qactioninput.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+
 #include <Qt3DInput/private/qactioninput_p.h>
 #include <Qt3DInput/private/inputhandler_p.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DInput/private/utils_p.h>
 
 QT_BEGIN_NAMESPACE

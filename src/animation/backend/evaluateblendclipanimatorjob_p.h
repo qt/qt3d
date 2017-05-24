@@ -50,6 +50,8 @@
 
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DAnimation/private/handle_types_p.h>
+#include <Qt3DAnimation/private/animationutils_p.h>
+#include <Qt3DAnimation/private/blendedclipanimator_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,6 +59,7 @@ namespace Qt3DAnimation {
 namespace Animation {
 
 class Handler;
+class ClipBlendNode;
 
 class EvaluateBlendClipAnimatorJob : public Qt3DCore::QAspectJob
 {

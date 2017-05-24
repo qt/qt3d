@@ -51,13 +51,15 @@
 // We mean it.
 //
 
-#include <private/qobject_p.h>
 #include <Qt3DCore/qnode.h>
-#include <Qt3DCore/private/qobservableinterface_p.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
-#include <Qt3DCore/private/qt3dcore_global_p.h>
-#include "propertychangehandler_p.h"
+
 #include <functional>
+
+#include <Qt3DCore/private/propertychangehandler_p.h>
+#include <Qt3DCore/private/qchangearbiter_p.h>
+#include <Qt3DCore/private/qobservableinterface_p.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
+#include <QtCore/private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -74,7 +76,7 @@ public:
 
     void init(QNode *parent);
 
-    void setScene(QScene *scene);
+    virtual void setScene(QScene *scene);
     QScene *scene() const;
 
     void setArbiter(QLockableObserverInterface *arbiter) Q_DECL_OVERRIDE;
@@ -98,8 +100,8 @@ public:
     bool m_blockNotifications;
     bool m_hasBackendNode;
     bool m_enabled;
-    QNode::PropertyTrackMode m_propertyTrackMode;
-    QStringList m_trackedProperties;
+    QNode::PropertyTrackingMode m_defaultPropertyTrackMode;
+    QHash<QString, QNode::PropertyTrackingMode> m_trackedPropertiesOverrides;
 
     static QNodePrivate *get(QNode *q);
     static void nodePtrDeleter(QNode *q);

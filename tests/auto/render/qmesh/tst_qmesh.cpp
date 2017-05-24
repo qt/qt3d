@@ -121,7 +121,7 @@ private Q_SLOTS:
             const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QGeometryRendererData>>(creationChanges.first());
             const Qt3DRender::QGeometryRendererData cloneData = creationChangeData->data;
 
-            Qt3DRender::MeshFunctor meshFunctor(mesh.source(), mesh.meshName());
+            Qt3DRender::MeshLoaderFunctor meshFunctor(&mesh, nullptr);
 
             QVERIFY(meshFunctor == *cloneData.geometryFactory);
             QCOMPARE(mesh.id(), creationChangeData->subjectId());
@@ -169,7 +169,7 @@ private Q_SLOTS:
             QCOMPARE(change->propertyName(), "geometryFactory");
             QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
-            Qt3DRender::MeshFunctor meshFunctor(mesh.source());
+            Qt3DRender::MeshLoaderFunctor meshFunctor(&mesh, nullptr);
             Qt3DRender::QGeometryFactoryPtr factory = change->value().value<Qt3DRender::QGeometryFactoryPtr>();
             QVERIFY(meshFunctor == *factory);
 
@@ -205,7 +205,7 @@ private Q_SLOTS:
             QCOMPARE(change->propertyName(), "geometryFactory");
             QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
-            Qt3DRender::MeshFunctor meshFunctor(QUrl(), mesh.meshName());
+            Qt3DRender::MeshLoaderFunctor meshFunctor(&mesh, nullptr);
             Qt3DRender::QGeometryFactoryPtr factory = change->value().value<Qt3DRender::QGeometryFactoryPtr>();
             QVERIFY(meshFunctor == *factory);
 

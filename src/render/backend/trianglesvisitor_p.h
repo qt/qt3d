@@ -52,6 +52,10 @@
 //
 
 #include <Qt3DCore/qnodeid.h>
+#include <Qt3DRender/QAttribute>
+#include <Qt3DRender/private/bufferutils_p.h>
+
+#include <private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,6 +69,8 @@ namespace Render {
 
 class GeometryRenderer;
 class NodeManagers;
+class Attribute;
+class Buffer;
 
 class Q_AUTOTEST_EXPORT TrianglesVisitor
 {
@@ -82,6 +88,27 @@ public:
 protected:
     NodeManagers *m_manager;
     Qt3DCore::QNodeId m_nodeId;
+};
+
+class QT3DRENDERSHARED_PRIVATE_EXPORT CoordinateReader
+{
+public:
+    explicit CoordinateReader(NodeManagers *manager)
+        : m_manager(manager)
+        , m_attribute(nullptr)
+        , m_buffer(nullptr)
+    {
+    }
+
+    bool setGeometry(const GeometryRenderer *renderer, const QString &attributeName);
+
+    QVector4D getCoordinate(uint vertexIndex);
+
+protected:
+    NodeManagers *m_manager;
+    Attribute *m_attribute;
+    Buffer *m_buffer;
+    BufferInfo m_bufferInfo;
 };
 
 } // namespace Render

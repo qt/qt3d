@@ -38,26 +38,35 @@
 ****************************************************************************/
 
 #include "scene3drenderer_p.h"
-#include "scene3dcleaner_p.h"
-#include "scene3ditem_p.h"
-#include "scene3dlogging_p.h"
-#include "scene3dsgnode_p.h"
 
-#include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DCore/qaspectengine.h>
-#include <Qt3DCore/private/qaspectengine_p.h>
-
-#include <QtQuick/qquickwindow.h>
-
+#include <Qt3DRender/qrenderaspect.h>
+#include <QtCore/qthread.h>
 #include <QtGui/qopenglcontext.h>
 #include <QtGui/qopenglframebufferobject.h>
+#include <QtQuick/qquickwindow.h>
 
-#include <QtCore/qthread.h>
+#include <Qt3DRender/private/qrenderaspect_p.h>
+#include <Qt3DCore/private/qaspectengine_p.h>
+#include <scene3dcleaner_p.h>
+#include <scene3ditem_p.h>
+#include <scene3dlogging_p.h>
+#include <scene3dsgnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+
+namespace {
+
+inline QMetaMethod setItemAreaMethod()
+{
+    const int idx = Scene3DItem::staticMetaObject.indexOfMethod("setItemArea(QSize)");
+    Q_ASSERT(idx != -1);
+    return Scene3DItem::staticMetaObject.method(idx);
+}
+
+} // anonymous
 
 class ContextSaver
 {
@@ -120,14 +129,18 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     , m_multisampledFBO(nullptr)
     , m_finalFBO(nullptr)
     , m_texture(nullptr)
+    , m_node(nullptr)
+    , m_cleaner(nullptr)
     , m_multisample(false) // this value is not used, will be synced from the Scene3DItem instead
     , m_lastMultisample(false)
+    , m_needsShutdown(true)
 {
     Q_CHECK_PTR(m_item);
     Q_CHECK_PTR(m_item->window());
 
     QObject::connect(m_item->window(), &QQuickWindow::beforeRendering, this, &Scene3DRenderer::render, Qt::DirectConnection);
-    QObject::connect(m_item, &QQuickItem::windowChanged, this, &Scene3DRenderer::onWindowChangedQueued, Qt::QueuedConnection);
+    QObject::connect(m_item->window(), &QQuickWindow::sceneGraphInvalidated, this, &Scene3DRenderer::onSceneGraphInvalidated, Qt::DirectConnection);
+    QObject::connect(m_item, &QQuickItem::windowChanged, this, &Scene3DRenderer::onWindowChanged, Qt::QueuedConnection);
 
     Q_ASSERT(QOpenGLContext::currentContext());
     ContextSaver saver;
@@ -173,7 +186,7 @@ void Scene3DRenderer::setCleanerHelper(Scene3DCleaner *cleaner)
     }
 }
 
-// Executed in the QtQuick render thread.
+// Executed in the QtQuick render thread (which may even be the gui/main with QQuickWidget / RenderControl).
 void Scene3DRenderer::shutdown()
 {
     qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
@@ -195,16 +208,26 @@ void Scene3DRenderer::shutdown()
         static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderShutdown();
 }
 
-// SGThread
-void Scene3DRenderer::onWindowChangedQueued(QQuickWindow *w)
+// QtQuick render thread (which may also be the gui/main thread with QQuickWidget / RenderControl)
+void Scene3DRenderer::onSceneGraphInvalidated()
 {
-    if (w == nullptr) {
-        qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
+    qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
+    if (m_needsShutdown) {
+        m_needsShutdown = false;
         shutdown();
-        // Will only trigger something with the Loader case
-        // The window closed cases is handled by the window's destroyed
-        // signal
         QMetaObject::invokeMethod(m_cleaner, "cleanup");
+    }
+}
+
+void Scene3DRenderer::onWindowChanged(QQuickWindow *w)
+{
+    qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread() << w;
+    if (!w) {
+        if (m_needsShutdown) {
+            m_needsShutdown = false;
+            shutdown();
+            QMetaObject::invokeMethod(m_cleaner, "cleanup");
+        }
     }
 }
 
@@ -238,8 +261,11 @@ void Scene3DRenderer::render()
     const bool multisampleHasChanged = m_multisample != m_lastMultisample;
     const bool forceRecreate = sizeHasChanged || multisampleHasChanged;
 
-    if (sizeHasChanged)
-        m_item->setItemArea(boundingRectSize);
+    if (sizeHasChanged) {
+        // We are in the QSGRenderThread (doing a direct call would result in a race)
+        static const QMetaMethod setItemArea = setItemAreaMethod();
+        setItemArea.invoke(m_item, Qt::QueuedConnection, Q_ARG(QSize, boundingRectSize));
+    }
 
     // Rebuild FBO and textures if never created or a resize has occurred
     if ((m_multisampledFBO.isNull() || forceRecreate) && m_multisample) {

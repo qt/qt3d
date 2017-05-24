@@ -51,34 +51,27 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qcomponent_p.h>
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/private/qabstractclipanimator_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QChannelMapper;
+class QAbstractAnimationClip;
 
-class QClipAnimatorPrivate : public Qt3DCore::QComponentPrivate
+class QClipAnimatorPrivate : public Qt3DAnimation::QAbstractClipAnimatorPrivate
 {
 public:
     QClipAnimatorPrivate();
 
     Q_DECLARE_PUBLIC(QClipAnimator)
 
-    QAnimationClip *m_clip;
-    Qt3DAnimation::QChannelMapper *m_mapper;
-    bool m_running;
-    int m_loops;
+    QAbstractAnimationClip *m_clip;
 };
 
-struct QClipAnimatorData
+struct QClipAnimatorData : public QAbstractClipAnimatorData
 {
     Qt3DCore::QNodeId clipId;
-    Qt3DCore::QNodeId mapperId;
-    bool running;
-    int loops;
 };
 
 } // namespace Qt3DAnimation

@@ -52,14 +52,7 @@ OpenGLVertexArrayObject::OpenGLVertexArrayObject()
     : m_ctx(nullptr)
     , m_specified(false)
     , m_supportsVao(false)
-    , m_createdEmulatedVAO(false)
 {}
-
-void OpenGLVertexArrayObject::setGraphicsContext(GraphicsContext *ctx)
-{
-    m_ctx = ctx;
-    m_supportsVao = m_ctx->supportsVAO();
-}
 
 void OpenGLVertexArrayObject::bind()
 {
@@ -75,7 +68,7 @@ void OpenGLVertexArrayObject::bind()
 
         m_ctx->m_currentVAO = this;
         // We need to specify array and vertex attributes
-        for (const GraphicsContext::VAOVertexAttribute &attr : m_vertexAttributes)
+        for (const GraphicsContext::VAOVertexAttribute &attr : qAsConst(m_vertexAttributes))
             m_ctx->enableAttribute(attr);
         if (!m_indexAttribute.isNull())
             m_ctx->bindGLBuffer(m_ctx->m_renderer->nodeManagers()->glBufferManager()->data(m_indexAttribute),
@@ -92,44 +85,58 @@ void OpenGLVertexArrayObject::release()
         m_vao->release();
     } else {
         if (m_ctx->m_currentVAO == this) {
-            for (const GraphicsContext::VAOVertexAttribute &attr : m_vertexAttributes)
+            for (const GraphicsContext::VAOVertexAttribute &attr : qAsConst(m_vertexAttributes))
                 m_ctx->disableAttribute(attr);
             m_ctx->m_currentVAO = nullptr;
         }
     }
 }
 
-void OpenGLVertexArrayObject::create()
+// called from Render thread
+void OpenGLVertexArrayObject::create(GraphicsContext *ctx, const VAOIdentifier &key)
 {
-    Q_ASSERT(m_ctx);
-    if (m_supportsVao) {
-        Q_ASSERT(!m_vao.isNull());
-        m_vao->create();
-    } else {
-        m_createdEmulatedVAO = true;
-    }
+    QMutexLocker lock(&m_mutex);
+
+    Q_ASSERT(!m_ctx && !m_vao);
+
+    m_ctx = ctx;
+    m_supportsVao = m_ctx->supportsVAO();
+    m_vao.reset(m_supportsVao ? new QOpenGLVertexArrayObject() : nullptr);
+    m_vao->create();
+    m_owners = key;
 }
 
+// called from Render thread
 void OpenGLVertexArrayObject::destroy()
 {
+    QMutexLocker locker(&m_mutex);
+
     Q_ASSERT(m_ctx);
-    if (m_supportsVao) {
-        Q_ASSERT(!m_vao.isNull());
-        m_vao->destroy();
-    }
+    cleanup();
+}
+
+void OpenGLVertexArrayObject::cleanup()
+{
+    m_vao.reset();
+    m_ctx = nullptr;
     m_specified = false;
+    m_supportsVao = false;
     m_indexAttribute = GraphicsContext::VAOIndexAttribute();
     m_vertexAttributes.clear();
 }
 
-bool OpenGLVertexArrayObject::isCreated() const
+// called from job
+bool OpenGLVertexArrayObject::isAbandoned(GeometryManager *geomMgr, ShaderManager *shaderMgr)
 {
-    if (m_supportsVao) {
-        Q_ASSERT(!m_vao.isNull());
-        return m_vao->isCreated();
-    } else {
-        return m_createdEmulatedVAO;
-    }
+    QMutexLocker lock(&m_mutex);
+
+    if (!m_ctx)
+        return false;
+
+    const bool geometryExists = (geomMgr->data(m_owners.first) != nullptr);
+    const bool shaderExists = (shaderMgr->data(m_owners.second) != nullptr);
+
+    return !geometryExists || !shaderExists;
 }
 
 void OpenGLVertexArrayObject::saveVertexAttribute(const GraphicsContext::VAOVertexAttribute &attr)

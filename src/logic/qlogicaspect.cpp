@@ -37,20 +37,21 @@
 **
 ****************************************************************************/
 
+
 #include "qlogicaspect.h"
 #include "qlogicaspect_p.h"
-#include "executor_p.h"
-#include "handler_p.h"
-#include "manager_p.h"
-#include "qframeaction.h"
 
+#include <Qt3DLogic/qframeaction.h>
 #include <Qt3DCore/qnode.h>
+#include <QtCore/QThread>
+#include <QtGui/QWindow>
+
+#include <Qt3DLogic/private/executor_p.h>
+#include <Qt3DLogic/private/handler_p.h>
+#include <Qt3DLogic/private/manager_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
-
-#include <QThread>
-#include <QWindow>
 
 QT_BEGIN_NAMESPACE
 
@@ -121,7 +122,7 @@ QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)
     d->m_manager->setDeltaTime(dt);
     d->m_time = time;
 
-    // Create jobs that will get exectued by the threadpool
+    // Create jobs that will get executed by the threadpool
     QVector<QAspectJobPtr> jobs;
     jobs.append(d->m_callbackJob);
     return jobs;

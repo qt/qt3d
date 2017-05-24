@@ -52,19 +52,26 @@ class QSkyboxEntityPrivate;
 class QT3DEXTRASSHARED_EXPORT QSkyboxEntity : public Qt3DCore::QEntity
 {
     Q_OBJECT
+    Q_PROPERTY(QString baseName READ baseName WRITE setBaseName NOTIFY baseNameChanged)
+    Q_PROPERTY(QString extension READ extension WRITE setExtension NOTIFY extensionChanged)
+    Q_PROPERTY(bool gammaCorrect READ isGammaCorrectEnabled WRITE setGammaCorrectEnabled NOTIFY gammaCorrectEnabledChanged REVISION 9)
 public:
     explicit QSkyboxEntity(Qt3DCore::QNode *parent = nullptr);
     ~QSkyboxEntity();
 
-    void setBaseName(const QString &path);
     QString baseName() const;
-
-    void setExtension(const QString &extension);
     QString extension() const;
+    bool isGammaCorrectEnabled() const;
+
+public Q_SLOTS:
+    void setBaseName(const QString &path);
+    void setExtension(const QString &extension);
+    void setGammaCorrectEnabled(bool enabled);
 
 Q_SIGNALS:
-    void sourceDirectoryChanged(const QString &path);
+    void baseNameChanged(const QString &path);
     void extensionChanged(const QString &extension);
+    void gammaCorrectEnabledChanged(bool enabled);
 
 private:
     Q_DECLARE_PRIVATE(QSkyboxEntity)

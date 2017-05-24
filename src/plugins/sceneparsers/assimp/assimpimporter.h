@@ -56,13 +56,15 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/DefaultLogger.hpp>
-#include <Qt3DRender/private/qsceneimporter_p.h>
+
+#include <QtCore/QMap>
+#include <QtCore/QDir>
+#include <QtCore/QLoggingCategory>
+#include <QtCore/QVector>
+
 #include "assimphelpers.h"
 
-#include <QMap>
-#include <QDir>
-#include <QVector>
-#include <QLoggingCategory>
+#include <Qt3DRender/private/qsceneimporter_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,7 +74,7 @@ namespace Qt3DCore {
 class QCamera;
 }
 
-namespace Qt3DExtras {
+namespace Qt3DAnimation {
 class QKeyframeAnimation;
 class QMorphingAnimation;
 }
@@ -98,17 +100,19 @@ public:
 
     // SceneParserInterface interface
     void setSource(const QUrl& source) Q_DECL_OVERRIDE;
-    bool isFileTypeSupported(const QUrl &source) const Q_DECL_OVERRIDE;
+    void setData(const QByteArray& data, const QString &basePath) Q_DECL_OVERRIDE;
+    bool areFileTypesSupported(const QStringList &extensions) const Q_DECL_OVERRIDE;
     Qt3DCore::QEntity *scene(const QString &id = QString()) Q_DECL_OVERRIDE;
     Qt3DCore::QEntity *node(const QString &id) Q_DECL_OVERRIDE;
 
 private:
-    static bool isAssimpPath(const QString &path);
+    static bool areAssimpExtensions(const QStringList &extensions);
     static QStringList assimpSupportedFormats();
 
     Qt3DCore::QEntity *node(aiNode *node);
 
     void readSceneFile(const QString &file);
+    void readSceneData(const QByteArray& data, const QString &basePath);
 
     void cleanup();
     void parse();
@@ -141,11 +145,10 @@ private:
         QMap<uint, QMaterial*> m_materials;
         QMap<uint, QEffect *> m_effects;
         QMap<uint, QAbstractTexture *> m_embeddedTextures;
-        QMap<QString, QAbstractTexture *> m_materialTextures;
         QMap<aiNode*, Qt3DCore::QEntity*> m_cameras;
         QHash<aiTextureType, QString> m_textureToParameterName;
-        QVector<Qt3DExtras::QKeyframeAnimation *> m_animations;
-        QVector<Qt3DExtras::QMorphingAnimation *> m_morphAnimations;
+        QVector<Qt3DAnimation::QKeyframeAnimation *> m_animations;
+        QVector<Qt3DAnimation::QMorphingAnimation *> m_morphAnimations;
 //    QMap<aiNode*, Light*> m_lights;
     };
 

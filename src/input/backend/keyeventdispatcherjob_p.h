@@ -51,9 +51,9 @@
 // We mean it.
 //
 
+#include <Qt3DInput/QKeyEvent>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
-#include <QKeyEvent>
 
 QT_BEGIN_NAMESPACE
 

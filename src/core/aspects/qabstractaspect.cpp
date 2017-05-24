@@ -38,15 +38,17 @@
 ****************************************************************************/
 
 #include "qabstractaspect.h"
-#include "qentity.h"
-#include <Qt3DCore/private/qaspectmanager_p.h>
-#include <private/qabstractaspect_p.h>
-#include <Qt3DCore/private/qaspectjobmanager_p.h>
-#include <private/qchangearbiter_p.h>
-#include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qnodevisitor_p.h>
+#include "qabstractaspect_p.h"
+
+#include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+
 #include <Qt3DCore/private/corelogging_p.h>
+#include <Qt3DCore/private/qaspectjobmanager_p.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DCore/private/qchangearbiter_p.h>
+#include <Qt3DCore/private/qnodevisitor_p.h>
+#include <Qt3DCore/private/qscene_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -155,6 +157,12 @@ void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackend
 {
     Q_D(QAbstractAspect);
     d->m_backendCreatorFunctors.insert(&obj, functor);
+}
+
+void QAbstractAspect::unregisterBackendType(const QMetaObject &obj)
+{
+    Q_D(QAbstractAspect);
+    d->m_backendCreatorFunctors.remove(&obj);
 }
 
 void QAbstractAspectPrivate::sceneNodeAdded(QSceneChangePtr &change)
@@ -282,7 +290,15 @@ QAbstractAspectJobManager *QAbstractAspectPrivate::jobManager() const
 QVector<QAspectJobPtr> QAbstractAspectPrivate::jobsToExecute(qint64 time)
 {
     Q_Q(QAbstractAspect);
-    return q->jobsToExecute(time);
+    auto res = q->jobsToExecute(time);
+
+    {
+        QMutexLocker lock(&m_singleShotMutex);
+        res << m_singleShotJobs;
+        m_singleShotJobs.clear();
+    }
+
+    return res;
 }
 
 /*!
@@ -322,6 +338,13 @@ void QAbstractAspect::onEngineStartup()
  */
 void QAbstractAspect::onEngineShutdown()
 {
+}
+
+void QAbstractAspect::scheduleSingleShotJob(const Qt3DCore::QAspectJobPtr &job)
+{
+    Q_D(QAbstractAspect);
+    QMutexLocker lock(&d->m_singleShotMutex);
+    d->m_singleShotJobs.push_back(job);
 }
 
 namespace Debug {

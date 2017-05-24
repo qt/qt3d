@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "qstaticpropertyupdatedchangebase.h"
+
 #include "qstaticpropertyupdatedchangebase_p.h"
 
 QT_BEGIN_NAMESPACE

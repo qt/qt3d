@@ -81,6 +81,7 @@ void tst_RenderShader::hasCoherentInitialState()
     QVERIFY(shader->uniforms().isEmpty());
     QVERIFY(shader->attributes().isEmpty());
     QVERIFY(shader->uniformBlocks().isEmpty());
+    QCOMPARE(shader->status(), Qt3DRender::QShaderProgram::NotReady);
 }
 
 void tst_RenderShader::matchesFrontendPeer()
@@ -114,6 +115,7 @@ void tst_RenderShader::cleanupLeavesACoherentState()
     QVERIFY(shader->uniforms().isEmpty());
     QVERIFY(shader->attributes().isEmpty());
     QVERIFY(shader->uniformBlocks().isEmpty());
+    QCOMPARE(shader->status(), Qt3DRender::QShaderProgram::NotReady);
 }
 
 QTEST_APPLESS_MAIN(tst_RenderShader)

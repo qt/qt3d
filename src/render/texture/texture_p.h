@@ -135,14 +135,15 @@ public:
         NotDirty = 0,
         DirtyProperties = 0x1,
         DirtyParameters = 0x2,
-        DirtyGenerators = 0x4
+        DirtyImageGenerators = 0x4,
+        DirtyDataGenerator = 0x8
     };
     Q_DECLARE_FLAGS(DirtyFlags, DirtyFlag)
 
     void setTextureImageManager(TextureImageManager *manager);
 
     void addDirtyFlag(DirtyFlags flags);
-    inline DirtyFlags dirtyFlags() const { return m_dirty; }
+    DirtyFlags dirtyFlags();
     void unsetDirty();
 
     void addTextureImage(Qt3DCore::QNodeId id);
@@ -156,6 +157,7 @@ public:
     inline const QVector<HTextureImage>& textureImages() const { return m_textureImages; }
     inline const QTextureGeneratorPtr& dataGenerator() const { return m_dataFunctor; }
 
+    bool isValid() const;
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
@@ -167,6 +169,7 @@ private:
     QVector<HTextureImage> m_textureImages;
 
     TextureImageManager *m_textureImageManager;
+    QMutex m_flagsMutex;
 };
 
 class TextureFunctor : public Qt3DCore::QBackendNodeMapper

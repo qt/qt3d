@@ -38,11 +38,12 @@
 ****************************************************************************/
 
 #include "scene3dsgmaterialshader_p.h"
-#include "scene3dsgmaterial_p.h"
 
 #include <QtGui/qopenglcontext.h>
 #include <QtGui/qopenglfunctions.h>
 #include <QtGui/qsurfaceformat.h>
+
+#include <scene3dsgmaterial_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -70,6 +71,13 @@ namespace Qt3DRender {
  */
 
 QSGMaterialType Scene3DSGMaterialShader::type;
+
+Scene3DSGMaterialShader::Scene3DSGMaterialShader()
+    : QSGMaterialShader()
+    , m_matrixId(-1)
+    , m_opacityId(-1)
+{
+}
 
 const char * const *Scene3DSGMaterialShader::attributeNames() const
 {

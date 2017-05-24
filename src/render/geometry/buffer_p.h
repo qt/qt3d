@@ -60,7 +60,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QBufferUpdate;
+struct QBufferUpdate;
 
 namespace Render {
 
@@ -77,6 +77,7 @@ public:
 
     void setManager(BufferManager *manager);
     void executeFunctor();
+    void updateDataFromGPUToCPU(QByteArray data);
     inline QBuffer::BufferType type() const { return m_type; }
     inline QBuffer::UsageType usage() const { return m_usage; }
     inline QByteArray data() const { return m_data; }
@@ -84,10 +85,12 @@ public:
     inline bool isDirty() const { return m_bufferDirty; }
     inline QBufferDataGeneratorPtr dataGenerator() const { return m_functor; }
     inline bool isSyncData() const { return m_syncData; }
+    inline QBuffer::AccessType access() const { return m_access; }
     void unsetDirty();
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void forceDataUpload();
 
     QBuffer::BufferType m_type;
     QBuffer::UsageType m_usage;
@@ -95,6 +98,7 @@ private:
     QVector<Qt3DRender::QBufferUpdate> m_bufferUpdates;
     bool m_bufferDirty;
     bool m_syncData;
+    QBuffer::AccessType m_access;
     QBufferDataGeneratorPtr m_functor;
     BufferManager *m_manager;
 };

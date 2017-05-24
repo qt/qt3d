@@ -70,10 +70,19 @@ public:
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
+    void setChannelName(const QString &channelName) { m_channelName = channelName; }
     QString channelName() const { return m_channelName; }
+
+    void setTargetId(Qt3DCore::QNodeId targetId) { m_targetId = targetId; }
     Qt3DCore::QNodeId targetId() const { return m_targetId; }
+
+    void setProperty(const QString &property) { m_property = property; }
     QString property() const { return m_property; }
+
+    void setType(int type) { m_type = type; }
     int type() const { return m_type; }
+
+    void setPropertyName(const char *propertyName) { m_propertyName = propertyName; }
     const char *propertyName() const { return m_propertyName; }
 
 private:

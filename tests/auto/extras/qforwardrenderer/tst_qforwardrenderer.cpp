@@ -55,6 +55,8 @@ private Q_SLOTS:
         QCOMPARE(forwardRenderer.clearColor(), QColor(Qt::white));
         QVERIFY(forwardRenderer.camera() == nullptr);
         QCOMPARE(forwardRenderer.externalRenderTargetSize(), QSize());
+        QVERIFY(forwardRenderer.isFrustumCullingEnabled());
+        QCOMPARE(forwardRenderer.gamma(), 2.2f);
     }
 
     void checkPropertyChanges()
@@ -160,6 +162,51 @@ private Q_SLOTS:
 
             // THEN
             QCOMPARE(forwardRenderer.externalRenderTargetSize(), newValue);
+            QCOMPARE(spy.count(), 0);
+
+        }
+        {
+            // WHEN
+            QSignalSpy spy(&forwardRenderer, SIGNAL(frustumCullingEnabledChanged(bool)));
+            forwardRenderer.setFrustumCullingEnabled(false);
+
+            // THEN
+            QVERIFY(!forwardRenderer.isFrustumCullingEnabled());
+            QCOMPARE(spy.count(), 1);
+            QVERIFY(!spy.takeFirst().takeFirst().toBool());
+
+            // WHEN
+            forwardRenderer.setFrustumCullingEnabled(false);
+
+            // THEN
+            QVERIFY(!forwardRenderer.isFrustumCullingEnabled());
+            QCOMPARE(spy.count(), 0);
+
+            // WHEN
+            forwardRenderer.setFrustumCullingEnabled(true);
+
+            // THEN
+            QVERIFY(forwardRenderer.isFrustumCullingEnabled());
+            QCOMPARE(spy.count(), 1);
+            QVERIFY(spy.takeFirst().takeFirst().toBool());
+        }
+        {
+            // WHEN
+            QSignalSpy spy(&forwardRenderer, SIGNAL(gammaChanged(float)));
+            const float newValue = 1.8f;
+            forwardRenderer.setGamma(newValue);
+
+            // THEN
+            QCOMPARE(forwardRenderer.gamma(), newValue);
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.takeFirst().first().toFloat(), 1.8f);
+
+            // WHEN
+            spy.clear();
+            forwardRenderer.setClearColor(newValue);
+
+            // THEN
+            QCOMPARE(forwardRenderer.gamma(), newValue);
             QCOMPARE(spy.count(), 0);
 
         }

@@ -94,7 +94,13 @@ QGeometryPrivate::~QGeometryPrivate()
 /*!
     \qmlproperty Attribute Geometry::boundingVolumePositionAttribute
 
-    Holds the attribute used to compute the bounding volume.
+    Holds the attribute used to compute the bounding volume. The bounding volume is used internally
+    for picking and view frustum culling.
+
+    If unspecified, the system will look for the attribute using the name returned by
+    QAttribute::defaultPositionAttributeName.
+
+    \sa Attribute
  */
 /*!
     \qmlproperty list<Attribute> Geometry::attributes
@@ -105,7 +111,13 @@ QGeometryPrivate::~QGeometryPrivate()
 /*!
     \property QGeometry::boundingVolumePositionAttribute
 
-    Holds the attribute used to compute the bounding volume.
+    Holds the attribute used to compute the bounding volume. The bounding volume is used internally
+    for picking and view frustum culling.
+
+    If unspecified, the system will look for the attribute using the name returned by
+    QAttribute::defaultPositionAttributeName.
+
+    \sa Qt3DRender::QAttribute
  */
 
 

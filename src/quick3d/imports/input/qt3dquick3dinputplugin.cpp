@@ -37,29 +37,31 @@
 **
 ****************************************************************************/
 
-#include <QtQml>
-#include <Qt3DInput/qkeyboarddevice.h>
-#include <Qt3DInput/qkeyboardhandler.h>
-#include <Qt3DInput/qkeyevent.h>
-#include <Qt3DInput/qmousedevice.h>
-#include <Qt3DInput/qmousehandler.h>
-#include <Qt3DInput/qmouseevent.h>
+#include "qt3dquick3dinputplugin.h"
 
-#include <Qt3DInput/qaxis.h>
-#include <Qt3DInput/qaxisaccumulator.h>
-#include <Qt3DInput/qaxissetting.h>
+#include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qactioninput.h>
 #include <Qt3DInput/qanalogaxisinput.h>
+#include <Qt3DInput/qaxis.h>
+#include <Qt3DInput/qaxisaccumulator.h>
+#include <Qt3DInput/qaxissetting.h>
 #include <Qt3DInput/qbuttonaxisinput.h>
-#include <Qt3DInput/qinputsequence.h>
 #include <Qt3DInput/qinputchord.h>
-#include <Qt3DInput/qlogicaldevice.h>
-#include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DInput/qinputsequence.h>
 #include <Qt3DInput/qinputsettings.h>
+#include <Qt3DInput/qkeyboarddevice.h>
+#include <Qt3DInput/qkeyboardhandler.h>
+#include <Qt3DInput/qkeyevent.h>
+#include <Qt3DInput/qlogicaldevice.h>
+#include <Qt3DInput/qmousedevice.h>
+#include <Qt3DInput/qmouseevent.h>
+#include <Qt3DInput/qmousehandler.h>
+#include <QtQml>
+
 #include <Qt3DInput/private/qgenericinputdevice_p.h>
-#include <Qt3DQuickInput/private/quick3daxis_p.h>
 #include <Qt3DQuickInput/private/quick3daction_p.h>
+#include <Qt3DQuickInput/private/quick3daxis_p.h>
 #include <Qt3DQuickInput/private/quick3dinputchord_p.h>
 #include <Qt3DQuickInput/private/quick3dinputsequence_p.h>
 #include <Qt3DQuickInput/private/quick3dlogicaldevice_p.h>
@@ -68,8 +70,6 @@
 #ifdef HAVE_QGAMEPAD
 # include <Qt3DInput/private/qgamepadinput_p.h>
 #endif
-
-#include "qt3dquick3dinputplugin.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -81,7 +81,9 @@ void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DInput::QInputSettings>(uri, 2, 0, "InputSettings");
 
     qmlRegisterUncreatableType<Qt3DInput::QMouseEvent>(uri, 2, 0, "MouseEvent", QStringLiteral("Events cannot be created"));
+#if QT_CONFIG(wheelevent)
     qmlRegisterUncreatableType<Qt3DInput::QWheelEvent>(uri, 2, 0, "WheelEvent", QStringLiteral("Events cannot be created"));
+#endif
     qmlRegisterType<Qt3DInput::QMouseHandler>(uri, 2, 0, "MouseHandler");
     qmlRegisterType<Qt3DInput::QMouseDevice>(uri, 2, 0, "MouseDevice");
 

@@ -38,15 +38,15 @@
 ****************************************************************************/
 
 #include "mousehandler_p.h"
-#include "inputmanagers_p.h"
-#include "inputhandler_p.h"
-#include "mousedevice_p.h"
 
 #include <Qt3DInput/qmousehandler.h>
-#include <Qt3DInput/private/qmousehandler_p.h>
 #include <Qt3DInput/qmousedevice.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
+
+#include <Qt3DInput/private/inputmanagers_p.h>
+#include <Qt3DInput/private/inputhandler_p.h>
+#include <Qt3DInput/private/mousedevice_p.h>
+#include <Qt3DInput/private/qmousehandler_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -88,19 +88,19 @@ void MouseHandler::mouseEvent(const QMouseEventPtr &event)
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("mouse");
     e->setValue(QVariant::fromValue(event));
-    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
     notifyObservers(e);
 }
 
+#if QT_CONFIG(wheelevent)
 void MouseHandler::wheelEvent(const QWheelEventPtr &event)
 {
     auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
     e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
     e->setPropertyName("wheel");
     e->setValue(QVariant::fromValue(event));
-    Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
     notifyObservers(e);
 }
+#endif
 
 void MouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {

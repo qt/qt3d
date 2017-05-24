@@ -74,7 +74,6 @@ void BlendedClipAnimator::cleanup()
     m_startGlobalTime = 0;
     m_currentLoop = 0;
     m_loops = 1;
-    m_mappingData.clear();
 }
 
 void BlendedClipAnimator::setBlendTreeRootId(Qt3DCore::QNodeId blendTreeId)
@@ -93,11 +92,6 @@ void BlendedClipAnimator::setRunning(bool running)
 {
     m_running = running;
     setDirty(Handler::BlendedClipAnimatorDirty);
-}
-
-void BlendedClipAnimator::setMappingData(const QVector<AnimationUtils::BlendingMappingData> mappingData)
-{
-    m_mappingData = mappingData;
 }
 
 void BlendedClipAnimator::sendPropertyChanges(const QVector<Qt3DCore::QSceneChangePtr> &changes)

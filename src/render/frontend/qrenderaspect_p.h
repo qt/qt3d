@@ -55,6 +55,8 @@
 #include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 
+#include <QtCore/qmutex.h>
+
 QT_BEGIN_NAMESPACE
 
 class QSurface;
@@ -62,9 +64,11 @@ class QSurface;
 namespace Qt3DRender {
 
 class QSceneImporter;
+
 namespace Render {
 class AbstractRenderer;
 class NodeManagers;
+class QRenderPlugin;
 }
 
 namespace Render {
@@ -79,12 +83,16 @@ public:
 
     Q_DECLARE_PUBLIC(QRenderAspect)
 
+    static QRenderAspectPrivate* findPrivate(Qt3DCore::QAspectEngine *engine);
+
     void registerBackendTypes();
     void unregisterBackendTypes();
     void loadSceneParsers();
+    void loadRenderPlugin(const QString &pluginName);
     void renderInitialize(QOpenGLContext *context);
     void renderSynchronous();
     void renderShutdown();
+    void registerBackendType(const QMetaObject &, const Qt3DCore::QBackendNodeMapperPtr &functor);
     QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
 
     Render::NodeManagers *m_nodeManagers;
@@ -92,8 +100,15 @@ public:
 
     bool m_initialized;
     QList<QSceneImporter *> m_sceneImporter;
+    QVector<QString> m_loadedPlugins;
+    QVector<Render::QRenderPlugin *> m_renderPlugins;
     QRenderAspect::RenderType m_renderType;
     Render::OffscreenSurfaceHelper *m_offscreenHelper;
+
+    static QMutex m_pluginLock;
+    static QVector<QString> m_pluginConfig;
+    static QVector<QRenderAspectPrivate *> m_instances;
+    static void configurePlugin(const QString &plugin);
 };
 
 }

@@ -79,6 +79,7 @@ public:
 
 class QT3DRENDERSHARED_EXPORT QAbstractCollisionQueryService : public Qt3DCore::QAbstractServiceProvider
 {
+    Q_OBJECT
 public:
     enum QueryMode {
         FirstHit,
@@ -96,7 +97,8 @@ protected:
     QAbstractCollisionQueryService(QAbstractCollisionQueryServicePrivate &dd);
 
     void setResultHandle(QCollisionQueryResult &result, const QQueryHandle &handle);
-    void addEntityHit(QCollisionQueryResult &result, Qt3DCore::QNodeId entity, const QVector3D &intersection, float distance);
+    void addEntityHit(QCollisionQueryResult &result, Qt3DCore::QNodeId entity, const QVector3D &intersection,
+                      float distance, const QVector3D &uvw);
 
 private:
     Q_DECLARE_PRIVATE(QAbstractCollisionQueryService)

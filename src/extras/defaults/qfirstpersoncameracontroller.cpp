@@ -1,66 +1,53 @@
 /****************************************************************************
 **
 ** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
-** Contact: https://www.qt.io/licensing/
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
-** $QT_BEGIN_LICENSE:BSD$
+** $QT_BEGIN_LICENSE:LGPL3$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
+** and conditions see http://www.qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
-** BSD License Usage
-** Alternatively, you may use this file under the terms of the BSD license
-** as follows:
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 3 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPLv3 included in the
+** packaging of this file. Please review the following information to
+** ensure the GNU Lesser General Public License version 3 requirements
+** will be met: https://www.gnu.org/licenses/lgpl.html.
 **
-** "Redistribution and use in source and binary forms, with or without
-** modification, are permitted provided that the following conditions are
-** met:
-**   * Redistributions of source code must retain the above copyright
-**     notice, this list of conditions and the following disclaimer.
-**   * Redistributions in binary form must reproduce the above copyright
-**     notice, this list of conditions and the following disclaimer in
-**     the documentation and/or other materials provided with the
-**     distribution.
-**   * Neither the name of The Qt Company Ltd nor the names of its
-**     contributors may be used to endorse or promote products derived
-**     from this software without specific prior written permission.
-**
-**
-** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 2.0 or later as published by the Free
+** Software Foundation and appearing in the file LICENSE.GPL included in
+** the packaging of this file. Please review the following information to
+** ensure the GNU General Public License version 2.0 requirements will be
+** met: http://www.gnu.org/licenses/gpl-2.0.html.
 **
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
-#include "qfirstpersoncameracontroller_p.h"
 #include "qfirstpersoncameracontroller.h"
-#include <Qt3DRender/QCamera>
-#include <Qt3DInput/QAxis>
-#include <Qt3DInput/QAnalogAxisInput>
-#include <Qt3DInput/QButtonAxisInput>
+#include "qfirstpersoncameracontroller_p.h"
+
 #include <Qt3DInput/QAction>
 #include <Qt3DInput/QActionInput>
-#include <Qt3DInput/QLogicalDevice>
+#include <Qt3DInput/QAnalogAxisInput>
+#include <Qt3DInput/QAxis>
+#include <Qt3DInput/QButtonAxisInput>
+#include <Qt3DLogic/QFrameAction>
 #include <Qt3DInput/QKeyboardDevice>
+#include <Qt3DInput/QLogicalDevice>
 #include <Qt3DInput/QMouseDevice>
 #include <Qt3DInput/QMouseEvent>
-#include <Qt3DLogic/QFrameAction>
+#include <Qt3DRender/QCamera>
 
 QT_BEGIN_NAMESPACE
 
@@ -80,6 +67,8 @@ QFirstPersonCameraControllerPrivate::QFirstPersonCameraControllerPrivate()
     , m_fineMotionKeyInput(new Qt3DInput::QActionInput())
     , m_mouseRxInput(new Qt3DInput::QAnalogAxisInput())
     , m_mouseRyInput(new Qt3DInput::QAnalogAxisInput())
+    , m_mouseTzXInput(new Qt3DInput::QAnalogAxisInput())
+    , m_mouseTzYInput(new Qt3DInput::QAnalogAxisInput())
     , m_keyboardTxPosInput(new Qt3DInput::QButtonAxisInput())
     , m_keyboardTyPosInput(new Qt3DInput::QButtonAxisInput())
     , m_keyboardTzPosInput(new Qt3DInput::QButtonAxisInput())
@@ -92,6 +81,8 @@ QFirstPersonCameraControllerPrivate::QFirstPersonCameraControllerPrivate()
     , m_frameAction(new Qt3DLogic::QFrameAction())
     , m_linearSpeed(10.0f)
     , m_lookSpeed(180.0f)
+    , m_acceleration(-1.0f)
+    , m_deceleration(-1.0f)
     , m_firstPersonUp(QVector3D(0.0f, 1.0f, 0.0f))
 {}
 
@@ -120,6 +111,16 @@ void QFirstPersonCameraControllerPrivate::init()
     m_mouseRyInput->setAxis(Qt3DInput::QMouseDevice::Y);
     m_mouseRyInput->setSourceDevice(m_mouseDevice);
     m_ryAxis->addInput(m_mouseRyInput);
+
+    // Mouse Wheel X
+    m_mouseTzXInput->setAxis(Qt3DInput::QMouseDevice::WheelX);
+    m_mouseTzXInput->setSourceDevice(m_mouseDevice);
+    m_tzAxis->addInput(m_mouseTzXInput);
+
+    // Mouse Wheel Y
+    m_mouseTzYInput->setAxis(Qt3DInput::QMouseDevice::WheelY);
+    m_mouseTzYInput->setSourceDevice(m_mouseDevice);
+    m_tzAxis->addInput(m_mouseTzYInput);
 
     // Keyboard Pos Tx
     m_keyboardTxPosInput->setButtons(QVector<int>() << Qt::Key_Right);
@@ -167,6 +168,8 @@ void QFirstPersonCameraControllerPrivate::init()
     m_logicalDevice->addAxis(m_tyAxis);
     m_logicalDevice->addAxis(m_tzAxis);
 
+    applyAccelerations();
+
     Q_Q(QFirstPersonCameraController);
     //// FrameAction
 
@@ -179,6 +182,23 @@ void QFirstPersonCameraControllerPrivate::init()
 
     q->addComponent(m_frameAction);
     q->addComponent(m_logicalDevice);
+}
+
+void QFirstPersonCameraControllerPrivate::applyAccelerations()
+{
+    const auto inputs = {
+        m_keyboardTxPosInput,
+        m_keyboardTyPosInput,
+        m_keyboardTzPosInput,
+        m_keyboardTxNegInput,
+        m_keyboardTyNegInput,
+        m_keyboardTzNegInput
+    };
+
+    for (auto input : inputs) {
+        input->setAcceleration(m_acceleration);
+        input->setDeceleration(m_deceleration);
+    }
 }
 
 void QFirstPersonCameraControllerPrivate::_q_onTriggered(float dt)
@@ -214,6 +234,9 @@ void QFirstPersonCameraControllerPrivate::_q_onTriggered(float dt)
         \li Left mouse button
         \li While the left mouse button is pressed, mouse movement along x-axis pans the camera and
         movement along y-axis tilts it.
+    \row
+        \li Mouse scroll wheel
+        \li Zooms the camera in and out without changing the view center.
     \row
         \li Shift key
         \li Turns the fine motion control active while pressed. Makes mouse pan and tilt less
@@ -273,6 +296,28 @@ float QFirstPersonCameraController::lookSpeed() const
     return d->m_lookSpeed;
 }
 
+/*!
+    \property QFirstPersonCameraController::acceleration
+
+    Holds the current acceleration of the camera controller.
+*/
+float QFirstPersonCameraController::acceleration() const
+{
+    Q_D(const QFirstPersonCameraController);
+    return d->m_acceleration;
+}
+
+/*!
+    \property QFirstPersonCameraController::deceleration
+
+    Holds the current deceleration of the camera controller.
+*/
+float QFirstPersonCameraController::deceleration() const
+{
+    Q_D(const QFirstPersonCameraController);
+    return d->m_deceleration;
+}
+
 void QFirstPersonCameraController::setCamera(Qt3DRender::QCamera *camera)
 {
     Q_D(QFirstPersonCameraController);
@@ -309,6 +354,26 @@ void QFirstPersonCameraController::setLookSpeed(float lookSpeed)
     if (d->m_lookSpeed != lookSpeed) {
         d->m_lookSpeed = lookSpeed;
         emit lookSpeedChanged();
+    }
+}
+
+void QFirstPersonCameraController::setAcceleration(float acceleration)
+{
+    Q_D(QFirstPersonCameraController);
+    if (d->m_acceleration != acceleration) {
+        d->m_acceleration = acceleration;
+        d->applyAccelerations();
+        emit accelerationChanged(acceleration);
+    }
+}
+
+void QFirstPersonCameraController::setDeceleration(float deceleration)
+{
+    Q_D(QFirstPersonCameraController);
+    if (d->m_deceleration != deceleration) {
+        d->m_deceleration = deceleration;
+        d->applyAccelerations();
+        emit decelerationChanged(deceleration);
     }
 }
 

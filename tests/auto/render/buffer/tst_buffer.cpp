@@ -33,7 +33,6 @@
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 #include "testpostmanarbiter.h"
 #include "testrenderer.h"
 
@@ -51,7 +50,7 @@ public:
 
     bool operator ==(const Qt3DRender::QBufferDataGenerator &other) const Q_DECL_FINAL
     {
-        const TestFunctor *otherFunctor = functor_cast<TestFunctor>(&other);
+        const TestFunctor *otherFunctor = Qt3DRender::functor_cast<TestFunctor>(&other);
         if (otherFunctor != nullptr)
             return otherFunctor->m_size == m_size;
         return false;
@@ -90,6 +89,8 @@ private Q_SLOTS:
         QCOMPARE(renderBuffer.data(), buffer.data());
         QCOMPARE(renderBuffer.dataGenerator(), buffer.dataGenerator());
         QVERIFY(*renderBuffer.dataGenerator() == *buffer.dataGenerator());
+        QCOMPARE(renderBuffer.pendingBufferUpdates().size(), 1);
+        QCOMPARE(renderBuffer.pendingBufferUpdates().first().offset, -1);
     }
 
     void checkInitialAndCleanedUpState()
@@ -196,7 +197,10 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderBuffer.data(), QByteArrayLiteral("LS9"));
         QVERIFY(renderBuffer.isDirty());
+        QCOMPARE(renderBuffer.pendingBufferUpdates().size(), 1);
+        QCOMPARE(renderBuffer.pendingBufferUpdates().first().offset, -1);
 
+        renderBuffer.pendingBufferUpdates().clear();
         renderBuffer.unsetDirty();
         QVERIFY(!renderBuffer.isDirty());
 
@@ -234,9 +238,11 @@ private Q_SLOTS:
         Qt3DCore::QPropertyUpdatedChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "data");
         QCOMPARE(change->value().toByteArray(), QByteArrayLiteral("454"));
-        QCOMPARE(Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(change.data())->m_isFinal, true);
+        QCOMPARE(renderBuffer.pendingBufferUpdates().size(), 1);
+        QCOMPARE(renderBuffer.pendingBufferUpdates().first().offset, -1);
 
         arbiter.events.clear();
+        renderBuffer.pendingBufferUpdates().clear();
 
         // WHEN
         updateChange.reset(new Qt3DCore::QPropertyUpdatedChange(Qt3DCore::QNodeId()));
@@ -249,6 +255,7 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(!renderBuffer.pendingBufferUpdates().empty());
+        QCOMPARE(renderBuffer.pendingBufferUpdates().first().offset, 2);
         QVERIFY(renderBuffer.isDirty());
 
         renderBuffer.unsetDirty();

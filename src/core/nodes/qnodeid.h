@@ -41,7 +41,7 @@
 #define QT3DCORE_QNODEID_H
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <QDebug>
+#include <QtCore/QDebug>
 #include <QtCore/QHashFunctions>
 
 QT_BEGIN_NAMESPACE

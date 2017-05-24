@@ -190,6 +190,7 @@ private:
     QVector<Qt3DCore::QNodeId> m_levelOfDetailComponents;
     QVector<Qt3DCore::QNodeId> m_shaderDataComponents;
     QVector<Qt3DCore::QNodeId> m_lightComponents;
+    QVector<Qt3DCore::QNodeId> m_environmentLightComponents;
     Qt3DCore::QNodeId m_geometryRendererComponent;
     Qt3DCore::QNodeId m_objectPickerComponent;
     Qt3DCore::QNodeId m_boundingVolumeDebugComponent;
@@ -233,6 +234,9 @@ template<>
 QVector<HLight> Entity::componentsHandle<Light>() const;
 
 template<>
+QVector<HEnvironmentLight> Entity::componentsHandle<EnvironmentLight>() const;
+
+template<>
 Q_AUTOTEST_EXPORT HComputeCommand Entity::componentHandle<ComputeCommand>() const;
 
 // Render components
@@ -246,10 +250,10 @@ template<>
 Transform *Entity::renderComponent<Transform>() const;
 
 template<>
-Q_AUTOTEST_EXPORT GeometryRenderer *Entity::renderComponent<GeometryRenderer>() const;
+QT3DRENDERSHARED_PRIVATE_EXPORT GeometryRenderer *Entity::renderComponent<GeometryRenderer>() const;
 
 template<>
-Q_AUTOTEST_EXPORT ObjectPicker *Entity::renderComponent<ObjectPicker>() const;
+QT3DRENDERSHARED_PRIVATE_EXPORT ObjectPicker *Entity::renderComponent<ObjectPicker>() const;
 
 template<>
 QVector<Layer *> Entity::renderComponents<Layer>() const;
@@ -265,6 +269,9 @@ QVector<ShaderData *> Entity::renderComponents<ShaderData>() const;
 
 template<>
 QVector<Light *> Entity::renderComponents<Light>() const;
+
+template<>
+QVector<EnvironmentLight *> Entity::renderComponents<EnvironmentLight>() const;
 
 template<>
 Q_AUTOTEST_EXPORT ComputeCommand *Entity::renderComponent<ComputeCommand>() const;
@@ -289,10 +296,10 @@ template<>
 Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<ShaderData>() const;
 
 template<>
-Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<GeometryRenderer>() const;
+QT3DRENDERSHARED_PRIVATE_EXPORT Qt3DCore::QNodeId Entity::componentUuid<GeometryRenderer>() const;
 
 template<>
-Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ObjectPicker>() const;
+QT3DRENDERSHARED_PRIVATE_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ObjectPicker>() const;
 
 //template<>
 //Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<BoundingVolumeDebug>() const;
@@ -302,6 +309,9 @@ Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ComputeCommand>() cons
 
 template<>
 Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const;
+
+template<>
+Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<EnvironmentLight>() const;
 
 class RenderEntityFunctor : public Qt3DCore::QBackendNodeMapper
 {

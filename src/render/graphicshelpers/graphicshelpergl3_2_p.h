@@ -93,6 +93,8 @@ public:
     void disablei(GLenum cap, GLuint index) Q_DECL_OVERRIDE;
     void disablePrimitiveRestart() Q_DECL_OVERRIDE;
     void dispatchCompute(GLuint wx, GLuint wy, GLuint wz) Q_DECL_OVERRIDE;
+    char *mapBuffer(GLenum target) Q_DECL_OVERRIDE;
+    GLboolean unmapBuffer(GLenum target) Q_DECL_OVERRIDE;
     void drawArrays(GLenum primitiveType, GLint first, GLsizei count) Q_DECL_OVERRIDE;
     void drawArraysIndirect(GLenum mode,void *indirect) Q_DECL_OVERRIDE;
     void drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances) Q_DECL_OVERRIDE;
@@ -110,7 +112,7 @@ public:
     void initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) Q_DECL_OVERRIDE;
     void pointSize(bool programmable, GLfloat value) Q_DECL_OVERRIDE;
     GLint maxClipPlaneCount() Q_DECL_OVERRIDE;
-    void memoryBarrier(QMemoryBarrier::BarrierTypes barriers) Q_DECL_OVERRIDE;
+    void memoryBarrier(QMemoryBarrier::Operations barriers) Q_DECL_OVERRIDE;
     QVector<ShaderUniformBlock> programUniformBlocks(GLuint programId) Q_DECL_OVERRIDE;
     QVector<ShaderAttribute> programAttributesAndLocations(GLuint programId) Q_DECL_OVERRIDE;
     QVector<ShaderUniform> programUniformsAndLocations(GLuint programId) Q_DECL_OVERRIDE;

@@ -51,10 +51,12 @@
 // We mean it.
 //
 
-#include <QQuickItem>
 #include <QtCore/qpointer.h>
+#include <QtQuick/QQuickItem>
 
 QT_BEGIN_NAMESPACE
+
+class QOffscreenSurface;
 
 namespace Qt3DCore {
 class QAspectEngine;
@@ -86,7 +88,7 @@ public:
 
     bool multisample() const;
     void setMultisample(bool enable);
-    void setItemArea(const QSize &area);
+    Q_INVOKABLE void setItemArea(QSize area);
     bool isHoverEnabled() const;
 
     enum CameraAspectRatioMode {
@@ -131,6 +133,7 @@ private:
 
     QPointer<Qt3DRender::QCamera> m_camera;
     CameraAspectRatioMode m_cameraAspectRatioMode;
+    QOffscreenSurface *m_dummySurface;
 };
 
 } // Qt3DRender

@@ -38,12 +38,13 @@
 ****************************************************************************/
 
 #include "task_p.h"
-#include "dependencyhandler_p.h"
-#include "qthreadpooler_p.h"
 
-#include <QMutexLocker>
-#include <QElapsedTimer>
-#include <QDebug>
+#include <QtCore/QDebug>
+#include <QtCore/QElapsedTimer>
+#include <QtCore/QMutexLocker>
+
+#include <Qt3DCore/private/dependencyhandler_p.h>
+#include <Qt3DCore/private/qthreadpooler_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,8 +57,9 @@ RunnableInterface::~RunnableInterface()
 // Aspect task
 
 AspectTaskRunnable::AspectTaskRunnable()
-    : m_dependencyHandler(0),
-      m_reserved(false)
+    : m_dependencyHandler(nullptr)
+    , m_pooler(nullptr)
+    , m_reserved(false)
 {
 }
 
@@ -106,11 +108,12 @@ DependencyHandler *AspectTaskRunnable::dependencyHandler()
 
 SyncTaskRunnable::SyncTaskRunnable(QAbstractAspectJobManager::JobFunction func,
                                    void *arg, QAtomicInt *atomicCount)
-    : m_func(func),
-      m_arg(arg),
-      m_atomicCount(atomicCount),
-      m_pooler(nullptr),
-      m_reserved(false)
+    : m_func(func)
+    , m_arg(arg)
+    , m_atomicCount(atomicCount)
+    , m_pooler(nullptr)
+    , m_reserved(false)
+    , m_id(0)
 {
 }
 

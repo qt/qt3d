@@ -40,11 +40,12 @@
 #ifndef QT3DCORE_QNODE_H
 #define QT3DCORE_QNODE_H
 
-#include <QObject>
-#include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/qscenechange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
+#include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/qnodecommand.h>
+#include <Qt3DCore/qscenechange.h>
+#include <Qt3DCore/qt3dcore_global.h>
+#include <QtCore/QObject>
 
 #define Q_NODE_NULLPTR static_cast<Qt3DCore::QNode *>(nullptr)
 
@@ -69,16 +70,15 @@ class QT3DCORESHARED_EXPORT QNode : public QObject
     Q_OBJECT
     Q_PROPERTY(Qt3DCore::QNode *parent READ parentNode WRITE setParent NOTIFY parentChanged)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
-    Q_PROPERTY(PropertyTrackMode propertyTrackMode READ propertyTrackMode WRITE setPropertyTrackMode NOTIFY propertyUpdateModeChanged)
-    Q_PROPERTY(QStringList trackedProperties READ trackedProperties WRITE setTrackedProperties NOTIFY trackedPropertiesChanged)
+    Q_PROPERTY(PropertyTrackingMode defaultPropertyTrackingMode READ defaultPropertyTrackingMode WRITE setDefaultPropertyTrackingMode NOTIFY defaultPropertyTrackingModeChanged REVISION 9)
 public:
 
-    enum PropertyTrackMode {
-        DefaultTrackMode,
-        TrackNamedPropertiesMode,
-        TrackAllPropertiesMode
+    enum PropertyTrackingMode : quint16 {
+        TrackFinalValues,
+        DontTrackValues,
+        TrackAllValues
     };
-    Q_ENUM(PropertyTrackMode)
+    Q_ENUM(PropertyTrackingMode)
 
     explicit QNode(QNode *parent = nullptr);
     virtual ~QNode();
@@ -92,20 +92,26 @@ public:
     QNodeVector childNodes() const;
 
     bool isEnabled() const;
-    PropertyTrackMode propertyTrackMode() const;
-    QStringList trackedProperties() const;
+    PropertyTrackingMode defaultPropertyTrackingMode() const;
+
+    void setPropertyTracking(const QString &propertyName, PropertyTrackingMode trackMode);
+    PropertyTrackingMode propertyTracking(const QString &propertyName) const;
+    void clearPropertyTracking(const QString &propertyName);
+    void clearPropertyTrackings();
+
+    QNodeCommand::CommandId sendCommand(const QString &name, const QVariant &data = QVariant(),
+                                        QNodeCommand::CommandId replyTo = QNodeCommand::CommandId());
+    void sendReply(const QNodeCommandPtr &command);
 
 public Q_SLOTS:
     void setParent(QNode *parent);
     void setEnabled(bool isEnabled);
-    void setPropertyTrackMode(PropertyTrackMode mode);
-    void setTrackedProperties(const QStringList &trackedProperties);
+    void setDefaultPropertyTrackingMode(PropertyTrackingMode mode);
 
 Q_SIGNALS:
     void parentChanged(QObject *parent);
     void enabledChanged(bool enabled);
-    void propertyUpdateModeChanged(PropertyTrackMode mode);
-    void trackedPropertiesChanged(const QStringList &trackedProperties);
+    void defaultPropertyTrackingModeChanged(PropertyTrackingMode mode);
     void nodeDestroyed();
 
 protected:

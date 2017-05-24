@@ -66,6 +66,8 @@ class QT3DQUICKANIMATIONSHARED_PRIVATE_EXPORT Quick3DChannelMapper  : public QOb
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3DAnimation::QChannelMapping> mappings READ qmlMappings CONSTANT)
+    Q_CLASSINFO("DefaultProperty", "mappings")
+
 public:
     explicit Quick3DChannelMapper(QObject *parent = nullptr);
 

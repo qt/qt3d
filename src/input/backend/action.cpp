@@ -38,13 +38,14 @@
 ****************************************************************************/
 
 #include "action_p.h"
+
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qabstractactioninput.h>
-#include <Qt3DInput/private/qaction_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
-#include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
+
+#include <Qt3DInput/private/qaction_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -82,7 +83,6 @@ void Action::setActionTriggered(bool actionTriggered)
         e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
         e->setPropertyName("active");
         e->setValue(m_actionTriggered);
-        Qt3DCore::QPropertyUpdatedChangeBasePrivate::get(e.data())->m_isFinal = true;
         notifyObservers(e);
     }
 }

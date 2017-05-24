@@ -134,6 +134,8 @@ QForwardRenderer::QForwardRenderer(QNode *parent)
     QObject::connect(d->m_cameraSelector, &QCameraSelector::cameraChanged, this, &QForwardRenderer::cameraChanged);
     QObject::connect(d->m_surfaceSelector, &QRenderSurfaceSelector::surfaceChanged, this, &QForwardRenderer::surfaceChanged);
     QObject::connect(d->m_surfaceSelector, &QRenderSurfaceSelector::externalRenderTargetSizeChanged, this, &QForwardRenderer::externalRenderTargetSizeChanged);
+    QObject::connect(d->m_frustumCulling, &QFrustumCulling::enabledChanged, this, &QForwardRenderer::frustumCullingEnabledChanged);
+    QObject::connect(d->m_viewport, &QViewport::gammaChanged, this, &QForwardRenderer::gammaChanged);
     d->init();
 }
 
@@ -169,6 +171,18 @@ void QForwardRenderer::setExternalRenderTargetSize(const QSize &size)
 {
     Q_D(QForwardRenderer);
     d->m_surfaceSelector->setExternalRenderTargetSize(size);
+}
+
+void QForwardRenderer::setFrustumCullingEnabled(bool enabled)
+{
+    Q_D(QForwardRenderer);
+    d->m_frustumCulling->setEnabled(enabled);
+}
+
+void QForwardRenderer::setGamma(float gamma)
+{
+    Q_D(QForwardRenderer);
+    d->m_viewport->setGamma(gamma);
 }
 
 /*!
@@ -226,6 +240,21 @@ Qt3DCore::QEntity *QForwardRenderer::camera() const
 }
 
 /*!
+    \qmlproperty Object ForwardRenderer::window
+
+    Holds the current render surface.
+
+    \deprecated
+*/
+/*!
+    \property QForwardRenderer::window
+
+    Holds the current render surface.
+
+    \deprecated
+*/
+
+/*!
     \qmlproperty Object ForwardRenderer::surface
 
     Holds the current render surface.
@@ -245,6 +274,38 @@ QSize QForwardRenderer::externalRenderTargetSize() const
 {
     Q_D(const QForwardRenderer);
     return d->m_surfaceSelector->externalRenderTargetSize();
+}
+
+/*!
+    \qmlproperty color ForwardRenderer::frustumCulling
+
+    Indicates if the renderer applies frustum culling to the scene.
+*/
+/*!
+    \property QForwardRenderer::frustumCulling
+
+    Indicates if the renderer applies frustum culling to the scene.
+*/
+bool QForwardRenderer::isFrustumCullingEnabled() const
+{
+    Q_D(const QForwardRenderer);
+    return d->m_frustumCulling->isEnabled();
+}
+
+/*!
+    \qmlproperty color ForwardRenderer::gamma
+
+    Holds the gamma value the renderer applies to the scene.
+*/
+/*!
+    \property QForwardRenderer::gamma
+
+    Holds the gamma value the renderer applies to the scene.
+*/
+float QForwardRenderer::gamma() const
+{
+    Q_D(const QForwardRenderer);
+    return d->m_viewport->gamma();
 }
 
 } // namespace Qt3DExtras

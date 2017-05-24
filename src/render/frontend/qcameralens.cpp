@@ -202,6 +202,11 @@ namespace Qt3DRender {
  */
 
 /*!
+ * \property QCameraLens::exposure
+ * Holds the current exposure of the camera lens.
+ */
+
+/*!
  *   \internal
  */
 QCameraLensPrivate::QCameraLensPrivate()
@@ -215,7 +220,45 @@ QCameraLensPrivate::QCameraLensPrivate()
     , m_right(0.5f)
     , m_bottom(-0.5f)
     , m_top(0.5f)
+    , m_exposure(0.0f)
 {
+}
+
+void QCameraLens::viewAll(Qt3DCore::QNodeId cameraId)
+{
+    Q_D(QCameraLens);
+    if (d->m_projectionType == PerspectiveProjection) {
+        QVariant v;
+        v.setValue(cameraId);
+        d->m_pendingViewAllCommand = sendCommand(QLatin1Literal("QueryRootBoundingVolume"), v);
+    }
+}
+
+void QCameraLens::viewEntity(Qt3DCore::QNodeId entityId, Qt3DCore::QNodeId cameraId)
+{
+    Q_D(QCameraLens);
+    if (d->m_projectionType == PerspectiveProjection) {
+        QVector<Qt3DCore::QNodeId> ids = {entityId, cameraId};
+        QVariant v;
+        v.setValue(ids);
+        d->m_pendingViewAllCommand = sendCommand(QLatin1Literal("QueryEntityBoundingVolume"), v);
+    }
+}
+
+void QCameraLensPrivate::processViewAllCommand(Qt3DCore::QNodeCommand::CommandId commandId,
+                                               const QVariant &data)
+{
+    Q_Q(QCameraLens);
+    if (m_pendingViewAllCommand != commandId)
+        return;
+
+    QVector<float> boundingVolumeData = data.value< QVector<float> >();
+    if (boundingVolumeData.size() != 4)
+        return;
+    QVector3D center(boundingVolumeData[0], boundingVolumeData[1], boundingVolumeData[2]);
+    float radius = boundingVolumeData[3];
+    Q_EMIT q->viewSphere(center, radius);
+    m_pendingViewAllCommand = Qt3DCore::QNodeCommand::CommandId();
 }
 
 /*!
@@ -559,12 +602,48 @@ QMatrix4x4 QCameraLens::projectionMatrix() const
     return d->m_projectionMatrix;
 }
 
+/*!
+ * Sets the camera lens' \a exposure
+ */
+void QCameraLens::setExposure(float exposure)
+{
+    Q_D(QCameraLens);
+    if (qFuzzyCompare(d->m_exposure, exposure))
+        return;
+    d->m_exposure = exposure;
+
+    emit exposureChanged(exposure);
+}
+
+float QCameraLens::exposure() const
+{
+    Q_D(const QCameraLens);
+    return d->m_exposure;
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QCameraLens::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QCameraLensData>::create(this);
     auto &data = creationChange->data;
     data.projectionMatrix = d_func()->m_projectionMatrix;
+    data.exposure = d_func()->m_exposure;
     return creationChange;
+}
+
+void QCameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
+{
+    Q_D(QCameraLens);
+    switch (change->type()) {
+    case Qt3DCore::CommandRequested: {
+        Qt3DCore::QNodeCommandPtr command = qSharedPointerCast<Qt3DCore::QNodeCommand>(change);
+
+        if (command->name() == QLatin1Literal("ViewAll"))
+            d->processViewAllCommand(command->inReplyTo(), command->data());
+    }
+        break;
+    default:
+        break;
+    }
 }
 
 } // Qt3DRender

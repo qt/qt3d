@@ -49,10 +49,9 @@
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qalphacoverage.h>
 #include <Qt3DRender/qdepthtest.h>
-
-#include <QUrl>
-#include <QVector3D>
-#include <QVector4D>
+#include <QtCore/QUrl>
+#include <QtGui/QVector3D>
+#include <QtGui/QVector4D>
 
 QT_BEGIN_NAMESPACE
 

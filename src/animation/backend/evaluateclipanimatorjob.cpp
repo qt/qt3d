@@ -39,6 +39,7 @@
 #include <Qt3DAnimation/private/managers_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 #include <Qt3DAnimation/private/animationutils_p.h>
+#include <Qt3DAnimation/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,6 +49,7 @@ namespace Animation {
 EvaluateClipAnimatorJob::EvaluateClipAnimatorJob()
     : Qt3DCore::QAspectJob()
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::EvaluateClipAnimator, 0);
 }
 
 void EvaluateClipAnimatorJob::run()
@@ -61,27 +63,23 @@ void EvaluateClipAnimatorJob::run()
     Q_ASSERT(clipAnimator);
 
     // Evaluate the fcurves
-    AnimationClip *clip = m_handler->animationClipManager()->lookupResource(clipAnimator->clipId());
+    AnimationClip *clip = m_handler->animationClipLoaderManager()->lookupResource(clipAnimator->clipId());
     Q_ASSERT(clip);
-    bool finalFrame = false;
-    int currentLoop = 0;
-    const QVector<float> channelResults = AnimationUtils::evaluateAtGlobalTime(clip,
-                                                                               globalTime,
-                                                                               clipAnimator->startTime(),
-                                                                               clipAnimator->loops(),
-                                                                               currentLoop,
-                                                                               finalFrame);
+    // Prepare for evaluation (convert global time to local time ....)
+    const AnimatorEvaluationData animatorEvaluationData = evaluationDataForAnimator(clipAnimator, globalTime);
+    const ClipEvaluationData preEvaluationDataForClip = evaluationDataForClip(clip, animatorEvaluationData);
+    const ClipResults channelResults = evaluateClipAtLocalTime(clip, preEvaluationDataForClip.localTime);
 
-    if (finalFrame)
+    if (preEvaluationDataForClip.isFinalFrame)
         clipAnimator->setRunning(false);
 
-    clipAnimator->setCurrentLoop(currentLoop);
+    clipAnimator->setCurrentLoop(preEvaluationDataForClip.currentLoop);
 
     // Prepare property changes (if finalFrame it also prepares the change for the running property for the frontend)
-    const QVector<Qt3DCore::QSceneChangePtr> changes = AnimationUtils::preparePropertyChanges(clipAnimator->peerId(),
-                                                                                              clipAnimator->mappingData(),
-                                                                                              channelResults,
-                                                                                              finalFrame);
+    const QVector<Qt3DCore::QSceneChangePtr> changes = preparePropertyChanges(clipAnimator->peerId(),
+                                                                              clipAnimator->mappingData(),
+                                                                              channelResults,
+                                                                              preEvaluationDataForClip.isFinalFrame);
 
     // Send the property changes
     clipAnimator->sendPropertyChanges(changes);

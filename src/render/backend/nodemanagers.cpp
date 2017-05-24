@@ -46,6 +46,7 @@
 #include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/techniquemanager_p.h>
+#include <private/resourceaccessor_p.h>
 
 #include <QOpenGLVertexArrayObject>
 
@@ -88,8 +89,10 @@ NodeManagers::NodeManagers()
     , m_objectPickerManager(new ObjectPickerManager())
 //    , m_boundingVolumeDebugManager(new BoundingVolumeDebugManager())
     , m_lightManager(new LightManager())
+    , m_environmentLightManager(new EnvironmentLightManager())
     , m_computeJobManager(new ComputeCommandManager())
     , m_renderStateManager(new RenderStateManager())
+    , m_resourceAccessor(new ResourceAccessor(this))
 {
 }
 
@@ -126,9 +129,15 @@ NodeManagers::~NodeManagers()
     delete m_objectPickerManager;
 //    delete m_boundingVolumeDebugManager;
     delete m_lightManager;
+    delete m_environmentLightManager;
     delete m_computeJobManager;
     delete m_renderStateManager;
     delete m_renderNodesManager;
+}
+
+QSharedPointer<ResourceAccessor> NodeManagers::resourceAccessor()
+{
+    return m_resourceAccessor;
 }
 
 template<>
@@ -309,6 +318,12 @@ template<>
 LightManager *NodeManagers::manager<Light>() const Q_DECL_NOTHROW
 {
     return m_lightManager;
+}
+
+template<>
+EnvironmentLightManager *NodeManagers::manager<EnvironmentLight>() const Q_DECL_NOTHROW
+{
+    return m_environmentLightManager;
 }
 
 template<>

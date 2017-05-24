@@ -28,11 +28,9 @@
 
 
 #include <QtTest/QTest>
-#include <Qt3DAnimation/qanimationclip.h>
 #include <Qt3DAnimation/qblendedclipanimator.h>
-#include <Qt3DAnimation/private/qanimationclip_p.h>
 #include <Qt3DAnimation/private/qblendedclipanimator_p.h>
-#include <Qt3DAnimation/qlerpblend.h>
+#include <Qt3DAnimation/qlerpclipblend.h>
 #include <Qt3DAnimation/qchannelmapper.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qnodecreatedchange.h>
@@ -62,7 +60,7 @@ private Q_SLOTS:
         QVERIFY(blendedClipAnimator.blendTree() == nullptr);
         QVERIFY(blendedClipAnimator.channelMapper() == nullptr);
         QCOMPARE(blendedClipAnimator.isRunning(), false);
-        QCOMPARE(blendedClipAnimator.loops(), 1);
+        QCOMPARE(blendedClipAnimator.loopCount(), 1);
     }
 
     void checkPropertyChanges()
@@ -73,7 +71,7 @@ private Q_SLOTS:
         {
             // WHEN
             QSignalSpy spy(&blendedClipAnimator, SIGNAL(blendTreeChanged(QAbstractClipBlendNode *)));
-            Qt3DAnimation::QLerpBlend newValue;
+            Qt3DAnimation::QLerpClipBlend newValue;
             blendedClipAnimator.setBlendTree(&newValue);
 
             // THEN
@@ -130,21 +128,21 @@ private Q_SLOTS:
 
         {
             // WHEN
-            QSignalSpy spy(&blendedClipAnimator, SIGNAL(loopsChanged(int)));
+            QSignalSpy spy(&blendedClipAnimator, SIGNAL(loopCountChanged(int)));
             const int newValue = 5;
-            blendedClipAnimator.setLoops(newValue);
+            blendedClipAnimator.setLoopCount(newValue);
 
             // THEN
             QVERIFY(spy.isValid());
-            QCOMPARE(blendedClipAnimator.loops(), newValue);
+            QCOMPARE(blendedClipAnimator.loopCount(), newValue);
             QCOMPARE(spy.count(), 1);
 
             // WHEN
             spy.clear();
-            blendedClipAnimator.setLoops(newValue);
+            blendedClipAnimator.setLoopCount(newValue);
 
             // THEN
-            QCOMPARE(blendedClipAnimator.loops(), newValue);
+            QCOMPARE(blendedClipAnimator.loopCount(), newValue);
             QCOMPARE(spy.count(), 0);
         }
     }
@@ -154,7 +152,7 @@ private Q_SLOTS:
         // GIVEN
         Qt3DAnimation::QBlendedClipAnimator blendedClipAnimator;
         Qt3DAnimation::QChannelMapper channelMapper;
-        Qt3DAnimation::QLerpBlend blendRoot;
+        Qt3DAnimation::QLerpClipBlend blendRoot;
 
         blendedClipAnimator.setBlendTree(&blendRoot);
         blendedClipAnimator.setChannelMapper(&channelMapper);
@@ -182,7 +180,7 @@ private Q_SLOTS:
             QCOMPARE(blendedClipAnimator.isEnabled(), true);
             QCOMPARE(blendedClipAnimator.isEnabled(), creationChangeData->isNodeEnabled());
             QCOMPARE(blendedClipAnimator.metaObject(), creationChangeData->metaObject());
-            QCOMPARE(blendedClipAnimator.loops(), cloneData.loops);
+            QCOMPARE(blendedClipAnimator.loopCount(), cloneData.loops);
         }
 
         // WHEN
@@ -216,7 +214,7 @@ private Q_SLOTS:
         TestArbiter arbiter;
         Qt3DAnimation::QBlendedClipAnimator blendedClipAnimator;
         arbiter.setArbiterOnNode(&blendedClipAnimator);
-        Qt3DAnimation::QLerpBlend blendRoot;
+        Qt3DAnimation::QLerpClipBlend blendRoot;
 
         {
             // WHEN
@@ -251,7 +249,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            Qt3DAnimation::QLerpBlend blendRoot;
+            Qt3DAnimation::QLerpClipBlend blendRoot;
             blendedClipAnimator.setBlendTree(&blendRoot);
 
             QCOMPARE(blendedClipAnimator.blendTree(), &blendRoot);
@@ -354,14 +352,14 @@ private Q_SLOTS:
 
         {
             // WHEN
-            blendedClipAnimator.setLoops(1584);
+            blendedClipAnimator.setLoopCount(1584);
             QCoreApplication::processEvents();
 
             // THEN
             QCOMPARE(arbiter.events.size(), 1);
             auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
             QCOMPARE(change->propertyName(), "loops");
-            QCOMPARE(change->value().value<int>(), blendedClipAnimator.loops());
+            QCOMPARE(change->value().value<int>(), blendedClipAnimator.loopCount());
             QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
             arbiter.events.clear();
@@ -369,7 +367,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            blendedClipAnimator.setLoops(1584);
+            blendedClipAnimator.setLoopCount(1584);
             QCoreApplication::processEvents();
 
             // THEN

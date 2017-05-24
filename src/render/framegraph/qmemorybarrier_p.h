@@ -63,12 +63,12 @@ public:
     QMemoryBarrierPrivate();
 
     Q_DECLARE_PUBLIC(QMemoryBarrier)
-    QMemoryBarrier::BarrierTypes m_barrierTypes;
+    QMemoryBarrier::Operations m_waitOperations;
 };
 
 struct QMemoryBarrierData
 {
-    QMemoryBarrier::BarrierTypes barrierTypes;
+    QMemoryBarrier::Operations waitOperations;
 };
 
 } // namespace Qt3DRender

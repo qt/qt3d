@@ -38,14 +38,15 @@
 ****************************************************************************/
 
 #include "mousedevice_p.h"
-#include "inputmanagers_p.h"
-#include "inputhandler_p.h"
-#include "qmousedevice.h"
-#include <Qt3DInput/private/qmousedevice_p.h>
 
-#include <Qt3DCore/qnode.h>
+#include <Qt3DInput/qmousedevice.h>
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
+
+#include <Qt3DInput/private/inputmanagers_p.h>
+#include <Qt3DInput/private/inputhandler_p.h>
+#include <Qt3DInput/private/qmousedevice_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -134,6 +135,7 @@ float MouseDevice::sensitivity() const
     return m_sensitivity;
 }
 
+#if QT_CONFIG(wheelevent)
 void MouseDevice::updateWheelEvents(const QList<QT_PREPEND_NAMESPACE (QWheelEvent)> &events)
 {
     // Reset axis values before we accumulate new values for this frame
@@ -146,6 +148,7 @@ void MouseDevice::updateWheelEvents(const QList<QT_PREPEND_NAMESPACE (QWheelEven
         }
     }
 }
+#endif
 
 void MouseDevice::updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events)
 {

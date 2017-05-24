@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 namespace Animation {
 
-class ChannelGroup;
+struct Channel;
 class Handler;
 
 class Q_AUTOTEST_EXPORT ClipAnimator : public BackendNode
@@ -73,6 +73,7 @@ public:
 
     void setRunning(bool running);
     bool isRunning() const { return m_running; }
+    void setLoops(int loops) { m_loops = loops; }
     int loops() const { return m_loops; }
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
@@ -80,8 +81,8 @@ public:
 
     // Called by jobs
     bool canRun() const { return !m_clipId.isNull() && !m_mapperId.isNull() && m_running; }
-    void setMappingData(const QVector<AnimationUtils::MappingData> mappingData);
-    QVector<AnimationUtils::MappingData> mappingData() const { return m_mappingData; }
+    void setMappingData(const QVector<MappingData> &mappingData) { m_mappingData = mappingData; }
+    QVector<MappingData> mappingData() const { return m_mappingData; }
 
     void setStartTime(qint64 globalTime) { m_startGlobalTime = globalTime; }
     qint64 startTime() const { return m_startGlobalTime; }
@@ -101,7 +102,7 @@ private:
 
     // Working state
     qint64 m_startGlobalTime;
-    QVector<AnimationUtils::MappingData> m_mappingData;
+    QVector<MappingData> m_mappingData;
 
     int m_currentLoop;
 };

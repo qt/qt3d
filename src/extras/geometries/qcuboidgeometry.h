@@ -42,7 +42,7 @@
 
 #include <Qt3DExtras/qt3dextras_global.h>
 #include <Qt3DRender/qgeometry.h>
-#include <QSize>
+#include <QtCore/QSize>
 
 QT_BEGIN_NAMESPACE
 

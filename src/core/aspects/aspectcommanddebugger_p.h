@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#ifdef QT3D_JOBS_RUN_STATS
+#include <Qt3DCore/qt3dcore-config.h>
 
 #ifndef QT3DCORE_DEBUG_ASPECTCOMMANDDEBUGGER_H
 #define QT3DCORE_DEBUG_ASPECTCOMMANDDEBUGGER_H
@@ -108,5 +108,3 @@ private:
 QT_END_NAMESPACE
 
 #endif // QT3DCORE_DEBUG_ASPECTCOMMANDDEBUGGER_H
-
-#endif // QT3D_JOBS_RUN_STATS

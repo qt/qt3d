@@ -77,9 +77,13 @@ public:
     void reset();
 
     void setNoRender();
+    inline bool isNoRender() const { return m_noRender; }
+
+    inline bool wasReset() const { return m_wasReset; }
 
 private:
     bool m_noRender;
+    bool m_wasReset;
     int m_targetRenderViewCount;
     int m_currentRenderViewCount;
     QVector<RenderView *> m_currentWorkQueue;

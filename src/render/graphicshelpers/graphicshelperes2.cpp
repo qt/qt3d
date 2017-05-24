@@ -65,8 +65,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-GraphicsHelperES2::GraphicsHelperES2() :
-    m_funcs(0)
+GraphicsHelperES2::GraphicsHelperES2()
+    : m_funcs(0)
+    , m_supportFramebufferBlit(false)
 {
 }
 
@@ -80,6 +81,9 @@ void GraphicsHelperES2::initializeHelper(QOpenGLContext *context,
     Q_ASSERT(context);
     m_funcs = context->functions();
     Q_ASSERT(m_funcs);
+    m_ext.reset(new QOpenGLExtensions(context));
+    if (m_ext->hasOpenGLExtension(QOpenGLExtensions::FramebufferBlit))
+        m_supportFramebufferBlit = true;
 }
 
 void GraphicsHelperES2::drawElementsInstancedBaseVertexBaseInstance(GLenum primitiveType,
@@ -366,6 +370,8 @@ bool GraphicsHelperES2::supportsFeature(GraphicsHelperInterface::Feature feature
     switch (feature) {
     case RenderBufferDimensionRetrieval:
         return true;
+    case BlitFramebuffer:
+        return m_supportFramebufferBlit;
     default:
         return false;
     }
@@ -492,7 +498,7 @@ GLint GraphicsHelperES2::maxClipPlaneCount()
     return 0;
 }
 
-void GraphicsHelperES2::memoryBarrier(QMemoryBarrier::BarrierTypes barriers)
+void GraphicsHelperES2::memoryBarrier(QMemoryBarrier::Operations barriers)
 {
     Q_UNUSED(barriers);
     qWarning() << "memory barrier is not supported by OpenGL ES 2.0 (since 4.3)";
@@ -573,6 +579,20 @@ void GraphicsHelperES2::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
     Q_UNUSED(wy);
     Q_UNUSED(wz);
     qWarning() << "Compute Shaders are not supported by ES 2.0 (since ES 3.1)";
+}
+
+char *GraphicsHelperES2::mapBuffer(GLenum target)
+{
+    Q_UNUSED(target);
+    qWarning() << "Map buffer is not a core requirement for ES 2.0";
+    return nullptr;
+}
+
+GLboolean GraphicsHelperES2::unmapBuffer(GLenum target)
+{
+    Q_UNUSED(target);
+    qWarning() << "unMap buffer is not a core requirement for ES 2.0";
+    return false;
 }
 
 void GraphicsHelperES2::glUniform1fv(GLint location, GLsizei count, const GLfloat *values)
@@ -725,17 +745,10 @@ UniformType GraphicsHelperES2::uniformTypeFromGLType(GLenum type)
 
 void GraphicsHelperES2::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter)
 {
-    Q_UNUSED(srcX0);
-    Q_UNUSED(srcX1);
-    Q_UNUSED(srcY0);
-    Q_UNUSED(srcY1);
-    Q_UNUSED(dstX0);
-    Q_UNUSED(dstX1);
-    Q_UNUSED(dstY0);
-    Q_UNUSED(dstY1);
-    Q_UNUSED(mask);
-    Q_UNUSED(filter);
-    qWarning() << "Framebuffer blits are not supported by ES 2.0 (since ES 3.1)";
+    if (!m_supportFramebufferBlit)
+        qWarning() << "Framebuffer blits are not supported by ES 2.0 (since ES 3.1)";
+    else
+        m_ext->glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
 }
 
 } // namespace Render

@@ -60,6 +60,7 @@ namespace Qt3DRender {
 class Scene3DSGMaterialShader : public QSGMaterialShader
 {
 public:
+    Scene3DSGMaterialShader();
     void updateState(const RenderState &state, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) Q_DECL_FINAL;
     const char * const *attributeNames() const Q_DECL_FINAL;
 

@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>PlaneEntity.qml</file>
+        <file>SimpleForwardRenderer.qml</file>
     </qresource>
 </RCC>

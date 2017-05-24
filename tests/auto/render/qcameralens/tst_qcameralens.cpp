@@ -63,6 +63,7 @@ private Q_SLOTS:
         QCOMPARE(cameraLens.right(), 0.5f);
         QCOMPARE(cameraLens.bottom(), -0.5f);
         QCOMPARE(cameraLens.top(), 0.5f);
+        QCOMPARE(cameraLens.exposure(), 0.0f);
     }
 
     void checkPropertyChanges()
@@ -243,6 +244,26 @@ private Q_SLOTS:
         }
         {
             // WHEN
+            QSignalSpy spy(&cameraLens, SIGNAL(exposureChanged(float)));
+            const float newValue = -2.0f;
+            cameraLens.setExposure(newValue);
+
+            // THEN
+            QVERIFY(spy.isValid());
+            QCOMPARE(cameraLens.exposure(), newValue);
+            QCOMPARE(spy.count(), 1);
+            QCOMPARE(spy.takeFirst().first().toFloat(), -2.0f);
+
+            // WHEN
+            spy.clear();
+            cameraLens.setExposure(newValue);
+
+            // THEN
+            QCOMPARE(cameraLens.exposure(), newValue);
+            QCOMPARE(spy.count(), 0);
+        }
+        {
+            // WHEN
             QSignalSpy spy(&cameraLens, SIGNAL(projectionMatrixChanged(QMatrix4x4)));
             QMatrix4x4 newValue;
             newValue.translate(5.0f, 2.0f, 4.3f);
@@ -340,6 +361,7 @@ private Q_SLOTS:
         cameraLens.setFarPlane(1005.0f);
         cameraLens.setFieldOfView(35.0f);
         cameraLens.setAspectRatio(16.0f/9.0f);
+        cameraLens.setExposure(1.0f);
 
         // WHEN
         QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
@@ -357,6 +379,7 @@ private Q_SLOTS:
             const Qt3DRender::QCameraLensData cloneData = creationChangeData->data;
 
             QCOMPARE(cameraLens.projectionMatrix(), cloneData.projectionMatrix);
+            QCOMPARE(cameraLens.exposure(), cloneData.exposure);
             QCOMPARE(cameraLens.id(), creationChangeData->subjectId());
             QCOMPARE(cameraLens.isEnabled(), true);
             QCOMPARE(cameraLens.isEnabled(), creationChangeData->isNodeEnabled());
@@ -379,6 +402,7 @@ private Q_SLOTS:
             const Qt3DRender::QCameraLensData cloneData = creationChangeData->data;
 
             QCOMPARE(cameraLens.projectionMatrix(), cloneData.projectionMatrix);
+            QCOMPARE(cameraLens.exposure(), cloneData.exposure);
             QCOMPARE(cameraLens.id(), creationChangeData->subjectId());
             QCOMPARE(cameraLens.isEnabled(), false);
             QCOMPARE(cameraLens.isEnabled(), creationChangeData->isNodeEnabled());
@@ -666,6 +690,38 @@ private Q_SLOTS:
         {
             // WHEN
             cameraLens.setTop(12.0f);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 0);
+        }
+
+    }
+
+    void checkExposureUpdate()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DRender::QCameraLens cameraLens;
+        arbiter.setArbiterOnNode(&cameraLens);
+
+        {
+            // WHEN
+            cameraLens.setExposure(2.0f);
+            QCoreApplication::processEvents();
+
+            // THEN
+            QCOMPARE(arbiter.events.size(), 1);
+            auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "exposure");
+            QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+            arbiter.events.clear();
+        }
+
+        {
+            // WHEN
+            cameraLens.setExposure(2.0f);
             QCoreApplication::processEvents();
 
             // THEN

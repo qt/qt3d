@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "qframeaction.h"
+
 #include "qframeaction_p.h"
 
 QT_BEGIN_NAMESPACE

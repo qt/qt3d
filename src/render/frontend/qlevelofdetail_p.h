@@ -53,6 +53,7 @@
 
 #include <private/qcomponent_p.h>
 #include <qlevelofdetail.h>
+#include <Qt3DRender/qlevelofdetailboundingsphere.h>
 
 #include <QVector3D>
 
@@ -74,7 +75,7 @@ public:
     int m_currentIndex;
     QLevelOfDetail::ThresholdType m_thresholdType;
     QVector<qreal> m_thresholds;
-    QPointer<QBoundingSphere> m_volumeOverride;
+    QLevelOfDetailBoundingSphere m_volumeOverride;
 };
 
 struct QLevelOfDetailData
@@ -83,8 +84,7 @@ struct QLevelOfDetailData
     int currentIndex;
     QLevelOfDetail::ThresholdType thresholdType;
     QVector<qreal> thresholds;
-    float radius;
-    QVector3D center;
+    QLevelOfDetailBoundingSphere volumeOverride;
 };
 
 } // namespace Qt3DRender

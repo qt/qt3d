@@ -69,6 +69,11 @@ QAbstractTexturePrivate::QAbstractTexturePrivate()
 {
 }
 
+QTextureGeneratorPtr QAbstractTexturePrivate::dataFunctor() const
+{
+    return m_dataFunctor;
+}
+
 void QAbstractTexturePrivate::setDataFunctor(const QTextureGeneratorPtr &generator)
 {
     if (generator != m_dataFunctor) {

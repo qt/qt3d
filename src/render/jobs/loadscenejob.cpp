@@ -44,6 +44,7 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DRender/private/job_common_p.h>
 #include <Qt3DRender/private/qsceneimporter_p.h>
+#include <Qt3DRender/private/qurlhelper_p.h>
 #include <Qt3DRender/qsceneloader.h>
 
 QT_BEGIN_NAMESPACE
@@ -58,6 +59,11 @@ LoadSceneJob::LoadSceneJob(const QUrl &source, Qt3DCore::QNodeId m_sceneComponen
     , m_managers(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadScene, 0);
+}
+
+void LoadSceneJob::setData(const QByteArray &data)
+{
+    m_data = data;
 }
 
 NodeManagers *LoadSceneJob::nodeManagers() const
@@ -95,20 +101,54 @@ void LoadSceneJob::run()
     // Perform the loading only if the source wasn't explicitly set to empty
     if (!m_source.isEmpty()) {
         finalStatus = QSceneLoader::Error;
-        for (QSceneImporter *sceneImporter : qAsConst(m_sceneImporters)) {
-            if (!sceneImporter->isFileTypeSupported(m_source))
-                continue;
 
-            // If the file type is supported -> enter Loading status
-            scene->setStatus(QSceneLoader::Loading);
+        if (m_data.isEmpty()) {
+            const QString path = QUrlHelper::urlToLocalFileOrQrc(m_source);
+            QFileInfo finfo(path);
+            if (finfo.exists()) {
+                QStringList extensions(finfo.suffix());
 
-            // File type is supported, try to load it
-            sceneImporter->setSource(m_source);
-            sceneSubTree = sceneImporter->scene();
-            if (sceneSubTree != nullptr) {
-                // Successfully built a subtree
-                finalStatus = QSceneLoader::Ready;
-                break;
+                for (QSceneImporter *sceneImporter : qAsConst(m_sceneImporters)) {
+                    if (!sceneImporter->areFileTypesSupported(extensions))
+                        continue;
+
+                    // If the file type is supported -> enter Loading status
+                    scene->setStatus(QSceneLoader::Loading);
+
+                    // File type is supported, try to load it
+                    sceneImporter->setSource(m_source);
+                    sceneSubTree = sceneImporter->scene();
+                    if (sceneSubTree != nullptr) {
+                        // Successfully built a subtree
+                        finalStatus = QSceneLoader::Ready;
+                        break;
+                    }
+                }
+            }
+        } else {
+            QStringList extensions;
+            QMimeDatabase db;
+            QMimeType mtype = db.mimeTypeForData(m_data);
+            if (mtype.isValid()) {
+                extensions = mtype.suffixes();
+            }
+
+            QString basePath = m_source.adjusted(QUrl::RemoveFilename).toString();
+            for (QSceneImporter *sceneImporter : qAsConst(m_sceneImporters)) {
+                if (!sceneImporter->areFileTypesSupported(extensions))
+                    continue;
+
+                // If the file type is supported -> enter Loading status
+                scene->setStatus(QSceneLoader::Loading);
+
+                // File type is supported, try to load it
+                sceneImporter->setData(m_data, basePath);
+                sceneSubTree = sceneImporter->scene();
+                if (sceneSubTree != nullptr) {
+                    // Successfully built a subtree
+                    finalStatus = QSceneLoader::Ready;
+                    break;
+                }
             }
         }
     }

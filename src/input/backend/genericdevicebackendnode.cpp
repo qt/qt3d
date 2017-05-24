@@ -38,11 +38,12 @@
 ****************************************************************************/
 
 #include "genericdevicebackendnode_p.h"
-#include "inputhandler_p.h"
-#include "inputmanagers_p.h"
 
-#include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+
+#include <Qt3DInput/private/inputhandler_p.h>
+#include <Qt3DInput/private/inputmanagers_p.h>
 
 QT_BEGIN_NAMESPACE
 

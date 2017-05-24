@@ -51,8 +51,9 @@
 // We mean it.
 //
 
+#include <Qt3DInput/QMouseEvent>
+
 #include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
-#include <QMouseEvent>
 
 QT_BEGIN_NAMESPACE
 
@@ -98,7 +99,9 @@ public:
     bool isButtonPressed(int buttonIdentifier) const Q_DECL_OVERRIDE;
 
     void updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events);
+#if QT_CONFIG(wheelevent)
     void updateWheelEvents(const QList<QT_PREPEND_NAMESPACE(QWheelEvent)> &events);
+#endif
 
     MouseState mouseState() const;
     QPointF previousPos() const;

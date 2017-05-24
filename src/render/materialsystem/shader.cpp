@@ -59,10 +59,11 @@ namespace Qt3DRender {
 namespace Render {
 
 Shader::Shader()
-    : BackendNode()
+    : BackendNode(ReadWrite)
     , m_isLoaded(false)
     , m_dna(0)
     , m_graphicsContext(nullptr)
+    , m_status(QShaderProgram::NotReady)
 {
     m_shaderCode.resize(static_cast<int>(QShaderProgram::Compute) + 1);
 }
@@ -71,8 +72,8 @@ Shader::~Shader()
 {
     // TO DO: ShaderProgram is leaked as of now
     // Fix that taking care that they may be shared given a same dna
-
-    QObject::disconnect(m_contextConnection);
+    if (m_graphicsContext)
+        QObject::disconnect(m_contextConnection);
 }
 
 void Shader::cleanup()
@@ -84,6 +85,7 @@ void Shader::cleanup()
         if (m_graphicsContext)
             m_graphicsContext->removeShaderProgramReference(this);
         m_graphicsContext = nullptr;
+        QObject::disconnect(m_contextConnection);
     }
 
     QBackendNode::setEnabled(false);
@@ -96,6 +98,7 @@ void Shader::cleanup()
     m_uniforms.clear();
     m_attributes.clear();
     m_uniformBlocks.clear();
+    m_status = QShaderProgram::NotReady;
 }
 
 void Shader::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -183,8 +186,10 @@ void Shader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_shaderCode[QShaderProgram::Compute] = propertyValue.toByteArray();
             m_isLoaded = false;
         }
-        if (!m_isLoaded)
+        if (!m_isLoaded) {
+            setStatus(QShaderProgram::NotReady);
             updateDNA();
+        }
         markDirty(AbstractRenderer::AllDirty);
     }
 
@@ -253,6 +258,14 @@ ShaderStorageBlock Shader::storageBlockForBlockName(const QString &blockName)
     return ShaderStorageBlock();
 }
 
+// To be called from a worker thread
+void Shader::submitPendingNotifications()
+{
+    const  QVector<Qt3DCore::QPropertyUpdatedChangePtr> notifications = std::move(m_pendingNotifications);
+    for (const Qt3DCore::QPropertyUpdatedChangePtr &notification : notifications)
+        notifyObservers(notification);
+}
+
 void Shader::prepareUniforms(ShaderParameterPack &pack)
 {
     const PackUniformHash &values = pack.uniforms();
@@ -261,7 +274,7 @@ void Shader::prepareUniforms(ShaderParameterPack &pack)
     const auto end = values.cend();
     while (it != end) {
         // Find if there's a uniform with the same name id
-        for (const ShaderUniform &uniform : m_uniforms) {
+        for (const ShaderUniform &uniform : qAsConst(m_uniforms)) {
             if (uniform.m_nameId == it.key()) {
                 pack.setSubmissionUniform(uniform);
                 break;
@@ -298,8 +311,8 @@ void Shader::updateDNA()
 
     QMutexLocker locker(&m_mutex);
     uint attachmentHash = 0;
-    QHash<QString, int>::const_iterator it = m_fragOutputs.begin();
-    QHash<QString, int>::const_iterator end = m_fragOutputs.end();
+    QHash<QString, int>::const_iterator it = m_fragOutputs.cbegin();
+    QHash<QString, int>::const_iterator end = m_fragOutputs.cend();
     while (it != end) {
         attachmentHash += ::qHash(it.value()) + ::qHash(it.key());
         ++it;
@@ -360,11 +373,11 @@ void Shader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformB
         qCDebug(Shaders) << "Initializing Uniform Block {" << m_uniformBlockNames[i] << "}";
 
         // Find all active uniforms for the shader block
-        QVector<ShaderUniform>::const_iterator uniformsIt = m_uniforms.begin();
-        const QVector<ShaderUniform>::const_iterator uniformsEnd = m_uniforms.end();
+        QVector<ShaderUniform>::const_iterator uniformsIt = m_uniforms.cbegin();
+        const QVector<ShaderUniform>::const_iterator uniformsEnd = m_uniforms.cend();
 
-        QVector<QString>::const_iterator uniformNamesIt = m_uniformsNames.begin();
-        const QVector<QString>::const_iterator uniformNamesEnd = m_attributesNames.end();
+        QVector<QString>::const_iterator uniformNamesIt = m_uniformsNames.cbegin();
+        const QVector<QString>::const_iterator uniformNamesEnd = m_attributesNames.cend();
 
         QHash<QString, ShaderUniform> activeUniformsInBlock;
 
@@ -402,7 +415,7 @@ void Shader::initializeShaderStorageBlocks(const QVector<ShaderStorageBlock> &sh
    Initializes this Shader's state relating to attributes, global block uniforms and
    and named uniform blocks by copying these details from \a other.
 */
-void Shader::initialize(const Shader &other)
+void Shader::initializeFromReference(const Shader &other)
 {
     Q_ASSERT(m_dna == other.m_dna);
     m_uniformsNamesIds = other.m_uniformsNamesIds;
@@ -420,6 +433,32 @@ void Shader::initialize(const Shader &other)
     m_shaderStorageBlockNames = other.m_shaderStorageBlockNames;
     m_shaderStorageBlocks = other.m_shaderStorageBlocks;
     m_isLoaded = other.m_isLoaded;
+    setStatus(other.status());
+    setLog(other.log());
+}
+
+void Shader::setLog(const QString &log)
+{
+    if (log != m_log) {
+        m_log = log;
+        Qt3DCore::QPropertyUpdatedChangePtr e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+        e->setPropertyName("log");
+        e->setValue(QVariant::fromValue(m_log));
+        m_pendingNotifications.push_back(e);
+    }
+}
+
+void Shader::setStatus(QShaderProgram::Status status)
+{
+    if (status != m_status) {
+        m_status = status;
+        Qt3DCore::QPropertyUpdatedChangePtr e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+        e->setPropertyName("status");
+        e->setValue(QVariant::fromValue(m_status));
+        m_pendingNotifications.push_back(e);
+    }
 }
 
 } // namespace Render

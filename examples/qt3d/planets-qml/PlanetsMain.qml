@@ -417,8 +417,9 @@ Item {
             value: 1
             minimumValue: 1
             maximumValue: 2
-
+            //! [2]
             onValueChanged: solarsystem.changeCameraDistance(value)
+            //! [2]
 
             property bool panningEnabled: false
             signal swipeUp()

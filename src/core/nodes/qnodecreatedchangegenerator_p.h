@@ -48,11 +48,12 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qnodecreatedchange.h>
-#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/qt3dcore_global.h>
 #include <QtCore/qvector.h>
+
+#include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
