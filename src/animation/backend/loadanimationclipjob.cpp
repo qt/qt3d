@@ -69,7 +69,7 @@ void LoadAnimationClipJob::clearDirtyAnimationClips()
 void LoadAnimationClipJob::run()
 {
     Q_ASSERT(m_handler);
-    AnimationClipManager *animationClipManager = m_handler->animationClipManager();
+    AnimationClipLoaderManager *animationClipManager = m_handler->animationClipLoaderManager();
     for (const auto animationClipHandle : qAsConst(m_animationClipHandles)) {
         AnimationClip *animationClip = animationClipManager->data(animationClipHandle);
         animationClip->loadAnimation();

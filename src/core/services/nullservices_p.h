@@ -52,8 +52,9 @@
 //
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include "qopenglinformationservice_p.h"
-#include "qsysteminformationservice_p.h"
+
+#include <Qt3DCore/private/qopenglinformationservice_p.h>
+#include <Qt3DCore/private/qsysteminformationservice_p.h>
 
 QT_BEGIN_NAMESPACE
 

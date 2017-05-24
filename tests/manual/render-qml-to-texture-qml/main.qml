@@ -35,10 +35,11 @@
 ****************************************************************************/
 
 import Qt3D.Core 2.0
-import Qt3D.Render 2.2
+import Qt3D.Render 2.9
 import Qt3D.Input 2.0
 import QtQuick 2.0 as QQ2
 import QtQuick.Scene3D 2.0
+import QtQuick.Scene2D 2.9
 import QtQuick.Window 2.0 as QW2
 import Qt3D.Extras 2.0
 
@@ -88,6 +89,11 @@ QQ2.Item {
                     }
 
                 }
+
+                entities: [plane1]
+
+                mouseEnabled: plane1.picker.pressed
+
                 InteractiveGui {
 
                 }
@@ -96,6 +102,7 @@ QQ2.Item {
             FirstPersonCameraController {
                 id: controller
                 camera: camera
+                enabled: !plane1.picker.pressed
             }
 
             components: [
@@ -131,17 +138,6 @@ QQ2.Item {
                 property ObjectPicker picker: ObjectPicker {
                     hoverEnabled: true
                     dragEnabled: true
-                    eventForward: EventForward {
-                        id: eventForward
-                        target: qmlTexture
-                        focus: true
-                    }
-                    onPressed: {
-                        controller.enabled = false
-                    }
-                    onReleased: {
-                        controller.enabled = true
-                    }
                 }
 
                 components: [planeMesh, material, transform, picker]

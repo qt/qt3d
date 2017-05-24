@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <QLoggingCategory>
+#include <QtCore/QLoggingCategory>
 
 QT_BEGIN_NAMESPACE
 

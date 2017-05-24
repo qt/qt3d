@@ -72,7 +72,7 @@ Q_SIGNALS:
     void propertyChanged(QString property);
 
 protected:
-    QChannelMapping(QChannelMappingPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QChannelMapping(QChannelMappingPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QChannelMapping)

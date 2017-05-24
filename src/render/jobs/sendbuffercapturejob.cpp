@@ -51,9 +51,8 @@ namespace Qt3DRender {
 
 namespace Render {
 
-SendBufferCaptureJob::SendBufferCaptureJob(Renderer *renderer)
+SendBufferCaptureJob::SendBufferCaptureJob()
     : Qt3DCore::QAspectJob()
-    , m_renderer(renderer)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::SendBufferCapture, 0);
 }
@@ -76,7 +75,7 @@ void SendBufferCaptureJob::addRequest(QPair<Buffer *, QByteArray> request)
 void SendBufferCaptureJob::run()
 {
     QMutexLocker locker(&m_mutex);
-    for (QPair<Buffer*, QByteArray> pendingCapture : m_pendingSendBufferCaptures) {
+    for (const QPair<Buffer*, QByteArray> &pendingCapture : qAsConst(m_pendingSendBufferCaptures)) {
         pendingCapture.first->updateDataFromGPUToCPU(pendingCapture.second);
     }
 

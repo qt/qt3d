@@ -6,7 +6,7 @@
     error( "Couldn't find the render-qml-to-texture.pri file!")
 }
 
-QT += 3dextras 3dcore 3drender 3dinput 3dquick qml quick 3dquickrender
+QT += 3dextras 3dcore 3drender 3dinput 3dquick qml quick
 
 SOURCES += main.cpp
 

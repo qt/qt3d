@@ -52,12 +52,11 @@
 //
 
 #include <Qt3DCore/qt3dcore_global.h>
-
-#include <QObject>
-#include <QHash>
-#include <QVector>
-#include <QMetaMethod>
-#include <QDebug>
+#include <QtCore/QDebug>
+#include <QtCore/QHash>
+#include <QtCore/QMetaMethod>
+#include <QtCore/QObject>
+#include <QtCore/QVector>
 
 QT_BEGIN_NAMESPACE
 

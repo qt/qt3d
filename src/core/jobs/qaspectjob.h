@@ -41,8 +41,8 @@
 #define QT3DCORE_QASPECTJOB_H
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <QSharedPointer>
-#include <QVector>
+#include <QtCore/QSharedPointer>
+#include <QtCore/QVector>
 
 QT_BEGIN_NAMESPACE
 

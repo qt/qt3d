@@ -81,11 +81,19 @@ void Texture::setTextureImageManager(TextureImageManager *manager)
 
 void Texture::addDirtyFlag(DirtyFlags flags)
 {
+    QMutexLocker lock(&m_flagsMutex);
     m_dirty |= flags;
+}
+
+Texture::DirtyFlags Texture::dirtyFlags()
+{
+    QMutexLocker lock(&m_flagsMutex);
+    return m_dirty;
 }
 
 void Texture::unsetDirty()
 {
+    QMutexLocker lock(&m_flagsMutex);
     m_dirty = Texture::NotDirty;
 }
 
@@ -244,6 +252,16 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
     markDirty(AbstractRenderer::AllDirty);
     BackendNode::sceneChangeEvent(e);
+}
+
+bool Texture::isValid() const
+{
+    for (const auto handle : m_textureImages) {
+        TextureImage *img = m_textureImageManager->data(handle);
+        if (img == nullptr)
+            return false;
+    }
+    return true;
 }
 
 void Texture::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)

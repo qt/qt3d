@@ -40,9 +40,9 @@
 #ifndef QT3DCORE_QSCENECHANGE_H
 #define QT3DCORE_QSCENECHANGE_H
 
-#include <Qt3DCore/qt3dcore_global.h>
-#include <QSharedPointer>
 #include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/qt3dcore_global.h>
+#include <QtCore/QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,6 +56,7 @@ enum ChangeFlag {
     PropertyValueRemoved    = 1 << 4,
     ComponentAdded          = 1 << 5,
     ComponentRemoved        = 1 << 6,
+    CommandRequested        = 1 << 7,
     AllChanges              = 0xFFFFFFFF
 };
 Q_DECLARE_FLAGS(ChangeFlags, ChangeFlag)

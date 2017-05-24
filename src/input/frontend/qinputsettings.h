@@ -40,8 +40,8 @@
 #ifndef QT3DINPUT_QINPUTSETTINGS_H
 #define QT3DINPUT_QINPUTSETTINGS_H
 
-#include <Qt3DCore/qcomponent.h>
 #include <Qt3DInput/qt3dinput_global.h>
+#include <Qt3DCore/qcomponent.h>
 
 QT_BEGIN_NAMESPACE
 

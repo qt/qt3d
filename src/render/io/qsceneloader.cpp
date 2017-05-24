@@ -198,7 +198,8 @@ void QSceneLoaderPrivate::populateEntityMap(QEntity *parentEntity)
 {
     // Topmost parent entity is not considered part of the scene as that is typically
     // an unnamed entity inserted by importer.
-    for (auto childNode : parentEntity->childNodes()) {
+    const QNodeVector childNodes = parentEntity->childNodes();
+    for (auto childNode : childNodes) {
         auto childEntity = qobject_cast<QEntity *>(childNode);
         if (childEntity) {
             m_entityMap.insert(childEntity->objectName(), childEntity);
@@ -339,7 +340,7 @@ QStringList QSceneLoader::entityNames() const
     \sa Qt3DRender::QSceneLoader::ComponentType
 */
 /*!
-    Returns a component matching \a componentType of a loaded entity with an \a objectName matching
+    Returns a component matching \a componentType of a loaded entity with an objectName matching
     the \a entityName.
     If the entity has multiple matching components, the first match in the component list of
     the entity is returned.
@@ -349,7 +350,8 @@ QComponent *QSceneLoader::component(const QString &entityName,
                                     QSceneLoader::ComponentType componentType) const
 {
     QEntity *e = entity(entityName);
-    for (auto component : e->components()) {
+    const QComponentVector components = e->components();
+    for (auto component : components) {
         switch (componentType) {
         case GeometryRendererComponent:
             if (qobject_cast<Qt3DRender::QGeometryRenderer *>(component))

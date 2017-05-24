@@ -51,8 +51,9 @@
 // We mean it.
 //
 
+#include <QtCore/QSize>
+
 #include <Qt3DRender/private/qgeometry_p.h>
-#include <QSize>
 
 QT_BEGIN_NAMESPACE
 
@@ -74,6 +75,7 @@ public:
     float m_width;
     float m_height;
     QSize m_meshResolution;
+    bool m_mirrored;
     Qt3DRender::QAttribute *m_positionAttribute;
     Qt3DRender::QAttribute *m_normalAttribute;
     Qt3DRender::QAttribute *m_texCoordAttribute;

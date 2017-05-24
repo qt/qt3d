@@ -52,8 +52,8 @@
 
 PlaneMaterial::PlaneMaterial(Qt3DRender::QAbstractTexture *texture, Qt3DCore::QNode *parent)
     : QMaterial(parent)
-    , m_texture(texture)
     , m_effect(new Qt3DRender::QEffect(this))
+    , m_texture(texture)
 {
     setEffect(m_effect);
 

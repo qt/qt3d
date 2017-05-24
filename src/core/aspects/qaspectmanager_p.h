@@ -51,13 +51,14 @@
 // We mean it.
 //
 
-#include <QObject>
 #include <Qt3DCore/qnodecreatedchange.h>
+#include <QtCore/QObject>
+#include <QtCore/QScopedPointer>
+#include <QtCore/QSemaphore>
+#include <QtCore/QVariant>
+#include <QtCore/QVector>
+
 #include <Qt3DCore/private/qt3dcore_global_p.h>
-#include <QVector>
-#include <QScopedPointer>
-#include <QVariant>
-#include <QSemaphore>
 
 QT_BEGIN_NAMESPACE
 

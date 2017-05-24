@@ -89,9 +89,9 @@ NodeManagers::NodeManagers()
     , m_objectPickerManager(new ObjectPickerManager())
 //    , m_boundingVolumeDebugManager(new BoundingVolumeDebugManager())
     , m_lightManager(new LightManager())
+    , m_environmentLightManager(new EnvironmentLightManager())
     , m_computeJobManager(new ComputeCommandManager())
     , m_renderStateManager(new RenderStateManager())
-    , m_eventForwardManager(new EventForwardManager())
     , m_resourceAccessor(new ResourceAccessor(this))
 {
 }
@@ -129,10 +129,10 @@ NodeManagers::~NodeManagers()
     delete m_objectPickerManager;
 //    delete m_boundingVolumeDebugManager;
     delete m_lightManager;
+    delete m_environmentLightManager;
     delete m_computeJobManager;
     delete m_renderStateManager;
     delete m_renderNodesManager;
-    delete m_eventForwardManager;
 }
 
 QSharedPointer<ResourceAccessor> NodeManagers::resourceAccessor()
@@ -321,6 +321,12 @@ LightManager *NodeManagers::manager<Light>() const Q_DECL_NOTHROW
 }
 
 template<>
+EnvironmentLightManager *NodeManagers::manager<EnvironmentLight>() const Q_DECL_NOTHROW
+{
+    return m_environmentLightManager;
+}
+
+template<>
 ComputeCommandManager *NodeManagers::manager<ComputeCommand>() const Q_DECL_NOTHROW
 {
     return m_computeJobManager;
@@ -330,12 +336,6 @@ template<>
 RenderStateManager *NodeManagers::manager<RenderStateNode>() const Q_DECL_NOTHROW
 {
     return m_renderStateManager;
-}
-
-template<>
-EventForwardManager *NodeManagers::manager<EventForward>() const Q_DECL_NOTHROW
-{
-    return m_eventForwardManager;
 }
 
 } // Render

@@ -188,6 +188,8 @@ QOpenGLTexture* GLTexture::getOrCreateGLTexture()
 
     if (!m_gl) {
         m_gl = buildGLTexture();
+        if (!m_gl)
+            return nullptr;
         m_gl->allocateStorage();
         if (!m_gl->isStorageAllocated()) {
             qWarning() << Q_FUNC_INFO << "texture storage allocation failed";
@@ -281,20 +283,24 @@ void GLTexture::setImages(const QVector<Image> &images)
 
 void GLTexture::setGenerator(const QTextureGeneratorPtr &generator)
 {
-    if (m_dataFunctor != generator) {
-        if (m_dataFunctor)
-            m_textureDataManager->releaseData(m_dataFunctor, this);
+    // Note: we do not compare if the generator is different
+    // as in some cases we may want to reset the same generator to force a reload
+    // e.g when using remote urls for textures
+    if (m_dataFunctor)
+        m_textureDataManager->releaseData(m_dataFunctor, this);
 
-        m_textureData.reset();
-        m_dataFunctor = generator;
+    m_textureData.reset();
+    m_dataFunctor = generator;
 
-        if (m_dataFunctor) {
-            m_textureDataManager->requestData(m_dataFunctor, this);
-            requestUpload();
-        }
+    if (m_dataFunctor) {
+        m_textureDataManager->requestData(m_dataFunctor, this);
+        requestUpload();
     }
 }
 
+// Return nullptr if
+// - context cannot be obtained
+// - texture hasn't yet been loaded
 QOpenGLTexture *GLTexture::buildGLTexture()
 {
     QOpenGLContext *ctx = QOpenGLContext::currentContext();
@@ -304,7 +310,9 @@ QOpenGLTexture *GLTexture::buildGLTexture()
     }
 
     if (m_actualTarget == QAbstractTexture::TargetAutomatic) {
-        qWarning() << Q_FUNC_INFO << "something went wrong, target shouldn't be automatic at this point";
+        // If the target is automatic at this point, it means that the texture
+        // hasn't been loaded yet (case of remote urls) and that loading failed
+        // and that target format couldn't be deduced
         return nullptr;
     }
 
@@ -401,7 +409,7 @@ void GLTexture::uploadGLTextureData()
             for (int layer = 0; layer < data->layers(); layer++) {
                 for (int face = 0; face < data->faces(); face++) {
                     for (int level = 0; level < mipLevels; level++) {
-                        // ensure we don't accidently cause a detach / copy of the raw bytes
+                        // ensure we don't accidentally cause a detach / copy of the raw bytes
                         const QByteArray bytes(data->data(layer, face, level));
                         uploadGLData(m_gl, level, layer,
                                      static_cast<QOpenGLTexture::CubeMapFace>(QOpenGLTexture::CubeMapPositiveX + face),
@@ -416,7 +424,7 @@ void GLTexture::uploadGLTextureData()
     for (int i = 0; i < m_images.size(); i++) {
         const QTextureImageDataPtr &imgData = m_imageData.at(i);
 
-        // ensure we don't accidently cause a detach / copy of the raw bytes
+        // ensure we don't accidentally cause a detach / copy of the raw bytes
         const QByteArray bytes(imgData->data());
         uploadGLData(m_gl, m_images[i].mipLevel, m_images[i].layer,
                      static_cast<QOpenGLTexture::CubeMapFace>(m_images[i].face),

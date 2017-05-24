@@ -38,12 +38,14 @@
 ****************************************************************************/
 
 #include "qscene_p.h"
-#include <QHash>
-#include <QReadLocker>
+
 #include <Qt3DCore/qnode.h>
+#include <QtCore/QHash>
+#include <QtCore/QReadLocker>
+
 #include <Qt3DCore/private/qlockableobserverinterface_p.h>
-#include <Qt3DCore/private/qobservableinterface_p.h>
 #include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/private/qobservableinterface_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,6 +57,7 @@ public:
     QScenePrivate(QAspectEngine *engine)
         : m_engine(engine)
         , m_arbiter(nullptr)
+        , m_rootNode(nullptr)
     {
     }
 
@@ -67,6 +70,7 @@ public:
     QLockableObserverInterface *m_arbiter;
     mutable QReadWriteLock m_lock;
     mutable QReadWriteLock m_nodePropertyTrackModeLock;
+    QNode *m_rootNode;
 };
 
 
@@ -171,6 +175,12 @@ QNodeId QScene::nodeIdFromObservable(QObservableInterface *observable) const
     return d->m_observableToUuid.value(observable);
 }
 
+QNode *QScene::rootNode() const
+{
+    Q_D(const QScene);
+    return d->m_rootNode;
+}
+
 void QScene::setArbiter(QLockableObserverInterface *arbiter)
 {
     Q_D(QScene);
@@ -212,7 +222,8 @@ bool QScene::hasEntityForComponent(QNodeId componentUuid, QNodeId entityUuid)
 {
     Q_D(QScene);
     QReadLocker lock(&d->m_lock);
-    return d->m_componentToEntities.values(componentUuid).contains(entityUuid);
+    const auto range = d->m_componentToEntities.equal_range(componentUuid);
+    return std::find(range.first, range.second, entityUuid) != range.second;
 }
 
 QScene::NodePropertyTrackData QScene::lookupNodePropertyTrackData(QNodeId id) const
@@ -234,6 +245,12 @@ void QScene::removePropertyTrackDataForNode(QNodeId nodeId)
     Q_D(QScene);
     QWriteLocker lock(&d->m_nodePropertyTrackModeLock);
     d->m_nodePropertyTrackModeLookupTable.remove(nodeId);
+}
+
+void QScene::setRootNode(QNode *root)
+{
+    Q_D(QScene);
+    d->m_rootNode = root;
 }
 
 } // Qt3D

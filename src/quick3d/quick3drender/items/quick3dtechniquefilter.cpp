@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "quick3dtechniquefilter_p.h"
+#include <Qt3DQuickRender/private/quick3dtechniquefilter_p.h>
 
 QT_BEGIN_NAMESPACE
 

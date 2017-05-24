@@ -51,10 +51,12 @@
 // We mean it.
 //
 
-#include <private/qobject_p.h>
+#include <Qt3DCore/qt3dcore-config.h>
 #include <Qt3DCore/qnodecreatedchange.h>
-#include <Qt3DCore/private/qaspectfactory_p.h>
 #include <QtCore/qsharedpointer.h>
+
+#include <Qt3DCore/private/qaspectfactory_p.h>
+#include <QtCore/private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
 

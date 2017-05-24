@@ -38,10 +38,11 @@
 ****************************************************************************/
 
 #include "mouseeventdispatcherjob_p.h"
-#include "inputhandler_p.h"
-#include "mousehandler_p.h"
-#include "inputmanagers_p.h"
-#include "job_common_p.h"
+
+#include <Qt3DInput/private/inputhandler_p.h>
+#include <Qt3DInput/private/inputmanagers_p.h>
+#include <Qt3DInput/private/job_common_p.h>
+#include <Qt3DInput/private/mousehandler_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,13 +50,18 @@ namespace Qt3DInput {
 namespace Input {
 
 MouseEventDispatcherJob::MouseEventDispatcherJob(Qt3DCore::QNodeId input,
-                                                 const QList<QT_PREPEND_NAMESPACE (QMouseEvent)> &mouseEvents,
-                                                 const QList<QT_PREPEND_NAMESPACE (QWheelEvent)> &wheelEvents)
+                                                 const QList<QT_PREPEND_NAMESPACE (QMouseEvent)> &mouseEvents
+#if QT_CONFIG(wheelevent)
+                                               , const QList<QT_PREPEND_NAMESPACE (QWheelEvent)> &wheelEvents
+#endif
+                                                                                                             )
     : QAspectJob()
     , m_inputHandler(nullptr)
     , m_mouseInput(input)
     , m_mouseEvents(mouseEvents)
+#if QT_CONFIG(wheelevent)
     , m_wheelEvents(wheelEvents)
+#endif
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::MouseEventDispatcher, 0);
 }
@@ -72,8 +78,10 @@ void MouseEventDispatcherJob::run()
         // Send mouse and wheel events to frontend
         for (const QT_PREPEND_NAMESPACE(QMouseEvent) &e : m_mouseEvents)
             input->mouseEvent(QMouseEventPtr(new QMouseEvent(e)));
+#if QT_CONFIG(wheelevent)
         for (const QT_PREPEND_NAMESPACE(QWheelEvent) &e : m_wheelEvents)
             input->wheelEvent(QWheelEventPtr(new QWheelEvent(e)));
+#endif
     }
 }
 

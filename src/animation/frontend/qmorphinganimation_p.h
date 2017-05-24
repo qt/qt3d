@@ -67,6 +67,8 @@ public:
     void updateAnimation(float position);
     void setTargetInterpolated(int morphTarget);
 
+    float m_minposition;
+    float m_maxposition;
     QVector<float> m_targetPositions;
     QVector<QVector<float>*> m_weights;
     QVector<float> m_morphKey;

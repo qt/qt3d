@@ -40,10 +40,9 @@
 #ifndef QT3DCORE_QASPECTENGINE_H
 #define QT3DCORE_QASPECTENGINE_H
 
-#include <QObject>
-#include <QVector>
-
 #include <Qt3DCore/qt3dcore_global.h>
+#include <QtCore/QObject>
+#include <QtCore/QVector>
 
 QT_BEGIN_NAMESPACE
 

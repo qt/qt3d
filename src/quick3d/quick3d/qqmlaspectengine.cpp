@@ -38,10 +38,11 @@
 ****************************************************************************/
 
 #include "qqmlaspectengine_p.h"
-#include <QQmlComponent>
-#include <QQmlContext>
-#include <QDebug>
+
 #include <Qt3DCore/qentity.h>
+#include <QtCore/QDebug>
+#include <QtQml/QQmlComponent>
+#include <QtQml/QQmlContext>
 
 QT_BEGIN_NAMESPACE
 

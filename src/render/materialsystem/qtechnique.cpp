@@ -68,14 +68,61 @@ QTechniquePrivate::~QTechniquePrivate()
     \since 5.7
     \brief Encapsulates a Technique.
 
-    A Technique specifies a set of RenderPass objects, FilterKey objects, Parameter objects
-    and a GraphicsApiFilter, which together define a rendering technique the given
-    graphics API can render. The filter keys are used by TechniqueFilter
-    to select specific techinques at specific parts of the FrameGraph.
-    If the same parameter is specified both in Technique and RenderPass, the one
-    in Technique overrides the one used in the RenderPass.
+    A Technique specifies a set of RenderPass objects, FilterKey objects,
+    Parameter objects and a GraphicsApiFilter, which together define a
+    rendering technique the given graphics API can render. The filter keys are
+    used by TechniqueFilter to select specific techniques at specific parts of
+    the FrameGraph. If two Parameter instances with the same name are specified
+    in a Technique and a RenderPass, the one in Technique overrides the one
+    used in the RenderPass.
 
-    \sa Qt3D.Render::Effect
+    When creating an Effect that targets several versions of a graphics API, it
+    is useful to create several Technique nodes each with a graphicsApiFilter
+    set to match one of the targeted versions. At runtime, the Qt3D renderer
+    will select the most appropriate Technique based on which graphics API
+    versions are supported and (if specified) the FilterKey nodes that satisfy
+    a given TechniqueFilter in the FrameGraph.
+
+    \note When using OpenGL as the graphics API for rendering, Qt3D relies on
+    the QSurfaceFormat returned by QSurfaceFormat::defaultFormat() at runtime
+    to decide what is the most appropriate GL version available. If you need to
+    customize the QSurfaceFormat, do not forget to apply it with
+    QSurfaceFormat::setDefaultFormat(). Setting the QSurfaceFormat on the view
+    will likely have no effect on Qt3D related rendering.
+
+    \code
+    Technique {
+        id: gl3Technique
+        parameters: [
+            Parameter { name: "color"; value: "orange" }
+        ]
+        filterKeys: [
+            FilterKey { name: "name"; value: "zFillTechnique" }
+        ]
+        graphicsApiFilter {
+            api: GraphicsApiFilter.OpenGL
+            profile: GraphicsApiFilter.CoreProfile
+            majorVersion: 3
+            minorVersion: 1
+        }
+        renderPasses: [
+            RenderPass {
+                id: firstPass
+                shaderProgram: ShaderProgram {
+                    ...
+                }
+            },
+            RenderPass {
+                id: secondPass
+                shaderProgram: ShaderProgram {
+                    ...
+                }
+            }
+        ]
+    }
+    \endcode
+
+    \sa Effect, RenderPass, TechniqueFilter
  */
 
 /*!
@@ -85,15 +132,62 @@ QTechniquePrivate::~QTechniquePrivate()
     \since 5.7
     \brief Encapsulates a Technique.
 
-    A Qt3DRender::QTechnique specifies a set of Qt3DRender::QRenderPass objects,
-    Qt3DRender::QFilterKey objects, Qt3DRender::QParameter objects and
-    a Qt3DRender::QGraphicsApiFilter, which together define a rendering technique the given
-    graphics API can render. The filter keys are used by Qt3DRender::QTechniqueFilter
-    to select specific techinques at specific parts of the FrameGraph.
-    If the same parameter is specified both in QTechnique and QRenderPass, the one
-    in QTechnique overrides the one used in the QRenderPass.
+    A Qt3DRender::QTechnique specifies a set of Qt3DRender::QRenderPass
+    objects, Qt3DRender::QFilterKey objects, Qt3DRender::QParameter objects and
+    a Qt3DRender::QGraphicsApiFilter, which together define a rendering
+    technique the given graphics API can render. The filter keys are used by
+    Qt3DRender::QTechniqueFilter to select specific techniques at specific
+    parts of the FrameGraph. If two QParameter instances with the same name are
+    specified in a QTechnique and a QRenderPass, the one in Technique overrides
+    the one used in the QRenderPass.
 
-    \sa Qt3DRender::QEffect
+    When creating an QEffect that targets several versions of a graphics API,
+    it is useful to create several QTechnique nodes each with a
+    graphicsApiFilter set to match one of the targeted GL versions. At runtime,
+    the Qt3D renderer will select the most appropriate QTechnique based on
+    which graphics API versions are supported and (if specified) the QFilterKey
+    nodes that satisfy a given QTechniqueFilter in the FrameGraph.
+
+    \note When using OpenGL as the graphics API for rendering, Qt3D relies on
+    the QSurfaceFormat returned by QSurfaceFormat::defaultFormat() at runtime
+    to decide what is the most appropriate GL version available. If you need to
+    customize the QSurfaceFormat, do not forget to apply it with
+    QSurfaceFormat::setDefaultFormat(). Setting the QSurfaceFormat on the view
+    will likely have no effect on Qt3D related rendering.
+
+    \code
+    QTechnique *gl3Technique = new QTechnique();
+
+    // Create the render passes
+    QRenderPass *firstPass = new QRenderPass();
+    QRenderPass *secondPass = new QRenderPass();
+
+    // Add the passes to the technique
+    gl3Technique->addRenderPass(firstPass);
+    gl3Technique->addRenderPass(secondPass);
+
+    // Set the targeted GL version for the technique
+    gl3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+    gl3Technique->graphicsApiFilter()->setMajorVersion(3);
+    gl3Technique->graphicsApiFilter()->setMinorVersion(1);
+    gl3Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::CoreProfile);
+
+    // Create a FilterKey
+    QFilterKey *filterKey = new QFilterKey();
+    filterKey->setName(QStringLiteral("name"));
+    fitlerKey->setValue(QStringLiteral("zFillPass"));
+
+    // Add the FilterKey to the Technique
+    gl3Technique->addFilterKey(filterKey);
+
+    // Create a QParameter
+    QParameter *colorParameter = new QParameter(QStringLiteral("color"), QColor::fromRgbF(0.0f, 0.0f, 1.0f, 1.0f));
+
+    // Add parameter to technique
+    gl3Technique->addParameter(colorParameter);
+    \endcode
+
+    \sa QEffect, QRenderPass, QTechniqueFilter
  */
 
 /*!

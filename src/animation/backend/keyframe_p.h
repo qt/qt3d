@@ -48,6 +48,7 @@
 // We mean it.
 //
 
+#include <Qt3DAnimation/qkeyframe.h>
 #include <QtGui/qvector2d.h>
 
 QT_BEGIN_NAMESPACE
@@ -57,13 +58,6 @@ namespace Animation {
 
 struct Keyframe
 {
-    enum Interpolation {
-        Constant,
-        Linear,
-        Bezier
-        // TODO: Add other easing types
-    };
-
     inline bool operator==(const Keyframe &rhs) const
     {
         return value == rhs.value
@@ -75,7 +69,7 @@ struct Keyframe
     float value;                 // Value (time is stored separately in FCurve)
     QVector2D leftControlPoint;  // Bezier control point (time, value)
     QVector2D rightControlPoint; // Bezier control point (time, value)
-    Interpolation interpolation; // Method to use for evaluation between this Keyframe and the next
+    QKeyFrame::InterpolationType interpolation; // Method to use for evaluation between this Keyframe and the next
 };
 
 } // namespace Animation

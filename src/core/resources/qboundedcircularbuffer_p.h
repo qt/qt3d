@@ -51,12 +51,12 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qcircularbuffer_p.h>
+#include <QtCore/QReadWriteLock>
+#include <QtCore/QReadLocker>
+#include <QtCore/QSemaphore>
+#include <QtCore/QtGlobal>
 
-#include <QReadWriteLock>
-#include <QReadLocker>
-#include <QSemaphore>
-#include <QtGlobal>
+#include <Qt3DCore/private/qcircularbuffer_p.h>
 
 QT_BEGIN_NAMESPACE
 

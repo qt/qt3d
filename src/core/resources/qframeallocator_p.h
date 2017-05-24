@@ -56,9 +56,10 @@
 #include <valgrind/memcheck.h>
 #endif
 
-#include <QDebug>
-#include <QScopedPointer>
-#include <QVector>
+#include <QtCore/QDebug>
+#include <QtCore/QScopedPointer>
+#include <QtCore/QVector>
+
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE

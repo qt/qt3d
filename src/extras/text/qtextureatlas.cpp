@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qtextureatlas.h"
 #include "qtextureatlas_p.h"
+#include "qtextureatlas_p_p.h"
 #include <Qt3DRender/qtexturedata.h>
 #include <Qt3DRender/qabstracttextureimage.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
@@ -179,7 +179,7 @@ Qt3DRender::QTextureDataPtr QTextureAtlasGenerator::operator()()
 
 bool QTextureAtlasGenerator::operator==(const QTextureGenerator &other) const
 {
-    const QTextureAtlasGenerator *otherFunctor = functor_cast<QTextureAtlasGenerator>(&other);
+    const QTextureAtlasGenerator *otherFunctor = Qt3DRender::functor_cast<QTextureAtlasGenerator>(&other);
     return (otherFunctor != nullptr
             && otherFunctor->m_data == m_data
             && otherFunctor->m_atlasId == m_atlasId

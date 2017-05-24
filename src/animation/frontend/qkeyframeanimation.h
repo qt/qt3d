@@ -55,7 +55,7 @@ class QT3DANIMATIONSHARED_EXPORT QKeyframeAnimation : public QAbstractAnimation
     Q_OBJECT
     Q_PROPERTY(QVector<float> framePositions READ framePositions WRITE setFramePositions NOTIFY framePositionsChanged)
     Q_PROPERTY(Qt3DCore::QTransform *target READ target WRITE setTarget NOTIFY targetChanged)
-    Q_PROPERTY(QEasingCurve::Type easing READ easing WRITE setEasing NOTIFY easingChanged)
+    Q_PROPERTY(QEasingCurve easing READ easing WRITE setEasing NOTIFY easingChanged)
     Q_PROPERTY(QString targetName READ targetName WRITE setTargetName NOTIFY targetNameChanged)
     Q_PROPERTY(QKeyframeAnimation::RepeatMode startMode READ startMode WRITE setStartMode NOTIFY startModeChanged)
     Q_PROPERTY(QKeyframeAnimation::RepeatMode endMode READ endMode WRITE setEndMode NOTIFY endModeChanged)
@@ -74,7 +74,7 @@ public:
     QVector<float> framePositions() const;
     QVector<Qt3DCore::QTransform *> keyframeList() const;
     Qt3DCore::QTransform *target() const;
-    QEasingCurve::Type easing() const;
+    QEasingCurve easing() const;
     QString targetName() const;
     RepeatMode startMode() const;
     RepeatMode endMode() const;
@@ -86,7 +86,7 @@ public:
 public Q_SLOTS:
     void setFramePositions(const QVector<float> &positions);
     void setTarget(Qt3DCore::QTransform *target);
-    void setEasing(QEasingCurve::Type easing);
+    void setEasing(const QEasingCurve &easing);
     void setTargetName(const QString &name);
     void setStartMode(RepeatMode mode);
     void setEndMode(RepeatMode mode);
@@ -94,10 +94,10 @@ public Q_SLOTS:
 Q_SIGNALS:
     void framePositionsChanged(const QVector<float> &positions);
     void targetChanged(Qt3DCore::QTransform *target);
-    void easingChanged(QEasingCurve::Type easing);
+    void easingChanged(const QEasingCurve &easing);
     void targetNameChanged(const QString &name);
-    void startModeChanged(RepeatMode startMode);
-    void endModeChanged(RepeatMode endMode);
+    void startModeChanged(QKeyframeAnimation::RepeatMode startMode);
+    void endModeChanged(QKeyframeAnimation::RepeatMode endMode);
 
 private:
     void updateAnimation(float position);

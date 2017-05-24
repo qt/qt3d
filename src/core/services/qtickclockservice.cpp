@@ -38,9 +38,10 @@
 ****************************************************************************/
 
 #include "qtickclockservice_p.h"
-#include "qtickclock_p.h"
-#include "qabstractframeadvanceservice_p.h"
-#include "qabstractframeadvanceservice_p_p.h"
+
+#include <Qt3DCore/private/qabstractframeadvanceservice_p.h>
+#include <Qt3DCore/private/qabstractframeadvanceservice_p_p.h>
+#include <Qt3DCore/private/qtickclock_p.h>
 
 QT_BEGIN_NAMESPACE
 

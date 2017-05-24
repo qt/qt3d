@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "quick3dinputchord_p.h"
+#include <Qt3DQuickInput/private/quick3dinputchord_p.h>
 
 QT_BEGIN_NAMESPACE
 

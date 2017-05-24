@@ -51,10 +51,12 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qt3dcore_global_p.h>
-#include <Qt3DCore/private/qobservableinterface_p.h>
+#include <QtCore/QScopedPointer>
+
 #include <Qt3DCore/qnode.h>
-#include <QScopedPointer>
+#include <QtCore/qscopedpointer.h>
+#include <Qt3DCore/private/qobservableinterface_p.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -83,6 +85,8 @@ public:
     QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const;
     QNodeId nodeIdFromObservable(QObservableInterface *observable) const;
 
+    QNode *rootNode() const;
+
     void setArbiter(Qt3DCore::QLockableObserverInterface *arbiter);
     Qt3DCore::QLockableObserverInterface *arbiter() const;
 
@@ -95,8 +99,8 @@ public:
     // Node -> Property Update Data
     struct NodePropertyTrackData
     {
-        QNode::PropertyTrackMode updateMode = QNode::DefaultTrackMode;
-        QStringList namedProperties;
+        QNode::PropertyTrackingMode defaultTrackMode = QNode::TrackFinalValues;
+        QHash<QString, QNode::PropertyTrackingMode> trackedPropertiesOverrides;
     };
     NodePropertyTrackData lookupNodePropertyTrackData(QNodeId id) const;
     void setPropertyTrackDataForNode(QNodeId id, const NodePropertyTrackData &data);
@@ -105,6 +109,9 @@ public:
 private:
     Q_DECLARE_PRIVATE(QScene)
     QScopedPointer<QScenePrivate> d_ptr;
+
+    void setRootNode(QNode *root);
+    friend class QAspectEnginePrivate;
 };
 
 } // Qt3D

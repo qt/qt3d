@@ -54,12 +54,14 @@ class QT3DRENDERSHARED_EXPORT QPickTriangleEvent : public QPickEvent
     Q_PROPERTY(uint vertex1Index READ vertex1Index CONSTANT)
     Q_PROPERTY(uint vertex2Index READ vertex2Index CONSTANT)
     Q_PROPERTY(uint vertex3Index READ vertex3Index CONSTANT)
+    Q_PROPERTY(QVector3D uvw READ uvw CONSTANT)
 public:
     QPickTriangleEvent();
     QPickTriangleEvent(const QPointF &position, const QVector3D& worldIntersection, const QVector3D& localIntersection, float distance,
                        uint triangleIndex, uint vertex1Index, uint vertex2Index, uint vertex3Index);
     QPickTriangleEvent(const QPointF &position, const QVector3D& worldIntersection, const QVector3D& localIntersection, float distance,
-                       uint triangleIndex, uint vertex1Index, uint vertex2Index, uint vertex3Index, Buttons button, int buttons, int modifiers);
+                       uint triangleIndex, uint vertex1Index, uint vertex2Index, uint vertex3Index, Buttons button, int buttons, int modifiers,
+                       const QVector3D &uvw);
     ~QPickTriangleEvent();
 
 public:
@@ -67,6 +69,7 @@ public:
     uint vertex1Index() const;
     uint vertex2Index() const;
     uint vertex3Index() const;
+    QVector3D uvw() const;
 
 private:
     Q_DECLARE_PRIVATE(QPickTriangleEvent)

@@ -74,7 +74,6 @@ void BlendedClipAnimator::cleanup()
     m_startGlobalTime = 0;
     m_currentLoop = 0;
     m_loops = 1;
-    m_blendTreeTable.clear();
 }
 
 void BlendedClipAnimator::setBlendTreeRootId(Qt3DCore::QNodeId blendTreeId)

@@ -38,12 +38,14 @@
 ****************************************************************************/
 
 #include "action_p.h"
+
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qabstractactioninput.h>
-#include <Qt3DInput/private/qaction_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
+
+#include <Qt3DInput/private/qaction_p.h>
 
 QT_BEGIN_NAMESPACE
 

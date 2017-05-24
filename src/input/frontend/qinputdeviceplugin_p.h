@@ -52,8 +52,8 @@
 //
 
 #include <QtCore/QObject>
-#include <QtCore/QtPlugin>
 #include <QtCore/QFactoryInterface>
+#include <QtCore/QtPlugin>
 
 #include <Qt3DInput/private/qt3dinput_global_p.h>
 

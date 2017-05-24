@@ -11,6 +11,7 @@ HEADERS += \
     $$PWD/calcboundingvolumejob_p.h \
     $$PWD/pickboundingvolumejob_p.h \
     $$PWD/calcgeometrytrianglevolumes_p.h \
+    $$PWD/computefilteredboundingvolumejob_p.h \
     $$PWD/job_common_p.h \
     $$PWD/filterlayerentityjob_p.h \
     $$PWD/filterentitybycomponentjob_p.h \
@@ -42,6 +43,7 @@ SOURCES += \
     $$PWD/calcboundingvolumejob.cpp \
     $$PWD/pickboundingvolumejob.cpp \
     $$PWD/calcgeometrytrianglevolumes.cpp \
+    $$PWD/computefilteredboundingvolumejob.cpp \
     $$PWD/filterlayerentityjob.cpp \
     $$PWD/materialparametergathererjob.cpp \
     $$PWD/renderviewbuilderjob.cpp \

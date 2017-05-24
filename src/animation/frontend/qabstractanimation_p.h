@@ -55,7 +55,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
-class QAbstractAnimationPrivate : public QObjectPrivate
+class Q_AUTOTEST_EXPORT QAbstractAnimationPrivate : public QObjectPrivate
 {
 public:
     QAbstractAnimationPrivate(QAbstractAnimation::AnimationType type);

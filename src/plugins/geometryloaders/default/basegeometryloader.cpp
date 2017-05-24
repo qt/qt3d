@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-Q_LOGGING_CATEGORY(BaseGeometryLoaderLog, "Qt3D.BaseGeometryLoader")
+Q_LOGGING_CATEGORY(BaseGeometryLoaderLog, "Qt3D.BaseGeometryLoader", QtWarningMsg)
 
 BaseGeometryLoader::BaseGeometryLoader()
     : m_loadTextureCoords(true)

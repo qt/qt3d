@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "quick3daxis_p.h"
+#include <Qt3DQuickInput/private/quick3daxis_p.h>
 
 QT_BEGIN_NAMESPACE
 

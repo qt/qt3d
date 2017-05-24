@@ -53,45 +53,37 @@ class QT3DEXTRASSHARED_EXPORT QTexturedMetalRoughMaterial : public Qt3DRender::Q
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QAbstractTexture *baseColor READ baseColor WRITE setBaseColor NOTIFY baseColorChanged)
-    Q_PROPERTY(Qt3DRender::QAbstractTexture *metallic READ metallic WRITE setMetallic NOTIFY metallicChanged)
+    Q_PROPERTY(Qt3DRender::QAbstractTexture *metalness READ metalness WRITE setMetalness NOTIFY metalnessChanged)
     Q_PROPERTY(Qt3DRender::QAbstractTexture *roughness READ roughness WRITE setRoughness NOTIFY roughnessChanged)
     Q_PROPERTY(Qt3DRender::QAbstractTexture *ambientOcclusion READ ambientOcclusion WRITE setAmbientOcclusion NOTIFY ambientOcclusionChanged)
     Q_PROPERTY(Qt3DRender::QAbstractTexture *normal READ normal WRITE setNormal NOTIFY normalChanged)
-    Q_PROPERTY(Qt3DRender::QAbstractTexture *environmentIrradiance READ environmentIrradiance WRITE setEnvironmentIrradiance NOTIFY environmentIrradianceChanged)
-    Q_PROPERTY(Qt3DRender::QAbstractTexture *environmentSpecular READ environmentSpecular WRITE setEnvironmentSpecular NOTIFY environmentSpecularChanged)
 
 public:
     explicit QTexturedMetalRoughMaterial(Qt3DCore::QNode *parent = nullptr);
     ~QTexturedMetalRoughMaterial();
 
     Qt3DRender::QAbstractTexture *baseColor() const;
-    Qt3DRender::QAbstractTexture *metallic() const;
+    Qt3DRender::QAbstractTexture *metalness() const;
     Qt3DRender::QAbstractTexture *roughness() const;
     Qt3DRender::QAbstractTexture *ambientOcclusion() const;
     Qt3DRender::QAbstractTexture *normal() const;
-    Qt3DRender::QAbstractTexture *environmentIrradiance() const;
-    Qt3DRender::QAbstractTexture *environmentSpecular() const;
 
 public Q_SLOTS:
     void setBaseColor(Qt3DRender::QAbstractTexture *baseColor);
-    void setMetallic(Qt3DRender::QAbstractTexture *metallic);
+    void setMetalness(Qt3DRender::QAbstractTexture *metalness);
     void setRoughness(Qt3DRender::QAbstractTexture *roughness);
     void setAmbientOcclusion(Qt3DRender::QAbstractTexture *ambientOcclusion);
     void setNormal(Qt3DRender::QAbstractTexture *normal);
-    void setEnvironmentIrradiance(Qt3DRender::QAbstractTexture *environmentIrradiance);
-    void setEnvironmentSpecular(Qt3DRender::QAbstractTexture *environmentSpecular);
 
 Q_SIGNALS:
     void baseColorChanged(Qt3DRender::QAbstractTexture *baseColor);
-    void metallicChanged(Qt3DRender::QAbstractTexture *metallic);
+    void metalnessChanged(Qt3DRender::QAbstractTexture *metalness);
     void roughnessChanged(Qt3DRender::QAbstractTexture *roughness);
     void ambientOcclusionChanged(Qt3DRender::QAbstractTexture *ambientOcclusion);
     void normalChanged(Qt3DRender::QAbstractTexture *normal);
-    void environmentIrradianceChanged(Qt3DRender::QAbstractTexture *environmentIrradiance);
-    void environmentSpecularChanged(Qt3DRender::QAbstractTexture *environmentSpecular);
 
 protected:
-    QTexturedMetalRoughMaterial(QTexturedMetalRoughMaterialPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    explicit QTexturedMetalRoughMaterial(QTexturedMetalRoughMaterialPrivate &dd, Qt3DCore::QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QTexturedMetalRoughMaterial)

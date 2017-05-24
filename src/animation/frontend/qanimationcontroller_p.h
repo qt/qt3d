@@ -64,6 +64,7 @@ public:
     int m_activeAnimationGroup;
     QVector<QAnimationGroup *> m_animationGroups;
     float m_position;
+    float m_scaledPosition;
     float m_positionScale;
     float m_positionOffset;
     Qt3DCore::QEntity *m_entity;
@@ -73,6 +74,7 @@ public:
     void extractAnimations();
     void clearAnimations();
     QAnimationGroup *findGroup(const QString &name);
+    float scaledPosition(float position) const;
 
     Q_DECLARE_PUBLIC(QAnimationController)
 };

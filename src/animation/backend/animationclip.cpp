@@ -36,7 +36,9 @@
 
 #include "animationclip_p.h"
 #include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/private/qanimationclip_p.h>
+#include <Qt3DAnimation/private/qanimationcliploader_p.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
@@ -55,20 +57,36 @@ namespace Animation {
 AnimationClip::AnimationClip()
     : BackendNode(ReadWrite)
     , m_source()
+    , m_status(QAnimationClipLoader::NotReady)
+    , m_clipData()
+    , m_dataType(Unknown)
     , m_name()
-    , m_objectName()
-    , m_channelGroups()
+    , m_channels()
     , m_duration(0.0f)
 {
 }
 
 void AnimationClip::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
-    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAnimationClipData>>(change);
-    const auto &data = typedChange->data;
-    m_source = data.source;
-    if (!m_source.isEmpty())
-        setDirty(Handler::AnimationClipDirty);
+    const auto loaderTypedChange = qSharedPointerDynamicCast<Qt3DCore::QNodeCreatedChange<QAnimationClipLoaderData>>(change);
+    if (loaderTypedChange) {
+        const auto &data = loaderTypedChange->data;
+        m_dataType = File;
+        m_source = data.source;
+        if (!m_source.isEmpty())
+            setDirty(Handler::AnimationClipDirty);
+        return;
+    }
+
+    const auto clipTypedChange = qSharedPointerDynamicCast<Qt3DCore::QNodeCreatedChange<QAnimationClipChangeData>>(change);
+    if (clipTypedChange) {
+        const auto &data = clipTypedChange->data;
+        m_dataType = Data;
+        m_clipData = data.clipData;
+        if (m_clipData.isValid())
+            setDirty(Handler::AnimationClipDirty);
+        return;
+    }
 }
 
 void AnimationClip::cleanup()
@@ -76,10 +94,25 @@ void AnimationClip::cleanup()
     setEnabled(false);
     m_handler = nullptr;
     m_source.clear();
-    m_channelGroups.clear();
+    m_clipData.clearChannels();
+    m_status = QAnimationClipLoader::NotReady;
+    m_dataType = Unknown;
+    m_channels.clear();
     m_duration = 0.0f;
 
     clearData();
+}
+
+void AnimationClip::setStatus(QAnimationClipLoader::Status status)
+{
+    if (status != m_status) {
+        m_status = status;
+        Qt3DCore::QPropertyUpdatedChangePtr e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
+        e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
+        e->setPropertyName("status");
+        e->setValue(QVariant::fromValue(m_status));
+        notifyObservers(e);
+    }
 }
 
 void AnimationClip::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -88,8 +121,14 @@ void AnimationClip::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     case Qt3DCore::PropertyUpdated: {
         const auto change = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (change->propertyName() == QByteArrayLiteral("source")) {
+            Q_ASSERT(m_dataType == File);
             m_source = change->value().toUrl();
             setDirty(Handler::AnimationClipDirty);
+        } else if (change->propertyName() == QByteArrayLiteral("clipData")) {
+            Q_ASSERT(m_dataType == Data);
+            m_clipData = change->value().value<Qt3DAnimation::QAnimationClipData>();
+            if (m_clipData.isValid())
+                setDirty(Handler::AnimationClipDirty);
         }
         break;
     }
@@ -109,11 +148,45 @@ void AnimationClip::loadAnimation()
     qCDebug(Jobs) << Q_FUNC_INFO << m_source;
     clearData();
 
+    // Load the data
+    switch (m_dataType) {
+    case File:
+        loadAnimationFromUrl();
+        break;
+
+    case Data:
+        loadAnimationFromData();
+        break;
+
+    default:
+        Q_UNREACHABLE();
+    }
+
+    // Update the duration
+    const float t = findDuration();
+    setDuration(t);
+
+    m_channelComponentCount = findChannelComponentCount();
+
+    // If using a loader inform the frontend of the status change
+    if (m_source.isEmpty()) {
+        if (qFuzzyIsNull(t) || m_channelComponentCount == 0)
+            setStatus(QAnimationClipLoader::Error);
+        else
+            setStatus(QAnimationClipLoader::Ready);
+    }
+
+    qCDebug(Jobs) << "Loaded animation data:" << *this;
+}
+
+void AnimationClip::loadAnimationFromUrl()
+{
     // TODO: Handle remote files
     QString filePath = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_source);
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly)) {
         qWarning() << "Could not find animation clip:" << filePath;
+        setStatus(QAnimationClipLoader::Error);
         return;
     }
 
@@ -126,28 +199,29 @@ void AnimationClip::loadAnimation()
     qCDebug(Jobs) << "Found" << animationsArray.size() << "animations:";
     for (int i = 0; i < animationsArray.size(); ++i) {
         QJsonObject animation = animationsArray.at(i).toObject();
-        qCDebug(Jobs) << "\tName:" << animation[QLatin1String("action")].toString()
-                      << "Object:" << animation[QLatin1String("object")].toString();
+        qCDebug(Jobs) << "Animation Name:" << animation[QLatin1String("animationName")].toString();
     }
 
     // For now just load the first animation
+    // TODO: Allow loading a named animation from within the file analogous to QMesh
     QJsonObject animation = animationsArray.at(0).toObject();
-    m_name = animation[QLatin1String("action")].toString();
-    m_objectName = animation[QLatin1String("object")].toString();
-    QJsonArray groupsArray = animation[QLatin1String("groups")].toArray();
-    const int groupCount = groupsArray.size();
-    m_channelGroups.resize(groupCount);
-    for (int i = 0; i < groupCount; ++i) {
-        const QJsonObject group = groupsArray.at(i).toObject();
-        m_channelGroups[i].read(group);
+    m_name = animation[QLatin1String("animationName")].toString();
+    QJsonArray channelsArray = animation[QLatin1String("channels")].toArray();
+    const int channelCount = channelsArray.size();
+    m_channels.resize(channelCount);
+    for (int i = 0; i < channelCount; ++i) {
+        const QJsonObject group = channelsArray.at(i).toObject();
+        m_channels[i].read(group);
     }
+}
 
-    const float t = findDuration();
-    setDuration(t);
-
-    m_channelCount = findChannelCount();
-
-    qCDebug(Jobs) << "Loaded animation data:" << *this;
+void AnimationClip::loadAnimationFromData()
+{
+    // Reformat data from QAnimationClipData to backend format
+    m_channels.resize(m_clipData.channelCount());
+    int i = 0;
+    for (const auto &frontendChannel : qAsConst(m_clipData))
+        m_channels[i++].setFromQChannel(frontendChannel);
 }
 
 void AnimationClip::setDuration(float duration)
@@ -165,38 +239,47 @@ void AnimationClip::setDuration(float duration)
     notifyObservers(e);
 }
 
+int AnimationClip::channelIndex(const QString &channelName) const
+{
+    const int channelCount = m_channels.size();
+    for (int i = 0; i < channelCount; ++i) {
+        if (m_channels[i].name == channelName)
+            return i;
+    }
+    return -1;
+}
+
 /*!
     \internal
 
-    Given the index of a channel group, \a channelGroupIndex, calculates
-    the base index of the first channel in this group. For example, if
+    Given the index of a channel, \a channelIndex, calculates
+    the base index of the first channelComponent in this group. For example, if
     there are two channel groups each with 3 channels and you request
     the channelBaseIndex(1), the return value will be 3. Indices 0-2 are
     for the first group, so the first channel of the second group occurs
     at index 3.
  */
-int AnimationClip::channelBaseIndex(int channelGroupIndex) const
+int AnimationClip::channelComponentBaseIndex(int channelIndex) const
 {
     int index = 0;
-    for (int i = 0; i < channelGroupIndex; ++i)
-        index += m_channelGroups[i].channels.size();
+    for (int i = 0; i < channelIndex; ++i)
+        index += m_channels[i].channelComponents.size();
     return index;
 }
 
 void AnimationClip::clearData()
 {
     m_name.clear();
-    m_objectName.clear();
-    m_channelGroups.clear();
+    m_channels.clear();
 }
 
 float AnimationClip::findDuration()
 {
     // Iterate over the contained fcurves and find the longest one
     double tMax = 0.0;
-    for (const ChannelGroup &channelGroup : qAsConst(m_channelGroups)) {
-        for (const Channel &channel : qAsConst(channelGroup.channels)) {
-            const float t = channel.fcurve.endTime();
+    for (const Channel &channel : qAsConst(m_channels)) {
+        for (const ChannelComponent &channelComponent : qAsConst(channel.channelComponents)) {
+            const float t = channelComponent.fcurve.endTime();
             if (t > tMax)
                 tMax = t;
         }
@@ -204,11 +287,11 @@ float AnimationClip::findDuration()
     return tMax;
 }
 
-int AnimationClip::findChannelCount()
+int AnimationClip::findChannelComponentCount()
 {
     int channelCount = 0;
-    for (const ChannelGroup &channelGroup : qAsConst(m_channelGroups))
-        channelCount += channelGroup.channels.size();
+    for (const Channel &channel : qAsConst(m_channels))
+        channelCount += channel.channelComponents.size();
     return channelCount;
 }
 

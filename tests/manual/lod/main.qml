@@ -49,9 +49,9 @@
 ****************************************************************************/
 
 import Qt3D.Core 2.0
-import Qt3D.Render 2.2
+import Qt3D.Render 2.9
 import Qt3D.Input 2.0
-import Qt3D.Extras 2.2
+import Qt3D.Extras 2.9
 
 import QtQuick 2.0 as QQ2
 
@@ -126,10 +126,8 @@ Entity {
                     id: lod
                     camera: camera
                     thresholds: [1000, 600, 300, 180]
-                    thresholdType: LevelOfDetail.ProjectedScreenPixelSize
-                    volumeOverride: BoundingSphere {
-                        radius: 2.
-                    }
+                    thresholdType: LevelOfDetail.ProjectedScreenPixelSizeThreshold
+                    volumeOverride: lod.createBoundingSphere(Qt.vector3d(0, 0, 0), 2.0)
                 }
             ]
         }
@@ -143,6 +141,7 @@ Entity {
         ]
 
         LevelOfDetailLoader {
+            id: lodLoader
             components: [ Transform {
                     scale: .5
                     translation: Qt.vector3d(-8, 0, 0)
@@ -150,8 +149,8 @@ Entity {
 
             camera: camera
             thresholds: [20, 35, 50, 65]
-            thresholdType: LevelOfDetail.DistanceToCamera
-            volumeOverride: null
+            thresholdType: LevelOfDetail.DistanceToCameraThreshold
+            volumeOverride: lodLoader.createBoundingSphere(Qt.vector3d(0, 0, 0), -1)
             sources: ["qrc:/SphereEntity.qml", "qrc:/CylinderEntity.qml", "qrc:/ConeEntity.qml", "qrc:/CuboidEntity.qml"]
         }
     }
@@ -172,7 +171,7 @@ Entity {
                 LevelOfDetailSwitch {
                     camera: camera
                     thresholds: [20, 35, 50, 65]
-                    thresholdType: LevelOfDetail.DistanceToCamera
+                    thresholdType: LevelOfDetail.DistanceToCameraThreshold
                 }
             ]
 

@@ -38,13 +38,15 @@
 
 #include "qinputsequence.h"
 #include "qinputsequence_p.h"
-#include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DCore/qnodecreatedchange.h>
-#include <Qt3DInput/qabstractphysicaldevice.h>
+
 #include <Qt3DInput/qabstractactioninput.h>
-#include <Qt3DCore/qpropertyupdatedchange.h>
+#include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/qpropertynodeaddedchange.h>
 #include <Qt3DCore/qpropertynoderemovedchange.h>
+#include <Qt3DCore/qpropertyupdatedchange.h>
+
+#include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -74,7 +76,7 @@ QInputSequencePrivate::QInputSequencePrivate()
 
     Represents a set of QAbstractActionInput's that must be triggerd one after the other.
 
-    The following example shows a chord that will be triggered by pressing the A and S keys together with a tolerence of 10 miliseconds between presses.
+    The following example shows a chord that will be triggered by pressing the A and S keys together with a tolerance of 10 miliseconds between presses.
     \qml
     InputChord {
       tolerance: 10

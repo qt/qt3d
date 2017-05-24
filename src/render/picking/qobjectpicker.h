@@ -41,7 +41,6 @@
 #define QT3DRENDER_QOBJECTPICKER_H
 
 #include <Qt3DCore/qcomponent.h>
-#include <Qt3DRender/qeventforward.h>
 #include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -59,7 +58,6 @@ class QT3DRENDERSHARED_EXPORT QObjectPicker : public Qt3DCore::QComponent
     Q_PROPERTY(bool dragEnabled READ isDragEnabled WRITE setDragEnabled NOTIFY dragEnabledChanged)
     Q_PROPERTY(bool pressed READ isPressed NOTIFY pressedChanged)
     Q_PROPERTY(bool containsMouse READ containsMouse NOTIFY containsMouseChanged)
-    Q_PROPERTY(Qt3DRender::QEventForward *eventForward READ eventForward WRITE setEventForward NOTIFY eventForwardChanged)
 
 public:
     explicit QObjectPicker(QNode *parent = nullptr);
@@ -71,12 +69,9 @@ public:
     bool containsMouse() const;
     bool isPressed() const;
 
-    QEventForward *eventForward() const;
-
 public Q_SLOTS:
     void setHoverEnabled(bool hoverEnabled);
     void setDragEnabled(bool dragEnabled);
-    void setEventForward(QEventForward *eventForward);
 
 Q_SIGNALS:
     void pressed(Qt3DRender::QPickEvent *pick);
@@ -89,7 +84,6 @@ Q_SIGNALS:
     void dragEnabledChanged(bool dragEnabled);
     void pressedChanged(bool pressed);
     void containsMouseChanged(bool containsMouse);
-    void eventForwardChanged(QEventForward *eventForward);
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;

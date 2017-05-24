@@ -46,11 +46,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DAnimation {
 
 QBlendedClipAnimatorPrivate::QBlendedClipAnimatorPrivate()
-    : Qt3DCore::QComponentPrivate()
+    : Qt3DAnimation::QAbstractClipAnimatorPrivate()
     , m_blendTreeRoot(nullptr)
-    , m_mapper(nullptr)
-    , m_running(false)
-    , m_loops(1)
 {
 }
 
@@ -58,34 +55,210 @@ QBlendedClipAnimatorPrivate::QBlendedClipAnimatorPrivate()
     \qmltype BlendedClipAnimator
     \instantiates Qt3DAnimation::QBlendedClipAnimator
     \inqmlmodule Qt3D.Animation
-
-    \brief Performs an animation based on a tree of blend nodes
-
-    \note The blend node tree should only be edited when the clip is not
-    running
-
     \since 5.9
+
+    \brief BlendedClipAnimator is a component providing animation playback capabilities of a tree
+    of blend nodes.
+
+    An instance of BlendedClipAnimator can be aggregated by an Entity to add the ability to play
+    back animation clips and to apply the calculated animation values to properties of QObjects.
+
+    Whereas a ClipAnimator gets its animation data from a single animation clip,
+    BlendedClipAnimator can blend together multiple clips. The animation data is obtained by
+    evaluating a so called \e {blend tree}. A blend tree is a hierarchical tree structure where the
+    leaf nodes are value nodes that encapsulate an animation clip (AbstractAnimationClip); and the
+    internal nodes represent blending operations that operate on the nodes pointed to by their
+    operand properties.
+
+    To associate a blend tree with a BlendedClipAnimator, set the animator's blendTree property to
+    point at the root node of your blend tree:
+
+    \badcode
+    BlendedClipAnimator {
+        blendTree: AdditiveClipBlend {
+            ....
+        }
+    }
+    \endcode
+
+    A blend tree can be constructed from the following node types:
+
+    \note The blend node tree should only be edited when the animator is not running.
+
+    \list
+    \li Qt3D.Animation.ClipBlendValue
+    \li Qt3D.Animation.LerpClipBlend
+    \li Qt3D.Animation.AdditiveClipBlend
+    \endlist
+
+    Additional node types will be added over time.
+
+    As an example consider the following blend tree:
+
+    \badcode
+        Clip0----
+                |
+                Lerp Node----
+                |           |
+        Clip1----           Additive Node
+                            |
+                    Clip2----
+    \endcode
+
+    This can be created and used as follows:
+
+    \badcode
+    BlendedClipAnimator {
+        blendTree: AdditiveClipBlend {
+            baseClip: LerpClipBlend {
+                startClip: ClipBlendValue {
+                    clip: AnimationClipLoader { source: "walk.json" }
+                }
+
+                endClip: ClipBlendValue {
+                    clip: AnimationClipLoader { source: "run.json" }
+                }
+            }
+
+            additiveClip: ClipBlendValue {
+                clip: AnimationClipLoader { source: "wave-arm.json" }
+            }
+        }
+
+        channelMapper: ChannelMapper {...}
+        running: true
+    }
+    \endcode
+
+    By authoring a set of animation clips and blending between them dynamically at runtime with a
+    blend tree, we open up a huge set of possible resulting animations. As some simple examples of
+    the above blend tree, where alpha is the additive factor and beta is the lerp blend factor we
+    can get a 2D continuum of possible animations:
+
+    \badcode
+    (alpha = 0, beta = 1) Running, No arm waving --- (alpha = 1, beta = 1) Running, Arm waving
+            |                                               |
+            |                                               |
+            |                                               |
+    (alpha = 0, beta = 0) Walking, No arm waving --- (alpha = 0, beta = 1) Running, No arm waving
+    \endcode
+
+    More complex blend trees offer even more flexibility for combining your animation clips. Note
+    that the values used to control the blend tree (alpha and beta above) are simple properties on
+    the blend nodes. This means, that these properties themselves can also be controlled by
+    the animation framework.
 */
 
 /*!
     \class Qt3DAnimation::QBlendedClipAnimator
+    \inherits Qt3DAnimation::QAbstractClipAnimator
+
     \inmodule Qt3DAnimation
-    \inherits Qt3DCore::QComponent
-
-    \brief Performs an animation based on a tree of blend nodes
-
-    \note The blend node tree should only be edited when the clip is not
-    running
-
     \since 5.9
+
+    \brief QBlendedClipAnimator is a component providing animation playback capabilities of a tree
+    of blend nodes.
+
+    An instance of QBlendedClipAnimator can be aggregated by a QEntity to add the ability to play
+    back animation clips and to apply the calculated animation values to properties of QObjects.
+
+    Whereas a QClipAnimator gets its animation data from a single animation clip,
+    QBlendedClipAnimator can blend together multiple clips. The animation data is obtained by
+    evaluating a so called \e {blend tree}. A blend tree is a hierarchical tree structure where the
+    leaf nodes are value nodes that encapsulate an animation clip (QAbstractAnimationClip); and the
+    internal nodes represent blending operations that operate on the nodes pointed to by their
+    operand properties.
+
+    To associate a blend tree with a QBlendedClipAnimator, set the animator's blendTree property to
+    point at the root node of your blend tree:
+
+    \badcode
+    auto blendTreeRoot = new QAdditiveClipBlend();
+    ...
+    auto animator = new QBlendedClipAnimator();
+    animator->setBlendTree(blendTreeRoot);
+    \endcode
+
+    A blend tree can be constructed from the following node types:
+
+    \note The blend node tree should only be edited when the animator is not running.
+
+    \list
+    \li Qt3DAnimation::QClipBlendValue
+    \li Qt3DAnimation::QLerpClipBlend
+    \li Qt3DAnimation::QAdditiveClipBlend
+    \endlist
+
+    Additional node types will be added over time.
+
+    As an example consider the following blend tree:
+
+    \badcode
+        Clip0----
+                |
+                Lerp Node----
+                |           |
+        Clip1----           Additive Node
+                            |
+                    Clip2----
+    \endcode
+
+    This can be created and used as follows:
+
+    \code
+    // Create leaf nodes of blend tree
+    auto clip0 = new QClipBlendValue(
+        new QAnimationClipLoader(QUrl::fromLocalFile("walk.json")));
+    auto clip1 = new QClipBlendValue(
+        new QAnimationClipLoader(QUrl::fromLocalFile("run.json")));
+    auto clip2 = new QClipBlendValue(
+        new QAnimationClipLoader(QUrl::fromLocalFile("wave-arm.json")));
+
+    // Create blend tree inner nodes
+    auto lerpNode = new QLerpClipBlend();
+    lerpNode->setStartClip(clip0);
+    lerpNode->setEndClip(clip1);
+    lerpNode->setBlendFactor(0.5f); // Half-walk, half-run
+
+    auto additiveNode = new QAdditiveClipBlend();
+    additiveNode->setBaseClip(lerpNode); // Comes from lerp sub-tree
+    additiveNode->setAdditiveClip(clip2);
+    additiveNode->setAdditiveFactor(1.0f); // Wave arm fully
+
+    // Run the animator
+    auto animator = new QBlendedClipAnimator();
+    animator->setBlendTree(additiveNode);
+    animator->setChannelMapper(...);
+    animator->setRunning(true);
+    \endcode
+
+    By authoring a set of animation clips and blending between them dynamically at runtime with a
+    blend tree, we open up a huge set of possible resulting animations. As some simple examples of
+    the above blend tree, where alpha is the additive factor and beta is the lerp blend factor we
+    can get a 2D continuum of possible animations:
+
+    \badcode
+    (alpha = 0, beta = 1) Running, No arm waving --- (alpha = 1, beta = 1) Running, Arm waving
+            |                                               |
+            |                                               |
+            |                                               |
+    (alpha = 0, beta = 0) Walking, No arm waving --- (alpha = 0, beta = 1) Running, No arm waving
+    \endcode
+
+    More complex blend trees offer even more flexibility for combining your animation clips. Note
+    that the values used to control the blend tree (alpha and beta above) are simple properties on
+    the blend nodes. This means, that these properties themselves can also be controlled by
+    the animation framework.
+
 */
 QBlendedClipAnimator::QBlendedClipAnimator(Qt3DCore::QNode *parent)
-    : Qt3DCore::QComponent(*new QBlendedClipAnimatorPrivate, parent)
+    : Qt3DAnimation::QAbstractClipAnimator(*new QBlendedClipAnimatorPrivate, parent)
 {
 }
 
+/*! \internal */
 QBlendedClipAnimator::QBlendedClipAnimator(QBlendedClipAnimatorPrivate &dd, Qt3DCore::QNode *parent)
-    : Qt3DCore::QComponent(dd, parent)
+    : Qt3DAnimation::QAbstractClipAnimator(dd, parent)
 {
 }
 
@@ -93,28 +266,23 @@ QBlendedClipAnimator::~QBlendedClipAnimator()
 {
 }
 
+/*!
+    \qmlproperty AbstractClipBlendNode blendTree
+
+    This property holds the root of the animation blend tree that will be evaluated before being
+    interpolated by the animator.
+*/
+
+/*!
+    \property blendTree
+
+    This property holds the root of the animation blend tree that will be evaluated before being
+    interpolated by the animator.
+*/
 QAbstractClipBlendNode *QBlendedClipAnimator::blendTree() const
 {
     Q_D(const QBlendedClipAnimator);
     return d->m_blendTreeRoot;
-}
-
-bool QBlendedClipAnimator::isRunning() const
-{
-    Q_D(const QBlendedClipAnimator);
-    return d->m_running;
-}
-
-QChannelMapper *QBlendedClipAnimator::channelMapper() const
-{
-    Q_D(const QBlendedClipAnimator);
-    return d->m_mapper;
-}
-
-int QBlendedClipAnimator::loops() const
-{
-    Q_D(const QBlendedClipAnimator);
-    return d->m_loops;
 }
 
 void QBlendedClipAnimator::setBlendTree(QAbstractClipBlendNode *blendTree)
@@ -137,45 +305,7 @@ void QBlendedClipAnimator::setBlendTree(QAbstractClipBlendNode *blendTree)
     emit blendTreeChanged(blendTree);
 }
 
-void QBlendedClipAnimator::setRunning(bool running)
-{
-    Q_D(QBlendedClipAnimator);
-    if (d->m_running == running)
-        return;
-
-    d->m_running = running;
-    emit runningChanged(running);
-}
-
-void QBlendedClipAnimator::setLoops(int loops)
-{
-    Q_D(QBlendedClipAnimator);
-    if (d->m_loops == loops)
-        return;
-
-    d->m_loops = loops;
-    emit loopsChanged(loops);
-}
-
-
-void QBlendedClipAnimator::setChannelMapper(QChannelMapper *mapping)
-{
-    Q_D(QBlendedClipAnimator);
-    if (d->m_mapper == mapping)
-        return;
-
-    if (d->m_mapper)
-        d->unregisterDestructionHelper(d->m_mapper);
-
-    if (mapping && !mapping->parent())
-        mapping->setParent(this);
-    d->m_mapper = mapping;
-
-    if (d->m_mapper)
-        d->registerDestructionHelper(d->m_mapper, &QBlendedClipAnimator::setChannelMapper, d->m_mapper);
-    emit channelMapperChanged(mapping);
-}
-
+/*! \internal */
 Qt3DCore::QNodeCreatedChangeBasePtr QBlendedClipAnimator::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QBlendedClipAnimatorData>::create(this);

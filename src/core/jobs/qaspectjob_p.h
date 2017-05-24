@@ -51,8 +51,10 @@
 // We mean it.
 //
 
-#include <QWeakPointer>
+#include <QtCore/QWeakPointer>
+
 #include <Qt3DCore/private/qt3dcore_global_p.h>
+#include <Qt3DCore/qt3dcore-config.h>
 
 QT_BEGIN_NAMESPACE
 

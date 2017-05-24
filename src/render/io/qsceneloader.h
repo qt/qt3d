@@ -82,10 +82,10 @@ public:
     QUrl source() const;
     Status status() const;
 
-    Q_INVOKABLE Qt3DCore::QEntity *entity(const QString &entityName) const;
-    Q_INVOKABLE QStringList entityNames() const;
-    Q_INVOKABLE Qt3DCore::QComponent *component(const QString &entityName,
-                                                ComponentType componentType) const;
+    Q_REVISION(9) Q_INVOKABLE Qt3DCore::QEntity *entity(const QString &entityName) const;
+    Q_REVISION(9) Q_INVOKABLE QStringList entityNames() const;
+    Q_REVISION(9) Q_INVOKABLE Qt3DCore::QComponent *component(const QString &entityName,
+                                                              ComponentType componentType) const;
 
 public Q_SLOTS:
     void setSource(const QUrl &arg);

@@ -55,16 +55,16 @@ Quick3DMemoryBarrier::~Quick3DMemoryBarrier()
 {
 }
 
-void Quick3DMemoryBarrier::setBarrierTypesInt(int barrierTypes)
+void Quick3DMemoryBarrier::setWaitFor(int barrierTypes)
 {
-    QMemoryBarrier::BarrierTypes types(QMemoryBarrier::AllBarrier);
+    QMemoryBarrier::Operations types(QMemoryBarrier::All);
     types &= barrierTypes; // Will only keep flags that are actually set
-    parentBarrier()->setBarrierTypes(types);
+    parentBarrier()->setWaitOperations(types);
 }
 
-int Quick3DMemoryBarrier::barrierTypesInt() const
+int Quick3DMemoryBarrier::waitFor() const
 {
-    return QMemoryBarrier::BarrierTypes::Int(parentBarrier()->barrierTypes());
+    return QMemoryBarrier::Operations::Int(parentBarrier()->waitOperations());
 }
 
 } // namespace Quick

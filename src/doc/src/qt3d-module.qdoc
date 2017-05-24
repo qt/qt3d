@@ -77,6 +77,12 @@
 
     \section2 Qt 3D Extras Module
     \generatelist {classesbymodule Qt3DExtras}
+
+    \section2 Qt 3D Animation Module
+    \generatelist {classesbymodule Qt3DAnimation}
+
+    \section2 Qt 3D Scene2D Module
+    \generatelist {classesbymodule Qt3DScene2D}
 */
 
 /*!
@@ -111,6 +117,7 @@
    import Qt3D.Input 2.0
    import Qt3D.Logic 2.0
    import Qt3D.Extras 2.0
+   import Qt3D.Animation 2.0
    \endcode
 
    \section1 QML Types
@@ -130,5 +137,13 @@
 
    \section2 Qt 3D Extras Module
    \generatelist {qmltypesbymodule Qt3D.Extras}
+   \noautolist
+
+   \section2 Qt 3D Animation Module
+   \generatelist {qmltypesbymodule Qt3D.Animation}
+   \noautolist
+
+   \section2 Qt 3D Scene2D Module
+   \generatelist {qmltypesbymodule Qt3D.Scene2D}
    \noautolist
 */

@@ -1,6 +1,3 @@
-#DEFINES += QT3D_RENDER_VIEW_JOB_TIMING
-#DEFINES += QT3D_RENDER_DUMP_BACKEND_NODES
-
 INCLUDEPATH += $$PWD
 
 HEADERS += \
@@ -29,6 +26,8 @@ HEADERS += \
     $$PWD/triangleboundingvolume_p.h \
     $$PWD/openglvertexarrayobject_p.h \
     $$PWD/trianglesextractor_p.h \
+    $$PWD/buffervisitor_p.h \
+    $$PWD/bufferutils_p.h \
     $$PWD/trianglesvisitor_p.h \
     $$PWD/abstractrenderer_p.h \
     $$PWD/computecommand_p.h \
@@ -36,13 +35,13 @@ HEADERS += \
     $$PWD/stringtoint_p.h \
     $$PWD/backendnode_p.h \
     $$PWD/rendertargetoutput_p.h \
-    $$PWD/commandexecuter_p.h \
     $$PWD/uniform_p.h \
     $$PWD/shaderparameterpack_p.h \
     $$PWD/renderviewbuilder_p.h \
     $$PWD/frameprofiler_p.h \
     $$PWD/offscreensurfacehelper_p.h \
-    $$PWD/resourceaccessor_p.h
+    $$PWD/resourceaccessor_p.h \
+    $$PWD/commandthread_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
@@ -71,11 +70,18 @@ SOURCES += \
     $$PWD/backendnode.cpp \
     $$PWD/rendertargetoutput.cpp \
     $$PWD/attachmentpack.cpp \
-    $$PWD/commandexecuter.cpp \
     $$PWD/openglvertexarrayobject.cpp \
     $$PWD/uniform.cpp \
     $$PWD/shaderparameterpack.cpp \
     $$PWD/renderviewbuilder.cpp \
     $$PWD/offscreensurfacehelper.cpp \
-    $$PWD/resourceaccessor.cpp
+    $$PWD/resourceaccessor.cpp \
+    $$PWD/commandthread.cpp
+
+include($$OUT_PWD/../core/qt3dcore-config.pri)
+QT_FOR_CONFIG += 3dcore-private
+qtConfig(qt3d-profile-jobs): {
+  HEADERS += $$PWD/commandexecuter_p.h
+  SOURCES += $$PWD/commandexecuter.cpp
+}
 

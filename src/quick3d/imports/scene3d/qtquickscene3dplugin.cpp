@@ -37,9 +37,11 @@
 **
 ****************************************************************************/
 
-#include <QtQml>
 #include "qtquickscene3dplugin.h"
-#include "scene3ditem_p.h"
+
+#include <QtQml>
+
+#include <scene3ditem_p.h>
 
 QT_BEGIN_NAMESPACE
 

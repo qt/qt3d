@@ -163,7 +163,7 @@ public:
     void releaseBuffer(Qt3DCore::QNodeId bufferId);
     bool hasGLBufferForBuffer(Buffer *buffer);
 
-    void memoryBarrier(QMemoryBarrier::BarrierTypes barriers);
+    void memoryBarrier(QMemoryBarrier::Operations barriers);
 
     void setParameters(ShaderParameterPack &parameterPack);
 

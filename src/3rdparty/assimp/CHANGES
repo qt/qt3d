@@ -2,11 +2,100 @@
 CHANGELOG
 ----------------------------------------------------------------------
 
+3.3.1 (2016-07-08)
+
+FIXES/HOUSEKEEPING:
+    - Setup of default precision for 17 exporters
+    - Fix xcode project files
+    - Fix BlenderTesselator: offsetof operator
+    - Invalid version in cmake file
+    - Update pstdint.h to latest greatest
+
+
+3.3.0 (2016-07-05)
+
+FEATURES:
+    - C++11 support enabled
+    - New regression-test-UI
+    - Experimental glTF-importer support
+    - OpenGEX: add support for cameras and lights
+    - C4D: update to latest Melange-SDK
+    - Add a gitter channel
+    - Coverity check enabled
+    - Switch to <...> include brackets for public headers 
+    - Enable export by pyAssimp
+    - CI: check windows build
+    - Add functionality to perform a singlepost-processing step
+    - many more, just check the history
+
+FIXES/HOUSEKEEPING:
+    - Fix of many resource leaks in unittests and main lib
+    - Fix iOS-buildfor X64
+    - Choosing zlib manually for cmake
+    - many more, just check the history
+
+
+3.2.1 (2016-010-10)
+
+FEATURES:
+  - Updated glTF exporter to meet 1.0 specification.
+
+FIXES/HOUSEKEEPING:
+  - Fixed glTF Validator errors for exported glTF format.
+
+ISSUES:
+  - Hard coded sampler setting for
+    - magFilter
+    - minFilter
+  - void* in ExportData for accessor max and min.
+
+
+3.2.0 (2015-11-03)
+
+FEATURES:
+  - OpenDDL-Parser is part of contrib-source.
+  - Experimental OpenGEX-support
+  - CI-check for linux and windows
+  - Coverity check added
+  - New regression testsuite.
+
+FIXES/HOUSEKEEPING:
+  - Hundreds of bugfixes  in all parts of the library
+  - Unified line endings
+
+
+API COMPATIBILITY:
+  - Removed precompiled header to increase build speed for linux
+
+
+3.1.1 (2014-06-15)
+
+FEATURES:
+   - Support for FBX 2013 and newer, binary and ASCII (this is partly
+     work from Google Summer of Code 2012)
+   - Support for OGRE binary mesh and skeleton format
+   - Updated BLEND support for newer Blender versions
+   - Support for arbitrary meta data, used to hold FBX and DAE metadata
+   - OBJ Export now produces smaller files
+   - Meshes can now have names, this is supported by the major importers
+   - Improved IFC geometry generation
+   - M3 support has been removed
+
+FIXES/HOUSEKEEPING:
+    - Hundreds of bugfixes in all parts of the library
+    - CMake is now the primary build system
+
+API COMPATIBILITY:
+    - 3.1.1 is not binary compatible to 3.0 due to aiNode::mMetaData
+      and aiMesh::mName
+    - Export interface has been cleaned up and unified
+    - Other than that no relevant changes
+
 
 3.0 (2012-07-07)
 
 FEATURES:
-   - new export interface similar to the import API. 
+   - new export interface similar to the import API.
    - Supported export formats: Collada, OBJ, PLY and STL
    - added new import formats: XGL/ZGL, M3 (experimental)
    - new postprocessing steps: Debone
@@ -23,11 +112,11 @@ FIXES/HOUSEKEEPING:
    - improved CMake build system
    - templatized math library
    - reduce dependency on boost.thread, only remaining spot
-     is synchronization for the C logging API 
+     is synchronization for the C logging API
 
 API COMPATIBILITY:
    - renamed headers, export interface, C API properties and meta data
-     prevent compatibility with code written for 2.0, but in 
+     prevent compatibility with code written for 2.0, but in
      most cases these can be easily resolved
    - Note: 3.0 is not binary compatible with 2.0
 
@@ -45,9 +134,9 @@ FEATURES:
      spatial structure) in some expensive postprocessing steps
    - AssimpView now uses a reworked layout which leaves more space
      to the scene hierarchy window
-     
+
    - Add C# bindings ('Assimp.NET')
-   - Keep BSD-licensed and otherwise free test files in separate 
+   - Keep BSD-licensed and otherwise free test files in separate
      folders (./test/models and ./test/models-nonbsd).
 
 FIXES:
@@ -57,20 +146,20 @@ FIXES:
    - OpenGL-sample now works with MinGW
    - Fix Importer::FindLoader failing on uppercase file extensions
    - Fix flawed path handling when locating external files
-   - Limit the maximum number of vertices, faces, face indices and 
+   - Limit the maximum number of vertices, faces, face indices and
      weights that Assimp is able to handle. This is to avoid
      crashes due to overflowing counters.
-   
+
    - Updated XCode project files
    - Further CMAKE build improvements
-   
+
 
 API CHANGES:
    - Add data structures for vertex-based animations (These are not
      currently used, however ...)
    - Some Assimp::Importer methods are const now.
- 
- 
+
+
 
 
 

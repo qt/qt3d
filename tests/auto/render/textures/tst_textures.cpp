@@ -52,12 +52,12 @@ class TestImageDataGenerator : public Qt3DRender::QTextureImageDataGenerator
 public:
     TestImageDataGenerator(int id) : m_id(id) {}
 
-    Qt3DRender::QTextureImageDataPtr operator ()() {
+    Qt3DRender::QTextureImageDataPtr operator ()() Q_DECL_OVERRIDE {
         return Qt3DRender::QTextureImageDataPtr::create();
     }
 
-    bool operator ==(const Qt3DRender::QTextureImageDataGenerator &other) const {
-        const TestImageDataGenerator *otherFunctor = functor_cast<TestImageDataGenerator>(&other);
+    bool operator ==(const Qt3DRender::QTextureImageDataGenerator &other) const Q_DECL_OVERRIDE {
+        const TestImageDataGenerator *otherFunctor = Qt3DRender::functor_cast<TestImageDataGenerator>(&other);
         return (otherFunctor != Q_NULLPTR && otherFunctor->m_id == m_id);
     }
 
@@ -73,12 +73,12 @@ class TestTextureGenerator : public Qt3DRender::QTextureGenerator
 public:
     TestTextureGenerator(int id) : m_id(id) {}
 
-    Qt3DRender::QTextureDataPtr operator ()() {
+    Qt3DRender::QTextureDataPtr operator ()() Q_DECL_OVERRIDE {
         return Qt3DRender::QTextureDataPtr::create();
     }
 
-    bool operator ==(const Qt3DRender::QTextureGenerator &other) const {
-        const TestTextureGenerator *otherFunctor = functor_cast<TestTextureGenerator>(&other);
+    bool operator ==(const Qt3DRender::QTextureGenerator &other) const Q_DECL_OVERRIDE {
+        const TestTextureGenerator *otherFunctor = Qt3DRender::functor_cast<TestTextureGenerator>(&other);
         return (otherFunctor != Q_NULLPTR && otherFunctor->m_id == m_id);
     }
 

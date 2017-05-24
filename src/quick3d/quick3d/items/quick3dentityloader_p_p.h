@@ -51,11 +51,10 @@
 // We mean it.
 //
 
-#include "quick3dentityloader_p.h"
-
-#include <QQmlComponent>
+#include <QtQml/QQmlComponent>
 
 #include <Qt3DCore/private/qentity_p.h>
+#include <Qt3DQuick/private/quick3dentityloader_p.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -72,6 +72,8 @@ Shader::~Shader()
 {
     // TO DO: ShaderProgram is leaked as of now
     // Fix that taking care that they may be shared given a same dna
+    if (m_graphicsContext)
+        QObject::disconnect(m_contextConnection);
 }
 
 void Shader::cleanup()
@@ -272,7 +274,7 @@ void Shader::prepareUniforms(ShaderParameterPack &pack)
     const auto end = values.cend();
     while (it != end) {
         // Find if there's a uniform with the same name id
-        for (const ShaderUniform &uniform : m_uniforms) {
+        for (const ShaderUniform &uniform : qAsConst(m_uniforms)) {
             if (uniform.m_nameId == it.key()) {
                 pack.setSubmissionUniform(uniform);
                 break;
@@ -309,8 +311,8 @@ void Shader::updateDNA()
 
     QMutexLocker locker(&m_mutex);
     uint attachmentHash = 0;
-    QHash<QString, int>::const_iterator it = m_fragOutputs.begin();
-    QHash<QString, int>::const_iterator end = m_fragOutputs.end();
+    QHash<QString, int>::const_iterator it = m_fragOutputs.cbegin();
+    QHash<QString, int>::const_iterator end = m_fragOutputs.cend();
     while (it != end) {
         attachmentHash += ::qHash(it.value()) + ::qHash(it.key());
         ++it;
@@ -371,11 +373,11 @@ void Shader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformB
         qCDebug(Shaders) << "Initializing Uniform Block {" << m_uniformBlockNames[i] << "}";
 
         // Find all active uniforms for the shader block
-        QVector<ShaderUniform>::const_iterator uniformsIt = m_uniforms.begin();
-        const QVector<ShaderUniform>::const_iterator uniformsEnd = m_uniforms.end();
+        QVector<ShaderUniform>::const_iterator uniformsIt = m_uniforms.cbegin();
+        const QVector<ShaderUniform>::const_iterator uniformsEnd = m_uniforms.cend();
 
-        QVector<QString>::const_iterator uniformNamesIt = m_uniformsNames.begin();
-        const QVector<QString>::const_iterator uniformNamesEnd = m_attributesNames.end();
+        QVector<QString>::const_iterator uniformNamesIt = m_uniformsNames.cbegin();
+        const QVector<QString>::const_iterator uniformNamesEnd = m_attributesNames.cend();
 
         QHash<QString, ShaderUniform> activeUniformsInBlock;
 
@@ -447,7 +449,7 @@ void Shader::setLog(const QString &log)
     }
 }
 
-void Shader::setStatus(QShaderProgram::ShaderStatus status)
+void Shader::setStatus(QShaderProgram::Status status)
 {
     if (status != m_status) {
         m_status = status;

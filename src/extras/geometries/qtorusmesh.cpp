@@ -43,7 +43,8 @@
 #endif
 
 #include "qtorusmesh.h"
-#include "qtorusgeometry.h"
+
+#include <Qt3DExtras/qtorusgeometry.h>
 
 QT_BEGIN_NAMESPACE
 

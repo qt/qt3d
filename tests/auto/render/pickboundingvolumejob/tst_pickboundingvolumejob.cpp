@@ -809,13 +809,13 @@ private Q_SLOTS:
         QVERIFY(!backendPicker1->isPressed());
         QCOMPARE(arbiter.events.count(), 2);
         change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "clicked");
+        QCOMPARE(change->propertyName(), "released");
         pickEvent = change->value().value<Qt3DRender::QPickEventPtr>();
         QVERIFY(pickEvent);
         if (pickMethod == Qt3DRender::QPickingSettings::TrianglePicking)
             QVERIFY(pickEvent.dynamicCast<Qt3DRender::QPickTriangleEvent>());
         change = arbiter.events.last().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "released");
+        QCOMPARE(change->propertyName(), "clicked");
         pickEvent = change->value().value<Qt3DRender::QPickEventPtr>();
         QVERIFY(pickEvent);
         if (pickMethod == Qt3DRender::QPickingSettings::TrianglePicking)
@@ -1034,9 +1034,9 @@ private Q_SLOTS:
         QVERIFY(!backendPicker->isPressed());
         QCOMPARE(arbiter.events.count(), 2);
         change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-        QCOMPARE(change->propertyName(), "clicked");
-        change = arbiter.events.last().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "released");
+        change = arbiter.events.last().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "clicked");
 
         arbiter.events.clear();
 
@@ -1145,7 +1145,10 @@ private Q_SLOTS:
             change = arbiter1.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
             QCOMPARE(change->propertyName(), "moved");
         } else {
+            QVERIFY(arbiter2.events.size() > 1);
             change = arbiter2.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+            QCOMPARE(change->propertyName(), "moved");
+            change = arbiter2.events.at(1).staticCast<Qt3DCore::QPropertyUpdatedChange>();
             QCOMPARE(change->propertyName(), "entered");
         }
 

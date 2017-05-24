@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DCore/private/qresourcemanager_p.h>
+#include <Qt3DCore/private/qdownloadhelperservice_p.h>
 #include <Qt3DRender/private/scene_p.h>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DRender/private/loadscenejob_p.h>
@@ -65,6 +66,22 @@ class QEntity;
 namespace Qt3DRender {
 namespace Render {
 
+class SceneManager;
+
+class SceneDownloader : public Qt3DCore::QDownloadRequest {
+public:
+    SceneDownloader(const QUrl &source, Qt3DCore::QNodeId sceneComponent, SceneManager* manager);
+
+    void onCompleted() Q_DECL_OVERRIDE;
+
+private:
+    Qt3DCore::QNodeId m_sceneComponent;
+    SceneManager* m_manager;
+};
+
+typedef QSharedPointer<SceneDownloader> SceneDownloaderPtr;
+
+
 class Q_AUTOTEST_EXPORT SceneManager : public Qt3DCore::QResourceManager<
         Scene,
         Qt3DCore::QNodeId,
@@ -74,12 +91,21 @@ class Q_AUTOTEST_EXPORT SceneManager : public Qt3DCore::QResourceManager<
 {
 public:
     SceneManager();
+    ~SceneManager();
 
-    void addSceneData(const QUrl &source, Qt3DCore::QNodeId sceneUuid);
+    void setDownloadService(Qt3DCore::QDownloadHelperService *service);
+
+    void addSceneData(const QUrl &source, Qt3DCore::QNodeId sceneUuid,
+                      const QByteArray &data = QByteArray());
     QVector<LoadSceneJobPtr> pendingSceneLoaderJobs();
 
+    void startSceneDownload(const QUrl &source, Qt3DCore::QNodeId sceneUuid);
+    void clearSceneDownload(SceneDownloader *downloader);
+
 private:
+    Qt3DCore::QDownloadHelperService *m_service;
     QVector<LoadSceneJobPtr> m_pendingJobs;
+    QVector<SceneDownloaderPtr> m_pendingDownloads;
 };
 
 } // namespace Render

@@ -51,9 +51,10 @@
 // We mean it.
 //
 
+#include <QtCore/QHash>
+#include <QtCore/QMutex>
+
 #include <Qt3DInput/private/qabstractphysicaldevicebackendnode_p.h>
-#include <QHash>
-#include <QMutex>
 
 QT_BEGIN_NAMESPACE
 

@@ -43,10 +43,10 @@ public:
     API api() const Q_DECL_OVERRIDE { return AbstractRenderer::OpenGL; }
     qint64 time() const Q_DECL_OVERRIDE { return 0; }
     void setTime(qint64 time) Q_DECL_OVERRIDE { Q_UNUSED(time); }
-    void setNodeManagers(Qt3DRender::Render::NodeManagers *managers) Q_DECL_OVERRIDE { Q_UNUSED(managers); }
+    void setNodeManagers(Qt3DRender::Render::NodeManagers *m) Q_DECL_OVERRIDE { m_managers = m; }
     void setServices(Qt3DCore::QServiceLocator *services) Q_DECL_OVERRIDE { Q_UNUSED(services); }
     void setSurfaceExposed(bool exposed) Q_DECL_OVERRIDE { Q_UNUSED(exposed); }
-    Qt3DRender::Render::NodeManagers *nodeManagers() const Q_DECL_OVERRIDE { return nullptr; }
+    Qt3DRender::Render::NodeManagers *nodeManagers() const Q_DECL_OVERRIDE { return m_managers; }
     Qt3DCore::QServiceLocator *services() const Q_DECL_OVERRIDE { return nullptr; }
     void initialize() Q_DECL_OVERRIDE {}
     void shutdown() Q_DECL_OVERRIDE {}
@@ -60,6 +60,7 @@ public:
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() Q_DECL_OVERRIDE { return QVector<Qt3DCore::QAspectJobPtr>(); }
     Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() Q_DECL_OVERRIDE { return Qt3DCore::QAspectJobPtr(); }
     Qt3DCore::QAspectJobPtr syncTextureLoadingJob() Q_DECL_OVERRIDE { return Qt3DCore::QAspectJobPtr(); }
+    Qt3DCore::QAspectJobPtr expandBoundingVolumeJob() Q_DECL_OVERRIDE { return Qt3DCore::QAspectJobPtr(); }
     void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Qt3DRender::Render::Entity *root) Q_DECL_OVERRIDE { Q_UNUSED(factory);  Q_UNUSED(root); }
     Qt3DRender::Render::Entity *sceneRoot() const Q_DECL_OVERRIDE { return nullptr; }
     Qt3DRender::Render::FrameGraphNode *frameGraphRoot() const Q_DECL_OVERRIDE { return nullptr; }
@@ -81,6 +82,7 @@ public:
 
 protected:
     Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet m_changes;
+    Qt3DRender::Render::NodeManagers *m_managers;
 };
 
 QT_END_NAMESPACE

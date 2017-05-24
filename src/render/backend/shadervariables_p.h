@@ -81,6 +81,7 @@ struct ShaderUniform
 {
     ShaderUniform()
         : m_nameId(-1)
+        , m_type(GL_NONE)
         , m_size(0)
         , m_offset(-1)
         , m_location(-1)

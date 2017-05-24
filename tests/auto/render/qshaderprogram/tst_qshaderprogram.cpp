@@ -481,11 +481,11 @@ private Q_SLOTS:
     void checkStatusPropertyUpdate()
     {
         // GIVEN
-        qRegisterMetaType<Qt3DRender::QShaderProgram::ShaderStatus>("ShaderStatus");
+        qRegisterMetaType<Qt3DRender::QShaderProgram::Status>("Status");
         TestArbiter arbiter;
         arbiter.setArbiterOnNode(this);
-        QSignalSpy spy(this, SIGNAL(statusChanged(ShaderStatus)));
-        const Qt3DRender::QShaderProgram::ShaderStatus newStatus = Qt3DRender::QShaderProgram::Error;
+        QSignalSpy spy(this, SIGNAL(statusChanged(Status)));
+        const Qt3DRender::QShaderProgram::Status newStatus = Qt3DRender::QShaderProgram::Error;
 
         // THEN
         QVERIFY(spy.isValid());

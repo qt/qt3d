@@ -48,8 +48,6 @@
 // We mean it.
 //
 
-#ifdef QT3D_JOBS_RUN_STATS
-
 #include <QVector>
 #include <QVariant>
 
@@ -91,7 +89,5 @@ private:
 } // Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3D_JOBS_RUN_STATS
 
 #endif // QT3DRENDER_DEBUG_COMMANDEXECUTER_H

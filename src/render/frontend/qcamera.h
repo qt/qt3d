@@ -72,7 +72,7 @@ class QT3DRENDERSHARED_EXPORT QCamera : public Qt3DCore::QEntity
     Q_PROPERTY(float bottom READ bottom WRITE setBottom NOTIFY bottomChanged)
     Q_PROPERTY(float top READ top WRITE setTop NOTIFY topChanged)
     Q_PROPERTY(QMatrix4x4 projectionMatrix READ projectionMatrix WRITE setProjectionMatrix NOTIFY projectionMatrixChanged)
-    Q_PROPERTY(float exposure READ exposure WRITE setExposure NOTIFY exposureChanged)
+    Q_PROPERTY(float exposure READ exposure WRITE setExposure NOTIFY exposureChanged REVISION 9)
     // LookAt
     Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(QVector3D upVector READ upVector WRITE setUpVector NOTIFY upVectorChanged)
@@ -149,6 +149,10 @@ public Q_SLOTS:
     void setPosition(const QVector3D &position);
     void setUpVector(const QVector3D &upVector);
     void setViewCenter(const QVector3D &viewCenter);
+
+    void viewAll();
+    void viewSphere(const QVector3D &center, float radius);
+    void viewEntity(Qt3DCore::QEntity *entity);
 
 Q_SIGNALS:
     void projectionTypeChanged(QCameraLens::ProjectionType projectionType);

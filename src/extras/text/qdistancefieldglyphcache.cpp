@@ -41,9 +41,13 @@
 #include <QtGui/qglyphrun.h>
 #include <QtGui/private/qrawfont_p.h>
 
-#include "qdistancefieldglyphcache.h"
 #include "qdistancefieldglyphcache_p.h"
-#include "qtextureatlas.h"
+#include "qtextureatlas_p.h"
+
+#include <QtGui/qfont.h>
+#include <QtGui/private/qdistancefield_p.h>
+#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DExtras/private/qtextureatlas_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,6 +56,59 @@ QT_BEGIN_NAMESPACE
 using namespace Qt3DCore;
 
 namespace Qt3DExtras {
+
+// ref-count glyphs and keep track of where they are stored
+class StoredGlyph {
+public:
+    StoredGlyph() = default;
+    StoredGlyph(const StoredGlyph &) = default;
+    StoredGlyph(const QRawFont &font, quint32 glyph, bool doubleResolution);
+
+    int refCount() const { return m_ref; }
+    void ref() { ++m_ref; }
+    int deref() { return m_ref = std::max(m_ref - 1, (quint32) 0); }
+
+    bool addToTextureAtlas(QTextureAtlas *atlas);
+    void removeFromTextureAtlas();
+
+    QTextureAtlas *atlas() const { return m_atlas; }
+    QRectF glyphPathBoundingRect() const { return m_glyphPathBoundingRect; }
+    QRectF texCoords() const;
+
+private:
+    quint32 m_glyph = (quint32) -1;
+    quint32 m_ref = 0;
+    QTextureAtlas *m_atlas = nullptr;
+    QTextureAtlas::TextureId m_atlasEntry = QTextureAtlas::InvalidTexture;
+    QRectF m_glyphPathBoundingRect;
+    QImage m_distanceFieldImage;    // only used until added to texture atlas
+};
+
+// A DistanceFieldFont stores all glyphs for a given QRawFont.
+// it will use multiple QTextureAtlasess to store the distance
+// fields and uses ref-counting for each glyph to ensure that
+// unused glyphs are removed from the texture atlasses.
+class DistanceFieldFont
+{
+public:
+    DistanceFieldFont(const QRawFont &font, bool doubleRes, Qt3DCore::QNode *parent);
+    ~DistanceFieldFont();
+
+    StoredGlyph findGlyph(quint32 glyph) const;
+    StoredGlyph refGlyph(quint32 glyph);
+    void derefGlyph(quint32 glyph);
+
+    bool doubleGlyphResolution() const { return m_doubleGlyphResolution; }
+
+private:
+    QRawFont m_font;
+    bool m_doubleGlyphResolution;
+    Qt3DCore::QNode *m_parentNode; // parent node for the QTextureAtlasses
+
+    QHash<quint32, StoredGlyph> m_glyphs;
+
+    QVector<QTextureAtlas*> m_atlasses;
+};
 
 StoredGlyph::StoredGlyph(const QRawFont &font, quint32 glyph, bool doubleResolution)
     : m_glyph(glyph)
@@ -190,7 +247,7 @@ void DistanceFieldFont::derefGlyph(quint32 glyph)
 // copied from QSGDistanceFieldGlyphCacheManager::fontKey
 // we use this function to compare QRawFonts, as QRawFont doesn't
 // implement a stable comparison function
-QString QDistanceFieldGlyphCachePrivate::fontKey(const QRawFont &font)
+QString QDistanceFieldGlyphCache::fontKey(const QRawFont &font)
 {
     QFontEngine *fe = QRawFontPrivate::get(font)->fontEngine;
     if (!fe->faceId().filename.isEmpty()) {
@@ -210,12 +267,12 @@ QString QDistanceFieldGlyphCachePrivate::fontKey(const QRawFont &font)
     }
 }
 
-DistanceFieldFont* QDistanceFieldGlyphCachePrivate::getOrCreateDistanceFieldFont(const QRawFont &font)
+DistanceFieldFont* QDistanceFieldGlyphCache::getOrCreateDistanceFieldFont(const QRawFont &font)
 {
     // return, if font already exists (make sure to only create one DistanceFieldFont for
     // each unique QRawFont, by building a hash on the QRawFont that ignores the font size)
     const QString key = fontKey(font);
-    const auto it = m_fonts.find(key);
+    const auto it = m_fonts.constFind(key);
     if (it != m_fonts.cend())
         return it.value();
 
@@ -229,13 +286,13 @@ DistanceFieldFont* QDistanceFieldGlyphCachePrivate::getOrCreateDistanceFieldFont
     actualFont.setPixelSize(QT_DISTANCEFIELD_BASEFONTSIZE(useDoubleRes) * QT_DISTANCEFIELD_SCALE(useDoubleRes));
 
     // create new font cache
-    DistanceFieldFont *dff = new DistanceFieldFont(actualFont, useDoubleRes, q_func());
+    DistanceFieldFont *dff = new DistanceFieldFont(actualFont, useDoubleRes, m_rootNode);
     m_fonts.insert(key, dff);
     return dff;
 }
 
-QDistanceFieldGlyphCache::QDistanceFieldGlyphCache(QNode *parent)
-    : QNode(*new QDistanceFieldGlyphCachePrivate(), parent)
+QDistanceFieldGlyphCache::QDistanceFieldGlyphCache()
+    : m_rootNode(nullptr)
 {
 }
 
@@ -243,10 +300,19 @@ QDistanceFieldGlyphCache::~QDistanceFieldGlyphCache()
 {
 }
 
+void QDistanceFieldGlyphCache::setRootNode(QNode *rootNode)
+{
+    m_rootNode = rootNode;
+}
+
+QNode *QDistanceFieldGlyphCache::rootNode() const
+{
+    return m_rootNode;
+}
+
 bool QDistanceFieldGlyphCache::doubleGlyphResolution(const QRawFont &font)
 {
-    Q_D(QDistanceFieldGlyphCache);
-    return d->getOrCreateDistanceFieldFont(font)->doubleGlyphResolution();
+    return getOrCreateDistanceFieldFont(font)->doubleGlyphResolution();
 }
 
 namespace {
@@ -266,13 +332,11 @@ QDistanceFieldGlyphCache::Glyph refAndGetGlyph(DistanceFieldFont *dff, quint32 g
 
     return ret;
 }
-}
+} // anonymous
 
 QVector<QDistanceFieldGlyphCache::Glyph> QDistanceFieldGlyphCache::refGlyphs(const QGlyphRun &run)
 {
-    Q_D(QDistanceFieldGlyphCache);
-
-    DistanceFieldFont *dff = d->getOrCreateDistanceFieldFont(run.rawFont());
+    DistanceFieldFont *dff = getOrCreateDistanceFieldFont(run.rawFont());
     QVector<QDistanceFieldGlyphCache::Glyph> ret;
 
     const QVector<quint32> glyphs = run.glyphIndexes();
@@ -284,15 +348,12 @@ QVector<QDistanceFieldGlyphCache::Glyph> QDistanceFieldGlyphCache::refGlyphs(con
 
 QDistanceFieldGlyphCache::Glyph QDistanceFieldGlyphCache::refGlyph(const QRawFont &font, quint32 glyph)
 {
-    Q_D(QDistanceFieldGlyphCache);
-    return refAndGetGlyph(d->getOrCreateDistanceFieldFont(font), glyph);
+    return refAndGetGlyph(getOrCreateDistanceFieldFont(font), glyph);
 }
 
 void QDistanceFieldGlyphCache::derefGlyphs(const QGlyphRun &run)
 {
-    Q_D(QDistanceFieldGlyphCache);
-
-    DistanceFieldFont *dff = d->getOrCreateDistanceFieldFont(run.rawFont());
+    DistanceFieldFont *dff = getOrCreateDistanceFieldFont(run.rawFont());
 
     const QVector<quint32> glyphs = run.glyphIndexes();
     for (quint32 glyph : glyphs)
@@ -301,8 +362,7 @@ void QDistanceFieldGlyphCache::derefGlyphs(const QGlyphRun &run)
 
 void QDistanceFieldGlyphCache::derefGlyph(const QRawFont &font, quint32 glyph)
 {
-    Q_D(QDistanceFieldGlyphCache);
-    d->getOrCreateDistanceFieldFont(font)->derefGlyph(glyph);
+    getOrCreateDistanceFieldFont(font)->derefGlyph(glyph);
 }
 
 } // namespace Qt3DExtras

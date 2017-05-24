@@ -40,8 +40,8 @@
 #ifndef QT3DINPUT_QMOUSEDEVICE_H
 #define QT3DINPUT_QMOUSEDEVICE_H
 
-#include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DInput/qt3dinput_global.h>
 
 QT_BEGIN_NAMESPACE
 

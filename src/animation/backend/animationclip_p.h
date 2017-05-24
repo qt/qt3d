@@ -49,6 +49,8 @@
 //
 
 #include <Qt3DAnimation/private/backendnode_p.h>
+#include <Qt3DAnimation/qanimationclipdata.h>
+#include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/private/fcurve_p.h>
 #include <QtCore/qurl.h>
 
@@ -67,32 +69,52 @@ public:
     void cleanup();
     void setSource(const QUrl &source) { m_source = source; }
     QUrl source() const { return m_source; }
+    void setStatus(QAnimationClipLoader::Status status);
+    QAnimationClipLoader::Status status() const { return m_status; }
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     QString name() const { return m_name; }
-    QString objectName() const { return m_objectName; }
-    const QVector<ChannelGroup> &channelGroups() const { return m_channelGroups; }
+    const QVector<Channel> &channels() const { return m_channels; }
 
     // Called from jobs
     void loadAnimation();
     void setDuration(float duration);
     float duration() const { return m_duration; }
-    int channelCount() const { return m_channelCount; }
-    int channelBaseIndex(int channelGroupIndex) const;
+    int channelIndex(const QString &channelName) const;
+    int channelCount() const { return m_channelComponentCount; }
+    int channelComponentBaseIndex(int channelGroupIndex) const;
+
+    // Allow unit tests to set the data type
+#if !defined(QT_BUILD_INTERNAL)
+private:
+#endif
+    enum ClipDataType {
+        Unknown,
+        File,
+        Data
+    };
+#if defined(QT_BUILD_INTERNAL)
+public:
+    void setDataType(ClipDataType dataType) { m_dataType = dataType; }
+#endif
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+    void loadAnimationFromUrl();
+    void loadAnimationFromData();
     void clearData();
     float findDuration();
-    int findChannelCount();
+    int findChannelComponentCount();
 
     QUrl m_source;
+    QAnimationClipLoader::Status m_status;
+    QAnimationClipData m_clipData;
+    ClipDataType m_dataType;
 
     QString m_name;
-    QString m_objectName;
-    QVector<ChannelGroup> m_channelGroups;
+    QVector<Channel> m_channels;
     float m_duration;
-    int m_channelCount;
+    int m_channelComponentCount;
 };
 
 #ifndef QT_NO_DEBUG_STREAM
@@ -101,12 +123,12 @@ inline QDebug operator<<(QDebug dbg, const AnimationClip &animationClip)
     QDebugStateSaver saver(dbg);
     dbg << "QNodeId =" << animationClip.peerId() << endl
         << "Name =" << animationClip.name() << endl
-        << "Object Name =" << animationClip.objectName() << endl
-        << "Channel Groups:" << endl;
+        << "Duration: " << animationClip.duration() << endl
+        << "Channels:" << endl;
 
-    const QVector<ChannelGroup> channelGroups = animationClip.channelGroups();
-    for (const auto channelGroup : channelGroups) {
-        dbg << channelGroup;
+    const QVector<Channel> channels = animationClip.channels();
+    for (const auto &channel : channels) {
+        dbg << channel;
     }
 
     return dbg;

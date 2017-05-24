@@ -37,6 +37,8 @@
 #include <QGuiApplication>
 #include <QAnimationDriver>
 #include <QPropertyAnimation>
+#include <QQmlComponent>
+#include <QQmlEngine>
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QAspectEngine>
@@ -49,7 +51,7 @@
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QMaterial>
 #include <Qt3DExtras/QForwardRenderer>
-#include <Qt3DQuickRender/QScene2D>
+#include <Qt3DQuickScene2D/QScene2D>
 #include <Qt3DExtras/QPlaneMesh>
 #include <Qt3DRender/QTextureWrapMode>
 #include <Qt3DRender/QClearBuffers>
@@ -87,7 +89,7 @@ int main(int argc, char *argv[])
     while (frameGraphNode->childNodes().size() > 0)
         frameGraphNode = (Qt3DRender::QFrameGraphNode*)frameGraphNode->childNodes().at(0);
     view.defaultFrameGraph()->setClearColor(QColor::fromRgbF(1.0f, 1.0f, 1.0f));
-    Qt3DRender::Quick::QScene2D* qmlTextureRenderer = new Qt3DRender::Quick::QScene2D(frameGraphNode);
+    Qt3DRender::Quick::QScene2D *qmlTextureRenderer = new Qt3DRender::Quick::QScene2D(frameGraphNode);
 
     Qt3DRender::QTexture2D* offscreenTexture = new Qt3DRender::QTexture2D(qmlTextureRenderer);
     offscreenTexture->setSize(1024, 1024);
@@ -102,7 +104,9 @@ int main(int argc, char *argv[])
     output->setTexture(offscreenTexture);
 
     qmlTextureRenderer->setOutput(output);
-    qmlTextureRenderer->setSource(QUrl(QStringLiteral("qrc:/OffscreenGui.qml")));
+    QQmlEngine engine;
+    QQmlComponent component(&engine, QUrl(QStringLiteral("qrc:/OffscreenGui.qml")));
+    qmlTextureRenderer->setItem(static_cast<QQuickItem *>(component.create()));
 
     Qt3DCore::QEntity* planeEntity = new Qt3DCore::QEntity(sceneRoot);
     Qt3DExtras::QPlaneMesh* planeMesh = new Qt3DExtras::QPlaneMesh(planeEntity);

@@ -39,12 +39,14 @@
 
 #include "qcomponent.h"
 #include "qcomponent_p.h"
-#include "qentity.h"
-#include "qentity_p.h"
-#include "qscene_p.h"
+
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/qcomponentaddedchange.h>
 #include <Qt3DCore/qcomponentremovedchange.h>
+#include <Qt3DCore/qentity.h>
+
+#include <Qt3DCore/private/qentity_p.h>
+#include <Qt3DCore/private/qscene_p.h>
 
 QT_BEGIN_NAMESPACE
 

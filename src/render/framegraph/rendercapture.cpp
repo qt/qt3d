@@ -92,7 +92,7 @@ void RenderCapture::sendRenderCaptures()
 {
     QMutexLocker lock(&m_mutex);
 
-    for (const RenderCaptureDataPtr data : m_renderCaptureData) {
+    for (const RenderCaptureDataPtr &data : qAsConst(m_renderCaptureData)) {
         auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId());
         e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
         e->setPropertyName("renderCaptureData");

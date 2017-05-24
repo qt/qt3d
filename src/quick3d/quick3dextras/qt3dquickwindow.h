@@ -52,9 +52,9 @@
 #define QT3DEXTRAS_QUICK_QT3DQUICKWINDOW_H
 
 #include <Qt3DQuickExtras/qt3dquickextras_global.h>
-#include <QQuickWindow>
+#include <QtCore/QUrl>
 #include <QtCore/qpointer.h>
-#include <QUrl>
+#include <QtQuick/QQuickWindow>
 
 QT_BEGIN_NAMESPACE
 
@@ -84,6 +84,7 @@ namespace Qt3DExtras {
 
 namespace Quick {
 
+class Qt3DQuickWindowPrivate;
 
 class QT3DQUICKEXTRASSHARED_EXPORT Qt3DQuickWindow : public QWindow
 {
@@ -121,18 +122,7 @@ private:
     void setCameraAspectModeHelper();
     void updateCameraAspectRatio();
 
-    QScopedPointer<Qt3DCore::Quick::QQmlAspectEngine> m_engine;
-
-    // Aspects
-    Qt3DRender::QRenderAspect *m_renderAspect;
-    Qt3DInput::QInputAspect *m_inputAspect;
-    Qt3DLogic::QLogicAspect *m_logicAspect;
-
-    QUrl m_source;
-    bool m_initialized;
-    QPointer<Qt3DRender::QCamera> m_camera;
-    CameraAspectRatioMode m_cameraAspectRatioMode;
-    QQmlIncubationController *m_incubationController;
+    Q_DECLARE_PRIVATE(Qt3DQuickWindow)
 };
 
 } // Quick

@@ -40,10 +40,10 @@
 #ifndef QT3DCORE_QABSTRACTASPECT_H
 #define QT3DCORE_QABSTRACTASPECT_H
 
-#include <QObject>
-#include <QSharedPointer>
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qnodeid.h>
+#include <QtCore/QObject>
+#include <QtCore/QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,6 +67,8 @@ class QT3DCORESHARED_EXPORT QAbstractAspect : public QObject
 public:
     explicit QAbstractAspect(QObject *parent = nullptr);
     ~QAbstractAspect();
+
+    void scheduleSingleShotJob(const Qt3DCore::QAspectJobPtr &job);
 
 protected:
     explicit QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = nullptr);

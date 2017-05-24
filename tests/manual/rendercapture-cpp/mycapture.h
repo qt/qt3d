@@ -63,28 +63,23 @@ public:
         , m_reply(nullptr)
         , m_imageLabel(imageLabel)
         , m_continuous(false)
-        , m_cid(1)
     {
     }
 
 public slots:
-    void onCompleted(bool isComplete)
+    void onCompleted()
     {
-        if (isComplete) {
-            QObject::disconnect(connection);
+        QObject::disconnect(connection);
 
-            m_imageLabel->setPixmap(QPixmap::fromImage(m_reply->image()));
+        m_imageLabel->setPixmap(QPixmap::fromImage(m_reply->image()));
 
-            ++m_cid;
+        m_reply->saveImage("capture.bmp");
 
-            m_reply->saveToFile("capture.bmp");
+        delete m_reply;
+        m_reply = nullptr;
 
-            delete m_reply;
-            m_reply = nullptr;
-
-            if (m_continuous)
-                capture();
-        }
+        if (m_continuous)
+            capture();
     }
 
     void setContinuous(bool continuos)
@@ -94,9 +89,11 @@ public slots:
 
     void capture()
     {
-        m_reply = m_capture->requestCapture(m_cid);
-        connection = QObject::connect(m_reply, &Qt3DRender::QRenderCaptureReply::completeChanged,
-                         this, &MyCapture::onCompleted);
+        if (!m_reply) {
+            m_reply = m_capture->requestCapture();
+            connection = QObject::connect(m_reply, &Qt3DRender::QRenderCaptureReply::completed,
+                                          this, &MyCapture::onCompleted);
+        }
     }
 
 private:
@@ -105,7 +102,6 @@ private:
     QMetaObject::Connection connection;
     QLabel *m_imageLabel;
     bool m_continuous;
-    int m_cid;
 };
 
 #endif

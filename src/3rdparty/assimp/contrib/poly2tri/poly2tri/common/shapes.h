@@ -107,7 +107,7 @@ struct Point {
   /// Get the length of this point (the norm).
   double Length() const
   {
-    return std::sqrt(x * x + y * y);
+    return sqrt(x * x + y * y);
   }
 
   /// Convert this point into a unit point. Returns the Length.

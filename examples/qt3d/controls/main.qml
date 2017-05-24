@@ -178,13 +178,20 @@ Item {
         spacing: 5
 
         Text { text: "Camera"; font.bold: true }
-        Text { text: "View Center Z" }
+        Text { text: "View Ctr Z: " + watch.cameraZ.toFixed(2) }
         Slider {
             id: viewCenter_z
             Layout.fillWidth: true
             minimumValue: 4
             maximumValue: 12
             value: 7.5
+            onValueChanged: watch.setPositionZ(value)
+        }
+        Button {
+            id: viewAll
+            Layout.fillWidth: true
+            text: "View All"
+            onClicked: watch.viewLogo()
         }
     }
 

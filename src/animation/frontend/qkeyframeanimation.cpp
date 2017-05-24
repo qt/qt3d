@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -43,18 +43,132 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 
+/*!
+    \class Qt3DAnimation::QKeyframeAnimation
+    \brief A class implementing simple keyframe animation to a QTransform
+    \inmodule Qt3DAnimation
+    \since 5.9
+    \inherits Qt3DAnimation::QAbstractAnimation
+
+    A Qt3DAnimation::QKeyframeAnimation class implements simple keyframe animation
+    that can be used to animate \l QTransform. The keyframes consists of multiple
+    timed QTransforms, which are interpolated and applied to the target \l QTransform.
+    \l QEasingCurve is used between keyframes to control the interpolator. RepeatMode
+    can be set for when the position set to the QKeyframeAnimation is below or above
+    the values defined in the keyframe positions.
+*/
+
+/*!
+    \qmltype KeyframeAnimation
+    \brief A type implementing simple keyframe animation to a Transform
+    \inqmlmodule Qt3D.Animation
+    \since 5.9
+    \inherits AbstractAnimation
+    \instantiates Qt3DAnimation::QKeyframeAnimation
+
+    A KeyframeAnimation type implements simple keyframe animation
+    that can be used to animate \l Transform. The keyframes consists of multiple
+    timed \l {Qt3D.Core::Transform}s, which are interpolated and applied
+    to the target Transform. EasingCurve is used between keyframes to control
+    the interpolator. RepeatMode can be set for when the position set to the
+    KeyframeAnimation is less or or greater than the values defined in the keyframe positions.
+*/
+
+/*!
+    \property Qt3DAnimation::QKeyframeAnimation::framePositions
+    Holds the positions of the keyframes. Each position in the list specifies the position
+    of the corresponding keyframe with the same index. The values must be in an ascending order.
+    Values can be positive or negative and do not have any predefined unit.
+*/
+/*!
+    \property Qt3DAnimation::QKeyframeAnimation::target
+    Holds the target QTransform the animation is applied to.
+*/
+/*!
+    \property Qt3DAnimation::QKeyframeAnimation::easing
+    Holds the easing curve of the interpolator between keyframes.
+*/
+/*!
+    \property Qt3DAnimation::QKeyframeAnimation::targetName
+    Holds the name of the target transform. This is a convenience property making it
+    easier to match the target transform to the keyframe animation. The name
+    is usually same as the name of the parent entity of the target transform, but
+    does not have to be.
+*/
+/*!
+    \property Qt3DAnimation::QKeyframeAnimation::startMode
+    Holds the repeat mode for the position values less than the first frame position.
+*/
+/*!
+    \property Qt3DAnimation::QKeyframeAnimation::endMode
+    Holds the repeat mode for the position values greater than the last frame position.
+*/
+/*!
+    \enum QKeyframeAnimation::RepeatMode
+
+    This enumeration specifies how position values outside keyframe values are handled.
+    \value None The animation is not applied to the target transform.
+    \value Constant The edge keyframe value is used.
+    \value Repeat The animation is repeated.
+*/
+/*!
+    \qmlproperty list<real> KeyframeAnimation::framePositions
+    Holds the positions of the keyframes. Each position in the list specifies the position
+    of the corresponding keyframe. The values must be in an ascending order. Values can
+    be positive or negative and do not have any predefined unit.
+*/
+/*!
+    \qmlproperty Transform KeyframeAnimation::target
+    Holds the target Transform the animation is applied to.
+*/
+/*!
+    \qmlproperty EasingCurve KeyframeAnimation::easing
+    Holds the easing curve of the interpolator between keyframes.
+*/
+/*!
+    \qmlproperty string KeyframeAnimation::targetName
+    Holds the name of the target transform. This is a convenience property making it
+    easier to match the target transform to the keyframe animation. The name
+    is usually same as the name of the parent entity of the target transform, but
+    does not have to be.
+*/
+/*!
+    \qmlproperty enumeration KeyframeAnimation::startMode
+    Holds the repeat mode for the position values less than the first frame position.
+    \list
+    \li None
+    \li Constant
+    \li Repeat
+    \endlist
+*/
+/*!
+    \qmlproperty enumeration KeyframeAnimation::endMode
+    Holds the repeat mode for the position values greater than the last frame position.
+    \list
+    \li None
+    \li Constant
+    \li Repeat
+    \endlist
+*/
+/*!
+    \qmlproperty list<Transform> KeyframeAnimation::keyframes
+    Holds the list of keyframes in the keyframe animation.
+*/
+
 QKeyframeAnimationPrivate::QKeyframeAnimationPrivate()
     : QAbstractAnimationPrivate(QAbstractAnimation::KeyframeAnimation)
+    , m_target(nullptr)
     , m_minposition(0.0f)
     , m_maxposition(0.0f)
-    , m_prevPosition(-1.0f)
-    , m_target(nullptr)
     , m_startMode(QKeyframeAnimation::Constant)
     , m_endMode(QKeyframeAnimation::Constant)
 {
 
 }
 
+/*!
+    Constructs an QKeyframeAnimation with \a parent.
+*/
 QKeyframeAnimation::QKeyframeAnimation(QObject *parent)
     : QAbstractAnimation(*new QKeyframeAnimationPrivate(), parent)
 {
@@ -68,7 +182,7 @@ void QKeyframeAnimation::setFramePositions(const QVector<float> &positions)
 {
     Q_D(QKeyframeAnimation);
     d->m_framePositions = positions;
-    d->m_prevPosition = -1.0f;
+    d->m_position = -1.0f;
     if (d->m_framePositions.size() == 0) {
         d->m_minposition = d->m_maxposition = 0.0f;
         return;
@@ -76,7 +190,7 @@ void QKeyframeAnimation::setFramePositions(const QVector<float> &positions)
     d->m_minposition = d->m_framePositions.first();
     d->m_maxposition = d->m_framePositions.last();
     float lastPos = d->m_minposition;
-    for (float p : d->m_framePositions) {
+    for (float p : qAsConst(d->m_framePositions)) {
         if (p < lastPos || p > d->m_maxposition)
             qWarning() << "positions not ordered correctly";
         lastPos = p;
@@ -84,6 +198,9 @@ void QKeyframeAnimation::setFramePositions(const QVector<float> &positions)
     setDuration(d->m_maxposition);
 }
 
+/*!
+    Sets the \a keyframes of the animation. Old keyframes are cleared.
+ */
 void QKeyframeAnimation::setKeyframes(const QVector<Qt3DCore::QTransform *> &keyframes)
 {
     Q_D(QKeyframeAnimation);
@@ -116,9 +233,35 @@ QQuaternion lslerp(QQuaternion q1, QQuaternion q2, float t)
 void QKeyframeAnimationPrivate::calculateFrame(float position)
 {
     if (m_target && m_framePositions.size() > 0
-        && m_keyframes.size() == m_framePositions.size()
-        && m_prevPosition != m_position) {
-        if (m_position >= m_minposition && m_position < m_maxposition) {
+        && m_keyframes.size() == m_framePositions.size()) {
+        if (position < m_minposition) {
+            if (m_startMode == QKeyframeAnimation::None) {
+                return;
+            } else if (m_startMode == QKeyframeAnimation::Constant) {
+                m_target->setRotation(m_keyframes.first()->rotation());
+                m_target->setScale3D(m_keyframes.first()->scale3D());
+                m_target->setTranslation(m_keyframes.first()->translation());
+                return;
+            } else {
+                // must be repeat
+                position = std::fmod(-(position - m_minposition), m_maxposition - m_minposition)
+                                     + m_minposition;
+            }
+        } else if (position >= m_maxposition) {
+            if (m_endMode == QKeyframeAnimation::None) {
+                return;
+            } else if (m_endMode == QKeyframeAnimation::Constant) {
+                m_target->setRotation(m_keyframes.last()->rotation());
+                m_target->setScale3D(m_keyframes.last()->scale3D());
+                m_target->setTranslation(m_keyframes.last()->translation());
+                return;
+            } else {
+                // must be repeat
+                position = std::fmod(position - m_minposition, m_maxposition - m_minposition)
+                                     + m_minposition;
+            }
+        }
+        if (position >= m_minposition && position < m_maxposition) {
             for (int i = 0; i < m_framePositions.size() - 1; i++) {
                 if (position >= m_framePositions.at(i)
                     && position < m_framePositions.at(i+1)) {
@@ -140,16 +283,7 @@ void QKeyframeAnimationPrivate::calculateFrame(float position)
                     return;
                 }
             }
-        } else if (position < m_minposition) {
-            m_target->setRotation(m_keyframes.first()->rotation());
-            m_target->setScale3D(m_keyframes.first()->scale3D());
-            m_target->setTranslation(m_keyframes.first()->translation());
-        } else {
-            m_target->setRotation(m_keyframes.last()->rotation());
-            m_target->setScale3D(m_keyframes.last()->scale3D());
-            m_target->setTranslation(m_keyframes.last()->translation());
         }
-        m_prevPosition = m_position;
     }
 }
 
@@ -165,6 +299,9 @@ QVector<float> QKeyframeAnimation::framePositions() const
     return d->m_framePositions;
 }
 
+/*!
+    Returns the list of keyframes.
+ */
 QVector<Qt3DCore::QTransform *> QKeyframeAnimation::keyframeList() const
 {
     Q_D(const QKeyframeAnimation);
@@ -177,7 +314,7 @@ void QKeyframeAnimation::setTarget(Qt3DCore::QTransform *target)
     if (d->m_target != target) {
         d->m_target = target;
         emit targetChanged(d->m_target);
-        d->m_prevPosition = -1.0f;
+        d->m_position = -1.0f;
 
         if (target) {
             d->m_baseScale = target->scale3D();
@@ -199,11 +336,11 @@ QKeyframeAnimation::RepeatMode QKeyframeAnimation::endMode() const
     return d->m_endMode;
 }
 
-void QKeyframeAnimation::setEasing(QEasingCurve::Type easing)
+void QKeyframeAnimation::setEasing(const QEasingCurve &easing)
 {
     Q_D(QKeyframeAnimation);
-    if (d->m_easing.type() != easing) {
-        d->m_easing.setType(easing);
+    if (d->m_easing != easing) {
+        d->m_easing = easing;
         emit easingChanged(easing);
     }
 }
@@ -211,8 +348,10 @@ void QKeyframeAnimation::setEasing(QEasingCurve::Type easing)
 void QKeyframeAnimation::setTargetName(const QString &name)
 {
     Q_D(QKeyframeAnimation);
-    d->m_targetName = name;
-    emit targetNameChanged(name);
+    if (d->m_targetName != name) {
+        d->m_targetName = name;
+        emit targetNameChanged(name);
+    }
 }
 
 void QKeyframeAnimation::setStartMode(QKeyframeAnimation::RepeatMode mode)
@@ -233,10 +372,24 @@ void QKeyframeAnimation::setEndMode(QKeyframeAnimation::RepeatMode mode)
     }
 }
 
+/*!
+    Adds new \a keyframe at the end of the animation. The QTransform can
+    be added to the animation multiple times.
+ */
 void QKeyframeAnimation::addKeyframe(Qt3DCore::QTransform *keyframe)
 {
     Q_D(QKeyframeAnimation);
     d->m_keyframes.push_back(keyframe);
+}
+
+/*!
+    Removes a \a keyframe from the animation. If the same QTransform
+    is set as keyframe multiple times, all occurrences are removed.
+ */
+void QKeyframeAnimation::removeKeyframe(Qt3DCore::QTransform *keyframe)
+{
+    Q_D(QKeyframeAnimation);
+    d->m_keyframes.removeAll(keyframe);
 }
 
 QString QKeyframeAnimation::targetName() const
@@ -245,10 +398,10 @@ QString QKeyframeAnimation::targetName() const
     return d->m_targetName;
 }
 
-QEasingCurve::Type QKeyframeAnimation::easing() const
+QEasingCurve QKeyframeAnimation::easing() const
 {
     Q_D(const QKeyframeAnimation);
-    return d->m_easing.type();
+    return d->m_easing;
 }
 
 Qt3DCore::QTransform *QKeyframeAnimation::target() const

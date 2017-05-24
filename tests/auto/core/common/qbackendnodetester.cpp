@@ -47,6 +47,12 @@ QBackendNodeTester::QBackendNodeTester(QObject *parent)
 {
 }
 
+void QBackendNodeTester::setPeerId(QBackendNode *backend, QNodeId id)
+{
+    Q_ASSERT(backend);
+    backend->setPeerId(id);
+}
+
 void QBackendNodeTester::simulateInitialization(QNode *frontend, QBackendNode *backend)
 {
     Q_ASSERT(frontend);

@@ -37,6 +37,9 @@
 #include "animationutils_p.h"
 #include <Qt3DAnimation/private/handler_p.h>
 #include <Qt3DAnimation/private/managers_p.h>
+#include <Qt3DAnimation/private/clipblendnode_p.h>
+#include <Qt3DAnimation/private/clipblendnodevisitor_p.h>
+#include <Qt3DAnimation/private/clipblendvalue_p.h>
 #include <Qt3DCore/qpropertyupdatedchange.h>
 #include <Qt3DCore/private/qpropertyupdatedchangebase_p.h>
 #include <QtGui/qvector2d.h>
@@ -46,31 +49,60 @@
 #include <QtCore/qvariant.h>
 #include <Qt3DAnimation/private/animationlogging_p.h>
 
+#include <numeric>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DAnimation {
 namespace Animation {
 
-AnimationUtils::ClipPreEvaluationData AnimationUtils::evaluationDataForClip(AnimationClip *clip,
-                                                                            const AnimationUtils::AnimatorEvaluationData &animatorData)
+int componentsForType(int type)
+{
+    int componentCount = 1;
+    switch (type) {
+    case QVariant::Double:
+        componentCount = 1;
+        break;
+
+    case QVariant::Vector2D:
+        componentCount = 2;
+        break;
+
+    case QVariant::Vector3D:
+        componentCount = 3;
+        break;
+
+    case QVariant::Vector4D:
+    case QVariant::Quaternion:
+        componentCount = 4;
+        break;
+
+    default:
+        qWarning() << "Unhandled animation type";
+    }
+
+    return componentCount;
+}
+
+ClipEvaluationData evaluationDataForClip(AnimationClip *clip,
+                                         const AnimatorEvaluationData &animatorData)
 {
     // global time values expected in seconds
-    ClipPreEvaluationData result;
+    ClipEvaluationData result;
     result.localTime = localTimeFromGlobalTime(animatorData.globalTime, animatorData.startTime,
                                                animatorData.playbackRate, clip->duration(),
                                                animatorData.loopCount, result.currentLoop);
-    result.isFinalFrame = (result.localTime >= clip->duration() &&
-                           animatorData.loopCount != 0 &&
-                           result.currentLoop >= animatorData.loopCount - 1);
+    result.isFinalFrame = isFinalFrame(result.localTime, clip->duration(),
+                                       result.currentLoop, animatorData.loopCount);
     return result;
 }
 
-double AnimationUtils::localTimeFromGlobalTime(double t_global,
-                                               double t_start_global,
-                                               double playbackRate,
-                                               double duration,
-                                               int loopCount,
-                                               int &currentLoop)
+double localTimeFromGlobalTime(double t_global,
+                               double t_start_global,
+                               double playbackRate,
+                               double duration,
+                               int loopCount,
+                               int &currentLoop)
 {
     double t_local = playbackRate * (t_global - t_start_global);
     double loopNumber = 0;
@@ -103,60 +135,48 @@ double AnimationUtils::localTimeFromGlobalTime(double t_global,
     return t_local;
 }
 
-QVector<int> AnimationUtils::channelsToIndices(const ChannelGroup &channelGroup, int dataType, int offset)
+double phaseFromGlobalTime(double t_global, double t_start_global,
+                           double playbackRate, double duration,
+                           int loopCount, int &currentLoop)
 {
-    static const QStringList standardSuffixes = (QStringList()
-                                                 << QLatin1String("x")
-                                                 << QLatin1String("y")
-                                                 << QLatin1String("z")
-                                                 << QLatin1String("w"));
-    static const QStringList quaternionSuffixes = (QStringList()
-                                                   << QLatin1String("w")
-                                                   << QLatin1String("x")
-                                                   << QLatin1String("y")
-                                                   << QLatin1String("z"));
-
-    if (dataType != QVariant::Quaternion)
-        return channelsToIndicesHelper(channelGroup, dataType, offset, standardSuffixes);
-    else
-        return channelsToIndicesHelper(channelGroup, dataType, offset, quaternionSuffixes);
-
+    const double t_local = localTimeFromGlobalTime(t_global, t_start_global, playbackRate,
+                                                   duration, loopCount, currentLoop);
+    return t_local / duration;
 }
 
-QVector<int> AnimationUtils::channelsToIndicesHelper(const ChannelGroup &channelGroup, int dataType, int offset, const QStringList &suffixes)
+ComponentIndices channelComponentsToIndices(const Channel &channel, int dataType, int offset)
 {
-    int expectedChannelCount = 1;
-    switch (dataType) {
-    case QVariant::Double:
-        expectedChannelCount = 1;
-        break;
+#if defined Q_COMPILER_UNIFORM_INIT
+    static const QVector<char> standardSuffixes = { 'X', 'Y', 'Z', 'W' };
+    static const QVector<char> quaternionSuffixes = { 'W', 'X', 'Y', 'Z' };
+#else
+    static const QVector<char> standardSuffixes = (QVector<char>() << 'X' << 'Y' << 'Z' << 'W');
+    static const QVector<char> quaternionSuffixes = (QVector<char>() << 'W' << 'X' << 'Y' << 'Z');
+#endif
 
-    case QVariant::Vector2D:
-        expectedChannelCount = 2;
-        break;
+    if (dataType != QVariant::Quaternion)
+        return channelComponentsToIndicesHelper(channel, dataType, offset, standardSuffixes);
+    else
+        return channelComponentsToIndicesHelper(channel, dataType, offset, quaternionSuffixes);
+}
 
-    case QVariant::Vector3D:
-        expectedChannelCount = 3;
-        break;
-
-    case QVariant::Vector4D:
-    case QVariant::Quaternion:
-        expectedChannelCount = 4;
-        break;
-
-    default:
-        qWarning() << "Unhandled animation type";
+ComponentIndices channelComponentsToIndicesHelper(const Channel &channel,
+                                              int dataType,
+                                              int offset,
+                                              const QVector<char> &suffixes)
+{
+    const int expectedComponentCount = componentsForType(dataType);
+    const int actualComponentCount = channel.channelComponents.size();
+    if (actualComponentCount != expectedComponentCount) {
+        qWarning() << "Data type expects" << expectedComponentCount
+                   << "but found" << actualComponentCount << "components in the animation clip";
     }
 
-    const int foundChannelCount = channelGroup.channels.size();
-    if (foundChannelCount != expectedChannelCount) {
-        qWarning() << "Data type expects" << expectedChannelCount
-                   << "but found" << foundChannelCount << "channels in the animation clip";
-    }
-
-    QVector<int> indices(expectedChannelCount);
-    for (int i = 0; i < expectedChannelCount; ++i) {
-        int index = suffixes.indexOf(channelGroup.channels[i].name);
+    ComponentIndices indices(expectedComponentCount);
+    for (int i = 0; i < expectedComponentCount; ++i) {
+        const QString &componentName = channel.channelComponents[i].name;
+        char suffix = componentName.at(componentName.length() - 1).toLatin1();
+        int index = suffixes.indexOf(suffix);
         if (index != -1)
             indices[i] = index + offset;
         else
@@ -165,7 +185,7 @@ QVector<int> AnimationUtils::channelsToIndicesHelper(const ChannelGroup &channel
     return indices;
 }
 
-QVector<float> AnimationUtils::evaluateClipAtLocalTime(AnimationClip *clip, float localTime)
+ClipResults evaluateClipAtLocalTime(AnimationClip *clip, float localTime)
 {
     QVector<float> channelResults;
     Q_ASSERT(clip);
@@ -174,19 +194,26 @@ QVector<float> AnimationUtils::evaluateClipAtLocalTime(AnimationClip *clip, floa
     channelResults.resize(clip->channelCount());
 
     // Iterate over channels and evaluate the fcurves
-    const QVector<ChannelGroup> &channelGroups = clip->channelGroups();
+    const QVector<Channel> &channels = clip->channels();
     int i = 0;
-    for (const ChannelGroup &channelGroup : channelGroups) {
-        for (const auto channel : qAsConst(channelGroup.channels))
-            channelResults[i++] = channel.fcurve.evaluateAtTime(localTime);
+    for (const Channel &channel : channels) {
+        for (const auto &channelComponent : qAsConst(channel.channelComponents))
+            channelResults[i++] = channelComponent.fcurve.evaluateAtTime(localTime);
     }
     return channelResults;
 }
 
-QVector<Qt3DCore::QSceneChangePtr> AnimationUtils::preparePropertyChanges(Qt3DCore::QNodeId peerId,
-                                                                          const QVector<MappingData> &mappingDataVec,
-                                                                          const QVector<float> &channelResults,
-                                                                          bool finalFrame)
+ClipResults evaluateClipAtPhase(AnimationClip *clip, float phase)
+{
+    // Calculate the clip local time from the phase and clip duration
+    const double localTime = phase * clip->duration();
+    return evaluateClipAtLocalTime(clip, localTime);
+}
+
+QVector<Qt3DCore::QSceneChangePtr> preparePropertyChanges(Qt3DCore::QNodeId animatorId,
+                                                          const QVector<MappingData> &mappingDataVec,
+                                                          const QVector<float> &channelResults,
+                                                          bool finalFrame)
 {
     QVector<Qt3DCore::QSceneChangePtr> changes;
     // Iterate over the mappings
@@ -254,7 +281,7 @@ QVector<Qt3DCore::QSceneChangePtr> AnimationUtils::preparePropertyChanges(Qt3DCo
 
     // If it's the final frame, notify the frontend that we've stopped
     if (finalFrame) {
-        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(peerId);
+        auto e = Qt3DCore::QPropertyUpdatedChangePtr::create(animatorId);
         e->setDeliveryFlags(Qt3DCore::QSceneChange::DeliverToAll);
         e->setPropertyName("running");
         e->setValue(false);
@@ -263,11 +290,15 @@ QVector<Qt3DCore::QSceneChangePtr> AnimationUtils::preparePropertyChanges(Qt3DCo
     return changes;
 }
 
-QVector<AnimationUtils::MappingData> AnimationUtils::buildPropertyMappings(Handler *handler, const AnimationClip *clip, const ChannelMapper *mapper)
+//TODO: Remove this and use new implementation below for both the unblended
+//      and blended animation cases.
+QVector<MappingData> buildPropertyMappings(Handler *handler,
+                                           const AnimationClip *clip,
+                                           const ChannelMapper *mapper)
 {
     QVector<MappingData> mappingDataVec;
     ChannelMappingManager *mappingManager = handler->channelMappingManager();
-    const QVector<ChannelGroup> &channelGroups = clip->channelGroups();
+    const QVector<Channel> &channels = clip->channels();
 
     // Iterate over the mappings in the mapper object
     for (const Qt3DCore::QNodeId mappingId : mapper->mappingIds()) {
@@ -292,13 +323,13 @@ QVector<AnimationUtils::MappingData> AnimationUtils::buildPropertyMappings(Handl
         const QString channelName = mapping->channelName();
         int channelGroupIndex = 0;
         bool foundMatch = false;
-        for (const ChannelGroup &channelGroup : channelGroups) {
-            if (channelGroup.name == channelName) {
+        for (const Channel &channel : channels) {
+            if (channel.name == channelName) {
                 foundMatch = true;
-                const int channelBaseIndex = clip->channelBaseIndex(channelGroupIndex);
+                const int channelBaseIndex = clip->channelComponentBaseIndex(channelGroupIndex);
 
                 // Within this group, match channel names with index ordering
-                mappingData.channelIndices = channelsToIndices(channelGroup, mappingData.type, channelBaseIndex);
+                mappingData.channelIndices = channelComponentsToIndices(channel, mappingData.type, channelBaseIndex);
 
                 // Store the mapping data
                 mappingDataVec.push_back(mappingData);
@@ -314,6 +345,226 @@ QVector<AnimationUtils::MappingData> AnimationUtils::buildPropertyMappings(Handl
     return mappingDataVec;
 }
 
+QVector<MappingData> buildPropertyMappings(const QVector<ChannelMapping*> &channelMappings,
+                                           const QVector<ChannelNameAndType> &channelNamesAndTypes,
+                                           const QVector<ComponentIndices> &channelComponentIndices)
+{
+    QVector<MappingData> mappingDataVec;
+    mappingDataVec.reserve(channelMappings.size());
+
+    // Iterate over the mappings
+    for (const auto mapping : channelMappings) {
+        // Populate the data we need, easy stuff first
+        MappingData mappingData;
+        mappingData.targetId = mapping->targetId();
+        mappingData.propertyName = mapping->propertyName();
+        mappingData.type = mapping->type();
+
+        if (mappingData.type == static_cast<int>(QVariant::Invalid)) {
+            qWarning() << "Unknown type for node id =" << mappingData.targetId
+                       << "and property =" << mapping->property();
+            continue;
+        }
+
+        // Try to find matching channel name and type
+        const ChannelNameAndType nameAndType = { mapping->channelName(), mapping->type() };
+        const int index = channelNamesAndTypes.indexOf(nameAndType);
+        if (index != -1) {
+            // We got one!
+            mappingData.channelIndices = channelComponentIndices[index];
+            mappingDataVec.push_back(mappingData);
+        }
+    }
+
+    return mappingDataVec;
+}
+
+QVector<ChannelNameAndType> buildRequiredChannelsAndTypes(Handler *handler,
+                                                          const ChannelMapper *mapper)
+{
+    ChannelMappingManager *mappingManager = handler->channelMappingManager();
+    const QVector<Qt3DCore::QNodeId> mappingIds = mapper->mappingIds();
+
+    // Reserve enough storage assuming each mapping is for a different channel.
+    // May be overkill but avoids potential for multiple allocations
+    QVector<ChannelNameAndType> namesAndTypes;
+    namesAndTypes.reserve(mappingIds.size());
+
+    // Iterate through the mappings and add ones not already used by an earlier mapping.
+    // We could add them all then sort and remove duplicates. However, our approach has the
+    // advantage of keeping the blend tree format more consistent with the mapping
+    // orderings which will have better cache locality when generating events.
+    for (const Qt3DCore::QNodeId mappingId : mappingIds) {
+        // Get the mapping object
+        ChannelMapping *mapping = mappingManager->lookupResource(mappingId);
+        Q_ASSERT(mapping);
+
+        // Get the name and type
+        const ChannelNameAndType nameAndType{ mapping->channelName(), mapping->type() };
+
+        // Add if not already contained
+        if (!namesAndTypes.contains(nameAndType))
+            namesAndTypes.push_back(nameAndType);
+    }
+
+    return namesAndTypes;
+}
+
+QVector<ComponentIndices> assignChannelComponentIndices(const QVector<ChannelNameAndType> &namesAndTypes)
+{
+    QVector<ComponentIndices> channelComponentIndices;
+    channelComponentIndices.reserve(namesAndTypes.size());
+
+    int baseIndex = 0;
+    for (const auto &entry : namesAndTypes) {
+        // Populate indices in order
+        const int componentCount = componentsForType(entry.type);
+        ComponentIndices indices(componentCount);
+        std::iota(indices.begin(), indices.end(), baseIndex);
+
+        // Append to the results
+        channelComponentIndices.push_back(indices);
+
+        // Increment baseIndex
+        baseIndex += componentCount;
+    }
+
+    return channelComponentIndices;
+}
+
+QVector<Qt3DCore::QNodeId> gatherValueNodesToEvaluate(Handler *handler,
+                                                      Qt3DCore::QNodeId blendTreeRootId)
+{
+    Q_ASSERT(handler);
+    Q_ASSERT(blendTreeRootId.isNull() == false);
+
+    // We need the ClipBlendNodeManager to be able to lookup nodes from their Ids
+    ClipBlendNodeManager *nodeManager = handler->clipBlendNodeManager();
+
+    // Visit the tree in a pre-order manner and collect the dependencies
+    QVector<Qt3DCore::QNodeId> clipIds;
+    ClipBlendNodeVisitor visitor(nodeManager,
+                                 ClipBlendNodeVisitor::PreOrder,
+                                 ClipBlendNodeVisitor::VisitOnlyDependencies);
+
+    auto func = [&clipIds, nodeManager] (ClipBlendNode *blendNode) {
+        const auto dependencyIds = blendNode->currentDependencyIds();
+        for (const auto dependencyId : dependencyIds) {
+            // Look up the blend node and if it's a value type (clip),
+            // add it to the set of value node ids that need to be evaluated
+            ClipBlendNode *node = nodeManager->lookupNode(dependencyId);
+            if (node && node->blendType() == ClipBlendNode::ValueType)
+                clipIds.append(dependencyId);
+        }
+    };
+    visitor.traverse(blendTreeRootId, func);
+
+    // Sort and remove duplicates
+    std::sort(clipIds.begin(), clipIds.end());
+    auto last = std::unique(clipIds.begin(), clipIds.end());
+    clipIds.erase(last, clipIds.end());
+    return clipIds;
+}
+
+ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &targetChannels,
+                                           const QVector<ComponentIndices> &targetIndices,
+                                           const AnimationClip *clip)
+{
+    Q_ASSERT(targetChannels.size() == targetIndices.size());
+
+    // Reserve enough storage for all the format indices
+    int indexCount = 0;
+    for (const auto targetIndexVec : targetIndices)
+        indexCount += targetIndexVec.size();
+    ComponentIndices format;
+    format.resize(indexCount);
+
+
+    // Iterate through the target channels
+    const int channelCount = targetChannels.size();
+    auto formatIt = format.begin();
+    for (int i = 0; i < channelCount; ++i) {
+        // Find the index of the channel from the clip
+        const ChannelNameAndType &targetChannel = targetChannels[i];
+        const int clipChannelIndex = clip->channelIndex(targetChannel.name);
+
+        // TODO: Ensure channel in the clip has enough components to map to the type.
+        //       Requires some improvements to the clip data structure first.
+        // TODO: I don't think we need the targetIndices, only the number of components
+        //       for each target channel. Check once blend tree is complete.
+        const int componentCount = targetIndices[i].size();
+
+        if (clipChannelIndex != -1) {
+            // Found a matching channel in the clip. Get the base channel
+            // component index and populate the format indices for this channel.
+            const int baseIndex = clip->channelComponentBaseIndex(clipChannelIndex);
+            std::iota(formatIt, formatIt + componentCount, baseIndex);
+
+        } else {
+            // No such channel in this clip. We'll use default values when
+            // mapping from the clip to the formatted clip results.
+            std::fill(formatIt, formatIt + componentCount, -1);
+        }
+
+        formatIt += componentCount;
+    }
+
+    return format;
+}
+
+ClipResults formatClipResults(const ClipResults &rawClipResults,
+                              const ComponentIndices &format)
+{
+    // Resize the output to match the number of indices
+    const int elementCount = format.size();
+    ClipResults formattedClipResults(elementCount);
+
+    // Perform a gather operation to format the data
+    // TODO: For large numbers of components do this in parallel with
+    // for e.g. a parallel_for() like construct
+    for (int i = 0; i < elementCount; ++i) {
+        const float value = format[i] != -1 ? rawClipResults[format[i]] : 0.0f;
+        formattedClipResults[i] = value;
+    }
+
+    return formattedClipResults;
+}
+
+ClipResults evaluateBlendTree(Handler *handler,
+                              BlendedClipAnimator *animator,
+                              Qt3DCore::QNodeId blendTreeRootId)
+{
+    Q_ASSERT(handler);
+    Q_ASSERT(blendTreeRootId.isNull() == false);
+    const Qt3DCore::QNodeId animatorId = animator->peerId();
+
+    // We need the ClipBlendNodeManager to be able to lookup nodes from their Ids
+    ClipBlendNodeManager *nodeManager = handler->clipBlendNodeManager();
+
+    // Visit the tree in a post-order manner and for each interior node call
+    // blending function. We only need to visit the nodes that affect the blend
+    // tree at this time.
+    ClipBlendNodeVisitor visitor(nodeManager,
+                                 ClipBlendNodeVisitor::PostOrder,
+                                 ClipBlendNodeVisitor::VisitOnlyDependencies);
+
+    // TODO: When jobs can spawn other jobs we could evaluate subtrees of
+    // the blend tree in parallel. Since it's just a dependency tree, it maps
+    // simply onto the dependencies between jobs.
+    auto func = [animatorId] (ClipBlendNode *blendNode) {
+        // Look up the blend node and if it's an interior node, perform
+        // the blend operation
+        if (blendNode->blendType() != ClipBlendNode::ValueType)
+            blendNode->blend(animatorId);
+    };
+    visitor.traverse(blendTreeRootId, func);
+
+    // The clip results stored in the root node for this animator
+    // now represent the result of the blend tree evaluation
+    ClipBlendNode *blendTreeRootNode = nodeManager->lookupNode(blendTreeRootId);
+    Q_ASSERT(blendTreeRootNode);
+    return blendTreeRootNode->clipResults(animatorId);
+}
 
 } // Animation
 } // Qt3DAnimation

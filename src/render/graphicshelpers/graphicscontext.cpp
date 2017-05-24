@@ -162,6 +162,7 @@ GraphicsContext::GraphicsContext()
     , m_ownCurrent(true)
     , m_activeShader(nullptr)
     , m_activeShaderDNA(0)
+    , m_renderTargetFormat(QAbstractTexture::NoFormat)
     , m_currClearStencilValue(0)
     , m_currClearDepthValue(1.f)
     , m_currClearColorValue(0,0,0,0)
@@ -215,7 +216,7 @@ void GraphicsContext::initialize()
 void GraphicsContext::resolveRenderTargetFormat()
 {
     const QSurfaceFormat format = m_gl->format();
-    const uint a = format.alphaBufferSize();
+    const uint a = (format.alphaBufferSize() == -1) ? 0 : format.alphaBufferSize();
     const uint r = format.redBufferSize();
     const uint g = format.greenBufferSize();
     const uint b = format.blueBufferSize();
@@ -1319,16 +1320,16 @@ void GraphicsContext::applyUniform(const ShaderUniform &description, const Unifo
         break;
 
     case UniformType::UInt:
-        applyUniformHelper<UniformType::Int>(description.m_location, description.m_size, v);
+        applyUniformHelper<UniformType::UInt>(description.m_location, description.m_size, v);
         break;
     case UniformType::UIVec2:
-        applyUniformHelper<UniformType::IVec2>(description.m_location, description.m_size, v);
+        applyUniformHelper<UniformType::UIVec2>(description.m_location, description.m_size, v);
         break;
     case UniformType::UIVec3:
-        applyUniformHelper<UniformType::IVec3>(description.m_location, description.m_size, v);
+        applyUniformHelper<UniformType::UIVec3>(description.m_location, description.m_size, v);
         break;
     case UniformType::UIVec4:
-        applyUniformHelper<UniformType::IVec4>(description.m_location, description.m_size, v);
+        applyUniformHelper<UniformType::UIVec4>(description.m_location, description.m_size, v);
         break;
 
     case UniformType::Bool:
@@ -1477,7 +1478,7 @@ bool GraphicsContext::hasGLBufferForBuffer(Buffer *buffer)
     return (it != m_renderBufferHash.end());
 }
 
-void GraphicsContext::memoryBarrier(QMemoryBarrier::BarrierTypes barriers)
+void GraphicsContext::memoryBarrier(QMemoryBarrier::Operations barriers)
 {
     m_glHelper->memoryBarrier(barriers);
 }
@@ -1500,8 +1501,6 @@ HGLBuffer GraphicsContext::createGLBufferFor(Buffer *buffer)
     if (!bindGLBuffer(b, bufferTypeToGLBufferType(buffer->type())))
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer binding failed";
 
-    // TO DO: Handle usage pattern
-    b->allocate(this, buffer->data().constData(), buffer->data().size(), false);
     return m_renderer->nodeManagers()->glBufferManager()->lookupHandle(buffer->peerId());
 }
 
@@ -1527,21 +1526,39 @@ void GraphicsContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool rel
     // * setData was called changing the whole data or functor (or the usage pattern)
     // * partial buffer updates where received
 
-    // Note: we assume the case where both setData/functor and updates are called to be a misuse
-    // with unexpected behavior
-    const QVector<Qt3DRender::QBufferUpdate> updates = std::move(buffer->pendingBufferUpdates());
-    if (!updates.empty()) {
-        for (const Qt3DRender::QBufferUpdate &update : updates) {
+    // TO DO: Handle usage pattern
+    QVector<Qt3DRender::QBufferUpdate> updates = std::move(buffer->pendingBufferUpdates());
+    for (auto it = updates.begin(); it != updates.end(); ++it) {
+        auto update = it;
+        // We have a partial update
+        if (update->offset >= 0) {
+            //accumulate sequential updates as single one
+            int bufferSize = update->data.size();
+            auto it2 = it + 1;
+            while ((it2 != updates.end())
+                   && (it2->offset - update->offset == bufferSize)) {
+                bufferSize += it2->data.size();
+                ++it2;
+            }
+            update->data.resize(bufferSize);
+            while (it + 1 != it2) {
+                ++it;
+                update->data.replace(it->offset - update->offset, it->data.size(), it->data);
+                it->data.clear();
+            }
             // TO DO: based on the number of updates .., it might make sense to
             // sometime use glMapBuffer rather than glBufferSubData
-            b->update(this, update.data.constData(), update.data.size(), update.offset);
+            b->update(this, update->data.constData(), update->data.size(), update->offset);
+        } else {
+            // We have an update that was done by calling QBuffer::setData
+            // which is used to resize or entirely clear the buffer
+            // Note: we use the buffer data directly in that case
+            const int bufferSize = buffer->data().size();
+            b->allocate(this, bufferSize, false); // orphan the buffer
+            b->allocate(this, buffer->data().constData(), bufferSize, false);
         }
-    } else {
-        const int bufferSize = buffer->data().size();
-        // TO DO: Handle usage pattern
-        b->allocate(this, bufferSize, false); // orphan the buffer
-        b->allocate(this, buffer->data().constData(), bufferSize, false);
     }
+
     if (releaseBuffer) {
         b->release(this);
         if (bufferTypeToGLBufferType(buffer->type()) == GLBuffer::ArrayBuffer)

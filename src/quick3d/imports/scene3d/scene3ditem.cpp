@@ -38,23 +38,26 @@
 ****************************************************************************/
 
 #include "scene3ditem_p.h"
-#include "scene3dcleaner_p.h"
-#include "scene3dlogging_p.h"
-#include "scene3drenderer_p.h"
-#include "scene3dsgnode_p.h"
 
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DRender/qcamera.h>
-#include <Qt3DRender/QRenderAspect>
-#include <Qt3DRender/qrendersurfaceselector.h>
-#include <Qt3DRender/private/qrendersurfaceselector_p.h>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DInput/qinputsettings.h>
 #include <Qt3DLogic/qlogicaspect.h>
+#include <Qt3DRender/QRenderAspect>
+#include <Qt3DRender/qcamera.h>
+#include <Qt3DRender/qrendersurfaceselector.h>
 
-
+#include <QtGui/qguiapplication.h>
+#include <QtGui/qoffscreensurface.h>
 #include <QtQuick/qquickwindow.h>
+#include <QtQuick/qquickrendercontrol.h>
+
+#include <Qt3DRender/private/qrendersurfaceselector_p.h>
+#include <scene3dcleaner_p.h>
+#include <scene3dlogging_p.h>
+#include <scene3drenderer_p.h>
+#include <scene3dsgnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -179,7 +182,7 @@ void Scene3DItem::applyRootEntityChange()
             QList<Qt3DRender::QCamera *> cameras
                 = m_entity->findChildren<Qt3DRender::QCamera *>();
             if (cameras.isEmpty()) {
-                qWarning() << "No camera found and automatic aspect ratio requested";
+                qCDebug(Scene3D) << "No camera found and automatic aspect ratio requested";
             } else {
                 m_camera = cameras.first();
                 setCameraAspectModeHelper();
@@ -191,7 +194,7 @@ void Scene3DItem::applyRootEntityChange()
         if (inputSettings) {
             inputSettings->setEventSource(this);
         } else {
-            qWarning() << "No Input Settings found, keyboard and mouse events won't be handled";
+            qCDebug(Scene3D) << "No Input Settings found, keyboard and mouse events won't be handled";
         }
     }
 }
@@ -202,11 +205,25 @@ void Scene3DItem::setWindowSurface(QObject *rootObject)
 
     // Set the item's window surface if it appears
     // the surface wasn't set on the surfaceSelector
-    if (surfaceSelector && !surfaceSelector->surface())
-        surfaceSelector->setSurface(this->window());
+    if (surfaceSelector && !surfaceSelector->surface()) {
+        // We may not have a real, exposed QQuickWindow when the Quick rendering
+        // is redirected via QQuickRenderControl (f.ex. QQuickWidget).
+        if (QWindow *rw = QQuickRenderControl::renderWindowFor(this->window())) {
+            // rw is the top-level window that is backed by a native window. Do
+            // not use that though since we must not clash with e.g. the widget
+            // backingstore compositor in the gui thread.
+            m_dummySurface = new QOffscreenSurface;
+            m_dummySurface->setParent(qGuiApp); // parent to something suitably long-living
+            m_dummySurface->setFormat(rw->format());
+            m_dummySurface->create();
+            surfaceSelector->setSurface(m_dummySurface);
+        } else {
+            surfaceSelector->setSurface(this->window());
+        }
+    }
 }
 
-void Scene3DItem::setItemArea(const QSize &area)
+void Scene3DItem::setItemArea(QSize area)
 {
     Qt3DRender::QRenderSurfaceSelector *surfaceSelector = Qt3DRender::QRenderSurfaceSelectorPrivate::find(m_entity);
     if (surfaceSelector)

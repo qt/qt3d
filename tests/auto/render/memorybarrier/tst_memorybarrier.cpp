@@ -50,14 +50,14 @@ private Q_SLOTS:
         QCOMPARE(backendMemoryBarrier.nodeType(), Qt3DRender::Render::FrameGraphNode::MemoryBarrier);
         QCOMPARE(backendMemoryBarrier.isEnabled(), false);
         QVERIFY(backendMemoryBarrier.peerId().isNull());
-        QCOMPARE(backendMemoryBarrier.barrierTypes(), Qt3DRender::QMemoryBarrier::None);
+        QCOMPARE(backendMemoryBarrier.waitOperations(), Qt3DRender::QMemoryBarrier::None);
     }
 
     void checkInitializeFromPeer()
     {
         // GIVEN
         Qt3DRender::QMemoryBarrier memoryBarrier;
-        memoryBarrier.setBarrierTypes(Qt3DRender::QMemoryBarrier::VertexAttributeArrayBarrier);
+        memoryBarrier.setWaitOperations(Qt3DRender::QMemoryBarrier::VertexAttributeArray);
 
         {
             // WHEN
@@ -67,7 +67,7 @@ private Q_SLOTS:
             // THEN
             QCOMPARE(backendMemoryBarrier.isEnabled(), true);
             QCOMPARE(backendMemoryBarrier.peerId(), memoryBarrier.id());
-            QCOMPARE(backendMemoryBarrier.barrierTypes(), Qt3DRender::QMemoryBarrier::VertexAttributeArrayBarrier);
+            QCOMPARE(backendMemoryBarrier.waitOperations(), Qt3DRender::QMemoryBarrier::VertexAttributeArray);
         }
         {
             // WHEN
@@ -101,14 +101,14 @@ private Q_SLOTS:
         }
         {
              // WHEN
-             const Qt3DRender::QMemoryBarrier::BarrierTypes newValue(Qt3DRender::QMemoryBarrier::AtomicCounterBarrier|Qt3DRender::QMemoryBarrier::ElementArrayBarrier);
+             const Qt3DRender::QMemoryBarrier::Operations newValue(Qt3DRender::QMemoryBarrier::AtomicCounter|Qt3DRender::QMemoryBarrier::ElementArray);
              const auto change = Qt3DCore::QPropertyUpdatedChangePtr::create(Qt3DCore::QNodeId());
-             change->setPropertyName("barrierTypes");
+             change->setPropertyName("waitOperations");
              change->setValue(QVariant::fromValue(newValue));
              backendMemoryBarrier.sceneChangeEvent(change);
 
              // THEN
-            QCOMPARE(backendMemoryBarrier.barrierTypes(), newValue);
+            QCOMPARE(backendMemoryBarrier.waitOperations(), newValue);
         }
     }
 

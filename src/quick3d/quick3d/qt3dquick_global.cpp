@@ -38,12 +38,13 @@
 ****************************************************************************/
 
 #include "qt3dquick_global_p.h"
-#include "qt3dquicknodefactory_p.h"
-#include <private/qqmlglobal_p.h>
-#include <private/qt3dquickvaluetypes_p.h>
-#include <private/qv8engine_p.h>
-#include <private/qv4engine_p.h>
-#include <private/qv4object_p.h>
+
+#include <Qt3DQuick/private/qt3dquicknodefactory_p.h>
+#include <Qt3DQuick/private/qt3dquickvaluetypes_p.h>
+#include <QtQml/private/qqmlglobal_p.h>
+#include <QtQml/private/qv4engine_p.h>
+#include <QtQml/private/qv4object_p.h>
+#include <QtQml/private/qv8engine_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -579,6 +580,7 @@ public:
         case QMetaType::QColor:
             {
             Q_ASSERT(dstSize >= sizeof(QColor));
+            Q_UNUSED(dstSize);
             const QRgb *rgb = reinterpret_cast<const QRgb *>(src);
             QColor *color = reinterpret_cast<QColor *>(dst);
             new (color) QColor(QColor::fromRgba(*rgb));
@@ -657,9 +659,9 @@ public:
 #undef ASSERT_VALID_SIZE
 };
 
+static Quick3DValueTypeProvider valueTypeProvider;
 static Quick3DValueTypeProvider *getValueTypeProvider()
 {
-    static Quick3DValueTypeProvider valueTypeProvider;
     return &valueTypeProvider;
 }
 
@@ -702,6 +704,11 @@ void Quick3D_initialize()
     // allow removal of this hook here and in QtQuick.
     QQmlPrivate::RegisterAutoParent autoparent = { 0, &qquick3ditem_autoParent };
     QQmlPrivate::qmlregister(QQmlPrivate::AutoParentRegistration, &autoparent);
+}
+
+void Quick3D_uninitialize()
+{
+    QQml_removeValueTypeProvider(&valueTypeProvider);
 }
 
 void Quick3D_registerType(const char *className, const char *quickName, int major, int minor)

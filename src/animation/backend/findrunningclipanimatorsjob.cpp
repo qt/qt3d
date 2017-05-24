@@ -73,10 +73,10 @@ void FindRunningClipAnimatorsJob::run()
         // TODO: Should be possible to parallelise this with the fcurve evaluation as
         //       sending the property change events doesn't happen until after evaluation
         if (canRun) {
-            const AnimationClip *clip = m_handler->animationClipManager()->lookupResource(clipAnimator->clipId());
+            const AnimationClip *clip = m_handler->animationClipLoaderManager()->lookupResource(clipAnimator->clipId());
             const ChannelMapper *mapper = m_handler->channelMapperManager()->lookupResource(clipAnimator->mapperId());
             Q_ASSERT(clip && mapper);
-            const QVector<AnimationUtils::MappingData> mappingData = AnimationUtils::buildPropertyMappings(m_handler, clip, mapper);
+            const QVector<MappingData> mappingData = buildPropertyMappings(m_handler, clip, mapper);
             clipAnimator->setMappingData(mappingData);
         }
     }

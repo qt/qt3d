@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "quick3dlogicaldevice_p.h"
+#include <Qt3DQuickInput/private/quick3dlogicaldevice_p.h>
 
 QT_BEGIN_NAMESPACE
 

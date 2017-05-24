@@ -53,6 +53,9 @@
 
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DRender/QAttribute>
+#include <Qt3DRender/private/bufferutils_p.h>
+
+#include <private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -68,24 +71,6 @@ class GeometryRenderer;
 class NodeManagers;
 class Attribute;
 class Buffer;
-
-struct BufferInfo
-{
-    BufferInfo()
-        : type(QAttribute::VertexBaseType::Float)
-        , dataSize(0)
-        , count(0)
-        , byteStride(0)
-        , byteOffset(0)
-    {}
-
-    QByteArray data;
-    QAttribute::VertexBaseType type;
-    uint dataSize;
-    uint count;
-    uint byteStride;
-    uint byteOffset;
-};
 
 class Q_AUTOTEST_EXPORT TrianglesVisitor
 {
@@ -105,7 +90,7 @@ protected:
     Qt3DCore::QNodeId m_nodeId;
 };
 
-class Q_AUTOTEST_EXPORT CoordinateReader
+class QT3DRENDERSHARED_PRIVATE_EXPORT CoordinateReader
 {
 public:
     explicit CoordinateReader(NodeManagers *manager)

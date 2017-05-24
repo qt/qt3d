@@ -14,19 +14,16 @@ gcov {
 
 SOURCES += \
     qt3dquickrender_global.cpp \
-    qt3dquickrendernodefactory.cpp \
-    qt3dquickrender_logging.cpp
+    qt3dquickrendernodefactory.cpp
 
 HEADERS += \
     qt3dquickrendernodefactory_p.h \
     qt3dquickrender_global_p.h \
-    qt3dquickrender_global.h \
-    qt3dquickrender_logging_p.h
+    qt3dquickrender_global.h
 
 # otherwise mingw headers do not declare common functions like ::strcasecmp
 win32-g++*:QMAKE_CXXFLAGS_CXX11 = -std=gnu++0x
 
 include(./items/items.pri)
-include(./scene2d/scene2d.pri)
 
 load(qt_module)

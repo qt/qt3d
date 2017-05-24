@@ -42,7 +42,7 @@
 
 #include <Qt3DExtras/qt3dextras_global.h>
 #include <Qt3DRender/qgeometry.h>
-#include <QSize>
+#include <QtCore/QSize>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,6 +62,7 @@ class QT3DEXTRASSHARED_EXPORT QPlaneGeometry : public Qt3DRender::QGeometry
     Q_PROPERTY(float width READ width WRITE setWidth NOTIFY widthChanged)
     Q_PROPERTY(float height READ height WRITE setHeight NOTIFY heightChanged)
     Q_PROPERTY(QSize resolution READ resolution WRITE setResolution NOTIFY resolutionChanged)
+    Q_PROPERTY(bool mirrored READ mirrored WRITE setMirrored NOTIFY mirroredChanged REVISION 9)
     Q_PROPERTY(Qt3DRender::QAttribute *positionAttribute READ positionAttribute CONSTANT)
     Q_PROPERTY(Qt3DRender::QAttribute *normalAttribute READ normalAttribute CONSTANT)
     Q_PROPERTY(Qt3DRender::QAttribute *texCoordAttribute READ texCoordAttribute CONSTANT)
@@ -78,6 +79,7 @@ public:
     QSize resolution() const;
     float width() const;
     float height() const;
+    bool mirrored() const;
 
     Qt3DRender::QAttribute *positionAttribute() const;
     Qt3DRender::QAttribute *normalAttribute() const;
@@ -89,11 +91,13 @@ public Q_SLOTS:
     void setResolution(const QSize &resolution);
     void setWidth(float width);
     void setHeight(float height);
+    void setMirrored(bool mirrored);
 
 Q_SIGNALS:
     void resolutionChanged(const QSize &resolution);
     void widthChanged(float width);
     void heightChanged(float height);
+    void mirroredChanged(bool mirrored);
 
 protected:
     QPlaneGeometry(QPlaneGeometryPrivate &dd, QNode *parent = nullptr);

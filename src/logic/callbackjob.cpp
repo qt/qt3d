@@ -38,8 +38,9 @@
 ****************************************************************************/
 
 #include "callbackjob_p.h"
-#include "manager_p.h"
-#include "job_common_p.h"
+
+#include <Qt3DLogic/private/job_common_p.h>
+#include <Qt3DLogic/private/manager_p.h>
 
 QT_BEGIN_NAMESPACE
 

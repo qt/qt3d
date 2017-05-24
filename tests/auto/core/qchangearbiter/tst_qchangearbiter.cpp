@@ -442,6 +442,7 @@ void tst_QChangeArbiter::registerSceneObserver()
     tst_Node *root = new tst_Node();
     Qt3DCore::QNode *child = new tst_Node();
     Qt3DCore::QNodePrivate::get(root)->setScene(scene.data());
+    Qt3DCore::QNodePrivate::get(root)->m_hasBackendNode = true;
     scene->addObservable(root);
 
     QList<tst_SimpleObserver *> observers;
@@ -573,6 +574,7 @@ void tst_QChangeArbiter::unregisterSceneObservers()
     tst_Node *root = new tst_Node();
     Qt3DCore::QNode *child = new tst_Node();
     Qt3DCore::QNodePrivate::get(root)->setScene(scene.data());
+    Qt3DCore::QNodePrivate::get(root)->m_hasBackendNode = true;
     scene->addObservable(root);
 
     QList<tst_SimpleObserver *> observers;
@@ -796,6 +798,7 @@ void tst_QChangeArbiter::distributePropertyChanges()
     // WHEN
     PropertyTestNode *root = new PropertyTestNode();
     Qt3DCore::QNodePrivate::get(root)->setScene(scene.data());
+    Qt3DCore::QNodePrivate::get(root)->m_hasBackendNode = true;
     scene->addObservable(root);
 
     tst_SimpleObserver *rootObserver = new tst_SimpleObserver();
@@ -890,6 +893,7 @@ void tst_QChangeArbiter::distributeBackendChanges()
     // WHEN
     tst_Node *root = new tst_Node();
     Qt3DCore::QNodePrivate::get(root)->setScene(scene.data());
+    Qt3DCore::QNodePrivate::get(root)->m_hasBackendNode = true;
     scene->addObservable(root);
 
     tst_BackendObserverObservable *backenObserverObservable = new tst_BackendObserverObservable();

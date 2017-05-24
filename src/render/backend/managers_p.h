@@ -77,8 +77,8 @@
 #include <Qt3DRender/private/boundingvolumedebug_p.h>
 #include <Qt3DRender/private/openglvertexarrayobject_p.h>
 #include <Qt3DRender/private/light_p.h>
+#include <Qt3DRender/private/environmentlight_p.h>
 #include <Qt3DRender/private/computecommand_p.h>
-#include <Qt3DRender/private/eventforward_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -360,15 +360,6 @@ class ObjectPickerManager : public Qt3DCore::QResourceManager<
 {
 };
 
-class EventForwardManager : public Qt3DCore::QResourceManager<
-        EventForward,
-        Qt3DCore::QNodeId,
-        8,
-        Qt3DCore::ArrayAllocatingPolicy,
-        Qt3DCore::NonLockingPolicy>
-{
-};
-
 #if 0
 class BoundingVolumeDebugManager : public Qt3DCore::QResourceManager<
         BoundingVolumeDebug,
@@ -389,6 +380,17 @@ class LightManager : public Qt3DCore::QResourceManager<
 {
 public:
     LightManager() {}
+};
+
+class EnvironmentLightManager : public Qt3DCore::QResourceManager<
+        EnvironmentLight,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy,
+        Qt3DCore::NonLockingPolicy>
+{
+public:
+    EnvironmentLightManager() {}
 };
 
 class ComputeCommandManager : public Qt3DCore::QResourceManager<

@@ -208,7 +208,8 @@ UniformValue RenderView::standardUniformValue(RenderView::StandardUniform standa
 }
 
 RenderView::RenderView()
-    : m_renderer(nullptr)
+    : m_isDownloadBuffersEnable(false)
+    , m_renderer(nullptr)
     , m_devicePixelRatio(1.)
     , m_viewport(QRectF(0.0f, 0.0f, 1.0f, 1.0f))
     , m_gamma(2.2f)
@@ -217,9 +218,9 @@ RenderView::RenderView()
     , m_stateSet(nullptr)
     , m_noDraw(false)
     , m_compute(false)
-    , m_isDownloadBuffersEnable(false)
     , m_frustumCulling(false)
     , m_memoryBarrier(QMemoryBarrier::None)
+    , m_environmentLight(nullptr)
 {
     m_workGroups[0] = 1;
     m_workGroups[1] = 1;
@@ -361,6 +362,7 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
     // is only accessed from the same thread
     UniformBlockValueBuilder *builder = new UniformBlockValueBuilder();
     builder->shaderDataManager = m_manager->shaderDataManager();
+    builder->textureManager = m_manager->textureManager();
     m_localData.setLocalData(builder);
 
     QVector<RenderCommand *> commands;
@@ -413,7 +415,12 @@ QVector<RenderCommand *> RenderView::buildDrawRenderCommands(const QVector<Entit
                 ParameterInfoList globalParameters = passData.parameterInfo;
                 // setShaderAndUniforms can initialize a localData
                 // make sure this is cleared before we leave this function
-                setShaderAndUniforms(command, pass, globalParameters, *(node->worldTransform()), lightSources.mid(0, std::max(lightSources.size(), MAX_LIGHTS)));
+                setShaderAndUniforms(command,
+                                     pass,
+                                     globalParameters,
+                                     *(node->worldTransform()),
+                                     lightSources.mid(0, std::max(lightSources.size(), MAX_LIGHTS)),
+                                     m_environmentLight);
 
                 // Store all necessary information for actual drawing if command is valid
                 command->m_isValid = !command->m_attributes.empty();
@@ -479,6 +486,7 @@ QVector<RenderCommand *> RenderView::buildComputeRenderCommands(const QVector<En
     // is only accessed from the same thread
     UniformBlockValueBuilder *builder = new UniformBlockValueBuilder();
     builder->shaderDataManager = m_manager->shaderDataManager();
+    builder->textureManager = m_manager->textureManager();
     m_localData.setLocalData(builder);
 
     // If the RenderView contains only a ComputeDispatch then it cares about
@@ -512,7 +520,8 @@ QVector<RenderCommand *> RenderView::buildComputeRenderCommands(const QVector<En
                                      pass,
                                      globalParameters,
                                      *(node->worldTransform()),
-                                     QVector<LightSource>());
+                                     QVector<LightSource>(),
+                                     nullptr);
                 commands.append(command);
             }
         }
@@ -588,7 +597,7 @@ void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
         // If two shaders define the same block with the exact same layout, in that case the UBO could be shared
         // but how do we know that ? We'll need to compare ShaderUniformBlocks
 
-        // Note: we assume that if a buffer is shared accross multiple shaders
+        // Note: we assume that if a buffer is shared across multiple shaders
         // then it implies that they share the same layout
 
         // Temporarly disabled
@@ -700,7 +709,7 @@ void RenderView::buildSortingKey(RenderCommand *command) const
 }
 
 void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform,
-                                      const QVector<LightSource> &activeLightSources) const
+                                      const QVector<LightSource> &activeLightSources, EnvironmentLight *environmentLight) const
 {
     // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
     // Set shader, technique, and effect by basically doing :
@@ -821,13 +830,25 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                 if (uniformNamesIds.contains(LIGHT_COUNT_NAME_ID))
                     setUniformValue(command->m_parameterPack, LIGHT_COUNT_NAME_ID, UniformValue(qMax(1, lightIdx)));
 
-                if (activeLightSources.isEmpty()) {
+                // If no active light sources and no environment light, add a default light
+                if (activeLightSources.isEmpty() && !environmentLight) {
                     // Note: implicit conversion of values to UniformValue
                     setUniformValue(command->m_parameterPack, LIGHT_POSITION_NAMES[0], QVector3D(10.0f, 10.0f, 0.0f));
                     setUniformValue(command->m_parameterPack, LIGHT_TYPE_NAMES[0], int(QAbstractLight::PointLight));
                     setUniformValue(command->m_parameterPack, LIGHT_COLOR_NAMES[0], QVector3D(1.0f, 1.0f, 1.0f));
                     setUniformValue(command->m_parameterPack, LIGHT_INTENSITY_NAMES[0], 0.5f);
                 }
+
+                // Environment Light
+                int envLightCount = 0;
+                if (environmentLight && environmentLight->isEnabled()) {
+                    ShaderData *shaderData = m_manager->shaderDataManager()->lookupResource(environmentLight->shaderData());
+                    if (shaderData) {
+                        setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, QStringLiteral("envLight"));
+                        envLightCount = 1;
+                    }
+                }
+                setUniformValue(command->m_parameterPack, StringToInt::lookupId(QStringLiteral("envLightCount")), envLightCount);
             }
             // Set frag outputs in the shaders if hash not empty
             if (!fragOutputs.isEmpty())

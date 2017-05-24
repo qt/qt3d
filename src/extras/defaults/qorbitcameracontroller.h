@@ -37,8 +37,8 @@
 #ifndef QT3DEXTRAS_QORBITCAMERACONTROLLER_H
 #define QT3DEXTRAS_QORBITCAMERACONTROLLER_H
 
-#include <Qt3DExtras/qt3dextras_global.h>
 #include <Qt3DCore/QEntity>
+#include <Qt3DExtras/qt3dextras_global.h>
 
 QT_BEGIN_NAMESPACE
 

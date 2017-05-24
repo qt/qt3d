@@ -51,6 +51,7 @@ namespace Render {
 LightGatherer::LightGatherer()
     : Qt3DCore::QAspectJob()
     , m_manager(nullptr)
+    , m_environmentLight(nullptr)
 {
     SET_JOB_RUN_STAT_TYPE(this, JobTypes::LightGathering, 0);
 }
@@ -58,13 +59,21 @@ LightGatherer::LightGatherer()
 void LightGatherer::run()
 {
     const QVector<HEntity> handles = m_manager->activeHandles();
+    int envLightCount = 0;
 
     for (const HEntity handle : handles) {
         Entity *node = m_manager->data(handle);
         const QVector<Light *> lights = node->renderComponents<Light>();
         if (!lights.isEmpty())
             m_lights.push_back(LightSource(node, lights));
+        const QVector<EnvironmentLight *> envLights = node->renderComponents<EnvironmentLight>();
+        envLightCount += envLights.size();
+        if (!envLights.isEmpty() && !m_environmentLight)
+            m_environmentLight = envLights.first();
     }
+
+    if (envLightCount > 1)
+        qWarning() << "More than one environment light found, extra instances are ignored";
 }
 
 } // Render

@@ -39,7 +39,8 @@
 
 #include "qaspectjob.h"
 #include "qaspectjob_p.h"
-#include <QByteArray>
+
+#include <QtCore/QByteArray>
 
 QT_BEGIN_NAMESPACE
 

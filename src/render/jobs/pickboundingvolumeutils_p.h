@@ -136,6 +136,21 @@ private:
                                    uint cndx, const QVector3D &c);
 };
 
+class Q_AUTOTEST_EXPORT HierarchicalEntityPicker
+{
+public:
+    explicit HierarchicalEntityPicker(const RayCasting::QRay3D &ray);
+
+    bool collectHits(Entity *root);
+    inline CollisionVisitor::HitList hits() const { return m_hits; }
+    inline QVector<Entity *> entities() const { return m_entities; }
+
+private:
+    RayCasting::QRay3D m_ray;
+    CollisionVisitor::HitList m_hits;
+    QVector<Entity *> m_entities;
+};
+
 struct Q_AUTOTEST_EXPORT AbstractCollisionGathererFunctor
 {
     AbstractCollisionGathererFunctor();
@@ -148,6 +163,8 @@ struct Q_AUTOTEST_EXPORT AbstractCollisionGathererFunctor
     typedef CollisionVisitor::HitList result_type;
     result_type operator ()(const Entity *entity) const;
     virtual result_type pick(RayCasting::QAbstractCollisionQueryService *rayCasting, const Entity *entity) const = 0;
+
+    static void sortHits(CollisionVisitor::HitList &results);
 };
 
 struct Q_AUTOTEST_EXPORT EntityCollisionGathererFunctor : public AbstractCollisionGathererFunctor

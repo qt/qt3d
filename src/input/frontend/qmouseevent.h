@@ -41,9 +41,9 @@
 #define QT3DINPUT_QMOUSEEVENT_H
 
 #include <Qt3DInput/qt3dinput_global.h>
-#include <QObject>
+#include <QtCore/QtGlobal>
+#include <QtCore/QObject>
 #include <QtGui/QMouseEvent>
-#include <QtGlobal>
 
 QT_BEGIN_NAMESPACE
 
@@ -85,7 +85,13 @@ public:
 
     inline int x() const { return m_event.x(); }
     inline int y() const { return m_event.y(); }
-    inline bool wasHeld() const { return static_cast<Qt::GestureType>(m_event.type()) == Qt::TapAndHoldGesture; }
+    inline bool wasHeld() const {
+#if QT_CONFIG(gestures)
+      return static_cast<Qt::GestureType>(m_event.type()) == Qt::TapAndHoldGesture;
+#else
+      return false;
+#endif
+    }
     Buttons button() const;
     int buttons() const;
     Modifiers modifiers() const;
@@ -100,6 +106,7 @@ private:
 
 typedef QSharedPointer<QMouseEvent> QMouseEventPtr;
 
+#if QT_CONFIG(wheelevent)
 class QT3DINPUTSHARED_EXPORT QWheelEvent : public QObject
 {
     Q_OBJECT
@@ -148,12 +155,16 @@ private:
 };
 
 typedef QSharedPointer<QWheelEvent> QWheelEventPtr;
+#endif
 
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3DInput::QMouseEvent*) // LCOV_EXCL_LINE
+
+#if QT_CONFIG(wheelevent)
 Q_DECLARE_METATYPE(Qt3DInput::QWheelEvent*) // LCOV_EXCL_LINE
+#endif
 
 #endif // QT3DINPUT_QMOUSEEVENT_H

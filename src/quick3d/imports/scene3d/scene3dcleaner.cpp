@@ -38,12 +38,12 @@
 ****************************************************************************/
 
 #include "scene3dcleaner_p.h"
-#include "scene3dlogging_p.h"
-#include "scene3drenderer_p.h"
 
 #include <Qt3DCore/qaspectengine.h>
-
 #include <QtCore/qthread.h>
+
+#include <scene3dlogging_p.h>
+#include <scene3drenderer_p.h>
 
 QT_BEGIN_NAMESPACE
 

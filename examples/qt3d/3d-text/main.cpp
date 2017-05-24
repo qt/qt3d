@@ -51,8 +51,7 @@
 #include <QCoreApplication>
 #include <Qt3DCore/Qt3DCore>
 #include <Qt3DExtras/Qt3DExtras>
-#include <qtext3dmesh.h>
-#include <qtext3dgeometry.h>
+#include <Qt3DExtras/QExtrudedTextMesh>
 
 int main(int argc, char *argv[])
 {
@@ -85,17 +84,15 @@ int main(int argc, char *argv[])
         for (QString family : fonts)
         {
             auto *text = new Qt3DCore::QEntity(root);
-            auto *textMesh = new Qt3DExtras::QText3DMesh();
-            Qt3DExtras::QText3DGeometry *textGeometry = static_cast<Qt3DExtras::QText3DGeometry*>(textMesh->geometry());
+            auto *textMesh = new Qt3DExtras::QExtrudedTextMesh();
 
             auto *textTransform = new Qt3DCore::QTransform();
             QFont font(family, 32, -1, false);
             textTransform->setTranslation(QVector3D(-2.45f, i * .5f, 0));
             textTransform->setScale(.2f);
-            textGeometry->setDepth(.45f);
-            textGeometry->setFont(font);
-            textGeometry->setEdgeSplitAngle(90.f * .15f);
-            textGeometry->setText(QString(family));
+            textMesh->setDepth(.45f);
+            textMesh->setFont(font);
+            textMesh->setText(QString(family));
             textMaterial->setDiffuse(QColor(111, 150, 255));
 
             text->addComponent(textMaterial);

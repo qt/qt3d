@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "quick3dentity_p.h"
+
 #include <Qt3DCore/qcomponent.h>
 
 QT_BEGIN_NAMESPACE
@@ -92,6 +93,7 @@ void Quick3DEntity::qmlAppendComponent(QQmlListProperty<QComponent> *list, QComp
     if (comp == nullptr)
         return;
     Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
+    self->m_managedComponents.push_back(comp);
     self->parentEntity()->addComponent(comp);
 }
 
@@ -110,10 +112,9 @@ int Quick3DEntity::qmlComponentsCount(QQmlListProperty<QComponent> *list)
 void Quick3DEntity::qmlClearComponents(QQmlListProperty<QComponent> *list)
 {
     Quick3DEntity *self = static_cast<Quick3DEntity *>(list->object);
-    const QComponentVector components = self->parentEntity()->components();
-    for (QComponent *comp : components) {
+    for (QComponent *comp : qAsConst(self->m_managedComponents))
         self->parentEntity()->removeComponent(comp);
-    }
+    self->m_managedComponents.clear();
 }
 
 } // namespace Quick

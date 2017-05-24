@@ -45,7 +45,7 @@ private Q_SLOTS:
 
     void initTestCase()
     {
-        qRegisterMetaType<Qt3DRender::QMemoryBarrier::BarrierTypes>("QMemoryBarrier::BarrierTypes");
+        qRegisterMetaType<Qt3DRender::QMemoryBarrier::Operations>("QMemoryBarrier::Operations");
     }
 
     void checkDefaultConstruction()
@@ -54,7 +54,7 @@ private Q_SLOTS:
         Qt3DRender::QMemoryBarrier memoryBarrier;
 
         // THEN
-        QCOMPARE(memoryBarrier.barrierTypes(), Qt3DRender::QMemoryBarrier::None);
+        QCOMPARE(memoryBarrier.waitOperations(), Qt3DRender::QMemoryBarrier::None);
     }
 
     void checkPropertyChanges()
@@ -64,21 +64,21 @@ private Q_SLOTS:
 
         {
             // WHEN
-            QSignalSpy spy(&memoryBarrier, SIGNAL(barrierTypesChanged(QMemoryBarrier::BarrierTypes)));
-            const Qt3DRender::QMemoryBarrier::BarrierTypes newValue(Qt3DRender::QMemoryBarrier::ShaderStorageBarrier|Qt3DRender::QMemoryBarrier::VertexAttributeArrayBarrier);
-            memoryBarrier.setBarrierTypes(newValue);
+            QSignalSpy spy(&memoryBarrier, SIGNAL(waitOperationsChanged(QMemoryBarrier::Operations)));
+            const Qt3DRender::QMemoryBarrier::Operations newValue(Qt3DRender::QMemoryBarrier::ShaderStorage|Qt3DRender::QMemoryBarrier::VertexAttributeArray);
+            memoryBarrier.setWaitOperations(newValue);
 
             // THEN
             QVERIFY(spy.isValid());
-            QCOMPARE(memoryBarrier.barrierTypes(), newValue);
+            QCOMPARE(memoryBarrier.waitOperations(), newValue);
             QCOMPARE(spy.count(), 1);
 
             // WHEN
             spy.clear();
-            memoryBarrier.setBarrierTypes(newValue);
+            memoryBarrier.setWaitOperations(newValue);
 
             // THEN
-            QCOMPARE(memoryBarrier.barrierTypes(), newValue);
+            QCOMPARE(memoryBarrier.waitOperations(), newValue);
             QCOMPARE(spy.count(), 0);
         }
     }
@@ -88,7 +88,7 @@ private Q_SLOTS:
         // GIVEN
         Qt3DRender::QMemoryBarrier memoryBarrier;
 
-        memoryBarrier.setBarrierTypes(Qt3DRender::QMemoryBarrier::CommandBarrier);
+        memoryBarrier.setWaitOperations(Qt3DRender::QMemoryBarrier::Command);
 
         // WHEN
         QVector<Qt3DCore::QNodeCreatedChangeBasePtr> creationChanges;
@@ -105,7 +105,7 @@ private Q_SLOTS:
             const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QMemoryBarrierData>>(creationChanges.first());
             const Qt3DRender::QMemoryBarrierData cloneData = creationChangeData->data;
 
-            QCOMPARE(memoryBarrier.barrierTypes(), cloneData.barrierTypes);
+            QCOMPARE(memoryBarrier.waitOperations(), cloneData.waitOperations);
             QCOMPARE(memoryBarrier.id(), creationChangeData->subjectId());
             QCOMPARE(memoryBarrier.isEnabled(), true);
             QCOMPARE(memoryBarrier.isEnabled(), creationChangeData->isNodeEnabled());
@@ -127,7 +127,7 @@ private Q_SLOTS:
             const auto creationChangeData = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<Qt3DRender::QMemoryBarrierData>>(creationChanges.first());
             const Qt3DRender::QMemoryBarrierData cloneData = creationChangeData->data;
 
-            QCOMPARE(memoryBarrier.barrierTypes(), cloneData.barrierTypes);
+            QCOMPARE(memoryBarrier.waitOperations(), cloneData.waitOperations);
             QCOMPARE(memoryBarrier.id(), creationChangeData->subjectId());
             QCOMPARE(memoryBarrier.isEnabled(), false);
             QCOMPARE(memoryBarrier.isEnabled(), creationChangeData->isNodeEnabled());
@@ -144,14 +144,14 @@ private Q_SLOTS:
 
         {
             // WHEN
-            memoryBarrier.setBarrierTypes(Qt3DRender::QMemoryBarrier::ShaderStorageBarrier);
+            memoryBarrier.setWaitOperations(Qt3DRender::QMemoryBarrier::ShaderStorage);
             QCoreApplication::processEvents();
 
             // THEN
             QCOMPARE(arbiter.events.size(), 1);
             auto change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
-            QCOMPARE(change->propertyName(), "barrierTypes");
-            QCOMPARE(change->value().value<Qt3DRender::QMemoryBarrier::BarrierTypes>(), memoryBarrier.barrierTypes());
+            QCOMPARE(change->propertyName(), "waitOperations");
+            QCOMPARE(change->value().value<Qt3DRender::QMemoryBarrier::Operations>(), memoryBarrier.waitOperations());
             QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
             arbiter.events.clear();
@@ -159,7 +159,7 @@ private Q_SLOTS:
 
         {
             // WHEN
-            memoryBarrier.setBarrierTypes(Qt3DRender::QMemoryBarrier::ShaderStorageBarrier);
+            memoryBarrier.setWaitOperations(Qt3DRender::QMemoryBarrier::ShaderStorage);
             QCoreApplication::processEvents();
 
             // THEN

@@ -42,13 +42,13 @@
 
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
-#include <QtQml/QQmlInfo>
 #include <QtQml/QQmlError>
-#include <QtQml/private/qqmlobjectmodel_p.h>
+#include <QtQml/QQmlInfo>
+
+#include <Qt3DCore/private/qnode_p.h>
+#include <QtQml/private/qqmlchangeset_p.h>
 #include <QtQml/private/qqmldelegatemodel_p.h>
-#include <private/qnode_p.h>
-#include <private/qqmlchangeset_p.h>
-#include <private/qqmlobjectmodel_p.h>
+#include <QtQml/private/qqmlobjectmodel_p.h>
 
 QT_BEGIN_NAMESPACE
 

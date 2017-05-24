@@ -168,6 +168,7 @@ inline QJsonArray vec2jsvec(const QVector4D &v)
     return arr;
 }
 
+#if 0   // unused for now
 inline QJsonArray matrix2jsvec(const QMatrix2x2 &matrix)
 {
     QJsonArray jm;
@@ -185,6 +186,7 @@ inline QJsonArray matrix2jsvec(const QMatrix3x3 &matrix)
         jm.append(*mtxp++);
     return jm;
 }
+#endif
 
 inline QJsonArray matrix2jsvec(const QMatrix4x4 &matrix)
 {
@@ -225,7 +227,7 @@ using namespace Qt3DExtras;
 
 namespace Qt3DRender {
 
-Q_LOGGING_CATEGORY(GLTFExporterLog, "Qt3D.GLTFExport")
+Q_LOGGING_CATEGORY(GLTFExporterLog, "Qt3D.GLTFExport", QtWarningMsg)
 
 const QString MATERIAL_DIFFUSE_COLOR = QStringLiteral("kd");
 const QString MATERIAL_SPECULAR_COLOR = QStringLiteral("ks");
@@ -368,7 +370,7 @@ bool GLTFExporter::exportScene(QEntity *sceneRoot, const QString &outDir,
     QFile::Permissions targetPermissions = gltfFile.permissions();
 
     // Copy exported scene to actual export directory
-    for (auto sourceFileStr : m_exportedFiles) {
+    for (const auto &sourceFileStr : m_exportedFiles) {
         QFileInfo fiSource(m_exportDir + sourceFileStr);
         QFileInfo fiDestination(finalExportDir + sourceFileStr);
         if (fiDestination.exists()) {
@@ -522,7 +524,7 @@ void GLTFExporter::copyTextures()
 void GLTFExporter::createShaders()
 {
     qCDebug(GLTFExporterLog, "Creating shaders...");
-    for (auto si : m_shaderInfo) {
+    for (const auto &si : m_shaderInfo) {
         const QString fileName = m_exportDir + si.uri;
         QFile f(fileName);
         if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
@@ -938,11 +940,11 @@ void GLTFExporter::parseMeshes()
                 qCDebug(GLTFExporterLog, "    Vertex buffer size (bytes): %i", vertexBuf.size());
                 qCDebug(GLTFExporterLog, "    Index buffer size (bytes): %i", indexBuf.size());
                 QStringList sl;
-                for (auto bv : meshInfo.views)
+                for (const auto &bv : meshInfo.views)
                     sl << bv.name;
                 qCDebug(GLTFExporterLog) << "    buffer views:" << sl;
                 sl.clear();
-                for (auto acc : meshInfo.accessors)
+                for (const auto &acc : meshInfo.accessors)
                     sl << acc.name;
                 qCDebug(GLTFExporterLog) << "    accessors:" << sl;
                 qCDebug(GLTFExporterLog, "    material: '%ls'",
@@ -1127,7 +1129,7 @@ QString GLTFExporter::addShaderInfo(QShaderProgram::ShaderType type, QByteArray 
     if (code.isEmpty())
         return QString();
 
-    for (auto si : m_shaderInfo) {
+    for (const auto &si : m_shaderInfo) {
         if (si.type == QShaderProgram::Vertex && code == si.code)
             return si.name;
     }
@@ -1151,10 +1153,11 @@ bool GLTFExporter::saveScene()
 
     QVector<MeshInfo::BufferView> bvList;
     QVector<MeshInfo::Accessor> accList;
-    for (auto mi : m_meshInfo.values()) {
-        for (auto v : mi.views)
+    for (auto it = m_meshInfo.begin(); it != m_meshInfo.end(); ++it) {
+        auto &mi = it.value();
+        for (auto &v : mi.views)
             bvList << v;
-        for (auto acc : mi.accessors)
+        for (auto &acc : mi.accessors)
             accList << acc;
     }
 
@@ -1191,7 +1194,7 @@ bool GLTFExporter::saveScene()
     m_obj["buffers"] = buffers;
 
     QJsonObject bufferViews;
-    for (auto bv : bvList) {
+    for (const auto &bv : bvList) {
         QJsonObject bufferView;
         bufferView["buffer"] = QStringLiteral("buf");
         bufferView["byteLength"] = int(bv.length);
@@ -1204,7 +1207,7 @@ bool GLTFExporter::saveScene()
         m_obj["bufferViews"] = bufferViews;
 
     QJsonObject accessors;
-    for (auto acc : accList) {
+    for (const auto &acc : accList) {
         QJsonObject accessor;
         accessor["bufferView"] = acc.bufferView;
         accessor["byteOffset"] = int(acc.offset);
@@ -1218,7 +1221,8 @@ bool GLTFExporter::saveScene()
         m_obj["accessors"] = accessors;
 
     QJsonObject meshes;
-    for (auto meshInfo : m_meshInfo.values()) {
+    for (auto it = m_meshInfo.begin(); it != m_meshInfo.end(); ++it) {
+        auto &meshInfo = it.value();
         QJsonObject mesh;
         mesh["name"] = meshInfo.originalName;
         if (meshInfo.meshType != TypeNone) {
@@ -1232,7 +1236,7 @@ bool GLTFExporter::saveScene()
             QJsonObject prim;
             prim["mode"] = 4; // triangles
             QJsonObject attrs;
-            for (auto acc : meshInfo.accessors) {
+            for (const auto &acc : meshInfo.accessors) {
                 if (acc.usage != QStringLiteral("INDEX"))
                     attrs[acc.usage] = acc.name;
                 else
@@ -1249,7 +1253,7 @@ bool GLTFExporter::saveScene()
         m_obj["meshes"] = meshes;
 
     QJsonObject cameras;
-    for (auto camInfo : m_cameraInfo.values()) {
+    for (auto camInfo : qAsConst(m_cameraInfo)) {
         QJsonObject camera;
         QJsonObject proj;
         proj["znear"] = camInfo.znear;
@@ -1281,7 +1285,7 @@ bool GLTFExporter::saveScene()
     if (m_rootNodeEmpty) {
         // Don't export the root node if it is there just to group the scene, so we don't get
         // an extra empty node when we import the scene back.
-        for (auto c : m_rootNode->children)
+        for (auto c : qAsConst(m_rootNode->children))
             sceneNodes << exportNodes(c, nodes);
     } else {
         sceneNodes << exportNodes(m_rootNode, nodes);
@@ -1303,7 +1307,8 @@ bool GLTFExporter::saveScene()
 
     // Lights must be declared as extensions to the top-level glTF object
     QJsonObject lights;
-    for (auto lightInfo : m_lightInfo.values()) {
+    for (auto it = m_lightInfo.begin(); it != m_lightInfo.end(); ++it) {
+        const auto &lightInfo = it.value();
         QJsonObject light;
         QJsonObject lightDetails;
         QString type;
@@ -1404,7 +1409,7 @@ bool GLTFExporter::saveScene()
             if (!gFilter->vendor().isEmpty())
                 graphicsApiFilterObj["vendor"] = gFilter->vendor();
             QJsonArray extensions;
-            for (auto extName : gFilter->extensions())
+            for (const auto &extName : gFilter->extensions())
                 extensions << extName;
             if (!extensions.isEmpty())
                 graphicsApiFilterObj["extensions"] = extensions;
@@ -1483,7 +1488,7 @@ bool GLTFExporter::saveScene()
 
     // Save shaders for custom materials
     QJsonObject shaders;
-    for (auto si : m_shaderInfo) {
+    for (const auto &si : m_shaderInfo) {
         QJsonObject shaderObj;
         shaderObj["uri"] = si.uri;
         shaders[si.name] = shaderObj;
@@ -1570,7 +1575,7 @@ bool GLTFExporter::saveScene()
         QByteArray pre = "<RCC><qresource prefix=\"/gltf_res\">\n";
         QByteArray post = "</qresource></RCC>\n";
         f.write(pre);
-        for (auto file : m_exportedFiles) {
+        for (const auto &file : qAsConst(m_exportedFiles)) {
             QString line = QString(QStringLiteral("  <file>%1</file>\n")).arg(file);
             f.write(line.toUtf8());
         }
@@ -1592,7 +1597,7 @@ void GLTFExporter::delNode(GLTFExporter::Node *n)
 {
     if (!n)
         return;
-    for (auto *c : n->children)
+    for (auto *c : qAsConst(n->children))
         delNode(c);
     delete n;
 }
@@ -1602,7 +1607,7 @@ QString GLTFExporter::exportNodes(GLTFExporter::Node *n, QJsonObject &nodes)
     QJsonObject node;
     node["name"] = n->name;
     QJsonArray children;
-    for (auto c : n->children)
+    for (auto c : qAsConst(n->children))
         children << exportNodes(c, nodes);
     node["children"] = children;
     if (auto transform = m_transformMap.value(n))
@@ -2058,7 +2063,7 @@ void GLTFExporter::setVarToJSonObject(QJsonObject &jsObj, const QString &key, co
         jsObj[key] = var.value<float>();
         break;
     case QMetaType::QSize:
-        jsObj[key] = size2jsvec(var.value<QSize>());
+        jsObj[key] = size2jsvec(var.toSize());
         break;
     case QMetaType::QVector2D:
         jsObj[key] = vec2jsvec(var.value<QVector2D>());

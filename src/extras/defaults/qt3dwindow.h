@@ -51,8 +51,8 @@
 #ifndef QT3DWINDOW_H
 #define QT3DWINDOW_H
 
-#include <QWindow>
 #include <Qt3DExtras/qt3dextras_global.h>
+#include <QtGui/QWindow>
 
 QT_BEGIN_NAMESPACE
 
@@ -84,6 +84,8 @@ class QLogicAspect;
 
 namespace Qt3DExtras {
 
+class Qt3DWindowPrivate;
+
 class QT3DEXTRASSHARED_EXPORT Qt3DWindow : public QWindow
 {
     Q_OBJECT
@@ -112,28 +114,7 @@ protected:
     void resizeEvent(QResizeEvent *) Q_DECL_OVERRIDE;
 
 private:
-    QScopedPointer<Qt3DCore::QAspectEngine> m_aspectEngine;
-
-    // Aspects
-    Qt3DRender::QRenderAspect *m_renderAspect;
-    Qt3DInput::QInputAspect *m_inputAspect;
-    Qt3DLogic::QLogicAspect *m_logicAspect;
-
-    // Renderer configuration
-    Qt3DRender::QRenderSettings *m_renderSettings;
-    Qt3DExtras::QForwardRenderer *m_forwardRenderer;
-    Qt3DRender::QCamera *m_defaultCamera;
-
-    // Input configuration
-    Qt3DInput::QInputSettings *m_inputSettings;
-
-    // Logic configuration
-
-    // Scene
-    Qt3DCore::QEntity *m_root;
-    Qt3DCore::QEntity *m_userRoot;
-
-    bool m_initialized;
+    Q_DECLARE_PRIVATE(Qt3DWindow)
 };
 
 } // Qt3DExtras

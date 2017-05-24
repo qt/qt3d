@@ -50,6 +50,10 @@ namespace Qt3DRender {
     \inmodule Qt3DRender
 
     \brief The QPickEvent class holds information when an object is picked
+
+    This is received as a parameter in most of the QObjectPicker component signals when picking
+    succeeds.
+
     \sa QPickingSettings, QPickTriangleEvent, QObjectPicker
 
     \since 5.7
@@ -61,8 +65,9 @@ namespace Qt3DRender {
  * \inqmlmodule Qt3D.Render
  * \sa ObjectPicker PickingSettings
  * \brief PickEvent holds information when an object is picked.
+ * This is received as a parameter in most of the QObjectPicker component signals when picking
+ * succeeds.
  */
-
 
 /*!
   \fn Qt3DRender::QPickEvent::QPickEvent()
@@ -71,6 +76,11 @@ namespace Qt3DRender {
 QPickEvent::QPickEvent()
     : QObject(*new QPickEventPrivate())
 {
+}
+
+QPickEventPrivate *QPickEventPrivate::get(QPickEvent *object)
+{
+    return object->d_func();
 }
 
 /*!
@@ -147,11 +157,11 @@ void QPickEvent::setAccepted(bool accepted)
 
 /*!
     \qmlproperty bool Qt3D.Render::PickEvent::position
-    Specifies the position of the event
+    Specifies the mouse position with respect to the render area (window or quick item)
 */
 /*!
   \property Qt3DRender::QPickEvent::position
-    Specifies the position of the event
+    Specifies the mouse position with respect to the render area (window or quick item)
  */
 /*!
  * \brief QPickEvent::position
@@ -165,11 +175,11 @@ QPointF QPickEvent::position() const
 
 /*!
     \qmlproperty bool Qt3D.Render::PickEvent::distance
-    Specifies the distance of the event
+    Specifies the distance of the hit to the camera
 */
 /*!
   \property Qt3DRender::QPickEvent::distance
-    Specifies the distance of the event
+    Specifies the distance of the hit to the camera
  */
 /*!
  * \brief QPickEvent::distance
@@ -183,15 +193,15 @@ float QPickEvent::distance() const
 
 /*!
     \qmlproperty bool Qt3D.Render::PickEvent::worldIntersection
-    Specifies the world intersection of the event
+    Specifies the coordinates of the hit in world coordinate system
 */
 /*!
   \property Qt3DRender::QPickEvent::worldIntersection
-    Specifies the world intersection of the event
+    Specifies the coordinates of the hit in world coordinate system
  */
 /*!
  * \brief QPickEvent::worldIntersection
- * \return  world coordinate of the pick point
+ * \return  coordinates of the hit in world coordinate system
  */
 QVector3D QPickEvent::worldIntersection() const
 {
@@ -201,15 +211,15 @@ QVector3D QPickEvent::worldIntersection() const
 
 /*!
     \qmlproperty bool Qt3D.Render::PickEvent::localIntersection
-    Specifies the world local intersection of the event
+    Specifies the coordinates of the hit in the local coordinate system of the picked entity
 */
 /*!
   \property Qt3DRender::QPickEvent::localIntersection
-    Specifies the local intersection of the event
+    Specifies the coordinates of the hit in the local coordinate system of the picked entity
  */
 /*!
  * \brief QPickEvent::localIntersection
- * \return local coordinate of pick point
+ * \return coordinates of the hit in the local coordinate system of the picked entity
  */
 QVector3D QPickEvent::localIntersection() const
 {

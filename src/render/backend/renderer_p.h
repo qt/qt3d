@@ -157,7 +157,7 @@ public:
     void setTime(qint64 time) Q_DECL_OVERRIDE;
 
     void setNodeManagers(NodeManagers *managers) Q_DECL_OVERRIDE;
-    void setServices(Qt3DCore::QServiceLocator *services) Q_DECL_OVERRIDE { m_services = services; }
+    void setServices(Qt3DCore::QServiceLocator *services) Q_DECL_OVERRIDE;
     void setSurfaceExposed(bool exposed) Q_DECL_OVERRIDE;
 
     NodeManagers *nodeManagers() const Q_DECL_OVERRIDE;
@@ -189,11 +189,11 @@ public:
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() Q_DECL_OVERRIDE;
     Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() Q_DECL_OVERRIDE;
     Qt3DCore::QAspectJobPtr syncTextureLoadingJob() Q_DECL_OVERRIDE;
+    Qt3DCore::QAspectJobPtr expandBoundingVolumeJob() Q_DECL_OVERRIDE;
 
     QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs() const;
 
     inline FrameCleanupJobPtr frameCleanupJob() const { return m_cleanupJob; }
-    inline ExpandBoundingVolumeJobPtr expandBoundingVolumeJob() const { return m_expandBoundingVolumeJob; }
     inline UpdateShaderDataTransformJobPtr updateShaderDataTransformJob() const { return m_updateShaderDataTransformJob; }
     inline CalculateBoundingVolumeJobPtr calculateBoundingVolumeJob() const { return m_calculateBoundingVolumeJob; }
     inline UpdateTreeEnabledJobPtr updateTreeEnabledJob() const { return m_updateTreeEnabledJob; }
@@ -259,7 +259,7 @@ public:
 
     ViewSubmissionResultData submitRenderViews(const QVector<Render::RenderView *> &renderViews);
 
-    QMutex* mutex() { return &m_mutex; }
+    QMutex* mutex() { return &m_renderQueueMutex; }
 
 
 #ifdef QT3D_RENDER_UNIT_TESTS
@@ -290,7 +290,7 @@ private:
     QScopedPointer<RenderThread> m_renderThread;
     QScopedPointer<VSyncFrameAdvanceService> m_vsyncFrameAdvanceService;
 
-    QMutex m_mutex;
+    QMutex m_renderQueueMutex;
     QSemaphore m_submitRenderViewsSemaphore;
     QSemaphore m_waitForInitializationToBeCompleted;
 

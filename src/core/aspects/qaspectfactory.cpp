@@ -39,11 +39,9 @@
 
 #include "qaspectfactory_p.h"
 
-#include <QtGlobal>
-
-#include <QDebug>
-
 #include <Qt3DCore/QAbstractAspect>
+#include <QtCore/QDebug>
+#include <QtCore/QtGlobal>
 
 QT_BEGIN_NAMESPACE
 

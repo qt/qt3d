@@ -51,9 +51,10 @@
 // We mean it.
 //
 
+#include <QtGui/qquaternion.h>
+
 #include <Qt3DQuick/private/qt3dquick_global_p.h>
 #include <QtQuick/private/qquickanimation_p.h>
-#include <QtGui/qquaternion.h>
 
 QT_BEGIN_NAMESPACE
 

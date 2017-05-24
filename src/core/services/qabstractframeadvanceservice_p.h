@@ -52,8 +52,9 @@
 //
 
 #include <Qt3DCore/qt3dcore_global.h>
+#include <QtCore/QString>
+
 #include <Qt3DCore/private/qservicelocator_p.h>
-#include <QString>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,6 +64,7 @@ class QAbstractFrameAdvanceServicePrivate;
 
 class QT3DCORESHARED_EXPORT QAbstractFrameAdvanceService : public QAbstractServiceProvider
 {
+    Q_OBJECT
 public:
     virtual qint64 waitForNextFrame() = 0;
     virtual void start() = 0;

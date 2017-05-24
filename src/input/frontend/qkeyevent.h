@@ -40,9 +40,9 @@
 #ifndef QT3DINPUT_QKEYEVENT_H
 #define QT3DINPUT_QKEYEVENT_H
 
-#include <QObject>
-#include <QtGui/QKeyEvent>
 #include <Qt3DInput/qt3dinput_global.h>
+#include <QtCore/QObject>
+#include <QtGui/QKeyEvent>
 
 QT_BEGIN_NAMESPACE
 
@@ -78,7 +78,9 @@ public:
     inline bool isAccepted() const { return m_event.isAccepted(); }
     inline void setAccepted(bool accepted) { m_event.setAccepted(accepted); }
     inline QEvent::Type type() const { return m_event.type(); }
+#if QT_CONFIG(shortcut)
     Q_INVOKABLE bool matches(QKeySequence::StandardKey key_) const { return m_event.matches(key_); }
+#endif
 
 private:
     QT_PREPEND_NAMESPACE(QKeyEvent) m_event;

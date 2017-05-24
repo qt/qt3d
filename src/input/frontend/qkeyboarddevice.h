@@ -40,9 +40,9 @@
 #ifndef QT3DINPUT_INPUT_QKEYBOARDDEVICE_H
 #define QT3DINPUT_INPUT_QKEYBOARDDEVICE_H
 
+#include <Qt3DInput/QKeyboardHandler>
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DInput/QKeyboardHandler>
 
 QT_BEGIN_NAMESPACE
 

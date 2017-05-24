@@ -39,6 +39,7 @@
 
 #include "qnormaldiffusespecularmapmaterial.h"
 #include "qnormaldiffusespecularmapmaterial_p.h"
+
 #include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qeffect.h>
@@ -48,9 +49,9 @@
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
-#include <QUrl>
-#include <QVector3D>
-#include <QVector4D>
+#include <QtCore/QUrl>
+#include <QtGui/QVector3D>
+#include <QtGui/QVector4D>
 
 QT_BEGIN_NAMESPACE
 

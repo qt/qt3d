@@ -28,7 +28,7 @@
 
 #include <QtTest/QTest>
 #include <Qt3DAnimation/private/blendedclipanimator_p.h>
-#include <Qt3DAnimation/qanimationclip.h>
+#include <Qt3DAnimation/qanimationcliploader.h>
 #include <Qt3DAnimation/qblendedclipanimator.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
@@ -39,7 +39,7 @@
 
 #include <QtTest/QTest>
 #include <Qt3DAnimation/qblendedclipanimator.h>
-#include <Qt3DAnimation/qlerpblend.h>
+#include <Qt3DAnimation/qlerpclipblend.h>
 #include <Qt3DAnimation/qchannelmapper.h>
 #include <Qt3DAnimation/private/qblendedclipanimator_p.h>
 #include <Qt3DAnimation/private/blendedclipanimator_p.h>
@@ -99,11 +99,11 @@ private Q_SLOTS:
         // GIVEN
         Qt3DAnimation::QBlendedClipAnimator blendedClipAnimator;
         Qt3DAnimation::QChannelMapper mapper;
-        Qt3DAnimation::QLerpBlend blendTree;
+        Qt3DAnimation::QLerpClipBlend blendTree;
         blendedClipAnimator.setRunning(true);
         blendedClipAnimator.setBlendTree(&blendTree);
         blendedClipAnimator.setChannelMapper(&mapper);
-        blendedClipAnimator.setLoops(10);
+        blendedClipAnimator.setLoopCount(10);
 
         {
             // WHEN

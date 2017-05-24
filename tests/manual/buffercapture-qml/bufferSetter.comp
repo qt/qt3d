@@ -62,5 +62,5 @@ layout (location=1) uniform int inputSize;
 void main()
 {
     if (gl_GlobalInvocationID.x < inputSize)
-        d[gl_GlobalInvocationID.x] = gl_GlobalInvocationID.x;
+        d[gl_GlobalInvocationID.x] = d[gl_GlobalInvocationID.x] + gl_GlobalInvocationID.x * 2;
 }

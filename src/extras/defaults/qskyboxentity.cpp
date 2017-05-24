@@ -51,6 +51,7 @@
 #include <Qt3DExtras/qcuboidmesh.h>
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
+#include <Qt3DRender/qseamlesscubemap.h>
 #include <Qt3DRender/qshaderprogram.h>
 
 QT_BEGIN_NAMESPACE
@@ -86,6 +87,7 @@ QSkyboxEntityPrivate::QSkyboxEntityPrivate()
     , m_negZImage(new QTextureImage())
     , m_extension(QStringLiteral(".png"))
 {
+    m_loadedTexture->setGenerateMipMaps(false);
 }
 
 /*!
@@ -129,9 +131,11 @@ void QSkyboxEntityPrivate::init()
     cullFront->setMode(QCullFace::Front);
     QDepthTest *depthTest = new QDepthTest();
     depthTest->setDepthFunction(QDepthTest::LessOrEqual);
+    QSeamlessCubemap *seamlessCubemap = new QSeamlessCubemap();
 
     m_gl3RenderPass->addRenderState(cullFront);
     m_gl3RenderPass->addRenderState(depthTest);
+    m_gl3RenderPass->addRenderState(seamlessCubemap);
     m_gl2RenderPass->addRenderState(cullFront);
     m_gl2RenderPass->addRenderState(depthTest);
     m_es2RenderPass->addRenderState(cullFront);
@@ -296,7 +300,7 @@ void QSkyboxEntity::setGammaCorrectEnabled(bool enabled)
 }
 
 /*!
- * Indicates if gamma correction is enabled for this skybox.
+ * Returns true if gamma correction is enabled for this skybox.
  * \since 5.9
  */
 bool QSkyboxEntity::isGammaCorrectEnabled() const

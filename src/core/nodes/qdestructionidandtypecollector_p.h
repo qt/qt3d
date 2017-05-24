@@ -48,8 +48,8 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qnodevisitor_p.h>
 #include <Qt3DCore/private/qentity_p.h>
+#include <Qt3DCore/private/qnodevisitor_p.h>
 
 QT_BEGIN_NAMESPACE
 
