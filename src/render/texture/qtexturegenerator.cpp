@@ -43,6 +43,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*! class Qt3DRender::QTextureGenerator
+    \inmodule Qt3DRender
+    \brief Generates the necessary information to create an OpenGL texture image.
+*/
 QTextureGenerator::~QTextureGenerator()
 {
 }
