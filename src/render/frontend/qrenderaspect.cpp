@@ -255,7 +255,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QObjectPicker>(QSharedPointer<Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager> >::create(m_renderer));
 
     // Plugins
-    for (const QString &plugin : m_pluginConfig)
+    for (const QString &plugin : qAsConst(m_pluginConfig))
         loadRenderPlugin(plugin);
 }
 

@@ -176,7 +176,8 @@ void QMorphTarget::removeAttribute(Qt3DRender::QAttribute *attribute)
 QMorphTarget *QMorphTarget::fromGeometry(Qt3DRender::QGeometry *geometry, const QStringList &attributes)
 {
     QMorphTarget *target = new QMorphTarget();
-    for (Qt3DRender::QAttribute *attr : geometry->attributes()) {
+    const auto geometryAttributes = geometry->attributes();
+    for (Qt3DRender::QAttribute *attr : geometryAttributes) {
         if (attributes.contains(attr->name()))
             target->addAttribute(attr);
     }

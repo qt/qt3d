@@ -301,7 +301,8 @@ QVector<MappingData> buildPropertyMappings(Handler *handler,
     const QVector<Channel> &channels = clip->channels();
 
     // Iterate over the mappings in the mapper object
-    for (const Qt3DCore::QNodeId mappingId : mapper->mappingIds()) {
+    const auto mappingIds = mapper->mappingIds();
+    for (const Qt3DCore::QNodeId mappingId : mappingIds) {
         // Get the mapping object
         ChannelMapping *mapping = mappingManager->lookupResource(mappingId);
         Q_ASSERT(mapping);
@@ -474,7 +475,7 @@ ComponentIndices generateClipFormatIndices(const QVector<ChannelNameAndType> &ta
 
     // Reserve enough storage for all the format indices
     int indexCount = 0;
-    for (const auto targetIndexVec : targetIndices)
+    for (const auto targetIndexVec : qAsConst(targetIndices))
         indexCount += targetIndexVec.size();
     ComponentIndices format;
     format.resize(indexCount);
