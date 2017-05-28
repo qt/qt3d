@@ -70,7 +70,7 @@ public:
     void setReplyToCommandId(CommandId id);
 
 protected:
-    QNodeCommand(QNodeCommandPrivate &dd, QNodeId id);
+    explicit QNodeCommand(QNodeCommandPrivate &dd, QNodeId id);
 
 private:
     Q_DECLARE_PRIVATE(QNodeCommand)

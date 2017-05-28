@@ -50,6 +50,10 @@ QNodeCommandPrivate::QNodeCommandPrivate()
 {
 }
 
+QNodeCommandPrivate::~QNodeCommandPrivate()
+{
+}
+
 QNodeCommand::CommandId QNodeCommandPrivate::createId()
 {
     static QBasicAtomicInteger<QNodeCommand::CommandId> next = Q_BASIC_ATOMIC_INITIALIZER(0);

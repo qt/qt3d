@@ -59,6 +59,7 @@ class QT3DCORE_PRIVATE_EXPORT QNodeCommandPrivate : public QSceneChangePrivate
 {
 public:
     QNodeCommandPrivate();
+    ~QNodeCommandPrivate();
 
     static QNodeCommand::CommandId createId();
 
