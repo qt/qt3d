@@ -261,6 +261,30 @@ private Q_SLOTS:
         renderBuffer.unsetDirty();
         QVERIFY(!renderBuffer.isDirty());
     }
+
+    void checkBufferManagerReferenceCount()
+    {
+        // GIVEN
+        Qt3DRender::Render::Buffer renderBuffer;
+        Qt3DRender::QBuffer buffer(Qt3DRender::QBuffer::IndexBuffer);
+        Qt3DRender::Render::BufferManager bufferManager;
+
+        // WHEN
+        renderBuffer.setManager(&bufferManager);
+        simulateInitialization(&buffer, &renderBuffer);
+
+        // THEN
+        QVERIFY(bufferManager.takeBuffersToRelease().empty());
+
+        // WHEN
+        bufferManager.removeBufferReference(renderBuffer.peerId());
+        auto buffers = bufferManager.takeBuffersToRelease();
+
+        // THEN
+        QVERIFY(buffers.size() == 1);
+        QVERIFY(buffers.first() == renderBuffer.peerId());
+        QVERIFY(bufferManager.takeBuffersToRelease().empty());
+    }
 };
 
 
