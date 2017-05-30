@@ -75,13 +75,24 @@ QComponentRemovedChangePrivate::QComponentRemovedChangePrivate(const QEntity *en
  */
 
 /*!
- * Constructs a new QComponentRemovedChange with \a entity and  \a component.
+ * Constructs a new QComponentRemovedChange which will notify \a entity that \a component was removed.
  */
 QComponentRemovedChange::QComponentRemovedChange(const QEntity *entity,
                                                  const QComponent *component)
     : QSceneChange(*new QComponentRemovedChangePrivate(entity, component),
                    ComponentRemoved, entity->id())
 {
+}
+
+/*!
+ * Constructs a new QComponentRemovedChange which will notify \a component that it was removed from \a entity
+ */
+QComponentRemovedChange::QComponentRemovedChange(const QComponent *component,
+                                                 const QEntity *entity)
+    : QSceneChange(*new QComponentRemovedChangePrivate(entity, component),
+                   ComponentRemoved, component->id())
+{
+
 }
 
 QComponentRemovedChange::~QComponentRemovedChange()

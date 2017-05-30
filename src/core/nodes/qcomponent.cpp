@@ -73,7 +73,7 @@ void QComponentPrivate::addEntity(QEntity *entity)
         m_scene->addEntityForComponent(m_id, entity->id());
     }
 
-    const auto componentAddedChange = QComponentAddedChangePtr::create(entity, q);
+    const auto componentAddedChange = QComponentAddedChangePtr::create(q, entity);
     notifyObservers(componentAddedChange);
     Q_EMIT q->addedToEntity(entity);
 }
@@ -86,7 +86,7 @@ void QComponentPrivate::removeEntity(QEntity *entity)
 
     m_entities.removeAll(entity);
 
-    const auto componentRemovedChange = QComponentRemovedChangePtr::create(entity, q);
+    const auto componentRemovedChange = QComponentRemovedChangePtr::create(q, entity);
     notifyObservers(componentRemovedChange);
     Q_EMIT q->removedFromEntity(entity);
 }

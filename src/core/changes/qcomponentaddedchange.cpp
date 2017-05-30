@@ -75,12 +75,22 @@ QComponentAddedChangePrivate::QComponentAddedChangePrivate(const QEntity *entity
  */
 
 /*!
- * Constructs a new QComponentAddedChange with with \a entity and  \a component.
+ * Constructs a new QComponentAddedChange which will notify \a entity that \a component was added
  */
 QComponentAddedChange::QComponentAddedChange(const QEntity *entity,
                                              const QComponent *component)
     : QSceneChange(*new QComponentAddedChangePrivate(entity, component),
                    ComponentAdded, entity->id())
+{
+}
+
+/*!
+ * Constructs a new QComponentAddedChange which will notify \a component that it was added to \a entity
+ */
+QComponentAddedChange::QComponentAddedChange(const QComponent *component,
+                                             const QEntity *entity)
+    : QSceneChange(*new QComponentAddedChangePrivate(entity, component),
+                   ComponentAdded, component->id())
 {
 }
 
