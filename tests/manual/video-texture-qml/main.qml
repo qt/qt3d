@@ -40,7 +40,7 @@ import Qt3D.Input 2.0
 import QtQuick 2.2 as QQ2
 import QtQuick.Scene2D 2.9
 import QtQuick.Window 2.0 as QW2
-import Qt3D.Extras 2.0
+import Qt3D.Extras 2.9
 import QtMultimedia 5.6 as QMM
 import QtQuick.Dialogs 1.0
 
@@ -121,7 +121,7 @@ Entity {
             translation: Qt.vector3d(0,0,0)
         }
 
-        property Material material: PlaneMaterial {
+        property Material material: TextureMaterial {
             texture: offscreenTexture
         }
 
