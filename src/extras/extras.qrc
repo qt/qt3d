@@ -1,8 +1,12 @@
 <RCC>
     <qresource prefix="/">
+        <file>shaders/graphs/metalrough.frag.json</file>
+        <file>shaders/graphs/metalroughuniform.frag.json</file>
         <file>shaders/gl3/light.inc.frag</file>
         <file>shaders/es2/light.inc.frag</file>
         <file>shaders/es2/light.inc.frag100</file>
+        <file>shaders/gl3/metalrough.inc.frag</file>
+        <file>shaders/gl3/coordinatesystems.inc</file>
         <file>shaders/gl3/phong.vert</file>
         <file>shaders/gl3/phong.frag</file>
         <file>shaders/es2/phong.vert</file>
@@ -40,8 +44,6 @@
         <file>shaders/es2/unlittexture.frag</file>
         <file>shaders/es2/unlittexture.vert</file>
         <file>shaders/gl3/metalrough.vert</file>
-        <file>shaders/gl3/metalrough.frag</file>
-        <file>shaders/gl3/metalroughuniform.frag</file>
         <file>shaders/gl3/distancefieldtext.vert</file>
         <file>shaders/gl3/distancefieldtext.frag</file>
         <file>shaders/es2/distancefieldtext.frag</file>

@@ -48,29 +48,6 @@
 **
 ****************************************************************************/
 
-#version 150
-
-in vec2 texCoord;
-in vec3 worldPosition;
-in vec3 worldNormal;
-in vec4 worldTangent;
-
-out vec4 fragColor;
-
-// Qt 3D built in uniforms
-uniform vec3 eyePosition; // World space eye position
-uniform float time; // Time in seconds
-
-// PBR Material maps
-uniform sampler2D baseColorMap;
-uniform sampler2D metalnessMap;
-uniform sampler2D roughnessMap;
-uniform sampler2D normalMap;
-uniform sampler2D ambientOcclusionMap;
-
-// User control parameters
-uniform float metalFactor = 1.0;
-
 // Exposure correction
 uniform float exposure = 0.0;
 // Gamma correction
@@ -81,7 +58,7 @@ uniform float gamma = 2.2;
 int mipLevelCount(const in samplerCube cube)
 {
    int baseSize = textureSize(cube, 0).x;
-   int nMips = int(log2(float(baseSize>0 ? baseSize : 1))) + 1;
+   int nMips = int(log2(float(baseSize > 0 ? baseSize : 1))) + 1;
    return nMips;
 }
 
@@ -95,26 +72,6 @@ float remapRoughness(const in float roughness)
     const float maxSpecPower = 999999.0;
     const float minRoughness = sqrt(2.0 / (maxSpecPower + 2));
     return max(roughness * roughness, minRoughness);
-}
-
-mat3 calcWorldSpaceToTangentSpaceMatrix(const in vec3 wNormal, const in vec4 wTangent)
-{
-    // Make the tangent truly orthogonal to the normal by using Gram-Schmidt.
-    // This allows to build the tangentMatrix below by simply transposing the
-    // tangent -> eyespace matrix (which would now be orthogonal)
-    vec3 wFixedTangent = normalize(wTangent.xyz - dot(wTangent.xyz, wNormal) * wNormal);
-
-    // Calculate binormal vector. No "real" need to renormalize it,
-    // as built by crossing two normal vectors.
-    // To orient the binormal correctly, use the fourth coordinate of the tangent,
-    // which is +1 for a right hand system, and -1 for a left hand system.
-    vec3 wBinormal = cross(wNormal, wFixedTangent.xyz) * wTangent.w;
-
-    // Construct matrix to transform from world space to tangent space
-    // This is the transpose of the tangentToWorld transformation matrix
-    mat3 tangentToWorldMatrix = mat3(wFixedTangent, wBinormal, wNormal);
-    mat3 worldToTangentMatrix = transpose(tangentToWorldMatrix);
-    return worldToTangentMatrix;
 }
 
 float alphaToMipLevel(float alpha)
@@ -249,7 +206,7 @@ vec3 pbrModel(const in int lightIndex,
     sDotH = dot(s, h);
 
     // Calculate diffuse component
-    vec3 diffuseColor = (1.0 - metalness) * baseColor;
+    vec3 diffuseColor = (1.0 - metalness) * baseColor * lights[lightIndex].color;
     vec3 diffuse = diffuseColor * max(sDotN, 0.0) / 3.14159;
 
     // Calculate specular component
@@ -264,7 +221,7 @@ vec3 pbrModel(const in int lightIndex,
     vec3 specular = specularColor * specularFactor;
 
     // Blend between diffuse and specular to conserver energy
-    vec3 color = lights[lightIndex].intensity * (specular + diffuse * (vec3(1.0) - specular));
+    vec3 color = att * lights[lightIndex].intensity * (specular + diffuse * (vec3(1.0) - specular));
 
     // Reduce by ambient occlusion amount
     color *= ambientOcclusion;
@@ -325,12 +282,12 @@ vec3 pbrIblModel(const in vec3 wNormal,
     vec3 specular = specularSkyColor * specularFactor;
 
     // Blend between diffuse and specular to conserve energy
-    vec3 iblColor = specular + diffuse * (vec3(1.0) - specularFactor);
+    vec3 color = specular + diffuse * (vec3(1.0) - specularFactor);
 
     // Reduce by ambient occlusion amount
-    iblColor *= ambientOcclusion;
+    color *= ambientOcclusion;
 
-    return iblColor;
+    return color;
 }
 
 vec3 toneMap(const in vec3 c)
@@ -343,30 +300,23 @@ vec3 gammaCorrect(const in vec3 color)
     return pow(color, vec3(1.0 / gamma));
 }
 
-void main()
+vec4 metalRoughFunction(const in vec4 baseColor,
+                        const in float metalness,
+                        const in float roughness,
+                        const in float ambientOcclusion,
+                        const in vec3 worldPosition,
+                        const in vec3 worldView,
+                        const in vec3 worldNormal)
 {
     vec3 cLinear = vec3(0.0);
-
-    // Calculate the perturbed texture coordinates from parallax occlusion mapping
-    mat3 worldToTangentMatrix = calcWorldSpaceToTangentSpaceMatrix(worldNormal, worldTangent);
-    vec3 wView = normalize(eyePosition - worldPosition);
-    vec3 tView = worldToTangentMatrix * wView;
-
-    // Sample the inputs needed for the metal-roughness PBR BRDF
-    vec3 baseColor = texture(baseColorMap, texCoord).rgb;
-    float metalness = texture(metalnessMap, texCoord).r * metalFactor;
-    float roughness = texture(roughnessMap, texCoord).r;
-    float ambientOcclusion = texture(ambientOcclusionMap, texCoord).r;
-    vec3 tNormal = 2.0 * texture(normalMap, texCoord).rgb - vec3(1.0);
-    vec3 wNormal = normalize(transpose(worldToTangentMatrix) * tNormal);
 
     // Remap roughness for a perceptually more linear correspondence
     float alpha = remapRoughness(roughness);
 
     for (int i = 0; i < envLightCount; ++i) {
-        cLinear += pbrIblModel(wNormal,
-                               wView,
-                               baseColor,
+        cLinear += pbrIblModel(worldNormal,
+                               worldView,
+                               baseColor.rgb,
                                metalness,
                                alpha,
                                ambientOcclusion);
@@ -375,8 +325,8 @@ void main()
     for (int i = 0; i < lightCount; ++i) {
         cLinear += pbrModel(i,
                             worldPosition,
-                            wNormal,
-                            wView,
+                            worldNormal,
+                            worldView,
                             baseColor.rgb,
                             metalness,
                             alpha,
@@ -391,5 +341,6 @@ void main()
 
     // Apply gamma correction prior to display
     vec3 cGamma = gammaCorrect(cToneMapped);
-    fragColor = vec4(cGamma, 1.0);
+
+    return vec4(cGamma, 1.0);
 }

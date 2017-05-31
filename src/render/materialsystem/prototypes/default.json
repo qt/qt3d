@@ -17,10 +17,673 @@
                 "format": {
                     "api": "OpenGLCoreProfile",
                     "major": 3,
-                    "minor": 2
+                    "minor": 0
                 },
                 "substitution": "vec3 $worldPosition = worldPosition;",
                 "headerSnippets": [ "in vec3 worldPosition;" ]
+            }
+        ]
+    },
+    "worldNormal": {
+        "outputs": [
+            "worldNormal"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec3 $worldNormal = worldNormal;",
+                "headerSnippets": [ "varying highp vec3 worldNormal;" ]
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec3 $worldNormal = worldNormal;",
+                "headerSnippets": [ "in vec3 worldNormal;" ]
+            }
+        ]
+    },
+    "worldTangent": {
+        "outputs": [
+            "worldTangent"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec4 $worldTangent = worldTangent;",
+                "headerSnippets": [ "varying highp vec4 worldTangent;" ]
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec4 $worldTangent = worldTangent;",
+                "headerSnippets": [ "in vec4 worldTangent;" ]
+            }
+        ]
+    },
+    "texCoord": {
+        "outputs": [
+            "texCoord"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec2 $texCoord = texCoord;",
+                "headerSnippets": [ "varying highp vec2 texCoord;" ]
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec2 $texCoord = texCoord;",
+                "headerSnippets": [ "in vec2 texCoord;" ]
+            }
+        ]
+    },
+    "fragColor": {
+        "inputs": [
+            "fragColor"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "gl_fragColor = $fragColor;"
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "fragColor = $fragColor;",
+                "headerSnippets": [ "out vec4 fragColor;" ]
+            }
+        ]
+    },
+    "eyePosition": {
+        "outputs": [
+            "eyePosition"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec3 $eyePosition = eyePosition;",
+                "headerSnippets": [ "uniform highp vec3 eyePosition;" ]
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec3 $eyePosition = eyePosition;",
+                "headerSnippets": [ "uniform vec3 eyePosition;" ]
+            }
+        ]
+    },
+    "time": {
+        "outputs": [
+            "time"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp float $time = time;",
+                "headerSnippets": [ "uniform highp float time;" ]
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "float $time = time;",
+                "headerSnippets": [ "uniform float time;" ]
+            }
+        ]
+    },
+    "baseColor": {
+        "outputs": [
+            "baseColor"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec4 $baseColor = baseColor;",
+                "headerSnippets": [ "uniform highp vec4 baseColor;" ]
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec4 $baseColor = baseColor;",
+                "headerSnippets": [ "uniform vec4 baseColor;" ]
+            }
+        ]
+    },
+    "metalness": {
+        "outputs": [
+            "metalness"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp float $metalness = metalness;",
+                "headerSnippets": [ "uniform highp float metalness;" ]
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "float $metalness = metalness;",
+                "headerSnippets": [ "uniform float metalness;" ]
+            }
+        ]
+    },
+    "roughness": {
+        "outputs": [
+            "roughness"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp float $roughness = roughness;",
+                "headerSnippets": [ "uniform highp float roughness;" ]
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "float $roughness = roughness;",
+                "headerSnippets": [ "uniform float roughness;" ]
+            }
+        ]
+    },
+    "ambientOcclusion": {
+        "outputs": [
+            "ambientOcclusion"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp float $ambientOcclusion = 1.0;"
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "float $ambientOcclusion = 1.0;"
+            }
+        ]
+    },
+    "constantTwo": {
+        "outputs": [
+            "two"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp float $two = 2.0;"
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "float $two = 2.0;"
+            }
+        ]
+    },
+    "constantVec3One": {
+        "outputs": [
+            "one"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec3 $one = vec3(1.0);"
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec3 $one = vec3(1.0);"
+            }
+        ]
+    },
+    "sampleBaseColorMap": {
+        "inputs": [
+            "coord"
+        ],
+        "outputs": [
+            "color"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec4 $color = texture2D(baseColorMap, $coord);",
+                "headerSnippets": [ "uniform sampler2D baseColorMap;" ]
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec4 $color = texture2D(baseColorMap, $coord);",
+                "headerSnippets": [ "uniform sampler2D baseColorMap;" ]
+            }
+        ]
+    },
+    "sampleMetalnessMap": {
+        "inputs": [
+            "coord"
+        ],
+        "outputs": [
+            "color"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec4 $color = texture2D(metalnessMap, $coord);",
+                "headerSnippets": [ "uniform sampler2D metalnessMap;" ]
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec4 $color = texture2D(metalnessMap, $coord);",
+                "headerSnippets": [ "uniform sampler2D metalnessMap;" ]
+            }
+        ]
+    },
+    "sampleRoughnessMap": {
+        "inputs": [
+            "coord"
+        ],
+        "outputs": [
+            "color"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec4 $color = texture2D(roughnessMap, $coord);",
+                "headerSnippets": [ "uniform sampler2D roughnessMap;" ]
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec4 $color = texture2D(roughnessMap, $coord);",
+                "headerSnippets": [ "uniform sampler2D roughnessMap;" ]
+            }
+        ]
+    },
+    "sampleAmbientOcclusionMap": {
+        "inputs": [
+            "coord"
+        ],
+        "outputs": [
+            "color"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec4 $color = texture2D(ambientOcclusionMap, $coord);",
+                "headerSnippets": [ "uniform sampler2D ambientOcclusionMap;" ]
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec4 $color = texture2D(ambientOcclusionMap, $coord);",
+                "headerSnippets": [ "uniform sampler2D ambientOcclusionMap;" ]
+            }
+        ]
+    },
+    "sampleNormalMap": {
+        "inputs": [
+            "coord"
+        ],
+        "outputs": [
+            "color"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec4 $color = texture2D(normalMap, $coord);",
+                "headerSnippets": [ "uniform sampler2D normalMap;" ]
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec4 $color = texture2D(normalMap, $coord);",
+                "headerSnippets": [ "uniform sampler2D normalMap;" ]
+            }
+        ]
+    },
+    "transposeMat3": {
+        "inputs": [
+            "input"
+        ],
+        "outputs": [
+            "output"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp mat3 $output = transpose($input);"
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "mat3 $output = transpose($input);"
+            }
+        ]
+    },
+    "normalizeVec3": {
+        "inputs": [
+            "input"
+        ],
+        "outputs": [
+            "output"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec3 $output = normalize($input);"
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec3 $output = normalize($input);"
+            }
+        ]
+    },
+    "substractVec3": {
+        "inputs": [
+            "minuend",
+            "substrahend"
+        ],
+        "outputs": [
+            "difference"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec3 $difference = $minuend - $substrahend;"
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec3 $difference = $minuend - $substrahend;"
+            }
+        ]
+    },
+    "addVec3": {
+        "inputs": [
+            "first",
+            "second"
+        ],
+        "outputs": [
+            "sum"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec3 $sum = $first + $second;"
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec3 $sum = $first + $second;"
+            }
+        ]
+    },
+    "multiplyVec3": {
+        "inputs": [
+            "first",
+            "second"
+        ],
+        "outputs": [
+            "product"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec3 $product = $first * $second;"
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec3 $product = $first * $second;"
+            }
+        ]
+    },
+    "swizzleRGB": {
+        "inputs": [
+            "input"
+        ],
+        "outputs": [
+            "output"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp vec3 $output = $input.rgb;"
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "vec3 $output = $input.rgb;"
+            }
+        ]
+    },
+    "swizzleR": {
+        "inputs": [
+            "input"
+        ],
+        "outputs": [
+            "output"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLES",
+                    "major": 2,
+                    "minor": 0
+                },
+                "substitution": "highp float $output = $input.r;"
+            },
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "float $output = $input.r;"
+            }
+        ]
+    },
+    "worldSpaceToTangentSpaceMatrix": {
+        "inputs": [
+            "worldNormal",
+            "worldTangent"
+        ],
+        "outputs": [
+            "matrix"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 0
+                },
+                "substitution": "mat3 $matrix = calcWorldSpaceToTangentSpaceMatrix($worldNormal, $worldTangent);",
+                "headerSnippets": [ "#pragma include :/shaders/gl3/coordinatesystems.inc" ]
+            }
+        ]
+    },
+    "metalRoughFunction": {
+        "inputs": [
+            "baseColor",
+            "metalness",
+            "roughness",
+            "ambientOcclusion",
+            "worldPosition",
+            "worldView",
+            "worldNormal"
+        ],
+        "outputs": [
+            "outputColor"
+        ],
+        "rules": [
+            {
+                "format": {
+                    "api": "OpenGLCoreProfile",
+                    "major": 3,
+                    "minor": 1
+                },
+                "substitution": "vec4 $outputColor = metalRoughFunction($baseColor, $metalness, $roughness, $ambientOcclusion, $worldPosition, $worldView, $worldNormal);",
+                "headerSnippets": [ "#pragma include :/shaders/gl3/metalrough.inc.frag" ]
             }
         ]
     }

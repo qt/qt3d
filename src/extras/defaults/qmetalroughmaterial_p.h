@@ -63,6 +63,7 @@ class QAbstractTexture;
 class QTechnique;
 class QParameter;
 class QShaderProgram;
+class QShaderProgramBuilder;
 class QRenderPass;
 
 } // namespace Qt3DRender
@@ -93,6 +94,7 @@ public:
     Qt3DRender::QTechnique *m_metalRoughGL3Technique;
     Qt3DRender::QRenderPass *m_metalRoughGL3RenderPass;
     Qt3DRender::QShaderProgram *m_metalRoughGL3Shader;
+    Qt3DRender::QShaderProgramBuilder *m_metalRoughGL3ShaderBuilder;
     Qt3DRender::QFilterKey *m_filterKey;
 
     Q_DECLARE_PUBLIC(QMetalRoughMaterial)

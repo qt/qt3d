@@ -1,0 +1,126 @@
+{
+    "nodes": [
+        {
+            "uuid": "{00000000-0000-0000-0000-000000000001}",
+            "type": "worldPosition"
+        },
+        {
+            "uuid": "{00000000-0000-0000-0000-000000000002}",
+            "type": "worldNormal"
+        },
+        {
+            "uuid": "{00000000-0000-0000-0000-000000000003}",
+            "type": "eyePosition"
+        },
+        {
+            "uuid": "{00000000-0000-0000-0000-000000000004}",
+            "type": "baseColor"
+        },
+        {
+            "uuid": "{00000000-0000-0000-0000-000000000005}",
+            "type": "metalness"
+        },
+        {
+            "uuid": "{00000000-0000-0000-0000-000000000006}",
+            "type": "roughness"
+        },
+        {
+            "uuid": "{00000000-0000-0000-0000-000000000007}",
+            "type": "ambientOcclusion"
+        },
+        {
+            "uuid": "{00000000-0000-0000-0000-000000000008}",
+            "type": "normalizeVec3"
+        },
+        {
+            "uuid": "{00000000-0000-0000-0000-000000000009}",
+            "type": "substractVec3"
+        },
+        {
+            "uuid": "{00000000-0000-0000-0000-00000000000a}",
+            "type": "normalizeVec3"
+        },
+        {
+            "uuid": "{00000000-0000-0000-0000-00000000000b}",
+            "type": "metalRoughFunction"
+        },
+        {
+            "uuid": "{00000000-0000-0000-0000-00000000000c}",
+            "type": "fragColor"
+        }
+    ],
+    "edges": [
+        {
+            "sourceUuid": "{00000000-0000-0000-0000-000000000001}",
+            "sourcePort": "worldPosition",
+            "targetUuid": "{00000000-0000-0000-0000-00000000000b}",
+            "targetPort": "worldPosition"
+        },
+        {
+            "sourceUuid": "{00000000-0000-0000-0000-000000000001}",
+            "sourcePort": "worldPosition",
+            "targetUuid": "{00000000-0000-0000-0000-000000000009}",
+            "targetPort": "substrahend"
+        },
+        {
+            "sourceUuid": "{00000000-0000-0000-0000-000000000002}",
+            "sourcePort": "worldNormal",
+            "targetUuid": "{00000000-0000-0000-0000-000000000008}",
+            "targetPort": "input"
+        },
+        {
+            "sourceUuid": "{00000000-0000-0000-0000-000000000003}",
+            "sourcePort": "eyePosition",
+            "targetUuid": "{00000000-0000-0000-0000-000000000009}",
+            "targetPort": "minuend"
+        },
+        {
+            "sourceUuid": "{00000000-0000-0000-0000-000000000004}",
+            "sourcePort": "baseColor",
+            "targetUuid": "{00000000-0000-0000-0000-00000000000b}",
+            "targetPort": "baseColor"
+        },
+        {
+            "sourceUuid": "{00000000-0000-0000-0000-000000000005}",
+            "sourcePort": "metalness",
+            "targetUuid": "{00000000-0000-0000-0000-00000000000b}",
+            "targetPort": "metalness"
+        },
+        {
+            "sourceUuid": "{00000000-0000-0000-0000-000000000006}",
+            "sourcePort": "roughness",
+            "targetUuid": "{00000000-0000-0000-0000-00000000000b}",
+            "targetPort": "roughness"
+        },
+        {
+            "sourceUuid": "{00000000-0000-0000-0000-000000000007}",
+            "sourcePort": "ambientOcclusion",
+            "targetUuid": "{00000000-0000-0000-0000-00000000000b}",
+            "targetPort": "ambientOcclusion"
+        },
+        {
+            "sourceUuid": "{00000000-0000-0000-0000-000000000008}",
+            "sourcePort": "output",
+            "targetUuid": "{00000000-0000-0000-0000-00000000000b}",
+            "targetPort": "worldNormal"
+        },
+        {
+            "sourceUuid": "{00000000-0000-0000-0000-000000000009}",
+            "sourcePort": "difference",
+            "targetUuid": "{00000000-0000-0000-0000-00000000000a}",
+            "targetPort": "input"
+        },
+        {
+            "sourceUuid": "{00000000-0000-0000-0000-00000000000a}",
+            "sourcePort": "output",
+            "targetUuid": "{00000000-0000-0000-0000-00000000000b}",
+            "targetPort": "worldView"
+        },
+        {
+            "sourceUuid": "{00000000-0000-0000-0000-00000000000b}",
+            "sourcePort": "outputColor",
+            "targetUuid": "{00000000-0000-0000-0000-00000000000c}",
+            "targetPort": "fragColor"
+        }
+    ]
+}

@@ -45,6 +45,7 @@
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qtechnique.h>
 #include <Qt3DRender/qshaderprogram.h>
+#include <Qt3DRender/qshaderprogrambuilder.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
@@ -78,6 +79,7 @@ QTexturedMetalRoughMaterialPrivate::QTexturedMetalRoughMaterialPrivate()
     , m_metalRoughGL3Technique(new QTechnique())
     , m_metalRoughGL3RenderPass(new QRenderPass())
     , m_metalRoughGL3Shader(new QShaderProgram())
+    , m_metalRoughGL3ShaderBuilder(new QShaderProgramBuilder())
     , m_filterKey(new QFilterKey)
 {
     m_baseColorTexture->setMagnificationFilter(QAbstractTexture::Linear);
@@ -125,6 +127,8 @@ QTexturedMetalRoughMaterialPrivate::QTexturedMetalRoughMaterialPrivate()
 
 void QTexturedMetalRoughMaterialPrivate::init()
 {
+    Q_Q(QTexturedMetalRoughMaterial);
+
     connect(m_baseColorParameter, &Qt3DRender::QParameter::valueChanged,
             this, &QTexturedMetalRoughMaterialPrivate::handleBaseColorChanged);
     connect(m_metalnessParameter, &Qt3DRender::QParameter::valueChanged,
@@ -137,14 +141,16 @@ void QTexturedMetalRoughMaterialPrivate::init()
             this, &QTexturedMetalRoughMaterialPrivate::handleNormalChanged);
 
     m_metalRoughGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/metalrough.vert"))));
-    m_metalRoughGL3Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/metalrough.frag"))));
+
+    m_metalRoughGL3ShaderBuilder->setParent(q);
+    m_metalRoughGL3ShaderBuilder->setShaderProgram(m_metalRoughGL3Shader);
+    m_metalRoughGL3ShaderBuilder->setFragmentShaderGraph(QUrl(QStringLiteral("qrc:/shaders/graphs/metalrough.frag.json")));
 
     m_metalRoughGL3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
     m_metalRoughGL3Technique->graphicsApiFilter()->setMajorVersion(3);
     m_metalRoughGL3Technique->graphicsApiFilter()->setMinorVersion(1);
     m_metalRoughGL3Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::CoreProfile);
 
-    Q_Q(QTexturedMetalRoughMaterial);
     m_filterKey->setParent(q);
     m_filterKey->setName(QStringLiteral("renderingStyle"));
     m_filterKey->setValue(QStringLiteral("forward"));
