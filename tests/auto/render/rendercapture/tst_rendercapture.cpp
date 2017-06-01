@@ -90,7 +90,7 @@ private Q_SLOTS:
         QCOMPARE(renderCapture.wasCaptureRequested(), true);
     }
 
-    void checkAcknowledgeCaptureRequest()
+    void checkTakeCaptureRequest()
     {
         // GIVEN
         Qt3DRender::Render::RenderCapture renderCapture;
@@ -99,22 +99,26 @@ private Q_SLOTS:
         renderCapture.setEnabled(true);
 
         // WHEN
-        renderCapture.requestCapture(2);
-        renderCapture.requestCapture(4);
+        renderCapture.requestCapture({ 2, QRect(10, 10, 20, 20) });
+        renderCapture.requestCapture({ 4, QRect(15, 15, 30, 30) });
 
         // THEN
         QCOMPARE(renderCapture.wasCaptureRequested(), true);
 
         // WHEN
-        renderCapture.acknowledgeCaptureRequest();
+        Qt3DRender::QRenderCaptureRequest r1 = renderCapture.takeCaptureRequest();
 
         // THEN
+        QCOMPARE(r1.captureId, 2);
+        QCOMPARE(r1.rect, QRect(10, 10, 20, 20));
         QCOMPARE(renderCapture.wasCaptureRequested(), true);
 
         // WHEN
-        renderCapture.acknowledgeCaptureRequest();
+        Qt3DRender::QRenderCaptureRequest r2 = renderCapture.takeCaptureRequest();
 
         // THEN
+        QCOMPARE(r2.captureId, 4);
+        QCOMPARE(r2.rect, QRect(15, 15, 30, 30));
         QCOMPARE(renderCapture.wasCaptureRequested(), false);
     }
 };

@@ -62,10 +62,10 @@ class Q_AUTOTEST_EXPORT RenderCapture : public FrameGraphNode
 public:
     RenderCapture();
 
-    void requestCapture(int captureId);
+    void requestCapture(const QRenderCaptureRequest &request);
     bool wasCaptureRequested() const;
-    void acknowledgeCaptureRequest();
-    void addRenderCapture(const QImage &image);
+    QRenderCaptureRequest takeCaptureRequest();
+    void addRenderCapture(int captureId, const QImage &image);
     void sendRenderCaptures();
 
 protected:
@@ -73,8 +73,7 @@ protected:
 
 private:
 
-    QVector<int> m_requestedCaptures;
-    QVector<int> m_acknowledgedCaptures;
+    QVector<QRenderCaptureRequest> m_requestedCaptures;
     QVector<RenderCaptureDataPtr> m_renderCaptureData;
     QMutex m_mutex;
 };

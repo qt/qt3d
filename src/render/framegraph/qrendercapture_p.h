@@ -95,10 +95,17 @@ struct RenderCaptureData
 
 typedef QSharedPointer<RenderCaptureData> RenderCaptureDataPtr;
 
+struct QRenderCaptureRequest
+{
+    int captureId;
+    QRect rect;
+};
+
 } // Qt3DRender
 
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3DRender::RenderCaptureDataPtr) // LCOV_EXCL_LINE
+Q_DECLARE_METATYPE(Qt3DRender::QRenderCaptureRequest); // LCOV_EXCL_LINE
 
 #endif // QRENDERCAPTURE_P_H

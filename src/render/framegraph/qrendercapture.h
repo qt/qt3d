@@ -85,8 +85,8 @@ public:
     explicit QRenderCapture(Qt3DCore::QNode *parent = nullptr);
 
     Q_INVOKABLE Q_DECL_DEPRECATED_X("Use the overload with no parameter")
-    Qt3DRender::QRenderCaptureReply *requestCapture(int captureId);
-    Q_REVISION(9) Q_INVOKABLE Qt3DRender::QRenderCaptureReply *requestCapture();
+    Qt3DRender::QRenderCaptureReply *requestCapture(int captureId, const QRect &rect = QRect());
+    Q_REVISION(9) Q_INVOKABLE Qt3DRender::QRenderCaptureReply *requestCapture(const QRect &rect = QRect());
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;

@@ -1303,11 +1303,19 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
         // of gc->currentContext() at the moment it was called (either
         // renderViewStateSet or m_defaultRenderStateSet)
         if (!renderView->renderCaptureNodeId().isNull()) {
-            QSize size = m_graphicsContext->renderTargetSize(renderView->surfaceSize() * renderView->devicePixelRatio());
-            QImage image = m_graphicsContext->readFramebuffer(size);
+            const QRenderCaptureRequest request = renderView->renderCaptureRequest();
+            const QSize size = m_graphicsContext->renderTargetSize(renderView->surfaceSize() * renderView->devicePixelRatio());
+            QRect rect(QPoint(0, 0), size);
+            if (!request.rect.isEmpty())
+                rect = rect.intersected(request.rect);
+            QImage image;
+            if (!rect.isEmpty())
+                image = m_graphicsContext->readFramebuffer(rect);
+            else
+                qWarning() << "Requested capture rectangle is outside framebuffer";
             Render::RenderCapture *renderCapture =
                     static_cast<Render::RenderCapture*>(m_nodesManager->frameGraphManager()->lookupNode(renderView->renderCaptureNodeId()));
-            renderCapture->addRenderCapture(image);
+            renderCapture->addRenderCapture(request.captureId, image);
             addRenderCaptureSendRequest(renderView->renderCaptureNodeId());
         }
 

@@ -289,14 +289,15 @@ QRenderCapture::QRenderCapture(Qt3DCore::QNode *parent)
  * The function returns a QRenderCaptureReply object, which receives the captured image
  * when it is done. The user is responsible for deallocating the returned object.
  */
-QRenderCaptureReply *QRenderCapture::requestCapture(int captureId)
+QRenderCaptureReply *QRenderCapture::requestCapture(int captureId, const QRect &rect)
 {
     Q_D(QRenderCapture);
     QRenderCaptureReply *reply = d->createReply(captureId);
 
     Qt3DCore::QPropertyUpdatedChangePtr change(new Qt3DCore::QPropertyUpdatedChange(id()));
     change->setPropertyName(QByteArrayLiteral("renderCaptureRequest"));
-    change->setValue(QVariant::fromValue(captureId));
+    const QRenderCaptureRequest request = { captureId, rect };
+    change->setValue(QVariant::fromValue(request));
     d->notifyObservers(change);
 
     return reply;
@@ -308,7 +309,7 @@ QRenderCaptureReply *QRenderCapture::requestCapture(int captureId)
  * The function returns a QRenderCaptureReply object, which receives the captured image
  * when it is done. The user is responsible for deallocating the returned object.
  */
-QRenderCaptureReply *QRenderCapture::requestCapture()
+QRenderCaptureReply *QRenderCapture::requestCapture(const QRect &rect)
 {
     Q_D(QRenderCapture);
     static int captureId = 1;
@@ -316,7 +317,8 @@ QRenderCaptureReply *QRenderCapture::requestCapture()
 
     Qt3DCore::QPropertyUpdatedChangePtr change(new Qt3DCore::QPropertyUpdatedChange(id()));
     change->setPropertyName(QByteArrayLiteral("renderCaptureRequest"));
-    change->setValue(QVariant::fromValue(captureId));
+    const QRenderCaptureRequest request = { captureId, rect };
+    change->setValue(QVariant::fromValue(request));
     d->notifyObservers(change);
 
     captureId++;

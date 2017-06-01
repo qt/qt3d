@@ -1724,10 +1724,10 @@ static void copyGLFramebufferDataToImage(QImage &img, const uchar *srcData, uint
     }
 }
 
-QImage GraphicsContext::readFramebuffer(QSize size)
+QImage GraphicsContext::readFramebuffer(const QRect &rect)
 {
     QImage img;
-    const unsigned int area = size.width() * size.height();
+    const unsigned int area = rect.width() * rect.height();
     unsigned int bytes;
     GLenum format, type;
     QImage::Format imageFormat;
@@ -1752,7 +1752,7 @@ QImage GraphicsContext::readFramebuffer(QSize size)
 #endif
         type = GL_UNSIGNED_BYTE;
         bytes = area * 4;
-        stride = size.width() * 4;
+        stride = rect.width() * 4;
         break;
     case QAbstractTexture::SRGB8:
     case QAbstractTexture::RGBFormat:
@@ -1768,7 +1768,7 @@ QImage GraphicsContext::readFramebuffer(QSize size)
 #endif
         type = GL_UNSIGNED_BYTE;
         bytes = area * 4;
-        stride = size.width() * 4;
+        stride = rect.width() * 4;
         break;
 #ifndef QT_OPENGL_ES_2
     case QAbstractTexture::RG11B10F:
@@ -1776,14 +1776,14 @@ QImage GraphicsContext::readFramebuffer(QSize size)
         format = GL_RGB;
         type = GL_UNSIGNED_INT_10F_11F_11F_REV;
         imageFormat = QImage::Format_RGB30;
-        stride = size.width() * 4;
+        stride = rect.width() * 4;
         break;
     case QAbstractTexture::RGB10A2:
         bytes = area * 4;
         format = GL_RGBA;
         type = GL_UNSIGNED_INT_2_10_10_10_REV;
         imageFormat = QImage::Format_A2BGR30_Premultiplied;
-        stride = size.width() * 4;
+        stride = rect.width() * 4;
         break;
     case QAbstractTexture::R5G6B5:
         bytes = area * 2;
@@ -1791,7 +1791,7 @@ QImage GraphicsContext::readFramebuffer(QSize size)
         type = GL_UNSIGNED_SHORT;
         internalFormat = GL_UNSIGNED_SHORT_5_6_5_REV;
         imageFormat = QImage::Format_RGB16;
-        stride = size.width() * 2;
+        stride = rect.width() * 2;
         break;
     case QAbstractTexture::RGBA16F:
     case QAbstractTexture::RGBA16U:
@@ -1801,7 +1801,7 @@ QImage GraphicsContext::readFramebuffer(QSize size)
         format = GL_RGBA;
         type = GL_FLOAT;
         imageFormat = QImage::Format_ARGB32_Premultiplied;
-        stride = size.width() * 16;
+        stride = rect.width() * 16;
         break;
 #endif
     default:
@@ -1815,7 +1815,7 @@ QImage GraphicsContext::readFramebuffer(QSize size)
     if (samples > 0 && !m_glHelper->supportsFeature(GraphicsHelperInterface::BlitFramebuffer))
         return img;
 
-    img = QImage(size.width(), size.height(), imageFormat);
+    img = QImage(rect.width(), rect.height(), imageFormat);
 
     QScopedArrayPointer<uchar> data(new uchar [bytes]);
 
@@ -1827,7 +1827,7 @@ QImage GraphicsContext::readFramebuffer(QSize size)
         gl->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
         gl->glGenRenderbuffers(1, &rb);
         gl->glBindRenderbuffer(GL_RENDERBUFFER, rb);
-        gl->glRenderbufferStorage(GL_RENDERBUFFER, internalFormat, size.width(), size.height());
+        gl->glRenderbufferStorage(GL_RENDERBUFFER, internalFormat, rect.width(), rect.height());
         gl->glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, rb);
 
         const GLenum status = gl->glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
@@ -1837,13 +1837,13 @@ QImage GraphicsContext::readFramebuffer(QSize size)
             return img;
         }
 
-        m_glHelper->blitFramebuffer(0, 0, size.width(), size.height(),
-                                    0, 0, size.width(), size.height(),
+        m_glHelper->blitFramebuffer(rect.x(), rect.y(), rect.x() + rect.width(), rect.y() + rect.height(),
+                                    0, 0, rect.width(), rect.height(),
                                     GL_COLOR_BUFFER_BIT, GL_NEAREST);
         gl->glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
-        gl->glReadPixels(0,0,size.width(), size.height(), format, type, data.data());
+        gl->glReadPixels(0,0,rect.width(), rect.height(), format, type, data.data());
 
-        copyGLFramebufferDataToImage(img, data.data(), stride, size.width(), size.height(), m_renderTargetFormat);
+        copyGLFramebufferDataToImage(img, data.data(), stride, rect.width(), rect.height(), m_renderTargetFormat);
 
         gl->glBindRenderbuffer(GL_RENDERBUFFER, rb);
         gl->glDeleteRenderbuffers(1, &rb);
@@ -1851,8 +1851,8 @@ QImage GraphicsContext::readFramebuffer(QSize size)
         gl->glDeleteFramebuffers(1, &fbo);
     } else {
         // read pixels directly from framebuffer
-        m_gl->functions()->glReadPixels(0,0,size.width(), size.height(), format, type, data.data());
-        copyGLFramebufferDataToImage(img, data.data(), stride, size.width(), size.height(), m_renderTargetFormat);
+        m_gl->functions()->glReadPixels(rect.x(), rect.y(), rect.width(), rect.height(), format, type, data.data());
+        copyGLFramebufferDataToImage(img, data.data(), stride, rect.width(), rect.height(), m_renderTargetFormat);
     }
 
     return img;

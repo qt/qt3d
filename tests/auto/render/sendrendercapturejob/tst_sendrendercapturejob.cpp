@@ -55,9 +55,9 @@ private Q_SLOTS:
         renderer.setNodeManagers(&nodeManagers);
         job.setManagers(&nodeManagers);
 
-        renderCapture->requestCapture(42);
-        renderCapture->acknowledgeCaptureRequest();
-        renderCapture->addRenderCapture(image);
+        renderCapture->requestCapture({ 42, QRect() });
+        auto request = renderCapture->takeCaptureRequest();
+        renderCapture->addRenderCapture(request.captureId, image);
         renderer.addRenderCaptureSendRequest(renderCapture->peerId());
 
         //WHEN

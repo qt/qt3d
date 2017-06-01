@@ -232,8 +232,8 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 auto *renderCapture = const_cast<Render::RenderCapture *>(
                                             static_cast<const Render::RenderCapture *>(node));
                 if (rv->renderCaptureNodeId().isNull() && renderCapture->wasCaptureRequested()) {
-                    renderCapture->acknowledgeCaptureRequest();
                     rv->setRenderCaptureNodeId(renderCapture->peerId());
+                    rv->setRenderCaptureRequest(renderCapture->takeCaptureRequest());
                 }
                 break;
             }

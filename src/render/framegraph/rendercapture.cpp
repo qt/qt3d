@@ -50,20 +50,23 @@ RenderCapture::RenderCapture()
 
 }
 
-void RenderCapture::requestCapture(int captureId)
+void RenderCapture::requestCapture(const QRenderCaptureRequest &request)
 {
     QMutexLocker lock(&m_mutex);
-    m_requestedCaptures.push_back(captureId);
+    m_requestedCaptures.push_back(request);
 }
 
+// called by render view initializer job
 bool RenderCapture::wasCaptureRequested() const
 {
     return m_requestedCaptures.size() > 0 && isEnabled();
 }
 
-void RenderCapture::acknowledgeCaptureRequest()
+// called by render view initializer job
+QRenderCaptureRequest RenderCapture::takeCaptureRequest()
 {
-    m_acknowledgedCaptures.push_back(m_requestedCaptures.takeFirst());
+    Q_ASSERT(!m_requestedCaptures.isEmpty());
+    return m_requestedCaptures.takeFirst();
 }
 
 void RenderCapture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -71,18 +74,18 @@ void RenderCapture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     if (e->type() == Qt3DCore::PropertyUpdated) {
         Qt3DCore::QPropertyUpdatedChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QPropertyUpdatedChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("renderCaptureRequest")) {
-            requestCapture(propertyChange->value().toInt());
+            requestCapture(propertyChange->value().value<QRenderCaptureRequest>());
         }
     }
     FrameGraphNode::sceneChangeEvent(e);
 }
 
 // called by render thread
-void RenderCapture::addRenderCapture(const QImage &image)
+void RenderCapture::addRenderCapture(int captureId, const QImage &image)
 {
     QMutexLocker lock(&m_mutex);
     auto data = RenderCaptureDataPtr::create();
-    data.data()->captureId = m_acknowledgedCaptures.takeFirst();
+    data.data()->captureId = captureId;
     data.data()->image = image;
     m_renderCaptureData.push_back(data);
 }

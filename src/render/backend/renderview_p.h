@@ -62,6 +62,7 @@
 #include <Qt3DRender/private/qsortpolicy_p.h>
 #include <Qt3DRender/private/lightsource_p.h>
 #include <Qt3DRender/private/qmemorybarrier_p.h>
+#include <Qt3DRender/private/qrendercapture_p.h>
 
 #include <Qt3DCore/private/qframeallocator_p.h>
 
@@ -221,6 +222,8 @@ public:
 
     inline void setRenderCaptureNodeId(const Qt3DCore::QNodeId nodeId) Q_DECL_NOTHROW { m_renderCaptureNodeId = nodeId; }
     inline const Qt3DCore::QNodeId renderCaptureNodeId() const Q_DECL_NOTHROW { return m_renderCaptureNodeId; }
+    inline void setRenderCaptureRequest(const QRenderCaptureRequest& request) Q_DECL_NOTHROW { m_renderCaptureRequest = request; }
+    inline const QRenderCaptureRequest renderCaptureRequest() const Q_DECL_NOTHROW { return m_renderCaptureRequest; }
 
     void setMemoryBarrier(QMemoryBarrier::Operations barrier) Q_DECL_NOTHROW { m_memoryBarrier = barrier; }
     QMemoryBarrier::Operations memoryBarrier() const Q_DECL_NOTHROW { return m_memoryBarrier; }
@@ -259,6 +262,7 @@ private:
     mutable QThreadStorage<UniformBlockValueBuilder*> m_localData;
 
     Qt3DCore::QNodeId m_renderCaptureNodeId;
+    QRenderCaptureRequest m_renderCaptureRequest;
     bool m_isDownloadBuffersEnable;
 
     Renderer *m_renderer;

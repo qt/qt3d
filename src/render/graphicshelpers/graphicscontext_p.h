@@ -241,7 +241,7 @@ public:
     bool supportsDrawBuffersBlend() const;
     bool supportsVAO() const { return m_supportsVAO; }
 
-    QImage readFramebuffer(QSize size);
+    QImage readFramebuffer(const QRect &rect);
 
 private:
     void initialize();
