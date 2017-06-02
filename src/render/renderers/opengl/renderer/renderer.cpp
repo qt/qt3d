@@ -229,9 +229,9 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     m_filterCompatibleTechniqueJob->setRenderer(this);
 
     m_defaultRenderStateSet = new RenderStateSet;
-    m_defaultRenderStateSet->addState(RenderStateSet::createState<DepthTest>(GL_LESS));
-    m_defaultRenderStateSet->addState(RenderStateSet::createState<CullFace>(GL_BACK));
-    m_defaultRenderStateSet->addState(RenderStateSet::createState<ColorMask>(true, true, true, true));
+    m_defaultRenderStateSet->addState(StateVariant::createState<DepthTest>(GL_LESS));
+    m_defaultRenderStateSet->addState(StateVariant::createState<CullFace>(GL_BACK));
+    m_defaultRenderStateSet->addState(StateVariant::createState<ColorMask>(true, true, true, true));
 }
 
 Renderer::~Renderer()

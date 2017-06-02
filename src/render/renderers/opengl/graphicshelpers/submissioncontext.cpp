@@ -41,6 +41,7 @@
 
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qparameter.h>
+#include <Qt3DRender/qcullface.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DRender/private/material_p.h>
@@ -137,6 +138,192 @@ void copyGLFramebufferDataToImage(QImage &img, const uchar *srcData, uint stride
             }
         } break;
     }
+}
+
+// Render States Helpers
+template<typename GenericState>
+void applyStateHelper(const GenericState *state, SubmissionContext *gc)
+{
+}
+
+template<>
+void applyStateHelper<AlphaFunc>(const AlphaFunc *state, SubmissionContext *gc)
+{
+    const auto values = state->values();
+    gc->alphaTest(std::get<0>(values), std::get<1>(values));
+}
+
+template<>
+void applyStateHelper<BlendEquationArguments>(const BlendEquationArguments *state, SubmissionContext *gc)
+{
+    const auto values = state->values();
+    // Un-indexed BlendEquationArguments -> Use normal GL1.0 functions
+    if (std::get<5>(values) < 0) {
+        if (std::get<4>(values)) {
+            gc->openGLContext()->functions()->glEnable(GL_BLEND);
+            gc->openGLContext()->functions()->glBlendFuncSeparate(std::get<0>(values), std::get<1>(values), std::get<2>(values), std::get<3>(values));
+        } else {
+            gc->openGLContext()->functions()->glDisable(GL_BLEND);
+        }
+    }
+    // BlendEquationArguments for a particular Draw Buffer. Different behaviours for
+    //  (1) 3.0-3.3: only enablei/disablei supported.
+    //  (2) 4.0+: all operations supported.
+    // We just ignore blend func parameter for (1), so no warnings get
+    // printed.
+    else {
+        if (std::get<4>(values)) {
+            gc->enablei(GL_BLEND, std::get<5>(values));
+            if (gc->supportsDrawBuffersBlend()) {
+                gc->blendFuncSeparatei(std::get<5>(values), std::get<0>(values), std::get<1>(values), std::get<2>(values), std::get<3>(values));
+            }
+        } else {
+            gc->disablei(GL_BLEND, std::get<5>(values));
+        }
+    }
+}
+
+template<>
+void applyStateHelper<BlendEquation>(const BlendEquation *state, SubmissionContext *gc)
+{
+    gc->blendEquation(std::get<0>(state->values()));
+}
+
+template<>
+void applyStateHelper<MSAAEnabled>(const MSAAEnabled *state, SubmissionContext *gc)
+{
+    gc->setMSAAEnabled(std::get<0>(state->values()));
+}
+
+
+template<>
+void applyStateHelper<DepthTest>(const DepthTest *state, SubmissionContext *gc)
+{
+    gc->depthTest(std::get<0>(state->values()));
+}
+
+
+template<>
+void applyStateHelper<NoDepthMask>(const NoDepthMask *state, SubmissionContext *gc)
+{
+    gc->depthMask(std::get<0>(state->values()));
+}
+
+
+template<>
+void applyStateHelper<CullFace>(const CullFace *state, SubmissionContext *gc)
+{
+    const auto values = state->values();
+    if (std::get<0>(values) == QCullFace::NoCulling) {
+        gc->openGLContext()->functions()->glDisable(GL_CULL_FACE);
+    } else {
+        gc->openGLContext()->functions()->glEnable(GL_CULL_FACE);
+        gc->openGLContext()->functions()->glCullFace(std::get<0>(values));
+    }
+}
+
+template<>
+void applyStateHelper<FrontFace>(const FrontFace *state, SubmissionContext *gc)
+{
+    gc->frontFace(std::get<0>(state->values()));
+}
+
+template<>
+void applyStateHelper<ScissorTest>(const ScissorTest *state, SubmissionContext *gc)
+{
+    const auto values = state->values();
+    gc->openGLContext()->functions()->glEnable(GL_SCISSOR_TEST);
+    gc->openGLContext()->functions()->glScissor(std::get<0>(values), std::get<1>(values), std::get<2>(values), std::get<3>(values));
+}
+
+template<>
+void applyStateHelper<StencilTest>(const StencilTest *state, SubmissionContext *gc)
+{
+    const auto values = state->values();
+    gc->openGLContext()->functions()->glEnable(GL_STENCIL_TEST);
+    gc->openGLContext()->functions()->glStencilFuncSeparate(GL_FRONT, std::get<0>(values), std::get<1>(values), std::get<2>(values));
+    gc->openGLContext()->functions()->glStencilFuncSeparate(GL_BACK, std::get<3>(values), std::get<4>(values), std::get<5>(values));
+}
+
+template<>
+void applyStateHelper<AlphaCoverage>(const AlphaCoverage *, SubmissionContext *gc)
+{
+    gc->setAlphaCoverageEnabled(true);
+}
+
+template<>
+void applyStateHelper<PointSize>(const PointSize *state, SubmissionContext *gc)
+{
+    const auto values = state->values();
+    gc->pointSize(std::get<0>(values), std::get<1>(values));
+}
+
+
+template<>
+void applyStateHelper<PolygonOffset>(const PolygonOffset *state, SubmissionContext *gc)
+{
+    const auto values = state->values();
+    gc->openGLContext()->functions()->glEnable(GL_POLYGON_OFFSET_FILL);
+    gc->openGLContext()->functions()->glPolygonOffset(std::get<0>(values), std::get<1>(values));
+}
+
+template<>
+void applyStateHelper<ColorMask>(const ColorMask *state, SubmissionContext *gc)
+{
+    const auto values = state->values();
+    gc->openGLContext()->functions()->glColorMask(std::get<0>(values), std::get<1>(values), std::get<2>(values), std::get<3>(values));
+}
+
+template<>
+void applyStateHelper<ClipPlane>(const ClipPlane *state, SubmissionContext *gc)
+{
+    const auto values = state->values();
+    gc->enableClipPlane(std::get<0>(values));
+    gc->setClipPlane(std::get<0>(values), std::get<1>(values), std::get<2>(values));
+}
+
+template<>
+void applyStateHelper<SeamlessCubemap>(const SeamlessCubemap *, SubmissionContext *gc)
+{
+    gc->setSeamlessCubemap(true);
+}
+
+template<>
+void applyStateHelper<StencilOp>(const StencilOp *state, SubmissionContext *gc)
+{
+    const auto values = state->values();
+    gc->openGLContext()->functions()->glStencilOpSeparate(GL_FRONT, std::get<0>(values), std::get<1>(values), std::get<2>(values));
+    gc->openGLContext()->functions()->glStencilOpSeparate(GL_BACK, std::get<3>(values), std::get<4>(values), std::get<5>(values));
+}
+
+template<>
+void applyStateHelper<StencilMask>(const StencilMask *state, SubmissionContext *gc)
+{
+    const auto values = state->values();
+    gc->openGLContext()->functions()->glStencilMaskSeparate(GL_FRONT, std::get<0>(values));
+    gc->openGLContext()->functions()->glStencilMaskSeparate(GL_BACK, std::get<1>(values));
+}
+
+template<>
+void applyStateHelper<Dithering>(const Dithering *, SubmissionContext *gc)
+{
+    gc->openGLContext()->functions()->glEnable(GL_DITHER);
+}
+
+#ifndef GL_LINE_SMOOTH
+#define GL_LINE_SMOOTH 0x0B20
+#endif
+
+template<>
+void applyStateHelper<LineWidth>(const LineWidth *state, SubmissionContext *gc)
+{
+    const auto values = state->values();
+    if (std::get<1>(values))
+        gc->openGLContext()->functions()->glEnable(GL_LINE_SMOOTH);
+    else
+        gc->openGLContext()->functions()->glDisable(GL_LINE_SMOOTH);
+
+    gc->openGLContext()->functions()->glLineWidth(std::get<0>(values));
 }
 
 } // anonymous
@@ -789,13 +976,206 @@ void SubmissionContext::setCurrentStateSet(RenderStateSet *ss)
     if (ss == m_stateSet)
         return;
     if (ss)
-        ss->apply(this);
+        applyStateSet(ss);
     m_stateSet = ss;
 }
 
 RenderStateSet *SubmissionContext::currentStateSet() const
 {
     return m_stateSet;
+}
+
+void SubmissionContext::applyState(const StateVariant &stateVariant)
+{
+    switch (stateVariant.type) {
+
+    case AlphaCoverageStateMask: {
+        applyStateHelper<AlphaCoverage>(static_cast<const AlphaCoverage *>(stateVariant.constState()), this);
+        break;
+    }
+    case AlphaTestMask: {
+        applyStateHelper<AlphaFunc>(static_cast<const AlphaFunc *>(stateVariant.constState()), this);
+        break;
+    }
+    case BlendStateMask: {
+        applyStateHelper<BlendEquation>(static_cast<const BlendEquation *>(stateVariant.constState()), this);
+        break;
+    }
+    case BlendEquationArgumentsMask: {
+        applyStateHelper<BlendEquationArguments>(static_cast<const BlendEquationArguments *>(stateVariant.constState()), this);
+        break;
+    }
+    case MSAAEnabledStateMask: {
+        applyStateHelper<MSAAEnabled>(static_cast<const MSAAEnabled *>(stateVariant.constState()), this);
+        break;
+    }
+
+    case CullFaceStateMask: {
+        applyStateHelper<CullFace>(static_cast<const CullFace *>(stateVariant.constState()), this);
+        break;
+    }
+
+    case DepthWriteStateMask: {
+        applyStateHelper<NoDepthMask>(static_cast<const NoDepthMask *>(stateVariant.constState()), this);
+        break;
+    }
+
+    case DepthTestStateMask: {
+        applyStateHelper<DepthTest>(static_cast<const DepthTest *>(stateVariant.constState()), this);
+        break;
+    }
+
+    case FrontFaceStateMask: {
+        applyStateHelper<FrontFace>(static_cast<const FrontFace *>(stateVariant.constState()), this);
+        break;
+    }
+
+    case ScissorStateMask: {
+        applyStateHelper<ScissorTest>(static_cast<const ScissorTest *>(stateVariant.constState()), this);
+        break;
+    }
+
+    case StencilTestStateMask: {
+        applyStateHelper<StencilTest>(static_cast<const StencilTest *>(stateVariant.constState()), this);
+        break;
+    }
+
+    case PointSizeMask: {
+        applyStateHelper<PointSize>(static_cast<const PointSize *>(stateVariant.constState()), this);
+        break;
+    }
+
+    case PolygonOffsetStateMask: {
+        applyStateHelper<PolygonOffset>(static_cast<const PolygonOffset *>(stateVariant.constState()), this);
+        break;
+    }
+
+    case ColorStateMask: {
+        applyStateHelper<ColorMask>(static_cast<const ColorMask *>(stateVariant.constState()), this);
+        break;
+    }
+
+    case ClipPlaneMask: {
+        applyStateHelper<ClipPlane>(static_cast<const ClipPlane *>(stateVariant.constState()), this);
+        break;
+    }
+
+    case SeamlessCubemapMask: {
+        applyStateHelper<SeamlessCubemap>(static_cast<const SeamlessCubemap *>(stateVariant.constState()), this);
+        break;
+    }
+
+    case StencilOpMask: {
+        applyStateHelper<StencilOp>(static_cast<const StencilOp *>(stateVariant.constState()), this);
+        break;
+    }
+
+    case StencilWriteStateMask: {
+        applyStateHelper<StencilMask>(static_cast<const StencilMask *>(stateVariant.constState()), this);
+        break;
+    }
+
+    case DitheringStateMask: {
+        applyStateHelper<Dithering>(static_cast<const Dithering *>(stateVariant.constState()), this);
+        break;
+    }
+
+    case LineWidthMask: {
+        applyStateHelper<LineWidth>(static_cast<const LineWidth *>(stateVariant.constState()), this);
+        break;
+    }
+    default:
+        Q_UNREACHABLE();
+    }
+}
+
+void SubmissionContext::resetMasked(qint64 maskOfStatesToReset)
+{
+    // TO DO -> Call gcHelper methods instead of raw GL
+    // QOpenGLFunctions shouldn't be used here directly
+    QOpenGLFunctions *funcs = m_gl->functions();
+
+    if (maskOfStatesToReset & ScissorStateMask)
+        funcs->glDisable(GL_SCISSOR_TEST);
+
+    if (maskOfStatesToReset & BlendStateMask)
+        funcs->glDisable(GL_BLEND);
+
+    if (maskOfStatesToReset & StencilWriteStateMask)
+        funcs->glStencilMask(0);
+
+    if (maskOfStatesToReset & StencilTestStateMask)
+        funcs->glDisable(GL_STENCIL_TEST);
+
+    if (maskOfStatesToReset & DepthTestStateMask)
+        funcs->glDisable(GL_DEPTH_TEST);
+
+    if (maskOfStatesToReset & DepthWriteStateMask)
+        funcs->glDepthMask(GL_TRUE); // reset to default
+
+    if (maskOfStatesToReset & FrontFaceStateMask)
+        funcs->glFrontFace(GL_CCW); // reset to default
+
+    if (maskOfStatesToReset & CullFaceStateMask)
+        funcs->glDisable(GL_CULL_FACE);
+
+    if (maskOfStatesToReset & DitheringStateMask)
+        funcs->glDisable(GL_DITHER);
+
+    if (maskOfStatesToReset & AlphaCoverageStateMask)
+        setAlphaCoverageEnabled(false);
+
+    if (maskOfStatesToReset & PointSizeMask)
+        pointSize(false, 1.0f);    // reset to default
+
+    if (maskOfStatesToReset & PolygonOffsetStateMask)
+        funcs->glDisable(GL_POLYGON_OFFSET_FILL);
+
+    if (maskOfStatesToReset & ColorStateMask)
+        funcs->glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+    if (maskOfStatesToReset & ClipPlaneMask) {
+        GLint max = maxClipPlaneCount();
+        for (GLint i = 0; i < max; ++i)
+            disableClipPlane(i);
+    }
+
+    if (maskOfStatesToReset & SeamlessCubemapMask)
+        setSeamlessCubemap(false);
+
+    if (maskOfStatesToReset & StencilOpMask)
+        funcs->glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+
+    if (maskOfStatesToReset & LineWidthMask)
+        funcs->glLineWidth(1.0f);
+}
+
+void SubmissionContext::applyStateSet(RenderStateSet *ss)
+{
+    RenderStateSet* previousStates = currentStateSet();
+
+    const StateMaskSet invOurState = ~ss->stateMask();
+    // generate a mask for each set bit in previous, where we do not have
+    // the corresponding bit set.
+
+    StateMaskSet stateToReset = 0;
+    if (previousStates) {
+        stateToReset = previousStates->stateMask() & invOurState;
+        qCDebug(RenderStates) << "previous states " << QString::number(previousStates->stateMask(), 2);
+    }
+    qCDebug(RenderStates) << " current states " << QString::number(ss->stateMask(), 2)  << "inverse " << QString::number(invOurState, 2) << " -> states to change:  " << QString::number(stateToReset, 2);
+
+    // Reset states that aren't active in the current state set
+    resetMasked(stateToReset);
+
+    // Apply states that weren't in the previous state or that have
+    // different values
+    const QVector<StateVariant> statesToSet = ss->states();
+    for (const StateVariant &ds : statesToSet) {
+        if (previousStates && previousStates->contains(ds))
+            continue;
+        applyState(ds);
+    }
 }
 
 void SubmissionContext::clearColor(const QColor &color)

@@ -79,6 +79,7 @@ class AttachmentPack;
 class Attribute;
 class Buffer;
 class ShaderManager;
+struct StateVariant;
 
 enum TextureScope
 {
@@ -152,6 +153,10 @@ public:
     // RenderState
     void setCurrentStateSet(RenderStateSet* ss);
     RenderStateSet *currentStateSet() const;
+    void applyState(const StateVariant &state);
+
+    void resetMasked(qint64 maskOfStatesToReset);
+    void applyStateSet(RenderStateSet *ss);
 
     // Wrappers
     void    clearColor(const QColor &color);

@@ -78,7 +78,6 @@ class RenderStateImpl
 public:
     virtual ~RenderStateImpl() {}
 
-    virtual void apply(GraphicsContext* gc) const = 0;
     virtual StateMask mask() const = 0;
     virtual bool equalTo(const RenderStateImpl &renderState) const = 0;
     virtual void updateProperty(const char *name, const QVariant &value);
@@ -108,6 +107,11 @@ public:
     static StateMask type()
     {
         return stateMask;
+    }
+
+    std::tuple<T ...> values() const
+    {
+        return m_values;
     }
 
 protected:
