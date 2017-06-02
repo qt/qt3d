@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_VISITORUTILS_P_H
-#define QT3DRENDER_VISITORUTILS_P_H
+#ifndef QT3DRENDER_RENDER_VISITORUTILS_P_H
+#define QT3DRENDER_RENDER_VISITORUTILS_P_H
 
 //
 //  W A R N I N G
@@ -178,4 +178,4 @@ void visitPrimitives(NodeManagers *manager, const GeometryRenderer *renderer, Vi
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_VISITORUTILS_P_H
+#endif // QT3DRENDER_RENDER_VISITORUTILS_P_H
